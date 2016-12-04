@@ -1,0 +1,402 @@
+#define _CRTDBG_MAP_ALLOC
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdlib.h>
+#include <crtdbg.h>
+#include <io.h>
+
+#include "Engine/Engine.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/MapInfo.h"
+#include "Engine/Graphics/Render.h"
+#include "Engine/LOD.h"
+#include "Engine/SaveLoad.h"
+#include "Engine/texts.h"
+
+#include "IO/Keyboard.h"
+
+#include "GUI/GUIFont.h"
+#include "GUI/UI/UISaveLoad.h"
+
+#include "Game/MainMenu.h"
+
+void UI_DrawSaveLoad(bool save);
+
+
+Image *saveload_ui_save_up = nullptr;
+Image *saveload_ui_load_up = nullptr;
+Image *saveload_ui_loadsave = nullptr;
+Image *saveload_ui_saveu = nullptr;
+Image *saveload_ui_loadu = nullptr;
+Image *saveload_ui_x_u = nullptr;
+Image *saveload_ui_ls_saved = nullptr;
+Image *saveload_ui_x_d = nullptr;
+
+GUIWindow_Save::GUIWindow_Save() :
+    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+{
+    // ------------------------------------------------
+    // 0045E93E SaveUI_Load(enum CURRENT_SCREEN screen)
+    char *v3; // eax@7
+    LODWriteableFile pLODFile; // [sp+1Ch] [bp-248h]@1
+
+    ++pIcons_LOD->uTexturePacksCount;
+    if (!pIcons_LOD->uNumPrevLoadedFiles)
+        pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
+    memset(&pSavegameUsedSlots, 0, sizeof(pSavegameUsedSlots));
+    memset(&pSavegameThumbnails, 0, sizeof(pSavegameThumbnails));
+    saveload_ui_loadsave = assets->GetImage_16BitColorKey(L"loadsave", 0x7FF);
+    saveload_ui_save_up = assets->GetImage_16BitColorKey(L"save_up", 0x7FF);
+    saveload_ui_load_up = assets->GetImage_16BitColorKey(L"load_up", 0x7FF);
+    saveload_ui_saveu = assets->GetImage_16BitColorKey(L"LS_saveU", 0x7FF);
+    saveload_ui_loadu = assets->GetImage_16BitColorKey(L"LS_loadU", 0x7FF);
+    saveload_ui_x_u = assets->GetImage_16BitColorKey(L"x_u", 0x7FF);
+
+    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
+
+    //if (screen == SCREEN_SAVEGAME)
+    {
+        pRenderer->DrawTextureAlphaNew(241/640.0f, 302/480.0f, saveload_ui_saveu);
+        pRenderer->DrawTextureAlphaNew(351/640.0f, 302/480.0f, saveload_ui_x_u);
+        pRenderer->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_save_up);
+    }
+    /*else
+    {
+    pRenderer->DrawTextureTransparentColorKey(241, 302, pIcons_LOD->GetTexture(uTextureID_LS_loadU));
+    pRenderer->DrawTextureTransparentColorKey(351, 302, pIcons_LOD->GetTexture(uTextureID_x_u));
+    pRenderer->DrawTextureTransparentColorKey(18, 141, pIcons_LOD->GetTexture(uTextureID_load_up));
+    }*/
+
+    //pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, 25, 199, 0, pGlobalTXT_LocalizationStrings[505], 0, 0, 0);//Read...(Чтение...)
+    pRenderer->Present();
+    pSavegameList->Initialize(1);
+    pLODFile.AllocSubIndicesAndIO(300, 0);
+    for (uint i = 0; i < 40; ++i)
+    {
+        v3 = pSavegameList->pFileList[i].pSaveFileName;
+        if (!*pSavegameList->pFileList[i].pSaveFileName)
+            v3 = "1.mm7";
+        sprintf(pTmpBuf.data(), "saves\\%s", v3);
+        if (_access(pTmpBuf.data(), 0) || _access(pTmpBuf.data(), 6))
+        {
+            pSavegameUsedSlots[i] = 0;
+            strcpy(pSavegameHeader[i].pName, pGlobalTXT_LocalizationStrings[LOCSTR_EMPTY]);
+        }
+        else
+        {
+            pLODFile.LoadFile(pTmpBuf.data(), 1);
+            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", 1));
+            if (pLODFile.FindContainer("image.pcx", 1))
+            {
+                //pSavegameThumbnails[i].LoadFromFILE(pLODFile.FindContainer("image.pcx", 1), 0, 1);
+                pLODFile.CloseWriteFile();
+                pSavegameUsedSlots[i] = 1;
+            }
+            else
+                pSavegameUsedSlots[i] = 0;
+        }
+    }
+    pLODFile.FreeSubIndexAndIO();
+
+    if (!saveload_ui_x_d)
+        saveload_ui_x_d = assets->GetImage_16BitAlpha("x_d");
+    if (!saveload_ui_ls_saved)
+        saveload_ui_ls_saved = assets->GetImage_16BitAlpha("LS_saveD");
+    if (!ui_ar_up_dn)
+        ui_ar_up_dn = assets->GetImage_16BitAlpha("ar_up_dn");
+    if (!ui_ar_dn_dn)
+        ui_ar_dn_dn = assets->GetImage_16BitAlpha("ar_dn_dn");
+
+
+// -----------------------------
+// GUIWindow_Save c-tor --- part
+    CreateButton(21, 198, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 0, 0, "", 0);
+    CreateButton(21, 218, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 1, 0, "", 0);
+    CreateButton(21, 238, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 2, 0, "", 0);
+    CreateButton(21, 258, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 3, 0, "", 0);
+    CreateButton(21, 278, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 4, 0, "", 0);
+    CreateButton(21, 298, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 5, 0, "", 0);
+    CreateButton(21, 318, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 6, 0, "", 0);
+
+    pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, 0, "", saveload_ui_ls_saved, 0);
+    pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, 0, "", saveload_ui_x_d, 0);
+    pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, 0, "", ui_ar_up_dn, 0);
+    pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, 34, 0, "", ui_ar_dn_dn, 0);
+}
+
+
+void GUIWindow_Save::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+// {
+//     SaveUI_Draw();
+// }
+
+// ----- (004606FE) --------------------------------------------------------
+// void SaveUI_Draw()
+// {
+    UI_DrawSaveLoad(true);
+}
+
+
+
+
+GUIWindow_Load::GUIWindow_Load(bool ingame) :
+    GUIWindow(0, 0, 0, 0, 0, nullptr)
+{
+// ----- (0045E361) --------------------------------------------------------
+// void LoadUI_Load(unsigned int uDialogueType)
+// {
+    current_screen_type = SCREEN_LOADGAME;
+
+    LODWriteableFile pLODFile; // [sp+1Ch] [bp-248h]@1
+
+    dword_6BE138 = -1;
+    pIcons_LOD->_inlined_sub2();
+
+    memset(pSavegameUsedSlots.data(), 0, sizeof(pSavegameUsedSlots));
+    memset(pSavegameThumbnails.data(), 0, 45 * sizeof(Image *));
+    saveload_ui_loadsave = assets->GetImage_16BitColorKey(L"loadsave", 0x7FF);
+    saveload_ui_save_up = assets->GetImage_16BitColorKey(L"save_up", 0x7FF);
+    saveload_ui_load_up = assets->GetImage_16BitColorKey(L"load_up", 0x7FF);
+    saveload_ui_saveu = assets->GetImage_16BitColorKey(L"LS_saveU", 0x7FF);
+    saveload_ui_loadu = assets->GetImage_16BitColorKey(L"LS_loadU", 0x7FF);
+    saveload_ui_x_u = assets->GetImage_16BitColorKey(L"x_u", 0x7FF);
+
+    if (ingame)
+    {
+        pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
+        if (current_screen_type == SCREEN_SAVEGAME)
+        {
+            pRenderer->DrawTextureAlphaNew(241/640.0f, 302/480.0f, saveload_ui_saveu);
+            pRenderer->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f, saveload_ui_save_up);
+        }
+        else
+        {
+            pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
+            pRenderer->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f, saveload_ui_load_up);
+        }
+        pRenderer->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+    }
+    else
+        pRenderer->DrawTextureNew(0, 0, main_menu_background);
+
+
+    /*pGUIWindow_CurrentMenu = new GUIWindow_Load(
+        saveload_dlg_xs[uDialogueType],
+        saveload_dlg_ys[uDialogueType],
+        saveload_dlg_zs[uDialogueType],
+        saveload_dlg_ws[uDialogueType], 0, 0);*/
+
+    // GUIWindow::GUIWindow
+    this->uFrameX = saveload_dlg_xs[ingame ? 1 : 0];
+    this->uFrameY = saveload_dlg_ys[ingame ? 1 : 0];
+    this->uFrameWidth = saveload_dlg_zs[ingame ? 1 : 0];
+    this->uFrameHeight = saveload_dlg_ws[ingame ? 1 : 0];
+    this->uFrameZ = uFrameX + uFrameWidth - 1;
+    this->uFrameW = uFrameY + uFrameHeight - 1;
+
+
+
+    DrawText(pFontSmallnum, 25, 199, 0, pGlobalTXT_LocalizationStrings[505], 0, 0, 0);// "Reading..."
+    pRenderer->Present();
+    pSavegameList->Initialize(0);
+    if (pSaveListPosition > (signed int)uNumSavegameFiles)
+    {
+        pSaveListPosition = 0;
+        uLoadGameUI_SelectedSlot = 0;
+    }
+    pLODFile.AllocSubIndicesAndIO(300, 0);
+    Assert(sizeof(SavegameHeader) == 100);
+    for (uint i = 0; i < uNumSavegameFiles; ++i)
+    {
+        sprintf(pTmpBuf.data(), "saves\\%s", pSavegameList->pFileList[i].pSaveFileName);
+        if (_access(pTmpBuf.data(), 6))
+        {
+            pSavegameUsedSlots[i] = 0;
+            strcpy(pSavegameHeader[i].pName, pGlobalTXT_LocalizationStrings[72]); // "Empty"
+            continue;
+        }
+        pLODFile.LoadFile(pTmpBuf.data(), 1);
+        if (pLODFile.FindContainer("header.bin", true))
+            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", true));
+        if (!_stricmp(pSavegameList->pFileList[i].pSaveFileName, pGlobalTXT_LocalizationStrings[613]))// "AutoSave.MM7"
+            strcpy(pSavegameHeader[i].pName, pGlobalTXT_LocalizationStrings[16]);// "Autosave"
+        if (!pLODFile.FindContainer("image.pcx", true))
+        {
+            pSavegameUsedSlots[i] = 0;
+            strcpy(pSavegameList->pFileList[i].pSaveFileName, "");
+        }
+        else
+        {
+            //pSavegameThumbnails[i].LoadFromFILE(pLODFile.FindContainer("image.pcx", true), 0, true);
+            pLODFile.CloseWriteFile();
+            pSavegameUsedSlots[i] = 1;
+        }
+    }
+
+    pLODFile.FreeSubIndexAndIO();
+
+    saveload_ui_x_d = assets->GetImage_16BitAlpha("x_d");
+
+    if (saveload_ui_ls_saved)
+    {
+        saveload_ui_ls_saved->Release();
+        saveload_ui_ls_saved = nullptr;
+    }
+    if (current_screen_type == SCREEN_SAVEGAME)
+        saveload_ui_ls_saved = assets->GetImage_16BitAlpha("LS_saveD");
+    else
+        saveload_ui_ls_saved = assets->GetImage_16BitAlpha("LS_loadD");
+
+    if (!ui_ar_up_dn)
+        ui_ar_up_dn = assets->GetImage_16BitAlpha("AR_UP_DN");
+    if (!ui_ar_dn_dn)
+        ui_ar_dn_dn = assets->GetImage_16BitAlpha("AR_DN_DN");
+
+    CreateButton(21, 198, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 0, 0, "", 0);
+    CreateButton(21, 219, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 1, 0, "", 0);
+    CreateButton(21, 240, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 2, 0, "", 0);
+    CreateButton(21, 261, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 3, 0, "", 0);
+    CreateButton(21, 282, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 4, 0, "", 0);
+    CreateButton(21, 303, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 5, 0, "", 0);
+    CreateButton(21, 324, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 6, 0, "", 0);
+
+    pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, 0, "", saveload_ui_ls_saved, 0);
+    pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, 0, "", saveload_ui_x_d, 0);
+    pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, 0, "", ui_ar_up_dn, 0);
+    pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, uNumSavegameFiles, 0, "", ui_ar_dn_dn, 0);
+}
+
+
+void GUIWindow_Load::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+// {
+//     LoadUI_Draw();
+// }
+
+// ----- (004606F7) --------------------------------------------------------
+// void LoadUI_Draw()
+// {
+    UI_DrawSaveLoad(false);
+}
+
+
+//----- (004601B7) --------------------------------------------------------
+static void UI_DrawSaveLoad(bool save)
+{
+//  const char *pSlotName; // edi@36
+  GUIWindow save_load_window; // [sp+Ch] [bp-78h]@8
+  unsigned int pSaveFiles; // [sp+70h] [bp-14h]@10
+  unsigned __int64 full_hours;
+  unsigned __int64 full_days;
+  int full_weeks;
+  int full_month;
+  int current_year;
+  int current_month;
+  int current_day;
+  int current_hour;
+  int current_minutes;
+
+  pRenderer->BeginScene();
+  if ( GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu )
+  {
+    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
+    if (save)
+    {
+      pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_saveu);
+      pRenderer->DrawTextureAlphaNew( 18 / 640.0f, 139 / 480.0f, saveload_ui_save_up);
+    }
+    else
+    {
+      pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
+      pRenderer->DrawTextureAlphaNew( 18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
+    }
+    pRenderer->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+  }
+  if ( pSavegameUsedSlots[uLoadGameUI_SelectedSlot] )
+  {
+    memset(&save_load_window, 0, 0x54);
+    save_load_window.uFrameX = pGUIWindow_CurrentMenu->uFrameX + 240;
+    save_load_window.uFrameWidth = 220;
+    save_load_window.uFrameY = (pGUIWindow_CurrentMenu->uFrameY - pFontSmallnum->uFontHeight) + 157;
+    save_load_window.uFrameZ = save_load_window.uFrameX + 219;
+    save_load_window.uFrameHeight = pFontSmallnum->uFontHeight;
+    save_load_window.uFrameW = pFontSmallnum->uFontHeight + save_load_window.uFrameY - 1;
+    if ( pSavegameThumbnails[uLoadGameUI_SelectedSlot] )
+      pRenderer->DrawTextureNew((pGUIWindow_CurrentMenu->uFrameX + 276)/640.0f, (pGUIWindow_CurrentMenu->uFrameY + 171)/480.0f, pSavegameThumbnails[uLoadGameUI_SelectedSlot]);
+//Draw map name
+    save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameHeader[uLoadGameUI_SelectedSlot].pLocationName)].pName, 3);
+//Draw date
+    full_hours = ((signed __int64)(pSavegameHeader[uLoadGameUI_SelectedSlot].uWordTime * 0.234375) / 60) / 60i64;
+    full_days = (unsigned int)full_hours / 24;
+    full_weeks = (unsigned int)(full_days / 7);
+    full_month = (unsigned int)full_weeks / 4;
+    current_year = (full_month / 12) + game_starting_year;
+    current_month = full_month % 12;
+    current_day = full_days % 28;
+    current_hour = full_hours % 24;
+    current_minutes = (((signed __int64)(pSavegameHeader[uLoadGameUI_SelectedSlot].uWordTime * 0.234375) / 60) % 60i64);
+
+    save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
+    int am;
+    if ( (signed int)current_hour >= 12 )
+    {
+      current_hour -= 12;
+      if ( !current_hour )
+        current_hour = 12;
+      am = 1;
+    }
+    else
+      am = 0;
+    const char* day = aDayNames[full_days % 7];
+    const char* ampm = aAMPMNames[am];
+    const char* month = aMonthNames[current_month];
+
+    sprintfex(pTmpBuf.data(), "%s %d:%02d %s\n%d %s %d", day, current_hour, current_minutes, aAMPMNames[am], current_day + 1, month, current_year);
+    save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, pTmpBuf.data(), 3);
+  }
+  if ( pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED)
+  {
+    pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+    strcpy((char *)&pSavegameHeader + 100 * uLoadGameUI_SelectedSlot, pKeyActionMap->pPressedKeysBuffer);
+    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveGame, 0, 0);
+  }
+  else
+  {
+    if ( pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED)
+      pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+  }
+  if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu)
+  {
+    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, pGlobalTXT_LocalizationStrings[135]) + 25,
+        220, 0, pGlobalTXT_LocalizationStrings[135], 0, 0, 0);//Загрузка
+    pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, pFontSmallnum->AlignText_Center(186,
+		pSavegameHeader[uLoadGameUI_SelectedSlot].pName) + 25, 0x106, 0, pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, pGlobalTXT_LocalizationStrings[165]) + 25,
+        304, 0, pGlobalTXT_LocalizationStrings[165], 0, 0, 0);//"Пожалуйста, пожождите"
+  }
+  else
+  {
+    if ( save )
+      pSaveFiles = 40;
+    else
+      pSaveFiles = uNumSavegameFiles;
+
+    int slot_Y = 199;
+    for ( uint i = pSaveListPosition; i < pSaveFiles; ++i )
+    {
+      if ( slot_Y >= 346 )
+        break;
+      if ( pGUIWindow_CurrentMenu->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS || i != uLoadGameUI_SelectedSlot )
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, pSavegameHeader[i].pName, 185, 0);
+      else
+        pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, (const char *)pKeyActionMap->pPressedKeysBuffer, 175, 1) + 27,
+           slot_Y, pFontSmallnum);
+      slot_Y += 21;
+    }
+  }
+  pRenderer->EndScene();
+}

@@ -1,0 +1,10 @@
+#old mercurial stuff
+.hg*
+*.orig
+
+#env`s
+Debug
+Release
+Build/Visual Studio 2015/Debug
+Build/Visual Studio 2015/*.sdf
+Build/Visual Studio 2015/*.opensdf

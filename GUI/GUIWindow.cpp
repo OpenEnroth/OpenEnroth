@@ -1,0 +1,3528 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+#define _CRT_SECURE_NO_WARNINGS
+#include "Engine/Engine.h"
+
+#include "GUIWindow.h"
+#include "GUIFont.h"
+#include "Engine/Party.h"
+#include "Engine/LOD.h"
+#include "IO/Keyboard.h"
+#include "Engine/OurMath.h"
+#include "Engine/Timer.h"
+#include "Media/Audio/AudioPlayer.h"
+#include "IO/Mouse.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Tables/StorylineTextTable.h"
+#include "GUI\UI\UIHouses.h"
+#include "GUI\UI\UIBooks.h"
+#include "Engine/texts.h"
+#include "Engine/Autonotes.h"
+#include "Engine/Awards.h"
+#include "Engine/Objects/Chest.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/Events.h"
+#include "Engine/Graphics/Level\Decoration.h"
+
+#include "GUI/UI/UIArena.h"
+#include "GUI/UI/UIPopup.h"
+#include "GUI/UI/UIGame.h"
+#include "GUI/UI/UICharacter.h"
+
+typedef struct _RGBColor
+    {
+    unsigned char R;
+    unsigned char B;
+    unsigned char G;
+    }RGBColor;
+
+
+std::array<RGBColor, 20> spell_tooltip_colors={{ 
+    {0x96, 0xD4, 0xFF},
+    {0xFF, 0x80, 0x00},
+    {0xFF, 0xFF, 0x9B},
+    {0xE1, 0xE1, 0xE1},
+    {0x80, 0x80, 0x80},
+    {0x96, 0xD4, 0xFF},
+    {0xFF, 0x55, 0x00},
+    {0x96, 0xD4, 0xFF},
+    {0xFF, 0x55, 0x00},
+    {0xE1, 0xE1, 0xE1},
+    {0xFF, 0x55, 0x00},
+    {0x96, 0xD4, 0xFF},
+    {0xEB, 0x0F, 0xFF},
+    {0xFF, 0x80, 0x00},
+    {0x96, 0xD4, 0xFF},
+    {0x80, 0x80, 0x80},
+    {0xFF, 0x55, 0x00},
+    {0x00, 0x80, 0xFF},
+    {0x00, 0x80, 0xFF},
+    {0x96, 0xD4, 0xFF}}};
+
+
+enum WindowType current_character_screen_window;
+struct GUIWindow *pWindow_MMT_MainMenu;
+struct GUIWindow *pWindow_MainMenu;
+std::array<struct GUIWindow *, 50> pWindowList;
+
+struct GUIMessageQueue *pMessageQueue_50CBD0 = new GUIMessageQueue;
+struct GUIMessageQueue *pMessageQueue_50C9E8 = new GUIMessageQueue;
+
+
+Image *ui_exit_cancel_button_background = nullptr;
+Image *game_ui_right_panel_frame = nullptr;
+Image *dialogue_ui_x_ok_u = nullptr;
+Image *dialogue_ui_x_x_u = nullptr;
+
+Image *ui_buttdesc2 = nullptr;
+Image *ui_buttyes2 = nullptr;
+
+Image *ui_btn_npc_right = nullptr;
+Image *ui_btn_npc_left = nullptr;
+
+Image *ui_ar_dn_dn = nullptr;
+Image *ui_ar_dn_up = nullptr;
+Image *ui_ar_up_dn = nullptr;
+Image *ui_ar_up_up = nullptr;
+
+
+
+Image *ui_leather_mm6 = nullptr;
+Image *ui_leather_mm7 = nullptr;
+
+
+GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
+    GUIWindow(x, y, width, height, button, hint)
+{
+    pMouse->SetCursorBitmap("MICON2");
+    pBtn_ExitCancel = CreateButton(392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, 0, pGlobalTXT_LocalizationStrings[34],//Отмена
+        ui_buttdesc2, nullptr);
+    ShowStatusBarString(pGlobalTXT_LocalizationStrings[39], 2); // Choose target / Выбрать цель
+    ++pIcons_LOD->uTexturePacksCount;
+    current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+    current_screen_type = SCREEN_CASTING;
+    if (!pIcons_LOD->uNumPrevLoadedFiles)
+        pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
+}
+
+GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
+    GUIWindow(x, y, width, height, button, hint)
+{
+    current_screen_type = SCREEN_HOUSE;
+    pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, pGlobalTXT_LocalizationStrings[80], // Quit building / Выйти из здания
+        ui_exit_cancel_button_background, 0);
+    for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26)
+    {
+        char *v29, *v30;
+        if (v26 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic)
+        {
+            v30 = pMapStats->pInfos[uHouse_ExitPic].pName;
+            v29 = (char*)pGlobalTXT_LocalizationStrings[LOCSTR_ENTER_S];
+        }
+        else
+        {
+            if (v26 || !dword_591080)
+                v30 = HouseNPCData[v26 + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
+            else
+                v30 = (char*)p2DEvents[button - 1].pProprieterName;
+            v29 = (char*)pGlobalTXT_LocalizationStrings[435];
+        }
+        sprintfex(byte_591180[v26].data(), v29, v30);
+        HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],
+            pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26],
+            63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, 0, byte_591180[v26].data(), 0, 0, 0);
+    }
+    if (uNumDialogueNPCPortraits == 1)
+    {
+        window_SpeakInHouse = this;
+        _4B4224_UpdateNPCTopics(0);
+    }
+}
+
+GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
+    GUIWindow(x, y, width, height, button, hint)
+{
+    prev_screen_type = current_screen_type;
+    current_screen_type = SCREEN_NPC_DIALOGUE;
+    pBtn_ExitCancel = CreateButton(0x1D7u, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0, pGlobalTXT_LocalizationStrings[79], //"Exit"
+        ui_exit_cancel_button_background, 0);
+    if (par1C != 1)
+    {
+        int num_menu_buttons = 0;
+        int v11 = LOBYTE(pFontArrus->uFontHeight) - 3;
+        NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+        if (GetGreetType(sDialogue_SpeakingActorNPC_ID) == 1)//QuestsNPC_greet
+        {
+            if (speakingNPC->joins)
+            {
+                CreateButton(480, 130, 140, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0xDu, 0, "", 0);
+                num_menu_buttons = 1;
+            }
+            if (speakingNPC->evt_A)
+            {
+                if (num_menu_buttons < 4)
+                {
+                    int v14 = NPC_EventProcessor(speakingNPC->evt_A);
+                    if (v14 == 1 || v14 == 2)
+                        CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x13u, 0, "", 0);
+                }
+            }
+            if (speakingNPC->evt_B)
+            {
+                if (num_menu_buttons < 4)
+                {
+                    int v16 = NPC_EventProcessor(speakingNPC->evt_B);
+                    if (v16 == 1 || v16 == 2)
+                        CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x14u, 0, "", 0);
+                }
+            }
+            if (speakingNPC->evt_C)
+            {
+                if (num_menu_buttons < 4)
+                {
+                    int v18 = NPC_EventProcessor(speakingNPC->evt_C);
+                    if (v18 == 1 || v18 == 2)
+                        CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x15u, 0, "", 0);
+                }
+            }
+            if (speakingNPC->evt_D)
+            {
+                if (num_menu_buttons < 4)
+                {
+                    int v20 = NPC_EventProcessor(speakingNPC->evt_D);
+                    if (v20 == 1 || v20 == 2)
+                        CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x16u, 0, "", 0);
+                }
+            }
+            if (speakingNPC->evt_E)
+            {
+                if (num_menu_buttons < 4)
+                {
+                    int v22 = NPC_EventProcessor(speakingNPC->evt_E);
+                    if (v22 == 1 || v22 == 2)
+                        CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x17u, 0, "", 0);
+                }
+            }
+            if (speakingNPC->evt_F)
+            {
+                if (num_menu_buttons < 4)
+                {
+                    int v24 = NPC_EventProcessor(speakingNPC->evt_F);
+                    if (v24 == 1 || v24 == 2)
+                        CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x18u, 0, "", 0);
+                }
+            }
+        }
+        else
+        {
+            if (speakingNPC->joins)
+            {
+                CreateButton(0x1E0u, 0x82u, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Du, 0, pGlobalTXT_LocalizationStrings[407], 0);//Подробнее
+                if (speakingNPC->Hired())
+                {
+                    sprintf(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[408], speakingNPC->pName); //Отпустить
+                    CreateButton(0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0, pTmpBuf.data(), 0);
+                }
+                else
+                    CreateButton(0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0, pGlobalTXT_LocalizationStrings[406], 0);//Нанять
+                num_menu_buttons = 2;
+            }
+        }
+        _41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 1);
+    }
+}
+
+
+GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
+    GUIWindow(x, y, width, height, button, hint)
+{
+    prev_screen_type = current_screen_type;
+    pKeyActionMap->EnterText(0, 15, this);
+    current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;
+}
+
+OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
+    GUIWindow(x, y, width, height, button, hint)
+{
+    pEventTimer->Pause();
+    pAudioPlayer->StopChannels(-1, -1);
+    pMouse->SetCursorBitmap("MICON2");
+    ShowStatusBarString(pGlobalTXT_LocalizationStrings[39], 2u); // ChooseTarget / Выберите цель
+}
+
+
+// inlined
+//----- (mm6c::00420520) --------------------------------------------------
+void GUIMessageQueue::Flush()
+{
+  if (uNumMessages)
+    uNumMessages = pMessages[0].field_8 != 0;
+}
+
+//----- (004356B9) --------------------------------------------------------
+void GUIMessageQueue::PopMessage(enum UIMessageType *pType, int *pParam, int *a4)
+{
+  if ( this->uNumMessages )
+  {
+    *pType = this->pMessages[0].eType;
+    *pParam = this->pMessages[0].param;
+    *a4 = this->pMessages[0].field_8;
+    if ( (signed int)(this->uNumMessages - 1) > 0 )
+    {
+      for ( uint i = 0; i < (signed int)(this->uNumMessages - 1); ++i )
+      {
+        this->pMessages[i].eType = this->pMessages[i + 1].eType;
+        this->pMessages[i].param = this->pMessages[i + 1].param;
+        this->pMessages[i].field_8 = this->pMessages[i + 1].field_8;
+      }
+    }
+    --this->uNumMessages;
+  }
+}
+
+//----- (0041B4E1) --------------------------------------------------------
+void GUI_ReplaceHotkey(unsigned __int8 uOldHotkey, unsigned __int8 uNewHotkey, char bFirstCall)
+{
+  int i; // edx@2
+  GUIButton *j; // ecx@3
+  int k; // edx@7
+  GUIButton *l; // ecx@8
+  unsigned __int8 v9; // [sp+4h] [bp-8h]@1
+  char old_hot_key; // [sp+8h] [bp-4h]@1
+
+  //v3 = uNewHotkey;
+  old_hot_key = toupper(uOldHotkey);
+  v9 = toupper(uNewHotkey);
+  if ( bFirstCall )
+  {
+    for ( i = uNumVisibleWindows; i >= 0; --i )
+    {
+      for ( j = pWindowList[pVisibleWindowsIdxs[i] - 1]->pControlsHead; j; j = j->pNext )
+        j->field_28 = 0;
+    }
+  }
+  for ( k = uNumVisibleWindows; k >= 0; --k )
+  {
+    for ( l = pWindowList[pVisibleWindowsIdxs[k] - 1]->pControlsHead; l; l = l->pNext )
+    {
+      if ( l->uHotkey == old_hot_key )
+      {
+        if ( !l->field_28 )
+        {
+          l->field_28 = 1;
+          l->uHotkey = v9;
+        }
+      }
+    }
+  }
+}
+
+//----- (0041B438) --------------------------------------------------------
+GUIButton *__fastcall GUI_HandleHotkey(unsigned __int8 uHotkey)
+{
+  char Hot_key_num; // al@1
+  GUIWindow *current_window; // ecx@2
+  GUIButton *result; // eax@2
+
+  Hot_key_num = toupper(uHotkey);
+  for( int i = uNumVisibleWindows; i >= 0 && pVisibleWindowsIdxs[i] > 0; i-- )
+  {
+	current_window = pWindowList[pVisibleWindowsIdxs[i] - 1];
+	for ( result = current_window->pControlsHead; result; result = result->pNext )
+	{
+	  if ( result->uHotkey == Hot_key_num )
+	  {
+		pMessageQueue_50CBD0->AddGUIMessage(result->msg, result->msg_param, 0);
+		return result;
+	  }
+	}
+	if ( !current_window->uFrameX && !current_window->uFrameY
+		&& (current_window->uFrameWidth == window->GetWidth() && current_window->uFrameHeight == window->GetWidth()) )
+	  break;
+  }
+  return 0;
+}
+// 5075E0: using guessed type int pVisibleWindowsIdxs[20];
+
+//----- (0041D73D) --------------------------------------------------------
+void GUIWindow::_41D73D_draw_buff_tooltip()
+{
+  __int64 remaing_time; // ST28_8@11
+  unsigned short text_color;
+  int Y_pos; // esi@11
+  int string_count; // [sp+20h] [bp-4h]@7
+
+  string_count = 0;
+  for (int i=0; i<20; ++i)
+    if ( pParty->pPartyBuffs[i].uExpireTime > 0i64 )
+      ++string_count;
+
+  uFrameHeight = pFontArrus->uFontHeight + 72;
+  uFrameHeight += (string_count - 1) * pFontArrus->uFontHeight;
+  uFrameZ = uFrameWidth + uFrameX - 1;
+  uFrameW = uFrameY + uFrameHeight - 1;
+  DrawMessageBox(0);
+  DrawTitleText(pFontArrus, 0, 12, 0, pGlobalTXT_LocalizationStrings[451], 3);
+  if ( !string_count )
+     DrawTitleText(pFontComic, 0, 40, 0, pGlobalTXT_LocalizationStrings[153], 3);
+
+  GetTickCount();
+  string_count = 0;
+  for (int i=0; i<20; ++i)
+  {
+    if ( pParty->pPartyBuffs[i].uExpireTime>0i64 )//!!!
+    {
+      remaing_time = pParty->pPartyBuffs[i].uExpireTime- pParty->uTimePlayed;//!!!
+      Y_pos = string_count * pFontComic->uFontHeight + 40; 
+      text_color = Color16(spell_tooltip_colors[i].R, spell_tooltip_colors[i].G, spell_tooltip_colors[i].B);
+      DrawText(pFontComic, 52, Y_pos, text_color, aSpellNames[i], 0, 0, 0);
+      DrawBuff_remaining_time_string(Y_pos, this, remaing_time, pFontComic); 
+      ++string_count;
+    }
+  }
+}
+
+
+//----- (0041D08F) --------------------------------------------------------
+void GUIWindow::_41D08F_set_keyboard_control_group(int num_buttons, int a3, int a4, int a5)
+{
+  if (num_buttons)
+  {
+    this->pNumPresenceButton = num_buttons;
+    this->field_30 = a3;
+    this->field_34 = a4;
+    this->pCurrentPosActiveItem = a5;
+    this->pStartingPosActiveItem = a5;
+    this->receives_keyboard_input = true;
+  }
+  else
+  {
+    this->pNumPresenceButton = 0;
+    this->field_30 = a3;
+    this->field_34 = a4;
+    this->pCurrentPosActiveItem = 0;
+    this->pStartingPosActiveItem = 0;
+    this->receives_keyboard_input = false;
+  }
+}
+
+
+
+
+void GUIWindow_Dialogue::Release()
+{
+// -----------------------------------------
+// 0041C26A void GUIWindow::Release --- part
+    if (!dword_591084)
+    {
+        if (pDialogueNPCPortraits[0])
+        {
+            pDialogueNPCPortraits[0]->Release();
+            pDialogueNPCPortraits[0] = nullptr;
+        }
+    }
+    uNumDialogueNPCPortraits = 0;
+
+    if (game_ui_dialogue_background)
+    {
+        game_ui_dialogue_background->Release();
+        game_ui_dialogue_background = nullptr;
+    }
+
+    current_screen_type = prev_screen_type;
+
+    GUIWindow::Release();
+}
+
+void GUIWindow_GenericDialogue::Release()
+{
+// -----------------------------------------
+// 0041C26A void GUIWindow::Release --- part
+    pIcons_LOD->SyncLoadedFilesCount();
+    current_screen_type = prev_screen_type;
+    pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+
+    GUIWindow::Release();
+}
+
+void GUIWindow_House::Release()
+{
+// -----------------------------------------
+// 0041C26A void GUIWindow::Release --- part
+    for (int i = 0; i < uNumDialogueNPCPortraits; ++i)
+    {
+        if (pDialogueNPCPortraits[i])
+        {
+            pDialogueNPCPortraits[i]->Release();
+            pDialogueNPCPortraits[i] = nullptr;
+        }
+    }
+    uNumDialogueNPCPortraits = 0;
+
+    if (game_ui_dialogue_background)
+    {
+        game_ui_dialogue_background->Release();
+        game_ui_dialogue_background = nullptr;
+    }
+
+    dword_5C35D4 = 0;
+    if (bFlipOnExit)
+    {
+        pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (stru_5C6E00->uIntegerPi + pParty->sRotationY);
+        pIndoorCameraD3D->sRotationY = pParty->sRotationY;
+    }
+    pParty->uFlags |= 2u;
+
+    GUIWindow::Release();
+}
+
+//----- (0041C26A) --------------------------------------------------------
+void GUIWindow::Release()
+{
+  //GUIWindow *v1; // esi@1
+  int i; // edi@20
+  //GUIButton *v8; // eax@26
+  GUIButton *pNextBtn; // edi@27
+  //int v10; // esi@28
+  //int v11; // ecx@28
+  int v12; // edx@29
+
+  //v1 = this;
+  if ( !this )
+    return;
+
+  //v8 = this->pControlsHead;
+  if ( this->pControlsHead )
+  {
+    do
+    {
+      pNextBtn = this->pControlsHead->pNext;
+      free(this->pControlsHead);
+      this->pControlsHead = pNextBtn;
+    }
+    while ( pNextBtn );
+  }
+  this->pControlsHead = 0;
+  this->pControlsTail = 0;
+  this->uNumControls = 0;
+  this->eWindowType = WINDOW_null;
+  while ( this->numVisibleWindows < uNumVisibleWindows )
+  {
+    v12 = pVisibleWindowsIdxs[this->numVisibleWindows + 1];
+    pVisibleWindowsIdxs[this->numVisibleWindows] = v12;
+    --pWindowList[v12 - 1]->numVisibleWindows;
+    ++this->numVisibleWindows;
+  }
+  pVisibleWindowsIdxs[uNumVisibleWindows] = 0;
+  uNumVisibleWindows = uNumVisibleWindows - 1;
+}
+
+//----- (0041CD3B) --------------------------------------------------------
+GUIButton *GUIWindow::GetControl(unsigned int uID)
+{
+  GUIButton *result; // eax@1
+
+  result = this->pControlsHead;
+  for ( uID; uID; --uID )
+    result = result->pNext;
+  return result;
+}
+
+
+//----- (00415551) --------------------------------------------------------
+void GUIWindow::DrawMessageBox(bool inside_game_viewport)
+{
+  unsigned int v16; // esi@19
+  GUIWindow current_window; // [sp+Ch] [bp-60h]@18
+  POINT cursor; // [sp+60h] [bp-Ch]@8
+  unsigned int v22; // [sp+74h] [bp+8h]@2
+
+  int x = 0;
+  int y = 0;
+  int z, w;
+  if (inside_game_viewport)
+  {
+    x = pViewport->uViewportTL_X;
+    z = pViewport->uViewportBR_X;
+    y = pViewport->uViewportTL_Y;
+    w = pViewport->uViewportBR_Y;
+  }
+  else
+  {
+    z = window->GetWidth();
+    w = window->GetHeight();
+  }
+
+  pMouse->GetCursorPos(&cursor);
+  if ( (signed int)this->uFrameX >= x )
+  {
+    if ( (signed int)(this->uFrameWidth + this->uFrameX) > z )
+    {
+      this->uFrameX = z - this->uFrameWidth;
+      this->uFrameY = cursor.y + 30;
+    }
+  }
+  else
+  {
+    this->uFrameX = x;
+    this->uFrameY = cursor.y + 30;
+  }
+
+  if ( (signed int)this->uFrameY >= y )
+  {
+    if ( (signed int)(this->uFrameY + this->uFrameHeight) > w)
+      this->uFrameY = cursor.y - this->uFrameHeight - 30;
+  }
+  else
+    this->uFrameY = cursor.y + 30;
+  if ( (signed int)this->uFrameY < y )
+    this->uFrameY = y;
+  if ( (signed int)this->uFrameX < x )
+    this->uFrameX = x;
+  this->uFrameZ = this->uFrameWidth + this->uFrameX - 1;
+  this->uFrameW = this->uFrameHeight + this->uFrameY - 1;
+  memcpy(&current_window, this, sizeof(current_window));
+  current_window.uFrameX += 12;
+  current_window.uFrameWidth -= 24;
+  current_window.uFrameY += 12;
+  current_window.uFrameHeight -= 12;
+  current_window.uFrameZ = current_window.uFrameWidth + current_window.uFrameX - 1;
+  current_window.uFrameW = current_window.uFrameHeight + current_window.uFrameY - 1;
+  if ( this->Hint )
+    v16 = pFontLucida->CalcTextHeight(this->Hint, &current_window, 0, 0) + 24;
+  else
+    v16 = this->uFrameHeight;
+  if ( (signed int)v16 < 64 )
+    v16 = 64;
+  if ( (signed int)(v16 + this->uFrameY) > 479 )
+    v16 = 479 - this->uFrameY;
+  DrawPopupWindow(this->uFrameX, this->uFrameY, this->uFrameWidth, v16);
+  if ( this->Hint )
+    current_window.DrawTitleText(pFontLucida, 0, (signed int)(v16 - pFontLucida->CalcTextHeight(this->Hint, &current_window, 0, 0)) / 2 - 14, 0, this->Hint, 3);
+}
+
+
+
+
+//----- (004B3157) --------------------------------------------------------
+void GUIWindow::HouseDialogManager()
+{
+  unsigned __int16 pWhiteColor; // di@2
+  const char *pHouseName; // edx@4
+  signed int v3; // edx@5
+  char *v4; // edi@9
+  int pTextHeight; // eax@45
+  int v6; // edi@45
+  char *v7; // eax@45
+  int v8; // edi@46
+  int v9; // eax@50
+  unsigned int v10; // [sp-10h] [bp-C8h]@53
+  char *pTitleText; // [sp-8h] [bp-C0h]@50
+  GUIWindow pDialogWindow; // [sp+Ch] [bp-ACh]@4
+  GUIWindow pWindow; // [sp+60h] [bp-58h]@2
+  int pColor2; // [sp+B4h] [bp-4h]@2
+
+  if ( !window_SpeakInHouse )
+    return;
+  memcpy(&pWindow, this, sizeof(pWindow));
+  pWindow.uFrameWidth -= 18;
+  pWindow.uFrameZ -= 18;
+  pWhiteColor = Color16(0xFFu, 0xFFu, 0xFFu);
+  pColor2 = Color16(0x15u, 0x99u, 0xE9u);
+  pRenderer->DrawTextureNew(477/640.0f, 0, game_ui_dialogue_background);
+  pRenderer->DrawTextureAlphaNew(468/640.0f, 0, game_ui_right_panel_frame);
+  if ( pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic )
+  {
+    pDialogWindow.uFrameWidth = 130;
+    pDialogWindow.uFrameHeight = 2 * LOBYTE(pFontCreate->uFontHeight);
+    pHouseName = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName;
+    if ( pHouseName )
+    {
+      v3 = 2 * LOBYTE(pFontCreate->uFontHeight) - 6 - pFontCreate->CalcTextHeight(pHouseName, &pDialogWindow, 0, 0);
+      if ( v3 < 0 )
+        v3 = 0;
+      pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, pWhiteColor,
+        //(const char *)p2DEvents_minus1_::04[13 * (unsigned int)ptr_507BC0->ptr_1C],
+        p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName, 3);
+    }
+  }
+  pWindow.uFrameWidth += 8;
+  pWindow.uFrameZ += 8;
+  if ( !pDialogueNPCCount )
+  {
+    if ( in_current_building_type == BuildingType_Jail )
+    {
+      JailDialog();
+      if ( pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic )
+      {
+        pRenderer->DrawTextureAlphaNew(556/640.0f, 451/480.0f, dialogue_ui_x_x_u);
+        pRenderer->DrawTextureAlphaNew(476/640.0f, 451/480.0f, dialogue_ui_x_ok_u);
+      }
+      else
+        pRenderer->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
+      return;
+    }
+    if ( current_npc_text )
+    {
+      pDialogWindow.uFrameWidth = 458;
+      pDialogWindow.uFrameZ = 457;
+      pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, &pDialogWindow, 13, 0);
+      v6 = pTextHeight + 7;
+      pRenderer->DrawTextureCustomHeight(
+          8/640.0f,
+          (352 - (pTextHeight + 7))/480.0f,
+          ui_leather_mm7,
+          pTextHeight + 7);
+      pRenderer->DrawTextureAlphaNew(8/640.0f, (347 - v6)/480.0f, _591428_endcap);
+      v7 = FitTextInAWindow(current_npc_text, pFontArrus, &pDialogWindow, 0xDu, 0);
+      window_SpeakInHouse->DrawText(pFontArrus, 13, 354 - v6, 0, v7, 0, 0, 0);
+    }
+    if ( uNumDialogueNPCPortraits <= 0 )
+    {
+      if ( pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic )
+      {
+        pRenderer->DrawTextureAlphaNew(556/640.0f, 451/480.0f, dialogue_ui_x_x_u);
+        pRenderer->DrawTextureAlphaNew(476/640.0f, 451/480.0f, dialogue_ui_x_ok_u);
+      }
+      else
+          pRenderer->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+      return;
+    }
+    for ( v8 = 0; v8 < uNumDialogueNPCPortraits; ++v8 )
+    {
+      pRenderer->DrawTextureAlphaNew((pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8] - 4)/640.0f,
+                                    (pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] - 4)/480.0f, game_ui_evtnpc);
+      pRenderer->DrawTextureAlphaNew(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8]/640.0f,
+                                    pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8]/480.0f, pDialogueNPCPortraits[v8]);
+      if ( uNumDialogueNPCPortraits < 4 )
+      {
+        if ( v8 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic )
+        {
+          pTitleText = pMapStats->pInfos[uHouse_ExitPic].pName;
+          v9 = 94 * v8 + 113;
+        }
+        else
+        {
+          if ( !v8 && dword_591080 )
+          {
+            pTitleText = (char *)p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterTitle;
+            pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, pColor2, pTitleText, 3);
+            continue;
+          }
+          pTitleText = HouseNPCData[v8 +1 - (dword_591080 != 0)]->pName;
+          v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
+        }
+        v10 = v9;
+        pWindow.DrawTitleText(pFontCreate, 483, v10, pColor2, pTitleText, 3);
+      }
+    }
+      if ( pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic )
+      {
+        pRenderer->DrawTextureAlphaNew(556/640.0f, 451/480.0f, dialogue_ui_x_x_u);
+        pRenderer->DrawTextureAlphaNew(476/640.0f, 451/480.0f, dialogue_ui_x_ok_u);
+      }
+      else
+          pRenderer->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+      return;
+  }
+  v4 = (char *)pDialogueNPCCount - 1;
+  pRenderer->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4)/640.0f, (pNPCPortraits_y[0][0] - 4)/480.0f, game_ui_evtnpc);
+  pRenderer->DrawTextureAlphaNew(pNPCPortraits_x[0][0]/640.0f, pNPCPortraits_y[0][0]/480.0f, pDialogueNPCPortraits[(signed int)v4]);
+  if ( current_screen_type == SCREEN_E )
+  {
+    CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+    if ( pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic )
+    {
+      pRenderer->DrawTextureAlphaNew(556/640.0f, 451/480.0f, dialogue_ui_x_x_u);
+      pRenderer->DrawTextureAlphaNew(476/640.0f, 451/480.0f, dialogue_ui_x_ok_u);
+    }
+    else
+        pRenderer->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
+    return;
+  }
+  if ( v4 || !dword_591080 )//на изумрудном острове заходит на корабле пока не выполнены квесты
+    SimpleHouseDialog();
+  else
+  {
+    sprintfex( pTmpBuf.data(), pGlobalTXT_LocalizationStrings[429],
+      p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterName,
+      p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterTitle);
+    pWindow.DrawTitleText(pFontCreate, 0x1E3u, 0x71u, pColor2, pTmpBuf.data(), 3);
+      switch ( in_current_building_type )
+      {
+        case BuildingType_WeaponShop:
+          WeaponShopDialog();
+          break;
+        case BuildingType_ArmorShop:
+          ArmorShopDialog();
+          break;
+        case BuildingType_MagicShop:
+          MagicShopDialog();
+          break;
+        case BuildingType_AlchemistShop:
+          AlchemistDialog();
+          break;
+        case BuildingType_FireGuild:
+        case BuildingType_AirGuild:
+        case BuildingType_WaterGuild:
+        case BuildingType_EarthGuild:
+        case BuildingType_SpiritGuild:
+        case BuildingType_MindGuild:
+        case BuildingType_BodyGuild:
+        case BuildingType_LightGuild:
+        case BuildingType_DarkGuild:
+          GuildDialog();
+          break;
+        case BuildingType_18:
+          __debugbreak(); //What over the dialog?
+          sub_4B6478();
+          break;
+        case BuildingType_TownHall:
+          TownHallDialog();
+          break;
+        case BuildingType_Tavern:
+          TavernDialog();
+          break;
+        case BuildingType_Bank:
+          BankDialog();
+          break;
+        case BuildingType_Temple:
+          TempleDialog();
+          break;
+        case BuildingType_Stables:
+        case BuildingType_Boats:
+          TravelByTransport();
+          break;
+        case BuildingType_Training:
+          TrainingDialog();
+          break;
+        case BuildingType_Jail:
+          JailDialog();
+          break;
+        default:
+          //__debugbreak();//New BuildingType (if enter Boat)
+          break;
+      }
+  }
+  if ( pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic )
+  {
+    pRenderer->DrawTextureAlphaNew(556/640.0f, 451/480.0f, dialogue_ui_x_x_u);
+    pRenderer->DrawTextureAlphaNew(476/640.0f, 451/480.0f, dialogue_ui_x_ok_u);
+  }
+  else
+      pRenderer->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
+}
+
+//----- (004B1854) --------------------------------------------------------
+void GUIWindow::DrawShops_next_generation_time_string( __int64 next_generation_time )
+{
+  unsigned int full_time; // esi@1
+  signed __int64 hours; // kr00_8@1
+  const char *text; // eax@2
+  signed __int64 minutes; // [sp+Ch] [bp-10h]@1
+  signed __int64 seconds; // [sp+14h] [bp-8h]@1
+  unsigned int days; // [sp+20h] [bp+4h]@1
+
+  full_time = (signed __int64)((double)next_generation_time * 0.234375);
+  seconds = (signed __int64)full_time % 60;
+  minutes = (signed __int64)(full_time / 60) % 60;
+  hours = ((full_time / 60) / 60) % 24;
+  days = (unsigned int)((full_time / 60) / 60) / 24;
+  strcpy(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[532]);
+  if ( days )
+  {
+    text = pGlobalTXT_LocalizationStrings[57];//Days
+    if ( days <= 1 )
+      text = pGlobalTXT_LocalizationStrings[56];//Day
+    sprintfex(pTmpBuf2.data(), "%d %s ", days, text);
+    strcat(pTmpBuf.data(), pTmpBuf2.data());
+  }
+  if ( hours )
+  {
+    if ( hours <= 1 )
+      text = pGlobalTXT_LocalizationStrings[109];//Hour
+    else
+      text = pGlobalTXT_LocalizationStrings[110];//Hours
+    sprintfex(pTmpBuf2.data(), "%d %s ", (int)hours, text);
+    strcat(pTmpBuf.data(), pTmpBuf2.data());
+  }
+  if ( minutes && !days )
+  {
+    if ( minutes <= 1 )
+      text = pGlobalTXT_LocalizationStrings[437];//"Minute"
+    else
+      text = pGlobalTXT_LocalizationStrings[436]; //"Minutes"
+    sprintfex(pTmpBuf2.data(), "%d %s ", (int)minutes, text);
+    strcat(pTmpBuf.data(), pTmpBuf2.data());
+  }
+  if ( seconds && !hours )
+  {
+    if ( seconds <= 1 )
+      text = pGlobalTXT_LocalizationStrings[439]; //"Second"	
+    else
+      text = pGlobalTXT_LocalizationStrings[438]; //"Seconds"
+    sprintfex(pTmpBuf2.data(), "%d %s ", (int)seconds, text);
+    strcat(pTmpBuf.data(), pTmpBuf2.data());
+  }
+  this->DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(pTmpBuf.data(), this, 0, 0)) / 2 + 101, Color16(0xFFu, 0xFFu, 0x9Bu), pTmpBuf.data(), 3);
+}
+
+//----- (0044D406) --------------------------------------------------------
+void GUIWindow::DrawTitleText( GUIFont *a2, signed int uHorizontalMargin, unsigned int uVerticalMargin, unsigned __int16 uDefaultColor, 
+                               const char *pInString, unsigned int uLineSpacing )
+{
+  //GUIWindow *pWindow; // esi@1
+  unsigned int v8; // ebx@1
+  char *v9; // eax@1
+  unsigned int v11; // edi@1
+  signed int v12; // esi@1
+  int v13; // eax@2
+  GUIFont *pFont; // [sp+Ch] [bp-4h]@1
+  const char *Stra; // [sp+24h] [bp+14h]@5
+
+  //pWindow = this;
+  pFont = a2;
+  v8 = this->uFrameWidth - uHorizontalMargin;
+  ui_current_text_color = uDefaultColor;
+  v9 = FitTextInAWindow(pInString, a2, this, uHorizontalMargin, 0);
+  Stra = strtok(v9, "\n");
+  v11 = uHorizontalMargin + this->uFrameX;
+  v12 = uVerticalMargin + this->uFrameY;
+  while ( 1 )
+  {
+    if ( !Stra )
+      break;
+    v13 = (signed int)(v8 - pFont->GetLineWidth(Stra)) >> 1;
+    if ( v13 < 0 )
+      v13 = 0;
+    pFont->DrawTextLine(uDefaultColor, v11 + v13, v12, Stra, window->GetWidth());
+    v12 += pFont->uFontHeight - uLineSpacing;
+    Stra = strtok(0, "\n");
+  }
+}
+
+
+//----- (0044CE08) --------------------------------------------------------
+void GUIWindow::DrawText(GUIFont *font, signed int uX, int uY, unsigned short uFontColor, const char *Str, bool present_time_transparency, int max_text_height, signed int uFontShadowColor )
+{
+  int v14; // edx@9
+  char Dest[6]; // [sp+Ch] [bp-2Ch]@32
+  size_t v30; // [sp+2Ch] [bp-Ch]@4
+
+  int left_margin = 0;
+  if ( !Str )
+  {
+    MessageBoxW(nullptr, L"Invalid string passed!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Font.cpp:859", 0);
+    return;
+  }
+  if (!strcmp(Str, "null"))
+    return;
+
+  v30 = strlen(Str);
+  if ( !uX )
+    uX = 12;
+
+  const char *string_begin = Str;
+  if ( max_text_height == 0 )
+    string_begin = FitTextInAWindow(Str, font, this, uX, 0);
+  auto string_end = string_begin;
+  auto string_base = string_begin;
+
+  int out_x = uX + uFrameX;
+  int out_y = uY + uFrameY;
+  v14 = 0;
+
+  if (max_text_height != 0 && out_y + LOBYTE(font->uFontHeight) > max_text_height)
+    return;
+
+  if ( (signed int)v30 > 0 )
+  {
+    do
+    {
+      unsigned char c = string_base[v14];
+      if ( c >= font->cFirstChar && c <= font->cLastChar
+        || c == '\f'
+        || c == '\r'
+        || c == '\t'
+        || c == '\n' )
+      {
+        switch ( c )
+        {
+          case '\t':
+            strncpy(Dest, &string_base[v14 + 1], 3);
+            Dest[3] = 0;
+            v14 += 3;
+            left_margin = atoi(Dest);
+            out_x = uX + uFrameX + left_margin;
+            break;
+          case '\n':
+            uY = uY + LOBYTE(font->uFontHeight) - 3;
+            out_y = uY + uFrameY;
+            out_x = uX + uFrameX + left_margin;
+            if ( max_text_height != 0 )
+            {
+              if (LOBYTE(font->uFontHeight) + out_y - 3 > max_text_height )
+                return;
+            }
+            break;
+          case '\f':
+            strncpy(Dest, &string_base[v14 + 1], 5);
+            Dest[5] = 0;
+            uFontColor = atoi(Dest);
+            v14 += 5;
+            break;
+          case '\r':
+            strncpy(Dest, &string_base[v14 + 1], 3);
+            Dest[3] = 0;
+            v14 += 3;
+            left_margin = atoi(Dest);
+            out_x = uFrameZ - font->GetLineWidth(&string_base[v14]) - left_margin;
+            out_y = uY + uFrameY;
+            if ( max_text_height != 0 )
+            {
+              if (LOBYTE(font->uFontHeight) + out_y - 3 > max_text_height )
+                return;
+              break;
+            }
+            break;
+
+          default:
+            if (c == '\"' && string_base[v14 + 1] == '\"')
+              ++v14;
+                
+            c = (unsigned __int8)string_base[v14];
+            if ( v14 > 0 )
+              out_x += font->pMetrics[c].uLeftSpacing;
+
+            unsigned char *letter_pixels = &font->pFontData[font->font_pixels_offset[c]];
+            if ( uFontColor )
+              pRenderer->DrawText(out_x, out_y, letter_pixels, font->pMetrics[c].uWidth, LOBYTE(font->uFontHeight),
+                  font->pFontPalettes[0], uFontColor, uFontShadowColor);
+            else
+              pRenderer->DrawTextAlpha(out_x, out_y, letter_pixels, font->pMetrics[c].uWidth, LOBYTE(font->uFontHeight),
+                  font->pFontPalettes[0], present_time_transparency);
+
+            out_x += font->pMetrics[c].uWidth;
+            if ( (signed int)v14 < (signed int)v30 )
+              out_x += font->pMetrics[c].uRightSpacing;
+            break;
+          }
+        }
+      }
+      while ( (signed int)++v14 < (signed int)v30 );
+    }
+}
+
+//----- (0044CB4F) --------------------------------------------------------
+int GUIWindow::DrawTextInRect( GUIFont *pFont, unsigned int uX, unsigned int uY, unsigned int uColor, const char *text, int rect_width, int reverse_text )
+{
+  int pLineWidth; // ebx@1
+  int text_width; // esi@3
+  unsigned __int8 v12; // cl@7
+  signed int v13; // esi@19
+  signed int v14; // ebx@19
+  unsigned __int8 v15; // cl@21
+//  int v16; // eax@22
+//  int v17; // ecx@22
+//  int v18; // ecx@23
+//  int v19; // ecx@24
+  unsigned int v20; // ecx@26
+  unsigned char* v21; // eax@28
+//  int v22; // ebx@34
+  int v23; // eax@34
+  int v24; // ebx@36
+  char Str[6]; // [sp+Ch] [bp-20h]@34
+//  char v26; // [sp+Fh] [bp-1Dh]@34
+//  char v27; // [sp+11h] [bp-1Bh]@35
+  int v28; // [sp+20h] [bp-Ch]@17
+  GUIWindow *pWindow; // [sp+24h] [bp-8h]@1
+  size_t pNumLen; // [sp+28h] [bp-4h]@1
+  size_t Str1a; // [sp+40h] [bp+14h]@5
+//  size_t Str1b; // [sp+40h] [bp+14h]@19
+//  const char *Sourcea; // [sp+44h] [bp+18h]@20
+//  int v34; // [sp+48h] [bp+1Ch]@26
+  int i;
+
+
+  pWindow = this;
+  pNumLen = strlen(text);
+  pLineWidth = pFont->GetLineWidth(text);
+  if ( pLineWidth < rect_width )
+  {
+    pWindow->DrawText(pFont, uX, uY, uColor, text, 0, 0, 0);
+    return pLineWidth;
+  }
+  strcpy(pTmpBuf2.data(), text);
+  text_width = 0;
+  if ( reverse_text )
+    _strrev(pTmpBuf2.data());
+  Str1a = 0;
+  for ( i = 0; i < pNumLen; ++i )
+    {
+      if ( text_width >= rect_width )
+        break;
+      v12 = pTmpBuf2[i];
+      if ( pFont->IsCharValid(v12) )
+      {
+      switch (v12)
+          {
+      case '\t':// Horizontal tab 09
+      case '\n': //Line Feed 0A 10
+      case '\r': //Form Feed, page eject  0C 12
+          break;
+      case '\f': //Carriage Return 0D 13
+          i += 5;	  
+          break;
+      default:
+          if ( i > 0 )
+            text_width += pFont->pMetrics[v12].uLeftSpacing;
+          text_width += pFont->pMetrics[v12].uWidth;
+          if ( i < pNumLen )
+              text_width += pFont->pMetrics[v12].uRightSpacing;
+          }
+      }
+    }
+  pTmpBuf2[i - 1] = 0;
+
+
+  pNumLen = strlen(pTmpBuf2.data());
+  v28 = pFont->GetLineWidth(pTmpBuf2.data());
+  if ( reverse_text )
+    _strrev(pTmpBuf2.data());
+
+  v13 = uX + pWindow->uFrameX;
+  v14 = uY + pWindow->uFrameY;
+  for (i=0; i<pNumLen; ++i)
+  {
+      v15 = pTmpBuf2[i];
+      if ( pFont->IsCharValid(v15) )
+      {
+      switch (v12)
+          {
+      case '\t':// Horizontal tab 09
+          {
+          strncpy(Str,  &pTmpBuf2[i+1], 3);
+          Str[3] = 0;
+       //   atoi(Str);
+          i += 3;
+          break;
+          }
+      case '\n': //Line Feed 0A 10
+          {
+          v24 = pFont->uFontHeight;
+          v13 = uX;
+          uY = uY + pFont->uFontHeight - 3;
+          v14 = uY+pFont->uFontHeight - 3;
+          break;
+          }
+      case '\r': //Form Feed, page eject  0C 12
+          {
+          strncpy(Str, &pTmpBuf2[i+1], 5);
+          Str[5] = 0;
+          i += 5;
+          uColor = atoi(Str);
+          break;
+          }
+      case '\f': //Carriage Return 0D 13
+          {
+          strncpy(Str, &pTmpBuf2[i+1], 3);
+          Str[3] = 0;
+          i += 3;
+          v23 = pFont->GetLineWidth(&pTmpBuf2[i]);
+          v13 = pWindow->uFrameZ - v23 - atoi(Str);
+          v14 = uY;
+          break;
+          }
+      default:
+          v20 = pFont->pMetrics[v15].uWidth;
+          if ( i > 0 )
+              v13 += pFont->pMetrics[v15].uLeftSpacing;
+          v21 = &pFont->pFontData[pFont->font_pixels_offset[v15]];
+          if ( uColor )
+              pRenderer->DrawText(v13, v14,  v21, v20, pFont->uFontHeight, pFont->pFontPalettes[0], uColor, 0);
+          else
+              pRenderer->DrawTextAlpha(v13, v14, v21, v20, pFont->uFontHeight, pFont->pFontPalettes[0], false);
+          v13 += v20;
+          if ( i < (signed int)pNumLen )
+              v13 += pFont->pMetrics[v15].uRightSpacing;
+          }
+      }
+  }
+  return v28;
+}
+
+//----- (0041D12F) --------------------------------------------------------
+GUIButton *GUIWindow::CreateButton(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, 
+	int a6, int a7, UIMessageType msg, unsigned int msg_param, unsigned __int8 uHotkey, const char *pName, Image *pTextures, ...)
+{
+  GUIButton *pButton; // esi@1
+//  unsigned int v13; // eax@1
+//  unsigned int v14; // ebx@4
+//  unsigned int v15; // eax@4
+  unsigned int TextureNum=0; // ebx@4
+//  unsigned int v17; // eax@4
+//  Texture_MM7 *v18; // eax@4
+//  Texture_MM7 **v19; // ecx@5
+//  Texture_MM7 **v20; // edx@5
+//  GUIButton *v21; // eax@7
+  va_list texturs_ptr;
+
+  pButton = (GUIButton *)malloc(0xBC);
+
+  for (unsigned int i = 0; i < 5; ++i)
+      pButton->pTextures[i] = nullptr;
+
+  pButton->pParent = this;
+  pButton->uWidth = uWidth;
+  pButton->uHeight = uHeight;
+  
+  if ( a6 == 2 && !uHeight )
+    pButton->uHeight = uWidth;
+
+  pButton->uButtonType = a6;
+  pButton->uX = uX + this->uFrameX;
+  pButton->uY = uY + this->uFrameY;
+  pButton->uZ = pButton->uX + uWidth - 1;
+  pButton->uW = pButton->uY + uHeight - 1;
+  pButton->field_2C_is_pushed = 0;
+  pButton->field_1C = a7;
+  pButton->msg = msg;
+  pButton->msg_param = msg_param;
+  pButton->uHotkey = uHotkey;
+  //strlen(pName);
+  strcpy(pButton->pButtonName, pName);
+
+
+
+  va_start(texturs_ptr, pName);
+  do
+  {
+      pTextures = va_arg(texturs_ptr, Image *);
+      pButton->pTextures[TextureNum] = pTextures;
+      ++TextureNum;
+  } while (pTextures);
+  va_end(texturs_ptr);
+
+
+
+  pButton->uNumTextures = TextureNum;
+  if ( this->pControlsTail )
+    this->pControlsTail->pNext = pButton;
+  else
+    this->pControlsHead = pButton;
+  pButton->pPrev = this->pControlsTail;
+  this->pControlsTail = pButton;
+  pButton->pNext = 0;
+  ++this->uNumControls;
+  return pButton;
+}
+
+
+void GUIWindow::InitializeGUI()
+{
+    SetUserInterface(PartyAlignment_Neutral, false);
+
+    for (uint i = 0; i < 20; ++i)
+        pWindowList[i] = nullptr;
+    uNumVisibleWindows = -1;
+    memset(pVisibleWindowsIdxs.data(), 0, sizeof(pVisibleWindowsIdxs));
+
+    MainMenuUI_LoadFontsAndSomeStuff();
+}
+
+//----- (00459C2B) --------------------------------------------------------
+void GUIWindow::DrawFlashingInputCursor( signed int uX, int uY, struct GUIFont *a2 )
+{
+  if ( GetTickCount() % 1000 > 500 )
+    DrawText(a2, uX, uY, 0, "_", 0, 0, 0);
+}
+
+
+GUIWindow::GUIWindow() :
+    uNumControls(0),
+    pControlsHead(nullptr),
+    pControlsTail(nullptr),
+    eWindowType(WINDOW_null)
+{}
+
+//----- (0041C432) --------------------------------------------------------
+GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const char* hint) :
+    uNumControls(0),
+    pControlsHead(nullptr),
+    pControlsTail(nullptr),
+    eWindowType(WINDOW_MainMenu)
+{
+    unsigned int uNextFreeWindowID; // ebp@1
+    //int *v8; // eax@1
+    //GUIWindow *pWindow; // esi@4
+    //int v10; // eax@4
+    unsigned int v11; // ebx@15
+    NPCData *speakingNPC; // ebp@15
+    int v14; // eax@20
+    int v16; // eax@25
+    int v18; // eax@30
+    int v20; // eax@35
+    int v22; // eax@40
+    int v24; // eax@45
+    //  int v25; // eax@65
+    unsigned int v26; // ebx@65
+    char *v27; // eax@71
+    const char *v29; // [sp-8h] [bp-18h]@68
+    char *v30; // [sp-4h] [bp-14h]@68
+    //  int uWidtha; // [sp+14h] [bp+4h]@66
+    int num_menu_buttons; // [sp+20h] [bp+10h]@15
+
+    for (uNextFreeWindowID = 0; uNextFreeWindowID < 20; ++uNextFreeWindowID)
+    {
+        if (pWindowList[uNextFreeWindowID] == nullptr)
+            break;
+    }
+
+    //GUIWindow* pWindow = &pWindowList[uNextFreeWindowID];
+    pWindowList[uNextFreeWindowID] = this;//sometimes uNextFreeWindowID == 20. it's result crash
+    this->uFrameWidth = uWidth;
+    this->uFrameHeight = uHeight;
+
+    this->uFrameX = uX;
+    this->uFrameY = uY;
+    this->uFrameZ = uX + uWidth - 1;
+    this->uFrameW = uY + uHeight - 1;
+
+    this->ptr_1C = (void *)pButton;
+    this->Hint = hint;
+
+    //this->eWindowType = eWindowType;
+    this->receives_keyboard_input = false;
+    ++uNumVisibleWindows;
+    this->numVisibleWindows = uNumVisibleWindows;
+    pVisibleWindowsIdxs[uNumVisibleWindows] = uNextFreeWindowID + 1;
+}
+
+
+//----- (004B3EF0) --------------------------------------------------------
+void DrawJoinGuildWindow( int pEventCode )
+{
+  uDialogueType = 81;//enum JoinGuildDialog
+  current_npc_text = (char *)pNPCTopics[pEventCode + 99].pText;
+  ContractSelectText(pEventCode);
+  pDialogueWindow->Release();
+  pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 350, pEventCode, 0);
+  pBtn_ExitCancel = pDialogueWindow->CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape,                    0, 0, pGlobalTXT_LocalizationStrings[34], ui_exit_cancel_button_background, 0); // Cancel
+                    pDialogueWindow->CreateButton(  0,   0,   0,  0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "", 0);
+                    pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,             82, 0, pGlobalTXT_LocalizationStrings[122], 0);
+  pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
+  dialog_menu_id = HOUSE_DIALOGUE_OTHER;
+}
+//----- (0044603D) --------------------------------------------------------
+void DialogueEnding()
+{
+  sDialogue_SpeakingActorNPC_ID = 0;
+  pDialogueWindow->Release();
+  pDialogueWindow = 0;
+  pMiscTimer->Resume();
+  pEventTimer->Resume();
+}
+
+
+void GUIWindow_BooksButtonOverlay::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    auto pButton = (GUIButton *)ptr_1C;
+    pRenderer->DrawTextureAlphaNew(uFrameY/640.0f, uFrameX/480.0f, pButton->pTextures[0]);
+    viewparams->bRedrawGameUI = true;
+}
+
+void GUIWindow_Dialogue::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    GameUI_DrawDialogue();
+}
+
+void GUIWindow_GenericDialogue::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    GameUI_DrawBranchlessDialogue();
+}
+
+void GUIWindow_House::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    HouseDialogManager();
+    if (!window_SpeakInHouse)
+        return;
+    if (window_SpeakInHouse->par1C >= 53)
+        return;
+    if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] <= pParty->uTimePlayed)
+    {
+        if (window_SpeakInHouse->par1C < 53)
+            pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] = 0;
+        return;
+    }
+    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+}
+
+void GUIWindow_Scroll::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    CreateScrollWindow();
+}
+
+void GUIWindow_Inventory::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    DrawMessageBox(0);
+    DrawText(pFontLucida, 10, 20, 0, "Making item number", 0, 0, 0);
+    DrawText(pFontLucida, 10, 40, 0, pKeyActionMap->pPressedKeysBuffer, 0, 0, 0);
+    if (!pKeyActionMap->field_204)
+    {
+        ItemGen ItemGen2;
+        ItemGen2.Reset();
+        Release();
+        pEventTimer->Resume();
+        current_screen_type = SCREEN_GAME;
+        viewparams->bRedrawGameUI = 1;
+        int v39 = atoi(pKeyActionMap->pPressedKeysBuffer);
+        if (v39 > 0 && v39 < 800)
+            SpawnActor(v39);
+    }
+}
+
+void GUIWindow_Inventory_CastSpell::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    pRenderer->ClearZBuffer(0, 479);
+    draw_leather();
+    CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+    CharacterUI_DrawPaperdoll(pPlayers[uActiveCharacter]);
+    pRenderer->DrawTextureAlphaNew(pBtn_ExitCancel->uX/640.0f, pBtn_ExitCancel->uY/480.0f, dialogue_ui_x_x_u);
+}
+
+void OnButtonClick::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    if (Hint != (char *)1)
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+    GUIButton *pButton = (GUIButton *)ptr_1C;
+    pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[0]);
+    viewparams->bRedrawGameUI = true;
+    if (Hint && Hint != (char *)1)
+        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    Release();
+}
+
+void OnButtonClick2::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    if (Hint != (char *)1)
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+    GUIButton *pButton = (GUIButton *)ptr_1C;
+    if (pButton->uX >= 0 && pButton->uX <= window->GetWidth())
+    {
+        if (pButton->uY >= 0 && pButton->uY <= window->GetHeight())
+        {
+            pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[0]);
+            viewparams->bRedrawGameUI = true;
+            if (Hint && Hint != (char *)1)
+                pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+            Release();
+            return;
+        }
+    }
+    viewparams->bRedrawGameUI = true;
+    if (Hint && Hint != (char *)1)
+        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    Release();
+}
+
+void OnButtonClick3::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    if (Hint != (char *)1)
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+    auto pButton = (GUIButton *)ptr_1C;
+    pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[1]);
+    viewparams->bRedrawGameUI = 1;
+    if (Hint && Hint != (char *)1)
+        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    Release();
+}
+
+void OnButtonClick4::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    if (Hint != (char *)1)
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+    auto pButton = (GUIButton *)ptr_1C;
+    pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[1]);
+    viewparams->bRedrawGameUI = true;
+
+    Release();
+}
+
+void OnSaveLoad::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    if (Hint != (char *)1)
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+    auto pButton = (GUIButton *)ptr_1C;
+    pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[0]);
+    viewparams->bRedrawGameUI = true;
+    if (Hint && Hint != (char *)1)
+        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    Release();
+
+    if (current_screen_type == SCREEN_SAVEGAME)
+        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveGame, 0, 0);
+    else
+        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
+}
+
+void OnCancel::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    if (Hint != (char *)1)
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+    auto pGUIButton = (GUIButton *)ptr_1C;
+    pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pGUIButton->pTextures[0]);
+    viewparams->bRedrawGameUI = true;
+    if (Hint && Hint != (char *)1)
+        pGUIButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    Release();
+
+    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+}
+
+void OnCancel2::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    if (Hint != (char *)1)
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+    auto pButton = (GUIButton *)ptr_1C;
+    pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[1]);
+    viewparams->bRedrawGameUI = true;
+    if (Hint && Hint != (char *)1)
+        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    Release();
+
+    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+}
+
+void OnCancel3::Update()
+{
+// -----------------------------------
+// 004156F0 GUI_UpdateWindows --- part
+    if (Hint != (char *)1)
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+    auto pButton = (GUIButton *)ptr_1C;
+    pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[0]);
+    viewparams->bRedrawGameUI = true;
+    if (Hint && Hint != (char *)1)
+        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    Release();
+
+    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+}
+
+//----- (004156F0) --------------------------------------------------------
+void GUI_UpdateWindows() 
+{
+  GUIWindow *pWindow; // esi@4
+  //unsigned int pWindowType; // eax@4
+  const char *pHint; // edx@66
+//  GUIButton *pButtonPtr_1C; // ebp@79
+//  char *pHint1; // edx@80
+  int v26; // eax@98
+  unsigned int v27; // ebp@106
+  GUIWindow *pGUIWindow2; // ecx@109
+//  GUIFont *pGUIFont; // ST1C_4@115
+  int v31; // eax@115
+  GUIButton *pButton; // ebp@118
+  int v39; // eax@129
+  GUIButton *pGUIButton; // ebp@146
+  //unsigned int pX; // [sp-1Ch] [bp-124h]@17
+  //unsigned int pY; // [sp-18h] [bp-120h]@17
+  //Texture_MM7 *pTexture; // [sp-14h] [bp-11Ch]@17
+  //Texture_MM7 *pTexture2; // [sp-14h] [bp-11Ch]@86
+  int i; // [sp+0h] [bp-108h]@3
+//  ItemGen pItemGen; // [sp+4h] [bp-104h]@98
+  GUIButton GUIButton2; // [sp+28h] [bp-E0h]@133
+  ItemGen ItemGen2; // [sp+E4h] [bp-24h]@129
+
+  if (GetCurrentMenuID() != MENU_CREATEPARTY)
+    Mouse::UI_OnKeyDown(VK_NEXT);
+
+  for ( i = 1; i <= uNumVisibleWindows; ++i )
+  {
+    pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1];
+
+    pWindow->Update();
+    /*switch (pWindow->eWindowType)
+    {
+      case WINDOW_50:
+      {
+          __debugbreak(); // looks like debugging tools
+        v27 = Color16(255, 255, 255);
+        if ( ptr_507BD0->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
+        {
+          ptr_507BD0->DrawMessageBox(0);
+          ptr_507BD0->DrawText(pFontCreate, 30, 40, v27, pKeyActionMap->pPressedKeysBuffer, 0, 0, 0);
+          v31 = pFontCreate->GetLineWidth(pKeyActionMap->pPressedKeysBuffer);
+          ptr_507BD0->DrawFlashingInputCursor(v31 + 30, 40, pFontCreate);
+          continue;
+        }
+        if ( ptr_507BD0->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED)
+        {
+          pWindow->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+          pMessageQueue_50CBD0->AddGUIMessage((UIMessageType)(int)ptr_507BD0->ptr_1C, 0, 0);
+          pEventTimer->Resume();
+          ptr_507BD0->Release();
+          current_screen_type = SCREEN_GAME;
+          viewparams->bRedrawGameUI = true;
+          continue;
+        }
+        if ( ptr_507BD0->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED)
+        {
+          pWindow->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+          pEventTimer->Resume();
+          ptr_507BD0->Release();
+          continue;
+        }
+
+        __debugbreak(); // switch pass-through
+      }
+      case WINDOW_59:
+      {
+          __debugbreak(); // looks like debugging tools
+        pWindow->DrawMessageBox(0);
+        pWindow->DrawText(pFontLucida, 10, 20, 0, "Making item number", 0, 0, 0);
+        pWindow->DrawText(pFontLucida, 10, 40, 0, pKeyActionMap->pPressedKeysBuffer, 0, 0, 0);
+        if ( !pKeyActionMap->field_204 )
+        {
+          ItemGen2.Reset();
+          pWindow->Release();
+          pEventTimer->Resume();
+          current_screen_type = SCREEN_GAME;
+          viewparams->bRedrawGameUI = true;
+          v26 = atoi(pKeyActionMap->pPressedKeysBuffer);
+          if ( v26 > 0 )
+          {
+            if ( v26 < 800 )
+            {
+              ItemGen2.uAttributes |= 1;
+              ItemGen2.uItemID = v26;
+              if ( pItemsTable->pItems[v26].uEquipType == 12 )
+              {
+                ItemGen2.uNumCharges = rand() % 6 + ItemGen2.GetDamageMod() + 1;
+                ItemGen2.uMaxCharges = LOBYTE(ItemGen2.uNumCharges);
+              }
+              else
+              {
+                if ( v26 >= 221 && v26 < 271 )
+                  ItemGen2.uEnchantmentType = rand() % 10 + 1;
+              }
+              pItemsTable->SetSpecialBonus(&ItemGen2);
+              pParty->SetHoldingItem(&ItemGen2);
+            }
+          }
+        }
+        continue;
+      }
+      case WINDOW_MainMenu:
+      case WINDOW_null:
+          continue;
+      default:
+          __debugbreak();
+        continue;
+    }*/
+  }
+  if ( GetCurrentMenuID() == -1 )
+    GameUI_DrawFoodAndGold();
+  if ( sub_4637E0_is_there_popup_onscreen() )
+    UI_OnMouseRightClick(0);
+}
+
+
+//----- (00467FB6) --------------------------------------------------------
+void CreateScrollWindow()
+{
+  unsigned int v0; // eax@1
+  char *v1; // ST18_4@3
+  GUIWindow a1; // [sp+Ch] [bp-54h]@1
+
+  memcpy(&a1, pGUIWindow_ScrollWindow, sizeof(a1));
+  a1.Hint = 0;
+  a1.uFrameX = 1;
+  a1.uFrameY = 1;
+  a1.uFrameWidth = 468;
+  v0 = pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->par1C], &a1, 0, 0)
+     + 2 * LOBYTE(pFontCreate->uFontHeight) + 24;
+  a1.uFrameHeight = v0;
+  if ( (signed int)(v0 + a1.uFrameY) > 479 )
+  {
+    v0 = 479 - a1.uFrameY;
+    a1.uFrameHeight = 479 - a1.uFrameY;
+  }
+  a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
+  a1.uFrameW = v0 + a1.uFrameY - 1;
+  a1.DrawMessageBox(0);
+  a1.uFrameX += 12;
+  a1.uFrameWidth -= 24;
+  a1.uFrameY += 12;
+  a1.uFrameHeight -= 12;
+  a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
+  a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
+  v1 = pItemsTable->pItems[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C + 700].pName;
+  sprintf(pTmpBuf.data(), format_4E2D80, Color16(0xFFu, 0xFFu, 0x9Bu), v1);
+  a1.DrawTitleText(pFontCreate, 0, 0, 0, pTmpBuf.data(), 3);
+  a1.DrawText(pFontSmallnum, 1, LOBYTE(pFontCreate->uFontHeight) - 3, 0,
+              pScrolls[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C], 0, 0, 0);
+}
+//----- (00467F48) --------------------------------------------------------
+void CreateMsgScrollWindow( signed int mscroll_id )
+{
+  if ( !pGUIWindow_ScrollWindow && mscroll_id >= 700 )
+  {
+    if ( mscroll_id <= 782 )
+    {
+      uTextureID_720980 = pIcons_LOD->LoadTexture("leather", TEXTURE_16BIT_PALETTE);
+      pGUIWindow_ScrollWindow = new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), mscroll_id - 700, 0);
+    }
+  }
+}
+//----- (00467F9F) --------------------------------------------------------
+void free_book_subwindow()
+{
+  if ( pGUIWindow_ScrollWindow )
+  {
+    pGUIWindow_ScrollWindow->Release();
+    pGUIWindow_ScrollWindow = 0;
+  }
+}
+//----- (004226EF) --------------------------------------------------------
+void SetUserInterface(PartyAlignment align, bool bReplace)
+{
+  extern void set_default_ui_skin();
+  set_default_ui_skin();
+
+
+  if (!parchment)
+      parchment = assets->GetImage_16BitColorKey(L"parchment", 0x7FF);
+
+  if (align == PartyAlignment_Evil)
+  {
+    if ( bReplace )
+    {
+        game_ui_rightframe = assets->GetImage_PCXFromIconsLOD(L"ib-r-C.pcx");
+        game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD(L"ib-b-C.pcx");
+        game_ui_topframe = assets->GetImage_PCXFromIconsLOD(L"ib-t-C.pcx");
+        game_ui_leftframe = assets->GetImage_PCXFromIconsLOD(L"ib-l-C.pcx");
+        game_ui_statusbar = assets->GetImage_PCXFromIconsLOD(L"IB-Foot-c.pcx");
+
+        game_ui_right_panel_frame = assets->GetImage_16BitAlpha(L"ib-mb-C");
+
+        game_ui_minimap_frame = assets->GetImage_16BitAlpha(L"ib-autmask-c");
+        game_ui_minimap_compass = assets->GetImage_16BitColorKey(L"IB-COMP-C", 0x7FF);
+
+        game_ui_player_alert_green = assets->GetImage_16BitAlpha(L"IB-InitG-c");
+        game_ui_player_alert_yellow = assets->GetImage_16BitAlpha(L"IB-InitY-c");
+        game_ui_player_alert_red = assets->GetImage_16BitAlpha(L"IB-InitR-c");
+
+        ui_btn_npc_left = assets->GetImage_16BitAlpha(L"IB-NPCLD-C");
+        ui_btn_npc_right = assets->GetImage_16BitAlpha(L"IB-NPCRD-C");
+        game_ui_btn_zoomin = assets->GetImage_16BitAlpha("ib-autout-C");
+        game_ui_btn_zoomout = assets->GetImage_16BitAlpha("ib-autin-C");
+        game_ui_player_selection_frame = assets->GetImage_16BitColorKey("IB-selec-C", 0x7FF);
+      game_ui_btn_cast = assets->GetImage_16BitAlpha("ib-m1d-c");
+      game_ui_btn_rest = assets->GetImage_16BitAlpha("ib-m2d-c");
+      game_ui_btn_quickref = assets->GetImage_16BitAlpha("ib-m3d-c");
+      game_ui_btn_settings = assets->GetImage_16BitAlpha("ib-m4d-c");
+
+      game_ui_playerbuff_bless = assets->GetImage_16BitColorKey("isg-01-c", 0x7FF);
+      game_ui_playerbuff_preservation = assets->GetImage_16BitColorKey("isg-02-c", 0x7FF);
+      game_ui_playerbuff_hammerhands = assets->GetImage_16BitColorKey("isg-03-c", 0x7FF);
+      game_ui_playerbuff_pain_reflection = assets->GetImage_16BitColorKey("isg-04-c", 0x7FF);
+
+      pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeC");
+      pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
+
+      pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
+      pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
+
+      ui_exit_cancel_button_background = assets->GetImage_16BitColorKey(L"ib-bcu-c", 0x7FF);
+
+      game_ui_evtnpc = assets->GetImage_16BitColorKey(L"evtnpc-c", 0x7FF);
+      ui_character_inventory_background = assets->GetImage_16BitColorKey(L"fr_inven-c", 0x7FF);
+      messagebox_corner_y = assets->GetImage_16BitAlpha(L"cornr_ll-c");
+      messagebox_corner_w = assets->GetImage_16BitAlpha(L"cornr_lr-c");
+      messagebox_corner_x = assets->GetImage_16BitAlpha(L"cornr_ul-c");
+      messagebox_corner_z = assets->GetImage_16BitAlpha(L"cornr_ur-c"); 
+      messagebox_border_bottom = assets->GetImage_16BitAlpha(L"edge_btm-c");
+      messagebox_border_left = assets->GetImage_16BitAlpha(L"edge_lf-c");
+      messagebox_border_right = assets->GetImage_16BitAlpha(L"edge_rt-c");
+      messagebox_border_top = assets->GetImage_16BitAlpha(L"edge_top-c");
+      _591428_endcap = assets->GetImage_16BitColorKey(L"endcap-c", 0x7FF);
+    }
+    else
+    {
+        game_ui_rightframe = assets->GetImage_PCXFromIconsLOD(L"ib-r-C.pcx");
+        game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD(L"ib-b-c.pcx");
+        game_ui_topframe = assets->GetImage_PCXFromIconsLOD(L"ib-t-C.pcx");
+        game_ui_leftframe = assets->GetImage_PCXFromIconsLOD(L"ib-l-C.pcx");
+        game_ui_statusbar = assets->GetImage_PCXFromIconsLOD(L"IB-Foot-c.pcx");
+
+        game_ui_right_panel_frame = assets->GetImage_16BitAlpha(L"ib-mb-C");
+        game_ui_minimap_frame = assets->GetImage_16BitAlpha(L"ib-autmask-c");
+      game_ui_minimap_compass = assets->GetImage_16BitColorKey(L"IB-COMP-C", 0x7FF);
+      game_ui_player_alert_green = assets->GetImage_16BitAlpha(L"IB-InitG-c");
+      game_ui_player_alert_yellow = assets->GetImage_16BitAlpha(L"IB-InitY-c");
+      game_ui_player_alert_red = assets->GetImage_16BitAlpha(L"IB-InitR-c");
+
+      ui_btn_npc_left = assets->GetImage_16BitAlpha(L"IB-NPCLD-C");
+      ui_btn_npc_right = assets->GetImage_16BitAlpha(L"IB-NPCRD-C");
+      game_ui_btn_zoomin = assets->GetImage_16BitAlpha(L"ib-autout-C");
+      game_ui_btn_zoomout = assets->GetImage_16BitAlpha(L"ib-autin-C");
+      game_ui_player_selection_frame = assets->GetImage_16BitColorKey("IB-selec-C", 0x7FF);
+      game_ui_btn_cast = assets->GetImage_16BitAlpha(L"ib-m1d-c");
+      game_ui_btn_rest = assets->GetImage_16BitAlpha("ib-m2d-c");
+      game_ui_btn_quickref = assets->GetImage_16BitAlpha("ib-m3d-c");
+      game_ui_btn_settings = assets->GetImage_16BitAlpha("ib-m4d-c");
+      ui_exit_cancel_button_background = assets->GetImage_16BitColorKey(L"ib-bcu-c", 0x7FF);
+
+      game_ui_playerbuff_bless = assets->GetImage_16BitColorKey("isg-01-c", 0x7FF);
+      game_ui_playerbuff_preservation = assets->GetImage_16BitColorKey("isg-02-c", 0x7FF);
+      game_ui_playerbuff_hammerhands = assets->GetImage_16BitColorKey("isg-03-c", 0x7FF);
+      game_ui_playerbuff_pain_reflection = assets->GetImage_16BitColorKey("isg-04-c", 0x7FF);
+
+      game_ui_evtnpc = assets->GetImage_16BitColorKey(L"evtnpc-c", 0x7FF);
+      ui_character_inventory_background = assets->GetImage_16BitColorKey(L"fr_inven", 0x7FF);
+
+      pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeC");
+      pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
+
+      pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
+      pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
+    }
+    uGameUIFontMain = Color16(0xC8u, 0, 0);
+    uGameUIFontShadow = Color16(10, 0, 0);
+  }
+  else if (align == PartyAlignment_Neutral)
+  {
+    if ( bReplace )
+    {
+        game_ui_rightframe = assets->GetImage_PCXFromIconsLOD(L"ib-r-a.pcx");
+        game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD(L"ib-b-a.pcx");
+        game_ui_topframe = assets->GetImage_PCXFromIconsLOD(L"ib-t-a.pcx");
+        game_ui_leftframe = assets->GetImage_PCXFromIconsLOD(L"ib-l-a.pcx");
+      game_ui_statusbar = assets->GetImage_PCXFromIconsLOD(L"IB-Foot-a.pcx");
+
+      game_ui_right_panel_frame = assets->GetImage_16BitAlpha(L"ib-mb-a");
+      game_ui_minimap_frame = assets->GetImage_16BitAlpha(L"ib-autmask-a");
+      game_ui_minimap_compass = assets->GetImage_16BitColorKey(L"IB-COMP-a", 0x7FF);
+      game_ui_player_alert_green = assets->GetImage_16BitAlpha(L"IB-InitG-a");
+      game_ui_player_alert_yellow = assets->GetImage_16BitAlpha(L"IB-InitY-a");
+      game_ui_player_alert_red = assets->GetImage_16BitAlpha(L"IB-InitR-a");
+
+      ui_btn_npc_left = assets->GetImage_16BitAlpha(L"IB-NPCLD-a");
+      ui_btn_npc_right = assets->GetImage_16BitAlpha(L"IB-NPCRD-a");
+      game_ui_btn_zoomin = assets->GetImage_16BitAlpha("ib-autout-a");
+      game_ui_btn_zoomout = assets->GetImage_16BitAlpha("ib-autin-a");
+      game_ui_player_selection_frame = assets->GetImage_16BitColorKey("IB-selec-a", 0x7FF);
+      game_ui_btn_cast = assets->GetImage_16BitAlpha("ib-m1d-a");
+      game_ui_btn_rest = assets->GetImage_16BitAlpha("ib-m2d-a");
+      game_ui_btn_quickref = assets->GetImage_16BitAlpha("ib-m3d-a");
+      game_ui_btn_settings = assets->GetImage_16BitAlpha("ib-m4d-a");
+
+      game_ui_playerbuff_bless = assets->GetImage_16BitColorKey("isg-01-a", 0x7FF);
+      game_ui_playerbuff_preservation = assets->GetImage_16BitColorKey("isg-02-a", 0x7FF);
+      game_ui_playerbuff_hammerhands = assets->GetImage_16BitColorKey("isg-03-a", 0x7FF);
+      game_ui_playerbuff_pain_reflection = assets->GetImage_16BitColorKey("isg-04-a", 0x7FF);
+
+      pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeA");
+      pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
+      pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchA");
+      pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
+
+      ui_exit_cancel_button_background = assets->GetImage_16BitColorKey(L"ib-bcu-a", 0x7FF);
+
+      game_ui_evtnpc = assets->GetImage_16BitColorKey(L"evtnpc", 0x7FF);
+      ui_character_inventory_background = assets->GetImage_16BitColorKey(L"fr_inven", 0x7FF);
+      messagebox_corner_y = assets->GetImage_16BitAlpha(L"cornr_ll");
+      messagebox_corner_w = assets->GetImage_16BitAlpha(L"cornr_lr");
+      messagebox_corner_x = assets->GetImage_16BitAlpha(L"cornr_ul");
+      messagebox_corner_z = assets->GetImage_16BitAlpha(L"cornr_ur");
+      messagebox_border_bottom = assets->GetImage_16BitAlpha(L"edge_btm");
+      messagebox_border_left = assets->GetImage_16BitAlpha(L"edge_lf");
+      messagebox_border_right = assets->GetImage_16BitAlpha(L"edge_rt");
+      messagebox_border_top = assets->GetImage_16BitAlpha(L"edge_top");
+      _591428_endcap = assets->GetImage_16BitColorKey(L"endcap", 0x7FF);
+    }
+    else
+    {
+        game_ui_rightframe = assets->GetImage_PCXFromIconsLOD(L"ib-r-A.pcx");
+        game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD(L"ib-b-A.pcx");
+        game_ui_topframe = assets->GetImage_PCXFromIconsLOD(L"ib-t-A.pcx");
+        game_ui_leftframe = assets->GetImage_PCXFromIconsLOD(L"ib-l-A.pcx");
+      game_ui_statusbar = assets->GetImage_PCXFromIconsLOD(L"IB-Foot-a.pcx");
+
+      game_ui_right_panel_frame = assets->GetImage_16BitAlpha(L"ib-mb-A");
+      game_ui_minimap_frame = assets->GetImage_16BitAlpha(L"ib-autmask-a");
+      game_ui_minimap_compass = assets->GetImage_16BitColorKey(L"IB-COMP-A", 0x7FF);
+      game_ui_player_alert_green = assets->GetImage_16BitAlpha(L"IB-InitG-a");
+      game_ui_player_alert_yellow = assets->GetImage_16BitAlpha(L"IB-InitY-a");
+      game_ui_player_alert_red = assets->GetImage_16BitAlpha(L"IB-InitR-a");
+
+      ui_btn_npc_left = assets->GetImage_16BitAlpha(L"IB-NPCLD-A");
+      ui_btn_npc_right = assets->GetImage_16BitAlpha(L"IB-NPCRD-A");
+      game_ui_player_selection_frame = assets->GetImage_16BitColorKey("IB-selec-A", 0x7FF);
+      game_ui_btn_cast = assets->GetImage_16BitAlpha("ib-m1d-a");
+      game_ui_btn_rest = assets->GetImage_16BitAlpha("ib-m2d-a");
+      game_ui_btn_quickref = assets->GetImage_16BitAlpha("ib-m3d-a");
+      game_ui_btn_settings = assets->GetImage_16BitAlpha("ib-m4d-a");
+      game_ui_btn_zoomin = assets->GetImage_16BitAlpha("ib-autout-a");
+      game_ui_btn_zoomout = assets->GetImage_16BitAlpha("ib-autin-a");
+      ui_exit_cancel_button_background = assets->GetImage_16BitColorKey(L"ib-bcu-a", 0x7FF);
+
+      game_ui_playerbuff_bless = assets->GetImage_16BitColorKey("isg-01-a", 0x7FF);
+      game_ui_playerbuff_preservation = assets->GetImage_16BitColorKey("isg-02-a", 0x7FF);
+      game_ui_playerbuff_hammerhands = assets->GetImage_16BitColorKey("isg-03-a", 0x7FF);
+      game_ui_playerbuff_pain_reflection = assets->GetImage_16BitColorKey("isg-04-a", 0x7FF);
+
+      game_ui_evtnpc = assets->GetImage_16BitColorKey(L"evtnpc", 0x7FF);
+      ui_character_inventory_background = assets->GetImage_16BitColorKey(L"fr_inven", 0x7FF);
+
+      pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeA");
+      pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
+      pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchA");
+      pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
+
+      messagebox_corner_y = assets->GetImage_16BitAlpha(L"cornr_ll");
+      messagebox_corner_w = assets->GetImage_16BitAlpha(L"cornr_lr");
+      messagebox_corner_x = assets->GetImage_16BitAlpha(L"cornr_ul");
+      messagebox_corner_z = assets->GetImage_16BitAlpha(L"cornr_ur");
+      messagebox_border_bottom = assets->GetImage_16BitAlpha(L"edge_btm");
+      messagebox_border_left = assets->GetImage_16BitAlpha(L"edge_lf");
+      messagebox_border_right = assets->GetImage_16BitAlpha(L"edge_rt");
+      messagebox_border_top = assets->GetImage_16BitAlpha(L"edge_top");
+      _591428_endcap = assets->GetImage_16BitColorKey(L"endcap", 0x7FF);
+    }
+    uGameUIFontMain = Color16(0xAu, 0, 0);
+    uGameUIFontShadow = Color16(230, 214, 193);
+  }
+  else if (align == PartyAlignment_Good)
+  {
+    if ( bReplace )
+    {
+        game_ui_rightframe = assets->GetImage_PCXFromIconsLOD(L"ib-r-B.pcx");
+        game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD(L"ib-b-B.pcx");
+        game_ui_topframe = assets->GetImage_PCXFromIconsLOD(L"ib-t-B.pcx");
+        game_ui_leftframe = assets->GetImage_PCXFromIconsLOD(L"ib-l-B.pcx");
+      game_ui_statusbar = assets->GetImage_PCXFromIconsLOD(L"IB-Foot-b.pcx");
+
+      game_ui_right_panel_frame = assets->GetImage_16BitAlpha(L"ib-mb-B");
+      game_ui_minimap_frame = assets->GetImage_16BitAlpha(L"ib-autmask-b");
+      game_ui_minimap_compass = assets->GetImage_16BitColorKey(L"IB-COMP-B", 0x7FF);
+      game_ui_player_alert_green = assets->GetImage_16BitAlpha(L"IB-InitG-b");
+      game_ui_player_alert_yellow = assets->GetImage_16BitAlpha(L"IB-InitY-b");
+      game_ui_player_alert_red = assets->GetImage_16BitAlpha(L"IB-InitR-b");
+
+      ui_btn_npc_left = assets->GetImage_16BitAlpha(L"IB-NPCLD-B");
+      ui_btn_npc_right = assets->GetImage_16BitAlpha(L"IB-NPCRD-B");
+      game_ui_btn_zoomin = assets->GetImage_16BitAlpha("ib-autout-B");
+      game_ui_btn_zoomout = assets->GetImage_16BitAlpha("ib-autin-B");
+      game_ui_player_selection_frame = assets->GetImage_16BitColorKey("IB-selec-B", 0x7FF);
+      game_ui_btn_cast = assets->GetImage_16BitAlpha("ib-m1d-b");
+      game_ui_btn_rest = assets->GetImage_16BitAlpha("ib-m2d-b");
+      game_ui_btn_quickref = assets->GetImage_16BitAlpha("ib-m3d-b");
+      game_ui_btn_settings = assets->GetImage_16BitAlpha("ib-m4d-b");
+
+      game_ui_playerbuff_bless = assets->GetImage_16BitColorKey("isg-01-b", 0x7FF);
+      game_ui_playerbuff_preservation = assets->GetImage_16BitColorKey("isg-02-b", 0x7FF);
+      game_ui_playerbuff_hammerhands = assets->GetImage_16BitColorKey("isg-03-b", 0x7FF);
+      game_ui_playerbuff_pain_reflection = assets->GetImage_16BitColorKey("isg-04-b", 0x7FF);
+
+      pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeB");
+      pIconsFrameTable->InitializeAnimation(pUIAnim_WizardEye->icon->id);
+      pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchB");
+      pIconsFrameTable->InitializeAnimation(pUIAnum_Torchlight->icon->id);
+
+      ui_exit_cancel_button_background = assets->GetImage_16BitColorKey(L"ib-bcu-b", 0x7FF);
+      game_ui_evtnpc = assets->GetImage_16BitColorKey(L"evtnpc-b", 0x7FF);
+      ui_character_inventory_background = assets->GetImage_16BitColorKey(L"fr_inven-b", 0x7FF);
+      messagebox_corner_y = assets->GetImage_16BitAlpha(L"cornr_ll-b");
+      messagebox_corner_w = assets->GetImage_16BitAlpha(L"cornr_lr-b");
+      messagebox_corner_x = assets->GetImage_16BitAlpha(L"cornr_ul-b");
+      messagebox_corner_z = assets->GetImage_16BitAlpha(L"cornr_ur-b");
+      messagebox_border_bottom = assets->GetImage_16BitAlpha(L"edge_btm-b");
+      messagebox_border_left = assets->GetImage_16BitAlpha(L"edge_lf-b");
+      messagebox_border_right = assets->GetImage_16BitAlpha(L"edge_rt-b");
+      messagebox_border_top = assets->GetImage_16BitAlpha(L"edge_top-b");
+      _591428_endcap = assets->GetImage_16BitColorKey(L"endcap-b", 0x7FF);
+    }
+    uGameUIFontMain = Color16(0, 0, 0xC8u);
+    uGameUIFontShadow = Color16(255, 255, 255);
+  }
+  else Error("Invalid alignment type: %u", align);
+}
+//----- (0041D20D) --------------------------------------------------------
+void DrawBuff_remaining_time_string( int uY, struct GUIWindow *window, __int64 remaining_time, struct GUIFont *Font )
+{
+  unsigned int full_time; // esi@1
+  signed __int64 hours; // kr00_8@1
+  const char *text; // eax@2
+  signed __int64 minutes; // [sp+10h] [bp-10h]@1
+  signed __int64 seconds; // [sp+18h] [bp-8h]@1
+  unsigned int day; // [sp+24h] [bp+4h]@1
+
+  full_time = (signed __int64)((double)remaining_time * 0.234375);
+  day = (unsigned int)((full_time / 60) / 60) / 24;
+  hours = ((full_time / 60) / 60) % 24;
+  minutes = (signed __int64)(full_time / 60) % 60;
+  seconds = (signed __int64)full_time % 60;
+  strcpy(pTmpBuf.data(), "\r020");
+  if ( day )
+  {
+    text = pGlobalTXT_LocalizationStrings[57];   // Days
+    if ( day <= 1 )
+      text = pGlobalTXT_LocalizationStrings[56]; // Day
+    sprintfex(pTmpBuf2.data(), "%d %s ", (int)day, text);
+    strcat(pTmpBuf.data(), pTmpBuf2.data());
+  }
+  if ( hours )
+  {
+    if ( hours <= 1 )
+      text = pGlobalTXT_LocalizationStrings[109];// Hour
+    else
+      text = pGlobalTXT_LocalizationStrings[110];// Hours
+    sprintfex(pTmpBuf2.data(), "%d %s ", (int)hours, text);
+    strcat(pTmpBuf.data(), pTmpBuf2.data());
+  }
+  if ( minutes && !day )
+  {
+    if ( minutes <= 1 )
+      text = pGlobalTXT_LocalizationStrings[437];// Minute
+    else
+      text = pGlobalTXT_LocalizationStrings[436];// Minutes
+    sprintfex(pTmpBuf2.data(), "%d %s ", (int)minutes, text);
+    strcat(pTmpBuf.data(), pTmpBuf2.data());
+  }
+  if ( seconds && !hours )
+  {
+    if ( seconds <= 1 )
+      text = pGlobalTXT_LocalizationStrings[439];// Second
+    else
+      text = pGlobalTXT_LocalizationStrings[438];// Seconds
+    sprintfex(pTmpBuf2.data(), "%d %s ", (int)seconds, text);
+    strcat(pTmpBuf.data(), pTmpBuf2.data());
+  }
+  window->DrawText(Font, 32, uY, 0, pTmpBuf.data(), 0, 0, 0);
+}
+
+
+//----- (0042EB8D) --------------------------------------------------------
+void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param, unsigned int a4, const char *file, int line)
+{
+  //Log::Warning(L"%s @ (%S %u)", UIMessage2String(msg), file, line);
+  if (uNumMessages < 40)
+  {
+    files[uNumMessages] = file;
+    lines[uNumMessages] = line;
+
+    pMessages[uNumMessages].eType = msg;
+    pMessages[uNumMessages].param = param;
+    pMessages[uNumMessages++].field_8 = a4;
+  }
+}
+
+//----- (004637E0) --------------------------------------------------------
+char  sub_4637E0_is_there_popup_onscreen()
+{
+  return dword_507BF0_is_there_popup_onscreen == 1;
+}
+// 507BF0: using guessed type int dword_507BF0_is_there_popup_onscreen;
+
+//----- (00417AD4) --------------------------------------------------------
+unsigned int GetSkillColor(unsigned int uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, signed int skill_level)
+{
+	switch (uPlayerClass % 4)
+	{
+	case 0:
+	{
+			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass][uPlayerSkillType] >= skill_level)
+				  return ui_character_skillinfo_can_learn;
+			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 1][uPlayerSkillType] < skill_level &&
+				  byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 2][uPlayerSkillType] < skill_level)
+			  {
+				  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 3][uPlayerSkillType] < skill_level)
+					  return ui_character_skillinfo_cant_learn;
+			  }
+			  return ui_character_skillinfo_can_learn_gm;
+	}
+		break;
+
+	case 1:
+	{
+			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass][uPlayerSkillType] >= skill_level)
+				  return ui_character_skillinfo_can_learn;
+			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 1][uPlayerSkillType] < skill_level)
+			  {
+				  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 2][uPlayerSkillType] < skill_level)
+					  return ui_character_skillinfo_cant_learn;
+			  }
+			  return ui_character_skillinfo_can_learn_gm;
+	}
+		break;
+
+	case 2:
+	case 3:
+	{
+			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass][uPlayerSkillType] < skill_level)
+				  return ui_character_skillinfo_cant_learn;
+			  return ui_character_skillinfo_can_learn;
+	}
+		break;
+	}
+	Error("Invalid player class: %u", uPlayerClass);
+}
+
+//----- (0040F92A) --------------------------------------------------------
+void __fastcall ZBuffer_DoFill2(int *pZBuffer, Texture_MM7 *a2, int a3)
+{//срабатывает в покупке в магазине
+	void *v4; // eax@3
+	//int *v5; // edi@5
+	//  int v6; // ecx@6
+	//  int v9; // [sp+18h] [bp-4h]@1
+
+	if (pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed && a2->uDecompressedSize)
+		v4 = a2->UnzipPalette();
+	else
+		v4 = a2->paletted_pixels;
+	//v5 = pZBuffer;
+	for (uint i = 0; i < a2->uTextureHeight; i++)
+	{
+		for (uint j = 0; j < a2->uTextureWidth; j++)
+		{
+			*pZBuffer = a3;
+			++pZBuffer;
+		}
+		pZBuffer += window->GetWidth() - a2->uTextureWidth;
+	}
+	if (pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed)
+	{
+		if (a2->uDecompressedSize)
+			free(v4);
+	}
+}
+
+
+// 4E28F8: using guessed type int current_screen_type;
+
+//----- (0040F82D) --------------------------------------------------------
+void __fastcall ZBuffer_Fill(int *pZBuffer, int uTextureId, int iZValue)
+{
+	assert(uTextureId != -1);
+	ZBuffer_DoFill(pZBuffer, pIcons_LOD->GetTexture(uTextureId), iZValue);
+}
+
+//----- (0040F89C) --------------------------------------------------------
+void __fastcall ZBuffer_DoFill(int *pZBuffer, Texture_MM7 *pTex, int uZValue)
+{//срабатывает при продаже в магазине
+	void *v3; // eax@3
+	//void *v4; // esi@5
+	//int *v5; // edi@5
+	//int v6; // eax@5
+	//  int v7; // ecx@6
+	//  int v11; // [sp+18h] [bp-8h]@1
+	//void *v12; // [sp+1Ch] [bp-4h]@5
+
+	if (pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed && pTex->uDecompressedSize)
+		v3 = pTex->UnzipPalette();
+	else
+		v3 = pTex->paletted_pixels;
+	//v12 = v3;
+	//v4 = v3;
+	//v5 = pZBuffer;
+	//v6 = 0;
+	for (uint i = 0; i < pTex->uTextureHeight; i++)
+	{
+		for (uint j = 0; j < pTex->uTextureWidth; j++)
+		{
+			//LOBYTE(v6) = *(char *)v4;
+			//v4 = (char *)v4 + 1;
+			//if ( v6 )
+			*pZBuffer = uZValue;
+			++pZBuffer;
+		}
+		pZBuffer += window->GetWidth() - pTex->uTextureWidth;
+	}
+	if (pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed)
+	{
+		if (pTex->uDecompressedSize)
+			free(v3);
+	}
+}
+
+//----- (004BC49B) --------------------------------------------------------
+void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType)
+{
+	NPCData *speakingNPC; // ebp@1
+	int npc_event_id; // ecx@10
+	char *v13; // [sp-8h] [bp-18h]@60
+
+	speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+	uDialogueType = newDialogueType;
+	if (!speakingNPC->uFlags)
+		speakingNPC->uFlags = 1;
+	if (newDialogueType == DIALOGUE_PROFESSION_DETAILS)
+		dialogue_show_profession_details = ~dialogue_show_profession_details;
+	else if (newDialogueType == DIALOGUE_76)
+	{
+		if (speakingNPC->Hired())
+		{
+			if ((signed int)pNPCStats->uNumNewNPCs > 0)
+			{
+				for (uint i = 0; i < (unsigned int)pNPCStats->uNumNewNPCs; ++i)
+				{
+					if (pNPCStats->pNewNPCData[i].uFlags & 0x80 && !strcmp(speakingNPC->pName, pNPCStats->pNewNPCData[i].pName))
+						pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
+				}
+			}
+			if (pParty->pHirelings[0].pName && !_stricmp(pParty->pHirelings[0].pName, speakingNPC->pName))
+				memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
+			else if (pParty->pHirelings[1].pName && !_stricmp(pParty->pHirelings[1].pName, speakingNPC->pName))
+				memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
+			pParty->hirelingScrollPosition = 0;
+			pParty->CountHirelings();
+			dword_591084 = 0;
+			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+			dword_7241C8 = 0;
+			return;
+		}
+		if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName)
+			ShowStatusBarString(pGlobalTXT_LocalizationStrings[533], 2);// ""I cannot join you, you're party is full""
+		else
+		{
+			if (speakingNPC->uProfession != 51) //burglars have no hiring price
+			{
+				if (pParty->uNumGold < pNPCStats->pProfessions[speakingNPC->uProfession].uHirePrice)
+				{
+					ShowStatusBarString(pGlobalTXT_LocalizationStrings[155], 2);// "You don't have enough gold"
+					dialogue_show_profession_details = false;
+					uDialogueType = 13;
+					if (uActiveCharacter)
+						pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
+					if (!dword_7241C8)
+						pEngine->Draw();
+					dword_7241C8 = 0;
+					return;
+				}
+				Party::TakeGold(pNPCStats->pProfessions[speakingNPC->uProfession].uHirePrice);
+			}
+			LOBYTE(speakingNPC->uFlags) |= 0x80u;
+			if (pParty->pHirelings[0].pName)
+			{
+				memcpy(&pParty->pHirelings[1], speakingNPC, sizeof(pParty->pHirelings[1]));
+				v13 = pParty->pHireling2Name;
+			}
+			else
+			{
+				memcpy(&pParty->pHirelings[0], speakingNPC, sizeof(pParty->pHirelings[0]));
+				v13 = pParty->pHireling1Name;
+			}
+			strcpy(v13, speakingNPC->pName);
+			pParty->hirelingScrollPosition = 0;
+			pParty->CountHirelings();
+			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+			if (sDialogue_SpeakingActorNPC_ID >= 0)
+				pDialogue_SpeakingActor->uAIState = Removed;
+			if (uActiveCharacter)
+				pPlayers[uActiveCharacter]->PlaySound(SPEECH_61, 0);
+		}
+	}
+	else if ((signed int)newDialogueType > DIALOGUE_84 && (signed int)newDialogueType <= DIALOGUE_ARENA_SELECT_CHAMPION) //выбор уровня сложности боя
+	{
+		ArenaFight();
+		return;
+	}
+	else if (newDialogueType == DIALOGUE_USE_NPC_ABILITY)
+	{
+		if (UseNPCSkill((NPCProf)speakingNPC->uProfession) == 0)
+		{
+			if (speakingNPC->uProfession != GateMaster)
+				speakingNPC->bHasUsedTheAbility = 1;
+			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+		}
+		else
+			ShowStatusBarString(pGlobalTXT_LocalizationStrings[140], 2); //"Your packs are already full!"
+	}
+	else if (newDialogueType == DIALOGUE_13)
+	{
+		if (!speakingNPC->Hired())
+		{
+			sub_4B3E1E();
+			dialogue_show_profession_details = false;
+		}
+		else
+		{
+			for (uint i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i)
+			{
+				if (pNPCStats->pNewNPCData[i].uFlags & 0x80 && !strcmp(speakingNPC->pName, pNPCStats->pNewNPCData[i].pName))
+					pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
+			}
+			if (pParty->pHirelings[0].pName && !_stricmp(pParty->pHirelings[0].pName, speakingNPC->pName))
+				memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
+			else if (pParty->pHirelings[1].pName && !_stricmp(pParty->pHirelings[1].pName, speakingNPC->pName))
+				memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
+			pParty->hirelingScrollPosition = 0;
+			pParty->CountHirelings();
+			dword_591084 = 0;
+			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+			dword_7241C8 = 0;
+			return;
+		}
+	}
+	else if (newDialogueType >= DIALOGUE_EVT_A && newDialogueType <= DIALOGUE_EVT_F)
+	{
+		switch (newDialogueType)
+		{
+		case DIALOGUE_EVT_A:  npc_event_id = speakingNPC->evt_A; break;
+		case DIALOGUE_EVT_B:  npc_event_id = speakingNPC->evt_B; break;
+		case DIALOGUE_EVT_C:  npc_event_id = speakingNPC->evt_C; break;
+		case DIALOGUE_EVT_D:  npc_event_id = speakingNPC->evt_D; break;
+		case DIALOGUE_EVT_E:  npc_event_id = speakingNPC->evt_E; break;
+		case DIALOGUE_EVT_F:  npc_event_id = speakingNPC->evt_F; break;
+		}
+		if ((npc_event_id >= 200) && (npc_event_id <= 310))
+			_4B3FE5_training_dialogue(npc_event_id); //200-310
+		else if ((npc_event_id >= 400) && (npc_event_id <= 410))
+		{ //400-410
+			dword_F8B1D8 = newDialogueType;
+			DrawJoinGuildWindow(npc_event_id - 400);
+		}
+		else
+		{
+			switch (npc_event_id)
+			{
+			case 139:
+				OracleDialogue();
+				break;
+			case 311:
+				CheckBountyRespawnAndAward();
+				break;
+			case 399:
+				Arena_SelectionFightLevel();
+				break;
+			default:
+				activeLevelDecoration = (LevelDecoration*)1;
+				current_npc_text = 0;
+				EventProcessor(npc_event_id, 0, 1);
+				activeLevelDecoration = nullptr;
+				break;
+			}
+		}
+	}
+	if (!dword_7241C8)
+		pEngine->Draw();
+	dword_7241C8 = 0;
+}
+
+//----- (004B3E1E) --------------------------------------------------------
+void sub_4B3E1E()
+{
+	NPCData *v0; // ST40_4@1
+	signed int v1; // edi@1
+	//GUIWindow *v2; // ecx@1
+
+	__debugbreak();
+	v0 = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+	v1 = 0;
+	pDialogueWindow->eWindowType = WINDOW_MainMenu;
+	pDialogueWindow->Release();
+    pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 1, 0);
+	if (pNPCStats->pProfessions[v0->uProfession].pBenefits)//*(&pNPCStats->field_13A5C + 5 * v0->uProfession) )
+	{
+		pDialogueWindow->CreateButton(480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, 0, pGlobalTXT_LocalizationStrings[407], 0);//Подробнее
+		v1 = 1;
+	}
+	pDialogueWindow->CreateButton(480, 30 * v1 + 160, 140, 30, 1, 0, UIMSG_SelectNPCDialogueOption, 76, 0, pGlobalTXT_LocalizationStrings[406], 0);//Нанять
+	pDialogueWindow->_41D08F_set_keyboard_control_group(v1 + 1, 1, 0, 1);
+}
+
+//----- (004B2001) --------------------------------------------------------
+void __fastcall ClickNPCTopic(signed int uMessageParam)
+{
+	//signed int v1; // eax@1
+	NPCData *pCurrentNPCInfo; // ebp@1
+	int pEventNumber; // ecx@8
+	Player *v4; // esi@20
+	//int v5; // eax@28
+	//int v6; // eax@31
+	//int v7; // eax@34
+	//int v8; // eax@37
+	//int v9; // eax@40
+	//unsigned int v10; // eax@43
+	char *v12; // eax@53
+	char *v13; // eax@56
+	char *v14; // eax@57
+	char *v15; // eax@58
+	//unsigned int v16; // ebp@62
+	char *v17; // ecx@63
+	char *v18; // eax@65
+	//  const char *v19; // ecx@68
+	//unsigned int v20; // eax@69
+	signed int pPrice; // ecx@70
+	char *v22; // [sp-Ch] [bp-18h]@73
+	//int v23; // [sp-8h] [bp-14h]@49
+	char *v24; // [sp-8h] [bp-14h]@73
+	//int v25; // [sp-4h] [bp-10h]@49
+
+	uDialogueType = uMessageParam + 1;
+	pCurrentNPCInfo = HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];//- 1
+	if (uMessageParam <= 24)
+	{
+		switch (uMessageParam)
+		{
+		case 13:
+			current_npc_text = pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText;//(char *)*(&pNPCStats->field_13A64 + 5 * v2->uProfession);
+			current_npc_text = BuildDialogueString(current_npc_text, uActiveCharacter - 1, 0, 0, 0, 0);
+			NPCHireableDialogPrepare();
+			dialogue_show_profession_details = false;
+			BackToHouseMenu();
+			return;		
+		case 19:
+			pEventNumber = pCurrentNPCInfo->evt_A;
+			break;
+		case 20:
+			pEventNumber = pCurrentNPCInfo->evt_B;
+			break;
+		case 21:
+			pEventNumber = pCurrentNPCInfo->evt_C;
+			break;
+		case 22:
+			pEventNumber = pCurrentNPCInfo->evt_D;
+			break;
+		case 23:
+			pEventNumber = pCurrentNPCInfo->evt_E;
+			break;
+		case 24:
+			pEventNumber = pCurrentNPCInfo->evt_F;
+			break;
+		default:
+			BackToHouseMenu();
+			return;
+		}
+		/*switch ( pEventNumber )
+		{
+		case 139:
+		OracleDialogue();
+		goto _return;
+		case 311:
+		CheckBountyRespawnAndAward();
+		goto _return;
+		}*/
+		if (pEventNumber < 200 || pEventNumber > 310)
+		{
+			if (pEventNumber < 400 || pEventNumber > 410)
+			{
+				if (pEventNumber == 139)
+				{
+					OracleDialogue();
+				}
+				else
+				{
+					if (pEventNumber == 311)
+					{
+						CheckBountyRespawnAndAward();
+					}
+					else
+					{
+						current_npc_text = 0;
+						activeLevelDecoration = (LevelDecoration*)1;
+						EventProcessor(pEventNumber, 0, 1);
+						activeLevelDecoration = nullptr;
+					}
+				}
+			}
+			else
+			{
+				dword_F8B1D8 = uMessageParam;
+				DrawJoinGuildWindow(pEventNumber - 400);
+			}
+		}
+		else
+		{
+			_4B3FE5_training_dialogue(pEventNumber);
+		}
+		BackToHouseMenu();
+		return;
+	}
+	if (uMessageParam != 76)
+	{
+		if (uMessageParam == 77)
+		{
+			//v16 = pCurrentNPCInfo->uProfession;
+			__debugbreak();  // probably hirelings found in buildings, not present in MM7, changed "pCurrentNPCInfo->uProfession - 1" to "pCurrentNPCInfo->uProfession", have to check in other versions whether it's ok
+			if (dialogue_show_profession_details)
+				v17 = pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText;
+			else
+				v17 = pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pBenefits;
+			current_npc_text = v17;
+			v18 = BuildDialogueString(v17, uActiveCharacter - 1, 0, 0, 0, 0);
+			dialogue_show_profession_details = ~dialogue_show_profession_details;
+			current_npc_text = v18;
+		}
+		else
+		{
+			if (uMessageParam == 79)
+			{
+				if (contract_approved)
+				{
+					Party::TakeGold(gold_transaction_amount);
+					if (uActiveCharacter)
+					{
+						v12 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
+						*(short *)v12 &= 0x3Fu;
+						switch (dword_F8B1B0_MasteryBeingTaught)
+						{
+						case 2:
+							v15 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
+							*v15 |= 0x40u;
+							break;
+						case 3:
+							v14 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
+							*v14 |= 0x80u;
+							break;
+						case 4:
+							v13 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
+							v13[1] |= 1u;
+							break;
+						}
+						pPlayers[uActiveCharacter]->PlaySound(SPEECH_85, 0);
+					}
+					pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+					/*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
+					{
+					pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType = UIMSG_Escape;
+					pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 1;
+					*(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
+					++pMessageQueue_50CBD0->uNumMessages;
+					}*/
+				}
+			}
+			else
+			{
+				if (uMessageParam == 82 && contract_approved) //join guild
+				{
+					Party::TakeGold(gold_transaction_amount);
+					v4 = pParty->pPlayers.data();
+					do
+					{
+						v4->SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
+						++v4;
+					} while ((signed int)v4 < (signed int)pParty->pHirelings.data());
+					switch (dword_F8B1D8)
+					{
+					case 19:
+						pEventNumber = pCurrentNPCInfo->evt_A;
+						if (pEventNumber >= 400 && pEventNumber <= 416)
+							pCurrentNPCInfo->evt_A = 0;
+						break;
+					case 20:
+						pEventNumber = pCurrentNPCInfo->evt_B;
+						if (pEventNumber >= 400 && pEventNumber <= 416)
+							pCurrentNPCInfo->evt_B = 0;
+						break;
+					case 21:
+						pEventNumber = pCurrentNPCInfo->evt_C;
+						if (pEventNumber >= 400 && pEventNumber <= 416)
+							pCurrentNPCInfo->evt_C = 0;
+						break;
+					case 22:
+						pEventNumber = pCurrentNPCInfo->evt_D;
+						if (pEventNumber >= 400 && pEventNumber <= 416)
+							pCurrentNPCInfo->evt_D = 0;
+						break;
+					case 23:
+						pEventNumber = pCurrentNPCInfo->evt_E;
+						if (pEventNumber >= 400 && pEventNumber <= 416)
+							pCurrentNPCInfo->evt_E = 0;
+						break;
+					case 24:
+						pEventNumber = pCurrentNPCInfo->evt_F;
+						if (pEventNumber >= 400 && pEventNumber <= 416)
+							pCurrentNPCInfo->evt_F = 0;
+						break;
+					}
+					pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+					/*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
+					{
+					pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType = UIMSG_Escape;
+					pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 1;
+					*(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
+					++pMessageQueue_50CBD0->uNumMessages;
+					}*/
+					//v11 = uActiveCharacter;
+					if (uActiveCharacter)
+					{
+						pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_86, 0);
+						BackToHouseMenu();
+						return;
+					}
+				}
+			}
+		}
+		BackToHouseMenu();
+		return;
+	}
+	if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName)
+	{
+		ShowStatusBarString(pGlobalTXT_LocalizationStrings[533], 2);// ""I cannot join you, you're party is full""
+		BackToHouseMenu();
+		return;
+	}
+	
+	
+	if (pCurrentNPCInfo->uProfession != 51) //burglars have no hiring price
+	{
+		__debugbreak();  // probably hirelings found in buildings, not present in MM7, changed "pCurrentNPCInfo->uProfession - 1" to "pCurrentNPCInfo->uProfession", have to check in other versions whether it's ok
+		pPrice = pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].uHirePrice;
+		if (pParty->uNumGold < (unsigned int)pPrice)
+		{
+			ShowStatusBarString(pGlobalTXT_LocalizationStrings[155], 2);
+			dialogue_show_profession_details = false;
+			uDialogueType = 13;
+			current_npc_text = pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText;
+			current_npc_text = BuildDialogueString(current_npc_text, uActiveCharacter - 1, 0, 0, 0, 0);
+			if (uActiveCharacter)
+				pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
+			ShowStatusBarString(pGlobalTXT_LocalizationStrings[155], 2);
+			BackToHouseMenu();
+			return;
+		}
+		else
+			Party::TakeGold(pPrice);
+	}
+	//LOBYTE(v2->uFlags) |= 0x80u;
+	pCurrentNPCInfo->uFlags |= 128;
+	pParty->hirelingScrollPosition = 0;
+	pParty->CountHirelings();
+	if (pParty->pHirelings[0].pName)
+	{
+		memcpy(&pParty->pHirelings[1], pCurrentNPCInfo, sizeof(pParty->pHirelings[1]));
+		v24 = pCurrentNPCInfo->pName;
+		v22 = pParty->pHireling2Name;
+	}
+	else
+	{
+		memcpy(pParty->pHirelings.data(), pCurrentNPCInfo, 0x4Cu);
+		v24 = pCurrentNPCInfo->pName;
+		v22 = pParty->pHireling1Name;
+	}
+	strcpy(v22, v24);
+	pParty->hirelingScrollPosition = 0;
+	pParty->CountHirelings();
+	PrepareHouse((HOUSE_ID)(int)window_SpeakInHouse->ptr_1C);
+	dialog_menu_id = HOUSE_DIALOGUE_MAIN;
+
+	pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+	/*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
+	{
+	pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType = UIMSG_Escape;
+	pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 1;
+	*(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
+	++pMessageQueue_50CBD0->uNumMessages;
+	}*/
+	if (uActiveCharacter)
+		pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)61, 0);
+
+_return:
+	BackToHouseMenu();
+}
+
+//----- (004B3FE5) --------------------------------------------------------
+//Originally called _4B254D_SkillMasteryTeacher to have contract_approved assigned, to be able to set some button name. 
+//But it the name gets immediately overwritten
+void _4B3FE5_training_dialogue(int a4)
+{
+	const char *v2; // edi@1
+
+	//__debugbreak();
+	uDialogueType = DIALOGUE_SKILL_TRAINER;
+	current_npc_text = (char *)pNPCTopics[a4 + 168].pText;
+	_4B254D_SkillMasteryTeacher(a4);  //might be needed because of contract_approved ?
+	pDialogueWindow->Release();
+    pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 350, a4, 0);
+	pBtn_ExitCancel = pDialogueWindow->CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
+		pGlobalTXT_LocalizationStrings[34], ui_exit_cancel_button_background, 0);
+	pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "", 0);
+	v2 = "";
+	if (contract_approved)
+		v2 = pGlobalTXT_LocalizationStrings[535];
+	pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, 0x4Fu, 0, v2, 0);
+	pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
+	dialog_menu_id = HOUSE_DIALOGUE_OTHER;
+}
+
+//----- (004B1ECE) --------------------------------------------------------
+void OracleDialogue()
+{
+	__int16 *v0; // edi@1
+	signed int v4; // eax@9
+	int v5; // ebx@11
+	signed int v8; // edi@14
+	ItemGen *v9; // [sp+Ch] [bp-Ch]@11
+	signed int v10; // [sp+10h] [bp-8h]@13
+	int v11; // [sp+14h] [bp-4h]@1
+
+	contract_approved = 0;
+	v11 = 0;
+	uDialogueType = 84;
+	current_npc_text = (char *)pNPCTopics[667].pText;
+	v0 = _4F0882_evt_VAR_PlayerItemInHands_vals.data();
+	//while ( 1 )
+	for (uint i = 0; i <= 53; i++)
+	{
+		if ((unsigned __int16)_449B57_test_bit(pParty->_quest_bits, *v0))
+		{
+			//v1 = 0;
+			//v2 = pParty->pPlayers.data();
+			for (uint pl = 0; pl < 4; pl++)
+			{
+				//LOBYTE(v3) = pParty->pPlayers[pl].CompareVariable(VAR_PlayerItemInHands, *(v0+1));
+				if (pParty->pPlayers[pl].CompareVariable(VAR_PlayerItemInHands, *(v0 + 1)))
+					break;
+				//++v2;
+				//++v1;
+			}
+			//while ( (signed int)v2 < (signed int)pParty->pHirelings.data() );
+			//if ( v1 == 4 )
+			//break;
+		}
+		++v11;
+		//v0 += 2;
+		//if ( v0 > &_4F0882_evt_VAR_PlayerItemInHands_vals[53] )
+		//break;
+	}
+	if (v0 <= &_4F0882_evt_VAR_PlayerItemInHands_vals[53])
+	{
+		current_npc_text = (char *)pNPCTopics[666].pText; // Here's %s that you lost. Be careful
+		v4 = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
+		contract_approved = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
+		pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, v4);
+	}
+	if (contract_approved == 601)
+	{
+		v5 = 0;
+		//v12 = pParty->pPlayers.data();//[0].uClass;
+		v9 = 0;
+		//while ( 1 )
+		for (uint i = 0; i < 4; i++)
+		{
+			if (pParty->pPlayers[i].classType == PLAYER_CLASS_LICH)
+			{
+				v10 = 0;
+				//v6 = pParty->pPlayers.data();//[0].pInventoryItems[0].field_1A;
+				for (uint pl = 0; pl < 4; pl++)
+				{
+					for (v8 = 0; v8 < 126; v8++)//138
+					{
+						if (pParty->pPlayers[pl].pInventoryItemList[v8].uItemID == ITEM_LICH_JAR_FULL)
+						{
+							if (!pParty->pPlayers[pl].pInventoryItemList[v8].uHolderPlayer)
+								v9 = &pParty->pPlayers[pl].pInventoryItemList[v8];
+							if (pParty->pPlayers[pl].pInventoryItemList[v8].uHolderPlayer == v5)
+								v10 = 1;
+						}
+					}
+				}
+				if (!v10)
+					break;
+			}
+			//      ++v12;
+			++v5;
+			//  if ( v12 > &pParty->pPlayers[3] )
+			//  return;
+		}
+		if (v9)
+			v9->uHolderPlayer = v5;
+	}
+}
+
+//----- (004B46A5) --------------------------------------------------------
+void __fastcall DrawTextAtStatusBar(const char *Str, int a5)
+{
+	pRenderer->DrawTextureNew(0, 352/480.0f, game_ui_statusbar);
+	pPrimaryWindow->DrawText(pFontLucida, pFontLucida->AlignText_Center(450, Str) + 11, 357, a5, Str, 0, 0, 0);
+}
+
+//----- (004BBA85) --------------------------------------------------------
+void CheckBountyRespawnAndAward()
+{
+	int i; // eax@2
+	int rand_monster_id; // edx@3
+
+	uDialogueType = 83;
+	pDialogueWindow->Release();
+    pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 350, 0, 0);
+	pBtn_ExitCancel = pDialogueWindow->CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, pGlobalTXT_LocalizationStrings[34],// "Cancel"
+        ui_exit_cancel_button_background, 0);
+	pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "", 0);
+	pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_0, 83, 0, "", 0);
+	pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
+	dialog_menu_id = HOUSE_DIALOGUE_OTHER;
+	//get new monster for hunting
+	if (pParty->PartyTimes.bountyHunting_next_generation_time[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] < (signed __int64)pParty->uTimePlayed)
+	{
+		pParty->monster_for_hunting_killed[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
+		pParty->PartyTimes.bountyHunting_next_generation_time[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] = (signed __int64)((double)(0x12750000 * (pParty->uCurrentMonth + 12i64 * pParty->uCurrentYear - 14015)) * 0.033333335);
+		for (i = rand();; i = rand())
+		{
+			rand_monster_id = i % 258 + 1;
+			pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] = rand_monster_id;
+			if ((unsigned __int16)rand_monster_id < 0x73u || (unsigned __int16)rand_monster_id > 0x84u)
+			{
+				if (((unsigned __int16)rand_monster_id < 0xEBu || (unsigned __int16)rand_monster_id > 0xFCu)
+					&& ((unsigned __int16)rand_monster_id < 0x85u || (unsigned __int16)rand_monster_id > 0x96u)
+					&& ((unsigned __int16)rand_monster_id < 0x97u || (unsigned __int16)rand_monster_id > 0xBAu)
+					&& ((unsigned __int16)rand_monster_id < 0xC4u || (unsigned __int16)rand_monster_id > 0xC6u))
+					break;
+			}
+		}
+	}
+	bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)];
+	if (!pParty->monster_for_hunting_killed[(int)((char *)window_SpeakInHouse->ptr_1C - 102)])
+	{
+		bountyHunting_text = pNPCTopics[351].pText;
+		if (!pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)])
+			bountyHunting_text = pNPCTopics[353].pText;
+	}
+	else//get prize
+	{
+		if (pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)])
+		{
+			pParty->PartyFindsGold(100 * pMonsterStats->pInfos[(unsigned __int16)pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)]].uLevel, 0);
+			for (uint i = 0; i < 4; ++i)
+				pParty->pPlayers[i].SetVariable(VAR_Award, 86);
+			pParty->uNumBountiesCollected += 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)]].uLevel;
+			pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] = 0;
+			pParty->monster_for_hunting_killed[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
+		}
+		bountyHunting_text = pNPCTopics[352].pText;
+	}
+}
+
+//----- (004B254D) --------------------------------------------------------
+const char * _4B254D_SkillMasteryTeacher(int trainerInfo)
+{
+	int teacherLevel; // edx@1
+	int skillBeingTaught; // ecx@1
+	int pClassType; // eax@7
+	int currClassMaxMastery; // eax@7
+	int pointsInSkillWOutMastery; // ebx@7
+	int classBaseId; // eax@8
+	unsigned int skillMastery; // eax@29
+	unsigned __int16 pointsInSkill; // [sp+1Ch] [bp-10h]@7
+	int masteryLevelBeingTaught; // [sp+24h] [bp-8h]@7
+
+	contract_approved = 0;
+	teacherLevel = (trainerInfo - 200) % 3;
+	skillBeingTaught = (trainerInfo - 200) / 3;
+	Player* activePlayer = pPlayers[uActiveCharacter];
+	pClassType = activePlayer->classType;
+	currClassMaxMastery = byte_4ED970_skill_learn_ability_by_class_table[pClassType][skillBeingTaught];
+	masteryLevelBeingTaught = teacherLevel + 2;
+	dword_F8B1B0_MasteryBeingTaught = masteryLevelBeingTaught;
+	if (currClassMaxMastery < masteryLevelBeingTaught)
+	{
+		classBaseId = pClassType - pClassType % 4;
+		if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 1][skillBeingTaught] >= masteryLevelBeingTaught)
+			sprintf(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[633], pClassNames[classBaseId + 1]);//Вы должны достичь звания %s для обучения этому уровню навыка. You have to be promoted to %s to learn this skill level.
+		else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught
+			&& byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught)
+			sprintf(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[634], pClassNames[classBaseId + 2], pClassNames[classBaseId + 3]);//Вы должны достичь звания %s или %s для обучения этому уровню навыка. You have to be promoted to %s or %s to learn this skill level.
+		else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught)
+			sprintf(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[633], pClassNames[classBaseId + 2]);//Вы должны достичь звания %s для обучения этому уровню навыка. You have to be promoted to %s to learn this skill level.
+		else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught)
+			sprintf(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[633], pClassNames[classBaseId + 3]);//Вы должны достичь звания %s для обучения этому уровню навыка. You have to be promoted to %s to learn this skill level.
+		else
+			sprintf(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[632], pClassNames[pClassType]);//Этот уровень навыка не может быть постигнут классом %s. This skill level can not be learned by the %s class.
+		return pTmpBuf.data();
+	}
+	if (!activePlayer->CanAct())
+		return pNPCTopics[122].pText; //Not in your condition!
+	pointsInSkill = activePlayer->pActiveSkills[skillBeingTaught];
+	pointsInSkillWOutMastery = pointsInSkill & 0x3F;
+	if (!pointsInSkillWOutMastery)
+		return pNPCTopics[131].pText; //You must know the skill before you can become an expert in it!
+	skillMastery = SkillToMastery(pointsInSkill);
+	if ((signed int)skillMastery > teacherLevel + 1)
+		return pNPCTopics[teacherLevel + 128].pText;    // You are already an SKILLLEVEL in this skill.	
+	dword_F8B1AC_award_bit_number = skillBeingTaught;
+	if (masteryLevelBeingTaught == 2 && pointsInSkillWOutMastery < 4
+		|| masteryLevelBeingTaught == 3 && pointsInSkillWOutMastery < 7
+		|| masteryLevelBeingTaught == 4 && pointsInSkillWOutMastery < 10
+		)
+		return pNPCTopics[127].pText;  //"You don't meet the requirements, and cannot be taught until you do."
+	switch (dword_F8B1AC_award_bit_number)
+	{
+	case PLAYER_SKILL_STAFF:
+	case PLAYER_SKILL_SWORD:
+	case PLAYER_SKILL_DAGGER:
+	case PLAYER_SKILL_AXE:
+	case PLAYER_SKILL_SPEAR:
+	case PLAYER_SKILL_BOW:
+	case PLAYER_SKILL_MACE:
+	case PLAYER_SKILL_ARMSMASTER:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 2000;
+			break;
+		case 3:
+			gold_transaction_amount = 5000;
+			break;
+		case 4:
+			gold_transaction_amount = 8000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_BLASTER:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 0;
+			break;
+		case 3:
+			gold_transaction_amount = 0;
+			break;
+		case 4:
+			gold_transaction_amount = 0;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_SHIELD:
+	case PLAYER_SKILL_LEATHER:
+	case PLAYER_SKILL_CHAIN:
+	case PLAYER_SKILL_PLATE:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 1000;
+			break;
+		case 3:
+			gold_transaction_amount = 3000;
+			break;
+		case 4:
+			gold_transaction_amount = 7000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_FIRE:
+	case PLAYER_SKILL_AIR:
+	case PLAYER_SKILL_WATER:
+	case PLAYER_SKILL_EARTH:
+	case PLAYER_SKILL_SPIRIT:
+	case PLAYER_SKILL_MIND:
+	case PLAYER_SKILL_BODY:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 1000;
+			break;
+		case 3:
+			gold_transaction_amount = 4000;
+			break;
+		case 4:
+			gold_transaction_amount = 8000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_LIGHT:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 2000;
+			break;
+		case 3:
+			if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits, 114))
+				return pNPCTopics[127].pText;
+			gold_transaction_amount = 5000;
+			break;
+		case 4:
+			if (!activePlayer->ProfessionOrGuildFlagsCorrect(0x22u, 1) ||
+				!activePlayer->ProfessionOrGuildFlagsCorrect(0x1Au, 1))
+				return pNPCTopics[127].pText;
+			gold_transaction_amount = 8000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_DARK:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 2000;
+			break;
+		case 3:
+			if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits, 110))
+				return pNPCTopics[127].pText;
+			gold_transaction_amount = 5000;
+			break;
+		case 4:
+			if (!activePlayer->ProfessionOrGuildFlagsCorrect(0x23u, 1)
+				|| !activePlayer->ProfessionOrGuildFlagsCorrect(0x1Bu, 1))
+				return pNPCTopics[127].pText;
+			gold_transaction_amount = 8000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_ITEM_ID:
+	case PLAYER_SKILL_REPAIR:
+	case PLAYER_SKILL_MEDITATION:
+	case PLAYER_SKILL_PERCEPTION:
+	case PLAYER_SKILL_TRAP_DISARM:
+	case PLAYER_SKILL_MONSTER_ID:
+	case PLAYER_SKILL_STEALING:
+	case PLAYER_SKILL_ALCHEMY:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 500;
+			break;
+		case 3:
+			gold_transaction_amount = 2500;
+			break;
+		case 4:
+			gold_transaction_amount = 6000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_MERCHANT:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 2000;
+			break;
+		case 3:
+			if (activePlayer->GetBaseWillpower() < 50)
+				return pNPCTopics[127].pText;
+			gold_transaction_amount = 5000;
+			break;
+		case 4:
+			gold_transaction_amount = 8000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_BODYBUILDING:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 500;
+			break;
+		case 3:
+			if (activePlayer->GetBaseEndurance() < 50)
+				return pNPCTopics[127].pText;
+			gold_transaction_amount = 2500;
+			break;
+		case 4:
+			gold_transaction_amount = 6000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_DIPLOMACY:
+		Error("Diplomacy not used");
+		break;
+	case PLAYER_SKILL_TIEVERY:
+		Error("Thievery not used");
+		break;
+	case PLAYER_SKILL_DODGE:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 2000;
+			break;
+		case 3:
+			gold_transaction_amount = 5000;
+			break;
+		case 4:
+			if ((activePlayer->pActiveSkills[PLAYER_SKILL_UNARMED] & 63) < 0xA)
+				return pNPCTopics[127].pText;
+			gold_transaction_amount = 8000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_UNARMED:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 2000;
+			break;
+		case 3:
+			gold_transaction_amount = 5000;
+			break;
+		case 4:
+			if ((activePlayer->pActiveSkills[PLAYER_SKILL_DODGE] & 63) < 0xA)
+				return pNPCTopics[127].pText;
+			gold_transaction_amount = 8000;
+			break;
+		}
+		break;
+	case PLAYER_SKILL_LEARNING:
+		switch (masteryLevelBeingTaught)
+		{
+		case 2:
+			gold_transaction_amount = 2000;
+			break;
+		case 3:
+			if (activePlayer->GetBaseIntelligence() < 50)
+				return pNPCTopics[127].pText;
+			gold_transaction_amount = 5000;
+			break;
+		case 4:
+			gold_transaction_amount = 8000;
+			break;
+		}
+		break;
+	default:
+		Error("Unknown skill");
+	}
+	if (gold_transaction_amount > pParty->uNumGold)
+		return pNPCTopics[124].pText;  //You don't have enough gold!
+	contract_approved = 1;
+	if (masteryLevelBeingTaught == 2)
+	{
+		sprintfex(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[534],//Получить степень ^Pr[%s] в навыке ^Pr[%s] за ^I[%lu] золот^L[ой;ых;ых]
+			pGlobalTXT_LocalizationStrings[433], pSkillNames[dword_F8B1AC_award_bit_number], gold_transaction_amount);//Эксперт
+	}
+	else if (masteryLevelBeingTaught == 3)
+	{
+		sprintfex(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[534],
+			pGlobalTXT_LocalizationStrings[432], pSkillNames[dword_F8B1AC_award_bit_number], gold_transaction_amount);//Мастер
+	}
+	else if (masteryLevelBeingTaught == 4)
+		sprintfex(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[534],
+		pGlobalTXT_LocalizationStrings[225], pSkillNames[dword_F8B1AC_award_bit_number], gold_transaction_amount);//Великий Магистр
+	return pTmpBuf2.data();
+}
+
+//----- (00495461) --------------------------------------------------------
+char *BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, ItemGen *a3, char *a4, int a5, __int64 *a6)
+{
+	Player *pPlayer; // ebx@3
+	const char *pText; // esi@7
+	int v17; // eax@10
+	signed __int64 v18; // qax@18
+	unsigned __int8 *v20; // ebx@32
+	int v21; // ecx@34
+	int pReputation; // eax@45
+	int v29; // eax@68
+	__int16 v55[56]; // [sp+10h] [bp-128h]@34
+	stru351_summoned_item v56; // [sp+80h] [bp-B8h]@107
+	char a1[100]; // [sp+B8h] [bp-80h]@3
+	int v63; // [sp+12Ch] [bp-Ch]@32
+
+	if (IsBadStringPtrA(lpsz, 1))
+		return "Invalid String Passed";
+
+	a1[0] = 0;
+	pPlayer = &pParty->pPlayers[uPlayerID];
+	memset(pTmpBuf2.data(), 0, sizeof(pTmpBuf2));
+
+	NPCData *npc = nullptr;
+	if (dword_5C35D4)
+		npc = HouseNPCData[(unsigned int)((char *)pDialogueNPCCount + -(dword_591080 != 0))]; //- 1
+	else
+		npc = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+
+	//pText = a4;
+	uint len = strlen(lpsz);
+	for (int i = 0, dst = 0; i < len; ++i)
+	{
+		char c = lpsz[i];
+		if (c != '%')
+			pTmpBuf2[dst++] = c;
+		else
+		{
+			v17 = 10 * (int)(lpsz[i + 1] - '0') + lpsz[i + 2] - '0';
+
+			switch (v17)
+			{
+			case 1://Подробнее
+				strcat(pTmpBuf2.data(), npc->pName);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 2:
+				strcat(pTmpBuf2.data(), pPlayer->pName);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 3:
+			case 4:
+				strcat(pTmpBuf2.data(), a1);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 5:
+				v18 = (signed __int64)((double)(signed __int64)pParty->uTimePlayed * 0.234375) / 60 / 60 % 24;
+				pText = pGlobalTXT_LocalizationStrings[397];// "evening"
+				if (SHIDWORD(v18) <= 0 && SHIDWORD(v18) >= 0 && (unsigned int)v18 >= 5 && SHIDWORD(v18) <= 0)
+				{
+					if (SHIDWORD(v18) >= 0 && (unsigned int)v18 >= 11)
+					{
+						if (v18 < 20)
+							pText = pGlobalTXT_LocalizationStrings[396];// "day"
+					}
+					else
+					{
+						pText = pGlobalTXT_LocalizationStrings[395];// "morning"
+					}
+				}
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 6:
+				if (pPlayer->uSex)
+					pText = pGlobalTXT_LocalizationStrings[387];// "lady"
+				else
+					pText = pGlobalTXT_LocalizationStrings[385];// "sir"
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 7:
+				if (pPlayer->uSex)
+					pText = pGlobalTXT_LocalizationStrings[389];// "Lady"
+				else
+					pText = pGlobalTXT_LocalizationStrings[386];// "Sir"
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 8:
+				v63 = 0;
+				v20 = (unsigned __int8 *)pPlayer->_achieved_awards_bits;
+				for (uint _i = 0; _i < 28; ++_i)
+				{
+					if ((unsigned __int16)_449B57_test_bit(v20, word_4EE150[i]))
+					{
+						v21 = v63;
+						++v63;
+						v55[v63] = word_4EE150[i];
+					}
+				}
+				if (v63)
+				{
+					if (dword_A74CDC == -1)
+						dword_A74CDC = rand() % v63;
+					pText = (char *)pAwards[v55[dword_A74CDC]].pText;//(char *)dword_723E80_award_related[2 * v55[v24]];
+				}
+				else
+					pText = (char *)pNPCTopics[55].pText;
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 9:
+				if (npc->uSex)
+					pText = pGlobalTXT_LocalizationStrings[384];// "her"
+				else
+					pText = pGlobalTXT_LocalizationStrings[383];// "his"
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 10:
+				if (pPlayer->uSex)
+					pText = pGlobalTXT_LocalizationStrings[389];// "Lady"
+				else
+					pText = pGlobalTXT_LocalizationStrings[388];// "Lord"
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 11:
+				pReputation = pParty->GetPartyReputation();
+				if (pReputation >= 25)
+					pText = pGlobalTXT_LocalizationStrings[379];
+				else//v25 < 25
+				{
+					if (pReputation < 6)
+					{
+						if (pReputation >= -5)//6 >= v25 >= -5
+							pText = pGlobalTXT_LocalizationStrings[399];
+						else// v25 < -5
+						{
+							if (pReputation < -24)//-24 > v25
+								pText = pGlobalTXT_LocalizationStrings[434];
+							else// -5 > v25 > -24
+								pText = pGlobalTXT_LocalizationStrings[402];
+						}
+					}
+					else//25 > v25 > 6
+						pText = pGlobalTXT_LocalizationStrings[392];
+				}
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 12:
+				pReputation = npc->rep;
+				if (pReputation >= 25)
+					pText = pGlobalTXT_LocalizationStrings[379];//Ненавистный
+				else
+				{
+					if (pReputation < 6)
+					{
+						if (pReputation >= -5)
+							pText = pGlobalTXT_LocalizationStrings[399];//Нейтральная
+						else
+						{
+							if (pReputation < -24)
+								pText = pGlobalTXT_LocalizationStrings[434];//Почтенная
+							else
+								pText = pGlobalTXT_LocalizationStrings[402];//Дружелюбный
+						}
+					}
+					else
+						pText = pGlobalTXT_LocalizationStrings[392];//Недружелюбный
+				}
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 13:
+				strcat(pTmpBuf2.data(), pNPCStats->sub_495366_MispronounceName(pPlayer->pName[0], pPlayer->uSex));
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 14:
+				if (npc->uSex)
+					pText = pGlobalTXT_LocalizationStrings[391];// "sister"
+				else
+					pText = pGlobalTXT_LocalizationStrings[390];// "brother"
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 15:
+				strcat(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[393]);// "daughter"
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 16:
+				if (npc->uSex)
+					pText = pGlobalTXT_LocalizationStrings[391];// "sister"
+				else
+					pText = pGlobalTXT_LocalizationStrings[390];// "brother"
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 17://текст наёмного НПС
+			{
+						uint pay_percentage = pNPCStats->pProfessions[npc->uProfession].uHirePrice / 100;
+						if (!pay_percentage)
+							pay_percentage = 1;
+						sprintf(a1, "%lu", pay_percentage);
+						strcat(pTmpBuf2.data(), a1);
+						dst = strlen(pTmpBuf2.data());
+						i += 2;
+						break;
+			}
+			case 18:
+			case 19:
+			case 20:
+			case 21:
+			case 22:
+			case 26:
+				strncpy(a1, lpsz + i + 1, 2);
+				sprintf(a1, "%lu", atoi(a1));
+				strcat(pTmpBuf2.data(), a1);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 23:
+				if (pMapStats->GetMapInfo(pCurrentMapName))
+					pText = pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName;
+				else
+					pText = pGlobalTXT_LocalizationStrings[394];// "Unknown"
+				strcat(pTmpBuf2.data(), pText);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 24://название товара в продаже
+				sprintfex(a1, format_4E2D80, Color16(255, 255, 155), a3->GetDisplayName());
+				strcat(pTmpBuf2.data(), a1);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 25:
+				v29 = pPlayer->GetBaseBuyingPrice(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+				switch (a5)
+				{
+				case 3:
+					v29 = pPlayer->GetBaseSellingPrice(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+					break;
+				case 4:
+					v29 = pPlayer->GetBaseIdentifyPrice(p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+					break;
+				case 5:
+					v29 = pPlayer->GetBaseRepairPrice(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+					break;
+				case 6:
+					v29 = pPlayer->GetBaseSellingPrice(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier) / 2;
+					break;
+				}
+				sprintfex(a1, "%lu", v29);
+				strcat(pTmpBuf2.data(), a1);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 27://текст продажи
+				v29 = pPlayer->GetBuyingPrice(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+				if (a5 == 3)
+				{
+					v29 = pPlayer->GetPriceSell(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+					if (a3->IsBroken())
+						v29 = 1;
+					sprintfex(a1, "%lu", v29);
+					strcat(pTmpBuf2.data(), a1);
+					dst = strlen(pTmpBuf2.data());
+					i += 2;
+					break;
+				}
+				if (a5 != 4)
+				{
+					if (a5 == 5)
+						v29 = pPlayer->GetPriceRepair(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+					else
+					{
+						if (a5 == 6)
+						{
+							v29 = pPlayer->GetPriceSell(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier) / 2;
+							if (a3->IsBroken())
+								v29 = 1;
+							if (!v29)
+								v29 = 1;
+							sprintfex(a1, "%lu", v29);
+							strcat(pTmpBuf2.data(), a1);
+							dst = strlen(pTmpBuf2.data());
+							i += 2;
+							break;
+						}
+					}
+					sprintfex(a1, "%lu", v29);
+					strcat(pTmpBuf2.data(), a1);
+					dst = strlen(pTmpBuf2.data());
+					i += 2;
+					break;
+				}
+				sprintfex(a1, "%lu", pPlayer->GetPriceIdentification(p2DEvents[(signed int)a4 - 1].fPriceMultiplier));
+				strcat(pTmpBuf2.data(), a1);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 28://профессия
+				strcat(pTmpBuf2.data(), (char *)p2DEvents[(signed int)a4 - 1].pProprieterTitle);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 29:
+				sprintfex(a1, "%lu", pPlayer->GetPriceIdentification(p2DEvents[(signed int)a4 - 1].fPriceMultiplier));
+				strcat(pTmpBuf2.data(), a1);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 30:
+				if (!a6)
+				{
+					strcat(pTmpBuf2.data(), a4);
+					dst = strlen(pTmpBuf2.data());
+					i += 2;
+					break;
+				}
+				init_summoned_item(&v56, *a6);
+				sprintfex(a1, pGlobalTXT_LocalizationStrings[378], aMonthNames[v56.field_14_exprie_month], v56.field_C_expire_day + 1, v56.field_18_expire_year);
+				strcat(pTmpBuf2.data(), a1);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			case 31:
+			case 32:
+			case 33:
+			case 34:
+				strcat(pTmpBuf2.data(), pParty->pPlayers[v17 - 31].pName);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			default:
+				if (v17 <= 50 || v17 > 70)
+				{
+					strncpy(a1, lpsz + i + 1, 2);
+					sprintf(a1, "%lu", atoi(a1));
+					strcat(pTmpBuf2.data(), a1);
+					dst = strlen(pTmpBuf2.data());
+					i += 2;
+					break;
+				}
+				if (v17 - 51 >= 20)
+				{
+					strcat(pTmpBuf2.data(), a4);
+					dst = strlen(pTmpBuf2.data());
+					i += 2;
+					break;
+				}
+				init_summoned_item(&v56, pParty->PartyTimes._s_times[v17 - 51]);
+				sprintfex(a1, pGlobalTXT_LocalizationStrings[378], aMonthNames[v56.field_14_exprie_month], v56.field_C_expire_day + 1, v56.field_18_expire_year);
+				strcat(pTmpBuf2.data(), a1);
+				dst = strlen(pTmpBuf2.data());
+				i += 2;
+				break;
+			}
+		}
+	}
+	return pTmpBuf2.data();
+}
+
+//----- (0044C175) --------------------------------------------------------
+void ShowStatusBarString(const char *pString, unsigned int uNumSeconds)
+{
+	strcpy(GameUI_Footer_TimedString.data(), pString);
+	GameUI_Footer_TimeLeft = 1000 * uNumSeconds + GetTickCount();
+
+	for (int i = pFontLucida->GetLineWidth(GameUI_Footer_TimedString.data()); i > 450;
+		i = pFontLucida->GetLineWidth(GameUI_Footer_TimedString.data()))
+		GameUI_Footer_TimedString[strlen(GameUI_Footer_TimedString.data()) - 1] = 0;
+}
+
+//----- (0044C1D0) --------------------------------------------------------
+void ShowNothingHereStatus()
+{
+	if (!GameUI_Footer_TimeLeft)
+		ShowStatusBarString(pGlobalTXT_LocalizationStrings[521], 2);// Nothing here
+}
+
+//----- (0044C28B) --------------------------------------------------------
+int const_2()
+{
+	return 2;
+}
