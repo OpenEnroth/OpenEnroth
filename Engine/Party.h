@@ -328,7 +328,7 @@ extern Party *pParty; // idb
 extern struct ActionQueue *pPartyActionQueue;
 
 bool TestPartyQuestBit(PARTY_QUEST_BITS bit);
-void __fastcall Rest(unsigned int uHoursToSleep);
+void Rest(unsigned int uHoursToSleep);
 void RestAndHeal(__int64 uNumMinutes); // idb
 int GetTravelTime();
 

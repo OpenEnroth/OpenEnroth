@@ -1,12 +1,14 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#include <vector>
 
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdlib.h>
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 
 #include "..\..\GUI\UI\UIHouses.h"
 #include "GUI/GUIButton.h"
@@ -20,122 +22,7 @@
 #include "../Party.h"
 #include "../Tables/FactionTable.h"
 #include "../Tables/StorylineTextTable.h"
-#include "../texts.h"
 #include "../OurMath.h"
-
-
-
-struct ITEM_VARIATION
-	{
-	unsigned __int16 treasure_level;
-	unsigned __int16 item_class[4];
-	};
-
-
-std::array<const char, 5> uItemsAmountPerShopType={ 0, 6, 8, 12, 12};
-
-const ITEM_VARIATION shopWeap_variation_ord[15] ={
-	{ 0, { 0, 0, 0, 0 }},
-	{ 1, { 23, 27, 20, 20 }},
-	{ 1, { 23, 24, 28, 20 }},
-	{ 2, { 23, 24, 25, 20 }},
-	{ 2, { 27, 27, 26, 26 }},
-	{ 4, { 24, 30, 25, 27 }},
-	{ 4, { 24, 30, 25, 27 }},
-	{ 3, { 30, 24, 20, 20 }},
-	{ 2, { 20, 20, 20, 20 }},
-	{ 3, { 27, 27, 26, 26 }},
-	{ 3, { 28, 28, 25, 25 }},
-	{ 2, { 23, 23, 24, 24 }},
-	{ 3, { 23, 23, 26, 26 }},
-	{ 2, { 30, 26, 26, 26 }},
-	{ 2, { 28, 25, 28, 29 }}};
-
-const ITEM_VARIATION shopArmr_variation_ord[28] ={
-	{ 1, { 35, 35, 38, 38 }},
-	{ 1, { 31, 31, 31, 34 }},
-	{ 1, { 35, 35, 38, 38 }},
-	{ 1, { 31, 31, 32, 34 }},
-	{ 2, { 35, 35, 38, 38 }},
-	{ 2, { 31, 32, 32, 33 }},
-	{ 2, { 35, 35, 38, 38 }},
-	{ 2, { 31, 31, 32, 32 }},
-	{ 4, { 35, 35, 38, 38 }},
-	{ 4, { 31, 32, 33, 34 }},
-	{ 4, { 35, 35, 38, 38 }},
-	{ 4, { 31, 32, 33, 34 }},
-	{ 3, { 35, 35, 38, 38 }},
-	{ 3, { 31, 31, 31, 31 }},
-	{ 2, { 35, 35, 38, 38 }},
-	{ 2, { 31, 32, 34, 34 }},
-	{ 3, { 35, 35, 38, 38 }},
-	{ 3, { 31, 31, 32, 32 }},
-	{ 3, { 35, 35, 38, 38 }},
-	{ 3, { 32, 32, 32, 33 }},
-	{ 3, { 35, 35, 38, 38 }},
-	{ 3, { 31, 31, 31, 32 }},
-	{ 3, { 35, 35, 38, 38 }},
-	{ 3, { 33, 31, 32, 34 }},
-	{ 3, { 35, 35, 38, 38 }},
-	{ 3, { 33, 31, 32, 34 }},
-	{ 4, { 35, 35, 38, 38 }},
-	{ 4, { 33, 31, 32, 34 }}};
-
-
-
-const unsigned __int16 shopMagic_treasure_lvl[14]= {0, 1, 1, 2, 2, 4, 4, 3, 2, 2, 2, 2, 2, 2};
-const unsigned __int16 shopAlch_treasure_lvl[13] = {0, 1, 1, 2, 2, 3, 3, 4, 4, 2, 2, 2, 2};
-
-const ITEM_VARIATION shopWeap_variation_spc[15]={
-	{ 0, { 0, 0, 0, 0 }},
-	{ 2, { 25, 30, 20, 20}},
-	{ 2, { 23, 24, 28, 20}},
-	{ 3, { 23, 24, 25, 20}},
-	{ 3, { 27, 27, 26, 26}},
-	{ 5, { 23, 26, 28, 27}},
-	{ 5, { 23, 26, 28, 27}},
-	{ 4, { 30, 24, 20, 20}},
-	{ 3, { 20, 20, 20, 20}},
-	{ 4, { 27, 27, 26, 26}},
-	{ 4, { 28, 28, 25, 25}},
-	{ 4, { 23, 23, 24, 24}},
-	{ 4, { 24, 24, 27, 20}},
-	{ 4, { 30, 26, 26, 26}},
-	{ 4, { 28, 25, 28, 29}}};
-
-const ITEM_VARIATION shopArmr_variation_spc[28]={
-	{ 2, { 35, 35, 38, 38 }},
-	{ 2, { 31, 31, 31, 34 }},
-	{ 2, { 35, 35, 38, 38 }},
-	{ 2, { 31, 31, 32, 34 }},
-	{ 3, { 35, 35, 38, 38 }},
-	{ 3, { 31, 32, 32, 33 }},
-	{ 3, { 35, 35, 38, 38 }},
-	{ 3, { 31, 31, 32, 32 }},
-	{ 5, { 35, 35, 38, 38 }},
-	{ 5, { 31, 32, 33, 34 }},
-	{ 5, { 35, 35, 38, 38 }},
-	{ 5, { 31, 32, 33, 34 }},
-	{ 4, { 35, 35, 38, 38 }},
-	{ 4, { 31, 31, 31, 31 }},
-	{ 3, { 35, 35, 38, 38 }},
-	{ 3, { 31, 32, 34, 34 }},
-	{ 4, { 35, 35, 38, 38 }},
-	{ 4, { 31, 31, 32, 33 }},
-	{ 4, { 35, 35, 38, 38 }},
-	{ 4, { 32, 32, 33, 34 }},
-	{ 4, { 35, 35, 38, 38 }},
-	{ 4, { 31, 31, 31, 32 }},
-	{ 4, { 35, 35, 38, 38 }},
-	{ 4, { 32, 32, 32, 32 }},
-	{ 4, { 35, 35, 38, 38 }},
-	{ 4, { 34, 34, 34, 34 }},
-	{ 5, { 35, 35, 38, 38 }},
-	{ 5, { 33, 33, 33, 33 }}
-	};
-
-const unsigned __int16 shopMagicSpc_treasure_lvl[14]  =  {0, 2, 2, 3, 3, 5, 5, 4, 3, 3, 3, 3, 3, 3};
-const unsigned __int16 shopAlchSpc_treasure_lvl[13]   =  {0, 2, 2, 3, 3, 4, 4, 5, 5, 3, 2, 2, 2};
 
 
 std::array< std::array<char, 14>, 7> byte_4E8168={{  //byte_4E8178
@@ -147,15 +34,11 @@ std::array< std::array<char, 14>, 7> byte_4E8168={{  //byte_4E8178
     { 2, 2, 2, 2, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6},
     { 2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}}};
 
-int sub_4BE571_AddItemToSet(int valueToAdd, int *outPutSet, int elemsAlreadyPresent, int elemsNeeded);
-int dword_F8B1DC_currentShopOption; // weak
-
 ItemGen *ptr_50C9A4_ItemToEnchant;
 
 struct ItemsTable *pItemsTable; // 005D29E0
 
-
-
+extern std::vector<char *> Tokenize(char *input, const char separator);
 
 
 //----- (00439DF3) --------------------------------------------------------
@@ -289,7 +172,6 @@ void ItemsTable::Release()
 {
   free(pMonstersTXT_Raw);
   free(pMonsterPlacementTXT_Raw);
-  free(pSkillDescTXT_Raw);
   free(pSpcItemsTXT_Raw);
   free(pStdItemsTXT_Raw);
   free(pRndItemsTXT_Raw);
@@ -301,7 +183,6 @@ void ItemsTable::Release()
   pMonstersTXT_Raw = nullptr;
   pMonsterPlacementTXT_Raw = nullptr;
   pSpcItemsTXT_Raw = nullptr;
-  pSkillDescTXT_Raw = nullptr;
   pStdItemsTXT_Raw = nullptr;
   pRndItemsTXT_Raw = nullptr;
   pItemsTXT_Raw = nullptr;
@@ -470,7 +351,10 @@ void ItemsTable::Initialize()
     while (item_counter < 800)
     {
         test_string = strtok(NULL, "\r") + 1;
+
+        extern std::vector<char *> Tokenize(char *input, const char separator);
         auto tokens = Tokenize(test_string, '\t');
+
         item_counter = atoi(tokens[0]);
         uAllItemsCount = item_counter;
         pItems[item_counter].pIconName = RemoveQuotes(tokens[1]);
@@ -612,116 +496,9 @@ void ItemsTable::Initialize()
     free(pRndItemsTXT_Raw);
     pRndItemsTXT_Raw = nullptr;
 
-    pSkillDescTXT_Raw = (char *)pEvents_LOD->LoadRaw("skilldes.txt", 0);
-    strtok(pSkillDescTXT_Raw, "\r");
-    for (int i = 0; i < 37; ++i)
-    {
-        test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
-        Assert(tokens.size() >= 6, "Invalid number of tokens");
-        pSkillDesc[i] = RemoveQuotes(tokens[1]);
-        pNormalSkillDesc[i] = RemoveQuotes(tokens[2]);
-        pExpertSkillDesc[i] = RemoveQuotes(tokens[3]);
-        pMasterSkillDesc[i] = RemoveQuotes(tokens[4]);
-        pGrandSkillDesc[i] = RemoveQuotes(tokens[5]);
-    }
-
-    pStatsTXT_Raw = (char *)pEvents_LOD->LoadRaw("stats.txt", 0);
-    strtok(pStatsTXT_Raw, "\r");
-    for (int i = 0; i < 26; ++i)
-    {
-        test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
-        Assert(tokens.size() == 2, "Invalid number of tokens");
-        switch (i)
-        {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-            pAttributeDescriptions[i] = RemoveQuotes(tokens[1]);
-            break;
-        case 7:
-            pHealthPointsAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 8:
-            pArmourClassAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 9:
-            pSpellPointsAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 10:
-            pPlayerConditionAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 11:
-            pFastSpellAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 12:
-            pPlayerAgeAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 13:
-            pPlayerLevelAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 14:
-            pPlayerExperienceAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 15:
-            pAttackBonusAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 16:
-            pAttackDamageAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 17:
-            pMissleBonusAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 18:
-            pMissleDamageAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 19:
-            pFireResistanceAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 20:
-            pAirResistanceAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 21:
-            pWaterResistanceAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 22:
-            pEarthResistanceAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 23:
-            pMindResistanceAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 24:
-            pBodyResistanceAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        case 25:
-            pSkillPointsAttributeDescription = RemoveQuotes(tokens[1]);
-            break;
-        }
-    }
-
-    pClassTXT_Raw = 0;
-    pClassTXT_Raw = (char *)pEvents_LOD->LoadRaw("class.txt", 0);
-    strtok(pClassTXT_Raw, "\r");
-    for (int i = 0; i < 36; ++i)
-    {
-        test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
-        Assert(tokens.size() == 3, "Invalid number of tokens");
-        pClassDescriptions[i] = RemoveQuotes(tokens[1]);
-    }
-
-
-
     ItemGen::PopulateSpecialBonusMap();
     ItemGen::PopulateArtifactBonusMap();
     ItemGen::PopulateRegularBonusMap();
-
-
 }
 
 //----- (00456D17) --------------------------------------------------------
@@ -890,79 +667,83 @@ unsigned int ItemGen::GetValue()
 	}
 
 //----- (00456499) --------------------------------------------------------
-const char *ItemGen::GetDisplayName()
+String ItemGen::GetDisplayName()
 {
-  if (IsIdentified())
-    return GetIdentifiedName();
-  else
-    return pItemsTable->pItems[uItemID].pUnidentifiedName;
-}
-
-//----- (004564B3) --------------------------------------------------------
-const char *ItemGen::GetIdentifiedName()
-{
-  unsigned __int8 equip_type; 
-  const char *player_name; 
-  const char *nameModificator; 
-  const char *format_str; 
-
-  equip_type = GetItemEquipType();
-  if ( (equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) || (equip_type == EQUIP_GOLD) )
-  {
-    sprintf(item__getname_buffer.data(), "%s", pItemsTable->pItems[uItemID].pName);
-    return item__getname_buffer.data();
-  }
-  sprintf(item__getname_buffer.data(), "%s", pItemsTable->pItems[uItemID].pName);
-  if ( uItemID == ITEM_LICH_JAR_FULL )  //Lich Jar
-  {
-    if ( (uHolderPlayer >0 )&& (uHolderPlayer <= 4) )
-      {
-        player_name = pPlayers[uHolderPlayer]->pName;
-        if ( player_name[strlen(player_name) - 1] == 's' )
-          format_str = pGlobalTXT_LocalizationStrings[655]; //"%s' Jar"
-        else
-          format_str = pGlobalTXT_LocalizationStrings[654]; //"%s's Jar"
-		sprintf(item__getname_buffer.data(), format_str, pPlayers[uHolderPlayer]->pName);
-		return item__getname_buffer.data();
-      }
-  }
-  if ( !pItemsTable->IsMaterialNonCommon(this) )
-  {
-    if ( uEnchantmentType )
+    if (IsIdentified())
     {
-      strcat(item__getname_buffer.data(), " ");
-      nameModificator = pItemsTable->pEnchantments[uEnchantmentType-1].pOfName;
+        return GetIdentifiedName();
     }
     else
     {
-      if ( !special_enchantment )
-        return item__getname_buffer.data();
-      if ( special_enchantment == 16 //Drain Hit Points from target.
-        || special_enchantment == 39 //Double damage vs Demons.
-        || special_enchantment == 40 //Double damage vs Dragons
-        || special_enchantment == 45 //+5 Speed and Accuracy
-        || special_enchantment == 56 //+5 Might and Endurance.
-        || special_enchantment == 57 //+5 Intellect and Personality.
-        || special_enchantment == 58 //Increased Value.
-        || special_enchantment == 60 //+3 Unarmed and Dodging skills
-        || special_enchantment == 61 //+3 Stealing and Disarm skills.
-        || special_enchantment == 59  //Increased Weapon speed.
-        || special_enchantment == 63 //Double Damage vs. Elves.
-        || special_enchantment == 64 //Double Damage vs. Undead.
-        || special_enchantment == 67 //Adds 5 points of Body damage and +2 Disarm skill.
-        || special_enchantment == 68 ) //Adds 6-8 points of Cold damage and +5 Armor Class.
-      {  //enchantment and name positions inverted!
-        sprintf( item__getname_buffer.data(), "%s %s",
-				  pItemsTable->pSpecialEnchantments[special_enchantment-1].pNameAdd,
-				  pItemsTable->pItems[uItemID].pName);
-        return item__getname_buffer.data();
-      }
-      strcat(item__getname_buffer.data(), " ");
-	  nameModificator = pItemsTable->pSpecialEnchantments[special_enchantment-1].pNameAdd;
+        return String(pItemsTable->pItems[uItemID].pUnidentifiedName);
     }
-    strcat(item__getname_buffer.data(), nameModificator);
-  }
-  return item__getname_buffer.data();
+}
+
+//----- (004564B3) --------------------------------------------------------
+String ItemGen::GetIdentifiedName()
+{
+    unsigned __int8 equip_type;
+
+    equip_type = GetItemEquipType();
+    if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) || (equip_type == EQUIP_GOLD))
+    {
+        return String(pItemsTable->pItems[uItemID].pName);
+    }
+
+    if (uItemID == ITEM_LICH_JAR_FULL)  //Lich Jar
+    {
+        if ((uHolderPlayer > 0) && (uHolderPlayer <= 4))
+        {
+            auto player_name = pPlayers[uHolderPlayer]->pName;
+            if (player_name[strlen(player_name) - 1] == 's')
+                return localization->FormatString(655, pPlayers[uHolderPlayer]->pName); //"%s' Jar"
+            else
+                return localization->FormatString(654, pPlayers[uHolderPlayer]->pName); //"%s's Jar"
+        }
+    }
+
+    if (!pItemsTable->IsMaterialNonCommon(this))
+    {
+        if (uEnchantmentType)
+        {
+            return String(pItemsTable->pItems[uItemID].pName) + " " + pItemsTable->pEnchantments[uEnchantmentType - 1].pOfName;
+        }
+        else if (!special_enchantment)
+        {
+            return String(pItemsTable->pItems[uItemID].pName);
+        }
+        else
+        {
+            if (special_enchantment == 16 // Drain Hit Points from target.
+                || special_enchantment == 39 // Double damage vs Demons.
+                || special_enchantment == 40 // Double damage vs Dragons
+                || special_enchantment == 45 // +5 Speed and Accuracy
+                || special_enchantment == 56 // +5 Might and Endurance.
+                || special_enchantment == 57 // +5 Intellect and Personality.
+                || special_enchantment == 58 // Increased Value.
+                || special_enchantment == 60 // +3 Unarmed and Dodging skills
+                || special_enchantment == 61 // +3 Stealing and Disarm skills.
+                || special_enchantment == 59 // Increased Weapon speed.
+                || special_enchantment == 63 // Double Damage vs. Elves.
+                || special_enchantment == 64 // Double Damage vs. Undead.
+                || special_enchantment == 67 // Adds 5 points of Body damage and +2 Disarm skill.
+                || special_enchantment == 68 // Adds 6-8 points of Cold damage and +5 Armor Class.
+                )
+            {  //enchantment and name positions inverted!
+                return StringPrintf(
+                    "%s %s",
+                    pItemsTable->pSpecialEnchantments[special_enchantment - 1].pNameAdd,
+                    pItemsTable->pItems[uItemID].pName
+                );
+            }
+            else
+            {
+                return String(pItemsTable->pItems[uItemID].pName) + " " + pItemsTable->pSpecialEnchantments[special_enchantment - 1].pNameAdd;
+            }
+        }
+    }
+
+    return String(pItemsTable->pItems[uItemID].pName);
 }
 
 
@@ -1750,368 +1531,9 @@ unsigned __int8 ItemGen::GetDamageMod()
 {
   return pItemsTable->pItems[this->uItemID].uDamageMod;
 }
-//----- (004B8E3D) --------------------------------------------------------
-void GenerateStandartShopItems()
-{
-  signed int item_count; 
-  signed int shop_index; 
-  int treasure_lvl; 
-  int item_class; 
-  int mdf;
-
-  shop_index = (signed int)window_SpeakInHouse->ptr_1C;
-  if ( uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType] )
-  {
-    for (item_count = 0; item_count < uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType]; ++item_count )
-    {
-      if (shop_index <= 14) //weapon shop
-      {
-        treasure_lvl = shopWeap_variation_ord[shop_index].treasure_level;
-        item_class = shopWeap_variation_ord[shop_index].item_class[rand() % 4];
-      }
-      else if (shop_index <= 28) //armor shop
-      {
-        mdf = 0;
-        if (item_count > 3)
-          ++mdf;// rechek offsets
-        treasure_lvl = shopArmr_variation_ord[2*(shop_index - 15) + mdf].treasure_level;
-        item_class = shopArmr_variation_ord[2*(shop_index - 15) + mdf].item_class[rand() % 4];
-      }
-      else if (shop_index <= 41)  //magic shop
-      {
-        treasure_lvl = shopMagic_treasure_lvl[shop_index - 28];
-        item_class = 22;  //misc
-      }
-      else if (shop_index <= 53) //alchemist shop
-      {
-        if (item_count < 6)
-        {
-          pParty->StandartItemsInShops[shop_index][item_count].Reset();
-          pParty->StandartItemsInShops[shop_index][item_count].uItemID = ITEM_POTION_BOTTLE;  //potion bottle
-          continue;
-        }
-        else
-        {
-          treasure_lvl = shopAlch_treasure_lvl[shop_index - 41];
-          item_class = 45;  //reagent
-        }
-      }
-      pItemsTable->GenerateItem(treasure_lvl, item_class, &pParty->StandartItemsInShops[shop_index][item_count]);
-      pParty->StandartItemsInShops[shop_index][item_count].SetIdentified();  //identified
-    }
-  }
-  pParty->InTheShopFlags[shop_index] = 0;
-}
-
-//----- (004B8F94) --------------------------------------------------------
-void  GenerateSpecialShopItems()
-{
-  signed int item_count; 
-  signed int shop_index; 
-  int treasure_lvl; 
-  int item_class; 
-  int mdf;
-
-  shop_index = (signed int)window_SpeakInHouse->ptr_1C;
-  if ( uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType] )
-  {
-    for ( item_count = 0; item_count < uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType]; ++item_count )
-    {
-      if (shop_index <= 14) //weapon shop
-      {
-        treasure_lvl = shopWeap_variation_spc[shop_index].treasure_level;
-        item_class =  shopWeap_variation_spc[shop_index].item_class[rand() % 4];
-      }
-      else if (shop_index <= 28) //armor shop
-      {
-        mdf = 0;
-        if (item_count > 3)
-          ++mdf;
-        treasure_lvl = shopArmr_variation_spc[2*(shop_index - 15) + mdf].treasure_level;
-        item_class = shopArmr_variation_spc[2*(shop_index - 15) + mdf].item_class[rand() % 4];
-      }
-      else if (shop_index <= 41)  //magic shop
-      {
-        treasure_lvl = shopMagicSpc_treasure_lvl[shop_index - 28];
-        item_class = 22;  //misc
-      }
-      else if (shop_index <= 53) //alchemist shop
-      {
-        if (item_count < 6)
-        {
-          pParty->SpecialItemsInShops[shop_index][item_count].Reset();
-          pParty->SpecialItemsInShops[shop_index][item_count].uItemID = rand() % 32 + ITEM_RECIPE_REJUVENATION;  //mscrool
-          continue;
-        }
-        else
-        {
-          treasure_lvl = shopAlchSpc_treasure_lvl[shop_index - 41];
-          item_class = 44;  //potion
-        }
-      }
-      pItemsTable->GenerateItem(treasure_lvl, item_class, &pParty->SpecialItemsInShops[shop_index][item_count]);
-      pParty->SpecialItemsInShops[shop_index][item_count].SetIdentified();  //identified
-    }
-  }
-  pParty->InTheShopFlags[shop_index] = 0;
-}
 
 
-//----- (00450218) --------------------------------------------------------
-void GenerateItemsInChest()
-{
-    unsigned int mapType; // eax@1
-    MapInfo *currMapInfo; // esi@1
-    ItemGen *currItem; // ebx@2
-    int additionaItemCount; // ebp@4
-    int treasureLevelBot; // edi@4
-    int treasureLevelTop; // esi@4
-    signed int treasureLevelRange; // esi@4
-    int resultTreasureLevel; // edx@4
-    int goldAmount; // esi@8
-    int v11; // ebp@25
-    int v12; // esi@25
-    signed int whatToGenerateProb; // [sp+10h] [bp-18h]@1
 
-    mapType = pMapStats->GetMapInfo(pCurrentMapName);
-    currMapInfo = &pMapStats->pInfos[mapType];
-    for (int i = 1; i < 20; ++i)
-    {
-        for (int j = 0; j < 140; ++j)
-        {
-
-            currItem = &pChests[i].igChestItems[j];
-            if (currItem->uItemID < 0)
-            {
-                additionaItemCount = rand() % 5; //additional items in chect
-                treasureLevelBot = byte_4E8168[abs(currItem->uItemID) - 1][2 * currMapInfo->Treasure_prob];
-                treasureLevelTop = byte_4E8168[abs(currItem->uItemID) - 1][2 * currMapInfo->Treasure_prob + 1];
-                treasureLevelRange = treasureLevelTop - treasureLevelBot + 1;
-                resultTreasureLevel = treasureLevelBot + rand() % treasureLevelRange;  //treasure level 
-                if (resultTreasureLevel < 7)
-                {
-                    v11 = 0;
-                    do
-                    {
-                        whatToGenerateProb = rand() % 100;
-                        if (whatToGenerateProb < 20)
-                        {
-                            currItem->Reset();
-                        }
-                        else if (whatToGenerateProb < 60) //generate gold
-                        {
-                            goldAmount = 0;
-                            currItem->Reset();
-                            switch (resultTreasureLevel)
-                            {
-                            case 1:
-                                goldAmount = rand() % 51 + 50;
-                                currItem->uItemID = ITEM_GOLD_SMALL;
-                                break;
-                            case 2:
-                                goldAmount = rand() % 101 + 100;
-                                currItem->uItemID = ITEM_GOLD_SMALL;
-                                break;
-                            case 3:
-                                goldAmount = rand() % 301 + 200;
-                                currItem->uItemID = ITEM_GOLD_MEDIUM;
-                                break;
-                            case 4:
-                                goldAmount = rand() % 501 + 500;
-                                currItem->uItemID = ITEM_GOLD_MEDIUM;
-                                break;
-                            case 5:
-                                goldAmount = rand() % 1001 + 1000;
-                                currItem->uItemID = ITEM_GOLD_LARGE;
-                                break;
-                            case 6:
-                                goldAmount = rand() % 3001 + 2000;
-                                currItem->uItemID = ITEM_GOLD_LARGE;
-                                break;
-                            }
-                            currItem->SetIdentified();
-                            currItem->special_enchantment = (ITEM_ENCHANTMENT)goldAmount;
-                        }
-                        else
-                        {
-                            pItemsTable->GenerateItem(resultTreasureLevel, 0, currItem);
-                        }
-                        v12 = 0;
-                        while (!(pChests[i].igChestItems[v12].uItemID == ITEM_NULL) && (v12 < 140))
-                        {
-                            ++v12;
-                        }
-                        if (v12 >= 140)
-                            break;
-                        currItem = &pChests[i].igChestItems[v12];
-                        v11++;
-                    } while (v11 < additionaItemCount + 1); // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
-                }
-                else
-                    currItem->GenerateArtifact();
-            }
-        }
-    }
-
-}
-
-
-	
-
-// 4505CC: using guessed type int var_A0[32];
-	//----- (004B3703) --------------------------------------------------------
-void FillAviableSkillsToTeach( int _this )
-	{
-	const char *v30; // ecx@65
-	unsigned int v29; // edx@56
-	int v15; // ecx@19
-	int v33; // [sp-4h] [bp-2Ch]@23
-	int v34; // [sp-4h] [bp-2Ch]@43
-	int v21; // ecx@34
-	int v35[5]; // [sp+Ch] [bp-1Ch]@8
-	int v37=0; // [sp+24h] [bp-4h]@1*
-	int i=0;
-
-	dword_F8B1DC_currentShopOption = 0;
-
-	switch (_this)
-		{
-	case 1:  //shop weapon
-		for (int i=0; i<2; ++i)
-			{
-			for (int j=0; j<4; ++j)
-				{
-				if ( i )
-					v21 = shopWeap_variation_spc[(unsigned int)window_SpeakInHouse->ptr_1C].item_class[j];
-				else
-					v21 = shopWeap_variation_ord[(unsigned int)window_SpeakInHouse->ptr_1C].item_class[j];
-
-				switch (v21)
-					{
-				case 23:  v34 = 37;	break;
-				case 24:  v34 = 38;	break;
-				case 25:  v34 = 39;	break;
-				case 26:  v34 = 40;	break;
-				case 27:  v34 = 41;	break;
-				case 28:  v34 = 42; break;
-				case 30:  v34 = 36;	break;
-				default:
-					continue;
-					}	
-				v37 = sub_4BE571_AddItemToSet(v34, v35, v37, 5);
-				}
-			}
-		break;
-	case 2: //shop armor
-
-		for (int i=0; i<2; ++i)
-			{
-			for (int j=0; j<2; ++j)
-				{
-				for (int k=0; k<4; ++k)
-					{
-					if ( i )
-						v15 = shopArmr_variation_spc[(unsigned int)window_SpeakInHouse->ptr_1C-15+j].item_class[k];
-					else
-						v15 = shopArmr_variation_ord[(unsigned int)window_SpeakInHouse->ptr_1C-15+j].item_class[k];
-					switch (v15)
-						{
-					case 31: v33 = 45; break;
-					case 32: v33 = 46; break;
-					case 33: v33 = 47; break;
-					case 34: v33 = 44; break;
-					default:
-						continue;
-						}
-					v37 = sub_4BE571_AddItemToSet(v33, v35, v37, 5);
-					}
-				}
-			}
-		break;
-	case 3:  //shop magic
-		v37 = 2;
-		v35[0] = 57;
-		v35[1] = 59;
-		break;
-	case 4: //shop alchemist
-		v37 = 2;
-		v35[0] = 71;
-		v35[1] = 68;
-		break;
-	case 21:  //tavern
-		v37 = 3;
-		v35[0] = 70;
-		v35[1] = 65;
-		v35[2] = 62;
-		break;
-	case 23:  //temple
-		v37 = 3;
-		v35[0] = 67;
-		v35[1] = 66;
-		v35[2] = 58;
-		break;
-	case 30:  ///trainig
-		v37 = 2;
-		v35[0] = 69;
-		v35[1] = 60;
-		break;
-		}
-	for(i=0;i<v37;++i) 
-		{
-		v29=v35[i];
-		switch(v29)
-			{
-		case 40 :v30 = pSkillNames[4];	break;
-		case 5 : v30 = pSkillNames[23];	break;
-		case 36 :v30 = pSkillNames[0];	break;
-		case 37 :v30 = pSkillNames[1];	break;
-		case 38 :v30 = pSkillNames[2];	break;
-		case 39 :v30 = pSkillNames[3];	break;
-		case 41 :v30 = pSkillNames[5];	break;
-		case 42 :v30 = pSkillNames[6];	break;
-		case 44 :v30 = pSkillNames[8];	break;
-		case 45 :v30 = pSkillNames[9];	break;
-		case 46 :v30 = pSkillNames[10];	break;
-		case 47 :v30 = pSkillNames[11];	break;
-		case 66 :v30 = pSkillNames[30];	break;
-		case 57 :v30 = pSkillNames[21];	break;
-		case 58 :v30 = pSkillNames[22];	break;
-		case 60 :v30 = pSkillNames[24];	break;
-		case 62 :v30 = pSkillNames[26];	break;
-		case 65 :v30 = pSkillNames[29];	break;
-		case 67:v30 = pSkillNames[31];	break;
-		case 68:v30 = pSkillNames[32];	break;
-		case 69:v30 = pSkillNames[33];	break;
-		case 70:v30 = pSkillNames[34];	break;
-		case 71:v30 = pSkillNames[35]; break;
-		default:
-			v30 = pGlobalTXT_LocalizationStrings[127]; //"No Text!"
-			}
-		pShopOptions[dword_F8B1DC_currentShopOption] = const_cast<char *>(v30);
-		++dword_F8B1DC_currentShopOption;
-		CreateButtonInColumn(i+1, v29);
-		}
-	pDialogueWindow->_41D08F_set_keyboard_control_group(i, 1, 0, 2);
-	dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
-	}
-
-	//----- (004BE571) --------------------------------------------------------
-int sub_4BE571_AddItemToSet(int valueToAdd, int *outPutSet, int elemsAlreadyPresent, int elemsNeeded)
-{
-	int i; // esi@3
-
-	if ( elemsAlreadyPresent < elemsNeeded )
-	{
-		for ( i = 0; i < elemsAlreadyPresent; ++i )
-    {
-      if ( valueToAdd == outPutSet[i] )
-        return elemsAlreadyPresent;
-    }
-    outPutSet[elemsAlreadyPresent] = valueToAdd;
-    return elemsAlreadyPresent + 1;
-	}
-  return  elemsNeeded;
-}
 //----- (0043C91D) --------------------------------------------------------
 int GetItemTextureFilename(char *pOut, signed int item_id, int index, int shoulder)
 {

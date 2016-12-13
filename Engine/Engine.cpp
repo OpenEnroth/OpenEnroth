@@ -5,12 +5,12 @@
 #include <direct.h>
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Timer.h"
 #include "Engine/LOD.h"
 #include "Engine/Events.h"
 #include "Engine/OurMath.h"
-#include "Engine/texts.h"
 #include "Engine/stru123.h"
 #include "Engine/LuaVM.h"
 #include "Engine/MMT.h"
@@ -52,6 +52,7 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIPartyCreation.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "GUI/NewUI/MainMenu.h"
 
@@ -273,13 +274,13 @@ void Engine::Draw()
     if (pOtherOverlayList->bRedraw)
         viewparams->bRedrawGameUI = true;
     v4 = viewparams->bRedrawGameUI;
-    GameUI_Footer();
+    GameUI_StatusBar_DrawForced();
     if (!viewparams->bRedrawGameUI)
         GameUI_DrawRightPanelItems();
     else
     {
         GameUI_DrawRightPanelFrames();
-        GameUI_Footer_2();
+        GameUI_StatusBar_Draw();
         viewparams->bRedrawGameUI = false;
     }
     if (!pMovie_Track)//!pVideoPlayer->pSmackerMovie)
@@ -343,33 +344,31 @@ void Engine::Draw()
     {
         if (render_framerate)
         {
-            sprintf(pTmpBuf.data(), "FPS: % .4f", framerate);
-            pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(0, 0, 0), pTmpBuf.data(), 0, 0, 0);
+            pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(0, 0, 0), StringPrintf("FPS: % .4f", framerate), 0, 0, 0);
         }
 
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
             int sector_id = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-            sprintf(pTmpBuf.data(), "Party Sector ID:        %u/%u\n", sector_id, pIndoor->uNumSectors);
-            pPrimaryWindow->DrawText(pFontArrus, 16, 16, Color16(255, 255, 255), pTmpBuf.data(), 0, 0, Color16(255, 255, 255));
+            pPrimaryWindow->DrawText(pFontArrus, 16, 16, Color16(255, 255, 255), StringPrintf("Party Sector ID:        %u/%u\n", sector_id, pIndoor->uNumSectors), 0, 0, Color16(255, 255, 255));
         }
-        sprintf(pTmpBuf.data(), "Party Position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-        pPrimaryWindow->DrawText(pFontArrus, 16, 16 + 16, Color16(255, 255, 255), pTmpBuf.data(), 0, 0, Color16(255, 255, 255));
+        pPrimaryWindow->DrawText(pFontArrus, 16, 16 + 16, Color16(255, 255, 255), StringPrintf("Party Position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, Color16(255, 255, 255));
 
+        String floor_level_str;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
             uint uFaceID;
             int sector_id = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
             int floor_level = BLV_GetFloorLevel(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + 40, sector_id, &uFaceID);
-            sprintf(pTmpBuf.data(), "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
+            floor_level_str = StringPrintf("BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         }
         else
         {
             int on_water, _a6;
             int floor_level = ODM_GetFloorLevel(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z, 0, &on_water, &_a6, false);
-            sprintf(pTmpBuf.data(), "ODM_GetFloorLevel: %d   on_water: %s    a6 = %d\n", floor_level, on_water ? "true" : "false", _a6);
+            floor_level_str = StringPrintf("ODM_GetFloorLevel: %d   on_water: %s    a6 = %d\n", floor_level, on_water ? "true" : "false", _a6);
         }
-        pPrimaryWindow->DrawText(pFontArrus, 16, 16 + 16 + 16, Color16(255, 255, 255), pTmpBuf.data(), 0, 0, Color16(255, 255, 255));
+        pPrimaryWindow->DrawText(pFontArrus, 16, 16 + 16 + 16, Color16(255, 255, 255), floor_level_str, 0, 0, Color16(255, 255, 255));
     }
 
     GUI_UpdateWindows();
@@ -1090,7 +1089,7 @@ void IntegrityTest()
     static_assert(sizeof(Player) == 0x1B3C, "Wrong type size");
     static_assert(sizeof(PartyTimeStruct) == 0x678, "Wrong type size");
     static_assert(sizeof(Party) == 0x16238, "Wrong type size");
-    static_assert(sizeof(GUIButton) == 0xBC, "Wrong type size");
+    //static_assert(sizeof(GUIButton) == 0xBC, "Wrong type size");
     //static_assert(sizeof(GUIWindow) == 0x54, "Wrong type size");
     //static_assert(sizeof(GUIProgressBar) == 0x1B8, "Wrong type size");
     static_assert(sizeof(GUIFont) == 0x1020, "Wrong type size");
@@ -1139,7 +1138,7 @@ void FinalInitialization()
 
 
 //----- (00464E17) --------------------------------------------------------
-bool __fastcall CheckMM7CD(char c)
+bool CheckMM7CD(char c)
 {
     char DstBuf[256] = { 0 };
     char strCommand[256] = { 0 }; // [sp+10Ch] [bp-118h]@1
@@ -1271,7 +1270,7 @@ signed int __stdcall InsertMM7CDDialogFunc(HWND hDlg, int a2, __int16 a3, int a4
 }
 
 //----- (00465061) --------------------------------------------------------
-bool __fastcall FindMM7CD(HWND hWnd, char *pCDDrive)
+bool FindMM7CD(HWND hWnd, char *pCDDrive)
 {
     char drive[4] = { 'X', ':', '\\', 0 };
 
@@ -1393,7 +1392,7 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
     pKeyActionMap = new KeyboardActionMapping;
 
     OnTimer(1);
-    GameUI_StatusBar_UpdateTimedString(1);
+    GameUI_StatusBar_Update(true);
     pEngine = Engine::Create();
     pMouse = pEngine->pMouseInstance;
 
@@ -1418,14 +1417,14 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
         return false;
     }
 
-    InitializeGameText();
+    localization = new Localization();
+    localization->Initialize();
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     sprintf(filename, "%s\\data\\bitmaps.lod", mm7_path);
     if (!pBitmaps_LOD->Load(filename, "bitmaps"))
     {
-        MessageBoxA(nullptr, pGlobalTXT_LocalizationStrings[63],
-            pGlobalTXT_LocalizationStrings[184], MB_ICONEXCLAMATION);
+        MessageBoxA(nullptr, localization->GetString(63), localization->GetString(184), MB_ICONEXCLAMATION);
         return false;
     }
 
@@ -1433,9 +1432,7 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
     sprintf(filename, "%s\\data\\sprites.lod", mm7_path);
     if (!pSprites_LOD->LoadSprites(filename))
     {
-        MessageBoxA(nullptr,
-            pGlobalTXT_LocalizationStrings[63],
-            pGlobalTXT_LocalizationStrings[184], MB_ICONEXCLAMATION);
+        MessageBoxA(nullptr, localization->GetString(63), localization->GetString(184), MB_ICONEXCLAMATION);
         return false;
     }
 
@@ -1772,8 +1769,9 @@ void SecondaryInitialization()
     for (uint i = 0; i < 5; ++i)
         for (uint j = 0; j < 6; ++j)
         {
-        sprintf(pTmpBuf.data(), "data\\lloyd%d%d.pcx", i, j);
-        remove(pTmpBuf.data());
+            remove(
+                StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str()
+            );
         }
 
     Initialize_GamesLOD_NewLOD();
@@ -1816,6 +1814,112 @@ void ParseCommandLine(const wchar_t *cmd)
         bNoMargareth = true;
 }
 
+
+bool GameLoop()
+{
+    while (1)
+    {
+        if (uGameState == GAME_FINISHED || GetCurrentMenuID() == MENU_EXIT_GAME)
+        {
+            pEngine->Deinitialize();
+            return false;
+        }
+        else if (GetCurrentMenuID() == MENU_SAVELOAD)
+        {
+            MainMenuLoad_Loop();
+            if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu)
+            {
+                uGameState = GAME_STATE_PLAYING;
+                Game_Loop();
+            }
+            break;
+        }
+        else if (GetCurrentMenuID() == MENU_NEWGAME)
+        {
+            pOtherOverlayList->Reset();
+            if (!CreateParty_Loop())
+                break;
+
+            pParty->pPickedItem.uItemID = 0;
+
+            strcpy(pCurrentMapName, pStartingMapName);
+            bFlashQuestBook = true;
+            pMediaPlayer->PlayFullscreenMovie(MOVIE_Emerald, true);
+            SaveNewGame();
+            if (bNoMargareth)
+                _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_MARGARETH_OFF, 1);
+            Game_Loop();
+            if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU)
+            {
+                SetCurrentMenuID(MENU_NEWGAME);
+                uGameState = GAME_STATE_PLAYING;
+                continue;
+            }
+            else if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU)
+                break;
+            assert(false && "Invalid game state");
+        }
+        else if (GetCurrentMenuID() == MENU_CREDITS)
+        {
+            if (use_music_folder)
+                alSourceStop(mSourceID);
+            else
+            {
+                if (pAudioPlayer->hAILRedbook)
+                    AIL_redbook_stop(pAudioPlayer->hAILRedbook);
+            }
+            MainMenuUI_Credits_Loop();
+            break;
+        }
+        else if (GetCurrentMenuID() == MENU_5 || GetCurrentMenuID() == MENU_LoadingProcInMainMenu)
+        {
+            uGameState = GAME_STATE_PLAYING;
+            Game_Loop();
+        }
+        else if (GetCurrentMenuID() == MENU_DebugBLVLevel)
+        {
+            pMouse->ChangeActivation(0);
+            pParty->Reset();
+            pParty->CreateDefaultParty(true);
+
+            __debugbreak();
+            /*extern void CreateDefaultBLVLevel();
+            CreateDefaultBLVLevel();
+
+            OPENFILENAMEA ofn;
+            if ( !GetOpenFileNameA((LPOPENFILENAMEA)&ofn) )
+            {
+            pMouse->ChangeActivation(1);
+            break;
+            }
+            _chdir("..\\");
+            strcpy(pCurrentMapName, ofn.lpstrFileTitle);*/
+            pMouse->ChangeActivation(1);
+            Game_Loop();
+        }
+        if (uGameState == GAME_STATE_LOADING_GAME)
+        {
+            SetCurrentMenuID(MENU_5);
+            uGameState = GAME_STATE_PLAYING;
+            continue;
+        }
+        if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU)
+        {
+            SetCurrentMenuID(MENU_NEWGAME);
+            uGameState = GAME_STATE_PLAYING;
+            continue;
+        }
+        if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU)// from the loaded game
+        {
+            pAudioPlayer->StopChannels(-1, -1);
+            uGameState = GAME_STATE_PLAYING;
+            break;
+        }
+    }
+
+    return true;
+}
+
 //----- (00462C94) --------------------------------------------------------
 bool MM_Main(const wchar_t *pCmdLine, const char *mm7_path)
 {
@@ -1831,133 +1935,31 @@ bool MM_Main(const wchar_t *pCmdLine, const char *mm7_path)
     {
         Log::Warning(L"MM init: failed");
         pEngine->Deinitialize();
-        return 1;
+        return false;
     }
 
     pEventTimer->Pause();
 
     GUIWindow::InitializeGUI();
 
-
     ShowLogoVideo();
-    //ShowIntroVideo_and_LoadingScreen();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-
-    //if (use_MMT)
-    //    MMT_MainMenu_Loop();
 
     Log::Warning(L"MM: entering main loop");
     while (1)
     {
-        //MainMenuWindow *main_menu_window = MainMenuWindow::Create();
-        //window->AddControl(main_menu_window);
         MainMenu_Loop();
         uGameState = GAME_STATE_PLAYING;
-        while (1)
+
+        if (!GameLoop())
         {
-            if (uGameState == GAME_FINISHED || GetCurrentMenuID() == MENU_EXIT_GAME)
-            {
-                pEngine->Deinitialize();
-                return true;
-            }
-            else if (GetCurrentMenuID() == MENU_SAVELOAD)
-            {
-                MainMenuLoad_Loop();
-                if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu)
-                {
-                    uGameState = GAME_STATE_PLAYING;
-                    Game_Loop();
-                }
-                break;
-            }
-            else if (GetCurrentMenuID() == MENU_NEWGAME)
-            {
-                pOtherOverlayList->Reset();
-                if (!CreateParty_Loop())
-                    break;
-
-
-                pParty->pPickedItem.uItemID = 0;
-
-                strcpy(pCurrentMapName, pStartingMapName);
-                bFlashQuestBook = true;
-                pMediaPlayer->PlayFullscreenMovie(MOVIE_Emerald, true);
-                SaveNewGame();
-                if (bNoMargareth)
-                    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_MARGARETH_OFF, 1);
-                Game_Loop();
-                if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU)
-                {
-                    SetCurrentMenuID(MENU_NEWGAME);
-                    uGameState = GAME_STATE_PLAYING;
-                    continue;
-                }
-                else if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU)
-                    break;
-                assert(false && "Invalid game state");
-            }
-            else if (GetCurrentMenuID() == MENU_CREDITS)
-            {
-                if (use_music_folder)
-                    alSourceStop(mSourceID);
-                else
-                {
-                    if (pAudioPlayer->hAILRedbook)
-                        AIL_redbook_stop(pAudioPlayer->hAILRedbook);
-                }
-                MainMenuUI_Credits_Loop();
-                break;
-            }
-            else if (GetCurrentMenuID() == MENU_5 || GetCurrentMenuID() == MENU_LoadingProcInMainMenu)
-            {
-                uGameState = GAME_STATE_PLAYING;
-                Game_Loop();
-            }
-            else if (GetCurrentMenuID() == MENU_DebugBLVLevel)
-            {
-                pMouse->ChangeActivation(0);
-                pParty->Reset();
-                pParty->CreateDefaultParty(true);
-
-                __debugbreak();
-                /*extern void CreateDefaultBLVLevel();
-                CreateDefaultBLVLevel();
-
-                OPENFILENAMEA ofn;
-                if ( !GetOpenFileNameA((LPOPENFILENAMEA)&ofn) )
-                {
-                pMouse->ChangeActivation(1);
-                break;
-                }
-                _chdir("..\\");
-                strcpy(pCurrentMapName, ofn.lpstrFileTitle);*/
-                pMouse->ChangeActivation(1);
-                Game_Loop();
-            }
-            if (uGameState == GAME_STATE_LOADING_GAME)
-            {
-                SetCurrentMenuID(MENU_5);
-                uGameState = GAME_STATE_PLAYING;
-                continue;
-            }
-            if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU)
-            {
-                SetCurrentMenuID(MENU_NEWGAME);
-                uGameState = GAME_STATE_PLAYING;
-                continue;
-            }
-            if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU)// from the loaded game
-            {
-                pAudioPlayer->StopChannels(-1, -1);
-                uGameState = GAME_STATE_PLAYING;
-                break;
-            }
+            break;
         }
     }
-    //lua_close(L);
+
     pEngine->Deinitialize();
-    return 1;
+    return true;
 }
 
 
@@ -2111,7 +2113,7 @@ void MM7Initialization()
 }
 
 //----- (004610AA) --------------------------------------------------------
-void __fastcall PrepareToLoadODM(unsigned int bLoading, ODMRenderParams *a2)
+void PrepareToLoadODM(unsigned int bLoading, ODMRenderParams *a2)
 {
     pGameLoadingUI_ProgressBar->Reset(27);
     pSoundList->_4A9D79(0);
@@ -2156,6 +2158,104 @@ void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows()
     }
 }
 
+
+//----- (00450218) --------------------------------------------------------
+void GenerateItemsInChest()
+{
+    unsigned int mapType; // eax@1
+    MapInfo *currMapInfo; // esi@1
+    ItemGen *currItem; // ebx@2
+    int additionaItemCount; // ebp@4
+    int treasureLevelBot; // edi@4
+    int treasureLevelTop; // esi@4
+    signed int treasureLevelRange; // esi@4
+    int resultTreasureLevel; // edx@4
+    int goldAmount; // esi@8
+    int v11; // ebp@25
+    int v12; // esi@25
+    signed int whatToGenerateProb; // [sp+10h] [bp-18h]@1
+
+    mapType = pMapStats->GetMapInfo(pCurrentMapName);
+    currMapInfo = &pMapStats->pInfos[mapType];
+    for (int i = 1; i < 20; ++i)
+    {
+        for (int j = 0; j < 140; ++j)
+        {
+
+            currItem = &pChests[i].igChestItems[j];
+            if (currItem->uItemID < 0)
+            {
+                additionaItemCount = rand() % 5; //additional items in chect
+                treasureLevelBot = byte_4E8168[abs(currItem->uItemID) - 1][2 * currMapInfo->Treasure_prob];
+                treasureLevelTop = byte_4E8168[abs(currItem->uItemID) - 1][2 * currMapInfo->Treasure_prob + 1];
+                treasureLevelRange = treasureLevelTop - treasureLevelBot + 1;
+                resultTreasureLevel = treasureLevelBot + rand() % treasureLevelRange;  //treasure level 
+                if (resultTreasureLevel < 7)
+                {
+                    v11 = 0;
+                    do
+                    {
+                        whatToGenerateProb = rand() % 100;
+                        if (whatToGenerateProb < 20)
+                        {
+                            currItem->Reset();
+                        }
+                        else if (whatToGenerateProb < 60) //generate gold
+                        {
+                            goldAmount = 0;
+                            currItem->Reset();
+                            switch (resultTreasureLevel)
+                            {
+                            case 1:
+                                goldAmount = rand() % 51 + 50;
+                                currItem->uItemID = ITEM_GOLD_SMALL;
+                                break;
+                            case 2:
+                                goldAmount = rand() % 101 + 100;
+                                currItem->uItemID = ITEM_GOLD_SMALL;
+                                break;
+                            case 3:
+                                goldAmount = rand() % 301 + 200;
+                                currItem->uItemID = ITEM_GOLD_MEDIUM;
+                                break;
+                            case 4:
+                                goldAmount = rand() % 501 + 500;
+                                currItem->uItemID = ITEM_GOLD_MEDIUM;
+                                break;
+                            case 5:
+                                goldAmount = rand() % 1001 + 1000;
+                                currItem->uItemID = ITEM_GOLD_LARGE;
+                                break;
+                            case 6:
+                                goldAmount = rand() % 3001 + 2000;
+                                currItem->uItemID = ITEM_GOLD_LARGE;
+                                break;
+                            }
+                            currItem->SetIdentified();
+                            currItem->special_enchantment = (ITEM_ENCHANTMENT)goldAmount;
+                        }
+                        else
+                        {
+                            pItemsTable->GenerateItem(resultTreasureLevel, 0, currItem);
+                        }
+                        v12 = 0;
+                        while (!(pChests[i].igChestItems[v12].uItemID == ITEM_NULL) && (v12 < 140))
+                        {
+                            ++v12;
+                        }
+                        if (v12 >= 140)
+                            break;
+                        currItem = &pChests[i].igChestItems[v12];
+                        v11++;
+                    } while (v11 < additionaItemCount + 1); // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
+                }
+                else
+                    currItem->GenerateArtifact();
+            }
+        }
+    }
+}
+
 //----- (00461103) --------------------------------------------------------
 void _461103_load_level_sub()
 {
@@ -2171,8 +2271,8 @@ void _461103_load_level_sub()
     signed int v20; // [sp+18h] [bp-44h]@14
     int v21[16]; // [sp+1Ch] [bp-40h]@17
 
-  if(no_actors)
-	uNumActors = 0;
+    if (no_actors)
+        uNumActors = 0;
 
     GenerateItemsInChest();
     pGameLoadingUI_ProgressBar->Progress();
@@ -2320,7 +2420,7 @@ void InitializeTurnBasedAnimations(void *_this)
 }
 
 //----- (0046BDA8) --------------------------------------------------------
-unsigned int  GetGravityStrength()
+unsigned int GetGravityStrength()
 {
     int v0; // eax@1
 
@@ -2330,14 +2430,16 @@ unsigned int  GetGravityStrength()
 }
 
 //----- (00448B45) --------------------------------------------------------
-void  GameUI_StatusBar_UpdateTimedString(unsigned int bForceHide)
+void GameUI_StatusBar_Update(bool force_hide)
 {
-    if (bForceHide || GameUI_Footer_TimeLeft && GetTickCount() >= GameUI_Footer_TimeLeft)
-        GameUI_Footer_TimeLeft = 0;
+    if (force_hide || game_ui_status_bar_event_string_time_left && GetTickCount() >= game_ui_status_bar_event_string_time_left)
+    {
+        game_ui_status_bar_event_string_time_left = 0;
+    }
 }
 
 //----- (0044861E) --------------------------------------------------------
-void __fastcall sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename)
+void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename)
 {
     unsigned int texture; // eax@2
 
@@ -2409,7 +2511,7 @@ void __fastcall sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilen
 }
 
 //----- (0044892E) --------------------------------------------------------
-void __fastcall sub_44892E_set_faces_bit(int sCogNumber, int bit, int on)
+void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on)
 {
     if (sCogNumber)
     {
@@ -2448,7 +2550,7 @@ void __fastcall sub_44892E_set_faces_bit(int sCogNumber, int bit, int on)
 }
 
 //----- (0044882F) --------------------------------------------------------
-void __fastcall SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName)
+void SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName)
 {
     for (size_t i = 0; i < uNumLevelDecorations; i++)
     {
@@ -2582,8 +2684,7 @@ void _494035_timed_effects__water_walking_damage__etc()
                     pPlayers[pl]->ReceiveDamage((signed __int64)pPlayers[pl]->GetMaxHealth() * 0.1, DMGT_FIRE);
                     if (pParty->uFlags & 4)
                     {
-                        strcpy(GameUI_Footer_TimedString.data(), pGlobalTXT_LocalizationStrings[660]);// Вы тонете!
-                        GameUI_Footer_TimeLeft = 128;
+                        GameUI_StatusBar_OnEvent_128ms(localization->GetString(660)); // You're drowning!
                     }
                 }
                 else
@@ -2601,8 +2702,7 @@ void _494035_timed_effects__water_walking_damage__etc()
             pPlayers[pl]->ReceiveDamage((signed __int64)pPlayers[pl]->GetMaxHealth() * 0.1, DMGT_FIRE);
             if (pParty->uFlags & 0x200)
             {
-                strcpy(GameUI_Footer_TimedString.data(), pGlobalTXT_LocalizationStrings[661]); //Вы горите!
-                GameUI_Footer_TimeLeft = 128;
+                GameUI_StatusBar_OnEvent_128ms(localization->GetString(661)); // On fire!
             }
         }
     }
@@ -3159,7 +3259,7 @@ void sub_491E3A()
 }
 
 //----- (00494820) --------------------------------------------------------
-unsigned int __fastcall _494820_training_time(unsigned int a1)
+unsigned int _494820_training_time(unsigned int a1)
 {
     signed int v1; // eax@1
 
@@ -3419,7 +3519,7 @@ void Transition_StopSound_Autosave(const char *pMapName, MapStartPoint start_poi
 }
 
 //----- (004451A8) --------------------------------------------------------
-void __fastcall sub_4451A8_press_any_key(int a1, int a2, int a4)
+void sub_4451A8_press_any_key(int a1, int a2, int a4)
 {
     if (!pGUIWindow2)
     {

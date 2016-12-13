@@ -90,7 +90,7 @@ struct SpriteFrameTable
 
 
 
-void __fastcall _46E26D_collide_against_sprites(signed int a1, signed int a2);
+void _46E26D_collide_against_sprites(signed int a1, signed int a2);
 
 
 extern struct SpriteFrameTable *pSpriteFrameTable;

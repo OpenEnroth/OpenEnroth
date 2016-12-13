@@ -417,6 +417,6 @@ extern std::array<stru339_spell_sound, 4> AA1058_PartyQuickSpellSound;
 
 struct SoundHeader *FindSound_BinSearch(unsigned int uStart, unsigned int uEnd, const char *pName);
 struct SoundData *LoadSound(const char *pSoundName, struct SoundData *pOutBuff, unsigned int uID);
-int __fastcall sub_4AB66C(int, int); // weak
+int sub_4AB66C(int, int); // weak
 int GetSoundStrengthByDistanceFromParty(int x, int y, int z);
 void PlayLevelMusic();

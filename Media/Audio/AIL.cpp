@@ -139,7 +139,7 @@ HSAMPLE __stdcall AIL_allocate_sample_handle(HDIGDRIVER hDrv)
  return (mss32_AIL_allocate_sample_handle)(hDrv);
 }
 
-// sub_4D8308: using guessed type int __fastcall AIL_redbook_set_volume(_DWORD, _DWORD, _DWORD, _DWORD);
+// sub_4D8308: using guessed type int AIL_redbook_set_volume(_DWORD, _DWORD, _DWORD, _DWORD);
 int __stdcall AIL_redbook_set_volume(HREDBOOK hRedbook, int volume)
 {
  return (mss32_AIL_redbook_set_volume)(hRedbook, volume);

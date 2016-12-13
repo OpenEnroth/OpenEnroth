@@ -16,10 +16,10 @@ inline __declspec(noreturn) void Error_impl_(const char *filename, const char *f
   va_start(va, format);
   {
     char header[4096];
-    sprintf(header, "Error in %s: %u\n\t%s\n\n", filename, line, functionname);
+    sprintf_s(header, "Error in %s: %u\n\t%s\n\n", filename, line, functionname);
 
     char msg_body[8192];
-    vsprintf(msg_body, format, va);
+    vsprintf_s(msg_body, format, va);
 
     wchar_t msg[sizeof(header) + sizeof(msg_body)];
     swprintf(msg, 8192, L"%S %S", header, msg_body);
@@ -41,10 +41,10 @@ inline void Assert_impl_(const char *filename, const char *functionname, int lin
   va_start(va, format);
   {
     char header[4096];
-    sprintf(header, "Assertion in %s: %u\n\t%s:\n%s\n\n", filename, line, functionname, condition_string);
+    sprintf_s(header, "Assertion in %s: %u\n\t%s:\n%s\n\n", filename, line, functionname, condition_string);
 
     char msg_body[8192];
-    vsprintf(msg_body, format, va);
+    vsprintf_s(msg_body, format, va);
     
     wchar_t msg[sizeof(header) + sizeof(msg_body)];
     if (format)

@@ -3,13 +3,17 @@
 #include <crtdbg.h>
 
 #define _CRT_SECURE_NO_WARNINGS
-#include "../texts.h"
+
+#include "Engine/Engine.h"
+#include "Engine/Localization.h"
+
+#include "GUI/UI/UITransition.h"
+
 #include "../LOD.h"
 #include "../Autonotes.h"
 #include "../Awards.h"
 #include "../Party.h"
 #include "NPC.h"
-#include "GUI/GUIWindow.h"
 #include "../Events.h"
 #include "..\..\GUI\UI\UIHouses.h"
 #include "../Graphics/Indoor.h"
@@ -18,6 +22,9 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "../Spells/CastSpellInfo.h"
 #include "../Graphics/Overlays.h"
+
+#include "GUI/UI/UIStatusBar.h"
+
 
 int pDialogueNPCCount;
 std::array<class Image *, 6> pDialogueNPCPortraits;
@@ -36,349 +43,283 @@ void  InitializeQuests();
 bool   CheckPortretAgainstSex(int portret_num, int sex); 
 
 //----- (004459F9) --------------------------------------------------------
-NPCData *__fastcall GetNPCData(signed int npcid)
+NPCData *GetNPCData(signed int npcid)
 {
-  unsigned int v1; // esi@1
-  NPCData *result; // eax@5
-  int v3; // esi@9
-  int v4; // ecx@9
-  //int v5; // edx@9
-  //NPCData *v6; // eax@9
-//  char *v7; // ebx@14
-//  NPCData *v8; // edi@14
-  char v9; // al@22
-//  char v10;
-  //std::string v10; // [sp-18h] [bp-2Ch]@4
-//  int v11;
-  //const char *v11; // [sp-8h] [bp-1Ch]@4
-//  int v12; // [sp-4h] [bp-18h]@4
-//  int v13; 
-//  char *v14;
-  //std::string *v13; // [sp+Ch] [bp-8h]@4
-//  int a3; // [sp+13h] [bp-1h]@4
-  int i;
+    unsigned int v1; // esi@1
+    NPCData *result; // eax@5
+    int v3; // esi@9
+    int v4; // ecx@9
+    char v9; // al@22
+    int i;
 
-  /*v1 = npcid;
-  if ( (npcid & 0x80000000u) == 0 )
-  {
-    if ( (signed int)npcid < 5000 )
+    v1 = npcid;
+    if (npcid >= 0)
     {
-      if ( (signed int)npcid >= 501 )
-      {
-    MessageBoxW(nullptr, L"NPC id exceeds MAX_DATA!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Events.cpp:1984", 0);
-      }
-      return &pNPCStats->pNewNPCData[v1];
-    }
-    return &pNPCStats->array_13EF4[npcid - 5000];
-  }
-  if ( (signed int)npcid >= 5000 )
-    return &pNPCStats->array_13EF4[npcid - 5000];
-  if ( (sDialogue_SpeakingActorNPC_ID & 0x80000000u) == 0 )
-  {
-    result = 0;
-  }
-  else
-  {
-    v3 = abs((int)sDialogue_SpeakingActorNPC_ID) - 1;
-    v4 = 0;
-    v5 = 0;
-    v6 = pParty->pHirelings;
-    do
-    {
-      if ( v6->pName )
-        pTmpBuf[v4++] = v5;
-      ++v6;
-      ++v5;
-    }
-    while ( (signed int)v6 < (signed int)&pParty->pPickedItem );
-    v13 = 0;
-    if ( (signed int)pNPCStats->uNumNewNPCs > 0 )
-    {
-      v7 = &pTmpBuf[v4];
-      v8 = pNPCStats->pNewNPCData;
-      do
-      {
-        if ( v8->uFlags & 0x80
-          && (!pParty->pHirelings[0].pName || strcmp(v8->pName, pParty->pHirelings[0].pName))
-          && (!pParty->pHirelings[1].pName || strcmp(v8->pName, pParty->pHirelings[1].pName)) )
-          *v7++ = (char)v13 + 2;
-        v13 = (std::string *)((char *)v13 + 1);
-        ++v8;
-      }
-      while ( (signed int)v13 < (signed int)pNPCStats->uNumNewNPCs );
-    }
-    v9 = pTmpBuf[v3];
-    if ( (unsigned __int8)v9 >= 2u )
-      result = &pNPCStats->pNPCData[(unsigned __int8)v9 + 499];
-    else
-      result = &pParty->pHirelings[(unsigned __int8)v9];
-  }
-  return result;*/
-  v1 = npcid;
-  if ( npcid >= 0 )
-  {
-    if ( npcid < 5000 )
-    {
-      if ( npcid >= 501 )
-      {
-        MessageBoxW(nullptr, L"NPC id exceeds MAX_DATA!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Events.cpp:1984", 0);
-      }
-      return &pNPCStats->pNewNPCData[v1];// - 1];
-    }
-    return &pNPCStats->pAdditionalNPC[npcid - 5000];
-  }
-
-
-  if ( npcid >= 5000 )
-    return &pNPCStats->pAdditionalNPC[npcid - 5000];
-  if (sDialogue_SpeakingActorNPC_ID >= 0)
-  {
-    result = 0;
-  }
-  else
-  {
-    v3 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
-    v4 = 0;
-
-    for (i = 0; i < 2; ++i)
-    {
-      if (pParty->pHirelings[i].pName)
-        pTmpBuf[v4++] = i;
-    }
-
-    if (pNPCStats->uNumNewNPCs > 0)
-    {
-      for (i = 0; i < pNPCStats->uNumNewNPCs; ++i)
-      {
-        if (pNPCStats->pNewNPCData[i].Hired())
+        if (npcid < 5000)
         {
-          if (!pParty->pHirelings[0].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[0].pName))
-          {
-            if (!pParty->pHirelings[1].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[1].pName))
-              pTmpBuf[v4++] = i + 2;
-          }
+            if (npcid >= 501)
+            {
+                Log::Warning(L"NPC id exceeds MAX_DATA!");
+            }
+            return &pNPCStats->pNewNPCData[v1];// - 1];
         }
-      }
+        return &pNPCStats->pAdditionalNPC[npcid - 5000];
     }
 
-    v9 = pTmpBuf[v3];
-    if ( v9 >= 2 )
-     result = &pNPCStats->pNPCData[499 + v9];
+
+    if (npcid >= 5000)
+        return &pNPCStats->pAdditionalNPC[npcid - 5000];
+    if (sDialogue_SpeakingActorNPC_ID >= 0)
+    {
+        result = 0;
+    }
     else
-      result = &pParty->pHirelings[v9];
-  }
-  return result;
+    {
+        v3 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
+        v4 = 0;
+        char buf[1024];
+
+        for (i = 0; i < 2; ++i)
+        {
+            if (pParty->pHirelings[i].pName)
+                buf[v4++] = i;
+        }
+
+        if (pNPCStats->uNumNewNPCs > 0)
+        {
+            for (i = 0; i < pNPCStats->uNumNewNPCs; ++i)
+            {
+                if (pNPCStats->pNewNPCData[i].Hired())
+                {
+                    if (!pParty->pHirelings[0].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[0].pName))
+                    {
+                        if (!pParty->pHirelings[1].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[1].pName))
+                            buf[v4++] = i + 2;
+                    }
+                }
+            }
+        }
+
+        v9 = buf[v3];
+        if (v9 >= 2)
+            result = &pNPCStats->pNPCData[499 + v9];
+        else
+            result = &pParty->pHirelings[v9];
+    }
+    return result;
 }
 
 //----- (00445B2C) --------------------------------------------------------
-struct NPCData * GetNewNPCData( signed int npcid, int* npc_indx )
-    {
+struct NPCData * GetNewNPCData(signed int npcid, int* npc_indx)
+{
 
-  int* v3; // edi@1
-  NPCData *result; // eax@5
-  int v5; // esi@9
-  int v6; // ecx@9
-  char v11; // al@23
+    int* v3; // edi@1
+    NPCData *result; // eax@5
+    int v5; // esi@9
+    int v6; // ecx@9
+    char v11; // al@23
 
-  v3 = npc_indx;
-  if ( npcid >= 0 )
-  {
-    if ( npcid < 5000 )
+    v3 = npc_indx;
+    if (npcid >= 0)
     {
-      if ( npcid >= 501 )
-      {
-        MessageBoxW(nullptr, L"NPC id exceeds MAX_DATA!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Events.cpp:2040", 0);
-      }
-      *v3 = npcid;
-      return &pNPCStats->pNewNPCData[npcid];
-    }
-    *npc_indx = npcid - 5000;
-    return &pNPCStats->pAdditionalNPC[npcid - 5000];
-  }
-  if ( npcid >= 5000 )
-      {
-      *npc_indx = npcid - 5000;
-      return &pNPCStats->pAdditionalNPC[npcid - 5000];
-      }
-  if ( sDialogue_SpeakingActorNPC_ID >= 0 )
-  {
-    *npc_indx = 0;
-    result = nullptr;
-  }
-  else
-  {
-    v5 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
-    v6 = 0;
-    for (int i=0; i<2; ++i)
-    {
-      if ( pParty->pHirelings[i].pName )
-        pTmpBuf[v6++] = i;
-     
-    }     
-    for (int i=0; i< pNPCStats->uNumNewNPCs; ++i)
+        if (npcid < 5000)
         {
-        if ( pNPCStats->pNewNPCData[i].Hired()
-            && (!pParty->pHirelings[0].pName || strcmp(pNPCStats->pNewNPCData[i].pName, pParty->pHirelings[0].pName))
-            && (!pParty->pHirelings[1].pName || strcmp(pNPCStats->pNewNPCData[i].pName, pParty->pHirelings[1].pName)) )
+            if (npcid >= 501)
             {
-                pTmpBuf[v6++]=i+2;
+                Log::Warning(L"NPC id exceeds MAX_DATA!");
             }
+            *v3 = npcid;
+            return &pNPCStats->pNewNPCData[npcid];
         }
-    v11 = pTmpBuf[v5];
-
-    if ( v11 >= 2u )
+        *npc_indx = npcid - 5000;
+        return &pNPCStats->pAdditionalNPC[npcid - 5000];
+    }
+    if (npcid >= 5000)
     {
-      *v3 = v11 - 2;
-      result = &pNPCStats->pNewNPCData[v11 - 2];
+        *npc_indx = npcid - 5000;
+        return &pNPCStats->pAdditionalNPC[npcid - 5000];
+    }
+    if (sDialogue_SpeakingActorNPC_ID >= 0)
+    {
+        *npc_indx = 0;
+        result = nullptr;
     }
     else
     {
-      *v3 = v11;
-      result = &pParty->pHirelings[v11];
+        v5 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
+        v6 = 0;
+        char buf[1024];
+
+        for (int i = 0; i < 2; ++i)
+        {
+            if (pParty->pHirelings[i].pName)
+                buf[v6++] = i;
+
+        }
+        for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i)
+        {
+            if (pNPCStats->pNewNPCData[i].Hired()
+                && (!pParty->pHirelings[0].pName || strcmp(pNPCStats->pNewNPCData[i].pName, pParty->pHirelings[0].pName))
+                && (!pParty->pHirelings[1].pName || strcmp(pNPCStats->pNewNPCData[i].pName, pParty->pHirelings[1].pName)))
+            {
+                buf[v6++] = i + 2;
+            }
+        }
+        v11 = buf[v5];
+
+        if (v11 >= 2u)
+        {
+            *v3 = v11 - 2;
+            result = &pNPCStats->pNewNPCData[v11 - 2];
+        }
+        else
+        {
+            *v3 = v11;
+            result = &pParty->pHirelings[v11];
+        }
     }
-  }
-  return result;
+    return result;
 }
 
 //----- (00476977) --------------------------------------------------------
 void NPCStats::InitializeNPCText()
-	{
-	int i;
-	char* test_string;
-	unsigned char c;
-	bool break_loop;
-	unsigned int temp_str_len;
-	char* tmp_pos;
-	int decode_step;
+{
+    int i;
+    char* test_string;
+    unsigned char c;
+    bool break_loop;
+    unsigned int temp_str_len;
+    char* tmp_pos;
+    int decode_step;
 
-	free(pNPCTextTXT_Raw);
-	pNPCTextTXT_Raw = (char *)pEvents_LOD->LoadRaw("npctext.txt", 0);
-	strtok(pNPCTextTXT_Raw, "\r");
+    free(pNPCTextTXT_Raw);
+    pNPCTextTXT_Raw = (char *)pEvents_LOD->LoadRaw("npctext.txt", 0);
+    strtok(pNPCTextTXT_Raw, "\r");
 
-	for (i=0; i<789; ++i)
-		{
-		test_string = strtok(NULL, "\r") + 1;
-		break_loop = false;
-		decode_step=0;
-		do 
-			{
-			c = *(unsigned char*)test_string;
-			temp_str_len = 0;
-			while((c!='\t')&&(c>0))
-				{
-				++temp_str_len;
-				c=test_string[temp_str_len];
-				}		
-			tmp_pos=test_string+temp_str_len;
-			if (*tmp_pos == 0)
-				break_loop = true;
-			*tmp_pos = 0;
-			if (temp_str_len)
-				{
-				if ( decode_step == 1)
-					pNPCTopics[i].pText =RemoveQuotes(test_string);
-				}
-			else
-				{ 
-				break_loop = true;
-				}
-			++decode_step;
-			test_string=tmp_pos+1;
-			} while ((decode_step<2)&&!break_loop);
-		}
-	free(pNPCTopicTXT_Raw);
-	pNPCTopicTXT_Raw = (char *)pEvents_LOD->LoadRaw("npctopic.txt", 0);
-	strtok(pNPCTopicTXT_Raw, "\r");
+    for (i = 0; i < 789; ++i)
+    {
+        test_string = strtok(NULL, "\r") + 1;
+        break_loop = false;
+        decode_step = 0;
+        do
+        {
+            c = *(unsigned char*)test_string;
+            temp_str_len = 0;
+            while ((c != '\t') && (c>0))
+            {
+                ++temp_str_len;
+                c = test_string[temp_str_len];
+            }
+            tmp_pos = test_string + temp_str_len;
+            if (*tmp_pos == 0)
+                break_loop = true;
+            *tmp_pos = 0;
+            if (temp_str_len)
+            {
+                if (decode_step == 1)
+                    pNPCTopics[i].pText = RemoveQuotes(test_string);
+            }
+            else
+            {
+                break_loop = true;
+            }
+            ++decode_step;
+            test_string = tmp_pos + 1;
+        } while ((decode_step < 2) && !break_loop);
+    }
+    free(pNPCTopicTXT_Raw);
+    pNPCTopicTXT_Raw = (char *)pEvents_LOD->LoadRaw("npctopic.txt", 0);
+    strtok(pNPCTopicTXT_Raw, "\r");
 
-	for ( i = 1; i <= 579; ++i )//NPC topics count limit
-		{
-		test_string = strtok(NULL, "\r") + 1;
-		break_loop = false;
-		decode_step=0;
-		do 
-			{
-			c = *(unsigned char*)test_string;
-			temp_str_len = 0;
-			while((c!='\t')&&(c>0))
-				{
-				++temp_str_len;
-				c=test_string[temp_str_len];
-				}		
-			tmp_pos=test_string+temp_str_len;
-			if (*tmp_pos == 0)
-				break_loop = true;
-			*tmp_pos = 0;
-			if (temp_str_len)
-				{
-				if ( decode_step == 1)
-					pNPCTopics[i].pTopic = RemoveQuotes(test_string);
-				}
-			else
-				{ 
-				break_loop = true;
-				}
-			++decode_step;
-			test_string=tmp_pos+1;
-			} while ((decode_step<2)&&!break_loop);
-		}
+    for (i = 1; i <= 579; ++i)//NPC topics count limit
+    {
+        test_string = strtok(NULL, "\r") + 1;
+        break_loop = false;
+        decode_step = 0;
+        do
+        {
+            c = *(unsigned char*)test_string;
+            temp_str_len = 0;
+            while ((c != '\t') && (c>0))
+            {
+                ++temp_str_len;
+                c = test_string[temp_str_len];
+            }
+            tmp_pos = test_string + temp_str_len;
+            if (*tmp_pos == 0)
+                break_loop = true;
+            *tmp_pos = 0;
+            if (temp_str_len)
+            {
+                if (decode_step == 1)
+                    pNPCTopics[i].pTopic = RemoveQuotes(test_string);
+            }
+            else
+            {
+                break_loop = true;
+            }
+            ++decode_step;
+            test_string = tmp_pos + 1;
+        } while ((decode_step < 2) && !break_loop);
+    }
 
-	free(pNPCDistTXT_Raw);
-	pNPCDistTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcdist.txt", 0);
-	strtok(pNPCDistTXT_Raw, "\r");
-	strtok(NULL, "\r");
+    free(pNPCDistTXT_Raw);
+    pNPCDistTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcdist.txt", 0);
+    strtok(pNPCDistTXT_Raw, "\r");
+    strtok(NULL, "\r");
 
-	for (i=1; i<59; ++i)
-		{
-		test_string = strtok(NULL, "\r") + 1;
-		break_loop = false;
-		decode_step=0;
-		do 
-			{
-			c = *(unsigned char*)test_string;
-			temp_str_len = 0;
-			while((c!='\t')&&(c>0))
-				{
-				++temp_str_len;
-				c=test_string[temp_str_len];
-				}		
-			tmp_pos=test_string+temp_str_len;
-			if (*tmp_pos == 0)
-				break_loop = true;
-			*tmp_pos = 0;
-			if (temp_str_len)
-				{
-				if ((decode_step>0)&&(decode_step<77))
-					{
-					pProfessionChance[decode_step].professionChancePerArea[i]=atoi(test_string);
-					}
-				else if (decode_step==0)
-					{
-					pProfessionChance[0].professionChancePerArea[i]=10;
-					}
-				}
-			else
-				{ 
-				break_loop = true;
-				}
-			++decode_step;
-			test_string=tmp_pos+1;
-			} while ((decode_step<78)&&!break_loop);
-		}
+    for (i = 1; i < 59; ++i)
+    {
+        test_string = strtok(NULL, "\r") + 1;
+        break_loop = false;
+        decode_step = 0;
+        do
+        {
+            c = *(unsigned char*)test_string;
+            temp_str_len = 0;
+            while ((c != '\t') && (c>0))
+            {
+                ++temp_str_len;
+                c = test_string[temp_str_len];
+            }
+            tmp_pos = test_string + temp_str_len;
+            if (*tmp_pos == 0)
+                break_loop = true;
+            *tmp_pos = 0;
+            if (temp_str_len)
+            {
+                if ((decode_step > 0) && (decode_step < 77))
+                {
+                    pProfessionChance[decode_step].professionChancePerArea[i] = atoi(test_string);
+                }
+                else if (decode_step == 0)
+                {
+                    pProfessionChance[0].professionChancePerArea[i] = 10;
+                }
+            }
+            else
+            {
+                break_loop = true;
+            }
+            ++decode_step;
+            test_string = tmp_pos + 1;
+        } while ((decode_step < 78) && !break_loop);
+    }
 
-	for ( i = 0; i < 77; ++i )
-		{
-		pProfessionChance[i].uTotalprofChance=0;
-		for ( int ii = 1; ii < 59; ++ii )
-			{
-			pProfessionChance[i].uTotalprofChance+=pProfessionChance[i].professionChancePerArea[ii];
-			}
-		pProfessionChance[i].professionChancePerArea[0]=0;
-		pProfessionChance[i].professionChancePerArea[59]=0;
-		}
+    for (i = 0; i < 77; ++i)
+    {
+        pProfessionChance[i].uTotalprofChance = 0;
+        for (int ii = 1; ii < 59; ++ii)
+        {
+            pProfessionChance[i].uTotalprofChance += pProfessionChance[i].professionChancePerArea[ii];
+        }
+        pProfessionChance[i].professionChancePerArea[0] = 0;
+        pProfessionChance[i].professionChancePerArea[59] = 0;
+    }
 
-	free(pNPCDistTXT_Raw);
-	pNPCDistTXT_Raw = nullptr;
-	}
+    free(pNPCDistTXT_Raw);
+    pNPCDistTXT_Raw = nullptr;
+}
 
 //----- (00476C60) --------------------------------------------------------
 void NPCStats::_476C60_on_load_game()
@@ -1328,17 +1269,17 @@ void NPCHireableDialogPrepare()
   pDialogueWindow->Release();
   pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 350, 0, 0);
   pBtn_ExitCancel = pDialogueWindow->CreateButton( 471, 0x1BDu,  0xA9u,   0x23u,  1,  0,  UIMSG_Escape,  0,   0,
-                 pGlobalTXT_LocalizationStrings[34], //"Cancel"
+                 localization->GetString(34), //"Cancel"
                 ui_exit_cancel_button_background, 0);
   pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "", 0);
   if ( pNPCStats->pProfessions[v1->uProfession].pBenefits)//*(&pNPCStats->field_13A5C + 5 * v1->uProfession) )
   {
     pDialogueWindow->CreateButton( 480,  0xA0u,  0x8Cu,  0x1Eu,   1,  0,  UIMSG_ClickNPCTopic,  0x4Du,   0,
-      pGlobalTXT_LocalizationStrings[407], 0);//"More Information"   
+        localization->GetString(407), 0);//"More Information"   
     v0 = 1;
   }
   pDialogueWindow->CreateButton(  0x1E0u,  30 * v0 + 160,  0x8Cu,  0x1Eu,  1,  0,  UIMSG_ClickNPCTopic,  0x4Cu,  0,
-    pGlobalTXT_LocalizationStrings[406],  0); //"Hire"
+      localization->GetString(406),  0); //"Hire"
   pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
   dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 }
@@ -1363,11 +1304,11 @@ void _4B4224_UpdateNPCTopics( int _this )
   {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, 0);
-    sprintfex(sHouseName.data(), pGlobalTXT_LocalizationStrings[LOCSTR_ENTER_S], pMapStats->pInfos[uHouse_ExitPic].pName);
-    pBtn_ExitCancel = pDialogueWindow->CreateButton(566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 'N', pGlobalTXT_LocalizationStrings[34], ui_buttdesc2, 0);// "Cancel"
-    pBtn_YES        = pDialogueWindow->CreateButton(486, 445, 75, 33, 1, 0, UIMSG_BF,     1, 'Y', sHouseName.data(), ui_buttyes2, 0);
-    pDialogueWindow->CreateButton( pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63u, 73u, 1, 0,  UIMSG_BF, 1u, 0x20u,  sHouseName.data(), 0);
-    pDialogueWindow->CreateButton(8, 8, 460, 344, 1, 0, UIMSG_BF, 1, 0x59u, sHouseName.data(), 0);
+    transition_button_label = localization->FormatString(411, pMapStats->pInfos[uHouse_ExitPic].pName); // Enter %s
+    pBtn_ExitCancel = pDialogueWindow->CreateButton(566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 'N', localization->GetString(34), ui_buttdesc2, 0);// "Cancel"
+    pBtn_YES        = pDialogueWindow->CreateButton(486, 445, 75, 33, 1, 0, UIMSG_BF,     1, 'Y', transition_button_label.c_str(), ui_buttyes2, 0);
+    pDialogueWindow->CreateButton( pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63u, 73u, 1, 0,  UIMSG_BF, 1u, 0x20u, transition_button_label.c_str(), 0);
+    pDialogueWindow->CreateButton(8, 8, 460, 344, 1, 0, UIMSG_BF, 1, 0x59u, transition_button_label.c_str(), 0);
   }
   else
   {
@@ -1383,7 +1324,7 @@ void _4B4224_UpdateNPCTopics( int _this )
     }
     pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(  471,  445,  169, 35,  1,   0, UIMSG_Escape,  0,  0,
-                   pGlobalTXT_LocalizationStrings[74],// "End Conversation"
+        localization->GetString(74),// "End Conversation"
         ui_exit_cancel_button_background, nullptr);
     pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "", 0);
     if ( pDialogueNPCCount == 1 && dword_591080 )
@@ -1543,55 +1484,58 @@ int NPC_EventProcessor(int npc_event_id, int entry_line)
   return result;
 }
 //----- (00445C8B) --------------------------------------------------------
-int __fastcall GetGreetType(signed int SpeakingNPC_ID)
+int GetGreetType(signed int SpeakingNPC_ID)
 {
-  signed int v1; // ebx@1
-  int v3; // edi@6
-  int v4; // ecx@6
-  int v5; // edx@6
-  NPCData *v6; // eax@6
-  char *v7; // ebp@11
-  NPCData *v8; // esi@11
+    int v1; // ebx@1
+    int v3; // edi@6
+    int v4; // ecx@6
+    int v5; // edx@6
+    NPCData *v6; // eax@6
+    char *v7; // ebp@11
+    NPCData *v8; // esi@11
 
-  v1 = 0;
-  if ( SpeakingNPC_ID >= 0 )
-  {
-    if ( SpeakingNPC_ID < 5000 )
-      return 1;//QuestNPC_greet
-    return 2;//HiredNPC_greet
-  }
-  if ( SpeakingNPC_ID >= 5000 )
-    return 2;
-  v3 = abs((int)sDialogue_SpeakingActorNPC_ID) - 1;
-  v4 = 0;
-  v5 = 0;
-  v6 = pParty->pHirelings.data();
-  do
-  {
-    if ( v6->pName )
-      pTmpBuf[v4++] = v5;
-    ++v6;
-    ++v5;
-  }
-  while ( (signed int)v6 < (signed int)&pParty->pPickedItem );
-  if ( (signed int)pNPCStats->uNumNewNPCs > 0 )
-  {
-    v7 = &pTmpBuf[v4];
-    v8 = pNPCStats->pNewNPCData;
+    v1 = 0;
+    if (SpeakingNPC_ID >= 0)
+    {
+        if (SpeakingNPC_ID < 5000)
+            return 1; // QuestNPC_greet
+        return 2; // HiredNPC_greet
+    }
+
+    if (SpeakingNPC_ID >= 5000)
+        return 2;
+
+    v3 = abs((int)sDialogue_SpeakingActorNPC_ID) - 1;
+    v4 = 0;
+    v5 = 0;
+    v6 = pParty->pHirelings.data();
+
+    char buf[1024];
     do
     {
-      if (v8->Hired() && (!pParty->pHirelings[0].pName || strcmp(v8->pName, pParty->pHirelings[0].pName)) )
-      {
-        if ( !pParty->pHirelings[1].pName || strcmp(v8->pName, pParty->pHirelings[1].pName) )
-          *v7++ = v1 + 2;
-      }
-      ++v1;
-      ++v8;
+        if (v6->pName)
+            buf[v4++] = v5;
+        ++v6;
+        ++v5;
+    } while ((signed int)v6 < (signed int)&pParty->pPickedItem);
+    if ((signed int)pNPCStats->uNumNewNPCs > 0)
+    {
+        v7 = &buf[v4];
+        v8 = pNPCStats->pNewNPCData;
+        do
+        {
+            if (v8->Hired() && (!pParty->pHirelings[0].pName || strcmp(v8->pName, pParty->pHirelings[0].pName)))
+            {
+                if (!pParty->pHirelings[1].pName || strcmp(v8->pName, pParty->pHirelings[1].pName))
+                    *v7++ = v1 + 2;
+            }
+            ++v1;
+            ++v8;
+        } while (v1 < (signed int)pNPCStats->uNumNewNPCs);
     }
-    while ( v1 < (signed int)pNPCStats->uNumNewNPCs );
-  }
-  return ((unsigned __int8)pTmpBuf[v3] < 2) + 1;
+    return ((unsigned __int8)buf[v3] < 2) + 1;
 }
+
 //----- (00445308) --------------------------------------------------------
 const char *GetProfessionActionText(int a1)
 {
@@ -1680,7 +1624,7 @@ int UseNPCSkill(NPCProf profession)
     {
       if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
       {
-        ShowStatusBarString(pGlobalTXT_LocalizationStrings[494], 2);//Нельзя применить знание Полет в помещении!
+        GameUI_StatusBar_OnEvent(localization->GetString(494)); // Can't fly indoors     Нельзя применить знание Полет в помещении!
         pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0, 0, 0);
       }
       else

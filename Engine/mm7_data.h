@@ -1,5 +1,6 @@
 #pragma once
-#include <string>
+#include "Engine/Strings.h"
+
 #include "VectorTypes.h"
 #include "OSAPI.h"
 #include <array>
@@ -10,7 +11,7 @@
 typedef unsigned int uint;
 
 
-inline void __fastcall memset32(void *ptr, unsigned __int32 value, int count)
+inline void memset32(void *ptr, unsigned __int32 value, int count)
 {
 	unsigned __int32* p = (unsigned __int32 *)ptr;
 	for (int i = 0; i < count; i++)
@@ -413,12 +414,9 @@ extern int BtnDown_flag; //BtnDown_flag
 extern int BtnUp_flag; //BtnUp_flag
 extern int quick_spell_at_page; // weak
 extern char byte_506550; // weak
-extern std::array<const char *, 5> aMoonPhaseNames;
 extern int _506568_autonote_type; // 506568
 extern bool bRecallingBeacon; // weak
 extern int uLastPointedObjectID; // weak
-//extern unsigned __int8 bMonsterInfoUI_bDollInitialized;
-extern std::array<const char *, 44> aSpellNames;
 extern enum CURRENT_SCREEN prev_screen_type; // weak
 extern int dword_506980_uW; // weak
 extern int dword_506984_uZ; // weak
@@ -442,10 +440,6 @@ extern struct GUIButton *pBtn_ZoomIn; // idb
 extern unsigned int uGameUIFontShadow;
 extern unsigned int uGameUIFontMain;
 extern int dword_507B00_spell_info_to_draw_in_popup; // weak
-extern std::array<const char *, 12> aMonthNames;
-extern std::array<const char *, 7> aDayNames;
-extern std::array<const char *, 9> aSpellSchoolNames;
-extern std::array<const char *, 7> aAttributeNames;
 extern unsigned int uActiveCharacter;
 extern int dword_507BF0_is_there_popup_onscreen; // weak
 extern int awards_scroll_bar_created; // weak
@@ -499,7 +493,6 @@ extern struct Actor *pDialogue_SpeakingActor;
 extern unsigned int uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
 extern struct LevelDecoration *_591094_decoration;
-extern std::array<char, 200> sHouseName; // idb
 extern int uCurrentHouse_Animation; // weak
 extern char *dword_591164_teleport_map_name; // idb
 extern int dword_591168_teleport_speedz; // weak
@@ -528,33 +521,21 @@ extern int dword_5B65D0_dialogue_actor_npc_id; // weak
 extern int dword_5C3418; // weak
 extern int dword_5C341C; // weak
 //extern std::array<char, 777> byte_5C3427; // weak
-extern std::array<char, 200> GameUI_Footer_TimedString;
-extern std::array<char, 200> pFooterString;
-extern unsigned int GameUI_Footer_TimeLeft;
+extern String game_ui_status_bar_event_string;
+extern String game_ui_status_bar_string;
+extern unsigned int game_ui_status_bar_event_string_time_left;
 extern int bForceDrawFooter; // weak
 extern int _5C35C0_force_party_death; // weak
 extern int bDialogueUI_InitializeActor_NPC_ID; // weak
 extern char *p2DEventsTXT_Raw;
 
 extern int dword_5C35D4; // weak
-extern std::array<const char *, 2> aAMPMNames;
 extern char byte_5C45AF[]; // weak
 extern std::array<char, 10000> pTmpBuf3;
-extern std::array<char, 4096> pFinalMessage; // idb
-extern std::array<char, 2000> pTmpBuf;
-extern std::array<char, 2000> pTmpBuf2;
 extern std::array<char, 100> Journal_limitation_factor; // weak
 extern int ui_current_text_color; // weak
 extern __int64 qword_5C6DF0; // weak
 extern int dword_5C6DF8; // weak
-extern std::array<char, 104> item__getname_buffer; // idb
-extern std::array<char *, 36> pClassDescriptions;
-extern std::array<char *, 7> pAttributeDescriptions;
-extern std::array<char *, 38> pGrandSkillDesc;
-extern std::array<char *, 38> pMasterSkillDesc;
-extern std::array<char *, 38> pExpertSkillDesc;
-extern std::array<char *, 38> pNormalSkillDesc;
-extern std::array<char *, 38> pSkillDesc;
 extern char *pHealthPointsAttributeDescription;
 extern char *pSpellPointsAttributeDescription;
 extern char *pArmourClassAttributeDescription;
@@ -574,14 +555,7 @@ extern char *pEarthResistanceAttributeDescription;
 extern char *pMindResistanceAttributeDescription;
 extern char *pBodyResistanceAttributeDescription;
 extern char *pSkillPointsAttributeDescription;
-extern char *pClassTXT_Raw;
-extern char *pStatsTXT_Raw;
-extern char *pSkillDescTXT_Raw;
 extern struct FactionTable *pFactionTable;
-//extern std::array<char, 777> byte_5C8D1A; // weak
-
-extern std::array<char, 777> byte_5E4C15; // weak
-extern std::array<const char *, 14> pSomeItemsNames;
 
 extern char *pMonstersTXT_Raw;
 extern char *pMonsterPlacementTXT_Raw;
@@ -693,7 +667,6 @@ extern char *dword_723718_autonote_related; // idb
 extern std::array<const char *, 82> pScrolls;
 extern int dword_7241C8; // weak
 
-extern std::array<const char *, 59> aNPCProfessionNames;
 extern char *pAwardsTXT_Raw;
 extern char *pScrollsTXT_Raw;
 extern char *pMerchantsTXT_Raw;
@@ -716,9 +689,6 @@ extern int dword_A74CDC; // weak
 extern __int64 _A750D8_player_speech_timer; // qword_A750D8
 extern enum PlayerSpeech PlayerSpeechID;
 extern int uSpeakingCharacter; // weak
-extern std::array<const char *, 36> pClassNames;
-extern std::array<const char *, 19> aCharacterConditionNames;
-extern std::array<const char *, 38> pSkillNames;
 extern char byte_AE5B91; // weak
 extern std::array<int, 32> dword_F1B430; // weak
 extern std::array<int, 4> player_levels;
@@ -729,11 +699,11 @@ extern int contract_approved; // weak
 extern int dword_F8B1AC_award_bit_number; // idb
 extern int dword_F8B1B0_MasteryBeingTaught; // weak
 extern int gold_transaction_amount; // F8B1B4
-extern std::array<char *, 4> pShopOptions;
+extern std::array<const char *, 4> pShopOptions;
 extern int dword_F8B1D8; // weak
 extern int dword_F8B1E0; // weak
 extern int dword_F8B1E4; // weak
-extern const char *current_npc_text; // 0xF8B1E8
+extern String current_npc_text; // F8B1E8
 extern char dialogue_show_profession_details; // weak
 extern std::array<char, 777> byte_F8B1EF; // weak
 extern std::array<char, 4> byte_F8B1F0;

@@ -1,9 +1,9 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
 #include "Engine/Timer.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/Render.h"
 #include "Engine/Graphics/Viewport.h"
 
@@ -123,20 +123,20 @@ void GUIWindow_Spellbook::OpenSpellbook()
     if (a2)
         _41D08F_set_keyboard_control_group(a2, 0, 0, 0);
 
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_FIRE])   CreateButton(399, 10, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 0, 0, aSpellSchoolNames[0], 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_AIR])    CreateButton(399, 46, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 1, 0, aSpellSchoolNames[1], 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER])  CreateButton(399, 83, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 2, 0, aSpellSchoolNames[2], 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_EARTH])  CreateButton(399, 121, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 3, 0, aSpellSchoolNames[3], 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_SPIRIT]) CreateButton(399, 158, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 4, 0, aSpellSchoolNames[4], 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_MIND])   CreateButton(400, 196, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 5, 0, aSpellSchoolNames[5], 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_BODY])   CreateButton(400, 234, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 6, 0, aSpellSchoolNames[6], 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_LIGHT])  CreateButton(400, 271, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 7, 0, aSpellSchoolNames[7], 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_DARK])   CreateButton(400, 307, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 8, 0, aSpellSchoolNames[8], 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_FIRE])   CreateButton(399, 10, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 0, 0, localization->GetSpellSchoolName(0), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_AIR])    CreateButton(399, 46, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 1, 0, localization->GetSpellSchoolName(1), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER])  CreateButton(399, 83, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 2, 0, localization->GetSpellSchoolName(2), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_EARTH])  CreateButton(399, 121, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 3, 0, localization->GetSpellSchoolName(3), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_SPIRIT]) CreateButton(399, 158, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 4, 0, localization->GetSpellSchoolName(5), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_MIND])   CreateButton(400, 196, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 5, 0, localization->GetSpellSchoolName(4), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_BODY])   CreateButton(400, 234, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 6, 0, localization->GetSpellSchoolName(6), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_LIGHT])  CreateButton(400, 271, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 7, 0, localization->GetSpellSchoolName(7), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_DARK])   CreateButton(400, 307, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 8, 0, localization->GetSpellSchoolName(8), 0);
 
     CreateButton(476, 450, ui_spellbook_btn_quckspell->GetWidth(), ui_spellbook_btn_quckspell->GetHeight(), 1, 78, UIMSG_ClickInstallRemoveQuickSpellBtn, 0, 0, "", 0);
     pBtn_InstallRemoveSpell = CreateButton(476, 450, 48, 32, 1, 78, UIMSG_ClickInstallRemoveQuickSpellBtn, 0, 0, "", ui_spellbook_btn_quckspell_click, 0);
-    CreateButton(561, 450, ui_spellbook_btn_close->GetWidth(), ui_spellbook_btn_close->GetHeight(), 1, 0, UIMSG_Escape, 0, 0, pGlobalTXT_LocalizationStrings[79], 0);
-    pBtn_CloseBook = CreateButton(561, 450, 48, 32, 1, 0, UIMSG_Escape, 0, 0, pGlobalTXT_LocalizationStrings[79], ui_spellbook_btn_close_click, 0);
+    CreateButton(561, 450, ui_spellbook_btn_close->GetWidth(), ui_spellbook_btn_close->GetHeight(), 1, 0, UIMSG_Escape, 0, 0, localization->GetString(79), 0);
+    pBtn_CloseBook = CreateButton(561, 450, 48, 32, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(79), ui_spellbook_btn_close_click, 0);
 }
 
 void GUIWindow_Spellbook::Update()
@@ -309,12 +309,8 @@ void InitializeSpellBookTextures()
     for (uint i = 0; i < 9; ++i)
     {
         ui_spellbook_school_backgrounds[i] = assets->GetImage_16BitColorKey(texNames[i], 0x7FF);
-
-        sprintf(pTmpBuf.data(), "tab%da", i + 1);
-        ui_spellbook_school_tabs[i][0] = assets->GetImage_16BitAlpha(pTmpBuf.data());
-
-        sprintf(pTmpBuf.data(), "tab%db", i + 1);
-        ui_spellbook_school_tabs[i][1] = assets->GetImage_16BitAlpha(pTmpBuf.data());
+        ui_spellbook_school_tabs[i][0] = assets->GetImage_16BitAlpha(StringPrintf("tab%da", i + 1));
+        ui_spellbook_school_tabs[i][1] = assets->GetImage_16BitAlpha(StringPrintf("tab%db", i + 1));
     }
 }
 

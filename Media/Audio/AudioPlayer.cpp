@@ -2062,7 +2062,7 @@ void AudioPlayer::UpdateSounds()
 }
 
 //----- (004AB66C) --------------------------------------------------------
-int __fastcall sub_4AB66C(int a1, int a2)
+int sub_4AB66C(int a1, int a2)
 {
   signed int v2; // eax@1
 
@@ -2073,7 +2073,7 @@ int __fastcall sub_4AB66C(int a1, int a2)
   v2 =(v2 >> 3) - (v2 >> 10) ;
   return v2;
 }
-// 4AB66C: using guessed type int __fastcall sub_4AB66C(int, int);
+// 4AB66C: using guessed type int sub_4AB66C(int, int);
 
 //----- (004AB6B1) --------------------------------------------------------
 int GetSoundStrengthByDistanceFromParty(int x, int y, int z)

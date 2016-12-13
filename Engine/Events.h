@@ -349,4 +349,4 @@ struct ByteArray
 void init_event_triggers();
 void check_event_triggers();
 bool sub_4465DF_check_season(int a1);
-void __fastcall sub_448CF4_spawn_monsters(__int16 typeindex, __int16 level, int count, int x, int y, int z, int group, unsigned int uUniqueName);
+void sub_448CF4_spawn_monsters(__int16 typeindex, __int16 level, int count, int x, int y, int z, int group, unsigned int uUniqueName);

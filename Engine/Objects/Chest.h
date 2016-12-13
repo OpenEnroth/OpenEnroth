@@ -69,7 +69,7 @@ struct Chest //0x14cc
 };
 #pragma pack(pop)
 
-void __fastcall sub_420B13(int a1, int a2);
+void sub_420B13(int a1, int a2);
 
 
 extern size_t uNumChests; // idb

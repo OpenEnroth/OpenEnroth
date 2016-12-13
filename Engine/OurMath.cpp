@@ -241,7 +241,7 @@ int integer_sqrt(int val)
 }
 
 //----- (00452B2E) --------------------------------------------------------
-int __fastcall GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides)
+int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides)
 {
   int v3; // esi@1
 

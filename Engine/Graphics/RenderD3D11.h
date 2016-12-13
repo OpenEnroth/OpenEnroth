@@ -78,19 +78,19 @@ struct RenderD3D11: public IRender
   virtual void ResetUIClipRect();
   virtual void CreditsTextureScroll(unsigned int pX, unsigned int pY, int move_X, int move_Y, RGBTexture *pTexture);
   
-  virtual void DrawTextureNew(float u, float v, struct Image *);
-  virtual void DrawTextureAlphaNew(float u, float v, struct Image *);
+  virtual void DrawTextureNew(float u, float v, class Image *);
+  virtual void DrawTextureAlphaNew(float u, float v, class Image *);
   virtual void DrawTextureCustomHeight(float u, float v, class Image *img, int height);
 
-  virtual void ZBuffer_Fill_2(signed int a2, signed int a3, struct Image *pTexture, int a5);
-  virtual void ZDrawTextureAlpha(float u, float v, struct Image *pTexture, int zVal);
-  virtual void BlendTextures(unsigned int a2, unsigned int a3, struct Image *a4, struct Texture_MM7 *a5, int t, int start_opacity, int end_opacity);
+  virtual void ZBuffer_Fill_2(signed int a2, signed int a3, class Image *pTexture, int a5);
+  virtual void ZDrawTextureAlpha(float u, float v, class Image *pTexture, int zVal);
+  virtual void BlendTextures(unsigned int a2, unsigned int a3, class Image *a4, struct Texture_MM7 *a5, int t, int start_opacity, int end_opacity);
   virtual void _4A65CC(unsigned int x, unsigned int y, struct Texture_MM7 *a4, struct Texture_MM7 *a5, int a6, int a7, int a8);
 
-  virtual void DrawMasked(float u, float v, struct Image *img, unsigned int color_dimming_level, unsigned __int16 mask);
-  virtual void DrawTextureGrayShade(float u, float v, struct Image *a4);
-  virtual void DrawTransparentRedShade(float u, float v, struct Image *a4);
-  virtual void DrawTransparentGreenShade(float u, float v, struct Image *pTexture);
+  virtual void DrawMasked(float u, float v, class Image *img, unsigned int color_dimming_level, unsigned __int16 mask);
+  virtual void DrawTextureGrayShade(float u, float v, class Image *a4);
+  virtual void DrawTransparentRedShade(float u, float v, class Image *a4);
+  virtual void DrawTransparentGreenShade(float u, float v, class Image *pTexture);
   virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices);
 
   virtual void DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, unsigned __int16 *pPalette, bool present_time_transparency);

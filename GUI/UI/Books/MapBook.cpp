@@ -1,11 +1,11 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
 #include "Engine/Timer.h"
 #include "Engine/Events.h"
 #include "Engine/OurMath.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -62,17 +62,17 @@ GUIWindow_MapBook::GUIWindow_MapBook() :
     ui_book_button6_off = assets->GetImage_16BitAlpha(L"tabWoff");
 
     pBtn_Book_1 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 0, 0, pGlobalTXT_LocalizationStrings[251], ui_book_button1_on, 0);// "Zoom In"
+        UIMSG_ClickBooksBtn, 0, 0, localization->GetString(251), ui_book_button1_on, 0);// "Zoom In"
     pBtn_Book_2 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 1, 0, pGlobalTXT_LocalizationStrings[252], ui_book_button2_on, 0);// "Zoom Out"
+        UIMSG_ClickBooksBtn, 1, 0, localization->GetString(252), ui_book_button2_on, 0);// "Zoom Out"
     pBtn_Book_3 = this->CreateButton(pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 113, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 2, 0, pGlobalTXT_LocalizationStrings[192], (Image *)"", 0);// Scroll Up
+        UIMSG_ClickBooksBtn, 2, 0, localization->GetString(192), (Image *)"", 0);// Scroll Up
     pBtn_Book_4 = this->CreateButton(pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 150, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 3, 0, pGlobalTXT_LocalizationStrings[193], (Image *)"", 0);// Scroll Down
+        UIMSG_ClickBooksBtn, 3, 0, localization->GetString(193), (Image *)"", 0);// Scroll Down
     pBtn_Book_5 = this->CreateButton(pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 4, 0, pGlobalTXT_LocalizationStrings[573], (Image *)"", 0);// "Scroll Right"
+        UIMSG_ClickBooksBtn, 4, 0, localization->GetString(573), (Image *)"", 0);// "Scroll Right"
     pBtn_Book_6 = this->CreateButton(pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 5, 0, pGlobalTXT_LocalizationStrings[572], (Image *)"", 0);// "Scroll Left"
+        UIMSG_ClickBooksBtn, 5, 0, localization->GetString(572), (Image *)"", 0);// "Scroll Left"
 }
 
 
@@ -96,7 +96,7 @@ void GUIWindow_MapBook::Update()
 // void BookUI_Map_Draw()
 // {
     unsigned int map_id; // eax@35
-    char party_coord[120]; // [sp+Ch] [bp-CCh]@37
+    //char party_coord[120]; // [sp+Ch] [bp-CCh]@37
     GUIWindow map_window; // [sp+84h] [bp-54h]@35
 
     pRenderer->DrawTextureAlphaNew(pViewport->uViewportTL_X/640.0f, pViewport->uViewportTL_Y/480.0f, ui_book_map_background);
@@ -163,9 +163,10 @@ void GUIWindow_MapBook::Update()
     if (map_id)
         map_window.DrawTitleText(pBook2Font, -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
 
+    auto party_coordinates = localization->FormatString(659, pParty->vPosition.x, pParty->vPosition.y); //"x: %d  y: %d"
+
     map_window.uFrameX = 0;
-    sprintf(party_coord, pGlobalTXT_LocalizationStrings[659], pParty->vPosition.x, pParty->vPosition.y); //"x: %d  y: %d"
-    map_window.DrawTitleText(pFontComic, 0, 320, ui_book_map_coordinates_color, party_coord, 0);
+    map_window.DrawTitleText(pFontComic, 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);
 }
 
 

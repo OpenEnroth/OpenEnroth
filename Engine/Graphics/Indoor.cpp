@@ -36,11 +36,11 @@
 #include "Sprites.h"
 #include "Engine/stru6.h"
 #include "ParticleEngine.h"
-#include "../texts.h"
 #include "GUI/GUIWindow.h"
 #include "Level/Decoration.h"
 #include "Overlays.h"
 
+#include "GUI/UI/UIStatusBar.h"
 
 
 IndoorLocation *pIndoor = new IndoorLocation;
@@ -86,7 +86,7 @@ std::array<const char *, 11> _4E6BDC_loc_names=
 
 
 //----- (0043F39E) --------------------------------------------------------
-void __fastcall PrepareDrawLists_BLV()
+void PrepareDrawLists_BLV()
 {
   int v5; // eax@4
   unsigned int v7; // ebx@8
@@ -268,7 +268,7 @@ void IndoorLocation::ExecDraw(bool bD3D)
 
 /*
 //----- (00440BED) --------------------------------------------------------
-void __fastcall sub_440BED(IndoorLocation_drawstru *_this)
+void sub_440BED(IndoorLocation_drawstru *_this)
 {
   unsigned __int16 *v1; // edi@7
   BspRenderer_stru0 *v2; // esi@8
@@ -508,7 +508,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID, IndoorCameraD3D_Vec4 *pV
 }
 
 //----- (004B0E07) --------------------------------------------------------
-unsigned int __fastcall sub_4B0E07(unsigned int uFaceID)
+unsigned int sub_4B0E07(unsigned int uFaceID)
 {
   unsigned int result; // eax@1
 
@@ -3662,7 +3662,7 @@ void AddBspNodeToRenderList(unsigned int node_id)
 }
 
 //----- (004406BC) --------------------------------------------------------
-void __fastcall sub_4406BC(unsigned int node_id, unsigned int uFirstNode)
+void sub_4406BC(unsigned int node_id, unsigned int uFirstNode)
 {
   BLVSector *pSector; // esi@2
   BSPNode *pNode; // edi@2
@@ -3951,7 +3951,7 @@ void stru149::_48653D_frustum_blv(int a2, int a3, int a4, int a5, int a6, int a7
                                 this->viewing_angle_from_north_south, this->field_8_party_dir_z);
 }
 //----- (00407A1C) --------------------------------------------------------
-bool __fastcall sub_407A1C(int x, int y, int z, Vec3_int_ v)
+bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
 {
   unsigned int v4; // esi@1
   int dist_y; // edi@2
@@ -4442,7 +4442,7 @@ void BspRenderer::MakeVisibleSectorList()
   }
 }
 //----- (0046A334) --------------------------------------------------------
-char __fastcall DoInteractionWithTopmostZObject(int a1, int a2)
+char DoInteractionWithTopmostZObject(int a1, int a2)
 {
   int v17; // edi@36
 
@@ -4498,7 +4498,7 @@ char __fastcall DoInteractionWithTopmostZObject(int a1, int a2)
       {
         if ( !(pIndoor->pFaces[v17].uAttributes & FACE_CLICKABLE) )
         {
-          ShowNothingHereStatus();
+          GameUI_StatusBar_NothingHere();
           return 1;
         }
         if ( pIndoor->pFaces[v17].uAttributes & FACE_HAS_EVENT || !pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID].uEventID )
@@ -4788,7 +4788,7 @@ bool PortalFrustrum(int pNumVertices, BspRenderer_PortalViewportData *far_portal
   return true;
 }
 //----- (00423B5D) --------------------------------------------------------
-int __fastcall GetPortalScreenCoord(unsigned int uFaceID)
+int GetPortalScreenCoord(unsigned int uFaceID)
 {
   BLVFace *pFace; // ebx@1
   int pNextVertices; // edx@11
@@ -5203,7 +5203,7 @@ int __fastcall GetPortalScreenCoord(unsigned int uFaceID)
 }
 
 //----- (004AAEA6) --------------------------------------------------------
-int __fastcall sub_4AAEA6_transform(RenderVertexSoft *a1)
+int sub_4AAEA6_transform(RenderVertexSoft *a1)
 {
   double v4; // st5@2
   double v5; // st4@3
@@ -5861,7 +5861,7 @@ void Door_switch_animation(unsigned int uDoorID, int a2)
 
 
 //----- (004088E9) --------------------------------------------------------
-int __fastcall sub_4088E9(int x1, int y1, int x2, int y2, int x3, int y3)
+int sub_4088E9(int x1, int y1, int x2, int y2, int x3, int y3)
 {
   signed int result; // eax@1
 
@@ -5885,7 +5885,7 @@ int  GetAlertStatus()
 
 
 //----- (0045063B) --------------------------------------------------------
-int __fastcall _45063B_spawn_some_monster(MapInfo *a1, int a2)
+int _45063B_spawn_some_monster(MapInfo *a1, int a2)
 {
   int result; // eax@8
   int v6; // edi@11
@@ -6005,7 +6005,7 @@ int __fastcall _45063B_spawn_some_monster(MapInfo *a1, int a2)
 }
 
 //----- (00450521) --------------------------------------------------------
-int __fastcall sub_450521_ProllyDropItemAt(int ecx0, signed int a2, int a3, int a4, int a5, unsigned __int16 a6)
+int sub_450521_ProllyDropItemAt(int ecx0, signed int a2, int a3, int a4, int a5, unsigned __int16 a6)
 {
   int v6; // edi@1
   int v7; // esi@1
@@ -6042,7 +6042,7 @@ int __fastcall sub_450521_ProllyDropItemAt(int ecx0, signed int a2, int a3, int 
 }
 
 //----- (004075DB) --------------------------------------------------------
-bool __fastcall sub_4075DB(int x, int y, int z, BLVFace *face)
+bool sub_4075DB(int x, int y, int z, BLVFace *face)
 {
 	int v8; // edi@2
 	signed int v25; // eax@22
@@ -6118,7 +6118,7 @@ bool __fastcall sub_4075DB(int x, int y, int z, BLVFace *face)
 }
 
 //----- (004077F1) --------------------------------------------------------
-bool __fastcall sub_4077F1(int a1, int a2, int a3, ODMFace *face, BSPVertexBuffer *a5)
+bool sub_4077F1(int a1, int a2, int a3, ODMFace *face, BSPVertexBuffer *a5)
 {
 	int a4a; // [sp+28h] [bp+Ch]@2
 	signed int a5a; // [sp+2Ch] [bp+10h]@14

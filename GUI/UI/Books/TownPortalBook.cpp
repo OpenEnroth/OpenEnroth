@@ -1,8 +1,8 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIFont.h"
@@ -109,5 +109,5 @@ void GUIWindow_TownPortalBook::Update()
         if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[v3 - 1]))
             pRenderer->DrawTextureAlphaNew(pTownPortalBook_xs[v3 - 1]/640.0f, pTownPortalBook_ys[v3 - 1]/480.0f, ui_book_townportal_icons[v3 - 1]);
     }
-    TownPortalWindow.DrawTitleText(pBook2Font, 0, 22, 0, pGlobalTXT_LocalizationStrings[10], 3);
+    TownPortalWindow.DrawTitleText(pBook2Font, 0, 22, 0, localization->GetString(10), 3);
 }

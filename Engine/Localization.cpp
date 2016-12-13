@@ -1,194 +1,705 @@
-#pragma once
-#include <array>
+#include <stdarg.h>
 #include <vector>
 
+#include "Engine/Engine.h"
+#include "Engine/Localization.h"
+#include "Engine/LOD.h"
 
-int  sprintfex(char *buf, const char *format, ...);
+
+#define MAX_LOC_STRINGS 677
+extern std::vector<char *> Tokenize(char* input, const char separator);
 
 
-void  SetSomeItemsNames();
-char *RemoveQuotes(char *Str);
-void  InitializeGameText();
-void SetMoonPhaseNames();
-void SetAttributeNames();
+Localization *localization = nullptr;
 
-struct ci_less : std::binary_function<std::string, std::string, bool>   //case insensitive comparator for dictionaries
+
+
+
+const char *Localization::GetString(unsigned int index) const
 {
-  // case-independent (ci) compare_less binary function
-  struct nocase_compare : public std::binary_function<unsigned char,unsigned char,bool> 
-  {
-    bool operator() (const unsigned char& c1, const unsigned char& c2) const {
-      return tolower (c1) < tolower (c2); 
+    return this->localization_strings[index];
+}
+
+String Localization::FormatString(unsigned int index, ...) const
+{
+    va_list args_ptr;
+
+    const char *format = this->GetString(index);
+    char buf[2048];
+
+    va_start(args_ptr, index);
+    {
+        vsprintf(buf, format, args_ptr);
     }
-  };
-  bool operator() (const std::string & s1, const std::string & s2) const {
-    return std::lexicographical_compare 
-      (s1.begin (), s1.end (),   // source range
-      s2.begin (), s2.end (),   // dest range
-      nocase_compare ());  // comparison
-  }
-};
-std::vector<char*> Tokenize(char* input, const char separator);
+    va_end(args_ptr);
 
+    extern int sprintfex_internal(char *str);
+    sprintfex_internal(buf);
+    return String(buf);
+}
+
+//----- (00452C49) --------------------------------------------------------
+bool Localization::Initialize()
+{
+    char *tmp_pos; // eax@3
+    int step; // ebp@4
+    unsigned char c; // dl@5
+    int temp_str_len; // ecx@5
+    bool string_end; // [sp+14h] [bp-4h]@4
+
+    this->localization_raw = (char *)pEvents_LOD->LoadRaw("global.txt", 0);
+    if (!this->localization_raw)
+    {
+        return false;
+    }
+
+    this->localization_strings = new const char *[MAX_LOC_STRINGS];
+
+    strtok(this->localization_raw, "\r");
+    strtok(NULL, "\r");
+
+    for (int i = 0; i < MAX_LOC_STRINGS; ++i)
+    {
+        char *test_string = strtok(NULL, "\r") + 1;
+        step = 0;
+        string_end = false;
+        do
+        {
+            c = *(unsigned char *)test_string;
+            temp_str_len = 0;
+            if (c != '\t')
+            {
+                do
+                {
+                    if (!c)
+                        break;
+                    c = *(test_string + temp_str_len + 1);
+                    temp_str_len++;
+                } while (c != '\t');
+            }
+            tmp_pos = test_string + temp_str_len;
+            if (*tmp_pos == 0)
+                string_end = true;
+
+            *tmp_pos = 0;
+            if (temp_str_len == 0)
+                string_end = true;
+            else
+            {
+                if (step == 1)
+                    this->localization_strings[i] = RemoveQuotes(test_string);
+            }
+            ++step;
+            test_string = tmp_pos + 1;
+        } while (step <= 2 && !string_end);
+    }
+
+
+
+    InitializeMm6ItemCategories();
+
+    InitializeMonthNames();
+    InitializeDayNames();
+    InitializeMoonPhaseNames();
+
+    InitializeClassNames();
+    InitializeAttributeNames();
+    InitializeSkillNames();
+    InitializeCharacterConditionNames();
+
+    InitializeSpellSchoolNames();
+    InitializeSpellNames();
+
+    InitializeNpcProfessionNames();
+
+    return true;
+}
+
+void Localization::InitializeSpellNames()
+{
+    this->spell_names[0] = this->localization_strings[202];  // Protection from Air
+    this->spell_names[1] = this->localization_strings[204];
+    this->spell_names[2] = this->localization_strings[219];
+    this->spell_names[3] = this->localization_strings[215];
+    this->spell_names[4] = this->localization_strings[208];
+    this->spell_names[5] = this->localization_strings[454];  // Feather Fall
+    this->spell_names[6] = this->localization_strings[24];
+    this->spell_names[7] = this->localization_strings[455];
+    this->spell_names[8] = this->localization_strings[441];
+    this->spell_names[9] = this->localization_strings[440];
+    this->spell_names[10] = this->localization_strings[218]; // Ring of Fire
+    this->spell_names[11] = this->localization_strings[217];
+    this->spell_names[12] = this->localization_strings[213];
+    this->spell_names[13] = this->localization_strings[462];
+    this->spell_names[14] = this->localization_strings[279];
+    this->spell_names[15] = this->localization_strings[442]; // Stoneskin
+    this->spell_names[16] = this->localization_strings[452];
+    this->spell_names[17] = this->localization_strings[194];
+    this->spell_names[18] = this->localization_strings[456];
+    this->spell_names[19] = this->localization_strings[453];
+    this->spell_names[20] = this->localization_strings[202]; // Protection from Air
+    this->spell_names[21] = this->localization_strings[443];
+    this->spell_names[22] = this->localization_strings[204];
+    this->spell_names[23] = this->localization_strings[208];
+    this->spell_names[24] = this->localization_strings[221];
+    this->spell_names[25] = this->localization_strings[24];  // Protection from Fire
+    this->spell_names[26] = this->localization_strings[228];
+    this->spell_names[27] = this->localization_strings[441];
+    this->spell_names[28] = this->localization_strings[440];
+    this->spell_names[29] = this->localization_strings[213];
+    this->spell_names[30] = this->localization_strings[229]; // Pain Reflection
+    this->spell_names[31] = this->localization_strings[233];
+    this->spell_names[32] = this->localization_strings[234];
+    this->spell_names[33] = this->localization_strings[279];
+    this->spell_names[34] = this->localization_strings[442];
+    this->spell_names[35] = this->localization_strings[235]; // Temporary Accuracy
+    this->spell_names[36] = this->localization_strings[246];
+    this->spell_names[37] = this->localization_strings[247];
+    this->spell_names[38] = this->localization_strings[248];
+    this->spell_names[39] = this->localization_strings[674];
+    this->spell_names[40] = this->localization_strings[249]; // Temporary Willpower
+    this->spell_names[41] = this->localization_strings[258];
+    this->spell_names[42] = this->localization_strings[194];
+    this->spell_names[43] = this->localization_strings[657]; // Water Breathing
+}
+
+void Localization::InitializeNpcProfessionNames()
+{
+    this->npc_profession_names[0] = this->localization_strings[153]; // Nothing
+    this->npc_profession_names[1] = this->localization_strings[308]; // smith
+    this->npc_profession_names[2] = this->localization_strings[309]; // armsmaster
+    this->npc_profession_names[3] = this->localization_strings[7];   // alchemist
+    this->npc_profession_names[4] = this->localization_strings[306];
+    this->npc_profession_names[5] = this->localization_strings[310];
+    this->npc_profession_names[6] = this->localization_strings[311];
+    this->npc_profession_names[7] = this->localization_strings[312];
+    this->npc_profession_names[8] = this->localization_strings[313];
+    this->npc_profession_names[9] = this->localization_strings[314];
+    this->npc_profession_names[10] = this->localization_strings[105];
+    this->npc_profession_names[11] = this->localization_strings[315];
+    this->npc_profession_names[12] = this->localization_strings[316];
+    this->npc_profession_names[13] = this->localization_strings[317];
+    this->npc_profession_names[14] = this->localization_strings[115];
+    this->npc_profession_names[15] = this->localization_strings[318];
+    this->npc_profession_names[16] = this->localization_strings[319];
+    this->npc_profession_names[17] = this->localization_strings[320];
+    this->npc_profession_names[18] = this->localization_strings[321];
+    this->npc_profession_names[19] = this->localization_strings[322];
+    this->npc_profession_names[20] = this->localization_strings[323];
+    this->npc_profession_names[21] = this->localization_strings[293];
+    this->npc_profession_names[22] = this->localization_strings[324];
+    this->npc_profession_names[23] = this->localization_strings[498];
+    this->npc_profession_names[24] = this->localization_strings[525];
+    this->npc_profession_names[25] = this->localization_strings[327];
+    this->npc_profession_names[26] = this->localization_strings[328];
+    this->npc_profession_names[27] = this->localization_strings[329];
+    this->npc_profession_names[28] = this->localization_strings[330];
+    this->npc_profession_names[29] = this->localization_strings[331];
+    this->npc_profession_names[30] = this->localization_strings[332];
+    this->npc_profession_names[31] = this->localization_strings[333];
+    this->npc_profession_names[32] = this->localization_strings[334];
+    this->npc_profession_names[33] = this->localization_strings[335];
+    this->npc_profession_names[34] = this->localization_strings[336];
+    this->npc_profession_names[35] = this->localization_strings[337];
+    this->npc_profession_names[36] = this->localization_strings[338];
+    this->npc_profession_names[37] = this->localization_strings[339];
+    this->npc_profession_names[38] = this->localization_strings[340];
+    this->npc_profession_names[39] = this->localization_strings[341];
+    this->npc_profession_names[40] = this->localization_strings[342];
+    this->npc_profession_names[41] = this->localization_strings[343];
+    this->npc_profession_names[42] = this->localization_strings[596];
+    this->npc_profession_names[43] = this->localization_strings[345];
+    this->npc_profession_names[44] = this->localization_strings[346];
+    this->npc_profession_names[45] = this->localization_strings[347];
+    this->npc_profession_names[46] = this->localization_strings[348];
+    this->npc_profession_names[47] = this->localization_strings[349];
+    this->npc_profession_names[48] = this->localization_strings[350];
+    this->npc_profession_names[49] = this->localization_strings[597];
+    this->npc_profession_names[50] = this->localization_strings[352];
+    this->npc_profession_names[51] = this->localization_strings[353];
+    this->npc_profession_names[52] = this->localization_strings[598];
+    this->npc_profession_names[53] = this->localization_strings[344];
+    this->npc_profession_names[54] = this->localization_strings[26];
+    this->npc_profession_names[55] = this->localization_strings[599];
+    this->npc_profession_names[56] = this->localization_strings[21];
+    this->npc_profession_names[57] = this->localization_strings[600];
+    this->npc_profession_names[58] = this->localization_strings[370];
+}
+
+void Localization::InitializeCharacterConditionNames()
+{
+    this->character_conditions[0] = this->localization_strings[52];   // Cursed
+    this->character_conditions[1] = this->localization_strings[241];  // Weak
+    this->character_conditions[2] = this->localization_strings[14];   // Asleep
+    this->character_conditions[3] = this->localization_strings[4];    // Fear
+    this->character_conditions[4] = this->localization_strings[69];   // Drunk
+    this->character_conditions[5] = this->localization_strings[117];  // Insane
+    this->character_conditions[6] = this->localization_strings[166];  // Poisoned
+    this->character_conditions[7] = this->localization_strings[65];   // Diseased
+    this->character_conditions[8] = this->localization_strings[166];  // Poisoned
+    this->character_conditions[9] = this->localization_strings[65];   // Diseased
+    this->character_conditions[10] = this->localization_strings[166]; // Poisoned
+    this->character_conditions[11] = this->localization_strings[65];  // Diseased
+    this->character_conditions[12] = this->localization_strings[162]; // Paralyzed
+    this->character_conditions[13] = this->localization_strings[231]; // Unconcious
+    this->character_conditions[14] = this->localization_strings[58];  // Dead
+    this->character_conditions[15] = this->localization_strings[220]; // Pertified
+    this->character_conditions[16] = this->localization_strings[76];  // Eradicated
+    this->character_conditions[17] = this->localization_strings[601]; // Zombie
+    this->character_conditions[18] = this->localization_strings[98];  // Good
+}
+
+void Localization::InitializeSkillNames()
+{
+    this->skill_names[0] = this->localization_strings[271]; // Staff
+    this->skill_names[1] = this->localization_strings[272];
+    this->skill_names[2] = this->localization_strings[273];
+    this->skill_names[3] = this->localization_strings[274];
+    this->skill_names[4] = this->localization_strings[275];
+    this->skill_names[5] = this->localization_strings[276]; // Bow
+    this->skill_names[6] = this->localization_strings[277];
+    this->skill_names[7] = this->localization_strings[278];
+    this->skill_names[8] = this->localization_strings[279];
+    this->skill_names[9] = this->localization_strings[280];
+    this->skill_names[10] = this->localization_strings[281]; // Chain
+    this->skill_names[11] = this->localization_strings[282];
+    this->skill_names[12] = this->localization_strings[283];
+    this->skill_names[13] = this->localization_strings[284];
+    this->skill_names[14] = this->localization_strings[285];
+    this->skill_names[15] = this->localization_strings[286]; // Earth
+    this->skill_names[16] = this->localization_strings[289];
+    this->skill_names[17] = this->localization_strings[290];
+    this->skill_names[18] = this->localization_strings[291];
+    this->skill_names[19] = this->localization_strings[287];
+    this->skill_names[20] = this->localization_strings[288]; // Dark
+    this->skill_names[21] = this->localization_strings[292];
+    this->skill_names[22] = this->localization_strings[293];
+    this->skill_names[23] = this->localization_strings[294];
+    this->skill_names[24] = this->localization_strings[295];
+    this->skill_names[25] = this->localization_strings[296]; // Meditation
+    this->skill_names[26] = this->localization_strings[297];
+    this->skill_names[27] = this->localization_strings[298];
+    this->skill_names[28] = this->localization_strings[299];
+    this->skill_names[29] = this->localization_strings[300];
+    this->skill_names[30] = this->localization_strings[50]; // Dodge
+    this->skill_names[31] = this->localization_strings[77];
+    this->skill_names[32] = this->localization_strings[88];
+    this->skill_names[33] = this->localization_strings[89];
+    this->skill_names[34] = this->localization_strings[90];
+    this->skill_names[35] = this->localization_strings[95]; // Alchemy
+    this->skill_names[36] = this->localization_strings[301];
+    this->skill_names[37] = this->localization_strings[153]; // Nothing
+
+
+
+    skill_desc_raw = (char *)pEvents_LOD->LoadRaw("skilldes.txt", 0);
+    strtok(skill_desc_raw, "\r");
+    for (int i = 0; i < 37; ++i)
+    {
+        char *test_string = strtok(NULL, "\r") + 1;
+
+        auto tokens = Tokenize(test_string, '\t');
+        Assert(tokens.size() >= 6, "Invalid number of tokens");
+
+        this->skill_descriptions[i] = RemoveQuotes(tokens[1]);
+        this->skill_descriptions_normal[i] = RemoveQuotes(tokens[2]);
+        this->skill_descriptions_expert[i] = RemoveQuotes(tokens[3]);
+        this->skill_descriptions_master[i] = RemoveQuotes(tokens[4]);
+        this->skill_descriptions_grand[i] = RemoveQuotes(tokens[5]);
+    }
+}
+
+void Localization::InitializeClassNames()
+{
+    this->class_names[0] = this->localization_strings[253]; // Knight
+    this->class_names[1] = this->localization_strings[254]; // Cavalier
+    this->class_names[2] = this->localization_strings[255]; // Champion
+    this->class_names[3] = this->localization_strings[2];   // Black Knight
+
+    this->class_names[4] = this->localization_strings[307]; // Thief
+    this->class_names[5] = this->localization_strings[114]; // Rogue
+    this->class_names[6] = this->localization_strings[3];   // Spy
+    this->class_names[7] = this->localization_strings[13];  // Assassin
+
+    this->class_names[8] = this->localization_strings[21];   // Monk
+    this->class_names[9] = this->localization_strings[26];   // Initiate
+    this->class_names[10] = this->localization_strings[432]; // Master
+    this->class_names[11] = this->localization_strings[27];  // Ninja
+
+    this->class_names[12] = this->localization_strings[262]; // Paladin
+    this->class_names[13] = this->localization_strings[263]; // Crusader
+    this->class_names[14] = this->localization_strings[264]; // Hero
+    this->class_names[15] = this->localization_strings[28];  // Villian
+
+    this->class_names[16] = this->localization_strings[265]; // Archer
+    this->class_names[17] = this->localization_strings[267]; // Battle Mage
+    this->class_names[18] = this->localization_strings[119];
+    this->class_names[19] = this->localization_strings[124]; // Sniper
+
+    this->class_names[20] = this->localization_strings[31];  // Ranger
+    this->class_names[21] = this->localization_strings[370]; // Hunter
+    this->class_names[22] = this->localization_strings[33];  // Ranger Lord
+    this->class_names[23] = this->localization_strings[40];
+
+    this->class_names[24] = this->localization_strings[256]; // Cleric
+    this->class_names[25] = this->localization_strings[257];
+    this->class_names[26] = this->localization_strings[44];
+    this->class_names[27] = this->localization_strings[46];
+
+    this->class_names[28] = this->localization_strings[268]; // Druid
+    this->class_names[29] = this->localization_strings[269];
+    this->class_names[30] = this->localization_strings[270];
+    this->class_names[31] = this->localization_strings[48];  // Warlock
+
+    this->class_names[32] = this->localization_strings[259]; // Sorcerer
+    this->class_names[33] = this->localization_strings[260]; // Wizard
+    this->class_names[34] = this->localization_strings[261]; // Archmage
+    this->class_names[35] = this->localization_strings[49];  // Lich
+
+
+
+    this->class_desc_raw = (char *)pEvents_LOD->LoadRaw("class.txt", 0);
+    strtok(this->class_desc_raw, "\r");
+    for (int i = 0; i < 36; ++i)
+    {
+        char *test_string = strtok(NULL, "\r") + 1;
+        auto tokens = Tokenize(test_string, '\t');
+        Assert(tokens.size() == 3, "Invalid number of tokens");
+        class_desciptions[i] = RemoveQuotes(tokens[1]);
+    }
+}
+
+
+//----- (00452B95) --------------------------------------------------------
+void Localization::InitializeMm6ItemCategories()
+{
+    this->mm6_item_categories[0] = this->localization_strings[568];  // Club
+    this->mm6_item_categories[1] = this->localization_strings[271];  // Staff
+    this->mm6_item_categories[2] = this->localization_strings[272];  // Sword
+    this->mm6_item_categories[3] = this->localization_strings[273];  // Dagger
+    this->mm6_item_categories[4] = this->localization_strings[274];  // Axe
+    this->mm6_item_categories[5] = this->localization_strings[275];  // Spear
+    this->mm6_item_categories[6] = this->localization_strings[276];  // Bow
+    this->mm6_item_categories[7] = this->localization_strings[277];  // Mace
+    this->mm6_item_categories[8] = this->localization_strings[278];  // Blaster
+    this->mm6_item_categories[9] = this->localization_strings[279];  // Shield
+    this->mm6_item_categories[10] = this->localization_strings[280]; // Leather armour
+    this->mm6_item_categories[11] = this->localization_strings[281]; // Chainmail
+    this->mm6_item_categories[12] = this->localization_strings[282]; // Plate armour
+    this->mm6_item_categories[13] = this->localization_strings[143]; // Other
+}
+
+//----- (00413FF1) --------------------------------------------------------
+void Localization::InitializeMonthNames()
+{
+    this->month_names[0] = this->localization_strings[415]; // january
+    this->month_names[1] = this->localization_strings[416];
+    this->month_names[2] = this->localization_strings[417];
+    this->month_names[3] = this->localization_strings[418];
+    this->month_names[4] = this->localization_strings[419];
+    this->month_names[5] = this->localization_strings[420];
+    this->month_names[6] = this->localization_strings[421];
+    this->month_names[7] = this->localization_strings[422];
+    this->month_names[8] = this->localization_strings[423];
+    this->month_names[9] = this->localization_strings[424];
+    this->month_names[10] = this->localization_strings[425];
+    this->month_names[11] = this->localization_strings[426]; // december
+}
+
+//----- (0041406F) --------------------------------------------------------
+void Localization::InitializeDayNames()
+{
+    this->day_names[0] = this->localization_strings[145]; // monday
+    this->day_names[1] = this->localization_strings[230];
+    this->day_names[2] = this->localization_strings[243];
+    this->day_names[3] = this->localization_strings[227];
+    this->day_names[4] = this->localization_strings[91];
+    this->day_names[5] = this->localization_strings[188];
+    this->day_names[6] = this->localization_strings[222]; // sunday
+}
+
+//----- (004140BB) --------------------------------------------------------
+void Localization::InitializeSpellSchoolNames()
+{
+    this->spell_school_names[0] = this->localization_strings[87];  // Fire
+    this->spell_school_names[1] = this->localization_strings[6];   // Air
+    this->spell_school_names[2] = this->localization_strings[240]; // Water
+    this->spell_school_names[3] = this->localization_strings[70];  // Earth
+    this->spell_school_names[4] = this->localization_strings[142]; // Mind
+    this->spell_school_names[5] = this->localization_strings[214]; // Spirit
+    this->spell_school_names[6] = this->localization_strings[29];  // Body
+    this->spell_school_names[7] = this->localization_strings[133]; // Light
+    this->spell_school_names[8] = this->localization_strings[54];  // Dark
+}
+
+//----- (0041411B) --------------------------------------------------------
+void Localization::InitializeAttributeNames()
+{
+    this->attribute_names[0] = this->localization_strings[144]; // Might
+    this->attribute_names[1] = this->localization_strings[116]; // Intelligence
+    this->attribute_names[2] = this->localization_strings[163]; // Willpower
+    this->attribute_names[3] = this->localization_strings[75];  // Endurance
+    this->attribute_names[4] = this->localization_strings[1];   // Accuracy
+    this->attribute_names[5] = this->localization_strings[211]; // Speed
+    this->attribute_names[6] = this->localization_strings[136]; // Luck
+
+    this->attribute_desc_raw = (char *)pEvents_LOD->LoadRaw("stats.txt", 0);
+    strtok(this->attribute_desc_raw, "\r");
+    for (int i = 0; i < 26; ++i)
+    {
+        char *test_string = strtok(NULL, "\r") + 1;
+        auto tokens = Tokenize(test_string, '\t');
+        Assert(tokens.size() == 2, "Invalid number of tokens");
+        switch (i)
+        {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                this->attribute_descriptions[i] = RemoveQuotes(tokens[1]);
+                break;
+            case 7:
+                pHealthPointsAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 8:
+                pArmourClassAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 9:
+                pSpellPointsAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 10:
+                pPlayerConditionAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 11:
+                pFastSpellAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 12:
+                pPlayerAgeAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 13:
+                pPlayerLevelAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 14:
+                pPlayerExperienceAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 15:
+                pAttackBonusAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 16:
+                pAttackDamageAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 17:
+                pMissleBonusAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 18:
+                pMissleDamageAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 19:
+                pFireResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 20:
+                pAirResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 21:
+                pWaterResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 22:
+                pEarthResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 23:
+                pMindResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 24:
+                pBodyResistanceAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+            case 25:
+                pSkillPointsAttributeDescription = RemoveQuotes(tokens[1]);
+                break;
+        }
+    }
+}
+
+//----- (00410AF5) --------------------------------------------------------
+void Localization::InitializeMoonPhaseNames()
+{
+    this->moon_phase_names[0] = this->localization_strings[150];
+    this->moon_phase_names[1] = this->localization_strings[171];
+    this->moon_phase_names[2] = this->localization_strings[102];
+    this->moon_phase_names[3] = this->localization_strings[169];
+    this->moon_phase_names[4] = this->localization_strings[92];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 enum GLOBAL_LOCALIZ_INDEX
-	{
+{
+    LOCSTR_AC = 0,		//"AC"	
+    LOCSTR_ACCURACY = 1,		//"Accuracy"	
+    LOCSTR_BLK_KNIGHT = 2,		//"Black Knight"
+    LOCSTR_SPY = 3,		// "Spy"
 
-	LOCSTR_AC     =                             0,		//"AC"	
-	LOCSTR_ACCURACY 	=						1,		//"Accuracy"	
-	LOCSTR_BLK_KNIGHT =							2,		//"Black Knight"
-	LOCSTR_SPY  	=						    3,		// "Spy"
+    LOCSTR_TOWN_PORTAL = 10, // "Town Portal"	
 
-	LOCSTR_TOWN_PORTAL		   =                 10, // "Town Portal"	
+    LOCSTR_ASSASIN = 13,	// "Assassin"
 
-	LOCSTR_ASSASIN             =        		13,	// "Assassin"
+    LOCSTR_AUTOSAVE = 16,	// "Autosave"
 
-	LOCSTR_AUTOSAVE            =        		16,	// "Autosave"
+    LOCSTR_ATTACK = 18, // "Attack"	
+    LOCSTR_AVAILABLE = 19, //"Available"
 
-	LOCSTR_ATTACK             =         		18, // "Attack"	
-	LOCSTR_AVAILABLE           =                19, //"Available"
+    LOCSTR_MONK = 21, //"Monk"	
 
-	LOCSTR_MONK                 =       		21, //"Monk"	
+    LOCSTR_AVARDS_FOR = 23, //"Awards for"
 
-	LOCSTR_AVARDS_FOR            =      		23, //"Awards for"
 
+    LOCSTR_RANGER = 31, //"Ranger"
 
-	LOCSTR_RANGER		           =             31, //"Ranger"
+    LOCSTR_CANCEL = 34, //"Cancel"	
 
-	LOCSTR_CANCEL		            =            34, //"Cancel"	
 
+    LOCSTR_SELECT_TGT = 39,	 ///"Select Target"
 
-	LOCSTR_SELECT_TGT               =   		39,	 ///"Select Target"
+    LOCSTR_CLASS = 41,	// "Class"
 
-	LOCSTR_CLASS                     =  		41,	// "Class"
+    LOCSTR_CONDITION = 47,	//"Condition"
 
-	LOCSTR_CONDITION                  = 		47,	//"Condition"
+    LOCSTR_CREATE_PARTY = 51,   //"C R E A T E   P A R T Y"	
 
-	LOCSTR_CREATE_PARTY                =  		51,   //"C R E A T E   P A R T Y"	
+    LOCSTR_DAWN = 55, //"Dawn"	
+    LOCSTR_DAY = 56,	//"Day"	
+    LOCSTR_DAYS = 57,	/// "Days"	
 
-	LOCSTR_DAWN                       =         55, //"Dawn"	
-	LOCSTR_DAY                         = 		56,	//"Day"	
-	LOCSTR_DAYS                        =		57,	/// "Days"	
+    LOCSTR_PRESS_ESCAPE = 61,	// "Press Escape"	
 
-	LOCSTR_PRESS_ESCAPE                =		61,	// "Press Escape"	
+    LOCSTR_TROUBLE_LOAD = 63,//"Might and Magic VII is having trouble loading files. 
+                             // Please re-install to fix this problem. Note: Re-installing will not destroy your save games."	
+    LOCSTR_DETAIL_TOGGLE = 64,	 //"Detail Toggle"	
 
-	LOCSTR_TROUBLE_LOAD                 =		63,//"Might and Magic VII is having trouble loading files. 
-	// Please re-install to fix this problem. Note: Re-installing will not destroy your save games."	
-	LOCSTR_DETAIL_TOGGLE              = 		64,	 //"Detail Toggle"	
+    LOCSTR_DMG = 66,	 /// "Dmg"	
 
-	LOCSTR_DMG                   =   		    66,	 /// "Dmg"	
+    LOCSTR_EMPTY = 72, // "Empty"	
 
-	LOCSTR_EMPTY                  =     		72, // "Empty"	
+    LOCSTR_EXIT = 79,	// "Exit"	
+    LOCSTR_EXIT_BLDNG = 80,   // "Exit Building"
 
-	LOCSTR_EXIT                    =    		79,	// "Exit"	
-	LOCSTR_EXIT_BLDNG               =   		80,   // "Exit Building"
+    LOCSTR_EXPIRIENCE = 83, //"Experience"	
 
-	LOCSTR_EXPIRIENCE		          =          83, //"Experience"	
+    LOCSTR_GRAND = 96,	// "Grand"
 
-	LOCSTR_GRAND		               =         96,	// "Grand"
+    LOCSTR_HP = 107,	// "HP"	
+    LOCSTR_HIT_POINTS = 108,	// "Hit Points"	
+    LOCSTR_HOUR = 109,	//"Hour"	
+    LOCSTR_HOURS = 110, //"Hours"	
 
-	LOCSTR_HP                          =		107,	// "HP"	
-	LOCSTR_HIT_POINTS		             =       108,	// "Hit Points"	
-	LOCSTR_HOUR                         =		109,	//"Hour"	
-	LOCSTR_HOURS		                  =      110, //"Hours"	
+    LOCSTR_ROGUE = 114,	 //"Rogue"
 
-	LOCSTR_ROGUE                 =          	114,	 //"Rogue"
+    LOCSTR_LEVEL = 131,   // "Level"	
 
-	LOCSTR_LEVEL                =        		131,   // "Level"	
+    LOCSTR_LOADING = 135,  //"Loading"	
 
-	LOCSTR_LOADING               =      		135,  //"Loading"	
+    LOCSTR_MIGHT = 144,	 //"Might"
 
-	LOCSTR_MIGHT		           =             144,	 //"Might"
+    LOCSTR_NAME = 149,	// "Name"	
 
-	LOCSTR_NAME		            =            149,	// "Name"	
+    LOCSTR_YOU_TO_TRAIN = 147, // "You are eligible to train to %u."	
 
-	LOCSTR_YOU_TO_TRAIN             =      		147, // "You are eligible to train to %u."	
+    LOCSTR_STAY_IN_AREA = 156,  //"Stay in this Area"	
+    LOCSTR_3DO_COPYRHT = 157,	  // ""© 1999 The 3DO Company.
 
-	LOCSTR_STAY_IN_AREA		      =          156,  //"Stay in this Area"	
-	LOCSTR_3DO_COPYRHT			=				157,	  // ""© 1999 The 3DO Company.
+    LOCSTR_PLEASE_WAIT = 165,	// "Please Wait"
 
-	LOCSTR_PLEASE_WAIT          =       		165,	// "Please Wait"
+    LOCSTR_REPUTATION = 180,	 //"Reputation"
 
-	LOCSTR_REPUTATION            =      		180,	 //"Reputation"
+    LOCSTR_REST_HEAL_8 = 183, //"Rest & Heal 8 Hours"	
 
-	LOCSTR_REST_HEAL_8            =             183, //"Rest & Heal 8 Hours"	
+    LOCSTR_TIME_ERATHIA = 186, // "Time in Erathia"	
 
-	LOCSTR_TIME_ERATHIA            =    		186, // "Time in Erathia"	
+    LOCSTR_SAVING = 190,  // "Saving"	
 
-	LOCSTR_SAVING                   =   		190,  // "Saving"	
+    LOCSTR_SKILL_POINTS = 207, /// "Skill Points"	
 
-	LOCSTR_SKILL_POINTS		      =          207, /// "Skill Points"	
+    LOCSTR_KNIGHT = 253,  //"Knight"	
+    LOCSTR_CAVALIER = 254,  //"Cavalier"	
+    LOCSTR_CHAMPION = 255,  //"Champion"	
+    LOCSTR_CLERIC = 256,  //"Cleric"	
+    LOCSTR_PRIEST = 257,  //"Priest"	
 
-	LOCSTR_KNIGHT                     = 		253,  //"Knight"	
-	LOCSTR_CAVALIER		            =        254,  //"Cavalier"	
-	LOCSTR_CHAMPION		             =       255,  //"Champion"	
-	LOCSTR_CLERIC		                  =      256,  //"Cleric"	
-	LOCSTR_PRIEST		                   =     257,  //"Priest"	
+    LOCSTR_SORCERER = 259,  // "Sorcerer"	
 
-	LOCSTR_SORCERER		                =    259,  // "Sorcerer"	
+    LOCSTR_PALADIN = 262, // "Paladin"
 
-	LOCSTR_PALADIN                   =  		262, // "Paladin"
+    LOCSTR_ARCHER = 265,   /// "Archer"
 
-	LOCSTR_ARCHER		               =         265,   /// "Archer"
+    LOCSTR_DRUID = 268, // "Druid"	
 
-	LOCSTR_DRUID		            =            268, // "Druid"	
+    LOCSTR_THIEF = 307, //"Thief"
 
-	LOCSTR_THIEF                    =   		307, //"Thief"
+    LOCSTR_SET_BEACON = 375, // "Set Beacon"
 
-	LOCSTR_SET_BEACON                =  		375, // "Set Beacon"
+    LOCSTR_HATED = 379,// "Hated"
 
-	LOCSTR_HATED                      =  		379,// "Hated"
+    LOCSTR_UNFRENDLY = 392,	 //"Unfriendly"	
 
-	LOCSTR_UNFRENDLY		            =        392,	 //"Unfriendly"	
+    LOCSTR_NEITRAL = 399,  // "Neutral"	
 
-	LOCSTR_NEITRAL                     =		399,  // "Neutral"	
+    LOCSTR_FRENDLY = 402, // "Friendly"	
 
-	LOCSTR_FRENDLY                     =		402, // "Friendly"	
+    LOCSTR_D_DAYS_TO_S = 404,   //"%d days to %s"	
+    LOCSTR_TRAVEL_COST = 405,    //"Travel Cost %d gold"	
 
-	LOCSTR_D_DAYS_TO_S                  =		404,   //"%d days to %s"	
-	LOCSTR_TRAVEL_COST                   =      405,    //"Travel Cost %d gold"	
+    LOCSTR_ENTER_S = 411, // "Enter %s"	
 
-	LOCSTR_ENTER_S		                   =     411, // "Enter %s"	
+    LOCSTR_IS_IN_NO_COND = 427,	// "%s is in no condition to %s"	
 
-	LOCSTR_IS_IN_NO_COND		            =    427,	// "%s is in no condition to %s"	
+    LOCSTR_S_THE_S = 429,    //"%s the %s"
 
-	LOCSTR_S_THE_S                          =   429,    //"%s the %s"
+    LOCSTR_NORMAL = 431,	//"Normal"
+    LOCSTR_MASTER = 432,	//"Master"	
+    LOCSTR_EXPERT = 433,	//"Expert"
+    LOCSTR_LIKED = 434, //"Liked"	
 
-	LOCSTR_NORMAL               =       		431,	//"Normal"
-	LOCSTR_MASTER		          =              432,	//"Master"	
-	LOCSTR_EXPERT		          =              433,	//"Expert"
-	LOCSTR_LIKED		          =              434, //"Liked"	
+    LOCSTR_ACTIVE_SPELL = 450,	// "Active Spells: %s"	
 
-	LOCSTR_ACTIVE_SPELL           =     		450,	// "Active Spells: %s"	
+    LOCSTR_READING = 505, ///"Reading..."	
 
-	LOCSTR_READING                 =        	505, ///"Reading..."	
+    LOCSTR_NOTHING_HERE = 521, // "Nothing here"	
 
-	LOCSTR_NOTHING_HERE             =    		521, // "Nothing here"	
+    LOCSTR_SP_COST = 522, //"SP Cost"
+    LOCSTR_RECALL_BEACON = 523, // "Recall Beacon"	
 
-	LOCSTR_SP_COST                   =   		522, //"SP Cost"
-	LOCSTR_RECALL_BEACON              = 		523, // "Recall Beacon"	
+    LOCSTR_TIME = 526,	//"Time"	
 
-	LOCSTR_TIME                        =		526,	//"Time"	
+    LOCSTR_NEED_MORE_EXP = 538, //"You need %d more experience to train to level %d"	
 
-	LOCSTR_NEED_MORE_EXP               =		538, //"You need %d more experience to train to level %d"	
+    LOCSTR_IDENT_ITEM = 541, // "Identify Items"
 
-	LOCSTR_IDENT_ITEM                  =		541, // "Identify Items"
+    LOCSTR_DUSK = 566,   //"Dusk"	
+    LOCSTR_NIGHT = 567,  // "Night"	
 
-	LOCSTR_DUSK                         =		566,   //"Dusk"	
-	LOCSTR_NIGHT                        =       567,  // "Night"	
+    LOCSTR_NO_SAVING = 583,	//"No saving in the Arena"	
 
-	LOCSTR_NO_SAVING                   	=	583,	//"No saving in the Arena"	
+    LOCSTR_AUTOSAVE_MM7 = 613, // "AutoSave.MM7"
 
-	LOCSTR_AUTOSAVE_MM7                    =	613, // "AutoSave.MM7"
+    LOCSTR_BONUS = 623, //"Bonus"	
 
-	LOCSTR_BONUS                       	=	623, //"Bonus"	
+    LOCSTR_GAME_SAVED = 656,	// "Game Saved!"
 
-	LOCSTR_GAME_SAVED                  	=	656,	// "Game Saved!"
+    MAX_LOC_STRINGS = 677
 
-	MAX_LOC_STRINGS =677
-
-	};
-
-  extern  std::array<const char *, MAX_LOC_STRINGS> pGlobalTXT_LocalizationStrings;
+};*/
 
 /*
 
@@ -860,4 +1371,4 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[674]	0x041062a3 "Temp Might"	unsigned char *
 +		[675]	0x041062b3 ""Splendid job!  With the activation of the Gate, a thousand worlds lie at your feet.  Perhaps on one of them you will find the Ancients themselves, and return with the fruits their great civilization has to offer your world and your kingdom.""	unsigned char *
 +		[676]	0x041063ab ""Brilliant!  The completion of the Heavenly Forge has provided enough Ancient weapons to crush all resistance to your plans.  Soon the world will bow to your every whim!  Still, you can't help but wonder what was beyond the Gate the other side was trying so hard to build.""	unsigned char *
- */
+*/

@@ -246,5 +246,5 @@ void CompactLayingItemsList();
 extern size_t uNumSpriteObjects;
 extern std::array<SpriteObject, MAX_SPRITE_OBJECTS> pSpriteObjects;
 
-bool __fastcall _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2);
-void __fastcall sub_43A97E(unsigned int uLayingItemID, signed int a2); // idb
+bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2);
+void sub_43A97E(unsigned int uLayingItemID, signed int a2); // idb

@@ -690,7 +690,7 @@ bool SpriteFrameTable::FromFileTxt(const char *Args)
   return result;
 }
 //----- (0046E26D) --------------------------------------------------------
-void __fastcall _46E26D_collide_against_sprites(signed int a1, signed int a2)
+void _46E26D_collide_against_sprites(signed int a1, signed int a2)
 {
   int v2; // edx@5
   unsigned __int16 *v3; // eax@5

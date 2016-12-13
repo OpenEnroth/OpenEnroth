@@ -58,18 +58,18 @@ void RenderD3D11::DrawBillboardList_BLV() {__debugbreak();}
 void RenderD3D11::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, IDirect3DTexture2 *a9) {__debugbreak();}
 void RenderD3D11::ScreenFade(unsigned int color, float t) {__debugbreak();}
 void RenderD3D11::CreditsTextureScroll(unsigned int pX, unsigned int pY, int move_X, int move_Y, RGBTexture *pTexture) {__debugbreak();}
-void RenderD3D11::ZBuffer_Fill_2(signed int a2, signed int a3, struct Image *pTexture, int a5) {__debugbreak();}
-void RenderD3D11::ZDrawTextureAlpha(float u, float v, struct Image *pTexture, int zVal) {__debugbreak();}
-void RenderD3D11::BlendTextures(unsigned int a2, unsigned int a3, struct Image *a4, struct Texture_MM7 *a5, int t, int start_opacity, int end_opacity) {__debugbreak();}
+void RenderD3D11::ZBuffer_Fill_2(signed int a2, signed int a3, class Image *pTexture, int a5) {__debugbreak();}
+void RenderD3D11::ZDrawTextureAlpha(float u, float v, class Image *pTexture, int zVal) {__debugbreak();}
+void RenderD3D11::BlendTextures(unsigned int a2, unsigned int a3, class Image *a4, struct Texture_MM7 *a5, int t, int start_opacity, int end_opacity) {__debugbreak();}
 void RenderD3D11::_4A65CC(unsigned int x, unsigned int y, struct Texture_MM7 *a4, struct Texture_MM7 *a5, int a6, int a7, int a8) {__debugbreak();}
-void RenderD3D11::DrawTransparentRedShade(float u, float v, struct Image *a4) {__debugbreak();}
-void RenderD3D11::DrawTransparentGreenShade(float u, float v, struct Image *pTexture) {__debugbreak();}
+void RenderD3D11::DrawTransparentRedShade(float u, float v, class Image *a4) {__debugbreak();}
+void RenderD3D11::DrawTransparentGreenShade(float u, float v, class Image *pTexture) {__debugbreak();}
 void RenderD3D11::DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {__debugbreak();}
-void RenderD3D11::DrawMasked(float u, float v, struct Image *pTexture, unsigned int, unsigned __int16 mask) {__debugbreak();}
+void RenderD3D11::DrawMasked(float u, float v, class Image *pTexture, unsigned int, unsigned __int16 mask) {__debugbreak();}
 void RenderD3D11::DrawTextureCustomHeight(float u, float v, class Image *img, int height) {__debugbreak();}
 void RenderD3D11::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16) {__debugbreak();}
 void RenderD3D11::_4A6DF5(unsigned __int16 *pBitmap, unsigned int uBitmapPitch, struct Vec2_int_ *pBitmapXY, void *pTarget, unsigned int uTargetPitch, Vec4_int_ *a7) {__debugbreak();}
-void RenderD3D11::DrawTextureGrayShade(float a2, float a3, struct Image *a4) {__debugbreak();}
+void RenderD3D11::DrawTextureGrayShade(float a2, float a3, class Image *a4) {__debugbreak();}
 void RenderD3D11::DrawBuildingsD3D() {__debugbreak();}
 void RenderD3D11::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {__debugbreak();}
 void RenderD3D11::DrawOutdoorSkyD3D() {__debugbreak();}

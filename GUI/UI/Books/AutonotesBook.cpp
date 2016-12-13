@@ -1,11 +1,11 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
 #include "Engine/Timer.h"
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
@@ -56,35 +56,35 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() :
 
     pBtn_Book_1 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 11, 0, pGlobalTXT_LocalizationStrings[193], ui_book_button1_on, 0
+        UIMSG_ClickBooksBtn, 11, 0, localization->GetString(193), ui_book_button1_on, 0
     );
     pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 10, 0, pGlobalTXT_LocalizationStrings[192], ui_book_button2_on, 0
+        UIMSG_ClickBooksBtn, 10, 0, localization->GetString(192), ui_book_button2_on, 0
     );
     pBtn_Book_3 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 113, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 2, 0, pGlobalTXT_LocalizationStrings[85], ui_book_button3_on, 0
+        UIMSG_ClickBooksBtn, 2, 0, localization->GetString(85), ui_book_button3_on, 0
     ); // "Potion Notes"
     pBtn_Book_4 = CreateButton(
         pViewport->uViewportTL_X + 399, pViewport->uViewportTL_Y + 150, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 3, 0, pGlobalTXT_LocalizationStrings[137], ui_book_button4_on, 0
+        UIMSG_ClickBooksBtn, 3, 0, localization->GetString(137), ui_book_button4_on, 0
     ); // "Fountain Notes"
     pBtn_Book_5 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 4, 0, pGlobalTXT_LocalizationStrings[8], ui_book_button5_on, 0
+        UIMSG_ClickBooksBtn, 4, 0, localization->GetString(8), ui_book_button5_on, 0
     ); // "Obelisk Notes"
     pBtn_Book_6 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 5, 0, pGlobalTXT_LocalizationStrings[141], ui_book_button6_on, 0
+        UIMSG_ClickBooksBtn, 5, 0, localization->GetString(141), ui_book_button6_on, 0
     ); // "Seer Notes"
     pBtn_Autonotes_Misc = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 264, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 6, 0, pGlobalTXT_LocalizationStrings[123], ui_book_button7_on, 0
+        UIMSG_ClickBooksBtn, 6, 0, localization->GetString(123), ui_book_button7_on, 0
     ); // "Miscellaneous Notes"
     pBtn_Autonotes_Instructors = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 302, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 7, 0, pGlobalTXT_LocalizationStrings[662], ui_book_button8_on, 0
+        UIMSG_ClickBooksBtn, 7, 0, localization->GetString(662), ui_book_button8_on, 0
     ); // "Instructors"
 
     int num_achieved_awards = 0;
@@ -268,7 +268,7 @@ void GUIWindow_AutonotesBook::Update()
     autonotes_window.uFrameY = game_viewport_y;
     autonotes_window.uFrameZ = game_viewport_z;
     autonotes_window.uFrameW = game_viewport_w;
-    autonotes_window.DrawTitleText(pBook2Font, 0, 22, ui_book_autonotes_title_color, pGlobalTXT_LocalizationStrings[154], 3); // "Auto notes"
+    autonotes_window.DrawTitleText(pBook2Font, 0, 22, ui_book_autonotes_title_color, localization->GetString(154), 3); // "Auto notes"
 
     //for other text
     autonotes_window.uFrameX = 48;
@@ -329,7 +329,7 @@ void GUIWindow_AutonotesBook::Update()
     {
         ++num_achieved_awards;
         autonotes_window.DrawText(pAutonoteFont, 1, 0, ui_book_autonotes_text_color, pAutonoteTxt[achieved_awards[i]].pText, 0, 0, 0);
-        pTextHeight = pAutonoteFont->CalcTextHeight(pAutonoteTxt[achieved_awards[i]].pText, &autonotes_window, 1, 0);
+        pTextHeight = pAutonoteFont->CalcTextHeight(pAutonoteTxt[achieved_awards[i]].pText, &autonotes_window, 1);
         if ((signed int)(autonotes_window.uFrameY + pTextHeight) > (signed int)autonotes_window.uFrameHeight)
             break;
 

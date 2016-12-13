@@ -16,7 +16,6 @@
 #include "../Graphics/DecorationList.h"
 #include "../Party.h"
 #include "../OurMath.h"
-#include "../Texts.h"
 #include "ObjectList.h"
 #include "../Timer.h"
 #include "SpriteObject.h"
@@ -26,6 +25,7 @@
 #include "IO/Mouse.h"
 
 #include "GUI/UI/Chest.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -206,7 +206,7 @@ void Chest::ChestUI_WritePointedObjectStatusString()
       if ( v1 )
       {
         ItemGen* item = &pChests[pChestWindow->par1C].igChestItems[pChests[pChestWindow->par1C].pInventoryIndices[(v1 & 0xFFFF) - 1] - 1];
-        GameUI_SetFooterString(item->GetDisplayName());
+        GameUI_StatusBar_Set(item->GetDisplayName());
       }
     }
   }
@@ -643,7 +643,7 @@ int ChestList::FromFileTxt(const char *Args)
 }
 
 //----- (00420B13) --------------------------------------------------------
-void __fastcall sub_420B13(int a1, int a2)
+void sub_420B13(int a1, int a2)
 {	//Give item from chest(rus: Взять предмет из ящика)
     void *v2; // eax@1
     unsigned int v4; // eax@1

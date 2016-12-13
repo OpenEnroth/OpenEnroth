@@ -114,7 +114,7 @@ void CreateParty_EventLoop()
         case UIMSG_PlayerCreationClickOK:
             new OnButtonClick2(580, 431, 0, 0, (int)pPlayerCreationUI_BtnOK, 0);
             if (PlayerCreation_GetUnspentAttributePointCount() || !PlayerCreation_Choose4Skills())
-                GameUI_Footer_TimeLeft = GetTickCount() + 4000;
+                game_ui_status_bar_event_string_time_left = GetTickCount() + 4000;
             else
                 uGameState = GAME_STATE_STARTING_NEW_GAME;
             break;

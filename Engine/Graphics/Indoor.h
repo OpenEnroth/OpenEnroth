@@ -783,32 +783,32 @@ extern BLVRenderParams *pBLVRenderParams;
 
 
 
-int __fastcall GetPortalScreenCoord(unsigned int uFaceID);
+int GetPortalScreenCoord(unsigned int uFaceID);
 bool PortalFrustrum(int pNumVertices, struct BspRenderer_PortalViewportData *a2, struct BspRenderer_PortalViewportData *near_portal, int uFaceID);
 void PrepareBspRenderList_BLV();
 void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID);
 void PrepareActorRenderList_BLV();
 void PrepareItemsRenderList_BLV();
 void AddBspNodeToRenderList(unsigned int node_id);
-void __fastcall sub_4406BC(unsigned int node_id, unsigned int uFirstNode); // idb
-char __fastcall DoInteractionWithTopmostZObject(int a1, int a2);
-int __fastcall sub_4AAEA6_transform(struct RenderVertexSoft *a1);
-unsigned int __fastcall sub_4B0E07(unsigned int uFaceID); // idb
+void sub_4406BC(unsigned int node_id, unsigned int uFirstNode); // idb
+char DoInteractionWithTopmostZObject(int a1, int a2);
+int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
+unsigned int sub_4B0E07(unsigned int uFaceID); // idb
 void BLV_UpdateUserInputAndOther();
 int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
 void Door_switch_animation(unsigned int uDoorID, int a2); // idb: sub_449A49
-int __fastcall sub_4088E9(int a1, int a2, int a3, int a4, int a5, int a6);
-void __fastcall PrepareDrawLists_BLV();
+int sub_4088E9(int a1, int a2, int a3, int a4, int a5, int a6);
+void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(unsigned int bLoading);
 int GetAlertStatus();
-int __fastcall _45063B_spawn_some_monster(struct MapInfo *a1, int a2);
-int __fastcall sub_450521_ProllyDropItemAt(int ecx0, signed int a2, int a3, int a4, int a5, unsigned __int16 a6);
+int _45063B_spawn_some_monster(struct MapInfo *a1, int a2);
+int sub_450521_ProllyDropItemAt(int ecx0, signed int a2, int a3, int a4, int a5, unsigned __int16 a6);
 
-bool __fastcall sub_4075DB(int a1, int a2, int a3, struct BLVFace *face);
-bool __fastcall sub_4077F1(int a1, int a2, int a3, struct ODMFace *face, struct BSPVertexBuffer *a5);
+bool sub_4075DB(int a1, int a2, int a3, struct BLVFace *face);
+bool sub_4077F1(int a1, int a2, int a3, struct ODMFace *face, struct BSPVertexBuffer *a5);
 
 #pragma once
 
@@ -922,4 +922,4 @@ void FindBillboardsLightLevels_BLV();
 
 int collide_against_floor_approximate(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID); // idb
 
-bool __fastcall sub_407A1C(int x, int z, int y, struct Vec3_int_ v); // idb
+bool sub_407A1C(int x, int z, int y, struct Vec3_int_ v); // idb

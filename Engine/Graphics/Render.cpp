@@ -8761,7 +8761,7 @@ void Render::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, IDirect3DT
 }
 
 //----- (00452442) --------------------------------------------------------
-unsigned int __fastcall _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3, int a4)
+unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3, int a4)
 {
 	int v4; // ebx@0
 	__int16 v5; // ST14_2@1
@@ -8795,7 +8795,7 @@ unsigned int __fastcall _452442_color_cvt(unsigned __int16 a1, unsigned __int16 
 }
 
 //----- (0047C4FC) --------------------------------------------------------
-int __fastcall GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, RenderBillboard *a5)
+int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, RenderBillboard *a5)
 {
 	signed int v6; // edx@1
 	int v8; // eax@3
@@ -8925,7 +8925,7 @@ int __fastcall GetActorTintColor(int max_dimm, int min_dimm, float distance, int
 // 6BE3C4: using guessed type char bUnderwater;
 
 //----- (0043F55F) --------------------------------------------------------
-int __fastcall _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseLightLevel)
+int _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseLightLevel)
 {
 	signed int v3; // ecx@2
 
@@ -8942,7 +8942,7 @@ int __fastcall _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseL
 }
 
 //----- (0043F5C8) --------------------------------------------------------
-int __fastcall _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z)
+int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z)
 {
 	signed int v6; // edi@1
 	int v8; // eax@6
@@ -9067,7 +9067,7 @@ int __fastcall _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int
 }
 
 //----- (0049D700) --------------------------------------------------------
-unsigned int __fastcall GetMaxMipLevels(unsigned int uDim)
+unsigned int GetMaxMipLevels(unsigned int uDim)
 {
 	int v2; // ecx@1
 	unsigned int v3; // eax@1
@@ -9226,7 +9226,7 @@ int  _46E44E_collide_against_faces_and_portals(unsigned int b1)
 // 46E44E: using guessed type int var_28[10];
 
 //----- (0046E889) --------------------------------------------------------
-int __fastcall _46E889_collide_against_bmodels(unsigned int ecx0)
+int _46E889_collide_against_bmodels(unsigned int ecx0)
 {
 	int result; // eax@1
 	//int v3; // ebx@9
@@ -9411,7 +9411,7 @@ int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned
 }
 
 //----- (0046ED8A) --------------------------------------------------------
-void __fastcall _46ED8A_collide_against_sprite_objects(unsigned int _this)
+void _46ED8A_collide_against_sprite_objects(unsigned int _this)
 {
 	ObjectDesc *object; // edx@4
 	int v10; // ecx@12
@@ -9629,7 +9629,7 @@ int _46F04E_collide_against_portals()
 }
 
 //----- (0046DEF2) --------------------------------------------------------
-unsigned int __fastcall sub_46DEF2(signed int a2, unsigned int uLayingItemID)
+unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID)
 {
 	unsigned int result; // eax@1
 
@@ -9939,7 +9939,7 @@ int sub_475665(BLVFace *face, int a2, __int16 a3)
 }
 
 //----- (004759C9) --------------------------------------------------------
-bool __fastcall sub_4759C9(BLVFace *face, int a2, int a3, __int16 a4)
+bool sub_4759C9(BLVFace *face, int a2, int a3, __int16 a4)
 {
 	bool v12; // edi@14
 	signed int v16; // ebx@18
@@ -10040,7 +10040,7 @@ bool __fastcall sub_4759C9(BLVFace *face, int a2, int a3, __int16 a4)
 }
 
 //----- (00475D85) --------------------------------------------------------
-bool __fastcall sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, BLVFace *a4)
+bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, BLVFace *a4)
 {
 	BLVFace *v4; // ebx@1
 	int v5; // ST24_4@2
@@ -10096,7 +10096,7 @@ bool __fastcall sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, BLVFace *a4)
 }
 
 //----- (00475F30) --------------------------------------------------------
-bool __fastcall sub_475F30(int *a1, BLVFace *a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9)
+bool sub_475F30(int *a1, BLVFace *a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9)
 {
 	int v10; // ST20_4@2
 	int v11; // ST28_4@2
@@ -10144,7 +10144,7 @@ bool __fastcall sub_475F30(int *a1, BLVFace *a2, int a3, int a4, int a5, int a6,
 }
 
 //----- (00479089) --------------------------------------------------------
-bool __fastcall IsBModelVisible(unsigned int uModelID, int *reachable)
+bool IsBModelVisible(unsigned int uModelID, int *reachable)
 {
 	int v3; // edi@1
 	int v4; // ebx@1

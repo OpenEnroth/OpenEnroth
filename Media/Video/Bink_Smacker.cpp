@@ -161,7 +161,7 @@ int __stdcall SmackBufferOpen(HWND a1, long a2, long a3, long a4, long a5, long 
   return (smackw32_SmackBufferOpen)(a1, a2, a3, a4, a5, a6);
 }
 
-int __fastcall SmackVolumePan(_SMACK *a3, long a4, long a5, long a6)
+int __stdcall SmackVolumePan(_SMACK *a3, long a4, long a5, long a6)
 {
  //__asm int 3
  return 0;

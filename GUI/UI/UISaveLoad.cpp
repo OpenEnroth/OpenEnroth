@@ -6,11 +6,11 @@
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Graphics/Render.h"
 #include "Engine/LOD.h"
 #include "Engine/SaveLoad.h"
-#include "Engine/texts.h"
 
 #include "IO/Keyboard.h"
 
@@ -75,15 +75,16 @@ GUIWindow_Save::GUIWindow_Save() :
         v3 = pSavegameList->pFileList[i].pSaveFileName;
         if (!*pSavegameList->pFileList[i].pSaveFileName)
             v3 = "1.mm7";
-        sprintf(pTmpBuf.data(), "saves\\%s", v3);
-        if (_access(pTmpBuf.data(), 0) || _access(pTmpBuf.data(), 6))
+
+        auto str = StringPrintf("saves\\%s", v3);
+        if (_access(str.c_str(), 0) || _access(str.c_str(), 6))
         {
             pSavegameUsedSlots[i] = 0;
-            strcpy(pSavegameHeader[i].pName, pGlobalTXT_LocalizationStrings[LOCSTR_EMPTY]);
+            strcpy(pSavegameHeader[i].pName, localization->GetString(72)); // Empty
         }
         else
         {
-            pLODFile.LoadFile(pTmpBuf.data(), 1);
+            pLODFile.LoadFile(str.c_str(), 1);
             fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", 1));
             if (pLODFile.FindContainer("image.pcx", 1))
             {
@@ -198,7 +199,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
 
 
 
-    DrawText(pFontSmallnum, 25, 199, 0, pGlobalTXT_LocalizationStrings[505], 0, 0, 0);// "Reading..."
+    DrawText(pFontSmallnum, 25, 199, 0, localization->GetString(505), 0, 0, 0);// "Reading..."
     pRenderer->Present();
     pSavegameList->Initialize(0);
     if (pSaveListPosition > (signed int)uNumSavegameFiles)
@@ -210,18 +211,18 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i)
     {
-        sprintf(pTmpBuf.data(), "saves\\%s", pSavegameList->pFileList[i].pSaveFileName);
-        if (_access(pTmpBuf.data(), 6))
+        auto str = StringPrintf("saves\\%s", pSavegameList->pFileList[i].pSaveFileName);
+        if (_access(str.c_str(), 6))
         {
             pSavegameUsedSlots[i] = 0;
-            strcpy(pSavegameHeader[i].pName, pGlobalTXT_LocalizationStrings[72]); // "Empty"
+            strcpy(pSavegameHeader[i].pName, localization->GetString(72)); // "Empty"
             continue;
         }
-        pLODFile.LoadFile(pTmpBuf.data(), 1);
+        pLODFile.LoadFile(str.c_str(), 1);
         if (pLODFile.FindContainer("header.bin", true))
             fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", true));
-        if (!_stricmp(pSavegameList->pFileList[i].pSaveFileName, pGlobalTXT_LocalizationStrings[613]))// "AutoSave.MM7"
-            strcpy(pSavegameHeader[i].pName, pGlobalTXT_LocalizationStrings[16]);// "Autosave"
+        if (!_stricmp(pSavegameList->pFileList[i].pSaveFileName, localization->GetString(613)))// "AutoSave.MM7"
+            strcpy(pSavegameHeader[i].pName, localization->GetString(16));// "Autosave"
         if (!pLODFile.FindContainer("image.pcx", true))
         {
             pSavegameUsedSlots[i] = 0;
@@ -287,116 +288,123 @@ void GUIWindow_Load::Update()
 //----- (004601B7) --------------------------------------------------------
 static void UI_DrawSaveLoad(bool save)
 {
-//  const char *pSlotName; // edi@36
-  GUIWindow save_load_window; // [sp+Ch] [bp-78h]@8
-  unsigned int pSaveFiles; // [sp+70h] [bp-14h]@10
-  unsigned __int64 full_hours;
-  unsigned __int64 full_days;
-  int full_weeks;
-  int full_month;
-  int current_year;
-  int current_month;
-  int current_day;
-  int current_hour;
-  int current_minutes;
+    //  const char *pSlotName; // edi@36
+    GUIWindow save_load_window; // [sp+Ch] [bp-78h]@8
+    unsigned int pSaveFiles; // [sp+70h] [bp-14h]@10
+    unsigned __int64 full_hours;
+    unsigned __int64 full_days;
+    int full_weeks;
+    int full_month;
+    int current_year;
+    int current_month;
+    int current_day;
+    int current_hour;
+    int current_minutes;
 
-  pRenderer->BeginScene();
-  if ( GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu )
-  {
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
-    if (save)
+    pRenderer->BeginScene();
+    if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu)
     {
-      pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_saveu);
-      pRenderer->DrawTextureAlphaNew( 18 / 640.0f, 139 / 480.0f, saveload_ui_save_up);
+        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
+        if (save)
+        {
+            pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_saveu);
+            pRenderer->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_save_up);
+        }
+        else
+        {
+            pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
+            pRenderer->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
+        }
+        pRenderer->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+    }
+
+    if (pSavegameUsedSlots[uLoadGameUI_SelectedSlot])
+    {
+        memset(&save_load_window, 0, 0x54);
+        save_load_window.uFrameX = pGUIWindow_CurrentMenu->uFrameX + 240;
+        save_load_window.uFrameWidth = 220;
+        save_load_window.uFrameY = (pGUIWindow_CurrentMenu->uFrameY - pFontSmallnum->uFontHeight) + 157;
+        save_load_window.uFrameZ = save_load_window.uFrameX + 219;
+        save_load_window.uFrameHeight = pFontSmallnum->uFontHeight;
+        save_load_window.uFrameW = pFontSmallnum->uFontHeight + save_load_window.uFrameY - 1;
+        if (pSavegameThumbnails[uLoadGameUI_SelectedSlot])
+            pRenderer->DrawTextureNew((pGUIWindow_CurrentMenu->uFrameX + 276) / 640.0f, (pGUIWindow_CurrentMenu->uFrameY + 171) / 480.0f, pSavegameThumbnails[uLoadGameUI_SelectedSlot]);
+        //Draw map name
+        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameHeader[uLoadGameUI_SelectedSlot].pLocationName)].pName, 3);
+        //Draw date
+        full_hours = ((signed __int64)(pSavegameHeader[uLoadGameUI_SelectedSlot].uWordTime * 0.234375) / 60) / 60i64;
+        full_days = (unsigned int)full_hours / 24;
+        full_weeks = (unsigned int)(full_days / 7);
+        full_month = (unsigned int)full_weeks / 4;
+        current_year = (full_month / 12) + game_starting_year;
+        current_month = full_month % 12;
+        current_day = full_days % 28;
+        current_hour = full_hours % 24;
+        current_minutes = (((signed __int64)(pSavegameHeader[uLoadGameUI_SelectedSlot].uWordTime * 0.234375) / 60) % 60i64);
+
+        save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
+        int am;
+        if ((signed int)current_hour >= 12)
+        {
+            current_hour -= 12;
+            if (!current_hour)
+                current_hour = 12;
+            am = 1;
+        }
+        else
+            am = 0;
+
+        auto str = StringPrintf(
+            "%s %d:%02d %s\n%d %s %d",
+            localization->GetDayName(full_days % 7),
+            current_hour,
+            current_minutes,
+            localization->GetAmPm(am),
+            current_day + 1,
+            localization->GetMonthName(current_month),
+            current_year
+        );
+        save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, str, 3);
+    }
+    if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED)
+    {
+        pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+        strcpy((char *)&pSavegameHeader + 100 * uLoadGameUI_SelectedSlot, pKeyActionMap->pPressedKeysBuffer);
+        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveGame, 0, 0);
     }
     else
     {
-      pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
-      pRenderer->DrawTextureAlphaNew( 18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
+        if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED)
+            pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
     }
-    pRenderer->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
-  }
-  if ( pSavegameUsedSlots[uLoadGameUI_SelectedSlot] )
-  {
-    memset(&save_load_window, 0, 0x54);
-    save_load_window.uFrameX = pGUIWindow_CurrentMenu->uFrameX + 240;
-    save_load_window.uFrameWidth = 220;
-    save_load_window.uFrameY = (pGUIWindow_CurrentMenu->uFrameY - pFontSmallnum->uFontHeight) + 157;
-    save_load_window.uFrameZ = save_load_window.uFrameX + 219;
-    save_load_window.uFrameHeight = pFontSmallnum->uFontHeight;
-    save_load_window.uFrameW = pFontSmallnum->uFontHeight + save_load_window.uFrameY - 1;
-    if ( pSavegameThumbnails[uLoadGameUI_SelectedSlot] )
-      pRenderer->DrawTextureNew((pGUIWindow_CurrentMenu->uFrameX + 276)/640.0f, (pGUIWindow_CurrentMenu->uFrameY + 171)/480.0f, pSavegameThumbnails[uLoadGameUI_SelectedSlot]);
-//Draw map name
-    save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameHeader[uLoadGameUI_SelectedSlot].pLocationName)].pName, 3);
-//Draw date
-    full_hours = ((signed __int64)(pSavegameHeader[uLoadGameUI_SelectedSlot].uWordTime * 0.234375) / 60) / 60i64;
-    full_days = (unsigned int)full_hours / 24;
-    full_weeks = (unsigned int)(full_days / 7);
-    full_month = (unsigned int)full_weeks / 4;
-    current_year = (full_month / 12) + game_starting_year;
-    current_month = full_month % 12;
-    current_day = full_days % 28;
-    current_hour = full_hours % 24;
-    current_minutes = (((signed __int64)(pSavegameHeader[uLoadGameUI_SelectedSlot].uWordTime * 0.234375) / 60) % 60i64);
-
-    save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
-    int am;
-    if ( (signed int)current_hour >= 12 )
+    if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu)
     {
-      current_hour -= 12;
-      if ( !current_hour )
-        current_hour = 12;
-      am = 1;
+        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, localization->GetString(135)) + 25,
+            220, 0, localization->GetString(135), 0, 0, 0); // Загрузка
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, pFontSmallnum->AlignText_Center(186,
+            pSavegameHeader[uLoadGameUI_SelectedSlot].pName) + 25, 0x106, 0, pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, localization->GetString(165)) + 25,
+            304, 0, localization->GetString(165), 0, 0, 0); // Пожалуйста, пожождите
     }
     else
-      am = 0;
-    const char* day = aDayNames[full_days % 7];
-    const char* ampm = aAMPMNames[am];
-    const char* month = aMonthNames[current_month];
-
-    sprintfex(pTmpBuf.data(), "%s %d:%02d %s\n%d %s %d", day, current_hour, current_minutes, aAMPMNames[am], current_day + 1, month, current_year);
-    save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, pTmpBuf.data(), 3);
-  }
-  if ( pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED)
-  {
-    pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-    strcpy((char *)&pSavegameHeader + 100 * uLoadGameUI_SelectedSlot, pKeyActionMap->pPressedKeysBuffer);
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveGame, 0, 0);
-  }
-  else
-  {
-    if ( pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED)
-      pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-  }
-  if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu)
-  {
-    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, pGlobalTXT_LocalizationStrings[135]) + 25,
-        220, 0, pGlobalTXT_LocalizationStrings[135], 0, 0, 0);//Загрузка
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, pFontSmallnum->AlignText_Center(186,
-		pSavegameHeader[uLoadGameUI_SelectedSlot].pName) + 25, 0x106, 0, pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
-    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, pGlobalTXT_LocalizationStrings[165]) + 25,
-        304, 0, pGlobalTXT_LocalizationStrings[165], 0, 0, 0);//"Пожалуйста, пожождите"
-  }
-  else
-  {
-    if ( save )
-      pSaveFiles = 40;
-    else
-      pSaveFiles = uNumSavegameFiles;
-
-    int slot_Y = 199;
-    for ( uint i = pSaveListPosition; i < pSaveFiles; ++i )
     {
-      if ( slot_Y >= 346 )
-        break;
-      if ( pGUIWindow_CurrentMenu->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS || i != uLoadGameUI_SelectedSlot )
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, pSavegameHeader[i].pName, 185, 0);
-      else
-        pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, (const char *)pKeyActionMap->pPressedKeysBuffer, 175, 1) + 27,
-           slot_Y, pFontSmallnum);
-      slot_Y += 21;
+        if (save)
+            pSaveFiles = 40;
+        else
+            pSaveFiles = uNumSavegameFiles;
+
+        int slot_Y = 199;
+        for (uint i = pSaveListPosition; i < pSaveFiles; ++i)
+        {
+            if (slot_Y >= 346)
+                break;
+            if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS || i != uLoadGameUI_SelectedSlot)
+                pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, pSavegameHeader[i].pName, 185, 0);
+            else
+                pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, (const char *)pKeyActionMap->pPressedKeysBuffer, 175, 1) + 27,
+                    slot_Y, pFontSmallnum);
+            slot_Y += 21;
+        }
     }
-  }
-  pRenderer->EndScene();
+    pRenderer->EndScene();
 }

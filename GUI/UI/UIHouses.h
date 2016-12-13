@@ -118,23 +118,23 @@ enum HouseSoundID: unsigned __int32
 };
 
 bool HouseUI_CheckIfPlayerCanInteract();
-void TrainingDialog();
+void TrainingDialog(const char *s);
 void JailDialog();
-void  MagicShopDialog();
-void  GuildDialog();
-void  sub_4B6478();
-bool __fastcall IsTravelAvailable(int a1);
-void  TravelByTransport();
+void MagicShopDialog();
+void GuildDialog();
+void sub_4B6478();
+bool IsTravelAvailable(int a1);
+void TravelByTransport();
 void TempleDialog();
-void  TownHallDialog();
-void  BankDialog();
-void  TavernDialog();
+void TownHallDialog();
+void BankDialog();
+void TavernDialog();
 void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound); // idb
-void  WeaponShopDialog();
-void  AlchemistDialog();
-void  ArmorShopDialog();
+void WeaponShopDialog();
+void AlchemistDialog();
+void ArmorShopDialog();
 void SimpleHouseDialog();
-void __fastcall OnSelectShopDialogueOption(signed int uMessageParam);
+void OnSelectShopDialogueOption(signed int uMessageParam);
 void PrepareHouse(enum HOUSE_ID house); // idb
 bool EnterHouse(enum HOUSE_ID uHouseID);
 void BackToHouseMenu();
@@ -151,7 +151,6 @@ extern BuildingType in_current_building_type; // 00F8B198
 extern HOUSE_DIALOGUE_MENU dialog_menu_id; // 00F8B19C
 
 int HouseDialogPressCloseBtn();
-
 
 
 extern class Image *_591428_endcap;

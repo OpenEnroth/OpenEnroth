@@ -27,7 +27,7 @@ struct stru314
   {}
 
 
-  void (__fastcall ***vdestructor_ptr)(stru314 *, bool);
+  void (***vdestructor_ptr)(stru314 *, bool);
   Vec3_float_ Normal;
   Vec3_float_ field_10;
   Vec3_float_ field_1C;

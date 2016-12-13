@@ -6,7 +6,6 @@
 
 #include "MapInfo.h"
 #include "LOD.h"
-#include "texts.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/Indoor.h"

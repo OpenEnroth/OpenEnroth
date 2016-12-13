@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Engine/Strings.h"
 
 /*  171 */
 #pragma pack(push, 1)
@@ -17,12 +17,18 @@ struct GUICharMetric
 #pragma pack(push, 1)
 struct GUIFont
 {
-	
 //----- (0044C4DE) --------------------------------------------------------
   bool IsCharValid(unsigned char c) {	return (c >= cFirstChar) && (c <= cLastChar) || (c == '\f') || (c == '\r') || (c == '\t') || (c == '\n');}
-  int AlignText_Center(unsigned int uCenterX, const char *pString);
+
+  int AlignText_Center(unsigned int center_x, const char *pString);
+  int AlignText_Center(unsigned int center_x, const String &str);
+
   int GetLineWidth(const char *pString);
-  int CalcTextHeight(const  char *pString, struct GUIWindow *pWindow, int uXOffset, int a5);
+  int GetLineWidth(const String &str);
+
+  int CalcTextHeight(const char *str, struct GUIWindow *window, int x_offset, bool return_on_carriage = false);
+  int CalcTextHeight(const String &str, struct GUIWindow *window, int x_offset, bool return_on_carriage = false);
+
   int GetStringHeight2(GUIFont *secondFont, const char *text_str, GUIWindow* pWindow, int startX, int a6);
   char* GetPageTop(const char *pInString, GUIWindow *pWindow, unsigned int uX, int a5);
   void DrawTextLineToBuff(int uColor, int a3, unsigned short* uX_buff_pos, const char *text, int line_width);
@@ -53,7 +59,8 @@ struct GUIFont
 #pragma warning( pop )
 
 GUIFont *LoadFont(const char *pFontFile, const char *pFontPalette, ...);
-char * FitTextInAWindow(const char *pInString, GUIFont *pFont, struct GUIWindow *pWindow, signed int uX, int a5);
+char *FitTextInAWindow(const char *pInString, GUIFont *pFont, struct GUIWindow *pWindow, int uX, bool return_on_carriage = false);
+String FitTextInAWindow(String &str, GUIFont *pFont, struct GUIWindow *pWindow, int uX, bool return_on_carriage = false);
 
 
 extern struct GUIFont *pAutonoteFont;

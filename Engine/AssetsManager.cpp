@@ -5,6 +5,11 @@
 AssetsManager *assets = new AssetsManager();
 
 
+Image *AssetsManager::GetImage_16BitColorKey(const String &name, unsigned __int16 colorkey)
+{
+    return this->GetImage_16BitColorKey(name.c_str(), colorkey);
+}
+
 Image *AssetsManager::GetImage_16BitColorKey(const char *name, unsigned __int16 colorkey)
 {
     wchar_t namew[1024];
@@ -12,6 +17,7 @@ Image *AssetsManager::GetImage_16BitColorKey(const char *name, unsigned __int16 
 
     return this->GetImage_16BitColorKey(namew, colorkey);
 }
+
 Image *AssetsManager::GetImage_16BitColorKey(const wchar_t *name, unsigned __int16 colorkey)
 {
     Image *img = new Image();
@@ -28,6 +34,11 @@ Image *AssetsManager::GetImage_16BitColorKey(const wchar_t *name, unsigned __int
 
 
 
+
+Image *AssetsManager::GetImage_16Bit(const String &name)
+{
+    return this->GetImage_16Bit(name.c_str());
+}
 
 Image *AssetsManager::GetImage_16Bit(const char *name)
 {
@@ -56,6 +67,12 @@ Image *AssetsManager::GetImage_16Bit(const wchar_t *name)
 
 
 
+
+Image *AssetsManager::GetImage_16BitAlpha(const String &name)
+{
+    return this->GetImage_16BitAlpha(name.c_str());
+
+}
 
 Image *AssetsManager::GetImage_16BitAlpha(const char *name)
 {

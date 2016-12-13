@@ -426,9 +426,6 @@
     <ClCompile Include="..\..\Engine\stru298.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\texts.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\Timer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -614,6 +611,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Engine\AssetsManager.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Localization.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Strings.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GUI\UI\UiStatusBar.cpp">
+      <Filter>GUI\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1178,9 +1184,6 @@
     <ClInclude Include="..\..\Engine\stru367.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\texts.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Engine\Timer.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -1396,6 +1399,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\AssetsManager.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Localization.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Strings.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GUI\UI\UiStatusBar.h">
+      <Filter>GUI\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

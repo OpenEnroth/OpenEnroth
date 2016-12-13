@@ -1,10 +1,10 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/Timer.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
 #include "Engine/SaveLoad.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
@@ -163,7 +163,7 @@ void MainMenu_EventLoop()
             case UIMSG_PlayerCreationClickOK:
                 new OnButtonClick2(580, 431, 0, 0, (int)pPlayerCreationUI_BtnOK, 0);
                 if (PlayerCreation_GetUnspentAttributePointCount() || !PlayerCreation_Choose4Skills())
-                    GameUI_Footer_TimeLeft = GetTickCount() + 4000;
+                    game_ui_status_bar_event_string_time_left = GetTickCount() + 4000;
                 else
                     uGameState = GAME_STATE_STARTING_NEW_GAME;
                 break;
@@ -472,13 +472,12 @@ void DrawMM7CopyrightWindow()
     Dst.uFrameHeight = 256;
     Dst.uFrameX = 8;
     Dst.uFrameY = 30;                             // c 1999 The 3DO Company.
-    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(pGlobalTXT_LocalizationStrings[157], &Dst, 24, 0)
+    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(localization->GetString(157), &Dst, 24, 0)
         + 2 * LOBYTE(pFontSmallnum->uFontHeight)
         + 24;
     Dst.uFrameY = 470 - Dst.uFrameHeight;
     Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
     Dst.uFrameW = 469;
-    //Dst.Hint = "abcagfdsgsg ljsrengvlkjesnfkjwnef";
     Dst.DrawMessageBox(0);
 
     Dst.uFrameWidth -= 24;
@@ -487,5 +486,5 @@ void DrawMM7CopyrightWindow()
     Dst.uFrameHeight -= 12;
     Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
     Dst.uFrameW = Dst.uFrameY + Dst.uFrameHeight - 1;
-    Dst.DrawTitleText(pFontSmallnum, 0, 12, ui_mainmenu_copyright_color, pGlobalTXT_LocalizationStrings[157], 3);
+    Dst.DrawTitleText(pFontSmallnum, 0, 12, ui_mainmenu_copyright_color, localization->GetString(157), 3);
 }

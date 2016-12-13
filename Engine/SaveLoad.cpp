@@ -6,7 +6,7 @@
 #include <direct.h>
 
 #include "Engine/Engine.h"
-#include "Engine/texts.h"
+#include "Engine/Localization.h"
 #include "Engine/ZlibWrapper.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Party.h"
@@ -25,6 +25,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UISaveLoad.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -90,85 +91,87 @@ void LoadThumbnailLloydTexture(unsigned int uSlot, unsigned int uPlayer)
 //----- (0045EE8A) --------------------------------------------------------
 void LoadGame(unsigned int uSlot)
 {
-  bool v25; // esi@62
-  bool v26; // eax@62
-  SavegameHeader header; // [sp+Ch] [bp-E4h]@23
-  char Str[123]; // [sp+70h] [bp-80h]@25
+    bool v25; // esi@62
+    bool v26; // eax@62
+    SavegameHeader header; // [sp+Ch] [bp-E4h]@23
+    char Str[123]; // [sp+70h] [bp-80h]@25
 
-  MapsLongTimers_count = 0;
-  if (!pSavegameUsedSlots[uSlot])
-  {
-    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-    Log::Warning(L"LoadGame: slot %u is empty", uSlot);
-    return;
-  }
-
-  for (uint i = 1; i < 5; ++i)
-    for (uint j = 1; j < 6; ++j)
+    MapsLongTimers_count = 0;
+    if (!pSavegameUsedSlots[uSlot])
     {
-      sprintf(pTmpBuf.data(), "data\\lloyd%d%d.pcx", i, j);
-      remove(pTmpBuf.data());
+        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+        Log::Warning(L"LoadGame: slot %u is empty", uSlot);
+        return;
     }
 
-  if (SoundSetAction[24][0])
-    for (uint i = 0; i < 4; ++i)
-    {
-      for (uint j = 0; j < pSoundList->sNumSounds; ++j)
-        if (pSoundList->pSL_Sounds[j].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4998)
+    for (uint i = 1; i < 5; ++i)
+        for (uint j = 1; j < 6; ++j)
         {
-          pSoundList->UnloadSound(j, 1);
-          break;
+            remove(StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str());
         }
 
-      for (uint j = 0; j < pSoundList->sNumSounds; ++j)
-        if (pSoundList->pSL_Sounds[j].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4999)
+    if (SoundSetAction[24][0])
+        for (uint i = 0; i < 4; ++i)
         {
-          pSoundList->UnloadSound(j, 1);
-          break;
+            for (uint j = 0; j < pSoundList->sNumSounds; ++j)
+                if (pSoundList->pSL_Sounds[j].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4998)
+                {
+                    pSoundList->UnloadSound(j, 1);
+                    break;
+                }
+
+            for (uint j = 0; j < pSoundList->sNumSounds; ++j)
+                if (pSoundList->pSL_Sounds[j].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4999)
+                {
+                    pSoundList->UnloadSound(j, 1);
+                    break;
+                }
+        }
+
+    pNew_LOD->CloseWriteFile();
+
+    auto filename = StringPrintf("saves\\%s", pSavegameList->pFileList[uSlot].pSaveFileName);
+    if (!CopyFileA(filename.c_str(), "data\\new.lod", 0))
+        int e = GetLastError();
+
+    pNew_LOD->LoadFile("data\\new.lod", 0);
+    FILE *file = pNew_LOD->FindContainer("header.bin", 1);
+    if (!file)
+    {
+        Log::Warning(
+            L"%S",
+            localization->FormatString(612, 100).c_str()
+            ); // Savegame damaged! Code=%d
+    }
+    Assert(sizeof(SavegameHeader) == 100);
+    fread(&header, sizeof(SavegameHeader), 1, file);
+
+    {
+        file = pNew_LOD->FindContainer("party.bin", 1);
+        if (!file)
+        {
+            Log::Warning(
+                L"%S",
+                localization->FormatString(612, 101).c_str()
+                ); // Savegame damaged! Code=%d
+        }
+        else
+        {
+            Party_Image_MM7 serialization;
+            fread(&serialization, sizeof(serialization), 1, file);
+
+            serialization.Deserialize(pParty);
         }
     }
-
-  sprintf(pTmpBuf.data(), "saves\\%s", pSavegameList->pFileList[uSlot].pSaveFileName);
-
-  pNew_LOD->CloseWriteFile();
-  if (!CopyFileA(pTmpBuf.data(), "data\\new.lod", 0))
-    int e = GetLastError();
-
-  pNew_LOD->LoadFile("data\\new.lod", 0);
-  FILE *file = pNew_LOD->FindContainer("header.bin", 1);
-  if (!file)
-  {
-    sprintf(Str, pGlobalTXT_LocalizationStrings[612], 100);//Сохраненная игра повреждена! Code=%d
-    Log::Warning(L"%S", Str);
-    MessageBoxA(nullptr, Str, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:549", 0);
-  }
-  Assert(sizeof(SavegameHeader) == 100);
-  fread(&header, sizeof(SavegameHeader), 1, file);
-
-  {
-      file = pNew_LOD->FindContainer("party.bin", 1);
-      if (!file)
-      {
-          sprintf(Str, pGlobalTXT_LocalizationStrings[612], 101);//Сохраненная игра повреждена! Code=%d
-          Log::Warning(L"%S", Str);
-          MessageBoxA(nullptr, Str, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:559", 0);
-      }
-      else
-      {
-          Party_Image_MM7 serialization;
-          fread(&serialization, sizeof(serialization), 1, file);
-
-          serialization.Deserialize(pParty);
-      }
-  }
 
     {
         file = pNew_LOD->FindContainer("clock.bin", 1);
         if (!file)
         {
-            sprintf(Str, pGlobalTXT_LocalizationStrings[612], 102);//Сохраненная игра повреждена! Code=%d
-            Log::Warning(L"%S", Str);
-            MessageBoxA(nullptr, Str, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:569", 0);
+            Log::Warning(
+                L"%S",
+                localization->FormatString(612, 102).c_str()
+                ); // Savegame damaged! Code=%d
         }
         else
         {
@@ -183,9 +186,10 @@ void LoadGame(unsigned int uSlot)
         file = pNew_LOD->FindContainer("overlay.bin", 1);
         if (!file)
         {
-            sprintf(Str, pGlobalTXT_LocalizationStrings[612], 103);//Сохраненная игра повреждена! Code=%d
-            Log::Warning(L"%S", Str);
-            MessageBoxA(nullptr, Str, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:579", 0);
+            Log::Warning(
+                L"%S",
+                localization->FormatString(612, 103).c_str()
+                ); // Savegame damaged! Code=%d
         }
         else
         {
@@ -200,9 +204,10 @@ void LoadGame(unsigned int uSlot)
         file = pNew_LOD->FindContainer("npcdata.bin", 0);
         if (!file)
         {
-            sprintf(Str, pGlobalTXT_LocalizationStrings[612], 104);//Сохраненная игра повреждена! Code=%d
-            Log::Warning(L"%S", Str);
-            MessageBoxA(nullptr, Str, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:590", 0);
+            Log::Warning(
+                L"%S",
+                localization->FormatString(612, 104).c_str()
+                ); // Savegame damaged! Code=%d
         }
         else
         {
@@ -216,85 +221,85 @@ void LoadGame(unsigned int uSlot)
         }
     }
 
-  file = pNew_LOD->FindContainer("npcgroup.bin", 0);
-  if (!file)
-  {
-    sprintf(Str, pGlobalTXT_LocalizationStrings[612], 105);//Сохраненная игра повреждена! Code=%d
-    Log::Warning(L"%S", Str);
-    MessageBoxA(nullptr, Str, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:600", 0);
-  }
-  if (sizeof(pNPCStats->pGroups_copy) != 0x66)
-    Log::Warning(L"NPCStats: deserialization warning");
-  fread(pNPCStats->pGroups_copy, sizeof(pNPCStats->pGroups_copy), 1, file);
-
-  uActiveCharacter = 0;
-  for (uint i = 0; i < 4; ++i)
-    if (pParty->pPlayers[i].CanAct())
+    file = pNew_LOD->FindContainer("npcgroup.bin", 0);
+    if (!file)
     {
-      uActiveCharacter = i + 1;
-      break;
+        Log::Warning(
+            L"%S",
+            localization->FormatString(612, 105).c_str()
+            ); // Savegame damaged! Code=%d
     }
+    if (sizeof(pNPCStats->pGroups_copy) != 0x66)
+        Log::Warning(L"NPCStats: deserialization warning");
+    fread(pNPCStats->pGroups_copy, sizeof(pNPCStats->pGroups_copy), 1, file);
 
-  for (uint i = 0; i < 4; ++i)
-  {
-    if ( pParty->pPlayers[i].uQuickSpell )
-      AA1058_PartyQuickSpellSound[i].AddPartySpellSound(pParty->pPlayers[i].uQuickSpell, i + 1);
-
-    for (uint j = 0; j < 2; ++j)
-    {
-      uint uEquipIdx = pParty->pPlayers[i].pEquipment.pIndices[j];
-      if (uEquipIdx)
-      {
-        int pItemID = pParty->pPlayers[i].pInventoryItemList[uEquipIdx - 1].uItemID;
-        if (pItemsTable->pItems[pItemID].uEquipType == EQUIP_WAND && pItemID )//жезл
+    uActiveCharacter = 0;
+    for (uint i = 0; i < 4; ++i)
+        if (pParty->pPlayers[i].CanAct())
         {
-          __debugbreak();  // looks like offset in player's inventory and wand_lut much like case in 0042ECB5
-          stru_A750F8[i].AddPartySpellSound(wand_spell_ids[pItemID - ITEM_WAND_FIRE], i + 9);
+            uActiveCharacter = i + 1;
+            break;
         }
-      }
+
+    for (uint i = 0; i < 4; ++i)
+    {
+        if (pParty->pPlayers[i].uQuickSpell)
+            AA1058_PartyQuickSpellSound[i].AddPartySpellSound(pParty->pPlayers[i].uQuickSpell, i + 1);
+
+        for (uint j = 0; j < 2; ++j)
+        {
+            uint uEquipIdx = pParty->pPlayers[i].pEquipment.pIndices[j];
+            if (uEquipIdx)
+            {
+                int pItemID = pParty->pPlayers[i].pInventoryItemList[uEquipIdx - 1].uItemID;
+                if (pItemsTable->pItems[pItemID].uEquipType == EQUIP_WAND && pItemID)//жезл
+                {
+                    __debugbreak();  // looks like offset in player's inventory and wand_lut much like case in 0042ECB5
+                    stru_A750F8[i].AddPartySpellSound(wand_spell_ids[pItemID - ITEM_WAND_FIRE], i + 9);
+                }
+            }
+        }
     }
-  }
 
-  /*if (pGUIWindow_CurrentMenu)
-  {
-      pGUIWindow_CurrentMenu->Release();
-      pGUIWindow_CurrentMenu = nullptr;
-  }*/
-  current_screen_type = SCREEN_GAME;
+    /*if (pGUIWindow_CurrentMenu)
+    {
+        pGUIWindow_CurrentMenu->Release();
+        pGUIWindow_CurrentMenu = nullptr;
+    }*/
+    current_screen_type = SCREEN_GAME;
 
-  viewparams->bRedrawGameUI = true;
+    viewparams->bRedrawGameUI = true;
 
-  SetUserInterface(pParty->alignment, true);
+    SetUserInterface(pParty->alignment, true);
 
-  pEventTimer->Resume();
-  pEventTimer->StopGameTime();
+    pEventTimer->Resume();
+    pEventTimer->StopGameTime();
 
-  v25 = pGames_LOD->DoesContainerExist(header.pLocationName);
-  sprintf(pTmpBuf.data(), "levels\\%s", header.pLocationName);
-  v26 = _access(pTmpBuf.data(), 4) != -1;
-  if ( !v25 && !v26 )
-    Error("Unable to find: %s!", header.pLocationName);
+    v25 = pGames_LOD->DoesContainerExist(header.pLocationName);
+    v26 = _access(StringPrintf("levels\\%s", header.pLocationName).c_str(), 4) != -1;
+    if (!v25 && !v26)
+        Error("Unable to find: %s!", header.pLocationName);
 
-  strcpy(pCurrentMapName, header.pLocationName);
-  dword_6BE364_game_settings_1 |= GAME_SETTINGS_2000 | GAME_SETTINGS_0001;
+    strcpy(pCurrentMapName, header.pLocationName);
+    dword_6BE364_game_settings_1 |= GAME_SETTINGS_2000 | GAME_SETTINGS_0001;
 
-  for (uint i = 0; i < uNumSavegameFiles; ++i)
-  {
-      pSavegameThumbnails[i]->Release();
-      pSavegameThumbnails[i] = nullptr;
-  }
+    for (uint i = 0; i < uNumSavegameFiles; ++i)
+    {
+        pSavegameThumbnails[i]->Release();
+        pSavegameThumbnails[i] = nullptr;
+    }
 
-  pIcons_LOD->RemoveTexturesPackFromTextureList();
-  if ( use_music_folder )
-    alSourcef (mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
-  else
-    pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
-  pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
-  if (uTurnSpeed)
-    pParty->sRotationY = uTurnSpeed * pParty->sRotationY / (signed int)uTurnSpeed;
-  MM7Initialization();
-  bFlashQuestBook = false;
-  viewparams->bRedrawGameUI = true;
+    pIcons_LOD->RemoveTexturesPackFromTextureList();
+    if (use_music_folder)
+        alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
+    else
+        pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
+    pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
+    if (uTurnSpeed)
+        pParty->sRotationY = uTurnSpeed * pParty->sRotationY / (signed int)uTurnSpeed;
+    MM7Initialization();
+    bFlashQuestBook = false;
+    viewparams->bRedrawGameUI = true;
 }
 
 //----- (0045F469) --------------------------------------------------------
@@ -311,7 +316,6 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     char Filename[255]; // [sp+130h] [bp-140h]@51
     char Ext[255]; // [sp+150h] [bp-120h]@51
     char Source[32]; // [sp+170h] [bp-100h]@51
-    char work_string[120]; // [sp+190h] [bp-E0h]@8
     int pPositionY; // [sp+208h] [bp-68h]@2
     int pPositionX; // [sp+20Ch] [bp-64h]@2
     int sPRotationY; // [sp+210h] [bp-60h]@2
@@ -356,19 +360,20 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     {
         pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
         pRenderer->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_loadsave);
-        text_pos = pFontSmallnum->AlignText_Center(186, pGlobalTXT_LocalizationStrings[190]);
-        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, pGlobalTXT_LocalizationStrings[190], 0, 0, 0); //Сохранение
+        text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
+        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->GetString(190), 0, 0, 0); //Сохранение
         text_pos = pFontSmallnum->AlignText_Center(186, pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, text_pos + 25, 259, 0, pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
-        text_pos = pFontSmallnum->AlignText_Center(186, pGlobalTXT_LocalizationStrings[165]);
-        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, pGlobalTXT_LocalizationStrings[165], 0, 0, 0); //Пожалуйста, подождите
+        text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(165));
+        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, localization->GetString(165), 0, 0, 0); //Пожалуйста, подождите
         pRenderer->Present();
     }
 
     if (pNew_LOD->Write(&pLodDirectory, uncompressed_buff, 0))
     {
-        sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 200); //Сохраненная игра повреждена! Code=%d
-        MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:773", 0);
+        auto error_message = localization->FormatString(612, 200); // Savegame damaged! Code=%d
+        Log::Warning(L"%S", error_message.c_str());
+        MessageBoxA(nullptr, error_message.c_str(), "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:773", 0);
     }
 
     Assert(sizeof(SavegameHeader) == 100);
@@ -381,8 +386,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     pLodDirectory.uDataSize = sizeof(SavegameHeader);
     if (pNew_LOD->Write(&pLodDirectory, &save_header, 0))
     {
-        sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 201);
-        MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:784", 0);
+        auto error_message = localization->FormatString(612, 201);
+        Log::Warning(L"%S", error_message.c_str());
     }
 
 
@@ -394,8 +399,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         strcpy(pLodDirectory.pFilename, "party.bin");
         if (pNew_LOD->Write(&pLodDirectory, &serialization, 0))
         {
-            sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 202);//Save game corrupted!  Code=%d
-            MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:793", 0);
+            auto error_message = localization->FormatString(612, 202);
+            Log::Warning(L"%S", error_message.c_str());
         }
     }
 
@@ -407,8 +412,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         strcpy(pLodDirectory.pFilename, "clock.bin");
         if (pNew_LOD->Write(&pLodDirectory, &serialization, 0))
         {
-            sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 203);
-            MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:802", 0);
+            auto error_message = localization->FormatString(612, 203);
+            Log::Warning(L"%S", error_message.c_str());
         }
     }
 
@@ -420,8 +425,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         strcpy(pLodDirectory.pFilename, "overlay.bin");
         if (pNew_LOD->Write(&pLodDirectory, &serialization, 0))
         {
-            sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 204);
-            MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:811", 0);
+            auto error_message = localization->FormatString(612, 204);
+            Log::Warning(L"%S", error_message.c_str());
         }
     }
 
@@ -434,8 +439,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         strcpy(pLodDirectory.pFilename, "npcdata.bin");
         if (pNew_LOD->Write(&pLodDirectory, serialization, 0))
         {
-            sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 205);
-            MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:820", 0);
+            auto error_message = localization->FormatString(612, 205);
+            Log::Warning(L"%S", error_message.c_str());
         }
     }
 
@@ -443,14 +448,15 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
   pLodDirectory.uDataSize = 102;
   if ( pNew_LOD->Write(&pLodDirectory, pNPCStats->pGroups_copy, 0) )
   {
-    sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 206);
-    MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:829", 0);
+      auto error_message = localization->FormatString(612, 206);
+      Log::Warning(L"%S", error_message.c_str());
   }
 
   for (int i =  1; i <= 4; ++i) // 4 - players
   {
     for (int j =  1; j <= 5; ++j) // 5 - images
     {
+        char work_string[120];
       sprintf(work_string, "data\\lloyd%d%d.pcx", i, j);
       pLLoidFile = fopen(work_string, "rb");
       if ( pLLoidFile )
@@ -466,9 +472,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         remove(work_string);
         if ( pNew_LOD->Write(&pLodDirectory, uncompressed_buff, 0) )
         {
-          sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 207);
-          MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:857", 0);
-          Size = 5080748;
+            auto error_message = localization->FormatString(612, 207);
+            Log::Warning(L"%S", error_message.c_str());
         }
       }
 	}
@@ -592,8 +597,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     pLodDirectory.uDataSize = compressed_block_size;
     if ( pNew_LOD->Write(&pLodDirectory, (const void *)compressed_buf, 0) )
     {
-      sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 208);
-      MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:1071", 0);
+        auto error_message = localization->FormatString(612, 208);
+        Log::Warning(L"%S", error_message.c_str());
     }
     free((void *)compressed_buf);
   }
@@ -603,8 +608,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     if ( !CopyFileA("data\\new.lod", "saves\\autosave.mm7", 0) )
     {
       FormatMessageA(0x1000, 0, GetLastError(), 0x400, Buffer, 0x80, 0);
-      sprintf(work_string, pGlobalTXT_LocalizationStrings[612], 300);
-      MessageBoxA(nullptr, work_string, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:1097", 0);
+      auto error_message = localization->FormatString(612, 300);
+      Log::Warning(L"%S", error_message.c_str());
     }
   }
   pParty->vPosition.x = pPositionX;
@@ -627,9 +632,8 @@ void DoSavegame(unsigned int uSlot)
     strcpy(pDir.pFilename, "header.bin");
     pDir.uDataSize = 100;
     pNew_LOD->Write(&pDir, &pSavegameHeader[uSlot], 0);
-    sprintf(pTmpBuf.data(), "saves\\save%03d.mm7", uSlot);
     pNew_LOD->CloseWriteFile();//закрыть 
-    CopyFileA("data\\new.lod", pTmpBuf.data(), 0);//сохранение файла в директорию saves
+    CopyFileA("data\\new.lod", StringPrintf("saves\\save%03d.mm7", uSlot).c_str(), 0);//сохранение файла в директорию saves
   }
   GUI_UpdateWindows();
   pGUIWindow_CurrentMenu->Release();
@@ -645,10 +649,10 @@ void DoSavegame(unsigned int uSlot)
   if ( _stricmp(pCurrentMapName, "d05.blv") )
     pNew_LOD->_4621A7();
   else
-    ShowStatusBarString(pGlobalTXT_LocalizationStrings[583], 2);// "No saving in the Arena"
+    GameUI_StatusBar_OnEvent(localization->GetString(583), 2);// "No saving in the Arena"
   pIcons_LOD->RemoveTexturesFromTextureList();
   pEventTimer->Resume();
-  ShowStatusBarString(pGlobalTXT_LocalizationStrings[656], 2);// "Game Saved!"
+  GameUI_StatusBar_OnEvent(localization->GetString(656), 2);// "Game Saved!"
   viewparams->bRedrawGameUI = true;
 }
 // 4E28F8: using guessed type int current_screen_type;
@@ -662,19 +666,19 @@ void SavegameList::Initialize(unsigned int bHideEmptySlots)
 
   _chdir("saves");
   {
-    if (!bHideEmptySlots && _access(pGlobalTXT_LocalizationStrings[613], 0) != -1 ) // AutoSave.MM7
-      strcpy(pSavegameList->pFileList[uNumSavegameFiles++].pSaveFileName, pGlobalTXT_LocalizationStrings[613]);
+    if (!bHideEmptySlots && _access(localization->GetString(613), 0) != -1 ) // AutoSave.MM7
+      strcpy(pSavegameList->pFileList[uNumSavegameFiles++].pSaveFileName, localization->GetString(613));
 
     for (uint i = 0; i < 40; ++i)
     {
-      sprintf(pTmpBuf.data(), "save%03d.mm7", i);
-      if (_access(pTmpBuf.data(), 0) == -1)
+      auto filename = StringPrintf("save%03d.mm7", i);
+      if (_access(filename.c_str(), 0) == -1)
         continue;
 
       uint idx = i;
       if (!bHideEmptySlots)
         idx = uNumSavegameFiles;
-      strcpy(pSavegameList->pFileList[idx].pSaveFileName, pTmpBuf.data());
+      strcpy(pSavegameList->pFileList[idx].pSaveFileName, filename.c_str());
 
       ++uNumSavegameFiles;
     }

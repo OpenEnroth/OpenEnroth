@@ -1,8 +1,8 @@
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Timer.h"
 #include "Engine/LOD.h"
-#include "Engine/texts.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/IRender.h"
 
@@ -30,7 +30,7 @@ GUIWindow_QuickReference::GUIWindow_QuickReference() :
 
     pBtn_ExitCancel = CreateButton(
         0x187u, 0x13Cu, 0x4Bu, 0x21u, 1, 0, UIMSG_Escape, 0, 0,
-        pGlobalTXT_LocalizationStrings[79],// "Exit"
+        localization->GetString(79),// "Exit"
         ui_buttdesc2,
         0
     ); //, v179);
@@ -62,83 +62,88 @@ void GUIWindow_QuickReference::Update()
         Player* player = &pParty->pPlayers[i];
         pX = 94 * i + 89;
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, 18, 0, pGlobalTXT_LocalizationStrings[149], 60, 0);//Name
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, 18, 0, localization->GetString(149), 60, 0);//Name
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 94 * i + 89, 18, ui_character_header_text_color, player->pName, 84, 0);
+
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, 47, 0, pGlobalTXT_LocalizationStrings[131], 60, 0); //Уров.
-        sprintf(pTmpBuf.data(), "%lu", player->GetActualLevel());
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, 47, 0, localization->GetString(131), 60, 0); //Уров.
         if (player->GetActualLevel() <= player->GetBaseLevel())
             pTextColor = player->GetExperienceDisplayColor();
         else
             pTextColor = ui_character_bonus_text_color;
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, 47, pTextColor, pTmpBuf.data(), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, 47, pTextColor, StringPrintf("%lu", player->GetActualLevel()), 84, 0);
+
         pY = pFontHeight + 47;
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pFontHeight + 47, 0, pGlobalTXT_LocalizationStrings[41], 60, 0);//Класс
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, pClassNames[player->classType], 84, 0);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pFontHeight + 47, 0, localization->GetString(41), 60, 0);//Класс
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, localization->GetClassName(player->classType), 84, 0);
         pY = pFontHeight + pY;
+
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[107], 60, 0);//Здор.
-        sprintf(pTmpBuf.data(), "%d", player->sHealth);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(107), 60, 0);//Здор.
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player->sHealth, player->GetMaxHealth());
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, pTmpBuf.data(), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, StringPrintf("%d", player->sHealth), 84, 0);
         pY = pFontHeight + pY;
+
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[209], 60, 0);//Мана
-        sprintf(pTmpBuf.data(), "%d", player->sMana);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(209), 60, 0);//Мана
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana());
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, pTmpBuf.data(), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, StringPrintf("%d", player->sMana), 84, 0);
         pY = pFontHeight + pY;
+
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[0], 60, 0);//Класс брони
-        sprintf(pTmpBuf.data(), "%d", player->GetActualAC());
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(0), 60, 0);//Класс брони
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAC(), player->GetBaseAC());
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, pTmpBuf.data(), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, StringPrintf("%d", player->GetActualAC()), 84, 0);
         pY = pFontHeight + pY;
+
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[18], 60, 0);//Атака
-        sprintf(pTmpBuf.data(), "%+d", player->GetActualAttack(false));
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, pTmpBuf.data(), 84, 0);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(18), 60, 0);//Атака
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, StringPrintf("%+d", player->GetActualAttack(false)), 84, 0);
         pY = pFontHeight + pY;
+
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[66], 60, 0);//Повр.
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(66), 60, 0); // Damage   Повр.
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, player->GetMeleeDamageString(), 84, 0);
         pY = pFontHeight + pY;
+
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[203], 60, 0);// Стрелять
-        sprintf(pTmpBuf.data(), "%+d", player->GetRangedAttack());
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, pTmpBuf.data(), 84, 0);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(203), 60, 0);// Стрелять
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, StringPrintf("%+d", player->GetRangedAttack()), 84, 0);
         pY = pFontHeight + pY;
+
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[66], 60, 0);//Повр.
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(66), 60, 0);//Повр.
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, player->GetRangedDamageString(), 84, 0);
         pY = pFontHeight + pY;
+
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[205], 60, 0);//Навыки
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(205), 60, 0);//Навыки
         pSkillsCount = 0;
         for (uint j = 0; j <= 36; ++j)
         {
             if (player->pActiveSkills[j])
                 ++pSkillsCount;
         }
-        sprintf(pTmpBuf.data(), "%lu", pSkillsCount);
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, pTmpBuf.data(), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, StringPrintf("%lu", pSkillsCount), 84, 0);
         pY = pFontHeight + pY;
+
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[168], 60, 0);//Очки
-        sprintf(pTmpBuf.data(), "%lu", player->uSkillPoints);
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color, pTmpBuf.data(), 84, 0);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(168), 60, 0);//Очки
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color, StringPrintf("%lu", player->uSkillPoints), 84, 0);
         pY = pFontHeight + pY;
+
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[45], 60, 0);//Сост.
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, aCharacterConditionNames[player->GetMajorConditionIdx()], 84, 0);
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(45), 60, 0);//Сост.
+        pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, localization->GetCharacterConditionName(player->GetMajorConditionIdx()), 84, 0);
         pY = pFontHeight + pY;
+
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, pGlobalTXT_LocalizationStrings[170], 60, 0);//Б.Прим.
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(170), 60, 0);//Б.Прим.
         if (player->uQuickSpell)
             pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
         else
-            pText = pGlobalTXT_LocalizationStrings[153];//Нет
+            pText = localization->GetString(153);//Нет
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, pText, 84, 0);
     }
 
@@ -152,8 +157,8 @@ void GUIWindow_QuickReference::Update()
     else
         pTextColor = ui_character_bonus_text_color;
 
-    sprintf(pTmpBuf.data(), "%s: \f%05d%s\f00000", pGlobalTXT_LocalizationStrings[180], pTextColor, GetReputationString(pParty->GetPartyReputation()));//Reputation
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 22, 323, 0, pTmpBuf.data(), 0, 0, 0);
-    sprintf(pTmpBuf.data(), "\r261%s: %d", pGlobalTXT_LocalizationStrings[84], pParty->GetPartyFame());// Fame Слава
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 0, 323, 0, pTmpBuf.data(), 0, 0, 0);
+    auto str1 = StringPrintf("%s: \f%05d%s\f00000", localization->GetString(180), pTextColor, GetReputationString(pParty->GetPartyReputation()).c_str());//Reputation
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 22, 323, 0, str1, 0, 0, 0);
+    auto str2 = StringPrintf("\r261%s: %d", localization->GetString(84), pParty->GetPartyFame());// Fame Слава
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 0, 323, 0, str2, 0, 0, 0);
 }

@@ -4,6 +4,7 @@
 #include <crtdbg.h>
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 
 #include "CastSpellInfo.h"
 #include "../Objects/Actor.h"
@@ -24,10 +25,11 @@
 #include "../Tables/IconFrameTable.h"
 #include "../Awards.h"
 #include "../TurnEngine/TurnEngine.h"
-#include "../texts.h"
 #include "../LOD.h"
 #include "../Graphics/Level/Decoration.h"
 #include "..\..\GUI\UI\UIPartyCreation.h"
+
+#include "GUI/UI/UiStatusBar.h"
 
 const size_t CastSpellInfoCount = 10;
 std::array<CastSpellInfo, CastSpellInfoCount> pCastSpellInfo;
@@ -234,7 +236,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
 
     if (pCastSpell->uSpellID < SPELL_BOW_ARROW && pPlayer->sMana < uRequiredMana)
     {
-      ShowStatusBarString(pGlobalTXT_LocalizationStrings[586], 2); // "Not enough spell points"
+      GameUI_StatusBar_OnEvent(localization->GetString(586)); // "Not enough spell points"
       pCastSpell->uSpellID = 0;
       continue;
     }
@@ -249,7 +251,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         pPlayer->SetRecoveryTime(sRecoveryTime);
         pTurnEngine->ApplyPlayerAction();
       }
-      ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // "Spell failed"
+
+      GameUI_StatusBar_OnEvent(localization->GetString(428)); // "Spell failed"
       pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
       pCastSpellInfo[n].uSpellID = 0;
       pPlayer->sMana -= uRequiredMana;
@@ -367,7 +370,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         }
         if ( _v733 > amount )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -405,7 +408,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           break;
         if (!a2)
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -497,7 +500,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         int obj_id = pSpellSprite.Create(0, 0, 0, 0);
         if ( !MonsterStats::BelongsToSupertype(pActors[PID_ID(a2)].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD) )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -587,7 +590,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         if ( uCurrentlyLoadedLevelType == LEVEL_Indoor
           || uCurrentlyLoadedLevelType == LEVEL_Outdoor && (pParty->uCurrentHour < 5 || pParty->uCurrentHour >= 21) )//только в дневное время
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -763,7 +766,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         _50C9D0_AfterEnchClickEventId = 113;
         _50C9D4_AfterEnchClickEventSecondParam = 0;
         _50C9D8_AfterEnchClickEventTimeout = 1;
-        ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+        GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
         pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
         pCastSpell->uSpellID = 0;
         continue;
@@ -935,7 +938,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           }
           else
           {
-            ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2);//"Не получилось!!!"
+            GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed     Не получилось!!!
             pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
             pCastSpell->uSpellID = 0;
           }
@@ -1012,7 +1015,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           meteor_num = 16;
         if ( uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[491], 2);  // Can't cast Meteor Shower indoors!
+          GameUI_StatusBar_OnEvent(localization->GetString(491));  // Can't cast Meteor Shower indoors!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -1082,7 +1085,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[492], 2); // Can't cast Inferno outdoors!
+          GameUI_StatusBar_OnEvent(localization->GetString(492)); // Can't cast Inferno outdoors!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -1204,7 +1207,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         if ( pParty->uFlags & PARTY_FLAGS_1_FALLING)
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[493], 2);  // Can't cast Jump while airborne!
+          GameUI_StatusBar_OnEvent(localization->GetString(493));  // Can't cast Jump while airborne!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           break;
         }
@@ -1230,7 +1233,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         }
         if (pParty->uFlags & (PARTY_FLAGS_1_ALERT_RED | PARTY_FLAGS_1_ALERT_YELLOW))
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[638], 2);  // There are hostile creatures nearby!
+          GameUI_StatusBar_OnEvent(localization->GetString(638));  // There are hostile creatures nearby!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -1251,13 +1254,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         if ( uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[494], 2);  // Can not cast Fly indoors!
+          GameUI_StatusBar_OnEvent(localization->GetString(494));  // Can not cast Fly indoors!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           break;
         }
         if ( !pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2);  // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428));  // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           break;
         }
@@ -1279,7 +1282,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         if ( uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[495], 2);  // Can't cast Starburst indoors!
+          GameUI_StatusBar_OnEvent(localization->GetString(495));  // Can't cast Starburst indoors!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -1456,7 +1459,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         if ( !pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2);  // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428));  // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           break;
         }
@@ -1493,7 +1496,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           _50C9D0_AfterEnchClickEventId = 113;
           _50C9D4_AfterEnchClickEventSecondParam = 0;
           _50C9D8_AfterEnchClickEventTimeout = 1;
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2);  // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428));  // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -1517,7 +1520,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           _50C9D0_AfterEnchClickEventId = 113;
           _50C9D4_AfterEnchClickEventSecondParam = 0;
           _50C9D8_AfterEnchClickEventTimeout = 1;
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2);//Не получилось!!!
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed     Не получилось!!!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           spell_level = v723;
@@ -1677,10 +1680,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         }
         if ( spell_sound_flag == 0 )
         {
-          v317 = pGlobalTXT_LocalizationStrings[428];//Не получилось!!!
+          v317 = localization->GetString(428); // Spell failed    Не получилось!!!
           if ( item_not_broken == false )
-            v317 = pGlobalTXT_LocalizationStrings[585];//Предмет недостаточно высокого качества
-          ShowStatusBarString(v317, 2);
+            v317 = localization->GetString(585); // Item too lame     Предмет недостаточно высокого качества
+          GameUI_StatusBar_OnEvent(v317, 2);
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           //v318 =  &pParty->pPlayers[pCastSpell->uPlayerID_2];
           pCastSpell->uSpellID = 0;
@@ -1696,7 +1699,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         if ( pParty->uFlags & (PARTY_FLAGS_1_ALERT_RED | PARTY_FLAGS_1_ALERT_YELLOW) && skill_level != 4 
           || rand() % 100 >= amount && skill_level != 4 )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -1706,11 +1709,11 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         spell_sound_flag = true;
         break;
       }
-      case SPELL_WATER_LLOYDS_BEACON://Маяк Ллойда
+      case SPELL_WATER_LLOYDS_BEACON:
       {
         if ( !_stricmp(pCurrentMapName, "d05.blv") ) // Arena
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -1785,11 +1788,11 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         spell_sound_flag = true;
         break;
       }
-      case SPELL_EARTH_DEATH_BLOSSOM: //Цветок смерти
+      case SPELL_EARTH_DEATH_BLOSSOM:
       {
         if ( uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -2165,24 +2168,23 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
               }
             }
           }
-          if ( gold_num > 0 )
+          if (gold_num > 0)
           {
-            if (item.uItemID)
-              sprintf(pTmpBuf2.data(), "(%s), and %d gold", item.GetDisplayName(), gold_num);
-            else
-              sprintf(pTmpBuf2.data(), "%d gold", gold_num);
+              if (item.uItemID)
+                  GameUI_StatusBar_OnEvent(StringPrintf("(%s), and %d gold", item.GetDisplayName().c_str(), gold_num));
+              else
+                  GameUI_StatusBar_OnEvent(StringPrintf("%d gold", gold_num));
           }
           else
           {
             if (item.uItemID)
-              sprintf(pTmpBuf2.data(), "(%s)", item.GetDisplayName());
+                GameUI_StatusBar_OnEvent(StringPrintf("(%s)", item.GetDisplayName().c_str()));
             else
             {
-              strcpy(pTmpBuf2.data(), "nothing");
-              ShowStatusBarString(pTmpBuf2.data(), 2);
+                GameUI_StatusBar_OnEvent("nothing");
             }
           }
-          ShowStatusBarString(pTmpBuf2.data(), 2);
+
           pSpellSprite.containing_item.Reset();
           pSpellSprite.spell_id = pCastSpell->uSpellID;
           pSpellSprite.spell_level = spell_level;
@@ -2379,8 +2381,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           }
           else
           {
-              sprintfex(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[471], pItemsTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);//Вы нашли ^Pv[%s]!
-            ShowStatusBarString(pTmpBuf2.data(), 2);
+            GameUI_StatusBar_OnEvent(localization->FormatString(471, pItemsTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName)); // You find %s!     Вы нашли ^Pv[%s]!
             if (!pParty->AddItemToParty(&pSpriteObjects[obj_id].containing_item))
                 pParty->SetHoldingItem(&pSpriteObjects[obj_id].containing_item);
           }
@@ -2648,7 +2649,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         }
         if ( mon_num >= amount )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[648], 2);  // This character can't summon any more monsters!
+          GameUI_StatusBar_OnEvent(localization->GetString(648));  // This character can't summon any more monsters!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -2685,7 +2686,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[497], 2);  // Can't cast Prismatic Light outdoors!
+          GameUI_StatusBar_OnEvent(localization->GetString(497));  // Can't cast Prismatic Light outdoors!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -2797,12 +2798,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         spell_sound_flag = true;
         break;
       }
-      case SPELL_LIGHT_DIVINE_INTERVENTION://Божественное вмешательство
+
+      case SPELL_LIGHT_DIVINE_INTERVENTION:
       {
         //amount = 3;
         if ( pPlayer->uNumDivineInterventionCastsThisDay >= 3 )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -2853,7 +2855,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         mon_id = PID_ID(pCastSpell->spell_target_pid);
         if ( mon_id == -1 )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[496], 2);  // No valid target exists!
+          GameUI_StatusBar_OnEvent(localization->GetString(496));  // No valid target exists!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -2861,7 +2863,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         if ( pActors[mon_id].sCurrentHP > 0 
          ||  pActors[mon_id].uAIState != Dead && pActors[mon_id].uAIState != Dying )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -2929,7 +2931,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           _50C9D0_AfterEnchClickEventId = 113;
           _50C9D4_AfterEnchClickEventSecondParam = 0;
           _50C9D8_AfterEnchClickEventTimeout = 1;
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -3015,7 +3017,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
             break;
           if ( !pActors[mon_id].DoesDmgTypeDoDamage((DAMAGE_TYPE)10) )
           {
-            ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+            GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
             pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
             pCastSpell->uSpellID = 0;
             continue;
@@ -3077,7 +3079,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         if ( pCastSpell->uPlayerID_2 != 4 && pCastSpell->uPlayerID_2 != 5
            || achieved_awards[pCastSpell->uPlayerID_2 - 4] <= 0 || achieved_awards[pCastSpell->uPlayerID_2 - 4] >= 3 )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -3191,7 +3193,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         if ( uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[499], 2);  // Can't cast Armageddon indoors!
+          GameUI_StatusBar_OnEvent(localization->GetString(499));  // Can't cast Armageddon indoors!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -3202,7 +3204,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           amount = 3;
         if ( pPlayer->uNumArmageddonCasts >= amount || pParty->armageddon_timer > 0 )
         {
-          ShowStatusBarString(pGlobalTXT_LocalizationStrings[428], 2); // Spell failed
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           continue;
@@ -3288,7 +3290,7 @@ void CastSpellInfoHelpers::_427D48()
       pGUIWindow_CastTargetedSpell->Release();
       pGUIWindow_CastTargetedSpell = nullptr;
       pMouse->SetCursorBitmap("MICON1");
-      GameUI_Footer_TimeLeft = 0;
+      GameUI_StatusBar_Update(true);
       _50C9A0_IsEnchantingInProgress = 0;
       back_to_game();
     }

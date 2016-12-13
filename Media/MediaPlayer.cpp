@@ -1040,33 +1040,35 @@ void MPlayer::Initialize(OSWindow *target_window)
   //GetDllVersion(L"BINKW32.DLL", &uBinkVersionMajor, &uBinkVersionMinor);
   //uBinkVersion = (unsigned __int64)uBinkVersionMajor << 32 | uBinkVersionMinor;
 
-  strcpy(pTmpBuf.data(), "anims\\might7.vid");
-  hMightVid = CreateFileW(L"anims\\might7.vid", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080, 0);
+  char filename[1024];
+  strcpy(filename, "anims\\might7.vid");
+  hMightVid = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080, 0);
   if ( hMightVid == INVALID_HANDLE_VALUE )
   {
-    sprintf(pTmpBuf2.data(), "Can't open file - anims\\%s.smk", pTmpBuf.data());
-    MessageBoxA(0, pTmpBuf2.data(), "Video File Error", 0);
+    MessageBoxA(0, filename, "Can't open video file", 0);
     return;
   }
-  strcpy(pTmpBuf.data(), "anims\\magic7.vid");
-  hMagicVid = CreateFileW(L"anims\\magic7.vid", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080, 0);
+
+  strcpy(filename, "anims\\magic7.vid");
+  hMagicVid = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080, 0);
   if ( hMagicVid == INVALID_HANDLE_VALUE )
   {
     if ( !bCanLoadFromCD )
     {
-       sprintf(pTmpBuf2.data(), "Can't open file - anims\\%s.smk", pTmpBuf.data());
-       MessageBoxA(0, pTmpBuf2.data(), "Video File Error", 0);
+        MessageBoxA(0, filename, "Can't open video file", 0);
        return;
     }
-    sprintf(pTmpBuf2.data(), "%c:\\%s", (unsigned __int8)cMM7GameCDDriveLetter, pTmpBuf.data());
-    hMagicVid = CreateFileA(pTmpBuf2.data(), GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080, 0);
+
+    char filename2[1024];
+    sprintf(filename2, "%c:\\%s", (unsigned __int8)cMM7GameCDDriveLetter, filename);
+    hMagicVid = CreateFileA(filename2, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080, 0);
     if ( hMagicVid == (HANDLE)INVALID_HANDLE_VALUE )
     {
-      sprintf(pTmpBuf2.data(), "Can't open file - %s", pTmpBuf.data());
-      MessageBoxA(0, pTmpBuf2.data(), "Video File Error", 0);
+        MessageBoxA(0, filename2, "Can't open video file", 0);
       return;
     }
   }
+
   ReadFile(hMightVid, &uNumMightVideoHeaders, 4, &NumberOfBytesRead, 0);
   ReadFile(hMagicVid, &uNumMagicVideoHeaders, 4, &NumberOfBytesRead, 0);
   pMightVideoHeaders = (MovieHeader *)malloc(sizeof(MovieHeader) * uNumMightVideoHeaders + 2);

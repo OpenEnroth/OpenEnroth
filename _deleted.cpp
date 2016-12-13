@@ -830,7 +830,7 @@ void Polygon::_48276F_sr()
 
 
 //----- (004829B9) --------------------------------------------------------
-Polygon *__fastcall sr_sub_4829B9(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, Polygon *a4, int a5)
+Polygon *sr_sub_4829B9(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, Polygon *a4, int a5)
 {
   double v5; // st7@1
   RenderVertexSoft *v6; // esi@1
@@ -870,7 +870,7 @@ Polygon *__fastcall sr_sub_4829B9(RenderVertexSoft *a1, RenderVertexSoft *a2, Re
 }
 
 //----- (00481DB2) --------------------------------------------------------
-char __fastcall sr_sub_481DB2(RenderVertexSoft *a1, signed int a2, Polygon *a3)
+char sr_sub_481DB2(RenderVertexSoft *a1, signed int a2, Polygon *a3)
 {
   int v3; // eax@2
   int v4; // esi@2
@@ -906,7 +906,7 @@ char __fastcall sr_sub_481DB2(RenderVertexSoft *a1, signed int a2, Polygon *a3)
 }
 
 //----- (00486B4E) --------------------------------------------------------
-char __fastcall sr_sub_486B4E_push_outdoor_edges(RenderVertexSoft *a1, int *a2, int *a3, Polygon *a4)//maybe DrawPolygonSW
+char sr_sub_486B4E_push_outdoor_edges(RenderVertexSoft *a1, int *a2, int *a3, Polygon *a4)//maybe DrawPolygonSW
 {
   Polygon *v4; // esi@1
   RenderVertexSoft *v5; // edi@1
@@ -1687,7 +1687,7 @@ LABEL_72:
 }
 
 //----- (0047BC6F) --------------------------------------------------------
-unsigned __int16 *__fastcall sr_GetBillboardPalette(RenderBillboard *a1, int a2, signed int a3, int a4)
+unsigned __int16 *sr_GetBillboardPalette(RenderBillboard *a1, int a2, signed int a3, int a4)
 {
   int v4; // ebx@1
   int v6; // edx@4
@@ -2435,7 +2435,7 @@ LABEL_15:
 }
 
 //----- (00482E07) --------------------------------------------------------
-signed int __fastcall sr_sub_482E07(Span *ecx0, unsigned __int16 *pRenderTarget)
+signed int sr_sub_482E07(Span *ecx0, unsigned __int16 *pRenderTarget)
 {
   stru315 *v2; // ebp@0
   Polygon *v3; // esi@1
@@ -2902,7 +2902,7 @@ LABEL_16:
 }
 
 //----- (00485AFF) --------------------------------------------------------
-stru315 *__fastcall sr_sub_485AFF(stru315 *a1, stru316 *a2)
+stru315 *sr_sub_485AFF(stru315 *a1, stru316 *a2)
 {
   stru315 *result; // eax@1
   int i; // ecx@1
@@ -2965,7 +2965,7 @@ stru315 *__fastcall sr_sub_485AFF(stru315 *a1, stru316 *a2)
 }
 
 //----- (0047F4D3) --------------------------------------------------------
-void __fastcall _47F4D3_initialize_terrain_bezier_stuff(int band1, int band2, int band3)
+void _47F4D3_initialize_terrain_bezier_stuff(int band1, int band2, int band3)
 {
   int v3; // edi@1
   //stru220 *v4; // esi@1
@@ -3016,7 +3016,7 @@ void __fastcall _47F4D3_initialize_terrain_bezier_stuff(int band1, int band2, in
 }
 
 //----- (00481EFA) --------------------------------------------------------
-bool __fastcall _481EFA_clip_terrain_poly(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, RenderVertexSoft *a4, int a5)
+bool _481EFA_clip_terrain_poly(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, RenderVertexSoft *a4, int a5)
 {
   RenderVertexSoft *v5; // esi@1
   RenderVertexSoft *v6; // edx@1
@@ -3544,7 +3544,7 @@ LABEL_74:
 }
 
 //----- (00481FC9) --------------------------------------------------------
-int __fastcall _481FC9_terrain(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, struct Polygon *a4)//Rotate camera
+int _481FC9_terrain(RenderVertexSoft *a1, RenderVertexSoft *a2, RenderVertexSoft *a3, struct Polygon *a4)//Rotate camera
 {
   float arg_0, arg_4, var_4, var_8, var_c, var_10, var_14;
 
@@ -3829,7 +3829,7 @@ LABEL_15:
 }
 
 //----- (0047BEB1) --------------------------------------------------------
-int __fastcall sr_sub_47BEB1(signed int a1, Polygon *a2, int terrain_gamma, int a4, int *a5, int *a6, int a7, int a8)
+int sr_sub_47BEB1(signed int a1, Polygon *a2, int terrain_gamma, int a4, int *a5, int *a6, int a7, int a8)
 {
   Polygon *v8; // ebx@1
   signed int v9; // edx@1
@@ -4020,7 +4020,7 @@ LABEL_59:
   return result;
 }
 //----- (0047C24C) --------------------------------------------------------
-unsigned __int16 *__fastcall sr_sub_47C24C_get_palette(BLVFace *a1, int a2, int a3, char a4)
+unsigned __int16 *sr_sub_47C24C_get_palette(BLVFace *a1, int a2, int a3, char a4)
 {
   int v4; // esi@1
   int v5; // eax@2
@@ -4084,7 +4084,7 @@ void IndoorCameraD3D::sr_438141_draw_list_0037C()
   }
 }
 //----- (00485BAE) --------------------------------------------------------
-stru315 *__fastcall sr_sub_485BAE(stru315 *a1, stru316 *a2)
+stru315 *sr_sub_485BAE(stru315 *a1, stru316 *a2)
 {
   stru315 *result; // eax@1
   int i; // ecx@1
@@ -4161,7 +4161,7 @@ stru315 *__fastcall sr_sub_485BAE(stru315 *a1, stru316 *a2)
 }
 
 //----- (00485C89) --------------------------------------------------------
-stru315 *__fastcall sr_sub_485C89(stru315 *a1, stru316 *a2)
+stru315 *sr_sub_485C89(stru315 *a1, stru316 *a2)
 {
   stru315 *result; // eax@1
   int i; // ecx@1
@@ -4225,7 +4225,7 @@ stru315 *__fastcall sr_sub_485C89(stru315 *a1, stru316 *a2)
 }
 
 //----- (00485D3E) --------------------------------------------------------
-stru315 *__fastcall sr_sub_485D3E(stru315 *a1, stru316 *a2)
+stru315 *sr_sub_485D3E(stru315 *a1, stru316 *a2)
 {
   stru315 *result; // eax@1
   int i; // ecx@1
@@ -4303,7 +4303,7 @@ stru315 *__fastcall sr_sub_485D3E(stru315 *a1, stru316 *a2)
 }
 
 //----- (0047C178) --------------------------------------------------------
-void *__fastcall sr_sub_47C178(signed int a1, Polygon *a2, int terrain_gamma, int a4)
+void *sr_sub_47C178(signed int a1, Polygon *a2, int terrain_gamma, int a4)
 {
   Polygon *v4; // esi@1
   void *result; // eax@2
@@ -4324,7 +4324,7 @@ void *__fastcall sr_sub_47C178(signed int a1, Polygon *a2, int terrain_gamma, in
 }
 
 //----- (0047C1CA) --------------------------------------------------------
-void *__fastcall sr_sub_47C1CA(Polygon *a1, char a2, int a3, signed int a4)
+void *sr_sub_47C1CA(Polygon *a1, char a2, int a3, signed int a4)
 {
   Polygon *v4; // esi@1
   void *result; // eax@2
@@ -4367,7 +4367,7 @@ void *__fastcall sr_sub_47C1CA(Polygon *a1, char a2, int a3, signed int a4)
 }
 
 //----- (0047C28C) --------------------------------------------------------
-char *__fastcall sr_sub_47C28C_get_palette(Polygon *a1, char a2, signed int a3, signed int a4)
+char *sr_sub_47C28C_get_palette(Polygon *a1, char a2, signed int a3, signed int a4)
 {
   Polygon *v4; // esi@1
   char *result; // eax@2
@@ -5017,7 +5017,7 @@ LABEL_47:
   }
 }
 //----- (00485E1F) --------------------------------------------------------
-void *__fastcall sr_sub_485E1F(stru316 *a1, Span *a2, int a3, Polygon *a4, int a5, unsigned __int8 a6, char a7)
+void *sr_sub_485E1F(stru316 *a1, Span *a2, int a3, Polygon *a4, int a5, unsigned __int8 a6, char a7)
 {
   stru316 *v7; // esi@1
   signed int *v8; // edi@1
@@ -5450,7 +5450,7 @@ LABEL_23:
   return result;
 }
 //----- (00485A24) --------------------------------------------------------
-stru315 *__fastcall sr_sub_485A24(stru315 *a1, stru315 *a2)
+stru315 *sr_sub_485A24(stru315 *a1, stru315 *a2)
 {
   stru315 *result; // eax@1
   int i; // ecx@1
@@ -5526,7 +5526,7 @@ stru315 *__fastcall sr_sub_485A24(stru315 *a1, stru315 *a2)
   return result;
 }
 //----- (00485975) --------------------------------------------------------
-stru315 *__fastcall sr_sub_485975(stru315 *a1, stru315 *a2)
+stru315 *sr_sub_485975(stru315 *a1, stru315 *a2)
 {
   stru315 *result; // eax@1
   int i; // ecx@1
@@ -5588,7 +5588,7 @@ stru315 *__fastcall sr_sub_485975(stru315 *a1, stru315 *a2)
   return result;
 }
 //----- (004839BD) --------------------------------------------------------
-signed int __fastcall sr_sub_4839BD(Span *ecx0, unsigned __int16 *pTargetSurface)
+signed int sr_sub_4839BD(Span *ecx0, unsigned __int16 *pTargetSurface)
 {
   stru315 *v2; // ebp@0
   int v3; // eax@1
@@ -6604,7 +6604,7 @@ LABEL_14:
 }
 
 //----- (00485407) --------------------------------------------------------
-signed int __fastcall sr_sub_485407_prolly_odm_water_wavy(Span *a1)
+signed int sr_sub_485407_prolly_odm_water_wavy(Span *a1)
 {
   stru315 *v1; // ebp@0
   int v2; // eax@1
@@ -6809,7 +6809,7 @@ LABEL_12:
 }
 
 //----- (0048585C) --------------------------------------------------------
-signed int __fastcall sr_sub_48585C_mb_DrawSpan(Span *a1, unsigned __int16 *pRenderTarget, int a4)
+signed int sr_sub_48585C_mb_DrawSpan(Span *a1, unsigned __int16 *pRenderTarget, int a4)
 {
   Span *v3; // esi@1
   Polygon *v4; // edi@1
@@ -6854,7 +6854,7 @@ signed int __fastcall sr_sub_48585C_mb_DrawSpan(Span *a1, unsigned __int16 *pRen
   return 1;
 }
 //----- (004252E8) --------------------------------------------------------
-signed int __fastcall sr_4252E8(unsigned int uVertexID)
+signed int sr_4252E8(unsigned int uVertexID)
 {
   unsigned int v1; // edx@1
   double v2; // st7@1
@@ -6985,7 +6985,7 @@ LABEL_22:
 }
 
 //----- (004250FE) --------------------------------------------------------
-signed int __fastcall sr_4250FE(unsigned int uVertexID)
+signed int sr_4250FE(unsigned int uVertexID)
 {
   unsigned int v1; // edx@1
   char *v2; // edi@5
@@ -7115,7 +7115,7 @@ LABEL_22:
 
 
 //----- (004254D2) --------------------------------------------------------
-int __fastcall sr_4254D2(signed int a1)
+int sr_4254D2(signed int a1)
 {
   signed int v1; // ebx@2
   int v2; // ecx@2
@@ -7747,7 +7747,7 @@ LABEL_112:
 
 
 //----- (00424579) --------------------------------------------------------
-int __fastcall sr_424579(int uFaceID, LightsData *a2)
+int sr_424579(int uFaceID, LightsData *a2)
 {
   BLVFace *v2; // eax@1
   Vec3_short_ *v3; // ebx@1
@@ -8018,7 +8018,7 @@ LABEL_16:
 
 
 //----- (004AD504) --------------------------------------------------------
-int __fastcall sr_4AD504(signed int sFaceID)
+int sr_4AD504(signed int sFaceID)
 {
   int result; // eax@1
   signed int v2; // ebx@1
@@ -8541,7 +8541,7 @@ LABEL_45:
 }
 
 //----- (004AE313) --------------------------------------------------------
-int __fastcall sr_4AE313(int viewport_space_x, int viewport_space_y, stru337_stru0 *p)
+int sr_4AE313(int viewport_space_x, int viewport_space_y, stru337_stru0 *p)
 {
   int _dy; // ebx@1
   int _dx; // edi@1
@@ -8596,7 +8596,7 @@ int __fastcall sr_4AE313(int viewport_space_x, int viewport_space_y, stru337_str
   return result;
 }
 //----- (004AE491) --------------------------------------------------------
-int __fastcall sr_4AE491(signed int a1, signed int a2)
+int sr_4AE491(signed int a1, signed int a2)
 {
   signed int v2; // eax@1
   signed int v3; // edi@1
@@ -8672,7 +8672,7 @@ int __fastcall sr_4AE491(signed int a1, signed int a2)
 }
 
 //----- (004AE5F1) --------------------------------------------------------
-void __fastcall sr_4AE5F1(unsigned int uFaceID)
+void sr_4AE5F1(unsigned int uFaceID)
 {
   BLVFace *v1; // esi@1
   BLVFaceExtra *v2; // ebx@1
@@ -9323,7 +9323,7 @@ int  sr_4AF412()
   return result;
 }
 //----- (004ADD1D) --------------------------------------------------------
-void __fastcall sr_4ADD1D(int uFaceID)
+void sr_4ADD1D(int uFaceID)
 {
   int v1; // edi@1
   BLVFace *v2; // esi@3
@@ -9600,7 +9600,7 @@ LABEL_26:
   }
 }
 //----- (004AE1E7) --------------------------------------------------------
-int __fastcall sr_4AE1E7(int a1, int a2, int a3)
+int sr_4AE1E7(int a1, int a2, int a3)
 {
   int v3; // ebx@1
   int v4; // edi@1
@@ -10915,11 +10915,11 @@ void Abortf(const char *Format, ...)
   va_start(va, Format);
   if ( !pRenderer->bWindowMode )
     pRenderer->ChangeBetweenWinFullscreenModes();
-  vsprintf(pTmpBuf.data(), Format, va);
+  vsprintf(tmp_str.data(), Format, va);
   if ( pMouse )
     pMouse->ChangeActivation(0);
   ClipCursor(0);
-  MessageBoxA(0, pTmpBuf.data(), "Error", 0x30u);
+  MessageBoxA(0, tmp_str.data(), "Error", 0x30u);
   Engine_DeinitializeAndTerminate(1);
 }
 //----- (00466B8C) --------------------------------------------------------
@@ -10960,10 +10960,10 @@ void CreateDefaultBLVLevel()
   ofn.lCustData = 0;
   ofn.lpfnHook = 0;
   ofn.lpTemplateName = 0;
-  ofn.lpstrFileTitle = pTmpBuf.data();
+  ofn.lpstrFileTitle = tmp_str.data();
 }
 //----- (004268E3) --------------------------------------------------------
-int __fastcall sr_4268E3_smthn_to_a1r5g5b5(unsigned int uColor)
+int sr_4268E3_smthn_to_a1r5g5b5(unsigned int uColor)
 {
   unsigned int v1; // eax@1
   unsigned int v2; // edx@1
@@ -10982,7 +10982,7 @@ int __fastcall sr_4268E3_smthn_to_a1r5g5b5(unsigned int uColor)
   return v5 | v4 | v3;
 }
 //----- (0042690D) --------------------------------------------------------
-int __fastcall sr_42690D_colors_cvt(unsigned int a1)
+int sr_42690D_colors_cvt(unsigned int a1)
 {
   unsigned int v1; // eax@1
   unsigned int v2; // edx@1
@@ -11094,7 +11094,7 @@ int aborting_app = false; // weak
 
 
 
-void __fastcall CheckMemoryAccessibility(void *pBase, DWORD uSize);
+void CheckMemoryAccessibility(void *pBase, DWORD uSize);
 
 
 
@@ -11371,7 +11371,7 @@ bool Allocator::CreateFileDump(const char *a1)
 
 
 //----- (00426892) --------------------------------------------------------
-static void __fastcall CheckMemoryAccessibility(void *pBase, DWORD uSize)
+static void CheckMemoryAccessibility(void *pBase, DWORD uSize)
 {
   DWORD v2; // edi@1
   DWORD i; // eax@1
@@ -11830,7 +11830,7 @@ bool Render::UsingDirect3D()
 
 
 //----- (004A46E6) --------------------------------------------------------
-int __fastcall sr_4A46E6_draw_particle_segment(unsigned int x, signed int y, signed int _z, int a4, unsigned int lightColor)
+int sr_4A46E6_draw_particle_segment(unsigned int x, signed int y, signed int _z, int a4, unsigned int lightColor)
 {
   int v5; // eax@1
   int z; // eax@1
@@ -12873,7 +12873,7 @@ LABEL_18:
       {
         v23 = pSpriteObjects[v20].stru_24.GetDisplayName();
         v24 = v23;
-	    GameUI_SetFooterString(v24);
+	    GameUI_StatusBar_Set(v24);
 	    return v19;
       }
     }
@@ -12884,7 +12884,7 @@ LABEL_18:
 		  if ( v20 >= 0xBB8 )
 			return 0;
 		  v24 = (const char *)&pActors[v20];
-		  GameUI_SetFooterString(v24);
+		  GameUI_StatusBar_Set(v24);
 		  return v19;
 		}
 		if ( PID_TYPE(dword_720020_zvalues[v18]) == OBJECT_Decoration)
@@ -12908,7 +12908,7 @@ LABEL_18:
 					if ( v23 )
 					{
 						v24 = v23;
-						GameUI_SetFooterString(v24);
+						GameUI_StatusBar_Set(v24);
 						return v19;
 					}
 				}
@@ -12929,14 +12929,14 @@ LABEL_18:
     if ( !v23 )
       return v19;
 	v24 = v23;
-	GameUI_SetFooterString(v24);
+	GameUI_StatusBar_Set(v24);
 	return v19;
   }
   if ( v25->IsInteractive() )
     v24 = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events[v26->_idx_in_stru123 - 75] + 379].pTopic;
   else
     v24 = pDecorationList->pDecorations[v26->uDecorationDescID].field_20;
-  GameUI_SetFooterString(v24);
+  GameUI_StatusBar_Set(v24);
   return v19;
 }
 
@@ -13212,7 +13212,7 @@ LABEL_14:
 
 
 //----- (0046A6AC) --------------------------------------------------------
-int __fastcall _46A6AC_spell_render(int a1, int a2, int a3)
+int _46A6AC_spell_render(int a1, int a2, int a3)
 {
   int result; // eax@2
   int *v5; // esi@6

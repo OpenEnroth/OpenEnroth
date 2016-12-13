@@ -31,4 +31,4 @@ extern class Image *ui_character_inventory_background;
 extern class Image *ui_character_inventory_background_strip;
 extern class Image *ui_character_inventory_paperdoll_background;
 
-extern std::array<struct Image *, 16> paperdoll_dbrds;
+extern std::array<class Image *, 16> paperdoll_dbrds;

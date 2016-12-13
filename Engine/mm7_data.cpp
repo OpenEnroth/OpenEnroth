@@ -723,12 +723,10 @@ int BtnDown_flag; //BtnDown_flag
 int BtnUp_flag; //BtnUp_flag
 int quick_spell_at_page; // weak
 char byte_506550; // weak
-std::array<const char *, 5> aMoonPhaseNames;
 int _506568_autonote_type; // weak
 bool bRecallingBeacon; // weak
 int uLastPointedObjectID; // weak
 //unsigned __int8 bMonsterInfoUI_bDollInitialized;
-std::array<const char *, 44> aSpellNames;
 enum CURRENT_SCREEN prev_screen_type; // weak
 int dword_506980_uW; // weak
 int dword_506984_uZ; // weak
@@ -751,10 +749,6 @@ struct GUIButton *pBtn_ZoomIn; // idb
 unsigned int uGameUIFontShadow;
 unsigned int uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup; // weak
-std::array<const char *, 12> aMonthNames;
-std::array<const char *, 7> aDayNames;
-std::array<const char *, 9> aSpellSchoolNames;
-std::array<const char *, 7> aAttributeNames;
 unsigned int uActiveCharacter;
 int dword_507BF0_is_there_popup_onscreen; // weak
 int awards_scroll_bar_created; // weak
@@ -809,7 +803,6 @@ struct Actor *pDialogue_SpeakingActor;
 unsigned int uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
 struct LevelDecoration *_591094_decoration;
-std::array<char, 200> sHouseName; // idb
 int uCurrentHouse_Animation; // weak
 char *dword_591164_teleport_map_name; // idb
 int dword_591168_teleport_speedz; // weak
@@ -838,33 +831,21 @@ signed int dword_5B65D0_dialogue_actor_npc_id; // weak
 int dword_5C3418; // weak
 int dword_5C341C; // weak
 //std::array<char, 777> byte_5C3427; // weak
-std::array<char, 200> GameUI_Footer_TimedString;
-std::array<char, 200> pFooterString;
-unsigned int GameUI_Footer_TimeLeft;
+String game_ui_status_bar_event_string;
+String game_ui_status_bar_string;
+unsigned int game_ui_status_bar_event_string_time_left;
 int bForceDrawFooter; // weak
 int _5C35C0_force_party_death = false; // weak
 int bDialogueUI_InitializeActor_NPC_ID; // weak
 char *p2DEventsTXT_Raw;
 
 int dword_5C35D4; // weak
-std::array<const char *, 2> aAMPMNames;
 char byte_5C45AF[777]; // weak
 
-std::array<char, 4096> pFinalMessage; // idb
-std::array<char, 2000> pTmpBuf;
-std::array<char, 2000> pTmpBuf2;
 std::array<char, 100> Journal_limitation_factor; // weak
 int ui_current_text_color; // weak
 __int64 qword_5C6DF0; // weak
 int dword_5C6DF8; // weak
-std::array<char, 104> item__getname_buffer; // idb
-std::array<char *, 36> pClassDescriptions;
-std::array<char *, 7> pAttributeDescriptions;
-std::array<char *, 38> pGrandSkillDesc;
-std::array<char *, 38> pMasterSkillDesc;
-std::array<char *, 38> pExpertSkillDesc;
-std::array<char *, 38> pNormalSkillDesc;
-std::array<char *, 38> pSkillDesc;
 char *pHealthPointsAttributeDescription;
 char *pSpellPointsAttributeDescription;
 char *pArmourClassAttributeDescription;
@@ -884,15 +865,11 @@ char *pEarthResistanceAttributeDescription;
 char *pMindResistanceAttributeDescription;
 char *pBodyResistanceAttributeDescription;
 char *pSkillPointsAttributeDescription;
-char *pClassTXT_Raw;
-char *pStatsTXT_Raw;
-char *pSkillDescTXT_Raw;
 
 struct FactionTable *pFactionTable;
 //std::array<char, 777> byte_5C8D1A; // weak
 
 std::array<char, 777> byte_5E4C15; // weak
-std::array<const char *, 14> pSomeItemsNames;
 
 char *pMonstersTXT_Raw;
 char *pMonsterPlacementTXT_Raw;
@@ -978,7 +955,6 @@ std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related; // idb
 std::array<const char *, 82> pScrolls;
 int dword_7241C8; // weak
-std::array<const char *, 59> aNPCProfessionNames;
 char *pAwardsTXT_Raw;
 char *pScrollsTXT_Raw;
 char *pMerchantsTXT_Raw;
@@ -1001,9 +977,6 @@ int dword_A74CDC; // weak
 __int64 _A750D8_player_speech_timer; // qword_A750D8
 enum PlayerSpeech PlayerSpeechID;
 int uSpeakingCharacter; // weak
-std::array<const char *, 36> pClassNames;
-std::array<const char *, 19> aCharacterConditionNames;
-std::array<const char *, 38> pSkillNames;
 char byte_AE5B91; // weak
 std::array<int, 32> dword_F1B430; // weak
 //int dword_F8B144; // nexindex [-1] to the following
@@ -1015,11 +988,11 @@ int contract_approved; // weak
 int dword_F8B1AC_award_bit_number; // idb
 int dword_F8B1B0_MasteryBeingTaught; // weak
 int gold_transaction_amount; // F8B1B4
-std::array<char *, 4> pShopOptions;
+std::array<const char *, 4> pShopOptions;
 int dword_F8B1D8; // weak
 int dword_F8B1E0; // weak
 int dword_F8B1E4; // weak
-const char *current_npc_text; // idb
+String current_npc_text; // F8B1E8
 char dialogue_show_profession_details = false; // F8B1EC
 std::array<char, 777> byte_F8B1EF; // weak
 std::array<char, 4> byte_F8B1F0;

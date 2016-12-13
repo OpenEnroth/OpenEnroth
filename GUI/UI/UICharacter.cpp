@@ -5,6 +5,7 @@
 #include <algorithm> 
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/AssetsManager.h"
 
 #include "GUI/GUIWindow.h"
@@ -22,7 +23,6 @@
 #include "..\../Engine/Timer.h"
 #include "..\../Engine/Awards.h"
 #include "..\../Engine/Spells/CastSpellInfo.h"
-#include "..\../Engine/texts.h"
 #include "..\../IO/Mouse.h"
 
 
@@ -449,69 +449,67 @@ std::array<Image *, 16> paperdoll_dbrds;
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(unsigned int uActiveCharacter, enum CURRENT_SCREEN screen) :
     GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter, nullptr)
 {
-//----- (00421626) --------------------------------------------------------
-// 00421626 CharacterUI_Initialize --- part
-//GUIWindow *CharacterUI_Initialize(enum CURRENT_SCREEN screen)
+    //----- (00421626) --------------------------------------------------------
+    // 00421626 CharacterUI_Initialize --- part
+    //GUIWindow *CharacterUI_Initialize(enum CURRENT_SCREEN screen)
 
-  ++pIcons_LOD->uTexturePacksCount;
-  if ( !pIcons_LOD->uNumPrevLoadedFiles )
-    pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
+    ++pIcons_LOD->uTexturePacksCount;
+    if (!pIcons_LOD->uNumPrevLoadedFiles)
+        pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
 
-  pEventTimer->Pause();
-  pAudioPlayer->StopChannels(-1, -1);
-  bRingsShownInCharScreen = false;
-  CharacterUI_LoadPaperdollTextures();
-  current_screen_type = screen;
+    pEventTimer->Pause();
+    pAudioPlayer->StopChannels(-1, -1);
+    bRingsShownInCharScreen = false;
+    CharacterUI_LoadPaperdollTextures();
+    current_screen_type = screen;
 
-  //auto wnd = new GUIWindow_CharacterRecord(0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter, 0);
-  pCharacterScreen_StatsBtn = CreateButton(pViewport->uViewportTL_X + 12, pViewport->uViewportTL_Y + 308,
-                                paperdoll_dbrds[9]->GetWidth(),
-                                paperdoll_dbrds[9]->GetHeight(),
-                                1, 0, UIMSG_ClickStatsBtn, 0, 'S', pGlobalTXT_LocalizationStrings[216],// Stats
-                                paperdoll_dbrds[10],
-                                paperdoll_dbrds[9], 0);
-  pCharacterScreen_SkillsBtn = CreateButton(pViewport->uViewportTL_X + 102, pViewport->uViewportTL_Y + 308,
-                                 paperdoll_dbrds[7]->GetWidth(),
-                                 paperdoll_dbrds[7]->GetHeight(),
-                                 1, 0, UIMSG_ClickSkillsBtn, 0, 'K', pGlobalTXT_LocalizationStrings[205],//Skills
-                                 paperdoll_dbrds[8],
-                                 paperdoll_dbrds[7], 0);
-  pCharacterScreen_InventoryBtn = CreateButton(pViewport->uViewportTL_X + 192, pViewport->uViewportTL_Y + 308,
-                                    paperdoll_dbrds[5]->GetWidth(),
-                                    paperdoll_dbrds[5]->GetHeight(),
-                                    1, 0, UIMSG_ClickInventoryBtn, 0, 'I', pGlobalTXT_LocalizationStrings[120], //Inventory
-                                    paperdoll_dbrds[6],
-                                    paperdoll_dbrds[5], 0);
-  pCharacterScreen_AwardsBtn = CreateButton(pViewport->uViewportTL_X + 282, pViewport->uViewportTL_Y + 308,
-                                 paperdoll_dbrds[3]->GetWidth(),
-                                 paperdoll_dbrds[3]->GetHeight(),
-                                 1, 0, UIMSG_ClickAwardsBtn, 0, 'A', pGlobalTXT_LocalizationStrings[22], //Awards
-                                 paperdoll_dbrds[4],
-                                 paperdoll_dbrds[3], 0);
-  pCharacterScreen_ExitBtn = CreateButton(pViewport->uViewportTL_X + 371, pViewport->uViewportTL_Y + 308,
-                 paperdoll_dbrds[1]->GetWidth(),
-                 paperdoll_dbrds[1]->GetHeight(),
-                 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0, pGlobalTXT_LocalizationStrings[79],//Exit
-                 paperdoll_dbrds[2],
-                 paperdoll_dbrds[1], 0);
-  CreateButton(0, 0, 476, 345, 1, 122, UIMSG_InventoryLeftClick, 0, 0, "", 0);
-  pCharacterScreen_DetalizBtn = CreateButton(600, 300, 30, 30, 1, 0, UIMSG_ChangeDetaliz, 0, 0, pGlobalTXT_LocalizationStrings[64], 0);
-  pCharacterScreen_DollBtn = CreateButton(476, 0, 164, 345, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "", 0);
+    //auto wnd = new GUIWindow_CharacterRecord(0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter, 0);
+    pCharacterScreen_StatsBtn = CreateButton(pViewport->uViewportTL_X + 12, pViewport->uViewportTL_Y + 308,
+        paperdoll_dbrds[9]->GetWidth(),
+        paperdoll_dbrds[9]->GetHeight(),
+        1, 0, UIMSG_ClickStatsBtn, 0, 'S', localization->GetString(216),// Stats
+        paperdoll_dbrds[10],
+        paperdoll_dbrds[9], 0);
+    pCharacterScreen_SkillsBtn = CreateButton(pViewport->uViewportTL_X + 102, pViewport->uViewportTL_Y + 308,
+        paperdoll_dbrds[7]->GetWidth(),
+        paperdoll_dbrds[7]->GetHeight(),
+        1, 0, UIMSG_ClickSkillsBtn, 0, 'K', localization->GetString(205),//Skills
+        paperdoll_dbrds[8],
+        paperdoll_dbrds[7], 0);
+    pCharacterScreen_InventoryBtn = CreateButton(pViewport->uViewportTL_X + 192, pViewport->uViewportTL_Y + 308,
+        paperdoll_dbrds[5]->GetWidth(),
+        paperdoll_dbrds[5]->GetHeight(),
+        1, 0, UIMSG_ClickInventoryBtn, 0, 'I', localization->GetString(120), //Inventory
+        paperdoll_dbrds[6],
+        paperdoll_dbrds[5], 0);
+    pCharacterScreen_AwardsBtn = CreateButton(pViewport->uViewportTL_X + 282, pViewport->uViewportTL_Y + 308,
+        paperdoll_dbrds[3]->GetWidth(),
+        paperdoll_dbrds[3]->GetHeight(),
+        1, 0, UIMSG_ClickAwardsBtn, 0, 'A', localization->GetString(22), //Awards
+        paperdoll_dbrds[4],
+        paperdoll_dbrds[3], 0);
+    pCharacterScreen_ExitBtn = CreateButton(pViewport->uViewportTL_X + 371, pViewport->uViewportTL_Y + 308,
+        paperdoll_dbrds[1]->GetWidth(),
+        paperdoll_dbrds[1]->GetHeight(),
+        1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0, localization->GetString(79),//Exit
+        paperdoll_dbrds[2],
+        paperdoll_dbrds[1], 0);
+    CreateButton(0, 0, 476, 345, 1, 122, UIMSG_InventoryLeftClick, 0, 0, "", 0);
+    pCharacterScreen_DetalizBtn = CreateButton(600, 300, 30, 30, 1, 0, UIMSG_ChangeDetaliz, 0, 0, localization->GetString(64), 0);
+    pCharacterScreen_DollBtn = CreateButton(476, 0, 164, 345, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "", 0);
 
-  CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
-  CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-  CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-  CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
+    CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
+    CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
+    CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
+    CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
 
-  CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "", 0);
-  FillAwardsData();
+    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "", 0);
+    FillAwardsData();
 
-
-
-  ui_character_skills_background = assets->GetImage_16BitColorKey(L"fr_skill", 0x7FF);
-  ui_character_awards_background = assets->GetImage_16BitColorKey(L"fr_award", 0x7FF);
-  ui_character_stats_background = assets->GetImage_16BitColorKey(L"fr_stats", 0x7FF);
-  ui_character_inventory_background_strip = assets->GetImage_16BitColorKey(L"fr_strip", 0x7FF);
+    ui_character_skills_background = assets->GetImage_16BitColorKey(L"fr_skill", 0x7FF);
+    ui_character_awards_background = assets->GetImage_16BitColorKey(L"fr_award", 0x7FF);
+    ui_character_stats_background = assets->GetImage_16BitColorKey(L"fr_stats", 0x7FF);
+    ui_character_inventory_background_strip = assets->GetImage_16BitColorKey(L"fr_strip", 0x7FF);
 }
 
 //----- (0041ABFD) --------------------------------------------------------
@@ -662,9 +660,9 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay()
     }
     pCharacterScreen_DetalizBtn = pGUIWindow_CurrentMenu->CreateButton(
         v121, v123, v125, v128, 1, 0, UIMSG_ChangeDetaliz, 0, 0,
-        pGlobalTXT_LocalizationStrings[64],// "Detail Toggle"
+        localization->GetString(64),// "Detail Toggle"
         0
-    );
+        );
     pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton(0x1DCu, 0, 0xA4u, 0x159u, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "", 0);
     viewparams->bRedrawGameUI = true;
 }
@@ -674,149 +672,151 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay()
 //----- (004219BE) --------------------------------------------------------
 GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow()
 {
-  GUIWindow *CS_inventory_window; // ebx@1
+    GUIWindow *CS_inventory_window; // ebx@1
 
-  pEventTimer->Pause();
-  pAudioPlayer->StopChannels(-1, -1);
-  bRingsShownInCharScreen = 0;
-  CharacterUI_LoadPaperdollTextures();
-  current_screen_type = SCREEN_CASTING;
-  CS_inventory_window = new GUIWindow_Inventory_CastSpell(0, 0, window->GetWidth(), window->GetHeight(), (int)this, 0);
-  pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0,
-                 pGlobalTXT_LocalizationStrings[79], // Close
-                 paperdoll_dbrds[2],
-                 paperdoll_dbrds[1], 0);
-  CS_inventory_window->CreateButton(0, 0, 0x1DCu, 0x159u, 1, 122, UIMSG_InventoryLeftClick, 0, 0, "", 0);
-  pCharacterScreen_DollBtn = CS_inventory_window->CreateButton(0x1DCu, 0, 0xA4u, 0x159u, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "", 0);
+    pEventTimer->Pause();
+    pAudioPlayer->StopChannels(-1, -1);
+    bRingsShownInCharScreen = 0;
+    CharacterUI_LoadPaperdollTextures();
+    current_screen_type = SCREEN_CASTING;
+    CS_inventory_window = new GUIWindow_Inventory_CastSpell(0, 0, window->GetWidth(), window->GetHeight(), (int)this, 0);
+    pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0,
+        localization->GetString(79), // Close
+        paperdoll_dbrds[2],
+        paperdoll_dbrds[1], 0);
+    CS_inventory_window->CreateButton(0, 0, 0x1DCu, 0x159u, 1, 122, UIMSG_InventoryLeftClick, 0, 0, "", 0);
+    pCharacterScreen_DollBtn = CS_inventory_window->CreateButton(0x1DCu, 0, 0xA4u, 0x159u, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "", 0);
 
-  CS_inventory_window->CreateButton( 61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
-  CS_inventory_window->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-  CS_inventory_window->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-  CS_inventory_window->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
+    CS_inventory_window->CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
+    CS_inventory_window->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
+    CS_inventory_window->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
+    CS_inventory_window->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
 
-  return CS_inventory_window;
+    return CS_inventory_window;
 }
 
 static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int y, const int *skill_list, int skill_list_size, int right_margin, const char *skill_group_name)
 {
-  int y_offset = y;
-  
-  sprintf(pTmpBuf.data(), "%s\r%03d%s", skill_group_name, right_margin, pGlobalTXT_LocalizationStrings[131]); //"Level"
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, x, y, ui_character_header_text_color, pTmpBuf.data(), 0, 0, 0);
+    int y_offset = y;
 
-  int num_skills_drawn = 0;
-  for (int i = 0; i < skill_list_size; ++i)
-  {
-    PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)skill_list[i];
-    for (uint j = 0; j < pGUIWindow_CurrentMenu->uNumControls; ++j)
+    auto str = StringPrintf("%s\r%03d%s", skill_group_name, right_margin, localization->GetString(131)); //"Level"
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, x, y, ui_character_header_text_color, str, 0, 0, 0);
+
+    int num_skills_drawn = 0;
+    for (int i = 0; i < skill_list_size; ++i)
     {
-      GUIButton* v8 = pGUIWindow_CurrentMenu->pControlsHead;
-
-      for (int v7 = j; v7 > 0; --v7)
-        v8 = v8->pNext;
-
-      int v9 = v8->field_1C;
-      if ((short)(v8->field_1C) >= 0)
-        continue;
-      if ( (v9 & 0x7FFF) != skill )
-        continue;
-
-      ++num_skills_drawn;
-      y_offset = v8->uY;
-
-      ushort skill_value = player->pActiveSkills[skill];
-      int skill_level = skill_value & 0x3F;
-
-      uint skill_color = 0;
-      uint skill_mastery_color = 0;
-      if (player->uSkillPoints > skill_level)
-        skill_color = ui_character_skill_upgradeable_color;
-
-      if (pGUIWindow_CurrentMenu->pCurrentPosActiveItem == j)
-      {
-        if (player->uSkillPoints > skill_level)
-          skill_mastery_color = ui_character_bonus_text_color;
-        else
-          skill_mastery_color = ui_character_skill_default_color;
-        skill_color = skill_mastery_color;
-      }
-
-      if (SkillToMastery(skill_value) == 1)
-      {
-        sprintfex(pTmpBuf.data(), "%s\r%03d%2d", pSkillNames[skill], right_margin, skill_level);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, pTmpBuf.data(), 0, 0, 0);
-      }
-      else
-      {
-        const char *skill_level_str = nullptr;
-
-        switch (SkillToMastery(skill_value))
+        PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)skill_list[i];
+        for (uint j = 0; j < pGUIWindow_CurrentMenu->uNumControls; ++j)
         {
-          case 4: skill_level_str = pGlobalTXT_LocalizationStrings[96];  break; // "Grand"
-          case 3: skill_level_str = pGlobalTXT_LocalizationStrings[432]; break; // Master
-          case 2: skill_level_str = pGlobalTXT_LocalizationStrings[433]; break; // Expert
+            GUIButton* v8 = pGUIWindow_CurrentMenu->pControlsHead;
+
+            for (int v7 = j; v7 > 0; --v7)
+                v8 = v8->pNext;
+
+            int v9 = v8->field_1C;
+            if ((short)(v8->field_1C) >= 0)
+                continue;
+            if ((v9 & 0x7FFF) != skill)
+                continue;
+
+            ++num_skills_drawn;
+            y_offset = v8->uY;
+
+            ushort skill_value = player->pActiveSkills[skill];
+            int skill_level = skill_value & 0x3F;
+
+            uint skill_color = 0;
+            uint skill_mastery_color = 0;
+            if (player->uSkillPoints > skill_level)
+                skill_color = ui_character_skill_upgradeable_color;
+
+            if (pGUIWindow_CurrentMenu->pCurrentPosActiveItem == j)
+            {
+                if (player->uSkillPoints > skill_level)
+                    skill_mastery_color = ui_character_bonus_text_color;
+                else
+                    skill_mastery_color = ui_character_skill_default_color;
+                skill_color = skill_mastery_color;
+            }
+
+            if (SkillToMastery(skill_value) == 1)
+            {
+                auto Str = StringPrintf("%s\r%03d%2d", localization->GetSkillName(skill), right_margin, skill_level);
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, str, 0, 0, 0);
+            }
+            else
+            {
+                const char *skill_level_str = nullptr;
+
+                switch (SkillToMastery(skill_value))
+                {
+                case 4: skill_level_str = localization->GetString(96);  break; // Grand
+                case 3: skill_level_str = localization->GetString(432); break; // Master
+                case 2: skill_level_str = localization->GetString(433); break; // Expert
+                }
+
+                if (!skill_mastery_color)
+                    skill_mastery_color = ui_character_header_text_color;
+
+                auto Str = StringPrintf("%s \f%05d%s\f%05d\r%03d%2d", localization->GetSkillName(skill), skill_mastery_color, skill_level_str, skill_color, right_margin, skill_level);
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, str, 0, 0, 0);
+            }
         }
-
-        if (!skill_mastery_color)
-          skill_mastery_color = ui_character_header_text_color;
-        sprintfex(pTmpBuf.data(), "%s \f%05d%s\f%05d\r%03d%2d", pSkillNames[skill], skill_mastery_color, skill_level_str, skill_color, right_margin, skill_level);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, pTmpBuf.data(), 0, 0, 0);
-      }
     }
-  }
 
-  if (!num_skills_drawn)
-  {
-    y_offset += LOBYTE(pFontLucida->uFontHeight) - 3;
-    pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, y_offset, 0, pGlobalTXT_LocalizationStrings[153], 0, 0, 0); //"None"
-  }
+    if (!num_skills_drawn)
+    {
+        y_offset += LOBYTE(pFontLucida->uFontHeight) - 3;
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, y_offset, 0, localization->GetString(153), 0, 0, 0); // None
+    }
 
-  return y_offset;
+    return y_offset;
 }
 
 //----- (00419719) --------------------------------------------------------
 void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player)
 {
-  pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_character_skills_background);
+    pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, ui_character_skills_background);
 
-  sprintfex(pTmpBuf.data(), "%s \f%05d^Pv[%s]\f00000\r177%s: \f%05d%d\f00000",
-            pGlobalTXT_LocalizationStrings[206],        // Skills for
-            ui_character_header_text_color,
-            player->pName,
-            pGlobalTXT_LocalizationStrings[207],        // Skill Points
-            player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color,
-            player->uSkillPoints);
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 24, 18, 0, pTmpBuf.data(), 0, 0, 0);
+    auto str = StringPrintf(
+        "%s \f%05d^Pv[%s]\f00000\r177%s: \f%05d%d\f00000",
+        localization->GetString(206),        // Skills for
+        ui_character_header_text_color,
+        player->pName,
+        localization->GetString(207),        // Skill Points
+        player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color,
+        player->uSkillPoints
+    );
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 24, 18, 0, str, 0, 0, 0);
 
-  int y = 2 * LOBYTE(pFontLucida->uFontHeight) + 13;
-  y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, pWeaponSkills, 9, 400, pGlobalTXT_LocalizationStrings[242]); // "Weapons"
+    int y = 2 * LOBYTE(pFontLucida->uFontHeight) + 13;
+    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, pWeaponSkills, 9, 400, localization->GetString(242)); // "Weapons"
 
-  y += 2 * LOBYTE(pFontLucida->uFontHeight) - 10;
-  CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, pMagicSkills, 9, 400, pGlobalTXT_LocalizationStrings[138]); // "Magic"
+    y += 2 * LOBYTE(pFontLucida->uFontHeight) - 10;
+    CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, pMagicSkills, 9, 400, localization->GetString(138)); // "Magic"
 
-  y = 2 * LOBYTE(pFontLucida->uFontHeight) + 13;
-  y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, pArmorSkills, 5, 177, pGlobalTXT_LocalizationStrings[11]); // "Armor"
- 
-  y += 2 * LOBYTE(pFontLucida->uFontHeight) - 10;
-  y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, pMiscSkills, 12, 177, pGlobalTXT_LocalizationStrings[143]); //"Misc"
+    y = 2 * LOBYTE(pFontLucida->uFontHeight) + 13;
+    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, pArmorSkills, 5, 177, localization->GetString(11)); // "Armor"
+
+    y += 2 * LOBYTE(pFontLucida->uFontHeight) - 10;
+    y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, pMiscSkills, 12, 177, localization->GetString(143)); //"Misc"
 }
 
 //----- (0041A000) --------------------------------------------------------
 void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player)
 {
   int items_per_page; // eax@1
-  char *v6; // ebx@15
   char Source[100]; // [sp+Ch] [bp-C4h]@1
   GUIWindow awards_window; // [sp+70h] [bp-60h]@1
 
   pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_character_awards_background);
 
-  sprintfex(pTmpBuf.data(), "%s \f%05d", pGlobalTXT_LocalizationStrings[LOCSTR_AVARDS_FOR], ui_character_header_text_color);
-  sprintfex(Source, pGlobalTXT_LocalizationStrings[LOCSTR_S_THE_S], player->pName, pClassNames[player->classType]);
-  strcat(pTmpBuf.data(), Source);
-  strcat(pTmpBuf.data(), "\f00000");
+  String str =
+      StringPrintf("%s \f%05d", localization->GetString(23), ui_character_header_text_color) // Awards for
+      + localization->FormatString(429, player->pName, localization->GetClassName(player->classType)) // %s the %s
+      + "\f00000";
 
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 24, 18, 0, pTmpBuf.data(), 0, 0, 0);
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 24, 18, 0, str, 0, 0, 0);
   items_per_page = books_primary_item_per_page;
   awards_window.uFrameX = 12;
   awards_window.uFrameY = 48;
@@ -859,27 +859,28 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player)
 
   for ( int i = items_per_page; i < full_num_items_in_book; ++i)
   {
-    v6 = (char *)pAwards[achieved_awards[i]].pText;//(char *)dword_723E80_award_related[v20 / 4];
-    pTmpBuf[0] = 0;
+      String str;
+      auto v6 = pAwards[achieved_awards[i]].pText;//(char *)dword_723E80_award_related[v20 / 4];
+
     switch (achieved_awards[i])
     {
-        case Award_Arena_PageWins:    sprintf(pTmpBuf.data(), v6, pParty->uNumArenaPageWins);     break;
-        case Award_Arena_SquireWins:  sprintf(pTmpBuf.data(), v6, pParty->uNumArenaSquireWins);   break;
-        case Award_Arena_KnightWins:  sprintf(pTmpBuf.data(), v6, pParty->uNumArenaKnightWins);   break;
-        case Award_Arena_LordWins:    sprintf(pTmpBuf.data(), v6, pParty->uNumArenaLordWins);     break;
-        case Award_ArcomageWins:      sprintf(pTmpBuf.data(), v6, pParty->uNumArcomageWins);      break;
-        case Award_ArcomageLoses:     sprintf(pTmpBuf.data(), v6, pParty->uNumArcomageLoses);     break;
-        case Award_Deaths:            sprintf(pTmpBuf.data(), v6, pParty->uNumDeaths);            break;
-        case Award_BountiesCollected: sprintf(pTmpBuf.data(), v6, pParty->uNumBountiesCollected); break;
-        case Award_Fine:              sprintf(pTmpBuf.data(), v6, pParty->uFine);                 break;
-        case Award_PrisonTerms:       sprintf(pTmpBuf.data(), v6, pParty->uNumPrisonTerms);       break;
+        case Award_Arena_PageWins:    str = StringPrintf(v6, pParty->uNumArenaPageWins);     break;
+        case Award_Arena_SquireWins:  str = StringPrintf(v6, pParty->uNumArenaSquireWins);   break;
+        case Award_Arena_KnightWins:  str = StringPrintf(v6, pParty->uNumArenaKnightWins);   break;
+        case Award_Arena_LordWins:    str = StringPrintf(v6, pParty->uNumArenaLordWins);     break;
+        case Award_ArcomageWins:      str = StringPrintf(v6, pParty->uNumArcomageWins);      break;
+        case Award_ArcomageLoses:     str = StringPrintf(v6, pParty->uNumArcomageLoses);     break;
+        case Award_Deaths:            str = StringPrintf(v6, pParty->uNumDeaths);            break;
+        case Award_BountiesCollected: str = StringPrintf(v6, pParty->uNumBountiesCollected); break;
+        case Award_Fine:              str = StringPrintf(v6, pParty->uFine);                 break;
+        case Award_PrisonTerms:       str = StringPrintf(v6, pParty->uNumPrisonTerms);       break;
     }
 
-    if (*pTmpBuf.data())
-      v6 = pTmpBuf.data();
+    if (str.length() < 1)
+        str = String(v6);
 
-    awards_window.DrawText(pFontArrus, 0, 0, ui_character_award_color[pAwards[achieved_awards[i]].uPriority % 6], v6, 0, 0, 0);
-    awards_window.uFrameY = pFontArrus->CalcTextHeight(v6, &awards_window, 0, 0) + awards_window.uFrameY + 8;
+    awards_window.DrawText(pFontArrus, 0, 0, ui_character_award_color[pAwards[achieved_awards[i]].uPriority % 6], str, 0, 0, 0);
+    awards_window.uFrameY = pFontArrus->CalcTextHeight(str, &awards_window, 0) + awards_window.uFrameY + 8;
     if (awards_window.uFrameY > awards_window.uFrameHeight)
       break;
 
@@ -888,7 +889,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player)
 }
 
 //----- (0041A2C1) --------------------------------------------------------
-unsigned int __fastcall GetSizeInInventorySlots(unsigned int uNumPixels)
+unsigned int GetSizeInInventorySlots(unsigned int uNumPixels)
 {
   if ( (signed int)uNumPixels < 14 )
     uNumPixels = 14;
@@ -1684,371 +1685,371 @@ void CharacterUI_DrawPaperdoll(Player *player)
 //----- (0041A2D1) --------------------------------------------------------
 void CharacterUI_InventoryTab_Draw(Player *player, bool a2)
 {
-  Image *pTexture; // esi@6
-  unsigned int v17; // edi@15
-  unsigned int uCellX; // [sp+30h] [bp-8h]@5
-  unsigned int uCellY; // [sp+34h] [bp-4h]@5
+    Image *pTexture; // esi@6
+    unsigned int v17; // edi@15
+    unsigned int uCellX; // [sp+30h] [bp-8h]@5
+    unsigned int uCellY; // [sp+34h] [bp-4h]@5
 
-  pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_character_inventory_background);
-  if (a2)
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 305/480.0f, ui_character_inventory_background_strip);
+    pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, ui_character_inventory_background);
+    if (a2)
+        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
 
-  for (uint i = 0; i < 126; ++i)
-  {
-    if ( player->pInventoryMatrix[i] <= 0 )
-      continue;
-    if ( !player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uItemID )
-      continue;
-    uCellY = 32 * (i / 14) + 17;
-    uCellX = 32 * (i % 14) + 14;
-
-    //uint item_texture_id = pIcons_LOD->LoadTexture(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].GetIconName(), TEXTURE_16BIT_PALETTE);
-    //pTexture = pIcons_LOD->GetTexture(item_texture_id);
-    pTexture = assets->GetImage_16BitAlpha(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].GetIconName());
-
-    //if (pTexture->uTextureWidth < 14)
-    //  pTexture->uTextureWidth = 14;
-    int width = pTexture->GetWidth();
-    if (width < 14)
-        width = 14;
-
-    if ( (width - 14) / 32 == 0 && width < 32)
-      uCellX += (32 - width) / 2;
-
-    int height = pTexture->GetHeight();
-    if (height < 14 )
-        height = 14;
-    v17 = uCellX + (( (int)((width - 14) & 0xE0) + 32 - width) / 2)
-       + pSRZBufferLineOffsets[uCellY + (( (int)((height - 14) & 0xFFFFFFE0) - height + 32) / 2)];   //added typecast. without it the value in the brackets got cat to unsigned which messed stuff up
-    if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uAttributes & ITEM_ENCHANT_ANIMATION)
+    for (uint i = 0; i < 126; ++i)
     {
-      Texture_MM7 *loadedTextureptr = nullptr;
-      switch (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uAttributes & ITEM_ENCHANT_ANIMATION)
-      {
-        case ITEM_AURA_EFFECT_RED:    loadedTextureptr = pIcons_LOD->LoadTexturePtr("sptext01", TEXTURE_16BIT_PALETTE); break;
-        case ITEM_AURA_EFFECT_BLUE:   loadedTextureptr = pIcons_LOD->LoadTexturePtr("sp28a", TEXTURE_16BIT_PALETTE);    break;
-        case ITEM_AURA_EFFECT_GREEN:  loadedTextureptr = pIcons_LOD->LoadTexturePtr("sp30a", TEXTURE_16BIT_PALETTE);    break;
-        case ITEM_AURA_EFFECT_PURPLE: loadedTextureptr = pIcons_LOD->LoadTexturePtr("sp91a", TEXTURE_16BIT_PALETTE);    break;
-      }
-      _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-      if (_50C9A8_item_enchantment_timer <= 0)
-      {
-        _50C9A8_item_enchantment_timer = 0;
-        LOBYTE(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uAttributes) &= 0xF;
-        ptr_50C9A4_ItemToEnchant = nullptr;
-      }
+        if (player->pInventoryMatrix[i] <= 0)
+            continue;
+        if (!player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uItemID)
+            continue;
+        uCellY = 32 * (i / 14) + 17;
+        uCellX = 32 * (i % 14) + 14;
 
-      pRenderer->BlendTextures(uCellX, uCellY, pTexture, loadedTextureptr, GetTickCount() * 0.1, 0, 255);
-      //ZBuffer_Fill(&pRenderer->pActiveZBuffer[v17], item_texture_id, player->pInventoryMatrix[i]);
-    }
-    else
-    {
-      if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].IsIdentified() || current_screen_type != SCREEN_HOUSE)
-      {
-        if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].IsBroken())
-          pRenderer->DrawTransparentRedShade(uCellX/640.0f, uCellY/480.0f, pTexture);
+        //uint item_texture_id = pIcons_LOD->LoadTexture(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].GetIconName(), TEXTURE_16BIT_PALETTE);
+        //pTexture = pIcons_LOD->GetTexture(item_texture_id);
+        pTexture = assets->GetImage_16BitAlpha(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].GetIconName());
+
+        //if (pTexture->uTextureWidth < 14)
+        //  pTexture->uTextureWidth = 14;
+        int width = pTexture->GetWidth();
+        if (width < 14)
+            width = 14;
+
+        if ((width - 14) / 32 == 0 && width < 32)
+            uCellX += (32 - width) / 2;
+
+        int height = pTexture->GetHeight();
+        if (height < 14)
+            height = 14;
+        v17 = uCellX + (((int)((width - 14) & 0xE0) + 32 - width) / 2)
+            + pSRZBufferLineOffsets[uCellY + (((int)((height - 14) & 0xFFFFFFE0) - height + 32) / 2)];   //added typecast. without it the value in the brackets got cat to unsigned which messed stuff up
+        if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uAttributes & ITEM_ENCHANT_ANIMATION)
+        {
+            Texture_MM7 *loadedTextureptr = nullptr;
+            switch (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uAttributes & ITEM_ENCHANT_ANIMATION)
+            {
+            case ITEM_AURA_EFFECT_RED:    loadedTextureptr = pIcons_LOD->LoadTexturePtr("sptext01", TEXTURE_16BIT_PALETTE); break;
+            case ITEM_AURA_EFFECT_BLUE:   loadedTextureptr = pIcons_LOD->LoadTexturePtr("sp28a", TEXTURE_16BIT_PALETTE);    break;
+            case ITEM_AURA_EFFECT_GREEN:  loadedTextureptr = pIcons_LOD->LoadTexturePtr("sp30a", TEXTURE_16BIT_PALETTE);    break;
+            case ITEM_AURA_EFFECT_PURPLE: loadedTextureptr = pIcons_LOD->LoadTexturePtr("sp91a", TEXTURE_16BIT_PALETTE);    break;
+            }
+            _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
+            if (_50C9A8_item_enchantment_timer <= 0)
+            {
+                _50C9A8_item_enchantment_timer = 0;
+                LOBYTE(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uAttributes) &= 0xF;
+                ptr_50C9A4_ItemToEnchant = nullptr;
+            }
+
+            pRenderer->BlendTextures(uCellX, uCellY, pTexture, loadedTextureptr, GetTickCount() * 0.1, 0, 255);
+            //ZBuffer_Fill(&pRenderer->pActiveZBuffer[v17], item_texture_id, player->pInventoryMatrix[i]);
+        }
         else
-          pRenderer->DrawTextureAlphaNew(uCellX/640.0f, uCellY/480.0f, pTexture);
-      }
-      else
-        pRenderer->DrawTransparentGreenShade(uCellX/640.0f, uCellY/480.0f, pTexture);
-      //ZBuffer_Fill(&pRenderer->pActiveZBuffer[v17], item_texture_id, player->pInventoryMatrix[i]);
-      continue;
+        {
+            if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].IsIdentified() || current_screen_type != SCREEN_HOUSE)
+            {
+                if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].IsBroken())
+                    pRenderer->DrawTransparentRedShade(uCellX / 640.0f, uCellY / 480.0f, pTexture);
+                else
+                    pRenderer->DrawTextureAlphaNew(uCellX / 640.0f, uCellY / 480.0f, pTexture);
+            }
+            else
+                pRenderer->DrawTransparentGreenShade(uCellX / 640.0f, uCellY / 480.0f, pTexture);
+            //ZBuffer_Fill(&pRenderer->pActiveZBuffer[v17], item_texture_id, player->pInventoryMatrix[i]);
+            continue;
+        }
     }
-  }
 }
 
 static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id)
 {
-  //Texture_MM7* item_texture = pIcons_LOD->LoadTexturePtr(item->GetIconName(), TEXTURE_16BIT_PALETTE);
+    //Texture_MM7* item_texture = pIcons_LOD->LoadTexturePtr(item->GetIconName(), TEXTURE_16BIT_PALETTE);
     auto item_texture = assets->GetImage_16BitAlpha(item->GetIconName());
 
-  if (item->uAttributes & ITEM_ENCHANT_ANIMATION) // enchant animation
-  {
-    Texture_MM7 *enchantment_texture = nullptr;
-    switch (item->uAttributes & ITEM_ENCHANT_ANIMATION)
+    if (item->uAttributes & ITEM_ENCHANT_ANIMATION) // enchant animation
     {
-      case ITEM_AURA_EFFECT_RED:    enchantment_texture = pIcons_LOD->LoadTexturePtr("sptext01", TEXTURE_16BIT_PALETTE); break;
-      case ITEM_AURA_EFFECT_BLUE:   enchantment_texture = pIcons_LOD->LoadTexturePtr("sp28a", TEXTURE_16BIT_PALETTE);    break;
-      case ITEM_AURA_EFFECT_GREEN:  enchantment_texture = pIcons_LOD->LoadTexturePtr("sp30a", TEXTURE_16BIT_PALETTE);    break;
-      case ITEM_AURA_EFFECT_PURPLE: enchantment_texture = pIcons_LOD->LoadTexturePtr("sp91a", TEXTURE_16BIT_PALETTE);    break;
-    }
+        Texture_MM7 *enchantment_texture = nullptr;
+        switch (item->uAttributes & ITEM_ENCHANT_ANIMATION)
+        {
+        case ITEM_AURA_EFFECT_RED:    enchantment_texture = pIcons_LOD->LoadTexturePtr("sptext01", TEXTURE_16BIT_PALETTE); break;
+        case ITEM_AURA_EFFECT_BLUE:   enchantment_texture = pIcons_LOD->LoadTexturePtr("sp28a", TEXTURE_16BIT_PALETTE);    break;
+        case ITEM_AURA_EFFECT_GREEN:  enchantment_texture = pIcons_LOD->LoadTexturePtr("sp30a", TEXTURE_16BIT_PALETTE);    break;
+        case ITEM_AURA_EFFECT_PURPLE: enchantment_texture = pIcons_LOD->LoadTexturePtr("sp91a", TEXTURE_16BIT_PALETTE);    break;
+        }
 
-    _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-    if (_50C9A8_item_enchantment_timer <= 0)
-    {
-      _50C9A8_item_enchantment_timer = 0;
-      item->uAttributes &= 0xFFFFFF0F;
-      ptr_50C9A4_ItemToEnchant = nullptr;
+        _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
+        if (_50C9A8_item_enchantment_timer <= 0)
+        {
+            _50C9A8_item_enchantment_timer = 0;
+            item->uAttributes &= 0xFFFFFF0F;
+            ptr_50C9A4_ItemToEnchant = nullptr;
+        }
+        pRenderer->BlendTextures(x, y, item_texture, enchantment_texture, GetTickCount() * 0.1, 0, 255);
     }
-    pRenderer->BlendTextures(x, y, item_texture, enchantment_texture, GetTickCount() * 0.1, 0, 255);
-  }
-  else
-  {
-    if (item->IsBroken())
-      pRenderer->DrawTransparentRedShade(x/640.0f, y/480.0f, item_texture);
-    else if (!item->IsIdentified())
-      pRenderer->DrawTransparentGreenShade(x/640.0f, y/480.0f, item_texture);
     else
-      pRenderer->DrawTextureAlphaNew(x/640.0f, y/480.0f, item_texture);
+    {
+        if (item->IsBroken())
+            pRenderer->DrawTransparentRedShade(x / 640.0f, y / 480.0f, item_texture);
+        else if (!item->IsIdentified())
+            pRenderer->DrawTransparentGreenShade(x / 640.0f, y / 480.0f, item_texture);
+        else
+            pRenderer->DrawTextureAlphaNew(x / 640.0f, y / 480.0f, item_texture);
 
-    pRenderer->ZBuffer_Fill_2(x, y, item_texture, id);
-  }
+        pRenderer->ZBuffer_Fill_2(x, y, item_texture, id);
+    }
 }
 
 //----- (0043E825) --------------------------------------------------------
 void CharacterUI_DrawPaperdollWithRingOverlay(Player *player)
 {
-  CharacterUI_DrawPaperdoll(player);
+    CharacterUI_DrawPaperdoll(player);
 
-  pRenderer->DrawTextureAlphaNew(473/640.0f, 0, ui_character_inventory_paperdoll_rings_background);
-  pRenderer->DrawTextureAlphaNew(468/640.0f, 0, game_ui_right_panel_frame);
-  pRenderer->DrawTextureAlphaNew(pCharacterScreen_DetalizBtn->uX/640.0f, pCharacterScreen_DetalizBtn->uY/480.0f, ui_character_inventory_paperdoll_rings_close);
+    pRenderer->DrawTextureAlphaNew(473 / 640.0f, 0, ui_character_inventory_paperdoll_rings_background);
+    pRenderer->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    pRenderer->DrawTextureAlphaNew(pCharacterScreen_DetalizBtn->uX / 640.0f, pCharacterScreen_DetalizBtn->uY / 480.0f, ui_character_inventory_paperdoll_rings_close);
 
-  for (uint i = 0; i < 6; ++i)
-  {
-    if (!player->pEquipment.uRings[i])
-      continue;
-    static int pPaperdollRingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
-    static int pPaperdollRingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
-    CharacterUI_DrawItem(pPaperdollRingsX[i], pPaperdollRingsY[i], &player->pInventoryItemList[player->pEquipment.uRings[i] - 1],
-                         player->pEquipment.uRings[i]);
-  }
-  if (player->pEquipment.uAmulet)
-    CharacterUI_DrawItem(493, 91, player->GetAmuletItem(), player->pEquipment.uAmulet);
-  if (player->pEquipment.uGlove)
-    CharacterUI_DrawItem(586, 88, player->GetGloveItem(), player->pEquipment.uGlove);
+    for (uint i = 0; i < 6; ++i)
+    {
+        if (!player->pEquipment.uRings[i])
+            continue;
+        static int pPaperdollRingsX[6] = { 0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248 };
+        static int pPaperdollRingsY[6] = { 0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA };
+        CharacterUI_DrawItem(pPaperdollRingsX[i], pPaperdollRingsY[i], &player->pInventoryItemList[player->pEquipment.uRings[i] - 1],
+            player->pEquipment.uRings[i]);
+    }
+    if (player->pEquipment.uAmulet)
+        CharacterUI_DrawItem(493, 91, player->GetAmuletItem(), player->pEquipment.uAmulet);
+    if (player->pEquipment.uGlove)
+        CharacterUI_DrawItem(586, 88, player->GetGloveItem(), player->pEquipment.uGlove);
 }
 
 //----- (0043BCA7) --------------------------------------------------------
 void CharacterUI_LoadPaperdollTextures()
 {
-  int v3; // ebx@10
-  Player *pPlayer; // edi@12
-  signed int v32; // [sp+10h] [bp-28h]@75
-  signed int v33; // [sp+10h] [bp-28h]@77
-  int pItemTXTNum; // [sp+14h] [bp-24h]@75
-  signed int v38; // [sp+14h] [bp-24h]@79
-  char pContainer[128]; // [sp+24h] [bp-14h]@12
+    int v3; // ebx@10
+    Player *pPlayer; // edi@12
+    signed int v32; // [sp+10h] [bp-28h]@75
+    signed int v33; // [sp+10h] [bp-28h]@77
+    int pItemTXTNum; // [sp+14h] [bp-24h]@75
+    signed int v38; // [sp+14h] [bp-24h]@79
+    char pContainer[128]; // [sp+24h] [bp-14h]@12
 
-  if (!ui_character_inventory_magnification_glass)
-      ui_character_inventory_magnification_glass = assets->GetImage_16BitAlpha(L"MAGNIF-B");
+    if (!ui_character_inventory_magnification_glass)
+        ui_character_inventory_magnification_glass = assets->GetImage_16BitAlpha(L"MAGNIF-B");
 
-  //if ( !pParty->uAlignment || pParty->uAlignment == 1 || pParty->uAlignment == 2 )
-  if (!ui_character_inventory_paperdoll_background)
-      ui_character_inventory_paperdoll_background = assets->GetImage_16BitColorKey(L"BACKDOLL", 0x7FF);
+    //if ( !pParty->uAlignment || pParty->uAlignment == 1 || pParty->uAlignment == 2 )
+    if (!ui_character_inventory_paperdoll_background)
+        ui_character_inventory_paperdoll_background = assets->GetImage_16BitColorKey(L"BACKDOLL", 0x7FF);
 
-  ui_character_inventory_paperdoll_rings_background = assets->GetImage_16BitAlpha(L"BACKHAND");
+    ui_character_inventory_paperdoll_rings_background = assets->GetImage_16BitAlpha(L"BACKHAND");
 
-  ui_character_inventory_paperdoll_rings_close = ui_exit_cancel_button_background;
-  for ( uint i = 0; i < 4; ++i )
-  {
-    if ( pPlayers[i + 1]->HasUnderwaterSuitEquipped() )
+    ui_character_inventory_paperdoll_rings_close = ui_exit_cancel_button_background;
+    for (uint i = 0; i < 4; ++i)
     {
-      if ( pPlayers[i + 1]->GetRace() == CHARACTER_RACE_DWARF )
-        v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 3;
-      else
-        v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 1;
-      wsprintfA(pContainer, "pc23v%dBod", v3);
-      papredoll_dbods[i] = assets->GetImage_16BitAlpha(pContainer);//Body texture
-      wsprintfA(pContainer, "pc23v%dlad", v3);
-      papredoll_dlads[i] = assets->GetImage_16BitAlpha(pContainer);// Left Hand
-      wsprintfA(pContainer, "pc23v%dlau", v3);
-      papredoll_dlaus[i] = assets->GetImage_16BitAlpha(pContainer);// Left Hand2
-      wsprintfA(pContainer, "pc23v%drh", v3);
-      papredoll_drhs[i] = assets->GetImage_16BitAlpha(pContainer);// Right Hand
-      wsprintfA(pContainer, "pc23v%dlh", v3);
-      papredoll_dlhs[i] = assets->GetImage_16BitAlpha(pContainer);// Left Palm
-      wsprintfA(pContainer, "pc23v%dlhu", v3);
-      papredoll_dlhus[i] = assets->GetImage_16BitAlpha(pContainer); // Left Fist
-      pPlayer = pPlayers[i + 1];
+        if (pPlayers[i + 1]->HasUnderwaterSuitEquipped())
+        {
+            if (pPlayers[i + 1]->GetRace() == CHARACTER_RACE_DWARF)
+                v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 3;
+            else
+                v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 1;
+            wsprintfA(pContainer, "pc23v%dBod", v3);
+            papredoll_dbods[i] = assets->GetImage_16BitAlpha(pContainer);//Body texture
+            wsprintfA(pContainer, "pc23v%dlad", v3);
+            papredoll_dlads[i] = assets->GetImage_16BitAlpha(pContainer);// Left Hand
+            wsprintfA(pContainer, "pc23v%dlau", v3);
+            papredoll_dlaus[i] = assets->GetImage_16BitAlpha(pContainer);// Left Hand2
+            wsprintfA(pContainer, "pc23v%drh", v3);
+            papredoll_drhs[i] = assets->GetImage_16BitAlpha(pContainer);// Right Hand
+            wsprintfA(pContainer, "pc23v%dlh", v3);
+            papredoll_dlhs[i] = assets->GetImage_16BitAlpha(pContainer);// Left Palm
+            wsprintfA(pContainer, "pc23v%dlhu", v3);
+            papredoll_dlhus[i] = assets->GetImage_16BitAlpha(pContainer); // Left Fist
+            pPlayer = pPlayers[i + 1];
 
-      if ( pPlayer->uCurrentFace == 12 || pPlayer->uCurrentFace == 13 )
-        paperdoll_dbrds[(char)pPlayer->uCurrentFace] = nullptr;
-      papredoll_flying_feet[pPlayer->uCurrentFace] = nullptr;
+            if (pPlayer->uCurrentFace == 12 || pPlayer->uCurrentFace == 13)
+                paperdoll_dbrds[(char)pPlayer->uCurrentFace] = nullptr;
+            papredoll_flying_feet[pPlayer->uCurrentFace] = nullptr;
 
-      IsPlayerWearingWatersuit[i + 1] = true;
+            IsPlayerWearingWatersuit[i + 1] = true;
+        }
+        else
+        {
+            papredoll_dbods[i] = assets->GetImage_16BitAlpha(dbod_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
+            papredoll_dlads[i] = assets->GetImage_16BitAlpha(dlad_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
+            papredoll_dlaus[i] = assets->GetImage_16BitAlpha(dlau_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
+            papredoll_drhs[i] = assets->GetImage_16BitAlpha(drh_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
+            papredoll_dlhs[i] = assets->GetImage_16BitAlpha(dlh_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
+            papredoll_dlhus[i] = assets->GetImage_16BitAlpha(dlhu_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
+
+            wchar_t name[1024];
+            if (pPlayers[i + 1]->uCurrentFace == 12 || pPlayers[i + 1]->uCurrentFace == 13)
+            {
+                wsprintfW(name, L"pc%02dbrd", pPlayers[i + 1]->uCurrentFace + 1);
+                paperdoll_dbrds[pPlayers[i + 1]->uCurrentFace] = assets->GetImage_16BitAlpha(name);
+            }
+            wsprintfW(name, L"item281pc%02d", pPlayers[i + 1]->uCurrentFace + 1);
+            papredoll_flying_feet[pPlayers[i + 1]->uCurrentFace] = assets->GetImage_16BitAlpha(name);
+            IsPlayerWearingWatersuit[i + 1] = 0;
+        }
     }
-    else
+
+    ui_ar_up_up = assets->GetImage_16BitAlpha(L"ar_up_up");
+    ui_ar_up_dn = assets->GetImage_16BitAlpha(L"ar_up_dn");
+    ui_ar_dn_up = assets->GetImage_16BitAlpha(L"ar_dn_up");
+    ui_ar_dn_dn = assets->GetImage_16BitAlpha(L"ar_dn_dn");
+
+    paperdoll_dbrds[9] = assets->GetImage_16BitAlpha(L"ib-cd1-d");
+    paperdoll_dbrds[7] = assets->GetImage_16BitAlpha(L"ib-cd2-d");
+    paperdoll_dbrds[5] = assets->GetImage_16BitAlpha(L"ib-cd3-d");
+    paperdoll_dbrds[3] = assets->GetImage_16BitAlpha(L"ib-cd4-d");
+    paperdoll_dbrds[1] = assets->GetImage_16BitAlpha(L"ib-cd5-d");
+
+    for (uint i = 0; i < 54; ++i)// test equipment
     {
-      papredoll_dbods[i] = assets->GetImage_16BitAlpha(dbod_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-      papredoll_dlads[i] = assets->GetImage_16BitAlpha(dlad_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-      papredoll_dlaus[i] = assets->GetImage_16BitAlpha(dlau_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-      papredoll_drhs[i] = assets->GetImage_16BitAlpha(drh_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-      papredoll_dlhs[i] = assets->GetImage_16BitAlpha(dlh_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-      papredoll_dlhus[i] = assets->GetImage_16BitAlpha(dlhu_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-
-      wchar_t name[1024];
-      if ( pPlayers[i + 1]->uCurrentFace == 12 || pPlayers[i + 1]->uCurrentFace == 13 )
-      {
-        wsprintfW(name, L"pc%02dbrd", pPlayers[i + 1]->uCurrentFace + 1);
-        paperdoll_dbrds[pPlayers[i + 1]->uCurrentFace] = assets->GetImage_16BitAlpha(name);
-      }
-      wsprintfW(name, L"item281pc%02d", pPlayers[i + 1]->uCurrentFace + 1);
-      papredoll_flying_feet[pPlayers[i + 1]->uCurrentFace] = assets->GetImage_16BitAlpha(name);
-      IsPlayerWearingWatersuit[i + 1] = 0;
+        party_has_equipment[i] = 0;
+        if (pParty->pPickedItem.uItemID != i + 66)
+        {
+            for (uint j = 0; j < 4; ++j)
+            {
+                if (pParty->pPlayers[j].HasItem(i + 66, 0))
+                    party_has_equipment[i] = 1;
+            }
+        }
     }
-  }
-
-  ui_ar_up_up = assets->GetImage_16BitAlpha(L"ar_up_up");
-  ui_ar_up_dn = assets->GetImage_16BitAlpha(L"ar_up_dn");
-  ui_ar_dn_up = assets->GetImage_16BitAlpha(L"ar_dn_up");
-  ui_ar_dn_dn = assets->GetImage_16BitAlpha(L"ar_dn_dn");
-
-  paperdoll_dbrds[9] = assets->GetImage_16BitAlpha(L"ib-cd1-d");
-  paperdoll_dbrds[7] = assets->GetImage_16BitAlpha(L"ib-cd2-d");
-  paperdoll_dbrds[5] = assets->GetImage_16BitAlpha(L"ib-cd3-d");
-  paperdoll_dbrds[3] = assets->GetImage_16BitAlpha(L"ib-cd4-d");
-  paperdoll_dbrds[1] = assets->GetImage_16BitAlpha(L"ib-cd5-d");
-
-  for ( uint i = 0; i < 54; ++i )// test equipment
-  {
-    party_has_equipment[i] = 0;
-    if ( pParty->pPickedItem.uItemID != i + 66 )
+    memset(byte_5111F6_OwnedArtifacts.data(), 0, sizeof(byte_5111F6_OwnedArtifacts));
+    for (uint i = 0; i < 4; ++i)
     {
-      for ( uint j = 0; j < 4; ++j)
-      {
-        if ( pParty->pPlayers[j].HasItem(i + 66, 0) )
-          party_has_equipment[i] = 1;
-      }
+        Player* player = &pParty->pPlayers[i];
+
+        if (player->HasItem(ITEM_ARTIFACT_GOVERNORS_ARMOR, 1))    byte_5111F6_OwnedArtifacts[0] = 1;
+        if (player->HasItem(ITEM_ARTIFACT_YORUBA, 1))             byte_5111F6_OwnedArtifacts[1] = 1;
+        if (player->HasItem(ITEM_RELIC_HARECS_LEATHER, 1))        byte_5111F6_OwnedArtifacts[2] = 1;
+        if (player->HasItem(ITEM_ARTIFACT_LEAGUE_BOOTS, 1))       byte_5111F6_OwnedArtifacts[3] = 1;
+        if (player->HasItem(ITEM_RELIC_TALEDONS_HELM, 1))         byte_5111F6_OwnedArtifacts[4] = 1;
+        if (player->HasItem(ITEM_RELIC_SCHOLARS_CAP, 1))          byte_5111F6_OwnedArtifacts[5] = 1;
+        if (player->HasItem(ITEM_RELIC_PHYNAXIAN_CROWN, 1))       byte_5111F6_OwnedArtifacts[6] = 1;
+        if (player->HasItem(ITEM_ARTIFACT_MINDS_EYE, 1))          byte_5111F6_OwnedArtifacts[7] = 1;
+        if (player->HasItem(ITEM_RARE_SHADOWS_MASK, 1))           byte_5111F6_OwnedArtifacts[8] = 1;
+        if (player->HasItem(ITEM_RILIC_TITANS_BELT, 1))           byte_5111F6_OwnedArtifacts[9] = 1;
+        if (player->HasItem(ITEM_ARTIFACT_HEROS_BELT, 1))         byte_5111F6_OwnedArtifacts[10] = 1;
+        if (player->HasItem(ITEM_RELIC_TWILIGHT, 1))              byte_5111F6_OwnedArtifacts[11] = 1;
+        if (player->HasItem(ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, 1)) byte_5111F6_OwnedArtifacts[12] = 1;
+        if (player->HasItem(ITEM_RARE_SUN_CLOAK, 1))              byte_5111F6_OwnedArtifacts[13] = 1;
+        if (player->HasItem(ITEM_RARE_MOON_CLOAK, 1))             byte_5111F6_OwnedArtifacts[14] = 1;
+        if (player->HasItem(ITEM_RARE_VAMPIRES_CAPE, 1))          byte_5111F6_OwnedArtifacts[15] = 1;
+        if (player->HasItem(ITEM_ELVEN_CHAINMAIL, 1))             byte_5111F6_OwnedArtifacts[16] = 1;
     }
-  }
-  memset(byte_5111F6_OwnedArtifacts.data(), 0, sizeof(byte_5111F6_OwnedArtifacts));
-  for (uint i = 0; i < 4; ++i)
-  {
-    Player* player = &pParty->pPlayers[i];
 
-    if (player->HasItem(ITEM_ARTIFACT_GOVERNORS_ARMOR, 1))    byte_5111F6_OwnedArtifacts[0] = 1;
-    if (player->HasItem(ITEM_ARTIFACT_YORUBA, 1))             byte_5111F6_OwnedArtifacts[1] = 1;
-    if (player->HasItem(ITEM_RELIC_HARECS_LEATHER, 1))        byte_5111F6_OwnedArtifacts[2] = 1;
-    if (player->HasItem(ITEM_ARTIFACT_LEAGUE_BOOTS, 1))       byte_5111F6_OwnedArtifacts[3] = 1;
-    if (player->HasItem(ITEM_RELIC_TALEDONS_HELM, 1))         byte_5111F6_OwnedArtifacts[4] = 1;
-    if (player->HasItem(ITEM_RELIC_SCHOLARS_CAP, 1))          byte_5111F6_OwnedArtifacts[5] = 1;
-    if (player->HasItem(ITEM_RELIC_PHYNAXIAN_CROWN, 1))       byte_5111F6_OwnedArtifacts[6] = 1;
-    if (player->HasItem(ITEM_ARTIFACT_MINDS_EYE, 1))          byte_5111F6_OwnedArtifacts[7] = 1;
-    if (player->HasItem(ITEM_RARE_SHADOWS_MASK, 1))           byte_5111F6_OwnedArtifacts[8] = 1;
-    if (player->HasItem(ITEM_RILIC_TITANS_BELT, 1))           byte_5111F6_OwnedArtifacts[9] = 1;
-    if (player->HasItem(ITEM_ARTIFACT_HEROS_BELT, 1))         byte_5111F6_OwnedArtifacts[10] = 1;
-    if (player->HasItem(ITEM_RELIC_TWILIGHT, 1))              byte_5111F6_OwnedArtifacts[11] = 1;
-    if (player->HasItem(ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, 1)) byte_5111F6_OwnedArtifacts[12] = 1;
-    if (player->HasItem(ITEM_RARE_SUN_CLOAK, 1))              byte_5111F6_OwnedArtifacts[13] = 1;
-    if (player->HasItem(ITEM_RARE_MOON_CLOAK, 1))             byte_5111F6_OwnedArtifacts[14] = 1;
-    if (player->HasItem(ITEM_RARE_VAMPIRES_CAPE, 1))          byte_5111F6_OwnedArtifacts[15] = 1;
-    if (player->HasItem(ITEM_ELVEN_CHAINMAIL, 1))             byte_5111F6_OwnedArtifacts[16] = 1;
-  }
-
-  for (uint i = 0; i < 2; ++i)
-  {
-    for ( uint j = 0; j < 5; ++j )//Belt
+    for (uint i = 0; i < 2; ++i)
     {
-      GetItemTextureFilename(pContainer, j + 100, i + 1, 0);
-      paperdoll_belt_texture[i][j] = assets->GetImage_16BitAlpha(pContainer);
-    }
-    GetItemTextureFilename(pContainer, 535, i + 1, 0);
-    paperdoll_belt_texture[i][6] = assets->GetImage_16BitAlpha(pContainer);
-    for ( uint j = 0; j < 11; ++j )//Helm
-    {
-      GetItemTextureFilename(pContainer, j + 89, i + 1, 0);
-      paperdoll_helm_texture[i][j] = assets->GetImage_16BitAlpha(pContainer);
-    }
-    GetItemTextureFilename(pContainer, 521, i + 1, 0);
-    paperdoll_helm_texture[i][11] = assets->GetImage_16BitAlpha(pContainer);
-    GetItemTextureFilename(pContainer, 522, i + 1, 0);
-    paperdoll_helm_texture[i][12] = assets->GetImage_16BitAlpha(pContainer);
-    GetItemTextureFilename(pContainer, 523, i + 1, 0);
-    paperdoll_helm_texture[i][13] = assets->GetImage_16BitAlpha(pContainer);
-    GetItemTextureFilename(pContainer, 532, i + 1, 0);
-    paperdoll_helm_texture[i][14] = assets->GetImage_16BitAlpha(pContainer);
-    GetItemTextureFilename(pContainer, 544, i + 1, 0);
-    paperdoll_helm_texture[i][15] = assets->GetImage_16BitAlpha(pContainer);
+        for (uint j = 0; j < 5; ++j)//Belt
+        {
+            GetItemTextureFilename(pContainer, j + 100, i + 1, 0);
+            paperdoll_belt_texture[i][j] = assets->GetImage_16BitAlpha(pContainer);
+        }
+        GetItemTextureFilename(pContainer, 535, i + 1, 0);
+        paperdoll_belt_texture[i][6] = assets->GetImage_16BitAlpha(pContainer);
+        for (uint j = 0; j < 11; ++j)//Helm
+        {
+            GetItemTextureFilename(pContainer, j + 89, i + 1, 0);
+            paperdoll_helm_texture[i][j] = assets->GetImage_16BitAlpha(pContainer);
+        }
+        GetItemTextureFilename(pContainer, 521, i + 1, 0);
+        paperdoll_helm_texture[i][11] = assets->GetImage_16BitAlpha(pContainer);
+        GetItemTextureFilename(pContainer, 522, i + 1, 0);
+        paperdoll_helm_texture[i][12] = assets->GetImage_16BitAlpha(pContainer);
+        GetItemTextureFilename(pContainer, 523, i + 1, 0);
+        paperdoll_helm_texture[i][13] = assets->GetImage_16BitAlpha(pContainer);
+        GetItemTextureFilename(pContainer, 532, i + 1, 0);
+        paperdoll_helm_texture[i][14] = assets->GetImage_16BitAlpha(pContainer);
+        GetItemTextureFilename(pContainer, 544, i + 1, 0);
+        paperdoll_helm_texture[i][15] = assets->GetImage_16BitAlpha(pContainer);
 
-    if ( IsDwarfPresentInParty(true) )          //the phynaxian helm uses a slightly different graphic for dwarves
-      paperdoll_dbrds[11] = assets->GetImage_16BitAlpha(L"item092v3");
-  }
-  //v43 = 0;
-  for (uint i = 0; i < 4; ++i)
-  {
-    if ( ShouldLoadTexturesForRaceAndGender(i) )
-    {
-      GetItemTextureFilename(pContainer, 524, i + 1, 0);
-      paperdoll_belt_texture[i][5] = assets->GetImage_16BitAlpha(pContainer);//Titans belt
-      pItemTXTNum = 66;
-      for ( v32 = 0; v32 < 13; ++v32 )//simple armor
-      {
-        GetItemTextureFilename(pContainer, pItemTXTNum, i + 1, 0);
-        paperdoll_armor_texture[i][v32][0] = assets->GetImage_16BitAlpha(pContainer);// armor
-        GetItemTextureFilename(pContainer, pItemTXTNum, i + 1, 1);
-        paperdoll_armor_texture[i][v32][1] = assets->GetImage_16BitAlpha(pContainer);// shoulder 1
-        GetItemTextureFilename(pContainer, pItemTXTNum, i + 1, 2);
-        paperdoll_armor_texture[i][v32][2] = assets->GetImage_16BitAlpha(pContainer);// shoulder 2
-        pItemTXTNum++;
-      }
-      GetItemTextureFilename(pContainer, 516, i + 1, 0);//artefacts
-      paperdoll_armor_texture[i][v32][0] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 516, i + 1, 1);
-      paperdoll_armor_texture[i][v32][1] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 516, i + 1, 2);
-      paperdoll_armor_texture[i][v32][2] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 505, i + 1, 0);
-      paperdoll_armor_texture[i][v32 + 1][0] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 505, i + 1, 1);
-      paperdoll_armor_texture[i][v32 + 1][1] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 505, i + 1, 2);
-      paperdoll_armor_texture[i][v32 + 1][2] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 504, i + 1, 0);
-      paperdoll_armor_texture[i][v32 + 2][0] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 504, i + 1, 1);
-      paperdoll_armor_texture[i][v32 + 2][1] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 504, i + 1, 2);
-      paperdoll_armor_texture[i][v32 + 2][2] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 533, i + 1, 0);
-      paperdoll_armor_texture[i][v32 + 3][0] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 533, i + 1, 1);
-      paperdoll_armor_texture[i][v32 + 3][1] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 533, i + 1, 2);
-      paperdoll_armor_texture[i][v32 + 3][2] = assets->GetImage_16BitAlpha(pContainer);
-      for ( v33 = 0; v33 < 5; ++v33 )//boots
-      {
-        GetItemTextureFilename(pContainer, v33 + 115, i + 1, 0);
-        paperdoll_boots_texture[i][v33] = assets->GetImage_16BitAlpha(pContainer);
-      }
-      GetItemTextureFilename(pContainer, 512, i + 1, 0);
-      paperdoll_boots_texture[i][v33] = assets->GetImage_16BitAlpha(pContainer);
-      for ( v38 = 0; v38 < 5; ++v38 )//Cloak
-      {
-        GetItemTextureFilename(pContainer, v38 + 105, i + 1, 0);
-        paperdoll_cloak_texture[i][v38] = assets->GetImage_16BitAlpha(pContainer);
-        GetItemTextureFilename(pContainer, v38 + 105, i + 1, 1);
-        paperdoll_cloak_collar_texture[i][v38] = assets->GetImage_16BitAlpha(pContainer);
-      }
-
-      GetItemTextureFilename(pContainer, 525, i + 1, 0);
-      paperdoll_cloak_texture[i][5] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 530, i + 1, 0);
-      paperdoll_cloak_texture[i][6] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 547, i + 1, 0);
-      paperdoll_cloak_texture[i][7] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 548, i + 1, 0);
-      paperdoll_cloak_texture[i][8] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 550, i + 1, 0);
-      paperdoll_cloak_texture[i][9] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 525, i + 1, 1);
-      paperdoll_cloak_collar_texture[i][5] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 530, i + 1, 1);
-      paperdoll_cloak_collar_texture[i][6] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 547, i + 1, 1);
-      paperdoll_cloak_collar_texture[i][7] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 548, i + 1, 1);
-      paperdoll_cloak_collar_texture[i][8] = assets->GetImage_16BitAlpha(pContainer);
-      GetItemTextureFilename(pContainer, 550, i + 1, 1);
-      paperdoll_cloak_collar_texture[i][9] = assets->GetImage_16BitAlpha(pContainer);
+        if (IsDwarfPresentInParty(true))          //the phynaxian helm uses a slightly different graphic for dwarves
+            paperdoll_dbrds[11] = assets->GetImage_16BitAlpha(L"item092v3");
     }
-    //else
-    //{
-      //v26 = v43;
-    //}
-    //v43 = v26 + 40;
-  }
+    //v43 = 0;
+    for (uint i = 0; i < 4; ++i)
+    {
+        if (ShouldLoadTexturesForRaceAndGender(i))
+        {
+            GetItemTextureFilename(pContainer, 524, i + 1, 0);
+            paperdoll_belt_texture[i][5] = assets->GetImage_16BitAlpha(pContainer);//Titans belt
+            pItemTXTNum = 66;
+            for (v32 = 0; v32 < 13; ++v32)//simple armor
+            {
+                GetItemTextureFilename(pContainer, pItemTXTNum, i + 1, 0);
+                paperdoll_armor_texture[i][v32][0] = assets->GetImage_16BitAlpha(pContainer);// armor
+                GetItemTextureFilename(pContainer, pItemTXTNum, i + 1, 1);
+                paperdoll_armor_texture[i][v32][1] = assets->GetImage_16BitAlpha(pContainer);// shoulder 1
+                GetItemTextureFilename(pContainer, pItemTXTNum, i + 1, 2);
+                paperdoll_armor_texture[i][v32][2] = assets->GetImage_16BitAlpha(pContainer);// shoulder 2
+                pItemTXTNum++;
+            }
+            GetItemTextureFilename(pContainer, 516, i + 1, 0);//artefacts
+            paperdoll_armor_texture[i][v32][0] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 516, i + 1, 1);
+            paperdoll_armor_texture[i][v32][1] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 516, i + 1, 2);
+            paperdoll_armor_texture[i][v32][2] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 505, i + 1, 0);
+            paperdoll_armor_texture[i][v32 + 1][0] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 505, i + 1, 1);
+            paperdoll_armor_texture[i][v32 + 1][1] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 505, i + 1, 2);
+            paperdoll_armor_texture[i][v32 + 1][2] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 504, i + 1, 0);
+            paperdoll_armor_texture[i][v32 + 2][0] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 504, i + 1, 1);
+            paperdoll_armor_texture[i][v32 + 2][1] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 504, i + 1, 2);
+            paperdoll_armor_texture[i][v32 + 2][2] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 533, i + 1, 0);
+            paperdoll_armor_texture[i][v32 + 3][0] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 533, i + 1, 1);
+            paperdoll_armor_texture[i][v32 + 3][1] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 533, i + 1, 2);
+            paperdoll_armor_texture[i][v32 + 3][2] = assets->GetImage_16BitAlpha(pContainer);
+            for (v33 = 0; v33 < 5; ++v33)//boots
+            {
+                GetItemTextureFilename(pContainer, v33 + 115, i + 1, 0);
+                paperdoll_boots_texture[i][v33] = assets->GetImage_16BitAlpha(pContainer);
+            }
+            GetItemTextureFilename(pContainer, 512, i + 1, 0);
+            paperdoll_boots_texture[i][v33] = assets->GetImage_16BitAlpha(pContainer);
+            for (v38 = 0; v38 < 5; ++v38)//Cloak
+            {
+                GetItemTextureFilename(pContainer, v38 + 105, i + 1, 0);
+                paperdoll_cloak_texture[i][v38] = assets->GetImage_16BitAlpha(pContainer);
+                GetItemTextureFilename(pContainer, v38 + 105, i + 1, 1);
+                paperdoll_cloak_collar_texture[i][v38] = assets->GetImage_16BitAlpha(pContainer);
+            }
+
+            GetItemTextureFilename(pContainer, 525, i + 1, 0);
+            paperdoll_cloak_texture[i][5] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 530, i + 1, 0);
+            paperdoll_cloak_texture[i][6] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 547, i + 1, 0);
+            paperdoll_cloak_texture[i][7] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 548, i + 1, 0);
+            paperdoll_cloak_texture[i][8] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 550, i + 1, 0);
+            paperdoll_cloak_texture[i][9] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 525, i + 1, 1);
+            paperdoll_cloak_collar_texture[i][5] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 530, i + 1, 1);
+            paperdoll_cloak_collar_texture[i][6] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 547, i + 1, 1);
+            paperdoll_cloak_collar_texture[i][7] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 548, i + 1, 1);
+            paperdoll_cloak_collar_texture[i][8] = assets->GetImage_16BitAlpha(pContainer);
+            GetItemTextureFilename(pContainer, 550, i + 1, 1);
+            paperdoll_cloak_collar_texture[i][9] = assets->GetImage_16BitAlpha(pContainer);
+        }
+        //else
+        //{
+          //v26 = v43;
+        //}
+        //v43 = v26 + 40;
+    }
 }
 
 //----- (00419401) --------------------------------------------------------
@@ -2145,221 +2146,248 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons()
 //----- (00418511) --------------------------------------------------------
 void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
 {
-  int pY; // ST34_4@4
-  const char *pText; // eax@9
-  const char *text_format; // [sp+14h] [bp-Ch]@4
+    int pY; // ST34_4@4
+    const char *pText; // eax@9
+    const char *text_format; // [sp+14h] [bp-Ch]@4
 
-  pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_character_stats_background);
+    pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, ui_character_stats_background);
 
-  sprintf(pTmpBuf.data(), "\f%05d", ui_character_header_text_color);
-  sprintfex(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[429], player->pName, pClassNames[player->classType]);//"^Pi[%s] %s" / "%s the %s"
-  strcat(pTmpBuf.data(), pTmpBuf2.data());
-  sprintfex(pTmpBuf2.data(),  "\f00000\r180%s: \f%05d%d\f00000\n\n\n",
-            pGlobalTXT_LocalizationStrings[207], // "Skill points"
+    auto str1 =
+        StringPrintf("\f%05d", ui_character_header_text_color)
+        + localization->FormatString(429, player->pName, localization->GetClassName(player->classType)) // "^Pi[%s] %s" / "%s the %s"
+        + StringPrintf("\f00000\r180%s: \f%05d%d\f00000\n\n\n",
+            localization->GetString(207), // "Skill points"
             player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color,
             player->uSkillPoints);
-  strcat(pTmpBuf.data(), pTmpBuf2.data());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, 18, 0, pTmpBuf.data(), 0, 0, 0);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, 18, 0, str1);
 
-  //First column(Первая колонка)
-  pY = 53;
-  sprintf(pTmpBuf.data(), "%s\f%05u\r424%d\f00000 /\t185%d\n", pGlobalTXT_LocalizationStrings[144],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualMight(), player->GetBaseStrength()),
-          player->GetActualMight(), player->GetBaseStrength());//Might
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    //First column(Первая колонка)
+    pY = 53;
+    auto str2 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(144),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualMight(), player->GetBaseStrength()),
+        player->GetActualMight(), player->GetBaseStrength()); // Might
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str2);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\f%05u\r424%d\f00000 /\t185%d\n", pGlobalTXT_LocalizationStrings[116],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualIntelligence(), player->GetBaseIntelligence()),
-          player->GetActualIntelligence(), player->GetBaseIntelligence());//Intellect
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str3 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(116),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualIntelligence(), player->GetBaseIntelligence()),
+        player->GetActualIntelligence(), player->GetBaseIntelligence()); // Intellect
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str3);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\f%05u\r424%d\f00000 /\t185%d\n", pGlobalTXT_LocalizationStrings[163],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualWillpower(), player->GetBaseWillpower()),
-          player->GetActualWillpower(), player->GetBaseWillpower());//
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str4 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(163),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualWillpower(), player->GetBaseWillpower()),
+        player->GetActualWillpower(), player->GetBaseWillpower()); // Willpower
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str4);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\f%05u\r424%d\f00000 /\t185%d\n", pGlobalTXT_LocalizationStrings[75],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualEndurance(), player->GetBaseEndurance()),
-          player->GetActualEndurance(), player->GetBaseEndurance());//
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str5 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(75),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualEndurance(), player->GetBaseEndurance()),
+        player->GetActualEndurance(), player->GetBaseEndurance());
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str5);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\f%05u\r424%d\f00000 /\t185%d\n", pGlobalTXT_LocalizationStrings[1],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAccuracy(), player->GetBaseAccuracy()),
-          player->GetActualAccuracy(), player->GetBaseAccuracy());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str6 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(1),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAccuracy(), player->GetBaseAccuracy()),
+        player->GetActualAccuracy(), player->GetBaseAccuracy());
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str6);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\f%05u\r424%d\f00000 /\t185%d\n", pGlobalTXT_LocalizationStrings[211],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualSpeed(), player->GetBaseSpeed()),
-          player->GetActualSpeed(), player->GetBaseSpeed());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str7 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(211),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualSpeed(), player->GetBaseSpeed()),
+        player->GetActualSpeed(), player->GetBaseSpeed());
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str7);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\f%05u\r424%d\f00000 /\t185%d\n\n", pGlobalTXT_LocalizationStrings[136],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLuck(), player->GetBaseLuck()),
-          player->GetActualLuck(), player->GetBaseLuck());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str8 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n", localization->GetString(136),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLuck(), player->GetBaseLuck()),
+        player->GetActualLuck(), player->GetBaseLuck());
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str8);
 
-  text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
-  if ( player->GetMaxHealth() >= 1000 )
-    text_format = "%s\f%05u\r388%d\f00000 / %d\n";
-  pY += 2 * LOBYTE(pFontArrus->uFontHeight) + 5;
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[108],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->sHealth, player->GetMaxHealth()),
-          player->sHealth, player->GetMaxHealth());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
+    if (player->GetMaxHealth() >= 1000)
+        text_format = "%s\f%05u\r388%d\f00000 / %d\n";
+    pY += 2 * LOBYTE(pFontArrus->uFontHeight) + 5;
+    auto str9 = StringPrintf(text_format, localization->GetString(108),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->sHealth, player->GetMaxHealth()),
+        player->sHealth, player->GetMaxHealth()
+    );
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str9);
 
-  text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
-  if ( player->GetMaxMana() >= 1000 )
-    text_format = "%s\f%05u\r388%d\f00000 / %d\n";
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[212],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
-          player->sMana, player->GetMaxMana());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
+    if (player->GetMaxMana() >= 1000)
+        text_format = "%s\f%05u\r388%d\f00000 / %d\n";
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str10 = StringPrintf(text_format, localization->GetString(212),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
+        player->sMana, player->GetMaxMana()
+    );
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str10);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\f%05u\r424%d\f00000 /\t185%d\n\n", pGlobalTXT_LocalizationStrings[12],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAC(), player->GetBaseAC()),
-          player->GetActualAC(), player->GetBaseAC());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str11 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n", localization->GetString(12),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAC(), player->GetBaseAC()),
+        player->GetActualAC(), player->GetBaseAC()
+    );
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str11);
 
-  pY += 2 * LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s: \f%05d%s\n", pGlobalTXT_LocalizationStrings[47], GetConditionDrawColor(player->GetMajorConditionIdx()),
-          aCharacterConditionNames[player->GetMajorConditionIdx()]);//Состояние
-  pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, pTmpBuf.data(), 226, 0);
+    pY += 2 * LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str12 = StringPrintf(
+        "%s: \f%05d%s\n",
+        localization->GetString(47), // Condition   /   Состояние
+        GetConditionDrawColor(player->GetMajorConditionIdx()),
+        localization->GetCharacterConditionName(player->GetMajorConditionIdx())
+    );
+    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str12, 226, 0);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) + - 1;
-  pText = pGlobalTXT_LocalizationStrings[153];//Нет
-  if (player->uQuickSpell)
-    pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
-  sprintf(pTmpBuf.data(), "%s: %s", pGlobalTXT_LocalizationStrings[172], pText);//Б. применение
-  pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, pTmpBuf.data(), 226, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) + -1;
+    pText = localization->GetString(153); // Нет
+    if (player->uQuickSpell)
+        pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
+    auto str13 = StringPrintf("%s: %s", localization->GetString(172), pText); // Б. применение
+    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str13, 226, 0);
 
-  //Second column (Вторая колонка)
-  pY = 50;
-  text_format = Stat_string_format_2_column_less_100;
-  if ( player->GetActualAge() > 99 )
-    text_format = Stat_string_format_2_column_over_100;
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[5],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAge(), player->GetBaseAge()),
-          player->GetActualAge(), player->GetBaseAge());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    //Second column (Вторая колонка)
+    pY = 50;
+    text_format = Stat_string_format_2_column_less_100;
+    if (player->GetActualAge() > 99)
+        text_format = Stat_string_format_2_column_over_100;
+    auto str14 = StringPrintf(text_format, localization->GetString(5),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAge(), player->GetBaseAge()),
+        player->GetActualAge(), player->GetBaseAge()
+    );
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str14);
 
-  text_format = Stat_string_format_2_column_less_100;
-  if ( player->GetBaseLevel() > 99 )
-    text_format = Stat_string_format_2_column_over_100;
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[131],//Уров.
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLevel(), player->GetBaseLevel()),
-          player->GetActualLevel(), player->GetBaseLevel());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    text_format = Stat_string_format_2_column_less_100;
+    if (player->GetBaseLevel() > 99)
+        text_format = Stat_string_format_2_column_over_100;
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str15 = StringPrintf(text_format, localization->GetString(131), // Уров.
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLevel(), player->GetBaseLevel()),
+        player->GetActualLevel(), player->GetBaseLevel()
+    );
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str15);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  pText = pGlobalTXT_LocalizationStrings[17]; // "Exp."
-  if (player->uExperience <= 9999999)
-    pText = pGlobalTXT_LocalizationStrings[83]; // "Experience"
-  sprintf(pTmpBuf.data(), "%s\r180\f%05d%lu\f00000\n\n", pText, player->GetExperienceDisplayColor(), LODWORD(player->uExperience));
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    pText = localization->GetString(17); // Exp.
+    if (player->uExperience <= 9999999)
+        pText = localization->GetString(83); // Experience
+    auto str16 = StringPrintf("%s\r180\f%05d%lu\f00000\n\n", pText, player->GetExperienceDisplayColor(), LODWORD(player->uExperience));
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str16);
 
-  pY += 2 * LOBYTE(pFontArrus->uFontHeight);
-  sprintf(pTmpBuf.data(), "%s\t100%+d\n", pGlobalTXT_LocalizationStrings[18], player->GetActualAttack(false));
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += 2 * LOBYTE(pFontArrus->uFontHeight);
+    auto str17 = StringPrintf("%s\t100%+d\n", localization->GetString(18), player->GetActualAttack(false));
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str17);
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\t100 %s\n", pGlobalTXT_LocalizationStrings[53], player->GetMeleeDamageString());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    pGUIWindow_CurrentMenu->DrawText(
+        pFontArrus,
+        266,
+        pY,
+        0,
+        StringPrintf("%s\t100 %s\n", localization->GetString(53), player->GetMeleeDamageString().c_str())
+    );
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\t100%+d\n", pGlobalTXT_LocalizationStrings[203], player->GetRangedAttack());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    pGUIWindow_CurrentMenu->DrawText(
+        pFontArrus,
+        266,
+        pY,
+        0,
+        StringPrintf("%s\t100%+d\n", localization->GetString(203), player->GetRangedAttack())
+    );
 
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), "%s\t100 %s\n\n", pGlobalTXT_LocalizationStrings[53], player->GetRangedDamageString());
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    pGUIWindow_CurrentMenu->DrawText(
+        pFontArrus,
+        266,
+        pY,
+        0,
+        StringPrintf("%s\t100 %s\n\n", localization->GetString(53), player->GetRangedDamageString().c_str())
+    );
 
-  text_format = Stat_string_format_2_column_less_100;
-  if ( player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99 )
-    text_format = Stat_string_format_2_column_over_100;
-  pY += 2 * LOBYTE(pFontArrus->uFontHeight) - 4;
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[87],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)),
-          player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE));
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    text_format = Stat_string_format_2_column_less_100;
+    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99)
+        text_format = Stat_string_format_2_column_over_100;
+    pY += 2 * LOBYTE(pFontArrus->uFontHeight) - 4;
+    auto str18 = StringPrintf(text_format, localization->GetSpellSchoolName(0),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)),
+        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE));
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str18);
 
-  text_format = Stat_string_format_2_column_less_100;
-  if ( player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99 )
-    text_format = Stat_string_format_2_column_over_100;
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[6],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)),
-          player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR));
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    text_format = Stat_string_format_2_column_less_100;
+    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99)
+        text_format = Stat_string_format_2_column_over_100;
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str19 = StringPrintf(text_format, localization->GetSpellSchoolName(1),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)),
+        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR));
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str19);
 
-  text_format = Stat_string_format_2_column_less_100;
-  if ( player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99 )
-    text_format = Stat_string_format_2_column_over_100;
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[240],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)),
-          player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER));
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    text_format = Stat_string_format_2_column_less_100;
+    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99)
+        text_format = Stat_string_format_2_column_over_100;
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str20 = StringPrintf(text_format, localization->GetSpellSchoolName(2),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)),
+        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER));
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str20);
 
-  text_format = Stat_string_format_2_column_less_100;
-  if ( player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH) > 99 )
-    text_format = Stat_string_format_2_column_over_100;
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[70],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)),
-          player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH));
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    text_format = Stat_string_format_2_column_less_100;
+    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH) > 99)
+        text_format = Stat_string_format_2_column_over_100;
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str21 = StringPrintf(text_format, localization->GetSpellSchoolName(3),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)),
+        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH));
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str21);
 
-  text_format = Stat_string_format_2_column_less_100;
-  if ( player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99 )
-    text_format = Stat_string_format_2_column_over_100;
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[142],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND)),
-          player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND));
-  if ( player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200 )
-    sprintf(pTmpBuf.data(), Stat_string_format_2_column_text, pGlobalTXT_LocalizationStrings[142],
-         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), 200), pGlobalTXT_LocalizationStrings[625]);
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    text_format = Stat_string_format_2_column_less_100;
+    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99)
+        text_format = Stat_string_format_2_column_over_100;
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    auto str22 = StringPrintf(text_format, localization->GetSpellSchoolName(4),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND)),
+        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND));
+    if (player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200)
+    {
+        str22 = StringPrintf(Stat_string_format_2_column_text, localization->GetString(142),
+            UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), 200), localization->GetString(625));
+    }
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str22);
 
-  text_format = Stat_string_format_2_column_less_100;
-  if ( player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99 )
-    text_format = Stat_string_format_2_column_over_100;
-  pY += LOBYTE(pFontArrus->uFontHeight) - 2;
-  int it = player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
-  sprintf(pTmpBuf.data(), text_format, pGlobalTXT_LocalizationStrings[29],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY)),
-          player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY));
-  if ( player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200 )
-    sprintf(pTmpBuf.data(), Stat_string_format_2_column_text, pGlobalTXT_LocalizationStrings[29],
-          UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), 200), pGlobalTXT_LocalizationStrings[625]);
-  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, pTmpBuf.data(), 0, 0, 0);
+    text_format = Stat_string_format_2_column_less_100;
+    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99)
+        text_format = Stat_string_format_2_column_over_100;
+    pY += LOBYTE(pFontArrus->uFontHeight) - 2;
+    int it = player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
+    auto str23 = StringPrintf(text_format, localization->GetSpellSchoolName(6),
+        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY)),
+        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY));
+    if (player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200)
+    {
+        str23 = StringPrintf(Stat_string_format_2_column_text, localization->GetString(29),
+            UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), 200), localization->GetString(625));
+    }
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str23);
 }
 
-bool awardSort (int i, int j)
+bool awardSort(int i, int j)
 {
-  if (pAwards[i].uPriority == 0)  //none
-    return false;
-  else if (pAwards[j].uPriority == 0)
-    return true;
-  else if(pAwards[i].uPriority == 1)  //fines,arena stuff,etc
-    return false;
-  else if(pAwards[j].uPriority == 1)
-    return true;
-  else if(pAwards[i].uPriority == 5) //joined guilds
-    return false;
-  else if(pAwards[j].uPriority == 5)
-    return true;
-  else
-    return (pAwards[i].uPriority < pAwards[j].uPriority);
+    if (pAwards[i].uPriority == 0)  //none
+        return false;
+    else if (pAwards[j].uPriority == 0)
+        return true;
+    else if (pAwards[i].uPriority == 1)  //fines,arena stuff,etc
+        return false;
+    else if (pAwards[j].uPriority == 1)
+        return true;
+    else if (pAwards[i].uPriority == 5) //joined guilds
+        return false;
+    else if (pAwards[j].uPriority == 5)
+        return true;
+    else
+        return (pAwards[i].uPriority < pAwards[j].uPriority);
 }
 
 //----- (00419100) --------------------------------------------------------
@@ -2370,7 +2398,6 @@ void FillAwardsData()
   memset(achieved_awards.data(), 0, 4000);
   num_achieved_awards = 0;
 
-  memset(pTmpBuf2.data(), 0, 0x7D0u);
   BtnDown_flag = 0;
   BtnUp_flag = 0;
   books_page_number = 0;
@@ -2449,31 +2476,31 @@ void WetsuitOn( unsigned int uPlayerID )
 }
 
 //----- (0043F0BD) --------------------------------------------------------
-void WetsuitOff( unsigned int uPlayerID )
+void WetsuitOff(unsigned int uPlayerID)
 {
-  char pContainer[20]; // [sp+0h] [bp-18h]@4
-
-  if (uPlayerID > 0 )
-  {
-    papredoll_dbods[uPlayerID - 1] = assets->GetImage_16BitAlpha(dbod_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-    papredoll_dlads[uPlayerID - 1] = assets->GetImage_16BitAlpha(dlad_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-    papredoll_dlaus[uPlayerID - 1] = assets->GetImage_16BitAlpha(dlau_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-    papredoll_drhs [uPlayerID - 1] = assets->GetImage_16BitAlpha(drh_texnames_by_face [pPlayers[uPlayerID]->uCurrentFace]);
-    papredoll_dlhs [uPlayerID - 1] = assets->GetImage_16BitAlpha(dlh_texnames_by_face [pPlayers[uPlayerID]->uCurrentFace]);
-    papredoll_dlhus[uPlayerID - 1] = assets->GetImage_16BitAlpha(dlhu_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-
-    wchar_t name[1024];
-    if ( pPlayers[uPlayerID]->uCurrentFace == 12 || pPlayers[uPlayerID]->uCurrentFace == 13 )
+    if (uPlayerID > 0)
     {
-      wsprintfW(name, L"pc%02dbrd", pPlayers[uPlayerID]->uCurrentFace + 1);
-      paperdoll_dbrds[pPlayers[uPlayerID]->uCurrentFace] = assets->GetImage_16BitAlpha(name);
+        papredoll_dbods[uPlayerID - 1] = assets->GetImage_16BitAlpha(dbod_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
+        papredoll_dlads[uPlayerID - 1] = assets->GetImage_16BitAlpha(dlad_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
+        papredoll_dlaus[uPlayerID - 1] = assets->GetImage_16BitAlpha(dlau_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
+        papredoll_drhs[uPlayerID - 1] = assets->GetImage_16BitAlpha(drh_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
+        papredoll_dlhs[uPlayerID - 1] = assets->GetImage_16BitAlpha(dlh_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
+        papredoll_dlhus[uPlayerID - 1] = assets->GetImage_16BitAlpha(dlhu_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
+
+        wchar_t name[1024];
+        if (pPlayers[uPlayerID]->uCurrentFace == 12 || pPlayers[uPlayerID]->uCurrentFace == 13)
+        {
+            paperdoll_dbrds[pPlayers[uPlayerID]->uCurrentFace] = assets->GetImage_16BitAlpha(
+                StringPrintf("pc%02dbrd", pPlayers[uPlayerID]->uCurrentFace + 1)
+            );
+        }
+
+        papredoll_flying_feet[pPlayers[uPlayerID]->uCurrentFace] = assets->GetImage_16BitAlpha(
+            StringPrintf("item281pc%02d", pPlayers[uPlayerID]->uCurrentFace + 1)
+        );
+
+        IsPlayerWearingWatersuit[uPlayerID] = false;
     }
-
-    wsprintfW(name, L"item281pc%02d", pPlayers[uPlayerID]->uCurrentFace + 1);
-    papredoll_flying_feet[pPlayers[uPlayerID]->uCurrentFace] = assets->GetImage_16BitAlpha(name);
-
-    IsPlayerWearingWatersuit[uPlayerID] = false;
-  }
 }
 
 //----- (00468F8A) --------------------------------------------------------

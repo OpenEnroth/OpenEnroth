@@ -225,14 +225,14 @@ struct Actor
   static void Resurrect(unsigned int uActorID);
   static void AI_Bored(unsigned int uActorID, unsigned int uObjID, struct AIDirection *a4);
   static void AI_Stun(unsigned int uActorID, signed int edx0, int arg0);
-  static char __fastcall _4031C1_update_job_never_gets_called(unsigned int uActorID, signed int a2, int a3);
+  static char _4031C1_update_job_never_gets_called(unsigned int uActorID, signed int a2, int a3);
   static void AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id, int radius, int uActionLength);
   static void AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid, struct AIDirection *pDir);
   static void AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid, struct AIDirection *pDir);
   static void AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid, struct AIDirection *pDir);
   static void AI_SpellAttack2(unsigned int uActorID, signed int sTargetPid, struct AIDirection *pDir);
   static void AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid, struct AIDirection *arg0);
-  static void __fastcall StandAwhile(unsigned int uActorID);
+  static void StandAwhile(unsigned int uActorID);
   static void AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid, unsigned int uActionLength, struct AIDirection *a4);
   static void AI_StandOrBored(unsigned int uActorID, signed int uObjID, int uActionLength, struct AIDirection *a4);
   static void AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int _48, struct AIDirection *a4);
@@ -327,13 +327,13 @@ extern std::array<Actor, 500> pActors;
 extern size_t uNumActors;
 
 bool CheckActors_proximity();
-int __fastcall IsActorAlive(unsigned int uType, unsigned int uParam, unsigned int uNumAlive); // idb
-void __fastcall sub_448518_npc_set_item(int npc, unsigned int item, int a3);
-void __fastcall ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag, unsigned int bToggle);
-bool __fastcall sub_4070EF_prolly_detect_player(unsigned int uObjID, unsigned int uObj2ID);
-bool __fastcall SpawnActor(unsigned int uMonsterID);
-int __fastcall sub_44FA4C_spawn_light_elemental(int a1, int a2, int a3);
+int IsActorAlive(unsigned int uType, unsigned int uParam, unsigned int uNumAlive); // idb
+void sub_448518_npc_set_item(int npc, unsigned int item, int a3);
+void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag, unsigned int bToggle);
+bool sub_4070EF_prolly_detect_player(unsigned int uObjID, unsigned int uObj2ID);
+bool SpawnActor(unsigned int uMonsterID);
+int sub_44FA4C_spawn_light_elemental(int a1, int a2, int a3);
 void SpawnEncounter(struct MapInfo *pMapInfo, struct SpawnPointMM7 *spawn, int a3, int a4, int a5);
 void area_of_effect__damage_evaluate();
-double __fastcall sub_43AE12(signed int a1);
+double sub_43AE12(signed int a1);
 void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID, struct Vec3_int_ *pVelocity);

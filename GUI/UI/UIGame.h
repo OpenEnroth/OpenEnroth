@@ -2,9 +2,9 @@
 #include "GUI/GUIWindow.h"
 
 void GameUI_WritePointedObjectStatusString();
-void __fastcall GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID); // idb
+void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID); // idb
 
-__int16 __fastcall sub_441A4E(int a1);
+__int16 sub_441A4E(int a1);
 
 
 

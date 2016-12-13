@@ -7,6 +7,7 @@
 
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/Graphics/Render.h"
 #include "Arcomage.h"
 #include "Media/Audio/AudioPlayer.h"
@@ -15,7 +16,6 @@
 #include "GUI/GUIFont.h"
 #include "Engine/Party.h"
 #include "GUI/GUIWindow.h"
-#include "Engine/texts.h"
 #include <windef.h>
 #include "GUI/UI/UIHouses.h"
 
@@ -61,7 +61,7 @@ void DrawRect(RECT *pXYZW, unsigned __int16 uColor, char bSolidFill);
 void DrawSquare( POINT *pTargetXY, unsigned __int16 uColor );
 void DrawPixel(POINT *pTargetXY, unsigned __int16 uColor);
 int  rand_interval(int min, int max); // idb
-void __fastcall am_IntToString(int val, char *pOut);
+void am_IntToString(int val, char *pOut);
 
 //----- (0040DEDB) --------------------------------------------------------
 unsigned int R8G8B8_to_TargetFormat(int uColor)
@@ -1744,7 +1744,7 @@ void DrawPlayersText()
 
   if ( need_to_discard_card )
   {
-    strcpy(text_buff, pGlobalTXT_LocalizationStrings[266]);// DISCARD A CARD
+    strcpy(text_buff, localization->GetString(266));// DISCARD A CARD
     text_position.x = 320 - pArcomageGame->pfntArrus->GetLineWidth(text_buff) / 2;
     text_position.y = 306;
     am_DrawText(-1, text_buff, &text_position);
@@ -3275,7 +3275,7 @@ int ApplyDamageToBuildings( int player_num, int damage )
     am_Players[player_num].tower_height = 0;
   return result;
 }
-// 40D402: using guessed type int __fastcall am_40D402(uint, uint);
+// 40D402: using guessed type int am_40D402(uint, uint);
 
 //----- (0040D444) --------------------------------------------------------
 void GameResultsApply()
@@ -3628,9 +3628,9 @@ int rand_interval( int min, int max )
 }
 
 //----- (0040DEC8) --------------------------------------------------------
-void __fastcall am_IntToString(int val, char *pOut)
+void am_IntToString(int val, char *pOut)
 {
-  sprintfex(pOut, "%d", val);
+  sprintf(pOut, "%d", val);
 }
 
 void set_stru1_field_8_InArcomage(int inValue)

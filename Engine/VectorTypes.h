@@ -41,7 +41,7 @@ struct Vec3: public Vec2<T>
     );
   }
 
-  static void __fastcall Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz);
+  static void Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz);
   static void Normalize(T *x, T *y, T *z);
 };
 #pragma pack(pop)

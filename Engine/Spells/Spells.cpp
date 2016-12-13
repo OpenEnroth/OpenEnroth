@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
-#include "Engine/texts.h"
 #include "Engine/stru6.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Indoor.h"
@@ -398,47 +398,51 @@ bool SpellBuff::Apply( signed __int64 uExpireTime, unsigned __int16 uSkillLevel,
 //----- (0045384A) --------------------------------------------------------
 void SpellStats::Initialize()
 {
-  std::map<std::string, SPELL_SCHOOL, ci_less> spellSchoolMaps;
-  spellSchoolMaps["fire"] = SPELL_SCHOOL_FIRE;
-  spellSchoolMaps["air"] = SPELL_SCHOOL_AIR;
-  spellSchoolMaps["water"] = SPELL_SCHOOL_WATER;
-  spellSchoolMaps["earth"] = SPELL_SCHOOL_EARTH;
-  spellSchoolMaps["spirit"] = SPELL_SCHOOL_SPIRIT;
-  spellSchoolMaps["mind"] = SPELL_SCHOOL_MIND;
-  spellSchoolMaps["body"] = SPELL_SCHOOL_BODY;
-  spellSchoolMaps["light"] = SPELL_SCHOOL_LIGHT;
-  spellSchoolMaps["dark"] = SPELL_SCHOOL_DARK;
-  spellSchoolMaps["magic"] = SPELL_SCHOOL_MAGIC;
+    std::map<std::string, SPELL_SCHOOL, ci_less> spellSchoolMaps;
+    spellSchoolMaps["fire"] = SPELL_SCHOOL_FIRE;
+    spellSchoolMaps["air"] = SPELL_SCHOOL_AIR;
+    spellSchoolMaps["water"] = SPELL_SCHOOL_WATER;
+    spellSchoolMaps["earth"] = SPELL_SCHOOL_EARTH;
+    spellSchoolMaps["spirit"] = SPELL_SCHOOL_SPIRIT;
+    spellSchoolMaps["mind"] = SPELL_SCHOOL_MIND;
+    spellSchoolMaps["body"] = SPELL_SCHOOL_BODY;
+    spellSchoolMaps["light"] = SPELL_SCHOOL_LIGHT;
+    spellSchoolMaps["dark"] = SPELL_SCHOOL_DARK;
+    spellSchoolMaps["magic"] = SPELL_SCHOOL_MAGIC;
 
-	char* test_string;
+    char* test_string;
 
-	free(pSpellsTXT_Raw);
-	pSpellsTXT_Raw = (char *)pEvents_LOD->LoadRaw("spells.txt", 0);
+    free(pSpellsTXT_Raw);
+    pSpellsTXT_Raw = (char *)pEvents_LOD->LoadRaw("spells.txt", 0);
 
-	strtok(pSpellsTXT_Raw, "\r");
-	for(int i=1; i<100; ++i) 
-  {
-    if (((i % 11) - 1 )==0)
-      strtok(NULL, "\r");
-    test_string=strtok(NULL, "\r")+1;
-    auto tokens = Tokenize(test_string, '\t');
-    pInfos[i].pName=RemoveQuotes(tokens[2]);
-    auto findResult = spellSchoolMaps.find(tokens[3]);
-    pInfos[i].uSchool = findResult == spellSchoolMaps.end() ? SPELL_SCHOOL_NONE : findResult->second;
-    pInfos[i].pShortName=RemoveQuotes(tokens[4]);
-    pInfos[i].pDescription=RemoveQuotes(tokens[5]);
-    pInfos[i].pBasicSkillDesc=RemoveQuotes(tokens[6]);
-    pInfos[i].pExpertSkillDesc=RemoveQuotes(tokens[7]);
-    pInfos[i].pMasterSkillDesc=RemoveQuotes(tokens[8]);
-    pInfos[i].pGrandmasterSkillDesc=RemoveQuotes(tokens[9]);
-    pSpellDatas[i].stats |= strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? 1 : 0;
-    pSpellDatas[i].stats |= strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? 2 : 0;
-    pSpellDatas[i].stats |= strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? 4 : 0;
-    pSpellDatas[i].stats |= strchr(tokens[10], 'x') || strchr(tokens[10], 'X') ? 8 : 0;
-  }
+    strtok(pSpellsTXT_Raw, "\r");
+    for (int i = 1; i < 100; ++i)
+    {
+        if (((i % 11) - 1) == 0)
+            strtok(NULL, "\r");
+        test_string = strtok(NULL, "\r") + 1;
+
+        extern std::vector<char *> Tokenize(char *input, const char separator);
+        auto tokens = Tokenize(test_string, '\t');
+
+        pInfos[i].pName = RemoveQuotes(tokens[2]);
+        auto findResult = spellSchoolMaps.find(tokens[3]);
+        pInfos[i].uSchool = findResult == spellSchoolMaps.end() ? SPELL_SCHOOL_NONE : findResult->second;
+        pInfos[i].pShortName = RemoveQuotes(tokens[4]);
+        pInfos[i].pDescription = RemoveQuotes(tokens[5]);
+        pInfos[i].pBasicSkillDesc = RemoveQuotes(tokens[6]);
+        pInfos[i].pExpertSkillDesc = RemoveQuotes(tokens[7]);
+        pInfos[i].pMasterSkillDesc = RemoveQuotes(tokens[8]);
+        pInfos[i].pGrandmasterSkillDesc = RemoveQuotes(tokens[9]);
+        pSpellDatas[i].stats |= strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? 1 : 0;
+        pSpellDatas[i].stats |= strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? 2 : 0;
+        pSpellDatas[i].stats |= strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? 4 : 0;
+        pSpellDatas[i].stats |= strchr(tokens[10], 'x') || strchr(tokens[10], 'X') ? 8 : 0;
+    }
 }
+
 //----- (00448DF8) --------------------------------------------------------
-void __fastcall EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fromy, int fromz, int tox, int toy, int toz)//sub_448DF8
+void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fromy, int fromz, int tox, int toy, int toz)//sub_448DF8
 {
   int v9; // esi@1
   signed __int64 v10; // st7@4

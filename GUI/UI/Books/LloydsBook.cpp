@@ -1,8 +1,8 @@
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIFont.h"
@@ -37,8 +37,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() :
     ui_book_button1_on = assets->GetImage_16BitAlpha(L"tab-an-6b");
     ui_book_button1_off = assets->GetImage_16BitAlpha(L"tab-an-6a");
 
-    pBtn_Book_1 = CreateButton(415, 13, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, 0, pGlobalTXT_LocalizationStrings[375], 0); // Set Beacon
-    pBtn_Book_2 = CreateButton(415, 48, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, 0, pGlobalTXT_LocalizationStrings[523], 0); // Recall Beacon
+    pBtn_Book_1 = CreateButton(415, 13, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, 0, localization->GetString(375), 0); // Set Beacon
+    pBtn_Book_2 = CreateButton(415, 48, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, 0, localization->GetString(523), 0); // Recall Beacon
 
     int max_beacons = 1;
     int v18 = pParty->pPlayers[_506348_current_lloyd_playerid].pActiveSkills[PLAYER_SKILL_WATER];
@@ -94,7 +94,7 @@ void GUIWindow_LloydsBook::Update()
 
     pPlayer = &pParty->pPlayers[_506348_current_lloyd_playerid];
     pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
-    pText = pGlobalTXT_LocalizationStrings[523];     // Recall Beacon
+    pText = localization->GetString(523);     // Recall Beacon
     pWindow.uFrameX = game_viewport_x;
     pWindow.uFrameY = game_viewport_y;
     pWindow.uFrameWidth = 428;
@@ -102,9 +102,9 @@ void GUIWindow_LloydsBook::Update()
     pWindow.uFrameZ = 435;
     pWindow.uFrameW = game_viewport_w;
     if (!bRecallingBeacon)
-        pText = pGlobalTXT_LocalizationStrings[375];   // Set Beacon
-    sprintf(pTmpBuf.data(), "%s", pText);
-    pWindow.DrawTitleText(pBook2Font, 0, 22, 0, pTmpBuf.data(), 3);
+        pText = localization->GetString(375);   // Set Beacon
+
+    pWindow.DrawTitleText(pBook2Font, 0, 22, 0, pText, 3);
     if (bRecallingBeacon)
     {
         pRenderer->DrawTextureAlphaNew(pBtn_Book_1->uX/640.0f, pBtn_Book_1->uY/480.0f, ui_book_button1_on);
@@ -141,7 +141,7 @@ void GUIWindow_LloydsBook::Update()
                 pRenderer->DrawTextureAlphaNew(pLloydsBeacons_SomeXs[BeaconID]/640.0f, pLloydsBeacons_SomeYs[BeaconID]/480.0f, ui_book_lloyds_border);
                 pRenderer->DrawTextureNew(pLloydsBeaconsPreviewXs[BeaconID]/640.0f, pLloydsBeaconsPreviewYs[BeaconID]/480.0f, pSavegameThumbnails[BeaconID]);
                 Str = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(pPlayer->pInstalledBeacons[BeaconID].SaveFileID)].pName;
-                pTextHeight = pSpellFont->CalcTextHeight(Str, &pWindow, 0, 0);
+                pTextHeight = pSpellFont->CalcTextHeight(Str, &pWindow, 0);
                 pWindow.uFrameY += -6 - pTextHeight;
                 pWindow.DrawTitleText(pSpellFont, 0, 0, 1, Str, 3);
                 RemainingTime = pPlayer->pInstalledBeacons[BeaconID].uBeaconTime - pParty->uTimePlayed;
@@ -149,9 +149,9 @@ void GUIWindow_LloydsBook::Update()
                 pDays = pHours / 24;
                 if (pDays)
                 {
-                    sprintf(pTmpBuf.data(), "%lu %s", pDays + 1, pGlobalTXT_LocalizationStrings[57]);//days
+                    auto str = StringPrintf("%lu %s", pDays + 1, localization->GetString(57));//days
                     pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
-                    pWindow.DrawTitleText(pSpellFont, 0, 0, 1, pTmpBuf.data(), 3);
+                    pWindow.DrawTitleText(pSpellFont, 0, 0, 1, str, 3);
                     continue;
                 }
                 else
@@ -159,25 +159,25 @@ void GUIWindow_LloydsBook::Update()
                     if (pHours + 1 <= 23)
                     {
                         if (pHours < 1)
-                            pSelectionText = pGlobalTXT_LocalizationStrings[109];// Hour
+                            pSelectionText = localization->GetString(109);// Hour
                         else
-                            pSelectionText = pGlobalTXT_LocalizationStrings[110];// Hours
-                        sprintf(pTmpBuf.data(), "%lu %s", pHours + 1, pSelectionText);
+                            pSelectionText = localization->GetString(110);// Hours
+                        auto str = StringPrintf("%lu %s", pHours + 1, pSelectionText);
                         pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
-                        pWindow.DrawTitleText(pSpellFont, 0, 0, 1, pTmpBuf.data(), 3);
+                        pWindow.DrawTitleText(pSpellFont, 0, 0, 1, str, 3);
                         continue;
                     }
                 }
-                sprintf(pTmpBuf.data(), "%lu %s", pDays + 1, pGlobalTXT_LocalizationStrings[56]);//Day
+                auto str = StringPrintf("%lu %s", pDays + 1, localization->GetString(56)); //Day
                 pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
-                pWindow.DrawTitleText(pSpellFont, 0, 0, 1, pTmpBuf.data(), 3);
+                pWindow.DrawTitleText(pSpellFont, 0, 0, 1, str, 3);
                 continue;
             }
             if (!bRecallingBeacon)
             {
                 pRenderer->DrawTextureAlphaNew(pLloydsBeacons_SomeXs[BeaconID]/640.0f, pLloydsBeacons_SomeYs[BeaconID]/480.0f, ui_book_lloyds_border);
-                pTextHeight = pSpellFont->CalcTextHeight(pGlobalTXT_LocalizationStrings[19], &pWindow, 0, 0);
-                pWindow.DrawTitleText(pSpellFont, 0, (signed int)pWindow.uFrameHeight / 2 - pTextHeight / 2, 1, pGlobalTXT_LocalizationStrings[19], 3);//Доступно
+                pTextHeight = pSpellFont->CalcTextHeight(localization->GetString(19), &pWindow, 0);
+                pWindow.DrawTitleText(pSpellFont, 0, (signed int)pWindow.uFrameHeight / 2 - pTextHeight / 2, 1, localization->GetString(19), 3);//Доступно
             }
         }
     }

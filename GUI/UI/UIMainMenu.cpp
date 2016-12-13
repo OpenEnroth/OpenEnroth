@@ -5,9 +5,9 @@
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/MMT.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -149,155 +149,156 @@ static void LoadPartyBuffIcons()
 //----- (0041B690) --------------------------------------------------------
 void MainMenuUI_Create()
 {
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeC"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeB"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeA"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchC"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchB"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchA"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeC"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeB"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeA"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchC"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchB"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchA"));
 
-  game_ui_minimap_dirs[0] = assets->GetImage_16BitAlpha("MAPDIR1");
-  game_ui_minimap_dirs[1] = assets->GetImage_16BitAlpha("MAPDIR2");
-  game_ui_minimap_dirs[2] = assets->GetImage_16BitAlpha("MAPDIR3");
-  game_ui_minimap_dirs[3] = assets->GetImage_16BitAlpha("MAPDIR4");
-  game_ui_minimap_dirs[4] = assets->GetImage_16BitAlpha("MAPDIR5");
-  game_ui_minimap_dirs[5] = assets->GetImage_16BitAlpha("MAPDIR6");
-  game_ui_minimap_dirs[6] = assets->GetImage_16BitAlpha("MAPDIR7");
-  game_ui_minimap_dirs[7] = assets->GetImage_16BitAlpha("MAPDIR8");
+    game_ui_minimap_dirs[0] = assets->GetImage_16BitAlpha("MAPDIR1");
+    game_ui_minimap_dirs[1] = assets->GetImage_16BitAlpha("MAPDIR2");
+    game_ui_minimap_dirs[2] = assets->GetImage_16BitAlpha("MAPDIR3");
+    game_ui_minimap_dirs[3] = assets->GetImage_16BitAlpha("MAPDIR4");
+    game_ui_minimap_dirs[4] = assets->GetImage_16BitAlpha("MAPDIR5");
+    game_ui_minimap_dirs[5] = assets->GetImage_16BitAlpha("MAPDIR6");
+    game_ui_minimap_dirs[6] = assets->GetImage_16BitAlpha("MAPDIR7");
+    game_ui_minimap_dirs[7] = assets->GetImage_16BitAlpha("MAPDIR8");
 
-  game_ui_bar_blue = assets->GetImage_16BitColorKey(L"ib-statB", 0x7FF);
-  game_ui_bar_green = assets->GetImage_16BitColorKey(L"ib-statG", 0x7FF);
-  game_ui_bar_yellow = assets->GetImage_16BitColorKey(L"ib-statY", 0x7FF);
-  game_ui_bar_red = assets->GetImage_16BitColorKey(L"ib-statR", 0x7FF);
-  game_ui_monster_hp_background = assets->GetImage_16BitColorKey(L"mhp_bg", 0x7FF);
-  game_ui_monster_hp_border_left = assets->GetImage_16BitColorKey(L"mhp_capl", 0x7FF);
-  game_ui_monster_hp_border_right = assets->GetImage_16BitColorKey(L"mhp_capr", 0x7FF);
-  game_ui_monster_hp_green = assets->GetImage_16BitColorKey(L"mhp_grn", 0x7FF);
-  game_ui_monster_hp_red = assets->GetImage_16BitColorKey(L"mhp_red", 0x7FF);
-  game_ui_monster_hp_yellow = assets->GetImage_16BitColorKey(L"mhp_yel", 0x7FF);
-  ui_leather_mm7 = assets->GetImage_16Bit("LEATHER");
-  ui_leather_mm6 = assets->GetImage_16Bit("ibground");
-  dialogue_ui_x_x_u = assets->GetImage_16BitColorKey(L"x_x_u", 0x7FF);
-  ui_buttdesc2 = assets->GetImage_16BitAlpha(L"BUTTESC2");
-  dialogue_ui_x_ok_u = assets->GetImage_16BitColorKey(L"x_ok_u", 0x7FF);
-  ui_buttyes2 = assets->GetImage_16BitAlpha(L"BUTTYES2");
-  ui_partycreation_buttmake = assets->GetImage_16BitAlpha(L"BUTTMAKE");
-  ui_partycreation_buttmake2 = assets->GetImage_16BitAlpha(L"BUTTMAKE2");
+    game_ui_bar_blue = assets->GetImage_16BitColorKey(L"ib-statB", 0x7FF);
+    game_ui_bar_green = assets->GetImage_16BitColorKey(L"ib-statG", 0x7FF);
+    game_ui_bar_yellow = assets->GetImage_16BitColorKey(L"ib-statY", 0x7FF);
+    game_ui_bar_red = assets->GetImage_16BitColorKey(L"ib-statR", 0x7FF);
+    game_ui_monster_hp_background = assets->GetImage_16BitColorKey(L"mhp_bg", 0x7FF);
+    game_ui_monster_hp_border_left = assets->GetImage_16BitColorKey(L"mhp_capl", 0x7FF);
+    game_ui_monster_hp_border_right = assets->GetImage_16BitColorKey(L"mhp_capr", 0x7FF);
+    game_ui_monster_hp_green = assets->GetImage_16BitColorKey(L"mhp_grn", 0x7FF);
+    game_ui_monster_hp_red = assets->GetImage_16BitColorKey(L"mhp_red", 0x7FF);
+    game_ui_monster_hp_yellow = assets->GetImage_16BitColorKey(L"mhp_yel", 0x7FF);
+    ui_leather_mm7 = assets->GetImage_16Bit("LEATHER");
+    ui_leather_mm6 = assets->GetImage_16Bit("ibground");
+    dialogue_ui_x_x_u = assets->GetImage_16BitColorKey(L"x_x_u", 0x7FF);
+    ui_buttdesc2 = assets->GetImage_16BitAlpha(L"BUTTESC2");
+    dialogue_ui_x_ok_u = assets->GetImage_16BitColorKey(L"x_ok_u", 0x7FF);
+    ui_buttyes2 = assets->GetImage_16BitAlpha(L"BUTTYES2");
+    ui_partycreation_buttmake = assets->GetImage_16BitAlpha(L"BUTTMAKE");
+    ui_partycreation_buttmake2 = assets->GetImage_16BitAlpha(L"BUTTMAKE2");
 
-  pPrimaryWindow = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, 0);
-  pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0, 0, "", 0);
+    pPrimaryWindow = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, 0);
+    pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0, 0, "", 0);
 
-  pPrimaryWindow->CreateButton(61, 424, 31, 80, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);//buttons for portraits
-  pPrimaryWindow->CreateButton(177, 424, 31, 80, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-  pPrimaryWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-  pPrimaryWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
+    pPrimaryWindow->CreateButton(61, 424, 31, 80, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);//buttons for portraits
+    pPrimaryWindow->CreateButton(177, 424, 31, 80, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
+    pPrimaryWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
+    pPrimaryWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
 
-  pPrimaryWindow->CreateButton(24, 404, 5, 49, 1, 93, UIMSG_0, 1, 0, "", 0);//buttons for HP
-  pPrimaryWindow->CreateButton(139, 404, 5, 49, 1, 93, UIMSG_0, 2, 0, "", 0);
-  pPrimaryWindow->CreateButton(255, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "", 0);
-  pPrimaryWindow->CreateButton(370, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "", 0);
+    pPrimaryWindow->CreateButton(24, 404, 5, 49, 1, 93, UIMSG_0, 1, 0, "", 0);//buttons for HP
+    pPrimaryWindow->CreateButton(139, 404, 5, 49, 1, 93, UIMSG_0, 2, 0, "", 0);
+    pPrimaryWindow->CreateButton(255, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "", 0);
+    pPrimaryWindow->CreateButton(370, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "", 0);
 
-  pPrimaryWindow->CreateButton(97, 404, 5, 49, 1, 93, UIMSG_0, 1, 0, "", 0);//buttons for SP
-  pPrimaryWindow->CreateButton(212, 404, 5, 49, 1, 93, UIMSG_0, 2, 0, "", 0);
-  pPrimaryWindow->CreateButton(328, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "", 0);
-  pPrimaryWindow->CreateButton(443, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "", 0);
+    pPrimaryWindow->CreateButton(97, 404, 5, 49, 1, 93, UIMSG_0, 1, 0, "", 0);//buttons for SP
+    pPrimaryWindow->CreateButton(212, 404, 5, 49, 1, 93, UIMSG_0, 2, 0, "", 0);
+    pPrimaryWindow->CreateButton(328, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "", 0);
+    pPrimaryWindow->CreateButton(443, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "", 0);
 
-  game_ui_tome_quests = assets->GetImage_16BitAlpha(L"ib-td1-A");
-  pBtn_Quests = pPrimaryWindow->CreateButton(
-      491, 353,
-      game_ui_tome_quests->GetWidth(),
-      game_ui_tome_quests->GetHeight(),
-      1, 0, UIMSG_OpenQuestBook, 0, pKeyActionMap->GetActionVKey(INPUT_Quest),
-      pGlobalTXT_LocalizationStrings[174], game_ui_tome_quests, 0
-  ); //Quests
+    game_ui_tome_quests = assets->GetImage_16BitAlpha(L"ib-td1-A");
+    pBtn_Quests = pPrimaryWindow->CreateButton(
+        491, 353,
+        game_ui_tome_quests->GetWidth(),
+        game_ui_tome_quests->GetHeight(),
+        1, 0, UIMSG_OpenQuestBook, 0, pKeyActionMap->GetActionVKey(INPUT_Quest),
+        localization->GetString(174), game_ui_tome_quests, 0
+    ); //Quests
 
-  game_ui_tome_autonotes = assets->GetImage_16BitAlpha(L"ib-td2-A");
-  pBtn_Autonotes = pPrimaryWindow->CreateButton(
-      527, 353,
-      game_ui_tome_autonotes->GetWidth(),
-      game_ui_tome_autonotes->GetHeight(),
-      1, 0, UIMSG_OpenAutonotes, 0, pKeyActionMap->GetActionVKey(INPUT_Autonotes),
-     pGlobalTXT_LocalizationStrings[154], game_ui_tome_autonotes, 0
-  );//Autonotes
+    game_ui_tome_autonotes = assets->GetImage_16BitAlpha(L"ib-td2-A");
+    pBtn_Autonotes = pPrimaryWindow->CreateButton(
+        527, 353,
+        game_ui_tome_autonotes->GetWidth(),
+        game_ui_tome_autonotes->GetHeight(),
+        1, 0, UIMSG_OpenAutonotes, 0, pKeyActionMap->GetActionVKey(INPUT_Autonotes),
+        localization->GetString(154), game_ui_tome_autonotes, 0
+    );//Autonotes
 
-  game_ui_tome_maps = assets->GetImage_16BitAlpha("ib-td3-A");
-  pBtn_Maps = pPrimaryWindow->CreateButton(
-      546, 353,
-      game_ui_tome_maps->GetWidth(),
-     game_ui_tome_maps->GetHeight(),
-      1, 0, UIMSG_OpenMapBook, 0, pKeyActionMap->GetActionVKey(INPUT_Mapbook),
-     pGlobalTXT_LocalizationStrings[139], game_ui_tome_maps, 0
-  ); //Maps
+    game_ui_tome_maps = assets->GetImage_16BitAlpha("ib-td3-A");
+    pBtn_Maps = pPrimaryWindow->CreateButton(
+        546, 353,
+        game_ui_tome_maps->GetWidth(),
+        game_ui_tome_maps->GetHeight(),
+        1, 0, UIMSG_OpenMapBook, 0, pKeyActionMap->GetActionVKey(INPUT_Mapbook),
+        localization->GetString(139), game_ui_tome_maps, 0
+    ); //Maps
 
-  game_ui_tome_calendar = assets->GetImage_16BitAlpha("ib-td4-A");
-  pBtn_Calendar = pPrimaryWindow->CreateButton(
-      570, 353,
-      game_ui_tome_calendar->GetWidth(),
-     game_ui_tome_calendar->GetHeight(),
-      1, 0, UIMSG_OpenCalendar, 0, pKeyActionMap->GetActionVKey(INPUT_TimeCal),
-     pGlobalTXT_LocalizationStrings[78], game_ui_tome_calendar, 0
-  );//Calendar
+    game_ui_tome_calendar = assets->GetImage_16BitAlpha("ib-td4-A");
+    pBtn_Calendar = pPrimaryWindow->CreateButton(
+        570, 353,
+        game_ui_tome_calendar->GetWidth(),
+        game_ui_tome_calendar->GetHeight(),
+        1, 0, UIMSG_OpenCalendar, 0, pKeyActionMap->GetActionVKey(INPUT_TimeCal),
+        localization->GetString(78), game_ui_tome_calendar, 0
+    );//Calendar
 
-  game_ui_tome_storyline = assets->GetImage_16BitAlpha("ib-td5-A");
-  pBtn_History = pPrimaryWindow->CreateButton(
-      600, 361,
-      game_ui_tome_storyline->GetWidth(),
-      game_ui_tome_storyline->GetHeight(),
-      1, 0, UIMSG_OpenHistoryBook, 0, 72,//ascii
-      pGlobalTXT_LocalizationStrings[602], game_ui_tome_storyline, 0
-  );//History
+    game_ui_tome_storyline = assets->GetImage_16BitAlpha("ib-td5-A");
+    pBtn_History = pPrimaryWindow->CreateButton(
+        600, 361,
+        game_ui_tome_storyline->GetWidth(),
+        game_ui_tome_storyline->GetHeight(),
+        1, 0, UIMSG_OpenHistoryBook, 0, 72,//ascii
+        localization->GetString(602), game_ui_tome_storyline, 0
+    );//History
 
-  bFlashAutonotesBook = 0;
-  bFlashQuestBook = 0;
-  bFlashHistoryBook = 0;
+    bFlashAutonotesBook = 0;
+    bFlashQuestBook = 0;
+    bFlashHistoryBook = 0;
 
-  pBtn_ZoomIn = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomin->GetWidth(),
-     game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomIn),
-     pGlobalTXT_LocalizationStrings[252], game_ui_btn_zoomin, 0); // Zoom In
+    pBtn_ZoomIn = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomin->GetWidth(),
+        game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomIn),
+        localization->GetString(252), game_ui_btn_zoomin, 0); // Zoom In
 
-  pBtn_ZoomOut = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomout->GetWidth(),
-     game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomOut),
-     pGlobalTXT_LocalizationStrings[251], game_ui_btn_zoomout, 0); // Zoom Out
+    pBtn_ZoomOut = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomout->GetWidth(),
+        game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomOut),
+        localization->GetString(251), game_ui_btn_zoomout, 0); // Zoom Out
 
-  pPrimaryWindow->CreateButton(481, 0, 153, 67, 1, 92, UIMSG_0, 0, 0, "", 0);
-  pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, '5', "", 0);
-  pPrimaryWindow->CreateButton(561, 149, 64, 74, 1, 0, UIMSG_StartHireling2Dialogue, 0, '6', "", 0);
-  pPrimaryWindow->CreateButton(476, 322, 77, 17, 1, 100, UIMSG_0, 0, 0, "", 0);
-  pPrimaryWindow->CreateButton(555, 322, 77, 17, 1, 101, UIMSG_0, 0, 0, "", 0);
+    pPrimaryWindow->CreateButton(481, 0, 153, 67, 1, 92, UIMSG_0, 0, 0, "", 0);
+    pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, '5', "", 0);
+    pPrimaryWindow->CreateButton(561, 149, 64, 74, 1, 0, UIMSG_StartHireling2Dialogue, 0, '6', "", 0);
+    pPrimaryWindow->CreateButton(476, 322, 77, 17, 1, 100, UIMSG_0, 0, 0, "", 0);
+    pPrimaryWindow->CreateButton(555, 322, 77, 17, 1, 101, UIMSG_0, 0, 0, "", 0);
 
-  pBtn_CastSpell = pPrimaryWindow->CreateButton(476, 450,
-      game_ui_btn_cast->GetWidth(),
-      game_ui_btn_cast->GetHeight(),
-      1, 0, UIMSG_SpellBookWindow, 0, 67, pGlobalTXT_LocalizationStrings[38], game_ui_btn_cast, 0);
-  pBtn_Rest = pPrimaryWindow->CreateButton(518, 450,
-      game_ui_btn_rest->GetWidth(),
-      game_ui_btn_rest->GetHeight(),
-      1, 0, UIMSG_RestWindow, 0, 82, pGlobalTXT_LocalizationStrings[182], game_ui_btn_rest, 0);
-  pBtn_QuickReference = pPrimaryWindow->CreateButton(560, 450,
-      game_ui_btn_quickref->GetWidth(),
-      game_ui_btn_quickref->GetHeight(),
-      1, 0, UIMSG_QuickReference, 0, 90, pGlobalTXT_LocalizationStrings[173], game_ui_btn_quickref, 0);
-  pBtn_GameSettings = pPrimaryWindow->CreateButton(602, 450,
-      game_ui_btn_settings->GetWidth(),
-      game_ui_btn_settings->GetHeight(),
-      1, 0, UIMSG_GameMenuButton, 0, 0, pGlobalTXT_LocalizationStrings[93], game_ui_btn_settings, 0);
+    pBtn_CastSpell = pPrimaryWindow->CreateButton(476, 450,
+        game_ui_btn_cast->GetWidth(),
+        game_ui_btn_cast->GetHeight(),
+        1, 0, UIMSG_SpellBookWindow, 0, 67, localization->GetString(38), game_ui_btn_cast, 0);
+    pBtn_Rest = pPrimaryWindow->CreateButton(518, 450,
+        game_ui_btn_rest->GetWidth(),
+        game_ui_btn_rest->GetHeight(),
+        1, 0, UIMSG_RestWindow, 0, 82, localization->GetString(182), game_ui_btn_rest, 0);
+    pBtn_QuickReference = pPrimaryWindow->CreateButton(560, 450,
+        game_ui_btn_quickref->GetWidth(),
+        game_ui_btn_quickref->GetHeight(),
+        1, 0, UIMSG_QuickReference, 0, 90, localization->GetString(173), game_ui_btn_quickref, 0);
+    pBtn_GameSettings = pPrimaryWindow->CreateButton(602, 450,
+        game_ui_btn_settings->GetWidth(),
+        game_ui_btn_settings->GetHeight(),
+        1, 0, UIMSG_GameMenuButton, 0, 0, localization->GetString(93), game_ui_btn_settings, 0);
 
-  pBtn_NPCLeft = pPrimaryWindow->CreateButton(469, 178,
-      ui_btn_npc_left->GetWidth(),
-      ui_btn_npc_left->GetHeight(),
-      1, 0, UIMSG_ScrollNPCPanel, 0, 0, "", ui_btn_npc_left, 0);
-  pBtn_NPCRight = pPrimaryWindow->CreateButton(626, 178,
-      ui_btn_npc_right->GetWidth(),
-      ui_btn_npc_right->GetHeight(),
-      1, 0, UIMSG_ScrollNPCPanel, 1, 0, "", ui_btn_npc_right, 0);
-  LoadPartyBuffIcons();
+    pBtn_NPCLeft = pPrimaryWindow->CreateButton(469, 178,
+        ui_btn_npc_left->GetWidth(),
+        ui_btn_npc_left->GetHeight(),
+        1, 0, UIMSG_ScrollNPCPanel, 0, 0, "", ui_btn_npc_left, 0);
+    pBtn_NPCRight = pPrimaryWindow->CreateButton(626, 178,
+        ui_btn_npc_right->GetWidth(),
+        ui_btn_npc_right->GetHeight(),
+        1, 0, UIMSG_ScrollNPCPanel, 1, 0, "", ui_btn_npc_right, 0);
+
+    LoadPartyBuffIcons();
 }
 
 
 
 
 //----- (00452AF3) --------------------------------------------------------
-void __fastcall fill_pixels_fast(unsigned int a1, unsigned __int16 *pPixels, unsigned int uNumPixels)
+void fill_pixels_fast(unsigned int a1, unsigned __int16 *pPixels, unsigned int uNumPixels)
 {
   void *v3; // edi@1
   unsigned int v4; // eax@1
@@ -363,7 +364,7 @@ MENU_STATE MainMenuUI_Credits_Loop()
   cred_texturet = (char *)pEvents_LOD->LoadRaw("credits.txt", 0);
   pFile = pEvents_LOD->FindContainer("credits.txt", 0);
   if ( !pFile )
-    Error(pGlobalTXT_LocalizationStrings[63]); // "Might and Magic VII is having trouble loading files. 
+    Error(localization->GetString(63)); // "Might and Magic VII is having trouble loading files. 
 
   // Please re-install to fix this problem. Note: Re-installing will not destroy your save games."
 

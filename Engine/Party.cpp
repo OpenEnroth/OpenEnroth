@@ -5,6 +5,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 
 #include "Party.h"
 #include "Timer.h"
@@ -16,12 +17,12 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Actor.h"
 #include "GUI/GUIWindow.h"
-#include "texts.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "LOD.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/ObjectList.h"
 
+#include "GUI/UI/UIStatusBar.h"
 
 
 
@@ -257,9 +258,13 @@ void Party::TakeFood(unsigned int uNumFood)
 }
 
 //----- (00492B42) --------------------------------------------------------
-void Party::GiveFood(unsigned int _this)
+void Party::GiveFood(unsigned int num_food)
 {
-  pParty->uNumFoodRations += _this;
+  pParty->uNumFoodRations += num_food;
+
+  if (pParty->uNumFoodRations > 0xFFFF)
+      Party::SetFood(0xFFFFu);
+
   pUIAnim_Food->uAnimTime = 0;
   pUIAnim_Food->uAnimLength = pUIAnim_Food->icon->GetAnimLength();
 }
@@ -308,7 +313,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems)
   this->hirelingScrollPosition = 0;
   memset(&pHirelings, 0, sizeof(pHirelings));
 
-  strcpy(this->pPlayers[0].pName, pGlobalTXT_LocalizationStrings[509]); // Zoltan
+  strcpy(this->pPlayers[0].pName, localization->GetString(509)); // Zoltan
   this->pPlayers[0].uPrevFace = 17;
   this->pPlayers[0].uCurrentFace = 17;
   this->pPlayers[0].uPrevVoiceID = 17;
@@ -325,7 +330,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems)
   this->pPlayers[0].pActiveSkills[PLAYER_SKILL_BOW] = 1;
   this->pPlayers[0].pActiveSkills[PLAYER_SKILL_SWORD] = 1;
 
-  strcpy(this->pPlayers[1].pName, pGlobalTXT_LocalizationStrings[506]); // Roderic
+  strcpy(this->pPlayers[1].pName, localization->GetString(506)); // Roderic
   this->pPlayers[1].uPrevFace = 3;
   this->pPlayers[1].uCurrentFace = 3;
   this->pPlayers[1].uPrevVoiceID = 3;
@@ -342,7 +347,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems)
   this->pPlayers[1].pActiveSkills[PLAYER_SKILL_DAGGER] = 1;
   this->pPlayers[1].pActiveSkills[PLAYER_SKILL_TRAP_DISARM] = 1;
 
-  strcpy(this->pPlayers[2].pName, pGlobalTXT_LocalizationStrings[508]); // Serena
+  strcpy(this->pPlayers[2].pName, localization->GetString(508)); // Serena
   this->pPlayers[2].uPrevFace = 14;
   this->pPlayers[2].uCurrentFace = 14;
   this->pPlayers[2].uPrevVoiceID = 14;
@@ -359,7 +364,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems)
   this->pPlayers[2].pActiveSkills[PLAYER_SKILL_BODY] = 1;
   this->pPlayers[2].pActiveSkills[PLAYER_SKILL_MACE] = 1;
 
-  strcpy(this->pPlayers[3].pName, pGlobalTXT_LocalizationStrings[507]); // Alexis
+  strcpy(this->pPlayers[3].pName, localization->GetString(507)); // Alexis
   this->pPlayers[3].uPrevFace = 10;
   this->pPlayers[3].uCurrentFace = 10;
   this->pPlayers[3].uEndurance = 13;
@@ -496,98 +501,100 @@ void Party::CreateDefaultParty(bool bDebugGiveItems)
 
 //----- (004917CE) --------------------------------------------------------
 void Party::Reset()
-{  
-  Zero();
+{
+    Zero();
 
-  field_708 = 15;
-  sEyelevel = 160;
-  uNumGold = 200;
-  uNumFoodRations = 7;
+    field_708 = 15;
+    sEyelevel = 160;
+    uNumGold = 200;
+    uNumFoodRations = 7;
 
-  alignment = PartyAlignment_Neutral;
-  SetUserInterface(alignment, true);
+    alignment = PartyAlignment_Neutral;
+    SetUserInterface(alignment, true);
 
-  // 0x21C00 = 138240
-  // 138240 x 0.234375 = 32400
-  // 32400 / 60 / 60 = 9 am
-  uTimePlayed = 0x21C00;
-  uLastRegenerationTime = 0x21C00;
+    // 0x21C00 = 138240
+    // 138240 x 0.234375 = 32400
+    // 32400 / 60 / 60 = 9 am
+    uTimePlayed = 0x21C00;
+    uLastRegenerationTime = 0x21C00;
 
-  bTurnBasedModeOn = false;
+    bTurnBasedModeOn = false;
 
-  uActiveCharacter = 1;
-  ::pPlayers.ZerothIndex() = &pPlayers[0];
-  for (uint i = 0; i < 4; ++i)
-    ::pPlayers[i + 1] = &pPlayers[i];
+    uActiveCharacter = 1;
+    ::pPlayers.ZerothIndex() = &pPlayers[0];
+    for (uint i = 0; i < 4; ++i)
+        ::pPlayers[i + 1] = &pPlayers[i];
 
-  pPlayers[0].Reset(PLAYER_CLASS_KNIGHT);
-  pPlayers[0].uCurrentFace = 17;
-  pPlayers[0].uPrevVoiceID = 17;
-  pPlayers[0].uVoiceID = 17;
-  pPlayers[0].SetInitialStats();
+    pPlayers[0].Reset(PLAYER_CLASS_KNIGHT);
+    pPlayers[0].uCurrentFace = 17;
+    pPlayers[0].uPrevVoiceID = 17;
+    pPlayers[0].uVoiceID = 17;
+    pPlayers[0].SetInitialStats();
 
-  pPlayers[0].uSex = pPlayers[0].GetSexByVoice();
-  pPlayers[0].RandomizeName();
-  strcpy(pPlayers[0].pName, pGlobalTXT_LocalizationStrings[509]);
+    pPlayers[0].uSex = pPlayers[0].GetSexByVoice();
+    pPlayers[0].RandomizeName();
+    strcpy(pPlayers[0].pName, localization->GetString(509));
 
 
-  pPlayers[1].Reset(PLAYER_CLASS_THEIF);
-  pPlayers[1].uCurrentFace = 3;
-  pPlayers[1].uPrevVoiceID = 3;
-  pPlayers[1].uVoiceID = 3;
-  pPlayers[1].SetInitialStats();
-  pPlayers[1].uSex = pPlayers[1].GetSexByVoice();
-  pPlayers[1].RandomizeName();
-  strcpy(pPlayers[1].pName, pGlobalTXT_LocalizationStrings[506]);
+    pPlayers[1].Reset(PLAYER_CLASS_THEIF);
+    pPlayers[1].uCurrentFace = 3;
+    pPlayers[1].uPrevVoiceID = 3;
+    pPlayers[1].uVoiceID = 3;
+    pPlayers[1].SetInitialStats();
+    pPlayers[1].uSex = pPlayers[1].GetSexByVoice();
+    pPlayers[1].RandomizeName();
+    strcpy(pPlayers[1].pName, localization->GetString(506));
 
-  pPlayers[2].Reset(PLAYER_CLASS_CLERIC);
-  pPlayers[2].uCurrentFace = 14;
-  pPlayers[2].uPrevVoiceID = 14;
-  pPlayers[2].uVoiceID = 14;
-  pPlayers[2].SetInitialStats();
-  pPlayers[2].uSex = pPlayers[3].GetSexByVoice();
-  pPlayers[2].RandomizeName();
-  strcpy(pPlayers[2].pName, pGlobalTXT_LocalizationStrings[508]);
+    pPlayers[2].Reset(PLAYER_CLASS_CLERIC);
+    pPlayers[2].uCurrentFace = 14;
+    pPlayers[2].uPrevVoiceID = 14;
+    pPlayers[2].uVoiceID = 14;
+    pPlayers[2].SetInitialStats();
+    pPlayers[2].uSex = pPlayers[3].GetSexByVoice();
+    pPlayers[2].RandomizeName();
+    strcpy(pPlayers[2].pName, localization->GetString(508));
 
-  pPlayers[3].Reset(PLAYER_CLASS_SORCERER);
-  pPlayers[3].uCurrentFace = 10;
-  pPlayers[3].uPrevVoiceID = 10;
-  pPlayers[3].uVoiceID = 10;
-  pPlayers[3].SetInitialStats();
-  pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
-  pPlayers[3].RandomizeName();
-  strcpy(pPlayers[3].pName, pGlobalTXT_LocalizationStrings[507]);
-  
-  for (uint i = 0; i < 4; ++i)
-  {
-    pPlayers[i].uTimeToRecovery = 0;
-    for (uint j = 0; j < 20; ++j)
-      pPlayers[i].pConditions[j] = 0;
+    pPlayers[3].Reset(PLAYER_CLASS_SORCERER);
+    pPlayers[3].uCurrentFace = 10;
+    pPlayers[3].uPrevVoiceID = 10;
+    pPlayers[3].uVoiceID = 10;
+    pPlayers[3].SetInitialStats();
+    pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
+    pPlayers[3].RandomizeName();
+    strcpy(pPlayers[3].pName, localization->GetString(507));
 
-    for (uint j = 0; j < 24; ++j)
-      pPlayers[i].pPlayerBuffs[j].Reset();
+    for (uint i = 0; i < 4; ++i)
+    {
+        pPlayers[i].uTimeToRecovery = 0;
+        for (uint j = 0; j < 20; ++j)
+            pPlayers[i].pConditions[j] = 0;
 
-    pPlayers[i].expression = CHARACTER_EXPRESSION_1;
-    pPlayers[i].uExpressionTimePassed = 0;
-    pPlayers[i].uExpressionTimeLength = rand() % 256 + 128;
-  }
+        for (uint j = 0; j < 24; ++j)
+            pPlayers[i].pPlayerBuffs[j].Reset();
 
-  for (uint i = 1; i < 20; ++i)
-    pPartyBuffs[i].Reset();
+        pPlayers[i].expression = CHARACTER_EXPRESSION_1;
+        pPlayers[i].uExpressionTimePassed = 0;
+        pPlayers[i].uExpressionTimeLength = rand() % 256 + 128;
+    }
 
-  current_character_screen_window = WINDOW_CharacterWindow_Stats;  // default character ui - stats
-  uFlags = 0;
-  memset(_autonote_bits, 0, sizeof(_autonote_bits));
-  memset(_quest_bits, 0, sizeof(_quest_bits));
-  pIsArtifactFound.fill(0);
+    for (uint i = 1; i < 20; ++i)
+        pPartyBuffs[i].Reset();
 
-  PartyTimes._shop_ban_times.fill(0);
+    current_character_screen_window = WINDOW_CharacterWindow_Stats;  // default character ui - stats
+    uFlags = 0;
+    memset(_autonote_bits, 0, sizeof(_autonote_bits));
+    memset(_quest_bits, 0, sizeof(_quest_bits));
+    pIsArtifactFound.fill(0);
 
-  memcpy(pNPCStats->pNewNPCData, pNPCStats->pNPCData, 0x94BCu);
-  memcpy(pNPCStats->pGroups_copy, pNPCStats->pGroups, 0x66u);
-  pNPCStats->pNewNPCData[3].uFlags |= 128;//|= 0x80u; Lady Margaret
-  _494035_timed_effects__water_walking_damage__etc();
-  pEventTimer->Pause();
+    PartyTimes._shop_ban_times.fill(0);
+
+    memcpy(pNPCStats->pNewNPCData, pNPCStats->pNPCData, 0x94BCu);
+    memcpy(pNPCStats->pGroups_copy, pNPCStats->pGroups, 0x66u);
+    pNPCStats->pNewNPCData[3].uFlags |= 128;//|= 0x80u; Lady Margaret
+    _494035_timed_effects__water_walking_damage__etc();
+    pEventTimer->Pause();
+
+    this->pPickedItem.uItemID = 0;
 }
 
 
@@ -829,7 +836,7 @@ void Party::RestAndHeal()
 }
 
 //----- (004938D1) --------------------------------------------------------
-void __fastcall Rest(unsigned int uHoursToSleep)
+void Rest(unsigned int uHoursToSleep)
 {
   signed __int64 v2; // st7@3
 
@@ -980,21 +987,23 @@ void Party::PartyFindsGold(unsigned int uNumGold, int _1_dont_share_with_followe
   hirelingSalaries = 0;
   goldToGain = uNumGold;
 
+  std::string status;
   if ( _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal == 2 )
-    pTmpBuf2[0] = 0;
+    ;
   else if ( _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal == 1 )
   {
-    sprintf(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[467], uNumGold);// You found %lu gold!
+      status = localization->FormatString(467, uNumGold); // You found %lu gold!
   } 
   else
   {
+      unsigned char buf[1024];
     hirelingCount = 0;
     for (int i = 0; i < 2; i++)
     {
       if (this->pHirelings[i].pName)
       {
         hirelingCount++;
-        pTmpBuf[hirelingCount] = i;
+        buf[hirelingCount] = i;
       }
     }
     for (uint i = 0; i < pNPCStats->uNumNewNPCs; i++)
@@ -1004,12 +1013,12 @@ void Party::PartyFindsGold(unsigned int uNumGold, int _1_dont_share_with_followe
         && (!this->pHirelings[1].pName || strcmp(pNPCStats->pNewNPCData[i].pName, this->pHirelings[1].pName)) )
       {
         hirelingCount++;
-        pTmpBuf[hirelingCount] = i + 2;
+        buf[hirelingCount] = i + 2;
       }
     }
     for (int i = 0; i < hirelingCount; i++)
     {
-      uchar thisBufId = (uchar)pTmpBuf[i];
+      uchar thisBufId = buf[i];
       if (thisBufId < 2)
         v12 = &this->pHirelings[thisBufId];
       else
@@ -1029,18 +1038,18 @@ void Party::PartyFindsGold(unsigned int uNumGold, int _1_dont_share_with_followe
       hirelingSalaries = (signed int)(goldToGain * hirelingSalaries / 100) / 100;
       if ( hirelingSalaries < 1 )
         hirelingSalaries = 1;
-      sprintf(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[466], goldToGain, hirelingSalaries);// You found %lu gold (followers take %lu)!
+      status = localization->FormatString(466, goldToGain, hirelingSalaries); // You found %lu gold (followers take %lu)!
     }
     else
     {
-      sprintf(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[467], goldToGain);// You found %lu gold!
+        status = localization->FormatString(467, uNumGold); // You found %lu gold!
     }
   }
   this->uNumGold += goldToGain - hirelingSalaries;
   pUIAnim_Gold->uAnimTime = 0;
   pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
-  if ( pTmpBuf2[0] )
-    ShowStatusBarString(pTmpBuf2.data(), 2u);
+  if (status.length() > 0)
+    GameUI_StatusBar_OnEvent(status.c_str(), 2u);
   pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0, 0, 0);
 }
 //----- (00421B2C) --------------------------------------------------------

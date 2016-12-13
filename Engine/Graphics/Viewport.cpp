@@ -5,6 +5,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 
 #include "Viewport.h"
 #include "Engine/Party.h"
@@ -16,7 +17,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/ObjectList.h"
 #include "DecorationList.h"
-#include "Engine/texts.h"
 #include "Vis.h"
 #include "Engine/LOD.h"
 #include "GUI/GUIWindow.h"
@@ -24,6 +24,7 @@
 #include "Engine/stru123.h"
 #include "Level/Decoration.h"
 
+#include "GUI/UI/UIStatusBar.h"
 
 //----- (004C0262) --------------------------------------------------------
 void Viewport::SetScreen( signed int sTL_X, signed int sTL_Y, signed int sBR_X, signed int sBR_Y )
@@ -274,8 +275,13 @@ void ItemInteraction(unsigned int item_id)
         if (pParty->pPickedItem.uItemID)
             return;
 
-        sprintfex(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[471], pItemsTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName);//You found an item (%s)!
-        ShowStatusBarString(pTmpBuf2.data(), 2);
+        GameUI_StatusBar_OnEvent(
+            localization->FormatString(
+                471,
+                pItemsTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName
+            )
+        ); // You found an item (%s)!
+
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_ARTIFACT_SPLITTER)
             _449B7E_toggle_bit(pParty->_quest_bits, 184, 1);
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_SPELLBOOK_MIND_REMOVE_FEAR)
@@ -468,7 +474,7 @@ void OnGameViewportClick()
           {
               if (!pParty->pPickedItem.uItemID)
               {
-                  ShowNothingHereStatus();
+                  GameUI_StatusBar_NothingHere();
                   if (!pParty->pPickedItem.uItemID)
                       return;
               }
@@ -487,7 +493,7 @@ void OnGameViewportClick()
           {
               if (!pParty->pPickedItem.uItemID)
               {
-                  ShowNothingHereStatus();
+                  GameUI_StatusBar_NothingHere();
                   if (!pParty->pPickedItem.uItemID)
                       return;
               }

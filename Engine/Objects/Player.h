@@ -1,4 +1,7 @@
 #pragma once
+
+#include "Engine/Strings.h"
+
 #include "Items.h"
 #include "../Spells/Spells.h"
 #include "../Conditions.h"
@@ -500,7 +503,7 @@ struct Player
   int GetActualAccuracy();
   int GetActualSpeed();
   int GetActualLuck();
-  int GetActualAttack(bool a2);
+  int GetActualAttack(bool onlyMainHandDmg);
   int GetMeleeDamageMinimal();
   int GetMeleeDamageMaximal();
   int CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand, unsigned int uTargetActorID);
@@ -508,8 +511,8 @@ struct Player
   int GetRangedDamageMin();
   int GetRangedDamageMax();
   int CalculateRangedDamageTo(int a2);
-  char *GetMeleeDamageString();
-  char *GetRangedDamageString();
+  String GetMeleeDamageString();
+  String GetRangedDamageString();
   bool CanTrainToNextLevel();
   unsigned int GetExperienceDisplayColor();
   int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
@@ -526,8 +529,12 @@ struct Player
   int ReceiveSpecialAttackEffect(int attType, struct Actor *pActor);
   unsigned int GetSpellSchool(unsigned int uSpellID);
   int GetAttackRecoveryTime(bool bRangedAttack);
+
+  int GetHealth() const { return this->sHealth; }
   int GetMaxHealth();
+  int GetMana() const { return this->sMana; }
   int GetMaxMana();
+
   int GetBaseAC();
   int GetActualAC();
   unsigned int GetBaseAge();
@@ -543,7 +550,8 @@ struct Player
   int GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2);
   int GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType);
   int GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE a2);
-  enum CHARACTER_RACE GetRace();
+  enum CHARACTER_RACE GetRace() const;
+  String GetRaceName() const;
   PLAYER_SEX GetSexByVoice();
   void SetInitialStats();
   void SetSexByVoice();
@@ -581,7 +589,8 @@ struct Player
   void PlaySound(PlayerSpeech speech, int a3);
   void PlayEmotion(CHARACTER_EXPRESSION_ID expression, int a3);
   void ItemsEnchant(int enchant_count);
-  unsigned int GetItemIDAtInventoryIndex(int *a2);
+  unsigned int GetItemIDAtInventoryIndex(int *inout_item_cell);
+  struct ItemGen *GetItemAtInventoryIndex(int *inout_item_cell);
   bool IsPlayerHealableByTemple();
   int GetBaseIdentifyPrice(float a2);
   int GetBaseRepairPrice(int a2, float a3);
@@ -769,14 +778,14 @@ struct Player
   int pure_accuracy_used;      
   int pure_might_used;    
   union  //214h
+  {
+      struct
       {
-      struct  
-          {
           std::array<ItemGen, 126> pInventoryItemList;
           std::array<ItemGen, 12> pEquippedItems;
       };
       std::array<ItemGen, 138> pOwnItems;
-      };
+  };
   
   std::array<int, 126> pInventoryMatrix;  
   __int16 sResFireBase;
@@ -847,7 +856,7 @@ struct Player
 };
 #pragma pack(pop)
 
-void __fastcall DamagePlayerFromMonster(unsigned int uObjID, int a2, struct Vec3_int_ *pPos, signed int a4);
+void DamagePlayerFromMonster(unsigned int uObjID, int a2, struct Vec3_int_ *pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool  ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();

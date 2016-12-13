@@ -17,7 +17,7 @@ PaletteManager *pPaletteManager = new PaletteManager;
 
 
 //----- (00452AE2) --------------------------------------------------------
-int __fastcall MakeColorMaskFromBitDepth(int a1)
+int MakeColorMaskFromBitDepth(int a1)
 {
   signed __int64 v1; // qax@1
 
@@ -36,7 +36,7 @@ int __fastcall MakeColorMaskFromBitDepth(int a1)
 }
 
 //----- (0048A643) --------------------------------------------------------
-bool __fastcall HSV2RGB(float *a1, float *a2, float *a3, float a4, float a5, float a6)
+bool HSV2RGB(float *a1, float *a2, float *a3, float a4, float a5, float a6)
 {
   float *v6; // ebx@1
   float *v7; // edi@1
@@ -143,7 +143,7 @@ LABEL_20:
 }
 
 //----- (0048A7AA) --------------------------------------------------------
-void __fastcall RGB2HSV(float *a1, float *a2, float a3, float a4, float a5, float *a6)
+void RGB2HSV(float *a1, float *a2, float a3, float a4, float a5, float *a6)
 {
   double v6; // st7@2
   double v7; // st6@7

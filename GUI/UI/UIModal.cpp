@@ -1,9 +1,8 @@
-
 #include "OSWindow.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/Timer.h"
-#include "Engine/texts.h"
 
 #include "GUI/UI/UIModal.h"
 
@@ -36,8 +35,10 @@ void GUIWindow_Modal::Update()
 // {
     GUIWindow pWindow; // [sp+4h] [bp-54h]@1
 
-    sprintf(pTmpBuf2.data(), "%s\n \n%s", pModalWindow->Hint, pGlobalTXT_LocalizationStrings[61]);// Press Escape
-    pWindow.Hint = pTmpBuf2.data();
+    static String label_container;
+    label_container = StringPrintf("%s\n \n%s", pModalWindow->Hint, localization->GetString(61)); // Press Escape
+
+    pWindow.Hint = label_container.c_str();
     pWindow.uFrameWidth = 400;
     pWindow.uFrameHeight = 100;
     pWindow.uFrameX = 120;

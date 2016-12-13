@@ -748,7 +748,7 @@ LABEL_25:
     goto LABEL_25;
   }
 }
-// 46DF1A: using guessed type int __fastcall 46DF1A_collide_against_actor(int, int);
+// 46DF1A: using guessed type int 46DF1A_collide_against_actor(int, int);
 
 //----- (00438E35) --------------------------------------------------------
 void SpriteObject::ExplosionTraps()
@@ -1084,7 +1084,7 @@ void SpriteObject::sub_42F960_create_object(int x, int y, int z)
 
 
 //----- (0046BFFA) --------------------------------------------------------
-bool __fastcall _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
+bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
 {
 	ObjectDesc *object; // ebx@1
 	unsigned int v8; // eax@19
@@ -1938,7 +1938,7 @@ bool __fastcall _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a
 }
 
 //----- (0043A97E) --------------------------------------------------------
-void __fastcall sub_43A97E(unsigned int uLayingItemID, signed int a2)
+void sub_43A97E(unsigned int uLayingItemID, signed int a2)
 {
 	if (PID_TYPE(a2) == OBJECT_Player)
 	{

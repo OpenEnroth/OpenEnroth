@@ -14,6 +14,7 @@
     <ProjectGuid>{5DA49362-EF43-4753-85DC-88CC41F26764}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>WorldofMightandMagic</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -42,7 +43,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(Configuration)\</IntDir>
-    <OutDir>$(WoMM_MM7_INSTALL_DIR)\</OutDir>
+    <OutDir>$(WoMM_MM7_INSTALL_DIR)</OutDir>
     <GenerateManifest>false</GenerateManifest>
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
@@ -117,6 +118,7 @@
     <ClCompile Include="..\..\Engine\Graphics\Viewport.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Vis.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Weather.cpp" />
+    <ClCompile Include="..\..\Engine\Localization.cpp" />
     <ClCompile Include="..\..\Engine\LOD.cpp" />
     <ClCompile Include="..\..\Engine\Log.cpp" />
     <ClCompile Include="..\..\Engine\LuaVM.cpp" />
@@ -139,6 +141,7 @@
     <ClCompile Include="..\..\Engine\Serialization\LegacyImages.cpp" />
     <ClCompile Include="..\..\Engine\Spells\CastSpellInfo.cpp" />
     <ClCompile Include="..\..\Engine\Spells\Spells.cpp" />
+    <ClCompile Include="..\..\Engine\Strings.cpp" />
     <ClCompile Include="..\..\Engine\stru298.cpp" />
     <ClCompile Include="..\..\Engine\stru6.cpp" />
     <ClCompile Include="..\..\Engine\Tables\FactionTable.cpp" />
@@ -147,7 +150,6 @@
     <ClCompile Include="..\..\Engine\Tables\PlayerFrameTable.cpp" />
     <ClCompile Include="..\..\Engine\Tables\StorylineTextTable.cpp" />
     <ClCompile Include="..\..\Engine\Tables\TileTable.cpp" />
-    <ClCompile Include="..\..\Engine\texts.cpp" />
     <ClCompile Include="..\..\Engine\Timer.cpp" />
     <ClCompile Include="..\..\Engine\TurnEngine\TurnEngine.cpp" />
     <ClCompile Include="..\..\Engine\VectorTypes.cpp" />
@@ -187,6 +189,7 @@
     <ClCompile Include="..\..\GUI\UI\UIRest.cpp" />
     <ClCompile Include="..\..\GUI\UI\UISaveLoad.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIShops.cpp" />
+    <ClCompile Include="..\..\GUI\UI\UiStatusBar.cpp" />
     <ClCompile Include="..\..\GUI\UI\UITransition.cpp" />
     <ClCompile Include="..\..\IO\Keyboard.cpp" />
     <ClCompile Include="..\..\IO\Mouse.cpp" />
@@ -292,6 +295,7 @@
     <ClInclude Include="..\..\Engine\Graphics\Viewport.h" />
     <ClInclude Include="..\..\Engine\Graphics\Vis.h" />
     <ClInclude Include="..\..\Engine\Graphics\Weather.h" />
+    <ClInclude Include="..\..\Engine\Localization.h" />
     <ClInclude Include="..\..\Engine\LOD.h" />
     <ClInclude Include="..\..\Engine\Log.h" />
     <ClInclude Include="..\..\Engine\LuaVM.h" />
@@ -317,6 +321,7 @@
     <ClInclude Include="..\..\Engine\Serialization\LegacyImages.h" />
     <ClInclude Include="..\..\Engine\Spells\CastSpellInfo.h" />
     <ClInclude Include="..\..\Engine\Spells\Spells.h" />
+    <ClInclude Include="..\..\Engine\Strings.h" />
     <ClInclude Include="..\..\Engine\stru123.h" />
     <ClInclude Include="..\..\Engine\stru159.h" />
     <ClInclude Include="..\..\Engine\stru160.h" />
@@ -330,7 +335,6 @@
     <ClInclude Include="..\..\Engine\Tables\PlayerFrameTable.h" />
     <ClInclude Include="..\..\Engine\Tables\StorylineTextTable.h" />
     <ClInclude Include="..\..\Engine\Tables\TileFrameTable.h" />
-    <ClInclude Include="..\..\Engine\texts.h" />
     <ClInclude Include="..\..\Engine\Timer.h" />
     <ClInclude Include="..\..\Engine\TurnEngine\TurnEngine.h" />
     <ClInclude Include="..\..\Engine\VectorTypes.h" />
@@ -370,6 +374,7 @@
     <ClInclude Include="..\..\GUI\UI\UIRest.h" />
     <ClInclude Include="..\..\GUI\UI\UISaveLoad.h" />
     <ClInclude Include="..\..\GUI\UI\UIShops.h" />
+    <ClInclude Include="..\..\GUI\UI\UiStatusBar.h" />
     <ClInclude Include="..\..\GUI\UI\UITransition.h" />
     <ClInclude Include="..\..\IO\Keyboard.h" />
     <ClInclude Include="..\..\IO\Mouse.h" />

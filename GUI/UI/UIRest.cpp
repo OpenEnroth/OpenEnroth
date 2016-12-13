@@ -6,12 +6,12 @@
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/LOD.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Timer.h"
-#include "Engine/texts.h"
 #include "Engine/Party.h"
 
 #include "GUI/UI/UIRest.h"
@@ -49,7 +49,7 @@ void GUIWindow_RestWindow::Update()
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
     pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, *((Image **)ptr_1C + 15));
     viewparams->bRedrawGameUI = 1;
-    GUIButton2.DrawLabel(pGlobalTXT_LocalizationStrings[183], pFontCreate, 0, 0); // Rest & Heal 8 hrs / Отдых и лечение 8 часов
+    GUIButton2.DrawLabel(localization->GetString(183), pFontCreate, 0, 0); // Rest & Heal 8 hrs / Отдых и лечение 8 часов
     GUIButton2.pParent = 0;
     Release();
 }
@@ -131,96 +131,92 @@ GUIWindow_Rest::GUIWindow_Rest() :
 //----- (0041FA01) --------------------------------------------------------
 void GUIWindow_Rest::Update()
 {
-  int live_characters; // esi@1
-  unsigned int v3; // eax@15
-  GUIButton tmp_button; // [sp+8h] [bp-DCh]@19
-  unsigned int am_pm_hours; // [sp+D8h] [bp-Ch]@9
+    int live_characters; // esi@1
+    unsigned int v3; // eax@15
+    GUIButton tmp_button; // [sp+8h] [bp-DCh]@19
+    unsigned int am_pm_hours; // [sp+D8h] [bp-Ch]@9
 
-  live_characters = 0;
-  for( int i = 1; i < 5; ++i )
-    if ( !pPlayers[i]->IsDead() && !pPlayers[i]->IsEradicated() && pPlayers[i]->sHealth > 0 )
-      ++live_characters;
+    live_characters = 0;
+    for (int i = 1; i < 5; ++i)
+        if (!pPlayers[i]->IsDead() && !pPlayers[i]->IsEradicated() && pPlayers[i]->sHealth > 0)
+            ++live_characters;
 
-  if ( live_characters )
-  {
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, rest_ui_restmain);
-    am_pm_hours = pParty->uCurrentHour;
-    dword_506F1C = pGUIWindow_CurrentMenu->pCurrentPosActiveItem;
-    if ( (signed int)pParty->uCurrentHour <= 12 )
+    if (live_characters)
     {
-      if ( !am_pm_hours )
-        am_pm_hours = 12;
+        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);
+        am_pm_hours = pParty->uCurrentHour;
+        dword_506F1C = pGUIWindow_CurrentMenu->pCurrentPosActiveItem;
+        if ((signed int)pParty->uCurrentHour <= 12)
+        {
+            if (!am_pm_hours)
+                am_pm_hours = 12;
+        }
+        else
+            am_pm_hours -= 12;
+        pRenderer->DrawTextureAlphaNew(16 / 640.0f, 26 / 480.0f, rest_ui_sky_frame_current);
+        if (rest_ui_hourglass_frame_current)
+        {
+            rest_ui_hourglass_frame_current->Release();
+            rest_ui_hourglass_frame_current = nullptr;
+        }
+        v3 = pEventTimer->uTimeElapsed + _507CD4_RestUI_hourglass_anim_controller;
+        _507CD4_RestUI_hourglass_anim_controller += pEventTimer->uTimeElapsed;
+        if ((unsigned int)_507CD4_RestUI_hourglass_anim_controller >= 512)
+        {
+            v3 = 0;
+            _507CD4_RestUI_hourglass_anim_controller = 0;
+        }
+        hourglass_icon_idx = (int)floorf(((double)v3 / 512.0 * 120.0) + 0.5f) % 256 + 1;
+        if (hourglass_icon_idx >= 120)
+            hourglass_icon_idx = 1;
+
+        {
+            rest_ui_hourglass_frame_current = assets->GetImage_16BitColorKey(StringPrintf("hglas%03d", hourglass_icon_idx), 0x7FF);
+            pRenderer->DrawTextureAlphaNew(267 / 640.0f, 159 / 480.0f, rest_ui_hourglass_frame_current);
+        }
+
+        memset(&tmp_button, 0, sizeof(GUIButton));
+        tmp_button.uX = 24;
+        tmp_button.uY = 154;
+        tmp_button.uZ = 194;
+        tmp_button.uW = 190;
+        tmp_button.uWidth = 171;
+        tmp_button.uHeight = 37;
+        tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
+        tmp_button.DrawLabel(localization->GetString(183), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Отдых и лечение 8 часов
+        tmp_button.pParent = 0;
+
+        auto str1 = StringPrintf("\r408%d", uRestUI_FoodRequiredToRest);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 0, 164, Color16(10, 0, 0), str1, 0, 0, Color16(230, 214, 193));
+
+        pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(237), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать до рассвета
+        pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(239), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать 1 час
+        pButton_RestUI_Wait5Minutes->DrawLabel(localization->GetString(238), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать 5 минут
+        pButton_RestUI_Exit->DrawLabel(localization->GetString(81), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Закончить отдыхать
+        memset(&tmp_button, 0, sizeof(GUIButton));
+        tmp_button.uX = 45;
+        tmp_button.uY = 199;
+
+        tmp_button.uZ = 229;
+        tmp_button.uW = 228;
+
+        tmp_button.uWidth = 185;
+        tmp_button.uHeight = 30;
+
+        tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
+        tmp_button.DrawLabel(localization->GetString(236), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать без лечения
+        tmp_button.pParent = 0;
+        auto str2 = StringPrintf("%d:%02d %s", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 368, 168, Color16(10, 0, 0), str2, 0, 0, Color16(230, 214, 193));
+        auto str3 = StringPrintf("%s\r190%d", localization->GetString(56), pParty->uDaysPlayed + 1);//День
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190, Color16(10, 0, 0), str3, 0, 0, Color16(230, 214, 193));
+        auto str4 = StringPrintf("%s\r190%d", localization->GetString(146), pParty->uCurrentMonth + 1);//Месяц
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 222, Color16(10, 0, 0), str4, 0, 0, Color16(230, 214, 193));
+        auto str5 = StringPrintf("%s\r190%d", localization->GetString(245), pParty->uCurrentYear);//Год
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 254, Color16(10, 0, 0), str5, 0, 0, Color16(230, 214, 193));
+        if (_506F14_resting_stage)
+            Party::Sleep6Hours();
     }
     else
-      am_pm_hours -= 12;
-    pRenderer->DrawTextureAlphaNew(16/640.0f, 26/480.0f, rest_ui_sky_frame_current);
-    if ( rest_ui_hourglass_frame_current )
-    {
-      rest_ui_hourglass_frame_current->Release();
-      rest_ui_hourglass_frame_current = nullptr;
-    }
-    v3 = pEventTimer->uTimeElapsed + _507CD4_RestUI_hourglass_anim_controller;
-    _507CD4_RestUI_hourglass_anim_controller += pEventTimer->uTimeElapsed;
-    if ( (unsigned int)_507CD4_RestUI_hourglass_anim_controller >= 512 )
-    {
-      v3 = 0;
-      _507CD4_RestUI_hourglass_anim_controller = 0;
-    }
-    hourglass_icon_idx = (int)floorf(((double)v3 / 512.0 * 120.0) + 0.5f) % 256 + 1;
-    if (hourglass_icon_idx >= 120 )
-      hourglass_icon_idx = 1;
-
-    {
-        wchar_t name[1024];
-        sprintf(pTmpBuf.data(), "hglas%03d", hourglass_icon_idx);
-        swprintf(name, L"hglas%03d", hourglass_icon_idx);
-        rest_ui_hourglass_frame_current = assets->GetImage_16BitColorKey(name, 0x7FF);
-
-        pRenderer->DrawTextureAlphaNew(267/640.0f, 159/480.0f, rest_ui_hourglass_frame_current);
-    }
-
-    memset(&tmp_button, 0, sizeof(GUIButton));
-    tmp_button.uX = 24;
-    tmp_button.uY = 154;
-    tmp_button.uZ = 194;
-    tmp_button.uW = 190;
-    tmp_button.uWidth = 171;
-    tmp_button.uHeight = 37;
-    tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-    tmp_button.DrawLabel(pGlobalTXT_LocalizationStrings[183], pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Отдых и лечение 8 часов
-    tmp_button.pParent = 0;
-
-    sprintf(pTmpBuf.data(), "\r408%d", uRestUI_FoodRequiredToRest);
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, 0, 164, Color16(10, 0, 0), pTmpBuf.data(), 0, 0, Color16(230, 214, 193));
-
-    pButton_RestUI_WaitUntilDawn->DrawLabel(pGlobalTXT_LocalizationStrings[237], pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать до рассвета
-    pButton_RestUI_Wait1Hour->DrawLabel(pGlobalTXT_LocalizationStrings[239], pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать 1 час
-    pButton_RestUI_Wait5Minutes->DrawLabel(pGlobalTXT_LocalizationStrings[238], pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать 5 минут
-    pButton_RestUI_Exit->DrawLabel(pGlobalTXT_LocalizationStrings[81], pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Закончить отдыхать
-    memset(&tmp_button, 0, sizeof(GUIButton));
-    tmp_button.uX = 45;
-    tmp_button.uY = 199;
-
-    tmp_button.uZ = 229;
-    tmp_button.uW = 228;
-
-    tmp_button.uWidth = 185;
-    tmp_button.uHeight = 30;
-
-    tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-    tmp_button.DrawLabel(pGlobalTXT_LocalizationStrings[236], pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать без лечения
-    tmp_button.pParent = 0;
-    sprintf(pTmpBuf.data(), "%d:%02d %s", am_pm_hours, pParty->uCurrentMinute, aAMPMNames[(pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24)? 1:0]);
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, 368, 168, Color16(10, 0, 0), pTmpBuf.data(), 0, 0, Color16(230, 214, 193));
-    sprintf(pTmpBuf.data(), "%s\r190%d", pGlobalTXT_LocalizationStrings[56], pParty->uDaysPlayed + 1);//День
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190, Color16(10, 0, 0), pTmpBuf.data(), 0, 0, Color16(230, 214, 193));
-    sprintf(pTmpBuf.data(), "%s\r190%d", pGlobalTXT_LocalizationStrings[146], pParty->uCurrentMonth + 1);//Месяц
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 222, Color16(10, 0, 0), pTmpBuf.data(), 0, 0, Color16(230, 214, 193));
-    sprintf(pTmpBuf.data(), "%s\r190%d", pGlobalTXT_LocalizationStrings[245], pParty->uCurrentYear);//Год
-    pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 254, Color16(10, 0, 0), pTmpBuf.data(), 0, 0, Color16(230, 214, 193));
-    if ( _506F14_resting_stage )
-      Party::Sleep6Hours();
-  }
-  else
-      new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0, (int)pButton_RestUI_Exit, pGlobalTXT_LocalizationStrings[81]); // "Exit Rest"
+        new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0, (int)pButton_RestUI_Exit, localization->GetString(81)); // "Exit Rest"
 }

@@ -204,32 +204,32 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box);
 
 //int __stdcall aWinProc(HWND hWnd, UINT Msg, WPARAM wParam, unsigned int lParam);
 int __stdcall InsertMM7CDDialogFunc(HWND hDlg, int a2, __int16 a3, int a4);
-bool __fastcall FindMM7CD(HWND hWnd, char *pCDDrive);
-//bool __fastcall Initialize(HINSTANCE hInst, char *pCmdLine);
+bool FindMM7CD(HWND hWnd, char *pCDDrive);
+//bool Initialize(HINSTANCE hInst, char *pCmdLine);
 
 void FinalInitialization();
-bool __fastcall CheckMM7CD(char c);
+bool CheckMM7CD(char c);
 void SecondaryInitialization();
 
 
 void MM6_Initialize(const wchar_t *pIniFilename);
 void MM7Initialization();
 
-void __fastcall PrepareToLoadODM(unsigned int bLoading, struct ODMRenderParams *a2);
+void PrepareToLoadODM(unsigned int bLoading, struct ODMRenderParams *a2);
 void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
 void _461103_load_level_sub();
 void  InitializeTurnBasedAnimations(void *);
 unsigned int GetGravityStrength();
-void  GameUI_StatusBar_UpdateTimedString(unsigned int bForceHide); // idb
+void  GameUI_StatusBar_Update(bool force_hide = false);
 
-void __fastcall sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename);
-void __fastcall sub_44892E_set_faces_bit(int sCogNumber, int bit, int on);
-void __fastcall SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName); // idb
+void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename);
+void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on);
+void SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName); // idb
 void _494035_timed_effects__water_walking_damage__etc();
 void _493938_regenerate();
 void sub_491E3A();
-const char *GetReputationString(signed int a1);
-unsigned int __fastcall _494820_training_time(unsigned int a1);
+String GetReputationString(int reputation);
+unsigned int _494820_training_time(unsigned int a1);
 void LoadLevel_InitializeLevelStr();
 void OnMapLeave();
 void OnMapLoad();
@@ -238,7 +238,7 @@ void sub_4452BB();
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(const char *pMapName, MapStartPoint point); // sub_44987B idb
 
-void __fastcall sub_4451A8_press_any_key(int a1, int a2, int a4);
+void sub_4451A8_press_any_key(int a1, int a2, int a4);
 
 void OnTimer(int);
 bool TeleportToNWCDungeon();

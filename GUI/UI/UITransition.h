@@ -19,3 +19,5 @@ struct GUIWindow_Transition : public GUIWindow
     virtual void Update();
     virtual void Release();
 };
+
+extern std::string transition_button_label;

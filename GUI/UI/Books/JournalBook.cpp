@@ -1,10 +1,10 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
 #include "Engine/Timer.h"
 #include "Engine/Awards.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Tables/StorylineTextTable.h"
@@ -33,7 +33,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
 
 // ----------------------------------------------
 // 00411BFC GUIWindow::InitializeBookView -- part
-    char *pString; // eax@12
+    //char *pString; // eax@12
     int pTextHeight; // eax@12
     unsigned int page_count; // esi@12
     GUIWindow journal_window; // [sp+18h] [bp-54h]@8
@@ -47,10 +47,10 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
 
     pBtn_Book_1 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,
         ui_book_button1_on->GetWidth(), ui_book_button1_on->GetHeight(), 1, 0,
-        UIMSG_ClickBooksBtn, 11, 0, pGlobalTXT_LocalizationStrings[192], ui_book_button1_on, 0);
+        UIMSG_ClickBooksBtn, 11, 0, localization->GetString(192), ui_book_button1_on, 0);
     pBtn_Book_2 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38,
         ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(), 1, 0, UIMSG_ClickBooksBtn, 10, 0,
-        pGlobalTXT_LocalizationStrings[193], ui_book_button2_on, 0);
+        localization->GetString(193), ui_book_button2_on, 0);
 
     num_achieved_awards = 0;
     journal_window.uFrameX = 48;
@@ -70,8 +70,8 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
             {
                 if (pStorylineText->StoreLine[i + 1].pText)
                 {
-                    pString = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, uActiveCharacter - 1, 0, 0, 0, &pParty->PartyTimes.HistoryEventTimes[i]);
-                    pTextHeight = pAutonoteFont->CalcTextHeight(pString, &journal_window, 1, 0);
+                    auto str = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, uActiveCharacter - 1, 0, 0, 0, &pParty->PartyTimes.HistoryEventTimes[i]);
+                    pTextHeight = pAutonoteFont->CalcTextHeight(str, &journal_window, 1);
                     page_count = ((pTextHeight - (pAutonoteFont->uFontHeight - 3)) / (signed int)journal_window.uFrameHeight) + 1;
                     memset32((char *)&achieved_awards[num_achieved_awards], i + 1, page_count);
                     for (uint j = 0; j <= page_count - 1; ++j)
@@ -103,7 +103,7 @@ void GUIWindow_JournalBook::Update()
 // ----- (00412E85) --------------------------------------------------------
 // void BookUI_Journal_Draw()
 // {
-    char *pDialogueString; // eax@21
+    //char *pDialogueString; // eax@21
     char* pStringOnPage; // eax@22
     GUIWindow journal_window; // [sp+8h] [bp-54h]@10
 
@@ -160,9 +160,9 @@ void GUIWindow_JournalBook::Update()
     if (achieved_awards[books_primary_item_per_page])
     {
         int index = ((int)achieved_awards[books_primary_item_per_page] - 1);
-        pDialogueString = BuildDialogueString(pStorylineText->StoreLine[achieved_awards[books_primary_item_per_page]].pText, uActiveCharacter - 1,
+        auto str = BuildDialogueString(pStorylineText->StoreLine[achieved_awards[books_primary_item_per_page]].pText, uActiveCharacter - 1,
             0, 0, 0, &pParty->PartyTimes.HistoryEventTimes[index]);
-        pStringOnPage = pAutonoteFont->GetPageTop(pDialogueString, &journal_window, 1, (unsigned __int8)Journal_limitation_factor[books_primary_item_per_page]);
+        pStringOnPage = pAutonoteFont->GetPageTop(str.c_str(), &journal_window, 1, (unsigned __int8)Journal_limitation_factor[books_primary_item_per_page]);
         journal_window.DrawText(pAutonoteFont, 1, 0, ui_book_journal_text_color, pStringOnPage, 0,
             journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);
         ++num_achieved_awards;

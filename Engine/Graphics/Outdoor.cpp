@@ -2899,11 +2899,13 @@ void OutdoorLocation::LoadActualSkyFrame()
         rest_ui_hourglass_frame_current = nullptr;
     }
 
-    wchar_t name[1024];
-    swprintf(name, L"TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour);
+    wchar_t namew[1024];
+    swprintf(namew, L"TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour);
 
-  sprintf(pTmpBuf.data(), "TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour);
-  rest_ui_sky_frame_current = assets->GetImage_16BitColorKey(name, 0x7FF);
+    char name[1024];
+    sprintf(name, "TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour);
+
+    rest_ui_sky_frame_current = assets->GetImage_16BitColorKey(namew, 0x7FF);
 }
 
 
@@ -4606,7 +4608,7 @@ unsigned int GetLevelFogColor()
 }
 
 //----- (0047C3D7) --------------------------------------------------------
-int __fastcall sub_47C3D7_get_fog_specular(int a1, int a2, float a3)
+int sub_47C3D7_get_fog_specular(int a1, int a2, float a3)
 {
 	int v3; // ecx@1
 	signed int v7; // ecx@11
@@ -4786,7 +4788,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_z)
 }
 
 //----- (0048257A) --------------------------------------------------------
-int __fastcall GetTerrainHeightsAroundParty2(int a1, int a2, int *pIsOnWater, int bFloatAboveWater)
+int GetTerrainHeightsAroundParty2(int a1, int a2, int *pIsOnWater, int bFloatAboveWater)
 {
 	//  int result; // eax@9
 	int v8; // ebx@11

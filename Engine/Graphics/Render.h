@@ -251,22 +251,22 @@ struct Render: public IRender
   virtual void ResetUIClipRect();
   virtual void CreditsTextureScroll(unsigned int pX, unsigned int pY, int move_X, int move_Y, struct RGBTexture *pTexture);
 
-  virtual void DrawTextureNew(float u, float v, struct Image *);
-  virtual void DrawTextureAlphaNew(float u, float v, struct Image *);
+  virtual void DrawTextureNew(float u, float v, class Image *);
+  virtual void DrawTextureAlphaNew(float u, float v, class Image *);
   virtual void DrawTextureCustomHeight(float u, float v, class Image *img, int height);
   //virtual void DrawTextureNew(float u, float v, struct Texture_MM7 *);
   //virtual void DrawTextureTransparentColorKey(signed int x, signed int y, struct Texture_MM7 *tex);
   //virtual void DrawTextureIndexedAlpha(unsigned int uX, unsigned int uY, struct Texture_MM7 *pTexture);
 
-  virtual void ZBuffer_Fill_2(signed int a2, signed int a3, struct Image *pTexture, int a5);
-  virtual void ZDrawTextureAlpha(float u, float v, struct Image *pTexture, int zVal);
-  virtual void BlendTextures(unsigned int a2, unsigned int a3, struct Image *a4, struct Texture_MM7 *a5, int t, int start_opacity, int end_opacity);
+  virtual void ZBuffer_Fill_2(signed int a2, signed int a3, class Image *pTexture, int a5);
+  virtual void ZDrawTextureAlpha(float u, float v, class Image *pTexture, int zVal);
+  virtual void BlendTextures(unsigned int a2, unsigned int a3, class Image *a4, struct Texture_MM7 *a5, int t, int start_opacity, int end_opacity);
   virtual void _4A65CC(unsigned int x, unsigned int y, struct Texture_MM7 *a4, struct Texture_MM7 *a5, int a6, int a7, int a8);
 
-  virtual void DrawMasked(float u, float v, struct Image *img, unsigned int color_dimming_level, unsigned __int16 mask);
-  virtual void DrawTextureGrayShade(float u, float v, struct Image *a4);
-  virtual void DrawTransparentRedShade(float u, float v, struct Image *a4);
-  virtual void DrawTransparentGreenShade(float u, float v, struct Image *pTexture);
+  virtual void DrawMasked(float u, float v, class Image *img, unsigned int color_dimming_level, unsigned __int16 mask);
+  virtual void DrawTextureGrayShade(float u, float v, class Image *a4);
+  virtual void DrawTransparentRedShade(float u, float v, class Image *a4);
+  virtual void DrawTransparentGreenShade(float u, float v, class Image *pTexture);
   virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices);
 
   virtual void DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, unsigned __int16 *pPalette, bool present_time_transparency);
@@ -446,26 +446,26 @@ struct Render: public IRender
   //int windowed_mode_height;
 };
 
-unsigned int __fastcall _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3, int a4);
+unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3, int a4);
 
-int __fastcall GetActorTintColor(int max_dim, int min_dim, float distance, int a4, struct RenderBillboard *a5);
-int __fastcall _43F55F_get_billboard_light_level(struct RenderBillboard *a1, int uBaseLightLevel);
-int __fastcall _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
-unsigned int __fastcall GetMaxMipLevels(unsigned int uDim);
+int GetActorTintColor(int max_dim, int min_dim, float distance, int a4, struct RenderBillboard *a5);
+int _43F55F_get_billboard_light_level(struct RenderBillboard *a1, int uBaseLightLevel);
+int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
+unsigned int GetMaxMipLevels(unsigned int uDim);
 int _46E44E_collide_against_faces_and_portals(unsigned int b1); // idb
-int __fastcall _46E889_collide_against_bmodels(unsigned int ecx0);
+int _46E889_collide_against_bmodels(unsigned int ecx0);
 int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID); // idb
-void __fastcall _46ED8A_collide_against_sprite_objects(unsigned int _this);
+void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 int _46EF01_collision_chech_player(int a1); // idb
 void _46E0B2_collide_against_decorations();
 int _46F04E_collide_against_portals();
-unsigned int __fastcall sub_46DEF2(signed int a2, unsigned int uLayingItemID);
+unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID);
 void UpdateObjects();
 bool sub_47531C(int a1, int *a2, int pos_x, int pos_y, int pos_z, int dir_x, int dir_y, int dir_z, struct BLVFace *face, int a10);
 bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y, int dir_z, struct BLVFace *face, int a10, int a11);
 int sub_475665(struct BLVFace *face, int a2, __int16 a3);
-bool __fastcall sub_4759C9(struct BLVFace *face, int a2, int a3, __int16 a4);
-bool __fastcall sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, struct BLVFace *a4);
-bool __fastcall sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9);
+bool sub_4759C9(struct BLVFace *face, int a2, int a3, __int16 a4);
+bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, struct BLVFace *a4);
+bool sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9);
 
-bool __fastcall IsBModelVisible(unsigned int uModelID, int *unused);
+bool IsBModelVisible(unsigned int uModelID, int *unused);

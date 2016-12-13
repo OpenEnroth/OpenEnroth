@@ -50,7 +50,7 @@ struct GUIProgressBar
       loading_bg(nullptr)
   {}
 
-  struct Image *loading_bg;
+  class Image *loading_bg;
 };
 #pragma pack(pop)
 

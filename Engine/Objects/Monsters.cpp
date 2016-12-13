@@ -8,11 +8,11 @@
 #include <string.h>
 
 #include "Engine/Engine.h"
+#include "Engine/Strings.h"
 
 #include "Monsters.h"
 #include "../Tables/FrameTableInc.h"
 #include "../LOD.h"
-#include "../texts.h"
 
 
 
@@ -29,152 +29,151 @@ int ParseMissleAttackType(const char *missle_attack_str);
 int ParseSpecialAttack(const char *spec_att_str);
 
 //----- (004548E2) --------------------------------------------------------
-unsigned int ParseSpellType( struct FrameTableTxtLine * tbl, int* next_token )
-    {
+unsigned int ParseSpellType(struct FrameTableTxtLine * tbl, int* next_token)
+{
 
-    if (!tbl->pProperties[0] )
-        {
+    if (!tbl->pProperties[0])
+    {
         ++*next_token;
         return 0;
-        }
-    if ( !_stricmp(tbl->pProperties[0], "Dispel") )  //dispel magic
-        {
+    }
+    if (!_stricmp(tbl->pProperties[0], "Dispel"))  //dispel magic
+    {
         ++*next_token;
         return 80;
-        }
-    else  if ( !_stricmp(tbl->pProperties[0], "Day") )  //day of protection
-        {
-        *next_token+=2;;
+    }
+    else  if (!_stricmp(tbl->pProperties[0], "Day"))  //day of protection
+    {
+        *next_token += 2;;
         return 85;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Hour") )  //hour  of power
-        {
-        *next_token+=2;;
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Hour"))  //hour  of power
+    {
+        *next_token += 2;;
         return 86;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Shield") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Shield"))
         return  17;
-    else if ( !_stricmp(tbl->pProperties[0], "Spirit") )
-        {
+    else if (!_stricmp(tbl->pProperties[0], "Spirit"))
+    {
         ++*next_token;
         return 52;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Power") )  //power cure
-        {
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Power"))  //power cure
+    {
         ++*next_token;
         return 77;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Meteor") )  //meteot shower
-        {
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Meteor"))  //meteot shower
+    {
         ++*next_token;
         return 9;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Lightning") ) //Lightning bolt
-        {
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Lightning")) //Lightning bolt
+    {
         ++*next_token;
         return 18;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Implosion") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Implosion"))
         return  20;
-    else if ( !_stricmp(tbl->pProperties[0], "Stone") )
-        {
+    else if (!_stricmp(tbl->pProperties[0], "Stone"))
+    {
         ++*next_token;
         return 38;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Haste") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Haste"))
         return   5;
-    else if ( !_stricmp(tbl->pProperties[0], "Heroism") )
+    else if (!_stricmp(tbl->pProperties[0], "Heroism"))
         return   51;
-    else if ( !_stricmp(tbl->pProperties[0], "Pain") ) //pain reflection
-        {
+    else if (!_stricmp(tbl->pProperties[0], "Pain")) //pain reflection
+    {
         ++*next_token;
         return 95;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Sparks") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Sparks"))
         return 15;
-    else if ( !_stricmp(tbl->pProperties[0], "Light") )
-        {
+    else if (!_stricmp(tbl->pProperties[0], "Light"))
+    {
         ++*next_token;
         return 78;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Toxic") ) //toxic cloud
-        {
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Toxic")) //toxic cloud
+    {
         ++*next_token;
         return 90;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "ShrapMetal") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "ShrapMetal"))
         return 93;
-    else if ( !_stricmp(tbl->pProperties[0], "Paralyze") )
+    else if (!_stricmp(tbl->pProperties[0], "Paralyze"))
         return 81;
-    else if ( !_stricmp(tbl->pProperties[0], "Fireball") )
+    else if (!_stricmp(tbl->pProperties[0], "Fireball"))
         return 6;
-    else if ( !_stricmp(tbl->pProperties[0], "Incinerate") )
+    else if (!_stricmp(tbl->pProperties[0], "Incinerate"))
         return 11;
-    else if ( !_stricmp(tbl->pProperties[0], "Fire") )
-        {
+    else if (!_stricmp(tbl->pProperties[0], "Fire"))
+    {
         ++*next_token;
         return 2;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Rock") )
-        {
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Rock"))
+    {
         ++*next_token;
         return 41;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Mass") )
-        {
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Mass"))
+    {
         ++*next_token;
         return 44;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Ice") )
-        {
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Ice"))
+    {
         ++*next_token;
         return 26;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Acid") )
-        {
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Acid"))
+    {
         ++*next_token;
         return 29;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Bless") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Bless"))
         return 46;
-    else if ( !_stricmp(tbl->pProperties[0], "Dragon") )
-        {
+    else if (!_stricmp(tbl->pProperties[0], "Dragon"))
+    {
         ++*next_token;
         return 97;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Reanimate") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Reanimate"))
         return 89;
-    else if ( !_stricmp(tbl->pProperties[0], "Summon") )
-        {
+    else if (!_stricmp(tbl->pProperties[0], "Summon"))
+    {
         ++*next_token;
         return 82;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Fate") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Fate"))
         return 47;
-    else if ( !_stricmp(tbl->pProperties[0], "Harm") )
+    else if (!_stricmp(tbl->pProperties[0], "Harm"))
         return 70;
-    else if ( !_stricmp(tbl->pProperties[0], "Mind") )
-        {
+    else if (!_stricmp(tbl->pProperties[0], "Mind"))
+    {
         ++*next_token;
         return 57;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Blades") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Blades"))
         return 39;
-    else if ( !_stricmp(tbl->pProperties[0], "Psychic") )
-        {
+    else if (!_stricmp(tbl->pProperties[0], "Psychic"))
+    {
         ++*next_token;
         return 65;
-        }
-    else if ( !_stricmp(tbl->pProperties[0], "Hammerhands") )
+    }
+    else if (!_stricmp(tbl->pProperties[0], "Hammerhands"))
         return 73;
     else
-        {
-        sprintf(pTmpBuf.data(), "Unknown monster spell %s", tbl->pProperties[0]);
-        MessageBoxA(nullptr, pTmpBuf.data(), "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Itemdata.cpp:1562", 0);
+    {
+        Log::Warning(L"%S", StringPrintf("Unknown monster spell %s", tbl->pProperties[0]).c_str());
         ++*next_token;
         return 0;
-        }
     }
+}
 
 //----- (00454CB4) --------------------------------------------------------
 int ParseAttackType( const char *damage_type_str )
@@ -568,7 +567,7 @@ void MonsterStats::InitializePlacements()
 
 //----- (0045501E) --------------------------------------------------------
 void MonsterStats::Initialize()
-    {
+{
     int i;//,j;
     char* test_string;
     unsigned char c;
@@ -576,11 +575,12 @@ void MonsterStats::Initialize()
     unsigned int temp_str_len;
     char* tmp_pos;
     int decode_step;
-//    int item_counter;
+    //    int item_counter;
     int curr_rec_num;
-    char parse_str[64]; 
-    char Src[120];
+    char parse_str[64];
+    //char Src[120];
     FrameTableTxtLine parsed_field;
+    String str;
 
     free(pMonstersTXT_Raw);
     pMonstersTXT_Raw = (char *)pEvents_LOD->LoadRaw("monsters.txt", 0);
@@ -589,597 +589,591 @@ void MonsterStats::Initialize()
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     uNumMonsters = 265;
-    curr_rec_num=0;
-    for (i=0;i<uNumMonsters-1;++i)
-        {
+    curr_rec_num = 0;
+    for (i = 0; i < uNumMonsters - 1; ++i)
+    {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
-        decode_step=0;
-        do 
-            {
+        decode_step = 0;
+        do
+        {
             c = *(unsigned char*)test_string;
             temp_str_len = 0;
-            while((c!='\t')&&(c>0))
-                {
+            while ((c != '\t') && (c>0))
+            {
                 ++temp_str_len;
-                c=test_string[temp_str_len];
-                }		
-            tmp_pos=test_string+temp_str_len;
+                c = test_string[temp_str_len];
+            }
+            tmp_pos = test_string + temp_str_len;
             if (*tmp_pos == 0)
                 break_loop = true;
             *tmp_pos = 0;
             if (temp_str_len)
-                {
+            {
                 switch (decode_step)
-                    {
-                case 0: 
-                    curr_rec_num=atoi(test_string);
-                    pInfos[curr_rec_num].uID=curr_rec_num;
+                {
+                case 0:
+                    curr_rec_num = atoi(test_string);
+                    pInfos[curr_rec_num].uID = curr_rec_num;
                     break;
                 case 1:
-                    pInfos[curr_rec_num].pName=RemoveQuotes(test_string);
+                    pInfos[curr_rec_num].pName = RemoveQuotes(test_string);
                     break;
                 case 2:
-                    pInfos[curr_rec_num].pPictureName=RemoveQuotes(test_string);
+                    pInfos[curr_rec_num].pPictureName = RemoveQuotes(test_string);
                     break;
                 case 3:
-                    pInfos[curr_rec_num].uLevel=atoi(test_string);
+                    pInfos[curr_rec_num].uLevel = atoi(test_string);
                     break;
                 case 4:
-                    {
-                    int str_len=0;
-                    int str_pos=0;
-                    pInfos[curr_rec_num].uHP=0;
-                    if (test_string[0]=='"')
-                        test_string[0]=' ';
-                    str_len=strlen(test_string);
-                    if (str_len==0)
+                {
+                    int str_len = 0;
+                    int str_pos = 0;
+                    pInfos[curr_rec_num].uHP = 0;
+                    if (test_string[0] == '"')
+                        test_string[0] = ' ';
+                    str_len = strlen(test_string);
+                    if (str_len == 0)
                         break;
-                    while ((test_string[str_pos]!=',')&&(str_pos<str_len))
+                    while ((test_string[str_pos] != ',') && (str_pos < str_len))
                         ++str_pos;
-                    if (str_len==str_pos)
-                        pInfos[curr_rec_num].uHP=atoi(test_string);
+                    if (str_len == str_pos)
+                        pInfos[curr_rec_num].uHP = atoi(test_string);
                     else
-                        {
-                        test_string[str_pos]='\0';
-                        pInfos[curr_rec_num].uHP=1000*atoi(test_string);
-                        pInfos[curr_rec_num].uHP+=atoi(&test_string[str_pos+1]);
-                        test_string[str_pos]=',';
-                        }
+                    {
+                        test_string[str_pos] = '\0';
+                        pInfos[curr_rec_num].uHP = 1000 * atoi(test_string);
+                        pInfos[curr_rec_num].uHP += atoi(&test_string[str_pos + 1]);
+                        test_string[str_pos] = ',';
                     }
-                    break;
+                }
+                break;
                 case 5:
-                    pInfos[curr_rec_num].uAC=atoi(test_string);
+                    pInfos[curr_rec_num].uAC = atoi(test_string);
                     break;
                 case 6:
-                    {
-                    int str_len=0;
-                    int str_pos=0;
-                    pInfos[curr_rec_num].uExp=0;
-                    if (test_string[0]=='"')
-                        test_string[0]=' ';
-                    str_len=strlen(test_string);
-                    if (str_len==0)
+                {
+                    int str_len = 0;
+                    int str_pos = 0;
+                    pInfos[curr_rec_num].uExp = 0;
+                    if (test_string[0] == '"')
+                        test_string[0] = ' ';
+                    str_len = strlen(test_string);
+                    if (str_len == 0)
                         break;
-                    while ((test_string[str_pos]!=',')&&(str_pos<str_len))
+                    while ((test_string[str_pos] != ',') && (str_pos < str_len))
                         ++str_pos;
-                    if (str_len==str_pos)
-                        pInfos[curr_rec_num].uExp=atoi(test_string);
+                    if (str_len == str_pos)
+                        pInfos[curr_rec_num].uExp = atoi(test_string);
                     else
-                        {
-                        test_string[str_pos]='\0';
-                        pInfos[curr_rec_num].uExp=1000*atoi(test_string);
-                        pInfos[curr_rec_num].uExp+=atoi(&test_string[str_pos+1]);
-                        test_string[str_pos]=',';
-                        }
+                    {
+                        test_string[str_pos] = '\0';
+                        pInfos[curr_rec_num].uExp = 1000 * atoi(test_string);
+                        pInfos[curr_rec_num].uExp += atoi(&test_string[str_pos + 1]);
+                        test_string[str_pos] = ',';
                     }
-                    break;
+                }
+                break;
                 case 7:
-                    {
-                    int str_len=0;
-                    int str_pos=0;
-                    bool chance_flag=false;
-                    bool dice_flag=false;
-                    bool item_type_flag=false;
+                {
+                    int str_len = 0;
+                    int str_pos = 0;
+                    bool chance_flag = false;
+                    bool dice_flag = false;
+                    bool item_type_flag = false;
                     char* item_name;
-                    pInfos[curr_rec_num].uTreasureDropChance=0;
-                    pInfos[curr_rec_num].uTreasureDiceRolls=0;
-                    pInfos[curr_rec_num].uTreasureDiceSides=0;
-                    pInfos[curr_rec_num].uTreasureType=0;
-                    pInfos[curr_rec_num].uTreasureLevel=0;
-                    if (test_string[0]=='"')
-                        test_string[0]=' ';
-                    str_len=strlen(test_string);
+                    pInfos[curr_rec_num].uTreasureDropChance = 0;
+                    pInfos[curr_rec_num].uTreasureDiceRolls = 0;
+                    pInfos[curr_rec_num].uTreasureDiceSides = 0;
+                    pInfos[curr_rec_num].uTreasureType = 0;
+                    pInfos[curr_rec_num].uTreasureLevel = 0;
+                    if (test_string[0] == '"')
+                        test_string[0] = ' ';
+                    str_len = strlen(test_string);
                     do
+                    {
+                        switch (tolower(test_string[str_pos]))
                         {
-                        switch(tolower(test_string[str_pos]))
-                            {
-                        case '%': chance_flag=true; break;
-                        case 'd': dice_flag=true; break;
-                        case 'l': item_type_flag=true; break;
-                            }
-                        ++str_pos;
+                        case '%': chance_flag = true; break;
+                        case 'd': dice_flag = true; break;
+                        case 'l': item_type_flag = true; break;
                         }
-                        while(str_pos<str_len);
-                        if (chance_flag)
-                            {
-                            pInfos[curr_rec_num].uTreasureDropChance=atoi(test_string);
-                            }
-                        else
-                            {
-                            if ((!dice_flag)&&(!item_type_flag))
-                                break;
-                            pInfos[curr_rec_num].uTreasureDropChance=100;
-                            }
-                        if (dice_flag)
-                            {
-                            str_pos=0;
-                            dice_flag=false;
-                            do
-                                {
-                                switch(tolower(test_string[str_pos]))
-                                    {
-                                case '%': 
-                                    pInfos[curr_rec_num].uTreasureDiceRolls=atoi(&test_string[str_pos+1]);
-                                    dice_flag=true;
-                                    break;
-                                case 'd':
-                                    if(!dice_flag)
-                                        pInfos[curr_rec_num].uTreasureDiceRolls=atoi(test_string);
-                                    pInfos[curr_rec_num].uTreasureDiceSides=atoi(&test_string[str_pos+1]);
-                                    str_pos=str_len;
-                                    break;
-
-                                    }
-                                ++str_pos;
-                                }
-                                while(str_pos<str_len);
-                            }
-                        if (item_type_flag)
-                            {
-                            str_pos=0;
-                            do
-                                {
-                                if (tolower(test_string[str_pos])=='l')
-                                    break;
-                                ++str_pos;
-                                }
-                                while(str_pos<str_len);
-                              
-                                pInfos[curr_rec_num].uTreasureLevel=test_string[str_pos+1]-'0';
-                                item_name=&test_string[str_pos+2];
-                                if (*item_name)
-                                    {
-                                    if ( !_stricmp(item_name, "WEAPON"))
-                                        pInfos[curr_rec_num].uTreasureType= 20;
-                                    else if ( !_stricmp(item_name, "ARMOR"))
-                                        pInfos[curr_rec_num].uTreasureType= 21;
-                                    else if ( !_stricmp(item_name, "MISC"))
-                                        pInfos[curr_rec_num].uTreasureType= 22;
-                                    else if ( !_stricmp(item_name, "SWORD"))
-                                        pInfos[curr_rec_num].uTreasureType= 23;
-                                    else if ( !_stricmp(item_name, "DAGGER"))
-                                        pInfos[curr_rec_num].uTreasureType= 24;
-                                    else if ( !_stricmp(item_name, "AXE"))
-                                        pInfos[curr_rec_num].uTreasureType= 25;
-                                    else if ( !_stricmp(item_name, "SPEAR"))
-                                        pInfos[curr_rec_num].uTreasureType= 26;
-                                    else if ( !_stricmp(item_name, "BOW"))
-                                        pInfos[curr_rec_num].uTreasureType= 27;
-                                    else if ( !_stricmp(item_name, "MACE"))
-                                        pInfos[curr_rec_num].uTreasureType= 28;
-                                    else if ( !_stricmp(item_name, "CLUB"))
-                                        pInfos[curr_rec_num].uTreasureType= 29;
-                                    else if ( !_stricmp(item_name, "STAFF"))
-                                        pInfos[curr_rec_num].uTreasureType= 30;
-                                    else if ( !_stricmp(item_name, "LEATHER"))
-                                        pInfos[curr_rec_num].uTreasureType= 31;
-                                    else if ( !_stricmp(item_name, "CHAIN"))
-                                        pInfos[curr_rec_num].uTreasureType= 32;
-                                    else if ( !_stricmp(item_name, "PLATE"))
-                                        pInfos[curr_rec_num].uTreasureType= 33;
-                                    else if ( !_stricmp(item_name, "SHIELD"))
-                                        pInfos[curr_rec_num].uTreasureType= 34;
-                                    else if ( !_stricmp(item_name, "HELM"))
-                                        pInfos[curr_rec_num].uTreasureType= 35;
-                                    else if ( !_stricmp(item_name, "BELT"))
-                                        pInfos[curr_rec_num].uTreasureType= 36;
-                                    else if ( !_stricmp(item_name, "CAPE"))
-                                        pInfos[curr_rec_num].uTreasureType= 37;
-                                    else if ( !_stricmp(item_name, "GAUNTLETS"))
-                                        pInfos[curr_rec_num].uTreasureType= 38;
-                                    else if ( !_stricmp(item_name, "BOOTS"))
-                                        pInfos[curr_rec_num].uTreasureType= 39;
-                                    else if ( !_stricmp(item_name, "RING"))
-                                        pInfos[curr_rec_num].uTreasureType= 40;
-                                    else if ( !_stricmp(item_name, "AMULET"))
-                                        pInfos[curr_rec_num].uTreasureType= 41;
-                                    else if ( !_stricmp(item_name, "WAND"))
-                                        pInfos[curr_rec_num].uTreasureType= 42;
-                                    else if ( !_stricmp(item_name, "SCROLL"))
-                                        pInfos[curr_rec_num].uTreasureType= 43;
-                                    else if ( !_stricmp(item_name, "GEM"))
-                                        pInfos[curr_rec_num].uTreasureType= 46;
-                                    }
-                            }
-
-                    }
-                    break;
-                case 8:
+                        ++str_pos;
+                    } while (str_pos < str_len);
+                    if (chance_flag)
                     {
-                    pInfos[curr_rec_num].bQuestMonster=0;
-                    if (atoi(test_string))
-                        pInfos[curr_rec_num].bQuestMonster=1;
+                        pInfos[curr_rec_num].uTreasureDropChance = atoi(test_string);
                     }
-                    break;
-                case 9:
+                    else
                     {
-                    pInfos[curr_rec_num].uFlying=false;
-                    if (_strnicmp(test_string, "n",1))
-                        pInfos[curr_rec_num].uFlying=true;
+                        if ((!dice_flag) && (!item_type_flag))
+                            break;
+                        pInfos[curr_rec_num].uTreasureDropChance = 100;
                     }
-                    break;
-                case 10:
+                    if (dice_flag)
                     {
-                    switch(tolower(test_string[0]))
+                        str_pos = 0;
+                        dice_flag = false;
+                        do
                         {
-                    case 's': pInfos[curr_rec_num].uMovementType=MONSTER_MOVEMENT_TYPE_SHORT;// short
-                        if (tolower(test_string[1])!='h')
-                            pInfos[curr_rec_num].uMovementType=MONSTER_MOVEMENT_TYPE_STAIONARY; //stationary
+                            switch (tolower(test_string[str_pos]))
+                            {
+                            case '%':
+                                pInfos[curr_rec_num].uTreasureDiceRolls = atoi(&test_string[str_pos + 1]);
+                                dice_flag = true;
+                                break;
+                            case 'd':
+                                if (!dice_flag)
+                                    pInfos[curr_rec_num].uTreasureDiceRolls = atoi(test_string);
+                                pInfos[curr_rec_num].uTreasureDiceSides = atoi(&test_string[str_pos + 1]);
+                                str_pos = str_len;
+                                break;
+
+                            }
+                            ++str_pos;
+                        } while (str_pos < str_len);
+                    }
+                    if (item_type_flag)
+                    {
+                        str_pos = 0;
+                        do
+                        {
+                            if (tolower(test_string[str_pos]) == 'l')
+                                break;
+                            ++str_pos;
+                        } while (str_pos < str_len);
+
+                        pInfos[curr_rec_num].uTreasureLevel = test_string[str_pos + 1] - '0';
+                        item_name = &test_string[str_pos + 2];
+                        if (*item_name)
+                        {
+                            if (!_stricmp(item_name, "WEAPON"))
+                                pInfos[curr_rec_num].uTreasureType = 20;
+                            else if (!_stricmp(item_name, "ARMOR"))
+                                pInfos[curr_rec_num].uTreasureType = 21;
+                            else if (!_stricmp(item_name, "MISC"))
+                                pInfos[curr_rec_num].uTreasureType = 22;
+                            else if (!_stricmp(item_name, "SWORD"))
+                                pInfos[curr_rec_num].uTreasureType = 23;
+                            else if (!_stricmp(item_name, "DAGGER"))
+                                pInfos[curr_rec_num].uTreasureType = 24;
+                            else if (!_stricmp(item_name, "AXE"))
+                                pInfos[curr_rec_num].uTreasureType = 25;
+                            else if (!_stricmp(item_name, "SPEAR"))
+                                pInfos[curr_rec_num].uTreasureType = 26;
+                            else if (!_stricmp(item_name, "BOW"))
+                                pInfos[curr_rec_num].uTreasureType = 27;
+                            else if (!_stricmp(item_name, "MACE"))
+                                pInfos[curr_rec_num].uTreasureType = 28;
+                            else if (!_stricmp(item_name, "CLUB"))
+                                pInfos[curr_rec_num].uTreasureType = 29;
+                            else if (!_stricmp(item_name, "STAFF"))
+                                pInfos[curr_rec_num].uTreasureType = 30;
+                            else if (!_stricmp(item_name, "LEATHER"))
+                                pInfos[curr_rec_num].uTreasureType = 31;
+                            else if (!_stricmp(item_name, "CHAIN"))
+                                pInfos[curr_rec_num].uTreasureType = 32;
+                            else if (!_stricmp(item_name, "PLATE"))
+                                pInfos[curr_rec_num].uTreasureType = 33;
+                            else if (!_stricmp(item_name, "SHIELD"))
+                                pInfos[curr_rec_num].uTreasureType = 34;
+                            else if (!_stricmp(item_name, "HELM"))
+                                pInfos[curr_rec_num].uTreasureType = 35;
+                            else if (!_stricmp(item_name, "BELT"))
+                                pInfos[curr_rec_num].uTreasureType = 36;
+                            else if (!_stricmp(item_name, "CAPE"))
+                                pInfos[curr_rec_num].uTreasureType = 37;
+                            else if (!_stricmp(item_name, "GAUNTLETS"))
+                                pInfos[curr_rec_num].uTreasureType = 38;
+                            else if (!_stricmp(item_name, "BOOTS"))
+                                pInfos[curr_rec_num].uTreasureType = 39;
+                            else if (!_stricmp(item_name, "RING"))
+                                pInfos[curr_rec_num].uTreasureType = 40;
+                            else if (!_stricmp(item_name, "AMULET"))
+                                pInfos[curr_rec_num].uTreasureType = 41;
+                            else if (!_stricmp(item_name, "WAND"))
+                                pInfos[curr_rec_num].uTreasureType = 42;
+                            else if (!_stricmp(item_name, "SCROLL"))
+                                pInfos[curr_rec_num].uTreasureType = 43;
+                            else if (!_stricmp(item_name, "GEM"))
+                                pInfos[curr_rec_num].uTreasureType = 46;
+                        }
+                    }
+
+                }
+                break;
+                case 8:
+                {
+                    pInfos[curr_rec_num].bQuestMonster = 0;
+                    if (atoi(test_string))
+                        pInfos[curr_rec_num].bQuestMonster = 1;
+                }
+                break;
+                case 9:
+                {
+                    pInfos[curr_rec_num].uFlying = false;
+                    if (_strnicmp(test_string, "n", 1))
+                        pInfos[curr_rec_num].uFlying = true;
+                }
+                break;
+                case 10:
+                {
+                    switch (tolower(test_string[0]))
+                    {
+                    case 's': pInfos[curr_rec_num].uMovementType = MONSTER_MOVEMENT_TYPE_SHORT;// short
+                        if (tolower(test_string[1]) != 'h')
+                            pInfos[curr_rec_num].uMovementType = MONSTER_MOVEMENT_TYPE_STAIONARY; //stationary
                         break;  //short
                     case 'l': pInfos[curr_rec_num].uMovementType = MONSTER_MOVEMENT_TYPE_LONG;  break; //long
                     case 'm': pInfos[curr_rec_num].uMovementType = MONSTER_MOVEMENT_TYPE_MEDIUM; break; //med
                     case 'g': pInfos[curr_rec_num].uMovementType = MONSTER_MOVEMENT_TYPE_GLOBAL; break; //global?     
                     default:
                         pInfos[curr_rec_num].uMovementType = MONSTER_MOVEMENT_TYPE_FREE; //free
-                        }       
                     }
-                    break;
+                }
+                break;
                 case 11:
+                {
+                    switch (tolower(test_string[0]))
                     {
-                    switch(tolower(test_string[0]))
-                        {
-                    case 's': pInfos[curr_rec_num].uAIType=0; break; // suicide
-                    case 'w': pInfos[curr_rec_num].uAIType=1;  break; //wimp
-                    case 'n': pInfos[curr_rec_num].uAIType=2; break; //normal 
+                    case 's': pInfos[curr_rec_num].uAIType = 0; break; // suicide
+                    case 'w': pInfos[curr_rec_num].uAIType = 1;  break; //wimp
+                    case 'n': pInfos[curr_rec_num].uAIType = 2; break; //normal 
                     default:
-                        pInfos[curr_rec_num].uAIType=3; //Agress
-                        }       
+                        pInfos[curr_rec_num].uAIType = 3; //Agress
                     }
-                    break;
+                }
+                break;
                 case 12:
-                    pInfos[curr_rec_num].uHostilityType=(MonsterInfo::HostilityRadius)atoi(test_string);
+                    pInfos[curr_rec_num].uHostilityType = (MonsterInfo::HostilityRadius)atoi(test_string);
                     break;
                 case 13:
-                    pInfos[curr_rec_num].uBaseSpeed=atoi(test_string);
+                    pInfos[curr_rec_num].uBaseSpeed = atoi(test_string);
                     break;
                 case 14:
-                    pInfos[curr_rec_num].uRecoveryTime=atoi(test_string);
+                    pInfos[curr_rec_num].uRecoveryTime = atoi(test_string);
                     break;
                 case 15:
+                {
+                    int str_len = 0;
+                    int str_pos = 0;
+                    pInfos[curr_rec_num].uAttackPreference = 0;
+                    pInfos[curr_rec_num].uNumCharactersAttackedPerSpecialAbility = 0;
+                    str_len = strlen(test_string);
+                    for (str_pos = 0; str_pos < str_len; ++str_pos)
                     {
-                    int str_len=0;
-                    int str_pos=0;
-                    pInfos[curr_rec_num].uAttackPreference=0;
-                    pInfos[curr_rec_num].uNumCharactersAttackedPerSpecialAbility=0;
-                    str_len=strlen(test_string);
-                    for (str_pos=0;str_pos<str_len;++str_pos )
+                        switch (tolower(test_string[str_pos]))
                         {
-                        switch(tolower(test_string[str_pos]))
-                            {
-                        case '0': pInfos[curr_rec_num].uAttackPreference|=0x0004; break;
-                        case '2': pInfos[curr_rec_num].uNumCharactersAttackedPerSpecialAbility=2; break;
-                        case '3': pInfos[curr_rec_num].uNumCharactersAttackedPerSpecialAbility=3; break;
-                        case '4': pInfos[curr_rec_num].uNumCharactersAttackedPerSpecialAbility=4; break;
-                        case 'c': pInfos[curr_rec_num].uAttackPreference|=0x0010; break;
-                        case 'd': pInfos[curr_rec_num].uAttackPreference|=0x0008; break;
-                        case 'e': pInfos[curr_rec_num].uAttackPreference|=0x1000; break;
-                        case 'f': pInfos[curr_rec_num].uAttackPreference|=0x0400; break;
-                        case 'h': pInfos[curr_rec_num].uAttackPreference|=0x0800; break;
-                        case 'k': pInfos[curr_rec_num].uAttackPreference|=0x0001; break;
-                        case 'm': pInfos[curr_rec_num].uAttackPreference|=0x0100; break;
-                        case 'o': pInfos[curr_rec_num].uAttackPreference|=0x0400; break;
-                        case 'p': pInfos[curr_rec_num].uAttackPreference|=0x0002; break;
-                        case 'r': pInfos[curr_rec_num].uAttackPreference|=0x0040; break;
-                        case 's': pInfos[curr_rec_num].uAttackPreference|=0x0020; break;
-                        case 't': pInfos[curr_rec_num].uAttackPreference|=0x0080; break;
-                        case 'w': pInfos[curr_rec_num].uAttackPreference|=0x2000; break;
-                        case 'x': pInfos[curr_rec_num].uAttackPreference|=0x0200; break;
-                            }
+                        case '0': pInfos[curr_rec_num].uAttackPreference |= 0x0004; break;
+                        case '2': pInfos[curr_rec_num].uNumCharactersAttackedPerSpecialAbility = 2; break;
+                        case '3': pInfos[curr_rec_num].uNumCharactersAttackedPerSpecialAbility = 3; break;
+                        case '4': pInfos[curr_rec_num].uNumCharactersAttackedPerSpecialAbility = 4; break;
+                        case 'c': pInfos[curr_rec_num].uAttackPreference |= 0x0010; break;
+                        case 'd': pInfos[curr_rec_num].uAttackPreference |= 0x0008; break;
+                        case 'e': pInfos[curr_rec_num].uAttackPreference |= 0x1000; break;
+                        case 'f': pInfos[curr_rec_num].uAttackPreference |= 0x0400; break;
+                        case 'h': pInfos[curr_rec_num].uAttackPreference |= 0x0800; break;
+                        case 'k': pInfos[curr_rec_num].uAttackPreference |= 0x0001; break;
+                        case 'm': pInfos[curr_rec_num].uAttackPreference |= 0x0100; break;
+                        case 'o': pInfos[curr_rec_num].uAttackPreference |= 0x0400; break;
+                        case 'p': pInfos[curr_rec_num].uAttackPreference |= 0x0002; break;
+                        case 'r': pInfos[curr_rec_num].uAttackPreference |= 0x0040; break;
+                        case 's': pInfos[curr_rec_num].uAttackPreference |= 0x0020; break;
+                        case 't': pInfos[curr_rec_num].uAttackPreference |= 0x0080; break;
+                        case 'w': pInfos[curr_rec_num].uAttackPreference |= 0x2000; break;
+                        case 'x': pInfos[curr_rec_num].uAttackPreference |= 0x0200; break;
                         }
                     }
-                    break;
-                    case 16:
+                }
+                break;
+                case 16:
+                {
+                    int str_len = 0;
+                    int str_pos = 0;
+                    pInfos[curr_rec_num].uSpecialAttackLevel = 1;
+                    pInfos[curr_rec_num].uSpecialAttackType = (SPECIAL_ATTACK_TYPE)0;
+                    str_len = strlen(test_string);
+                    if (str_len > 1)
                     {
-                    int str_len=0;
-                    int str_pos=0;
-                    pInfos[curr_rec_num].uSpecialAttackLevel=1;
-                    pInfos[curr_rec_num].uSpecialAttackType=(SPECIAL_ATTACK_TYPE)0;
-                    str_len=strlen(test_string);
-                    if (str_len>1)
+                        for (str_pos = 0; str_pos < str_len; ++str_pos)
                         {
-                        for (str_pos=0;str_pos<str_len;++str_pos )
+                            if (tolower(test_string[str_pos]) == 'x')
                             {
-                            if (tolower(test_string[str_pos])=='x')
-                                {
-                                test_string[str_pos]='\0';
-                                pInfos[curr_rec_num].uSpecialAttackLevel=atoi(&test_string[str_pos+1]);
-                                test_string[str_pos]='x';
+                                test_string[str_pos] = '\0';
+                                pInfos[curr_rec_num].uSpecialAttackLevel = atoi(&test_string[str_pos + 1]);
+                                test_string[str_pos] = 'x';
                                 break;
-                                }
                             }
-                        pInfos[curr_rec_num].uSpecialAttackType=(SPECIAL_ATTACK_TYPE)ParseSpecialAttack(test_string);
                         }
+                        pInfos[curr_rec_num].uSpecialAttackType = (SPECIAL_ATTACK_TYPE)ParseSpecialAttack(test_string);
                     }
+                }
+                break;
+                case 17:
+                    pInfos[curr_rec_num].uAttack1Type = ParseAttackType(test_string);
                     break;
-                    case 17:
-                         pInfos[curr_rec_num].uAttack1Type=ParseAttackType(test_string);
-                    break;
-                    case 18:
-                    {
+                case 18:
+                {
                     ParseDamage(test_string, &pInfos[curr_rec_num].uAttack1DamageDiceRolls,
-                                             &pInfos[curr_rec_num].uAttack1DamageDiceSides,
-                                             &pInfos[curr_rec_num].uAttack1DamageBonus);
-                    }
+                        &pInfos[curr_rec_num].uAttack1DamageDiceSides,
+                        &pInfos[curr_rec_num].uAttack1DamageBonus);
+                }
+                break;
+                case 19:
+                    pInfos[curr_rec_num].uMissleAttack1Type = ParseMissleAttackType(test_string);
                     break;
-                   case 19:
-                        pInfos[curr_rec_num].uMissleAttack1Type=ParseMissleAttackType(test_string);
+                case 20:
+                    pInfos[curr_rec_num].uAttack2Chance = atoi(test_string);
                     break;
-                    case 20:
-                        pInfos[curr_rec_num].uAttack2Chance=atoi(test_string);
+                case 21:
+                    pInfos[curr_rec_num].uAttack2Type = ParseAttackType(test_string);
                     break;
-                    case 21:
-                          pInfos[curr_rec_num].uAttack2Type=ParseAttackType(test_string);
-                    break;
-                    case 22:
-                    {
+                case 22:
+                {
                     ParseDamage(test_string, &pInfos[curr_rec_num].uAttack2DamageDiceRolls,
-                                             &pInfos[curr_rec_num].uAttack2DamageDiceSides,
-                                             &pInfos[curr_rec_num].uAttack2DamageBonus);
-                    }
+                        &pInfos[curr_rec_num].uAttack2DamageDiceSides,
+                        &pInfos[curr_rec_num].uAttack2DamageBonus);
+                }
+                break;
+                case 23:
+                    pInfos[curr_rec_num].uMissleAttack2Type = ParseMissleAttackType(test_string);
                     break;
-                    case 23:
-                        pInfos[curr_rec_num].uMissleAttack2Type=ParseMissleAttackType(test_string);
+                case 24:
+                    pInfos[curr_rec_num].uSpell1UseChance = atoi(test_string);
                     break;
-                    case 24:
-                         pInfos[curr_rec_num].uSpell1UseChance=atoi(test_string);
-                    break;
-                    case 25:
-                    {
+                case 25:
+                {
                     int param_num;
                     char type_flag;
-                    strcpy(parse_str,test_string);
-                    parse_str[0]=' ';
-                    parse_str[strlen(parse_str)-1]=' ';
-                    frame_table_txt_parser(parse_str,&parsed_field);
-                    if (parsed_field.uPropCount>2)
+                    strcpy(parse_str, test_string);
+                    parse_str[0] = ' ';
+                    parse_str[strlen(parse_str) - 1] = ' ';
+                    frame_table_txt_parser(parse_str, &parsed_field);
+                    if (parsed_field.uPropCount > 2)
+                    {
+                        param_num = 1;
+                        pInfos[curr_rec_num].uSpell1ID = ParseSpellType(&parsed_field, &param_num);
+                        type_flag = *parsed_field.pProperties[param_num];
+                        pInfos[curr_rec_num].uSpellSkillAndMastery1 = atoi(parsed_field.pProperties[param_num + 1]) & 0x003F;
+                        switch (type_flag)
                         {
-                        param_num=1;
-                        pInfos[curr_rec_num].uSpell1ID=ParseSpellType(&parsed_field,&param_num);
-                        type_flag=*parsed_field.pProperties[param_num];
-                        pInfos[curr_rec_num].uSpellSkillAndMastery1=atoi(parsed_field.pProperties[param_num+1])&0x003F;
-                        switch(type_flag)
-                            {
-                        case 'E': pInfos[curr_rec_num].uSpellSkillAndMastery1|=0x0040; break;
-                        case 'M': pInfos[curr_rec_num].uSpellSkillAndMastery1|=0x0080; break;
-                        case 'G': pInfos[curr_rec_num].uSpellSkillAndMastery1|=0x0100; break;
-                            }
+                        case 'E': pInfos[curr_rec_num].uSpellSkillAndMastery1 |= 0x0040; break;
+                        case 'M': pInfos[curr_rec_num].uSpellSkillAndMastery1 |= 0x0080; break;
+                        case 'G': pInfos[curr_rec_num].uSpellSkillAndMastery1 |= 0x0100; break;
                         }
+                    }
                     else
-                        {
-                        pInfos[curr_rec_num].uSpell1ID=0;
-                        pInfos[curr_rec_num].uSpellSkillAndMastery1=0;
-                        }
+                    {
+                        pInfos[curr_rec_num].uSpell1ID = 0;
+                        pInfos[curr_rec_num].uSpellSkillAndMastery1 = 0;
+                    }
 
-                    }
+                }
+                break;
+                case 26:
+                    pInfos[curr_rec_num].uSpell2UseChance = atoi(test_string);
                     break;
-                    case 26:
-                        pInfos[curr_rec_num].uSpell2UseChance=atoi(test_string);
-                    break;
-                    case 27:
-                    {
+                case 27:
+                {
                     int param_num;
                     char type_flag;
-                    strcpy(parse_str,test_string);
-                    parse_str[0]=' ';
-                    parse_str[strlen(parse_str)-1]=' ';
-                    frame_table_txt_parser(parse_str,&parsed_field);
-                    if (parsed_field.uPropCount>2)
+                    strcpy(parse_str, test_string);
+                    parse_str[0] = ' ';
+                    parse_str[strlen(parse_str) - 1] = ' ';
+                    frame_table_txt_parser(parse_str, &parsed_field);
+                    if (parsed_field.uPropCount > 2)
+                    {
+                        param_num = 1;
+                        pInfos[curr_rec_num].uSpell2ID = ParseSpellType(&parsed_field, &param_num);
+                        type_flag = *parsed_field.pProperties[param_num];
+                        pInfos[curr_rec_num].uSpellSkillAndMastery2 = atoi(parsed_field.pProperties[param_num + 1]) & 0x003F;
+                        switch (type_flag)
                         {
-                        param_num=1;
-                        pInfos[curr_rec_num].uSpell2ID=ParseSpellType(&parsed_field,&param_num);
-                        type_flag=*parsed_field.pProperties[param_num];
-                        pInfos[curr_rec_num].uSpellSkillAndMastery2=atoi(parsed_field.pProperties[param_num+1])&0x003F;
-                        switch(type_flag)
+                        case 'E': pInfos[curr_rec_num].uSpellSkillAndMastery2 |= 0x0040; break;
+                        case 'M': pInfos[curr_rec_num].uSpellSkillAndMastery2 |= 0x0080; break;
+                        case 'G': pInfos[curr_rec_num].uSpellSkillAndMastery2 |= 0x0100; break;
+                        }
+                    }
+                    else
+                    {
+                        pInfos[curr_rec_num].uSpell2ID = 0;
+                        pInfos[curr_rec_num].uSpellSkillAndMastery2 = 0;
+                    }
+                }
+                break;
+                case 28:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResFire = 200;
+                    else
+                        pInfos[curr_rec_num].uResFire = atoi(test_string);
+                }
+                break;
+                case 29:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResAir = 200;
+                    else
+                        pInfos[curr_rec_num].uResAir = atoi(test_string);
+                }
+                break;
+                case 30:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResWater = 200;
+                    else
+                        pInfos[curr_rec_num].uResWater = atoi(test_string);
+                }
+                break;
+                case 31:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResEarth = 200;
+                    else
+                        pInfos[curr_rec_num].uResEarth = atoi(test_string);
+                }
+                break;
+                case 32:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResMind = 200;
+                    else
+                        pInfos[curr_rec_num].uResMind = atoi(test_string);
+                }
+                break;
+                case 33:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResSpirit = 200;
+                    else
+                        pInfos[curr_rec_num].uResSpirit = atoi(test_string);
+                }
+                break;
+                case 34:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResBody = 200;
+                    else
+                        pInfos[curr_rec_num].uResBody = atoi(test_string);
+                }
+                break;
+                case 35:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResLight = 200;
+                    else
+                        pInfos[curr_rec_num].uResLight = atoi(test_string);
+                }
+                break;
+                case 36:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResDark = 200;
+                    else
+                        pInfos[curr_rec_num].uResDark = atoi(test_string);
+                }
+                break;
+                case 37:
+                {
+                    if (tolower(test_string[0]) == 'i')
+                        pInfos[curr_rec_num].uResPhysical = 200;
+                    else
+                        pInfos[curr_rec_num].uResPhysical = atoi(test_string);
+                }
+                break;
+                case 38:
+                {
+                    //                    int param_num;
+                    //                    char type_flag;
+                    pInfos[curr_rec_num].uSpecialAbilityType = 0;
+                    pInfos[curr_rec_num].uSpecialAbilityDamageDiceBonus = 0;
+                    strcpy(parse_str, test_string);
+                    parse_str[0] = ' ';
+                    parse_str[strlen(parse_str) - 1] = ' ';
+                    frame_table_txt_parser(parse_str, &parsed_field);
+                    if (parsed_field.uPropCount)
+                    {
+                        //      v74 = v94.field_0;
+                        if (parsed_field.uPropCount < 10)
+                        {
+                            if (!_stricmp(parsed_field.pProperties[0], "shot"))
                             {
-                        case 'E': pInfos[curr_rec_num].uSpellSkillAndMastery2|=0x0040; break;
-                        case 'M': pInfos[curr_rec_num].uSpellSkillAndMastery2|=0x0080; break;
-                        case 'G': pInfos[curr_rec_num].uSpellSkillAndMastery2|=0x0100; break;
+                                pInfos[curr_rec_num].uSpecialAbilityType = 1;
+                                pInfos[curr_rec_num].uSpecialAbilityDamageDiceBonus = atoi((char *)(parsed_field.pProperties[1] + 1));
                             }
-                        }
-                    else
-                        {
-                        pInfos[curr_rec_num].uSpell2ID=0;
-                        pInfos[curr_rec_num].uSpellSkillAndMastery2=0;
-                        }
-                    }
-                    break;
-                    case 28:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResFire=200;
-                    else
-                        pInfos[curr_rec_num].uResFire=atoi(test_string);
-                    }
-                    break;
-                    case 29:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResAir=200;
-                    else
-                        pInfos[curr_rec_num].uResAir=atoi(test_string);
-                    }
-                    break;
-                    case 30:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResWater=200;
-                    else
-                        pInfos[curr_rec_num].uResWater=atoi(test_string);
-                    }
-                    break;
-                    case 31:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResEarth=200;
-                    else
-                        pInfos[curr_rec_num].uResEarth=atoi(test_string);
-                    }
-                    break;
-                    case 32:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResMind=200;
-                    else
-                        pInfos[curr_rec_num].uResMind=atoi(test_string);
-                    }
-                    break;
-                    case 33:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResSpirit=200;
-                    else
-                        pInfos[curr_rec_num].uResSpirit=atoi(test_string);
-                    }
-                    break;
-                    case 34:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResBody=200;
-                    else
-                        pInfos[curr_rec_num].uResBody=atoi(test_string);
-                    }
-                    break;
-                    case 35:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResLight=200;
-                    else
-                        pInfos[curr_rec_num].uResLight=atoi(test_string);
-                    }
-                    break;
-                    case 36:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResDark=200;
-                    else
-                        pInfos[curr_rec_num].uResDark=atoi(test_string);
-                    }
-                    break;
-                    case 37:
-                    {
-                    if (tolower(test_string[0])=='i')
-                        pInfos[curr_rec_num].uResPhysical=200;
-                    else
-                        pInfos[curr_rec_num].uResPhysical=atoi(test_string);
-                    }
-                    break;
-                    case 38:
-                    {
-//                    int param_num;
-//                    char type_flag;
-                    pInfos[curr_rec_num].uSpecialAbilityType=0;
-                    pInfos[curr_rec_num].uSpecialAbilityDamageDiceBonus=0;
-                    strcpy(parse_str,test_string);
-                    parse_str[0]=' ';
-                    parse_str[strlen(parse_str)-1]=' ';
-                    frame_table_txt_parser(parse_str,&parsed_field);
-                    if ( parsed_field.uPropCount )
-                        {
-                  //      v74 = v94.field_0;
-                        if ( parsed_field.uPropCount < 10 )
+                            else  if (!_stricmp(parsed_field.pProperties[0], "summon"))
                             {
-                            if (! _stricmp(parsed_field.pProperties[0], "shot") )
+                                pInfos[curr_rec_num].uSpecialAbilityType = 2;
+                                if (parsed_field.uPropCount > 1)
                                 {
-                                pInfos[curr_rec_num].uSpecialAbilityType=1;
-                                pInfos[curr_rec_num].uSpecialAbilityDamageDiceBonus=atoi((char *)(parsed_field.pProperties[1] + 1));
-                                }
-                            else  if (!_stricmp(parsed_field.pProperties[0], "summon") )
-                            {
-                            pInfos[curr_rec_num].uSpecialAbilityType=2;
-                            if ( parsed_field.uPropCount  > 1 )
-                                {
-                                pTmpBuf[0] = 0;
-                                strcpy(pTmpBuf.data(), parsed_field.pProperties[2]);
-                                if ( parsed_field.uPropCount  > 2 )
+                                    str = parsed_field.pProperties[2];
+                                    if (parsed_field.uPropCount > 2)
                                     {
-                                    int prop_cnt = 3;
-                                    if ( parsed_field.uPropCount  > 3 )
+                                        int prop_cnt = 3;
+                                        if (parsed_field.uPropCount > 3)
                                         {
-                                        do
+                                            do
                                             {
-                                            strcat(pTmpBuf.data(), " ");
-                                            char test_char = parsed_field.pProperties[prop_cnt][0];
-                                            strcat(pTmpBuf.data(), parsed_field.pProperties[prop_cnt]);
-                                            if ( prop_cnt == (parsed_field.uPropCount - 1) )
+                                                str += " ";
+                                                char test_char = parsed_field.pProperties[prop_cnt][0];
+                                                str += parsed_field.pProperties[prop_cnt];
+                                                if (prop_cnt == (parsed_field.uPropCount - 1))
                                                 {
-                                                switch (tolower(test_char))
-                                                {
-                                                case 'a': pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 1; break;
-                                                case 'b': pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 2; break;
-                                                case 'c': pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 3; break;
-                                                default:
-                                                    pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 0;
+                                                    switch (tolower(test_char))
+                                                    {
+                                                    case 'a': pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 1; break;
+                                                    case 'b': pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 2; break;
+                                                    case 'c': pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 3; break;
+                                                    default:
+                                                        pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 0;
+                                                    }
+
                                                 }
-                                                
-                                                }
-                                            ++prop_cnt;
-                                            }
-                                        while ( prop_cnt < parsed_field.uPropCount );
+                                                ++prop_cnt;
+                                            } while (prop_cnt < parsed_field.uPropCount);
                                         }
                                     }
-                                else
+                                    else
                                     {
-                                    pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 0;
+                                        pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls = 0;
                                     }
-                                if ( pMonsterList->uNumMonsters )
+                                    if (pMonsterList->uNumMonsters)
                                     {
-                                    pInfos[curr_rec_num].field_3C_some_special_attack = pMonsterList->GetMonsterIDByName(pTmpBuf.data()) + 1;
-                                    if ( pInfos[curr_rec_num].field_3C_some_special_attack == -1 )
+                                        pInfos[curr_rec_num].field_3C_some_special_attack = pMonsterList->GetMonsterIDByName(str.c_str()) + 1;
+                                        if (pInfos[curr_rec_num].field_3C_some_special_attack == -1)
                                         {
-                                        sprintf(Src, "Can't create random monster: '%s' See MapStats!", pTmpBuf.data());
-                                        MessageBoxA(nullptr, Src, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Itemdata.cpp:2239", 0);
+                                            Log::Warning(L"%S", StringPrintf("Can't create random monster: '%s' See MapStats!", str.c_str()));
                                         }
                                     }
-                                pInfos[curr_rec_num].uSpecialAbilityDamageDiceSides = 0;
-                                if ( !_stricmp(parsed_field.pProperties[1], "ground") )
-                                    pInfos[curr_rec_num].uSpecialAbilityDamageDiceSides = 1;
-                                if ( pInfos[curr_rec_num].field_3C_some_special_attack == -1 )
-                                    pInfos[curr_rec_num].uSpecialAbilityType = 0;
+                                    pInfos[curr_rec_num].uSpecialAbilityDamageDiceSides = 0;
+                                    if (!_stricmp(parsed_field.pProperties[1], "ground"))
+                                        pInfos[curr_rec_num].uSpecialAbilityDamageDiceSides = 1;
+                                    if (pInfos[curr_rec_num].field_3C_some_special_attack == -1)
+                                        pInfos[curr_rec_num].uSpecialAbilityType = 0;
                                 }
                             }
-                            else  if (!_stricmp(parsed_field.pProperties[0], "explode") )
-                                {
+                            else  if (!_stricmp(parsed_field.pProperties[0], "explode"))
+                            {
                                 pInfos[curr_rec_num].uSpecialAbilityType = 3;
                                 ParseDamage((char*)parsed_field.pProperties[1], &pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls,
                                     &pInfos[curr_rec_num].uSpecialAbilityDamageDiceSides,
                                     &pInfos[curr_rec_num].uSpecialAbilityDamageDiceBonus);
                                 pInfos[curr_rec_num].field_3C_some_special_attack = ParseAttackType(test_string);
-                                }
                             }
                         }
                     }
-                    break;     
-                    }
                 }
+                break;
+                }
+            }
             else
-                { 
+            {
                 break_loop = true;
-                }
+            }
             ++decode_step;
-            test_string=tmp_pos+1;
-            } while ((decode_step<39)&&!break_loop);
-        }
+            test_string = tmp_pos + 1;
+        } while ((decode_step < 39) && !break_loop);
+    }
     uNumMonsters = i;
 }
 

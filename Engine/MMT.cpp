@@ -347,7 +347,7 @@ void DrawMMTCopyrightWindow()
   Dst.uFrameHeight = 256;
   Dst.uFrameX = 8;
   Dst.uFrameY = 30;
-  Dst.uFrameHeight = pFontSmallnum->CalcTextHeight("Text Verification: Here we can write an explanation of the project", &Dst, 24, 0)
+  Dst.uFrameHeight = pFontSmallnum->CalcTextHeight("Text Verification: Here we can write an explanation of the project", &Dst, 24)
                    + 2 * LOBYTE(pFontSmallnum->uFontHeight)
                    + 24;
   Dst.uFrameY = 470 - Dst.uFrameHeight;

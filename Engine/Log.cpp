@@ -35,7 +35,7 @@ void Log::Warning(const wchar_t *pFormat, ...)
   WriteConsoleW(hStdOut, L"\r\n", 2, &w, nullptr);
 }
 //----- (004BE386) --------------------------------------------------------
-void __fastcall log_error(const char *pMessage)
+void log_error(const char *pMessage)
 {
   const char *v1; // edi@1
   FILE *f; // eax@1

@@ -5,8 +5,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
-#include "Engine/Texts.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -239,7 +239,7 @@ void UI_CreateEndConversationButton()
   pDialogueWindow->Release();
   pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0, 0);
   pBtn_ExitCancel = pDialogueWindow->CreateButton( 471, 445,  169, 35, 1, 0, UIMSG_Escape,  0,  0,
-                 pGlobalTXT_LocalizationStrings[74],  //"End Conversation"
+                 localization->GetString(74),  //"End Conversation"
       ui_exit_cancel_button_background, 0);
   pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "", 0);
 }

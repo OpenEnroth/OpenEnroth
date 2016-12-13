@@ -1,10 +1,10 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
 #include "Engine/Timer.h"
 #include "Engine/Awards.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
@@ -41,13 +41,13 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() :
     pBtn_Book_1 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,
         ui_book_button1_on->GetWidth(), ui_book_button1_on->GetWidth(),
-        1, 0, UIMSG_ClickBooksBtn, 0xBu, 0, pGlobalTXT_LocalizationStrings[192],// "Scroll Up"
+        1, 0, UIMSG_ClickBooksBtn, 0xBu, 0, localization->GetString(192),// "Scroll Up"
         ui_book_button1_on, 0
     );
     pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38,
         ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(),
-        1, 0, UIMSG_ClickBooksBtn, 0xAu, 0, pGlobalTXT_LocalizationStrings[193],// "Scroll Down"
+        1, 0, UIMSG_ClickBooksBtn, 0xAu, 0, localization->GetString(193),// "Scroll Down"
         ui_book_button2_on, 0
     );
     num_achieved_awards = 0;
@@ -104,7 +104,7 @@ void GUIWindow_QuestBook::Update()
     questbook_window.uFrameY = game_viewport_y;
     questbook_window.uFrameZ = game_viewport_z;
     questbook_window.uFrameW = game_viewport_w;
-    questbook_window.DrawTitleText(pBook2Font, 0, 22, ui_book_quests_title_color, pGlobalTXT_LocalizationStrings[174], 3); //"Current Quests"
+    questbook_window.DrawTitleText(pBook2Font, 0, 22, ui_book_quests_title_color, localization->GetString(174), 3); //"Current Quests"
 
     //for other text
     questbook_window.uFrameX = 48;
@@ -137,7 +137,7 @@ void GUIWindow_QuestBook::Update()
     {
         ++num_achieved_awards;
         questbook_window.DrawText(pAutonoteFont, 1, 0, ui_book_quests_text_color, pQuestTable[achieved_awards[i]], 0, 0, 0);
-        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[achieved_awards[i]], &questbook_window, 1, 0);
+        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[achieved_awards[i]], &questbook_window, 1);
         if ((signed int)(questbook_window.uFrameY + pTextHeight) > (signed int)questbook_window.uFrameHeight)
             break;
 

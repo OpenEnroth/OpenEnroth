@@ -1,8 +1,8 @@
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
 #include "Engine/Timer.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
@@ -49,13 +49,13 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() :
 static const char *GetDayPart()
 {
     if (pParty->uCurrentHour > 5 && pParty->uCurrentHour < 20)
-        return pGlobalTXT_LocalizationStrings[56]; // "Day"
+        return localization->GetString(56); // "Day"
     else if (pParty->uCurrentHour == 5)
-        return pGlobalTXT_LocalizationStrings[55]; // "Dawn"
+        return localization->GetString(55); // "Dawn"
     else if (pParty->uCurrentHour == 20)
-        return pGlobalTXT_LocalizationStrings[566]; // "Dusk"
+        return localization->GetString(566); // "Dusk"
     else
-        return pGlobalTXT_LocalizationStrings[567]; // "Night"
+        return localization->GetString(567); // "Night"
 }
 
 
@@ -113,31 +113,47 @@ void GUIWindow_CalendarBook::Update()
     calendar_window.uFrameHeight = game_viewport_height;
     calendar_window.uFrameZ = game_viewport_z;
     calendar_window.uFrameW = game_viewport_w;
-    calendar_window.DrawTitleText(pBook2Font, 0, 22, ui_book_calendar_title_color, pGlobalTXT_LocalizationStrings[186], 3); // "Time in Erathia"
+    calendar_window.DrawTitleText(pBook2Font, 0, 22, ui_book_calendar_title_color, localization->GetString(186), 3); // "Time in Erathia"
 
-    sprintf(pTmpBuf.data(), "%s\t100:\t110%d:%02d %s - %s", pGlobalTXT_LocalizationStrings[526], // "Time"
-        pHour, pParty->uCurrentMinute, aAMPMNames[am], GetDayPart());
-    calendar_window.DrawText(pBookFont, 70, 55, ui_book_calendar_time_color, pTmpBuf.data(), 0, 0, 0);
+    auto str = StringPrintf(
+        "%s\t100:\t110%d:%02d %s - %s",
+        localization->GetString(526), // "Time"
+        pHour, pParty->uCurrentMinute, localization->GetAmPm(am), GetDayPart()
+    );
+    calendar_window.DrawText(pBookFont, 70, 55, ui_book_calendar_time_color, str, 0, 0, 0);
 
-    sprintf(pTmpBuf.data(), "%s\t100:\t110%d - %s", pGlobalTXT_LocalizationStrings[56], // "Day"
-        pParty->uDaysPlayed + 1, aDayNames[pParty->uDaysPlayed % 7]);
-    calendar_window.DrawText(pBookFont, 70, 2 * LOBYTE(pBookFont->uFontHeight) + 49, ui_book_calendar_day_color, pTmpBuf.data(), 0, 0, 0);
+    str = StringPrintf(
+        "%s\t100:\t110%d - %s",
+        localization->GetString(56), // "Day"
+        pParty->uDaysPlayed + 1,
+        localization->GetDayName(pParty->uDaysPlayed % 7)
+    );
+    calendar_window.DrawText(pBookFont, 70, 2 * LOBYTE(pBookFont->uFontHeight) + 49, ui_book_calendar_day_color, str, 0, 0, 0);
 
-    sprintf(pTmpBuf.data(), "%s\t100:\t110%d - %s", pGlobalTXT_LocalizationStrings[146], // "Month"
-        pParty->uCurrentMonth + 1, aMonthNames[pParty->uCurrentMonth]);
-    calendar_window.DrawText(pBookFont, 70, 4 * LOBYTE(pBookFont->uFontHeight) + 43, ui_book_calendar_month_color, pTmpBuf.data(), 0, 0, 0);
+    str = StringPrintf(
+        "%s\t100:\t110%d - %s",
+        localization->GetString(146), // "Month"
+        pParty->uCurrentMonth + 1,
+        localization->GetMonthName(pParty->uCurrentMonth)
+    );
+    calendar_window.DrawText(pBookFont, 70, 4 * LOBYTE(pBookFont->uFontHeight) + 43, ui_book_calendar_month_color, str, 0, 0, 0);
 
-    sprintf(pTmpBuf.data(), "%s\t100:\t110%d", pGlobalTXT_LocalizationStrings[245], pParty->uCurrentYear); // "Year"
-    calendar_window.DrawText(pBookFont, 70, 6 * LOBYTE(pBookFont->uFontHeight) + 37, ui_book_calendar_year_color, pTmpBuf.data(), 0, 0, 0);
+    str = StringPrintf("%s\t100:\t110%d", localization->GetString(245), pParty->uCurrentYear); // "Year"
+    calendar_window.DrawText(pBookFont, 70, 6 * LOBYTE(pBookFont->uFontHeight) + 37, ui_book_calendar_year_color, str, 0, 0, 0);
 
-    sprintf(pTmpBuf.data(), "%s\t100:\t110%s", pGlobalTXT_LocalizationStrings[530], aMoonPhaseNames[pDayMoonPhase[pParty->uDaysPlayed]]); // "Moon"
-    calendar_window.DrawText(pBookFont, 70, 8 * LOBYTE(pBookFont->uFontHeight) + 31, ui_book_calendar_moon_color, pTmpBuf.data(), 0, 0, 0);
+    str = StringPrintf(
+        "%s\t100:\t110%s",
+        localization->GetString(530), // Moon
+        localization->GetMoonPhaseName(pDayMoonPhase[pParty->uDaysPlayed])
+     );
+    calendar_window.DrawText(pBookFont, 70, 8 * LOBYTE(pBookFont->uFontHeight) + 31, ui_book_calendar_moon_color, str, 0, 0, 0);
 
     pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     if (pMapID)
         pMapName = pMapStats->pInfos[pMapID].pName;
     else
         pMapName = "Unknown";
-    sprintf(pTmpBuf.data(), "%s\t100:\t110%s", pGlobalTXT_LocalizationStrings[531], pMapName); // "Location"
-    calendar_window.DrawText(pBookFont, 70, 10 * LOBYTE(pBookFont->uFontHeight) + 25, ui_book_calendar_location_color, pTmpBuf.data(), 0, 0, 0);
+
+    str = StringPrintf("%s\t100:\t110%s", localization->GetString(531), pMapName); // "Location"
+    calendar_window.DrawText(pBookFont, 70, 10 * LOBYTE(pBookFont->uFontHeight) + 25, ui_book_calendar_location_color, str, 0, 0, 0);
 }

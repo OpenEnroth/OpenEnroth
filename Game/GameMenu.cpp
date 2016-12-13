@@ -1,11 +1,11 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Game/Game.h"
 #include "Engine/Timer.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
-#include "Engine/texts.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
@@ -15,6 +15,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIModal.h"
+#include "GUI/UI/UiStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/AIL.h"
@@ -38,7 +39,7 @@ void Game_StartNewGameWhilePlaying(bool force_start)
     }
     else
     {
-        ShowStatusBarString(pGlobalTXT_LocalizationStrings[201], 2);// "Are you sure?  Click again to start a New Game"
+        GameUI_StatusBar_OnEvent(localization->GetString(201));// "Are you sure?  Click again to start a New Game"
         pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0, 0, 0);
         dword_6BE138 = 124;
     }
@@ -59,7 +60,7 @@ void Game_QuitGameWhilePlaying(bool force_quit)
     }
     else
     {
-        ShowStatusBarString(pGlobalTXT_LocalizationStrings[82], 2);// "Are you sure?  Click again to quit"
+        GameUI_StatusBar_OnEvent(localization->GetString(82));// "Are you sure?  Click again to quit"
         pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0, 0, 0);
         dword_6BE138 = 132;
     }
@@ -136,7 +137,7 @@ void GameMenu_EventLoop()
                 else
                 {
                     pKeyActionMap->EnterText(0, 19, pGUIWindow_CurrentMenu);
-                    if (strcmp(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, pGlobalTXT_LocalizationStrings[72]))// "Empty"
+                    if (strcmp(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, localization->GetString(72)))// "Empty"
                         strcpy(pKeyActionMap->pPressedKeysBuffer, pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
                     pKeyActionMap->uNumKeysPressed = strlen(pKeyActionMap->pPressedKeysBuffer);
                 }

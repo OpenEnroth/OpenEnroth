@@ -5,6 +5,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 
 #include "Graphics/Weather.h"
 #include "Graphics/Texture.h"
@@ -19,7 +20,6 @@
 #include "OurMath.h"
 #include "Graphics/Indoor.h"
 #include "Graphics/Viewport.h"
-#include "texts.h"
 #include "stru123.h"
 #include "stru159.h"
 #include "Events.h"
@@ -33,6 +33,7 @@
 #include "GUI/UI/UITransition.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -356,8 +357,8 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages, int entry_
   }	
   if ( !uEventID )
   {
-    if ( !GameUI_Footer_TimeLeft )
-      ShowStatusBarString(pGlobalTXT_LocalizationStrings[521], 2u);// Nothing here
+    if ( !game_ui_status_bar_event_string_time_left )
+      GameUI_StatusBar_OnEvent(localization->GetString(521));// Nothing here
     return;
   }
   player_choose = (uActiveCharacter == 0)?6:4;  //4 - active or  6 - random player if active =0
@@ -917,15 +918,15 @@ LABEL_47:
       case EVENT_InputString:
         if ( !entry_line )
         {
-          strcpy(GameUI_Footer_TimedString.data(), &pLevelStr[pLevelStrOffsets[EVT_DWORD(_evt->v5 )]]);
+          game_ui_status_bar_event_string = &pLevelStr[pLevelStrOffsets[EVT_DWORD(_evt->v5 )]];
           sub_4451A8_press_any_key(uEventID, curr_seq_num, 26);
           if ( v133 == 1 )
             OnMapLeave();
           return;
         }
         v84 = _evt->v13 + ((_evt->v14 + ((_evt->v15 + ((uint)_evt->v16 << 8)) << 8)) << 8);
-        if ( !_stricmp(GameUI_Footer_TimedString.data(), &pLevelStr[pLevelStrOffsets[_evt->v9 + ((_evt->v10 + ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8)) << 8)]])
-          || !_stricmp(GameUI_Footer_TimedString.data(), &pLevelStr[pLevelStrOffsets[v84]]) )
+        if ( !_stricmp(game_ui_status_bar_event_string.data(), &pLevelStr[pLevelStrOffsets[_evt->v9 + ((_evt->v10 + ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8)) << 8)]])
+          || !_stricmp(game_ui_status_bar_event_string.data(), &pLevelStr[pLevelStrOffsets[v84]]) )
         {
           v11 = _evt->v17;
           curr_seq_num = v11 - 1;
@@ -1004,7 +1005,7 @@ LABEL_47:
             {
             v91 = pNPCTopics[v90-1].pText;//(&dword_721664)[8 * v90];
             //LABEL_248:
-            ShowStatusBarString(v91, 2);
+            GameUI_StatusBar_OnEvent(v91, 2);
             }
         }
         else
@@ -1012,7 +1013,7 @@ LABEL_47:
           if ( canShowMessages == 1 )
           {
             v91 = &pLevelStr[pLevelStrOffsets[v90]];
-            ShowStatusBarString(v91, 2);
+            GameUI_StatusBar_OnEvent(v91, 2);
           }
         }
         ++curr_seq_num;
@@ -1334,7 +1335,7 @@ bool sub_4465DF_check_season(int a1)
 }
 
 //----- (00448CF4) --------------------------------------------------------
-void __fastcall sub_448CF4_spawn_monsters(__int16 typeindex, __int16 level, int count, int x, int y, int z, int group, unsigned int uUniqueName)
+void sub_448CF4_spawn_monsters(__int16 typeindex, __int16 level, int count, int x, int y, int z, int group, unsigned int uUniqueName)
 {
 	unsigned int map_id; // eax@1
 	size_t old_num_actors; // ebx@2

@@ -1,6 +1,9 @@
 #pragma once
 #include <array>
 #include <map>
+
+#include "Engine/Strings.h"
+
 #include "../NZIArray.h"
 
 enum DAMAGE_TYPE: unsigned int
@@ -310,8 +313,8 @@ struct ItemGen //0x24
 
   bool GenerateArtifact();
   unsigned int GetValue();
-  const char *GetDisplayName();
-  const char *GetIdentifiedName();
+  String GetDisplayName();
+  String GetIdentifiedName();
   void UpdateTempBonus(__int64 uTimePlayed);
   void Reset();
   int _439DF3_get_additional_damage(DAMAGE_TYPE *a2, bool *vampiyr);
@@ -488,10 +491,6 @@ struct ItemsTable
 };
 #pragma pack(pop)
 
-void GenerateStandartShopItems();
-void GenerateSpecialShopItems();
-void GenerateItemsInChest();
-
 extern std::array<const char, 5> uItemsAmountPerShopType; // weak
 extern ItemGen *ptr_50C9A4_ItemToEnchant;
 
@@ -589,5 +588,4 @@ struct stru351_summoned_item
 
 
 int GetItemTextureFilename(char *pOut, signed int item_id, int index, int shoulder);
-void FillAviableSkillsToTeach(int _this);
 void init_summoned_item(struct stru351_summoned_item *_this, __int64 duration);

@@ -1,7 +1,7 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
 #include "Engine/Timer.h"
-#include "Engine/texts.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
 #include "Engine/SaveLoad.h"
@@ -17,6 +17,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIPartyCreation.h"
+#include "GUI/UI/UiStatusBar.h"
 
 
 //----- (004BF91E) --------------------------------------------------------
@@ -73,9 +74,9 @@ void GameOver_Loop(int v15)
     pWindow.uFrameW = 397;
     pFont = LoadFont("endgame.fnt", "FONTPAL", NULL);
     if (pParty->IsPartyGood())
-        v1 = pGlobalTXT_LocalizationStrings[675];//"Splendid job!  With the activation of the Gate, a thousand worlds lie at your feet.  Perhaps on one of them you will find the Ancients themselves, and return with the fruits their great civilization has to offer your world and your kingdom."
+        v1 = localization->GetString(675);//"Splendid job!  With the activation of the Gate, a thousand worlds lie at your feet.  Perhaps on one of them you will find the Ancients themselves, and return with the fruits their great civilization has to offer your world and your kingdom."
     else if (pParty->IsPartyEvil())
-        v1 = pGlobalTXT_LocalizationStrings[676];//"Brilliant!  The completion of the Heavenly Forge has provided enough Ancient weapons to crush all resistance to your plans.  Soon the world will bow to your every whim!  Still, you can't help but wonder what was beyond the Gate the other side was trying so hard to build."
+        v1 = localization->GetString(676);//"Brilliant!  The completion of the Heavenly Forge has provided enough Ancient weapons to crush all resistance to your plans.  Soon the world will bow to your every whim!  Still, you can't help but wonder what was beyond the Gate the other side was trying so hard to build."
     else return;
     pInString = v1;
     v23 = pParty->uTimePlayed - 138240;
@@ -86,37 +87,51 @@ void GameOver_Loop(int v15)
     if (!v19)
         v19 = 1;
     pRenderer->BeginScene();
-    pWindow.DrawTitleText(pFont, 1, 0x23, 1, pGlobalTXT_LocalizationStrings[9], 3);//Congratulations!
+    pWindow.DrawTitleText(pFont, 1, 0x23, 1, localization->GetString(9), 3);//Congratulations!
     v23 = 0i64;
     v20 = 0;
     for (uint i = 0; i < 4; i++)
     {
-        sprintf(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[129], pParty->pPlayers[i].pName, pParty->pPlayers[i].GetBaseLevel(), pClassNames[pParty->pPlayers[i].classType]);//%s the Level %u %s
-        pWindow.DrawTitleText(pFont, 1, i * (LOBYTE(pFont->uFontHeight) - 2) + LOBYTE(pFont->uFontHeight) + 46, 1, pTmpBuf.data(), 3);
+        pWindow.DrawTitleText(
+            pFont,
+            1,
+            i * (LOBYTE(pFont->uFontHeight) - 2) + LOBYTE(pFont->uFontHeight) + 46,
+            1,
+            localization->FormatString(
+                129,
+                pParty->pPlayers[i].pName, pParty->pPlayers[i].GetBaseLevel(), localization->GetClassName(pParty->pPlayers[i].classType) // %s the Level %u %s
+            ),
+            3
+        );
         v23 += pParty->pPlayers[i].uExperience;//__PAIR__(*(int *)(i - 4), *(int *)(i - 8));
     }
     v23 = (signed __int64)v23 / v19;
-    v6 = FitTextInAWindow(pInString, pFont, &pWindow, 0xC, 0);
+    v6 = FitTextInAWindow(pInString, pFont, &pWindow, 0xC);
     pWindow.DrawTitleText(pFont, 1, 5 * (LOBYTE(pFont->uFontHeight) + 11), 1, v6, 0);
-    strcpy(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[37]);//Total Time:
 
-    v7 = pGlobalTXT_LocalizationStrings[56];
+
+    v7 = localization->GetString(56);
     if (v17 != 1)
-        v7 = pGlobalTXT_LocalizationStrings[57];
+        v7 = localization->GetString(57);
 
-    v8 = pGlobalTXT_LocalizationStrings[146];//Month
+    v8 = localization->GetString(146); // Month
     if (v18 != 1)
-        v8 = pGlobalTXT_LocalizationStrings[148];//Months
+        v8 = localization->GetString(148); // Months
 
-    v9 = pGlobalTXT_LocalizationStrings[245];
+    v9 = localization->GetString(245);
     if (v14 != 1)
-        v9 = pGlobalTXT_LocalizationStrings[132];
+        v9 = localization->GetString(132);
 
-    sprintf(pTmpBuf2.data(), " %lu %s, %lu %s, %lu %s ", v14, v9, v18, v8, v17, v7);
-    strcat(pTmpBuf.data(), pTmpBuf2.data());
-    pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight - 2 * LOBYTE(pFont->uFontHeight) - 5, 1, pTmpBuf.data(), 3);
-    sprintf(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[94], v23);
-    pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight, 1, pTmpBuf.data(), 3);
+    pWindow.DrawTitleText(
+        pFont,
+        1,
+        pWindow.uFrameHeight - 2 * LOBYTE(pFont->uFontHeight) - 5,
+        1,
+        localization->GetString(37) + StringPrintf(" %lu %s, %lu %s, %lu %s ", v14, v9, v18, v8, v17, v7), //Total Time:
+        3
+    );
+
+    pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight, 1, localization->FormatString(94, v23), 3);
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
     pRenderer->EndScene();
     pRenderer->Present();

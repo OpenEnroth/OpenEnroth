@@ -4,10 +4,11 @@
 #include <crtdbg.h>
 
 #include "Engine/Engine.h"
-#include "Engine/Graphics/Render.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
-#include "Engine/texts.h"
 #include "Engine/Awards.h"
+
+#include "Engine/Graphics/Render.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIBooks.h"
@@ -78,7 +79,7 @@ void GUIWindow_Book::BasicBookInitialization()
 // {
     pAudioPlayer->StopChannels(-1, -1);
     InitializeFonts();
-    CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, 0, pGlobalTXT_LocalizationStrings[79], 0); // Close
+    CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(79), 0); // Close
     current_screen_type = SCREEN_BOOKS;
     full_num_items_in_book = 0;
     books_primary_item_per_page = 0;

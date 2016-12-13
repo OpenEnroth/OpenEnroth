@@ -43,7 +43,7 @@ void Vec3<T>::Normalize_float()
 
 //----- (0043AA99) --------------------------------------------------------
 template <class T>
-void __fastcall Vec3<T>::Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz)
+void Vec3<T>::Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz)
 {
  float cosf_x = cosf(3.14159265f * sRotX / 1024.0f),
        sinf_x = sinf(3.14159265f * sRotX / 1024.0f),

@@ -56,4 +56,4 @@ extern std::array<unsigned int, 45> pSavegameUsedSlots;
 extern struct SavegameList *pSavegameList;
 extern std::array<SavegameHeader, 45>  pSavegameHeader;
 
-extern std::array<struct Image *, 45> pSavegameThumbnails;
+extern std::array<class Image *, 45> pSavegameThumbnails;

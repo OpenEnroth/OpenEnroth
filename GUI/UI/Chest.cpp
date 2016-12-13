@@ -1,8 +1,10 @@
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/Timer.h"
 #include "Engine/LOD.h"
-#include "Engine/texts.h"
+
 #include "Engine/Graphics/IRender.h"
+
 #include "Engine/Objects/Chest.h"
 
 #include "GUI/UI/Chest.h"
@@ -19,17 +21,17 @@ int pChestHeightsByType[8] = { 9, 9, 9, 9, 9, 9, 9, 9 };
 GUIWindow_Chest::GUIWindow_Chest(unsigned int chest_id) :
     GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), chest_id, nullptr)
 {
-// --------------------------------------
-// 0041C432 GUIWindow::GUIWindow --- part
+    // --------------------------------------
+    // 0041C432 GUIWindow::GUIWindow --- part
     CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
     CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
     CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
     CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
     CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, 9, "", 0);
 
-// --------------------------------------------------------
-// 0042041E bool Chest::Open( signed int uChestID ) -- part
-    pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, pGlobalTXT_LocalizationStrings[79], ui_exit_cancel_button_background, 0);// Exit
+    // --------------------------------------------------------
+    // 0042041E bool Chest::Open( signed int uChestID ) -- part
+    pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(79), ui_exit_cancel_button_background, 0);// Exit
     CreateButton(7, 8, 460, 343, 1, 0, UIMSG_CHEST_ClickItem, 0, 0, "", 0);
     current_screen_type = SCREEN_CHEST;
     pEventTimer->Pause();
@@ -83,10 +85,9 @@ void GUIWindow_Chest::Update()
         chest_offs_y = pChestPixelOffsetY[chestBitmapId];
         chestWidthCells = pChestWidthsByType[chestBitmapId];
         chestHeghtCells = pChestHeightsByType[chestBitmapId];
-        sprintfex(pTmpBuf.data(), "chest%02d", pChestList->pChests[chestBitmapId].uTextureID);
 
-        //v5 = pIcons_LOD->LoadTexture(pTmpBuf.data(), TEXTURE_16BIT_PALETTE);
-        auto chest_background = assets->GetImage_16BitColorKey(pTmpBuf.data(), 0x7FF);
+        //v5 = pIcons_LOD->LoadTexture(tmp_str.data(), TEXTURE_16BIT_PALETTE);
+        auto chest_background = assets->GetImage_16BitColorKey(StringPrintf("chest%02d", pChestList->pChests[chestBitmapId].uTextureID), 0x7FF);
         pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, chest_background);
 
         for (item_counter = 0; item_counter < chestWidthCells * chestHeghtCells; ++item_counter)

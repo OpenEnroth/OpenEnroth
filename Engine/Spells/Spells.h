@@ -292,4 +292,4 @@ extern std::array<SPELL_TYPE, 25> wand_spell_ids;
 int _43AFE3_calc_spell_damage(int spellId, int spellLevel, signed int skillMastery, int currentHp);
 
 bool sub_427769_isSpellQuickCastableOnShiftClick(unsigned int uSpellID);
-void __fastcall EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fromy, int fromz, int tox, int toy, int toz);//sub_448DF8
+void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fromy, int fromz, int tox, int toy, int toz);//sub_448DF8

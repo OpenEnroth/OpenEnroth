@@ -47,7 +47,7 @@ struct PaletteManager
 
 
 
-bool __fastcall HSV2RGB(float *a1, float *a2, float *a3, float a4, float a5, float a6);
-void __fastcall RGB2HSV(float *a1, float *a2, float a3, float a4, float a5, float *a6);
+bool HSV2RGB(float *a1, float *a2, float *a3, float a4, float a5, float a6);
+void RGB2HSV(float *a1, float *a2, float a3, float a4, float a5, float *a6);
 signed int ReplaceHSV(unsigned int uColor, float a2, float gamma, float a4);
 extern PaletteManager *pPaletteManager;

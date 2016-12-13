@@ -1,10 +1,11 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
+
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
 #include "Engine/Events.h"
 #include "Engine/Timer.h"
-#include "Engine/texts.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
@@ -42,6 +43,7 @@
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIModal.h"
 #include "GUI/UI/UIRest.h"
+#include "GUI/UI/UiStatusBar.h"
 #include "GUI/UI/Spellbook.h"
 #include "GUI/UI/UIBooks.h"
 #include "GUI/UI/Books/LloydsBook.h"
@@ -90,10 +92,11 @@ void Game_StartHirelingDialogue(unsigned int hireling_id)
     DoThatMessageThing();
 
     uint hireling_slot = 0;
+    char buf[1024];
     for (uint i = 0; i < 2; ++i)
     {
         if (pParty->pHirelings[i].pName)
-            pTmpBuf[hireling_slot++] = i;
+            buf[hireling_slot++] = i;
     }
 
     for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i)
@@ -103,7 +106,7 @@ void Game_StartHirelingDialogue(unsigned int hireling_id)
             && (!pParty->pHirelings[0].pName || strcmp(npc->pName, pParty->pHirelings[0].pName))
             && (!pParty->pHirelings[1].pName || strcmp(npc->pName, pParty->pHirelings[1].pName)))
         {
-            pTmpBuf[hireling_slot++] = i + 2;
+            buf[hireling_slot++] = i + 2;
         }
     }
 
@@ -129,7 +132,7 @@ void Game_CloseTargetedSpellWindow()
             pGUIWindow_CastTargetedSpell->Release();
             pGUIWindow_CastTargetedSpell = nullptr;
             pMouse->SetCursorBitmap("MICON1");
-            GameUI_Footer_TimeLeft = 0;
+            game_ui_status_bar_event_string_time_left = 0;
             _50C9A0_IsEnchantingInProgress = 0;
             back_to_game();
         }
@@ -225,8 +228,6 @@ void Game_EventLoop()
     Player *pPlayer4; // ecx@718
     int v105; // eax@718
     Player *pPlayer5; // ST78_4@758
-    unsigned int v107; // eax@758
-    unsigned int v108; // eax@758
     unsigned int v115; // eax@764
     int v116; // eax@776
     unsigned int v118; // eax@785
@@ -237,12 +238,8 @@ void Game_EventLoop()
     int v127; // [sp-1Ch] [bp-618h]@107
     unsigned int v128; // [sp-1Ch] [bp-618h]@711
     GUIButton *pButton2; // [sp-4h] [bp-600h]@59
-    const char *v161; // [sp-4h] [bp-600h]@637
     KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
     char *v173; // [sp+0h] [bp-5FCh]@444
-    char *v174; // [sp+0h] [bp-5FCh]@449
-    const char *v177; // [sp+0h] [bp-5FCh]@629
-    char *v178; // [sp+0h] [bp-5FCh]@637
     signed int thisb; // [sp+14h] [bp-5E8h]@272
     Player *pPlayer7; // [sp+14h] [bp-5E8h]@373
     Player *pPlayer8; // [sp+14h] [bp-5E8h]@377
@@ -765,7 +762,7 @@ void Game_EventLoop()
                             pGUIWindow_CastTargetedSpell->Release();
                             pGUIWindow_CastTargetedSpell = 0;
                             pMouse->SetCursorBitmap("MICON1");
-                            GameUI_Footer_TimeLeft = 0;
+                            game_ui_status_bar_event_string_time_left = 0;
                             _50C9A0_IsEnchantingInProgress = 0;
                             back_to_game();
                         }
@@ -1019,8 +1016,9 @@ void Game_EventLoop()
                                     current_screen_type = SCREEN_GAME;
                                     viewparams->bRedrawGameUI = true;
                                     continue;
-                                case SCREEN_BRANCHLESS_NPC_DIALOG://click escape
-                                    memset(GameUI_Footer_TimedString.data(), 0, 0xC8u);
+                                case SCREEN_BRANCHLESS_NPC_DIALOG: //click escape
+                                    GameUI_StatusBar_ClearEventString();
+
                                     sub_4452BB();
                                     DialogueEnding();
                                     current_screen_type = SCREEN_GAME;
@@ -1299,7 +1297,7 @@ void Game_EventLoop()
                     pGUIWindow_CastTargetedSpell->Release();
                     pGUIWindow_CastTargetedSpell = 0;
                     pMouse->SetCursorBitmap("MICON1");
-                    GameUI_Footer_TimeLeft = 0;
+                    game_ui_status_bar_event_string_time_left = 0;
                     _50C9A0_IsEnchantingInProgress = 0;
                     back_to_game();
                     continue;
@@ -1317,7 +1315,7 @@ void Game_EventLoop()
                     pGUIWindow_CastTargetedSpell->Release();
                     pGUIWindow_CastTargetedSpell = 0;
                     pMouse->SetCursorBitmap("MICON1");
-                    GameUI_Footer_TimeLeft = 0;
+                    game_ui_status_bar_event_string_time_left = 0;
                     _50C9A0_IsEnchantingInProgress = 0;
                     back_to_game();
                     continue;
@@ -1344,7 +1342,7 @@ void Game_EventLoop()
                         pGUIWindow_CastTargetedSpell->Release();
                         pGUIWindow_CastTargetedSpell = 0;
                         pMouse->SetCursorBitmap("MICON1");
-                        GameUI_Footer_TimeLeft = 0;
+                        game_ui_status_bar_event_string_time_left = 0;
                         _50C9A0_IsEnchantingInProgress = 0;
                         back_to_game();
                         continue;
@@ -1364,7 +1362,7 @@ void Game_EventLoop()
                 pGUIWindow_CastTargetedSpell->Release();
                 pGUIWindow_CastTargetedSpell = 0;
                 pMouse->SetCursorBitmap("MICON1");
-                GameUI_Footer_TimeLeft = 0;
+                game_ui_status_bar_event_string_time_left = 0;
                 _50C9A0_IsEnchantingInProgress = 0;
                 back_to_game();
                 continue;
@@ -1400,7 +1398,7 @@ void Game_EventLoop()
                         pGUIWindow_CastTargetedSpell = 0;
                         pEventTimer->Resume();
                         pMouse->SetCursorBitmap("MICON1");
-                        GameUI_Footer_TimeLeft = 0;
+                        game_ui_status_bar_event_string_time_left = 0;
                         _50C9A0_IsEnchantingInProgress = 0;
                     }
                 }
@@ -1460,8 +1458,7 @@ void Game_EventLoop()
                     __debugbreak();/*indexing error*/ //if (*((int *)&pSavegameThumbnails[10 * uMessageParam].pPixels))
                     {
                         v173 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(pPlayer->pInstalledBeacons[uMessageParam].SaveFileID)].pName;
-                        sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[474], v173);// "Recall to %s"
-                        GameUI_SetFooterString(pTmpBuf.data());
+                        GameUI_StatusBar_Set(localization->FormatString(474, v173)); // Recall to %s
                     }
                     continue;
                 }
@@ -1473,14 +1470,17 @@ void Game_EventLoop()
                 __debugbreak();/*indexing error*/ //if (!*((int *)&pSavegameThumbnails[10 * uMessageParam].pPixels) || !pMapNum)
                 if (!pMapNum)
                 {
-                    sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[476], pMapName);// "Set to %s"
-                    GameUI_SetFooterString(pTmpBuf.data());
+                    GameUI_StatusBar_Set(localization->FormatString(476, pMapName)); // Set to %s
                 }
                 else
                 {
-                    v174 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(*(short *)(uNumSeconds + 26))].pName;
-                    sprintf(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[475], (unsigned int)pMapName, v174);// "Set %s over %s"
-                    GameUI_SetFooterString(pTmpBuf.data());
+                    GameUI_StatusBar_Set(
+                        localization->FormatString(
+                            475,
+                            pMapName,
+                            pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(*(short *)(uNumSeconds + 26))].pName
+                        )
+                    ); // Set %s over %s
                 }
                 continue;
 
@@ -1670,8 +1670,7 @@ void Game_EventLoop()
                                     if (uMessageParam != 5)
                                     {
                                         __debugbreak(); // warning C4700: uninitialized local variable 'v200' used
-                                        sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[35], v200);
-                                        GameUI_SetFooterString(pTmpBuf.data());
+                                        GameUI_StatusBar_Set(localization->FormatString(35, v200));
                                         continue;
                                     }
                                     v69 = pMapStats->pInfos[8].pName;
@@ -1682,8 +1681,7 @@ void Game_EventLoop()
                             {
                                 v69 = pMapStats->pInfos[21].pName;
                             }
-                            sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[35], v69);
-                            GameUI_SetFooterString(pTmpBuf.data());
+                            GameUI_StatusBar_Set(localization->FormatString(35, v69));
                             continue;
                         }
                         v68 = 210;
@@ -1720,8 +1718,7 @@ void Game_EventLoop()
                         if (uMessageParam != 5)
                             //goto LABEL_519;
                         {
-                            sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[35], v200);
-                            GameUI_SetFooterString(pTmpBuf.data());
+                            GameUI_StatusBar_Set(localization->FormatString(35, v200));
                             continue;
                         }
                         v69 = pMapStats->pInfos[8].pName;
@@ -1732,16 +1729,23 @@ void Game_EventLoop()
                 {
                     v69 = pMapStats->pInfos[21].pName;
                 }
-                sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[35], v69);
-                GameUI_SetFooterString(pTmpBuf.data());
+                GameUI_StatusBar_Set(localization->FormatString(35, v69));
                 continue;
             case UIMSG_ShowFinalWindow:
-                sprintfex(pFinalMessage.data(), "%s\n \n%s\n \n%s", pGlobalTXT_LocalizationStrings[151],// "Congratulations Adventurer."
-                    pGlobalTXT_LocalizationStrings[118],// "We hope that you've enjoyed playing Might and Magic VII as much as we did making it. We have saved this screen as MM7_WIN.PCX in your MM7 directory. You can print it out as proof of your accomplishment."
-                    pGlobalTXT_LocalizationStrings[167]);// "- The Might and Magic VII Development Team."   
-                pModalWindow = new GUIWindow_Modal(pFinalMessage.data(), UIMSG_OnFinalWindowClose);
+            {
+                static String final_message; // static due to GUIWindow_Modal not holding a reference and text ptr will be destroyed upon exiting scope
+
+                final_message = StringPrintf(
+                    "%s\n \n%s\n \n%s",
+                    localization->GetString(151), // Congratulations Adventurer.
+                    localization->GetString(118), // We hope that you've enjoyed playing Might and Magic VII as much as we did making it. We have saved this screen as MM7_WIN.PCX in your MM7 directory. You can print it out as proof of your accomplishment.
+                    localization->GetString(167)  // - The Might and Magic VII Development Team.
+                );
+
+                pModalWindow = new GUIWindow_Modal(final_message.c_str(), UIMSG_OnFinalWindowClose);
                 uGameState = GAME_STATE_FINAL_WINDOW;
                 continue;
+            }
             case UIMSG_OnFinalWindowClose:
                 __debugbreak();
                 uGameState = GAME_STATE_PLAYING;
@@ -1749,7 +1753,7 @@ void Game_EventLoop()
                 __debugbreak(); // missed break/continue?
             case UIMSG_DD:
                 __debugbreak();
-                sprintf(pTmpBuf.data(), "%s", pKeyActionMap->pPressedKeysBuffer);
+                //sprintf(tmp_str.data(), "%s", pKeyActionMap->pPressedKeysBuffer);
                 memcpy(&v216, txt_file_frametable_parser(pKeyActionMap->pPressedKeysBuffer, &v218), sizeof(v216));
                 if (v216.uPropCount == 1)
                 {
@@ -1826,12 +1830,14 @@ void Game_EventLoop()
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
                     v73 = "Can't jump to that location!";
                 }
-                ShowStatusBarString(v73, 6);
+                GameUI_StatusBar_OnEvent(v73, 6);
                 continue;
+
             case UIMSG_CastQuickSpell:
+            {
                 if (bUnderwater == 1)
                 {
-                    ShowStatusBarString(pGlobalTXT_LocalizationStrings[652], 2);// "You can not do that while you are underwater!"
+                    GameUI_StatusBar_OnEvent(localization->GetString(652));// "You can not do that while you are underwater!"
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
                     continue;
                 }
@@ -1839,6 +1845,8 @@ void Game_EventLoop()
                     continue;
                 _42777D_CastSpell_UseWand_ShootArrow((SPELL_TYPE)pPlayer2->uQuickSpell, uActiveCharacter - 1, 0, 0, uActiveCharacter);
                 continue;
+            }
+
             case UIMSG_CastSpell_Monster_Improvement:
             case UIMSG_CastSpell_Shoot_Monster://FireBlow, Lightning, Ice Lightning, Swarm, 
                 //if ( pRenderer->pRenderD3D )
@@ -1874,7 +1882,7 @@ void Game_EventLoop()
                 pGUIWindow_CastTargetedSpell->Release();
                 pGUIWindow_CastTargetedSpell = 0;
                 pMouse->SetCursorBitmap("MICON1");
-                GameUI_Footer_TimeLeft = 0;
+                game_ui_status_bar_event_string_time_left = 0;
                 _50C9A0_IsEnchantingInProgress = 0;
                 back_to_game();
                 continue;
@@ -1922,29 +1930,29 @@ void Game_EventLoop()
                     Player::_42ECB5_PlayerAttacksActor();
                 continue;
             case UIMSG_ExitRest:
-                new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0, (int)pButton_RestUI_Exit, pGlobalTXT_LocalizationStrings[81]);// "Exit Rest"
+                new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0, (int)pButton_RestUI_Exit, localization->GetString(81));// "Exit Rest"
                 continue;
             case UIMSG_Wait5Minutes:
                 if (_506F14_resting_stage == 2)
                 {
-                    ShowStatusBarString(pGlobalTXT_LocalizationStrings[477], 2);// "You are already resting!"
+                    GameUI_StatusBar_OnEvent(localization->GetString(477));// "You are already resting!"
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
                     continue;
                 }
                 new OnButtonClick2(pButton_RestUI_Wait5Minutes->uX, pButton_RestUI_Wait5Minutes->uY, 0, 0,
-                    (int)pButton_RestUI_Wait5Minutes, pGlobalTXT_LocalizationStrings[238]);// "Wait 5 Minutes"
+                    (int)pButton_RestUI_Wait5Minutes, localization->GetString(238));// "Wait 5 Minutes"
                 _506F14_resting_stage = 1;
                 _506F18_num_minutes_to_sleep = 5;
                 continue;
             case UIMSG_Wait1Hour:
                 if (_506F14_resting_stage == 2)
                 {
-                    ShowStatusBarString(pGlobalTXT_LocalizationStrings[477], 2);// "You are already resting!"
+                    GameUI_StatusBar_OnEvent(localization->GetString(477));// "You are already resting!"
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
                     continue;
                 }
                 new OnButtonClick2(pButton_RestUI_Wait1Hour->uX, pButton_RestUI_Wait1Hour->uY, 0, 0,
-                    (int)pButton_RestUI_Wait1Hour, pGlobalTXT_LocalizationStrings[239]);// "Wait 1 Hour"
+                    (int)pButton_RestUI_Wait1Hour, localization->GetString(239));// "Wait 1 Hour"
                 _506F14_resting_stage = 1;
                 _506F18_num_minutes_to_sleep = 60;
                 continue;
@@ -1973,13 +1981,13 @@ void Game_EventLoop()
                 {
                     if (pParty->bTurnBasedModeOn == 1)
                     {
-                        ShowStatusBarString(pGlobalTXT_LocalizationStrings[478], 2);// "You can't rest in turn-based mode!"
+                        GameUI_StatusBar_OnEvent(localization->GetString(478));// "You can't rest in turn-based mode!"
                         continue;
                     }
-                    v88 = pGlobalTXT_LocalizationStrings[480];// "There are hostile enemies near!"
+                    v88 = localization->GetString(480);// "There are hostile enemies near!"
                     if (pParty->uFlags & 0x88)
-                        v88 = pGlobalTXT_LocalizationStrings[479];// "You can't rest here!"
-                    ShowStatusBarString(v88, 2);
+                        v88 = localization->GetString(479);// "You can't rest here!"
+                    GameUI_StatusBar_OnEvent(v88);
                     if (!uActiveCharacter)
                         continue;
                     pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)13, 0);
@@ -1987,7 +1995,7 @@ void Game_EventLoop()
                 }
                 if (pParty->bTurnBasedModeOn == 1)
                 {
-                    ShowStatusBarString(pGlobalTXT_LocalizationStrings[478], 2);// "You can't rest in turn-based mode!"
+                    GameUI_StatusBar_OnEvent(localization->GetString(478));// "You can't rest in turn-based mode!"
                     continue;
                 }
                 if (!(pParty->uFlags & 0x88))
@@ -1997,13 +2005,13 @@ void Game_EventLoop()
                 }
                 if (pParty->bTurnBasedModeOn == 1)
                 {
-                    ShowStatusBarString(pGlobalTXT_LocalizationStrings[478], 2);// "You can't rest in turn-based mode!"
+                    GameUI_StatusBar_OnEvent(localization->GetString(478));// "You can't rest in turn-based mode!"
                     continue;
                 }
-                v88 = pGlobalTXT_LocalizationStrings[480];// "There are hostile enemies near!"
+                v88 = localization->GetString(480);// "There are hostile enemies near!"
                 if (pParty->uFlags & 0x88)
-                    v88 = pGlobalTXT_LocalizationStrings[479];// "You can't rest here!"
-                ShowStatusBarString(v88, 2);
+                    v88 = localization->GetString(479);// "You can't rest here!"
+                GameUI_StatusBar_OnEvent(v88);
                 if (!uActiveCharacter)
                     continue;
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantRestHere, 0);
@@ -2011,13 +2019,13 @@ void Game_EventLoop()
             case UIMSG_Rest8Hour:
                 if (_506F14_resting_stage != 0)
                 {
-                    ShowStatusBarString(pGlobalTXT_LocalizationStrings[477], 2);// "You are already resting!"
+                    GameUI_StatusBar_OnEvent(localization->GetString(477));// "You are already resting!"
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
                     continue;
                 }
                 if (pParty->uNumFoodRations < uRestUI_FoodRequiredToRest)
                 {
-                    ShowStatusBarString(pGlobalTXT_LocalizationStrings[482], 2);// "You don't have enough food to rest"
+                    GameUI_StatusBar_OnEvent(localization->GetString(482));// "You don't have enough food to rest"
                     if (uActiveCharacter && pPlayers[uActiveCharacter]->CanAct())
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_108, 0);
                 }
@@ -2052,7 +2060,7 @@ void Game_EventLoop()
                             _506F14_resting_stage = 0;
   
                             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
-                            ShowStatusBarString(pGlobalTXT_LocalizationStrings[481], 2);// "Encounter!"
+                            GameUI_StatusBar_OnEvent(localization->GetString(481));// "Encounter!"
                             pAudioPlayer->PlaySound(SOUND_encounter, 0, 0, -1, 0, 0, 0, 0);
                             continue;
                         }
@@ -2071,33 +2079,40 @@ void Game_EventLoop()
             case UIMSG_AlreadyResting:
                 if (_506F14_resting_stage == 2)
                 {
-                    ShowStatusBarString(pGlobalTXT_LocalizationStrings[477], 2);// "You are already resting!"
+                    GameUI_StatusBar_OnEvent(localization->GetString(477));// "You are already resting!"
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
                     continue;
                 }
                 new OnButtonClick2(pButton_RestUI_WaitUntilDawn->uX, pButton_RestUI_WaitUntilDawn->uY, 0, 0,
-                    (int)pButton_RestUI_WaitUntilDawn, pGlobalTXT_LocalizationStrings[237]);// "Wait until Dawn"
+                    (int)pButton_RestUI_WaitUntilDawn, localization->GetString(237));// "Wait until Dawn"
                 v97 = _494820_training_time(pParty->uCurrentHour);
                 _506F14_resting_stage = 1;
                 _506F18_num_minutes_to_sleep = 60 * v97 - pParty->uCurrentMinute;
                 continue;
+
             case UIMSG_HintSelectRemoveQuickSpellBtn:
+            {
                 if (quick_spell_at_page && byte_506550)
                 {
-                    v173 = pSpellStats->pInfos[quick_spell_at_page + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage].pName;
-                    sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[483], v173);
+                    GameUI_StatusBar_Set(
+                        localization->FormatString(
+                            483,
+                            pSpellStats->pInfos[quick_spell_at_page + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage].pName
+                        )
+                    );
                 }
                 else
                 {
                     if (pPlayers[uActiveCharacter]->uQuickSpell)
-                        v177 = pGlobalTXT_LocalizationStrings[584];// "Click here to remove your Quick Spell"
+                        GameUI_StatusBar_Set(localization->GetString(584));// "Click here to remove your Quick Spell"
                     else
-                        v177 = pGlobalTXT_LocalizationStrings[484];// "Select a spell then click here to set a QuickSpell"
-                    strcpy(pTmpBuf.data(), v177);
+                        GameUI_StatusBar_Set(localization->GetString(484));// "Select a spell then click here to set a QuickSpell"
                 }
-                GameUI_SetFooterString(pTmpBuf.data());
                 continue;
+            }
+
             case UIMSG_SPellbook_ShowHightlightedSpellInfo:
+            {
                 if (!uActiveCharacter || (uNumSeconds = (unsigned int)pPlayers[uActiveCharacter],
                     !*(char *)(uNumSeconds + 11 * *(char *)(uNumSeconds + 6734) + uMessageParam + 402)))
                     continue;
@@ -2106,18 +2121,17 @@ void Game_EventLoop()
                 v98 = *(char *)(uNumSeconds + 6734);
                 if (quick_spell_at_page - 1 == uMessageParam)
                 {
-                    v178 = pSpellStats->pInfos[uMessageParam + 11 * v98 + 1].pName;
-                    v161 = pGlobalTXT_LocalizationStrings[485];
+                    GameUI_StatusBar_Set(localization->FormatString(485, pSpellStats->pInfos[uMessageParam + 11 * v98 + 1].pName));
                 }
                 else
                 {
-                    v178 = pSpellStats->pInfos[uMessageParam + 11 * v98 + 1].pName;
-                    v161 = pGlobalTXT_LocalizationStrings[486];
+                    GameUI_StatusBar_Set(localization->FormatString(486, pSpellStats->pInfos[uMessageParam + 11 * v98 + 1].pName));
                 }
-                sprintfex(pTmpBuf.data(), v161, v178);
-                GameUI_SetFooterString(pTmpBuf.data());
                 continue;
+            }
+
             case UIMSG_ClickInstallRemoveQuickSpellBtn:
+            {
                 new OnButtonClick2(pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY, 0, 0, (int)pBtn_InstallRemoveSpell, 0);
                 if (!uActiveCharacter)
                     continue;
@@ -2135,6 +2149,8 @@ void Game_EventLoop()
                     pPlayer10->PlaySound(SPEECH_12, 0);
                 byte_506550 = 0;
                 continue;
+            }
+
             case UIMSG_SpellBook_PressTab://перелистывание страниц клавишей Tab
             {
                 if (!uActiveCharacter)
@@ -2211,8 +2227,8 @@ void Game_EventLoop()
                         quick_spell_at_page = uMessageParam + 1;
                     }
                 }
-            }
                 continue;
+            }
 
             case UIMSG_CastSpellFromBook:
                 if (pTurnEngine->turn_stage != TE_MOVEMENT)
@@ -2229,7 +2245,7 @@ void Game_EventLoop()
                     continue;
                 if (bUnderwater == true)
                 {
-                    ShowStatusBarString(pGlobalTXT_LocalizationStrings[652], 2);// "You can not do that while you are underwater!"
+                    GameUI_StatusBar_OnEvent(localization->GetString(652));// "You can not do that while you are underwater!"
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
                 }
                 else
@@ -2320,7 +2336,7 @@ void Game_EventLoop()
                 uNumSeconds = v2;
                 if (pPlayer4->uSkillPoints < (v2 & 0x3F) + 1)
                 {
-                    v87 = pGlobalTXT_LocalizationStrings[488];// "You don't have enough skill points!"
+                    v87 = localization->GetString(488);// "You don't have enough skill points!"
                 }
                 else
                 {
@@ -2332,9 +2348,9 @@ void Game_EventLoop()
                         pAudioPlayer->PlaySound((SoundID)SOUND_quest, 0, 0, -1, 0, 0, 0, 0);
                         continue;
                     }
-                    v87 = pGlobalTXT_LocalizationStrings[487];// "You have already mastered this skill!"
+                    v87 = localization->GetString(487);// "You have already mastered this skill!"
                 }
-                ShowStatusBarString(v87, 2);
+                GameUI_StatusBar_OnEvent(v87);
                 continue;
             case UIMSG_ClickStatsBtn:
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowStatsTab();
@@ -2412,11 +2428,15 @@ void Game_EventLoop()
                 GameUI_OnPlayerPortraitLeftClick(uMessageParam);
                 continue;
             case UIMSG_ShowStatus_Funds:
-                v174 = (char *)pParty->uNumGoldInBank;
-                //v158 = pParty->uNumGold + pParty->uNumGoldInBank;
-                sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[489], pParty->uNumGold + pParty->uNumGoldInBank, v174);// "You have %d total gold, %d in the Bank"
-                GameUI_SetFooterString(pTmpBuf.data());
+            {
+                GameUI_StatusBar_Set(
+                    localization->FormatString(
+                        489,
+                        pParty->uNumGold + pParty->uNumGoldInBank, pParty->uNumGoldInBank // You have %d total gold, %d in the Bank
+                    )
+                );
                 continue;
+            }
             case UIMSG_ShowStatus_DateTime:
                 currHour = pParty->uCurrentHour;
                 uNumSeconds = 1;
@@ -2433,31 +2453,54 @@ void Game_EventLoop()
                     if (pParty->uCurrentHour == 0)
                         currHour = 12;
                 }
-                sprintf(pTmpBuf.data(), "%d:%02d%s %s %d %s %d", currHour, pParty->uCurrentMinute, aAMPMNames[uNumSeconds], aDayNames[pParty->uDaysPlayed % 7],
-                    7 * pParty->uCurrentMonthWeek + pParty->uDaysPlayed % 7 + 1, aMonthNames[pParty->uCurrentMonth], pParty->uCurrentYear);
-                GameUI_SetFooterString(pTmpBuf.data());
+                GameUI_StatusBar_Set(
+                    StringPrintf(
+                        "%d:%02d%s %s %d %s %d",
+                        currHour, pParty->uCurrentMinute,
+                        localization->GetAmPm(uNumSeconds),
+                        localization->GetDayName(pParty->uDaysPlayed % 7),
+                        7 * pParty->uCurrentMonthWeek + pParty->uDaysPlayed % 7 + 1,
+                        localization->GetMonthName(pParty->uCurrentMonth),
+                        pParty->uCurrentYear
+                    )
+                );
                 continue;
+
             case UIMSG_ShowStatus_Food:
-                sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[501], pParty->uNumFoodRations); // "You have %lu food"
-                GameUI_SetFooterString(pTmpBuf.data());
+            {
+                GameUI_StatusBar_Set(localization->FormatString(501, pParty->uNumFoodRations)); // You have %lu food
                 continue;
+            }
+
             case UIMSG_ShowStatus_Player:
+            {
                 pPlayer5 = pPlayers[uMessageParam];
-                sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[429], pPlayer5->pName, pClassNames[pPlayer5->classType]);// "%s the %s"
-                strcat(pTmpBuf.data(), ": ");
-                v107 = pPlayer5->GetMajorConditionIdx();
-                strcat(pTmpBuf.data(), aCharacterConditionNames[v107]);
-                GameUI_SetFooterString(pTmpBuf.data());
-                v108 = 8 * uMessageParam - 8;
-                LOBYTE(v108) = v108 | 4;
-                pMouse->uPointingObjectID = PID(OBJECT_Player, v108);
+
+                auto status = localization->FormatString(429, pPlayer5->pName, localization->GetClassName(pPlayer5->classType)); // %s the %s
+                status += ": ";
+                status += localization->GetCharacterConditionName(pPlayer5->GetMajorConditionIdx());
+                GameUI_StatusBar_Set(status);
+
+                pMouse->uPointingObjectID = PID(OBJECT_Player, (unsigned char)(8 * uMessageParam - 8) | 4);
                 continue;
+            }
+
             case UIMSG_ShowStatus_ManaHP:
-                sprintf(pTmpBuf.data(), "%d / %d %s    %d / %d %s", pPlayers[uMessageParam]->sHealth, pPlayers[uMessageParam]->GetMaxHealth(),
-                    pGlobalTXT_LocalizationStrings[108], pPlayers[uMessageParam]->sMana, pPlayers[uMessageParam]->GetMaxMana(),
-                    pGlobalTXT_LocalizationStrings[212]);
-                GameUI_SetFooterString(pTmpBuf.data());
+            {
+                GameUI_StatusBar_Set(
+                    StringPrintf(
+                        "%d / %d %s    %d / %d %s",
+                        pPlayers[uMessageParam]->GetHealth(),
+                        pPlayers[uMessageParam]->GetMaxHealth(),
+                        localization->GetString(108),
+                        pPlayers[uMessageParam]->GetMana(),
+                        pPlayers[uMessageParam]->GetMaxMana(),
+                        localization->GetString(212)
+                    )
+                );
                 continue;
+            }
+
             case UIMSG_CHEST_ClickItem:
                 if (current_screen_type == SCREEN_CHEST_INVENTORY)
                 {
@@ -2679,8 +2722,7 @@ void Game_Loop()
     for (uint i = 1; i < 5; ++i)
         for (uint j = 1; j < 6; ++j)
         {
-        sprintf(pTmpBuf.data(), "data\\lloyd%d%d.pcx", i, j);
-        remove(pTmpBuf.data());
+            remove(StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str());
         }
 
     extern bool use_music_folder;
@@ -2752,7 +2794,7 @@ void Game_Loop()
             pMiscTimer->Update();
 
             OnTimer(0);
-            GameUI_StatusBar_UpdateTimedString(0);
+            GameUI_StatusBar_Update();
             if (pMiscTimer->bPaused && !pEventTimer->bPaused)
                 pMiscTimer->Resume();
             if (pEventTimer->bTackGameTime && !pParty->bTurnBasedModeOn)
@@ -2901,7 +2943,7 @@ void Game_Loop()
                     pParty->pPlayers[idx].PlaySound(SPEECH_99, 0);
                 }
 
-                ShowStatusBarString(pGlobalTXT_LocalizationStrings[524], 2);// "Once again you've cheated death!.." "Вы снова обхитрили смерть! …"
+                GameUI_StatusBar_OnEvent(localization->GetString(524));// "Once again you've cheated death!.." "Вы снова обхитрили смерть! …"
                 uGameState = GAME_STATE_PLAYING;
             }
         } while (!game_finished);

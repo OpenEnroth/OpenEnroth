@@ -258,14 +258,14 @@ void ODM_Project(unsigned int uNumVertices);
 void sub_487DA9();
 void ODM_LoadAndInitialize(const char *pLevelFilename, struct ODMRenderParams *thisa);
 unsigned int GetLevelFogColor();
-int __fastcall sub_47C3D7_get_fog_specular(int a1, int a2, float a3);
+int sub_47C3D7_get_fog_specular(int a1, int a2, float a3);
 unsigned int WorldPosToGridCellX(int); // weak
 unsigned int WorldPosToGridCellZ(int); // weak
 int GridCellToWorldPosX(int); // weak
 int GridCellToWorldPosZ(int); // weak
 void sub_481ED9_MessWithODMRenderParams();
 bool IsTerrainSlopeTooHigh(int pos_x, int pos_y);
-int __fastcall GetTerrainHeightsAroundParty2(int a1, int a2, int *a3, int a4);
+int GetTerrainHeightsAroundParty2(int a1, int a2, int *a3, int a4);
 
 
 

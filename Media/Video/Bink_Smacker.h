@@ -205,7 +205,7 @@ int __stdcall SmackBlitClear(HSMACKBLIT a1, unsigned short *pFrameData, unsigned
 
 
 int __stdcall SmackBufferOpen(HWND a1, long a2, long a3, long a4, long a5, long a6);
-int __fastcall SmackVolumePan(_SMACK *a3, long a4, long a5, long a6);
+int __stdcall SmackVolumePan(_SMACK *a3, long a4, long a5, long a6);
 
 int __stdcall SmackGoto(_SMACK *a1, long a2);
 

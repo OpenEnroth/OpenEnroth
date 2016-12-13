@@ -390,7 +390,7 @@ char* GUIFont::GetPageTop( const char *pInString, GUIWindow *pWindow, unsigned i
 
   if ( !pInString )
     return 0;
-  text_str = FitTextInAWindow(pInString, this, pWindow, uX, 0);
+  text_str = FitTextInAWindow(pInString, this, pWindow, uX);
   text_length = strlen(text_str);
   for ( int i = 0; i < text_length; ++i )
   {
@@ -458,192 +458,215 @@ int GUIFont::GetStringHeight2( GUIFont *secondFont, const char *text_str, GUIWin
   return uAllHeght;
 }
 
-//----- (0044C59D) --------------------------------------------------------
-int GUIFont::CalcTextHeight( const char *pString, struct GUIWindow *pWindow, int uXOffset, int a5 )
+int GUIFont::CalcTextHeight(const String &str, struct GUIWindow *window, int x_offset, bool return_on_carriage)
 {
-  int uAllHeght; 
-  int uStringLen; 
-  unsigned char c; 
-  char *test_string; 
+    return this->CalcTextHeight(str.c_str(), window, x_offset, return_on_carriage);
+}
 
-  if (!pString)
-    return 0;
-  uAllHeght = uFontHeight - 6;
-  test_string = FitTextInAWindow(pString, this, pWindow, uXOffset, 0);
-  uStringLen = strlen(pString);
-  for (int i = 0; i < uStringLen; ++i)
-  {
-    c = test_string[i];
-    if (IsCharValid(c))
+//----- (0044C59D) --------------------------------------------------------
+int GUIFont::CalcTextHeight(const char *pString, struct GUIWindow *pWindow, int uXOffset, bool return_on_carriage)
+{
+    int uAllHeght;
+    int uStringLen;
+    unsigned char c;
+    char *test_string;
+
+    if (!pString)
+        return 0;
+    uAllHeght = uFontHeight - 6;
+    test_string = FitTextInAWindow(pString, this, pWindow, uXOffset);
+    uStringLen = strlen(pString);
+    for (int i = 0; i < uStringLen; ++i)
     {
-      switch (c)
-      {
-        case '\n':	//Line Feed 0A 10:
-          uAllHeght += uFontHeight - 3;
-          break;
-        case '\f':  //Form Feed, page eject  0C 12 
-          i += 5;
-          break;
-        case '\t':	// Horizontal tab 09
-        case '\r':   //Carriage Return 0D 13
-          if (a5 != 1)
-            i += 3;
-          break;
-      }
-   }
-  }
-  return uAllHeght;
+        c = test_string[i];
+        if (IsCharValid(c))
+        {
+            switch (c)
+            {
+            case '\n':	//Line Feed 0A 10:
+                uAllHeght += uFontHeight - 3;
+                break;
+            case '\f':  //Form Feed, page eject  0C 12 
+                i += 5;
+                break;
+            case '\t':	// Horizontal tab 09
+            case '\r':   //Carriage Return 0D 13
+                if (!return_on_carriage)
+                    i += 3;
+                break;
+            }
+        }
+    }
+    return uAllHeght;
+}
+
+int GUIFont::GetLineWidth(const String &str)
+{
+    return this->GetLineWidth(str.c_str());
 }
 
 //----- (0044C51E) --------------------------------------------------------
 int GUIFont::GetLineWidth(const char *pString)
-	{
-	int str_len; // ebp@3
-	int string_line_width; // esi@3
-	unsigned char c;
+{
+    int str_len; // ebp@3
+    int string_line_width; // esi@3
+    unsigned char c;
 
-	if (!pString)
-		return 0;
-	str_len = strlen(pString);
-	string_line_width = 0;
-	for ( int i = 0; i < str_len; ++i )
-		{
-		c = pString[i];
-		if (IsCharValid(c))
-			{
-			switch (c)
-				{
-			case '\t':
-			case '\n':
-			case '\r':
-				return string_line_width;
-			case '\f':
-				i += 5;	  
-				break;
-			default:
-				if (i > 0)
-					string_line_width += pMetrics[c].uLeftSpacing;
-				string_line_width += pMetrics[c].uWidth;
-				if (i < str_len)
-					string_line_width +=pMetrics[c].uRightSpacing;
-				}
-			}
-		}
-	return string_line_width;
-	}
+    if (!pString)
+        return 0;
+    str_len = strlen(pString);
+    string_line_width = 0;
+    for (int i = 0; i < str_len; ++i)
+    {
+        c = pString[i];
+        if (IsCharValid(c))
+        {
+            switch (c)
+            {
+            case '\t':
+            case '\n':
+            case '\r':
+                return string_line_width;
+            case '\f':
+                i += 5;
+                break;
+            default:
+                if (i > 0)
+                    string_line_width += pMetrics[c].uLeftSpacing;
+                string_line_width += pMetrics[c].uWidth;
+                if (i < str_len)
+                    string_line_width += pMetrics[c].uRightSpacing;
+            }
+        }
+    }
+    return string_line_width;
+}
 
+
+int GUIFont::AlignText_Center(unsigned int center_x, const String &str)
+{
+    return this->AlignText_Center(center_x, str.c_str());
+}
 
 //----- (0044C502) --------------------------------------------------------
 int GUIFont::AlignText_Center(unsigned int uCenterX, const char *pString)
 {
-  signed int position; // esi@1
- 
-  position = (signed int)(uCenterX - GetLineWidth(pString)) >> 1;
-  if ( position >= 0 )
-    return position;
-  else
-    return  0;
+    signed int position; // esi@1
+
+    position = (signed int)(uCenterX - GetLineWidth(pString)) >> 1;
+    if (position >= 0)
+        return position;
+    else
+        return  0;
+}
+
+
+String FitTextInAWindow(String &str, GUIFont *font, GUIWindow *window, int x, bool return_on_carriage)
+{
+    auto result = FitTextInAWindow(str.c_str(), font, window, x, return_on_carriage);
+    return String(result);
 }
 
 //----- (0044C768) --------------------------------------------------------
-char * FitTextInAWindow( const char *pInString, GUIFont *pFont, GUIWindow *pWindow, signed int uX, int a5 )
+char *FitTextInAWindow(const char *pInString, GUIFont *pFont, GUIWindow *pWindow, int uX, bool return_on_carriage)
 {
-  unsigned char c;
-  int uInStrLen;
-  char digits[4];
-  int possible_transition_point;
-  int string_pixel_Width;
-  int start_pixel_offset;
+    unsigned char c;
+    int uInStrLen;
+    char digits[4];
+    int possible_transition_point;
+    int string_pixel_Width;
+    int start_pixel_offset;
 
-  if (!pInString)
-  {
-    MessageBoxW(nullptr, L"Invalid string passed !", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Font.cpp:445", 0);
-    return 0;
-  }
-  uInStrLen = strlen(pInString);
-  strcpy(&temp_string[0], pInString);
-  if (uInStrLen == 0)
-    return &temp_string[0];
-
-  start_pixel_offset = string_pixel_Width=uX;
-  possible_transition_point = 0;
-  for ( int i = 0; i < uInStrLen; ++i )
-  {
-    c = temp_string[i];
-    if (pFont->IsCharValid(c))
+    if (!pInString)
     {
-      switch (c)
-      {
-        case '\t':	// Horizontal tab 09
+        MessageBoxW(nullptr, L"Invalid string passed !", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Font.cpp:445", 0);
+        return 0;
+    }
+    uInStrLen = strlen(pInString);
+    strcpy(&temp_string[0], pInString);
+    if (uInStrLen == 0)
+        return &temp_string[0];
+
+    start_pixel_offset = string_pixel_Width = uX;
+    possible_transition_point = 0;
+    for (int i = 0; i < uInStrLen; ++i)
+    {
+        c = temp_string[i];
+        if (pFont->IsCharValid(c))
         {
-          strncpy(digits, &temp_string[i + 1],3);
-          digits[3] = 0;
-          string_pixel_Width = atoi(digits)+uX;
-          i += 3;
-          break;
-        }
-        case  '\n':	//Line Feed 0A 10 (конец строки)
-        {
-          string_pixel_Width = start_pixel_offset;
-          possible_transition_point = i;
-          break;
-        }
-        case  '\f':   //Form Feed, page eject  0C 12
-        {
-          i += 5;  
-          break;
-        }
-        case  '\r':   //Carriage Return 0D 13
-        {
-          if ( !a5 )
-            return (char*)pInString;
-          break;
-        }
-        case ' '://пробел
-        {
-          string_pixel_Width += pFont->pMetrics[c].uWidth;
-          possible_transition_point = i;
-          break;
-        }
-        default:
-          if ((string_pixel_Width + pFont->pMetrics[c].uWidth + pFont->pMetrics[c].uLeftSpacing +
-               pFont->pMetrics[c].uRightSpacing) < pWindow->uFrameWidth )//наращивание длины строки или перенос
-          {
-            if ( i > possible_transition_point )
-              string_pixel_Width += pFont->pMetrics[c].uLeftSpacing;
-            string_pixel_Width += pFont->pMetrics[c].uWidth;
-            if (i < uInStrLen)
-              string_pixel_Width += pFont->pMetrics[c].uRightSpacing;
-          }
-          else//перенос строки и слова
-          {
-            temp_string[possible_transition_point] ='\n';
-            string_pixel_Width = start_pixel_offset;
-            if ( i > possible_transition_point )
+            switch (c)
             {
-              for ( int j = possible_transition_point; j < i; ++j )
-              {
-                c = temp_string[j];
-                if (pFont->IsCharValid(c))
-                {
-                  if ( j > possible_transition_point )
-                    string_pixel_Width += pFont->pMetrics[c].uLeftSpacing;
-                  string_pixel_Width += pFont->pMetrics[c].uWidth;
-                  if ( j < i )
-                    string_pixel_Width += pFont->pMetrics[c].uRightSpacing;
-                }
-              }
+            case '\t':	// Horizontal tab 09
+            {
+                strncpy(digits, &temp_string[i + 1], 3);
+                digits[3] = 0;
+                string_pixel_Width = atoi(digits) + uX;
+                i += 3;
+                break;
             }
-          }
+            case  '\n':	//Line Feed 0A 10 (конец строки)
+            {
+                string_pixel_Width = start_pixel_offset;
+                possible_transition_point = i;
+                break;
+            }
+            case  '\f':   //Form Feed, page eject  0C 12
+            {
+                i += 5;
+                break;
+            }
+            case  '\r':   //Carriage Return 0D 13
+            {
+                if (!return_on_carriage)
+                    return (char*)pInString;
+                break;
+            }
+            case ' '://пробел
+            {
+                string_pixel_Width += pFont->pMetrics[c].uWidth;
+                possible_transition_point = i;
+                break;
+            }
+            default:
+                if ((string_pixel_Width + pFont->pMetrics[c].uWidth + pFont->pMetrics[c].uLeftSpacing +
+                    pFont->pMetrics[c].uRightSpacing) < pWindow->uFrameWidth)//наращивание длины строки или перенос
+                {
+                    if (i > possible_transition_point)
+                        string_pixel_Width += pFont->pMetrics[c].uLeftSpacing;
+                    string_pixel_Width += pFont->pMetrics[c].uWidth;
+                    if (i < uInStrLen)
+                        string_pixel_Width += pFont->pMetrics[c].uRightSpacing;
+                }
+                else//перенос строки и слова
+                {
+                    temp_string[possible_transition_point] = '\n';
+                    string_pixel_Width = start_pixel_offset;
+                    if (i > possible_transition_point)
+                    {
+                        for (int j = possible_transition_point; j < i; ++j)
+                        {
+                            c = temp_string[j];
+                            if (pFont->IsCharValid(c))
+                            {
+                                if (j > possible_transition_point)
+                                    string_pixel_Width += pFont->pMetrics[c].uLeftSpacing;
+                                string_pixel_Width += pFont->pMetrics[c].uWidth;
+                                if (j < i)
+                                    string_pixel_Width += pFont->pMetrics[c].uRightSpacing;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
-  }
-  return &temp_string[0];
+    return &temp_string[0];
 }
+
 //----- (00414162) --------------------------------------------------------
 void uGameUIFontMain_initialize()
 {
-  uGameUIFontMain = Color16(0xAu, 0, 0);
+    uGameUIFontMain = Color16(10, 0, 0);
 }
 
 //----- (00414174) --------------------------------------------------------

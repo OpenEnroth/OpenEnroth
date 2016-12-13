@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <array>
 
+#include "Engine/Strings.h"
 #include "Engine/Objects/Player.h"
 
 enum UIMessageType: unsigned __int32
@@ -334,13 +335,24 @@ struct GUIWindow
     GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const char* hint);
     virtual ~GUIWindow() {}
 
-  GUIButton *CreateButton(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int a6, int a7, 
-	                      UIMessageType msg, unsigned int msg_param, unsigned __int8 uHotkey, const char *pName,
-                            struct Image *pTextures, ...);
+    GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
+        UIMessageType msg, unsigned int msg_param, unsigned __int8 hotkey, const char *label, class Image *textures, ...);
+    GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
+        UIMessageType msg, unsigned int msg_param, unsigned __int8 hotkey, const String &label, class Image *textures, ...);
+    GUIButton *CreateButtonInternal(int x, int y, int width, int height, int a6, int a7,
+        UIMessageType msg, unsigned int msg_param, unsigned __int8 hotkey, const String &label, va_list textures);
+
   void DrawFlashingInputCursor(signed int uX, int uY, struct GUIFont *a2);
-  int DrawTextInRect(GUIFont *pFont, unsigned int uX, unsigned int uY, unsigned int uColor, const char *text, int rect_width, int reverse_text);
-  void DrawText(GUIFont *a2, signed int uX, int uY, unsigned short uFontColor, const char *Str, bool present_time_transparency, int max_text_height, signed int uFontShadowColor);
-  void DrawTitleText(GUIFont *a2, signed int uHorizontalMargin, unsigned int uVerticalMargin, unsigned __int16 uDefaultColor, const char *pInString, unsigned int uLineSpacing);
+
+  int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, const char *text, int rect_width, int reverse_text);
+  int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, String &str, int rect_width, int reverse_text);
+
+  void DrawText(GUIFont *font, int x, int y, unsigned short uFontColor, const char *str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
+  void DrawText(GUIFont *font, int x, int y, unsigned short uFontColor, const String &str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
+
+  void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, unsigned __int16 uDefaultColor, const char *pInString, int line_spacing);
+  void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, unsigned __int16 uDefaultColor, const String &str, int line_spacing);
+
   void DrawShops_next_generation_time_string(__int64 next_generation_time);
   void HouseDialogManager();
   void DrawMessageBox(bool inside_game_viewport);
@@ -633,9 +645,6 @@ void GameUI_DrawFoodAndGold();
 void GameUI_DrawLifeManaBars();
 void GameUI_DrawHiredNPCs();
 void GameUI_DrawPortraits(unsigned int _this);
-void GameUI_Footer();
-void GameUI_Footer_2();
-void GameUI_SetFooterString(const char *pStr);
 void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW, unsigned int uZoom, unsigned int bRedrawOdmMinimap);
 auto GameUI_GetMinimapHintText() -> const char *;
 void GameUI_DrawPartySpells();
@@ -652,7 +661,7 @@ void GameUI_DrawDialogue();
 
 
 // character ui
-const char *CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uPlayerSkillType);
+String CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uPlayerSkillType);
 void CharacterUI_SkillsTab_ShowHint();
 void CharacterUI_StatsTab_ShowHint();
 void CharacterUI_InventoryTab_Draw(Player *player, bool a2);
@@ -683,9 +692,9 @@ void FillAwardsData();
 void CreateAwardsScrollBar();
 void ReleaseAwardsScrollBar();
 void Inventory_ItemPopupAndAlchemy();
-unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(signed int current_pos, signed int base_pos);
-unsigned int __fastcall GetSizeInInventorySlots(unsigned int uNumPixels);
-struct GUIButton *__fastcall GUI_HandleHotkey(unsigned __int8 uHotkey); // idb
+unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int base_pos);
+unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
+struct GUIButton *GUI_HandleHotkey(unsigned __int8 uHotkey); // idb
 void GUI_ReplaceHotkey(unsigned __int8 uOldHotkey, unsigned __int8 uNewHotkey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, __int64 remaining_time, struct GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item); // idb
@@ -699,22 +708,20 @@ void DrawJoinGuildWindow(int pEventCode);
 void DialogueEnding();
 char sub_4637E0_is_there_popup_onscreen();
 void sub_4B3E1E();
-void __fastcall ClickNPCTopic(signed int uMessageParam);
-void __fastcall DrawTextAtStatusBar(const char *Str, int a5);
+void ClickNPCTopic(signed int uMessageParam);
+void GameUI_StatusBar_DrawImmediate(const char *Str, int a5);
 void _4B3FE5_training_dialogue(int a4);
 void OracleDialogue();
 void CheckBountyRespawnAndAward();
-const char * _4B254D_SkillMasteryTeacher(int trainerInfo);
-char *BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int a5, __int64 *a6);
-void __fastcall DrawTextAtStatusBar(const char *Str, int a5);
-void ShowStatusBarString(const char *pString, unsigned int uNumSeconds);
-void ShowNothingHereStatus();
+String _4B254D_SkillMasteryTeacher(int trainerInfo);
+String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int a5, __int64 *a6);
+String BuildDialogueString(String &str, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int a5, __int64 *a6);
 int const_2();
 
 
-void __fastcall ZBuffer_Fill(int *pZBuffer, int uTextureId, int iZValue);
-void __fastcall ZBuffer_DoFill(int *pZBuffer, struct Texture_MM7 *pTex, int uZValue);
-void __fastcall ZBuffer_DoFill2(int *pZBuffer, struct Texture_MM7 *a2, int a3); // idb
+void ZBuffer_Fill(int *pZBuffer, int uTextureId, int iZValue);
+void ZBuffer_DoFill(int *pZBuffer, struct Texture_MM7 *pTex, int uZValue);
+void ZBuffer_DoFill2(int *pZBuffer, struct Texture_MM7 *a2, int a3); // idb
 
 
 
@@ -738,31 +745,35 @@ struct GUIButton
             pTextures[i] = nullptr;
     }
 
-void DrawLabel(const char *label_text, struct GUIFont *pFont, int a5, int uFontShadowColor);
+    void DrawLabel(const char *label_text, struct GUIFont *pFont, int a5, int uFontShadowColor);
 
-  void Release();
+    void Release();
 
 
-  unsigned int uX;
-  unsigned int uY;
-  unsigned int uWidth;
-  unsigned int uHeight;
-  unsigned int uZ;
-  unsigned int uW;
-  int uButtonType;
-  int field_1C;//may be pMessageType
-  UIMessageType msg;
-  unsigned int  msg_param;
-  int field_28;
-  int field_2C_is_pushed;
-  GUIButton *pPrev;
-  GUIButton *pNext;
-  struct GUIWindow *pParent;
-  struct Image *pTextures[5];
-  unsigned int uNumTextures;
-  unsigned __int8 uHotkey;
-  char pButtonName[32];
-  char field_75[71];
+    unsigned int uX;
+    unsigned int uY;
+    unsigned int uWidth;
+    unsigned int uHeight;
+    unsigned int uZ;
+    unsigned int uW;
+    int uButtonType;
+    int field_1C;//may be pMessageType
+    UIMessageType msg;
+    unsigned int  msg_param;
+    int field_28;
+    int field_2C_is_pushed;
+    GUIButton *pPrev;
+    GUIButton *pNext;
+    struct GUIWindow *pParent;
+    class Image *pTextures[5];
+    unsigned int uNumTextures;
+    unsigned __int8 uHotkey;
+    char pButtonName[32];
+    char field_75[71];
+
+
+    // new fields
+    String button_name;
 };
 #pragma pack(pop)
 

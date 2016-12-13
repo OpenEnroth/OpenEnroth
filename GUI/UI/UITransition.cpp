@@ -6,13 +6,13 @@
 #include <io.h>
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/LOD.h"
 #include "Engine/Timer.h"
 #include "Engine/stru159.h"
 #include "Engine/Events2D.h"
-#include "Engine/texts.h"
 #include "Engine/MapInfo.h"
 
 #include "GUI/UI/UITransition.h"
@@ -29,6 +29,7 @@
 
 Image *transition_ui_icon = nullptr;
 
+std::string transition_button_label;
 
 void GUIWindow_Travel::Release()
 {
@@ -81,7 +82,6 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
 // ----------------------------------
 // 00444839 TransitionUI_Load -- part
   const char *v15; // eax@14
-  char pContainer[40]; // [sp+Ch] [bp-2Ch]@1
 
   dword_59117C_teleportx = x;
   dword_591178_teleporty = y;
@@ -94,14 +94,15 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
   pEventTimer->Pause();
   pAudioPlayer->StopChannels(-1, -1);
 
+  char filename[40];
   switch (pParty->alignment)
   {
-    case PartyAlignment_Good:    sprintfex(pContainer, "evt%02d-b", const_2()); break;
-    case PartyAlignment_Neutral: sprintfex(pContainer, "evt%02d", const_2());   break;
-    case PartyAlignment_Evil:    sprintfex(pContainer, "evt%02d-c", const_2()); break;
+    case PartyAlignment_Good:    sprintf(filename, "evt%02d-b", const_2()); break;
+    case PartyAlignment_Neutral: sprintf(filename, "evt%02d", const_2());   break;
+    case PartyAlignment_Evil:    sprintf(filename, "evt%02d-c", const_2()); break;
     default: Error("Invalid alignment: %u", pParty->alignment);
   }
-  game_ui_dialogue_background = assets->GetImage_16Bit(pContainer);
+  game_ui_dialogue_background = assets->GetImage_16Bit(filename);
 
   transition_ui_icon = assets->GetImage_16Bit(pHouse_ExitPictures[exit_pic_id]);
   if (anim_id)
@@ -114,7 +115,8 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
         v15 = pCurrentMapName;
     if (pMapStats->GetMapInfo(v15))
     {
-        sprintfex(sHouseName.data(), pGlobalTXT_LocalizationStrings[411], pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName);//Войти в ^Pv[%s]
+        transition_button_label = localization->FormatString(411, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName); // Enter %s   Войти в ^Pv[%s]
+
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->uFlags & 0x30)
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
         if (IndoorLocation::GetLocationIndex(pLocationName))
@@ -122,9 +124,9 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
     }
     else
     {
-        strcpy(sHouseName.data(), pGlobalTXT_LocalizationStrings[73]);//Войти
+        transition_button_label = localization->GetString(73); // Enter    Войти
         //if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId )
-        //PlayHouseSound(anim_id, HouseSound_Greeting);
+        //  PlayHouseSound(anim_id, HouseSound_Greeting);
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->uFlags & 0x30)
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
         if (IndoorLocation::GetLocationIndex(pLocationName))
@@ -135,7 +137,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
   {
     if ( pMapStats->GetMapInfo(pCurrentMapName) )
     {
-      sprintfex(sHouseName.data(), pGlobalTXT_LocalizationStrings[410], pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName); // "Leave %s"
+        transition_button_label = localization->FormatString(410, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName); // "Leave %s"
       //if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId )
         //PlayHouseSound(anim_id, HouseSound_Greeting);
       if ( uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->uFlags & 0x30 )
@@ -145,7 +147,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
     }
     else
     {
-        strcpy(sHouseName.data(), pGlobalTXT_LocalizationStrings[79]);
+        transition_button_label = localization->GetString(79);
         //if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId )
         //PlayHouseSound(anim_id, HouseSound_Greeting);
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->uFlags & 0x30)
@@ -155,14 +157,14 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
     }
   }
 
-  auto hint = this->Hint = sHouseName.data();
+  auto hint = this->Hint = transition_button_label.c_str();
 
 //
 // --------------------------------
 // 0041C432 GUIWindow c-tor -- part
   prev_screen_type = current_screen_type;
   current_screen_type = SCREEN_INPUT_BLV;
-  pBtn_ExitCancel = CreateButton(0x236u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionWindowCloseBtn, 0, 'N', pGlobalTXT_LocalizationStrings[34], ui_buttdesc2, 0); // Cancel / Отмена
+  pBtn_ExitCancel = CreateButton(0x236u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionWindowCloseBtn, 0, 'N', localization->GetString(34), ui_buttdesc2, 0); // Cancel / Отмена
   pBtn_YES = CreateButton(0x1E6u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionUI_Confirm, 0, 'Y', hint, ui_buttyes2, 0);
   CreateButton(pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 0x3Fu, 0x49u, 1, 0, UIMSG_TransitionUI_Confirm, 1, 0x20u, hint, 0);
   CreateButton(8, 8, 0x1CCu, 0x158u, 1, 0, UIMSG_TransitionUI_Confirm, 1u, 0, hint, 0);
@@ -182,22 +184,22 @@ GUIWindow_Travel::GUIWindow_Travel() :
 
   switch (pParty->alignment)
   {
-    case PartyAlignment_Good:    sprintfex(pContainer, "evt%02d-b", const_2()); break;
-    case PartyAlignment_Neutral: sprintfex(pContainer, "evt%02d", const_2());   break;
-    case PartyAlignment_Evil:    sprintfex(pContainer, "evt%02d-c", const_2()); break;
+    case PartyAlignment_Good:    sprintf(pContainer, "evt%02d-b", const_2()); break;
+    case PartyAlignment_Neutral: sprintf(pContainer, "evt%02d", const_2());   break;
+    case PartyAlignment_Evil:    sprintf(pContainer, "evt%02d-c", const_2()); break;
     default: Error("Invalid alignment: %u", pParty->alignment);
   }
   game_ui_dialogue_background = assets->GetImage_16Bit(pContainer);
 
   transition_ui_icon = assets->GetImage_16Bit("outside");
-  if ( pMapStats->GetMapInfo(pCurrentMapName) )
-    sprintfex(sHouseName.data(), pGlobalTXT_LocalizationStrings[410], pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);// "Leave %s"
+  if (pMapStats->GetMapInfo(pCurrentMapName))
+      transition_button_label = localization->FormatString(410, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);// "Leave %s"
   else
-    strcpy(sHouseName.data(), pGlobalTXT_LocalizationStrings[79]);// "Exit"
+      transition_button_label = localization->GetString(79); // Exit
 
 
 
-  auto hint = this->Hint = sHouseName.data();
+  auto hint = this->Hint = transition_button_label.c_str();
 
 // --------------------------------
 // 0041C432 GUIWindow c-tor -- part
@@ -208,7 +210,7 @@ GUIWindow_Travel::GUIWindow_Travel() :
       UIMSG_CHANGE_LOCATION_ClickCencelBtn,
       0,
       'N',
-      pGlobalTXT_LocalizationStrings[156],
+      localization->GetString(156),
       ui_buttdesc2,
       0
   );// Stay in this area / Остаться в этой области
@@ -230,38 +232,39 @@ GUIWindow_Travel::GUIWindow_Travel() :
 //----- (00444DCA) --------------------------------------------------------
 void GUIWindow_Travel::Update()
 {
-// -----------------------------------
-// 004156F0 GUI_UpdateWindows --- part
-  GUIWindow travel_window; // [sp+Ch] [bp-78h]@1
-  char pDestinationMapName[32]; // [sp+60h] [bp-24h]@1
+    // -----------------------------------
+    // 004156F0 GUI_UpdateWindows --- part
+    GUIWindow travel_window; // [sp+Ch] [bp-78h]@1
+    char pDestinationMapName[32]; // [sp+60h] [bp-24h]@1
 
-  memcpy(&travel_window, pPrimaryWindow, sizeof(travel_window));
-  pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, pDestinationMapName, 20);
-  pRenderer->DrawTextureNew(477/640.0f, 0, game_ui_dialogue_background);
-  pRenderer->DrawTextureAlphaNew(468/640.0f, 0, game_ui_right_panel_frame);
-  pRenderer->DrawTextureNew(pNPCPortraits_x[0][0]/640.0f, pNPCPortraits_y[0][0]/480.0f, transition_ui_icon);
-  pRenderer->DrawTextureAlphaNew(556/640.0f, 451/480.0f, dialogue_ui_x_x_u);
-  pRenderer->DrawTextureAlphaNew(476/640.0f, 451/480.0f, dialogue_ui_x_ok_u);
-  if ( pMapStats->GetMapInfo(pDestinationMapName) )
-  {
-    travel_window.uFrameX = 493;
-    travel_window.uFrameWidth = 126;
-    travel_window.uFrameZ = 366;
-    travel_window.DrawTitleText(pFontCreate, 0, 4, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName, 3);
-    travel_window.uFrameX = 483;
-    travel_window.uFrameWidth = 148;
-    travel_window.uFrameZ = 334;
-    if ( GetTravelTime() == 1 )
-      sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[663], 1, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName);// "It will take %d day to cross to %s."
-    else
-      sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[128], GetTravelTime(), pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName);// "It will take %d days to travel to %s."
+    memcpy(&travel_window, pPrimaryWindow, sizeof(travel_window));
+    pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, pDestinationMapName, 20);
+    pRenderer->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+    pRenderer->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    pRenderer->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
+    pRenderer->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+    pRenderer->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    if (pMapStats->GetMapInfo(pDestinationMapName))
+    {
+        travel_window.uFrameX = 493;
+        travel_window.uFrameWidth = 126;
+        travel_window.uFrameZ = 366;
+        travel_window.DrawTitleText(pFontCreate, 0, 4, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName, 3);
+        travel_window.uFrameX = 483;
+        travel_window.uFrameWidth = 148;
+        travel_window.uFrameZ = 334;
 
-    strcat(pTmpBuf.data(), "\n \n");
-    sprintfex(pTmpBuf2.data(), pGlobalTXT_LocalizationStrings[126], pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);
-    strcat(pTmpBuf.data(), pTmpBuf2.data());
-    travel_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(pTmpBuf.data(), &travel_window, 0, 0)) / 2 + 101, 0, pTmpBuf.data(), 3);
-    _unused_5B5924_is_travel_ui_drawn = 1;
-  }
+        String str;
+        if (GetTravelTime() == 1)
+            str = localization->FormatString(663, 1, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName); // It will take %d day to cross to %s.
+        else
+            str = localization->FormatString(128, GetTravelTime(), pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName); // It will take %d days to travel to %s.
+        str += "\n \n";
+        str += localization->FormatString(126, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);
+
+        travel_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, &travel_window, 0)) / 2 + 101, 0, str, 3);
+        _unused_5B5924_is_travel_ui_drawn = 1;
+    }
 }
 
 
@@ -269,45 +272,45 @@ void GUIWindow_Travel::Update()
 //----- (00444A51) --------------------------------------------------------
 void GUIWindow_Transition::Update()
 {
-// -----------------------------------
-// 004156F0 GUI_UpdateWindows --- part
-  unsigned int v4; // [sp-10h] [bp-7Ch]@12
-  GUIWindow transition_window; // [sp+Ch] [bp-60h]@1
-  unsigned int v9; // [sp+60h] [bp-Ch]@1
-  unsigned int map_id; // [sp+64h] [bp-8h]@1
+    // -----------------------------------
+    // 004156F0 GUI_UpdateWindows --- part
+    unsigned int v4; // [sp-10h] [bp-7Ch]@12
+    GUIWindow transition_window; // [sp+Ch] [bp-60h]@1
+    unsigned int v9; // [sp+60h] [bp-Ch]@1
+    unsigned int map_id; // [sp+64h] [bp-8h]@1
 
-  memcpy(&transition_window, pPrimaryWindow, sizeof(transition_window));
-  v9 = IndoorLocation::GetLocationIndex(dword_591164_teleport_map_name);
-  pRenderer->DrawTextureNew(477/640.0f, 0, game_ui_dialogue_background);
-  pRenderer->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4)/640.0f, (pNPCPortraits_y[0][0] - 4)/480.0f, game_ui_evtnpc);
-  pRenderer->DrawTextureNew(pNPCPortraits_x[0][0]/640.0f, pNPCPortraits_y[0][0]/480.0f, transition_ui_icon);
+    memcpy(&transition_window, pPrimaryWindow, sizeof(transition_window));
+    v9 = IndoorLocation::GetLocationIndex(dword_591164_teleport_map_name);
+    pRenderer->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+    pRenderer->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
+    pRenderer->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
 
-  pRenderer->DrawTextureAlphaNew(468/640.0f, 0, game_ui_right_panel_frame);
-  pRenderer->DrawTextureAlphaNew(556/640.0f, 451/480.0f, dialogue_ui_x_x_u);
-  pRenderer->DrawTextureAlphaNew(476/640.0f, 451/480.0f, dialogue_ui_x_ok_u);
-  map_id = pMapStats->GetMapInfo(pCurrentMapName);
-  if ( (pMovie_Track || v9) && *dword_591164_teleport_map_name != ' ' )
-    map_id = pMapStats->GetMapInfo(dword_591164_teleport_map_name);
-  transition_window.uFrameX = 493;
-  transition_window.uFrameWidth = 126;
-  transition_window.uFrameZ = 366;
-  transition_window.DrawTitleText(pFontCreate, 0, 5, 0, pMapStats->pInfos[map_id].pName, 3);
-  transition_window.uFrameX = 483;
-  transition_window.uFrameWidth = 148;
-  transition_window.uFrameZ = 334;
+    pRenderer->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    pRenderer->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+    pRenderer->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    if ((pMovie_Track || v9) && *dword_591164_teleport_map_name != ' ')
+        map_id = pMapStats->GetMapInfo(dword_591164_teleport_map_name);
+    transition_window.uFrameX = 493;
+    transition_window.uFrameWidth = 126;
+    transition_window.uFrameZ = 366;
+    transition_window.DrawTitleText(pFontCreate, 0, 5, 0, pMapStats->pInfos[map_id].pName, 3);
+    transition_window.uFrameX = 483;
+    transition_window.uFrameWidth = 148;
+    transition_window.uFrameZ = 334;
 
-  if ( uCurrentHouse_Animation )
-  {
-    v4 = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uCurrentHouse_Animation], &transition_window, 0, 0)) / 2 + 101;
-    transition_window.DrawTitleText(pFontCreate, 0, v4, 0, pTransitionStrings[uCurrentHouse_Animation], 3);
-  }
-  else if ( map_id )
-  {
-    sprintfex(pTmpBuf.data(), pGlobalTXT_LocalizationStrings[409], pMapStats->pInfos[map_id].pName);// "Do you wish to leave %s?"
-    v4 = (212 - pFontCreate->CalcTextHeight(pTmpBuf.data(), &transition_window, 0, 0)) / 2 + 101;
-    transition_window.DrawTitleText(pFontCreate, 0, v4, 0, pTmpBuf.data(), 3);
-  }
-  else Error("Troubles in da house");
+    if (uCurrentHouse_Animation)
+    {
+        v4 = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uCurrentHouse_Animation], &transition_window, 0)) / 2 + 101;
+        transition_window.DrawTitleText(pFontCreate, 0, v4, 0, pTransitionStrings[uCurrentHouse_Animation], 3);
+    }
+    else if (map_id)
+    {
+        auto str = localization->FormatString(409, pMapStats->pInfos[map_id].pName); // Do you wish to leave %s?
+        v4 = (212 - pFontCreate->CalcTextHeight(str, &transition_window, 0)) / 2 + 101;
+        transition_window.DrawTitleText(pFontCreate, 0, v4, 0, str, 3);
+    }
+    else Error("Troubles in da house");
 
-  _unused_5B5924_is_travel_ui_drawn = true;
+    _unused_5B5924_is_travel_ui_drawn = true;
 }
