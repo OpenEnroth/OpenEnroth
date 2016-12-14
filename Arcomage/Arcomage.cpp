@@ -3,10 +3,9 @@
 #include <crtdbg.h>
 
 #define _CRT_SECURE_NO_WARNINGS
-#include <string>
-
 
 #include "Engine/Engine.h"
+#include "Engine/Strings.h"
 #include "Engine/Time.h"
 #include "Engine/Localization.h"
 
@@ -37,10 +36,10 @@ void DrawGameUI(int  animation_stage);
 void DrawSparks();
 void DrawRectanglesForText();
 void DrawPlayersText();
-void DrawPlayerLevels(int a1, char *text, POINT *pXY); 
-void DrawBricksCount(int a1, char* text, POINT *pXY); 
-void DrawGemsCount(int a1, char* text, POINT* pXY);
-void DrawBeastsCount(int a1, char *text, POINT *pXY);
+void DrawPlayerLevels(const String &str, POINT *pXY); 
+void DrawBricksCount(const String &str, POINT *pXY); 
+void DrawGemsCount(const String &str, POINT* pXY);
+void DrawBeastsCount(const String &str, POINT *pXY);
 void DrawPlayersTowers();
 void DrawPlayersWall();
 void DrawCards();
@@ -55,7 +54,7 @@ int  am_40D2B4(POINT* a1, int a2);
 int  ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
-void am_DrawText(int a1, const char *pText, POINT *pXY);
+void am_DrawText(const String &str, POINT *pXY);
 void am_BeginScene(unsigned __int16 *pPcxPixels, int a2, int a3); // idb
 void am_EndScene();
 void DrawRect(RECT *pXYZW, unsigned __int16 uColor, char bSolidFill);
@@ -687,78 +686,71 @@ void Render::am_Blt_Chroma(RECT *pSrcRect, POINT *pTargetPoint, int a3, int blen
 }
 
 //----- (0040D9B1) --------------------------------------------------------
-void Render::am_Blt_Copy( RECT *pSrcRect, POINT *pTargetPoint, int blend_mode )
+void Render::am_Blt_Copy(RECT *pSrcRect, POINT *pTargetPoint, int blend_mode)
 {
-  unsigned __int16 *pSrc; // eax@2
-  int uSrcTotalWidth; // ecx@4
-  int v21; // [sp+Ch] [bp-18h]@8
-  unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
-  __int32 src_width; // [sp+14h] [bp-10h]@3
-  __int32 src_height; // [sp+18h] [bp-Ch]@3
-  int uSrcPitch; // [sp+1Ch] [bp-8h]@5
+    unsigned __int16 *pSrc; // eax@2
+    int uSrcTotalWidth; // ecx@4
+    int v21; // [sp+Ch] [bp-18h]@8
+    unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
+    __int32 src_width; // [sp+14h] [bp-10h]@3
+    __int32 src_height; // [sp+18h] [bp-Ch]@3
+    int uSrcPitch; // [sp+1Ch] [bp-8h]@5
 
-  if ( !uNumSceneBegins )
-    return;
-  if ( !pArcomageGame->pBlit_Copy_pixels )
-    return;
+    if (!uNumSceneBegins)
+        return;
+    if (!pArcomageGame->pBlit_Copy_pixels)
+        return;
 
     //dest_surf_pos = &pRenderer->pTargetSurface[pTargetPoint->x + pTargetPoint->y * pRenderer->uTargetSurfacePitch];
-  src_width = pSrcRect->right - pSrcRect->left;
-  src_height = pSrcRect->bottom - pSrcRect->top;
-  if ( pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels )
-    uSrcTotalWidth = pArcomageGame->pGameBackground.uWidth;
-  else if ( pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels )
-    uSrcTotalWidth = pArcomageGame->pSprites.uWidth;
+    src_width = pSrcRect->right - pSrcRect->left;
+    src_height = pSrcRect->bottom - pSrcRect->top;
+    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
+        uSrcTotalWidth = pArcomageGame->pGameBackground.uWidth;
+    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
+        uSrcTotalWidth = pArcomageGame->pSprites.uWidth;
 
-  //v20 = 157;
-  //v19 = "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\am_nw.cpp";
-  //v21 = &v18;
-  //std__string_char_40E2C8(&v18, "Problem in Blit_Chroma", &a3a);
-  //466D09_xcpt_string(&v21, v18, v19, v20);
-  //pSrc = pArcomageGame.pBlit_Copy_pixels;
-  //LABEL_9:
-  pSrc = pArcomageGame->pBlit_Copy_pixels;
-  uSrcPitch = uSrcTotalWidth;
-  src_surf_pos = &pSrc[pSrcRect->left + uSrcPitch * pSrcRect->top];
-  v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
+    pSrc = pArcomageGame->pBlit_Copy_pixels;
+    uSrcPitch = uSrcTotalWidth;
+    src_surf_pos = &pSrc[pSrcRect->left + uSrcPitch * pSrcRect->top];
+    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
 
-  if ( blend_mode == 2 )
-  {
-    uSrcPitch =  (uSrcPitch - src_width);
-    for ( int i = 0; i < src_height; ++i )
+    if (blend_mode == 2)
     {
-      for ( int j = 0; j < src_width; ++j )
-      { 
-        if ( *src_surf_pos != v21 )
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i)
         {
-          if ( pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1 
-            && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-            WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
+            for (int j = 0; j < src_width; ++j)
+            {
+                if (*src_surf_pos != v21)
+                {
+                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
         }
-        ++src_surf_pos;
-      }
-      src_surf_pos += uSrcPitch;
     }
-  }
-  else 
-  {
-    uSrcPitch =  (uSrcPitch - src_width);
-    for ( int i = 0; i < src_height; ++i )
+    else
     {
-      for ( int j = 0; j < src_width; ++j )
-      {
-        if ( *src_surf_pos != v21 )
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i)
         {
-          if ( pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-            && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-          //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) / 2)) + (v21 & (*src_surf_pos / 2)));
-            WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
+            for (int j = 0; j < src_width; ++j)
+            {
+                if (*src_surf_pos != v21)
+                {
+                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+                        //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) / 2)) + (v21 & (*src_surf_pos / 2)));
+                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
         }
-        ++src_surf_pos;
-      }
-      src_surf_pos += uSrcPitch;
     }
-  }
 }
 
 //----- (0040DB10) --------------------------------------------------------
@@ -1343,7 +1335,7 @@ void TurnChange()
       // v0 = 0;
       v11.y = 200;
       v11.x = 320; // - 12 * v0 / 2;
-      am_DrawText(-1, player_name, &v11);
+      am_DrawText(player_name, &v11);
       am_byte_4FAA75 = 1;
       ++current_player_num;
       if ( current_player_num >= 2  )
@@ -1352,7 +1344,7 @@ void TurnChange()
       // v4 = 0;
       v11.y = 260;
       v11.x = 320;// - 12 * v4 / 2;
-      am_DrawText(-1, player_name, &v11);
+      am_DrawText(player_name, &v11);
       /* v6.left = 0;
       v6.right = 640;
       v6.top = 0;
@@ -1739,315 +1731,282 @@ void DrawRectanglesForText()
 //----- (0040AC5F) --------------------------------------------------------
 void DrawPlayersText()
 {
-  int res_value; // ecx@18
-  char text_buff[32]; // [sp+Ch] [bp-28h]@2
-  POINT text_position; // [sp+2Ch] [bp-8h]@2
+    int res_value; // ecx@18
+    char text_buff[32]; // [sp+Ch] [bp-28h]@2
+    POINT text_position; // [sp+2Ch] [bp-8h]@2
 
-  if ( need_to_discard_card )
-  {
-    strcpy(text_buff, localization->GetString(266));// DISCARD A CARD
-    text_position.x = 320 - pArcomageGame->pfntArrus->GetLineWidth(text_buff) / 2;
-    text_position.y = 306;
-    am_DrawText(-1, text_buff, &text_position);
-  }
-  strcpy( text_buff, am_Players[0].pPlayerName);
-  if ( !current_player_num )
-    strcat(text_buff, "***");
-  text_position.x = 47 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
-  text_position.y = 21;
-  am_DrawText(-1, text_buff, &text_position);
+    if (need_to_discard_card)
+    {
+        strcpy(text_buff, localization->GetString(266));// DISCARD A CARD
+        text_position.x = 320 - pArcomageGame->pfntArrus->GetLineWidth(text_buff) / 2;
+        text_position.y = 306;
+        am_DrawText(text_buff, &text_position);
+    }
+    strcpy(text_buff, am_Players[0].pPlayerName);
+    if (!current_player_num)
+        strcat(text_buff, "***");
+    text_position.x = 47 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
+    text_position.y = 21;
+    am_DrawText(text_buff, &text_position);
 
-  strcpy(text_buff, am_Players[1].pPlayerName);
-  if ( current_player_num == 1 )
-    strcat(text_buff, "***" );
-  text_position.x = 595 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
-  text_position.y = 21;
-  am_DrawText(-1, text_buff, &text_position);
+    strcpy(text_buff, am_Players[1].pPlayerName);
+    if (current_player_num == 1)
+        strcat(text_buff, "***");
+    text_position.x = 595 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
+    text_position.y = 21;
+    am_DrawText(text_buff, &text_position);
 
-  am_IntToString(am_Players[0].tower_height, text_buff);
-  text_position.x = 123 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
-  text_position.y = 305;
-  am_DrawText(-1, text_buff, &text_position);
+    am_IntToString(am_Players[0].tower_height, text_buff);
+    text_position.x = 123 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
+    text_position.y = 305;
+    am_DrawText(text_buff, &text_position);
 
-  am_IntToString(am_Players[1].tower_height, text_buff);
-  text_position.x = 515 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
-  text_position.y = 305;
-  am_DrawText(-1, text_buff, &text_position);
+    am_IntToString(am_Players[1].tower_height, text_buff);
+    text_position.x = 515 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
+    text_position.y = 305;
+    am_DrawText(text_buff, &text_position);
 
-  am_IntToString(am_Players[0].wall_height, text_buff);
-  text_position.x = 188 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
-  text_position.y = 305;
-  am_DrawText(-1, text_buff, &text_position);
+    am_IntToString(am_Players[0].wall_height, text_buff);
+    text_position.x = 188 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
+    text_position.y = 305;
+    am_DrawText(text_buff, &text_position);
 
-  am_IntToString(am_Players[1].wall_height, text_buff);
-  text_position.x = 451 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
-  text_position.y = 305;
-  am_DrawText(-1, text_buff, &text_position);
+    am_IntToString(am_Players[1].wall_height, text_buff);
+    text_position.x = 451 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
+    text_position.y = 305;
+    am_DrawText(text_buff, &text_position);
 
-  res_value = am_Players[0].quarry_level;
-  if ( use_start_bonus )
-    res_value =am_Players[0].quarry_level + quarry_bonus;
-  am_IntToString(res_value, text_buff);
-  text_position.x = 14;// - 6 * 0 / 2;
-  text_position.y = 92;
-  DrawPlayerLevels(-1, text_buff, &text_position);
+    res_value = am_Players[0].quarry_level;
+    if (use_start_bonus)
+        res_value = am_Players[0].quarry_level + quarry_bonus;
+    text_position.x = 14;// - 6 * 0 / 2;
+    text_position.y = 92;
+    DrawPlayerLevels(StringFromInt(res_value), &text_position);
 
-  res_value = am_Players[1].quarry_level;
-  if ( use_start_bonus )
-    res_value = am_Players[1].quarry_level + quarry_bonus;
-  am_IntToString(res_value, text_buff);
-//  v2 = 0;
-  text_position.y = 92;
-  text_position.x = 561; //- 6 * v2 / 2;
-  DrawPlayerLevels(-1, text_buff, &text_position);
+    res_value = am_Players[1].quarry_level;
+    if (use_start_bonus)
+        res_value = am_Players[1].quarry_level + quarry_bonus;
+    text_position.y = 92;
+    text_position.x = 561; //- 6 * v2 / 2;
+    DrawPlayerLevels(StringFromInt(res_value), &text_position);
 
-  res_value = am_Players[0].magic_level;
-  if ( use_start_bonus )
-    res_value = am_Players[0].magic_level + magic_bonus;    
-  am_IntToString(res_value, text_buff);
- // v4 = 0;
-  text_position.y = 164;
-  text_position.x = 14; //- 6 * v4 / 2;
-  DrawPlayerLevels(-1, text_buff, &text_position);
+    res_value = am_Players[0].magic_level;
+    if (use_start_bonus)
+        res_value = am_Players[0].magic_level + magic_bonus;
+    text_position.y = 164;
+    text_position.x = 14; //- 6 * v4 / 2;
+    DrawPlayerLevels(StringFromInt(res_value), &text_position);
 
-  res_value = am_Players[1].magic_level;
-  if ( use_start_bonus )
-    res_value = am_Players[1].magic_level + magic_bonus;
-  am_IntToString(res_value, text_buff);
- // v6 = 0;
-  text_position.y = 164;
-  text_position.x = 561; //- 6 * v6 / 2;
-  DrawPlayerLevels(-1, text_buff, &text_position);
+    res_value = am_Players[1].magic_level;
+    if (use_start_bonus)
+        res_value = am_Players[1].magic_level + magic_bonus;
+    text_position.y = 164;
+    text_position.x = 561; //- 6 * v6 / 2;
+    DrawPlayerLevels(StringFromInt(res_value), &text_position);
 
-  res_value = am_Players[0].zoo_level;
-  if ( use_start_bonus )
-    res_value = am_Players[0].zoo_level + zoo_bonus;
-  am_IntToString(res_value, text_buff);
- // v8 = 0;
-  text_position.y = 236;
-  text_position.x = 14;// - 6 * v8 / 2;
-  DrawPlayerLevels(-1, text_buff, &text_position);
+    res_value = am_Players[0].zoo_level;
+    if (use_start_bonus)
+        res_value = am_Players[0].zoo_level + zoo_bonus;
+    text_position.y = 236;
+    text_position.x = 14;// - 6 * v8 / 2;
+    DrawPlayerLevels(StringFromInt(res_value), &text_position);
 
-  res_value = am_Players[1].zoo_level;
-  if ( use_start_bonus )
-    res_value =  am_Players[1].zoo_level + zoo_bonus;
-  am_IntToString(res_value, text_buff);
- // v10 = 0;
-  text_position.y = 236;
-  text_position.x = 561;// - 6 * v10 / 2;
-  DrawPlayerLevels(-1, text_buff, &text_position);
+    res_value = am_Players[1].zoo_level;
+    if (use_start_bonus)
+        res_value = am_Players[1].zoo_level + zoo_bonus;
+    text_position.y = 236;
+    text_position.x = 561;// - 6 * v10 / 2;
+    DrawPlayerLevels(StringFromInt(res_value), &text_position);
 
-  am_IntToString(am_Players[0].resource_bricks, text_buff);
-  text_position.y = 114;
-  text_position.x = 10;
-  DrawBricksCount(-1, text_buff, &text_position);
+    text_position.y = 114;
+    text_position.x = 10;
+    DrawBricksCount(StringFromInt(am_Players[0].resource_bricks), &text_position);
 
-  am_IntToString(am_Players[1].resource_bricks, text_buff);
-  text_position.x = 557;
-  text_position.y = 114;
-  DrawBricksCount(-1, text_buff, &text_position);
+    text_position.x = 557;
+    text_position.y = 114;
+    DrawBricksCount(StringFromInt(am_Players[1].resource_bricks), &text_position);
 
-  am_IntToString(am_Players[0].resource_gems, text_buff);
-  text_position.x = 10;
-  text_position.y = 186;
-  DrawGemsCount(-1, text_buff, &text_position);
+    text_position.x = 10;
+    text_position.y = 186;
+    DrawGemsCount(StringFromInt(am_Players[0].resource_gems), &text_position);
 
-  am_IntToString(am_Players[1].resource_gems, text_buff);
-  text_position.x = 557;
-  text_position.y = 186;
-  DrawGemsCount(-1, text_buff, &text_position);
+    text_position.x = 557;
+    text_position.y = 186;
+    DrawGemsCount(StringFromInt(am_Players[1].resource_gems), &text_position);
 
-  am_IntToString(am_Players[0].resource_beasts, text_buff);
-  text_position.x = 10;
-  text_position.y = 258;
-  DrawBeastsCount(-1, text_buff, &text_position);
+    text_position.x = 10;
+    text_position.y = 258;
+    DrawBeastsCount(StringFromInt(am_Players[0].resource_beasts), &text_position);
 
-  am_IntToString(am_Players[1].resource_beasts, text_buff);
-  text_position.x = 557;
-  text_position.y = 258;
-  DrawBeastsCount(-1, text_buff, &text_position);
+    text_position.x = 557;
+    text_position.y = 258;
+    DrawBeastsCount(StringFromInt(am_Players[1].resource_beasts), &text_position);
 }
 
 
 //----- (0040B102) --------------------------------------------------------
-void DrawPlayerLevels( int a1, char *text, POINT *pXY )
+void DrawPlayerLevels(const String &str, POINT *pXY)
 {
-  char *v3; // esi@1
-  unsigned char test_char; // bl@2
-  int v7; // eax@3
-  RECT pSrcRect;
-  POINT pTargetPoint;
+    unsigned char test_char; // bl@2
+    int v7; // eax@3
+    RECT pSrcRect;
+    POINT pTargetPoint;
 
-  v3 = text;
-  am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
-  pTargetPoint.x = pXY->x;
-  pTargetPoint.y = pXY->y;
-  do
-  {
-    test_char = *v3;
-    ++v3;
-    if ( test_char )
+    am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
     {
-      v7 = 22 * test_char;
-      pSrcRect.right = v7 - 842;
-      pSrcRect.left = v7 - 864;
-      pSrcRect.top = 190;
-      pSrcRect.bottom = 207;
-      pRenderer->am_Blt_Chroma(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
-      pTargetPoint.x += 22;
+        pTargetPoint.x = pXY->x;
+        pTargetPoint.y = pXY->y;
+
+        for (auto i = str.begin(); i != str.end(); ++i)
+        {
+            v7 = 22 * *i;
+            pSrcRect.right = v7 - 842;
+            pSrcRect.left = v7 - 864;
+            pSrcRect.top = 190;
+            pSrcRect.bottom = 207;
+            pRenderer->am_Blt_Chroma(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
+            pTargetPoint.x += 22;
+        }
     }
-  }
-  while ( test_char!= 0 );
-  am_EndScene();
+    am_EndScene();
 }
 
 //----- (0040B17E) --------------------------------------------------------
-void DrawBricksCount( int a1, char* text, POINT *pXY )
+void DrawBricksCount(const String &str, POINT *pXY)
 {
-  char *v3; // esi@1
-  unsigned char test_char; // bl@2
-  int v7; // eax@3
-  RECT pSrcRect;
-  POINT pTargetPoint;
+    int v7; // eax@3
+    RECT pSrcRect;
+    POINT pTargetPoint;
 
-  v3 = text;
-  am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
-  pTargetPoint.x = pXY->x;
-  pTargetPoint.y = pXY->y;
-  do
-  {
-    test_char = *v3;
-    ++v3;
-    if ( test_char )
+    am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
     {
-      v7 = 13 * test_char;
-      pSrcRect.left = v7 - 370;
-      pSrcRect.right = v7 - 357;
-      pSrcRect.top = 128;
-      pSrcRect.bottom = 138;
-      pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
-      pTargetPoint.x += 13;
+        pTargetPoint.x = pXY->x;
+        pTargetPoint.y = pXY->y;
+        for (auto i = str.begin(); i != str.end(); ++i)
+        {
+            if (*i)
+            {
+                v7 = 13 * *i;
+                pSrcRect.left = v7 - 370;
+                pSrcRect.right = v7 - 357;
+                pSrcRect.top = 128;
+                pSrcRect.bottom = 138;
+                pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
+                pTargetPoint.x += 13;
+            }
+        }
     }
-  }
-  while ( test_char!= 0 );
-  am_EndScene();
+    am_EndScene();
 }
 
 //----- (0040B1F3) --------------------------------------------------------
-void DrawGemsCount( int a1, char* text, POINT* pXY )
+void DrawGemsCount(const String &str, POINT* pXY)
 {
-  char *v3; // esi@1
-  unsigned char test_char; // bl@2
-  int v7; // eax@3
-  RECT pSrcRect;
-  POINT pTargetPoint;
+    int v7; // eax@3
+    RECT pSrcRect;
+    POINT pTargetPoint;
 
-  v3 = text;
-  am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
-  pTargetPoint.x = pXY->x;
-  pTargetPoint.y = pXY->y;
-  do
-  {
-    test_char = *v3;
-    ++v3;
-    if ( test_char )
+    am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
     {
-      v7 = 13 * test_char;
-      pSrcRect.left = v7 - 370;
-      pSrcRect.right = v7 - 357;
-      pSrcRect.top = 138;
-      pSrcRect.bottom = 148;
-      pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
-      pTargetPoint.x += 13;
+        pTargetPoint.x = pXY->x;
+        pTargetPoint.y = pXY->y;
+        for (auto i = str.begin(); i != str.end(); ++i)
+        {
+            if (*i)
+            {
+                v7 = 13 * *i;
+                pSrcRect.left = v7 - 370;
+                pSrcRect.right = v7 - 357;
+                pSrcRect.top = 138;
+                pSrcRect.bottom = 148;
+                pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
+                pTargetPoint.x += 13;
+            }
+        }
     }
-  }
-  while ( test_char!= 0 );
-  am_EndScene();
+    am_EndScene();
 }
 
 //----- (0040B268) --------------------------------------------------------
-void DrawBeastsCount( int a1, char *text, POINT *pXY )
+void DrawBeastsCount(const String &str, POINT *pXY)
 {
-  char *v3; // esi@1
-  unsigned char test_char; // bl@2
-  int v7; // eax@3
-  RECT pSrcRect;
-  POINT pTargetPoint;
+    int v7; // eax@3
+    RECT pSrcRect;
+    POINT pTargetPoint;
 
-  v3 = text;
-  am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
-  pTargetPoint.x = pXY->x;
-  pTargetPoint.y = pXY->y;
-  do
-  {
-    test_char = *v3;
-    ++v3;
-    if ( test_char )
+    am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
     {
-      v7 = 13 * test_char;
-      pSrcRect.left = v7 - 370;
-      pSrcRect.right = v7 - 357;
-      pSrcRect.top = 148;
-      pSrcRect.bottom = 158;
-      pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
-      pTargetPoint.x += 13;
+        pTargetPoint.x = pXY->x;
+        pTargetPoint.y = pXY->y;
+        for (auto i = str.begin(); i != str.end(); ++i)
+        {
+            if (*i)
+            {
+                v7 = 13 * *i;
+                pSrcRect.left = v7 - 370;
+                pSrcRect.right = v7 - 357;
+                pSrcRect.top = 148;
+                pSrcRect.bottom = 158;
+                pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
+                pTargetPoint.x += 13;
+            }
+        }
     }
-  }
-  while ( test_char!= 0 );
-  am_EndScene();
+    am_EndScene();
 }
 
 //----- (0040B2DD) --------------------------------------------------------
 void DrawPlayersTowers()
 {
-  int tower_height; // eax@1
-  int tower_top; // esi@3
-  RECT pSrcXYZW; // [sp+0h] [bp-18h]@3
-  POINT pTargetXY; // [sp+10h] [bp-8h]@3
+    int tower_height; // eax@1
+    int tower_top; // esi@3
+    RECT pSrcXYZW; // [sp+0h] [bp-18h]@3
+    POINT pTargetXY; // [sp+10h] [bp-8h]@3
 
-  tower_height= am_Players[0].tower_height;
-  if ( am_Players[0].tower_height > max_tower_height )
-    tower_height = max_tower_height;
-  pSrcXYZW.top = 0;
-  pSrcXYZW.left = 892;
-  pSrcXYZW.right = 937;
-  tower_top = 200 * tower_height / max_tower_height;
-  pSrcXYZW.bottom = tower_top;
-  pTargetXY.x = 102;
-  pTargetXY.y = 297 - tower_top;
-  pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//стена башни
+    tower_height = am_Players[0].tower_height;
+    if (am_Players[0].tower_height > max_tower_height)
+        tower_height = max_tower_height;
+    pSrcXYZW.top = 0;
+    pSrcXYZW.left = 892;
+    pSrcXYZW.right = 937;
+    tower_top = 200 * tower_height / max_tower_height;
+    pSrcXYZW.bottom = tower_top;
+    pTargetXY.x = 102;
+    pTargetXY.y = 297 - tower_top;
+    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//стена башни
 
-  pSrcXYZW.top = 0;
-  pSrcXYZW.left = 384;
-  pSrcXYZW.right = 452;
-  pSrcXYZW.bottom = 94;
-  pTargetXY.y = 203 - tower_top;
-  pTargetXY.x = 91;
-  pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);//верхушка башни
+    pSrcXYZW.top = 0;
+    pSrcXYZW.left = 384;
+    pSrcXYZW.right = 452;
+    pSrcXYZW.bottom = 94;
+    pTargetXY.y = 203 - tower_top;
+    pTargetXY.x = 91;
+    pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);//верхушка башни
 
-  tower_height = am_Players[1].tower_height;
-  if (am_Players[1].tower_height  > max_tower_height )
-    tower_height = max_tower_height;
-  tower_top = 200 * tower_height / max_tower_height;
-  pSrcXYZW.top    = 0;
-  pSrcXYZW.left   = 892;
-  pSrcXYZW.right  = 937;
-  pSrcXYZW.bottom = tower_top;
+    tower_height = am_Players[1].tower_height;
+    if (am_Players[1].tower_height > max_tower_height)
+        tower_height = max_tower_height;
+    tower_top = 200 * tower_height / max_tower_height;
+    pSrcXYZW.top = 0;
+    pSrcXYZW.left = 892;
+    pSrcXYZW.right = 937;
+    pSrcXYZW.bottom = tower_top;
 
-  pTargetXY.x = 494;
-  pTargetXY.y = 297 - tower_top;
-  pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
-  //draw tower up cone
-  pSrcXYZW.left   = 384;
-  pSrcXYZW.right  = 452;
-  pSrcXYZW.top    =  94;
-  pSrcXYZW.bottom = 188;
+    pTargetXY.x = 494;
+    pTargetXY.y = 297 - tower_top;
+    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+    //draw tower up cone
+    pSrcXYZW.left = 384;
+    pSrcXYZW.right = 452;
+    pSrcXYZW.top = 94;
+    pSrcXYZW.bottom = 188;
 
-  pTargetXY.x = 483;
-  pTargetXY.y = 203 - tower_top;
-  pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+    pTargetXY.x = 483;
+    pTargetXY.y = 203 - tower_top;
+    pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
 }
-// 4E1884: using guessed type int dword_4E1884;
+
+
 
 //----- (0040B400) --------------------------------------------------------
 void DrawPlayersWall()
@@ -2091,530 +2050,534 @@ void DrawPlayersWall()
   }
 }
 
+
+
 //----- (0040B4B9) --------------------------------------------------------
 void DrawCards()
 {
-  int v0; // esi@1
-  int v2; // edi@1
-  unsigned int v7; // ecx@4
-  signed int v11; // edi@18
-  RECT pSrcXYZW; // [sp+Ch] [bp-1Ch]@8
-  POINT pTargetXY; // [sp+1Ch] [bp-Ch]@1
-  int v24; // [sp+24h] [bp-4h]@1
+    int v0; // esi@1
+    int v2; // edi@1
+    unsigned int v7; // ecx@4
+    signed int v11; // edi@18
+    RECT pSrcXYZW; // [sp+Ch] [bp-1Ch]@8
+    POINT pTargetXY; // [sp+1Ch] [bp-Ch]@1
+    int v24; // [sp+24h] [bp-4h]@1
 
-  v0 = GetPlayerHandCardCount(current_player_num);
-  pTargetXY.y = 327;
-  v24 = (window->GetWidth() - 96 * v0) / (v0 + 1);
-  pTargetXY.x = (window->GetWidth() - 96 * v0) / (v0 + 1);
-  for ( v2 = 0; v2 < v0; ++v2 )
-  {
-    //v3 = current_player_num;
-    if ( am_byte_4E185D)
+    v0 = GetPlayerHandCardCount(current_player_num);
+    pTargetXY.y = 327;
+    v24 = (window->GetWidth() - 96 * v0) / (v0 + 1);
+    pTargetXY.x = (window->GetWidth() - 96 * v0) / (v0 + 1);
+    for (v2 = 0; v2 < v0; ++v2)
     {
-      pTargetXY.x += am_Players[current_player_num].card_shift[v2].x;
-      pTargetXY.y += am_Players[current_player_num].card_shift[v2].y;
-    }
-    v7 = am_Players[current_player_num].cards_at_hand[v2];
-    if ( am_Players[current_player_num].cards_at_hand[v2] == -1 )
-    {
-      ++v0;
-    }
-    else if ( v2 != amuint_4FAA4C )
-    {
-      if ( am_Players[current_player_num].IsHisTurn == 0 && byte_505881 == 0 )
-      {
-        pSrcXYZW.left = 192;
-        pSrcXYZW.right = 288;
-        pSrcXYZW.top = 0;
-        pSrcXYZW.bottom = 128;
-        pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуется оборотные стороны карт противника
-        pTargetXY.x += v24 + 96;
-      }
-	  else
-	  {
+        //v3 = current_player_num;
+        if (am_byte_4E185D)
+        {
+            pTargetXY.x += am_Players[current_player_num].card_shift[v2].x;
+            pTargetXY.y += am_Players[current_player_num].card_shift[v2].y;
+        }
+        v7 = am_Players[current_player_num].cards_at_hand[v2];
+        if (am_Players[current_player_num].cards_at_hand[v2] == -1)
+        {
+            ++v0;
+        }
+        else if (v2 != amuint_4FAA4C)
+        {
+            if (am_Players[current_player_num].IsHisTurn == 0 && byte_505881 == 0)
+            {
+                pSrcXYZW.left = 192;
+                pSrcXYZW.right = 288;
+                pSrcXYZW.top = 0;
+                pSrcXYZW.bottom = 128;
+                pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуется оборотные стороны карт противника
+                pTargetXY.x += v24 + 96;
+            }
+            else
+            {
 
-		  pArcomageGame->GetCardRect(v7, &pSrcXYZW);
-		  if (!CanCardBePlayed(current_player_num, v2))
-		  {
-			  pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);//рисуются неактивные карты
-			  pTargetXY.x += v24 + 96;
-		  }
-		  else
-		  {
-			  pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуются активные карты
-			  pTargetXY.x += v24 + 96;
-		  }
-	  }
+                pArcomageGame->GetCardRect(v7, &pSrcXYZW);
+                if (!CanCardBePlayed(current_player_num, v2))
+                {
+                    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);//рисуются неактивные карты
+                    pTargetXY.x += v24 + 96;
+                }
+                else
+                {
+                    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуются активные карты
+                    pTargetXY.x += v24 + 96;
+                }
+            }
+        }
+        else
+            pTargetXY.x += v24 + 96;
+        //LABEL_15:
+        if (am_byte_4E185D)
+        {
+            pTargetXY.x -= am_Players[current_player_num].card_shift[v2].x;
+            pTargetXY.y -= am_Players[current_player_num].card_shift[v2].y;
+        }
     }
-	else
-		pTargetXY.x += v24 + 96;
-//LABEL_15:
-    if ( am_byte_4E185D )
-    {
-      pTargetXY.x -= am_Players[current_player_num].card_shift[v2].x;
-      pTargetXY.y -= am_Players[current_player_num].card_shift[v2].y;
-    }
-  }
 
-  for ( v11 = 0; v11 < 10; ++v11 )
-  {
-    if ( am_byte_4FAA76 == 0 )
+    for (v11 = 0; v11 < 10; ++v11)
     {
-      if ( shown_cards[v11].uCardId != -1 )
-      {
-        pArcomageGame->GetCardRect(shown_cards[v11].uCardId, &pSrcXYZW);
-        pRenderer->am_Blt_Copy(&pSrcXYZW, &shown_cards[v11].field_18_point, 0);
-      }
-      if ( shown_cards[v11].field_4 != 0 )
-      {
-        pTargetXY.x = shown_cards[v11].field_18_point.x + 12;
-        pTargetXY.y = shown_cards[v11].field_18_point.y + 40;
-        pSrcXYZW.left   = 843;
-        pSrcXYZW.right  = 916;
-        pSrcXYZW.top    = 200;
-        pSrcXYZW.bottom = 216;
-        pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
-      }
+        if (am_byte_4FAA76 == 0)
+        {
+            if (shown_cards[v11].uCardId != -1)
+            {
+                pArcomageGame->GetCardRect(shown_cards[v11].uCardId, &pSrcXYZW);
+                pRenderer->am_Blt_Copy(&pSrcXYZW, &shown_cards[v11].field_18_point, 0);
+            }
+            if (shown_cards[v11].field_4 != 0)
+            {
+                pTargetXY.x = shown_cards[v11].field_18_point.x + 12;
+                pTargetXY.y = shown_cards[v11].field_18_point.y + 40;
+                pSrcXYZW.left = 843;
+                pSrcXYZW.right = 916;
+                pSrcXYZW.top = 200;
+                pSrcXYZW.bottom = 216;
+                pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+            }
+        }
+        else if (amuint_4FAA34 <= 0)
+        {
+            if (v11 == 9)
+            {
+                am_byte_4FAA76 = 0;
+                am_byte_4FAA75 = 0;
+                amuint_4FAA34 = 5;
+            }
+            if (shown_cards[v11].uCardId != -1)
+                amuint_4FABC4 = shown_cards[v11].uCardId;
+            shown_cards[v11].uCardId = -1;
+            shown_cards[v11].field_18_point.x = shown_cards[v11].field_8.x;
+            shown_cards[v11].field_18_point.y = shown_cards[v11].field_8.y;
+            shown_cards[v11].field_4 = 0;
+        }
+        else
+        {
+            if (shown_cards[v11].uCardId != -1)
+            {
+                shown_cards[v11].field_18_point.x += shown_cards[v11].field_10_xplus;
+                shown_cards[v11].field_18_point.y += shown_cards[v11].field_14_y_plus;
+                pArcomageGame->GetCardRect(shown_cards[v11].uCardId, &pSrcXYZW);
+                pRenderer->am_Blt_Copy(&pSrcXYZW, &shown_cards[v11].field_18_point, 0);
+            }
+        }
     }
-    else if ( amuint_4FAA34 <= 0 )
-    {
-      if ( v11 == 9 )
-      {
-        am_byte_4FAA76 = 0;
-        am_byte_4FAA75 = 0;
-        amuint_4FAA34 = 5;
-      }
-      if ( shown_cards[v11].uCardId != -1 )
-        amuint_4FABC4 = shown_cards[v11].uCardId;
-      shown_cards[v11].uCardId = -1;
-      shown_cards[v11].field_18_point.x = shown_cards[v11].field_8.x;
-      shown_cards[v11].field_18_point.y = shown_cards[v11].field_8.y;
-      shown_cards[v11].field_4 = 0;
-    }
-    else
-    {
-      if ( shown_cards[v11].uCardId != -1 )
-      {
-        shown_cards[v11].field_18_point.x += shown_cards[v11].field_10_xplus;
-        shown_cards[v11].field_18_point.y += shown_cards[v11].field_14_y_plus;
-        pArcomageGame->GetCardRect(shown_cards[v11].uCardId, &pSrcXYZW);
-        pRenderer->am_Blt_Copy(&pSrcXYZW, &shown_cards[v11].field_18_point, 0);
-      }
-    }
-  }
-  if ( am_byte_4FAA76 != 0 )
-    --amuint_4FAA34;
-  pSrcXYZW.left   = 192;
-  pSrcXYZW.right  = 288;
-  pSrcXYZW.top    = 0;
-  pSrcXYZW.bottom = 128;
-  pTargetXY.x     = 120;
-  pTargetXY.y     = 18;
-  pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
+    if (am_byte_4FAA76 != 0)
+        --amuint_4FAA34;
+    pSrcXYZW.left = 192;
+    pSrcXYZW.right = 288;
+    pSrcXYZW.top = 0;
+    pSrcXYZW.bottom = 128;
+    pTargetXY.x = 120;
+    pTargetXY.y = 18;
+    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
 }
+
+
 
 //----- (0040B76F) --------------------------------------------------------
-void DrawCardAnimation( int animation_stage )
+void DrawCardAnimation(int animation_stage)
 {
-  int v1; // eax@3
-  int v2; // eax@3
-  int v4; // eax@4
-  int v8; // eax@15
-  double v15; // st7@22
-  int v17; // eax@32
-  char v18; // zf@37
-  int v19; // eax@41
-  RECT pSrcXYZW; // [sp+Ch] [bp-1Ch]@6
-  POINT pTargetXY; // [sp+1Ch] [bp-Ch]@20
-  int v26; // [sp+24h] [bp-4h]@1
+    int v1; // eax@3
+    int v2; // eax@3
+    int v4; // eax@4
+    int v8; // eax@15
+    double v15; // st7@22
+    int v17; // eax@32
+    char v18; // zf@37
+    int v19; // eax@41
+    RECT pSrcXYZW; // [sp+Ch] [bp-1Ch]@6
+    POINT pTargetXY; // [sp+1Ch] [bp-Ch]@20
+    int v26; // [sp+24h] [bp-4h]@1
 
-  v26 = animation_stage;
-  if ( amuint_4FAA4C != -1 )
-  {
-    if ( amuint_4FAA38 >= 9 )
+    v26 = animation_stage;
+    if (amuint_4FAA4C != -1)
     {
-      am_uint_4FAA44_blt_xy.y = 18;
-      am_uint_4FAA44_blt_xy.x = 120;
-      v1 = GetPlayerHandCardCount(current_player_num);
-      v2 = (window->GetWidth() - 96 * v1) / v1 + 96;
-      if ( am_byte_4E185D )
-      {
-        // v3 = 188 * current_player_num + 8 * amuint_4FAA4C;
-        // amuint_4FAA3C_blt_xy.x = (amuint_4FAA4C * v2 + *(am_Players[0].arr_6C[0] + v3) - 120) / 10;
-        amuint_4FAA3C_blt_xy.x=(amuint_4FAA4C * v2 + am_Players[current_player_num].card_shift[amuint_4FAA4C].x-120)/10;
-        v4 = (am_Players[current_player_num].card_shift[amuint_4FAA4C].y+309) /10;//(*(&am_Players[0].arr_6C[0][1] + v3) + 309) / 10;
-      }
-      else
-      {
-        amuint_4FAA3C_blt_xy.x = (amuint_4FAA4C * v2 - 120) / 10;
-        v4 = 30;
-      }
-      am_uint_4FAA44_blt_xy.y += v4;
-      am_uint_4FAA44_blt_xy.x += amuint_4FAA3C_blt_xy.x;
-      amuint_4FAA3C_blt_xy.y = v4;
-      pSrcXYZW.left = 192;
-      pSrcXYZW.top = 0;
-      pSrcXYZW.right = 288;
-      pSrcXYZW.bottom = 128;
-      pRenderer->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
-    }
-    else
-    {
-      pSrcXYZW.left  = 192;
-      pSrcXYZW.top    = 0;
-      pSrcXYZW.right  = 288;
-      pSrcXYZW.bottom = 128;
-      am_uint_4FAA44_blt_xy.x += amuint_4FAA3C_blt_xy.x;
-      am_uint_4FAA44_blt_xy.y += amuint_4FAA3C_blt_xy.y;
-      pRenderer->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
-      if ( !amuint_4FAA38 )
-       amuint_4FAA4C = -1;
-    }
-  }
-  if ( uCardID != -1 )
-  {
-    if ( v26 <= 10 )
-    {
-      if ( v26 == 10 )
-      {
-        pArcomageGame->GetCardRect(uCardID, &pSrcXYZW);
-        //  v8 = 0;
-        for ( v8 = 0; v8 < 10; ++v8 )
+        if (amuint_4FAA38 >= 9)
         {
-          if (shown_cards[v8].uCardId==-1)
-          {
-            shown_cards[v8].uCardId = uCardID;
-            shown_cards[v8].field_4 = 1;
-            break;
-          }
+            am_uint_4FAA44_blt_xy.y = 18;
+            am_uint_4FAA44_blt_xy.x = 120;
+            v1 = GetPlayerHandCardCount(current_player_num);
+            v2 = (window->GetWidth() - 96 * v1) / v1 + 96;
+            if (am_byte_4E185D)
+            {
+                // v3 = 188 * current_player_num + 8 * amuint_4FAA4C;
+                // amuint_4FAA3C_blt_xy.x = (amuint_4FAA4C * v2 + *(am_Players[0].arr_6C[0] + v3) - 120) / 10;
+                amuint_4FAA3C_blt_xy.x = (amuint_4FAA4C * v2 + am_Players[current_player_num].card_shift[amuint_4FAA4C].x - 120) / 10;
+                v4 = (am_Players[current_player_num].card_shift[amuint_4FAA4C].y + 309) / 10;//(*(&am_Players[0].arr_6C[0][1] + v3) + 309) / 10;
+            }
+            else
+            {
+                amuint_4FAA3C_blt_xy.x = (amuint_4FAA4C * v2 - 120) / 10;
+                v4 = 30;
+            }
+            am_uint_4FAA44_blt_xy.y += v4;
+            am_uint_4FAA44_blt_xy.x += amuint_4FAA3C_blt_xy.x;
+            amuint_4FAA3C_blt_xy.y = v4;
+            pSrcXYZW.left = 192;
+            pSrcXYZW.top = 0;
+            pSrcXYZW.right = 288;
+            pSrcXYZW.bottom = 128;
+            pRenderer->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
         }
-        /* v9 = shown_cards;
-        while ( v9->uCardId != -1 )
+        else
         {
-          ++v9;
-          ++v8;
-          if ( v9 >= &dword_4FABB8 )
-          goto LABEL_20;
+            pSrcXYZW.left = 192;
+            pSrcXYZW.top = 0;
+            pSrcXYZW.right = 288;
+            pSrcXYZW.bottom = 128;
+            am_uint_4FAA44_blt_xy.x += amuint_4FAA3C_blt_xy.x;
+            am_uint_4FAA44_blt_xy.y += amuint_4FAA3C_blt_xy.y;
+            pRenderer->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
+            if (!amuint_4FAA38)
+                amuint_4FAA4C = -1;
         }
-        v10 = v8;
-        shown_cards[v10].uCardId = uCardID;
-        shown_cards[v10].field_4 = 1;*/
-//LABEL_20:
-        pTargetXY.x = shown_cards[v8].field_8.x;
-        pTargetXY.y = shown_cards[v8].field_8.y;
-        pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
-        uCardID = -1;
-      }
     }
-    else
+    if (uCardID != -1)
     {
-      pArcomageGame->GetCardRect(uCardID, &pSrcXYZW);
-      amuint_4FAA5C_blt_xy.x += amuint_4FAA54_blt_xy.x;
-      amuint_4FAA5C_blt_xy.y += amuint_4FAA54_blt_xy.y;
-      pRenderer->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 0);
+        if (v26 <= 10)
+        {
+            if (v26 == 10)
+            {
+                pArcomageGame->GetCardRect(uCardID, &pSrcXYZW);
+                //  v8 = 0;
+                for (v8 = 0; v8 < 10; ++v8)
+                {
+                    if (shown_cards[v8].uCardId == -1)
+                    {
+                        shown_cards[v8].uCardId = uCardID;
+                        shown_cards[v8].field_4 = 1;
+                        break;
+                    }
+                }
+                /* v9 = shown_cards;
+                while ( v9->uCardId != -1 )
+                {
+                  ++v9;
+                  ++v8;
+                  if ( v9 >= &dword_4FABB8 )
+                  goto LABEL_20;
+                }
+                v10 = v8;
+                shown_cards[v10].uCardId = uCardID;
+                shown_cards[v10].field_4 = 1;*/
+                //LABEL_20:
+                pTargetXY.x = shown_cards[v8].field_8.x;
+                pTargetXY.y = shown_cards[v8].field_8.y;
+                pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
+                uCardID = -1;
+            }
+        }
+        else
+        {
+            pArcomageGame->GetCardRect(uCardID, &pSrcXYZW);
+            amuint_4FAA5C_blt_xy.x += amuint_4FAA54_blt_xy.x;
+            amuint_4FAA5C_blt_xy.y += amuint_4FAA54_blt_xy.y;
+            pRenderer->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 0);
+        }
     }
-  }
-  if ( played_card_id != -1 )
-  {
-    v15 = v26;
-    if ( v15 > 15.0 )
+    if (played_card_id != -1)
     {
-      pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
-      amuint_4FAA5C_blt_xy.x += amuint_4FAA54_blt_xy.x;
-      amuint_4FAA5C_blt_xy.y += amuint_4FAA54_blt_xy.y;
-      pRenderer->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 2);
-      return;
-    }
-    if ( v15 == 15.0 )
-    {
-      ApplyCardToPlayer(current_player_num, played_card_id);
-      pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
-      pTargetXY.x = 272;
-      pTargetXY.y = 173;
-      pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
-      return;
-    }
-    if ( v15 == 5.0 )
-    {
-      amuint_4FAA5C_blt_xy.x = 272;
-      amuint_4FAA5C_blt_xy.y = 173;
-      for ( v17 = 0; v17 < 10; ++v17 )
-      {
-        if (shown_cards[v17].uCardId == -1)
-          break;
-      }
-      amuint_4FAA54_blt_xy.x = (shown_cards[v17].field_8.x - 272) / 5;
-      amuint_4FAA54_blt_xy.y = (shown_cards[v17].field_8.y - 173) / 5;
-      pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
-      pTargetXY.x = 272;
-      pTargetXY.y = 173;
-      pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
-      return;
-    }
-    if ( v15 >= 5.0 )
-      v18 = v26 == 0;
-    else
-    {
-      v18 = v26 == 0;
-      if ( v26 > 0 )
-      {
+        v15 = v26;
+        if (v15 > 15.0)
+        {
+            pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
+            amuint_4FAA5C_blt_xy.x += amuint_4FAA54_blt_xy.x;
+            amuint_4FAA5C_blt_xy.y += amuint_4FAA54_blt_xy.y;
+            pRenderer->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 2);
+            return;
+        }
+        if (v15 == 15.0)
+        {
+            ApplyCardToPlayer(current_player_num, played_card_id);
+            pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
+            pTargetXY.x = 272;
+            pTargetXY.y = 173;
+            pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+            return;
+        }
+        if (v15 == 5.0)
+        {
+            amuint_4FAA5C_blt_xy.x = 272;
+            amuint_4FAA5C_blt_xy.y = 173;
+            for (v17 = 0; v17 < 10; ++v17)
+            {
+                if (shown_cards[v17].uCardId == -1)
+                    break;
+            }
+            amuint_4FAA54_blt_xy.x = (shown_cards[v17].field_8.x - 272) / 5;
+            amuint_4FAA54_blt_xy.y = (shown_cards[v17].field_8.y - 173) / 5;
+            pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
+            pTargetXY.x = 272;
+            pTargetXY.y = 173;
+            pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+            return;
+        }
+        if (v15 >= 5.0)
+            v18 = v26 == 0;
+        else
+        {
+            v18 = v26 == 0;
+            if (v26 > 0)
+            {
+                pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
+                amuint_4FAA5C_blt_xy.x += amuint_4FAA54_blt_xy.x;
+                amuint_4FAA5C_blt_xy.y += amuint_4FAA54_blt_xy.y;
+                pRenderer->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 0);
+                return;
+            }
+        }
+        if (!v18)
+        {
+            pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
+            pTargetXY.x = 272;
+            pTargetXY.y = 173;
+            pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+            return;
+        }
         pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
-        amuint_4FAA5C_blt_xy.x += amuint_4FAA54_blt_xy.x;
-        amuint_4FAA5C_blt_xy.y += amuint_4FAA54_blt_xy.y;
-        pRenderer->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 0);
-        return;
-      }
+        for (v19 = 0; v19 < 10; ++v19)
+        {
+            if (shown_cards[v19].uCardId == -1)
+            {
+                shown_cards[v19].uCardId = played_card_id;
+                break;
+            }
+        }
+        pTargetXY.x = shown_cards[v19].field_8.x;
+        pTargetXY.y = shown_cards[v19].field_8.y;
+        pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
+        played_card_id = -1;
     }
-    if ( !v18 )
-    {
-      pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
-      pTargetXY.x = 272;
-      pTargetXY.y = 173;
-      pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
-      return;
-    }
-    pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
-    for ( v19 = 0; v19 < 10; ++v19 )
-    {
-      if (shown_cards[v19].uCardId == -1)
-      {
-        shown_cards[v19].uCardId = played_card_id;
-        break;
-      }
-    }
-    pTargetXY.x = shown_cards[v19].field_8.x;
-    pTargetXY.y = shown_cards[v19].field_8.y;
-    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
-    played_card_id = -1;
-  }
 }
+
+
 
 //----- (0040BB12) --------------------------------------------------------
 void ArcomageGame::GetCardRect(unsigned int uCardID, RECT *pCardRect)
 {
-  int v3; // edx@1
-  int v4; // ecx@1
+    int v3; // edx@1
+    int v4; // ecx@1
 
-  v3 = pCards[uCardID].slot % 10;
-  v4 = (pCards[uCardID].slot / 10 << 7) + 220;
-  pCardRect->top = v4;
-  pCardRect->left = 96 * v3;
-  pCardRect->bottom = v4 + 128;
-  pCardRect->right = 96 * v3 + 96;
+    v3 = pCards[uCardID].slot % 10;
+    v4 = (pCards[uCardID].slot / 10 << 7) + 220;
+    pCardRect->top = v4;
+    pCardRect->left = 96 * v3;
+    pCardRect->bottom = v4 + 128;
+    pCardRect->right = 96 * v3 + 96;
 }
 
 //----- (0040BB49) --------------------------------------------------------
-int GetPlayerHandCardCount( int player_num )
+int GetPlayerHandCardCount(int player_num)
 {
-  int card_count; // eax@1
+    int card_count; // eax@1
 
-  card_count = 0;
-  for(int i=0; i<10; ++i)
-  {
-    if (am_Players[player_num].cards_at_hand[i]!=-1)
-      ++card_count;
-  }
-  return card_count;
+    card_count = 0;
+    for (int i = 0; i < 10; ++i)
+    {
+        if (am_Players[player_num].cards_at_hand[i] != -1)
+            ++card_count;
+    }
+    return card_count;
 }
 
 //----- (0040BB67) --------------------------------------------------------
-signed int DrawCardsRectangles( int player_num )
+signed int DrawCardsRectangles(int player_num)
 {
-  int v5; // eax@3
-  int color; // ST00_4@19
-  RECT pXYZW; // [sp+Ch] [bp-3Ch]@3
-  stru273 v26; // [sp+1Ch] [bp-2Ch]@2
-  __int32 var18; // [sp+30h] [bp-18h]@3
-  int hand_index; // [sp+3Ch] [bp-Ch]@3
+    int v5; // eax@3
+    int color; // ST00_4@19
+    RECT pXYZW; // [sp+Ch] [bp-3Ch]@3
+    stru273 v26; // [sp+1Ch] [bp-2Ch]@2
+    __int32 var18; // [sp+30h] [bp-18h]@3
+    int hand_index; // [sp+3Ch] [bp-Ch]@3
 
-//__debugbreak(); // need do fix rectangle not fit to card
+  //__debugbreak(); // need do fix rectangle not fit to card
 
-  if ( am_Players[player_num].IsHisTurn )
-  {
-    if ( v26._40DD2F() )
+    if (am_Players[player_num].IsHisTurn)
     {
-      v5 = GetPlayerHandCardCount(player_num);
-      pXYZW.top = 327;
-      pXYZW.bottom = 455;
-      pXYZW.left = (window->GetWidth() - 96 * v5) / (v5 + 1);
-      var18 = pXYZW.left + 96;
-      pXYZW.right = pXYZW.left + 96;
-      for( hand_index = 0; hand_index < v5; hand_index++)
-      {
-        //for ( i = 0; i < 10; ++i )
-        //{
-        if (am_Players[player_num].cards_at_hand[hand_index] != -1 )
+        if (v26._40DD2F())
         {
-            //break;
-        //}
-          if ( am_byte_4E185D )
-          {
-            pXYZW.left += am_Players[player_num].card_shift[hand_index].x;
-            pXYZW.right += am_Players[player_num].card_shift[hand_index].x;
-            pXYZW.top += am_Players[player_num].card_shift[hand_index].y;
-            pXYZW.bottom += am_Players[player_num].card_shift[hand_index].y;
-          }
-          if ( v26.Inside(&pXYZW) )
-          {
-            if ( CanCardBePlayed(player_num, hand_index) )
-              color = 0x00FFFFFF;//белый цвет
-            else
-              color = 0x000000FF;//красный цвет
-            DrawRect(&pXYZW, R8G8B8_to_TargetFormat(color), 0);
-            return hand_index;
-          }
-          DrawRect(&pXYZW, R8G8B8_to_TargetFormat(0), 0);//рамка чёрного цвета
-          if ( am_byte_4E185D )
-          {
-            pXYZW.left -= am_Players[player_num].card_shift[hand_index].x;
-            pXYZW.right -= am_Players[player_num].card_shift[hand_index].x;
-            pXYZW.top -= am_Players[player_num].card_shift[hand_index].y;
-            pXYZW.bottom -= am_Players[player_num].card_shift[hand_index].y;
-          }
-          pXYZW.left += var18;
-          pXYZW.right += var18;
+            v5 = GetPlayerHandCardCount(player_num);
+            pXYZW.top = 327;
+            pXYZW.bottom = 455;
+            pXYZW.left = (window->GetWidth() - 96 * v5) / (v5 + 1);
+            var18 = pXYZW.left + 96;
+            pXYZW.right = pXYZW.left + 96;
+            for (hand_index = 0; hand_index < v5; hand_index++)
+            {
+                //for ( i = 0; i < 10; ++i )
+                //{
+                if (am_Players[player_num].cards_at_hand[hand_index] != -1)
+                {
+                    //break;
+                //}
+                    if (am_byte_4E185D)
+                    {
+                        pXYZW.left += am_Players[player_num].card_shift[hand_index].x;
+                        pXYZW.right += am_Players[player_num].card_shift[hand_index].x;
+                        pXYZW.top += am_Players[player_num].card_shift[hand_index].y;
+                        pXYZW.bottom += am_Players[player_num].card_shift[hand_index].y;
+                    }
+                    if (v26.Inside(&pXYZW))
+                    {
+                        if (CanCardBePlayed(player_num, hand_index))
+                            color = 0x00FFFFFF;//белый цвет
+                        else
+                            color = 0x000000FF;//красный цвет
+                        DrawRect(&pXYZW, R8G8B8_to_TargetFormat(color), 0);
+                        return hand_index;
+                    }
+                    DrawRect(&pXYZW, R8G8B8_to_TargetFormat(0), 0);//рамка чёрного цвета
+                    if (am_byte_4E185D)
+                    {
+                        pXYZW.left -= am_Players[player_num].card_shift[hand_index].x;
+                        pXYZW.right -= am_Players[player_num].card_shift[hand_index].x;
+                        pXYZW.top -= am_Players[player_num].card_shift[hand_index].y;
+                        pXYZW.bottom -= am_Players[player_num].card_shift[hand_index].y;
+                    }
+                    pXYZW.left += var18;
+                    pXYZW.right += var18;
+                }
+            }
         }
-      }
     }
-  }
-  return -1;
+    return -1;
 }
-// 4E185D: using guessed type char am_byte_4E185D;
+
+
 
 //----- (0040BCFB) --------------------------------------------------------
-bool DiscardCard( int player_num, signed int card_slot_index )
+bool DiscardCard(int player_num, signed int card_slot_index)
 {
-  int v2; // esi@2
-  int v8; // eax@8
-  int v10; // ecx@8
-  int v12; // eax@8
-  int i;
+    int v2; // esi@2
+    int v8; // eax@8
+    int v10; // ecx@8
+    int v12; // eax@8
+    int i;
 
-  if ( card_slot_index <= -1 )
-    return false;
-  v2 = 0;
+    if (card_slot_index <= -1)
+        return false;
+    v2 = 0;
 
-  for( i = 0; i < 10; ++i )
-  {
-    if ( am_Players[player_num].cards_at_hand[i] != -1 )
+    for (i = 0; i < 10; ++i)
     {
-      if ( card_slot_index == v2 )
-        break;
-      ++v2;
+        if (am_Players[player_num].cards_at_hand[i] != -1)
+        {
+            if (card_slot_index == v2)
+                break;
+            ++v2;
+        }
     }
-  }
 
-  if ( pCards[am_Players[player_num].cards_at_hand[i]].can_be_discarded) 
-  {
-    ArcomageGame::PlaySound(22);
-    v8 = GetPlayerHandCardCount(current_player_num);
-    v10 = am_Players[player_num].card_shift[i].x + (window->GetWidth() - 96 * v8) / (v8 + 1);
-    amuint_4FAA5C_blt_xy.x = v10;
-    amuint_4FAA5C_blt_xy.y = am_Players[player_num].card_shift[i].y + 327;//v11;
-    v12 = 0;
-
-    if ( !am_byte_4FAA75 )
+    if (pCards[am_Players[player_num].cards_at_hand[i]].can_be_discarded)
     {
-      for ( v12 = 0; v12 < 10; ++v12 )
-      {
-        if (shown_cards[v12].uCardId == -1)
-          break;
-      }
+        ArcomageGame::PlaySound(22);
+        v8 = GetPlayerHandCardCount(current_player_num);
+        v10 = am_Players[player_num].card_shift[i].x + (window->GetWidth() - 96 * v8) / (v8 + 1);
+        amuint_4FAA5C_blt_xy.x = v10;
+        amuint_4FAA5C_blt_xy.y = am_Players[player_num].card_shift[i].y + 327;//v11;
+        v12 = 0;
+
+        if (!am_byte_4FAA75)
+        {
+            for (v12 = 0; v12 < 10; ++v12)
+            {
+                if (shown_cards[v12].uCardId == -1)
+                    break;
+            }
+        }
+        pArcomageGame->field_F6 = 1;
+        amuint_4FAA54_blt_xy.x = (shown_cards[v12].field_8.x - v10) / 10;
+        amuint_4FAA54_blt_xy.y = (shown_cards[v12].field_8.y - 327) / 10;
+        uCardID = am_Players[player_num].cards_at_hand[i];
+        am_Players[player_num].cards_at_hand[i] = -1;
+        need_to_discard_card = 0;
+        return true;
     }
-    pArcomageGame->field_F6 = 1;
-    amuint_4FAA54_blt_xy.x = (shown_cards[v12].field_8.x - v10) / 10;
-    amuint_4FAA54_blt_xy.y = (shown_cards[v12].field_8.y - 327) / 10;
-    uCardID = am_Players[player_num].cards_at_hand[i];
-    am_Players[player_num].cards_at_hand[i] = -1;
-    need_to_discard_card = 0;
-    return true;
-  }
-  else
-    return false;
+    else
+        return false;
 }
 
 //----- (0040BE0E) --------------------------------------------------------
-bool PlayCard( int player_num, int card_slot_num )
+bool PlayCard(int player_num, int card_slot_num)
 {
-  int v4; // ecx@2
-  int card_index; // edi@2
-  int cards_at_hand; // eax@8
-  int v12; // ecx@8
-  ArcomageCard *pCard; // eax@8
+    int v4; // ecx@2
+    int card_index; // edi@2
+    int cards_at_hand; // eax@8
+    int v12; // ecx@8
+    ArcomageCard *pCard; // eax@8
 
-  if ( card_slot_num <= -1 )
-    return false;
+    if (card_slot_num <= -1)
+        return false;
 
-  v4 = 0;
-  for (card_index=0; card_index<10; ++card_index)
-  {
-    if ( am_Players[player_num].cards_at_hand[card_index] != -1 )
+    v4 = 0;
+    for (card_index = 0; card_index < 10; ++card_index)
     {
-      if ( card_slot_num == v4 )
-        break;
-      ++v4;
+        if (am_Players[player_num].cards_at_hand[card_index] != -1)
+        {
+            if (card_slot_num == v4)
+                break;
+            ++v4;
+        }
     }
-  }
 
-  if (CanCardBePlayed(player_num, card_index) )
-  {
-    ArcomageGame::PlaySound(23);
-    cards_at_hand = GetPlayerHandCardCount(current_player_num);
-    pArcomageGame->field_F6 = 1;
-    v12 =  am_Players[player_num].card_shift[card_index].x + 
-         (window->GetWidth() - 96 * cards_at_hand) / (cards_at_hand + 1)+ 
-         96 * card_index ;
-        
-  //  v13 = *(int *)((char *)&am_Players[0].arr_6C[0][1] + v10) + 327;
-    amuint_4FAA5C_blt_xy.x = v12;//v12;
-    amuint_4FAA5C_blt_xy.y = am_Players[player_num].card_shift[card_index].y + 327;//v13;
+    if (CanCardBePlayed(player_num, card_index))
+    {
+        ArcomageGame::PlaySound(23);
+        cards_at_hand = GetPlayerHandCardCount(current_player_num);
+        pArcomageGame->field_F6 = 1;
+        v12 = am_Players[player_num].card_shift[card_index].x +
+            (window->GetWidth() - 96 * cards_at_hand) / (cards_at_hand + 1) +
+            96 * card_index;
 
-    amuint_4FAA54_blt_xy.x = (272 - v12) / 5;
-    amuint_4FAA54_blt_xy.y = -30;
+        //  v13 = *(int *)((char *)&am_Players[0].arr_6C[0][1] + v10) + 327;
+        amuint_4FAA5C_blt_xy.x = v12;//v12;
+        amuint_4FAA5C_blt_xy.y = am_Players[player_num].card_shift[card_index].y + 327;//v13;
 
-    pCard = &pCards[am_Players[player_num].cards_at_hand[card_index]];
-    am_Players[player_num].resource_bricks -= pCard->needed_bricks;
-    am_Players[player_num].resource_beasts -= pCard->needed_beasts;
-    am_Players[player_num].resource_gems   -= pCard->needed_gems;
-    played_card_id = am_Players[player_num].cards_at_hand[card_index];
-    am_Players[player_num].cards_at_hand[card_index] = -1;
-    return true;
-  }
-  else
-   return false;
+        amuint_4FAA54_blt_xy.x = (272 - v12) / 5;
+        amuint_4FAA54_blt_xy.y = -30;
 
+        pCard = &pCards[am_Players[player_num].cards_at_hand[card_index]];
+        am_Players[player_num].resource_bricks -= pCard->needed_bricks;
+        am_Players[player_num].resource_beasts -= pCard->needed_beasts;
+        am_Players[player_num].resource_gems -= pCard->needed_gems;
+        played_card_id = am_Players[player_num].cards_at_hand[card_index];
+        am_Players[player_num].cards_at_hand[card_index] = -1;
+        return true;
+    }
+    else
+        return false;
 }
 
 //----- (0040BF15) --------------------------------------------------------
 bool CanCardBePlayed(int player_num, int hand_card_indx)
 {
-  bool result; // eax@1
-  ArcomageCard *test_card; // ecx@1
-  ArcomagePlayer *pPlayer; // esi@1
+    bool result; // eax@1
+    ArcomageCard *test_card; // ecx@1
+    ArcomagePlayer *pPlayer; // esi@1
 
-  pPlayer = &am_Players[player_num];
-  result = true;
-  test_card = &pCards[am_Players[player_num].cards_at_hand[hand_card_indx]];
-  if ( test_card->needed_quarry_level > pPlayer->quarry_level )
-    result = false;
-  if ( test_card->needed_magic_level > pPlayer->magic_level )
-    result = false;
-  if ( test_card->needed_zoo_level > pPlayer->zoo_level )
-    result = false;
-  if ( test_card->needed_bricks > pPlayer->resource_bricks )
-    result = false;
-  if ( test_card->needed_gems > pPlayer->resource_gems )
-    result = false;
-  if ( test_card->needed_beasts > pPlayer->resource_beasts )
-    result = false;
-  return result;
+    pPlayer = &am_Players[player_num];
+    result = true;
+    test_card = &pCards[am_Players[player_num].cards_at_hand[hand_card_indx]];
+    if (test_card->needed_quarry_level > pPlayer->quarry_level)
+        result = false;
+    if (test_card->needed_magic_level > pPlayer->magic_level)
+        result = false;
+    if (test_card->needed_zoo_level > pPlayer->zoo_level)
+        result = false;
+    if (test_card->needed_bricks > pPlayer->resource_bricks)
+        result = false;
+    if (test_card->needed_gems > pPlayer->resource_gems)
+        result = false;
+    if (test_card->needed_beasts > pPlayer->resource_beasts)
+        result = false;
+    return result;
 }
 
 //----- (0040BF77) --------------------------------------------------------
-void ApplyCardToPlayer( int player_num, unsigned int uCardID )
-    {
-
-  
+void ApplyCardToPlayer(int player_num, unsigned int uCardID)
+{
 #define APPLY_TO_PLAYER( PLAYER, ENEMY,FIELD, VAL, RES )\
    if (VAL != 0) {\
         if (VAL == 99) {\
@@ -2650,1014 +2613,1036 @@ void ApplyCardToPlayer( int player_num, unsigned int uCardID )
             RES_P = (signed int)(VAL);  RES_E = (signed int)(VAL); \
             }\
        }
-        ArcomagePlayer *player; // esi@1
-        ArcomagePlayer *enemy; // edi@1
-        int v23; // eax@26
-        signed int v24; // ebx@26
-        int v103;
-        int v104;
+    ArcomagePlayer *player; // esi@1
+    ArcomagePlayer *enemy; // edi@1
+    int v23; // eax@26
+    signed int v24; // ebx@26
+    int v103;
+    int v104;
 
-        POINT v184; // [sp+Ch] [bp-64h]@488
-        int enemy_num; // [sp+14h] [bp-5Ch]@1
-        ArcomageCard *pCard; // [sp+18h] [bp-58h]@1
-        int buildings_e; // [sp+1Ch] [bp-54h]@1
-        int buildings_p; // [sp+20h] [bp-50h]@1
-        int quarry_p; // [sp+28h] [bp-48h]@1
-        int dmg_e; // [sp+2Ch] [bp-44h]@1
-        int dmg_p; // [sp+30h] [bp-40h]@1
-        int bricks_p; // [sp+34h] [bp-3Ch]@1
-        int tower_e; // [sp+38h] [bp-38h]@1
-        int tower_p; // [sp+3Ch] [bp-34h]@1
-        int wall_e; // [sp+40h] [bp-30h]@1
-        int wall_p; // [sp+44h] [bp-2Ch]@1
-        int beasts_e; // [sp+48h] [bp-28h]@1
-        int beasts_p; // [sp+4Ch] [bp-24h]@1
-        int gems_e; // [sp+50h] [bp-20h]@1
-        int gems_p; // [sp+54h] [bp-1Ch]@1
-        int bricks_e; // [sp+58h] [bp-18h]@1
-        int zoo_e; // [sp+5Ch] [bp-14h]@1
-        int zoo_p; // [sp+60h] [bp-10h]@1
-        int magic_e; // [sp+64h] [bp-Ch]@1
-        int magic_p; // [sp+68h] [bp-8h]@1
-        int quarry_e; // [sp+6Ch] [bp-4h]@1
+    POINT v184; // [sp+Ch] [bp-64h]@488
+    int enemy_num; // [sp+14h] [bp-5Ch]@1
+    ArcomageCard *pCard; // [sp+18h] [bp-58h]@1
+    int buildings_e; // [sp+1Ch] [bp-54h]@1
+    int buildings_p; // [sp+20h] [bp-50h]@1
+    int quarry_p; // [sp+28h] [bp-48h]@1
+    int dmg_e; // [sp+2Ch] [bp-44h]@1
+    int dmg_p; // [sp+30h] [bp-40h]@1
+    int bricks_p; // [sp+34h] [bp-3Ch]@1
+    int tower_e; // [sp+38h] [bp-38h]@1
+    int tower_p; // [sp+3Ch] [bp-34h]@1
+    int wall_e; // [sp+40h] [bp-30h]@1
+    int wall_p; // [sp+44h] [bp-2Ch]@1
+    int beasts_e; // [sp+48h] [bp-28h]@1
+    int beasts_p; // [sp+4Ch] [bp-24h]@1
+    int gems_e; // [sp+50h] [bp-20h]@1
+    int gems_p; // [sp+54h] [bp-1Ch]@1
+    int bricks_e; // [sp+58h] [bp-18h]@1
+    int zoo_e; // [sp+5Ch] [bp-14h]@1
+    int zoo_p; // [sp+60h] [bp-10h]@1
+    int magic_e; // [sp+64h] [bp-Ch]@1
+    int magic_p; // [sp+68h] [bp-8h]@1
+    int quarry_e; // [sp+6Ch] [bp-4h]@1
 
-        quarry_p  = 0;
-        magic_p   = 0;
-        zoo_p     = 0;
-        bricks_p  = 0;
-        gems_p    = 0;
-        beasts_p  = 0;
-        wall_p    = 0;
-        tower_p   = 0;
-        buildings_p = 0;
-        dmg_p     = 0;
-        quarry_e  = 0;
-        magic_e   = 0;
-        zoo_e     = 0;
-        bricks_e  = 0;
-        gems_e    = 0;
-        beasts_e  = 0;
-        wall_e    = 0;
-        tower_e   = 0;
-        buildings_e = 0;
-        dmg_e      = 0;
+    quarry_p = 0;
+    magic_p = 0;
+    zoo_p = 0;
+    bricks_p = 0;
+    gems_p = 0;
+    beasts_p = 0;
+    wall_p = 0;
+    tower_p = 0;
+    buildings_p = 0;
+    dmg_p = 0;
+    quarry_e = 0;
+    magic_e = 0;
+    zoo_e = 0;
+    bricks_e = 0;
+    gems_e = 0;
+    beasts_e = 0;
+    wall_e = 0;
+    tower_e = 0;
+    buildings_e = 0;
+    dmg_e = 0;
 
-        player = &am_Players[player_num];
-        pCard = &pCards[uCardID];
-        enemy_num = (player_num + 1) % 2;
-        enemy = &am_Players[enemy_num];
-        switch ( pCard->compare_param )
-        {
-        case 2:
-            if ( player->quarry_level < enemy->quarry_level )//если рудники < рудника врага
-                goto LABEL_26;
-            goto LABEL_231;
-        case 3:
-            if ( player->magic_level < enemy->magic_level )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 4:
-            if ( player->zoo_level < enemy->zoo_level )//если зверинец < зверинца врага
-                goto LABEL_26;
-            goto LABEL_231;
-        case 5:
-            if ( player->quarry_level == enemy->quarry_level )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 6:
-            if ( player->magic_level == enemy->magic_level )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 7:
-            if ( player->zoo_level == enemy->zoo_level )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 8:
-            if ( player->quarry_level < enemy->quarry_level )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 9:
-            if ( player->magic_level < enemy->magic_level )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 10:
-            if ( player->zoo_level < enemy->zoo_level )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 11:
-            if ( !player->wall_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 12:
-            if ( player->wall_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 13:
-            if ( !enemy->wall_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 14:
-            if ( enemy->wall_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 15:
-            if ( player->wall_height < enemy->wall_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 16:
-            if ( player->tower_height < enemy->tower_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 17:
-            if ( player->wall_height == enemy->wall_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 18:
-            if ( player->tower_height == enemy->tower_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 19:
-            if ( player->wall_height < enemy->wall_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        case 20:
-            if ( player->tower_height < enemy->tower_height )
-                goto LABEL_26;
-            goto LABEL_231;
-        default:
-LABEL_26:
+    player = &am_Players[player_num];
+    pCard = &pCards[uCardID];
+    enemy_num = (player_num + 1) % 2;
+    enemy = &am_Players[enemy_num];
+    switch (pCard->compare_param)
+    {
+    case 2:
+        if (player->quarry_level < enemy->quarry_level)//если рудники < рудника врага
+            goto LABEL_26;
+        goto LABEL_231;
+    case 3:
+        if (player->magic_level < enemy->magic_level)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 4:
+        if (player->zoo_level < enemy->zoo_level)//если зверинец < зверинца врага
+            goto LABEL_26;
+        goto LABEL_231;
+    case 5:
+        if (player->quarry_level == enemy->quarry_level)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 6:
+        if (player->magic_level == enemy->magic_level)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 7:
+        if (player->zoo_level == enemy->zoo_level)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 8:
+        if (player->quarry_level < enemy->quarry_level)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 9:
+        if (player->magic_level < enemy->magic_level)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 10:
+        if (player->zoo_level < enemy->zoo_level)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 11:
+        if (!player->wall_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 12:
+        if (player->wall_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 13:
+        if (!enemy->wall_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 14:
+        if (enemy->wall_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 15:
+        if (player->wall_height < enemy->wall_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 16:
+        if (player->tower_height < enemy->tower_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 17:
+        if (player->wall_height == enemy->wall_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 18:
+        if (player->tower_height == enemy->tower_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 19:
+        if (player->wall_height < enemy->wall_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    case 20:
+        if (player->tower_height < enemy->tower_height)
+            goto LABEL_26;
+        goto LABEL_231;
+    default:
+        LABEL_26:
             dword_4FAA68 = pCard->draw_extra_card_count + (pCard->field_30 == 1);
             dword_4FAA64 = pCard->draw_extra_card_count;
-            for ( uint i = 0; i < pCard->draw_extra_card_count; i++ )
-              GetNextCardFromDeck(player_num);
+            for (uint i = 0; i < pCard->draw_extra_card_count; i++)
+                GetNextCardFromDeck(player_num);
 
             need_to_discard_card = GetPlayerHandCardCount(player_num) > minimum_cards_at_hand;
 
-            APPLY_TO_PLAYER(player, enemy, quarry_level,    pCard->to_player_quarry_lvl, quarry_p);
-            APPLY_TO_PLAYER(player, enemy, magic_level,     pCard->to_player_magic_lvl,  magic_p);
-            APPLY_TO_PLAYER(player, enemy, zoo_level,       pCard->to_player_zoo_lvl,    zoo_p);
-            APPLY_TO_PLAYER(player, enemy, resource_bricks, pCard->to_player_bricks,     bricks_p);
-            APPLY_TO_PLAYER(player, enemy, resource_gems,   pCard->to_player_gems,       gems_p);
-            APPLY_TO_PLAYER(player, enemy, resource_beasts, pCard->to_player_beasts,     beasts_p);
-            if ( pCard->to_player_buildings )
-                {
+            APPLY_TO_PLAYER(player, enemy, quarry_level, pCard->to_player_quarry_lvl, quarry_p);
+            APPLY_TO_PLAYER(player, enemy, magic_level, pCard->to_player_magic_lvl, magic_p);
+            APPLY_TO_PLAYER(player, enemy, zoo_level, pCard->to_player_zoo_lvl, zoo_p);
+            APPLY_TO_PLAYER(player, enemy, resource_bricks, pCard->to_player_bricks, bricks_p);
+            APPLY_TO_PLAYER(player, enemy, resource_gems, pCard->to_player_gems, gems_p);
+            APPLY_TO_PLAYER(player, enemy, resource_beasts, pCard->to_player_beasts, beasts_p);
+            if (pCard->to_player_buildings)
+            {
                 dmg_p = ApplyDamageToBuildings(player_num, (signed int)pCard->to_player_buildings);
                 buildings_p = (signed int)pCard->to_player_buildings - dmg_p;
-                }
-           APPLY_TO_PLAYER(player, enemy, wall_height,  pCard->to_player_wall, wall_p);
-           APPLY_TO_PLAYER(player, enemy, tower_height, pCard->to_player_tower, tower_p);
+            }
+            APPLY_TO_PLAYER(player, enemy, wall_height, pCard->to_player_wall, wall_p);
+            APPLY_TO_PLAYER(player, enemy, tower_height, pCard->to_player_tower, tower_p);
 
-           APPLY_TO_ENEMY(player, enemy, quarry_level,    pCard->to_enemy_quarry_lvl, quarry_e);
-           APPLY_TO_ENEMY(player, enemy, magic_level,     pCard->to_enemy_magic_lvl,  magic_e);
-           APPLY_TO_ENEMY(player, enemy, zoo_level,       pCard->to_enemy_zoo_lvl,    zoo_e);
-           APPLY_TO_ENEMY(player, enemy, resource_bricks, pCard->to_enemy_bricks,     bricks_e);
-           APPLY_TO_ENEMY(player, enemy, resource_gems,   pCard->to_enemy_gems,       gems_e);
-           APPLY_TO_ENEMY(player, enemy, resource_beasts, pCard->to_enemy_beasts,     beasts_e);
-            if ( pCard->to_enemy_buildings )
-                {
+            APPLY_TO_ENEMY(player, enemy, quarry_level, pCard->to_enemy_quarry_lvl, quarry_e);
+            APPLY_TO_ENEMY(player, enemy, magic_level, pCard->to_enemy_magic_lvl, magic_e);
+            APPLY_TO_ENEMY(player, enemy, zoo_level, pCard->to_enemy_zoo_lvl, zoo_e);
+            APPLY_TO_ENEMY(player, enemy, resource_bricks, pCard->to_enemy_bricks, bricks_e);
+            APPLY_TO_ENEMY(player, enemy, resource_gems, pCard->to_enemy_gems, gems_e);
+            APPLY_TO_ENEMY(player, enemy, resource_beasts, pCard->to_enemy_beasts, beasts_e);
+            if (pCard->to_enemy_buildings)
+            {
                 dmg_e = ApplyDamageToBuildings(enemy_num, (signed int)pCard->to_enemy_buildings);
                 buildings_e = (signed int)pCard->to_enemy_buildings - dmg_e;
-                }
-            APPLY_TO_ENEMY(player, enemy, wall_height,  pCard->to_enemy_wall,  wall_e);
+            }
+            APPLY_TO_ENEMY(player, enemy, wall_height, pCard->to_enemy_wall, wall_e);
             APPLY_TO_ENEMY(player, enemy, tower_height, pCard->to_enemy_tower, tower_e);
-            
-            APPLY_TO_BOTH(player, enemy, quarry_level,    pCard->to_pl_enm_quarry_lvl, quarry_p, quarry_e);
-            APPLY_TO_BOTH(player, enemy, magic_level,     pCard->to_pl_enm_magic_lvl,  magic_p,  magic_e);
-            APPLY_TO_BOTH(player, enemy, zoo_level,       pCard->to_pl_enm_zoo_lvl,    zoo_p,    zoo_e);
-            APPLY_TO_BOTH(player, enemy, resource_bricks, pCard->to_pl_enm_bricks,     bricks_p, bricks_e);
-            APPLY_TO_BOTH(player, enemy, resource_gems,   pCard->to_pl_enm_gems,       gems_p,   gems_e);
-            APPLY_TO_BOTH(player, enemy, resource_beasts, pCard->to_pl_enm_beasts,     beasts_p, beasts_e);
-            if ( pCard->to_pl_enm_buildings )
-                {
+
+            APPLY_TO_BOTH(player, enemy, quarry_level, pCard->to_pl_enm_quarry_lvl, quarry_p, quarry_e);
+            APPLY_TO_BOTH(player, enemy, magic_level, pCard->to_pl_enm_magic_lvl, magic_p, magic_e);
+            APPLY_TO_BOTH(player, enemy, zoo_level, pCard->to_pl_enm_zoo_lvl, zoo_p, zoo_e);
+            APPLY_TO_BOTH(player, enemy, resource_bricks, pCard->to_pl_enm_bricks, bricks_p, bricks_e);
+            APPLY_TO_BOTH(player, enemy, resource_gems, pCard->to_pl_enm_gems, gems_p, gems_e);
+            APPLY_TO_BOTH(player, enemy, resource_beasts, pCard->to_pl_enm_beasts, beasts_p, beasts_e);
+            if (pCard->to_pl_enm_buildings)
+            {
                 dmg_p = ApplyDamageToBuildings(player_num, (signed int)pCard->to_pl_enm_buildings);
-                dmg_e = ApplyDamageToBuildings(enemy_num,  (signed int)pCard->to_pl_enm_buildings);
+                dmg_e = ApplyDamageToBuildings(enemy_num, (signed int)pCard->to_pl_enm_buildings);
                 buildings_p = (signed int)pCard->to_pl_enm_buildings - dmg_p;
                 buildings_e = (signed int)pCard->to_pl_enm_buildings - dmg_e;
-                }
+            }
             APPLY_TO_BOTH(player, enemy, wall_height, pCard->to_pl_enm_wall, wall_p, wall_e);
             APPLY_TO_BOTH(player, enemy, tower_height, pCard->to_pl_enm_tower, tower_p, tower_e);
             break;
-        case 0:
-LABEL_231:
+    case 0:
+        LABEL_231:
             dword_4FAA68 = pCard->can_draw_extra_card2 + (pCard->field_4D == 1);
             dword_4FAA64 = pCard->can_draw_extra_card2;
-            for ( uint i = 0; i < pCard->can_draw_extra_card2; i++ )
-              GetNextCardFromDeck(player_num);
+            for (uint i = 0; i < pCard->can_draw_extra_card2; i++)
+                GetNextCardFromDeck(player_num);
 
             need_to_discard_card = GetPlayerHandCardCount(player_num) > minimum_cards_at_hand;
 
-            APPLY_TO_PLAYER(player, enemy, quarry_level,    pCard->to_player_quarry_lvl2, quarry_p);
-            APPLY_TO_PLAYER(player, enemy, magic_level,     pCard->to_player_magic_lvl2,  magic_p);
-            APPLY_TO_PLAYER(player, enemy, zoo_level,       pCard->to_player_zoo_lvl2,    zoo_p);
-            APPLY_TO_PLAYER(player, enemy, resource_bricks, pCard->to_player_bricks2,     bricks_p);
-            APPLY_TO_PLAYER(player, enemy, resource_gems,   pCard->to_player_gems2,       gems_p);
-            APPLY_TO_PLAYER(player, enemy, resource_beasts, pCard->to_player_beasts2,     beasts_p);
-            if ( pCard->to_player_buildings2 )
-                {
+            APPLY_TO_PLAYER(player, enemy, quarry_level, pCard->to_player_quarry_lvl2, quarry_p);
+            APPLY_TO_PLAYER(player, enemy, magic_level, pCard->to_player_magic_lvl2, magic_p);
+            APPLY_TO_PLAYER(player, enemy, zoo_level, pCard->to_player_zoo_lvl2, zoo_p);
+            APPLY_TO_PLAYER(player, enemy, resource_bricks, pCard->to_player_bricks2, bricks_p);
+            APPLY_TO_PLAYER(player, enemy, resource_gems, pCard->to_player_gems2, gems_p);
+            APPLY_TO_PLAYER(player, enemy, resource_beasts, pCard->to_player_beasts2, beasts_p);
+            if (pCard->to_player_buildings2)
+            {
                 dmg_p = ApplyDamageToBuildings(player_num, (signed int)pCard->to_player_buildings2);
                 buildings_p = (signed int)pCard->to_player_buildings2 - dmg_p;
-                }
-            APPLY_TO_PLAYER(player, enemy, wall_height,  pCard->to_player_wall2,  wall_p);
+            }
+            APPLY_TO_PLAYER(player, enemy, wall_height, pCard->to_player_wall2, wall_p);
             APPLY_TO_PLAYER(player, enemy, tower_height, pCard->to_player_tower2, tower_p);
 
-            APPLY_TO_ENEMY(player, enemy, quarry_level,    pCard->to_enemy_quarry_lvl2, quarry_e);
-            APPLY_TO_ENEMY(player, enemy, magic_level,     pCard->to_enemy_magic_lvl2,  magic_e);
-            APPLY_TO_ENEMY(player, enemy, zoo_level,       pCard->to_enemy_zoo_lvl2,    zoo_e);
-            APPLY_TO_ENEMY(player, enemy, resource_bricks, pCard->to_enemy_bricks2,     bricks_e);
-            APPLY_TO_ENEMY(player, enemy, resource_gems,   pCard->to_enemy_gems2,       gems_e);
-            APPLY_TO_ENEMY(player, enemy, resource_beasts, pCard->to_enemy_beasts2,     beasts_e);
-            if ( pCard->to_enemy_buildings2 )
-                {
+            APPLY_TO_ENEMY(player, enemy, quarry_level, pCard->to_enemy_quarry_lvl2, quarry_e);
+            APPLY_TO_ENEMY(player, enemy, magic_level, pCard->to_enemy_magic_lvl2, magic_e);
+            APPLY_TO_ENEMY(player, enemy, zoo_level, pCard->to_enemy_zoo_lvl2, zoo_e);
+            APPLY_TO_ENEMY(player, enemy, resource_bricks, pCard->to_enemy_bricks2, bricks_e);
+            APPLY_TO_ENEMY(player, enemy, resource_gems, pCard->to_enemy_gems2, gems_e);
+            APPLY_TO_ENEMY(player, enemy, resource_beasts, pCard->to_enemy_beasts2, beasts_e);
+            if (pCard->to_enemy_buildings2)
+            {
                 dmg_e = ApplyDamageToBuildings(enemy_num, (signed int)pCard->to_enemy_buildings2);
                 buildings_e = (signed int)pCard->to_enemy_buildings2 - dmg_e;
-                }
-            APPLY_TO_ENEMY(player, enemy, wall_height,  pCard->to_enemy_wall2,  wall_e);
+            }
+            APPLY_TO_ENEMY(player, enemy, wall_height, pCard->to_enemy_wall2, wall_e);
             APPLY_TO_ENEMY(player, enemy, tower_height, pCard->to_enemy_tower2, tower_e);
 
-            APPLY_TO_BOTH(player, enemy, quarry_level,    pCard->to_pl_enm_quarry_lvl2, quarry_p, quarry_e);
-            APPLY_TO_BOTH(player, enemy, magic_level,     pCard->to_pl_enm_magic_lvl2,  magic_p,  magic_e);
-            APPLY_TO_BOTH(player, enemy, zoo_level,       pCard->to_pl_enm_zoo_lvl2,    zoo_p,    zoo_e);
-            APPLY_TO_BOTH(player, enemy, resource_bricks, pCard->to_pl_enm_bricks2,     bricks_p, bricks_e);
-            APPLY_TO_BOTH(player, enemy, resource_gems,   pCard->to_pl_enm_gems2,       gems_p,   gems_e);
-            APPLY_TO_BOTH(player, enemy, resource_beasts, pCard->to_pl_enm_beasts2,     beasts_p, beasts_e);
+            APPLY_TO_BOTH(player, enemy, quarry_level, pCard->to_pl_enm_quarry_lvl2, quarry_p, quarry_e);
+            APPLY_TO_BOTH(player, enemy, magic_level, pCard->to_pl_enm_magic_lvl2, magic_p, magic_e);
+            APPLY_TO_BOTH(player, enemy, zoo_level, pCard->to_pl_enm_zoo_lvl2, zoo_p, zoo_e);
+            APPLY_TO_BOTH(player, enemy, resource_bricks, pCard->to_pl_enm_bricks2, bricks_p, bricks_e);
+            APPLY_TO_BOTH(player, enemy, resource_gems, pCard->to_pl_enm_gems2, gems_p, gems_e);
+            APPLY_TO_BOTH(player, enemy, resource_beasts, pCard->to_pl_enm_beasts2, beasts_p, beasts_e);
 
-            if ( pCard->to_pl_enm_buildings2 )
-                {
+            if (pCard->to_pl_enm_buildings2)
+            {
                 dmg_p = ApplyDamageToBuildings(player_num, (signed int)pCard->to_pl_enm_buildings2);
-                dmg_e = ApplyDamageToBuildings(enemy_num,  (signed int)pCard->to_pl_enm_buildings2);
+                dmg_e = ApplyDamageToBuildings(enemy_num, (signed int)pCard->to_pl_enm_buildings2);
                 buildings_p = (signed int)pCard->to_pl_enm_buildings2 - dmg_p;
                 buildings_e = (signed int)pCard->to_pl_enm_buildings2 - dmg_e;
-                }
+            }
             APPLY_TO_BOTH(player, enemy, wall_height, pCard->to_pl_enm_wall2, wall_p, wall_e);
-            APPLY_TO_BOTH(player, enemy, tower_height, pCard->to_pl_enm_tower2, tower_p, tower_e);    
+            APPLY_TO_BOTH(player, enemy, tower_height, pCard->to_pl_enm_tower2, tower_p, tower_e);
             break;
-            }
-          //  }
-        if ( quarry_p > 0 || quarry_e > 0 )
-            pArcomageGame->PlaySound(30);
-        if ( quarry_p < 0 || quarry_e < 0 )
-            pArcomageGame->PlaySound(31);
-        if ( magic_p > 0 || magic_e > 0 )
-            pArcomageGame->PlaySound(33);
-        if ( magic_p < 0 || magic_e < 0 )
-            pArcomageGame->PlaySound(34);
-        if ( zoo_p > 0 || zoo_e > 0 )
-            pArcomageGame->PlaySound(36);
-        if ( zoo_p < 0 || zoo_e < 0 )
-            pArcomageGame->PlaySound(37);
-        if ( bricks_p > 0 || bricks_e > 0 )
-            pArcomageGame->PlaySound(39);
-        if ( bricks_p < 0 || bricks_e < 0 )
-            pArcomageGame->PlaySound(40);
-        if ( gems_p > 0 || gems_e > 0 )
-            pArcomageGame->PlaySound(42);
-        if ( gems_p < 0 || gems_e < 0 )
-            pArcomageGame->PlaySound(43);
-        if ( beasts_p > 0 || beasts_e > 0 )
-            pArcomageGame->PlaySound(45u);
-        if ( beasts_p < 0 || beasts_e < 0 )
-            pArcomageGame->PlaySound(46);
-        if ( buildings_p || buildings_e || dmg_p || dmg_e )
-            pArcomageGame->PlaySound(48);
-        if ( wall_p > 0 || wall_e > 0 )
-            pArcomageGame->PlaySound(49);
-        if ( wall_p < 0 || wall_e < 0 )
-            pArcomageGame->PlaySound(50);
-        if ( tower_p > 0 || tower_e > 0 )
-            pArcomageGame->PlaySound(52);
-        if ( tower_p < 0 || tower_e < 0 )
-            pArcomageGame->PlaySound(53);
-        if ( player_num )
-            {
-            if ( quarry_p )
-                {
-                v184.x = 573;
-                v184.y = 92;
-                am_40D2B4(&v184, quarry_p);
-                }
-            if ( quarry_e )
-                {
-                v184.x = 26;
-                v184.y = 92;
-                am_40D2B4(&v184, quarry_e);
-                }
-            if ( magic_p )
-                {
-                v184.x = 573;
-                v184.y = 164;
-                am_40D2B4(&v184, magic_p);
-                }
-            if ( magic_e )
-                {
-                v184.x = 26;
-                v184.y = 164;
-                am_40D2B4(&v184, magic_e);
-                }
-            if ( zoo_p )
-                {
-                v184.x = 573;
-                v184.y = 236;
-                am_40D2B4(&v184, zoo_p);
-                }
-            if ( zoo_e )
-                {
-                v184.x = 26;
-                v184.y = 236;
-                am_40D2B4(&v184, zoo_e);
-                }
-            if ( bricks_p )
-                {
-                v184.x = 563;
-                v184.y = 114;
-                am_40D2B4(&v184, bricks_p);
-                }
-            if ( bricks_e )
-                {
-                v184.x = 16;
-                v184.y = 114;
-                am_40D2B4(&v184, bricks_e);
-                }
-            if ( gems_p )
-                {
-                v184.x = 563;
-                v184.y = 186;
-                am_40D2B4(&v184, gems_p);
-                }
-            if ( gems_e )
-                {
-                v184.x = 16;
-                v184.y = 186;
-                am_40D2B4(&v184, gems_e);
-                }
-            if ( beasts_p )
-                {
-                v184.x = 563;
-                v184.y = 258;
-                am_40D2B4(&v184, beasts_p);
-                }
-            if ( beasts_e )
-                {
-                v184.x = 16;
-                v184.y = 258;
-                am_40D2B4(&v184, beasts_e);
-                }
-            if ( wall_p )
-                {
-                v184.x = 442;
-                v184.y = 296;
-                am_40D2B4(&v184, wall_p);
-                }
-            if ( wall_e )
-                {
-                v184.x = 180;
-                v184.y = 296;
-                am_40D2B4(&v184, wall_e);
-                }
-            if ( tower_p )
-                {
-                v184.x = 514;
-                v184.y = 296;
-                am_40D2B4(&v184, tower_p);
-                }
-            if ( tower_e )
-                {
-                v184.x = 122;
-                v184.y = 296;
-                am_40D2B4(&v184, tower_e);
-                }
-            if ( dmg_p )
-                {
-                v184.x = 442;
-                v184.y = 296;
-                am_40D2B4(&v184, dmg_p);
-                }
-            if ( buildings_p )
-                {
-                v184.x = 514;
-                v184.y = 296;
-                am_40D2B4(&v184, buildings_p);
-                }
-            if ( dmg_e )
-                {
-                v184.x = 180;
-                v184.y = 296;
-                am_40D2B4(&v184, dmg_e);
-                }
-            if ( buildings_e )
-                {
-                v184.x = 122;
-                v184.y = 296;
-                am_40D2B4(&v184, buildings_e);
-                }
-            }
-        else
-            {
-            if ( quarry_p )
-                {
-                v184.x = 26;
-                v184.y = 92;
-                am_40D2B4(&v184, quarry_p);
-                }
-            if ( quarry_e )
-                {
-                v184.x = 573;
-                v184.y = 92;
-                am_40D2B4(&v184, quarry_e);
-                }
-            if ( magic_p )
-                {
-                v184.x = 26;
-                v184.y = 164;
-                am_40D2B4(&v184, magic_p);
-                }
-            if ( magic_e )
-                {
-                v184.x = 573;
-                v184.y = 164;
-                am_40D2B4(&v184, magic_e);
-                }
-            if ( zoo_p )
-                {
-                v184.x = 26;
-                v184.y = 236;
-                am_40D2B4(&v184, zoo_p);
-                }
-            if ( zoo_e )
-                {
-                v184.x = 573;
-                v184.y = 236;
-                am_40D2B4(&v184, zoo_e);
-                }
-            if ( bricks_p )
-                {
-                v184.x = 16;
-                v184.y = 114;
-                am_40D2B4(&v184, bricks_p);
-                }
-            if ( bricks_e )
-                {
-                v184.x = 563;
-                v184.y = 114;
-                am_40D2B4(&v184, bricks_e);
-                }
-            if ( gems_p )
-                {
-                v184.x = 16;
-                v184.y = 186;
-                am_40D2B4(&v184, gems_p);
-                }
-            if ( gems_e )
-                {
-                v184.x = 563;
-                v184.y = 186;
-                am_40D2B4(&v184, gems_e);
-                }
-            if ( beasts_p )
-                {
-                v184.x = 16;
-                v184.y = 258;
-                am_40D2B4(&v184, beasts_p);
-                }
-            if ( beasts_e )
-                {
-                v184.x = 563;
-                v184.y = 258;
-                am_40D2B4(&v184, beasts_e);
-                }
-            if ( wall_p )
-                {
-                v184.x = 180;
-                v184.y = 296;
-                am_40D2B4(&v184, wall_p);
-                }
-            if ( wall_e )
-                {
-                v184.x = 442;
-                v184.y = 296;
-                am_40D2B4(&v184, wall_e);
-                }
-            if ( tower_p )
-                {
-                v184.x = 122;
-                v184.y = 296;
-                am_40D2B4(&v184, tower_p);
-                }
-            if ( tower_e )
-                {
-                v184.x = 514;
-                v184.y = 296;
-                am_40D2B4(&v184, tower_e);
-                }
-            if ( dmg_p )
-                {
-                v184.x = 180;
-                v184.y = 296;
-                am_40D2B4(&v184, dmg_p);
-                }
-            if ( buildings_p )
-                {
-                v184.x = 122;
-                v184.y = 296;
-                am_40D2B4(&v184, buildings_p);
-                }
-            if ( dmg_e )
-                {
-                v184.x = 442;
-                v184.y = 296;
-                am_40D2B4(&v184, dmg_e);
-                }
-            if ( buildings_e )
-                {
-                v184.x = 514;
-                v184.y = 296;
-                am_40D2B4(&v184, buildings_e);
-                }
-            }
-#undef APPLY_TO_BOTH
-#undef APPLY_TO_ENEMY
-#undef APPLY_TO_PLAYER
-
-}
-
-//----- (0040D2B4) --------------------------------------------------------
-int am_40D2B4( POINT* startXY, int effect_value )
-{
-  int v2; // ebp@1
-  int result; // eax@3
-  int v6;
-  stru272_stru0 *v8; // ecx@12
-  signed int v11; // [sp+10h] [bp-8h]@1
-
-  v11 = 0;
-  v2 = effect_value;
-
-  while ( array_4FABD0[v11].have_effect )//Ritor1: needed refactoring
-  {
-    result = array_4FABD0[v11].field_40->_40E2A7();
-    if ( !result )
-    {
-      array_4FABD0[v11].have_effect = 0;
-      --v11;
     }
-    ++v11;
-    if ( v11 >= 10 )
-      return result;
-  }
-  v6 = v11;
-  array_4FABD0[v11].have_effect = 1;
-  if ( effect_value <= 0 )
-  {
-    array_4FABD0[v6].effect_sign = 0;
-    effect_value = -effect_value;
-  }
-  else
-    array_4FABD0[v6].effect_sign = 1;
-  array_4FABD0[v6].field_4.effect_area.left = startXY->x - 20;
-  array_4FABD0[v6].field_4.effect_area.right = startXY->x + 20;
-  array_4FABD0[v6].field_4.effect_area.top = startXY->y - 20;
-  array_4FABD0[v6].field_4.effect_area.bottom = startXY->y + 20;
-  array_4FABD0[v6].field_4.field_10 = -60;
-  array_4FABD0[v6].field_4.field_14 = 60;
-  array_4FABD0[v6].field_4.field_18 = 180;
-  array_4FABD0[v6].field_4.field_1Cf = 0.5;
-  array_4FABD0[v6].field_4.field_20 = 150;
-  array_4FABD0[v6].field_4.field_24f= 50.0;
-  array_4FABD0[v6].field_4.field_28f = 3.0;
-  array_4FABD0[v6].field_4.field_2Cf = 8.0;
-  array_4FABD0[v6].field_4.field_30 = 5;
-  array_4FABD0[v6].field_4.field_34 = 15;
-  array_4FABD0[v6].field_4.sparks_array = &array_4FABD0[v6].effect_sparks[0];
-  v8 = array_4FABD0[v6].field_40;
-  v8->StartFill(&array_4FABD0[v6].field_4);
-  if ( 10 * effect_value > 150 )
-      effect_value = 15;
-
-  if ( v8->signature != SIG_trpg )
-    return 2;
-  if ( !v8->field_59 )
-    return 3;
-  v8->position_in_sparks_arr = 10 * effect_value;
-  v8->field_30 = 0.0;
-  v8->field_58 = 0;
-  v8->field_44 = 0;
-  v8->field_4C = 0;
-  v8->field_48 = 0;
-  v8->field_50 = 0;
-  for (int i = 0; i < v8->field_4; ++i)
-    v8->field_54[i].have_spark = 0;
-  return 0;
-}
-
-//----- (0040D402) --------------------------------------------------------
-int ApplyDamageToBuildings( int player_num, int damage )
-{
-  int v3; // esi@1
-  int result; // eax@3
-
-  v3 = am_Players[player_num].wall_height;
-  //if ( v3 <= 0 )
-    result = 0;
-  //else
-  //{
-    if ( v3 >= -damage )
+    //  }
+    if (quarry_p > 0 || quarry_e > 0)
+        pArcomageGame->PlaySound(30);
+    if (quarry_p < 0 || quarry_e < 0)
+        pArcomageGame->PlaySound(31);
+    if (magic_p > 0 || magic_e > 0)
+        pArcomageGame->PlaySound(33);
+    if (magic_p < 0 || magic_e < 0)
+        pArcomageGame->PlaySound(34);
+    if (zoo_p > 0 || zoo_e > 0)
+        pArcomageGame->PlaySound(36);
+    if (zoo_p < 0 || zoo_e < 0)
+        pArcomageGame->PlaySound(37);
+    if (bricks_p > 0 || bricks_e > 0)
+        pArcomageGame->PlaySound(39);
+    if (bricks_p < 0 || bricks_e < 0)
+        pArcomageGame->PlaySound(40);
+    if (gems_p > 0 || gems_e > 0)
+        pArcomageGame->PlaySound(42);
+    if (gems_p < 0 || gems_e < 0)
+        pArcomageGame->PlaySound(43);
+    if (beasts_p > 0 || beasts_e > 0)
+        pArcomageGame->PlaySound(45u);
+    if (beasts_p < 0 || beasts_e < 0)
+        pArcomageGame->PlaySound(46);
+    if (buildings_p || buildings_e || dmg_p || dmg_e)
+        pArcomageGame->PlaySound(48);
+    if (wall_p > 0 || wall_e > 0)
+        pArcomageGame->PlaySound(49);
+    if (wall_p < 0 || wall_e < 0)
+        pArcomageGame->PlaySound(50);
+    if (tower_p > 0 || tower_e > 0)
+        pArcomageGame->PlaySound(52);
+    if (tower_p < 0 || tower_e < 0)
+        pArcomageGame->PlaySound(53);
+    if (player_num)
     {
-      result = damage;
-      am_Players[player_num].wall_height += damage;
+        if (quarry_p)
+        {
+            v184.x = 573;
+            v184.y = 92;
+            am_40D2B4(&v184, quarry_p);
+        }
+        if (quarry_e)
+        {
+            v184.x = 26;
+            v184.y = 92;
+            am_40D2B4(&v184, quarry_e);
+        }
+        if (magic_p)
+        {
+            v184.x = 573;
+            v184.y = 164;
+            am_40D2B4(&v184, magic_p);
+        }
+        if (magic_e)
+        {
+            v184.x = 26;
+            v184.y = 164;
+            am_40D2B4(&v184, magic_e);
+        }
+        if (zoo_p)
+        {
+            v184.x = 573;
+            v184.y = 236;
+            am_40D2B4(&v184, zoo_p);
+        }
+        if (zoo_e)
+        {
+            v184.x = 26;
+            v184.y = 236;
+            am_40D2B4(&v184, zoo_e);
+        }
+        if (bricks_p)
+        {
+            v184.x = 563;
+            v184.y = 114;
+            am_40D2B4(&v184, bricks_p);
+        }
+        if (bricks_e)
+        {
+            v184.x = 16;
+            v184.y = 114;
+            am_40D2B4(&v184, bricks_e);
+        }
+        if (gems_p)
+        {
+            v184.x = 563;
+            v184.y = 186;
+            am_40D2B4(&v184, gems_p);
+        }
+        if (gems_e)
+        {
+            v184.x = 16;
+            v184.y = 186;
+            am_40D2B4(&v184, gems_e);
+        }
+        if (beasts_p)
+        {
+            v184.x = 563;
+            v184.y = 258;
+            am_40D2B4(&v184, beasts_p);
+        }
+        if (beasts_e)
+        {
+            v184.x = 16;
+            v184.y = 258;
+            am_40D2B4(&v184, beasts_e);
+        }
+        if (wall_p)
+        {
+            v184.x = 442;
+            v184.y = 296;
+            am_40D2B4(&v184, wall_p);
+        }
+        if (wall_e)
+        {
+            v184.x = 180;
+            v184.y = 296;
+            am_40D2B4(&v184, wall_e);
+        }
+        if (tower_p)
+        {
+            v184.x = 514;
+            v184.y = 296;
+            am_40D2B4(&v184, tower_p);
+        }
+        if (tower_e)
+        {
+            v184.x = 122;
+            v184.y = 296;
+            am_40D2B4(&v184, tower_e);
+        }
+        if (dmg_p)
+        {
+            v184.x = 442;
+            v184.y = 296;
+            am_40D2B4(&v184, dmg_p);
+        }
+        if (buildings_p)
+        {
+            v184.x = 514;
+            v184.y = 296;
+            am_40D2B4(&v184, buildings_p);
+        }
+        if (dmg_e)
+        {
+            v184.x = 180;
+            v184.y = 296;
+            am_40D2B4(&v184, dmg_e);
+        }
+        if (buildings_e)
+        {
+            v184.x = 122;
+            v184.y = 296;
+            am_40D2B4(&v184, buildings_e);
+        }
     }
     else
     {
-      damage += v3;
-      result = -v3;
-      am_Players[player_num].wall_height = 0;
-      am_Players[player_num].tower_height += damage;
+        if (quarry_p)
+        {
+            v184.x = 26;
+            v184.y = 92;
+            am_40D2B4(&v184, quarry_p);
+        }
+        if (quarry_e)
+        {
+            v184.x = 573;
+            v184.y = 92;
+            am_40D2B4(&v184, quarry_e);
+        }
+        if (magic_p)
+        {
+            v184.x = 26;
+            v184.y = 164;
+            am_40D2B4(&v184, magic_p);
+        }
+        if (magic_e)
+        {
+            v184.x = 573;
+            v184.y = 164;
+            am_40D2B4(&v184, magic_e);
+        }
+        if (zoo_p)
+        {
+            v184.x = 26;
+            v184.y = 236;
+            am_40D2B4(&v184, zoo_p);
+        }
+        if (zoo_e)
+        {
+            v184.x = 573;
+            v184.y = 236;
+            am_40D2B4(&v184, zoo_e);
+        }
+        if (bricks_p)
+        {
+            v184.x = 16;
+            v184.y = 114;
+            am_40D2B4(&v184, bricks_p);
+        }
+        if (bricks_e)
+        {
+            v184.x = 563;
+            v184.y = 114;
+            am_40D2B4(&v184, bricks_e);
+        }
+        if (gems_p)
+        {
+            v184.x = 16;
+            v184.y = 186;
+            am_40D2B4(&v184, gems_p);
+        }
+        if (gems_e)
+        {
+            v184.x = 563;
+            v184.y = 186;
+            am_40D2B4(&v184, gems_e);
+        }
+        if (beasts_p)
+        {
+            v184.x = 16;
+            v184.y = 258;
+            am_40D2B4(&v184, beasts_p);
+        }
+        if (beasts_e)
+        {
+            v184.x = 563;
+            v184.y = 258;
+            am_40D2B4(&v184, beasts_e);
+        }
+        if (wall_p)
+        {
+            v184.x = 180;
+            v184.y = 296;
+            am_40D2B4(&v184, wall_p);
+        }
+        if (wall_e)
+        {
+            v184.x = 442;
+            v184.y = 296;
+            am_40D2B4(&v184, wall_e);
+        }
+        if (tower_p)
+        {
+            v184.x = 122;
+            v184.y = 296;
+            am_40D2B4(&v184, tower_p);
+        }
+        if (tower_e)
+        {
+            v184.x = 514;
+            v184.y = 296;
+            am_40D2B4(&v184, tower_e);
+        }
+        if (dmg_p)
+        {
+            v184.x = 180;
+            v184.y = 296;
+            am_40D2B4(&v184, dmg_p);
+        }
+        if (buildings_p)
+        {
+            v184.x = 122;
+            v184.y = 296;
+            am_40D2B4(&v184, buildings_p);
+        }
+        if (dmg_e)
+        {
+            v184.x = 442;
+            v184.y = 296;
+            am_40D2B4(&v184, dmg_e);
+        }
+        if (buildings_e)
+        {
+            v184.x = 514;
+            v184.y = 296;
+            am_40D2B4(&v184, buildings_e);
+        }
     }
-  //}
-  if ( am_Players[player_num].tower_height < 0 )
-    am_Players[player_num].tower_height = 0;
-  return result;
+#undef APPLY_TO_BOTH
+#undef APPLY_TO_ENEMY
+#undef APPLY_TO_PLAYER
 }
-// 40D402: using guessed type int am_40D402(uint, uint);
+
+//----- (0040D2B4) --------------------------------------------------------
+int am_40D2B4(POINT* startXY, int effect_value)
+{
+    int v2; // ebp@1
+    int result; // eax@3
+    int v6;
+    stru272_stru0 *v8; // ecx@12
+    signed int v11; // [sp+10h] [bp-8h]@1
+
+    v11 = 0;
+    v2 = effect_value;
+
+    while (array_4FABD0[v11].have_effect)//Ritor1: needed refactoring
+    {
+        result = array_4FABD0[v11].field_40->_40E2A7();
+        if (!result)
+        {
+            array_4FABD0[v11].have_effect = 0;
+            --v11;
+        }
+        ++v11;
+        if (v11 >= 10)
+            return result;
+    }
+    v6 = v11;
+    array_4FABD0[v11].have_effect = 1;
+    if (effect_value <= 0)
+    {
+        array_4FABD0[v6].effect_sign = 0;
+        effect_value = -effect_value;
+    }
+    else
+        array_4FABD0[v6].effect_sign = 1;
+    array_4FABD0[v6].field_4.effect_area.left = startXY->x - 20;
+    array_4FABD0[v6].field_4.effect_area.right = startXY->x + 20;
+    array_4FABD0[v6].field_4.effect_area.top = startXY->y - 20;
+    array_4FABD0[v6].field_4.effect_area.bottom = startXY->y + 20;
+    array_4FABD0[v6].field_4.field_10 = -60;
+    array_4FABD0[v6].field_4.field_14 = 60;
+    array_4FABD0[v6].field_4.field_18 = 180;
+    array_4FABD0[v6].field_4.field_1Cf = 0.5;
+    array_4FABD0[v6].field_4.field_20 = 150;
+    array_4FABD0[v6].field_4.field_24f = 50.0;
+    array_4FABD0[v6].field_4.field_28f = 3.0;
+    array_4FABD0[v6].field_4.field_2Cf = 8.0;
+    array_4FABD0[v6].field_4.field_30 = 5;
+    array_4FABD0[v6].field_4.field_34 = 15;
+    array_4FABD0[v6].field_4.sparks_array = &array_4FABD0[v6].effect_sparks[0];
+    v8 = array_4FABD0[v6].field_40;
+    v8->StartFill(&array_4FABD0[v6].field_4);
+    if (10 * effect_value > 150)
+        effect_value = 15;
+
+    if (v8->signature != SIG_trpg)
+        return 2;
+    if (!v8->field_59)
+        return 3;
+    v8->position_in_sparks_arr = 10 * effect_value;
+    v8->field_30 = 0.0;
+    v8->field_58 = 0;
+    v8->field_44 = 0;
+    v8->field_4C = 0;
+    v8->field_48 = 0;
+    v8->field_50 = 0;
+    for (int i = 0; i < v8->field_4; ++i)
+        v8->field_54[i].have_spark = 0;
+    return 0;
+}
+
+
+
+//----- (0040D402) --------------------------------------------------------
+int ApplyDamageToBuildings(int player_num, int damage)
+{
+    int v3; // esi@1
+    int result; // eax@3
+
+    v3 = am_Players[player_num].wall_height;
+    //if ( v3 <= 0 )
+    result = 0;
+    //else
+    //{
+    if (v3 >= -damage)
+    {
+        result = damage;
+        am_Players[player_num].wall_height += damage;
+    }
+    else
+    {
+        damage += v3;
+        result = -v3;
+        am_Players[player_num].wall_height = 0;
+        am_Players[player_num].tower_height += damage;
+    }
+    //}
+    if (am_Players[player_num].tower_height < 0)
+        am_Players[player_num].tower_height = 0;
+    return result;
+}
+
+
 
 //----- (0040D444) --------------------------------------------------------
 void GameResultsApply()
 {
-  int winner; // esi@1
-  int victory_type; // edi@1
-  int pl_resource; // edx@25
-  int en_resource; // eax@28
-  unsigned int tavern_num; // eax@54
+    int winner; // esi@1
+    int victory_type; // edi@1
+    int pl_resource; // edx@25
+    int en_resource; // eax@28
+    unsigned int tavern_num; // eax@54
 
-  winner = -1;
-  victory_type = -1;
-  //nullsub_1();
-  /*strcpy(pText, "The Winner is: ");//"Победил: " Ritor1: архаизм
-  xy.y = 160;
-  xy.x = 320; //- 12 * v2 / 2;
-  am_DrawText(-1, pText, &xy);*/
+    winner = -1;
+    victory_type = -1;
+    //nullsub_1();
+    /*strcpy(pText, "The Winner is: ");//"Победил: " Ritor1: архаизм
+    xy.y = 160;
+    xy.x = 320; //- 12 * v2 / 2;
+    am_DrawText(-1, pText, &xy);*/
 
-  //проверка построена ли башня
-  if ( am_Players[0].tower_height < max_tower_height && am_Players[1].tower_height >= max_tower_height )//наша башня не построена, а у врага построена
-  {
-    winner = 2;//победил игрок 2(враг)
-    victory_type = 0;
-  }
-  else if ( am_Players[0].tower_height >= max_tower_height && am_Players[1].tower_height < max_tower_height )//наша башня построена, а у врага нет
-  {
-    winner = 1;//победил игрок 1(мы)
-    victory_type = 0;
-  }
-  else if ( am_Players[0].tower_height >= max_tower_height && am_Players[1].tower_height >= max_tower_height )//и у нас, и у врага построена
-  {
-    if ( am_Players[0].tower_height == am_Players[1].tower_height )//наши башни равны
+    //проверка построена ли башня
+    if (am_Players[0].tower_height < max_tower_height && am_Players[1].tower_height >= max_tower_height)//наша башня не построена, а у врага построена
     {
-      winner = 0;//никто не победил
-      victory_type = 4;//ничья
+        winner = 2;//победил игрок 2(враг)
+        victory_type = 0;
     }
-    else//наши башни не равны
+    else if (am_Players[0].tower_height >= max_tower_height && am_Players[1].tower_height < max_tower_height)//наша башня построена, а у врага нет
     {
-      winner = (am_Players[0].tower_height <= am_Players[1].tower_height) + 1;//победил тот, у кого выше
-      victory_type = 0;
+        winner = 1;//победил игрок 1(мы)
+        victory_type = 0;
     }
-  }
+    else if (am_Players[0].tower_height >= max_tower_height && am_Players[1].tower_height >= max_tower_height)//и у нас, и у врага построена
+    {
+        if (am_Players[0].tower_height == am_Players[1].tower_height)//наши башни равны
+        {
+            winner = 0;//никто не победил
+            victory_type = 4;//ничья
+        }
+        else//наши башни не равны
+        {
+            winner = (am_Players[0].tower_height <= am_Players[1].tower_height) + 1;//победил тот, у кого выше
+            victory_type = 0;
+        }
+    }
 
-  //проверка разрушена ли башня
-  if ( am_Players[0].tower_height <= 0 && am_Players[1].tower_height > 0 )//наша башня разрушена, а у врага нет
-  {
-    winner = 2;// победил игрок 2(враг)
-    victory_type = 2;//победил разрушив башню врага
-  }
-  else if ( am_Players[0].tower_height > 0 && am_Players[1].tower_height <= 0 )//у врага башня разрушена, а у нас нет
-  {
-    winner = 1;//победил игрок 1(мы)
-    victory_type = 2;//победил разрушив башню врага
-  }
-  else if ( am_Players[0].tower_height <= 0 && am_Players[1].tower_height <= 0  )//наша башня разрушена, и у врага разрушена
-  {
-    if ( am_Players[0].tower_height == am_Players[1].tower_height )//если башни равны
+    //проверка разрушена ли башня
+    if (am_Players[0].tower_height <= 0 && am_Players[1].tower_height > 0)//наша башня разрушена, а у врага нет
     {
-      if ( am_Players[0].wall_height == am_Players[1].wall_height )//если стены равны
-      {
-        winner = 0;
-        victory_type = 4;
-      }
-      else//если стены не равны
-      {
-        winner = (am_Players[0].wall_height <= am_Players[1].wall_height) + 1;//победил тот, у кого стена выше
-        victory_type = 1;//победа когда больше стена при ничье
-      }
+        winner = 2;// победил игрок 2(враг)
+        victory_type = 2;//победил разрушив башню врага
     }
-    else//башни не равны
+    else if (am_Players[0].tower_height > 0 && am_Players[1].tower_height <= 0)//у врага башня разрушена, а у нас нет
     {
-      winner = (am_Players[0].tower_height <= am_Players[1].tower_height) + 1;// побеждает тот у кого башня больше
-      victory_type = 2;//победил разрушив башню врага
+        winner = 1;//победил игрок 1(мы)
+        victory_type = 2;//победил разрушив башню врага
     }
-  }
+    else if (am_Players[0].tower_height <= 0 && am_Players[1].tower_height <= 0)//наша башня разрушена, и у врага разрушена
+    {
+        if (am_Players[0].tower_height == am_Players[1].tower_height)//если башни равны
+        {
+            if (am_Players[0].wall_height == am_Players[1].wall_height)//если стены равны
+            {
+                winner = 0;
+                victory_type = 4;
+            }
+            else//если стены не равны
+            {
+                winner = (am_Players[0].wall_height <= am_Players[1].wall_height) + 1;//победил тот, у кого стена выше
+                victory_type = 1;//победа когда больше стена при ничье
+            }
+        }
+        else//башни не равны
+        {
+            winner = (am_Players[0].tower_height <= am_Players[1].tower_height) + 1;// побеждает тот у кого башня больше
+            victory_type = 2;//победил разрушив башню врага
+        }
+    }
 
-  //проверка набраны ли ресурсы
-  //проверка какого ресурса больше всего у игрока 1(нас)
-  pl_resource = am_Players[0].resource_bricks;//кирпичей больше чем др. ресурсов
-  if ( am_Players[0].resource_gems > am_Players[0].resource_bricks
-    && am_Players[0].resource_gems > am_Players[0].resource_beasts )//драг.камней больше всего
-    pl_resource = am_Players[0].resource_gems;
-  else if ( am_Players[0].resource_beasts > am_Players[0].resource_gems
-          && am_Players[0].resource_beasts > am_Players[0].resource_bricks )//зверей больше всего
-    pl_resource = am_Players[0].resource_beasts;
+    //проверка набраны ли ресурсы
+    //проверка какого ресурса больше всего у игрока 1(нас)
+    pl_resource = am_Players[0].resource_bricks;//кирпичей больше чем др. ресурсов
+    if (am_Players[0].resource_gems > am_Players[0].resource_bricks
+        && am_Players[0].resource_gems > am_Players[0].resource_beasts)//драг.камней больше всего
+        pl_resource = am_Players[0].resource_gems;
+    else if (am_Players[0].resource_beasts > am_Players[0].resource_gems
+        && am_Players[0].resource_beasts > am_Players[0].resource_bricks)//зверей больше всего
+        pl_resource = am_Players[0].resource_beasts;
 
-  //проверка какого ресурса больше у игрока 2(врага)
-  en_resource = am_Players[1].resource_bricks;//кирпичей больше чем др. ресурсов
-  if ( am_Players[1].resource_gems > am_Players[1].resource_bricks
-    && am_Players[1].resource_gems > am_Players[1].resource_beasts )//драг.камней больше всего
-    en_resource = am_Players[1].resource_gems;
-  else if ( am_Players[1].resource_beasts > am_Players[1].resource_gems
-          && am_Players[1].resource_beasts > am_Players[1].resource_bricks )//зверей больше всего
-    en_resource = am_Players[1].resource_beasts;
+    //проверка какого ресурса больше у игрока 2(врага)
+    en_resource = am_Players[1].resource_bricks;//кирпичей больше чем др. ресурсов
+    if (am_Players[1].resource_gems > am_Players[1].resource_bricks
+        && am_Players[1].resource_gems > am_Players[1].resource_beasts)//драг.камней больше всего
+        en_resource = am_Players[1].resource_gems;
+    else if (am_Players[1].resource_beasts > am_Players[1].resource_gems
+        && am_Players[1].resource_beasts > am_Players[1].resource_bricks)//зверей больше всего
+        en_resource = am_Players[1].resource_beasts;
 
-  //сравнение ресурсов игроков
-  if ( winner == -1 && victory_type == -1 )//нет победителя по башням
-  {
-    if ( pl_resource < max_resources_amount && en_resource >= max_resources_amount )//враг набрал нужное количество
+    //сравнение ресурсов игроков
+    if (winner == -1 && victory_type == -1)//нет победителя по башням
     {
-      winner = 2;// враг победил
-      victory_type = 3;//победа собрав нужное количество ресурсов
+        if (pl_resource < max_resources_amount && en_resource >= max_resources_amount)//враг набрал нужное количество
+        {
+            winner = 2;// враг победил
+            victory_type = 3;//победа собрав нужное количество ресурсов
+        }
+        else if (pl_resource >= max_resources_amount && en_resource < max_resources_amount)//мы набрали нужное количество
+        {
+            winner = 1;// мы победили
+            victory_type = 3;//победа собрав нужное количество ресурсов
+        }
+        else if (pl_resource >= max_resources_amount && en_resource >= max_resources_amount)//и у нас и у врага нужное количество ресурсов
+        {
+            if (pl_resource == en_resource)// ресурсы равны
+            {
+                winner = 0;//ресурсы равны
+                victory_type = 4; //ничья
+            }
+            else
+            {
+                winner = (pl_resource <= en_resource) + 1;//ресурсы не равны, побеждает тот у кого больше
+                victory_type = 3;//победа собрав нужное количество ресурсов
+            }
+        }
     }
-    else if ( pl_resource >= max_resources_amount && en_resource < max_resources_amount )//мы набрали нужное количество
+    else if (winner == 0 && victory_type == 4)// при ничье по башням и стене
     {
-      winner = 1;// мы победили
-      victory_type = 3;//победа собрав нужное количество ресурсов
+        if (pl_resource != en_resource)//ресурсы не равны
+        {
+            winner = (pl_resource <= en_resource) + 1;//победил тот у кого больше
+            victory_type = 5;//победа когда при ничье большее количество ресурсов
+        }
+        else //ресурсы равны
+        {
+            winner = 0;//нет победителя
+            victory_type = 4; //ничья
+        }
     }
-    else if ( pl_resource >= max_resources_amount && en_resource >= max_resources_amount )//и у нас и у врага нужное количество ресурсов
-    {
-      if ( pl_resource == en_resource )// ресурсы равны
-      {
-        winner = 0;//ресурсы равны
-        victory_type = 4; //ничья
-      }
-      else
-      {
-        winner = (pl_resource <= en_resource) + 1;//ресурсы не равны, побеждает тот у кого больше
-        victory_type = 3;//победа собрав нужное количество ресурсов
-      }
-    }
-  }
-  else if ( winner == 0 && victory_type == 4 )// при ничье по башням и стене
-  {
-    if ( pl_resource != en_resource )//ресурсы не равны
-    {
-      winner = (pl_resource <= en_resource) + 1;//победил тот у кого больше
-      victory_type = 5;//победа когда при ничье большее количество ресурсов
-    }
-    else //ресурсы равны
-    {
-      winner = 0;//нет победителя
-      victory_type = 4; //ничья
-    }
-  }
 
-  //подведение итогов
-  pArcomageGame->Victory_type = victory_type;
-  pArcomageGame->uGameWinner = winner;
-  if ( winner == 1 )//победитель игрок 1(мы)
-  {
-    if (( window_SpeakInHouse->par1C >= 108 ) && ( window_SpeakInHouse->par1C <= 120 ))//таверны
+    //подведение итогов
+    pArcomageGame->Victory_type = victory_type;
+    pArcomageGame->uGameWinner = winner;
+    if (winner == 1)//победитель игрок 1(мы)
     {
-      if ( !pParty->pArcomageWins[window_SpeakInHouse->par1C - 108] )
-      {
-        pParty->pArcomageWins[window_SpeakInHouse->par1C - 108] = 1;
-        pParty->PartyFindsGold(p2DEvents[ window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100.0, 0);//вознаграждение
-      }
-    }
-    //проверка выполнен ли квест по аркомагу
-    tavern_num = 0;
-    for ( uint i = 108; i <= 120; ++i )
-    {
-      if ( !pParty->pArcomageWins[i - 108] )
-        break;
-      tavern_num++;
-    }
-    if ( tavern_num == 13 )
-      _449B7E_toggle_bit(pParty->_quest_bits, 238, 1);// 238 - Won all Arcomage games
+        if ((window_SpeakInHouse->par1C >= 108) && (window_SpeakInHouse->par1C <= 120))//таверны
+        {
+            if (!pParty->pArcomageWins[window_SpeakInHouse->par1C - 108])
+            {
+                pParty->pArcomageWins[window_SpeakInHouse->par1C - 108] = 1;
+                pParty->PartyFindsGold(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100.0, 0);//вознаграждение
+            }
+        }
+        //проверка выполнен ли квест по аркомагу
+        tavern_num = 0;
+        for (uint i = 108; i <= 120; ++i)
+        {
+            if (!pParty->pArcomageWins[i - 108])
+                break;
+            tavern_num++;
+        }
+        if (tavern_num == 13)
+            _449B7E_toggle_bit(pParty->_quest_bits, 238, 1);// 238 - Won all Arcomage games
 
-    for ( int i = 0; i < 4; ++i )//внесение записи в Заслуги
-    {
-      if ( !_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, 1) )
-        _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__ARCOMAGE_WIN, 1);
+        for (int i = 0; i < 4; ++i)//внесение записи в Заслуги
+        {
+            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, 1))
+                _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__ARCOMAGE_WIN, 1);
+        }
+        ++pParty->uNumArcomageWins;
+        if (pParty->uNumArcomageWins > 1000000)//ограничение количества побед
+            pParty->uNumArcomageWins = 1000000;
     }
-    ++pParty->uNumArcomageWins;
-    if ( pParty->uNumArcomageWins > 1000000 )//ограничение количества побед
-      pParty->uNumArcomageWins = 1000000;
-  }
-  else//проигрыш
-  {
-    for ( int i = 0; i < 4; ++i )//внесение записи в Заслуги
+    else//проигрыш
     {
-      if ( !_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, 1) )
-        _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__ARCOMAGE_LOSE, 1);
+        for (int i = 0; i < 4; ++i)//внесение записи в Заслуги
+        {
+            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, 1))
+                _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__ARCOMAGE_LOSE, 1);
+        }
+        ++pParty->uNumArcomageLoses;
+        if (pParty->uNumArcomageLoses > 1000000)//ограничение количества проигрышей
+            pParty->uNumArcomageLoses = 1000000;
     }
-    ++pParty->uNumArcomageLoses;
-    if ( pParty->uNumArcomageLoses > 1000000 )//ограничение количества проигрышей
-      pParty->uNumArcomageLoses = 1000000;
-  }
 }
+
+
 
 //----- (00409C8B) --------------------------------------------------------
 void ArcomageGame::PrepareArcomage()
 {
-  int v2; // esi@4
-  int v3; // esi@5
-  signed int v4; // edi@5
-  RECT pXYZW; // [sp+8h] [bp-1Ch]@5
-  POINT pXY; // [sp+18h] [bp-Ch]@5
+    int v2; // esi@4
+    int v3; // esi@5
+    signed int v4; // edi@5
+    RECT pXYZW; // [sp+8h] [bp-1Ch]@5
+    POINT pXY; // [sp+18h] [bp-Ch]@5
 
-  pAudioPlayer->StopChannels(-1, -1);
-  strcpy(pArcomageGame->pPlayer1Name, Player1Name);
-  strcpy(pArcomageGame->pPlayer2Name, Player2Name);
-  am_byte_4FAA76 = 0;
-  am_byte_4FAA75 = 0;
+    pAudioPlayer->StopChannels(-1, -1);
+    strcpy(pArcomageGame->pPlayer1Name, Player1Name);
+    strcpy(pArcomageGame->pPlayer2Name, Player2Name);
+    am_byte_4FAA76 = 0;
+    am_byte_4FAA75 = 0;
 
-  for (int i = 0; i < 10; ++i)
-  {
-    v2 = (i+1) % 4;
-    v3 = (i+1) / 4;
-    shown_cards[i].uCardId = -1;
-    shown_cards[i].field_4 = 0;
-    shown_cards[i].field_8.x = 100 * v2 + 120;
-    shown_cards[i].field_8.y = 138 * v3 + 18;
-    shown_cards[i].field_10_xplus = -100 * v2 / 5;
-    shown_cards[i].field_14_y_plus = -138 * v3 / 5;
-    shown_cards[i].field_18_point.x = shown_cards[i].field_8.x;
-    shown_cards[i].field_18_point.y = shown_cards[i].field_8.y;
-  }
+    for (int i = 0; i < 10; ++i)
+    {
+        v2 = (i + 1) % 4;
+        v3 = (i + 1) / 4;
+        shown_cards[i].uCardId = -1;
+        shown_cards[i].field_4 = 0;
+        shown_cards[i].field_8.x = 100 * v2 + 120;
+        shown_cards[i].field_8.y = 138 * v3 + 18;
+        shown_cards[i].field_10_xplus = -100 * v2 / 5;
+        shown_cards[i].field_14_y_plus = -138 * v3 / 5;
+        shown_cards[i].field_18_point.x = shown_cards[i].field_8.x;
+        shown_cards[i].field_18_point.y = shown_cards[i].field_8.y;
+    }
 
-  pXY.x = 0;
-  pXY.y = 0;
-  ArcomageGame::LoadBackground();
-  pXYZW.left = 0;
-  pXYZW.right = window->GetWidth();
-  pXYZW.top = 0;
-  pXYZW.bottom = window->GetHeight();
-  am_BeginScene(pArcomageGame->pBackgroundPixels, -1, 1);
-  pRenderer->am_Blt_Copy(&pXYZW, &pXY, 2);
-  am_EndScene();
-  pRenderer->Present();
-  ArcomageGame::LoadSprites();
-  pRenderer->Present();
+    pXY.x = 0;
+    pXY.y = 0;
+    ArcomageGame::LoadBackground();
+    pXYZW.left = 0;
+    pXYZW.right = window->GetWidth();
+    pXYZW.top = 0;
+    pXYZW.bottom = window->GetHeight();
+    am_BeginScene(pArcomageGame->pBackgroundPixels, -1, 1);
+    pRenderer->am_Blt_Copy(&pXYZW, &pXY, 2);
+    am_EndScene();
+    pRenderer->Present();
+    ArcomageGame::LoadSprites();
+    pRenderer->Present();
 
-  v4 = 120;
-  for ( int i = 0; i < 12; ++i )
-    am_sounds[i] = pSoundList->LoadSound(v4++, 0);
+    v4 = 120;
+    for (int i = 0; i < 12; ++i)
+        am_sounds[i] = pSoundList->LoadSound(v4++, 0);
 
-  for (int i = 0; i < 10; ++i)
-     array_4FABD0[i].field_40 = stru272_stru0::New();
-  
-  current_card_slot_index = -1;
-  amuint_4FAA4C = -1;
-  byte_4FAA74 = 0;
-  pArcomageGame->field_F4 = 0;
-  am_gameover = false;
-  byte_505880 = 0;
-  dword_4FAA70 = 0;
-  need_to_discard_card = 0;
-  SetStartGameData();
-  InitalHandsFill();
-  //nullsub_1();
-  pArcomageGame->GameOver = 0;
-  pArcomageGame->pfntComic = pFontComic;
-  pArcomageGame->pfntArrus = pFontArrus;
+    for (int i = 0; i < 10; ++i)
+        array_4FABD0[i].field_40 = stru272_stru0::New();
+
+    current_card_slot_index = -1;
+    amuint_4FAA4C = -1;
+    byte_4FAA74 = 0;
+    pArcomageGame->field_F4 = 0;
+    am_gameover = false;
+    byte_505880 = 0;
+    dword_4FAA70 = 0;
+    need_to_discard_card = 0;
+    SetStartGameData();
+    InitalHandsFill();
+    //nullsub_1();
+    pArcomageGame->GameOver = 0;
+    pArcomageGame->pfntComic = pFontComic;
+    pArcomageGame->pfntArrus = pFontArrus;
 }
+
+
 
 //----- (0040D711) --------------------------------------------------------
 ArcomageGame::ArcomageGame()
 {
-  field_4 = 0;
-  bGameInProgress = 0;
-  field_F9 = 0;
+    field_4 = 0;
+    bGameInProgress = 0;
+    field_F9 = 0;
 }
+
+
 
 //----- (00409BE8) --------------------------------------------------------
 void SetStartConditions()
 {
-  const ArcomageStartConditions *st_cond; // eax@1
+    const ArcomageStartConditions *st_cond; // eax@1
 
-  st_cond = &start_conditions[window_SpeakInHouse->par1C - 108];
-  start_tower_height = st_cond->tower_height;
-  start_wall_height  = st_cond->wall_height;
-  start_quarry_level = st_cond->quarry_level - 1;
-  start_magic_level  = st_cond->magic_level - 1;
-  start_zoo_level  = st_cond->zoo_level - 1;
-  minimum_cards_at_hand = 5;
-  quarry_bonus = 1;
-  magic_bonus = 1;
-  zoo_bonus = 1;
-  max_tower_height = st_cond->max_tower;
-  max_resources_amount = st_cond->max_resources;
+    st_cond = &start_conditions[window_SpeakInHouse->par1C - 108];
+    start_tower_height = st_cond->tower_height;
+    start_wall_height = st_cond->wall_height;
+    start_quarry_level = st_cond->quarry_level - 1;
+    start_magic_level = st_cond->magic_level - 1;
+    start_zoo_level = st_cond->zoo_level - 1;
+    minimum_cards_at_hand = 5;
+    quarry_bonus = 1;
+    magic_bonus = 1;
+    zoo_bonus = 1;
+    max_tower_height = st_cond->max_tower;
+    max_resources_amount = st_cond->max_resources;
 
-  opponent_mastery = st_cond->mastery_lvl;
+    opponent_mastery = st_cond->mastery_lvl;
 
-  start_bricks_amount = st_cond->bricks_amount;
-  start_gems_amount   = st_cond->gems_amount;
-  start_beasts_amount = st_cond->beasts_amount;
+    start_bricks_amount = st_cond->bricks_amount;
+    start_gems_amount = st_cond->gems_amount;
+    start_beasts_amount = st_cond->beasts_amount;
 }
+
+
 
 //----- (0040D75D) --------------------------------------------------------
-void am_DrawText( int a1, const char *pText, POINT *pXY )
+void am_DrawText(const String &str, POINT *pXY)
 {
-  pPrimaryWindow->DrawText( pFontComic, pXY->x, pXY->y - ((pFontComic->uFontHeight - 3) / 2) + 3, 0, pText, 0, 0, 0);
+    pPrimaryWindow->DrawText(pFontComic, pXY->x, pXY->y - ((pFontComic->uFontHeight - 3) / 2) + 3, 0, str, 0, 0, 0);
 }
+
+
 
 //----- (0040DB27) --------------------------------------------------------
-void DrawRect( RECT *pXYZW, unsigned __int16 uColor, char bSolidFill )
+void DrawRect(RECT *pXYZW, unsigned __int16 uColor, char bSolidFill)
 {
-  pRenderer->BeginScene();
-  pRenderer->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
-  if ( bSolidFill )
-  {
-    for ( int i = pXYZW->top; i <= pXYZW->bottom;  ++i )
-      pRenderer->RasterLine2D(pXYZW->left, i, pXYZW->right, i, uColor);
-  }
-  else
-  {
-    pRenderer->RasterLine2D(pXYZW->left, pXYZW->top, pXYZW->right, pXYZW->top, uColor);
-    pRenderer->RasterLine2D(pXYZW->right, pXYZW->top, pXYZW->right, pXYZW->bottom, uColor);
-    pRenderer->RasterLine2D(pXYZW->right, pXYZW->bottom, pXYZW->left, pXYZW->bottom, uColor);
-    pRenderer->RasterLine2D(pXYZW->left, pXYZW->bottom, pXYZW->left, pXYZW->top, uColor);
-  }
-  pRenderer->EndScene();
-}
-
-void DrawSquare( POINT *pTargetXY, unsigned __int16 uColor )
-{
-  pRenderer->BeginScene();
-  //if ( uNumSceneBegins )
-  {
-    if ( pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
-      && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
+    pRenderer->BeginScene();
+    pRenderer->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
+    if (bSolidFill)
     {
-      pRenderer->WritePixel16(pTargetXY->x,     pTargetXY->y, uColor);
-      pRenderer->WritePixel16(pTargetXY->x + 1, pTargetXY->y, uColor);
-      pRenderer->WritePixel16(pTargetXY->x,     pTargetXY->y + 1, uColor);
-      pRenderer->WritePixel16(pTargetXY->x + 1, pTargetXY->y + 1, uColor);
+        for (int i = pXYZW->top; i <= pXYZW->bottom; ++i)
+            pRenderer->RasterLine2D(pXYZW->left, i, pXYZW->right, i, uColor);
+    }
+    else
+    {
+        pRenderer->RasterLine2D(pXYZW->left, pXYZW->top, pXYZW->right, pXYZW->top, uColor);
+        pRenderer->RasterLine2D(pXYZW->right, pXYZW->top, pXYZW->right, pXYZW->bottom, uColor);
+        pRenderer->RasterLine2D(pXYZW->right, pXYZW->bottom, pXYZW->left, pXYZW->bottom, uColor);
+        pRenderer->RasterLine2D(pXYZW->left, pXYZW->bottom, pXYZW->left, pXYZW->top, uColor);
     }
     pRenderer->EndScene();
-  }
 }
+
+
+
+void DrawSquare(POINT *pTargetXY, unsigned __int16 uColor)
+{
+    pRenderer->BeginScene();
+    //if ( uNumSceneBegins )
+    {
+        if (pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
+            && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
+        {
+            pRenderer->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
+            pRenderer->WritePixel16(pTargetXY->x + 1, pTargetXY->y, uColor);
+            pRenderer->WritePixel16(pTargetXY->x, pTargetXY->y + 1, uColor);
+            pRenderer->WritePixel16(pTargetXY->x + 1, pTargetXY->y + 1, uColor);
+        }
+        pRenderer->EndScene();
+    }
+}
+
+
 
 //----- (0040DBD3) --------------------------------------------------------
-void DrawPixel( POINT *pTargetXY, unsigned __int16 uColor )
+void DrawPixel(POINT *pTargetXY, unsigned __int16 uColor)
 {
-  pRenderer->BeginScene();
-  //if ( pRenderer->uNumSceneBegins )
-  {
-    if ( pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
-      && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
+    pRenderer->BeginScene();
+    //if ( pRenderer->uNumSceneBegins )
     {
-      pRenderer->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
-    /*int xVal = pTargetXY->x;
-    int yVal = pTargetXY->y;
-    if ( xVal >= 0 && xVal <= 639 && yVal >= 0 && yVal <= 479)
-    {
-      pRenderer->pTargetSurface[xVal + pRenderer->uTargetSurfacePitch * yVal] = uColor;
-    }*/
+        if (pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
+            && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
+        {
+            pRenderer->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
+            /*int xVal = pTargetXY->x;
+            int yVal = pTargetXY->y;
+            if ( xVal >= 0 && xVal <= 639 && yVal >= 0 && yVal <= 479)
+            {
+              pRenderer->pTargetSurface[xVal + pRenderer->uTargetSurfacePitch * yVal] = uColor;
+            }*/
+        }
+        pRenderer->EndScene();
     }
-    pRenderer->EndScene();
-  }
 }
 
+
+
 //----- (0040DDB1) --------------------------------------------------------
-int rand_interval( int min, int max )
+int rand_interval(int min, int max)
 {
-  return min + rand() % (max - min + 1);
+    return min + rand() % (max - min + 1);
 }
+
+
 
 //----- (0040DEC8) --------------------------------------------------------
 void am_IntToString(int val, char *pOut)
 {
-  sprintf(pOut, "%d", val);
+    sprintf(pOut, "%d", val);
 }
+
+
 
 void set_stru1_field_8_InArcomage(int inValue)
 {
-  switch(inValue)
-  {
-  case 91:LOBYTE(pArcomageGame->stru1.field_8) = 123;break;
-  case 92:LOBYTE(pArcomageGame->stru1.field_8) = 124;break;
-  case 93:LOBYTE(pArcomageGame->stru1.field_8) = 125;break;
-  case 96:LOBYTE(pArcomageGame->stru1.field_8) = 126;break;
-  case 61:LOBYTE(pArcomageGame->stru1.field_8) = 43;break;
-  case 55:LOBYTE(pArcomageGame->stru1.field_8) = 38;break;
-  case 56:LOBYTE(pArcomageGame->stru1.field_8) = 42;break;
-  case 57:LOBYTE(pArcomageGame->stru1.field_8) = 40;break;
-  case 59:LOBYTE(pArcomageGame->stru1.field_8) = 58;break;
-  case 54:LOBYTE(pArcomageGame->stru1.field_8) = 94;break;
-  case 50:LOBYTE(pArcomageGame->stru1.field_8) = 64;break;
-  case 51:LOBYTE(pArcomageGame->stru1.field_8) = 35;break;
-  case 52:LOBYTE(pArcomageGame->stru1.field_8) = 36;break;
-  case 53:LOBYTE(pArcomageGame->stru1.field_8) = 37;break;
-  case 49:LOBYTE(pArcomageGame->stru1.field_8) = 33;break;
-  case 39:LOBYTE(pArcomageGame->stru1.field_8) = 34;break;
-  case 44:LOBYTE(pArcomageGame->stru1.field_8) = 60;break;
-  case 46:LOBYTE(pArcomageGame->stru1.field_8) = 62;break;
-  case 47:LOBYTE(pArcomageGame->stru1.field_8) = 63;break;
-  case 48:LOBYTE(pArcomageGame->stru1.field_8) = 41;break;
-  default:LOBYTE(pArcomageGame->stru1.field_8) = inValue;break;
-  }
+    switch (inValue)
+    {
+    case 91:LOBYTE(pArcomageGame->stru1.field_8) = 123; break;
+    case 92:LOBYTE(pArcomageGame->stru1.field_8) = 124; break;
+    case 93:LOBYTE(pArcomageGame->stru1.field_8) = 125; break;
+    case 96:LOBYTE(pArcomageGame->stru1.field_8) = 126; break;
+    case 61:LOBYTE(pArcomageGame->stru1.field_8) = 43; break;
+    case 55:LOBYTE(pArcomageGame->stru1.field_8) = 38; break;
+    case 56:LOBYTE(pArcomageGame->stru1.field_8) = 42; break;
+    case 57:LOBYTE(pArcomageGame->stru1.field_8) = 40; break;
+    case 59:LOBYTE(pArcomageGame->stru1.field_8) = 58; break;
+    case 54:LOBYTE(pArcomageGame->stru1.field_8) = 94; break;
+    case 50:LOBYTE(pArcomageGame->stru1.field_8) = 64; break;
+    case 51:LOBYTE(pArcomageGame->stru1.field_8) = 35; break;
+    case 52:LOBYTE(pArcomageGame->stru1.field_8) = 36; break;
+    case 53:LOBYTE(pArcomageGame->stru1.field_8) = 37; break;
+    case 49:LOBYTE(pArcomageGame->stru1.field_8) = 33; break;
+    case 39:LOBYTE(pArcomageGame->stru1.field_8) = 34; break;
+    case 44:LOBYTE(pArcomageGame->stru1.field_8) = 60; break;
+    case 46:LOBYTE(pArcomageGame->stru1.field_8) = 62; break;
+    case 47:LOBYTE(pArcomageGame->stru1.field_8) = 63; break;
+    case 48:LOBYTE(pArcomageGame->stru1.field_8) = 41; break;
+    default:LOBYTE(pArcomageGame->stru1.field_8) = inValue; break;
+    }
 }

@@ -2716,124 +2716,123 @@ void Render::PackPCXpicture( unsigned short* picture_data, int wight, int heidth
 }
 
 //----- (0049F8B5) --------------------------------------------------------
-void Render::SavePCXImage(const char *Filename, unsigned short* picture_data, int width, int height)
+void Render::SavePCXImage(const String &filename, unsigned short* picture_data, int width, int height)
 {
-  FILE *result; // eax@1
-  FILE *pOutFile; // edi@4
-  unsigned short* v9; // eax@5
-//  int v10; // eax@7
-  signed int v12; // eax@12
-//  char v13; // zf@21
-  char v14[56]; // [sp+4h] [bp-A0h]@4
-  __int16 v15; // [sp+3Ch] [bp-68h]@4
-  char color_map[48]; // [sp+40h] [bp-64h]@4
-  int v18; // [sp+74h] [bp-30h]@5
-//  char *v19; // [sp+78h] [bp-2Ch]@5
-  int image_width; // [sp+7Ch] [bp-28h]@5
-  PCXHeader_1 header1; // [sp+80h] [bp-24h]@4
-  PCXHeader_2 header2; // [sp+90h] [bp-14h]@4
-  char *lineRGB; // [sp+98h] [bp-Ch]@4
-  int pitch; // [sp+9Ch] [bp-8h]@2
-  char *lineB; // [sp+A0h] [bp-4h]@8
-  char *lineG;
-  unsigned short* line_pictute_data;
-  byte test_byte;
-  char v43;
+    FILE *result; // eax@1
+    FILE *pOutFile; // edi@4
+    unsigned short* v9; // eax@5
+  //  int v10; // eax@7
+    signed int v12; // eax@12
+  //  char v13; // zf@21
+    char v14[56]; // [sp+4h] [bp-A0h]@4
+    __int16 v15; // [sp+3Ch] [bp-68h]@4
+    char color_map[48]; // [sp+40h] [bp-64h]@4
+    int v18; // [sp+74h] [bp-30h]@5
+  //  char *v19; // [sp+78h] [bp-2Ch]@5
+    int image_width; // [sp+7Ch] [bp-28h]@5
+    PCXHeader_1 header1; // [sp+80h] [bp-24h]@4
+    PCXHeader_2 header2; // [sp+90h] [bp-14h]@4
+    char *lineRGB; // [sp+98h] [bp-Ch]@4
+    int pitch; // [sp+9Ch] [bp-8h]@2
+    char *lineB; // [sp+A0h] [bp-4h]@8
+    char *lineG;
+    unsigned short* line_pictute_data;
+    byte test_byte;
+    char v43;
 
-  int num_r_bits = 5;
-  int num_g_bits = 6;
-  int num_b_bits = 5;
+    int num_r_bits = 5;
+    int num_g_bits = 6;
+    int num_b_bits = 5;
 
-  int r_mask = 0xF800;
-  int g_mask = 0x7E0;
-  int b_mask = 0x1F;
+    int r_mask = 0xF800;
+    int g_mask = 0x7E0;
+    int b_mask = 0x1F;
 
-  result = fopen(Filename, "wb");
-  Filename = (const char *)result;
-  if ( result )
-  {
-    pitch = width;
-    if ( width & 1 )
-      pitch = width + 1;
-    header1.left = 0;
-    header1.up = 0;
-    header1.right = width - 1;
-    header1.bottom = height - 1;
-    header2.pitch = pitch;
-    memset(color_map, 0, sizeof(color_map));
-    header2.reserved = 0;
-    memset(v14, 0, sizeof(v14));
-    v15 = 0;
-    header1.manufacturer = 10;
-    header1.version = 5;
-    header1.encoding = 1;
-    header1.bpp = 8;
-    header1.hdpi = 75;
-    header1.vdpi = 75;
-    header2.planes = 3;
-    header2.palette_info = 1;
-    fwrite(&header1, 1, 1, (FILE *)Filename);
-    pOutFile = (FILE *)Filename;
-    fwrite(&header1.version, 1, 1, (FILE *)Filename);
-    fwrite(&header1.encoding, 1, 1, pOutFile);
-    fwrite(&header1.bpp, 1, 1, pOutFile);
-    fwrite(&header1.left, 2, 1, pOutFile);
-    fwrite(&header1.up, 2, 1, pOutFile);
-    fwrite(&header1.right, 2, 1, pOutFile);
-    fwrite(&header1.bottom, 2, 1, pOutFile);
-    fwrite(&header1.hdpi, 2, 1, pOutFile);
-    fwrite(&header1.vdpi, 2, 1, pOutFile);
-    fwrite(color_map, 0x30u, 1, pOutFile);
-    fwrite(&header2, 1, 1, pOutFile);
-    fwrite(&header2.planes, 1, 1, pOutFile);
-    fwrite(&header2.pitch, 2, 1, pOutFile);
-    fwrite(&header2.palette_info, 2, 1, pOutFile);
-    fwrite(v14, 0x3Au, 1, pOutFile);
-
-    lineRGB = (char *)malloc(3 * (width + 2));
-    //При сохранении изображения подряд идущие пиксели одинакового цвета объединяются и вместо указания цвета для каждого пикселя
-    //указывается цвет группы пикселей и их количество.
-    image_width = 3 * pitch;
-    v9 = picture_data;
-    for ( v18 = 0; v18 < height; v18++ )//столбец
+    result = fopen(filename.c_str(), "wb");
+    if (result)
     {
-      line_pictute_data = v9;
-      lineG = (char *)lineRGB + pitch;
-      lineB = (char *)lineRGB + 2 * pitch;
+        pitch = width;
+        if (width & 1)
+            pitch = width + 1;
+        header1.left = 0;
+        header1.up = 0;
+        header1.right = width - 1;
+        header1.bottom = height - 1;
+        header2.pitch = pitch;
+        memset(color_map, 0, sizeof(color_map));
+        header2.reserved = 0;
+        memset(v14, 0, sizeof(v14));
+        v15 = 0;
+        header1.manufacturer = 10;
+        header1.version = 5;
+        header1.encoding = 1;
+        header1.bpp = 8;
+        header1.hdpi = 75;
+        header1.vdpi = 75;
+        header2.planes = 3;
+        header2.palette_info = 1;
+        fwrite(&header1, 1, 1, result);
+        pOutFile = result;
+        fwrite(&header1.version, 1, 1, result);
+        fwrite(&header1.encoding, 1, 1, pOutFile);
+        fwrite(&header1.bpp, 1, 1, pOutFile);
+        fwrite(&header1.left, 2, 1, pOutFile);
+        fwrite(&header1.up, 2, 1, pOutFile);
+        fwrite(&header1.right, 2, 1, pOutFile);
+        fwrite(&header1.bottom, 2, 1, pOutFile);
+        fwrite(&header1.hdpi, 2, 1, pOutFile);
+        fwrite(&header1.vdpi, 2, 1, pOutFile);
+        fwrite(color_map, 0x30u, 1, pOutFile);
+        fwrite(&header2, 1, 1, pOutFile);
+        fwrite(&header2.planes, 1, 1, pOutFile);
+        fwrite(&header2.pitch, 2, 1, pOutFile);
+        fwrite(&header2.palette_info, 2, 1, pOutFile);
+        fwrite(v14, 0x3Au, 1, pOutFile);
 
-      for ( int i = 0; i < width; i++ )//строка
-      {
-        lineRGB[i] = (signed int)(r_mask & *line_pictute_data) >> (num_g_bits + num_b_bits + num_r_bits - 8);
-        lineG[i] = (signed int)(g_mask & *line_pictute_data) >> (num_b_bits + num_g_bits - 8);
-        lineB[i] = (b_mask & *line_pictute_data) << (8 - num_b_bits);
-        line_pictute_data += 1;
-      }
-      test_byte = 1;
-      for ( int i = 0; (signed int)i < image_width; i += test_byte )
-      {
-        unsigned char pic_byte = lineRGB[i];
-         for ( test_byte; test_byte < 63; ++test_byte )// расчёт количества одинаковых цветов
+        lineRGB = (char *)malloc(3 * (width + 2));
+        //При сохранении изображения подряд идущие пиксели одинакового цвета объединяются и вместо указания цвета для каждого пикселя
+        //указывается цвет группы пикселей и их количество.
+        image_width = 3 * pitch;
+        v9 = picture_data;
+        for (v18 = 0; v18 < height; v18++)//столбец
         {
-          v12 = i + test_byte;
-          if ( lineRGB[v12] != pic_byte )
-            break;
-          if ( !(v12 % pitch) )
-            break;
+            line_pictute_data = v9;
+            lineG = (char *)lineRGB + pitch;
+            lineB = (char *)lineRGB + 2 * pitch;
+
+            for (int i = 0; i < width; i++)//строка
+            {
+                lineRGB[i] = (signed int)(r_mask & *line_pictute_data) >> (num_g_bits + num_b_bits + num_r_bits - 8);
+                lineG[i] = (signed int)(g_mask & *line_pictute_data) >> (num_b_bits + num_g_bits - 8);
+                lineB[i] = (b_mask & *line_pictute_data) << (8 - num_b_bits);
+                line_pictute_data += 1;
+            }
+            test_byte = 1;
+            for (int i = 0; (signed int)i < image_width; i += test_byte)
+            {
+                unsigned char pic_byte = lineRGB[i];
+                for (test_byte; test_byte < 63; ++test_byte)// расчёт количества одинаковых цветов
+                {
+                    v12 = i + test_byte;
+                    if (lineRGB[v12] != pic_byte)
+                        break;
+                    if (!(v12 % pitch))
+                        break;
+                }
+                if (i + test_byte > image_width)
+                    test_byte = 3 * pitch - i;
+                if (test_byte > 1 || pic_byte >= 0xC0)
+                {
+                    v43 = test_byte | 0xC0;//тест-байт объединения
+                    fwrite(&v43, 1, 1, pOutFile);
+                }
+                fwrite(&pic_byte, 1, 1, pOutFile);
+            }
+            v9 += width;
         }
-        if ( i + test_byte > image_width )
-          test_byte = 3 * pitch - i;
-        if ( test_byte > 1 || pic_byte >= 0xC0 )
-        {
-          v43 = test_byte | 0xC0;//тест-байт объединения
-          fwrite(&v43, 1, 1, pOutFile);
-        }
-        fwrite(&pic_byte, 1, 1, pOutFile);
-      }
-      v9 += width;
+        free(lineRGB);
+        fclose(pOutFile);
     }
-    free(lineRGB);
-    fclose(pOutFile);
-  }
 }
 
 //----- (0049FBCD) --------------------------------------------------------
@@ -8447,11 +8446,11 @@ unsigned short *Render::MakeScreenshot(signed int width, signed int height)
   return pPixels;
 }
 //----- (0045E26C) --------------------------------------------------------
-void Render::SaveScreenshot(const char *pFilename, unsigned int width, unsigned int height)
+void Render::SaveScreenshot(const String &filename, unsigned int width, unsigned int height)
 {
-  auto pixels = MakeScreenshot(width, height);
-  SavePCXImage(pFilename, pixels, width, height);
-  free(pixels);
+    auto pixels = MakeScreenshot(width, height);
+    SavePCXImage(filename, pixels, width, height);
+    free(pixels);
 }
 
 void Render::PackScreenshot(unsigned int width, unsigned int height, void *data, unsigned int data_size, unsigned int *out_screenshot_size)

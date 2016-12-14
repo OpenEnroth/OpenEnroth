@@ -2,6 +2,7 @@
 #include <comdef.h> // _com_error
 
 #include "Engine/Engine.h"
+
 #include "RenderD3D11.h"
 #include "Texture.h"
 #include "Sprites.h"
@@ -79,7 +80,7 @@ void RenderD3D11::PrepareDecorationsRenderList_ODM() {__debugbreak();}
 void RenderD3D11::DrawSpriteObjects_ODM() {__debugbreak();}
 void RenderD3D11::RenderTerrainD3D() {__debugbreak();}
 bool RenderD3D11::AreRenderSurfacesOk() {return true;}
-void RenderD3D11::SaveScreenshot(const char *pFilename, unsigned int width, unsigned int height) {__debugbreak();}
+void RenderD3D11::SaveScreenshot(const String &filename, unsigned int width, unsigned int height) {__debugbreak();}
 void RenderD3D11::SavePCXScreenshot() {__debugbreak();}
 int RenderD3D11::_46ภ6ภั_GetActorsInViewport(int pDepth) {__debugbreak(); return 0;}
 void RenderD3D11::BeginLightmaps() {__debugbreak();}
@@ -93,7 +94,7 @@ void RenderD3D11::DrawDecal(struct Decal *pDecal, float z_bias) {__debugbreak();
 void RenderD3D11::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff) {__debugbreak();}
 void RenderD3D11::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {__debugbreak();}
 void RenderD3D11::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, IDirect3DTexture2 *texture) {__debugbreak();}
-void RenderD3D11::am_Blt_Copy(RECT *pSrcRect, POINT *pTargetXY, int a3) {__debugbreak();}
+void RenderD3D11::am_Blt_Copy(RECT *pSrcRect, POINT *pTargetXY, int blend_mode) {__debugbreak();}
 void RenderD3D11::am_Blt_Chroma(RECT *pSrcRect, POINT *pTargetPoint, int a3, int blend_mode) {__debugbreak();}
 
 void RenderD3D11::Sub01() {__debugbreak();}

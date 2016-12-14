@@ -18,7 +18,7 @@ struct GameTime
         value(val) { ; }
     GameTime(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0)
     {
-        this->value =
+        auto converted =
             (
                 seconds
                 + 60 * minutes
@@ -29,12 +29,14 @@ struct GameTime
                 + (__int64)29030400 * years
             )
             * TIME_PACK_GAME_SECONDS;
+
+        this->value = (__int64)converted;
     }
 
     __int64 GetSeconds() const { return (__int64)(this->value * TIME_UNPACK_GAME_SECONDS); }
-    __int64 GetMinutes() const { return this->GetSeconds() / 60; }
-    __int64 GetHours() const { return this->GetMinutes() / 60; }
-    int GetDays() const { return this->GetHours() / 24; }
+    __int64 GetMinutes() const { return this->GetSeconds() / 60i64; }
+    __int64 GetHours() const { return this->GetMinutes() / 60i64; }
+    int GetDays() const { return (int)(this->GetHours() / 24); }
     int GetWeeks() const { return this->GetDays() / 7; }
     int GetMonths() const { return this->GetWeeks() / 4; }
     int GetYears() const { return this->GetMonths() / 12; }

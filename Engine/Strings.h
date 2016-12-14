@@ -4,6 +4,7 @@
 typedef std::string String;
 
 String StringPrintf(const char *fmt, ...);
+String StringFromInt(int value);
 
 
 

@@ -1330,24 +1330,24 @@ void stru6::RenderSpecialEffects()
 //----- (004A902A) --------------------------------------------------------
 void stru6::DrawPlayerBuffAnims()
 {
-  for (uint i = 0; i < 4; ++i)
-  {
-    PlayerBuffAnim* buff = &pPlayerBuffs[i];
-    if (!buff->bRender)
-      continue;
-
-    buff->uSpellAnimTimeElapsed += pEventTimer->uTimeElapsed;
-    if (buff->uSpellAnimTimeElapsed >= buff->uSpellAnimTime)
+    for (uint i = 0; i < 4; ++i)
     {
-      buff->bRender = false;
-      continue;
+        PlayerBuffAnim* buff = &pPlayerBuffs[i];
+        if (!buff->bRender)
+            continue;
+
+        buff->uSpellAnimTimeElapsed += pEventTimer->uTimeElapsed;
+        if (buff->uSpellAnimTimeElapsed >= buff->uSpellAnimTime)
+        {
+            buff->bRender = false;
+            continue;
+        }
+
+        Icon* icon = pIconsFrameTable->GetFrame(buff->uSpellIconID, buff->uSpellAnimTimeElapsed);
+        pRenderer->DrawTextureAlphaNew(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 385 / 480.0f, icon->texture);
+
+        pOtherOverlayList->bRedraw = true;
     }
-
-    Icon* icon = pIconsFrameTable->GetFrame(buff->uSpellIconID, buff->uSpellAnimTimeElapsed);
-    pRenderer->DrawTextureAlphaNew(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i]/640.0f, 385/480.0f, icon->texture);
-
-    pOtherOverlayList->bRedraw = true;
-  }
 }
 
 //----- (004A90A0) --------------------------------------------------------

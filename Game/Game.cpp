@@ -274,7 +274,6 @@ void Game_EventLoop()
     FrameTableTxtLine v216; // [sp+DCh] [bp-520h]@524
     int v217[9]; // [sp+158h] [bp-4A4h]@652
     FrameTableTxtLine v218; // [sp+17Ch] [bp-480h]@524
-    char a1[64]; // [sp+1F8h] [bp-404h]@467
     char Str2[128]; // [sp+238h] [bp-3C4h]@527
     Actor actor; // [sp+2B8h] [bp-344h]@4
     int currHour;
@@ -1548,8 +1547,11 @@ void Game_EventLoop()
                 }
                 else
                 {
-                    sprintf(a1, "data\\lloyd%d%d.pcx", _506348_current_lloyd_playerid + 1, uMessageParam + 1);
-                    pRenderer->SaveScreenshot(a1, 92, 68);
+                    pRenderer->SaveScreenshot(
+                        StringPrintf("data\\lloyd%d%d.pcx", _506348_current_lloyd_playerid + 1, uMessageParam + 1),
+                        92,
+                        68
+                    );
                     LoadThumbnailLloydTexture(uMessageParam, _506348_current_lloyd_playerid + 1);
                     pPlayer9->pInstalledBeacons[uMessageParam].uBeaconTime = pParty->GetPlayingTime() + GameTime::FromSeconds(lloyds_beacon_spell_level);
                     pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_X = pParty->vPosition.x;

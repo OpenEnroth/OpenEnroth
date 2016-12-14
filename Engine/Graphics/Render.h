@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <array>
 
+#include "Engine/Strings.h"
+
 #include "lib\legacy_dx\d3d.h"
 #include "OSWindow.h"
 #include "RenderStruct.h"
@@ -298,7 +300,7 @@ struct Render: public IRender
   virtual bool AreRenderSurfacesOk();
   virtual bool IsGammaSupported();
 
-  virtual void SaveScreenshot(const char *pFilename, unsigned int width, unsigned int height);
+  virtual void SaveScreenshot(const String &filename, unsigned int width, unsigned int height);
   virtual void PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size);
   virtual void SavePCXScreenshot();
 
@@ -440,7 +442,7 @@ struct Render: public IRender
     void CreateClipper(HWND a2);
 
     void PackPCXpicture(unsigned short* picture_data, int wight, int heidth, void *data_buff, int max_buff_size,unsigned int* packed_size);
-    void SavePCXImage(const char *Filename, unsigned short* picture_data, int width, int height);
+    void SavePCXImage(const String &filename, unsigned short* picture_data, int width, int height);
 
   //int windowed_mode_width;
   //int windowed_mode_height;

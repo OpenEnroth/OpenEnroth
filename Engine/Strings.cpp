@@ -4,10 +4,15 @@
 #include "Engine/Strings.h"
 
 
+String StringFromInt(int value)
+{
+    return StringPrintf("%d", value);
+}
+
 String StringPrintf(const char *fmt, ...)
 {
     int size = 1024;
-    char* buffer = new char[size];
+    char *buffer = new char[size];
 
     va_list va;
     va_start(va, fmt);

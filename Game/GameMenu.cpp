@@ -603,6 +603,7 @@ void GameMenu_Loop()
         gamma_preview_image->Release();
         gamma_preview_image = nullptr;
     }
+
     pRenderer->SaveScreenshot("gamma.pcx", 155, 117);
     gamma_preview_image = assets->GetImage_PCXFromFile(L"gamma.pcx");
 
