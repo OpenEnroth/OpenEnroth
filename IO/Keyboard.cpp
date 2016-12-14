@@ -5,13 +5,16 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
+#include "Engine/Objects/Actor.h"
+
 #include "Engine/TurnEngine/TurnEngine.h"
+
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Indoor.h"
+
 #include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/Objects/Actor.h"
 
 #include "IO/Keyboard.h"
 

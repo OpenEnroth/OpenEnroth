@@ -43,7 +43,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(Configuration)\</IntDir>
-    <OutDir>$(WoMM_MM7_INSTALL_DIR)</OutDir>
+    <OutDir>$(WoMM_MM7_INSTALL_DIR)\</OutDir>
     <GenerateManifest>false</GenerateManifest>
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
@@ -150,7 +150,7 @@
     <ClCompile Include="..\..\Engine\Tables\PlayerFrameTable.cpp" />
     <ClCompile Include="..\..\Engine\Tables\StorylineTextTable.cpp" />
     <ClCompile Include="..\..\Engine\Tables\TileTable.cpp" />
-    <ClCompile Include="..\..\Engine\Timer.cpp" />
+    <ClCompile Include="..\..\Engine\Time.cpp" />
     <ClCompile Include="..\..\Engine\TurnEngine\TurnEngine.cpp" />
     <ClCompile Include="..\..\Engine\VectorTypes.cpp" />
     <ClCompile Include="..\..\Engine\ZlibWrapper.cpp" />
@@ -335,7 +335,7 @@
     <ClInclude Include="..\..\Engine\Tables\PlayerFrameTable.h" />
     <ClInclude Include="..\..\Engine\Tables\StorylineTextTable.h" />
     <ClInclude Include="..\..\Engine\Tables\TileFrameTable.h" />
-    <ClInclude Include="..\..\Engine\Timer.h" />
+    <ClInclude Include="..\..\Engine\Time.h" />
     <ClInclude Include="..\..\Engine\TurnEngine\TurnEngine.h" />
     <ClInclude Include="..\..\Engine\VectorTypes.h" />
     <ClInclude Include="..\..\Engine\ZlibWrapper.h" />

@@ -22,4 +22,4 @@ struct Autonote
   AUTONOTE_TYPE  eType;
 };
 #pragma pack(pop)
-extern std::array<Autonote, 196> pAutonoteTxt; // weak
+extern std::array<Autonote, 196> pAutonoteTxt;

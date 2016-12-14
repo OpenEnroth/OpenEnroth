@@ -402,10 +402,11 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages, int entry_
         curr_seq_num = _evt->v6 - 1;
           ++curr_seq_num;
         break;
+
       case EVENT_ShowMovie:
       {
         strcpy(Source, (char *)&_evt->v7);
-        v12 = (char *)&item.uExpireTime + strlen(Source) + 7;
+        v12 = (char *)&item.expirte_time + strlen(Source) + 7;
         if ( *v12 == 32 )
           *v12 = 0;
         if (pMediaPlayer->bPlaying_Movie)
@@ -1304,34 +1305,32 @@ void check_event_triggers()
 		}
 	}
 }
-// 6836C8: using guessed type int 6836C8_num_decorations_6807E8;
 
 //----- (004465DF) --------------------------------------------------------
 bool sub_4465DF_check_season(int a1)
 {
-	unsigned int monthPlusOne; // eax@1
-	unsigned int daysPlusOne; // edx@1
+    auto monthPlusOne = pParty->uCurrentMonth + 1;
+    auto daysPlusOne = pParty->uCurrentDayOfMonth + 1;
 
-	monthPlusOne = pParty->uCurrentMonth + 1;
-	daysPlusOne = pParty->uDaysPlayed + 1;
+    switch (a1)
+    {
+        case 3: //winter 12.21 -> 3.20
+            return (monthPlusOne == 12 && daysPlusOne >= 21 || monthPlusOne == 1 || monthPlusOne == 2 || monthPlusOne == 3 && daysPlusOne <= 20);
 
-	switch (a1)
-	{
-	case 3: //winter 12.21 -> 3.20
-		return (monthPlusOne == 12 && daysPlusOne >= 21 || monthPlusOne == 1 || monthPlusOne == 2 || monthPlusOne == 3 && daysPlusOne <= 20);
-		break;
-	case 2:// autumn/fall 9.21 -> 12.20
-		return (monthPlusOne == 9 && daysPlusOne >= 21 || monthPlusOne == 10 || monthPlusOne == 11 || monthPlusOne == 12 && daysPlusOne <= 20);
-		break;
-	case 1://summer 6.21 -> 9.20
-		return (monthPlusOne == 6 && daysPlusOne >= 21 || monthPlusOne == 7 || monthPlusOne == 8 || monthPlusOne == 9 && daysPlusOne <= 20);
-		break;
-	case 0: //spring 3.21 -> 6.20
-		return (monthPlusOne == 3 && daysPlusOne >= 21 || monthPlusOne == 4 || monthPlusOne == 5 || monthPlusOne == 6 && daysPlusOne <= 20);
-		break;
-	}
-	Error("Unknown season");
-	return false;
+        case 2:// autumn/fall 9.21 -> 12.20
+            return (monthPlusOne == 9 && daysPlusOne >= 21 || monthPlusOne == 10 || monthPlusOne == 11 || monthPlusOne == 12 && daysPlusOne <= 20);
+
+        case 1://summer 6.21 -> 9.20
+            return (monthPlusOne == 6 && daysPlusOne >= 21 || monthPlusOne == 7 || monthPlusOne == 8 || monthPlusOne == 9 && daysPlusOne <= 20);
+
+        case 0: //spring 3.21 -> 6.20
+            return (monthPlusOne == 3 && daysPlusOne >= 21 || monthPlusOne == 4 || monthPlusOne == 5 || monthPlusOne == 6 && daysPlusOne <= 20);
+
+        default:
+            Error("Unknown season");
+    }
+
+    return false;
 }
 
 //----- (00448CF4) --------------------------------------------------------

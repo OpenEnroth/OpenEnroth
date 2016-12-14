@@ -99,7 +99,7 @@ enum EventType
   EVENT_ForPartyMember = 0x23,
   EVENT_Jmp = 0x24,
   EVENT_OnMapReload = 0x25,
-  EVENT_Initialize = 0x26,
+  EVENT_OnLongTimer = 0x26,
   EVENT_SetNPCTopic = 0x27,
   EVENT_MoveNPC = 0x28,
   EVENT_GiveItem = 0x29,

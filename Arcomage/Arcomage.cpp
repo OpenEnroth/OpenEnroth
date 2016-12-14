@@ -7,12 +7,13 @@
 
 
 #include "Engine/Engine.h"
+#include "Engine/Time.h"
 #include "Engine/Localization.h"
+
 #include "Engine/Graphics/Render.h"
 #include "Arcomage.h"
 #include "Media/Audio/AudioPlayer.h"
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/Timer.h"
 #include "GUI/GUIFont.h"
 #include "Engine/Party.h"
 #include "GUI/GUIWindow.h"
@@ -50,8 +51,8 @@ bool DiscardCard(int player_num, int card_slot_index);
 bool PlayCard(int player_num, int card_slot_num);
 bool CanCardBePlayed(int player_num, int hand_card_indx);
 void ApplyCardToPlayer(int player_num, unsigned int uCardID); 
-int  am_40D2B4(POINT* a1, int a2); // weak
-int  ApplyDamageToBuildings(int player_num, int damage); // weak
+int  am_40D2B4(POINT* a1, int a2);
+int  ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
 void am_DrawText(int a1, const char *pText, POINT *pXY);
@@ -147,9 +148,9 @@ struct am_2
 am_2  cards_power[10];
 std::array<__int16, 12> am_sounds;
 
-char byte_4E185C  = 1; // weak
-char am_byte_4E185D = 1; // weak
-char use_start_bonus = 1; // weak
+char byte_4E185C  = 1;
+char am_byte_4E185D = 1;
+char use_start_bonus = 1;
 
 int start_tower_height;
 int start_wall_height; 
@@ -166,10 +167,10 @@ int zoo_bonus              = 1;
 int max_tower_height       = 50; 
 int max_resources_amount   = 100 ; 
 
-int opponent_mastery = 1 ; // weak
+int opponent_mastery = 1 ;
 
 bool am_gameover; // 004FAA2C
-char byte_4FAA2D; // weak
+char byte_4FAA2D;
 
 int am_default_starting_player = 0; // 505890
 int current_player_num; // 004FAA6C
@@ -190,29 +191,29 @@ POINT am_uint_4FAA44_blt_xy;
 POINT amuint_4FAA54_blt_xy;
 POINT amuint_4FAA5C_blt_xy;
 
-int dword_4FAA64; // weak
-int dword_4FAA68; // weak
+int dword_4FAA64;
+int dword_4FAA68;
 
-int dword_4FABB8; // weak
+int dword_4FABB8;
 
-char byte_4FAA00; // weak
+char byte_4FAA00;
 
-int amuint_4FAA34; // weak
-int amuint_4FAA38; // weak
-int amuint_4FAA4C; // weak
+int amuint_4FAA34;
+int amuint_4FAA38;
+int amuint_4FAA4C;
 
-char byte_4FAA2E; // weak
+char byte_4FAA2E;
 
-int dword_4FAA70; // weak
-char byte_4FAA74; // weak
-char am_byte_4FAA75; // weak
-char am_byte_4FAA76; // weak
+int dword_4FAA70;
+char byte_4FAA74;
+char am_byte_4FAA75;
+char am_byte_4FAA76;
 
-int amuint_4FABC4; // weak
+int amuint_4FABC4;
 
 
-char byte_505880; // weak
-char byte_505881; // weak
+char byte_505880;
+char byte_505881;
 
 //----- (0040DD2F) --------------------------------------------------------
 bool stru273::_40DD2F()

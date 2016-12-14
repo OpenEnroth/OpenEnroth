@@ -1,33 +1,35 @@
 #pragma once
-#include<array>
+#include <array>
+
+#include "Engine/Time.h"
 
 #pragma pack(push, 1)
 struct SaveFile_
-	{
-	char field_0[20];
-	char pSaveFileName[260];
-	};
+{
+    char field_0[20];
+    char pSaveFileName[260];
+};
 #pragma pack(pop)
 
 /*  243 */
 #pragma pack(push, 1)
 struct SavegameList
 {
-  static void Initialize(unsigned int a1);
-  SavegameList() {Reset();}
+    static void Initialize(unsigned int a1);
+    SavegameList() { Reset(); }
 
-  inline void Reset()
-  {
-    for ( int j = 0; j < 45; j++ )
+    inline void Reset()
     {
-      for (int i = 0; i < 20; ++i)
-        this->pFileList[j].field_0[i] = 0;
-      for (int i = 0; i < 260; ++i)
-        this->pFileList[j].pSaveFileName[i] = 0;
+        for (int j = 0; j < 45; j++)
+        {
+            for (int i = 0; i < 20; ++i)
+                this->pFileList[j].field_0[i] = 0;
+            for (int i = 0; i < 260; ++i)
+                this->pFileList[j].pSaveFileName[i] = 0;
+        }
     }
-  }
-  SaveFile_ pFileList[45];
-  
+
+    SaveFile_ pFileList[45];
 };
 #pragma pack(pop)
 
@@ -36,10 +38,10 @@ struct SavegameList
 #pragma pack(push, 1)
 struct SavegameHeader
 {
-  char pName[20];
-  char pLocationName[20];
-  unsigned __int64 uWordTime;
-  char field_30[52];
+    char pName[20];
+    char pLocationName[20];
+    GameTime playing_time;// unsigned __int64 uWordTime;
+    char field_30[52];
 };
 #pragma pack(pop)
 

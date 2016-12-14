@@ -19,4 +19,4 @@ struct stru298
 };
 #pragma pack(pop)
 
-extern stru298 AttackerInfo; // weak
+extern stru298 AttackerInfo;

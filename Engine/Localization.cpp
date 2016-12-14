@@ -229,7 +229,7 @@ void Localization::InitializeNpcProfessionNames()
 void Localization::InitializeCharacterConditionNames()
 {
     this->character_conditions[0] = this->localization_strings[52];   // Cursed
-    this->character_conditions[1] = this->localization_strings[241];  // Weak
+    this->character_conditions[1] = this->localization_strings[241]; 
     this->character_conditions[2] = this->localization_strings[14];   // Asleep
     this->character_conditions[3] = this->localization_strings[4];    // Fear
     this->character_conditions[4] = this->localization_strings[69];   // Drunk

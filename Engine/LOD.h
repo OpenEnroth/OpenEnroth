@@ -3,6 +3,8 @@
 #include <memory.h>
 #include <cstdint>
 
+#include "Engine/Strings.h"
+
 #include "Engine/Graphics/Texture.h"
 
 class Sprite;
@@ -78,7 +80,9 @@ namespace LOD
     virtual ~File();
     void *LoadRaw(const char *pContainer, int a3);
     FILE *FindContainer(const char *pContainerName, bool bLinearSearch);
+    FILE *FindContainer(const String &filename, bool bLinearSearch);
     bool DoesContainerExist(const char *pContainer);
+    bool DoesContainerExist(const String &filename);
     int CalcIndexFast(int startIndex, int maxIndex, const char *pContainerName);
     bool LoadHeader(const char *pFilename, bool bWriting);
     int LoadSubIndices(const char *pContainer);
@@ -322,5 +326,5 @@ extern LODWriteableFile *pGames_LOD;
 
 
 
-extern int _6A0CA4_lod_binary_search; // weak
-extern int _6A0CA8_lod_unused; // weak
+extern int _6A0CA4_lod_binary_search;
+extern int _6A0CA8_lod_unused;

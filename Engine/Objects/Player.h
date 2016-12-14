@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Strings.h"
+#include "Engine/Engine.h"
 
 #include "Items.h"
 #include "../Spells/Spells.h"
@@ -319,7 +319,7 @@ enum PLAYER_CLASS_TYPE: unsigned __int8
 #pragma pack(push, 1)
 struct LloydBeacon
 {
-  unsigned __int64 uBeaconTime;
+  GameTime uBeaconTime;
   int PartyPos_X;
   int PartyPos_Y;
   int PartyPos_Z;
@@ -561,7 +561,7 @@ struct Player
   void IncreaseAttribute(int eAttribute);
   void Player::Zero();
   unsigned int GetStatColor(int uStat);
-  bool DiscardConditionIfLastsLongerThan(unsigned int uCondition, signed __int64 uTime);
+  bool DiscardConditionIfLastsLongerThan(unsigned int uCondition, GameTime time);
   int SelectPhrasesTransaction(ItemGen *pItem, int building_type, int BuildID_2Events, int a5);
   int GetBodybuilding();
   int GetMeditation();
@@ -627,40 +627,40 @@ struct Player
   void PlayAwardSound_Anim98();
   void PlayAwardSound_Anim98_Face(PlayerSpeech speech);
 
-  bool IsWeak();
-  bool IsDead();
-  bool IsEradicated();
-  bool IsZombie();
-  bool IsCursed();
-  bool IsPertified();
-  bool IsUnconcious();
-  bool IsAsleep();
-  bool IsParalyzed();
-  bool IsDrunk();
+  bool IsWeak() const;
+  bool IsDead() const;
+  bool IsEradicated() const;
+  bool IsZombie() const;
+  bool IsCursed() const;
+  bool IsPertified() const;
+  bool IsUnconcious() const;
+  bool IsAsleep() const;
+  bool IsParalyzed() const;
+  bool IsDrunk() const;
 
-  void SetCursed(unsigned long long state);
-  void SetWeak(unsigned long long state);
-  void SetAsleep(unsigned long long state);
-  void SetAfraid(unsigned long long state);
-  void SetDrunk(unsigned long long state);
-  void SetInsane(unsigned long long state);
-  void SetPoisonWeak(unsigned long long state);
-  void SetDiseaseWeak(unsigned long long state);
-  void SetPoisonMedium(unsigned long long state);
-  void SetDiseaseMedium(unsigned long long state);
-  void SetPoisonSevere(unsigned long long state);
-  void SetDiseaseSevere(unsigned long long state);
-  void SetParalyzed(unsigned long long state);
-  void SetUnconcious(unsigned long long state);
-  void SetDead(unsigned long long state);
-  void SetPertified(unsigned long long state);
-  void SetEradicated(unsigned long long state);
-  void SetZombie(unsigned long long state);
+  void SetCursed(GameTime time);
+  void SetWeak(GameTime time);
+  void SetAsleep(GameTime time);
+  void SetAfraid(GameTime time);
+  void SetDrunk(GameTime time);
+  void SetInsane(GameTime time);
+  void SetPoisonWeak(GameTime time);
+  void SetDiseaseWeak(GameTime time);
+  void SetPoisonMedium(GameTime time);
+  void SetDiseaseMedium(GameTime time);
+  void SetPoisonSevere(GameTime time);
+  void SetDiseaseSevere(GameTime time);
+  void SetParalyzed(GameTime time);
+  void SetUnconcious(GameTime time);
+  void SetDead(GameTime time);
+  void SetPertified(GameTime time);
+  void SetEradicated(GameTime time);
+  void SetZombie(GameTime time);
 
-  void SetCondWeakWithBlockCheck (int blockable);
-  void SetCondInsaneWithBlockCheck (int blockable);
-  void SetCondDeadWithBlockCheck (int blockable);
-  void SetCondUnconsciousWithBlockCheck( int blockable );
+  void SetCondWeakWithBlockCheck(int blockable);
+  void SetCondInsaneWithBlockCheck(int blockable);
+  void SetCondDeadWithBlockCheck(int blockable);
+  void SetCondUnconsciousWithBlockCheck(int blockable);
 
   inline bool IsRaceHuman() {return GetRace() == CHARACTER_RACE_HUMAN;}
   inline bool IsRaceDwarf() {return GetRace() == CHARACTER_RACE_DWARF;}
@@ -688,7 +688,7 @@ struct Player
   static void _42ECB5_PlayerAttacksActor();
   static void _42FA66_do_explosive_impact(int a1, int a2, int a3, int a4, __int16 a5, signed int a6);
 
-  std::array<__int64, 20> pConditions;
+  std::array<GameTime, 20> conditions_times;
   unsigned __int64 uExperience;
   char pName[16];
   PLAYER_SEX uSex;

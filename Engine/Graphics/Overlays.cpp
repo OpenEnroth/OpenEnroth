@@ -5,13 +5,14 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdlib.h>
+
 #include "Engine/Engine.h"
+#include "Engine/Time.h"
 
 #include "Overlays.h"
 #include "Sprites.h"
 #include "../Tables/FrameTableInc.h"
 #include "../Tables/IconFrameTable.h"
-#include "../Timer.h"
 #include "../Party.h"
 #include "../TurnEngine/TurnEngine.h"
 #include "../LOD.h"

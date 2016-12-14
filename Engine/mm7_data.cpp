@@ -44,10 +44,10 @@ struct ViewingParams *viewparams = new ViewingParams;
 stru123 stru_5E4C90_MapPersistVars;
 
 #include "stru298.h"
-stru298 AttackerInfo; // weak
+stru298 AttackerInfo;
 
 #include "Engine/Autonotes.h"
-std::array<Autonote, 196> pAutonoteTxt; // weak
+std::array<Autonote, 196> pAutonoteTxt;
 
 #include "Engine/Awards.h"
 std::array<Award, 105> pAwards;
@@ -299,11 +299,11 @@ std::array<unsigned int, 2> saveload_dlg_ys = {60, 0};
 std::array<unsigned int, 2> saveload_dlg_zs = {460, 640};
 std::array<unsigned int, 2> saveload_dlg_ws = {344, 480};
 int pWindowList_at_506F50_minus1_indexing[1];
-int dword_4C9890[10]; // weak
-int dword_4C9920[16]; // weak
-char byte_4D864C; // weak
-float flt_4D86CC = 1.0f; // weak
-int dword_4D86D8 = 0x40000000; // weak
+int dword_4C9890[10];
+int dword_4C9920[16];
+char byte_4D864C;
+float flt_4D86CC = 1.0f;
+int dword_4D86D8 = 0x40000000;
 
 
 
@@ -318,7 +318,7 @@ unsigned int uGammaPos = 0;
 std::array<int, 8> BtnTurnCoord = 
 {{
   0xA4, 0x5D, 0x16, 0xB, 0x5, 0xD, 0x7, 0x3B,
-}}; // weak
+}};
 std::array<__int16, 4> RightClickPortraitXmin={{0x14, 0x83, 0xF2, 0x165}};
 std::array<__int16, 4> RightClickPortraitXmax={{0x53, 0xC6, 0x138, 0x1A7}};
 
@@ -336,7 +336,7 @@ std::array<char, 88> monster_popup_y_offsets =
   -20, -80, -10,   0,   0, -40,   0,   0,   0, -20,  10,
     0,   0,   0,   0,   0,   0, -60,   0,   0,   0,   0
 }};
-unsigned char hourglass_icon_idx = 12; // weak
+unsigned char hourglass_icon_idx = 12;
 
 
 const char *format_4E2D80 = "\f%05d%s\f00000\n";
@@ -345,7 +345,7 @@ const char *format_4E2DE8 = "\f%05d%s\f00000 - ";
 const char *Stat_string_format_2_column_text = "%s\f%05u\r180%s\n"; 
 const char *Stat_string_format_2_column_less_100 = "%s\f%05u\t110%d\f00000 / %d\n";
 const char *Stat_string_format_2_column_over_100 = "%s\f%05u\r180%d\f00000 / %d\n";
-int dword_4E455C; // weak
+int dword_4E455C;
 std::array<int, 6> dword_4E4560;
 std::array<int, 6> dword_4E4578;
 std::array<int, 6> dword_4E4590;
@@ -408,10 +408,10 @@ std::array<const char *, 11> pHouse_ExitPictures=
 
 std::array<__int16, 11> word_4E8152 = {0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30};
 
-char _4E94D0_light_type = 5; // weak
-char _4E94D2_light_type = 6; // weak
-char _4E94D3_light_type = 10; // weak
-int dword_4E98BC_bApplicationActive; // weak
+char _4E94D0_light_type = 5;
+char _4E94D2_light_type = 6;
+char _4E94D3_light_type = 10;
+int dword_4E98BC_bApplicationActive;
 //char *off_4EB080; // idb
 std::array<char*, 465> pTransitionStrings = {"", nullptr};  // 004EB080
 std::array<const char*, 25> pPlayerPortraitsNames =
@@ -678,7 +678,7 @@ std::array<__int16, 54> _4F0882_evt_VAR_PlayerItemInHands_vals =
 }};
 std::array<unsigned short, 6> pMaxLevelPerTrainingHallType = {5, 15, 25, 25, 200, 200};
 
-std::array<int, 11> price_for_membership={100, 100, 50, 50, 50, 50, 50, 50, 50, 1000, 1000}; // weak
+std::array<int, 11> price_for_membership={100, 100, 50, 50, 50, 50, 50, 50, 50, 1000, 1000};
 
 
 std::array<__int16, 32> word_4F0F30 ={{ 4, 7, 10, 11,                                              
@@ -693,26 +693,26 @@ std::array<__int16, 32> word_4F0F30 ={{ 4, 7, 10, 11,
 std::array<int, 500> ai_array_4F5E68;
 std::array<int, 500> ai_array_4F6638_actor_ids;
 std::array<int, 500> ai_near_actors_targets_pid;
-int ai_arrays_size; // weak
+int ai_arrays_size;
 std::array<int, 500> ai_near_actors_distances;
 std::array<unsigned int, 500> ai_near_actors_ids;
-std::array<int, 182> dword_4F8580 = {}; // weak
+std::array<int, 182> dword_4F8580 = {};
 
-char byte_4FAA24; // weak
+char byte_4FAA24;
 //HWND dword_4FAA28; // idb
 
 std::array<unsigned int, 480> pSRZBufferLineOffsets;
-int areWeLoadingTexture; // weak
-std::array<char, 777> books_num_items_per_page; // weak
+int areWeLoadingTexture;
+std::array<char, 777> books_num_items_per_page;
 int lloyds_beacon_spell_id; // dword_506338
 int lloyds_beacon_sound_id; // dword_50633C
 signed int sRecoveryTime; // idb
 unsigned int uRequiredMana; // idb
-int _506348_current_lloyd_playerid; // weak
+int _506348_current_lloyd_playerid;
 __int64 lloyds_beacon_spell_level; // qword_506350
-int dword_506364; // weak
-int books_page_number; // weak
-int books_primary_item_per_page; // weak
+int dword_506364;
+int books_page_number;
+int books_primary_item_per_page;
 int Autonotes_Instructors_page_flag; // dword_50652C
 int Autonotes_Misc_page_flag; //dword_506530
 int Book_PageBtn6_flag; //dword_506534
@@ -721,66 +721,66 @@ int Book_PageBtn4_flag; // dword_50653C
 int Book_PageBtn3_flag; //dword_506540
 int BtnDown_flag; //BtnDown_flag
 int BtnUp_flag; //BtnUp_flag
-int quick_spell_at_page; // weak
-char byte_506550; // weak
-int _506568_autonote_type; // weak
-bool bRecallingBeacon; // weak
-int uLastPointedObjectID; // weak
+int quick_spell_at_page;
+char byte_506550;
+int _506568_autonote_type;
+bool bRecallingBeacon;
+int uLastPointedObjectID;
 //unsigned __int8 bMonsterInfoUI_bDollInitialized;
-enum CURRENT_SCREEN prev_screen_type; // weak
-int dword_506980_uW; // weak
-int dword_506984_uZ; // weak
-int dword_506988_uY; // weak
-int dword_50698C_uX; // weak
+enum CURRENT_SCREEN prev_screen_type;
+int dword_506980_uW;
+int dword_506984_uZ;
+int dword_506988_uY;
+int dword_50698C_uX;
 int uGameMenuUI_CurentlySelectedKeyIdx; // 506E68
 std::array<unsigned int, 28> pPrevVirtualCidesMapping;
-int KeyboardPageNum; // weak
+int KeyboardPageNum;
 int uRestUI_FoodRequiredToRest;
-int _506F14_resting_stage; // weak
-int _506F18_num_minutes_to_sleep; // weak
-int dword_506F1C; // weak
-std::array<int, 20> pVisibleWindowsIdxs; // weak
+int _506F14_resting_stage;
+int _506F18_num_minutes_to_sleep;
+int dword_506F1C;
+std::array<int, 20> pVisibleWindowsIdxs;
 int uNumVisibleWindows;
-char bFlashHistoryBook; // weak
-char bFlashAutonotesBook; // weak
-char bFlashQuestBook; // weak
+char bFlashHistoryBook;
+char bFlashAutonotesBook;
+char bFlashQuestBook;
 struct GUIButton *pBtn_ZoomOut; // idb
 struct GUIButton *pBtn_ZoomIn; // idb
 unsigned int uGameUIFontShadow;
 unsigned int uGameUIFontMain;
-int dword_507B00_spell_info_to_draw_in_popup; // weak
+int dword_507B00_spell_info_to_draw_in_popup;
 unsigned int uActiveCharacter;
-int dword_507BF0_is_there_popup_onscreen; // weak
-int awards_scroll_bar_created; // weak
-int dword_507CC0_activ_ch; // weak
-__int64 GameUI_RightPanel_BookFlashTimer; // weak
-int _507CD4_RestUI_hourglass_anim_controller; // weak
+int dword_507BF0_is_there_popup_onscreen;
+int awards_scroll_bar_created;
+int dword_507CC0_activ_ch;
+GameTime GameUI_RightPanel_BookFlashTimer;
+int _507CD4_RestUI_hourglass_anim_controller;
 bool OpenedTelekinesis;
-std::array<int, 50> dword_50B570; // weak
-std::array<int, 50> dword_50B638; // weak
+std::array<int, 50> dword_50B570;
+std::array<int, 50> dword_50B638;
 stru367 PortalFace;
-std::array<int, 100> dword_50BC10; // weak
-std::array<int, 100> dword_50BDA0; // weak
-std::array<int, 100> _50BF30_actors_in_viewport_ids; // weak
-char town_portal_caster_id; // weak
-int some_active_character; // weak
+std::array<int, 100> dword_50BC10;
+std::array<int, 100> dword_50BDA0;
+std::array<int, 100> _50BF30_actors_in_viewport_ids;
+char town_portal_caster_id;
+int some_active_character;
 std::array<unsigned int, 5> pIconIDs_Turn;
 unsigned int uIconID_TurnStop;
 unsigned int uIconID_TurnHour;
 int uIconID_CharacterFrame; // idb
 unsigned int uIconID_TurnStart;
-int dword_50C994 = 0; // weak
-int dword_50C998_turnbased_icon_1A = 0; // weak
+int dword_50C994 = 0;
+int dword_50C998_turnbased_icon_1A = 0;
 int uSpriteID_Spell11; // idb
-bool _50C9A0_IsEnchantingInProgress; // weak
-int _50C9A8_item_enchantment_timer = 0; // weak
-int _50C9D0_AfterEnchClickEventId; // weak
-int _50C9D4_AfterEnchClickEventSecondParam; // weak
-int _50C9D8_AfterEnchClickEventTimeout; // weak
-int dword_50C9DC; // weak
+bool _50C9A0_IsEnchantingInProgress;
+int _50C9A8_item_enchantment_timer = 0;
+int _50C9D0_AfterEnchClickEventId;
+int _50C9D4_AfterEnchClickEventSecondParam;
+int _50C9D8_AfterEnchClickEventTimeout;
+int dword_50C9DC;
 struct NPCData *ptr_50C9E0;
 //int dword_50C9E8; // idb
-//int dword_50C9EC[120]; // weak
+//int dword_50C9EC[120];
 int dword_50CDC8;
 Vec3_int_ layingitem_vel_50FDFC;
 char pStartingMapName[32]; // idb
@@ -793,59 +793,59 @@ std::array<unsigned __int16, 50> pBlueFacesInBLVMinimapIDs;
 std::array<int, 14> pTextureIDs_PartyBuffIcons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
-int dword_576E28; // weak
-int _576E2C_current_minimap_zoom; // weak
-__int64 _5773B8_event_timer; // weak
+int dword_576E28;
+int _576E2C_current_minimap_zoom;
+GameTime _5773B8_event_timer;
 
 
-int dword_591084; // weak
+int dword_591084;
 struct Actor *pDialogue_SpeakingActor;
 unsigned int uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
 struct LevelDecoration *_591094_decoration;
-int uCurrentHouse_Animation; // weak
+int uCurrentHouse_Animation;
 char *dword_591164_teleport_map_name; // idb
-int dword_591168_teleport_speedz; // weak
-int dword_59116C_teleport_directionx; // weak
-int dword_591170_teleport_directiony; // weak
-int dword_591174_teleportz; // weak
-int dword_591178_teleporty; // weak
-int dword_59117C_teleportx; // weak
+int dword_591168_teleport_speedz;
+int dword_59116C_teleport_directionx;
+int dword_591170_teleport_directiony;
+int dword_591174_teleportz;
+int dword_591178_teleporty;
+int dword_59117C_teleportx;
 std::array<std::array<char, 100>, 6> byte_591180; // idb
 std::array<struct NPCData *, 7> HouseNPCData;//0 zero element holds standart house npc
 GUIButton* HouseNPCPortraitsButtonsList[6];//dword_5913F4
 std::array<char, 2000> byte_5B0938;
 int EvtTargetObj; // 0x5B5920
 int _unused_5B5924_is_travel_ui_drawn = false; // 005B5924
-int _5B65A8_npcdata_uflags_or_other; // weak
-int _5B65AC_npcdata_fame_or_other; // weak
-int _5B65B0_npcdata_rep_or_other; // weak
-int _5B65B4_npcdata_loword_house_or_other; // weak
-int _5B65B8_npcdata_hiword_house_or_other; // weak
-int dword_5B65BC; // weak
-int dword_5B65C0; // weak
-int dword_5B65C4_cancelEventProcessing; // weak
+int _5B65A8_npcdata_uflags_or_other;
+int _5B65AC_npcdata_fame_or_other;
+int _5B65B0_npcdata_rep_or_other;
+int _5B65B4_npcdata_loword_house_or_other;
+int _5B65B8_npcdata_hiword_house_or_other;
+int dword_5B65BC;
+int dword_5B65C0;
+int dword_5B65C4_cancelEventProcessing;
 int MapsLongTimers_count; // dword_5B65C8 счётчик таймеров для колодцев, фаерволов-ловушек
-int npcIdToDismissAfterDialogue; // weak
-signed int dword_5B65D0_dialogue_actor_npc_id; // weak
-int dword_5C3418; // weak
-int dword_5C341C; // weak
-//std::array<char, 777> byte_5C3427; // weak
+int npcIdToDismissAfterDialogue;
+signed int dword_5B65D0_dialogue_actor_npc_id;
+int dword_5C3418;
+int dword_5C341C;
+//std::array<char, 777> byte_5C3427;
 String game_ui_status_bar_event_string;
 String game_ui_status_bar_string;
 unsigned int game_ui_status_bar_event_string_time_left;
-int bForceDrawFooter; // weak
-int _5C35C0_force_party_death = false; // weak
-int bDialogueUI_InitializeActor_NPC_ID; // weak
+int bForceDrawFooter;
+int _5C35C0_force_party_death = false;
+int bDialogueUI_InitializeActor_NPC_ID;
 char *p2DEventsTXT_Raw;
 
-int dword_5C35D4; // weak
-char byte_5C45AF[777]; // weak
+int dword_5C35D4;
+char byte_5C45AF[777];
 
-std::array<char, 100> Journal_limitation_factor; // weak
-int ui_current_text_color; // weak
-__int64 qword_5C6DF0; // weak
-int dword_5C6DF8; // weak
+std::array<char, 100> Journal_limitation_factor;
+int ui_current_text_color;
+__int64 qword_5C6DF0;
+int dword_5C6DF8;
 char *pHealthPointsAttributeDescription;
 char *pSpellPointsAttributeDescription;
 char *pArmourClassAttributeDescription;
@@ -867,9 +867,9 @@ char *pBodyResistanceAttributeDescription;
 char *pSkillPointsAttributeDescription;
 
 struct FactionTable *pFactionTable;
-//std::array<char, 777> byte_5C8D1A; // weak
+//std::array<char, 777> byte_5C8D1A;
 
-std::array<char, 777> byte_5E4C15; // weak
+std::array<char, 777> byte_5E4C15;
 
 char *pMonstersTXT_Raw;
 char *pMonsterPlacementTXT_Raw;
@@ -880,32 +880,32 @@ char *pPotionsTXT_Raw;
 char *pPotionNotesTXT_Raw;
 
 std::array<int, 777> _6807B8_level_decorations_ids; // idb
-int _6807E0_num_decorations_with_sounds_6807B8; // weak
+int _6807E0_num_decorations_with_sounds_6807B8;
 std::array<int, 3000> event_triggers;     // 6807E8
 size_t num_event_triggers; // 6836C8
 std::array<int, 64> dword_69B010;
-float flt_69B138_dist; // weak
-char byte_69BD41_unused; // weak
-int pSaveListPosition; // weak
+float flt_69B138_dist;
+char byte_69BD41_unused;
+int pSaveListPosition;
 unsigned int uLoadGameUI_SelectedSlot;
 HWND hInsertCDWindow; // idb
 char cMM7GameCDDriveLetter; // idb
 MENU_STATE sCurrentMenuID;
 unsigned int uGameState;
-int uDefaultTravelTime_ByFoot; // weak
-int day_attrib; // weak
-int day_fogrange_1; // weak
-int day_fogrange_2; // weak
+int uDefaultTravelTime_ByFoot;
+int day_attrib;
+int day_fogrange_1;
+int day_fogrange_2;
 struct TileTable *pTileTable; // idb
 std::array<char, 777> pDefaultSkyTexture; // idb
 std::array<char, 16> byte_6BE124_cfg_textures_DefaultGroundTexture; // idb
-int _6BE134_odm_main_tile_group; // weak
-int dword_6BE138; // weak
-int dword_6BE13C_uCurrentlyLoadedLocationID; // weak
-float fWalkSpeedMultiplier = 1.0f; // weak
-float fBackwardWalkSpeedMultiplier = 1.0f; // weak
-float fTurnSpeedMultiplier = 1.0f; // weak
-float flt_6BE150_look_up_down_dangle = 1.0f; // weak
+int _6BE134_odm_main_tile_group;
+int dword_6BE138;
+int dword_6BE13C_uCurrentlyLoadedLocationID;
+float fWalkSpeedMultiplier = 1.0f;
+float fBackwardWalkSpeedMultiplier = 1.0f;
+float fTurnSpeedMultiplier = 1.0f;
+float flt_6BE150_look_up_down_dangle = 1.0f;
 //HWND hWnd; // idb
 bool FORCE_16_BITS = false;
 class OSWindow *window = nullptr;
@@ -918,13 +918,13 @@ int bShowDamage; // idb
 unsigned int bAlwaysRun;
 unsigned int bFlipOnExit;
 unsigned int uTurnSpeed;
-float flt_6BE3A0 = 0.55000001f; // weak
+float flt_6BE3A0 = 0.55000001f;
 float flt_6BE3A4_debug_recmod1;
 float flt_6BE3A8_debug_recmod2;
 float flt_6BE3AC_debug_recmod1_x_1_6;
 std::array<char, 20> byte_6BE3B0; // idb
-char bUnderwater = false; // weak
-char bNoNPCHiring = false; // weak
+char bUnderwater = false;
+char bNoNPCHiring = false;
 unsigned int bNoVideo = false;
 bool bNoIntro = false;
 bool bNoLogo = false;
@@ -932,7 +932,7 @@ bool bNoCD = false;
 bool bNoSound = false;
 std::array<int, 100> dword_720020_zvalues;
 std::array<int, 299> dword_7201B0_zvalues;
-int uTextureID_720980; // weak
+int uTextureID_720980;
 std::array<__int16, 104> word_7209A0_intercepts_ys_plus_ys;
 std::array<__int16, 104> word_720A70_intercepts_xs_plus_xs;
 std::array<__int16, 104> word_720B40_intercepts_zs;
@@ -947,14 +947,14 @@ std::array<__int16, 104> odm_floor_face_vert_coord_X; // word_721040
 std::array<int, 20> current_Face_id; // dword_721110
 std::array<int, 20> current_BModel_id; // dword_721160
 std::array<int, 20> odm_floor_level; // idb
-int blv_prev_party_x; // weak
-int blv_prev_party_z; // weak
-int blv_prev_party_y; // weak
+int blv_prev_party_x;
+int blv_prev_party_z;
+int blv_prev_party_y;
 std::array<NPCTopic, 789> pNPCTopics;
 std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related; // idb
 std::array<const char *, 82> pScrolls;
-int dword_7241C8; // weak
+int dword_7241C8;
 char *pAwardsTXT_Raw;
 char *pScrollsTXT_Raw;
 char *pMerchantsTXT_Raw;
@@ -969,34 +969,34 @@ unsigned int    uNumTerrainNormals;
 struct Vec3_float_ *pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2>  pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2>    pTerrainSomeOtherData;
-int dword_A74C88; // weak
+int dword_A74C88;
 unsigned int uPlayerCreationUI_SkySliderPos;
 int uPlayerCreationUI_ArrowAnim;
 unsigned int uPlayerCreationUI_SelectedCharacter;
-int dword_A74CDC; // weak
+int dword_A74CDC;
 __int64 _A750D8_player_speech_timer; // qword_A750D8
 enum PlayerSpeech PlayerSpeechID;
-int uSpeakingCharacter; // weak
-char byte_AE5B91; // weak
-std::array<int, 32> dword_F1B430; // weak
+int uSpeakingCharacter;
+char byte_AE5B91;
+std::array<int, 32> dword_F1B430;
 //int dword_F8B144; // nexindex [-1] to the following
 std::array<int, 4> player_levels = {{1, 1, 1, 1}};
 std::array<__int16, 6> weapons_Ypos; // word_F8B158
 __int16 bountyHunting_monster_id_for_hunting; // word_F8B1A0
 const char *bountyHunting_text; // word_F8B1A4
-int contract_approved; // weak
+int contract_approved;
 int dword_F8B1AC_award_bit_number; // idb
-int dword_F8B1B0_MasteryBeingTaught; // weak
+int dword_F8B1B0_MasteryBeingTaught;
 int gold_transaction_amount; // F8B1B4
 std::array<const char *, 4> pShopOptions;
-int dword_F8B1D8; // weak
-int dword_F8B1E0; // weak
-int dword_F8B1E4; // weak
+int dword_F8B1D8;
+int dword_F8B1E0;
+int dword_F8B1E4;
 String current_npc_text; // F8B1E8
 char dialogue_show_profession_details = false; // F8B1EC
-std::array<char, 777> byte_F8B1EF; // weak
+std::array<char, 777> byte_F8B1EF;
 std::array<char, 4> byte_F8B1F0;
 
-int bGameoverLoop = 0; // weak
+int bGameoverLoop = 0;
 std::array<__int16, 104> intersect_face_vertex_coords_list_a; // word_F8BC48
 std::array<__int16, 104> intersect_face_vertex_coords_list_b; // word_F8BD18

@@ -87,7 +87,7 @@ public:
 
 extern LightsStack_StationaryLight_ *pStationaryLightsStack;
 //extern StationaryLight pStationaryLights[400];
-//extern int uNumStationaryLightsApplied; // weak
+//extern int uNumStationaryLightsApplied;
 extern LightsStack_MobileLight_ *pMobileLightsStack;
 //extern MobileLight pMobileLights[400];
 //extern int uNumMobileLightsApplied;

@@ -1,10 +1,11 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
 #include "Engine/SaveLoad.h"
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
@@ -79,11 +80,14 @@ void GameOver_Loop(int v15)
         v1 = localization->GetString(676);//"Brilliant!  The completion of the Heavenly Forge has provided enough Ancient weapons to crush all resistance to your plans.  Soon the world will bow to your every whim!  Still, you can't help but wonder what was beyond the Gate the other side was trying so hard to build."
     else return;
     pInString = v1;
-    v23 = pParty->uTimePlayed - 138240;
-    v19 = (unsigned int)((signed __int64)((double)(pParty->uTimePlayed - 138240) * 0.234375) / 60 / 60) / 24;
-    v14 = (unsigned int)((signed __int64)((double)(pParty->uTimePlayed - 138240) * 0.234375) / 60 / 60) / 24 / 0x1C / 0xC;
-    v18 = (unsigned int)((signed __int64)((double)(pParty->uTimePlayed - 138240) * 0.234375) / 60 / 60) / 24 / 0x1C % 0xC;
-    v17 = v19 % 0x1C;
+
+    auto play_time = pParty->GetPlayingTime();
+    play_time.SubtractHours(9); // game begins at 9 am
+
+    v19 = play_time.GetDays();
+    v14 = play_time.GetYears();
+    v18 = play_time.GetMonthsOfYear();
+    v17 = play_time.GetDaysOfMonth();
     if (!v19)
         v19 = 1;
     pRenderer->BeginScene();

@@ -5,19 +5,20 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/Party.h"
+#include "Engine/LOD.h"
+#include "Engine/Time.h"
+#include "Engine/Events.h"
 
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/Party.h"
-#include "Engine/LOD.h"
-#include "Engine/Objects/Actor.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/PaletteManager.h"
+
+#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Timer.h"
-#include "Engine/Events.h"
 
 #include "IO/Mouse.h"
 
@@ -194,7 +195,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     const char *v28; // edi@69
     int v34; // esi@81
     char out_text[300]; // [sp+8h] [bp-270h]@40
-    stru351_summoned_item v67;
+    SummonedItem v67;
     int v77; // [sp+200h] [bp-78h]@12
     int v78; // [sp+204h] [bp-74h]@5
     GUIWindow iteminfo_window; // [sp+208h] [bp-70h]@2
@@ -258,7 +259,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
                 dword_4E455C = 0;
             }
         }
-        inspect_item->UpdateTempBonus(pParty->uTimePlayed);
+        inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
         if (inspect_item->IsBroken())
         {
             if (pPlayers[uActiveCharacter]->CanRepair(inspect_item) == 1)
@@ -474,7 +475,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) && (inspect_item->special_enchantment || inspect_item->uEnchantmentType))
         {
-            init_summoned_item(&v67, inspect_item->uExpireTime - pParty->uTimePlayed);
+            v67.Initialize(inspect_item->expirte_time - pParty->GetPlayingTime());
 
             String txt4 = "Duration:";
             Str = (char *)(v67.field_18_expire_year - game_starting_year);
@@ -792,7 +793,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         pTextHeight = LOBYTE(pFontSmallnum->uFontHeight) + 193;
         for (uint i = 1; i <= 21; ++i)
         {
-            if (pActors[uActorID].pActorBuffs[i].uExpireTime > 0)
+            if (pActors[uActorID].pActorBuffs[i].Active())
             {
                 switch (i)
                 {
@@ -1033,8 +1034,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
             pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
         }
     }
+
     //cast spell: Detect life
-    if ((signed __int64)pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].uExpireTime > 0)
+    if (pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active())
     {
         auto txt9 = StringPrintf("%s: %d", localization->GetString(650), pActors[uActorID].sCurrentHP);//Current Hit Points
         pFontSmallnum->GetLineWidth(txt9);
@@ -1189,13 +1191,12 @@ void  CharacterUI_StatsTab_ShowHint()
             extern std::array<unsigned int, 18> pConditionImportancyTable;
             for (uint i = 0; i < 18; ++i)
             {
-                if (pPlayers[uActiveCharacter]->pConditions[pConditionImportancyTable[i]])
+                if (pPlayers[uActiveCharacter]->conditions_times[pConditionImportancyTable[i]].Valid())
                 {
                     str += " \n";
-                    pHour = pParty->uTimePlayed - pPlayers[uActiveCharacter]->pConditions[pConditionImportancyTable[i]];
-                    pHour = (unsigned int)((pHour * 0.234375) / 60 / 60);
-                    pDay = (unsigned int)pHour / 24;
-                    pHour %= 24i64;
+                    auto condition_time = pParty->GetPlayingTime() - pPlayers[uActiveCharacter]->conditions_times[pConditionImportancyTable[i]];
+                    pHour = condition_time.GetHoursOfDay();
+                    pDay = condition_time.GetDays();
                     pTextColor = GetConditionDrawColor(pConditionImportancyTable[i]);
                     str += StringPrintf(format_4E2DE8, pTextColor, localization->GetCharacterConditionName(pConditionImportancyTable[i]));
                     if (pHour && pHour <= 1)
@@ -1686,6 +1687,8 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
     viewparams->bRedrawGameUI = 1;
 }
 
+
+
 int no_rightlick_in_inventory = false; // 0050CDCC
 //----- (00416196) --------------------------------------------------------
 void Inventory_ItemPopupAndAlchemy()
@@ -1825,18 +1828,19 @@ void Inventory_ItemPopupAndAlchemy()
                 item->IsBroken() ||
                 item->special_enchantment ||
                 item->uEnchantmentType ||
-                item->GetItemEquipType() >= EQUIP_ARMOUR)  // only melee weapons and bows
+                item->GetItemEquipType() >= EQUIP_ARMOUR
+            )  // only melee weapons and bows
             {
                 pMouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = true;
                 return;
             }
 
-            item->UpdateTempBonus(pParty->uTimePlayed);
+            item->UpdateTempBonus(pParty->GetPlayingTime());
             if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING_POTION)
             {
                 item->special_enchantment = ITEM_ENCHANTMENT_40; // of Slaying
-                v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType * 128);
+                v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             }
             else
             {
@@ -1851,10 +1855,10 @@ void Inventory_ItemPopupAndAlchemy()
                     (ITEM_ENCHANTMENT)59
                 };
                 item->special_enchantment = _4E2904_enchantment_by_potion_lut[pParty->pPickedItem.uItemID - 240];
-                v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType * 128);
+                v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             }
 
-            item->uExpireTime = pParty->uTimePlayed + v31 * 0.033333335;
+            item->expirte_time = pParty->GetPlayingTime() + GameTime::FromSeconds(v31);
             item->uAttributes = alchemy_skill_level | 0x18;
 
             _50C9A8_item_enchantment_timer = 256;

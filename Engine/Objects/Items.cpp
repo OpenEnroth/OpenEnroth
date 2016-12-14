@@ -49,7 +49,7 @@ int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE *damage_type, bool *drain
     if (uItemID == ITEM_NULL)
         return 0;
 
-    UpdateTempBonus(pParty->uTimePlayed);
+    UpdateTempBonus(pParty->GetPlayingTime());
     if (uItemID == ITEM_ARTIFACT_IRON_FEATHER)
     {
         *damage_type = DMGT_ELECTR;
@@ -150,46 +150,46 @@ void ItemGen::Reset()
   this->uEnchantmentType = 0;
   this->uItemID = ITEM_NULL;
   this->uBodyAnchor = 0;
-  this->uExpireTime = 0i64;
+  this->expirte_time.Reset();
 }
 
 //----- (00458260) --------------------------------------------------------
-void ItemGen::UpdateTempBonus(__int64 uTimePlayed)
+void ItemGen::UpdateTempBonus(GameTime time)
 {
-  if ( this->uAttributes & ITEM_TEMP_BONUS )
-  {
-    if ( uTimePlayed > (signed __int64)this->uExpireTime )
+    if (this->uAttributes & ITEM_TEMP_BONUS)
     {
-      this->uEnchantmentType = 0;
-      this->special_enchantment = ITEM_ENCHANTMENT_NULL;
-      this->uAttributes = this->uAttributes&(~ITEM_TEMP_BONUS);
+        if (time > this->expirte_time)
+        {
+            this->uEnchantmentType = 0;
+            this->special_enchantment = ITEM_ENCHANTMENT_NULL;
+            this->uAttributes &= ~ITEM_TEMP_BONUS;
+        }
     }
-  }
 }
 
 //----- (0045814E) --------------------------------------------------------
 void ItemsTable::Release()
 {
-  free(pMonstersTXT_Raw);
-  free(pMonsterPlacementTXT_Raw);
-  free(pSpcItemsTXT_Raw);
-  free(pStdItemsTXT_Raw);
-  free(pRndItemsTXT_Raw);
-  free(pItemsTXT_Raw);
-  free(pHostileTXT_Raw);
-  free(pHistoryTXT_Raw);
-  free(pPotionsTXT_Raw);
-  free(pPotionNotesTXT_Raw);
-  pMonstersTXT_Raw = nullptr;
-  pMonsterPlacementTXT_Raw = nullptr;
-  pSpcItemsTXT_Raw = nullptr;
-  pStdItemsTXT_Raw = nullptr;
-  pRndItemsTXT_Raw = nullptr;
-  pItemsTXT_Raw = nullptr;
-  pHostileTXT_Raw = nullptr;
-  pHistoryTXT_Raw = nullptr;
-  pPotionsTXT_Raw = nullptr;
-  pPotionNotesTXT_Raw = nullptr;
+    free(pMonstersTXT_Raw);
+    free(pMonsterPlacementTXT_Raw);
+    free(pSpcItemsTXT_Raw);
+    free(pStdItemsTXT_Raw);
+    free(pRndItemsTXT_Raw);
+    free(pItemsTXT_Raw);
+    free(pHostileTXT_Raw);
+    free(pHistoryTXT_Raw);
+    free(pPotionsTXT_Raw);
+    free(pPotionNotesTXT_Raw);
+    pMonstersTXT_Raw = nullptr;
+    pMonsterPlacementTXT_Raw = nullptr;
+    pSpcItemsTXT_Raw = nullptr;
+    pStdItemsTXT_Raw = nullptr;
+    pRndItemsTXT_Raw = nullptr;
+    pItemsTXT_Raw = nullptr;
+    pHostileTXT_Raw = nullptr;
+    pHistoryTXT_Raw = nullptr;
+    pPotionsTXT_Raw = nullptr;
+    pPotionNotesTXT_Raw = nullptr;
 }
 
 
@@ -1682,27 +1682,4 @@ bool ItemGen::MerchandiseTest(int _2da_idx)
     }
   }
   return test;
-}
-
-//----- (00493F79) --------------------------------------------------------
-void init_summoned_item(stru351_summoned_item *_this, __int64 duration)
-{
-	signed __int64 v2; // ST2C_8@1
-	signed __int64 v3; // qax@1
-	//signed __int64 v4; // ST1C_8@1
-	unsigned __int64 v5; // qax@1
-	unsigned int v6; // ebx@1
-
-	v2 = (signed __int64)((double)duration * 0.234375);
-	v3 = v2 / 60 / 60;
-	//v4 = v3;
-	v5 = (unsigned int)v3 / 0x18;
-	v6 = (unsigned int)(v5 / 7) >> 2;
-	_this->field_0_expire_second = v2 % 60;
-	_this->field_4_expire_minute = v2 / 60 % 60;
-	_this->field_8_expire_hour = v3 % 24;
-	_this->field_10_expire_week = v5 / 7 & 3;
-	_this->field_C_expire_day = (unsigned int)v5 % 0x1C;
-	_this->field_14_exprie_month = v6 % 0xC;
-	_this->field_18_expire_year = v6 / 0xC + game_starting_year;
 }

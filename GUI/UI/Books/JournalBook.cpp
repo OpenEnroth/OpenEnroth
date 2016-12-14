@@ -3,10 +3,12 @@
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
 #include "Engine/Awards.h"
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
+
 #include "Engine/Tables/StorylineTextTable.h"
 
 #include "GUI/GUIFont.h"
@@ -66,11 +68,16 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
     {
         for (int i = books_primary_item_per_page; i < books_primary_item_per_page + 29; i++)
         {
-            if (pParty->PartyTimes.HistoryEventTimes[i] > 0)
+            if (pParty->PartyTimes.HistoryEventTimes[i].Valid())
             {
                 if (pStorylineText->StoreLine[i + 1].pText)
                 {
-                    auto str = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, uActiveCharacter - 1, 0, 0, 0, &pParty->PartyTimes.HistoryEventTimes[i]);
+                    auto str = BuildDialogueString(
+                        pStorylineText->StoreLine[i + 1].pText,
+                        uActiveCharacter - 1,
+                        0, 0, 0,
+                        &pParty->PartyTimes.HistoryEventTimes[i]
+                    );
                     pTextHeight = pAutonoteFont->CalcTextHeight(str, &journal_window, 1);
                     page_count = ((pTextHeight - (pAutonoteFont->uFontHeight - 3)) / (signed int)journal_window.uFrameHeight) + 1;
                     memset32((char *)&achieved_awards[num_achieved_awards], i + 1, page_count);
@@ -160,8 +167,12 @@ void GUIWindow_JournalBook::Update()
     if (achieved_awards[books_primary_item_per_page])
     {
         int index = ((int)achieved_awards[books_primary_item_per_page] - 1);
-        auto str = BuildDialogueString(pStorylineText->StoreLine[achieved_awards[books_primary_item_per_page]].pText, uActiveCharacter - 1,
-            0, 0, 0, &pParty->PartyTimes.HistoryEventTimes[index]);
+        auto str = BuildDialogueString(
+            pStorylineText->StoreLine[achieved_awards[books_primary_item_per_page]].pText,
+            uActiveCharacter - 1,
+            0, 0, 0,
+            &pParty->PartyTimes.HistoryEventTimes[index]
+        );
         pStringOnPage = pAutonoteFont->GetPageTop(str.c_str(), &journal_window, 1, (unsigned __int8)Journal_limitation_factor[books_primary_item_per_page]);
         journal_window.DrawText(pAutonoteFont, 1, 0, ui_book_journal_text_color, pStringOnPage, 0,
             journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);

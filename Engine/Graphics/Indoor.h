@@ -1,6 +1,8 @@
 #pragma once
 #include <array>
 
+#include "Engine/Strings.h"
+
 #include "Render.h"
 #include "IndoorCameraD3D.h"
 #include "../mm7_data.h"
@@ -279,12 +281,12 @@ struct stru352
 #pragma pack(push, 1)
 struct LocationTime_stru1
 {
-  unsigned __int64 uLastVisitDay;
-  char sky_texture_name[12];
-  int day_attrib;
-  int day_fogrange_1;
-  int day_fogrange_2;
-  char field_2F4[24];
+    GameTime last_visit;
+    char sky_texture_name[12];
+    int day_attrib;
+    int day_fogrange_1;
+    int day_fogrange_2;
+    char field_2F4[24];
 };
 #pragma pack(pop)
 
@@ -669,7 +671,7 @@ struct IndoorLocation
   int GetSector(int sX, int sY, int sZ);
   void Release();
   bool Alloc();
-  bool Load(char *pFilename, int a3, size_t i, char *pDest);
+  bool Load(const String &filename, int num_days_played, int respawn_interval_days, char *pDest);
   void Draw();
   void ToggleLight(signed int uLightID, unsigned int bToggle);
 
@@ -678,7 +680,7 @@ struct IndoorLocation
   //static void ExecDraw_sw(unsigned int uFaceID);
   static void ExecDraw_d3d(unsigned int uFaceID, struct IndoorCameraD3D_Vec4 *pVertices, unsigned int uNumVertices, struct RenderVertexSoft *pPortalBounding);
 
-  char pFilename[32];
+  String filename;
   char field_20[48];
   unsigned int bLoaded;
   char field_54[404];

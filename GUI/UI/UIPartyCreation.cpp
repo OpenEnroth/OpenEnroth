@@ -8,9 +8,11 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
 #include "Engine/MMT.h"
+
 #include "Engine/Graphics/Render.h"
+
 #include "Engine/Tables/IconFrameTable.h"
 
 #include "IO/Mouse.h"
@@ -557,196 +559,196 @@ void DeleteCCharFont()
 //----- (00497526) --------------------------------------------------------
 bool PlayerCreationUI_Loop()
 {
-  LONG uMouseX; // edi@6
-  LONG uMouseY; // eax@6
-  //GUIButton *pControlsHead; // edx@6
-  //int pControlParam; // esi@12
-  signed int v8; // edi@30
-  int v9; // edx@31
-//  char *v10; // ebx@37
-  ItemGen item; // [sp+Ch] [bp-74h]@37
-  char v20[32]; // [sp+30h] [bp-50h]@29
-  MSG Msg; // [sp+50h] [bp-30h]@17
-  POINT v25; // [sp+6Ch] [bp-14h]@6
-  bool party_not_creation_flag; // [sp+74h] [bp-Ch]@1
+    LONG uMouseX; // edi@6
+    LONG uMouseY; // eax@6
+    //GUIButton *pControlsHead; // edx@6
+    //int pControlParam; // esi@12
+    signed int v8; // edi@30
+    int v9; // edx@31
+  //  char *v10; // ebx@37
+    ItemGen item; // [sp+Ch] [bp-74h]@37
+    char v20[32]; // [sp+30h] [bp-50h]@29
+    MSG Msg; // [sp+50h] [bp-30h]@17
+    POINT v25; // [sp+6Ch] [bp-14h]@6
+    bool party_not_creation_flag; // [sp+74h] [bp-Ch]@1
 
-  party_not_creation_flag = false;
+    party_not_creation_flag = false;
 
-  if (main_menu_background)
-  {
-      main_menu_background->Release();
-      main_menu_background = nullptr;
-  }
-  main_menu_background = assets->GetImage_PCXFromIconsLOD(L"makeme.pcx");
-
-  pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-  SetCurrentMenuID(MENU_CREATEPARTY);
-  while ( GetCurrentMenuID() == MENU_CREATEPARTY )
-  {
-    uMouseX = pMouse->GetCursorPos(&v25)->x;
-    uMouseY = pMouse->GetCursorPos(&v25)->y;
-
-    while ( PeekMessageA(&Msg, 0, 0, 0, PM_REMOVE) )
+    if (main_menu_background)
     {
-      if ( Msg.message == WM_QUIT )
-        Engine_DeinitializeAndTerminate(0);
-      TranslateMessage(&Msg);
-      DispatchMessageA(&Msg);
+        main_menu_background->Release();
+        main_menu_background = nullptr;
     }
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
-      WaitMessage();
-    else
+    main_menu_background = assets->GetImage_PCXFromIconsLOD(L"makeme.pcx");
+
+    pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+    SetCurrentMenuID(MENU_CREATEPARTY);
+    while (GetCurrentMenuID() == MENU_CREATEPARTY)
     {
-      //PlayerCreationUI_Draw();
-      //MainMenu_EventLoop();
-        CreateParty_EventLoop();
-      pRenderer->BeginScene();
-      GUI_UpdateWindows();
-      pRenderer->EndScene();
-      pRenderer->Present();
-      if ( uGameState == GAME_FINISHED )//if click Esc in PlayerCreation Window
-      {
-        party_not_creation_flag = true;
-        SetCurrentMenuID(MENU_MAIN);
-        continue;
-      }
-      if ( uGameState == GAME_STATE_STARTING_NEW_GAME )//if click OK in PlayerCreation Window
-      {
-        uGameState = GAME_STATE_PLAYING;
-        SetCurrentMenuID(MENU_NEWGAME);
-        continue;
-      }
+        uMouseX = pMouse->GetCursorPos(&v25)->x;
+        uMouseY = pMouse->GetCursorPos(&v25)->y;
+
+        while (PeekMessageA(&Msg, 0, 0, 0, PM_REMOVE))
+        {
+            if (Msg.message == WM_QUIT)
+                Engine_DeinitializeAndTerminate(0);
+            TranslateMessage(&Msg);
+            DispatchMessageA(&Msg);
+        }
+        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
+            WaitMessage();
+        else
+        {
+            //PlayerCreationUI_Draw();
+            //MainMenu_EventLoop();
+            CreateParty_EventLoop();
+            pRenderer->BeginScene();
+            GUI_UpdateWindows();
+            pRenderer->EndScene();
+            pRenderer->Present();
+            if (uGameState == GAME_FINISHED)//if click Esc in PlayerCreation Window
+            {
+                party_not_creation_flag = true;
+                SetCurrentMenuID(MENU_MAIN);
+                continue;
+            }
+            if (uGameState == GAME_STATE_STARTING_NEW_GAME)//if click OK in PlayerCreation Window
+            {
+                uGameState = GAME_STATE_PLAYING;
+                SetCurrentMenuID(MENU_NEWGAME);
+                continue;
+            }
+        }
     }
-  }
 
-  pGUIWindow_CurrentMenu->Release();
-  pGUIWindow_CurrentMenu = nullptr;
+    pGUIWindow_CurrentMenu->Release();
+    pGUIWindow_CurrentMenu = nullptr;
 
-  pIcons_LOD->RemoveTexturesPackFromTextureList();
+    pIcons_LOD->RemoveTexturesPackFromTextureList();
 
-  memset(v20, 0, 32);
-  for ( int i = 0; i < 32; i++ )
-  {
-    for ( v8 = 0; v8 < 10; ++v8 )
+    memset(v20, 0, 32);
+    for (int i = 0; i < 32; i++)
     {
-      v9 = rand() % 32;
-      if ( !v20[v9] )
-        break;
+        for (v8 = 0; v8 < 10; ++v8)
+        {
+            v9 = rand() % 32;
+            if (!v20[v9])
+                break;
+        }
+        if (v8 == 10)
+        {
+            v9 = 0;
+            if (v20[0])
+            {
+                do
+                    ++v9;
+                while (v20[v9]);
+            }
+        }
+        pParty->field_854[i] = v9;
+        v20[v9] = 1;
     }
-    if ( v8 == 10 )
+
+    item.Reset();
+    for (uint i = 0; i < 4; ++i)
     {
-      v9 = 0;
-      if ( v20[0] )
-      {
-        do
-          ++v9;
-        while ( v20[v9] );
-      }
-    }
-    pParty->field_854[i] = v9;
-    v20[v9] = 1;
-  }
+        if (pParty->pPlayers[i].classType == PLAYER_CLASS_KNIGHT)
+            pParty->pPlayers[i].sResMagicBase = 10;
+        pParty->pPlayers[i].pPlayerBuffs[22].expire_time.Reset();
+        for (uint j = 0; j < 9; j++)
+        {
+            if (pParty->pPlayers[i].pActiveSkills[PLAYER_SKILL_FIRE + j])
+            {
+                pParty->pPlayers[i].lastOpenedSpellbookPage = j;
+                break;
+            }
+        }
+        pItemsTable->GenerateItem(2, 40, &item);
+        pParty->pPlayers[i].AddItem2(-1, &item);
 
-  item.Reset();
-  for (uint i = 0; i < 4; ++i)
-  {
-    if (pParty->pPlayers[i].classType == PLAYER_CLASS_KNIGHT)
-      pParty->pPlayers[i].sResMagicBase = 10;
-    pParty->pPlayers[i].pPlayerBuffs[22].uExpireTime = 0;
-    for (uint j = 0; j < 9; j++)
+        pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+        pParty->pPlayers[i].sMana = pParty->pPlayers[i].GetMaxMana();
+        for (uint j = 0; j < 37; ++j)
+        {
+            if (!pParty->pPlayers[i].pActiveSkills[j])
+                continue;
+
+            switch (j)
+            {
+            case PLAYER_SKILL_STAFF:   pParty->pPlayers[i].AddItem(-1, ITEM_STAFF_1); break;
+            case PLAYER_SKILL_SWORD:   pParty->pPlayers[i].AddItem(-1, ITEM_LONGSWORD_1); break;
+            case PLAYER_SKILL_DAGGER:  pParty->pPlayers[i].AddItem(-1, ITEM_DAGGER_1); break;
+            case PLAYER_SKILL_AXE:     pParty->pPlayers[i].AddItem(-1, ITEM_AXE_1); break;
+            case PLAYER_SKILL_SPEAR:   pParty->pPlayers[i].AddItem(-1, ITEM_SPEAR_1); break;
+            case PLAYER_SKILL_BOW:     pParty->pPlayers[i].AddItem(-1, ITEM_CROSSBOW_1); break;
+            case PLAYER_SKILL_MACE:    pParty->pPlayers[i].AddItem(-1, ITEM_MACE_1); break;
+            case PLAYER_SKILL_BLASTER: Error("No blasters at startup :p");
+            case PLAYER_SKILL_SHIELD:  pParty->pPlayers[i].AddItem(-1, ITEM_BUCKLER_1); break;
+            case PLAYER_SKILL_LEATHER: pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_1); break;
+            case PLAYER_SKILL_CHAIN:   pParty->pPlayers[i].AddItem(-1, ITEM_CHAINMAIL_1); break;
+            case PLAYER_SKILL_PLATE:   pParty->pPlayers[i].AddItem(-1, ITEM_PLATE_1); break;
+            case PLAYER_SKILL_FIRE:
+                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_FIRE_STRIKE);
+                pParty->pPlayers[i].spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;
+                break;
+            case PLAYER_SKILL_AIR:
+                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_AIR_FEATHER_FALL);
+                pParty->pPlayers[i].spellbook.pAirSpellbook.bIsSpellAvailable[0] = true;
+                break;
+            case PLAYER_SKILL_WATER:
+                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_WATER_POISON_SPRAY);
+                pParty->pPlayers[i].spellbook.pWaterSpellbook.bIsSpellAvailable[0] = true;
+                break;
+            case PLAYER_SKILL_EARTH:
+                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_EARTH_SLOW);
+                pParty->pPlayers[i].spellbook.pEarthSpellbook.bIsSpellAvailable[0] = true;
+                break;
+            case PLAYER_SKILL_SPIRIT:
+                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_SPIRIT_BLESS);
+                pParty->pPlayers[i].spellbook.pSpiritSpellbook.bIsSpellAvailable[0] = true;
+                break;
+            case PLAYER_SKILL_MIND:
+                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_MIND_MIND_BLAST);
+                pParty->pPlayers[i].spellbook.pMindSpellbook.bIsSpellAvailable[0] = true;
+                break;
+            case PLAYER_SKILL_BODY:
+                pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_BODY_FIRST_AID);
+                pParty->pPlayers[i].spellbook.pBodySpellbook.bIsSpellAvailable[0] = true;
+                break;
+            case PLAYER_SKILL_LIGHT:
+            case PLAYER_SKILL_DARK:
+            case PLAYER_SKILL_DIPLOMACY:
+                Error("No dimoplacy in mm7 (yet)");
+                break;
+            case PLAYER_SKILL_ITEM_ID:
+            case PLAYER_SKILL_REPAIR:
+            case PLAYER_SKILL_MEDITATION:
+            case PLAYER_SKILL_PERCEPTION:
+            case PLAYER_SKILL_TRAP_DISARM:
+            case PLAYER_SKILL_LEARNING:
+                pParty->pPlayers[i].AddItem(-1, ITEM_POTION_BOTTLE);
+                pParty->pPlayers[i].AddItem(-1, 5 * (rand() % 3 + 40));
+                break;
+            case PLAYER_SKILL_DODGE:   pParty->pPlayers[i].AddItem(-1, ITEM_BOOTS_1); break;
+            case PLAYER_SKILL_UNARMED: pParty->pPlayers[i].AddItem(-1, ITEM_GAUNTLETS_1); break;
+            default:
+                break;
+            }
+
+            for (uint k = 0; k < 138; k++)
+            {
+                if (pParty->pPlayers[i].pOwnItems[k].uItemID)
+                    pParty->pPlayers[i].pOwnItems[k].SetIdentified();
+            }
+        }
+    }
+
+    if (main_menu_background)
     {
-      if (pParty->pPlayers[i].pActiveSkills[PLAYER_SKILL_FIRE + j])
-      {
-        pParty->pPlayers[i].lastOpenedSpellbookPage = j;
-        break;
-      }
+        main_menu_background->Release();
+        main_menu_background = nullptr;
     }
-    pItemsTable->GenerateItem(2, 40, &item);
-    pParty->pPlayers[i].AddItem2(-1, &item);
 
-    pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
-    pParty->pPlayers[i].sMana = pParty->pPlayers[i].GetMaxMana();
-    for (uint j = 0; j < 37; ++j)
-    {
-      if (!pParty->pPlayers[i].pActiveSkills[j])
-        continue;
-
-      switch (j)
-      {
-        case PLAYER_SKILL_STAFF:   pParty->pPlayers[i].AddItem(-1, ITEM_STAFF_1); break;
-        case PLAYER_SKILL_SWORD:   pParty->pPlayers[i].AddItem(-1, ITEM_LONGSWORD_1); break;
-        case PLAYER_SKILL_DAGGER:  pParty->pPlayers[i].AddItem(-1, ITEM_DAGGER_1); break;
-        case PLAYER_SKILL_AXE:     pParty->pPlayers[i].AddItem(-1, ITEM_AXE_1); break;
-        case PLAYER_SKILL_SPEAR:   pParty->pPlayers[i].AddItem(-1, ITEM_SPEAR_1); break;
-        case PLAYER_SKILL_BOW:     pParty->pPlayers[i].AddItem(-1, ITEM_CROSSBOW_1); break;
-        case PLAYER_SKILL_MACE:    pParty->pPlayers[i].AddItem(-1, ITEM_MACE_1); break;
-        case PLAYER_SKILL_BLASTER: Error("No blasters at startup :p");
-        case PLAYER_SKILL_SHIELD:  pParty->pPlayers[i].AddItem(-1, ITEM_BUCKLER_1); break;
-        case PLAYER_SKILL_LEATHER: pParty->pPlayers[i].AddItem(-1, ITEM_LEATHER_1); break;
-        case PLAYER_SKILL_CHAIN:   pParty->pPlayers[i].AddItem(-1, ITEM_CHAINMAIL_1); break;
-        case PLAYER_SKILL_PLATE:   pParty->pPlayers[i].AddItem(-1, ITEM_PLATE_1); break;
-        case PLAYER_SKILL_FIRE:
-            pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_FIRE_STRIKE);
-          pParty->pPlayers[i].spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;
-        break;
-        case PLAYER_SKILL_AIR:
-            pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_AIR_FEATHER_FALL);
-          pParty->pPlayers[i].spellbook.pAirSpellbook.bIsSpellAvailable[0] = true;
-        break;
-        case PLAYER_SKILL_WATER:
-            pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_WATER_POISON_SPRAY);
-          pParty->pPlayers[i].spellbook.pWaterSpellbook.bIsSpellAvailable[0] = true;
-        break;
-        case PLAYER_SKILL_EARTH:
-            pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_EARTH_SLOW);
-          pParty->pPlayers[i].spellbook.pEarthSpellbook.bIsSpellAvailable[0] = true;
-        break;
-        case PLAYER_SKILL_SPIRIT:
-            pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_SPIRIT_BLESS);
-          pParty->pPlayers[i].spellbook.pSpiritSpellbook.bIsSpellAvailable[0] = true;
-        break;
-        case PLAYER_SKILL_MIND:
-            pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_MIND_MIND_BLAST);
-          pParty->pPlayers[i].spellbook.pMindSpellbook.bIsSpellAvailable[0] = true;
-        break;
-        case PLAYER_SKILL_BODY:
-            pParty->pPlayers[i].AddItem(-1, ITEM_SPELLBOOK_BODY_FIRST_AID);
-          pParty->pPlayers[i].spellbook.pBodySpellbook.bIsSpellAvailable[0] = true;
-        break;
-        case PLAYER_SKILL_LIGHT:
-        case PLAYER_SKILL_DARK:
-        case PLAYER_SKILL_DIPLOMACY:
-          Error("No dimoplacy in mm7 (yet)");
-        break;
-        case PLAYER_SKILL_ITEM_ID:
-        case PLAYER_SKILL_REPAIR:
-        case PLAYER_SKILL_MEDITATION:
-        case PLAYER_SKILL_PERCEPTION:
-        case PLAYER_SKILL_TRAP_DISARM:
-        case PLAYER_SKILL_LEARNING:
-            pParty->pPlayers[i].AddItem(-1, ITEM_POTION_BOTTLE);
-          pParty->pPlayers[i].AddItem(-1, 5 * (rand() % 3 + 40));
-        break;
-        case PLAYER_SKILL_DODGE:   pParty->pPlayers[i].AddItem(-1, ITEM_BOOTS_1); break;
-        case PLAYER_SKILL_UNARMED: pParty->pPlayers[i].AddItem(-1, ITEM_GAUNTLETS_1); break;
-        default:
-          break;
-      }
-
-      for (uint k = 0; k < 138; k++)
-      {
-        if (pParty->pPlayers[i].pOwnItems[k].uItemID)
-          pParty->pPlayers[i].pOwnItems[k].SetIdentified();
-      }
-    }
-  }
-
-  if (main_menu_background)
-  {
-      main_menu_background->Release();
-      main_menu_background = nullptr;
-  }
-
-  pAudioPlayer->StopChannels(-1, -1);
-  return party_not_creation_flag;
+    pAudioPlayer->StopChannels(-1, -1);
+    return party_not_creation_flag;
 }

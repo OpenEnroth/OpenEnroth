@@ -5,45 +5,45 @@
 #pragma pack(push, 1)
 struct stru6_stru1_indoor_sw_billboard
 {
-  //----- (004775B1) --------------------------------------------------------
-  inline stru6_stru1_indoor_sw_billboard()
-  {
-    uNumVertices = 0;
-    uNumVec4sInArray1 = 0;
-    uNumVec3sInArray2 = 0;
-    pArray1 = nullptr;
-    pArray2 = nullptr;
-  }
+    //----- (004775B1) --------------------------------------------------------
+    inline stru6_stru1_indoor_sw_billboard()
+    {
+        uNumVertices = 0;
+        uNumVec4sInArray1 = 0;
+        uNumVec3sInArray2 = 0;
+        pArray1 = nullptr;
+        pArray2 = nullptr;
+    }
 
-  //----- (004775C4) --------------------------------------------------------
-  virtual ~stru6_stru1_indoor_sw_billboard();
+    //----- (004775C4) --------------------------------------------------------
+    virtual ~stru6_stru1_indoor_sw_billboard();
 
-  int _4775ED(float a2);
-  int _477927(float a2);
-  int sub_477C61();
-  bool sub_477F63();
-  int sub_47802A();
-  void Initialize(int a2);
-  void _47829F_sphere_particle(float x_offset, float y_offset, float z_offset, float scale, int diffuse);
+    int _4775ED(float a2);
+    int _477927(float a2);
+    int sub_477C61();
+    bool sub_477F63();
+    int sub_47802A();
+    void Initialize(int a2);
+    void _47829F_sphere_particle(float x_offset, float y_offset, float z_offset, float scale, int diffuse);
 
 
-  struct local_01
-  {
-    float x;
-    float y;
-    float z;
-    int   diffuse;
-  };
+    struct local_01
+    {
+        float x;
+        float y;
+        float z;
+        int   diffuse;
+    };
 
-  unsigned int uNumVec4sInArray1;
-  struct stru16x *pArray1;
-  unsigned int uNumVec3sInArray2;
-  struct stru160 *pArray2;
-  int uNumVertices;
-  local_01 field_14[5];
-  int field_64[20];
-  float field_B4[20];
-  local_01 field_104[5];
+    unsigned int uNumVec4sInArray1;
+    struct stru16x *pArray1;
+    unsigned int uNumVec3sInArray2;
+    struct stru160 *pArray2;
+    int uNumVertices;
+    local_01 field_14[5];
+    int field_64[20];
+    float field_B4[20];
+    local_01 field_104[5];
 };
 #pragma pack(pop)
 
@@ -131,7 +131,7 @@ struct stru6
   void AddProjectile(struct SpriteObject *a2, int a3, unsigned int uTextureID);
   void _4A7E89_sparkles_on_actor_after_it_casts_buff(struct Actor *pActor, unsigned int uDiffuse);
   void _4A7F74(int x, int y, int z);
-  int _4A806F(struct Actor *pActor);
+  int _4A806F_get_mass_distortion_value(struct Actor *pActor);
   //void _4A80DC_implosion_particle_sw(struct SpriteObject *a2);
   bool RenderAsSprite(struct SpriteObject *a2);
   void SetPlayerBuffAnim(unsigned __int16 uSpellID, unsigned __int16 uPlayerID);

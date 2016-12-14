@@ -426,9 +426,6 @@
     <ClCompile Include="..\..\Engine\stru298.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\Timer.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\VectorTypes.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -620,6 +617,9 @@
     </ClCompile>
     <ClCompile Include="..\..\GUI\UI\UiStatusBar.cpp">
       <Filter>GUI\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Time.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1184,9 +1184,6 @@
     <ClInclude Include="..\..\Engine\stru367.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\Timer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Engine\VectorTypes.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -1408,6 +1405,9 @@
     </ClInclude>
     <ClInclude Include="..\..\GUI\UI\UiStatusBar.h">
       <Filter>GUI\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Time.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

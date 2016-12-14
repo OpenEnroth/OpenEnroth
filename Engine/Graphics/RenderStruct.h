@@ -336,10 +336,10 @@ struct RenderBillboardTransform_local0
 
 
 
-extern int uNumDecorationsDrawnThisFrame; // weak
+extern int uNumDecorationsDrawnThisFrame;
 extern RenderBillboard pBillboardRenderList[500];
 extern unsigned int uNumBillboardsToDraw;
-extern int uNumSpritesDrawnThisFrame; // weak
+extern int uNumSpritesDrawnThisFrame;
 
 
 

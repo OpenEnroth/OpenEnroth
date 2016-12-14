@@ -199,7 +199,7 @@ struct NPCStats
 
 extern int pDialogueNPCCount;
 extern std::array<class Image *, 6> pDialogueNPCPortraits;
-extern int uNumDialogueNPCPortraits; // weak
+extern int uNumDialogueNPCPortraits;
 extern struct NPCStats *pNPCStats;
 
 bool PartyHasDragon();

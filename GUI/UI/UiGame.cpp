@@ -7,31 +7,33 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/Events.h"
-#include "Engine/Graphics/Texture.h"
-#include "Engine/Graphics/Vis.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
-#include "Engine/Graphics/Outdoor.h"
 #include "Engine/LOD.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/Objects/SpriteObject.h"
-#include "Engine/Objects/ObjectList.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/stru123.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
+#include "Engine/OurMath.h"
+
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/PlayerFrameTable.h"
+
 #include "Engine/TurnEngine/TurnEngine.h"
+
+#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/BSPModel.h"
-#include "Engine/OurMath.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Objects/Chest.h"
 #include "Engine/Graphics/Overlays.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 
-#include "Game/Game.h"
+#include "Engine/Objects/Chest.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/ObjectList.h"
 
 #include "IO/Mouse.h"
 #include "IO/Keyboard.h"
@@ -45,6 +47,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Game/Game.h"
 
 Image *game_ui_statusbar = nullptr;
 Image *game_ui_rightframe = nullptr;
@@ -688,108 +691,108 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID)
 //----- (00416B01) --------------------------------------------------------
 void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
 {
-  int v1; // edi@2
-  NPCData *pNPC; // eax@16
-  const CHAR *pText; // eax@18
-  GUIWindow popup_window; // [sp+Ch] [bp-60h]@23
-  int a2; // [sp+60h] [bp-Ch]@16
-  LPCSTR lpsz; // [sp+68h] [bp-4h]@6
+    int v1; // edi@2
+    NPCData *pNPC; // eax@16
+    const CHAR *pText; // eax@18
+    GUIWindow popup_window; // [sp+Ch] [bp-60h]@23
+    int a2; // [sp+60h] [bp-Ch]@16
+    LPCSTR lpsz; // [sp+68h] [bp-4h]@6
 
-  char buf[4096];
-  if ( bNoNPCHiring != 1 )
-  {
-    v1 = 0;
-    /*do
+    char buf[4096];
+    if (bNoNPCHiring != 1)
     {
-      if ( v3->pName )
-        tmp_str[v1++] = v2;
-      ++v3;
-      ++v2;
-    }
-    while ( (signed int)v3 < (signed int)&pParty->pPickedItem );*/
-    for (int i = 0; i < 2; ++i)
-    {
-     if (pParty->pHirelings[i].pName)
-         buf[v1++] = i;
-    }
-    lpsz = 0;
-    if ( (signed int)pNPCStats->uNumNewNPCs > 0 )
-    {
-      /*v4 = pNPCStats->pNewNPCData;
-      do
-      {
-        if ( v4->uFlags & 0x80
-          && (!pParty->pHirelings[0].pName || strcmp(v4->pName, pParty->pHirelings[0].pName))
-          && (!pParty->pHirelings[1].pName || strcmp(v4->pName, pParty->pHirelings[1].pName)) )
-          tmp_str[v1++] = (char)lpsz + 2;
-        ++lpsz;
-        ++v4;
-      }
-      while ( (signed int)lpsz < (signed int)pNPCStats->uNumNewNPCs );*/
-      for ( uint i = 0; i < pNPCStats->uNumNewNPCs; ++i )
-      {
-        if (pNPCStats->pNewNPCData[i].Hired())
+        v1 = 0;
+        /*do
         {
-          if (!pParty->pHirelings[0].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[0].pName))
-          {
-            if (!pParty->pHirelings[1].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[1].pName))
-                buf[v1++] = i + 2;
-          }
+          if ( v3->pName )
+            tmp_str[v1++] = v2;
+          ++v3;
+          ++v2;
         }
-      }
-    }
-    if ( (signed int)((char *)_this + pParty->hirelingScrollPosition) < v1 )
-    {
-      sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - (int)_this;
-      pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
-      if ( pNPC )
-      {
-        if ( a2 == 57 )
-          pText = pNPCTopics[512].pText; // Baby dragon
-        else
-          pText = (const CHAR *)pNPCStats->pProfessions[pNPC->uProfession].pBenefits;
-        lpsz = pText;
-        if ( !pText )
+        while ( (signed int)v3 < (signed int)&pParty->pPickedItem );*/
+        for (int i = 0; i < 2; ++i)
         {
-          lpsz = (LPCSTR)pNPCStats->pProfessions[pNPC->uProfession].pJoinText;
-          if ( !lpsz )
-            lpsz = "";
+            if (pParty->pHirelings[i].pName)
+                buf[v1++] = i;
         }
-        popup_window.Hint = nullptr;
-        popup_window.uFrameX = 38;
-        popup_window.uFrameY = 60;
-        popup_window.uFrameWidth = 276;
-        popup_window.uFrameZ = 313;
-        popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, &popup_window, 0) + 2 * LOBYTE(pFontArrus->uFontHeight) + 24;
-        if ( (signed int)popup_window.uFrameHeight < 130 )
-          popup_window.uFrameHeight = 130;
-        popup_window.uFrameWidth = 400;
-        popup_window.uFrameZ = popup_window.uFrameX + 399;
-        popup_window.DrawMessageBox(0);
+        lpsz = 0;
+        if ((signed int)pNPCStats->uNumNewNPCs > 0)
+        {
+            /*v4 = pNPCStats->pNewNPCData;
+            do
+            {
+              if ( v4->uFlags & 0x80
+                && (!pParty->pHirelings[0].pName || strcmp(v4->pName, pParty->pHirelings[0].pName))
+                && (!pParty->pHirelings[1].pName || strcmp(v4->pName, pParty->pHirelings[1].pName)) )
+                tmp_str[v1++] = (char)lpsz + 2;
+              ++lpsz;
+              ++v4;
+            }
+            while ( (signed int)lpsz < (signed int)pNPCStats->uNumNewNPCs );*/
+            for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i)
+            {
+                if (pNPCStats->pNewNPCData[i].Hired())
+                {
+                    if (!pParty->pHirelings[0].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[0].pName))
+                    {
+                        if (!pParty->pHirelings[1].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[1].pName))
+                            buf[v1++] = i + 2;
+                    }
+                }
+            }
+        }
+        if ((signed int)((char *)_this + pParty->hirelingScrollPosition) < v1)
+        {
+            sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - (int)_this;
+            pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
+            if (pNPC)
+            {
+                if (a2 == 57)
+                    pText = pNPCTopics[512].pText; // Baby dragon
+                else
+                    pText = (const CHAR *)pNPCStats->pProfessions[pNPC->uProfession].pBenefits;
+                lpsz = pText;
+                if (!pText)
+                {
+                    lpsz = (LPCSTR)pNPCStats->pProfessions[pNPC->uProfession].pJoinText;
+                    if (!lpsz)
+                        lpsz = "";
+                }
+                popup_window.Hint = nullptr;
+                popup_window.uFrameX = 38;
+                popup_window.uFrameY = 60;
+                popup_window.uFrameWidth = 276;
+                popup_window.uFrameZ = 313;
+                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, &popup_window, 0) + 2 * LOBYTE(pFontArrus->uFontHeight) + 24;
+                if ((signed int)popup_window.uFrameHeight < 130)
+                    popup_window.uFrameHeight = 130;
+                popup_window.uFrameWidth = 400;
+                popup_window.uFrameZ = popup_window.uFrameX + 399;
+                popup_window.DrawMessageBox(0);
 
-        auto tex_name = StringPrintf("NPC%03d", pNPC->uPortraitID);
-        pRenderer->DrawTextureAlphaNew(
-            (popup_window.uFrameX + 22)/640.0f,
-            (popup_window.uFrameY + 36)/480.0f,
-            assets->GetImage_16BitColorKey(tex_name, 0x7FF)
-        );
+                auto tex_name = StringPrintf("NPC%03d", pNPC->uPortraitID);
+                pRenderer->DrawTextureAlphaNew(
+                    (popup_window.uFrameX + 22) / 640.0f,
+                    (popup_window.uFrameY + 36) / 480.0f,
+                    assets->GetImage_16BitColorKey(tex_name, 0x7FF)
+                    );
 
-        String title;
-        if ( pNPC->uProfession )
-        {
-            title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));
+                String title;
+                if (pNPC->uProfession)
+                {
+                    title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));
+                }
+                else
+                {
+                    title = pNPC->pName;
+                }
+                popup_window.DrawTitleText(pFontArrus, 0, 12, Color16(0xFFu, 0xFFu, 0x9Bu), title, 3);
+                popup_window.uFrameWidth -= 24;
+                popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
+                popup_window.DrawText(pFontArrus, 100, 36, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
+            }
         }
-        else
-        {
-            title = pNPC->pName;
-        }
-        popup_window.DrawTitleText(pFontArrus, 0, 12, Color16(0xFFu, 0xFFu, 0x9Bu), title, 3);
-        popup_window.uFrameWidth -= 24;
-        popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-        popup_window.DrawText(pFontArrus, 100, 36, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0, 0), 0, 0, 0);
-      }
     }
-  }
 }
 
 //----- (00445D4A) --------------------------------------------------------
@@ -946,7 +949,7 @@ void GameUI_DrawDialogue()
     switch (uDialogueType)
     {
     case DIALOGUE_13:
-        dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0, 0);
+        dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
         break;
 
     case DIALOGUE_PROFESSION_DETAILS:
@@ -954,11 +957,11 @@ void GameUI_DrawDialogue()
         //auto prof = pNPCStats->pProfessions[pNPC->uProfession];
 
         if (dialogue_show_profession_details)
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0, 0);
+            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0);
         else if (pNPC->Hired())
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pDismissText, uActiveCharacter - 1, 0, 0, 0, 0);
+            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pDismissText, uActiveCharacter - 1, 0, 0, 0);
         else
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0, 0);
+            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
     }
     break;
 
@@ -998,9 +1001,9 @@ void GameUI_DrawDialogue()
             NPCProfession* prof = &pNPCStats->pProfessions[pNPC->uProfession];
 
             if (pNPC->Hired())
-                dialogue_string = BuildDialogueString(prof->pDismissText, uActiveCharacter - 1, 0, 0, 0, 0);
+                dialogue_string = BuildDialogueString(prof->pDismissText, uActiveCharacter - 1, 0, 0, 0);
             else
-                dialogue_string = BuildDialogueString(prof->pJoinText, uActiveCharacter - 1, 0, 0, 0, 0);
+                dialogue_string = BuildDialogueString(prof->pJoinText, uActiveCharacter - 1, 0, 0, 0);
         }
         break;
     }
@@ -1325,8 +1328,10 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player)
 
     uint numActivePlayerBuffs = 0;
     for (uint i = 0; i < 24; ++i)
-        if (player->pPlayerBuffs[i].uExpireTime > 0)
+    {
+        if (player->pPlayerBuffs[i].Active() > 0)
             ++numActivePlayerBuffs;
+    }
 
     window->uFrameHeight = ((pFontArrus->uFontHeight + 162) + ((numActivePlayerBuffs - 1) * pFontArrus->uFontHeight));
     window->uFrameZ = window->uFrameWidth + window->uFrameX - 1;
@@ -1388,11 +1393,11 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player)
     for (uint i = 0; i < 24; ++i)
     {
         SpellBuff* buff = &player->pPlayerBuffs[i];
-        if (buff->uExpireTime > 0)
+        if (buff->Active())
         {
             v36 = uFramesetIDa++ * pFontComic->uFontHeight + 134;
             window->DrawText(pFontComic, 52, v36, ui_game_character_record_playerbuff_colors[i], localization->GetSpellName(20 + i), 0, 0, 0);
-            DrawBuff_remaining_time_string(v36, window, buff->uExpireTime - pParty->uTimePlayed, pFontComic);
+            DrawBuff_remaining_time_string(v36, window, buff->expire_time - pParty->GetPlayingTime(), pFontComic);
         }
     }
 
@@ -1406,27 +1411,27 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player)
 //----- (0041AD6E) --------------------------------------------------------
 void GameUI_DrawRightPanelItems()
 {
-  if ( (unsigned long long)GameUI_RightPanel_BookFlashTimer > pParty->uTimePlayed )
-    GameUI_RightPanel_BookFlashTimer = 0;
+    if (GameUI_RightPanel_BookFlashTimer > pParty->GetPlayingTime())
+        GameUI_RightPanel_BookFlashTimer = 0;
 
-  if ( pParty->uTimePlayed - GameUI_RightPanel_BookFlashTimer > 128 )
-  {
-    GameUI_RightPanel_BookFlashTimer = pParty->uTimePlayed;
-    
-    static bool _50697C_book_flasher = false; // 50697C
-    _50697C_book_flasher = !_50697C_book_flasher;
-    if (_50697C_book_flasher && current_screen_type != SCREEN_REST )
+    if (pParty->GetPlayingTime() - GameUI_RightPanel_BookFlashTimer > 128)
     {
-      if (bFlashQuestBook)     pRenderer->DrawTextureAlphaNew(493/640.0f, 355/480.0f, game_ui_tome_quests);
-      if (bFlashAutonotesBook) pRenderer->DrawTextureAlphaNew(527/640.0f, 353/480.0f, game_ui_tome_autonotes);
-      if (bFlashHistoryBook)   pRenderer->DrawTextureAlphaNew(600/640.0f, 361/480.0f, game_ui_tome_storyline);
+        GameUI_RightPanel_BookFlashTimer = pParty->GetPlayingTime();
+
+        static bool _50697C_book_flasher = false; // 50697C
+        _50697C_book_flasher = !_50697C_book_flasher;
+        if (_50697C_book_flasher && current_screen_type != SCREEN_REST)
+        {
+            if (bFlashQuestBook)     pRenderer->DrawTextureAlphaNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
+            if (bFlashAutonotesBook) pRenderer->DrawTextureAlphaNew(527 / 640.0f, 353 / 480.0f, game_ui_tome_autonotes);
+            if (bFlashHistoryBook)   pRenderer->DrawTextureAlphaNew(600 / 640.0f, 361 / 480.0f, game_ui_tome_storyline);
+        }
+        else
+        {
+            pRenderer->DrawTextureNew(468 / 640.0f, 0, game_ui_rightframe);
+            GameUI_DrawHiredNPCs();
+        }
     }
-    else
-    {
-      pRenderer->DrawTextureNew(468/640.0f, 0, game_ui_rightframe);
-      GameUI_DrawHiredNPCs();
-    }
-  }
 }
 
 //----- (0041AEBB) --------------------------------------------------------
@@ -1895,189 +1900,199 @@ void GameUI_DrawCharacterSelectionFrame()
 //----- (0044162D) --------------------------------------------------------
 void GameUI_DrawPartySpells()
 {
-  unsigned int v0; // ebp@1
-  Image *spell_texture; // [sp-4h] [bp-1Ch]@12
-  //Texture_MM7 *v9; // [sp-4h] [bp-1Ch]@21
+    unsigned int v0; // ebp@1
+    Image *spell_texture; // [sp-4h] [bp-1Ch]@12
+    //Texture_MM7 *v9; // [sp-4h] [bp-1Ch]@21
 
-  v0 = (signed __int64)((double)GetTickCount() * 0.050000001);
-  //v1 = 0;
-  for (uint i = 0; i < 14; ++i)
-  {
-    //v2 =  byte_4E5DD8[v1];
-    if (pParty->pPartyBuffs[byte_4E5DD8[i]].uExpireTime)
+    v0 = (signed __int64)((double)GetTickCount() * 0.050000001);
+    for (uint i = 0; i < 14; ++i)
     {
-      Texture_MM7* tex = pIcons_LOD->GetTexture(pTextureIDs_PartyBuffIcons[i]);
-      //v3 = pTextureIDs_PartyBuffIcons[i];
-      pRenderer->_4A65CC(
-          pPartySpellbuffsUI_XYs[i][0],
-          pPartySpellbuffsUI_XYs[i][1], tex, tex,
-          v0 + 20 * pPartySpellbuffsUI_smthns[i], 0, 63
-      );
+        if (pParty->pPartyBuffs[byte_4E5DD8[i]].Active())
+        {
+            Texture_MM7* tex = pIcons_LOD->GetTexture(pTextureIDs_PartyBuffIcons[i]);
+            pRenderer->_4A65CC(
+                pPartySpellbuffsUI_XYs[i][0],
+                pPartySpellbuffsUI_XYs[i][1], tex, tex,
+                v0 + 20 * pPartySpellbuffsUI_smthns[i], 0, 63
+            );
+        }
     }
-    //++v1;
-  }
-  //while ( v1 < 14 );
-  if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_NPC_DIALOGUE)
-  {
-    if (pParty->FlyActive())
+
+    if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_NPC_DIALOGUE)
     {
-      if ( pParty->bFlying )
-        spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, v0)->texture;
-      else
-        spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0)->texture;
-      //if ( pRenderer->pRenderD3D )
-        pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, spell_texture);
-      /*else
-        pRenderer->DrawTextureIndexedAlpha(8, 8, v7);*/
+        if (pParty->FlyActive())
+        {
+            if (pParty->bFlying)
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, v0)->texture;
+            else
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0)->texture;
+            pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, spell_texture);
+        }
+        if (pParty->WaterWalkActive())
+        {
+            if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, v0)->texture;
+            else
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)->texture;
+            pRenderer->DrawTextureAlphaNew(396 / 640.0f, 8 / 480.0f, spell_texture);
+        }
     }
-    if ( pParty->WaterWalkActive() )
+
+    for (uint i = 0; i < 4; ++i)
     {
-      if ( pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER )
-        spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, v0)->texture;
-      else
-        spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)->texture;
-      //if ( pRenderer->pRenderD3D )
-        pRenderer->DrawTextureAlphaNew(396/640.0f, 8/480.0f, spell_texture);
-      /*else
-        pRenderer->DrawTextureIndexedAlpha(396, 8, v9);*/
+        if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active())
+            pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 427 / 480.0f, game_ui_playerbuff_hammerhands);
+        if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_BLESS].Active())
+            pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 393 / 480.0f, game_ui_playerbuff_bless);
+        if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
+            pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 410 / 480.0f, game_ui_playerbuff_preservation);
+        if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active())
+            pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 444 / 480.0f, game_ui_playerbuff_pain_reflection);
     }
-  }
-  for (uint i = 0; i < 4; ++i)
-  {
-    if ( pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].uExpireTime )
-      pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72)/640.0f, 427/480.0f, game_ui_playerbuff_hammerhands);
-    if ( pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_BLESS].uExpireTime )
-      pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72)/640.0f, 393/480.0f, game_ui_playerbuff_bless);
-    if ( pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].uExpireTime )
-      pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72)/640.0f, 410/480.0f, game_ui_playerbuff_preservation);
-    if ( pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].uExpireTime )
-      pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72)/640.0f, 444/480.0f, game_ui_playerbuff_pain_reflection);
-  }
 }
 
 //----- (004921C1) --------------------------------------------------------
 void GameUI_DrawPortraits(unsigned int _this)
 {
-  unsigned int face_expression_ID; // eax@17
-  PlayerFrame *pFrame; // eax@21
-  Image *pPortrait; // [sp-4h] [bp-1Ch]@27
+    unsigned int face_expression_ID; // eax@17
+    PlayerFrame *pFrame; // eax@21
+    Image *pPortrait; // [sp-4h] [bp-1Ch]@27
 
-  if ( _A750D8_player_speech_timer )
-  {
-    _A750D8_player_speech_timer -= (signed int)pMiscTimer->uTimeElapsed;
-    if ( _A750D8_player_speech_timer <= 0 )
+    if (_A750D8_player_speech_timer)
     {
-      if ( pPlayers[uSpeakingCharacter]->CanAct() )
-        pPlayers[uSpeakingCharacter]->PlaySound(PlayerSpeechID, 0);
-      _A750D8_player_speech_timer = 0i64;
-    }
-  }
-
-  for (uint i = 0; i < 4; ++i)
-  {
-    Player* pPlayer = &pParty->pPlayers[i];
-    if ( pPlayer->IsEradicated() )
-    {
-      pPortrait = game_ui_player_face_eradicated;
-      if ( pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime )
-        pRenderer->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i]/640.0f, 388/480.0f, pPortrait);
-      else
-        pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1)/640.0f, 388/480.0f, pPortrait);
-      if ( pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].uExpireTime | pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].uExpireTime
-         | pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].uExpireTime | pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].uExpireTime
-         | pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].uExpireTime )
-        sub_441A4E(i);
-      continue;
-    }
-    if (pPlayer->IsDead())
-    {
-      pPortrait = game_ui_player_face_dead;
-      if ( pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime )
-        pRenderer->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i]/640.0f, 388/480.0f, pPortrait);
-      else
-        pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1)/640.0f, 388/480.0f, pPortrait);
-      if ( pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].uExpireTime | pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].uExpireTime
-         | pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].uExpireTime | pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].uExpireTime
-         | pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].uExpireTime )
-        sub_441A4E(i);
-      continue;
-    }
-    face_expression_ID = 0;
-    for ( uint j = 0; j < pPlayerFrameTable->uNumFrames; ++j )
-      if ( pPlayerFrameTable->pFrames[j].expression == pPlayer->expression )
-      {
-        face_expression_ID = j;
-        break;
-      }
-    if ( face_expression_ID == 0 )
-      face_expression_ID = 1;
-    if (pPlayer->expression == CHARACTER_EXPRESSION_21)
-      pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, pMiscTimer->uTimeElapsed);
-    else
-      pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->uExpressionTimePassed);
-    if (pPlayer->field_1AA2 != pFrame->uTextureID - 1 || _this )
-    {
-      pPlayer->field_1AA2 = pFrame->uTextureID - 1;
-      pPortrait = game_ui_player_faces[i][pPlayer->field_1AA2];//pFace = (Texture_MM7 *)game_ui_player_faces[i][pFrame->uTextureID];
-      if ( pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime )
-        pRenderer->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i]/640.0f, 388/480.0f, pPortrait);
-      else
-        pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1)/640.0f, 388/480.0f, pPortrait);
-      if ( pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].uExpireTime | pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].uExpireTime
-         | pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].uExpireTime | pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].uExpireTime
-         | pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].uExpireTime )
-        sub_441A4E(i);
-      continue;
-    }
-  }
-  if ( pParty->bTurnBasedModeOn == 1 )
-  {
-    if ( pTurnEngine->turn_stage != TE_WAIT )
-    {
-      if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Player)
-      {
-        if ( pTurnEngine->uActorQueueSize > 0 )
+        _A750D8_player_speech_timer -= (signed int)pMiscTimer->uTimeElapsed;
+        if (_A750D8_player_speech_timer <= 0)
         {
-          for (uint i = 0; i < (uint)pTurnEngine->uActorQueueSize; ++i)
-          {
-            if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Player)
-              break;
-
-            auto alert_texture = game_ui_player_alert_green;
-            if (pParty->GetRedAlert())
-                alert_texture = game_ui_player_alert_red;
-            else if (pParty->GetYellowAlert())
-                alert_texture = game_ui_player_alert_yellow;
-
-            pRenderer->DrawTextureAlphaNew(
-                (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[PID_ID(pTurnEngine->pQueue[i].uPackedID)] - 4)/640.0f,
-                385/480.0f,
-                alert_texture
-            );
-          }
+            if (pPlayers[uSpeakingCharacter]->CanAct())
+                pPlayers[uSpeakingCharacter]->PlaySound(PlayerSpeechID, 0);
+            _A750D8_player_speech_timer = 0i64;
         }
-      }
     }
-  }
-  else
-  {
+
     for (uint i = 0; i < 4; ++i)
     {
-      if (pParty->pPlayers[i].CanAct() && !pParty->pPlayers[i].uTimeToRecovery)
-      {
-          auto alert_texture = game_ui_player_alert_green;
-          if (pParty->GetRedAlert())
-              alert_texture = game_ui_player_alert_red;
-          else if (pParty->GetYellowAlert())
-              alert_texture = game_ui_player_alert_yellow;
-
-        pRenderer->DrawTextureAlphaNew(
-            (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] - 4)/640.0f,
-            385/480.0f,
-            alert_texture);
-      }
+        Player* pPlayer = &pParty->pPlayers[i];
+        if (pPlayer->IsEradicated())
+        {
+            pPortrait = game_ui_player_face_eradicated;
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+                pRenderer->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 388 / 480.0f, pPortrait);
+            else
+                pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 388 / 480.0f, pPortrait);
+            if (
+                pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active()
+                || pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active()
+                || pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active()
+                || pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active()
+                || pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Active()
+            )
+            {
+                sub_441A4E(i);
+            }
+            continue;
+        }
+        if (pPlayer->IsDead())
+        {
+            pPortrait = game_ui_player_face_dead;
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+                pRenderer->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 388 / 480.0f, pPortrait);
+            else
+                pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 388 / 480.0f, pPortrait);
+            if (
+                pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active()
+                || pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active()
+                || pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active()
+                || pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active()
+                || pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Active()
+            )
+            {
+                sub_441A4E(i);
+            }
+            continue;
+        }
+        face_expression_ID = 0;
+        for (uint j = 0; j < pPlayerFrameTable->uNumFrames; ++j)
+            if (pPlayerFrameTable->pFrames[j].expression == pPlayer->expression)
+            {
+                face_expression_ID = j;
+                break;
+            }
+        if (face_expression_ID == 0)
+            face_expression_ID = 1;
+        if (pPlayer->expression == CHARACTER_EXPRESSION_21)
+            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, pMiscTimer->uTimeElapsed);
+        else
+            pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->uExpressionTimePassed);
+        if (pPlayer->field_1AA2 != pFrame->uTextureID - 1 || _this)
+        {
+            pPlayer->field_1AA2 = pFrame->uTextureID - 1;
+            pPortrait = game_ui_player_faces[i][pPlayer->field_1AA2];//pFace = (Texture_MM7 *)game_ui_player_faces[i][pFrame->uTextureID];
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+                pRenderer->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 388 / 480.0f, pPortrait);
+            else
+                pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 388 / 480.0f, pPortrait);
+            if (
+                pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active()
+                | pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active()
+                | pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active()
+                | pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active()
+                | pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Active()
+            )
+            {
+                sub_441A4E(i);
+            }
+            continue;
+        }
     }
-  }
+    if (pParty->bTurnBasedModeOn == 1)
+    {
+        if (pTurnEngine->turn_stage != TE_WAIT)
+        {
+            if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Player)
+            {
+                if (pTurnEngine->uActorQueueSize > 0)
+                {
+                    for (uint i = 0; i < (uint)pTurnEngine->uActorQueueSize; ++i)
+                    {
+                        if (PID_TYPE(pTurnEngine->pQueue[i].uPackedID) != OBJECT_Player)
+                            break;
+
+                        auto alert_texture = game_ui_player_alert_green;
+                        if (pParty->GetRedAlert())
+                            alert_texture = game_ui_player_alert_red;
+                        else if (pParty->GetYellowAlert())
+                            alert_texture = game_ui_player_alert_yellow;
+
+                        pRenderer->DrawTextureAlphaNew(
+                            (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[PID_ID(pTurnEngine->pQueue[i].uPackedID)] - 4) / 640.0f,
+                            385 / 480.0f,
+                            alert_texture
+                        );
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        for (uint i = 0; i < 4; ++i)
+        {
+            if (pParty->pPlayers[i].CanAct() && !pParty->pPlayers[i].uTimeToRecovery)
+            {
+                auto alert_texture = game_ui_player_alert_green;
+                if (pParty->GetRedAlert())
+                    alert_texture = game_ui_player_alert_red;
+                else if (pParty->GetYellowAlert())
+                    alert_texture = game_ui_player_alert_yellow;
+
+                pRenderer->DrawTextureAlphaNew(
+                    (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] - 4) / 640.0f,
+                    385 / 480.0f,
+                    alert_texture
+                );
+            }
+        }
+    }
 }
 
 //----- (00441D38) --------------------------------------------------------

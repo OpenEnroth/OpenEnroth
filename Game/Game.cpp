@@ -1,16 +1,18 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
+#include "Engine/Time.h"
 
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
 #include "Engine/Events.h"
-#include "Engine/Timer.h"
 #include "Engine/SaveLoad.h"
+
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -20,8 +22,11 @@
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
+
 #include "Engine/Tables/FrameTableInc.h"
+
 #include "Engine/TurnEngine/TurnEngine.h"
+
 #include "Engine/Spells/CastSpellInfo.h"
 
 #include "IO/Keyboard.h"
@@ -1149,8 +1154,9 @@ void Game_EventLoop()
                 else
                     EventProcessor(dword_5C3418, 0, 1, dword_5C341C);
                 if (!_stricmp(byte_6BE3B0.data(), "d05.blv"))
-                    pParty->uTimePlayed += 1474560i64;
+                    pParty->GetPlayingTime() += GameTime::FromDays(4);
                 continue;
+
             case UIMSG_TransitionWindowCloseBtn:
                 CloseWindowBackground();
                 pMediaPlayer->Unload();
@@ -1167,7 +1173,7 @@ void Game_EventLoop()
                 dword_50CDC8 = 1;
                 sub_42FBDD();
                 //pNPCData4 = (NPCData *)GetTravelTime();
-                strcpy(pOutdoor->pLevelFilename, pCurrentMapName);
+                pOutdoor->level_filename =  pCurrentMapName;
                 if (bUnderwater != 1 && pParty->bFlying
                     || pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, pOut, 20) != 1)
                 {
@@ -1195,11 +1201,11 @@ void Game_EventLoop()
                     ++pGameLoadingUI_ProgressBar->uProgressMax;
                     SaveGame(1, 0);
                     pGameLoadingUI_ProgressBar->Progress();
-                    RestAndHeal(1440 * (signed int)GetTravelTime());
+                    RestAndHeal(24 * 60 * GetTravelTime());
                     if (pParty->uNumFoodRations)
                     {
                         pParty->RestAndHeal();
-                        if (((pParty->uNumFoodRations - (signed int)GetTravelTime()) & 0x80000000u) != 0)
+                        if (pParty->uNumFoodRations < GetTravelTime())
                         {
                             pPlayer7 = pParty->pPlayers.data();
                             do
@@ -1209,7 +1215,7 @@ void Game_EventLoop()
                             } while ((signed int)pPlayer7 < (signed int)pParty->pHirelings.data());
                             ++pParty->days_played_without_rest;
                         }
-                        Party::TakeFood((unsigned int)GetTravelTime());
+                        Party::TakeFood(GetTravelTime());
                     }
                     else
                     {
@@ -1545,7 +1551,7 @@ void Game_EventLoop()
                     sprintf(a1, "data\\lloyd%d%d.pcx", _506348_current_lloyd_playerid + 1, uMessageParam + 1);
                     pRenderer->SaveScreenshot(a1, 92, 68);
                     LoadThumbnailLloydTexture(uMessageParam, _506348_current_lloyd_playerid + 1);
-                    pPlayer9->pInstalledBeacons[uMessageParam].uBeaconTime = pParty->uTimePlayed + (signed __int64)((double)(lloyds_beacon_spell_level << 7) * 0.033333335);
+                    pPlayer9->pInstalledBeacons[uMessageParam].uBeaconTime = pParty->GetPlayingTime() + GameTime::FromSeconds(lloyds_beacon_spell_level);
                     pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_X = pParty->vPosition.x;
                     pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_Y = pParty->vPosition.y;
                     pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_Z = pParty->vPosition.z;
@@ -2031,10 +2037,10 @@ void Game_EventLoop()
                 }
                 else
                 {
-                    pParty->pPlayers[3].pConditions[Condition_Sleep] = pParty->uTimePlayed;
-                    pParty->pPlayers[2].pConditions[Condition_Sleep] = pParty->uTimePlayed;
-                    pParty->pPlayers[1].pConditions[Condition_Sleep] = pParty->uTimePlayed;
-                    pParty->pPlayers[0].pConditions[Condition_Sleep] = pParty->uTimePlayed;
+                    pParty->pPlayers[3].conditions_times[Condition_Sleep] = pParty->GetPlayingTime();
+                    pParty->pPlayers[2].conditions_times[Condition_Sleep] = pParty->GetPlayingTime();
+                    pParty->pPlayers[1].conditions_times[Condition_Sleep] = pParty->GetPlayingTime();
+                    pParty->pPlayers[0].conditions_times[Condition_Sleep] = pParty->GetPlayingTime();
                     v90 = pMapStats->GetMapInfo(pCurrentMapName);
                     if (!v90)
                         v90 = rand() % (signed int)pMapStats->uNumMaps + 1;
@@ -2053,7 +2059,7 @@ void Game_EventLoop()
                         if (pNPCData4)
                         {
                             pPlayerNum = rand() % 4;
-                            pParty->pPlayers[pPlayerNum].pConditions[Condition_Sleep] = 0;
+                            pParty->pPlayers[pPlayerNum].conditions_times[Condition_Sleep].Reset();
                             v95 = rand();
                             Rest(v95 % 6 + 60);
                             _506F18_num_minutes_to_sleep = 0;
@@ -2458,8 +2464,8 @@ void Game_EventLoop()
                         "%d:%02d%s %s %d %s %d",
                         currHour, pParty->uCurrentMinute,
                         localization->GetAmPm(uNumSeconds),
-                        localization->GetDayName(pParty->uDaysPlayed % 7),
-                        7 * pParty->uCurrentMonthWeek + pParty->uDaysPlayed % 7 + 1,
+                        localization->GetDayName(pParty->uCurrentDayOfMonth % 7),
+                        7 * pParty->uCurrentMonthWeek + pParty->uCurrentDayOfMonth % 7 + 1,
                         localization->GetMonthName(pParty->uCurrentMonth),
                         pParty->uCurrentYear
                     )
@@ -2818,7 +2824,7 @@ void Game_Loop()
                 viewparams->bRedrawGameUI = true;
             }
             pAudioPlayer->UpdateSounds();
-            if ((signed int)uGameState == GAME_STATE_PLAYING)
+            if (uGameState == GAME_STATE_PLAYING)
             {
                 pEngine->Draw();
                 continue;
@@ -2876,7 +2882,7 @@ void Game_Loop()
                 for (uint i = 0; i < 4; ++i)
                     pParty->pPlayers[i].SetVariable(VAR_Award, 85);
                 pParty->days_played_without_rest = 0;
-                pParty->uTimePlayed += 0x276000ui64;
+                pParty->GetPlayingTime() += GameTime::FromDays(7);// += 2580480
                 LOWORD(pParty->uFlags) &= ~0x204;
                 pParty->SetGold(0);
                 pOtherOverlayList->Reset();
@@ -2889,7 +2895,7 @@ void Game_Loop()
                 }
                 for (int i = 0; i < 4; ++i)
                 {
-                    memset(pParty->pPlayers[i].pConditions.data(), 0, 0xA0u);//(pConditions, 0, 160)
+                    memset(pParty->pPlayers[i].conditions_times.data(), 0, 0xA0u);//(pConditions, 0, 160)
                     memset(pParty->pPlayers[i].pPlayerBuffs.data(), 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
                     pParty->pPlayers[i].sHealth = 1;
                     uActiveCharacter = 1;

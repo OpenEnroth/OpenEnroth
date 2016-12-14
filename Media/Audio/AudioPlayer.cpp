@@ -6,32 +6,32 @@
 #include <string>
 
 #include "Engine/Engine.h"
-
-#include "Engine/ZlibWrapper.h"
-
-#include "../MediaPlayer.h"
-#include "AudioPlayer.h"
-#include "Engine/Tables/FrameTableInc.h"
-#include "Engine/Graphics/Indoor.h"
-#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
 #include "Engine/OurMath.h"
 #include "Engine/MapInfo.h"
-#include "GUI/GUIWindow.h"
-#include "Engine/Graphics/Level/Decoration.h"
-
-#include "Media/Video/Bink_Smacker.h"
-
+#include "Engine/ZlibWrapper.h"
 #include "Engine/MMT.h"
 
+#include "Engine/Tables/FrameTableInc.h"
+
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/SpriteObject.h"
+
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Level/Decoration.h"
+
+#include "GUI/GUIWindow.h"
+
+#include "Media/MediaPlayer.h"
+#include "Media/Audio/AudioPlayer.h"
+#include "Media/Video/Bink_Smacker.h"
 
 PCMWAVEFORMAT pcmWaveFormat;
 
-int uFindSound_BinSearch_ResultID; // weak
-int uLastLoadedSoundID; // weak
+int uFindSound_BinSearch_ResultID;
+int uLastLoadedSoundID;
 int sLastTrackLengthMS;
 std::array<Sound, 3000> pSounds;
 AudioPlayer *pAudioPlayer;

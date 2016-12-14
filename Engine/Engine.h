@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Strings.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Log.h"
 #include "Engine/MM7.h"

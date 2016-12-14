@@ -6,8 +6,8 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/Time.h"
 #include "Engine/Party.h"
-#include "Engine/Timer.h"
 #include "Engine/LOD.h"
 #include "Engine/Events.h"
 #include "Engine/OurMath.h"
@@ -1035,13 +1035,13 @@ void IntegrityTest()
     static_assert(sizeof(ODMFace) == 0x134, "Wrong type size");
     static_assert(sizeof(BSPNode) == 0x8, "Wrong type size");
     static_assert(sizeof(BSPModel) == 0xBC, "Wrong type size");
-    static_assert(sizeof(OutdoorLocation) == 0x1C28C, "Wrong type size");
+    //static_assert(sizeof(OutdoorLocation) == 0x1C28C, "Wrong type size");
     static_assert(sizeof(BLVFace) == 0x60, "Wrong type size");
     static_assert(sizeof(BLVFaceExtra) == 0x24, "Wrong type size");
     static_assert(sizeof(BLVSector) == 0x74, "Wrong type size");
     static_assert(sizeof(BLVLightMM7) == 0x10, "Wrong type size");
     static_assert(sizeof(BLVDoor) == 0x50, "Wrong type size");
-    static_assert(sizeof(IndoorLocation) == 0x690, "Wrong type size");
+    //static_assert(sizeof(IndoorLocation) == 0x690, "Wrong type size");
     //static_assert(sizeof(ODMRenderParams) == 0x74, "Wrong type size");
     static_assert(sizeof(Mouse) == 0x114, "Wrong type size");
     static_assert(sizeof(Particle_sw) == 0x68, "Wrong type size");
@@ -2591,9 +2591,7 @@ void back_to_game()
 //----- (00494035) --------------------------------------------------------
 void _494035_timed_effects__water_walking_damage__etc()
 {
-    signed __int64 v0; // qax@1
     unsigned int v4; // edi@1
-    //  signed int v12; // edi@29
     int v24; // ecx@60
     int v26; // ecx@64
     int v28; // ecx@68
@@ -2604,29 +2602,23 @@ void _494035_timed_effects__water_walking_damage__etc()
     int v38; // ecx@88
     int v40; // ecx@92
     int v42; // ecx@96
-    bool v43; // ebx@102
-    bool v46; // edi@111
-    //  unsigned int v56; // [sp-8h] [bp-38h]@55
-    //  int v59; // [sp-4h] [bp-34h]@55
-    //  unsigned int v61; // [sp+14h] [bp-1Ch]@1
     signed int a2a; // [sp+18h] [bp-18h]@47
     signed int old_day; // [sp+1Ch] [bp-14h]@47
     signed int old_hour;
 
-    old_day = pParty->uDaysPlayed;
+    old_day = pParty->uCurrentDayOfMonth;
     old_hour = pParty->uCurrentHour;
-    //auto prev_time = pEventTimer->uTimeElapsed;
-    pParty->uTimePlayed += pEventTimer->uTimeElapsed;
-    v0 = ((signed __int64)(pParty->uTimePlayed * 0.234375) / 60) / 60i64;
-    v4 = (unsigned int)(((unsigned int)v0 / 24) / 7) >> 2;
-    pParty->uCurrentTimeSecond = (signed __int64)((double)(signed __int64)pParty->uTimePlayed * 0.234375) % 60;
-    pParty->uCurrentMinute = ((signed __int64)(pParty->uTimePlayed * 0.234375) / 60) % 60;
-    pParty->uCurrentHour = v0 % 24;
-    pParty->uCurrentMonthWeek = ((unsigned int)v0 / 24) / 7 & 3;
-    pParty->uDaysPlayed = (unsigned int)((unsigned int)v0 / 24) % 28;
-    pParty->uCurrentMonth = v4 % 12;
-    pParty->uCurrentYear = v4 / 0xC + game_starting_year;
-    if (pParty->uCurrentHour >= 3 && (old_hour < 3 || pParty->uDaysPlayed > old_day)) // new day dawns
+
+    pParty->GetPlayingTime().value += pEventTimer->uTimeElapsed;
+
+    pParty->uCurrentTimeSecond = pParty->GetPlayingTime().GetSecondsFraction();
+    pParty->uCurrentMinute = pParty->GetPlayingTime().GetMinutesFraction();
+    pParty->uCurrentHour = pParty->GetPlayingTime().GetHoursOfDay();
+    pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetDays() / 7 & 3;
+    pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDays() % 28;
+    pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonths();
+    pParty->uCurrentYear = pParty->GetPlayingTime().GetMonths() / 12 + game_starting_year;
+    if (pParty->uCurrentHour >= 3 && (old_hour < 3 || pParty->uCurrentDayOfMonth > old_day)) // new day dawns
     {
         pParty->pHirelings[0].bHasUsedTheAbility = false;
         pParty->pHirelings[1].bHasUsedTheAbility = false;
@@ -2667,15 +2659,16 @@ void _494035_timed_effects__water_walking_damage__etc()
             pParty->pPlayers[i].uNumDivineInterventionCastsThisDay = 0;
     }
 
-    if (pParty->uFlags & 4 && pParty->field_6FC < (signed __int64)pParty->uTimePlayed)//water damage
+    // water damage
+    if (pParty->uFlags & 4 && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value)
     {
-        pParty->field_6FC = (signed __int64)pParty->uTimePlayed + 128;
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
         viewparams->bRedrawGameUI = true;
         for (uint pl = 1; pl <= 4; ++pl)
         {
             if (pPlayers[pl]->WearsItem(ITEM_RELIC_HARECS_LEATHER, EQUIP_ARMOUR)
                 || pPlayers[pl]->HasEnchantedItemEquipped(71)
-                || pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_WATER_WALK].uExpireTime > 0)
+                || pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expire_time)
                 pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_37, 0);
             else
             {
@@ -2692,10 +2685,12 @@ void _494035_timed_effects__water_walking_damage__etc()
             }
         }
     }
-    if (pParty->uFlags & 0x200 && pParty->field_6FC < (signed __int64)pParty->uTimePlayed) //lava damage
+
+    // lava damage
+    if (pParty->uFlags & 0x200 && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value)
     {
         viewparams->bRedrawGameUI = true;
-        pParty->field_6FC = (signed __int64)pParty->uTimePlayed + 128;
+        pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
 
         for (uint pl = 1; pl <= 4; pl++)
         {
@@ -2721,7 +2716,7 @@ void _494035_timed_effects__water_walking_damage__etc()
         if (pPlayers[pl]->uTimeToRecovery)
             pPlayers[pl]->Recover(a2a);//восстановление активности
         if (pPlayers[pl]->GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) + pPlayers[pl]->sHealth + pPlayers[pl]->uEndurance >= 1
-            || (signed __int64)pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].uExpireTime > 0)
+            || pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
         {
             if (pPlayers[pl]->sHealth < 1)
                 pPlayers[pl]->SetCondition(Condition_Unconcious, 0);
@@ -2838,37 +2833,40 @@ void _494035_timed_effects__water_walking_damage__etc()
                 viewparams->bRedrawGameUI = true;
             }
         }
-        if (pPlayers[pl]->pConditions[Condition_Sleep] | pPlayers[pl]->pConditions[Condition_Paralyzed]
-            | pPlayers[pl]->pConditions[Condition_Unconcious] | pPlayers[pl]->pConditions[Condition_Dead]
-            | pPlayers[pl]->pConditions[Condition_Pertified] | pPlayers[pl]->pConditions[Condition_Eradicated])
+        if (pPlayers[pl]->conditions_times[Condition_Sleep].Valid() || pPlayers[pl]->conditions_times[Condition_Paralyzed].Valid()
+            || pPlayers[pl]->conditions_times[Condition_Unconcious].Valid() || pPlayers[pl]->conditions_times[Condition_Dead].Valid()
+            || pPlayers[pl]->conditions_times[Condition_Pertified].Valid() || pPlayers[pl]->conditions_times[Condition_Eradicated].Valid())
+        {
             --party_condition_flag;
-        v43 = (signed __int64)pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_HASTE].uExpireTime > 0; //спешка
+        }
 
         for (uint k = 0; k < 24; ++k)
-            pPlayers[pl]->pPlayerBuffs[k].IsBuffExpiredToTime(pParty->uTimePlayed);
+        {
+            pPlayers[pl]->pPlayerBuffs[k].IsBuffExpiredToTime(pParty->GetPlayingTime());
+        }
 
-        if (v43 && (signed __int64)pPlayers[pl]->pPlayerBuffs[7].uExpireTime <= 0)
+        if (pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_HASTE].Expired())
+        {
             pPlayers[pl]->SetCondition(Condition_Weak, 0);
+        }
     }
-
-    v46 = (signed __int64)pParty->pPartyBuffs[PARTY_BUFF_HASTE].uExpireTime > 0;
 
     for (uint i = 0; i < 20; ++i)
     {
-        if (pParty->pPartyBuffs[i].IsBuffExpiredToTime(pParty->uTimePlayed) == 1)
+        if (pParty->pPartyBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime()) == 1)
             viewparams->bRedrawGameUI = true;
     }
 
-    if (v46 && (signed __int64)pParty->pPartyBuffs[PARTY_BUFF_HASTE].uExpireTime <= 0)
+    if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Expired())
     {
         for (uint i = 0; i < 4; ++i)
-            pParty->pPlayers[i].SetCondition(1, 0);
+            pParty->pPlayers[i].SetCondition(Condition_Weak, 0);
     }
 
     for (uint i = 0; i < 2; ++i)//Проверка в сознании ли перс сделавший закл на полёт и хождение по воде
     {
         SpellBuff* pBuf = &pParty->pPartyBuffs[Party_Spec_Motion_status_ids[i]];
-        if (pBuf->uExpireTime == 0)
+        if (!pBuf->expire_time)
             continue;
 
         if (!(pBuf->uFlags & 1))
@@ -2888,9 +2886,9 @@ void _494035_timed_effects__water_walking_damage__etc()
         {
             for (uint pl = 1; pl <= 4; pl++)
             {
-                if (pPlayers[pl]->pConditions[Condition_Sleep])
+                if (pPlayers[pl]->conditions_times[Condition_Sleep].Valid())
                 {
-                    pPlayers[pl]->pConditions[Condition_Sleep] = 0;
+                    pPlayers[pl]->conditions_times[Condition_Sleep].Reset();
                     party_condition_flag = 1;
                     break;
                 }
@@ -2904,12 +2902,13 @@ void _494035_timed_effects__water_walking_damage__etc()
     {
         if (current_screen_type != SCREEN_REST)
         {
-            if (pPlayers[uActiveCharacter]->pConditions[Condition_Sleep]
-                || pPlayers[uActiveCharacter]->pConditions[Condition_Paralyzed]
-                || pPlayers[uActiveCharacter]->pConditions[Condition_Unconcious]
-                || pPlayers[uActiveCharacter]->pConditions[Condition_Dead]
-                || pPlayers[uActiveCharacter]->pConditions[Condition_Pertified]
-                || pPlayers[uActiveCharacter]->pConditions[Condition_Eradicated])
+            if (pPlayers[uActiveCharacter]->conditions_times[Condition_Sleep]
+                || pPlayers[uActiveCharacter]->conditions_times[Condition_Paralyzed]
+                || pPlayers[uActiveCharacter]->conditions_times[Condition_Unconcious]
+                || pPlayers[uActiveCharacter]->conditions_times[Condition_Dead]
+                || pPlayers[uActiveCharacter]->conditions_times[Condition_Pertified]
+                || pPlayers[uActiveCharacter]->conditions_times[Condition_Eradicated]
+            )
             {
                 viewparams->bRedrawGameUI = true;
                 uActiveCharacter = pParty->GetNextActiveCharacter();
@@ -2925,25 +2924,13 @@ void _493938_regenerate()
     int last_reg_time; // qax@1
     int v4; // eax@2
     int v5; // edi@5
-    long long *v6; // ecx@5
-    char v7; // sf@5
-    int *v8; // ecx@10
     int v9; // edi@15
     signed int v10; // eax@15
-    //  __int16 *v11; // edx@16
-    //  int v12; // eax@20
     int numberOfActorsAffected; // ebx@20
     unsigned int v14; // esi@21
-    //unsigned int v15; // ecx@21
-    //unsigned int v16; // eax@21
-    //  int v18; // eax@21
     signed int v19; // eax@21
     bool recovery_HP; // ebx@25
-    //  ITEM_EQUIP_TYPE v22; // edi@30
     signed int v25; // eax@33
-    //  int v26; // eax@35
-    //  int v27; // eax@36
-    //  int v28; // eax@37
     signed int v31; // ecx@53
     int actorsAffectedByImmolation[100]; // [sp+4h] [bp-22Ch]@20
     SpriteObject a1; // [sp+194h] [bp-9Ch]@15
@@ -2957,12 +2944,14 @@ void _493938_regenerate()
     bool recovery_SP; // [sp+228h] [bp-8h]@25
     bool redraw_flag; // [sp+22Ch] [bp-4h]@2
 
-    current_time = (signed int)(signed __int64)((double)(signed __int64)pParty->uTimePlayed * 0.234375) / 60;
-    last_reg_time = (signed int)(signed __int64)((double)pParty->uLastRegenerationTime * 0.234375) / 60;
+    current_time = pParty->GetPlayingTime().GetMinutesFraction();
+    last_reg_time = pParty->last_regenerated.GetMinutesFraction();
     if (current_time >= (signed int)last_reg_time + 5)
     {
         redraw_flag = false;
         v4 = (current_time - last_reg_time) / 5;
+
+        // chance to flight break due to a curse
         if (pParty->FlyActive())
         {
             if (pParty->bFlying)
@@ -2970,16 +2959,12 @@ void _493938_regenerate()
                 if (!(pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1))
                 {
                     v5 = v4 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
-                    //cursed_flag = pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].pConditions[Condition_Cursed];//cursed
-                    //v7 = cursed_flag < v5;
-                    //cursed_flag -= v5;
 
-                    v6 = &pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].pConditions[Condition_Cursed];
-
-                    if (*v6 < v5)
+                    auto v6 = &pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].conditions_times[Condition_Cursed];
+                    if (v6->value < v5)
                     {
                         v6 = 0;
-                        pParty->uFlags &= 0xFFFFFFBFu;
+                        pParty->uFlags &= 0xFFFFFFBF;
                         pParty->bFlying = false;
                         redraw_flag = true;
                     }
@@ -2987,18 +2972,18 @@ void _493938_regenerate()
             }
         }
 
+        // chance to waterwalk drowning due to a curse
         if (pParty->WaterWalkActive())
         {
             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
             {
                 if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1))
                 { // taking on water
-                    v8 = (int *)&pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1].pConditions[Condition_Cursed];//&AA1058_PartyQuickSpellSound[4].pSounds[6972 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster + 2000];
-                    v7 = *v8 < v4;
-                    *v8 -= v4;
-                    if (v7)
+                    auto v8 = &pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1].conditions_times[Condition_Cursed];
+                    v8->value -= v4;
+                    if (v8->value <= 0)
                     {
-                        *v8 = 0;
+                        v8->value = 0;
                         pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
                         redraw_flag = true;
                     }
@@ -3096,19 +3081,23 @@ void _493938_regenerate()
                     }
 
                     if (recovery_HP &&
-                        !pParty->pPlayers[v49].pConditions[Condition_Dead] &&
-                        !pParty->pPlayers[v49].pConditions[Condition_Eradicated])
+                        !pParty->pPlayers[v49].conditions_times[Condition_Dead] &&
+                        !pParty->pPlayers[v49].conditions_times[Condition_Eradicated])
                     {
                         if (pParty->pPlayers[v49].sHealth < pParty->pPlayers[v49].GetMaxHealth())
+                        {
                             ++pParty->pPlayers[v49].sHealth;
-                        if (pParty->pPlayers[v49].pConditions[Condition_Unconcious] && pParty->pPlayers[v49].sHealth > 0)
-                            pParty->pPlayers[v49].pConditions[Condition_Unconcious] = 0;
+                        }
+                        if (pParty->pPlayers[v49].conditions_times[Condition_Unconcious] && pParty->pPlayers[v49].sHealth > 0)
+                        {
+                            pParty->pPlayers[v49].conditions_times[Condition_Unconcious].Reset();
+                        }
                         redraw_flag = true;
                     }
 
                     if (recovery_SP &&
-                        !pParty->pPlayers[v49].pConditions[Condition_Dead] &&
-                        !pParty->pPlayers[v49].pConditions[Condition_Eradicated])
+                        !pParty->pPlayers[v49].conditions_times[Condition_Dead] &&
+                        !pParty->pPlayers[v49].conditions_times[Condition_Eradicated])
                     {
                         if (pParty->pPlayers[v49].sMana < pParty->pPlayers[v49].GetMaxMana())
                             ++pParty->pPlayers[v49].sMana;
@@ -3116,21 +3105,24 @@ void _493938_regenerate()
                     }
 
                     if (decrease_HP &&
-                        !pParty->pPlayers[v49].pConditions[Condition_Dead] &&
-                        !pParty->pPlayers[v49].pConditions[Condition_Eradicated])
+                        !pParty->pPlayers[v49].conditions_times[Condition_Dead] &&
+                        !pParty->pPlayers[v49].conditions_times[Condition_Eradicated])
                     {
                         --pParty->pPlayers[v49].sHealth;
-                        if (!(pParty->pPlayers[v49].pConditions[Condition_Unconcious]) && pParty->pPlayers[v49].sHealth < 0)
-                            pParty->pPlayers[v49].pConditions[Condition_Unconcious] = pParty->uTimePlayed;
+                        if (!(pParty->pPlayers[v49].conditions_times[Condition_Unconcious]) && pParty->pPlayers[v49].sHealth < 0)
+                        {
+                            pParty->pPlayers[v49].conditions_times[Condition_Unconcious] = pParty->GetPlayingTime();
+                        }
                         if (pParty->pPlayers[v49].sHealth < 1)
                         {
                             if (pParty->pPlayers[v49].sHealth + pParty->pPlayers[v49].uEndurance + pParty->pPlayers[v49].GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1
-                                || (signed __int64)pParty->pPlayers[v49].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].uExpireTime > 0)
-                                pParty->pPlayers[v49].pConditions[Condition_Unconcious] = pParty->uTimePlayed;
-                            else
+                                || pParty->pPlayers[v49].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].expire_time)
                             {
-                                if (!pParty->pPlayers[v49].pConditions[Condition_Dead])
-                                    pParty->pPlayers[v49].pConditions[Condition_Dead] = pParty->uTimePlayed;
+                                pParty->pPlayers[v49].conditions_times[Condition_Unconcious] = pParty->GetPlayingTime();
+                            }
+                            else if (!pParty->pPlayers[v49].conditions_times[Condition_Dead])
+                            {
+                                pParty->pPlayers[v49].conditions_times[Condition_Dead] = pParty->GetPlayingTime();
                             }
                         }
                         redraw_flag = true;
@@ -3138,16 +3130,20 @@ void _493938_regenerate()
                 }
             }
 
-            //regeneration
-            if (pParty->pPlayers[v49].pPlayerBuffs[PLAYER_BUFF_REGENERATION].uExpireTime > 0
-                && !pParty->pPlayers[v49].pConditions[Condition_Dead]
-                && !pParty->pPlayers[v49].pConditions[Condition_Eradicated])
+            // regeneration
+            if (pParty->pPlayers[v49].pPlayerBuffs[PLAYER_BUFF_REGENERATION].expire_time
+                && !pParty->pPlayers[v49].conditions_times[Condition_Dead]
+                && !pParty->pPlayers[v49].conditions_times[Condition_Eradicated])
             {
                 pParty->pPlayers[v49].sHealth += 5 * pParty->pPlayers[v49].pPlayerBuffs[PLAYER_BUFF_REGENERATION].uPower;
                 if (pParty->pPlayers[v49].sHealth > pParty->pPlayers[v49].GetMaxHealth())
+                {
                     pParty->pPlayers[v49].sHealth = pParty->pPlayers[v49].GetMaxHealth();
-                if (pParty->pPlayers[v49].pConditions[Condition_Unconcious] && pParty->pPlayers[v49].sHealth > 0)
-                    pParty->pPlayers[v49].pConditions[Condition_Unconcious] = 0;
+                }
+                if (pParty->pPlayers[v49].conditions_times[Condition_Unconcious] && pParty->pPlayers[v49].sHealth > 0)
+                {
+                    pParty->pPlayers[v49].conditions_times[Condition_Unconcious].Reset();
+                }
                 redraw_flag = true;
             }
 
@@ -3155,7 +3151,9 @@ void _493938_regenerate()
             if (has_dragon_flag && pParty->pPlayers[v49].classType == PLAYER_CLASS_WARLOCK)
             {
                 if (pParty->pPlayers[v49].sMana < pParty->pPlayers[v49].GetMaxMana())
+                {
                     ++pParty->pPlayers[v49].sMana;
+                }
                 redraw_flag = true;
             }
 
@@ -3169,33 +3167,47 @@ void _493938_regenerate()
                 }
                 lich_flag = true;
             }
-            if (lich_flag && !pParty->pPlayers[v49].pConditions[Condition_Dead]
-                && !pParty->pPlayers[v49].pConditions[Condition_Eradicated])
+
+            if (lich_flag && !pParty->pPlayers[v49].conditions_times[Condition_Dead]
+                && !pParty->pPlayers[v49].conditions_times[Condition_Eradicated])
             {
                 if (pParty->pPlayers[v49].sHealth > pParty->pPlayers[v49].GetMaxHealth() / 2)
+                {
                     pParty->pPlayers[v49].sHealth = pParty->pPlayers[v49].sHealth - 2;
+                }
                 if (pParty->pPlayers[v49].sMana > pParty->pPlayers[v49].GetMaxMana() / 2)
+                {
                     pParty->pPlayers[v49].sMana = pParty->pPlayers[v49].sMana - 2;
+                }
             }
+
             if (lich_jar_flag)
             {
                 if (pParty->pPlayers[v49].sMana < pParty->pPlayers[v49].GetMaxMana())
+                {
                     ++pParty->pPlayers[v49].sMana;
+                }
             }
 
             //for zombie
-            if (pParty->pPlayers[v49].pConditions[Condition_Zombie])
+            if (pParty->pPlayers[v49].conditions_times[Condition_Zombie])
+            {
                 zombie_flag = true;
-            if (zombie_flag && !pParty->pPlayers[v49].pConditions[Condition_Dead]
-                && !pParty->pPlayers[v49].pConditions[Condition_Eradicated])
+            }
+            if (zombie_flag && !pParty->pPlayers[v49].conditions_times[Condition_Dead]
+                && !pParty->pPlayers[v49].conditions_times[Condition_Eradicated])
             {
                 if (pParty->pPlayers[v49].sHealth > pParty->pPlayers[v49].GetMaxHealth() / 2)
+                {
                     pParty->pPlayers[v49].sHealth = pParty->pPlayers[v49].sHealth - 1;
+                }
                 if (pParty->pPlayers[v49].sMana > 0)
+                {
                     pParty->pPlayers[v49].sMana = pParty->pPlayers[v49].sMana - 1;
+                }
             }
         }
-        pParty->uLastRegenerationTime = pParty->uTimePlayed;
+        pParty->last_regenerated = pParty->GetPlayingTime();
         if (!viewparams->bRedrawGameUI)
             viewparams->bRedrawGameUI = redraw_flag;
     }
@@ -3370,15 +3382,13 @@ void OnMapLeave()
 void OnMapLoad()
 {
     int v6; // eax@9
-    unsigned __int64 v8; // qax@26
     int hours; // ebx@26
-    unsigned __int64 v18; // [sp+Ch] [bp-44h]@12
+    GameTime v18; // [sp+Ch] [bp-44h]@12
     unsigned int seconds; // [sp+14h] [bp-3Ch]@26
-    unsigned __int64 v20; // [sp+1Ch] [bp-34h]@7
+    GameTime v20; // [sp+1Ch] [bp-34h]@7
     unsigned int minutes; // [sp+2Ch] [bp-24h]@26
     unsigned int years; // [sp+34h] [bp-1Ch]@26
     unsigned int weeks; // [sp+38h] [bp-18h]@26
-    int v26; // [sp+3Ch] [bp-14h]@15
     unsigned int days; // [sp+3Ch] [bp-14h]@26
     unsigned int months; // [sp+40h] [bp-10h]@26
 
@@ -3392,12 +3402,12 @@ void OnMapLoad()
             pSoundList->LoadSound(EVT_DWORD(_evt->v5), 0);
         else if (_evt->_e_type == EVENT_OnMapReload)
             EventProcessor(pEvent.uEventID, 0, 0, pEvent.event_sequence_num);
-        else if (_evt->_e_type == EVENT_OnTimer || _evt->_e_type == EVENT_Initialize)
+        else if (_evt->_e_type == EVENT_OnTimer || _evt->_e_type == EVENT_OnLongTimer)
         {
             //v3 = &MapsLongTimersList[MapsLongTimers_count];
-            v20 = pOutdoor->loc_time.uLastVisitDay;
+            v20 = pOutdoor->loc_time.last_visit;
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-                v20 = pIndoor->stru1.uLastVisitDay;
+                v20 = pIndoor->stru1.last_visit;
 
             MapsLongTimersList[MapsLongTimers_count].timer_evt_type = _evt->_e_type;
             MapsLongTimersList[MapsLongTimers_count].timer_evt_ID = pEvent.uEventID;
@@ -3415,18 +3425,17 @@ void OnMapLoad()
 
             MapsLongTimersList[MapsLongTimers_count].time_left_to_fire = ((unsigned short)_evt->v12 << 8) + _evt->v11;
             MapsLongTimersList[MapsLongTimers_count].IntervalHalfMins = ((unsigned short)_evt->v12 << 8) + _evt->v11;
-            if (MapsLongTimersList[MapsLongTimers_count].timer_evt_type == EVENT_Initialize && !(short)v6)
+            if (MapsLongTimersList[MapsLongTimers_count].timer_evt_type == EVENT_OnLongTimer && !(short)v6)
             {
                 if (v20)
-                    v18 = pParty->uTimePlayed - v20;
+                    v18 = pParty->GetPlayingTime() - v20;
                 else
                     v18 = 0;
-                v26 = (signed int)(signed __int64)((double)(signed __int64)v18 * 0.234375) / 60 / 60 / 24;
 
-                if (v26 / 7 / 4 / 12 != 0 && MapsLongTimersList[MapsLongTimers_count].YearsInterval ||
-                    v26 / 7 / 4 != 0 && MapsLongTimersList[MapsLongTimers_count].MonthsInterval != 0 ||
-                    v26 / 7 != 0 && MapsLongTimersList[MapsLongTimers_count].WeeksInterval != 0 ||
-                    v26 != 0 || !v20)
+                if (v18.GetYears() != 0 && MapsLongTimersList[MapsLongTimers_count].YearsInterval ||
+                    v18.GetMonths() != 0 && MapsLongTimersList[MapsLongTimers_count].MonthsInterval != 0 ||
+                    v18.GetWeeks() != 0 && MapsLongTimersList[MapsLongTimers_count].WeeksInterval != 0 ||
+                    v18.GetDays() != 0 || !v20)
                 {
                     ++MapsLongTimers_count;
                     MapsLongTimersList[MapsLongTimers_count].NextStartTime = 0;
@@ -3435,14 +3444,13 @@ void OnMapLoad()
             }
             else
             {
-                v8 = (__int64)((double)pParty->uTimePlayed * 0.234375);
-                seconds = v8 % 60;
-                minutes = (v8 / 60) % 60;
-                hours = ((v8 / 60) / 60) % 24;
-                days = (((v8 / 60) / 60) / 24) % 7;
-                weeks = ((((v8 / 60) / 60) / 24) / 7) % 4;
-                months = (((((v8 / 60) / 60) / 24) / 7) / 4) % 12;
-                years = (((((v8 / 60) / 60) / 24) / 7) / 4) / 12;
+                seconds = pParty->GetPlayingTime().GetSecondsFraction();
+                minutes = pParty->GetPlayingTime().GetMinutesFraction();
+                hours = pParty->GetPlayingTime().GetHoursOfDay();
+                days = pParty->GetPlayingTime().GetDaysOfWeek();
+                weeks = pParty->GetPlayingTime().GetWeeksOfMonth();
+                months = pParty->GetPlayingTime().GetMonthsOfYear();
+                years = pParty->GetPlayingTime().GetYears();
 
                 if (MapsLongTimersList[MapsLongTimers_count].YearsInterval)
                     ++years;
@@ -3457,15 +3465,7 @@ void OnMapLoad()
                     minutes = MapsLongTimersList[MapsLongTimers_count].MinutesInterval;
                     seconds = MapsLongTimersList[MapsLongTimers_count].SecondsInterval;
                 }
-                MapsLongTimersList[MapsLongTimers_count].NextStartTime = (signed __int64)((double)((seconds
-                    + 60 * minutes
-                    + 3600 * hours
-                    + 86400 * days
-                    + 604800 * weeks
-                    + 2419200 * months
-                    + 29030400 * years) << 7)
-                    * 0.033333335);
-
+                MapsLongTimersList[MapsLongTimers_count].NextStartTime = GameTime(seconds, minutes, hours, days, weeks, months, years);
                 ++MapsLongTimers_count;
             }
         }
@@ -3548,15 +3548,11 @@ void OnTimer(int)
     if (pEventTimer->bPaused)
         return;
 
-    long long v13 = (signed __int64)(pParty->uTimePlayed - _5773B8_event_timer) / 128;
+    __int64 v13 = (pParty->GetPlayingTime() - _5773B8_event_timer).value / 128;
     if (!v13)
         return;
 
-    //uint _v2v3 = pParty->uTimePlayed;
-    //v3 = HIDWORD(pParty->uTimePlayed);
-    //v2 = LODWORD(pParty->uTimePlayed);
-
-    _5773B8_event_timer = pParty->uTimePlayed;
+    _5773B8_event_timer = pParty->GetPlayingTime();
 
     for (uint i = 0; i < MapsLongTimers_count; ++i)
     {
@@ -3577,7 +3573,7 @@ void OnTimer(int)
         }
         else
         {
-            if (timer->NextStartTime < pParty->uTimePlayed)
+            if (timer->NextStartTime < pParty->GetPlayingTime())
             {
                 uint next_trigger_time = 1 * 60 * 60 * 24; // 1 day
                 if (timer->YearsInterval)
@@ -3587,9 +3583,9 @@ void OnTimer(int)
                 else if (timer->WeeksInterval)
                     next_trigger_time = 7 * 60 * 60 * 24; // 1 week
 
-                timer->NextStartTime += (next_trigger_time * 128) / 3.0f;
-                if (timer->NextStartTime < pParty->uTimePlayed) // make sure in wont fire several times in a row if big time interval has lapsed
-                    timer->NextStartTime = pParty->uTimePlayed;
+                timer->NextStartTime.value += (next_trigger_time * 128) / 3.0f;
+                if (timer->NextStartTime < pParty->GetPlayingTime()) // make sure in wont fire several times in a row if big time interval has lapsed
+                    timer->NextStartTime = pParty->GetPlayingTime();
 
                 EventProcessor(timer->timer_evt_ID, 0, 1, timer->timer_evt_seq_num);
             }

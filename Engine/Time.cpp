@@ -4,7 +4,8 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "Timer.h"
+#include "Engine/Time.h"
+
 #include "IO/Keyboard.h"
 
 #include "OSAPI.h"
@@ -24,10 +25,10 @@ Timer *pEventTimer;
 //----- (00426317) --------------------------------------------------------
 unsigned __int64 Timer::Time()
 {
-  unsigned __int64 v2 = TimeQuant * timeGetTime() / 1000;
-  if (v2 < uStartTime)
-    uStartTime = 0;
-  return v2;
+    unsigned __int64 v2 = TIME_QUANT * timeGetTime() / 1000;
+    if (v2 < uStartTime)
+        uStartTime = 0;
+    return v2;
 }
 
 

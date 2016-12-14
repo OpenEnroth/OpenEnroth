@@ -1,6 +1,6 @@
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Objects/NPC.h"
@@ -231,7 +231,7 @@ void SpellBuff_Image_MM7::Serialize(SpellBuff *buff)
 {
     memset(this, 0, sizeof(*this));
 
-    this->uExpireTime = buff->uExpireTime;
+    this->uExpireTime = buff->expire_time.value;
     this->uPower = buff->uPower;
     this->uSkill = buff->uSkill;
     this->uOverlayID = buff->uOverlayID;
@@ -241,7 +241,7 @@ void SpellBuff_Image_MM7::Serialize(SpellBuff *buff)
 
 void SpellBuff_Image_MM7::Deserialize(SpellBuff *buff)
 {
-    buff->uExpireTime = this->uExpireTime;
+    buff->expire_time.value = this->uExpireTime;
     buff->uPower = this->uPower;
     buff->uSkill = this->uSkill;
     buff->uOverlayID = this->uOverlayID;
@@ -265,7 +265,7 @@ void ItemGen_Image_MM7::Serialize(ItemGen *item)
     this->uMaxCharges = item->uMaxCharges;
     this->uHolderPlayer = item->uHolderPlayer;
     this->field_1B = item->field_1B;
-    this->uExpireTime = item->uExpireTime;
+    this->uExpireTime = item->expirte_time.value;
 }
 
 void ItemGen_Image_MM7::Deserialize(ItemGen *item)
@@ -280,7 +280,7 @@ void ItemGen_Image_MM7::Deserialize(ItemGen *item)
     item->uMaxCharges = this->uMaxCharges;
     item->uHolderPlayer = this->uHolderPlayer;
     item->field_1B = this->field_1B;
-    item->uExpireTime = this->uExpireTime;
+    item->expirte_time.value = this->uExpireTime;
 }
 
 
@@ -299,8 +299,8 @@ void Party_Image_MM7::Serialize(Party *party)
     this->y_rotation_speed = party->y_rotation_speed;
     this->field_24 = party->field_24;
     this->field_28 = party->field_28;
-    this->uTimePlayed = party->uTimePlayed;
-    this->uLastRegenerationTime = party->uLastRegenerationTime;
+    this->uTimePlayed = party->playing_time.value;
+    this->uLastRegenerationTime = party->last_regenerated.value;
 
     for (unsigned int i = 0; i < 10; ++i)
         this->PartyTimes.bountyHunting_next_generation_time[i] = party->PartyTimes.bountyHunting_next_generation_time[i];
@@ -333,7 +333,7 @@ void Party_Image_MM7::Serialize(Party *party)
     this->field_6F0 = party->field_6F0;
     this->floor_face_pid = party->floor_face_pid;
     this->walk_sound_timer = party->walk_sound_timer;
-    this->field_6FC = party->field_6FC;
+    this->_6FC_water_lava_timer = party->_6FC_water_lava_timer;
     this->uFallStartY = party->uFallStartY;
     this->bFlying = party->bFlying;
     this->field_708 = party->field_708;
@@ -343,7 +343,7 @@ void Party_Image_MM7::Serialize(Party *party)
     this->uCurrentYear = party->uCurrentYear;
     this->uCurrentMonth = party->uCurrentMonth;
     this->uCurrentMonthWeek = party->uCurrentMonthWeek;
-    this->uDaysPlayed = party->uDaysPlayed;
+    this->uCurrentDayOfMonth = party->uCurrentDayOfMonth;
     this->uCurrentHour = party->uCurrentHour;
     this->uCurrentMinute = party->uCurrentMinute;
     this->uCurrentTimeSecond = party->uCurrentTimeSecond;
@@ -452,8 +452,8 @@ void Party_Image_MM7::Deserialize(Party *party)
     party->y_rotation_speed = this->y_rotation_speed;
     party->field_24 = this->field_24;
     party->field_28 = this->field_28;
-    party->uTimePlayed = this->uTimePlayed;
-    party->uLastRegenerationTime = this->uLastRegenerationTime;
+    party->playing_time.value = this->uTimePlayed;
+    party->last_regenerated.value = this->uLastRegenerationTime;
 
     for (unsigned int i = 0; i < 10; ++i)
         party->PartyTimes.bountyHunting_next_generation_time[i] = this->PartyTimes.bountyHunting_next_generation_time[i];
@@ -486,7 +486,7 @@ void Party_Image_MM7::Deserialize(Party *party)
     party->field_6F0 = this->field_6F0;
     party->floor_face_pid = this->floor_face_pid;
     party->walk_sound_timer = this->walk_sound_timer;
-    party->field_6FC = this->field_6FC;
+    party->_6FC_water_lava_timer = this->_6FC_water_lava_timer;
     party->uFallStartY = this->uFallStartY;
     party->bFlying = this->bFlying;
     party->field_708 = this->field_708;
@@ -496,7 +496,7 @@ void Party_Image_MM7::Deserialize(Party *party)
     party->uCurrentYear = this->uCurrentYear;
     party->uCurrentMonth = this->uCurrentMonth;
     party->uCurrentMonthWeek = this->uCurrentMonthWeek;
-    party->uDaysPlayed = this->uDaysPlayed;
+    party->uCurrentDayOfMonth = this->uCurrentDayOfMonth;
     party->uCurrentHour = this->uCurrentHour;
     party->uCurrentMinute = this->uCurrentMinute;
     party->uCurrentTimeSecond = this->uCurrentTimeSecond;
@@ -605,7 +605,7 @@ void Player_Image_MM7::Serialize(Player *player)
     memset(this, 0, sizeof(*this));
 
     for (unsigned int i = 0; i < 20; ++i)
-        this->pConditions[i] = player->pConditions[i];
+        this->pConditions[i] = player->conditions_times[i].value;
 
     this->uExperience = player->uExperience;
 
@@ -759,7 +759,7 @@ void Player_Image_MM7::Serialize(Player *player)
 void Player_Image_MM7::Deserialize(Player *player)
 {
     for (unsigned int i = 0; i < 20; ++i)
-        player->pConditions[i] = this->pConditions[i];
+        player->conditions_times[i].value = this->pConditions[i];
 
     player->uExperience = this->uExperience;
 

@@ -398,7 +398,7 @@ struct Party_Image_MM7
     /* 006F0 */ int field_6F0;
     /* 006F4 */ int floor_face_pid; // face we are standing at
     /* 006F8 */ int walk_sound_timer;
-    /* 006FC */ int field_6FC;
+    /* 006FC */ int _6FC_water_lava_timer;
     /* 00700 */ int uFallStartY;
     /* 00704 */ unsigned int bFlying;
     /* 00708 */ char field_708;
@@ -408,7 +408,7 @@ struct Party_Image_MM7
     /* 0070C */ unsigned int uCurrentYear;
     /* 00710 */ unsigned int uCurrentMonth;
     /* 00714 */ unsigned int uCurrentMonthWeek;
-    /* 00718 */ unsigned int uDaysPlayed;
+    /* 00718 */ unsigned int uCurrentDayOfMonth;
     /* 0071C */ unsigned int uCurrentHour;
     /* 00720 */ unsigned int uCurrentMinute;
     /* 00724 */ unsigned int uCurrentTimeSecond;

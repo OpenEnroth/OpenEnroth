@@ -38,8 +38,8 @@ LODWriteableFile *pGames_LOD = nullptr;
 
 
 
-int _6A0CA4_lod_binary_search; // weak
-int _6A0CA8_lod_unused; // weak
+int _6A0CA4_lod_binary_search;
+int _6A0CA8_lod_unused;
 
 
 inline int LODFile_IconsBitmaps::LoadDummyTexture()
@@ -1668,7 +1668,11 @@ int LOD::File::CalcIndexFast(int startIndex, int maxIndex, const char *pContaine
   _6A0CA4_lod_binary_search = -1;
   return result;
 }
-// 6A0CA4: using guessed type int _6A0CA4_lod_binary_search;
+
+bool LOD::File::DoesContainerExist(const String &filename)
+{
+    return this->DoesContainerExist(filename.c_str());
+}
 
 //----- (0046161C) --------------------------------------------------------
 bool LOD::File::DoesContainerExist(const char *pContainer)
@@ -1690,6 +1694,12 @@ int LODFile_Sprites::_461397()
   if ( this->field_ECA0 < this->field_ECA4 )
     field_ECA0 = this->field_ECA4;
   return this->uNumLoadedSprites;
+}
+
+
+FILE *LOD::File::FindContainer(const String &filename, bool linear_search)
+{
+    return this->FindContainer(filename.c_str(), linear_search);
 }
 
 //----- (00461580) --------------------------------------------------------

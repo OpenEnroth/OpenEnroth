@@ -28,7 +28,7 @@
 
 int pDialogueNPCCount;
 std::array<class Image *, 6> pDialogueNPCPortraits;
-int uNumDialogueNPCPortraits; // weak
+int uNumDialogueNPCPortraits;
 struct NPCStats *pNPCStats = nullptr;
 
 int NPCStats::dword_AE336C_LastMispronouncedNameFirstLetter = -1;
@@ -1558,148 +1558,147 @@ const char *GetProfessionActionText(int a1)
 //----- (004BB756) --------------------------------------------------------
 int UseNPCSkill(NPCProf profession)
 {
-  switch (profession)
-  {
-    case Healer:
+    switch (profession)
     {
-      for (int i = 0; i < 4; ++i)
-        pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+        case Healer:
+        {
+            for (int i = 0; i < 4; ++i)
+                pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+        }
+        break;
+
+        case ExpertHealer:
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+
+                for (int j = 0; j < 14; ++j)
+                    pParty->pPlayers[i].conditions_times[j].Reset();
+                pParty->pPlayers[i].conditions_times[Condition_Good].Reset();
+            }
+        }
+        break;
+
+        case MasterHealer:
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                __debugbreak();	//Ritor1:needed cleaned(Необходимо почистить)
+                Player* player = &pParty->pPlayers[i];
+                pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+
+                int v5 = LODWORD(player->conditions_times[19]);//*((int *)v4 - 32);
+                int v6 = HIDWORD(player->conditions_times[19]);//*((int *)v4 - 31);
+                memset(&pParty->pPlayers[i].conditions_times, 0, sizeof(pParty->pPlayers[i].conditions_times));
+
+                *(int *)&player->pActiveSkills[PLAYER_SKILL_SHIELD] = v5;
+                *(int *)&player->pActiveSkills[PLAYER_SKILL_CHAIN] = v6;
+            }
+        }
+        break;
+
+        case Cook:
+        {
+            if (pParty->uNumFoodRations >= 13)
+                return 1;
+
+            Party::GiveFood(1);
+        }
+        break;
+
+        case Chef:
+        {
+            if (pParty->uNumFoodRations >= 13)
+                return 1;
+
+            if (pParty->uNumFoodRations == 13)
+                Party::GiveFood(1);
+            else
+                Party::GiveFood(2);
+        }
+        break;
+
+        case WindMaster:
+        {
+            if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+            {
+                GameUI_StatusBar_OnEvent(localization->GetString(494)); // Can't fly indoors     Нельзя применить знание Полет в помещении!
+                pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0, 0, 0);
+            }
+            else
+            {
+                int v19 = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);
+                pParty->pPartyBuffs[PARTY_BUFF_FLY].Apply(pParty->GetPlayingTime() + GameTime::FromHours(2), 3, 1, v19, 0);
+                pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags |= 1;
+                pAudioPlayer->PlaySound(SOUND_21fly03, 0, 0, -1, 0, 0, 0, 0);
+            }
+        }
+        break;
+
+        case WaterMaster:
+        {
+            int v20 = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
+            pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + GameTime::FromHours(3), 3, 0, v20, 0);
+            pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags |= 1;
+            pAudioPlayer->PlaySound(SOUND_WaterWalk, 0, 0, -1, 0, 0, 0, 0);
+        }
+        break;
+
+        case GateMaster:
+        {
+            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+            dword_50C9DC = 195;
+            ptr_50C9E0 = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+        }
+        break;
+
+        case Acolyte:      _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_BLESS, 0, 133, 0, 0); break;
+        case Piper:        _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_HEROISM, 0, 133, 0, 0); break;
+        case FallenWizard: _42777D_CastSpell_UseWand_ShootArrow(SPELL_LIGHT_HOUR_OF_POWER, 0, 133, 0, 0); break;
+
+        case Teacher:
+        case Instructor:
+        case Armsmaster:
+        case Weaponsmaster:
+        case Apprentice:
+        case Mystic:
+        case Spellmaster:
+        case Trader:
+        case Merchant:
+        case Scout:
+        case Herbalist:
+        case Apothecary:
+        case Tinker:
+        case Locksmith:
+        case Fool:
+        case ChimneySweep:
+        case Porter:
+        case QuarterMaster:
+        case Factor:
+        case Banker:
+        case Horseman:
+        case Bard:
+        case Enchanter:
+        case Cartographer:
+        case Explorer:
+        case Pirate:
+        case Squire:
+        case Psychic:
+        case Gypsy:
+        case Diplomat:
+        case Duper:
+        case Burglar:
+        case Acolyte2:
+        case Initiate:
+        case Prelate:
+        case Monk:
+        case Sage:
+        case Hunter:
+            break;
+
+        default:
+            assert(false && "Invalid enum value");
     }
-    break;
-
-    case ExpertHealer:
-    {
-      for (int i = 0; i < 4; ++i)
-      {
-        __debugbreak();
-        pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
-
-        for (int j = 0; j < 14; ++j)
-          pParty->pPlayers[i].pConditions[j] = 0;
-        pParty->pPlayers[i].pConditions[Condition_Good] = 0;
-      }
-    }
-    break;
-
-    case MasterHealer:
-    {
-      for (int i = 0; i < 4; ++i)
-      {
-        __debugbreak();	//Ritor1:needed cleaned(Необходимо почистить)
-        Player* player = &pParty->pPlayers[i];
-        pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
-
-        int v5 = LODWORD(player->pConditions[19]);//*((int *)v4 - 32);
-        int v6 = HIDWORD(player->pConditions[19]);//*((int *)v4 - 31);
-        memset(&pParty->pPlayers[i].pConditions, 0, sizeof(pParty->pPlayers[i].pConditions));
-
-        *(int *)&player->pActiveSkills[PLAYER_SKILL_SHIELD] = v5;
-        *(int *)&player->pActiveSkills[PLAYER_SKILL_CHAIN] = v6;
-      }
-    }
-    break;
-
-    case Cook://Повар
-    {
-      if (pParty->uNumFoodRations >= 13)
-        return 1;
-
-      Party::GiveFood(1);
-    }
-    break;
-
-    case Chef:
-    {
-      if (pParty->uNumFoodRations >= 13)
-        return 1;
-
-      if (pParty->uNumFoodRations == 13)
-        Party::GiveFood(1);
-      else
-        Party::GiveFood(2);
-    }
-    break;
-
-    case WindMaster:
-    {
-      if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-      {
-        GameUI_StatusBar_OnEvent(localization->GetString(494)); // Can't fly indoors     Нельзя применить знание Полет в помещении!
-        pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0, 0, 0);
-      }
-      else
-      {
-        int v19 = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);
-        pParty->pPartyBuffs[PARTY_BUFF_FLY].Apply(pParty->uTimePlayed + 60 * (256 * 2), 3, 1, v19, 0);
-        pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags |= 1;
-        pAudioPlayer->PlaySound(SOUND_21fly03, 0, 0, -1, 0, 0, 0, 0);
-      }
-    }
-    break;
-
-    case WaterMaster:
-    {
-      int v20 = pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
-      pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].Apply(pParty->uTimePlayed + 60 * (256 * (2 + 1)), 3, 0, v20, 0);
-      pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags |= 1;
-      pAudioPlayer->PlaySound(SOUND_WaterWalk, 0, 0, -1, 0, 0, 0, 0);
-    }
-    break;
-
-    case GateMaster:
-    {
-      pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
-      dword_50C9DC = 195;
-      ptr_50C9E0 = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    }
-    break;
-
-    case Acolyte:      _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_BLESS, 0, 133, 0, 0); break;
-    case Piper:        _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_HEROISM, 0, 133, 0, 0); break;
-    case FallenWizard: _42777D_CastSpell_UseWand_ShootArrow(SPELL_LIGHT_HOUR_OF_POWER, 0, 133, 0, 0); break;
-      
-    case Teacher:
-    case Instructor:
-    case Armsmaster:
-    case Weaponsmaster:
-    case Apprentice:
-    case Mystic:
-    case Spellmaster:
-    case Trader:
-    case Merchant:
-    case Scout:
-    case Herbalist:
-    case Apothecary:
-    case Tinker:
-    case Locksmith:
-    case Fool:
-    case ChimneySweep:
-    case Porter:
-    case QuarterMaster:
-    case Factor:
-    case Banker:
-    case Horseman:
-    case Bard:
-    case Enchanter:
-    case Cartographer:
-    case Explorer:
-    case Pirate:
-    case Squire:
-    case Psychic:
-    case Gypsy:
-    case Diplomat:
-    case Duper:
-    case Burglar:
-    case Acolyte2:
-    case Initiate:
-    case Prelate:
-    case Monk:
-    case Sage:
-    case Hunter:
-      break;
-
-    default:
-      assert(false && "Invalid enum value");
-  }
-  return 0;
+    return 0;
 }

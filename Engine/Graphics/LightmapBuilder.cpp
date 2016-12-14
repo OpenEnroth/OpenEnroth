@@ -14,7 +14,7 @@
 
 LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
 //StationaryLight pStationaryLights[400];
-//int uNumStationaryLightsApplied; // weak
+//int uNumStationaryLightsApplied;
 LightsStack_MobileLight_ *pMobileLightsStack = new LightsStack_MobileLight_;
 //MobileLight pMobileLights[400];
 //int uNumMobileLightsApplied;

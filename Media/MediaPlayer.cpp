@@ -7,18 +7,21 @@
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
-
-#include "IO/Mouse.h"
-#include "GUI/GUIWindow.h"
-#include "Media/Audio/OpenALSoundProvider.h"
-#include "MediaPlayer.h"
-#include "Media/Video/Bink_Smacker.h"
-#include "Media/Audio/AudioPlayer.h"
-#include "Engine/Timer.h"
-#include "Engine/Graphics/Render.h"
+#include "Engine/Time.h"
 #include "Engine/MMT.h"
 
+#include "Engine/Graphics/Render.h"
+
+#include "GUI/GUIWindow.h"
+
+#include "IO/Mouse.h"
+
 #include "Game/MainMenu.h"
+
+#include "Media/MediaPlayer.h"
+#include "Media/Video/Bink_Smacker.h"
+#include "Media/Audio/OpenALSoundProvider.h"
+#include "Media/Audio/AudioPlayer.h"
 
 
 #pragma comment(lib, "Version.lib")

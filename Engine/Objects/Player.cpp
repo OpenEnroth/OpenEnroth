@@ -275,9 +275,9 @@ bool Player::NothingOrJustBlastersEquipped()
 }
 
 //----- (004B8040) --------------------------------------------------------
-int Player::GetConditionDayOfWeek( unsigned int uCondition )
-    {
-  return (unsigned int)(((signed __int64)((double)this->pConditions[uCondition] * 0.234375) / 60 / 60) / 24) % 7 + 1;
+int Player::GetConditionDayOfWeek(unsigned int condition)
+{
+    return this->conditions_times[condition].GetDays() % 7 + 1;
 }
 
 //----- (004B807C) --------------------------------------------------------
@@ -677,23 +677,23 @@ bool Player::CanEquip_RaceAndAlignmentCheck(unsigned int uItemID)
 }
 
 //----- (00492D65) --------------------------------------------------------
-void Player::SetCondition( unsigned int uConditionIdx, int a3 )
+void Player::SetCondition(unsigned int uConditionIdx, int a3)
 {
-  signed int player_sex; // ecx@77
-  signed int remainig_player; // ebx@82
-  int players_before; // [sp+10h] [bp-4h]@2
-  int players_after; // [sp+20h] [bp+Ch]@82
+    signed int player_sex; // ecx@77
+    signed int remainig_player; // ebx@82
+    int players_before; // [sp+10h] [bp-4h]@2
+    int players_after; // [sp+20h] [bp+Ch]@82
 
-  if ( pConditions[uConditionIdx] )
-      return;
-  
-  if (!ConditionProcessor::IsPlayerAffected(this, uConditionIdx, a3))
-  {
-    return;
-  }
+    if (conditions_times[uConditionIdx])
+        return;
 
-  switch ( uConditionIdx )
-  {
+    if (!ConditionProcessor::IsPlayerAffected(this, uConditionIdx, a3))
+    {
+        return;
+    }
+
+    switch (uConditionIdx)
+    {
     case Condition_Cursed: PlaySound(SPEECH_30, 0); break;
     case Condition_Weak: PlaySound(SPEECH_25, 0); break;
     case Condition_Sleep: break; //nosound
@@ -705,75 +705,75 @@ void Player::SetCondition( unsigned int uConditionIdx, int a3 )
     case Condition_Poison_Severe: PlaySound(SPEECH_27, 0); break;
     case Condition_Disease_Weak:
     case Condition_Disease_Medium:
-    case Condition_Disease_Severe: PlaySound(SPEECH_28, 0);break;
+    case Condition_Disease_Severe: PlaySound(SPEECH_28, 0); break;
     case Condition_Paralyzed: break;  //nosound
     case Condition_Unconcious:
-      PlaySound(SPEECH_32, 0);
-      if ( sHealth > 0 )
-        sHealth = 0;
-    break;
+        PlaySound(SPEECH_32, 0);
+        if (sHealth > 0)
+            sHealth = 0;
+        break;
     case Condition_Dead:
-      PlaySound(SPEECH_33, 0);
-      if ( sHealth > 0 )
-        sHealth = 0;
-      if ( sMana > 0 )
-        sMana = 0;
-    break;
+        PlaySound(SPEECH_33, 0);
+        if (sHealth > 0)
+            sHealth = 0;
+        if (sMana > 0)
+            sMana = 0;
+        break;
     case Condition_Pertified:
-      PlaySound(SPEECH_34, 0);
-    break;
+        PlaySound(SPEECH_34, 0);
+        break;
     case Condition_Eradicated:
-      PlaySound(SPEECH_35, 0);
-      if (sHealth > 0 )
-        sHealth = 0;
-      if ( sMana > 0 )
-        sMana = 0;
-    break;
+        PlaySound(SPEECH_35, 0);
+        if (sHealth > 0)
+            sHealth = 0;
+        if (sMana > 0)
+            sMana = 0;
+        break;
     case Condition_Zombie:
-      if ( classType == PLAYER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead())
-        return;
-      pConditions.fill(0);
-      sHealth = GetMaxHealth();
-      sMana = 0;
-      player_sex = 0;
-      uPrevFace = uCurrentFace;
-      uPrevVoiceID = uVoiceID;
-      if (IsMale())
-      {
-        uCurrentFace = 23;
-        uVoiceID = 23;
-      }
-      else
-      {
-        uCurrentFace = 24;
-        uVoiceID = 24;
-      }
-      PlaySound(SPEECH_99, 0);
-    break;
-  }
-
-  players_before = 0;
-  for (int i = 1; i < 5; ++i)
-  {
-    if ( pPlayers[i]->CanAct() )
-      ++players_before;
-  }
-
-  pConditions[uConditionIdx] = pParty->uTimePlayed;
-
-  remainig_player = 0;
-  players_after = 0;
-  for (int i = 1; i < 5; ++i)
-  {
-    if ( pPlayers[i]->CanAct() )
-    {
-      remainig_player = i;
-      ++players_after;
+        if (classType == PLAYER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead())
+            return;
+        conditions_times.fill(0);
+        sHealth = GetMaxHealth();
+        sMana = 0;
+        player_sex = 0;
+        uPrevFace = uCurrentFace;
+        uPrevVoiceID = uVoiceID;
+        if (IsMale())
+        {
+            uCurrentFace = 23;
+            uVoiceID = 23;
+        }
+        else
+        {
+            uCurrentFace = 24;
+            uVoiceID = 24;
+        }
+        PlaySound(SPEECH_99, 0);
+        break;
     }
-  }
-  if (( players_before == 2 ) && ( players_after == 1 ))
-    pPlayers[remainig_player]->PlaySound(SPEECH_107, 0);//скорее всего обнадёжывающий возглас последнего
-  return;
+
+    players_before = 0;
+    for (int i = 1; i < 5; ++i)
+    {
+        if (pPlayers[i]->CanAct())
+            ++players_before;
+    }
+
+    conditions_times[uConditionIdx] = pParty->GetPlayingTime();
+
+    remainig_player = 0;
+    players_after = 0;
+    for (int i = 1; i < 5; ++i)
+    {
+        if (pPlayers[i]->CanAct())
+        {
+            remainig_player = i;
+            ++players_after;
+        }
+    }
+    if ((players_before == 2) && (players_after == 1))
+        pPlayers[remainig_player]->PlaySound(SPEECH_107, 0);//скорее всего обнадёжывающий возглас последнего
+    return;
 }
 
 //----- (00492528) --------------------------------------------------------
@@ -1234,7 +1234,7 @@ Player::Player()
     pPlayerBuffs[i].uSkill = 0;
     pPlayerBuffs[i].uSkill = 0;
     pPlayerBuffs[i].uPower = 0;
-    pPlayerBuffs[i].uExpireTime = 0;
+    pPlayerBuffs[i].expire_time.Reset();
     pPlayerBuffs[i].uCaster = 0;
     pPlayerBuffs[i].uFlags = 0;
   }
@@ -1242,7 +1242,7 @@ Player::Player()
   pName[0] = 0;
   uCurrentFace = 0;
   uVoiceID = 0;
-  pConditions.fill(0);
+  conditions_times.fill(0);
 
   field_BB = 0;
 
@@ -2132,43 +2132,43 @@ void Player::Heal(int amount)
 }
 
 //----- (0048DC1E) --------------------------------------------------------
-int Player::ReceiveDamage( signed int amount, DAMAGE_TYPE dmg_type )
+int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type)
+{
+    signed int recieved_dmg; // eax@1
+    bool broke_armor;
+
+    SetAsleep(false);
+    recieved_dmg = CalculateIncommingDamage(dmg_type, amount);
+    sHealth -= recieved_dmg;
+    broke_armor = sHealth <= -10;
+    if (sHealth < 1) //
     {
-  signed int recieved_dmg; // eax@1
-  bool broke_armor;
- 
-  SetAsleep(false);
-  recieved_dmg = CalculateIncommingDamage(dmg_type, amount);
-  sHealth -= recieved_dmg;
-  broke_armor = sHealth <= -10;
-  if ( sHealth < 1 ) //
-  {
-    if ( (sHealth + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1)
-      || pPlayerBuffs[PLAYER_BUFF_PRESERVATION].uExpireTime > 0 )
-    {
-      SetCondUnconsciousWithBlockCheck(false);
-    }
-    else
-    {
-      SetCondDeadWithBlockCheck(false);
-      if ( sHealth > 0 )
-        sHealth = 0;
-    }
-    if (broke_armor )
-    {
-      ItemGen* equippedArmor = GetArmorItem();
-      if ( equippedArmor != nullptr )
-      {
-        if ( !(equippedArmor->uAttributes & ITEM_HARDENED))
+        if ((sHealth + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1)
+            || pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
         {
-          equippedArmor->SetBroken();
+            SetCondUnconsciousWithBlockCheck(false);
         }
-      }
+        else
+        {
+            SetCondDeadWithBlockCheck(false);
+            if (sHealth > 0)
+                sHealth = 0;
+        }
+        if (broke_armor)
+        {
+            ItemGen* equippedArmor = GetArmorItem();
+            if (equippedArmor != nullptr)
+            {
+                if (!(equippedArmor->uAttributes & ITEM_HARDENED))
+                {
+                    equippedArmor->SetBroken();
+                }
+            }
+        }
     }
-  }
-  if ( recieved_dmg && CanAct() )
-    PlaySound(SPEECH_24, 0);
-  return recieved_dmg;
+    if (recieved_dmg && CanAct())
+        PlaySound(SPEECH_24, 0);
+    return recieved_dmg;
 }
 
 //----- (0048DCF6) --------------------------------------------------------
@@ -2507,131 +2507,131 @@ unsigned int Player::GetSpellSchool(unsigned int uSpellID)
 //----- (0048E1B5) --------------------------------------------------------
 int Player::GetAttackRecoveryTime(bool bRangedAttack)
 {
-  ItemGen  *weapon = nullptr;
-  uint      weapon_recovery = base_recovery_times_per_weapon_type[0];
-  if (bRangedAttack)
-  {
-    if ( HasItemEquipped(EQUIP_BOW) )
+    ItemGen  *weapon = nullptr;
+    uint      weapon_recovery = base_recovery_times_per_weapon_type[0];
+    if (bRangedAttack)
     {
-      weapon = GetBowItem();
-      weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
+        if (HasItemEquipped(EQUIP_BOW))
+        {
+            weapon = GetBowItem();
+            weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
+        }
     }
-  }
-  else if ( IsUnarmed() == 1 && GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0)
-  {
-      weapon_recovery = base_recovery_times_per_weapon_type[1];
-  }
-  else if ( HasItemEquipped(EQUIP_TWO_HANDED) )
-  {
-    weapon = GetMainHandItem();
-    if (weapon->GetItemEquipType() == EQUIP_WAND)
+    else if (IsUnarmed() == 1 && GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0)
     {
-      __debugbreak();  // looks like offset in player's inventory and wand_lut much like case in 0042ECB5
-      __debugbreak();  // looks like wands were two-handed weapons once, or supposed to be. should not get here now
-      weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID - ITEM_WAND_FIRE]].uExpertLevelRecovery;
+        weapon_recovery = base_recovery_times_per_weapon_type[1];
     }
-    else
-      weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
-  }
-  if (HasItemEquipped(EQUIP_SINGLE_HANDED) && GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) != EQUIP_SHIELD) 
-      // ADD: shield check because shield recovery is added later and can be accidentally doubled
-  {
-    if (base_recovery_times_per_weapon_type[GetOffHandItem()->GetPlayerSkillType()] > weapon_recovery)
+    else if (HasItemEquipped(EQUIP_TWO_HANDED))
     {
-      weapon = GetOffHandItem();
-      weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
+        weapon = GetMainHandItem();
+        if (weapon->GetItemEquipType() == EQUIP_WAND)
+        {
+            __debugbreak();  // looks like offset in player's inventory and wand_lut much like case in 0042ECB5
+            __debugbreak();  // looks like wands were two-handed weapons once, or supposed to be. should not get here now
+            weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID - ITEM_WAND_FIRE]].uExpertLevelRecovery;
+        }
+        else
+            weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
     }
-  }
-
-  uint armour_recovery = 0;
-  if ( HasItemEquipped(EQUIP_ARMOUR) )
-  {
-    uchar armour_skill_type = GetArmorItem()->GetPlayerSkillType();
-    uint base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
-    float multiplier;
-
-    if (armour_skill_type == PLAYER_SKILL_LEATHER)
+    if (HasItemEquipped(EQUIP_SINGLE_HANDED) && GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) != EQUIP_SHIELD)
+        // ADD: shield check because shield recovery is added later and can be accidentally doubled
     {
-      multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0, 0, 0);
-    }
-    else if (armour_skill_type == PLAYER_SKILL_CHAIN)
-    {
-      multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0, 0);
-    }
-    else if (armour_skill_type == PLAYER_SKILL_PLATE)
-    {
-      multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
-    }
-    else
-    {
-      Error("Unknown armour type"); // what kind of armour is that?
-      multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
+        if (base_recovery_times_per_weapon_type[GetOffHandItem()->GetPlayerSkillType()] > weapon_recovery)
+        {
+            weapon = GetOffHandItem();
+            weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
+        }
     }
 
-    armour_recovery = (uint)(base_armour_recovery * multiplier);
-  }
-
-  uint shield_recovery = 0;
-  if (HasItemEquipped(EQUIP_SINGLE_HANDED) && GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) == EQUIP_SHIELD)
-  {
-    uchar skill_type = GetOffHandItem()->GetPlayerSkillType();
-
-    uint shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
-    float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
-    shield_recovery = (uint)(shield_base_recovery * multiplier);
-  }
-
-  uint player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed()),
-       sword_axe_bow_recovery_reduction = 0;
-  bool shooting_laser = false;
-  if (weapon != nullptr)
-  {
-    if (GetActualSkillLevel((PLAYER_SKILL_TYPE)weapon->GetPlayerSkillType()) &&
-        (weapon->GetPlayerSkillType() == PLAYER_SKILL_SWORD || weapon->GetPlayerSkillType() == PLAYER_SKILL_AXE || weapon->GetPlayerSkillType() == PLAYER_SKILL_BOW) )
+    uint armour_recovery = 0;
+    if (HasItemEquipped(EQUIP_ARMOUR))
     {
-      if (SkillToMastery(pActiveSkills[weapon->GetPlayerSkillType()]) >= 2 )  // Expert   Sword, Axe & Bow   reduce recovery
-        sword_axe_bow_recovery_reduction = pActiveSkills[weapon->GetPlayerSkillType()] & 0x3F;
-    }
-    if (weapon->GetPlayerSkillType() == PLAYER_SKILL_BLASTER)
-      shooting_laser = true;
-  }
+        uchar armour_skill_type = GetArmorItem()->GetPlayerSkillType();
+        uint base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
+        float multiplier;
 
-  uint armsmaster_recovery_reduction = 0;
-  if (!bRangedAttack && !shooting_laser)
-  {
-    if (uint armsmaster_level = GetActualSkillLevel(PLAYER_SKILL_ARMSMASTER))
+        if (armour_skill_type == PLAYER_SKILL_LEATHER)
+        {
+            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0, 0, 0);
+        }
+        else if (armour_skill_type == PLAYER_SKILL_CHAIN)
+        {
+            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0, 0);
+        }
+        else if (armour_skill_type == PLAYER_SKILL_PLATE)
+        {
+            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
+        }
+        else
+        {
+            Error("Unknown armour type"); // what kind of armour is that?
+            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
+        }
+
+        armour_recovery = (uint)(base_armour_recovery * multiplier);
+    }
+
+    uint shield_recovery = 0;
+    if (HasItemEquipped(EQUIP_SINGLE_HANDED) && GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) == EQUIP_SHIELD)
     {
-      armsmaster_recovery_reduction = armsmaster_level & 0x3F;
-      if (SkillToMastery(armsmaster_level) >= 4)
-        armsmaster_recovery_reduction *= 2;
+        uchar skill_type = GetOffHandItem()->GetPlayerSkillType();
+
+        uint shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
+        float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
+        shield_recovery = (uint)(shield_base_recovery * multiplier);
     }
-  }
 
-  uint hasteRecoveryReduction = 0;
-  if (pPlayerBuffs[PLAYER_BUFF_HASTE].uExpireTime > 0 || pParty->pPartyBuffs[PARTY_BUFF_HASTE].uExpireTime > 0 )
-    hasteRecoveryReduction = 25;
+    uint player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed()),
+        sword_axe_bow_recovery_reduction = 0;
+    bool shooting_laser = false;
+    if (weapon != nullptr)
+    {
+        if (GetActualSkillLevel((PLAYER_SKILL_TYPE)weapon->GetPlayerSkillType()) &&
+            (weapon->GetPlayerSkillType() == PLAYER_SKILL_SWORD || weapon->GetPlayerSkillType() == PLAYER_SKILL_AXE || weapon->GetPlayerSkillType() == PLAYER_SKILL_BOW))
+        {
+            if (SkillToMastery(pActiveSkills[weapon->GetPlayerSkillType()]) >= 2)  // Expert   Sword, Axe & Bow   reduce recovery
+                sword_axe_bow_recovery_reduction = pActiveSkills[weapon->GetPlayerSkillType()] & 0x3F;
+        }
+        if (weapon->GetPlayerSkillType() == PLAYER_SKILL_BLASTER)
+            shooting_laser = true;
+    }
 
-  uint weapon_enchantment_recovery_reduction = 0;
-  if ( weapon  )
-  {
-    if (weapon->special_enchantment == 59 ||
-        weapon->special_enchantment == 41 ||
-        weapon->special_enchantment == 500)
-      weapon_enchantment_recovery_reduction = 20;
-  }
+    uint armsmaster_recovery_reduction = 0;
+    if (!bRangedAttack && !shooting_laser)
+    {
+        if (uint armsmaster_level = GetActualSkillLevel(PLAYER_SKILL_ARMSMASTER))
+        {
+            armsmaster_recovery_reduction = armsmaster_level & 0x3F;
+            if (SkillToMastery(armsmaster_level) >= 4)
+                armsmaster_recovery_reduction *= 2;
+        }
+    }
 
-  int recovery = weapon_recovery +
-                 armour_recovery +
-                 shield_recovery
-                 - armsmaster_recovery_reduction
-                 - weapon_enchantment_recovery_reduction
-                 - hasteRecoveryReduction
-                 - sword_axe_bow_recovery_reduction
-                 - player_speed_recovery_reduction;
+    uint hasteRecoveryReduction = 0;
+    if (pPlayerBuffs[PLAYER_BUFF_HASTE].Active())
+        hasteRecoveryReduction = 25;
 
-  if (recovery < 0)
-    recovery = 0;
-  return recovery;
+    uint weapon_enchantment_recovery_reduction = 0;
+    if (weapon)
+    {
+        if (weapon->special_enchantment == 59 ||
+            weapon->special_enchantment == 41 ||
+            weapon->special_enchantment == 500)
+            weapon_enchantment_recovery_reduction = 20;
+    }
+
+    int recovery = weapon_recovery +
+        armour_recovery +
+        shield_recovery
+        - armsmaster_recovery_reduction
+        - weapon_enchantment_recovery_reduction
+        - hasteRecoveryReduction
+        - sword_axe_bow_recovery_reduction
+        - player_speed_recovery_reduction;
+
+    if (recovery < 0)
+        recovery = 0;
+    return recovery;
 }
 
 
@@ -2768,7 +2768,7 @@ int Player::GetActualAC()
 //----- (0048E6DC) --------------------------------------------------------
 unsigned int Player::GetBaseAge()
 {
-  return (unsigned int)(((__int64)(pParty->uTimePlayed * 0.234375) / 60 / 60 / 24) / 7 / 4 / 12 - uBirthYear + game_starting_year);
+    return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
 }
 
 //----- (0048E72C) --------------------------------------------------------
@@ -2932,11 +2932,12 @@ void Player::RandomizeName()
 //----- (0048E9F4) --------------------------------------------------------
 unsigned int Player::GetMajorConditionIdx()
 {
-  for (uint i = 0; i < 18; ++i)
-    if (pConditions[pConditionImportancyTable[i]] != 0)
-      return pConditionImportancyTable[i];
-
-  return 18;
+    for (uint i = 0; i < 18; ++i)
+    {
+        if (conditions_times[pConditionImportancyTable[i]].Valid())
+            return pConditionImportancyTable[i];
+    }
+    return 18;
 }
 
 //----- (0048EA1B) --------------------------------------------------------
@@ -4298,15 +4299,15 @@ unsigned int Player::GetStatColor(int uStat)
 }
 
 //----- (004908A8) --------------------------------------------------------
-bool Player::DiscardConditionIfLastsLongerThan(unsigned int uCondition, signed __int64 uTime)
+bool Player::DiscardConditionIfLastsLongerThan(unsigned int uCondition, GameTime time)
 {
-  if ( pConditions[uCondition] && (uTime < (signed long long)pConditions[uCondition]) )
-  {
-    pConditions[uCondition] = 0i64;
-    return true;
-  }
-  else
-   return false;
+    if (conditions_times[uCondition] && (time < conditions_times[uCondition]))
+    {
+        conditions_times[uCondition].Reset();
+        return true;
+    }
+    else
+        return false;
 }
 
 //----- (004680ED) --------------------------------------------------------
@@ -4325,7 +4326,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
     int v25; // eax@109
     int v26; // eax@113
     int new_mana_val; // edi@114
-    signed __int64 v28; // qax@120
     __int64 v30; // edi@137
     __int64 v32; // ST3C_4@137
     __int64 v34; // ST34_4@137
@@ -4398,11 +4398,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
         case 221: //Catalyst
             playerAffected->SetCondition(Condition_Poison_Weak, 1);
             break;
+
         case 222: //Cure Wounds
             v25 = pParty->pPickedItem.uEnchantmentType + 10;
             playerAffected->Heal(v25);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+
         case 223: //Magic Potion
             v26 = pParty->pPickedItem.uEnchantmentType + 10;
             new_mana_val = playerAffected->sMana;
@@ -4412,127 +4414,172 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
             playerAffected->PlaySound(SPEECH_36, 0);
             playerAffected->sMana = new_mana_val;
             break;
+
         case 224: //Cure Weakness
-            playerAffected->pConditions[Condition_Weak] = 0i64;
+            playerAffected->conditions_times[Condition_Weak].Reset();
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+
         case 225: //Cure Disease
-            playerAffected->pConditions[Condition_Disease_Severe] = 0i64;
-            playerAffected->pConditions[Condition_Disease_Medium] = 0i64;
-            playerAffected->pConditions[Condition_Disease_Weak] = 0i64;
+            playerAffected->conditions_times[Condition_Disease_Severe].Reset();
+            playerAffected->conditions_times[Condition_Disease_Medium].Reset();
+            playerAffected->conditions_times[Condition_Disease_Weak].Reset();
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+
         case 226: //Cure Poison
-            playerAffected->pConditions[Condition_Poison_Severe] = 0i64;
-            playerAffected->pConditions[Condition_Poison_Medium] = 0i64;
-            playerAffected->pConditions[Condition_Poison_Weak] = 0i64;
+            playerAffected->conditions_times[Condition_Poison_Severe].Reset();
+            playerAffected->conditions_times[Condition_Poison_Medium].Reset();
+            playerAffected->conditions_times[Condition_Poison_Weak].Reset();
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+
         case 227: //Awaken
-            playerAffected->pConditions[Condition_Sleep] = 0i64;
+            playerAffected->conditions_times[Condition_Sleep].Reset();
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+
         case 228: //Haste
-            if (!playerAffected->pConditions[Condition_Weak])
+            if (!playerAffected->conditions_times[Condition_Weak])
             {
-                v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(pParty->uTimePlayed + v28, 3, 5, 0, 0);
+                auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
+                playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + duration, 3, 5, 0, 0);
                 playerAffected->PlaySound(SPEECH_36, 0);
             }
             break;
+
         case 229: //Heroism
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_HEROISM].Apply(pParty->uTimePlayed + v28, 3, 5, 0, 0);
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + duration, 3, 5, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 230: //Bless
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_BLESS].Apply(pParty->uTimePlayed + v28, 3, 5, 0, 0);
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + duration, 3, 5, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 231: //Preservation
+        {
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 232: //Shield
+        {
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_SHIELD].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 234: //Stoneskin
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Apply(pParty->uTimePlayed + v28, 3, 5, 0, 0);
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + duration, 3, 5, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 235: //Water Breathing
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335),
-                playerAffected->pPlayerBuffs[PLAYER_BUFF_WATER_WALK].Apply(pParty->uTimePlayed + v28, 3, 5, 0, 0);
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + duration, 3, 5, 0, 0);
             break;
+        }
+
         case 237: //Remove Fear
-            playerAffected->pConditions[Condition_Fear] = 0i64;
+            playerAffected->conditions_times[Condition_Fear].Reset();
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
         case 238: //Remove Curse
-            playerAffected->pConditions[Condition_Cursed] = 0i64;
+            playerAffected->conditions_times[Condition_Cursed].Reset();
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
         case 239: //Cure Insanity
-            playerAffected->pConditions[Condition_Insane] = 0i64;
+            playerAffected->conditions_times[Condition_Insane].Reset();
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+
         case 240: //Might Boost
+        {
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_STRENGTH].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 241: //Intellect Boost
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_INTELLIGENCE].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 242: //Personality Boost
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_WILLPOWER].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_WILLPOWER].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 243://Endurance Boost
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_ENDURANCE].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 244: //Speed Boost
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_SPEED].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 245: //Accuracy Boost
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_ACCURACY].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 251: //Cure Paralysis
-            playerAffected->pConditions[Condition_Paralyzed] = 0i64;
+            playerAffected->conditions_times[Condition_Paralyzed].Reset();
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+
         case 252://Divine Restoration
-            v30 = playerAffected->pConditions[Condition_Dead];
-            v32 = playerAffected->pConditions[Condition_Pertified];
-            v34 = playerAffected->pConditions[Condition_Eradicated];
-            pConditions.fill(0);
-            playerAffected->pConditions[Condition_Dead] = v30;
-            playerAffected->pConditions[Condition_Pertified] = v32;
-            playerAffected->pConditions[Condition_Eradicated] = v34;
+            v30 = playerAffected->conditions_times[Condition_Dead];
+            v32 = playerAffected->conditions_times[Condition_Pertified];
+            v34 = playerAffected->conditions_times[Condition_Eradicated];
+            conditions_times.fill(0);
+            playerAffected->conditions_times[Condition_Dead] = v30;
+            playerAffected->conditions_times[Condition_Pertified] = v32;
+            playerAffected->conditions_times[Condition_Eradicated] = v34;
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+
         case 253: //Divine Cure
             v25 = 5 * pParty->pPickedItem.uEnchantmentType;
             playerAffected->Heal(v25);
@@ -4547,51 +4594,73 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
         case 255: //Luck Boost
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_LUCK].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 256: //Fire Resistance
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_FIRE].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 257: //Air Resistance
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_AIR].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 258: //Water Resistance
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_WATER].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 259: //Earth Resistance
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_EARTH].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 260: //Mind Resistance
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_MIND].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 261: //Body Resistance
+        {
+            auto duration = GameTime(0, TIME_SECONDS_PER_QUANT * pParty->pPickedItem.uEnchantmentType);
             v50 = 3 * pParty->pPickedItem.uEnchantmentType;
-            v28 = (signed __int64)((double)(230400 * pParty->pPickedItem.uEnchantmentType) * 0.033333335);
-            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_BODY].Apply(pParty->uTimePlayed + v28, 0, v50, 0, 0);
+            playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+        }
+
         case 262: //Stone to Flesh
-            playerAffected->pConditions[Condition_Pertified] = 0i64;
+            playerAffected->conditions_times[Condition_Pertified].Reset();
             playerAffected->PlaySound(SPEECH_36, 0);
             break;
+
         case 264: //Pure Luck
             if (!playerAffected->pure_luck_used)
             {
@@ -4922,17 +4991,17 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
             pEngine->pStru6Instance->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
             playerAffected->PlaySound(SPEECH_93, 0);
             pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0, 0, 0);
-            if (pParty->uDaysPlayed == 6 || pParty->uDaysPlayed == 20)
+            if (pParty->uCurrentDayOfMonth == 6 || pParty->uCurrentDayOfMonth == 20)
             {
                 playerAffected->SetCondition(Condition_Eradicated, 0);
                 pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0, 0, 0);
             }
-            else if (pParty->uDaysPlayed == 12 || pParty->uDaysPlayed == 26)
+            else if (pParty->uCurrentDayOfMonth == 12 || pParty->uCurrentDayOfMonth == 26)
             {
                 playerAffected->SetCondition(Condition_Dead, 0);
                 pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0, 0, 0);
             }
-            else  if (pParty->uDaysPlayed == 4 || pParty->uDaysPlayed == 25)
+            else  if (pParty->uCurrentDayOfMonth == 4 || pParty->uCurrentDayOfMonth == 25)
             {
                 playerAffected->SetCondition(Condition_Pertified, 0);
                 pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0, 0, 0);
@@ -4996,354 +5065,351 @@ bool CmpSkillValue(int valToCompare, int skillValue)
 }
 
 //----- (00449BB4) --------------------------------------------------------
-bool Player::CompareVariable( enum VariableType VarNum, signed int pValue )   // in some cases this calls only calls v4 >= pValue, which i've changed to return false, since these values are supposed to be positive and v4 was -1 by default
+bool Player::CompareVariable(enum VariableType VarNum, signed int pValue)   // in some cases this calls only calls v4 >= pValue, which i've changed to return false, since these values are supposed to be positive and v4 was -1 by default
 {
-  Assert(pValue >= 0, "Compare variable shouldn't have negative arguments");
+    Assert(pValue >= 0, "Compare variable shouldn't have negative arguments");
 
-  signed int v4; // edi@1
-  unsigned __int8 test_bit_value; // eax@25
-  unsigned __int8 byteWithRequestedBit; // cl@25
-  DDM_DLV_Header *v19; // eax@122
-  DDM_DLV_Header *v21; // eax@126
-  int actStat; // ebx@161
-  int baseStat; // eax@161
+    signed int v4; // edi@1
+    unsigned __int8 test_bit_value; // eax@25
+    unsigned __int8 byteWithRequestedBit; // cl@25
+    DDM_DLV_Header *v19; // eax@122
+    DDM_DLV_Header *v21; // eax@126
+    int actStat; // ebx@161
+    int baseStat; // eax@161
 
 
-  if ( (signed int)VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74 )
-    return (unsigned __int8)stru_5E4C90_MapPersistVars.field_0[VarNum - VAR_MapPersistentVariable_0] > 0;  // originally (unsigned __int8)byte_5E4C15[VarNum];
-  if ( (signed int)VarNum >= VAR_MapPersistentVariable_75 && VarNum <= VAR_MapPersistentVariable_99 )
-    return (unsigned __int8)stru_5E4C90_MapPersistVars._decor_events[VarNum - VAR_MapPersistentVariable_75] > 0;      //not really sure whether the number gets up to 99, but can't ignore the possibility
+    if ((signed int)VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74)
+        return (unsigned __int8)stru_5E4C90_MapPersistVars.field_0[VarNum - VAR_MapPersistentVariable_0] > 0;  // originally (unsigned __int8)byte_5E4C15[VarNum];
+    if ((signed int)VarNum >= VAR_MapPersistentVariable_75 && VarNum <= VAR_MapPersistentVariable_99)
+        return (unsigned __int8)stru_5E4C90_MapPersistVars._decor_events[VarNum - VAR_MapPersistentVariable_75] > 0;      //not really sure whether the number gets up to 99, but can't ignore the possibility
 
-  switch ( VarNum )
-  {
+    switch (VarNum)
+    {
     case VAR_Sex:
-      return ( pValue == this->uSex );
+        return (pValue == this->uSex);
     case VAR_Class:
-      return ( pValue == this->classType );
+        return (pValue == this->classType);
     case VAR_Race:
-      return pValue == GetRace();
+        return pValue == GetRace();
     case VAR_CurrentHP:
-      return this->sHealth >= pValue;
+        return this->sHealth >= pValue;
     case VAR_MaxHP:
-      return (this->sHealth >= GetMaxHealth());
+        return (this->sHealth >= GetMaxHealth());
     case VAR_CurrentSP:
-      return this->sMana >= pValue;
+        return this->sMana >= pValue;
     case VAR_MaxSP:
-      return (this->sMana >= GetMaxMana());
+        return (this->sMana >= GetMaxMana());
     case VAR_ActualAC:
-      return GetActualAC() >= pValue;
+        return GetActualAC() >= pValue;
     case VAR_ACModifier:
-      return this->sACModifier >= pValue;
+        return this->sACModifier >= pValue;
     case VAR_BaseLevel:
-      return this->uLevel >= pValue;
+        return this->uLevel >= pValue;
     case VAR_LevelModifier:
-      return this->sLevelModifier >= pValue;
+        return this->sLevelModifier >= pValue;
     case VAR_Age:
-      return GetActualAge() >= (unsigned int)pValue;
+        return GetActualAge() >= (unsigned int)pValue;
     case VAR_Award:
-      return _449B57_test_bit(this->_achieved_awards_bits, pValue);
+        return _449B57_test_bit(this->_achieved_awards_bits, pValue);
     case VAR_Experience:
-      return this->uExperience >= pValue;       //TODO change pValue to long long
+        return this->uExperience >= pValue;       //TODO change pValue to long long
     case VAR_QBits_QuestsDone:
-      return _449B57_test_bit(pParty->_quest_bits, pValue);
+        return _449B57_test_bit(pParty->_quest_bits, pValue);
     case VAR_PlayerItemInHands:
-      //for (int i = 0; i < 138; i++)
-      for (int i = 0; i < 126; i++)
-      {
-        if (pInventoryItemList[i].uItemID == pValue)
+        //for (int i = 0; i < 138; i++)
+        for (int i = 0; i < 126; i++)
         {
-          return true;
+            if (pInventoryItemList[i].uItemID == pValue)
+            {
+                return true;
+            }
         }
-      }
-      return pParty->pPickedItem.uItemID == pValue;
+        return pParty->pPickedItem.uItemID == pValue;
+
     case VAR_Hour:
-      if ( (long long)(pParty->uTimePlayed * 0.234375) / 60 / 60 % 24 == pValue )
-        return true;
-      return false;
+        return pParty->GetPlayingTime().GetHoursOfDay() == pValue;
+
     case VAR_DayOfYear:
-      if (((long long)(pParty->uTimePlayed * 0.234375) / 60 / 60) / 24 % 336 + 1 == pValue)
-        return true;
-      return false;
+        return pParty->GetPlayingTime().GetDays() % 336 + 1 == pValue;
+
     case VAR_DayOfWeek:
-      if (((long long)(pParty->uTimePlayed * 0.234375) / 60 / 60) / 24 % 7)
-        return true;
-      return false;
+        return pParty->GetPlayingTime().GetDays() % 7 == pValue;
+
     case VAR_FixedGold:
-      return pParty->uNumGold >= (unsigned int)pValue;
+        return pParty->uNumGold >= (unsigned int)pValue;
     case VAR_FixedFood:
-      return pParty->uNumFoodRations >= (unsigned int)pValue;
+        return pParty->uNumFoodRations >= (unsigned int)pValue;
     case VAR_MightBonus:
-      return this->uMightBonus >= pValue;
+        return this->uMightBonus >= pValue;
     case VAR_IntellectBonus:
-      return this->uIntelligenceBonus >= pValue;
+        return this->uIntelligenceBonus >= pValue;
     case VAR_PersonalityBonus:
-      return this->uWillpowerBonus >= pValue;
+        return this->uWillpowerBonus >= pValue;
     case VAR_EnduranceBonus:
-      return this->uEnduranceBonus >= pValue;
+        return this->uEnduranceBonus >= pValue;
     case VAR_SpeedBonus:
-      return this->uSpeedBonus >= pValue;
+        return this->uSpeedBonus >= pValue;
     case VAR_AccuracyBonus:
-      return this->uAccuracyBonus >= pValue;
+        return this->uAccuracyBonus >= pValue;
     case VAR_LuckBonus:
-      return this->uLuckBonus >= pValue;
+        return this->uLuckBonus >= pValue;
     case VAR_BaseMight:
-      return this->uMight >= pValue;
+        return this->uMight >= pValue;
     case VAR_BaseIntellect:
-      return this->uIntelligence >= pValue;
+        return this->uIntelligence >= pValue;
     case VAR_BasePersonality:
-      return this->uWillpower >= pValue;
+        return this->uWillpower >= pValue;
     case VAR_BaseEndurance:
-      return this->uEndurance >= pValue;
+        return this->uEndurance >= pValue;
     case VAR_BaseSpeed:
-      return this->uSpeed >= pValue;
+        return this->uSpeed >= pValue;
     case VAR_BaseAccuracy:
-      return this->uAccuracy >= pValue;
+        return this->uAccuracy >= pValue;
     case VAR_BaseLuck:
-      return this->uLuck >= pValue;
+        return this->uLuck >= pValue;
     case VAR_ActualMight:
-      return GetActualMight() >= pValue;
+        return GetActualMight() >= pValue;
     case VAR_ActualIntellect:
-      return GetActualIntelligence() >= pValue;
+        return GetActualIntelligence() >= pValue;
     case VAR_ActualPersonality:
-      return GetActualWillpower() >= pValue;
+        return GetActualWillpower() >= pValue;
     case VAR_ActualEndurance:
-      return GetActualEndurance() >= pValue;
+        return GetActualEndurance() >= pValue;
     case VAR_ActualSpeed:
-      return GetActualSpeed() >= pValue;
+        return GetActualSpeed() >= pValue;
     case VAR_ActualAccuracy:
-      return GetActualAccuracy() >= pValue;
+        return GetActualAccuracy() >= pValue;
     case VAR_ActualLuck:
-      return GetActualLuck() >= pValue;
+        return GetActualLuck() >= pValue;
     case VAR_FireResistance:
-      return this->sResFireBase >= pValue;
+        return this->sResFireBase >= pValue;
     case VAR_AirResistance:
-      return this->sResAirBase >= pValue;
+        return this->sResAirBase >= pValue;
     case VAR_WaterResistance:
-      return this->sResWaterBase >= pValue;
+        return this->sResWaterBase >= pValue;
     case VAR_EarthResistance:
-      return this->sResEarthBase >= pValue;
+        return this->sResEarthBase >= pValue;
     case VAR_SpiritResistance:
-      return this->sResSpiritBase >= pValue;
+        return this->sResSpiritBase >= pValue;
     case VAR_MindResistance:
-      return this->sResMindBase >= pValue;
+        return this->sResMindBase >= pValue;
     case VAR_BodyResistance:
-      return this->sResBodyBase >= pValue;
+        return this->sResBodyBase >= pValue;
     case VAR_LightResistance:
-      return this->sResLightBase >= pValue;
+        return this->sResLightBase >= pValue;
     case VAR_DarkResistance:
-      return this->sResDarkBase >= pValue;
+        return this->sResDarkBase >= pValue;
     case VAR_PhysicalResistance:
-      Error("Physical resistance isn't used in events");
-      return false;
+        Error("Physical resistance isn't used in events");
+        return false;
     case VAR_MagicResistance:
-      return this->sResMagicBase >= pValue;
+        return this->sResMagicBase >= pValue;
     case VAR_FireResistanceBonus:
-      return this->sResFireBonus >= pValue;
+        return this->sResFireBonus >= pValue;
     case VAR_AirResistanceBonus:
-      return this->sResAirBonus >= pValue;
+        return this->sResAirBonus >= pValue;
     case VAR_WaterResistanceBonus:
-      return this->sResWaterBonus >= pValue;
+        return this->sResWaterBonus >= pValue;
     case VAR_EarthResistanceBonus:
-      return this->sResEarthBonus >= pValue;
+        return this->sResEarthBonus >= pValue;
     case VAR_SpiritResistanceBonus:
-      return this->sResSpiritBonus >= pValue;
+        return this->sResSpiritBonus >= pValue;
     case VAR_MindResistanceBonus:
-      return this->sResMindBonus >= pValue;
+        return this->sResMindBonus >= pValue;
     case VAR_BodyResistanceBonus:
-      return this->sResBodyBonus >= pValue;
+        return this->sResBodyBonus >= pValue;
     case VAR_LightResistanceBonus:
-      return this->sResLightBonus >= pValue;
+        return this->sResLightBonus >= pValue;
     case VAR_DarkResistanceBonus:
-      return this->sResDarkBonus >= pValue;
+        return this->sResDarkBonus >= pValue;
     case VAR_MagicResistanceBonus:
-      return this->sResMagicBonus >= pValue;
+        return this->sResMagicBonus >= pValue;
     case VAR_StaffSkill:
-      return CmpSkillValue(pValue, this->skillStaff);
+        return CmpSkillValue(pValue, this->skillStaff);
     case VAR_SwordSkill:
-      return CmpSkillValue(pValue, this->skillSword);
+        return CmpSkillValue(pValue, this->skillSword);
     case VAR_DaggerSkill:
-      return CmpSkillValue(pValue, this->skillDagger);
+        return CmpSkillValue(pValue, this->skillDagger);
     case VAR_AxeSkill:
-      return CmpSkillValue(pValue, this->skillAxe);
+        return CmpSkillValue(pValue, this->skillAxe);
     case VAR_SpearSkill:
-      return CmpSkillValue(pValue, this->skillSpear);
+        return CmpSkillValue(pValue, this->skillSpear);
     case VAR_BowSkill:
-      return CmpSkillValue(pValue, this->skillBow);
+        return CmpSkillValue(pValue, this->skillBow);
     case VAR_MaceSkill:
-      return CmpSkillValue(pValue, this->skillMace);
+        return CmpSkillValue(pValue, this->skillMace);
     case VAR_BlasterSkill:
-      return CmpSkillValue(pValue, this->skillBlaster);
+        return CmpSkillValue(pValue, this->skillBlaster);
     case VAR_ShieldSkill:
-      return CmpSkillValue(pValue, this->skillShield);
+        return CmpSkillValue(pValue, this->skillShield);
     case VAR_LeatherSkill:
-      return CmpSkillValue(pValue, this->skillLeather);
+        return CmpSkillValue(pValue, this->skillLeather);
     case VAR_SkillChain:
-      return CmpSkillValue(pValue, this->skillChain);
+        return CmpSkillValue(pValue, this->skillChain);
     case VAR_PlateSkill:
-      return CmpSkillValue(pValue, this->skillPlate);
+        return CmpSkillValue(pValue, this->skillPlate);
     case VAR_FireSkill:
-      return CmpSkillValue(pValue, this->skillFire);
+        return CmpSkillValue(pValue, this->skillFire);
     case VAR_AirSkill:
-      return CmpSkillValue(pValue, this->skillAir);
+        return CmpSkillValue(pValue, this->skillAir);
     case VAR_WaterSkill:
-      return CmpSkillValue(pValue, this->skillWater);
+        return CmpSkillValue(pValue, this->skillWater);
     case VAR_EarthSkill:
-      return CmpSkillValue(pValue, this->skillEarth);
+        return CmpSkillValue(pValue, this->skillEarth);
     case VAR_SpiritSkill:
-      return CmpSkillValue(pValue, this->skillSpirit);
+        return CmpSkillValue(pValue, this->skillSpirit);
     case VAR_MindSkill:
-      return CmpSkillValue(pValue, this->skillMind);
+        return CmpSkillValue(pValue, this->skillMind);
     case VAR_BodySkill:
-      return CmpSkillValue(pValue, this->skillBody);
+        return CmpSkillValue(pValue, this->skillBody);
     case VAR_LightSkill:
-      return CmpSkillValue(pValue, this->skillLight);
+        return CmpSkillValue(pValue, this->skillLight);
     case VAR_DarkSkill:
-      return CmpSkillValue(pValue, this->skillDark);
+        return CmpSkillValue(pValue, this->skillDark);
     case VAR_IdentifyItemSkill:
-      return CmpSkillValue(pValue, this->skillItemId);
+        return CmpSkillValue(pValue, this->skillItemId);
     case VAR_MerchantSkill:
-      return CmpSkillValue(pValue, this->skillMerchant);
+        return CmpSkillValue(pValue, this->skillMerchant);
     case VAR_RepairSkill:
-      return CmpSkillValue(pValue, this->skillRepair);
+        return CmpSkillValue(pValue, this->skillRepair);
     case VAR_BodybuildingSkill:
-      return CmpSkillValue(pValue, this->skillBodybuilding);
+        return CmpSkillValue(pValue, this->skillBodybuilding);
     case VAR_MeditationSkill:
-      return CmpSkillValue(pValue, this->skillMeditation);
+        return CmpSkillValue(pValue, this->skillMeditation);
     case VAR_PerceptionSkill:
-      return CmpSkillValue(pValue, this->skillPerception);
+        return CmpSkillValue(pValue, this->skillPerception);
     case VAR_DiplomacySkill:
-      return CmpSkillValue(pValue, this->skillDiplomacy);
+        return CmpSkillValue(pValue, this->skillDiplomacy);
     case VAR_ThieverySkill:
-      Error("Thievery isn't used in events");
-      return false;
+        Error("Thievery isn't used in events");
+        return false;
     case VAR_DisarmTrapSkill:         //wasn't in the original
-      return CmpSkillValue(pValue, this->skillDisarmTrap);
+        return CmpSkillValue(pValue, this->skillDisarmTrap);
     case VAR_DodgeSkill:         //wasn't in the original
-      return CmpSkillValue(pValue, this->skillDodge);
+        return CmpSkillValue(pValue, this->skillDodge);
     case VAR_UnarmedSkill:         //wasn't in the original
-      return CmpSkillValue(pValue, this->skillUnarmed);
+        return CmpSkillValue(pValue, this->skillUnarmed);
     case VAR_IdentifyMonsterSkill:         //wasn't in the original
-      return CmpSkillValue(pValue, this->skillMonsterId);
+        return CmpSkillValue(pValue, this->skillMonsterId);
     case VAR_ArmsmasterSkill:         //wasn't in the original
-      return CmpSkillValue(pValue, this->skillArmsmaster);
+        return CmpSkillValue(pValue, this->skillArmsmaster);
     case VAR_StealingSkill:         //wasn't in the original
-      return CmpSkillValue(pValue, this->skillStealing);
+        return CmpSkillValue(pValue, this->skillStealing);
     case VAR_AlchemySkill:         //wasn't in the original
-      return CmpSkillValue(pValue, this->skillAlchemy);
+        return CmpSkillValue(pValue, this->skillAlchemy);
     case VAR_LearningSkill:
-      return CmpSkillValue(pValue, this->skillLearning);
+        return CmpSkillValue(pValue, this->skillLearning);
     case VAR_Cursed:
-      return pConditions[Condition_Cursed] > 0;
+        return conditions_times[Condition_Cursed].Valid();
     case VAR_Weak:
-      return pConditions[Condition_Weak] > 0;
+        return conditions_times[Condition_Weak].Valid();
     case VAR_Asleep:
-      return pConditions[Condition_Sleep] > 0;
+        return conditions_times[Condition_Sleep].Valid();
     case VAR_Afraid:
-      return pConditions[Condition_Fear] > 0;
+        return conditions_times[Condition_Fear].Valid();
     case VAR_Drunk:
-      return pConditions[Condition_Drunk] > 0;
+        return conditions_times[Condition_Drunk].Valid();
     case VAR_Insane:
-      return pConditions[Condition_Insane] > 0;
+        return conditions_times[Condition_Insane].Valid();
     case VAR_PoisonedGreen:
-      return pConditions[Condition_Poison_Weak] > 0;
+        return conditions_times[Condition_Poison_Weak].Valid();
     case VAR_DiseasedGreen:
-      return pConditions[Condition_Disease_Weak] > 0;
+        return conditions_times[Condition_Disease_Weak].Valid();
     case VAR_PoisonedYellow:
-      return pConditions[Condition_Poison_Medium] > 0;
+        return conditions_times[Condition_Poison_Medium].Valid();
     case VAR_DiseasedYellow:
-      return pConditions[Condition_Disease_Medium] > 0;
+        return conditions_times[Condition_Disease_Medium].Valid();
     case VAR_PoisonedRed:
-      return pConditions[Condition_Poison_Severe] > 0;
+        return conditions_times[Condition_Poison_Severe].Valid();
     case VAR_DiseasedRed:
-      return pConditions[Condition_Disease_Severe] > 0;
+        return conditions_times[Condition_Disease_Severe].Valid();
     case VAR_Paralyzed:
-      return pConditions[Condition_Paralyzed] > 0;
+        return conditions_times[Condition_Paralyzed].Valid();
     case VAR_Unconsious:
-      return pConditions[Condition_Unconcious] > 0;
+        return conditions_times[Condition_Unconcious].Valid();
     case VAR_Dead:
-      return pConditions[Condition_Dead] > 0;
+        return conditions_times[Condition_Dead].Valid();
     case VAR_Stoned:
-      return pConditions[Condition_Pertified] > 0;
+        return conditions_times[Condition_Pertified].Valid();
     case VAR_Eradicated:
-      return pConditions[Condition_Eradicated] > 0;
+        return conditions_times[Condition_Eradicated].Valid();
     case VAR_MajorCondition:
-      v4 = GetMajorConditionIdx();
-      if ( v4 != 18 )
-      {
-        return v4 >= pValue;
-      }
-      return true;
-    case VAR_AutoNotes :  //TODO: find out why the double subtraction. or whether this is even used
-      test_bit_value = 0x80u >> (pValue - 2) % 8;
-      byteWithRequestedBit = pParty->_autonote_bits[(pValue - 2) /8];
-      return (test_bit_value & byteWithRequestedBit) != 0;
-    case VAR_IsMightMoreThanBase:
-      actStat = GetActualMight();
-      baseStat = GetBaseStrength();
-      return (actStat >= baseStat);
-    case VAR_IsIntellectMoreThanBase:
-      actStat = GetActualIntelligence();
-      baseStat = GetBaseIntelligence();
-      return (actStat >= baseStat);
-    case VAR_IsPersonalityMoreThanBase:
-      actStat = GetActualWillpower();
-      baseStat = GetBaseWillpower();
-      return (actStat >= baseStat);
-    case VAR_IsEnduranceMoreThanBase:
-      actStat = GetActualEndurance();
-      baseStat = GetBaseEndurance();
-      return (actStat >= baseStat);
-    case VAR_IsSpeedMoreThanBase:
-      actStat = GetActualSpeed();
-      baseStat = GetBaseSpeed();
-      return (actStat >= baseStat);
-    case VAR_IsAccuracyMoreThanBase:
-      actStat = GetActualAccuracy();
-      baseStat = GetBaseAccuracy();
-      return (actStat >= baseStat);
-    case VAR_IsLuckMoreThanBase:
-      actStat = GetActualLuck();
-      baseStat = GetBaseLuck();
-      return (actStat >= baseStat);
-    case VAR_PlayerBits:
-      test_bit_value = 0x80u >> ((signed __int16)pValue - 1) % 8;
-      byteWithRequestedBit = this->playerEventBits[((signed __int16)pValue - 1)/8];
-      return ( test_bit_value & byteWithRequestedBit ) != 0;
-    case VAR_NPCs2:
-      return pNPCStats->pNewNPCData[pValue].Hired();
-    case VAR_IsFlying:
-      if ( pParty->bFlying
-        && (pParty->pPartyBuffs[PARTY_BUFF_FLY].uExpireTime> 0) )
-        return true;
-      return false;
-    case VAR_HiredNPCHasSpeciality:
-      return CheckHiredNPCSpeciality(pValue);
-    case VAR_CircusPrises:    //isn't used in MM6 since 0x1D6u is a book of regeneration
-      v4 = 0;
-      for (int playerNum = 0; playerNum < 4; playerNum++)
-      {
-        for (int invPos = 0; invPos < 138; invPos++)
+        v4 = GetMajorConditionIdx();
+        if (v4 != 18)
         {
-          int itemId = pParty->pPlayers[playerNum].pInventoryItemList[invPos].uItemID;
-          switch ( itemId )
-          {
-          case 0x1D6u:
-            ++v4;
-            break;
-          case 0x1D7u:
-            v4 += 3;
-            break;
-          case 0x1DDu:
-            v4 += 5;
-            break;
-          }
+            return v4 >= pValue;
         }
-      }
-      return v4 >= pValue;
+        return true;
+    case VAR_AutoNotes:  //TODO: find out why the double subtraction. or whether this is even used
+        test_bit_value = 0x80u >> (pValue - 2) % 8;
+        byteWithRequestedBit = pParty->_autonote_bits[(pValue - 2) / 8];
+        return (test_bit_value & byteWithRequestedBit) != 0;
+    case VAR_IsMightMoreThanBase:
+        actStat = GetActualMight();
+        baseStat = GetBaseStrength();
+        return (actStat >= baseStat);
+    case VAR_IsIntellectMoreThanBase:
+        actStat = GetActualIntelligence();
+        baseStat = GetBaseIntelligence();
+        return (actStat >= baseStat);
+    case VAR_IsPersonalityMoreThanBase:
+        actStat = GetActualWillpower();
+        baseStat = GetBaseWillpower();
+        return (actStat >= baseStat);
+    case VAR_IsEnduranceMoreThanBase:
+        actStat = GetActualEndurance();
+        baseStat = GetBaseEndurance();
+        return (actStat >= baseStat);
+    case VAR_IsSpeedMoreThanBase:
+        actStat = GetActualSpeed();
+        baseStat = GetBaseSpeed();
+        return (actStat >= baseStat);
+    case VAR_IsAccuracyMoreThanBase:
+        actStat = GetActualAccuracy();
+        baseStat = GetBaseAccuracy();
+        return (actStat >= baseStat);
+    case VAR_IsLuckMoreThanBase:
+        actStat = GetActualLuck();
+        baseStat = GetBaseLuck();
+        return (actStat >= baseStat);
+    case VAR_PlayerBits:
+        test_bit_value = 0x80u >> ((signed __int16)pValue - 1) % 8;
+        byteWithRequestedBit = this->playerEventBits[((signed __int16)pValue - 1) / 8];
+        return (test_bit_value & byteWithRequestedBit) != 0;
+    case VAR_NPCs2:
+        return pNPCStats->pNewNPCData[pValue].Hired();
+    case VAR_IsFlying:
+        if (pParty->bFlying && pParty->pPartyBuffs[PARTY_BUFF_FLY].Active())
+            return true;
+        return false;
+    case VAR_HiredNPCHasSpeciality:
+        return CheckHiredNPCSpeciality(pValue);
+    case VAR_CircusPrises:    //isn't used in MM6 since 0x1D6u is a book of regeneration
+        v4 = 0;
+        for (int playerNum = 0; playerNum < 4; playerNum++)
+        {
+            for (int invPos = 0; invPos < 138; invPos++)
+            {
+                int itemId = pParty->pPlayers[playerNum].pInventoryItemList[invPos].uItemID;
+                switch (itemId)
+                {
+                case 0x1D6u:
+                    ++v4;
+                    break;
+                case 0x1D7u:
+                    v4 += 3;
+                    break;
+                case 0x1DDu:
+                    v4 += 5;
+                    break;
+                }
+            }
+        }
+        return v4 >= pValue;
     case VAR_NumSkillPoints:
-      return this->uSkillPoints >= (unsigned int)pValue;
+        return this->uSkillPoints >= (unsigned int)pValue;
     case VAR_MonthIs:
-      return (pParty->uCurrentMonth == (unsigned int)pValue);
+        return (pParty->uCurrentMonth == (unsigned int)pValue);
     case VAR_Counter1:
     case VAR_Counter2:
     case VAR_Counter3:
@@ -5354,458 +5420,466 @@ bool Player::CompareVariable( enum VariableType VarNum, signed int pValue )   //
     case VAR_Counter8:
     case VAR_Counter9:
     case VAR_Counter10:
-      if (pParty->PartyTimes.CounterEventValues[VarNum - VAR_Counter1])         //originally (signed __int64)(__PAIR__(*(int *)&stru_AA1058[3].pSounds[8 * VarNum + 44304], *(int *)&stru_AA1058[3].pSounds[8 * VarNum + 44300])
-      {
-        return (pParty->PartyTimes.CounterEventValues[VarNum - VAR_Counter1] + 460800 * pValue * 0.033333335) <= pParty->uTimePlayed ;
-      }
-    case VAR_ReputationInCurrentLocation:
-      v19 = &pOutdoor->ddm;
-      if ( uCurrentlyLoadedLevelType != LEVEL_Outdoor )
-        v19 = &pIndoor->dlv;
-      return (v19->uReputation >= pValue);
-    case VAR_Unknown1:
-      v21 = &pOutdoor->ddm;
-      if ( uCurrentlyLoadedLevelType != LEVEL_Outdoor )
-        v21 = &pIndoor->dlv;
-      return (v21->field_C_alert == pValue);        //yes, equality, not >=
-    case VAR_GoldInBank:
-      return pParty->uNumGoldInBank >= (unsigned int)pValue;
-    case VAR_NumDeaths:
-      return pParty->uNumDeaths >= (unsigned int)pValue;
-    case VAR_NumBounties:
-      return pParty->uNumBountiesCollected >= (unsigned int)pValue;
-    case VAR_PrisonTerms:
-      return pParty->uNumPrisonTerms >= pValue;
-    case VAR_ArenaWinsPage:
-      return (unsigned __int8)pParty->uNumArenaPageWins >= pValue;
-    case VAR_ArenaWinsSquire:
-      return (unsigned __int8)pParty->uNumArenaSquireWins >= pValue;
-    case VAR_ArenaWinsKnight:
-      return (unsigned __int8)pParty->uNumArenaKnightWins >= pValue;
-    case VAR_ArenaWinsLord:
-      return pParty->uNumArenaLordWins >= pValue;
-    case VAR_Invisible:
-      return ( pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime > 0 );
-    case VAR_ItemEquipped:
-      for (int i = 0; i < 16; i++)
-      {
-        if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) && GetNthEquippedIndexItem(i)->uItemID == pValue )
+        if (pParty->PartyTimes.CounterEventValues[VarNum - VAR_Counter1].Valid())
         {
-          return true;
+            return (pParty->PartyTimes.CounterEventValues[VarNum - VAR_Counter1] + GameTime::FromHours(pValue)) <= pParty->GetPlayingTime();
         }
-      }
-      return false;
-  }
-  
-  return false;
+        break;
+
+    case VAR_ReputationInCurrentLocation:
+        v19 = &pOutdoor->ddm;
+        if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
+            v19 = &pIndoor->dlv;
+        return (v19->uReputation >= pValue);
+
+    case VAR_Unknown1:
+        v21 = &pOutdoor->ddm;
+        if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
+            v21 = &pIndoor->dlv;
+        return (v21->field_C_alert == pValue);        //yes, equality, not >=
+
+    case VAR_GoldInBank:
+        return pParty->uNumGoldInBank >= (unsigned int)pValue;
+
+    case VAR_NumDeaths:
+        return pParty->uNumDeaths >= (unsigned int)pValue;
+
+    case VAR_NumBounties:
+        return pParty->uNumBountiesCollected >= (unsigned int)pValue;
+
+    case VAR_PrisonTerms:
+        return pParty->uNumPrisonTerms >= pValue;
+    case VAR_ArenaWinsPage:
+        return (unsigned __int8)pParty->uNumArenaPageWins >= pValue;
+    case VAR_ArenaWinsSquire:
+        return (unsigned __int8)pParty->uNumArenaSquireWins >= pValue;
+    case VAR_ArenaWinsKnight:
+        return (unsigned __int8)pParty->uNumArenaKnightWins >= pValue;
+    case VAR_ArenaWinsLord:
+        return pParty->uNumArenaLordWins >= pValue;
+    case VAR_Invisible:
+        return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
+    case VAR_ItemEquipped:
+        for (int i = 0; i < 16; i++)
+        {
+            if (HasItemEquipped((ITEM_EQUIP_TYPE)i) && GetNthEquippedIndexItem(i)->uItemID == pValue)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    return false;
 }
 
 
 //----- (0044A5CB) --------------------------------------------------------
 void Player::SetVariable(enum VariableType var_type, signed int var_value)
 {
-  unsigned int v6; // esi@13
-  unsigned int v7; // esi@14
-  signed int v11; // eax@30
-  DDM_DLV_Header *v24; // ecx@148
-  ItemGen item; // [sp+Ch] [bp-28h]@52
+    unsigned int v6; // esi@13
+    unsigned int v7; // esi@14
+    signed int v11; // eax@30
+    DDM_DLV_Header *v24; // ecx@148
+    ItemGen item; // [sp+Ch] [bp-28h]@52
 
 
-  if ( var_type >= VAR_History_0 && var_type <= VAR_History_28)
-  {
-    if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0])
+    if (var_type >= VAR_History_0 && var_type <= VAR_History_28)
     {
-      pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->uTimePlayed;
-      if (pStorylineText->StoreLine[var_type - VAR_History_0].pText)
-      {
-        bFlashHistoryBook = 1;
-        PlayAwardSound();
-      }
+        if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0])
+        {
+            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->GetPlayingTime();
+            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText)
+            {
+                bFlashHistoryBook = 1;
+                PlayAwardSound();
+            }
+        }
+        return;
     }
-    return;
-  }
 
-  if ( var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_99 )
-  {
-    if ( var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74 )
-      stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] = (char)var_value;  // originally (unsigned __int8)byte_5E4C15[VarNum];
-    if ( var_type >= VAR_MapPersistentVariable_75 && var_type <= VAR_MapPersistentVariable_99 )
-      stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75] = (unsigned char)var_value;      //not really sure whether the number gets up to 99, but can't ignore the possibility
-    return;
-  }
+    if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_99)
+    {
+        if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74)
+            stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] = (char)var_value;
+        if (var_type >= VAR_MapPersistentVariable_75 && var_type <= VAR_MapPersistentVariable_99)
+            stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75] = (unsigned char)var_value;      //not really sure whether the number gets up to 99, but can't ignore the possibility
+        return;
+    }
 
-  if ( var_type >= VAR_UnknownTimeEvent0 && var_type <= VAR_UnknownTimeEvent19 )
-  {
-    pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] = pParty->uTimePlayed;    //*(int *)&stru_AA1058[3].pSounds[8 * var_type + 44532] = LODWORD(pParty->uTimePlayed);, *(int *)&stru_AA1058[3].pSounds[8 * var_type + 44536] = HIDWORD(pParty->uTimePlayed
-    PlayAwardSound();
-    return;
-  }
-
-  switch ( var_type )
-  {
-    case VAR_Sex:
-      this->uSex = (PLAYER_SEX)var_value;
-      PlayAwardSound_Anim();
-      return;
-    case VAR_Class:
-      this->classType = (PLAYER_CLASS_TYPE)var_value;
-      if ( (PLAYER_CLASS_TYPE)var_value == PLAYER_CLASS_LICH )
-      {
-        for (int i = 0; i < 138; i++)
-        {
-          if (this->pOwnItems[i].uItemID == ITEM_LICH_JAR_EMPTY)
-          {
-            this->pOwnItems[i].uItemID = ITEM_LICH_JAR_FULL;
-            this->pOwnItems[i].uHolderPlayer = GetPlayerIndex() + 1;
-          }
-        }
-        if ( this->sResFireBase < 20 )
-          this->sResFireBase = 20;
-        if ( this->sResAirBase < 20 )
-          this->sResAirBase = 20;
-        if ( this->sResWaterBase < 20 )
-          this->sResWaterBase = 20;
-        if ( this->sResEarthBase < 20 )
-          this->sResEarthBase = 20;
-        this->sResMindBase = 200;
-        this->sResBodyBase = 200;
-        v11 = this->GetSexByVoice();
-        this->uPrevVoiceID = this->uVoiceID;
-        this->uPrevFace = this->uCurrentFace;
-        if ( v11 )
-        {
-          this->uCurrentFace = 21;
-          this->uVoiceID = 21;
-        }
-        else
-        {
-          this->uCurrentFace = 20;
-          this->uVoiceID = 20;
-        }
-        ReloadPlayerPortraits(GetPlayerIndex(), this->uCurrentFace);
-      }
-      PlayAwardSound_Anim();
-      return;
-    case VAR_CurrentHP:
-      this->sHealth = var_value;
-      PlayAwardSound_Anim();
-      return;
-    case VAR_MaxHP:
-      this->sHealth = GetMaxHealth();
-      return;
-    case VAR_CurrentSP:
-      this->sMana = var_value;
-      PlayAwardSound_Anim();
-      return;
-    case VAR_MaxSP:
-      this->sMana = GetMaxMana();
-      return;
-    case VAR_ACModifier:
-      this->sACModifier = (unsigned __int8)var_value;
-      PlayAwardSound_Anim();
-      return;
-    case VAR_BaseLevel:
-      this->uLevel = (unsigned __int8)var_value;
-      PlayAwardSound_Anim();
-      return;
-    case VAR_LevelModifier:
-      this->sLevelModifier = (unsigned __int8)var_value;
-      PlayAwardSound_Anim();
-      return;
-    case VAR_Age:
-      this->sAgeModifier = var_value;
-      return;
-    case VAR_Award:
-      if ( !_449B57_test_bit(this->_achieved_awards_bits, var_value) && pAwards[var_value].pText )
-      {
-        PlayAwardSound_Anim();
-        this->PlaySound(SPEECH_96, 0);
-      }
-      _449B7E_toggle_bit(this->_achieved_awards_bits, var_value, 1u);
-      return;
-    case VAR_Experience:
-      this->uExperience = var_value;
-      PlayAwardSound_Anim();
-      return;
-    case VAR_QBits_QuestsDone:
-      if ( !_449B57_test_bit(pParty->_quest_bits, var_value) && pQuestTable[var_value-1] )
-      {
-        bFlashQuestBook = 1;
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
+    if (var_type >= VAR_UnknownTimeEvent0 && var_type <= VAR_UnknownTimeEvent19)
+    {
+        pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] = pParty->GetPlayingTime();
         PlayAwardSound();
-        this->PlaySound(SPEECH_93, 0);
-      }
-      _449B7E_toggle_bit(pParty->_quest_bits, var_value, 1u);
-      return;
+        return;
+    }
+
+    switch (var_type)
+    {
+    case VAR_Sex:
+        this->uSex = (PLAYER_SEX)var_value;
+        PlayAwardSound_Anim();
+        return;
+    case VAR_Class:
+        this->classType = (PLAYER_CLASS_TYPE)var_value;
+        if ((PLAYER_CLASS_TYPE)var_value == PLAYER_CLASS_LICH)
+        {
+            for (int i = 0; i < 138; i++)
+            {
+                if (this->pOwnItems[i].uItemID == ITEM_LICH_JAR_EMPTY)
+                {
+                    this->pOwnItems[i].uItemID = ITEM_LICH_JAR_FULL;
+                    this->pOwnItems[i].uHolderPlayer = GetPlayerIndex() + 1;
+                }
+            }
+            if (this->sResFireBase < 20)
+                this->sResFireBase = 20;
+            if (this->sResAirBase < 20)
+                this->sResAirBase = 20;
+            if (this->sResWaterBase < 20)
+                this->sResWaterBase = 20;
+            if (this->sResEarthBase < 20)
+                this->sResEarthBase = 20;
+            this->sResMindBase = 200;
+            this->sResBodyBase = 200;
+            v11 = this->GetSexByVoice();
+            this->uPrevVoiceID = this->uVoiceID;
+            this->uPrevFace = this->uCurrentFace;
+            if (v11)
+            {
+                this->uCurrentFace = 21;
+                this->uVoiceID = 21;
+            }
+            else
+            {
+                this->uCurrentFace = 20;
+                this->uVoiceID = 20;
+            }
+            ReloadPlayerPortraits(GetPlayerIndex(), this->uCurrentFace);
+        }
+        PlayAwardSound_Anim();
+        return;
+    case VAR_CurrentHP:
+        this->sHealth = var_value;
+        PlayAwardSound_Anim();
+        return;
+    case VAR_MaxHP:
+        this->sHealth = GetMaxHealth();
+        return;
+    case VAR_CurrentSP:
+        this->sMana = var_value;
+        PlayAwardSound_Anim();
+        return;
+    case VAR_MaxSP:
+        this->sMana = GetMaxMana();
+        return;
+    case VAR_ACModifier:
+        this->sACModifier = (unsigned __int8)var_value;
+        PlayAwardSound_Anim();
+        return;
+    case VAR_BaseLevel:
+        this->uLevel = (unsigned __int8)var_value;
+        PlayAwardSound_Anim();
+        return;
+    case VAR_LevelModifier:
+        this->sLevelModifier = (unsigned __int8)var_value;
+        PlayAwardSound_Anim();
+        return;
+    case VAR_Age:
+        this->sAgeModifier = var_value;
+        return;
+    case VAR_Award:
+        if (!_449B57_test_bit(this->_achieved_awards_bits, var_value) && pAwards[var_value].pText)
+        {
+            PlayAwardSound_Anim();
+            this->PlaySound(SPEECH_96, 0);
+        }
+        _449B7E_toggle_bit(this->_achieved_awards_bits, var_value, 1u);
+        return;
+    case VAR_Experience:
+        this->uExperience = var_value;
+        PlayAwardSound_Anim();
+        return;
+    case VAR_QBits_QuestsDone:
+        if (!_449B57_test_bit(pParty->_quest_bits, var_value) && pQuestTable[var_value - 1])
+        {
+            bFlashQuestBook = 1;
+            pEngine->pStru6Instance->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
+            PlayAwardSound();
+            this->PlaySound(SPEECH_93, 0);
+        }
+        _449B7E_toggle_bit(pParty->_quest_bits, var_value, 1u);
+        return;
     case VAR_PlayerItemInHands:
-      item.Reset();
-      item.uItemID = var_value;
-      item.uAttributes = 1;
-      pParty->SetHoldingItem(&item);
-      if ( var_value >= ITEM_ARTIFACT_PUCK && var_value <= ITEM_RELIC_MEKORIGS_HAMMER )
-        pParty->pIsArtifactFound[var_value-500] = 1;
-      return;
+        item.Reset();
+        item.uItemID = var_value;
+        item.uAttributes = 1;
+        pParty->SetHoldingItem(&item);
+        if (var_value >= ITEM_ARTIFACT_PUCK && var_value <= ITEM_RELIC_MEKORIGS_HAMMER)
+            pParty->pIsArtifactFound[var_value - 500] = 1;
+        return;
     case VAR_FixedGold:
-      Party::SetGold(var_value);
-      return;
+        Party::SetGold(var_value);
+        return;
     case VAR_RandomGold:
-      v6 = rand() % var_value + 1;
-      Party::SetGold(v6);
-      GameUI_StatusBar_OnEvent(localization->FormatString(500, v6)); // You have %lu gold
-      GameUI_DrawFoodAndGold();
-      return;
+        v6 = rand() % var_value + 1;
+        Party::SetGold(v6);
+        GameUI_StatusBar_OnEvent(localization->FormatString(500, v6)); // You have %lu gold
+        GameUI_DrawFoodAndGold();
+        return;
     case VAR_FixedFood:
-      Party::SetFood(var_value);
-      PlayAwardSound_Anim();
-      return;
+        Party::SetFood(var_value);
+        PlayAwardSound_Anim();
+        return;
     case VAR_RandomFood:
-      v7 = rand() % var_value + 1;
-      Party::SetFood(v7);
-      GameUI_StatusBar_OnEvent(localization->FormatString(501, v7)); // You have %lu food
-      GameUI_DrawFoodAndGold();
-      PlayAwardSound_Anim();
-      return;
+        v7 = rand() % var_value + 1;
+        Party::SetFood(v7);
+        GameUI_StatusBar_OnEvent(localization->FormatString(501, v7)); // You have %lu food
+        GameUI_DrawFoodAndGold();
+        PlayAwardSound_Anim();
+        return;
     case VAR_BaseMight:
-      this->uMight = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->uMight = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_BaseIntellect:
-      this->uIntelligence = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->uIntelligence = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_BasePersonality:
-      this->uWillpower = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->uWillpower = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_BaseEndurance:
-      this->uEndurance = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->uEndurance = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_BaseSpeed:
-      this->uSpeed = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->uSpeed = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_BaseAccuracy:
-      this->uAccuracy = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->uAccuracy = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_BaseLuck:
-      this->uLuck = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->uLuck = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_MightBonus:
     case VAR_ActualMight:
-      this->uMightBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->uMightBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_IntellectBonus:
     case VAR_ActualIntellect:
-      this->uIntelligenceBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->uIntelligenceBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_PersonalityBonus:
     case VAR_ActualPersonality:
-      this->uWillpowerBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->uWillpowerBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_EnduranceBonus:
     case VAR_ActualEndurance:
-      this->uEnduranceBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->uEnduranceBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_SpeedBonus:
     case VAR_ActualSpeed:
-      this->uSpeedBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->uSpeedBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_AccuracyBonus:
     case VAR_ActualAccuracy:
-      this->uAccuracyBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->uAccuracyBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_LuckBonus:
     case VAR_ActualLuck:
-      this->uLuckBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->uLuckBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_FireResistance:
-      this->sResFireBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResFireBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_AirResistance:
-      this->sResAirBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResAirBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_WaterResistance:
-      this->sResWaterBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResWaterBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_EarthResistance:
-      this->sResEarthBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResEarthBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_SpiritResistance:
-      this->sResSpiritBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResSpiritBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_MindResistance:
-      this->sResMindBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResMindBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_BodyResistance:
-      this->sResBodyBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResBodyBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_LightResistance:
-      this->sResLightBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResLightBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_DarkResistance:
-      this->sResDarkBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResDarkBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_MagicResistance:
-      this->sResMagicBase = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_92);
-      return;
+        this->sResMagicBase = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_92);
+        return;
     case VAR_FireResistanceBonus:
-      this->sResFireBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResFireBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_AirResistanceBonus:
-      this->sResAirBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResAirBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_WaterResistanceBonus:
-      this->sResWaterBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResWaterBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_EarthResistanceBonus:
-      this->sResEarthBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResEarthBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_SpiritResistanceBonus:
-      this->sResSpiritBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResSpiritBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_MindResistanceBonus:
-      this->sResMindBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResMindBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_BodyResistanceBonus:
-      this->sResBodyBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResBodyBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_LightResistanceBonus:
-      this->sResLightBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResLightBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_DarkResistanceBonus:
-      this->sResDarkBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResDarkBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_PhysicalResistanceBonus:
-      Error("Physical res. bonus not used");
-      return;
+        Error("Physical res. bonus not used");
+        return;
     case VAR_MagicResistanceBonus:
-      this->sResMagicBonus = (unsigned __int8)var_value;
-      PlayAwardSound_Anim_Face(SPEECH_91);
-      return;
+        this->sResMagicBonus = (unsigned __int8)var_value;
+        PlayAwardSound_Anim_Face(SPEECH_91);
+        return;
     case VAR_Cursed:
-      this->SetCondition(Condition_Cursed, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Cursed, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Weak:
-      this->SetCondition(Condition_Weak, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Weak, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Asleep:
-      this->SetCondition(Condition_Sleep, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Sleep, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Afraid:
-      this->SetCondition(Condition_Fear, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Fear, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Drunk:
-      this->SetCondition(Condition_Drunk, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Drunk, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Insane:
-      this->SetCondition(Condition_Insane, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Insane, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_PoisonedGreen:
-      this->SetCondition(Condition_Poison_Weak, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Poison_Weak, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_DiseasedGreen:
-      this->SetCondition(Condition_Disease_Weak, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Disease_Weak, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_PoisonedYellow:
-      this->SetCondition(Condition_Poison_Medium, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Poison_Medium, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_DiseasedYellow:
-      this->SetCondition(Condition_Disease_Medium, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Disease_Medium, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_PoisonedRed:
-      this->SetCondition(Condition_Poison_Severe, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Poison_Severe, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_DiseasedRed:
-      this->SetCondition(Condition_Disease_Severe, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Disease_Severe, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Paralyzed:
-      this->SetCondition(Condition_Paralyzed, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Paralyzed, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Unconsious:
-      this->SetCondition(Condition_Unconcious, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Unconcious, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Dead:
-      this->SetCondition(Condition_Dead, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Dead, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Stoned:
-      this->SetCondition(Condition_Pertified, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Pertified, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_Eradicated:
-      this->SetCondition(Condition_Eradicated, 1);
-      PlayAwardSound_Anim();
-      return;
+        this->SetCondition(Condition_Eradicated, 1);
+        PlayAwardSound_Anim();
+        return;
     case VAR_MajorCondition:
-      pConditions.fill(0);
-      PlayAwardSound_Anim();
-      return;
+        conditions_times.fill(0);
+        PlayAwardSound_Anim();
+        return;
     case VAR_AutoNotes:
-      if ( !_449B57_test_bit(pParty->_autonote_bits, var_value) && pAutonoteTxt[var_value-1].pText )
-      {
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
-        this->PlaySound(SPEECH_96, 0);
-        bFlashAutonotesBook = 1;
-        _506568_autonote_type = pAutonoteTxt[var_value-1].eType;// dword_72371C[2 * a3];
-      }
-      _449B7E_toggle_bit(pParty->_autonote_bits, var_value, 1u);
-      PlayAwardSound();
-      return;
+        if (!_449B57_test_bit(pParty->_autonote_bits, var_value) && pAutonoteTxt[var_value - 1].pText)
+        {
+            pEngine->pStru6Instance->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
+            this->PlaySound(SPEECH_96, 0);
+            bFlashAutonotesBook = 1;
+            _506568_autonote_type = pAutonoteTxt[var_value - 1].eType;// dword_72371C[2 * a3];
+        }
+        _449B7E_toggle_bit(pParty->_autonote_bits, var_value, 1u);
+        PlayAwardSound();
+        return;
     case VAR_PlayerBits:
-      _449B7E_toggle_bit((unsigned char *)playerEventBits, var_value, 1u);
-      return;
+        _449B7E_toggle_bit((unsigned char *)playerEventBits, var_value, 1u);
+        return;
     case VAR_NPCs2:
-      pParty->hirelingScrollPosition = 0;
-      LOBYTE(pNPCStats->pNewNPCData[var_value].uFlags) |= 0x80u;
-      pParty->CountHirelings();
-      viewparams->bRedrawGameUI = true;
-      return;
+        pParty->hirelingScrollPosition = 0;
+        LOBYTE(pNPCStats->pNewNPCData[var_value].uFlags) |= 0x80u;
+        pParty->CountHirelings();
+        viewparams->bRedrawGameUI = true;
+        return;
     case VAR_NumSkillPoints:
-      this->uSkillPoints = var_value;
-      return;
+        this->uSkillPoints = var_value;
+        return;
+
     case VAR_Counter1:
     case VAR_Counter2:
     case VAR_Counter3:
@@ -5816,152 +5890,153 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value)
     case VAR_Counter8:
     case VAR_Counter9:
     case VAR_Counter10:
-      pParty->PartyTimes.CounterEventValues[var_type - VAR_Counter1] = pParty->uTimePlayed; //           *(int *)&stru_AA1058[3].pSounds[8 * var_type + 44300] = LODWORD(pParty->uTimePlayed);*(int *)&stru_AA1058[3].pSounds[8 * var_type + 44304] = HIDWORD(pParty->uTimePlayed);
-      return;
+        pParty->PartyTimes.CounterEventValues[var_type - VAR_Counter1] = pParty->GetPlayingTime();
+        return;
+
     case VAR_ReputationInCurrentLocation:
-      v24 = &pOutdoor->ddm;
-      if ( uCurrentlyLoadedLevelType != LEVEL_Outdoor )
-        v24 = &pIndoor->dlv;
-      v24->uReputation = var_value;
-      if ( var_value > 10000 )
-        v24->uReputation = 10000;
-      return;
+        v24 = &pOutdoor->ddm;
+        if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
+            v24 = &pIndoor->dlv;
+        v24->uReputation = var_value;
+        if (var_value > 10000)
+            v24->uReputation = 10000;
+        return;
     case VAR_GoldInBank:
-      pParty->uNumGoldInBank = var_value;
-      return;
+        pParty->uNumGoldInBank = var_value;
+        return;
     case VAR_NumDeaths:
-      pParty->uNumDeaths = var_value;
-      return;
+        pParty->uNumDeaths = var_value;
+        return;
     case VAR_NumBounties:
-      pParty->uNumBountiesCollected = var_value;
-      return;
+        pParty->uNumBountiesCollected = var_value;
+        return;
     case VAR_PrisonTerms:
-      pParty->uNumPrisonTerms = var_value;
-      return;
+        pParty->uNumPrisonTerms = var_value;
+        return;
     case VAR_ArenaWinsPage:
-      pParty->uNumArenaPageWins = var_value;
-      return;
+        pParty->uNumArenaPageWins = var_value;
+        return;
     case VAR_ArenaWinsSquire:
-      pParty->uNumArenaSquireWins = var_value;
-      return;
+        pParty->uNumArenaSquireWins = var_value;
+        return;
     case VAR_ArenaWinsKnight:
-      pParty->uNumArenaKnightWins = var_value;
-      return;
+        pParty->uNumArenaKnightWins = var_value;
+        return;
     case VAR_ArenaWinsLord:
-      pParty->uNumArenaLordWins = var_value;
-      return;
+        pParty->uNumArenaLordWins = var_value;
+        return;
     case VAR_StaffSkill:
-      SetSkillByEvent(&Player::skillStaff, var_value);
-      return;
+        SetSkillByEvent(&Player::skillStaff, var_value);
+        return;
     case VAR_SwordSkill:
-      SetSkillByEvent(&Player::skillSword, var_value);
-      return;
+        SetSkillByEvent(&Player::skillSword, var_value);
+        return;
     case VAR_DaggerSkill:
-      SetSkillByEvent(&Player::skillDagger, var_value);
-      return;
+        SetSkillByEvent(&Player::skillDagger, var_value);
+        return;
     case VAR_AxeSkill:
-      SetSkillByEvent(&Player::skillAxe, var_value);
-      return;
+        SetSkillByEvent(&Player::skillAxe, var_value);
+        return;
     case VAR_SpearSkill:
-      SetSkillByEvent(&Player::skillSpear, var_value);
-      return;
+        SetSkillByEvent(&Player::skillSpear, var_value);
+        return;
     case VAR_BowSkill:
-      SetSkillByEvent(&Player::skillBow, var_value);
-      return;
+        SetSkillByEvent(&Player::skillBow, var_value);
+        return;
     case VAR_MaceSkill:
-      SetSkillByEvent(&Player::skillMace, var_value);
-      return;
+        SetSkillByEvent(&Player::skillMace, var_value);
+        return;
     case VAR_BlasterSkill:
-      SetSkillByEvent(&Player::skillBlaster, var_value);
-      return;
+        SetSkillByEvent(&Player::skillBlaster, var_value);
+        return;
     case VAR_ShieldSkill:
-      SetSkillByEvent(&Player::skillShield, var_value);
-      return;
+        SetSkillByEvent(&Player::skillShield, var_value);
+        return;
     case VAR_LeatherSkill:
-      SetSkillByEvent(&Player::skillLeather, var_value);
-      return;
+        SetSkillByEvent(&Player::skillLeather, var_value);
+        return;
     case VAR_SkillChain:
-      SetSkillByEvent(&Player::skillChain, var_value);
-      return;
+        SetSkillByEvent(&Player::skillChain, var_value);
+        return;
     case VAR_PlateSkill:
-      SetSkillByEvent(&Player::skillPlate, var_value);
-      return;
+        SetSkillByEvent(&Player::skillPlate, var_value);
+        return;
     case VAR_FireSkill:
-      SetSkillByEvent(&Player::skillFire, var_value);
-      return;
+        SetSkillByEvent(&Player::skillFire, var_value);
+        return;
     case VAR_AirSkill:
-      SetSkillByEvent(&Player::skillAir, var_value);
-      return;
+        SetSkillByEvent(&Player::skillAir, var_value);
+        return;
     case VAR_WaterSkill:
-      SetSkillByEvent(&Player::skillWater, var_value);
-      return;
+        SetSkillByEvent(&Player::skillWater, var_value);
+        return;
     case VAR_EarthSkill:
-      SetSkillByEvent(&Player::skillEarth, var_value);
-      return;
+        SetSkillByEvent(&Player::skillEarth, var_value);
+        return;
     case VAR_SpiritSkill:
-      SetSkillByEvent(&Player::skillSpirit, var_value);
-      return;
+        SetSkillByEvent(&Player::skillSpirit, var_value);
+        return;
     case VAR_MindSkill:
-      SetSkillByEvent(&Player::skillMind, var_value);
-      return;
+        SetSkillByEvent(&Player::skillMind, var_value);
+        return;
     case VAR_BodySkill:
-      SetSkillByEvent(&Player::skillBody, var_value);
-      return;
+        SetSkillByEvent(&Player::skillBody, var_value);
+        return;
     case VAR_LightSkill:
-      SetSkillByEvent(&Player::skillLight, var_value);
-      return;
+        SetSkillByEvent(&Player::skillLight, var_value);
+        return;
     case VAR_DarkSkill:
-      SetSkillByEvent(&Player::skillDark, var_value);
-      return;
+        SetSkillByEvent(&Player::skillDark, var_value);
+        return;
     case VAR_IdentifyItemSkill:
-      SetSkillByEvent(&Player::skillItemId, var_value);
-      return;
+        SetSkillByEvent(&Player::skillItemId, var_value);
+        return;
     case VAR_MerchantSkill:
-      SetSkillByEvent(&Player::skillMerchant, var_value);
-      return;
+        SetSkillByEvent(&Player::skillMerchant, var_value);
+        return;
     case VAR_RepairSkill:
-      SetSkillByEvent(&Player::skillRepair, var_value);
-      return;
+        SetSkillByEvent(&Player::skillRepair, var_value);
+        return;
     case VAR_BodybuildingSkill:
-      SetSkillByEvent(&Player::skillBodybuilding, var_value);
-      return;
+        SetSkillByEvent(&Player::skillBodybuilding, var_value);
+        return;
     case VAR_MeditationSkill:
-      SetSkillByEvent(&Player::skillMeditation, var_value);
-      return;
+        SetSkillByEvent(&Player::skillMeditation, var_value);
+        return;
     case VAR_PerceptionSkill:
-      SetSkillByEvent(&Player::skillPerception, var_value);
-      return;
+        SetSkillByEvent(&Player::skillPerception, var_value);
+        return;
     case VAR_DiplomacySkill:
-      SetSkillByEvent(&Player::skillDiplomacy, var_value);
-      return;
+        SetSkillByEvent(&Player::skillDiplomacy, var_value);
+        return;
     case VAR_ThieverySkill:
-      Error ("Thieving unsupported");
-      return;
+        Error("Thieving unsupported");
+        return;
     case VAR_DisarmTrapSkill:
-      SetSkillByEvent(&Player::skillDisarmTrap, var_value);
-      return;
+        SetSkillByEvent(&Player::skillDisarmTrap, var_value);
+        return;
     case VAR_DodgeSkill:
-      SetSkillByEvent(&Player::skillDodge, var_value);
-      return;
+        SetSkillByEvent(&Player::skillDodge, var_value);
+        return;
     case VAR_UnarmedSkill:
-      SetSkillByEvent(&Player::skillUnarmed, var_value);
-      return;
+        SetSkillByEvent(&Player::skillUnarmed, var_value);
+        return;
     case VAR_IdentifyMonsterSkill:
-      SetSkillByEvent(&Player::skillMonsterId, var_value);
-      return;
+        SetSkillByEvent(&Player::skillMonsterId, var_value);
+        return;
     case VAR_ArmsmasterSkill:
-      SetSkillByEvent(&Player::skillArmsmaster, var_value);
-      return;
+        SetSkillByEvent(&Player::skillArmsmaster, var_value);
+        return;
     case VAR_StealingSkill:
-      SetSkillByEvent(&Player::skillStealing, var_value);
-      return;
+        SetSkillByEvent(&Player::skillStealing, var_value);
+        return;
     case VAR_AlchemySkill:
-      SetSkillByEvent(&Player::skillAlchemy, var_value);
-      return;
+        SetSkillByEvent(&Player::skillAlchemy, var_value);
+        return;
     case VAR_LearningSkill:
-      SetSkillByEvent(&Player::skillLearning, var_value);
-      return;
-  }
+        SetSkillByEvent(&Player::skillLearning, var_value);
+        return;
+    }
 }
 
 
@@ -6009,543 +6084,543 @@ void Player::SetSkillByEvent( unsigned __int16 Player::* skillToSet, unsigned __
 //----- (0044AFFB) --------------------------------------------------------
 void Player::AddVariable(enum VariableType var_type, signed int val)
 {
-  int v6; // eax@15
-  unsigned int v7; // esi@18
-  DDM_DLV_Header *v27; // eax@153
-  ItemGen item; // [sp+Ch] [bp-2Ch]@45
- 
-  if ( var_type >= VAR_Counter1 && var_type <= VAR_Counter10)
-  {
-    pParty->PartyTimes.CounterEventValues[var_type - VAR_Counter1] = pParty->uTimePlayed;
-    return;
-  }
+    int v6; // eax@15
+    unsigned int v7; // esi@18
+    DDM_DLV_Header *v27; // eax@153
+    ItemGen item; // [sp+Ch] [bp-2Ch]@45
 
-  if ( var_type >= VAR_UnknownTimeEvent0 && var_type <= VAR_UnknownTimeEvent19 )
-  {
-    pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] = pParty->uTimePlayed;
-    PlayAwardSound();
-    return;
-  }
-
-  if ( var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_99 )
-  {
-
-    if ( var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74 )
+    if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10)
     {
-      if (255 - val > stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0])
-        stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] += val;
-      else
-        stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] = 255;
+        pParty->PartyTimes.CounterEventValues[var_type - VAR_Counter1] = pParty->GetPlayingTime();
+        return;
     }
-    if ( (signed int)var_type >= VAR_MapPersistentVariable_75 && var_type <= VAR_MapPersistentVariable_99 )
-    {
-      if (255 - val > stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75])
-        stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75] += val;
-      else
-        stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75] = 255;
-    }
-    return;
-  }
 
-  if ( var_type >= VAR_History_0 && var_type <= VAR_History_28)
-  {
-    if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0])
+    if (var_type >= VAR_UnknownTimeEvent0 && var_type <= VAR_UnknownTimeEvent19)
     {
-      pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->uTimePlayed;
-      if (pStorylineText->StoreLine[var_type - VAR_History_0].pText = 0)
-      {
-        bFlashHistoryBook = 1;
+        pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] = pParty->GetPlayingTime();
         PlayAwardSound();
-      }
+        return;
     }
-    return;
-  }
 
-  switch ( var_type )
-  {
+    if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_99)
+    {
+
+        if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74)
+        {
+            if (255 - val > stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0])
+                stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] += val;
+            else
+                stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] = 255;
+        }
+        if ((signed int)var_type >= VAR_MapPersistentVariable_75 && var_type <= VAR_MapPersistentVariable_99)
+        {
+            if (255 - val > stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75])
+                stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75] += val;
+            else
+                stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75] = 255;
+        }
+        return;
+    }
+
+    if (var_type >= VAR_History_0 && var_type <= VAR_History_28)
+    {
+        if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0])
+        {
+            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->GetPlayingTime();
+            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText = 0)
+            {
+                bFlashHistoryBook = 1;
+                PlayAwardSound();
+            }
+        }
+        return;
+    }
+
+    switch (var_type)
+    {
     case VAR_RandomGold:
-      if ( val == 0 )
-        val = 1;
-      v6 = rand();
-      pParty->PartyFindsGold(v6 % val + 1, 1);
-      GameUI_DrawFoodAndGold();
-      return;
+        if (val == 0)
+            val = 1;
+        v6 = rand();
+        pParty->PartyFindsGold(v6 % val + 1, 1);
+        GameUI_DrawFoodAndGold();
+        return;
     case VAR_RandomFood:
-      if ( val == 0 )
-        val = 1;
-      v7 = rand() % val + 1;
-      Party::GiveFood(v7);
-      GameUI_StatusBar_OnEvent(localization->FormatString(502, v7)); // You find %lu food
+        if (val == 0)
+            val = 1;
+        v7 = rand() % val + 1;
+        Party::GiveFood(v7);
+        GameUI_StatusBar_OnEvent(localization->FormatString(502, v7)); // You find %lu food
 
-      GameUI_DrawFoodAndGold();
-      PlayAwardSound();
-      return;
+        GameUI_DrawFoodAndGold();
+        PlayAwardSound();
+        return;
     case VAR_Sex:
-      this->uSex = (PLAYER_SEX)val;
-      PlayAwardSound_Anim97();
-      return;
+        this->uSex = (PLAYER_SEX)val;
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Class:
-      this->classType = (PLAYER_CLASS_TYPE)val;
-      PlayAwardSound_Anim97();
-      return;
+        this->classType = (PLAYER_CLASS_TYPE)val;
+        PlayAwardSound_Anim97();
+        return;
     case VAR_CurrentHP:
-      this->sHealth = min(this->sHealth + val, this->GetMaxHealth() );
-      PlayAwardSound_Anim97();
-      return;
+        this->sHealth = min(this->sHealth + val, this->GetMaxHealth());
+        PlayAwardSound_Anim97();
+        return;
     case VAR_MaxHP:
-      this->_health_related = 0;
-      this->uFullHealthBonus = 0;
-      this->sHealth = this->GetMaxHealth();
-      return;
+        this->_health_related = 0;
+        this->uFullHealthBonus = 0;
+        this->sHealth = this->GetMaxHealth();
+        return;
     case VAR_CurrentSP:
-      this->sMana = min(this->sMana + val, this->GetMaxMana() );
-      PlayAwardSound_Anim97();
-      return;
+        this->sMana = min(this->sMana + val, this->GetMaxMana());
+        PlayAwardSound_Anim97();
+        return;
     case VAR_MaxSP:
-      this->_mana_related = 0;
-      this->uFullManaBonus = 0;
-      this->sMana = GetMaxMana();
-      return;
+        this->_mana_related = 0;
+        this->uFullManaBonus = 0;
+        this->sMana = GetMaxMana();
+        return;
     case VAR_ACModifier:
-      this->sACModifier = min(this->sACModifier + val, 255);
-      PlayAwardSound_Anim97();
-      return;
+        this->sACModifier = min(this->sACModifier + val, 255);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_BaseLevel:
-      this->uLevel = min(this->uLevel + val, 255);
-      PlayAwardSound_Anim97();
-      return;
+        this->uLevel = min(this->uLevel + val, 255);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_LevelModifier:
-      this->sLevelModifier = min(this->sLevelModifier + val, 255);
-      PlayAwardSound_Anim97();
-      return;
+        this->sLevelModifier = min(this->sLevelModifier + val, 255);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Age:
-      this->sAgeModifier += val;
-      return;
+        this->sAgeModifier += val;
+        return;
     case VAR_Award:
-      if (_449B57_test_bit(this->_achieved_awards_bits, val) && pAwards[val].pText )
-      {
-        PlayAwardSound_Anim97_Face(SPEECH_96);
-      }
-      _449B7E_toggle_bit(this->_achieved_awards_bits, val, 1);
-      return;
+        if (_449B57_test_bit(this->_achieved_awards_bits, val) && pAwards[val].pText)
+        {
+            PlayAwardSound_Anim97_Face(SPEECH_96);
+        }
+        _449B7E_toggle_bit(this->_achieved_awards_bits, val, 1);
+        return;
     case VAR_Experience:
-      this->uExperience = min(this->uExperience + val, 4000000000i64);
-      PlayAwardSound_Anim97();
-      return;
+        this->uExperience = min(this->uExperience + val, 4000000000i64);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_QBits_QuestsDone:
-      if ( !_449B57_test_bit(pParty->_quest_bits, val) && pQuestTable[val] )
-      {
-        bFlashQuestBook = 1;
-        PlayAwardSound_Anim97_Face(SPEECH_93);
-      }
-      _449B7E_toggle_bit(pParty->_quest_bits, val, 1);
-      return;
+        if (!_449B57_test_bit(pParty->_quest_bits, val) && pQuestTable[val])
+        {
+            bFlashQuestBook = 1;
+            PlayAwardSound_Anim97_Face(SPEECH_93);
+        }
+        _449B7E_toggle_bit(pParty->_quest_bits, val, 1);
+        return;
     case VAR_PlayerItemInHands:
-      item.Reset();
-      item.uAttributes = 1;
-      item.uItemID = val;
-      if ( val >= ITEM_ARTIFACT_PUCK && val <= ITEM_RELIC_MEKORIGS_HAMMER )
-        pParty->pIsArtifactFound[val-500] = 1;
-      else if ( val >= ITEM_WAND_FIRE && val <= ITEM_WAND_INCENERATION )
-      {
-        item.uNumCharges = rand() % 6 + item.GetDamageMod() + 1;
-        item.uMaxCharges = LOBYTE(item.uNumCharges);
-      }
-      pParty->SetHoldingItem(&item);
-      return;
+        item.Reset();
+        item.uAttributes = 1;
+        item.uItemID = val;
+        if (val >= ITEM_ARTIFACT_PUCK && val <= ITEM_RELIC_MEKORIGS_HAMMER)
+            pParty->pIsArtifactFound[val - 500] = 1;
+        else if (val >= ITEM_WAND_FIRE && val <= ITEM_WAND_INCENERATION)
+        {
+            item.uNumCharges = rand() % 6 + item.GetDamageMod() + 1;
+            item.uMaxCharges = LOBYTE(item.uNumCharges);
+        }
+        pParty->SetHoldingItem(&item);
+        return;
     case VAR_FixedGold:
-      pParty->PartyFindsGold(val, 1);
-      return;
+        pParty->PartyFindsGold(val, 1);
+        return;
     case VAR_BaseMight:
-      this->uMight = min(this->uMight + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->uMight = min(this->uMight + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_BaseIntellect:
-      this->uIntelligence = min(this->uIntelligence + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->uIntelligence = min(this->uIntelligence + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_BasePersonality:
-      this->uWillpower = min(this->uWillpower + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->uWillpower = min(this->uWillpower + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_BaseEndurance:
-      this->uEndurance = min(this->uEndurance + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->uEndurance = min(this->uEndurance + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_BaseSpeed:
-      this->uSpeed = min(this->uSpeed + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->uSpeed = min(this->uSpeed + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_BaseAccuracy:
-      this->uAccuracy = min(this->uAccuracy + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->uAccuracy = min(this->uAccuracy + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_BaseLuck:
-      this->uLuck = min(this->uLuck + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->uLuck = min(this->uLuck + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_FixedFood:
-      Party::GiveFood(val);
-      GameUI_StatusBar_OnEvent(localization->FormatString(502, val)); // You find %lu food
+        Party::GiveFood(val);
+        GameUI_StatusBar_OnEvent(localization->FormatString(502, val)); // You find %lu food
 
-      PlayAwardSound();
-      return;
+        PlayAwardSound();
+        return;
     case VAR_MightBonus:
     case VAR_ActualMight:
-      this->uMightBonus = min(this->uMightBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->uMightBonus = min(this->uMightBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_IntellectBonus:
     case VAR_ActualIntellect:
-      this->uIntelligenceBonus = min(this->uIntelligenceBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->uIntelligenceBonus = min(this->uIntelligenceBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_PersonalityBonus:
     case VAR_ActualPersonality:
-      this->uWillpowerBonus = min(this->uWillpowerBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->uWillpowerBonus = min(this->uWillpowerBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_EnduranceBonus:
     case VAR_ActualEndurance:
-      this->uEnduranceBonus = min(this->uEnduranceBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->uEnduranceBonus = min(this->uEnduranceBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_SpeedBonus:
     case VAR_ActualSpeed:
-      this->uSpeedBonus = min(this->uSpeedBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->uSpeedBonus = min(this->uSpeedBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_AccuracyBonus:
     case VAR_ActualAccuracy:
-      this->uAccuracyBonus = min(this->uAccuracyBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->uAccuracyBonus = min(this->uAccuracyBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_LuckBonus:
     case VAR_ActualLuck:
-      this->uLuckBonus = min(this->uLuckBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->uLuckBonus = min(this->uLuckBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_FireResistance:
-      this->sResFireBase = min(this->sResFireBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResFireBase = min(this->sResFireBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_AirResistance:
-      this->sResAirBase = min(this->sResAirBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResAirBase = min(this->sResAirBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_WaterResistance:
-      this->sResWaterBase = min(this->sResWaterBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResWaterBase = min(this->sResWaterBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_EarthResistance:
-      this->sResEarthBase = min(this->sResEarthBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResEarthBase = min(this->sResEarthBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_SpiritResistance:
-      this->sResSpiritBase = min(this->sResSpiritBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResSpiritBase = min(this->sResSpiritBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_MindResistance:
-      this->sResMindBase = min(this->sResMindBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResMindBase = min(this->sResMindBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_BodyResistance:
-      this->sResBodyBase = min(this->sResBodyBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResBodyBase = min(this->sResBodyBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_LightResistance:
-      this->sResLightBase = min(this->sResLightBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResLightBase = min(this->sResLightBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_DarkResistance:
-      this->sResDarkBase = min(this->sResDarkBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResDarkBase = min(this->sResDarkBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_MagicResistance:
-      this->sResMagicBase = min(this->sResMagicBase + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_92);
-      return;
+        this->sResMagicBase = min(this->sResMagicBase + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_92);
+        return;
     case VAR_FireResistanceBonus:
-      this->sResFireBonus = min(this->sResFireBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResFireBonus = min(this->sResFireBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_AirResistanceBonus:
-      this->sResAirBonus = min(this->sResAirBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResAirBonus = min(this->sResAirBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_WaterResistanceBonus:
-      this->sResWaterBonus = min(this->sResWaterBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResWaterBonus = min(this->sResWaterBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_EarthResistanceBonus:
-      this->sResEarthBonus = min(this->sResEarthBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResEarthBonus = min(this->sResEarthBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_SpiritResistanceBonus:
-      this->sResSpiritBonus = min(this->sResSpiritBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResSpiritBonus = min(this->sResSpiritBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_MindResistanceBonus:
-      this->sResMindBonus = min(this->sResMindBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResMindBonus = min(this->sResMindBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_BodyResistanceBonus:
-      this->sResBodyBonus = min(this->sResBodyBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResBodyBonus = min(this->sResBodyBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_LightResistanceBonus:
-      this->sResLightBonus = min(this->sResLightBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResLightBonus = min(this->sResLightBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_DarkResistanceBonus:
-      this->sResDarkBonus = min(this->sResDarkBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResDarkBonus = min(this->sResDarkBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_MagicResistanceBonus:
-      this->sResMagicBonus = min(this->sResMagicBonus + val, 255);
-      PlayAwardSound_Anim97_Face(SPEECH_91);
-      return;
+        this->sResMagicBonus = min(this->sResMagicBonus + val, 255);
+        PlayAwardSound_Anim97_Face(SPEECH_91);
+        return;
     case VAR_Cursed:
-      this->SetCondition(Condition_Cursed, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Cursed, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Weak:
-      this->SetCondition(Condition_Weak, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Weak, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Asleep:
-      this->SetCondition(Condition_Sleep, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Sleep, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Afraid:
-      this->SetCondition(Condition_Fear, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Fear, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Drunk:
-      this->SetCondition(Condition_Drunk, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Drunk, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Insane:
-      this->SetCondition(Condition_Insane, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Insane, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_PoisonedGreen:
-      this->SetCondition(Condition_Poison_Weak, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Poison_Weak, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_DiseasedGreen:
-      this->SetCondition(Condition_Disease_Weak, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Disease_Weak, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_PoisonedYellow:
-      this->SetCondition(Condition_Poison_Medium, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Poison_Medium, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_DiseasedYellow:
-      this->SetCondition(Condition_Disease_Medium, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Disease_Medium, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_PoisonedRed:
-      this->SetCondition(Condition_Poison_Severe, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Poison_Severe, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_DiseasedRed:
-      this->SetCondition(Condition_Disease_Severe, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Disease_Severe, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Paralyzed:
-      this->SetCondition(Condition_Paralyzed, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Paralyzed, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Unconsious:
-      this->SetCondition(Condition_Unconcious, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Unconcious, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Dead:
-      this->SetCondition(Condition_Dead, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Dead, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Stoned:
-      this->SetCondition(Condition_Pertified, 1);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Pertified, 1);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_Eradicated:
-      this->SetCondition(Condition_Eradicated, 1);
-      PlayAwardSound_Anim97();
-      return;
-    case VAR_MajorCondition :
-      pConditions.fill(0);
-      PlayAwardSound_Anim97();
-      return;
+        this->SetCondition(Condition_Eradicated, 1);
+        PlayAwardSound_Anim97();
+        return;
+    case VAR_MajorCondition:
+        conditions_times.fill(0);
+        PlayAwardSound_Anim97();
+        return;
     case VAR_AutoNotes:
-        if ( !_449B57_test_bit(pParty->_autonote_bits, val) && pAutonoteTxt[val].pText )
+        if (!_449B57_test_bit(pParty->_autonote_bits, val) && pAutonoteTxt[val].pText)
         {
-          this->PlaySound(SPEECH_96, 0);
-          bFlashAutonotesBook = 1;
-          _506568_autonote_type = pAutonoteTxt[val].eType;
-          pEngine->pStru6Instance->SetPlayerBuffAnim(0x97u, GetPlayerIndex());
+            this->PlaySound(SPEECH_96, 0);
+            bFlashAutonotesBook = 1;
+            _506568_autonote_type = pAutonoteTxt[val].eType;
+            pEngine->pStru6Instance->SetPlayerBuffAnim(0x97u, GetPlayerIndex());
         }
         _449B7E_toggle_bit(pParty->_autonote_bits, val, 1);
         PlayAwardSound();
         return;
     case VAR_PlayerBits:
-      _449B7E_toggle_bit((unsigned char *)this->playerEventBits, val, 1u);
-      return;
+        _449B7E_toggle_bit((unsigned char *)this->playerEventBits, val, 1u);
+        return;
     case VAR_NPCs2:
-      pParty->hirelingScrollPosition = 0;
-      LOBYTE(pNPCStats->pNewNPCData[val].uFlags) |= 0x80u;
-      pParty->CountHirelings();
-      viewparams->bRedrawGameUI = true;
-      return;
+        pParty->hirelingScrollPosition = 0;
+        LOBYTE(pNPCStats->pNewNPCData[val].uFlags) |= 0x80u;
+        pParty->CountHirelings();
+        viewparams->bRedrawGameUI = true;
+        return;
     case VAR_NumSkillPoints:
-      this->uSkillPoints += val;
-      return;
+        this->uSkillPoints += val;
+        return;
     case VAR_ReputationInCurrentLocation:
-      v27 = &pOutdoor->ddm;
-      if ( uCurrentlyLoadedLevelType != LEVEL_Outdoor )
-        v27 = &pIndoor->dlv;
-      v27->uReputation += val;
-      if ( v27->uReputation > 10000 )
-        v27->uReputation = 10000;
-      return;
+        v27 = &pOutdoor->ddm;
+        if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
+            v27 = &pIndoor->dlv;
+        v27->uReputation += val;
+        if (v27->uReputation > 10000)
+            v27->uReputation = 10000;
+        return;
     case VAR_GoldInBank:
-      pParty->uNumGoldInBank += val;
-      return;
+        pParty->uNumGoldInBank += val;
+        return;
     case VAR_NumDeaths:
-      pParty->uNumDeaths += val;
-      return;
+        pParty->uNumDeaths += val;
+        return;
     case VAR_NumBounties:
-      pParty->uNumBountiesCollected += val;
-      return;
+        pParty->uNumBountiesCollected += val;
+        return;
     case VAR_PrisonTerms:
-      pParty->uNumPrisonTerms += val;
-      return;
+        pParty->uNumPrisonTerms += val;
+        return;
     case VAR_ArenaWinsPage:
-      pParty->uNumArenaPageWins += val;
-      return;
+        pParty->uNumArenaPageWins += val;
+        return;
     case VAR_ArenaWinsSquire:
-      pParty->uNumArenaSquireWins += val;
-      return;
+        pParty->uNumArenaSquireWins += val;
+        return;
     case VAR_ArenaWinsKnight:
-      pParty->uNumArenaKnightWins += val;
-      return;
+        pParty->uNumArenaKnightWins += val;
+        return;
     case VAR_ArenaWinsLord:
-      pParty->uNumArenaLordWins += val;
-      return;
+        pParty->uNumArenaLordWins += val;
+        return;
     case VAR_StaffSkill:
-      AddSkillByEvent(&Player::skillStaff, val);
-      return;
+        AddSkillByEvent(&Player::skillStaff, val);
+        return;
     case VAR_SwordSkill:
-      AddSkillByEvent(&Player::skillSword, val);
-      return;
+        AddSkillByEvent(&Player::skillSword, val);
+        return;
     case VAR_DaggerSkill:
-      AddSkillByEvent(&Player::skillDagger, val);
-      return;
+        AddSkillByEvent(&Player::skillDagger, val);
+        return;
     case VAR_AxeSkill:
-      AddSkillByEvent(&Player::skillAxe, val);
-      return;
+        AddSkillByEvent(&Player::skillAxe, val);
+        return;
     case VAR_SpearSkill:
-      AddSkillByEvent(&Player::skillSpear, val);
-      return;
+        AddSkillByEvent(&Player::skillSpear, val);
+        return;
     case VAR_BowSkill:
-      AddSkillByEvent(&Player::skillBow, val);
-      return;
+        AddSkillByEvent(&Player::skillBow, val);
+        return;
     case VAR_MaceSkill:
-      AddSkillByEvent(&Player::skillMace, val);
-      return;
+        AddSkillByEvent(&Player::skillMace, val);
+        return;
     case VAR_BlasterSkill:
-      AddSkillByEvent(&Player::skillBlaster, val);
-      return;
+        AddSkillByEvent(&Player::skillBlaster, val);
+        return;
     case VAR_ShieldSkill:
-      AddSkillByEvent(&Player::skillShield, val);
-      return;
+        AddSkillByEvent(&Player::skillShield, val);
+        return;
     case VAR_LeatherSkill:
-      AddSkillByEvent(&Player::skillLeather, val);
-      return;
+        AddSkillByEvent(&Player::skillLeather, val);
+        return;
     case VAR_SkillChain:
-      AddSkillByEvent(&Player::skillChain, val);
-      return;
+        AddSkillByEvent(&Player::skillChain, val);
+        return;
     case VAR_PlateSkill:
-      AddSkillByEvent(&Player::skillPlate, val);
-      return;
+        AddSkillByEvent(&Player::skillPlate, val);
+        return;
     case VAR_FireSkill:
-      AddSkillByEvent(&Player::skillFire, val);
-      return;
+        AddSkillByEvent(&Player::skillFire, val);
+        return;
     case VAR_AirSkill:
-      AddSkillByEvent(&Player::skillAir, val);
-      return;
+        AddSkillByEvent(&Player::skillAir, val);
+        return;
     case VAR_WaterSkill:
-      AddSkillByEvent(&Player::skillWater, val);
-      return;
+        AddSkillByEvent(&Player::skillWater, val);
+        return;
     case VAR_EarthSkill:
-      AddSkillByEvent(&Player::skillEarth, val);
-      return;
+        AddSkillByEvent(&Player::skillEarth, val);
+        return;
     case VAR_SpiritSkill:
-      AddSkillByEvent(&Player::skillSpirit, val);
-      return;
+        AddSkillByEvent(&Player::skillSpirit, val);
+        return;
     case VAR_MindSkill:
-      AddSkillByEvent(&Player::skillMind, val);
-      return;
+        AddSkillByEvent(&Player::skillMind, val);
+        return;
     case VAR_BodySkill:
-      AddSkillByEvent(&Player::skillBody, val);
-      return;
+        AddSkillByEvent(&Player::skillBody, val);
+        return;
     case VAR_LightSkill:
-      AddSkillByEvent(&Player::skillLight, val);
-      return;
+        AddSkillByEvent(&Player::skillLight, val);
+        return;
     case VAR_DarkSkill:
-      AddSkillByEvent(&Player::skillDark, val);
-      return;
+        AddSkillByEvent(&Player::skillDark, val);
+        return;
     case VAR_IdentifyItemSkill:
-      AddSkillByEvent(&Player::skillItemId, val);
-      return;
+        AddSkillByEvent(&Player::skillItemId, val);
+        return;
     case VAR_MerchantSkill:
-      AddSkillByEvent(&Player::skillMerchant, val);
-      return;
+        AddSkillByEvent(&Player::skillMerchant, val);
+        return;
     case VAR_RepairSkill:
-      AddSkillByEvent(&Player::skillRepair, val);
-      return;
+        AddSkillByEvent(&Player::skillRepair, val);
+        return;
     case VAR_BodybuildingSkill:
-      AddSkillByEvent(&Player::skillBodybuilding, val);
-      return;
+        AddSkillByEvent(&Player::skillBodybuilding, val);
+        return;
     case VAR_MeditationSkill:
-      AddSkillByEvent(&Player::skillMeditation, val);
-      return;
+        AddSkillByEvent(&Player::skillMeditation, val);
+        return;
     case VAR_PerceptionSkill:
-      AddSkillByEvent(&Player::skillPerception, val);
-      return;
+        AddSkillByEvent(&Player::skillPerception, val);
+        return;
     case VAR_DiplomacySkill:
-      AddSkillByEvent(&Player::skillDiplomacy, val);
-      return;
+        AddSkillByEvent(&Player::skillDiplomacy, val);
+        return;
     case VAR_ThieverySkill:
-      Error ("Thieving unsupported");
-      return;
+        Error("Thieving unsupported");
+        return;
     case VAR_DisarmTrapSkill:
-      AddSkillByEvent(&Player::skillDisarmTrap, val);
-      return;
+        AddSkillByEvent(&Player::skillDisarmTrap, val);
+        return;
     case VAR_DodgeSkill:
-      AddSkillByEvent(&Player::skillDodge, val);
-      return;
+        AddSkillByEvent(&Player::skillDodge, val);
+        return;
     case VAR_UnarmedSkill:
-      AddSkillByEvent(&Player::skillUnarmed, val);
-      return;
+        AddSkillByEvent(&Player::skillUnarmed, val);
+        return;
     case VAR_IdentifyMonsterSkill:
-      AddSkillByEvent(&Player::skillMonsterId, val);
-      return;
+        AddSkillByEvent(&Player::skillMonsterId, val);
+        return;
     case VAR_ArmsmasterSkill:
-      AddSkillByEvent(&Player::skillArmsmaster, val);
-      return;
+        AddSkillByEvent(&Player::skillArmsmaster, val);
+        return;
     case VAR_StealingSkill:
-      AddSkillByEvent(&Player::skillStealing, val);
-      return;
+        AddSkillByEvent(&Player::skillStealing, val);
+        return;
     case VAR_AlchemySkill:
-      AddSkillByEvent(&Player::skillAlchemy, val);
-      return;
+        AddSkillByEvent(&Player::skillAlchemy, val);
+        return;
     case VAR_LearningSkill:
-      AddSkillByEvent(&Player::skillLearning, val);
-      return;
+        AddSkillByEvent(&Player::skillLearning, val);
+        return;
     default:
-      return;
-  }
+        return;
+    }
 }
 
 //----- (new function) --------------------------------------------------------
@@ -6985,71 +7060,71 @@ void Player::SubtractVariable( enum VariableType VarNum, signed int pValue )
       PlayAwardSound_Anim98();
       return;
     case VAR_Cursed:
-      this->pConditions[Condition_Cursed] = 0;
+      this->conditions_times[Condition_Cursed].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Weak:
-      this->pConditions[Condition_Weak] = 0;
+      this->conditions_times[Condition_Weak].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Asleep:
-      this->pConditions[Condition_Sleep] = 0;
+      this->conditions_times[Condition_Sleep].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Afraid:
-      this->pConditions[Condition_Fear] = 0;
+      this->conditions_times[Condition_Fear].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Drunk:
-      this->pConditions[Condition_Drunk] = 0;
+      this->conditions_times[Condition_Drunk].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Insane:
-      this->pConditions[Condition_Insane] = 0;
+      this->conditions_times[Condition_Insane].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_PoisonedGreen:
-      this->pConditions[Condition_Poison_Weak] = 0;
+      this->conditions_times[Condition_Poison_Weak].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_DiseasedGreen:
-      this->pConditions[Condition_Disease_Weak] = 0;
+      this->conditions_times[Condition_Disease_Weak].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_PoisonedYellow:
-      this->pConditions[Condition_Poison_Medium] = 0;
+      this->conditions_times[Condition_Poison_Medium].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_DiseasedYellow:
-      this->pConditions[Condition_Disease_Medium] = 0;
+      this->conditions_times[Condition_Disease_Medium].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_PoisonedRed:
-      this->pConditions[Condition_Poison_Severe] = 0;
+      this->conditions_times[Condition_Poison_Severe].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_DiseasedRed:
-      this->pConditions[Condition_Disease_Severe] = 0;
+      this->conditions_times[Condition_Disease_Severe].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Paralyzed:
-      this->pConditions[Condition_Paralyzed] = 0;
+      this->conditions_times[Condition_Paralyzed].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Unconsious:
-      this->pConditions[Condition_Unconcious] = 0;
+      this->conditions_times[Condition_Unconcious].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Dead:
-      this->pConditions[Condition_Dead] = 0;
+      this->conditions_times[Condition_Dead].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Stoned:
-      this->pConditions[Condition_Pertified] = 0;
+      this->conditions_times[Condition_Pertified].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_Eradicated:
-      this->pConditions[Condition_Eradicated] = 0;
+      this->conditions_times[Condition_Eradicated].Reset();
       PlayAwardSound_Anim98();
       return;
     case VAR_AutoNotes:
@@ -7346,12 +7421,13 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
         }
         pAudioPlayer->PlaySound(soundToPlay, PID(OBJECT_Player, a4 + 80), 0, -1, 0, 0, 0, 0);
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
-        if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uExpireTime > 0)
+        if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active())
         {
             __int16 spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
             if (spellPower)
-                dmgToReceive /= (signed int)spellPower;
+                dmgToReceive /= spellPower;
         }
+
         int damageType;
         switch (dmgSource)
         {
@@ -7374,7 +7450,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
         if (!(dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_NO_DAMAGE))
         {
             dmgToReceive = playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
-            if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].uExpireTime > 0)
+            if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active())
             {
                 int actorState = actorPtr->uAIState;
                 if (actorState != Dying && actorState != Dead)
@@ -7511,7 +7587,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
             {
                 if (!actorPtr->ActorHitOrMiss(playerPtr))
                     return;
-                if (playerPtr->pPlayerBuffs[PLAYER_BUFF_SHIELD].uExpireTime > 0)
+                if (playerPtr->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active())
                     dmgToReceive >>= 1;
                 if (playerPtr->HasEnchantedItemEquipped(36))
                     dmgToReceive >>= 1;
@@ -7533,11 +7609,11 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
                         dmgToReceive >>= 1;
                 }
             }
-            if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uExpireTime > 0)
+            if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active())
             {
                 int spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
                 if (spellPower)
-                    dmgToReceive /= (signed int)spellPower;
+                    dmgToReceive /= spellPower;
             }
             int damageType;
             switch (dmgSource)
@@ -7566,7 +7642,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
             if (!(dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_NO_DAMAGE))
             {
                 int reflectedDmg = playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
-                if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].uExpireTime > 0)
+                if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active())
                 {
                     unsigned __int16 actorState = actorPtr->uAIState;
                     if (actorState != Dying && actorState != Dead)
@@ -7734,145 +7810,143 @@ void Player::OnInventoryLeftClick()
   }
 }
 
-
-bool Player::IsWeak()
+bool Player::IsWeak() const
 {
-  return pConditions[Condition_Weak] != 0;
+    return this->conditions_times[Condition_Weak].Valid();
+}
+bool Player::IsDead() const
+{
+    return this->conditions_times[Condition_Dead].Valid();
 }
 
-bool Player::IsDead()
+bool Player::IsEradicated() const
 {
-  return pConditions[Condition_Dead] != 0;
+    return this->conditions_times[Condition_Eradicated].Valid();
 }
 
-bool Player::IsEradicated()
+bool Player::IsZombie() const
 {
-  return pConditions[Condition_Eradicated] != 0;
+    return this->conditions_times[Condition_Zombie].Valid();
 }
 
-bool Player::IsZombie()
+bool Player::IsCursed() const
 {
-  return pConditions[Condition_Zombie] != 0;
+    return this->conditions_times[Condition_Cursed].Valid();
 }
 
-bool Player::IsCursed()
+bool Player::IsPertified() const
 {
-  return pConditions[Condition_Cursed] != 0;
+    return this->conditions_times[Condition_Pertified].Valid();
 }
 
-bool Player::IsPertified()
+bool Player::IsUnconcious() const
 {
-  return pConditions[Condition_Pertified] != 0;
+    return this->conditions_times[Condition_Unconcious].Valid();
 }
 
-bool Player::IsUnconcious()
+bool Player::IsAsleep() const
 {
-  return pConditions[Condition_Unconcious] != 0;
+    return this->conditions_times[Condition_Sleep].Valid();
 }
 
-bool Player::IsAsleep()
+bool Player::IsParalyzed() const
 {
-  return pConditions[Condition_Sleep] != 0;
+    return this->conditions_times[Condition_Paralyzed].Valid();
 }
 
-bool Player::IsParalyzed()
+bool Player::IsDrunk() const
 {
-  return pConditions[Condition_Paralyzed] != 0;
+    return this->conditions_times[Condition_Drunk].Valid();
 }
 
-bool Player::IsDrunk()
+void Player::SetCursed(GameTime time)
 {
-  return pConditions[Condition_Drunk] != 0;
+    this->conditions_times[Condition_Cursed] = time;
 }
 
-void Player::SetCursed( unsigned long long state )
+void Player::SetWeak(GameTime time)
 {
-  pConditions[Condition_Cursed] = state;
+    this->conditions_times[Condition_Weak] = time;
 }
 
-void Player::SetWeak( unsigned long long state )
+void Player::SetAsleep(GameTime time)
 {
-  pConditions[Condition_Weak] = state;
+    this->conditions_times[Condition_Sleep] = time;
 }
 
-void Player::SetAsleep( unsigned long long state )
+void Player::SetAfraid(GameTime time)
 {
-  pConditions[Condition_Sleep] = state;
+    this->conditions_times[Condition_Fear] = time;
 }
 
-void Player::SetAfraid( unsigned long long state )
+void Player::SetDrunk(GameTime time)
 {
-  pConditions[Condition_Fear] = state;
+    this->conditions_times[Condition_Drunk] = time;
 }
 
-void Player::SetDrunk( unsigned long long state )
+void Player::SetInsane(GameTime time)
 {
-  pConditions[Condition_Drunk] = state;
+    this->conditions_times[Condition_Insane] = time;
 }
 
-void Player::SetInsane( unsigned long long state )
+void Player::SetPoisonWeak(GameTime time)
 {
-  pConditions[Condition_Insane] = state;
+    this->conditions_times[Condition_Poison_Weak] = time;
 }
 
-void Player::SetPoisonWeak( unsigned long long state )
+void Player::SetDiseaseWeak(GameTime time)
 {
-  pConditions[Condition_Poison_Weak] = state;
+    this->conditions_times[Condition_Disease_Weak] = time;
 }
 
-void Player::SetDiseaseWeak( unsigned long long state )
+void Player::SetPoisonMedium(GameTime time)
 {
-  pConditions[Condition_Disease_Weak] = state;
+    this->conditions_times[Condition_Poison_Medium] = time;
 }
 
-void Player::SetPoisonMedium( unsigned long long state )
+void Player::SetDiseaseMedium(GameTime time)
 {
-  pConditions[Condition_Poison_Medium] = state;
+    this->conditions_times[Condition_Disease_Medium] = time;
 }
 
-void Player::SetDiseaseMedium( unsigned long long state )
+void Player::SetPoisonSevere(GameTime time)
 {
-  pConditions[Condition_Disease_Medium] = state;
+    this->conditions_times[Condition_Poison_Severe] = time;
 }
 
-void Player::SetPoisonSevere( unsigned long long state )
+void Player::SetDiseaseSevere(GameTime time)
 {
-  pConditions[Condition_Poison_Severe] = state;
+    this->conditions_times[Condition_Disease_Severe] = time;
 }
 
-void Player::SetDiseaseSevere( unsigned long long state )
+void Player::SetParalyzed(GameTime time)
 {
-  pConditions[Condition_Disease_Severe] = state;
+    this->conditions_times[Condition_Paralyzed] = time;
 }
 
-void Player::SetParalyzed( unsigned long long state )
+void Player::SetUnconcious(GameTime time)
 {
-  pConditions[Condition_Paralyzed] = state;
+    this->conditions_times[Condition_Unconcious] = time;
 }
 
-void Player::SetUnconcious( unsigned long long state )
+void Player::SetDead(GameTime time)
 {
-  pConditions[Condition_Unconcious] = state;
+    this->conditions_times[Condition_Dead] = time;
 }
 
-void Player::SetDead( unsigned long long state )
+void Player::SetPertified(GameTime time)
 {
-  pConditions[Condition_Dead] = state;
+    this->conditions_times[Condition_Pertified] = time;
 }
 
-void Player::SetPertified( unsigned long long state )
+void Player::SetEradicated(GameTime time)
 {
-  pConditions[Condition_Pertified] = state;
+    this->conditions_times[Condition_Eradicated] = time;
 }
 
-void Player::SetEradicated( unsigned long long state )
+void Player::SetZombie(GameTime time)
 {
-  pConditions[Condition_Eradicated] = state;
-}
-
-void Player::SetZombie( unsigned long long state )
-{
-  pConditions[Condition_Zombie] = state;
+    this->conditions_times[Condition_Zombie] = time;
 }
 
 void Player::SetCondWeakWithBlockCheck( int blockable )
@@ -7987,45 +8061,45 @@ int Player::GetPlayerIndex()
 //----- (004272F5) --------------------------------------------------------
 bool Player::PlayerHitOrMiss(Actor *pActor, int a3, int a4)
 {
-  signed int naturalArmor; // esi@1
-  signed int armorBuff; // edi@1
-  int effectiveActorArmor; // esi@8
-  int attBonus; // eax@9
-  int v9; // edx@11
-//  unsigned __int8 v12; // sf@13
-//  unsigned __int8 v13; // of@13
-  int attPositiveMod; // edx@14
-  int attNegativeMod; // eax@14
-//  signed int result; // eax@17
+    signed int naturalArmor; // esi@1
+    signed int armorBuff; // edi@1
+    int effectiveActorArmor; // esi@8
+    int attBonus; // eax@9
+    int v9; // edx@11
+  //  unsigned __int8 v12; // sf@13
+  //  unsigned __int8 v13; // of@13
+    int attPositiveMod; // edx@14
+    int attNegativeMod; // eax@14
+  //  signed int result; // eax@17
 
-  naturalArmor = pActor->pMonsterInfo.uAC;
-  armorBuff = 0;
-  if ( pActor->pActorBuffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC].uExpireTime > 0 )
-    naturalArmor /= 2;
-  if ( pActor->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uExpireTime > 0 )
-    armorBuff = pActor->pActorBuffs[ACTOR_BUFF_SHIELD].uPower;
-  if ( pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].uExpireTime > 0 && pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower > armorBuff )
-    armorBuff = pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower;
-  effectiveActorArmor = armorBuff + naturalArmor;
-  if ( a3 )
-    attBonus = this->GetRangedAttack();
-  else
-    attBonus = this->GetActualAttack(false);
-  v9 = rand() % (effectiveActorArmor + 2 * attBonus + 30);
-  attPositiveMod = a4 + v9;
-  if ( a3 == 2 )
-  {
-    attNegativeMod = ((effectiveActorArmor + 15) / 2) + effectiveActorArmor + 15;
-  }
-  else if ( a3 == 3 )
-  {
-    attNegativeMod = 2 * effectiveActorArmor + 30;
-  }
-  else 
-  {
-    attNegativeMod = effectiveActorArmor + 15;
-  }
-  return (attPositiveMod > attNegativeMod);
+    naturalArmor = pActor->pMonsterInfo.uAC;
+    armorBuff = 0;
+    if (pActor->pActorBuffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC].Active())
+        naturalArmor /= 2;
+    if (pActor->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
+        armorBuff = pActor->pActorBuffs[ACTOR_BUFF_SHIELD].uPower;
+    if (pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].Active() && pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower > armorBuff)
+        armorBuff = pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower;
+    effectiveActorArmor = armorBuff + naturalArmor;
+    if (a3)
+        attBonus = this->GetRangedAttack();
+    else
+        attBonus = this->GetActualAttack(false);
+    v9 = rand() % (effectiveActorArmor + 2 * attBonus + 30);
+    attPositiveMod = a4 + v9;
+    if (a3 == 2)
+    {
+        attNegativeMod = ((effectiveActorArmor + 15) / 2) + effectiveActorArmor + 15;
+    }
+    else if (a3 == 3)
+    {
+        attNegativeMod = 2 * effectiveActorArmor + 30;
+    }
+    else
+    {
+        attNegativeMod = effectiveActorArmor + 15;
+    }
+    return (attPositiveMod > attNegativeMod);
 }
 
 

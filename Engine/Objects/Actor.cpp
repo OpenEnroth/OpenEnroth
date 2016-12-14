@@ -6,33 +6,34 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/Time.h"
+#include "Engine/stru6.h"
 
+#include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
+#include "GUI/UI/UIStatusBar.h"
+
+#include "Media/Audio/AudioPlayer.h"
 
 #include "../Graphics/PaletteManager.h"
 #include "../Graphics/DecalBuilder.h"
 #include "../Graphics/Sprites.h"
-#include "Engine/stru6.h"
 #include "Actor.h"
 #include "../OurMath.h"
 #include "../Graphics/Outdoor.h"
-#include "Media/Audio/AudioPlayer.h"
 #include "ObjectList.h"
 #include "../Graphics/Overlays.h"
 #include "../Tables/FactionTable.h"
 #include "../TurnEngine/TurnEngine.h"
 #include "../Spells/CastSpellInfo.h"
-#include "../Timer.h"
 #include "../LOD.h"
 #include "../Party.h"
-#include "GUI/GUIWindow.h"
 #include "SpriteObject.h"
 #include "../stru298.h"
 #include "../Graphics/Level/Decoration.h"
 #include "../Graphics/Viewport.h"
 #include "../Graphics/Vis.h"
 
-#include "GUI/UI/UIStatusBar.h"
 
 
 
@@ -168,22 +169,21 @@ void Actor::GiveItem(signed int uActorID, unsigned int uItemID, unsigned int bGi
 //----- (0040894B) --------------------------------------------------------
 bool Actor::CanAct()
 {
-  bool isparalyzed; // esi@1
-  bool isstoned; // edi@2
-
-  isstoned = (signed __int64)this->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime > 0;// stoned
-  isparalyzed = (signed __int64)this->pActorBuffs[ACTOR_BUFF_PARALYZED].uExpireTime > 0;// paralyzed
-  return !(isstoned || isparalyzed || this->uAIState == Dying || this->uAIState == Dead
-                    || this->uAIState == Removed || this->uAIState == Summoned || this->uAIState == Disabled);
+    bool stoned = this->pActorBuffs[ACTOR_BUFF_STONED].Active();
+    bool paralyzed = this->pActorBuffs[ACTOR_BUFF_PARALYZED].Active();
+    return !(
+        stoned || paralyzed || this->uAIState == Dying || this->uAIState == Dead
+        || this->uAIState == Removed || this->uAIState == Summoned || this->uAIState == Disabled
+    );
 }
 
 //----- (004089C7) --------------------------------------------------------
 bool Actor::IsNotAlive()
 {
-  bool isstoned; // esi@1
-
-  isstoned = (signed __int64)this->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime > 0;// stoned
-  return (isstoned || (uAIState == Dying) || (uAIState == Dead) || (uAIState == Removed) || (uAIState == Summoned) || (uAIState == Disabled));
+    bool stoned = this->pActorBuffs[ACTOR_BUFF_STONED].Active();
+    return (
+        stoned || (uAIState == Dying) || (uAIState == Dead) || (uAIState == Removed) || (uAIState == Summoned) || (uAIState == Disabled)
+    );
 }
 
 //----- (004086E9) --------------------------------------------------------
@@ -216,56 +216,56 @@ void Actor::SetRandomGoldIfTheresNoItem()
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellID, int a4, unsigned int uSkillLevel)
 {
-  Actor *actorPtr; // esi@1
-  unsigned int realPoints; // edi@1
-  unsigned int masteryLevel; // eax@1
-  int v8; // edi@16
-  signed int v10; // ecx@22
-  int v19; // edi@34
-  int v20; // eax@35
-  signed int v23; // eax@41
-  int v28; // st6@50
-  int v30; // esi@50
-  int v31; // ST3C_4@51
-  unsigned int v32; // edi@51
-  signed int v36; // eax@67
-  int v39; // ecx@75
-  int v42; // ecx@91
-  int v44; // ecx@100
-  int v48; // ecx@110
-  int v51; // ecx@130
-  int v54; // ecx@138
-  int v59; // edi@146
-  int v61; // edi@146
-  signed int v63; // edi@146
-  int v68; // edi@168
-  signed int v70; // ecx@172
-  int v79; // edx@185
-  int v80; // eax@185
-  signed int v91; // eax@200
-  int v94; // ecx@208
-  int v96; // ecx@217
-  int pitch; // [sp+2Ch] [bp-A4h]@51
-  int v114; // [sp+48h] [bp-88h]@41
-  SpriteObject a1; // [sp+4Ch] [bp-84h]@1
-  int v116; // [sp+BCh] [bp-14h]@49
-  int v118; // [sp+C4h] [bp-Ch]@29
-  int v119; // [sp+C8h] [bp-8h]@48
-  int v120; // [sp+CCh] [bp-4h]@1
-  int spellnuma; // [sp+D8h] [bp+8h]@29
-  int spellnumb; // [sp+D8h] [bp+8h]@48
-  int spellnumc; // [sp+D8h] [bp+8h]@50
-  int spellnume; // [sp+D8h] [bp+8h]@179
-  int a1a; // [sp+E0h] [bp+10h]@34
-  int a1c; // [sp+E0h] [bp+10h]@184
+    Actor *actorPtr; // esi@1
+    unsigned int realPoints; // edi@1
+    unsigned int masteryLevel; // eax@1
+    int v8; // edi@16
+    signed int v10; // ecx@22
+    int v19; // edi@34
+    int v20; // eax@35
+    signed int v23; // eax@41
+    int v28; // st6@50
+    int v30; // esi@50
+    int v31; // ST3C_4@51
+    unsigned int v32; // edi@51
+    signed int v36; // eax@67
+    int v39; // ecx@75
+    int v42; // ecx@91
+    int v44; // ecx@100
+    int v48; // ecx@110
+    int v51; // ecx@130
+    int v54; // ecx@138
+    int v59; // edi@146
+    int v61; // edi@146
+    signed int v63; // edi@146
+    int v68; // edi@168
+    signed int v70; // ecx@172
+    int v79; // edx@185
+    int v80; // eax@185
+    signed int v91; // eax@200
+    int v94; // ecx@208
+    int v96; // ecx@217
+    int pitch; // [sp+2Ch] [bp-A4h]@51
+    int v114; // [sp+48h] [bp-88h]@41
+    SpriteObject a1; // [sp+4Ch] [bp-84h]@1
+    int v116; // [sp+BCh] [bp-14h]@49
+    int v118; // [sp+C4h] [bp-Ch]@29
+    int v119; // [sp+C8h] [bp-8h]@48
+    int v120; // [sp+CCh] [bp-4h]@1
+    int spellnuma; // [sp+D8h] [bp+8h]@29
+    int spellnumb; // [sp+D8h] [bp+8h]@48
+    int spellnumc; // [sp+D8h] [bp+8h]@50
+    int spellnume; // [sp+D8h] [bp+8h]@179
+    int a1a; // [sp+E0h] [bp+10h]@34
+    int a1c; // [sp+E0h] [bp+10h]@184
 
 
-  actorPtr = &pActors[uActorID];
-  realPoints = uSkillLevel & 0x3F;
-  masteryLevel = SkillToMastery(uSkillLevel);
-  
-  switch (uSpellID)
-  {
+    actorPtr = &pActors[uActorID];
+    realPoints = uSkillLevel & 0x3F;
+    masteryLevel = SkillToMastery(uSkillLevel);
+
+    switch (uSpellID)
+    {
     case SPELL_FIRE_FIRE_BOLT:
     case SPELL_FIRE_FIREBALL:
     case SPELL_FIRE_INCINERATE:
@@ -280,412 +280,420 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
     case SPELL_LIGHT_LIGHT_BOLT:
     case SPELL_DARK_TOXIC_CLOUD:
     case SPELL_DARK_DRAGON_BREATH:
-      a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
-      a1.uObjectDescID = GetObjDescId(uSpellID);
-      a1.containing_item.Reset();
-      a1.spell_id = uSpellID;
-      a1.spell_level = uSkillLevel;
-      a1.vPosition.x = actorPtr->vPosition.x;
-      a1.spell_skill = 0;
-      a1.vPosition.y = actorPtr->vPosition.y;
-      a1.vPosition.z = actorPtr->vPosition.z + ((signed int)actorPtr->uActorHeight >> 1);
-      a1.uFacing = LOWORD(pDir->uYawAngle);
-      a1.uSoundID = 0;
-      a1.uAttributes = 0;
-      a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
-      a1.uSpriteFrameID = 0;
-      a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
-      a1.spell_target_pid = 0;
-      if ((double)pDir->uDistance < 307.2 )
-        a1.field_60_distance_related_prolly_lod = 0;
-      else if ( pDir->uDistance < 1024 )
-        a1.field_60_distance_related_prolly_lod = 1;
-      else if ( pDir->uDistance < 2560 )
-        a1.field_60_distance_related_prolly_lod = 2;
-      else 
-        a1.field_60_distance_related_prolly_lod = 3;
-
-      a1.field_61 = 2;
-      v91 = a1.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
-      if ( v91 != -1 )
-      {
-        pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID], PID(OBJECT_Item, v91), 0, -1, 0, 0, 0, 0);
-        return;
-      }
-      return;
-      break;
-
-    case SPELL_FIRE_HASTE: 
-      if (masteryLevel == 1 || masteryLevel == 2)
-        v39 = 60 * (realPoints + 60);
-      else if (masteryLevel == 3 )
-        v39 = 180 * (realPoints + 20);
-      else if (masteryLevel == 4 ) 
-        v39 = 240 * (realPoints + 15);
-      else
-        v39 = 0;
-      actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply(pParty->uTimePlayed + (signed int)(signed __int64)((double)(v39 << 7) * 0.033333335),
-        masteryLevel, 0, 0, 0);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFF3C1Eu);
-      pAudioPlayer->PlaySound((SoundID)SOUND_Haste, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-      return;
-
-    case SPELL_FIRE_METEOR_SHOWER:
-      if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
-        return;
-      v114 = pParty->vPosition.z + 2500;
-      v23 = 8;
-      if (masteryLevel == 2)
-        v23 = 10;
-      else if (masteryLevel == 3)
-        v23 = 12;
-      else if (masteryLevel == 4)
-        v23 = 14;
-      spellnumb = 0;
-      v28 = 0;
-      for ( int i = 0; i < v23; i++)
-      {
-        v30 = rand() % 1000;
-        spellnumc = v30 - 2500;
-        v120 = v28 * v28;
-        v119 = spellnumb * spellnumb;
-        if ( sqrt((float)(spellnumc * spellnumc + v119 + v120)) <= 1.0 )
-        {
-          v32 = 0;
-          pitch = 0;
-        }
-        else
-        {
-          v31 = (signed __int64)sqrt((float)(v119 + v120));
-          v32 = stru_5C6E00->Atan2(spellnumb, (int)v28);
-          pitch = stru_5C6E00->Atan2(v31, (int)spellnumc);
-        }
-        a1.containing_item.Reset();
         a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
         a1.uObjectDescID = GetObjDescId(uSpellID);
+        a1.containing_item.Reset();
+        a1.spell_id = uSpellID;
         a1.spell_level = uSkillLevel;
-        a1.vPosition.x = pParty->vPosition.x;
-        a1.vPosition.y = pParty->vPosition.y;
-        a1.vPosition.z = v30 + v114;
-        a1.spell_id = SPELL_FIRE_METEOR_SHOWER;
+        a1.vPosition.x = actorPtr->vPosition.x;
         a1.spell_skill = 0;
+        a1.vPosition.y = actorPtr->vPosition.y;
+        a1.vPosition.z = actorPtr->vPosition.z + ((signed int)actorPtr->uActorHeight >> 1);
+        a1.uFacing = LOWORD(pDir->uYawAngle);
+        a1.uSoundID = 0;
         a1.uAttributes = 0;
-        a1.uSectorID = 0;
+        a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
         a1.uSpriteFrameID = 0;
         a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
         a1.spell_target_pid = 0;
-        a1.field_60_distance_related_prolly_lod = stru_50C198._427546(v30 + 2500);
-        a1.uFacing = v32;
-        a1.uSoundID = 0;
-        if (pDir->uDistance < 307.2 )
-          a1.field_60_distance_related_prolly_lod = 0;
-        else if ( pDir->uDistance < 1024 )
-          a1.field_60_distance_related_prolly_lod = 1;
-        else if ( pDir->uDistance < 2560 )
-          a1.field_60_distance_related_prolly_lod = 2;
-        else 
-          a1.field_60_distance_related_prolly_lod = 3;
+        if ((double)pDir->uDistance < 307.2)
+            a1.field_60_distance_related_prolly_lod = 0;
+        else if (pDir->uDistance < 1024)
+            a1.field_60_distance_related_prolly_lod = 1;
+        else if (pDir->uDistance < 2560)
+            a1.field_60_distance_related_prolly_lod = 2;
+        else
+            a1.field_60_distance_related_prolly_lod = 3;
+
         a1.field_61 = 2;
-        v36 = a1.Create(v32, pitch, pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
-        if ( v36 != -1 )
-          pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[9], PID(OBJECT_Item, v36), 0, -1, 0, 0, 0, 0);
-        spellnumb = rand() % 1024 - 512;
-        v28 = rand() % 1024 - 512;
-      }
-      return;
-      break;
+        v91 = a1.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
+        if (v91 != -1)
+        {
+            pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID], PID(OBJECT_Item, v91), 0, -1, 0, 0, 0, 0);
+            return;
+        }
+        return;
+        break;
+
+    case SPELL_FIRE_HASTE:
+        if (masteryLevel == 1 || masteryLevel == 2)
+            v39 = 60 * (realPoints + 60);
+        else if (masteryLevel == 3)
+            v39 = 2 * 60 * (realPoints + 20);
+        else if (masteryLevel == 4)
+            v39 = 3 * 60 * (realPoints + 15);
+        else
+            v39 = 0;
+        actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(v39 / 60), masteryLevel, 0, 0, 0);
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFF3C1Eu);
+        pAudioPlayer->PlaySound((SoundID)SOUND_Haste, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
+
+    case SPELL_FIRE_METEOR_SHOWER:
+        if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+            return;
+        v114 = pParty->vPosition.z + 2500;
+        v23 = 8;
+        if (masteryLevel == 2)
+            v23 = 10;
+        else if (masteryLevel == 3)
+            v23 = 12;
+        else if (masteryLevel == 4)
+            v23 = 14;
+        spellnumb = 0;
+        v28 = 0;
+        for (int i = 0; i < v23; i++)
+        {
+            v30 = rand() % 1000;
+            spellnumc = v30 - 2500;
+            v120 = v28 * v28;
+            v119 = spellnumb * spellnumb;
+            if (sqrt((float)(spellnumc * spellnumc + v119 + v120)) <= 1.0)
+            {
+                v32 = 0;
+                pitch = 0;
+            }
+            else
+            {
+                v31 = (signed __int64)sqrt((float)(v119 + v120));
+                v32 = stru_5C6E00->Atan2(spellnumb, (int)v28);
+                pitch = stru_5C6E00->Atan2(v31, (int)spellnumc);
+            }
+            a1.containing_item.Reset();
+            a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
+            a1.uObjectDescID = GetObjDescId(uSpellID);
+            a1.spell_level = uSkillLevel;
+            a1.vPosition.x = pParty->vPosition.x;
+            a1.vPosition.y = pParty->vPosition.y;
+            a1.vPosition.z = v30 + v114;
+            a1.spell_id = SPELL_FIRE_METEOR_SHOWER;
+            a1.spell_skill = 0;
+            a1.uAttributes = 0;
+            a1.uSectorID = 0;
+            a1.uSpriteFrameID = 0;
+            a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
+            a1.spell_target_pid = 0;
+            a1.field_60_distance_related_prolly_lod = stru_50C198._427546(v30 + 2500);
+            a1.uFacing = v32;
+            a1.uSoundID = 0;
+            if (pDir->uDistance < 307.2)
+                a1.field_60_distance_related_prolly_lod = 0;
+            else if (pDir->uDistance < 1024)
+                a1.field_60_distance_related_prolly_lod = 1;
+            else if (pDir->uDistance < 2560)
+                a1.field_60_distance_related_prolly_lod = 2;
+            else
+                a1.field_60_distance_related_prolly_lod = 3;
+            a1.field_61 = 2;
+            v36 = a1.Create(v32, pitch, pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
+            if (v36 != -1)
+                pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[9], PID(OBJECT_Item, v36), 0, -1, 0, 0, 0, 0);
+            spellnumb = rand() % 1024 - 512;
+            v28 = rand() % 1024 - 512;
+        }
+        return;
+        break;
 
     case SPELL_AIR_SPARKS:
-      if (masteryLevel == 2 )
-        v10 = 5;
-      else if (masteryLevel == 3 )
-        v10 = 7;
-      else if (masteryLevel == 4 ) 
-        v10 = 9;
-      else 
-        v10 = 3;
-      spellnuma = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
-      a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
-      v118 = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360 / (v10 - 1);
-      a1.uObjectDescID = GetObjDescId(uSpellID);
+        if (masteryLevel == 2)
+            v10 = 5;
+        else if (masteryLevel == 3)
+            v10 = 7;
+        else if (masteryLevel == 4)
+            v10 = 9;
+        else
+            v10 = 3;
+        spellnuma = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+        a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
+        v118 = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360 / (v10 - 1);
+        a1.uObjectDescID = GetObjDescId(uSpellID);
 
-      a1.containing_item.Reset();
-      a1.spell_id = SPELL_AIR_SPARKS;
-      a1.spell_level = uSkillLevel;
-      a1.vPosition.x = actorPtr->vPosition.x;
-      a1.spell_skill = 0;
-      a1.vPosition.y = actorPtr->vPosition.y;
-      a1.vPosition.z = actorPtr->vPosition.z + ((signed int)actorPtr->uActorHeight >> 1);
-      a1.uFacing = pDir->uYawAngle;
-      a1.uSoundID = 0;
-      a1.uAttributes = 0;
-      a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
-      a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
-      a1.uSpriteFrameID = 0;
-      a1.spell_target_pid = 0;
-      a1.field_60_distance_related_prolly_lod = 3;
-      v19 = spellnuma / -2;
-      a1a = spellnuma / 2;
-      if ( spellnuma / -2 > spellnuma / 2 )
-        v20 = spellnuma / 2;
-      else
-      {
-        do
+        a1.containing_item.Reset();
+        a1.spell_id = SPELL_AIR_SPARKS;
+        a1.spell_level = uSkillLevel;
+        a1.vPosition.x = actorPtr->vPosition.x;
+        a1.spell_skill = 0;
+        a1.vPosition.y = actorPtr->vPosition.y;
+        a1.vPosition.z = actorPtr->vPosition.z + ((signed int)actorPtr->uActorHeight >> 1);
+        a1.uFacing = pDir->uYawAngle;
+        a1.uSoundID = 0;
+        a1.uAttributes = 0;
+        a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
+        a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
+        a1.uSpriteFrameID = 0;
+        a1.spell_target_pid = 0;
+        a1.field_60_distance_related_prolly_lod = 3;
+        v19 = spellnuma / -2;
+        a1a = spellnuma / 2;
+        if (spellnuma / -2 > spellnuma / 2)
+            v20 = spellnuma / 2;
+        else
         {
-          a1.uFacing = v19 + LOWORD(pDir->uYawAngle);
-          v20 = a1.Create((signed __int16)a1.uFacing, pDir->uPitchAngle,
-            pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
-          v19 += v118;
+            do
+            {
+                a1.uFacing = v19 + LOWORD(pDir->uYawAngle);
+                v20 = a1.Create((signed __int16)a1.uFacing, pDir->uPitchAngle,
+                    pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
+                v19 += v118;
+            } while (v19 <= a1a);
         }
-        while ( v19 <= a1a );
-      }
-      if ( v20 != -1 )
-      {
-        pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[15], PID(OBJECT_Item, v20), 0, -1, 0, 0, 0, 0);
+        if (v20 != -1)
+        {
+            pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[15], PID(OBJECT_Item, v20), 0, -1, 0, 0, 0, 0);
+            return;
+        }
         return;
-      }
-      return;
-      break;
+        break;
 
     case SPELL_AIR_SHIELD:
-      if (masteryLevel == 1 || masteryLevel == 2)
-        v8 = 300 * realPoints + 3840;
-      else if (masteryLevel == 3 )
-        v8 = 900 * realPoints + 3840;
-      else if (masteryLevel == 4 ) 
-        v8 = 3600 * (realPoints + 64);
-      else
-        v8 = 0;
-      actorPtr->pActorBuffs[ACTOR_BUFF_SHIELD].Apply(
-        pParty->uTimePlayed + (signed int)(signed __int64)((double)(v8 << 7) * 0.033333335),
-        masteryLevel, 0, 0, 0);
-      return;
+        if (masteryLevel == 1 || masteryLevel == 2)
+            v8 = 5 * 60 * realPoints + 3840;
+        else if (masteryLevel == 3)
+            v8 = 15 * 60 * realPoints + 3840;
+        else if (masteryLevel == 4)
+            v8 = 60 * 60 * (realPoints + 64);
+        else
+            v8 = 0;
+        actorPtr->pActorBuffs[ACTOR_BUFF_SHIELD].Apply(
+            pParty->GetPlayingTime() + GameTime::FromMinutes(v8 / 60), masteryLevel, 0, 0, 0
+        );
+        return;
 
     case SPELL_EARTH_STONESKIN:
-      if (masteryLevel == 1 || masteryLevel == 2)
-        v44 = 300 * realPoints + 3840;
-      else if (masteryLevel == 3 )
-        v44 = 900 * realPoints + 3840;
-      else if (masteryLevel == 4 ) 
-        v44 = 3600 * (realPoints + 64);
-      else
-          v44 = 0;
-      actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(
-        pParty->uTimePlayed + (signed int)(signed __int64)((double)(v44 << 7) * 0.033333335),
-        masteryLevel, realPoints + 5, 0, 0);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,0x5C310Eu);
-      pAudioPlayer->PlaySound((SoundID)SOUND_Stoneskin, PID(OBJECT_Actor,uActorID), 0, -1, 0, 0, 0, 0);
-      return;
+        if (masteryLevel == 1 || masteryLevel == 2)
+            v44 = 5 * 60 * realPoints + 3840;
+        else if (masteryLevel == 3)
+            v44 = 15 * 60 * realPoints + 3840;
+        else if (masteryLevel == 4)
+            v44 = 60 * 60 * (realPoints + 64);
+        else
+            v44 = 0;
+        actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(
+            pParty->GetPlayingTime() + GameTime::FromMinutes(v44 / 60),
+            masteryLevel, realPoints + 5, 0, 0
+        );
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x5C310Eu);
+        pAudioPlayer->PlaySound((SoundID)SOUND_Stoneskin, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
 
     case SPELL_SPIRIT_BLESS:
-      if (masteryLevel == 1 || masteryLevel == 2)
-        v42 = 300 * realPoints + 3840;
-      else if (masteryLevel == 3 )
-        v42 = 900 * realPoints + 3840;
-      else if (masteryLevel == 4 ) 
-        v42 = 1200 * realPoints + 3840;
-      else
-        v42 = 0;
-      actorPtr->pActorBuffs[ACTOR_BUFF_BLESS].Apply(
-        pParty->uTimePlayed + (signed int)(signed __int64)((double)(v42 << 7) * 0.033333335),
-        masteryLevel, realPoints + 5, 0, 0);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,0xC8C805u);
-      pAudioPlayer->PlaySound((SoundID)SOUND_Bless, PID(OBJECT_Actor,uActorID), 0, -1, 0, 0, 0, 0);
-      return;
-      break;
+        if (masteryLevel == 1 || masteryLevel == 2)
+            v42 = 5 * 60 * realPoints + 3840;
+        else if (masteryLevel == 3)
+            v42 = 15 * 60 * realPoints + 3840;
+        else if (masteryLevel == 4)
+            v42 = 20 * 60 * realPoints + 3840;
+        else
+            v42 = 0;
+
+        actorPtr->pActorBuffs[ACTOR_BUFF_BLESS].Apply(
+            pParty->GetPlayingTime() + GameTime::FromMinutes(v42 / 60),
+            masteryLevel, realPoints + 5, 0, 0
+        );
+
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
+        pAudioPlayer->PlaySound((SoundID)SOUND_Bless, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
 
     case SPELL_SPIRIT_FATE:
-      if (masteryLevel == 1 || masteryLevel == 2)
-        v48 = 2 * realPoints + 40;
-      else if (masteryLevel == 3 )
-        v48 = 3 * realPoints + 60;
-      else if (masteryLevel == 4 ) 
-        v48 = 2 * (3 * realPoints + 60);
-      else
-        v48 = 0;
-      actorPtr->pActorBuffs[ACTOR_BUFF_FATE].Apply(pParty->uTimePlayed + 1280, masteryLevel, v48, 0, 0);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,0xC8C805u);
-      pAudioPlayer->PlaySound((SoundID)SOUND_Fate, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-      return;
+        if (masteryLevel == 1 || masteryLevel == 2)
+            v48 = 2 * realPoints + 40;
+        else if (masteryLevel == 3)
+            v48 = 3 * realPoints + 60;
+        else if (masteryLevel == 4)
+            v48 = 2 * (3 * realPoints + 60);
+        else
+            v48 = 0;
+
+        actorPtr->pActorBuffs[ACTOR_BUFF_FATE].Apply(
+            pParty->GetPlayingTime() + GameTime::FromMinutes(5),
+            masteryLevel, v48, 0, 0
+        );
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
+        pAudioPlayer->PlaySound((SoundID)SOUND_Fate, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
 
     case SPELL_SPIRIT_HEROISM:
-      if (masteryLevel == 1 || masteryLevel == 2)
-        v54 = 300 * realPoints + 3840;
-      else if (masteryLevel == 3 )
-        v54 = 900 * realPoints + 3840;
-      else if (masteryLevel == 4 ) 
-        v54 = 1200 * realPoints + 3840;
-      else
-        v54 = 0;
-      actorPtr->pActorBuffs[ACTOR_BUFF_HEROISM].Apply(
-        pParty->uTimePlayed + (signed int)(signed __int64)((double)(v54 << 7) * 0.033333335),
-        masteryLevel, realPoints + 5, 0, 0);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,0xC8C805u);
-      pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03, PID(OBJECT_Actor,uActorID), 0, -1, 0, 0, 0, 0);
-      return;
+        if (masteryLevel == 1 || masteryLevel == 2)
+            v54 = 5 * 60 * realPoints + 3840;
+        else if (masteryLevel == 3)
+            v54 = 15 * 60 * realPoints + 3840;
+        else if (masteryLevel == 4)
+            v54 = 20 * 60 * realPoints + 3840;
+        else
+            v54 = 0;
+        actorPtr->pActorBuffs[ACTOR_BUFF_HEROISM].Apply(
+            pParty->GetPlayingTime() + GameTime::FromMinutes(v54 / 60),
+            masteryLevel, realPoints + 5, 0, 0
+        );
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
+        pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
 
     case SPELL_BODY_HAMMERHANDS:
-      if ( (signed int)masteryLevel <= 0 || (signed int)masteryLevel > 4 )
-        v51 = 0;
-      else
-        v51 = 3600 * realPoints;
-      actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Apply(
-        pParty->uTimePlayed + (signed int)(signed __int64)((double)(v51 << 7) * 0.033333335),
-        masteryLevel,
-        realPoints,
-        0,
-        0);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
-      pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-      return;
+        if ((signed int)masteryLevel <= 0 || (signed int)masteryLevel > 4)
+            v51 = 0;
+        else
+            v51 = 60 * 60 * realPoints;
+        actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Apply(
+            pParty->GetPlayingTime() + GameTime::FromMinutes(v51 / 60),
+            masteryLevel,
+            realPoints,
+            0,
+            0
+        );
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
+        pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
 
     case SPELL_BODY_POWER_CURE:
-      actorPtr->sCurrentHP += 5 * realPoints + 10;
-      if ( actorPtr->sCurrentHP >= (signed int)actorPtr->pMonsterInfo.uHP )
-        actorPtr->sCurrentHP = LOWORD(actorPtr->pMonsterInfo.uHP);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
-      pAudioPlayer->PlaySound((SoundID)SOUND_Fate, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-      return;
+        actorPtr->sCurrentHP += 5 * realPoints + 10;
+        if (actorPtr->sCurrentHP >= (signed int)actorPtr->pMonsterInfo.uHP)
+            actorPtr->sCurrentHP = LOWORD(actorPtr->pMonsterInfo.uHP);
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
+        pAudioPlayer->PlaySound((SoundID)SOUND_Fate, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
 
     case SPELL_LIGHT_DISPEL_MAGIC:
-      for (int i = 0; i < 20; i++ )
-        pParty->pPartyBuffs[i].Reset();
-      for (int i = 1; i <= 4; i++)
-      {
-        v59 = pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualWillpower());
-        v61 = (pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualIntelligence()) + v59) / 2;
-        v63 = v61 + pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualLuck()) + 30;
-        if ( rand() % v63 < 30 )
+        for (int i = 0; i < 20; i++)
+            pParty->pPartyBuffs[i].Reset();
+        for (int i = 1; i <= 4; i++)
         {
-          for (uint k = 0; k < pPlayers[i]->pPlayerBuffs.size(); k++)
-            pPlayers[i]->pPlayerBuffs[k].Reset();
-          pOtherOverlayList->_4418B1(11210, i + 99, 0, 65536);
+            v59 = pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualWillpower());
+            v61 = (pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualIntelligence()) + v59) / 2;
+            v63 = v61 + pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualLuck()) + 30;
+            if (rand() % v63 < 30)
+            {
+                for (uint k = 0; k < pPlayers[i]->pPlayerBuffs.size(); k++)
+                    pPlayers[i]->pPlayerBuffs[k].Reset();
+                pOtherOverlayList->_4418B1(11210, i + 99, 0, 65536);
+            }
         }
-      }
-      pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[80], PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-      return;
+        pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[80], PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
 
     case SPELL_LIGHT_DAY_OF_PROTECTION:
-       if (masteryLevel == 1 || masteryLevel == 2)
-        v96 = 300 * realPoints + 3840;
-      else if (masteryLevel == 3 )
-      {
-        LOWORD(realPoints) = 3 * realPoints;
-        v96 = 900 * (uSkillLevel & 0x3F) + 3840;
-      }
-      else if (masteryLevel == 4 ) 
-      {
-        v96 = 1200 * realPoints + 3840;
-        LOWORD(realPoints) = 4 * realPoints;
-      }
-      else
-      {
-        LOWORD(realPoints) = uSkillLevel;
-        v96 = 0;
-      }
-      actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(
-        pParty->uTimePlayed + (signed int)(signed __int64)((double)(v96 << 7) * 0.033333335),
-        masteryLevel, realPoints, 0, 0);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
-      pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-      return;
+        if (masteryLevel == 1 || masteryLevel == 2)
+            v96 = 5 * 60 * realPoints + 128 * 30;
+        else if (masteryLevel == 3)
+        {
+            LOWORD(realPoints) = 3 * realPoints;
+            v96 = 15 * 60 * (uSkillLevel & 0x3F) + 128 * 30;
+        }
+        else if (masteryLevel == 4)
+        {
+            v96 = 20 * 60 * realPoints + 128 * 30;
+            LOWORD(realPoints) = 4 * realPoints;
+        }
+        else
+        {
+            LOWORD(realPoints) = uSkillLevel;
+            v96 = 0;
+        }
+        actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(
+            pParty->GetPlayingTime() + GameTime::FromMinutes(v96 / 60),
+            masteryLevel, realPoints, 0, 0
+        );
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
+        pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
 
     case SPELL_LIGHT_HOUR_OF_POWER:
-      if (masteryLevel == 1 || masteryLevel == 2)
-        v94 = 300 * realPoints + 3840;
-      else if (masteryLevel == 3)
-        v94 = 900 * realPoints + 3840;
-      else if (masteryLevel == 4)
-        v94 = 1200 * realPoints + 3840;
-      else
-        v94 = 0;
-      actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(
-        pParty->uTimePlayed + (signed int)(signed __int64)((double)(v94 << 7) * 0.033333335),
-        masteryLevel, realPoints + 5, 0, 0);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
-      pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-      return;
+        if (masteryLevel == 1 || masteryLevel == 2)
+            v94 = 5 * 60 * realPoints + 30 * 128;
+        else if (masteryLevel == 3)
+            v94 = 15 * 60 * realPoints + 30 * 128;
+        else if (masteryLevel == 4)
+            v94 = 20 * 60* realPoints + 30 * 128;
+        else
+            v94 = 0;
+        actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(
+            pParty->GetPlayingTime() + GameTime::FromMinutes(v94 / 60),
+            masteryLevel, realPoints + 5, 0, 0
+        );
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
+        pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
 
     case SPELL_DARK_SHARPMETAL:
-      if (masteryLevel == 2)
-        v70 = 5;
-      else if (masteryLevel == 3)
-        v70 = 7;
-      else if (masteryLevel == 4)
-        v70 = 9;
-      else
-        v70 = 3;
+        if (masteryLevel == 2)
+            v70 = 5;
+        else if (masteryLevel == 3)
+            v70 = 7;
+        else if (masteryLevel == 4)
+            v70 = 9;
+        else
+            v70 = 3;
 
-      spellnume = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
-      a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
-      v116 = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360 / (v70 - 1);
-      a1.uObjectDescID = GetObjDescId(uSpellID);
-      a1.containing_item.Reset();
-      a1.spell_id = uSpellID;
-      a1.spell_level = uSkillLevel;
-      a1.vPosition.x = actorPtr->vPosition.x;
-      a1.spell_skill = 0;
-      a1.vPosition.y = actorPtr->vPosition.y;
-      a1.vPosition.z = actorPtr->vPosition.z + ((signed int)actorPtr->uActorHeight >> 1);
-      a1.uFacing = pDir->uYawAngle;
-      a1.uSoundID = 0;
-      a1.uAttributes = 0;
-      a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
-      a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
-      a1.uSpriteFrameID = 0;
-      a1.spell_target_pid = 0;
-      a1.field_60_distance_related_prolly_lod = 3;
-      a1c = spellnume / -2;
-      if ( spellnume / -2 > spellnume / 2 )
-        v80 = spellnume / -2;
-      else
-      {
-        do
+        spellnume = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+        a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
+        v116 = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360 / (v70 - 1);
+        a1.uObjectDescID = GetObjDescId(uSpellID);
+        a1.containing_item.Reset();
+        a1.spell_id = uSpellID;
+        a1.spell_level = uSkillLevel;
+        a1.vPosition.x = actorPtr->vPosition.x;
+        a1.spell_skill = 0;
+        a1.vPosition.y = actorPtr->vPosition.y;
+        a1.vPosition.z = actorPtr->vPosition.z + ((signed int)actorPtr->uActorHeight >> 1);
+        a1.uFacing = pDir->uYawAngle;
+        a1.uSoundID = 0;
+        a1.uAttributes = 0;
+        a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
+        a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
+        a1.uSpriteFrameID = 0;
+        a1.spell_target_pid = 0;
+        a1.field_60_distance_related_prolly_lod = 3;
+        a1c = spellnume / -2;
+        if (spellnume / -2 > spellnume / 2)
+            v80 = spellnume / -2;
+        else
         {
-          v79 = pDir->uYawAngle;
-          a1.uFacing = a1c + LOWORD(pDir->uYawAngle);
-          v80 = a1.Create(v79, pDir->uPitchAngle,
-            pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
-          a1c += v116;
+            do
+            {
+                v79 = pDir->uYawAngle;
+                a1.uFacing = a1c + LOWORD(pDir->uYawAngle);
+                v80 = a1.Create(v79, pDir->uPitchAngle,
+                    pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
+                a1c += v116;
+            } while (a1c <= spellnume / 2);
         }
-        while ( a1c <= spellnume / 2 );
-      }
-      if ( v80 != -1 )
-      {
-        pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[93], PID(OBJECT_Item, v80), 0, -1, 0, 0, 0, 0);
+        if (v80 != -1)
+        {
+            pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[93], PID(OBJECT_Item, v80), 0, -1, 0, 0, 0, 0);
+            return;
+        }
         return;
-      }
-      return;
-      break;
 
     case SPELL_DARK_PAIN_REFLECTION:
-      if (masteryLevel == 0)
-        v68 = 0;
-      else if (masteryLevel == 1 || (masteryLevel == 2) || (masteryLevel == 3))
-        v68 = 300 * realPoints + 3840;
-      else
-        v68 = 900 * realPoints + 3840;
-      actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(
-        pParty->uTimePlayed + (signed int)(signed __int64)((double)(v68 << 7) * 0.033333335),
-        masteryLevel, 0, 0, 0);
-      pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,0x7E7E7Eu);
-      pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-      return;
-  }
+        if (masteryLevel == 0)
+            v68 = 0;
+        else if (masteryLevel == 1 || (masteryLevel == 2) || (masteryLevel == 3))
+            v68 = 5 * 30 * realPoints + 30 * 128;
+        else
+            v68 = 15 * 30 * realPoints + 30 * 128;
+        actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(
+            pParty->GetPlayingTime() + GameTime::FromMinutes(v68 / 60),
+            masteryLevel, 0, 0, 0
+        );
+        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x7E7E7Eu);
+        pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        return;
+    }
 }
 
 //----- (new func) --------------------------------------------------------
-unsigned short Actor::GetObjDescId( int spellId )
+unsigned short Actor::GetObjDescId(int spellId)
 {
-  for (unsigned int i = 0; i < pObjectList->uNumObjects; i++)
-  {
-      if (spell_sprite_mapping[spellId].uSpriteType == pObjectList->pObjects[i].uObjectID)
+    for (unsigned int i = 0; i < pObjectList->uNumObjects; i++)
     {
-      return i;
-      break;
+        if (spell_sprite_mapping[spellId].uSpriteType == pObjectList->pObjects[i].uObjectID)
+        {
+            return i;
+            break;
+        }
     }
-  }
-  return 0;
+    return 0;
 }
 
 
@@ -1169,75 +1177,75 @@ void Actor::StandAwhile(unsigned int uActorID)
 //----- (00403C6C) --------------------------------------------------------
 void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid, struct AIDirection *arg0)
 {
-  int16_t v6; // esi@6
-  int16_t v7; // edi@6
-  signed int v8; // eax@7
-  Vec3_int_ v10; // ST04_12@9
-  AIDirection *v12; // eax@11
-  AIDirection a3; // [sp+Ch] [bp-48h]@12
-  AIDirection v20; // [sp+28h] [bp-2Ch]@12
-  int v23; // [sp+4Ch] [bp-8h]@6
-  unsigned int v25; // [sp+5Ch] [bp+8h]@13
+    int16_t v6; // esi@6
+    int16_t v7; // edi@6
+    signed int v8; // eax@7
+    Vec3_int_ v10; // ST04_12@9
+    AIDirection *v12; // eax@11
+    AIDirection a3; // [sp+Ch] [bp-48h]@12
+    AIDirection v20; // [sp+28h] [bp-2Ch]@12
+    int v23; // [sp+4Ch] [bp-8h]@6
+    unsigned int v25; // [sp+5Ch] [bp+8h]@13
 
-  assert(uActorID < uNumActors);
+    assert(uActorID < uNumActors);
 
-  if ( pActors[uActorID].pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY && pActors[uActorID].pMonsterInfo.uAIType == 1 )
-  {
-    Actor::AI_Stand(uActorID, sTargetPid, 0, arg0);
-    return;
-  }
+    if (pActors[uActorID].pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY && pActors[uActorID].pMonsterInfo.uAIType == 1)
+    {
+        Actor::AI_Stand(uActorID, sTargetPid, 0, arg0);
+        return;
+    }
 
-  if ( PID_TYPE(sTargetPid) == OBJECT_Actor)
-  {
-	  v8 = PID_ID(sTargetPid);
-    v6 = pActors[v8].vPosition.x;
-    v7 = pActors[v8].vPosition.y;
-    v23 = (int)(pActors[v8].uActorHeight * 0.75 + pActors[v8].vPosition.z);
-  }
-  else if ( PID_TYPE(sTargetPid) == OBJECT_Player)
-  {
-	  v6 = pParty->vPosition.x;
-    v7 = pParty->vPosition.y;
-    v23 = pParty->vPosition.z + pParty->sEyelevel;
-  }
-  else
-  {
-    Error("Should not get here");
-    return;
-  }
-
-  v10.x = pActors[uActorID].vPosition.x;
-  v10.y = pActors[uActorID].vPosition.y;
-  v10.z = (int32_t)(pActors[uActorID].uActorHeight * 0.75 + pActors[uActorID].vPosition.z);
-
-  if ( sub_407A1C((int)v6, (int)v7, v23, v10) )
-  {
-    if (arg0 != nullptr)
-      v12 = arg0;
+    if (PID_TYPE(sTargetPid) == OBJECT_Actor)
+    {
+        v8 = PID_ID(sTargetPid);
+        v6 = pActors[v8].vPosition.x;
+        v7 = pActors[v8].vPosition.y;
+        v23 = (int)(pActors[v8].uActorHeight * 0.75 + pActors[v8].vPosition.z);
+    }
+    else if (PID_TYPE(sTargetPid) == OBJECT_Player)
+    {
+        v6 = pParty->vPosition.x;
+        v7 = pParty->vPosition.y;
+        v23 = pParty->vPosition.z + pParty->sEyelevel;
+    }
     else
     {
-      Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid, &a3, 0);
-      v12 = &a3;
+        Error("Should not get here");
+        return;
     }
-    pActors[uActorID].uYawAngle = LOWORD(v12->uYawAngle);
-    pActors[uActorID].uCurrentActionLength = pSpriteFrameTable->pSpriteSFrames[pActors[uActorID].pSpriteIDs[ANIM_AtkMelee]].uAnimLength * 8;
-    pActors[uActorID].uCurrentActionTime = 0;
-    pActors[uActorID].uAIState = AttackingMelee;
-    Actor::PlaySound(uActorID, 0);
-    v25 = pMonsterStats->pInfos[pActors[uActorID].pMonsterInfo.uID].uRecoveryTime;
-    if ( pActors[uActorID].pActorBuffs[ACTOR_BUFF_SLOWED].uExpireTime > 0 )
-      v25 *= 2;
-    if ( pParty->bTurnBasedModeOn != 1 )
-      pActors[uActorID].pMonsterInfo.uRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * v25 * 2.133333333333333);
+
+    v10.x = pActors[uActorID].vPosition.x;
+    v10.y = pActors[uActorID].vPosition.y;
+    v10.z = (int32_t)(pActors[uActorID].uActorHeight * 0.75 + pActors[uActorID].vPosition.z);
+
+    if (sub_407A1C((int)v6, (int)v7, v23, v10))
+    {
+        if (arg0 != nullptr)
+            v12 = arg0;
+        else
+        {
+            Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid, &a3, 0);
+            v12 = &a3;
+        }
+        pActors[uActorID].uYawAngle = LOWORD(v12->uYawAngle);
+        pActors[uActorID].uCurrentActionLength = pSpriteFrameTable->pSpriteSFrames[pActors[uActorID].pSpriteIDs[ANIM_AtkMelee]].uAnimLength * 8;
+        pActors[uActorID].uCurrentActionTime = 0;
+        pActors[uActorID].uAIState = AttackingMelee;
+        Actor::PlaySound(uActorID, 0);
+        v25 = pMonsterStats->pInfos[pActors[uActorID].pMonsterInfo.uID].uRecoveryTime;
+        if (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SLOWED].Active())
+            v25 *= 2;
+        if (pParty->bTurnBasedModeOn != 1)
+            pActors[uActorID].pMonsterInfo.uRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * v25 * 2.133333333333333);
+        else
+            pActors[uActorID].pMonsterInfo.uRecoveryTime = v25;
+        pActors[uActorID].vVelocity.z = 0;
+        pActors[uActorID].vVelocity.y = 0;
+        pActors[uActorID].vVelocity.x = 0;
+        pActors[uActorID].UpdateAnimation();
+    }
     else
-      pActors[uActorID].pMonsterInfo.uRecoveryTime = v25;
-    pActors[uActorID].vVelocity.z = 0;
-    pActors[uActorID].vVelocity.y = 0;
-    pActors[uActorID].vVelocity.x = 0;
-    pActors[uActorID].UpdateAnimation();
-  }
-  else
-	Actor::AI_Pursue1(uActorID, sTargetPid, rand() % 2, 64, arg0);
+        Actor::AI_Pursue1(uActorID, sTargetPid, rand() % 2, 64, arg0);
 }
 
 //----- (00438CF3) --------------------------------------------------------
@@ -1329,60 +1337,60 @@ void Actor::AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2, signed i
 }
 
 //----- (0043B3E0) --------------------------------------------------------
-int Actor::_43B3E0_CalcDamage( signed int dmgSource )
+int Actor::_43B3E0_CalcDamage(signed int dmgSource)
 {
-  signed int v2; // ebp@1
-  int v3; // eax@9
-  signed int v4; // edi@9
-  int v5; // esi@9
-  unsigned __int16 v8; // si@21
-  int v9; // edi@21
-  signed int v10; // eax@23
-  int v11; // [sp+10h] [bp-4h]@1
+    signed int v2; // ebp@1
+    int v3; // eax@9
+    signed int v4; // edi@9
+    int v5; // esi@9
+    unsigned __int16 v8; // si@21
+    int v9; // edi@21
+    signed int v10; // eax@23
+    int v11; // [sp+10h] [bp-4h]@1
 
-  v2 = 0;
-  v11 = 0;
+    v2 = 0;
+    v11 = 0;
 
-  switch( dmgSource )
-  {
-    case 0: 
-      if ( this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uExpireTime > 0 )
-        v2 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
-      if ( this->pActorBuffs[ACTOR_BUFF_HEROISM].uExpireTime > 0 && this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower > v2 )
-        v2 = this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower;
-      if ( this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].uExpireTime > 0 )
-        v2 += this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].uPower;
-      v3 = this->pMonsterInfo.uAttack1DamageDiceRolls;
-      v4 = this->pMonsterInfo.uAttack1DamageDiceSides;
-      v5 = this->pMonsterInfo.uAttack1DamageBonus;
-      break;
-    case 1: 
-      v3 = this->pMonsterInfo.uAttack2DamageDiceRolls;
-      v4 = this->pMonsterInfo.uAttack2DamageDiceSides;
-      v5 = this->pMonsterInfo.uAttack2DamageBonus;
-      break;
-    case 2: 
-      v8 = this->pMonsterInfo.uSpellSkillAndMastery1;
-      v9 = this->pMonsterInfo.uSpell1ID;
-      v10 = SkillToMastery(v8);
-      return _43AFE3_calc_spell_damage(v9, v8 & 0x3F, v10, 0);
-      break;
-    case 3: 
-      v8 = this->pMonsterInfo.uSpellSkillAndMastery2;
-      v9 = this->pMonsterInfo.uSpell2ID;
-      v10 = SkillToMastery(v8);
-      return _43AFE3_calc_spell_damage(v9, v8 & 0x3F, v10, 0);
-      break;
+    switch (dmgSource)
+    {
+    case 0:
+        if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
+            v2 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+        if (this->pActorBuffs[ACTOR_BUFF_HEROISM].Active() && this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower > v2)
+            v2 = this->pActorBuffs[ACTOR_BUFF_HEROISM].uPower;
+        if (this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Active())
+            v2 += this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].uPower;
+        v3 = this->pMonsterInfo.uAttack1DamageDiceRolls;
+        v4 = this->pMonsterInfo.uAttack1DamageDiceSides;
+        v5 = this->pMonsterInfo.uAttack1DamageBonus;
+        break;
+    case 1:
+        v3 = this->pMonsterInfo.uAttack2DamageDiceRolls;
+        v4 = this->pMonsterInfo.uAttack2DamageDiceSides;
+        v5 = this->pMonsterInfo.uAttack2DamageBonus;
+        break;
+    case 2:
+        v8 = this->pMonsterInfo.uSpellSkillAndMastery1;
+        v9 = this->pMonsterInfo.uSpell1ID;
+        v10 = SkillToMastery(v8);
+        return _43AFE3_calc_spell_damage(v9, v8 & 0x3F, v10, 0);
+        break;
+    case 3:
+        v8 = this->pMonsterInfo.uSpellSkillAndMastery2;
+        v9 = this->pMonsterInfo.uSpell2ID;
+        v10 = SkillToMastery(v8);
+        return _43AFE3_calc_spell_damage(v9, v8 & 0x3F, v10, 0);
+        break;
     case 4:
-      v3 = this->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
-      v4 = this->pMonsterInfo.uSpecialAbilityDamageDiceSides;
-      v5 = this->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
+        v3 = this->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
+        v4 = this->pMonsterInfo.uSpecialAbilityDamageDiceSides;
+        v5 = this->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
     default:
-      return 0;
-  }
-  for ( int i = 0; i < v3; i++)
-    v11 += rand() % v4 + 1;
-  return v11 + v5 + v2;
+        return 0;
+    }
+    for (int i = 0; i < v3; i++)
+        v11 += rand() % v4 + 1;
+    return v11 + v5 + v2;
 }
 
 //----- (00438B9B) --------------------------------------------------------
@@ -1433,308 +1441,308 @@ void Actor::StealFrom( unsigned int uActorID )
 //----- (00403A60) --------------------------------------------------------
 void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0, AIDirection *pDir)
 {
-  Actor *v3; // ebx@1
-  int16_t v4; // esi@3
-  int16_t v5; // edi@3
-  signed int v6; // eax@4
-  Vec3_int_ v7; // ST04_12@6
-  AIDirection *v9; // eax@8
-  __int16 v13; // ax@10
-  AIDirection a3; // [sp+Ch] [bp-48h]@9
-  AIDirection v18; // [sp+28h] [bp-2Ch]@9
-  int v19; // [sp+44h] [bp-10h]@6
-  signed int a2; // [sp+48h] [bp-Ch]@1
-  int v21; // [sp+4Ch] [bp-8h]@3
-  unsigned int pDira; // [sp+5Ch] [bp+8h]@10
+    Actor *v3; // ebx@1
+    int16_t v4; // esi@3
+    int16_t v5; // edi@3
+    signed int v6; // eax@4
+    Vec3_int_ v7; // ST04_12@6
+    AIDirection *v9; // eax@8
+    __int16 v13; // ax@10
+    AIDirection a3; // [sp+Ch] [bp-48h]@9
+    AIDirection v18; // [sp+28h] [bp-2Ch]@9
+    int v19; // [sp+44h] [bp-10h]@6
+    signed int a2; // [sp+48h] [bp-Ch]@1
+    int v21; // [sp+4Ch] [bp-8h]@3
+    unsigned int pDira; // [sp+5Ch] [bp+8h]@10
 
-  v3 = &pActors[uActorID];
-  a2 = edx0;
-  if ( PID_TYPE(edx0) == OBJECT_Actor)
-  {
-    v6 = PID_ID(edx0);
-    v4 = pActors[v6].vPosition.x;
-    v5 = pActors[v6].vPosition.y;
-    v21 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
-  }
-  else if ( PID_TYPE(edx0) == OBJECT_Player)
-  {
-    v4 = pParty->vPosition.x;
-    v5 = pParty->vPosition.y;
-    v21 = pParty->vPosition.z + pParty->sEyelevel;
-  }
-  else
-  {
-    Error("Should not get here");
-    return;
-  }
-  v19 = v3->uActorHeight;
-  v7.z = v3->vPosition.z - (int)(v19 * -0.75);
-  v7.y = v3->vPosition.y;
-  v7.x = v3->vPosition.x;
-  if ( sub_407A1C(v4, v5, v21, v7) )
-  {
-    if ( pDir == nullptr)
+    v3 = &pActors[uActorID];
+    a2 = edx0;
+    if (PID_TYPE(edx0) == OBJECT_Actor)
     {
-      Actor::GetDirectionInfo(PID(OBJECT_Actor,uActorID), a2, &a3, 0);
-      v9 = &a3;
+        v6 = PID_ID(edx0);
+        v4 = pActors[v6].vPosition.x;
+        v5 = pActors[v6].vPosition.y;
+        v21 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
+    }
+    else if (PID_TYPE(edx0) == OBJECT_Player)
+    {
+        v4 = pParty->vPosition.x;
+        v5 = pParty->vPosition.y;
+        v21 = pParty->vPosition.z + pParty->sEyelevel;
     }
     else
-      v9 = pDir;
-    v3->uYawAngle = LOWORD(v9->uYawAngle);
-    v13 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
-    v3->uCurrentActionLength = 8 * v13;
-    v3->uCurrentActionTime = 0;
-    v3->uAIState = AttackingRanged4;
-    Actor::PlaySound(uActorID, 0);
-    pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
-    if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].uExpireTime > 0)
-      pDira *= 2;
-    if ( pParty->bTurnBasedModeOn == 1 )
-      v3->pMonsterInfo.uRecoveryTime = pDira;
-    else
-      v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
-    v3->vVelocity.z = 0;
-    v3->vVelocity.y = 0;
-    v3->vVelocity.x = 0;
-    if ( ShouldMonsterPlayAttackAnim(v3->pMonsterInfo.uSpell2ID) )
     {
-      v3->uCurrentActionLength = 64;
-      v3->uCurrentActionTime = 0;
-      v3->uAIState = Fidgeting;
-      v3->UpdateAnimation();
-      v3->uAIState = AttackingRanged4;
+        Error("Should not get here");
+        return;
+    }
+    v19 = v3->uActorHeight;
+    v7.z = v3->vPosition.z - (int)(v19 * -0.75);
+    v7.y = v3->vPosition.y;
+    v7.x = v3->vPosition.x;
+    if (sub_407A1C(v4, v5, v21, v7))
+    {
+        if (pDir == nullptr)
+        {
+            Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), a2, &a3, 0);
+            v9 = &a3;
+        }
+        else
+            v9 = pDir;
+        v3->uYawAngle = LOWORD(v9->uYawAngle);
+        v13 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
+        v3->uCurrentActionLength = 8 * v13;
+        v3->uCurrentActionTime = 0;
+        v3->uAIState = AttackingRanged4;
+        Actor::PlaySound(uActorID, 0);
+        pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
+        if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active())
+            pDira *= 2;
+        if (pParty->bTurnBasedModeOn == 1)
+            v3->pMonsterInfo.uRecoveryTime = pDira;
+        else
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+        v3->vVelocity.z = 0;
+        v3->vVelocity.y = 0;
+        v3->vVelocity.x = 0;
+        if (ShouldMonsterPlayAttackAnim(v3->pMonsterInfo.uSpell2ID))
+        {
+            v3->uCurrentActionLength = 64;
+            v3->uCurrentActionTime = 0;
+            v3->uAIState = Fidgeting;
+            v3->UpdateAnimation();
+            v3->uAIState = AttackingRanged4;
+        }
+        else
+            v3->UpdateAnimation();
     }
     else
-      v3->UpdateAnimation();
-  }
-  else
-    Actor::AI_Pursue1(uActorID, a2, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, a2, uActorID, 64, pDir);
 }
 
 //----- (00403854) --------------------------------------------------------
 void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid, AIDirection *pDir)
 {
-  Actor *v3; // ebx@1
-  int16_t v4; // esi@3
-  int16_t v5; // edi@3
-  signed int v6; // eax@4
-  Vec3_int_ v7; // ST04_12@6
-  AIDirection *v9; // eax@8
-  __int16 v13; // ax@10
-  signed int v16; // ecx@17
-  AIDirection a3; // [sp+Ch] [bp-48h]@9
-  AIDirection v18; // [sp+28h] [bp-2Ch]@9
-  int v19; // [sp+44h] [bp-10h]@6
-  int v21; // [sp+4Ch] [bp-8h]@3
-  unsigned int pDira; // [sp+5Ch] [bp+8h]@10
+    Actor *v3; // ebx@1
+    int16_t v4; // esi@3
+    int16_t v5; // edi@3
+    signed int v6; // eax@4
+    Vec3_int_ v7; // ST04_12@6
+    AIDirection *v9; // eax@8
+    __int16 v13; // ax@10
+    signed int v16; // ecx@17
+    AIDirection a3; // [sp+Ch] [bp-48h]@9
+    AIDirection v18; // [sp+28h] [bp-2Ch]@9
+    int v19; // [sp+44h] [bp-10h]@6
+    int v21; // [sp+4Ch] [bp-8h]@3
+    unsigned int pDira; // [sp+5Ch] [bp+8h]@10
 
-  v3 = &pActors[uActorID];
-  if ( PID_TYPE(sTargetPid) == OBJECT_Actor)
-  {
-    v6 = PID_ID(sTargetPid);
-    v4 = pActors[v6].vPosition.x;
-    v5 = pActors[v6].vPosition.y;
-    v21 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
-  }
-  else if ( PID_TYPE(sTargetPid) == OBJECT_Player)
-  {
-    v4 = pParty->vPosition.x;
-    v5 = pParty->vPosition.y;
-    v21 = pParty->vPosition.z + pParty->sEyelevel;
-  }
-  else
-  {
-    Error("Should not get here");
-    return;
-  }
-  v19 = v3->uActorHeight;
-  v7.z = v3->vPosition.z - (int)(v19 * -0.75);
-  v7.y = v3->vPosition.y;
-  v7.x = v3->vPosition.x;
-  if ( sub_407A1C(v4, v5, v21, v7) )
-  {
-    if ( pDir == nullptr )
+    v3 = &pActors[uActorID];
+    if (PID_TYPE(sTargetPid) == OBJECT_Actor)
     {
-      Actor::GetDirectionInfo(PID(OBJECT_Actor,uActorID), sTargetPid, &a3, 0);
-      v9 = &a3;
+        v6 = PID_ID(sTargetPid);
+        v4 = pActors[v6].vPosition.x;
+        v5 = pActors[v6].vPosition.y;
+        v21 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
+    }
+    else if (PID_TYPE(sTargetPid) == OBJECT_Player)
+    {
+        v4 = pParty->vPosition.x;
+        v5 = pParty->vPosition.y;
+        v21 = pParty->vPosition.z + pParty->sEyelevel;
     }
     else
-      v9 = pDir;
-    v3->uYawAngle = LOWORD(v9->uYawAngle);
-    v13 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
-    v3->uCurrentActionLength = 8 * v13;
-    v3->uCurrentActionTime = 0;
-    v3->uAIState = AttackingRanged3;
-    Actor::PlaySound(uActorID, 0);
-    pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
-    if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].uExpireTime > 0)
-      pDira *= 2;
-    if ( pParty->bTurnBasedModeOn == 1 )
-      v3->pMonsterInfo.uRecoveryTime = pDira;
-    else
-      v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
-    v16 = v3->pMonsterInfo.uSpell1ID;
-    v3->vVelocity.z = 0;
-    v3->vVelocity.y = 0;
-    v3->vVelocity.x = 0;
-    if ( ShouldMonsterPlayAttackAnim(v3->pMonsterInfo.uSpell1ID) )
     {
-      v3->uCurrentActionLength = 64;
-      v3->uCurrentActionTime = 0;
-      v3->uAIState = Fidgeting;
-      v3->UpdateAnimation();
-      v3->uAIState = AttackingRanged3;
+        Error("Should not get here");
+        return;
+    }
+    v19 = v3->uActorHeight;
+    v7.z = v3->vPosition.z - (int)(v19 * -0.75);
+    v7.y = v3->vPosition.y;
+    v7.x = v3->vPosition.x;
+    if (sub_407A1C(v4, v5, v21, v7))
+    {
+        if (pDir == nullptr)
+        {
+            Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid, &a3, 0);
+            v9 = &a3;
+        }
+        else
+            v9 = pDir;
+        v3->uYawAngle = LOWORD(v9->uYawAngle);
+        v13 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
+        v3->uCurrentActionLength = 8 * v13;
+        v3->uCurrentActionTime = 0;
+        v3->uAIState = AttackingRanged3;
+        Actor::PlaySound(uActorID, 0);
+        pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
+        if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active())
+            pDira *= 2;
+        if (pParty->bTurnBasedModeOn == 1)
+            v3->pMonsterInfo.uRecoveryTime = pDira;
+        else
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+        v16 = v3->pMonsterInfo.uSpell1ID;
+        v3->vVelocity.z = 0;
+        v3->vVelocity.y = 0;
+        v3->vVelocity.x = 0;
+        if (ShouldMonsterPlayAttackAnim(v3->pMonsterInfo.uSpell1ID))
+        {
+            v3->uCurrentActionLength = 64;
+            v3->uCurrentActionTime = 0;
+            v3->uAIState = Fidgeting;
+            v3->UpdateAnimation();
+            v3->uAIState = AttackingRanged3;
+        }
+        else
+            v3->UpdateAnimation();
     }
     else
-      v3->UpdateAnimation();
-  }
-  else
-    Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
 }
 
 //----- (0040368B) --------------------------------------------------------
 void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid, AIDirection *pDir)
 {
-  Actor *v3; // ebx@1
-  int16_t v4; // esi@3
-  int16_t v5; // edi@3
-  signed int v6; // eax@4
-  Vec3_int_ v7; // ST04_12@6
-  AIDirection *v9; // eax@8
-  __int16 v13; // ax@10
-  AIDirection a3; // [sp+Ch] [bp-48h]@9
-  AIDirection v17; // [sp+28h] [bp-2Ch]@9
-  int v18; // [sp+44h] [bp-10h]@6
-  int v20; // [sp+4Ch] [bp-8h]@3
-  unsigned int pDira; // [sp+5Ch] [bp+8h]@10
+    Actor *v3; // ebx@1
+    int16_t v4; // esi@3
+    int16_t v5; // edi@3
+    signed int v6; // eax@4
+    Vec3_int_ v7; // ST04_12@6
+    AIDirection *v9; // eax@8
+    __int16 v13; // ax@10
+    AIDirection a3; // [sp+Ch] [bp-48h]@9
+    AIDirection v17; // [sp+28h] [bp-2Ch]@9
+    int v18; // [sp+44h] [bp-10h]@6
+    int v20; // [sp+4Ch] [bp-8h]@3
+    unsigned int pDira; // [sp+5Ch] [bp+8h]@10
 
-  v3 = &pActors[uActorID];
-  if ( PID_TYPE(sTargetPid) == OBJECT_Actor)
-  {
-    v6 = PID_ID(sTargetPid);
-    v4 = pActors[v6].vPosition.x;
-    v5 = pActors[v6].vPosition.y;
-    v20 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
-  }
-  else if ( PID_TYPE(sTargetPid) == OBJECT_Player)
-  {
-    v4 = pParty->vPosition.x;
-    v5 = pParty->vPosition.y;
-    v20 = pParty->vPosition.z + pParty->sEyelevel;
-  }
-  else
-  {
-    Error("Should not get here");
-    return;
-  }
-  v18 = v3->uActorHeight;
-  v7.z = v3->vPosition.z - (int)(v18 * -0.75);
-  v7.y = v3->vPosition.y;
-  v7.x = v3->vPosition.x;
-  if ( sub_407A1C(v4, v5, v20, v7) )
-  {
-    if ( pDir == nullptr )
+    v3 = &pActors[uActorID];
+    if (PID_TYPE(sTargetPid) == OBJECT_Actor)
     {
-      Actor::GetDirectionInfo(PID(OBJECT_Actor,uActorID), sTargetPid, &a3, 0);
-      v9 = &a3;
+        v6 = PID_ID(sTargetPid);
+        v4 = pActors[v6].vPosition.x;
+        v5 = pActors[v6].vPosition.y;
+        v20 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
+    }
+    else if (PID_TYPE(sTargetPid) == OBJECT_Player)
+    {
+        v4 = pParty->vPosition.x;
+        v5 = pParty->vPosition.y;
+        v20 = pParty->vPosition.z + pParty->sEyelevel;
     }
     else
-      v9 = pDir;
-    v3->uYawAngle = LOWORD(v9->uYawAngle);
-    v13 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
-    v3->uCurrentActionLength = 8 * v13;
-    v3->uCurrentActionTime = 0;
-    v3->uAIState = AttackingRanged2;
-    Actor::PlaySound(uActorID, 0);
-    pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
-    if ( v3->pActorBuffs[ACTOR_BUFF_SLOWED].uExpireTime > 0 )
-      pDira *= 2;
-    if ( pParty->bTurnBasedModeOn != 1 )
-      v3->pMonsterInfo.uRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+    {
+        Error("Should not get here");
+        return;
+    }
+    v18 = v3->uActorHeight;
+    v7.z = v3->vPosition.z - (int)(v18 * -0.75);
+    v7.y = v3->vPosition.y;
+    v7.x = v3->vPosition.x;
+    if (sub_407A1C(v4, v5, v20, v7))
+    {
+        if (pDir == nullptr)
+        {
+            Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid, &a3, 0);
+            v9 = &a3;
+        }
+        else
+            v9 = pDir;
+        v3->uYawAngle = LOWORD(v9->uYawAngle);
+        v13 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
+        v3->uCurrentActionLength = 8 * v13;
+        v3->uCurrentActionTime = 0;
+        v3->uAIState = AttackingRanged2;
+        Actor::PlaySound(uActorID, 0);
+        pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
+        if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active())
+            pDira *= 2;
+        if (pParty->bTurnBasedModeOn != 1)
+            v3->pMonsterInfo.uRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+        else
+            v3->pMonsterInfo.uRecoveryTime = pDira;
+        v3->vVelocity.z = 0;
+        v3->vVelocity.y = 0;
+        v3->vVelocity.x = 0;
+        v3->UpdateAnimation();
+    }
     else
-      v3->pMonsterInfo.uRecoveryTime = pDira;
-    v3->vVelocity.z = 0;
-    v3->vVelocity.y = 0;
-    v3->vVelocity.x = 0;
-    v3->UpdateAnimation();
-  }
-  else
-    Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
 }
 
 //----- (00403476) --------------------------------------------------------
 void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid, AIDirection *pDir)
 {
-  Actor *v3; // ebx@1
-  int v4; // esi@3
-  int v5; // edi@3
-  signed int v6; // eax@4
-  Vec3_int_ v7; // ST04_12@6
-  AIDirection *v10; // eax@9
-  __int16 v14; // ax@11
-  AIDirection a3; // [sp+Ch] [bp-48h]@10
-  AIDirection v18; // [sp+28h] [bp-2Ch]@10
-  int v19; // [sp+44h] [bp-10h]@6
-  //signed int a2; // [sp+48h] [bp-Ch]@1
-  int v22; // [sp+50h] [bp-4h]@3
-  unsigned int pDira; // [sp+5Ch] [bp+8h]@11
+    Actor *v3; // ebx@1
+    int v4; // esi@3
+    int v5; // edi@3
+    signed int v6; // eax@4
+    Vec3_int_ v7; // ST04_12@6
+    AIDirection *v10; // eax@9
+    __int16 v14; // ax@11
+    AIDirection a3; // [sp+Ch] [bp-48h]@10
+    AIDirection v18; // [sp+28h] [bp-2Ch]@10
+    int v19; // [sp+44h] [bp-10h]@6
+    //signed int a2; // [sp+48h] [bp-Ch]@1
+    int v22; // [sp+50h] [bp-4h]@3
+    unsigned int pDira; // [sp+5Ch] [bp+8h]@11
 
-  v3 = &pActors[uActorID];
-  //a2 = edx0;
-  if ( PID_TYPE(sTargetPid) == OBJECT_Actor)
-  {
-    v6 = PID_ID(sTargetPid);
-    v4 = pActors[v6].vPosition.x;
-    v5 = pActors[v6].vPosition.y;
-    v22 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
-  }
-  else
-  {
-    if ( PID_TYPE(sTargetPid) == OBJECT_Player)
+    v3 = &pActors[uActorID];
+    //a2 = edx0;
+    if (PID_TYPE(sTargetPid) == OBJECT_Actor)
     {
-      v4 = pParty->vPosition.x;
-      v5 = pParty->vPosition.y;
-      v22 = pParty->vPosition.z + pParty->sEyelevel;
+        v6 = PID_ID(sTargetPid);
+        v4 = pActors[v6].vPosition.x;
+        v5 = pActors[v6].vPosition.y;
+        v22 = (int)(pActors[v6].uActorHeight * 0.75 + pActors[v6].vPosition.z);
     }
     else
     {
-      v4 = (int)pDir;
-      v5 = (int)pDir;
+        if (PID_TYPE(sTargetPid) == OBJECT_Player)
+        {
+            v4 = pParty->vPosition.x;
+            v5 = pParty->vPosition.y;
+            v22 = pParty->vPosition.z + pParty->sEyelevel;
+        }
+        else
+        {
+            v4 = (int)pDir;
+            v5 = (int)pDir;
+        }
     }
-  }
-  v19 = v3->uActorHeight;
-  v7.z = v3->vPosition.z - (unsigned int)(signed __int64)((double)v19 * -0.75);
-  v7.y = v3->vPosition.y;
-  v7.x = v3->vPosition.x;
-  if ( sub_407A1C(v4, v5, v22, v7) || sub_407A1C(v7.x, v7.y, v7.z, Vec3_int_(v4, v5, v22)))
-  {
-    if ( pDir == nullptr )
+    v19 = v3->uActorHeight;
+    v7.z = v3->vPosition.z - (unsigned int)(signed __int64)((double)v19 * -0.75);
+    v7.y = v3->vPosition.y;
+    v7.x = v3->vPosition.x;
+    if (sub_407A1C(v4, v5, v22, v7) || sub_407A1C(v7.x, v7.y, v7.z, Vec3_int_(v4, v5, v22)))
     {
-      Actor::GetDirectionInfo(PID(OBJECT_Actor,uActorID), sTargetPid, &a3, 0);
-      v10 = &a3;
+        if (pDir == nullptr)
+        {
+            Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid, &a3, 0);
+            v10 = &a3;
+        }
+        else
+            v10 = pDir;
+        v3->uYawAngle = LOWORD(v10->uYawAngle);
+        v14 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
+        v3->uCurrentActionLength = 8 * v14;
+        v3->uCurrentActionTime = 0;
+        v3->uAIState = AttackingRanged1;
+        Actor::PlaySound(uActorID, 0);
+        pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
+        if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active())
+            pDira *= 2;
+        if (pParty->bTurnBasedModeOn == 1)
+            v3->pMonsterInfo.uRecoveryTime = pDira;
+        else
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength - (int)(flt_6BE3A8_debug_recmod2 * pDira * -2.133333333333333);
+        v3->vVelocity.z = 0;
+        v3->vVelocity.y = 0;
+        v3->vVelocity.x = 0;
+        v3->UpdateAnimation();
     }
     else
-      v10 = pDir;
-    v3->uYawAngle = LOWORD(v10->uYawAngle);
-    v14 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
-    v3->uCurrentActionLength = 8 * v14;
-    v3->uCurrentActionTime = 0;
-    v3->uAIState = AttackingRanged1;
-    Actor::PlaySound(uActorID, 0);
-    pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
-    if ( v3->pActorBuffs[ACTOR_BUFF_SLOWED].uExpireTime > 0 )
-      pDira *= 2;
-    if ( pParty->bTurnBasedModeOn == 1 )
-      v3->pMonsterInfo.uRecoveryTime = pDira;
-    else
-      v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength - (int)(flt_6BE3A8_debug_recmod2 * pDira * -2.133333333333333);
-    v3->vVelocity.z = 0;
-    v3->vVelocity.y = 0;
-    v3->vVelocity.x = 0;
-    v3->UpdateAnimation();
-  }
-  else
-    Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
+        Actor::AI_Pursue1(uActorID, sTargetPid, uActorID, 64, pDir);
 }
 
 //----- (004032B2) --------------------------------------------------------
@@ -1855,37 +1863,37 @@ char Actor::_4031C1_update_job_never_gets_called(unsigned int uActorID, signed i
 //----- (004030AD) --------------------------------------------------------
 void Actor::AI_Stun(unsigned int uActorID, signed int edx0, int stunRegardlessOfState)
 {
-  __int16 v7; // ax@16
-  AIDirection a3; // [sp+Ch] [bp-40h]@16
+    __int16 v7; // ax@16
+    AIDirection a3; // [sp+Ch] [bp-40h]@16
 
-  if ( pActors[uActorID].uAIState == Fleeing )
-    pActors[uActorID].uAttributes |= ACTOR_FLEEING;
-  if ( pActors[uActorID].pMonsterInfo.uHostilityType != 4 )
-  {
-    pActors[uActorID].uAttributes &= 0xFFFFFFFB;//~0x4
-    pActors[uActorID].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
-  }
-  if ( pActors[uActorID].pActorBuffs[ACTOR_BUFF_CHARM].uExpireTime > 0 )
-    pActors[uActorID].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
-  if ( pActors[uActorID].pActorBuffs[ACTOR_BUFF_AFRAID].uExpireTime > 0 )
-    pActors[uActorID].pActorBuffs[ACTOR_BUFF_AFRAID].Reset();
-  if ( stunRegardlessOfState || (pActors[uActorID].uAIState != Stunned
-    && pActors[uActorID].uAIState != AttackingRanged1
-    && pActors[uActorID].uAIState != AttackingRanged2
-    && pActors[uActorID].uAIState != AttackingRanged3
-    && pActors[uActorID].uAIState != AttackingRanged4
-    && pActors[uActorID].uAIState != AttackingMelee))
-  {
-    Actor::GetDirectionInfo(PID(OBJECT_Actor,uActorID), edx0, &a3, 0);
-    //v10 = &a3;
-    pActors[uActorID].uYawAngle = LOWORD(a3.uYawAngle);
-    v7 = pSpriteFrameTable->pSpriteSFrames[pActors[uActorID].pSpriteIDs[ANIM_GotHit]].uAnimLength;
-    pActors[uActorID].uCurrentActionTime = 0;
-    pActors[uActorID].uAIState = Stunned;
-    pActors[uActorID].uCurrentActionLength = 8 * v7;
-    Actor::PlaySound(uActorID, 2);
-    pActors[uActorID].UpdateAnimation();
-  }
+    if (pActors[uActorID].uAIState == Fleeing)
+        pActors[uActorID].uAttributes |= ACTOR_FLEEING;
+    if (pActors[uActorID].pMonsterInfo.uHostilityType != 4)
+    {
+        pActors[uActorID].uAttributes &= 0xFFFFFFFB;//~0x4
+        pActors[uActorID].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+    }
+    if (pActors[uActorID].pActorBuffs[ACTOR_BUFF_CHARM].Active())
+        pActors[uActorID].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
+    if (pActors[uActorID].pActorBuffs[ACTOR_BUFF_AFRAID].Active())
+        pActors[uActorID].pActorBuffs[ACTOR_BUFF_AFRAID].Reset();
+    if (stunRegardlessOfState || (pActors[uActorID].uAIState != Stunned
+        && pActors[uActorID].uAIState != AttackingRanged1
+        && pActors[uActorID].uAIState != AttackingRanged2
+        && pActors[uActorID].uAIState != AttackingRanged3
+        && pActors[uActorID].uAIState != AttackingRanged4
+        && pActors[uActorID].uAIState != AttackingMelee))
+    {
+        Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), edx0, &a3, 0);
+        //v10 = &a3;
+        pActors[uActorID].uYawAngle = LOWORD(a3.uYawAngle);
+        v7 = pSpriteFrameTable->pSpriteSFrames[pActors[uActorID].pSpriteIDs[ANIM_GotHit]].uAnimLength;
+        pActors[uActorID].uCurrentActionTime = 0;
+        pActors[uActorID].uAIState = Stunned;
+        pActors[uActorID].uCurrentActionLength = 8 * v7;
+        Actor::PlaySound(uActorID, 2);
+        pActors[uActorID].UpdateAnimation();
+    }
 }
 
 //----- (00402F87) --------------------------------------------------------
@@ -2008,33 +2016,31 @@ void Actor::Die(unsigned int uActorID)
 //----- (00402CED) --------------------------------------------------------
 void Actor::PlaySound(unsigned int uActorID, unsigned int uSoundID)
 {
-  unsigned __int16 v3; // dx@1
-
-  v3 = pActors[uActorID].pSoundSampleIDs[uSoundID];
-  if ( v3 )
-  {
-    if ( pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].uExpireTime <= 0 )
-      pAudioPlayer->PlaySound((SoundID)v3, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-    else
+    SoundID sound_sample_id = (SoundID)pActors[uActorID].pSoundSampleIDs[uSoundID];
+    if (sound_sample_id)
     {
-      switch(pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
-      {
-        case 1: 
-          pAudioPlayer->PlaySound((SoundID)v3, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0, 0, 33075);
-          break;
-        case 2: 
-          pAudioPlayer->PlaySound((SoundID)v3, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0, 0, 33075);
-          break;
-        case 3: 
-        case 4: 
-          pAudioPlayer->PlaySound((SoundID)v3, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0, 0, 33075);
-          break;
-        default:
-          pAudioPlayer->PlaySound((SoundID)v3, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
-          break;
-      }
+        if (!pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].Active())
+            pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        else
+        {
+            switch (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
+            {
+            case 1:
+                pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0, 0, 33075);
+                break;
+            case 2:
+                pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0, 0, 33075);
+                break;
+            case 3:
+            case 4:
+                pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0, 0, 33075);
+                break;
+            default:
+                pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+                break;
+            }
+        }
     }
-  }
 }
 
 //----- (00402AD7) --------------------------------------------------------
@@ -2281,159 +2287,157 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2, signed int uActio
 //----- (00401221) --------------------------------------------------------
 void Actor::_SelectTarget(unsigned int uActorID, int *a2, bool can_target_party)
 {
-  int v5; // ecx@1
-  signed int v10; // eax@13
-  uint v11; // ebx@16
-  uint v12; // eax@16
-  signed int v14; // eax@31
-  uint v15; // edi@43
-  uint v16; // ebx@45
-  uint v17; // eax@45
-  signed int closestId; // [sp+14h] [bp-1Ch]@1
-  uint v23; // [sp+1Ch] [bp-14h]@16
-  unsigned int lowestRadius; // [sp+24h] [bp-Ch]@1
-  uint v27; // [sp+2Ch] [bp-4h]@16
-  uint v28; // [sp+2Ch] [bp-4h]@45
+    int v5; // ecx@1
+    signed int v10; // eax@13
+    uint v11; // ebx@16
+    uint v12; // eax@16
+    signed int v14; // eax@31
+    uint v15; // edi@43
+    uint v16; // ebx@45
+    uint v17; // eax@45
+    signed int closestId; // [sp+14h] [bp-1Ch]@1
+    uint v23; // [sp+1Ch] [bp-14h]@16
+    unsigned int lowestRadius; // [sp+24h] [bp-Ch]@1
+    uint v27; // [sp+2Ch] [bp-4h]@16
+    uint v28; // [sp+2Ch] [bp-4h]@45
 
-  lowestRadius = UINT_MAX;
-  v5 = 0;
-  *a2 = 0;
-  closestId = 0;
-  assert(uActorID < uNumActors);
-  Actor* thisActor = &pActors[uActorID];
+    lowestRadius = UINT_MAX;
+    v5 = 0;
+    *a2 = 0;
+    closestId = 0;
+    assert(uActorID < uNumActors);
+    Actor* thisActor = &pActors[uActorID];
 
-  for (uint i = 0; i < uNumActors; ++i)
-  {
-    Actor* actor = &pActors[i];
-    if (actor->uAIState == Dead || actor->uAIState == Dying ||
-        actor->uAIState == Removed || actor->uAIState == Summoned || actor->uAIState == Disabled || uActorID == i )
-      continue;
-
-		if (thisActor->uLastCharacterIDToHit == 0 || PID(OBJECT_Actor,v5) != thisActor->uLastCharacterIDToHit )
-		{
-		  v10 = thisActor->GetActorsRelation(actor);
-		  if ( v10 == 0 )
-			continue;
-		}
-		else if (thisActor->IsNotAlive())
-		{
-		  thisActor->uLastCharacterIDToHit = 0;
-		  v10 = thisActor->GetActorsRelation(actor);
-		  if ( v10 == 0 )
-			continue;
-		}
-		else
-		{
-			if ( (actor->uGroup != 0 || thisActor->uGroup != 0) && actor->uGroup == thisActor->uGroup )
-				continue;
-			v10 = 4;
-		}
-		if ( thisActor->pMonsterInfo.uHostilityType )
-		  v10 = pMonsterStats->pInfos[thisActor->pMonsterInfo.uID].uHostilityType;
-		v11 = _4DF380_hostilityRanges[v10];
-		v23 = abs(thisActor->vPosition.x - actor->vPosition.x);
-		v27 = abs(thisActor->vPosition.y - actor->vPosition.y);
-		v12 = abs(thisActor->vPosition.z - actor->vPosition.z);
-		if ( v23 <= v11
-		  && v27 <= v11
-		  && v12 <= v11
-		  && sub_4070EF_prolly_detect_player(PID(OBJECT_Actor, i), PID(OBJECT_Actor, uActorID))
-		  && v23 * v23 + v27 * v27 + v12 * v12 < lowestRadius )
-		{
-		  lowestRadius = v23 * v23 + v27 * v27 + v12 * v12;
-		  closestId = i;
-		}
-  }
-
-  if ( lowestRadius != UINT_MAX )
-  {
-    *a2 = PID(OBJECT_Actor, closestId);
-  }
-  
-  if (can_target_party && !pParty->Invisible())
-  {
-    if ( thisActor->ActorEnemy()
-      && thisActor->pActorBuffs[ACTOR_BUFF_ENSLAVED].uExpireTime <= 0
-      && thisActor->pActorBuffs[ACTOR_BUFF_CHARM].uExpireTime <= 0
-      && thisActor->pActorBuffs[ACTOR_BUFF_SUMMONED].uExpireTime <= 0 )
-      v14 = 4;
-    else
-      v14 = thisActor->GetActorsRelation(0);
-    if ( v14 != 0 )
+    for (uint i = 0; i < uNumActors; ++i)
     {
-      if ( !thisActor->pMonsterInfo.uHostilityType )
-        v15 = _4DF380_hostilityRanges[v14];
-      else
-        v15 = _4DF380_hostilityRanges[4];
-      v16 = abs(thisActor->vPosition.x - pParty->vPosition.x);
-      v28 = abs(thisActor->vPosition.y - pParty->vPosition.y);
-      v17 = abs(thisActor->vPosition.z - pParty->vPosition.z);
-      if ( v16 <= v15 && v28 <= v15 && v17 <= v15 && (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius))
-      {
-        *a2 = OBJECT_Player;
-      }
+        Actor* actor = &pActors[i];
+        if (actor->uAIState == Dead || actor->uAIState == Dying ||
+            actor->uAIState == Removed || actor->uAIState == Summoned || actor->uAIState == Disabled || uActorID == i)
+            continue;
+
+        if (thisActor->uLastCharacterIDToHit == 0 || PID(OBJECT_Actor, v5) != thisActor->uLastCharacterIDToHit)
+        {
+            v10 = thisActor->GetActorsRelation(actor);
+            if (v10 == 0)
+                continue;
+        }
+        else if (thisActor->IsNotAlive())
+        {
+            thisActor->uLastCharacterIDToHit = 0;
+            v10 = thisActor->GetActorsRelation(actor);
+            if (v10 == 0)
+                continue;
+        }
+        else
+        {
+            if ((actor->uGroup != 0 || thisActor->uGroup != 0) && actor->uGroup == thisActor->uGroup)
+                continue;
+            v10 = 4;
+        }
+        if (thisActor->pMonsterInfo.uHostilityType)
+            v10 = pMonsterStats->pInfos[thisActor->pMonsterInfo.uID].uHostilityType;
+        v11 = _4DF380_hostilityRanges[v10];
+        v23 = abs(thisActor->vPosition.x - actor->vPosition.x);
+        v27 = abs(thisActor->vPosition.y - actor->vPosition.y);
+        v12 = abs(thisActor->vPosition.z - actor->vPosition.z);
+        if (v23 <= v11
+            && v27 <= v11
+            && v12 <= v11
+            && sub_4070EF_prolly_detect_player(PID(OBJECT_Actor, i), PID(OBJECT_Actor, uActorID))
+            && v23 * v23 + v27 * v27 + v12 * v12 < lowestRadius)
+        {
+            lowestRadius = v23 * v23 + v27 * v27 + v12 * v12;
+            closestId = i;
+        }
     }
-  }
+
+    if (lowestRadius != UINT_MAX)
+    {
+        *a2 = PID(OBJECT_Actor, closestId);
+    }
+
+    if (can_target_party && !pParty->Invisible())
+    {
+        if (thisActor->ActorEnemy()
+            && !thisActor->pActorBuffs[ACTOR_BUFF_ENSLAVED].Active()
+            && !thisActor->pActorBuffs[ACTOR_BUFF_CHARM].Active()
+            && !thisActor->pActorBuffs[ACTOR_BUFF_SUMMONED].Active())
+            v14 = 4;
+        else
+            v14 = thisActor->GetActorsRelation(0);
+        if (v14 != 0)
+        {
+            if (!thisActor->pMonsterInfo.uHostilityType)
+                v15 = _4DF380_hostilityRanges[v14];
+            else
+                v15 = _4DF380_hostilityRanges[4];
+            v16 = abs(thisActor->vPosition.x - pParty->vPosition.x);
+            v28 = abs(thisActor->vPosition.y - pParty->vPosition.y);
+            v17 = abs(thisActor->vPosition.z - pParty->vPosition.z);
+            if (v16 <= v15 && v28 <= v15 && v17 <= v15 && (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius))
+            {
+                *a2 = OBJECT_Player;
+            }
+        }
+    }
 }
-// 4DF380: using guessed type int dword_4DF380[];
-// 4DF390: using guessed type int dword_4DF390;
 
 //----- (0040104C) --------------------------------------------------------
 signed int Actor::GetActorsRelation(Actor *otherActPtr)
 {
-  unsigned int thisGroup; // ebp@19
-  int otherGroup; // eax@22
-  unsigned int thisAlly; // edx@25
-  unsigned int otherAlly; // edx@33
+    unsigned int thisGroup; // ebp@19
+    int otherGroup; // eax@22
+    unsigned int thisAlly; // edx@25
+    unsigned int otherAlly; // edx@33
 
-  if ( otherActPtr)
-  {
-    if ( otherActPtr->uGroup != 0 && this->uGroup != 0 && otherActPtr->uGroup == this->uGroup )
-      return 0;
-  }
+    if (otherActPtr)
+    {
+        if (otherActPtr->uGroup != 0 && this->uGroup != 0 && otherActPtr->uGroup == this->uGroup)
+            return 0;
+    }
 
-  if (this->pActorBuffs[ACTOR_BUFF_BERSERK].uExpireTime > 0)
-    return 4;
-  thisAlly = this->uAlly;
-  if ( this->pActorBuffs[ACTOR_BUFF_ENSLAVED].uExpireTime > 0 || thisAlly == 9999)
-    thisGroup = 0;
-  else if ( thisAlly > 0 )
-    thisGroup = thisAlly;
-  else
-    thisGroup = (this->pMonsterInfo.uID - 1) / 3 + 1;
-
-  if ( otherActPtr )
-  {
-    if (otherActPtr->pActorBuffs[ACTOR_BUFF_BERSERK].uExpireTime > 0)
-      return 4;
-    otherAlly = otherActPtr->uAlly;
-    if ( otherActPtr->pActorBuffs[ACTOR_BUFF_ENSLAVED].uExpireTime > 0 || otherAlly == 9999)
-      otherGroup = 0;
-    else  if ( otherAlly > 0 )
-      otherGroup = otherAlly;
+    if (this->pActorBuffs[ACTOR_BUFF_BERSERK].Active())
+        return 4;
+    thisAlly = this->uAlly;
+    if (this->pActorBuffs[ACTOR_BUFF_ENSLAVED].Active() || thisAlly == 9999)
+        thisGroup = 0;
+    else if (thisAlly > 0)
+        thisGroup = thisAlly;
     else
-      otherGroup = (otherActPtr->pMonsterInfo.uID - 1) / 3 + 1;
-  }
-  else
-    otherGroup = 0;
+        thisGroup = (this->pMonsterInfo.uID - 1) / 3 + 1;
 
-  if ( this->pActorBuffs[ACTOR_BUFF_CHARM].uExpireTime > 0 && !otherGroup
-    || otherActPtr && otherActPtr->pActorBuffs[ACTOR_BUFF_CHARM].uExpireTime > 0 && !thisGroup )
-    return 0;
-  if ( this->pActorBuffs[ACTOR_BUFF_ENSLAVED].uExpireTime <= 0 && this->ActorEnemy() && !otherGroup )
-    return 4;
-  if (thisGroup >= 89 || otherGroup >= 89)
-    return 0;
-
-  if ( thisGroup == 0  )
-  {
-    if ( (!otherActPtr || this->pActorBuffs[ACTOR_BUFF_ENSLAVED].uExpireTime > 0 && otherActPtr->ActorFriend()) && !pFactionTable->relations[otherGroup][0])
-      return pFactionTable->relations[0][otherGroup];
+    if (otherActPtr)
+    {
+        if (otherActPtr->pActorBuffs[ACTOR_BUFF_BERSERK].Active())
+            return 4;
+        otherAlly = otherActPtr->uAlly;
+        if (otherActPtr->pActorBuffs[ACTOR_BUFF_ENSLAVED].Active() || otherAlly == 9999)
+            otherGroup = 0;
+        else  if (otherAlly > 0)
+            otherGroup = otherAlly;
+        else
+            otherGroup = (otherActPtr->pMonsterInfo.uID - 1) / 3 + 1;
+    }
     else
-      return 4;
-  }
-  else
-    return pFactionTable->relations[thisGroup][otherGroup];
+        otherGroup = 0;
+
+    if (this->pActorBuffs[ACTOR_BUFF_CHARM].Active() && !otherGroup
+        || otherActPtr && otherActPtr->pActorBuffs[ACTOR_BUFF_CHARM].Active() && !thisGroup)
+        return 0;
+    if (!this->pActorBuffs[ACTOR_BUFF_ENSLAVED].Active() && this->ActorEnemy() && !otherGroup)
+        return 4;
+    if (thisGroup >= 89 || otherGroup >= 89)
+        return 0;
+
+    if (thisGroup == 0)
+    {
+        if ((!otherActPtr || this->pActorBuffs[ACTOR_BUFF_ENSLAVED].Active() && otherActPtr->ActorFriend()) && !pFactionTable->relations[otherGroup][0])
+            return pFactionTable->relations[0][otherGroup];
+        else
+            return 4;
+    }
+    else
+        return pFactionTable->relations[thisGroup][otherGroup];
 }
 
 //----- (0045976D) --------------------------------------------------------
@@ -2581,80 +2585,80 @@ void Actor::Remove()
 //----- (0043B1B0) --------------------------------------------------------
 void Actor::ActorDamageFromMonster(signed int attacker_id, unsigned int actor_id, Vec3_int_ *pVelocity, signed int a4)
 {
-  int v4; // ebx@1
-  int dmgToRecv; // qax@8
-  signed int v12; // ecx@20
-  int finalDmg; // edi@30
-  int pushDistance; // [sp+20h] [bp+Ch]@34
+    int v4; // ebx@1
+    int dmgToRecv; // qax@8
+    signed int v12; // ecx@20
+    int finalDmg; // edi@30
+    int pushDistance; // [sp+20h] [bp+Ch]@34
 
-  v4 = 0;
-  if ( PID_TYPE(attacker_id) == OBJECT_Item)
-  {
-    v4 = pSpriteObjects[PID_ID(attacker_id)].field_60_distance_related_prolly_lod;
-    attacker_id = pSpriteObjects[PID_ID(attacker_id)].spell_caster_pid;
-  }
-  if ( PID_TYPE(attacker_id) == OBJECT_Actor)
-  {
-    if ( !pActors[actor_id].IsNotAlive() )
+    v4 = 0;
+    if (PID_TYPE(attacker_id) == OBJECT_Item)
     {
-      pActors[actor_id].uLastCharacterIDToHit = attacker_id;
-      if ( pActors[actor_id].uAIState == Fleeing )
-        pActors[actor_id].uAttributes |= ACTOR_FLEEING;
-      if ( pActors[PID_ID(attacker_id)]._4273BB_DoesHitOtherActor(&pActors[actor_id], v4, 0) )
-      {
-        dmgToRecv = pActors[PID_ID(attacker_id)]._43B3E0_CalcDamage(a4);
-        if ( pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uExpireTime > 0 )
-        {
-          if ( pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower )
-            dmgToRecv = dmgToRecv / pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
-        }
-        if ( pActors[actor_id].pActorBuffs[ACTOR_BUFF_STONED].uExpireTime > 0 )
-          dmgToRecv = 0;
-        if ( a4 == 0 )
-          v12 = pActors[PID_ID(attacker_id)].pMonsterInfo.uAttack1Type;
-        else if ( a4 == 1 )
-        {
-          v12 = pActors[PID_ID(attacker_id)].pMonsterInfo.uAttack2Type;
-          if ( SHIDWORD(pActors[actor_id].pActorBuffs[ACTOR_BUFF_SHIELD].uExpireTime) > 0 )
-            dmgToRecv = dmgToRecv / 2;
-        }
-        else if ( a4 == 2 )
-          v12 = pSpellStats->pInfos[pActors[actor_id].pMonsterInfo.uSpell1ID].uSchool;
-        else if ( a4 == 3 )
-          v12 = pSpellStats->pInfos[pActors[actor_id].pMonsterInfo.uSpell2ID].uSchool;
-        else if ( a4 == 4 )
-          v12 = pActors[PID_ID(attacker_id)].pMonsterInfo.field_3C_some_special_attack;
-        else
-          v12 = 4;
-        finalDmg = pActors[actor_id].CalcMagicalDamageToActor((DAMAGE_TYPE)v12, dmgToRecv);
-        pActors[actor_id].sCurrentHP -= finalDmg;
-        if ( finalDmg )
-        {
-          if ( pActors[actor_id].sCurrentHP > 0 )
-            Actor::AI_Stun(actor_id, attacker_id, 0);
-          else
-            Actor::Die(actor_id);
-          Actor::AggroSurroundingPeasants(actor_id, 0);
-          pushDistance = 20 * finalDmg / pActors[actor_id].pMonsterInfo.uHP;
-          if ( pushDistance > 10 )
-            pushDistance = 10;
-          if ( !MonsterStats::BelongsToSupertype(pActors[actor_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_TREANT) )
-          {
-            pVelocity->x = (int32)fixpoint_mul(pushDistance, pVelocity->x);
-            pVelocity->y = (int32)fixpoint_mul(pushDistance, pVelocity->y);
-            pVelocity->z = (int32)fixpoint_mul(pushDistance, pVelocity->z);
-            pActors[actor_id].vVelocity.x = 50 * LOWORD(pVelocity->x);
-            pActors[actor_id].vVelocity.y = 50 * LOWORD(pVelocity->y);
-            pActors[actor_id].vVelocity.z = 50 * LOWORD(pVelocity->z);
-          }
-          Actor::AddBloodsplatOnDamageOverlay(actor_id, 1, finalDmg);
-        }
-        else
-          Actor::AI_Stun(actor_id, attacker_id, 0);
-        return;
-      }
+        v4 = pSpriteObjects[PID_ID(attacker_id)].field_60_distance_related_prolly_lod;
+        attacker_id = pSpriteObjects[PID_ID(attacker_id)].spell_caster_pid;
     }
-  }
+    if (PID_TYPE(attacker_id) == OBJECT_Actor)
+    {
+        if (!pActors[actor_id].IsNotAlive())
+        {
+            pActors[actor_id].uLastCharacterIDToHit = attacker_id;
+            if (pActors[actor_id].uAIState == Fleeing)
+                pActors[actor_id].uAttributes |= ACTOR_FLEEING;
+            if (pActors[PID_ID(attacker_id)]._4273BB_DoesHitOtherActor(&pActors[actor_id], v4, 0))
+            {
+                dmgToRecv = pActors[PID_ID(attacker_id)]._43B3E0_CalcDamage(a4);
+                if (pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].Active())
+                {
+                    if (pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
+                        dmgToRecv = dmgToRecv / pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
+                }
+                if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_STONED].Active())
+                    dmgToRecv = 0;
+                if (a4 == 0)
+                    v12 = pActors[PID_ID(attacker_id)].pMonsterInfo.uAttack1Type;
+                else if (a4 == 1)
+                {
+                    v12 = pActors[PID_ID(attacker_id)].pMonsterInfo.uAttack2Type;
+                    if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_SHIELD].Active())
+                        dmgToRecv = dmgToRecv / 2;
+                }
+                else if (a4 == 2)
+                    v12 = pSpellStats->pInfos[pActors[actor_id].pMonsterInfo.uSpell1ID].uSchool;
+                else if (a4 == 3)
+                    v12 = pSpellStats->pInfos[pActors[actor_id].pMonsterInfo.uSpell2ID].uSchool;
+                else if (a4 == 4)
+                    v12 = pActors[PID_ID(attacker_id)].pMonsterInfo.field_3C_some_special_attack;
+                else
+                    v12 = 4;
+                finalDmg = pActors[actor_id].CalcMagicalDamageToActor((DAMAGE_TYPE)v12, dmgToRecv);
+                pActors[actor_id].sCurrentHP -= finalDmg;
+                if (finalDmg)
+                {
+                    if (pActors[actor_id].sCurrentHP > 0)
+                        Actor::AI_Stun(actor_id, attacker_id, 0);
+                    else
+                        Actor::Die(actor_id);
+                    Actor::AggroSurroundingPeasants(actor_id, 0);
+                    pushDistance = 20 * finalDmg / pActors[actor_id].pMonsterInfo.uHP;
+                    if (pushDistance > 10)
+                        pushDistance = 10;
+                    if (!MonsterStats::BelongsToSupertype(pActors[actor_id].pMonsterInfo.uID, MONSTER_SUPERTYPE_TREANT))
+                    {
+                        pVelocity->x = (int32)fixpoint_mul(pushDistance, pVelocity->x);
+                        pVelocity->y = (int32)fixpoint_mul(pushDistance, pVelocity->y);
+                        pVelocity->z = (int32)fixpoint_mul(pushDistance, pVelocity->z);
+                        pActors[actor_id].vVelocity.x = 50 * LOWORD(pVelocity->x);
+                        pActors[actor_id].vVelocity.y = 50 * LOWORD(pVelocity->y);
+                        pActors[actor_id].vVelocity.z = 50 * LOWORD(pVelocity->z);
+                    }
+                    Actor::AddBloodsplatOnDamageOverlay(actor_id, 1, finalDmg);
+                }
+                else
+                    Actor::AI_Stun(actor_id, attacker_id, 0);
+                return;
+            }
+        }
+    }
 }
 
 //----- (0044FD29) --------------------------------------------------------
@@ -2813,482 +2817,496 @@ bool Actor::_46DF1A_collide_against_actor( int a1, int a2 )
 //----- (00401A91) --------------------------------------------------------
 void  Actor::UpdateActorAI()
 {
-	signed int v4; // edi@10
-	signed int sDmg; // eax@14
-	Player *pPlayer; // ecx@21
-	Actor *pActor; // esi@34
-	//unsigned __int16 v22; // ax@86
-	unsigned int v27; // ecx@123
-	unsigned int v28; // eax@123
-	int v33; // eax@144
-	int v34; // eax@147
-	char v35; // al@150
-	unsigned int v36; // edi@152
-	signed int v37; // eax@154
-	double v42; // st7@176
-	double v43; // st6@176
-	int v45; // eax@192
-	unsigned __int8 v46; // cl@197
-	signed int v47; // st7@206
-	uint v58; // st7@246
-	unsigned int v65; // [sp-10h] [bp-C0h]@144
-	int v70; // [sp-10h] [bp-C0h]@213
-	AIDirection v72; // [sp+0h] [bp-B0h]@246
-	AIDirection a3; // [sp+1Ch] [bp-94h]@129
-	int target_pid_type; // [sp+70h] [bp-40h]@83
-	signed int a1; // [sp+74h] [bp-3Ch]@129
-	int v78; // [sp+78h] [bp-38h]@79
-	AIDirection* pDir; // [sp+7Ch] [bp-34h]@129
-	float radiusMultiplier; // [sp+98h] [bp-18h]@33
-	int v81; // [sp+9Ch] [bp-14h]@100
-	signed int target_pid; // [sp+ACh] [bp-4h]@83
-	AIState uAIState;
-	uint v38;
-	
-	//Build AI array
-	if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-		Actor::MakeActorAIList_ODM();
-	else
-		Actor::MakeActorAIList_BLV();
-	
-	//Armageddon damage mechanic
-	if ( uCurrentlyLoadedLevelType != LEVEL_Indoor && pParty->armageddon_timer > 0 )
-	{
-		if ( pParty->armageddon_timer > 417 )
-			pParty->armageddon_timer = 0;
-		else
-		{
-			pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (pParty->sRotationY + rand() % 16 - 8);
-			pParty->sRotationX = pParty->sRotationX + rand() % 16 - 8;
-			if ( pParty->sRotationX > 128) 
-				pParty->sRotationX = 128;
-			else if ( pParty->sRotationX < -128 )
-				pParty->sRotationX = -128;
-				
-			pParty->uFlags |= 2u;
-			pParty->armageddon_timer -= pMiscTimer->uTimeElapsed;
-			v4 = pParty->armageddonDamage + 50;
-			if ( pParty->armageddon_timer <= 0 )
-			{
-				pParty->armageddon_timer = 0;
-				for(size_t i = 0; i < uNumActors; i++)
-				{
-					pActor=&pActors[i];
-					if ( pActor->CanAct() )
-					{
-						sDmg = pActor->CalcMagicalDamageToActor((DAMAGE_TYPE)5, v4);
-						pActor->sCurrentHP -= sDmg;
-						if ( sDmg )
-						{
-							if ( pActor->sCurrentHP >= 0 )
-								Actor::AI_Stun(i, 4, 0);
-							else
-							{
-								Actor::Die(i);
-								if ( pActor->pMonsterInfo.uExp )
-									pParty->GivePartyExp(pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uExp);
-							}
-						}
-					}
-				}
-				for(int i = 1; i <= 4; i++)
-				{
-					pPlayer = pPlayers[i];
-					if ( !pPlayer->pConditions[Condition_Dead] && !pPlayer->pConditions[Condition_Pertified] && !pPlayer->pConditions[Condition_Eradicated] )
-						pPlayer->ReceiveDamage(v4, DMGT_MAGICAL);
-				}
-			}
-			if (pTurnEngine->pending_actions)
-				--pTurnEngine->pending_actions;
-		}
-	}
-	
-	//Turn-based mode: return
-	if (pParty->bTurnBasedModeOn)
-	{
-		pTurnEngine->AITurnBasedAction();
-		return;
-	}
-	
-	for (uint i = 0; i < uNumActors; ++i)
-	{
-		pActor = &pActors[i];
-		ai_near_actors_targets_pid[i] = OBJECT_Player;
+    signed int v4; // edi@10
+    signed int sDmg; // eax@14
+    Player *pPlayer; // ecx@21
+    Actor *pActor; // esi@34
+    //unsigned __int16 v22; // ax@86
+    unsigned int v27; // ecx@123
+    unsigned int v28; // eax@123
+    int v33; // eax@144
+    int v34; // eax@147
+    char v35; // al@150
+    unsigned int v36; // edi@152
+    signed int v37; // eax@154
+    double v42; // st7@176
+    double v43; // st6@176
+    int v45; // eax@192
+    unsigned __int8 v46; // cl@197
+    signed int v47; // st7@206
+    uint v58; // st7@246
+    unsigned int v65; // [sp-10h] [bp-C0h]@144
+    int v70; // [sp-10h] [bp-C0h]@213
+    AIDirection v72; // [sp+0h] [bp-B0h]@246
+    AIDirection a3; // [sp+1Ch] [bp-94h]@129
+    int target_pid_type; // [sp+70h] [bp-40h]@83
+    signed int a1; // [sp+74h] [bp-3Ch]@129
+    int v78; // [sp+78h] [bp-38h]@79
+    AIDirection* pDir; // [sp+7Ch] [bp-34h]@129
+    float radiusMultiplier; // [sp+98h] [bp-18h]@33
+    int v81; // [sp+9Ch] [bp-14h]@100
+    signed int target_pid; // [sp+ACh] [bp-4h]@83
+    AIState uAIState;
+    uint v38;
 
-		//Skip actor if: Dead / Removed / Disabled / uAttributes & 0x0400
-		if (pActor->uAIState == Dead || pActor->uAIState == Removed || pActor->uAIState == Disabled || pActor->uAttributes & ACTOR_ALIVE)
-			continue;
-		
-		//Kill actor if HP == 0
-		if (!pActor->sCurrentHP && pActor->uAIState != Dying)
-			Actor::Die(i);
-		
-		//Kill buffs if expired
-		for (uint j = 0; j < 22; ++j)
-		{
-			if (j != 10)
-				pActor->pActorBuffs[j].IsBuffExpiredToTime(pParty->uTimePlayed);
-		}
+    //Build AI array
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+        Actor::MakeActorAIList_ODM();
+    else
+        Actor::MakeActorAIList_BLV();
 
-		//If shrink expired: reset height
-		if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].uExpireTime < 0)
-			pActor->uActorHeight = pMonsterList->pMonsters[pActor->pMonsterInfo.uID - 1].uMonsterHeight;
-		
-		//If Charm still active: make actor friendly
-		if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].uExpireTime > 0)
-			pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
-		//Else: reset hostilty
-		else if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].uExpireTime < 0)
-			pActor->pMonsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uHostilityType;
-		
-		//If actor Paralyzed or Stoned: skip
-		if (pActor->pActorBuffs[ACTOR_BUFF_PARALYZED].uExpireTime > 0 || pActor->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime > 0)
-		    continue;
-		
-		//Calculate RecoveryTime
-		pActor->pMonsterInfo.uRecoveryTime = max(pActor->pMonsterInfo.uRecoveryTime - pMiscTimer->uTimeElapsed, 0);
-			
-		pActor->uCurrentActionTime += pMiscTimer->uTimeElapsed;
-		if (pActor->uCurrentActionTime < pActor->uCurrentActionLength)
-			continue;
-			
-		if (pActor->uAIState == Dying)
-			pActor->uAIState = Dead;
-		else
-		{
-			if (pActor->uAIState != Summoned)
-			{
-				Actor::AI_StandOrBored(i, OBJECT_Player, 256, nullptr);
-				continue;
-			}
-			pActor->uAIState = Standing;
-		}
-			
-		pActor->uCurrentActionTime = 0;
-		pActor->uCurrentActionLength = 0;
-		pActor->UpdateAnimation();
-	}
-		
-	for(v78 = 0; v78 < ai_arrays_size; ++v78)
-	{
-		uint actor_id = ai_near_actors_ids[v78];
-		assert(actor_id < uNumActors);
-			
-		pActor = &pActors[actor_id];
+    //Armageddon damage mechanic
+    if (uCurrentlyLoadedLevelType != LEVEL_Indoor && pParty->armageddon_timer > 0)
+    {
+        if (pParty->armageddon_timer > 417)
+            pParty->armageddon_timer = 0;
+        else
+        {
+            pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (pParty->sRotationY + rand() % 16 - 8);
+            pParty->sRotationX = pParty->sRotationX + rand() % 16 - 8;
+            if (pParty->sRotationX > 128)
+                pParty->sRotationX = 128;
+            else if (pParty->sRotationX < -128)
+                pParty->sRotationX = -128;
 
-		v47 = (signed int)(pActor->pMonsterInfo.uRecoveryTime * 2.133333333333333);
+            pParty->uFlags |= 2u;
+            pParty->armageddon_timer -= pMiscTimer->uTimeElapsed;
+            v4 = pParty->armageddonDamage + 50;
+            if (pParty->armageddon_timer <= 0)
+            {
+                pParty->armageddon_timer = 0;
+                for (size_t i = 0; i < uNumActors; i++)
+                {
+                    pActor = &pActors[i];
+                    if (pActor->CanAct())
+                    {
+                        sDmg = pActor->CalcMagicalDamageToActor((DAMAGE_TYPE)5, v4);
+                        pActor->sCurrentHP -= sDmg;
+                        if (sDmg)
+                        {
+                            if (pActor->sCurrentHP >= 0)
+                                Actor::AI_Stun(i, 4, 0);
+                            else
+                            {
+                                Actor::Die(i);
+                                if (pActor->pMonsterInfo.uExp)
+                                    pParty->GivePartyExp(pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uExp);
+                            }
+                        }
+                    }
+                }
+                for (int i = 1; i <= 4; i++)
+                {
+                    pPlayer = pPlayers[i];
+                    if (!pPlayer->conditions_times[Condition_Dead] && !pPlayer->conditions_times[Condition_Pertified] && !pPlayer->conditions_times[Condition_Eradicated])
+                        pPlayer->ReceiveDamage(v4, DMGT_MAGICAL);
+                }
+            }
+            if (pTurnEngine->pending_actions)
+                --pTurnEngine->pending_actions;
+        }
+    }
 
-		Actor::_SelectTarget(actor_id, &ai_near_actors_targets_pid[actor_id], true);
-		
-		if (pActor->pMonsterInfo.uHostilityType && !ai_near_actors_targets_pid[actor_id])
-			pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
-		
-		target_pid = ai_near_actors_targets_pid[actor_id];
-		target_pid_type = PID_TYPE(target_pid);
-		
-		if ( target_pid_type == OBJECT_Actor)
-			radiusMultiplier = 0.5;
-		else
-			radiusMultiplier = 1.0;
-		
-		//v22 = pActor->uAIState;
-		if ( pActor->uAIState == Dying || pActor->uAIState == Dead || pActor->uAIState == Removed
-			                       || pActor->uAIState == Disabled || pActor->uAIState == Summoned)
-			continue;
-		
-		if ( !pActor->sCurrentHP )
-			Actor::Die(actor_id);
-		
-		for( int i = 0;i < 22; i++ )
-		{
-			if ( i != 10 )
-				pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->uTimePlayed);
-		}
-		
-		if ( pActor->pActorBuffs[ACTOR_BUFF_SHRINK].uExpireTime < 0 )
-			pActor->uActorHeight = pMonsterList->pMonsters[pActor->pMonsterInfo.uID - 1].uMonsterHeight;
-		if ( pActor->pActorBuffs[ACTOR_BUFF_CHARM].uExpireTime > 0 )
-			pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
-		else if ( pActor->pActorBuffs[ACTOR_BUFF_CHARM].uExpireTime < 0 )
-			pActor->pMonsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uHostilityType;
-		
-		//If actor is summoned and buff expired: continue and set state to Removed
-		if ( pActor->pActorBuffs[ACTOR_BUFF_SUMMONED].uExpireTime < 0 )
-		{
-			pActor->uAIState = Removed;
-			continue;
-		}
-		
-		if ( (signed __int64)pActor->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime > 0	|| (signed __int64)pActor->pActorBuffs[ACTOR_BUFF_PARALYZED].uExpireTime > 0)
-		{
-			continue;
-		}
-		
-		v27 = pMiscTimer->uTimeElapsed;
-		v28 = pActor->pMonsterInfo.uRecoveryTime;
-		pActor->uCurrentActionTime += pMiscTimer->uTimeElapsed;
-		
-		if ( (signed int)v28 > 0 )
-			pActor->pMonsterInfo.uRecoveryTime = v28 - v27;
-		if ( pActor->pMonsterInfo.uRecoveryTime < 0 )
-			pActor->pMonsterInfo.uRecoveryTime = 0;
-		if ( !pActor->ActorNearby() )
-			pActor->uAttributes |= ACTOR_NEARBY;
-		
-		a1 = PID(OBJECT_Actor,actor_id);
-		Actor::GetDirectionInfo(PID(OBJECT_Actor,actor_id), target_pid, &a3, 0);
-		pDir = &a3;
-		uAIState = pActor->uAIState; 
-		
-		if ( pActor->pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly
-			|| (signed int)pActor->pMonsterInfo.uRecoveryTime > 0
-			|| radiusMultiplier * 307.2 < pDir->uDistance
-			|| uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting
-			&&  !pActor->pMonsterInfo.uMissleAttack1Type || uAIState != Stunned )
-		{
-			if ( (signed int)pActor->uCurrentActionTime < pActor->uCurrentActionLength )
-				continue;
-			else if ( pActor->uAIState == AttackingMelee )
-			{
-				v35 = pActor->special_ability_use_check(actor_id);
-				AttackerInfo.Add(a1, 5120, pActor->vPosition.x, pActor->vPosition.y, pActor->vPosition.z + ((signed int)pActor->uActorHeight >> 1), v35, 1 );
-			}
-			else if ( pActor->uAIState == AttackingRanged1 )
-			{
-				v34 = pActor->pMonsterInfo.uMissleAttack1Type;
-				Actor::AI_RangedAttack(actor_id, pDir, v34, 0);
-			}
-			else if ( pActor->uAIState == AttackingRanged2 )
-			{
-				v34 = pActor->pMonsterInfo.uMissleAttack2Type;
-				Actor::AI_RangedAttack(actor_id, pDir, v34, 1);
-			}
-			else if ( pActor->uAIState == AttackingRanged3 )
-			{
-				v65 = pActor->pMonsterInfo.uSpellSkillAndMastery1;
-				v33 = pActor->pMonsterInfo.uSpell1ID;
-				Actor::AI_SpellAttack(actor_id, pDir, v33, 2, v65);
-			}
-			else if ( pActor->uAIState == AttackingRanged4 )
-			{
-				v65 = pActor->pMonsterInfo.uSpellSkillAndMastery2;
-				v33 = pActor->pMonsterInfo.uSpell2ID;
-				Actor::AI_SpellAttack(actor_id, pDir, v33, 3, v65);
-			}
-		}
+    //Turn-based mode: return
+    if (pParty->bTurnBasedModeOn)
+    {
+        pTurnEngine->AITurnBasedAction();
+        return;
+    }
 
-		v36 = pDir->uDistance;
-		
-		if ( pActor->pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly)
-		{
-			if ( target_pid_type == OBJECT_Actor )
-			{
-				v36 = pDir->uDistance;
-				v37 =pFactionTable->relations[(pActor->pMonsterInfo.uID-1) / 3 + 1][(pActors[PID_ID(target_pid)].pMonsterInfo.uID - 1) / 3 + 1];
-			}
-			else
-				v37 = 4;
-			v38 = 0;
-			if ( v37 == 2 )
-				v38 = 1024;
-			else if ( v37 == 3 )
-				v38 = 2560;
-			else if ( v37 == 4 )
-				v38 = 5120;
-			if ( v37 >= 1 && v37 <= 4 && v36 < v38  || v37 == 1 )
-				pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
-		}
+    for (uint i = 0; i < uNumActors; ++i)
+    {
+        pActor = &pActors[i];
+        ai_near_actors_targets_pid[i] = OBJECT_Player;
 
-		//If actor afraid: flee or if out of range random move
-		if (pActor->pActorBuffs[ACTOR_BUFF_AFRAID].uExpireTime > 0)
-		{
-			if ( (signed int)v36 >= 10240 )
-              Actor::AI_RandomMove(actor_id, target_pid, 1024, 0);
-			else
-              Actor::AI_Flee(actor_id, target_pid, 0, pDir);
-			continue;
-		}
+        //Skip actor if: Dead / Removed / Disabled / uAttributes & 0x0400
+        if (pActor->uAIState == Dead || pActor->uAIState == Removed || pActor->uAIState == Disabled || pActor->uAttributes & ACTOR_ALIVE)
+            continue;
 
-		if ( pActor->pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Long && target_pid )
-		{
-			if ( pActor->pMonsterInfo.uAIType == 1 )
-			{
-				if ( pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY )
-					Actor::AI_Stand(actor_id, target_pid, (uint)(pActor->pMonsterInfo.uRecoveryTime * 2.133333333333333),	pDir);
-				else
-				{
-					Actor::AI_Flee(actor_id, target_pid, 0, pDir);
-					continue;
-				}
-						
-			}
-			if ( !(pActor->uAttributes & ACTOR_FLEEING) )
-			{
-				if ( pActor->pMonsterInfo.uAIType == 2 || pActor->pMonsterInfo.uAIType == 3)
-				{
-					if ( pActor->pMonsterInfo.uAIType == 2 )
-						v43 = (double)(signed int)pActor->pMonsterInfo.uHP * 0.2;
-					if ( pActor->pMonsterInfo.uAIType == 3 )
-						v43 = (double)(signed int)pActor->pMonsterInfo.uHP * 0.1;
-					v42 = (double)pActor->sCurrentHP;
-					if ( v43 > v42 && (signed int)v36 < 10240 )
-					{
-						Actor::AI_Flee(actor_id, target_pid, 0, pDir);
-						continue;
-					}
-				}
-			}
-				
-			v81 = v36 - pActor->uActorRadius;
-			if ( target_pid_type == OBJECT_Actor )
-				v81 -= pActors[PID_ID(target_pid)].uActorRadius;
-			if ( v81 < 0 )
-				v81 = 0;
-			rand();
-			pActor->uAttributes &= ~ACTOR_UNKNOW5;//~0x40000
-			if ( v81 < 5120 )
-			{
-				v45 = pActor->special_ability_use_check(actor_id);
-				if ( v45 == 0 )
-				{
-					if ( pActor->pMonsterInfo.uMissleAttack1Type )
-					{
-						if ( (signed int)pActor->pMonsterInfo.uRecoveryTime <= 0 )
-							Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
-						else if ( pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY )
-							Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-						else
-						{
-							if ( radiusMultiplier * 307.2 > (double)v81 )
-								Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-							else
-								Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
-						}
-					}
-					else
-					{
-						if ( (double)v81 >= radiusMultiplier * 307.2 )
-						{
-							if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
-								Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-							else if ( v81 >= 1024 )//monsters
-								Actor::AI_Pursue3(actor_id, target_pid, 0, pDir);
-							else
-							{
-								v70 = (signed int)(radiusMultiplier * 307.2);
-								//monsters
-								//guard after player runs away
-								// follow player
-								Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
-							}
-						}
-						else if ( (signed int)pActor->pMonsterInfo.uRecoveryTime > 0 )
-						{
-							Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-						}
-						else
-						{
-							//monsters
-							Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
-						}
-					}
-					continue;
-				}
-				else if ( v45 == 2 || v45 == 3 )
-				{
-					if ( v45 == 2 )
-						v46 = pActor->pMonsterInfo.uSpell1ID;
-					else
-						v46 = pActor->pMonsterInfo.uSpell2ID;
-					if ( v46 )
-					{
-						if ( (signed int)pActor->pMonsterInfo.uRecoveryTime <= 0 )
-						{
-							if ( v45 == 2 )
-								Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
-							else
-								Actor::AI_SpellAttack2(actor_id, target_pid, pDir);
-						}
-						else if ( radiusMultiplier * 307.2 > (double)v81 || pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY )
-							Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-						else
-							Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
-					}
-					else
-					{
-						if ( (double)v81 >= radiusMultiplier * 307.2 ) 
-						{
-							if ( pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY )
-								Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-							else if ( v81 >= 1024 )
-								Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
-							else
-							{
-								v70 = (signed int)(radiusMultiplier * 307.2);
-								Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
-							}
-						}
-						else if ( (signed int)pActor->pMonsterInfo.uRecoveryTime > 0 )
-						{
-							Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-						}
-						else
-						{								
-							Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
-						}
-					}
-					continue;
-				}
-			}
-		}
-			
-		if ( pActor->pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Long || !target_pid || v81 >= 5120 || v45 != 1 )
-		{
-			if ( pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_SHORT )
-				Actor::AI_RandomMove(actor_id, 4, 1024, 0);
-			else if ( pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_MEDIUM )
-				Actor::AI_RandomMove(actor_id, 4, 2560, 0);
-			else if ( pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_LONG )
-				Actor::AI_RandomMove(actor_id, 4, 5120, 0);
-			else if ( pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_FREE )
-				Actor::AI_RandomMove(actor_id, 4, 10240, 0);
-			else if ( pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY )
-			{
-				Actor::GetDirectionInfo(a1, 4, &v72, 0);
-				v58 = (uint)(pActor->pMonsterInfo.uRecoveryTime * 2.133333333333333);
-				Actor::AI_Stand(actor_id, 4, v58, &v72);
-			}				
-		}
-		else if ( !pActor->pMonsterInfo.uMissleAttack2Type )
-		{
-			if ( (double)v81 >= radiusMultiplier * 307.2 )
-			{
-				if ( pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY )
-				  Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-				else if ( v81 >= 1024 )
-					Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
-				else
-				{
-					v70 = (int)(radiusMultiplier * 307.2);
-					Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
-				}
-			}
-			else if ( (signed int)pActor->pMonsterInfo.uRecoveryTime > 0 )
-				Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-			else
-				Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
-		}
-		else if ( (signed int)pActor->pMonsterInfo.uRecoveryTime > 0 )
-		{
-			if ( radiusMultiplier * 307.2 > (double)v81 || pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY )
-				Actor::AI_Stand(actor_id, target_pid, v47, pDir);
-			else
-				Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
-		}
-		else
-			Actor::AI_MissileAttack2(actor_id, target_pid, pDir);
-	}
+        //Kill actor if HP == 0
+        if (!pActor->sCurrentHP && pActor->uAIState != Dying)
+            Actor::Die(i);
+
+        //Kill buffs if expired
+        for (uint j = 0; j < 22; ++j)
+        {
+            if (j != 10)
+                pActor->pActorBuffs[j].IsBuffExpiredToTime(pParty->GetPlayingTime());
+        }
+
+        //If shrink expired: reset height
+        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired())
+        {
+            pActor->uActorHeight = pMonsterList->pMonsters[pActor->pMonsterInfo.uID - 1].uMonsterHeight;
+        }
+
+        //If Charm still active: make actor friendly
+        if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Active())
+        {
+            pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+        }
+        //Else: reset hostilty
+        else if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Expired())
+        {
+            pActor->pMonsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uHostilityType;
+        }
+
+        //If actor Paralyzed or Stoned: skip
+        if (pActor->pActorBuffs[ACTOR_BUFF_PARALYZED].Active() || pActor->pActorBuffs[ACTOR_BUFF_STONED].Active())
+            continue;
+
+        //Calculate RecoveryTime
+        pActor->pMonsterInfo.uRecoveryTime = max(pActor->pMonsterInfo.uRecoveryTime - pMiscTimer->uTimeElapsed, 0);
+
+        pActor->uCurrentActionTime += pMiscTimer->uTimeElapsed;
+        if (pActor->uCurrentActionTime < pActor->uCurrentActionLength)
+            continue;
+
+        if (pActor->uAIState == Dying)
+            pActor->uAIState = Dead;
+        else
+        {
+            if (pActor->uAIState != Summoned)
+            {
+                Actor::AI_StandOrBored(i, OBJECT_Player, 256, nullptr);
+                continue;
+            }
+            pActor->uAIState = Standing;
+        }
+
+        pActor->uCurrentActionTime = 0;
+        pActor->uCurrentActionLength = 0;
+        pActor->UpdateAnimation();
+    }
+
+    for (v78 = 0; v78 < ai_arrays_size; ++v78)
+    {
+        uint actor_id = ai_near_actors_ids[v78];
+        assert(actor_id < uNumActors);
+
+        pActor = &pActors[actor_id];
+
+        v47 = (signed int)(pActor->pMonsterInfo.uRecoveryTime * 2.133333333333333);
+
+        Actor::_SelectTarget(actor_id, &ai_near_actors_targets_pid[actor_id], true);
+
+        if (pActor->pMonsterInfo.uHostilityType && !ai_near_actors_targets_pid[actor_id])
+            pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+
+        target_pid = ai_near_actors_targets_pid[actor_id];
+        target_pid_type = PID_TYPE(target_pid);
+
+        if (target_pid_type == OBJECT_Actor)
+            radiusMultiplier = 0.5;
+        else
+            radiusMultiplier = 1.0;
+
+        //v22 = pActor->uAIState;
+        if (pActor->uAIState == Dying || pActor->uAIState == Dead || pActor->uAIState == Removed
+            || pActor->uAIState == Disabled || pActor->uAIState == Summoned)
+            continue;
+
+        if (!pActor->sCurrentHP)
+            Actor::Die(actor_id);
+
+        for (int i = 0; i < 22; i++)
+        {
+            if (i != 10)
+                pActor->pActorBuffs[i].IsBuffExpiredToTime(pParty->GetPlayingTime());
+        }
+
+        if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired())
+        {
+            pActor->uActorHeight = pMonsterList->pMonsters[pActor->pMonsterInfo.uID - 1].uMonsterHeight;
+        }
+
+        if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Active())
+        {
+            pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+        }
+        else if (pActor->pActorBuffs[ACTOR_BUFF_CHARM].Expired())
+        {
+            pActor->pMonsterInfo.uHostilityType = pMonsterStats->pInfos[pActor->pMonsterInfo.uID].uHostilityType;
+        }
+
+        //If actor is summoned and buff expired: continue and set state to Removed
+        if (pActor->pActorBuffs[ACTOR_BUFF_SUMMONED].Expired())
+        {
+            pActor->uAIState = Removed;
+            continue;
+        }
+
+        if (pActor->pActorBuffs[ACTOR_BUFF_STONED].Active() || pActor->pActorBuffs[ACTOR_BUFF_PARALYZED].Active())
+        {
+            continue;
+        }
+
+        v27 = pMiscTimer->uTimeElapsed;
+        v28 = pActor->pMonsterInfo.uRecoveryTime;
+        pActor->uCurrentActionTime += pMiscTimer->uTimeElapsed;
+
+        if ((signed int)v28 > 0)
+            pActor->pMonsterInfo.uRecoveryTime = v28 - v27;
+        if (pActor->pMonsterInfo.uRecoveryTime < 0)
+            pActor->pMonsterInfo.uRecoveryTime = 0;
+        if (!pActor->ActorNearby())
+            pActor->uAttributes |= ACTOR_NEARBY;
+
+        a1 = PID(OBJECT_Actor, actor_id);
+        Actor::GetDirectionInfo(PID(OBJECT_Actor, actor_id), target_pid, &a3, 0);
+        pDir = &a3;
+        uAIState = pActor->uAIState;
+
+        if (pActor->pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly
+            || (signed int)pActor->pMonsterInfo.uRecoveryTime > 0
+            || radiusMultiplier * 307.2 < pDir->uDistance
+            || uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting
+            &&  !pActor->pMonsterInfo.uMissleAttack1Type || uAIState != Stunned)
+        {
+            if ((signed int)pActor->uCurrentActionTime < pActor->uCurrentActionLength)
+                continue;
+            else if (pActor->uAIState == AttackingMelee)
+            {
+                v35 = pActor->special_ability_use_check(actor_id);
+                AttackerInfo.Add(a1, 5120, pActor->vPosition.x, pActor->vPosition.y, pActor->vPosition.z + ((signed int)pActor->uActorHeight >> 1), v35, 1);
+            }
+            else if (pActor->uAIState == AttackingRanged1)
+            {
+                v34 = pActor->pMonsterInfo.uMissleAttack1Type;
+                Actor::AI_RangedAttack(actor_id, pDir, v34, 0);
+            }
+            else if (pActor->uAIState == AttackingRanged2)
+            {
+                v34 = pActor->pMonsterInfo.uMissleAttack2Type;
+                Actor::AI_RangedAttack(actor_id, pDir, v34, 1);
+            }
+            else if (pActor->uAIState == AttackingRanged3)
+            {
+                v65 = pActor->pMonsterInfo.uSpellSkillAndMastery1;
+                v33 = pActor->pMonsterInfo.uSpell1ID;
+                Actor::AI_SpellAttack(actor_id, pDir, v33, 2, v65);
+            }
+            else if (pActor->uAIState == AttackingRanged4)
+            {
+                v65 = pActor->pMonsterInfo.uSpellSkillAndMastery2;
+                v33 = pActor->pMonsterInfo.uSpell2ID;
+                Actor::AI_SpellAttack(actor_id, pDir, v33, 3, v65);
+            }
+        }
+
+        v36 = pDir->uDistance;
+
+        if (pActor->pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly)
+        {
+            if (target_pid_type == OBJECT_Actor)
+            {
+                v36 = pDir->uDistance;
+                v37 = pFactionTable->relations[(pActor->pMonsterInfo.uID - 1) / 3 + 1][(pActors[PID_ID(target_pid)].pMonsterInfo.uID - 1) / 3 + 1];
+            }
+            else
+                v37 = 4;
+            v38 = 0;
+            if (v37 == 2)
+                v38 = 1024;
+            else if (v37 == 3)
+                v38 = 2560;
+            else if (v37 == 4)
+                v38 = 5120;
+            if (v37 >= 1 && v37 <= 4 && v36 < v38 || v37 == 1)
+                pActor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+        }
+
+        //If actor afraid: flee or if out of range random move
+        if (pActor->pActorBuffs[ACTOR_BUFF_AFRAID].Active())
+        {
+            if ((signed int)v36 >= 10240)
+                Actor::AI_RandomMove(actor_id, target_pid, 1024, 0);
+            else
+                Actor::AI_Flee(actor_id, target_pid, 0, pDir);
+            continue;
+        }
+
+        if (pActor->pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Long && target_pid)
+        {
+            if (pActor->pMonsterInfo.uAIType == 1)
+            {
+                if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
+                    Actor::AI_Stand(actor_id, target_pid, (uint)(pActor->pMonsterInfo.uRecoveryTime * 2.133333333333333), pDir);
+                else
+                {
+                    Actor::AI_Flee(actor_id, target_pid, 0, pDir);
+                    continue;
+                }
+
+            }
+            if (!(pActor->uAttributes & ACTOR_FLEEING))
+            {
+                if (pActor->pMonsterInfo.uAIType == 2 || pActor->pMonsterInfo.uAIType == 3)
+                {
+                    if (pActor->pMonsterInfo.uAIType == 2)
+                        v43 = (double)(signed int)pActor->pMonsterInfo.uHP * 0.2;
+                    if (pActor->pMonsterInfo.uAIType == 3)
+                        v43 = (double)(signed int)pActor->pMonsterInfo.uHP * 0.1;
+                    v42 = (double)pActor->sCurrentHP;
+                    if (v43 > v42 && (signed int)v36 < 10240)
+                    {
+                        Actor::AI_Flee(actor_id, target_pid, 0, pDir);
+                        continue;
+                    }
+                }
+            }
+
+            v81 = v36 - pActor->uActorRadius;
+            if (target_pid_type == OBJECT_Actor)
+                v81 -= pActors[PID_ID(target_pid)].uActorRadius;
+            if (v81 < 0)
+                v81 = 0;
+            rand();
+            pActor->uAttributes &= ~ACTOR_UNKNOW5;//~0x40000
+            if (v81 < 5120)
+            {
+                v45 = pActor->special_ability_use_check(actor_id);
+                if (v45 == 0)
+                {
+                    if (pActor->pMonsterInfo.uMissleAttack1Type)
+                    {
+                        if ((signed int)pActor->pMonsterInfo.uRecoveryTime <= 0)
+                            Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
+                        else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
+                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                        else
+                        {
+                            if (radiusMultiplier * 307.2 > (double)v81)
+                                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                            else
+                                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
+                        }
+                    }
+                    else
+                    {
+                        if ((double)v81 >= radiusMultiplier * 307.2)
+                        {
+                            if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
+                                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                            else if (v81 >= 1024)//monsters
+                                Actor::AI_Pursue3(actor_id, target_pid, 0, pDir);
+                            else
+                            {
+                                v70 = (signed int)(radiusMultiplier * 307.2);
+                                //monsters
+                                //guard after player runs away
+                                // follow player
+                                Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
+                            }
+                        }
+                        else if ((signed int)pActor->pMonsterInfo.uRecoveryTime > 0)
+                        {
+                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                        }
+                        else
+                        {
+                            //monsters
+                            Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
+                        }
+                    }
+                    continue;
+                }
+                else if (v45 == 2 || v45 == 3)
+                {
+                    if (v45 == 2)
+                        v46 = pActor->pMonsterInfo.uSpell1ID;
+                    else
+                        v46 = pActor->pMonsterInfo.uSpell2ID;
+                    if (v46)
+                    {
+                        if ((signed int)pActor->pMonsterInfo.uRecoveryTime <= 0)
+                        {
+                            if (v45 == 2)
+                                Actor::AI_SpellAttack1(actor_id, target_pid, pDir);
+                            else
+                                Actor::AI_SpellAttack2(actor_id, target_pid, pDir);
+                        }
+                        else if (radiusMultiplier * 307.2 > (double)v81 || pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
+                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                        else
+                            Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
+                    }
+                    else
+                    {
+                        if ((double)v81 >= radiusMultiplier * 307.2)
+                        {
+                            if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
+                                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                            else if (v81 >= 1024)
+                                Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
+                            else
+                            {
+                                v70 = (signed int)(radiusMultiplier * 307.2);
+                                Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
+                            }
+                        }
+                        else if ((signed int)pActor->pMonsterInfo.uRecoveryTime > 0)
+                        {
+                            Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                        }
+                        else
+                        {
+                            Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
+                        }
+                    }
+                    continue;
+                }
+            }
+        }
+
+        if (pActor->pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Long || !target_pid || v81 >= 5120 || v45 != 1)
+        {
+            if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_SHORT)
+                Actor::AI_RandomMove(actor_id, 4, 1024, 0);
+            else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_MEDIUM)
+                Actor::AI_RandomMove(actor_id, 4, 2560, 0);
+            else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_LONG)
+                Actor::AI_RandomMove(actor_id, 4, 5120, 0);
+            else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_FREE)
+                Actor::AI_RandomMove(actor_id, 4, 10240, 0);
+            else if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
+            {
+                Actor::GetDirectionInfo(a1, 4, &v72, 0);
+                v58 = (uint)(pActor->pMonsterInfo.uRecoveryTime * 2.133333333333333);
+                Actor::AI_Stand(actor_id, 4, v58, &v72);
+            }
+        }
+        else if (!pActor->pMonsterInfo.uMissleAttack2Type)
+        {
+            if ((double)v81 >= radiusMultiplier * 307.2)
+            {
+                if (pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
+                    Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+                else if (v81 >= 1024)
+                    Actor::AI_Pursue3(actor_id, target_pid, 256, pDir);
+                else
+                {
+                    v70 = (int)(radiusMultiplier * 307.2);
+                    Actor::AI_Pursue2(actor_id, target_pid, 0, pDir, v70);
+                }
+            }
+            else if ((signed int)pActor->pMonsterInfo.uRecoveryTime > 0)
+                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+            else
+                Actor::AI_MeleeAttack(actor_id, target_pid, pDir);
+        }
+        else if ((signed int)pActor->pMonsterInfo.uRecoveryTime > 0)
+        {
+            if (radiusMultiplier * 307.2 > (double)v81 || pActor->pMonsterInfo.uMovementType == MONSTER_MOVEMENT_TYPE_STAIONARY)
+                Actor::AI_Stand(actor_id, target_pid, v47, pDir);
+            else
+                Actor::AI_Pursue1(actor_id, target_pid, actor_id, v47, pDir);
+        }
+        else
+            Actor::AI_MissileAttack2(actor_id, target_pid, pDir);
+    }
 }
+
 //----- (0044665D) --------------------------------------------------------
 // uType:     0 -> any monster
 //            1 -> uParam is GroupID
@@ -3574,7 +3592,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         case SPELL_101:
             attackElement = DMGT_FIRE;
             uDamageAmount = player->CalculateRangedDamageTo(0);
-            if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].uExpireTime > 0)
+            if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                 uDamageAmount >>= 1;
             IsAdditionalDamagePossible = true;
             if (!player->PlayerHitOrMiss(pMonster, v61, a4))
@@ -3587,7 +3605,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             a4 = 5 * projectileSprite->spell_level;
             attackElement = (DAMAGE_TYPE)player->GetSpellSchool(SPELL_EARTH_BLADES);
             uDamageAmount = _43AFE3_calc_spell_damage(39, projectileSprite->spell_level, projectileSprite->spell_skill, pMonster->sCurrentHP);
-            if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].uExpireTime > 0)
+            if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                 uDamageAmount >>= 1;
             IsAdditionalDamagePossible = false;
             if (!player->PlayerHitOrMiss(pMonster, v61, a4))
@@ -3609,7 +3627,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         case SPELL_BOW_ARROW:
             attackElement = DMGT_PHISYCAL;
             uDamageAmount = player->CalculateRangedDamageTo(pMonster->word_000086_some_monster_id);
-            if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].uExpireTime > 0)
+            if (pMonster->pActorBuffs[ACTOR_BUFF_SHIELD].Active())
                 uDamageAmount /= 2;
             IsAdditionalDamagePossible = true;
             if (projectileSprite->containing_item.uItemID != 0 && projectileSprite->containing_item.special_enchantment == 3)  //of carnage
@@ -3633,10 +3651,10 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 
     if (player->IsWeak())
         uDamageAmount /= 2;
-    if (pMonster->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime > 0)
+    if (pMonster->pActorBuffs[ACTOR_BUFF_STONED].Active())
         uDamageAmount = 0;
     v61 = pMonster->CalcMagicalDamageToActor(attackElement, uDamageAmount);
-    if (!projectileSprite && player->IsUnarmed() && player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].uExpireTime > 0)
+    if (!projectileSprite && player->IsUnarmed() && player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active())
     {
         v61 += pMonster->CalcMagicalDamageToActor((DAMAGE_TYPE)8, player->pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].uPower);
     }
@@ -3727,7 +3745,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             GameUI_StatusBar_OnEvent(str);
         }
     }
-    if (pMonster->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].uExpireTime > 0 && uDamageAmount != 0)
+    if (pMonster->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
         player->ReceiveDamage(uDamageAmount, attackElement);
     int knockbackValue = 20 * v61 / (signed int)pMonster->pMonsterInfo.uHP;
     if ((player->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) || hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DMGT_EARTH))
@@ -3749,7 +3767,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     {
         v43 = player->GetActualSkillLevel(PLAYER_SKILL_MACE);
         v45 = SkillToMastery(v43);
-        v46 = pParty->uTimePlayed + (signed int)(signed __int64)((double)(signed int)(7680 * (v43 & 0x3F)) * 0.033333335);
+        v46 = pParty->GetPlayingTime() + GameTime(0, v43 & 63);
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply(v46, v45, 0, 0, 0);
         if (bShowDamage)
         {
@@ -3824,109 +3842,111 @@ void Actor::Arena_summon_actor( int monster_id, __int16 x, int y, int z )
     ++uNumActors;
   }
 }
+
 //----- (00426E10) --------------------------------------------------------
 int stru319::which_player_to_attack(Actor *pActor)
 {
-  signed int v2; // ebx@1
-  bool flag; // edi@37
-  int v22; // [sp+8h] [bp-140h]@3
-  int Victims_list[60]; // [sp+48h] [bp-100h]@48
-  int for_sex; // [sp+13Ch] [bp-Ch]@1
-  int for_race; // [sp+140h] [bp-8h]@1
-  int for_class; // [sp+144h] [bp-4h]@1
+    signed int v2; // ebx@1
+    bool flag; // edi@37
+    int v22; // [sp+8h] [bp-140h]@3
+    int Victims_list[60]; // [sp+48h] [bp-100h]@48
+    int for_sex; // [sp+13Ch] [bp-Ch]@1
+    int for_race; // [sp+140h] [bp-8h]@1
+    int for_class; // [sp+144h] [bp-4h]@1
 
-  for_class = -1;
-  for_race = -1;
-  for_sex = -1;
-  v2 = 0;
-  if ( pActor->pMonsterInfo.uAttackPreference )
-  {
-    for ( uint i = 0; i < 16; i++ )
+    for_class = -1;
+    for_race = -1;
+    for_sex = -1;
+    v2 = 0;
+    if (pActor->pMonsterInfo.uAttackPreference)
     {
-      v22 = pActor->pMonsterInfo.uAttackPreference & (1 << i);
-      if ( v22 )
-      {
-        switch ( v22 )
+        for (uint i = 0; i < 16; i++)
         {
-          case 1:
-            for_class = 0;
-            break;
-          case 2:
-            for_class = 12;
-            break;
-          case 4:
-            for_class = 16;
-            break;
-          case 8:
-            for_class = 28;
-            break;
-          case 16:
-            for_class = 24;
-            break;
-          case 32:
-            for_class = 32;
-            break;
-          case 64:
-            for_class = 20;
-            break;
-          case 128:
-            for_class = 4;
-            break;
-          case 256:
-            for_class = 8;
-            break;
-          case 512:
-            for_sex = 0;
-            break;
-          case 1024:
-            for_sex = 1;
-            break;
-          case 2048:
-            for_race = 0;
-            break;
-          case 4096:
-            for_race = 1;
-            break;
-          case 8192:
-            for_race = 3;
-            break;
-          case 16384:
-            for_race = 2;
-            break;
+            v22 = pActor->pMonsterInfo.uAttackPreference & (1 << i);
+            if (v22)
+            {
+                switch (v22)
+                {
+                case 1:
+                    for_class = 0;
+                    break;
+                case 2:
+                    for_class = 12;
+                    break;
+                case 4:
+                    for_class = 16;
+                    break;
+                case 8:
+                    for_class = 28;
+                    break;
+                case 16:
+                    for_class = 24;
+                    break;
+                case 32:
+                    for_class = 32;
+                    break;
+                case 64:
+                    for_class = 20;
+                    break;
+                case 128:
+                    for_class = 4;
+                    break;
+                case 256:
+                    for_class = 8;
+                    break;
+                case 512:
+                    for_sex = 0;
+                    break;
+                case 1024:
+                    for_sex = 1;
+                    break;
+                case 2048:
+                    for_race = 0;
+                    break;
+                case 4096:
+                    for_race = 1;
+                    break;
+                case 8192:
+                    for_race = 3;
+                    break;
+                case 16384:
+                    for_race = 2;
+                    break;
+                }
+                v2 = 0;
+                for (uint j = 0; j < 4; ++j)
+                {
+                    flag = 0;
+                    if (for_class != -1 && for_class == pPlayers[j + 1]->classType)
+                        flag = true;
+                    if (for_sex != -1 && for_sex == pPlayers[j + 1]->uSex)
+                        flag = true;
+                    if (for_race != -1 && for_race == pPlayers[j + 1]->GetRace())
+                        flag = true;
+                    if (flag == true)
+                    {
+                        if (!(pPlayers[j + 1]->conditions_times[Condition_Paralyzed] || pPlayers[j + 1]->conditions_times[Condition_Unconcious]
+                            || pPlayers[j + 1]->conditions_times[Condition_Dead] || pPlayers[j + 1]->conditions_times[Condition_Pertified] || pPlayers[j + 1]->conditions_times[Condition_Eradicated]))
+                            Victims_list[v2++] = j;
+                    }
+                }
+            }
         }
-        v2 = 0;
-        for ( uint j = 0; j < 4; ++j )
-        {
-          flag = 0;
-          if ( for_class != -1 && for_class == pPlayers[j + 1]->classType )
-            flag = true;
-          if ( for_sex != -1 && for_sex == pPlayers[j + 1]->uSex )
-            flag = true;
-          if ( for_race != -1 && for_race == pPlayers[j + 1]->GetRace() )
-            flag = true;
-          if ( flag == true )
-          {
-            if ( !(pPlayers[j + 1]->pConditions[Condition_Paralyzed] | pPlayers[j + 1]->pConditions[Condition_Unconcious]
-                 | pPlayers[j + 1]->pConditions[Condition_Dead] | pPlayers[j + 1]->pConditions[Condition_Pertified] | pPlayers[j + 1]->pConditions[Condition_Eradicated]) )
-              Victims_list[v2++] = j;
-          }
-        }
-      }
+        if (v2)
+            return Victims_list[rand() % v2];
     }
-    if ( v2 )
-      return Victims_list[rand() % v2];
-  }
-  for ( uint i = 0; i < 4; ++i )
-  {
-    if ( !(pPlayers[i + 1]->pConditions[Condition_Paralyzed] | pPlayers[i + 1]->pConditions[Condition_Unconcious]
-         | pPlayers[i + 1]->pConditions[Condition_Dead] | pPlayers[i + 1]->pConditions[Condition_Pertified] | pPlayers[i + 1]->pConditions[Condition_Eradicated]) )
-      Victims_list[v2++] = i;
-  }
-  if ( v2 )
-    return Victims_list[rand() % v2];
-  else
-    return 0;
+    for (uint i = 0; i < 4; ++i)
+    {
+        if (!(pPlayers[i + 1]->conditions_times[Condition_Paralyzed] || pPlayers[i + 1]->conditions_times[Condition_Unconcious]
+            || pPlayers[i + 1]->conditions_times[Condition_Dead] || pPlayers[i + 1]->conditions_times[Condition_Pertified] || pPlayers[i + 1]->conditions_times[Condition_Eradicated]))
+            Victims_list[v2++] = i;
+    }
+    if (v2)
+        return Victims_list[rand() % v2];
+    else
+        return 0;
 }
+
 //----- (00427546) --------------------------------------------------------
 int stru319::_427546(int a2)
 {
@@ -4274,234 +4294,196 @@ void Actor::LootActor()
 
 
 //----- (00427102) --------------------------------------------------------
-bool Actor::_427102_IsOkToCastSpell( signed int a2 )
+bool Actor::_427102_IsOkToCastSpell(enum SPELL_TYPE spell)
 {
-  switch(a2)
-  {
-  case SPELL_BODY_POWER_CURE:
+    switch (spell)
     {
-      if ( this->sCurrentHP >= (signed int)this->pMonsterInfo.uHP )
-        return false;
-      return true;
-    }
-  case SPELL_LIGHT_DISPEL_MAGIC:
-    {
-      for (int i = 0; i < 20; i++)
-      {
-        if (pParty->pPartyBuffs[i].uExpireTime > 0)
-          return true;
-      }
-      for ( int i = 1; i <= 4; i++ )
-      {
-        for ( int j = 0; j < 22; j++ )
+        case SPELL_BODY_POWER_CURE:
         {
-          if (pPlayers[i]->pPlayerBuffs[j].uExpireTime > 0)
+            if (this->sCurrentHP >= this->pMonsterInfo.uHP)
+                return false;
             return true;
         }
-      }
-      return false;
+
+        case SPELL_LIGHT_DISPEL_MAGIC:
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                if (pParty->pPartyBuffs[i].Active())
+                    return true;
+            }
+            for (int i = 1; i <= 4; i++)
+            {
+                for (int j = 0; j < 22; j++)
+                {
+                    if (pPlayers[i]->pPlayerBuffs[j].Active())
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        case SPELL_LIGHT_DAY_OF_PROTECTION: return this->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Expired();
+        case SPELL_LIGHT_HOUR_OF_POWER:     return this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Expired();
+        case SPELL_DARK_PAIN_REFLECTION:    return this->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Expired();
+        case SPELL_BODY_HAMMERHANDS:        return this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Expired();
+        case SPELL_FIRE_HASTE:              return this->pActorBuffs[ACTOR_BUFF_HASTE].Expired();
+        case SPELL_AIR_SHIELD:              return this->pActorBuffs[ACTOR_BUFF_SHIELD].Expired();
+        case SPELL_EARTH_STONESKIN:         return this->pActorBuffs[ACTOR_BUFF_STONESKIN].Expired();
+        case SPELL_SPIRIT_BLESS:            return this->pActorBuffs[ACTOR_BUFF_BLESS].Expired();
+        case SPELL_SPIRIT_FATE:             return this->pActorBuffs[ACTOR_BUFF_FATE].Expired();
+        case SPELL_SPIRIT_HEROISM:          return this->pActorBuffs[ACTOR_BUFF_HEROISM].Expired();
+        default:
+            return true;
     }
-  case SPELL_LIGHT_DAY_OF_PROTECTION:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].uExpireTime <= 0;
-      break;
-    }
-  case SPELL_LIGHT_HOUR_OF_POWER:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uExpireTime <= 0;
-      break;
-    }
-  case SPELL_DARK_PAIN_REFLECTION:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].uExpireTime <= 0;
-      break;
-    }
-  case SPELL_BODY_HAMMERHANDS:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].uExpireTime <= 0;
-      break;
-    }
-  case SPELL_FIRE_HASTE:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_HASTE].uExpireTime <= 0;
-      break;
-    }
-  case SPELL_AIR_SHIELD:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_SHIELD].uExpireTime <= 0;
-      break;
-    }
-  case SPELL_EARTH_STONESKIN:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_STONESKIN].uExpireTime <= 0;
-      break;
-    }
-  case SPELL_SPIRIT_BLESS:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_BLESS].uExpireTime <= 0;
-      break;
-    }
-  case SPELL_SPIRIT_FATE:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_FATE].uExpireTime <= 0;
-      break;
-    }
-  case SPELL_SPIRIT_HEROISM:
-    {
-      return this->pActorBuffs[ACTOR_BUFF_HEROISM].uExpireTime <= 0;
-      break;
-    }
-  default:
-      return true;
-  }
 }
 
 
 //----- (0042704B) --------------------------------------------------------
-ABILITY_INDEX Actor::special_ability_use_check( int a2 )
+ABILITY_INDEX Actor::special_ability_use_check(int a2)
 {
-  signed int okToCastSpell1; // ebx@5
-  signed int okToCastSpell2; // edi@5
+    signed int okToCastSpell1; // ebx@5
+    signed int okToCastSpell2; // edi@5
 
-  if ( this->pMonsterInfo.uSpecialAbilityType == 2
-    && this->pMonsterInfo.uSpecialAbilityDamageDiceBonus < 3
-    && rand() % 100 < 5 )
-    this->SummonMinion(a2);
-  okToCastSpell1 = this->_427102_IsOkToCastSpell(this->pMonsterInfo.uSpell1ID);
-  okToCastSpell2 = this->_427102_IsOkToCastSpell(this->pMonsterInfo.uSpell2ID);
-  if ( okToCastSpell1 && this->pMonsterInfo.uSpell1UseChance && rand() % 100 < this->pMonsterInfo.uSpell1UseChance )
-    return ABILITY_SPELL1;
-  if ( okToCastSpell2 && this->pMonsterInfo.uSpell2UseChance && rand() % 100 < this->pMonsterInfo.uSpell2UseChance )
-    return ABILITY_SPELL2;
-  if (this->pMonsterInfo.uAttack2Chance && rand() % 100 < this->pMonsterInfo.uAttack2Chance)
-    return ABILITY_ATTACK2;
-  return ABILITY_ATTACK1;
+    if (this->pMonsterInfo.uSpecialAbilityType == 2
+        && this->pMonsterInfo.uSpecialAbilityDamageDiceBonus < 3
+        && rand() % 100 < 5)
+        this->SummonMinion(a2);
+    okToCastSpell1 = this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell1ID);
+    okToCastSpell2 = this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell2ID);
+    if (okToCastSpell1 && this->pMonsterInfo.uSpell1UseChance && rand() % 100 < this->pMonsterInfo.uSpell1UseChance)
+        return ABILITY_SPELL1;
+    if (okToCastSpell2 && this->pMonsterInfo.uSpell2UseChance && rand() % 100 < this->pMonsterInfo.uSpell2UseChance)
+        return ABILITY_SPELL2;
+    if (this->pMonsterInfo.uAttack2Chance && rand() % 100 < this->pMonsterInfo.uAttack2Chance)
+        return ABILITY_ATTACK2;
+    return ABILITY_ATTACK1;
 }
 
 
 
 //----- (004273BB) --------------------------------------------------------
-bool Actor::_4273BB_DoesHitOtherActor( Actor *defender, int a3, int a4 )
+bool Actor::_4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4)
 {
-  signed int v6; // ebx@1
-  signed int v7; // esi@1
-  int armorSum; // ebx@10
-  signed int a2a; // [sp+18h] [bp+Ch]@1
+    signed int v6; // ebx@1
+    signed int v7; // esi@1
+    int armorSum; // ebx@10
+    signed int a2a; // [sp+18h] [bp+Ch]@1
 
-  v6 = defender->pMonsterInfo.uAC;
-  v7 = 0;
-  a2a = 0;
-  if ( defender->pActorBuffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC].uExpireTime > 0 )
-    v6 /= 2;
-  if ( defender->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uExpireTime > 0 )
-    v7 = defender->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
-  if ( defender->pActorBuffs[ACTOR_BUFF_STONESKIN].uExpireTime > 0 && defender->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower > v7 )
-    v7 = defender->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower;
-  armorSum = v7 + v6;
-  if ( this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uExpireTime > 0 )
-    a2a = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
-  if ( this->pActorBuffs[ACTOR_BUFF_BLESS].uExpireTime > 0 && this->pActorBuffs[ACTOR_BUFF_BLESS].uPower > a2a )
-    a2a = this->pActorBuffs[ACTOR_BUFF_BLESS].uPower;
-  if ( this->pActorBuffs[ACTOR_BUFF_FATE].uExpireTime > 0 )
-  {
-    a2a += this->pActorBuffs[ACTOR_BUFF_FATE].uPower;
-    this->pActorBuffs[ACTOR_BUFF_FATE].Reset();
-  }
-  return rand() % (armorSum + 2 * this->pMonsterInfo.uLevel + 10) + a2a + 1 > armorSum + 5;
+    v6 = defender->pMonsterInfo.uAC;
+    v7 = 0;
+    a2a = 0;
+    if (defender->pActorBuffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC].Active())
+        v6 /= 2;
+    if (defender->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
+        v7 = defender->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+    if (defender->pActorBuffs[ACTOR_BUFF_STONESKIN].Active() && defender->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower > v7)
+        v7 = defender->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower;
+    armorSum = v7 + v6;
+    if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
+        a2a = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+    if (this->pActorBuffs[ACTOR_BUFF_BLESS].Active() && this->pActorBuffs[ACTOR_BUFF_BLESS].uPower > a2a)
+        a2a = this->pActorBuffs[ACTOR_BUFF_BLESS].uPower;
+    if (this->pActorBuffs[ACTOR_BUFF_FATE].Active())
+    {
+        a2a += this->pActorBuffs[ACTOR_BUFF_FATE].uPower;
+        this->pActorBuffs[ACTOR_BUFF_FATE].Reset();
+    }
+    return rand() % (armorSum + 2 * this->pMonsterInfo.uLevel + 10) + a2a + 1 > armorSum + 5;
 }
 
 //----- (004274AD) --------------------------------------------------------
 bool Actor::ActorHitOrMiss(Player *pPlayer)
 {
-  signed int v3; // edi@1
-  signed int v4; // esi@8
-  int v5; // esi@8
+    signed int v3; // edi@1
+    signed int v4; // esi@8
+    int v5; // esi@8
 
-  v3 = 0;
-  if ( this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uExpireTime > 0 )
-    v3 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
-  if ( this->pActorBuffs[ACTOR_BUFF_BLESS].uExpireTime > 0 && this->pActorBuffs[ACTOR_BUFF_BLESS].uPower > v3 )
-    v3 = this->pActorBuffs[ACTOR_BUFF_BLESS].uPower;
-  if ( this->pActorBuffs[ACTOR_BUFF_FATE].uExpireTime > 0 )
-  {
-    v3 += this->pActorBuffs[ACTOR_BUFF_FATE].uPower;
-    this->pActorBuffs[ACTOR_BUFF_FATE].Reset();
-  }
-  v4 = pPlayer->GetActualAC() + 2 * this->pMonsterInfo.uLevel + 10;
-  v5 = rand() % v4 + 1;
-  return (v3 + v5 > pPlayer->GetActualAC() + 5);
+    v3 = 0;
+    if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
+        v3 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+    if (this->pActorBuffs[ACTOR_BUFF_BLESS].Active() && this->pActorBuffs[ACTOR_BUFF_BLESS].uPower > v3)
+        v3 = this->pActorBuffs[ACTOR_BUFF_BLESS].uPower;
+    if (this->pActorBuffs[ACTOR_BUFF_FATE].Active())
+    {
+        v3 += this->pActorBuffs[ACTOR_BUFF_FATE].uPower;
+        this->pActorBuffs[ACTOR_BUFF_FATE].Reset();
+    }
+    v4 = pPlayer->GetActualAC() + 2 * this->pMonsterInfo.uLevel + 10;
+    v5 = rand() % v4 + 1;
+    return (v3 + v5 > pPlayer->GetActualAC() + 5);
 }
 
 
 //----- (0042756B) --------------------------------------------------------
 int Actor::CalcMagicalDamageToActor(DAMAGE_TYPE dmgType, signed int incomingDmg)
 {
-  int v4; // edx@1
-  int v5; // ecx@1
-  signed int v6; // eax@4
-  signed int result; // eax@17
-  signed int v8; // esi@18
+    int v4; // edx@1
+    int v5; // ecx@1
+    signed int v6; // eax@4
+    signed int result; // eax@17
+    signed int v8; // esi@18
 
-  v4 = 0;
-  v5 = 0;
-  if ( this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uExpireTime > 0 )
-    v5 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
-  switch ( dmgType )
-  {
-  case DMGT_FIRE:
-    v6 = this->pMonsterInfo.uResFire;
-    v4 = v5;
-    break;
-  case DMGT_ELECTR:
-    v6 = this->pMonsterInfo.uResAir;
-    v4 = v5;
-    break;
-  case DMGT_COLD:
-    v6 = this->pMonsterInfo.uResWater;
-    v4 = v5;
-    break;
-  case DMGT_EARTH:
-    v6 = this->pMonsterInfo.uResEarth;
-    v4 = v5;
-    break;
-  case DMGT_PHISYCAL:
-    v6 = this->pMonsterInfo.uResPhysical;
-    break;
-  case DMGT_SPIRIT:
-    v6 = this->pMonsterInfo.uResSpirit;
-    break;
-  case DMGT_MIND:
-    v6 = this->pMonsterInfo.uResMind;
-    v4 = v5;
-    break;
-  case DMGT_BODY:
-    v6 = this->pMonsterInfo.uResBody;
-    v4 = v5;
-    break;
-  case DMGT_LIGHT:
-    v6 = this->pMonsterInfo.uResLight;
-    break;
-  case DMGT_DARK:
-    v6 = this->pMonsterInfo.uResDark;
-    break;
-  default:
-    v6 = 0;
-    break;
-  }
-  if ( v6 < 200 )
-  {
-    v8 = v4 + v6 + 30;
-    for (int i = 0; i < 4; i++)
+    v4 = 0;
+    v5 = 0;
+    if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
+        v5 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
+    switch (dmgType)
     {
-      if ( rand() % v8 < 30 )
+    case DMGT_FIRE:
+        v6 = this->pMonsterInfo.uResFire;
+        v4 = v5;
         break;
-      incomingDmg /= 2;
+    case DMGT_ELECTR:
+        v6 = this->pMonsterInfo.uResAir;
+        v4 = v5;
+        break;
+    case DMGT_COLD:
+        v6 = this->pMonsterInfo.uResWater;
+        v4 = v5;
+        break;
+    case DMGT_EARTH:
+        v6 = this->pMonsterInfo.uResEarth;
+        v4 = v5;
+        break;
+    case DMGT_PHISYCAL:
+        v6 = this->pMonsterInfo.uResPhysical;
+        break;
+    case DMGT_SPIRIT:
+        v6 = this->pMonsterInfo.uResSpirit;
+        break;
+    case DMGT_MIND:
+        v6 = this->pMonsterInfo.uResMind;
+        v4 = v5;
+        break;
+    case DMGT_BODY:
+        v6 = this->pMonsterInfo.uResBody;
+        v4 = v5;
+        break;
+    case DMGT_LIGHT:
+        v6 = this->pMonsterInfo.uResLight;
+        break;
+    case DMGT_DARK:
+        v6 = this->pMonsterInfo.uResDark;
+        break;
+    default:
+        v6 = 0;
+        break;
     }
-    result = incomingDmg;
-  }
-  else
-    result = 0;
-  return result;
+    if (v6 < 200)
+    {
+        v8 = v4 + v6 + 30;
+        for (int i = 0; i < 4; i++)
+        {
+            if (rand() % v8 < 30)
+                break;
+            incomingDmg /= 2;
+        }
+        result = incomingDmg;
+    }
+    else
+        result = 0;
+    return result;
 }
 
 //----- (00427662) --------------------------------------------------------
@@ -5152,85 +5134,87 @@ bool SpawnActor(unsigned int uMonsterID)
   }
   return result;
 }
-// 5C6DF8: using guessed type int dword_5C6DF8;
 
 
 //----- (0044FA4C) --------------------------------------------------------
-signed int sub_44FA4C_spawn_light_elemental(int a1, int a2, int a3)
+int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level, int duration_game_seconds)
 {
-  signed int result; // eax@13
-  int v10; // ebx@16
-  const char *v15; // [sp-4h] [bp-24h]@2
-  unsigned int uFaceID; // [sp+8h] [bp-18h]@16
-  int v19; // [sp+Ch] [bp-14h]@16
-  size_t v20; // [sp+10h] [bp-10h]@6
-  int v21; // [sp+14h] [bp-Ch]@14
-  unsigned int v23; // [sp+1Ch] [bp-4h]@6
+    signed int result; // eax@13
+    int v10; // ebx@16
+    const char *v15; // [sp-4h] [bp-24h]@2
+    unsigned int uFaceID; // [sp+8h] [bp-18h]@16
+    int v19; // [sp+Ch] [bp-14h]@16
+    size_t v20; // [sp+10h] [bp-10h]@6
+    int v21; // [sp+14h] [bp-Ch]@14
+    unsigned int v23; // [sp+1Ch] [bp-4h]@6
 
-  if ( a2 == 4 )
-    v15 = "Elemental Light C";
-  else if ( a2 == 3 )
-    v15 = "Elemental Light B";
-  else
-    v15 = "Elemental Light A";
+    if (caster_skill_level == 4)
+        v15 = "Elemental Light C";
+    else if (caster_skill_level == 3)
+        v15 = "Elemental Light B";
+    else
+        v15 = "Elemental Light A";
 
-  v23 = pMonsterList->GetMonsterIDByName(v15);
-  v20 = 0;
-  for ( v20; v20 < uNumActors; v20++ )
-  {
-    if ( pActors[v20].uAIState == Removed )
-      break;
-  }
-
-  result = uNumActors + 1;
-  if ( v20 != uNumActors ||  result < 500 )
-  {
-    v21 = 0;
-    if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
-      v21 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-    v19 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
-    pActors[v20].Reset();
-    strcpy(pActors[v20].pActorName, pMonsterStats->pInfos[v23 + 1].pName);
-    pActors[v20].sCurrentHP = pMonsterStats->pInfos[v23 + 1].uHP;
-    memcpy(&pActors[v20].pMonsterInfo, &pMonsterStats->pInfos[v23 + 1], sizeof(MonsterInfo));
-    pActors[v20].word_000086_some_monster_id = v23 + 1;
-    pActors[v20].uActorRadius = pMonsterList->pMonsters[v23].uMonsterRadius;
-    pActors[v20].uActorHeight = pMonsterList->pMonsters[v23].uMonsterHeight;
-    pActors[v20].pMonsterInfo.uTreasureDiceRolls = 0;
-    pActors[v20].pMonsterInfo.uTreasureType = 0;
-    pActors[v20].pMonsterInfo.uExp = 0;
-    pActors[v20].uMovementSpeed = pMonsterList->pMonsters[v23].uMovementSpeed;
-    v10 = rand() % 2048;
-    pActors[v20].vInitialPosition.x = pParty->vPosition.x + fixpoint_mul(stru_5C6E00->Cos(v10), v19);
-    pActors[v20].vPosition.x = pActors[v20].vInitialPosition.x;
-    pActors[v20].vInitialPosition.y = pParty->vPosition.y + fixpoint_mul(stru_5C6E00->Sin(v10), v19);
-    pActors[v20].vPosition.y = pActors[v20].vInitialPosition.y;
-    pActors[v20].vInitialPosition.z = pParty->vPosition.z;
-    pActors[v20].vPosition.z = pActors[v20].vInitialPosition.z;
-    pActors[v20].uTetherDistance = 256;
-    pActors[v20].uSectorID = v21;
-    pActors[v20].PrepareSprites(0);
-    pActors[v20].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
-    pActors[v20].uAlly = 9999;
-    pActors[v20].uGroup = 0;
-    pActors[v20].uCurrentActionTime = 0;
-    pActors[v20].uAIState = Summoned;
-    pActors[v20].uCurrentActionLength = 256;
-    pActors[v20].UpdateAnimation();
-
-    result = pIndoor->GetSector(pActors[v20].vPosition.x, pActors[v20].vPosition.y, pActors[v20].vPosition.z);
-    if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor
-      || result == v21
-	  && (result = BLV_GetFloorLevel(pActors[v20].vPosition.x, pActors[v20].vPosition.y, pActors[v20].vPosition.z, result, &uFaceID), result != -30000)
-      && (result = abs(result - pParty->vPosition.z), result <= 1024) )
+    v23 = pMonsterList->GetMonsterIDByName(v15);
+    v20 = 0;
+    for (v20; v20 < uNumActors; v20++)
     {
-      if ( v20 == uNumActors )
-        ++uNumActors;
-      pActors[v20].uSummonerID = PID(OBJECT_Player, a1);
-      result = pActors[v20].pActorBuffs[ACTOR_BUFF_SUMMONED].Apply(pParty->uTimePlayed + (a3 * 128) / 30.0f, a2, a1, 0, 0);
+        if (pActors[v20].uAIState == Removed)
+            break;
     }
-  }
-  return result;
+
+    result = uNumActors + 1;
+    if (v20 != uNumActors || result < 500)
+    {
+        v21 = 0;
+        if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+            v21 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+        v19 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
+        pActors[v20].Reset();
+        strcpy(pActors[v20].pActorName, pMonsterStats->pInfos[v23 + 1].pName);
+        pActors[v20].sCurrentHP = pMonsterStats->pInfos[v23 + 1].uHP;
+        memcpy(&pActors[v20].pMonsterInfo, &pMonsterStats->pInfos[v23 + 1], sizeof(MonsterInfo));
+        pActors[v20].word_000086_some_monster_id = v23 + 1;
+        pActors[v20].uActorRadius = pMonsterList->pMonsters[v23].uMonsterRadius;
+        pActors[v20].uActorHeight = pMonsterList->pMonsters[v23].uMonsterHeight;
+        pActors[v20].pMonsterInfo.uTreasureDiceRolls = 0;
+        pActors[v20].pMonsterInfo.uTreasureType = 0;
+        pActors[v20].pMonsterInfo.uExp = 0;
+        pActors[v20].uMovementSpeed = pMonsterList->pMonsters[v23].uMovementSpeed;
+        v10 = rand() % 2048;
+        pActors[v20].vInitialPosition.x = pParty->vPosition.x + fixpoint_mul(stru_5C6E00->Cos(v10), v19);
+        pActors[v20].vPosition.x = pActors[v20].vInitialPosition.x;
+        pActors[v20].vInitialPosition.y = pParty->vPosition.y + fixpoint_mul(stru_5C6E00->Sin(v10), v19);
+        pActors[v20].vPosition.y = pActors[v20].vInitialPosition.y;
+        pActors[v20].vInitialPosition.z = pParty->vPosition.z;
+        pActors[v20].vPosition.z = pActors[v20].vInitialPosition.z;
+        pActors[v20].uTetherDistance = 256;
+        pActors[v20].uSectorID = v21;
+        pActors[v20].PrepareSprites(0);
+        pActors[v20].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+        pActors[v20].uAlly = 9999;
+        pActors[v20].uGroup = 0;
+        pActors[v20].uCurrentActionTime = 0;
+        pActors[v20].uAIState = Summoned;
+        pActors[v20].uCurrentActionLength = 256;
+        pActors[v20].UpdateAnimation();
+
+        result = pIndoor->GetSector(pActors[v20].vPosition.x, pActors[v20].vPosition.y, pActors[v20].vPosition.z);
+        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor
+            || result == v21
+            && (result = BLV_GetFloorLevel(pActors[v20].vPosition.x, pActors[v20].vPosition.y, pActors[v20].vPosition.z, result, &uFaceID), result != -30000)
+            && (result = abs(result - pParty->vPosition.z), result <= 1024))
+        {
+            if (v20 == uNumActors)
+                ++uNumActors;
+            pActors[v20].uSummonerID = PID(OBJECT_Player, spell_power);
+            result = pActors[v20].pActorBuffs[ACTOR_BUFF_SUMMONED].Apply(
+                pParty->GetPlayingTime() + GameTime::FromSeconds(duration_game_seconds),
+                caster_skill_level, spell_power, 0, 0
+            );
+        }
+    }
+    return result;
 }
 
 //----- (0044F57C) --------------------------------------------------------
@@ -5559,9 +5543,7 @@ void area_of_effect__damage_evaluate()
 			}
 			else//Actor damage from monsters(повреждение местного жителя)
 			{
-				if (SHIDWORD(pActors[target_id].pActorBuffs[ACTOR_BUFF_PARALYZED].uExpireTime) > 0
-					|| SHIDWORD(pActors[target_id].pActorBuffs[ACTOR_BUFF_PARALYZED].uExpireTime) >= 0
-					&& LODWORD(pActors[target_id].pActorBuffs[ACTOR_BUFF_PARALYZED].uExpireTime)
+				if (pActors[target_id].pActorBuffs[ACTOR_BUFF_PARALYZED].Active()
 					|| pActors[target_id].CanAct())
 				{
 					v15 = pActors[target_id].vPosition.y - AttackerInfo.pYs[attacker_id];
@@ -5602,13 +5584,17 @@ void area_of_effect__damage_evaluate()
 				{
 					for (uint i = 0; i < 4; ++i)
 					{
-						if (!(HIDWORD(pParty->pPlayers[i].pConditions[Condition_Dead]) | LODWORD(pParty->pPlayers[i].pConditions[Condition_Dead]))
-							&& !pParty->pPlayers[i].pConditions[Condition_Pertified] && !pParty->pPlayers[i].pConditions[Condition_Eradicated])
-							DamagePlayerFromMonster(AttackerInfo.pIDs[attacker_id], AttackerInfo.field_450[attacker_id], &AttackerInfo.vec_4B4[attacker_id], i);
+                        if (!pParty->pPlayers[i].conditions_times[Condition_Dead]
+                            && !pParty->pPlayers[i].conditions_times[Condition_Pertified]
+                            && !pParty->pPlayers[i].conditions_times[Condition_Eradicated])
+                        {
+                            DamagePlayerFromMonster(AttackerInfo.pIDs[attacker_id], AttackerInfo.field_450[attacker_id], &AttackerInfo.vec_4B4[attacker_id], i);
+                        }
 					}
 				}
 			}
-			if ((signed int)uNumActors > 0)
+
+			if (uNumActors > 0)
 			{//actors damage(повреждения другим участникам)
 				for (int actorID = 0; (signed int)actorID < (signed int)uNumActors; ++actorID)
 				{

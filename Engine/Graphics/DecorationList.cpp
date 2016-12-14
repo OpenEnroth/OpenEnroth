@@ -52,20 +52,6 @@ bool DecorationList::FromFileTxt(const char *Args)
   FILE *v6; // ST18_4@12
   char *i; // eax@12
   unsigned __int16 v8; // ax@16
-  //const char *v9; // ST20_4@16
-  //const char *v10; // ST18_4@16
-  //__int16 v11; // ax@16
-  //const char *v12; // ST14_4@16
-  //unsigned __int16 v13; // ax@16
-//  const char *v14; // ST10_4@16
-  //__int16 v15; // ax@16
-//  const char *v16; // ST0C_4@16
-//  unsigned __int8 v17; // al@16
-//  const char *v18; // ST08_4@16
-//  unsigned __int8 v19; // al@16
-//  const char *v20; // ST04_4@16
-//  unsigned __int8 v21; // al@16
-//  const char *v22; // ST00_4@16
   unsigned __int8 v23; // zf@16
   char v24; // sf@16
   unsigned __int8 v25; // of@16

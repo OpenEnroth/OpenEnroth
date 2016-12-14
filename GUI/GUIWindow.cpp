@@ -3,37 +3,43 @@
 #include <crtdbg.h>
 
 #define _CRT_SECURE_NO_WARNINGS
-#include "Engine/Engine.h"
-#include "Engine/Localization.h"
 
-#include "GUIWindow.h"
-#include "GUIFont.h"
+#include "Engine/Engine.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
+#include "Engine/OurMath.h"
+#include "Engine/Time.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
-#include "IO/Keyboard.h"
-#include "Engine/OurMath.h"
-#include "Engine/Timer.h"
-#include "Media/Audio/AudioPlayer.h"
-#include "IO/Mouse.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/Tables/StorylineTextTable.h"
-#include "GUI\UI\UIHouses.h"
-#include "GUI\UI\UIBooks.h"
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
-#include "Engine/Objects/Chest.h"
-#include "Engine/Graphics/Outdoor.h"
-#include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/AssetsManager.h"
 #include "Engine/Events.h"
-#include "Engine/Graphics/Level\Decoration.h"
 
+#include "Engine/Objects/Chest.h"
+#include "Engine/Objects/Actor.h"
+
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Level/Decoration.h"
+
+#include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/IconFrameTable.h"
+
+#include "IO/Keyboard.h"
+#include "IO/Mouse.h"
+
+#include "GUI/GUIWindow.h"
+#include "GUI/GUIFont.h"
+#include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIBooks.h"
 #include "GUI/UI/UIArena.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UiStatusBar.h"
+
+#include "Media/Audio/AudioPlayer.h"
+
 
 typedef struct _RGBColor
     {
@@ -351,44 +357,46 @@ GUIButton *GUI_HandleHotkey(unsigned __int8 uHotkey)
   }
   return 0;
 }
-// 5075E0: using guessed type int pVisibleWindowsIdxs[20];
+
+
 
 //----- (0041D73D) --------------------------------------------------------
 void GUIWindow::_41D73D_draw_buff_tooltip()
 {
-  __int64 remaing_time; // ST28_8@11
-  unsigned short text_color;
-  int Y_pos; // esi@11
-  int string_count; // [sp+20h] [bp-4h]@7
+    unsigned short text_color;
+    int Y_pos; // esi@11
+    int string_count; // [sp+20h] [bp-4h]@7
 
-  string_count = 0;
-  for (int i=0; i<20; ++i)
-    if ( pParty->pPartyBuffs[i].uExpireTime > 0i64 )
-      ++string_count;
-
-  uFrameHeight = pFontArrus->uFontHeight + 72;
-  uFrameHeight += (string_count - 1) * pFontArrus->uFontHeight;
-  uFrameZ = uFrameWidth + uFrameX - 1;
-  uFrameW = uFrameY + uFrameHeight - 1;
-  DrawMessageBox(0);
-  DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(451), 3);
-  if ( !string_count )
-     DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(153), 3);
-
-  GetTickCount();
-  string_count = 0;
-  for (int i=0; i<20; ++i)
-  {
-    if ( pParty->pPartyBuffs[i].uExpireTime>0i64 )//!!!
+    string_count = 0;
+    for (int i = 0; i < 20; ++i)
     {
-      remaing_time = pParty->pPartyBuffs[i].uExpireTime- pParty->uTimePlayed;//!!!
-      Y_pos = string_count * pFontComic->uFontHeight + 40; 
-      text_color = Color16(spell_tooltip_colors[i].R, spell_tooltip_colors[i].G, spell_tooltip_colors[i].B);
-      DrawText(pFontComic, 52, Y_pos, text_color, localization->GetSpellName(i), 0, 0, 0);
-      DrawBuff_remaining_time_string(Y_pos, this, remaing_time, pFontComic); 
-      ++string_count;
+        if (pParty->pPartyBuffs[i].Active())
+            ++string_count;
     }
-  }
+
+    uFrameHeight = pFontArrus->uFontHeight + 72;
+    uFrameHeight += (string_count - 1) * pFontArrus->uFontHeight;
+    uFrameZ = uFrameWidth + uFrameX - 1;
+    uFrameW = uFrameY + uFrameHeight - 1;
+    DrawMessageBox(0);
+    DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(451), 3);
+    if (!string_count)
+        DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(153), 3);
+
+    GetTickCount();
+    string_count = 0;
+    for (int i = 0; i < 20; ++i)
+    {
+        if (pParty->pPartyBuffs[i].Active())
+        {
+            auto remaing_time = pParty->pPartyBuffs[i].expire_time - pParty->GetPlayingTime();
+            Y_pos = string_count * pFontComic->uFontHeight + 40;
+            text_color = Color16(spell_tooltip_colors[i].R, spell_tooltip_colors[i].G, spell_tooltip_colors[i].B);
+            DrawText(pFontComic, 52, Y_pos, text_color, localization->GetSpellName(i), 0, 0, 0);
+            DrawBuff_remaining_time_string(Y_pos, this, remaing_time, pFontComic);
+            ++string_count;
+        }
+    }
 }
 
 
@@ -827,14 +835,12 @@ void GUIWindow::HouseDialogManager()
 }
 
 
-String MakeDateTimeString(__int64 game_time)
+String MakeDateTimeString(GameTime time)
 {
-    __int64 game_seconds = ((double)game_time * 0.234375);
-
-    int seconds = (signed __int64)game_seconds % 60;
-    int minutes = (signed __int64)(game_seconds / 60) % 60;
-    int days = (unsigned int)((game_seconds / 60) / 60) / 24;
-    int hours = ((game_seconds / 60) / 60) % 24;
+    int seconds = time.GetSecondsFraction();
+    int minutes = time.GetMinutesFraction();
+    int hours = time.GetHoursOfDay();
+    int days = time.GetDays();
 
     String str = "";
     if (days)
@@ -877,9 +883,9 @@ String MakeDateTimeString(__int64 game_time)
 }
 
 //----- (004B1854) --------------------------------------------------------
-void GUIWindow::DrawShops_next_generation_time_string(__int64 next_generation_time)
+void GUIWindow::DrawShops_next_generation_time_string(GameTime time)
 {
-    auto str = MakeDateTimeString(next_generation_time);
+    auto str = MakeDateTimeString(time);
     this->DrawTitleText(
         pFontArrus,
         0,
@@ -1420,7 +1426,7 @@ void GUIWindow_House::Update()
         return;
     if (window_SpeakInHouse->par1C >= 53)
         return;
-    if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] <= pParty->uTimePlayed)
+    if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] <= pParty->GetPlayingTime())
     {
         if (window_SpeakInHouse->par1C < 53)
             pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] = 0;
@@ -2042,7 +2048,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace)
 }
 
 //----- (0041D20D) --------------------------------------------------------
-void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, __int64 remaining_time, struct GUIFont *Font)
+void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, GameTime remaining_time, struct GUIFont *Font)
 {
     window->DrawText(Font, 32, uY, 0, "\r020" + MakeDateTimeString(remaining_time), 0, 0, 0);
 }
@@ -2399,7 +2405,7 @@ void ClickNPCTopic(signed int uMessageParam)
 		switch (uMessageParam)
 		{
 		case 13:
-			current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0, 0);
+			current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
 			NPCHireableDialogPrepare();
 			dialogue_show_profession_details = false;
 			BackToHouseMenu();
@@ -2480,13 +2486,13 @@ void ClickNPCTopic(signed int uMessageParam)
 			if (dialogue_show_profession_details)
             {
                 current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0, 0
+                    pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0
                 );
             }
 			else
             {
                 current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0, 0
+                    pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0
                 );
             }
             dialogue_show_profession_details = ~dialogue_show_profession_details;
@@ -2611,7 +2617,7 @@ void ClickNPCTopic(signed int uMessageParam)
 			GameUI_StatusBar_OnEvent(localization->GetString(155));
 			dialogue_show_profession_details = false;
 			uDialogueType = 13;
-			current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0, 0);
+			current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
 			if (uActiveCharacter)
 				pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
 			GameUI_StatusBar_OnEvent(localization->GetString(155));
@@ -2780,7 +2786,7 @@ void CheckBountyRespawnAndAward()
 	pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
 	dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 	//get new monster for hunting
-	if (pParty->PartyTimes.bountyHunting_next_generation_time[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] < (signed __int64)pParty->uTimePlayed)
+	if (pParty->PartyTimes.bountyHunting_next_generation_time[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] < pParty->GetPlayingTime())
 	{
 		pParty->monster_for_hunting_killed[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
 		pParty->PartyTimes.bountyHunting_next_generation_time[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] = (signed __int64)((double)(0x12750000 * (pParty->uCurrentMonth + 12i64 * pParty->uCurrentYear - 14015)) * 0.033333335);
@@ -3147,13 +3153,13 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo)
     return String("");
 }
 
-String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, ItemGen *a3, char *a4, int a5, __int64 *a6)
+String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, ItemGen *a3, char *a4, int a5, GameTime *a6)
 {
     return BuildDialogueString(String(lpsz), uPlayerID, a3, a4, a5, a6);
 }
 
 //----- (00495461) --------------------------------------------------------
-String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, char *a4, int a5, __int64 *a6)
+String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, char *a4, int a5, GameTime *a6)
 {
     char v1[256];
 	Player *pPlayer; // ebx@3
@@ -3164,7 +3170,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 	int v21; // ecx@34
 	int v29; // eax@68
 	__int16 v55[56]; // [sp+10h] [bp-128h]@34
-	stru351_summoned_item v56; // [sp+80h] [bp-B8h]@107
+    SummonedItem v56; // [sp+80h] [bp-B8h]@107
 	int v63; // [sp+12Ch] [bp-Ch]@32
 
 	pPlayer = &pParty->pPlayers[uPlayerID];
@@ -3203,7 +3209,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
                 result += v1;
 				break;
 			case 5:
-				v18 = (signed __int64)((double)(signed __int64)pParty->uTimePlayed * 0.234375) / 60 / 60 % 24;
+				v18 = pParty->GetPlayingTime().GetHoursOfDay();
 				pText = localization->GetString(397);// "evening"
 				if (SHIDWORD(v18) <= 0 && SHIDWORD(v18) >= 0 && (unsigned int)v18 >= 5 && SHIDWORD(v18) <= 0)
 				{
@@ -3387,7 +3393,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
                     result += a4;
 					break;
 				}
-				init_summoned_item(&v56, *a6);
+                v56.Initialize(*a6);
                 result += localization->FormatString(378, localization->GetMonthName(v56.field_14_exprie_month), v56.field_C_expire_day + 1, v56.field_18_expire_year);
 				break;
 			case 31:
@@ -3410,7 +3416,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 					break;
 				}
 
-				init_summoned_item(&v56, pParty->PartyTimes._s_times[v17 - 51]);
+				v56.Initialize(pParty->PartyTimes._s_times[v17 - 51]);
                 result += localization->FormatString(378, localization->GetMonthName(v56.field_14_exprie_month), v56.field_C_expire_day + 1, v56.field_18_expire_year);
 				break;
 			}

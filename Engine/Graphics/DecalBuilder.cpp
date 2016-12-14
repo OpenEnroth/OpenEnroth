@@ -3,15 +3,17 @@
 #include <crtdbg.h>
 
 #define _CRT_SECURE_NO_WARNINGS
+
 #include "Engine/Engine.h"
-#include "DecalBuilder.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
+#include "Engine/OurMath.h"
 #include "Engine/stru314.h"
+
+#include "DecalBuilder.h"
 #include "Outdoor.h"
 
 #include "stru9.h"
 
-#include "Engine/OurMath.h"
 
 
 struct DecalBuilder *pDecalBuilder = new DecalBuilder;

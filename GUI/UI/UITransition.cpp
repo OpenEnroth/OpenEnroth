@@ -8,12 +8,13 @@
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Engine/Graphics/Outdoor.h"
 #include "Engine/LOD.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
 #include "Engine/stru159.h"
 #include "Engine/Events2D.h"
 #include "Engine/MapInfo.h"
+
+#include "Engine/Graphics/Outdoor.h"
 
 #include "GUI/UI/UITransition.h"
 #include "GUI/GUIFont.h"

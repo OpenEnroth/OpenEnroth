@@ -7,23 +7,25 @@
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Time.h"
+#include "Engine/MapInfo.h"
+#include "Engine/Party.h"
+#include "Engine/LOD.h"
+#include "Engine/Awards.h"
+
+#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/Viewport.h"
+
+#include "Engine/Spells/CastSpellInfo.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIFont.h"
+#include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UICharacter.h"
 
-#include "..\../Engine/MapInfo.h"
-#include "..\../GUI/GUIWindow.h"
-#include "..\../GUI/GUIFont.h"
-#include "..\../GUI/GUIProgressBar.h"
-#include "..\../Engine/Party.h"
-#include "..\../Media/Audio/AudioPlayer.h"
-#include "..\../Engine/Graphics/Render.h"
-#include "..\../Engine/LOD.h"
-#include "..\../Engine/Graphics/Viewport.h"
-#include "..\../Engine/Timer.h"
-#include "..\../Engine/Awards.h"
-#include "..\../Engine/Spells/CastSpellInfo.h"
-#include "..\../IO/Mouse.h"
+#include "Media/Audio/AudioPlayer.h"
+
+#include "IO/Mouse.h"
 
 
 void CharacterUI_LoadPaperdollTextures();
@@ -204,7 +206,7 @@ Image *papredoll_dlaus[5];
 Image *papredoll_dlads[4];
 Image *papredoll_flying_feet[22]; // 005115E0
 Image *paperdoll_boots_texture[4][6];//511638
-Image *paperdoll_cloak_collar_texture[4][10]; // weak
+Image *paperdoll_cloak_collar_texture[4][10];
 Image *paperdoll_cloak_texture[4][10];
 Image *paperdoll_helm_texture[2][16]; //511698
 Image *paperdoll_belt_texture[4][7];  //511718
@@ -237,7 +239,7 @@ const int paperdoll_CloakCollar[4][10][2] = //4E56B0
     0, 0,        0x30, 0x87,  0x1E, 0x86,  0x1B, 0x86,  0x1C, 0x8A,  0x21, 0x87,  0x30, 0x87,  0x1E, 0x86,  0x1B, 0x86,  0x1C, 0x8A,
     0, 0,        0x38, 0x8A,  0x24, 0x8B,  0x1D, 0x8B,  0x21, 0x8C,  0x27, 0x8A,  0x34, 0x8A,  0x24, 0x8B,  0x25, 0x8B,  0x21, 0x8C,
     };
-//int dword_4E56B4; // weak
+//int dword_4E56B4;
 const int paperdoll_Belt[4][7][2] = //4E57F0
     {
     0x3A, 0xB6,  0x37, 0xB2,  0x34, 0xB9,  0x3A, 0xB9,  0x37, 0xB7,  0x38, 0xAC,  0x37, 0xB7,

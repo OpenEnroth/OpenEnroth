@@ -5,6 +5,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
+#include "Engine/Time.h"
 
 #include "../ZlibWrapper.h"
 
@@ -18,7 +19,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Events.h"
 #include "Viewport.h"
-#include "../Timer.h"
 #include "../Party.h"
 #include "../OurMath.h"
 #include "../LOD.h"
@@ -780,1311 +780,569 @@ void IndoorLocation::ToggleLight(signed int sLightID, unsigned int bToggle)
 }
 
 //----- (00498E0A) --------------------------------------------------------
-bool IndoorLocation::Load(char *pFilename, int a3, size_t _i, char *pDest)
+bool IndoorLocation::Load(const String &filename, int num_days_played, int respawn_interval_days, char *pDest)
 {
-  /*unsigned int v5; // ebx@1
-  //IndoorLocation *v6; // esi@1
-  FILE *v7; // edi@3
-  bool result; // eax@3
-  char *v9; // ecx@4
-  void *v10; // eax@4
-  //unsigned __int8 v11; // zf@4
-  //unsigned __int8 v12; // sf@4
-  int v13; // eax@5
-  size_t v14; // ecx@6
-  char *v15; // ecx@6
-  int v16; // edx@6
-  size_t v17; // ecx@6
-  char *v18; // ecx@6
-  int v19; // edx@6
-  unsigned __int16 *v20; // edx@6
-  unsigned __int16 *v21; // edx@6
-  unsigned __int16 *v22; // edx@6
-  __int16 v23; // ax@10
-  char *v24; // ecx@10
-  __int16 v25; // cx@10
-  __int16 v26; // ax@11
-  char *v27; // ecx@11
-  unsigned __int16 v28; // ax@17
-  BLVFaceExtra *v29; // ecx@17
-  char *v30; // edx@17
-  int v31; // ecx@20
-  void *v32; // eax@25
-  int v33; // eax@26
-  unsigned __int16 *v34; // edx@27
-  size_t v35; // ecx@27
-  char *v36; // ecx@27
-  int v37; // edx@27
-  size_t v38; // ecx@27
-  char *v39; // ecx@27
-  int v40; // edx@27
-  unsigned __int16 *v41; // edx@27
-  unsigned __int16 *v42; // edx@27
-  unsigned __int16 *v43; // edx@27
-  unsigned __int16 *v44; // edx@27
-  size_t v45; // ecx@27
-  unsigned __int16 *v46; // edx@27
-  void *v47; // eax@28
-  BLVSector *v48; // eax@29
-  size_t v49; // ecx@29
-  unsigned __int16 *v50; // edx@31
-  void *v51; // eax@32
-  int v52; // eax@33
-  unsigned __int16 *v53; // edx@34
-  size_t v54; // ecx@34
-  char *v55; // ecx@34
-  int v56; // edx@34
-  size_t v57; // ecx@34
-  char *v58; // ecx@34
-  int v59; // edx@34
-  unsigned __int16 *v60; // edx@34
-  unsigned __int16 *v61; // edx@34
-  unsigned __int16 *v62; // edx@34
-  unsigned __int16 *v63; // edx@34
-  int v64; // ecx@34
-  BLVDoor *v65; // ecx@36
-  char *v66; // eax@37
-  int v67; // edx@38
-  int v68; // ecx@38
-  BLVFace *v69; // edx@38
-  int v70; // ecx@38
-  int v71; // edx@38
-  int v72; // eax@38
-  unsigned __int16 v73; // ax@42
-  char *v74; // ecx@42
-  SpriteObject *v75; // ecx@44
-  size_t v76; // eax@45
-  int j; // edx@46
-  unsigned __int16 v78; // ax@50
-  void *v79; // eax@52
-  void **v80; // esi@52
-  unsigned int v145; // eax@103
-  void *v146; // eax@103
-  unsigned int v147; // ecx@103
-  int v148; // ebx@103
-  unsigned int *v149; // ecx@103*/
-  //size_t v150; // eax@103
-  //unsigned int v151; // ebx@109
-  //unsigned int v152; // ecx@116
-  //unsigned int v153; // eax@117
-  //size_t v154; // ebx@126
-  //unsigned int v155; // ebx@134
-  //size_t v156; // eax@140
-  //signed int v157; // ebx@142
-  //int v158; // ebx@148
-  //BLVFace *v159; // eax@149
-//  BLVFaceExtra *v160; // ecx@149
-  //BLVFaceExtra *v161; // ecx@149
-  //signed int v162; // ebx@154
-  //unsigned int outz; // ebx@157
-  //unsigned int v164; // ebx@157
-  //unsigned int v165; // edx@158
-  //char *v166; // ecx@158
-  //unsigned __int16 v167; // ax@161
-  //__int16 v168; // ax@165
-  //unsigned int v169; // ebx@168
-  //void *v170; // eax@168
-  //size_t v171; // ebx@168
-  //int v172; // edx@168
-  //BLVDoor *v173; // ecx@169
-  //int k; // eax@169
-  //BLVDoor *v175; // ecx@172
-  //int v176; // edx@172
-  //BLVDoor *v177; // ecx@172
-  //int v178; // edx@172
-  //BLVDoor *v179; // ecx@172
-  //int v180; // edx@172
-  //BLVDoor *v181; // ecx@172
-  //int v182; // edx@172
-  //BLVDoor *v183; // ecx@172
-  //int v184; // edx@172
-  //BLVDoor *v185; // ecx@172
-  //int v186; // edx@172
-  //BLVDoor *v187; // ecx@172
-  //int v188; // edx@172
-  //unsigned __int16 *v189; // ebx@172
-  //char *v190; // edx@173
-  //BLVDoor *v191; // ecx@174
-  //BLVDoor *l; // eax@175
-  //signed int v193; // ebx@176
-  //int v194; // ecx@176
-  //BLVFaceExtra *v195; // ecx@176
-  //BLVFace *v196; // ebx@178
-  //std::string v197; // [sp-18h] [bp-680h]@66
-  //void *v198; // [sp-14h] [bp-67Ch]@72
-  //size_t v199; // [sp-10h] [bp-678h]@72
-  //size_t v200; // [sp-Ch] [bp-674h]@72
-  //const char *v201; // [sp-8h] [bp-670h]@4
-  //int v202; // [sp-4h] [bp-66Ch]@4
-  char v203[875]; // [sp+Ch] [bp-65Ch]@130
-//  char FileName[260]; // [sp+378h] [bp-2F0h]@1
-  //char DstBuf; // [sp+47Ch] [bp-1ECh]@4
-//  __int32 Offset; // [sp+480h] [bp-1E8h]@4
-//  __int32 v207; // [sp+48Ch] [bp-1DCh]@4
-//  __int32 v208; // [sp+498h] [bp-1D0h]@4
-//  __int32 v209; // [sp+4A4h] [bp-1C4h]@4
-//  __int32 v210; // [sp+4B0h] [bp-1B8h]@4
-//  __int32 v211; // [sp+4BCh] [bp-1ACh]@15
-//  __int32 v212; // [sp+4C8h] [bp-1A0h]@15
-//  __int32 v213; // [sp+4D4h] [bp-194h]@25
-//  __int32 v214; // [sp+4E0h] [bp-188h]@25
-//  __int32 v215; // [sp+4ECh] [bp-17Ch]@32
-//  __int32 v216; // [sp+4F8h] [bp-170h]@32
-//  __int32 v217; // [sp+504h] [bp-164h]@40
-//  __int32 v218; // [sp+510h] [bp-158h]@40
-//  __int32 v219; // [sp+51Ch] [bp-14Ch]@43
-//  __int32 v220; // [sp+528h] [bp-140h]@43
-//  __int32 v221; // [sp+534h] [bp-134h]@52
-//  __int32 v222; // [sp+540h] [bp-128h]@52
-//  __int32 v223; // [sp+54Ch] [bp-11Ch]@52
-//  __int32 v224; // [sp+558h] [bp-110h]@52
-//  __int32 v225; // [sp+564h] [bp-104h]@52
-//  __int32 v226; // [sp+570h] [bp-F8h]@52
-//  __int32 v227; // [sp+57Ch] [bp-ECh]@52
-//  __int32 v228; // [sp+588h] [bp-E0h]@52
-//  __int32 v229; // [sp+594h] [bp-D4h]@52
-//  __int32 v230; // [sp+5A0h] [bp-C8h]@52
-//  __int32 v231; // [sp+5ACh] [bp-BCh]@52
-//  __int32 v232; // [sp+5B8h] [bp-B0h]@52
-//  __int32 v233; // [sp+5C4h] [bp-A4h]@52
-//  __int32 v234; // [sp+5D0h] [bp-98h]@52
-  //char pName[40]; // [sp+5FCh] [bp-6Ch]@42
-  //size_t pSource; // [sp+624h] [bp-44h]@67
-  //char Dst[12]; // [sp+628h] [bp-40h]@9
-  //char *v238; // [sp+634h] [bp-34h]@38
-  ODMHeader header; // [sp+638h] [bp-30h]@61
-  //void *ptr; // [sp+648h] [bp-20h]@66
-  //size_t Count; // [sp+64Ch] [bp-1Ch]@109
-  //int uSourceLen; // [sp+653h] [bp-15h]@66
-  FILE *File; // [sp+658h] [bp-10h]@56
-  //BLVSector *v244; // [sp+65Ch] [bp-Ch]@72
-  //int v245; // [sp+660h] [bp-8h]@72
-  //BLVFace *Src; // [sp+664h] [bp-4h]@73
-//  signed int Argsa; // [sp+670h] [bp+8h]@4
-//  signed int Argsb; // [sp+670h] [bp+8h]@7
-//  signed int Argsc; // [sp+670h] [bp+8h]@15
-//  signed int Argsd; // [sp+670h] [bp+8h]@18
-//  int Argse; // [sp+670h] [bp+8h]@25
-//  int Argsf; // [sp+670h] [bp+8h]@28
-//  int Argsg; // [sp+670h] [bp+8h]@32
-//  int Argsh; // [sp+670h] [bp+8h]@35
-//  signed int Argsi; // [sp+670h] [bp+8h]@40
-//  signed int Argsj; // [sp+670h] [bp+8h]@45
-  //int Argsk; // [sp+670h] [bp+8h]@143
-  //void *Argsl; // [sp+670h] [bp+8h]@155
-  //signed int Argsm; // [sp+670h] [bp+8h]@161
-  //signed int Argsn; // [sp+670h] [bp+8h]@175
+    char v203[875]; // [sp+Ch] [bp-65Ch]@130
+    ODMHeader header; // [sp+638h] [bp-30h]@61
+    FILE *File; // [sp+658h] [bp-10h]@56
 
-  //v5 = 0;
-  //v6 = this;
-  _6807E0_num_decorations_with_sounds_6807B8 = 0;
+    _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
-  #pragma region "loading from txt"
-  /*sprintf(FileName, "levels\\%s", pFilename);
-  if ( GetFileAttributesA(FileName) != -1 )
-  {
+    if (bLoaded)
+    {
+        Log::Warning(L"BLV is already loaded");
+        return true;
+    }
+
+    auto blv_filename = filename;
+    blv_filename.replace(blv_filename.length() - 4, 4, ".blv");
+
+    this->filename = filename;
+    if (!pGames_LOD->DoesContainerExist(blv_filename))
+        Error("Unable to find %s in Games.LOD", blv_filename.c_str());
+
+    File = pGames_LOD->FindContainer(blv_filename, 1);
+    //File = v82;
+
     Release();
-    if ( Alloc() )
+    if (!Alloc())
+        return false;
+
+    header.uVersion = 91969;
+    header.pMagic[0] = 'm';
+    header.pMagic[1] = 'v';
+    header.pMagic[2] = 'i';
+    header.pMagic[3] = 'i';
+    header.uCompressedSize = 0;
+    header.uDecompressedSize = 0;
+    fread(&header, sizeof(ODMHeader), 1, File);
+    if (header.uVersion != 91969 ||
+        header.pMagic[0] != 'm' ||
+        header.pMagic[1] != 'v' ||
+        header.pMagic[2] != 'i' ||
+        header.pMagic[3] != 'i')
     {
-      v7 = fopen(FileName, "rb");
-      result = 1;
-      if ( !v7 )
-        return result;
-      v9 = pDest;
-      bLoaded = 1;
-      v202 = (int)v7;
-      v201 = (const char *)1;
-      *(int *)v9 = 1;
-      fread(&DstBuf, 0x180u, (size_t)v201, (FILE *)v202);
-      fseek(v7, Offset, 0);
-      fread(&blv, 0x88u, 1u, v7);
-      fseek(v7, v207, 0);
-      fread(&uNumVertices, 1u, 4u, v7);
-      fseek(v7, v208, 0);
-      fread(pVertices, 6u, uNumVertices, v7);
-      fseek(v7, v209, 0);
-      fread(&uNumFaces, 4u, 1u, v7);
-      fseek(v7, v210, 0);
-      fread(pFaces, 0x60u, uNumFaces, v7);
-      v10 = malloc(ptr_2AC, blv.uFaces_fdata_Size, "L.FData");
-      v202 = (int)v7;
-      ptr_2AC = (unsigned __int16 *)v10;
-      fread(v10, 1u, blv.uFaces_fdata_Size, (FILE *)v202);
-      v11 = uNumFaces == 0;
-      v12 = (uNumFaces & 0x80000000u) != 0;
-      pDest = 0;
-      Argsa = 0;
-      if ( !(v12 | v11) )
-      {
-        v13 = 0;
-        do
-        {
-          pFaces[v13].pVertexIDs = (unsigned __int16 *)&pDest[(unsigned int)ptr_2AC];
-          v14 = (size_t)&pFaces[v13];
-          i = v14;
-          v15 = &pDest[2 * *(char *)(v14 + 93) + 2];
-          v16 = (int)&v15[(unsigned int)ptr_2AC];
-          pDest = v15;
-          *(int *)(i + 52) = v16;
-          v17 = (size_t)&pFaces[v13];
-          i = v17;
-          v18 = &pDest[2 * *(char *)(v17 + 93) + 2];
-          v19 = (int)&v18[(unsigned int)ptr_2AC];
-          pDest = v18;
-          *(int *)(i + 56) = v19;
-          i = (size_t)&pFaces[v13];
-          v20 = ptr_2AC;
-          pDest += 2 * *(char *)(i + 93) + 2;
-          *(int *)(i + 60) = (int)(char *)v20 + (int)pDest;
-          i = (size_t)&pFaces[v13];
-          v21 = ptr_2AC;
-          pDest += 2 * *(char *)(i + 93) + 2;
-          *(int *)(i + 64) = (int)(char *)v21 + (int)pDest;
-          i = (size_t)&pFaces[v13];
-          ++v13;
-          v22 = ptr_2AC;
-          pDest += 2 * *(char *)(i + 93) + 2;
-          ++Argsa;
-          *(int *)(i + 68) = (int)(char *)v22 + (int)pDest;
-          pDest += 2 * *((char *)&pFaces[v13] - 3) + 2;
-        }
-        while ( Argsa < (signed int)uNumFaces );
-      }
-      Argsb = 0;
-      if ( (signed int)uNumFaces > 0 )
-      {
-        pDest = 0;
-        do
-        {
-          fread(Dst, 1u, 0xAu, v7);
-          if ( pDest[(unsigned int)pFaces + 45] & 0x40 )
-          {
-            v23 = pTextureFrameTable->FindTextureByName(Dst);
-            v24 = pDest;
-            *(short *)&pDest[(unsigned int)pFaces + 74] = v23;
-            v25 = *(short *)&v24[(unsigned int)pFaces + 74];
-            if ( v25 )
-            {
-              pTextureFrameTable->LoadAnimationSequenceAndPalettes(v25);
-            }
-            else
-            {
-              v26 = pBitmaps_LOD->LoadTexture(Dst);
-              v27 = pDest;
-              *(short *)&pDest[(unsigned int)pFaces + 74] = v26;
-              v27[(unsigned int)pFaces + 45] &= 0xBFu;
-            }
-          }
-          else
-          {
-            *(short *)&pDest[(unsigned int)pFaces + 74] = pBitmaps_LOD->LoadTexture(Dst);
-          }
-          ++Argsb;
-          pDest += 96;
-        }
-        while ( Argsb < (signed int)uNumFaces );
-      }
-      fseek(v7, v211, 0);
-      fread(&uNumFaceExtras, 4u, 1u, v7);
-      fseek(v7, v212, 0);
-      fread(pFaceExtras, 0x24u, uNumFaceExtras, v7);
-      Argsc = 0;
-      if ( (signed int)uNumFaceExtras > 0 )
-      {
-        pDest = 0;
-        do
-        {
-          fread(Dst, 1u, 0xAu, v7);
-          v28 = pBitmaps_LOD->LoadTexture(Dst);
-          v29 = pFaceExtras;
-          v30 = pDest;
-          ++Argsc;
-          pDest += 36;
-          *(unsigned __int16 *)((char *)&v29->uAdditionalBitmapID + (int)v30) = v28;
-        }
-        while ( Argsc < (signed int)uNumFaceExtras );
-      }
-      Argsd = 0;
-      if ( (signed int)uNumFaces > 0 )
-      {
-        pDest = 0;
-        do
-        {
-          v31 = (int)&pFaceExtras[*(short *)&pDest[(unsigned int)pFaces + 72]];
-          if ( *(short *)(v31 + 26) )
-          {
-            if ( ((BLVFaceExtra *)v31)->HasEventint() )
-              pDest[(unsigned int)pFaces + 46] |= 0x10u;
-            else
-              pDest[(unsigned int)pFaces + 46] &= 0xEFu;
-          }
-          ++Argsd;
-          pDest += 96;
-        }
-        while ( Argsd < (signed int)uNumFaces );
-      }
-      fseek(v7, v213, 0);
-      fread(&uNumSectors, 4u, 1u, v7);
-      fseek(v7, v214, 0);
-      fread(pSectors, 0x74u, uNumSectors, v7);
-      v32 = malloc(ptr_0002B0_sector_rdata, blv.uSector_rdata_Size, "L.RData");
-      v202 = (int)v7;
-      ptr_0002B0_sector_rdata = (unsigned __int16 *)v32;
-      fread(v32, 1u, blv.uSector_rdata_Size, (FILE *)v202);
-      v11 = uNumSectors == 0;
-      v12 = uNumSectors < 0;
-      pDest = 0;
-      Argse = 0;
-      if ( !(v12 | v11) )
-      {
-        v33 = 0;
-        do
-        {
-          pSectors[v33].pFloors = (unsigned __int16 *)&pDest[(unsigned int)ptr_0002B0_sector_rdata];
-          i = (size_t)&pSectors[v33];
-          v34 = ptr_0002B0_sector_rdata;
-          pDest += 2 * *(short *)(i + 4);
-          *(int *)(i + 16) = (int)(char *)v34 + (int)pDest;
-          v35 = (size_t)&pSectors[v33];
-          i = v35;
-          v36 = &pDest[2 * *(short *)(v35 + 12)];
-          v37 = (int)&v36[(unsigned int)ptr_0002B0_sector_rdata];
-          pDest = v36;
-          *(int *)(i + 24) = v37;
-          v38 = (size_t)&pSectors[v33];
-          i = v38;
-          v39 = &pDest[2 * *(short *)(v38 + 20)];
-          v40 = (int)&v39[(unsigned int)ptr_0002B0_sector_rdata];
-          pDest = v39;
-          *(int *)(i + 32) = v40;
-          i = (size_t)&pSectors[v33];
-          v41 = ptr_0002B0_sector_rdata;
-          pDest += 2 * *(short *)(i + 28);
-          *(int *)(i + 40) = (int)(char *)v41 + (int)pDest;
-          i = (size_t)&pSectors[v33];
-          v42 = ptr_0002B0_sector_rdata;
-          pDest += 2 * *(short *)(i + 36);
-          *(int *)(i + 48) = (int)(char *)v42 + (int)pDest;
-          i = (size_t)&pSectors[v33];
-          v43 = ptr_0002B0_sector_rdata;
-          pDest += 2 * *(short *)(i + 44);
-          *(int *)(i + 64) = (int)(char *)v43 + (int)pDest;
-          i = (size_t)&pSectors[v33];
-          v44 = ptr_0002B0_sector_rdata;
-          pDest += 2 * *(short *)(i + 60);
-          *(int *)(i + 72) = (int)(char *)v44 + (int)pDest;
-          v45 = (size_t)&pSectors[v33];
-          ++v33;
-          i = v45;
-          v46 = ptr_0002B0_sector_rdata;
-          pDest += 2 * *(short *)(v45 + 68);
-          ++Argse;
-          *(int *)(v45 + 80) = (int)(char *)v46 + (int)pDest;
-          pDest += 2 * *((short *)&pSectors[v33] - 20);
-        }
-        while ( Argse < uNumSectors );
-      }
-      v47 = malloc(
-              ptr_0002B8_sector_lrdata,
-              blv.uSector_lrdata_Size,
-              "L.RLData");
-      v202 = (int)v7;
-      ptr_0002B8_sector_lrdata = (unsigned __int16 *)v47;
-      fread(v47, 1u, blv.uSector_lrdata_Size, (FILE *)v202);
-      v11 = uNumSectors == 0;
-      v12 = uNumSectors < 0;
-      pDest = 0;
-      Argsf = 0;
-      if ( !(v12 | v11) )
-      {
-        v48 = pSectors;
-        v49 = 0;
-        for ( i = 0; ; v49 = i )
-        {
-          v50 = ptr_0002B8_sector_lrdata;
-          i += 116;
-          ++Argsf;
-          *(BLVLightMM7 **)((char *)&v48->pLights + v49) = (BLVLightMM7 *)((char *)v50 + (int)pDest);
-          v48 = pSectors;
-          pDest += 2 * *(__int16 *)((char *)&v48->uNumLights + v49);
-          if ( Argsf >= uNumSectors )
-            break;
-        }
-      }
-      fseek(v7, v215, 0);
-      fread(&uNumDoors, 4u, 1u, v7);
-      fseek(v7, v216, 0);
-      fread(pDoors, 0x50u, 0xC8u, v7);
-      v51 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
-      v202 = (int)v7;
-      ptr_0002B4_doors_ddata = (unsigned __int16 *)v51;
-      fread(v51, 1u, blv.uDoors_ddata_Size, (FILE *)v202);
-      v11 = uNumDoors == 0;
-      v12 = uNumDoors < 0;
-      pDest = 0;
-      Argsg = 0;
-      if ( !(v12 | v11) )
-      {
-        v52 = 0;
-        do
-        {
-          pDoors[v52].pVertexIDs = (unsigned __int16 *)&pDest[(unsigned int)ptr_0002B4_doors_ddata];
-          i = (size_t)&pDoors[v52];
-          v53 = ptr_0002B4_doors_ddata;
-          pDest += 2 * *(short *)(i + 68);
-          *(int *)(i + 40) = (int)(char *)v53 + (int)pDest;
-          v54 = (size_t)&pDoors[v52];
-          i = v54;
-          v55 = &pDest[2 * *(short *)(v54 + 70)];
-          v56 = (int)&v55[(unsigned int)ptr_0002B4_doors_ddata];
-          pDest = v55;
-          *(int *)(i + 44) = v56;
-          v57 = (size_t)&pDoors[v52];
-          i = v57;
-          v58 = &pDest[2 * *(short *)(v57 + 72)];
-          v59 = (int)&v58[(unsigned int)ptr_0002B4_doors_ddata];
-          pDest = v58;
-          *(int *)(i + 48) = v59;
-          i = (size_t)&pDoors[v52];
-          v60 = ptr_0002B4_doors_ddata;
-          pDest += 2 * *(short *)(i + 70);
-          *(int *)(i + 52) = (int)(char *)v60 + (int)pDest;
-          i = (size_t)&pDoors[v52];
-          v61 = ptr_0002B4_doors_ddata;
-          pDest += 2 * *(short *)(i + 70);
-          *(int *)(i + 56) = (int)(char *)v61 + (int)pDest;
-          i = (size_t)&pDoors[v52];
-          v62 = ptr_0002B4_doors_ddata;
-          pDest += 2 * *(short *)(i + 74);
-          *(int *)(i + 60) = (int)(char *)v62 + (int)pDest;
-          i = (size_t)&pDoors[v52];
-          v63 = ptr_0002B4_doors_ddata;
-          pDest += 2 * *(short *)(i + 74);
-          *(int *)(i + 64) = (int)(char *)v63 + (int)pDest;
-          ++Argsg;
-          v64 = pDoors[v52].uNumOffsets;
-          ++v52;
-          pDest += 2 * v64;
-        }
-        while ( Argsg < uNumDoors );
-      }
-      Argsh = 0;
-      if ( uNumDoors > 0 )
-      {
-        v65 = pDoors;
-        pDest = 0;
-        do
-        {
-          i = 0;
-          v66 = &pDest[(int)v65];
-          if ( *(short *)&pDest[(int)v65 + 70] > 0 )
-          {
-            do
-            {
-              v67 = *((int *)v66 + 10);
-              a3 = 2 * i;
-              v68 = *(short *)(v67 + 2 * i);
-              v69 = pFaces;
-              ++i;
-              v70 = (int)&pFaceExtras[v69[v68].uFaceExtraID];
-              v71 = *((int *)v66 + 12);
-              v72 = a3;
-              v238 = (char *)v70;
-              *(short *)(a3 + v71) = *(short *)(v70 + 20);
-              *(__int16 *)(*(char **)((char *)&pDoors->pDeltaVs + (unsigned int)pDest) + v72) = *((short *)v238 + 11);
-              v65 = pDoors;
-              v66 = &pDest[(int)v65];
-            }
-            while ( (signed int)i < *(short *)&pDest[(int)v65 + 70] );
-          }
-          ++Argsh;
-          pDest += 80;
-        }
-        while ( Argsh < uNumDoors );
-      }
-      fseek(v7, v217, 0);
-      fread(&uNumLevelDecorations, 4u, 1u, v7);
-      fseek(v7, v218, 0);
-      fread(pLevelDecorations, 0x20u, uNumLevelDecorations, v7);
-      Argsi = 0;
-      if ( (signed int)uNumLevelDecorations > 0 )
-      {
-        pDest = (char *)pLevelDecorations;
-        do
-        {
-          fread(pName, 1u, 0x20u, v7);
-          v73 = pDecorationList->GetDecorIdByName(pName);
-          v74 = pDest;
-          ++Argsi;
-          pDest += 32;
-          *(short *)v74 = v73;
-        }
-        while ( Argsi < (signed int)uNumLevelDecorations );
-      }
-      fseek(v7, v219, 0);
-      fread(&uNumSpriteObjects, 4u, 1u, v7);
-      fseek(v7, v220, 0);
-      fread(pSpriteObjects, 0x70u, uNumSpriteObjects, v7);
-      if ( (signed int)uNumSpriteObjects > 0 )
-      {
-        v75 = pSpriteObjects;
-        pDest = (char *)uNumSpriteObjects;
-        do
-        {
-          Argsj = 0;
-          v76 = 48 * v75->stru_24.uItemID;
-          v11 = pObjectList->uNumObjects == 0;
-          v12 = (pObjectList->uNumObjects & 0x80000000u) != 0;
-          LOWORD(v76) = *(unsigned __int16 *)((char *)&pItemsTable->pItems[0].uSpriteID + v76);
-          i = v76;
-          v75->uItemType = v76;
-          if ( v12 | v11 )
-          {
-LABEL_50:
-            v78 = 0;
-          }
-          else
-          {
-            for ( j = (int)&pObjectList->pObjects->uObjectID; (short)v76 != *(short *)j; j = a3 )
-            {
-              ++Argsj;
-              a3 = j + 56;
-              if ( Argsj >= (signed int)pObjectList->uNumObjects )
-                goto LABEL_50;
-              LOWORD(v76) = i;
-            }
-            v78 = Argsj;
-          }
-          v75->uObjectDescID = v78;
-          ++v75;
-          --pDest;
-        }
-        while ( pDest );
-      }
-      fseek(v7, v221, 0);
-      fread(&uNumActors, 4u, 1u, v7);
-      fseek(v7, v222, 0);
-      fread(pActors, 0x344u, uNumActors, v7);
-      fseek(v7, v228, 0);
-      fread(&uNumChests, 4u, 1u, v7);
-      fseek(v7, v229, 0);
-      fread(pChests, 0x14CCu, uNumChests, v7);
-      fseek(v7, v224, 0);
-      fread(&uNumLights, 4u, 1u, v7);
-      fseek(v7, v225, 0);
-      fread(pLights, 0x10u, uNumLights, v7);
-      fseek(v7, v226, 0);
-      fread(&uNumNodes, 4u, 1u, v7);
-      fseek(v7, v227, 0);
-      fread(pNodes, 8u, uNumNodes, v7);
-      fseek(v7, v230, 0);
-      fread(&uNumSpawnPoints, 4u, 1u, v7);
-      v79 = malloc(pSpawnPoints, 24 * uNumSpawnPoints, "Spawn");
-      v202 = 0;
-      pSpawnPoints = (SpawnPointMM7 *)v79;
-      fseek(v7, v231, v202);
-      fread(pSpawnPoints, 0x18u, uNumSpawnPoints, v7);
-      fseek(v7, v232, 0);
-      fread(&dlv, 0x28u, 1u, v7);
-      fseek(v7, v233, 0);
-      fread(&stru_5E4C90, 1u, 0xC8u, v7);
-      fseek(v7, v234, 0);
-      fread(&uLastVisitDay, 1u, 0x38u, v7);
-      fseek(v7, v223, 0);
-      v80 = (void **)&pMapOutlines;
-      fread(*v80, 4u, 1u, v7);
-      fread((char *)*v80 + 4, 0xCu, *(int *)*v80, v7);
-      fclose(v7);
-      goto LABEL_179;
+        MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:792", 0);
     }
-    return 4;
-  }*/
-  #pragma endregion
+    //v83 = header.uCompressedSize;
+    //pSource = header.uDecompressedSize;
+    //v84 = malloc(header.uDecompressedSize);
+    //v85 = v84;
+    //ptr = v84;
+    void* pRawBLV = malloc(header.uDecompressedSize);
+    memset(pRawBLV, 0, header.uDecompressedSize);
 
-  if (bLoaded)
-  {
-    Log::Warning(L"BLV is already loaded");
-    return 3;
-  }
-
-  if ( !pGames_LOD->DoesContainerExist(pFilename) )
-    Error("Unable to find %s in Games.LOD", pFilename);
-
-  //v238 = pFilename - 4;
-  //v81 = strlen(pFilename);
-  strcpy(this->pFilename, pFilename);
-  strcpy(&pFilename[strlen(pFilename) - 4], ".blv");
-  File = pGames_LOD->FindContainer(pFilename, 1);
-  //File = v82;
-
-  Release();
-  if ( !Alloc() )
-    return 4;
-  
-  header.uVersion = 91969;
-  header.pMagic[0] = 'm';
-  header.pMagic[1] = 'v';
-  header.pMagic[2] = 'i';
-  header.pMagic[3] = 'i';
-  header.uCompressedSize = 0;
-  header.uDecompressedSize = 0;
-  fread(&header, sizeof(ODMHeader), 1, File);
-  if (header.uVersion != 91969 ||
-      header.pMagic[0] != 'm'  ||
-      header.pMagic[1] != 'v'  ||
-      header.pMagic[2] != 'i'  ||
-      header.pMagic[3] != 'i' )
-  {
-    MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:792", 0);
-  }
-  //v83 = header.uCompressedSize;
-  //pSource = header.uDecompressedSize;
-  //v84 = malloc(header.uDecompressedSize);
-  //v85 = v84;
-  //ptr = v84;
-  void* pRawBLV = malloc(header.uDecompressedSize);
-  memset(pRawBLV, 0, header.uDecompressedSize);
-
-  if (header.uCompressedSize == header.uDecompressedSize)
-    fread(pRawBLV, header.uDecompressedSize, 1, File);
-  else if (header.uCompressedSize < header.uDecompressedSize)
-  {
-    void* pTmpMem = malloc(header.uCompressedSize);
-    {
-      fread(pTmpMem, header.uCompressedSize, 1, File);
-
-      uint uDecompressedSize = header.uDecompressedSize;
-      zlib::MemUnzip(pRawBLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
-
-      if (uDecompressedSize != header.uDecompressedSize)
-        Log::Warning(L"uDecompressedSize != header.uDecompressedSize in BLV");
-    }
-    free(pTmpMem);
-  }
-  else
-  {
-    MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:803", 0);
-    return 0;
-  }
-  
-  bLoaded = true;
-
-  char* pData = (char *)pRawBLV;
-  
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&blv, pData, 136);
-  memcpy(&uNumVertices, pData += 136, 4);
-  memcpy(pVertices, pData += 4, uNumVertices * sizeof(Vec3_short_));
-  
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&uNumFaces, pData += uNumVertices * sizeof(Vec3_short_), 4);
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(pFaces, pData += 4, uNumFaces * sizeof (BLVFace));
-  pLFaces = (unsigned __int16 *)malloc(blv.uFaces_fdata_Size);
-
-  memcpy(pLFaces, pData += uNumFaces * sizeof (BLVFace), blv.uFaces_fdata_Size);
-
-  for (uint i = 0, j = 0; i < uNumFaces; ++i)
-  {
-    BLVFace* pFace = &pFaces[i];
-
-    pFace->pVertexIDs = &pLFaces[j];
-    
-    j += pFace->uNumVertices + 1;
-    pFace->pXInterceptDisplacements = (short *)(&pLFaces[j]);
-
-    j += pFace->uNumVertices + 1;
-    pFace->pYInterceptDisplacements = (short *)(&pLFaces[j]);
-
-    j += pFace->uNumVertices + 1;
-    pFace->pZInterceptDisplacements = (short *)(&pLFaces[j]);
-
-    j += pFace->uNumVertices + 1;
-    pFace->pVertexUIDs = (__int16 *)(&pLFaces[j]);
-
-    j += pFace->uNumVertices + 1;
-    pFace->pVertexVIDs = (__int16 *)(&pLFaces[j]);
-
-    j += pFace->uNumVertices + 1;
-      /*v93 = &pFaces[v92];
-      Src = v93;
-      v94 = (BLVSector *)((char *)v244 + 2 * v93->uNumVertices + 2);
-      v95 = (unsigned __int16 *)((char *)v94 + (unsigned int)ptr_2AC);
-      v244 = v94;
-      Src->pXInterceptDisplacements = v95;
-      v96 = (int)&pFaces[v92];
-      Src = (BLVFace *)v96;
-      v97 = (BLVSector *)((char *)v244 + 2 * *(char *)(v96 + 93) + 2);
-      v98 = (unsigned __int16 *)((char *)v97 + (unsigned int)ptr_2AC);
-      v244 = v97;
-      Src->pYInterceptDisplacements = v98;
-      Src = &pFaces[v92];
-      v99 = ptr_2AC;
-      v244 = (BLVSector *)((char *)v244 + 2 * Src->uNumVertices + 2);
-      Src->pZInterceptDisplacements = (unsigned __int16 *)((char *)v99 + (int)v244);
-      Src = &pFaces[v92];
-      v100 = ptr_2AC;
-      v244 = (BLVSector *)((char *)v244 + 2 * Src->uNumVertices + 2);
-      Src->pVertexUIDs = (unsigned __int16 *)((char *)v100 + (int)v244);
-      Src = &pFaces[v92];
-      ++v92;
-      v101 = ptr_2AC;
-      v244 = (BLVSector *)((char *)v244 + 2 * Src->uNumVertices + 2);
-      ++v245;
-      Src->pVertexVIDs = (unsigned __int16 *)((char *)v101 + (int)v244);
-      v244 = (BLVSector *)((char *)v244 + 2 * *((char *)&pFaces[v92] - 3) + 2);*/
-  }
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  pData += blv.uFaces_fdata_Size;
-
-  for (uint i = 0; i < uNumFaces; ++i)
-  {
-    BLVFace* pFace = &pFaces[i];
-
-    char pTexName[16];
-    strncpy(pTexName, pData, 10);
-    pData += 10;
-
-    if (pFace->uAttributes & FACE_TEXTURE_FRAME)
-    {
-      pFace->uBitmapID = pTextureFrameTable->FindTextureByName(pTexName);
-      if (pFace->uBitmapID)
-        pTextureFrameTable->LoadAnimationSequenceAndPalettes(pFace->uBitmapID);
-      else
-      {
-        pFace->uBitmapID = pBitmaps_LOD->LoadTexture(pTexName);
-        pFace->uAttributes &= ~FACE_TEXTURE_FRAME;
-      }
-    }
-    else
-      pFace->uBitmapID = pBitmaps_LOD->LoadTexture(pTexName);
-  }
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&uNumFaceExtras, pData, 4);
-  memcpy(pFaceExtras, pData += 4, uNumFaceExtras * sizeof(BLVFaceExtra));
-  pData += uNumFaceExtras * sizeof(BLVFaceExtra);
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  //v108 = (char *)v107 + 36 * uNumFaceExtras;
-  //v245 = 0;
-  //*(int *)((char *)&uSourceLen + 1) = 0;
-  for (uint i = 0; i < uNumFaceExtras; ++i)
-  {
-    char pTexName[32];
-    strncpy(pTexName, pData, 10);
-    pData += 10;
-
-    if (!strcmp(pTexName, ""))
-      pFaceExtras[i].uAdditionalBitmapID = -1;
-    else
-      pFaceExtras[i].uAdditionalBitmapID = pBitmaps_LOD->LoadTexture(pTexName);
-  }
-
-
-  for (uint i = 0; i < uNumFaces; ++i)
-  {
-    BLVFace* pFace = &pFaces[i];
-    BLVFaceExtra* pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
-
-    if (pFaceExtra->uEventID)
-    {
-      if (pFaceExtra->HasEventint())
-        pFace->uAttributes |= FACE_HAS_EVENT;
-      else
-        pFace->uAttributes &= ~FACE_HAS_EVENT;
-    }
-  }
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&uNumSectors, pData, 4);
-  memcpy(pSectors, pData + 4, uNumSectors * sizeof(BLVSector));
-  pData += 4 + uNumSectors * sizeof(BLVSector);
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  ptr_0002B0_sector_rdata = (unsigned short *)malloc(blv.uSector_rdata_Size);//, "L.RData");
-  memcpy(ptr_0002B0_sector_rdata, pData, blv.uSector_rdata_Size);
-  pData += blv.uSector_rdata_Size;
-
-  for (uint i = 0, j = 0; i < uNumSectors; ++i)
-  {
-    BLVSector* pSector = &pSectors[i];
-
-    pSector->pFloors = &ptr_0002B0_sector_rdata[j];
-    j += pSector->uNumFloors;
-
-    pSector->pWalls = &ptr_0002B0_sector_rdata[j];
-    j += pSector->uNumWalls;
-
-    pSector->pCeilings = &ptr_0002B0_sector_rdata[j];
-    j += pSector->uNumCeilings;
-
-    pSector->pFluids = &ptr_0002B0_sector_rdata[j];
-    j += pSector->uNumFluids;
-
-    pSector->pPortals = &ptr_0002B0_sector_rdata[j];
-    j += pSector->uNumPortals;
-
-    pSector->pFaceIDs = &ptr_0002B0_sector_rdata[j];
-    j += pSector->uNumFaces;
-
-    pSector->pCogs = &ptr_0002B0_sector_rdata[j];
-    j += pSector->uNumCogs;
-
-    pSector->pDecorationIDs = &ptr_0002B0_sector_rdata[j];
-    j += pSector->uNumDecorations;
-
-    pSector->pMarkers = &ptr_0002B0_sector_rdata[j];
-    j += pSector->uNumMarkers;
-
-
-    //do
-    //{
-      /*pSectors[v118].pFloors = (unsigned __int16 *)((char *)Src + (unsigned int)ptr_0002B0_sector_rdata);
-      v244 = &pSectors[v118];
-      v119 = ptr_0002B0_sector_rdata;
-      Src = (BLVFace *)((char *)Src + 2 * v244->field_4);
-      v244->pWalls = (unsigned __int16 *)((char *)v119 + (int)Src);
-      v120 = (int)&pSectors[v118];
-      v244 = (BLVSector *)v120;
-      v121 = (BLVFace *)((char *)Src + 2 * *(short *)(v120 + 12));
-      v122 = (unsigned __int16 *)((char *)v121 + (unsigned int)ptr_0002B0_sector_rdata);
-      Src = v121;
-      v244->pCeilings = v122;
-      v123 = (int)&pSectors[v118];
-      v244 = (BLVSector *)v123;
-      v124 = (BLVFace *)((char *)Src + 2 * *(short *)(v123 + 20));
-      v125 = (unsigned __int16 *)((char *)v124 + (unsigned int)ptr_0002B0_sector_rdata);
-      Src = v124;
-      v244->pFluids = v125;
-      v244 = &pSectors[v118];
-      v126 = ptr_0002B0_sector_rdata;
-      Src = (BLVFace *)((char *)Src + 2 * v244->field_1C);
-      v244->pPortals = (unsigned __int16 *)((char *)v126 + (int)Src);
-      v244 = &pSectors[v118];
-      v127 = ptr_0002B0_sector_rdata;
-      Src = (BLVFace *)((char *)Src + 2 * v244->uNumPortals);
-      v244->pFaceIDs = (unsigned __int16 *)((char *)v127 + (int)Src);
-      v244 = &pSectors[v118];
-      v128 = ptr_0002B0_sector_rdata;
-      Src = (BLVFace *)((char *)Src + 2 * v244->field_2C);
-      v244->pCogs = (unsigned __int16 *)((char *)v128 + (int)Src);
-      v244 = &pSectors[v118];
-      v129 = ptr_0002B0_sector_rdata;
-      Src = (BLVFace *)((char *)Src + 2 * v244->field_3C);
-      v244->pDecorationIDs = (unsigned __int16 *)((char *)v129 + (int)Src);
-      v130 = (int)&pSectors[v118];
-      ++v118;
-      v244 = (BLVSector *)v130;
-      v131 = ptr_0002B0_sector_rdata;
-      Src = (BLVFace *)((char *)Src + 2 * *(short *)(v130 + 68));
-      ++v245;
-      *(int *)(v130 + 80) = (int)(char *)v131 + (int)Src;
-      Src = (BLVFace *)((char *)Src + 2 * *((short *)&pSectors[v118] - 20));*/
-    //}
-    //while ( v245 < uNumSectors );
-  }
-
-  ptr_0002B8_sector_lrdata = (unsigned __int16 *)malloc(blv.uSector_lrdata_Size);//, "L.RLData");
-  memcpy(ptr_0002B8_sector_lrdata, pData, blv.uSector_lrdata_Size);
-  pData += blv.uSector_lrdata_Size;
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  for (uint i = 0, j = 0; i < uNumSectors; ++i)
-  {
-    pSectors[i].pLights = ptr_0002B8_sector_lrdata + j;
-    j += pSectors[i].uNumLights;
-  }
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&uNumDoors, pData, 4);
-  pData += 4;
-
-  pGameLoadingUI_ProgressBar->Progress();
-  pGameLoadingUI_ProgressBar->Progress();
-  
-  memcpy(&uNumLevelDecorations, pData, 4);
-  memcpy(pLevelDecorations.data(), pData + 4, uNumLevelDecorations * sizeof(LevelDecoration));
-  pData += 4 + uNumLevelDecorations * sizeof(LevelDecoration);
-
-  for (uint i = 0; i < uNumLevelDecorations; ++i)
-  {
-    pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(pData);
-
-    pData += 32;
-  }
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&uNumLights, pData, 4);
-  memcpy(pLights, pData + 4, uNumLights * sizeof(BLVLightMM7));
-  pData += 4 + uNumLights * sizeof(BLVLightMM7);
-
-  pGameLoadingUI_ProgressBar->Progress();
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&uNumNodes, pData, 4);
-  memcpy(pNodes, pData + 4, uNumNodes * sizeof(BSPNode));
-  pData += 4 + uNumNodes * sizeof(BSPNode);
-  
-  pGameLoadingUI_ProgressBar->Progress();
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&uNumSpawnPoints, pData, 4);
-  pSpawnPoints = (SpawnPointMM7 *)malloc(uNumSpawnPoints * sizeof(SpawnPointMM7));
-  memcpy(pSpawnPoints, pData + 4, uNumSpawnPoints * sizeof(SpawnPointMM7));
-  pData += 4 + uNumSpawnPoints * sizeof(SpawnPointMM7);
-  
-  pGameLoadingUI_ProgressBar->Progress();
-  pGameLoadingUI_ProgressBar->Progress();
-
-  //v201 = (const char *)v148;
-  //v200 = (size_t)pMapOutlines;
-  memcpy(&pMapOutlines->uNumOutlines, pData, 4);
-  memcpy(pMapOutlines->pOutlines, pData + 4, pMapOutlines->uNumOutlines * sizeof(BLVMapOutline));
-  //v149 = pMapOutlines;
-  //v199 = 12 * *v149;
-  //memcpy(v149 + 1, (const void *)(v148 + 4), v199);
-  free(pRawBLV);
-  pRawBLV = nullptr;
-
-  void *pRawDLV = nullptr;
-  strcpy(&pFilename[strlen(pFilename) - 4], ".dlv");
-  File = pNew_LOD->FindContainer(pFilename, 1);//error on D28.dlv
-  fread(&header, 0x10, 1, File);//(FILE *)v245);
-  bool _v244 = false;
-  if (header.uVersion != 91969 ||
-      header.pMagic[0] != 'm'  ||
-      header.pMagic[1] != 'v'  ||
-      header.pMagic[2] != 'i'  ||
-      header.pMagic[3] != 'i' )
-  {
-    MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:1090", 0);
-    _v244 = true;
-  }
-  else
-  {
-    pRawDLV = malloc(header.uDecompressedSize);
     if (header.uCompressedSize == header.uDecompressedSize)
-      fread(pRawDLV, 1, header.uCompressedSize, File);
+        fread(pRawBLV, header.uDecompressedSize, 1, File);
     else if (header.uCompressedSize < header.uDecompressedSize)
     {
-      void* pTmpMem = malloc(header.uCompressedSize);
-      {
-        fread(pTmpMem, header.uCompressedSize, 1, File);
+        void* pTmpMem = malloc(header.uCompressedSize);
+        {
+            fread(pTmpMem, header.uCompressedSize, 1, File);
 
-        uint uDecompressedSize = header.uDecompressedSize;
-        zlib::MemUnzip(pRawDLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
+            uint uDecompressedSize = header.uDecompressedSize;
+            zlib::MemUnzip(pRawBLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
 
-        if (uDecompressedSize != header.uDecompressedSize)
-          Log::Warning(L"uDecompressedSize != header.uDecompressedSize in DLV");
-      }
-      free(pTmpMem);
+            if (uDecompressedSize != header.uDecompressedSize)
+                Log::Warning(L"uDecompressedSize != header.uDecompressedSize in BLV");
+        }
+        free(pTmpMem);
     }
     else
-      MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:1108", 0);
-
-    pData = (char *)pRawDLV;
-  }
-  
-  memcpy(&dlv, pData, 40);
-  pData += 40;
-
-  //v152 = dlv.uNumFacesInBModels;
-  if (dlv.uNumFacesInBModels)
-  {
-    //v153 = dlv.uNumDecorations;
-    if (dlv.uNumDecorations)
     {
-      if (dlv.uNumFacesInBModels != uNumFaces ||
-          dlv.uNumDecorations != uNumLevelDecorations)
-        _v244 = true;
+        MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:803", 0);
+        return 0;
     }
-  }
 
-  if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000 )
-    _i = 0x1BAF800;
-  bool _a = false;
-  if ( a3 - dlv.uLastRepawnDay >= _i && _stricmp(pCurrentMapName, "d29.dlv") )
-    _a = true;
+    bLoaded = true;
 
-  //v154 = 875;
-  if (_v244 || (_a || !dlv.uLastRepawnDay))
-  {
-	  if (_v244)
-	  {
-		  memset(v203, 0, 0x36B);
-	  }
-	  else if (_a || !dlv.uLastRepawnDay)
-	  {
-		  memcpy(v203, pData, 0x36B);
-	  }
+    char* pData = (char *)pRawBLV;
 
-		  free(pRawDLV);
-		  dlv.uLastRepawnDay = a3;
-		  if (_v244)
-			  ++dlv.uNumRespawns;
-		  //v201 = pFilename;
-		  *(int *)pDest = 1;
-		  File = pGames_LOD->FindContainer(pFilename, 0);
-		  fread(&header, 0x10u, 1, File);
-		  uint v155 = header.uCompressedSize;
-		  uint Count = header.uDecompressedSize;
-		  BLVFace* Src = (BLVFace *)malloc(header.uDecompressedSize);
-		  pRawDLV = Src;
-		  if (v155 <= Count)
-		  {
-			  if (v155 == Count)
-				  fread(Src, 1, Count, File);
-			  else
-			  {
-				  void* _uSourceLen = malloc(v155);
-				  fread(_uSourceLen, v155, 1, File);
-				  zlib::MemUnzip(Src, &Count, _uSourceLen, v155);
-				  free(_uSourceLen);
-			  }
-		  }
-		  else
-			  MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:1195", 0);
-		  pData = ((char *)Src + 40);
-		  //v154 = 875;
-  }
-  else
-  {
-	  *(int *)pDest = 0;
-  }
-  
+    pGameLoadingUI_ProgressBar->Progress();
 
-//LABEL_140:
-  //v202 = (int)".blv";
-  //v156 = strlen(pFilename);
-  strcpy(&pFilename[strlen(pFilename) - 4], ".blv");
-  memcpy(_visible_outlines, pData, 875);
-  pData += 875;
+    memcpy(&blv, pData, 136);
+    memcpy(&uNumVertices, pData += 136, 4);
+    memcpy(pVertices, pData += 4, uNumVertices * sizeof(Vec3_short_));
 
-  if ( *(int *)pDest )
-    memcpy(_visible_outlines, v203, 875);
+    pGameLoadingUI_ProgressBar->Progress();
 
-  for (uint i = 0; i < pMapOutlines->uNumOutlines; ++i)
-  {
-    BLVMapOutline* pVertex = &pMapOutlines->pOutlines[i];
-    if ((unsigned __int8)(1 << (7 - i % 8)) & _visible_outlines[i / 8])
-      pVertex->uFlags |= 1;
-  }
+    memcpy(&uNumFaces, pData += uNumVertices * sizeof(Vec3_short_), 4);
 
+    pGameLoadingUI_ProgressBar->Progress();
 
-  for (uint i = 0; i < uNumFaces; ++i)
-  {
-    BLVFace* pFace = &pFaces[i];
-    BLVFaceExtra* pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
+    memcpy(pFaces, pData += 4, uNumFaces * sizeof(BLVFace));
+    pLFaces = (unsigned __int16 *)malloc(blv.uFaces_fdata_Size);
 
-    memcpy(&pFace->uAttributes, pData, 4);
-    pData += 4;
+    memcpy(pLFaces, pData += uNumFaces * sizeof(BLVFace), blv.uFaces_fdata_Size);
 
-    if (pFaceExtra->uEventID)
+    for (uint i = 0, j = 0; i < uNumFaces; ++i)
     {
-      if (pFaceExtra->HasEventint())
-        pFace->uAttributes |= FACE_HAS_EVENT;
-      else
-        pFace->uAttributes &= ~FACE_HAS_EVENT;
+        BLVFace* pFace = &pFaces[i];
+
+        pFace->pVertexIDs = &pLFaces[j];
+
+        j += pFace->uNumVertices + 1;
+        pFace->pXInterceptDisplacements = (short *)(&pLFaces[j]);
+
+        j += pFace->uNumVertices + 1;
+        pFace->pYInterceptDisplacements = (short *)(&pLFaces[j]);
+
+        j += pFace->uNumVertices + 1;
+        pFace->pZInterceptDisplacements = (short *)(&pLFaces[j]);
+
+        j += pFace->uNumVertices + 1;
+        pFace->pVertexUIDs = (__int16 *)(&pLFaces[j]);
+
+        j += pFace->uNumVertices + 1;
+        pFace->pVertexVIDs = (__int16 *)(&pLFaces[j]);
+
+        j += pFace->uNumVertices + 1;
     }
-  }
 
-  pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
 
-  for (uint i = 0; i < uNumLevelDecorations; ++i)
-  {
-    memcpy(&pLevelDecorations[i].uFlags, pData, 2);
-    pData += 2;
-  }
+    pData += blv.uFaces_fdata_Size;
 
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&uNumActors, pData, 4);
-  memcpy(&pActors, pData + 4, uNumActors * sizeof(Actor));
-  pData += 4 + uNumActors * sizeof(Actor);
-
-  pGameLoadingUI_ProgressBar->Progress();
-  pGameLoadingUI_ProgressBar->Progress();
-
-  memcpy(&uNumSpriteObjects, pData, 4);
-  memcpy(pSpriteObjects.data(), pData + 4, uNumSpriteObjects * sizeof(SpriteObject));
-  pData += 4 + uNumSpriteObjects * sizeof(SpriteObject);
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  for ( uint i = 0; i < uNumSpriteObjects; ++i )
-  {
-      if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & 0x0100))
+    for (uint i = 0; i < uNumFaces; ++i)
     {
-          pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
+        BLVFace* pFace = &pFaces[i];
 
-      //uint uObjectID = 0;
-      for ( uint j = 0; j < pObjectList->uNumObjects; ++j )
-        if ( pSpriteObjects[i].uType == pObjectList->pObjects[j].uObjectID )
+        char pTexName[16];
+        strncpy(pTexName, pData, 10);
+        pData += 10;
+
+        if (pFace->uAttributes & FACE_TEXTURE_FRAME)
         {
-          pSpriteObjects[i].uObjectDescID = j;
-          break;
+            pFace->uBitmapID = pTextureFrameTable->FindTextureByName(pTexName);
+            if (pFace->uBitmapID)
+                pTextureFrameTable->LoadAnimationSequenceAndPalettes(pFace->uBitmapID);
+            else
+            {
+                pFace->uBitmapID = pBitmaps_LOD->LoadTexture(pTexName);
+                pFace->uAttributes &= ~FACE_TEXTURE_FRAME;
+            }
+        }
+        else
+            pFace->uBitmapID = pBitmaps_LOD->LoadTexture(pTexName);
+    }
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&uNumFaceExtras, pData, 4);
+    memcpy(pFaceExtras, pData += 4, uNumFaceExtras * sizeof(BLVFaceExtra));
+    pData += uNumFaceExtras * sizeof(BLVFaceExtra);
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    //v108 = (char *)v107 + 36 * uNumFaceExtras;
+    //v245 = 0;
+    //*(int *)((char *)&uSourceLen + 1) = 0;
+    for (uint i = 0; i < uNumFaceExtras; ++i)
+    {
+        char pTexName[32];
+        strncpy(pTexName, pData, 10);
+        pData += 10;
+
+        if (!strcmp(pTexName, ""))
+            pFaceExtras[i].uAdditionalBitmapID = -1;
+        else
+            pFaceExtras[i].uAdditionalBitmapID = pBitmaps_LOD->LoadTexture(pTexName);
+    }
+
+
+    for (uint i = 0; i < uNumFaces; ++i)
+    {
+        BLVFace* pFace = &pFaces[i];
+        BLVFaceExtra* pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
+
+        if (pFaceExtra->uEventID)
+        {
+            if (pFaceExtra->HasEventint())
+                pFace->uAttributes |= FACE_HAS_EVENT;
+            else
+                pFace->uAttributes &= ~FACE_HAS_EVENT;
         }
     }
-  }
 
-  pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
 
-  memcpy(&uNumChests, pData, 4);
-  memcpy(pChests.data(), pData + 4, uNumChests * sizeof(Chest));
-  pData += 4 + uNumChests * sizeof(Chest);
+    memcpy(&uNumSectors, pData, 4);
+    memcpy(pSectors, pData + 4, uNumSectors * sizeof(BLVSector));
+    pData += 4 + uNumSectors * sizeof(BLVSector);
 
-  pGameLoadingUI_ProgressBar->Progress();
-  pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
 
-  memcpy(pDoors, pData, 0x3E80);
-  pData += 0x3E80;
+    ptr_0002B0_sector_rdata = (unsigned short *)malloc(blv.uSector_rdata_Size);//, "L.RData");
+    memcpy(ptr_0002B0_sector_rdata, pData, blv.uSector_rdata_Size);
+    pData += blv.uSector_rdata_Size;
 
-  //v201 = (const char *)blv.uDoors_ddata_Size;
-  //v200 = (size_t)ptr_0002B4_doors_ddata;
-  //v170 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
-  //v171 = blv.uDoors_ddata_Size;
-  ptr_0002B4_doors_ddata = (unsigned __int16 *)malloc(blv.uDoors_ddata_Size);//, "L.DData");
-  memcpy(ptr_0002B4_doors_ddata, pData, blv.uDoors_ddata_Size);
-  pData += blv.uDoors_ddata_Size;
-
-  //Src = (BLVFace *)((char *)Src + v171);
-  //v172 = 0;
-  //v245 = 0;
-  //if (uNumDoors > 0)
-  for (uint i = 0, j = 0; i < uNumDoors; ++i)
-  {
-    BLVDoor* pDoor = &pDoors[i];
-
-    pDoor->pVertexIDs = &ptr_0002B4_doors_ddata[j];
-    j += pDoor->uNumVertices;
-
-    pDoor->pFaceIDs = &ptr_0002B4_doors_ddata[j];
-    j += pDoor->uNumFaces;
-
-    pDoor->pSectorIDs = &ptr_0002B4_doors_ddata[j];
-    j += pDoor->field_48;
-
-    pDoor->pDeltaUs = (short *)(&ptr_0002B4_doors_ddata[j]);
-    j += pDoor->uNumFaces;
-
-    pDoor->pDeltaVs = (short *)(&ptr_0002B4_doors_ddata[j]);
-    j += pDoor->uNumFaces;
-
-    pDoor->pXOffsets = &ptr_0002B4_doors_ddata[j];
-    j += pDoor->uNumOffsets;
-
-    pDoor->pYOffsets = &ptr_0002B4_doors_ddata[j];
-    j += pDoor->uNumOffsets;
-
-    pDoor->pZOffsets = &ptr_0002B4_doors_ddata[j];
-    j += pDoor->uNumOffsets;
-    /*v173 = pDoors;
-    for ( k = 0; ; v172 = v188 + 2 * *((short *)&v173[k] - 3) )
+    for (uint i = 0, j = 0; i < uNumSectors; ++i)
     {
-      v173[k].pVertexIDs = (unsigned __int16 *)((char *)ptr_0002B4_doors_ddata + v172);
-      v175 = &pDoors[k];
-      v176 = v172 + 2 * v175->uNumVertices;
-      v175->pFaceIDs = (unsigned __int16 *)((char *)ptr_0002B4_doors_ddata + v176);
-      v177 = &pDoors[k];
-      v178 = v176 + 2 * v177->uNumFaces;
-      v177->pSectorIDs = (unsigned __int16 *)((char *)ptr_0002B4_doors_ddata + v178);
-      v179 = &pDoors[k];
-      v180 = v178 + 2 * v179->field_48;
-      v179->pDeltaUs = (__int16 *)((char *)ptr_0002B4_doors_ddata + v180);
-      v181 = &pDoors[k];
-      v182 = v180 + 2 * v181->uNumFaces;
-      v181->pDeltaVs = (__int16 *)((char *)ptr_0002B4_doors_ddata + v182);
-      v183 = &pDoors[k];
-      v184 = v182 + 2 * v183->uNumFaces;
-      v183->pXOffsets = (unsigned __int16 *)((char *)ptr_0002B4_doors_ddata + v184);
-      v185 = &pDoors[k];
-      v186 = v184 + 2 * v185->uNumOffsets;
-      v185->pYOffsets = (unsigned __int16 *)((char *)ptr_0002B4_doors_ddata + v186);
-      v187 = &pDoors[k];
-      ++k;
-      v188 = v186 + 2 * v187->uNumOffsets;
-      v189 = (unsigned __int16 *)((char *)ptr_0002B4_doors_ddata + v188);
-      ++v245;
-      v187->pZOffsets = v189;
-      v173 = pDoors;
-      if ( v245 >= uNumDoors )
-        break;
-    }*/
-  }
-  //v190 = 0;
-  //v245 = 0;
-  for (uint i = 0; i < uNumDoors; ++i)
-  {
-    BLVDoor* pDoor = &pDoors[i];
+        BLVSector* pSector = &pSectors[i];
 
-    for (uint j = 0; j < pDoor->uNumFaces; ++j)
-    {
-      BLVFace* pFace = &pFaces[pDoor->pFaceIDs[j]];
-      BLVFaceExtra* pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
+        pSector->pFloors = &ptr_0002B0_sector_rdata[j];
+        j += pSector->uNumFloors;
 
-      pDoor->pDeltaUs[j] = pFaceExtra->sTextureDeltaU;
-      pDoor->pDeltaVs[j] = pFaceExtra->sTextureDeltaV;
+        pSector->pWalls = &ptr_0002B0_sector_rdata[j];
+        j += pSector->uNumWalls;
+
+        pSector->pCeilings = &ptr_0002B0_sector_rdata[j];
+        j += pSector->uNumCeilings;
+
+        pSector->pFluids = &ptr_0002B0_sector_rdata[j];
+        j += pSector->uNumFluids;
+
+        pSector->pPortals = &ptr_0002B0_sector_rdata[j];
+        j += pSector->uNumPortals;
+
+        pSector->pFaceIDs = &ptr_0002B0_sector_rdata[j];
+        j += pSector->uNumFaces;
+
+        pSector->pCogs = &ptr_0002B0_sector_rdata[j];
+        j += pSector->uNumCogs;
+
+        pSector->pDecorationIDs = &ptr_0002B0_sector_rdata[j];
+        j += pSector->uNumDecorations;
+
+        pSector->pMarkers = &ptr_0002B0_sector_rdata[j];
+        j += pSector->uNumMarkers;
     }
-    //v191 = pDoors;
-    //pDest = 0;
-    //do
-   // {
-      /*Argsn = 0;
-      for ( l = (BLVDoor *)&v190[(int)v191];
-            Argsn < *(short *)&v190[(int)v191 + 70];
-            l = (BLVDoor *)&v190[(int)v191] )
-      {
-        v193 = Argsn;
-        v194 = l->pFaceIDs[Argsn++];
-        v195 = &pFaceExtras[pFaces[v194].uFaceExtraID];
-        l->pDeltaUs[v193] = v195->sTextureDeltaU;
-        v190 = pDest;
-        *(short *)(v193 * 2 + *(int *)&pDest[(unsigned int)pDoors + 52]) = v195->sTextureDeltaV;
-        v191 = pDoors;
-      }
-      ++v245;
-      v190 += 80;
-      pDest = v190;*/
-    //}
-    //while ( v245 < uNumDoors );
-  }
+
+    ptr_0002B8_sector_lrdata = (unsigned __int16 *)malloc(blv.uSector_lrdata_Size);//, "L.RLData");
+    memcpy(ptr_0002B8_sector_lrdata, pData, blv.uSector_lrdata_Size);
+    pData += blv.uSector_lrdata_Size;
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    for (uint i = 0, j = 0; i < uNumSectors; ++i)
+    {
+        pSectors[i].pLights = ptr_0002B8_sector_lrdata + j;
+        j += pSectors[i].uNumLights;
+    }
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&uNumDoors, pData, 4);
+    pData += 4;
+
+    pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&uNumLevelDecorations, pData, 4);
+    memcpy(pLevelDecorations.data(), pData + 4, uNumLevelDecorations * sizeof(LevelDecoration));
+    pData += 4 + uNumLevelDecorations * sizeof(LevelDecoration);
+
+    for (uint i = 0; i < uNumLevelDecorations; ++i)
+    {
+        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(pData);
+
+        pData += 32;
+    }
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&uNumLights, pData, 4);
+    memcpy(pLights, pData + 4, uNumLights * sizeof(BLVLightMM7));
+    pData += 4 + uNumLights * sizeof(BLVLightMM7);
+
+    pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&uNumNodes, pData, 4);
+    memcpy(pNodes, pData + 4, uNumNodes * sizeof(BSPNode));
+    pData += 4 + uNumNodes * sizeof(BSPNode);
+
+    pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&uNumSpawnPoints, pData, 4);
+    pSpawnPoints = (SpawnPointMM7 *)malloc(uNumSpawnPoints * sizeof(SpawnPointMM7));
+    memcpy(pSpawnPoints, pData + 4, uNumSpawnPoints * sizeof(SpawnPointMM7));
+    pData += 4 + uNumSpawnPoints * sizeof(SpawnPointMM7);
+
+    pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
+
+    //v201 = (const char *)v148;
+    //v200 = (size_t)pMapOutlines;
+    memcpy(&pMapOutlines->uNumOutlines, pData, 4);
+    memcpy(pMapOutlines->pOutlines, pData + 4, pMapOutlines->uNumOutlines * sizeof(BLVMapOutline));
+    //v149 = pMapOutlines;
+    //v199 = 12 * *v149;
+    //memcpy(v149 + 1, (const void *)(v148 + 4), v199);
+    free(pRawBLV);
+    pRawBLV = nullptr;
+
+    void *pRawDLV = nullptr;
+
+    auto dlv_filename = filename;
+    dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
+    File = pNew_LOD->FindContainer(dlv_filename, 1);//error on D28.dlv
+    fread(&header, 0x10, 1, File);//(FILE *)v245);
+    bool _v244 = false;
+    if (header.uVersion != 91969 ||
+        header.pMagic[0] != 'm' ||
+        header.pMagic[1] != 'v' ||
+        header.pMagic[2] != 'i' ||
+        header.pMagic[3] != 'i')
+    {
+        MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:1090", 0);
+        _v244 = true;
+    }
+    else
+    {
+        pRawDLV = malloc(header.uDecompressedSize);
+        if (header.uCompressedSize == header.uDecompressedSize)
+            fread(pRawDLV, 1, header.uCompressedSize, File);
+        else if (header.uCompressedSize < header.uDecompressedSize)
+        {
+            void* pTmpMem = malloc(header.uCompressedSize);
+            {
+                fread(pTmpMem, header.uCompressedSize, 1, File);
+
+                uint uDecompressedSize = header.uDecompressedSize;
+                zlib::MemUnzip(pRawDLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
+
+                if (uDecompressedSize != header.uDecompressedSize)
+                    Log::Warning(L"uDecompressedSize != header.uDecompressedSize in DLV");
+            }
+            free(pTmpMem);
+        }
+        else
+            MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:1108", 0);
+
+        pData = (char *)pRawDLV;
+    }
+
+    memcpy(&dlv, pData, 40);
+    pData += 40;
+
+    //v152 = dlv.uNumFacesInBModels;
+    if (dlv.uNumFacesInBModels)
+    {
+        //v153 = dlv.uNumDecorations;
+        if (dlv.uNumDecorations)
+        {
+            if (dlv.uNumFacesInBModels != uNumFaces ||
+                dlv.uNumDecorations != uNumLevelDecorations)
+                _v244 = true;
+        }
+    }
+
+    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)
+        respawn_interval_days = 0x1BAF800;
+
+    bool _a = false;
+    if (num_days_played - dlv.uLastRepawnDay >= respawn_interval_days && _stricmp(pCurrentMapName, "d29.dlv"))
+        _a = true;
+
+    //v154 = 875;
+    if (_v244 || (_a || !dlv.uLastRepawnDay))
+    {
+        if (_v244)
+        {
+            memset(v203, 0, 0x36B);
+        }
+        else if (_a || !dlv.uLastRepawnDay)
+        {
+            memcpy(v203, pData, 0x36B);
+        }
+
+        free(pRawDLV);
+        dlv.uLastRepawnDay = num_days_played;
+        if (_v244)
+            ++dlv.uNumRespawns;
+        //v201 = pFilename;
+        *(int *)pDest = 1;
+        File = pGames_LOD->FindContainer(dlv_filename, false);
+        fread(&header, 0x10u, 1, File);
+        uint v155 = header.uCompressedSize;
+        uint Count = header.uDecompressedSize;
+        BLVFace* Src = (BLVFace *)malloc(header.uDecompressedSize);
+        pRawDLV = Src;
+        if (v155 <= Count)
+        {
+            if (v155 == Count)
+                fread(Src, 1, Count, File);
+            else
+            {
+                void* _uSourceLen = malloc(v155);
+                fread(_uSourceLen, v155, 1, File);
+                zlib::MemUnzip(Src, &Count, _uSourceLen, v155);
+                free(_uSourceLen);
+            }
+        }
+        else
+            MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Polydata.cpp:1195", 0);
+        pData = ((char *)Src + 40);
+        //v154 = 875;
+    }
+    else
+    {
+        *(int *)pDest = 0;
+    }
 
 
-  pGameLoadingUI_ProgressBar->Progress();
+    memcpy(_visible_outlines, pData, 875);
+    pData += 875;
 
-  memcpy(&stru_5E4C90_MapPersistVars, pData, 0xC8);
-  pData += 0xC8;
+    if (*(int *)pDest)
+        memcpy(_visible_outlines, v203, 875);
 
-  pGameLoadingUI_ProgressBar->Progress();
+    for (uint i = 0; i < pMapOutlines->uNumOutlines; ++i)
+    {
+        BLVMapOutline* pVertex = &pMapOutlines->pOutlines[i];
+        if ((unsigned __int8)(1 << (7 - i % 8)) & _visible_outlines[i / 8])
+            pVertex->uFlags |= 1;
+    }
 
-  memcpy(&stru1, pData, 0x38u);
-  pData += 0x38;
 
-  free(pRawDLV);
-  //v5 = 0;
+    for (uint i = 0; i < uNumFaces; ++i)
+    {
+        BLVFace* pFace = &pFaces[i];
+        BLVFaceExtra* pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
 
-  pSoundList->LoadSound(64, 0);
-  pSoundList->LoadSound(103, 0);
-  pSoundList->LoadSound(63, 0);
-  pSoundList->LoadSound(102, 0);
-  pSoundList->LoadSound(50, 0);
-  pSoundList->LoadSound(89, 0);
+        memcpy(&pFace->uAttributes, pData, 4);
+        pData += 4;
 
-  return 0;
+        if (pFaceExtra->uEventID)
+        {
+            if (pFaceExtra->HasEventint())
+                pFace->uAttributes |= FACE_HAS_EVENT;
+            else
+                pFace->uAttributes &= ~FACE_HAS_EVENT;
+        }
+    }
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    for (uint i = 0; i < uNumLevelDecorations; ++i)
+    {
+        memcpy(&pLevelDecorations[i].uFlags, pData, 2);
+        pData += 2;
+    }
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&uNumActors, pData, 4);
+    memcpy(&pActors, pData + 4, uNumActors * sizeof(Actor));
+    pData += 4 + uNumActors * sizeof(Actor);
+
+    pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&uNumSpriteObjects, pData, 4);
+    memcpy(pSpriteObjects.data(), pData + 4, uNumSpriteObjects * sizeof(SpriteObject));
+    pData += 4 + uNumSpriteObjects * sizeof(SpriteObject);
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    for (uint i = 0; i < uNumSpriteObjects; ++i)
+    {
+        if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & 0x0100))
+        {
+            pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
+
+            //uint uObjectID = 0;
+            for (uint j = 0; j < pObjectList->uNumObjects; ++j)
+                if (pSpriteObjects[i].uType == pObjectList->pObjects[j].uObjectID)
+                {
+                    pSpriteObjects[i].uObjectDescID = j;
+                    break;
+                }
+        }
+    }
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&uNumChests, pData, 4);
+    memcpy(pChests.data(), pData + 4, uNumChests * sizeof(Chest));
+    pData += 4 + uNumChests * sizeof(Chest);
+
+    pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(pDoors, pData, 0x3E80);
+    pData += 0x3E80;
+
+    //v201 = (const char *)blv.uDoors_ddata_Size;
+    //v200 = (size_t)ptr_0002B4_doors_ddata;
+    //v170 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
+    //v171 = blv.uDoors_ddata_Size;
+    ptr_0002B4_doors_ddata = (unsigned __int16 *)malloc(blv.uDoors_ddata_Size);//, "L.DData");
+    memcpy(ptr_0002B4_doors_ddata, pData, blv.uDoors_ddata_Size);
+    pData += blv.uDoors_ddata_Size;
+
+    //Src = (BLVFace *)((char *)Src + v171);
+    //v172 = 0;
+    //v245 = 0;
+    //if (uNumDoors > 0)
+    for (uint i = 0, j = 0; i < uNumDoors; ++i)
+    {
+        BLVDoor* pDoor = &pDoors[i];
+
+        pDoor->pVertexIDs = &ptr_0002B4_doors_ddata[j];
+        j += pDoor->uNumVertices;
+
+        pDoor->pFaceIDs = &ptr_0002B4_doors_ddata[j];
+        j += pDoor->uNumFaces;
+
+        pDoor->pSectorIDs = &ptr_0002B4_doors_ddata[j];
+        j += pDoor->field_48;
+
+        pDoor->pDeltaUs = (short *)(&ptr_0002B4_doors_ddata[j]);
+        j += pDoor->uNumFaces;
+
+        pDoor->pDeltaVs = (short *)(&ptr_0002B4_doors_ddata[j]);
+        j += pDoor->uNumFaces;
+
+        pDoor->pXOffsets = &ptr_0002B4_doors_ddata[j];
+        j += pDoor->uNumOffsets;
+
+        pDoor->pYOffsets = &ptr_0002B4_doors_ddata[j];
+        j += pDoor->uNumOffsets;
+
+        pDoor->pZOffsets = &ptr_0002B4_doors_ddata[j];
+        j += pDoor->uNumOffsets;
+    }
+    //v190 = 0;
+    //v245 = 0;
+    for (uint i = 0; i < uNumDoors; ++i)
+    {
+        BLVDoor* pDoor = &pDoors[i];
+
+        for (uint j = 0; j < pDoor->uNumFaces; ++j)
+        {
+            BLVFace* pFace = &pFaces[pDoor->pFaceIDs[j]];
+            BLVFaceExtra* pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
+
+            pDoor->pDeltaUs[j] = pFaceExtra->sTextureDeltaU;
+            pDoor->pDeltaVs[j] = pFaceExtra->sTextureDeltaV;
+        }
+    }
+
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&stru_5E4C90_MapPersistVars, pData, 0xC8);
+    pData += 0xC8;
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    memcpy(&stru1, pData, 0x38u);
+    pData += 0x38;
+
+    free(pRawDLV);
+    //v5 = 0;
+
+    pSoundList->LoadSound(64, 0);
+    pSoundList->LoadSound(103, 0);
+    pSoundList->LoadSound(63, 0);
+    pSoundList->LoadSound(102, 0);
+    pSoundList->LoadSound(50, 0);
+    pSoundList->LoadSound(89, 0);
+
+    return 0;
 }
 
 
@@ -2612,7 +1870,7 @@ void  UpdateActors_BLV()
     if ( pActors[actor_id].uCurrentActionAnimation == ANIM_Walking)//монстр двигается
     {
       v6 = pActors[actor_id].uMovementSpeed;
-      if ( pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uExpireTime > 0 )
+      if ( pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].Active())
       {
         if ( pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower )
           LODWORD(v10) = pActors[actor_id].uMovementSpeed / (unsigned __int16)pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower;
@@ -2798,15 +2056,17 @@ void  UpdateActors_BLV()
 						  //v51 = __OFSUB__(HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime), v22);
 						  //v49 = HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime) == v22;
 						  //v50 = HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime) - v22 < 0;
-						  pActors[actor_id].vVelocity.y = v22;
-						  pActors[actor_id].vVelocity.x = v22;
-						  if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime > v22)
-							  pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+						  pActors[actor_id].vVelocity.y = 0;
+						  pActors[actor_id].vVelocity.x = 0;
+                          if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+                          {
+                              pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+                          }
+
 						  viewparams->bRedrawGameUI = 1;
 						  pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
 						  pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
 						  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-						  v22 = 0;
 						  continue;
 					  }
 					  Actor::AI_FaceObject(actor_id, stru_721530.uFaceID, v22, (AIDirection *)v22);
@@ -2933,7 +2193,7 @@ void  UpdateActors_BLV()
 //----- (00460A78) --------------------------------------------------------
 void PrepareToLoadBLV(unsigned int bLoading)
 {
-  unsigned int respawn; // ebx@1
+  unsigned int respawn_interval; // ebx@1
   unsigned int map_id; // eax@8
   MapInfo *map_info; // edi@9
   int v4; // eax@11
@@ -2945,7 +2205,7 @@ void PrepareToLoadBLV(unsigned int bLoading)
   int v38; // [sp+404h] [bp-10h]@1
   int pDest; // [sp+40Ch] [bp-8h]@1
 
-  respawn = 0;
+  respawn_interval = 0;
   pGameLoadingUI_ProgressBar->Reset(0x20u);
   bUnderwater = false;
   bNoNPCHiring = false;
@@ -2969,7 +2229,7 @@ void PrepareToLoadBLV(unsigned int bLoading)
   if ( map_id )
   {
     map_info = &pMapStats->pInfos[map_id];
-    respawn = pMapStats->pInfos[map_id].uRespawnIntervalDays;
+    respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
     v38 = GetAlertStatus();
   }
   else
@@ -2977,7 +2237,7 @@ void PrepareToLoadBLV(unsigned int bLoading)
   dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
 
   pStationaryLightsStack->uNumLightsActive = 0;
-  v4 = pIndoor->Load(pCurrentMapName, (unsigned int)(signed __int64)((double)pParty->uTimePlayed * 0.234375) / 60 / 60 / 24 + 1, respawn, (char *)&pDest) - 1;
+  v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1, respawn_interval, (char *)&pDest) - 1;
   if ( !v4 )
     Error("Unable to open %s", pCurrentMapName);
 
@@ -3397,133 +2657,144 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
 //----- (0043FDED) --------------------------------------------------------
 void PrepareActorRenderList_BLV()
 {
-  unsigned int v4; // eax@5
-  int v6; // esi@5
-  int v8; // eax@10
-  SpriteFrame *v9; // eax@16
-  int v12; // ecx@28
-  signed __int64 v18; // qtt@36
-  int v25; // edx@44
-  __int16 v26; // ax@44
-  int a5a; // [sp+2Ch] [bp-28h]@36
-  __int16 v41; // [sp+3Ch] [bp-18h]@18
-  int a6; // [sp+40h] [bp-14h]@34
-  int v43; // [sp+44h] [bp-10h]@34
-  int z; // [sp+48h] [bp-Ch]@32
-  signed int y; // [sp+4Ch] [bp-8h]@32
-  int x; // [sp+50h] [bp-4h]@32
+    unsigned int v4; // eax@5
+    int v6; // esi@5
+    int v8; // eax@10
+    SpriteFrame *v9; // eax@16
+    int v12; // ecx@28
+    signed __int64 v18; // qtt@36
+    int v25; // edx@44
+    __int16 v26; // ax@44
+    int a5a; // [sp+2Ch] [bp-28h]@36
+    __int16 v41; // [sp+3Ch] [bp-18h]@18
+    int a6; // [sp+40h] [bp-14h]@34
+    int v43; // [sp+44h] [bp-10h]@34
+    int z; // [sp+48h] [bp-Ch]@32
+    signed int y; // [sp+4Ch] [bp-8h]@32
+    int x; // [sp+50h] [bp-4h]@32
 
-  for (uint i = 0; i < uNumActors; ++i)
-  {
-    if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled)
-      continue;
+    for (uint i = 0; i < uNumActors; ++i)
+    {
+        if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled)
+            continue;
 
-    v4 = stru_5C6E00->Atan2(pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x, pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
-    v6 = ((signed int)(pActors[i].uYawAngle + ((signed int)stru_5C6E00->uIntegerPi >> 3) - v4 + stru_5C6E00->uIntegerPi) >> 8) & 7;
-    v8 = pActors[i].uCurrentActionTime;
-    if ( pParty->bTurnBasedModeOn )
-    {
-      if ( pActors[i].uCurrentActionAnimation == 1 )
-        v8 = i * 32 + pMiscTimer->uTotalGameTimeElapsed;
-    }
-    else
-    {
-      if ( pActors[i].uCurrentActionAnimation == 1 )
-        v8 = i * 32 + pBLVRenderParams->field_0_timer_;
-    }
-    if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].uExpireTime > 0 || pActors[i].pActorBuffs[ACTOR_BUFF_PARALYZED].uExpireTime > 0 )
-      v8 = 0;
-
-    if (pActors[i].uAIState == Resurrected)
-      v9 = pSpriteFrameTable->GetFrameBy_x(pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], v8);
-    else
-      v9 = pSpriteFrameTable->GetFrame(pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], v8);
-
-    v41 = 0;
-    if (v9->uFlags & 2)
-      v41 = 2;
-    if (v9->uFlags & 0x40000)
-      v41 |= 0x40u;
-    if (v9->uFlags & 0x20000)
-      LOBYTE(v41) = v41 | 0x80;
-    if ( (256 << v6) & v9->uFlags)
-      v41 |= 4;
-    if ( v9->uGlowRadius )
-    {
-      //LOBYTE(v11) = _4E94D3_light_type;
-      pMobileLightsStack->AddLight(pActors[i].vPosition.x, pActors[i].vPosition.y, pActors[i].vPosition.z, pActors[i].uSectorID, v9->uGlowRadius, 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
-    }
-    for ( v12 = 0; v12 < pBspRenderer->uNumVisibleNotEmptySectors; ++v12 )
-    {
-      if ( pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[v12] == pActors[i].uSectorID )
-      {
-        if ( !pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pActors[i].vPosition.x, pActors[i].vPosition.y, pActors[i].vPosition.z, &x, &y, &z, 1)
-          || abs(x) < abs(y) )
-          continue;
-        pIndoorCameraD3D->Project(x, y, z, &v43, &a6);
-        if (uNumBillboardsToDraw >= 500)
-          break;
-        ++uNumBillboardsToDraw;
-        ++uNumSpritesDrawnThisFrame;
-        pActors[i].uAttributes |= ACTOR_UNKNOW2;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v9->pHwSpriteIDs[v6];
-        pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v9->uPaletteIndex;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].uSectorID;
-        /*if ( !pRenderer->pRenderD3D )
+        v4 = stru_5C6E00->Atan2(pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x, pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+        v6 = ((signed int)(pActors[i].uYawAngle + ((signed int)stru_5C6E00->uIntegerPi >> 3) - v4 + stru_5C6E00->uIntegerPi) >> 8) & 7;
+        v8 = pActors[i].uCurrentActionTime;
+        if (pParty->bTurnBasedModeOn)
         {
-          LODWORD(v20) = pBLVRenderParams->fov_rad_fixpoint << 16;
-          HIDWORD(v20) = pBLVRenderParams->fov_rad_fixpoint >> 16;
-          v0->_screenspace_x_scaler_packedfloat = fixpoint_mul(v10->scale, v20 / x);
-          a5a = fixpoint_mul(v10->scale, v20 / x);
-        }
-        else
-        {*/
-          pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
-          pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
-          LODWORD(v18) = 0;
-          HIDWORD(v18) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-          pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v9->scale, v18 / x);
-          a5a = fixpoint_mul(v9->scale, v18 / x);
-        //}
-        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = a5a;
-        if ( pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uExpireTime <= 0 )
-        {
-          if ( pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].uExpireTime > 0 )
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(pEngine->pStru6Instance->_4A806F(&pActors[i]),
-                       pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat);
+            if (pActors[i].uCurrentActionAnimation == 1)
+                v8 = i * 32 + pMiscTimer->uTotalGameTimeElapsed;
         }
         else
         {
-          if ( pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0 )
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(65536 / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower, pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat);
+            if (pActors[i].uCurrentActionAnimation == 1)
+                v8 = i * 32 + pBLVRenderParams->field_0_timer_;
         }
-        HIWORD(v25) = HIWORD(x);
-        pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pActors[i].vPosition.x;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pActors[i].vPosition.y;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pActors[i].vPosition.z;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v43;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = a6;
-        LOWORD(v25) = 0;
-        LOBYTE(v26) = v41;
+        if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active() || pActors[i].pActorBuffs[ACTOR_BUFF_PARALYZED].Active())
+            v8 = 0;
 
-        //v0->sZValue = v25 + (PID(OBJECT_Actor,i));
-        pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HIWORD(x);
-        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor,i);
+        if (pActors[i].uAIState == Resurrected)
+            v9 = pSpriteFrameTable->GetFrameBy_x(pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], v8);
+        else
+            v9 = pSpriteFrameTable->GetFrame(pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], v8);
 
-        //v29 = HIDWORD(p->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime) == 0;
-        //v30 = HIDWORD(p->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime) < 0;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v41;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v9;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;
-        if ( pActors[i].pActorBuffs[ACTOR_BUFF_STONED].uExpireTime > 0 )
+        v41 = 0;
+        if (v9->uFlags & 2)
+            v41 = 2;
+        if (v9->uFlags & 0x40000)
+            v41 |= 0x40u;
+        if (v9->uFlags & 0x20000)
+            LOBYTE(v41) = v41 | 0x80;
+        if ((256 << v6) & v9->uFlags)
+            v41 |= 4;
+        if (v9->uGlowRadius)
         {
-          HIBYTE(v26) = HIBYTE(v41) | 1;
-          pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v26;
+            //LOBYTE(v11) = _4E94D3_light_type;
+            pMobileLightsStack->AddLight(pActors[i].vPosition.x, pActors[i].vPosition.y, pActors[i].vPosition.z, pActors[i].uSectorID, v9->uGlowRadius, 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
         }
-      }
+        for (v12 = 0; v12 < pBspRenderer->uNumVisibleNotEmptySectors; ++v12)
+        {
+            if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[v12] == pActors[i].uSectorID)
+            {
+                if (!pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pActors[i].vPosition.x, pActors[i].vPosition.y, pActors[i].vPosition.z, &x, &y, &z, 1)
+                    || abs(x) < abs(y))
+                    continue;
+                pIndoorCameraD3D->Project(x, y, z, &v43, &a6);
+                if (uNumBillboardsToDraw >= 500)
+                    break;
+                ++uNumBillboardsToDraw;
+                ++uNumSpritesDrawnThisFrame;
+                pActors[i].uAttributes |= ACTOR_UNKNOW2;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v9->pHwSpriteIDs[v6];
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v9->uPaletteIndex;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].uSectorID;
+                /*if ( !pRenderer->pRenderD3D )
+                {
+                  LODWORD(v20) = pBLVRenderParams->fov_rad_fixpoint << 16;
+                  HIDWORD(v20) = pBLVRenderParams->fov_rad_fixpoint >> 16;
+                  v0->_screenspace_x_scaler_packedfloat = fixpoint_mul(v10->scale, v20 / x);
+                  a5a = fixpoint_mul(v10->scale, v20 / x);
+                }
+                else
+                {*/
+                pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
+                LODWORD(v18) = 0;
+                HIDWORD(v18) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
+                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v9->scale, v18 / x);
+                a5a = fixpoint_mul(v9->scale, v18 / x);
+                //}
+                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = a5a;
+                if (!pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active())
+                {
+                    if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
+                    {
+                        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
+                            pEngine->pStru6Instance->_4A806F_get_mass_distortion_value(&pActors[i]),
+                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
+                        );
+                    }
+                }
+                else
+                {
+                    if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
+                    {
+                        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(
+                            65536 / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower,
+                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat
+                        );
+                    }
+                }
+
+                HIWORD(v25) = HIWORD(x);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pActors[i].vPosition.x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pActors[i].vPosition.y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pActors[i].vPosition.z;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v43;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = a6;
+                LOWORD(v25) = 0;
+                LOBYTE(v26) = v41;
+
+                //v0->sZValue = v25 + (PID(OBJECT_Actor,i));
+                pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HIWORD(x);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
+
+                //v29 = HIDWORD(p->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime) == 0;
+                //v30 = HIDWORD(p->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime) < 0;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v41;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v9;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;
+                if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active())
+                {
+                    HIBYTE(v26) = HIBYTE(v41) | 1;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v26;
+                }
+            }
+        }
     }
-  }
 }
+
 //----- (0044028F) --------------------------------------------------------
 void PrepareItemsRenderList_BLV()
 {
@@ -5251,518 +4522,520 @@ int sub_4AAEA6_transform(RenderVertexSoft *a1)
 //----- (00472866) --------------------------------------------------------
 void BLV_ProcessPartyActions()
 {
-  int v1; // ebx@1
-  int v2; // edi@1
-  double v10; // st7@27
-  int new_party_z; // esi@96
-  int v38; // eax@96
-  int v39; // ecx@106
-  int v40; // eax@106
-  int v42; // eax@120
-  BLVFace *pFace; // esi@126
-  int v46; // ecx@133
-  int v52; // eax@140
-  int v54; // ebx@146
-  unsigned int uFaceEvent; // [sp+14h] [bp-4Ch]@1
-  bool party_running_flag; // [sp+1Ch] [bp-44h]@1
-  bool bFeatherFall; // [sp+24h] [bp-3Ch]@15
-  unsigned int uSectorID; // [sp+28h] [bp-38h]@1
-  bool party_walking_flag; // [sp+2Ch] [bp-34h]@1
-  unsigned int uFaceID; // [sp+30h] [bp-30h]@1
-  int v80; // [sp+34h] [bp-2Ch]@1
-  int v82; // [sp+3Ch] [bp-24h]@47
-  int _view_angle; // [sp+40h] [bp-20h]@47
-  bool hovering; // [sp+44h] [bp-1Ch]@1
-  int new_party_y; // [sp+48h] [bp-18h]@1
-  int new_party_x; // [sp+4Ch] [bp-14h]@1
-  int party_z; // [sp+50h] [bp-10h]@1
-  int angle; // [sp+5Ch] [bp-4h]@47
+    int v1; // ebx@1
+    int v2; // edi@1
+    double v10; // st7@27
+    int new_party_z; // esi@96
+    int v38; // eax@96
+    int v39; // ecx@106
+    int v40; // eax@106
+    int v42; // eax@120
+    BLVFace *pFace; // esi@126
+    int v46; // ecx@133
+    int v52; // eax@140
+    int v54; // ebx@146
+    unsigned int uFaceEvent; // [sp+14h] [bp-4Ch]@1
+    bool party_running_flag; // [sp+1Ch] [bp-44h]@1
+    bool bFeatherFall; // [sp+24h] [bp-3Ch]@15
+    unsigned int uSectorID; // [sp+28h] [bp-38h]@1
+    bool party_walking_flag; // [sp+2Ch] [bp-34h]@1
+    unsigned int uFaceID; // [sp+30h] [bp-30h]@1
+    int v80; // [sp+34h] [bp-2Ch]@1
+    int v82; // [sp+3Ch] [bp-24h]@47
+    int _view_angle; // [sp+40h] [bp-20h]@47
+    bool hovering; // [sp+44h] [bp-1Ch]@1
+    int new_party_y; // [sp+48h] [bp-18h]@1
+    int new_party_x; // [sp+4Ch] [bp-14h]@1
+    int party_z; // [sp+50h] [bp-10h]@1
+    int angle; // [sp+5Ch] [bp-4h]@47
 
-  uFaceEvent = 0;
-  //v89 = pParty->uFallSpeed;
-  v1 = 0;
-  v2 = 0;
-  new_party_x = pParty->vPosition.x;
-  new_party_y = pParty->vPosition.y;
-  party_z = pParty->vPosition.z;
-  uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-  party_running_flag = false;
-  party_walking_flag = false;
-  hovering = false;
-
-  uFaceID = -1;
-  int floor_level = collide_against_floor(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);//получить высоту пола
-
-  if ( pParty->bFlying )//отключить полёт
-  {
-    pParty->bFlying = false;
-    if (pParty->FlyActive())
-      pOtherOverlayList->pOverlays[pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID - 1].field_E |= 1;
-  }
-
-  if ( floor_level == -30000  || uFaceID == -1)
-  {
-    floor_level = collide_against_floor_approximate(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
-    if ( floor_level == -30000 || uFaceID == -1)
-    {
-      __debugbreak(); // level built with errors 
-      pParty->vPosition.x = blv_prev_party_x;
-      pParty->vPosition.y = blv_prev_party_z;
-      pParty->vPosition.z = blv_prev_party_y;
-      pParty->uFallStartY = blv_prev_party_y;
-      return;
-    }
-  }
-
-  blv_prev_party_x = pParty->vPosition.x;
-  blv_prev_party_z = pParty->vPosition.y;
-  blv_prev_party_y = pParty->vPosition.z;
-  if (!pParty->bTurnBasedModeOn)
-  {
-    static int dword_720CDC = 0;
-
-    int v67 = GetTickCount() / 500;
-    if (dword_720CDC != v67 )
-    {
-      dword_4F8580[3 * dword_4F8580[1]] = pParty->vPosition.x;
-      dword_4F8580[3 * dword_4F8580[2]] = pParty->vPosition.y;
-      dword_4F8580[3 * dword_4F8580[3]] = pParty->vPosition.z;
-      if ( dword_4F8580[0] > 60 )
-        dword_4F8580[0] = 1;
-
-      dword_720CDC = v67;
-    }
-  }
-
-  int fall_start;
-  /*
-  if (!pParty->FeatherFallActive())// не активно падение пера
-  {
-    bFeatherFall = false;
-    if (!pParty->pPlayers[0].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&  // grants feather fall
-        !pParty->pPlayers[1].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&
-        !pParty->pPlayers[2].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&
-        !pParty->pPlayers[3].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT))
-    {
-      fall_start = pParty->uFallStartY;
-    }
-	else// was missing
-	{
-		fall_start = floor_level;
-		bFeatherFall = true;
-		pParty->uFallStartY = floor_level;
-	}
-  }
-  else// активно падение пера
-  {
-    fall_start = floor_level;
-    bFeatherFall = true;
-    pParty->uFallStartY = floor_level;
-  }
-
-  Reworked condition below
-  */
-  if (pParty->FeatherFallActive()
-	  || pParty->pPlayers[0].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT)
-	  || pParty->pPlayers[1].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT)
-	  || pParty->pPlayers[2].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT)
-	  || pParty->pPlayers[3].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT))
-  {
-	  fall_start = floor_level;
-	  bFeatherFall = true;
-	  pParty->uFallStartY = floor_level;
-  }
-  else
-  {
-	  bFeatherFall = false;
-	  fall_start = pParty->uFallStartY;
-  }
-
-  if (fall_start - party_z > 512 && !bFeatherFall && party_z <= floor_level + 1)//повреждение от падения с высоты
-  {
-    assert(~pParty->uFlags & PARTY_FLAGS_1_LANDING); // why land in indoor?
-    if (pParty->uFlags & PARTY_FLAGS_1_LANDING)
-      pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
-    else for (uint i = 0; i < 4; ++i)
-    {                                      // receive falling damage
-      if (!pParty->pPlayers[i].HasEnchantedItemEquipped(72) && !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS))
-      {
-        pParty->pPlayers[i].ReceiveDamage((pParty->uFallStartY - party_z) * (0.1f * pParty->pPlayers[i].GetMaxHealth()) / 256, DMGT_PHISYCAL);
-        v10 = (double)(20 - pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualEndurance())) * flt_6BE3A4_debug_recmod1 * 2.133333333333333;
-        pParty->pPlayers[i].SetRecoveryTime((signed __int64)v10);
-      }
-    }
-  }
-
-  if ( party_z > floor_level + 1 )
-    hovering = true;
-
-  bool not_high_fall = false;
-
-  if ( party_z - floor_level <= 32 )
-  {
-    pParty->uFallStartY = party_z;
-    not_high_fall = true;
-  }
-
-  if (bWalkSound && pParty->walk_sound_timer)//таймеры для звуков передвижения
-  {
-    if (pParty->walk_sound_timer > pEventTimer->uTimeElapsed)
-      pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
-    else pParty->walk_sound_timer = 0;
-  }
-
-  if (party_z <= floor_level + 1)// группа ниже уровня пола
-  {
-    party_z = floor_level + 1;
-    pParty->uFallStartY = floor_level + 1;
-
-    if (!hovering && pParty->floor_face_pid != uFaceID)// не парящие и 
-    {
-      if (pIndoor->pFaces[uFaceID].uAttributes & FACE_PRESSURE_PLATE)
-        uFaceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].uEventID;
-    }
-  }
-  if (!hovering)
-    pParty->floor_face_pid = uFaceID;
-
-  bool on_water = false;
-  if ( pIndoor->pFaces[uFaceID].Fluid())// на воде
-    on_water = true;
-
-  //v81 = pParty->uWalkSpeed;
-  angle = pParty->sRotationY;
-  _view_angle = pParty->sRotationX;
-  v82 = (unsigned __int64)(pEventTimer->dt_in_some_format * (signed __int64)((signed int)(pParty->y_rotation_speed * stru_5C6E00->uIntegerPi)
-                                          / 180)) >> 16;
-  while ( pPartyActionQueue->uNumActions )
-  {
-    switch ( pPartyActionQueue->Next() )
-    {
-      case PARTY_TurnLeft:
-        if (uTurnSpeed)
-          angle = stru_5C6E00->uDoublePiMask & (angle + uTurnSpeed);
-        else
-          angle = stru_5C6E00->uDoublePiMask & (angle + (int)(v82 * fTurnSpeedMultiplier));
-        break;
-      case PARTY_TurnRight:
-        if (uTurnSpeed)
-          angle = stru_5C6E00->uDoublePiMask & (angle - uTurnSpeed);
-        else
-          angle = stru_5C6E00->uDoublePiMask & (angle - (int)(v82 * fTurnSpeedMultiplier));
-        break;
-
-      case PARTY_FastTurnLeft:
-        if (uTurnSpeed)
-          angle = stru_5C6E00->uDoublePiMask & (angle + uTurnSpeed);
-        else
-          angle = stru_5C6E00->uDoublePiMask & (angle + (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
-        break;
-
-      case PARTY_FastTurnRight:
-        if (uTurnSpeed)
-          angle = stru_5C6E00->uDoublePiMask & (angle - uTurnSpeed);
-        else
-          angle = stru_5C6E00->uDoublePiMask & (angle - (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
-        break;
-
-      case PARTY_StrafeLeft:
-        v2 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-        v1 += fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-        party_walking_flag = true;
-        break;
-      case PARTY_StrafeRight:
-        v2 += fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-        v1 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-        party_walking_flag = true;
-        break;
-      case PARTY_WalkForward:
-        v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-        v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-        party_walking_flag = true;
-        break;
-      case PARTY_WalkBackward:
-        v2 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-        v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-        party_walking_flag = true;
-        break;
-      case PARTY_RunForward://Бег вперёд
-        v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-        v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-        party_running_flag = true;
-        break;
-      case PARTY_RunBackward:
-        //v32 = stru_5C6E00->SinCos(angle);
-        //v33 = (double)v81;
-        //v88 = (double)v81;
-        v2 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-        //v34 = stru_5C6E00->SinCos(angle - stru_5C6E00->uIntegerHalfPi);
-        v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-        party_running_flag = true;
-        break;
-      case PARTY_LookUp:
-        _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
-        if ( _view_angle > 128 )
-          _view_angle = 128;
-        if ( uActiveCharacter )
-          pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_63, 0);
-        break;
-      case PARTY_LookDown:
-        _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
-        if ( _view_angle < -128 )
-          _view_angle = -128;
-        if ( uActiveCharacter )
-          pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_64, 0);
-        break;
-      case PARTY_CenterView:
-        _view_angle = 0;
-        break;
-      case PARTY_Jump:
-        if ( (!hovering || party_z <= floor_level + 6 && pParty->uFallSpeed <= 0) && pParty->field_24 )
-        {
-          hovering = true;
-          pParty->uFallSpeed = (signed __int64)((double)(pParty->field_24 << 6) * 1.5 + (double)pParty->uFallSpeed);
-        }
-        break;
-      default:
-        break;
-    }
-  }
-  pParty->sRotationY = angle;
-  pParty->sRotationX = _view_angle;
-  if ( hovering )//парящие
-  {
-    pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();// расчёт скорости падения
-    if ( hovering && pParty->uFallSpeed <= 0 )
-    {
-      if ( pParty->uFallSpeed < -500 && !pParty->bFlying )
-      {
-        for ( uint pl = 1; pl <= 4; pl++ )
-        {
-          if ( !pPlayers[pl]->HasEnchantedItemEquipped(72) && !pPlayers[pl]->WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS) ) //was 8 
-             pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_SCARED, 0);
-        }
-      }
-    }
-    else
-      pParty->uFallStartY = party_z;
-  }
-  else// не парящие
-  {
-    if ( pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 0x8000 )
-    {
-      pParty->uFallSpeed -= pEventTimer->uTimeElapsed * GetGravityStrength();
-      pParty->uFallStartY = party_z;
-    }
-    else
-    {
-      if (! (pParty->uFlags & PARTY_FLAGS_1_LANDING) )
-        pParty->uFallSpeed = 0;
-      pParty->uFallStartY = party_z;
-    }
-  }
-  if ( v2 * v2 + v1 * v1 < 400 )
-  {
+    uFaceEvent = 0;
+    //v89 = pParty->uFallSpeed;
     v1 = 0;
     v2 = 0;
-  }
+    new_party_x = pParty->vPosition.x;
+    new_party_y = pParty->vPosition.y;
+    party_z = pParty->vPosition.z;
+    uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+    party_running_flag = false;
+    party_walking_flag = false;
+    hovering = false;
 
-  stru_721530.field_84 = -1;
-  stru_721530.field_70 = 0;
-  stru_721530.prolly_normal_d = pParty->field_14_radius;
-  stru_721530.field_8_radius = pParty->field_14_radius / 2;
-  stru_721530.field_0 = 1;
-  stru_721530.height = pParty->uPartyHeight - 32;
-  for ( uint i = 0; i < 100; i++ )
-  {
-    new_party_z = party_z;
-    stru_721530.position.x = new_party_x;
-    stru_721530.position.y = new_party_y;
-    stru_721530.position.z = stru_721530.height + party_z + 1;
+    uFaceID = -1;
+    int floor_level = collide_against_floor(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);//получить высоту пола
 
-    stru_721530.normal.x = new_party_x;
-    stru_721530.normal.y = new_party_y;
-    stru_721530.normal.z = stru_721530.prolly_normal_d + party_z + 1;
-
-    stru_721530.velocity.x = v2;
-    stru_721530.velocity.y = v1;
-    stru_721530.velocity.z = pParty->uFallSpeed;
-
-    stru_721530.uSectorID = uSectorID;
-    v38 = 0;
-    if ( pParty->bTurnBasedModeOn == true && pTurnEngine->turn_stage == TE_MOVEMENT )
-      v38 = 13312;
-    if ( stru_721530._47050A(v38) )
-      break;
-    for ( uint j = 0; j < 100; ++j )
+    if (pParty->bFlying)//отключить полёт
     {
-      _46E44E_collide_against_faces_and_portals(1);
-      _46E0B2_collide_against_decorations();//столкновения с декором
-      for ( v80 = 0; v80 < (signed int)uNumActors; ++v80 )
-        Actor::_46DF1A_collide_against_actor(v80, 0);//столкновения с монстрами
-      if ( _46F04E_collide_against_portals() )//столкновения с порталами
-        break;
+        pParty->bFlying = false;
+        if (pParty->FlyActive())
+            pOtherOverlayList->pOverlays[pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID - 1].field_E |= 1;
     }
-    if ( stru_721530.field_7C >= stru_721530.field_6C )
+
+    if (floor_level == -30000 || uFaceID == -1)
     {
-      v39 = stru_721530.normal2.x;
-      uSectorID = stru_721530.normal2.y;
-      v40 = stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
+        floor_level = collide_against_floor_approximate(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
+        if (floor_level == -30000 || uFaceID == -1)
+        {
+            __debugbreak(); // level built with errors 
+            pParty->vPosition.x = blv_prev_party_x;
+            pParty->vPosition.y = blv_prev_party_z;
+            pParty->vPosition.z = blv_prev_party_y;
+            pParty->uFallStartY = blv_prev_party_y;
+            return;
+        }
+    }
+
+    blv_prev_party_x = pParty->vPosition.x;
+    blv_prev_party_z = pParty->vPosition.y;
+    blv_prev_party_y = pParty->vPosition.z;
+    if (!pParty->bTurnBasedModeOn)
+    {
+        static int dword_720CDC = 0;
+
+        int v67 = GetTickCount() / 500;
+        if (dword_720CDC != v67)
+        {
+            dword_4F8580[3 * dword_4F8580[1]] = pParty->vPosition.x;
+            dword_4F8580[3 * dword_4F8580[2]] = pParty->vPosition.y;
+            dword_4F8580[3 * dword_4F8580[3]] = pParty->vPosition.z;
+            if (dword_4F8580[0] > 60)
+                dword_4F8580[0] = 1;
+
+            dword_720CDC = v67;
+        }
+    }
+
+    int fall_start;
+    /*
+    if (!pParty->FeatherFallActive())// не активно падение пера
+    {
+      bFeatherFall = false;
+      if (!pParty->pPlayers[0].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&  // grants feather fall
+          !pParty->pPlayers[1].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&
+          !pParty->pPlayers[2].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&
+          !pParty->pPlayers[3].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT))
+      {
+        fall_start = pParty->uFallStartY;
+      }
+      else// was missing
+      {
+          fall_start = floor_level;
+          bFeatherFall = true;
+          pParty->uFallStartY = floor_level;
+      }
+    }
+    else// активно падение пера
+    {
+      fall_start = floor_level;
+      bFeatherFall = true;
+      pParty->uFallStartY = floor_level;
+    }
+
+    Reworked condition below
+    */
+    if (pParty->FeatherFallActive()
+        || pParty->pPlayers[0].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT)
+        || pParty->pPlayers[1].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT)
+        || pParty->pPlayers[2].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT)
+        || pParty->pPlayers[3].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT))
+    {
+        fall_start = floor_level;
+        bFeatherFall = true;
+        pParty->uFallStartY = floor_level;
     }
     else
     {
-      v39 = new_party_x + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
-      uSectorID = new_party_y + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
-      v40 = new_party_z + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
+        bFeatherFall = false;
+        fall_start = pParty->uFallStartY;
     }
-    v42 = collide_against_floor(v39, uSectorID, v40 + 40, &stru_721530.uSectorID, &uFaceID);
-    if ( v42 == -30000 || v42 - new_party_z > 128 )
-      return;
-    if ( stru_721530.field_7C >= stru_721530.field_6C )//???
-    {
-      new_party_x = stru_721530.normal2.x;
-      new_party_y = stru_721530.normal2.y;
-      new_party_z = stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
-      break;
-    }
-    new_party_x += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
-    new_party_y += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
-    uSectorID = stru_721530.uSectorID;
-    stru_721530.field_70 += stru_721530.field_7C;
-    unsigned long long v87 = new_party_z + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
-    if ( PID_TYPE(stru_721530.uFaceID) == OBJECT_Actor)//при столкновении с монстром
-    {
-      if ( pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime > 0 )
-        pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-      viewparams->bRedrawGameUI = true;
-    }
-    else if ( PID_TYPE(stru_721530.uFaceID) == OBJECT_Decoration)//при столкновении с декорацией
-    {
-      v54 = stru_5C6E00->Atan2(new_party_x - pLevelDecorations[stru_721530.uFaceID >> 3].vPosition.x,
-              new_party_y - pLevelDecorations[stru_721530.uFaceID >> 3].vPosition.y);
-      v2 = fixpoint_mul(stru_5C6E00->Cos(v54), integer_sqrt(v2 * v2 + v1 * v1));
-      v1 = fixpoint_mul(stru_5C6E00->Sin(v54), integer_sqrt(v2 * v2 + v1 * v1));
-    }
-    else if ( PID_TYPE(stru_721530.uFaceID) == OBJECT_BModel)//при столкновении с bmodel
-    {
-      pFace = &pIndoor->pFaces[(signed int)stru_721530.uFaceID >> 3];
-      if ( pFace->uPolygonType == POLYGON_Floor )// если bmodel - пол
-      {
-        if ( pParty->uFallSpeed < 0 )
-          pParty->uFallSpeed = 0;
-        v87 = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
-        if ( pParty->uFallStartY - v87 < 512 )
-          pParty->uFallStartY = v87;
-        if ( v2 * v2 + v1 * v1 < 400 )
-        {
-          v1 = 0;
-          v2 = 0;
-        }
-        if ( pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate() )
-          uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
-      }
-      else// если не пол
-      {
-        v46 = pParty->uFallSpeed * pFace->pFacePlane_old.vNormal.z;
-        if ( pFace->uPolygonType != POLYGON_InBetweenFloorAndWall )//полез на холм
-        {
-          v80 = abs(v1 * pFace->pFacePlane_old.vNormal.y + v46 + v2 * pFace->pFacePlane_old.vNormal.x) >> 16;
-          if ((stru_721530.speed >> 3) > v80 )
-          v80 = stru_721530.speed >> 3;
-          v2 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
-          v1 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
-          pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
-          //v80 = pFace->pFacePlane_old.vNormal.y;
-          v52 = stru_721530.prolly_normal_d - ((pFace->pFacePlane_old.dist
-                + v87 * pFace->pFacePlane_old.vNormal.z
-                + new_party_y * pFace->pFacePlane_old.vNormal.y
-                + new_party_x * pFace->pFacePlane_old.vNormal.x) >> 16);
-          if ( v52 > 0 )
-          {
-            new_party_x += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.x);
-            new_party_y += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.y);
-            v87 += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.z);
-          }
-          if ( pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate() )
-            uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
-        }
-        if ( pFace->uPolygonType == POLYGON_InBetweenFloorAndWall )
-        {
-          v80 = abs(v1 * pFace->pFacePlane_old.vNormal.y + v46 + v2 * pFace->pFacePlane_old.vNormal.x) >> 16;
-          if ((stru_721530.speed >> 3) > v80 )
-            v80 = stru_721530.speed >> 3;
-          v2 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
-          v1 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
-          pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
-          if ( v2 * v2 + v1 * v1 >= 400 )
-          {
-            if ( pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate() )
-              uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
-          }
-          else
-          {
-            v2 = 0;
-            v1 = 0;
-            pParty->uFallSpeed = 0;
-          }
-        }
-      }
-    }
-    v2 = fixpoint_mul(58500, v2);
-    v1 = fixpoint_mul(58500, v1);
-    pParty->uFallSpeed = fixpoint_mul(58500, pParty->uFallSpeed);
-  }
 
-  //  //Воспроизведение звуков ходьбы/бега-------------------------
-  uint pX_ = abs(pParty->vPosition.x - new_party_x);
-  uint pY_ = abs(pParty->vPosition.y - new_party_y);
-  uint pZ_ = abs(pParty->vPosition.z - new_party_z);
-  if ( bWalkSound && pParty->walk_sound_timer <= 0 )
-  {
-    pAudioPlayer->_4AA258(804);//stop sound
-    if ( party_running_flag && (!hovering || not_high_fall) ) //Бег и (не прыжок или не высокое падение )
+    if (fall_start - party_z > 512 && !bFeatherFall && party_z <= floor_level + 1)//повреждение от падения с высоты
     {
-      if ( integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16 )
-      {
-        if ( on_water )
-          pAudioPlayer->PlaySound(SOUND_RunWaterIndoor, 804, 1, -1, 0, 0, 0, 0);
-        else if ( pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET )//по ковру
-          pAudioPlayer->PlaySound(SOUND_RunCarpet, 804, 1, -1, 0, 0, 0, 0);
-        else
-          pAudioPlayer->PlaySound(SOUND_RunWood, 804, 1, -1, 0, 0, 0, 0);
-        pParty->walk_sound_timer = 96;//64
-      }
+        assert(~pParty->uFlags & PARTY_FLAGS_1_LANDING); // why land in indoor?
+        if (pParty->uFlags & PARTY_FLAGS_1_LANDING)
+            pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
+        else for (uint i = 0; i < 4; ++i)
+        {                                      // receive falling damage
+            if (!pParty->pPlayers[i].HasEnchantedItemEquipped(72) && !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS))
+            {
+                pParty->pPlayers[i].ReceiveDamage((pParty->uFallStartY - party_z) * (0.1f * pParty->pPlayers[i].GetMaxHealth()) / 256, DMGT_PHISYCAL);
+                v10 = (double)(20 - pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualEndurance())) * flt_6BE3A4_debug_recmod1 * 2.133333333333333;
+                pParty->pPlayers[i].SetRecoveryTime((signed __int64)v10);
+            }
+        }
     }
-    else if ( party_walking_flag && (!hovering || not_high_fall) )//Ходьба и (не прыжок или не высокое падение)
+
+    if (party_z > floor_level + 1)
+        hovering = true;
+
+    bool not_high_fall = false;
+
+    if (party_z - floor_level <= 32)
     {
-      if ( integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8 )
-      {
-        if ( on_water )
-          pAudioPlayer->PlaySound(SOUND_WalkWaterIndoor, 804, 1, -1, 0, 0, 0, 0);
-        else if ( pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET )//по ковру
-          pAudioPlayer->PlaySound(SOUND_WalkCarpet, 804, 1, -1, 0, 0, 0, 0);
-        else
-          pAudioPlayer->PlaySound(SOUND_WalkWood, 804, 1, -1, 0, 0, 0, 0);
-        pParty->walk_sound_timer = 144;//64
-      }
+        pParty->uFallStartY = party_z;
+        not_high_fall = true;
     }
-  }
-  if ( integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8 )//отключить  звук ходьбы при остановке
-    pAudioPlayer->_4AA258(804);
-  //-------------------------------------------------------------
-  if ( !hovering || !not_high_fall )
-    pParty->uFlags &= ~PARTY_FLAGS_1_FALLING;
-  else
-    pParty->uFlags |= PARTY_FLAGS_1_FALLING;
-  pParty->uFlags &= ~PARTY_FLAGS_1_BURNING;
-  pParty->vPosition.x = new_party_x;
-  pParty->vPosition.z = new_party_z;
-  pParty->vPosition.y = new_party_y;
-  //pParty->uFallSpeed = v89;
-  if ( !hovering && pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_LAVA )
-    pParty->uFlags |= PARTY_FLAGS_1_BURNING;//0x200
-  if (uFaceEvent)
-    EventProcessor(uFaceEvent, 0, 1);
+
+    if (bWalkSound && pParty->walk_sound_timer)//таймеры для звуков передвижения
+    {
+        if (pParty->walk_sound_timer > pEventTimer->uTimeElapsed)
+            pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
+        else pParty->walk_sound_timer = 0;
+    }
+
+    if (party_z <= floor_level + 1)// группа ниже уровня пола
+    {
+        party_z = floor_level + 1;
+        pParty->uFallStartY = floor_level + 1;
+
+        if (!hovering && pParty->floor_face_pid != uFaceID)// не парящие и 
+        {
+            if (pIndoor->pFaces[uFaceID].uAttributes & FACE_PRESSURE_PLATE)
+                uFaceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].uEventID;
+        }
+    }
+    if (!hovering)
+        pParty->floor_face_pid = uFaceID;
+
+    bool on_water = false;
+    if (pIndoor->pFaces[uFaceID].Fluid())// на воде
+        on_water = true;
+
+    //v81 = pParty->uWalkSpeed;
+    angle = pParty->sRotationY;
+    _view_angle = pParty->sRotationX;
+    v82 = (unsigned __int64)(pEventTimer->dt_in_some_format * (signed __int64)((signed int)(pParty->y_rotation_speed * stru_5C6E00->uIntegerPi)
+        / 180)) >> 16;
+    while (pPartyActionQueue->uNumActions)
+    {
+        switch (pPartyActionQueue->Next())
+        {
+        case PARTY_TurnLeft:
+            if (uTurnSpeed)
+                angle = stru_5C6E00->uDoublePiMask & (angle + uTurnSpeed);
+            else
+                angle = stru_5C6E00->uDoublePiMask & (angle + (int)(v82 * fTurnSpeedMultiplier));
+            break;
+        case PARTY_TurnRight:
+            if (uTurnSpeed)
+                angle = stru_5C6E00->uDoublePiMask & (angle - uTurnSpeed);
+            else
+                angle = stru_5C6E00->uDoublePiMask & (angle - (int)(v82 * fTurnSpeedMultiplier));
+            break;
+
+        case PARTY_FastTurnLeft:
+            if (uTurnSpeed)
+                angle = stru_5C6E00->uDoublePiMask & (angle + uTurnSpeed);
+            else
+                angle = stru_5C6E00->uDoublePiMask & (angle + (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
+            break;
+
+        case PARTY_FastTurnRight:
+            if (uTurnSpeed)
+                angle = stru_5C6E00->uDoublePiMask & (angle - uTurnSpeed);
+            else
+                angle = stru_5C6E00->uDoublePiMask & (angle - (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
+            break;
+
+        case PARTY_StrafeLeft:
+            v2 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+            v1 += fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+            party_walking_flag = true;
+            break;
+        case PARTY_StrafeRight:
+            v2 += fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+            v1 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+            party_walking_flag = true;
+            break;
+        case PARTY_WalkForward:
+            v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+            v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+            party_walking_flag = true;
+            break;
+        case PARTY_WalkBackward:
+            v2 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+            v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+            party_walking_flag = true;
+            break;
+        case PARTY_RunForward://Бег вперёд
+            v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+            v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+            party_running_flag = true;
+            break;
+        case PARTY_RunBackward:
+            //v32 = stru_5C6E00->SinCos(angle);
+            //v33 = (double)v81;
+            //v88 = (double)v81;
+            v2 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+            //v34 = stru_5C6E00->SinCos(angle - stru_5C6E00->uIntegerHalfPi);
+            v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+            party_running_flag = true;
+            break;
+        case PARTY_LookUp:
+            _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
+            if (_view_angle > 128)
+                _view_angle = 128;
+            if (uActiveCharacter)
+                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_63, 0);
+            break;
+        case PARTY_LookDown:
+            _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
+            if (_view_angle < -128)
+                _view_angle = -128;
+            if (uActiveCharacter)
+                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_64, 0);
+            break;
+        case PARTY_CenterView:
+            _view_angle = 0;
+            break;
+        case PARTY_Jump:
+            if ((!hovering || party_z <= floor_level + 6 && pParty->uFallSpeed <= 0) && pParty->field_24)
+            {
+                hovering = true;
+                pParty->uFallSpeed = (signed __int64)((double)(pParty->field_24 << 6) * 1.5 + (double)pParty->uFallSpeed);
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    pParty->sRotationY = angle;
+    pParty->sRotationX = _view_angle;
+    if (hovering)//парящие
+    {
+        pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();// расчёт скорости падения
+        if (hovering && pParty->uFallSpeed <= 0)
+        {
+            if (pParty->uFallSpeed < -500 && !pParty->bFlying)
+            {
+                for (uint pl = 1; pl <= 4; pl++)
+                {
+                    if (!pPlayers[pl]->HasEnchantedItemEquipped(72) && !pPlayers[pl]->WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS)) //was 8 
+                        pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_SCARED, 0);
+                }
+            }
+        }
+        else
+            pParty->uFallStartY = party_z;
+    }
+    else// не парящие
+    {
+        if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 0x8000)
+        {
+            pParty->uFallSpeed -= pEventTimer->uTimeElapsed * GetGravityStrength();
+            pParty->uFallStartY = party_z;
+        }
+        else
+        {
+            if (!(pParty->uFlags & PARTY_FLAGS_1_LANDING))
+                pParty->uFallSpeed = 0;
+            pParty->uFallStartY = party_z;
+        }
+    }
+    if (v2 * v2 + v1 * v1 < 400)
+    {
+        v1 = 0;
+        v2 = 0;
+    }
+
+    stru_721530.field_84 = -1;
+    stru_721530.field_70 = 0;
+    stru_721530.prolly_normal_d = pParty->field_14_radius;
+    stru_721530.field_8_radius = pParty->field_14_radius / 2;
+    stru_721530.field_0 = 1;
+    stru_721530.height = pParty->uPartyHeight - 32;
+    for (uint i = 0; i < 100; i++)
+    {
+        new_party_z = party_z;
+        stru_721530.position.x = new_party_x;
+        stru_721530.position.y = new_party_y;
+        stru_721530.position.z = stru_721530.height + party_z + 1;
+
+        stru_721530.normal.x = new_party_x;
+        stru_721530.normal.y = new_party_y;
+        stru_721530.normal.z = stru_721530.prolly_normal_d + party_z + 1;
+
+        stru_721530.velocity.x = v2;
+        stru_721530.velocity.y = v1;
+        stru_721530.velocity.z = pParty->uFallSpeed;
+
+        stru_721530.uSectorID = uSectorID;
+        v38 = 0;
+        if (pParty->bTurnBasedModeOn == true && pTurnEngine->turn_stage == TE_MOVEMENT)
+            v38 = 13312;
+        if (stru_721530._47050A(v38))
+            break;
+        for (uint j = 0; j < 100; ++j)
+        {
+            _46E44E_collide_against_faces_and_portals(1);
+            _46E0B2_collide_against_decorations();//столкновения с декором
+            for (v80 = 0; v80 < (signed int)uNumActors; ++v80)
+                Actor::_46DF1A_collide_against_actor(v80, 0);//столкновения с монстрами
+            if (_46F04E_collide_against_portals())//столкновения с порталами
+                break;
+        }
+        if (stru_721530.field_7C >= stru_721530.field_6C)
+        {
+            v39 = stru_721530.normal2.x;
+            uSectorID = stru_721530.normal2.y;
+            v40 = stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
+        }
+        else
+        {
+            v39 = new_party_x + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
+            uSectorID = new_party_y + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
+            v40 = new_party_z + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
+        }
+        v42 = collide_against_floor(v39, uSectorID, v40 + 40, &stru_721530.uSectorID, &uFaceID);
+        if (v42 == -30000 || v42 - new_party_z > 128)
+            return;
+        if (stru_721530.field_7C >= stru_721530.field_6C)//???
+        {
+            new_party_x = stru_721530.normal2.x;
+            new_party_y = stru_721530.normal2.y;
+            new_party_z = stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
+            break;
+        }
+        new_party_x += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
+        new_party_y += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
+        uSectorID = stru_721530.uSectorID;
+        stru_721530.field_70 += stru_721530.field_7C;
+        unsigned long long v87 = new_party_z + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
+        if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Actor) // invis break on actor collision    /    при столкновении с монстром
+        {
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+            {
+                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+            }
+            viewparams->bRedrawGameUI = true;
+        }
+        else if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Decoration) // decoration collision   /   при столкновении с декорацией
+        {
+            v54 = stru_5C6E00->Atan2(new_party_x - pLevelDecorations[stru_721530.uFaceID >> 3].vPosition.x,
+                new_party_y - pLevelDecorations[stru_721530.uFaceID >> 3].vPosition.y);
+            v2 = fixpoint_mul(stru_5C6E00->Cos(v54), integer_sqrt(v2 * v2 + v1 * v1));
+            v1 = fixpoint_mul(stru_5C6E00->Sin(v54), integer_sqrt(v2 * v2 + v1 * v1));
+        }
+        else if (PID_TYPE(stru_721530.uFaceID) == OBJECT_BModel)//при столкновении с bmodel
+        {
+            pFace = &pIndoor->pFaces[(signed int)stru_721530.uFaceID >> 3];
+            if (pFace->uPolygonType == POLYGON_Floor)// если bmodel - пол
+            {
+                if (pParty->uFallSpeed < 0)
+                    pParty->uFallSpeed = 0;
+                v87 = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
+                if (pParty->uFallStartY - v87 < 512)
+                    pParty->uFallStartY = v87;
+                if (v2 * v2 + v1 * v1 < 400)
+                {
+                    v1 = 0;
+                    v2 = 0;
+                }
+                if (pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate())
+                    uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+            }
+            else// если не пол
+            {
+                v46 = pParty->uFallSpeed * pFace->pFacePlane_old.vNormal.z;
+                if (pFace->uPolygonType != POLYGON_InBetweenFloorAndWall)//полез на холм
+                {
+                    v80 = abs(v1 * pFace->pFacePlane_old.vNormal.y + v46 + v2 * pFace->pFacePlane_old.vNormal.x) >> 16;
+                    if ((stru_721530.speed >> 3) > v80)
+                        v80 = stru_721530.speed >> 3;
+                    v2 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
+                    v1 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
+                    pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
+                    //v80 = pFace->pFacePlane_old.vNormal.y;
+                    v52 = stru_721530.prolly_normal_d - ((pFace->pFacePlane_old.dist
+                        + v87 * pFace->pFacePlane_old.vNormal.z
+                        + new_party_y * pFace->pFacePlane_old.vNormal.y
+                        + new_party_x * pFace->pFacePlane_old.vNormal.x) >> 16);
+                    if (v52 > 0)
+                    {
+                        new_party_x += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.x);
+                        new_party_y += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.y);
+                        v87 += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.z);
+                    }
+                    if (pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate())
+                        uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+                }
+                if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall)
+                {
+                    v80 = abs(v1 * pFace->pFacePlane_old.vNormal.y + v46 + v2 * pFace->pFacePlane_old.vNormal.x) >> 16;
+                    if ((stru_721530.speed >> 3) > v80)
+                        v80 = stru_721530.speed >> 3;
+                    v2 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
+                    v1 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
+                    pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
+                    if (v2 * v2 + v1 * v1 >= 400)
+                    {
+                        if (pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate())
+                            uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+                    }
+                    else
+                    {
+                        v2 = 0;
+                        v1 = 0;
+                        pParty->uFallSpeed = 0;
+                    }
+                }
+            }
+        }
+        v2 = fixpoint_mul(58500, v2);
+        v1 = fixpoint_mul(58500, v1);
+        pParty->uFallSpeed = fixpoint_mul(58500, pParty->uFallSpeed);
+    }
+
+    //  //Воспроизведение звуков ходьбы/бега-------------------------
+    uint pX_ = abs(pParty->vPosition.x - new_party_x);
+    uint pY_ = abs(pParty->vPosition.y - new_party_y);
+    uint pZ_ = abs(pParty->vPosition.z - new_party_z);
+    if (bWalkSound && pParty->walk_sound_timer <= 0)
+    {
+        pAudioPlayer->_4AA258(804);//stop sound
+        if (party_running_flag && (!hovering || not_high_fall)) //Бег и (не прыжок или не высокое падение )
+        {
+            if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16)
+            {
+                if (on_water)
+                    pAudioPlayer->PlaySound(SOUND_RunWaterIndoor, 804, 1, -1, 0, 0, 0, 0);
+                else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)//по ковру
+                    pAudioPlayer->PlaySound(SOUND_RunCarpet, 804, 1, -1, 0, 0, 0, 0);
+                else
+                    pAudioPlayer->PlaySound(SOUND_RunWood, 804, 1, -1, 0, 0, 0, 0);
+                pParty->walk_sound_timer = 96;//64
+            }
+        }
+        else if (party_walking_flag && (!hovering || not_high_fall))//Ходьба и (не прыжок или не высокое падение)
+        {
+            if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8)
+            {
+                if (on_water)
+                    pAudioPlayer->PlaySound(SOUND_WalkWaterIndoor, 804, 1, -1, 0, 0, 0, 0);
+                else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)//по ковру
+                    pAudioPlayer->PlaySound(SOUND_WalkCarpet, 804, 1, -1, 0, 0, 0, 0);
+                else
+                    pAudioPlayer->PlaySound(SOUND_WalkWood, 804, 1, -1, 0, 0, 0, 0);
+                pParty->walk_sound_timer = 144;//64
+            }
+        }
+    }
+    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)//отключить  звук ходьбы при остановке
+        pAudioPlayer->_4AA258(804);
+    //-------------------------------------------------------------
+    if (!hovering || !not_high_fall)
+        pParty->uFlags &= ~PARTY_FLAGS_1_FALLING;
+    else
+        pParty->uFlags |= PARTY_FLAGS_1_FALLING;
+    pParty->uFlags &= ~PARTY_FLAGS_1_BURNING;
+    pParty->vPosition.x = new_party_x;
+    pParty->vPosition.z = new_party_z;
+    pParty->vPosition.y = new_party_y;
+    //pParty->uFallSpeed = v89;
+    if (!hovering && pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_LAVA)
+        pParty->uFlags |= PARTY_FLAGS_1_BURNING;//0x200
+    if (uFaceEvent)
+        EventProcessor(uFaceEvent, 0, 1);
 }
 
 //----- (00449A49) --------------------------------------------------------

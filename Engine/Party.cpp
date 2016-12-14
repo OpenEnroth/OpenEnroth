@@ -6,9 +6,9 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/Time.h"
 
 #include "Party.h"
-#include "Timer.h"
 #include "Media/Audio/AudioPlayer.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "IO/Mouse.h"
@@ -89,12 +89,12 @@ void Party::Zero()
   uCurrentYear = 0;
   uCurrentMonth = 0;
   uCurrentMonthWeek = 0;
-  uDaysPlayed = 0;
+  uCurrentDayOfMonth = 0;
   uCurrentHour = 0;
   uCurrentMinute = 0;
   uCurrentTimeSecond = 0;
 
-  field_6FC = 0;
+  _6FC_water_lava_timer = 0;
   days_played_without_rest = 0;
   vPosition.x = 0;
   vPosition.y = 0;
@@ -113,7 +113,7 @@ void Party::Zero()
   walk_sound_timer = 0;
 
   field_24 = 5;
-  field_6FC = 0;
+  _6FC_water_lava_timer = 0;
   field_708 = 15;
   field_0 = 25;
 
@@ -512,11 +512,10 @@ void Party::Reset()
     alignment = PartyAlignment_Neutral;
     SetUserInterface(alignment, true);
 
-    // 0x21C00 = 138240
-    // 138240 x 0.234375 = 32400
-    // 32400 / 60 / 60 = 9 am
-    uTimePlayed = 0x21C00;
-    uLastRegenerationTime = 0x21C00;
+    // game begins at 9 am
+    this->playing_time = GameTime(0, 0, 9);
+    this->last_regenerated = GameTime(0, 0, 9);
+    this->uCurrentHour = 9;
 
     bTurnBasedModeOn = false;
 
@@ -567,7 +566,7 @@ void Party::Reset()
     {
         pPlayers[i].uTimeToRecovery = 0;
         for (uint j = 0; j < 20; ++j)
-            pPlayers[i].pConditions[j] = 0;
+            pPlayers[i].conditions_times[j].Reset();
 
         for (uint j = 0; j < 24; ++j)
             pPlayers[i].pPlayerBuffs[j].Reset();
@@ -601,29 +600,32 @@ void Party::Reset()
 //----- (0043AD34) --------------------------------------------------------
 void Party::Yell()
 {
-  Actor *v0; // esi@5
-  int v1; // edi@9
-  int v2; // ebx@9
-  int v3; // eax@9
+    Actor *v0; // esi@5
+    int v1; // edi@9
+    int v2; // ebx@9
+    int v3; // eax@9
 
-  if ( (signed __int64)pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime > 0 )
-    pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-  if ( pParty->bTurnBasedModeOn != 1 )
-  {
-    for (unsigned int i = 0; i < uNumActors; i++)
+    if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
     {
-      v0 = &pActors[i];
-      if ( v0->Actor::CanAct() && v0->pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Long
-		                       && v0->pMonsterInfo.uMovementType != MONSTER_MOVEMENT_TYPE_STAIONARY )
-      {
-        v1 = abs(v0->vPosition.x - pParty->vPosition.x);
-        v2 = abs(v0->vPosition.y - pParty->vPosition.y);
-        v3 = abs(v0->vPosition.z - pParty->vPosition.z);
-        if (int_get_vector_length(v1, v2, v3) < 512)
-          Actor::AI_Flee(i, 4, 0, 0);
-      }
+        pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
     }
-  }
+
+    if (pParty->bTurnBasedModeOn != 1)
+    {
+        for (unsigned int i = 0; i < uNumActors; i++)
+        {
+            v0 = &pActors[i];
+            if (v0->Actor::CanAct() && v0->pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Long
+                && v0->pMonsterInfo.uMovementType != MONSTER_MOVEMENT_TYPE_STAIONARY)
+            {
+                v1 = abs(v0->vPosition.x - pParty->vPosition.x);
+                v2 = abs(v0->vPosition.y - pParty->vPosition.y);
+                v3 = abs(v0->vPosition.z - pParty->vPosition.z);
+                if (int_get_vector_length(v1, v2, v3) < 512)
+                    Actor::AI_Flee(i, 4, 0, 0);
+            }
+        }
+    }
 }
 
 //----- (00491BF9) --------------------------------------------------------
@@ -643,7 +645,7 @@ void Party::ResetPosMiscAndSpellBuffs()
   this->uWalkSpeed = 384;
   this->y_rotation_speed = 90;
   this->field_24 = 5;
-  this->field_6FC = 0;
+  this->_6FC_water_lava_timer = 0;
   this->field_708 = 15;
   this->field_0 = 25;
 
@@ -770,119 +772,123 @@ void Party::UpdatePlayersAndHirelingsEmotions()
 //----- (00490D02) --------------------------------------------------------
 void Party::RestAndHeal()
 {
-  Player *pPlayer; // esi@4
-  bool have_vessels_soul; // [sp+10h] [bp-8h]@10
+    Player *pPlayer; // esi@4
+    bool have_vessels_soul; // [sp+10h] [bp-8h]@10
 
-  for ( uint i = 0; i < 20; ++i )
-    pParty->pPartyBuffs[i].Reset();
+    for (uint i = 0; i < 20; ++i)
+        pParty->pPartyBuffs[i].Reset();
 
-  for ( int pPlayerID = 0; pPlayerID < 4; ++pPlayerID )
-  {
-    pPlayer = &pParty->pPlayers[pPlayerID];
-    for ( uint i = 0; i < 20; ++i )
-      pPlayer->pPlayerBuffs[i].Reset();
+    for (int pPlayerID = 0; pPlayerID < 4; ++pPlayerID)
+    {
+        pPlayer = &pParty->pPlayers[pPlayerID];
+        for (uint i = 0; i < 20; ++i)
+            pPlayer->pPlayerBuffs[i].Reset();
 
-    pPlayer->Zero();
-    if ( pPlayer->pConditions[Condition_Dead] || pPlayer->pConditions[Condition_Pertified] || pPlayer->pConditions[Condition_Eradicated] )//Dead/Petrified/Eradicated
-      continue;
-    pPlayer->pConditions[Condition_Unconcious] = 0;//Unconcious
-    pPlayer->pConditions[Condition_Drunk] = 0;//Drunk
-    pPlayer->pConditions[Condition_Fear] = 0;//Fear
-    pPlayer->pConditions[Condition_Sleep] = 0;//Sleep
-    pPlayer->pConditions[Condition_Weak] = 0;//Weak
-    pPlayer->uTimeToRecovery = 0;
-    pPlayer->sHealth = pPlayer->GetMaxHealth();
-    pPlayer->sMana = pPlayer->GetMaxMana();
-    if ( pPlayer->classType == PLAYER_CLASS_LICH )
-    {
-      have_vessels_soul = false;
-      for ( uint i = 0; i < 126; i++ )
-      {
-        if ( pPlayer->pInventoryItemList[i].uItemID == ITEM_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID + 1 )
-          have_vessels_soul = true;
-      }
-      if ( !have_vessels_soul )
-      {
-        pPlayer->sHealth = pPlayer->GetMaxHealth() / 2;
-        pPlayer->sMana = pPlayer->GetMaxMana() / 2;
-      }
-    }
+        pPlayer->Zero();
+        if (
+            pPlayer->conditions_times[Condition_Dead]
+            || pPlayer->conditions_times[Condition_Pertified]
+            || pPlayer->conditions_times[Condition_Eradicated]
+        )
+        {
+            continue;
+        }
 
-    if (pPlayer->pConditions[Condition_Zombie])
-    {
-      pPlayer->sMana = 0;
-      pPlayer->sHealth /= 2;
+        pPlayer->conditions_times[Condition_Unconcious].Reset();
+        pPlayer->conditions_times[Condition_Drunk].Reset();
+        pPlayer->conditions_times[Condition_Fear].Reset();
+        pPlayer->conditions_times[Condition_Sleep].Reset();
+        pPlayer->conditions_times[Condition_Weak].Reset();
+
+        pPlayer->uTimeToRecovery = 0;
+        pPlayer->sHealth = pPlayer->GetMaxHealth();
+        pPlayer->sMana = pPlayer->GetMaxMana();
+        if (pPlayer->classType == PLAYER_CLASS_LICH)
+        {
+            have_vessels_soul = false;
+            for (uint i = 0; i < 126; i++)
+            {
+                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID + 1)
+                    have_vessels_soul = true;
+            }
+            if (!have_vessels_soul)
+            {
+                pPlayer->sHealth = pPlayer->GetMaxHealth() / 2;
+                pPlayer->sMana = pPlayer->GetMaxMana() / 2;
+            }
+        }
+
+        if (pPlayer->conditions_times[Condition_Zombie])
+        {
+            pPlayer->sMana = 0;
+            pPlayer->sHealth /= 2;
+        }
+        else if (pPlayer->conditions_times[Condition_Poison_Severe] || pPlayer->conditions_times[Condition_Disease_Severe])
+        {
+            pPlayer->sHealth /= 4;
+            pPlayer->sMana /= 4;
+        }
+        else if (pPlayer->conditions_times[Condition_Poison_Medium] || pPlayer->conditions_times[Condition_Disease_Medium])
+        {
+            pPlayer->sHealth /= 3;
+            pPlayer->sMana /= 3;
+        }
+        else if (pPlayer->conditions_times[Condition_Poison_Weak] || pPlayer->conditions_times[Condition_Disease_Weak])
+        {
+            pPlayer->sHealth /= 2;
+            pPlayer->sMana /= 2;
+        }
+        if (pPlayer->conditions_times[Condition_Insane])
+            pPlayer->sMana = 0;
+        UpdatePlayersAndHirelingsEmotions();
     }
-    else if ( pPlayer->pConditions[Condition_Poison_Severe] || pPlayer->pConditions[Condition_Disease_Severe] )
-    {
-      pPlayer->sHealth /= 4;
-      pPlayer->sMana /= 4;
-    }
-    else if ( pPlayer->pConditions[Condition_Poison_Medium] || pPlayer->pConditions[Condition_Disease_Medium] )
-    {
-      pPlayer->sHealth /= 3;
-      pPlayer->sMana /= 3;
-    }
-    else if ( pPlayer->pConditions[Condition_Poison_Weak] || pPlayer->pConditions[Condition_Disease_Weak] )
-    {
-      pPlayer->sHealth /= 2;
-      pPlayer->sMana /=  2;
-    }
-    if ( pPlayer->pConditions[Condition_Insane] )
-      pPlayer->sMana = 0;
-    UpdatePlayersAndHirelingsEmotions();
-  }
-  pParty->days_played_without_rest = 0;
+    pParty->days_played_without_rest = 0;
 }
 
 //----- (004938D1) --------------------------------------------------------
 void Rest(unsigned int uHoursToSleep)
 {
-  signed __int64 v2; // st7@3
+    auto rest_time = GameTime(0, 0, uHoursToSleep);
 
-  if ( uHoursToSleep > 240 )
-    Actor::InitializeActors();
-  v2 = (signed __int64)((7680 * uHoursToSleep) * 0.033333335);
-  pParty->uTimePlayed += v2;
-  for (int i = 1; i <= 4; i++)
-  {
-    pPlayers[i]->Recover((int)v2);
-  }
-  _494035_timed_effects__water_walking_damage__etc();
+    if (uHoursToSleep > 240)
+        Actor::InitializeActors();
+
+    pParty->GetPlayingTime() += rest_time;
+    for (int i = 1; i <= 4; i++)
+    {
+        pPlayers[i]->Recover(rest_time);
+    }
+
+    _494035_timed_effects__water_walking_damage__etc();
 }
+
 //----- (004B1BDB) --------------------------------------------------------
-void RestAndHeal(__int64 uNumMinutes)
+void RestAndHeal(__int64 minutes)
 {
-  signed __int64 v1; // ST2C_8@1
-  signed __int64 v2; // qax@1
-  unsigned __int64 v4; // qax@1
-  unsigned int v5; // ebx@1
+    pParty->GetPlayingTime().AddMinutes(minutes);
 
-  pParty->pHirelings[0].bHasUsedTheAbility = 0;
-  pParty->pHirelings[1].bHasUsedTheAbility = 0;
-  pParty->uTimePlayed += (signed __int64)((double)(7680 * uNumMinutes) * 0.033333335);
-  v1 = (signed __int64)((double)(signed __int64)pParty->uTimePlayed * 0.234375);
-  v2 = v1 / 60 / 60;
-  v4 = (unsigned int)v2 / 0x18;
-  v5 = (unsigned int)(v4 / 7) >> 2;
-  pParty->uCurrentTimeSecond = v1 % 60;
-  pParty->uCurrentMinute = v1 / 60 % 60;
-  pParty->uCurrentHour = v2 % 24;
-  pParty->uCurrentMonthWeek = v4 / 7 & 3;
-  pParty->uDaysPlayed = (unsigned int)v4 % 0x1C;
-  pParty->uCurrentMonth = v5 % 0xC;
-  pParty->uCurrentYear = v5 / 0xC + game_starting_year;
-  pParty->RestAndHeal();
+    pParty->pHirelings[0].bHasUsedTheAbility = false;
+    pParty->pHirelings[1].bHasUsedTheAbility = false;
 
-  for (int i = 0; i < 4; i++)
-  {
-    pParty->pPlayers[i].uTimeToRecovery = 0;
-    pParty->pPlayers[i].uNumDivineInterventionCastsThisDay = 0;
-    pParty->pPlayers[i].uNumArmageddonCasts = 0;
-    pParty->pPlayers[i].uNumFireSpikeCasts = 0;
-    pParty->pPlayers[i].field_1B3B = 0;
-  }
-  pParty->UpdatePlayersAndHirelingsEmotions();
+    pParty->uCurrentTimeSecond = pParty->GetPlayingTime().GetSecondsFraction();
+    pParty->uCurrentMinute = pParty->GetPlayingTime().GetMinutesFraction();
+    pParty->uCurrentHour = pParty->GetPlayingTime().GetHoursOfDay();
+    pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetWeeksOfMonth();
+    pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDaysOfMonth();
+    pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
+    pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
+    pParty->RestAndHeal();
+
+    for (int i = 0; i < 4; i++)
+    {
+        pParty->pPlayers[i].uTimeToRecovery = 0;
+        pParty->pPlayers[i].uNumDivineInterventionCastsThisDay = 0;
+        pParty->pPlayers[i].uNumArmageddonCasts = 0;
+        pParty->pPlayers[i].uNumFireSpikeCasts = 0;
+        pParty->pPlayers[i].field_1B3B = 0;
+    }
+
+    pParty->UpdatePlayersAndHirelingsEmotions();
 }
 //----- (0041F5BE) --------------------------------------------------------
 void  Party::Sleep6Hours()
@@ -936,45 +942,50 @@ int Party::GetPartyReputation()
     v1 += 5;
   return v1 + v0->uReputation;
 }
+
 //----- (004269A2) --------------------------------------------------------
 void Party::GivePartyExp(unsigned int pEXPNum)
 {
-  signed int pActivePlayerCount; // ecx@1
-  int pLearningPercent; // eax@13
+    signed int pActivePlayerCount; // ecx@1
+    int pLearningPercent; // eax@13
 
-  if ( pEXPNum > 0)
-  {
-    pActivePlayerCount = 0;
-    for ( uint i = 0; i < 4; ++i )
+    if (pEXPNum > 0)
     {
-      if ( !pParty->pPlayers[i].pConditions[Condition_Unconcious] && 
-        !pParty->pPlayers[i].pConditions[Condition_Dead] && 
-        !pParty->pPlayers[i].pConditions[Condition_Pertified] && 
-        !pParty->pPlayers[i].pConditions[Condition_Eradicated] )
-        pActivePlayerCount ++;
-    }
-    if ( pActivePlayerCount )
-    {
-      pEXPNum = pEXPNum / pActivePlayerCount;
-      for ( uint i = 0; i < 4; ++i )
-      {
-        if ( !pParty->pPlayers[i].pConditions[Condition_Unconcious] && 
-          !pParty->pPlayers[i].pConditions[Condition_Dead] && 
-          !pParty->pPlayers[i].pConditions[Condition_Pertified] && 
-          !pParty->pPlayers[i].pConditions[Condition_Eradicated] )
+        pActivePlayerCount = 0;
+        for (uint i = 0; i < 4; ++i)
         {
-          pLearningPercent = pParty->pPlayers[i].GetLearningPercent();
-          pEXPNum = pEXPNum + pEXPNum * pLearningPercent / 100;
-          pParty->pPlayers[i].uExperience += pEXPNum;
-          if ( pParty->pPlayers[i].uExperience > 4000000000i64 )
-          {
-            pParty->pPlayers[i].uExperience = 0;
-          }
+            if (!pParty->pPlayers[i].conditions_times[Condition_Unconcious] &&
+                !pParty->pPlayers[i].conditions_times[Condition_Dead] &&
+                !pParty->pPlayers[i].conditions_times[Condition_Pertified] &&
+                !pParty->pPlayers[i].conditions_times[Condition_Eradicated]
+                )
+            {
+                pActivePlayerCount++;
+            }
         }
-      }
+        if (pActivePlayerCount)
+        {
+            pEXPNum = pEXPNum / pActivePlayerCount;
+            for (uint i = 0; i < 4; ++i)
+            {
+                if (!pParty->pPlayers[i].conditions_times[Condition_Unconcious] &&
+                    !pParty->pPlayers[i].conditions_times[Condition_Dead] &&
+                    !pParty->pPlayers[i].conditions_times[Condition_Pertified] &&
+                    !pParty->pPlayers[i].conditions_times[Condition_Eradicated])
+                {
+                    pLearningPercent = pParty->pPlayers[i].GetLearningPercent();
+                    pEXPNum = pEXPNum + pEXPNum * pLearningPercent / 100;
+                    pParty->pPlayers[i].uExperience += pEXPNum;
+                    if (pParty->pPlayers[i].uExperience > 4000000000i64)
+                    {
+                        pParty->pPlayers[i].uExperience = 0;
+                    }
+                }
+            }
+        }
     }
-  }
 }
+
 //----- (00420C05) --------------------------------------------------------
 void Party::PartyFindsGold(unsigned int uNumGold, int _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal)
 {

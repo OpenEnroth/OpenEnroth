@@ -208,7 +208,9 @@ void GuildDialog()
             GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);//"Select the Item to Buy"
             if (!v8)
             {
-                working_window.DrawShops_next_generation_time_string(pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->par1C - 139] - pParty->uTimePlayed);//"Приходите через 14 дней"
+                working_window.DrawShops_next_generation_time_string(
+                    pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->par1C - 139] - pParty->GetPlayingTime()
+                );//"Приходите через 14 дней"
                 return;
             }
             pMouse->GetCursorPos(&cursor);
@@ -217,7 +219,13 @@ void GuildDialog()
             {
                 v15 = (ItemGen *)(&pParty->pPlayers[1].uExpressionTimeLength + 18 * (v13 + 12 * (int)window_SpeakInHouse->ptr_1C));
                 v17 = pPlayers[uActiveCharacter]->SelectPhrasesTransaction((ItemGen *)&pParty->pPlayers[1].uExpressionTimeLength + v13 + 12 * (int)window_SpeakInHouse->ptr_1C, BuildingType_MagicShop, (int)window_SpeakInHouse->ptr_1C, 2);
-                auto str = BuildDialogueString(pMerchantsBuyPhrases[v17], uActiveCharacter - 1, v15, (char *)window_SpeakInHouse->ptr_1C, 2, 0);
+                auto str = BuildDialogueString(
+                    pMerchantsBuyPhrases[v17],
+                    uActiveCharacter - 1,
+                    v15,
+                    (char *)window_SpeakInHouse->ptr_1C,
+                    2
+                );
                 pTextHeight = pFontArrus->CalcTextHeight(str, &working_window, 0);
                 working_window.DrawTitleText(pFontArrus, 0, (174 - pTextHeight) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
                 return;

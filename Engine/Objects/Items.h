@@ -2,7 +2,8 @@
 #include <array>
 #include <map>
 
-#include "Engine/Strings.h"
+#include "Engine/Engine.h"
+#include "Engine/Time.h"
 
 #include "../NZIArray.h"
 
@@ -273,87 +274,87 @@ typedef struct CEnchantment
 #pragma pack(push, 1)
 struct ItemGen //0x24
 {
-  //----- (0042EB25) --------------------------------------------------------
- // inline ItemGen()
- // {
- //   Reset();
- // }
-  static void AddToMap(std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* > &maptoadd, 
-    int enchId, 
-    CHARACTER_ATTRIBUTE_TYPE attrId, 
-    int bonusValue = 0, 
-    unsigned __int16 Player::* skillPtr = nullptr);
+    //----- (0042EB25) --------------------------------------------------------
+   // inline ItemGen()
+   // {
+   //   Reset();
+   // }
+    static void AddToMap(std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* > &maptoadd,
+        int enchId,
+        CHARACTER_ATTRIBUTE_TYPE attrId,
+        int bonusValue = 0,
+        unsigned __int16 Player::* skillPtr = nullptr);
 
-  static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* > regularBonusMap;
-  static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* > specialBonusMap;
-  static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* > artifactBonusMap;
+    static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* > regularBonusMap;
+    static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* > specialBonusMap;
+    static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* > artifactBonusMap;
 
-  static void PopulateSpecialBonusMap();
-  static void PopulateRegularBonusMap();
-  static void PopulateArtifactBonusMap();
-  static void ClearItemBonusMaps();
+    static void PopulateSpecialBonusMap();
+    static void PopulateRegularBonusMap();
+    static void PopulateArtifactBonusMap();
+    static void ClearItemBonusMaps();
 
-  inline void ResetEnchantAnimation(){uAttributes &= 0xFFFFFF0F;}
-  inline bool ItemEnchanted()const {return(uAttributes & ITEM_ENCHANT_ANIMATION) != 0;}
-  inline bool AuraEffectRed()const {return(uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_RED;}
-  inline bool AuraEffectBlue()const {return(uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_BLUE;}
-  inline bool AuraEffectGreen()const {return(uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_GREEN;}
-  inline bool AuraEffectPurple()const {return(uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_PURPLE;}
+    inline void ResetEnchantAnimation() { uAttributes &= 0xFFFFFF0F; }
+    inline bool ItemEnchanted()const { return(uAttributes & ITEM_ENCHANT_ANIMATION) != 0; }
+    inline bool AuraEffectRed()const { return(uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_RED; }
+    inline bool AuraEffectBlue()const { return(uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_BLUE; }
+    inline bool AuraEffectGreen()const { return(uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_GREEN; }
+    inline bool AuraEffectPurple()const { return(uAttributes & ITEM_ENCHANT_ANIMATION) == ITEM_AURA_EFFECT_PURPLE; }
 
-  void GetItemBonusSpecialEnchantment(Player* owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int* additiveBonus, int* halfSkillBonus);
-  void GetItemBonusArtifact(Player* owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int* bonusSum);
-  bool IsRegularEnchanmentForAttribute(CHARACTER_ATTRIBUTE_TYPE attrToGet);
+    void GetItemBonusSpecialEnchantment(Player* owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int* additiveBonus, int* halfSkillBonus);
+    void GetItemBonusArtifact(Player* owner, CHARACTER_ATTRIBUTE_TYPE attrToGet, int* bonusSum);
+    bool IsRegularEnchanmentForAttribute(CHARACTER_ATTRIBUTE_TYPE attrToGet);
 
-  inline bool IsBroken()        {return (uAttributes & ITEM_BROKEN) != 0;}
-  inline void SetBroken()     {uAttributes |= ITEM_BROKEN;}
-  inline bool IsIdentified()    {return (uAttributes & ITEM_IDENTIFIED) != 0;}
-  inline void SetIdentified() {uAttributes |= ITEM_IDENTIFIED;}
-  inline bool IsStolen()        {return (uAttributes & ITEM_STOLEN) != 0;}
-  inline void SetStolen()     {uAttributes |= ITEM_STOLEN;}
+    inline bool IsBroken() { return (uAttributes & ITEM_BROKEN) != 0; }
+    inline void SetBroken() { uAttributes |= ITEM_BROKEN; }
+    inline bool IsIdentified() { return (uAttributes & ITEM_IDENTIFIED) != 0; }
+    inline void SetIdentified() { uAttributes |= ITEM_IDENTIFIED; }
+    inline bool IsStolen() { return (uAttributes & ITEM_STOLEN) != 0; }
+    inline void SetStolen() { uAttributes |= ITEM_STOLEN; }
 
-  bool GenerateArtifact();
-  unsigned int GetValue();
-  String GetDisplayName();
-  String GetIdentifiedName();
-  void UpdateTempBonus(__int64 uTimePlayed);
-  void Reset();
-  int _439DF3_get_additional_damage(DAMAGE_TYPE *a2, bool *vampiyr);
+    bool GenerateArtifact();
+    unsigned int GetValue();
+    String GetDisplayName();
+    String GetIdentifiedName();
+    void UpdateTempBonus(GameTime time);
+    void Reset();
+    int _439DF3_get_additional_damage(DAMAGE_TYPE *a2, bool *vampiyr);
 
-  ITEM_EQUIP_TYPE GetItemEquipType();
-  unsigned char GetPlayerSkillType();
-  char* GetIconName();
-  unsigned __int8 GetDamageDice();
-  unsigned __int8 GetDamageRoll();
-  unsigned __int8 GetDamageMod();
-  bool MerchandiseTest(int _2da_idx);
-  int uItemID; //0
-  int uEnchantmentType; //4
-  int m_enchantmentStrength;  //8
-  ITEM_ENCHANTMENT special_enchantment; // 25  +5 levels //0c
-                            // 16  Drain Hit Points from target.
-                            // 35  Increases chance of disarming.
-                            // 39  Double damage vs Demons.
-                            // 40  Double damage vs Dragons
-                            // 45  +5 Speed and Accuracy
-                            // 56  +5 Might and Endurance.
-                            // 57  +5 Intellect and Personality.
-                            // 58  Increased Value.
-                            // 60  +3 Unarmed and Dodging skills
-                            // 61  +3 Stealing and Disarm skills.
-                            // 59  Increased Weapon speed.
-                            // 63  Double Damage vs. Elves.
-                            // 64  Double Damage vs. Undead.
-                            // 67  Adds 5 points of Body damage and +2 Disarm skill.
-                            // 68  Adds 6-8 points of Cold damage and +5 Armor Class.
-                            // 71  Prevents drowning damage.
-                            // 72  Prevents falling damage.
-  int uNumCharges; //10
-  unsigned int uAttributes;  //14
-  unsigned __int8 uBodyAnchor; //18
-  char uMaxCharges;  //19
-  char uHolderPlayer;  //1A
-  char field_1B;  //1B
-  unsigned __int64 uExpireTime; //1C
+    ITEM_EQUIP_TYPE GetItemEquipType();
+    unsigned char GetPlayerSkillType();
+    char* GetIconName();
+    unsigned __int8 GetDamageDice();
+    unsigned __int8 GetDamageRoll();
+    unsigned __int8 GetDamageMod();
+    bool MerchandiseTest(int _2da_idx);
+    int uItemID; //0
+    int uEnchantmentType; //4
+    int m_enchantmentStrength;  //8
+    ITEM_ENCHANTMENT special_enchantment; // 25  +5 levels //0c
+                              // 16  Drain Hit Points from target.
+                              // 35  Increases chance of disarming.
+                              // 39  Double damage vs Demons.
+                              // 40  Double damage vs Dragons
+                              // 45  +5 Speed and Accuracy
+                              // 56  +5 Might and Endurance.
+                              // 57  +5 Intellect and Personality.
+                              // 58  Increased Value.
+                              // 60  +3 Unarmed and Dodging skills
+                              // 61  +3 Stealing and Disarm skills.
+                              // 59  Increased Weapon speed.
+                              // 63  Double Damage vs. Elves.
+                              // 64  Double Damage vs. Undead.
+                              // 67  Adds 5 points of Body damage and +2 Disarm skill.
+                              // 68  Adds 6-8 points of Cold damage and +5 Armor Class.
+                              // 71  Prevents drowning damage.
+                              // 72  Prevents falling damage.
+    int uNumCharges; //10
+    unsigned int uAttributes;  //14
+    unsigned __int8 uBodyAnchor; //18
+    char uMaxCharges;  //19
+    char uHolderPlayer;  //1A
+    char field_1B;  //1B
+    GameTime expirte_time;//unsigned __int64 uExpireTime; //1C
 };
 #pragma pack(pop)
 
@@ -491,7 +492,7 @@ struct ItemsTable
 };
 #pragma pack(pop)
 
-extern std::array<const char, 5> uItemsAmountPerShopType; // weak
+extern std::array<const char, 5> uItemsAmountPerShopType;
 extern ItemGen *ptr_50C9A4_ItemToEnchant;
 
 extern struct ItemsTable *pItemsTable;
@@ -574,18 +575,29 @@ extern struct ItemsTable *pItemsTable;
 
 /*  391 */
 #pragma pack(push, 1)
-struct stru351_summoned_item
+struct SummonedItem
 {
-  int field_0_expire_second;
-  int field_4_expire_minute;
-  int field_8_expire_hour;
-  int field_C_expire_day;
-  int field_10_expire_week;
-  int field_14_exprie_month;
-  int field_18_expire_year;
+    //----- (00493F79) --------------------------------------------------------
+    void Initialize(GameTime duration)
+    {
+        this->field_0_expire_second = duration.GetSecondsFraction();
+        this->field_4_expire_minute = duration.GetMinutesFraction();
+        this->field_8_expire_hour = duration.GetHoursOfDay();
+        this->field_10_expire_week = duration.GetWeeksOfMonth();
+        this->field_C_expire_day = duration.GetDaysOfMonth();
+        this->field_14_exprie_month = duration.GetMonths();
+        this->field_18_expire_year = duration.GetYears() + game_starting_year;
+    }
+
+    int field_0_expire_second;
+    int field_4_expire_minute;
+    int field_8_expire_hour;
+    int field_C_expire_day;
+    int field_10_expire_week;
+    int field_14_exprie_month;
+    int field_18_expire_year;
 };
 #pragma pack(pop)
 
 
 int GetItemTextureFilename(char *pOut, signed int item_id, int index, int shoulder);
-void init_summoned_item(struct stru351_summoned_item *_this, __int64 duration);

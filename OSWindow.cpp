@@ -6,28 +6,31 @@
 #include "OSWindow.h"
 
 #include "Engine/Engine.h"
-
-#include "Arcomage\Arcomage.h"
-#include "Media/Audio/AudioPlayer.h"
-#include "IO/Mouse.h"
-#include "Engine/Timer.h"
-#include "GUI/GUIWindow.h"
+#include "Engine/Time.h"
 #include "Engine/Party.h"
-#include "Engine/Graphics/IndoorCameraD3D.h"
-#include "IO/Keyboard.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/Graphics/Vis.h"
-#include "Media/Audio/AIL.h"
 #include "Engine/MMT.h"
 
+#include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Vis.h"
+
+#include "Arcomage\Arcomage.h"
+
+#include "IO/Mouse.h"
+#include "IO/Keyboard.h"
+
+#include "GUI/GUIWindow.h"
+
+#include "Media/Audio/AudioPlayer.h"
+#include "Media/Audio/AIL.h"
 
 bool wizard_eye = false;          // wizard eye always on / включить на постоянно око чародея
-bool change_seasons = true;      // toggle seasons change / смена времён года
+bool change_seasons = true;       // toggle seasons change / смена времён года
 bool all_magic = false;           // toggle full spellbook / включить всю магию
-bool debug_information = false;   // toggle debug info / информация fps, положение группы, уровень пола и т.п.
+bool debug_information = true;   // toggle debug info / информация fps, положение группы, уровень пола и т.п.
 bool show_picked_face = false;    // highlight picked face / выделить активный фейс
 bool draw_portals_loops = false;  // show portal frames / видны рамки порталов
-bool new_speed = false;
+bool new_speed = true;            // debug turbo speed
 bool bSnow = true;
 bool draw_terrain_dist_mist = false;//новая дальность отрисовки тайлов
 bool no_actors = false;           // remove all monsters / убрать всех монстров
@@ -839,24 +842,24 @@ bool OSWindow::OnOSMenu(int item_id)
                 pParty->pPlayers[i].uSkillPoints = 50;
             break;
 
-        case 40029:  pPlayers[uActiveCharacter]->SetPertified(pParty->uTimePlayed);  break;
-        case 40030:  pPlayers[uActiveCharacter]->SetWeak(pParty->uTimePlayed);       break;
-        case 40031:  pPlayers[uActiveCharacter]->SetPoisonSevere(pParty->uTimePlayed);    break;
-        case 40032:  pPlayers[uActiveCharacter]->SetPoisonMedium(pParty->uTimePlayed);    break;
-        case 40033:  pPlayers[uActiveCharacter]->SetPoisonWeak(pParty->uTimePlayed);    break;
-        case 40034:  pPlayers[uActiveCharacter]->SetDiseaseSevere(pParty->uTimePlayed);   break;
-        case 40035:  pPlayers[uActiveCharacter]->SetDiseaseMedium(pParty->uTimePlayed);   break;
-        case 40036:  pPlayers[uActiveCharacter]->SetDiseaseWeak(pParty->uTimePlayed);   break;
-        case 40037:  pPlayers[uActiveCharacter]->SetCursed(pParty->uTimePlayed);     break;
-        case 40038:  pPlayers[uActiveCharacter]->SetInsane(pParty->uTimePlayed);     break;
-        case 40039:  pPlayers[uActiveCharacter]->SetDrunk(pParty->uTimePlayed);      break;
-        case 40040:  pPlayers[uActiveCharacter]->SetUnconcious(pParty->uTimePlayed); break;
-        case 40041:  pPlayers[uActiveCharacter]->SetDead(pParty->uTimePlayed);       break;
-        case 40042:  pPlayers[uActiveCharacter]->SetEradicated(pParty->uTimePlayed); break;
-        case 40043:  pPlayers[uActiveCharacter]->SetAsleep(pParty->uTimePlayed);     break;
-        case 40044:  pPlayers[uActiveCharacter]->SetAfraid(pParty->uTimePlayed);     break;
-        case 40045:  pPlayers[uActiveCharacter]->SetParalyzed(pParty->uTimePlayed);  break;
-        case 40073:  pPlayers[uActiveCharacter]->SetZombie(pParty->uTimePlayed);     break;
+        case 40029:  pPlayers[uActiveCharacter]->SetPertified(pParty->GetPlayingTime());  break;
+        case 40030:  pPlayers[uActiveCharacter]->SetWeak(pParty->GetPlayingTime());       break;
+        case 40031:  pPlayers[uActiveCharacter]->SetPoisonSevere(pParty->GetPlayingTime());    break;
+        case 40032:  pPlayers[uActiveCharacter]->SetPoisonMedium(pParty->GetPlayingTime());    break;
+        case 40033:  pPlayers[uActiveCharacter]->SetPoisonWeak(pParty->GetPlayingTime());    break;
+        case 40034:  pPlayers[uActiveCharacter]->SetDiseaseSevere(pParty->GetPlayingTime());   break;
+        case 40035:  pPlayers[uActiveCharacter]->SetDiseaseMedium(pParty->GetPlayingTime());   break;
+        case 40036:  pPlayers[uActiveCharacter]->SetDiseaseWeak(pParty->GetPlayingTime());   break;
+        case 40037:  pPlayers[uActiveCharacter]->SetCursed(pParty->GetPlayingTime());     break;
+        case 40038:  pPlayers[uActiveCharacter]->SetInsane(pParty->GetPlayingTime());     break;
+        case 40039:  pPlayers[uActiveCharacter]->SetDrunk(pParty->GetPlayingTime());      break;
+        case 40040:  pPlayers[uActiveCharacter]->SetUnconcious(pParty->GetPlayingTime()); break;
+        case 40041:  pPlayers[uActiveCharacter]->SetDead(pParty->GetPlayingTime());       break;
+        case 40042:  pPlayers[uActiveCharacter]->SetEradicated(pParty->GetPlayingTime()); break;
+        case 40043:  pPlayers[uActiveCharacter]->SetAsleep(pParty->GetPlayingTime());     break;
+        case 40044:  pPlayers[uActiveCharacter]->SetAfraid(pParty->GetPlayingTime());     break;
+        case 40045:  pPlayers[uActiveCharacter]->SetParalyzed(pParty->GetPlayingTime());  break;
+        case 40073:  pPlayers[uActiveCharacter]->SetZombie(pParty->GetPlayingTime());     break;
 
         case 40062:
             pParty->alignment = PartyAlignment_Good;
@@ -872,10 +875,10 @@ bool OSWindow::OnOSMenu(int item_id)
             break;
 
         //SubMenu "Time"
-        case 40009:  pParty->uTimePlayed += Timer::Day;   break;
-        case 40010:  pParty->uTimePlayed += Timer::Week;  break;
-        case 40011:  pParty->uTimePlayed += Timer::Month; break;
-        case 40012:  pParty->uTimePlayed += Timer::Year;  break;
+        case 40009:  pParty->GetPlayingTime() += GameTime::FromDays(1);   break;
+        case 40010:  pParty->GetPlayingTime().value += Timer::Week;  break;
+        case 40011:  pParty->GetPlayingTime().value += Timer::Month; break;
+        case 40012:  pParty->GetPlayingTime() += GameTime::FromYears(1);  break;
 
         //SubMenu "Items"
         case 40015: // uItemID_Rep_St == 1

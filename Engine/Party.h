@@ -1,7 +1,10 @@
 #pragma once
+#include <array>
+
+#include "Engine/Time.h"
+
 #include "Engine/Objects/Player.h"
 #include "Engine/Objects/NPC.h"
-#include <array>
 
 
 
@@ -158,12 +161,12 @@ enum PartyAlignment: unsigned __int32
 #pragma pack(push, 1)
 struct PartyTimeStruct
 {
-  std::array<__int64, 10> bountyHunting_next_generation_time;
-  std::array<__int64, 85> Shops_next_generation_time;//field_50
-  std::array<__int64, 53> _shop_ban_times;      
-  std::array<unsigned __int64, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
-  std::array<__int64, 29> HistoryEventTimes;   // (0xACD364h in Silvo's binary)
-  std::array<unsigned __int64, 20> _s_times; //5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
+  std::array<GameTime, 10> bountyHunting_next_generation_time;
+  std::array<GameTime, 85> Shops_next_generation_time;//field_50
+  std::array<GameTime, 53> _shop_ban_times;
+  std::array<GameTime, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
+  std::array<GameTime, 29> HistoryEventTimes;   // (0xACD364h in Silvo's binary)
+  std::array<GameTime, 20> _s_times; //5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
 };
 #pragma pack(pop)
 
@@ -171,11 +174,12 @@ struct PartyTimeStruct
 #pragma pack(push, 1)
 struct Party
 {
-  Party():
-    uTimePlayed(0)
-  {
-    Zero();
-  }
+    Party():
+        playing_time(),
+        last_regenerated()
+    {
+        Zero();
+    }
 
   void Zero();
   void UpdatePlayersAndHirelingsEmotions();
@@ -207,20 +211,24 @@ struct Party
 
   static void Sleep6Hours();
 
-  inline bool WizardEyeActive()      {return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].uExpireTime > 0;}
-  inline int  WizardEyeSkillLevel()  {return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].uSkill;}
-  inline bool TorchlightActive()     {return pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uExpireTime > 0;}
-  inline bool FlyActive()            {return pPartyBuffs[PARTY_BUFF_FLY].uExpireTime > 0;}
-  inline bool WaterWalkActive()      {return pPartyBuffs[PARTY_BUFF_WATER_WALK].uExpireTime > 0;}
-  inline bool ImmolationActive()     {return pPartyBuffs[PARTY_BUFF_IMMOLATION].uExpireTime > 0;}
-  inline int ImmolationSkillLevel() {return pPartyBuffs[PARTY_BUFF_IMMOLATION].uSkill;}
-  inline bool FeatherFallActive()    {return pPartyBuffs[PARTY_BUFF_FEATHER_FALL].uExpireTime > 0;}
-  inline bool Invisible()            {return pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime > 0;}
+  inline bool WizardEyeActive()     { return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time; }
+  inline int  WizardEyeSkillLevel() { return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].uSkill; }
+  inline bool TorchlightActive()    { return pPartyBuffs[PARTY_BUFF_TORCHLIGHT].expire_time; }
+  inline bool FlyActive()           { return pPartyBuffs[PARTY_BUFF_FLY].expire_time; }
+  inline bool WaterWalkActive()     { return pPartyBuffs[PARTY_BUFF_WATER_WALK].expire_time; }
+  inline bool ImmolationActive()    { return pPartyBuffs[PARTY_BUFF_IMMOLATION].expire_time; }
+  inline int ImmolationSkillLevel() { return pPartyBuffs[PARTY_BUFF_IMMOLATION].uSkill; }
+  inline bool FeatherFallActive()   { return pPartyBuffs[PARTY_BUFF_FEATHER_FALL].expire_time; }
+  inline bool Invisible()           { return pPartyBuffs[PARTY_BUFF_INVISIBILITY].expire_time; }
 
   inline bool GetRedAlert()    {return (uFlags & PARTY_FLAGS_1_ALERT_RED) != 0;}
   inline void SetRedAlert()    {uFlags |= PARTY_FLAGS_1_ALERT_RED;}
   inline bool GetYellowAlert() {return (uFlags & PARTY_FLAGS_1_ALERT_YELLOW) != 0;}
   inline void SetYellowAlert() {uFlags |= PARTY_FLAGS_1_ALERT_YELLOW;}
+
+  GameTime &GetPlayingTime() { return this->playing_time; }
+
+
 
   bool IsPartyEvil();
   bool IsPartyGood();
@@ -236,8 +244,8 @@ struct Party
   int y_rotation_speed;  // deg/s
   int field_24;
   int field_28;
-  unsigned __int64 uTimePlayed;
-  __int64 uLastRegenerationTime;
+  GameTime playing_time;//unsigned __int64 uTimePlayed;
+  GameTime last_regenerated;
   PartyTimeStruct PartyTimes;
   Vec3_int_ vPosition;
   int sRotationY;
@@ -253,7 +261,7 @@ struct Party
   int field_6F0;
   int floor_face_pid; // face we are standing at
   int walk_sound_timer;
-  int field_6FC;
+  int _6FC_water_lava_timer;
   int uFallStartY;
   unsigned int bFlying;
   char field_708;
@@ -263,7 +271,7 @@ struct Party
   unsigned int uCurrentYear;
   unsigned int uCurrentMonth;
   unsigned int uCurrentMonthWeek;
-  unsigned int uDaysPlayed;
+  unsigned int uCurrentDayOfMonth;//unsigned int uDaysPlayed;
   unsigned int uCurrentHour;
   unsigned int uCurrentMinute;
   unsigned int uCurrentTimeSecond;

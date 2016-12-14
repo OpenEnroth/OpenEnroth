@@ -100,7 +100,7 @@ struct MapStats
 extern struct MapStats *pMapStats;
 
 
-extern MapStartPoint uLevel_StartingPointType; // weak
+extern MapStartPoint uLevel_StartingPointType;
 
 
 void TeleportToStartingPoint(MapStartPoint point); // idb

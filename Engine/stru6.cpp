@@ -5,6 +5,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
+#include "Engine/Time.h"
 
 #include "stru6.h"
 
@@ -17,7 +18,6 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Random.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Timer.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/stru160.h"
@@ -732,35 +732,30 @@ void stru6::_4A7F74(int x, int y, int z)
 }
 
 //----- (004A806F) --------------------------------------------------------
-int stru6::_4A806F(Actor *pActor)
+int stru6::_4A806F_get_mass_distortion_value(Actor *pActor)
 {
-  int v2; // ecx@1
-  unsigned int v3; // eax@1
-  double v4; // st7@2
-  float v5; // ST00_4@6
+    int v2; // ecx@1
+    int v3; // eax@1
+    double v4; // st7@2
 
-  v2 = (int)pActor;
-  v3 = LODWORD(pActor->pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].uExpireTime) - pMiscTimer->uTotalGameTimeElapsed;
-  if ( (signed int)v3 <= 64 )
-  {
-    if ( (v3 & 0x80000000u) != 0 )
+    v3 = *(int *)&pActor->pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].expire_time.value - pMiscTimer->uTotalGameTimeElapsed;
+    if (v3 > 64)
     {
-      pActor->pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].uExpireTime = 0i64;
-      v4 = 1.0;
+        v2 = (v3 - 64) * (v3 - 64);
+        v4 = (double)v2 / 5120.0 + 0.2;
+    }
+    else if (v3 > 0)
+    {
+        v2 = v3 * v3;
+        v4 = 1.0 - (double)(signed int)(v3 * v3) / 5120.0;
     }
     else
     {
-      v2 = v3 * v3;
-      v4 = 1.0 - (double)(signed int)(v3 * v3) * 0.0001953125;
+        pActor->pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Reset();
+        v4 = 1.0;
     }
-  }
-  else
-  {
-    v2 = (v3 - 64) * (v3 - 64);
-    v4 = (double)v2 * 0.0001953125 + 0.2;
-  }
-  v5 = v4;
-  return fixpoint_from_float(v5);
+
+    return fixpoint_from_float(v4);
 }
 
 //----- (004A81CA) --------------------------------------------------------
@@ -1257,107 +1252,79 @@ int stru6::_4A8BFC() //for SPELL_LIGHT_PRISMATIC_LIGHT
 //----- (004A8C27) --------------------------------------------------------
 void stru6::RenderSpecialEffects()
 {
-  double v4; // st7@4
-  double v5; // st6@4
-  float v7; // ST14_4@6
-  unsigned int v8; // ST14_4@8
-  SpriteFrame *v10; // eax@8
-  int v11; // edi@8
-  RenderVertexD3D3 vd3d[4]; // [sp+60h] [bp-8Ch]@9
+    double v4; // st7@4
+    double v5; // st6@4
+    float v7; // ST14_4@6
+    unsigned int v8; // ST14_4@8
+    SpriteFrame *v10; // eax@8
+    int v11; // edi@8
+    RenderVertexD3D3 vd3d[4]; // [sp+60h] [bp-8Ch]@9
 
-  if (uNumProjectiles)
-  {
-    DrawProjectiles();
-    uNumProjectiles = 0;
-  }
-
-  field_204 = 0;
-  if ( uFadeTime > 0 )
-  {
-    v4 = (double)uFadeTime / (double)uFadeLength;
-    v5 = 1.0 - v4 * v4;
-    //v6 = v5;
-    if ( v5 > 0.9 )
-      v5 = 1.0 - (v5 - 0.9) * 10.0;
-    v7 = v5;
-    pRenderer->ScreenFade(uFadeColor, v7);
-    uFadeTime -= pEventTimer->uTimeElapsed;
-  }
-
-  if (uAnimLength > 0)
-  {
-    v8 = 8 * pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
-    v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
-    v11 = v10->pHwSpriteIDs[0];
-    uAnimLength -= pEventTimer->uTimeElapsed;
-    //if ( pRenderer->pRenderD3D )
-    //{
-      vd3d[0].pos.x = (double)(signed int)pViewport->uViewportTL_X;
-      vd3d[0].pos.y = (double)(signed int)pViewport->uViewportTL_Y;
-      vd3d[0].pos.z = 0.0;
-      vd3d[0].diffuse = 0x7F7F7Fu;
-      vd3d[0].specular = 0;
-      vd3d[0].rhw = 1.0;
-      vd3d[0].texcoord.x = 0.0;
-      vd3d[0].texcoord.y = 0.0;
-
-      vd3d[1].pos.x = (double)(signed int)pViewport->uViewportTL_X;
-      vd3d[1].pos.y = (double)(pViewport->uViewportBR_Y + 1);
-      vd3d[1].pos.z = 0.0;
-      vd3d[1].diffuse = 0x7F7F7Fu;
-      vd3d[1].specular = 0;
-      vd3d[1].rhw = 1.0;
-      vd3d[1].texcoord.x = 0.0;
-      vd3d[1].texcoord.y = 1.0;
-
-      vd3d[2].pos.x = (double)(signed int)pViewport->uViewportBR_X;
-      vd3d[2].pos.y = (double)(pViewport->uViewportBR_Y + 1);
-      vd3d[2].pos.z = 0.0;
-      vd3d[2].diffuse = 0x7F7F7Fu;
-      vd3d[2].specular = 0;
-      vd3d[2].rhw = 1.0;
-      vd3d[2].texcoord.x = 1.0;
-      vd3d[2].texcoord.y = 1.0;
-
-      vd3d[3].pos.x = (double)(signed int)pViewport->uViewportBR_X;
-      vd3d[3].pos.y = (double)(signed int)pViewport->uViewportTL_Y;
-      vd3d[3].pos.z = 0.0;
-      vd3d[3].diffuse = 0x7F7F7Fu;
-      vd3d[3].specular = 0;
-      vd3d[3].rhw = 1.0;
-      vd3d[3].texcoord.x = 1.0;
-      vd3d[3].texcoord.y = 0.0;
-
-      pRenderer->DrawSpecialEffectsQuad(vd3d, pSprites_LOD->pHardwareSprites[v11].pTexture);
-    //}
-    /*else
+    if (uNumProjectiles)
     {
-      vsr.pTarget = pRenderer->pTargetSurface;
-      vsr.sParentBillboardID = -1;
-      vsr.pTargetZ = pRenderer->pActiveZBuffer;
-      vsr.uScreenSpaceX = (signed int)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2;
-      vsr.uScreenSpaceY = pViewport->uViewportBR_Y;
-      v24 = 16777216;
-      LODWORD(v18) = 0;
-      HIDWORD(v18) = (signed __int16)(LOWORD(pViewport->uViewportBR_X) - LOWORD(pViewport->uViewportTL_X));
-      vsr._screenspace_x_scaler_packedfloat = v18 / 0x1000000;
-      LODWORD(v18) = 0;
-      HIDWORD(v18) = (signed __int16)(LOWORD(pViewport->uViewportBR_Y) - LOWORD(pViewport->uViewportTL_Y));
-      v26 = v18 / 16777216;
-      vsr._screenspace_y_scaler_packedfloat = v18 / 0x1000000;
-      vsr.pPalette = PaletteManager::Get_Dark_or_Red_LUT(v70->uPaletteIndex, 0, 1);
-      vsr.uTargetPitch = pRenderer->uTargetSurfacePitch;
-      vsr.sParentBillboardID = -1;
-      vsr.uViewportX = pViewport->uViewportTL_X;
-      vsr.uViewportZ = pViewport->uViewportBR_X;
-      vsr.uViewportY = pViewport->uViewportTL_Y;
-      vsr.sZValue = 0;
-      vsr.uViewportW = pViewport->uViewportBR_Y;
-      vsr.uFlags = 0;
-      if ( v11 >= 0 )
-        pSprites_LOD->pSpriteHeaders[v11].DrawSprite_sw(&vsr, 1);
-    }*/
-  }
+        DrawProjectiles();
+        uNumProjectiles = 0;
+    }
+
+    field_204 = 0;
+    if (uFadeTime > 0)
+    {
+        v4 = (double)uFadeTime / (double)uFadeLength;
+        v5 = 1.0 - v4 * v4;
+        //v6 = v5;
+        if (v5 > 0.9)
+            v5 = 1.0 - (v5 - 0.9) * 10.0;
+        v7 = v5;
+        pRenderer->ScreenFade(uFadeColor, v7);
+        uFadeTime -= pEventTimer->uTimeElapsed;
+    }
+
+    if (uAnimLength > 0)
+    {
+        v8 = 8 * pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
+        v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
+        v11 = v10->pHwSpriteIDs[0];
+        uAnimLength -= pEventTimer->uTimeElapsed;
+        //if ( pRenderer->pRenderD3D )
+        //{
+        vd3d[0].pos.x = (double)(signed int)pViewport->uViewportTL_X;
+        vd3d[0].pos.y = (double)(signed int)pViewport->uViewportTL_Y;
+        vd3d[0].pos.z = 0.0;
+        vd3d[0].diffuse = 0x7F7F7Fu;
+        vd3d[0].specular = 0;
+        vd3d[0].rhw = 1.0;
+        vd3d[0].texcoord.x = 0.0;
+        vd3d[0].texcoord.y = 0.0;
+
+        vd3d[1].pos.x = (double)(signed int)pViewport->uViewportTL_X;
+        vd3d[1].pos.y = (double)(pViewport->uViewportBR_Y + 1);
+        vd3d[1].pos.z = 0.0;
+        vd3d[1].diffuse = 0x7F7F7Fu;
+        vd3d[1].specular = 0;
+        vd3d[1].rhw = 1.0;
+        vd3d[1].texcoord.x = 0.0;
+        vd3d[1].texcoord.y = 1.0;
+
+        vd3d[2].pos.x = (double)(signed int)pViewport->uViewportBR_X;
+        vd3d[2].pos.y = (double)(pViewport->uViewportBR_Y + 1);
+        vd3d[2].pos.z = 0.0;
+        vd3d[2].diffuse = 0x7F7F7Fu;
+        vd3d[2].specular = 0;
+        vd3d[2].rhw = 1.0;
+        vd3d[2].texcoord.x = 1.0;
+        vd3d[2].texcoord.y = 1.0;
+
+        vd3d[3].pos.x = (double)(signed int)pViewport->uViewportBR_X;
+        vd3d[3].pos.y = (double)(signed int)pViewport->uViewportTL_Y;
+        vd3d[3].pos.z = 0.0;
+        vd3d[3].diffuse = 0x7F7F7Fu;
+        vd3d[3].specular = 0;
+        vd3d[3].rhw = 1.0;
+        vd3d[3].texcoord.x = 1.0;
+        vd3d[3].texcoord.y = 0.0;
+
+        pRenderer->DrawSpecialEffectsQuad(vd3d, pSprites_LOD->pHardwareSprites[v11].pTexture);
+    }
 }
 
 //----- (004A902A) --------------------------------------------------------

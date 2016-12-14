@@ -7,12 +7,12 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
+#include "Engine/LOD.h"
+#include "Engine/Time.h"
+#include "Engine/Party.h"
 
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/LOD.h"
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/Timer.h"
-#include "Engine/Party.h"
 
 #include "GUI/UI/UIRest.h"
 #include "GUI/GUIFont.h"
@@ -208,7 +208,7 @@ void GUIWindow_Rest::Update()
         tmp_button.pParent = 0;
         auto str2 = StringPrintf("%d:%02d %s", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 368, 168, Color16(10, 0, 0), str2, 0, 0, Color16(230, 214, 193));
-        auto str3 = StringPrintf("%s\r190%d", localization->GetString(56), pParty->uDaysPlayed + 1);//Δενό
+        auto str3 = StringPrintf("%s\r190%d", localization->GetString(56), pParty->uCurrentDayOfMonth + 1);//Δενό
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190, Color16(10, 0, 0), str3, 0, 0, Color16(230, 214, 193));
         auto str4 = StringPrintf("%s\r190%d", localization->GetString(146), pParty->uCurrentMonth + 1);//Μερÿφ
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 222, Color16(10, 0, 0), str4, 0, 0, Color16(230, 214, 193));

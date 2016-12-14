@@ -7,11 +7,12 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/Time.h"
+
 #include "Engine/ZlibWrapper.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
-#include "Engine/Timer.h"
 #include "Engine/stru123.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -349,9 +350,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     pParty->sRotationY = pParty->sPrevRotationY;
     pParty->sRotationX = pParty->sPrevRotationX;
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        pIndoor->stru1.uLastVisitDay = pParty->uTimePlayed;
+        pIndoor->stru1.last_visit = pParty->GetPlayingTime();
     else
-        pOutdoor->loc_time.uLastVisitDay = pParty->uTimePlayed;
+        pOutdoor->loc_time.last_visit = pParty->GetPlayingTime();
 
     pRenderer->PackScreenshot(150, 112, uncompressed_buff, 1000000, &pLodDirectory.uDataSize);//создание скриншота
     strcpy(pLodDirectory.pFilename, "image.pcx");
@@ -381,7 +382,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     memset(save_header.pLocationName, 0, 20);
     memset(save_header.field_30, 0, 52);
     strcpy(save_header.pLocationName, pCurrentMapName);
-    save_header.uWordTime = pParty->uTimePlayed;
+    save_header.playing_time = pParty->GetPlayingTime();
     strcpy(pLodDirectory.pFilename, "header.bin");
     pLodDirectory.uDataSize = sizeof(SavegameHeader);
     if (pNew_LOD->Write(&pLodDirectory, &save_header, 0))
@@ -627,18 +628,18 @@ void DoSavegame(unsigned int uSlot)
   {
     LOD::Directory pDir; // [sp+Ch] [bp-28h]@2
     SaveGame(0, 0);
-    strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName);//дать название карты
-    pSavegameHeader[uSlot].uWordTime = pParty->uTimePlayed;//текущее время
+    strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName);
+    pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
     strcpy(pDir.pFilename, "header.bin");
     pDir.uDataSize = 100;
     pNew_LOD->Write(&pDir, &pSavegameHeader[uSlot], 0);
     pNew_LOD->CloseWriteFile();//закрыть 
-    CopyFileA("data\\new.lod", StringPrintf("saves\\save%03d.mm7", uSlot).c_str(), 0);//сохранение файла в директорию saves
+    CopyFileA("data\\new.lod", StringPrintf("saves\\save%03d.mm7", uSlot).c_str(), 0);
   }
   GUI_UpdateWindows();
   pGUIWindow_CurrentMenu->Release();
   current_screen_type = SCREEN_GAME;
-  //v3 = pSavegameThumbnails;
+
   viewparams->bRedrawGameUI = true;
   for (uint i = 0; i < 45; i++)
   {

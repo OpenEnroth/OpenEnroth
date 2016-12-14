@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Strings.h"
+#include "Engine/Time.h"
 
 #include "VectorTypes.h"
 #include "OSAPI.h"
@@ -300,11 +301,11 @@ extern int game_viewport_z;
 extern int game_viewport_w;
 
 extern int pWindowList_at_506F50_minus1_indexing[1];
-extern int dword_4C9890[10]; // weak
-extern int dword_4C9920[16]; // weak
-extern char byte_4D864C; // weak
-extern float flt_4D86CC; // weak
-extern int dword_4D86D8; // weak
+extern int dword_4C9890[10];
+extern int dword_4C9920[16];
+extern char byte_4D864C;
+extern float flt_4D86CC;
+extern int dword_4D86D8;
 
 
 extern float flt_4D84E8;
@@ -321,8 +322,8 @@ extern std::array<__int16, 4> RightClickPortraitXmax;
 extern std::array<unsigned int, 4> pHealthBarPos;
 extern std::array<unsigned int, 4> pManaBarPos;
 //extern std::array<char, 80> _4E2B21_buff_spell_tooltip_colors;
-extern std::array<char, 88>  monster_popup_y_offsets; // weak
-extern unsigned char hourglass_icon_idx; // weak
+extern std::array<char, 88>  monster_popup_y_offsets;
+extern unsigned char hourglass_icon_idx;
 
 
 extern const char *format_4E2D80;
@@ -331,7 +332,7 @@ extern const char *format_4E2DE8; // idb
 extern const char *Stat_string_format_2_column_text;
 extern const char *Stat_string_format_2_column_less_100; // format text of resistance in Stats screen
 extern const char *Stat_string_format_2_column_over_100;
-extern int dword_4E455C; // weak
+extern int dword_4E455C;
 extern std::array<int, 6> dword_4E4560;
 extern std::array<int, 6> dword_4E4578;
 extern std::array<int, 6> dword_4E4590;
@@ -339,7 +340,7 @@ extern std::array<int, 6> dword_4E45A8;
 extern std::array<float, 10> flt_4E4A80;
 
 extern std::array< std::array<int, 2>, 14> pPartySpellbuffsUI_XYs;
-extern std::array<unsigned char, 14> byte_4E5DD8; // weak
+extern std::array<unsigned char, 14> byte_4E5DD8;
 extern std::array<unsigned __int8, 14> pPartySpellbuffsUI_smthns;
 extern std::array< std::array<int, 6>, 6> pNPCPortraits_x; // 004E5E50
 extern std::array< std::array<int, 6>, 6> pNPCPortraits_y; // 004E5EE0
@@ -347,61 +348,61 @@ extern std::array<const char *, 11> pHouse_ExitPictures;
 extern std::array<const char *, 11> _4E6BDC_loc_names;
 extern std::array<__int16, 11> word_4E8152;
 extern std::array< std::array<char, 14>, 7> byte_4E8168;
-extern char _4E94D0_light_type; // weak
-extern char _4E94D2_light_type; // weak
-extern char _4E94D3_light_type; // weak
+extern char _4E94D0_light_type;
+extern char _4E94D2_light_type;
+extern char _4E94D3_light_type;
 extern std::array<unsigned int, 2> saveload_dlg_xs;
 extern std::array<unsigned int, 2> saveload_dlg_ys;
 extern std::array<unsigned int, 2> saveload_dlg_zs;
 extern std::array<unsigned int, 2> saveload_dlg_ws;
-extern int dword_4E98BC_bApplicationActive; // weak
+extern int dword_4E98BC_bApplicationActive;
 extern std::array<char*, 465> pTransitionStrings; // 4EB080
-extern std::array<int, 9> dword_4EC268; // weak
-extern std::array<int, 7> dword_4EC28C; // weak
+extern std::array<int, 9> dword_4EC268;
+extern std::array<int, 7> dword_4EC28C;
 extern std::array<const char*, 25> pPlayerPortraitsNames;
 
 extern std::array< std::array<unsigned char, 25>, 48> byte_4ECF08;
-extern std::array<std::array<unsigned char, 8>, 110> SoundSetAction; // weak
+extern std::array<std::array<unsigned char, 8>, 110> SoundSetAction;
 extern std::array<__int16, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing;
 extern std::array< std::array<char, 37>, 36> byte_4ED970_skill_learn_ability_by_class_table;
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX;
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY;
 extern std::array<int, 2> Party_Spec_Motion_status_ids; //dword_4EE07C
-extern std::array<__int16, 101> word_4EE088_sound_ids; // weak
+extern std::array<__int16, 101> word_4EE088_sound_ids;
 extern std::array<short, 28> word_4EE150;
 extern int ScreenshotFileNumber; // dword_4EFA80
-extern __int16 word_4F0576[]; // weak
+extern __int16 word_4F0576[];
 
 extern std::array<int, 32> guild_mambership_flags;
 extern std::array<__int16, 49> word_4F0754;
 extern std::array<__int16, 54> _4F0882_evt_VAR_PlayerItemInHands_vals;
 extern std::array<unsigned short, 6> pMaxLevelPerTrainingHallType;
-extern std::array<int, 11> price_for_membership; // weak
-extern std::array<__int16, 32> word_4F0F30; // weak
+extern std::array<int, 11> price_for_membership;
+extern std::array<__int16, 32> word_4F0F30;
 extern std::array<int, 500> ai_array_4F5E68;
 extern std::array<int, 500> ai_array_4F6638_actor_ids;
 extern std::array<int, 500> ai_near_actors_targets_pid;
-extern int ai_arrays_size; // weak
+extern int ai_arrays_size;
 extern std::array<int, 500> ai_near_actors_distances;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
-extern std::array<int, 182> dword_4F8580; // weak
-extern int dword_4FA9B0[]; // weak
-extern int dword_4FA9B4[]; // weak
+extern std::array<int, 182> dword_4F8580;
+extern int dword_4FA9B0[];
+extern int dword_4FA9B4[];
 
-extern char byte_4FAA24; // weak
+extern char byte_4FAA24;
 //extern HWND dword_4FAA28; // idb
 
 extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
-extern int areWeLoadingTexture; // weak
-extern std::array<char, 777> books_num_items_per_page; // weak
+extern int areWeLoadingTexture;
+extern std::array<char, 777> books_num_items_per_page;
 extern int lloyds_beacon_spell_id; // dword_506338
 extern int lloyds_beacon_sound_id; // dword_50633C
 extern signed int sRecoveryTime; // idb
 extern unsigned int uRequiredMana; // idb
-extern int _506348_current_lloyd_playerid; // weak
+extern int _506348_current_lloyd_playerid;
 extern __int64 lloyds_beacon_spell_level; // qword_506350
-extern int dword_506364; // weak
-//extern Texture_MM7 *dword_50640C[]; // weak
+extern int dword_506364;
+//extern Texture_MM7 *dword_50640C[];
 extern int books_page_number; // number for page in books(номер страницы в книгах)
 extern int books_primary_item_per_page; // number primary item in book page(номер начальной записи на странице)
 extern int Autonotes_Instructors_page_flag; // dword_50652C
@@ -412,63 +413,63 @@ extern int Book_PageBtn4_flag; //dword_50653C
 extern int Book_PageBtn3_flag; //dword_506540
 extern int BtnDown_flag; //BtnDown_flag
 extern int BtnUp_flag; //BtnUp_flag
-extern int quick_spell_at_page; // weak
-extern char byte_506550; // weak
+extern int quick_spell_at_page;
+extern char byte_506550;
 extern int _506568_autonote_type; // 506568
-extern bool bRecallingBeacon; // weak
-extern int uLastPointedObjectID; // weak
-extern enum CURRENT_SCREEN prev_screen_type; // weak
-extern int dword_506980_uW; // weak
-extern int dword_506984_uZ; // weak
-extern int dword_506988_uY; // weak
-extern int dword_50698C_uX; // weak
+extern bool bRecallingBeacon;
+extern int uLastPointedObjectID;
+extern enum CURRENT_SCREEN prev_screen_type;
+extern int dword_506980_uW;
+extern int dword_506984_uZ;
+extern int dword_506988_uY;
+extern int dword_50698C_uX;
 extern int uGameMenuUI_CurentlySelectedKeyIdx; // 506E68
 extern std::array<bool, 28> GameMenuUI_InvaligKeyBindingsFlags; // 506E6C
 extern std::array<unsigned int, 28> pPrevVirtualCidesMapping;
-extern int KeyboardPageNum; // weak
+extern int KeyboardPageNum;
 extern int uRestUI_FoodRequiredToRest;
-extern int _506F14_resting_stage; // weak
-extern int _506F18_num_minutes_to_sleep; // weak
-extern int dword_506F1C; // weak
-extern std::array<int, 20> pVisibleWindowsIdxs; // weak
+extern int _506F14_resting_stage;
+extern int _506F18_num_minutes_to_sleep;
+extern int dword_506F1C;
+extern std::array<int, 20> pVisibleWindowsIdxs;
 extern int uNumVisibleWindows;
-extern char bFlashHistoryBook; // weak
-extern char bFlashAutonotesBook; // weak
-extern char bFlashQuestBook; // weak
+extern char bFlashHistoryBook;
+extern char bFlashAutonotesBook;
+extern char bFlashQuestBook;
 extern struct GUIButton *pBtn_ZoomOut; // idb
 extern struct GUIButton *pBtn_ZoomIn; // idb
 extern unsigned int uGameUIFontShadow;
 extern unsigned int uGameUIFontMain;
-extern int dword_507B00_spell_info_to_draw_in_popup; // weak
+extern int dword_507B00_spell_info_to_draw_in_popup;
 extern unsigned int uActiveCharacter;
-extern int dword_507BF0_is_there_popup_onscreen; // weak
-extern int awards_scroll_bar_created; // weak
-extern int dword_507CC0_activ_ch; // weak
-extern __int64 GameUI_RightPanel_BookFlashTimer; // weak
-extern int _507CD4_RestUI_hourglass_anim_controller; // weak
-extern bool OpenedTelekinesis; // weak
-extern std::array<int, 50> dword_50B570; // weak
-extern std::array<int, 50> dword_50B638; // weak
+extern int dword_507BF0_is_there_popup_onscreen;
+extern int awards_scroll_bar_created;
+extern int dword_507CC0_activ_ch;
+extern GameTime GameUI_RightPanel_BookFlashTimer;
+extern int _507CD4_RestUI_hourglass_anim_controller;
+extern bool OpenedTelekinesis;
+extern std::array<int, 50> dword_50B570;
+extern std::array<int, 50> dword_50B638;
 extern struct stru367 PortalFace;
-extern std::array<int, 100> dword_50BC10; // weak
-extern std::array<int, 100> dword_50BDA0; // weak
-extern std::array<int, 100> _50BF30_actors_in_viewport_ids; // weak
-extern char town_portal_caster_id; // weak
-extern int some_active_character; // weak
+extern std::array<int, 100> dword_50BC10;
+extern std::array<int, 100> dword_50BDA0;
+extern std::array<int, 100> _50BF30_actors_in_viewport_ids;
+extern char town_portal_caster_id;
+extern int some_active_character;
 extern std::array<unsigned int, 5> pIconIDs_Turn;
 extern unsigned int uIconID_TurnStop;
 extern unsigned int uIconID_TurnHour;
 extern int uIconID_CharacterFrame; // idb
 extern unsigned int uIconID_TurnStart;
-extern int dword_50C994; // weak
-extern int dword_50C998_turnbased_icon_1A; // weak
+extern int dword_50C994;
+extern int dword_50C998_turnbased_icon_1A;
 extern int uSpriteID_Spell11; // idb
-extern bool _50C9A0_IsEnchantingInProgress; // weak
-extern int _50C9A8_item_enchantment_timer; // weak
-extern int _50C9D0_AfterEnchClickEventId; // weak
-extern int _50C9D4_AfterEnchClickEventSecondParam; // weak
-extern int _50C9D8_AfterEnchClickEventTimeout; // weak
-extern int dword_50C9DC; // weak
+extern bool _50C9A0_IsEnchantingInProgress;
+extern int _50C9A8_item_enchantment_timer;
+extern int _50C9D0_AfterEnchClickEventId;
+extern int _50C9D4_AfterEnchClickEventSecondParam;
+extern int _50C9D8_AfterEnchClickEventTimeout;
+extern int dword_50C9DC;
 extern struct NPCData *ptr_50C9E0;
 //extern int dword_50C9E8; // idb
 //extern int dword_50C9EC[]; // 50C9EC
@@ -484,58 +485,58 @@ extern std::array<unsigned __int16, 50> pBlueFacesInBLVMinimapIDs;
 extern std::array<int, 14> pTextureIDs_PartyBuffIcons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
-extern int dword_576E28; // weak
-extern int _576E2C_current_minimap_zoom; // weak
-extern __int64 _5773B8_event_timer; // weak
+extern int dword_576E28;
+extern int _576E2C_current_minimap_zoom;
+extern GameTime _5773B8_event_timer; // 5773B8
 
-extern int dword_591084; // weak
+extern int dword_591084;
 extern struct Actor *pDialogue_SpeakingActor;
 extern unsigned int uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
 extern struct LevelDecoration *_591094_decoration;
-extern int uCurrentHouse_Animation; // weak
+extern int uCurrentHouse_Animation;
 extern char *dword_591164_teleport_map_name; // idb
-extern int dword_591168_teleport_speedz; // weak
-extern int dword_59116C_teleport_directionx; // weak
-extern int dword_591170_teleport_directiony; // weak
-extern int dword_591174_teleportz; // weak
-extern int dword_591178_teleporty; // weak
-extern int dword_59117C_teleportx; // weak
+extern int dword_591168_teleport_speedz;
+extern int dword_59116C_teleport_directionx;
+extern int dword_591170_teleport_directiony;
+extern int dword_591174_teleportz;
+extern int dword_591178_teleporty;
+extern int dword_59117C_teleportx;
 extern std::array<std::array<char, 100>, 6> byte_591180; // idb
 extern std::array<struct NPCData *, 7> HouseNPCData; //0this array size temporarily increased to 60 from 6 to work aroud house overflow
 extern GUIButton* HouseNPCPortraitsButtonsList[6];
 extern std::array<char, 2000> byte_5B0938;
-extern int EvtTargetObj; // weak
+extern int EvtTargetObj;
 extern int _unused_5B5924_is_travel_ui_drawn; // 005B5924
-extern int _5B65A8_npcdata_uflags_or_other; // weak
-extern int _5B65AC_npcdata_fame_or_other; // weak
-extern int _5B65B0_npcdata_rep_or_other; // weak
-extern int _5B65B4_npcdata_loword_house_or_other; // weak
-extern int _5B65B8_npcdata_hiword_house_or_other; // weak
-extern int dword_5B65BC; // weak
-extern int dword_5B65C0; // weak
-extern int dword_5B65C4_cancelEventProcessing; // weak
+extern int _5B65A8_npcdata_uflags_or_other;
+extern int _5B65AC_npcdata_fame_or_other;
+extern int _5B65B0_npcdata_rep_or_other;
+extern int _5B65B4_npcdata_loword_house_or_other;
+extern int _5B65B8_npcdata_hiword_house_or_other;
+extern int dword_5B65BC;
+extern int dword_5B65C0;
+extern int dword_5B65C4_cancelEventProcessing;
 extern int MapsLongTimers_count; // dword_5B65C8
-extern int npcIdToDismissAfterDialogue; // weak
-extern int dword_5B65D0_dialogue_actor_npc_id; // weak
-extern int dword_5C3418; // weak
-extern int dword_5C341C; // weak
-//extern std::array<char, 777> byte_5C3427; // weak
+extern int npcIdToDismissAfterDialogue;
+extern int dword_5B65D0_dialogue_actor_npc_id;
+extern int dword_5C3418;
+extern int dword_5C341C;
+//extern std::array<char, 777> byte_5C3427;
 extern String game_ui_status_bar_event_string;
 extern String game_ui_status_bar_string;
 extern unsigned int game_ui_status_bar_event_string_time_left;
-extern int bForceDrawFooter; // weak
-extern int _5C35C0_force_party_death; // weak
-extern int bDialogueUI_InitializeActor_NPC_ID; // weak
+extern int bForceDrawFooter;
+extern int _5C35C0_force_party_death;
+extern int bDialogueUI_InitializeActor_NPC_ID;
 extern char *p2DEventsTXT_Raw;
 
-extern int dword_5C35D4; // weak
-extern char byte_5C45AF[]; // weak
+extern int dword_5C35D4;
+extern char byte_5C45AF[];
 extern std::array<char, 10000> pTmpBuf3;
-extern std::array<char, 100> Journal_limitation_factor; // weak
-extern int ui_current_text_color; // weak
-extern __int64 qword_5C6DF0; // weak
-extern int dword_5C6DF8; // weak
+extern std::array<char, 100> Journal_limitation_factor;
+extern int ui_current_text_color;
+extern __int64 qword_5C6DF0;
+extern int dword_5C6DF8;
 extern char *pHealthPointsAttributeDescription;
 extern char *pSpellPointsAttributeDescription;
 extern char *pArmourClassAttributeDescription;
@@ -566,32 +567,32 @@ extern char *pPotionsTXT_Raw;
 extern char *pPotionNotesTXT_Raw;
 
 extern std::array<int, 777> _6807B8_level_decorations_ids; // idb
-extern int _6807E0_num_decorations_with_sounds_6807B8; // weak
+extern int _6807E0_num_decorations_with_sounds_6807B8;
 extern std::array<int, 3000> event_triggers; // 6807E8
 extern size_t num_event_triggers; // 6836C8
 extern std::array<int, 64> dword_69B010;
-extern float flt_69B138_dist; // weak
-extern char byte_69BD41_unused; // weak
-extern int pSaveListPosition; // weak
+extern float flt_69B138_dist;
+extern char byte_69BD41_unused;
+extern int pSaveListPosition;
 extern unsigned int uLoadGameUI_SelectedSlot;
 extern HWND hInsertCDWindow; // idb
 extern char cMM7GameCDDriveLetter; // idb
 extern enum MENU_STATE sCurrentMenuID;
 extern unsigned int uGameState;
-extern int uDefaultTravelTime_ByFoot; // weak
-extern int day_attrib; // weak
-extern int day_fogrange_1; // weak
-extern int day_fogrange_2; // weak
+extern int uDefaultTravelTime_ByFoot;
+extern int day_attrib;
+extern int day_fogrange_1;
+extern int day_fogrange_2;
 extern struct TileTable *pTileTable; // idb
 extern std::array<char, 777> pDefaultSkyTexture; // idb
 extern std::array<char, 16> byte_6BE124_cfg_textures_DefaultGroundTexture; // idb
-extern int _6BE134_odm_main_tile_group; // weak
-extern int dword_6BE138; // weak
-extern int dword_6BE13C_uCurrentlyLoadedLocationID; // weak
-extern float fWalkSpeedMultiplier; // weak
-extern float fBackwardWalkSpeedMultiplier; // weak
-extern float fTurnSpeedMultiplier; // weak
-extern float flt_6BE150_look_up_down_dangle; // weak
+extern int _6BE134_odm_main_tile_group;
+extern int dword_6BE138;
+extern int dword_6BE13C_uCurrentlyLoadedLocationID;
+extern float fWalkSpeedMultiplier;
+extern float fBackwardWalkSpeedMultiplier;
+extern float fTurnSpeedMultiplier;
+extern float flt_6BE150_look_up_down_dangle;
 //extern char pMM7WindowClassName[]; // idb
 //extern HINSTANCE hInstance; // idb
 //extern char *pCmdLine;
@@ -629,13 +630,13 @@ extern int bShowDamage; // idb
 extern unsigned int bAlwaysRun;
 extern unsigned int bFlipOnExit;
 extern unsigned int uTurnSpeed;
-extern float flt_6BE3A0; // weak
+extern float flt_6BE3A0;
 extern float flt_6BE3A4_debug_recmod1;
 extern float flt_6BE3A8_debug_recmod2;
 extern float flt_6BE3AC_debug_recmod1_x_1_6;
 extern std::array<char, 20> byte_6BE3B0; // idb
-extern char bUnderwater; // weak
-extern char bNoNPCHiring; // weak
+extern char bUnderwater;
+extern char bNoNPCHiring;
 extern unsigned int bNoVideo;
 extern bool bNoIntro;
 extern bool bNoLogo;
@@ -643,7 +644,7 @@ extern bool bNoCD;
 extern bool bNoSound;
 extern std::array<int, 100> dword_720020_zvalues;
 extern std::array<int, 299> dword_7201B0_zvalues;
-extern int uTextureID_720980; // weak
+extern int uTextureID_720980;
 extern std::array<__int16, 104> word_7209A0_intercepts_ys_plus_ys;
 extern std::array<__int16, 104> word_720A70_intercepts_xs_plus_xs;
 extern std::array<__int16, 104> word_720B40_intercepts_zs;
@@ -658,14 +659,14 @@ extern std::array<__int16, 104> odm_floor_face_vert_coord_X; // word_721040
 extern std::array<int, 20> current_Face_id; // dword_721110
 extern std::array<int, 20> current_BModel_id; // dword_721160
 extern std::array<int, 20> odm_floor_level; // idb dword_7211B0
-extern int blv_prev_party_x; // weak
-extern int blv_prev_party_z; // weak
-extern int blv_prev_party_y; // weak
+extern int blv_prev_party_x;
+extern int blv_prev_party_z;
+extern int blv_prev_party_y;
 extern char *dword_722F10; // idb
 extern std::array<const char *, 513> pQuestTable;
 extern char *dword_723718_autonote_related; // idb
 extern std::array<const char *, 82> pScrolls;
-extern int dword_7241C8; // weak
+extern int dword_7241C8;
 
 extern char *pAwardsTXT_Raw;
 extern char *pScrollsTXT_Raw;
@@ -681,34 +682,34 @@ extern unsigned int    uNumTerrainNormals;
 extern struct Vec3_float_ *pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2>  pTerrainNormalIndices;
 extern std::array<unsigned int, 128 * 128 * 2>    pTerrainSomeOtherData;
-extern int dword_A74C88; // weak
+extern int dword_A74C88;
 extern unsigned int uPlayerCreationUI_SkySliderPos;
 extern int uPlayerCreationUI_ArrowAnim;
 extern unsigned int uPlayerCreationUI_SelectedCharacter;
-extern int dword_A74CDC; // weak
+extern int dword_A74CDC;
 extern __int64 _A750D8_player_speech_timer; // qword_A750D8
 extern enum PlayerSpeech PlayerSpeechID;
-extern int uSpeakingCharacter; // weak
-extern char byte_AE5B91; // weak
-extern std::array<int, 32> dword_F1B430; // weak
+extern int uSpeakingCharacter;
+extern char byte_AE5B91;
+extern std::array<int, 32> dword_F1B430;
 extern std::array<int, 4> player_levels;
 extern std::array<__int16, 6> weapons_Ypos; // word_F8B158
-extern __int16 bountyHunting_monster_id_for_hunting; // weak
+extern __int16 bountyHunting_monster_id_for_hunting;
 extern const char *bountyHunting_text; // idb
-extern int contract_approved; // weak
+extern int contract_approved;
 extern int dword_F8B1AC_award_bit_number; // idb
-extern int dword_F8B1B0_MasteryBeingTaught; // weak
+extern int dword_F8B1B0_MasteryBeingTaught;
 extern int gold_transaction_amount; // F8B1B4
 extern std::array<const char *, 4> pShopOptions;
-extern int dword_F8B1D8; // weak
-extern int dword_F8B1E0; // weak
-extern int dword_F8B1E4; // weak
+extern int dword_F8B1D8;
+extern int dword_F8B1E0;
+extern int dword_F8B1E4;
 extern String current_npc_text; // F8B1E8
-extern char dialogue_show_profession_details; // weak
-extern std::array<char, 777> byte_F8B1EF; // weak
+extern char dialogue_show_profession_details;
+extern std::array<char, 777> byte_F8B1EF;
 extern std::array<char, 4> byte_F8B1F0;
 
-extern int bGameoverLoop; // weak
+extern int bGameoverLoop;
 extern std::array<__int16, 104> intersect_face_vertex_coords_list_a; // word_F8BC48
 extern std::array<__int16, 104> intersect_face_vertex_coords_list_b; // word_F8BD18
 extern bool wizard_eye;

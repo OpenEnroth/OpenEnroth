@@ -55,7 +55,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() :
 
     for (int i = 0; i < 5; ++i)
     {
-        if (pParty->pPlayers[_506348_current_lloyd_playerid].pInstalledBeacons[i].uBeaconTime >= (signed __int64)pParty->uTimePlayed)
+        if (pParty->pPlayers[_506348_current_lloyd_playerid].pInstalledBeacons[i].uBeaconTime >= pParty->GetPlayingTime())
             LoadThumbnailLloydTexture(i, _506348_current_lloyd_playerid + 1);
         else
             memset(&pParty->pPlayers[_506348_current_lloyd_playerid].pInstalledBeacons[i], 0, sizeof(LloydBeacon));
@@ -83,7 +83,7 @@ void GUIWindow_LloydsBook::Update()
     Player *pPlayer; // esi@1
     const char *pText; // eax@1
     int pTextHeight; // eax@14
-    int RemainingTime; // kr08_8@14
+    GameTime RemainingTime; // kr08_8@14
     unsigned int pHours; // esi@14
     unsigned int pDays; // eax@14
     const char *pSelectionText; // eax@19
@@ -144,9 +144,9 @@ void GUIWindow_LloydsBook::Update()
                 pTextHeight = pSpellFont->CalcTextHeight(Str, &pWindow, 0);
                 pWindow.uFrameY += -6 - pTextHeight;
                 pWindow.DrawTitleText(pSpellFont, 0, 0, 1, Str, 3);
-                RemainingTime = pPlayer->pInstalledBeacons[BeaconID].uBeaconTime - pParty->uTimePlayed;
-                pHours = (signed __int64)((double)RemainingTime * 0.234375) / 60 / 60;
-                pDays = pHours / 24;
+                RemainingTime = pPlayer->pInstalledBeacons[BeaconID].uBeaconTime - pParty->GetPlayingTime();
+                pHours = RemainingTime.GetHoursOfDay();
+                pDays = RemainingTime.GetDays();
                 if (pDays)
                 {
                     auto str = StringPrintf("%lu %s", pDays + 1, localization->GetString(57));//days

@@ -291,15 +291,6 @@ static void UI_DrawSaveLoad(bool save)
     //  const char *pSlotName; // edi@36
     GUIWindow save_load_window; // [sp+Ch] [bp-78h]@8
     unsigned int pSaveFiles; // [sp+70h] [bp-14h]@10
-    unsigned __int64 full_hours;
-    unsigned __int64 full_days;
-    int full_weeks;
-    int full_month;
-    int current_year;
-    int current_month;
-    int current_day;
-    int current_hour;
-    int current_minutes;
 
     pRenderer->BeginScene();
     if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu)
@@ -331,24 +322,18 @@ static void UI_DrawSaveLoad(bool save)
             pRenderer->DrawTextureNew((pGUIWindow_CurrentMenu->uFrameX + 276) / 640.0f, (pGUIWindow_CurrentMenu->uFrameY + 171) / 480.0f, pSavegameThumbnails[uLoadGameUI_SelectedSlot]);
         //Draw map name
         save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameHeader[uLoadGameUI_SelectedSlot].pLocationName)].pName, 3);
+
         //Draw date
-        full_hours = ((signed __int64)(pSavegameHeader[uLoadGameUI_SelectedSlot].uWordTime * 0.234375) / 60) / 60i64;
-        full_days = (unsigned int)full_hours / 24;
-        full_weeks = (unsigned int)(full_days / 7);
-        full_month = (unsigned int)full_weeks / 4;
-        current_year = (full_month / 12) + game_starting_year;
-        current_month = full_month % 12;
-        current_day = full_days % 28;
-        current_hour = full_hours % 24;
-        current_minutes = (((signed __int64)(pSavegameHeader[uLoadGameUI_SelectedSlot].uWordTime * 0.234375) / 60) % 60i64);
+        auto savegame_time = pSavegameHeader[uLoadGameUI_SelectedSlot].playing_time;
+        auto savegame_hour = savegame_time.GetHoursOfDay();
 
         save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
         int am;
-        if ((signed int)current_hour >= 12)
+        if (savegame_hour >= 12)
         {
-            current_hour -= 12;
-            if (!current_hour)
-                current_hour = 12;
+            savegame_hour -= 12;
+            if (!savegame_hour)
+                savegame_hour = 12;
             am = 1;
         }
         else
@@ -356,13 +341,13 @@ static void UI_DrawSaveLoad(bool save)
 
         auto str = StringPrintf(
             "%s %d:%02d %s\n%d %s %d",
-            localization->GetDayName(full_days % 7),
-            current_hour,
-            current_minutes,
+            localization->GetDayName(savegame_time.GetDaysOfWeek()),
+            savegame_hour,
+            savegame_time.GetMinutesFraction(),
             localization->GetAmPm(am),
-            current_day + 1,
-            localization->GetMonthName(current_month),
-            current_year
+            savegame_time.GetDaysOfMonth() + 1,
+            localization->GetMonthName(savegame_time.GetMonthsOfYear()),
+            savegame_time.GetYears() + game_starting_year
         );
         save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, str, 3);
     }

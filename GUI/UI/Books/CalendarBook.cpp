@@ -2,7 +2,8 @@
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
-#include "Engine/Timer.h"
+#include "Engine/Time.h"
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
@@ -125,8 +126,8 @@ void GUIWindow_CalendarBook::Update()
     str = StringPrintf(
         "%s\t100:\t110%d - %s",
         localization->GetString(56), // "Day"
-        pParty->uDaysPlayed + 1,
-        localization->GetDayName(pParty->uDaysPlayed % 7)
+        pParty->uCurrentDayOfMonth + 1,
+        localization->GetDayName(pParty->uCurrentDayOfMonth % 7)
     );
     calendar_window.DrawText(pBookFont, 70, 2 * LOBYTE(pBookFont->uFontHeight) + 49, ui_book_calendar_day_color, str, 0, 0, 0);
 
@@ -144,7 +145,7 @@ void GUIWindow_CalendarBook::Update()
     str = StringPrintf(
         "%s\t100:\t110%s",
         localization->GetString(530), // Moon
-        localization->GetMoonPhaseName(pDayMoonPhase[pParty->uDaysPlayed])
+        localization->GetMoonPhaseName(pDayMoonPhase[pParty->uCurrentDayOfMonth])
      );
     calendar_window.DrawText(pBookFont, 70, 8 * LOBYTE(pBookFont->uFontHeight) + 31, ui_book_calendar_moon_color, str, 0, 0, 0);
 

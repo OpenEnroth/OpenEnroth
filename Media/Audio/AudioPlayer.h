@@ -377,8 +377,8 @@ struct Sound
 
 extern int Aureal3D_SplashScreen;
 extern int Aureal3D_SplashAudio;
-extern int uFindSound_BinSearch_ResultID; // weak
-extern int uLastLoadedSoundID; // weak
+extern int uFindSound_BinSearch_ResultID;
+extern int uLastLoadedSoundID;
 extern int sLastTrackLengthMS;
 extern std::array<Sound, 3000> pSounds;
 extern AudioPlayer *pAudioPlayer;
@@ -417,6 +417,6 @@ extern std::array<stru339_spell_sound, 4> AA1058_PartyQuickSpellSound;
 
 struct SoundHeader *FindSound_BinSearch(unsigned int uStart, unsigned int uEnd, const char *pName);
 struct SoundData *LoadSound(const char *pSoundName, struct SoundData *pOutBuff, unsigned int uID);
-int sub_4AB66C(int, int); // weak
+int sub_4AB66C(int, int);
 int GetSoundStrengthByDistanceFromParty(int x, int y, int z);
 void PlayLevelMusic();

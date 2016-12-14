@@ -5,6 +5,14 @@
 #include <stdio.h>
 
 #include "Engine/Engine.h"
+#include "Engine/Time.h"
+
+#include "IO/Mouse.h"
+
+#include "GUI/UI/Chest.h"
+#include "GUI/UI/UIStatusBar.h"
+
+#include "Media/Audio/AudioPlayer.h"
 
 #include "Items.h"
 #include "Chest.h"
@@ -17,17 +25,9 @@
 #include "../Party.h"
 #include "../OurMath.h"
 #include "ObjectList.h"
-#include "../Timer.h"
 #include "SpriteObject.h"
 #include "../Graphics/Viewport.h"
 #include "../Graphics/Level/Decoration.h"
-
-#include "IO/Mouse.h"
-
-#include "GUI/UI/Chest.h"
-#include "GUI/UI/UIStatusBar.h"
-
-#include "Media/Audio/AudioPlayer.h"
 
 
 

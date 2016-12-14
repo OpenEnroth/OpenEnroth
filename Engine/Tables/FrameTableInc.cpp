@@ -17,7 +17,7 @@ FrameTableTxtLine* txt_file_frametable_parser(const char *str_to_parse, FrameTab
     int i;
 
     static char tokens_buff1[1000]; 
-    static struct FrameTableTxtLine temp_tokens_table1; // weak
+    static struct FrameTableTxtLine temp_tokens_table1;
 
     temp_tokens_table1.uPropCount = 0;
 
@@ -84,7 +84,7 @@ FrameTableTxtLine * frame_table_txt_parser(const char *str_to_parse, FrameTableT
     int i;
 
     static char tokens_buff2[1000]; 
-    static struct FrameTableTxtLine temp_tokens_table2; // weak
+    static struct FrameTableTxtLine temp_tokens_table2;
     temp_tokens_table2.uPropCount = 0;
 
     if ( str_to_parse && *str_to_parse )

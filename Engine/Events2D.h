@@ -50,7 +50,7 @@ struct _2devent
   __int16 _state;
   __int16 _rep;
   __int16 _per;
-  __int16 field_1C;
+  __int16 generation_interval_days;
   __int16 field_1E;
   float fPriceMultiplier;
   float flt_24;

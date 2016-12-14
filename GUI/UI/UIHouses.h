@@ -145,8 +145,8 @@ void InitializaDialogueOptions_Shops(BuildingType type);
 void InitializaDialogueOptions(BuildingType type);
 void InitializeBuildingResidents();
 
-extern int uHouse_ExitPic; // weak
-extern int dword_591080; // weak
+extern int uHouse_ExitPic;
+extern int dword_591080;
 extern BuildingType in_current_building_type; // 00F8B198
 extern HOUSE_DIALOGUE_MENU dialog_menu_id; // 00F8B19C
 

@@ -151,27 +151,29 @@ enum SPELL_SCHOOL : int
 #pragma pack(push, 1)
 struct SpellBuff
 {
-  inline SpellBuff()
-  {
-    uExpireTime = 0;
-    uPower = 0;
-    uSkill = 0;
-    uOverlayID = 0;
-    uCaster = 0;
-    uFlags = 0;
-  }
+    inline SpellBuff()
+    {
+        uPower = 0;
+        uSkill = 0;
+        uOverlayID = 0;
+        uCaster = 0;
+        uFlags = 0;
+    }
 
-  bool Apply(signed __int64 uExpireTime, unsigned __int16 uSkillLevel, unsigned __int16 uPower, int uOverlayID, unsigned __int8 caster);
-  void Reset();
-  bool IsBuffExpiredToTime(__int64 time_end);
-  bool NotExpired();
+    bool Apply(GameTime time, unsigned __int16 uSkillLevel, unsigned __int16 uPower, int uOverlayID, unsigned __int8 caster);
+    void Reset();
+    bool IsBuffExpiredToTime(GameTime time);
 
-  signed __int64 uExpireTime;
-  unsigned __int16 uPower;
-  unsigned __int16 uSkill;
-  unsigned __int16 uOverlayID;
-  unsigned __int8 uCaster;
-  unsigned __int8 uFlags;
+    //----- (0042EB31) --------------------------------------------------------
+    bool Active() const { return this->expire_time.value > 0; }
+    bool Expired() const { return this->expire_time.value < 0; }
+
+    GameTime expire_time;
+    unsigned __int16 uPower;
+    unsigned __int16 uSkill;
+    unsigned __int16 uOverlayID;
+    unsigned __int8 uCaster;
+    unsigned __int8 uFlags;
 };
 #pragma pack(pop)
 

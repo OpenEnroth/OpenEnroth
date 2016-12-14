@@ -353,7 +353,7 @@ struct GUIWindow
   void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, unsigned __int16 uDefaultColor, const char *pInString, int line_spacing);
   void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, unsigned __int16 uDefaultColor, const String &str, int line_spacing);
 
-  void DrawShops_next_generation_time_string(__int64 next_generation_time);
+  void DrawShops_next_generation_time_string(GameTime time);
   void HouseDialogManager();
   void DrawMessageBox(bool inside_game_viewport);
   GUIButton *GetControl(unsigned int uID);
@@ -696,7 +696,7 @@ unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int b
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
 struct GUIButton *GUI_HandleHotkey(unsigned __int8 uHotkey); // idb
 void GUI_ReplaceHotkey(unsigned __int8 uOldHotkey, unsigned __int8 uNewHotkey, char bFirstCall);
-void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, __int64 remaining_time, struct GUIFont *Font);
+void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, GameTime remaining_time, struct GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item); // idb
 void MonsterPopup_Draw(unsigned int uActorID, struct GUIWindow *window);
 void SetUserInterface(enum PartyAlignment alignment, bool bReplace);
@@ -714,8 +714,8 @@ void _4B3FE5_training_dialogue(int a4);
 void OracleDialogue();
 void CheckBountyRespawnAndAward();
 String _4B254D_SkillMasteryTeacher(int trainerInfo);
-String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int a5, __int64 *a6);
-String BuildDialogueString(String &str, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int a5, __int64 *a6);
+String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int a5, GameTime *a6 = nullptr);
+String BuildDialogueString(String &str, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int a5, GameTime *a6 = nullptr);
 int const_2();
 
 

@@ -183,7 +183,7 @@ struct Actor
     {
       this->pActorBuffs[i].uSkill = 0;
       this->pActorBuffs[i].uPower = 0;
-      this->pActorBuffs[i].uExpireTime = 0;
+      this->pActorBuffs[i].expire_time.value = 0;
       this->pActorBuffs[i].uCaster = 0;
       this->pActorBuffs[i].uFlags = 0;
     }
@@ -268,7 +268,7 @@ struct Actor
 
 
   void LootActor();
-  bool _427102_IsOkToCastSpell(signed int a2);
+  bool _427102_IsOkToCastSpell(enum SPELL_TYPE spell);
   ABILITY_INDEX special_ability_use_check(int a2);
   bool _4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4);
   bool ActorHitOrMiss(Player *pPlayer);
@@ -332,7 +332,7 @@ void sub_448518_npc_set_item(int npc, unsigned int item, int a3);
 void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag, unsigned int bToggle);
 bool sub_4070EF_prolly_detect_player(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
-int sub_44FA4C_spawn_light_elemental(int a1, int a2, int a3);
+int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level, int duration_game_seconds);
 void SpawnEncounter(struct MapInfo *pMapInfo, struct SpawnPointMM7 *spawn, int a3, int a4, int a5);
 void area_of_effect__damage_evaluate();
 double sub_43AE12(signed int a1);

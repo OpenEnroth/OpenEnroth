@@ -11089,7 +11089,7 @@ struct Allocator
 
 Allocator *pAllocator; // idb
 
-int aborting_app = false; // weak
+int aborting_app = false;
 
 
 
@@ -11660,7 +11660,7 @@ struct Edge
   float field_30;
 };
 #pragma pack(pop)
-extern Edge defaultEdge; // weak
+extern Edge defaultEdge;
 
 extern Edge stru_80C9A4;
 extern Edge stru_80C9D8;
