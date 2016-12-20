@@ -611,78 +611,71 @@ void am_BeginScene(unsigned __int16 *pPcxPixels, int a2, int a3)
 //----- (0040D7EC) --------------------------------------------------------
 void Render::am_Blt_Chroma(RECT *pSrcRect, POINT *pTargetPoint, int a3, int blend_mode)
 {
-  unsigned __int16 *pSrc; // eax@2
-  int uSrcTotalWidth; // ecx@4
-  unsigned int v10; // esi@9
-  int v21; // [sp+Ch] [bp-18h]@8
-  unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
-  __int32 src_width; // [sp+14h] [bp-10h]@3
-  __int32 src_height; // [sp+18h] [bp-Ch]@3
-  int uSrcPitch; // [sp+1Ch] [bp-8h]@5
+    unsigned __int16 *pSrc; // eax@2
+    int uSrcTotalWidth; // ecx@4
+    unsigned int v10; // esi@9
+    int v21; // [sp+Ch] [bp-18h]@8
+    unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
+    __int32 src_width; // [sp+14h] [bp-10h]@3
+    __int32 src_height; // [sp+18h] [bp-Ch]@3
+    int uSrcPitch; // [sp+1Ch] [bp-8h]@5
 
-  if ( !uNumSceneBegins )
-    return;
-  if ( !pArcomageGame->pBlit_Copy_pixels )
-    return;
+    if (!uNumSceneBegins)
+        return;
+    if (!pArcomageGame->pBlit_Copy_pixels)
+        return;
 
-  //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
-  src_width = pSrcRect->right - pSrcRect->left;
-  src_height = pSrcRect->bottom - pSrcRect->top;
+    //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
+    src_width = pSrcRect->right - pSrcRect->left;
+    src_height = pSrcRect->bottom - pSrcRect->top;
 
-  if ( pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels )
-    uSrcTotalWidth = pArcomageGame->pGameBackground.uWidth;
-  else if ( pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels )
-    uSrcTotalWidth = pArcomageGame->pSprites.uWidth;
+    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
+        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
+    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
+        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
 
-  //v20 = 157;
-  //v19 = "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\am_nw.cpp";
-  //v21 = &v18;
-  //std__string_char_40E2C8(&v18, "Problem in Blit_Chroma", &a3a);
-  //466D09_xcpt_string(&v21, v18, v19, v20);
-  //pSrc = pArcomageGame.pBlit_Copy_pixels;
-  //LABEL_9:
-  pSrc = pArcomageGame->pBlit_Copy_pixels;
-  uSrcPitch = uSrcTotalWidth;
-  src_surf_pos = &pSrc[pSrcRect->left + uSrcPitch * pSrcRect->top];
-  v10 = 0x1F;//0xFF >> (8 - (unsigned __int8)uTargetBBits);
-  v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
-  if ( blend_mode == 2 )
-  {
-    uSrcPitch =  (uSrcPitch - src_width);
-    for ( int i = 0; i < src_height; ++i )
+    pSrc = pArcomageGame->pBlit_Copy_pixels;
+    uSrcPitch = uSrcTotalWidth;
+    src_surf_pos = &pSrc[pSrcRect->left + uSrcPitch * pSrcRect->top];
+    v10 = 0x1F;//0xFF >> (8 - (unsigned __int8)uTargetBBits);
+    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
+    if (blend_mode == 2)
     {
-      for ( int j = 0; j < src_width; ++j )
-      {
-        if ( *src_surf_pos != v10 )
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i)
         {
-          if ( pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1 
-            && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-            WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
+            for (int j = 0; j < src_width; ++j)
+            {
+                if (*src_surf_pos != v10)
+                {
+                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
         }
-        ++src_surf_pos;
-      }
-      src_surf_pos += uSrcPitch;
     }
-  }
-  else 
-  {
-    uSrcPitch = (uSrcPitch - src_width);
-    for ( int i = 0; i < src_height; ++i )
+    else
     {
-      for ( int j = 0; j < src_width; ++j )
-      {
-        if ( *src_surf_pos != v10 )
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i)
         {
-          if ( pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-            && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-          //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) >> 1)) + (v21 & (*src_surf_pos >> 1)));
-            WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
+            for (int j = 0; j < src_width; ++j)
+            {
+                if (*src_surf_pos != v10)
+                {
+                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+                        //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) >> 1)) + (v21 & (*src_surf_pos >> 1)));
+                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
         }
-        ++src_surf_pos;
-      }
-      src_surf_pos+=uSrcPitch;
     }
-  }
 }
 
 //----- (0040D9B1) --------------------------------------------------------
@@ -705,9 +698,9 @@ void Render::am_Blt_Copy(RECT *pSrcRect, POINT *pTargetPoint, int blend_mode)
     src_width = pSrcRect->right - pSrcRect->left;
     src_height = pSrcRect->bottom - pSrcRect->top;
     if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
-        uSrcTotalWidth = pArcomageGame->pGameBackground.uWidth;
+        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
     else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
-        uSrcTotalWidth = pArcomageGame->pSprites.uWidth;
+        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
 
     pSrc = pArcomageGame->pBlit_Copy_pixels;
     uSrcPitch = uSrcTotalWidth;
@@ -763,22 +756,23 @@ void am_EndScene()
 //----- (0040D7B7) --------------------------------------------------------
 bool ArcomageGame::LoadSprites()
 {
-  pArcomageGame->pSprites.Load("sprites.pcx", 2);
-  pArcomageGame->pSpritesPixels = pArcomageGame->pSprites.pPixels;
-  return true;
+    pArcomageGame->pSprites = assets->GetImage_PCXFromIconsLOD(L"sprites.pcx");
+    pArcomageGame->pSpritesPixels = (unsigned __int16 *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_R5G6B5);
+    return true;
 }
 
 //----- (0040D799) --------------------------------------------------------
 bool ArcomageGame::LoadBackground()
 {
-  pArcomageGame->pGameBackground.Load("layout.pcx", 2);
-  pArcomageGame->pBackgroundPixels = pArcomageGame->pGameBackground.pPixels;
-  return true;
+    pArcomageGame->pGameBackground = assets->GetImage_PCXFromIconsLOD(L"layout.pcx");
+    pArcomageGame->pBackgroundPixels = (unsigned __int16 *)pArcomageGame->pGameBackground->GetPixels(IMAGE_FORMAT_R5G6B5);
+    return true;
 }
 
 int CalculateCardPower(ArcomagePlayer* player, ArcomagePlayer* enemy, ArcomageCard* pCard, int mastery)
 {
-  enum V_INDX{
+    enum V_IND
+    {
         P_TOWER_M10,
         P_WALL_M10,
         E_TOWER,
@@ -789,322 +783,414 @@ int CalculateCardPower(ArcomagePlayer* player, ArcomagePlayer* enemy, ArcomageCa
         E_ZOO,
         E_RES,
         V_INDEX_MAX
-        };
+    };
 
-    const int mastery_coeff[V_INDEX_MAX][2]= {{10, 5}, //P_TOWER_M10
-                                              {2, 1},  //P_WALL_M10
-                                              {1, 10}, //E_TOWER
-                                              {1, 3},  //E_WALL
-                                              {1, 7},  //E_BUILDINGS
-                                              {1, 5},  //E_QUARRY
-                                              {1, 40},  //E_MAGIC
-                                              {1, 40},  //E_ZOO
-                                              {1, 2}   //E_RES
-        };
-    int card_power= 0;
+    const int mastery_coeff[V_INDEX_MAX][2] =
+    {
+        {10, 5}, //P_TOWER_M10
+        {2, 1},  //P_WALL_M10
+        {1, 10}, //E_TOWER
+        {1, 3},  //E_WALL
+        {1, 7},  //E_BUILDINGS
+        {1, 5},  //E_QUARRY
+        {1, 40}, //E_MAGIC
+        {1, 40}, //E_ZOO
+        {1, 2}   //E_RES
+    };
+    int card_power = 0;
     int element_power;
 
-    if ( pCard->to_player_tower  == 99 || pCard->to_pl_enm_tower  == 99|| 
-            pCard->to_player_tower2 == 99 || pCard->to_pl_enm_tower2 == 99 )
-        element_power = enemy->tower_height - player->tower_height; 
+    if (pCard->to_player_tower == 99 || pCard->to_pl_enm_tower == 99 ||
+        pCard->to_player_tower2 == 99 || pCard->to_pl_enm_tower2 == 99)
+    {
+        element_power = enemy->tower_height - player->tower_height;
+    }
     else
+    {
         element_power = pCard->to_player_tower + pCard->to_pl_enm_tower + pCard->to_player_tower2 + pCard->to_pl_enm_tower2;
-        
-    if ( player->tower_height >= 10 )
-      card_power += mastery_coeff[P_TOWER_M10][mastery]*element_power; 
+    }
+
+    if (player->tower_height >= 10)
+    {
+        card_power += mastery_coeff[P_TOWER_M10][mastery] * element_power;
+    }
     else
-      card_power += 20*element_power; 
+    {
+        card_power += 20 * element_power;
+    }
 
 
-    if ( pCard->to_player_wall  == 99 || pCard->to_pl_enm_wall  == 99 || 
-         pCard->to_player_wall2 == 99 || pCard->to_pl_enm_wall2 == 99 )
+    if (pCard->to_player_wall == 99 || pCard->to_pl_enm_wall == 99 ||
+        pCard->to_player_wall2 == 99 || pCard->to_pl_enm_wall2 == 99)
+    {
         element_power = enemy->wall_height - player->wall_height;
+    }
     else
-        element_power = pCard->to_player_wall  + pCard->to_pl_enm_wall + 
-                        pCard->to_player_wall2 + pCard->to_pl_enm_wall2;
-    if ( player->wall_height >= 10 )
-        card_power += mastery_coeff[P_WALL_M10][mastery]*element_power; //1
+    {
+        element_power = pCard->to_player_wall + pCard->to_pl_enm_wall + pCard->to_player_wall2 + pCard->to_pl_enm_wall2;
+    }
+
+    if (player->wall_height >= 10)
+    {
+        card_power += mastery_coeff[P_WALL_M10][mastery] * element_power; //1
+    }
     else
-        card_power += 5*element_power; 
+    {
+        card_power += 5 * element_power;
+    }
 
+    card_power += 7 * (pCard->to_player_buildings + pCard->to_pl_enm_buildings + pCard->to_player_buildings2 + pCard->to_pl_enm_buildings2);
 
-    card_power += 7 * (pCard->to_player_buildings  + pCard->to_pl_enm_buildings + 
-                       pCard->to_player_buildings2 + pCard->to_pl_enm_buildings2);
-
-    if ( pCard->to_player_quarry_lvl  == 99 || pCard->to_pl_enm_quarry_lvl  == 99 || 
-         pCard->to_player_quarry_lvl2 == 99 || pCard->to_pl_enm_quarry_lvl2 == 99 )
+    if (pCard->to_player_quarry_lvl == 99 || pCard->to_pl_enm_quarry_lvl == 99 ||
+        pCard->to_player_quarry_lvl2 == 99 || pCard->to_pl_enm_quarry_lvl2 == 99)
+    {
         element_power = enemy->quarry_level - player->quarry_level;
+    }
     else
-        element_power = pCard->to_player_quarry_lvl  + pCard->to_pl_enm_quarry_lvl + 
-                        pCard->to_player_quarry_lvl2 + pCard->to_pl_enm_quarry_lvl;
+    {
+        element_power = pCard->to_player_quarry_lvl + pCard->to_pl_enm_quarry_lvl + pCard->to_player_quarry_lvl2 + pCard->to_pl_enm_quarry_lvl;
+    }
 
     card_power += 40 * element_power;
 
-    if ( pCard->to_player_magic_lvl  == 99 || pCard->to_pl_enm_magic_lvl  == 99 || 
-         pCard->to_player_magic_lvl2 == 99 || pCard->to_pl_enm_magic_lvl2 == 99 )
+    if (pCard->to_player_magic_lvl == 99 || pCard->to_pl_enm_magic_lvl == 99 ||
+        pCard->to_player_magic_lvl2 == 99 || pCard->to_pl_enm_magic_lvl2 == 99)
+    {
         element_power = enemy->magic_level - player->magic_level;
+    }
     else
-        element_power = pCard->to_player_magic_lvl  + pCard->to_pl_enm_magic_lvl + 
-                        pCard->to_player_magic_lvl2 + pCard->to_pl_enm_magic_lvl2;
-    card_power += 40 *element_power;
+    {
+        element_power = pCard->to_player_magic_lvl + pCard->to_pl_enm_magic_lvl + pCard->to_player_magic_lvl2 + pCard->to_pl_enm_magic_lvl2;
+    }
+    card_power += 40 * element_power;
 
-    if ( pCard->to_player_zoo_lvl  == 99 || pCard->to_pl_enm_zoo_lvl  == 99 || 
-         pCard->to_player_zoo_lvl2 == 99 || pCard->to_pl_enm_zoo_lvl2 == 99 )
+    if (pCard->to_player_zoo_lvl == 99 || pCard->to_pl_enm_zoo_lvl == 99 ||
+        pCard->to_player_zoo_lvl2 == 99 || pCard->to_pl_enm_zoo_lvl2 == 99)
+    {
         element_power = enemy->zoo_level - player->zoo_level;
+    }
     else
-        element_power =  pCard->to_player_zoo_lvl  + pCard->to_pl_enm_zoo_lvl + 
-                         pCard->to_player_zoo_lvl2 + pCard->to_pl_enm_zoo_lvl2;
-    card_power += 40 *element_power;
+    {
+        element_power = pCard->to_player_zoo_lvl + pCard->to_pl_enm_zoo_lvl + pCard->to_player_zoo_lvl2 + pCard->to_pl_enm_zoo_lvl2;
+    }
+    card_power += 40 * element_power;
 
-    if ( pCard->to_player_bricks  == 99 || pCard->to_pl_enm_bricks  == 99 || 
-         pCard->to_player_bricks2 == 99 || pCard->to_pl_enm_bricks2 == 99 )
+    if (pCard->to_player_bricks == 99 || pCard->to_pl_enm_bricks == 99 ||
+        pCard->to_player_bricks2 == 99 || pCard->to_pl_enm_bricks2 == 99)
+    {
         element_power = enemy->resource_bricks - player->resource_bricks;
+    }
     else
-        element_power = pCard->to_player_bricks  + pCard->to_pl_enm_bricks + 
-                        pCard->to_player_bricks2 + pCard->to_pl_enm_bricks2;
-    card_power += 2 *element_power;
+    {
+        element_power = pCard->to_player_bricks + pCard->to_pl_enm_bricks + pCard->to_player_bricks2 + pCard->to_pl_enm_bricks2;
+    }
+    card_power += 2 * element_power;
 
 
-    if ( pCard->to_player_gems  == 99 || pCard->to_pl_enm_gems  == 99 || 
-         pCard->to_player_gems2 == 99 || pCard->to_pl_enm_gems2 == 99 )
-         element_power = enemy->resource_gems - player->resource_gems;
+    if (pCard->to_player_gems == 99 || pCard->to_pl_enm_gems == 99 ||
+        pCard->to_player_gems2 == 99 || pCard->to_pl_enm_gems2 == 99)
+    {
+        element_power = enemy->resource_gems - player->resource_gems;
+    }
     else
-        element_power = pCard->to_player_gems  + pCard->to_pl_enm_gems + 
-                        pCard->to_player_gems2 + pCard->to_pl_enm_gems2;
-    card_power += 2 *element_power;
+    {
+        element_power = pCard->to_player_gems + pCard->to_pl_enm_gems + pCard->to_player_gems2 + pCard->to_pl_enm_gems2;
+    }
+    card_power += 2 * element_power;
 
-    if ( pCard->to_player_beasts  == 99 || pCard->to_pl_enm_beasts  == 99 || 
-        pCard->to_player_beasts2 == 99 || pCard->to_pl_enm_beasts2 == 99 )
+    if (pCard->to_player_beasts == 99 || pCard->to_pl_enm_beasts == 99 ||
+        pCard->to_player_beasts2 == 99 || pCard->to_pl_enm_beasts2 == 99)
+    {
         element_power = enemy->resource_beasts - player->resource_beasts;
+    }
     else
-        element_power = pCard->to_player_beasts  + pCard->to_pl_enm_beasts + 
-                        pCard->to_player_beasts2 + pCard->to_pl_enm_beasts2;
-    card_power += 2 *element_power;
+    {
+        element_power = pCard->to_player_beasts + pCard->to_pl_enm_beasts + pCard->to_player_beasts2 + pCard->to_pl_enm_beasts2;
+    }
+    card_power += 2 * element_power;
 
-    if ( pCard->to_enemy_tower == 99 || pCard->to_enemy_tower2 == 99 )
-        element_power = player->tower_height - enemy->tower_height;  
+    if (pCard->to_enemy_tower == 99 || pCard->to_enemy_tower2 == 99)
+    {
+        element_power = player->tower_height - enemy->tower_height;
+    }
     else
+    {
         element_power = -(pCard->to_enemy_tower + pCard->to_enemy_tower2);
-    card_power += mastery_coeff[E_TOWER][mastery]*element_power;
+    }
+    card_power += mastery_coeff[E_TOWER][mastery] * element_power;
 
-    if ( pCard->to_enemy_wall == 99 || pCard->to_enemy_wall2 == 99 )
-        element_power = player->wall_height - enemy->wall_height;  
+    if (pCard->to_enemy_wall == 99 || pCard->to_enemy_wall2 == 99)
+    {
+        element_power = player->wall_height - enemy->wall_height;
+    }
     else
+    {
         element_power = -(pCard->to_enemy_wall + pCard->to_enemy_wall2);
-    card_power += mastery_coeff[E_WALL][mastery]*element_power;
+    }
+    card_power += mastery_coeff[E_WALL][mastery] * element_power;
 
-     card_power -= mastery_coeff[E_BUILDINGS][mastery]*(pCard->to_enemy_buildings + pCard->to_enemy_buildings2); 
- 
-    if ( pCard->to_enemy_quarry_lvl == 99 || pCard->to_enemy_quarry_lvl2 == 99 )
+    card_power -= mastery_coeff[E_BUILDINGS][mastery] * (pCard->to_enemy_buildings + pCard->to_enemy_buildings2);
+
+    if (pCard->to_enemy_quarry_lvl == 99 || pCard->to_enemy_quarry_lvl2 == 99)
+    {
         element_power = player->quarry_level - enemy->quarry_level;  //5
+    }
     else
+    {
         element_power = -(pCard->to_enemy_quarry_lvl + pCard->to_enemy_quarry_lvl2); //5
-    card_power += mastery_coeff[E_QUARRY][mastery]*element_power;
+    }
+    card_power += mastery_coeff[E_QUARRY][mastery] * element_power;
 
-    if ( pCard->to_enemy_magic_lvl == 99 || pCard->to_enemy_magic_lvl2 == 99 )
+    if (pCard->to_enemy_magic_lvl == 99 || pCard->to_enemy_magic_lvl2 == 99)
+    {
         element_power = player->magic_level - enemy->magic_level;  //40
+    }
     else
+    {
         element_power = -(pCard->to_enemy_magic_lvl + pCard->to_enemy_magic_lvl2);
-    card_power += mastery_coeff[E_MAGIC][mastery]*element_power;
+    }
+    card_power += mastery_coeff[E_MAGIC][mastery] * element_power;
 
-    if ( pCard->to_enemy_zoo_lvl == 99 || pCard->to_enemy_zoo_lvl2 == 99 )
+    if (pCard->to_enemy_zoo_lvl == 99 || pCard->to_enemy_zoo_lvl2 == 99)
+    {
         element_power = player->zoo_level - enemy->zoo_level; //40
+    }
     else
+    {
         element_power = -(pCard->to_enemy_zoo_lvl + pCard->to_enemy_zoo_lvl2);
-    card_power += mastery_coeff[E_ZOO][mastery]*element_power;
+    }
+    card_power += mastery_coeff[E_ZOO][mastery] * element_power;
 
-    if ( pCard->to_enemy_bricks == 99 || pCard->to_enemy_bricks2 == 99 )
+    if (pCard->to_enemy_bricks == 99 || pCard->to_enemy_bricks2 == 99)
+    {
         element_power = player->resource_bricks - enemy->resource_bricks;  //2
+    }
     else
+    {
         element_power = -(pCard->to_enemy_bricks + pCard->to_enemy_bricks2);
-    card_power += mastery_coeff[E_RES][mastery]*element_power;
+    }
+    card_power += mastery_coeff[E_RES][mastery] * element_power;
 
-    if ( pCard->to_enemy_gems == 99 || pCard->to_enemy_gems2 == 99 )
+    if (pCard->to_enemy_gems == 99 || pCard->to_enemy_gems2 == 99)
+    {
         element_power = player->resource_gems - enemy->resource_gems; //2
+    }
     else
+    {
         element_power = -(pCard->to_enemy_gems + pCard->to_enemy_gems2);
-    card_power += mastery_coeff[E_RES][mastery]*element_power;
+    }
+    card_power += mastery_coeff[E_RES][mastery] * element_power;
 
-    if ( pCard->to_enemy_beasts == 99 || pCard->to_enemy_beasts2 == 99 )
+    if (pCard->to_enemy_beasts == 99 || pCard->to_enemy_beasts2 == 99)
+    {
         element_power = player->resource_beasts - enemy->resource_beasts;  //2
+    }
     else
+    {
         element_power = -(pCard->to_enemy_beasts + pCard->to_enemy_beasts2);
-    card_power += mastery_coeff[E_RES][mastery]*element_power;
+    }
+    card_power += mastery_coeff[E_RES][mastery] * element_power;
 
-    if ( pCard->field_30 || pCard->field_4D )
-         card_power *= 10;
+    if (pCard->field_30 || pCard->field_4D)
+    {
+        card_power *= 10;
+    }
 
-    if ( pCard->field_24 == 1 )
+    if (pCard->field_24 == 1)
+    {
         element_power = player->resource_bricks - pCard->needed_bricks;
-    else if ( pCard->field_24 == 2 )
-        element_power = player->resource_gems   - pCard->needed_gems;
+    }
+    else if (pCard->field_24 == 2)
+    {
+        element_power = player->resource_gems - pCard->needed_gems;
+    }
     else if (pCard->field_24 == 3)
+    {
         element_power = player->resource_beasts - pCard->needed_beasts;
-    if ( element_power > 3 )
+    }
+    if (element_power > 3)
+    {
         element_power = 3;
+    }
     card_power += 5 * element_power;
 
-    if ( enemy->tower_height <= pCard->to_enemy_tower2 + pCard->to_enemy_tower )
+    if (enemy->tower_height <= pCard->to_enemy_tower2 + pCard->to_enemy_tower)
+    {
         card_power += 9999;
+    }
 
-    if (pCard->to_enemy_tower2    + pCard->to_enemy_tower + 
-        pCard->to_enemy_wall      + pCard->to_enemy_wall2 + 
-        pCard->to_enemy_buildings + pCard->to_enemy_buildings2 >= enemy->wall_height + enemy->tower_height) 
+    if (pCard->to_enemy_tower2 + pCard->to_enemy_tower +
+        pCard->to_enemy_wall + pCard->to_enemy_wall2 +
+        pCard->to_enemy_buildings + pCard->to_enemy_buildings2 >= enemy->wall_height + enemy->tower_height)
+    {
         card_power += 9999;
+    }
 
-  if ( (pCard->to_player_tower2 + pCard->to_pl_enm_tower2 + pCard->to_player_tower  + pCard->to_pl_enm_tower  + player->tower_height)
-         >= max_tower_height )
-    card_power += 9999;
+    if ((pCard->to_player_tower2 + pCard->to_pl_enm_tower2 + pCard->to_player_tower + pCard->to_pl_enm_tower + player->tower_height)
+        >= max_tower_height)
+    {
+        card_power += 9999;
+    }
 
-  return card_power;
+    return card_power;
 }
 
 //----- (00408BB4) --------------------------------------------------------
 bool OpponentsAITurn(int player_num)
 {
-  int all_player_cards_count; // eax@9
-  int random_card_slot; // edi@9
-  ArcomageCard *v12; // ecx@20
-  int v56; // ecx@141
-  int v57; // edx@141
-  int v132; // [sp-14h] [bp-14h]@0
-  ArcomagePlayer *enemy; // [sp-10h] [bp-10h]@5
-  ArcomagePlayer *player; // [sp-Ch] [bp-Ch]@5
+    int all_player_cards_count; // eax@9
+    int random_card_slot; // edi@9
+    ArcomageCard *v12; // ecx@20
+    int v56; // ecx@141
+    int v57; // edx@141
+    int v132; // [sp-14h] [bp-14h]@0
+    ArcomagePlayer *enemy; // [sp-10h] [bp-10h]@5
+    ArcomagePlayer *player; // [sp-Ch] [bp-Ch]@5
 
-  byte_4FAA00 = 1;
-  if ( opponent_mastery == 0)
-  {
-    if ( need_to_discard_card == 0 )  //am_byte_4FAA77
+    byte_4FAA00 = 1;
+    if (opponent_mastery == 0)
     {
-      for(int i = 0; i < 10; ++i )
-      {
+        if (need_to_discard_card == 0)  //am_byte_4FAA77
+        {
+            for (int i = 0; i < 10; ++i)
+            {
+                all_player_cards_count = GetPlayerHandCardCount(player_num);
+                random_card_slot = rand_interval(0, all_player_cards_count - 1);
+                if (CanCardBePlayed(player_num, random_card_slot))
+                    return PlayCard(player_num, random_card_slot);
+            }
+        }
         all_player_cards_count = GetPlayerHandCardCount(player_num);
         random_card_slot = rand_interval(0, all_player_cards_count - 1);
-        if ( CanCardBePlayed(player_num, random_card_slot) )
-          return PlayCard(player_num, random_card_slot);
-      }
+        return DiscardCard(player_num, random_card_slot);
     }
-    all_player_cards_count = GetPlayerHandCardCount(player_num);
-    random_card_slot= rand_interval(0, all_player_cards_count - 1);
-    return DiscardCard(player_num, random_card_slot);
-  }
-  else if (( opponent_mastery == 1 )|| ( opponent_mastery == 2 ))
-  {
-    player = &am_Players[player_num];
-    enemy = &am_Players[(player_num + 1) % 2];
-    all_player_cards_count = GetPlayerHandCardCount(player_num);
-    for(int i = 0; i < 10 ; ++i )
+    else if ((opponent_mastery == 1) || (opponent_mastery == 2))
     {
-      if ( i >= all_player_cards_count )
-      {
-        cards_power[i].slot_index = -1;
-        cards_power[i].card_power = -9999;
-      }
-      else
-      {
-        cards_power[i].slot_index = i;
-        cards_power[i].card_power = 0;
-      }
-    }
-    for(int i = 0; i < all_player_cards_count ; ++i )
-    {
-      v12 = &pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]];
-      cards_power[i].card_power = CalculateCardPower(player, enemy, v12, opponent_mastery-1);
-    }
-
-    for (int j = all_player_cards_count - 1; j >= 0; --j )
-    {
-      for (int m = 0; m < j; ++m )
-      {
-        if ( cards_power[m].card_power < cards_power[m + 1].card_power )
+        player = &am_Players[player_num];
+        enemy = &am_Players[(player_num + 1) % 2];
+        all_player_cards_count = GetPlayerHandCardCount(player_num);
+        for (int i = 0; i < 10; ++i)
         {
-          v56 = cards_power[m].slot_index;
-          v57 = cards_power[m].card_power;
-          cards_power[m].slot_index = cards_power[m + 1].slot_index;
-          cards_power[m].card_power = cards_power[m + 1].card_power;
-          cards_power[m + 1].slot_index = cards_power[m].slot_index;
-          cards_power[m + 1].card_power = cards_power[m].card_power;
+            if (i >= all_player_cards_count)
+            {
+                cards_power[i].slot_index = -1;
+                cards_power[i].card_power = -9999;
+            }
+            else
+            {
+                cards_power[i].slot_index = i;
+                cards_power[i].card_power = 0;
+            }
         }
-      }
+        for (int i = 0; i < all_player_cards_count; ++i)
+        {
+            v12 = &pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]];
+            cards_power[i].card_power = CalculateCardPower(player, enemy, v12, opponent_mastery - 1);
+        }
+
+        for (int j = all_player_cards_count - 1; j >= 0; --j)
+        {
+            for (int m = 0; m < j; ++m)
+            {
+                if (cards_power[m].card_power < cards_power[m + 1].card_power)
+                {
+                    v56 = cards_power[m].slot_index;
+                    v57 = cards_power[m].card_power;
+                    cards_power[m].slot_index = cards_power[m + 1].slot_index;
+                    cards_power[m].card_power = cards_power[m + 1].card_power;
+                    cards_power[m + 1].slot_index = cards_power[m].slot_index;
+                    cards_power[m + 1].card_power = cards_power[m].card_power;
+                }
+            }
+        }
+        if (need_to_discard_card)
+        {
+            for (int i = all_player_cards_count - 1; i; --i)
+            {
+                if (pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]].can_be_discarded)
+                {
+                    v132 = cards_power[i].slot_index;
+                }
+            }
+        }
+        else
+        {
+            for (int i = all_player_cards_count - 1; i; --i)
+            {
+                if (pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]].can_be_discarded)
+                {
+                    v132 = cards_power[i].slot_index;
+                }
+            }
+            for (int i = 0; i < all_player_cards_count - 1; ++i)
+            {
+                if (CanCardBePlayed(player_num, cards_power[i].slot_index) && cards_power[i].card_power)
+                {
+                    return PlayCard(player_num, cards_power[i].slot_index);
+                }
+            }
+        }
+        return DiscardCard(player_num, v132);
     }
-    if ( need_to_discard_card )
-    {
-      for ( int i = all_player_cards_count - 1; i; --i )
-      {
-        if ( pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]].can_be_discarded )
-          v132 = cards_power[i].slot_index;
-      }
-    }
-    else
-    {
-      for ( int i = all_player_cards_count - 1; i; --i )
-      {
-        if ( pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]].can_be_discarded )
-          v132 = cards_power[i].slot_index;
-      }
-      for ( int i = 0; i < all_player_cards_count - 1; ++i )
-      {
-        if ( CanCardBePlayed(player_num, cards_power[i].slot_index) && cards_power[i].card_power )
-          return PlayCard(player_num, cards_power[i].slot_index);
-      }
-    }
-    return DiscardCard(player_num, v132);
-  }
-  return true;//result != 0;
+    return true;//result != 0;
 }
 
 //----- (00409E6A) --------------------------------------------------------
 void ArcomageGame::Loop()
 {
-  while ( !pArcomageGame->GameOver )
-  {
-    pArcomageGame->field_F6 = 1;
-    byte_4FAA24 = 1;
-    IncreaseResourcesInTurn(current_player_num);
-//LABEL_8:
-    while ( byte_4FAA24 )
+    while (!pArcomageGame->GameOver)
     {
-      played_card_id = -1;
-      GetNextCardFromDeck(current_player_num);
-      while ( 1 )
-      {
-        byte_4FAA24 = PlayerTurn(current_player_num);
-		if (GetPlayerHandCardCount(current_player_num) <= minimum_cards_at_hand)
-		{
-			need_to_discard_card = 0;
-			break;
-		}
-        need_to_discard_card = 1;
-		if (pArcomageGame->field_F4)
-			break;
-      }
+        pArcomageGame->field_F6 = 1;
+        byte_4FAA24 = 1;
+        IncreaseResourcesInTurn(current_player_num);
+        //LABEL_8:
+        while (byte_4FAA24)
+        {
+            played_card_id = -1;
+            GetNextCardFromDeck(current_player_num);
+            while (1)
+            {
+                byte_4FAA24 = PlayerTurn(current_player_num);
+                if (GetPlayerHandCardCount(current_player_num) <= minimum_cards_at_hand)
+                {
+                    need_to_discard_card = 0;
+                    break;
+                }
+                need_to_discard_card = 1;
+                if (pArcomageGame->field_F4)
+                    break;
+            }
+        }
+        pArcomageGame->GameOver = IsGameOver();
+        if (!pArcomageGame->GameOver)
+            TurnChange();
+        if (pArcomageGame->field_F4)
+            pArcomageGame->GameOver = 1;
     }
-    pArcomageGame->GameOver = IsGameOver();
-    if ( !pArcomageGame->GameOver )
-      TurnChange();
-    if ( pArcomageGame->field_F4 )
-      pArcomageGame->GameOver = 1;
-  }
-  GameResultsApply();
-  if ( am_gameover )
-     dword_4FAA70 = 0;
-  else
-    dword_4FAA70 = -1;
+    GameResultsApply();
+    if (am_gameover)
+        dword_4FAA70 = 0;
+    else
+        dword_4FAA70 = -1;
 
-  for( int i = 0; i < 10; ++i )
-  {
-      array_4FABD0[i].field_40->Clear(1, 1);
-      array_4FABD0[i].field_40->Free();
-  }
+    for (int i = 0; i < 10; ++i)
+    {
+        array_4FABD0[i].field_40->Clear(1, 1);
+        array_4FABD0[i].field_40->Free();
+    }
 
-  pArcomageGame->pGameBackground.Release();
-  pArcomageGame->pSprites.Release();
-  pArcomageGame->bGameInProgress = false;
-  viewparams->bRedrawGameUI = true;
-  if ( pMovie_Track )
-    BackToHouseMenu();
-  for( int i = 0; i < 12; ++i )
-    pSoundList->UnloadSound(am_sounds[i], 1);
+    delete pArcomageGame->pGameBackground;
+    pArcomageGame->pGameBackground = nullptr;
+
+    delete pArcomageGame->pSprites;
+    pArcomageGame->pSprites = nullptr;
+
+    pArcomageGame->bGameInProgress = false;
+    viewparams->bRedrawGameUI = true;
+    if (pMovie_Track)
+        BackToHouseMenu();
+    for (int i = 0; i < 12; ++i)
+        pSoundList->UnloadSound(am_sounds[i], 1);
 }
 
 //----- (00409FE9) --------------------------------------------------------

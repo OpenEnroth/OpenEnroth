@@ -30,18 +30,14 @@ inline unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format)
 }
 
 
-struct ImageLoader
-{
-    virtual bool Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format) = 0;
-};
 
-
-
+class ImageLoader;
 class Image
 {
     public:
         inline Image(bool lazy_initialization = true):
-            lazy_initialization(lazy_initialization), initialized(false),
+            lazy_initialization(lazy_initialization),
+            initialized(false),
             width(0), height(0), native_format(IMAGE_INVALID_FORMAT),
             loader(nullptr)
         {
@@ -49,6 +45,8 @@ class Image
                 pixels[i] = nullptr;
         }
 
+
+        static Image *Create(unsigned int width, unsigned int height, IMAGE_FORMAT format, const void *pixels = nullptr);
 
         bool Image16bit_From_LOD(const wchar_t *name);
         bool ColorKey_From_LOD(const wchar_t *name, unsigned __int16 colorkey);
@@ -103,36 +101,6 @@ class ImageHelper
             return power;
         }
 };
-
-
-
-/*  194 */
-#pragma pack(push, 1)
-struct RGBTexture
-{
-  RGBTexture();
-  void Release();
-  int LoadPCXFile(const char *Filename, unsigned int a3);
-  unsigned int LoadFromFILE(FILE *pFile, unsigned int mode, unsigned int bCloseFile);
-  int DecodePCX(char *pPcx, unsigned __int16 *pOutPixels, unsigned int uNumPixels);
-  int Load(const char *pContainer, int mode);
-  int Reload(const char *pContainer);
-
-  char pName[16];
-  unsigned int uNumPixels;
-  unsigned __int16 uWidth;
-  unsigned __int16 uHeight;
-  __int16 field_18;
-  __int16 field_1A;
-  __int16 field_1C;
-  __int16 field_1E;
-  int _allocation_flags; // & 1 - malloc, else custom allocator
-  unsigned __int16 *pPixels;
-
-  struct ID3D11ShaderResourceView *d3d11_srv;
-  struct D3D11_TEXTURE2D_DESC     *d3d11_desc;
-};
-#pragma pack(pop)
 
 
 

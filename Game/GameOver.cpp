@@ -42,9 +42,6 @@ void GameOver_Loop(int v15)
     unsigned __int64 v23; // [sp+C8h] [bp-8h]@5
     MSG msg;
 
-    //RGBTexture _this; // [sp+Ch] [bp-C4h]@1
-    //RGBTexture::RGBTexture(&this);
-
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
     bGameoverLoop = true;
     pMediaPlayer->bStopBeforeSchedule = 0;

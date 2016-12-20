@@ -346,12 +346,13 @@ void Engine::Draw()
             pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(0, 0, 0), StringPrintf("FPS: % .4f", framerate), 0, 0, 0);
         }
 
+        int debug_info_offset = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
             int sector_id = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-            pPrimaryWindow->DrawText(pFontArrus, 16, 16, Color16(255, 255, 255), StringPrintf("Party Sector ID:        %u/%u\n", sector_id, pIndoor->uNumSectors), 0, 0, Color16(255, 255, 255));
+            pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255), StringPrintf("Party Sector ID:        %u/%u\n", sector_id, pIndoor->uNumSectors), 0, 0, Color16(255, 255, 255));
         }
-        pPrimaryWindow->DrawText(pFontArrus, 16, 16 + 16, Color16(255, 255, 255), StringPrintf("Party Position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, Color16(255, 255, 255));
+        pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset + 16, Color16(255, 255, 255), StringPrintf("Party Position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, Color16(255, 255, 255));
 
         String floor_level_str;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
@@ -367,7 +368,7 @@ void Engine::Draw()
             int floor_level = ODM_GetFloorLevel(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z, 0, &on_water, &_a6, false);
             floor_level_str = StringPrintf("ODM_GetFloorLevel: %d   on_water: %s    a6 = %d\n", floor_level, on_water ? "true" : "false", _a6);
         }
-        pPrimaryWindow->DrawText(pFontArrus, 16, 16 + 16 + 16, Color16(255, 255, 255), floor_level_str, 0, 0, Color16(255, 255, 255));
+        pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset + 16 + 16, Color16(255, 255, 255), floor_level_str, 0, 0, Color16(255, 255, 255));
     }
 
     GUI_UpdateWindows();
@@ -999,7 +1000,6 @@ void IntegrityTest()
     static_assert(sizeof(SpriteFrame) == 60, "Wrong type size");
     static_assert(sizeof(RenderVertexSoft) == 0x30, "Wrong type size");
     static_assert(sizeof(RenderBillboard) == 0x34, "Wrong type size");
-    //static_assert(sizeof(RGBTexture) == 0x28, "Wrong type size");
     //static_assert(sizeof(LODFile_IconsBitmaps) == 0x11BB8 + 4, "Wrong type size"); // + virtual dtor ptr
     static_assert(sizeof(AudioPlayer) == 0xC84, "Wrong type size");
     static_assert(sizeof(SoundDesc) == 0x78, "Wrong type size");

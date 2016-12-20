@@ -3,30 +3,25 @@
 #include "..\..\Engine/Graphics/Render.h"
 
 
-class MainMenuWindow: public UIControl
+class MainMenuWindow : public UIControl
 {
-  public:
-    static MainMenuWindow *Create();
+    public:
+        static MainMenuWindow *Create();
 
-    bool Initialize();
+        bool Initialize();
 
     // UIControl
-    virtual void Show() override;
-    
-    // UIControl
-    virtual bool Focused() override;
-    
-    // UIControl
-    virtual bool OnKey(int key) override;
-    // UIControl
-    virtual bool OnMouseLeftClick(int x, int y) override;
-    // UIControl
-    virtual bool OnMouseRightClick(int x, int y) override;
-    // UIControl
-    //virtual bool OnMouseEnter() override;
-    // UIControl
-    //virtual bool OnMouseLeave() override;
+        virtual void Show() override;
 
-  private:
-	RGBTexture *background_texture;
+    // UIControl
+        virtual bool Focused() override;
+
+    // UIControl
+        virtual bool OnKey(int key) override;
+        virtual bool OnMouseLeftClick(int x, int y) override;
+        virtual bool OnMouseRightClick(int x, int y) override;
+        //virtual bool OnMouseEnter() override;
+        //virtual bool OnMouseLeave() override;
+
+    private:
 };

@@ -338,7 +338,6 @@ MENU_STATE MainMenuUI_Credits_Loop()
     char *pString; // [sp+12Ch] [bp-10h]@9
     GUIFont *pFontQuick; // [sp+134h] [bp-8h]@1
     GUIFont *pFontCChar; // [sp+138h] [bp-4h]@1
-    RGBTexture cred_texture; // [sp+100h] [bp-3Ch]@1
     Texture_MM7 pTemporaryTexture; // [sp+Ch] [bp-130h]@5
 
     pFontQuick = LoadFont("quick.fnt", "FONTPAL", NULL);
@@ -357,9 +356,10 @@ MENU_STATE MainMenuUI_Credits_Loop()
     cred_texturet = (char *)pEvents_LOD->LoadRaw("credits.txt", 0);
     pFile = pEvents_LOD->FindContainer("credits.txt", 0);
     if (!pFile)
+    {
         Error(localization->GetString(63)); // "Might and Magic VII is having trouble loading files. 
-
-      // Please re-install to fix this problem. Note: Re-installing will not destroy your save games."
+                                            // Please re-install to fix this problem. Note: Re-installing will not destroy your save games."
+    }
 
       //для получения размера-----------------------
     fread(&pTemporaryTexture, 1, 0x30, pFile);
@@ -374,19 +374,23 @@ MENU_STATE MainMenuUI_Credits_Loop()
     credit_window.uFrameX = 389;
     credit_window.uFrameY = 19;
 
-    cred_texture.uWidth = 250;
-    cred_texture.uHeight = pFontQuick->GetStringHeight2(pFontCChar, cred_texturet, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
-    cred_texture.uNumPixels = cred_texture.uWidth * cred_texture.uHeight;
-    cred_texture.pPixels = (unsigned __int16 *)malloc(2 * cred_texture.uNumPixels);
-    fill_pixels_fast(Color16(0, 0xFFu, 0xFFu), cred_texture.pPixels, cred_texture.uNumPixels);
-    cred_texture._allocation_flags = 0;
+    int credits_width = 250;
+    int credits_height = pFontQuick->GetStringHeight2(pFontCChar, cred_texturet, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
+    int credits_num_pixels = credits_width * credits_height;
+    auto credits_pixels = (unsigned __int16 *)malloc(2 * credits_num_pixels);
+    fill_pixels_fast(Color16(0, 0xFF, 0xFF), credits_pixels, credits_num_pixels);
+
+    auto credits_texture = Image::Create(credits_width, credits_height, IMAGE_FORMAT_R5G6B5, credits_pixels);
 
     //дать шрифт и цвета тексту
     pString = (char *)malloc(2 * pSize);
     strncpy(pString, cred_texturet, pSize);
     pString[pSize] = 0;
-    pFontQuick->_44D2FD_prolly_draw_credits_entry(pFontCChar, 0, credit_window.uFrameHeight, cred_texture.uWidth,
-        cred_texture.uHeight, Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu), pString, cred_texture.pPixels, cred_texture.uWidth);
+    pFontQuick->_44D2FD_prolly_draw_credits_entry(
+        pFontCChar, 0, credit_window.uFrameHeight, credits_width,
+        credits_height, Color16(0x70, 0x8F, 0xFE), Color16(0xEC, 0xE6, 0x9C),
+        pString, credits_pixels, credits_width
+    );
     free(pString);
 
     pWindow_MainMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, cred_texturet);
@@ -414,20 +418,27 @@ MENU_STATE MainMenuUI_Credits_Loop()
             render->DrawTextureNew(0, 0, mm6title);
             render->SetUIClipRect(credit_window.uFrameX, credit_window.uFrameY, credit_window.uFrameX + credit_window.uFrameWidth,
                 credit_window.uFrameY + credit_window.uFrameHeight);
-            render->CreditsTextureScroll(credit_window.uFrameX, credit_window.uFrameY, 0, move_Y, &cred_texture);
+            render->DrawTextureOffset(credit_window.uFrameX, credit_window.uFrameY, 0, move_Y, credits_texture);
             render->ResetUIClipRect();
             render->EndScene();
-            ++move_Y;
-            if (move_Y >= cred_texture.uHeight)
-                SetCurrentMenuID(MENU_MAIN);
             render->Present();
-            current_screen_type = SCREEN_GAME;//Ritor1: temporarily, must be corrected MainMenu_EventLoop()
+
+            ++move_Y;
+            if (move_Y >= credits_texture->GetHeight())
+            {
+                SetCurrentMenuID(MENU_MAIN);
+            }
+            current_screen_type = SCREEN_GAME; // Ritor1: temporarily, must be corrected MainMenu_EventLoop()
             MainMenu_EventLoop();
         }
     } while (GetCurrentMenuID() == MENU_CREDITSPROC);
+
     if (use_music_folder)
+    {
         alSourceStop(mSourceID);
+    }
     pAudioPlayer->_4AA258(1);
+
     free(cred_texturet);
     free(pFontQuick);
     free(pFontCChar);
@@ -440,6 +451,7 @@ MENU_STATE MainMenuUI_Credits_Loop()
         mm6title = nullptr;
     }
 
-    cred_texture.Release();
+    credits_texture->Release();
+
     return MENU_MAIN;     // return MENU_Main
 }

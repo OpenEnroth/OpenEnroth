@@ -18,7 +18,6 @@
 
 struct Polygon;
 struct Texture_MM7;
-struct RGBTexture;
 struct RenderBillboardTransform_local0;
 struct ODMFace;
 

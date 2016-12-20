@@ -6424,60 +6424,56 @@ void Render::DrawTextureNew(float u, float v, Image *bmp)
 
 
 //----- (004A5D33) --------------------------------------------------------
-void Render::CreditsTextureScroll(unsigned int pX, unsigned int pY, int move_X, int move_Y, RGBTexture *pTexture)
+void Render::DrawTextureOffset(int out_x, int out_y, int offset_x, int offset_y, Image *pTexture)
 {
-    int full_width; // ecx@3
-    int full_height; // edi@3
     unsigned __int16 *pTexturea; // [sp+28h] [bp+18h]@3
 
     if (this->uNumSceneBegins && pTexture)
     {
-        full_width = pTexture->uWidth - move_X;
-        full_height = pTexture->uHeight - move_Y;
-        pTexturea = &pTexture->pPixels[move_X + move_Y * pTexture->uWidth];
+        int draw_width = pTexture->GetWidth() - offset_x;
+        int draw_height = pTexture->GetHeight() - offset_y;
+        pTexturea = (unsigned __int16 *)pTexture->GetPixels(IMAGE_FORMAT_R5G6B5) + offset_x + offset_y * pTexture->GetWidth();
         if (this->bClip)
         {
-            if (pX < this->uClipX)//если кадр выходит за правую границу
+            if (out_x < this->uClipX)//если кадр выходит за правую границу
             {
-                pTexturea = (unsigned __int16 *)((char *)pTexturea + (2 * (this->uClipX - pX)));
-                full_width += pX - this->uClipX;
-                //v7 = (unsigned __int32 *)((char *)v7 + ((FORCE_16_BITS ? 2 : 4) * (this->uClipX - pX)));
+                pTexturea += (this->uClipX - out_x);
+                draw_width += out_x - this->uClipX;
             }
-            if (pY < this->uClipY)//если кадр выходит за верхнюю границу
+            if (out_y < this->uClipY)//если кадр выходит за верхнюю границу
             {
-                pTexturea += pTexture->uWidth * (this->uClipY - pY);
-                full_height += pY - this->uClipY;
-                //v7 = (unsigned __int32 *)((char *)v7 + (FORCE_16_BITS ? 2 : 4) * this->uTargetSurfacePitch * (this->uClipY - pY));
+                pTexturea += pTexture->GetWidth() * (this->uClipY - out_y);
+                draw_height += out_y - this->uClipY;
             }
-            if (this->uClipX < pX)//если правая граница окна меньше х координаты кадра
-                this->uClipX = pX;
-            if (this->uClipY < pY)//если верхняя граница окна меньше y координаты кадра
-                this->uClipY = pY;
-            if ((full_width + this->uClipX) > this->uClipZ)//если ширина кадра выходит за правую границу
+            if (this->uClipX < out_x)//если правая граница окна меньше х координаты кадра
+                this->uClipX = out_x;
+            if (this->uClipY < out_y)//если верхняя граница окна меньше y координаты кадра
+                this->uClipY = out_y;
+            if ((draw_width + this->uClipX) > this->uClipZ)//если ширина кадра выходит за правую границу
             {
-                if (this->uClipX < pX)
-                    this->uClipX = pX;
-                full_width = this->uClipZ - this->uClipX;
+                if (this->uClipX < out_x)
+                    this->uClipX = out_x;
+                draw_width = this->uClipZ - this->uClipX;
             }
-            if ((full_height + this->uClipY) > this->uClipW)//если высота кадра выходит за нижнюю границу
+            if ((draw_height + this->uClipY) > this->uClipW)//если высота кадра выходит за нижнюю границу
             {
-                if (this->uClipY < pY)
-                    this->uClipY = pY;
-                full_height = this->uClipW - this->uClipY;
+                if (this->uClipY < out_y)
+                    this->uClipY = out_y;
+                draw_height = this->uClipW - this->uClipY;
             }
         }
 
-        for (int y = 0; y < full_height; ++y)
+        for (int y = 0; y < draw_height; ++y)
         {
-            for (int x = 0; x < full_width; ++x)
+            for (int x = 0; x < draw_width; ++x)
             {
-                if (*pTexturea != Color16(0, 0xFFu, 0xFFu))
+                if (*pTexturea != Color16(0, 0xFF, 0xFF))
                 {
-                    WritePixel16(pX + x, pY + y, *pTexturea);
+                    WritePixel16(out_x + x, out_y + y, *pTexturea);
                 }
                 ++pTexturea;
             }
-            pTexturea = (unsigned __int16 *)((char *)pTexturea + 2 * (pTexture->uWidth - full_width));
+            pTexturea += (pTexture->GetWidth() - draw_width);
         }
     }
 }
@@ -6491,44 +6487,47 @@ void Render::DrawTextureGrayShade(float u, float v, Image *img)
 //----- (004A6DF5) --------------------------------------------------------
 void Render::_4A6DF5(unsigned __int16 *pBitmap, unsigned int uBitmapPitch, Vec2_int_ *pBitmapXY, void *pTarget, unsigned int uTargetPitch, Vec4_int_ *a7)
 {
-  int width; // ecx@3
-  unsigned __int16 *pixels; // ebx@4
-  int height; // esi@4
+    int width; // ecx@3
+    unsigned __int16 *pixels; // ebx@4
+    int height; // esi@4
 
-  if ( !pBitmap || !pTarget)
-    return;
+    if (!pBitmap || !pTarget)
+        return;
 
-  width = a7->z - a7->x;
-  height = a7->w - a7->y;
-  pixels = (unsigned short *)pTarget + a7->x + uTargetPitch * a7->y;
-  for ( int y = 0; y < height; ++y )
-  {
-    for ( int x = 0; x < width; ++x )
+    width = a7->z - a7->x;
+    height = a7->w - a7->y;
+    pixels = (unsigned short *)pTarget + a7->x + uTargetPitch * a7->y;
+    for (int y = 0; y < height; ++y)
     {
-      WritePixel16(a7->x + x, a7->y + y, *pixels);
-      ++pixels;
+        for (int x = 0; x < width; ++x)
+        {
+            WritePixel16(a7->x + x, a7->y + y, *pixels);
+            ++pixels;
+        }
+        pixels += uTargetPitch - width;
     }
-    pixels += uTargetPitch - width;
-  }
 }
 
 //----- (004A6D87) --------------------------------------------------------
 void Render::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16)
 {
-  if (!uNumSceneBegins)
-    return;
+    if (!uNumSceneBegins)
+        return;
 
-  unsigned __int32 twoColors = (uColor16 << 16) | uColor16;
-  for (uint y = 0; y < uHeight; ++y)
-  {
-    void *pDst = (char *)pTargetSurface + (FORCE_16_BITS ? 2 : 4) * (uX + (y + uY) * uTargetSurfacePitch);
+    unsigned __int32 twoColors = (uColor16 << 16) | uColor16;
+    for (uint y = 0; y < uHeight; ++y)
+    {
+        void *pDst = (char *)pTargetSurface + (FORCE_16_BITS ? 2 : 4) * (uX + (y + uY) * uTargetSurfacePitch);
 
-    memset32(pDst,
-             FORCE_16_BITS ? twoColors : 0xFF000000 | Color32(uColor16),  // two colors per int (16bit) or 1 (32bit)
-             uWidth / (FORCE_16_BITS ? 2 : 1));                      // two pixels per int (16bit) or 1 (32bit)
+        memset32(pDst,
+            FORCE_16_BITS ? twoColors : 0xFF000000 | Color32(uColor16),  // two colors per int (16bit) or 1 (32bit)
+            uWidth / (FORCE_16_BITS ? 2 : 1)                             // two pixels per int (16bit) or 1 (32bit)
+        );
 
-    if (FORCE_16_BITS && uWidth & 1) // we may miss one pixel for 16bit
-      ((unsigned __int16 *)pTargetSurface)[uX + uWidth - 1 + (y + uY) * uTargetSurfacePitch] = uColor16;
+        if (FORCE_16_BITS && uWidth & 1) // we may miss one pixel for 16bit
+        {
+            ((unsigned __int16 *)pTargetSurface)[uX + uWidth - 1 + (y + uY) * uTargetSurfacePitch] = uColor16;
+        }
     }
 }
 

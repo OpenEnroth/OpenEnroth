@@ -168,8 +168,8 @@ struct ArcomageGame
     struct GUIFont *pfntArrus;//ptr_4C;
     int field_50;
     int field_54;
-    RGBTexture pGameBackground;
-    RGBTexture pSprites;
+    Image *pGameBackground;
+    Image *pSprites;
     int event_timer_time;
     int uGameWinner;
     int Victory_type;

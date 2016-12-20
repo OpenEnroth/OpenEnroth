@@ -39,6 +39,10 @@ stru355 stru_4EFCBC = {0x20, 0x41, 0, 0x10, 0x7C00, 0x3E0, 0x1F, 0x8000};
 
 
 
+struct ImageLoader
+{
+    virtual bool Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format) = 0;
+};
 
 
 
@@ -255,74 +259,6 @@ void Texture_MM7::Release()
   }
 }
 
-//----- (0040F5F5) --------------------------------------------------------
-int RGBTexture::Reload(const char *pContainer)
-{
-  //RGBTexture *v2; // esi@1
-  FILE *v3; // eax@3
-  FILE *v4; // edi@3
-  void *v5; // ebx@7
-  signed int result; // eax@11
-  unsigned int v7; // ecx@12
-  unsigned __int16 *v8; // ST20_4@14
-  int v9; // eax@14
-  char color_map[48]; // [sp+8h] [bp-98h]@9
-  Texture_MM7 DstBuf; // [sp+38h] [bp-68h]@1
-  PCXHeader1 header1; // [sp+80h] [bp-20h]@9
-  PCXHeader2 header2; // [sp+90h] [bp-10h]@9
-  FILE *File; // [sp+98h] [bp-8h]@3
-  size_t Count; // [sp+9Ch] [bp-4h]@6
-  void *uSourceLena; // [sp+A8h] [bp+8h]@7
-
- // v2 = this;
-  if ( !this->pPixels )
-    return 2;
-  v3 = pIcons_LOD->FindContainer(pContainer, 0);
-  v4 = v3;
-  File = v3;
-  if ( !v3 )
-    Error("Unable to load %s", pContainer);
-
-  fread(&DstBuf, 1, 0x30, v3);
-  Count = DstBuf.uTextureSize;
-  if ( DstBuf.uDecompressedSize )
-  {
-    v5 = malloc(DstBuf.uDecompressedSize);
-    uSourceLena = malloc(DstBuf.uTextureSize);
-    fread(uSourceLena, 1, Count, File);
-    zlib::MemUnzip(v5, &DstBuf.uDecompressedSize, uSourceLena, DstBuf.uTextureSize);
-    DstBuf.uTextureSize = DstBuf.uDecompressedSize;
-    free(uSourceLena);
-  }
-  else
-  {
-    v5 = malloc(DstBuf.uTextureSize);
-    fread(v5, 1, Count, v4);
-  }
-  memcpy(&header1, v5, 0x10u);
-  memcpy(color_map, (char *)v5 + 16, 0x30);
-  memcpy(&header2, (char *)v5 + 64, 6);
-  if ( header1.bpp != 8 )
-    return 3;
-  v7 = (signed __int16)(header1.right - header1.left + 1);
-  if ( (signed int)(v7 * (signed __int16)(header1.bottom - header1.up + 1)) <= (signed int)this->uNumPixels )
-  {
-    this->uWidth = header1.right - header1.left + 1;
-    v8 = this->pPixels;
-    v9 = v7 * this->uHeight;
-    this->uNumPixels = v9;
-    this->uHeight = v9;
-    this->DecodePCX((char *)v5, v8, v7);
-    free(v5);
-    result = 0;
-  }
-  else
-  {
-    result = -1;
-  }
-  return result;
-}
-
 //----- (0040F5BE) --------------------------------------------------------
 Texture_MM7::Texture_MM7()
 {
@@ -346,722 +282,7 @@ Texture_MM7::Texture_MM7()
   d3d11_desc = nullptr;
 }
 
-//----- (0040F414) --------------------------------------------------------
-int RGBTexture::Load(const char *pContainer, int mode)
-{
-  FILE *file; // eax@1
-  void *v6; // ebx@5
-  char color_map[48]; // [sp+Ch] [bp-98h]@7
-  Texture_MM7 DstBuf; // [sp+3Ch] [bp-68h]@1
-  PCXHeader1 header1; // [sp+84h] [bp-20h]@7
-  PCXHeader2 header2; // [sp+94h] [bp-10h]@7
-  size_t Count; // [sp+A0h] [bp-4h]@4
-  char *Str1a; // [sp+ACh] [bp+8h]@5
 
-  file = pIcons_LOD->FindContainer(pContainer, 0);
-  if ( !file )
-    Error("Unable to load %s", pContainer);
-
-  fread(&DstBuf, 1, 0x30u, file);
-  Count = DstBuf.uTextureSize;
-  if ( DstBuf.uDecompressedSize )
-  {
-    Str1a = (char *)malloc(DstBuf.uDecompressedSize);
-    v6 = malloc(DstBuf.uTextureSize);
-    fread(v6, 1, Count, file);
-    zlib::MemUnzip(Str1a, &DstBuf.uDecompressedSize, v6, DstBuf.uTextureSize);
-    DstBuf.uTextureSize = DstBuf.uDecompressedSize;
-    free(v6);
-  }
-  else
-  {
-    Str1a = (char *)malloc(DstBuf.uTextureSize);
-    fread(Str1a, 1, Count, file);
-  }
-  memcpy(&header1, Str1a, 0x10u);
-  memcpy(color_map, Str1a + 16, 0x30u);
-  memcpy(&header2, Str1a + 64, 6);
-  if ( header1.bpp != 8 )
-    return 3;
-  this->uWidth = header1.right - header1.left + 1;
-  this->uHeight = header1.bottom - header1.up + 1;
-  this->uNumPixels = (signed __int16)this->uWidth * (signed __int16)this->uHeight;
-  this->pPixels = (unsigned __int16 *)malloc(2 * this->uNumPixels + 4);
-  if ( this->pPixels )
-  {
-    if ( mode )
-	  {
-      if ( mode != 2 )
-      {
-        if ( !this->pPixels )
-          return 2;
-        this->DecodePCX(Str1a, this->pPixels, this->uWidth);
-        free(Str1a);
-        return 0;
-      }
-      this->_allocation_flags |= 1;
-      this->pPixels = (unsigned __int16 *)malloc(2 * this->uNumPixels + 4);
-      if ( !this->pPixels )
-        return 2;
-      this->DecodePCX(Str1a, this->pPixels, this->uWidth);
-      free(Str1a);
-      return 0;	
-	  }
-    free(this->pPixels);
-  }
-  if ( !mode )
-  {
-    this->pPixels = (unsigned __int16 *)malloc(2 * this->uNumPixels + 4);
-    if ( !this->pPixels )
-      return 2;
-    this->DecodePCX(Str1a, this->pPixels, this->uWidth);
-    free(Str1a);
-    return 0;	
-  }
-  if ( mode != 2 )
-  {
-    if ( !this->pPixels )
-      return 2;
-    this->DecodePCX(Str1a, this->pPixels, this->uWidth);
-    free(Str1a);
-    return 0;
-  }
-  this->_allocation_flags |= 1;
-  this->pPixels = (unsigned __int16 *)malloc(2 * this->uNumPixels + 4);
-  if ( !this->pPixels )
-    return 2;
-  this->DecodePCX(Str1a, this->pPixels, this->uWidth);
-  free(Str1a);
-  return 0;
-}
-
-//----- (0040F037) --------------------------------------------------------
-signed int RGBTexture::DecodePCX(char *pPcx, unsigned __int16 *pOutPixels, unsigned int uNumPixels)
-{
-    //  signed int result; // eax@2
-    unsigned char test_byte; // edx@3
-    unsigned int read_offset; // ebx@37
-    unsigned int row_position; // edi@40
-    unsigned char value; // cl@63
-    char count; // [sp+50h] [bp-Ch]@43
-    unsigned short current_line; // [sp+54h] [bp-8h]@38
-    unsigned short *dec_position;
-    unsigned short *temp_dec_position;
-    PCXHeader1 psx_head1;
-    PCXHeader2 psx_head2;
-    //	short int width, height;
-    BYTE  color_map[48];	// Colormap for 16-color images
-
-
-    memcpy(&psx_head1, pPcx, 16);
-    memcpy(&color_map, pPcx + 16, 48);
-    memcpy(&psx_head2, pPcx + 64, 6);
-
-
-    if (psx_head1.bpp != 8)
-        return 3;
-    uWidth = (short int)(psx_head1.right - psx_head1.left + 1);  // word @ 000014
-    uHeight = (short int)(psx_head1.bottom - psx_head1.up + 1);  // word @ 000016
-
-
-    uNumPixels = uWidth*uHeight;		  // dword @ 000010
-
-    memset(pOutPixels, 0, uNumPixels * sizeof(__int16));
-    short i = 1;
-    while ((1 << i) != uWidth)
-    {
-        ++i;
-        if (i >= 15)
-            break;
-    }
-    field_18 = i;
-    short i_ = 1;
-    while ((1 << i_) != uHeight)
-    {
-        ++i_;
-        if (i_ >= 15)
-            break;
-    }
-    field_1A = i_;
-    switch (field_18)
-    {
-    case 2:   field_1C = 3;    break;
-    case 3:   field_1C = 7;    break;
-    case 4:   field_1C = 15;   break;
-    case 5:   field_1C = 31;   break;
-    case 6:   field_1C = 63;   break;
-    case 7:   field_1C = 127;  break;
-    case 8:   field_1C = 255;  break;
-    case 9:   field_1C = 511;  break;
-    case 10:  field_1C = 1023; break;
-    case 11:  field_1C = 2047; break;
-    case 12:  field_1C = 4095; break;
-    }
-
-    switch (field_1A)
-    {
-    case 2:   field_1E = 3;    break;
-    case 3:   field_1E = 7;    break;
-    case 4:   field_1E = 15;   break;
-    case 5:   field_1E = 31;   break;
-    case 6:   field_1E = 63;   break;
-    case 7:   field_1E = 127;  break;
-    case 8:   field_1E = 255;  break;
-    case 9:   field_1E = 511;  break;
-    case 10:  field_1E = 1023; break;
-    case 11:  field_1E = 2047; break;
-    case 12:  field_1E = 4095; break;
-    }
-
-    unsigned int r_mask = 0xF800;
-    unsigned int num_r_bits = 5;
-    unsigned int g_mask = 0x07E0;
-    unsigned int num_g_bits = 6;
-    unsigned int b_mask = 0x001F;
-    unsigned int num_b_bits = 5;
-    //При сохранении изображения подряд идущие пиксели одинакового цвета объединяются и вместо указания цвета для каждого пикселя
-    //указывается цвет группы пикселей и их количество.
-    read_offset = 128;
-    if (psx_head2.planes != 3)
-        return 0;
-    current_line = 0;
-    if (uHeight > 0)
-    {
-        dec_position = pOutPixels;
-        do
-        {
-            temp_dec_position = dec_position;
-            row_position = 0;
-            //decode red line
-            if (psx_head2.pitch)
-            {
-                do
-                {
-                    test_byte = pPcx[read_offset];
-                    ++read_offset;
-                    if ((test_byte & 0xC0) == 0xC0)//имеется ли объединение
-                    {
-                        value = pPcx[read_offset];
-                        ++read_offset;
-
-                        if ((test_byte & 0x3F) > 0)
-                        {
-                            count = test_byte & 0x3F;//количество одинаковых пикселей
-                            do
-                            {
-                                ++row_position;
-                                //*temp_dec_position =0xFF000000;
-                                //*temp_dec_position|=(unsigned long)value<<16;
-                                *temp_dec_position |= r_mask & ((unsigned __int8)value << (num_g_bits + num_r_bits + num_b_bits - 8));
-                                temp_dec_position++;
-                                if (row_position == psx_head2.pitch)
-                                    break;
-                            } while (count-- != 1);
-                        }
-                    }
-                    else
-                    {
-                        ++row_position;
-                        //*temp_dec_position =0xFF000000; 
-                       //*temp_dec_position|= (unsigned long)test_byte<<16;
-
-                        *temp_dec_position |= r_mask & ((unsigned __int8)test_byte << (num_g_bits + num_r_bits + num_b_bits - 8));
-
-                        temp_dec_position++;
-                    }
-
-                } while (row_position < psx_head2.pitch);
-            }
-
-            temp_dec_position = dec_position;
-            row_position = 0;
-            //decode green line
-            while (row_position < psx_head2.pitch)
-            {
-                test_byte = *(pPcx + read_offset);
-                ++read_offset;
-                if ((test_byte & 0xC0) == 0xC0)
-                {
-                    value = *(pPcx + read_offset);
-                    ++read_offset;
-                    if ((test_byte & 0x3F) > 0)
-                    {
-                        count = test_byte & 0x3F;
-                        do
-                        {
-                            //*temp_dec_position|= (unsigned int)value<<8;
-                            //temp_dec_position++;
-
-                            *temp_dec_position |= g_mask & (unsigned __int16)((unsigned __int8)value << (num_g_bits + num_b_bits - 8));
-
-                            temp_dec_position++;
-                            ++row_position;
-                            if (row_position == psx_head2.pitch)
-                                break;
-
-                        } while (count-- != 1);
-                    }
-                }
-                else
-                {
-                    //*temp_dec_position |=(unsigned int) test_byte<<8;
-                    //temp_dec_position++;
-
-                    *temp_dec_position |= g_mask & (unsigned __int16)((unsigned __int8)test_byte << (num_g_bits + num_b_bits - 8));
-                    temp_dec_position++;
-                    ++row_position;
-                }
-            }
-
-            temp_dec_position = dec_position;
-            row_position = 0;
-            //decode blue line
-            while (row_position < psx_head2.pitch)
-            {
-                test_byte = *(pPcx + read_offset);
-                read_offset++;
-                if ((test_byte & 0xC0) == 0xC0)
-                {
-                    value = *(pPcx + read_offset);
-                    ++read_offset;
-                    if ((test_byte & 0x3F) > 0)
-                    {
-                        count = test_byte & 0x3F;
-                        do
-                        {
-                            //*temp_dec_position|= value;
-                             //temp_dec_position++;
-
-                            *temp_dec_position |= value >> (8 - num_b_bits);
-                            temp_dec_position++;
-
-                            ++row_position;
-                            if (row_position == psx_head2.pitch)
-                                break;
-                        } while (count-- != 1);
-                    }
-                }
-                else
-                {
-                    //*temp_dec_position|= test_byte;
-                     //temp_dec_position++;
-                    *temp_dec_position |= test_byte >> (8 - num_b_bits);
-                    temp_dec_position++;
-
-                    ++row_position;
-                }
-
-            }
-            ++current_line;
-            dec_position += uWidth;
-        } while (current_line < uHeight);
-    }
-    return 0;
-}
-
-//----- (0040EAD8) --------------------------------------------------------
-unsigned int RGBTexture::LoadFromFILE(FILE *pFile, unsigned int mode, unsigned int bCloseFile)
-{
-    PCXHeader1 psx_head1;
-    PCXHeader2 psx_head2;
-    //	short int width, height;
-    BYTE  color_map[48];	// Colormap for 16-color images
-
-    unsigned int num_r_bits = 5;
-    unsigned int num_g_bits = 6;
-    unsigned int num_b_bits = 5;
-
-    unsigned int r_mask = 0xF800;
-    unsigned int g_mask = 0x07E0;
-    unsigned int b_mask = 0x001F;
-
-    if (!pFile)
-        return 1;
-
-
-    fread(&psx_head1, 1, 16, pFile);
-    fread(&color_map, 1, 48, pFile);
-    fread(&psx_head2, 1, 6, pFile);
-
-    if (psx_head1.bpp != 8)
-        return 3;
-    uWidth = (short int)(psx_head1.right - psx_head1.left + 1);  // word @ 000014
-    uHeight = (short int)(psx_head1.bottom - psx_head1.up + 1);  // word @ 000016
-
-
-    uNumPixels = uWidth*uHeight;		  // dword @ 000010
-
-
-    if (mode == 0)
-    {
-        free(pPixels);
-        pPixels = (unsigned __int16 *)malloc(2 * uNumPixels + 4);
-    }
-    else
-    {
-        if (mode != 1 && mode == 2)
-        {
-            pPixels = (unsigned __int16 *)malloc((uNumPixels + 2) * sizeof(unsigned __int16));
-            _allocation_flags |= 1;
-        }
-    }
-
-    ushort* pOutPixels = pPixels;
-
-    memset(pOutPixels, 0, uNumPixels * sizeof(__int16));
-
-    short i = 1;
-    while ((1 << i) != uWidth)
-    {
-        ++i;
-        if (i >= 15)
-            break;
-    }
-    field_18 = i;
-    short i_ = 1;
-    while ((1 << i_) != uHeight)
-    {
-        ++i_;
-        if (i_ >= 15)
-            break;
-    }
-    field_1A = i_;
-    switch (field_18)
-    {
-        case 2:   field_1C = 3;    break;
-        case 3:   field_1C = 7;    break;
-        case 4:   field_1C = 15;   break;
-        case 5:   field_1C = 31;   break;
-        case 6:   field_1C = 63;   break;
-        case 7:   field_1C = 127;  break;
-        case 8:   field_1C = 255;  break;
-        case 9:   field_1C = 511;  break;
-        case 10:  field_1C = 1023; break;
-        case 11:  field_1C = 2047; break;
-        case 12:  field_1C = 4095; break;
-    }
-
-    switch (field_1A)
-    {
-        case 2:   field_1E = 3;    break;
-        case 3:   field_1E = 7;    break;
-        case 4:   field_1E = 15;   break;
-        case 5:   field_1E = 31;   break;
-        case 6:   field_1E = 63;   break;
-        case 7:   field_1E = 127;  break;
-        case 8:   field_1E = 255;  break;
-        case 9:   field_1E = 511;  break;
-        case 10:  field_1E = 1023; break;
-        case 11:  field_1E = 2047; break;
-        case 12:  field_1E = 4095; break;
-    }
-
-    fseek(pFile, 128 - 70, SEEK_CUR);
-
-
-    for (uint y = 0; y < uHeight; ++y)
-    {
-        unsigned __int16 *pDst = pPixels + y * uWidth;
-
-        uint x = 0;
-        do
-        {
-            uint ctrl = 0;
-            fread(&ctrl, 1, 1, pFile);
-            if ((ctrl & 0xC0) == 0xC0)
-            {
-                uint uNumPixels = ctrl & 0x3F;
-                uint clr = 0;
-                fread(&clr, 1, 1, pFile);
-                for (uint i = 0; i < uNumPixels; ++i)
-                    pDst[x++] = r_mask & (clr << (num_g_bits + num_r_bits + num_b_bits - 8));
-            }
-            else
-            {
-                pDst[x++] = r_mask & (ctrl << (num_g_bits + num_r_bits + num_b_bits - 8));
-            }
-        } while (x < psx_head2.pitch);
-
-        x = 0;
-        do
-        {
-            uint ctrl = 0;
-            fread(&ctrl, 1, 1, pFile);
-            if ((ctrl & 0xC0) == 0xC0)
-            {
-                uint uNumPixels = ctrl & 0x3F;
-                uint clr = 0;
-                fread(&clr, 1, 1, pFile);
-                for (uint i = 0; i < uNumPixels; ++i)
-                    pDst[x++] |= g_mask & (clr << (num_g_bits + num_b_bits - 8));
-            }
-            else
-            {
-                pDst[x++] |= g_mask & (ctrl << (num_g_bits + num_b_bits - 8));
-            }
-        } while (x < psx_head2.pitch);
-
-        x = 0;
-        do
-        {
-            uint ctrl = 0;
-            fread(&ctrl, 1, 1, pFile);
-            if ((ctrl & 0xC0) == 0xC0)
-            {
-                uint uNumPixels = ctrl & 0x3F;
-                uint clr = 0;
-                fread(&clr, 1, 1, pFile);
-                for (uint i = 0; i < uNumPixels; ++i)
-                    pDst[x++] |= b_mask & (clr >> (8 - num_b_bits));
-            }
-            else
-            {
-                pDst[x++] |= b_mask & (ctrl >> (8 - num_b_bits));
-            }
-        } while (x < psx_head2.pitch);
-    }
-
-    if (bCloseFile)
-        fclose(pFile);
-
-    return 0;
-}
-
-//----- (0040E51F) --------------------------------------------------------
-void RGBTexture::Release()
-{
-  this->pName[0] = 0;
-  //if ( !(this->_allocation_flags & 1) )
-    //free(this->pPixels);
-  //else
-    //free(this->pPixels);
-  if (this->pPixels)
-    free(this->pPixels);
-  this->_allocation_flags = 0;
-  this->pPixels = 0;
-  this->uNumPixels = 0;
-  this->uHeight = 0;
-  this->uWidth = 0;
-  this->field_1A = 0;
-  this->field_18 = 0;
-
-  if (d3d11_srv)
-  {
-    if (d3d11_desc)
-    {
-      delete d3d11_desc;
-      d3d11_desc = nullptr;
-    }
-
-    extern void d3d11_release(struct ID3D11ShaderResourceView *);
-    d3d11_release(d3d11_srv);
-    d3d11_srv = nullptr;
-  }
-}
-
-//----- (0040E55E) --------------------------------------------------------
-int RGBTexture::LoadPCXFile(const char *Filename, unsigned int a3)
-{
-  signed int result; // eax@2
-  char *v6; // eax@3
-  int v7; // edx@3
-  char v8; // cl@4
-  signed int v14; // ecx@19
-  signed int v15; // ecx@24
-//  int v16; // eax@57
-//  unsigned __int16 *v17; // ecx@57
-//  unsigned __int16 *v18; // edi@57
-//  signed int x; // eax@59
-//  unsigned __int16 *v20; // edi@64
-//  signed int v21; // eax@66
-//  unsigned __int16 *v22; // edi@71
-//  signed int v23; // eax@73
-//  int v24; // eax@78
-  char v25[48]; // [sp+Ch] [bp-54h]@3
-  PCXHeader1 pcx_header1;
-  PCXHeader2 pcx_header2;
-  int y; // [sp+54h] [bp-Ch]@3
-  FILE *File; // [sp+5Ch] [bp-4h]@1
-
-  unsigned int num_r_bits = 5;
-  unsigned int num_g_bits = 6;
-  unsigned int num_b_bits = 5;
-
-  unsigned int r_mask = 0xF800;
-  unsigned int g_mask = 0x07E0;
-  unsigned int b_mask = 0x001F;
-
-
-  File = fopen(Filename, "rb");
-  if ( !File )
-    return 1;
-  
-  fread(&pcx_header1, sizeof(pcx_header1), 1, File);
-  fread(&v25,48,1,File);
-  fread(&pcx_header2, 4, 1, File);
-
-  v6 = (char *)Filename;
-  v7 = (char *)this - Filename;
-  uint i = 0;
-  for ( i; i < 15; ++i )
-  {
-    v8 = *v6;
-    if ( !*v6 )
-      break;
-    if ( v8 == 46 )
-      break;
-    (v6++)[v7] = v8;
-  }
-  this->pName[i] = 0;
-  if ( pcx_header1.bpp != 8 )
-    return 3;
-  this->uWidth = pcx_header1.right - pcx_header1.left + 1;
-  this->uHeight = pcx_header1.bottom - pcx_header1.up + 1;
-  this->uNumPixels = (signed __int16)this->uWidth * (signed __int16)this->uHeight;
-  if ( !a3 )
-  {
-    free(this->pPixels);
-    this->pPixels = (unsigned __int16 *)malloc(2 * this->uNumPixels + 4);
-  }
-  if ( a3 == 2 )
-  {
-    this->_allocation_flags |= 1;
-    this->pPixels = (unsigned __int16 *)malloc((uNumPixels + 2) * sizeof(unsigned __int16));
-  }
-  if ( this->pPixels )
-  {
-    for ( v14 = 1; v14 < 15; ++v14 )
-    {
-      if ( 1 << v14 == this->uWidth )
-        this->field_18 = v14;
-    }
-    for ( v15 = 1; v15 < 15; ++v15 )
-    {
-      if ( 1 << v15 == this->uHeight  )
-        this->field_1A = v15;
-    }
-    switch ( this->field_18 )
-    {
-      case 2: this->field_1C = 3; break;
-      case 3: this->field_1C = 7; break;
-      case 4: this->field_1C = 15; break;
-      case 5: this->field_1C = 31; break;
-      case 6: this->field_1C = 63; break;
-      case 7: this->field_1C = 127; break;
-      case 8: this->field_1C = 255; break;
-      case 9: this->field_1C = 511; break;
-      case 10: this->field_1C = 1023; break;
-      case 11: this->field_1C = 2047; break;
-      case 12: this->field_1C = 4095; break;
-      default: break;
-    }
-    switch ( this->field_1A )
-    {
-      case 2: this->field_1E = 3; break;
-      case 3: this->field_1E = 7; break;
-      case 4: this->field_1E = 15; break;
-      case 5: this->field_1E = 31; break;
-      case 6: this->field_1E = 63; break;
-      case 7: this->field_1E = 127; break;
-      case 8: this->field_1E = 255; break;
-      case 9: this->field_1E = 511; break;
-      case 10: this->field_1E = 1023; break;
-      case 11: this->field_1E = 2047; break;
-      case 12: this->field_1E = 4095; break;
-      default: break;
-    }
-    fseek(File, 128, 0);
-    ftell(File);
-    if ( pcx_header2.planes == 1 )
-      Error("24bit PCX Only!");
-
-    if ( pcx_header2.planes == 3 )
-    {
-      for ( y = 0; y < this->uHeight; ++y )
-      {
-        unsigned __int16 *pDst = pPixels + y * uWidth;
-        uint x = 0;
-        do
-        {
-          uint ctrl = 0;
-          fread(&ctrl, 1, 1, File);
-          if ( (ctrl & 0xC0) == 0xC0 )
-          {
-            uint uNumPixels = ctrl & 0x3F;
-            uint clr = 0;
-            ctrl &= 0x3F;
-            fread(&clr, 1, 1, File);
-            for ( uint i = 0; i < uNumPixels; ++i )
-              pDst[x++] = r_mask & (clr << (num_r_bits + num_g_bits + num_b_bits - 8));
-          }
-          else
-            pDst[x++] = r_mask & (ctrl << (num_g_bits + num_r_bits + num_b_bits - 8));
-        }
-        while ( x < pcx_header2.pitch );
-
-        x = 0;
-        do
-        {
-          uint ctrl = 0;
-          fread(&ctrl, 1, 1, File);
-          if ( (ctrl & 0xC0) == 0xC0 )
-          {
-            uint uNumPixels = ctrl & 0x3F;
-            uint clr = 0;
-            ctrl &= 0x3F;
-            fread(&clr, 1, 1, File);
-            for ( uint i = 0; i < uNumPixels; ++i )
-              pDst[x++] |= g_mask & (clr << (num_g_bits + num_b_bits - 8));
-          }
-          else
-            pDst[x++] |= g_mask & (ctrl << (num_g_bits + num_b_bits - 8));
-        }
-        while (x < pcx_header2.pitch);
-
-        x = 0;
-        do
-        {
-          uint ctrl = 0;
-          fread(&ctrl, 1, 1, File);
-          if ( (ctrl & 0xC0) == 0xC0 )
-          {
-            uint uNumPixels = ctrl & 0x3F;
-            uint clr = 0;
-            fread(&clr, 1, 1, File);
-            for ( uint i = 0; i < uNumPixels; ++i )
-              pDst[x++] |= b_mask & (clr >> (8 - num_b_bits));
-          }
-          else
-            pDst[x++] |= b_mask & (ctrl >> (8 - num_b_bits));
-        }
-        while (x < pcx_header2.pitch);
-      }
-    }
-    fclose(File);
-    result = 0;
-  }
-  else
-  {
-    result = 2;
-  }
-  return result;
-}
-
-//----- (0040D73D) --------------------------------------------------------
-RGBTexture::RGBTexture()
-{
-  pName[0] = 0;
-  pPixels = 0;
-  uNumPixels = 0;
-  uHeight = 0;
-  uWidth = 0;
-  field_1A = 0;
-  field_18 = 0;
-  _allocation_flags = 0;
-
-  d3d11_srv = nullptr;
-  d3d11_desc = nullptr;
-}
 //----- (0044E1EC) --------------------------------------------------------
 int TextureFrameTable::FromFileTxt(const char *Args)
 {
@@ -2141,7 +1362,9 @@ bool Image::PCX_From_IconsLOD(const wchar_t *name)
     loader = new PCX_LOD_Loader(pIcons_LOD, name);
 
     if (!lazy_initialization)
+    {
         this->LoadImageData();
+    }
 
     return true;
 }
@@ -2151,7 +1374,9 @@ bool Image::PCX_From_NewLOD(const wchar_t *name)
     loader = new PCX_LOD_Loader(pNew_LOD, name);
 
     if (!lazy_initialization)
+    {
         this->LoadImageData();
+    }
 
     return true;
 }
@@ -2161,7 +1386,9 @@ bool Image::PCX_From_File(const wchar_t *filename)
     loader = new PCX_File_Loader(pIcons_LOD, filename);
 
     if (!lazy_initialization)
+    {
         this->LoadImageData();
+    }
 
     return true;
 }
@@ -2171,7 +1398,9 @@ bool Image::Alpha_From_LOD(const wchar_t *name)
     loader = new Alpha_LOD_Loader(pIcons_LOD, name);
 
     if (!lazy_initialization)
+    {
         this->LoadImageData();
+    }
 
     return true;
 }
@@ -2181,7 +1410,9 @@ bool Image::Image16bit_From_LOD(const wchar_t *name)
     loader = new Image16bit_LOD_Loader(pIcons_LOD, name);
 
     if (!lazy_initialization)
+    {
         this->LoadImageData();
+    }
 
     return true;
 }
@@ -2193,57 +1424,94 @@ bool Image::ColorKey_From_LOD(const wchar_t *name, unsigned __int16 colorkey)
     loader = new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey);
 
     if (!lazy_initialization)
+    {
         this->LoadImageData();
+    }
 
     return true;
 }
 
 bool Image::LoadImageData()
 {
-    if (!initialized)
+    if (!this->initialized)
     {
         void *pixels;
 
-        initialized = loader->Load(&width, &height, &pixels, &native_format);
-        if (initialized && native_format != IMAGE_INVALID_FORMAT)
+        this->initialized = this->loader->Load(&width, &height, &pixels, &native_format);
+        if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT)
             this->pixels[native_format] = pixels;
     }
 
-    return initialized;
+    return this->initialized;
 }
 
 
 unsigned int Image::GetWidth()
 {
-    if (!initialized)
-        LoadImageData();
+    if (!this->initialized)
+    {
+        this->LoadImageData();
+    }
 
-    if (initialized)
-        return width;
+    if (this->initialized)
+    {
+        return this->width;
+    }
+
     return 0;
 }
 
 unsigned int Image::GetHeight()
 {
-    if (!initialized)
-        LoadImageData();
+    if (!this->initialized)
+    {
+        this->LoadImageData();
+    }
 
-    if (initialized)
-        return height;
+    if (this->initialized)
+    {
+        return this->height;
+    }
     return 0;
+}
+
+Image *Image::Create(unsigned int width, unsigned int height, IMAGE_FORMAT format, const void *pixels)
+{
+    auto img = new Image(false);
+    if (img)
+    {
+        img->initialized = true;
+        img->width = width;
+        img->height = height;
+        img->native_format = format;
+        if (pixels)
+        {
+            unsigned int num_pixels = img->GetWidth() * img->GetHeight();
+            unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(format);
+            img->pixels[format] = new unsigned char[num_pixels_bytes];
+
+            memcpy(img->pixels[format], pixels, num_pixels_bytes);
+        }
+    }
+
+    return img;
 }
 
 const void *Image::GetPixels(IMAGE_FORMAT format)
 {
-    if (!initialized)
-        LoadImageData();
+    if (!this->initialized)
+    {
+        this->LoadImageData();
+    }
 
     if (initialized)
     {
-        if (pixels[format])
-            return pixels[format];
+        if (this->pixels[format])
+        {
+            return this->pixels[format];
+        }
 
-        auto native_pixels = pixels[native_format];
+        auto native_pixels = this->pixels[this->native_format];
         if (native_pixels)
         {
             static ImageFormatConverter converters[IMAGE_NUM_FORMATS][IMAGE_NUM_FORMATS] =
@@ -2270,15 +1538,15 @@ const void *Image::GetPixels(IMAGE_FORMAT format)
                 },
             };
 
-            ImageFormatConverter cvt = converters[native_format][format];
+            ImageFormatConverter cvt = converters[this->native_format][format];
             if (cvt)
             {
-                unsigned int num_pixels = width * height;
+                unsigned int num_pixels = this->GetWidth() * this->GetHeight();
 
                 void *cvt_pixels = new unsigned char[num_pixels * IMAGE_FORMAT_BytesPerPixel(format)];
                 if (cvt(width * height, native_pixels, cvt_pixels))
                 {
-                    return pixels[format] = cvt_pixels;
+                    return this->pixels[format] = cvt_pixels;
                 }
                 else
                 {
@@ -2303,11 +1571,13 @@ bool Image::Release()
         }
 
         for (unsigned int i = 0; i < IMAGE_NUM_FORMATS; ++i)
+        {
             if (pixels[i])
             {
                 delete[] pixels[i];
                 pixels[i] = nullptr;
             }
+        }
 
         native_format = IMAGE_INVALID_FORMAT;
         width = 0;

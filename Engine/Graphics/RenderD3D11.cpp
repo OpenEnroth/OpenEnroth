@@ -58,7 +58,7 @@ void RenderD3D11::TransformBillboardsAndSetPalettesODM() {__debugbreak();}
 void RenderD3D11::DrawBillboardList_BLV() {__debugbreak();}
 void RenderD3D11::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, IDirect3DTexture2 *a9) {__debugbreak();}
 void RenderD3D11::ScreenFade(unsigned int color, float t) {__debugbreak();}
-void RenderD3D11::CreditsTextureScroll(unsigned int pX, unsigned int pY, int move_X, int move_Y, RGBTexture *pTexture) {__debugbreak();}
+void RenderD3D11::DrawTextureOffset(int pX, int pY, int move_X, int move_Y, Image *pTexture) {__debugbreak();}
 void RenderD3D11::ZBuffer_Fill_2(signed int a2, signed int a3, class Image *pTexture, int a5) {__debugbreak();}
 void RenderD3D11::ZDrawTextureAlpha(float u, float v, class Image *pTexture, int zVal) {__debugbreak();}
 void RenderD3D11::BlendTextures(unsigned int a2, unsigned int a3, class Image *a4, struct Texture_MM7 *a5, int t, int start_opacity, int end_opacity) {__debugbreak();}
@@ -801,57 +801,6 @@ ID3DBlob *DoD3DCompiling(const wchar_t *shader_name, const char *pShaderSource, 
 
   return pShader;
 }
-
-/*
-void RenderD3D11::PrepareTexture(RGBTexture *p)
-{
-  if (!p->d3d11_srv)
-  {
-    auto desc = p->d3d11_desc = new D3D11_TEXTURE2D_DESC;
-    desc->Width = p->uWidth;
-    desc->Height = p->uHeight;
-    desc->ArraySize = 1;
-    desc->MipLevels = 1;
-    desc->Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    desc->SampleDesc.Count = 1;
-    desc->SampleDesc.Quality = 0;
-    desc->Usage = D3D11_USAGE_DEFAULT;
-    desc->BindFlags = D3D11_BIND_SHADER_RESOURCE;
-    desc->CPUAccessFlags = 0;
-    desc->MiscFlags = 0;
-    
-    ID3D11Texture2D *vram_texture = nullptr;
-    ErrorD3D(d3dd->CreateTexture2D(desc, nullptr, &vram_texture));
-
-    D3D11_TEXTURE2D_DESC ram_desc;
-    memcpy(&ram_desc, desc, sizeof(ram_desc));
-    ram_desc.Usage = D3D11_USAGE_STAGING;
-    ram_desc.BindFlags = 0;
-    ram_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    
-    ID3D11Texture2D *ram_texture = nullptr;
-    ErrorD3D(d3dd->CreateTexture2D(&ram_desc, nullptr, &ram_texture));
-
-    D3D11_MAPPED_SUBRESOURCE map;
-    ErrorD3D(d3dc->Map(ram_texture, 0, D3D11_MAP_WRITE, 0, &map));
-    for (unsigned int y = 0; y < desc->Height; ++y)
-      for (unsigned int x = 0; x < desc->Width; ++x)
-      {
-        auto src = p->pPixels + y * p->uWidth + x;
-        auto dst = (unsigned int *)((char *)map.pData + y * map.RowPitch) + x;
-
-        extern unsigned __int32 Color32_SwapRedBlue(unsigned __int16 color16);
-        *dst = 0xFF000000 | Color32_SwapRedBlue(*src);
-      }
-
-    d3dc->Unmap(ram_texture, 0);
-    d3dc->CopyResource(vram_texture, ram_texture);
-    ram_texture->Release();
-    
-    ErrorD3D(d3dd->CreateShaderResourceView(vram_texture, nullptr, (ID3D11ShaderResourceView **)&p->d3d11_srv));
-    vram_texture->Release();
-  }
-}*/
 
 
 

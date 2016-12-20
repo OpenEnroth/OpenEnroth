@@ -90,7 +90,6 @@ namespace Media
       virtual ~MPlayer();
 
 	  //for video/////////////////////////////////////////////////
-      //RGBTexture pVideoFrame;
       int field_44;//final video
       unsigned int bFirstFrame;
       unsigned int bLoopPlaying;
