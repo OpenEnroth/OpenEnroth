@@ -927,24 +927,22 @@ extern unsigned int ui_game_dialogue_option_normal_color;
 extern unsigned int ui_house_player_cant_interact_color;
 
 
-extern class Image *ui_exit_cancel_button_background;
-extern class Image *game_ui_right_panel_frame;
-extern class Image *dialogue_ui_x_ok_u;
-extern class Image *dialogue_ui_x_x_u;
+class Image;
+extern Image *ui_exit_cancel_button_background;
+extern Image *game_ui_right_panel_frame;
+extern Image *dialogue_ui_x_ok_u;
+extern Image *dialogue_ui_x_x_u;
 
-extern class Image *ui_buttdesc2;
-extern class Image *ui_buttyes2;
+extern Image *ui_buttdesc2;
+extern Image *ui_buttyes2;
 
-extern class Image *ui_btn_npc_right;
-extern class Image *ui_btn_npc_left;
+extern Image *ui_btn_npc_right;
+extern Image *ui_btn_npc_left;
 
-extern class Image *ui_ar_dn_dn;
-extern class Image *ui_ar_dn_up;
-extern class Image *ui_ar_up_dn;
-extern class Image *ui_ar_up_up;
+extern Image *ui_ar_dn_dn;
+extern Image *ui_ar_dn_up;
+extern Image *ui_ar_up_dn;
+extern Image *ui_ar_up_up;
 
-extern class Image *ui_leather_mm6;
-extern class Image *ui_leather_mm7;
-
-//extern unsigned int 507C20_gamma_slider_left_texid; // 507C20
-//extern unsigned int 507C24_gamma_slider_right_texid; // 507C24
+extern Image *ui_leather_mm6;
+extern Image *ui_leather_mm7;

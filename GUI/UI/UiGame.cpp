@@ -20,7 +20,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -122,13 +122,13 @@ GUIWindow_GameMenu::GUIWindow_GameMenu() :
 {
 // -----------------------
 // GameMenuUI_Load -- part
-    game_ui_menu_options = assets->GetImage_16BitAlpha(L"options");
-    game_ui_menu_new = assets->GetImage_16BitAlpha(L"new1");
-    game_ui_menu_load = assets->GetImage_16BitAlpha(L"load1");
-    game_ui_menu_save = assets->GetImage_16BitAlpha(L"save1");
-    game_ui_menu_controls = assets->GetImage_16BitAlpha(L"controls1");
-    game_ui_menu_resume = assets->GetImage_16BitAlpha(L"resume1");
-    game_ui_menu_quit = assets->GetImage_16BitAlpha(L"quit1");
+    game_ui_menu_options = assets->GetImage_16BitAlpha("options");
+    game_ui_menu_new = assets->GetImage_16BitAlpha("new1");
+    game_ui_menu_load = assets->GetImage_16BitAlpha("load1");
+    game_ui_menu_save = assets->GetImage_16BitAlpha("save1");
+    game_ui_menu_controls = assets->GetImage_16BitAlpha("controls1");
+    game_ui_menu_resume = assets->GetImage_16BitAlpha("resume1");
+    game_ui_menu_quit = assets->GetImage_16BitAlpha("quit1");
 
     pBtn_NewGame = CreateButton(
         0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0, UIMSG_StartNewGame, 0, 0x4Eu,
@@ -193,8 +193,12 @@ void GameUI_LoadPlayerPortraintsAndVoices()
     {
         for (uint j = 0; j < 56; ++j)
         {
-            auto filename = StringPrintf("%s%02d", pPlayerPortraitsNames[pParty->pPlayers[i].uCurrentFace], j + 1);
-            game_ui_player_faces[i][j] = assets->GetImage_16BitColorKey(filename, 0x7FF);
+            game_ui_player_faces[i][j] = assets->GetImage_16BitColorKey(
+                StringPrintf(
+                    "%s%02d", pPlayerPortraitsNames[pParty->pPlayers[i].uCurrentFace], j + 1
+                ),
+                0x7FF
+            );
         }
     }
 
@@ -256,11 +260,11 @@ GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings():
 {
 // ------------------------------------------
 // GameMenuUI_OptionsKeymapping_Load --- part
-    game_ui_options_controls[0] = assets->GetImage_16BitColorKey(L"optkb", 0x7FF);
-    game_ui_options_controls[1] = assets->GetImage_16BitColorKey(L"optkb_h", 0x7FF);
-    game_ui_options_controls[2] = assets->GetImage_16BitColorKey(L"resume1", 0x7FF);
-    game_ui_options_controls[3] = assets->GetImage_16BitColorKey(L"optkb_1", 0x7FF);
-    game_ui_options_controls[4] = assets->GetImage_16BitColorKey(L"optkb_2", 0x7FF);
+    game_ui_options_controls[0] = assets->GetImage_16BitColorKey("optkb", 0x7FF);
+    game_ui_options_controls[1] = assets->GetImage_16BitColorKey("optkb_h", 0x7FF);
+    game_ui_options_controls[2] = assets->GetImage_16BitColorKey("resume1", 0x7FF);
+    game_ui_options_controls[3] = assets->GetImage_16BitColorKey("optkb_1", 0x7FF);
+    game_ui_options_controls[4] = assets->GetImage_16BitColorKey("optkb_2", 0x7FF);
 
     CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, "", 0);
 
@@ -397,21 +401,21 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions() :
 {
 // -------------------------------------
 // GameMenuUI_OptionsVideo_Load --- part
-    game_ui_menu_options_video_background = assets->GetImage_16BitColorKey(L"optvid", 0x7FF);
-    game_ui_menu_options_video_bloodsplats = assets->GetImage_16BitColorKey(L"opvdH-bs", 0x7FF);
-    game_ui_menu_options_video_coloredlights = assets->GetImage_16BitColorKey(L"opvdH-cl", 0x7FF);
-    game_ui_menu_options_video_tinting = assets->GetImage_16BitColorKey(L"opvdH-tn", 0x7FF);
+    game_ui_menu_options_video_background = assets->GetImage_16BitColorKey("optvid", 0x7FF);
+    game_ui_menu_options_video_bloodsplats = assets->GetImage_16BitColorKey("opvdH-bs", 0x7FF);
+    game_ui_menu_options_video_coloredlights = assets->GetImage_16BitColorKey("opvdH-cl", 0x7FF);
+    game_ui_menu_options_video_tinting = assets->GetImage_16BitColorKey("opvdH-tn", 0x7FF);
 
-    game_ui_menu_options_video_gamma_positions[0] = assets->GetImage_16BitColorKey(L"convol10", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[1] = assets->GetImage_16BitColorKey(L"convol20", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[2] = assets->GetImage_16BitColorKey(L"convol30", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[3] = assets->GetImage_16BitColorKey(L"convol40", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[4] = assets->GetImage_16BitColorKey(L"convol50", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[5] = assets->GetImage_16BitColorKey(L"convol60", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[6] = assets->GetImage_16BitColorKey(L"convol70", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[7] = assets->GetImage_16BitColorKey(L"convol80", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[8] = assets->GetImage_16BitColorKey(L"convol90", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[9] = assets->GetImage_16BitColorKey(L"convol00", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[0] = assets->GetImage_16BitColorKey("convol10", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[1] = assets->GetImage_16BitColorKey("convol20", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[2] = assets->GetImage_16BitColorKey("convol30", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[3] = assets->GetImage_16BitColorKey("convol40", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[4] = assets->GetImage_16BitColorKey("convol50", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[5] = assets->GetImage_16BitColorKey("convol60", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[6] = assets->GetImage_16BitColorKey("convol70", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[7] = assets->GetImage_16BitColorKey("convol80", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[8] = assets->GetImage_16BitColorKey("convol90", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[9] = assets->GetImage_16BitColorKey("convol00", 0x7FF);
     //not_available_bloodsplats_texture_id = pIcons_LOD->LoadTexture("opvdG-bs", TEXTURE_16BIT_PALETTE);
     //not_available_us_colored_lights_texture_id = pIcons_LOD->LoadTexture("opvdG-cl", TEXTURE_16BIT_PALETTE);
     //not_available_tinting_texture_id = pIcons_LOD->LoadTexture("opvdG-tn", TEXTURE_16BIT_PALETTE);
@@ -520,26 +524,26 @@ GUIWindow_GameOptions::GUIWindow_GameOptions() :
     GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
 {
 // GameMenuUI_Options_Load -- part
-    options_menu_skin.uTextureID_Background = assets->GetImage_16BitColorKey(L"ControlBG", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_16BitColorKey(L"con_16x", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_16BitColorKey(L"con_32x", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[0] = assets->GetImage_16BitColorKey(L"con_Smoo", 0x7FF);
-    options_menu_skin.uTextureID_ArrowLeft = assets->GetImage_16BitAlpha(L"con_ArrL");
-    options_menu_skin.uTextureID_ArrowRight = assets->GetImage_16BitAlpha(L"con_ArrR");
-    options_menu_skin.uTextureID_SoundLevels[0] = assets->GetImage_16BitColorKey(L"convol10", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[1] = assets->GetImage_16BitColorKey(L"convol20", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[2] = assets->GetImage_16BitColorKey(L"convol30", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[3] = assets->GetImage_16BitColorKey(L"convol40", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[4] = assets->GetImage_16BitColorKey(L"convol50", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[5] = assets->GetImage_16BitColorKey(L"convol60", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[6] = assets->GetImage_16BitColorKey(L"convol70", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[7] = assets->GetImage_16BitColorKey(L"convol80", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[8] = assets->GetImage_16BitColorKey(L"convol90", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[9] = assets->GetImage_16BitColorKey(L"convol00", 0x7FF);
-    options_menu_skin.uTextureID_FlipOnExit = assets->GetImage_16BitColorKey(L"option04", 0x7FF);
-    options_menu_skin.uTextureID_AlwaysRun = assets->GetImage_16BitColorKey(L"option03", 0x7FF);
-    options_menu_skin.uTextureID_ShowDamage = assets->GetImage_16BitColorKey(L"option02", 0x7FF);
-    options_menu_skin.uTextureID_WalkSound = assets->GetImage_16BitColorKey(L"option01", 0x7FF);
+    options_menu_skin.uTextureID_Background = assets->GetImage_16BitColorKey("ControlBG", 0x7FF);
+    options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_16BitColorKey("con_16x", 0x7FF);
+    options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_16BitColorKey("con_32x", 0x7FF);
+    options_menu_skin.uTextureID_TurnSpeed[0] = assets->GetImage_16BitColorKey("con_Smoo", 0x7FF);
+    options_menu_skin.uTextureID_ArrowLeft = assets->GetImage_16BitAlpha("con_ArrL");
+    options_menu_skin.uTextureID_ArrowRight = assets->GetImage_16BitAlpha("con_ArrR");
+    options_menu_skin.uTextureID_SoundLevels[0] = assets->GetImage_16BitColorKey("convol10", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[1] = assets->GetImage_16BitColorKey("convol20", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[2] = assets->GetImage_16BitColorKey("convol30", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[3] = assets->GetImage_16BitColorKey("convol40", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[4] = assets->GetImage_16BitColorKey("convol50", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[5] = assets->GetImage_16BitColorKey("convol60", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[6] = assets->GetImage_16BitColorKey("convol70", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[7] = assets->GetImage_16BitColorKey("convol80", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[8] = assets->GetImage_16BitColorKey("convol90", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[9] = assets->GetImage_16BitColorKey("convol00", 0x7FF);
+    options_menu_skin.uTextureID_FlipOnExit = assets->GetImage_16BitColorKey("option04", 0x7FF);
+    options_menu_skin.uTextureID_AlwaysRun = assets->GetImage_16BitColorKey("option03", 0x7FF);
+    options_menu_skin.uTextureID_ShowDamage = assets->GetImage_16BitColorKey("option02", 0x7FF);
+    options_menu_skin.uTextureID_WalkSound = assets->GetImage_16BitColorKey("option01", 0x7FF);
 
     CreateButton(22, 270,
         options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(),

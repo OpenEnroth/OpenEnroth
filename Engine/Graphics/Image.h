@@ -47,15 +47,7 @@ class Image
 
 
         static Image *Create(unsigned int width, unsigned int height, IMAGE_FORMAT format, const void *pixels = nullptr);
-
-        bool Image16bit_From_LOD(const wchar_t *name);
-        bool ColorKey_From_LOD(const wchar_t *name, unsigned __int16 colorkey);
-        bool Alpha_From_LOD(const wchar_t *name);
-
-        bool PCX_From_IconsLOD(const wchar_t *name);
-        bool PCX_From_NewLOD(const wchar_t *name);
-        bool PCX_From_File(const wchar_t *filename);
-
+        static Image *Create(ImageLoader *loader);
 
         unsigned int  GetWidth();
         unsigned int  GetHeight();

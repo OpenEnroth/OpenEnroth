@@ -7,26 +7,13 @@
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 
-#include "Graphics/Weather.h"
-#include "Graphics/Texture.h"
-#include "MapInfo.h"
-#include "Graphics/Render.h"
-#include "Objects/SpriteObject.h"
-#include "Objects/Chest.h"
-#include "MapsLongTimer.h"
-#include "LOD.h"
-#include "Objects/Actor.h"
-#include "Party.h"
-#include "OurMath.h"
-#include "Graphics/Indoor.h"
-#include "Graphics/Viewport.h"
-#include "stru123.h"
-#include "stru159.h"
-#include "Events.h"
-#include "Events2D.h"
-#include "Graphics/Level/Decoration.h"
-#include "LuaVM.h"
-#include "Graphics/DecorationList.h"
+#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/Weather.h"
+#include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Level/Decoration.h"
 
 #include "IO/Mouse.h"
 
@@ -37,6 +24,21 @@
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
+
+
+#include "MapInfo.h"
+#include "Objects/SpriteObject.h"
+#include "Objects/Chest.h"
+#include "MapsLongTimer.h"
+#include "LOD.h"
+#include "Objects/Actor.h"
+#include "Party.h"
+#include "OurMath.h"
+#include "stru123.h"
+#include "stru159.h"
+#include "Events.h"
+#include "Events2D.h"
+#include "LuaVM.h"
 
 std::array<EventIndex, 4400> pSomeOtherEVT_Events;
 signed int uSomeOtherEVT_NumEvents;

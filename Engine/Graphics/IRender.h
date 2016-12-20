@@ -4,9 +4,9 @@
 #include "OSWindow.h"
 #include "RenderStruct.h"
 #include "../VectorTypes.h"
-#include "Engine/Graphics/Texture.h"
 
-class Image;
+#include "Engine/Graphics/Image.h"
+
 class IRender
 {
   public:

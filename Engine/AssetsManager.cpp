@@ -2,7 +2,13 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/LOD.h"
 
+#include "Engine/Graphics/ImageLoader.h"
+
+
+
+
 AssetsManager *assets = new AssetsManager();
+
 
 bool AssetsManager::ReleaseAllImages()
 {
@@ -11,132 +17,57 @@ bool AssetsManager::ReleaseAllImages()
 
 Image *AssetsManager::GetImage_16BitColorKey(const String &name, unsigned __int16 colorkey)
 {
-    return this->GetImage_16BitColorKey(name.c_str(), colorkey);
+    return Image::Create(
+        new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey)
+    );
 }
-
-Image *AssetsManager::GetImage_16BitColorKey(const char *name, unsigned __int16 colorkey)
-{
-    wchar_t namew[1024];
-    swprintf(namew, L"%S", name);
-
-    return this->GetImage_16BitColorKey(namew, colorkey);
-}
-
-Image *AssetsManager::GetImage_16BitColorKey(const wchar_t *name, unsigned __int16 colorkey)
-{
-    Image *img = new Image();
-    if (!img->ColorKey_From_LOD(name, colorkey))
-    {
-        delete img;
-        img = nullptr;
-    }
-
-    return img;
-}
-
-
-
-
 
 
 Image *AssetsManager::GetImage_16Bit(const String &name)
 {
-    return this->GetImage_16Bit(name.c_str());
+    return Image::Create(
+        new Image16bit_LOD_Loader(pIcons_LOD, name)
+    );
 }
-
-Image *AssetsManager::GetImage_16Bit(const char *name)
-{
-    wchar_t wname[1024];
-    swprintf(wname, L"%S", name);
-
-    return this->GetImage_16Bit(wname);
-}
-
-Image *AssetsManager::GetImage_16Bit(const wchar_t *name)
-{
-    Image *img = new Image();
-    if (!img->Image16bit_From_LOD(name))
-    {
-        delete img;
-        img = nullptr;
-
-        Log::Warning(L"Texture %s not found", name);
-    }
-
-    return img;
-}
-
-
-
-
-
-
-
 
 
 Image *AssetsManager::GetImage_16BitAlpha(const String &name)
 {
-    return this->GetImage_16BitAlpha(name.c_str());
-
-}
-
-Image *AssetsManager::GetImage_16BitAlpha(const char *name)
-{
-    wchar_t wname[1024];
-    swprintf(wname, L"%S", name);
-
-    return this->GetImage_16BitAlpha(wname);
-}
-
-Image *AssetsManager::GetImage_16BitAlpha(const wchar_t *name)
-{
-    Image *img = new Image();
-    if (!img->Alpha_From_LOD(name))
-    {
-        delete img;
-        img = nullptr;
-    }
-
-    return img;
+    return Image::Create(
+        new Alpha_LOD_Loader(pIcons_LOD, name)
+    );
 }
 
 
-
-
-
-Image *AssetsManager::GetImage_PCXFromIconsLOD(const wchar_t *name)
+Image *AssetsManager::GetImage_PCXFromIconsLOD(const String &filename)
 {
-    Image *img = new Image();
-    if (!img->PCX_From_IconsLOD(name))
-    {
-        delete img;
-        img = nullptr;
-    }
-
-    return img;
-}
-
-Image *AssetsManager::GetImage_PCXFromNewLOD(const wchar_t *name)
-{
-    Image *img = new Image();
-    if (!img->PCX_From_NewLOD(name))
-    {
-        delete img;
-        img = nullptr;
-    }
-
-    return img;
+    return Image::Create(
+        new PCX_LOD_Loader(pIcons_LOD, filename)
+    );
 }
 
 
-Image *AssetsManager::GetImage_PCXFromFile(const wchar_t *name)
+Image *AssetsManager::GetImage_PCXFromNewLOD(const String &filename)
 {
-    Image *img = new Image();
-    if (!img->PCX_From_File(name))
-    {
-        delete img;
-        img = nullptr;
-    }
+    return Image::Create(
+        new PCX_LOD_Loader(pNew_LOD, filename)
+    );
+}
 
-    return img;
+
+Image *AssetsManager::GetImage_PCXFromFile(const String &filename)
+{
+    return Image::Create(
+        new PCX_File_Loader(pIcons_LOD, filename)
+    );
+}
+
+
+
+
+Image *AssetsManager::GetBitmap(const String &name)
+{
+    return Image::Create(
+        new Image16bit_LOD_Loader(pBitmaps_LOD, name)
+    );
 }

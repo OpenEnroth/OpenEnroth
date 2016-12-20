@@ -5,10 +5,10 @@
 #pragma pack(push, 1)
 class Sprite  //28h
 {
-  public:
+public:
     inline Sprite()
     {
-      d3d11_srv = nullptr;
+        d3d11_srv = nullptr;
     }
     ~Sprite();
 

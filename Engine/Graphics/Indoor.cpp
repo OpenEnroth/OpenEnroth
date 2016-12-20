@@ -2991,117 +2991,107 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode)
 //----- (0043FA33) --------------------------------------------------------
 void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID)
 {
-  unsigned int v8; // edi@5
-  int v9; // edi@5
-  int v10; // eax@7
-  SpriteFrame *v11; // eax@7
-  signed __int64 v20; // qtt@19
-  Particle_sw particle; // [sp+Ch] [bp-A0h]@3
-  int v30; // [sp+8Ch] [bp-20h]@7
-  int a5; // [sp+94h] [bp-18h]@17
-  int z; // [sp+98h] [bp-14h]@15
-  int a6; // [sp+9Ch] [bp-10h]@17
-  int y; // [sp+A0h] [bp-Ch]@15
-  int x; // [sp+A4h] [bp-8h]@15
-  int v37; // [sp+A8h] [bp-4h]@5
+    unsigned int v8; // edi@5
+    int v9; // edi@5
+    int v10; // eax@7
+    SpriteFrame *v11; // eax@7
+    signed __int64 v20; // qtt@19
+    Particle_sw particle; // [sp+Ch] [bp-A0h]@3
+    int v30; // [sp+8Ch] [bp-20h]@7
+    int a5; // [sp+94h] [bp-18h]@17
+    int z; // [sp+98h] [bp-14h]@15
+    int a6; // [sp+9Ch] [bp-10h]@17
+    int y; // [sp+A0h] [bp-Ch]@15
+    int x; // [sp+A4h] [bp-8h]@15
+    int v37; // [sp+A8h] [bp-4h]@5
 
-  if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
-    return;
+    if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
+        return;
 
-  if (pDecorationList->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID].uFlags & DECORATION_DESC_EMITS_FIRE)
-  {
-    memset(&particle, 0, sizeof(particle));               // fire,  like at the Pit's tavern
-    particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
-    particle.uDiffuse = 0xFF3C1E;
-    particle.x = (double)pLevelDecorations[uDecorationID].vPosition.x;
-    particle.y = (double)pLevelDecorations[uDecorationID].vPosition.y;
-    particle.z = (double)pLevelDecorations[uDecorationID].vPosition.z;
-    particle.r = 0.0;
-    particle.g = 0.0;
-    particle.b = 0.0;
-    particle.flt_28 = 1.0;
-    particle.timeToLive = (rand() & 0x80) + 128;
-    particle.uTextureID = pBitmaps_LOD->LoadTexture("effpar01");
-    pEngine->pParticleEngine->AddParticle(&particle);
-    return;
-  }
-
-  if (pDecorationList->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID].uFlags & DECORATION_DESC_DONT_DRAW)
-    return;
-
-  v8 = pLevelDecorations[uDecorationID].field_10_y_rot + ((signed int)stru_5C6E00->uIntegerPi >> 3)
-     - stru_5C6E00->Atan2(pLevelDecorations[uDecorationID].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
-                          pLevelDecorations[uDecorationID].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
-  v9 = ((signed int)(stru_5C6E00->uIntegerPi + v8) >> 8) & 7;
-  v37 = pBLVRenderParams->field_0_timer_;
-  if (pParty->bTurnBasedModeOn)
-    v37 = pMiscTimer->uTotalGameTimeElapsed;
-  v10 = abs(pLevelDecorations[uDecorationID].vPosition.x + pLevelDecorations[uDecorationID].vPosition.y);
-  v11 = pSpriteFrameTable->GetFrame(pDecorationList->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID].uSpriteID, v37 + v10);
-  v30 = 0;
-  if ( v11->uFlags & 2 )
-    v30 = 2;
-  if ( v11->uFlags & 0x40000 )
-    v30 |= 0x40u;
-  if ( v11->uFlags & 0x20000 )
-    LOBYTE(v30) = v30 | 0x80;
-  if ( (256 << v9) & v11->uFlags )
-    v30 |= 4;
-  if ( pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pLevelDecorations[uDecorationID].vPosition.x,
-                                                                          pLevelDecorations[uDecorationID].vPosition.y,
-                                                                          pLevelDecorations[uDecorationID].vPosition.z, &x, &y, &z, 1) )
-  {
-    if ( abs(x) >= abs(y) )
+    if (pDecorationList->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID].uFlags & DECORATION_DESC_EMITS_FIRE)
     {
-      pIndoorCameraD3D->Project(x, y, z, &a5, &a6);
-
-      assert(uNumBillboardsToDraw < 500);
-
-      ++uNumBillboardsToDraw;
-      ++uNumDecorationsDrawnThisFrame;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v11->pHwSpriteIDs[v9];
-      pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v11->uPaletteIndex;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
-      /*if ( !render->pRenderD3D )
-      {
-        LODWORD(v21) = pBLVRenderParams->fov_rad_fixpoint << 16;
-        HIDWORD(v21) = pBLVRenderParams->fov_rad_fixpoint >> 16;
-        //LODWORD(v31) = v12->scale;
-        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v12->scale, v21 / x);
-        v37 = fixpoint_mul(v12->scale, v21 / x);
-      }
-      else
-      {*/
-        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
-        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
-        LODWORD(v20) = 0;
-        HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v11->scale, v20 / x);
-        LODWORD(v20) = 0;
-        HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y + 0.5f);
-        v37 = fixpoint_mul(v11->scale, v20 / x);
-      //}
-      //HIWORD(v22) = HIWORD(x);
-      //LOWORD(v22) = 0;
-      pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = v37;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pLevelDecorations[uDecorationID].vPosition.x;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pLevelDecorations[uDecorationID].vPosition.y;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pLevelDecorations[uDecorationID].vPosition.z;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = a5;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = a6;
-      //v23 = 8 * uDecorationID;
-      //LOBYTE(v23) = PID(OBJECT_Decoration,uDecorationID);
-
-      //pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v22 + v23;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HIWORD(x);
-      pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration,uDecorationID);
-
-      pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
-      pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v11;
+        memset(&particle, 0, sizeof(particle));               // fire,  like at the Pit's tavern
+        particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
+        particle.uDiffuse = 0xFF3C1E;
+        particle.x = (double)pLevelDecorations[uDecorationID].vPosition.x;
+        particle.y = (double)pLevelDecorations[uDecorationID].vPosition.y;
+        particle.z = (double)pLevelDecorations[uDecorationID].vPosition.z;
+        particle.r = 0.0;
+        particle.g = 0.0;
+        particle.b = 0.0;
+        particle.flt_28 = 1.0;
+        particle.timeToLive = (rand() & 0x80) + 128;
+        particle.resource_id = pBitmaps_LOD->LoadTexture("effpar01");
+        pEngine->pParticleEngine->AddParticle(&particle);
+        return;
     }
-  }
+
+    if (pDecorationList->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID].uFlags & DECORATION_DESC_DONT_DRAW)
+        return;
+
+    v8 = pLevelDecorations[uDecorationID].field_10_y_rot + ((signed int)stru_5C6E00->uIntegerPi >> 3)
+        - stru_5C6E00->Atan2(pLevelDecorations[uDecorationID].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
+            pLevelDecorations[uDecorationID].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+    v9 = ((signed int)(stru_5C6E00->uIntegerPi + v8) >> 8) & 7;
+    v37 = pBLVRenderParams->field_0_timer_;
+    if (pParty->bTurnBasedModeOn)
+        v37 = pMiscTimer->uTotalGameTimeElapsed;
+    v10 = abs(pLevelDecorations[uDecorationID].vPosition.x + pLevelDecorations[uDecorationID].vPosition.y);
+    v11 = pSpriteFrameTable->GetFrame(pDecorationList->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID].uSpriteID, v37 + v10);
+    v30 = 0;
+    if (v11->uFlags & 2)
+        v30 = 2;
+    if (v11->uFlags & 0x40000)
+        v30 |= 0x40u;
+    if (v11->uFlags & 0x20000)
+        LOBYTE(v30) = v30 | 0x80;
+    if ((256 << v9) & v11->uFlags)
+        v30 |= 4;
+    if (pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pLevelDecorations[uDecorationID].vPosition.x,
+        pLevelDecorations[uDecorationID].vPosition.y,
+        pLevelDecorations[uDecorationID].vPosition.z, &x, &y, &z, 1))
+    {
+        if (abs(x) >= abs(y))
+        {
+            pIndoorCameraD3D->Project(x, y, z, &a5, &a6);
+
+            assert(uNumBillboardsToDraw < 500);
+
+            ++uNumBillboardsToDraw;
+            ++uNumDecorationsDrawnThisFrame;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v11->pHwSpriteIDs[v9];
+            pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v11->uPaletteIndex;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
+
+            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
+            LODWORD(v20) = 0;
+            HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
+            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v11->scale, v20 / x);
+            LODWORD(v20) = 0;
+            HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y + 0.5f);
+            v37 = fixpoint_mul(v11->scale, v20 / x);
+
+            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = v37;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pLevelDecorations[uDecorationID].vPosition.x;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pLevelDecorations[uDecorationID].vPosition.y;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pLevelDecorations[uDecorationID].vPosition.z;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = a5;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = a6;
+            //v23 = 8 * uDecorationID;
+            //LOBYTE(v23) = PID(OBJECT_Decoration,uDecorationID);
+
+            //pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v22 + v23;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HIWORD(x);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, uDecorationID);
+
+            pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v11;
+        }
+    }
 }
+
 //----- (0043F953) --------------------------------------------------------
 void PrepareBspRenderList_BLV()
 {

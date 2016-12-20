@@ -1,7 +1,7 @@
 #pragma once
 #include "OSAPI.h"
 
-#include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/Image.h"
 
 
 

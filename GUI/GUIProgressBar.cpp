@@ -28,9 +28,6 @@ bool GUIProgressBar::Initialize(Type type)
     int v5; // ecx@8
     //int v6; // edi@8
     int v7; // edx@14
-    //const char *v8; // [sp-8h] [bp-84h]@20
-    //unsigned int v9; // [sp-4h] [bp-80h]@20
-    char Str1[64]; // [sp+4h] [bp-78h]@16
 
     switch (type)
     {
@@ -71,12 +68,8 @@ bool GUIProgressBar::Initialize(Type type)
                 v7 = rand() % 5 + 1;
             while (field_10[v7] == 1);
         }
-        sprintf(Str1, "loading%d.pcx", v7);
 
-        wchar_t image_name[1024];
-        swprintf(image_name, L"loading%d.pcx", v7);
-
-        loading_bg = assets->GetImage_PCXFromIconsLOD(image_name);
+        loading_bg = assets->GetImage_PCXFromIconsLOD(StringPrintf("loading%d.pcx", v7));
         //pLoadingBg.Load(Str1, 2);
         uProgressCurrent = 0;
         uX = 122;

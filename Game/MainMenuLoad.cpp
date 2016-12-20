@@ -102,7 +102,7 @@ void MainMenuLoad_EventLoop()
                         main_menu_background->Release();
                         main_menu_background = nullptr;
                     }
-                    main_menu_background = assets->GetImage_PCXFromIconsLOD(L"title.pcx");
+                    main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
 
                     SetCurrentMenuID(MENU_MAIN);
                     current_screen_type = SCREEN_GAME;
@@ -125,7 +125,7 @@ void MainMenuLoad_Loop()
         main_menu_background->Release();
         main_menu_background = nullptr;
     }
-    main_menu_background = assets->GetImage_PCXFromIconsLOD(L"lsave640.pcx");
+    main_menu_background = assets->GetImage_PCXFromIconsLOD("lsave640.pcx");
 
         //LoadUI_Load(0);
     pGUIWindow_CurrentMenu = new GUIWindow_Load(false);

@@ -13051,7 +13051,7 @@ void stru6::_4A80DC_implosion_particle_sw(SpriteObject *a2)
   local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
   local_0.uDiffuse = 0x7E7E7E;
   local_0.timeToLive = (rand() & 0x7F) + 128;
-  local_0.uTextureID = uTextureID_effpar1;
+  local_0.uTextureID = effpar01;
   v3 = 8;
   local_0.flt_28 = 1.0;
   do

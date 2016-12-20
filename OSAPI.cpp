@@ -97,39 +97,59 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hprevinstance, wchar_t *lpCmd
     }
     #endif
 
-  Log::Initialize();
+    Log::Initialize();
 
-  bool mm7_installation_found = false;
-  char mm7_path[2048];
+    bool mm7_installation_found = false;
+    char mm7_path[2048];
 
-  // standard 1.0 installation
-  if (!mm7_installation_found)
-      mm7_installation_found = ReadWindowsRegistryString("HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath", mm7_path, sizeof(mm7_path));
+    // standard 1.0 installation
+    if (!mm7_installation_found)
+    {
+        mm7_installation_found = ReadWindowsRegistryString(
+            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
+            mm7_path, sizeof(mm7_path)
+        );
 
-  // GoG version
-  if (!mm7_installation_found)
-      mm7_installation_found = ReadWindowsRegistryString("HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH", mm7_path, sizeof(mm7_path));
+        if (mm7_installation_found)
+        {
+            Log::Warning(L"Standard MM7 installation found");
+        }
+    }
+
+    // GoG version
+    if (!mm7_installation_found)
+    {
+        mm7_installation_found = ReadWindowsRegistryString(
+            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
+            mm7_path, sizeof(mm7_path)
+        );
+
+        if (mm7_installation_found)
+        {
+            Log::Warning(L"GoG MM7 installation found");
+        }
+    }
 
 
-  if (HWND hMM7Window = FindWindowW(L"M&MTrilogy", 0))//check whether the window is open
-  {
-    if (IsIconic(hMM7Window))
-      ShowWindow(hMM7Window, SW_RESTORE);
-    SetForegroundWindow(GetLastActivePopup(hMM7Window));
-    return 0;
-  }
+    if (HWND hMM7Window = FindWindowW(L"M&MTrilogy", 0))//check whether the window is open
+    {
+        if (IsIconic(hMM7Window))
+            ShowWindow(hMM7Window, SW_RESTORE);
+        SetForegroundWindow(GetLastActivePopup(hMM7Window));
+        return 0;
+    }
 
-  HWND hPrevWindow = GetActiveWindow();
-  if (!hPrevWindow)
-  {
-    Log::Warning(L"OS init: ok");
-    extern bool MM_Main(const wchar_t *pCmdLine, const char *mm7_path);
-    MM_Main(lpCmdLine, mm7_path);
-  }
-  if (hPrevWindow)
-    SetActiveWindow(hPrevWindow);
+    HWND hPrevWindow = GetActiveWindow();
+    if (!hPrevWindow)
+    {
+        Log::Warning(L"OS init: ok");
+        extern bool MM_Main(const wchar_t *pCmdLine, const char *mm7_path);
+        MM_Main(lpCmdLine, mm7_path);
+    }
+    if (hPrevWindow)
+        SetActiveWindow(hPrevWindow);
 
-  return GetLastError();
+    return GetLastError();
 }
 
 

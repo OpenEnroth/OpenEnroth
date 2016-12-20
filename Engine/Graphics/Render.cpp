@@ -44,7 +44,7 @@
 //#pragma comment(lib, "lib\\legacy_dx\\lib\\dxguid.lib")
 
 struct IDirectDrawClipper *pDDrawClipper;
-struct IRender *render; // idb
+class IRender *render; // idb
 struct RenderVertexD3D3  pVertices[50];
 int uNumDecorationsDrawnThisFrame;
 RenderBillboard pBillboardRenderList[500];
@@ -898,278 +898,278 @@ HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc, __in
 //----- (0047A95E) --------------------------------------------------------
 void Render::PrepareDecorationsRenderList_ODM()
 {
-  unsigned int v6; // edi@9
-  int v7; // eax@9
-  SpriteFrame *frame; // eax@9
-  unsigned __int16 *v10; // eax@9
-  int v13; // ecx@9
-  char r; // ecx@20
-  char g; // dl@20
-  char b_; // eax@20
-  int v17; // eax@23
-  int v18; // ecx@24
-  int v19; // eax@24
-  int v20; // ecx@24
-  int v21; // ebx@26
-  int v22; // eax@26
-  signed __int64 v24; // qtt@31
-  int v25; // ebx@31
-  __int16 v29; // cx@37
-  int v30; // ecx@37
-  int v31; // ebx@37
-  Particle_sw local_0; // [sp+Ch] [bp-98h]@7
-  unsigned __int16 *v37; // [sp+84h] [bp-20h]@9
-  int v38; // [sp+88h] [bp-1Ch]@9
-  int v40; // [sp+90h] [bp-14h]@24
-  int v41; // [sp+94h] [bp-10h]@24
-  int v42; // [sp+98h] [bp-Ch]@9
-  int b; // [sp+A0h] [bp-4h]@22
+    unsigned int v6; // edi@9
+    int v7; // eax@9
+    SpriteFrame *frame; // eax@9
+    unsigned __int16 *v10; // eax@9
+    int v13; // ecx@9
+    char r; // ecx@20
+    char g; // dl@20
+    char b_; // eax@20
+    int v17; // eax@23
+    int v18; // ecx@24
+    int v19; // eax@24
+    int v20; // ecx@24
+    int v21; // ebx@26
+    int v22; // eax@26
+    signed __int64 v24; // qtt@31
+    int v25; // ebx@31
+    __int16 v29; // cx@37
+    int v30; // ecx@37
+    int v31; // ebx@37
+    Particle_sw local_0; // [sp+Ch] [bp-98h]@7
+    unsigned __int16 *v37; // [sp+84h] [bp-20h]@9
+    int v38; // [sp+88h] [bp-1Ch]@9
+    int v40; // [sp+90h] [bp-14h]@24
+    int v41; // [sp+94h] [bp-10h]@24
+    int v42; // [sp+98h] [bp-Ch]@9
+    int b; // [sp+A0h] [bp-4h]@22
 
-  for (unsigned int i = 0; i < uNumLevelDecorations; ++i)
-  {
-    //LevelDecoration* decor = &pLevelDecorations[i];
-    if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST)
-        || pLevelDecorations[i].IsObeliskChestActive()) && !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE))
+    for (unsigned int i = 0; i < uNumLevelDecorations; ++i)
     {
-      DecorationDesc* decor_desc = &pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID];
-      if ( (char)decor_desc->uFlags >= 0 )
-      {
-        if ( !(decor_desc->uFlags & 0x22) )
+        //LevelDecoration* decor = &pLevelDecorations[i];
+        if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST)
+            || pLevelDecorations[i].IsObeliskChestActive()) && !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE))
         {
-          v6 = pMiscTimer->uTotalGameTimeElapsed;
-          v7 = abs(pLevelDecorations[i].vPosition.x + pLevelDecorations[i].vPosition.y);
-
-          #pragma region "New: seasons change"
-          extern bool change_seasons;
-          if (change_seasons)
-            switch (pParty->uCurrentMonth)
+            DecorationDesc* decor_desc = &pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID];
+            if ((char)decor_desc->uFlags >= 0)
             {
-              // case 531 (tree60), 536 (tree65), 537 (tree66) have no autumn/winter sprites
-              case 11: case 0: case 1: // winter
-                switch (decor_desc->uSpriteID)
+                if (!(decor_desc->uFlags & 0x22))
                 {
-                  //case 468: //bush02    grows on swamps, which are evergreeen actually
-                  case 548:             // flower10
-                  case 547:             // flower09
-                  case 541:             // flower03
-                  case 539: continue;   // flower01
+                    v6 = pMiscTimer->uTotalGameTimeElapsed;
+                    v7 = abs(pLevelDecorations[i].vPosition.x + pLevelDecorations[i].vPosition.y);
 
-                  case 483:             // tree01
-                  case 486:             // tree04
-                  case 492:             // tree10
-                    pSpriteFrameTable->InitializeSprite(decor_desc->uSpriteID + 2);
-                    frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID + 2, v6 + v7);
-                  break;
+#pragma region "New: seasons change"
+                    extern bool change_seasons;
+                    if (change_seasons)
+                        switch (pParty->uCurrentMonth)
+                        {
+                            // case 531 (tree60), 536 (tree65), 537 (tree66) have no autumn/winter sprites
+                        case 11: case 0: case 1: // winter
+                            switch (decor_desc->uSpriteID)
+                            {
+                                //case 468: //bush02    grows on swamps, which are evergreeen actually
+                            case 548:             // flower10
+                            case 547:             // flower09
+                            case 541:             // flower03
+                            case 539: continue;   // flower01
 
-                  default:
-                    frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
+                            case 483:             // tree01
+                            case 486:             // tree04
+                            case 492:             // tree10
+                                pSpriteFrameTable->InitializeSprite(decor_desc->uSpriteID + 2);
+                                frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID + 2, v6 + v7);
+                                break;
+
+                            default:
+                                frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
+                            }
+                            break;
+
+                        case 2: case 3: case 4: // spring
+                            switch (decor_desc->uSpriteID)
+                            {
+                            }
+                            frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
+                            break;
+
+                        case 8: case 9: case 10: // autumn
+                            switch (decor_desc->uSpriteID)
+                            {
+                                //case 468: //bush02    grows on swamps, which are evergreeen actually
+                            case 548:             // flower10
+                            case 547:             // flower09
+                            case 541:             // flower03
+                            case 539: continue;   // flower01
+
+                            case 483:             // tree01
+                            case 486:             // tree04
+                            case 492:             // tree10
+                                pSpriteFrameTable->InitializeSprite(decor_desc->uSpriteID + 1);
+                                frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID + 1, v6 + v7);
+                                break;
+
+                            default:
+                                frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
+                            }
+                            break;
+
+                        case 5: case 6: case 7: // summer
+                          //all green by default
+                            frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
+                            break;
+
+                        default: assert(pParty->uCurrentMonth >= 0 && pParty->uCurrentMonth < 12);
+                        }
+                    else
+                        frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
+#pragma endregion
+                    //v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
+
+                    v10 = (unsigned __int16 *)stru_5C6E00->Atan2(pLevelDecorations[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
+                        pLevelDecorations[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                    v38 = 0;
+                    v13 = ((signed int)(stru_5C6E00->uIntegerPi + ((signed int)stru_5C6E00->uIntegerPi >> 3) + pLevelDecorations[i].field_10_y_rot - (signed int)v10) >> 8) & 7;
+                    v37 = (unsigned __int16 *)v13;
+                    if (frame->uFlags & 2)
+                        v38 = 2;
+                    if ((256 << v13) & frame->uFlags)
+                        v38 |= 4;
+                    if (frame->uFlags & 0x40000)
+                        v38 |= 0x40;
+                    if (frame->uFlags & 0x20000)
+                        LOBYTE(v38) = v38 | 0x80;
+
+                    //for light
+                    if (frame->uGlowRadius)
+                    {
+                        r = 255;
+                        g = 255;
+                        b_ = 255;
+                        if ( /*pRenderD3D &&*/ bUseColoredLights)
+                        {
+                            r = /*255;//*/decor_desc->uColoredLightRed;
+                            g = /*255;//*/decor_desc->uColoredLightGreen;
+                            b_ = /*255;//*/decor_desc->uColoredLightBlue;
+                        }
+                        pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.x,
+                            pLevelDecorations[i].vPosition.y,
+                            pLevelDecorations[i].vPosition.z + decor_desc->uDecorationHeight / 2,
+                            frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
+                    }//for light
+
+                    v17 = (pLevelDecorations[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x) << 16;
+                    if (pIndoorCameraD3D->sRotationX)
+                    {
+                        v40 = (pLevelDecorations[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y) << 16;
+                        v18 = fixpoint_mul(v17, pIndoorCameraD3D->int_cosine_y) + fixpoint_mul(v40, pIndoorCameraD3D->int_sine_y);
+                        v41 = fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_sine_x);
+                        v19 = fixpoint_mul(v18, pIndoorCameraD3D->int_cosine_x);
+                        v20 = v19 + fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_sine_x);
+                        if (v20 >= 0x40000 && v20 <= pODMRenderParams->shading_dist_mist << 16)
+                        {
+                            v21 = fixpoint_mul(v40, pIndoorCameraD3D->int_cosine_y) - fixpoint_mul(v17, pIndoorCameraD3D->int_sine_y);
+                            v22 = fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(v18, pIndoorCameraD3D->int_sine_x);
+                            if (2 * abs(v20) >= abs(v21))
+                            {
+                                LODWORD(v24) = 0;
+                                HIDWORD(v24) = SLOWORD(pODMRenderParams->int_fov_rad);
+                                v25 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v24 / v20, v21) + 0x8000) >> 16);
+                                v40 = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v24 / v20, v22) + 0x8000) >> 16);
+                                v41 = fixpoint_mul(frame->scale, v24 / v20);
+                                if (pRenderD3D)
+                                    b = fixpoint_mul(pSprites_LOD->pHardwareSprites[frame->pHwSpriteIDs[(int)v37]].uBufferWidth / 2, v41);
+                                else
+                                {
+                                    __debugbreak();
+                                    b = fixpoint_mul(pSprites_LOD->pSpriteHeaders[frame->pHwSpriteIDs[(int)v37]].uWidth / 2, v41);
+                                }
+                                if (b + v25 >= (signed int)pViewport->uViewportTL_X && v25 - b <= (signed int)pViewport->uViewportBR_X)
+                                {
+                                    if (::uNumBillboardsToDraw >= 500)
+                                        return;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].HwSpriteID = frame->pHwSpriteIDs[(int)v37];
+                                    pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_x_scaler_packedfloat = v41;
+                                    pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = v41;
+                                    v29 = v38;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = v25;
+                                    HIBYTE(v29) |= 2;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v29;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].world_x = pLevelDecorations[i].vPosition.x;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].world_y = pLevelDecorations[i].vPosition.y;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].world_z = pLevelDecorations[i].vPosition.z;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = v40;
+                                    HIWORD(v30) = HIWORD(v20);
+                                    v31 = PID(OBJECT_Decoration, i);
+                                    LOWORD(v30) = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].sZValue = v30 + v31;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
+                                    ::uNumBillboardsToDraw++;
+                                    ++uNumDecorationsDrawnThisFrame;
+                                }
+                            }
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        v42 = (pLevelDecorations[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x) << 16;
+                        v40 = (pLevelDecorations[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y) << 16;
+                        v20 = fixpoint_mul(v17, pIndoorCameraD3D->int_cosine_y) + fixpoint_mul(v40, pIndoorCameraD3D->int_sine_y);
+                        if (v20 >= 0x40000 && v20 <= pODMRenderParams->shading_dist_mist << 16)
+                        {
+                            v21 = fixpoint_mul(v40, pIndoorCameraD3D->int_cosine_y) - fixpoint_mul(v42, pIndoorCameraD3D->int_sine_y);
+                            v22 = (pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16;
+                            v42 = v22;
+                            if (2 * abs(v20) >= abs(v21))
+                            {
+                                LODWORD(v24) = 0;
+                                HIDWORD(v24) = SLOWORD(pODMRenderParams->int_fov_rad);
+                                v25 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v24 / v20, v21) + 0x8000) >> 16);
+                                v40 = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v24 / v20, v42) + 0x8000) >> 16);
+                                v41 = fixpoint_mul(frame->scale, v24 / v20);
+                                if (pRenderD3D)
+                                    b = fixpoint_mul(pSprites_LOD->pHardwareSprites[frame->pHwSpriteIDs[(int)v37]].uBufferWidth / 2, v41);
+                                else
+                                {
+                                    __debugbreak();
+                                    b = fixpoint_mul(pSprites_LOD->pSpriteHeaders[frame->pHwSpriteIDs[(int)v37]].uWidth / 2, v41);
+                                }
+                                if (b + v25 >= (signed int)pViewport->uViewportTL_X && v25 - b <= (signed int)pViewport->uViewportBR_X)
+                                {
+                                    if (::uNumBillboardsToDraw >= 500)
+                                        return;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].HwSpriteID = frame->pHwSpriteIDs[(int)v37];
+                                    pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_x_scaler_packedfloat = v41;
+                                    pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = v41;
+                                    v29 = v38;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = v25;
+                                    HIBYTE(v29) |= 2;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v29;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].world_x = pLevelDecorations[i].vPosition.x;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].world_y = pLevelDecorations[i].vPosition.y;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].world_z = pLevelDecorations[i].vPosition.z;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = v40;
+                                    HIWORD(v30) = HIWORD(v20);
+                                    v31 = PID(OBJECT_Decoration, i);
+                                    LOWORD(v30) = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].sZValue = v30 + v31;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
+                                    pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
+                                    ::uNumBillboardsToDraw++;
+                                    ++uNumDecorationsDrawnThisFrame;
+                                }
+                            }
+                            continue;
+                        }
+                    }
                 }
-              break;
-
-              case 2: case 3: case 4: // spring
-                switch (decor_desc->uSpriteID)
-                {
-                }
-                frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
-              break;
-
-              case 8: case 9: case 10: // autumn
-                switch (decor_desc->uSpriteID)
-                {
-                  //case 468: //bush02    grows on swamps, which are evergreeen actually
-                  case 548:             // flower10
-                  case 547:             // flower09
-                  case 541:             // flower03
-                  case 539: continue;   // flower01
-                  
-                  case 483:             // tree01
-                  case 486:             // tree04
-                  case 492:             // tree10
-                    pSpriteFrameTable->InitializeSprite(decor_desc->uSpriteID + 1);
-                    frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID + 1, v6 + v7);
-                  break;
-
-                  default:
-                    frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
-                }
-              break;
-
-              case 5: case 6: case 7: // summer
-                //all green by default
-                frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
-              break;
-
-              default: assert(pParty->uCurrentMonth >= 0 && pParty->uCurrentMonth < 12);
             }
-          else
-            frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
-          #pragma endregion
-          //v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID, v6 + v7);
-
-          v10 = (unsigned __int16 *)stru_5C6E00->Atan2(pLevelDecorations[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
-                                                       pLevelDecorations[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
-          v38 = 0;
-          v13 = ((signed int)(stru_5C6E00->uIntegerPi + ((signed int)stru_5C6E00->uIntegerPi >> 3) + pLevelDecorations[i].field_10_y_rot - (signed int)v10) >> 8) & 7;
-          v37 = (unsigned __int16 *)v13;
-          if ( frame->uFlags & 2 )
-            v38 = 2;
-          if ( (256 << v13) & frame->uFlags )
-            v38 |= 4;
-          if ( frame->uFlags & 0x40000 )
-            v38 |= 0x40;
-          if ( frame->uFlags & 0x20000 )
-            LOBYTE(v38) = v38 | 0x80;
-
-		  //for light
-          if ( frame->uGlowRadius )
-          {
-            r = 255;
-            g = 255;
-            b_ = 255;
-            if ( /*pRenderD3D &&*/ bUseColoredLights )
+            else
             {
-              r = /*255;//*/decor_desc->uColoredLightRed;
-              g = /*255;//*/decor_desc->uColoredLightGreen;
-              b_ = /*255;//*/decor_desc->uColoredLightBlue;
+                memset(&local_0, 0, 0x68);
+                local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
+                local_0.uDiffuse = 0xFF3C1E;
+                local_0.x = (double)pLevelDecorations[i].vPosition.x;
+                local_0.y = (double)pLevelDecorations[i].vPosition.y;
+                local_0.z = (double)pLevelDecorations[i].vPosition.z;
+                local_0.r = 0.0;
+                local_0.g = 0.0;
+                local_0.b = 0.0;
+                local_0.flt_28 = 1.0;
+                local_0.timeToLive = (rand() & 0x80) + 128;
+                local_0.resource_id = pBitmaps_LOD->LoadTexture("effpar01");
+                pEngine->pParticleEngine->AddParticle(&local_0);
             }
-            pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.x,
-				                             pLevelDecorations[i].vPosition.y,
-											 pLevelDecorations[i].vPosition.z + decor_desc->uDecorationHeight / 2,
-                                             frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
-          }//for light
-
-          v17 = (pLevelDecorations[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x) << 16;
-          if (pIndoorCameraD3D->sRotationX)
-          {
-            v40 = (pLevelDecorations[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y) << 16;
-            v18 = fixpoint_mul(v17, pIndoorCameraD3D->int_cosine_y) + fixpoint_mul(v40, pIndoorCameraD3D->int_sine_y);
-            v41 = fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_sine_x);
-            v19 = fixpoint_mul(v18, pIndoorCameraD3D->int_cosine_x);
-            v20 = v19 + fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_sine_x);
-            if ( v20 >= 0x40000 && v20 <= pODMRenderParams->shading_dist_mist << 16 )
-            {
-              v21 = fixpoint_mul(v40, pIndoorCameraD3D->int_cosine_y) - fixpoint_mul(v17, pIndoorCameraD3D->int_sine_y);
-              v22 = fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(v18, pIndoorCameraD3D->int_sine_x);
-              if ( 2 * abs(v20) >= abs(v21) )
-              {
-                LODWORD(v24) = 0;
-                HIDWORD(v24) = SLOWORD(pODMRenderParams->int_fov_rad);
-                v25 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v24 / v20, v21) + 0x8000) >> 16);
-                v40 = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v24 / v20, v22) + 0x8000) >> 16);
-                v41 = fixpoint_mul(frame->scale, v24 / v20);
-                if ( pRenderD3D )
-                  b = fixpoint_mul(pSprites_LOD->pHardwareSprites[frame->pHwSpriteIDs[(int)v37]].uBufferWidth / 2, v41);
-                else
-                {
-                  __debugbreak();
-                  b = fixpoint_mul(pSprites_LOD->pSpriteHeaders[frame->pHwSpriteIDs[(int)v37]].uWidth / 2, v41);
-                }
-                if ( b + v25 >= (signed int)pViewport->uViewportTL_X && v25 - b <= (signed int)pViewport->uViewportBR_X )
-                {
-                  if (::uNumBillboardsToDraw >= 500)
-                    return;
-                  pBillboardRenderList[::uNumBillboardsToDraw].HwSpriteID = frame->pHwSpriteIDs[(int)v37];
-                  pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_x_scaler_packedfloat = v41;
-                  pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = v41;
-                  v29 = v38;
-                  pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = v25;
-                  HIBYTE(v29) |= 2;
-                  pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
-                  pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v29;
-                  pBillboardRenderList[::uNumBillboardsToDraw].world_x = pLevelDecorations[i].vPosition.x;
-                  pBillboardRenderList[::uNumBillboardsToDraw].world_y = pLevelDecorations[i].vPosition.y;
-                  pBillboardRenderList[::uNumBillboardsToDraw].world_z = pLevelDecorations[i].vPosition.z;
-                  pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = v40;
-                  HIWORD(v30) = HIWORD(v20);
-                  v31 = PID(OBJECT_Decoration,i);
-                  LOWORD(v30) = 0;
-                  pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = 0;
-                  pBillboardRenderList[::uNumBillboardsToDraw].sZValue = v30 + v31;
-                  pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
-                  pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
-                  pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
-                  ::uNumBillboardsToDraw++;
-                  ++uNumDecorationsDrawnThisFrame;
-                }
-              }
-              continue;
-            }
-          }
-          else
-          {
-            v42 = (pLevelDecorations[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x) << 16;
-            v40 = (pLevelDecorations[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y) << 16;
-            v20 = fixpoint_mul(v17, pIndoorCameraD3D->int_cosine_y) + fixpoint_mul(v40, pIndoorCameraD3D->int_sine_y);
-            if ( v20 >= 0x40000 && v20 <= pODMRenderParams->shading_dist_mist << 16 )
-            {
-              v21 = fixpoint_mul(v40, pIndoorCameraD3D->int_cosine_y) - fixpoint_mul(v42, pIndoorCameraD3D->int_sine_y);
-              v22 = (pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16;
-              v42 = v22;
-              if ( 2 * abs(v20) >= abs(v21) )
-              {
-                LODWORD(v24) = 0;
-                HIDWORD(v24) = SLOWORD(pODMRenderParams->int_fov_rad);
-                v25 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v24 / v20, v21) + 0x8000) >> 16);
-                v40 = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v24 / v20, v42) + 0x8000) >> 16);
-                v41 = fixpoint_mul(frame->scale, v24 / v20);
-                if ( pRenderD3D )
-                  b = fixpoint_mul(pSprites_LOD->pHardwareSprites[frame->pHwSpriteIDs[(int)v37]].uBufferWidth / 2, v41);
-                else
-                {
-                  __debugbreak();
-                  b = fixpoint_mul(pSprites_LOD->pSpriteHeaders[frame->pHwSpriteIDs[(int)v37]].uWidth / 2, v41);
-                }
-                if ( b + v25 >= (signed int)pViewport->uViewportTL_X && v25 - b <= (signed int)pViewport->uViewportBR_X )
-                {
-                  if (::uNumBillboardsToDraw >= 500)
-                    return;
-                  pBillboardRenderList[::uNumBillboardsToDraw].HwSpriteID = frame->pHwSpriteIDs[(int)v37];
-                  pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_x_scaler_packedfloat = v41;
-                  pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = v41;
-                  v29 = v38;
-                  pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = v25;
-                  HIBYTE(v29) |= 2;
-                  pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
-                  pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v29;
-                  pBillboardRenderList[::uNumBillboardsToDraw].world_x = pLevelDecorations[i].vPosition.x;
-                  pBillboardRenderList[::uNumBillboardsToDraw].world_y = pLevelDecorations[i].vPosition.y;
-                  pBillboardRenderList[::uNumBillboardsToDraw].world_z = pLevelDecorations[i].vPosition.z;
-                  pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = v40;
-                  HIWORD(v30) = HIWORD(v20);
-                  v31 = PID(OBJECT_Decoration,i);
-                  LOWORD(v30) = 0;
-                  pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = 0;
-                  pBillboardRenderList[::uNumBillboardsToDraw].sZValue = v30 + v31;
-                  pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
-                  pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
-                  pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
-                  ::uNumBillboardsToDraw++;
-                  ++uNumDecorationsDrawnThisFrame;
-                }
-              }
-              continue;
-            }
-          }
         }
-      }
-      else
-      {
-        memset(&local_0, 0, 0x68);
-        local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
-        local_0.uDiffuse = 0xFF3C1E;
-        local_0.x = (double)pLevelDecorations[i].vPosition.x;
-        local_0.y = (double)pLevelDecorations[i].vPosition.y;
-        local_0.z = (double)pLevelDecorations[i].vPosition.z;
-        local_0.r = 0.0;
-        local_0.g = 0.0;
-        local_0.b = 0.0;
-        local_0.flt_28 = 1.0;
-        local_0.timeToLive = (rand() & 0x80) + 128;
-        local_0.uTextureID = pBitmaps_LOD->LoadTexture("effpar01");
-        pEngine->pParticleEngine->AddParticle(&local_0);
-      }
     }
-  }
 }
 
 //----- (0049D717) --------------------------------------------------------

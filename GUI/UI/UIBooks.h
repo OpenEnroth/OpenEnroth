@@ -28,23 +28,23 @@ struct GUIWindow_BooksButtonOverlay : public GUIWindow
 };
 
 
+class Image;
+extern Image *ui_book_button8_off;
+extern Image *ui_book_button8_on;
+extern Image *ui_book_button7_off;
+extern Image *ui_book_button7_on;
+extern Image *ui_book_button6_off;
+extern Image *ui_book_button6_on;
+extern Image *ui_book_button5_off;
+extern Image *ui_book_button5_on;
+extern Image *ui_book_button4_off;
+extern Image *ui_book_button4_on;
+extern Image *ui_book_button3_off;
+extern Image *ui_book_button3_on;
+extern Image *ui_book_button2_off;
+extern Image *ui_book_button2_on;
+extern Image *ui_book_button1_off;
+extern Image *ui_book_button1_on;
 
-extern class Image *ui_book_button8_off;
-extern class Image *ui_book_button8_on;
-extern class Image *ui_book_button7_off;
-extern class Image *ui_book_button7_on;
-extern class Image *ui_book_button6_off;
-extern class Image *ui_book_button6_on;
-extern class Image *ui_book_button5_off;
-extern class Image *ui_book_button5_on;
-extern class Image *ui_book_button4_off;
-extern class Image *ui_book_button4_on;
-extern class Image *ui_book_button3_off;
-extern class Image *ui_book_button3_on;
-extern class Image *ui_book_button2_off;
-extern class Image *ui_book_button2_on;
-extern class Image *ui_book_button1_off;
-extern class Image *ui_book_button1_on;
-
-extern class Image *ui_book_map_frame;
-extern class Image *ui_book_quest_div_bar;
+extern Image *ui_book_map_frame;
+extern Image *ui_book_quest_div_bar;

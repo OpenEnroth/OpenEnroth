@@ -47,13 +47,6 @@ std::array<SavegameHeader, 45> pSavegameHeader;
 //----- (00411B59) --------------------------------------------------------
 void LoadThumbnailLloydTexture(unsigned int uSlot, unsigned int uPlayer)
 {
-    //unsigned int v2; // esi@1
-    //unsigned int v3; // edi@1
-    FILE *v4; // ebx@1
-    FILE *v5; // eax@2
-              //char pContainerName[64]; // [sp+Ch] [bp-44h]@1
-              //unsigned int v7; // [sp+4Ch] [bp-4h]@1
-
     if (pSavegameThumbnails[uSlot])
     {
         pSavegameThumbnails[uSlot]->Release();
@@ -61,31 +54,16 @@ void LoadThumbnailLloydTexture(unsigned int uSlot, unsigned int uPlayer)
     }
 
 
-    wchar_t filename[1024];
-    swprintf(filename, L"data\\lloyd%d%d.pcx", uPlayer, uSlot + 1);
-    pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromFile(filename);
+    pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromFile(
+        StringPrintf("data\\lloyd%d%d.pcx", uPlayer, uSlot + 1)
+    );
 
     if (!pSavegameThumbnails[uSlot])
     {
-        swprintf(filename, L"lloyd%d%d.pcx", uPlayer, uSlot + 1);
-        pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromNewLOD(filename);
+        pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromNewLOD(
+            StringPrintf("lloyd%d%d.pcx", uPlayer, uSlot + 1)
+        );
     }
-    /*sprintf(pContainerName, "data\\lloyd%d%d.pcx", uPlayer, uSlot + 1);
-    v4 = fopen(pContainerName, "rb");
-    if ( v4 )
-    {
-    pSavegameThumbnails[uSlot].LoadFromFILE(v4, 0, 1);
-    fclose(v4);
-    }
-    else
-    {
-    sprintf(pContainerName, "lloyd%d%d.pcx", uPlayer, uSlot + 1);
-    v5 = pNew_LOD->FindContainer(pContainerName, 1);
-    if ( v5 )
-    pSavegameThumbnails[uSlot].LoadFromFILE(v5, 0, 0);
-    else
-    *((int *)&pSavegameThumbnails.data()->pPixels + 10 * uSlot) = 0;
-    }*/
 }
 
 
@@ -106,28 +84,38 @@ void LoadGame(unsigned int uSlot)
     }
 
     for (uint i = 1; i < 5; ++i)
+    {
         for (uint j = 1; j < 6; ++j)
         {
-            remove(StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str());
+            remove(
+                StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str()
+            );
         }
+    }
 
     if (SoundSetAction[24][0])
+    {
         for (uint i = 0; i < 4; ++i)
         {
             for (uint j = 0; j < pSoundList->sNumSounds; ++j)
+            {
                 if (pSoundList->pSL_Sounds[j].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4998)
                 {
                     pSoundList->UnloadSound(j, 1);
                     break;
                 }
+            }
 
             for (uint j = 0; j < pSoundList->sNumSounds; ++j)
+            {
                 if (pSoundList->pSL_Sounds[j].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4999)
                 {
                     pSoundList->UnloadSound(j, 1);
                     break;
                 }
+            }
         }
+    }
 
     pNew_LOD->CloseWriteFile();
 
@@ -142,7 +130,7 @@ void LoadGame(unsigned int uSlot)
         Log::Warning(
             L"%S",
             localization->FormatString(612, 100).c_str()
-            ); // Savegame damaged! Code=%d
+        ); // Savegame damaged! Code=%d
     }
     Assert(sizeof(SavegameHeader) == 100);
     fread(&header, sizeof(SavegameHeader), 1, file);
@@ -154,7 +142,7 @@ void LoadGame(unsigned int uSlot)
             Log::Warning(
                 L"%S",
                 localization->FormatString(612, 101).c_str()
-                ); // Savegame damaged! Code=%d
+            ); // Savegame damaged! Code=%d
         }
         else
         {
@@ -172,7 +160,7 @@ void LoadGame(unsigned int uSlot)
             Log::Warning(
                 L"%S",
                 localization->FormatString(612, 102).c_str()
-                ); // Savegame damaged! Code=%d
+            ); // Savegame damaged! Code=%d
         }
         else
         {
@@ -190,7 +178,7 @@ void LoadGame(unsigned int uSlot)
             Log::Warning(
                 L"%S",
                 localization->FormatString(612, 103).c_str()
-                ); // Savegame damaged! Code=%d
+            ); // Savegame damaged! Code=%d
         }
         else
         {
@@ -208,7 +196,7 @@ void LoadGame(unsigned int uSlot)
             Log::Warning(
                 L"%S",
                 localization->FormatString(612, 104).c_str()
-                ); // Savegame damaged! Code=%d
+            ); // Savegame damaged! Code=%d
         }
         else
         {
@@ -228,7 +216,7 @@ void LoadGame(unsigned int uSlot)
         Log::Warning(
             L"%S",
             localization->FormatString(612, 105).c_str()
-            ); // Savegame damaged! Code=%d
+        ); // Savegame damaged! Code=%d
     }
     if (sizeof(pNPCStats->pGroups_copy) != 0x66)
         Log::Warning(L"NPCStats: deserialization warning");
@@ -236,11 +224,13 @@ void LoadGame(unsigned int uSlot)
 
     uActiveCharacter = 0;
     for (uint i = 0; i < 4; ++i)
+    {
         if (pParty->pPlayers[i].CanAct())
         {
             uActiveCharacter = i + 1;
             break;
         }
+    }
 
     for (uint i = 0; i < 4; ++i)
     {
@@ -262,11 +252,7 @@ void LoadGame(unsigned int uSlot)
         }
     }
 
-    /*if (pGUIWindow_CurrentMenu)
-    {
-        pGUIWindow_CurrentMenu->Release();
-        pGUIWindow_CurrentMenu = nullptr;
-    }*/
+
     current_screen_type = SCREEN_GAME;
 
     viewparams->bRedrawGameUI = true;

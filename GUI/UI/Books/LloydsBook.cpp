@@ -32,10 +32,10 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() :
     if (!ui_book_lloyds_border)
         ui_book_lloyds_border = assets->GetImage_16BitColorKey("lb_bordr", 0x7FF);
 
-    ui_book_lloyds_backgrounds[0] = assets->GetImage_16BitColorKey(L"sbmap", 0x7FF);
-    ui_book_lloyds_backgrounds[1] = assets->GetImage_16BitColorKey(L"sbmap", 0x7FF);
-    ui_book_button1_on = assets->GetImage_16BitAlpha(L"tab-an-6b");
-    ui_book_button1_off = assets->GetImage_16BitAlpha(L"tab-an-6a");
+    ui_book_lloyds_backgrounds[0] = assets->GetImage_16BitColorKey("sbmap", 0x7FF);
+    ui_book_lloyds_backgrounds[1] = assets->GetImage_16BitColorKey("sbmap", 0x7FF);
+    ui_book_button1_on = assets->GetImage_16BitAlpha("tab-an-6b");
+    ui_book_button1_off = assets->GetImage_16BitAlpha("tab-an-6a");
 
     pBtn_Book_1 = CreateButton(415, 13, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, 0, localization->GetString(375), 0); // Set Beacon
     pBtn_Book_2 = CreateButton(415, 48, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, 0, localization->GetString(523), 0); // Recall Beacon
@@ -48,10 +48,12 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() :
         max_beacons = 3;
 
     for (int i = 0; i < max_beacons; ++i)
+    {
         CreateButton(
             pLloydsBeaconsPreviewXs[i], pLloydsBeaconsPreviewYs[i],
             92, 68, 1, 180, UIMSG_InstallBeacon, i, 0, "", 0
         );
+    }
 
     for (int i = 0; i < 5; ++i)
     {

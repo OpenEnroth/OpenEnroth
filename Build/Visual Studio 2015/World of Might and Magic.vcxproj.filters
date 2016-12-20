@@ -354,9 +354,6 @@
     <ClCompile Include="..\..\Engine\Graphics\stru10.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\Graphics\Texture.cpp">
-      <Filter>Engine\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\Sprites.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
@@ -617,6 +614,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Engine\Time.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\ImageLoader.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\Image.cpp">
+      <Filter>Engine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1100,9 +1103,6 @@
     <ClInclude Include="..\..\Engine\Graphics\stru10.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\Graphics\Texture.h">
-      <Filter>Engine\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Sprites.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
@@ -1402,6 +1402,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\Time.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\ImageLoader.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Image.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\ImageFormatConverter.h">
+      <Filter>Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

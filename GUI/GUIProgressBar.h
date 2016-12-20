@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/Image.h"
 
 
 /*  278 */

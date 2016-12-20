@@ -1364,7 +1364,7 @@ void MPlayer::ShowMM7IntroVideo_and_LoadingScreen()
       PlayFullscreenMovie(MOVIE_Intro, true);
   }
 
-  Image *tex = assets->GetImage_PCXFromIconsLOD(L"mm6title.pcx");
+  Image *tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
 
   render->BeginScene();
   render->DrawTextureNew(0, 0, tex);

@@ -292,10 +292,10 @@ void InitializeSpellBookTextures()
     pAudioPlayer->StopChannels(-1, -1);
     pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
 
-    ui_spellbook_btn_close = assets->GetImage_16BitAlpha(L"ib-m5-u");
-    ui_spellbook_btn_close_click = assets->GetImage_16BitAlpha(L"ib-m5-d");
-    ui_spellbook_btn_quckspell = assets->GetImage_16BitAlpha(L"ib-m6-u");
-    ui_spellbook_btn_quckspell_click = assets->GetImage_16BitAlpha(L"ib-m6-d");
+    ui_spellbook_btn_close = assets->GetImage_16BitAlpha("ib-m5-u");
+    ui_spellbook_btn_close_click = assets->GetImage_16BitAlpha("ib-m5-d");
+    ui_spellbook_btn_quckspell = assets->GetImage_16BitAlpha("ib-m6-u");
+    ui_spellbook_btn_quckspell_click = assets->GetImage_16BitAlpha("ib-m6-d");
 
     static const char *texNames[9] = // 004E24EC
     {

@@ -7,39 +7,43 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
+#include "Engine/stru159.h"
+#include "Engine/SaveLoad.h"
+#include "Engine/Party.h"
+#include "Engine/Events.h"
+#include "Engine/MapInfo.h"
+#include "Engine/LOD.h"
+
+#include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Overlays.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Level/Decoration.h"
+
+#include "Engine/Objects/Monsters.h"
+
+#include "Engine/Spells/CastSpellInfo.h"
+
+#include "Arcomage/Arcomage.h"
 
 #include "Game/GameOver.h"
 
+#include "GUI/GUIWindow.h"
+#include "GUI/GUIFont.h"
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIGuilds.h"
+#include "GUI/UI/UIPartyCreation.h"
+#include "GUI/UI/UIShops.h"
+#include "GUI/UI/UIHouses.h"
 
-#include "UIGuilds.h"
-#include "UIPartyCreation.h"
-#include "UIShops.h"
-#include "..\../GUI/GUIButton.h"
-#include "..\../Engine/SaveLoad.h"
-#include "..\../Engine/Graphics/Texture.h"
-#include "UIHouses.h"
-#include "..\../Engine/Party.h"
-#include "..\../Engine/Events.h"
-#include "..\../Arcomage/Arcomage.h"
-#include "..\../Engine/LOD.h"
-#include "..\../IO/Mouse.h"
-#include "..\../GUI/GUIWindow.h"
-#include "..\../GUI/GUIFont.h"
-#include "..\../Engine/Graphics/Overlays.h"
-#include "..\../Engine/Graphics/Outdoor.h"
-#include "..\../Media/Audio/AudioPlayer.h"
-#include "..\../Media/MediaPlayer.h"
-#include "..\../Engine/Objects/Monsters.h"
-#include "..\../Engine/Graphics/Viewport.h"
-#include "..\../IO/Keyboard.h"
-#include "..\../Engine/MapInfo.h"
-#include "..\../Engine/Spells/CastSpellInfo.h"
+#include "IO/Mouse.h"
+#include "IO/Keyboard.h"
 
-#include "../../Engine/Graphics/Level/Decoration.h"
+#include "Media/Audio/AudioPlayer.h"
+#include "Media/MediaPlayer.h"
 
-#include "..\../Engine/stru159.h"
 
 int uHouse_ExitPic;
 int _F8B1DC_currentShopOption; // F8B1DC
@@ -49,7 +53,7 @@ BuildingType in_current_building_type; // 00F8B198
 HOUSE_DIALOGUE_MENU dialog_menu_id; // 00F8B19C
 
 
-class Image *_591428_endcap = nullptr;
+Image *_591428_endcap = nullptr;
 
 
 void GenerateStandartShopItems();
@@ -1198,10 +1202,10 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
         dialog_menu_id = (HOUSE_DIALOGUE_MENU)uMessageParam;
         if (in_current_building_type < BuildingType_19)
         {
-            wchar_t name[1024];
-            swprintf(name, L"%S", _4F03B8_shop_background_names[(int)in_current_building_type]);
-
-            shop_ui_background = assets->GetImage_16BitColorKey(name, 0x7FF);
+            shop_ui_background = assets->GetImage_16BitColorKey(
+                _4F03B8_shop_background_names[(int)in_current_building_type],
+                0x7FF
+            );
         }
     }
 

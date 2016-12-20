@@ -756,7 +756,7 @@ void am_EndScene()
 //----- (0040D7B7) --------------------------------------------------------
 bool ArcomageGame::LoadSprites()
 {
-    pArcomageGame->pSprites = assets->GetImage_PCXFromIconsLOD(L"sprites.pcx");
+    pArcomageGame->pSprites = assets->GetImage_PCXFromIconsLOD("sprites.pcx");
     pArcomageGame->pSpritesPixels = (unsigned __int16 *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_R5G6B5);
     return true;
 }
@@ -764,7 +764,7 @@ bool ArcomageGame::LoadSprites()
 //----- (0040D799) --------------------------------------------------------
 bool ArcomageGame::LoadBackground()
 {
-    pArcomageGame->pGameBackground = assets->GetImage_PCXFromIconsLOD(L"layout.pcx");
+    pArcomageGame->pGameBackground = assets->GetImage_PCXFromIconsLOD("layout.pcx");
     pArcomageGame->pBackgroundPixels = (unsigned __int16 *)pArcomageGame->pGameBackground->GetPixels(IMAGE_FORMAT_R5G6B5);
     return true;
 }

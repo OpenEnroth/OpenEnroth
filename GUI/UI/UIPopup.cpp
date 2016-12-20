@@ -31,15 +31,15 @@
 #include "Media/Audio/AudioPlayer.h"
 
 
-class Image *parchment = nullptr;
-class Image *messagebox_corner_x = nullptr; // 5076AC
-class Image *messagebox_corner_y = nullptr; // 5076B4
-class Image *messagebox_corner_z = nullptr; // 5076A8
-class Image *messagebox_corner_w = nullptr; // 5076B0
-class Image *messagebox_border_top = nullptr; // 507698
-class Image *messagebox_border_bottom = nullptr; // 5076A4
-class Image *messagebox_border_left = nullptr; // 50769C
-class Image *messagebox_border_right = nullptr; // 5076A0
+Image *parchment = nullptr;
+Image *messagebox_corner_x = nullptr; // 5076AC
+Image *messagebox_corner_y = nullptr; // 5076B4
+Image *messagebox_corner_z = nullptr; // 5076A8
+Image *messagebox_corner_w = nullptr; // 5076B0
+Image *messagebox_border_top = nullptr; // 507698
+Image *messagebox_border_bottom = nullptr; // 5076A4
+Image *messagebox_border_left = nullptr; // 50769C
+Image *messagebox_border_right = nullptr; // 5076A0
 
 //----- (004179BC) --------------------------------------------------------
 void CharacterUI_DrawTooltip(const char *title, String &content)

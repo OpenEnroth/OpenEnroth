@@ -54,7 +54,7 @@ void GameOver_Loop(int v15)
     _449B57_test_bit(pParty->_quest_bits, 99);
 
 
-    Image *background = assets->GetImage_PCXFromIconsLOD(L"winbg.pcx");
+    Image *background = assets->GetImage_PCXFromIconsLOD("winbg.pcx");
     {
         render->BeginScene();
         render->DrawTextureNew(0, 0, background);

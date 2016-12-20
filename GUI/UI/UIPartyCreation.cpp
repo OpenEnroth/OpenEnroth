@@ -602,10 +602,10 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ui_partycreation_portraits[uX] = assets->GetImage_16BitColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]), 0x7FF);
     }
 
-    ui_partycreation_minus = assets->GetImage_16BitColorKey(L"buttminu", 0x7FF);
-    ui_partycreation_plus = assets->GetImage_16BitColorKey(L"buttplus", 0x7FF);
-    ui_partycreation_right = assets->GetImage_16BitColorKey(L"presrigh", 0x7FF);
-    ui_partycreation_left = assets->GetImage_16BitColorKey(L"presleft", 0x7FF);
+    ui_partycreation_minus = assets->GetImage_16BitColorKey("buttminu", 0x7FF);
+    ui_partycreation_plus = assets->GetImage_16BitColorKey("buttplus", 0x7FF);
+    ui_partycreation_right = assets->GetImage_16BitColorKey("presrigh", 0x7FF);
+    ui_partycreation_left = assets->GetImage_16BitColorKey("presleft", 0x7FF);
 
     for (int i = 1; i < 20; ++i)
     {
@@ -700,8 +700,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ++uControlParam;
     } while (uControlParam < 9);
 
-    ui_partycreation_buttmake = assets->GetImage_16BitAlpha(L"BUTTMAKE");
-    ui_partycreation_buttmake2 = assets->GetImage_16BitAlpha(L"BUTTMAKE2");
+    ui_partycreation_buttmake = assets->GetImage_16BitAlpha("BUTTMAKE");
+    ui_partycreation_buttmake2 = assets->GetImage_16BitAlpha("BUTTMAKE2");
 
     pPlayerCreationUI_BtnOK = CreateButton(580, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickOK, 0, '\r', "", ui_partycreation_buttmake, 0);
     pPlayerCreationUI_BtnReset = CreateButton(527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, 'C', "", ui_partycreation_buttmake2, 0);
@@ -742,7 +742,7 @@ bool PartyCreationUI_LoopInternal()
         main_menu_background->Release();
         main_menu_background = nullptr;
     }
-    main_menu_background = assets->GetImage_PCXFromIconsLOD(L"makeme.pcx");
+    main_menu_background = assets->GetImage_PCXFromIconsLOD("makeme.pcx");
 
     pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
     SetCurrentMenuID(MENU_CREATEPARTY);

@@ -6,21 +6,25 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/Party.h"
+#include "Engine/Events2D.h"
+#include "Engine/LOD.h"
 
+#include "Engine/Objects/Items.h"
+
+#include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Render.h"
+
+#include "GUI/GUIWindow.h"
+#include "GUI/GUIFont.h"
+#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UiStatusBar.h"
 
-#include "..\../Engine/Objects/Items.h"
-#include "..\../GUI/GUIWindow.h"
-#include "UIHouses.h"
-#include "..\../GUI/GUIFont.h"
-#include "..\../Engine/Graphics/Render.h"
-#include "..\../Engine/Party.h"
-#include "..\../Engine/Graphics/Texture.h"
-#include "..\../IO/Mouse.h"
-#include "..\../Engine/Events2D.h"
-#include "..\../Media/Audio/AudioPlayer.h"
-#include "..\../Engine/LOD.h"
+#include "IO/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+
 
 //----- (004B5D7C) --------------------------------------------------------
 void GuildDialog()

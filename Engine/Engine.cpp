@@ -1654,7 +1654,8 @@ void SecondaryInitialization()
 
     for (unsigned int i = 0; i < pObjectList->uNumObjects; ++i)
     {
-        pObjectList->pObjects[i].uParticleTrailColor = pObjectList->pObjects[i].uParticleTrailColorB |
+        pObjectList->pObjects[i].uParticleTrailColor =
+            pObjectList->pObjects[i].uParticleTrailColorB |
             ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorG << 8) |
             ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorR << 16);
     }

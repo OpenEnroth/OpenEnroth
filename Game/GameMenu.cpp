@@ -586,7 +586,7 @@ void GameMenu_Loop()
     }
 
     render->SaveScreenshot("gamma.pcx", 155, 117);
-    gamma_preview_image = assets->GetImage_PCXFromFile(L"gamma.pcx");
+    gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
 
     while (uGameState == GAME_STATE_PLAYING
         && (

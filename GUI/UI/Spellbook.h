@@ -14,7 +14,8 @@ struct GUIWindow_Spellbook : public GUIWindow
 };
 
 
-extern class Image *ui_spellbook_btn_quckspell;
-extern class Image *ui_spellbook_btn_quckspell_click;
-extern class Image *ui_spellbook_btn_close;
-extern class Image *ui_spellbook_btn_close_click;
+class Image;
+extern Image *ui_spellbook_btn_quckspell;
+extern Image *ui_spellbook_btn_quckspell_click;
+extern Image *ui_spellbook_btn_close;
+extern Image *ui_spellbook_btn_close_click;

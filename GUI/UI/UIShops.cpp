@@ -6,24 +6,28 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/Party.h"
+#include "Engine/Events2D.h"
+#include "Engine/MapInfo.h"
 
-#include "UIShops.h"
-#include "..\../Engine/Objects/Items.h"
-#include "..\../GUI/GUIWindow.h"
-#include "UIHouses.h"
-#include "..\../GUI/GUIFont.h"
-#include "..\../Engine/Graphics/Render.h"
-#include "..\../Engine/Party.h"
-#include "..\../Engine/Graphics/Texture.h"
-#include "..\../IO/Mouse.h"
-#include "..\../Engine/Events2D.h"
-#include "..\../Media/Audio/AudioPlayer.h"
-#include "..\../Engine/MapInfo.h"
-#include "..\../Engine/Graphics/Viewport.h"
-#include "..\../Engine/Graphics/Outdoor.h"
-#include "..\../Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Image.h"
 
+#include "Engine/Objects/Items.h"
+
+#include "GUI/GUIWindow.h"
+#include "GUI/GUIFont.h"
 #include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIShops.h"
+#include "GUI/UI/UIHouses.h"
+
+#include "IO/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+
 
 
 Image *shop_ui_background = nullptr;

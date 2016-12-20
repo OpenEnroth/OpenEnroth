@@ -2280,7 +2280,7 @@ void Game_EventLoop()
                     gamma_preview_image = nullptr;
                 }
                 render->SaveScreenshot("gamma.pcx", 155, 117);
-                gamma_preview_image = assets->GetImage_PCXFromFile(L"gamma.pcx");
+                gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
 
                 new OnButtonClick(0x25Au, 0x1C2u, 0, 0, (int)pBtn_GameSettings, 0);
                 //LABEL_453:

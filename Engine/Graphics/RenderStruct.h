@@ -249,38 +249,38 @@ struct RenderD3D_aux
 class RenderD3D
 {
 public:
-  RenderD3D();
-  
-  void GetAvailableDevices(RenderD3D__DevInfo **pOutDevices);
-  void Release();
-  bool CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *window);
-  unsigned int GetDeviceCaps();
-  void ClearTarget(unsigned int bClearColor, unsigned int uClearColor, unsigned int bClearDepth, float z_clear);
-  void Present(bool bForceBlit);
-  bool CreateTexture(unsigned int uTextureWidth, unsigned int uTextureHeight, IDirectDrawSurface4 **pOutSurface, IDirect3DTexture2 **pOutTexture, bool bAlphaChannel, bool bMipmaps, unsigned int uMinDeviceTexDim);
-  void HandleLostResources();
+    RenderD3D();
+
+    void GetAvailableDevices(RenderD3D__DevInfo **pOutDevices);
+    void Release();
+    bool CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *window);
+    unsigned int GetDeviceCaps();
+    void ClearTarget(unsigned int bClearColor, unsigned int uClearColor, unsigned int bClearDepth, float z_clear);
+    void Present(bool bForceBlit);
+    bool CreateTexture(unsigned int uTextureWidth, unsigned int uTextureHeight, IDirectDrawSurface4 **pOutSurface, IDirect3DTexture2 **pOutTexture, bool bAlphaChannel, bool bMipmaps, unsigned int uMinDeviceTexDim);
+    void HandleLostResources();
 
 
-  unsigned int bWindowed;
-  int field_4;
-  int field_8;
-  HWND hWindow;
-  int field_10;
-  int field_14;
-  int field_18;
-  RenderD3D__DevInfo *pAvailableDevices;
-  IDirectDraw4 *pHost;
-  IDirect3D3 *pDirect3D;
-  IUnknown *pUnk;
-  IDirectDrawSurface4 *pBackBuffer;
-  IDirectDrawSurface4 *pFrontBuffer;
-  IDirectDrawSurface4 *pZBuffer;
-  IDirect3DDevice3 *pDevice;
-  IDirect3DViewport3 *pViewport;
-  int field_40;
-  int field_44;
-  char pErrorMessage[48];
-  char field_78[208];
+    unsigned int bWindowed;
+    int field_4;
+    int field_8;
+    HWND hWindow;
+    int field_10;
+    int field_14;
+    int field_18;
+    RenderD3D__DevInfo *pAvailableDevices;
+    IDirectDraw4 *pHost;
+    IDirect3D3 *pDirect3D;
+    IUnknown *pUnk;
+    IDirectDrawSurface4 *pBackBuffer;
+    IDirectDrawSurface4 *pFrontBuffer;
+    IDirectDrawSurface4 *pZBuffer;
+    IDirect3DDevice3 *pDevice;
+    IDirect3DViewport3 *pViewport;
+    int field_40;
+    int field_44;
+    char pErrorMessage[48];
+    char field_78[208];
 };
 #pragma pack(pop)
 extern struct RenderVertexD3D3  pVertices[50];
@@ -293,7 +293,7 @@ extern struct RenderVertexD3D3  pVertices[50];
 bool PauseGameDrawing();
 
 extern struct IDirectDrawClipper *pDDrawClipper;
-extern struct IRender *render; // idb
+extern class IRender *render; // idb
 extern struct pUnkTerrain *Unks;
 
 

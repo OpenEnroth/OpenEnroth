@@ -380,7 +380,9 @@ void MainMenu_Loop()
         first_initialization = false;
 
         if (!main_menu_bg)
-            main_menu_bg = assets->GetImage_PCXFromIconsLOD(L"mm6title.pcx");
+        {
+            main_menu_bg = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
+        }
 
         render->ResetUIClipRect();
         render->BeginScene();
@@ -430,7 +432,9 @@ void MainMenu_Loop()
         }
 
         if (!main_menu_background)
-            main_menu_background = assets->GetImage_PCXFromIconsLOD(L"title.pcx");
+        {
+            main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
+        }
 
         render->BeginScene();
         {

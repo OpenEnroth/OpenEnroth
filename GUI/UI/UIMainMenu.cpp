@@ -44,10 +44,10 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 {
 // -----------------------------------
 // 004627B7 void MainMenu_Loop -- part
-    ui_mainmenu_new = assets->GetImage_16BitColorKey(L"title_new", 0x7FF);
-    ui_mainmenu_load = assets->GetImage_16BitColorKey(L"title_load", 0x7FF);
-    ui_mainmenu_credits = assets->GetImage_16BitColorKey(L"title_cred", 0x7FF);
-    ui_mainmenu_exit = assets->GetImage_16BitColorKey(L"title_exit", 0x7FF);
+    ui_mainmenu_new = assets->GetImage_16BitColorKey("title_new", 0x7FF);
+    ui_mainmenu_load = assets->GetImage_16BitColorKey("title_load", 0x7FF);
+    ui_mainmenu_credits = assets->GetImage_16BitColorKey("title_cred", 0x7FF);
+    ui_mainmenu_exit = assets->GetImage_16BitColorKey("title_exit", 0x7FF);
 
     pMainMenu_BtnNew = CreateButton(495, 172, ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight(), 1, 0, UIMSG_MainMenu_ShowPartyCreationWnd, 0, 'N', "", ui_mainmenu_new, 0);
     pMainMenu_BtnLoad = CreateButton(495, 227, ui_mainmenu_load->GetWidth(), ui_mainmenu_load->GetHeight(), 1, 0, UIMSG_MainMenu_ShowLoadWindow, 1, 'L', "", ui_mainmenu_load, 0);
@@ -163,22 +163,22 @@ void MainMenuUI_Create()
     game_ui_minimap_dirs[6] = assets->GetImage_16BitAlpha("MAPDIR7");
     game_ui_minimap_dirs[7] = assets->GetImage_16BitAlpha("MAPDIR8");
 
-    game_ui_bar_blue = assets->GetImage_16BitColorKey(L"ib-statB", 0x7FF);
-    game_ui_bar_green = assets->GetImage_16BitColorKey(L"ib-statG", 0x7FF);
-    game_ui_bar_yellow = assets->GetImage_16BitColorKey(L"ib-statY", 0x7FF);
-    game_ui_bar_red = assets->GetImage_16BitColorKey(L"ib-statR", 0x7FF);
-    game_ui_monster_hp_background = assets->GetImage_16BitColorKey(L"mhp_bg", 0x7FF);
-    game_ui_monster_hp_border_left = assets->GetImage_16BitColorKey(L"mhp_capl", 0x7FF);
-    game_ui_monster_hp_border_right = assets->GetImage_16BitColorKey(L"mhp_capr", 0x7FF);
-    game_ui_monster_hp_green = assets->GetImage_16BitColorKey(L"mhp_grn", 0x7FF);
-    game_ui_monster_hp_red = assets->GetImage_16BitColorKey(L"mhp_red", 0x7FF);
-    game_ui_monster_hp_yellow = assets->GetImage_16BitColorKey(L"mhp_yel", 0x7FF);
+    game_ui_bar_blue = assets->GetImage_16BitColorKey("ib-statB", 0x7FF);
+    game_ui_bar_green = assets->GetImage_16BitColorKey("ib-statG", 0x7FF);
+    game_ui_bar_yellow = assets->GetImage_16BitColorKey("ib-statY", 0x7FF);
+    game_ui_bar_red = assets->GetImage_16BitColorKey("ib-statR", 0x7FF);
+    game_ui_monster_hp_background = assets->GetImage_16BitColorKey("mhp_bg", 0x7FF);
+    game_ui_monster_hp_border_left = assets->GetImage_16BitColorKey("mhp_capl", 0x7FF);
+    game_ui_monster_hp_border_right = assets->GetImage_16BitColorKey("mhp_capr", 0x7FF);
+    game_ui_monster_hp_green = assets->GetImage_16BitColorKey("mhp_grn", 0x7FF);
+    game_ui_monster_hp_red = assets->GetImage_16BitColorKey("mhp_red", 0x7FF);
+    game_ui_monster_hp_yellow = assets->GetImage_16BitColorKey("mhp_yel", 0x7FF);
     ui_leather_mm7 = assets->GetImage_16Bit("LEATHER");
     ui_leather_mm6 = assets->GetImage_16Bit("ibground");
-    dialogue_ui_x_x_u = assets->GetImage_16BitColorKey(L"x_x_u", 0x7FF);
-    ui_buttdesc2 = assets->GetImage_16BitAlpha(L"BUTTESC2");
-    dialogue_ui_x_ok_u = assets->GetImage_16BitColorKey(L"x_ok_u", 0x7FF);
-    ui_buttyes2 = assets->GetImage_16BitAlpha(L"BUTTYES2");
+    dialogue_ui_x_x_u = assets->GetImage_16BitColorKey("x_x_u", 0x7FF);
+    ui_buttdesc2 = assets->GetImage_16BitAlpha("BUTTESC2");
+    dialogue_ui_x_ok_u = assets->GetImage_16BitColorKey("x_ok_u", 0x7FF);
+    ui_buttyes2 = assets->GetImage_16BitAlpha("BUTTYES2");
 
     pPrimaryWindow = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, 0);
     pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0, 0, "", 0);
@@ -198,7 +198,7 @@ void MainMenuUI_Create()
     pPrimaryWindow->CreateButton(328, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "", 0);
     pPrimaryWindow->CreateButton(443, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "", 0);
 
-    game_ui_tome_quests = assets->GetImage_16BitAlpha(L"ib-td1-A");
+    game_ui_tome_quests = assets->GetImage_16BitColorKey("ib-td1-A", 0x7FF);
     pBtn_Quests = pPrimaryWindow->CreateButton(
         491, 353,
         game_ui_tome_quests->GetWidth(),
@@ -207,7 +207,7 @@ void MainMenuUI_Create()
         localization->GetString(174), game_ui_tome_quests, 0
     ); //Quests
 
-    game_ui_tome_autonotes = assets->GetImage_16BitAlpha(L"ib-td2-A");
+    game_ui_tome_autonotes = assets->GetImage_16BitColorKey("ib-td2-A", 0x7FF);
     pBtn_Autonotes = pPrimaryWindow->CreateButton(
         527, 353,
         game_ui_tome_autonotes->GetWidth(),
@@ -216,7 +216,7 @@ void MainMenuUI_Create()
         localization->GetString(154), game_ui_tome_autonotes, 0
     );//Autonotes
 
-    game_ui_tome_maps = assets->GetImage_16BitAlpha("ib-td3-A");
+    game_ui_tome_maps = assets->GetImage_16BitColorKey("ib-td3-A", 0x7FF);
     pBtn_Maps = pPrimaryWindow->CreateButton(
         546, 353,
         game_ui_tome_maps->GetWidth(),
@@ -225,7 +225,7 @@ void MainMenuUI_Create()
         localization->GetString(139), game_ui_tome_maps, 0
     ); //Maps
 
-    game_ui_tome_calendar = assets->GetImage_16BitAlpha("ib-td4-A");
+    game_ui_tome_calendar = assets->GetImage_16BitColorKey("ib-td4-A", 0x7FF);
     pBtn_Calendar = pPrimaryWindow->CreateButton(
         570, 353,
         game_ui_tome_calendar->GetWidth(),
@@ -234,12 +234,12 @@ void MainMenuUI_Create()
         localization->GetString(78), game_ui_tome_calendar, 0
     );//Calendar
 
-    game_ui_tome_storyline = assets->GetImage_16BitAlpha("ib-td5-A");
+    game_ui_tome_storyline = assets->GetImage_16BitColorKey("ib-td5-A", 0x7FF);
     pBtn_History = pPrimaryWindow->CreateButton(
         600, 361,
         game_ui_tome_storyline->GetWidth(),
         game_ui_tome_storyline->GetHeight(),
-        1, 0, UIMSG_OpenHistoryBook, 0, 72,//ascii
+        1, 0, UIMSG_OpenHistoryBook, 0, 'H',
         localization->GetString(602), game_ui_tome_storyline, 0
     );//History
 
@@ -249,11 +249,13 @@ void MainMenuUI_Create()
 
     pBtn_ZoomIn = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomin->GetWidth(),
         game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomIn),
-        localization->GetString(252), game_ui_btn_zoomin, 0); // Zoom In
+        localization->GetString(252), game_ui_btn_zoomin, 0
+    ); // Zoom In
 
     pBtn_ZoomOut = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomout->GetWidth(),
         game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomOut),
-        localization->GetString(251), game_ui_btn_zoomout, 0); // Zoom Out
+        localization->GetString(251), game_ui_btn_zoomout, 0
+    ); // Zoom Out
 
     pPrimaryWindow->CreateButton(481, 0, 153, 67, 1, 92, UIMSG_0, 0, 0, "", 0);
     pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, '5', "", 0);
@@ -264,28 +266,34 @@ void MainMenuUI_Create()
     pBtn_CastSpell = pPrimaryWindow->CreateButton(476, 450,
         game_ui_btn_cast->GetWidth(),
         game_ui_btn_cast->GetHeight(),
-        1, 0, UIMSG_SpellBookWindow, 0, 67, localization->GetString(38), game_ui_btn_cast, 0);
+        1, 0, UIMSG_SpellBookWindow, 0, 67, localization->GetString(38), game_ui_btn_cast, 0
+    );
     pBtn_Rest = pPrimaryWindow->CreateButton(518, 450,
         game_ui_btn_rest->GetWidth(),
         game_ui_btn_rest->GetHeight(),
-        1, 0, UIMSG_RestWindow, 0, 82, localization->GetString(182), game_ui_btn_rest, 0);
+        1, 0, UIMSG_RestWindow, 0, 82, localization->GetString(182), game_ui_btn_rest, 0
+    );
     pBtn_QuickReference = pPrimaryWindow->CreateButton(560, 450,
         game_ui_btn_quickref->GetWidth(),
         game_ui_btn_quickref->GetHeight(),
-        1, 0, UIMSG_QuickReference, 0, 90, localization->GetString(173), game_ui_btn_quickref, 0);
+        1, 0, UIMSG_QuickReference, 0, 90, localization->GetString(173), game_ui_btn_quickref, 0
+    );
     pBtn_GameSettings = pPrimaryWindow->CreateButton(602, 450,
         game_ui_btn_settings->GetWidth(),
         game_ui_btn_settings->GetHeight(),
-        1, 0, UIMSG_GameMenuButton, 0, 0, localization->GetString(93), game_ui_btn_settings, 0);
+        1, 0, UIMSG_GameMenuButton, 0, 0, localization->GetString(93), game_ui_btn_settings, 0
+    );
 
     pBtn_NPCLeft = pPrimaryWindow->CreateButton(469, 178,
         ui_btn_npc_left->GetWidth(),
         ui_btn_npc_left->GetHeight(),
-        1, 0, UIMSG_ScrollNPCPanel, 0, 0, "", ui_btn_npc_left, 0);
+        1, 0, UIMSG_ScrollNPCPanel, 0, 0, "", ui_btn_npc_left, 0
+    );
     pBtn_NPCRight = pPrimaryWindow->CreateButton(626, 178,
         ui_btn_npc_right->GetWidth(),
         ui_btn_npc_right->GetHeight(),
-        1, 0, UIMSG_ScrollNPCPanel, 1, 0, "", ui_btn_npc_right, 0);
+        1, 0, UIMSG_ScrollNPCPanel, 1, 0, "", ui_btn_npc_right, 0
+    );
 
     LoadPartyBuffIcons();
 }
@@ -349,7 +357,7 @@ MENU_STATE MainMenuUI_Credits_Loop()
     else
         pAudioPlayer->PlayMusicTrack(MUSIC_Credits);
 
-    Image *mm6title = assets->GetImage_PCXFromIconsLOD(L"mm6title.pcx");
+    Image *mm6title = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
 
     cred_texturet = (char *)pEvents_LOD->LoadRaw("credits.txt", 0);
     pFile = pEvents_LOD->FindContainer("credits.txt", 0);

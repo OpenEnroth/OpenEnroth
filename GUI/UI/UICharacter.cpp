@@ -509,10 +509,10 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(unsigned int uActiveCharact
     CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "", 0);
     FillAwardsData();
 
-    ui_character_skills_background = assets->GetImage_16BitColorKey(L"fr_skill", 0x7FF);
-    ui_character_awards_background = assets->GetImage_16BitColorKey(L"fr_award", 0x7FF);
-    ui_character_stats_background = assets->GetImage_16BitColorKey(L"fr_stats", 0x7FF);
-    ui_character_inventory_background_strip = assets->GetImage_16BitColorKey(L"fr_strip", 0x7FF);
+    ui_character_skills_background = assets->GetImage_16BitColorKey("fr_skill", 0x7FF);
+    ui_character_awards_background = assets->GetImage_16BitColorKey("fr_award", 0x7FF);
+    ui_character_stats_background = assets->GetImage_16BitColorKey("fr_stats", 0x7FF);
+    ui_character_inventory_background_strip = assets->GetImage_16BitColorKey("fr_strip", 0x7FF);
 }
 
 //----- (0041ABFD) --------------------------------------------------------
@@ -1859,13 +1859,13 @@ void CharacterUI_LoadPaperdollTextures()
     char pContainer[128]; // [sp+24h] [bp-14h]@12
 
     if (!ui_character_inventory_magnification_glass)
-        ui_character_inventory_magnification_glass = assets->GetImage_16BitAlpha(L"MAGNIF-B");
+        ui_character_inventory_magnification_glass = assets->GetImage_16BitAlpha("MAGNIF-B");
 
     //if ( !pParty->uAlignment || pParty->uAlignment == 1 || pParty->uAlignment == 2 )
     if (!ui_character_inventory_paperdoll_background)
-        ui_character_inventory_paperdoll_background = assets->GetImage_16BitColorKey(L"BACKDOLL", 0x7FF);
+        ui_character_inventory_paperdoll_background = assets->GetImage_16BitColorKey("BACKDOLL", 0x7FF);
 
-    ui_character_inventory_paperdoll_rings_background = assets->GetImage_16BitAlpha(L"BACKHAND");
+    ui_character_inventory_paperdoll_rings_background = assets->GetImage_16BitAlpha("BACKHAND");
 
     ui_character_inventory_paperdoll_rings_close = ui_exit_cancel_button_background;
     for (uint i = 0; i < 4; ++i)
@@ -1905,28 +1905,30 @@ void CharacterUI_LoadPaperdollTextures()
             papredoll_dlhs[i] = assets->GetImage_16BitAlpha(dlh_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
             papredoll_dlhus[i] = assets->GetImage_16BitAlpha(dlhu_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
 
-            wchar_t name[1024];
             if (pPlayers[i + 1]->uCurrentFace == 12 || pPlayers[i + 1]->uCurrentFace == 13)
             {
-                wsprintfW(name, L"pc%02dbrd", pPlayers[i + 1]->uCurrentFace + 1);
-                paperdoll_dbrds[pPlayers[i + 1]->uCurrentFace] = assets->GetImage_16BitAlpha(name);
+                paperdoll_dbrds[pPlayers[i + 1]->uCurrentFace] = assets->GetImage_16BitAlpha(
+                    StringPrintf("pc%02dbrd", pPlayers[i + 1]->uCurrentFace + 1)
+                );
             }
-            wsprintfW(name, L"item281pc%02d", pPlayers[i + 1]->uCurrentFace + 1);
-            papredoll_flying_feet[pPlayers[i + 1]->uCurrentFace] = assets->GetImage_16BitAlpha(name);
+
+            papredoll_flying_feet[pPlayers[i + 1]->uCurrentFace] = assets->GetImage_16BitAlpha(
+                StringPrintf("item281pc%02d", pPlayers[i + 1]->uCurrentFace + 1)
+            );
             IsPlayerWearingWatersuit[i + 1] = 0;
         }
     }
 
-    ui_ar_up_up = assets->GetImage_16BitAlpha(L"ar_up_up");
-    ui_ar_up_dn = assets->GetImage_16BitAlpha(L"ar_up_dn");
-    ui_ar_dn_up = assets->GetImage_16BitAlpha(L"ar_dn_up");
-    ui_ar_dn_dn = assets->GetImage_16BitAlpha(L"ar_dn_dn");
+    ui_ar_up_up = assets->GetImage_16BitAlpha("ar_up_up");
+    ui_ar_up_dn = assets->GetImage_16BitAlpha("ar_up_dn");
+    ui_ar_dn_up = assets->GetImage_16BitAlpha("ar_dn_up");
+    ui_ar_dn_dn = assets->GetImage_16BitAlpha("ar_dn_dn");
 
-    paperdoll_dbrds[9] = assets->GetImage_16BitAlpha(L"ib-cd1-d");
-    paperdoll_dbrds[7] = assets->GetImage_16BitAlpha(L"ib-cd2-d");
-    paperdoll_dbrds[5] = assets->GetImage_16BitAlpha(L"ib-cd3-d");
-    paperdoll_dbrds[3] = assets->GetImage_16BitAlpha(L"ib-cd4-d");
-    paperdoll_dbrds[1] = assets->GetImage_16BitAlpha(L"ib-cd5-d");
+    paperdoll_dbrds[9] = assets->GetImage_16BitAlpha("ib-cd1-d");
+    paperdoll_dbrds[7] = assets->GetImage_16BitAlpha("ib-cd2-d");
+    paperdoll_dbrds[5] = assets->GetImage_16BitAlpha("ib-cd3-d");
+    paperdoll_dbrds[3] = assets->GetImage_16BitAlpha("ib-cd4-d");
+    paperdoll_dbrds[1] = assets->GetImage_16BitAlpha("ib-cd5-d");
 
     for (uint i = 0; i < 54; ++i)// test equipment
     {
@@ -1990,7 +1992,7 @@ void CharacterUI_LoadPaperdollTextures()
         paperdoll_helm_texture[i][15] = assets->GetImage_16BitAlpha(pContainer);
 
         if (IsDwarfPresentInParty(true))          //the phynaxian helm uses a slightly different graphic for dwarves
-            paperdoll_dbrds[11] = assets->GetImage_16BitAlpha(L"item092v3");
+            paperdoll_dbrds[11] = assets->GetImage_16BitAlpha("item092v3");
     }
     //v43 = 0;
     for (uint i = 0; i < 4; ++i)

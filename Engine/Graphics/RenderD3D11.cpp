@@ -3,8 +3,9 @@
 
 #include "Engine/Engine.h"
 
+#include "Engine/Graphics/Image.h"
+
 #include "RenderD3D11.h"
-#include "Texture.h"
 #include "Sprites.h"
 
 #define ErrorD3D(x)\

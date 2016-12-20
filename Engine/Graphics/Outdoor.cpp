@@ -2522,13 +2522,10 @@ void OutdoorLocation::LoadActualSkyFrame()
         rest_ui_hourglass_frame_current = nullptr;
     }
 
-    wchar_t namew[1024];
-    swprintf(namew, L"TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour);
-
-    char name[1024];
-    sprintf(name, "TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour);
-
-    rest_ui_sky_frame_current = assets->GetImage_16BitColorKey(namew, 0x7FF);
+    rest_ui_sky_frame_current = assets->GetImage_16BitColorKey(
+        StringPrintf("TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour),
+        0x7FF
+    );
 }
 
 

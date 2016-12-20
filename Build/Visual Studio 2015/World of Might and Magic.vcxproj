@@ -100,6 +100,7 @@
     <ClCompile Include="..\..\Engine\Graphics\BSPModel.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\DecalBuilder.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\DecorationList.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\ImageLoader.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Indoor.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\IndoorCameraD3D.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Level\Decoration.cpp" />
@@ -114,7 +115,7 @@
     <ClCompile Include="..\..\Engine\Graphics\Sprites.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\stru10.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\stru9.cpp" />
-    <ClCompile Include="..\..\Engine\Graphics\Texture.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\Image.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Viewport.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Vis.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Weather.cpp" />
@@ -274,6 +275,8 @@
     <ClInclude Include="..\..\Engine\Graphics\BSPModel.h" />
     <ClInclude Include="..\..\Engine\Graphics\DecalBuilder.h" />
     <ClInclude Include="..\..\Engine\Graphics\DecorationList.h" />
+    <ClInclude Include="..\..\Engine\Graphics\ImageFormatConverter.h" />
+    <ClInclude Include="..\..\Engine\Graphics\ImageLoader.h" />
     <ClInclude Include="..\..\Engine\Graphics\Indoor.h" />
     <ClInclude Include="..\..\Engine\Graphics\IndoorCameraD3D.h" />
     <ClInclude Include="..\..\Engine\Graphics\IRender.h" />
@@ -290,7 +293,7 @@
     <ClInclude Include="..\..\Engine\Graphics\Sprites.h" />
     <ClInclude Include="..\..\Engine\Graphics\stru10.h" />
     <ClInclude Include="..\..\Engine\Graphics\stru9.h" />
-    <ClInclude Include="..\..\Engine\Graphics\Texture.h" />
+    <ClInclude Include="..\..\Engine\Graphics\Image.h" />
     <ClInclude Include="..\..\Engine\Graphics\Viewport.h" />
     <ClInclude Include="..\..\Engine\Graphics\Vis.h" />
     <ClInclude Include="..\..\Engine\Graphics\Weather.h" />

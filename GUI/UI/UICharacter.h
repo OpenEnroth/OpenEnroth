@@ -24,11 +24,12 @@ struct GUIWindow_CharacterRecord : public GUIWindow
 
 
 
-extern class Image *ui_character_skills_background;
-extern class Image *ui_character_awards_background;
-extern class Image *ui_character_stats_background;
-extern class Image *ui_character_inventory_background;
-extern class Image *ui_character_inventory_background_strip;
-extern class Image *ui_character_inventory_paperdoll_background;
+class Image;
+extern Image *ui_character_skills_background;
+extern Image *ui_character_awards_background;
+extern Image *ui_character_stats_background;
+extern Image *ui_character_inventory_background;
+extern Image *ui_character_inventory_background_strip;
+extern Image *ui_character_inventory_paperdoll_background;
 
-extern std::array<class Image *, 16> paperdoll_dbrds;
+extern std::array<Image *, 16> paperdoll_dbrds;

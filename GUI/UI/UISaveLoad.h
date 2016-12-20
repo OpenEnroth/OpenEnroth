@@ -18,9 +18,10 @@ struct GUIWindow_Load : public GUIWindow
 };
 
 
-extern class Image *saveload_ui_save_up;
-extern class Image *saveload_ui_load_up;
-extern class Image *saveload_ui_loadsave;
-extern class Image *saveload_ui_saveu;
-extern class Image *saveload_ui_loadu;
-extern class Image *saveload_ui_x_u;
+class Image;
+extern Image *saveload_ui_save_up;
+extern Image *saveload_ui_load_up;
+extern Image *saveload_ui_loadsave;
+extern Image *saveload_ui_saveu;
+extern Image *saveload_ui_loadu;
+extern Image *saveload_ui_x_u;

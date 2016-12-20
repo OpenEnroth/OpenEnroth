@@ -31,13 +31,13 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() :
 
 // ----------------------------------------------
 // 00411BFC GUIWindow::InitializeBookView -- part
-    ui_book_quests_background = assets->GetImage_16Bit(L"sbquiknot");
-    ui_book_quest_div_bar = assets->GetImage_16BitAlpha(L"divbar");
+    ui_book_quests_background = assets->GetImage_16Bit("sbquiknot");
+    ui_book_quest_div_bar = assets->GetImage_16BitAlpha("divbar");
 
-    ui_book_button1_on = assets->GetImage_16BitAlpha(L"tab-an-6b");
-    ui_book_button2_on = assets->GetImage_16BitAlpha(L"tab-an-7b");
-    ui_book_button1_off = assets->GetImage_16BitAlpha(L"tab-an-6a");
-    ui_book_button2_off = assets->GetImage_16BitAlpha(L"tab-an-7a");
+    ui_book_button1_on = assets->GetImage_16BitAlpha("tab-an-6b");
+    ui_book_button2_on = assets->GetImage_16BitAlpha("tab-an-7b");
+    ui_book_button1_off = assets->GetImage_16BitAlpha("tab-an-6a");
+    ui_book_button2_off = assets->GetImage_16BitAlpha("tab-an-7a");
 
     pBtn_Book_1 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,

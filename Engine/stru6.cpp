@@ -188,547 +188,550 @@ void stru6_stru1_indoor_sw_billboard::_47829F_sphere_particle(float x_offset, fl
 //----- (004A71FE) --------------------------------------------------------
 void stru6::DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, float dstY, float dstZ, unsigned int uTextureID)
 {
-  //int v8; // eax@1
+    //int v8; // eax@1
 
-  //v8 = uNumProjectiles;
-  if (uNumProjectiles < 32)
-  {
-    pProjectiles[uNumProjectiles].srcX = srcX;
-    pProjectiles[uNumProjectiles].srcY = srcY;
-    pProjectiles[uNumProjectiles].srcZ = srcZ;
-    pProjectiles[uNumProjectiles].dstX = dstX;
-    pProjectiles[uNumProjectiles].dstY = dstY;
-    pProjectiles[uNumProjectiles].dstZ = dstZ;
-    pProjectiles[uNumProjectiles++].uTextureID = uTextureID;
-  }
+    //v8 = uNumProjectiles;
+    if (uNumProjectiles < 32)
+    {
+        pProjectiles[uNumProjectiles].srcX = srcX;
+        pProjectiles[uNumProjectiles].srcY = srcY;
+        pProjectiles[uNumProjectiles].srcZ = srcZ;
+        pProjectiles[uNumProjectiles].dstX = dstX;
+        pProjectiles[uNumProjectiles].dstY = dstY;
+        pProjectiles[uNumProjectiles].dstZ = dstZ;
+        pProjectiles[uNumProjectiles++].uTextureID = uTextureID;
+    }
 }
 
 //----- (004A7298) --------------------------------------------------------
 void stru6::DrawProjectiles()
 {
-  float v10; // ST1C_4@8
-  float v11; // ST0C_4@8
-  IDirect3DTexture2 *v12; // [sp+20h] [bp-78h]@6
-  RenderVertexSoft v[2]; // [sp+30h] [bp-68h]@1
-  
-  for (uint i = 0; i < uNumProjectiles; ++i)
-  {
-    ProjectileAnim* p = &pProjectiles[i];
+    float v10; // ST1C_4@8
+    float v11; // ST0C_4@8
+    IDirect3DTexture2 *v12; // [sp+20h] [bp-78h]@6
+    RenderVertexSoft v[2]; // [sp+30h] [bp-68h]@1
 
-    v[0].vWorldPosition.x = p->srcX;
-    v[0].vWorldPosition.y = p->srcY;
-    v[0].vWorldPosition.z = p->srcZ;
-    v[1].vWorldPosition.x = p->dstX;
-    v[1].vWorldPosition.y = p->dstY;
-    v[1].vWorldPosition.z = p->dstZ;
-    pIndoorCameraD3D->ViewTransform(v, 2);
+    for (uint i = 0; i < uNumProjectiles; ++i)
+    {
+        ProjectileAnim* p = &pProjectiles[i];
 
-    sr_42620A(v);
+        v[0].vWorldPosition.x = p->srcX;
+        v[0].vWorldPosition.y = p->srcY;
+        v[0].vWorldPosition.z = p->srcZ;
+        v[1].vWorldPosition.x = p->dstX;
+        v[1].vWorldPosition.y = p->dstY;
+        v[1].vWorldPosition.z = p->dstZ;
+        pIndoorCameraD3D->ViewTransform(v, 2);
 
-    pIndoorCameraD3D->Project(v, 2, 0);
+        sr_42620A(v);
 
-    if (p->uTextureID != -1)
-      v12 = pBitmaps_LOD->pHardwareTextures[p->uTextureID];
-    else
-      v12 = 0;
+        pIndoorCameraD3D->Project(v, 2, 0);
 
-    v10 = pIndoorCameraD3D->fov_x / v[1].vWorldViewPosition.x * 20.0;
-    v11 = pIndoorCameraD3D->fov_x / v[0].vWorldViewPosition.x * 20.0;
-    render->DrawProjectile(
-        v[0].vWorldViewProjX,
-        v[0].vWorldViewProjY,
-        v[0].vWorldViewPosition.x,
-         v11,
-        v[1].vWorldViewProjX,
-        v[1].vWorldViewProjY,
-        v[1].vWorldViewPosition.x,
-         v10,
-         v12);
-   }
+        if (p->uTextureID != -1)
+            v12 = pBitmaps_LOD->pHardwareTextures[p->uTextureID];
+        else
+            v12 = 0;
+
+        v10 = pIndoorCameraD3D->fov_x / v[1].vWorldViewPosition.x * 20.0;
+        v11 = pIndoorCameraD3D->fov_x / v[0].vWorldViewPosition.x * 20.0;
+        render->DrawProjectile(
+            v[0].vWorldViewProjX,
+            v[0].vWorldViewProjY,
+            v[0].vWorldViewPosition.x,
+            v11,
+            v[1].vWorldViewProjX,
+            v[1].vWorldViewProjY,
+            v[1].vWorldViewPosition.x,
+            v10,
+            v12
+        );
+    }
 }
 
 //----- (004A73AA) --------------------------------------------------------
-void stru6::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(SpriteObject *a2, unsigned int uDiffuse, unsigned int uTextureID)
+void stru6::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(SpriteObject *a2, unsigned int uDiffuse, unsigned int resource_id)
 {
-  stru6 *v4; // edi@1
-  SpriteObject *v5; // esi@1
-  int v6; // eax@1
-  stru6_stru2 *v7; // eax@2
-  double v8; // st7@2
-  double v9; // st6@2
-  double v10; // st7@3
-  Particle_sw local_0; // [sp+8h] [bp-68h]@1
-  float x; // [sp+78h] [bp+8h]@2
+    stru6 *v4; // edi@1
+    SpriteObject *v5; // esi@1
+    int v6; // eax@1
+    stru6_stru2 *v7; // eax@2
+    double v8; // st7@2
+    double v9; // st6@2
+    double v10; // st7@3
+    Particle_sw local_0; // [sp+8h] [bp-68h]@1
+    float x; // [sp+78h] [bp+8h]@2
 
-  v4 = this;
-  memset(&local_0, 0, 0x68u);
-  v5 = a2;
-  v6 = a2->field_54;
-  if ( v6 )
-  {
-    v7 = &v4->array_4[v6 & 0x1F];
-    x = ((double)a2->vPosition.x - v7->flt_0_x) * 0.5 + v7->flt_0_x;
-    v8 = ((double)v5->vPosition.y - v7->flt_4_y) * 0.5 + v7->flt_4_y;
-    v9 = ((double)v5->vPosition.z - v7->flt_8_z) * 0.5 + v7->flt_8_z;
-    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
-    local_0.uDiffuse = uDiffuse;
-    local_0.x = x + 4.0;
-    local_0.y = v8;
-    local_0.z = v9;
-    local_0.r = 0.0;
-    local_0.g = 0.0;
-    local_0.b = 0.0;
-    local_0.timeToLive = (rand() & 0x40) + 96;
-    local_0.uTextureID = uTextureID;
-    local_0.flt_28 = 1.0;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-    local_0.x = x - 4.0;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-    local_0.x = (double)v5->vPosition.x + 4.0;
-    local_0.y = (double)v5->vPosition.y;
-    local_0.z = (double)v5->vPosition.z;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-    local_0.x = (double)v5->vPosition.x - 4.0;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-    v4->array_4[v5->field_54 & 0x1F].flt_0_x = (double)v5->vPosition.x;
-    v4->array_4[v5->field_54 & 0x1F].flt_4_y = (double)v5->vPosition.y;
-    v4->array_4[v5->field_54 & 0x1F].flt_8_z = (double)v5->vPosition.z;
-  }
-  else
-  {
-    a2->field_54 = v4->field_0++;
-    v4->array_4[a2->field_54 & 0x1F].flt_0_x = (double)a2->vPosition.x;
-    v4->array_4[a2->field_54 & 0x1F].flt_4_y = (double)a2->vPosition.y;
-    v4->array_4[a2->field_54 & 0x1F].flt_8_z = (double)a2->vPosition.z;
-    v10 = (double)a2->vPosition.x;
-    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
-    local_0.uDiffuse = uDiffuse;
-    local_0.x = v10 + 4.0;
-    local_0.y = (double)a2->vPosition.y;
-    local_0.z = (double)a2->vPosition.z;
-    local_0.r = 0.0;
-    local_0.g = 0.0;
-    local_0.b = 0.0;
-    local_0.flt_28 = 1.0;
-    local_0.timeToLive = (rand() & 0x7F) + 128;
-    local_0.uTextureID = uTextureID;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-    local_0.x = (double)a2->vPosition.x - 4.0;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-  }
+    v4 = this;
+    memset(&local_0, 0, 0x68u);
+    v5 = a2;
+    v6 = a2->field_54;
+    if (v6)
+    {
+        v7 = &v4->array_4[v6 & 0x1F];
+        x = ((double)a2->vPosition.x - v7->flt_0_x) * 0.5 + v7->flt_0_x;
+        v8 = ((double)v5->vPosition.y - v7->flt_4_y) * 0.5 + v7->flt_4_y;
+        v9 = ((double)v5->vPosition.z - v7->flt_8_z) * 0.5 + v7->flt_8_z;
+        local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
+        local_0.uDiffuse = uDiffuse;
+        local_0.x = x + 4.0;
+        local_0.y = v8;
+        local_0.z = v9;
+        local_0.r = 0.0;
+        local_0.g = 0.0;
+        local_0.b = 0.0;
+        local_0.timeToLive = (rand() & 0x40) + 96;
+        local_0.resource_id = resource_id;
+        local_0.flt_28 = 1.0;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+        local_0.x = x - 4.0;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+        local_0.x = (double)v5->vPosition.x + 4.0;
+        local_0.y = (double)v5->vPosition.y;
+        local_0.z = (double)v5->vPosition.z;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+        local_0.x = (double)v5->vPosition.x - 4.0;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+        v4->array_4[v5->field_54 & 0x1F].flt_0_x = (double)v5->vPosition.x;
+        v4->array_4[v5->field_54 & 0x1F].flt_4_y = (double)v5->vPosition.y;
+        v4->array_4[v5->field_54 & 0x1F].flt_8_z = (double)v5->vPosition.z;
+    }
+    else
+    {
+        a2->field_54 = v4->field_0++;
+        v4->array_4[a2->field_54 & 0x1F].flt_0_x = (double)a2->vPosition.x;
+        v4->array_4[a2->field_54 & 0x1F].flt_4_y = (double)a2->vPosition.y;
+        v4->array_4[a2->field_54 & 0x1F].flt_8_z = (double)a2->vPosition.z;
+        v10 = (double)a2->vPosition.x;
+        local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
+        local_0.uDiffuse = uDiffuse;
+        local_0.x = v10 + 4.0;
+        local_0.y = (double)a2->vPosition.y;
+        local_0.z = (double)a2->vPosition.z;
+        local_0.r = 0.0;
+        local_0.g = 0.0;
+        local_0.b = 0.0;
+        local_0.flt_28 = 1.0;
+        local_0.timeToLive = (rand() & 0x7F) + 128;
+        local_0.resource_id = resource_id;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+        local_0.x = (double)a2->vPosition.x - 4.0;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+    }
 }
 
 //----- (004A75CC) --------------------------------------------------------
-void stru6::_4A75CC_single_spell_collision_particle(SpriteObject *a1, unsigned int uDiffuse, unsigned int uTextureID)
+void stru6::_4A75CC_single_spell_collision_particle(SpriteObject *a1, unsigned int uDiffuse, unsigned int resource_id)
 {
-  double v4; // st7@1
-  signed int v5; // edi@1
-  Particle_sw local_0; // [sp+8h] [bp-68h]@1
+    double v4; // st7@1
+    signed int v5; // edi@1
+    Particle_sw local_0; // [sp+8h] [bp-68h]@1
 
-  memset(&local_0, 0, 0x68u);
-  local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
-  local_0.x = (double)a1->vPosition.x;
-  local_0.y = (double)a1->vPosition.y;
-  v4 = (double)a1->vPosition.z;
-  local_0.uDiffuse = uDiffuse;
-  local_0.z = v4;
-  v5 = 10;
-  local_0.timeToLive = (rand() & 0x7F) + 128;
-  local_0.uTextureID = uTextureID;
-  local_0.flt_28 = 1.0;
-  do
-  {
-    local_0.r = (double)(rand() & 0x1FF) - 255.0;
-    local_0.g = (double)(rand() & 0x1FF) - 255.0;
-    local_0.b = (double)(rand() & 0x1FF) - 255.0;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-    --v5;
-  }
-  while ( v5 );
+    memset(&local_0, 0, 0x68u);
+    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
+    local_0.x = (double)a1->vPosition.x;
+    local_0.y = (double)a1->vPosition.y;
+    v4 = (double)a1->vPosition.z;
+    local_0.uDiffuse = uDiffuse;
+    local_0.z = v4;
+    v5 = 10;
+    local_0.timeToLive = (rand() & 0x7F) + 128;
+    local_0.resource_id = resource_id;
+    local_0.flt_28 = 1.0;
+    do
+    {
+        local_0.r = (double)(rand() & 0x1FF) - 255.0;
+        local_0.g = (double)(rand() & 0x1FF) - 255.0;
+        local_0.b = (double)(rand() & 0x1FF) - 255.0;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+        --v5;
+    } while (v5);
 }
 
 //----- (004A7688) --------------------------------------------------------
 void stru6::_4A7688_fireball_collision_particle(SpriteObject *a2)
 {
-  double v3; // st7@1
-  double v4; // st7@2
-  Particle_sw local_0; // [sp+1Ch] [bp-7Ch]@1
+    double v3; // st7@1
+    double v4; // st7@2
+    Particle_sw local_0; // [sp+1Ch] [bp-7Ch]@1
 
-  memset(&local_0, 0, 0x68u);
+    memset(&local_0, 0, 0x68u);
 
-  v3 = (double)a2->uSpriteFrameID / (double)pObjectList->pObjects[a2->uObjectDescID].uLifetime;
-  if ( v3 >= 0.75 )
-    v4 = (1.0 - v3) * 4.0;
-  else
-    v4 = v3 * 1.333333333333333;
+    v3 = (double)a2->uSpriteFrameID / (double)pObjectList->pObjects[a2->uObjectDescID].uLifetime;
+    if (v3 >= 0.75)
+        v4 = (1.0 - v3) * 4.0;
+    else
+        v4 = v3 * 1.333333333333333;
 
-  local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
-  local_0.uDiffuse = 0xFF3C1E;
-  local_0.x = (double)a2->vPosition.x;
-  local_0.y = (double)a2->vPosition.y;
-  local_0.z = (double)a2->vPosition.z;
-  local_0.timeToLive = (rand() & 0x7F) + 128;
-  local_0.uTextureID = pBitmaps_LOD->LoadTexture("effpar01", TEXTURE_DEFAULT);
-  local_0.flt_28 = 1.0;
+    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
+    local_0.uDiffuse = 0xFF3C1E;
+    local_0.x = (double)a2->vPosition.x;
+    local_0.y = (double)a2->vPosition.y;
+    local_0.z = (double)a2->vPosition.z;
+    local_0.timeToLive = (rand() & 0x7F) + 128;
+    local_0.resource_id = this->effpar01;
+    local_0.flt_28 = 1.0;
 
-  // 10 fireball sparks 
-  for (unsigned int i = 0; i < 10; ++i)
-  {
-    local_0.r = (rand() & 0x1FF) - 255;
-    local_0.g = (rand() & 0x1FF) - 255;
-    local_0.b = (rand() & 0x1FF) - 255;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-  }
+    // 10 fireball sparks 
+    for (unsigned int i = 0; i < 10; ++i)
+    {
+        local_0.r = (rand() & 0x1FF) - 255;
+        local_0.g = (rand() & 0x1FF) - 255;
+        local_0.b = (rand() & 0x1FF) - 255;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+    }
 
-  pStru1->_47829F_sphere_particle((double)a2->vPosition.x, (double)a2->vPosition.y, (double)a2->vPosition.z, 
-                                              (double)floorf(0.5f + (512.0 * v3)), ModulateColor(0xFF3C1E, v4));
+    pStru1->_47829F_sphere_particle(
+        (double)a2->vPosition.x, (double)a2->vPosition.y, (double)a2->vPosition.z,
+        (double)floorf(0.5f + (512.0 * v3)), ModulateColor(0xFF3C1E, v4)
+    );
 }
 
 //----- (004A77FD) --------------------------------------------------------
 void stru6::_4A77FD_implosion_particle_d3d(SpriteObject *a1)
 {
-  double v4; // st7@1
-  double v5; // st7@2
-  int v7; // eax@4
-  float v8; // ST0C_4@4
-  float v9; // ST08_4@4
-  float v10; // ST04_4@4
-  float v11; // ST00_4@4
-  float v12; // [sp+28h] [bp-4h]@1
+    double v4; // st7@1
+    double v5; // st7@2
+    int v7; // eax@4
+    float v8; // ST0C_4@4
+    float v9; // ST08_4@4
+    float v10; // ST04_4@4
+    float v11; // ST00_4@4
+    float v12; // [sp+28h] [bp-4h]@1
 
-  v4 = (double)a1->uSpriteFrameID / (double)pObjectList->pObjects[a1->uObjectDescID].uLifetime;
-  v12 = 512.0 - v4 * 512.0;
-  if ( v4 >= 0.75 )
-    v5 = v4 * 4.0;
-  else
-    v5 = v4 * 1.333333333333333;
+    v4 = (double)a1->uSpriteFrameID / (double)pObjectList->pObjects[a1->uObjectDescID].uLifetime;
+    v12 = 512.0 - v4 * 512.0;
+    if (v4 >= 0.75)
+        v5 = v4 * 4.0;
+    else
+        v5 = v4 * 1.333333333333333;
 
-  v7 = ModulateColor(0x7E7E7E, v5);
-  v8 = (double)floorf(0.5f + v12);
-  v9 = (double)a1->vPosition.z;
-  v10 = (double)a1->vPosition.y;
-  v11 = (double)a1->vPosition.x;
-  pStru1->_47829F_sphere_particle(v11, v10, v9, v8, v7);
+    v7 = ModulateColor(0x7E7E7E, v5);
+    v8 = (double)floorf(0.5f + v12);
+    v9 = (double)a1->vPosition.z;
+    v10 = (double)a1->vPosition.y;
+    v11 = (double)a1->vPosition.x;
+    pStru1->_47829F_sphere_particle(v11, v10, v9, v8, v7);
 }
 
 //----- (004A78AE) --------------------------------------------------------
 void stru6::_4A78AE_sparks_spell(SpriteObject *a1)
 {
-  ObjectDesc *v2; // esi@1
-  unsigned int v3; // eax@1
-  double v4; // st7@1
-  Particle_sw local_0; // [sp+8h] [bp-68h]@1
+    ObjectDesc *v2; // esi@1
+    unsigned int v3; // eax@1
+    double v4; // st7@1
+    Particle_sw local_0; // [sp+8h] [bp-68h]@1
 
-  v2 = &pObjectList->pObjects[a1->uObjectDescID];
-  memset(&local_0, 0, 0x68u);
-  v3 = a1->uSpriteFrameID;
-  local_0.x = (double)a1->vPosition.x;
-  v4 = (double)a1->vPosition.y;
-  local_0.type = ParticleType_Sprite;
-  local_0.uDiffuse = 0x7F7F7F;
-  local_0.timeToLive = 1;
-  local_0.y = v4;
-  local_0.z = (double)a1->vPosition.z;
-  local_0.r = 0.0;
-  local_0.g = 0.0;
-  local_0.b = 0.0;
-  local_0.uTextureID = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->pHwSpriteIDs[0];
-  LODWORD(local_0.flt_28) = 0x40000000u;
-  pEngine->pParticleEngine->AddParticle(&local_0);
+    v2 = &pObjectList->pObjects[a1->uObjectDescID];
+    memset(&local_0, 0, 0x68u);
+    v3 = a1->uSpriteFrameID;
+    local_0.x = (double)a1->vPosition.x;
+    v4 = (double)a1->vPosition.y;
+    local_0.type = ParticleType_Sprite;
+    local_0.uDiffuse = 0x7F7F7F;
+    local_0.timeToLive = 1;
+    local_0.y = v4;
+    local_0.z = (double)a1->vPosition.z;
+    local_0.r = 0.0;
+    local_0.g = 0.0;
+    local_0.b = 0.0;
+__debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
+    //local_0.uTextureID = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->pHwSpriteIDs[0];
+    LODWORD(local_0.flt_28) = 0x40000000u;
+    pEngine->pParticleEngine->AddParticle(&local_0);
 }
 
 //----- (004A7948) --------------------------------------------------------
 void stru6::_4A7948_mind_blast_after_effect(SpriteObject *a1)
 {
-  ObjectDesc *v2; // esi@1
-  unsigned int v3; // eax@1
-  double v4; // st7@1
-  char v5; // al@1
-  signed int v6; // edi@1
-  Particle_sw Dst; // [sp+8h] [bp-68h]@1
+    ObjectDesc *v2; // esi@1
+    unsigned int v3; // eax@1
+    double v4; // st7@1
+    char v5; // al@1
+    signed int v6; // edi@1
+    Particle_sw Dst; // [sp+8h] [bp-68h]@1
 
-  v2 = &pObjectList->pObjects[a1->uObjectDescID];
-  memset(&Dst, 0, 0x68u);
-  v3 = a1->uSpriteFrameID;
-  Dst.x = (double)a1->vPosition.x;
-  v4 = (double)a1->vPosition.y;
-  Dst.type = ParticleType_Sprite | ParticleType_Rotating | ParticleType_1;
-  Dst.uDiffuse = 0x7F7F7F;
-  Dst.y = v4;
-  Dst.z = (double)a1->vPosition.z;
-  Dst.uTextureID = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->pHwSpriteIDs[0];
-  v5 = rand();
-  v6 = 10;
-  Dst.flt_28 = 1.0;
-  Dst.timeToLive = (v5 & 0x7F) + 128;
-  do
-  {
-    Dst.r = (double)(rand() & 0x1FF) - 255.0;
-    Dst.g = (double)(rand() & 0x1FF) - 255.0;
-    Dst.b = (double)(rand() & 0x1FF) - 255.0;
-    pEngine->pParticleEngine->AddParticle(&Dst);
-    --v6;
-  }
-  while ( v6 );
+    v2 = &pObjectList->pObjects[a1->uObjectDescID];
+    memset(&Dst, 0, 0x68u);
+    v3 = a1->uSpriteFrameID;
+    Dst.x = (double)a1->vPosition.x;
+    v4 = (double)a1->vPosition.y;
+    Dst.type = ParticleType_Sprite | ParticleType_Rotating | ParticleType_1;
+    Dst.uDiffuse = 0x7F7F7F;
+    Dst.y = v4;
+    Dst.z = (double)a1->vPosition.z;
+__debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
+    //Dst.uTextureID = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->pHwSpriteIDs[0];
+    v5 = rand();
+    v6 = 10;
+    Dst.flt_28 = 1.0;
+    Dst.timeToLive = (v5 & 0x7F) + 128;
+    do
+    {
+        Dst.r = (double)(rand() & 0x1FF) - 255.0;
+        Dst.g = (double)(rand() & 0x1FF) - 255.0;
+        Dst.b = (double)(rand() & 0x1FF) - 255.0;
+        pEngine->pParticleEngine->AddParticle(&Dst);
+        --v6;
+    } while (v6);
 }
 
 //----- (004A7A27) --------------------------------------------------------
 bool stru6::AddMobileLight(SpriteObject *a1, unsigned int uDiffuse, int uRadius)
 {
-  return pMobileLightsStack->AddLight(a1->vPosition.x, a1->vPosition.y, a1->vPosition.z, a1->uSectorID, uRadius,
-           (uDiffuse & 0x00FF0000) >> 16,
-           (uDiffuse & 0x0000FF00) >> 8,
-           uDiffuse & 0x000000FF,
-           _4E94D3_light_type);
+    return pMobileLightsStack->AddLight(
+        a1->vPosition.x, a1->vPosition.y, a1->vPosition.z, a1->uSectorID, uRadius,
+        (uDiffuse & 0x00FF0000) >> 16,
+        (uDiffuse & 0x0000FF00) >> 8,
+        uDiffuse & 0x000000FF,
+        _4E94D3_light_type
+    );
 }
-// 4E94D3: using guessed type char _4E94D3_light_type;
 
 //----- (004A7A66) --------------------------------------------------------
-void stru6::_4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(SpriteObject *a1, unsigned int uDiffuse, unsigned int uTextureID, float a4)
+void stru6::_4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(SpriteObject *a1, unsigned int uDiffuse, unsigned int resource_id, float a4)
 {
-  int v5; // eax@1
-  char v6; // al@1
-  double v7; // st6@1
-  double v8; // st6@1
-  double v9; // st7@1
-  double v10; // st6@1
-  Particle_sw local_0; // [sp+0h] [bp-6Ch]@1
-  float v12; // [sp+68h] [bp-4h]@1
-  float a1a; // [sp+74h] [bp+8h]@1
-  float uDiffusea; // [sp+78h] [bp+Ch]@1
-  float uTextureIDa; // [sp+7Ch] [bp+10h]@1
+    int v5; // eax@1
+    char v6; // al@1
+    double v7; // st6@1
+    double v8; // st6@1
+    double v9; // st7@1
+    double v10; // st6@1
+    Particle_sw local_0; // [sp+0h] [bp-6Ch]@1
+    float v12; // [sp+68h] [bp-4h]@1
+    float a1a; // [sp+74h] [bp+8h]@1
+    float uDiffusea; // [sp+78h] [bp+Ch]@1
+    float uTextureIDa; // [sp+7Ch] [bp+10h]@1
 
-  memset(&local_0, 0, 0x68u);
-  local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
-  local_0.x = (double)a1->vPosition.x;
-  v5 = a1->vPosition.z;
-  local_0.y = (double)a1->vPosition.y;
-  local_0.uDiffuse = uDiffuse;
-  local_0.z = (double)(v5 + 32);
-  v6 = rand();
-  local_0.flt_28 = 1.0;
-  v7 = 0.0 * a4;
-  local_0.timeToLive = (v6 & 0x7F) + 128;
-  local_0.uTextureID = uTextureID;
-  a1a = v7;
-  local_0.r = v7;
-  local_0.g = a4;
-  local_0.b = a4;
-  pEngine->pParticleEngine->AddParticle(&local_0);
-  v8 = 0.70710677 * a4;
-  uDiffusea = v8;
-  local_0.r = v8;
-  local_0.g = v8;
-  local_0.b = a4;
-  pEngine->pParticleEngine->AddParticle(&local_0);
-  local_0.g = a1a;
-  local_0.r = a4;
-  local_0.b = a4;
-  pEngine->pParticleEngine->AddParticle(&local_0);
-  local_0.r = uDiffusea;
-  local_0.b = a4;
-  v9 = -uDiffusea;
-  uTextureIDa = v9;
-  local_0.g = v9;
-  pEngine->pParticleEngine->AddParticle(&local_0);
-  v10 = -1.0 * a4;
-  local_0.r = a1a;
-  v12 = v10;
-  local_0.g = v10;
-  local_0.b = a4;
-  pEngine->pParticleEngine->AddParticle(&local_0);
-  local_0.b = a4;
-  local_0.r = uTextureIDa;
-  local_0.g = uTextureIDa;
-  pEngine->pParticleEngine->AddParticle(&local_0);
-  local_0.r = v12;
-  local_0.g = a1a;
-  local_0.b = a4;
-  pEngine->pParticleEngine->AddParticle(&local_0);
-  local_0.r = uTextureIDa;
-  local_0.g = uDiffusea;
-  local_0.b = a4;
-  pEngine->pParticleEngine->AddParticle(&local_0);
+    memset(&local_0, 0, 0x68u);
+    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
+    local_0.x = (double)a1->vPosition.x;
+    v5 = a1->vPosition.z;
+    local_0.y = (double)a1->vPosition.y;
+    local_0.uDiffuse = uDiffuse;
+    local_0.z = (double)(v5 + 32);
+    v6 = rand();
+    local_0.flt_28 = 1.0;
+    v7 = 0.0 * a4;
+    local_0.timeToLive = (v6 & 0x7F) + 128;
+    local_0.resource_id = resource_id;
+    a1a = v7;
+    local_0.r = v7;
+    local_0.g = a4;
+    local_0.b = a4;
+    pEngine->pParticleEngine->AddParticle(&local_0);
+    v8 = 0.70710677 * a4;
+    uDiffusea = v8;
+    local_0.r = v8;
+    local_0.g = v8;
+    local_0.b = a4;
+    pEngine->pParticleEngine->AddParticle(&local_0);
+    local_0.g = a1a;
+    local_0.r = a4;
+    local_0.b = a4;
+    pEngine->pParticleEngine->AddParticle(&local_0);
+    local_0.r = uDiffusea;
+    local_0.b = a4;
+    v9 = -uDiffusea;
+    uTextureIDa = v9;
+    local_0.g = v9;
+    pEngine->pParticleEngine->AddParticle(&local_0);
+    v10 = -1.0 * a4;
+    local_0.r = a1a;
+    v12 = v10;
+    local_0.g = v10;
+    local_0.b = a4;
+    pEngine->pParticleEngine->AddParticle(&local_0);
+    local_0.b = a4;
+    local_0.r = uTextureIDa;
+    local_0.g = uTextureIDa;
+    pEngine->pParticleEngine->AddParticle(&local_0);
+    local_0.r = v12;
+    local_0.g = a1a;
+    local_0.b = a4;
+    pEngine->pParticleEngine->AddParticle(&local_0);
+    local_0.r = uTextureIDa;
+    local_0.g = uDiffusea;
+    local_0.b = a4;
+    pEngine->pParticleEngine->AddParticle(&local_0);
 }
 
 //----- (004A7C07) --------------------------------------------------------
 void stru6::_4A7C07_stun_spell_fx(SpriteObject *a2)
 {
-  stru6 *v2; // edi@1
-  SpriteObject *v3; // esi@1
-  int v4; // eax@1
-  ObjectDesc *v5; // ebx@1
-  stru6_stru2 *v6; // eax@2
-  double v7; // st6@2
-  double v8; // st5@2
-  double v9; // st4@2
-  char v10; // al@2
-  double v11; // st7@2
-  double v12; // st7@3
-  Particle_sw local_0; // [sp+Ch] [bp-68h]@1
-  float a2a; // [sp+7Ch] [bp+8h]@2
+    stru6 *v2; // edi@1
+    SpriteObject *v3; // esi@1
+    int v4; // eax@1
+    ObjectDesc *v5; // ebx@1
+    stru6_stru2 *v6; // eax@2
+    double v7; // st6@2
+    double v8; // st5@2
+    double v9; // st4@2
+    char v10; // al@2
+    double v11; // st7@2
+    double v12; // st7@3
+    Particle_sw local_0; // [sp+Ch] [bp-68h]@1
+    float a2a; // [sp+7Ch] [bp+8h]@2
 
-  v2 = this;
-  memset(&local_0, 0, 0x68u);
-  v3 = a2;
-  v4 = a2->field_54;
-  v5 = &pObjectList->pObjects[a2->uObjectDescID];
-  if ( v4 )
-  {
-    v6 = &v2->array_4[v4 & 0x1F];
-    v7 = ((double)a2->vPosition.x - v6->flt_0_x) * 0.5 + v6->flt_0_x;
-    v8 = ((double)a2->vPosition.y - v6->flt_4_y) * 0.5 + v6->flt_4_y;
-    v9 = ((double)a2->vPosition.z - v6->flt_8_z) * 0.5 + v6->flt_8_z;
-    local_0.type = ParticleType_Sprite;
-    local_0.uDiffuse = 0xFFFFFF;
-    a2a = v9;
-    local_0.x = v7;
-    local_0.z = a2a;
-    local_0.y = v8;
-    local_0.r = 0.0;
-    local_0.g = 0.0;
-    local_0.b = 0.0;
-    v10 = rand();
-    LODWORD(local_0.flt_28) = 0x40400000u;
-    local_0.timeToLive = (v10 & 0x3F) + 64;
-    local_0.uTextureID = pSpriteFrameTable->GetFrame(v5->uSpriteID, v3->uSpriteFrameID)->pHwSpriteIDs[0];
-    pEngine->pParticleEngine->AddParticle(&local_0);
-    v11 = (double)v3->vPosition.x;
-    LODWORD(local_0.flt_28) = 0x40800000u;
-    local_0.x = v11;
-    local_0.y = (double)v3->vPosition.y;
-    local_0.z = (double)v3->vPosition.z;
-    local_0.timeToLive = (rand() & 0x3F) + 64;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-    v2->array_4[v3->field_54 & 0x1F].flt_0_x = (double)v3->vPosition.x;
-    v2->array_4[v3->field_54 & 0x1F].flt_4_y = (double)v3->vPosition.y;
-    v2->array_4[v3->field_54 & 0x1F].flt_8_z = (double)v3->vPosition.z;
-  }
-  else
-  {
-    a2->field_54 = v2->field_0++;
-    v2->array_4[a2->field_54 & 0x1F].flt_0_x = (double)a2->vPosition.x;
-    v2->array_4[a2->field_54 & 0x1F].flt_4_y = (double)a2->vPosition.y;
-    v2->array_4[a2->field_54 & 0x1F].flt_8_z = (double)a2->vPosition.z;
-    v12 = (double)a2->vPosition.x;
-    local_0.type = ParticleType_Sprite;
-    local_0.uDiffuse = 0xFFFFFF;
-    LODWORD(local_0.flt_28) = 0x40000000u;
-    local_0.x = v12;
-    local_0.y = (double)a2->vPosition.y;
-    local_0.z = (double)a2->vPosition.z;
-    local_0.r = 0.0;
-    local_0.g = 0.0;
-    local_0.b = 0.0;
-    local_0.timeToLive = (rand() & 0x3F) + 64;
-    local_0.uTextureID = pSpriteFrameTable->GetFrame(v5->uSpriteID, a2->uSpriteFrameID)->pHwSpriteIDs[0];
-    pEngine->pParticleEngine->AddParticle(&local_0);
-  }
+    v2 = this;
+    memset(&local_0, 0, 0x68u);
+    v3 = a2;
+    v4 = a2->field_54;
+    v5 = &pObjectList->pObjects[a2->uObjectDescID];
+    if (v4)
+    {
+        v6 = &v2->array_4[v4 & 0x1F];
+        v7 = ((double)a2->vPosition.x - v6->flt_0_x) * 0.5 + v6->flt_0_x;
+        v8 = ((double)a2->vPosition.y - v6->flt_4_y) * 0.5 + v6->flt_4_y;
+        v9 = ((double)a2->vPosition.z - v6->flt_8_z) * 0.5 + v6->flt_8_z;
+        local_0.type = ParticleType_Sprite;
+        local_0.uDiffuse = 0xFFFFFF;
+        a2a = v9;
+        local_0.x = v7;
+        local_0.z = a2a;
+        local_0.y = v8;
+        local_0.r = 0.0;
+        local_0.g = 0.0;
+        local_0.b = 0.0;
+        v10 = rand();
+        LODWORD(local_0.flt_28) = 0x40400000u;
+        local_0.timeToLive = (v10 & 0x3F) + 64;
+__debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
+        //local_0.uTextureID = pSpriteFrameTable->GetFrame(v5->uSpriteID, v3->uSpriteFrameID)->pHwSpriteIDs[0];
+        pEngine->pParticleEngine->AddParticle(&local_0);
+        v11 = (double)v3->vPosition.x;
+        LODWORD(local_0.flt_28) = 0x40800000u;
+        local_0.x = v11;
+        local_0.y = (double)v3->vPosition.y;
+        local_0.z = (double)v3->vPosition.z;
+        local_0.timeToLive = (rand() & 0x3F) + 64;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+        v2->array_4[v3->field_54 & 0x1F].flt_0_x = (double)v3->vPosition.x;
+        v2->array_4[v3->field_54 & 0x1F].flt_4_y = (double)v3->vPosition.y;
+        v2->array_4[v3->field_54 & 0x1F].flt_8_z = (double)v3->vPosition.z;
+    }
+    else
+    {
+        a2->field_54 = v2->field_0++;
+        v2->array_4[a2->field_54 & 0x1F].flt_0_x = (double)a2->vPosition.x;
+        v2->array_4[a2->field_54 & 0x1F].flt_4_y = (double)a2->vPosition.y;
+        v2->array_4[a2->field_54 & 0x1F].flt_8_z = (double)a2->vPosition.z;
+        v12 = (double)a2->vPosition.x;
+        local_0.type = ParticleType_Sprite;
+        local_0.uDiffuse = 0xFFFFFF;
+        LODWORD(local_0.flt_28) = 0x40000000u;
+        local_0.x = v12;
+        local_0.y = (double)a2->vPosition.y;
+        local_0.z = (double)a2->vPosition.z;
+        local_0.r = 0.0;
+        local_0.g = 0.0;
+        local_0.b = 0.0;
+        local_0.timeToLive = (rand() & 0x3F) + 64;
+__debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
+        //local_0.uTextureID = pSpriteFrameTable->GetFrame(v5->uSpriteID, a2->uSpriteFrameID)->pHwSpriteIDs[0];
+        pEngine->pParticleEngine->AddParticle(&local_0);
+    }
 }
 
 //----- (004A7E05) --------------------------------------------------------
 void stru6::AddProjectile(SpriteObject *a2, int a3, unsigned int uTextureID)
 {
-  if (a2->field_54)
-  {
-    DoAddProjectile(array_4[a2->field_54 & 0x1F].flt_0_x,
-                    array_4[a2->field_54 & 0x1F].flt_4_y,
-                    array_4[a2->field_54 & 0x1F].flt_8_z,
-                    a2->vPosition.x,
-                    a2->vPosition.y,
-                    a2->vPosition.z,
-                    uTextureID);
-  }
-  else
-  {
-    a2->field_54 = field_0++;
-    array_4[a2->field_54 & 0x1F].flt_0_x = (double)a2->vPosition.x;
-    array_4[a2->field_54 & 0x1F].flt_4_y = (double)a2->vPosition.y;
-    array_4[a2->field_54 & 0x1F].flt_8_z = (double)a2->vPosition.z;
-  }
+    if (a2->field_54)
+    {
+        DoAddProjectile(
+            array_4[a2->field_54 & 0x1F].flt_0_x,
+            array_4[a2->field_54 & 0x1F].flt_4_y,
+            array_4[a2->field_54 & 0x1F].flt_8_z,
+            a2->vPosition.x,
+            a2->vPosition.y,
+            a2->vPosition.z,
+            uTextureID
+        );
+    }
+    else
+    {
+        a2->field_54 = field_0++;
+        array_4[a2->field_54 & 0x1F].flt_0_x = (double)a2->vPosition.x;
+        array_4[a2->field_54 & 0x1F].flt_4_y = (double)a2->vPosition.y;
+        array_4[a2->field_54 & 0x1F].flt_8_z = (double)a2->vPosition.z;
+    }
 }
 
 //----- (004A7E89) --------------------------------------------------------
 void stru6::_4A7E89_sparkles_on_actor_after_it_casts_buff(Actor *pActor, unsigned int uDiffuse)
 {
-  Actor *v3; // edi@1
-  int v4; // ebx@3
-  //int result; // eax@5
-  Particle_sw Dst; // [sp+Ch] [bp-6Ch]@1
-  int v7; // [sp+74h] [bp-4h]@2
-  signed int pActora; // [sp+80h] [bp+8h]@1
+    Actor *v3; // edi@1
+    int v4; // ebx@3
+    //int result; // eax@5
+    Particle_sw Dst; // [sp+Ch] [bp-6Ch]@1
+    int v7; // [sp+74h] [bp-4h]@2
+    signed int pActora; // [sp+80h] [bp+8h]@1
 
-  memset(&Dst, 0, 0x68u);
-  Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
-  Dst.timeToLive = (rand() & 0x7F) + 128;
-  v3 = pActor;
-  Dst.uTextureID = pBitmaps_LOD->LoadTexture("effpar02", TEXTURE_DEFAULT);
-  pActora = 50;
-  Dst.flt_28 = 1.0;
-  do
-  {
-    v7 = (unsigned __int8)rand() + v3->vPosition.x - 127;
-    Dst.x = (double)v7;
-    v7 = (unsigned __int8)rand() + v3->vPosition.y - 127;
-    Dst.y = (double)v7;
-    v7 = v3->vPosition.z + (unsigned __int8)rand();
-    Dst.z = (double)v7;
-    if ( uDiffuse )
+    memset(&Dst, 0, 0x68u);
+    Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
+    Dst.timeToLive = (rand() & 0x7F) + 128;
+    v3 = pActor;
+    Dst.resource_id = this->effpar02;
+    pActora = 50;
+    Dst.flt_28 = 1.0;
+    do
     {
-      Dst.uDiffuse = uDiffuse;
-    }
-    else
-    {
-      v4 = rand() << 16;
-      Dst.uDiffuse = rand() | v4;
-    }
-    pEngine->pParticleEngine->AddParticle(&Dst);
-    --pActora;
-  }
-  while ( pActora );
+        v7 = (unsigned __int8)rand() + v3->vPosition.x - 127;
+        Dst.x = (double)v7;
+        v7 = (unsigned __int8)rand() + v3->vPosition.y - 127;
+        Dst.y = (double)v7;
+        v7 = v3->vPosition.z + (unsigned __int8)rand();
+        Dst.z = (double)v7;
+        if (uDiffuse)
+        {
+            Dst.uDiffuse = uDiffuse;
+        }
+        else
+        {
+            v4 = rand() << 16;
+            Dst.uDiffuse = rand() | v4;
+        }
+        pEngine->pParticleEngine->AddParticle(&Dst);
+        --pActora;
+    } while (pActora);
 }
 
 //----- (004A7F74) --------------------------------------------------------
 void stru6::_4A7F74(int x, int y, int z)
 {
-  stru6 *v4; // esi@1
-  char v5; // al@1
-  signed int v6; // edi@1
-  unsigned int v7; // eax@1
-  double v8; // st7@2
-  double v9; // st7@2
-  Particle_sw local_0; // [sp+8h] [bp-78h]@1
-  double v11; // [sp+70h] [bp-10h]@1
-  double v12; // [sp+78h] [bp-8h]@1
-  float z1; // [sp+88h] [bp+8h]@2
+    char v5; // al@1
+    signed int v6; // edi@1
+    double v8; // st7@2
+    double v9; // st7@2
+    Particle_sw local_0; // [sp+8h] [bp-78h]@1
+    double v11; // [sp+70h] [bp-10h]@1
+    double v12; // [sp+78h] [bp-8h]@1
+    float z1; // [sp+88h] [bp+8h]@2
 
-  v4 = this;
-  memset(&local_0, 0, 0x68u);
-  local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
-  local_0.uDiffuse = 0x7E7E7E;
-  v5 = rand();
-  local_0.flt_28 = 1.0;
-  v6 = 8;
-  local_0.timeToLive = (v5 & 0x7F) + 128;
-  v7 = v4->uTextureID_effpar1;
-  v12 = (double)x;
-  local_0.uTextureID = v7;
-  v11 = (double)y;
-  do
-  {
-    v8 = pRnd->GetRandom();
-    local_0.x = v8 * 40.0 - 20.0 + v12;
-    v9 = pRnd->GetRandom();
-    z1 = (double)z;
-    local_0.z = z1;
-    local_0.y = v9 * 40.0 - 20.0 + v11;
-    local_0.r = pRnd->GetRandom() * 400.0 - 200.0;
-    local_0.g = pRnd->GetRandom() * 400.0 - 200.0;
-    local_0.b = pRnd->GetRandom() * 150.0 + 50.0;
-    pEngine->pParticleEngine->AddParticle(&local_0);
-    --v6;
-  }
-  while ( v6 );
+    memset(&local_0, 0, 0x68u);
+    local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
+    local_0.uDiffuse = 0x7E7E7E;
+    v5 = rand();
+    local_0.flt_28 = 1.0;
+    v6 = 8;
+    local_0.timeToLive = (v5 & 0x7F) + 128;
+
+    v12 = (double)x;
+    local_0.resource_id = this->effpar01;
+    v11 = (double)y;
+    do
+    {
+        v8 = pRnd->GetRandom();
+        local_0.x = v8 * 40.0 - 20.0 + v12;
+        v9 = pRnd->GetRandom();
+        z1 = (double)z;
+        local_0.z = z1;
+        local_0.y = v9 * 40.0 - 20.0 + v11;
+        local_0.r = pRnd->GetRandom() * 400.0 - 200.0;
+        local_0.g = pRnd->GetRandom() * 400.0 - 200.0;
+        local_0.b = pRnd->GetRandom() * 150.0 + 50.0;
+        pEngine->pParticleEngine->AddParticle(&local_0);
+        --v6;
+    } while (v6);
 }
 
 //----- (004A806F) --------------------------------------------------------
@@ -791,60 +794,60 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
 
         case SPRITE_PROJECTILE_500:
         case SPRITE_PROJECTILE_530:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x00AAAFF, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x00AAAFF, effpar01);
             return false;
         case SPRITE_PROJECTILE_500_IMPACT:
         case SPRITE_PROJECTILE_530_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xAAAFF, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xAAAFF, effpar01);
             return true;
 
         case SPRITE_PROJECTILE_505:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x5C310E, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x5C310E, effpar01);
             return false;
         case SPRITE_PROJECTILE_505_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0x5C310E, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0x5C310E, effpar01);
             return false;
 
         case SPRITE_PROJECTILE_510:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFF3C1E, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFF3C1E, effpar01);
             return false;
         case SPRITE_PROJECTILE_510_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, effpar01);
             return false;
 
         case SPRITE_PROJECTILE_515:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x0062D0, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x0062D0, effpar01);
             return false;
         case SPRITE_PROJECTILE_515_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0x0062D0, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0x0062D0, effpar01);
             return false;
 
         case SPRITE_PROJECTILE_520:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x0AB450, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x0AB450, effpar01);
             return false;
         case SPRITE_PROJECTILE_520_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0x0AB450, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0x0AB450, effpar01);
             return false;
 
         case SPRITE_PROJECTILE_525:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xC8C805, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xC8C805, effpar01);
             return false;
         case SPRITE_PROJECTILE_525_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xC8C805, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xC8C805, effpar01);
             return false;
 
         case SPRITE_PROJECTILE_535:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFFFFFF, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFFFFFF, effpar01);
             return false;
         case SPRITE_PROJECTILE_535_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xFFFFFF, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xFFFFFF, effpar01);
             return false;
 
         case SPRITE_PROJECTILE_540:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x7E7E7E, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x7E7E7E, effpar01);
             return false;
         case SPRITE_PROJECTILE_540_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0x7E7E7E, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0x7E7E7E, effpar01);
             return false;
 
         case SPRITE_PROJECTILE_545:
@@ -867,7 +870,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
         case 570: case 571: case 572: case 573: case 574: case 575: case 576: case 577: case 578: case 579:
         case 580: case 581: case 582: case 583: case 584: case 585: case 586: case 587: case 588: case 589:
         case 590: case 591: case 592: case 593: case 594: case 595: case 596: case 597: case 598: case 599:
-            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, effpar01);
             return false;
 
         case SPRITE_811:
@@ -878,19 +881,19 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
 
 
         case SPRITE_SPELL_FIRE_FIRE_BOLT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFF3C1E, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFF3C1E, effpar01);
             AddMobileLight(a2, 0xFF3C1E, 256);
             return false;
 
         case SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, effpar01);
             AddMobileLight(a2, 0xFF3C1E, 256);
             return false;
 
 
 
         case SPRITE_SPELL_FIRE_FIREBALL:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFF3C1E, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFF3C1E, effpar01);
             AddMobileLight(a2, 0xFF3C1E, 256);
             return false;
 
@@ -915,32 +918,32 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
         case SPRITE_SPELL_FIRE_FIRE_SPIKE:
             return true;
         case SPRITE_SPELL_FIRE_FIRE_SPIKE_IMPACT:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1E, uTextureID_effpar1, 250.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1E, effpar01, 250.0);
             AddMobileLight(a2, 0xFF3C1E, 256);
             return false;
 
         case SPRITE_SPELL_FIRE_IMMOLATION:
-            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, effpar01);
             return false;
 
         case SPRITE_SPELL_FIRE_METEOR_SHOWER:
             return true;
         case SPRITE_SPELL_FIRE_METEOR_SHOWER_1:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1E, uTextureID_effpar1, 300.0);
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1E, uTextureID_effpar1, 250.0);
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1E, uTextureID_effpar1, 200.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1E, effpar01, 300.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1E, effpar01, 250.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1E, effpar01, 200.0);
             AddMobileLight(a2, 0xFF3C1E, 256);
             return false;
 
         case SPRITE_SPELL_FIRE_INFERNO:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1Eu, uTextureID_effpar1, 250.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xFF3C1Eu, effpar01, 250.0);
             return false;
 
         case SPRITE_SPELL_FIRE_INCINERATE:
             return true;
         case SPRITE_SPELL_FIRE_INCINERATE_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, uTextureID_effpar1);
-            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, effpar01);
+            _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, effpar01);
             AddMobileLight(a2, 0xFF3C1E, 256);
             return false;
 
@@ -962,7 +965,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
             AddProjectile(a2, 100, pBitmaps_LOD->LoadTexture(pContainer));
             return false;
         case SPRITE_SPELL_AIR_LIGHNING_BOLT_IMPACT:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xC8C814, uTextureID_effpar2, 200.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xC8C814, effpar02, 200.0);
             AddMobileLight(a2, 0xC8C814, 256);
             return false;
 
@@ -977,30 +980,30 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
         case SPRITE_SPELL_AIR_STARBURST:
             return true;
         case SPRITE_SPELL_AIR_STARBURST_1:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xC8C814, uTextureID_effpar1, 200.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xC8C814, effpar01, 200.0);
             AddMobileLight(a2, 0xC8C814, 256);
             return false;
 
 
 
         case SPRITE_SPELL_WATER_POISON_SPRAY:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xAB450, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xAB450, effpar01);
             AddMobileLight(a2, 0xAB450, 256);
             return false;
         case SPRITE_SPELL_WATER_POISON_SPRAY_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xAB450, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xAB450, effpar01);
             AddMobileLight(a2, 0xAB450, 256);
             return false;
 
         case SPRITE_SPELL_WATER_ICE_BOLT:
             return true;
         case SPRITE_SPELL_WATER_ICE_BOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0x9EB9F1, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0x9EB9F1, effpar01);
             AddMobileLight(a2, 0x9EB9F1, 256);
             return false;
 
         case SPRITE_SPELL_WATER_ACID_BURST:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x0AB450, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x0AB450, effpar01);
             AddMobileLight(a2, 0x0AB450, 256);
             return false;
         case SPRITE_SPELL_WATER_ACID_BURST_IMPACT:
@@ -1009,11 +1012,11 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
         case SPRITE_SPELL_WATER_ICE_BLAST:
             return true;
         case SPRITE_SPELL_WATER_ICE_BLAST_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0x9EB9F1, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0x9EB9F1, effpar01);
             AddMobileLight(a2, 0x9EB9F1, 256);
             return false;
         case SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x9EB9F1, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x9EB9F1, effpar01);
             return false;
 
 
@@ -1030,7 +1033,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
         case SPRITE_SPELL_EARTH_ROCK_BLAST:
             return true;
         case SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0x5C310E, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0x5C310E, effpar01);
             return false;
 
         case SPRITE_SPELL_EARTH_TELEKINESIS:
@@ -1043,13 +1046,13 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
             return false;
 
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x7E7E7E, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x7E7E7E, effpar01);
             return true;
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM_IMPACT:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0x7E7E7E, uTextureID_effpar1, 200.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0x7E7E7E, effpar01, 200.0);
             return false;
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x7E7E7E, uTextureID_effpar1);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x7E7E7E, effpar01);
             return false;
 
         case SPRITE_SPELL_EARTH_MASS_DISTORTION:
@@ -1077,24 +1080,24 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
             AddMobileLight(a2, 0x64640F, 128);
             return false;
         case SPRITE_SPELL_BODY_HARM_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xF00000, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xF00000, effpar01);
             return false;
 
         case SPRITE_SPELL_BODY_FLYING_FIST:
             return true;
         case SPRITE_SPELL_BODY_FLYING_FIST_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xF00000, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0xF00000, effpar01);
             AddMobileLight(a2, 0xF00000, 256);
             return false;
 
 
 
         case SPRITE_SPELL_LIGHT_LIGHT_BOLT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFFFFFF, uTextureID_effpar3);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFFFFFF, effpar03);
             AddMobileLight(a2, 0xFFFFFF, 128);
             return false;
         case SPRITE_SPELL_LIGHT_LIGHT_BOLT_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xFFFFFF, uTextureID_effpar2);
+            _4A75CC_single_spell_collision_particle(a2, 0xFFFFFF, effpar02);
             AddMobileLight(a2, 0xFFFFFF, 256);
             return false;
 
@@ -1116,7 +1119,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
             AddProjectile(a2, 100, -1);
             return false;
         case SPRITE_SPELL_LIGHT_SUNRAY_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0xFFFFFF, uTextureID_effpar3);
+            _4A75CC_single_spell_collision_particle(a2, 0xFFFFFF, effpar03);
             return false;
 
 
@@ -1131,7 +1134,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
         case SPRITE_SPELL_DARK_SHARPMETAL:
             return true;
         case SPRITE_SPELL_DARK_SHARPMETAL_IMPACT:
-            _4A75CC_single_spell_collision_particle(a2, 0x7E7E7E, uTextureID_effpar1);
+            _4A75CC_single_spell_collision_particle(a2, 0x7E7E7E, effpar01);
             return false;
 
         case SPRITE_SPELL_DARK_SACRIFICE:
@@ -1357,62 +1360,62 @@ void stru6::DrawPlayerBuffAnims()
 //----- (004A90A0) --------------------------------------------------------
 void stru6::LoadAnimations()
 {
-  uTextureID_effpar1 = pBitmaps_LOD->LoadTexture("effpar01", TEXTURE_DEFAULT);
-  uTextureID_effpar2 = pBitmaps_LOD->LoadTexture("effpar02", TEXTURE_DEFAULT);
-  uTextureID_effpar3 = pBitmaps_LOD->LoadTexture("effpar03", TEXTURE_DEFAULT);
-  uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);
+    effpar01 = pBitmaps_LOD->LoadTexture("effpar01");
+    effpar02 = pBitmaps_LOD->LoadTexture("effpar02");
+    effpar03 = pBitmaps_LOD->LoadTexture("effpar03");
+    uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);
 
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("zapp"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal1"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal2"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal3"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost1"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost2"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost3"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell03"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell05"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell14"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell17"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell21"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell25"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell27"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell36"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell38"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell46"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell51"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell55"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell58"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell69"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell71"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell73"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell75"));
-  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell96"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("zapp"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal1"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal2"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal3"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost1"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost2"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost3"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell03"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell05"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell14"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell17"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell21"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell25"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell27"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell36"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell38"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell46"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell51"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell55"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell58"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell69"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell71"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell73"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell75"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell96"));
 
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell01"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell02"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell03"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell09"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell11"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell18"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell22"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell26"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell29"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39c"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell41"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell57c"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell62"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell65"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell66"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell70"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell76"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell84"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell90"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell92"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell93"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
-  pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell01"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell02"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell03"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell09"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell11"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell18"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell22"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell26"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell29"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39c"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell41"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell57c"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell62"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell65"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell66"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell70"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell76"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell84"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell90"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell92"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell93"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
 }
 
 //----- (004775ED) --------------------------------------------------------
