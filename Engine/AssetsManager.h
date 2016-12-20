@@ -7,6 +7,8 @@ class AssetsManager
     public:
         AssetsManager() {}
 
+        bool ReleaseAllImages();
+
         Image *GetImage_PCXFromFile(const wchar_t *filename);
         Image *GetImage_PCXFromIconsLOD(const wchar_t *name);
         Image *GetImage_PCXFromNewLOD(const wchar_t *name);

@@ -8,31 +8,33 @@
 #include "Engine/Time.h"
 #include "Engine/stru6.h"
 
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Overlays.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Level/Decoration.h"
+
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/ObjectList.h"
+
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UiGame.h"
+#include "GUI/UI/UiStatusBar.h"
 
 #include "IO/Mouse.h"
-
-#include "GUI/UI/UiStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
 #include "CastSpellInfo.h"
-#include "../Objects/Actor.h"
 #include "../Party.h"
-#include "../Graphics/Outdoor.h"
-#include "../Graphics/Overlays.h"
 #include "../Events.h"
-#include "../Graphics/Viewport.h"
 #include "../OurMath.h"
-#include "../Objects/SpriteObject.h"
-#include "../Objects/ObjectList.h"
 #include "../stru123.h"
 #include "../Tables/IconFrameTable.h"
 #include "../Awards.h"
 #include "../TurnEngine/TurnEngine.h"
 #include "../LOD.h"
-#include "../Graphics/Level/Decoration.h"
-#include "..\..\GUI\UI\UIPartyCreation.h"
+
 
 const size_t CastSpellInfoCount = 10;
 std::array<CastSpellInfo, CastSpellInfoCount> pCastSpellInfo;
@@ -1121,7 +1123,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           }
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          int mon_num = pRenderer->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
           v700.x = 0;
           v700.y = 0;
           v700.z = 0;
@@ -2016,7 +2018,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
               duration = 300 * spell_level + 180;
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          int mon_num = pRenderer->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
           pEngine->GetStru6()->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xFFFFFF, 192);
           //++pSpellSprite.uType;
           pSpellSprite.uType = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
@@ -2409,7 +2411,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
               amount = 180 * spell_level;
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          int mon_num = pRenderer->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
           pEngine->GetStru6()->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xA0A0A, 192);
           //++pSpellSprite.uType;
           pSpellSprite.uType = SPRITE_SPELL_MIND_MASS_FEAR_1;
@@ -2734,7 +2736,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
           pEngine->GetStru6()->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xAFF0A, 192);
-          int mon_num = pRenderer->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
           //++pSpellSprite.uType;
           pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
           v688.x = 0;
@@ -2841,7 +2843,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           }
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          int mon_num = pRenderer->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
           //++pSpellSprite.uType;
           pSpellSprite.uType = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
           v694.x = 0;
@@ -3000,7 +3002,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
               if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions_times[Condition_Dead].Valid())
               {
                   pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(Condition_Zombie, 1);
-                  ReloadPlayerPortraits(pCastSpell->uPlayerID_2, (pParty->pPlayers[pCastSpell->uPlayerID_2].GetSexByVoice() != 0) + 23);
+                  GameUI_ReloadPlayerPortraits(pCastSpell->uPlayerID_2, (pParty->pPlayers[pCastSpell->uPlayerID_2].GetSexByVoice() != 0) + 23);
                   pParty->pPlayers[pCastSpell->uPlayerID_2].conditions_times[Condition_Zombie] = pParty->GetPlayingTime();
               }
               break;
@@ -3280,7 +3282,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
 
-          int mon_num = pRenderer->_46ภ6ภั_GetActorsInViewport((signed __int64)pIndoorCameraD3D->GetPickDepth());
+          int mon_num = render->_46ภ6ภั_GetActorsInViewport((signed __int64)pIndoorCameraD3D->GetPickDepth());
           v707.x = 0;
           v707.y = 0;
           v707.z = 0;

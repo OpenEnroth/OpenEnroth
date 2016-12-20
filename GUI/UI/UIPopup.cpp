@@ -85,7 +85,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
       return;
 
 
-    pRenderer->SetUIClipRect(uX, uY, uX + uWidth, uY + uHeight);
+    render->SetUIClipRect(uX, uY, uX + uWidth, uY + uHeight);
 
     unsigned int parchment_width = parchment->GetWidth();
     unsigned int parchment_height = parchment->GetHeight();
@@ -100,28 +100,28 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
       for ( uint i = uNumTiles + 1; i; --i )
       {
         coord_x += parchment_width;
-        pRenderer->DrawTextureNew(coord_x / 640.0f, coord_y / 480.0f, parchment);
+        render->DrawTextureNew(coord_x / 640.0f, coord_y / 480.0f, parchment);
       }
       coord_y += parchment_height;
     }
 
 
-    pRenderer->DrawTextureAlphaNew(
+    render->DrawTextureAlphaNew(
         uX / 640.0f,
         uY / 480.0f,
         messagebox_corner_x
     );
-    pRenderer->DrawTextureAlphaNew(
+    render->DrawTextureAlphaNew(
         uX / 640.0f,
         (uY + uHeight - messagebox_corner_y->GetHeight()) / 480.0f,
         messagebox_corner_y
     );
-    pRenderer->DrawTextureAlphaNew(
+    render->DrawTextureAlphaNew(
         (uX + uWidth - messagebox_corner_z->GetWidth()) / 640.0f,
         uY / 480.0f,
         messagebox_corner_z
     );
-    pRenderer->DrawTextureAlphaNew(
+    render->DrawTextureAlphaNew(
         (uX + uWidth - messagebox_corner_z->GetWidth()) / 640.0f,
         (uY + uHeight - messagebox_corner_y->GetHeight()) / 480.0f,
         messagebox_corner_w
@@ -130,7 +130,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
 
     if (uWidth > messagebox_corner_x->GetWidth() + messagebox_corner_z->GetWidth())
     {
-      pRenderer->SetUIClipRect(
+      render->SetUIClipRect(
           uX + messagebox_corner_x->GetWidth(),
           uY,
           uX + uWidth - messagebox_corner_z->GetWidth(),
@@ -144,12 +144,12 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
           x += messagebox_border_top->GetWidth()
       )
       {
-          pRenderer->DrawTextureAlphaNew(
+          render->DrawTextureAlphaNew(
               x / 640.0f,
               uY / 480.0f,
               messagebox_border_top
           );
-          pRenderer->DrawTextureAlphaNew(
+          render->DrawTextureAlphaNew(
               x / 640.0f,
               (uY + uHeight - messagebox_border_bottom->GetHeight()) / 480.0f,
               messagebox_border_bottom
@@ -160,7 +160,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
     // vertical borders
     if ( uHeight > messagebox_corner_x->GetHeight() + messagebox_corner_y->GetHeight())
     {
-      pRenderer->SetUIClipRect(
+      render->SetUIClipRect(
           uX,
           uY + messagebox_corner_x->GetHeight(),
           uX + uWidth,
@@ -173,19 +173,19 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
           y += messagebox_border_top->GetHeight()
       )
       {
-          pRenderer->DrawTextureAlphaNew(
+          render->DrawTextureAlphaNew(
               uX / 640.0f,
               y / 480.0f,
               messagebox_border_left
           );
-          pRenderer->DrawTextureAlphaNew(
+          render->DrawTextureAlphaNew(
               (uX + uWidth - messagebox_border_right->GetWidth() - 1) / 640.0f,
               y / 480.0f,
               messagebox_border_right
           );
       }
     }
-    pRenderer->ResetUIClipRect();
+    render->ResetUIClipRect();
 }
 
 //----- (0041D895) --------------------------------------------------------
@@ -279,7 +279,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     if (inspect_item->IsBroken())
     {
         iteminfo_window.DrawMessageBox(0);
-        pRenderer->SetUIClipRect(iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
+        render->SetUIClipRect(iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
             iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
             iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
         iteminfo_window.uFrameWidth -= 24;
@@ -287,7 +287,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
         iteminfo_window.uFrameZ = iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
         iteminfo_window.uFrameW = iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
 
-        pRenderer->DrawTransparentRedShade(
+        render->DrawTransparentRedShade(
             (iteminfo_window.uFrameX + v78) / 640.0f,
             (v81 + iteminfo_window.uFrameY + 30) / 480.0f,
             //pIcons_LOD->LoadTexturePtr(inspect_item->GetIconName(), TEXTURE_16BIT_PALETTE));
@@ -299,7 +299,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
         iteminfo_window.DrawTitleText(
             pFontArrus, 0x64u, ((signed int)iteminfo_window.uFrameHeight >> 1) - pFontArrus->CalcTextHeight(localization->GetString(32), &iteminfo_window, 0) / 2,
             Color16(0xFFu, 0x19u, 0x19u), localization->GetString(32), 3); //"Broken Item"
-        pRenderer->ResetUIClipRect();
+        render->ResetUIClipRect();
 
         if (inspect_item_image)
         {
@@ -312,20 +312,20 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     if (!inspect_item->IsIdentified())
     {
         iteminfo_window.DrawMessageBox(0);
-        pRenderer->SetUIClipRect(iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
+        render->SetUIClipRect(iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
             iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12, iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
         iteminfo_window.uFrameWidth -= 24;
         iteminfo_window.uFrameHeight -= 12;
         iteminfo_window.uFrameZ = iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
         iteminfo_window.uFrameW = iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-        pRenderer->DrawTextureAlphaNew(
+        render->DrawTextureAlphaNew(
             (iteminfo_window.uFrameX + v78) / 640.0f,
             (v81 + iteminfo_window.uFrameY + 30) / 480.0f,
             inspect_item_image);
         iteminfo_window.DrawTitleText(pFontArrus, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu), pItemsTable->pItems[inspect_item->uItemID].pUnidentifiedName, 3);
         iteminfo_window.DrawTitleText(pFontArrus, 0x64u, ((signed int)iteminfo_window.uFrameHeight >> 1) - pFontArrus->CalcTextHeight(localization->GetString(232), &iteminfo_window, 0) / 2,
             Color16(0xFFu, 0x19u, 0x19u), localization->GetString(232), 3); // Not Identified
-        pRenderer->ResetUIClipRect();
+        render->ResetUIClipRect();
 
         if (inspect_item_image)
         {
@@ -434,13 +434,13 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     iteminfo_window.uFrameW = iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
     iteminfo_window.uFrameZ = iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
     iteminfo_window.DrawMessageBox(0);
-    pRenderer->SetUIClipRect(iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
+    render->SetUIClipRect(iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
         iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12, iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
     iteminfo_window.uFrameWidth -= 12;
     iteminfo_window.uFrameHeight -= 12;
     iteminfo_window.uFrameZ = iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
     iteminfo_window.uFrameW = iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-    pRenderer->DrawTextureAlphaNew(
+    render->DrawTextureAlphaNew(
         (iteminfo_window.uFrameX + v78) / 640.0f,
         (iteminfo_window.uFrameY + (signed int)(iteminfo_window.uFrameHeight - inspect_item_image->GetHeight()) / 2) / 480.0f,
         inspect_item_image
@@ -469,7 +469,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     {
         auto txt = StringPrintf("%s: %lu", localization->GetString(465), v77); // Value
         iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - LOBYTE(pFontComic->uFontHeight), 0, txt, 0, 0, 0);
-        pRenderer->ResetUIClipRect();
+        render->ResetUIClipRect();
     }
     else
     {
@@ -507,7 +507,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
         {
             if (!(inspect_item->uAttributes & ITEM_HARDENED))
             {
-                pRenderer->ResetUIClipRect();
+                render->ResetUIClipRect();
                 if (!areWeLoadingTexture)
                 {
                     pIcons_LOD->LoadTexturePtr(inspect_item->GetIconName(), TEXTURE_16BIT_PALETTE)->Release();
@@ -520,7 +520,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
         LOWORD(inspect_item->uAttributes) = r_mask;
         iteminfo_window.DrawText(pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
             iteminfo_window.uFrameHeight - LOBYTE(pFontComic->uFontHeight), inspect_item->uAttributes, txt3, 0, 0, 0);
-        pRenderer->ResetUIClipRect();
+        render->ResetUIClipRect();
     }
     if (!areWeLoadingTexture)
     {
@@ -600,9 +600,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         }
     }
     v10 = pSpriteFrameTable->GetFrame(pActors[uActorID].pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation], pMonsterInfoUI_Doll.uCurrentActionTime);
-    v106.pTarget = pRenderer->pTargetSurface;
-    v106.pTargetZ = pRenderer->pActiveZBuffer;
-    v106.uTargetPitch = pRenderer->uTargetSurfacePitch;
+    v106.pTarget = render->pTargetSurface;
+    v106.pTargetZ = render->pActiveZBuffer;
+    v106.uTargetPitch = render->uTargetSurfacePitch;
     v106.uViewportX = pWindow->uFrameX + 13;
     v106.uViewportY = pWindow->uFrameY + 52;
     v106.uViewportW = (pWindow->uFrameY + 52) + 128;
@@ -614,12 +614,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     v106.pPalette = PaletteManager::Get_Dark_or_Red_LUT(v10->uPaletteIndex, 0, 1);
     v106.sZValue = 0;
     v106.uFlags = 0;
-    pRenderer->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
-    pRenderer->RasterLine2D(v106.uViewportX - 1, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));//горизонтальная верхняя линия
-    pRenderer->RasterLine2D(v106.uViewportX - 1, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));//горизонтальная нижняя линия
-    pRenderer->RasterLine2D(v106.uViewportX + 129, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));//левая вертикальная линия
-    pRenderer->RasterLine2D(v106.uViewportX + 129, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));//правая вертикальная линия
-    //if ( pRenderer->pRenderD3D )
+    render->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
+    render->RasterLine2D(v106.uViewportX - 1, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));//горизонтальная верхняя линия
+    render->RasterLine2D(v106.uViewportX - 1, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));//горизонтальная нижняя линия
+    render->RasterLine2D(v106.uViewportX + 129, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));//левая вертикальная линия
+    render->RasterLine2D(v106.uViewportX + 129, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));//правая вертикальная линия
+    //if ( render->pRenderD3D )
     {
         v106.uScreenSpaceY = v115 + v106.uViewportY + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uBufferHeight;
 
@@ -653,24 +653,24 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
             dst_z = v106.uViewportZ;
         if (dst_w > v106.uViewportW)
             dst_w = v106.uViewportW;
-        pRenderer->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0x7FF);
-        pRenderer->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0x7FF);
+        render->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0x7FF);
+        render->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0x7FF);
         dest_rect.left = v106.uViewportX;
         dest_rect.top = v106.uViewportY;
         dest_rect.right = v106.uViewportZ;
         dest_rect.bottom = v106.uViewportW;
 
-        ErrD3D(pRenderer->pBackBuffer4->Blt(&dest_rect, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &Dst));
+        ErrD3D(render->pBackBuffer4->Blt(&dest_rect, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &Dst));
         {
             memset(&pDesc, 0, sizeof(pDesc));
             pDesc.dwSize = sizeof(pDesc);
-            if (pRenderer->LockSurface_DDraw4(pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface, &pDesc, DDLOCK_WAIT))
+            if (render->LockSurface_DDraw4(pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface, &pDesc, DDLOCK_WAIT))
             {
                 ushort* src = (unsigned __int16 *)pDesc.lpSurface;
                 uint num_top_scanlines_above_frame_y = i - dst_y;
                 for (uint y = dst_y; y < dst_w; ++y)
                 {
-                    //ushort* dst = &pRenderer->pTargetSurface[y * pRenderer->uTargetSurfacePitch + dst_x];
+                    //ushort* dst = &render->pTargetSurface[y * render->uTargetSurfacePitch + dst_x];
 
                     uint src_y = num_top_scanlines_above_frame_y + y;
                     for (uint x = dst_x; x < dst_z; ++x)
@@ -681,7 +681,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
                             pDesc.dwWidth  * src_x / pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaWidth;
                         uint b = src[idx] & 0x1F;
                         //*dst++ = b | 2 * (src[idx] & 0xFFE0);
-                        pRenderer->WritePixel16(x, y, b | 2 * (src[idx] & 0xFFE0));
+                        render->WritePixel16(x, y, b | 2 * (src[idx] & 0xFFE0));
                     }
                 }
                 pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface->Unlock(NULL);
@@ -690,7 +690,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     }
     /*else
     {
-      pRenderer->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0);
+      render->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0);
       if ( v10->pHwSpriteIDs[0] >= 0 )
         pSprites_LOD->pSpriteHeaders[v10->pHwSpriteIDs[0]].DrawSprite_sw(&v106, 0);
     }*/
@@ -1403,7 +1403,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
     {
         pMouse->GetClickPos(&pX, &pY);
     }
-    //if ( pRenderer->bWindowMode )
+    //if ( render->bWindowMode )
     {
         GetCursorPos(&Point);
         ScreenToClient(window->GetApiHandle(), &Point);
@@ -1453,8 +1453,8 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
         }
         else
         {
-            if (pRenderer->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF)
-                GameUI_DrawItemInfo(&pChests[pChestWindow->par1C].igChestItems[pChests[pChestWindow->par1C].pInventoryIndices[(pRenderer->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1] - 1]);
+            if (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF)
+                GameUI_DrawItemInfo(&pChests[pChestWindow->par1C].igChestItems[pChests[pChestWindow->par1C].pInventoryIndices[(render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1] - 1]);
         }
         break;
     }
@@ -1525,23 +1525,23 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
             if ((signed int)pX <= 320)
                 popup_window.uFrameX = pX + 30;
             popup_window.uFrameY = 40;
-            //if ( pRenderer->pRenderD3D )
+            //if ( render->pRenderD3D )
             v5 = pEngine->pVisInstance->get_picked_object_zbuf_val();
             /*else
-              v5 = pRenderer->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
+              v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
             if (PID_TYPE((unsigned __int16)v5) == OBJECT_Actor)
             {
-                /*if ( pRenderer->uNumSceneBegins )
+                /*if ( render->uNumSceneBegins )
                 {
                   popup_window.DrawMessageBox(1);
                   MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
                 }
                 else*/
                 {
-                    pRenderer->BeginScene();
+                    render->BeginScene();
                     popup_window.DrawMessageBox(1);
                     MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
-                    pRenderer->EndScene();
+                    render->EndScene();
                 }
             }
             if (PID_TYPE((unsigned __int16)v5) == OBJECT_Item)
@@ -1707,7 +1707,7 @@ void Inventory_ItemPopupAndAlchemy()
         return;
 
     pMouse->GetCursorPos(&cursor);
-    int item_pid = (pRenderer->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF) - 1;
+    int item_pid = (render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF) - 1;
     //if (item_pid == -1) //added here to avoid crash
     //    return;
 

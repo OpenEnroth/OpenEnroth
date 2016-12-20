@@ -99,7 +99,7 @@ void GUIWindow_MainMenu::Update()
                         pY = 337;
                         break;
                     }
-                    pRenderer->DrawTextureAlphaNew(495/640.0f, pY/480.0f, pTexture);
+                    render->DrawTextureAlphaNew(495/640.0f, pY/480.0f, pTexture);
                 }
             }
         }
@@ -110,9 +110,9 @@ void GUIWindow_MainMenu::Update()
 //----- (0041B578) --------------------------------------------------------
 void MainMenuUI_LoadFontsAndSomeStuff()
 {
-  //pIcons_LOD->SetupPalettes(pRenderer->uTargetRBits, pRenderer->uTargetGBits, pRenderer->uTargetBBits);
+  //pIcons_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits, render->uTargetBBits);
   pIcons_LOD->SetupPalettes(5, 6, 5);
-  //pPaletteManager->SetColorChannelInfo(pRenderer->uTargetRBits, pRenderer->uTargetGBits, pRenderer->uTargetBBits);
+  //pPaletteManager->SetColorChannelInfo(render->uTargetRBits, render->uTargetGBits, render->uTargetBBits);
   pPaletteManager->SetColorChannelInfo(5, 6, 5);
   pPaletteManager->RecalculateAll();
 
@@ -181,8 +181,6 @@ void MainMenuUI_Create()
     ui_buttdesc2 = assets->GetImage_16BitAlpha(L"BUTTESC2");
     dialogue_ui_x_ok_u = assets->GetImage_16BitColorKey(L"x_ok_u", 0x7FF);
     ui_buttyes2 = assets->GetImage_16BitAlpha(L"BUTTYES2");
-    ui_partycreation_buttmake = assets->GetImage_16BitAlpha(L"BUTTMAKE");
-    ui_partycreation_buttmake2 = assets->GetImage_16BitAlpha(L"BUTTMAKE2");
 
     pPrimaryWindow = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, 0);
     pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0, 0, "", 0);
@@ -331,123 +329,117 @@ void fill_pixels_fast(unsigned int a1, unsigned __int16 *pPixels, unsigned int u
 //----- (004979D2) --------------------------------------------------------
 MENU_STATE MainMenuUI_Credits_Loop()
 {
-  char *cred_texturet; // edi@5
-  FILE *pFile; // eax@5
-  unsigned int pSize; // esi@7
-  MSG Msg; // [sp+84h] [bp-B8h]@10
-  GUIWindow credit_window;
-  int move_Y; // [sp+128h] [bp-14h]@1
-  char *pString; // [sp+12Ch] [bp-10h]@9
-  GUIFont *pFontQuick; // [sp+134h] [bp-8h]@1
-  GUIFont *pFontCChar; // [sp+138h] [bp-4h]@1
-  RGBTexture cred_texture; // [sp+100h] [bp-3Ch]@1
-  Texture_MM7 pTemporaryTexture; // [sp+Ch] [bp-130h]@5
+    char *cred_texturet; // edi@5
+    FILE *pFile; // eax@5
+    unsigned int pSize; // esi@7
+    MSG Msg; // [sp+84h] [bp-B8h]@10
+    GUIWindow credit_window;
+    int move_Y; // [sp+128h] [bp-14h]@1
+    char *pString; // [sp+12Ch] [bp-10h]@9
+    GUIFont *pFontQuick; // [sp+134h] [bp-8h]@1
+    GUIFont *pFontCChar; // [sp+138h] [bp-4h]@1
+    RGBTexture cred_texture; // [sp+100h] [bp-3Ch]@1
+    Texture_MM7 pTemporaryTexture; // [sp+Ch] [bp-130h]@5
 
-  pFontQuick = LoadFont("quick.fnt", "FONTPAL", NULL);
-  pFontCChar = LoadFont("cchar.fnt", "FONTPAL", NULL);
+    pFontQuick = LoadFont("quick.fnt", "FONTPAL", NULL);
+    pFontCChar = LoadFont("cchar.fnt", "FONTPAL", NULL);
 
-  if ( pMessageQueue_50CBD0->uNumMessages )
-    pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
-  ++pIcons_LOD->uTexturePacksCount;
-  if ( !pIcons_LOD->uNumPrevLoadedFiles )
-    pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
-  //dword_A74C88 = 0;//??? часть дальнейшего кода отсутствует, там использовалась данная переменная
+    if (pMessageQueue_50CBD0->uNumMessages)
+        pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
 
-
-  if ( use_music_folder )
-	PlayAudio(L"Music\\15.mp3");
-  else
-    pAudioPlayer->PlayMusicTrack(MUSIC_Credits);
-
-  Image *mm6title = assets->GetImage_PCXFromIconsLOD(L"mm6title.pcx");
-
-  cred_texturet = (char *)pEvents_LOD->LoadRaw("credits.txt", 0);
-  pFile = pEvents_LOD->FindContainer("credits.txt", 0);
-  if ( !pFile )
-    Error(localization->GetString(63)); // "Might and Magic VII is having trouble loading files. 
-
-  // Please re-install to fix this problem. Note: Re-installing will not destroy your save games."
-
-  //для получения размера-----------------------
-  fread(&pTemporaryTexture, 1, 0x30, pFile);
-  pSize = pTemporaryTexture.uDecompressedSize;
-  if ( !pSize )
-    pSize = pTemporaryTexture.uTextureSize;
-  memset(&pTemporaryTexture, 0, 0x48);//обнуление
-  cred_texturet[pSize] = 0;//конец текста
-
-  credit_window.uFrameWidth = 250;
-  credit_window.uFrameHeight = 440;
-  credit_window.uFrameX = 389;
-  credit_window.uFrameY = 19;
-
-  cred_texture.uWidth = 250;
-  cred_texture.uHeight = pFontQuick->GetStringHeight2(pFontCChar, cred_texturet, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
-  cred_texture.uNumPixels = cred_texture.uWidth * cred_texture.uHeight;
-  cred_texture.pPixels = (unsigned __int16 *)malloc(2 * cred_texture.uNumPixels);
-  fill_pixels_fast(Color16(0, 0xFFu, 0xFFu), cred_texture.pPixels, cred_texture.uNumPixels);
-  cred_texture._allocation_flags = 0;
-
-  //дать шрифт и цвета тексту
-  pString = (char *)malloc(2 * pSize);
-  strncpy(pString, cred_texturet, pSize);
-  pString[pSize] = 0;
-  pFontQuick->_44D2FD_prolly_draw_credits_entry(pFontCChar, 0, credit_window.uFrameHeight, cred_texture.uWidth,
-    cred_texture.uHeight, Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu), pString, cred_texture.pPixels, cred_texture.uWidth);
-  free(pString);
-
-  pWindow_MainMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, cred_texturet);
-  pWindow_MainMenu->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "", 0);
-  current_screen_type = SCREEN_CREATORS;
-  SetCurrentMenuID(MENU_CREDITSPROC);
-
-  move_Y = 0;
-  do
-  {
-    while ( PeekMessageA(&Msg, 0, 0, 0, 1) )
-    {
-      if ( Msg.message == 18 )
-        Engine_DeinitializeAndTerminate(0);
-      TranslateMessage(&Msg);
-      DispatchMessageA(&Msg);
-    }
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
-    {
-      WaitMessage();
-    }
+    if (use_music_folder)
+        PlayAudio(L"Music\\15.mp3");
     else
-    {
-      pRenderer->BeginScene();
-      pRenderer->DrawTextureNew(0, 0, mm6title);
-      pRenderer->SetUIClipRect(credit_window.uFrameX, credit_window.uFrameY, credit_window.uFrameX + credit_window.uFrameWidth,
-           credit_window.uFrameY + credit_window.uFrameHeight);
-      pRenderer->CreditsTextureScroll(credit_window.uFrameX, credit_window.uFrameY, 0, move_Y, &cred_texture);
-      pRenderer->ResetUIClipRect();
-      pRenderer->EndScene();
-      ++move_Y;
-      if ( move_Y >= cred_texture.uHeight )
-        SetCurrentMenuID(MENU_MAIN);
-      pRenderer->Present();
-      current_screen_type = SCREEN_GAME;//Ritor1: temporarily, must be corrected MainMenu_EventLoop()
-      MainMenu_EventLoop();
-    }
-  }
-  while ( GetCurrentMenuID() == MENU_CREDITSPROC );
-  if ( use_music_folder )
-	alSourceStop(mSourceID);
-  pAudioPlayer->_4AA258(1);
-  free(cred_texturet);
-  free(pFontQuick);
-  free(pFontCChar);
-  pWindow_MainMenu->Release();
-  pIcons_LOD->RemoveTexturesPackFromTextureList();
+        pAudioPlayer->PlayMusicTrack(MUSIC_Credits);
 
-  if (mm6title)
-  {
-      mm6title->Release();
-      mm6title = nullptr;
-  }
-    
-  cred_texture.Release();
-  return MENU_MAIN;     // return MENU_Main
+    Image *mm6title = assets->GetImage_PCXFromIconsLOD(L"mm6title.pcx");
+
+    cred_texturet = (char *)pEvents_LOD->LoadRaw("credits.txt", 0);
+    pFile = pEvents_LOD->FindContainer("credits.txt", 0);
+    if (!pFile)
+        Error(localization->GetString(63)); // "Might and Magic VII is having trouble loading files. 
+
+      // Please re-install to fix this problem. Note: Re-installing will not destroy your save games."
+
+      //для получения размера-----------------------
+    fread(&pTemporaryTexture, 1, 0x30, pFile);
+    pSize = pTemporaryTexture.uDecompressedSize;
+    if (!pSize)
+        pSize = pTemporaryTexture.uTextureSize;
+    memset(&pTemporaryTexture, 0, 0x48);//обнуление
+    cred_texturet[pSize] = 0;//конец текста
+
+    credit_window.uFrameWidth = 250;
+    credit_window.uFrameHeight = 440;
+    credit_window.uFrameX = 389;
+    credit_window.uFrameY = 19;
+
+    cred_texture.uWidth = 250;
+    cred_texture.uHeight = pFontQuick->GetStringHeight2(pFontCChar, cred_texturet, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
+    cred_texture.uNumPixels = cred_texture.uWidth * cred_texture.uHeight;
+    cred_texture.pPixels = (unsigned __int16 *)malloc(2 * cred_texture.uNumPixels);
+    fill_pixels_fast(Color16(0, 0xFFu, 0xFFu), cred_texture.pPixels, cred_texture.uNumPixels);
+    cred_texture._allocation_flags = 0;
+
+    //дать шрифт и цвета тексту
+    pString = (char *)malloc(2 * pSize);
+    strncpy(pString, cred_texturet, pSize);
+    pString[pSize] = 0;
+    pFontQuick->_44D2FD_prolly_draw_credits_entry(pFontCChar, 0, credit_window.uFrameHeight, cred_texture.uWidth,
+        cred_texture.uHeight, Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu), pString, cred_texture.pPixels, cred_texture.uWidth);
+    free(pString);
+
+    pWindow_MainMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, cred_texturet);
+    pWindow_MainMenu->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "", 0);
+    current_screen_type = SCREEN_CREATORS;
+    SetCurrentMenuID(MENU_CREDITSPROC);
+
+    move_Y = 0;
+    do
+    {
+        while (PeekMessageA(&Msg, 0, 0, 0, 1))
+        {
+            if (Msg.message == 18)
+                Engine_DeinitializeAndTerminate(0);
+            TranslateMessage(&Msg);
+            DispatchMessageA(&Msg);
+        }
+        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
+        {
+            WaitMessage();
+        }
+        else
+        {
+            render->BeginScene();
+            render->DrawTextureNew(0, 0, mm6title);
+            render->SetUIClipRect(credit_window.uFrameX, credit_window.uFrameY, credit_window.uFrameX + credit_window.uFrameWidth,
+                credit_window.uFrameY + credit_window.uFrameHeight);
+            render->CreditsTextureScroll(credit_window.uFrameX, credit_window.uFrameY, 0, move_Y, &cred_texture);
+            render->ResetUIClipRect();
+            render->EndScene();
+            ++move_Y;
+            if (move_Y >= cred_texture.uHeight)
+                SetCurrentMenuID(MENU_MAIN);
+            render->Present();
+            current_screen_type = SCREEN_GAME;//Ritor1: temporarily, must be corrected MainMenu_EventLoop()
+            MainMenu_EventLoop();
+        }
+    } while (GetCurrentMenuID() == MENU_CREDITSPROC);
+    if (use_music_folder)
+        alSourceStop(mSourceID);
+    pAudioPlayer->_4AA258(1);
+    free(cred_texturet);
+    free(pFontQuick);
+    free(pFontCChar);
+    pWindow_MainMenu->Release();
+    pIcons_LOD->RemoveTexturesPackFromTextureList();
+
+    if (mm6title)
+    {
+        mm6title->Release();
+        mm6title = nullptr;
+    }
+
+    cred_texture.Release();
+    return MENU_MAIN;     // return MENU_Main
 }

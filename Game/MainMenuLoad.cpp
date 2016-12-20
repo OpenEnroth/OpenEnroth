@@ -148,14 +148,14 @@ void MainMenuLoad_Loop()
             continue;
         }
 
-        pRenderer->BeginScene();
-        pRenderer->DrawTextureNew(0, 0, main_menu_background);
+        render->BeginScene();
+        render->DrawTextureNew(0, 0, main_menu_background);
 
         MainMenuLoad_EventLoop();
         GUI_UpdateWindows();
 
-        pRenderer->EndScene();
-        pRenderer->Present();
+        render->EndScene();
+        render->Present();
     }
 
     pGUIWindow_CurrentMenu->Release();

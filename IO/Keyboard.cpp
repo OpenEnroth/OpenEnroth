@@ -337,7 +337,7 @@ bool Keyboard::WasKeyPressed(int vKey)
 void OnPressSpace()
 {
 
-  //if ( pRenderer->pRenderD3D )
+  //if ( render->pRenderD3D )
   {
     pEngine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
     int pid = pEngine->pVisInstance->get_picked_object_zbuf_val();
@@ -366,8 +366,8 @@ void OnPressSpace()
 	  {
 		if ( (signed int)v2 < (signed int)v20 )
 		{
-			v1 = &pRenderer->pActiveZBuffer[(int)&v2[v3]];
-			v21 = &pRenderer->pActiveZBuffer[(int)&v2[v3]];
+			v1 = &render->pActiveZBuffer[(int)&v2[v3]];
+			v21 = &render->pActiveZBuffer[(int)&v2[v3]];
 			v4 = v22;
 			v5 = (((char *)v20 - v2 - 1) >> 1) + 1;
 			do

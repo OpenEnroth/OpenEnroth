@@ -383,13 +383,13 @@ void MainMenu_Loop()
         if (!main_menu_bg)
             main_menu_bg = assets->GetImage_PCXFromIconsLOD(L"mm6title.pcx");
 
-        pRenderer->ResetUIClipRect();
-        pRenderer->BeginScene();
+        render->ResetUIClipRect();
+        render->BeginScene();
         {
             DrawMM7CopyrightWindow();
         }
-        pRenderer->EndScene();
-        pRenderer->Present();
+        render->EndScene();
+        render->Present();
 
 #ifdef NDEBUG
         Sleep(1500);   // let the copyright window stay for a while
@@ -433,24 +433,24 @@ void MainMenu_Loop()
         if (!main_menu_background)
             main_menu_background = assets->GetImage_PCXFromIconsLOD(L"title.pcx");
 
-        pRenderer->BeginScene();
+        render->BeginScene();
         {
-            pRenderer->DrawTextureNew(0, 0, main_menu_background);
+            render->DrawTextureNew(0, 0, main_menu_background);
 
             MainMenu_EventLoop();
             GUI_UpdateWindows();
         }
-        pRenderer->EndScene();
-        pRenderer->Present();
+        render->EndScene();
+        render->Present();
     }
 
-    pRenderer->BeginScene();
+    render->BeginScene();
     {
         MainMenu_EventLoop();
         GUI_UpdateWindows();
     }
-    pRenderer->EndScene();
-    pRenderer->Present();
+    render->EndScene();
+    render->Present();
 
     main_menu_background->Release();
     main_menu_background = nullptr;
@@ -464,7 +464,7 @@ void MainMenu_Loop()
 //----- (00415485) --------------------------------------------------------
 void DrawMM7CopyrightWindow()
 {
-    pRenderer->DrawTextureNew(0, 0, main_menu_bg);
+    render->DrawTextureNew(0, 0, main_menu_bg);
 
     GUIWindow Dst; // [sp+8h] [bp-54h]@1
 

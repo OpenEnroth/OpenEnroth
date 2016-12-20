@@ -10,13 +10,10 @@
 
 #include "Player.h"
 #include "../Tables/PlayerFrameTable.h"
-#include "Media/Audio/AudioPlayer.h"
 #include "../Party.h"
 #include "../LOD.h"
-#include "GUI/GUIWindow.h"
 #include "../Graphics/Viewport.h"
 #include "Actor.h"
-#include "IO/Mouse.h"
 #include "../TurnEngine/TurnEngine.h"
 #include "../Events.h"
 #include "../Events2D.h"
@@ -32,9 +29,14 @@
 #include "../Graphics/DecalBuilder.h"
 #include "../Spells/CastSpellInfo.h"
 #include "../OurMath.h"
-#include "..\..\GUI\UI\UIPartyCreation.h"
 
-#include "GUI/UI/UIStatusBar.h"
+#include "IO/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+
+#include "GUI/GUIWindow.h"
+#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UiGame.h"
 
 
 
@@ -5555,7 +5557,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value)
                 this->uCurrentFace = 20;
                 this->uVoiceID = 20;
             }
-            ReloadPlayerPortraits(GetPlayerIndex(), this->uCurrentFace);
+            GameUI_ReloadPlayerPortraits(GetPlayerIndex(), this->uCurrentFace);
         }
         PlayAwardSound_Anim();
         return;

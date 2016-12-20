@@ -54,7 +54,7 @@ void GUIWindow_QuickReference::Update()
     const char *pText; // eax@38
     int pFontHeight; // [sp+18h] [bp-14h]@1
 
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_game_quickref_background);
+    render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_game_quickref_background);
 
     pFontHeight = LOBYTE(pFontArrus->uFontHeight) + 1;
     for (uint i = 0; i < 4; ++i)

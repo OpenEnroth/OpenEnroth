@@ -102,10 +102,10 @@ void OtherOverlayList::DrawTurnBasedIcon(int a2)
   }
   else if ( pTurnEngine->turn_stage == TE_ATTACK )//группа атакует(ладонь)
     frame = pIconsFrameTable->GetFrame(uIconID_TurnStop, pEventTimer->uStartTime);
-  //if ( pRenderer->pRenderD3D )
-    pRenderer->DrawTextureAlphaNew(394/640.0f, 288/480.0f, frame->texture);
+  //if ( render->pRenderD3D )
+    render->DrawTextureAlphaNew(394/640.0f, 288/480.0f, frame->texture);
   /*else
-    pRenderer->DrawTextureIndexedAlpha(0x18Au, 0x120u, v7);*/
+    render->DrawTextureIndexedAlpha(0x18Au, 0x120u, v7);*/
   if ( dword_50C994 < dword_50C998_turnbased_icon_1A )
   {
     dword_50C994 += pEventTimer->uTimeElapsed;

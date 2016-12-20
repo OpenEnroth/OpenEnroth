@@ -70,6 +70,5 @@ extern struct GUIFont *pFontLucida;
 extern struct GUIFont *pBook2Font;
 extern struct GUIFont *pBookFont;
 extern struct GUIFont *pFontCreate;
-extern struct GUIFont *pFontCChar;
 extern struct GUIFont *pFontComic;
 extern struct GUIFont *pFontSmallnum;

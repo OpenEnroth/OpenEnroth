@@ -47,7 +47,7 @@ void GUIWindow_RestWindow::Update()
     GUIButton2.uHeight = 37;
     GUIButton2.pParent = pButton_RestUI_WaitUntilDawn->pParent;
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
-    pRenderer->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, *((Image **)ptr_1C + 15));
+    render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, *((Image **)ptr_1C + 15));
     viewparams->bRedrawGameUI = 1;
     GUIButton2.DrawLabel(localization->GetString(183), pFontCreate, 0, 0); // Rest & Heal 8 hrs / Отдых и лечение 8 часов
     GUIButton2.pParent = 0;
@@ -143,7 +143,7 @@ void GUIWindow_Rest::Update()
 
     if (live_characters)
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);
         am_pm_hours = pParty->uCurrentHour;
         dword_506F1C = pGUIWindow_CurrentMenu->pCurrentPosActiveItem;
         if ((signed int)pParty->uCurrentHour <= 12)
@@ -153,7 +153,7 @@ void GUIWindow_Rest::Update()
         }
         else
             am_pm_hours -= 12;
-        pRenderer->DrawTextureAlphaNew(16 / 640.0f, 26 / 480.0f, rest_ui_sky_frame_current);
+        render->DrawTextureAlphaNew(16 / 640.0f, 26 / 480.0f, rest_ui_sky_frame_current);
         if (rest_ui_hourglass_frame_current)
         {
             rest_ui_hourglass_frame_current->Release();
@@ -172,7 +172,7 @@ void GUIWindow_Rest::Update()
 
         {
             rest_ui_hourglass_frame_current = assets->GetImage_16BitColorKey(StringPrintf("hglas%03d", hourglass_icon_idx), 0x7FF);
-            pRenderer->DrawTextureAlphaNew(267 / 640.0f, 159 / 480.0f, rest_ui_hourglass_frame_current);
+            render->DrawTextureAlphaNew(267 / 640.0f, 159 / 480.0f, rest_ui_hourglass_frame_current);
         }
 
         memset(&tmp_button, 0, sizeof(GUIButton));

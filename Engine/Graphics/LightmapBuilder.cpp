@@ -174,12 +174,12 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight, Vec3_float
   Lights._blv_lights_types[*pSlot] = pLight->uLightType;
 
   v57 = Lights._blv_lights_types[*pSlot];
-  if ( pRenderer->bUsingSpecular && Lights._blv_lights_types[*pSlot] & 4 )
+  if ( render->bUsingSpecular && Lights._blv_lights_types[*pSlot] & 4 )
     v57 = _4E94D2_light_type;
   Lights._blv_lights_types[*pSlot] = v57;
 
   int id = 4 * *pSlot;
-  if ( pRenderer->bUsingSpecular )
+  if ( render->bUsingSpecular )
   {
     if ( Lights._blv_lights_types[*pSlot] & 4 )
     {
@@ -223,11 +223,11 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace, un
 		Lights._blv_lights_light_dot_faces[*pSlot] = abs((int)floorf(v10 + 0.5f));
 		Lights._blv_lights_types[*pSlot] = pLight->uLightType;
 		v14 = Lights._blv_lights_types[*pSlot];
-		if ( pRenderer->bUsingSpecular && Lights._blv_lights_types[*pSlot] & 4 )
+		if ( render->bUsingSpecular && Lights._blv_lights_types[*pSlot] & 4 )
 		  v14 = _4E94D2_light_type;
 		Lights._blv_lights_types[*pSlot] = v14;
 		result = 4 * *pSlot;
-		if ( pRenderer->bUsingSpecular )
+		if ( render->bUsingSpecular )
 		{
 		  __debugbreak();
 		  if ( Lights._blv_lights_types[*pSlot] & 4 )
@@ -340,7 +340,7 @@ bool LightmapBuilder::DoDraw_183808_Lightmaps(float z_bias)
   v.x = 1.0;
   
   for (uint i = 0; i < MobileLightsCount; ++i)
-    if (!pRenderer->DrawLightmap(&MobileLights[i], &v, z_bias))
+    if (!render->DrawLightmap(&MobileLights[i], &v, z_bias))
       Error("Invalid lightmap detected! (%u)", i);
 
   return true;
@@ -840,7 +840,7 @@ bool LightmapBuilder::DrawLightmaps(int indices)
   if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related)
     return true;
 
-  pRenderer->BeginLightmaps();
+  render->BeginLightmaps();
 
   arg4.x = 1.0f;
   arg4.y = 1.0f;
@@ -850,18 +850,18 @@ bool LightmapBuilder::DrawLightmaps(int indices)
   {
 	for (unsigned int i = 0; i < MobileLightsCount; ++i)
 	{
-	  if ( !pRenderer->DrawLightmap(&MobileLights[i], &arg4, 0.0) )
+	  if ( !render->DrawLightmap(&MobileLights[i], &arg4, 0.0) )
 		Error("Invalid lightmap detected! (%u)", i);
 	}
   }
   else
   {
 	for (unsigned int i = 0; i < StationaryLightsCount; ++i)
-	  if ( !pRenderer->DrawLightmap(&StationaryLights[i], &arg4, 0.0) )
+	  if ( !render->DrawLightmap(&StationaryLights[i], &arg4, 0.0) )
 		Error("Invalid lightmap detected! (%u)", i);
   }
 
-  pRenderer->EndLightmaps();
+  render->EndLightmaps();
   
   return true;
 }
@@ -930,11 +930,11 @@ void LightmapBuilder::Draw_183808_Lightmaps()
   if (!MobileLightsCount)
     return;
 
-  pRenderer->BeginLightmaps2();
+  render->BeginLightmaps2();
 
   DoDraw_183808_Lightmaps(0.00050000002);
 
-  pRenderer->EndLightmaps2();
+  render->EndLightmaps2();
 }
 
 

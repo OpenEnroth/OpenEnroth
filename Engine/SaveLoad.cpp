@@ -354,20 +354,20 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     else
         pOutdoor->loc_time.last_visit = pParty->GetPlayingTime();
 
-    pRenderer->PackScreenshot(150, 112, uncompressed_buff, 1000000, &pLodDirectory.uDataSize);//создание скриншота
+    render->PackScreenshot(150, 112, uncompressed_buff, 1000000, &pLodDirectory.uDataSize);//создание скриншота
     strcpy(pLodDirectory.pFilename, "image.pcx");
 
     if (current_screen_type == SCREEN_SAVEGAME)
     {
-        pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
-        pRenderer->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_loadsave);
+        render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
+        render->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_loadsave);
         text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->GetString(190), 0, 0, 0); //Сохранение
         text_pos = pFontSmallnum->AlignText_Center(186, pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, text_pos + 25, 259, 0, pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
         text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(165));
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, localization->GetString(165), 0, 0, 0); //Пожалуйста, подождите
-        pRenderer->Present();
+        render->Present();
     }
 
     if (pNew_LOD->Write(&pLodDirectory, uncompressed_buff, 0))

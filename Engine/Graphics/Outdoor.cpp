@@ -88,7 +88,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw)
     if (viewparams->draw_d3d_outlines)
         pIndoorCameraD3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;
 
-    if (bRedraw || true/*pRenderer->pRenderD3D*/)
+    if (bRedraw || true/*render->pRenderD3D*/)
     {
         //pODMRenderParams->RotationToInts();
         sub_481ED9_MessWithODMRenderParams();
@@ -107,21 +107,21 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw)
     pOutdoor->UpdateFog();
     //pIndoorCameraD3D->sr_Reset_list_0037C();
 
-    //if (pRenderer->pRenderD3D) // d3d - redraw always
+    //if (render->pRenderD3D) // d3d - redraw always
     {
-        pRenderer->DrawOutdoorSkyD3D();
-        pRenderer->DrawBuildingsD3D();
-        pRenderer->RenderTerrainD3D();
-        //pRenderer->DrawBezierTerrain();
+        render->DrawOutdoorSkyD3D();
+        render->DrawBuildingsD3D();
+        render->RenderTerrainD3D();
+        //render->DrawBezierTerrain();
     }
     /*else
     {
       if (!bRedraw)
-        pRenderer->OnOutdoorRedrawSW();
+        render->OnOutdoorRedrawSW();
       else
       {
-        pRenderer->DrawBuildingsSW();
-        pRenderer->DrawBezierTerrain();
+        render->DrawBuildingsSW();
+        render->DrawBezierTerrain();
         sr_sub_486F92_MessWithEdgesAndSpans();
         pODMRenderParams->ApplyLightmapsSW();
       }
@@ -130,9 +130,9 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw)
 
     pMobileLightsStack->uNumLightsActive = 0;
     pStationaryLightsStack->uNumLightsActive = 0;
-    /*if ( !pRenderer->pRenderD3D )
+    /*if ( !render->pRenderD3D )
     {
-      pRenderer->ExecOutdoorDrawSW();
+      render->ExecOutdoorDrawSW();
       pIndoorCameraD3D->sr_438240_draw_lits();
     }*/
     pEngine->PushStationaryLights(-1);
@@ -140,7 +140,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw)
     if (bRedraw)
         pOutdoor->UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellZ(pParty->vPosition.y), 1);
     pEngine->uFlags2 &= 0xFFFFFFFEu;//~0x00000001
-    if (/*pRenderer->pRenderD3D*/true && pRenderer->bUsingSpecular)
+    if (/*render->pRenderD3D*/true && render->bUsingSpecular)
         pEngine->pLightmapBuilder->uFlags |= 1;
     else
         pEngine->pLightmapBuilder->uFlags &= 0xFFFFFFFEu;//~0x00000001
@@ -151,10 +151,10 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw)
 
     PrepareActorsDrawList();
     if (!pODMRenderParams->bDoNotRenderDecorations)
-        pRenderer->PrepareDecorationsRenderList_ODM();
+        render->PrepareDecorationsRenderList_ODM();
 
-    pRenderer->DrawSpriteObjects_ODM();
-    pRenderer->TransformBillboardsAndSetPalettesODM();
+    render->DrawSpriteObjects_ODM();
+    render->TransformBillboardsAndSetPalettesODM();
 }
 
 
@@ -274,10 +274,9 @@ bool OutdoorLocation::Initialize(const String &filename, int days_played, int re
     if (!filename.empty())
     {
         Release();
-        pBitmaps_LOD->ReleaseAll2();
+        assets->ReleaseAllImages();
         pSprites_LOD->DeleteSomeOtherSprites();
         pSpriteFrameTable->ResetSomeSpriteFlags();
-        pIcons_LOD->ReleaseAll2();
 
         if (!this->Load(filename, days_played, respawn_interval_days, thisa))
         {
@@ -878,7 +877,7 @@ int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2, int num_
   int g_mask = 0x7E0;
   int b_mask = 0x1F;
 
-  //if ( pRenderer->pRenderD3D )
+  //if ( render->pRenderD3D )
     result = 0;
   /*else
   {
@@ -1089,7 +1088,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
 
 
     String minimap_filename = filename.substr(0, filename.length() - 4);
-    viewparams->uTextureID_LocationMap = pIcons_LOD->LoadTexture(minimap_filename.c_str(), TEXTURE_16BIT_PALETTE);
+    viewparams->location_minimap = assets->GetImage_16Bit(minimap_filename);
 
     auto odm_filename = filename;
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
@@ -4112,7 +4111,7 @@ void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa)
 	//thisa->AllocSoftwareDrawBuffers();
 	pODMRenderParams->Initialize();
 	pWeather->bRenderSnow = false;
-	pRenderer->ClearZBuffer(0, 479);
+	render->ClearZBuffer(0, 479);
 	//thisa = (ODMRenderParams *)1;
 	GetAlertStatus();
 	if (_A750D8_player_speech_timer)

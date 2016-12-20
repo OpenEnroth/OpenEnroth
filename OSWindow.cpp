@@ -86,7 +86,7 @@ bool OSWindow::WinApiMessageProc(UINT msg, WPARAM wparam, LPARAM lparam, LRESULT
         if (wparam == VK_CONTROL)
             _507B98_ctrl_pressed = false;
         if (wparam == VK_SNAPSHOT)
-            pRenderer->SavePCXScreenshot();
+            render->SavePCXScreenshot();
 
         OnKey(wparam);
         return *result = 0, true;
@@ -194,7 +194,7 @@ bool OSWindow::WinApiMessageProc(UINT msg, WPARAM wparam, LPARAM lparam, LRESULT
     return false;
 
     /*case WM_MBUTTONDOWN:
-      if (pRenderer->pRenderD3D && pEngine)
+      if (render->pRenderD3D && pEngine)
       {
         pEngine->PickMouse(pIndoorCameraD3D->GetPickDepth(), LOWORD(lParam), HIWORD(lParam), 1, &vis_sprite_filter_3, &vis_face_filter);
       }
@@ -292,7 +292,7 @@ bool OSWindow::WinApiMessageProc(UINT msg, WPARAM wparam, LPARAM lparam, LRESULT
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
             {
                 dword_4E98BC_bApplicationActive = 1;
-                /*if ( pRenderer->bWindowMode )
+                /*if ( render->bWindowMode )
                 {
                   HDC hDC = GetDC(api_handle);
                   int bitsPerPixel = GetDeviceCaps(hDC, BITSPIXEL);
@@ -321,8 +321,8 @@ bool OSWindow::WinApiMessageProc(UINT msg, WPARAM wparam, LPARAM lparam, LRESULT
                     viewparams->bRedrawGameUI = true;
                     if (pMovie_Track)//pVideoPlayer->pSmackerMovie )
                     {
-                        pRenderer->RestoreFrontBuffer();
-                        pRenderer->RestoreBackBuffer();
+                        render->RestoreFrontBuffer();
+                        render->RestoreBackBuffer();
                         //BackToHouseMenu();
                     }
                 }
@@ -376,10 +376,10 @@ bool OSWindow::WinApiMessageProc(UINT msg, WPARAM wparam, LPARAM lparam, LRESULT
         return false;
 
     case WM_PAINT:
-        if (!api_handle || !pRenderer)
+        if (!api_handle || !render)
             return false;
 
-        if (!GetUpdateRect(api_handle, 0, 0))// || !dword_4E98BC_bApplicationActive && !pRenderer->bWindowMode )
+        if (!GetUpdateRect(api_handle, 0, 0))// || !dword_4E98BC_bApplicationActive && !render->bWindowMode )
             return *result = 0, true;
 
         PAINTSTRUCT Paint;
@@ -388,9 +388,9 @@ bool OSWindow::WinApiMessageProc(UINT msg, WPARAM wparam, LPARAM lparam, LRESULT
         {
             pArcomageGame->field_F9 = 1;
         }
-        if (pRenderer->AreRenderSurfacesOk())
+        if (render->AreRenderSurfacesOk())
         {
-            pRenderer->Present();
+            render->Present();
             //EndPaint(api_handle, &Paint);
             //return *result = 0, true;
         }
@@ -818,7 +818,7 @@ bool OSWindow::OnOSMenu(int item_id)
     {
         default: return false;
 
-        //case 103:  pRenderer->SavePCXScreenshot(); break;
+        //case 103:  render->SavePCXScreenshot(); break;
         case 101:  // Quit game
         case 40001: // Menu "File"-> "Exit"
             pEngine->Deinitialize();
@@ -826,7 +826,7 @@ bool OSWindow::OnOSMenu(int item_id)
             break;
 
         /*case 104: //F4 button
-          pRenderer->ChangeBetweenWinFullscreenModes();
+          render->ChangeBetweenWinFullscreenModes();
           if (pArcomageGame->bGameInProgress)
             pArcomageGame->field_F6 = 1;
         break;*/

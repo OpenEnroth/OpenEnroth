@@ -134,54 +134,54 @@ struct ArcomageGame_stru1
 #pragma pack(push, 1)
 struct ArcomageGame
 {
-  ArcomageGame();
+    ArcomageGame();
 
-  static bool LoadBackground();
-  static bool LoadSprites();
-  static bool MsgLoop(int a1, ArcomageGame_stru1 *a2);
-  static void PlaySound(unsigned int event_id);
-  static void OnMouseClick(char right_left, bool bDown);
-  static void OnMouseMove(int x, int y);
-  static void GetCardRect(unsigned int uCardID, RECT *pCardRect);
-  static void PrepareArcomage();
-  static void DoBlt_Copy(unsigned __int16 *pPixels); // idb
+    static bool LoadBackground();
+    static bool LoadSprites();
+    static bool MsgLoop(int a1, ArcomageGame_stru1 *a2);
+    static void PlaySound(unsigned int event_id);
+    static void OnMouseClick(char right_left, bool bDown);
+    static void OnMouseMove(int x, int y);
+    static void GetCardRect(unsigned int uCardID, RECT *pCardRect);
+    static void PrepareArcomage();
+    static void DoBlt_Copy(unsigned __int16 *pPixels); // idb
 
-  static void Loop();
+    static void Loop();
 
-  char field_0;
-  char field_1;
-  char field_2;
-  char field_3;
-  int field_4;
-  ArcomageGame_stru1 stru1;
-  tagMSG msg;
-  int mouse_x;
-  int mouse_y;
-  char mouse_left;
-  char field_39;
-  char mouse_right;
-  char field_3B;
-  unsigned __int16 *pBackgroundPixels;
-  unsigned __int16 *pSpritesPixels;
-  unsigned __int16 *pBlit_Copy_pixels;
-  struct GUIFont *pfntComic;//ptr_48;
-  struct GUIFont *pfntArrus;//ptr_4C;
-  int field_50;
-  int field_54;
-  RGBTexture pGameBackground;
-  RGBTexture pSprites;
-  int event_timer_time;
-  int uGameWinner;
-  int Victory_type;
-  char pPlayer1Name[32];
-  char pPlayer2Name[32];
-  char field_F4;
-  char GameOver;
-  char field_F6;
-  char prev_mouse_left;
-  char prev_mouse_right;
-  char field_F9;
-  char bGameInProgress;
+    char field_0;
+    char field_1;
+    char field_2;
+    char field_3;
+    int field_4;
+    ArcomageGame_stru1 stru1;
+    tagMSG msg;
+    int mouse_x;
+    int mouse_y;
+    char mouse_left;
+    char field_39;
+    char mouse_right;
+    char field_3B;
+    unsigned __int16 *pBackgroundPixels;
+    unsigned __int16 *pSpritesPixels;
+    unsigned __int16 *pBlit_Copy_pixels;
+    struct GUIFont *pfntComic;//ptr_48;
+    struct GUIFont *pfntArrus;//ptr_4C;
+    int field_50;
+    int field_54;
+    RGBTexture pGameBackground;
+    RGBTexture pSprites;
+    int event_timer_time;
+    int uGameWinner;
+    int Victory_type;
+    char pPlayer1Name[32];
+    char pPlayer2Name[32];
+    char field_F4;
+    char GameOver;
+    char field_F6;
+    char prev_mouse_left;
+    char prev_mouse_right;
+    char field_F9;
+    char bGameInProgress;
 };
 #pragma pack(pop)
 

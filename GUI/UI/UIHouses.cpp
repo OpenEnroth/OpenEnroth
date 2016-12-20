@@ -960,7 +960,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID)
     dword_F8B1E4 = 0;
     memset(byte_F8B1F0.data(), 0, 4);
     memset(player_levels.data(), 0, 16);
-    pRenderer->ClearZBuffer(0, 479);
+    render->ClearZBuffer(0, 479);
 
     if (((uCloseTime - 1 <= uOpenTime) && ((pParty->uCurrentHour <uOpenTime) && (pParty->uCurrentHour >(uCloseTime - 1)))) ||
         ((uCloseTime - 1 > uOpenTime) && ((pParty->uCurrentHour < uOpenTime) || (pParty->uCurrentHour >(uCloseTime - 1)))))
@@ -1158,7 +1158,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
 
     if (!pDialogueWindow->pNumPresenceButton)
         return;
-    pRenderer->ClearZBuffer(0, 479);
+    render->ClearZBuffer(0, 479);
     if (dialog_menu_id == HOUSE_DIALOGUE_MAIN)
     {
         if (in_current_building_type == BuildingType_Training)
@@ -1882,8 +1882,8 @@ void TownHallDialog()
         pOutString = pFontCreate;
         pTextHeight = pFontCreate->CalcTextHeight(current_npc_text, &window, 13) + 7;
       }
-      pRenderer->DrawTextureCustomHeight(8/640.0f, (352 - pTextHeight)/480.0f, ui_leather_mm7, pTextHeight);
-      pRenderer->DrawTextureAlphaNew(8/640.0f, (347 - pTextHeight)/480.0f, _591428_endcap);
+      render->DrawTextureCustomHeight(8/640.0f, (352 - pTextHeight)/480.0f, ui_leather_mm7, pTextHeight);
+      render->DrawTextureAlphaNew(8/640.0f, (347 - pTextHeight)/480.0f, _591428_endcap);
       window.DrawText(pOutString, 13, 354 - pTextHeight, 0, FitTextInAWindow(current_npc_text, pOutString, &window, 13), 0, 0, 0);
       break;
     }
@@ -2174,8 +2174,8 @@ void  TavernDialog()
             pOutString = pFontCreate;
             pTextHeight = pFontCreate->CalcTextHeight(str, &dialog_window, 12) + 7;
         }
-        pRenderer->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+        render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
+        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         window_SpeakInHouse->DrawText(pOutString, 12, 354 - pTextHeight, 0, FitTextInAWindow(str, pOutString, &dialog_window, 12), 0, 0, 0);
         break;
     }
@@ -2186,8 +2186,8 @@ void  TavernDialog()
         dialog_window.uFrameWidth = game_viewport_width;
         dialog_window.uFrameZ = 452;
         pTextHeight = pFontArrus->CalcTextHeight(label, &dialog_window, 12) + 7;
-        pRenderer->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+        render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
+        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         window_SpeakInHouse->DrawText(pFontArrus, 12, 354 - pTextHeight, 0, FitTextInAWindow(label, pFontArrus, &dialog_window, 12));
         break;
     }
@@ -2468,7 +2468,7 @@ void TempleDialog()
             {
                 pPlayers[uActiveCharacter]->uCurrentFace = pPlayers[uActiveCharacter]->uPrevFace;
                 pPlayers[uActiveCharacter]->uVoiceID = pPlayers[uActiveCharacter]->uPrevVoiceID;
-                ReloadPlayerPortraits(uActiveCharacter - 1, pPlayers[uActiveCharacter]->uPrevFace);
+                GameUI_ReloadPlayerPortraits(uActiveCharacter - 1, pPlayers[uActiveCharacter]->uPrevFace);
             }
             pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0, 0, 0);
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_82, 0);
@@ -2496,7 +2496,7 @@ void TempleDialog()
             pPlayers[uActiveCharacter]->SetCondition(Condition_Zombie, 1);
             pPlayers[uActiveCharacter]->uVoiceID = (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23;
             pPlayers[uActiveCharacter]->uCurrentFace = (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23;
-            ReloadPlayerPortraits(uActiveCharacter - 1, (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23);
+            GameUI_ReloadPlayerPortraits(uActiveCharacter - 1, (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23);
             pPlayers[uActiveCharacter]->conditions_times[Condition_Zombie] = pParty->GetPlayingTime();
             //v39 = (GUIWindow *)HIDWORD(pParty->uTimePlayed);
         }
@@ -3104,14 +3104,14 @@ void SimpleHouseDialog()
         house_window.uFrameZ = 452;
         pInString = pNPCStats->pNPCGreetings[pNPC->greet].pGreetings[((pNPC->uFlags & 3) == 2)];
         //pInString = (char *)*(&pNPCStats->field_17884 + ((pNPC->uFlags & 3) == 2) + 2 * pNPC->greet);
-        pRenderer->DrawTextureCustomHeight(
+        render->DrawTextureCustomHeight(
             8/640.0f,
             (352 - (pFontArrus->CalcTextHeight(pInString, &house_window, 13) + 7))/480.0f,
             ui_leather_mm7,
             (pFontArrus->CalcTextHeight(pInString, &house_window, 13) + 7));
 
         int h = (pFontArrus->CalcTextHeight(pInString, &house_window, 13) + 7);
-        pRenderer->DrawTextureAlphaNew(8/640.0f, (347 - h)/480.0f, _591428_endcap);
+        render->DrawTextureAlphaNew(8/640.0f, (347 - h)/480.0f, _591428_endcap);
         pDialogueWindow->DrawText(pFontArrus, 13, 354 - h, 0, FitTextInAWindow(pInString, pFontArrus, &house_window, 13), 0, 0, 0);
       }
     }
@@ -3276,8 +3276,8 @@ void SimpleHouseDialog()
       pTextFont = pFontCreate;
       pTextHeight = pFontCreate->CalcTextHeight(current_npc_text, &w, 13) + 7;
     }
-    pRenderer->DrawTextureCustomHeight(8/640.0f, (352 - pTextHeight)/480.0f, ui_leather_mm7, pTextHeight);
-    pRenderer->DrawTextureAlphaNew(8/640.0f, (347 - pTextHeight)/480.0f, _591428_endcap);
+    render->DrawTextureCustomHeight(8/640.0f, (352 - pTextHeight)/480.0f, ui_leather_mm7, pTextHeight);
+    render->DrawTextureAlphaNew(8/640.0f, (347 - pTextHeight)/480.0f, _591428_endcap);
     house_window.DrawText(pTextFont, 13, 354 - pTextHeight, 0, FitTextInAWindow(current_npc_text, pTextFont, &w, 13), 0, 0, 0);
   }
 }

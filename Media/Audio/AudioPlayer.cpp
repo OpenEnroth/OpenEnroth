@@ -1502,7 +1502,7 @@ void AudioPlayer::UpdateSounds()
                 v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
                 *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
                 v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-                //if ( pRenderer->pRenderD3D )
+                //if ( render->pRenderD3D )
                 {
                   v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
                   v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
@@ -1520,7 +1520,7 @@ void AudioPlayer::UpdateSounds()
               {
                 v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
                 *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-                //if ( pRenderer->pRenderD3D )
+                //if ( render->pRenderD3D )
                 {
                   a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
                   v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
@@ -1573,7 +1573,7 @@ void AudioPlayer::UpdateSounds()
                 v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
                 *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
                 v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-                //if ( pRenderer->pRenderD3D )
+                //if ( render->pRenderD3D )
                 {
                   v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
                   v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
@@ -1591,7 +1591,7 @@ void AudioPlayer::UpdateSounds()
               {
                 v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
                 *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-                //if ( pRenderer->pRenderD3D )
+                //if ( render->pRenderD3D )
                 {
                   a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
                   v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
@@ -1647,7 +1647,7 @@ void AudioPlayer::UpdateSounds()
             v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
             *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
             v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-            //if ( pRenderer->pRenderD3D )
+            //if ( render->pRenderD3D )
             {
               v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
               v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
@@ -1665,7 +1665,7 @@ void AudioPlayer::UpdateSounds()
           {
             v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
             *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-            //if ( pRenderer->pRenderD3D )
+            //if ( render->pRenderD3D )
             {
               a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
               v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
@@ -1745,7 +1745,7 @@ void AudioPlayer::UpdateSounds()
             v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
             *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
             v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-            //if ( pRenderer->pRenderD3D )
+            //if ( render->pRenderD3D )
             {
               v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
               v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
@@ -1763,7 +1763,7 @@ void AudioPlayer::UpdateSounds()
           {
             v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
             *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-            //if ( pRenderer->pRenderD3D )
+            //if ( render->pRenderD3D )
             {
               a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
               v21 = v58 * v56 - *(float *)&uNumRepeats * v55;

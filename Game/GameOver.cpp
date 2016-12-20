@@ -49,19 +49,19 @@ void GameOver_Loop(int v15)
     bGameoverLoop = true;
     pMediaPlayer->bStopBeforeSchedule = 0;
     pAudioPlayer->StopChannels(-1, -1);
-    pRenderer->BeginScene();
-    pRenderer->ClearBlack();
-    pRenderer->EndScene();
-    pRenderer->Present();
+    render->BeginScene();
+    render->ClearBlack();
+    render->EndScene();
+    render->Present();
     //pMediaPlayer->pResetflag = 0;
     _449B57_test_bit(pParty->_quest_bits, 99);
 
 
     Image *background = assets->GetImage_PCXFromIconsLOD(L"winbg.pcx");
     {
-        pRenderer->BeginScene();
-        pRenderer->DrawTextureNew(0, 0, background);
-        pRenderer->EndScene();
+        render->BeginScene();
+        render->DrawTextureNew(0, 0, background);
+        render->EndScene();
     }
     background->Release();
     background = nullptr;
@@ -90,7 +90,7 @@ void GameOver_Loop(int v15)
     v17 = play_time.GetDaysOfMonth();
     if (!v19)
         v19 = 1;
-    pRenderer->BeginScene();
+    render->BeginScene();
     pWindow.DrawTitleText(pFont, 1, 0x23, 1, localization->GetString(9), 3);//Congratulations!
     v23 = 0i64;
     v20 = 0;
@@ -137,11 +137,11 @@ void GameOver_Loop(int v15)
 
     pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight, 1, localization->FormatString(94, v23), 3);
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-    pRenderer->EndScene();
-    pRenderer->Present();
-    //if ( pRenderer->pRenderD3D )
-    pRenderer->pBeforePresentFunction();
-    pRenderer->SaveWinnersCertificate("MM7_Win.Pcx");
+    render->EndScene();
+    render->Present();
+    //if ( render->pRenderD3D )
+    render->pBeforePresentFunction();
+    render->SaveWinnersCertificate("MM7_Win.Pcx");
     free(pFont);
     window_SpeakInHouse->Release();
     window_SpeakInHouse = 0;

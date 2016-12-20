@@ -51,23 +51,23 @@ GUIWindow_Save::GUIWindow_Save() :
     saveload_ui_loadu = assets->GetImage_16BitColorKey(L"LS_loadU", 0x7FF);
     saveload_ui_x_u = assets->GetImage_16BitColorKey(L"x_u", 0x7FF);
 
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
+    render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
 
     //if (screen == SCREEN_SAVEGAME)
     {
-        pRenderer->DrawTextureAlphaNew(241/640.0f, 302/480.0f, saveload_ui_saveu);
-        pRenderer->DrawTextureAlphaNew(351/640.0f, 302/480.0f, saveload_ui_x_u);
-        pRenderer->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_save_up);
+        render->DrawTextureAlphaNew(241/640.0f, 302/480.0f, saveload_ui_saveu);
+        render->DrawTextureAlphaNew(351/640.0f, 302/480.0f, saveload_ui_x_u);
+        render->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_save_up);
     }
     /*else
     {
-    pRenderer->DrawTextureTransparentColorKey(241, 302, pIcons_LOD->GetTexture(uTextureID_LS_loadU));
-    pRenderer->DrawTextureTransparentColorKey(351, 302, pIcons_LOD->GetTexture(uTextureID_x_u));
-    pRenderer->DrawTextureTransparentColorKey(18, 141, pIcons_LOD->GetTexture(uTextureID_load_up));
+    render->DrawTextureTransparentColorKey(241, 302, pIcons_LOD->GetTexture(uTextureID_LS_loadU));
+    render->DrawTextureTransparentColorKey(351, 302, pIcons_LOD->GetTexture(uTextureID_x_u));
+    render->DrawTextureTransparentColorKey(18, 141, pIcons_LOD->GetTexture(uTextureID_load_up));
     }*/
 
     //pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, 25, 199, 0, pGlobalTXT_LocalizationStrings[505], 0, 0, 0);//Read...(Чтение...)
-    pRenderer->Present();
+    render->Present();
     pSavegameList->Initialize(1);
     pLODFile.AllocSubIndicesAndIO(300, 0);
     for (uint i = 0; i < 40; ++i)
@@ -166,21 +166,21 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
 
     if (ingame)
     {
-        pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
+        render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
         if (current_screen_type == SCREEN_SAVEGAME)
         {
-            pRenderer->DrawTextureAlphaNew(241/640.0f, 302/480.0f, saveload_ui_saveu);
-            pRenderer->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f, saveload_ui_save_up);
+            render->DrawTextureAlphaNew(241/640.0f, 302/480.0f, saveload_ui_saveu);
+            render->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f, saveload_ui_save_up);
         }
         else
         {
-            pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
-            pRenderer->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f, saveload_ui_load_up);
+            render->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
+            render->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f, saveload_ui_load_up);
         }
-        pRenderer->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+        render->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
     }
     else
-        pRenderer->DrawTextureNew(0, 0, main_menu_background);
+        render->DrawTextureNew(0, 0, main_menu_background);
 
 
     /*pGUIWindow_CurrentMenu = new GUIWindow_Load(
@@ -200,7 +200,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
 
 
     DrawText(pFontSmallnum, 25, 199, 0, localization->GetString(505), 0, 0, 0);// "Reading..."
-    pRenderer->Present();
+    render->Present();
     pSavegameList->Initialize(0);
     if (pSaveListPosition > (signed int)uNumSavegameFiles)
     {
@@ -292,21 +292,21 @@ static void UI_DrawSaveLoad(bool save)
     GUIWindow save_load_window; // [sp+Ch] [bp-78h]@8
     unsigned int pSaveFiles; // [sp+70h] [bp-14h]@10
 
-    pRenderer->BeginScene();
+    render->BeginScene();
     if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu)
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
         if (save)
         {
-            pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_saveu);
-            pRenderer->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_save_up);
+            render->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_saveu);
+            render->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_save_up);
         }
         else
         {
-            pRenderer->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
-            pRenderer->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
+            render->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
+            render->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
         }
-        pRenderer->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
+        render->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
     }
 
     if (pSavegameUsedSlots[uLoadGameUI_SelectedSlot])
@@ -319,7 +319,7 @@ static void UI_DrawSaveLoad(bool save)
         save_load_window.uFrameHeight = pFontSmallnum->uFontHeight;
         save_load_window.uFrameW = pFontSmallnum->uFontHeight + save_load_window.uFrameY - 1;
         if (pSavegameThumbnails[uLoadGameUI_SelectedSlot])
-            pRenderer->DrawTextureNew((pGUIWindow_CurrentMenu->uFrameX + 276) / 640.0f, (pGUIWindow_CurrentMenu->uFrameY + 171) / 480.0f, pSavegameThumbnails[uLoadGameUI_SelectedSlot]);
+            render->DrawTextureNew((pGUIWindow_CurrentMenu->uFrameX + 276) / 640.0f, (pGUIWindow_CurrentMenu->uFrameY + 171) / 480.0f, pSavegameThumbnails[uLoadGameUI_SelectedSlot]);
         //Draw map name
         save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameHeader[uLoadGameUI_SelectedSlot].pLocationName)].pName, 3);
 
@@ -391,5 +391,5 @@ static void UI_DrawSaveLoad(bool save)
             slot_Y += 21;
         }
     }
-    pRenderer->EndScene();
+    render->EndScene();
 }

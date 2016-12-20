@@ -220,7 +220,7 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
     int i;//, sprite_indx;
 
     //find if already loaded
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
         {
         for (i=0; i<uNumLoadedSprites;++i)
             {
@@ -241,7 +241,7 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
         return -1;
     //if not loaded - load from file   
 
-    //if ( pRenderer->pRenderD3D && can_load_hardware_sprites )
+    //if ( render->pRenderD3D && can_load_hardware_sprites )
         {
         if ( !pHardwareSprites )
             {
@@ -296,12 +296,12 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
             }
         }*/
 
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
         {
         pHardwareSprites[uNumLoadedSprites].pName = (const char *)malloc(20);
         strcpy((char *)pHardwareSprites[uNumLoadedSprites].pName, pContainerName);
         pHardwareSprites[uNumLoadedSprites].uPaletteID = uPaletteID;
-        pRenderer->MoveSpriteToDevice(&pHardwareSprites[uNumLoadedSprites]);
+        render->MoveSpriteToDevice(&pHardwareSprites[uNumLoadedSprites]);
         }
     ++uNumLoadedSprites;
     return uNumLoadedSprites - 1;
@@ -337,7 +337,7 @@ void LODFile_Sprites::ReleaseLostHardwareSprites()
           v6 = (IDirectDrawSurface *)this->pHardwareSprites[v3].pTextureSurface;
           v6->Release();
           this->pHardwareSprites[v3].pTextureSurface = nullptr;
-          pRenderer->MoveSpriteToDevice(&this->pHardwareSprites[v3]);
+          render->MoveSpriteToDevice(&this->pHardwareSprites[v3]);
         }
         ++v2;
         ++v3;
@@ -380,7 +380,7 @@ void LODFile_Sprites::MoveSpritesToVideoMemory()
   if ( this->pHardwareSprites )
   {
     for ( int i = 0; i < this->uNumLoadedSprites; ++i )
-      pRenderer->MoveSpriteToDevice(&this->pHardwareSprites[i]);
+      render->MoveSpriteToDevice(&this->pHardwareSprites[i]);
   }
 }
 
@@ -1811,8 +1811,6 @@ int LODFile_IconsBitmaps::PlacementLoadTexture(Texture_MM7 *pDst, const char *pC
   int v15; // ecx@12
   int v16; // ecx@12
   int v17; // eax@12
-  signed int v21; // ecx@18
-  signed int v22; // ecx@23
   FILE *File; // [sp+68h] [bp-4h]@1
   unsigned int uTargetRBits;
   unsigned int uTargetGBits;
@@ -1880,25 +1878,19 @@ int LODFile_IconsBitmaps::PlacementLoadTexture(Texture_MM7 *pDst, const char *pC
     //pDst->pLevelOfDetail2 = 0;
     //pDst->pLevelOfDetail1 = 0;
   }
-  //pDst->pLevelOfDetail3 = (unsigned __int8 *)v17;
-  v21 = 1;
-  while ( 1 << v21 != pDst->uTextureWidth )
+
+  pDst->uWidthLn2 = ImageHelper::GetPowerOf2(pDst->uTextureWidth);
+  if (pDst->uWidthLn2 >= 15)
   {
-    ++v21;
-    if ( v21 >= 15 )
-      goto LABEL_23;
+      pDst->uWidthLn2 = 1;
   }
-  pDst->uWidthLn2 = v21;
-LABEL_23:
-  v22 = 1;
-  while ( 1 << v22 != pDst->uTextureHeight )
+
+  pDst->uHeightLn2 = ImageHelper::GetPowerOf2(pDst->uTextureHeight);
+  if (pDst->uHeightLn2 >= 15)
   {
-    ++v22;
-    if ( v22 >= 15 )
-      goto LABEL_28;
+      pDst->uHeightLn2 = 1;
   }
-  pDst->uHeightLn2 = v22;
-LABEL_28:
+
   switch ( pDst->uWidthLn2 )
   {
     case 2:
@@ -1990,7 +1982,7 @@ void LODFile_IconsBitmaps::_410423_move_textures_to_device()
     {
       if ( this->pTextures[i].pName[0] != 'w' || this->pTextures[i].pName[1] != 't' 
         || this->pTextures[i].pName[2] != 'r' || this->pTextures[i].pName[3] != 'd' || this->pTextures[i].pName[4] != 'r' )
-        pRenderer->LoadTexture(&this->pTextures[i].pName[0], this->pTextures[i].uTextureSize, (IDirectDrawSurface4 **)&this->pHardwareSurfaces[i],
+        render->LoadTexture(&this->pTextures[i].pName[0], this->pTextures[i].uTextureSize, (IDirectDrawSurface4 **)&this->pHardwareSurfaces[i],
           &this->pHardwareTextures[i]);
       else
       {
@@ -1998,7 +1990,7 @@ void LODFile_IconsBitmaps::_410423_move_textures_to_device()
         v5 = (char *)malloc(v4 + 2);
         *v5 = 'h';
         strcpy(v5 + 1, &this->pTextures[i].pName[0]);
-        pRenderer->LoadTexture(v5, this->pTextures[i].uTextureSize, (IDirectDrawSurface4 **)&this->pHardwareSurfaces[i], &this->pHardwareTextures[i]);
+        render->LoadTexture(v5, this->pTextures[i].uTextureSize, (IDirectDrawSurface4 **)&this->pHardwareSurfaces[i], &this->pHardwareTextures[i]);
         free(v5);
       }
     }
@@ -2142,7 +2134,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
   v8 = pOutTex;
   fread(pOutTex, 1, 0x30, pFile);
   strcpy(pOutTex->pName, pContainer);
-  if (/*pRenderer->pRenderD3D &&*/ (pOutTex->pBits & 2) && strcmp(v8->pName, "sptext01"))//Ritor1: "&& strcmp(v8->pName, "sptext01")" - temporarily for red_aura
+  if (/*render->pRenderD3D &&*/ (pOutTex->pBits & 2) && strcmp(v8->pName, "sptext01"))//Ritor1: "&& strcmp(v8->pName, "sptext01")" - temporarily for red_aura
   {
     if (!pHardwareSurfaces || !pHardwareTextures)
     {
@@ -2161,10 +2153,10 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
         v14 = uNumLoadedFiles;
       else
       {
-        pRenderer->hd_water_tile_id = uNumLoadedFiles;
+        render->hd_water_tile_id = uNumLoadedFiles;
         v14 = uNumLoadedFiles;
       }
-      result = pRenderer->LoadTexture(pContainer, pOutTex->palette_id1, (IDirectDrawSurface4 **)&pHardwareSurfaces[v14], &pHardwareTextures[v14]);
+      result = render->LoadTexture(pContainer, pOutTex->palette_id1, (IDirectDrawSurface4 **)&pHardwareSurfaces[v14], &pHardwareTextures[v14]);
     }
     else
     {
@@ -2172,7 +2164,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
       temp_container = (char *)malloc(strlen(pContainer) + 2);
       *temp_container = 104;//'h'
       strcpy(temp_container + 1, pContainer);
-      result = pRenderer->LoadTexture((const char *)temp_container, pOutTex->palette_id1,
+      result = render->LoadTexture((const char *)temp_container, pOutTex->palette_id1,
               (IDirectDrawSurface4 **)&pHardwareSurfaces[uNumLoadedFiles], &pHardwareTextures[uNumLoadedFiles]);
       free((void *)temp_container);
     }

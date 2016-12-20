@@ -294,10 +294,10 @@ void GameMenu_EventLoop()
                 pEngine->ToggleFlags2(0x20u);
                 continue;
             case UIMSG_ToggleColoredLights:
-                pRenderer->ToggleColoredLights();
+                render->ToggleColoredLights();
                 continue;
             case UIMSG_ToggleTint:
-                pRenderer->ToggleTint();
+                render->ToggleTint();
                 continue;
             case UIMSG_ChangeMusicVolume:
                 extern bool use_music_folder;
@@ -471,7 +471,7 @@ void GameMenu_EventLoop()
                     pModalWindow = nullptr;
                     continue;
                 }
-                pRenderer->ClearZBuffer(0, 479);
+                render->ClearZBuffer(0, 479);
                 viewparams->bRedrawGameUI = true;
                 viewparams->field_48 = 1;
 
@@ -518,10 +518,10 @@ void GameMenu_EventLoop()
                 }
                 else if (current_screen_type == SCREEN_VIDEO_OPTIONS)
                 {
-                    //if ( pRenderer->pRenderD3D )
+                    //if ( render->pRenderD3D )
                     {
-                        WriteWindowsRegistryInt("Colored Lights", pRenderer->bUseColoredLights);
-                        WriteWindowsRegistryInt("Tinting", pRenderer->bTinting);
+                        WriteWindowsRegistryInt("Colored Lights", render->bUseColoredLights);
+                        WriteWindowsRegistryInt("Tinting", render->bTinting);
                         WriteWindowsRegistryInt("Bloodsplats", (LOBYTE(pEngine->uFlags2) >> 5) & 1);
                     }
 
@@ -604,7 +604,7 @@ void GameMenu_Loop()
         gamma_preview_image = nullptr;
     }
 
-    pRenderer->SaveScreenshot("gamma.pcx", 155, 117);
+    render->SaveScreenshot("gamma.pcx", 155, 117);
     gamma_preview_image = assets->GetImage_PCXFromFile(L"gamma.pcx");
 
     while (uGameState == GAME_STATE_PLAYING
@@ -632,13 +632,13 @@ void GameMenu_Loop()
             continue;
         }
 
-        pRenderer->BeginScene();
+        render->BeginScene();
         {
             GameMenu_EventLoop();
             GUI_UpdateWindows();
         }
-        pRenderer->EndScene();
-        pRenderer->Present();
+        render->EndScene();
+        render->Present();
     }
 
     pGUIWindow_CurrentMenu->Release();

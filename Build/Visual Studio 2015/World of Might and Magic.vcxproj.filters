@@ -594,9 +594,6 @@
     <ClCompile Include="..\..\Game\MainMenuLoad.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Game\CreateParty.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Game\GameMenu.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -1380,9 +1377,6 @@
       <Filter>GUI\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Game\MainMenuLoad.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Game\CreateParty.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Game\GameMenu.h">

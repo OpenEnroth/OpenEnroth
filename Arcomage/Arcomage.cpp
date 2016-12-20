@@ -450,7 +450,7 @@ void DoBlt_Copy(unsigned __int16 *pPixels)
   RECT pSrcRect;
   POINT pTargetPoint; // [sp+1Ch] [bp-8h]@1
 
-  pRenderer->Present();
+  render->Present();
 
   pTargetPoint.x = 0;
   pTargetPoint.y = 0;
@@ -460,10 +460,10 @@ void DoBlt_Copy(unsigned __int16 *pPixels)
   pSrcRect.right  = window->GetWidth();
   pSrcRect.bottom = window->GetHeight();
 
-  pRenderer->BeginScene();
+  render->BeginScene();
   pArcomageGame->pBlit_Copy_pixels = pPixels;
-  pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
-  pRenderer->EndScene();
+  render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
+  render->EndScene();
   pArcomageGame->pBlit_Copy_pixels = nullptr;
 }
 
@@ -604,7 +604,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_stru1 *a2)
 //----- (0040D7D5) --------------------------------------------------------
 void am_BeginScene(unsigned __int16 *pPcxPixels, int a2, int a3)
 {
-  pRenderer->BeginScene();
+  render->BeginScene();
   pArcomageGame->pBlit_Copy_pixels = pPcxPixels;
 }
 
@@ -625,7 +625,7 @@ void Render::am_Blt_Chroma(RECT *pSrcRect, POINT *pTargetPoint, int a3, int blen
   if ( !pArcomageGame->pBlit_Copy_pixels )
     return;
 
-  //dest_surf_pos = &pRenderer->pTargetSurface[pTargetPoint->x + pTargetPoint->y * pRenderer->uTargetSurfacePitch];
+  //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
   src_width = pSrcRect->right - pSrcRect->left;
   src_height = pSrcRect->bottom - pSrcRect->top;
 
@@ -701,7 +701,7 @@ void Render::am_Blt_Copy(RECT *pSrcRect, POINT *pTargetPoint, int blend_mode)
     if (!pArcomageGame->pBlit_Copy_pixels)
         return;
 
-    //dest_surf_pos = &pRenderer->pTargetSurface[pTargetPoint->x + pTargetPoint->y * pRenderer->uTargetSurfacePitch];
+    //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
     src_width = pSrcRect->right - pSrcRect->left;
     src_height = pSrcRect->bottom - pSrcRect->top;
     if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
@@ -756,7 +756,7 @@ void Render::am_Blt_Copy(RECT *pSrcRect, POINT *pTargetPoint, int blend_mode)
 //----- (0040DB10) --------------------------------------------------------
 void am_EndScene()
 {
-  pRenderer->EndScene();
+  render->EndScene();
   pArcomageGame->pBlit_Copy_pixels = nullptr;
 }
 
@@ -1350,7 +1350,7 @@ void TurnChange()
       v6.top = 0;
       v6.bottom = 480;*/
       //nullsub_1();
-      pRenderer->Present();
+      render->Present();
       //nullsub_1();
       while ( 1 )
       {
@@ -1379,7 +1379,7 @@ void TurnChange()
       v6.top = 0;
       v6.bottom = 480;*/
       //nullsub_1();
-      pRenderer->Present();
+      render->Present();
     }
   }
 }
@@ -1601,10 +1601,10 @@ char PlayerTurn( int player_num )
       pSrcXYZW.top = 0;
       pSrcXYZW.bottom = window->GetHeight();
       am_BeginScene(pArcomageGame->pBackgroundPixels, -1, 1);
-      pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+      render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
       am_EndScene();
       DrawGameUI(animation_stage);
-      pRenderer->Present();
+      render->Present();
       pArcomageGame->field_F9 = 0;
     }
   }
@@ -1682,11 +1682,11 @@ void DrawRectanglesForText()
 
   pTargetXY.x = 8;
   pTargetXY.y = 56;
-  pRenderer->am_Blt_Copy(&pSrcRect, &pTargetXY, 2);
+  render->am_Blt_Copy(&pSrcRect, &pTargetXY, 2);
 
   pTargetXY.x = 555;
   pTargetXY.y = 56;
-  pRenderer->am_Blt_Copy(&pSrcRect, &pTargetXY, 2);
+  render->am_Blt_Copy(&pSrcRect, &pTargetXY, 2);
 
   //players name rectangle
   pSrcRect.left   = 283;
@@ -1695,11 +1695,11 @@ void DrawRectanglesForText()
   pSrcRect.bottom = 190;
   pTargetXY.x = 8;
   pTargetXY.y = 13;
-  pRenderer->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+  render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
   pTargetXY.x = 555;
   pTargetXY.y = 13;
-  pRenderer->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+  render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
   //tower height rectangle
   pSrcRect.left   = 234;
@@ -1708,11 +1708,11 @@ void DrawRectanglesForText()
   pSrcRect.bottom = 190;
   pTargetXY.x = 100;
   pTargetXY.y = 296;
-  pRenderer->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+  render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
   pTargetXY.x = 492;
   pTargetXY.y = 296;
-  pRenderer->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+  render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
   //wall height rectangle
   pSrcRect.left   = 192; 
@@ -1721,11 +1721,11 @@ void DrawRectanglesForText()
   pSrcRect.bottom = 190;
   pTargetXY.x = 168;
   pTargetXY.y = 296;
-  pRenderer->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+  render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
   pTargetXY.x = 430;
   pTargetXY.y = 296;
-  pRenderer->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+  render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 }
 
 //----- (0040AC5F) --------------------------------------------------------
@@ -1864,7 +1864,7 @@ void DrawPlayerLevels(const String &str, POINT *pXY)
             pSrcRect.left = v7 - 864;
             pSrcRect.top = 190;
             pSrcRect.bottom = 207;
-            pRenderer->am_Blt_Chroma(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
+            render->am_Blt_Chroma(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
             pTargetPoint.x += 22;
         }
     }
@@ -1891,7 +1891,7 @@ void DrawBricksCount(const String &str, POINT *pXY)
                 pSrcRect.right = v7 - 357;
                 pSrcRect.top = 128;
                 pSrcRect.bottom = 138;
-                pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
+                render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
                 pTargetPoint.x += 13;
             }
         }
@@ -1919,7 +1919,7 @@ void DrawGemsCount(const String &str, POINT* pXY)
                 pSrcRect.right = v7 - 357;
                 pSrcRect.top = 138;
                 pSrcRect.bottom = 148;
-                pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
+                render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
                 pTargetPoint.x += 13;
             }
         }
@@ -1947,7 +1947,7 @@ void DrawBeastsCount(const String &str, POINT *pXY)
                 pSrcRect.right = v7 - 357;
                 pSrcRect.top = 148;
                 pSrcRect.bottom = 158;
-                pRenderer->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
+                render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
                 pTargetPoint.x += 13;
             }
         }
@@ -1973,7 +1973,7 @@ void DrawPlayersTowers()
     pSrcXYZW.bottom = tower_top;
     pTargetXY.x = 102;
     pTargetXY.y = 297 - tower_top;
-    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//стена башни
+    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//стена башни
 
     pSrcXYZW.top = 0;
     pSrcXYZW.left = 384;
@@ -1981,7 +1981,7 @@ void DrawPlayersTowers()
     pSrcXYZW.bottom = 94;
     pTargetXY.y = 203 - tower_top;
     pTargetXY.x = 91;
-    pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);//верхушка башни
+    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);//верхушка башни
 
     tower_height = am_Players[1].tower_height;
     if (am_Players[1].tower_height > max_tower_height)
@@ -1994,7 +1994,7 @@ void DrawPlayersTowers()
 
     pTargetXY.x = 494;
     pTargetXY.y = 297 - tower_top;
-    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
     //draw tower up cone
     pSrcXYZW.left = 384;
     pSrcXYZW.right = 452;
@@ -2003,7 +2003,7 @@ void DrawPlayersTowers()
 
     pTargetXY.x = 483;
     pTargetXY.y = 203 - tower_top;
-    pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
 }
 
 
@@ -2032,7 +2032,7 @@ void DrawPlayersWall()
     pSrcXYZW.bottom = v1;
     pTargetXY.x = 177;
     pTargetXY.y = 297 - v1;
-    pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
   }
   v3 = am_Players[1].wall_height;
   if ( am_Players[1].wall_height > 100 )
@@ -2046,7 +2046,7 @@ void DrawPlayersWall()
     pSrcXYZW.bottom = v4;
     pTargetXY.x = 439;
     pTargetXY.y =  297 - v4;
-    pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
   }
 }
 
@@ -2088,7 +2088,7 @@ void DrawCards()
                 pSrcXYZW.right = 288;
                 pSrcXYZW.top = 0;
                 pSrcXYZW.bottom = 128;
-                pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуется оборотные стороны карт противника
+                render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуется оборотные стороны карт противника
                 pTargetXY.x += v24 + 96;
             }
             else
@@ -2097,12 +2097,12 @@ void DrawCards()
                 pArcomageGame->GetCardRect(v7, &pSrcXYZW);
                 if (!CanCardBePlayed(current_player_num, v2))
                 {
-                    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);//рисуются неактивные карты
+                    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);//рисуются неактивные карты
                     pTargetXY.x += v24 + 96;
                 }
                 else
                 {
-                    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуются активные карты
+                    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуются активные карты
                     pTargetXY.x += v24 + 96;
                 }
             }
@@ -2124,7 +2124,7 @@ void DrawCards()
             if (shown_cards[v11].uCardId != -1)
             {
                 pArcomageGame->GetCardRect(shown_cards[v11].uCardId, &pSrcXYZW);
-                pRenderer->am_Blt_Copy(&pSrcXYZW, &shown_cards[v11].field_18_point, 0);
+                render->am_Blt_Copy(&pSrcXYZW, &shown_cards[v11].field_18_point, 0);
             }
             if (shown_cards[v11].field_4 != 0)
             {
@@ -2134,7 +2134,7 @@ void DrawCards()
                 pSrcXYZW.right = 916;
                 pSrcXYZW.top = 200;
                 pSrcXYZW.bottom = 216;
-                pRenderer->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+                render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
             }
         }
         else if (amuint_4FAA34 <= 0)
@@ -2159,7 +2159,7 @@ void DrawCards()
                 shown_cards[v11].field_18_point.x += shown_cards[v11].field_10_xplus;
                 shown_cards[v11].field_18_point.y += shown_cards[v11].field_14_y_plus;
                 pArcomageGame->GetCardRect(shown_cards[v11].uCardId, &pSrcXYZW);
-                pRenderer->am_Blt_Copy(&pSrcXYZW, &shown_cards[v11].field_18_point, 0);
+                render->am_Blt_Copy(&pSrcXYZW, &shown_cards[v11].field_18_point, 0);
             }
         }
     }
@@ -2171,7 +2171,7 @@ void DrawCards()
     pSrcXYZW.bottom = 128;
     pTargetXY.x = 120;
     pTargetXY.y = 18;
-    pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
+    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
 }
 
 
@@ -2219,7 +2219,7 @@ void DrawCardAnimation(int animation_stage)
             pSrcXYZW.top = 0;
             pSrcXYZW.right = 288;
             pSrcXYZW.bottom = 128;
-            pRenderer->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
+            render->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
         }
         else
         {
@@ -2229,7 +2229,7 @@ void DrawCardAnimation(int animation_stage)
             pSrcXYZW.bottom = 128;
             am_uint_4FAA44_blt_xy.x += amuint_4FAA3C_blt_xy.x;
             am_uint_4FAA44_blt_xy.y += amuint_4FAA3C_blt_xy.y;
-            pRenderer->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
+            render->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
             if (!amuint_4FAA38)
                 amuint_4FAA4C = -1;
         }
@@ -2265,7 +2265,7 @@ void DrawCardAnimation(int animation_stage)
                 //LABEL_20:
                 pTargetXY.x = shown_cards[v8].field_8.x;
                 pTargetXY.y = shown_cards[v8].field_8.y;
-                pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
+                render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
                 uCardID = -1;
             }
         }
@@ -2274,7 +2274,7 @@ void DrawCardAnimation(int animation_stage)
             pArcomageGame->GetCardRect(uCardID, &pSrcXYZW);
             amuint_4FAA5C_blt_xy.x += amuint_4FAA54_blt_xy.x;
             amuint_4FAA5C_blt_xy.y += amuint_4FAA54_blt_xy.y;
-            pRenderer->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 0);
+            render->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 0);
         }
     }
     if (played_card_id != -1)
@@ -2285,7 +2285,7 @@ void DrawCardAnimation(int animation_stage)
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             amuint_4FAA5C_blt_xy.x += amuint_4FAA54_blt_xy.x;
             amuint_4FAA5C_blt_xy.y += amuint_4FAA54_blt_xy.y;
-            pRenderer->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 2);
+            render->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 2);
             return;
         }
         if (v15 == 15.0)
@@ -2294,7 +2294,7 @@ void DrawCardAnimation(int animation_stage)
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = 272;
             pTargetXY.y = 173;
-            pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+            render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
             return;
         }
         if (v15 == 5.0)
@@ -2311,7 +2311,7 @@ void DrawCardAnimation(int animation_stage)
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = 272;
             pTargetXY.y = 173;
-            pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+            render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
             return;
         }
         if (v15 >= 5.0)
@@ -2324,7 +2324,7 @@ void DrawCardAnimation(int animation_stage)
                 pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
                 amuint_4FAA5C_blt_xy.x += amuint_4FAA54_blt_xy.x;
                 amuint_4FAA5C_blt_xy.y += amuint_4FAA54_blt_xy.y;
-                pRenderer->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 0);
+                render->am_Blt_Copy(&pSrcXYZW, &amuint_4FAA5C_blt_xy, 0);
                 return;
             }
         }
@@ -2333,7 +2333,7 @@ void DrawCardAnimation(int animation_stage)
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = 272;
             pTargetXY.y = 173;
-            pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+            render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
             return;
         }
         pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
@@ -2347,7 +2347,7 @@ void DrawCardAnimation(int animation_stage)
         }
         pTargetXY.x = shown_cards[v19].field_8.x;
         pTargetXY.y = shown_cards[v19].field_8.y;
-        pRenderer->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
+        render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
         played_card_id = -1;
     }
 }
@@ -3463,11 +3463,11 @@ void ArcomageGame::PrepareArcomage()
     pXYZW.top = 0;
     pXYZW.bottom = window->GetHeight();
     am_BeginScene(pArcomageGame->pBackgroundPixels, -1, 1);
-    pRenderer->am_Blt_Copy(&pXYZW, &pXY, 2);
+    render->am_Blt_Copy(&pXYZW, &pXY, 2);
     am_EndScene();
-    pRenderer->Present();
+    render->Present();
     ArcomageGame::LoadSprites();
-    pRenderer->Present();
+    render->Present();
 
     v4 = 120;
     for (int i = 0; i < 12; ++i)
@@ -3542,39 +3542,39 @@ void am_DrawText(const String &str, POINT *pXY)
 //----- (0040DB27) --------------------------------------------------------
 void DrawRect(RECT *pXYZW, unsigned __int16 uColor, char bSolidFill)
 {
-    pRenderer->BeginScene();
-    pRenderer->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
+    render->BeginScene();
+    render->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
     if (bSolidFill)
     {
         for (int i = pXYZW->top; i <= pXYZW->bottom; ++i)
-            pRenderer->RasterLine2D(pXYZW->left, i, pXYZW->right, i, uColor);
+            render->RasterLine2D(pXYZW->left, i, pXYZW->right, i, uColor);
     }
     else
     {
-        pRenderer->RasterLine2D(pXYZW->left, pXYZW->top, pXYZW->right, pXYZW->top, uColor);
-        pRenderer->RasterLine2D(pXYZW->right, pXYZW->top, pXYZW->right, pXYZW->bottom, uColor);
-        pRenderer->RasterLine2D(pXYZW->right, pXYZW->bottom, pXYZW->left, pXYZW->bottom, uColor);
-        pRenderer->RasterLine2D(pXYZW->left, pXYZW->bottom, pXYZW->left, pXYZW->top, uColor);
+        render->RasterLine2D(pXYZW->left, pXYZW->top, pXYZW->right, pXYZW->top, uColor);
+        render->RasterLine2D(pXYZW->right, pXYZW->top, pXYZW->right, pXYZW->bottom, uColor);
+        render->RasterLine2D(pXYZW->right, pXYZW->bottom, pXYZW->left, pXYZW->bottom, uColor);
+        render->RasterLine2D(pXYZW->left, pXYZW->bottom, pXYZW->left, pXYZW->top, uColor);
     }
-    pRenderer->EndScene();
+    render->EndScene();
 }
 
 
 
 void DrawSquare(POINT *pTargetXY, unsigned __int16 uColor)
 {
-    pRenderer->BeginScene();
+    render->BeginScene();
     //if ( uNumSceneBegins )
     {
         if (pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
             && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
         {
-            pRenderer->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
-            pRenderer->WritePixel16(pTargetXY->x + 1, pTargetXY->y, uColor);
-            pRenderer->WritePixel16(pTargetXY->x, pTargetXY->y + 1, uColor);
-            pRenderer->WritePixel16(pTargetXY->x + 1, pTargetXY->y + 1, uColor);
+            render->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
+            render->WritePixel16(pTargetXY->x + 1, pTargetXY->y, uColor);
+            render->WritePixel16(pTargetXY->x, pTargetXY->y + 1, uColor);
+            render->WritePixel16(pTargetXY->x + 1, pTargetXY->y + 1, uColor);
         }
-        pRenderer->EndScene();
+        render->EndScene();
     }
 }
 
@@ -3583,21 +3583,21 @@ void DrawSquare(POINT *pTargetXY, unsigned __int16 uColor)
 //----- (0040DBD3) --------------------------------------------------------
 void DrawPixel(POINT *pTargetXY, unsigned __int16 uColor)
 {
-    pRenderer->BeginScene();
-    //if ( pRenderer->uNumSceneBegins )
+    render->BeginScene();
+    //if ( render->uNumSceneBegins )
     {
         if (pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
             && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
         {
-            pRenderer->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
+            render->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
             /*int xVal = pTargetXY->x;
             int yVal = pTargetXY->y;
             if ( xVal >= 0 && xVal <= 639 && yVal >= 0 && yVal <= 479)
             {
-              pRenderer->pTargetSurface[xVal + pRenderer->uTargetSurfacePitch * yVal] = uColor;
+              render->pTargetSurface[xVal + render->uTargetSurfacePitch * yVal] = uColor;
             }*/
         }
-        pRenderer->EndScene();
+        render->EndScene();
     }
 }
 

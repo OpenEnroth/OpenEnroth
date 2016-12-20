@@ -12,6 +12,7 @@
 #include "Engine/MMT.h"
 
 #include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/Viewport.h"
 
 #include "Engine/Tables/IconFrameTable.h"
 
@@ -23,13 +24,14 @@
 #include "GUI/UI/UIGame.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Media/Audio/AIL.h"
 
 #include "Game/Game.h"
 #include "Game/MainMenu.h"
-#include "Game/CreateParty.h"
 
 
 
+GUIFont *ui_partycreation_font;
 
 Image *ui_partycreation_top = nullptr;
 Image *ui_partycreation_sky_scroller = nullptr;
@@ -47,62 +49,223 @@ std::array<Image *, 22> ui_partycreation_portraits;
 std::array<Image *, 20> ui_partycreation_arrow_r;
 std::array<Image *, 20> ui_partycreation_arrow_l;
 
-Image *ui_partycreation_face_mask = nullptr;
+bool PartyCreationUI_LoopInternal();
+void PartyCreationUI_DeleteFont();
+
 
 //----- (004908DE) --------------------------------------------------------
 bool PlayerCreation_Choose4Skills()
 {
-  signed int skills_count; // edx@2
+    int skills_count;
 
-  for ( uint j = 0; j < 4; ++j )
-  {
-    skills_count = 0;
-    for ( uint i = 0; i < 37; ++i )
+    for (uint j = 0; j < 4; ++j)
     {
-      if ( pParty->pPlayers[j].pActiveSkills[i] )
-        ++skills_count;
+        skills_count = 0;
+        for (uint i = 0; i < 37; ++i)
+        {
+            if (pParty->pPlayers[j].pActiveSkills[i])
+                ++skills_count;
+        }
+        if (skills_count < 4)
+            return false;
     }
-    if ( skills_count < 4 )
-      return false;
-  }
-  return true;
+    return true;
 }
 
-//----- (00491CB5) --------------------------------------------------------
-void LoadPlayerPortraintsAndVoices()
+
+void CreateParty_EventLoop()
 {
-    pIcons_LOD->pFacesLock = pIcons_LOD->uNumLoadedFiles;
-
-    for (uint i = 0; i < 4; ++i)
+    auto pPlayer = pParty->pPlayers.data();
+    while (pMessageQueue_50CBD0->uNumMessages)
     {
-        for (uint j = 0; j < 56; ++j)
+        UIMessageType msg;
+        int param, param2;
+        pMessageQueue_50CBD0->PopMessage(&msg, &param, &param2);
+
+        switch (msg)
         {
-            auto filename = StringPrintf("%s%02d", pPlayerPortraitsNames[pParty->pPlayers[i].uCurrentFace], j + 1);
-            game_ui_player_faces[i][j] = assets->GetImage_16BitColorKey(filename, 0x7FF);
+        case UIMSG_PlayerCreation_SelectAttribute:
+        {
+            pGUIWindow_CurrentMenu->pCurrentPosActiveItem = (pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem)
+                % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
+            uPlayerCreationUI_SelectedCharacter = param;
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0, 0, 0);
         }
-    }
+        break;
 
-    game_ui_player_face_eradicated = assets->GetImage_16BitColorKey("ERADCATE", 0x7FF);
-    game_ui_player_face_dead = assets->GetImage_16BitColorKey("DEAD", 0x7FF);
-    ui_partycreation_face_mask = assets->GetImage_16BitColorKey("FACEMASK", 0x7FF);
-
-    if (SoundSetAction[24][0])
-    {
-        for (uint i = 0; i < 4; ++i)
+        case UIMSG_PlayerCreation_VoicePrev:
         {
-            pSoundList->LoadSound(2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4998, 0);
-            pSoundList->LoadSound(2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4999, 0);
+            int sex = pParty->pPlayers[param].GetSexByVoice();
+            do
+            {
+                if (pParty->pPlayers[param].uVoiceID == 0)
+                    pParty->pPlayers[param].uVoiceID = 19;
+                else --pParty->pPlayers[param].uVoiceID;
+            } while (pParty->pPlayers[param].GetSexByVoice() != sex);
+            auto pButton = pCreationUI_BtnPressLeft2[param];
+
+            new OnButtonClick(pButton->uX, pButton->uY, 0, 0, (int)pButton, (char *)1);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0, 0, 0);
+            pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
+        }
+        break;
+
+        case UIMSG_PlayerCreation_VoiceNext:
+        {
+            int sex = pParty->pPlayers[param].GetSexByVoice();
+            do
+            {
+                pParty->pPlayers[param].uVoiceID = (pParty->pPlayers[param].uVoiceID + 1) % 20;
+            } while (pParty->pPlayers[param].GetSexByVoice() != sex);
+            auto pButton = pCreationUI_BtnPressRight2[param];
+            new OnButtonClick(pButton->uX, pButton->uY, 0, 0, (int)pButton, (char *)1);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0, 0, 0);
+            pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
+        }
+        break;
+        case UIMSG_PlayerCreation_FacePrev:
+            //pPlayer = &pParty->pPlayers[pParam];
+            if (!pParty->pPlayers[param].uCurrentFace)
+                pParty->pPlayers[param].uCurrentFace = 19;
+            else
+                pParty->pPlayers[param].uCurrentFace -= 1;
+            pParty->pPlayers[param].uVoiceID = pParty->pPlayers[param].uCurrentFace;
+            pParty->pPlayers[param].SetInitialStats();
+            pParty->pPlayers[param].SetSexByVoice();
+            pParty->pPlayers[param].RandomizeName();
+            pGUIWindow_CurrentMenu->pCurrentPosActiveItem = (pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem)
+                % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
+            uPlayerCreationUI_SelectedCharacter = param;
+            new OnButtonClick(pCreationUI_BtnPressLeft[param]->uX, pCreationUI_BtnPressLeft[param]->uY, 0, 0, (int)pCreationUI_BtnPressLeft[param], (char *)1);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0, 0.0, 0);
+            pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
+            break;
+        case UIMSG_PlayerCreation_FaceNext:
+            //pPlayer = &pParty->pPlayers[pParam];
+            int v20; v20 = (char)((int)pParty->pPlayers[param].uCurrentFace + 1) % 20;
+            pParty->pPlayers[param].uCurrentFace = v20;
+            pParty->pPlayers[param].uVoiceID = v20;
+            pParty->pPlayers[param].SetInitialStats();
+            pParty->pPlayers[param].SetSexByVoice();
+            pParty->pPlayers[param].RandomizeName();
+            pGUIWindow_CurrentMenu->pCurrentPosActiveItem = (pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem)
+                % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
+            uPlayerCreationUI_SelectedCharacter = param;
+            new OnButtonClick(pCreationUI_BtnPressRight[param]->uX, pCreationUI_BtnPressRight[param]->uY, 0, 0, (int)pCreationUI_BtnPressRight[param], (char *)1);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0, 0, 0);
+            pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
+            break;
+        case UIMSG_PlayerCreationClickPlus:
+            new OnButtonClick2(613, 393, 0, 0, (int)pPlayerCreationUI_BtnPlus, (char *)1);
+            pPlayer[uPlayerCreationUI_SelectedCharacter].IncreaseAttribute((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7);
+            pAudioPlayer->PlaySound(SOUND_ClickMinus, 0, 0, -1, 0, 0, 0, 0);
+            break;
+        case UIMSG_PlayerCreationClickMinus:
+            new OnButtonClick2(523, 393, 0, 0, (int)pPlayerCreationUI_BtnMinus, (char *)1);
+            pPlayer[uPlayerCreationUI_SelectedCharacter].DecreaseAttribute((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7);
+            pAudioPlayer->PlaySound(SOUND_ClickPlus, 0, 0, -1, 0, 0, 0, 0);
+            break;
+        case UIMSG_PlayerCreationSelectActiveSkill:
+            if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == 37)
+                pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(param + 4)] = 1;
+            pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0, 0, 0);
+            break;
+        case UIMSG_PlayerCreationSelectClass:
+            pPlayer[uPlayerCreationUI_SelectedCharacter].Reset((PLAYER_CLASS_TYPE)param);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0, 0, 0);
+            break;
+        case UIMSG_PlayerCreationClickOK:
+            new OnButtonClick2(580, 431, 0, 0, (int)pPlayerCreationUI_BtnOK, 0);
+            if (PlayerCreation_GetUnspentAttributePointCount() || !PlayerCreation_Choose4Skills())
+                game_ui_status_bar_event_string_time_left = GetTickCount() + 4000;
+            else
+                uGameState = GAME_STATE_STARTING_NEW_GAME;
+            break;
+        case UIMSG_PlayerCreationClickReset:
+            new OnButtonClick2(527, 431, 0, 0, (int)pPlayerCreationUI_BtnReset, 0);
+            pParty->Reset();
+            break;
+        case UIMSG_PlayerCreationRemoveUpSkill:
+        {
+            int v4; v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
+            pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
+            if (pPlayer[param].GetSkillIdxByOrder(2) != 37)//37 - None(Нет)
+                pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)] = 0;
+        }
+        break;
+        case UIMSG_PlayerCreationRemoveDownSkill:
+        {
+            int v4; v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
+            pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
+            if (pPlayer[param].GetSkillIdxByOrder(3) != 37)//37 - None(Нет)
+                pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(3)] = 0;
+        }
+        break;
+        case UIMSG_PlayerCreationChangeName:
+            pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0, 0, 0);
+            uPlayerCreationUI_SelectedCharacter = param;
+            pKeyActionMap->EnterText(0, 15, pGUIWindow_CurrentMenu);
+            pGUIWindow_CurrentMenu->ptr_1C = (void *)param;
+            break;
+        case UIMSG_Escape:
+            if (pModalWindow)
+            {
+                pModalWindow->Release();
+                pModalWindow = nullptr;
+                break;
+            }
+            if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000))
+                break;
+            viewparams->bRedrawGameUI = true;
+            viewparams->field_48 = 1;
+            if (GetCurrentMenuID() == MENU_MAIN || GetCurrentMenuID() == MENU_MMT_MAIN_MENU
+                || GetCurrentMenuID() == MENU_CREATEPARTY || GetCurrentMenuID() == MENU_NAMEPANELESC)
+            {
+                //if ( current_screen_type == SCREEN_VIDEO )
+                //pVideoPlayer->FastForwardToFrame(pVideoPlayer->pResetflag);			  
+                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_ChangeGameState, 0, 0);
+            }
+            break;
+        case UIMSG_ChangeGameState:
+            uGameState = GAME_FINISHED;
+            break;
         }
     }
 }
 
-//----- (00491DE7) --------------------------------------------------------
-void ReloadPlayerPortraits(int player_id, int face_id)//the transition from the zombies in the normal state
+bool PartyCreationUI_Loop()
 {
-    for (uint i = 0; i <= 55; ++i)
+    // -------------------------------------------------------
+    // 00462C94 bool MM_Main(const wchar_t *pCmdLine) --- part
+    extern bool use_music_folder;
+    if (use_music_folder)
+        alSourceStop(mSourceID);
+    else
     {
-        auto filename = StringPrintf("%s%02d", pPlayerPortraitsNames[face_id], i + 1);
-        game_ui_player_faces[player_id][i] = assets->GetImage_16BitColorKey(filename, 0x7FF);
+        if (pAudioPlayer->hAILRedbook)
+            AIL_redbook_stop(pAudioPlayer->hAILRedbook);
+    }
+
+    pParty->Reset();
+    pParty->CreateDefaultParty();
+
+    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_RED_POTION_ACTIVE, 1);
+    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_SEASHELL_ACTIVE, 1);
+    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_LONGBOW_ACTIVE, 1);
+    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_PLATE_ACTIVE, 1);
+    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_LUTE_ACTIVE, 1);
+    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_HAT_ACTIVE, 1);
+
+    pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
+    if (PartyCreationUI_LoopInternal())
+    {
+        PartyCreationUI_DeleteFont();
+        return false;
+    }
+    else
+    {
+        PartyCreationUI_DeleteFont();
+        return true;
     }
 }
 
@@ -134,38 +297,38 @@ void GUIWindow_PartyCreation::Update()
     int pCorrective;
 
     //move sky
-    pRenderer->BeginScene();
-    pRenderer->DrawTextureNew(0, 0, main_menu_background);
-    uPlayerCreationUI_SkySliderPos = (GetTickCount() % 12800) / 20;
-    pRenderer->DrawTextureAlphaNew(uPlayerCreationUI_SkySliderPos / 640.0f, 2 / 480.0f, ui_partycreation_sky_scroller);
-    pRenderer->DrawTextureAlphaNew((uPlayerCreationUI_SkySliderPos - window->GetWidth()) / 640.0f, 2 / 480.0f, ui_partycreation_sky_scroller);
-    pRenderer->DrawTextureAlphaNew(0, 0, ui_partycreation_top);
+    render->BeginScene();
+    render->DrawTextureNew(0, 0, main_menu_background);
+    int sky_slider_anim_timer = (GetTickCount() % (window->GetWidth() * 20)) / 20;
+    render->DrawTextureAlphaNew(sky_slider_anim_timer / 640.0f, 2 / 480.0f, ui_partycreation_sky_scroller);
+    render->DrawTextureAlphaNew((sky_slider_anim_timer - (int)window->GetWidth()) / 640.0f, 2 / 480.0f, ui_partycreation_sky_scroller);
+    render->DrawTextureAlphaNew(0, 0, ui_partycreation_top);
 
     uPlayerCreationUI_SelectedCharacter = (pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) / 7;
     switch (uPlayerCreationUI_SelectedCharacter)
     {
-    case 0: pX = 12;  break;
-    case 1: pX = 171; break;
-    case 2: pX = 329; break;
-    case 3: pX = 488; break;
-    default:
-        Error("Invalid selected character");
+        case 0: pX = 12;  break;
+        case 1: pX = 171; break;
+        case 2: pX = 329; break;
+        case 3: pX = 488; break;
+        default:
+            Error("Invalid selected character");
     }
 
-    pTextCenter = pFontCChar->AlignText_Center(window->GetWidth(), localization->GetString(51));
-    pGUIWindow_CurrentMenu->DrawText(pFontCChar, pTextCenter + 1, 0, 0, localization->GetString(51), 0, 0, 0);// CREATE PARTY / С О З Д А Т Ь  О Т Р Я Д
-    pRenderer->DrawTextureAlphaNew(17 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[0].uCurrentFace]);
-    pRenderer->DrawTextureAlphaNew(176 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[1].uCurrentFace]);
-    pRenderer->DrawTextureAlphaNew(335 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[2].uCurrentFace]);
-    pRenderer->DrawTextureAlphaNew(494 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[3].uCurrentFace]);
+    pTextCenter = ui_partycreation_font->AlignText_Center(window->GetWidth(), localization->GetString(51));
+    pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font, pTextCenter + 1, 0, 0, localization->GetString(51), 0, 0, 0);// CREATE PARTY / С О З Д А Т Ь  О Т Р Я Д
+    render->DrawTextureAlphaNew(17 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[0].uCurrentFace]);
+    render->DrawTextureAlphaNew(176 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[1].uCurrentFace]);
+    render->DrawTextureAlphaNew(335 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[2].uCurrentFace]);
+    render->DrawTextureAlphaNew(494 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[3].uCurrentFace]);
 
     //arrows
     pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uStartTime);
-    pRenderer->DrawTextureAlphaNew(pX / 640.0f, 29 / 480.0f, pFrame->texture);
+    render->DrawTextureAlphaNew(pX / 640.0f, 29 / 480.0f, pFrame->texture);
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     uPlayerCreationUI_ArrowAnim = 18 - (GetTickCount() % 450) / 25;
-    pRenderer->DrawTextureAlphaNew((uPosActiveItem->uZ - 4) / 640.0f, uPosActiveItem->uY / 480.0f, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
-    pRenderer->DrawTextureAlphaNew((uPosActiveItem->uX - 12) / 640.0f, uPosActiveItem->uY / 480.0f, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
+    render->DrawTextureAlphaNew((uPosActiveItem->uZ - 4) / 640.0f, uPosActiveItem->uY / 480.0f, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
+    render->DrawTextureAlphaNew((uPosActiveItem->uX - 12) / 640.0f, uPosActiveItem->uY / 480.0f, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
 
     memset(pText, 0, 200);
     strcpy(pText, localization->GetString(205));// "Skills"
@@ -180,7 +343,7 @@ void GUIWindow_PartyCreation::Update()
     for (int i = 0; i < 4; ++i)
     {
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, pIntervalX + 73, 100, 0, localization->GetClassName(pParty->pPlayers[i].classType), 0, 0, 0);
-        pRenderer->DrawTextureAlphaNew((pIntervalX + 77) / 640.0f, 50 / 480.0f, ui_partycreation_class_icons[pParty->pPlayers[i].classType / 4]);
+        render->DrawTextureAlphaNew((pIntervalX + 77) / 640.0f, 50 / 480.0f, ui_partycreation_class_icons[pParty->pPlayers[i].classType / 4]);
 
         if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 != WINDOW_INPUT_NONE && pGUIWindow_CurrentMenu->ptr_1C == (void *)i)
         {
@@ -397,7 +560,7 @@ void GUIWindow_PartyCreation::Update()
         message_window.uFrameW = 239;
         message_window.DrawMessageBox(0);
     }
-    pRenderer->EndScene();
+    render->EndScene();
 }
 
 
@@ -420,7 +583,6 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
     current_screen_type = SCREEN_PARTY_CREATION;
     uPlayerCreationUI_ArrowAnim = 0;
-    uPlayerCreationUI_SkySliderPos = 0;
     uPlayerCreationUI_SelectedCharacter = 0;
     v0 = LOBYTE(pFontCreate->uFontHeight) - 2;
 
@@ -442,7 +604,6 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ui_partycreation_portraits[uX] = assets->GetImage_16BitColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]), 0x7FF);
     }
 
-    ui_partycreation_face_mask = assets->GetImage_16BitColorKey("FACEMASK", 0x7FF);
     ui_partycreation_minus = assets->GetImage_16BitColorKey(L"buttminu", 0x7FF);
     ui_partycreation_plus = assets->GetImage_16BitColorKey(L"buttplus", 0x7FF);
     ui_partycreation_right = assets->GetImage_16BitColorKey(L"presrigh", 0x7FF);
@@ -541,23 +702,27 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ++uControlParam;
     } while (uControlParam < 9);
 
+    ui_partycreation_buttmake = assets->GetImage_16BitAlpha(L"BUTTMAKE");
+    ui_partycreation_buttmake2 = assets->GetImage_16BitAlpha(L"BUTTMAKE2");
+
     pPlayerCreationUI_BtnOK = CreateButton(580, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickOK, 0, '\r', "", ui_partycreation_buttmake, 0);
     pPlayerCreationUI_BtnReset = CreateButton(527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, 'C', "", ui_partycreation_buttmake2, 0);
     pPlayerCreationUI_BtnMinus = CreateButton(523, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickMinus, 0, '-', "", ui_partycreation_minus, 0);
     pPlayerCreationUI_BtnPlus = CreateButton(613, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickPlus, 1, '+', "", ui_partycreation_plus, 0);
 
-    pFontCChar = LoadFont("cchar.fnt", "FONTPAL", NULL);
+    ui_partycreation_font = LoadFont("cchar.fnt", "FONTPAL", NULL);
 }
 
 
 //----- (0049750E) --------------------------------------------------------
-void DeleteCCharFont()
+void PartyCreationUI_DeleteFont()
 {
-  free(pFontCChar);
-  pFontCChar = 0;
+  free(ui_partycreation_font);
+  ui_partycreation_font = 0;
 }
+
 //----- (00497526) --------------------------------------------------------
-bool PlayerCreationUI_Loop()
+bool PartyCreationUI_LoopInternal()
 {
     LONG uMouseX; // edi@6
     LONG uMouseY; // eax@6
@@ -602,10 +767,10 @@ bool PlayerCreationUI_Loop()
             //PlayerCreationUI_Draw();
             //MainMenu_EventLoop();
             CreateParty_EventLoop();
-            pRenderer->BeginScene();
+            render->BeginScene();
             GUI_UpdateWindows();
-            pRenderer->EndScene();
-            pRenderer->Present();
+            render->EndScene();
+            render->Present();
             if (uGameState == GAME_FINISHED)//if click Esc in PlayerCreation Window
             {
                 party_not_creation_flag = true;

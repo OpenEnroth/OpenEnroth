@@ -1143,7 +1143,7 @@ void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSi
     OpenFullscreenMovie(pMovieName, 0);
     bPlaying_Movie = 1;
     field_44 = v4;
-    pRenderer->ClearTarget(0);
+    render->ClearTarget(0);
     current_screen_type = SCREEN_VIDEO;
 
     auto hwnd = pMediaPlayer->window->GetApiHandle();
@@ -1232,12 +1232,12 @@ void MPlayer::HouseMovieLoop()
 {
 	if (pMovie_Track && !bNoVideo)
 	{
-		pRenderer->BeginScene();
+		render->BeginScene();
 		pMouse->DrawCursorToTarget();
 
         Log::Warning(L"smacker");
         loop_current_file = true;
-        pRenderer->BeginScene();
+        render->BeginScene();
         if (!bPlaying_Movie)//reload
         {
           unsigned int width = game_viewport_width;
@@ -1270,16 +1270,16 @@ void MPlayer::HouseMovieLoop()
             {
               for (unsigned int x = 8; x < 8 + game_viewport_width; ++x)
               {
-                auto p = (unsigned __int32 *)pRenderer->pTargetSurface + x + y * pRenderer->uTargetSurfacePitch;
+                auto p = (unsigned __int32 *)render->pTargetSurface + x + y * render->uTargetSurfacePitch;
                 *p = image_array[((x - 8) + ((y - 8)*game_viewport_width))];
               }
             }
             delete[] image;
           }
        //}
-        pRenderer->EndScene();
+        render->EndScene();
 		pMouse->ReadCursorWithItem();
-		pRenderer->EndScene();
+		render->EndScene();
 	}
 }
  
@@ -1359,21 +1359,21 @@ void MPlayer::ShowMM7IntroVideo_and_LoadingScreen()
   bGameoverLoop = true;
   if (!bNoVideo)
   {
-    pRenderer->PresentBlackScreen();
+    render->PresentBlackScreen();
     if ( !pMediaPlayer->bStopBeforeSchedule )
       PlayFullscreenMovie(MOVIE_Intro, true);
   }
 
   Image *tex = assets->GetImage_PCXFromIconsLOD(L"mm6title.pcx");
 
-  pRenderer->BeginScene();
-  pRenderer->DrawTextureNew(0, 0, tex);
+  render->BeginScene();
+  render->DrawTextureNew(0, 0, tex);
 
   //LoadFonts_and_DrawCopyrightWindow();
   DrawMM7CopyrightWindow();
 
-  pRenderer->EndScene();
-  pRenderer->Present();
+  render->EndScene();
+  render->Present();
 
   tex->Release();
   tex = nullptr;

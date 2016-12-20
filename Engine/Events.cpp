@@ -1079,7 +1079,7 @@ LABEL_47:
         v134 = v96 + ((_evt->v26 + ((_evt->v27 + ((uint)_evt->v28 << 8)) << 8)) << 8);
         if ( _evt->v29 || _evt->v30 )
           {
-            pRenderer->Sub01();
+            render->Sub01();
             pDialogueWindow = new GUIWindow_Transition(_evt->v29, _evt->v30, v135, v132, v126, v129, v95, v134, (char *)&_evt->v31);
           dword_5C3418 = uEventID;
           dword_5C341C = curr_seq_num + 1;
@@ -1176,7 +1176,7 @@ LABEL_47:
       case EVENT_SpeakInHouse:
         if ( EnterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5)))
           {
-            pRenderer->Sub01();
+            render->Sub01();
           pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0, 0, 0);
           pAudioPlayer->PlaySound(SOUND_enter, 814, 0, -1, 0, 0, 0, 0);
           v104 = 187;

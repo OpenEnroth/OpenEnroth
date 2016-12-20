@@ -177,7 +177,7 @@ void stru6_stru1_indoor_sw_billboard::_47829F_sphere_particle(float x_offset, fl
     if ( sub_477C61() && sub_477F63() )
     {
       if ( sub_47802A() )
-        pRenderer->_4A4CC9_AddSomeBillboard(this, diffuse);
+        render->_4A4CC9_AddSomeBillboard(this, diffuse);
     }
   }
 }
@@ -234,7 +234,7 @@ void stru6::DrawProjectiles()
 
     v10 = pIndoorCameraD3D->fov_x / v[1].vWorldViewPosition.x * 20.0;
     v11 = pIndoorCameraD3D->fov_x / v[0].vWorldViewPosition.x * 20.0;
-    pRenderer->DrawProjectile(
+    render->DrawProjectile(
         v[0].vWorldViewProjX,
         v[0].vWorldViewProjY,
         v[0].vWorldViewPosition.x,
@@ -896,7 +896,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
 
         case SPRITE_SPELL_FIRE_FIREBALL_IMPACT:
             AddMobileLight(a2, 0xFF3C1E, 256);
-            //if (pRenderer->pRenderD3D)
+            //if (render->pRenderD3D)
             {
                 if (PID_TYPE(a2->spell_caster_pid) != OBJECT_Actor &&
                     PID_TYPE(a2->spell_caster_pid) != OBJECT_Item)
@@ -947,14 +947,14 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
 
 
         case SPRITE_SPELL_AIR_SPARKS:
-            //if ( !pRenderer->pRenderD3D )
+            //if ( !render->pRenderD3D )
             //  return true;
             _4A78AE_sparks_spell(a2);
             AddMobileLight(a2, 0x64640F, 128);
             return false;
 
         case SPRITE_SPELL_AIR_LIGHNING_BOLT:
-            //if ( !pRenderer->pRenderD3D )
+            //if ( !render->pRenderD3D )
             //  return true;
             memcpy(pContainer, "sp18h1", 7);
             pRnd->SetRange(1, 6);
@@ -968,7 +968,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
 
         case SPRITE_SPELL_AIR_IMPLOSION:
         case SPRITE_SPELL_AIR_IMPLOSION_IMPACT:
-            //if ( pRenderer->pRenderD3D )
+            //if ( render->pRenderD3D )
             _4A77FD_implosion_particle_d3d(a2);
             /*else
             _4A80DC_implosion_particle_sw(a2);*/
@@ -1018,7 +1018,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
 
 
         case SPRITE_SPELL_EARTH_STUN:
-            //if ( !pRenderer->pRenderD3D )
+            //if ( !render->pRenderD3D )
             //  return true;
             _4A7C07_stun_spell_fx(a2);
             return false;
@@ -1071,7 +1071,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
 
 
         case SPRITE_SPELL_BODY_HARM:
-            //if ( !pRenderer->pRenderD3D )
+            //if ( !render->pRenderD3D )
             //  return true;
             _4A78AE_sparks_spell(a2);
             AddMobileLight(a2, 0x64640F, 128);
@@ -1111,7 +1111,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
 
         case SPRITE_SPELL_LIGHT_SUNRAY:
             AddMobileLight(a2, 0xFFFFFFu, 128);
-            //if ( !pRenderer->pRenderD3D )
+            //if ( !render->pRenderD3D )
             //  return true;
             AddProjectile(a2, 100, -1);
             return false;
@@ -1275,7 +1275,7 @@ void stru6::RenderSpecialEffects()
         if (v5 > 0.9)
             v5 = 1.0 - (v5 - 0.9) * 10.0;
         v7 = v5;
-        pRenderer->ScreenFade(uFadeColor, v7);
+        render->ScreenFade(uFadeColor, v7);
         uFadeTime -= pEventTimer->uTimeElapsed;
     }
 
@@ -1285,7 +1285,7 @@ void stru6::RenderSpecialEffects()
         v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
         v11 = v10->pHwSpriteIDs[0];
         uAnimLength -= pEventTimer->uTimeElapsed;
-        //if ( pRenderer->pRenderD3D )
+        //if ( render->pRenderD3D )
         //{
         vd3d[0].pos.x = (double)(signed int)pViewport->uViewportTL_X;
         vd3d[0].pos.y = (double)(signed int)pViewport->uViewportTL_Y;
@@ -1323,7 +1323,7 @@ void stru6::RenderSpecialEffects()
         vd3d[3].texcoord.x = 1.0;
         vd3d[3].texcoord.y = 0.0;
 
-        pRenderer->DrawSpecialEffectsQuad(vd3d, pSprites_LOD->pHardwareSprites[v11].pTexture);
+        render->DrawSpecialEffectsQuad(vd3d, pSprites_LOD->pHardwareSprites[v11].pTexture);
     }
 }
 
@@ -1344,7 +1344,7 @@ void stru6::DrawPlayerBuffAnims()
         }
 
         Icon* icon = pIconsFrameTable->GetFrame(buff->uSpellIconID, buff->uSpellAnimTimeElapsed);
-        pRenderer->DrawTextureAlphaNew(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 385 / 480.0f, icon->texture);
+        render->DrawTextureAlphaNew(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 385 / 480.0f, icon->texture);
 
         pOtherOverlayList->bRedraw = true;
     }
@@ -1770,7 +1770,7 @@ int stru6_stru1_indoor_sw_billboard::sub_477C61()
 				{
 					v5 = v4 - (double)pIndoorCameraD3D->vPartyPos.x;
 					v6 = v37 - (double)pIndoorCameraD3D->vPartyPos.y;
-					//if ( pRenderer->pRenderD3D )
+					//if ( render->pRenderD3D )
 					//{
 					v41 = pIndoorCameraD3D->fRotationYSine * v6 + pIndoorCameraD3D->fRotationYCosine * v5;
 					v7 = pIndoorCameraD3D->fRotationYSine * v5 - pIndoorCameraD3D->fRotationYCosine * v6;
@@ -1790,7 +1790,7 @@ int stru6_stru1_indoor_sw_billboard::sub_477C61()
 				{
 					v42 = v4 - (double)pIndoorCameraD3D->vPartyPos.x;
 					v39 = v37 - (double)pIndoorCameraD3D->vPartyPos.y;
-					//if ( pRenderer->pRenderD3D )
+					//if ( render->pRenderD3D )
 					//{
 					v10 = pIndoorCameraD3D->fRotationYSine * v39 + pIndoorCameraD3D->fRotationYCosine * v42;
 					v11 = pIndoorCameraD3D->fRotationYSine * v42 - pIndoorCameraD3D->fRotationYCosine * v39;
@@ -1935,7 +1935,7 @@ int stru6_stru1_indoor_sw_billboard::sub_47802A()
 		for (int i = 0; i < this->uNumVertices; i++)
 		{
 			v6 = (double)pBLVRenderParams->fov_rad_fixpoint * 0.000015258789 / this->field_B4[i * 4];
-			//if ( pRenderer->pRenderD3D )
+			//if ( render->pRenderD3D )
 			{
 				pIndoorCameraD3D->Project(round_to_int(this->field_B4[i * 4]), round_to_int(this->field_B4[i * 4 + 1]), round_to_int(this->field_B4[i * 4 + 2]),
 					&a5, &a6);

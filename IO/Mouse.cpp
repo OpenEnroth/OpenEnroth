@@ -105,7 +105,7 @@ LONG Mouse::_469AE4()
   else
   {*/
     GetCursorPos(&Point);
-    //if ( pRenderer->bWindowMode )
+    //if ( render->bWindowMode )
       ScreenToClient(window->GetApiHandle(), &Point);
     result = Point.y;
     v2 = Point.x;
@@ -117,7 +117,7 @@ LONG Mouse::_469AE4()
   //This block has been commented out, because of the changed condition above "if(true)"
   //Also the next condition and the first line has been commented out as well
 
-  // if (pRenderer->bWindowMode)
+  // if (render->bWindowMode)
   if ( true )
     goto LABEL_16;
   //if (pAsyncMouse)
@@ -138,7 +138,7 @@ LONG Mouse::_469AE4()
 //LABEL_16:
     //if (pAsyncMouse)
     //  goto LABEL_24;
-	if (true/*pRenderer->bWindowMode*/ && (v2 < 0 || result < 0 || v2 > window->GetWidth() - 1 || result > window->GetHeight() - 1))
+	if (true/*render->bWindowMode*/ && (v2 < 0 || result < 0 || v2 > window->GetWidth() - 1 || result > window->GetHeight() - 1))
 	{
 		this->bActive = false;
 		//LABEL_24:
@@ -248,7 +248,7 @@ void Mouse::DrawCursor()
       return;
     }
 
-    //if ( pRenderer->bWindowMode )
+    //if ( render->bWindowMode )
     {
       if ( this->uMouseClickX < 0 || this->uMouseClickY < 0 || this->uMouseClickX > window->GetWidth() - 1 || this->uMouseClickY > window->GetHeight() - 1 )
       {
@@ -288,7 +288,7 @@ void Mouse::DrawCursor()
         v9 = 2 * pMouse->uCursorBitmapPitch;
       else
         v9 = 0;
-      pRenderer->_4A6DF5( this->pCursorBitmap_sysmem, v9, &this->pCursorBitmapPos, pRenderer->pTargetSurface, pRenderer->uTargetSurfacePitch,
+      render->_4A6DF5( this->pCursorBitmap_sysmem, v9, &this->pCursorBitmapPos, render->pTargetSurface, render->uTargetSurfacePitch,
         &this->pCursorBitmapRect);//срабатывает когда берём курсором вещь в инвенторе
       this->bRedraw = false;
     }
@@ -317,8 +317,8 @@ void Mouse::DrawCursorToTarget()//??? DrawCursorWithItem
   ushort* pSrc = pCursorBitmap3_sysmembits_16bit;
   for (int y = uCursorWithItemY; y < uCursorWithItemZ; ++y)
     for (int x = uCursorWithItemX; x < uCursorWithItemW; ++x)
-      //pRenderer->pTargetSurface[y * pRenderer->uTargetSurfacePitch + x] = *pSrc++;
-        pRenderer->WritePixel16(x, y, *pSrc++);
+      //render->pTargetSurface[y * render->uTargetSurfacePitch + x] = *pSrc++;
+        render->WritePixel16(x, y, *pSrc++);
 }
 
 //----- (00469EA4) --------------------------------------------------------
@@ -377,16 +377,16 @@ void Mouse::ReadCursorWithItem()
       {
         for (int x = this->uCursorWithItemX; x < this->uCursorWithItemW; ++x)
         {
-          *v22++ = pRenderer->ReadPixel16(x, y);
+          *v22++ = render->ReadPixel16(x, y);
         }
       }
 
       if (pParty->pPickedItem.IsBroken())
-        pRenderer->DrawTransparentRedShade(pMouse->uMouseClickX/640.0f, pMouse->uMouseClickY/480.0f, pTexture);
+        render->DrawTransparentRedShade(pMouse->uMouseClickX/640.0f, pMouse->uMouseClickY/480.0f, pTexture);
       else if (!pParty->pPickedItem.IsIdentified())
-        pRenderer->DrawTransparentGreenShade(pMouse->uMouseClickX/640.0f, pMouse->uMouseClickY/480.0f, pTexture);
+        render->DrawTransparentGreenShade(pMouse->uMouseClickX/640.0f, pMouse->uMouseClickY/480.0f, pTexture);
       else
-        pRenderer->DrawTextureAlphaNew(pMouse->uMouseClickX/640.0f, pMouse->uMouseClickY/480.0f, pTexture);
+        render->DrawTextureAlphaNew(pMouse->uMouseClickX/640.0f, pMouse->uMouseClickY/480.0f, pTexture);
     }
   }
   else
@@ -511,10 +511,10 @@ void Mouse::UI_OnMouseLeftClick(int *pXY)
     return;
   }
   y = pY;
-  //if ( pRenderer->pRenderD3D )
+  //if ( render->pRenderD3D )
     v5 = pEngine->pVisInstance->get_picked_object_zbuf_val();
   /*else
-    v5 = pRenderer->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
+    v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
 
   uint type = PID_TYPE((unsigned __int16)v5);
   if (type == OBJECT_Actor && uActiveCharacter && v5 < 0x2000000

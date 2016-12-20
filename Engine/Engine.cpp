@@ -68,7 +68,6 @@
 #include "Game/Game.h"
 #include "Game/MainMenu.h"
 #include "Game/MainMenuLoad.h"
-#include "Game/CreateParty.h"
 
 #include "stru6.h"
 
@@ -100,13 +99,13 @@ b = true;
 }
 
 auto icon = pIconsFrameTable->GetFrame(torchA.icon->id, GetTickCount()/2);
-pRenderer->DrawTextureAlphaNew(64 / 640.0f, 48 / 480.0f, icon->texture);
+render->DrawTextureAlphaNew(64 / 640.0f, 48 / 480.0f, icon->texture);
 
 icon = pIconsFrameTable->GetFrame(torchB.icon->id, GetTickCount() / 2);
-pRenderer->DrawTextureAlphaNew((64 + torchA.icon->texture->GetWidth())/ 640.0f, 48 / 480.0f, icon->texture);
+render->DrawTextureAlphaNew((64 + torchA.icon->texture->GetWidth())/ 640.0f, 48 / 480.0f, icon->texture);
 
 icon = pIconsFrameTable->GetFrame(torchC.icon->id, GetTickCount() / 2);
-pRenderer->DrawTextureAlphaNew((64 + torchA.icon->texture->GetWidth() + torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
+render->DrawTextureAlphaNew((64 + torchA.icon->texture->GetWidth() + torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 
 */
 
@@ -163,7 +162,7 @@ void Engine_DeinitializeAndTerminate(int exitCode)
     SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
     ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     pEngine->Deinitialize();
-    pRenderer->Release();
+    render->Release();
     delete window;
     //if ( !DestroyWindow(hWnd) )
     //  GetLastError();
@@ -214,11 +213,11 @@ void Engine::Draw()
 
     if (pMovie_Track)
     {
-        /*if ( !pRenderer->pRenderD3D )
+        /*if ( !render->pRenderD3D )
         {
-        pRenderer->BeginSceneD3D();
+        render->BeginSceneD3D();
         pMouse->DrawCursorToTarget();
-        pRenderer->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
+        render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         }*/
     }
     else
@@ -229,23 +228,23 @@ void Engine::Draw()
         pParty->vPrevPosition.x = pParty->vPosition.x;
         pParty->vPrevPosition.y = pParty->vPosition.y;
         pParty->vPrevPosition.z = pParty->vPosition.z;
-        //v0 = &pRenderer;
+        //v0 = &render;
         pParty->sPrevRotationY = pParty->sRotationY;
         pParty->sPrevRotationX = pParty->sRotationX;
 
         pParty->sPrevEyelevel = pParty->sEyelevel;
-        pRenderer->BeginSceneD3D();
+        render->BeginSceneD3D();
 
-        //if ( !pRenderer->pRenderD3D )
+        //if ( !render->pRenderD3D )
         //pMouse->DrawCursorToTarget();
         if (!PauseGameDrawing() || viewparams->field_48 == 1)
         {
-            //if ( pRenderer->pRenderD3D )
+            //if ( render->pRenderD3D )
             {
                 float v2 = (double)(((signed int)pMiscTimer->uTotalGameTimeElapsed >> 2) & 0x1F) * 0.032258064 * 6.0;
                 //v3 = v2 + 6.7553994e15;
-                //pRenderer->field_1036A8_bitmapid = LODWORD(v3);
-                pRenderer->hd_water_current_frame = floorf(v2 + 0.5f);
+                //render->field_1036A8_bitmapid = LODWORD(v3);
+                render->hd_water_current_frame = floorf(v2 + 0.5f);
             }
 
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
@@ -255,21 +254,21 @@ void Engine::Draw()
             else
                 Error("Invalid level type: %u", uCurrentlyLoadedLevelType);
 
-            //if (pRenderer->pRenderD3D)
+            //if (render->pRenderD3D)
             {
                 pDecalBuilder->DrawBloodsplats();
                 pEngine->pLightmapBuilder->DrawLightmapsType(2);
             }
         }
-        pRenderer->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
+        render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     }
 
     //DEBUG: force redraw gui
     viewparams->bRedrawGameUI = true;
 
 
-    pRenderer->BeginScene();
-    //if (pRenderer->pRenderD3D)
+    render->BeginScene();
+    //if (render->pRenderD3D)
     pMouse->DrawCursorToTarget();
     if (pOtherOverlayList->bRedraw)
         viewparams->bRedrawGameUI = true;
@@ -288,8 +287,8 @@ void Engine::Draw()
         GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);//redraw = pParty->uFlags & 2);
         if (v4)
         {
-            if (!PauseGameDrawing() /*&& pRenderer->pRenderD3D*/) // clear game viewport with transparent color
-                pRenderer->FillRectFast(pViewport->uViewportTL_X, pViewport->uViewportTL_Y, pViewport->uViewportBR_X - pViewport->uViewportTL_X,
+            if (!PauseGameDrawing() /*&& render->pRenderD3D*/) // clear game viewport with transparent color
+                render->FillRectFast(pViewport->uViewportTL_X, pViewport->uViewportTL_Y, pViewport->uViewportBR_X - pViewport->uViewportTL_X,
                 pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
                 0x7FF);
             viewparams->field_48 = 0;
@@ -380,8 +379,8 @@ void Engine::Draw()
     pMouse->ReadCursorWithItem();
     pMouse->DrawCursor();
     pMouse->Activate();
-    pRenderer->EndScene();
-    pRenderer->Present();
+    render->EndScene();
+    render->Present();
     pParty->uFlags &= ~2;
 }
 
@@ -503,11 +502,11 @@ bool Engine::_44EEA7()
 
     if (uFlags & GAME_FLAGS_1_DRAW_BLV_DEBUGS)
         pStru10Instance->bDoNotDrawPortalFrustum = false;
-    if ( /*pRenderer->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        pRenderer->uFogColor = GetLevelFogColor() & 0xFFFFFF;
+    if ( /*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+        render->uFogColor = GetLevelFogColor() & 0xFFFFFF;
     if (uFlags & 0x0400)
         uFlags2 |= 0x01;
-    /*if ( !pRenderer->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_Outdoor && pMobileLightsStack->uNumLightsActive )
+    /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_Outdoor && pMobileLightsStack->uNumLightsActive )
     {
     uFlags2 |= 0x01;
     field_E10 = qword_5C6DF0;
@@ -554,8 +553,8 @@ bool Engine::AlterGamma_ODM(ODMFace *pFace, signed int *pColor)
 //----- (004645FA) --------------------------------------------------------
 void Engine::Deinitialize()
 {
-    WriteWindowsRegistryInt("startinwindow", 1);//pRenderer->bWindowMode);
-    //if (pRenderer->bWindowMode)
+    WriteWindowsRegistryInt("startinwindow", 1);//render->bWindowMode);
+    //if (render->bWindowMode)
     {
         WriteWindowsRegistryInt("window X", window->GetX());
         WriteWindowsRegistryInt("window Y", window->GetY());
@@ -567,7 +566,7 @@ void Engine::Deinitialize()
     if (pMouse)
         pMouse->Deactivate();
 
-    delete pRenderer;
+    delete render;
     pAudioPlayer->Release();//error
     pNew_LOD->FreeSubIndexAndIO();
     pGames_LOD->FreeSubIndexAndIO();
@@ -771,7 +770,7 @@ Engine::~Engine()
 //----- (0044EA5E) --------------------------------------------------------
 bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY, bool bOutline, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter)
 {
-    /*if (current_screen_type != SCREEN_GAME|| !pRenderer->pRenderD3D)
+    /*if (current_screen_type != SCREEN_GAME|| !render->pRenderD3D)
     return false;*/
 
     if (!pVisInstance)
@@ -798,7 +797,7 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMou
 //----- (0044EB12) --------------------------------------------------------
 bool Engine::PickKeyboard(bool bOutline, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter)
 {
-    if (current_screen_type == SCREEN_GAME && pVisInstance /*&& pRenderer->pRenderD3D*/)
+    if (current_screen_type == SCREEN_GAME && pVisInstance /*&& render->pRenderD3D*/)
     {
         bool r = pVisInstance->PickKeyboard(&pVisInstance->default_list, sprite_filter, face_filter);
 
@@ -880,16 +879,16 @@ void Engine::OutlineSelection()
 void  sub_42FBDD()
 {
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
-    pRenderer->DrawTextureAlphaNew(pBtn_YES->uX/640.0f, pBtn_YES->uY/480.0f, pBtn_YES->pTextures[0]);
-    pRenderer->Present();
+    render->DrawTextureAlphaNew(pBtn_YES->uX/640.0f, pBtn_YES->uY/480.0f, pBtn_YES->pTextures[0]);
+    render->Present();
 }
 
 //----- (0042FC15) --------------------------------------------------------
 void CloseWindowBackground()
 {
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -2, 0, -1, 0, 0, 0, 0);
-    pRenderer->DrawTextureAlphaNew(pBtn_ExitCancel->uX/640.0f, pBtn_ExitCancel->uY/480.0f, pBtn_ExitCancel->pTextures[0]);
-    pRenderer->Present();
+    render->DrawTextureAlphaNew(pBtn_ExitCancel->uX/640.0f, pBtn_ExitCancel->uY/480.0f, pBtn_ExitCancel->pTextures[0]);
+    render->Present();
 }
 
 
@@ -913,7 +912,7 @@ void  UpdateUserInput_and_MapSpecificStuff()
 //----- (004646F0) --------------------------------------------------------
 void PrepareWorld(unsigned int _0_box_loading_1_fullscreen)
 {
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
     pEngine->pVisInstance->_4C1A02();
     pEventTimer->Pause();
     pMiscTimer->Pause();
@@ -980,7 +979,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box)
     bDialogueUI_InitializeActor_NPC_ID = 0;
     OnMapLoad();
     pGameLoadingUI_ProgressBar->Progress();
-    memset(&pRenderer->pBillboardRenderListD3D, 0, sizeof(pRenderer->pBillboardRenderListD3D));
+    memset(&render->pBillboardRenderListD3D, 0, sizeof(render->pBillboardRenderListD3D));
     pGameLoadingUI_ProgressBar->Release();
     _flushall();
 }
@@ -1357,10 +1356,10 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
 
     bool use_d3d11 = false;
     if (use_d3d11)
-        pRenderer = RenderD3D11::Create();
+        render = RenderD3D11::Create();
     else
-        pRenderer = Render::Create();//Create DirectX
-    if (!pRenderer)
+        render = Render::Create();//Create DirectX
+    if (!render)
     {
         Log::Warning(L"Render creation failed");
         return false;
@@ -1370,7 +1369,7 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
         //bool bWindowMode = ReadWindowsRegistryInt("startinwindow", false);
         //uint uDefaultDevice = ReadWindowsRegistryInt("D3D Device", 1);
 
-        if (!pRenderer->Initialize(window/*, bColoredLights, uLevelOfDetail, bTinting*/))
+        if (!render->Initialize(window/*, bColoredLights, uLevelOfDetail, bTinting*/))
         {
             Log::Warning(L"Render failed to initialize");
             return false;
@@ -1629,13 +1628,13 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
     if (dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_RUN_IN_WIDOW)
     {
         //window->SetWindowedMode(game_width, game_height);
-        pRenderer->SwitchToWindow();
+        render->SwitchToWindow();
     }
     else
     {
         __debugbreak(); // Nomad
         window->SetFullscreenMode();
-        pRenderer->InitializeFullscreen();
+        render->InitializeFullscreen();
     }
 
     uSoundVolumeMultiplier = min(9, ReadWindowsRegistryInt("soundflag", 9));
@@ -1695,11 +1694,11 @@ void SecondaryInitialization()
     pItemsTable->Initialize();
 
     //pBitmaps_LOD->can_load_hardware_sprites = 1;
-    //pBitmaps_LOD->SetupPalettes(pRenderer->uTargetRBits, pRenderer->uTargetGBits, pRenderer->uTargetBBits);
+    //pBitmaps_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits, render->uTargetBBits);
     pBitmaps_LOD->SetupPalettes(5, 6, 5);
-    //pIcons_LOD->SetupPalettes(pRenderer->uTargetRBits, pRenderer->uTargetGBits, pRenderer->uTargetBBits);
+    //pIcons_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits, render->uTargetBBits);
     pIcons_LOD->SetupPalettes(5, 6, 5);
-    //pPaletteManager->SetColorChannelInfo(pRenderer->uTargetRBits, pRenderer->uTargetGBits, pRenderer->uTargetBBits);
+    //pPaletteManager->SetColorChannelInfo(render->uTargetRBits, render->uTargetGBits, render->uTargetBBits);
     pPaletteManager->SetColorChannelInfo(5, 6, 5);
 
     pPaletteManager->SetMistColor(128, 128, 128);
@@ -1753,7 +1752,7 @@ void SecondaryInitialization()
     {
         char container_name[64];
         sprintf(container_name, "HDWTR%03u", i);
-        pRenderer->pHDWaterBitmapIDs[i] = pBitmaps_LOD->LoadTexture(container_name);
+        render->pHDWaterBitmapIDs[i] = pBitmaps_LOD->LoadTexture(container_name);
     }
 
     pNPCStats = new NPCStats;
@@ -1837,8 +1836,10 @@ bool GameLoop()
         else if (GetCurrentMenuID() == MENU_NEWGAME)
         {
             pOtherOverlayList->Reset();
-            if (!CreateParty_Loop())
+            if (!PartyCreationUI_Loop())
+            {
                 break;
+            }
 
             pParty->pPickedItem.uItemID = 0;
 

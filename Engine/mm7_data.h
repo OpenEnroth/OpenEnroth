@@ -683,7 +683,6 @@ extern struct Vec3_float_ *pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2>  pTerrainNormalIndices;
 extern std::array<unsigned int, 128 * 128 * 2>    pTerrainSomeOtherData;
 extern int dword_A74C88;
-extern unsigned int uPlayerCreationUI_SkySliderPos;
 extern int uPlayerCreationUI_ArrowAnim;
 extern unsigned int uPlayerCreationUI_SelectedCharacter;
 extern int dword_A74CDC;

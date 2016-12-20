@@ -200,7 +200,7 @@ void Chest::ChestUI_WritePointedObjectStatusString()
   pMouse->GetCursorPos(&cursor);
   if ( cursor.y < 350 )
   {
-    v1 = pRenderer->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]];
+    v1 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]];
     if ( v1 != 0 && v1 != -65536 )
     {
       if ( v1 )
@@ -473,7 +473,7 @@ void Chest::PlaceItems(signed int uChestID )
     int chest_item_id; // [sp+9Ch] [bp-10h]@10
     unsigned int items_counter; // [sp+A4h] [bp-8h]@8
 
-    pRenderer->ClearZBuffer(0, 479);
+    render->ClearZBuffer(0, 479);
     uChestArea = pChestWidthsByType[pChests[uChestID].uChestBitmapID] * pChestHeightsByType[pChests[uChestID].uChestBitmapID];
     memset(chest_cells_map, 0, 144);
     //fill cell map at random positions
@@ -731,7 +731,7 @@ void Chest::OnChestLeftClick()
   else
   {
     pMouse->GetCursorPos(&cursor);
-    v2 = pRenderer->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
+    v2 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
     if ( v2 )
     {
       if ( v2 )

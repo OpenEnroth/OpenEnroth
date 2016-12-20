@@ -10,19 +10,19 @@ struct Viewport
     SetScreen(0, 0, 639, 479);
   }
 
-  void SetScreen(signed int uX, signed int uY, signed int uZ, signed int uW);
+  void SetScreen(int uX, int uY, int uZ, int uW);
   void SetFOV(int a2);
-  void SetViewport(signed int uX, signed int uY, signed int uZ, signed int uW);
+  void SetViewport(int uX, int uY, int uZ, int uW);
 
 
-  signed int uScreen_TL_X;
-  signed int uScreen_TL_Y;
-  signed int uScreen_BR_X;
-  signed int uScreen_BR_Y;
-  signed int uViewportTL_X;
-  signed int uViewportTL_Y;
-  signed int uViewportBR_X;
-  signed int uViewportBR_Y;
+  int uScreen_TL_X;
+  int uScreen_TL_Y;
+  int uScreen_BR_X;
+  int uScreen_BR_Y;
+  int uViewportTL_X;
+  int uViewportTL_Y;
+  int uViewportBR_X;
+  int uViewportBR_Y;
   int uScreenWidth;
   int uScreenHeight;
   int uScreenCenterX;
@@ -78,7 +78,7 @@ struct ViewingParams
   __int16 indoor_center_x;
   __int16 indoor_center_y;
   int field_3C;
-  unsigned int uTextureID_LocationMap;
+  class Image *location_minimap;//unsigned int uTextureID_LocationMap; ::40
   int bRedrawGameUI;
   int field_48;
   int field_4C;

@@ -32,7 +32,7 @@ void ShowLogoVideo()
   bGameoverLoop = 1;
   if (!bNoVideo)
   {
-    pRenderer->PresentBlackScreen();
+    render->PresentBlackScreen();
     pMediaPlayer->PlayFullscreenMovie(MOVIE_3DOLogo, true);
     if ( !pMediaPlayer->bStopBeforeSchedule )
     {
@@ -142,6 +142,7 @@ Texture_MM7 *LoadPNG(const char *name)
     }
   }
   //Ritor1: temporarily stopped, needed change RGBTexture structure
+__debugbreak();
   /*for (int i = 0; i < width * height; ++i)
     tex->pPalette16[i] = 0x7FF;
   memset(tex->pLevelOfDetail0_prolly_alpha_mask, 1, sizeof(unsigned __int8) * width * height);*/
@@ -221,8 +222,8 @@ void MMT_MainMenu_Loop()
       continue;
     }
 
-      pRenderer->BeginScene();
-      pRenderer->DrawTextureRGB(0, 0, &main_menu_background);
+      render->BeginScene();
+      render->DrawTextureRGB(0, 0, &main_menu_background);
 
       MMT_MenuMessageProc();//for ÌÌÒ menu
       GUI_UpdateWindows();
@@ -264,19 +265,19 @@ void MMT_MainMenu_Loop()
                 pY = window->GetHeight() - 35;
                 break;
             }
-            pRenderer->DrawTextureTransparentColorKey(pX, pY, pTexture);
+            render->DrawTextureTransparentColorKey(pX, pY, pTexture);
            }
           }
         }
       //}
-      pRenderer->EndScene();
-      pRenderer->Present();
+      render->EndScene();
+      render->Present();
   }
   MMT_MenuMessageProc();
-  pRenderer->BeginScene();
+  render->BeginScene();
   GUI_UpdateWindows();
-  pRenderer->EndScene();
-  pRenderer->Present();
+  render->EndScene();
+  render->Present();
 
   //remove resource
   if ( pGUIWindow2 )

@@ -523,10 +523,10 @@ void Game_EventLoop()
                 pEngine->ToggleFlags2(0x20u);
                 continue;
             case UIMSG_ToggleColoredLights:
-                pRenderer->ToggleColoredLights();
+                render->ToggleColoredLights();
                 continue;
             case UIMSG_ToggleTint:
-                pRenderer->ToggleTint();
+                render->ToggleTint();
                 continue;
             case UIMSG_ChangeMusicVolume:
                 extern bool use_music_folder;
@@ -748,7 +748,7 @@ void Game_EventLoop()
                     pModalWindow = nullptr;
                     continue;
                 }
-                    pRenderer->ClearZBuffer(0, 479);
+                    render->ClearZBuffer(0, 479);
                     viewparams->bRedrawGameUI = true;
                     viewparams->field_48 = 1;
                     if (current_screen_type == SCREEN_GAME)
@@ -814,10 +814,10 @@ void Game_EventLoop()
                     }
                     else if (current_screen_type == SCREEN_VIDEO_OPTIONS)
                     {/*
-                        //if ( pRenderer->pRenderD3D )
+                        //if ( render->pRenderD3D )
                         {
-                            WriteWindowsRegistryInt("Colored Lights", pRenderer->bUseColoredLights);
-                            WriteWindowsRegistryInt("Tinting", pRenderer->bTinting);
+                            WriteWindowsRegistryInt("Colored Lights", render->bUseColoredLights);
+                            WriteWindowsRegistryInt("Tinting", render->bTinting);
                             WriteWindowsRegistryInt("Bloodsplats", (LOBYTE(pEngine->uFlags2) >> 5) & 1);
                         }
 
@@ -1277,13 +1277,13 @@ void Game_EventLoop()
                 viewparams->bRedrawGameUI = true;
                 continue;
             case UIMSG_CastSpell_Telekinesis:
-                //if ( pRenderer->pRenderD3D )
+                //if ( render->pRenderD3D )
                 LOWORD(v42) = pEngine->pVisInstance->get_picked_object_zbuf_val();
                 /*else
                 {
                 uNumSeconds = (unsigned int)pMouse->GetCursorPos(&v210);
                 pPoint = pMouse->GetCursorPos(&v208);
-                v42 = pRenderer->pActiveZBuffer[*(int *)uNumSeconds + pSRZBufferLineOffsets[pPoint->y]];
+                v42 = render->pActiveZBuffer[*(int *)uNumSeconds + pSRZBufferLineOffsets[pPoint->y]];
                 }*/
                 v44 = (unsigned __int16)v42;
                 v45 = PID_TYPE(v44);
@@ -1547,7 +1547,7 @@ void Game_EventLoop()
                 }
                 else
                 {
-                    pRenderer->SaveScreenshot(
+                    render->SaveScreenshot(
                         StringPrintf("data\\lloyd%d%d.pcx", _506348_current_lloyd_playerid + 1, uMessageParam + 1),
                         92,
                         68
@@ -1702,7 +1702,7 @@ void Game_EventLoop()
                 }
                 if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits, v68))
                 {
-                    pRenderer->DrawTextureNew(0, 352/480.0f, game_ui_statusbar);
+                    render->DrawTextureNew(0, 352/480.0f, game_ui_statusbar);
                     continue;
                 }
                 //LABEL_506:
@@ -1857,7 +1857,7 @@ void Game_EventLoop()
 
             case UIMSG_CastSpell_Monster_Improvement:
             case UIMSG_CastSpell_Shoot_Monster://FireBlow, Lightning, Ice Lightning, Swarm, 
-                //if ( pRenderer->pRenderD3D )
+                //if ( render->pRenderD3D )
             {
                 v81 = pEngine->pVisInstance->get_picked_object_zbuf_val();
             }
@@ -1865,7 +1865,7 @@ void Game_EventLoop()
                 {
                 uNumSeconds = (unsigned int)pMouse->GetCursorPos(&v206);
                 pPoint2 = pMouse->GetCursorPos(&v201);
-                v81 = pRenderer->pActiveZBuffer[*(int *)uNumSeconds + pSRZBufferLineOffsets[pPoint2->y]];
+                v81 = render->pActiveZBuffer[*(int *)uNumSeconds + pSRZBufferLineOffsets[pPoint2->y]];
                 }*/
                 v83 = v81;
                 v44 = (unsigned __int16)v81;
@@ -2304,7 +2304,7 @@ void Game_EventLoop()
                     gamma_preview_image->Release();
                     gamma_preview_image = nullptr;
                 }
-                pRenderer->SaveScreenshot("gamma.pcx", 155, 117);
+                render->SaveScreenshot("gamma.pcx", 155, 117);
                 gamma_preview_image = assets->GetImage_PCXFromFile(L"gamma.pcx");
 
                 new OnButtonClick(0x25Au, 0x1C2u, 0, 0, (int)pBtn_GameSettings, 0);
@@ -2521,7 +2521,7 @@ void Game_EventLoop()
                 pPlayers[uActiveCharacter]->OnInventoryLeftClick();
                 continue;
             case UIMSG_MouseLeftClickInGame:
-                /*if ( !pRenderer->pRenderD3D )
+                /*if ( !render->pRenderD3D )
                 {
                 if ( pMessageQueue_50CBD0->uNumMessages )
                 pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
@@ -2576,7 +2576,7 @@ void Game_EventLoop()
                 continue;
             case UIMSG_F:
                 __debugbreak();
-                //if ( pRenderer->pRenderD3D )
+                //if ( render->pRenderD3D )
                 {
                     LOWORD(v116) = pEngine->pVisInstance->get_picked_object_zbuf_val();
                 }
@@ -2584,7 +2584,7 @@ void Game_EventLoop()
                 {
                 uNumSeconds = (unsigned int)pMouse->GetCursorPos(&v209);
                 pPoint3 = pMouse->GetCursorPos(&v204);
-                v116 = pRenderer->pActiveZBuffer[*(int *)uNumSeconds + pSRZBufferLineOffsets[pPoint3->y]];
+                v116 = render->pActiveZBuffer[*(int *)uNumSeconds + pSRZBufferLineOffsets[pPoint3->y]];
                 }*/
                 pButton2 = (GUIButton *)(unsigned __int16)v116;
                 __debugbreak();//GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
@@ -2734,7 +2734,7 @@ void Game_Loop()
         }
 
     extern bool use_music_folder;
-    LoadPlayerPortraintsAndVoices();
+    GameUI_LoadPlayerPortraintsAndVoices();
     pIcons_LOD->_inlined_sub1();
     if (use_music_folder)
         alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
@@ -2767,7 +2767,7 @@ void Game_Loop()
         // uGame_if_0_else_ui_id__11_save__else_load__8_drawSpellInfoPopup__22_final_window__26_keymapOptions__2_options__28_videoOptions = 0;
         current_screen_type = SCREEN_GAME;
 
-        //if ( pRenderer->pRenderD3D )
+        //if ( render->pRenderD3D )
         pEngine->pVisInstance->_4C1A02();
 
         bool game_finished = false;
@@ -2792,7 +2792,7 @@ void Game_Loop()
             if (pArcomageGame->bGameInProgress)
             {
                 ArcomageGame::Loop();
-                pRenderer->Present();
+                render->Present();
                 continue;
             }
 
@@ -2854,10 +2854,10 @@ void Game_Loop()
             }
             if (uGameState == GAME_STATE_FINAL_WINDOW)
             {
-                pRenderer->BeginScene();
+                render->BeginScene();
                 GUI_UpdateWindows();
-                pRenderer->EndScene();
-                pRenderer->Present();
+                render->EndScene();
+                render->Present();
                 continue;
             }
             if (uGameState != GAME_STATE_PARTY_DIED)
@@ -2961,7 +2961,7 @@ void Game_Loop()
         if (uGameState == GAME_STATE_LOADING_GAME)
         {
             sub_491E3A();
-            LoadPlayerPortraintsAndVoices();
+            GameUI_LoadPlayerPortraintsAndVoices();
             uGameState = GAME_STATE_PLAYING;
             pIcons_LOD->dword_11B84 = pIcons_LOD->uNumLoadedFiles;
             bLoading = true;

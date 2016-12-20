@@ -173,7 +173,7 @@ void BLVRenderParams::Reset()
     this->vPartyPos.y = pParty->vPosition.y;*/
     this->uPartySectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
   }
-  //if ( pRenderer->pRenderD3D )
+  //if ( render->pRenderD3D )
   {
     //this->sCosineY = stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY);
     //this->sSineY = stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY);
@@ -229,10 +229,10 @@ void BLVRenderParams::Reset()
   extern float _calc_fov(int viewport_width, int angle_degree);
   this->fov_rad_fixpoint = fixpoint_from_int(_calc_fov(uViewportWidth, 65), 0);
   this->fov_rad_inv_fixpoint = 0x100000000i64 / this->fov_rad_fixpoint;
-  this->pRenderTarget = pRenderer->pTargetSurface;
+  this->pRenderTarget = render->pTargetSurface;
   this->uTargetWidth = window->GetWidth();
   this->uTargetHeight = window->GetHeight();
-  this->pTargetZBuffer = pRenderer->pActiveZBuffer;
+  this->pTargetZBuffer = render->pActiveZBuffer;
   this->field_8C = 0;
   this->field_84 = 0;
   this->uNumFacesRenderedThisFrame = 0;
@@ -281,10 +281,10 @@ void sub_440BED(IndoorLocation_drawstru *_this)
 
   PrepareDrawLists_BLV(_this);
   if (pBLVRenderParams->uPartySectorID)
-    IndoorLocation::ExecDraw(pRenderer->pRenderD3D != 0);
-  pRenderer->DrawBillboardList_BLV();
+    IndoorLocation::ExecDraw(render->pRenderD3D != 0);
+  render->DrawBillboardList_BLV();
 
-  if ( !pRenderer->pRenderD3D )
+  if ( !render->pRenderD3D )
   {
     if (pBLVRenderParams->uFlags & INDOOR_CAMERA_DRAW_D3D_OUTLINES)
       pBspRenderer->DrawFaceOutlines();
@@ -295,7 +295,7 @@ void sub_440BED(IndoorLocation_drawstru *_this)
 	  for(int i=0; i < pBspRenderer->num_nodes; i++)
 	  {		 
 		  BspRenderer_stru0 *pNode = &pBspRenderer->nodes[i];
-		  v4 = pRenderer->uTargetSurfacePitch * pNode->PortalScreenData._viewport_space_y;
+		  v4 = render->uTargetSurfacePitch * pNode->PortalScreenData._viewport_space_y;
 		  if ( pNode->PortalScreenData._viewport_space_y <= pNode->PortalScreenData._viewport_space_w )
 		  {
 			//v5 = (char *)&pBspRenderer->nodes[0].field_C.array_3D8[pNode->field_C._viewport_space_y + v7];
@@ -306,7 +306,7 @@ void sub_440BED(IndoorLocation_drawstru *_this)
 				v1[v4 + *v8] = 255;
 				++pNode->PortalScreenData._viewport_space_y;
 				v1[v4 + *v5] = 255;
-				v4 += pRenderer->uTargetSurfacePitch;
+				v4 += render->uTargetSurfacePitch;
 				++v5;
 				++v8;
 			}
@@ -342,7 +342,7 @@ void IndoorLocation::Draw()
   //_this.vPosition.z = pParty->vPosition.z + pParty->sEyelevel;
   //_this.sRotationX = pParty->sRotationX;
   //_this.sRotationY = pParty->sRotationY;
-  _this.pRenderTarget = pRenderer->pTargetSurface;
+  _this.pRenderTarget = render->pTargetSurface;
   _this.uViewportX = pViewport->uScreen_TL_X;
   _this.uViewportY = pViewport->uScreen_TL_Y;
   _this.uViewportZ = pViewport->uScreen_BR_X;
@@ -351,14 +351,14 @@ void IndoorLocation::Draw()
 
   _this.uTargetWidth = 640;
   _this.uTargetHeight = 480;
-  _this.pTargetZ = pRenderer->pActiveZBuffer;*/
+  _this.pTargetZ = render->pActiveZBuffer;*/
 
   //sub_440BED(&_this); -- inlined
   //{
     PrepareDrawLists_BLV();
     if (pBLVRenderParams->uPartySectorID)
-      IndoorLocation::ExecDraw(true/*pRenderer->pRenderD3D != 0*/);
-    pRenderer->DrawBillboardList_BLV();
+      IndoorLocation::ExecDraw(true/*render->pRenderD3D != 0*/);
+    render->DrawBillboardList_BLV();
   //}
 
   pParty->uFlags &= ~2;
@@ -473,8 +473,8 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID, IndoorCameraD3D_Vec4 *pV
 
         if (pFace->Fluid())
         {
-          if (pFace->uBitmapID == pRenderer->hd_water_tile_id)
-            v27 = pBitmaps_LOD->pHardwareTextures[pRenderer->pHDWaterBitmapIDs[pRenderer->hd_water_current_frame]];
+          if (pFace->uBitmapID == render->hd_water_tile_id)
+            v27 = pBitmaps_LOD->pHardwareTextures[render->pHDWaterBitmapIDs[render->hd_water_current_frame]];
           else
           {
             //auto v24 = GetTickCount() / 4;
@@ -498,9 +498,9 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID, IndoorCameraD3D_Vec4 *pV
         }
 
         if (pFace->Indoor_sky())
-          pRenderer->DrawIndoorSky(uNumVerticesa, uFaceID);
+          render->DrawIndoorSky(uNumVerticesa, uFaceID);
         else
-          pRenderer->DrawIndoorPolygon(uNumVerticesa, pFace, v27, pFace->GetTexture(), PID(OBJECT_BModel, uFaceID), v17, 0);
+          render->DrawIndoorPolygon(uNumVerticesa, pFace, v27, pFace->GetTexture(), PID(OBJECT_BModel, uFaceID), v17, 0);
         return;
       }
     }
@@ -1710,10 +1710,10 @@ void  BLV_UpdateDoors()
         HIDWORD(v27) = face->pFacePlane_old.dist >> 16;
         face->zCalc3 = -v27 / face->pFacePlane_old.vNormal.z;
       }
-      //if ( face->uAttributes & FACE_TEXTURE_FLOW || pRenderer->pRenderD3D )
+      //if ( face->uAttributes & FACE_TEXTURE_FLOW || render->pRenderD3D )
         face->_get_normals(&v70, &v67);
       v28 = &pIndoor->pFaceExtras[face->uFaceExtraID];
-      /*if ( !pRenderer->pRenderD3D )
+      /*if ( !render->pRenderD3D )
       {
         if ( !(face->uAttributes & FACE_TEXTURE_FLOW) )
           continue;
@@ -2324,7 +2324,7 @@ void PrepareToLoadBLV(unsigned int bLoading)
           unsigned char r = 255,
                         g = 255,
                         b = 255;
-          if (/*pRenderer->pRenderD3D*/true && pRenderer->bUseColoredLights)
+          if (/*render->pRenderD3D*/true && render->bUseColoredLights)
           {
             r = decoration->uColoredLightRed;
             g = decoration->uColoredLightGreen;
@@ -2729,7 +2729,7 @@ void PrepareActorRenderList_BLV()
                 pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v9->pHwSpriteIDs[v6];
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v9->uPaletteIndex;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].uSectorID;
-                /*if ( !pRenderer->pRenderD3D )
+                /*if ( !render->pRenderD3D )
                 {
                   LODWORD(v20) = pBLVRenderParams->fov_rad_fixpoint << 16;
                   HIDWORD(v20) = pBLVRenderParams->fov_rad_fixpoint >> 16;
@@ -2864,7 +2864,7 @@ void PrepareItemsRenderList_BLV()
               pSpriteObjects[i].uAttributes |= 1;
               pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
               pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
-              //if ( pRenderer->pRenderD3D )
+              //if ( render->pRenderD3D )
               {
                 pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
@@ -2901,7 +2901,7 @@ void PrepareItemsRenderList_BLV()
               pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item,i);
               /*if (pSpriteObjects[i].uAttributes & 0x20)
               {
-                if ( !pRenderer->pRenderD3D )
+                if ( !render->pRenderD3D )
                   pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = 0;
               }*/
             }
@@ -2917,7 +2917,7 @@ void AddBspNodeToRenderList(unsigned int node_id)
   BLVSector *pSector; // esi@1
 
   pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
-  //if ( pRenderer->pRenderD3D )
+  //if ( render->pRenderD3D )
   {
     for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
       //Log::Warning(L"Non-BSP face: %X", v3->pFaceIDs[v2]);
@@ -2972,7 +2972,7 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode)
 
     //Log::Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8, v2->pFaceIDs[v7]);
     
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
     {
       while ( v7 < v8 )
         pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[v7++]);
@@ -3062,7 +3062,7 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
       pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v11->pHwSpriteIDs[v9];
       pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v11->uPaletteIndex;
       pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
-      /*if ( !pRenderer->pRenderD3D )
+      /*if ( !render->pRenderD3D )
       {
         LODWORD(v21) = pBLVRenderParams->fov_rad_fixpoint << 16;
         HIDWORD(v21) = pBLVRenderParams->fov_rad_fixpoint >> 16;
@@ -4423,7 +4423,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
   PortalFace._screen_space_x[bottom_num_vertices] = PortalFace._screen_space_x[0];
   PortalFace._screen_space_y[bottom_num_vertices] = PortalFace._screen_space_y[0];
 //check for software(проверка для софтвар)
-  /*if ( !pRenderer->pRenderD3D && bottom_num_vertices > 3 )
+  /*if ( !render->pRenderD3D && bottom_num_vertices > 3 )
   {
     PortalFace._screen_space_x[bottom_num_vertices + 1] = PortalFace._screen_space_x[1];
     PortalFace._screen_space_y[bottom_num_vertices + 1] = PortalFace._screen_space_y[1];
@@ -4488,7 +4488,7 @@ int sub_4AAEA6_transform(RenderVertexSoft *a1)
     v13 = a1->vWorldPosition.x - (double)pParty->vPosition.x;
     v11 = a1->vWorldPosition.y - (double)pParty->vPosition.y;
     v4 = a1->vWorldPosition.z - (double)pParty->vPosition.z;
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
     //{
       v5 = v11 * pIndoorCameraD3D->fRotationYSine + v13 * pIndoorCameraD3D->fRotationYCosine;
       a1->vWorldViewPosition.y = v13 * pIndoorCameraD3D->fRotationYSine - v11 * pIndoorCameraD3D->fRotationYCosine;
@@ -4506,7 +4506,7 @@ int sub_4AAEA6_transform(RenderVertexSoft *a1)
     v14 = a1->vWorldPosition.x - (double)pParty->vPosition.x;
     v12 = a1->vWorldPosition.y - (double)pParty->vPosition.y;
     a1->vWorldViewPosition.z = a1->vWorldPosition.z - (double)pParty->vPosition.z;
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
     //{
       a1->vWorldViewPosition.x = v12 * pIndoorCameraD3D->fRotationYSine + v14 * pIndoorCameraD3D->fRotationYCosine;
       a1->vWorldViewPosition.y = v14 * pIndoorCameraD3D->fRotationYSine - v12 * pIndoorCameraD3D->fRotationYCosine;

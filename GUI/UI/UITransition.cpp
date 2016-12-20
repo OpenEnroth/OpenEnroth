@@ -240,11 +240,11 @@ void GUIWindow_Travel::Update()
 
     memcpy(&travel_window, pPrimaryWindow, sizeof(travel_window));
     pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, pDestinationMapName, 20);
-    pRenderer->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    pRenderer->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    pRenderer->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
-    pRenderer->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-    pRenderer->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
+    render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+    render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
     if (pMapStats->GetMapInfo(pDestinationMapName))
     {
         travel_window.uFrameX = 493;
@@ -282,13 +282,13 @@ void GUIWindow_Transition::Update()
 
     memcpy(&transition_window, pPrimaryWindow, sizeof(transition_window));
     v9 = IndoorLocation::GetLocationIndex(dword_591164_teleport_map_name);
-    pRenderer->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    pRenderer->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    pRenderer->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
+    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+    render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
+    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
 
-    pRenderer->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    pRenderer->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-    pRenderer->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+    render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
     map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if ((pMovie_Track || v9) && *dword_591164_teleport_map_name != ' ')
         map_id = pMapStats->GetMapInfo(dword_591164_teleport_map_name);

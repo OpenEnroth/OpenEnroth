@@ -44,7 +44,7 @@ int Weather::DrawSnow()
             this->Screen_Coord[x] = viewparams->uScreen_topL_X + (rand() % (signed int)((viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X) - 2));
         }
         //v1[this->Screen_Coord[2 * i] + 640 * this->Screen_Coord[2 * i + 1]] = 0xFFFFu;
-        pRenderer->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y], 0xFFFF);//snowflake - point(снежинка - точка)
+        render->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y], 0xFFFF);//snowflake - point(снежинка - точка)
     }
 
     for (uint i = 700; i < 950; ++i)
@@ -62,10 +62,10 @@ int Weather::DrawSnow()
             this->Screen_Coord[y] = viewparams->uScreen_topL_Y;
             this->Screen_Coord[x] = viewparams->uScreen_topL_X + (rand() % (signed int)((viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X) - 2));
         }
-        pRenderer->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y], 0xFFFF);//x, y  квадратная снежинка)
-        pRenderer->WritePixel16(this->Screen_Coord[x] + 1, this->Screen_Coord[y], 0xFFFF);//x + 1, y
-        pRenderer->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y] + 1, 0xFFFF);//x , y + 1
-        pRenderer->WritePixel16(this->Screen_Coord[x] + 1, this->Screen_Coord[y] + 1, 0xFFFF);//x + 1, y + 1
+        render->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y], 0xFFFF);//x, y  квадратная снежинка)
+        render->WritePixel16(this->Screen_Coord[x] + 1, this->Screen_Coord[y], 0xFFFF);//x + 1, y
+        render->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y] + 1, 0xFFFF);//x , y + 1
+        render->WritePixel16(this->Screen_Coord[x] + 1, this->Screen_Coord[y] + 1, 0xFFFF);//x + 1, y + 1
 
         //v1[this->Screen_Coord[2 * i] + 640 * this->Screen_Coord[2 * i + 1]] = 0xFFFFu;
         //v1[this->Screen_Coord[2 * i] + 640 * this->Screen_Coord[2 * i + 1] + 1] = 0xFFFFu;
@@ -87,25 +87,25 @@ int Weather::DrawSnow()
             this->Screen_Coord[1901 + (i * 2)] = viewparams->uScreen_topL_Y;
             this->Screen_Coord[1901 + ((i * 2) - 1)] = viewparams->uScreen_topL_X + (rand() % (signed int)((viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X) - 5));
         }
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)], this->Screen_Coord[1901 + (i * 2)], 0xFFFF);//x, y
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)], this->Screen_Coord[1901 + (i * 2)] + 1, 0xFFFF);//x, y + 1
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)], this->Screen_Coord[1901 + (i * 2)] + 2, 0xFFFF);//x, y + 2
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)], this->Screen_Coord[1901 + (i * 2)] + 3, 0xFFFF);//x, y + 3
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)], this->Screen_Coord[1901 + (i * 2)], 0xFFFF);//x, y
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)], this->Screen_Coord[1901 + (i * 2)] + 1, 0xFFFF);//x, y + 1
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)], this->Screen_Coord[1901 + (i * 2)] + 2, 0xFFFF);//x, y + 2
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)], this->Screen_Coord[1901 + (i * 2)] + 3, 0xFFFF);//x, y + 3
 
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 1, this->Screen_Coord[1901 + (i * 2)], 0xFFFF);//x + 1, y
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 1, this->Screen_Coord[1901 + (i * 2)] + 1, 0xFFFF);//x + 1, y + 1
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 1, this->Screen_Coord[1901 + (i * 2)] + 2, 0xFFFF);//x + 1, y + 2
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 1, this->Screen_Coord[1901 + (i * 2)] + 3, 0xFFFF);//x + 1, y + 3
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 1, this->Screen_Coord[1901 + (i * 2)], 0xFFFF);//x + 1, y
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 1, this->Screen_Coord[1901 + (i * 2)] + 1, 0xFFFF);//x + 1, y + 1
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 1, this->Screen_Coord[1901 + (i * 2)] + 2, 0xFFFF);//x + 1, y + 2
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 1, this->Screen_Coord[1901 + (i * 2)] + 3, 0xFFFF);//x + 1, y + 3
 
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 2, this->Screen_Coord[1901 + (i * 2)], 0xFFFF);//x + 2, y
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 2, this->Screen_Coord[1901 + (i * 2)] + 1, 0xFFFF);//x + 2, y + 1
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 2, this->Screen_Coord[1901 + (i * 2)] + 2, 0xFFFF);//x + 2, y + 2
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 2, this->Screen_Coord[1901 + (i * 2)] + 3, 0xFFFF);//x + 2, y + 3
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 2, this->Screen_Coord[1901 + (i * 2)], 0xFFFF);//x + 2, y
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 2, this->Screen_Coord[1901 + (i * 2)] + 1, 0xFFFF);//x + 2, y + 1
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 2, this->Screen_Coord[1901 + (i * 2)] + 2, 0xFFFF);//x + 2, y + 2
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 2, this->Screen_Coord[1901 + (i * 2)] + 3, 0xFFFF);//x + 2, y + 3
 
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 3, this->Screen_Coord[1901 + (i * 2)], 0xFFFF);//x + 3, y
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 3, this->Screen_Coord[1901 + (i * 2)] + 1, 0xFFFF);//x + 3, y + 1
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 3, this->Screen_Coord[1901 + (i * 2)] + 2, 0xFFFF);//x + 3, y + 2
-        pRenderer->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 3, this->Screen_Coord[1901 + (i * 2)] + 3, 0xFFFF);//x + 3, y + 3
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 3, this->Screen_Coord[1901 + (i * 2)], 0xFFFF);//x + 3, y
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 3, this->Screen_Coord[1901 + (i * 2)] + 1, 0xFFFF);//x + 3, y + 1
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 3, this->Screen_Coord[1901 + (i * 2)] + 2, 0xFFFF);//x + 3, y + 2
+        render->WritePixel16(this->Screen_Coord[1901 + ((i * 2) - 1)] + 3, this->Screen_Coord[1901 + (i * 2)] + 3, 0xFFFF);//x + 3, y + 3
     }
     return 0;
 }

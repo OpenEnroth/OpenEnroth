@@ -104,7 +104,7 @@ void GameUI_StatusBar_DrawForced()
 //----- (0041C047) --------------------------------------------------------
 void GameUI_StatusBar_Draw()
 {
-    pRenderer->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
+    render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
 
     String status;
     if (game_ui_status_bar_event_string_time_left)
@@ -135,7 +135,7 @@ void GameUI_StatusBar_Draw()
 //----- (004B46A5) --------------------------------------------------------
 void GameUI_StatusBar_DrawImmediate(String &str, int color)
 {
-    pRenderer->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
+    render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     pPrimaryWindow->DrawText(
         pFontLucida,
         pFontLucida->AlignText_Center(450, str) + 11,

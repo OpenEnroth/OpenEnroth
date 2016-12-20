@@ -90,7 +90,7 @@ void GUIWindow_MapBook::Update()
 // ----- (00413CC6) --------------------------------------------------------
 // void BookUI_Draw(WindowType book) --- part
 // {
-    pRenderer->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
 //     BookUI_Map_Draw();
 
 // ----- (00413980) --------------------------------------------------------
@@ -100,36 +100,36 @@ void GUIWindow_MapBook::Update()
     //char party_coord[120]; // [sp+Ch] [bp-CCh]@37
     GUIWindow map_window; // [sp+84h] [bp-54h]@35
 
-    pRenderer->DrawTextureAlphaNew(pViewport->uViewportTL_X/640.0f, pViewport->uViewportTL_Y/480.0f, ui_book_map_background);
+    render->DrawTextureAlphaNew(pViewport->uViewportTL_X/640.0f, pViewport->uViewportTL_Y/480.0f, ui_book_map_background);
     if (BtnUp_flag || viewparams->uMapBookMapZoom / 128 >= 12)//Button 1
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 2)/480.0f, ui_book_button1_off);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 2)/480.0f, ui_book_button1_off);
     else
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 1)/480.0f, ui_book_button1_on);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 1)/480.0f, ui_book_button1_on);
 
     if (BtnDown_flag || viewparams->uMapBookMapZoom / 128 <= 3)//Button 2
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_off);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_off);
     else
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_on);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_on);
 
     if (Book_PageBtn3_flag)//Button 3
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 113)/480.0f, ui_book_button3_off);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 113)/480.0f, ui_book_button3_off);
     else
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 113)/480.0f, ui_book_button3_on);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 113)/480.0f, ui_book_button3_on);
 
     if (Book_PageBtn4_flag)//Button 4
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 150)/480.0f, ui_book_button4_off);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 150)/480.0f, ui_book_button4_off);
     else
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 399)/640.0f, (pViewport->uViewportTL_Y + 150)/480.0f, ui_book_button4_on);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 399)/640.0f, (pViewport->uViewportTL_Y + 150)/480.0f, ui_book_button4_on);
 
     if (Book_PageBtn5_flag)//Button 5
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 188)/480.0f, ui_book_button5_off);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 188)/480.0f, ui_book_button5_off);
     else
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 397)/640.0f, (pViewport->uViewportTL_Y + 188)/480.0f, ui_book_button5_on);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 397)/640.0f, (pViewport->uViewportTL_Y + 188)/480.0f, ui_book_button5_on);
 
     if (Book_PageBtn6_flag)//Button 6
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 226)/480.0f, ui_book_button6_off);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 226)/480.0f, ui_book_button6_off);
     else
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 397)/640.0f, (pViewport->uViewportTL_Y + 226)/480.0f, ui_book_button6_on);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 397)/640.0f, (pViewport->uViewportTL_Y + 226)/480.0f, ui_book_button6_on);
 
     if (BtnDown_flag)
         viewparams->CenterOnParty2();
@@ -153,7 +153,7 @@ void GUIWindow_MapBook::Update()
     Book_PageBtn4_flag = 0;
     Book_PageBtn3_flag = 0;
     DrawBook_Map_sub(97, 49, 361, 313, 0);
-    pRenderer->DrawTextureAlphaNew(75/640.0f, 22/480.0f, ui_book_map_frame);
+    render->DrawTextureAlphaNew(75/640.0f, 22/480.0f, ui_book_map_frame);
     map_window.uFrameWidth = game_viewport_width;
     map_window.uFrameHeight = game_viewport_height;
     map_window.uFrameX = game_viewport_x;
@@ -203,10 +203,9 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     signed int v62; // ebx@85
     signed int v63; // esi@85
     int v64; // eax@87
-    unsigned __int16 *pPalette_16; // [sp+48014h] [bp-50h]@23
+    //unsigned __int16 *pPalette_16; // [sp+48014h] [bp-50h]@23
     int map_tile_X; // [sp+48020h] [bp-44h]@23
-    unsigned char* texture8_data;
-    unsigned char* curr_line;
+    //unsigned char* texture8_data;
     int scale_increment;
     int scaled_posX;
     int scaled_posY;
@@ -229,7 +228,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 
     screenCenter_X = (signed int)(tl_x + br_x) / 2;
     screenCenterY = (signed int)(tl_y + br_y) / 2;
-    pRenderer->SetRasterClipRect(tl_x, tl_y, br_x, br_y);
+    render->SetRasterClipRect(tl_x, tl_y, br_x, br_y);
     pCenterX = viewparams->sViewCenterX;
     pCenterY = viewparams->sViewCenterY;
     if (viewparams->uMapBookMapZoom != 384)
@@ -252,32 +251,36 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     {
         screenWidth = br_x - tl_x + 1;
         screenHeight = br_y - tl_y + 1;
-        //render16_data = &pRenderer->pTargetSurface[tl_x + tl_y * pRenderer->uTargetSurfacePitch];
-        texture8_data = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].paletted_pixels;
-        pPalette_16 = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].pPalette16;
-        scale_increment = (1 << (pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].uWidthLn2 + 16)) / viewparams->uMapBookMapZoom;
+        //render16_data = &render->pTargetSurface[tl_x + tl_y * render->uTargetSurfacePitch];
+        //texture8_data = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].paletted_pixels;
+        //pPalette_16 = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].pPalette16;
 
-        v30 = (double)(1 << (16 - pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].uWidthLn2));
+        scale_increment = (1 << (ImageHelper::GetWidthLn2(viewparams->location_minimap) + 16)) / viewparams->uMapBookMapZoom;
+
+        v30 = (double)(1 << (16 - ImageHelper::GetWidthLn2(viewparams->location_minimap)));
 
         teal = (unsigned int)(signed __int64)((double)(viewparams->sViewCenterX - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / v30) << 16;
 
-        textr_width = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].uTextureWidth;
+        textr_width = viewparams->location_minimap->GetWidth();
         stepY_r = (int)(signed __int64)((double)(-pCenterY - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / v30) << 16;
         black = (signed __int16)(signed __int64)((double)(viewparams->sViewCenterX - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / v30);
 
         scaled_posY = stepY_r >> 16;
+
+        auto minimap_pixels = (unsigned __int16 *)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_R5G6B5);
+
         //nearest neiborhood scaling
-        if (texture8_data)
+        //if (texture8_data)
         {
             for (uint i = 0; i < screenHeight; ++i)
             {
-                curr_line = &texture8_data[scaled_posY*textr_width];
+                unsigned __int16 *curr_line = &minimap_pixels[scaled_posY*textr_width];
                 stepX_r = teal;
                 for (uint j = 0; j < screenWidth; ++j)
                 {
                     scaled_posX = stepX_r >> 16;
                     //map_texture_16[i*screenWidth+j]=pPalette_16[*(curr_line+scaled_posX)];
-                    pRenderer->WritePixel16(tl_x + j, tl_y + i, pPalette_16[*(curr_line + scaled_posX)]);
+                    render->WritePixel16(tl_x + j, tl_y + i, *(curr_line + scaled_posX));
                     stepX_r += scale_increment;
                 }
                 stepY_r += scale_increment;
@@ -289,7 +292,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         for( uint i = 0; i < screenHeight; ++i )
         {
         if ( screenWidth > 0 )
-        memcpy((void*)&render16_data[pRenderer->uTargetSurfacePitch * i],(void*)&map_texture_16[i*screenWidth], screenWidth*2);
+        memcpy((void*)&render16_data[render->uTargetSurfacePitch * i],(void*)&map_texture_16[i*screenWidth], screenWidth*2);
         }*/
     }
     else
@@ -327,7 +330,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                         v87 = fixpoint_mul(screenHeight, viewparams->uMapBookMapZoom);
                         v93 = (unsigned __int16 *)(fixpoint_mul((pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].x - viewparams->sViewCenterX), viewparams->uMapBookMapZoom));
                         screenHeight = fixpoint_mul(v20, viewparams->uMapBookMapZoom);
-                        pRenderer->RasterLine2D(screenCenter_X + v88, screenCenterY - v87,
+                        render->RasterLine2D(screenCenter_X + v88, screenCenterY - v87,
                             screenCenter_X + (fixpoint_mul((pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].x - viewparams->sViewCenterX), viewparams->uMapBookMapZoom)), screenCenterY - screenHeight, black);
                     }
                 }
@@ -346,7 +349,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                 v88 = fixpoint_mul(v28, viewparams->uMapBookMapZoom);
                 uint i = fixpoint_mul((v26 - pCenterX), viewparams->uMapBookMapZoom);
                 v95 = fixpoint_mul(v29, viewparams->uMapBookMapZoom);
-                pRenderer->RasterLine2D(screenCenter_X + (fixpoint_mul((signed int)v27, viewparams->uMapBookMapZoom)),
+                render->RasterLine2D(screenCenter_X + (fixpoint_mul((signed int)v27, viewparams->uMapBookMapZoom)),
                     screenCenterY - v88, screenCenter_X + (fixpoint_mul((v26 - pCenterX), viewparams->uMapBookMapZoom)), screenCenterY - v95, teal);
             }
             viewparams->sViewCenterX = pCenterX;
@@ -405,7 +408,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
             v50 = 0;
         if ((signed int)v51 < 128 || (signed int)v51 > 1920)
             v50 = 7;
-        pRenderer->DrawTransparentRedShade(v47/640.0f, v49/480.0f, game_ui_minimap_dirs[v50]);
+        render->DrawTransparentRedShade(v47/640.0f, v49/480.0f, game_ui_minimap_dirs[v50]);
     }
     if ((signed int)uNumLevelDecorations > 0)
     {
@@ -418,17 +421,17 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                 v54 = (fixpoint_mul((signed int)v93, viewparams->uMapBookMapZoom)) + screenCenter_X;
                 v97 = (const void *)(fixpoint_mul(screenHeight, viewparams->uMapBookMapZoom));
                 v55 = screenCenterY - (int)v97;
-                //if ( v54 >= pRenderer->raster_clip_x && v54 <= pRenderer->raster_clip_z
-                //  && v55 >= pRenderer->raster_clip_y && v55 <= pRenderer->raster_clip_w )
+                //if ( v54 >= render->raster_clip_x && v54 <= render->raster_clip_z
+                //  && v55 >= render->raster_clip_y && v55 <= render->raster_clip_w )
                 {
                     if (viewparams->uMapBookMapZoom > 512)
                     {
-                        pRenderer->RasterLine2D(v54 - 1, v55 - 1, v54 - 1, v55 + 1, Color16(0xFFu, 0xFFu, 0xFFu));
-                        pRenderer->RasterLine2D(v54, v55 - 1, v54, v55 + 1, Color16(0xFFu, 0xFFu, 0xFFu));
-                        pRenderer->RasterLine2D(v54 + 1, v55 - 1, v54 + 1, v55 + 1, Color16(0xFFu, 0xFFu, 0xFFu));
+                        render->RasterLine2D(v54 - 1, v55 - 1, v54 - 1, v55 + 1, Color16(0xFFu, 0xFFu, 0xFFu));
+                        render->RasterLine2D(v54, v55 - 1, v54, v55 + 1, Color16(0xFFu, 0xFFu, 0xFFu));
+                        render->RasterLine2D(v54 + 1, v55 - 1, v54 + 1, v55 + 1, Color16(0xFFu, 0xFFu, 0xFFu));
                     }
                     else
-                        pRenderer->RasterLine2D(v54, screenCenterY - (int)v97,
+                        render->RasterLine2D(v54, screenCenterY - (int)v97,
                         (fixpoint_mul((signed int)v93, viewparams->uMapBookMapZoom)) + screenCenter_X,
                         screenCenterY - (int)v97, Color16(0xFF, 0xFF, 0xFF));
                 }
@@ -439,12 +442,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     {
         screenCenterY = br_x - tl_x + 1;
         v95 = br_y - tl_y + 1;
-        //v77 = &pRenderer->pTargetSurface[tl_x + tl_y * pRenderer->uTargetSurfacePitch];
-        black = (1 << (pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].uWidthLn2 + 16)) / viewparams->uMapBookMapZoom;
-        v57 = (double)(1 << (16 - pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].uWidthLn2));
+        //v77 = &render->pTargetSurface[tl_x + tl_y * render->uTargetSurfacePitch];
+        black = (1 << (ImageHelper::GetWidthLn2(viewparams->location_minimap) + 16)) / viewparams->uMapBookMapZoom;
+        v57 = (double)(1 << (16 - ImageHelper::GetWidthLn2(viewparams->location_minimap)));
         v60 = (int)((signed __int64)((double)(viewparams->sViewCenterX - (22528 / (viewparams->uMapBookMapZoom / 384)) + 32768) / v57)) << 16;
         teal = v60 >> 16;
-        pPalette_16 = (unsigned __int16 *)(v60 >> 16);
         v97 = (const void *)((int)((signed __int64)((double)(viewparams->sViewCenterX - (22528 / (viewparams->uMapBookMapZoom / 384)) + 32768) / v57)) << 16);
         v62 = (int)((signed __int64)((double)(32768 - (22528 / (viewparams->uMapBookMapZoom / 384)) - pCenterY) / v57)) << 16;
         v63 = (signed __int16)((signed __int64)((double)(32768 - (22528 / (viewparams->uMapBookMapZoom / 384)) - pCenterY) / v57));
@@ -463,11 +465,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                     {
                         if (!((x + screenCenter_X) % 2))
                             //*a4a = Color16(12, 12, 12);
-                            pRenderer->WritePixel16(tl_x + x, tl_y + y, Color16(12, 12, 12));
+                            render->WritePixel16(tl_x + x, tl_y + y, Color16(12, 12, 12));
                     }
                     else
                         //*a4a = 0;
-                        pRenderer->WritePixel16(tl_x + x, tl_y + y, Color16(0, 0, 0));
+                        render->WritePixel16(tl_x + x, tl_y + y, Color16(0, 0, 0));
                 }
                 v97 = (char *)v97 + black;
                 v64 = (signed int)v97 >> 16;
@@ -476,61 +478,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
             v62 += black;
             v97 = (const void *)v60;
             v63 = v62 >> 16;
-            teal = (unsigned int)pPalette_16;
         }
-        /*a4a = map_texture_16;
-        for ( screenCenter_X = 0; screenCenter_X < (signed int)v95; ++screenCenter_X )
-        {
-        if ( screenCenterY > 0 )
-        {
-        map_tile_Y = (v63 - 80) / 4;
-        v64 = teal;
-        for ( a5a = 0; a5a < screenCenterY; ++a5a )
-        {
-        map_tile_X = (v64 - 80) / 4;
-        if ( !pOutdoor->_47F04C(map_tile_X, map_tile_Y) )
-        {
-        if ( pOutdoor->_47F097(map_tile_X, map_tile_Y) )
-        {
-        if ( !((a5a + screenCenter_X) % 2) )
-        *a4a = Color16(0xCu, 0xCu, 0xCu);
-        }
-        else
-        *a4a = 0;
-        }
-        ++a4a;
-        v97 = (char *)v97 + black;
-        v64 = (signed int)v97 >> 16;
-        }
-        }
-        v62 += black;
-        v97 = (const void *)v60;
-        a4a += screenCenterY - a5a;
-        v63 = v62 >> 16;
-        teal = (unsigned int)pPalette_16;
-        }
-
-        v66 = map_texture_16;
-        if ( (signed int)v95 > 0 )
-        {
-        v67 = v77;
-        result = 2 * (pRenderer->uTargetSurfacePitch - screenCenterY);
-        for ( v65 = v95; v65; --v65 )
-        {
-        if ( screenCenterY > 0 )
-        {
-        for ( v68 = screenCenterY; v68; --v68 )
-        {
-        v69 = *(short *)v66;
-        if ( !*(short *)v66 || v69 == (short)result )
-        *v67 = v69;
-        ++v66;
-        ++v67;
-        }
-        }
-        v67 = (unsigned __int16 *)((char *)v67 + result);
-        }
-        }*/
     }
 }
 

@@ -74,7 +74,7 @@ void GUIWindow_LloydsBook::Update()
 // ----- (00413CC6) --------------------------------------------------------
 // void BookUI_Draw(WindowType book) --- part
 // {
-    pRenderer->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
 //     DrawLloydBeaconsScreen();
 
 // ----- (00410DEC) --------------------------------------------------------
@@ -93,7 +93,7 @@ void GUIWindow_LloydsBook::Update()
     int uNumMaxBeacons; // [sp+84h] [bp-4h]@6
 
     pPlayer = &pParty->pPlayers[_506348_current_lloyd_playerid];
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
+    render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
     pText = localization->GetString(523);     // Recall Beacon
     pWindow.uFrameX = game_viewport_x;
     pWindow.uFrameY = game_viewport_y;
@@ -107,13 +107,13 @@ void GUIWindow_LloydsBook::Update()
     pWindow.DrawTitleText(pBook2Font, 0, 22, 0, pText, 3);
     if (bRecallingBeacon)
     {
-        pRenderer->DrawTextureAlphaNew(pBtn_Book_1->uX/640.0f, pBtn_Book_1->uY/480.0f, ui_book_button1_on);
-        pRenderer->DrawTextureAlphaNew(pBtn_Book_2->uX/640.0f, pBtn_Book_2->uY/480.0f, ui_book_button1_off);
+        render->DrawTextureAlphaNew(pBtn_Book_1->uX/640.0f, pBtn_Book_1->uY/480.0f, ui_book_button1_on);
+        render->DrawTextureAlphaNew(pBtn_Book_2->uX/640.0f, pBtn_Book_2->uY/480.0f, ui_book_button1_off);
     }
     else
     {
-        pRenderer->DrawTextureAlphaNew(pBtn_Book_1->uX/640.0f, pBtn_Book_1->uY/480.0f, ui_book_button1_off);
-        pRenderer->DrawTextureAlphaNew(pBtn_Book_2->uX/640.0f, pBtn_Book_2->uY/480.0f, ui_book_button1_on);
+        render->DrawTextureAlphaNew(pBtn_Book_1->uX/640.0f, pBtn_Book_1->uY/480.0f, ui_book_button1_off);
+        render->DrawTextureAlphaNew(pBtn_Book_2->uX/640.0f, pBtn_Book_2->uY/480.0f, ui_book_button1_on);
     }
     uNumMaxBeacons = 1;
     if (HIBYTE(pPlayer->pActiveSkills[PLAYER_SKILL_WATER]) & 1 || (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x80u) != 0)
@@ -138,8 +138,8 @@ void GUIWindow_LloydsBook::Update()
             //if ( pSavegameThumbnails[BeaconID].pPixels != 0 )
             if (pPlayer->pInstalledBeacons[BeaconID].SaveFileID != 0)
             {
-                pRenderer->DrawTextureAlphaNew(pLloydsBeacons_SomeXs[BeaconID]/640.0f, pLloydsBeacons_SomeYs[BeaconID]/480.0f, ui_book_lloyds_border);
-                pRenderer->DrawTextureNew(pLloydsBeaconsPreviewXs[BeaconID]/640.0f, pLloydsBeaconsPreviewYs[BeaconID]/480.0f, pSavegameThumbnails[BeaconID]);
+                render->DrawTextureAlphaNew(pLloydsBeacons_SomeXs[BeaconID]/640.0f, pLloydsBeacons_SomeYs[BeaconID]/480.0f, ui_book_lloyds_border);
+                render->DrawTextureNew(pLloydsBeaconsPreviewXs[BeaconID]/640.0f, pLloydsBeaconsPreviewYs[BeaconID]/480.0f, pSavegameThumbnails[BeaconID]);
                 Str = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(pPlayer->pInstalledBeacons[BeaconID].SaveFileID)].pName;
                 pTextHeight = pSpellFont->CalcTextHeight(Str, &pWindow, 0);
                 pWindow.uFrameY += -6 - pTextHeight;
@@ -175,7 +175,7 @@ void GUIWindow_LloydsBook::Update()
             }
             if (!bRecallingBeacon)
             {
-                pRenderer->DrawTextureAlphaNew(pLloydsBeacons_SomeXs[BeaconID]/640.0f, pLloydsBeacons_SomeYs[BeaconID]/480.0f, ui_book_lloyds_border);
+                render->DrawTextureAlphaNew(pLloydsBeacons_SomeXs[BeaconID]/640.0f, pLloydsBeacons_SomeYs[BeaconID]/480.0f, ui_book_lloyds_border);
                 pTextHeight = pSpellFont->CalcTextHeight(localization->GetString(19), &pWindow, 0);
                 pWindow.DrawTitleText(pSpellFont, 0, (signed int)pWindow.uFrameHeight / 2 - pTextHeight / 2, 1, localization->GetString(19), 3);//Доступно
             }

@@ -171,15 +171,15 @@ void GuildDialog()
     }
     if (dialog_menu_id == HOUSE_DIALOGUE_GUILD_BUY_BOOKS) //buy skill
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
         v6 = 0;
         v62 = 0;
         for (pX = 32; pX < 452; pX += 70)//расположение в верхнем ряду
         {
             if (pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][v6].uItemID)
             {
-                pRenderer->DrawTextureAlphaNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[v6]);
-                //ZBuffer_DoFill((int *)((char *)pRenderer->pActiveZBuffer + v62 + 230528), shop_ui_items_in_store[v6], v6 + 1);
+                render->DrawTextureAlphaNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[v6]);
+                //ZBuffer_DoFill((int *)((char *)render->pActiveZBuffer + v62 + 230528), shop_ui_items_in_store[v6], v6 + 1);
             }
             v62 += 280;
             ++v6;
@@ -190,8 +190,8 @@ void GuildDialog()
         {
             if (pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][v7].uItemID)
             {
-                pRenderer->DrawTextureAlphaNew(pX / 640.0f, 250 / 480.0f, shop_ui_items_in_store[v7]);
-                //ZBuffer_DoFill((int *)((char *)pRenderer->pActiveZBuffer + v62 + 638448), shop_ui_items_in_store[v7], v7 + 1);
+                render->DrawTextureAlphaNew(pX / 640.0f, 250 / 480.0f, shop_ui_items_in_store[v7]);
+                //ZBuffer_DoFill((int *)((char *)render->pActiveZBuffer + v62 + 638448), shop_ui_items_in_store[v7], v7 + 1);
             }
             v62 += 280;
             ++v7;
@@ -214,7 +214,7 @@ void GuildDialog()
                 return;
             }
             pMouse->GetCursorPos(&cursor);
-            v13 = pRenderer->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
+            v13 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
             if (v13)
             {
                 v15 = (ItemGen *)(&pParty->pPlayers[1].uExpressionTimeLength + 18 * (v13 + 12 * (int)window_SpeakInHouse->ptr_1C));

@@ -970,7 +970,6 @@ struct Vec3_float_ *pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2>  pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2>    pTerrainSomeOtherData;
 int dword_A74C88;
-unsigned int uPlayerCreationUI_SkySliderPos;
 int uPlayerCreationUI_ArrowAnim;
 unsigned int uPlayerCreationUI_SelectedCharacter;
 int dword_A74CDC;

@@ -104,7 +104,7 @@ void GUIWindow_JournalBook::Update()
 // ----- (00413CC6) --------------------------------------------------------
 // void BookUI_Draw(WindowType book) --- part
 // {
-    pRenderer->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
 //     BookUI_Journal_Draw();
 
 // ----- (00412E85) --------------------------------------------------------
@@ -114,16 +114,16 @@ void GUIWindow_JournalBook::Update()
     char* pStringOnPage; // eax@22
     GUIWindow journal_window; // [sp+8h] [bp-54h]@10
 
-    pRenderer->DrawTextureAlphaNew(pViewport->uViewportTL_X/640.0f, pViewport->uViewportTL_Y/480.0f, ui_book_journal_background);
+    render->DrawTextureAlphaNew(pViewport->uViewportTL_X/640.0f, pViewport->uViewportTL_Y/480.0f, ui_book_journal_background);
     if (BtnUp_flag || !books_primary_item_per_page)
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407)/640.0f, (pViewport->uViewportTL_Y + 2)/480.0f, ui_book_button1_off);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407)/640.0f, (pViewport->uViewportTL_Y + 2)/480.0f, ui_book_button1_off);
     else
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 1)/480.0f, ui_book_button1_on);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 1)/480.0f, ui_book_button1_on);
 
     if (BtnDown_flag || books_primary_item_per_page + num_achieved_awards >= full_num_items_in_book)
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_off);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_off);
     else
-        pRenderer->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_on);
+        render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_on);
 
     if (!Journal_limitation_factor[books_primary_item_per_page])//for title
     {

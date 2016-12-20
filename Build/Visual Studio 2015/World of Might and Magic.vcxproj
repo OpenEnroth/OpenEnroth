@@ -154,7 +154,6 @@
     <ClCompile Include="..\..\Engine\TurnEngine\TurnEngine.cpp" />
     <ClCompile Include="..\..\Engine\VectorTypes.cpp" />
     <ClCompile Include="..\..\Engine\ZlibWrapper.cpp" />
-    <ClCompile Include="..\..\Game\CreateParty.cpp" />
     <ClCompile Include="..\..\Game\Game.cpp" />
     <ClCompile Include="..\..\Game\GameMenu.cpp" />
     <ClCompile Include="..\..\Game\GameOver.cpp" />
@@ -339,7 +338,6 @@
     <ClInclude Include="..\..\Engine\TurnEngine\TurnEngine.h" />
     <ClInclude Include="..\..\Engine\VectorTypes.h" />
     <ClInclude Include="..\..\Engine\ZlibWrapper.h" />
-    <ClInclude Include="..\..\Game\CreateParty.h" />
     <ClInclude Include="..\..\Game\Game.h" />
     <ClInclude Include="..\..\Game\GameMenu.h" />
     <ClInclude Include="..\..\Game\GameOver.h" />

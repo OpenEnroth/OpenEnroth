@@ -91,17 +91,17 @@ void WeaponShopDialog()
 
     case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
         item_X = 0;
         for (uint i = 0; i < 6; ++i)
         {
             if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
             {
-                pRenderer->DrawTextureAlphaNew(
+                render->DrawTextureAlphaNew(
                     ((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f,
                     (weapons_Ypos[i] + 30) / 480.0f,
                     shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[(60 - ((signed int)shop_ui_items_in_store[i]->uTextureWidth / 2)) + item_X + window->GetWidth() * (weapons_Ypos[i] + 30)], shop_ui_items_in_store[i], i + 1);
+                //ZBuffer_DoFill2(&render->pActiveZBuffer[(60 - ((signed int)shop_ui_items_in_store[i]->uTextureWidth / 2)) + item_X + window->GetWidth() * (weapons_Ypos[i] + 30)], shop_ui_items_in_store[i], i + 1);
             }
             item_X += 70;
         }
@@ -122,9 +122,9 @@ void WeaponShopDialog()
             if (item_num)
             {
                 pMouse->GetCursorPos(&mouse);
-                if (pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
+                if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
                 {
-                    item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+                    item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
                     String str;
                     if (!GetAsyncKeyState(VK_CONTROL) || !pPlayers[uActiveCharacter]->CanSteal())
@@ -160,17 +160,17 @@ void WeaponShopDialog()
 
     case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
         item_X = 0;
         for (uint i = 0; i < 6; ++i)
         {
             if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
             {
-                pRenderer->DrawTextureAlphaNew(
+                render->DrawTextureAlphaNew(
                     ((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f,
                     (weapons_Ypos[i] + 30) / 480.0f,
                     shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[(60 - ((signed int)shop_ui_items_in_store[i]->uTextureWidth / 2)) + item_X + window->GetWidth() * (weapons_Ypos[i] + 30)], shop_ui_items_in_store[i], i + 1);
+                //ZBuffer_DoFill2(&render->pActiveZBuffer[(60 - ((signed int)shop_ui_items_in_store[i]->uTextureWidth / 2)) + item_X + window->GetWidth() * (weapons_Ypos[i] + 30)], shop_ui_items_in_store[i], i + 1);
             }
             item_X += 70;
         }
@@ -191,9 +191,9 @@ void WeaponShopDialog()
             if (item_num)
             {
                 pMouse->GetCursorPos(&mouse);
-                if (pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
+                if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
                 {
-                    item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+                    item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
                     String str;
                     if (!GetAsyncKeyState(VK_CONTROL) || !pPlayers[uActiveCharacter]->CanSteal())
@@ -484,7 +484,7 @@ void  ArmorShopDialog()
 
     case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
         item_x = 0;
         for (int i = 0; i < 8; ++i)// разместить вещи
         {
@@ -492,7 +492,7 @@ void  ArmorShopDialog()
             {
                 if (i >= 4)  //low row
                 {
-                    pRenderer->DrawTextureAlphaNew(
+                    render->DrawTextureAlphaNew(
                         ((90 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x - 420) / 640.0f,
                         126 / 480.0f,
                         shop_ui_items_in_store[i]);
@@ -500,13 +500,13 @@ void  ArmorShopDialog()
                 }
                 else
                 {
-                    pRenderer->DrawTextureAlphaNew(
+                    render->DrawTextureAlphaNew(
                         ((86 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x) / 640.0f,
                         (98 - shop_ui_items_in_store[i]->GetWidth()) / 480.0f,
                         shop_ui_items_in_store[i]);
                     v59 = item_x + (86 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + window->GetWidth() * (98 - shop_ui_items_in_store[i]->GetHeight());
                 }
-                //ZBuffer_DoFill(&pRenderer->pActiveZBuffer[v59], shop_ui_items_in_store[i], i + 1);
+                //ZBuffer_DoFill(&render->pActiveZBuffer[v59], shop_ui_items_in_store[i], i + 1);
             }
             item_x += 105;
         }
@@ -527,9 +527,9 @@ void  ArmorShopDialog()
         if (pItemCount)
         {
             pMouse->GetCursorPos(&mouse);
-            if (!(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
+            if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
                 return;
-            selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+            selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
             String str;
             if (!GetAsyncKeyState(VK_CONTROL) || !pPlayers[uActiveCharacter]->CanSteal())
@@ -553,7 +553,7 @@ void  ArmorShopDialog()
 
     case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
         item_x = 0;
         for (int i = 0; i < 8; ++i)
         {
@@ -561,7 +561,7 @@ void  ArmorShopDialog()
             {
                 if (i >= 4)
                 {
-                    pRenderer->DrawTextureAlphaNew(
+                    render->DrawTextureAlphaNew(
                         (item_x + (90 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) - 420) / 640.0f,
                         126 / 480.0f,
                         shop_ui_items_in_store[i]);
@@ -569,13 +569,13 @@ void  ArmorShopDialog()
                 }
                 else
                 {
-                    pRenderer->DrawTextureAlphaNew(
+                    render->DrawTextureAlphaNew(
                         (86 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2) + item_x) / 640.0f,
                         (98 - shop_ui_items_in_store[i]->GetHeight()) / 480.0f,
                         shop_ui_items_in_store[i]);
                     v59 = (86 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x + window->GetWidth() * (98 - shop_ui_items_in_store[i]->GetHeight());
                 }
-                //ZBuffer_DoFill(&pRenderer->pActiveZBuffer[v59], shop_ui_items_in_store[i], i + 1);
+                //ZBuffer_DoFill(&render->pActiveZBuffer[v59], shop_ui_items_in_store[i], i + 1);
             }
             item_x += 105;
         }
@@ -595,13 +595,13 @@ void  ArmorShopDialog()
         if (pItemCount)
         {
             pMouse->GetCursorPos(&mouse);
-            if (!(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
+            if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
                 return;
-            pItemCount = (pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1;
+            pItemCount = (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1;
             if (dialog_menu_id == 2)
-                selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+                selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
             else
-                selected_item = &pParty->SpecialItemsInShops[window_SpeakInHouse->par1C][(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+                selected_item = &pParty->SpecialItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
             String str;
             if (!GetAsyncKeyState(VK_CONTROL) || !pPlayers[uActiveCharacter]->CanSteal())
@@ -859,7 +859,7 @@ void  AlchemistDialog()
 
     case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
       for ( uint i = 0; i < 6; ++i )
       {
         if ( pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID )
@@ -878,8 +878,8 @@ void  AlchemistDialog()
           }
           else if ( (signed int)product_width_1row < 18 )
             product_width_1row = 18;
-          pRenderer->DrawTextureAlphaNew(product_width_1row/640.0f, product_height_1row/480.0f, shop_ui_items_in_store[i]);
-          //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
+          render->DrawTextureAlphaNew(product_width_1row/640.0f, product_height_1row/480.0f, shop_ui_items_in_store[i]);
+          //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
         }
       }
       for ( uint i = 0; i < 6; ++i )
@@ -903,8 +903,8 @@ void  AlchemistDialog()
             if ( (signed int)product_width_2row < 18 )
               product_width_2row = 18;
           }
-          pRenderer->DrawTextureAlphaNew(product_width_2row/640.0f, product_height_2row/480.0f, shop_ui_items_in_store[i + 6]);
-          //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
+          render->DrawTextureAlphaNew(product_width_2row/640.0f, product_height_2row/480.0f, shop_ui_items_in_store[i + 6]);
+          //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
         }
       }
       if ( HouseUI_CheckIfPlayerCanInteract() )
@@ -927,9 +927,9 @@ void  AlchemistDialog()
           return;
         }
         pMouse->GetCursorPos(&mouse);
-        if ( pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF )
+        if ( render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF )
         {
-          item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+          item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
           String str;
           if ( !GetAsyncKeyState(VK_CONTROL) || !pPlayers[uActiveCharacter]->CanSteal() )
@@ -948,7 +948,7 @@ void  AlchemistDialog()
 
     case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
       for ( uint i = 0; i < 6; ++i )
       {
         if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
@@ -970,8 +970,8 @@ void  AlchemistDialog()
             if ( (signed int)product_width_1row < 18 )
               product_width_1row = 18;
           }
-          pRenderer->DrawTextureAlphaNew(product_width_1row/640.0f, product_height_1row/480.0f, shop_ui_items_in_store[i]);
-          //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
+          render->DrawTextureAlphaNew(product_width_1row/640.0f, product_height_1row/480.0f, shop_ui_items_in_store[i]);
+          //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
         }
       }
       for ( uint i = 0; i < 6; ++i )
@@ -995,8 +995,8 @@ void  AlchemistDialog()
             if ( (signed int)product_width_2row < 18 )
               product_width_2row = 18;
           }
-          pRenderer->DrawTextureAlphaNew(product_width_2row/640.0f, product_height_2row/480.0f, shop_ui_items_in_store[i + 6]);
-          //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
+          render->DrawTextureAlphaNew(product_width_2row/640.0f, product_height_2row/480.0f, shop_ui_items_in_store[i + 6]);
+          //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
         }
       }
       if ( HouseUI_CheckIfPlayerCanInteract() )
@@ -1019,9 +1019,9 @@ void  AlchemistDialog()
           return;
         }
         pMouse->GetCursorPos(&mouse);
-        if ( pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF )
+        if ( render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF )
         {
-          item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+          item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
           String str;
           if ( !GetAsyncKeyState(VK_CONTROL) || !pPlayers[uActiveCharacter]->CanSteal() )
@@ -1248,7 +1248,7 @@ void MagicShopDialog()
 
     if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
         for (uint i = 0; i < 6; ++i)
         {
             if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
@@ -1270,8 +1270,8 @@ void MagicShopDialog()
                     if ((signed int)product_width_1row < 18)
                         product_width_1row = 18;
                 }
-                pRenderer->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
+                render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
+                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
             }
         }
         for (uint i = 0; i < 6; ++i)
@@ -1293,8 +1293,8 @@ void MagicShopDialog()
                     if ((signed int)product_width_2row < 18)
                         product_width_2row = 18;
                 }
-                pRenderer->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
-                //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
+                render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
+                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
             }
         }
         if (HouseUI_CheckIfPlayerCanInteract())
@@ -1317,9 +1317,9 @@ void MagicShopDialog()
                 return;
             }
             pMouse->GetCursorPos(&mouse);
-            if (pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
+            if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
             {
-                item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+                item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
                 String str;
                 if (GetAsyncKeyState(VK_CONTROL) && pPlayers[uActiveCharacter]->CanSteal())
@@ -1338,7 +1338,7 @@ void MagicShopDialog()
 
     if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL)
     {
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
         for (uint i = 0; i < 6; ++i)
         {
             if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
@@ -1360,8 +1360,8 @@ void MagicShopDialog()
                     if ((signed int)product_width_1row < 18)
                         product_width_1row = 18;
                 }
-                pRenderer->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
+                render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
+                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
             }
         }
         for (uint i = 0; i < 6; ++i)
@@ -1385,8 +1385,8 @@ void MagicShopDialog()
                     if ((signed int)product_width_2row < 18)
                         product_width_2row = 18;
                 }
-                pRenderer->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
-                //ZBuffer_DoFill2(&pRenderer->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
+                render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
+                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
             }
         }
         if (HouseUI_CheckIfPlayerCanInteract())
@@ -1409,9 +1409,9 @@ void MagicShopDialog()
                 return;
             }
             pMouse->GetCursorPos(&mouse);
-            if (pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
+            if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
             {
-                item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(pRenderer->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+                item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
                 String str;
                 if (GetAsyncKeyState(VK_CONTROL) && pPlayers[uActiveCharacter]->CanSteal())
@@ -1648,7 +1648,7 @@ void  UIShop_Buy_Identify_Repair()
     case HOUSE_DIALOGUE_GUILD_BUY_BOOKS:
     {
       pMouse->GetCursorPos(&cursor);
-      v18 = pRenderer->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
+      v18 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
       if ( !v18 )
         return;
       bought_item = (ItemGen *)(&pParty->pPlayers[1].uExpressionTimeLength + 18 * (v18 + 12 * (int)window_SpeakInHouse->ptr_1C));
@@ -1670,7 +1670,7 @@ void  UIShop_Buy_Identify_Repair()
         Party::TakeGold(uPriceItemService);
         viewparams->bRedrawGameUI = 1;
         bought_item->Reset();
-        pRenderer->ClearZBuffer(0, 479);
+        render->ClearZBuffer(0, 479);
         pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_75, 0);
         return;
       }
@@ -1690,7 +1690,7 @@ void  UIShop_Buy_Identify_Repair()
         dword_F8B1E4 = 1;
         pPlayers[uActiveCharacter]->SalesProcess(v79, v15 - 1, (int)window_SpeakInHouse->ptr_1C);
         viewparams->bRedrawGameUI = 1;
-        pRenderer->ClearZBuffer(0, 479);
+        render->ClearZBuffer(0, 479);
         pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)77, 0);
         return;
       }
@@ -1782,7 +1782,7 @@ void  UIShop_Buy_Identify_Repair()
     case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
     {
       pCursorPos = pMouse->GetCursorPos(&cursor);
-      v18 = pRenderer->pActiveZBuffer[pCursorPos->x + pSRZBufferLineOffsets[pCursorPos->y]] & 0xFFFF;
+      v18 = render->pActiveZBuffer[pCursorPos->x + pSRZBufferLineOffsets[pCursorPos->y]] & 0xFFFF;
       if ( !v18 )
         return;
       if ( dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
@@ -1827,7 +1827,7 @@ void  UIShop_Buy_Identify_Repair()
         }
         viewparams->bRedrawGameUI = 1;
         bought_item->Reset();
-        pRenderer->ClearZBuffer(0, 479);
+        render->ClearZBuffer(0, 479);
         pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_75, 0);
         return;
       }
@@ -1894,7 +1894,7 @@ void  ShowPopupShopItem()
     if ( dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL )
     {
       pMouse->GetCursorPos(&cursor);
-      v3 = pRenderer->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
+      v3 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
       if ( !v3 )
         return;
       v7 = &pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][v3 - 1];
@@ -1919,7 +1919,7 @@ void  ShowPopupShopItem()
   if ( in_current_building_type <= BuildingType_16 && dialog_menu_id == HOUSE_DIALOGUE_GUILD_BUY_BOOKS )
   {
     pMouse->GetCursorPos(&cursor);
-    v3 = pRenderer->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
+    v3 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
     if ( v3 )
     {
       unsigned int guildId = (unsigned int)window_SpeakInHouse->ptr_1C - 139;

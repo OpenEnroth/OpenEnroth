@@ -72,7 +72,7 @@ void GUIWindow_CalendarBook::Update()
 // ----- (00413CC6) --------------------------------------------------------
 // void BookUI_Draw(WindowType book) --- part
 // {
-    pRenderer->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
 //     BookUI_Calendar_Draw();
 
 // ----- (00413D6F) --------------------------------------------------------
@@ -96,7 +96,7 @@ void GUIWindow_CalendarBook::Update()
         1, 1, 1, 1
     };
 
-    pRenderer->DrawTextureAlphaNew(pViewport->uViewportTL_X/640.0f, pViewport->uViewportTL_Y/480.0f, ui_book_calendar_background);
+    render->DrawTextureAlphaNew(pViewport->uViewportTL_X/640.0f, pViewport->uViewportTL_Y/480.0f, ui_book_calendar_background);
     pHour = pParty->uCurrentHour;
     if ((signed int)pHour >= 12)
     {

@@ -540,7 +540,7 @@ bool DecalBuilder::_49BE8A(struct Polygon *a2, Vec3_float_ *_a3, float *a4, Rend
 void DecalBuilder::DrawDecals(float z_bias)
 {
   for (uint i = 0; i < DecalsCount; ++i)
-    pRenderer->DrawDecal(&Decals[i], z_bias);
+    render->DrawDecal(&Decals[i], z_bias);
 }
 
 //----- (0049C304) --------------------------------------------------------
@@ -549,11 +549,11 @@ void DecalBuilder::DrawBloodsplats()
   if (!DecalsCount)
     return;
 
-  pRenderer->BeginDecals();
+  render->BeginDecals();
 
   DrawDecals(0.00039999999);
 
-  pRenderer->EndDecals();
+  render->EndDecals();
 }
 
 //----- (0049C550) --------------------------------------------------------

@@ -36,24 +36,24 @@ void DrawCharToBuff(unsigned short* uXpos,unsigned char* pCharPixels, int uCharW
 
 //----- (0044C448) --------------------------------------------------------
 GUIFont *LoadFont(const char *pFontFile, const char *pFontPalette, ...)
-{	
+{
     int pallete_index; // eax@3
     GUIFont *pFont;
-    unsigned int palletes_count =0;
+    unsigned int palletes_count = 0;
     va_list palettes_ptr;
 
     pFont = (GUIFont *)pIcons_LOD->LoadRaw(pFontFile, 0);
     va_start(palettes_ptr, pFontFile);
 
-    while  (NULL!=(pFontPalette=va_arg(palettes_ptr, const char *)))
-        {
-        pallete_index =pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_16BIT_PALETTE);
+    while (NULL != (pFontPalette = va_arg(palettes_ptr, const char *)))
+    {
+        pallete_index = pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_16BIT_PALETTE);
         if (pallete_index == -1)
             Error("Unable to open %s", pFontPalette);
 
         pFont->pFontPalettes[palletes_count] = pIcons_LOD->pTextures[pallete_index].pPalette16;
         ++palletes_count;
-        }
+    }
     va_end(palettes_ptr);
     pFont->palletes_count = palletes_count;
     return pFont;
@@ -160,7 +160,7 @@ void GUIFont::DrawTextLine( unsigned int uDefaultColor, signed int uX, signed in
                     pCharPixels = &pFontData[font_pixels_offset[c]];
                     if ( !text_color )
                         draw_color = -1;
-                    pRenderer->DrawText(uX_pos, uY, pCharPixels, uCharWidth, uFontHeight, pFontPalettes[0], draw_color, 0);
+                    render->DrawText(uX_pos, uY, pCharPixels, uCharWidth, uFontHeight, pFontPalettes[0], draw_color, 0);
                     uX_pos += uCharWidth;
                     if ( i < text_length )
                         uX_pos += pMetrics[c].uRightSpacing;

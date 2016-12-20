@@ -294,7 +294,7 @@ extern struct RenderVertexD3D3  pVertices[50];
 bool PauseGameDrawing();
 
 extern struct IDirectDrawClipper *pDDrawClipper;
-extern struct IRender *pRenderer; // idb
+extern struct IRender *render; // idb
 extern struct pUnkTerrain *Unks;
 
 

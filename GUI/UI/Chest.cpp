@@ -45,10 +45,10 @@ void GUIWindow_Chest::Update()
     // 004156F0 GUI_UpdateWindows --- part
     if (current_screen_type == SCREEN_CHEST_INVENTORY)
     {
-        pRenderer->ClearZBuffer(0, 479);
+        render->ClearZBuffer(0, 479);
         draw_leather();
         CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        pRenderer->DrawTextureAlphaNew(pBtn_ExitCancel->uX/640.0f, pBtn_ExitCancel->uY/480.0f, ui_exit_cancel_button_background);
+        render->DrawTextureAlphaNew(pBtn_ExitCancel->uX/640.0f, pBtn_ExitCancel->uY/480.0f, ui_exit_cancel_button_background);
     }
     else if (current_screen_type == SCREEN_CHEST)
     {
@@ -78,8 +78,8 @@ void GUIWindow_Chest::Update()
         signed int chestWidthCells; // [sp+20h] [bp-14h]@1
         signed int item_counter; // [sp+30h] [bp-4h]@1
 
-        v16 = pRenderer->pActiveZBuffer;
-        pRenderer->ClearZBuffer(0, 479);
+        v16 = render->pActiveZBuffer;
+        render->ClearZBuffer(0, 479);
         chestBitmapId = pChests[uChestID].uChestBitmapID;
         chest_offs_x = pChestPixelOffsetX[chestBitmapId];
         chest_offs_y = pChestPixelOffsetY[chestBitmapId];
@@ -88,7 +88,7 @@ void GUIWindow_Chest::Update()
 
         //v5 = pIcons_LOD->LoadTexture(tmp_str.data(), TEXTURE_16BIT_PALETTE);
         auto chest_background = assets->GetImage_16BitColorKey(StringPrintf("chest%02d", pChestList->pChests[chestBitmapId].uTextureID), 0x7FF);
-        pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, chest_background);
+        render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, chest_background);
 
         for (item_counter = 0; item_counter < chestWidthCells * chestHeghtCells; ++item_counter)
         {
@@ -115,10 +115,10 @@ void GUIWindow_Chest::Update()
                 itemPixelPosX = chest_offs_x + 32 * (item_counter % chestWidthCells) + ((signed int)(v13 - itemPixelWidth) / 2);
                 itemPixelPosY = chest_offs_y + 32 * (item_counter / chestHeghtCells) +
                     ((signed int)(((itemPixelHeght - 14) & 0xFFFFFFE0) + 32 - item_texture->GetHeight()) / 2);
-                pRenderer->DrawTextureAlphaNew(itemPixelPosX/640.0f, itemPixelPosY/480.0f, item_texture);
+                render->DrawTextureAlphaNew(itemPixelPosX/640.0f, itemPixelPosY/480.0f, item_texture);
                 //ZBuffer_DoFill2(&v16[itemPixelPosX + pSRZBufferLineOffsets[itemPixelPosY]], item_texture, item_counter + 1);
             }
         }
-        pRenderer->DrawTextureAlphaNew(pBtn_ExitCancel->uX/640.0f, pBtn_ExitCancel->uY/480.0f, ui_exit_cancel_button_background);
+        render->DrawTextureAlphaNew(pBtn_ExitCancel->uX/640.0f, pBtn_ExitCancel->uY/480.0f, ui_exit_cancel_button_background);
     }
 }

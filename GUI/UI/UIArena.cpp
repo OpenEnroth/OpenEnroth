@@ -150,32 +150,32 @@ void ArenaFight()
   window.uFrameWidth = game_viewport_width;
   window.uFrameZ = 452;
   v0 = pFontArrus->CalcTextHeight(localization->GetString(575), &window, 13) + 7;// Пожалуйста, подождите пока я вызываю существ. Удачи.
-  pRenderer->BeginSceneD3D();
+  render->BeginSceneD3D();
 
   if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
     pIndoor->Draw();
   else if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
     pOutdoor->Draw();
 
-  pRenderer->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
-  pRenderer->BeginScene();
-  //if ( pRenderer->pRenderD3D )
-    pRenderer->FillRectFast(pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
+  render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
+  render->BeginScene();
+  //if ( render->pRenderD3D )
+    render->FillRectFast(pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
                             pViewport->uViewportBR_X - pViewport->uViewportTL_X,
                             pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
                             0x7FF);
 
-  pRenderer->DrawTextureCustomHeight(
+  render->DrawTextureCustomHeight(
       8/640.0f,
       (352 - v0)/480.0f,
       ui_leather_mm7,
       v0);
 
-  pRenderer->DrawTextureAlphaNew(8/640.0f, (347 - v0)/480.0f, _591428_endcap);
+  render->DrawTextureAlphaNew(8/640.0f, (347 - v0)/480.0f, _591428_endcap);
   v1 = FitTextInAWindow(localization->GetString(575), pFontArrus, &window, 0xDu);//Пожалуйста, подождите пока я вызываю существ. Удачи.
   pDialogueWindow->DrawText(pFontArrus, 13, 354 - v0, 0, v1, 0, 0, 0);
-  pRenderer->EndScene();
-  pRenderer->Present();
+  render->EndScene();
+  render->Present();
   pParty->vPosition.x = 3849;
   pParty->vPosition.y = 5770;
   pParty->vPosition.z = 1;

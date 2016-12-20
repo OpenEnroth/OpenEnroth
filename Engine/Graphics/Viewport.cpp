@@ -55,7 +55,7 @@ void Viewport::SetScreen( signed int sTL_X, signed int sTL_Y, signed int sBR_X, 
     this->uScreenWidth = br_x - tl_x + 1;
     this->uScreenHeight = br_y - tl_y + 1;
     this->uScreenCenterX = (signed int)(br_x + tl_x) /2;
-    //if ( pRenderer->pRenderD3D == 0 )
+    //if ( render->pRenderD3D == 0 )
     //    this->uScreenCenterY = this->uScreen_BR_Y - fixpoint_mul(field_30, uScreenHeight);
     //else
         this->uScreenCenterY = (br_y + tl_y)/2;
@@ -404,12 +404,12 @@ void OnGameViewportClick()
   int clickable_distance = 512;
 
   v1 = pMouse->GetCursorPos(&a2);
-  //if ( pRenderer->pRenderD3D )
+  //if ( render->pRenderD3D )
     v0 = pEngine->pVisInstance->get_picked_object_zbuf_val();
 	int distance = HIWORD(v0);
 	bool in_range = distance < clickable_distance;
   //else
-  //  v0 = pRenderer->pActiveZBuffer[v1->x + pSRZBufferLineOffsets[v1->y]];
+  //  v0 = render->pActiveZBuffer[v1->x + pSRZBufferLineOffsets[v1->y]];
 
   if ( PID_TYPE(v0) == OBJECT_Item)
   {

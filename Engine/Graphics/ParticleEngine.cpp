@@ -144,13 +144,13 @@ void ParticleEngine::Draw()
   else
     DrawParticles_ODM();
 
-  //if (pRenderer->pRenderD3D)
+  //if (render->pRenderD3D)
   {
     if (pLines.uNumLines)
     {
-      pRenderer->DrawLines(pLines.pLineVertices, pLines.uNumLines);
-      /*pRenderer->pRenderD3D->pDevice->SetTexture(0, 0);
-      pRenderer->pRenderD3D->pDevice->DrawPrimitive(
+      render->DrawLines(pLines.pLineVertices, pLines.uNumLines);
+      /*render->pRenderD3D->pDevice->SetTexture(0, 0);
+      render->pRenderD3D->pDevice->DrawPrimitive(
         D3DPT_LINELIST,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
         pLines.pLineVertices,
@@ -308,7 +308,7 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
   //uParticleID = LODWORD(pParticle->z);
   //z_int_ = *(float *)&uParticleID + 6.7553994e15;
   z_int_ = floorf(pParticle->z + 0.5f);
-  /*if ( !pRenderer->pRenderD3D )
+  /*if ( !render->pRenderD3D )
   {
     if (pIndoorCameraD3D->sRotationX)
     {
@@ -581,7 +581,7 @@ void ParticleEngine::DrawParticles_BLV()
         p->uScreenSpaceY >= pBLVRenderParams->uViewportY &&
         p->uScreenSpaceY < pBLVRenderParams->uViewportW)
     {
-      /*if (!pRenderer->pRenderD3D)
+      /*if (!render->pRenderD3D)
       {
         __debugbreak();
                     v11 = 13 * p->_screenspace_scale >> 16;
@@ -598,7 +598,7 @@ void ParticleEngine::DrawParticles_BLV()
                      }
                      else
                      {
-                       pRenderer->MakeParticleBillboardAndPush_BLV_Software(v13, v12, p->sZValue, p->uLightColor_bgr, v11);
+                       render->MakeParticleBillboardAndPush_BLV_Software(v13, v12, p->sZValue, p->uLightColor_bgr, v11);
                      }
       }
       else*/
@@ -611,7 +611,7 @@ void ParticleEngine::DrawParticles_BLV()
           v15.uScreenSpaceX = p->uScreenSpaceX;
           v15.uScreenSpaceY = p->uScreenSpaceY;
           v15.sZValue = p->sZValue;
-          pRenderer->MakeParticleBillboardAndPush_BLV(&v15, 0, p->uLightColor_bgr, p->angle);
+          render->MakeParticleBillboardAndPush_BLV(&v15, 0, p->uLightColor_bgr, p->angle);
           return;
         }
         if (p->type & ParticleType_Line)
@@ -644,7 +644,7 @@ void ParticleEngine::DrawParticles_BLV()
           v15.uScreenSpaceX = p->uScreenSpaceX;
           v15.uScreenSpaceY = p->uScreenSpaceY;
           v15.sZValue = p->sZValue;
-          pRenderer->MakeParticleBillboardAndPush_BLV(&v15, pBitmaps_LOD->pHardwareTextures[p->uTextureID], p->uLightColor_bgr, p->angle);
+          render->MakeParticleBillboardAndPush_BLV(&v15, pBitmaps_LOD->pHardwareTextures[p->uTextureID], p->uLightColor_bgr, p->angle);
         }
         if (p->type & ParticleType_Sprite)
         {
@@ -653,7 +653,7 @@ void ParticleEngine::DrawParticles_BLV()
           v15.uScreenSpaceX = p->uScreenSpaceX;
           v15.uScreenSpaceY = p->uScreenSpaceY;
           v15.sZValue = p->sZValue;
-          pRenderer->MakeParticleBillboardAndPush_BLV(&v15, pSprites_LOD->pHardwareSprites[p->uTextureID].pTexture, p->uLightColor_bgr, p->angle);
+          render->MakeParticleBillboardAndPush_BLV(&v15, pSprites_LOD->pHardwareSprites[p->uTextureID].pTexture, p->uLightColor_bgr, p->angle);
         }
     }
   }
@@ -691,7 +691,7 @@ void ParticleEngine::DrawParticles_ODM()
     if (particle->type == ParticleType_Invalid || !ViewProject_TrueIfStillVisible_ODM(i))
       continue;
 
-        /*if ( !pRenderer->pRenderD3D )
+        /*if ( !render->pRenderD3D )
         {
           __debugbreak();
           v10 = 13 * particle->_screenspace_scale >> 16;
@@ -708,7 +708,7 @@ void ParticleEngine::DrawParticles_ODM()
           }
           else
           {
-            pRenderer->MakeParticleBillboardAndPush_BLV_Software(v11, v12, particle->sZValue, particle->uLightColor_bgr, v10);
+            render->MakeParticleBillboardAndPush_BLV_Software(v11, v12, particle->sZValue, particle->uLightColor_bgr, v10);
           }
         }
         else*/
@@ -721,7 +721,7 @@ void ParticleEngine::DrawParticles_ODM()
             pBillboard.uScreenSpaceX = particle->uScreenSpaceX;
             pBillboard.uScreenSpaceY = particle->uScreenSpaceY;
             pBillboard.sZValue = particle->sZValue;
-            pRenderer->MakeParticleBillboardAndPush_ODM(&pBillboard, 0, particle->uLightColor_bgr, particle->angle);
+            render->MakeParticleBillboardAndPush_ODM(&pBillboard, 0, particle->uLightColor_bgr, particle->angle);
             return;
           }
           if (particle->type & ParticleType_Line)
@@ -755,7 +755,7 @@ void ParticleEngine::DrawParticles_ODM()
             pBillboard.uScreenSpaceX = particle->uScreenSpaceX;
             pBillboard.uScreenSpaceY = particle->uScreenSpaceY;
             pBillboard.sZValue = particle->sZValue;
-            pRenderer->MakeParticleBillboardAndPush_ODM(&pBillboard, pBitmaps_LOD->pHardwareTextures[particle->uTextureID], particle->uLightColor_bgr, particle->angle);
+            render->MakeParticleBillboardAndPush_ODM(&pBillboard, pBitmaps_LOD->pHardwareTextures[particle->uTextureID], particle->uLightColor_bgr, particle->angle);
           }
           if (particle->type & ParticleType_Sprite)
           {
@@ -764,7 +764,7 @@ void ParticleEngine::DrawParticles_ODM()
             pBillboard.uScreenSpaceX = particle->uScreenSpaceX;
             pBillboard.uScreenSpaceY = particle->uScreenSpaceY;
             pBillboard.sZValue = particle->sZValue;
-            pRenderer->MakeParticleBillboardAndPush_ODM(&pBillboard, pSprites_LOD->pHardwareSprites[particle->uTextureID].pTexture, particle->uLightColor_bgr, particle->angle);
+            render->MakeParticleBillboardAndPush_ODM(&pBillboard, pSprites_LOD->pHardwareSprites[particle->uTextureID].pTexture, particle->uLightColor_bgr, particle->angle);
           }   
   }
 }

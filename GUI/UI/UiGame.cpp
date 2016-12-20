@@ -173,11 +173,11 @@ void GUIWindow_GameMenu::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    pRenderer->DrawTextureAlphaNew(
+    render->DrawTextureAlphaNew(
         pViewport->uViewportTL_X/640.0f,
         pViewport->uViewportTL_Y/480.0f,
         game_ui_menu_options
-        );
+    );
 
     viewparams->bRedrawGameUI = true;
 }
@@ -185,6 +185,43 @@ void GUIWindow_GameMenu::Update()
 
 
 
+
+//----- (00491CB5) --------------------------------------------------------
+void GameUI_LoadPlayerPortraintsAndVoices()
+{
+    pIcons_LOD->pFacesLock = pIcons_LOD->uNumLoadedFiles;
+
+    for (uint i = 0; i < 4; ++i)
+    {
+        for (uint j = 0; j < 56; ++j)
+        {
+            auto filename = StringPrintf("%s%02d", pPlayerPortraitsNames[pParty->pPlayers[i].uCurrentFace], j + 1);
+            game_ui_player_faces[i][j] = assets->GetImage_16BitColorKey(filename, 0x7FF);
+        }
+    }
+
+    game_ui_player_face_eradicated = assets->GetImage_16BitColorKey("ERADCATE", 0x7FF);
+    game_ui_player_face_dead = assets->GetImage_16BitColorKey("DEAD", 0x7FF);
+
+    if (SoundSetAction[24][0])
+    {
+        for (uint i = 0; i < 4; ++i)
+        {
+            pSoundList->LoadSound(2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4998, 0);
+            pSoundList->LoadSound(2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4999, 0);
+        }
+    }
+}
+
+//----- (00491DE7) --------------------------------------------------------
+void GameUI_ReloadPlayerPortraits(int player_id, int face_id) //the transition from the zombies to the normal state
+{
+    for (uint i = 0; i <= 55; ++i)
+    {
+        auto filename = StringPrintf("%s%02d", pPlayerPortraitsNames[face_id], i + 1);
+        game_ui_player_faces[player_id][i] = assets->GetImage_16BitColorKey(filename, 0x7FF);
+    }
+}
 
 
 std::array<bool, 28> GameMenuUI_InvaligKeyBindingsFlags; // 506E6C
@@ -286,10 +323,10 @@ void GUIWindow_GameKeyBindings::Update()
         uGameMenuUI_CurentlySelectedKeyIdx = -1;
         pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
     }
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, game_ui_options_controls[0]);//draw base texture
+    render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, game_ui_options_controls[0]);//draw base texture
     if (KeyboardPageNum == 1)
     {
-        pRenderer->DrawTextureAlphaNew(19/640.0f, 302/480.0f, game_ui_options_controls[3]);
+        render->DrawTextureAlphaNew(19/640.0f, 302/480.0f, game_ui_options_controls[3]);
 
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142, ui_gamemenu_keys_action_name_color, "ВПЕРЁД", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 142, GameMenuUI_GetKeyBindingColor(0), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[0]), 0, 0, 0);
@@ -322,7 +359,7 @@ void GUIWindow_GameKeyBindings::Update()
     }
     else
     {
-        pRenderer->DrawTextureAlphaNew(127/640.0f, 302/480.0f, game_ui_options_controls[4]);
+        render->DrawTextureAlphaNew(127/640.0f, 302/480.0f, game_ui_options_controls[4]);
 
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142, ui_gamemenu_keys_action_name_color, "Б. СПРАВКА", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 142, GameMenuUI_GetKeyBindingColor(14), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[14]), 0, 0, 0);
@@ -382,7 +419,7 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions() :
     //not_available_tinting_texture_id = pIcons_LOD->LoadTexture("opvdG-tn", TEXTURE_16BIT_PALETTE);
 
     CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0, 0, "", 0);
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
     {
         CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats, 0, 0, "", 0);
         CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleColoredLights, 0, 0, "", 0);
@@ -399,15 +436,15 @@ void GUIWindow_GameVideoOptions::Update()
 // 004156F0 GUI_UpdateWindows --- part
     GUIWindow msg_window; // [sp+8h] [bp-54h]@3
 
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, game_ui_menu_options_video_background);//draw base texture
-    //if ( !pRenderer->bWindowMode && pRenderer->IsGammaSupported() )
+    render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, game_ui_menu_options_video_background);//draw base texture
+    //if ( !render->bWindowMode && render->IsGammaSupported() )
     {
-        pRenderer->DrawTextureAlphaNew(
+        render->DrawTextureAlphaNew(
             (17 * uGammaPos + 42)/640.0f,
             162/480.0f,
             game_ui_menu_options_video_gamma_positions[uGammaPos]);
 
-        pRenderer->DrawTextureNew(274/640.0f, 169/480.0f, gamma_preview_image);
+        render->DrawTextureNew(274/640.0f, 169/480.0f, gamma_preview_image);
         msg_window.uFrameX = 22;
         msg_window.uFrameY = 190;
         msg_window.uFrameWidth = 211;
@@ -419,11 +456,11 @@ void GUIWindow_GameVideoOptions::Update()
 
 
       if (pEngine->uFlags2 & GAME_FLAGS_2_DRAW_BLOODSPLATS)
-          pRenderer->DrawTextureAlphaNew(20/640.0f, 281/480.0f, game_ui_menu_options_video_bloodsplats);
-      if (pRenderer->bUseColoredLights)
-          pRenderer->DrawTextureAlphaNew(20/640.0f, 303/480.0f, game_ui_menu_options_video_coloredlights);
-      if (pRenderer->bTinting)
-          pRenderer->DrawTextureAlphaNew(20/640.0f, 325/480.0f, game_ui_menu_options_video_tinting);
+          render->DrawTextureAlphaNew(20/640.0f, 281/480.0f, game_ui_menu_options_video_bloodsplats);
+      if (render->bUseColoredLights)
+          render->DrawTextureAlphaNew(20/640.0f, 303/480.0f, game_ui_menu_options_video_coloredlights);
+      if (render->bTinting)
+          render->DrawTextureAlphaNew(20/640.0f, 325/480.0f, game_ui_menu_options_video_tinting);
 }
 
 
@@ -561,24 +598,24 @@ void GUIWindow_GameOptions::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, game_ui_menu_options);
-    pRenderer->DrawTextureAlphaNew(8/640.0f, 132/480.0f, options_menu_skin.uTextureID_Background);
+    render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, game_ui_menu_options);
+    render->DrawTextureAlphaNew(8/640.0f, 132/480.0f, options_menu_skin.uTextureID_Background);
 
     switch (uTurnSpeed)
     {
-        case 64:   pRenderer->DrawTextureAlphaNew(BtnTurnCoord[1]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[1]); break;
-        case 128:  pRenderer->DrawTextureAlphaNew(BtnTurnCoord[2]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[2]); break;
-        default:   pRenderer->DrawTextureAlphaNew(BtnTurnCoord[0]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[0]); break;
+        case 64:   render->DrawTextureAlphaNew(BtnTurnCoord[1]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[1]); break;
+        case 128:  render->DrawTextureAlphaNew(BtnTurnCoord[2]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[2]); break;
+        default:   render->DrawTextureAlphaNew(BtnTurnCoord[0]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[0]); break;
     }
 
-    if (bWalkSound)  pRenderer->DrawTextureAlphaNew(20/640.0f, 303/480.0f, options_menu_skin.uTextureID_WalkSound);
-    if (bShowDamage) pRenderer->DrawTextureAlphaNew(128/640.0f, 303/480.0f, options_menu_skin.uTextureID_ShowDamage);
-    if (bFlipOnExit) pRenderer->DrawTextureAlphaNew(128/640.0f, 325/480.0f, options_menu_skin.uTextureID_FlipOnExit);
-    if (bAlwaysRun)  pRenderer->DrawTextureAlphaNew(20/640.0f, 325/480.0f, options_menu_skin.uTextureID_AlwaysRun);
+    if (bWalkSound)  render->DrawTextureAlphaNew(20/640.0f, 303/480.0f, options_menu_skin.uTextureID_WalkSound);
+    if (bShowDamage) render->DrawTextureAlphaNew(128/640.0f, 303/480.0f, options_menu_skin.uTextureID_ShowDamage);
+    if (bFlipOnExit) render->DrawTextureAlphaNew(128/640.0f, 325/480.0f, options_menu_skin.uTextureID_FlipOnExit);
+    if (bAlwaysRun)  render->DrawTextureAlphaNew(20/640.0f, 325/480.0f, options_menu_skin.uTextureID_AlwaysRun);
 
-    pRenderer->DrawTextureAlphaNew((265 + 17 * uSoundVolumeMultiplier)/640.0f, 162/480.0f, options_menu_skin.uTextureID_SoundLevels[uSoundVolumeMultiplier]);
-    pRenderer->DrawTextureAlphaNew((265 + 17 * uMusicVolimeMultiplier)/640.0f, 216/480.0f, options_menu_skin.uTextureID_SoundLevels[uMusicVolimeMultiplier]);
-    pRenderer->DrawTextureAlphaNew((265 + 17 * uVoicesVolumeMultiplier)/640.0f, 270/480.0f, options_menu_skin.uTextureID_SoundLevels[uVoicesVolumeMultiplier]);
+    render->DrawTextureAlphaNew((265 + 17 * uSoundVolumeMultiplier)/640.0f, 162/480.0f, options_menu_skin.uTextureID_SoundLevels[uSoundVolumeMultiplier]);
+    render->DrawTextureAlphaNew((265 + 17 * uMusicVolimeMultiplier)/640.0f, 216/480.0f, options_menu_skin.uTextureID_SoundLevels[uMusicVolimeMultiplier]);
+    render->DrawTextureAlphaNew((265 + 17 * uVoicesVolumeMultiplier)/640.0f, 270/480.0f, options_menu_skin.uTextureID_SoundLevels[uVoicesVolumeMultiplier]);
 }
 
 
@@ -771,7 +808,7 @@ void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
                 popup_window.DrawMessageBox(0);
 
                 auto tex_name = StringPrintf("NPC%03d", pNPC->uPortraitID);
-                pRenderer->DrawTextureAlphaNew(
+                render->DrawTextureAlphaNew(
                     (popup_window.uFrameX + 22) / 640.0f,
                     (popup_window.uFrameY + 36) / 480.0f,
                     assets->GetImage_16BitColorKey(tex_name, 0x7FF)
@@ -927,10 +964,10 @@ void GameUI_DrawDialogue()
     pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
     window.uFrameWidth -= 10;
     window.uFrameZ -= 10;
-    pRenderer->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    pRenderer->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    pRenderer->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    pRenderer->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[0]);
+    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+    render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
+    render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[0]);
 
     String title;
     if (pNPC->uProfession)
@@ -1022,13 +1059,13 @@ void GameUI_DrawDialogue()
         }
 
         if (ui_leather_mm7)
-            pRenderer->DrawTextureCustomHeight(
+            render->DrawTextureCustomHeight(
                 8 / 640.0f,
                 (352 - pTextHeight) / 480.0f,
                 ui_leather_mm7,
                 pTextHeight);
 
-        pRenderer->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
         pDialogueWindow->DrawText(font, 13, 354 - pTextHeight, 0, FitTextInAWindow(dialogue_string, font, &window, 13), 0, 0, 0);
     }
 
@@ -1188,7 +1225,7 @@ void GameUI_DrawDialogue()
             window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->pButtonName, 3);
         }
     }
-    pRenderer->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 }
 
 //----- (00444FBE) --------------------------------------------------------
@@ -1210,14 +1247,14 @@ void GameUI_DrawBranchlessDialogue()
         pTextHeight = pFontCreate->CalcTextHeight(byte_5B0938.data(), &BranchlessDlg_window, 12) + 7;
     }
 
-    pRenderer->DrawTextureCustomHeight(
+    render->DrawTextureCustomHeight(
         8 / 640.0f,
         (352 - pTextHeight) / 480.0f,
         ui_leather_mm7,
         pTextHeight);
-    pRenderer->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+    render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
     pGUIWindow2->DrawText(pFont, 12, 354 - pTextHeight, 0, FitTextInAWindow(byte_5B0938.data(), pFont, &BranchlessDlg_window, 12), 0, 0, 0);
-    pRenderer->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
+    render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     if (pGUIWindow2->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS)
     {
         if (pGUIWindow2->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED)
@@ -1355,7 +1392,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player)
         v13 = game_ui_player_faces[(unsigned int)window->ptr_1C][v15->uTextureID - 1];
     }
 
-    pRenderer->DrawTextureAlphaNew((window->uFrameX + 24) / 640.0f, (window->uFrameY + 24) / 480.0f, v13);
+    render->DrawTextureAlphaNew((window->uFrameX + 24) / 640.0f, (window->uFrameY + 24) / 480.0f, v13);
 
     auto str =
         StringPrintf("\f%05d", ui_character_header_text_color)
@@ -1422,13 +1459,13 @@ void GameUI_DrawRightPanelItems()
         _50697C_book_flasher = !_50697C_book_flasher;
         if (_50697C_book_flasher && current_screen_type != SCREEN_REST)
         {
-            if (bFlashQuestBook)     pRenderer->DrawTextureAlphaNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
-            if (bFlashAutonotesBook) pRenderer->DrawTextureAlphaNew(527 / 640.0f, 353 / 480.0f, game_ui_tome_autonotes);
-            if (bFlashHistoryBook)   pRenderer->DrawTextureAlphaNew(600 / 640.0f, 361 / 480.0f, game_ui_tome_storyline);
+            if (bFlashQuestBook)     render->DrawTextureAlphaNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
+            if (bFlashAutonotesBook) render->DrawTextureAlphaNew(527 / 640.0f, 353 / 480.0f, game_ui_tome_autonotes);
+            if (bFlashHistoryBook)   render->DrawTextureAlphaNew(600 / 640.0f, 361 / 480.0f, game_ui_tome_storyline);
         }
         else
         {
-            pRenderer->DrawTextureNew(468 / 640.0f, 0, game_ui_rightframe);
+            render->DrawTextureNew(468 / 640.0f, 0, game_ui_rightframe);
             GameUI_DrawHiredNPCs();
         }
     }
@@ -1475,13 +1512,13 @@ void GameUI_DrawLifeManaBars()
         pTextureHealth = game_ui_bar_red;
       if( v3 > 0.0 )
       {
-        pRenderer->SetUIClipRect(
+        render->SetUIClipRect(
             v17 + pHealthBarPos[i],
             (signed __int64)((1.0 - v3) * pTextureHealth->GetHeight()) + 402,
             v17 + pHealthBarPos[i] + pTextureHealth->GetWidth(),
             pTextureHealth->GetHeight() + 402);
-        pRenderer->DrawTextureAlphaNew((v17 + pHealthBarPos[i])/640.0f, 402/480.0f, pTextureHealth);
-        pRenderer->ResetUIClipRect();
+        render->DrawTextureAlphaNew((v17 + pHealthBarPos[i])/640.0f, 402/480.0f, pTextureHealth);
+        render->ResetUIClipRect();
       }
     }
     if (pParty->pPlayers[i].sMana > 0)
@@ -1492,13 +1529,13 @@ void GameUI_DrawLifeManaBars()
       int v17 = 0;
       if (i == 2)
         v17 = 1;
-      pRenderer->SetUIClipRect(
+      render->SetUIClipRect(
           v17 + pManaBarPos[i],
           (signed __int64)((1.0 - v7) * game_ui_bar_blue->GetHeight()) + 402,
           v17 + pManaBarPos[i] + game_ui_bar_blue->GetWidth(),
           game_ui_bar_blue->GetHeight() + 402);
-      pRenderer->DrawTextureAlphaNew((v17 + pManaBarPos[i])/640.0f, 402/480.0f, game_ui_bar_blue);
-      pRenderer->ResetUIClipRect();
+      render->DrawTextureAlphaNew((v17 + pManaBarPos[i])/640.0f, 402/480.0f, game_ui_bar_blue);
+      render->ResetUIClipRect();
     }
   }
 }
@@ -1506,21 +1543,21 @@ void GameUI_DrawLifeManaBars()
 //----- (0041B3B6) --------------------------------------------------------
 void GameUI_DrawRightPanel()
 {
-  pRenderer->DrawTextureAlphaNew(pViewport->uViewportBR_X/640.0f, 0, game_ui_right_panel_frame);
+  render->DrawTextureAlphaNew(pViewport->uViewportBR_X/640.0f, 0, game_ui_right_panel_frame);
 }
 
 //----- (0041B3E2) --------------------------------------------------------
 void GameUI_DrawRightPanelFrames()
 {
-  pRenderer->DrawTextureNew(0,   0, game_ui_topframe);
-  pRenderer->DrawTextureNew(0,   8/480.0f, game_ui_leftframe);
-  pRenderer->DrawTextureNew(468/640.0f, 0, game_ui_rightframe);
-  pRenderer->DrawTextureNew(0,   352 / 480.0f, game_ui_bottomframe);
+  render->DrawTextureNew(0,   0, game_ui_topframe);
+  render->DrawTextureNew(0,   8/480.0f, game_ui_leftframe);
+  render->DrawTextureNew(468/640.0f, 0, game_ui_rightframe);
+  render->DrawTextureNew(0,   352 / 480.0f, game_ui_bottomframe);
   GameUI_DrawFoodAndGold();
   GameUI_DrawRightPanelItems();
 
-  //pRenderer->EndScene();
-  //pRenderer->Present();
+  //render->EndScene();
+  //render->Present();
 }
 
 
@@ -1552,7 +1589,7 @@ void GameUI_WritePointedObjectStatusString()
     {
         if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125)
         {
-            //if ( pRenderer->pRenderD3D )  // inlined mm8::4C1E01
+            //if ( render->pRenderD3D )  // inlined mm8::4C1E01
             {
                 pickedObjectPID = pEngine->pVisInstance->get_picked_object_zbuf_val();
                 if (pX < (unsigned int)pViewport->uScreen_TL_X || pX >(unsigned int)pViewport->uScreen_BR_X
@@ -1571,7 +1608,7 @@ void GameUI_WritePointedObjectStatusString()
             }
             /*else
             {
-              v18 = pRenderer->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
+              v18 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
             }*/
             pMouse->uPointingObjectID = (unsigned __int16)pickedObjectPID;
             pickedObjectID = (signed)PID_ID(pickedObjectPID);
@@ -1772,7 +1809,7 @@ void GameUI_WritePointedObjectStatusString()
         else if (current_screen_type == SCREEN_HOUSE)
         {
             if (dialog_menu_id != HOUSE_DIALOGUE_SHOP_BUY_STANDARD
-                || (v16 = pRenderer->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]], v16 == 0)
+                || (v16 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]], v16 == 0)
                 || v16 == -65536)
             {
                 if (uLastPointedObjectID != 0)
@@ -1792,7 +1829,7 @@ void GameUI_WritePointedObjectStatusString()
         }
         if (pY < 350)
         {
-            v14 = pRenderer->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
+            v14 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
             if (v14 == 0 || v14 == -65536 || v14 >= 5000)
             {
                 if (pMouse->uPointingObjectID == 0)
@@ -1891,7 +1928,7 @@ void GameUI_WritePointedObjectStatusString()
 void GameUI_DrawCharacterSelectionFrame()
 {
   if ( uActiveCharacter )
-    pRenderer->DrawTextureAlphaNew(
+    render->DrawTextureAlphaNew(
         (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[uActiveCharacter - 1] - 9)/640.0f,
         380/480.0f,
         game_ui_player_selection_frame);
@@ -1910,7 +1947,7 @@ void GameUI_DrawPartySpells()
         if (pParty->pPartyBuffs[byte_4E5DD8[i]].Active())
         {
             Texture_MM7* tex = pIcons_LOD->GetTexture(pTextureIDs_PartyBuffIcons[i]);
-            pRenderer->_4A65CC(
+            render->_4A65CC(
                 pPartySpellbuffsUI_XYs[i][0],
                 pPartySpellbuffsUI_XYs[i][1], tex, tex,
                 v0 + 20 * pPartySpellbuffsUI_smthns[i], 0, 63
@@ -1926,7 +1963,7 @@ void GameUI_DrawPartySpells()
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, v0)->texture;
             else
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0)->texture;
-            pRenderer->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, spell_texture);
+            render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
         if (pParty->WaterWalkActive())
         {
@@ -1934,20 +1971,20 @@ void GameUI_DrawPartySpells()
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, v0)->texture;
             else
                 spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)->texture;
-            pRenderer->DrawTextureAlphaNew(396 / 640.0f, 8 / 480.0f, spell_texture);
+            render->DrawTextureAlphaNew(396 / 640.0f, 8 / 480.0f, spell_texture);
         }
     }
 
     for (uint i = 0; i < 4; ++i)
     {
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS].Active())
-            pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 427 / 480.0f, game_ui_playerbuff_hammerhands);
+            render->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 427 / 480.0f, game_ui_playerbuff_hammerhands);
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_BLESS].Active())
-            pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 393 / 480.0f, game_ui_playerbuff_bless);
+            render->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 393 / 480.0f, game_ui_playerbuff_bless);
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
-            pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 410 / 480.0f, game_ui_playerbuff_preservation);
+            render->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 410 / 480.0f, game_ui_playerbuff_preservation);
         if (pParty->pPlayers[i].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active())
-            pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 444 / 480.0f, game_ui_playerbuff_pain_reflection);
+            render->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72) / 640.0f, 444 / 480.0f, game_ui_playerbuff_pain_reflection);
     }
 }
 
@@ -1976,9 +2013,9 @@ void GameUI_DrawPortraits(unsigned int _this)
         {
             pPortrait = game_ui_player_face_eradicated;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                pRenderer->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 388 / 480.0f, pPortrait);
+                render->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 388 / 480.0f, pPortrait);
             else
-                pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 388 / 480.0f, pPortrait);
+                render->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 388 / 480.0f, pPortrait);
             if (
                 pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active()
                 || pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active()
@@ -1995,9 +2032,9 @@ void GameUI_DrawPortraits(unsigned int _this)
         {
             pPortrait = game_ui_player_face_dead;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                pRenderer->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 388 / 480.0f, pPortrait);
+                render->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 388 / 480.0f, pPortrait);
             else
-                pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 388 / 480.0f, pPortrait);
+                render->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 388 / 480.0f, pPortrait);
             if (
                 pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active()
                 || pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active()
@@ -2028,9 +2065,9 @@ void GameUI_DrawPortraits(unsigned int _this)
             pPlayer->field_1AA2 = pFrame->uTextureID - 1;
             pPortrait = game_ui_player_faces[i][pPlayer->field_1AA2];//pFace = (Texture_MM7 *)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                pRenderer->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 388 / 480.0f, pPortrait);
+                render->DrawTextureGrayShade(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 388 / 480.0f, pPortrait);
             else
-                pRenderer->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 388 / 480.0f, pPortrait);
+                render->DrawTextureAlphaNew((pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1) / 640.0f, 388 / 480.0f, pPortrait);
             if (
                 pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active()
                 | pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active()
@@ -2063,7 +2100,7 @@ void GameUI_DrawPortraits(unsigned int _this)
                         else if (pParty->GetYellowAlert())
                             alert_texture = game_ui_player_alert_yellow;
 
-                        pRenderer->DrawTextureAlphaNew(
+                        render->DrawTextureAlphaNew(
                             (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[PID_ID(pTurnEngine->pQueue[i].uPackedID)] - 4) / 640.0f,
                             385 / 480.0f,
                             alert_texture
@@ -2085,7 +2122,7 @@ void GameUI_DrawPortraits(unsigned int _this)
                 else if (pParty->GetYellowAlert())
                     alert_texture = game_ui_player_alert_yellow;
 
-                pRenderer->DrawTextureAlphaNew(
+                render->DrawTextureAlphaNew(
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] - 4) / 640.0f,
                     385 / 480.0f,
                     alert_texture
@@ -2098,326 +2135,303 @@ void GameUI_DrawPortraits(unsigned int _this)
 //----- (00441D38) --------------------------------------------------------
 void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW, unsigned int uZoom, unsigned int bRedrawOdmMinimap)
 {
-  int uHeight; // ebx@6
-  signed int pW; // ebx@23
-  int v15; // eax@23
-  double v20; // st7@30
-  signed int v27; // eax@37
-  //unsigned __int16 *v28; // ecx@37
-  signed int v29; // edi@40
-  int pPoint_X; // edi@72
-  int pPoint_Y; // ebx@72
-  unsigned int lPitch; // [sp+20h] [bp-34h]@1
-  signed int pY; // [sp+20h] [bp-34h]@23
-  signed int pX; // [sp+24h] [bp-30h]@23
-  signed int v70; // [sp+24h] [bp-30h]@37
-  signed int uBluea; // [sp+28h] [bp-2Ch]@37
-  int v73; // [sp+2Ch] [bp-28h]@30
-  signed int uCenterY; // [sp+48h] [bp-Ch]@1
-  signed int uCenterX; // [sp+4Ch] [bp-8h]@1
-  signed int uWidth; // [sp+5Ch] [bp+8h]@30
-  signed int pZ; // [sp+60h] [bp+Ch]@23
-  float uWb; // [sp+60h] [bp+Ch]@30
-  unsigned int pColor;
+    int uHeight; // ebx@6
+    signed int pW; // ebx@23
+    int v15; // eax@23
+    double v20; // st7@30
+    signed int v27; // eax@37
+    //unsigned __int16 *v28; // ecx@37
+    signed int v29; // edi@40
+    int pPoint_X; // edi@72
+    int pPoint_Y; // ebx@72
+    unsigned int lPitch; // [sp+20h] [bp-34h]@1
+    signed int pY; // [sp+20h] [bp-34h]@23
+    signed int pX; // [sp+24h] [bp-30h]@23
+    signed int v70; // [sp+24h] [bp-30h]@37
+    signed int uBluea; // [sp+28h] [bp-2Ch]@37
+    int v73; // [sp+2Ch] [bp-28h]@30
+    signed int uCenterY; // [sp+48h] [bp-Ch]@1
+    signed int uCenterX; // [sp+4Ch] [bp-8h]@1
+    signed int uWidth; // [sp+5Ch] [bp+8h]@30
+    signed int pZ; // [sp+60h] [bp+Ch]@23
+    float uWb; // [sp+60h] [bp+Ch]@30
+    unsigned int pColor;
 
-  uCenterX = (uX + uZ) / 2;
-  uCenterY = (uY + uW) / 2;
-  lPitch = pRenderer->uTargetSurfacePitch;
-  bool bWizardEyeActive = pParty->WizardEyeActive();
-  int uWizardEyeSkillLevel = pParty->WizardEyeSkillLevel();
-  if ( CheckHiredNPCSpeciality(Cartographer) )
-  {
-    bWizardEyeActive = true;
-    uWizardEyeSkillLevel = 2;
-  }
-
-  if ( wizard_eye )
-  {
-    bWizardEyeActive = true;
-    uWizardEyeSkillLevel = 3;
-  }
-  pRenderer->SetRasterClipRect(uX, uY, uZ - 1, uW - 1);
-  uHeight = uW - uY;
-  uWidth = uZ - uX;
-
-  if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-  {
-    uchar* pMapLod0 = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].paletted_pixels;
-    ushort* pPal = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].pPalette16;
-    v73 = (1 << (pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].uWidthLn2 + 16)) / (signed int)uZoom;
-    v20 = (double)(pParty->vPosition.x + 32768) / (double)(1 << (16 - pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].uWidthLn2));
-    uWb = (double)(32768 - pParty->vPosition.y) / (double)(1 << (16 - pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].uWidthLn2));
-    switch (uZoom)
+    uCenterX = (uX + uZ) / 2;
+    uCenterY = (uY + uW) / 2;
+    lPitch = render->uTargetSurfacePitch;
+    bool bWizardEyeActive = pParty->WizardEyeActive();
+    int uWizardEyeSkillLevel = pParty->WizardEyeSkillLevel();
+    if (CheckHiredNPCSpeciality(Cartographer))
     {
-      case 512:
-      {
-        v20 = v20 - (double)(uWidth / 2);
-        uWb = uWb - (double)(uHeight / 2);
-      }
-      break;
-      case 1024:
-      {
-        v20 = v20 - (double)(uWidth / 4);
-        uWb = uWb - (double)(uHeight / 4);
-      }
-      break;
-      case 2048:
-      {
-        v20 = v20 - (double)(uWidth / 8);
-        uWb = uWb - (double)(uHeight / 8);
-      }
-      break;
-      default: assert(false);
+        bWizardEyeActive = true;
+        uWizardEyeSkillLevel = 2;
     }
 
-    static unsigned __int16 pOdmMinimap[117][137];
-    assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
-
-    v70 = floorf(v20 * 65536.0 + 0.5f);//LODWORD(v24);
-    uBluea = floorf(uWb * 65536.0 + 0.5f);//LODWORD(v25);
-    v27 = uBluea >> 16;
-    //v28 = &pRenderer->pTargetSurface[uX + uY * lPitch];
-
-    if (pMapLod0 && bRedrawOdmMinimap)
+    if (wizard_eye)
     {
-      assert(uWidth == 137 && uHeight == 117);
-      //auto pMinimap = (unsigned __int16 *)pOdmMinimap;
+        bWizardEyeActive = true;
+        uWizardEyeSkillLevel = 3;
+    }
+    render->SetRasterClipRect(uX, uY, uZ - 1, uW - 1);
+    uHeight = uW - uY;
+    uWidth = uZ - uX;
 
-      ushort mapWidth = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].uTextureWidth;
-
-      v29 = v70 >> 16;
-      for (int y = 0; y < uHeight; ++y)
-      {
-        uchar* pMapLod0Line = &pMapLod0[v27 * mapWidth];
-        for (int x = 0; x < uWidth; ++x)
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    {
+        //uchar* pMapLod0 = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].paletted_pixels;
+        //ushort* pPal = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].pPalette16;
+        v73 = (1 << (ImageHelper::GetWidthLn2(viewparams->location_minimap) + 16)) / (signed int)uZoom;
+        v20 = (double)(pParty->vPosition.x + 32768) / (double)(1 << (16 - ImageHelper::GetWidthLn2(viewparams->location_minimap)));
+        uWb = (double)(32768 - pParty->vPosition.y) / (double)(1 << (16 - ImageHelper::GetWidthLn2(viewparams->location_minimap)));
+        switch (uZoom)
         {
-          //*pMinimap++ = pPal[pMapLod0Line[v29]];
-          pRenderer->WritePixel16(uX + x, uY + y, pPal[pMapLod0Line[v29]]);
-          v29 = (v70 + x * v73) >> 16;
+            case 512:
+            {
+                v20 = v20 - (double)(uWidth / 2);
+                uWb = uWb - (double)(uHeight / 2);
+            }
+            break;
+            case 1024:
+            {
+                v20 = v20 - (double)(uWidth / 4);
+                uWb = uWb - (double)(uHeight / 4);
+            }
+            break;
+            case 2048:
+            {
+                v20 = v20 - (double)(uWidth / 8);
+                uWb = uWb - (double)(uHeight / 8);
+            }
+            break;
+            default: assert(false);
         }
-        uBluea += v73;
+
+        static unsigned __int16 pOdmMinimap[117][137];
+        assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
+
+        v70 = floorf(v20 * 65536.0 + 0.5f);//LODWORD(v24);
+        uBluea = floorf(uWb * 65536.0 + 0.5f);//LODWORD(v25);
         v27 = uBluea >> 16;
-      }
+        //v28 = &render->pTargetSurface[uX + uY * lPitch];
 
-      /*v29 = v70 >> 16;
-      for (int y = 0; y < uHeight; ++y)
-      {
-        uchar* pMapLod0Line = &pMapLod0[v27 * mapWidth];
-        for (int x = 0; x < uWidth; ++x)
+        if (/*pMapLod0 && */bRedrawOdmMinimap)
         {
-          //*pMinimap++ = pPal[pMapLod0Line[v29]];
-          pOdmMinimap[y][x] = pPal[pMapLod0Line[v29]];
-          v29 = (v70 + x * v73) >> 16;
+            assert(uWidth == 137 && uHeight == 117);
+
+            ushort mapWidth = viewparams->location_minimap->GetWidth();
+
+            v29 = v70 >> 16;
+            for (int y = 0; y < uHeight; ++y)
+            {
+                //uchar* pMapLod0Line = &pMapLod0[v27 * mapWidth];
+                auto pMapLod0Line = (unsigned __int16 *)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_R5G6B5) + v27 * mapWidth;
+                for (int x = 0; x < uWidth; ++x)
+                {
+                    //*pMinimap++ = pPal[pMapLod0Line[v29]];
+                    render->WritePixel16(uX + x, uY + y, pMapLod0Line[v29]);
+                    v29 = (v70 + x * v73) >> 16;
+                }
+                uBluea += v73;
+                v27 = uBluea >> 16;
+            }
         }
-        v29 = v70 >> 16;
-        v28 += 137 - uWidth;
-        uBluea += v73;
-        v27 = uBluea >> 16;
-      }*/
+
+        uNumBlueFacesInBLVMinimap = 0;
+    }
+    else// uCurrentlyLoadedLevelType == LEVEL_Indoor
+    {
+        render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
+        uNumBlueFacesInBLVMinimap = 0;
+
+        for (uint i = 0; i < (uint)pIndoor->pMapOutlines->uNumOutlines; ++i)
+        {
+            BLVMapOutline* pOutline = &pIndoor->pMapOutlines->pOutlines[i];
+            //BLVFace* pFace1 = &pIndoor->pFaces[pOutline->uFace1ID];
+            //BLVFace* pFace2 = &pIndoor->pFaces[pOutline->uFace2ID];
+            if (pIndoor->pFaces[pOutline->uFace1ID].Visible() && pIndoor->pFaces[pOutline->uFace2ID].Visible())
+            {
+                if (pOutline->uFlags & 1)
+                {
+                    if (bWizardEyeActive && uWizardEyeSkillLevel >= 3 &&
+                        (pIndoor->pFaces[pOutline->uFace1ID].Clickable() || pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
+                        (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID
+                            || pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID].uFaceExtraID].uEventID))
+                    {
+                        if (uNumBlueFacesInBLVMinimap < 49)
+                            pBlueFacesInBLVMinimapIDs[uNumBlueFacesInBLVMinimap++] = i;
+                    }
+                    else
+                    {
+                        pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
+                        pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
+                        pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
+                        pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
+                        v15 = abs(pOutline->sZ - pParty->vPosition.z) / 8;
+                        if (v15 > 100)
+                            v15 = 100;
+                        render->RasterLine2D(pX, pY, pZ, pW, viewparams->pPalette[-v15 + 200]);
+                    }
+                    continue;
+                }
+                if (pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_UNKNOW7
+                    || pIndoor->pFaces[pOutline->uFace2ID].uAttributes & FACE_UNKNOW7)
+                {
+                    pOutline->uFlags = pOutline->uFlags | 1;
+                    pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
+                    if (bWizardEyeActive && uWizardEyeSkillLevel >= 3 &&
+                        (pIndoor->pFaces[pOutline->uFace1ID].Clickable() || pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
+                        (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID || pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID].uFaceExtraID].uEventID))
+                    {
+                        if (uNumBlueFacesInBLVMinimap < 49)
+                            pBlueFacesInBLVMinimapIDs[uNumBlueFacesInBLVMinimap++] = i;
+                    }
+                    else
+                    {
+                        pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
+                        pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
+                        pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
+                        pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
+                        v15 = abs(pOutline->sZ - pParty->vPosition.z) / 8;
+                        if (v15 > 100)
+                            v15 = 100;
+                        render->RasterLine2D(pX, pY, pZ, pW, viewparams->pPalette[-v15 + 200]);
+                    }
+                    continue;
+                }
+            }
+        }
+
+        for (uint i = 0; i < uNumBlueFacesInBLVMinimap; ++i)
+        {
+            BLVMapOutline* pOutline = &pIndoor->pMapOutlines->pOutlines[pBlueFacesInBLVMinimapIDs[i]];
+            pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
+            pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
+            pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
+            pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
+            render->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
+        }
     }
 
-    /*for (int y = 0; y < 117; ++y)
-    {
-      for (int x = 0; x < 137; ++x)
-      {
-        *v28++ = pOdmMinimap[y][x];
-      }
-      v28 += lPitch - 137;
-    }*/
-    uNumBlueFacesInBLVMinimap = 0;
-  }
-  else// uCurrentlyLoadedLevelType == LEVEL_Indoor
-  {
-    pRenderer->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
-    uNumBlueFacesInBLVMinimap = 0;
+    //draw arrow on the minimap(include. Ritor1)
+    uint arrow_idx;
+    unsigned int rotate = pParty->sRotationY & stru_5C6E00->uDoublePiMask;
+    if ((signed int)rotate <= 1920)
+        arrow_idx = 6;
+    if ((signed int)rotate < 1664)
+        arrow_idx = 5;
+    if ((signed int)rotate <= 1408)
+        arrow_idx = 4;
+    if ((signed int)rotate < 1152)
+        arrow_idx = 3;
+    if ((signed int)rotate <= 896)
+        arrow_idx = 2;
+    if ((signed int)rotate < 640)
+        arrow_idx = 1;
+    if ((signed int)rotate <= 384)
+        arrow_idx = 0;
+    if ((signed int)rotate < 128 || (signed int)rotate > 1920)
+        arrow_idx = 7;
+    render->DrawTextureAlphaNew(
+        (uCenterX - 3) / 640.0f,
+        (uCenterY - 3) / 480.0f,
+        game_ui_minimap_dirs[arrow_idx]
+    );
 
-    for (uint i = 0; i < (uint)pIndoor->pMapOutlines->uNumOutlines; ++i)
+    //draw objects on the minimap
+    if (bWizardEyeActive)
     {
-      BLVMapOutline* pOutline = &pIndoor->pMapOutlines->pOutlines[i];
-      //BLVFace* pFace1 = &pIndoor->pFaces[pOutline->uFace1ID];
-      //BLVFace* pFace2 = &pIndoor->pFaces[pOutline->uFace2ID];
-      if (pIndoor->pFaces[pOutline->uFace1ID].Visible() && pIndoor->pFaces[pOutline->uFace2ID].Visible())
-      {
-        if ( pOutline->uFlags & 1 )
+        if (uWizardEyeSkillLevel >= 2)
         {
-          if (bWizardEyeActive && uWizardEyeSkillLevel >= 3 &&
-             (pIndoor->pFaces[pOutline->uFace1ID].Clickable() || pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
-             (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID
-		   || pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID].uFaceExtraID].uEventID))
-          {
-            if (uNumBlueFacesInBLVMinimap < 49)
-              pBlueFacesInBLVMinimapIDs[uNumBlueFacesInBLVMinimap++] = i;
-          }
-          else
-          {
-            pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
-            pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
-            pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
-            pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
-            v15 = abs(pOutline->sZ - pParty->vPosition.z) / 8;
-            if ( v15 > 100 )
-              v15 = 100;
-            pRenderer->RasterLine2D(pX, pY, pZ, pW, viewparams->pPalette[-v15 + 200]);
-          }
-          continue;
+            for (uint i = 0; i < uNumSpriteObjects; ++i)
+            {
+                if (!pSpriteObjects[i].uType || !pSpriteObjects[i].uObjectDescID)
+                    continue;
+                //if (uWizardEyeSkillLevel == 1
+                pPoint_X = uCenterX + fixpoint_mul((pSpriteObjects[i].vPosition.x - pParty->vPosition.x), uZoom);
+                pPoint_Y = uCenterY - fixpoint_mul((pSpriteObjects[i].vPosition.y - pParty->vPosition.y), uZoom);
+                //if ( pPoint_X >= render->raster_clip_x && pPoint_X <= render->raster_clip_z &&
+                //     pPoint_Y >= render->raster_clip_y && pPoint_Y <= render->raster_clip_w)
+                {
+                    if (pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)
+                    {
+                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, ui_game_minimap_projectile_color);
+                    }
+                    else if (uZoom > 512)
+                    {
+                        render->RasterLine2D(pPoint_X - 2, pPoint_Y, pPoint_X - 2, pPoint_Y + 1, ui_game_minimap_treasure_color);
+                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, ui_game_minimap_treasure_color);
+                        render->RasterLine2D(pPoint_X, pPoint_Y - 2, pPoint_X, pPoint_Y + 1, ui_game_minimap_treasure_color);
+                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, ui_game_minimap_treasure_color);
+                        render->RasterLine2D(pPoint_X + 2, pPoint_Y, pPoint_X + 2, pPoint_Y + 1, ui_game_minimap_treasure_color);
+                    }
+                    else
+                    {
+                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y, ui_game_minimap_treasure_color);
+                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y, ui_game_minimap_treasure_color);
+                    }
+                }
+            }
         }
-        if (pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_UNKNOW7 
-		 || pIndoor->pFaces[pOutline->uFace2ID].uAttributes & FACE_UNKNOW7)
+        for (uint i = 0; i < uNumActors; ++i)//draw actors(отрисовка монстров и нпс)
         {
-          pOutline->uFlags = pOutline->uFlags | 1;
-          pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
-          if (bWizardEyeActive && uWizardEyeSkillLevel >= 3 &&
-             (pIndoor->pFaces[pOutline->uFace1ID].Clickable() || pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
-             (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID || pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID].uFaceExtraID].uEventID))
-          {
-            if (uNumBlueFacesInBLVMinimap < 49)
-              pBlueFacesInBLVMinimapIDs[uNumBlueFacesInBLVMinimap++] = i;
-          }
-          else
-          {
-            pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
-            pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
-            pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
-            pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
-            v15 = abs(pOutline->sZ - pParty->vPosition.z) / 8;
-            if ( v15 > 100 )
-              v15 = 100;
-            pRenderer->RasterLine2D(pX, pY, pZ, pW, viewparams->pPalette[-v15 + 200]);
-          }
-          continue;
+            if (pActors[i].uAIState != Removed && pActors[i].uAIState != Disabled
+                && (pActors[i].uAIState == Dead || pActors[i].ActorNearby()))
+            {
+                pPoint_X = uCenterX + (fixpoint_mul((pActors[i].vPosition.x - pParty->vPosition.x), uZoom));
+                pPoint_Y = uCenterY - (fixpoint_mul((pActors[i].vPosition.y - pParty->vPosition.y), uZoom));
+                //if ( pPoint_X >= render->raster_clip_x && pPoint_X <= render->raster_clip_z
+                //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <= render->raster_clip_w )
+                {
+                    pColor = ui_game_minimap_actor_friendly_color;
+                    if (pActors[i].uAttributes & ACTOR_HOSTILE)
+                        pColor = ui_game_minimap_actor_hostile_color;
+                    if (pActors[i].uAIState == Dead)
+                        pColor = ui_game_minimap_actor_corpse_color;
+                    if (uZoom > 1024)
+                    {
+                        render->RasterLine2D(pPoint_X - 2, pPoint_Y - 1, pPoint_X - 2, pPoint_Y + 1, pColor);
+                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 2, pPoint_X - 1, pPoint_Y + 2, pColor);
+                        render->RasterLine2D(pPoint_X, pPoint_Y - 2, pPoint_X, pPoint_Y + 2, pColor);
+                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 2, pPoint_X + 1, pPoint_Y + 2, pColor);
+                        render->RasterLine2D(pPoint_X + 2, pPoint_Y - 1, pPoint_X + 2, pPoint_Y + 1, pColor);
+                    }
+                    else
+                    {
+                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y, pColor);
+                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y, pColor);
+                    }
+                }
+            }
         }
-      }
-    }
-
-    for (uint i = 0; i < uNumBlueFacesInBLVMinimap; ++i)
-    {
-      BLVMapOutline* pOutline = &pIndoor->pMapOutlines->pOutlines[pBlueFacesInBLVMinimapIDs[i]];
-      pX = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
-      pY = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
-      pZ = uCenterX + ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x)) << 16) - uZoom * pParty->vPosition.x) >> 16);
-      pW = uCenterY - ((signed int)(((unsigned int)(fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y)) << 16) - uZoom * pParty->vPosition.y) >> 16);
-      pRenderer->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
-    }
-  }
-
-  //draw arrow on the minimap(include. Ritor1)
-  uint arrow_idx;
-  unsigned int rotate = pParty->sRotationY & stru_5C6E00->uDoublePiMask;
-  if ( (signed int)rotate <= 1920 )
-    arrow_idx = 6;
-  if ( (signed int)rotate < 1664 )
-    arrow_idx = 5;
-  if ( (signed int)rotate <= 1408 )
-    arrow_idx = 4;
-  if ( (signed int)rotate < 1152 )
-    arrow_idx = 3;
-  if ( (signed int)rotate <= 896 )
-    arrow_idx = 2;
-  if ( (signed int)rotate < 640 )
-    arrow_idx = 1;
-  if ( (signed int)rotate <= 384 )
-    arrow_idx = 0;
-  if ( (signed int)rotate < 128 || (signed int)rotate > 1920 )
-    arrow_idx = 7;
-  pRenderer->DrawTextureAlphaNew(
-      (uCenterX - 3)/640.0f,
-      (uCenterY - 3)/480.0f,
-      game_ui_minimap_dirs[arrow_idx]);
-
-  //draw objects on the minimap
-  if ( bWizardEyeActive )
-  {
-    if ( uWizardEyeSkillLevel >= 2 )
-    {
-      for ( uint i = 0; i < uNumSpriteObjects; ++i )
-      {
-        if ( !pSpriteObjects[i].uType || !pSpriteObjects[i].uObjectDescID )
-          continue;
-        //if (uWizardEyeSkillLevel == 1
-        pPoint_X = uCenterX + fixpoint_mul((pSpriteObjects[i].vPosition.x - pParty->vPosition.x), uZoom);
-        pPoint_Y = uCenterY - fixpoint_mul((pSpriteObjects[i].vPosition.y - pParty->vPosition.y), uZoom);
-        //if ( pPoint_X >= pRenderer->raster_clip_x && pPoint_X <= pRenderer->raster_clip_z &&
-        //     pPoint_Y >= pRenderer->raster_clip_y && pPoint_Y <= pRenderer->raster_clip_w)
+        for (uint i = 0; i < (signed int)uNumLevelDecorations; ++i)//draw items(отрисовка предметов)
         {
-          if (pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)
-          {
-            pRenderer->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, ui_game_minimap_projectile_color);
-          }
-          else if ( uZoom > 512 )
-          {
-            pRenderer->RasterLine2D(pPoint_X - 2, pPoint_Y,     pPoint_X - 2, pPoint_Y + 1, ui_game_minimap_treasure_color);
-            pRenderer->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, ui_game_minimap_treasure_color);
-            pRenderer->RasterLine2D(pPoint_X,     pPoint_Y - 2, pPoint_X,     pPoint_Y + 1, ui_game_minimap_treasure_color);
-            pRenderer->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, ui_game_minimap_treasure_color);
-            pRenderer->RasterLine2D(pPoint_X + 2, pPoint_Y,     pPoint_X + 2, pPoint_Y + 1, ui_game_minimap_treasure_color);
-          }
-          else
-          {
-            pRenderer->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y, ui_game_minimap_treasure_color);
-            pRenderer->RasterLine2D(pPoint_X,     pPoint_Y - 1, pPoint_X,     pPoint_Y, ui_game_minimap_treasure_color);
-          }
+            if (pLevelDecorations[i].uFlags & 8)
+            {
+                pPoint_X = uCenterX + (fixpoint_mul((pLevelDecorations[i].vPosition.x - pParty->vPosition.x), uZoom));
+                pPoint_Y = uCenterY - (fixpoint_mul((pLevelDecorations[i].vPosition.y - pParty->vPosition.y), uZoom));
+                //if ( pPoint_X >= render->raster_clip_x && pPoint_X <= render->raster_clip_z
+                //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <= render->raster_clip_w )
+                {
+                    if ((signed int)uZoom > 512)
+                    {
+                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
+                    }
+                    else
+                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, ui_game_minimap_decoration_color_1);
+                }
+            }
         }
-      }
     }
-    for ( uint i = 0; i < uNumActors; ++i )//draw actors(отрисовка монстров и нпс)
-    {
-      if ( pActors[i].uAIState != Removed && pActors[i].uAIState != Disabled
-       && (pActors[i].uAIState == Dead || pActors[i].ActorNearby()) )
-      {
-        pPoint_X = uCenterX + (fixpoint_mul((pActors[i].vPosition.x - pParty->vPosition.x), uZoom));
-        pPoint_Y = uCenterY - (fixpoint_mul((pActors[i].vPosition.y - pParty->vPosition.y), uZoom));
-        //if ( pPoint_X >= pRenderer->raster_clip_x && pPoint_X <= pRenderer->raster_clip_z
-        //  && pPoint_Y >= pRenderer->raster_clip_y && pPoint_Y <= pRenderer->raster_clip_w )
-        {
-          pColor = ui_game_minimap_actor_friendly_color;
-          if ( pActors[i].uAttributes & ACTOR_HOSTILE )
-            pColor = ui_game_minimap_actor_hostile_color;
-          if ( pActors[i].uAIState == Dead)
-            pColor = ui_game_minimap_actor_corpse_color;
-          if ( uZoom > 1024 )
-          {
-            pRenderer->RasterLine2D(pPoint_X - 2, pPoint_Y - 1, pPoint_X - 2, pPoint_Y + 1, pColor);
-            pRenderer->RasterLine2D(pPoint_X - 1, pPoint_Y - 2, pPoint_X - 1, pPoint_Y + 2, pColor);
-            pRenderer->RasterLine2D(pPoint_X,     pPoint_Y - 2, pPoint_X,     pPoint_Y + 2, pColor);
-            pRenderer->RasterLine2D(pPoint_X + 1, pPoint_Y - 2, pPoint_X + 1, pPoint_Y + 2, pColor);
-            pRenderer->RasterLine2D(pPoint_X + 2, pPoint_Y - 1, pPoint_X + 2, pPoint_Y + 1, pColor);
-          }
-          else
-          {
-            pRenderer->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y, pColor);
-            pRenderer->RasterLine2D(pPoint_X,     pPoint_Y - 1, pPoint_X,     pPoint_Y, pColor);
-          }
-        }
-      }
-    }
-    for ( uint i = 0; i < (signed int)uNumLevelDecorations; ++i )//draw items(отрисовка предметов)
-    {
-      if ( pLevelDecorations[i].uFlags & 8 )
-      {
-        pPoint_X = uCenterX + (fixpoint_mul((pLevelDecorations[i].vPosition.x - pParty->vPosition.x), uZoom));
-        pPoint_Y = uCenterY - (fixpoint_mul((pLevelDecorations[i].vPosition.y - pParty->vPosition.y), uZoom));
-        //if ( pPoint_X >= pRenderer->raster_clip_x && pPoint_X <= pRenderer->raster_clip_z
-        //  && pPoint_Y >= pRenderer->raster_clip_y && pPoint_Y <= pRenderer->raster_clip_w )
-        {
-          if ( (signed int)uZoom > 512 )
-          {
-            pRenderer->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
-            pRenderer->RasterLine2D(pPoint_X,     pPoint_Y - 1, pPoint_X,     pPoint_Y + 1, ui_game_minimap_decoration_color_1);
-            pRenderer->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
-          }
-          else
-            pRenderer->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, ui_game_minimap_decoration_color_1);
-        }
-      }
-    }
-  }
-  pRenderer->DrawTextureAlphaNew(468/640.0f, 0, game_ui_minimap_frame);
-  pRenderer->SetUIClipRect(541, 0, 567, 480);
-  pRenderer->DrawTextureAlphaNew(
-      (floorf(((double)pParty->sRotationY * 0.1171875) + 0.5f) + 285)/640.0f,
-      136/480.0f,
-      game_ui_minimap_compass);
-  pRenderer->ResetUIClipRect();
+    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_minimap_frame);
+    render->SetUIClipRect(541, 0, 567, 480);
+    render->DrawTextureAlphaNew(
+        (floorf(((double)pParty->sRotationY * 0.1171875) + 0.5f) + 285) / 640.0f,
+        136 / 480.0f,
+        game_ui_minimap_compass);
+    render->ResetUIClipRect();
 }
 
 //----- (00441498) --------------------------------------------------------
@@ -2437,7 +2451,7 @@ void  GameUI_DrawTorchlightAndWizardEye()
   {
     if (pParty->TorchlightActive())
     {
-      pRenderer->DrawTextureAlphaNew(
+      render->DrawTextureAlphaNew(
           pUIAnum_Torchlight->x/640.0f,
           pUIAnum_Torchlight->y/480.0f,
           pIconsFrameTable->GetFrame(pUIAnum_Torchlight->icon->id, pEventTimer->Time())->texture
@@ -2445,7 +2459,7 @@ void  GameUI_DrawTorchlightAndWizardEye()
     }
     if (pParty->WizardEyeActive())
     {
-      pRenderer->DrawTextureAlphaNew(
+      render->DrawTextureAlphaNew(
           pUIAnim_WizardEye->x/640.0f,
           pUIAnim_WizardEye->y/480.0f,
           pIconsFrameTable->GetFrame(pUIAnim_WizardEye->icon->id, pEventTimer->Time())->texture
@@ -2491,7 +2505,7 @@ void GameUI_DrawHiredNPCs()
             if ((unsigned __int8)buf[i] >= 2)
             {
                 sprintf(pContainer, "NPC%03d", pNPCStats->pNPCData[(unsigned __int8)buf[i] + 499].uPortraitID);
-                pRenderer->DrawTextureAlphaNew(
+                render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
                     //pIcons_LOD->GetTexture(pIcons_LOD->LoadTexture(pContainer, TEXTURE_16BIT_PALETTE))
@@ -2501,7 +2515,7 @@ void GameUI_DrawHiredNPCs()
             else
             {
                 sprintf(pContainer, "NPC%03d", pParty->pHirelings[(unsigned __int8)buf[i]].uPortraitID);
-                pRenderer->DrawTextureAlphaNew(
+                render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
                     //pIcons_LOD->GetTexture(pIcons_LOD->LoadTexture(pContainer, TEXTURE_16BIT_PALETTE))
@@ -2519,7 +2533,7 @@ void GameUI_DrawHiredNPCs()
                                 break;
                         }
                     }
-                    pRenderer->DrawTextureAlphaNew(
+                    render->DrawTextureAlphaNew(
                         pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                         pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
                         //&pIcons_LOD->pTextures[pIconsFrameTable->GetFrame(v13, uFrameID)->uTextureID]
@@ -2624,9 +2638,9 @@ __int16 sub_441A4E(int a1)//for blessing
 	//int v13; // [sp+64h] [bp-4h]@6
 
 	v10.sParentBillboardID = -1;
-	v10.pTarget = pRenderer->pTargetSurface;
-	v10.pTargetZ = pRenderer->pActiveZBuffer;
-	v10.uTargetPitch = pRenderer->GetRenderWidth();
+	v10.pTarget = render->pTargetSurface;
+	v10.pTargetZ = render->pActiveZBuffer;
+	v10.uTargetPitch = render->GetRenderWidth();
 	result = 0;
 	v2 = a1;
 	v10.uViewportX = 0;

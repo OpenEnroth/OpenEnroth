@@ -113,16 +113,16 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices, int num_verti
   int v13 = -1;
   //v5 = 0;
 
-  //v6 = pRenderer->pBillboardRenderListD3D;
-  for (uint i = 0; i < pRenderer->uNumBillboardsToDraw; ++i)
+  //v6 = render->pBillboardRenderListD3D;
+  for (uint i = 0; i < render->uNumBillboardsToDraw; ++i)
   {
-    RenderBillboardD3D* billboard = &pRenderer->pBillboardRenderListD3D[i];
+    RenderBillboardD3D* billboard = &render->pBillboardRenderListD3D[i];
     if (IsPointInsideD3DBillboard(billboard, x, y))
     {
       if (v13 == -1)
         v13 = i;
       else  if (pBillboardRenderList[billboard->sParentBillboardID].sZValue < 
-                  pBillboardRenderList[pRenderer->pBillboardRenderListD3D[v13].sParentBillboardID].sZValue)
+                  pBillboardRenderList[render->pBillboardRenderListD3D[v13].sParentBillboardID].sZValue)
         v13 = i;
     }
   }
@@ -155,8 +155,8 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices, int num_verti
   }
   // //--------------------------------
 
-  if (min_x < pRenderer->pBillboardRenderListD3D[v13].pQuads[0].pos.x || pRenderer->pBillboardRenderListD3D[v13].pQuads[0].pos.y > min_y ||
-      pRenderer->pBillboardRenderListD3D[v13].pQuads[3].pos.x < max_x || pRenderer->pBillboardRenderListD3D[v13].pQuads[1].pos.y < max_y)
+  if (min_x < render->pBillboardRenderListD3D[v13].pQuads[0].pos.x || render->pBillboardRenderListD3D[v13].pQuads[0].pos.y > min_y ||
+      render->pBillboardRenderListD3D[v13].pQuads[3].pos.x < max_x || render->pBillboardRenderListD3D[v13].pQuads[1].pos.y < max_y)
     return false;
 
   return true;
@@ -197,9 +197,9 @@ void Vis::GetPolygonScreenSpaceCenter(RenderVertexSoft *vertices, int num_vertic
 //----- (004C1542) --------------------------------------------------------
 void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY, Vis_SelectionList *list, Vis_SelectionFilter *filter)
 {
-  for (uint i = 0; i < pRenderer->uNumBillboardsToDraw; ++i)
+  for (uint i = 0; i < render->uNumBillboardsToDraw; ++i)
   {
-    RenderBillboardD3D* d3d_billboard = &pRenderer->pBillboardRenderListD3D[i];
+    RenderBillboardD3D* d3d_billboard = &render->pBillboardRenderListD3D[i];
     if (is_part_of_selection((void *)i, filter) && IsPointInsideD3DBillboard(d3d_billboard, fX, fY))
     {
       if (DoesRayIntersectBillboard(fPickDepth, i))
@@ -776,7 +776,7 @@ int UnprojectX(int x)
 
   if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
   {
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
       v3 = pIndoorCameraD3D->fov;
     //else
     //  v3 = pIndoorCamera->fov_rad;
@@ -795,7 +795,7 @@ int UnprojectY(int y)
 
   if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
   {
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
       v3 = pIndoorCameraD3D->fov;
     //else
     //  v3 = pIndoorCamera->fov_rad;
@@ -1222,9 +1222,9 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY, Vis_SelectionFil
 //----- (004C06F8) --------------------------------------------------------
 void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter)
 {
-  for (uint i = 0; i < pRenderer->uNumBillboardsToDraw; ++i)
+  for (uint i = 0; i < render->uNumBillboardsToDraw; ++i)
   {
-    RenderBillboardD3D* d3d_billboard = &pRenderer->pBillboardRenderListD3D[i];
+    RenderBillboardD3D* d3d_billboard = &render->pBillboardRenderListD3D[i];
 
     if (is_part_of_selection((void *)i, filter))
     {
@@ -1265,8 +1265,8 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace, V
     case VisObjectType_Sprite:
     {
       //v5 = filter->select_flags;
-      int object_idx = PID_ID(pBillboardRenderList[pRenderer->pBillboardRenderListD3D[(int)uD3DBillboardIdx_or_pBLVFace_or_pODMFace].sParentBillboardID].object_pid);
-      int object_type = PID_TYPE(pBillboardRenderList[pRenderer->pBillboardRenderListD3D[(int)uD3DBillboardIdx_or_pBLVFace_or_pODMFace].sParentBillboardID].object_pid);
+      int object_idx = PID_ID(pBillboardRenderList[render->pBillboardRenderListD3D[(int)uD3DBillboardIdx_or_pBLVFace_or_pODMFace].sParentBillboardID].object_pid);
+      int object_type = PID_TYPE(pBillboardRenderList[render->pBillboardRenderListD3D[(int)uD3DBillboardIdx_or_pBLVFace_or_pODMFace].sParentBillboardID].object_pid);
       if ( filter->select_flags & 2 )
       {
         if (object_type == filter->object_id)
@@ -1392,7 +1392,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 
   static Vis_SelectionList Vis_static_stru_F91E10;
   Vis_static_stru_F91E10.uNumPointers = 0;
-  v3 = pRenderer->pBillboardRenderListD3D[uD3DBillboardIdx].sParentBillboardID;
+  v3 = render->pBillboardRenderListD3D[uD3DBillboardIdx].sParentBillboardID;
   if (v3 == -1)
     return false;
 
@@ -1400,7 +1400,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
     return false;
 
 
-    GetPolygonCenter(pRenderer->pBillboardRenderListD3D[v3].pQuads, 4, &test_x, &test_y);
+    GetPolygonCenter(render->pBillboardRenderListD3D[v3].pQuads, 4, &test_x, &test_y);
     CastPickRay(pPickingRay, test_x, test_y, fDepth);
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
       PickIndoorFaces_Mouse(fDepth, pPickingRay, &Vis_static_stru_F91E10, &vis_face_filter);
@@ -1421,8 +1421,8 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 
     for (v40 = 0; v40 < 4; ++v40)
         {
-        test_x=pRenderer->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[v40].pos.x;
-        test_y=  pRenderer->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[v40].pos.y;
+        test_x=render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[v40].pos.x;
+        test_y=  render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[v40].pos.y;
         if ((double)(pViewport->uScreen_TL_X) <= test_x &&
             (double)pViewport->uScreen_BR_X >= test_x &&
             (double)pViewport->uScreen_TL_Y <= test_y &&
@@ -1447,11 +1447,11 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
         {
           if ( uCurrentlyLoadedLevelType != LEVEL_Outdoor )
             return false;
-          t1_x = pRenderer->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[0].pos.x;
-          t2_x = pRenderer->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[3].pos.x;
+          t1_x = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[0].pos.x;
+          t2_x = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[3].pos.x;
 
-          t1_y = pRenderer->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[0].pos.y;
-          t2_y = pRenderer->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[1].pos.y;
+          t1_y = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[0].pos.y;
+          t2_y = render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[1].pos.y;
           if ( t1_x > t2_x )
           {
             swap_temp = t1_x;

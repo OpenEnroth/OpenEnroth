@@ -60,7 +60,7 @@ void GUIWindow_TownPortalBook::Update()
 // ----- (00413CC6) --------------------------------------------------------
 // void BookUI_Draw(WindowType book) --- part
 // {
-    pRenderer->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
 //     BookUI_DrawTownPortalMap();
 
 // ----- (00411150) --------------------------------------------------------
@@ -70,9 +70,9 @@ void GUIWindow_TownPortalBook::Update()
     GUIWindow TownPortalWindow; // [sp+Ch] [bp-64h]@1
     POINT a2; // [sp+68h] [bp-8h]@17
 
-    pRenderer->ClearZBuffer(0, 479);
-    pRenderer->DrawTextureNew(8/640.0f, 8/480.0f, ui_book_townportal_background);
-    pRenderer->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
+    render->ClearZBuffer(0, 479);
+    render->DrawTextureNew(8/640.0f, 8/480.0f, ui_book_townportal_background);
+    render->DrawTextureAlphaNew(471/640.0f, 445/480.0f, ui_exit_cancel_button_background);
 
     TownPortalWindow.uFrameX = game_viewport_x;
     TownPortalWindow.uFrameY = game_viewport_y;
@@ -94,7 +94,7 @@ void GUIWindow_TownPortalBook::Update()
     {
 
         if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[i]))
-            pRenderer->ZDrawTextureAlpha(
+            render->ZDrawTextureAlpha(
                 pTownPortalBook_xs[i]/640.0f,
                 pTownPortalBook_ys[i]/480.0f,
                 ui_book_townportal_icons[i], i + 1
@@ -102,12 +102,12 @@ void GUIWindow_TownPortalBook::Update()
     }
 
     pMouse->GetCursorPos(&a2);
-    v3 = pRenderer->pActiveZBuffer[a2.x + pSRZBufferLineOffsets[a2.y]] & 0xFFFF;
+    v3 = render->pActiveZBuffer[a2.x + pSRZBufferLineOffsets[a2.y]] & 0xFFFF;
 
     if (v3)
     {
         if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[v3 - 1]))
-            pRenderer->DrawTextureAlphaNew(pTownPortalBook_xs[v3 - 1]/640.0f, pTownPortalBook_ys[v3 - 1]/480.0f, ui_book_townportal_icons[v3 - 1]);
+            render->DrawTextureAlphaNew(pTownPortalBook_xs[v3 - 1]/640.0f, pTownPortalBook_ys[v3 - 1]/480.0f, ui_book_townportal_icons[v3 - 1]);
     }
     TownPortalWindow.DrawTitleText(pBook2Font, 0, 22, 0, localization->GetString(10), 3);
 }

@@ -170,7 +170,7 @@ void GUIWindow_Spellbook::Update()
     BookUI_Spellbook_DrawCurrentSchoolBackground();
 
     //PendingTexture = pIcons_LOD->GetTexture(pIcons_LOD->FindTextureByName("Pending"));
-    pRenderer->ClearZBuffer(0, 479);
+    render->ClearZBuffer(0, 479);
     if ((11 * player->lastOpenedSpellbookPage) || ((11 * player->lastOpenedSpellbookPage) + 11))//??? maybe structure need fix
     {
         for (uint i = 1; i <= 11; ++i)
@@ -188,8 +188,8 @@ void GUIWindow_Spellbook::Update()
                         pX_coord = pViewport->uViewportTL_X + pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Xpos;
                         pY_coord = pViewport->uViewportTL_Y + pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Ypos;
 
-                        pRenderer->DrawTextureAlphaNew(pX_coord/640.0f, pY_coord/480.0f, pTexture);
-                        pRenderer->ZDrawTextureAlpha(
+                        render->DrawTextureAlphaNew(pX_coord/640.0f, pY_coord/480.0f, pTexture);
+                        render->ZDrawTextureAlpha(
                             pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Xpos/640.0f,
                             pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Ypos/480.0f,
                             pTexture, i);
@@ -200,7 +200,7 @@ void GUIWindow_Spellbook::Update()
     }
 
     pMouse->GetCursorPos(&a2);
-    v10 = pRenderer->pActiveZBuffer[a2.x + pSRZBufferLineOffsets[a2.y]] & 0xFFFF;
+    v10 = render->pActiveZBuffer[a2.x + pSRZBufferLineOffsets[a2.y]] & 0xFFFF;
     if (v10)
     {
         if (SBPageCSpellsTextureList[v10])
@@ -208,7 +208,7 @@ void GUIWindow_Spellbook::Update()
             pX_coord = pViewport->uViewportTL_X + pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][v10]].Xpos;
             pY_coord = pViewport->uViewportTL_Y + pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][v10]].Ypos;
 
-            pRenderer->DrawTextureAlphaNew(pX_coord/640.0f, pY_coord/480.0f, SBPageCSpellsTextureList[v10]);
+            render->DrawTextureAlphaNew(pX_coord/640.0f, pY_coord/480.0f, SBPageCSpellsTextureList[v10]);
         }
     }
 
@@ -230,7 +230,7 @@ void GUIWindow_Spellbook::Update()
                 pY_coord = texture_tab_coord0[i][1];
             }
 
-            pRenderer->DrawTextureAlphaNew(pX_coord/640.0f, pY_coord/480.0f, pPageTexture);
+            render->DrawTextureAlphaNew(pX_coord/640.0f, pY_coord/480.0f, pPageTexture);
         }
     }
 }
@@ -277,10 +277,10 @@ static void BookUI_Spellbook_DrawCurrentSchoolBackground()
   int pTexID = 0;
   if ( uActiveCharacter )
     pTexID = pParty->pPlayers[uActiveCharacter - 1].lastOpenedSpellbookPage;
-  pRenderer->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_spellbook_school_backgrounds[pTexID]);
+  render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_spellbook_school_backgrounds[pTexID]);
 
-  pRenderer->DrawTextureAlphaNew(476/640.0f, 450/480.0f, ui_spellbook_btn_quckspell);
-  pRenderer->DrawTextureAlphaNew(561/640.0f, 450/480.0f, ui_spellbook_btn_close);
+  render->DrawTextureAlphaNew(476/640.0f, 450/480.0f, ui_spellbook_btn_quckspell);
+  render->DrawTextureAlphaNew(561/640.0f, 450/480.0f, ui_spellbook_btn_close);
 }
 
 

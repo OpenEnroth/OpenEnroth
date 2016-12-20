@@ -101,14 +101,14 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window)
 
   uX = window->uFrameX + (signed int)(window->uFrameWidth - bar_length) / 2;
 
-  pRenderer->SetUIClipRect(uX, window->uFrameY + 32, uX + bar_length, window->uFrameY + 52);
-  pRenderer->DrawTextureAlphaNew(uX/640.0f, (window->uFrameY + 32)/480.0f, game_ui_monster_hp_background);
-  pRenderer->SetUIClipRect(uX, window->uFrameY + 32, uX + v10, window->uFrameY + 52);
-  pRenderer->DrawTextureAlphaNew(uX/640.0f, (window->uFrameY + 34)/480.0f, v9);
+  render->SetUIClipRect(uX, window->uFrameY + 32, uX + bar_length, window->uFrameY + 52);
+  render->DrawTextureAlphaNew(uX/640.0f, (window->uFrameY + 32)/480.0f, game_ui_monster_hp_background);
+  render->SetUIClipRect(uX, window->uFrameY + 32, uX + v10, window->uFrameY + 52);
+  render->DrawTextureAlphaNew(uX/640.0f, (window->uFrameY + 34)/480.0f, v9);
 
-  pRenderer->ResetUIClipRect();
-  pRenderer->DrawTextureAlphaNew((uX - 5)/640.0f, (window->uFrameY + 32)/480.0f, game_ui_monster_hp_border_left);
-  pRenderer->DrawTextureAlphaNew((uX + bar_length)/640.0f, (window->uFrameY + 32)/480.0f, game_ui_monster_hp_border_right);
+  render->ResetUIClipRect();
+  render->DrawTextureAlphaNew((uX - 5)/640.0f, (window->uFrameY + 32)/480.0f, game_ui_monster_hp_border_left);
+  render->DrawTextureAlphaNew((uX + bar_length)/640.0f, (window->uFrameY + 32)/480.0f, game_ui_monster_hp_border_right);
 }
 
 //----- (00448A40) --------------------------------------------------------
@@ -3719,7 +3719,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     {
         if (pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].bQuestMonster & 1)
         {
-            if ( /*pRenderer->pRenderD3D &&*/ pEngine->uFlags2 & GAME_FLAGS_2_DRAW_BLOODSPLATS)
+            if ( /*render->pRenderD3D &&*/ pEngine->uFlags2 & GAME_FLAGS_2_DRAW_BLOODSPLATS)
             {
                 v33 = byte_4D864C && pEngine->uFlags & 0x80000 ? 10 * pMonster->uActorRadius : pMonster->uActorRadius;
                 pDecalBuilder->AddBloodsplat((float)pMonster->vPosition.x, (float)pMonster->vPosition.y, (float)pMonster->vPosition.z, 1.0, 0.0, 0.0, (float)v33, 0, 0);
@@ -4001,7 +4001,7 @@ int stru319::FindClosestActor(int pick_depth, int a3, int a4)
 	v4 = 0;
 	v5 = this;
 	v24 = this;
-	//if ( pRenderer->pRenderD3D )
+	//if ( render->pRenderD3D )
 	{
 		v6 = a3 != 0;
 		if (a4)
@@ -4014,12 +4014,12 @@ int stru319::FindClosestActor(int pick_depth, int a3, int a4)
 	/*else // software impl
 	{
 	v30 = 0;
-	if ( pRenderer->pActiveZBuffer )
+	if ( render->pActiveZBuffer )
 	{
 	if ( (signed int)viewparams->uScreen_topL_Y < (signed int)viewparams->uScreen_BttmR_Y )
 	{
-	v9 = &pRenderer->pActiveZBuffer[viewparams->uScreen_topL_X + 640 * viewparams->uScreen_topL_Y];
-	v26 = &pRenderer->pActiveZBuffer[viewparams->uScreen_topL_X + 640 * viewparams->uScreen_topL_Y];
+	v9 = &render->pActiveZBuffer[viewparams->uScreen_topL_X + 640 * viewparams->uScreen_topL_Y];
+	v26 = &render->pActiveZBuffer[viewparams->uScreen_topL_X + 640 * viewparams->uScreen_topL_Y];
 	for ( v25 = viewparams->uScreen_BttmR_Y - viewparams->uScreen_topL_Y; v25; --v25 )
 	{
 	if ( (signed int)viewparams->uScreen_topL_X < (signed int)viewparams->uScreen_BttmR_X )

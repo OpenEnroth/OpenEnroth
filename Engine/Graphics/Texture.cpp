@@ -193,16 +193,16 @@ int TextureFrameTable::GetFrameTexture(int uFrameID, signed int a3)
 //----- (0040F806) --------------------------------------------------------
 void *Texture_MM7::UnzipPalette()
 {
-  Texture_MM7 *v1; // esi@1
+    Texture_MM7 *v1; // esi@1
 
-  void *v2; // edi@1
-  Texture_MM7 *pSource; // [sp+0h] [bp-4h]@1
+    void *v2; // edi@1
+    Texture_MM7 *pSource; // [sp+0h] [bp-4h]@1
 
-  pSource = this;
-  v1 = this;
-  v2 = malloc(this->uDecompressedSize);
-  zlib::MemUnzip(v2, (unsigned int *)&pSource, v1->paletted_pixels, v1->uTextureSize);
-  return v2;
+    pSource = this;
+    v1 = this;
+    v2 = malloc(this->uDecompressedSize);
+    zlib::MemUnzip(v2, (unsigned int *)&pSource, v1->paletted_pixels, v1->uTextureSize);
+    return v2;
 }
 
 //----- (0040F77C) --------------------------------------------------------
@@ -438,682 +438,393 @@ int RGBTexture::Load(const char *pContainer, int mode)
 //----- (0040F037) --------------------------------------------------------
 signed int RGBTexture::DecodePCX(char *pPcx, unsigned __int16 *pOutPixels, unsigned int uNumPixels)
 {
-//  signed int result; // eax@2
-  unsigned char test_byte; // edx@3
-  unsigned int read_offset; // ebx@37
-  unsigned int row_position; // edi@40
-  unsigned char value; // cl@63
-  char count; // [sp+50h] [bp-Ch]@43
-  unsigned short current_line; // [sp+54h] [bp-8h]@38
-  unsigned short *dec_position; 
-  unsigned short *temp_dec_position; 
-  PCXHeader1 psx_head1;
-  PCXHeader2 psx_head2;
-//	short int width, height;
-	BYTE  color_map[48];	// Colormap for 16-color images
-
- 
- memcpy(&psx_head1, pPcx , 16);
- memcpy(&color_map, pPcx + 16, 48);
- memcpy(&psx_head2, pPcx + 64, 6);
+    //  signed int result; // eax@2
+    unsigned char test_byte; // edx@3
+    unsigned int read_offset; // ebx@37
+    unsigned int row_position; // edi@40
+    unsigned char value; // cl@63
+    char count; // [sp+50h] [bp-Ch]@43
+    unsigned short current_line; // [sp+54h] [bp-8h]@38
+    unsigned short *dec_position;
+    unsigned short *temp_dec_position;
+    PCXHeader1 psx_head1;
+    PCXHeader2 psx_head2;
+    //	short int width, height;
+    BYTE  color_map[48];	// Colormap for 16-color images
 
 
- if (psx_head1.bpp!=8)
-		return 3; 
- uWidth=(short int )(psx_head1.right-psx_head1.left+1);  // word @ 000014
- uHeight=(short int )(psx_head1.bottom-psx_head1.up+1);  // word @ 000016
- 
+    memcpy(&psx_head1, pPcx, 16);
+    memcpy(&color_map, pPcx + 16, 48);
+    memcpy(&psx_head2, pPcx + 64, 6);
 
- uNumPixels=uWidth*uHeight;		  // dword @ 000010
- 
- memset(pOutPixels, 0, uNumPixels * sizeof(__int16));
-  short i=1;
-  while ( (1<<i) !=uWidth)
-  {
-	  ++i;
-      if (i >= 15)
-	  break;
-  }
-  field_18=i;
-  short i_=1;
-  while ( (1<<i_) !=uHeight)
-  {
-	  ++i_;
-      if (i_ >= 15)
-	  break;
-  }
-  field_1A=i_;
-  switch (field_18)
-	  {
-  case 2:   field_1C = 3;    break;
-  case 3:   field_1C = 7;    break;
-  case 4:   field_1C = 15;   break;
-  case 5:   field_1C = 31;   break;
-  case 6:   field_1C = 63;   break;
-  case 7:   field_1C = 127;  break;
-  case 8:   field_1C = 255;  break;
-  case 9:   field_1C = 511;  break;
-  case 10:  field_1C = 1023; break;
-  case 11:  field_1C = 2047; break;
-  case 12:  field_1C = 4095; break;
-	  }
 
-  switch (field_1A)
-	  {
-  case 2:   field_1E = 3;    break;
-  case 3:   field_1E = 7;    break;
-  case 4:   field_1E = 15;   break;
-  case 5:   field_1E = 31;   break;
-  case 6:   field_1E = 63;   break;
-  case 7:   field_1E = 127;  break;
-  case 8:   field_1E = 255;  break;
-  case 9:   field_1E = 511;  break;
-  case 10:  field_1E = 1023; break;
-  case 11:  field_1E = 2047; break;
-  case 12:  field_1E = 4095; break;
-	  }
+    if (psx_head1.bpp != 8)
+        return 3;
+    uWidth = (short int)(psx_head1.right - psx_head1.left + 1);  // word @ 000014
+    uHeight = (short int)(psx_head1.bottom - psx_head1.up + 1);  // word @ 000016
 
-  unsigned int r_mask = 0xF800;
-  unsigned int num_r_bits = 5;
-  unsigned int g_mask = 0x07E0;
-  unsigned int num_g_bits = 6;
-  unsigned int b_mask = 0x001F;
-  unsigned int num_b_bits = 5;
-  //При сохранении изображения подряд идущие пиксели одинакового цвета объединяются и вместо указания цвета для каждого пикселя
-  //указывается цвет группы пикселей и их количество.
- read_offset = 128;
- if (psx_head2.planes != 3)
- 	  return 0;
-  current_line = 0;
-  if ( uHeight > 0 )
-  {
-   dec_position = pOutPixels;
-   do
-   {
-    temp_dec_position = dec_position;
-    row_position = 0;
-	//decode red line
-    if (psx_head2.pitch)
+
+    uNumPixels = uWidth*uHeight;		  // dword @ 000010
+
+    memset(pOutPixels, 0, uNumPixels * sizeof(__int16));
+    short i = 1;
+    while ((1 << i) != uWidth)
     {
-     do
-     {
-      test_byte = pPcx[read_offset];
-      ++read_offset;
-      if ((test_byte & 0xC0) == 0xC0)//имеется ли объединение
-      {	
-	    value = pPcx[read_offset];
-       	++read_offset; 
-      
-       if ((test_byte & 0x3F) > 0)
-       {
-        count = test_byte & 0x3F;//количество одинаковых пикселей
+        ++i;
+        if (i >= 15)
+            break;
+    }
+    field_18 = i;
+    short i_ = 1;
+    while ((1 << i_) != uHeight)
+    {
+        ++i_;
+        if (i_ >= 15)
+            break;
+    }
+    field_1A = i_;
+    switch (field_18)
+    {
+    case 2:   field_1C = 3;    break;
+    case 3:   field_1C = 7;    break;
+    case 4:   field_1C = 15;   break;
+    case 5:   field_1C = 31;   break;
+    case 6:   field_1C = 63;   break;
+    case 7:   field_1C = 127;  break;
+    case 8:   field_1C = 255;  break;
+    case 9:   field_1C = 511;  break;
+    case 10:  field_1C = 1023; break;
+    case 11:  field_1C = 2047; break;
+    case 12:  field_1C = 4095; break;
+    }
+
+    switch (field_1A)
+    {
+    case 2:   field_1E = 3;    break;
+    case 3:   field_1E = 7;    break;
+    case 4:   field_1E = 15;   break;
+    case 5:   field_1E = 31;   break;
+    case 6:   field_1E = 63;   break;
+    case 7:   field_1E = 127;  break;
+    case 8:   field_1E = 255;  break;
+    case 9:   field_1E = 511;  break;
+    case 10:  field_1E = 1023; break;
+    case 11:  field_1E = 2047; break;
+    case 12:  field_1E = 4095; break;
+    }
+
+    unsigned int r_mask = 0xF800;
+    unsigned int num_r_bits = 5;
+    unsigned int g_mask = 0x07E0;
+    unsigned int num_g_bits = 6;
+    unsigned int b_mask = 0x001F;
+    unsigned int num_b_bits = 5;
+    //При сохранении изображения подряд идущие пиксели одинакового цвета объединяются и вместо указания цвета для каждого пикселя
+    //указывается цвет группы пикселей и их количество.
+    read_offset = 128;
+    if (psx_head2.planes != 3)
+        return 0;
+    current_line = 0;
+    if (uHeight > 0)
+    {
+        dec_position = pOutPixels;
         do
         {
-         ++row_position;
-          //*temp_dec_position =0xFF000000;
-          //*temp_dec_position|=(unsigned long)value<<16;
-         *temp_dec_position |= r_mask & ((unsigned __int8)value << (num_g_bits + num_r_bits + num_b_bits - 8));
-         temp_dec_position++;
-         if (row_position == psx_head2.pitch)
-           break;
-        }
-        while (count-- != 1);
-       }
-      }
-      else
-      {
-       ++row_position;
-	   //*temp_dec_position =0xFF000000; 
-	  //*temp_dec_position|= (unsigned long)test_byte<<16;
-       
-       *temp_dec_position |= r_mask & ((unsigned __int8)test_byte << (num_g_bits + num_r_bits + num_b_bits - 8));
-
-       temp_dec_position++;
-      }
-    
-     }
-     while (row_position < psx_head2.pitch);
-    }
- 
-    temp_dec_position = dec_position;
-	row_position=0;
-	//decode green line
-    while (row_position <  psx_head2.pitch)
-    {
-     test_byte = *(pPcx + read_offset);
-     ++read_offset;
-     if ((test_byte & 0xC0) == 0xC0)
-     {
-      value = *(pPcx + read_offset);
-	  ++read_offset;
-      if ((test_byte & 0x3F) > 0)
-      {
-       count = test_byte & 0x3F;
-       do
-       {
-        //*temp_dec_position|= (unsigned int)value<<8;
-		//temp_dec_position++;
-         
-         *temp_dec_position|= g_mask & (unsigned __int16)((unsigned __int8)value << (num_g_bits + num_b_bits - 8));
-         
-       temp_dec_position++;
-        ++row_position;
-        if (row_position == psx_head2.pitch)
-			break;
-  
-       }
-       while (count-- != 1);
-      }
-     }
-     else
-     {
-      //*temp_dec_position |=(unsigned int) test_byte<<8;
-	  //temp_dec_position++;
-       
-         *temp_dec_position|= g_mask & (unsigned __int16)((unsigned __int8)test_byte << (num_g_bits + num_b_bits - 8));
-       temp_dec_position++;
-      ++row_position;
-     }
-    }
-
-    temp_dec_position = dec_position;
-	row_position=0;
-	//decode blue line
-    while (row_position < psx_head2.pitch)
-    {
-     test_byte = *(pPcx + read_offset);
-	 read_offset++;
-     if ((test_byte & 0xC0) ==  0xC0)
-     {
-       value = *(pPcx + read_offset);
-	  ++read_offset;
-      if ((test_byte & 0x3F) > 0)
-      {
-       count = test_byte & 0x3F;
-       do
-       {
-        //*temp_dec_position|= value;
-		 //temp_dec_position++;
-
-         *temp_dec_position |= value >> (8 - num_b_bits);
-       temp_dec_position++;
-
-        ++row_position;
-        if (row_position == psx_head2.pitch)
-		 break;
-       }
-       while (count-- != 1);
-      }
-     }
-     else
-     {
-      //*temp_dec_position|= test_byte;
-	   //temp_dec_position++;
-         *temp_dec_position |= test_byte >> (8 - num_b_bits);
-       temp_dec_position++;
-
-      ++row_position;
-     }
-     
-    }
-    ++current_line;
-    dec_position += uWidth;
-   }
-   while (current_line < uHeight);
-  }
-   return 0;
-/*
-  RGBTexture *v4; // esi@1
-  signed int result; // eax@2
-  unsigned __int16 v6; // ax@3
-  unsigned __int16 *v7; // ecx@3
-  unsigned int v8; // edx@3
-  signed int v9; // ecx@3
-  signed int v10; // ecx@8
-  signed int v11; // ebx@37
-  unsigned __int16 *v12; // eax@40
-  int v13; // edi@40
-  int v14; // ebx@41
-  char v15; // bl@42
-  unsigned __int16 *v16; // eax@50
-  int v17; // ebx@51
-  char v18; // bl@52
-  unsigned __int16 *v19; // eax@61
-  unsigned __int8 v20; // dl@62
-  unsigned __int8 v21; // dl@63
-  unsigned __int8 v22; // cl@63
-  char color_map[48]; // [sp+8h] [bp-54h]@1
-  PCXHeader1 header1; // [sp+38h] [bp-24h]@1
-  PCXHeader2 header2; // [sp+48h] [bp-14h]@1
-  unsigned int v26; // [sp+50h] [bp-Ch]@43
-  int v27; // [sp+54h] [bp-8h]@38
-  unsigned __int16 *v28; // [sp+58h] [bp-4h]@3
-  int pOutPixelsa; // [sp+68h] [bp+Ch]@41
-  int pOutPixelsb; // [sp+68h] [bp+Ch]@51
-
-  v4 = this;
-  memcpy(&header1, pPcx, 0x10u);
-  memcpy(color_map, pPcx + 16, 0x30u);
-  memcpy(&header2, pPcx + 64, 6u);
-  if ( header1.bpp == 8 )
-  {
-    v6 = header1.right - header1.left + 1;
-    LOWORD(v7) = header1.bottom - header1.up + 1;
-    v4->uWidth = v6;
-    v4->uHeight = (unsigned __int16)v7;
-    v7 = (unsigned __int16 *)(signed __int16)v7;
-    v28 = v7;
-    v4->uNumPixels = (signed __int16)v7 * (signed __int16)v6;
-    HIWORD(v8) = 0;
-    v9 = 1;
-    while ( 1 << v9 != (signed __int16)v6 )
-    {
-      ++v9;
-      if ( v9 >= 15 )
-        goto LABEL_8;
-    }
-    v4->field_18 = v9;
-LABEL_8:
-    v10 = 1;
-    while ( (unsigned __int16 *)(1 << v10) != v28 )
-    {
-      ++v10;
-      if ( v10 >= 15 )
-        goto LABEL_13;
-    }
-    v4->field_1A = v10;
-LABEL_13:
-    switch ( v4->field_18 )
-    {
-      case 2:
-        v4->field_1C = 3;
-        break;
-      case 3:
-        v4->field_1C = 7;
-        break;
-      case 4:
-        v4->field_1C = 15;
-        break;
-      case 5:
-        v4->field_1C = 31;
-        break;
-      case 6:
-        v4->field_1C = 63;
-        break;
-      case 7:
-        v4->field_1C = 127;
-        break;
-      case 8:
-        v4->field_1C = 255;
-        break;
-      case 9:
-        v4->field_1C = 511;
-        break;
-      case 10:
-        v4->field_1C = 1023;
-        break;
-      case 11:
-        v4->field_1C = 2047;
-        break;
-      case 12:
-        v4->field_1C = 4095;
-        break;
-      default:
-        break;
-    }
-    switch ( v4->field_1A )
-    {
-      case 2:
-        v4->field_1E = 3;
-        break;
-      case 3:
-        v4->field_1E = 7;
-        break;
-      case 4:
-        v4->field_1E = 15;
-        break;
-      case 5:
-        v4->field_1E = 31;
-        break;
-      case 6:
-        v4->field_1E = 63;
-        break;
-      case 7:
-        v4->field_1E = 127;
-        break;
-      case 8:
-        v4->field_1E = 255;
-        break;
-      case 9:
-        v4->field_1E = 511;
-        break;
-      case 10:
-        v4->field_1E = 1023;
-        break;
-      case 11:
-        v4->field_1E = 2047;
-        break;
-      case 12:
-        v4->field_1E = 4095;
-        break;
-      default:
-        break;
-    }
-    v11 = 128;
-    if ( header2.planes == 3 )
-    {
-      v27 = 0;
-      if ( (signed int)v28 > 0 )
-      {
-        v28 = pOutPixels;
-        do
-        {
-          v12 = v28;
-          v13 = 0;
-          if ( header2.pitch )
-          {
-            do
+            temp_dec_position = dec_position;
+            row_position = 0;
+            //decode red line
+            if (psx_head2.pitch)
             {
-              LOBYTE(v8) = pPcx[v11];
-              v14 = v11 + 1;
-              pOutPixelsa = v14;
-              if ( (v8 & 0xC0) == -64 )
-              {
-                pOutPixelsa = v14 + 1;
-                v15 = pPcx[v14];
-                if ( (signed int)(v8 & 0x3F) > 0 )
-                {
-                  v26 = v8 & 0x3F;
-                  do
-                  {
-                    ++v13;
-                    *v12 = LOWORD(pRenderer->uTargetRMask) & ((unsigned __int8)v15 << (LOBYTE(pRenderer->uTargetGBits)
-                                                                                    + LOBYTE(pRenderer->uTargetRBits)
-                                                                                    + LOBYTE(pRenderer->uTargetBBits)
-                                                                                    - 8));
-                    ++v12;
-                    if ( v13 == (unsigned __int16)header2.pitch )
-                      v12 = &v12[uNumPixels - (unsigned __int16)header2.pitch - 1];
-                    --v26;
-                  }
-                  while ( v26 );
-                }
-              }
-              else
-              {
-                LOWORD(v8) = (unsigned __int8)v8;
-                v8 = pRenderer->uTargetRMask & (v8 << (LOBYTE(pRenderer->uTargetGBits)
-                                                    + LOBYTE(pRenderer->uTargetRBits)
-                                                    + LOBYTE(pRenderer->uTargetBBits)
-                                                    - 8));
-                ++v13;
-                *v12 = v8;
-                ++v12;
-              }
-              v11 = pOutPixelsa;
-            }
-            while ( v13 < (unsigned __int16)header2.pitch );
-          }
-          v16 = v28;
-          while ( v13 < 2 * (unsigned __int16)header2.pitch )
-          {
-            LOBYTE(v8) = pPcx[v11];
-            v17 = v11 + 1;
-            pOutPixelsb = v17;
-            if ( (v8 & 0xC0) == -64 )
-            {
-              pOutPixelsb = v17 + 1;
-              v18 = pPcx[v17];
-              if ( (signed int)(v8 & 0x3F) > 0 )
-              {
-                v26 = v8 & 0x3F;
                 do
                 {
-                  *v16 |= pRenderer->uTargetGMask & (unsigned __int16)((unsigned __int8)v18 << (LOBYTE(pRenderer->uTargetGBits)
-                                                                                             + LOBYTE(pRenderer->uTargetBBits)
-                                                                                             - 8));
-                  ++v13;
-                  ++v16;
-                  if ( v13 == (unsigned __int16)header2.pitch )
-                    v16 = &v16[uNumPixels - (unsigned __int16)header2.pitch - 1];
-                  --v26;
-                }
-                while ( v26 );
-              }
+                    test_byte = pPcx[read_offset];
+                    ++read_offset;
+                    if ((test_byte & 0xC0) == 0xC0)//имеется ли объединение
+                    {
+                        value = pPcx[read_offset];
+                        ++read_offset;
+
+                        if ((test_byte & 0x3F) > 0)
+                        {
+                            count = test_byte & 0x3F;//количество одинаковых пикселей
+                            do
+                            {
+                                ++row_position;
+                                //*temp_dec_position =0xFF000000;
+                                //*temp_dec_position|=(unsigned long)value<<16;
+                                *temp_dec_position |= r_mask & ((unsigned __int8)value << (num_g_bits + num_r_bits + num_b_bits - 8));
+                                temp_dec_position++;
+                                if (row_position == psx_head2.pitch)
+                                    break;
+                            } while (count-- != 1);
+                        }
+                    }
+                    else
+                    {
+                        ++row_position;
+                        //*temp_dec_position =0xFF000000; 
+                       //*temp_dec_position|= (unsigned long)test_byte<<16;
+
+                        *temp_dec_position |= r_mask & ((unsigned __int8)test_byte << (num_g_bits + num_r_bits + num_b_bits - 8));
+
+                        temp_dec_position++;
+                    }
+
+                } while (row_position < psx_head2.pitch);
             }
-            else
+
+            temp_dec_position = dec_position;
+            row_position = 0;
+            //decode green line
+            while (row_position < psx_head2.pitch)
             {
-              LOWORD(v8) = (unsigned __int8)v8;
-              v8 = pRenderer->uTargetGMask & (v8 << (LOBYTE(pRenderer->uTargetGBits) + LOBYTE(pRenderer->uTargetBBits) - 8));
-              *v16 |= v8;
-              ++v13;
-              ++v16;
-            }
-            v11 = pOutPixelsb;
-          }
-          v19 = v28;
-          while ( v13 < 3 * (unsigned __int16)header2.pitch )
-          {
-            v20 = pPcx[v11++];
-            if ( (v20 & 0xC0) == -64 )
-            {
-              v21 = v20 & 0x3F;
-              v22 = pPcx[v11++];
-              if ( (signed int)v21 > 0 )
-              {
-                v26 = v21;
-                do
+                test_byte = *(pPcx + read_offset);
+                ++read_offset;
+                if ((test_byte & 0xC0) == 0xC0)
                 {
-                  *v19 |= v22 >> (8 - LOBYTE(pRenderer->uTargetBBits));
-                  ++v13;
-                  ++v19;
-                  if ( v13 == (unsigned __int16)header2.pitch )
-                  {
-                    v8 = uNumPixels - (unsigned __int16)header2.pitch;
-                    v19 = &v19[uNumPixels - (unsigned __int16)header2.pitch - 1];
-                  }
-                  --v26;
+                    value = *(pPcx + read_offset);
+                    ++read_offset;
+                    if ((test_byte & 0x3F) > 0)
+                    {
+                        count = test_byte & 0x3F;
+                        do
+                        {
+                            //*temp_dec_position|= (unsigned int)value<<8;
+                            //temp_dec_position++;
+
+                            *temp_dec_position |= g_mask & (unsigned __int16)((unsigned __int8)value << (num_g_bits + num_b_bits - 8));
+
+                            temp_dec_position++;
+                            ++row_position;
+                            if (row_position == psx_head2.pitch)
+                                break;
+
+                        } while (count-- != 1);
+                    }
                 }
-                while ( v26 );
-              }
+                else
+                {
+                    //*temp_dec_position |=(unsigned int) test_byte<<8;
+                    //temp_dec_position++;
+
+                    *temp_dec_position |= g_mask & (unsigned __int16)((unsigned __int8)test_byte << (num_g_bits + num_b_bits - 8));
+                    temp_dec_position++;
+                    ++row_position;
+                }
             }
-            else
+
+            temp_dec_position = dec_position;
+            row_position = 0;
+            //decode blue line
+            while (row_position < psx_head2.pitch)
             {
-              *v19 |= v20 >> (8 - LOBYTE(pRenderer->uTargetBBits));
-              ++v13;
-              ++v19;
+                test_byte = *(pPcx + read_offset);
+                read_offset++;
+                if ((test_byte & 0xC0) == 0xC0)
+                {
+                    value = *(pPcx + read_offset);
+                    ++read_offset;
+                    if ((test_byte & 0x3F) > 0)
+                    {
+                        count = test_byte & 0x3F;
+                        do
+                        {
+                            //*temp_dec_position|= value;
+                             //temp_dec_position++;
+
+                            *temp_dec_position |= value >> (8 - num_b_bits);
+                            temp_dec_position++;
+
+                            ++row_position;
+                            if (row_position == psx_head2.pitch)
+                                break;
+                        } while (count-- != 1);
+                    }
+                }
+                else
+                {
+                    //*temp_dec_position|= test_byte;
+                     //temp_dec_position++;
+                    *temp_dec_position |= test_byte >> (8 - num_b_bits);
+                    temp_dec_position++;
+
+                    ++row_position;
+                }
+
             }
-          }
-          ++v27;
-          v28 += uNumPixels;
-        }
-        while ( v27 < v4->uHeight );
-      }
+            ++current_line;
+            dec_position += uWidth;
+        } while (current_line < uHeight);
     }
-    result = 0;
-  }
-  else
-  {
-    result = 3;
-  }
-  return result;
-  */
+    return 0;
 }
 
 //----- (0040EAD8) --------------------------------------------------------
 unsigned int RGBTexture::LoadFromFILE(FILE *pFile, unsigned int mode, unsigned int bCloseFile)
 {
-//  signed int result; // eax@2
-//  unsigned char test_byte; // edx@3
-  //unsigned int read_offset; // ebx@37
-//  unsigned int row_position; // edi@40
-//  unsigned char value; // cl@63
-//  char count; // [sp+50h] [bp-Ch]@43
-//  unsigned short current_line; // [sp+54h] [bp-8h]@38
-//  unsigned short *dec_position; 
-//  unsigned short *temp_dec_position; 
-  PCXHeader1 psx_head1;
-  PCXHeader2 psx_head2;
-//	short int width, height;
-	BYTE  color_map[48];	// Colormap for 16-color images
+    PCXHeader1 psx_head1;
+    PCXHeader2 psx_head2;
+    //	short int width, height;
+    BYTE  color_map[48];	// Colormap for 16-color images
 
-  unsigned int num_r_bits = 5;
-  unsigned int num_g_bits = 6;
-  unsigned int num_b_bits = 5;
+    unsigned int num_r_bits = 5;
+    unsigned int num_g_bits = 6;
+    unsigned int num_b_bits = 5;
 
-  unsigned int r_mask = 0xF800;
-  unsigned int g_mask = 0x07E0;
-  unsigned int b_mask = 0x001F;
+    unsigned int r_mask = 0xF800;
+    unsigned int g_mask = 0x07E0;
+    unsigned int b_mask = 0x001F;
 
-  if (!pFile)
-    return 1;
-  
- 
- fread(&psx_head1, 1, 16, pFile);
- fread(&color_map, 1, 48, pFile);
- fread(&psx_head2, 1, 6, pFile);
-
-  if (psx_head1.bpp!=8)
-		return 3; 
- uWidth=(short int )(psx_head1.right-psx_head1.left+1);  // word @ 000014
- uHeight=(short int )(psx_head1.bottom-psx_head1.up+1);  // word @ 000016
- 
-
- uNumPixels=uWidth*uHeight;		  // dword @ 000010
+    if (!pFile)
+        return 1;
 
 
-      if ( mode == 0 )
-      {
+    fread(&psx_head1, 1, 16, pFile);
+    fread(&color_map, 1, 48, pFile);
+    fread(&psx_head2, 1, 6, pFile);
+
+    if (psx_head1.bpp != 8)
+        return 3;
+    uWidth = (short int)(psx_head1.right - psx_head1.left + 1);  // word @ 000014
+    uHeight = (short int)(psx_head1.bottom - psx_head1.up + 1);  // word @ 000016
+
+
+    uNumPixels = uWidth*uHeight;		  // dword @ 000010
+
+
+    if (mode == 0)
+    {
         free(pPixels);
         pPixels = (unsigned __int16 *)malloc(2 * uNumPixels + 4);
-      }
-      else
-      {
-        if ( mode != 1 && mode == 2 )
+    }
+    else
+    {
+        if (mode != 1 && mode == 2)
         {
-          pPixels = (unsigned __int16 *)malloc((uNumPixels + 2) * sizeof(unsigned __int16));
-          _allocation_flags |= 1;
+            pPixels = (unsigned __int16 *)malloc((uNumPixels + 2) * sizeof(unsigned __int16));
+            _allocation_flags |= 1;
         }
-      }
+    }
 
-      ushort* pOutPixels = pPixels;
- 
- memset(pOutPixels, 0, uNumPixels * sizeof(__int16));
+    ushort* pOutPixels = pPixels;
 
-  short i=1;
-  while ( (1<<i) !=uWidth)
-  {
-	  ++i;
-      if (i >= 15)
-	  break;
-  }
-  field_18=i;
-  short i_=1;
-  while ( (1<<i_) !=uHeight)
-  {
-	  ++i_;
-      if (i_ >= 15)
-	  break;
-  }
-  field_1A=i_;
-  switch (field_18)
-	  {
-  case 2:   field_1C = 3;    break;
-  case 3:   field_1C = 7;    break;
-  case 4:   field_1C = 15;   break;
-  case 5:   field_1C = 31;   break;
-  case 6:   field_1C = 63;   break;
-  case 7:   field_1C = 127;  break;
-  case 8:   field_1C = 255;  break;
-  case 9:   field_1C = 511;  break;
-  case 10:  field_1C = 1023; break;
-  case 11:  field_1C = 2047; break;
-  case 12:  field_1C = 4095; break;
-	  }
+    memset(pOutPixels, 0, uNumPixels * sizeof(__int16));
 
-  switch (field_1A)
-	  {
-  case 2:   field_1E = 3;    break;
-  case 3:   field_1E = 7;    break;
-  case 4:   field_1E = 15;   break;
-  case 5:   field_1E = 31;   break;
-  case 6:   field_1E = 63;   break;
-  case 7:   field_1E = 127;  break;
-  case 8:   field_1E = 255;  break;
-  case 9:   field_1E = 511;  break;
-  case 10:  field_1E = 1023; break;
-  case 11:  field_1E = 2047; break;
-  case 12:  field_1E = 4095; break;
-	  }
-
-  fseek(pFile, 128 - 70, SEEK_CUR);
-
-
-  for (uint y = 0; y < uHeight; ++y)
-  {
-    unsigned __int16 *pDst = pPixels + y * uWidth;
-
-    uint x = 0;
-    do
+    short i = 1;
+    while ((1 << i) != uWidth)
     {
-      uint ctrl = 0;
-      fread(&ctrl, 1, 1, pFile);
-      if ((ctrl & 0xC0) == 0xC0)
-      {
-        uint uNumPixels = ctrl & 0x3F;
-        uint clr = 0;
-        fread(&clr, 1, 1, pFile);
-        for (uint i = 0; i < uNumPixels; ++i)
-          pDst[x++] = r_mask & (clr << (num_g_bits + num_r_bits + num_b_bits - 8));
-      }
-      else
-      {
-        pDst[x++] = r_mask & (ctrl << (num_g_bits + num_r_bits + num_b_bits - 8));
-      }
-    } while (x < psx_head2.pitch);
-
-    x = 0;
-    do
+        ++i;
+        if (i >= 15)
+            break;
+    }
+    field_18 = i;
+    short i_ = 1;
+    while ((1 << i_) != uHeight)
     {
-      uint ctrl = 0;
-      fread(&ctrl, 1, 1, pFile);
-      if ((ctrl & 0xC0) == 0xC0)
-      {
-        uint uNumPixels = ctrl & 0x3F;
-        uint clr = 0;
-        fread(&clr, 1, 1, pFile);
-        for (uint i = 0; i < uNumPixels; ++i)
-          pDst[x++] |= g_mask & (clr << (num_g_bits + num_b_bits - 8));
-      }
-      else
-      {
-        pDst[x++] |= g_mask & (ctrl << (num_g_bits + num_b_bits - 8));
-      }
-    } while (x < psx_head2.pitch);
-
-    x = 0;
-    do
+        ++i_;
+        if (i_ >= 15)
+            break;
+    }
+    field_1A = i_;
+    switch (field_18)
     {
-      uint ctrl = 0;
-      fread(&ctrl, 1, 1, pFile);
-      if ((ctrl & 0xC0) == 0xC0)
-      {
-        uint uNumPixels = ctrl & 0x3F;
-        uint clr = 0;
-        fread(&clr, 1, 1, pFile);
-        for (uint i = 0; i < uNumPixels; ++i)
-          pDst[x++] |= b_mask & (clr >> (8 - num_b_bits));
-      }
-      else
-      {
-        pDst[x++] |= b_mask & (ctrl >> (8 - num_b_bits));
-      }
-    } while (x < psx_head2.pitch);
-  }
+        case 2:   field_1C = 3;    break;
+        case 3:   field_1C = 7;    break;
+        case 4:   field_1C = 15;   break;
+        case 5:   field_1C = 31;   break;
+        case 6:   field_1C = 63;   break;
+        case 7:   field_1C = 127;  break;
+        case 8:   field_1C = 255;  break;
+        case 9:   field_1C = 511;  break;
+        case 10:  field_1C = 1023; break;
+        case 11:  field_1C = 2047; break;
+        case 12:  field_1C = 4095; break;
+    }
 
-  if (bCloseFile)
-    fclose(pFile);
-  return 0;
+    switch (field_1A)
+    {
+        case 2:   field_1E = 3;    break;
+        case 3:   field_1E = 7;    break;
+        case 4:   field_1E = 15;   break;
+        case 5:   field_1E = 31;   break;
+        case 6:   field_1E = 63;   break;
+        case 7:   field_1E = 127;  break;
+        case 8:   field_1E = 255;  break;
+        case 9:   field_1E = 511;  break;
+        case 10:  field_1E = 1023; break;
+        case 11:  field_1E = 2047; break;
+        case 12:  field_1E = 4095; break;
+    }
+
+    fseek(pFile, 128 - 70, SEEK_CUR);
+
+
+    for (uint y = 0; y < uHeight; ++y)
+    {
+        unsigned __int16 *pDst = pPixels + y * uWidth;
+
+        uint x = 0;
+        do
+        {
+            uint ctrl = 0;
+            fread(&ctrl, 1, 1, pFile);
+            if ((ctrl & 0xC0) == 0xC0)
+            {
+                uint uNumPixels = ctrl & 0x3F;
+                uint clr = 0;
+                fread(&clr, 1, 1, pFile);
+                for (uint i = 0; i < uNumPixels; ++i)
+                    pDst[x++] = r_mask & (clr << (num_g_bits + num_r_bits + num_b_bits - 8));
+            }
+            else
+            {
+                pDst[x++] = r_mask & (ctrl << (num_g_bits + num_r_bits + num_b_bits - 8));
+            }
+        } while (x < psx_head2.pitch);
+
+        x = 0;
+        do
+        {
+            uint ctrl = 0;
+            fread(&ctrl, 1, 1, pFile);
+            if ((ctrl & 0xC0) == 0xC0)
+            {
+                uint uNumPixels = ctrl & 0x3F;
+                uint clr = 0;
+                fread(&clr, 1, 1, pFile);
+                for (uint i = 0; i < uNumPixels; ++i)
+                    pDst[x++] |= g_mask & (clr << (num_g_bits + num_b_bits - 8));
+            }
+            else
+            {
+                pDst[x++] |= g_mask & (ctrl << (num_g_bits + num_b_bits - 8));
+            }
+        } while (x < psx_head2.pitch);
+
+        x = 0;
+        do
+        {
+            uint ctrl = 0;
+            fread(&ctrl, 1, 1, pFile);
+            if ((ctrl & 0xC0) == 0xC0)
+            {
+                uint uNumPixels = ctrl & 0x3F;
+                uint clr = 0;
+                fread(&clr, 1, 1, pFile);
+                for (uint i = 0; i < uNumPixels; ++i)
+                    pDst[x++] |= b_mask & (clr >> (8 - num_b_bits));
+            }
+            else
+            {
+                pDst[x++] |= b_mask & (ctrl >> (8 - num_b_bits));
+            }
+        } while (x < psx_head2.pitch);
+    }
+
+    if (bCloseFile)
+        fclose(pFile);
+
+    return 0;
 }
 
 //----- (0040E51F) --------------------------------------------------------
@@ -2071,7 +1782,6 @@ struct PCX_Loader : public ImageLoader
 
 bool PCX_Loader::DecodePCX(const unsigned char *pcx_data, unsigned __int16 *pOutPixels, unsigned int *width, unsigned int *height)
 {
-    //  signed int result; // eax@2
     unsigned char test_byte; // edx@3
     unsigned int read_offset; // ebx@37
     unsigned int row_position; // edi@40
@@ -2100,55 +1810,6 @@ bool PCX_Loader::DecodePCX(const unsigned char *pcx_data, unsigned __int16 *pOut
     unsigned int uNumPixels = *width * *height;		  // dword @ 000010
 
     memset(pOutPixels, 0, uNumPixels * sizeof(__int16));
-    short i = 1;
-    while ((1 << i) != *width)
-    {
-        ++i;
-        if (i >= 15)
-            break;
-    }
-
-    auto field_18 = i;
-    short i_ = 1;
-    while ((1 << i_) != *height)
-    {
-        ++i_;
-        if (i_ >= 15)
-            break;
-    }
-
-    auto field_1A = i_;
-    short field_1C = 0;
-    switch (field_18)
-    {
-    case 2:   field_1C = 3;    break;
-    case 3:   field_1C = 7;    break;
-    case 4:   field_1C = 15;   break;
-    case 5:   field_1C = 31;   break;
-    case 6:   field_1C = 63;   break;
-    case 7:   field_1C = 127;  break;
-    case 8:   field_1C = 255;  break;
-    case 9:   field_1C = 511;  break;
-    case 10:  field_1C = 1023; break;
-    case 11:  field_1C = 2047; break;
-    case 12:  field_1C = 4095; break;
-    }
-
-    short field_1E = 0;
-    switch (field_1A)
-    {
-    case 2:   field_1E = 3;    break;
-    case 3:   field_1E = 7;    break;
-    case 4:   field_1E = 15;   break;
-    case 5:   field_1E = 31;   break;
-    case 6:   field_1E = 63;   break;
-    case 7:   field_1E = 127;  break;
-    case 8:   field_1E = 255;  break;
-    case 9:   field_1E = 511;  break;
-    case 10:  field_1E = 1023; break;
-    case 11:  field_1E = 2047; break;
-    case 12:  field_1E = 4095; break;
-    }
 
     unsigned int r_mask = 0xF800;
     unsigned int num_r_bits = 5;
@@ -2156,6 +1817,7 @@ bool PCX_Loader::DecodePCX(const unsigned char *pcx_data, unsigned __int16 *pOut
     unsigned int num_g_bits = 6;
     unsigned int b_mask = 0x001F;
     unsigned int num_b_bits = 5;
+
     //При сохранении изображения подряд идущие пиксели одинакового цвета объединяются и вместо указания цвета для каждого пикселя
     //указывается цвет группы пикселей и их количество.
     read_offset = 128;
@@ -2293,6 +1955,7 @@ bool PCX_Loader::DecodePCX(const unsigned char *pcx_data, unsigned __int16 *pOut
             dec_position += *width;
         } while (current_line < *height);
     }
+
     return true;
 }
 

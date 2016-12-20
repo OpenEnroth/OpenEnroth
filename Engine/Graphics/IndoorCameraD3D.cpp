@@ -115,7 +115,7 @@ bool IndoorCameraD3D::ApplyViewTransform_TrueIfStillVisible_BLV(int x, int y, in
   if (pIndoorCameraD3D->sRotationX)
   {
     to_z = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
     //{
       v14 = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
           + (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_sine_y);
@@ -130,7 +130,7 @@ bool IndoorCameraD3D::ApplyViewTransform_TrueIfStillVisible_BLV(int x, int y, in
   else
   {
     *pOutY = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-    //if ( pRenderer->pRenderD3D )
+    //if ( render->pRenderD3D )
     //{
       //v10 = pOutX;
       *pOutX = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
@@ -187,7 +187,7 @@ void IndoorCameraD3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVert
     for (uint i = 0; i < uNumVertices; ++i)
     {
           float st0, st1, st2;
-          //if ( pRenderer->pRenderD3D )
+          //if ( render->pRenderD3D )
           {
             /*__asm
             {
@@ -309,7 +309,7 @@ void IndoorCameraD3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVert
     {
       for (uint i = 0; i < uNumVertices; ++i)
       {
-          //if ( pRenderer->pRenderD3D )
+          //if ( render->pRenderD3D )
           {
             /*__asm
             {
@@ -521,7 +521,7 @@ void IndoorCameraD3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin, signed
   RenderVertexSoft pVertices[20]; // [sp+3C8h] [bp-404h]@2
   RenderVertexD3D3 v24[2]; // [sp+788h] [bp-44h]@11
 
-  //if ( pRenderer->pRenderD3D )
+  //if ( render->pRenderD3D )
   //{
     for ( uint i = 0; i < 20; i++ )
       pVertices[i].flt_2C = 0.0;
@@ -549,8 +549,8 @@ void IndoorCameraD3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin, signed
       v24[1].rhw = 0.001;
       v24[1].texcoord.x = 0.0;
       v24[1].texcoord.y = 0.0;
-      //v19 = pRenderer->pRenderD3D->pDevice;
-      pRenderer->DrawLines(v24, 2);
+      //v19 = render->pRenderD3D->pDevice;
+      render->DrawLines(v24, 2);
       return;
     }
     for ( uint i = 0; i < 20; i++ )
@@ -583,8 +583,8 @@ void IndoorCameraD3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin, signed
       v24[1].rhw = 0.001;
       v24[1].texcoord.x = 0.0;
       v24[1].texcoord.y = 0.0;
-      //v19 = pRenderer->pRenderD3D->pDevice;
-      pRenderer->DrawLines(v24, 2);
+      //v19 = render->pRenderD3D->pDevice;
+      render->DrawLines(v24, 2);
       return;
     }
   //}
@@ -594,8 +594,8 @@ void IndoorCameraD3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin, signed
 void IndoorCameraD3D::debug_outline_d3d(const RenderVertexD3D3 *pLineVertices, unsigned int uNumLines, int uDiffuse, float z_stuff)
 {
   for (int i = 0; i < uNumLines-1; ++i)
-    pRenderer->do_draw_debug_line_d3d(&pLineVertices[i], uDiffuse, &pLineVertices[i+1], uDiffuse, z_stuff);
-  pRenderer->do_draw_debug_line_d3d(&pLineVertices[uNumLines-1], uDiffuse, pLineVertices, uDiffuse, z_stuff);
+    render->do_draw_debug_line_d3d(&pLineVertices[i], uDiffuse, &pLineVertices[i+1], uDiffuse, z_stuff);
+  render->do_draw_debug_line_d3d(&pLineVertices[uNumLines-1], uDiffuse, pLineVertices, uDiffuse, z_stuff);
 }
 
 //----- (004379EE) --------------------------------------------------------
@@ -643,7 +643,7 @@ void IndoorCameraD3D::DebugDrawPortal(BLVFace *pFace)
     v[i].texcoord.y = 0;
   }
 
-  pRenderer->DrawFansTransparent(v, pFace->uNumVertices);
+  render->DrawFansTransparent(v, pFace->uNumVertices);
 }
 
 //----- (00437906) --------------------------------------------------------
@@ -1255,7 +1255,7 @@ void IndoorCameraD3D::Project(signed int x, signed int y, signed int z, int *a5,
   float a2a; // [sp+18h] [bp+8h]@2
   float a2b; // [sp+18h] [bp+8h]@2
 
-  //if ( pRenderer->pRenderD3D )
+  //if ( render->pRenderD3D )
   {
     v6 = 1.0 / (double)x;
     a2a = (double)y * fov * v6 + screenCenterX;

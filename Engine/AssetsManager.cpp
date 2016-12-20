@@ -4,6 +4,10 @@
 
 AssetsManager *assets = new AssetsManager();
 
+bool AssetsManager::ReleaseAllImages()
+{
+    return true;
+}
 
 Image *AssetsManager::GetImage_16BitColorKey(const String &name, unsigned __int16 colorkey)
 {
@@ -55,6 +59,8 @@ Image *AssetsManager::GetImage_16Bit(const wchar_t *name)
     {
         delete img;
         img = nullptr;
+
+        Log::Warning(L"Texture %s not found", name);
     }
 
     return img;
