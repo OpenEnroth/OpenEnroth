@@ -1042,7 +1042,7 @@ void IntegrityTest()
     static_assert(sizeof(BLVDoor) == 0x50, "Wrong type size");
     //static_assert(sizeof(IndoorLocation) == 0x690, "Wrong type size");
     //static_assert(sizeof(ODMRenderParams) == 0x74, "Wrong type size");
-    static_assert(sizeof(Mouse) == 0x114, "Wrong type size");
+    //static_assert(sizeof(Mouse) == 0x114, "Wrong type size");
     static_assert(sizeof(Particle_sw) == 0x68, "Wrong type size");
     static_assert(sizeof(Particle) == 0x68, "Wrong type size");
     static_assert(sizeof(ParticleEngine) == 0xE430, "Wrong type size");
@@ -1132,7 +1132,6 @@ void FinalInitialization()
     pSprites_LOD->_inlined_sub1();
     pIcons_LOD->_inlined_sub1();
 }
-// 6BE3A0: using guessed type float flt_6BE3A0;
 
 
 
@@ -1327,6 +1326,42 @@ bool FindMM7CD(HWND hWnd, char *pCDDrive)
     }
 }
 
+
+bool MM7_LoadLods(const char *mm7_path)
+{
+    pIcons_LOD = new LODFile_IconsBitmaps;
+    if (!pIcons_LOD->Load(StringPrintf("%s\\data\\icons.lod", mm7_path).c_str(), "icons"))
+    {
+        Error("Some files are missing\n\nPlease Reinstall.");
+        return false;
+    }
+    pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
+
+    pEvents_LOD = new LODFile_IconsBitmaps;
+    if (!pEvents_LOD->Load(StringPrintf("%s\\data\\events.lod", mm7_path).c_str(), "icons"))
+    {
+        Error("Some files are missing\n\nPlease Reinstall.");
+        return false;
+    }
+
+    pBitmaps_LOD = new LODFile_IconsBitmaps;
+    if (!pBitmaps_LOD->Load(StringPrintf("%s\\data\\bitmaps.lod", mm7_path).c_str(), "bitmaps"))
+    {
+        Error(localization->GetString(63), localization->GetString(184), MB_ICONEXCLAMATION);
+        return false;
+    }
+
+    pSprites_LOD = new LODFile_Sprites;
+    if (!pSprites_LOD->LoadSprites(StringPrintf("%s\\data\\sprites.lod", mm7_path).c_str()))
+    {
+        Error(localization->GetString(63), localization->GetString(184), MB_ICONEXCLAMATION);
+        return false;
+    }
+
+    return true;
+}
+
+
 //----- (004651F4) --------------------------------------------------------
 bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
 {
@@ -1395,131 +1430,10 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
     pEngine = Engine::Create();
     pMouse = pEngine->pMouseInstance;
 
-    char filename[2048];
-
-    pIcons_LOD = new LODFile_IconsBitmaps;
-    sprintf(filename, "%s\\data\\icons.lod", mm7_path);
-    if (!pIcons_LOD->Load(filename, "icons"))
-    {
-        MessageBoxW(nullptr, L"Some files are missing\n\nPlease Reinstall.",
-            L"Files Missing", MB_ICONEXCLAMATION);
-        return false;
-    }
-    pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
-
-    pEvents_LOD = new LODFile_IconsBitmaps;
-    sprintf(filename, "%s\\data\\events.lod", mm7_path);
-    if (!pEvents_LOD->Load(filename, "icons"))
-    {
-        MessageBoxW(nullptr, L"Some files are missing\n\nPlease Reinstall.",
-            L"Files Missing", MB_ICONEXCLAMATION);
-        return false;
-    }
+    MM7_LoadLods(mm7_path);
 
     localization = new Localization();
     localization->Initialize();
-
-    pBitmaps_LOD = new LODFile_IconsBitmaps;
-    sprintf(filename, "%s\\data\\bitmaps.lod", mm7_path);
-    if (!pBitmaps_LOD->Load(filename, "bitmaps"))
-    {
-        MessageBoxA(nullptr, localization->GetString(63), localization->GetString(184), MB_ICONEXCLAMATION);
-        return false;
-    }
-
-    pSprites_LOD = new LODFile_Sprites;
-    sprintf(filename, "%s\\data\\sprites.lod", mm7_path);
-    if (!pSprites_LOD->LoadSprites(filename))
-    {
-        MessageBoxA(nullptr, localization->GetString(63), localization->GetString(184), MB_ICONEXCLAMATION);
-        return false;
-    }
-
-
-#if 0
-    if (_access("../MM_VI/data/icons.lod", 0) == 0)
-    {
-        pIcons_LOD_mm6 = new LODFile_IconsBitmaps;
-        if (!pIcons_LOD_mm6->Load("../MM_VI/data/icons.lod", "icons"))
-        {
-            delete pIcons_LOD_mm6;
-            pIcons_LOD_mm6 = nullptr;
-            Log::Warning(L"Unable to load mm6:icons.lod");
-        }
-    }
-    else
-        Log::Warning(L"Unable to find mm6:icons.lod");
-
-    if (_access("../MM_VI/data/bitmaps.lod", 0) == 0)
-    {
-        pBitmaps_LOD_mm6 = new LODFile_IconsBitmaps;
-        if (!pBitmaps_LOD_mm6->Load("../MM_VI/data/bitmaps.lod", "bitmaps"))
-        {
-            delete pBitmaps_LOD_mm6;
-            pBitmaps_LOD_mm6 = nullptr;
-            Log::Warning(L"Unable to load mm6:bitmaps.lod");
-        }
-    }
-    else
-        Log::Warning(L"Unable to find mm6:bitmaps.lod");
-
-    auto mm6_sprite_container_name = bUseLoResSprites ? "../MM_VI/data/spriteLO.lod"
-        : "../MM_VI/data/sprites.lod";
-    if (_access(mm6_sprite_container_name, 0) == 0)
-    {
-        pSprites_LOD_mm6 = new LODFile_Sprites;
-        if (!pSprites_LOD_mm6->LoadSprites(mm6_sprite_container_name))
-        {
-            delete pSprites_LOD_mm6;
-            pSprites_LOD_mm6 = nullptr;
-            Log::Warning(L"Unable to load mm6:sprites.lod");
-        }
-    }
-    else
-        Log::Warning(L"Unable to find mm6:sprites.lod");
-
-
-    if (_access("../mm8/data/icons.lod", 0) == 0)
-    {
-        pIcons_LOD_mm8 = new LODFile_IconsBitmaps;
-        if (!pIcons_LOD_mm8->Load("../mm8/data/icons.lod", "icons"))
-        {
-            delete pIcons_LOD_mm8;
-            pIcons_LOD_mm8 = nullptr;
-            Log::Warning(L"Unable to load mm8:icons.lod");
-        }
-    }
-    else
-        Log::Warning(L"Unable to find mm8:icons.lod");
-
-
-    if (_access("../mm8/data/bitmaps.lod", 0) == 0)
-    {
-        pBitmaps_LOD_mm8 = new LODFile_IconsBitmaps;
-        if (!pBitmaps_LOD_mm8->Load("../mm8/data/bitmaps.lod", "bitmaps"))
-        {
-            delete pBitmaps_LOD_mm8;
-            pBitmaps_LOD_mm8 = nullptr;
-            Log::Warning(L"Unable to load mm8:bitmaps.lod");
-        }
-    }
-    else
-        Log::Warning(L"Unable to find mm8:bitmaps.lod");
-
-
-    if (_access("../mm8/data/sprites.lod", 0) == 0)
-    {
-        pSprites_LOD_mm8 = new LODFile_Sprites;
-        if (!pSprites_LOD_mm8->LoadSprites("../mm8/data/sprites.lod"))
-        {
-            delete pSprites_LOD_mm8;
-            pSprites_LOD_mm8 = nullptr;
-            Log::Warning(L"Unable to load mm8:sprites.lod");
-        }
-    }
-    else
-        Log::Warning(L"Unable to find mm8:sprites.lod");
-#endif
 
     {
         void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dsft.bin", 1) : nullptr,
@@ -2131,7 +2045,7 @@ void PrepareToLoadODM(unsigned int bLoading, ODMRenderParams *a2)
 void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows()
 {
     if (pMouse)
-        pMouse->SetCursorBitmap("MICON1");
+        pMouse->SetCursorImage("MICON1");
 
     pPaletteManager->ResetNonLocked();
     pBitmaps_LOD->ReleaseAll2();
@@ -3242,33 +3156,6 @@ void sub_491E3A()
             }
         }
     }
-    v6 = pIcons_LOD->uNumLoadedFiles - 1;
-    if (v6 >= pIcons_LOD->pFacesLock)
-    {
-        do
-        {
-            pIcons_LOD->pTextures[v6].Release();
-            if (pIcons_LOD->pHardwareTextures)
-            {
-                if (pIcons_LOD->pHardwareTextures[v6])
-                {
-                    pIcons_LOD->pHardwareTextures[v6]->Release();
-                    pIcons_LOD->pHardwareTextures[v6] = 0;
-                }
-            }
-            if (pIcons_LOD->pHardwareSurfaces)
-            {
-                if (pIcons_LOD->pHardwareSurfaces[v6])
-                {
-                    pIcons_LOD->pHardwareSurfaces[v6]->Release();
-                    pIcons_LOD->pHardwareSurfaces[v6] = 0;
-                }
-            }
-            --v6;
-        } while (v6 >= pIcons_LOD->pFacesLock);
-    }
-    pIcons_LOD->uNumLoadedFiles = pIcons_LOD->pFacesLock;
-    pIcons_LOD->pFacesLock = 0;
 }
 
 //----- (00494820) --------------------------------------------------------

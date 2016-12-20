@@ -135,15 +135,13 @@ void MainMenuUI_LoadFontsAndSomeStuff()
 //----- (004415C5) --------------------------------------------------------
 static void LoadPartyBuffIcons()
 {
-  for (uint i = 0; i < 14; ++i)
-  {
-    char filename[200];
-    sprintf(filename, "isn-%02d", i + 1);
-    pTextureIDs_PartyBuffIcons[i] = pIcons_LOD->LoadTexture(filename, TEXTURE_16BIT_PALETTE);
-  }
+    for (uint i = 0; i < 14; ++i)
+    {
+        party_buff_icons[i] = assets->GetImage_16BitColorKey(StringPrintf("isn-%02d", i + 1), 0x7FF);
+    }
 
-  uIconIdx_FlySpell = pIconsFrameTable->FindIcon("spell21");
-  uIconIdx_WaterWalk = pIconsFrameTable->FindIcon("spell27");
+    uIconIdx_FlySpell = pIconsFrameTable->FindIcon("spell21");
+    uIconIdx_WaterWalk = pIconsFrameTable->FindIcon("spell27");
 }
 
 //----- (0041B690) --------------------------------------------------------
@@ -443,7 +441,6 @@ MENU_STATE MainMenuUI_Credits_Loop()
     free(pFontQuick);
     free(pFontCChar);
     pWindow_MainMenu->Release();
-    pIcons_LOD->RemoveTexturesPackFromTextureList();
 
     if (mm6title)
     {

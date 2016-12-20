@@ -60,7 +60,6 @@ void GUIWindow_Book::Release()
     }
 
     pAudioPlayer->PlaySound(SOUND_closebook, 0, 0, -1, 0, 0, 0, 0);
-    pIcons_LOD->RemoveTexturesPackFromTextureList();
     dword_506364 = 0;
 
     GUIWindow::Release();
@@ -91,9 +90,6 @@ void GUIWindow_Book::BasicBookInitialization()
 void GUIWindow_Book::InitializeFonts()
 {
     pAudioPlayer->StopChannels(-1, -1);
-    ++pIcons_LOD->uTexturePacksCount;
-    if (!pIcons_LOD->uNumPrevLoadedFiles)
-        pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
     pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
 
     ui_book_map_frame = assets->GetImage_16BitAlpha("mapbordr");

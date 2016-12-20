@@ -169,7 +169,6 @@ void GUIWindow_Spellbook::Update()
 
     BookUI_Spellbook_DrawCurrentSchoolBackground();
 
-    //PendingTexture = pIcons_LOD->GetTexture(pIcons_LOD->FindTextureByName("Pending"));
     render->ClearZBuffer(0, 479);
     if ((11 * player->lastOpenedSpellbookPage) || ((11 * player->lastOpenedSpellbookPage) + 11))//??? maybe structure need fix
     {
@@ -291,9 +290,6 @@ static void BookUI_Spellbook_DrawCurrentSchoolBackground()
 void InitializeSpellBookTextures()
 {
     pAudioPlayer->StopChannels(-1, -1);
-    ++pIcons_LOD->uTexturePacksCount;
-    if (!pIcons_LOD->uNumPrevLoadedFiles)
-        pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
     pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
 
     ui_spellbook_btn_close = assets->GetImage_16BitAlpha(L"ib-m5-u");
@@ -372,35 +368,31 @@ void OnCloseSpellBook()
 //----- (0041140B) --------------------------------------------------------
 void OnCloseSpellBookPage()
 {
-  GUIButton *pNextButton; // esi@4
-  for ( uint i = 1; i <= 11; i++ )
-  {
-      if (SBPageCSpellsTextureList[i])
-      {
-          SBPageCSpellsTextureList[i]->Release();
-          SBPageCSpellsTextureList[i] = nullptr;
-      }
-      if (SBPageSSpellsTextureList[i])
-      {
-          SBPageSSpellsTextureList[i]->Release();
-          SBPageSSpellsTextureList[i] = nullptr;
-      }
-  }
-
-
-  pIcons_LOD->SyncLoadedFilesCount();
-  if ( pGUIWindow_CurrentMenu->pControlsHead )
-  {
-    do
+    GUIButton *pNextButton; // esi@4
+    for (uint i = 1; i <= 11; i++)
     {
-      pNextButton = pGUIWindow_CurrentMenu->pControlsHead->pNext;
-      free(pGUIWindow_CurrentMenu->pControlsHead);
-      pGUIWindow_CurrentMenu->pControlsHead = pNextButton;
+        if (SBPageCSpellsTextureList[i])
+        {
+            SBPageCSpellsTextureList[i]->Release();
+            SBPageCSpellsTextureList[i] = nullptr;
+        }
+        if (SBPageSSpellsTextureList[i])
+        {
+            SBPageSSpellsTextureList[i]->Release();
+            SBPageSSpellsTextureList[i] = nullptr;
+        }
     }
-    while ( pNextButton );
-  }
-  pGUIWindow_CurrentMenu->pControlsHead = 0;
-  pGUIWindow_CurrentMenu->pControlsTail = 0;
-  pGUIWindow_CurrentMenu->uNumControls = 0;
-}
 
+    if (pGUIWindow_CurrentMenu->pControlsHead)
+    {
+        do
+        {
+            pNextButton = pGUIWindow_CurrentMenu->pControlsHead->pNext;
+            free(pGUIWindow_CurrentMenu->pControlsHead);
+            pGUIWindow_CurrentMenu->pControlsHead = pNextButton;
+        } while (pNextButton);
+    }
+    pGUIWindow_CurrentMenu->pControlsHead = 0;
+    pGUIWindow_CurrentMenu->pControlsTail = 0;
+    pGUIWindow_CurrentMenu->uNumControls = 0;
+}

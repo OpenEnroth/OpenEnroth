@@ -702,7 +702,6 @@ char byte_4FAA24;
 //HWND dword_4FAA28; // idb
 
 std::array<unsigned int, 480> pSRZBufferLineOffsets;
-int areWeLoadingTexture;
 std::array<char, 777> books_num_items_per_page;
 int lloyds_beacon_spell_id; // dword_506338
 int lloyds_beacon_sound_id; // dword_50633C
@@ -790,15 +789,13 @@ std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
 unsigned int uNumBlueFacesInBLVMinimap;
 std::array<unsigned __int16, 50> pBlueFacesInBLVMinimapIDs;
-std::array<int, 14> pTextureIDs_PartyBuffIcons;
+std::array<class Image *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
 int dword_576E28;
 int _576E2C_current_minimap_zoom;
 GameTime _5773B8_event_timer;
 
-
-int dword_591084;
 struct Actor *pDialogue_SpeakingActor;
 unsigned int uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
@@ -932,7 +929,6 @@ bool bNoCD = false;
 bool bNoSound = false;
 std::array<int, 100> dword_720020_zvalues;
 std::array<int, 299> dword_7201B0_zvalues;
-int uTextureID_720980;
 std::array<__int16, 104> word_7209A0_intercepts_ys_plus_ys;
 std::array<__int16, 104> word_720A70_intercepts_xs_plus_xs;
 std::array<__int16, 104> word_720B40_intercepts_zs;

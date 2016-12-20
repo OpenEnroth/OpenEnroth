@@ -504,8 +504,6 @@ void OSWindow::SetCursor(const char *cursor_name)
 
         // Create target 
 
-        //pMouse->uCursorTextureID = pIcons_LOD->LoadTexture(cursor_name, TEXTURE_16BIT_PALETTE);
-        //hCurs1 = LoadCursor(NULL, L"Target");
         if (for_refactoring)
         {
             MessageBoxA(nullptr, "Ritor1: original cursor(Target) isn't loading", "", 0);

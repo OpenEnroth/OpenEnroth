@@ -719,12 +719,6 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, struct ItemGe
 int const_2();
 
 
-void ZBuffer_Fill(int *pZBuffer, int uTextureId, int iZValue);
-void ZBuffer_DoFill(int *pZBuffer, struct Texture_MM7 *pTex, int uZValue);
-void ZBuffer_DoFill2(int *pZBuffer, struct Texture_MM7 *a2, int a3); // idb
-
-
-
 
 
 

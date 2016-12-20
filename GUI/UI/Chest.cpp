@@ -86,7 +86,6 @@ void GUIWindow_Chest::Update()
         chestWidthCells = pChestWidthsByType[chestBitmapId];
         chestHeghtCells = pChestHeightsByType[chestBitmapId];
 
-        //v5 = pIcons_LOD->LoadTexture(tmp_str.data(), TEXTURE_16BIT_PALETTE);
         auto chest_background = assets->GetImage_16BitColorKey(StringPrintf("chest%02d", pChestList->pChests[chestBitmapId].uTextureID), 0x7FF);
         render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, chest_background);
 
@@ -95,12 +94,6 @@ void GUIWindow_Chest::Update()
             chest_item_index = pChests[uChestID].pInventoryIndices[item_counter];
             if (chest_item_index > 0)
             {
-                //item_texture_id = pIcons_LOD->LoadTexture(
-                //    //pItemsTable->pItems[*(int *)((char *)&pOtherOverlayList->pOverlays[49].field_4 + 36 * v6 + v3 * 5324)].pIconName,
-                //    pChests[uChestID].igChestItems[chest_item_index - 1].GetIconName(), TEXTURE_16BIT_PALETTE);
-                //item_texture = pIcons_LOD->GetTexture(item_texture_id);
-                //itemPixelWidth = item_texture->uTextureWidth;
-                //itemPixelHeght = item_texture->uTextureHeight;
                 auto item_texture = assets->GetImage_16BitColorKey(pChests[uChestID].igChestItems[chest_item_index - 1].GetIconName(), 0x7FF);
                 itemPixelWidth = item_texture->GetWidth();
                 itemPixelHeght = item_texture->GetHeight();

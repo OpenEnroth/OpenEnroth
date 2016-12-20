@@ -2353,46 +2353,25 @@ Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(const char *pContainer, enum T
 //----- (0040FB20) --------------------------------------------------------
 unsigned int LODFile_IconsBitmaps::LoadTexture(const char *pContainer, enum TEXTURE_TYPE uTextureType)
 {
-  areWeLoadingTexture = 1;
-
-  //check loaded texture?
-  for (uint i = 0; i < uNumLoadedFiles; ++i)
-  {
-    if (!_stricmp(pContainer, pTextures[i].pName))
-      return i;
-  }
-
-//  if (!uNumLoadedFiles)
-//  {
-//LABEL_5:
-    Assert(uNumLoadedFiles < 1000);
-    /*if (uNumLoadedFiles >= 1000)
+    for (uint i = 0; i < uNumLoadedFiles; ++i)
     {
-      Log::Warning(L"Maximum texture number exceeded");
-      AbortWithError();
-    }*/
+        if (!_stricmp(pContainer, pTextures[i].pName))
+            return i;
+    }
+
+    Assert(uNumLoadedFiles < 1000);
+
     if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer, uTextureType) == -1)
     {
-      for ( uint i = 0; i < uNumLoadedFiles; ++i )
-      {
-        if (!_stricmp(pTextures[i].pName, "pending"))
-          return i;
-      }
-      LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending", uTextureType);
+        for (uint i = 0; i < uNumLoadedFiles; ++i)
+        {
+            if (!_stricmp(pTextures[i].pName, "pending"))
+                return i;
+        }
+        LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending", uTextureType);
     }
-    areWeLoadingTexture = 0;
-    ++uNumLoadedFiles;
-    return uNumLoadedFiles - 1;
-//  }
-//  v5 = pTextures;
-//  while ( _stricmp(v5->pName, pContainer) )
-//  {
-//    ++v4;
-//    ++v5;
-//    if (v4 >= uNumLoadedFiles )
-//      goto LABEL_5;
-//  }
-//  return v4;
+
+    return uNumLoadedFiles++;
 }
 
 Texture_MM7 * LODFile_IconsBitmaps::GetTexture( int idx )

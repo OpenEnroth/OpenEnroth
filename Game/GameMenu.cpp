@@ -30,8 +30,6 @@ void Game_StartNewGameWhilePlaying(bool force_start)
 {
     if (dword_6BE138 == 124 || force_start)
     {
-        pIcons_LOD->SyncLoadedFilesCount();
-        pIcons_LOD->RemoveTexturesPackFromTextureList();
         DoThatMessageThing();
         //pGUIWindow_CurrentMenu->Release();
         uGameState = GAME_STATE_NEWGAME_OUT_GAMEMENU;
@@ -50,8 +48,6 @@ void Game_QuitGameWhilePlaying(bool force_quit)
 {
     if (dword_6BE138 == 132 || force_quit)
     {
-        pIcons_LOD->SyncLoadedFilesCount();
-        pIcons_LOD->RemoveTexturesPackFromTextureList();
         DoThatMessageThing();
         //pGUIWindow_CurrentMenu->Release();
         current_screen_type = SCREEN_GAME;
@@ -69,9 +65,6 @@ void Game_QuitGameWhilePlaying(bool force_quit)
 
 void Game_OpenLoadGameDialog()
 {
-    pIcons_LOD->SyncLoadedFilesCount();
-    pIcons_LOD->RemoveTexturesPackFromTextureList();
-
     DoThatMessageThing();
     pGUIWindow_CurrentMenu->Release();
     pGUIWindow_CurrentMenu = nullptr;
@@ -477,16 +470,10 @@ void GameMenu_EventLoop()
 
                 if (current_screen_type == SCREEN_MENU)
                 {
-                    pIcons_LOD->SyncLoadedFilesCount();
-                    pIcons_LOD->RemoveTexturesPackFromTextureList();
-                    pIcons_LOD->SyncLoadedFilesCount();
-                    pIcons_LOD->RemoveTexturesPackFromTextureList();
-
                     current_screen_type = SCREEN_GAME;
                 }
                 else if (current_screen_type == SCREEN_SAVEGAME || current_screen_type == SCREEN_LOADGAME)
                 {
-                    pIcons_LOD->RemoveTexturesPackFromTextureList();
                     //crt_deconstruct_ptr_6A0118();
 
                     pGUIWindow_CurrentMenu->Release();
@@ -496,7 +483,6 @@ void GameMenu_EventLoop()
                 else if (current_screen_type == SCREEN_OPTIONS)
                 {
                     options_menu_skin.Relaease();
-                    pIcons_LOD->SyncLoadedFilesCount();
                     WriteWindowsRegistryInt("soundflag", (char)uSoundVolumeMultiplier);
                     WriteWindowsRegistryInt("musicflag", (char)uMusicVolimeMultiplier);
                     WriteWindowsRegistryInt("CharVoices", (char)uVoicesVolumeMultiplier);
@@ -551,7 +537,6 @@ void GameMenu_EventLoop()
                             }
                         }
 
-                        pIcons_LOD->SyncLoadedFilesCount();
                         for (uint i = 0; i < 28; ++i)
                         {
                             if (pKeyActionMap->GetActionVKey((enum InputAction)i) != pPrevVirtualCidesMapping[i])
@@ -589,10 +574,6 @@ void GameMenu_Loop()
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     current_screen_type = SCREEN_MENU;
-
-    ++pIcons_LOD->uTexturePacksCount;
-    if (!pIcons_LOD->uNumPrevLoadedFiles)
-        pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
 
     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
 

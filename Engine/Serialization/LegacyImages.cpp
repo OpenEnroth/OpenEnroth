@@ -968,9 +968,6 @@ void IconFrame_MM7::Serialize(Icon *icon)
     strcpy(pTextureName, icon->pTextureName);
     uAnimTime = icon->GetAnimTime();
     uFlags = icon->uFlags;
-
-    __debugbreak(); // impossible
-    //uTextureID = icon->uTextureID;
 }
 
 void IconFrame_MM7::Deserialize(Icon *icon)
@@ -981,7 +978,6 @@ void IconFrame_MM7::Deserialize(Icon *icon)
     strcpy(icon->pTextureName, pTextureName);
     icon->SetAnimTime(uAnimTime);
     icon->uFlags = uFlags;
-    icon->texture = assets->GetImage_16BitColorKey(pIcons_LOD->pTextures[uTextureID].pName, 0x7FF);
 }
 
 

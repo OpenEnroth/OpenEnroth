@@ -290,7 +290,6 @@ void LoadGame(unsigned int uSlot)
         pSavegameThumbnails[i] = nullptr;
     }
 
-    pIcons_LOD->RemoveTexturesPackFromTextureList();
     if (use_music_folder)
         alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
     else
@@ -651,12 +650,11 @@ void DoSavegame(unsigned int uSlot)
     pNew_LOD->_4621A7();
   else
     GameUI_StatusBar_OnEvent(localization->GetString(583), 2);// "No saving in the Arena"
-  pIcons_LOD->RemoveTexturesFromTextureList();
+
   pEventTimer->Resume();
   GameUI_StatusBar_OnEvent(localization->GetString(656), 2);// "Game Saved!"
   viewparams->bRedrawGameUI = true;
 }
-// 4E28F8: using guessed type int current_screen_type;
 
 //----- (0045E297) --------------------------------------------------------
 void SavegameList::Initialize(unsigned int bHideEmptySlots)

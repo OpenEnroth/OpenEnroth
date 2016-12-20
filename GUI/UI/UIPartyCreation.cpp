@@ -324,7 +324,7 @@ void GUIWindow_PartyCreation::Update()
 
     //arrows
     pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uStartTime);
-    render->DrawTextureAlphaNew(pX / 640.0f, 29 / 480.0f, pFrame->texture);
+    render->DrawTextureAlphaNew(pX / 640.0f, 29 / 480.0f, pFrame->GetTexture());
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     uPlayerCreationUI_ArrowAnim = 18 - (GetTickCount() % 450) / 25;
     render->DrawTextureAlphaNew((uPosActiveItem->uZ - 4) / 640.0f, uPosActiveItem->uY / 480.0f, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
@@ -578,9 +578,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
     else
         pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
-    ++pIcons_LOD->uTexturePacksCount;
-    if (!pIcons_LOD->uNumPrevLoadedFiles)
-        pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
+
     current_screen_type = SCREEN_PARTY_CREATION;
     uPlayerCreationUI_ArrowAnim = 0;
     uPlayerCreationUI_SelectedCharacter = 0;
@@ -788,8 +786,6 @@ bool PartyCreationUI_LoopInternal()
 
     pGUIWindow_CurrentMenu->Release();
     pGUIWindow_CurrentMenu = nullptr;
-
-    pIcons_LOD->RemoveTexturesPackFromTextureList();
 
     memset(v20, 0, 32);
     for (int i = 0; i < 32; i++)

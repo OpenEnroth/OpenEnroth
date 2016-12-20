@@ -251,9 +251,6 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     {
         screenWidth = br_x - tl_x + 1;
         screenHeight = br_y - tl_y + 1;
-        //render16_data = &render->pTargetSurface[tl_x + tl_y * render->uTargetSurfacePitch];
-        //texture8_data = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].paletted_pixels;
-        //pPalette_16 = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].pPalette16;
 
         scale_increment = (1 << (ImageHelper::GetWidthLn2(viewparams->location_minimap) + 16)) / viewparams->uMapBookMapZoom;
 

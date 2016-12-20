@@ -96,9 +96,6 @@ bool GUIProgressBar::Initialize(Type type)
         case PartyAlignment_Good:    progressbar_dungeon = assets->GetImage_16BitColorKey("bardata-b", 0x7FF); break;
         case PartyAlignment_Neutral: progressbar_dungeon = assets->GetImage_16BitColorKey("bardata", 0x7FF); break;
         case PartyAlignment_Evil:    progressbar_dungeon = assets->GetImage_16BitColorKey("bardata-c", 0x7FF); break;
-            //case PartyAlignment_Good:    pIcons_LOD->PlacementLoadTexture(&pBardata, "bardata-b", 2); break;
-            //case PartyAlignment_Neutral: pIcons_LOD->PlacementLoadTexture(&pBardata, "bardata", 2); break;
-            //case PartyAlignment_Evil:    pIcons_LOD->PlacementLoadTexture(&pBardata, "bardata-c", 2); break;
         default: Error("Invalid alignment type: %u", pParty->alignment);
     }
 
@@ -169,7 +166,7 @@ void GUIProgressBar::Draw()
         render->Sub01();
 
         render->DrawTextureAlphaNew(80 / 640.0f, 122 / 480.0f, progressbar_dungeon);
-        render->DrawTextureAlphaNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->GetFrame(uIconID_TurnHour, 0)->texture);
+        render->DrawTextureAlphaNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->GetFrame(uIconID_TurnHour, 0)->GetTexture());
         render->FillRectFast(
             174, 164,
             floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) + 0.5f),

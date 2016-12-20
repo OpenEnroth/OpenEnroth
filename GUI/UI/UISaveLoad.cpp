@@ -39,9 +39,6 @@ GUIWindow_Save::GUIWindow_Save() :
     char *v3; // eax@7
     LODWriteableFile pLODFile; // [sp+1Ch] [bp-248h]@1
 
-    ++pIcons_LOD->uTexturePacksCount;
-    if (!pIcons_LOD->uNumPrevLoadedFiles)
-        pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
     memset(&pSavegameUsedSlots, 0, sizeof(pSavegameUsedSlots));
     memset(&pSavegameThumbnails, 0, sizeof(pSavegameThumbnails));
     saveload_ui_loadsave = assets->GetImage_16BitColorKey(L"loadsave", 0x7FF);
@@ -53,20 +50,10 @@ GUIWindow_Save::GUIWindow_Save() :
 
     render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
 
-    //if (screen == SCREEN_SAVEGAME)
-    {
-        render->DrawTextureAlphaNew(241/640.0f, 302/480.0f, saveload_ui_saveu);
-        render->DrawTextureAlphaNew(351/640.0f, 302/480.0f, saveload_ui_x_u);
-        render->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_save_up);
-    }
-    /*else
-    {
-    render->DrawTextureTransparentColorKey(241, 302, pIcons_LOD->GetTexture(uTextureID_LS_loadU));
-    render->DrawTextureTransparentColorKey(351, 302, pIcons_LOD->GetTexture(uTextureID_x_u));
-    render->DrawTextureTransparentColorKey(18, 141, pIcons_LOD->GetTexture(uTextureID_load_up));
-    }*/
+    render->DrawTextureAlphaNew(241/640.0f, 302/480.0f, saveload_ui_saveu);
+    render->DrawTextureAlphaNew(351/640.0f, 302/480.0f, saveload_ui_x_u);
+    render->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_save_up);
 
-    //pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, 25, 199, 0, pGlobalTXT_LocalizationStrings[505], 0, 0, 0);//Read...(Чтение...)
     render->Present();
     pSavegameList->Initialize(1);
     pLODFile.AllocSubIndicesAndIO(300, 0);

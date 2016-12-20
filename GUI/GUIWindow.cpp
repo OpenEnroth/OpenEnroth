@@ -106,15 +106,12 @@ Image *ui_leather_mm7 = nullptr;
 GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
     GUIWindow(x, y, width, height, button, hint)
 {
-    pMouse->SetCursorBitmap("MICON2");
+    pMouse->SetCursorImage("MICON2");
     pBtn_ExitCancel = CreateButton(392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(34), // Cancel    Отмена
         ui_buttdesc2, nullptr);
     GameUI_StatusBar_OnEvent(localization->GetString(39), 2); // Choose target / Выбрать цель
-    ++pIcons_LOD->uTexturePacksCount;
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     current_screen_type = SCREEN_CASTING;
-    if (!pIcons_LOD->uNumPrevLoadedFiles)
-        pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
 }
 
 GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
@@ -261,7 +258,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y, unsigne
 {
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
-    pMouse->SetCursorBitmap("MICON2");
+    pMouse->SetCursorImage("MICON2");
     GameUI_StatusBar_OnEvent(localization->GetString(39)); // Choose target / Выберите цель
 }
 
@@ -430,14 +427,6 @@ void GUIWindow_Dialogue::Release()
 {
 // -----------------------------------------
 // 0041C26A void GUIWindow::Release --- part
-    if (!dword_591084)
-    {
-        if (pDialogueNPCPortraits[0])
-        {
-            pDialogueNPCPortraits[0]->Release();
-            pDialogueNPCPortraits[0] = nullptr;
-        }
-    }
     uNumDialogueNPCPortraits = 0;
 
     if (game_ui_dialogue_background)
@@ -455,7 +444,6 @@ void GUIWindow_GenericDialogue::Release()
 {
 // -----------------------------------------
 // 0041C26A void GUIWindow::Release --- part
-    pIcons_LOD->SyncLoadedFilesCount();
     current_screen_type = prev_screen_type;
     pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
 
@@ -1761,17 +1749,17 @@ void CreateScrollWindow()
               pScrolls[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C], 0, 0, 0);
 }
 //----- (00467F48) --------------------------------------------------------
-void CreateMsgScrollWindow( signed int mscroll_id )
+void CreateMsgScrollWindow(signed int mscroll_id)
 {
-  if ( !pGUIWindow_ScrollWindow && mscroll_id >= 700 )
-  {
-    if ( mscroll_id <= 782 )
+    if (!pGUIWindow_ScrollWindow && mscroll_id >= 700)
     {
-      uTextureID_720980 = pIcons_LOD->LoadTexture("leather", TEXTURE_16BIT_PALETTE);
-      pGUIWindow_ScrollWindow = new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), mscroll_id - 700, 0);
+        if (mscroll_id <= 782)
+        {
+            pGUIWindow_ScrollWindow = new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), mscroll_id - 700, 0);
+        }
     }
-  }
 }
+
 //----- (00467F9F) --------------------------------------------------------
 void free_book_subwindow()
 {
@@ -2074,128 +2062,51 @@ char  sub_4637E0_is_there_popup_onscreen()
 {
   return dword_507BF0_is_there_popup_onscreen == 1;
 }
-// 507BF0: using guessed type int dword_507BF0_is_there_popup_onscreen;
 
 //----- (00417AD4) --------------------------------------------------------
 unsigned int GetSkillColor(unsigned int uPlayerClass, PLAYER_SKILL_TYPE uPlayerSkillType, signed int skill_level)
 {
-	switch (uPlayerClass % 4)
-	{
-	case 0:
-	{
-			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass][uPlayerSkillType] >= skill_level)
-				  return ui_character_skillinfo_can_learn;
-			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 1][uPlayerSkillType] < skill_level &&
-				  byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 2][uPlayerSkillType] < skill_level)
-			  {
-				  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 3][uPlayerSkillType] < skill_level)
-					  return ui_character_skillinfo_cant_learn;
-			  }
-			  return ui_character_skillinfo_can_learn_gm;
-	}
-		break;
+    switch (uPlayerClass % 4)
+    {
+        case 0:
+        {
+            if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass][uPlayerSkillType] >= skill_level)
+                return ui_character_skillinfo_can_learn;
+            if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 1][uPlayerSkillType] < skill_level &&
+                byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 2][uPlayerSkillType] < skill_level)
+            {
+                if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 3][uPlayerSkillType] < skill_level)
+                    return ui_character_skillinfo_cant_learn;
+            }
+            return ui_character_skillinfo_can_learn_gm;
+        }
+        break;
 
-	case 1:
-	{
-			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass][uPlayerSkillType] >= skill_level)
-				  return ui_character_skillinfo_can_learn;
-			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 1][uPlayerSkillType] < skill_level)
-			  {
-				  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 2][uPlayerSkillType] < skill_level)
-					  return ui_character_skillinfo_cant_learn;
-			  }
-			  return ui_character_skillinfo_can_learn_gm;
-	}
-		break;
+        case 1:
+        {
+            if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass][uPlayerSkillType] >= skill_level)
+                return ui_character_skillinfo_can_learn;
+            if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 1][uPlayerSkillType] < skill_level)
+            {
+            if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass + 2][uPlayerSkillType] < skill_level)
+                    return ui_character_skillinfo_cant_learn;
+            }
+            return ui_character_skillinfo_can_learn_gm;
+        }
+        break;
 
-	case 2:
-	case 3:
-	{
-			  if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass][uPlayerSkillType] < skill_level)
-				  return ui_character_skillinfo_cant_learn;
-			  return ui_character_skillinfo_can_learn;
-	}
-		break;
-	}
-	Error("Invalid player class: %u", uPlayerClass);
+        case 2:
+        case 3:
+        {
+            if (byte_4ED970_skill_learn_ability_by_class_table[uPlayerClass][uPlayerSkillType] < skill_level)
+                return ui_character_skillinfo_cant_learn;
+            return ui_character_skillinfo_can_learn;
+        }
+        break;
+    }
+    Error("Invalid player class: %u", uPlayerClass);
 }
 
-//----- (0040F92A) --------------------------------------------------------
-void ZBuffer_DoFill2(int *pZBuffer, Texture_MM7 *a2, int a3)
-{//срабатывает в покупке в магазине
-	void *v4; // eax@3
-	//int *v5; // edi@5
-	//  int v6; // ecx@6
-	//  int v9; // [sp+18h] [bp-4h]@1
-
-	if (pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed && a2->uDecompressedSize)
-		v4 = a2->UnzipPalette();
-	else
-		v4 = a2->paletted_pixels;
-	//v5 = pZBuffer;
-	for (uint i = 0; i < a2->uTextureHeight; i++)
-	{
-		for (uint j = 0; j < a2->uTextureWidth; j++)
-		{
-			*pZBuffer = a3;
-			++pZBuffer;
-		}
-		pZBuffer += window->GetWidth() - a2->uTextureWidth;
-	}
-	if (pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed)
-	{
-		if (a2->uDecompressedSize)
-			free(v4);
-	}
-}
-
-
-// 4E28F8: using guessed type int current_screen_type;
-
-//----- (0040F82D) --------------------------------------------------------
-void ZBuffer_Fill(int *pZBuffer, int uTextureId, int iZValue)
-{
-	assert(uTextureId != -1);
-	ZBuffer_DoFill(pZBuffer, pIcons_LOD->GetTexture(uTextureId), iZValue);
-}
-
-//----- (0040F89C) --------------------------------------------------------
-void ZBuffer_DoFill(int *pZBuffer, Texture_MM7 *pTex, int uZValue)
-{//срабатывает при продаже в магазине
-	void *v3; // eax@3
-	//void *v4; // esi@5
-	//int *v5; // edi@5
-	//int v6; // eax@5
-	//  int v7; // ecx@6
-	//  int v11; // [sp+18h] [bp-8h]@1
-	//void *v12; // [sp+1Ch] [bp-4h]@5
-
-	if (pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed && pTex->uDecompressedSize)
-		v3 = pTex->UnzipPalette();
-	else
-		v3 = pTex->paletted_pixels;
-	//v12 = v3;
-	//v4 = v3;
-	//v5 = pZBuffer;
-	//v6 = 0;
-	for (uint i = 0; i < pTex->uTextureHeight; i++)
-	{
-		for (uint j = 0; j < pTex->uTextureWidth; j++)
-		{
-			//LOBYTE(v6) = *(char *)v4;
-			//v4 = (char *)v4 + 1;
-			//if ( v6 )
-			*pZBuffer = uZValue;
-			++pZBuffer;
-		}
-		pZBuffer += window->GetWidth() - pTex->uTextureWidth;
-	}
-	if (pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed)
-	{
-		if (pTex->uDecompressedSize)
-			free(v3);
-	}
-}
 
 //----- (004BC49B) --------------------------------------------------------
 void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType)
@@ -2228,7 +2139,6 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType)
 				memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
 			pParty->hirelingScrollPosition = 0;
 			pParty->CountHirelings();
-			dword_591084 = 0;
 			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
 			dword_7241C8 = 0;
 			return;
@@ -2310,7 +2220,6 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType)
 				memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
 			pParty->hirelingScrollPosition = 0;
 			pParty->CountHirelings();
-			dword_591084 = 0;
 			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
 			dword_7241C8 = 0;
 			return;

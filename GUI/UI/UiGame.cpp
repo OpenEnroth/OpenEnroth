@@ -189,8 +189,6 @@ void GUIWindow_GameMenu::Update()
 //----- (00491CB5) --------------------------------------------------------
 void GameUI_LoadPlayerPortraintsAndVoices()
 {
-    pIcons_LOD->pFacesLock = pIcons_LOD->uNumLoadedFiles;
-
     for (uint i = 0; i < 4; ++i)
     {
         for (uint j = 0; j < 56; ++j)
@@ -835,109 +833,107 @@ void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
 //----- (00445D4A) --------------------------------------------------------
 void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
 {
-  NPCData *pNPCInfo; // ebp@1
-  int v9; // esi@8
-  int pNumberContacts; // eax@11
+    NPCData *pNPCInfo; // ebp@1
+    int v9; // esi@8
+    int pNumberContacts; // eax@11
 
-  dword_A74CDC = -1;
-  pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
-  pEventTimer->Pause();
-  pMiscTimer->Pause();
-  pAudioPlayer->StopChannels(-1, -1);
-  uDialogueType = 0;
-  sDialogue_SpeakingActorNPC_ID = actor->sNPC_ID;
-  pDialogue_SpeakingActor = actor;
-  pNPCInfo = GetNPCData(actor->sNPC_ID);
-  if ( (pNPCInfo->uFlags & 3) != 2 )
-    pNPCInfo->uFlags = pNPCInfo->uFlags + 1;
+    dword_A74CDC = -1;
+    pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
+    pEventTimer->Pause();
+    pMiscTimer->Pause();
+    pAudioPlayer->StopChannels(-1, -1);
+    uDialogueType = 0;
+    sDialogue_SpeakingActorNPC_ID = actor->sNPC_ID;
+    pDialogue_SpeakingActor = actor;
+    pNPCInfo = GetNPCData(actor->sNPC_ID);
+    if ((pNPCInfo->uFlags & 3) != 2)
+        pNPCInfo->uFlags = pNPCInfo->uFlags + 1;
 
-  String filename;
-  switch (pParty->alignment)
-  {
-    case PartyAlignment_Good:    filename = StringPrintf("evt%02d-b", const_2()); break;
-    case PartyAlignment_Neutral: filename = StringPrintf("evt%02d", const_2());   break;
-    case PartyAlignment_Evil:    filename = StringPrintf("evt%02d-c", const_2()); break;
-  }
-  game_ui_dialogue_background = assets->GetImage_16Bit(filename);
-
-  pDialogueNPCCount = 0;
-  uNumDialogueNPCPortraits = 1;
-
-  filename = StringPrintf("npc%03u", pNPCInfo->uPortraitID);
-  pDialogueNPCPortraits[0] = assets->GetImage_16BitColorKey(filename, 0x7FF);
-
-  dword_591084 = areWeLoadingTexture;
-
-  v9 = 0;
-  if ( !pNPCInfo->Hired() && pNPCInfo->Location2D >= 0 )
-  {
-    if ( (signed int)pParty->GetPartyFame() <= pNPCInfo->fame
-      || (pNumberContacts = pNPCInfo->uFlags & 0xFFFFFF7F, (pNumberContacts & 0x80000000u) != 0) )
+    String filename;
+    switch (pParty->alignment)
     {
-      v9 = 1;
+        case PartyAlignment_Good:    filename = StringPrintf("evt%02d-b", const_2()); break;
+        case PartyAlignment_Neutral: filename = StringPrintf("evt%02d", const_2());   break;
+        case PartyAlignment_Evil:    filename = StringPrintf("evt%02d-c", const_2()); break;
     }
-	else
-	{
-		if ( pNumberContacts > 1 )
-		{
-		  if ( pNumberContacts == 2 )
-		  {
-			v9 = 3;
-		  }
-		  else
-		  {
-			  if ( pNumberContacts != 3 )
-			  {
-				if ( pNumberContacts != 4 )
-				  v9 = 1;
-			  }
-			  else
-			  {
-				v9 = 2;
-			  }
-		  }
-		}
-		else if ( pNPCInfo->rep )
-		{
-		  v9 = 2;
-		}
-	}
-  }
-  if (sDialogue_SpeakingActorNPC_ID < 0)
-    v9 = 4;
-  pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 3, 0);//pNumberContacts = 1, v9 = 0; pNumberContacts = 2, v9 = 3;
-  if (pNPCInfo->Hired() && !pNPCInfo->bHasUsedTheAbility)
-  {
-    if (pNPCInfo->uProfession == 10 ||    //Healer
-        pNPCInfo->uProfession == 11 ||    //Expert Healer
-        pNPCInfo->uProfession == 12 ||    //Master Healer
-        pNPCInfo->uProfession == 33 ||    //Cook
-        pNPCInfo->uProfession == 34 ||    //Chef
-        pNPCInfo->uProfession == 39 ||    //Wind Master
-        pNPCInfo->uProfession == 40 ||    //Water Master
-        pNPCInfo->uProfession == 41 ||    //Gate Master
-        pNPCInfo->uProfession == 42 ||    //Chaplain
-        pNPCInfo->uProfession == 43 ||    //Piper
-        pNPCInfo->uProfession == 52       //Fallen Wizard
-      )
+    game_ui_dialogue_background = assets->GetImage_16Bit(filename);
+
+    pDialogueNPCCount = 0;
+    uNumDialogueNPCPortraits = 1;
+
+    filename = StringPrintf("npc%03u", pNPCInfo->uPortraitID);
+    pDialogueNPCPortraits[0] = assets->GetImage_16BitColorKey(filename, 0x7FF);
+
+    v9 = 0;
+    if (!pNPCInfo->Hired() && pNPCInfo->Location2D >= 0)
     {
-      pDialogueWindow->CreateButton(480, 250, 140, LOBYTE(pFontArrus->uFontHeight) - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "", 0);
-      pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
+        if ((signed int)pParty->GetPartyFame() <= pNPCInfo->fame
+            || (pNumberContacts = pNPCInfo->uFlags & 0xFFFFFF7F, (pNumberContacts & 0x80000000u) != 0))
+        {
+            v9 = 1;
+        }
+        else
+        {
+            if (pNumberContacts > 1)
+            {
+                if (pNumberContacts == 2)
+                {
+                    v9 = 3;
+                }
+                else
+                {
+                    if (pNumberContacts != 3)
+                    {
+                        if (pNumberContacts != 4)
+                            v9 = 1;
+                    }
+                    else
+                    {
+                        v9 = 2;
+                    }
+                }
+            }
+            else if (pNPCInfo->rep)
+            {
+                v9 = 2;
+            }
+        }
     }
-  }
+    if (sDialogue_SpeakingActorNPC_ID < 0)
+        v9 = 4;
+    pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 3, 0);//pNumberContacts = 1, v9 = 0; pNumberContacts = 2, v9 = 3;
+    if (pNPCInfo->Hired() && !pNPCInfo->bHasUsedTheAbility)
+    {
+        if (pNPCInfo->uProfession == 10 ||    //Healer
+            pNPCInfo->uProfession == 11 ||    //Expert Healer
+            pNPCInfo->uProfession == 12 ||    //Master Healer
+            pNPCInfo->uProfession == 33 ||    //Cook
+            pNPCInfo->uProfession == 34 ||    //Chef
+            pNPCInfo->uProfession == 39 ||    //Wind Master
+            pNPCInfo->uProfession == 40 ||    //Water Master
+            pNPCInfo->uProfession == 41 ||    //Gate Master
+            pNPCInfo->uProfession == 42 ||    //Chaplain
+            pNPCInfo->uProfession == 43 ||    //Piper
+            pNPCInfo->uProfession == 52       //Fallen Wizard
+        )
+        {
+            pDialogueWindow->CreateButton(480, 250, 140, LOBYTE(pFontArrus->uFontHeight) - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "", 0);
+            pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
+        }
+    }
 
-  pDialogueWindow->CreateButton( 61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
-  pDialogueWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-  pDialogueWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-  pDialogueWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
+    pDialogueWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
+    pDialogueWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
+    pDialogueWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
+    pDialogueWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
 
-  if (bPlayerSaysHello && uActiveCharacter && !pNPCInfo->Hired())
-  {
-    if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21)
-      pPlayers[uActiveCharacter]->PlaySound(SPEECH_GoodEvening, 0);
-    else
-      pPlayers[uActiveCharacter]->PlaySound(SPEECH_GoodDay, 0);
-  }
+    if (bPlayerSaysHello && uActiveCharacter && !pNPCInfo->Hired())
+    {
+        if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21)
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_GoodEvening, 0);
+        else
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_GoodDay, 0);
+    }
 }
 
 //----- (00445350) --------------------------------------------------------
@@ -1946,10 +1942,9 @@ void GameUI_DrawPartySpells()
     {
         if (pParty->pPartyBuffs[byte_4E5DD8[i]].Active())
         {
-            Texture_MM7* tex = pIcons_LOD->GetTexture(pTextureIDs_PartyBuffIcons[i]);
             render->_4A65CC(
                 pPartySpellbuffsUI_XYs[i][0],
-                pPartySpellbuffsUI_XYs[i][1], tex, tex,
+                pPartySpellbuffsUI_XYs[i][1], party_buff_icons[i], party_buff_icons[i],
                 v0 + 20 * pPartySpellbuffsUI_smthns[i], 0, 63
             );
         }
@@ -1960,17 +1955,17 @@ void GameUI_DrawPartySpells()
         if (pParty->FlyActive())
         {
             if (pParty->bFlying)
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, v0)->texture;
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, v0)->GetTexture();
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0)->texture;
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0)->GetTexture();
             render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
         if (pParty->WaterWalkActive())
         {
             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER)
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, v0)->texture;
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, v0)->GetTexture();
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)->texture;
+                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0)->GetTexture();
             render->DrawTextureAlphaNew(396 / 640.0f, 8 / 480.0f, spell_texture);
         }
     }
@@ -2179,8 +2174,6 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsig
 
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
     {
-        //uchar* pMapLod0 = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].paletted_pixels;
-        //ushort* pPal = pIcons_LOD->pTextures[viewparams->uTextureID_LocationMap].pPalette16;
         v73 = (1 << (ImageHelper::GetWidthLn2(viewparams->location_minimap) + 16)) / (signed int)uZoom;
         v20 = (double)(pParty->vPosition.x + 32768) / (double)(1 << (16 - ImageHelper::GetWidthLn2(viewparams->location_minimap)));
         uWb = (double)(32768 - pParty->vPosition.y) / (double)(1 << (16 - ImageHelper::GetWidthLn2(viewparams->location_minimap)));
@@ -2437,35 +2430,36 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsig
 //----- (00441498) --------------------------------------------------------
 void  GameUI_DrawTorchlightAndWizardEye()
 {
-  if (current_screen_type == SCREEN_GAME
-      || current_screen_type == SCREEN_MENU
-      || current_screen_type == SCREEN_OPTIONS
-      || current_screen_type == SCREEN_REST
-      || current_screen_type == SCREEN_SPELL_BOOK
-      || current_screen_type == SCREEN_CHEST
-      || current_screen_type == SCREEN_SAVEGAME
-      || current_screen_type == SCREEN_LOADGAME
-      || current_screen_type == SCREEN_CHEST_INVENTORY
-      || current_screen_type == SCREEN_BOOKS
-      || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG )
-  {
-    if (pParty->TorchlightActive())
+    if (current_screen_type == SCREEN_GAME
+        || current_screen_type == SCREEN_MENU
+        || current_screen_type == SCREEN_OPTIONS
+        || current_screen_type == SCREEN_REST
+        || current_screen_type == SCREEN_SPELL_BOOK
+        || current_screen_type == SCREEN_CHEST
+        || current_screen_type == SCREEN_SAVEGAME
+        || current_screen_type == SCREEN_LOADGAME
+        || current_screen_type == SCREEN_CHEST_INVENTORY
+        || current_screen_type == SCREEN_BOOKS
+        || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG
+    )
     {
-      render->DrawTextureAlphaNew(
-          pUIAnum_Torchlight->x/640.0f,
-          pUIAnum_Torchlight->y/480.0f,
-          pIconsFrameTable->GetFrame(pUIAnum_Torchlight->icon->id, pEventTimer->Time())->texture
-      );
+        if (pParty->TorchlightActive())
+        {
+            render->DrawTextureAlphaNew(
+                pUIAnum_Torchlight->x / 640.0f,
+                pUIAnum_Torchlight->y / 480.0f,
+                pIconsFrameTable->GetFrame(pUIAnum_Torchlight->icon->id, pEventTimer->Time())->GetTexture()
+            );
+        }
+        if (pParty->WizardEyeActive())
+        {
+            render->DrawTextureAlphaNew(
+                pUIAnim_WizardEye->x / 640.0f,
+                pUIAnim_WizardEye->y / 480.0f,
+                pIconsFrameTable->GetFrame(pUIAnim_WizardEye->icon->id, pEventTimer->Time())->GetTexture()
+            );
+        }
     }
-    if (pParty->WizardEyeActive())
-    {
-      render->DrawTextureAlphaNew(
-          pUIAnim_WizardEye->x/640.0f,
-          pUIAnim_WizardEye->y/480.0f,
-          pIconsFrameTable->GetFrame(pUIAnim_WizardEye->icon->id, pEventTimer->Time())->texture
-      );
-    }
-  }
 }
 
 
@@ -2508,9 +2502,8 @@ void GameUI_DrawHiredNPCs()
                 render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                    //pIcons_LOD->GetTexture(pIcons_LOD->LoadTexture(pContainer, TEXTURE_16BIT_PALETTE))
                     assets->GetImage_16BitColorKey(pContainer, 0x7FF)
-                    );
+                );
             }
             else
             {
@@ -2518,9 +2511,8 @@ void GameUI_DrawHiredNPCs()
                 render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                    //pIcons_LOD->GetTexture(pIcons_LOD->LoadTexture(pContainer, TEXTURE_16BIT_PALETTE))
                     assets->GetImage_16BitColorKey(pContainer, 0x7FF)
-                    );
+                );
                 if (pParty->pHirelings[(unsigned __int8)buf[i]].evt_A == 1)
                 {
                     uFrameID = pParty->pHirelings[(unsigned __int8)buf[i]].evt_B;
@@ -2536,9 +2528,8 @@ void GameUI_DrawHiredNPCs()
                     render->DrawTextureAlphaNew(
                         pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                         pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                        //&pIcons_LOD->pTextures[pIconsFrameTable->GetFrame(v13, uFrameID)->uTextureID]
-                        pIconsFrameTable->GetFrame(v13, uFrameID)->texture
-                        );
+                        pIconsFrameTable->GetFrame(v13, uFrameID)->GetTexture()
+                    );
                 }
             }
             ++pNPC_limit_ID;

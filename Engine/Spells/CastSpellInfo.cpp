@@ -3443,7 +3443,7 @@ void CastSpellInfoHelpers::_427D48()
             pCastSpellInfo[i].uSpellID = 0;
             pGUIWindow_CastTargetedSpell->Release();
             pGUIWindow_CastTargetedSpell = nullptr;
-            pMouse->SetCursorBitmap("MICON1");
+            pMouse->SetCursorImage("MICON1");
             GameUI_StatusBar_Update(true);
             _50C9A0_IsEnchantingInProgress = 0;
             back_to_game();
@@ -3669,9 +3669,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell, unsigned int uPlayer
         {
             if (pGUIWindow_CastTargetedSpell)
                 return;
-            ++pIcons_LOD->uTexturePacksCount;
-            if (!pIcons_LOD->uNumPrevLoadedFiles)
-                pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
+
             pGUIWindow_CastTargetedSpell = pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             _50C9A0_IsEnchantingInProgress = 1;
             some_active_character = uActiveCharacter;

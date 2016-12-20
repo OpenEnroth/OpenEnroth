@@ -5,6 +5,10 @@
 class Icon
 {
     public:
+        inline Icon():
+            img(nullptr)
+        {}
+
         inline void          SetAnimationName(const char *name)      { strcpy(this->anim_name, name); }
         inline const char   *GetAnimationName() const                { return anim_name; }
 
@@ -12,14 +16,16 @@ class Icon
         inline unsigned int  GetAnimLength() const                   { return this->anim_length; }
 
         inline void          SetAnimTime(unsigned int anim_time) { this->anim_time = anim_time; }
-        inline unsigned int  GetAnimTime() const { return this->anim_time; }
+        inline unsigned int  GetAnimTime() const                 { return this->anim_time; }
+
+        Image *GetTexture();
 
         ///* 000 */ char pAnimationName[12];
         /* 00C */ char pTextureName[12];
         ///* 018 */ __int16 uAnimTime;
         ///* 01A */ __int16 uAnimLength;
         /* 01C */ __int16 uFlags;
-        class Image *texture;///* 01E */ unsigned __int16 uTextureID;
+        ///* 01E */ unsigned __int16 uTextureID;
         int id;
         
 
@@ -31,37 +37,32 @@ class Icon
         unsigned int anim_time;
         //unsigned int flags;
         //unsigned int texture_id;
+
+        Image *img;
 };
 
 /*   45 */
 #pragma pack(push, 1)
 struct IconFrameTable
 {
-  inline IconFrameTable():
-    uNumIcons(0), pIcons(nullptr)
-  {}
+    inline IconFrameTable() :
+        uNumIcons(0), pIcons(nullptr)
+    {}
 
-  Icon *GetIcon(unsigned int idx);
-  Icon *GetIcon(const char *pIconName);
-  unsigned int FindIcon(const char *pIconName);
-  Icon *GetFrame(unsigned int uIconID, unsigned int frame_time);
-  void InitializeAnimation(unsigned int uIconID);
-  void ToFile();
-  void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
-  int FromFileTxt(const char *Args);
-  //int GetIconAnimLength(unsigned int uIconID);
+    Icon *GetIcon(unsigned int idx);
+    Icon *GetIcon(const char *pIconName);
+    unsigned int FindIcon(const char *pIconName);
+    Icon *GetFrame(unsigned int uIconID, unsigned int frame_time);
+    void InitializeAnimation(unsigned int uIconID);
+    void ToFile();
+    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    int FromFileTxt(const char *Args);
+    //int GetIconAnimLength(unsigned int uIconID);
 
-  unsigned int uNumIcons;
-  struct Icon *pIcons;
+    unsigned int uNumIcons;
+    struct Icon *pIcons;
 };
 #pragma pack(pop)
-
-
-
-
-
-
-
 
 
 
@@ -79,8 +80,6 @@ class UIAnimation
     /* 00A */ __int16 y;
     /* 00C */ char field_C;
 };
-
-
 
 
 

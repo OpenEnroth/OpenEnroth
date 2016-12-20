@@ -88,8 +88,8 @@ class RenderD3D11 : public IRender
 
         virtual void ZBuffer_Fill_2(signed int a2, signed int a3, class Image *pTexture, int a5);
         virtual void ZDrawTextureAlpha(float u, float v, class Image *pTexture, int zVal);
-        virtual void BlendTextures(unsigned int a2, unsigned int a3, class Image *a4, struct Texture_MM7 *a5, int t, int start_opacity, int end_opacity);
-        virtual void _4A65CC(unsigned int x, unsigned int y, struct Texture_MM7 *a4, struct Texture_MM7 *a5, int a6, int a7, int a8);
+        virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity);
+        virtual void _4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a6, int a7, int a8);
 
         virtual void DrawMasked(float u, float v, class Image *img, unsigned int color_dimming_level, unsigned __int16 mask);
         virtual void DrawTextureGrayShade(float u, float v, class Image *a4);

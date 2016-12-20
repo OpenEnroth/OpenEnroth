@@ -2211,11 +2211,11 @@ void PrepareToLoadBLV(unsigned int bLoading)
   bNoNPCHiring = false;
   pDest = 1;
   uCurrentlyLoadedLevelType = LEVEL_Indoor;
-  pEngine->uFlags2 &= 0xFFFFFFF7;//~0x00000008
+  pEngine->uFlags2 &= ~GAME_FLAGS_2_ALTER_GRAVITY;
   if ( Is_out15odm_underwater() )
   {
     bUnderwater = true;
-    pEngine->uFlags2 |= 8;
+    pEngine->uFlags2 |= GAME_FLAGS_2_ALTER_GRAVITY;
   }
   if ( !_stricmp(pCurrentMapName, "out15.odm") || !_stricmp(pCurrentMapName, "d23.blv") )
     bNoNPCHiring = true;

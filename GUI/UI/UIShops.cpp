@@ -1294,7 +1294,6 @@ void MagicShopDialog()
                         product_width_2row = 18;
                 }
                 render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
-                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
             }
         }
         if (HouseUI_CheckIfPlayerCanInteract())

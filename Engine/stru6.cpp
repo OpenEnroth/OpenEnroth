@@ -1343,8 +1343,12 @@ void stru6::DrawPlayerBuffAnims()
             continue;
         }
 
-        Icon* icon = pIconsFrameTable->GetFrame(buff->uSpellIconID, buff->uSpellAnimTimeElapsed);
-        render->DrawTextureAlphaNew(pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f, 385 / 480.0f, icon->texture);
+        Icon *icon = pIconsFrameTable->GetFrame(buff->uSpellIconID, buff->uSpellAnimTimeElapsed);
+        render->DrawTextureAlphaNew(
+            pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
+            385 / 480.0f,
+            icon->GetTexture()
+        );
 
         pOtherOverlayList->bRedraw = true;
     }

@@ -1028,20 +1028,16 @@ bool EnterHouse(enum HOUSE_ID uHouseID)
                 pParty->pPlayers[i].SetVariable(VAR_Award, 87);
             }
         }
-        ++pIcons_LOD->uTexturePacksCount;
-        if (!pIcons_LOD->uNumPrevLoadedFiles)
-            pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
+
         switch (pParty->alignment)
         {
-        case PartyAlignment_Good:    sprintf(pContainer, "evt%02d-b", const_2()); break;
-        case PartyAlignment_Neutral: sprintf(pContainer, "evt%02d", const_2()); break;
-        case PartyAlignment_Evil:    sprintf(pContainer, "evt%02d-c", const_2()); break;
-        default: Error("Invalid alignment type: %u", pParty->alignment);
+            case PartyAlignment_Good:    sprintf(pContainer, "evt%02d-b", const_2()); break;
+            case PartyAlignment_Neutral: sprintf(pContainer, "evt%02d", const_2()); break;
+            case PartyAlignment_Evil:    sprintf(pContainer, "evt%02d-c", const_2()); break;
+            default: Error("Invalid alignment type: %u", pParty->alignment);
         }
 
         pDialogueNPCCount = 0;
-        //v17 = pIcons_LOD->LoadTexture(pContainer, TEXTURE_16BIT_PALETTE);
-        //game_ui_dialogue_background = &pIcons_LOD->pTextures[v17];
         game_ui_dialogue_background = assets->GetImage_16Bit(pContainer);
 
         PrepareHouse(uHouseID);
@@ -3579,7 +3575,6 @@ int HouseDialogPressCloseBtn()
       pDialogueWindow->Release();
       dialog_menu_id = HOUSE_DIALOGUE_NULL;
       pDialogueWindow = 0;
-      pIcons_LOD->SyncLoadedFilesCount();
 
       if ( uNumDialogueNPCPortraits == 1 )
         return 0;

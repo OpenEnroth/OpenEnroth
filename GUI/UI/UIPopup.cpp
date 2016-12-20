@@ -290,7 +290,6 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
         render->DrawTransparentRedShade(
             (iteminfo_window.uFrameX + v78) / 640.0f,
             (v81 + iteminfo_window.uFrameY + 30) / 480.0f,
-            //pIcons_LOD->LoadTexturePtr(inspect_item->GetIconName(), TEXTURE_16BIT_PALETTE));
             inspect_item_image);
 
         iteminfo_window.DrawTitleText(
@@ -415,8 +414,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     v28 = pItemsTable->pItems[inspect_item->uItemID].pDescription;
     if (*v28)
         Str += pFontSmallnum->CalcTextHeight(pItemsTable->pItems[inspect_item->uItemID].pDescription, &iteminfo_window, 100);
-    iteminfo_window.uFrameHeight = pIcons_LOD->LoadTexturePtr(inspect_item->GetIconName(),
-        TEXTURE_16BIT_PALETTE)->uTextureHeight + v81 + 54;
+    iteminfo_window.uFrameHeight = assets->GetImage_16BitColorKey(inspect_item->GetIconName(), 0x7FF)->GetHeight() + v81 + 54;
     if ((signed int)Str > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS && (inspect_item->special_enchantment || inspect_item->uEnchantmentType))
@@ -508,11 +506,6 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
             if (!(inspect_item->uAttributes & ITEM_HARDENED))
             {
                 render->ResetUIClipRect();
-                if (!areWeLoadingTexture)
-                {
-                    pIcons_LOD->LoadTexturePtr(inspect_item->GetIconName(), TEXTURE_16BIT_PALETTE)->Release();
-                    pIcons_LOD->SyncLoadedFilesCount();
-                }
                 return;
             }
             txt3 = localization->GetString(651); //"Hardened"
@@ -521,11 +514,6 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
         iteminfo_window.DrawText(pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
             iteminfo_window.uFrameHeight - LOBYTE(pFontComic->uFontHeight), inspect_item->uAttributes, txt3, 0, 0, 0);
         render->ResetUIClipRect();
-    }
-    if (!areWeLoadingTexture)
-    {
-        pIcons_LOD->LoadTexturePtr(inspect_item->GetIconName(), TEXTURE_16BIT_PALETTE)->Release();
-        pIcons_LOD->SyncLoadedFilesCount();
     }
 }
 

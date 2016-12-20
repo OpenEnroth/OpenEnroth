@@ -12,6 +12,20 @@
 #include "FrameTableInc.h"
 
 
+
+Image *Icon::GetTexture()
+{
+    if (!this->img)
+    {
+        this->img = assets->GetImage_16BitColorKey(
+            this->pTextureName,
+            0x7FF
+        );
+    }
+
+    return this->img;
+}
+
 Icon *IconFrameTable::GetIcon(unsigned int idx)
 {
     if (idx < this->uNumIcons)
@@ -45,36 +59,36 @@ unsigned int IconFrameTable::FindIcon(const char *pIconName)
 //----- (00494F70) --------------------------------------------------------
 Icon *IconFrameTable::GetFrame(unsigned int uIconID, unsigned int frame_time)
 {
-  int v6; // edx@3
-  uint i;
+    int v6; // edx@3
+    uint i;
 
-  if ( this->pIcons[uIconID].uFlags & 1 && this->pIcons[uIconID].GetAnimLength() != 0 )
-  {
-      int t = frame_time;
+    if (this->pIcons[uIconID].uFlags & 1 && this->pIcons[uIconID].GetAnimLength() != 0)
+    {
+        int t = frame_time;
 
-    t = (t /*/ 8*/) % (unsigned __int16)this->pIcons[uIconID].GetAnimLength();
-    t /= 8;
-    for ( i = uIconID; t > this->pIcons[i].GetAnimTime(); i++ )
-      t -= this->pIcons[i].GetAnimTime();
-    return &this->pIcons[i];
-  }
-  else
-    return &this->pIcons[uIconID];
+        t = (t /*/ 8*/) % (unsigned __int16)this->pIcons[uIconID].GetAnimLength();
+        t /= 8;
+        for (i = uIconID; t > this->pIcons[i].GetAnimTime(); i++)
+            t -= this->pIcons[i].GetAnimTime();
+        return &this->pIcons[i];
+    }
+    else
+        return &this->pIcons[uIconID];
 }
 
 //----- (00494FBF) --------------------------------------------------------
 void IconFrameTable::InitializeAnimation(unsigned int uIconID)
 {
-  if ( uIconID && (signed int)uIconID <= (signed int)this->uNumIcons )
-  {
-    for ( uint  i = uIconID; ; ++i )
+    if (uIconID && (signed int)uIconID <= (signed int)this->uNumIcons)
     {
-      //this->pIcons[i].uTextureID = pIcons_LOD->LoadTexture(this->pIcons[i].pTextureName, TEXTURE_16BIT_PALETTE);
-        this->pIcons[i].texture = assets->GetImage_16BitColorKey(this->pIcons[i].pTextureName, 0x7FF);
-      if ( !(this->pIcons[i].uFlags & 1) )
-        break;
+        for (uint i = uIconID; ; ++i)
+        {
+            if (!(this->pIcons[i].uFlags & 1))
+            {
+                break;
+            }
+        }
     }
-  }
 }
 
 //----- (0049500A) --------------------------------------------------------

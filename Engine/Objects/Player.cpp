@@ -781,34 +781,26 @@ void Player::SetCondition(unsigned int uConditionIdx, int a3)
 //----- (00492528) --------------------------------------------------------
 bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID)
 {
-  Texture_MM7 *texture; // esi@1
-  unsigned int slotWidth; // ebx@1
-  unsigned int slotHeight; // [sp+1Ch] [bp+Ch]@1
+    auto img = assets->GetImage_16BitColorKey(pItemsTable->pItems[uItemID].pIconName, 0x7FF);
+    unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
+    unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
 
-  texture = pIcons_LOD->LoadTexturePtr(pItemsTable->pItems[uItemID].pIconName, TEXTURE_16BIT_PALETTE);
-  slotWidth = GetSizeInInventorySlots(texture->uTextureWidth);
-  slotHeight = GetSizeInInventorySlots(texture->uTextureHeight);
-  if ( !areWeLoadingTexture )
-  {
-    texture->Release();
-    pIcons_LOD->SyncLoadedFilesCount();
-  }
-  Assert(slotHeight > 0 && slotWidth > 0, "Items should have nonzero dimensions");
-  if ( (slotWidth + uSlot % INVETORYSLOTSWIDTH) <= INVETORYSLOTSWIDTH && (slotHeight + uSlot / INVETORYSLOTSWIDTH) <= INVETORYSLOTSHEIGHT )
-  {
-      for (unsigned int x = 0; x < slotWidth; x++)
-      {
-        for (unsigned int y = 0; y < slotHeight; y++)
+    Assert(slotHeight > 0 && slotWidth > 0, "Items should have nonzero dimensions");
+    if ((slotWidth + uSlot % INVETORYSLOTSWIDTH) <= INVETORYSLOTSWIDTH && (slotHeight + uSlot / INVETORYSLOTSWIDTH) <= INVETORYSLOTSHEIGHT)
+    {
+        for (unsigned int x = 0; x < slotWidth; x++)
         {
-          if (pInventoryMatrix[y * INVETORYSLOTSWIDTH + x + uSlot] != 0)
-          {
-            return false;
-          }
+            for (unsigned int y = 0; y < slotHeight; y++)
+            {
+                if (pInventoryMatrix[y * INVETORYSLOTSWIDTH + x + uSlot] != 0)
+                {
+                    return false;
+                }
+            }
         }
-      }
-    return true;
-  }
-  return false;
+        return true;
+    }
+    return false;
 }
 
 
@@ -952,65 +944,44 @@ int Player::CreateItemInInventory2(unsigned int index, ItemGen *Src)
 }
 
 //----- (0049298B) --------------------------------------------------------
-void Player::PutItemArInventoryIndex( int uItemID, int itemListPos, int index )   //originally accepted ItemGen* but needed only its uItemID
+void Player::PutItemArInventoryIndex(int uItemID, int itemListPos, int index)   //originally accepted ItemGen* but needed only its uItemID
 {
-  Texture_MM7 *item_texture; // esi@1
-  int *pInvPos; // esi@4
-  unsigned int slot_width; // [sp+Ch] [bp-4h]@1
-  unsigned int slot_height; // [sp+18h] [bp+8h]@1
+    auto img = assets->GetImage_16BitColorKey(pItemsTable->pItems[uItemID].pIconName, 0x7FF);
+    unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
+    unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
-  item_texture = pIcons_LOD->LoadTexturePtr(pItemsTable->pItems[uItemID].pIconName, TEXTURE_16BIT_PALETTE);
-  slot_width =  GetSizeInInventorySlots(item_texture->uTextureWidth);
-  slot_height = GetSizeInInventorySlots(item_texture->uTextureHeight);
-  if ( !areWeLoadingTexture )
-  {
-    item_texture->Release();
-    pIcons_LOD->SyncLoadedFilesCount();
-  }
-  if ( slot_width > 0 )
-  {
-    pInvPos = &pInventoryMatrix[index];
-    for (unsigned int i = 0; i < slot_height; i++)
+    if (slot_width > 0)
     {
-      memset32(pInvPos, -1 - index, slot_width);//TODO: try to come up with a better solution. negative values are used when drawing the inventory - nothing is drawn
-      pInvPos += INVETORYSLOTSWIDTH;
+        int *pInvPos = &pInventoryMatrix[index];
+        for (unsigned int i = 0; i < slot_height; i++)
+        {
+            memset32(pInvPos, -1 - index, slot_width);//TODO: try to come up with a better solution. negative values are used when drawing the inventory - nothing is drawn
+            pInvPos += INVETORYSLOTSWIDTH;
+        }
     }
-  }
-  pInventoryMatrix[index] = itemListPos + 1;
+    pInventoryMatrix[index] = itemListPos + 1;
 }
-
-// 506128: using guessed type int areWeLoadingTexture;
 
 //----- (00492A36) --------------------------------------------------------
-void Player::RemoveItemAtInventoryIndex( unsigned int index )
+void Player::RemoveItemAtInventoryIndex(unsigned int index)
 {
-  ItemGen *item_in_slot; // ecx@1
-  Texture_MM7 *item_texture; // esi@1
-  unsigned int slot_height; // ebp@1
-  int *pInvPos; // edx@4
-  unsigned int slot_width; // [sp+14h] [bp+4h]@1
+    auto item_in_slot = &this->pInventoryItemList[pInventoryMatrix[index] - 1];
+    item_in_slot->Reset();
 
-  item_in_slot = &this->pInventoryItemList[pInventoryMatrix[index]-1];  
-  item_texture = pIcons_LOD->LoadTexturePtr(item_in_slot->GetIconName(), TEXTURE_16BIT_PALETTE);
-  item_in_slot->Reset();
-  slot_width = GetSizeInInventorySlots(item_texture->uTextureWidth);
-  slot_height = GetSizeInInventorySlots(item_texture->uTextureHeight);
-  if ( !areWeLoadingTexture )
-  {
-    item_texture->Release();
-    pIcons_LOD->SyncLoadedFilesCount();
-  }
-  if ( slot_width > 0 )
-  {
-    pInvPos = &pInventoryMatrix[index];
-    for (unsigned int i = 0; i < slot_height; i++)
+    auto img = assets->GetImage_16BitColorKey(item_in_slot->GetIconName(), 0x7FF);
+    unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
+    unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
+
+    if (slot_width > 0)
     {
-      memset32(pInvPos, 0, slot_width);
-      pInvPos += INVETORYSLOTSWIDTH;
+        int *pInvPos = &pInventoryMatrix[index];
+        for (unsigned int i = 0; i < slot_height; i++)
+        {
+            memset32(pInvPos, 0, slot_width);
+            pInvPos += INVETORYSLOTSWIDTH;
+        }
     }
-  }
 }
-// 506128: using guessed type int areWeLoadingTexture;
 
 //----- (00490EEE) --------------------------------------------------------
 int Player::SelectPhrasesTransaction(ItemGen *pItem, int building_type, int BuildID_2Events, int ShopMenuType)  //TODO: probably move this somewhere else, not really Player:: stuff
@@ -4785,7 +4756,6 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
         {
             pMouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
-            pIcons_LOD->RemoveTexturesPackFromTextureList();
             current_screen_type = SCREEN_GAME;
             viewparams->bRedrawGameUI = 1;
             _42777D_CastSpell_UseWand_ShootArrow((SPELL_TYPE)scroll_id, player_num - 1, 0x85u, 1, 0);
@@ -7744,7 +7714,7 @@ void Player::OnInventoryLeftClick()
           _50C9A0_IsEnchantingInProgress = 0;
           if ( pMessageQueue_50CBD0->uNumMessages )
             pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
-          pMouse->SetCursorBitmap("MICON1");
+          pMouse->SetCursorImage("MICON1");
           _50C9D0_AfterEnchClickEventId = 113;
           _50C9D4_AfterEnchClickEventSecondParam = 0;
           _50C9D8_AfterEnchClickEventTimeout = 256;
@@ -7764,7 +7734,7 @@ void Player::OnInventoryLeftClick()
           memcpy(&pParty->pPickedItem, &this->pInventoryItemList[invItemIndex-1], sizeof(pParty->pPickedItem));
           this->RemoveItemAtInventoryIndex(invMatrixIndex);
           pickedItemId = pParty->pPickedItem.uItemID;
-          pMouse->SetCursorBitmap(pItemsTable->pItems[pickedItemId].pIconName);
+          pMouse->SetCursorImage(pItemsTable->pItems[pickedItemId].pIconName);
           return;
         }
       }
@@ -7787,7 +7757,7 @@ void Player::OnInventoryLeftClick()
             }
           }
           memcpy(&pParty->pPickedItem, &tmpItem, sizeof(ItemGen));
-          pMouse->SetCursorBitmap(pParty->pPickedItem.GetIconName());
+          pMouse->SetCursorImage(pParty->pPickedItem.GetIconName());
           return;
         }
         else

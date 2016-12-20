@@ -376,11 +376,8 @@ void DropHeldItem()
     extern int UnprojectX(int);
     //v9 = UnprojectX(v1->x);
     a1.Create(pParty->sRotationY + UnprojectX(v1->x), 184, 200, 0);
-    auto pTextureID = pIcons_LOD->LoadTexture(pParty->pPickedItem.GetIconName(), TEXTURE_16BIT_PALETTE);
-    if (pTextureID != -1)
-        pIcons_LOD->pTextures[pTextureID].Release();
+
     pMouse->RemoveHoldingItem();
-    pIcons_LOD->SyncLoadedFilesCount();
 }
 
 

@@ -131,12 +131,12 @@ void Game_CloseTargetedSpellWindow()
     if (pGUIWindow_CastTargetedSpell)
     {
         if (current_screen_type == SCREEN_CHARACTERS)
-            pMouse->SetCursorBitmap("MICON2");
+            pMouse->SetCursorImage("MICON2");
         else
         {
             pGUIWindow_CastTargetedSpell->Release();
             pGUIWindow_CastTargetedSpell = nullptr;
-            pMouse->SetCursorBitmap("MICON1");
+            pMouse->SetCursorImage("MICON1");
             game_ui_status_bar_event_string_time_left = 0;
             _50C9A0_IsEnchantingInProgress = 0;
             back_to_game();
@@ -156,7 +156,6 @@ void Game_OnEscape()
     pEventTimer->Resume();
     current_screen_type = SCREEN_GAME;
     viewparams->bRedrawGameUI = true;
-    pIcons_LOD->RemoveTexturesFromTextureList();
 }
 
 
@@ -326,8 +325,6 @@ void Game_EventLoop()
             //case UIMSG_Quit:                      Game_QuitGameWhilePlaying(uMessageParam); continue;
             case UIMSG_80:
                 __debugbreak();
-                pIcons_LOD->SyncLoadedFilesCount();
-                pIcons_LOD->RemoveTexturesPackFromTextureList();
                 pGUIWindow_CurrentMenu->Release();
                 current_screen_type = SCREEN_OPTIONS;
                 __debugbreak();//pGUIWindow_CurrentMenu = GUIWindow::Create(0, 0, window->GetWidth(), window->GetHeight(), WINDOW_8, 0, 0);
@@ -765,7 +762,7 @@ void Game_EventLoop()
                         {
                             pGUIWindow_CastTargetedSpell->Release();
                             pGUIWindow_CastTargetedSpell = 0;
-                            pMouse->SetCursorBitmap("MICON1");
+                            pMouse->SetCursorImage("MICON1");
                             game_ui_status_bar_event_string_time_left = 0;
                             _50C9A0_IsEnchantingInProgress = 0;
                             back_to_game();
@@ -774,17 +771,12 @@ void Game_EventLoop()
                     }
                     else if (current_screen_type == SCREEN_MENU)
                     {/*
-                        pIcons_LOD->SyncLoadedFilesCount();
-                        pIcons_LOD->RemoveTexturesPackFromTextureList();
-                        pIcons_LOD->SyncLoadedFilesCount();
-                        pIcons_LOD->RemoveTexturesPackFromTextureList();
                         stru_506E40.Release();
                         Game_OnEscape();*/
                         break;
                     }
                     else if (current_screen_type == SCREEN_SAVEGAME || current_screen_type == SCREEN_LOADGAME)
                     {/*
-                        pIcons_LOD->RemoveTexturesPackFromTextureList();
                         //crt_deconstruct_ptr_6A0118();
                         stru_506E40.Release();
                         Game_OnEscape();*/
@@ -793,7 +785,6 @@ void Game_EventLoop()
                     else if (current_screen_type == SCREEN_OPTIONS)
                     {/*
                         options_menu_skin.Relaease();
-                        pIcons_LOD->SyncLoadedFilesCount();
                         WriteWindowsRegistryInt("soundflag", (char)uSoundVolumeMultiplier);
                         WriteWindowsRegistryInt("musicflag", (char)uMusicVolimeMultiplier);
                         WriteWindowsRegistryInt("CharVoices", (char)uVoicesVolumeMultiplier);
@@ -836,13 +827,7 @@ void Game_EventLoop()
                         }
                         if (!pKeyBindingFlag)
                         {
-                            for (uint i = 0; i < 5; i++)
-                            {
-                                if (game_ui_options_controls[i])
-                                    pIcons_LOD->pTextures[game_ui_options_controls[i]].Release();
-                            }
                             memset(&game_ui_options_controls, 0, 20);
-                            pIcons_LOD->SyncLoadedFilesCount();
                             for (uint i = 0; i < 28; ++i)
                             {
                                 if (pKeyActionMap->GetActionVKey((enum InputAction)i) != pPrevVirtualCidesMapping[i])
@@ -876,7 +861,6 @@ void Game_EventLoop()
                         {
                             if (current_screen_type == SCREEN_QUICK_REFERENCE)
                             {
-                                pIcons_LOD->RemoveTexturesPackFromTextureList();
                                 Game_OnEscape();
                                 continue;
                             }
@@ -888,7 +872,6 @@ void Game_EventLoop()
                                 switch (current_screen_type)
                                 {
                                 case SCREEN_CASTING:
-                                    pIcons_LOD->RemoveTexturesPackFromTextureList();
                                     if (some_active_character)
                                     {
                                         uActiveCharacter = some_active_character;
@@ -921,7 +904,6 @@ void Game_EventLoop()
                                 case SCREEN_CHEST:
                                     pWindow2 = pChestWindow;
                                     pWindow2->Release();
-                                    pIcons_LOD->RemoveTexturesPackFromTextureList();
                                     current_screen_type = SCREEN_GAME;
                                     viewparams->bRedrawGameUI = 1;
                                     pEventTimer->Resume();
@@ -930,7 +912,6 @@ void Game_EventLoop()
                                     __debugbreak();
                                     pWindow2 = ptr_507BC8;
                                     pWindow2->Release();
-                                    pIcons_LOD->RemoveTexturesPackFromTextureList();
                                     current_screen_type = SCREEN_GAME;
                                     viewparams->bRedrawGameUI = 1;
                                     pEventTimer->Resume();
@@ -969,7 +950,6 @@ void Game_EventLoop()
                                     __debugbreak();
                                     pGUIWindow_CurrentMenu->Release();
                                     current_screen_type = SCREEN_HOUSE;
-                                    pIcons_LOD->RemoveTexturesPackFromTextureList();
                                     continue;
                                 case SCREEN_HOUSE:
                                     if (uDialogueType)
@@ -1047,7 +1027,6 @@ void Game_EventLoop()
                                 case SCREEN_CHARACTERS:
                                     CharacterUI_ReleaseButtons();
                                     ReleaseAwardsScrollBar();
-                                    pIcons_LOD->RemoveTexturesPackFromTextureList();
                                     Game_OnEscape();
                                     continue;
                                 case SCREEN_SPELL_BOOK:
@@ -1066,7 +1045,6 @@ void Game_EventLoop()
                             __debugbreak(); // which GAME_MENU is this?
                             CharacterUI_ReleaseButtons();
                             ReleaseAwardsScrollBar();
-                            pIcons_LOD->RemoveTexturesPackFromTextureList();
                         }
                         __debugbreak(); // which GAME_MENU is this?
                         Game_OnEscape();
@@ -1301,7 +1279,7 @@ void Game_EventLoop()
                     pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
                     pGUIWindow_CastTargetedSpell->Release();
                     pGUIWindow_CastTargetedSpell = 0;
-                    pMouse->SetCursorBitmap("MICON1");
+                    pMouse->SetCursorImage("MICON1");
                     game_ui_status_bar_event_string_time_left = 0;
                     _50C9A0_IsEnchantingInProgress = 0;
                     back_to_game();
@@ -1319,7 +1297,7 @@ void Game_EventLoop()
                     pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
                     pGUIWindow_CastTargetedSpell->Release();
                     pGUIWindow_CastTargetedSpell = 0;
-                    pMouse->SetCursorBitmap("MICON1");
+                    pMouse->SetCursorImage("MICON1");
                     game_ui_status_bar_event_string_time_left = 0;
                     _50C9A0_IsEnchantingInProgress = 0;
                     back_to_game();
@@ -1346,7 +1324,7 @@ void Game_EventLoop()
                         pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
                         pGUIWindow_CastTargetedSpell->Release();
                         pGUIWindow_CastTargetedSpell = 0;
-                        pMouse->SetCursorBitmap("MICON1");
+                        pMouse->SetCursorImage("MICON1");
                         game_ui_status_bar_event_string_time_left = 0;
                         _50C9A0_IsEnchantingInProgress = 0;
                         back_to_game();
@@ -1366,7 +1344,7 @@ void Game_EventLoop()
                 pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
                 pGUIWindow_CastTargetedSpell->Release();
                 pGUIWindow_CastTargetedSpell = 0;
-                pMouse->SetCursorBitmap("MICON1");
+                pMouse->SetCursorImage("MICON1");
                 game_ui_status_bar_event_string_time_left = 0;
                 _50C9A0_IsEnchantingInProgress = 0;
                 back_to_game();
@@ -1402,7 +1380,7 @@ void Game_EventLoop()
                         pGUIWindow_CastTargetedSpell->Release();
                         pGUIWindow_CastTargetedSpell = 0;
                         pEventTimer->Resume();
-                        pMouse->SetCursorBitmap("MICON1");
+                        pMouse->SetCursorImage("MICON1");
                         game_ui_status_bar_event_string_time_left = 0;
                         _50C9A0_IsEnchantingInProgress = 0;
                     }
@@ -1889,7 +1867,7 @@ void Game_EventLoop()
                 pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
                 pGUIWindow_CastTargetedSpell->Release();
                 pGUIWindow_CastTargetedSpell = 0;
-                pMouse->SetCursorBitmap("MICON1");
+                pMouse->SetCursorImage("MICON1");
                 game_ui_status_bar_event_string_time_left = 0;
                 _50C9A0_IsEnchantingInProgress = 0;
                 back_to_game();
@@ -2217,7 +2195,6 @@ void Game_EventLoop()
                         pEventTimer->Resume();
                         viewparams->bRedrawGameUI = 1;
                         current_screen_type = SCREEN_GAME;
-                        pIcons_LOD->RemoveTexturesPackFromTextureList();
                         v103 = quick_spell_at_page + 11 * player->lastOpenedSpellbookPage;
                         /*if ( dword_50C9E8 < 40 )
                         {
@@ -2282,9 +2259,7 @@ void Game_EventLoop()
                 DoThatMessageThing();
                 if (current_screen_type != SCREEN_GAME)
                     pGUIWindow_CurrentMenu->Release();
-                ++pIcons_LOD->uTexturePacksCount;
-                if (!pIcons_LOD->uNumPrevLoadedFiles)
-                    pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
+
                 new OnButtonClick2(0x230u, 0x1C2u, 0, 0, (int)pBtn_QuickReference, 0);
                 viewparams->bRedrawGameUI = true;
 
@@ -2963,7 +2938,6 @@ void Game_Loop()
             sub_491E3A();
             GameUI_LoadPlayerPortraintsAndVoices();
             uGameState = GAME_STATE_PLAYING;
-            pIcons_LOD->dword_11B84 = pIcons_LOD->uNumLoadedFiles;
             bLoading = true;
             continue;
         }

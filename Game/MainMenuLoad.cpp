@@ -95,7 +95,6 @@ void MainMenuLoad_EventLoop()
                 viewparams->field_48 = 1;
                 //if (current_screen_type == SCREEN_LOADGAME)
                 {
-                    pIcons_LOD->RemoveTexturesPackFromTextureList();
                     //crt_deconstruct_ptr_6A0118();
 
                     if (main_menu_background)

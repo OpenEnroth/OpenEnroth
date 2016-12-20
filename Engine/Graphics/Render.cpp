@@ -6907,210 +6907,179 @@ void Render::DrawMasked(float u, float v, Image *pTexture, unsigned int color_di
 
 
 //----- (004A65CC) --------------------------------------------------------
-void Render::_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
+void Render::_4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a6, int a7, int a8)
 {
-  unsigned int uHeight; // edi@6
-  unsigned int v14; // edx@11
-  unsigned int v16; // edx@14
-  unsigned int v17; // edx@17
-  unsigned int v19; // edx@20
-  int v20; // eax@27
-  int v21; // edx@29
-  unsigned __int8 *v24; // [sp+14h] [bp-4h]@6
-  int Width; // [sp+2Ch] [bp+14h]@6
+    unsigned int uHeight; // edi@6
+    unsigned int v14; // edx@11
+    unsigned int v16; // edx@14
+    unsigned int v17; // edx@17
+    unsigned int v19; // edx@20
+    int v20; // eax@27
+    int v21; // edx@29
+    unsigned __int16 *v24; // [sp+14h] [bp-4h]@6
+    int Width; // [sp+2Ch] [bp+14h]@6
 
-  if ( this->uNumSceneBegins && a4 && a4->pPalette16 && a5 && a5->pPalette16 )
-  {
-    v24 = a4->paletted_pixels;
-    Width = a4->uTextureWidth;
-    uHeight = a4->uTextureHeight;
-    int clipped_out_x = x;
-    int clipped_out_y = y;
-    if ( this->bClip )
+    if (this->uNumSceneBegins && a4 && a5)
     {
-      if ( (signed int)x < (signed int)this->uClipX )
-      {
-        v24 += this->uClipX - x;
-        Width += x - this->uClipX;
-        clipped_out_x = uClipX;
-      }
-      if ( (signed int)y < (signed int)this->uClipY )
-      {
-        v24 += a4->uTextureWidth * (this->uClipY - y);
-        uHeight = y - this->uClipY + a4->uTextureHeight;
-        clipped_out_y = uClipY;
-      }
-      v14 = this->uClipX;
-      if ( (signed int)this->uClipX < (signed int)x )
-        v14 = x;
-      if ( (signed int)(Width + v14) > (signed int)this->uClipZ )
-      {
-        v16 = this->uClipX;
-        if ( (signed int)this->uClipX < (signed int)x )
-          v16 = x;
-        Width = this->uClipZ - v16;
-      }
-      v17 = this->uClipY;
-      if ( (signed int)this->uClipY < (signed int)y )
-        v17 = y;
-      if ( (signed int)(uHeight + v17) > (signed int)this->uClipW )
-      {
-        v19 = this->uClipY;
-        if ( (signed int)this->uClipY < (signed int)y )
-          v19 = y;
-        uHeight = this->uClipW - v19;
-      }
-    }
-
-    for (uint dy = 0; dy < uHeight; ++dy)
-    {
-      for (int dx = 0; dx < Width; ++dx)
-      {
-        v20 = *v24;
-        if ( v20 >= a7 && v20 <= a8 )
+        v24 = (unsigned __int16 *)a4->GetPixels(IMAGE_FORMAT_R5G6B5);
+        Width = a4->GetWidth();
+        uHeight = a4->GetHeight();
+        int clipped_out_x = x;
+        int clipped_out_y = y;
+        if (this->bClip)
         {
-          v21 = a7 + (a6 + v20) % (2 * (a8 - a7));
-          if ( (a6 + v20) % (2 * (a8 - a7)) >= a8 - a7 )
-            v21 = 2 * a8 - v21 - a7;
-          WritePixel16(clipped_out_x + dx, clipped_out_y + dy, a4->pPalette16[v21]);
-        }
-        ++v24;
-      }
-      v24 += a4->uTextureWidth - Width;
-    }
-    /*if ( (signed int)v9 > 0 )
-    {
-      ya = v9;
-      v23 = v22 - v27;
-      do
-      {
-        if ( v27 > 0 )
-        {
-          xa = v27;
-          do
-          {
-            v20 = *v24;
-            if ( v20 >= a7 && v20 <= a8 )
+            if ((signed int)x < (signed int)this->uClipX)
             {
-              v21 = a7 + (a6 + v20) % (2 * (a8 - a7));
-              if ( (a6 + v20) % (2 * (a8 - a7)) >= a8 - a7 )
-                v21 = 2 * a8 - v21 - a7;
-              *v8 = a4->pPalette16[v21];
+                v24 += this->uClipX - x;
+                Width += x - this->uClipX;
+                clipped_out_x = uClipX;
             }
-            ++v8;
-            ++v24;
-            --xa;
-          }
-          while ( xa );
+            if ((signed int)y < (signed int)this->uClipY)
+            {
+                v24 += a4->GetWidth() * (this->uClipY - y);
+                uHeight = y - this->uClipY + a4->GetHeight();
+                clipped_out_y = uClipY;
+            }
+            v14 = this->uClipX;
+            if ((signed int)this->uClipX < (signed int)x)
+                v14 = x;
+            if ((signed int)(Width + v14) >(signed int)this->uClipZ)
+            {
+                v16 = this->uClipX;
+                if ((signed int)this->uClipX < (signed int)x)
+                    v16 = x;
+                Width = this->uClipZ - v16;
+            }
+            v17 = this->uClipY;
+            if ((signed int)this->uClipY < (signed int)y)
+                v17 = y;
+            if ((signed int)(uHeight + v17) >(signed int)this->uClipW)
+            {
+                v19 = this->uClipY;
+                if ((signed int)this->uClipY < (signed int)y)
+                    v19 = y;
+                uHeight = this->uClipW - v19;
+            }
         }
-        v8 += this->uTargetSurfacePitch - v27;
-        v24 += v23;
-        --ya;
-      }
-      while ( ya );
-    }*/
-  }
+
+        for (uint dy = 0; dy < uHeight; ++dy)
+        {
+            for (int dx = 0; dx < Width; ++dx)
+            {
+                /*v20 = *v24;
+                if (v20 >= a7 && v20 <= a8)
+                {
+                    v21 = a7 + (a6 + v20) % (2 * (a8 - a7));
+                    if ((a6 + v20) % (2 * (a8 - a7)) >= a8 - a7)
+                        v21 = 2 * a8 - v21 - a7;
+                    WritePixel16(clipped_out_x + dx, clipped_out_y + dy, a4->pPalette16[v21]);
+                }
+                ++v24;*/
+                WritePixel16(clipped_out_x + dx, clipped_out_y + dy, *v24);
+            }
+            v24 += a4->GetWidth() - Width;
+        }
+    }
 }
 
 //----- (004A63E6) --------------------------------------------------------
-void Render::BlendTextures(unsigned int a2, unsigned int a3, Image *a4, Texture_MM7 *a5, int t, int start_opacity, int end_opacity)
-                         //unsigned int a2, unsigned int a3, Image *a4, Texture_MM7 *a5, int a6, int a7, int a8)
+void Render::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity)
 {
-  unsigned int v14; // edx@11
-  unsigned int v16; // edx@14
-  unsigned int v17; // edx@17
-  unsigned int v19; // edx@20
-  int v20; // eax@27
-  int v21; // edx@29
-  int Height; // [sp+10h] [bp-8h]@6
-  int Width; // [sp+14h] [bp-4h]@6
-  int v27; // [sp+24h] [bp+Ch]@23
-  unsigned __int8 *v28; // [sp+28h] [bp+10h]@6
+    unsigned int v14; // edx@11
+    unsigned int v16; // edx@14
+    unsigned int v17; // edx@17
+    unsigned int v19; // edx@20
+    int v20; // eax@27
+    int v21; // edx@29
+    int Height; // [sp+10h] [bp-8h]@6
+    int Width; // [sp+14h] [bp-4h]@6
+    int v27; // [sp+24h] [bp+Ch]@23
+    unsigned __int16 *v28; // [sp+28h] [bp+10h]@6
 
-  /*if ( this->uNumSceneBegins )
-  {
-    if ( a4 )
+    if (this->uNumSceneBegins)
     {
-      if ( a4->pPalette16 )
-      {
-        if ( a5 )
+        if (a4 && a5)
         {
-          if ( a5->pPalette16 )
-          {
-            v28 = a4->paletted_pixels;
-            Width = a4->uTextureWidth;
-            Height = a4->uTextureHeight;
-            int clipped_out_x = a2;
-            int clipped_out_y = a3;
-            if ( this->bClip )
+            //if ( a4->pPalette16 )
             {
-              if ( (signed int)a2 < (signed int)this->uClipX )
-              {
-                v28 += this->uClipX - a2;
-                Width += a2 - this->uClipX;
-                clipped_out_x = uClipX;
-              }
-
-              if ( (signed int)a3 < (signed int)this->uClipY )
-              {
-                v28 += a4->uTextureWidth * (this->uClipY - a3);
-                Height += a3 - this->uClipY;
-                clipped_out_y = uClipY;
-              }
-
-              v14 = this->uClipX;
-              if ( (signed int)this->uClipX < (signed int)a2 )
-                v14 = a2;
-              if ( (signed int)(Width + v14) > (signed int)this->uClipZ )
-              {
-                v16 = this->uClipX;
-                if ( (signed int)this->uClipX < (signed int)a2 )
-                  v16 = a2;
-                Width = this->uClipZ - v16;
-              }
-
-              v17 = this->uClipY;
-              if ( (signed int)this->uClipY < (signed int)a3 )
-                v17 = a3;
-              if ( (signed int)(Height + v17) > (signed int)this->uClipW )
-              {
-                v19 = this->uClipY;
-                if ( (signed int)this->uClipY < (signed int)a3 )
-                  v19 = a3;
-                Height = this->uClipW - v19;
-              }
-            }
-
-            v27 = 0;
-            for (int y = 0; y < Height; ++y)
-            {
-              for (int x = 0; x < Width; ++x)
-              {
-                  if ( *v28 )
-                  {
-                    v20 = *(&a5->paletted_pixels[x & a5->uWidthMinus1] + a5->uTextureWidth * (v27 & a5->uHeightMinus1));
-                    if ( v20 >= a7 )
+                //if ( a5 )
+                {
+                    //if ( a5->pPalette16 )
                     {
-                      if ( v20 <= a8 )
-                      {
-                        v21 = a7 + (a6 + v20) % (2 * (a8 - a7));
-                        if ( (a6 + v20) % (2 * (a8 - a7)) >= a8 - a7 )
-                          v21 = 2 * a8 - v21 - a7;
-                        //v9 = a5;
-                        //*v10 = a5->pPalette16[v21];
-                        WritePixel16(clipped_out_x + x, clipped_out_y + y, a5->pPalette16[v21]);
-                      }
+                        v28 = (unsigned __int16 *)a4->GetPixels(IMAGE_FORMAT_R5G6B5);
+                        Width = a4->GetWidth();
+                        Height = a4->GetHeight();
+                        int clipped_out_x = a2;
+                        int clipped_out_y = a3;
+                        if (this->bClip)
+                        {
+                            if ((signed int)a2 < (signed int)this->uClipX)
+                            {
+                                v28 += this->uClipX - a2;
+                                Width += a2 - this->uClipX;
+                                clipped_out_x = uClipX;
+                            }
+
+                            if ((signed int)a3 < (signed int)this->uClipY)
+                            {
+                                v28 += a4->GetWidth() * (this->uClipY - a3);
+                                Height += a3 - this->uClipY;
+                                clipped_out_y = uClipY;
+                            }
+
+                            v14 = this->uClipX;
+                            if ((signed int)this->uClipX < (signed int)a2)
+                                v14 = a2;
+                            if ((signed int)(Width + v14) >(signed int)this->uClipZ)
+                            {
+                                v16 = this->uClipX;
+                                if ((signed int)this->uClipX < (signed int)a2)
+                                    v16 = a2;
+                                Width = this->uClipZ - v16;
+                            }
+
+                            v17 = this->uClipY;
+                            if ((signed int)this->uClipY < (signed int)a3)
+                                v17 = a3;
+                            if ((signed int)(Height + v17) >(signed int)this->uClipW)
+                            {
+                                v19 = this->uClipY;
+                                if ((signed int)this->uClipY < (signed int)a3)
+                                    v19 = a3;
+                                Height = this->uClipW - v19;
+                            }
+                        }
+
+                        v27 = 0;
+                        for (int y = 0; y < Height; ++y)
+                        {
+                            for (int x = 0; x < Width; ++x)
+                            {
+__debugbreak(); // find out what's that spell
+                                /*if (*v28)
+                                {
+                                    v20 = *((unsigned __int16 *)a5->GetPixels(IMAGE_FORMAT_R5G6B5) + x & (a5->GetWidth() - 1) + a5->GetWidth() * (v27 & (a5->GetHeight() - 1)));
+                                    if (v20 >= start_opacity)
+                                    {
+                                        if (v20 <= end_opacity)
+                                        {
+                                            v21 = start_opacity + (t + v20) % (2 * (end_opacity - start_opacity));
+                                            if ((t + v20) % (2 * (end_opacity - start_opacity)) >= end_opacity - start_opacity)
+                                                v21 = 2 * end_opacity - v21 - start_opacity;
+
+                                            WritePixel16(clipped_out_x + x, clipped_out_y + y, a5->pPalette16[v21]);
+                                        }
+                                    }
+                                }*/
+                                v28++;
+                            }
+                            v28 += a4->GetWidth() - Width;
+                        }
                     }
-                  }
-                  v28++;
-              }
-                v28 += a4->uTextureWidth - Width;
+                }
             }
-          }
         }
-      }
     }
-  }*/
 }
 
 

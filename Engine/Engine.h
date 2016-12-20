@@ -20,13 +20,13 @@ void Engine_DeinitializeAndTerminate(int exitCode);
 #include "Engine/AssetsManager.h"
 
 
-#define GAME_FLAGS_1_01_lightmap_related                 0x01
-#define GAME_FLAGS_1_DRAW_BLV_DEBUGS    0x08
+#define GAME_FLAGS_1_01_lightmap_related    0x01
+#define GAME_FLAGS_1_DRAW_BLV_DEBUGS        0x08
+
 #define GAME_FLAGS_2_SATURATE_LIGHTMAPS 0x02
 #define GAME_FLAGS_2_ALTER_GRAVITY      0x08
 #define GAME_FLAGS_2_TARGETING_MODE     0x10
 #define GAME_FLAGS_2_DRAW_BLOODSPLATS   0x20
-
 
 
 /*  320 */
@@ -165,8 +165,18 @@ public:
     __int64 field_E10;
     int uNumStationaryLights_in_pStationaryLightsStack;
     unsigned int __depricated1;//unsigned int bGammaControlInitialized;
-    unsigned int uFlags;
-    unsigned int uFlags2;
+
+    unsigned int uFlags;    // 0x0001    do not render terrain / bmodels(odm), render bmodels in white(blv)
+                            // 0x0002    only 0th lod, no lightning
+                            // & 0x0004  draw lightmaps / decals debug outlines
+                            // 0x0008    draw portal debug outlines
+                            // 0x0080    camera / culling / projection mode : BLV
+                            // 0x1000    do Torchlight lightning
+
+    unsigned int uFlags2;   // 0x02 : alter lightmaps saturation
+                            // 0x08 : alter gravity strength (for out15.odm)
+                            // 0x10 : current cursor is "MICON2" (crosshair)
+                            // 0x20 : bloodsplats
     float fSaturation;
     unsigned __int64 __depricated2;//unsigned __int64 uSomeGammaStartTime;
     unsigned __int64 __depricated3;//__int64 uSomeGammaDeltaTime;

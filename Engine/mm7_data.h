@@ -393,7 +393,6 @@ extern char byte_4FAA24;
 //extern HWND dword_4FAA28; // idb
 
 extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
-extern int areWeLoadingTexture;
 extern std::array<char, 777> books_num_items_per_page;
 extern int lloyds_beacon_spell_id; // dword_506338
 extern int lloyds_beacon_sound_id; // dword_50633C
@@ -482,14 +481,13 @@ extern std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
 extern unsigned int uNumBlueFacesInBLVMinimap;
 extern std::array<unsigned __int16, 50> pBlueFacesInBLVMinimapIDs;
-extern std::array<int, 14> pTextureIDs_PartyBuffIcons;
+extern std::array<class Image *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
 extern int dword_576E28;
 extern int _576E2C_current_minimap_zoom;
 extern GameTime _5773B8_event_timer; // 5773B8
 
-extern int dword_591084;
 extern struct Actor *pDialogue_SpeakingActor;
 extern unsigned int uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
@@ -644,7 +642,6 @@ extern bool bNoCD;
 extern bool bNoSound;
 extern std::array<int, 100> dword_720020_zvalues;
 extern std::array<int, 299> dword_7201B0_zvalues;
-extern int uTextureID_720980;
 extern std::array<__int16, 104> word_7209A0_intercepts_ys_plus_ys;
 extern std::array<__int16, 104> word_720A70_intercepts_xs_plus_xs;
 extern std::array<__int16, 104> word_720B40_intercepts_zs;

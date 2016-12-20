@@ -195,7 +195,7 @@ void MainMenu_EventLoop()
                 uGameState = GAME_FINISHED;
                 break;
             case UIMSG_ChangeCursor:
-                pMouse->SetCursorBitmap("MICON2");
+                pMouse->SetCursorImage("MICON2");
                 break;
             case UIMSG_DebugBlv:
                 __debugbreak();//some debugging tool
@@ -312,7 +312,6 @@ void MainMenu_EventLoop()
                 }
                 /*if (current_screen_type == SCREEN_LOADGAME)
                 {
-                    pIcons_LOD->RemoveTexturesPackFromTextureList();
                     //crt_deconstruct_ptr_6A0118();
                     main_menu_background.Release();
                     main_menu_background.Load("title.pcx", 0);
