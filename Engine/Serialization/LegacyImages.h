@@ -7,6 +7,20 @@
 */
 
 
+
+/*   48 */
+#pragma pack(push, 1)
+struct TileDesc_MM7  //26
+{
+    char pTileName[16];
+    unsigned __int16 uTileID;
+    unsigned __int16 uBitmapID;
+    unsigned __int16 tileset;
+    unsigned __int16 uSection;
+    unsigned __int16 uAttributes;
+};
+#pragma pack(pop)
+
 #pragma pack(push, 1)
 struct NPCData_Image_MM7
 {

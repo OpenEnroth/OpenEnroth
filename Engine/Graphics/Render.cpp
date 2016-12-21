@@ -17,7 +17,8 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 
-#include "Level/Decoration.h"
+#include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/Level/Decoration.h"
 
 #include "Media/MediaPlayer.h"
 
@@ -188,19 +189,6 @@ bool Render::AreRenderSurfacesOk()
 //----- (004A19D8) --------------------------------------------------------
 unsigned int BlendColors(unsigned int a1, unsigned int a2)
 {
-  /*signed __int64 v2; // ST10_8@1
-  double v3; // st7@1
-  float v4; // ST24_4@1
-  double v5; // ST10_8@1
-  int v6; // ST1C_4@1
-  float v7; // ST24_4@1
-  double v8; // ST10_8@1
-  unsigned __int8 v9; // ST20_1@1
-  float v10; // ST24_4@1
-  double v11; // ST10_8@1
-  float v12; // ST24_4@1
-  double v13; // ST08_8@1*/
-
   uint alpha = (uint)floorf(0.5f + (a1 >> 24) / 255.0f *
                                    (a2 >> 24) / 255.0f * 255.0f),
        red = (uint)floorf(0.5f + ((a1 >> 16) & 0xFF) / 255.0f *
@@ -210,277 +198,263 @@ unsigned int BlendColors(unsigned int a1, unsigned int a2)
        blue = (uint)floorf(0.5f + ((a1 >> 0) & 0xFF) / 255.0f *
                                    ((a2 >> 0) & 0xFF) / 255.0f * 255.0f);
   return (alpha << 24) | (red << 16) | (green << 8) | blue;
-  /*v2 = a1 >> 24;
-  v3 = (double)v2 / 255.0f;
-  HIDWORD(v2) = 0;
-  LODWORD(v2) = a2 >> 24;
-  v4 = v3 * (double)v2 / 255.0f * 255.0;
-  v5 = v4 + 6.7553994e15;
-  v6 = LODWORD(v5);
-  v7 = (double)((a1 >> 16) & 0xFFi64) / 255.0f * (double)((a2 >> 16) & 0xFF) * 0.0039215689 * 255.0;
-  v8 = v7 + 6.7553994e15;
-  v9 = LOBYTE(v8);
-  v10 = (double)((unsigned __int16)a1 >> 8) / 255.0f * (double)((unsigned __int16)a2 >> 8) / 255.0f * 255.0;
-  v11 = v10 + 6.7553994e15;
-  v12 = (double)(a1 & 0xFFi64) / 255.0f * (double)(unsigned __int8)a2 / 255.0f * 255.0;
-  v13 = v12 + 6.7553994e15;
-  return LOBYTE(v13) | ((LOBYTE(v11) | (((v6 << 8) | v9) << 8)) << 8);*/
 }
 
 void Render::RenderTerrainD3D() // New function
 {
-  int v6; // ecx@8
-  struct Polygon *pTilePolygon; // ebx@8
-  float Light_tile_dist;
+    struct Polygon *pTilePolygon; // ebx@8
+    float Light_tile_dist;
 
-  //warning: the game uses CW culling by default, ccw is incosistent
-  pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CCW);
+    //warning: the game uses CW culling by default, ccw is incosistent
+    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CCW);
 
-  static RenderVertexSoft pTerrainVertices[128 * 128];//vertexCountX and vertexCountZ
+    static RenderVertexSoft pTerrainVertices[128 * 128];//vertexCountX and vertexCountZ
 
-  //Генерация местоположения вершин-------------------------------------------------------------------------
-  //решётка вершин делится на две части от -64 до 0 и от 0 до 64
-  //
-  // -64  X  0     64
-  //  --------------- 64
-  //  |      |      |
-  //  |      |      |
-  //  |      |      |
-  // 0|------+------| Z
-  //  |      |      |
-  //  |      |      |
-  //  |      |      |
-  //  ---------------
-  //                -64
+    //Генерация местоположения вершин-------------------------------------------------------------------------
+    //решётка вершин делится на две части от -64 до 0 и от 0 до 64
+    //
+    // -64  X  0     64
+    //  --------------- 64
+    //  |      |      |
+    //  |      |      |
+    //  |      |      |
+    // 0|------+------| Z
+    //  |      |      |
+    //  |      |      |
+    //  |      |      |
+    //  ---------------
+    //                -64
 
-  int blockScale = 512;
-  int heightScale = 32;
-  for (unsigned int z = 0; z < 128; ++z)
-  {
-    for (unsigned int x = 0; x < 128; ++x)
+    int blockScale = 512;
+    int heightScale = 32;
+    for (unsigned int z = 0; z < 128; ++z)
     {
-      pTerrainVertices[z * 128 + x].vWorldPosition.x = (-64 + (signed)x) * blockScale;
-      pTerrainVertices[z * 128 + x].vWorldPosition.y = (64 - (signed)z) * blockScale;
-      pTerrainVertices[z * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[z * 128 + x];
-      pIndoorCameraD3D->ViewTransform(&pTerrainVertices[z * 128 + x], 1);
-      pIndoorCameraD3D->Project(&pTerrainVertices[z * 128 + x], 1, 0);
+        for (unsigned int x = 0; x < 128; ++x)
+        {
+            pTerrainVertices[z * 128 + x].vWorldPosition.x = (-64 + (signed)x) * blockScale;
+            pTerrainVertices[z * 128 + x].vWorldPosition.y = (64 - (signed)z) * blockScale;
+            pTerrainVertices[z * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[z * 128 + x];
+            pIndoorCameraD3D->ViewTransform(&pTerrainVertices[z * 128 + x], 1);
+            pIndoorCameraD3D->Project(&pTerrainVertices[z * 128 + x], 1, 0);
+        }
     }
-  }
-//-------(Отсечение невидимой части карты)------------------------------------------------------------------------------------------
-  float direction = (float)(pIndoorCameraD3D->sRotationY / 256);//direction of the camera(напрвление камеры)
-  //0-East(B)
-  //1-NorthEast(CB)
-  //2-North(C)
-  //3-WestNorth(CЗ)
-  //4-West(З)
-  //5-SouthWest(ЮЗ)
-  //6-South(Ю)
-  //7-SouthEast(ЮВ)
-  unsigned int Start_X, End_X, Start_Z, End_Z;
-  if ( direction >= 0 && direction < 1.0 )//East(B) - NorthEast(CB)
-  {
-    Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 128;
-    Start_Z = 0, End_Z = 128;
-  }
-  else if (direction >= 1.0 && direction < 3.0)//NorthEast(CB) - WestNorth(CЗ)
-  {
-      Start_X = 0, End_X = 128;
-      Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellZ + 1;
-  }
-  else if (direction >= 3.0 && direction < 5.0)//WestNorth(CЗ) - SouthWest(ЮЗ)
-  {
-    Start_X = 0, End_X = pODMRenderParams->uMapGridCellX + 2;
-    Start_Z = 0, End_Z = 128;
-  }
-  else if ( direction >= 5.0 && direction < 7.0 )//SouthWest(ЮЗ) - //SouthEast(ЮВ)
-  {
-    Start_X = 0, End_X = 128;
-    Start_Z = pODMRenderParams->uMapGridCellZ - 2, End_Z = 128;
-  }
-  else//SouthEast(ЮВ) - East(B)
-  {
-    Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 128;
-    Start_Z = 0, End_Z = 128;
-  }
-  for (unsigned int z = Start_Z; z < End_Z; ++z)
-  {
-    for (unsigned int x = Start_X; x < End_X; ++x)
+    //-------(Отсечение невидимой части карты)------------------------------------------------------------------------------------------
+    float direction = (float)(pIndoorCameraD3D->sRotationY / 256);//direction of the camera(напрвление камеры)
+    //0-East(B)
+    //1-NorthEast(CB)
+    //2-North(C)
+    //3-WestNorth(CЗ)
+    //4-West(З)
+    //5-SouthWest(ЮЗ)
+    //6-South(Ю)
+    //7-SouthEast(ЮВ)
+    unsigned int Start_X, End_X, Start_Z, End_Z;
+    if (direction >= 0 && direction < 1.0)//East(B) - NorthEast(CB)
     {
-      pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
-      pTilePolygon->flags = 0;
-      pTilePolygon->field_32 = 0;
-      pTilePolygon->uTileBitmapID = pOutdoor->DoGetTileTexture(x, z);
-      pTilePolygon->pTexture = (Texture_MM7 *)&pBitmaps_LOD->pHardwareTextures[pTilePolygon->uTileBitmapID];
-      if (pTilePolygon->uTileBitmapID == 0xFFFF)
-        continue;
-
-      //pTile->flags = 0x8010 |pOutdoor->GetSomeOtherTileInfo(x, z);
-      pTilePolygon->flags = pOutdoor->GetSomeOtherTileInfo(x, z);
-      pTilePolygon->field_32 = 0;
-      pTilePolygon->field_59 = 1;
-      pTilePolygon->sTextureDeltaU = 0;
-      pTilePolygon->sTextureDeltaV = 0;
-//  x,z         x+1,z
-//  .____________.
-//  |            |
-//  |            |
-//  |            |
-//  |            |
-//  |            |
-//  .____________.
-//  x,z+1       x+1,z+1
-      memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x], sizeof(RenderVertexSoft));//x, z
-      array_73D150[0].u = 0;
-      array_73D150[0].v = 0;
-      memcpy(&array_73D150[1], &pTerrainVertices[z * 128 + x + 1], sizeof(RenderVertexSoft));//x + 1, z
-      array_73D150[1].u = 1;
-      array_73D150[1].v = 0;
-      memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x + 1], sizeof(RenderVertexSoft));//x + 1, z + 1
-      array_73D150[2].u = 1;
-      array_73D150[2].v = 1;
-      memcpy(&array_73D150[3], &pTerrainVertices[(z + 1) * 128 + x], sizeof(RenderVertexSoft));//x, z + 1
-      array_73D150[3].u = 0;
-      array_73D150[3].v = 1;
-      //v58 = 0;
-      //if (v58 == 4) // if all y == first y;  primitive in xz plane 
-        //pTile->field_32 |= 0x0001;
-      pTilePolygon->pODMFace = nullptr;
-      pTilePolygon->uNumVertices = 4;
-      pTilePolygon->field_59 = 5;
-
-      if ( array_73D150[0].vWorldViewPosition.x < 8.0
-        && array_73D150[1].vWorldViewPosition.x < 8.0
-        && array_73D150[2].vWorldViewPosition.x < 8.0
-        && array_73D150[3].vWorldViewPosition.x < 8.0 )
-        continue;
-      if ( (double)pODMRenderParams->shading_dist_mist < array_73D150[0].vWorldViewPosition.x
-        && (double)pODMRenderParams->shading_dist_mist < array_73D150[1].vWorldViewPosition.x
-        && (double)pODMRenderParams->shading_dist_mist < array_73D150[2].vWorldViewPosition.x
-        && (double)pODMRenderParams->shading_dist_mist < array_73D150[3].vWorldViewPosition.x )
-        continue;
- //----------------------------------------------------------------------------
-
-      ++pODMRenderParams->uNumPolygons;
-      ++pODMRenderParams->field_44;
-      assert(pODMRenderParams->uNumPolygons < 20000);
-
-      pTilePolygon->uBModelID = 0;
-      pTilePolygon->uBModelFaceID = 0;
-      pTilePolygon->field_50 = (8 * (0 | (0 << 6))) | 6;
-      for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k)
-      {
-        memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
-        VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
-      }
-
-//shading (затенение)----------------------------------------------------------------------------
-      //uint norm_idx = pTerrainNormalIndices[2 * (z * 128 + x) + 1];
-      uint norm_idx = pTerrainNormalIndices[2 * (x * 128 + z) + 1];
-      assert(norm_idx < uNumTerrainNormals);
-
-      Vec3_float_* norm = &pTerrainNormals[norm_idx];
-      float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                  (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                  (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
-      pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
-      if ( norm_idx < 0 || norm_idx > uNumTerrainNormals - 1 )
-        norm = 0;
-      else
-        norm = &pTerrainNormals[norm_idx];
-	  if (lights_flag)
-	  {
-        //MessageBoxA(nullptr, "Ritor1: function StackLights_TerrainFace needed refactoring and result - slows", "", 0);
-        //__debugbreak();
-
-		pEngine->pLightmapBuilder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, 4, 1);//Ritor1: slows
-      //pDecalBuilder->_49BE8A(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, 4, 1);
-      }
-      unsigned int a5 = 4;
-
-//---------Draw distance(Дальность отрисовки)-------------------------------
-      int temp =  pODMRenderParams->shading_dist_mist;
-      if ( draw_terrain_dist_mist )
-        pODMRenderParams->shading_dist_mist = 0x5000;
-      bool neer_clip = array_73D150[0].vWorldViewPosition.x < 8.0
-                    || array_73D150[1].vWorldViewPosition.x < 8.0
-                    || array_73D150[2].vWorldViewPosition.x < 8.0
-                    || array_73D150[3].vWorldViewPosition.x < 8.0;
-      bool far_clip = (double)pODMRenderParams->shading_dist_mist < array_73D150[0].vWorldViewPosition.x
-                   || (double)pODMRenderParams->shading_dist_mist < array_73D150[1].vWorldViewPosition.x
-                   || (double)pODMRenderParams->shading_dist_mist < array_73D150[2].vWorldViewPosition.x
-                   || (double)pODMRenderParams->shading_dist_mist < array_73D150[3].vWorldViewPosition.x;
-
-      int uClipFlag = 0;
-      static stru154 static_sub_0048034E_stru_154;
-      pEngine->pLightmapBuilder->StationaryLightsCount = 0;
-      if ( Lights.uNumLightsApplied > 0 || pDecalBuilder->uNumDecals > 0 )
-      {
-        if ( neer_clip )
-          uClipFlag = 3;
-        else
-          uClipFlag = far_clip != 0 ? 5 : 0;
-        static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
-        if ( pDecalBuilder->uNumDecals > 0 )
-          pDecalBuilder->ApplyDecals(31 - pTilePolygon->dimming_level, 4, &static_sub_0048034E_stru_154, a5, VertexRenderList, 0, *(float *)&uClipFlag, -1);
-        if ( Lights.uNumLightsApplied > 0 )
-          pEngine->pLightmapBuilder->ApplyLights(&Lights, &static_sub_0048034E_stru_154, a5, VertexRenderList, 0, uClipFlag);
-      }
-
-      if ( !byte_4D864C || ~pEngine->uFlags & 0x80 )
-      {
-        //if ( neer_clip ) //Ritor1: Даёт искажения на подъёме, возможно требуется ф-ция Безье
-        //{
-         // pTilePolygon->uNumVertices = ODM_NearClip(pTilePolygon->uNumVertices);
-         // ODM_Project(pTilePolygon->uNumVertices);
-        //}
-        if ( far_clip )
-        {
-          pTilePolygon->uNumVertices = ODM_FarClip(pTilePolygon->uNumVertices);
-          ODM_Project(pTilePolygon->uNumVertices);
-        }
-      }
-      pODMRenderParams->shading_dist_mist = temp;
-
-// check the transparency and texture (tiles) mapping (проверка прозрачности и наложение текстур (тайлов))----------------------
-      bool transparent = false;
-      if ( !( pTilePolygon->flags & 1 ) ) // не поддерживается TextureFrameTable
-      {
-        if ( /*pTile->flags & 2 && */pTilePolygon->uTileBitmapID == render->hd_water_tile_id)
-        {
-          //transparent = false;
-          v6 = render->pHDWaterBitmapIDs[render->hd_water_current_frame];
-        }
-        else
-        {
-          v6 = pTilePolygon->uTileBitmapID;
-          if ( !_strnicmp(pBitmaps_LOD->pTextures[pTilePolygon->uTileBitmapID].pName, "wtrdr", 5) )
-            transparent = true;
-        }
-
-        assert(v6 < 1000); // many random crashes here
-
-        // for all shore tiles - draw a tile water under them since they're half-empty
-        if (!_strnicmp(pBitmaps_LOD->pTextures[pTilePolygon->uTileBitmapID].pName, "wtrdr", 5))  // all shore tile filenames are wtrdrXXX
-          DrawBorderTiles(pTilePolygon);
-
-        render->DrawTerrainPolygon(pTilePolygon->uNumVertices, pTilePolygon, pBitmaps_LOD->pHardwareTextures[v6], transparent, true);
-      }
-      //else //здесь уже пограничные тайлы воды
-        //pTile->DrawBorderTiles();
-//--------------------------------------------------------------------------------------------------------------------------------
-
-      //--pODMRenderParams->uNumPolygons;
-      //--pODMRenderParams->field_44;
+        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 128;
+        Start_Z = 0, End_Z = 128;
     }
-  }
+    else if (direction >= 1.0 && direction < 3.0)//NorthEast(CB) - WestNorth(CЗ)
+    {
+        Start_X = 0, End_X = 128;
+        Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellZ + 1;
+    }
+    else if (direction >= 3.0 && direction < 5.0)//WestNorth(CЗ) - SouthWest(ЮЗ)
+    {
+        Start_X = 0, End_X = pODMRenderParams->uMapGridCellX + 2;
+        Start_Z = 0, End_Z = 128;
+    }
+    else if (direction >= 5.0 && direction < 7.0)//SouthWest(ЮЗ) - //SouthEast(ЮВ)
+    {
+        Start_X = 0, End_X = 128;
+        Start_Z = pODMRenderParams->uMapGridCellZ - 2, End_Z = 128;
+    }
+    else//SouthEast(ЮВ) - East(B)
+    {
+        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 128;
+        Start_Z = 0, End_Z = 128;
+    }
+    for (unsigned int z = Start_Z; z < End_Z; ++z)
+    {
+        for (unsigned int x = Start_X; x < End_X; ++x)
+        {
+            pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
+            pTilePolygon->flags = 0;
+            pTilePolygon->field_32 = 0;
+            //pTilePolygon->uTileBitmapID = pOutdoor->DoGetTileTexture(x, z);
+            //pTilePolygon->pTexture = (Texture_MM7 *)&pBitmaps_LOD->pHardwareTextures[pTilePolygon->uTileBitmapID];
+            //if (pTilePolygon->uTileBitmapID == 0xFFFF)
+            //    continue;
+            auto tile = pOutdoor->DoGetTile(x, z);
+            if (!tile)
+                continue;
+
+            //pTile->flags = 0x8010 |pOutdoor->GetSomeOtherTileInfo(x, z);
+            pTilePolygon->flags = pOutdoor->GetSomeOtherTileInfo(x, z);
+            pTilePolygon->field_32 = 0;
+            pTilePolygon->field_59 = 1;
+            pTilePolygon->sTextureDeltaU = 0;
+            pTilePolygon->sTextureDeltaV = 0;
+            //  x,z         x+1,z
+            //  .____________.
+            //  |            |
+            //  |            |
+            //  |            |
+            //  |            |
+            //  |            |
+            //  .____________.
+            //  x,z+1       x+1,z+1
+            memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x], sizeof(RenderVertexSoft));//x, z
+            array_73D150[0].u = 0;
+            array_73D150[0].v = 0;
+            memcpy(&array_73D150[1], &pTerrainVertices[z * 128 + x + 1], sizeof(RenderVertexSoft));//x + 1, z
+            array_73D150[1].u = 1;
+            array_73D150[1].v = 0;
+            memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x + 1], sizeof(RenderVertexSoft));//x + 1, z + 1
+            array_73D150[2].u = 1;
+            array_73D150[2].v = 1;
+            memcpy(&array_73D150[3], &pTerrainVertices[(z + 1) * 128 + x], sizeof(RenderVertexSoft));//x, z + 1
+            array_73D150[3].u = 0;
+            array_73D150[3].v = 1;
+            //v58 = 0;
+            //if (v58 == 4) // if all y == first y;  primitive in xz plane 
+              //pTile->field_32 |= 0x0001;
+            pTilePolygon->pODMFace = nullptr;
+            pTilePolygon->uNumVertices = 4;
+            pTilePolygon->field_59 = 5;
+
+            if (array_73D150[0].vWorldViewPosition.x < 8.0
+                && array_73D150[1].vWorldViewPosition.x < 8.0
+                && array_73D150[2].vWorldViewPosition.x < 8.0
+                && array_73D150[3].vWorldViewPosition.x < 8.0)
+                continue;
+            if ((double)pODMRenderParams->shading_dist_mist < array_73D150[0].vWorldViewPosition.x
+                && (double)pODMRenderParams->shading_dist_mist < array_73D150[1].vWorldViewPosition.x
+                && (double)pODMRenderParams->shading_dist_mist < array_73D150[2].vWorldViewPosition.x
+                && (double)pODMRenderParams->shading_dist_mist < array_73D150[3].vWorldViewPosition.x)
+                continue;
+            //----------------------------------------------------------------------------
+
+            ++pODMRenderParams->uNumPolygons;
+            ++pODMRenderParams->field_44;
+            assert(pODMRenderParams->uNumPolygons < 20000);
+
+            pTilePolygon->uBModelID = 0;
+            pTilePolygon->uBModelFaceID = 0;
+            pTilePolygon->field_50 = (8 * (0 | (0 << 6))) | 6;
+            for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k)
+            {
+                memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
+                VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
+            }
+
+            //shading (затенение)----------------------------------------------------------------------------
+                  //uint norm_idx = pTerrainNormalIndices[2 * (z * 128 + x) + 1];
+            uint norm_idx = pTerrainNormalIndices[2 * (x * 128 + z) + 1];
+            assert(norm_idx < uNumTerrainNormals);
+
+            Vec3_float_* norm = &pTerrainNormals[norm_idx];
+            float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
+                (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
+                (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+            pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
+            if (norm_idx < 0 || norm_idx > uNumTerrainNormals - 1)
+                norm = 0;
+            else
+                norm = &pTerrainNormals[norm_idx];
+            if (lights_flag)
+            {
+                //MessageBoxA(nullptr, "Ritor1: function StackLights_TerrainFace needed refactoring and result - slows", "", 0);
+                //__debugbreak();
+
+                pEngine->pLightmapBuilder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, 4, 1);//Ritor1: slows
+              //pDecalBuilder->_49BE8A(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, 4, 1);
+            }
+            unsigned int a5 = 4;
+
+            //---------Draw distance(Дальность отрисовки)-------------------------------
+            int temp = pODMRenderParams->shading_dist_mist;
+            if (draw_terrain_dist_mist)
+                pODMRenderParams->shading_dist_mist = 0x5000;
+            bool neer_clip = array_73D150[0].vWorldViewPosition.x < 8.0
+                || array_73D150[1].vWorldViewPosition.x < 8.0
+                || array_73D150[2].vWorldViewPosition.x < 8.0
+                || array_73D150[3].vWorldViewPosition.x < 8.0;
+            bool far_clip = (double)pODMRenderParams->shading_dist_mist < array_73D150[0].vWorldViewPosition.x
+                || (double)pODMRenderParams->shading_dist_mist < array_73D150[1].vWorldViewPosition.x
+                || (double)pODMRenderParams->shading_dist_mist < array_73D150[2].vWorldViewPosition.x
+                || (double)pODMRenderParams->shading_dist_mist < array_73D150[3].vWorldViewPosition.x;
+
+            int uClipFlag = 0;
+            static stru154 static_sub_0048034E_stru_154;
+            pEngine->pLightmapBuilder->StationaryLightsCount = 0;
+            if (Lights.uNumLightsApplied > 0 || pDecalBuilder->uNumDecals > 0)
+            {
+                if (neer_clip)
+                    uClipFlag = 3;
+                else
+                    uClipFlag = far_clip != 0 ? 5 : 0;
+                static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
+                if (pDecalBuilder->uNumDecals > 0)
+                    pDecalBuilder->ApplyDecals(31 - pTilePolygon->dimming_level, 4, &static_sub_0048034E_stru_154, a5, VertexRenderList, 0, *(float *)&uClipFlag, -1);
+                if (Lights.uNumLightsApplied > 0)
+                    pEngine->pLightmapBuilder->ApplyLights(&Lights, &static_sub_0048034E_stru_154, a5, VertexRenderList, 0, uClipFlag);
+            }
+
+            if (!byte_4D864C || ~pEngine->uFlags & 0x80)
+            {
+                //if ( neer_clip ) //Ritor1: Даёт искажения на подъёме, возможно требуется ф-ция Безье
+                //{
+                 // pTilePolygon->uNumVertices = ODM_NearClip(pTilePolygon->uNumVertices);
+                 // ODM_Project(pTilePolygon->uNumVertices);
+                //}
+                if (far_clip)
+                {
+                    pTilePolygon->uNumVertices = ODM_FarClip(pTilePolygon->uNumVertices);
+                    ODM_Project(pTilePolygon->uNumVertices);
+                }
+            }
+            pODMRenderParams->shading_dist_mist = temp;
+
+            // check the transparency and texture (tiles) mapping (проверка прозрачности и наложение текстур (тайлов))----------------------
+            bool transparent = false;
+
+            auto tile_texture = tile->GetTexture();
+            if (!(pTilePolygon->flags & 1)) // не поддерживается TextureFrameTable
+            {
+                if ( /*pTile->flags & 2 && */tile->IsWaterTile())
+                {
+                    //transparent = false;
+                    tile_texture = this->hd_water_tile_anim[this->hd_water_current_frame];
+                    pTilePolygon->dimming_level = 0;
+                }
+                else
+                {
+                    if (tile->IsWaterBorderTile())
+                    {
+                        // for all shore tiles - draw a tile water under them since they're half-empty
+                        pTilePolygon->dimming_level = 0;
+                        DrawBorderTiles(pTilePolygon);
+                        transparent = true;
+                        pTilePolygon->dimming_level = 30;
+                    }
+                }
+                render->DrawTerrainPolygon(pTilePolygon->uNumVertices, pTilePolygon, tile_texture->GetDirect3DTexture(), transparent, true);
+            }
+        }
+    }
 }
 
 //----- (004811A3) --------------------------------------------------------
 void Render::DrawBorderTiles(struct Polygon *poly)
 {
   pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
-  DrawTerrainPolygon(poly->uNumVertices, poly,
-                     pBitmaps_LOD->pHardwareTextures[pHDWaterBitmapIDs[hd_water_current_frame]], false, true);
+  DrawTerrainPolygon(
+      poly->uNumVertices, poly,
+      //pBitmaps_LOD->pHardwareTextures[pHDWaterBitmapIDs[hd_water_current_frame]],
+      this->hd_water_tile_anim[this->hd_water_current_frame]->GetDirect3DTexture(),
+      false, true
+  );
 
   pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
   //DrawTerrainPolygon(poly->uNumVertices, poly, pBitmaps_LOD->pHardwareTextures[poly->uTileBitmapID], true, true);
@@ -5926,64 +5900,76 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1, int d
   }
 }
 
+HWLTexture *Render::LoadHwlBitmap(const char *name)
+{
+    return pD3DBitmaps.LoadTexture(name, 0);
+}
+
+HWLTexture *Render::LoadHwlSprite(const char *name)
+{
+    return pD3DSprites.LoadTexture(name, 0);
+}
+
 //----- (004A4DE1) --------------------------------------------------------
 bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, IDirectDrawSurface4 **pOutSurface, IDirect3DTexture2 **pOutTexture)
 {
-  unsigned __int16 *v13; // ecx@19
-  unsigned __int16 *v14; // eax@19
-  DWORD v15; // edx@20
-  stru350 Dst; // [sp+Ch] [bp-F8h]@12
+    unsigned __int16 *v13; // ecx@19
+    unsigned __int16 *v14; // eax@19
+    DWORD v15; // edx@20
+    stru350 Dst; // [sp+Ch] [bp-F8h]@12
 
-  HWLTexture* pHWLTexture = pD3DBitmaps.LoadTexture(pName, bMipMaps);
-  if (!pHWLTexture)
-    return false;
+    HWLTexture* pHWLTexture = pD3DBitmaps.LoadTexture(pName, bMipMaps);
+    if (!pHWLTexture)
+        return false;
 
     bMipMaps = !strncmp(pName, "HDWTR", 5);
-    if ( !pRenderD3D->CreateTexture(pHWLTexture->uWidth, pHWLTexture->uHeight, pOutSurface, pOutTexture, true,
-            bMipMaps, uMinDeviceTextureDim) )
-      Error("HiScreen16::LoadTexture - D3Drend->CreateTexture() failed: %x", 0);
+    if (!pRenderD3D->CreateTexture(pHWLTexture->uWidth, pHWLTexture->uHeight, pOutSurface, pOutTexture, true,
+        bMipMaps, uMinDeviceTextureDim))
+        Error("HiScreen16::LoadTexture - D3Drend->CreateTexture() failed: %x", 0);
     if (bMipMaps)
     {
-      Dst._450DDE();
-      Dst._450DF1(&stru_4EFCBC, &stru_4EFCBC);
+        Dst._450DDE();
+        Dst._450DF1(&stru_4EFCBC, &stru_4EFCBC);
 
-      IDirectDrawSurface4 *pNextSurf = *pOutSurface;
-      while ( 1 )
-      {
-        DDSCAPS2 v19;
-        memset(&v19, 0, sizeof(DDSCAPS2));
-        v19.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_MIPMAP;
-
-        DDSURFACEDESC2 desc;
-        memset(&desc, 0, sizeof(DDSURFACEDESC2));
-        desc.dwSize = sizeof(DDSURFACEDESC2);
-
-        if ( LockSurface_DDraw4(pNextSurf, &desc, DDLOCK_WAIT | DDLOCK_WRITEONLY) )
+        IDirectDrawSurface4 *pNextSurf = *pOutSurface;
+        while (1)
         {
-			// linear scaling
-		  for (int s = 0; s < desc.dwHeight; ++s)
-			  for (int t = 0; t < desc.dwWidth; ++t)
-			  {
-				  unsigned int resampled_x = t * pHWLTexture->uWidth / desc.dwWidth,
-					           resampled_y = s * pHWLTexture->uHeight / desc.dwHeight;
-				  unsigned short sample = pHWLTexture->pPixels[resampled_y * pHWLTexture->uWidth + resampled_x];
+            DDSCAPS2 v19;
+            memset(&v19, 0, sizeof(DDSCAPS2));
+            v19.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_MIPMAP;
 
-				  ((unsigned short *)desc.lpSurface)[s * (desc.lPitch >> 1) + t] = sample;
-			  }
+            DDSURFACEDESC2 desc;
+            memset(&desc, 0, sizeof(DDSURFACEDESC2));
+            desc.dwSize = sizeof(DDSURFACEDESC2);
 
-			
-			  //bicubic sampling
-          //Dst.sub_451007_scale_image_bicubic(pHWLTexture->pPixels, pHWLTexture->uWidth, pHWLTexture->uHeight, pHWLTexture->uWidth,
-          //  (unsigned short *)desc.lpSurface, desc.dwWidth, desc.dwHeight, desc.lPitch >> 1, 0, 0);
+            if (LockSurface_DDraw4(pNextSurf, &desc, DDLOCK_WAIT | DDLOCK_WRITEONLY))
+            {
+                // linear scaling
+                for (int s = 0; s < desc.dwHeight; ++s)
+                {
+                    for (int t = 0; t < desc.dwWidth; ++t)
+                    {
+                        unsigned int resampled_x = t * pHWLTexture->uWidth / desc.dwWidth,
+                            resampled_y = s * pHWLTexture->uHeight / desc.dwHeight;
+                        unsigned short sample = pHWLTexture->pPixels[resampled_y * pHWLTexture->uWidth + resampled_x];
 
-          ErrD3D(pNextSurf->Unlock(NULL));
-          //bMipMaps = 0x4D86ACu;
+                        ((unsigned short *)desc.lpSurface)[s * (desc.lPitch >> 1) + t] = sample;
+                    }
+                }
+
+
+                //bicubic sampling
+            //Dst.sub_451007_scale_image_bicubic(pHWLTexture->pPixels, pHWLTexture->uWidth, pHWLTexture->uHeight, pHWLTexture->uWidth,
+            //  (unsigned short *)desc.lpSurface, desc.dwWidth, desc.dwHeight, desc.lPitch >> 1, 0, 0);
+
+                ErrD3D(pNextSurf->Unlock(NULL));
+                //bMipMaps = 0x4D86ACu;
+            }
+            if (FAILED(pNextSurf->GetAttachedSurface(&v19, &pNextSurf)))
+                break;
         }
-        if (FAILED(pNextSurf->GetAttachedSurface(&v19, &pNextSurf)))
-          break;
-      }
-      //v20 = -1;
-      //nullsub_1();
+        //v20 = -1;
+        //nullsub_1();
     }
     else
     {
@@ -5995,28 +5981,27 @@ bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, IDirectDrawSu
         memset(&desc, 0, sizeof(DDSURFACEDESC2));
         desc.dwSize = sizeof(DDSURFACEDESC2);
 
-      if ( LockSurface_DDraw4(*pOutSurface, &desc, DDLOCK_WAIT | DDLOCK_WRITEONLY) )
-      {
-        bMipMaps = 0;
-        v13 = pHWLTexture->pPixels;
-        v14 = (unsigned __int16 *)desc.lpSurface;
-        for(uint bMipMaps = 0; bMipMaps < desc.dwHeight; bMipMaps++)
+        if (LockSurface_DDraw4(*pOutSurface, &desc, DDLOCK_WAIT | DDLOCK_WRITEONLY))
         {
-          for (v15 = 0; v15 < desc.dwWidth; v15++)
-          {
-            *v14 = *v13;
-            ++v14;
-            ++v13;
-          }
-          v14 += (desc.lPitch >> 1) - desc.dwWidth;
+            bMipMaps = 0;
+            v13 = pHWLTexture->pPixels;
+            v14 = (unsigned __int16 *)desc.lpSurface;
+            for (uint bMipMaps = 0; bMipMaps < desc.dwHeight; bMipMaps++)
+            {
+                for (v15 = 0; v15 < desc.dwWidth; v15++)
+                {
+                    *v14 = *v13;
+                    ++v14;
+                    ++v13;
+                }
+                v14 += (desc.lPitch >> 1) - desc.dwWidth;
+            }
+            ErrD3D((*pOutSurface)->Unlock(NULL));
         }
-        ErrD3D((*pOutSurface)->Unlock(NULL));
-      }
     }
-    delete [] pHWLTexture->pPixels;
+    delete[] pHWLTexture->pPixels;
     delete pHWLTexture;
     return true;
-
 }
 
 //----- (004A5048) --------------------------------------------------------
@@ -7515,117 +7500,116 @@ void Render::DrawTextureTransparentColorKey(signed int x, signed int y, Texture_
 //----- (004524D8) --------------------------------------------------------
 HWLTexture *RenderHWLContainer::LoadTexture(const char *pName, int bMipMaps)
 {
-  void *v13; // eax@13
-  int v16; // esi@14
-  int v17; // ecx@16
-  int v18; // esi@16
-  unsigned __int16 *v19; // eax@16
-  int v20; // edx@16
-  int v21; // ecx@16
-  int v22; // eax@16
-  int v23; // esi@16
-  unsigned __int16 *v26; // [sp+24h] [bp-10h]@13
-  int v27; // [sp+28h] [bp-Ch]@14
-  int v28; // [sp+2Ch] [bp-8h]@13
-  int pDestb; // [sp+3Ch] [bp+8h]@15
+    void *v13; // eax@13
+    int v16; // esi@14
+    int v17; // ecx@16
+    int v18; // esi@16
+    unsigned __int16 *v19; // eax@16
+    int v20; // edx@16
+    int v21; // ecx@16
+    int v22; // eax@16
+    int v23; // esi@16
+    unsigned __int16 *v26; // [sp+24h] [bp-10h]@13
+    int v27; // [sp+28h] [bp-Ch]@14
+    int v28; // [sp+2Ch] [bp-8h]@13
+    int pDestb; // [sp+3Ch] [bp+8h]@15
 
-  if (!uNumItems)
-    return nullptr;
+    if (!uNumItems)
+        return nullptr;
 
-  ///////////////////////////////
-  //quick search(быстрый поиск)//
-  ///////////////////////////////
-  uint idx1 = 0,
-       idx2 = uNumItems;
-  while (true)
-  {
-    uint i = idx1 + (idx2 - idx1) / 2;
-
-    int res = _stricmp(pName, pSpriteNames[i]);
-    if (!res)
+    ///////////////////////////////
+    //quick search(быстрый поиск)//
+    ///////////////////////////////
+    uint idx1 = 0,
+        idx2 = uNumItems;
+    while (true)
     {
-      fseek(pFile, pSpriteOffsets[i], SEEK_SET);
-      break;
-    }
-    else if (res < 0)
-      idx2 = idx1 + (idx2 - idx1) / 2;
-    else
-      idx1 = i + 1;
+        uint i = idx1 + (idx2 - idx1) / 2;
 
-    if ( idx1 >= idx2 )
-      return false;
-  }
-
-  uint uCompressedSize = 0;
-  fread(&uCompressedSize, 4, 1, pFile);
-
-  HWLTexture* pTex = new HWLTexture;
-  fread(&pTex->uBufferWidth, 4, 1, pFile);
-  fread(&pTex->uBufferHeight, 4, 1, pFile);
-  fread(&pTex->uAreaWidth, 4, 1, pFile);
-  fread(&pTex->uAreaHeigth, 4, 1, pFile);
-  fread(&pTex->uWidth, 4, 1, pFile);
-  fread(&pTex->uHeight, 4, 1, pFile);
-  fread(&pTex->uAreaX, 4, 1, pFile);
-  fread(&pTex->uAreaY, 4, 1, pFile);
-
-  pTex->pPixels = new unsigned __int16[pTex->uWidth * pTex->uHeight];
-  if (uCompressedSize)
-  {
-    char* pCompressedData = new char[uCompressedSize];
-    fread(pCompressedData, 1, uCompressedSize, pFile);
-    uint uDecompressedSize = pTex->uWidth * pTex->uHeight * sizeof(short);
-    zlib::MemUnzip(pTex->pPixels, &uDecompressedSize, pCompressedData, uCompressedSize);
-    delete [] pCompressedData;
-  }
-  else
-    fread(pTex->pPixels, 2, pTex->uWidth * pTex->uHeight, pFile);
-
-  if ( scale_hwls_to_half )
-  {
-	__debugbreak();//Ritor1
-    pTex->uHeight /= 2;
-    pTex->uWidth /= 2;
-    v13 = new unsigned __int16[pTex->uWidth * pTex->uHeight];
-    v28 = 0;
-    v26 = (unsigned __int16 *)v13;
-    if ( pTex->uHeight > 0 )
-    {
-      v16 = pTex->uWidth;
-      v27 = 1;
-      do
-      {
-        pDestb = 0;
-        if ( v16 > 0 )
+        int res = _stricmp(pName, pSpriteNames[i]);
+        if (!res)
         {
-          do
-          {
-            v17 = v16 * v27;
-            v18 = v28 * v16;
-            v19 = pTex->pPixels;
-            v20 = pDestb + 2 * v18;
-            v21 = (int)&v19[2 * (pDestb + v17)];
-            v22 = (int)&v19[2 * v20];
-            LOWORD(v20) = *(unsigned short *)(v21 + 2);
-            LOWORD(v21) = *(unsigned short *)v21;
-            v23 = pDestb + v18;
-			pDestb++;
-            
-            v26[v23] = _452442_color_cvt(*(unsigned short *)v22, *(unsigned short *)(v22 + 2), v21, v20);
-            v16 = pTex->uWidth;
-          }
-          while (pDestb < pTex->uWidth);
+            fseek(pFile, pSpriteOffsets[i], SEEK_SET);
+            break;
         }
-        ++v28;
-        v27 += 2;
-      }
-      while ( v28 < (signed int)pTex->uHeight );
+        else if (res < 0)
+            idx2 = idx1 + (idx2 - idx1) / 2;
+        else
+            idx1 = i + 1;
+
+        if (idx1 >= idx2)
+            return false;
     }
-    delete [] pTex->pPixels;
-    pTex->pPixels = v26;
-  }
-  return pTex;
+
+    uint uCompressedSize = 0;
+    fread(&uCompressedSize, 4, 1, pFile);
+
+    HWLTexture* pTex = new HWLTexture;
+    fread(&pTex->uBufferWidth, 4, 1, pFile);
+    fread(&pTex->uBufferHeight, 4, 1, pFile);
+    fread(&pTex->uAreaWidth, 4, 1, pFile);
+    fread(&pTex->uAreaHeigth, 4, 1, pFile);
+    fread(&pTex->uWidth, 4, 1, pFile);
+    fread(&pTex->uHeight, 4, 1, pFile);
+    fread(&pTex->uAreaX, 4, 1, pFile);
+    fread(&pTex->uAreaY, 4, 1, pFile);
+
+    pTex->pPixels = new unsigned __int16[pTex->uWidth * pTex->uHeight];
+    if (uCompressedSize)
+    {
+        char* pCompressedData = new char[uCompressedSize];
+        fread(pCompressedData, 1, uCompressedSize, pFile);
+        uint uDecompressedSize = pTex->uWidth * pTex->uHeight * sizeof(short);
+        zlib::MemUnzip(pTex->pPixels, &uDecompressedSize, pCompressedData, uCompressedSize);
+        delete[] pCompressedData;
+    }
+    else
+        fread(pTex->pPixels, 2, pTex->uWidth * pTex->uHeight, pFile);
+
+    if (scale_hwls_to_half)
+    {
+        __debugbreak();//Ritor1
+        pTex->uHeight /= 2;
+        pTex->uWidth /= 2;
+        v13 = new unsigned __int16[pTex->uWidth * pTex->uHeight];
+        v28 = 0;
+        v26 = (unsigned __int16 *)v13;
+        if (pTex->uHeight > 0)
+        {
+            v16 = pTex->uWidth;
+            v27 = 1;
+            do
+            {
+                pDestb = 0;
+                if (v16 > 0)
+                {
+                    do
+                    {
+                        v17 = v16 * v27;
+                        v18 = v28 * v16;
+                        v19 = pTex->pPixels;
+                        v20 = pDestb + 2 * v18;
+                        v21 = (int)&v19[2 * (pDestb + v17)];
+                        v22 = (int)&v19[2 * v20];
+                        LOWORD(v20) = *(unsigned short *)(v21 + 2);
+                        LOWORD(v21) = *(unsigned short *)v21;
+                        v23 = pDestb + v18;
+                        pDestb++;
+
+                        v26[v23] = _452442_color_cvt(*(unsigned short *)v22, *(unsigned short *)(v22 + 2), v21, v20);
+                        v16 = pTex->uWidth;
+                    } while (pDestb < pTex->uWidth);
+                }
+                ++v28;
+                v27 += 2;
+            } while (v28 < (signed int)pTex->uHeight);
+        }
+        delete[] pTex->pPixels;
+        pTex->pPixels = v26;
+    }
+    return pTex;
 }
+
 //----- (0045271F) --------------------------------------------------------
 bool RenderHWLContainer::Release()
 {

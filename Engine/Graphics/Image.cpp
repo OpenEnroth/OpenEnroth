@@ -78,27 +78,27 @@ void TextureFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8)
 }
 
 //----- (0044E0ED) --------------------------------------------------------
-void TextureFrameTable::LoadAnimationSequenceAndPalettes( signed int uIconID )
+void TextureFrameTable::LoadAnimationSequenceAndPalettes(signed int uIconID)
 {
-  //TextureFrameTable *v3; // ebx@1
-  unsigned int i; // edi@3
+    //TextureFrameTable *v3; // ebx@1
+    unsigned int i; // edi@3
 
-  //v3 = this;
-  if ( (uIconID <= this->sNumTextures) && uIconID >= 0 )
-  {
-    for ( i = uIconID; ; ++i )
+    //v3 = this;
+    if ((uIconID <= this->sNumTextures) && uIconID >= 0)
     {
-      this->pTextures[i].uTextureID = pBitmaps_LOD->LoadTexture(this->pTextures[i].pTextureName, TEXTURE_DEFAULT);
+        for (i = uIconID; ; ++i)
+        {
+            this->pTextures[i].uTextureID = pBitmaps_LOD->LoadTexture(this->pTextures[i].pTextureName, TEXTURE_DEFAULT);
 
-      if (this->pTextures[i].uTextureID != -1)
-        pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id1);
-      //result = (unsigned int)v3->pTextures;
-      //if ( !(*(char *)(result + i * 20 + 18) & 1) )
-      if( this->pTextures[i].uFlags & 1)
-        break;
+            if (this->pTextures[i].uTextureID != -1)
+                pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id1);
+            //result = (unsigned int)v3->pTextures;
+            //if ( !(*(char *)(result + i * 20 + 18) & 1) )
+            if (this->pTextures[i].uFlags & 1)
+                break;
+        }
     }
-  }
-  return;
+    return;
 }
 
 //----- (0044E163) --------------------------------------------------------

@@ -139,23 +139,23 @@ class IRender
 
     inline IRender()
     {
-      pActiveZBuffer = 0;
-      pDirectDraw4 = 0;
-      pFrontBuffer4 = 0;
-      pBackBuffer4 = 0;
-      pTargetSurface = 0;
-      uTargetSurfacePitch = 0;
-      bUseColoredLights = 0;
-      bTinting = 0;
-      bUsingSpecular = 0;
-      uFogColor = 0;
-      memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
-      hd_water_current_frame = 0;
-      hd_water_tile_id = 0;
-      pBeforePresentFunction = 0;
-      bFogEnabled;
-      memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
-      uNumBillboardsToDraw = 0;
+        pActiveZBuffer = 0;
+        pDirectDraw4 = 0;
+        pFrontBuffer4 = 0;
+        pBackBuffer4 = 0;
+        pTargetSurface = 0;
+        uTargetSurfacePitch = 0;
+        bUseColoredLights = 0;
+        bTinting = 0;
+        bUsingSpecular = 0;
+        uFogColor = 0;
+        memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
+        hd_water_current_frame = 0;
+        hd_water_tile_id = 0;
+        pBeforePresentFunction = 0;
+        bFogEnabled;
+        memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
+        uNumBillboardsToDraw = 0;
     }
 
     int *pActiveZBuffer;
@@ -171,6 +171,7 @@ class IRender
     unsigned int pHDWaterBitmapIDs[7];
     int hd_water_current_frame;
     int hd_water_tile_id;
+    Texture *hd_water_tile_anim[7];
     void (*pBeforePresentFunction)();
     uint32_t bFogEnabled;
     RenderBillboardD3D pBillboardRenderListD3D[1000];
@@ -186,4 +187,7 @@ class IRender
     virtual unsigned int GetRenderHeight() = 0;
 
     virtual void Sub01() = 0;
+
+    virtual HWLTexture *LoadHwlBitmap(const char *name) = 0;
+    virtual HWLTexture *LoadHwlSprite(const char *name) = 0;
 };

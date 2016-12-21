@@ -161,6 +161,8 @@ class RenderD3D11 : public IRender
 
         virtual void Sub01();
 
+        virtual HWLTexture *LoadHwlBitmap(const char *name);
+        virtual HWLTexture *LoadHwlSprite(const char *name);
 
     protected:
         void DrawTexture(float u, float v, int texture_width, int texture_height, ID3D11ShaderResourceView *srv, ID3D11BlendState *blend);

@@ -560,6 +560,15 @@ bool RenderD3D11::Initialize(OSWindow *window)
 }
 
 
+HWLTexture *RenderD3D11::LoadHwlBitmap(const char *name)
+{
+    return pD3DBitmaps.LoadTexture(name, 0);
+}
+
+HWLTexture *RenderD3D11::LoadHwlSprite(const char *name)
+{
+    return pD3DSprites.LoadTexture(name, 0);
+}
 
 
 bool RenderD3D11::MoveSpriteToDevice(Sprite *pSprite)

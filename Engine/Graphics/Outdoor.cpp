@@ -223,33 +223,20 @@ int OutdoorLocation::GetSomeOtherTileInfo(int sX, int sY)
    return 0;
  return ActuallyGetSomeOtherTileInfo(v5, v4);
 }
-// 47F44B: using guessed type int __stdcall WorldPosToGridCellX(int);
-// 47F458: using guessed type int __stdcall WorldPosToGridCellZ(int);
 
 //----- (00488EEF) --------------------------------------------------------
-unsigned int OutdoorLocation::GetTileTexture(signed int sX, signed int sY)
+TileDesc *OutdoorLocation::GetTile(signed int sX, signed int sY)
 {
-  //OutdoorLocation *v3; // esi@1
-  signed int v4; // edi@1
-  signed int v5; // eax@1
-//  unsigned int result; // eax@5
+    signed int v4; // edi@1
+    signed int v5; // eax@1
 
-  /*v3 = this;
-  v4 = WorldPosToGridCellZ(sZ);
-  v5 = WorldPosToGridCellX(sX);
-  if ( v5< 0 || (signed int)v5 > 127 || v4 < 0 || (signed int)v4 > 127 )//if ( (v5 & 0x80000000u) != 0 || (signed int)v5 > 127 || (v4 & 0x80000000u) != 0 || (signed int)v4 > 127 )
-    result = -1;
-  else
-    result = DoGetTileTexture(v5, v4);
-  return result;*/
-  v4 = WorldPosToGridCellZ(sY);
-  v5 = WorldPosToGridCellX(sX);
-  if ( v5 < 0 || v5 > 127 || v4 < 0 || v4 > 127 )
-    return -1;
-  return DoGetTileTexture(v5, v4);
+    v4 = WorldPosToGridCellZ(sY);
+    v5 = WorldPosToGridCellX(sX);
+    if (v5 < 0 || v5 > 127 || v4 < 0 || v4 > 127)
+        return nullptr;
+
+    return this->DoGetTile(v5, v4);
 }
-// 47F44B: using guessed type int __stdcall WorldPosToGridCellX(int);
-// 47F458: using guessed type int __stdcall WorldPosToGridCellZ(int);
 
 //----- (00488F2E) --------------------------------------------------------
 int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ)
@@ -1003,13 +990,11 @@ void OutdoorLocation::CreateDebugLocation()
     this->sSky_TextureID = pBitmaps_LOD->LoadTexture(this->sky_texture_filename.c_str());
 
     this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
-    this->sMainTile_BitmapID = pBitmaps_LOD->LoadTexture(this->ground_tileset.c_str());
+    //this->sMainTile_BitmapID = pBitmaps_LOD->LoadTexture(this->ground_tileset.c_str());
+    this->main_tile_texture = assets->GetBitmap(this->ground_tileset);
 
     if (this->sSky_TextureID == -1)
         Error("Invalid Sky Tex Handle");
-
-    if (this->sMainTile_BitmapID == -1)
-        Error("Invalid Ground Tex Handle");
 }
 
 //----- (0047CF9C) --------------------------------------------------------
@@ -1562,9 +1547,11 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     pTileTable->InitializeTileset(pTileTypes[3].tileset);
     this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
     TileDesc* v98 = pTileTable->GetTileById(pTileTypes[0].uTileID);
-    sMainTile_BitmapID = pBitmaps_LOD->LoadTexture(v98->pTileName, TEXTURE_DEFAULT);
-    if (sMainTile_BitmapID != -1)
-        pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id1);
+
+    main_tile_texture = v98->GetTexture();
+    //sMainTile_BitmapID = pBitmaps_LOD->LoadTexture(v98->pTileName, TEXTURE_DEFAULT);
+    //if (sMainTile_BitmapID != -1)
+    //    pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id1);
 
     _47F0E2();
 
@@ -1663,58 +1650,58 @@ int OutdoorLocation::GetTileIdByTileMapId(signed int a2)
 }
 
 //----- (0047ED08) --------------------------------------------------------
-unsigned int OutdoorLocation::DoGetTileTexture(signed int sX, signed int sY)
+TileDesc *OutdoorLocation::DoGetTile(int sX, int sY)
 {
-  int v3; // esi@5
-//  unsigned int result; // eax@9
+    int v3; // esi@5
+  //  unsigned int result; // eax@9
 
-  assert(sX < 128 && sY < 128);
+    assert(sX < 128 && sY < 128);
 
- v3 = this->pTerrain.pTilemap[sY * 128 + sX];
- if (v3 < 198) // < Tileset_3
- {
-  if (v3 >= 90)
-    v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID - 36 * ((v3 - 90) / 36) - 90;
- }
- else
-   v3 = v3 + this->pTileTypes[3].uTileID - 198;
-
-  #pragma region "New: seasons change"
-
-  if (change_seasons)
-    switch (pParty->uCurrentMonth)
+    v3 = this->pTerrain.pTilemap[sY * 128 + sX];
+    if (v3 < 198) // < Tileset_3
     {
-      case 11: case 0: case 1: // winter
-        if (v3 >= 90) // Tileset_Grass begins at TileID = 90
-        {
-          if (v3 <= 95) // some grastyl entries
-            v3 = 348;
-          else if (v3 <= 113)  // rest of grastyl & all grdrt*
-            v3 = 348 + (v3 - 96);
-        }
-      /*switch (v3)
-      {
-        case 102: v3 = 354; break;  // grdrtNE -> SNdrtne
-        case 104: v3 = 356; break;  // grdrtNW -> SNdrtnw
-        case 108: v3 = 360; break;  // grdrtN  -> SNdrtn
-      }*/
-      break;
-
-      case 2: case 3: case 4: // spring
-      case 8: case 9: case 10: // autumn
-        if (v3 >= 90 && v3 <= 113) // just convert all Tileset_Grass to dirt
-          v3 = 1;
-      break;
-
-      case 5: case 6: case 7: // summer
-        //all tiles are green grass by default
-      break;
-
-      default: assert(pParty->uCurrentMonth >= 0 && pParty->uCurrentMonth < 12);
+        if (v3 >= 90)
+            v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID - 36 * ((v3 - 90) / 36) - 90;
     }
-  #pragma endregion
+    else
+        v3 = v3 + this->pTileTypes[3].uTileID - 198;
 
- return pTileTable->pTiles[v3].uBitmapID;
+    if (change_seasons)
+    {
+        switch (pParty->uCurrentMonth)
+        {
+            case 11: case 0: case 1: // winter
+                if (v3 >= 90) // Tileset_Grass begins at TileID = 90
+                {
+                    if (v3 <= 95) // some grastyl entries
+                        v3 = 348;
+                    else if (v3 <= 113)  // rest of grastyl & all grdrt*
+                        v3 = 348 + (v3 - 96);
+                }
+                /*switch (v3)
+                {
+                case 102: v3 = 354; break;  // grdrtNE -> SNdrtne
+                case 104: v3 = 356; break;  // grdrtNW -> SNdrtnw
+                case 108: v3 = 360; break;  // grdrtN  -> SNdrtn
+                }*/
+            break;
+
+            case 2: case 3: case 4: // spring
+            case 8: case 9: case 10: // autumn
+                if (v3 >= 90 && v3 <= 113) // just convert all Tileset_Grass to dirt
+                    v3 = 1;
+                break;
+
+            case 5: case 6: case 7: // summer
+                //all tiles are green grass by default
+            break;
+
+            default:
+                assert(pParty->uCurrentMonth >= 0 && pParty->uCurrentMonth < 12);
+        }
+    }
+
+    return &pTileTable->pTiles[v3];
 }
 
 //----- (0047ED83) --------------------------------------------------------

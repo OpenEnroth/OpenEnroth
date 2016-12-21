@@ -22,57 +22,72 @@ enum TILE_DESC_FLAGS
 
 #pragma warning( push )
 #pragma warning( disable: 4341 )
-enum Tileset: signed __int16
+enum Tileset : signed __int16
 {
-  Tileset_Grass = 0,
-  Tileset_Snow = 1,
-  Tilset_Desert = 2,
-  Tileset_CooledLava = 3,
-  Tileset_Dirt = 4,
-  Tileset_Water = 5,
-  Tileset_Badlands = 6,
-  Tileset_Swamp = 7,
-  Tileset_8 = 8,
-  Tileset_9 = 9,
-  Tileset_RoadGrassCobble = 10,
-  Tileset_NULL =-1
+    Tileset_Grass = 0,
+    Tileset_Snow = 1,
+    Tilset_Desert = 2,
+    Tileset_CooledLava = 3,
+    Tileset_Dirt = 4,
+    Tileset_Water = 5,
+    Tileset_Badlands = 6,
+    Tileset_Swamp = 7,
+    Tileset_8 = 8,
+    Tileset_9 = 9,
+    Tileset_RoadGrassCobble = 10,
+    Tileset_NULL = -1
 };
 #pragma warning( pop )
 
-/*   48 */
-#pragma pack(push, 1)
-struct TileDesc  //26
+
+class TileDesc
 {
-  char pTileName[16];
-  unsigned __int16 uTileID;
-  unsigned __int16 uBitmapID;
-  Tileset          tileset;
-  unsigned __int16 uSection;
-  unsigned __int16 uAttributes;
+    public:
+        inline TileDesc() : texture(nullptr) {}
+
+        String           name;
+        unsigned __int16 uTileID;
+        Tileset          tileset;
+        unsigned __int16 uSection;
+        unsigned __int16 uAttributes;
+
+        inline Texture *GetTexture()
+        {
+            if (!this->texture)
+            {
+                this->texture = assets->GetBitmap(this->name);
+            }
+            return this->texture;
+        }
+
+        inline bool IsWaterTile() const         { return this->name == "wtrtyl"; }
+        inline bool IsWaterBorderTile() const   { return this->name.find("wtrdr", 0) == 0; }
+
+    protected:
+        Texture *texture;
 };
-#pragma pack(pop)
 
 /*   49 */
 #pragma pack(push, 1)
 struct TileTable
 {
-  //----- (00487E13) --------------------------------------------------------
-  TileTable()
-  {
-    this->pTiles = nullptr;
-    this->sNumTiles = 0;
-  }
-  ~TileTable();
+    //----- (00487E13) --------------------------------------------------------
+    TileTable()
+    {
+        this->pTiles = nullptr;
+        this->sNumTiles = 0;
+    }
+    ~TileTable();
 
-  TileDesc *GetTileById(unsigned int uTileID);
-  void InitializeTileset(Tileset tileset);
-  int GetTileForTerrainType(signed int a1, bool a2);
-  unsigned int GetTileId(unsigned int uTerrainType, unsigned int uSection);
-  void ToFile();
-  void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
-  int FromFileTxt(const char *pFilename);
+    TileDesc *GetTileById(unsigned int uTileID);
+    void InitializeTileset(Tileset tileset);
+    int GetTileForTerrainType(signed int a1, bool a2);
+    unsigned int GetTileId(unsigned int uTerrainType, unsigned int uSection);
+    void ToFile();
+    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    int FromFileTxt(const char *pFilename);
 
-  signed int sNumTiles;
-  struct TileDesc *pTiles;
+    int sNumTiles;
+    struct TileDesc *pTiles;
 };
 #pragma pack(pop)

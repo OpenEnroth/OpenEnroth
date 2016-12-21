@@ -116,6 +116,7 @@
     <ClCompile Include="..\..\Engine\Graphics\stru10.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\stru9.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Image.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\Texture.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Viewport.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Vis.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Weather.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="..\..\Engine\Graphics\stru10.h" />
     <ClInclude Include="..\..\Engine\Graphics\stru9.h" />
     <ClInclude Include="..\..\Engine\Graphics\Image.h" />
+    <ClInclude Include="..\..\Engine\Graphics\Texture.h" />
     <ClInclude Include="..\..\Engine\Graphics\Viewport.h" />
     <ClInclude Include="..\..\Engine\Graphics\Vis.h" />
     <ClInclude Include="..\..\Engine\Graphics\Weather.h" />

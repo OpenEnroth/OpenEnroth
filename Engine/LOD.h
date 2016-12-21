@@ -126,21 +126,6 @@ struct LODWriteableFile : public LOD::File
     int FixDirectoryOffsets();
     bool _4621A7();
     int CreateNewLod(LOD::FileHeader *pHeader, LOD::Directory *pDir, const char *Source);
-
-    /*FILE *pFile;
-    char pLODName[256];
-    unsigned int isFileOpened;
-    unsigned __int8 *pIOBuffer;
-    unsigned int uIOBufferSize;
-    struct LOD::FileHeader header;
-    struct LOD::Directory *pRoot;
-    unsigned __int8 pContainerName[16];
-    unsigned int uCurrentIndexDir;
-    unsigned int uLODDataSize;
-    unsigned int uNumSubIndices;
-    struct LOD::Directory *pSubIndices;
-    unsigned int uOffsetToSubIndex;
-    FILE *pOutputFileHandle;*/
 };
 #pragma pack(pop)
 
@@ -176,21 +161,6 @@ struct LODFile_IconsBitmaps : public LOD::File
 
     Texture_MM7 *GetTexture(int idx);
 
-
-    /*FILE *pFile;
-    unsigned __int8 pLODName[256];
-    unsigned int isFileOpened;
-    unsigned __int8 *pIOBuffer;
-    unsigned int uIOBufferSize;
-    struct LOD::FileHeader header;
-    struct LOD::Directory *pRoot;
-    unsigned __int8 pContainerName[16];
-    unsigned int uCurrentIndexDir;
-    unsigned int uLODDataSize;
-    unsigned int uNumSubIndices;
-    struct LOD::Directory *pSubIndices;
-    unsigned int uOffsetToSubIndex;
-    FILE *pOutputFileHandle;*/
     Texture_MM7 pTextures[MAX_LOD_TEXTURES];
     unsigned int uNumLoadedFiles;
     int dword_11B80;

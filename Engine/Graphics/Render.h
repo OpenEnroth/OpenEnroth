@@ -318,6 +318,9 @@ class Render : public IRender
         virtual void am_Blt_Copy(RECT *pSrcRect, POINT *pTargetXY, int a3);
         virtual void am_Blt_Chroma(RECT *pSrcRect, POINT *pTargetPoint, int a3, int blend_mode);
 
+        virtual HWLTexture *LoadHwlBitmap(const char *name);
+        virtual HWLTexture *LoadHwlSprite(const char *name);
+
     public:
         virtual void WritePixel16(int x, int y, unsigned __int16 color)
         {

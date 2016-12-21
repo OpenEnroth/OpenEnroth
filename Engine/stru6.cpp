@@ -6,24 +6,26 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
-
-#include "stru6.h"
-
-#include "Engine/Graphics/LightmapBuilder.h"
-#include "Engine/Objects/SpriteObject.h"
-#include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/LOD.h"
-#include "Engine/Graphics/Sprites.h"
-#include "Engine/Objects/ObjectList.h"
-#include "Engine/Objects/Actor.h"
+#include "Engine/stru6.h"
 #include "Engine/Random.h"
-#include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/Graphics/Overlays.h"
 #include "Engine/stru160.h"
 #include "Engine/OurMath.h"
+
+#include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Lights.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Texture.h"
+
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/Actor.h"
+
+#include "Engine/Tables/IconFrameTable.h"
 
 
 
@@ -1363,6 +1365,7 @@ void stru6::LoadAnimations()
     effpar01 = pBitmaps_LOD->LoadTexture("effpar01");
     effpar02 = pBitmaps_LOD->LoadTexture("effpar02");
     effpar03 = pBitmaps_LOD->LoadTexture("effpar03");
+
     uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);
 
     pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("zapp"));

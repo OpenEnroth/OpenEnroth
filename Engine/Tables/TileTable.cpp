@@ -8,11 +8,14 @@
 #include <string.h>
 
 #include "Engine/Engine.h"
+#include "Engine/LOD.h"
+
+#include "Engine/Graphics/PaletteManager.h"
+
+#include "Engine/Serialization/LegacyImages.h"
 
 #include "TileFrameTable.h"
 #include "FrameTableInc.h"
-#include "Engine/Graphics/PaletteManager.h"
-#include "../LOD.h"
 
 
 //----- (00487E1D) --------------------------------------------------------
@@ -33,93 +36,107 @@ TileDesc *TileTable::GetTileById(unsigned int uTileID)
 //----- (00487E58) --------------------------------------------------------
 void TileTable::InitializeTileset(Tileset tileset)
 {
-  for (int i = 0; i < sNumTiles; ++i )
-  {
-    if (pTiles[i].tileset == tileset && pTiles[i].pTileName[0] )
+    for (int i = 0; i < sNumTiles; ++i)
     {
-      pTiles[i].uBitmapID = pBitmaps_LOD->LoadTexture(pTiles[i].pTileName);
-      if ( pTiles[i].uBitmapID != -1 )
-        pBitmaps_LOD->pTextures[pTiles[i].uBitmapID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[pTiles[i].uBitmapID].palette_id1);
+        if (pTiles[i].tileset == tileset && !pTiles[i].name.empty())
+        {
+            //pTiles[i].uBitmapID = pBitmaps_LOD->LoadTexture(pTiles[i].pTileName);
+            //if (pTiles[i].uBitmapID != -1)
+            //    pBitmaps_LOD->pTextures[pTiles[i].uBitmapID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[pTiles[i].uBitmapID].palette_id1);
+        }
     }
-  }
 }
 
 //----- (00487ED6) --------------------------------------------------------
-int TileTable::GetTileForTerrainType( signed int terrain_type, bool not_random )
-    {
-  int v5; // edx@3
-  int v6; // edx@11
+int TileTable::GetTileForTerrainType(signed int terrain_type, bool not_random)
+{
+    int v5; // edx@3
+    int v6; // edx@11
 
-  if (  not_random || terrain_type > 8 )
-  {
-    return GetTileId(terrain_type, 0);
-  }
-   v5 = rand() % 50;
-  if ( v5 < 20)
-  {
-    return GetTileId(terrain_type, 0);
-  }
-  else if ( v5 < 30 )
-  {
-    return GetTileId(terrain_type, 1);
-  }
-  else if ( v5 < 40 )
-  {
-    return GetTileId(terrain_type, 2);
-  }
-  else if ( v5 < 48 )
-  {
-    return GetTileId(terrain_type, 3);
-  }
-  v6 = rand() % 8;
-  return GetTileId(terrain_type, v6+4);
-  return 0;
+    if (not_random || terrain_type > 8)
+    {
+        return GetTileId(terrain_type, 0);
+    }
+    v5 = rand() % 50;
+    if (v5 < 20)
+    {
+        return GetTileId(terrain_type, 0);
+    }
+    else if (v5 < 30)
+    {
+        return GetTileId(terrain_type, 1);
+    }
+    else if (v5 < 40)
+    {
+        return GetTileId(terrain_type, 2);
+    }
+    else if (v5 < 48)
+    {
+        return GetTileId(terrain_type, 3);
+    }
+    v6 = rand() % 8;
+    return GetTileId(terrain_type, v6 + 4);
 }
 
 //----- (00487F84) --------------------------------------------------------
 unsigned int TileTable::GetTileId(unsigned int uTerrainType, unsigned int uSection)
-{  
-  for (int i=0; i<sNumTiles; ++i)
-      {
-      if( (pTiles[i].tileset==uTerrainType)&&(pTiles[i].uSection==uSection))
-          return i;
-      }
-  return 0;
+{
+    for (int i = 0; i < sNumTiles; ++i)
+    {
+        if ((pTiles[i].tileset == uTerrainType) && (pTiles[i].uSection == uSection))
+            return i;
+    }
+    return 0;
 }
 
 //----- (00487FB4) --------------------------------------------------------
 void TileTable::ToFile()
 {
-  TileTable *v1; // esi@1
-  FILE *v2; // eax@1
-  FILE *v3; // edi@1
+    TileTable *v1; // esi@1
+    FILE *v2; // eax@1
+    FILE *v3; // edi@1
 
-  TileTable* Str = this;
+    TileTable* Str = this;
 
-  v1 = Str;
-  v2 = fopen("data\\dtile.bin", "wb");
-  v3 = v2;
-  if ( !v2 )
-    Error("Unable to save dtile.bin!");
-  fwrite(v1, 4u, 1u, v2);
-  fwrite(v1->pTiles, 0x1Au, v1->sNumTiles, v3);
-  fclose(v3);
+    v1 = Str;
+    v2 = fopen("data\\dtile.bin", "wb");
+    v3 = v2;
+    if (!v2)
+        Error("Unable to save dtile.bin!");
+    fwrite(v1, 4u, 1u, v2);
+    fwrite(v1->pTiles, 0x1Au, v1->sNumTiles, v3);
+    fclose(v3);
 }
 
 //----- (00488000) --------------------------------------------------------
 void TileTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8)
 {
-  uint num_mm6_tiles = data_mm6 ? *(int *)data_mm6 : 0,
-       num_mm7_tiles = data_mm7 ? *(int *)data_mm7 : 0,
-       num_mm8_tiles = data_mm8 ? *(int *)data_mm8 : 0;
-  sNumTiles = num_mm6_tiles + num_mm7_tiles + num_mm8_tiles;
-  Assert(sNumTiles);
-  Assert(!num_mm8_tiles);
+    uint num_mm6_tiles = data_mm6 ? *(int *)data_mm6 : 0,
+         num_mm7_tiles = data_mm7 ? *(int *)data_mm7 : 0,
+         num_mm8_tiles = data_mm8 ? *(int *)data_mm8 : 0;
+    this->sNumTiles = num_mm7_tiles /*+ num_mm6_tiles + num_mm8_tiles*/;
+    Assert(sNumTiles);
 
-  pTiles = (TileDesc *)malloc(sNumTiles * sizeof(TileDesc));
-  memcpy(pTiles,                                 (char *)data_mm7 + 4, num_mm7_tiles * sizeof(TileDesc));
-  memcpy(pTiles + num_mm7_tiles,                 (char *)data_mm6 + 4, num_mm6_tiles * sizeof(TileDesc));
-  memcpy(pTiles + num_mm6_tiles + num_mm7_tiles, (char *)data_mm8 + 4, num_mm8_tiles * sizeof(TileDesc));
+    auto tiles = new TileDesc[sNumTiles];
+    auto tile_data = (TileDesc_MM7 *)((unsigned char *)data_mm7 + 4);
+    for (unsigned int i = 0; i < num_mm7_tiles; ++i)
+    {
+        tiles[i].name = tile_data->pTileName;
+        std::transform(tiles[i].name.begin(), tiles[i].name.end(), tiles[i].name.begin(), ::tolower);
+
+        tiles[i].uTileID = tile_data->uTileID;
+        tiles[i].tileset = (Tileset)tile_data->tileset;
+        tiles[i].uSection = tile_data->uSection;
+        tiles[i].uAttributes = tile_data->uAttributes;
+
+        tile_data++;
+    }
+    //pTiles = (TileDesc *)malloc(sNumTiles * sizeof(TileDesc));
+    //memcpy(pTiles, (char *)data_mm7 + 4, num_mm7_tiles * sizeof(TileDesc));
+    //memcpy(pTiles + num_mm7_tiles, (char *)data_mm6 + 4, num_mm6_tiles * sizeof(TileDesc));
+    //memcpy(pTiles + num_mm6_tiles + num_mm7_tiles, (char *)data_mm8 + 4, num_mm8_tiles * sizeof(TileDesc));
+
+    this->pTiles = tiles;
 }
 
 //----- (00488047) --------------------------------------------------------
@@ -246,13 +263,13 @@ LABEL_173:
       if ( !fgets(&Buf, 490, File) )
         goto LABEL_174;
     }
-    strcpy(v2->pTiles[v2->sNumTiles].pTileName, v84.pProperties[0]);
+    //strcpy(v2->pTiles[v2->sNumTiles].pTileName, v84.pProperties[0]);
     v6 = atoi(v84.pProperties[1]);
     v7 = v84.pProperties[2];
     v2->pTiles[v2->sNumTiles].uTileID = v6;
     v8 = atoi(v7);
     v9 = v84.pProperties[3];
-    v2->pTiles[v2->sNumTiles].uBitmapID = v8;
+    //v2->pTiles[v2->sNumTiles].uBitmapID = v8;
     v2->pTiles[v2->sNumTiles].tileset = Tileset_Grass;
     if ( _stricmp(v9, "TTtype_NULL") )
     {

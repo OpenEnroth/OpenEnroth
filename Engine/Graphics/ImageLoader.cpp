@@ -1,7 +1,10 @@
 #include "Engine/ZlibWrapper.h"
 
+#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/RenderStruct.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/ImageFormatConverter.h"
+
 
 
 
@@ -15,10 +18,10 @@ bool ColorKey_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height
     *out_pixels = nullptr;
     *out_format = IMAGE_INVALID_FORMAT;
 
-    auto tex = lod->GetTexture(lod->LoadTexture(this->filename.c_str(), TEXTURE_16BIT_PALETTE));
+    auto tex = lod->GetTexture(lod->LoadTexture(this->resource_name.c_str(), TEXTURE_16BIT_PALETTE));
     if (tex->pBits & 512)
     {
-        Log::Warning(L"Alpha texture is loaded as ColorKey (%S)", this->filename.c_str());
+        Log::Warning(L"Alpha texture is loaded as ColorKey (%S)", this->resource_name.c_str());
     }
 
     if (tex->pPalette16 && tex->paletted_pixels)
@@ -63,9 +66,9 @@ bool Image16bit_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_heig
     *out_pixels = nullptr;
     *out_format = IMAGE_INVALID_FORMAT;
 
-    auto tex = lod->GetTexture(lod->LoadTexture(this->filename.c_str(), TEXTURE_16BIT_PALETTE));
+    auto tex = lod->GetTexture(lod->LoadTexture(this->resource_name.c_str(), TEXTURE_16BIT_PALETTE));
     if (tex->pBits & 512)
-        Log::Warning(L"Alpha texture is loaded as Image16bit (%S)", this->filename.c_str());
+        Log::Warning(L"Alpha texture is loaded as Image16bit (%S)", this->resource_name.c_str());
 
     if (tex->pPalette16 && tex->paletted_pixels)
     {
@@ -108,11 +111,11 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height, v
     *out_format = IMAGE_INVALID_FORMAT;
 
     auto tex = lod->GetTexture(
-        lod->LoadTexture(this->filename.c_str(), TEXTURE_16BIT_PALETTE)
+        lod->LoadTexture(this->resource_name.c_str(), TEXTURE_16BIT_PALETTE)
     );
     if (~tex->pBits & 512)
     {
-        Log::Warning(L"ColorKey texture is loaded as Alpha (%S)", this->filename.c_str());
+        Log::Warning(L"ColorKey texture is loaded as Alpha (%S)", this->resource_name.c_str());
     }
 
     if (tex->pPalette16 && tex->paletted_pixels)
@@ -378,10 +381,10 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height, void **pix
     *pixels = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    FILE *file = fopen(this->filename.c_str(), "rb");
+    FILE *file = fopen(this->resource_name.c_str(), "rb");
     if (!file)
     {
-        Log::Warning(L"Unable to load %s", this->filename.c_str());
+        Log::Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
@@ -443,10 +446,10 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **pixe
     *pixels = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    file = lod->FindContainer(this->filename.c_str(), 0);
+    file = lod->FindContainer(this->resource_name.c_str(), 0);
     if (!file)
     {
-        Log::Warning(L"Unable to load %s", this->filename.c_str());
+        Log::Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
@@ -495,4 +498,46 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **pixe
     free(Str1a);
 
     return *pixels != nullptr;
+}
+
+
+
+bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format)
+{
+    *width = 0;
+    *height = 0;
+    *pixels = nullptr;
+    *format = IMAGE_INVALID_FORMAT;
+
+    auto tex = lod->GetTexture(
+        lod->LoadTexture(this->resource_name.c_str())
+    );
+
+    if (tex->pBits & 2) // hardware bitmap
+    {
+        HWLTexture* hwl = render->LoadHwlBitmap(this->resource_name.c_str());
+        if (hwl)
+        {
+            int num_pixels = hwl->uWidth * hwl->uHeight;
+            int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R5G6B5);
+            *pixels = new unsigned char[num_pixels_bytes];
+            if (*pixels)
+            {
+                *width = hwl->uWidth;
+                *height = hwl->uHeight;
+                *format = IMAGE_FORMAT_R5G6B5;
+
+                memcpy(*pixels, hwl->pPixels, num_pixels_bytes);
+            }
+
+            delete[] hwl->pPixels;
+            delete hwl;
+
+            return *pixels != nullptr;
+        }
+    }
+    else
+        __debugbreak(); // prolly regular images as in Icons Lod -- check
+
+    return false;
 }

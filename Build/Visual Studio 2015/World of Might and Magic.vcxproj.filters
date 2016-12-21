@@ -621,6 +621,9 @@
     <ClCompile Include="..\..\Engine\Graphics\Image.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\Texture.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\libavcodec\avcodec.h">
@@ -1410,6 +1413,9 @@
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\ImageFormatConverter.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Texture.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

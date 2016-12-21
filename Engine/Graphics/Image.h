@@ -66,7 +66,7 @@ class Image
         IMAGE_FORMAT  native_format;
         void         *pixels[IMAGE_NUM_FORMATS];
 
-        bool LoadImageData();
+        virtual bool LoadImageData();
 };
 
 class ImageHelper

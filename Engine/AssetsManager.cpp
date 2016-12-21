@@ -3,6 +3,7 @@
 #include "Engine/LOD.h"
 
 #include "Engine/Graphics/ImageLoader.h"
+#include "Engine/Graphics/Texture.h"
 
 
 
@@ -65,9 +66,9 @@ Image *AssetsManager::GetImage_PCXFromFile(const String &filename)
 
 
 
-Image *AssetsManager::GetBitmap(const String &name)
+Texture *AssetsManager::GetBitmap(const String &name)
 {
-    return Image::Create(
-        new Image16bit_LOD_Loader(pBitmaps_LOD, name)
+    return Texture::Create(
+        new Bitmaps_LOD_Loader(pBitmaps_LOD, name)
     );
 }

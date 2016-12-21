@@ -1010,7 +1010,7 @@ void IntegrityTest()
     static_assert(sizeof(ObjectDesc) == 0x38, "Wrong type size");
     static_assert(sizeof(OverlayDesc) == 0x8, "Wrong type size");
     static_assert(sizeof(ChestDesc) == 0x24, "Wrong type size");
-    static_assert(sizeof(TileDesc) == 0x1A, "Wrong type size");
+    //static_assert(sizeof(TileDesc) == 0x1A, "Wrong type size");
     static_assert(sizeof(MonsterDesc_mm6) == 148, "Wrong type size");
     static_assert(sizeof(MonsterDesc) == 152, "Wrong type size");
     static_assert(sizeof(Timer) == 0x28, "Wrong type size");
@@ -1668,6 +1668,7 @@ void SecondaryInitialization()
         char container_name[64];
         sprintf(container_name, "HDWTR%03u", i);
         render->pHDWaterBitmapIDs[i] = pBitmaps_LOD->LoadTexture(container_name);
+        render->hd_water_tile_anim[i] = assets->GetBitmap(container_name);
     }
 
     pNPCStats = new NPCStats;

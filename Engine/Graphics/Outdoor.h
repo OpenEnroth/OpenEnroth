@@ -10,10 +10,10 @@
 #pragma pack(push, 1)
 struct ODMHeader
 {
-  int uVersion;
-  char pMagic[4];
-  unsigned int uCompressedSize;
-  unsigned int uDecompressedSize;
+    int uVersion;
+    char pMagic[4];
+    unsigned int uCompressedSize;
+    unsigned int uDecompressedSize;
 };
 #pragma pack(pop)
 
@@ -23,54 +23,54 @@ struct ODMHeader
 #pragma pack(push, 1)
 struct OutdoorLocationTileType
 {
-  Tileset tileset;
-  unsigned __int16 uTileID;
+    Tileset tileset;
+    unsigned __int16 uTileID;
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 struct DMap
-    {
+{
     unsigned __int8 field0;
     unsigned __int8 field1;
-    };
+};
 #pragma pack(pop)
 
 /*   79 */
 #pragma pack(push, 1)
 struct OutdoorLocationTerrain
 {
-  //----- (0047C794) --------------------------------------------------------
-  inline OutdoorLocationTerrain()
-  {
-    pHeightmap = nullptr;
-    pTilemap = nullptr;
-    pAttributemap = nullptr;
-    pDmap = nullptr;;
-    this->field_10 = 0;
-    this->field_12 = 0;
-
-    
-  }
-
-  void _47C7A9();
-  void Release();
-  void FillDMap(int X, int Y, int W, int Z);
-  int _47CB57(unsigned char *pixels_8bit, int a2, int num_pixels);
-  bool ZeroLandscape();
-  bool Initialize();
+    //----- (0047C794) --------------------------------------------------------
+    inline OutdoorLocationTerrain()
+    {
+        pHeightmap = nullptr;
+        pTilemap = nullptr;
+        pAttributemap = nullptr;
+        pDmap = nullptr;;
+        this->field_10 = 0;
+        this->field_12 = 0;
 
 
-  unsigned __int8 *pHeightmap;
-  unsigned __int8 *pTilemap;
-  unsigned __int8 *pAttributemap;
-  struct DMap *pDmap;
-  __int16 field_10;
-  __int16 field_12;
-  __int16 field_14;
-  __int16 field_16;
-  int field_18;
-  int field_1C;
+    }
+
+    void _47C7A9();
+    void Release();
+    void FillDMap(int X, int Y, int W, int Z);
+    int _47CB57(unsigned char *pixels_8bit, int a2, int num_pixels);
+    bool ZeroLandscape();
+    bool Initialize();
+
+
+    unsigned __int8 *pHeightmap;
+    unsigned __int8 *pTilemap;
+    unsigned __int8 *pAttributemap;
+    struct DMap *pDmap;
+    __int16 field_10;
+    __int16 field_12;
+    __int16 field_14;
+    __int16 field_16;
+    int field_18;
+    int field_1C;
 };
 #pragma pack(pop)
 
@@ -79,50 +79,50 @@ struct OutdoorLocationTerrain
 #pragma pack(push, 1)
 struct ODMFace
 {
-  bool HasEventHint();
+    bool HasEventHint();
 
-  
-  static bool IsBackfaceNotCulled(struct RenderVertexSoft *a2, struct Polygon *polygon);
-  
-  inline bool Invisible() const {return (uAttributes & FACE_INVISIBLE) != 0;}
-  inline bool Visible() const   {return !Invisible();}
-  inline bool Portal() const    {return (uAttributes & FACE_PORTAL) != 0;}
-  inline bool Fluid() const     {return (uAttributes & FACE_FLUID) != 0;}
-  inline bool Indoor_sky() const {return (uAttributes & FACE_INDOOR_SKY) != 0;}
-  inline bool Clickable() const {return (uAttributes & FACE_CLICKABLE) != 0;}
-  inline bool Pressure_Plate() const {return (uAttributes & FACE_PRESSURE_PLATE) != 0;}
-  inline bool Ethereal() const {return (uAttributes & FACE_ETHEREAL) != 0;}
 
-  struct Plane_int_ pFacePlane;
-  int zCalc1;
-  int zCalc2;
-  int zCalc3;
-  unsigned int uAttributes;
-  unsigned __int16 pVertexIDs[20];
-  unsigned __int16 pTextureUIDs[20];
-  unsigned __int16 pTextureVIDs[20];
-  signed __int16 pXInterceptDisplacements[20];
-  signed __int16 pYInterceptDisplacements[20];
-  signed __int16 pZInterceptDisplacements[20];
-  __int16 uTextureID;
-  __int16 sTextureDeltaU;
-  __int16 sTextureDeltaV;
-  struct BBox_short_ pBoundingBox;
-  __int16 sCogNumber;
-  __int16 sCogTriggeredID;
-  __int16 sCogTriggerType;
-  char field_128;
-  char field_129;
-  unsigned __int8 uGradientVertex1;
-  unsigned __int8 uGradientVertex2;
-  unsigned __int8 uGradientVertex3;
-  unsigned __int8 uGradientVertex4;
-  unsigned __int8 uNumVertices;
-  unsigned __int8 uPolygonType;
-  unsigned __int8 uShadeType;
-  unsigned __int8 bVisible;
-  char field_132;
-  char field_133;
+    static bool IsBackfaceNotCulled(struct RenderVertexSoft *a2, struct Polygon *polygon);
+
+    inline bool Invisible() const { return (uAttributes & FACE_INVISIBLE) != 0; }
+    inline bool Visible() const { return !Invisible(); }
+    inline bool Portal() const { return (uAttributes & FACE_PORTAL) != 0; }
+    inline bool Fluid() const { return (uAttributes & FACE_FLUID) != 0; }
+    inline bool Indoor_sky() const { return (uAttributes & FACE_INDOOR_SKY) != 0; }
+    inline bool Clickable() const { return (uAttributes & FACE_CLICKABLE) != 0; }
+    inline bool Pressure_Plate() const { return (uAttributes & FACE_PRESSURE_PLATE) != 0; }
+    inline bool Ethereal() const { return (uAttributes & FACE_ETHEREAL) != 0; }
+
+    struct Plane_int_ pFacePlane;
+    int zCalc1;
+    int zCalc2;
+    int zCalc3;
+    unsigned int uAttributes;
+    unsigned __int16 pVertexIDs[20];
+    unsigned __int16 pTextureUIDs[20];
+    unsigned __int16 pTextureVIDs[20];
+    signed __int16 pXInterceptDisplacements[20];
+    signed __int16 pYInterceptDisplacements[20];
+    signed __int16 pZInterceptDisplacements[20];
+    __int16 uTextureID;
+    __int16 sTextureDeltaU;
+    __int16 sTextureDeltaV;
+    struct BBox_short_ pBoundingBox;
+    __int16 sCogNumber;
+    __int16 sCogTriggeredID;
+    __int16 sCogTriggerType;
+    char field_128;
+    char field_129;
+    unsigned __int8 uGradientVertex1;
+    unsigned __int8 uGradientVertex2;
+    unsigned __int8 uGradientVertex3;
+    unsigned __int8 uGradientVertex4;
+    unsigned __int8 uNumVertices;
+    unsigned __int8 uPolygonType;
+    unsigned __int8 uShadeType;
+    unsigned __int8 bVisible;
+    char field_132;
+    char field_133;
 };
 #pragma pack(pop)
 
@@ -139,7 +139,6 @@ struct OutdoorLocation
     void Release();
     bool Load(const String &filename, int days_played, int respawn_interval_days, int *thisa);
     int GetTileIdByTileMapId(signed int a2);
-    unsigned int DoGetTileTexture(signed int uX, signed int uZ);
     int _47ED83(signed int a2, signed int a3);
     int ActuallyGetSomeOtherTileInfo(signed int uX, signed int uY);
     int DoGetHeightOnTerrain(signed int sX, signed int sZ);
@@ -155,7 +154,8 @@ struct OutdoorLocation
     bool LoadTileGroupIds();
     double GetFogDensityByTime();
     int GetSomeOtherTileInfo(int sX, int sY);
-    unsigned int GetTileTexture(int sX, int sZ);
+    TileDesc *GetTile(int sX, int sZ);
+    TileDesc *DoGetTile(int uX, int uZ);
     int GetHeightOnTerrain(int sX, int sZ);
     bool Initialize(const String &filename, int days_played, int respawn_interval_days, int *thisa);
     //bool Release2();
@@ -189,7 +189,7 @@ struct OutdoorLocation
     unsigned __int16 *pFaceIDLIST;
     unsigned int *pOMAP;
     signed int sSky_TextureID;
-    signed int sMainTile_BitmapID;
+    Texture *main_tile_texture; //signed int sMainTile_BitmapID;
     __int16 field_F0;
     __int16 field_F2;
     int field_F4;
