@@ -101,9 +101,9 @@ struct ODMFace
     unsigned __int16 pVertexIDs[20];
     unsigned __int16 pTextureUIDs[20];
     unsigned __int16 pTextureVIDs[20];
-    signed __int16 pXInterceptDisplacements[20];
-    signed __int16 pYInterceptDisplacements[20];
-    signed __int16 pZInterceptDisplacements[20];
+    __int16 pXInterceptDisplacements[20];
+    __int16 pYInterceptDisplacements[20];
+    __int16 pZInterceptDisplacements[20];
     __int16 uTextureID;
     __int16 sTextureDeltaU;
     __int16 sTextureDeltaV;

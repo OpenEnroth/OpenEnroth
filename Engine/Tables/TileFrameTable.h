@@ -60,8 +60,9 @@ class TileDesc
             return this->texture;
         }
 
-        inline bool IsWaterTile() const         { return this->name == "wtrtyl"; }
-        inline bool IsWaterBorderTile() const   { return this->name.find("wtrdr", 0) == 0; }
+        //inline bool IsWaterTile() const         { return this->name == "wtrtyl"; }
+        inline bool IsWaterTile() const         { return this->uAttributes & 2; }
+        inline bool IsWaterBorderTile() const   { return this->name.find("wtrdr", 0) == 0 || this->name.find("hwtrdr") == 0; }
 
     protected:
         Texture *texture;

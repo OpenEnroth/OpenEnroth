@@ -424,20 +424,13 @@ void Render::RenderTerrainD3D() // New function
             {
                 if ( /*pTile->flags & 2 && */tile->IsWaterTile())
                 {
-                    //transparent = false;
                     tile_texture = this->hd_water_tile_anim[this->hd_water_current_frame];
-                    pTilePolygon->dimming_level = 0;
                 }
-                else
+                else if (tile->IsWaterBorderTile())
                 {
-                    if (tile->IsWaterBorderTile())
-                    {
-                        // for all shore tiles - draw a tile water under them since they're half-empty
-                        pTilePolygon->dimming_level = 0;
-                        DrawBorderTiles(pTilePolygon);
-                        transparent = true;
-                        pTilePolygon->dimming_level = 30;
-                    }
+                    // for all shore tiles - draw a tile water under them since they're half-empty
+                    DrawBorderTiles(pTilePolygon);
+                    transparent = true;
                 }
                 render->DrawTerrainPolygon(pTilePolygon->uNumVertices, pTilePolygon, tile_texture->GetDirect3DTexture(), transparent, true);
             }
@@ -448,16 +441,16 @@ void Render::RenderTerrainD3D() // New function
 //----- (004811A3) --------------------------------------------------------
 void Render::DrawBorderTiles(struct Polygon *poly)
 {
-  pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
-  DrawTerrainPolygon(
-      poly->uNumVertices, poly,
-      //pBitmaps_LOD->pHardwareTextures[pHDWaterBitmapIDs[hd_water_current_frame]],
-      this->hd_water_tile_anim[this->hd_water_current_frame]->GetDirect3DTexture(),
-      false, true
-  );
+    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+    DrawTerrainPolygon(
+        poly->uNumVertices, poly,
+        //pBitmaps_LOD->pHardwareTextures[pHDWaterBitmapIDs[hd_water_current_frame]],
+        this->hd_water_tile_anim[this->hd_water_current_frame]->GetDirect3DTexture(),
+        false, true
+        );
 
-  pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
-  //DrawTerrainPolygon(poly->uNumVertices, poly, pBitmaps_LOD->pHardwareTextures[poly->uTileBitmapID], true, true);
+    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
+    //DrawTerrainPolygon(poly->uNumVertices, poly, pBitmaps_LOD->pHardwareTextures[poly->uTileBitmapID], true, true);
 }
 
 

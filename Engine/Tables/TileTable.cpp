@@ -123,6 +123,10 @@ void TileTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8)
     {
         tiles[i].name = tile_data->pTileName;
         std::transform(tiles[i].name.begin(), tiles[i].name.end(), tiles[i].name.begin(), ::tolower);
+        if (tiles[i].name.find("wtrdr") == 0)
+        {
+            tiles[i].name.insert(tiles[i].name.begin(), 'h'); // mm7 uses hd water tiles with legacy names
+        }
 
         tiles[i].uTileID = tile_data->uTileID;
         tiles[i].tileset = (Tileset)tile_data->tileset;
