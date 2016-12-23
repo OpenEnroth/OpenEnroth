@@ -75,8 +75,6 @@ struct OutdoorLocationTerrain
 #pragma pack(pop)
 
 
-/*   81 */
-#pragma pack(push, 1)
 struct ODMFace
 {
     bool HasEventHint();
@@ -93,6 +91,14 @@ struct ODMFace
     inline bool Pressure_Plate() const { return (uAttributes & FACE_PRESSURE_PLATE) != 0; }
     inline bool Ethereal() const { return (uAttributes & FACE_ETHEREAL) != 0; }
 
+    inline bool IsTextureFrameTable() { return this->uAttributes & FACE_TEXTURE_FRAME; }
+    inline void ToggleIsTextureFrameTable() { this->uAttributes = this->uAttributes & FACE_TEXTURE_FRAME ? this->uAttributes & ~FACE_TEXTURE_FRAME : this->uAttributes | FACE_TEXTURE_FRAME; }
+
+    void SetTexture(const String &filename);
+    Texture *GetTexture();
+
+    bool Deserialize(struct ODMFace_MM7 *);
+
     struct Plane_int_ pFacePlane;
     int zCalc1;
     int zCalc2;
@@ -104,7 +110,7 @@ struct ODMFace
     __int16 pXInterceptDisplacements[20];
     __int16 pYInterceptDisplacements[20];
     __int16 pZInterceptDisplacements[20];
-    __int16 uTextureID;
+    void *resource;//__int16 uTextureID;
     __int16 sTextureDeltaU;
     __int16 sTextureDeltaV;
     struct BBox_short_ pBoundingBox;
@@ -124,7 +130,6 @@ struct ODMFace
     char field_132;
     char field_133;
 };
-#pragma pack(pop)
 
 
 #pragma pack(push, 1)
@@ -188,7 +193,7 @@ struct OutdoorLocation
     unsigned int numFaceIDListElems;
     unsigned __int16 *pFaceIDLIST;
     unsigned int *pOMAP;
-    signed int sSky_TextureID;
+    Texture *sky_texture;//signed int sSky_TextureID;
     Texture *main_tile_texture; //signed int sMainTile_BitmapID;
     __int16 field_F0;
     __int16 field_F2;

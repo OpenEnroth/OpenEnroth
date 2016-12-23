@@ -293,9 +293,9 @@ struct LocationTime_stru1
 /*  319 */
 enum LEVEL_TYPE
 {
-  LEVEL_null = 0,
-  LEVEL_Indoor = 0x1,
-  LEVEL_Outdoor = 0x2,
+    LEVEL_null = 0,
+    LEVEL_Indoor = 0x1,
+    LEVEL_Outdoor = 0x2,
 };
 extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 
@@ -315,11 +315,11 @@ extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 #pragma pack(push, 1)
 struct SpawnPointMM6
 {
-  Vec3_int_ vPosition;
-  unsigned __int16 uRadius;
-  unsigned __int16 uKind;
-  unsigned __int16 uIndex;
-  unsigned __int16 uAttributes;
+    Vec3_int_ vPosition;
+    unsigned __int16 uRadius;
+    unsigned __int16 uKind;
+    unsigned __int16 uIndex;
+    unsigned __int16 uAttributes;
 };
 #pragma pack(pop)
 
@@ -329,26 +329,26 @@ struct SpawnPointMM6
 #pragma pack(push, 1)
 struct SpawnPointMM7
 {
-  //----- (00448DD6) --------------------------------------------------------
-  SpawnPointMM7()
-  {
-    uRadius = 32;
-    uAttributes = 0;
-    uIndex = 0;
-    uKind = 0;
-    uGroup = 0;
-  }
+    //----- (00448DD6) --------------------------------------------------------
+    SpawnPointMM7()
+    {
+        uRadius = 32;
+        uAttributes = 0;
+        uIndex = 0;
+        uKind = 0;
+        uGroup = 0;
+    }
 
 
-  Vec3_int_ vPosition;
-  unsigned __int16 uRadius;
-  unsigned __int16 uKind;
-  unsigned __int16 uIndex;
-  unsigned __int16 uAttributes;
-  unsigned int uGroup;
+    Vec3_int_ vPosition;
+    unsigned __int16 uRadius;
+    unsigned __int16 uKind;
+    unsigned __int16 uIndex;
+    unsigned __int16 uAttributes;
+    unsigned int uGroup;
 
-  inline bool IsMonsterSpawn() const { return uKind == 3; }
-  inline bool IsTreasureSpawn() const { return uKind != 3; }
+    inline bool IsMonsterSpawn() const { return uKind == 3; }
+    inline bool IsTreasureSpawn() const { return uKind != 3; }
 
 };
 #pragma pack(pop)
@@ -362,12 +362,12 @@ struct SpawnPointMM7
 #pragma pack(push, 1)
 struct BLVHeader
 {
-  char field_0[104];
-  unsigned int uFaces_fdata_Size;
-  unsigned int uSector_rdata_Size;
-  unsigned int uSector_lrdata_Size;
-  unsigned int uDoors_ddata_Size;
-  char field_78[16];
+    char field_0[104];
+    unsigned int uFaces_fdata_Size;
+    unsigned int uSector_rdata_Size;
+    unsigned int uSector_lrdata_Size;
+    unsigned int uDoors_ddata_Size;
+    char field_78[16];
 };
 #pragma pack(pop)
 
@@ -377,7 +377,7 @@ struct BLVHeader
 #pragma pack(push, 1)
 struct BLVSectorMM8
 {
-  int dword_000074;
+    int dword_000074;
 };
 #pragma pack(pop)
 
@@ -385,10 +385,10 @@ struct BLVSectorMM8
 #pragma pack(push, 1)
 struct BLVLightMM6
 {
-  Vec3_short_ vPosition;
-  __int16 uRadius;
-  __int16 uAttributes;
-  unsigned __int16 uBrightness;
+    Vec3_short_ vPosition;
+    __int16 uRadius;
+    __int16 uAttributes;
+    unsigned __int16 uBrightness;
 };
 #pragma pack(pop)
 
@@ -396,14 +396,14 @@ struct BLVLightMM6
 #pragma pack(push, 1)
 struct BLVLightMM7 //10h
 {
-  struct Vec3_short_ vPosition;
-  __int16 uRadius;
-  char uRed;
-  char uGreen;
-  char uBlue;
-  char uType;
-  __int16 uAtributes;           // & 0x08    doesn't light faces
-  __int16 uBrightness;
+    struct Vec3_short_ vPosition;
+    __int16 uRadius;
+    char uRed;
+    char uGreen;
+    char uBlue;
+    char uType;
+    __int16 uAtributes;           // & 0x08    doesn't light faces
+    __int16 uBrightness;
 };
 #pragma pack(pop)
 
@@ -411,7 +411,7 @@ struct BLVLightMM7 //10h
 #pragma pack(push, 1)
 struct BLVLightMM8
 {
-  int uID;
+    int uID;
 };
 #pragma pack(pop)
 
@@ -421,35 +421,35 @@ struct BLVLightMM8
 #pragma pack(push, 1)
 struct BLVDoor //50h
 {
-  enum State: unsigned __int16
-  {
-    Closed = 0,
-    Opening = 1,
-    Open = 2,
-    Closing = 3
-  };
+    enum State : unsigned __int16
+    {
+        Closed = 0,
+        Opening = 1,
+        Open = 2,
+        Closing = 3
+    };
 
-  unsigned int uAttributes;
-  unsigned int uDoorID;
-  unsigned int uTimeSinceTriggered;
-  Vec3_int_ vDirection;
-  int uMoveLength;
-  int uOpenSpeed;
-  int uCloseSpeed;
-  unsigned __int16 *pVertexIDs;
-  unsigned __int16 *pFaceIDs;
-  unsigned __int16 *pSectorIDs;
-  __int16 *pDeltaUs;
-  __int16 *pDeltaVs;
-  unsigned __int16 *pXOffsets;
-  unsigned __int16 *pYOffsets;
-  unsigned __int16 *pZOffsets;
-  unsigned __int16 uNumVertices;
-  unsigned __int16 uNumFaces;
-  __int16 field_48;
-  unsigned __int16 uNumOffsets;
-  State uState;
-  __int16 field_4E;
+    unsigned int uAttributes;
+    unsigned int uDoorID;
+    unsigned int uTimeSinceTriggered;
+    Vec3_int_ vDirection;
+    int uMoveLength;
+    int uOpenSpeed;
+    int uCloseSpeed;
+    unsigned __int16 *pVertexIDs;
+    unsigned __int16 *pFaceIDs;
+    unsigned __int16 *pSectorIDs;
+    __int16 *pDeltaUs;
+    __int16 *pDeltaVs;
+    unsigned __int16 *pXOffsets;
+    unsigned __int16 *pYOffsets;
+    unsigned __int16 *pZOffsets;
+    unsigned __int16 uNumVertices;
+    unsigned __int16 uNumFaces;
+    __int16 field_48;
+    unsigned __int16 uNumOffsets;
+    State uState;
+    __int16 field_4E;
 };
 #pragma pack(pop)
 
@@ -457,12 +457,12 @@ struct BLVDoor //50h
 #pragma pack(push, 1)
 struct BLVMapOutline //0C
 {
-  unsigned __int16 uVertex1ID;
-  unsigned __int16 uVertex2ID;
-  unsigned __int16 uFace1ID;
-  unsigned __int16 uFace2ID;
-  __int16 sZ;
-  unsigned __int16 uFlags;
+    unsigned __int16 uVertex1ID;
+    unsigned __int16 uVertex2ID;
+    unsigned __int16 uFace1ID;
+    unsigned __int16 uFace2ID;
+    __int16 sZ;
+    unsigned __int16 uFlags;
 };
 #pragma pack(pop)
 
@@ -504,52 +504,57 @@ struct BLVMapOutline //0C
 #pragma pack(push, 1)
 struct BLVFace  //60h
 {
-  //----- (0046ED02) --------------------------------------------------------
-  inline BLVFace()
-  {
-    this->uNumVertices = 0;
-    this->uAttributes = 0;
-    this->uFaceExtraID = 0;
-    this->pVertexIDs = nullptr;
-    this->pZInterceptDisplacements = nullptr;
-    this->pYInterceptDisplacements = nullptr;
-    this->pXInterceptDisplacements = nullptr;
-  }
+    //----- (0046ED02) --------------------------------------------------------
+    inline BLVFace()
+    {
+        this->uNumVertices = 0;
+        this->uAttributes = 0;
+        this->uFaceExtraID = 0;
+        this->pVertexIDs = nullptr;
+        this->pZInterceptDisplacements = nullptr;
+        this->pYInterceptDisplacements = nullptr;
+        this->pXInterceptDisplacements = nullptr;
+    }
 
-  void _get_normals(Vec3_int_ *a2, Vec3_int_ *a3);
-  struct Texture_MM7 *GetTexture();
-  void FromODM(struct ODMFace *face);
+    void _get_normals(Vec3_int_ *a2, Vec3_int_ *a3);
+    void FromODM(struct ODMFace *face);
 
-  inline bool Invisible() const {return (uAttributes & FACE_INVISIBLE) != 0;}
-  inline bool Visible() const   {return !Invisible();}
-  inline bool Portal() const    {return (uAttributes & FACE_PORTAL) != 0;}
-  inline bool Fluid() const     {return (uAttributes & FACE_FLUID) != 0;}
-  inline bool Indoor_sky() const     {return (uAttributes & FACE_INDOOR_SKY) != 0;}
-  inline bool Clickable() const {return (uAttributes & FACE_CLICKABLE) != 0;}
-  inline bool Pressure_Plate() const {return (uAttributes & FACE_PRESSURE_PLATE) != 0;}
-  inline bool Ethereal() const {return (uAttributes & FACE_ETHEREAL) != 0;}
+    void SetTexture(const String &filename);
+    Texture *GetTexture();
 
-  struct Plane_float_ pFacePlane;
-  struct Plane_int_ pFacePlane_old;
-  int zCalc1;
-  int zCalc2;
-  int zCalc3;
-  unsigned int uAttributes;
-  unsigned __int16 *pVertexIDs;
-  signed __int16 *pXInterceptDisplacements;
-  signed __int16 *pYInterceptDisplacements;
-  signed __int16 *pZInterceptDisplacements;
-  signed __int16   *pVertexUIDs;
-  signed __int16   *pVertexVIDs;
-  unsigned __int16  uFaceExtraID;
-  unsigned __int16  uBitmapID;
-  unsigned __int16  uSectorID;
-  __int16 uBackSectorID;
-  struct BBox_short_ pBounding;
-  PolygonType uPolygonType;
-  unsigned __int8 uNumVertices;
-  char field_5E;
-  char field_5F;
+    inline bool Invisible() const       { return (uAttributes & FACE_INVISIBLE) != 0; }
+    inline bool Visible() const         { return !Invisible(); }
+    inline bool Portal() const          { return (uAttributes & FACE_PORTAL) != 0; }
+    inline bool Fluid() const           { return (uAttributes & FACE_FLUID) != 0; }
+    inline bool Indoor_sky() const      { return (uAttributes & FACE_INDOOR_SKY) != 0; }
+    inline bool Clickable() const       { return (uAttributes & FACE_CLICKABLE) != 0; }
+    inline bool Pressure_Plate() const  { return (uAttributes & FACE_PRESSURE_PLATE) != 0; }
+    inline bool Ethereal() const        { return (uAttributes & FACE_ETHEREAL) != 0; }
+
+    inline bool IsTextureFrameTable() const { return this->uAttributes & FACE_TEXTURE_FRAME; }
+    inline void ToggleIsTextureFrameTable() { this->uAttributes = this->uAttributes & FACE_TEXTURE_FRAME ? this->uAttributes & ~FACE_TEXTURE_FRAME : this->uAttributes | FACE_TEXTURE_FRAME; }
+
+    struct Plane_float_ pFacePlane;
+    struct Plane_int_ pFacePlane_old;
+    int zCalc1;
+    int zCalc2;
+    int zCalc3;
+    unsigned int uAttributes;
+    unsigned __int16 *pVertexIDs;
+    signed __int16 *pXInterceptDisplacements;
+    signed __int16 *pYInterceptDisplacements;
+    signed __int16 *pZInterceptDisplacements;
+    signed __int16   *pVertexUIDs;
+    signed __int16   *pVertexVIDs;
+    unsigned __int16  uFaceExtraID;
+    void *resource;//unsigned __int16  uBitmapID;
+    unsigned __int16  uSectorID;
+    __int16 uBackSectorID;
+    struct BBox_short_ pBounding;
+    PolygonType uPolygonType;
+    unsigned __int8 uNumVertices;
+    char field_5E;
+    char field_5F;
 };
 #pragma pack(pop)
 
@@ -565,7 +570,7 @@ bool HasEventint();
   __int16 field_6;
   __int16 field_8;
   __int16 field_A;
-  __int16 field_C;
+  __int16 face_id;
   unsigned __int16 uAdditionalBitmapID;
   __int16 field_10;
   __int16 field_12;

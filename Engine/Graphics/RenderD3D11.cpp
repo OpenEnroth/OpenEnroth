@@ -47,9 +47,9 @@ void RenderD3D11::BltToFront(RECT *pDstRect, IDirectDrawSurface *pSrcSurface, RE
 void RenderD3D11::BltBackToFontFast(int a2, int a3, RECT *a4) {__debugbreak();}
 void RenderD3D11::BeginSceneD3D() {}
 unsigned int RenderD3D11::GetActorTintColor(float a2, int tint, int a4, int a5, RenderBillboard *a6) {__debugbreak(); return 0;}
-void RenderD3D11::DrawPolygon(unsigned int uNumVertices, struct Polygon *a3, ODMFace *a4, IDirect3DTexture2 *pTexture) {__debugbreak();}
-void RenderD3D11::DrawTerrainPolygon(unsigned int uNumVertices, struct Polygon *a4, IDirect3DTexture2 *a5, bool transparent, bool clampAtTextureBorders) {__debugbreak();}
-void RenderD3D11::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, IDirect3DTexture2 *pHwTex, struct Texture_MM7 *pTex, int uPackedID, unsigned int uColor, int a8) {__debugbreak();}
+void RenderD3D11::DrawPolygon(struct Polygon *a3) {__debugbreak();}
+void RenderD3D11::DrawTerrainPolygon(unsigned int uNumVertices, struct Polygon *a4, bool transparent, bool clampAtTextureBorders) {__debugbreak();}
+void RenderD3D11::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) {__debugbreak();}
 void RenderD3D11::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
 void RenderD3D11::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
 void RenderD3D11::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {__debugbreak();}
@@ -75,8 +75,8 @@ void RenderD3D11::DrawTextureGrayShade(float a2, float a3, Image *a4) {__debugbr
 void RenderD3D11::DrawBuildingsD3D() {__debugbreak();}
 void RenderD3D11::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {__debugbreak();}
 void RenderD3D11::DrawOutdoorSkyD3D() {__debugbreak();}
-void RenderD3D11::DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon, IDirect3DTexture2 *pTexture) {__debugbreak();}
-void RenderD3D11::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon, IDirect3DTexture2 *pTexture) {__debugbreak();}
+void RenderD3D11::DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon) {__debugbreak();}
+void RenderD3D11::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {__debugbreak();}
 void RenderD3D11::PrepareDecorationsRenderList_ODM() {__debugbreak();}
 void RenderD3D11::DrawSpriteObjects_ODM() {__debugbreak();}
 void RenderD3D11::RenderTerrainD3D() {__debugbreak();}

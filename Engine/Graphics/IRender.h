@@ -45,9 +45,9 @@ class IRender
 
     virtual unsigned int GetActorTintColor(float a2, int tint, int a4, int a5, RenderBillboard *a6) = 0;
 
-    virtual void DrawPolygon(unsigned int uNumVertices, struct Polygon *a3, ODMFace *a4, IDirect3DTexture2 *pTexture) = 0;
-    virtual void DrawTerrainPolygon(unsigned int uNumVertices, struct Polygon *a4, IDirect3DTexture2 *a5, bool transparent, bool clampAtTextureBorders) = 0;
-    virtual void DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, IDirect3DTexture2 *pHwTex, struct Texture_MM7 *pTex, int uPackedID, unsigned int uColor, int a8) = 0;
+    virtual void DrawPolygon(struct Polygon *a3) = 0;
+    virtual void DrawTerrainPolygon(unsigned int uNumVertices, struct Polygon *a4, bool transparent, bool clampAtTextureBorders) = 0;
+    virtual void DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) = 0;
 
     virtual void MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle) = 0;
     virtual void MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle) = 0;
@@ -95,8 +95,8 @@ class IRender
 
     virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID = 0) = 0;
     virtual void DrawOutdoorSkyD3D() = 0;
-    virtual void DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon, IDirect3DTexture2 *pTexture) = 0;
-    virtual void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon, IDirect3DTexture2 *pTexture) = 0;
+    virtual void DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon) = 0;
+    virtual void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) = 0;
 
     virtual void PrepareDecorationsRenderList_ODM() = 0;
     virtual void DrawSpriteObjects_ODM() = 0;

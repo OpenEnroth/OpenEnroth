@@ -8,6 +8,44 @@
 
 
 
+/*   81 */
+#pragma pack(push, 1)
+struct ODMFace_MM7
+{
+    struct Plane_int_ pFacePlane;
+    int zCalc1;
+    int zCalc2;
+    int zCalc3;
+    unsigned int uAttributes;
+    unsigned __int16 pVertexIDs[20];
+    unsigned __int16 pTextureUIDs[20];
+    unsigned __int16 pTextureVIDs[20];
+    __int16 pXInterceptDisplacements[20];
+    __int16 pYInterceptDisplacements[20];
+    __int16 pZInterceptDisplacements[20];
+    __int16 uTextureID;
+    __int16 sTextureDeltaU;
+    __int16 sTextureDeltaV;
+    struct BBox_short_ pBoundingBox;
+    __int16 sCogNumber;
+    __int16 sCogTriggeredID;
+    __int16 sCogTriggerType;
+    char field_128;
+    char field_129;
+    unsigned __int8 uGradientVertex1;
+    unsigned __int8 uGradientVertex2;
+    unsigned __int8 uGradientVertex3;
+    unsigned __int8 uGradientVertex4;
+    unsigned __int8 uNumVertices;
+    unsigned __int8 uPolygonType;
+    unsigned __int8 uShadeType;
+    unsigned __int8 bVisible;
+    char field_132;
+    char field_133;
+};
+#pragma pack(pop)
+
+
 /*   48 */
 #pragma pack(push, 1)
 struct TileDesc_MM7  //26
@@ -20,6 +58,19 @@ struct TileDesc_MM7  //26
     unsigned __int16 uAttributes;
 };
 #pragma pack(pop)
+
+
+#pragma pack(push, 1)
+struct TextureFrame_MM7
+{
+    char pTextureName[12];
+    __int16 uTextureID;
+    __int16 uAnimTime;
+    __int16 uAnimLength;
+    __int16 uFlags;
+};
+#pragma pack(pop)
+
 
 #pragma pack(push, 1)
 struct NPCData_Image_MM7

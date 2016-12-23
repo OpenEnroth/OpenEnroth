@@ -151,38 +151,49 @@ enum TEXTURE_FRAME_TABLE_FLAGS
 
 
 
-/*   41 */
-#pragma pack(push, 1)
-struct TextureFrame
+class TextureFrame
 {
-  char pTextureName[12];
-  __int16 uTextureID;
-  __int16 uAnimTime;
-  __int16 uAnimLength;
-  __int16 uFlags;
+    public:
+        inline TextureFrame(): tex(nullptr) {}
+
+        String  name;
+        __int16 uAnimTime;
+        __int16 uAnimLength;
+        __int16 uFlags;
+
+        Texture *GetTexture()
+        {
+            if (!this->tex)
+            {
+                this->tex = assets->GetBitmap(this->name);
+            }
+            return this->tex;
+        }
+
+    protected:
+        Texture *tex;
 };
-#pragma pack(pop)
 
 /*   40 */
 #pragma pack(push, 1)
 struct TextureFrameTable
 {
-  //----- (0044D4C9) --------------------------------------------------------
-  inline TextureFrameTable()
-  {
-    pTextures = 0;
-    sNumTextures = 0;
-  }
-  int FromFileTxt(const char *Args);
-  void ToFile();
-  void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
-  void LoadAnimationSequenceAndPalettes(signed int uIconID);
-  int GetFrameTexture(int uFrameID, int time);
-  signed int FindTextureByName(const char *Str2);
+    //----- (0044D4C9) --------------------------------------------------------
+    inline TextureFrameTable()
+    {
+        pTextures = 0;
+        sNumTextures = 0;
+    }
+    int FromFileTxt(const char *Args);
+    void ToFile();
+    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void LoadAnimationSequenceAndPalettes(int uIconID);
+    Texture *GetFrameTexture(int uFrameID, int time);
+    int FindTextureByName(const char *Str2);
 
 
-  signed int sNumTextures;
-  struct TextureFrame *pTextures;
+    int sNumTextures;
+    struct TextureFrame *pTextures;
 };
 #pragma pack(pop)
 

@@ -12,6 +12,8 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/ImageFormatConverter.h"
 
+#include "Engine/Serialization/LegacyImages.h"
+
 #include "../Tables/FrameTableInc.h"
 #include "PaletteManager.h"
 #include "../ZlibWrapper.h"
@@ -66,34 +68,44 @@ void TextureFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8)
        num_mm7_frames = data_mm7 ? *(int *)data_mm7 : 0,
        num_mm8_frames = data_mm8 ? *(int *)data_mm8 : 0;
 
-  sNumTextures = num_mm6_frames + num_mm7_frames + num_mm8_frames;
+  this->sNumTextures = /*num_mm6_frames + */num_mm7_frames /*+ num_mm8_frames*/;
   Assert(sNumTextures);
-  Assert(!num_mm8_frames);
+  //Assert(!num_mm8_frames);
 
-  pTextures = (TextureFrame *)malloc(sNumTextures * sizeof(TextureFrame));
+  TextureFrame_MM7 *frame_data = (TextureFrame_MM7 *)((unsigned char *)data_mm7 + 4);
+  auto frames = new TextureFrame[this->sNumTextures];
+  for (unsigned int i = 0; i < this->sNumTextures; ++i)
+  {
+      frames[i].name = frame_data->pTextureName;
+      std::transform(frames[i].name.begin(), frames[i].name.end(), frames[i].name.begin(), ::tolower);
 
-  memcpy(pTextures,                                   (char *)data_mm7 + 4, num_mm7_frames * sizeof(TextureFrame));
-  memcpy(pTextures + num_mm7_frames,                  (char *)data_mm6 + 4, num_mm6_frames * sizeof(TextureFrame));
-  memcpy(pTextures + num_mm6_frames + num_mm7_frames, (char *)data_mm8 + 4, num_mm8_frames * sizeof(TextureFrame));
+      frames[i].uAnimLength = frame_data->uAnimLength;
+      frames[i].uAnimTime = frame_data->uAnimTime;
+      frames[i].uFlags = frame_data->uFlags;
+
+      ++frame_data;
+  }
+
+  //pTextures = (TextureFrame *)malloc(sNumTextures * sizeof(TextureFrame));
+  //memcpy(pTextures,                                   (char *)data_mm7 + 4, num_mm7_frames * sizeof(TextureFrame));
+  //memcpy(pTextures + num_mm7_frames,                  (char *)data_mm6 + 4, num_mm6_frames * sizeof(TextureFrame));
+  //memcpy(pTextures + num_mm6_frames + num_mm7_frames, (char *)data_mm8 + 4, num_mm8_frames * sizeof(TextureFrame));
+
+  this->pTextures = frames;
 }
 
 //----- (0044E0ED) --------------------------------------------------------
-void TextureFrameTable::LoadAnimationSequenceAndPalettes(signed int uIconID)
+void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID)
 {
-    //TextureFrameTable *v3; // ebx@1
-    unsigned int i; // edi@3
-
-    //v3 = this;
-    if ((uIconID <= this->sNumTextures) && uIconID >= 0)
+    if (uFrameID <= this->sNumTextures && uFrameID >= 0)
     {
-        for (i = uIconID; ; ++i)
+        for (unsigned int i = uFrameID; ; ++i)
         {
-            this->pTextures[i].uTextureID = pBitmaps_LOD->LoadTexture(this->pTextures[i].pTextureName, TEXTURE_DEFAULT);
+            //this->pTextures[i].uTextureID = pBitmaps_LOD->LoadTexture(this->pTextures[i].pTextureName, TEXTURE_DEFAULT);
 
-            if (this->pTextures[i].uTextureID != -1)
-                pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id1);
-            //result = (unsigned int)v3->pTextures;
-            //if ( !(*(char *)(result + i * 20 + 18) & 1) )
+            //if (this->pTextures[i].uTextureID != -1)
+            //    pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id1);
+
             if (this->pTextures[i].uFlags & 1)
                 break;
         }
@@ -101,52 +113,52 @@ void TextureFrameTable::LoadAnimationSequenceAndPalettes(signed int uIconID)
     return;
 }
 
+
 //----- (0044E163) --------------------------------------------------------
-signed int TextureFrameTable::FindTextureByName(const char *Str2)
+int TextureFrameTable::FindTextureByName(const char *Str2)
 {
-  if ( (signed int)this->sNumTextures <= 0 )
+    String name = Str2;
+    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+    for (unsigned int i = 0; i < this->sNumTextures; ++i)
+    {
+        if (this->pTextures[i].name == name)
+            return i;
+    }
     return -1;
-  for ( int i = 0; (signed int)i < (signed int)this->sNumTextures; ++i )
-  {
-    if ( !_stricmp(this->pTextures[i].pTextureName, Str2) )
-      return i;
-  }
-  return -1;
 }
 
 //----- (0044E19A) --------------------------------------------------------
-int TextureFrameTable::GetFrameTexture(int uFrameID, signed int a3)
+Texture *TextureFrameTable::GetFrameTexture(int uFrameID, signed int a3)
 {
-  int v3; // esi@1
-  TextureFrame *v4; // edi@1
-  TextureFrame *v5; // ecx@1
-  __int16 v6; // dx@2
-  int v7; // edx@3
-  char *i; // eax@3
-  int v9; // ecx@5
-  unsigned int result; // eax@6
+    int v3; // esi@1
+    TextureFrame *v4; // edi@1
+    TextureFrame *v5; // ecx@1
+    __int16 v6; // dx@2
+    int v7; // edx@3
+    char *i; // eax@3
+    int v9; // ecx@5
 
-  v3 = uFrameID;
-  v4 = this->pTextures;
-  v5 = &v4[uFrameID];
-  if ( v5->uFlags & 1 && (v6 = v5->uAnimLength) != 0 )
-  {
-    v7 = (a3 >> 3) % v6;
-    for ( i = (char *)&v5->uAnimTime; ; i += 20 )
+    v3 = uFrameID;
+    v4 = this->pTextures;
+    v5 = &v4[uFrameID];
+    if (v5->uFlags & 1 && (v6 = v5->uAnimLength) != 0)
     {
-      v9 = *(short *)i;
-      if ( v7 <= v9 )
-        break;
-      v7 -= v9;
-      ++v3;
+        v7 = (a3 >> 3) % v6;
+        for (i = (char *)&v5->uAnimTime; ; i += 20)
+        {
+            v9 = *(short *)i;
+            if (v7 <= v9)
+                break;
+            v7 -= v9;
+            ++v3;
+        }
+        return v4[v3].GetTexture();
     }
-    result = v4[v3].uTextureID;
-  }
-  else
-  {
-    result = v5->uTextureID;
-  }
-  return result;
+    else
+    {
+        return v5->GetTexture();
+    }
 }
 
 
@@ -246,122 +258,120 @@ Texture_MM7::Texture_MM7()
 //----- (0044E1EC) --------------------------------------------------------
 int TextureFrameTable::FromFileTxt(const char *Args)
 {
-  TextureFrameTable *v2; // ebx@1
-  FILE *v3; // eax@1
-  int v4; // esi@3
-  const void *v5; // ST0C_4@10
-  void *v6; // eax@10
-  FILE *v7; // ST0C_4@12
-  char *i; // eax@12
-  signed int v9; // esi@15
-  int v10; // eax@17
-  int v11; // edx@22
-  int v12; // ecx@23
-  int v13; // eax@24
-  signed int j; // eax@27
-  TextureFrame *v15; // edx@28
-  int v16; // esi@28
-  int k; // ecx@29
-  char Buf; // [sp+Ch] [bp-2F8h]@3
-  FrameTableTxtLine v20; // [sp+200h] [bp-104h]@4
-  int v21; // [sp+27Ch] [bp-88h]@4
-  char *Str1; // [sp+280h] [bp-84h]@5
-  char *Str; // [sp+284h] [bp-80h]@15
-  int v24; // [sp+2F8h] [bp-Ch]@3
-  int v25; // [sp+2FCh] [bp-8h]@3
-  FILE *File; // [sp+300h] [bp-4h]@1
-  int Argsa; // [sp+30Ch] [bp+8h]@28
+    TextureFrameTable *v2; // ebx@1
+    FILE *v3; // eax@1
+    int v4; // esi@3
+    const void *v5; // ST0C_4@10
+    void *v6; // eax@10
+    FILE *v7; // ST0C_4@12
+    char *i; // eax@12
+    signed int v9; // esi@15
+    int v10; // eax@17
+    int v11; // edx@22
+    int v12; // ecx@23
+    int v13; // eax@24
+    signed int j; // eax@27
+    TextureFrame *v15; // edx@28
+    int v16; // esi@28
+    int k; // ecx@29
+    char Buf; // [sp+Ch] [bp-2F8h]@3
+    FrameTableTxtLine v20; // [sp+200h] [bp-104h]@4
+    int v21; // [sp+27Ch] [bp-88h]@4
+    char *Str1; // [sp+280h] [bp-84h]@5
+    char *Str; // [sp+284h] [bp-80h]@15
+    int v24; // [sp+2F8h] [bp-Ch]@3
+    int v25; // [sp+2FCh] [bp-8h]@3
+    FILE *File; // [sp+300h] [bp-4h]@1
+    int Argsa; // [sp+30Ch] [bp+8h]@28
 
-  v2 = this;
-  v3 = fopen(Args, "r");
-  File = v3;
-  if ( !v3 )
-    Error("CTextureFrameTable::load - Unable to open file: %s.", Args);
+    v2 = this;
+    v3 = fopen(Args, "r");
+    File = v3;
+    if (!v3)
+        Error("CTextureFrameTable::load - Unable to open file: %s.", Args);
 
-  v4 = 0;
-  v24 = 0;
-  v25 = 1;
-  if ( fgets(&Buf, 490, v3) )
-  {
-    do
+    v4 = 0;
+    v24 = 0;
+    v25 = 1;
+    if (fgets(&Buf, 490, v3))
     {
-      *strchr(&Buf, 10) = 0;
-      memcpy(&v21, txt_file_frametable_parser(&Buf, &v20), 0x7Cu);
-      __debugbreak(); // warning C4700: uninitialized local variable 'Str1' used
-      if ( v21 && *Str1 != 47 )
-      {
-        if ( v21 < 2 )
-          Error("CTextureFrameTable::load, too few arguments, %s line %i.", Args, v25);
-        ++v24;
-      }
-      ++v25;
-    }
-    while ( fgets(&Buf, 490, File) );
-    v4 = v24;
-  }
-  v5 = v2->pTextures;
-  v2->sNumTextures = v4;
-  v6 = malloc(20 * v4);
-  v2->pTextures = (TextureFrame *)v6;
-  if ( !v6 )
-    Error("CTextureFrameTable::load - Out of Memory!");
-  v7 = File;
-  v2->sNumTextures = 0;
-  fseek(v7, 0, 0);
-  for ( i = fgets(&Buf, 490, File); i; i = fgets(&Buf, 490, File) )
-  {
-    *strchr(&Buf, 10) = 0;
-    memcpy(&v21, txt_file_frametable_parser(&Buf, &v20), 0x7Cu);
-    if ( v21 && *Str1 != 47 )
-    {
-      strcpy(v2->pTextures[v2->sNumTextures].pTextureName, Str1);
-      __debugbreak(); // warning C4700: uninitialized local variable 'Str' used
-      v2->pTextures[v2->sNumTextures].uAnimTime = atoi(Str);
-      v9 = 2;
-      for ( v2->pTextures[v2->sNumTextures].uFlags = 0; v9 < v21; ++v9 )
-      {
-        if ( !_stricmp((&Str1)[4 * v9], "New") )
+        do
         {
-          //v10 = (int)&v2->pTextures[v2->sNumTextures].uFlags;
-          v2->pTextures[v2->sNumTextures].uFlags |= 2;
+            *strchr(&Buf, 10) = 0;
+            memcpy(&v21, txt_file_frametable_parser(&Buf, &v20), 0x7Cu);
+            __debugbreak(); // warning C4700: uninitialized local variable 'Str1' used
+            if (v21 && *Str1 != 47)
+            {
+                if (v21 < 2)
+                    Error("CTextureFrameTable::load, too few arguments, %s line %i.", Args, v25);
+                ++v24;
+            }
+            ++v25;
+        } while (fgets(&Buf, 490, File));
+        v4 = v24;
+    }
+    v5 = v2->pTextures;
+    v2->sNumTextures = v4;
+    v6 = malloc(20 * v4);
+    v2->pTextures = (TextureFrame *)v6;
+    if (!v6)
+        Error("CTextureFrameTable::load - Out of Memory!");
+    v7 = File;
+    v2->sNumTextures = 0;
+    fseek(v7, 0, 0);
+    for (i = fgets(&Buf, 490, File); i; i = fgets(&Buf, 490, File))
+    {
+        *strchr(&Buf, 10) = 0;
+        memcpy(&v21, txt_file_frametable_parser(&Buf, &v20), 0x7Cu);
+        if (v21 && *Str1 != 47)
+        {
+            //strcpy(v2->pTextures[v2->sNumTextures].pTextureName, Str1);
+            __debugbreak(); // warning C4700: uninitialized local variable 'Str' used
+            v2->pTextures[v2->sNumTextures].uAnimTime = atoi(Str);
+            v9 = 2;
+            for (v2->pTextures[v2->sNumTextures].uFlags = 0; v9 < v21; ++v9)
+            {
+                if (!_stricmp((&Str1)[4 * v9], "New"))
+                {
+                    //v10 = (int)&v2->pTextures[v2->sNumTextures].uFlags;
+                    v2->pTextures[v2->sNumTextures].uFlags |= 2;
+                }
+            }
+            ++v2->sNumTextures;
         }
-      }
-      ++v2->sNumTextures;
     }
-  }
-  fclose(File);
-  v11 = 0;
-  if ( (signed int)(v2->sNumTextures - 1) > 0 )
-  {
-    v12 = 0;
-    do
+    fclose(File);
+    v11 = 0;
+    if ((signed int)(v2->sNumTextures - 1) > 0)
     {
-      v13 = (int)&v2->pTextures[v12];
-      if ( !(*(char *)(v13 + 38) & 2) )
-        *(char *)(v13 + 18) |= 1u;
-      ++v11;
-      ++v12;
+        v12 = 0;
+        do
+        {
+            v13 = (int)&v2->pTextures[v12];
+            if (!(*(char *)(v13 + 38) & 2))
+                *(char *)(v13 + 18) |= 1u;
+            ++v11;
+            ++v12;
+        } while (v11 < (signed int)(v2->sNumTextures - 1));
     }
-    while ( v11 < (signed int)(v2->sNumTextures - 1) );
-  }
-  for ( j = 0; j < (signed int)v2->sNumTextures; *(short *)(Argsa + 16) = v16 )
-  {
-    v15 = v2->pTextures;
-    Argsa = (int)&v15[j];
-    v16 = *(short *)(Argsa + 14);
-    if ( *(char *)(Argsa + 18) & 1 )
+    for (j = 0; j < (signed int)v2->sNumTextures; *(short *)(Argsa + 16) = v16)
     {
-      ++j;
-      for ( k = (int)&v15[j]; *(char *)(k + 18) & 1; k += 20 )
-      {
-        v16 += *(short *)(k + 14);
+        v15 = v2->pTextures;
+        Argsa = (int)&v15[j];
+        v16 = *(short *)(Argsa + 14);
+        if (*(char *)(Argsa + 18) & 1)
+        {
+            ++j;
+            for (k = (int)&v15[j]; *(char *)(k + 18) & 1; k += 20)
+            {
+                v16 += *(short *)(k + 14);
+                ++j;
+            }
+            LOWORD(v16) = v15[j].uAnimTime + v16;
+        }
         ++j;
-      }
-      LOWORD(v16) = v15[j].uAnimTime + v16;
     }
-    ++j;
-  }
-  return 1;
+    return 1;
 }
 
 //----- (00451007) --------------------------------------------------------

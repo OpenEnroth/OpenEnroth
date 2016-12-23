@@ -996,7 +996,7 @@ void IntegrityTest()
     static_assert(sizeof(ObjectDesc) == 56, "Wrong type size");
     static_assert(sizeof(DecorationDesc) == 84, "Wrong type size");
     static_assert(sizeof(PlayerFrame) == 10, "Wrong type size");
-    static_assert(sizeof(TextureFrame) == 20, "Wrong type size");
+    //static_assert(sizeof(TextureFrame) == 20, "Wrong type size");
     static_assert(sizeof(SpriteFrame) == 60, "Wrong type size");
     static_assert(sizeof(RenderVertexSoft) == 0x30, "Wrong type size");
     static_assert(sizeof(RenderBillboard) == 0x34, "Wrong type size");
@@ -1031,11 +1031,11 @@ void IntegrityTest()
     static_assert(sizeof(KeyboardActionMapping) == 0x20C, "Wrong type size");
     //static_assert(sizeof(UIAnimation) == 0xD, "Wrong type size");
     //static_assert(sizeof(SpawnPointMM7) == 0x18, "Wrong type size");
-    static_assert(sizeof(ODMFace) == 0x134, "Wrong type size");
+    //static_assert(sizeof(ODMFace) == 0x134, "Wrong type size");
     static_assert(sizeof(BSPNode) == 0x8, "Wrong type size");
     static_assert(sizeof(BSPModel) == 0xBC, "Wrong type size");
     //static_assert(sizeof(OutdoorLocation) == 0x1C28C, "Wrong type size");
-    static_assert(sizeof(BLVFace) == 0x60, "Wrong type size");
+    //static_assert(sizeof(BLVFace) == 0x60, "Wrong type size");
     static_assert(sizeof(BLVFaceExtra) == 0x24, "Wrong type size");
     static_assert(sizeof(BLVSector) == 0x74, "Wrong type size");
     static_assert(sizeof(BLVLightMM7) == 0x10, "Wrong type size");
@@ -1100,7 +1100,7 @@ void IntegrityTest()
     static_assert(sizeof(TravelInfo) == 0x20, "Wrong type size");
     static_assert(sizeof(stru336) == 0x798, "Wrong type size");
     static_assert(sizeof(Vec3_short_) == 6, "Wrong type size");
-    static_assert(sizeof(BLVFace) == 96, "Wrong type size");
+    //static_assert(sizeof(BLVFace) == 96, "Wrong type size");
     static_assert(sizeof(BLVFaceExtra) == 36, "Wrong type size");
     static_assert(sizeof(BLVSector) == 116, "Wrong type size");
     static_assert(sizeof(LevelDecoration) == 32, "Wrong type size");
@@ -2355,73 +2355,56 @@ void GameUI_StatusBar_Update(bool force_hide)
     }
 }
 
+
+
+void sub_44861E_set_texture_indoor(unsigned int uFaceCog, const String &filename)
+{
+    for (uint i = 1; i < pIndoor->uNumFaceExtras; ++i)
+    {
+        auto extra = &pIndoor->pFaceExtras[i];
+        if (extra->sCogNumber == uFaceCog)
+        {
+            auto face = &pIndoor->pFaces[extra->face_id];
+            face->SetTexture(filename);
+        }
+    }
+}
+
+void sub_44861E_set_texture_outdoor(unsigned int uFaceCog, const String &filename)
+{
+    for (uint j = 0; j < pOutdoor->uNumBModels; ++j)
+    {
+        auto bmodel = &pOutdoor->pBModels[j];
+        for (uint i = 0; i < bmodel->uNumFaces; ++i)
+        {
+            auto face = &bmodel->pFaces[i];
+            if (face->sCogNumber == uFaceCog)
+            {
+                face->SetTexture(filename);
+            }
+        }
+    }
+}
+
 //----- (0044861E) --------------------------------------------------------
 void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename)
 {
-    unsigned int texture; // eax@2
-
     if (uFaceCog)
     {
-        texture = pBitmaps_LOD->LoadTexture(pFilename);
-        if (texture != -1 ? (int)&pBitmaps_LOD->pTextures[texture] : 0)
+        //unsigned int texture = pBitmaps_LOD->LoadTexture(pFilename);
+        //if (texture != -1)
         {
-            pBitmaps_LOD->pTextures[texture].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[texture].palette_id1);
+            //pBitmaps_LOD->pTextures[texture].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[texture].palette_id1);
 
-            if (uCurrentlyLoadedLevelType == 1)
+            if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
             {
-                if ((signed int)pIndoor->uNumFaceExtras > 1)
-                {
-                    for (uint i = 1; i < (signed int)pIndoor->uNumFaceExtras; ++i)
-                    {
-                        if (pIndoor->pFaceExtras[i].sCogNumber == uFaceCog)
-                        {
-                            if (pIndoor->pFaces[pIndoor->pFaceExtras[i].field_C].uAttributes & FACE_TEXTURE_FRAME)
-                            {
-                                pIndoor->pFaces[pIndoor->pFaceExtras[i].field_C].uBitmapID = pTextureFrameTable->FindTextureByName(pFilename);
-                                if (pIndoor->pFaces[pIndoor->pFaceExtras[i].field_C].uBitmapID)
-                                {
-                                    pTextureFrameTable->LoadAnimationSequenceAndPalettes(pIndoor->pFaces[pIndoor->pFaceExtras[i].field_C].uBitmapID);
-                                }
-                                else
-                                {
-                                    pIndoor->pFaces[pIndoor->pFaceExtras[i].field_C].uBitmapID = texture;
-                                    pIndoor->pFaces[pIndoor->pFaceExtras[i].field_C].uAttributes &= 0xFFFFBFFF;
-                                }
-                            }
-                            else
-                            {
-                                pIndoor->pFaces[pIndoor->pFaceExtras[i].field_C].uBitmapID = texture;
-                            }
-                        }
-                    }
-                }
-                pParty->uFlags |= 2;
+                sub_44861E_set_texture_indoor(uFaceCog, pFilename);
             }
             else
             {
-                for (uint j = 0; j < (unsigned int)pOutdoor->uNumBModels; ++j)
-                {
-                    for (uint i = 0; i < pOutdoor->pBModels[j].uNumFaces; ++i)
-                    {
-                        if (pOutdoor->pBModels[j].pFaces[i].sCogNumber == uFaceCog)
-                        {
-                            if (pOutdoor->pBModels[j].pFaces[i].uAttributes & FACE_TEXTURE_FRAME)
-                            {
-                                pOutdoor->pBModels[j].pFaces[i].uTextureID = pTextureFrameTable->FindTextureByName(pFilename);
-                                if (pOutdoor->pBModels[j].pFaces[i].uTextureID)
-                                    pTextureFrameTable->LoadAnimationSequenceAndPalettes(pOutdoor->pBModels[j].pFaces[i].uTextureID);
-                                else
-                                {
-                                    pOutdoor->pBModels[j].pFaces[i].uTextureID = texture;
-                                    pOutdoor->pBModels[j].pFaces[i].uAttributes &= 0xFFFFBFFF;
-                                }
-                            }
-                            else
-                                pOutdoor->pBModels[j].pFaces[i].uTextureID = texture;
-                        }
-                    }
-                }
+                sub_44861E_set_texture_outdoor(uFaceCog, pFilename);
             }
+
             pParty->uFlags |= 2;
         }
     }
@@ -2432,16 +2415,16 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on)
 {
     if (sCogNumber)
     {
-        if (uCurrentlyLoadedLevelType == 1)
+        if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
             for (uint i = 1; i < (unsigned int)pIndoor->uNumFaceExtras; ++i)
             {
                 if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber)
                 {
                     if (on)
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].field_C].uAttributes |= bit;
+                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes |= bit;
                     else
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].field_C].uAttributes &= ~bit;
+                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes &= ~bit;
                 }
             }
             pParty->uFlags |= 2;

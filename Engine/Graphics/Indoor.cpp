@@ -6,42 +6,46 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
-
-#include "../ZlibWrapper.h"
-
-#include "LightmapBuilder.h"
-#include "DecalBuilder.h"
-#include "stru9.h"
-#include "stru10.h"
-#include "../stru367.h"
-
-#include "Outdoor.h"
-#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Events.h"
+#include "Engine/ZlibWrapper.h"
+#include "Engine/stru367.h"
+#include "Engine/stru6.h"
+#include "Engine/LOD.h"
+
+#include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Graphics/stru9.h"
+#include "Engine/Graphics/stru10.h"
+#include "Engine/Graphics/Texture.h"
+
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/Chest.h"
+
+#include "Engine/TurnEngine/TurnEngine.h"
+
+
+#include "GUI/GUIWindow.h"
+#include "GUI/GUIProgressBar.h"
+#include "GUI/UI/UIStatusBar.h"
+
+#include "Media/Audio/AudioPlayer.h"
+
+
+
+#include "Sprites.h"
+#include "ParticleEngine.h"
+#include "Level/Decoration.h"
+#include "Overlays.h"
+#include "Outdoor.h"
 #include "Viewport.h"
 #include "../Party.h"
 #include "../OurMath.h"
-#include "../LOD.h"
 #include "DecorationList.h"
-#include "../Objects/ObjectList.h"
-#include "../Objects/Actor.h"
-#include "../Objects/Chest.h"
-#include "GUI/GUIProgressBar.h"
 #include "../stru123.h"
-#include "Media/Audio/AudioPlayer.h"
-#include "../TurnEngine/TurnEngine.h"
-#include "PaletteManager.h"
 #include "Lights.h"
-
-#include "Sprites.h"
-#include "Engine/stru6.h"
-#include "ParticleEngine.h"
-#include "GUI/GUIWindow.h"
-#include "Level/Decoration.h"
-#include "Overlays.h"
-
-#include "GUI/UI/UIStatusBar.h"
-
 
 IndoorLocation *pIndoor = new IndoorLocation;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
@@ -369,167 +373,174 @@ void IndoorLocation::Draw()
 //----- (004C0EF2) --------------------------------------------------------
 void BLVFace::FromODM(ODMFace *face)
 {
-  this->pFacePlane_old.vNormal.x = face->pFacePlane.vNormal.x;
-  this->pFacePlane_old.vNormal.y = face->pFacePlane.vNormal.y;
-  this->pFacePlane_old.vNormal.z = face->pFacePlane.vNormal.z;
-  this->pFacePlane_old.dist = face->pFacePlane.dist;
-  this->pFacePlane.vNormal.x = (double)(face->pFacePlane.vNormal.x & 0xFFFF) * 0.000015259022
-                             + (double)(face->pFacePlane.vNormal.x >> 16);
-  this->pFacePlane.vNormal.y = (double)(face->pFacePlane.vNormal.y & 0xFFFF) * 0.000015259022
-                             + (double)(face->pFacePlane.vNormal.y >> 16);
-  this->pFacePlane.vNormal.z = (double)(face->pFacePlane.vNormal.z & 0xFFFF) * 0.000015259022
-                             + (double)(face->pFacePlane.vNormal.z >> 16);
-  this->pFacePlane.dist = (double)(face->pFacePlane.dist & 0xFFFF) * 0.000015259022 + (double)(face->pFacePlane.dist >> 16);
-  this->uAttributes = face->uAttributes;
-  this->pBounding.x1 = face->pBoundingBox.x1;
-  this->pBounding.y1 = face->pBoundingBox.y1;
-  this->pBounding.z1 = face->pBoundingBox.z1;
-  this->pBounding.x2 = face->pBoundingBox.x2;
-  this->pBounding.y2 = face->pBoundingBox.y2;
-  this->pBounding.z2 = face->pBoundingBox.z2;
-  this->zCalc1 = face->zCalc1;
-  this->zCalc2 = face->zCalc2;
-  this->zCalc3 = face->zCalc3;
-  this->pXInterceptDisplacements = face->pXInterceptDisplacements;
-  this->pYInterceptDisplacements = face->pYInterceptDisplacements;
-  this->pZInterceptDisplacements = face->pZInterceptDisplacements;
-  this->uPolygonType = (PolygonType)face->uPolygonType;
-  this->uNumVertices = face->uNumVertices;
-  this->uBitmapID = face->uTextureID;
-  this->pVertexIDs = face->pVertexIDs;
+    this->pFacePlane_old.vNormal.x = face->pFacePlane.vNormal.x;
+    this->pFacePlane_old.vNormal.y = face->pFacePlane.vNormal.y;
+    this->pFacePlane_old.vNormal.z = face->pFacePlane.vNormal.z;
+    this->pFacePlane_old.dist = face->pFacePlane.dist;
+    this->pFacePlane.vNormal.x = (double)(face->pFacePlane.vNormal.x & 0xFFFF) * 0.000015259022
+        + (double)(face->pFacePlane.vNormal.x >> 16);
+    this->pFacePlane.vNormal.y = (double)(face->pFacePlane.vNormal.y & 0xFFFF) * 0.000015259022
+        + (double)(face->pFacePlane.vNormal.y >> 16);
+    this->pFacePlane.vNormal.z = (double)(face->pFacePlane.vNormal.z & 0xFFFF) * 0.000015259022
+        + (double)(face->pFacePlane.vNormal.z >> 16);
+    this->pFacePlane.dist = (double)(face->pFacePlane.dist & 0xFFFF) * 0.000015259022 + (double)(face->pFacePlane.dist >> 16);
+    this->uAttributes = face->uAttributes;
+    this->pBounding.x1 = face->pBoundingBox.x1;
+    this->pBounding.y1 = face->pBoundingBox.y1;
+    this->pBounding.z1 = face->pBoundingBox.z1;
+    this->pBounding.x2 = face->pBoundingBox.x2;
+    this->pBounding.y2 = face->pBoundingBox.y2;
+    this->pBounding.z2 = face->pBoundingBox.z2;
+    this->zCalc1 = face->zCalc1;
+    this->zCalc2 = face->zCalc2;
+    this->zCalc3 = face->zCalc3;
+    this->pXInterceptDisplacements = face->pXInterceptDisplacements;
+    this->pYInterceptDisplacements = face->pYInterceptDisplacements;
+    this->pZInterceptDisplacements = face->pZInterceptDisplacements;
+    this->uPolygonType = (PolygonType)face->uPolygonType;
+    this->uNumVertices = face->uNumVertices;
+    this->resource = face->resource;
+    this->pVertexIDs = face->pVertexIDs;
 }
 
 //----- (004B0A25) --------------------------------------------------------
 void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID, IndoorCameraD3D_Vec4 *pVertices, unsigned int uNumVertices, RenderVertexSoft *pPortalBounding)
 {
-  int v17; // ebx@25
-  IDirect3DTexture2 *v27; // eax@42
-  unsigned int uNumVerticesa; // [sp+24h] [bp-4h]@17
-  int a4a; // [sp+34h] [bp+Ch]@25
+    int v17; // ebx@25
+    //IDirect3DTexture2 *v27; // eax@42
+    unsigned int uNumVerticesa; // [sp+24h] [bp-4h]@17
+    int a4a; // [sp+34h] [bp+Ch]@25
 
-  if (uFaceID >= pIndoor->uNumFaces)
-    return;
-
-  static RenderVertexSoft static_vertices_F7C228[64];
-  static RenderVertexSoft static_vertices_F7B628[64];
-  static stru154 stru_F7B60C; // idb
-
-  BLVFace* pFace = &pIndoor->pFaces[uFaceID];
-  if (pFace->uNumVertices < 3)
-    return;
-
-
-  if (pFace->Invisible())
-    return;
-  
-  ++pBLVRenderParams->uNumFacesRenderedThisFrame;
-  pFace->uAttributes |= FACE_UNKNOW7;
-
-  if (!pFace->GetTexture())
-    return;
-
-  if (!pIndoorCameraD3D->IsCulled(pFace))
-  {
-    uNumVerticesa = pFace->uNumVertices;
-    for (uint i = 0; i < pFace->uNumVertices; ++i)
-    {
-      static_vertices_F7C228[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-      static_vertices_F7C228[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-      static_vertices_F7C228[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
-      static_vertices_F7C228[i].u = (signed short)pFace->pVertexUIDs[i];
-      static_vertices_F7C228[i].v = (signed short)pFace->pVertexVIDs[i];
-    }
-
-    if (!pVertices ||
-        (pEngine->pStru9Instance->_498377(pPortalBounding, 4, pVertices, static_vertices_F7C228, &uNumVerticesa), uNumVerticesa) )
-    {
-      if (pIndoorCameraD3D->CalcPortalShape(static_vertices_F7C228, &uNumVerticesa,
-                     static_vertices_F7B628, pIndoorCameraD3D->std__vector_000034_prolly_frustrum, 4, false, 0) != 1 || uNumVerticesa )
-      {
-        a4a = SHIWORD(Lights.uCurrentAmbientLightLevel);
-        v17 = (248 - (SHIWORD(Lights.uCurrentAmbientLightLevel) << 3))
-          | (((248 - (SHIWORD(Lights.uCurrentAmbientLightLevel) << 3))
-           | ((248 - (SHIWORD(Lights.uCurrentAmbientLightLevel) << 3)) << 8)) << 8);
-        sub_4B0E07(uFaceID);
-        pEngine->pLightmapBuilder->ApplyLights_IndoorFace(uFaceID);
-        pDecalBuilder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
-        pIndoorCameraD3D->ViewTransfrom_OffsetUV(static_vertices_F7B628, uNumVerticesa, array_507D30, &Lights);
-        pIndoorCameraD3D->Project(array_507D30, uNumVerticesa, 0);
-        pEngine->pLightmapBuilder->StationaryLightsCount = 0;
-        if (Lights.uNumLightsApplied > 0 || pDecalBuilder->uNumDecals > 0)
-        {
-          stru_F7B60C.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
-          stru_F7B60C.polygonType = pFace->uPolygonType;
-          stru_F7B60C.face_plane.vNormal.y = pFace->pFacePlane.vNormal.y;
-          stru_F7B60C.face_plane.vNormal.z = pFace->pFacePlane.vNormal.z;
-          stru_F7B60C.face_plane.dist = pFace->pFacePlane.dist;
-        }
-
-        if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky()) //for torchlight(для света факелов)
-          pEngine->pLightmapBuilder->ApplyLights(&Lights, &stru_F7B60C, uNumVerticesa, array_507D30, pVertices, 0);
-
-        if (pDecalBuilder->uNumDecals > 0)//отрисовка пятен крови
-          pDecalBuilder->ApplyDecals(a4a, 1, &stru_F7B60C, uNumVerticesa, array_507D30, pVertices, 0, pFace->uSectorID);
-
-        if (pFace->Fluid())
-        {
-          if (pFace->uBitmapID == render->hd_water_tile_id)
-            v27 = pBitmaps_LOD->pHardwareTextures[render->pHDWaterBitmapIDs[render->hd_water_current_frame]];
-          else
-          {
-            //auto v24 = GetTickCount() / 4;
-            //auto v25 = v24 - stru_5C6E00->uIntegerHalfPi;
-            uint eightSeconds = GetTickCount() % 8000;
-            float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
-
-            //animte lava back and forth
-            for (uint i = 0; i < uNumVerticesa; ++i)
-              //array_507D30[i].v += (double)(pBitmaps_LOD->pTextures[pFace->uBitmapID].uHeightMinus1 & (unsigned int)(stru_5C6E00->SinCos(v25) >> 8));
-              array_507D30[i].v += pBitmaps_LOD->pTextures[pFace->uBitmapID].uHeightMinus1 * cosf(angle);
-            v27 = pBitmaps_LOD->pHardwareTextures[pFace->uBitmapID];
-          }
-        }
-        else if (pFace->uAttributes & FACE_TEXTURE_FRAME)
-          v27 = pBitmaps_LOD->pHardwareTextures[pTextureFrameTable->GetFrameTexture(pFace->uBitmapID, pBLVRenderParams->field_0_timer_)];
-        else
-        {
-          v17 = 0xFF808080;
-          v27 = pBitmaps_LOD->pHardwareTextures[pFace->uBitmapID];
-        }
-
-        if (pFace->Indoor_sky())
-          render->DrawIndoorSky(uNumVerticesa, uFaceID);
-        else
-          render->DrawIndoorPolygon(uNumVerticesa, pFace, v27, pFace->GetTexture(), PID(OBJECT_BModel, uFaceID), v17, 0);
+    if (uFaceID >= pIndoor->uNumFaces)
         return;
-      }
+
+    static RenderVertexSoft static_vertices_F7C228[64];
+    static RenderVertexSoft static_vertices_F7B628[64];
+    static stru154 stru_F7B60C; // idb
+
+    BLVFace* pFace = &pIndoor->pFaces[uFaceID];
+    if (pFace->uNumVertices < 3)
+        return;
+
+
+    if (pFace->Invisible())
+        return;
+
+    ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+    pFace->uAttributes |= FACE_UNKNOW7;
+
+    if (!pFace->GetTexture())
+        return;
+
+    if (!pIndoorCameraD3D->IsCulled(pFace))
+    {
+        uNumVerticesa = pFace->uNumVertices;
+        for (uint i = 0; i < pFace->uNumVertices; ++i)
+        {
+            static_vertices_F7C228[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+            static_vertices_F7C228[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+            static_vertices_F7C228[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+            static_vertices_F7C228[i].u = (signed short)pFace->pVertexUIDs[i];
+            static_vertices_F7C228[i].v = (signed short)pFace->pVertexVIDs[i];
+        }
+
+        if (!pVertices ||
+            (pEngine->pStru9Instance->_498377(pPortalBounding, 4, pVertices, static_vertices_F7C228, &uNumVerticesa), uNumVerticesa))
+        {
+            if (pIndoorCameraD3D->CalcPortalShape(static_vertices_F7C228, &uNumVerticesa,
+                static_vertices_F7B628, pIndoorCameraD3D->std__vector_000034_prolly_frustrum, 4, false, 0) != 1 || uNumVerticesa)
+            {
+                a4a = SHIWORD(Lights.uCurrentAmbientLightLevel);
+                v17 = (248 - (SHIWORD(Lights.uCurrentAmbientLightLevel) << 3))
+                    | (((248 - (SHIWORD(Lights.uCurrentAmbientLightLevel) << 3))
+                        | ((248 - (SHIWORD(Lights.uCurrentAmbientLightLevel) << 3)) << 8)) << 8);
+                sub_4B0E07(uFaceID);
+                pEngine->pLightmapBuilder->ApplyLights_IndoorFace(uFaceID);
+                pDecalBuilder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
+                pIndoorCameraD3D->ViewTransfrom_OffsetUV(static_vertices_F7B628, uNumVerticesa, array_507D30, &Lights);
+                pIndoorCameraD3D->Project(array_507D30, uNumVerticesa, 0);
+                pEngine->pLightmapBuilder->StationaryLightsCount = 0;
+                if (Lights.uNumLightsApplied > 0 || pDecalBuilder->uNumDecals > 0)
+                {
+                    stru_F7B60C.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
+                    stru_F7B60C.polygonType = pFace->uPolygonType;
+                    stru_F7B60C.face_plane.vNormal.y = pFace->pFacePlane.vNormal.y;
+                    stru_F7B60C.face_plane.vNormal.z = pFace->pFacePlane.vNormal.z;
+                    stru_F7B60C.face_plane.dist = pFace->pFacePlane.dist;
+                }
+
+                if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky()) //for torchlight(для света факелов)
+                    pEngine->pLightmapBuilder->ApplyLights(&Lights, &stru_F7B60C, uNumVerticesa, array_507D30, pVertices, 0);
+
+                if (pDecalBuilder->uNumDecals > 0)//отрисовка пятен крови
+                    pDecalBuilder->ApplyDecals(a4a, 1, &stru_F7B60C, uNumVerticesa, array_507D30, pVertices, 0, pFace->uSectorID);
+
+                Texture *face_texture = pFace->GetTexture();
+                if (pFace->Fluid())
+                {
+                    //if (pFace->uBitmapID == render->hd_water_tile_id)
+                    //    v27 = pBitmaps_LOD->pHardwareTextures[render->pHDWaterBitmapIDs[render->hd_water_current_frame]];
+                    //else
+                    {
+                        face_texture = (Texture *)pFace->resource;
+                        //auto v24 = GetTickCount() / 4;
+                        //auto v25 = v24 - stru_5C6E00->uIntegerHalfPi;
+                        uint eightSeconds = GetTickCount() % 8000;
+                        float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
+
+                        //animte lava back and forth
+                        for (uint i = 0; i < uNumVerticesa; ++i)
+                            //array_507D30[i].v += (double)(pBitmaps_LOD->pTextures[pFace->uBitmapID].uHeightMinus1 & (unsigned int)(stru_5C6E00->SinCos(v25) >> 8));
+                            array_507D30[i].v += (face_texture->GetHeight() - 1) * cosf(angle);
+                    }
+                }
+                else if (pFace->IsTextureFrameTable())
+                {
+                    face_texture = pTextureFrameTable->GetFrameTexture((int)pFace->resource, pBLVRenderParams->field_0_timer_);
+                }
+                else
+                {
+                    v17 = 0xFF808080;
+                    //v27 = pBitmaps_LOD->pHardwareTextures[pFace->uBitmapID];
+                }
+
+                if (pFace->Indoor_sky())
+                    render->DrawIndoorSky(uNumVerticesa, uFaceID);
+                else
+                    render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_BModel, uFaceID), v17, 0);
+                return;
+            }
+        }
     }
-  }
 }
 
 //----- (004B0E07) --------------------------------------------------------
 unsigned int sub_4B0E07(unsigned int uFaceID)
 {
-  unsigned int result; // eax@1
+    Lights.pDeltaUV[0] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaU;
+    Lights.pDeltaUV[1] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaV;
 
-  Lights.pDeltaUV[0] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaU;
-  Lights.pDeltaUV[1] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaV;
-  result = GetTickCount() >> 3;
-  if ( pIndoor->pFaces[uFaceID].uAttributes & FACE_FLOW_DIAGONAL )
-    Lights.pDeltaUV[1] -= result & pBitmaps_LOD->GetTexture(pIndoor->pFaces[uFaceID].uBitmapID)->uHeightMinus1;
-  else
-  {
-    if ( pIndoor->pFaces[uFaceID].uAttributes & FACE_FLOW_VERTICAL )
-      Lights.pDeltaUV[1] += result & pBitmaps_LOD->GetTexture(pIndoor->pFaces[uFaceID].uBitmapID)->uHeightMinus1;
-  }
-  if ( pIndoor->pFaces[uFaceID].uAttributes & FACE_FLOW_HORIZONTAL )
-    Lights.pDeltaUV[0] -= result & pBitmaps_LOD->GetTexture(pIndoor->pFaces[uFaceID].uBitmapID)->uWidthMinus1;
-  else
-  {
-    if ( pIndoor->pFaces[uFaceID].uAttributes & FACE_DONT_CACHE_TEXTURE )
-      Lights.pDeltaUV[0] += result & pBitmaps_LOD->GetTexture(pIndoor->pFaces[uFaceID].uBitmapID)->uWidthMinus1;
-  }
-  return result;
+    unsigned int offset = GetTickCount() >> 3;
+
+    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FLOW_DIAGONAL)
+    {
+        Lights.pDeltaUV[1] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);//pBitmaps_LOD->GetTexture(pIndoor->pFaces[uFaceID].uBitmapID)->uHeightMinus1;
+    }
+    else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FLOW_VERTICAL)
+    {
+        Lights.pDeltaUV[1] += offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);//pBitmaps_LOD->GetTexture(pIndoor->pFaces[uFaceID].uBitmapID)->uHeightMinus1;
+    }
+
+    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FLOW_HORIZONTAL)
+    {
+        Lights.pDeltaUV[0] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetWidth() - 1);//pBitmaps_LOD->GetTexture(pIndoor->pFaces[uFaceID].uBitmapID)->uWidthMinus1;
+    }
+    else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_DONT_CACHE_TEXTURE)
+    {
+        Lights.pDeltaUV[0] += offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetWidth() - 1);//pBitmaps_LOD->GetTexture(pIndoor->pFaces[uFaceID].uBitmapID)->uWidthMinus1;
+    }
+
+    return offset;
 }
 
 //----- (004B0EA8) --------------------------------------------------------
@@ -666,15 +677,29 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
 }
 
 //----- (004AE5BA) --------------------------------------------------------
-Texture_MM7 *BLVFace::GetTexture()
+Texture *BLVFace::GetTexture()
 {
-  unsigned int v1; // ecx@2
+    if (this->IsTextureFrameTable())
+        return pTextureFrameTable->GetFrameTexture((int)this->resource, pBLVRenderParams->field_0_timer_);
+    else
+        return (Texture *)this->resource;
+}
 
-  if ( uAttributes & FACE_TEXTURE_FRAME )
-    v1 = pTextureFrameTable->GetFrameTexture(this->uBitmapID, pBLVRenderParams->field_0_timer_);
-  else
-    v1 = uBitmapID;
-  return pBitmaps_LOD->GetTexture(v1);
+
+void BLVFace::SetTexture(const String &filename)
+{
+    if (this->IsTextureFrameTable())
+    {
+        this->resource = (void *)pTextureFrameTable->FindTextureByName(filename.c_str());
+        if (this->resource != (void *)-1)
+        {
+            return;
+        }
+
+        this->ToggleIsTextureFrameTable();
+    }
+
+    this->resource = assets->GetBitmap(filename);
 }
 
 
@@ -769,14 +794,14 @@ unsigned int IndoorLocation::GetLocationIndex(const char *Str1)
 //----- (004488F7) --------------------------------------------------------
 void IndoorLocation::ToggleLight(signed int sLightID, unsigned int bToggle)
 {
-  if ( uCurrentlyLoadedLevelType == LEVEL_Indoor && (sLightID <= pIndoor->uNumLights - 1) && (sLightID >= 0) )
-  {
-    if ( bToggle )
-      pIndoor->pLights[sLightID].uAtributes &= 0xFFFFFFF7;
-    else
-      pIndoor->pLights[sLightID].uAtributes |= 8;
-    pParty->uFlags |= 2;
-  }
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor && (sLightID <= pIndoor->uNumLights - 1) && (sLightID >= 0))
+    {
+        if (bToggle)
+            pIndoor->pLights[sLightID].uAtributes &= 0xFFFFFFF7;
+        else
+            pIndoor->pLights[sLightID].uAtributes |= 8;
+        pParty->uFlags |= 2;
+    }
 }
 
 //----- (00498E0A) --------------------------------------------------------
@@ -911,19 +936,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
         strncpy(pTexName, pData, 10);
         pData += 10;
 
-        if (pFace->uAttributes & FACE_TEXTURE_FRAME)
-        {
-            pFace->uBitmapID = pTextureFrameTable->FindTextureByName(pTexName);
-            if (pFace->uBitmapID)
-                pTextureFrameTable->LoadAnimationSequenceAndPalettes(pFace->uBitmapID);
-            else
-            {
-                pFace->uBitmapID = pBitmaps_LOD->LoadTexture(pTexName);
-                pFace->uAttributes &= ~FACE_TEXTURE_FRAME;
-            }
-        }
-        else
-            pFace->uBitmapID = pBitmaps_LOD->LoadTexture(pTexName);
+        pFace->SetTexture(String(pTexName));
     }
 
     pGameLoadingUI_ProgressBar->Progress();
@@ -1605,206 +1618,209 @@ bool BLVFaceExtra::HasEventint()
 //----- (0046F228) --------------------------------------------------------
 void  BLV_UpdateDoors()
 {
-  BLVFace *face; // ebx@24
-  Vec3_short_ *v17; // esi@24
-  int v18; // eax@24
-  int v19; // edx@24
-  signed int v20; // eax@24
-  int v24; // esi@25
-  int v25; // eax@25
-  signed __int64 v27; // qtt@27
-  BLVFaceExtra *v28; // esi@32
-  int v32; // eax@34
-  Vec3_short_ *v34; // eax@35
-  int v35; // ecx@35
-  int v36; // edx@35
-  signed int v37; // eax@35
-  signed int v38; // edx@35
-  int v39; // eax@35
-  int v40; // edx@35
-  Vec3_short_ *v43; // edi@36
-  int v57; // eax@58
-  Vec3_int_ v67;
-  Vec3_int_ v70;
-  int v73; // [sp+20h] [bp-44h]@24
-  int v75; // [sp+28h] [bp-3Ch]@36
-  int v76; // [sp+2Ch] [bp-38h]@36
-  int v77; // [sp+30h] [bp-34h]@36
-  int v82; // [sp+44h] [bp-20h]@35
-  int v83; // [sp+48h] [bp-1Ch]@34
-  int v84; // [sp+4Ch] [bp-18h]@34
-  SoundID eDoorSoundID; // [sp+54h] [bp-10h]@1
-  int v88; // [sp+5Ch] [bp-8h]@18
-  int v89; // [sp+60h] [bp-4h]@6
+    BLVFace *face; // ebx@24
+    Vec3_short_ *v17; // esi@24
+    int v18; // eax@24
+    int v19; // edx@24
+    signed int v20; // eax@24
+    int v24; // esi@25
+    int v25; // eax@25
+    signed __int64 v27; // qtt@27
+    BLVFaceExtra *v28; // esi@32
+    int v32; // eax@34
+    Vec3_short_ *v34; // eax@35
+    int v35; // ecx@35
+    int v36; // edx@35
+    signed int v37; // eax@35
+    signed int v38; // edx@35
+    int v39; // eax@35
+    int v40; // edx@35
+    Vec3_short_ *v43; // edi@36
+    int v57; // eax@58
+    Vec3_int_ v67;
+    Vec3_int_ v70;
+    int v73; // [sp+20h] [bp-44h]@24
+    int v75; // [sp+28h] [bp-3Ch]@36
+    int v76; // [sp+2Ch] [bp-38h]@36
+    int v77; // [sp+30h] [bp-34h]@36
+    int v82; // [sp+44h] [bp-20h]@35
+    int v83; // [sp+48h] [bp-1Ch]@34
+    int v84; // [sp+4Ch] [bp-18h]@34
+    SoundID eDoorSoundID; // [sp+54h] [bp-10h]@1
+    int v88; // [sp+5Ch] [bp-8h]@18
+    int v89; // [sp+60h] [bp-4h]@6
 
-  eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
-  for (uint i = 0; i < pIndoor->uNumDoors; ++i)
-  {
-    BLVDoor* door = &pIndoor->pDoors[i];
-    if (door->uState == BLVDoor::Closed || door->uState == BLVDoor::Open)
+    eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
+    for (uint i = 0; i < pIndoor->uNumDoors; ++i)
     {
-      door->uAttributes &= 0xFFFFFFFDu;//~0x2
-      continue;
-    }
-    door->uTimeSinceTriggered += pEventTimer->uTimeElapsed;
-    if (door->uState == BLVDoor::Opening)
-    {
-      v89 = (signed int)(door->uTimeSinceTriggered * door->uCloseSpeed) / 128;
-      if ( v89 >= door->uMoveLength )
-      {
-        v89 = door->uMoveLength;
-        door->uState = BLVDoor::Open;
-        if ( !(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices != 0)
-          pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor,i), 0, -1, 0, 0, 0, 0);
-        //goto LABEL_18;
-      }
-	  else if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
-		  pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0, 0, 0);
-    }
-    else
-    {
-      signed int v5 = (signed int)(door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
-      if ( v5 >= door->uMoveLength)
-      {
-        v89 = 0;
-        door->uState = BLVDoor::Closed;
-        if ( !(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices != 0)
-          pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor,i), 0, -1, 0, 0, 0, 0);
-        //goto LABEL_18;
-      }
-	  else
-	  {
-		  v89 = door->uMoveLength - v5;
-		  if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
-			  pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0, 0, 0);
-	  }
-    }
+        BLVDoor* door = &pIndoor->pDoors[i];
+        if (door->uState == BLVDoor::Closed || door->uState == BLVDoor::Open)
+        {
+            door->uAttributes &= 0xFFFFFFFDu;//~0x2
+            continue;
+        }
+        door->uTimeSinceTriggered += pEventTimer->uTimeElapsed;
+        if (door->uState == BLVDoor::Opening)
+        {
+            v89 = (signed int)(door->uTimeSinceTriggered * door->uCloseSpeed) / 128;
+            if (v89 >= door->uMoveLength)
+            {
+                v89 = door->uMoveLength;
+                door->uState = BLVDoor::Open;
+                if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices != 0)
+                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0, 0, 0);
+                //goto LABEL_18;
+            }
+            else if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
+                pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0, 0, 0);
+        }
+        else
+        {
+            signed int v5 = (signed int)(door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
+            if (v5 >= door->uMoveLength)
+            {
+                v89 = 0;
+                door->uState = BLVDoor::Closed;
+                if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices != 0)
+                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0, 0, 0);
+                //goto LABEL_18;
+            }
+            else
+            {
+                v89 = door->uMoveLength - v5;
+                if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
+                    pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0, 0, 0);
+            }
+        }
 
-//LABEL_18:
-    for (uint j = 0; j < door->uNumVertices; ++j)
-    {
-      pIndoor->pVertices[door->pVertexIDs[j]].x = fixpoint_mul(door->vDirection.x, v89) + door->pXOffsets[j];
-      pIndoor->pVertices[door->pVertexIDs[j]].y = fixpoint_mul(door->vDirection.y, v89) + door->pYOffsets[j];
-      pIndoor->pVertices[door->pVertexIDs[j]].z = fixpoint_mul(door->vDirection.z, v89) + door->pZOffsets[j];
-    }
-    for ( v88 = 0; v88 < door->uNumFaces; ++v88 )
-    {
-      face = &pIndoor->pFaces[door->pFaceIDs[v88]];
-      v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
-      v18 = face->pFacePlane_old.vNormal.y;
-      v73 = *(int *)&v17->x;
-      v19 = face->pFacePlane_old.vNormal.z;
-      v20 = -(v19 * (int)v17->z + (signed __int16)v73 * face->pFacePlane_old.vNormal.x + SHIWORD(v73) * v18);
-      face->pFacePlane_old.dist = v20;
-      face->pFacePlane.dist = -((double)v17->z * face->pFacePlane.vNormal.z
-                             + (double)v17->y * face->pFacePlane.vNormal.y
-                             + (double)v17->x * face->pFacePlane.vNormal.x);
-      if ( v19 )
-      {
-        v24 = abs(v20 >> 15);
-        v25 = abs(face->pFacePlane_old.vNormal.z);
-        if ( v24 > v25 )
-          Error("Door Error\ndoor id: %i\nfacet no: %i\n\nOverflow dividing facet->d [%i] by facet->nz [%i]",
-            door->uDoorID, door->pFaceIDs[v88], face->pFacePlane_old.dist, face->pFacePlane_old.vNormal.z);
-        LODWORD(v27) = face->pFacePlane_old.dist << 16;
-        HIDWORD(v27) = face->pFacePlane_old.dist >> 16;
-        face->zCalc3 = -v27 / face->pFacePlane_old.vNormal.z;
-      }
-      //if ( face->uAttributes & FACE_TEXTURE_FLOW || render->pRenderD3D )
-        face->_get_normals(&v70, &v67);
-      v28 = &pIndoor->pFaceExtras[face->uFaceExtraID];
-      /*if ( !render->pRenderD3D )
-      {
-        if ( !(face->uAttributes & FACE_TEXTURE_FLOW) )
-          continue;
-        v83 = (unsigned __int64)(door->vDirection.x * (signed __int64)v70.x) >> 16;
-        v85 = (unsigned __int64)(door->vDirection.y * (signed __int64)v70.y) >> 16;
-        v84 = (unsigned __int64)(door->vDirection.z * (signed __int64)v70.z) >> 16;
-        v29 = v89;
-        v28->sTextureDeltaU = -((v83 + v85 + v84) * (signed __int64)v89) >> 16;
-        v85 = (unsigned __int64)(door->vDirection.x * (signed __int64)v67.x) >> 16;
-        v83 = (unsigned __int64)(door->vDirection.y * (signed __int64)v67.y) >> 16;
-        v84 = (unsigned __int64)(door->vDirection.z * (signed __int64)v67.z) >> 16;
-        v31 = (v85 + v83 + v84) * (signed __int64)v29;
-        v32 = v31 >> 16;
-        v57 = -v32;
-        v28->sTextureDeltaV = v57;
-        v28->sTextureDeltaU += door->pDeltaUs[v88];
-        v28->sTextureDeltaV = v57 + door->pDeltaVs[v88];
-        continue;
-      }*/
-      v28->sTextureDeltaU = 0;
-      v28->sTextureDeltaV = 0;
-      v34 = &pIndoor->pVertices[face->pVertexIDs[0]];
-      v35 = v34->z;
-      v36 = v34->y;
-      v82 = v34->x;
-      v37 = v70.x * v82 + v70.y * v36 + v70.z * v35;
-      v38 = v67.x * v82 + v67.y * v36 + v67.z * v35;
-      v39 = v37 >> 16;
-      *face->pVertexUIDs = v39;
-      v40 = v38 >> 16;
-      *face->pVertexVIDs = v40;
-      v84 = v39;
-      v82 = v40;
-      for (uint j = 1; j < face->uNumVertices; ++j)
-      {
-        v43 = &pIndoor->pVertices[face->pVertexIDs[j]];
-        v76 = ((__int64)v70.z * v43->z + (__int64)v70.x * v43->x + (__int64)v70.y * v43->y) >> 16;
-        v77 = ((__int64)v67.x * v43->x + (__int64)v67.y * v43->y + (__int64)v43->z * v67.z) >> 16;
-        if ( v76 < v39 )
-          v39 = v76;
-        if ( v77 < v40 )
-          v40 = v77;
-        if ( v76 > v84 )
-          v84 = v76;
-        if ( v77 > v82 )
-          v82 = v77;
-        face->pVertexUIDs[j] = v76;
-        face->pVertexVIDs[j] = v77;
-      }
-      if ( face->uAttributes & 0x00001000 )
-        v28->sTextureDeltaU -= v39;
-      else
-      {
-        if ( SBYTE1(face->uAttributes) < 0 )
+        //LABEL_18:
+        for (uint j = 0; j < door->uNumVertices; ++j)
         {
-          if ( face->uBitmapID != -1 )
-            v28->sTextureDeltaU -= v84 + pBitmaps_LOD->pTextures[face->uBitmapID].uTextureWidth;
+            pIndoor->pVertices[door->pVertexIDs[j]].x = fixpoint_mul(door->vDirection.x, v89) + door->pXOffsets[j];
+            pIndoor->pVertices[door->pVertexIDs[j]].y = fixpoint_mul(door->vDirection.y, v89) + door->pYOffsets[j];
+            pIndoor->pVertices[door->pVertexIDs[j]].z = fixpoint_mul(door->vDirection.z, v89) + door->pZOffsets[j];
         }
-      }
-      if ( face->uAttributes & FACE_UNKNOW6 )
-        v28->sTextureDeltaV -= v40;
-      else
-      {
-        if ( face->uAttributes & FACE_INDOOR_DOOR )
+        for (v88 = 0; v88 < door->uNumFaces; ++v88)
         {
-          if ( face->uBitmapID != -1 )
-            v28->sTextureDeltaV -= v82 + pBitmaps_LOD->GetTexture(face->uBitmapID)->uTextureHeight;
+            face = &pIndoor->pFaces[door->pFaceIDs[v88]];
+            v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
+            v18 = face->pFacePlane_old.vNormal.y;
+            v73 = *(int *)&v17->x;
+            v19 = face->pFacePlane_old.vNormal.z;
+            v20 = -(v19 * (int)v17->z + (signed __int16)v73 * face->pFacePlane_old.vNormal.x + SHIWORD(v73) * v18);
+            face->pFacePlane_old.dist = v20;
+            face->pFacePlane.dist = -((double)v17->z * face->pFacePlane.vNormal.z
+                + (double)v17->y * face->pFacePlane.vNormal.y
+                + (double)v17->x * face->pFacePlane.vNormal.x);
+            if (v19)
+            {
+                v24 = abs(v20 >> 15);
+                v25 = abs(face->pFacePlane_old.vNormal.z);
+                if (v24 > v25)
+                    Error("Door Error\ndoor id: %i\nfacet no: %i\n\nOverflow dividing facet->d [%i] by facet->nz [%i]",
+                        door->uDoorID, door->pFaceIDs[v88], face->pFacePlane_old.dist, face->pFacePlane_old.vNormal.z);
+                LODWORD(v27) = face->pFacePlane_old.dist << 16;
+                HIDWORD(v27) = face->pFacePlane_old.dist >> 16;
+                face->zCalc3 = -v27 / face->pFacePlane_old.vNormal.z;
+            }
+            //if ( face->uAttributes & FACE_TEXTURE_FLOW || render->pRenderD3D )
+            face->_get_normals(&v70, &v67);
+            v28 = &pIndoor->pFaceExtras[face->uFaceExtraID];
+            /*if ( !render->pRenderD3D )
+            {
+              if ( !(face->uAttributes & FACE_TEXTURE_FLOW) )
+                continue;
+              v83 = (unsigned __int64)(door->vDirection.x * (signed __int64)v70.x) >> 16;
+              v85 = (unsigned __int64)(door->vDirection.y * (signed __int64)v70.y) >> 16;
+              v84 = (unsigned __int64)(door->vDirection.z * (signed __int64)v70.z) >> 16;
+              v29 = v89;
+              v28->sTextureDeltaU = -((v83 + v85 + v84) * (signed __int64)v89) >> 16;
+              v85 = (unsigned __int64)(door->vDirection.x * (signed __int64)v67.x) >> 16;
+              v83 = (unsigned __int64)(door->vDirection.y * (signed __int64)v67.y) >> 16;
+              v84 = (unsigned __int64)(door->vDirection.z * (signed __int64)v67.z) >> 16;
+              v31 = (v85 + v83 + v84) * (signed __int64)v29;
+              v32 = v31 >> 16;
+              v57 = -v32;
+              v28->sTextureDeltaV = v57;
+              v28->sTextureDeltaU += door->pDeltaUs[v88];
+              v28->sTextureDeltaV = v57 + door->pDeltaVs[v88];
+              continue;
+            }*/
+            v28->sTextureDeltaU = 0;
+            v28->sTextureDeltaV = 0;
+            v34 = &pIndoor->pVertices[face->pVertexIDs[0]];
+            v35 = v34->z;
+            v36 = v34->y;
+            v82 = v34->x;
+            v37 = v70.x * v82 + v70.y * v36 + v70.z * v35;
+            v38 = v67.x * v82 + v67.y * v36 + v67.z * v35;
+            v39 = v37 >> 16;
+            *face->pVertexUIDs = v39;
+            v40 = v38 >> 16;
+            *face->pVertexVIDs = v40;
+            v84 = v39;
+            v82 = v40;
+            for (uint j = 1; j < face->uNumVertices; ++j)
+            {
+                v43 = &pIndoor->pVertices[face->pVertexIDs[j]];
+                v76 = ((__int64)v70.z * v43->z + (__int64)v70.x * v43->x + (__int64)v70.y * v43->y) >> 16;
+                v77 = ((__int64)v67.x * v43->x + (__int64)v67.y * v43->y + (__int64)v43->z * v67.z) >> 16;
+                if (v76 < v39)
+                    v39 = v76;
+                if (v77 < v40)
+                    v40 = v77;
+                if (v76 > v84)
+                    v84 = v76;
+                if (v77 > v82)
+                    v82 = v77;
+                face->pVertexUIDs[j] = v76;
+                face->pVertexVIDs[j] = v77;
+            }
+            if (face->uAttributes & 0x00001000)
+                v28->sTextureDeltaU -= v39;
+            else
+            {
+                if (face->uAttributes & 0x8000)
+                {
+                    if (face->resource)
+                    {
+                        //v28->sTextureDeltaU -= v84 + pBitmaps_LOD->pTextures[face->uBitmapID].uTextureWidth;
+                        v28->sTextureDeltaU -= v84 + ((Texture *)face->resource)->GetWidth();
+                    }
+                }
+            }
+            if (face->uAttributes & FACE_UNKNOW6)
+                v28->sTextureDeltaV -= v40;
+            else
+            {
+                if (face->uAttributes & FACE_INDOOR_DOOR)
+                {
+                    v28->sTextureDeltaV -= v84 + ((Texture *)face->resource)->GetHeight();
+                    //if (face->uBitmapID != -1)
+                    //    v28->sTextureDeltaV -= v82 + pBitmaps_LOD->GetTexture(face->uBitmapID)->uTextureHeight;
+                }
+            }
+            if (face->uAttributes & FACE_TEXTURE_FLOW)
+            {
+                v84 = fixpoint_mul(door->vDirection.x, v70.x);
+                v82 = fixpoint_mul(door->vDirection.y, v70.y);
+                v83 = fixpoint_mul(door->vDirection.z, v70.z);
+                v75 = v84 + v82 + v83;
+                v82 = fixpoint_mul(v75, v89);
+                v28->sTextureDeltaU = -v82;
+                v84 = fixpoint_mul(door->vDirection.x, v67.x);
+                v82 = fixpoint_mul(door->vDirection.y, v67.y);
+                v83 = fixpoint_mul(door->vDirection.z, v67.z);
+                v75 = v84 + v82 + v83;
+                v32 = fixpoint_mul(v75, v89);
+                v57 = -v32;
+                v28->sTextureDeltaV = v57;
+                v28->sTextureDeltaU += door->pDeltaUs[v88];
+                v28->sTextureDeltaV = v57 + door->pDeltaVs[v88];
+            }
         }
-      }
-      if ( face->uAttributes & FACE_TEXTURE_FLOW )
-      {
-        v84 = fixpoint_mul(door->vDirection.x, v70.x);
-        v82 = fixpoint_mul(door->vDirection.y, v70.y);
-        v83 = fixpoint_mul(door->vDirection.z, v70.z);
-        v75 = v84 + v82 + v83;
-        v82 = fixpoint_mul(v75, v89);
-        v28->sTextureDeltaU = -v82;
-        v84 = fixpoint_mul(door->vDirection.x, v67.x);
-        v82 = fixpoint_mul(door->vDirection.y, v67.y);
-        v83 = fixpoint_mul(door->vDirection.z, v67.z);
-        v75 = v84 + v82 + v83;
-        v32 = fixpoint_mul(v75, v89);
-        v57 = -v32;
-        v28->sTextureDeltaV = v57;
-        v28->sTextureDeltaU += door->pDeltaUs[v88];
-        v28->sTextureDeltaV = v57 + door->pDeltaVs[v88];
-      }
     }
-  }
 }
-// 6BE13C: using guessed type int dword_6BE13C_uCurrentlyLoadedLocationID;
 
 //----- (0046F90C) --------------------------------------------------------
 void  UpdateActors_BLV()
@@ -2193,467 +2209,469 @@ void  UpdateActors_BLV()
 //----- (00460A78) --------------------------------------------------------
 void PrepareToLoadBLV(unsigned int bLoading)
 {
-  unsigned int respawn_interval; // ebx@1
-  unsigned int map_id; // eax@8
-  MapInfo *map_info; // edi@9
-  int v4; // eax@11
-  DecorationDesc *decoration; // eax@54
-  char v28; // zf@81
-  signed int v30; // edi@94
-  int v34[4]; // [sp+3E8h] [bp-2Ch]@96
-  int v35; // [sp+3F8h] [bp-1Ch]@1
-  int v38; // [sp+404h] [bp-10h]@1
-  int pDest; // [sp+40Ch] [bp-8h]@1
+    unsigned int respawn_interval; // ebx@1
+    unsigned int map_id; // eax@8
+    MapInfo *map_info; // edi@9
+    int v4; // eax@11
+    DecorationDesc *decoration; // eax@54
+    char v28; // zf@81
+    signed int v30; // edi@94
+    int v34[4]; // [sp+3E8h] [bp-2Ch]@96
+    int v35; // [sp+3F8h] [bp-1Ch]@1
+    int v38; // [sp+404h] [bp-10h]@1
+    int pDest; // [sp+40Ch] [bp-8h]@1
 
-  respawn_interval = 0;
-  pGameLoadingUI_ProgressBar->Reset(0x20u);
-  bUnderwater = false;
-  bNoNPCHiring = false;
-  pDest = 1;
-  uCurrentlyLoadedLevelType = LEVEL_Indoor;
-  pEngine->uFlags2 &= ~GAME_FLAGS_2_ALTER_GRAVITY;
-  if ( Is_out15odm_underwater() )
-  {
-    bUnderwater = true;
-    pEngine->uFlags2 |= GAME_FLAGS_2_ALTER_GRAVITY;
-  }
-  if ( !_stricmp(pCurrentMapName, "out15.odm") || !_stricmp(pCurrentMapName, "d23.blv") )
-    bNoNPCHiring = true;
-  pPaletteManager->pPalette_tintColor[0] = 0;
-  pPaletteManager->pPalette_tintColor[1] = 0;
-  pPaletteManager->pPalette_tintColor[2] = 0;
-  pPaletteManager->RecalculateAll();
-  if ( _A750D8_player_speech_timer )
-    _A750D8_player_speech_timer = 0i64;
-  map_id = pMapStats->GetMapInfo(pCurrentMapName);
-  if ( map_id )
-  {
-    map_info = &pMapStats->pInfos[map_id];
-    respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
-    v38 = GetAlertStatus();
-  }
-  else
-    map_info = (MapInfo *)bLoading;
-  dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
-
-  pStationaryLightsStack->uNumLightsActive = 0;
-  v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1, respawn_interval, (char *)&pDest) - 1;
-  if ( !v4 )
-    Error("Unable to open %s", pCurrentMapName);
-
-  if ( v4 == 1 )
-    Error("File %s is not a BLV File", pCurrentMapName);
-
-  if ( v4 == 2 )
-    Error("Attempt to open new level before clearing old");
-  if ( v4 == 3 )
-    Error("Out of memory loading indoor level");
-  if ( !(dword_6BE364_game_settings_1 & GAME_SETTINGS_2000) )
-  {
-    Actor::InitializeActors();
-    SpriteObject::InitializeSpriteObjects();
-  }
-  dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_2000;
-  if ( !map_id )
-    pDest = 0;
-  if ( pDest == 1 )
-  {
-    for (uint i = 0; i < pIndoor->uNumSpawnPoints; ++i )
+    respawn_interval = 0;
+    pGameLoadingUI_ProgressBar->Reset(0x20u);
+    bUnderwater = false;
+    bNoNPCHiring = false;
+    pDest = 1;
+    uCurrentlyLoadedLevelType = LEVEL_Indoor;
+    pEngine->uFlags2 &= ~GAME_FLAGS_2_ALTER_GRAVITY;
+    if (Is_out15odm_underwater())
     {
-        auto spawn = pIndoor->pSpawnPoints + i;
-      if (spawn->IsMonsterSpawn())
-        SpawnEncounter(map_info, spawn, 0, 0, 0);
-      else
-        map_info->SpawnRandomTreasure(spawn);
+        bUnderwater = true;
+        pEngine->uFlags2 |= GAME_FLAGS_2_ALTER_GRAVITY;
     }
-    RespawnGlobalDecorations();
-  }
-
-  pSoundList->LoadSound(pDoorSoundIDsByLocationID[map_id], 0);
-  pSoundList->LoadSound(pDoorSoundIDsByLocationID[map_id] + 1, 0);
-
-  for (uint i = 0; i < pIndoor->uNumDoors; ++i)
-  {
-    if (pIndoor->pDoors[i].uAttributes & 0x01)
+    if (!_stricmp(pCurrentMapName, "out15.odm") || !_stricmp(pCurrentMapName, "d23.blv"))
+        bNoNPCHiring = true;
+    pPaletteManager->pPalette_tintColor[0] = 0;
+    pPaletteManager->pPalette_tintColor[1] = 0;
+    pPaletteManager->pPalette_tintColor[2] = 0;
+    pPaletteManager->RecalculateAll();
+    if (_A750D8_player_speech_timer)
+        _A750D8_player_speech_timer = 0i64;
+    map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    if (map_id)
     {
-      pIndoor->pDoors[i].uState = BLVDoor::Opening;
-      pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
-      pIndoor->pDoors[i].uAttributes = 2;
+        map_info = &pMapStats->pInfos[map_id];
+        respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
+        v38 = GetAlertStatus();
     }
+    else
+        map_info = (MapInfo *)bLoading;
+    dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
 
-    if (pIndoor->pDoors[i].uState == BLVDoor::Closed)
+    pStationaryLightsStack->uNumLightsActive = 0;
+    v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1, respawn_interval, (char *)&pDest) - 1;
+    if (!v4)
+        Error("Unable to open %s", pCurrentMapName);
+
+    if (v4 == 1)
+        Error("File %s is not a BLV File", pCurrentMapName);
+
+    if (v4 == 2)
+        Error("Attempt to open new level before clearing old");
+    if (v4 == 3)
+        Error("Out of memory loading indoor level");
+    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_2000))
     {
-      pIndoor->pDoors[i].uState = BLVDoor::Closing;
-      pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
-      pIndoor->pDoors[i].uAttributes = 2;
+        Actor::InitializeActors();
+        SpriteObject::InitializeSpriteObjects();
     }
-    else if (pIndoor->pDoors[i].uState == BLVDoor::Open)
+    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_2000;
+    if (!map_id)
+        pDest = 0;
+    if (pDest == 1)
     {
-      pIndoor->pDoors[i].uState = BLVDoor::Opening;
-      pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
-      pIndoor->pDoors[i].uAttributes = 2;
-    }
-  }
-
-  for (uint i = 0; i < pIndoor->uNumFaces; ++i)
-  {
-    if (pIndoor->pFaces[i].uBitmapID != -1)
-      pBitmaps_LOD->pTextures[pIndoor->pFaces[i].uBitmapID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[pIndoor->pFaces[i].uBitmapID].palette_id1);
-  }
-
-  pGameLoadingUI_ProgressBar->Progress();
-
-  v35 = 0;
-  for (uint i = 0; i < uNumLevelDecorations; ++i)
-  {
-    pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
-
-    if (pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID].uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9)
-    {
-        pSoundList->LoadSound(pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID].uSoundID, 0);
-        _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;
-    }
-
-    if (!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE))
-    {
-      decoration = &pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID];
-      if (!decoration->DontDraw())
-      {
-        if ( decoration->uLightRadius )
+        for (uint i = 0; i < pIndoor->uNumSpawnPoints; ++i)
         {
-          unsigned char r = 255,
+            auto spawn = pIndoor->pSpawnPoints + i;
+            if (spawn->IsMonsterSpawn())
+                SpawnEncounter(map_info, spawn, 0, 0, 0);
+            else
+                map_info->SpawnRandomTreasure(spawn);
+        }
+        RespawnGlobalDecorations();
+    }
+
+    pSoundList->LoadSound(pDoorSoundIDsByLocationID[map_id], 0);
+    pSoundList->LoadSound(pDoorSoundIDsByLocationID[map_id] + 1, 0);
+
+    for (uint i = 0; i < pIndoor->uNumDoors; ++i)
+    {
+        if (pIndoor->pDoors[i].uAttributes & 0x01)
+        {
+            pIndoor->pDoors[i].uState = BLVDoor::Opening;
+            pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
+            pIndoor->pDoors[i].uAttributes = 2;
+        }
+
+        if (pIndoor->pDoors[i].uState == BLVDoor::Closed)
+        {
+            pIndoor->pDoors[i].uState = BLVDoor::Closing;
+            pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
+            pIndoor->pDoors[i].uAttributes = 2;
+        }
+        else if (pIndoor->pDoors[i].uState == BLVDoor::Open)
+        {
+            pIndoor->pDoors[i].uState = BLVDoor::Opening;
+            pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
+            pIndoor->pDoors[i].uAttributes = 2;
+        }
+    }
+
+    /*for (uint i = 0; i < pIndoor->uNumFaces; ++i)
+    {
+        if (pIndoor->pFaces[i].uBitmapID != -1)
+            pBitmaps_LOD->pTextures[pIndoor->pFaces[i].uBitmapID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[pIndoor->pFaces[i].uBitmapID].palette_id1);
+    }*/
+
+    pGameLoadingUI_ProgressBar->Progress();
+
+    v35 = 0;
+    for (uint i = 0; i < uNumLevelDecorations; ++i)
+    {
+        pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
+
+        if (pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID].uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9)
+        {
+            pSoundList->LoadSound(pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID].uSoundID, 0);
+            _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;
+        }
+
+        if (!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE))
+        {
+            decoration = &pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID];
+            if (!decoration->DontDraw())
+            {
+                if (decoration->uLightRadius)
+                {
+                    unsigned char r = 255,
                         g = 255,
                         b = 255;
-          if (/*render->pRenderD3D*/true && render->bUseColoredLights)
-          {
-            r = decoration->uColoredLightRed;
-            g = decoration->uColoredLightGreen;
-            b = decoration->uColoredLightBlue;
-          }
-          pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.x,
-                                           pLevelDecorations[i].vPosition.y,
-                                           pLevelDecorations[i].vPosition.z + decoration->uDecorationHeight,
-										   decoration->uLightRadius, r, g, b, _4E94D0_light_type);
+                    if (/*render->pRenderD3D*/true && render->bUseColoredLights)
+                    {
+                        r = decoration->uColoredLightRed;
+                        g = decoration->uColoredLightGreen;
+                        b = decoration->uColoredLightBlue;
+                    }
+                    pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition.x,
+                        pLevelDecorations[i].vPosition.y,
+                        pLevelDecorations[i].vPosition.z + decoration->uDecorationHeight,
+                        decoration->uLightRadius, r, g, b, _4E94D0_light_type);
+                }
+            }
         }
-      }
-    }
 
-    if (!pLevelDecorations[i].uEventID)
-    {
-      if (pLevelDecorations[i].IsInteractive())
-      {
-        if ( v35 < 124 )
+        if (!pLevelDecorations[i].uEventID)
         {
-          pLevelDecorations[i]._idx_in_stru123 = v35 + 75;
-          if ( !stru_5E4C90_MapPersistVars._decor_events[v35] )
-            pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
-          v35++;
+            if (pLevelDecorations[i].IsInteractive())
+            {
+                if (v35 < 124)
+                {
+                    pLevelDecorations[i]._idx_in_stru123 = v35 + 75;
+                    if (!stru_5E4C90_MapPersistVars._decor_events[v35])
+                        pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
+                    v35++;
+                }
+            }
         }
-      }
     }
-  }
 
-  pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
 
-  for (uint i = 0; i < uNumSpriteObjects; ++i)
-  {
-    if (pSpriteObjects[i].uObjectDescID)
+    for (uint i = 0; i < uNumSpriteObjects; ++i)
     {
-        if (pSpriteObjects[i].containing_item.uItemID)
-      {
-          if (pSpriteObjects[i].containing_item.uItemID != 220 && pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
-              !pSpriteObjects[i].containing_item.uEnchantmentType)
-            pSpriteObjects[i].containing_item.uEnchantmentType = rand() % 15 + 5;
-        pItemsTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
-      }
+        if (pSpriteObjects[i].uObjectDescID)
+        {
+            if (pSpriteObjects[i].containing_item.uItemID)
+            {
+                if (pSpriteObjects[i].containing_item.uItemID != 220 && pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
+                    !pSpriteObjects[i].containing_item.uEnchantmentType)
+                    pSpriteObjects[i].containing_item.uEnchantmentType = rand() % 15 + 5;
+                pItemsTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
+            }
+        }
     }
-  }
 
-  // INDOOR initialize actors
-  v38 = 0;
+    // INDOOR initialize actors
+    v38 = 0;
 
-  for (uint i = 0; i < uNumActors; ++i)
-  {
-    if (pActors[i].uAttributes & ACTOR_UNKNOW7)
+    for (uint i = 0; i < uNumActors; ++i)
     {
-      if ( !map_id )
-      {
-        pActors[i].pMonsterInfo.field_3E = 19;
-        pActors[i].uAttributes |= ACTOR_UNKNOW11;
-        continue;
-      }
-      v28 = v38 == 0;
-    }
-    else
-      v28 = v38 == 1;
+        if (pActors[i].uAttributes & ACTOR_UNKNOW7)
+        {
+            if (!map_id)
+            {
+                pActors[i].pMonsterInfo.field_3E = 19;
+                pActors[i].uAttributes |= ACTOR_UNKNOW11;
+                continue;
+            }
+            v28 = v38 == 0;
+        }
+        else
+            v28 = v38 == 1;
 
-    if ( !v28 )
-    {
-      pActors[i].PrepareSprites(0);
-      pActors[i].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
-      if ( pActors[i].pMonsterInfo.field_3E != 11 && pActors[i].pMonsterInfo.field_3E != 19 && (!pActors[i].sCurrentHP || !pActors[i].pMonsterInfo.uHP) )
-      {
-        pActors[i].pMonsterInfo.field_3E = 5;
-        pActors[i].UpdateAnimation();
-      }
+        if (!v28)
+        {
+            pActors[i].PrepareSprites(0);
+            pActors[i].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+            if (pActors[i].pMonsterInfo.field_3E != 11 && pActors[i].pMonsterInfo.field_3E != 19 && (!pActors[i].sCurrentHP || !pActors[i].pMonsterInfo.uHP))
+            {
+                pActors[i].pMonsterInfo.field_3E = 5;
+                pActors[i].UpdateAnimation();
+            }
+        }
+        else
+        {
+            pActors[i].pMonsterInfo.field_3E = 19;
+            pActors[i].uAttributes |= ACTOR_UNKNOW11;
+        }
     }
-    else
-    {
-      pActors[i].pMonsterInfo.field_3E = 19;
-      pActors[i].uAttributes |= ACTOR_UNKNOW11;
-    }
-  }
 
-  pGameLoadingUI_ProgressBar->Progress();
+    pGameLoadingUI_ProgressBar->Progress();
 
-  //Party to start position
-  Actor this_;
-  this_.pMonsterInfo.uID = 45;
-  this_.PrepareSprites(0);
-  if ( !bLoading )
-  {
-    pParty->sRotationX = 0;
-    pParty->sRotationY = 0;
-    pParty->vPosition.z = 0;
-    pParty->vPosition.y = 0;
-    pParty->vPosition.x = 0;
-    pParty->uFallStartY = 0;
-    pParty->uFallSpeed = 0;
-    TeleportToStartingPoint(uLevel_StartingPointType);
-  }
-  viewparams->_443365();
-  PlayLevelMusic();
-  if ( !bLoading )
-  {
-    v30 = 0;
-    for ( uint pl_id = 1; pl_id <= 4; ++pl_id )
+    //Party to start position
+    Actor this_;
+    this_.pMonsterInfo.uID = 45;
+    this_.PrepareSprites(0);
+    if (!bLoading)
     {
-      if ( pPlayers[pl_id]->CanAct() )
-        v34[v30++] = pl_id;
+        pParty->sRotationX = 0;
+        pParty->sRotationY = 0;
+        pParty->vPosition.z = 0;
+        pParty->vPosition.y = 0;
+        pParty->vPosition.x = 0;
+        pParty->uFallStartY = 0;
+        pParty->uFallSpeed = 0;
+        TeleportToStartingPoint(uLevel_StartingPointType);
     }
-    if ( v30 )
+    viewparams->_443365();
+    PlayLevelMusic();
+    if (!bLoading)
     {
-      if ( pDest )
-      {
-        _A750D8_player_speech_timer = 256i64;
-        PlayerSpeechID = SPEECH_46;
-        uSpeakingCharacter = v34[rand() % v30];
-      }
+        v30 = 0;
+        for (uint pl_id = 1; pl_id <= 4; ++pl_id)
+        {
+            if (pPlayers[pl_id]->CanAct())
+                v34[v30++] = pl_id;
+        }
+        if (v30)
+        {
+            if (pDest)
+            {
+                _A750D8_player_speech_timer = 256i64;
+                PlayerSpeechID = SPEECH_46;
+                uSpeakingCharacter = v34[rand() % v30];
+            }
+        }
     }
-  }
 }
+
 //----- (0046CEC3) --------------------------------------------------------
 int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID)
 {
-  int v13; // ecx@13
-  signed int v14; // ebx@14
-  int v15; // eax@16
-  int v21; // eax@27
-  signed int v28; // eax@45
-  int v29; // ebx@47
-  int v38; // edx@62
-  bool v47; // [sp+24h] [bp-1Ch]@43
-  bool current_vertices_Y; // [sp+28h] [bp-18h]@10
-  bool v49; // [sp+28h] [bp-18h]@41
-  bool next_vertices_Y; // [sp+2Ch] [bp-14h]@12
-  signed int number_hits; // [sp+30h] [bp-10h]@10
-  signed int v54; // [sp+30h] [bp-10h]@41
-  signed int v55; // [sp+34h] [bp-Ch]@1
+    int v13; // ecx@13
+    signed int v14; // ebx@14
+    int v15; // eax@16
+    int v21; // eax@27
+    signed int v28; // eax@45
+    int v29; // ebx@47
+    int v38; // edx@62
+    bool v47; // [sp+24h] [bp-1Ch]@43
+    bool current_vertices_Y; // [sp+28h] [bp-18h]@10
+    bool v49; // [sp+28h] [bp-18h]@41
+    bool next_vertices_Y; // [sp+2Ch] [bp-14h]@12
+    signed int number_hits; // [sp+30h] [bp-10h]@10
+    signed int v54; // [sp+30h] [bp-10h]@41
+    signed int v55; // [sp+34h] [bp-Ch]@1
 
-  //LOG_DECOMPILATION_WARNING();
+    //LOG_DECOMPILATION_WARNING();
 
-  static int blv_floor_id[50]; // 00721200
-  static int blv_floor_level[50]; // 007212C8
+    static int blv_floor_id[50]; // 00721200
+    static int blv_floor_level[50]; // 007212C8
 
-  static __int16 blv_floor_face_vert_coord_Y[104]; // word_721390_ys
-  static __int16 blv_floor_face_vert_coord_X[104]; // word_721460_xs
+    static __int16 blv_floor_face_vert_coord_Y[104]; // word_721390_ys
+    static __int16 blv_floor_face_vert_coord_X[104]; // word_721460_xs
 
-  BLVSector* pSector = &pIndoor->pSectors[uSectorID];
-  v55 = 0;
-  for (uint i = 0; i < pSector->uNumFloors; ++i)
-  {
-    BLVFace* pFloor = &pIndoor->pFaces[pSector->pFloors[i]];
-    if (pFloor->Ethereal())
-      continue;
-
-    assert(pFloor->uNumVertices);
-    if (x <= pFloor->pBounding.x2 && x >= pFloor->pBounding.x1 &&
-        y <= pFloor->pBounding.y2 && y >= pFloor->pBounding.y1)
+    BLVSector* pSector = &pIndoor->pSectors[uSectorID];
+    v55 = 0;
+    for (uint i = 0; i < pSector->uNumFloors; ++i)
     {
-      for (uint j = 0; j < pFloor->uNumVertices; ++j)
-      {
-        blv_floor_face_vert_coord_X[2 * j] =     pFloor->pXInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j]].x;
-        blv_floor_face_vert_coord_X[2 * j + 1] = pFloor->pXInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j + 1]].x;
-        blv_floor_face_vert_coord_Y[2 * j] =     pFloor->pYInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j]].y;
-        blv_floor_face_vert_coord_Y[2 * j + 1] = pFloor->pYInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j + 1]].y;
-      }
-      blv_floor_face_vert_coord_X[2 * pFloor->uNumVertices] = blv_floor_face_vert_coord_X[0];
-      blv_floor_face_vert_coord_Y[2 * pFloor->uNumVertices] = blv_floor_face_vert_coord_Y[0];
+        BLVFace* pFloor = &pIndoor->pFaces[pSector->pFloors[i]];
+        if (pFloor->Ethereal())
+            continue;
 
-      next_vertices_Y = blv_floor_face_vert_coord_Y[0] >= y;
-      number_hits = 0;
-
-      for (uint j = 0; j < 2 * pFloor->uNumVertices; ++j)
-      {
-        if (number_hits >= 2)
-          break;
-
-        current_vertices_Y = next_vertices_Y;
-        next_vertices_Y = blv_floor_face_vert_coord_Y[j + 1] >= y;
-
-        v13 = i;
-        if (current_vertices_Y == next_vertices_Y)
-          continue;
-
-        v14 = blv_floor_face_vert_coord_X[j + 1] >= x ? 0 : 2;
-        v15 = v14 | (blv_floor_face_vert_coord_X[j] < x);
-
-        if (v15 == 3)
-          continue;
-        else if (!v15)
-          ++number_hits;
-        else
+        assert(pFloor->uNumVertices);
+        if (x <= pFloor->pBounding.x2 && x >= pFloor->pBounding.x1 &&
+            y <= pFloor->pBounding.y2 && y >= pFloor->pBounding.y1)
         {
-          long long a_div_b = fixpoint_div(y - blv_floor_face_vert_coord_Y[j], blv_floor_face_vert_coord_Y[j + 1] - blv_floor_face_vert_coord_Y[j]);
-          long long res = fixpoint_mul((signed int)blv_floor_face_vert_coord_X[j + 1] - (signed int)blv_floor_face_vert_coord_X[j], a_div_b);
-
-            if (res + blv_floor_face_vert_coord_X[j] >= x)
-                ++number_hits;
-          }
-      }
-
-
-        if ( number_hits == 1 )
-        {
-          if ( v55 >= 50 )
-            break;
-          if ( pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling )
-            v21 = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
-          else
-            v21 = fixpoint_mul(pFloor->zCalc1, x) + fixpoint_mul(pFloor->zCalc2, y) + (short)(pFloor->zCalc3 >> 16);
-          blv_floor_level[v55] = v21;
-          blv_floor_id[v55] = pSector->pFloors[i];
-          v55++;
-        }
-    }
-  }
-
-  if ( pSector->field_0 & 8 )
-  {
-    for (uint i = 0; i < pSector->uNumPortals; ++i)
-    {
-      BLVFace* portal = &pIndoor->pFaces[pSector->pPortals[i]];
-      if (portal->uPolygonType != POLYGON_Floor)
-        continue;
-
-      if (!portal->uNumVertices)
-        continue;
-
-      if (x <= portal->pBounding.x2 && x >= portal->pBounding.x1 &&
-          y <= portal->pBounding.y2 && y >= portal->pBounding.y1 )
-      {
-        for (uint j = 0; j < portal->uNumVertices; ++j)
-        {
-          blv_floor_face_vert_coord_X[2 * j] =     portal->pXInterceptDisplacements[j] + pIndoor->pVertices[portal->pVertexIDs[j]].x;
-          blv_floor_face_vert_coord_X[2 * j + 1] = portal->pXInterceptDisplacements[j + 1] + pIndoor->pVertices[portal->pVertexIDs[j + 1]].x;
-          blv_floor_face_vert_coord_Y[2 * j] =     portal->pYInterceptDisplacements[j] + pIndoor->pVertices[portal->pVertexIDs[j]].y;
-          blv_floor_face_vert_coord_Y[2 * j + 1] = portal->pYInterceptDisplacements[j + 1] + pIndoor->pVertices[portal->pVertexIDs[j + 1]].y;
-        }
-        blv_floor_face_vert_coord_X[2 * portal->uNumVertices] = blv_floor_face_vert_coord_X[0];
-        blv_floor_face_vert_coord_Y[2 * portal->uNumVertices] = blv_floor_face_vert_coord_Y[0];
-        v54 = 0;
-        v47 = blv_floor_face_vert_coord_Y[0] >= y;
-
-          for (uint j = 0; j < 2 * portal->uNumVertices; ++j)
-          {
-            v49 = v47;
-            if ( v54 >= 2 )
-              break;
-            v47 = blv_floor_face_vert_coord_Y[j + 1] >= y;
-            if ( v49 != v47 )
+            for (uint j = 0; j < pFloor->uNumVertices; ++j)
             {
-              v28 = blv_floor_face_vert_coord_X[j + 1] >= x ? 0 : 2;
-              v29 = v28 | (blv_floor_face_vert_coord_X[j] < x);
-              if ( v29 != 3 )
-              {
-                if ( !v29 )
-                  ++v54;
+                blv_floor_face_vert_coord_X[2 * j] = pFloor->pXInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j]].x;
+                blv_floor_face_vert_coord_X[2 * j + 1] = pFloor->pXInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j + 1]].x;
+                blv_floor_face_vert_coord_Y[2 * j] = pFloor->pYInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j]].y;
+                blv_floor_face_vert_coord_Y[2 * j + 1] = pFloor->pYInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j + 1]].y;
+            }
+            blv_floor_face_vert_coord_X[2 * pFloor->uNumVertices] = blv_floor_face_vert_coord_X[0];
+            blv_floor_face_vert_coord_Y[2 * pFloor->uNumVertices] = blv_floor_face_vert_coord_Y[0];
+
+            next_vertices_Y = blv_floor_face_vert_coord_Y[0] >= y;
+            number_hits = 0;
+
+            for (uint j = 0; j < 2 * pFloor->uNumVertices; ++j)
+            {
+                if (number_hits >= 2)
+                    break;
+
+                current_vertices_Y = next_vertices_Y;
+                next_vertices_Y = blv_floor_face_vert_coord_Y[j + 1] >= y;
+
+                v13 = i;
+                if (current_vertices_Y == next_vertices_Y)
+                    continue;
+
+                v14 = blv_floor_face_vert_coord_X[j + 1] >= x ? 0 : 2;
+                v15 = v14 | (blv_floor_face_vert_coord_X[j] < x);
+
+                if (v15 == 3)
+                    continue;
+                else if (!v15)
+                    ++number_hits;
                 else
                 {
-                  long long a_div_b = fixpoint_div(y - blv_floor_face_vert_coord_Y[j], blv_floor_face_vert_coord_Y[j + 1] - blv_floor_face_vert_coord_Y[j]);
-                  long long res = fixpoint_mul(blv_floor_face_vert_coord_X[j + 1] - blv_floor_face_vert_coord_X[j], a_div_b);
-                  if (res + blv_floor_face_vert_coord_X[j] >= x)
-                    ++v54;
+                    long long a_div_b = fixpoint_div(y - blv_floor_face_vert_coord_Y[j], blv_floor_face_vert_coord_Y[j + 1] - blv_floor_face_vert_coord_Y[j]);
+                    long long res = fixpoint_mul((signed int)blv_floor_face_vert_coord_X[j + 1] - (signed int)blv_floor_face_vert_coord_X[j], a_div_b);
+
+                    if (res + blv_floor_face_vert_coord_X[j] >= x)
+                        ++number_hits;
                 }
-              }
             }
-          }
-          if ( v54 == 1 )
-          {
-            if ( v55 >= 50 )
-              break;
-            blv_floor_level[v55] = -29000;
-            blv_floor_id[v55] = pSector->pPortals[i];
-            v55++;
-          }
-      }
-    }
-  }
-  if ( v55 == 1 )
-  {
-    *pFaceID = blv_floor_id[0];
-	if ( blv_floor_level[0] <= -29000 )
-		__debugbreak();
-    return blv_floor_level[0];
-  }
-  if ( !v55 )
-    return -30000;
-  *pFaceID = blv_floor_id[0];
-  //result = blv_floor_level[0];
 
-    /*for ( v35 = 1; v35 < v55; ++v35 )
-    {
-      if ( blv_floor_level[0] <= z + 5 )
-      {
-        if ( blv_floor_level[v35] >= blv_floor_level[0] || blv_floor_level[v35] > z + 5 )
-          continue;
-        blv_floor_level[0] = blv_floor_level[v35];
-        *pFaceID = blv_floor_id[v35];
-        continue;
-      }
-      if ( blv_floor_level[v35] < blv_floor_level[0] )
-      {
-        blv_floor_level[0] = blv_floor_level[v35];
-        *pFaceID = blv_floor_id[v35];
-      }
-    }*/
 
-    
-  int result = blv_floor_level[0];
-  for (uint i = 1; i < v55; ++i)
-  {
-      v38 = blv_floor_level[i];
-      if ( result <= z + 5 )
-      {
-        if ( v38 > result && v38 <= z + 5 )
-        {
-          result = blv_floor_level[i];
-	if ( blv_floor_level[i] <= -29000 )
-		__debugbreak();
-          *pFaceID = blv_floor_id[i];
+            if (number_hits == 1)
+            {
+                if (v55 >= 50)
+                    break;
+                if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling)
+                    v21 = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
+                else
+                    v21 = fixpoint_mul(pFloor->zCalc1, x) + fixpoint_mul(pFloor->zCalc2, y) + (short)(pFloor->zCalc3 >> 16);
+                blv_floor_level[v55] = v21;
+                blv_floor_id[v55] = pSector->pFloors[i];
+                v55++;
+            }
         }
-      }
-      else if ( v38 < result )
-      {
-        result = blv_floor_level[i];
-	if ( blv_floor_level[i] <= -29000 )
-		__debugbreak();
-        *pFaceID = blv_floor_id[i];
-      }
-  }
+    }
 
-  return result;
+    if (pSector->field_0 & 8)
+    {
+        for (uint i = 0; i < pSector->uNumPortals; ++i)
+        {
+            BLVFace* portal = &pIndoor->pFaces[pSector->pPortals[i]];
+            if (portal->uPolygonType != POLYGON_Floor)
+                continue;
+
+            if (!portal->uNumVertices)
+                continue;
+
+            if (x <= portal->pBounding.x2 && x >= portal->pBounding.x1 &&
+                y <= portal->pBounding.y2 && y >= portal->pBounding.y1)
+            {
+                for (uint j = 0; j < portal->uNumVertices; ++j)
+                {
+                    blv_floor_face_vert_coord_X[2 * j] = portal->pXInterceptDisplacements[j] + pIndoor->pVertices[portal->pVertexIDs[j]].x;
+                    blv_floor_face_vert_coord_X[2 * j + 1] = portal->pXInterceptDisplacements[j + 1] + pIndoor->pVertices[portal->pVertexIDs[j + 1]].x;
+                    blv_floor_face_vert_coord_Y[2 * j] = portal->pYInterceptDisplacements[j] + pIndoor->pVertices[portal->pVertexIDs[j]].y;
+                    blv_floor_face_vert_coord_Y[2 * j + 1] = portal->pYInterceptDisplacements[j + 1] + pIndoor->pVertices[portal->pVertexIDs[j + 1]].y;
+                }
+                blv_floor_face_vert_coord_X[2 * portal->uNumVertices] = blv_floor_face_vert_coord_X[0];
+                blv_floor_face_vert_coord_Y[2 * portal->uNumVertices] = blv_floor_face_vert_coord_Y[0];
+                v54 = 0;
+                v47 = blv_floor_face_vert_coord_Y[0] >= y;
+
+                for (uint j = 0; j < 2 * portal->uNumVertices; ++j)
+                {
+                    v49 = v47;
+                    if (v54 >= 2)
+                        break;
+                    v47 = blv_floor_face_vert_coord_Y[j + 1] >= y;
+                    if (v49 != v47)
+                    {
+                        v28 = blv_floor_face_vert_coord_X[j + 1] >= x ? 0 : 2;
+                        v29 = v28 | (blv_floor_face_vert_coord_X[j] < x);
+                        if (v29 != 3)
+                        {
+                            if (!v29)
+                                ++v54;
+                            else
+                            {
+                                long long a_div_b = fixpoint_div(y - blv_floor_face_vert_coord_Y[j], blv_floor_face_vert_coord_Y[j + 1] - blv_floor_face_vert_coord_Y[j]);
+                                long long res = fixpoint_mul(blv_floor_face_vert_coord_X[j + 1] - blv_floor_face_vert_coord_X[j], a_div_b);
+                                if (res + blv_floor_face_vert_coord_X[j] >= x)
+                                    ++v54;
+                            }
+                        }
+                    }
+                }
+                if (v54 == 1)
+                {
+                    if (v55 >= 50)
+                        break;
+                    blv_floor_level[v55] = -29000;
+                    blv_floor_id[v55] = pSector->pPortals[i];
+                    v55++;
+                }
+            }
+        }
+    }
+    if (v55 == 1)
+    {
+        *pFaceID = blv_floor_id[0];
+        if (blv_floor_level[0] <= -29000)
+            __debugbreak();
+        return blv_floor_level[0];
+    }
+    if (!v55)
+        return -30000;
+    *pFaceID = blv_floor_id[0];
+    //result = blv_floor_level[0];
+
+      /*for ( v35 = 1; v35 < v55; ++v35 )
+      {
+        if ( blv_floor_level[0] <= z + 5 )
+        {
+          if ( blv_floor_level[v35] >= blv_floor_level[0] || blv_floor_level[v35] > z + 5 )
+            continue;
+          blv_floor_level[0] = blv_floor_level[v35];
+          *pFaceID = blv_floor_id[v35];
+          continue;
+        }
+        if ( blv_floor_level[v35] < blv_floor_level[0] )
+        {
+          blv_floor_level[0] = blv_floor_level[v35];
+          *pFaceID = blv_floor_id[v35];
+        }
+      }*/
+
+
+    int result = blv_floor_level[0];
+    for (uint i = 1; i < v55; ++i)
+    {
+        v38 = blv_floor_level[i];
+        if (result <= z + 5)
+        {
+            if (v38 > result && v38 <= z + 5)
+            {
+                result = blv_floor_level[i];
+                if (blv_floor_level[i] <= -29000)
+                    __debugbreak();
+                *pFaceID = blv_floor_id[i];
+            }
+        }
+        else if (v38 < result)
+        {
+            result = blv_floor_level[i];
+            if (blv_floor_level[i] <= -29000)
+                __debugbreak();
+            *pFaceID = blv_floor_id[i];
+        }
+    }
+
+    return result;
 }
+
 //----- (0043FDED) --------------------------------------------------------
 void PrepareActorRenderList_BLV()
 {
@@ -2753,7 +2771,7 @@ void PrepareActorRenderList_BLV()
                         pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
                             pEngine->pStru6Instance->_4A806F_get_mass_distortion_value(&pActors[i]),
                             pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
-                        );
+                            );
                     }
                 }
                 else
@@ -2763,7 +2781,7 @@ void PrepareActorRenderList_BLV()
                         pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(
                             65536 / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower,
                             pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat
-                        );
+                            );
                     }
                 }
 
@@ -2798,196 +2816,197 @@ void PrepareActorRenderList_BLV()
 //----- (0044028F) --------------------------------------------------------
 void PrepareItemsRenderList_BLV()
 {
-  SpriteFrame *v4; // eax@12
-  unsigned int v6; // eax@12
-  int v7; // ecx@12
-  int v9; // ecx@12
-  __int64 v18; // ST5C_4@27
-  int a6; // [sp+2Ch] [bp-30h]@12
-  int v31; // [sp+38h] [bp-24h]@27
-  signed __int16 v34; // [sp+44h] [bp-18h]@14
-  int v35; // [sp+48h] [bp-14h]@25
-  int v36; // [sp+4Ch] [bp-10h]@25
-  signed int z; // [sp+50h] [bp-Ch]@24
-  signed int y; // [sp+54h] [bp-8h]@24
-  signed int x; // [sp+58h] [bp-4h]@24
+    SpriteFrame *v4; // eax@12
+    unsigned int v6; // eax@12
+    int v7; // ecx@12
+    int v9; // ecx@12
+    __int64 v18; // ST5C_4@27
+    int a6; // [sp+2Ch] [bp-30h]@12
+    int v31; // [sp+38h] [bp-24h]@27
+    signed __int16 v34; // [sp+44h] [bp-18h]@14
+    int v35; // [sp+48h] [bp-14h]@25
+    int v36; // [sp+4Ch] [bp-10h]@25
+    signed int z; // [sp+50h] [bp-Ch]@24
+    signed int y; // [sp+54h] [bp-8h]@24
+    signed int x; // [sp+58h] [bp-4h]@24
 
-  for (uint i = 0; i < uNumSpriteObjects; ++i)
-  {
-    if (pSpriteObjects[i].uObjectDescID)
+    for (uint i = 0; i < uNumSpriteObjects; ++i)
     {
-        if ( !(pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uFlags & 1) )
-         {
-          if ( ( pSpriteObjects[i].uType < 1000 || pSpriteObjects[i].uType >= 10000)
-            && (pSpriteObjects[i].uType < 500 || pSpriteObjects[i].uType >= 600)
-            && (pSpriteObjects[i].uType < 811 || pSpriteObjects[i].uType >= 815)
-            || pEngine->pStru6Instance->RenderAsSprite(&pSpriteObjects[i]))
-          {
-            v4 = pSpriteFrameTable->GetFrame(pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uSpriteID, pSpriteObjects[i].uSpriteFrameID);
-            a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
-            v6 = stru_5C6E00->Atan2(pSpriteObjects[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
-                                    pSpriteObjects[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
-            LOWORD(v7) = pSpriteObjects[i].uFacing;
-            v9 = ((signed int)(stru_5C6E00->uIntegerPi + ((signed int)stru_5C6E00->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
-            pBillboardRenderList[uNumBillboardsToDraw].HwSpriteID = v4->pHwSpriteIDs[v9];
-            if ( v4->uFlags & 0x20 )
-              pSpriteObjects[i].vPosition.z -= (signed int)(fixpoint_mul(v4->scale, pSprites_LOD->pSpriteHeaders[pBillboardRenderList[uNumBillboardsToDraw].HwSpriteID].uHeight) / 2);
-
-            v34 = 0;
-            if ( v4->uFlags & 2 )
-              v34 = 2;
-            if ( v4->uFlags & 0x40000 )
-              v34 |= 0x40u;
-            if ( v4->uFlags & 0x20000 )
-              LOBYTE(v34) = v34 | 0x80;
-            //v11 = (int *)(256 << v9);
-            if ( (256 << v9) & v4->uFlags )
-              v34 |= 4;
-            if ( a6 )
+        if (pSpriteObjects[i].uObjectDescID)
+        {
+            if (!(pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uFlags & 1))
             {
-              //LOBYTE(v11) = _4E94D3_light_type;
-              pMobileLightsStack->AddLight(pSpriteObjects[i].vPosition.x, pSpriteObjects[i].vPosition.y, pSpriteObjects[i].vPosition.z,
-                   pSpriteObjects[i].uSectorID, a6, pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uParticleTrailColorR,
-                                                    pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uParticleTrailColorG,
-                                                    pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uParticleTrailColorB, _4E94D3_light_type);
-            }
-            if ( pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pSpriteObjects[i].vPosition.x, pSpriteObjects[i].vPosition.y,
-                                                                                    pSpriteObjects[i].vPosition.z, &x, &y, &z, 1) )
-            {
-              pIndoorCameraD3D->Project(x, y, z, &v36, &v35);
+                if ((pSpriteObjects[i].uType < 1000 || pSpriteObjects[i].uType >= 10000)
+                    && (pSpriteObjects[i].uType < 500 || pSpriteObjects[i].uType >= 600)
+                    && (pSpriteObjects[i].uType < 811 || pSpriteObjects[i].uType >= 815)
+                    || pEngine->pStru6Instance->RenderAsSprite(&pSpriteObjects[i]))
+                {
+                    v4 = pSpriteFrameTable->GetFrame(pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uSpriteID, pSpriteObjects[i].uSpriteFrameID);
+                    a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
+                    v6 = stru_5C6E00->Atan2(pSpriteObjects[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
+                        pSpriteObjects[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                    LOWORD(v7) = pSpriteObjects[i].uFacing;
+                    v9 = ((signed int)(stru_5C6E00->uIntegerPi + ((signed int)stru_5C6E00->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
+                    pBillboardRenderList[uNumBillboardsToDraw].HwSpriteID = v4->pHwSpriteIDs[v9];
+                    if (v4->uFlags & 0x20)
+                        pSpriteObjects[i].vPosition.z -= (signed int)(fixpoint_mul(v4->scale, pSprites_LOD->pSpriteHeaders[pBillboardRenderList[uNumBillboardsToDraw].HwSpriteID].uHeight) / 2);
 
-              assert(uNumBillboardsToDraw < 500);
-              //if ( (signed int)uNumBillboardsToDraw >= 500 )
-              //  return;
-              ++uNumBillboardsToDraw;
-              ++uNumSpritesDrawnThisFrame;
-              pSpriteObjects[i].uAttributes |= 1;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
-              //if ( render->pRenderD3D )
-              {
-                pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
-                LODWORD(v18) = 0;
-                HIDWORD(v18) = (int)floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v4->scale, v18 / x);
-                v31 = fixpoint_mul(v4->scale, v18 / x);
-              }
-              /*else
-              {
-                __debugbreak(); // sw rendering
-                LODWORD(v19) = pBLVRenderParams->field_40 << 16;
-                HIDWORD(v19) = pBLVRenderParams->field_40 >> 16;
-                v20 = v19 / x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v24->scale, v19 / x);
-                v31 = fixpoint_mul(v24->scale, v20);
-              }*/
-              //HIWORD(v21) = HIWORD(x);
-              //LOWORD(v21) = 0;
-              pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = v31;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pSpriteObjects[i].vPosition.y;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pSpriteObjects[i].vPosition.z;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v36;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = v35;
-              //v23 = 8 * i;
-              //LOBYTE(v23) = PID(OBJECT_Item,i);
-              pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v4;
-              //v12 = (p->uAttributes & 0x20) == 0;
-              //pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v21 + v23;
-              pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HIWORD(x);
-              pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item,i);
-              /*if (pSpriteObjects[i].uAttributes & 0x20)
-              {
-                if ( !render->pRenderD3D )
-                  pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = 0;
-              }*/
+                    v34 = 0;
+                    if (v4->uFlags & 2)
+                        v34 = 2;
+                    if (v4->uFlags & 0x40000)
+                        v34 |= 0x40u;
+                    if (v4->uFlags & 0x20000)
+                        LOBYTE(v34) = v34 | 0x80;
+                    //v11 = (int *)(256 << v9);
+                    if ((256 << v9) & v4->uFlags)
+                        v34 |= 4;
+                    if (a6)
+                    {
+                        //LOBYTE(v11) = _4E94D3_light_type;
+                        pMobileLightsStack->AddLight(pSpriteObjects[i].vPosition.x, pSpriteObjects[i].vPosition.y, pSpriteObjects[i].vPosition.z,
+                            pSpriteObjects[i].uSectorID, a6, pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uParticleTrailColorR,
+                            pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uParticleTrailColorG,
+                            pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uParticleTrailColorB, _4E94D3_light_type);
+                    }
+                    if (pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pSpriteObjects[i].vPosition.x, pSpriteObjects[i].vPosition.y,
+                        pSpriteObjects[i].vPosition.z, &x, &y, &z, 1))
+                    {
+                        pIndoorCameraD3D->Project(x, y, z, &v36, &v35);
+
+                        assert(uNumBillboardsToDraw < 500);
+                        //if ( (signed int)uNumBillboardsToDraw >= 500 )
+                        //  return;
+                        ++uNumBillboardsToDraw;
+                        ++uNumSpritesDrawnThisFrame;
+                        pSpriteObjects[i].uAttributes |= 1;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
+                        //if ( render->pRenderD3D )
+                        {
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
+                            LODWORD(v18) = 0;
+                            HIDWORD(v18) = (int)floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
+                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v4->scale, v18 / x);
+                            v31 = fixpoint_mul(v4->scale, v18 / x);
+                        }
+                        /*else
+                        {
+                          __debugbreak(); // sw rendering
+                          LODWORD(v19) = pBLVRenderParams->field_40 << 16;
+                          HIDWORD(v19) = pBLVRenderParams->field_40 >> 16;
+                          v20 = v19 / x;
+                          pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v24->scale, v19 / x);
+                          v31 = fixpoint_mul(v24->scale, v20);
+                        }*/
+                        //HIWORD(v21) = HIWORD(x);
+                        //LOWORD(v21) = 0;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = v31;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pSpriteObjects[i].vPosition.y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pSpriteObjects[i].vPosition.z;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v36;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = v35;
+                        //v23 = 8 * i;
+                        //LOBYTE(v23) = PID(OBJECT_Item,i);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v4;
+                        //v12 = (p->uAttributes & 0x20) == 0;
+                        //pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v21 + v23;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HIWORD(x);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item, i);
+                        /*if (pSpriteObjects[i].uAttributes & 0x20)
+                        {
+                          if ( !render->pRenderD3D )
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = 0;
+                        }*/
+                    }
+                }
             }
-          }
         }
-      }
-  }
+    }
 }
 
 //----- (00440639) --------------------------------------------------------
 void AddBspNodeToRenderList(unsigned int node_id)
 {
-  BLVSector *pSector; // esi@1
+    BLVSector *pSector; // esi@1
 
-  pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
-  //if ( render->pRenderD3D )
-  {
-    for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
-      //Log::Warning(L"Non-BSP face: %X", v3->pFaceIDs[v2]);
-      pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);//рекурсия\recursion
-  }
-  /*else
-  {
-    for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
-      pBspRenderer->AddFaceToRenderList_sw(node_id, pSector->pFaceIDs[i]);
-  }*/
-  if ( pSector->field_0 & 0x10 )
-    sub_4406BC(node_id, pSector->uFirstBSPNode);
+    pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
+    //if ( render->pRenderD3D )
+    {
+        for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
+            //Log::Warning(L"Non-BSP face: %X", v3->pFaceIDs[v2]);
+            pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);//рекурсия\recursion
+    }
+    /*else
+    {
+      for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
+        pBspRenderer->AddFaceToRenderList_sw(node_id, pSector->pFaceIDs[i]);
+    }*/
+    if (pSector->field_0 & 0x10)
+        sub_4406BC(node_id, pSector->uFirstBSPNode);
 }
 
 //----- (004406BC) --------------------------------------------------------
 void sub_4406BC(unsigned int node_id, unsigned int uFirstNode)
 {
-  BLVSector *pSector; // esi@2
-  BSPNode *pNode; // edi@2
-  BLVFace *pFace; // eax@2
-  int v5; // ecx@2
-  __int16 v6; // ax@6
-  int v7; // ebp@10
-  int v8; // ebx@10
-  __int16 v9; // di@18
-  BspRenderer_stru0 *node; // [sp+18h] [bp-4h]@1
+    BLVSector *pSector; // esi@2
+    BSPNode *pNode; // edi@2
+    BLVFace *pFace; // eax@2
+    int v5; // ecx@2
+    __int16 v6; // ax@6
+    int v7; // ebp@10
+    int v8; // ebx@10
+    __int16 v9; // di@18
+    BspRenderer_stru0 *node; // [sp+18h] [bp-4h]@1
 
-  //Log::Warning(L"sub_4406BC(%u, %u)", a1, uFirstNode);
+    //Log::Warning(L"sub_4406BC(%u, %u)", a1, uFirstNode);
 
-  //v10 = a1;
-  node = &pBspRenderer->nodes[node_id];
-  while ( 1 )
-  {
-    pSector = &pIndoor->pSectors[node->uSectorID];
-    pNode = &pIndoor->pNodes[uFirstNode];
-    pFace = &pIndoor->pFaces[pSector->pFaceIDs[pNode->uCoplanarOffset]];
-    v5 = pFace->pFacePlane_old.dist +
-         pIndoorCameraD3D->vPartyPos.x * pFace->pFacePlane_old.vNormal.x +
-         pIndoorCameraD3D->vPartyPos.y * pFace->pFacePlane_old.vNormal.y +
-         pIndoorCameraD3D->vPartyPos.z * pFace->pFacePlane_old.vNormal.z;//plane equation
-    if (pFace->Portal() && pFace->uSectorID != node->uSectorID )
-      v5 = -v5;
-    //v11 = v5 > 0;
-    if ( v5 <= 0 )
-      v6 = pNode->uFront;
-    else
-      v6 = pNode->uBack;
-    if ( v6 != -1 )
-      sub_4406BC(node_id, v6);
-    v7 = pNode->uCoplanarOffset;
-    v8 = v7 + pNode->uCoplanarSize;
-
-    //Log::Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8, v2->pFaceIDs[v7]);
-    
-    //if ( render->pRenderD3D )
+    //v10 = a1;
+    node = &pBspRenderer->nodes[node_id];
+    while (1)
     {
-      while ( v7 < v8 )
-        pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[v7++]);
+        pSector = &pIndoor->pSectors[node->uSectorID];
+        pNode = &pIndoor->pNodes[uFirstNode];
+        pFace = &pIndoor->pFaces[pSector->pFaceIDs[pNode->uCoplanarOffset]];
+        v5 = pFace->pFacePlane_old.dist +
+            pIndoorCameraD3D->vPartyPos.x * pFace->pFacePlane_old.vNormal.x +
+            pIndoorCameraD3D->vPartyPos.y * pFace->pFacePlane_old.vNormal.y +
+            pIndoorCameraD3D->vPartyPos.z * pFace->pFacePlane_old.vNormal.z;//plane equation
+        if (pFace->Portal() && pFace->uSectorID != node->uSectorID)
+            v5 = -v5;
+        //v11 = v5 > 0;
+        if (v5 <= 0)
+            v6 = pNode->uFront;
+        else
+            v6 = pNode->uBack;
+        if (v6 != -1)
+            sub_4406BC(node_id, v6);
+        v7 = pNode->uCoplanarOffset;
+        v8 = v7 + pNode->uCoplanarSize;
+
+        //Log::Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8, v2->pFaceIDs[v7]);
+
+        //if ( render->pRenderD3D )
+        {
+            while (v7 < v8)
+                pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[v7++]);
+        }
+        /*else
+        {
+          while ( v7 < v8 )
+            pBspRenderer->AddFaceToRenderList_sw(node_id, pSector->pFaceIDs[v7++]);
+        }*/
+        v9 = v5 > 0 ? pNode->uFront : pNode->uBack;
+        if (v9 == -1)
+            break;
+        uFirstNode = v9;
     }
-    /*else
-    {
-      while ( v7 < v8 )
-        pBspRenderer->AddFaceToRenderList_sw(node_id, pSector->pFaceIDs[v7++]);
-    }*/
-    v9 = v5 > 0 ? pNode->uFront : pNode->uBack;
-    if ( v9 == -1 )
-      break;
-    uFirstNode = v9;
-  }
 }
+
 //----- (0043FA33) --------------------------------------------------------
 void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID)
 {

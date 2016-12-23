@@ -62,6 +62,9 @@ struct Polygon
 	void _normalize_v_18();
 	void Create_48607B(struct stru149 *a2);
 
+    inline bool IsWater() const { return this->flags & 2; }
+    inline bool IsWaterAnimDisabled() const { return this->flags & 0x3C00; }
+
 	float field_0;
 	float field_4;
 	float field_8;
@@ -72,11 +75,11 @@ struct Polygon
 	int field_24;
 	int sTextureDeltaU;
 	int sTextureDeltaV;
-	__int16 flags;
+	__int16 flags; // &2 -> Water  &3C00 still water (no anim)
 	__int16 field_32;
 	int field_34;
 	struct stru149 *ptr_38;
-	struct Texture_MM7 *pTexture;
+    Texture *texture;//struct Texture_MM7 *pTexture;
 	struct Span *_unused_prolly_head;
 	struct Span *_unused_prolly_tail;
 	int **ptr_48;
@@ -230,9 +233,9 @@ class Render : public IRender
 
         virtual unsigned int GetActorTintColor(float a2, int tint, int a4, int a5, RenderBillboard *a6);
 
-        virtual void DrawPolygon(unsigned int uNumVertices, struct Polygon *a3, ODMFace *a4, IDirect3DTexture2 *pTexture);
-        virtual void DrawTerrainPolygon(unsigned int uNumVertices, struct Polygon *a4, IDirect3DTexture2 *a5, bool transparent, bool clampAtTextureBorders);
-        virtual void DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, IDirect3DTexture2 *pHwTex, struct Texture_MM7 *pTex, int uPackedID, unsigned int uColor, int a8);
+        virtual void DrawPolygon(struct Polygon *a3);
+        virtual void DrawTerrainPolygon(unsigned int uNumVertices, struct Polygon *a4, bool transparent, bool clampAtTextureBorders);
+        virtual void DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8);
 
         virtual void MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle);
         virtual void MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle);
@@ -283,8 +286,8 @@ class Render : public IRender
         virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID);
         virtual void DrawOutdoorSkyD3D();
         //int DrawSkySW(struct Span *a1, Polygon *a2, int a3);
-        virtual void DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon, IDirect3DTexture2 *pTexture);
-        virtual void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon, IDirect3DTexture2 *pTexture);
+        virtual void DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon);
+        virtual void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon);
 
         virtual void PrepareDecorationsRenderList_ODM();
         virtual void DrawSpriteObjects_ODM();

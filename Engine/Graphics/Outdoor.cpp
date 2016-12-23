@@ -19,6 +19,8 @@
 #include "Engine/MMT.h"
 #include "Engine/stru6.h"
 
+#include "Engine/Serialization/LegacyImages.h"
+
 #include "Weather.h"
 #include "Sprites.h"
 #include "LightmapBuilder.h"
@@ -987,14 +989,11 @@ void OutdoorLocation::CreateDebugLocation()
     this->pFaceIDLIST[0] = 0;
 
     this->sky_texture_filename = pDefaultSkyTexture.data();
-    this->sSky_TextureID = pBitmaps_LOD->LoadTexture(this->sky_texture_filename.c_str());
+    this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
 
     this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
     //this->sMainTile_BitmapID = pBitmaps_LOD->LoadTexture(this->ground_tileset.c_str());
     this->main_tile_texture = assets->GetBitmap(this->ground_tileset);
-
-    if (this->sSky_TextureID == -1)
-        Error("Invalid Sky Tex Handle");
 }
 
 //----- (0047CF9C) --------------------------------------------------------
@@ -1195,10 +1194,16 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         memcpy(pBModels[i].pVertices.pVertices, pSrc, verticesSize);
         pSrc += verticesSize;
 
-        assert(sizeof(ODMFace) == 308);
-        uint facesSize = pBModels[i].uNumFaces * sizeof(ODMFace);
-        pBModels[i].pFaces = (ODMFace *)malloc(facesSize);
-        memcpy(pBModels[i].pFaces, pSrc, facesSize);
+        //assert(sizeof(ODMFace) == 308);
+        uint facesSize = pBModels[i].uNumFaces * sizeof(ODMFace_MM7);
+        pBModels[i].pFaces = new ODMFace[pBModels[i].uNumFaces];
+        auto face_data = (ODMFace_MM7 *)pSrc;
+        for (unsigned int j = 0; j < pBModels[i].uNumFaces; ++j)
+        {
+            pBModels[i].pFaces[j].Deserialize(face_data);
+            face_data++;
+        }
+        //memcpy(pBModels[i].pFaces, pSrc, facesSize);
         pSrc += facesSize;
 
         uint facesOrderingSize = pBModels[i].uNumFaces * sizeof(short);
@@ -1223,39 +1228,8 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         {
             const char* texFilename = &textureFilenames[j * 10];
 
-            if (!(pBModels[i].pFaces[j].uAttributes & FACE_DONT_CACHE_TEXTURE))
-            {
-                v62 = pBitmaps_LOD->LoadTexture(texFilename);
-                //        v63 = (ODMFace *)pFilename;
-                pBModels[i].pFaces[j].uTextureID = v62;
-                //v145 = (signed __int16)v62 != -1 ? &pBitmaps_LOD->pTextures[(signed __int16)v62] : 0;
-                //v108 = ((signed __int16)v62 != -1 ? pBitmaps_LOD->pTextures[(signed __int16)v62].palette_id1 : 36);
-                if ((signed __int16)v62 != -1)
-                    pBitmaps_LOD->pTextures[v62].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[v62].palette_id1);
-                //goto LABEL_69;
-                //goto LABEL_68;
-            }
-            else
-            {
-                //v61 = pTextureFrameTable->FindTextureByName(texFilename);
-                pBModels[i].pFaces[j].uTextureID = pTextureFrameTable->FindTextureByName(texFilename);
-                if (!pBModels[i].pFaces[j].uTextureID)
-                {
-                    v62 = pBitmaps_LOD->LoadTexture(texFilename);
-                    //v63 = (ODMFace *)pFilename;
-                    pBModels[i].pFaces[j].uAttributes &= ~FACE_DONT_CACHE_TEXTURE;
-                    //LABEL_68:
-                    pBModels[i].pFaces[j].uTextureID = v62;
-                    //v145 = (signed __int16)v62 != -1 ? &pBitmaps_LOD->pTextures[(signed __int16)v62] : 0;
-                    //v108 = ((signed __int16)v62 != -1 ? pBitmaps_LOD->pTextures[(signed __int16)v62].palette_id1 : 36);
-                    if ((signed __int16)v62 != -1)
-                        pBitmaps_LOD->pTextures[v62].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[v62].palette_id1);
-                    //goto LABEL_69;
-                }
-                else
-                    pTextureFrameTable->LoadAnimationSequenceAndPalettes(pBModels[i].pFaces[j].uTextureID);
-            }
-            //LABEL_69:
+            pBModels[i].pFaces[j].SetTexture(texFilename);
+
             if (pBModels[i].pFaces[j].sCogTriggeredID)
             {
                 if (pBModels[i].pFaces[j].HasEventHint())
@@ -1577,9 +1551,10 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
      // pBitmaps_LOD->pTextures[New_SKY_NIGHT_ID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[New_SKY_NIGHT_ID].palette_id1);
 
     //v101 = pBitmaps_LOD->LoadTexture(field_4F8);
-    sSky_TextureID = pBitmaps_LOD->LoadTexture(loc_time.sky_texture_name);
-    if (sSky_TextureID != -1)
-        pBitmaps_LOD->pTextures[sSky_TextureID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[sSky_TextureID].palette_id1);
+    //sSky_TextureID = pBitmaps_LOD->LoadTexture(loc_time.sky_texture_name);
+    //if (sSky_TextureID != -1)
+    //    pBitmaps_LOD->pTextures[sSky_TextureID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[sSky_TextureID].palette_id1);
+    this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
 
     pPaletteManager->RecalculateAll();
     pSoundList->LoadSound(SOUND_RunDirt, 0);			//For Dirt tyle(для звука хождения по грязи)
@@ -2198,29 +2173,97 @@ void OutdoorLocation::PrepareActorsDrawList()
     }
 }
 
+
+Texture *ODMFace::GetTexture()
+{
+    if (this->IsTextureFrameTable())
+    {
+        return pTextureFrameTable->GetFrameTexture((int)this->resource, pEventTimer->uTotalGameTimeElapsed);
+    }
+    else
+    {
+        return (Texture *)this->resource;
+    }
+}
+
+
+void ODMFace::SetTexture(const String &filename)
+{
+    if (this->IsTextureFrameTable())
+    {
+        this->resource = (void *)pTextureFrameTable->FindTextureByName(filename.c_str());
+        if (this->resource != (void *)-1)
+        {
+            return;
+        }
+
+        this->ToggleIsTextureFrameTable();
+    }
+
+    this->resource = assets->GetBitmap(filename);
+}
+
+
+bool ODMFace::Deserialize(ODMFace_MM7 *mm7)
+{
+    memcpy(&this->pFacePlane, &mm7->pFacePlane, sizeof(this->pFacePlane));
+    this->zCalc1 = mm7->zCalc1;
+    this->zCalc2 = mm7->zCalc2;
+    this->zCalc3 = mm7->zCalc3;
+    this->uAttributes = mm7->uAttributes;
+    memcpy(this->pVertexIDs, mm7->pVertexIDs, sizeof(this->pVertexIDs));
+    memcpy(this->pTextureUIDs, mm7->pTextureUIDs, sizeof(this->pTextureUIDs));
+    memcpy(this->pTextureVIDs, mm7->pTextureVIDs, sizeof(this->pTextureVIDs));
+    memcpy(this->pXInterceptDisplacements, mm7->pXInterceptDisplacements, sizeof(this->pXInterceptDisplacements));
+    memcpy(this->pYInterceptDisplacements, mm7->pYInterceptDisplacements, sizeof(this->pYInterceptDisplacements));
+    memcpy(this->pZInterceptDisplacements, mm7->pZInterceptDisplacements, sizeof(this->pZInterceptDisplacements));
+    this->resource = nullptr;
+    this->sTextureDeltaU = mm7->sTextureDeltaU;
+    this->sTextureDeltaV = mm7->sTextureDeltaV;
+    memcpy(&this->pBoundingBox, &mm7->pBoundingBox, sizeof(this->pBoundingBox));
+    this->sCogNumber = mm7->sCogNumber;
+    this->sCogTriggeredID = mm7->sCogTriggeredID;
+    this->sCogTriggerType = mm7->sCogTriggerType;
+    this->field_128 = mm7->field_128;
+    this->field_129 = mm7->field_129;
+    this->uGradientVertex1 = mm7->uGradientVertex1;
+    this->uGradientVertex2 = mm7->uGradientVertex2;
+    this->uGradientVertex3 = mm7->uGradientVertex3;
+    this->uGradientVertex4 = mm7->uGradientVertex4;
+    this->uNumVertices = mm7->uNumVertices;
+    this->uPolygonType = mm7->uPolygonType;
+    this->uShadeType = mm7->uShadeType;
+    this->bVisible = mm7->bVisible;
+    this->field_132 = mm7->field_132;
+    this->field_133 = mm7->field_133;
+
+    return true;
+}
+
 //----- (0044C1E8) --------------------------------------------------------
 bool ODMFace::HasEventHint()
 {
-  signed int event_index; // eax@1
-  _evt_raw* start_evt;
-  _evt_raw* end_evt;
+    signed int event_index; // eax@1
+    _evt_raw* start_evt;
+    _evt_raw* end_evt;
 
-  event_index = 0;
-  if ( (uLevelEVT_NumEvents - 1) <= 0 )
-    return false;
-  while ( pLevelEVT_Index[event_index].uEventID != this->sCogTriggeredID )
-  {
-    ++event_index;
-    if ( event_index >= (signed int)(uLevelEVT_NumEvents - 1) )
-      return false;
-  }
-  end_evt=(_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index+1].uEventOffsetInEVT];
-  start_evt=(_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
-  if ( (end_evt->_e_type != EVENT_Exit) || (start_evt->_e_type!= EVENT_MouseOver) )
-    return false;
-  else
-    return true;
+    event_index = 0;
+    if ((uLevelEVT_NumEvents - 1) <= 0)
+        return false;
+    while (pLevelEVT_Index[event_index].uEventID != this->sCogTriggeredID)
+    {
+        ++event_index;
+        if (event_index >= (signed int)(uLevelEVT_NumEvents - 1))
+            return false;
+    }
+    end_evt = (_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index + 1].uEventOffsetInEVT];
+    start_evt = (_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
+    if ((end_evt->_e_type != EVENT_Exit) || (start_evt->_e_type != EVENT_MouseOver))
+        return false;
+    else
+        return true;
 }
+
 //----- (0046D49E) --------------------------------------------------------
 int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, int *pIsOnWater, int *bmodel_pid, int bWaterWalk)
 {
