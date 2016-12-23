@@ -7913,9 +7913,9 @@ void Render::DrawBuildingsD3D()
                         poly->sTextureDeltaU = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaU;
                         poly->sTextureDeltaV = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaV;
 
-                        int flow_anim_timer = GetTickCount() >> 4;
-                        int flow_u_mod = ImageHelper::GetWidthLn2(poly->texture) - 1;
-                        int flow_v_mod = ImageHelper::GetHeightLn2(poly->texture) - 1;
+                        unsigned int flow_anim_timer = GetTickCount() >> 4;
+                        unsigned int flow_u_mod = ImageHelper::GetWidthLn2(poly->texture) - 1;
+                        unsigned int flow_v_mod = ImageHelper::GetHeightLn2(poly->texture) - 1;
 
                         if (pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z && abs(pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z) >= 59082)
                         {

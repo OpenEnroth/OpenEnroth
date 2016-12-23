@@ -502,7 +502,58 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **pixe
 
 
 
-bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format)
+bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **out_pixels, IMAGE_FORMAT *format)
+{
+    *width = 0;
+    *height = 0;
+    *out_pixels = nullptr;
+    *format = IMAGE_INVALID_FORMAT;
+
+    auto tex = lod->GetTexture(
+        lod->LoadTexture(this->resource_name.c_str())
+    );
+
+    int num_pixels = tex->uTextureWidth * tex->uTextureHeight;
+    int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R5G6B5);
+    auto pixels = new unsigned __int16[num_pixels];
+    if (pixels)
+    {
+        *width = tex->uTextureWidth;
+        *height = tex->uTextureHeight;
+        *format = IMAGE_FORMAT_R5G6B5;
+
+        if (tex->pBits & 2) // hardware bitmap
+        {
+            HWLTexture* hwl = render->LoadHwlBitmap(this->resource_name.c_str());
+            if (hwl)
+            {
+                // linear scaling
+                for (int s = 0; s < tex->uTextureHeight; ++s)
+                {
+                    for (int t = 0; t < tex->uTextureWidth; ++t)
+                    {
+                        unsigned int resampled_x = t * hwl->uWidth / tex->uTextureWidth,
+                                     resampled_y = s * hwl->uHeight / tex->uTextureHeight;
+                        unsigned short sample = hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
+
+                        pixels[s * tex->uTextureWidth + t] = sample;
+                    }
+                }
+
+                delete[] hwl->pPixels;
+                delete hwl;
+            }
+
+            *out_pixels = pixels;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+bool Bitmaps_LOD_HWL_Loader::Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format)
 {
     *width = 0;
     *height = 0;

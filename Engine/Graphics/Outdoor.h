@@ -105,8 +105,8 @@ struct ODMFace
     int zCalc3;
     unsigned int uAttributes;
     unsigned __int16 pVertexIDs[20];
-    unsigned __int16 pTextureUIDs[20];
-    unsigned __int16 pTextureVIDs[20];
+    __int16 pTextureUIDs[20];
+    __int16 pTextureVIDs[20];
     __int16 pXInterceptDisplacements[20];
     __int16 pYInterceptDisplacements[20];
     __int16 pZInterceptDisplacements[20];
