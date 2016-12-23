@@ -522,6 +522,8 @@ struct BLVFace  //60h
     void SetTexture(const String &filename);
     Texture *GetTexture();
 
+    bool Deserialize(struct BLVFace_MM7 *);
+
     inline bool Invisible() const       { return (uAttributes & FACE_INVISIBLE) != 0; }
     inline bool Visible() const         { return !Invisible(); }
     inline bool Portal() const          { return (uAttributes & FACE_PORTAL) != 0; }

@@ -45,6 +45,34 @@ struct ODMFace_MM7
 };
 #pragma pack(pop)
 
+/*   93 */
+#pragma pack(push, 1)
+struct BLVFace_MM7  //60h
+{
+    struct Plane_float_ pFacePlane;
+    struct Plane_int_ pFacePlane_old;
+    int zCalc1;
+    int zCalc2;
+    int zCalc3;
+    unsigned int uAttributes;
+    unsigned __int16 *pVertexIDs;
+    signed __int16 *pXInterceptDisplacements;
+    signed __int16 *pYInterceptDisplacements;
+    signed __int16 *pZInterceptDisplacements;
+    signed __int16   *pVertexUIDs;
+    signed __int16   *pVertexVIDs;
+    unsigned __int16  uFaceExtraID;
+    unsigned __int16  uBitmapID;
+    unsigned __int16  uSectorID;
+    __int16 uBackSectorID;
+    struct BBox_short_ pBounding;
+    unsigned __int8 uPolygonType;
+    unsigned __int8 uNumVertices;
+    char field_5E;
+    char field_5F;
+};
+#pragma pack(pop)
+
 
 /*   48 */
 #pragma pack(push, 1)

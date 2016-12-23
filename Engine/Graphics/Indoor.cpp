@@ -12,6 +12,8 @@
 #include "Engine/stru6.h"
 #include "Engine/LOD.h"
 
+#include "Engine/Serialization/LegacyImages.h"
+
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -74,7 +76,7 @@ unsigned __int16 pDoorSoundIDsByLocationID[78] =
 
 
 std::array<const char *, 11> _4E6BDC_loc_names=
-    {
+{
     "mdt12.blv",
     "d18.blv",
     "mdt14.blv",
@@ -86,7 +88,35 @@ std::array<const char *, 11> _4E6BDC_loc_names=
     "mdt09.blv",
     "mdt15.blv",
     "mdt11.blv"
-    };
+};
+
+
+bool BLVFace::Deserialize(BLVFace_MM7 *data)
+{
+    memcpy(&this->pFacePlane, &data->pFacePlane, sizeof(this->pFacePlane));
+    memcpy(&this->pFacePlane_old, &data->pFacePlane_old, sizeof(this->pFacePlane_old));
+    this->zCalc1 = data->zCalc1;
+    this->zCalc2 = data->zCalc2;
+    this->zCalc3 = data->zCalc3;
+    this->uAttributes = data->uAttributes;
+    this->pVertexIDs = data->pVertexIDs;
+    this->pXInterceptDisplacements = data->pXInterceptDisplacements;
+    this->pYInterceptDisplacements = data->pYInterceptDisplacements;
+    this->pZInterceptDisplacements = data->pZInterceptDisplacements;
+    this->pVertexUIDs = data->pVertexUIDs;
+    this->pVertexVIDs = data->pVertexVIDs;
+    this->uFaceExtraID = data->uFaceExtraID;
+    //unsigned __int16  uBitmapID;
+    this->uSectorID = data->uSectorID;
+    this->uBackSectorID = data->uBackSectorID;
+    memcpy(&this->pBounding, &data->pBounding, sizeof(this->pBounding));
+    this->uPolygonType = (PolygonType)data->uPolygonType;
+    this->uNumVertices = data->uNumVertices;
+    this->field_5E = data->field_5E;
+    this->field_5F = data->field_5F;
+
+    return true;
+}
 
 
 //----- (0043F39E) --------------------------------------------------------
@@ -892,13 +922,21 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
     pGameLoadingUI_ProgressBar->Progress();
 
     memcpy(&uNumFaces, pData += uNumVertices * sizeof(Vec3_short_), 4);
+    pData += 4;
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(pFaces, pData += 4, uNumFaces * sizeof(BLVFace));
-    pLFaces = (unsigned __int16 *)malloc(blv.uFaces_fdata_Size);
+    //memcpy(pFaces, pData, uNumFaces * sizeof(BLVFace));
+    auto face_data = (BLVFace_MM7 *)pData;
+    pFaces = new BLVFace[uNumFaces];
+    for (unsigned int i = 0; i < uNumFaces; ++i)
+    {
+        pFaces[i].Deserialize(face_data);
+        face_data++;
+    }
 
-    memcpy(pLFaces, pData += uNumFaces * sizeof(BLVFace), blv.uFaces_fdata_Size);
+    pLFaces = (unsigned __int16 *)malloc(blv.uFaces_fdata_Size);
+    memcpy(pLFaces, pData += uNumFaces * sizeof(BLVFace_MM7), blv.uFaces_fdata_Size);
 
     for (uint i = 0, j = 0; i < uNumFaces; ++i)
     {
