@@ -48,7 +48,7 @@ void RenderD3D11::BltBackToFontFast(int a2, int a3, RECT *a4) {__debugbreak();}
 void RenderD3D11::BeginSceneD3D() {}
 unsigned int RenderD3D11::GetActorTintColor(float a2, int tint, int a4, int a5, RenderBillboard *a6) {__debugbreak(); return 0;}
 void RenderD3D11::DrawPolygon(struct Polygon *a3) {__debugbreak();}
-void RenderD3D11::DrawTerrainPolygon(unsigned int uNumVertices, struct Polygon *a4, bool transparent, bool clampAtTextureBorders) {__debugbreak();}
+void RenderD3D11::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders) {__debugbreak();}
 void RenderD3D11::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) {__debugbreak();}
 void RenderD3D11::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
 void RenderD3D11::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle) {__debugbreak();}

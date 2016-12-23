@@ -434,7 +434,7 @@ void Render::RenderTerrainD3D() // New function
                 }
                 pTilePolygon->texture = tile_texture;
 
-                render->DrawTerrainPolygon(pTilePolygon->uNumVertices, pTilePolygon, transparent, true);
+                render->DrawTerrainPolygon(pTilePolygon, transparent, true);
             }
         }
     }
@@ -444,17 +444,13 @@ void Render::RenderTerrainD3D() // New function
 void Render::DrawBorderTiles(struct Polygon *poly)
 {
     struct Polygon poly_clone;
-    memcpy(&poly_clone, &poly, sizeof(poly_clone));
+    memcpy(&poly_clone, poly, sizeof(poly_clone));
     poly_clone.texture = this->hd_water_tile_anim[this->hd_water_current_frame];
 
     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
-    DrawTerrainPolygon(
-        poly->uNumVertices, &poly_clone,
-        false, true
-    );
+    DrawTerrainPolygon(&poly_clone, true, true);
 
     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
-    //DrawTerrainPolygon(poly->uNumVertices, poly, pBitmaps_LOD->pHardwareTextures[poly->uTileBitmapID], true, true);
 }
 
 
@@ -1959,17 +1955,6 @@ void Render::DrawPolygon(struct Polygon *a3)
     auto a4 = a3->pODMFace;
     auto uNumVertices = a3->uNumVertices;
 
-    Texture *tex = nullptr;
-    if (a3->IsWater() && !a3->IsWaterAnimDisabled())
-    {
-        tex = render->hd_water_tile_anim[render->hd_water_current_frame];
-    }
-    else
-    {
-        tex = a3->texture;
-    }
-
-
     v6 = 0;
     if (this->uNumD3DSceneBegins && (signed int)uNumVertices >= 3)
     {
@@ -2024,7 +2009,7 @@ void Render::DrawPolygon(struct Polygon *a3)
                         d3d_vertex_buffer[i].diffuse = color;
                 }
 
-                pRenderD3D->pDevice->SetTexture(0, tex->GetDirect3DTexture());
+                pRenderD3D->pDevice->SetTexture(0, a3->texture->GetDirect3DTexture());
                 pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
                     D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                     d3d_vertex_buffer,
@@ -2069,7 +2054,7 @@ void Render::DrawPolygon(struct Polygon *a3)
                 {
                     d3d_vertex_buffer[i].diffuse = a2;
                 }
-                ErrD3D(pRenderD3D->pDevice->SetTexture(0, tex->GetDirect3DTexture()));
+                ErrD3D(pRenderD3D->pDevice->SetTexture(0, a3->texture->GetDirect3DTexture()));
                 ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
                 if (!render->bUsingSpecular)
                     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
@@ -4449,11 +4434,13 @@ unsigned int Render::GetActorTintColor(float a2, int tint, int a4, int a5, Rende
 }
 
 //----- (004A26BC) --------------------------------------------------------
-void Render::DrawTerrainPolygon(unsigned int uNumVertices, struct Polygon *a4, bool transparent, bool clampAtTextureBorders)
+void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders)
 {
     int v11; // eax@5
     int v20; // eax@14
     unsigned int v45; // eax@28
+
+    unsigned int uNumVertices = a4->uNumVertices;
 
     if (!this->uNumD3DSceneBegins)
         return;
@@ -7893,7 +7880,6 @@ void Render::DrawBuildingsD3D()
                         poly->flags = 0;
                         poly->field_32 = 0;
                         poly->texture = pOutdoor->pBModels[model_id].pFaces[face_id].GetTexture();
-                        auto face_texture = poly->texture;
 
                         if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLUID)
                             poly->flags |= 2;
@@ -7914,8 +7900,8 @@ void Render::DrawBuildingsD3D()
                         poly->sTextureDeltaV = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaV;
 
                         unsigned int flow_anim_timer = GetTickCount() >> 4;
-                        unsigned int flow_u_mod = ImageHelper::GetWidthLn2(poly->texture) - 1;
-                        unsigned int flow_v_mod = ImageHelper::GetHeightLn2(poly->texture) - 1;
+                        unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
+                        unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
 
                         if (pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z && abs(pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z) >= 59082)
                         {
@@ -7945,8 +7931,8 @@ void Render::DrawBuildingsD3D()
                             array_73D150[vertex_id - 1].vWorldPosition.x = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].x;
                             array_73D150[vertex_id - 1].vWorldPosition.y = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].y;
                             array_73D150[vertex_id - 1].vWorldPosition.z = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].z;
-                            array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureUIDs[vertex_id - 1]) * (1.0 / (double)face_texture->GetWidth());
-                            array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureVIDs[vertex_id - 1]) * (1.0 / (double)face_texture->GetHeight());
+                            array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureUIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetWidth());
+                            array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureVIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetHeight());
                         }
                         for (uint i = 1; i <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; i++)
                         {
@@ -8024,6 +8010,14 @@ void Render::DrawBuildingsD3D()
 
                             if (poly->uNumVertices)
                             {
+                                if (poly->IsWater())
+                                {
+                                    if (poly->IsWaterAnimDisabled())
+                                        poly->texture = render->hd_water_tile_anim[0];
+                                    else
+                                        poly->texture = render->hd_water_tile_anim[render->hd_water_current_frame];
+                                }
+
                                 render->DrawPolygon(poly);
                             }
                         }
