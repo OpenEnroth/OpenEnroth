@@ -190,12 +190,11 @@ bool Chest::Open(signed int uChestID)
 void Chest::ChestUI_WritePointedObjectStatusString()
 {
     int v1; // ecx@2
-    POINT cursor; // [sp+8h] [bp-8h]@1
 
-    pMouse->GetCursorPos(&cursor);
-    if (cursor.y < 350)
+    Point pt = pMouse->GetCursorPos();
+    if (pt.y < 350)
     {
-        v1 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]];
+        v1 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]];
         if (v1 != 0 && v1 != -65536)
         {
             if (v1)
@@ -347,7 +346,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, signed int uChestID)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
             return 0;
         }
-        HIWORD(v8) = 0;
+        HEXRAYS_HIWORD(v8) = 0;
 
         auto texture = assets->GetImage_16BitColorKey(v4->GetIconName(), 0x7FF);
 
@@ -369,9 +368,9 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, signed int uChestID)
                 if ((signed int)v12 > 0)
                 {
                     v14 = &pChests[uChestID].pInventoryIndices[v21 + v23];
-                    LOWORD(v8) = -1 - v21;
+                    HEXRAYS_LOWORD(v8) = -1 - v21;
                     v8 <<= 16;
-                    LOWORD(v8) = -1 - v21;
+                    HEXRAYS_LOWORD(v8) = -1 - v21;
                     memset32(v14, v8, v12 >> 1);
                     v15 = (int)((char *)v14 + 4 * (v12 >> 1));
                     for (i = v12 & 1; i; --i)
@@ -681,7 +680,6 @@ void Chest::OnChestLeftClick()
     int v2; // eax@2
     int v3; // ebx@4
     int v4; // esi@6
-    POINT cursor; // [sp+84h] [bp-8h]@2
 
     SpriteObject v6; // [sp+Ch] [bp-80h]@1
     if (pParty->pPickedItem.uItemID)
@@ -691,8 +689,8 @@ void Chest::OnChestLeftClick()
     }
     else
     {
-        pMouse->GetCursorPos(&cursor);
-        v2 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
+        Point pt = pMouse->GetCursorPos();
+        v2 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
         if (v2)
         {
             if (v2)

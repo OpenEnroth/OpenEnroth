@@ -6,14 +6,18 @@
 #include "lib\legacy_dx\d3d.h"
 #include <d3d11.h>
 
+// pesky win macros
+#ifdef DrawText
+    #undef DrawText
+#endif
+
 #include "Engine/Strings.h"
+#include "Engine/VectorTypes.h"
 
-#include "OSWindow.h"
-#include "RenderStruct.h"
+#include "Engine/Graphics/IRender.h"
 
-#include "../VectorTypes.h"
+#include "Platform/OSWindow.h"
 
-#include "IRender.h"
 
 class Image;
 class RenderD3D11 : public IRender
@@ -21,8 +25,6 @@ class RenderD3D11 : public IRender
     public:
         RenderD3D11();
         virtual ~RenderD3D11();
-
-        static RenderD3D11 *Create() { return new RenderD3D11; }
 
         virtual bool Initialize(OSWindow *window);
 
@@ -44,15 +46,13 @@ class RenderD3D11 : public IRender
         virtual void ClearZBuffer(int a2, int a3);
         virtual void SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW);
         virtual bool LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags);
-        virtual void GetTargetPixelFormat(DDPIXELFORMAT *pOut);
         virtual void LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow);
         virtual void UnlockBackBuffer();
         virtual void LockFrontBuffer(void **pOutSurface, unsigned int *pOutPixelsPerRow);
         virtual void UnlockFrontBuffer();
         virtual void RestoreFrontBuffer();
         virtual void RestoreBackBuffer();
-        virtual void BltToFront(RECT *pDstRect, IDirectDrawSurface *pSrcSurface, RECT *pSrcRect, unsigned int uBltFlags);
-        virtual void BltBackToFontFast(int a2, int a3, RECT *pSrcRect);
+        virtual void BltBackToFontFast(int a2, int a3, Rect *pSrcRect);
         virtual void BeginSceneD3D();
 
         virtual unsigned int GetActorTintColor(float a2, int tint, int a4, int a5, RenderBillboard *a6);
@@ -61,8 +61,8 @@ class RenderD3D11 : public IRender
         virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders);
         virtual void DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8);
 
-        virtual void MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle);
-        virtual void MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle);
+        virtual void MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *gapi_texture, unsigned int uDiffuse, int angle);
+        virtual void MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *gapi_texture, unsigned int uDiffuse, int angle);
 
         virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         virtual void DrawBillboard_Indoor(RenderBillboardTransform_local0 *pSoftBillboard, Sprite *pSprite, int dimming_level);
@@ -70,8 +70,8 @@ class RenderD3D11 : public IRender
         virtual void TransformBillboardsAndSetPalettesODM();
         virtual void DrawBillboardList_BLV();
 
-        virtual void DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, IDirect3DTexture2 *a9);
-        virtual bool LoadTexture(const char *pName, unsigned int bMipMaps, IDirectDrawSurface4 **pOutSurface, IDirect3DTexture2 **pOutTexture);
+        virtual void DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture);
+        virtual bool LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture);
         virtual bool MoveSpriteToDevice(Sprite *pSprite);
 
         virtual void BeginScene();
@@ -137,10 +137,10 @@ class RenderD3D11 : public IRender
         virtual void do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff);
         virtual void DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices);
 
-        virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, IDirect3DTexture2 *texture);
+        virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, void *texture);
 
-        virtual void am_Blt_Copy(RECT *pSrcRect, POINT *pTargetXY, int a3);
-        virtual void am_Blt_Chroma(RECT *pSrcRect, POINT *pTargetPoint, int a3, int blend_mode);
+        virtual void am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY, int a3);
+        virtual void am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode);
 
     public:
         virtual void WritePixel16(int x, int y, unsigned __int16 color)
@@ -156,8 +156,8 @@ class RenderD3D11 : public IRender
         virtual void ToggleTint() {}
         virtual void ToggleColoredLights() {}
 
-        virtual unsigned int GetRenderWidth() { return window->GetWidth(); }
-        virtual unsigned int GetRenderHeight() { return window->GetHeight(); }
+        virtual unsigned int GetRenderWidth() const;
+        virtual unsigned int GetRenderHeight() const;
 
         virtual void Sub01();
 
@@ -190,7 +190,7 @@ class RenderD3D11 : public IRender
         ID3D11BlendState        *ui_blend_solid;
         ID3D11BlendState        *ui_blend_alpha;
         ID3D11RasterizerState   *ui_rasterizer;
-        D3D11_RECT               ui_clip_rect;
+        D3D11_RECT              *ui_clip_rect;
 
         RenderHWLContainer pD3DBitmaps;
         RenderHWLContainer pD3DSprites;

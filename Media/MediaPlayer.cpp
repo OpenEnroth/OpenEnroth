@@ -1,7 +1,3 @@
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
-#include <crtdbg.h>
 #include <vector>
 #include <deque>
 
@@ -10,7 +6,7 @@
 #include "Engine/Time.h"
 #include "Engine/MMT.h"
 
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -733,239 +729,248 @@ class Track: public Media::ITrack
     OpenALSoundProvider::TrackBuffer *device_buffer;
 };
 
-class Movie: public Media::IMovie
+class Movie : public Media::IMovie
 {
-  public:
+public:
     inline Movie()
     {
-      this->movie_filename[0] = 0;
-      this->width = 0;
-      this->height = 0;
-      this->format_ctx = nullptr;
-      this->end_of_file = false;
-      this->playback_time = 0.0;
+        this->movie_filename[0] = 0;
+        this->width = 0;
+        this->height = 0;
+        this->format_ctx = nullptr;
+        this->end_of_file = false;
+        this->playback_time = 0.0;
 
-      this->num_audio_frames = 0;
-      this->num_audio_samples = 0;
+        this->num_audio_frames = 0;
+        this->num_audio_samples = 0;
 
-      this->last_resampled_frame_num = -1;
-      memset(last_resampled_frame_data, 0, sizeof(last_resampled_frame_data));
-      memset(last_resampled_frame_linesize, 0, sizeof(last_resampled_frame_linesize));
+        this->last_resampled_frame_num = -1;
+        memset(last_resampled_frame_data, 0, sizeof(last_resampled_frame_data));
+        memset(last_resampled_frame_linesize, 0, sizeof(last_resampled_frame_linesize));
 
-      audio_data_in_device = nullptr;
-      decoding_packet = nullptr;
-	  ioBuffer = nullptr;
-	  format_ctx = nullptr;
-	  avioContext = nullptr;
+        audio_data_in_device = nullptr;
+        decoding_packet = nullptr;
+        ioBuffer = nullptr;
+        format_ctx = nullptr;
+        avioContext = nullptr;
     }
 
     virtual ~Movie() {}
- 
+
     virtual void Release()
     {
-      ReleaseAVCodec();
+        ReleaseAVCodec();
 
-      if (audio_data_in_device)
-        provider->DeleteStreamingTrack(&audio_data_in_device);
+        if (audio_data_in_device)
+            provider->DeleteStreamingTrack(&audio_data_in_device);
     }
 
     inline void ReleaseAVCodec()
     {
-      audio.Release();
-      video.Release();
+        audio.Release();
+        video.Release();
 
-      if (format_ctx)
-      {
-		// Close the video file
-        av_close_input_file(format_ctx);
-		Log::Warning(L"close video format context file\n");
-        format_ctx = nullptr;
-	  }
-	  if(avioContext)
-	  {
-		av_free(avioContext);
-		avioContext = nullptr;
-	  }
-	  if (ioBuffer)
-	  {
-		//av_free(ioBuffer);
-		ioBuffer = nullptr;
-      }
-	  av_free_packet(decoding_packet);
-	  delete decoding_packet;
-      avcodec_free_frame(&decoding_frame);
-	  delete decoding_frame;
-      if (last_resampled_frame_data[0])
-        av_freep(&last_resampled_frame_data[0]);
+        if (format_ctx)
+        {
+            // Close the video file
+            av_close_input_file(format_ctx);
+            Log::Warning(L"close video format context file\n");
+            format_ctx = nullptr;
+        }
+        if (avioContext)
+        {
+            av_free(avioContext);
+            avioContext = nullptr;
+        }
+        if (ioBuffer)
+        {
+            //av_free(ioBuffer);
+            ioBuffer = nullptr;
+        }
+        av_free_packet(decoding_packet);
+        delete decoding_packet;
+        avcodec_free_frame(&decoding_frame);
+        delete decoding_frame;
+        if (last_resampled_frame_data[0])
+            av_freep(&last_resampled_frame_data[0]);
 
     }
 
     bool Load(const wchar_t *filename, int dst_width, int dst_height, int cache_ms)	//Загрузка
     {
-      char filenamea[1024];
-      sprintf(filenamea, "%S", filename);
-      sprintf(movie_filename, "%S", filename);
+        char filenamea[1024];
+        sprintf(filenamea, "%S", filename);
+        sprintf(movie_filename, "%S", filename);
 
-      width = dst_width;
-      height = dst_height;
-      // Open video file
-      if (avformat_open_input(&format_ctx, filenamea, nullptr, nullptr) >= 0)
-      {
-        // Retrieve stream information
-        if (avformat_find_stream_info(format_ctx, nullptr) >= 0)
+        width = dst_width;
+        height = dst_height;
+        // Open video file
+        if (avformat_open_input(&format_ctx, filenamea, nullptr, nullptr) >= 0)
         {
-          // Dump information about file onto standard error
-          av_dump_format(format_ctx, 0, filenamea, 0);
+            // Retrieve stream information
+            if (avformat_find_stream_info(format_ctx, nullptr) >= 0)
+            {
+                // Dump information about file onto standard error
+                av_dump_format(format_ctx, 0, filenamea, 0);
 
-          /*if (!av_open_audio_stream(format_ctx, &audio))
-          {
-            Error("Cannot open audio stream: %s", filenamea);
+                /*if (!av_open_audio_stream(format_ctx, &audio))
+                {
+                  Error("Cannot open audio stream: %s", filenamea);
+                  return Release(), false;
+                }*/
+                av_open_audio_stream(format_ctx, &audio);
+
+                if (!av_open_video_stream(format_ctx, &video))
+                {
+                    Error("Cannot open video stream: %s", filenamea);
+                    return Release(), false;
+                }
+
+                //Ritor1: include 
+                if (_stricmp("binkvideo", video.dec->name))
+                {
+                    pMediaPlayer->current_movie_width = video.dec_ctx->width;
+                    pMediaPlayer->current_movie_height = video.dec_ctx->height;
+                }
+                else
+                {
+                    pMediaPlayer->current_movie_width = width;
+                    pMediaPlayer->current_movie_height = height;
+                }
+                //
+                decoding_packet = new AVPacket;
+                av_init_packet(decoding_packet);
+
+                // Allocate video frame
+                decoding_frame = avcodec_alloc_frame();
+
+                if (audio.stream_idx >= 0)
+                    audio_data_in_device = provider->CreateStreamingTrack16(audio.dec_ctx->channels, audio.dec_ctx->sample_rate, 2);
+                return true;
+            }
+            fprintf(stderr, "ffmpeg: Unable to find stream info\n");
             return Release(), false;
-          }*/
-		  av_open_audio_stream(format_ctx, &audio);
-          
-          if (!av_open_video_stream(format_ctx, &video))
-          {
-            Error("Cannot open video stream: %s", filenamea);
-            return Release(), false;
-          }
-
-          //Ritor1: include 
-		  if (_stricmp("binkvideo", video.dec->name) ) 
-		  {
-			pMediaPlayer->current_movie_width = video.dec_ctx->width;
-			pMediaPlayer->current_movie_height = video.dec_ctx->height;
-		  }
-		  else
-		  {
-			pMediaPlayer->current_movie_width = width;
-			pMediaPlayer->current_movie_height = height;
-	      }
-		  //
-          decoding_packet = new AVPacket;
-          av_init_packet(decoding_packet);
-      
-		  // Allocate video frame
-          decoding_frame = avcodec_alloc_frame();
-
-		  if (audio.stream_idx >= 0)
-            audio_data_in_device = provider->CreateStreamingTrack16(audio.dec_ctx->channels, audio.dec_ctx->sample_rate, 2);
-          return true;
         }
-        fprintf(stderr, "ffmpeg: Unable to find stream info\n");
-        return Release(), false; 
-      }
-      fprintf(stderr, "ffmpeg: Unable to open input file\n");
-      return Release(), false;
+        fprintf(stderr, "ffmpeg: Unable to open input file\n");
+        return Release(), false;
     }
 
-	bool LoadFromLOD(HANDLE h, int readFunction(void*, uint8_t*, int), int64_t seekFunction(void*, int64_t, int), int width, int height)
-	{
-		if (!ioBuffer)
-			ioBuffer = (unsigned char *)av_malloc(0x4000 + FF_INPUT_BUFFER_PADDING_SIZE); // can get av_free()ed by libav
-		if (!avioContext)
-			avioContext = avio_alloc_context(ioBuffer, 0x4000, 0, h, readFunction, NULL, seekFunction);
-		if (!format_ctx)
-			format_ctx = avformat_alloc_context();
-		format_ctx->pb = avioContext;
-		return Load(L"dummyFilename", width, height, 0);
-	}
+    bool LoadFromLOD(FILE *f, int readFunction(FILE *, uint8_t*, int), int64_t seekFunction(FILE *, int64_t, int), int width, int height)
+    {
+        if (!ioBuffer)
+            ioBuffer = (unsigned char *)av_malloc(0x4000 + FF_INPUT_BUFFER_PADDING_SIZE); // can get av_free()ed by libav
+        if (!avioContext)
+        {
+            avioContext = avio_alloc_context(
+                ioBuffer,
+                0x4000,
+                0,
+                f,
+                (int (*)(void*, uint8_t*, int))readFunction,
+                NULL,
+                (int64_t (*)(void*, int64_t, int))seekFunction
+            );
+        }
+        if (!format_ctx)
+            format_ctx = avformat_alloc_context();
+        format_ctx->pb = avioContext;
+        return Load(L"dummyFilename", width, height, 0);
+    }
 
     virtual void GetNextFrame(double dt, void *dst_surface)
     {
-      playback_time += dt;
+        playback_time += dt;
 
-      AVPacket *avpacket = decoding_packet;
-      AVFrame *avframe = decoding_frame;
+        AVPacket *avpacket = decoding_packet;
+        AVFrame *avframe = decoding_frame;
 
-      avcodec_get_frame_defaults(avframe);
+        avcodec_get_frame_defaults(avframe);
 
-      int desired_frame_number = floor(playback_time * video.dec_ctx->time_base.den / video.dec_ctx->time_base.num + 0.5);
-      if (last_resampled_frame_num == desired_frame_number)
-      {
-        memcpy(dst_surface, last_resampled_frame_data[0], pMediaPlayer->current_movie_height * last_resampled_frame_linesize[0]);
-        return;
-      }
-
-      volatile int frameFinished = false;
-
-      // keep reading packets until we hit the end or find a video packet
-      do
-      {
-        if (pMediaPlayer->loop_current_file)
+        int desired_frame_number = floor(playback_time * video.dec_ctx->time_base.den / video.dec_ctx->time_base.num + 0.5);
+        if (last_resampled_frame_num == desired_frame_number)
         {
-          //Now seek back to the beginning of the stream
-          if (video.dec_ctx->frame_number >= video.stream->duration - 1 )
-            pMediaPlayer->bPlaying_Movie = false;
-        }
-        if (av_read_frame(format_ctx, avpacket) < 0)
-        {
-          // probably movie is finished
-          pMediaPlayer->bPlaying_Movie = false;
-          av_free_packet(avpacket);
-		  return;
-        }
-		// Is this a packet from the video stream?
-        // audio packet - queue into playing
-        if (avpacket->stream_index == audio.stream_idx)
-        {
-          MemoryStream audio_data;
-          if (DecodeAudioFrame(audio.dec_ctx, avpacket, avframe, &audio_data, &num_audio_samples))
-            provider->Stream16(audio_data_in_device, num_audio_samples, audio_data.Ptr());
-          //continue;
+            memcpy(dst_surface, last_resampled_frame_data[0], pMediaPlayer->current_movie_height * last_resampled_frame_linesize[0]);
+            return;
         }
 
-		// Decode video frame
-        // video packet - decode & maybe show
-        else if (avpacket->stream_index == video.stream_idx)
+        volatile int frameFinished = false;
+
+        // keep reading packets until we hit the end or find a video packet
+        do
         {
-          do
-          {
-            if (avcodec_decode_video2(video.dec_ctx, avframe, (int *)&frameFinished, avpacket) < 0)
-              __debugbreak();
-          } while (!frameFinished);
-        }
-        else __debugbreak(); // unknown stream
-      }
-      while (avpacket->stream_index != video.stream_idx ||
-               avpacket->pts != desired_frame_number);
+            if (pMediaPlayer->loop_current_file)
+            {
+                //Now seek back to the beginning of the stream
+                if (video.dec_ctx->frame_number >= video.stream->duration - 1)
+                    pMediaPlayer->bPlaying_Movie = false;
+            }
+            if (av_read_frame(format_ctx, avpacket) < 0)
+            {
+                // probably movie is finished
+                pMediaPlayer->bPlaying_Movie = false;
+                av_free_packet(avpacket);
+                return;
+            }
+            // Is this a packet from the video stream?
+            // audio packet - queue into playing
+            if (avpacket->stream_index == audio.stream_idx)
+            {
+                MemoryStream audio_data;
+                if (DecodeAudioFrame(audio.dec_ctx, avpacket, avframe, &audio_data, &num_audio_samples))
+                    provider->Stream16(audio_data_in_device, num_audio_samples, audio_data.Ptr());
+                //continue;
+            }
 
-      if (frameFinished)
-      {
-        if (last_resampled_frame_data[0])
-          av_freep(&last_resampled_frame_data[0]);
+            // Decode video frame
+            // video packet - decode & maybe show
+            else if (avpacket->stream_index == video.stream_idx)
+            {
+                do
+                {
+                    if (avcodec_decode_video2(video.dec_ctx, avframe, (int *)&frameFinished, avpacket) < 0)
+                        __debugbreak();
+                } while (!frameFinished);
+            }
+            else __debugbreak(); // unknown stream
+        } while (avpacket->stream_index != video.stream_idx ||
+            avpacket->pts != desired_frame_number);
 
-        AVPixelFormat  rescaled_format = AV_PIX_FMT_RGB32;
-        uint8_t       *rescaled_data[4] = {nullptr, nullptr, nullptr, nullptr};
-        int            rescaled_linesize[4] = {0, 0, 0, 0};
-
-        if (av_image_alloc(rescaled_data, rescaled_linesize, pMediaPlayer->current_movie_width, pMediaPlayer->current_movie_height, rescaled_format, 1) >= 0)
+        if (frameFinished)
         {
-          SwsContext *converter = sws_getContext(avframe->width, avframe->height, (AVPixelFormat)avframe->format,
-                                               pMediaPlayer->current_movie_width, pMediaPlayer->current_movie_height, rescaled_format,
-                                               SWS_BICUBIC, nullptr, nullptr, nullptr);
-          sws_scale(converter, avframe->data, avframe->linesize, 0, avframe->height, rescaled_data, rescaled_linesize);
-          sws_freeContext(converter);
+            if (last_resampled_frame_data[0])
+                av_freep(&last_resampled_frame_data[0]);
 
-          memcpy(dst_surface, rescaled_data[0], pMediaPlayer->current_movie_height * rescaled_linesize[0]);
+            AVPixelFormat  rescaled_format = AV_PIX_FMT_RGB32;
+            uint8_t       *rescaled_data[4] = { nullptr, nullptr, nullptr, nullptr };
+            int            rescaled_linesize[4] = { 0, 0, 0, 0 };
 
-          last_resampled_frame_num = desired_frame_number;
-          memcpy(last_resampled_frame_data, rescaled_data, sizeof(rescaled_data));
-          memcpy(last_resampled_frame_linesize, rescaled_linesize, sizeof(rescaled_linesize));
+            if (av_image_alloc(rescaled_data, rescaled_linesize, pMediaPlayer->current_movie_width, pMediaPlayer->current_movie_height, rescaled_format, 1) >= 0)
+            {
+                SwsContext *converter = sws_getContext(avframe->width, avframe->height, (AVPixelFormat)avframe->format,
+                    pMediaPlayer->current_movie_width, pMediaPlayer->current_movie_height, rescaled_format,
+                    SWS_BICUBIC, nullptr, nullptr, nullptr);
+                sws_scale(converter, avframe->data, avframe->linesize, 0, avframe->height, rescaled_data, rescaled_linesize);
+                sws_freeContext(converter);
+
+                memcpy(dst_surface, rescaled_data[0], pMediaPlayer->current_movie_height * rescaled_linesize[0]);
+
+                last_resampled_frame_num = desired_frame_number;
+                memcpy(last_resampled_frame_data, rescaled_data, sizeof(rescaled_data));
+                memcpy(last_resampled_frame_linesize, rescaled_linesize, sizeof(rescaled_linesize));
+            }
         }
-      }
-      else
-        memset(dst_surface, 0, width * pMediaPlayer->current_movie_height * 4);
+        else
+            memset(dst_surface, 0, width * pMediaPlayer->current_movie_height * 4);
 
-      // Free the packet that was allocated by av_read_frame
-      av_free_packet(avpacket);
+        // Free the packet that was allocated by av_read_frame
+        av_free_packet(avpacket);
     }
 
     virtual void Play()
     {
     }
 
-  protected:
+protected:
     char             movie_filename[256];
     int              width;
     int              height;
@@ -980,15 +985,15 @@ class Movie: public Media::IMovie
     AVAudioStream   audio;
     int             num_audio_frames;
     int             num_audio_samples;
-	unsigned char  *ioBuffer;
-	AVIOContext    *avioContext;
+    unsigned char  *ioBuffer;
+    AVIOContext    *avioContext;
     OpenALSoundProvider::StreamingTrackBuffer *audio_data_in_device;
 
     AVVideoStream   video;
     int             last_resampled_frame_num;
     uint8_t        *last_resampled_frame_data[4];
     int             last_resampled_frame_linesize[4];
-};	
+};
 
 ITrack *MPlayer::LoadTrack(const wchar_t *filename)
 {
@@ -1022,62 +1027,61 @@ IMovie *MPlayer::LoadMovie(const wchar_t *filename, int width, int height, int c
 //----- (004BE9D8) --------------------------------------------------------
 void MPlayer::Initialize(OSWindow *target_window)
 {
-  window = target_window;
+    window = target_window;
 
-  hVidFile = INVALID_HANDLE_VALUE;
+    hVidFile = 0;
 
-  uNumMightVideoHeaders = 0;
-  pMightVideoHeaders = nullptr;
+    uNumMightVideoHeaders = 0;
+    pMightVideoHeaders = nullptr;
 
-  uNumMagicVideoHeaders = 0;
-  pMagicVideoHeaders = nullptr;
+    uNumMagicVideoHeaders = 0;
+    pMagicVideoHeaders = nullptr;
 
-  if (bNoVideo)
-    return;
+    if (bNoVideo)
+        return;
 
-  DWORD NumberOfBytesRead; // [sp+10h] [bp-4h]@9
-    
+    unsigned int uBinkVersionMajor = -1,
+        uBinkVersionMinor = -1;
+    //GetDllVersion(L"BINKW32.DLL", &uBinkVersionMajor, &uBinkVersionMinor);
+    //uBinkVersion = (unsigned __int64)uBinkVersionMajor << 32 | uBinkVersionMinor;
 
-  unsigned int uBinkVersionMajor = -1,
-               uBinkVersionMinor = -1;
-  //GetDllVersion(L"BINKW32.DLL", &uBinkVersionMajor, &uBinkVersionMinor);
-  //uBinkVersion = (unsigned __int64)uBinkVersionMajor << 32 | uBinkVersionMinor;
-
-  char filename[1024];
-  strcpy(filename, "anims\\might7.vid");
-  hMightVid = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080, 0);
-  if ( hMightVid == INVALID_HANDLE_VALUE )
-  {
-    MessageBoxA(0, filename, "Can't open video file", 0);
-    return;
-  }
-
-  strcpy(filename, "anims\\magic7.vid");
-  hMagicVid = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080, 0);
-  if ( hMagicVid == INVALID_HANDLE_VALUE )
-  {
-    if ( !bCanLoadFromCD )
+    char filename[1024];
+    strcpy(filename, "anims\\might7.vid");
+    hMightVid = fopen(filename, "rb");
+    if (!hMightVid)
     {
-        MessageBoxA(0, filename, "Can't open video file", 0);
-       return;
+        Log::Warning(L"Can't open video file: anims\\might7.vid");
+        return;
     }
 
-    char filename2[1024];
-    sprintf(filename2, "%c:\\%s", (unsigned __int8)cMM7GameCDDriveLetter, filename);
-    hMagicVid = CreateFileA(filename2, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080, 0);
-    if ( hMagicVid == (HANDLE)INVALID_HANDLE_VALUE )
+    strcpy(filename, "anims\\magic7.vid");
+    hMagicVid = fopen(filename, "rb");
+    if (!hMagicVid)
     {
-        MessageBoxA(0, filename2, "Can't open video file", 0);
-      return;
-    }
-  }
+        if (!bCanLoadFromCD)
+        {
+            Log::Warning(L"Can't open video file: anims\\magic7.vid");
+            return;
+        }
 
-  ReadFile(hMightVid, &uNumMightVideoHeaders, 4, &NumberOfBytesRead, 0);
-  ReadFile(hMagicVid, &uNumMagicVideoHeaders, 4, &NumberOfBytesRead, 0);
-  pMightVideoHeaders = (MovieHeader *)malloc(sizeof(MovieHeader) * uNumMightVideoHeaders + 2);
-  pMagicVideoHeaders = (MovieHeader *)malloc(sizeof(MovieHeader) * uNumMagicVideoHeaders + 2);
-  ReadFile(hMightVid, pMightVideoHeaders, 44 * uNumMightVideoHeaders, &NumberOfBytesRead, 0);
-  ReadFile(hMagicVid, pMagicVideoHeaders, 44 * uNumMagicVideoHeaders, &NumberOfBytesRead, 0);
+        char filename2[1024];
+        sprintf(filename2, "%c:\\%s", (unsigned __int8)cMM7GameCDDriveLetter, filename);
+        hMagicVid = fopen(filename2, "rb");
+        if (!hMagicVid)
+        {
+            Log::Warning(L"Can't open video file: %S", filename2);
+            return;
+        }
+    }
+
+    fread(&uNumMightVideoHeaders, 1, 4, hMightVid);
+    fread(&uNumMagicVideoHeaders, 1, 4, hMagicVid);
+
+    pMightVideoHeaders = (MovieHeader *)malloc(sizeof(MovieHeader) * uNumMightVideoHeaders + 2);
+    pMagicVideoHeaders = (MovieHeader *)malloc(sizeof(MovieHeader) * uNumMagicVideoHeaders + 2);
+
+    fread(pMightVideoHeaders, 1, 44 * uNumMightVideoHeaders, hMightVid);
+    fread(pMagicVideoHeaders, 1, 44 * uNumMagicVideoHeaders, hMagicVid);
 }
 
 //----- (004BF411) --------------------------------------------------------
@@ -1115,14 +1119,9 @@ void MPlayer::OpenHouseMovie(const char *pMovieName, unsigned int a3_1)
     bFirstFrame = false;
 
     this->bLoopPlaying = a3_1;
-    /*if ( LOBYTE(this->field_104) == 1 )
-    {
-      MessageBoxA(nullptr, "Unsupported Bink playback!", "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Video.cpp:925", 0);
-      return;
-    }*/
 
     LoadMovie(pMovieName);
-	time_video_begin = GetTickCount();
+	time_video_begin = OS_GetTime();
   }
 }
 
@@ -1130,8 +1129,7 @@ void MPlayer::OpenHouseMovie(const char *pMovieName, unsigned int a3_1)
 void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSizeFlag, int a4*/)
 {
   int v4; // ebp@1
-  MSG Msg; // [sp+Ch] [bp-1Ch]@12
-
+  /*
   v4 = a2;
   if ( dword_6BE364_game_settings_1 & (GAME_SETTINGS_NO_HOUSE_ANIM | GAME_SETTINGS_NO_INTRO) ||
 	   bNoVideo)
@@ -1139,7 +1137,8 @@ void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSi
 
     if ( a2 == 2 )
       v4 = 0;
-    ShowCursor(0);
+
+    OS_ShowCursor(false);
     OpenFullscreenMovie(pMovieName, 0);
     bPlaying_Movie = 1;
     field_44 = v4;
@@ -1159,7 +1158,7 @@ void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSi
 	auto    frame_buffer = new char[client_width * client_height * 4];
     SelectObject(back_dc, back_bmp);
 
-	DWORD t = GetTickCount();
+	DWORD t = OS_GetTime();
 
 	bPlaying_Movie = true;
 
@@ -1167,17 +1166,10 @@ void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSi
     {
       if (pMediaPlayer->bStopBeforeSchedule)
         break;
-      while (PeekMessageA(&Msg, hwnd, 0, 0, PM_REMOVE))
-      {
-        if (Msg.message == WM_QUIT)
-          Engine_DeinitializeAndTerminate(0);
-        if (Msg.message == WM_PAINT)
-          break;
-        TranslateMessage(&Msg);
-        DispatchMessageA(&Msg);
-      }
 
-      double dt = (GetTickCount() - t) / 1000.0; 
+      OS_PeekMessageLoop();
+
+      double dt = (OS_GetTime() - t) / 1000.0; 
       t = GetTickCount();
 
       pMovie_Track->GetNextFrame(dt, frame_buffer);	
@@ -1222,10 +1214,11 @@ void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSi
 
     pMediaPlayer->bPlaying_Movie = false;
 
-    ShowCursor(1);
+    OS_ShowCursor(true);
 
-    /*if ( current_screen_type == SCREEN_VIDEO )
-      current_screen_type = SCREEN_GAME;*/
+    //if ( current_screen_type == SCREEN_VIDEO )
+    //  current_screen_type = SCREEN_GAME;
+    */
 }
 
 void MPlayer::HouseMovieLoop()
@@ -1244,7 +1237,7 @@ void MPlayer::HouseMovieLoop()
           unsigned int height = game_viewport_height;
 	      MovieRelease();
 
-          SetFilePointer(hVidFile, uOffset, nullptr, FILE_BEGIN);
+          fseek(hVidFile, uOffset, SEEK_SET);
           pMovie_Track = nullptr;
 	      Log::Warning(L"reload pMovie_Track");
           pMovie_Track = pMediaPlayer->LoadMovieFromLOD(hVidFile, &readFunction, &seekFunction, width, height);
@@ -1252,9 +1245,9 @@ void MPlayer::HouseMovieLoop()
         }
         //else 
         //{
-          double dt = (GetTickCount() - time_video_begin) / 1000.0;
+          double dt = (OS_GetTime() - time_video_begin) / 1000.0;
           //dt = 1.0/15.0;
-          time_video_begin = GetTickCount();
+          time_video_begin = OS_GetTime();
 
           //log("dt=%.5f\n", dt);
 
@@ -1286,69 +1279,63 @@ void MPlayer::HouseMovieLoop()
 //----- (004BF73A) --------------------------------------------------------
 void MPlayer::SelectMovieType()
 {
-  char Source[32]; // [sp+Ch] [bp-40h]@1
+    char Source[32]; // [sp+Ch] [bp-40h]@1
 
-  strcpy(Source, this->pCurrentMovieName);
-  pMediaPlayer->Unload();
-  if ( this->uMovieType == 1 )
-    OpenHouseMovie(Source, LOBYTE(this->bLoopPlaying));
-  else if ( this->uMovieType == 2 )
-    OpenFullscreenMovie(Source, LOBYTE(this->bLoopPlaying));
-  else
-    __debugbreak();
+    strcpy(Source, this->pCurrentMovieName);
+    pMediaPlayer->Unload();
+    if (this->uMovieType == 1)
+        OpenHouseMovie(Source, this->bLoopPlaying);
+    else if (this->uMovieType == 2)
+        OpenFullscreenMovie(Source, this->bLoopPlaying);
+    else
+        __debugbreak();
 }
 
 void MPlayer::LoadMovie(const char *pFilename)
 {
-  char pVideoNameBik[120]; // [sp+Ch] [bp-28h]@2
-  char pVideoNameSmk[120]; // [sp+Ch] [bp-28h]@2
+    char pVideoNameBik[120]; // [sp+Ch] [bp-28h]@2
+    char pVideoNameSmk[120]; // [sp+Ch] [bp-28h]@2
 
-  sprintf(pVideoNameBik, "%s.bik", pFilename);
-  sprintf(pVideoNameSmk, "%s.smk", pFilename);
-  for (uint i = 0; i < uNumMightVideoHeaders; ++i)
-  {
-    if (!_stricmp(pVideoNameSmk, pMightVideoHeaders[i].pVideoName))
+    sprintf(pVideoNameBik, "%s.bik", pFilename);
+    sprintf(pVideoNameSmk, "%s.smk", pFilename);
+    for (uint i = 0; i < uNumMightVideoHeaders; ++i)
     {
-      hVidFile = hMightVid;
-      uOffset = pMightVideoHeaders[i].uFileOffset;
-      uSize = pMightVideoHeaders[i + 1].uFileOffset - uOffset;
-      this->uMovieType = 2;
+        if (!_stricmp(pVideoNameSmk, pMightVideoHeaders[i].pVideoName))
+        {
+            hVidFile = hMightVid;
+            uOffset = pMightVideoHeaders[i].uFileOffset;
+            uSize = pMightVideoHeaders[i + 1].uFileOffset - uOffset;
+            this->uMovieType = 2;
+        }
     }
-  }
-  for (uint i = 0; i < uNumMagicVideoHeaders; ++i)
-  {
-    if (!_stricmp(pVideoNameBik, pMagicVideoHeaders[i].pVideoName))
+    for (uint i = 0; i < uNumMagicVideoHeaders; ++i)
     {
-      hVidFile = hMagicVid;
-      uOffset = pMagicVideoHeaders[i].uFileOffset;
-      uSize = pMagicVideoHeaders[i + 1].uFileOffset - uOffset;
-      this->uMovieType = 1;
+        if (!_stricmp(pVideoNameBik, pMagicVideoHeaders[i].pVideoName))
+        {
+            hVidFile = hMagicVid;
+            uOffset = pMagicVideoHeaders[i].uFileOffset;
+            uSize = pMagicVideoHeaders[i + 1].uFileOffset - uOffset;
+            this->uMovieType = 1;
+        }
+        if (!_stricmp(pVideoNameSmk, pMagicVideoHeaders[i].pVideoName))
+        {
+            hVidFile = hMagicVid;
+            uOffset = pMagicVideoHeaders[i].uFileOffset;
+            uSize = pMagicVideoHeaders[i + 1].uFileOffset - uOffset;
+            this->uMovieType = 2;
+        }
     }
-    if (!_stricmp(pVideoNameSmk, pMagicVideoHeaders[i].pVideoName))
+    if (!hVidFile)
     {
-      hVidFile = hMagicVid;
-      uOffset = pMagicVideoHeaders[i].uFileOffset;
-      uSize = pMagicVideoHeaders[i + 1].uFileOffset - uOffset;
-      this->uMovieType = 2;
+        pMediaPlayer->Unload();
+        Log::Warning(L"MediaPlayer error");
+        return;
     }
-  }
-  if (hVidFile == INVALID_HANDLE_VALUE)
-  {
-    pMediaPlayer->Unload();
-    MessageBoxA(0, "MediaPlayer error", "MediaPlayer Error", 0);
-    return;
-  }
 
-  SetFilePointer(hVidFile, uOffset, 0, FILE_BEGIN);
-  strcpy(this->pCurrentMovieName, pFilename);
+    fseek(hVidFile, uOffset, SEEK_SET);
+    strcpy(this->pCurrentMovieName, pFilename);
 
-  auto hwnd = pMediaPlayer->window->GetApiHandle();
-  RECT rc_client;
-  GetClientRect(hwnd, &rc_client);
-  int client_width = rc_client.right - rc_client.left,
-      client_height = rc_client.bottom - rc_client.top;
-
-  pMovie_Track = pMediaPlayer->LoadMovieFromLOD(hVidFile, &readFunction, &seekFunction, client_width, client_height);
+    pMovie_Track = pMediaPlayer->LoadMovieFromLOD(hVidFile, &readFunction, &seekFunction, window->GetWidth(), window->GetHeight());
 }
 
 //----- (004BF794) --------------------------------------------------------
@@ -1411,39 +1398,42 @@ void MPlayer::Unload()
   pMovie_Track = nullptr;
 }
 
-int MPlayer::readFunction(void* opaque, uint8_t* buf, int buf_size)
+int MPlayer::readFunction(FILE *opaque, uint8_t* buf, int buf_size)
 {
-  HANDLE stream = (HANDLE)opaque;
-  //int numBytes = stream->read((char*)buf, buf_size);
-  int numBytes;
-  ReadFile(stream, (char *)buf, buf_size, (LPDWORD)&numBytes, NULL);
-  return numBytes;
+    //int numBytes = stream->read((char*)buf, buf_size);
+
+    //HANDLE stream = (HANDLE)opaque;
+    //int numBytes;
+    //ReadFile(stream, (char *)buf, buf_size, (LPDWORD)&numBytes, NULL);
+    //return numBytes;
+    return fread(buf, 1, buf_size, opaque);
 }
 
-int64_t MPlayer::seekFunction(void* opaque, int64_t offset, int whence)
+int64_t MPlayer::seekFunction(FILE *opaque, int64_t offset, int whence)
 {
-  if (whence == AVSEEK_SIZE)
-    return pMediaPlayer->uSize;
-  HANDLE h = (HANDLE)opaque;
-  LARGE_INTEGER li;
-  li.QuadPart = offset;
+    if (whence == AVSEEK_SIZE)
+        return pMediaPlayer->uSize;
+    /*HANDLE h = (HANDLE)opaque;
+    LARGE_INTEGER li;
+    li.QuadPart = offset;
 
-  if (!SetFilePointerEx(h, li, (PLARGE_INTEGER)&li, FILE_BEGIN))
-    return -1;
-  return li.QuadPart;
+    if (!SetFilePointerEx(h, li, (PLARGE_INTEGER)&li, FILE_BEGIN))
+      return -1;
+    return li.QuadPart;*/
+    _fseeki64(opaque, offset, SEEK_SET);
 }
 
 //for video//////////////////////////////////////////////////////////////////
 
 
 
-IMovie *MPlayer::LoadMovieFromLOD(HANDLE h, int readFunction(void*, uint8_t*, int), int64_t seekFunction(void*, int64_t, int), int width, int height)
+IMovie *MPlayer::LoadMovieFromLOD(FILE *f, int readFunction(FILE *, uint8_t*, int), int64_t seekFunction(FILE *, int64_t, int), int width, int height)
 {
 	movie = new Movie;
 	Log::Warning(L"allocation dynamic memory for movie\n");
 	if (movie)
 	{
-		if (movie->LoadFromLOD(h, readFunction, seekFunction, width, height))
+		if (movie->LoadFromLOD(f, readFunction, seekFunction, width, height))
 		  return movie;
 		delete movie;
 		Log::Warning(L"delete dynamic memory for movie\n");
@@ -1460,25 +1450,21 @@ void MovieRelease()
 }
 
 
-//for audio///////////////////////////////////////////////////////
 //----- (004AB818) --------------------------------------------------------
 void MPlayer::LoadAudioSnd()
 {
-  DWORD NumberOfBytesRead; // [sp+Ch] [bp-4h]@3
+    hAudioSnd = fopen("Sounds\\Audio.snd", "rb");
+    if (!hAudioSnd)
+    {
+        Log::Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
+        return;
+    }
 
-  hAudioSnd = CreateFileA("Sounds\\Audio.snd", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0x8000080u, 0);
-  if (hAudioSnd == INVALID_HANDLE_VALUE)
-  {
-    Log::Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
-    return;
-  }
-
-  ReadFile(hAudioSnd, &uNumSoundHeaders, 4, &NumberOfBytesRead, 0);
-  pSoundHeaders = nullptr;
-  pSoundHeaders = (SoundHeader *)malloc(52 * uNumSoundHeaders + 2);
-  ReadFile(hAudioSnd, pSoundHeaders, 52 * uNumSoundHeaders, &NumberOfBytesRead, 0);
+    fread(&uNumSoundHeaders, 1, 4, hAudioSnd);
+    pSoundHeaders = nullptr;
+    pSoundHeaders = (SoundHeader *)malloc(52 * uNumSoundHeaders + 2);
+    fread(pSoundHeaders, 1, 52 * uNumSoundHeaders, hAudioSnd);
 }
-//for audio///////////////////////////////////////////////////////
 
 void av_logger(void *, int, const char *format, va_list args)
 {

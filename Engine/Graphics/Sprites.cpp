@@ -513,7 +513,7 @@ bool SpriteFrameTable::FromFileTxt(const char *Args)
           v17 = (int)&v2->pSpriteSFrames[v2->uNumSpriteFrames].uFlags;
           *(int *)v17 |= 4u;
           v2->pSpritePFrames[v2->uNumEFrames] = &v2->pSpriteSFrames[v2->uNumSpriteFrames];
-          v2->pSpriteEFrames[v2->uNumEFrames++] = LOWORD(v2->uNumSpriteFrames);
+          v2->pSpriteEFrames[v2->uNumEFrames++] = (short)v2->uNumSpriteFrames;
         }
         if ( !_stricmp(v43.pProperties[10], "1") )
           BYTE2(v2->pSpriteSFrames[v2->uNumSpriteFrames].uFlags) |= 4u;
@@ -638,7 +638,7 @@ bool SpriteFrameTable::FromFileTxt(const char *Args)
           v31 += *(short *)(l + 54);
           ++k;
         }
-        LOWORD(v31) = v30[k].uAnimTime + v31;
+        HEXRAYS_LOWORD(v31) = v30[k].uAnimTime + v31;
       }
       ++k;
     }
@@ -664,7 +664,7 @@ bool SpriteFrameTable::FromFileTxt(const char *Args)
               v2->pSpritePFrames[v35] = v38;
               v39 = v2->pSpriteEFrames;
               v40 = (int)&v39[(int)Argsc];
-              LOWORD(v38) = *(short *)v40;
+              HEXRAYS_LOWORD(v38) = *(short *)v40;
               *(short *)v40 = v39[v34];
               v2->pSpriteEFrames[v34] = (signed __int16)v38;
             }
@@ -683,7 +683,7 @@ bool SpriteFrameTable::FromFileTxt(const char *Args)
   }
   else
   {
-    MessageBoxW(nullptr, L"CSpriteFrameTable::load - Out of Memory!", nullptr, 0);
+    Log::Warning(L"CSpriteFrameTable::load - Out of Memory!");
     fclose(File);
     result = 0;
   }

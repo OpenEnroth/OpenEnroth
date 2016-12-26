@@ -10,52 +10,52 @@
 #include <stdarg.h>
 #include <stdio.h>
 inline __declspec(noreturn) void Error_impl_(const char *filename, const char *functionname, int line,
-                                             const char *format, ...)
+    const char *format, ...)
 {
-  va_list va;
-  va_start(va, format);
-  {
-    char header[4096];
-    sprintf_s(header, "Error in %s: %u\n\t%s\n\n", filename, line, functionname);
+    va_list va;
+    va_start(va, format);
+    {
+        char header[4096];
+        sprintf_s(header, "Error in %s: %u\n\t%s\n\n", filename, line, functionname);
 
-    char msg_body[8192];
-    vsprintf_s(msg_body, format, va);
+        char msg_body[8192];
+        vsprintf_s(msg_body, format, va);
 
-    wchar_t msg[sizeof(header) + sizeof(msg_body)];
-    swprintf(msg, 8192, L"%S %S", header, msg_body);
+        wchar_t msg[sizeof(header) + sizeof(msg_body)];
+        swprintf(msg, 8192, L"%S %S", header, msg_body);
 
-    extern void MsgBox(const wchar_t *, const wchar_t *);
-    MsgBox(msg, L"Error");
-  }
-  va_end(va);
+        extern void OS_MsgBox(const wchar_t *, const wchar_t *);
+        OS_MsgBox(msg, L"Error");
+    }
+    va_end(va);
 }
 
 
 inline void Assert_impl_(const char *filename, const char *functionname, int line,
-                         bool condition, const char *condition_string, const char *format = nullptr, ...)
+    bool condition, const char *condition_string, const char *format = nullptr, ...)
 {
-  if (condition)
-    return;
+    if (condition)
+        return;
 
-  va_list va;
-  va_start(va, format);
-  {
-    char header[4096];
-    sprintf_s(header, "Assertion in %s: %u\n\t%s:\n%s\n\n", filename, line, functionname, condition_string);
+    va_list va;
+    va_start(va, format);
+    {
+        char header[4096];
+        sprintf_s(header, "Assertion in %s: %u\n\t%s:\n%s\n\n", filename, line, functionname, condition_string);
 
-    char msg_body[8192];
-    vsprintf_s(msg_body, format, va);
-    
-    wchar_t msg[sizeof(header) + sizeof(msg_body)];
-    if (format)
-      swprintf(msg, (sizeof(header) + sizeof(msg_body)), L"%S %S", header, msg_body);
-    else
-      swprintf(msg, (sizeof(header) + sizeof(msg_body)), L"%S", header);
+        char msg_body[8192];
+        vsprintf_s(msg_body, format, va);
 
-    extern void MsgBox(const wchar_t *, const wchar_t *);
-    MsgBox(msg, L"Assertion");
-  }
-  va_end(va);
+        wchar_t msg[sizeof(header) + sizeof(msg_body)];
+        if (format)
+            swprintf(msg, (sizeof(header) + sizeof(msg_body)), L"%S %S", header, msg_body);
+        else
+            swprintf(msg, (sizeof(header) + sizeof(msg_body)), L"%S", header);
 
-  __debugbreak();
+        extern void OS_MsgBox(const wchar_t *, const wchar_t *);
+        OS_MsgBox(msg, L"Assertion");
+    }
+    va_end(va);
+
+    __debugbreak();
 }

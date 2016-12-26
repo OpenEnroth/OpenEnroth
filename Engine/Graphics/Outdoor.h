@@ -1,8 +1,9 @@
-#pragma
+#pragma once
 
-#include "Indoor.h"
-#include "../Tables/TileFrameTable.h"
-#include "BSPModel.h"
+#include "Engine/Tables/TileFrameTable.h"
+
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/BSPModel.h"
 
 #define DAY_ATTRIB_FOG  1
 
@@ -254,7 +255,7 @@ struct OutdoorLocation
 #pragma pack(pop)
 
 
-extern struct OutdoorLocation *pOutdoor;
+extern OutdoorLocation *pOutdoor;
 
 void ODM_UpdateUserInputAndOther();
 int ODM_GetFloorLevel(int X, signed int Y, int Z, int, int *pOnWater, int *bmodel_pid, int bWaterWalk);

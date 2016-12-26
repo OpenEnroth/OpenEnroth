@@ -6,7 +6,6 @@
 #include "LuaVM.h"
 #include "lib/lua/lua.h"
 #include "Log.h"
-#include "OSAPI.h"
 
 extern "C" int luaopen_UIControl(lua_State *L); // declare the wrapped module
 extern "C" int luaopen_Player(lua_State *L); // declare the wrapped module
@@ -34,17 +33,17 @@ void LuaVM::Initialize()
 
 bool LuaVM::DoFile(const char *filename)
 {
-  if (luaL_dofile(L, GetScriptFileLocation(filename)))
-  {
-    Log::Warning(L"Error opening script %s", filename);
-    return false;
-  }
-  return true;
+    if (luaL_dofile(L, GetScriptFileLocation(filename)))
+    {
+        Log::Warning(L"Error opening script %s", filename);
+        return false;
+    }
+    return true;
 }
 
 const char *LuaVM::GetScriptFileLocation(const char *script_name)
 {
-  static DWORD tls_index = TlsAlloc();
+  /*static DWORD tls_index = TlsAlloc();
 
   auto buf = (char *)TlsGetValue(tls_index);
   if (!buf)
@@ -55,5 +54,8 @@ const char *LuaVM::GetScriptFileLocation(const char *script_name)
 
   strcpy(buf, "data/scripts/lua/core/");
   strcat(buf, script_name);
-  return buf;
+  return buf;*/
+    static char buf[2048];
+    sprintf(buf, "data/scripts/lua/core/%s", script_name);
+    return buf;
 }

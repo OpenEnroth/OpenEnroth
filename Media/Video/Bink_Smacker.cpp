@@ -1,8 +1,5 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+#include <windows.h>
 
-#define _CRT_SECURE_NO_WARNINGS
 #include "Bink_Smacker.h"
 
 
@@ -13,7 +10,7 @@
 
 int (__stdcall *smackw32_SmackSoundUseMSS)(HDIGDRIVER) = 0;
 unsigned int (__stdcall *smackw32_SmackUseMMX)(unsigned int) = 0;
-HSMACK (__stdcall *smackw32_SmackOpen)(HANDLE, unsigned int, unsigned int) = 0;
+HSMACK (__stdcall *smackw32_SmackOpen)(void *, unsigned int, unsigned int) = 0;
 HSMACKBLIT (__stdcall *smackw32_SmackBlitOpen)(unsigned int) = 0;
 void (__stdcall *smackw32_SmackToBuffer)(HSMACK, unsigned int, unsigned int, unsigned int, unsigned int, void *, unsigned int) = 0;
 void (__stdcall *smackw32_SmackBlitSetPalette)(HSMACKBLIT, void *, unsigned int) = 0;
@@ -28,7 +25,7 @@ void (__stdcall *smackw32_SmackBufferClose)(HSMACKBUF) = 0;
 void (__stdcall *smackw32_SmackBlitClose)(HSMACKBLIT) = 0;
 int  (__stdcall *smackw32_SmackBlitClear)(HSMACKBLIT, unsigned short *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, int) = 0;
 int  (__stdcall *smackw32_SmackGoto)(_SMACK *, long) = 0;
-int  (__stdcall *smackw32_SmackBufferOpen)(HWND a1, long a2, long a3, long a4, long a5, long a6) = nullptr;
+int  (__stdcall *smackw32_SmackBufferOpen)(void *hwnd, long a2, long a3, long a4, long a5, long a6) = nullptr;
 void(__stdcall *smackw32_SmackBufferNewPalette)(HSMACKBUF, void *, unsigned int) = nullptr;
 void(__stdcall *smackw32_SmackColorRemapWithTrans)(_SMACK *, void *, unsigned int, unsigned int, unsigned int) = nullptr;
 void SMACKW32_DLL_Initialize()
@@ -54,7 +51,7 @@ void SMACKW32_DLL_Initialize()
     smackw32_SmackBlitClose = (void (__stdcall *)(HSMACKBLIT))GetProcAddress(pDll, "_SmackBlitClose@4");
     smackw32_SmackBlitClear = (int (__stdcall *)(HSMACKBLIT, unsigned short *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, int))GetProcAddress(pDll, "_SmackBlitClear@32");
     smackw32_SmackGoto = (int  (__stdcall *)(_SMACK *, long))GetProcAddress(pDll, "_SmackGoto@8");
-    smackw32_SmackBufferOpen = (int  (__stdcall *)(HWND, long, long, long, long, long))GetProcAddress(pDll, "_SmackBufferOpen@24");
+    smackw32_SmackBufferOpen = (int  (__stdcall *)(void *, long, long, long, long, long))GetProcAddress(pDll, "_SmackBufferOpen@24");
 	smackw32_SmackBufferNewPalette = (void(__stdcall *)(HSMACKBUF, void *, unsigned int))GetProcAddress(pDll, "_SmackBufferNewPalette@12");
 	smackw32_SmackColorRemapWithTrans = (void(__stdcall *)(_SMACK *, void *, unsigned int, unsigned int, unsigned int))GetProcAddress(pDll, "_SmackColorRemapWithTrans@20");
     //LOAD(SmackBufferNewPalette);
@@ -130,7 +127,7 @@ unsigned int __stdcall SmackUseMMX(unsigned int flag)
  return (smackw32_SmackUseMMX)(flag);
 }
 
-HSMACK __stdcall SmackOpen(HANDLE hSourceFile, unsigned int uFlags, unsigned int uExtraBuffers)
+HSMACK __stdcall SmackOpen(void *hSourceFile, unsigned int uFlags, unsigned int uExtraBuffers)
 {
  return (smackw32_SmackOpen)(hSourceFile, uFlags, uExtraBuffers);
 }
@@ -156,7 +153,7 @@ int __stdcall SmackGoto(_SMACK *a1, long a2)
 }
 
 
-int __stdcall SmackBufferOpen(HWND a1, long a2, long a3, long a4, long a5, long a6)
+int __stdcall SmackBufferOpen(void *a1, long a2, long a3, long a4, long a5, long a6)
 {
   return (smackw32_SmackBufferOpen)(a1, a2, a3, a4, a5, a6);
 }

@@ -8,19 +8,21 @@
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
-
 #include "Engine/ZlibWrapper.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
 #include "Engine/stru123.h"
+
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Level/Decoration.h"
+
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/SpriteObject.h"
+
 #include "Engine/Serialization/LegacyImages.h"
 
 #include "GUI/GUIWindow.h"
@@ -42,6 +44,41 @@ std::array<SavegameHeader, 45> pSavegameHeader;
 
 
 
+
+bool CopyFile(const char *from, const char *to)
+{
+    int file_size = -1;
+    int bytes_read = 0;
+    int bytes_wrote = 0;
+
+    FILE *copy_from = fopen(from, "r");
+    if (copy_from)
+    {
+        FILE *copy_to = fopen(to, "w+");
+        if (copy_to)
+        {
+            fseek(copy_from, 0, SEEK_END);
+            file_size = ftell(copy_from);
+            fseek(copy_from, 0, SEEK_SET);
+
+            unsigned char *buf = new unsigned char[file_size];
+            if (buf)
+            {
+                int bytes_read = fread(buf, 1, file_size, copy_from);
+                if (bytes_read == file_size)
+                {
+                    bytes_wrote = fwrite(buf, 1, file_size, copy_to);
+                }
+
+                delete[] buf;
+            }
+            fclose(copy_to);
+        }
+        fclose(copy_from);
+    }
+
+    return file_size != -1 && bytes_read == bytes_wrote;
+}
 
 
 //----- (00411B59) --------------------------------------------------------
@@ -120,8 +157,10 @@ void LoadGame(unsigned int uSlot)
     pNew_LOD->CloseWriteFile();
 
     auto filename = StringPrintf("saves\\%s", pSavegameList->pFileList[uSlot].pSaveFileName);
-    if (!CopyFileA(filename.c_str(), "data\\new.lod", 0))
-        int e = GetLastError();
+    if (!CopyFile(filename.c_str(), "data\\new.lod"))
+    {
+        Error("Failed to copy: %s", filename.c_str());
+    }
 
     pNew_LOD->LoadFile("data\\new.lod", 0);
     FILE *file = pNew_LOD->FindContainer("header.bin", 1);
@@ -134,7 +173,6 @@ void LoadGame(unsigned int uSlot)
     }
     Assert(sizeof(SavegameHeader) == 100);
     fread(&header, sizeof(SavegameHeader), 1, file);
-
     {
         file = pNew_LOD->FindContainer("party.bin", 1);
         if (!file)
@@ -295,7 +333,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     FILE *pLLoidFile; // edi@24
     char* compressed_buf; // edi@30
     char *data_write_pos; // esi@41
-    CHAR Buffer[128]; // [sp+Ch] [bp-264h]@59
+    char Buffer[128]; // [sp+Ch] [bp-264h]@59
     char Dir[255]; // [sp+8Ch] [bp-1E4h]@51
     char Drive[255]; // [sp+ACh] [bp-1C4h]@51
     SavegameHeader save_header; // [sp+CCh] [bp-1A4h]@10
@@ -344,8 +382,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
 
     if (current_screen_type == SCREEN_SAVEGAME)
     {
-        render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, saveload_ui_loadsave);
-        render->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_loadsave);
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
+        render->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f, saveload_ui_loadsave);
         text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
         pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->GetString(190), 0, 0, 0); //Сохранение
         text_pos = pFontSmallnum->AlignText_Center(186, pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
@@ -359,7 +397,6 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     {
         auto error_message = localization->FormatString(612, 200); // Savegame damaged! Code=%d
         Log::Warning(L"%S", error_message.c_str());
-        MessageBoxA(nullptr, error_message.c_str(), "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\LoadSave.cpp:773", 0);
     }
 
     Assert(sizeof(SavegameHeader) == 100);
@@ -430,216 +467,214 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         }
     }
 
-  strcpy(pLodDirectory.pFilename, "npcgroup.bin");
-  pLodDirectory.uDataSize = 102;
-  if ( pNew_LOD->Write(&pLodDirectory, pNPCStats->pGroups_copy, 0) )
-  {
-      auto error_message = localization->FormatString(612, 206);
-      Log::Warning(L"%S", error_message.c_str());
-  }
-
-  for (int i =  1; i <= 4; ++i) // 4 - players
-  {
-    for (int j =  1; j <= 5; ++j) // 5 - images
+    strcpy(pLodDirectory.pFilename, "npcgroup.bin");
+    pLodDirectory.uDataSize = 102;
+    if (pNew_LOD->Write(&pLodDirectory, pNPCStats->pGroups_copy, 0))
     {
-        char work_string[120];
-      sprintf(work_string, "data\\lloyd%d%d.pcx", i, j);
-      pLLoidFile = fopen(work_string, "rb");
-      if ( pLLoidFile )
-      {
-        __debugbreak();
-        sprintf(work_string, "lloyd%d%d.pcx", i, j);
-        fseek(pLLoidFile, 0, SEEK_END);
-        pLodDirectory.uDataSize = ftell(pLLoidFile);
-        rewind(pLLoidFile);
-        fread(uncompressed_buff, pLodDirectory.uDataSize, 1, pLLoidFile);
-        strcpy(pLodDirectory.pFilename, work_string);
-        fclose(pLLoidFile);
-        remove(work_string);
-        if ( pNew_LOD->Write(&pLodDirectory, uncompressed_buff, 0) )
-        {
-            auto error_message = localization->FormatString(612, 207);
-            Log::Warning(L"%S", error_message.c_str());
-        }
-      }
-	}
-  }
-
-  if ( !NotSaveWorld )//autosave for change location
-  {
-    //__debugbreak();
-    CompactLayingItemsList();
-    compressed_buf = (char*)malloc(1000000);
-    odm_data.uVersion = 91969;
-    odm_data.pMagic[0] = 'm';
-    odm_data.pMagic[1] = 'v';
-    odm_data.pMagic[2] = 'i';
-    odm_data.pMagic[3] = 'i';
-    odm_data.uCompressedSize = 0;
-    odm_data.uDecompressedSize = 0;
-    data_write_pos = uncompressed_buff;
-    memcpy((void *)compressed_buf, &odm_data, 0x10);
-    if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
-    {
-      pIndoor->dlv.uNumFacesInBModels = pIndoor->uNumFaces;
-      pIndoor->dlv.uNumBModels = 0;
-      pIndoor->dlv.uNumDecorations = uNumLevelDecorations;
-      memcpy(data_write_pos, &pIndoor->dlv,sizeof(DDM_DLV_Header) );//0x28
-      data_write_pos += sizeof(DDM_DLV_Header);
-      memcpy(data_write_pos, pIndoor->_visible_outlines, 0x36B);
-      data_write_pos += 875;
-      for (int i =  0; i <(signed int)pIndoor->uNumFaces; ++i)
-      {
-        memcpy(data_write_pos, &pIndoor->pFaces[i].uAttributes, 4);
-        data_write_pos += 4;
-      }
-
-      for (int i =  0; i <(signed int)uNumLevelDecorations; ++i)
-      {
-        memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
-        data_write_pos += 2;
-      }
-      memcpy(data_write_pos, &uNumActors, 4);
-      data_write_pos += 4;
-      memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
-      data_write_pos += uNumActors * sizeof(Actor);
-      memcpy(data_write_pos, &uNumSpriteObjects, 4);
-      data_write_pos += 4;
-      memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
-      data_write_pos += 112 * uNumSpriteObjects;
-      memcpy(data_write_pos, &uNumChests, 4);
-      data_write_pos += 4;
-      memcpy(data_write_pos, pChests.data(), sizeof(Chest)*uNumChests);//5324 *
-      data_write_pos += sizeof(Chest)* uNumChests;
-      memcpy(data_write_pos, pIndoor->pDoors, 0x3E80);
-      data_write_pos += 16000;
-      memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata, pIndoor->blv.uDoors_ddata_Size);
-      data_write_pos += pIndoor->blv.uDoors_ddata_Size;
-      memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
-      data_write_pos += 200;
-      memcpy(data_write_pos, &pIndoor->stru1, 0x38);
-      data_write_pos += 56;
-
-    }
-    else//for Outdoor
-    {
-      pOutdoor->ddm.uNumFacesInBModels = 0;
-      for ( int i = 0; i < pOutdoor->uNumBModels; ++i )
-        pOutdoor->ddm.uNumFacesInBModels += pOutdoor->pBModels[i].uNumFaces;
-      pOutdoor->ddm.uNumBModels = pOutdoor->uNumBModels;
-      pOutdoor->ddm.uNumDecorations = uNumLevelDecorations;
-      memcpy(data_write_pos, &pOutdoor->ddm, sizeof(DDM_DLV_Header));//0x28
-      data_write_pos += sizeof(DDM_DLV_Header);
-      memcpy(data_write_pos, pOutdoor->uFullyRevealedCellOnMap, 0x3C8);
-      data_write_pos += 968;
-      memcpy(data_write_pos, pOutdoor->uPartiallyRevealedCellOnMap, 0x3C8);
-      data_write_pos += 968;
-      for (int i =  0; i < pOutdoor->uNumBModels ; ++i)  
-        for (int j =  0; j < pOutdoor->pBModels[i].uNumFaces;++j)//*(int *)&pOutdoor->pBModels->pModelName[v24]; ++j)
-        {
-          memcpy(data_write_pos, &(pOutdoor->pBModels[i].pFaces[j].uAttributes), 4);
-          data_write_pos += 4;
-        }
-
-      for (int i = 0; i < (signed int)uNumLevelDecorations; ++i)
-      {
-        memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
-        data_write_pos += 2;
-      }
-      memcpy(data_write_pos, &uNumActors, 4);
-      data_write_pos += 4;
-      memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
-      data_write_pos +=  uNumActors * sizeof(Actor);
-      memcpy(data_write_pos, &uNumSpriteObjects, 4);
-      data_write_pos += 4;
-      memcpy(data_write_pos, &pSpriteObjects, uNumSpriteObjects * sizeof(SpriteObject));
-      data_write_pos += uNumSpriteObjects * sizeof(SpriteObject);
-      memcpy(data_write_pos, &uNumChests, 4);
-      data_write_pos += 4;
-      memcpy(data_write_pos, pChests.data(), sizeof(Chest)* uNumChests);
-      data_write_pos += sizeof(Chest) * uNumChests;
-      memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
-      data_write_pos += 200;
-      memcpy(data_write_pos, &pOutdoor->loc_time, 0x38);
-      data_write_pos += 56;
-    }
-    strcpy(Source, pCurrentMapName);
-    _splitpath(Source, Drive, Dir, Filename, Ext);
-    Ext[1] = 'd';
-   
-    Size = (int)data_write_pos - (int)uncompressed_buff;
-    compressed_block_size = 999984;
-    res = zlib::MemZip((char *)compressed_buf + 16, (unsigned int *)&compressed_block_size, uncompressed_buff,Size);
-    if (res || (signed int)compressed_block_size > (signed int)Size )
-    {
-      memcpy((void *)(compressed_buf + 16), uncompressed_buff, Size);
-      compressed_block_size = Size;
-    }
-    compressed_block_size += 16;
-    memcpy(&((ODMHeader *)compressed_buf)->uCompressedSize, &compressed_block_size, 4);
-    memcpy(&((ODMHeader *)compressed_buf)->uDecompressedSize, &Size, 4);
-    sprintf(Source, "%s%s", Filename, Ext);
-    strcpy(pLodDirectory.pFilename, Source);
-    pLodDirectory.uDataSize = compressed_block_size;
-    if ( pNew_LOD->Write(&pLodDirectory, (const void *)compressed_buf, 0) )
-    {
-        auto error_message = localization->FormatString(612, 208);
+        auto error_message = localization->FormatString(612, 206);
         Log::Warning(L"%S", error_message.c_str());
     }
-    free((void *)compressed_buf);
-  }
-  free(uncompressed_buff);
-  if ( IsAutoSAve )
-  {
-    if ( !CopyFileA("data\\new.lod", "saves\\autosave.mm7", 0) )
+
+    for (int i = 1; i <= 4; ++i) // 4 - players
     {
-      FormatMessageA(0x1000, 0, GetLastError(), 0x400, Buffer, 0x80, 0);
-      auto error_message = localization->FormatString(612, 300);
-      Log::Warning(L"%S", error_message.c_str());
+        for (int j = 1; j <= 5; ++j) // 5 - images
+        {
+            char work_string[120];
+            sprintf(work_string, "data\\lloyd%d%d.pcx", i, j);
+            pLLoidFile = fopen(work_string, "rb");
+            if (pLLoidFile)
+            {
+                __debugbreak();
+                sprintf(work_string, "lloyd%d%d.pcx", i, j);
+                fseek(pLLoidFile, 0, SEEK_END);
+                pLodDirectory.uDataSize = ftell(pLLoidFile);
+                rewind(pLLoidFile);
+                fread(uncompressed_buff, pLodDirectory.uDataSize, 1, pLLoidFile);
+                strcpy(pLodDirectory.pFilename, work_string);
+                fclose(pLLoidFile);
+                remove(work_string);
+                if (pNew_LOD->Write(&pLodDirectory, uncompressed_buff, 0))
+                {
+                    auto error_message = localization->FormatString(612, 207);
+                    Log::Warning(L"%S", error_message.c_str());
+                }
+            }
+        }
     }
-  }
-  pParty->vPosition.x = pPositionX;
-  pParty->vPosition.y = pPositionY;
-  pParty->vPosition.z = pPositionZ;
-  pParty->uFallStartY = pPositionZ;
-  pParty->sRotationY = sPRotationY;
-  pParty->sRotationX = sPRotationX;
+
+    if (!NotSaveWorld)//autosave for change location
+    {
+        //__debugbreak();
+        CompactLayingItemsList();
+        compressed_buf = (char*)malloc(1000000);
+        odm_data.uVersion = 91969;
+        odm_data.pMagic[0] = 'm';
+        odm_data.pMagic[1] = 'v';
+        odm_data.pMagic[2] = 'i';
+        odm_data.pMagic[3] = 'i';
+        odm_data.uCompressedSize = 0;
+        odm_data.uDecompressedSize = 0;
+        data_write_pos = uncompressed_buff;
+        memcpy((void *)compressed_buf, &odm_data, 0x10);
+        if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+        {
+            pIndoor->dlv.uNumFacesInBModels = pIndoor->uNumFaces;
+            pIndoor->dlv.uNumBModels = 0;
+            pIndoor->dlv.uNumDecorations = uNumLevelDecorations;
+            memcpy(data_write_pos, &pIndoor->dlv, sizeof(DDM_DLV_Header));//0x28
+            data_write_pos += sizeof(DDM_DLV_Header);
+            memcpy(data_write_pos, pIndoor->_visible_outlines, 0x36B);
+            data_write_pos += 875;
+            for (int i = 0; i < (signed int)pIndoor->uNumFaces; ++i)
+            {
+                memcpy(data_write_pos, &pIndoor->pFaces[i].uAttributes, 4);
+                data_write_pos += 4;
+            }
+
+            for (int i = 0; i < (signed int)uNumLevelDecorations; ++i)
+            {
+                memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
+                data_write_pos += 2;
+            }
+            memcpy(data_write_pos, &uNumActors, 4);
+            data_write_pos += 4;
+            memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
+            data_write_pos += uNumActors * sizeof(Actor);
+            memcpy(data_write_pos, &uNumSpriteObjects, 4);
+            data_write_pos += 4;
+            memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
+            data_write_pos += 112 * uNumSpriteObjects;
+            memcpy(data_write_pos, &uNumChests, 4);
+            data_write_pos += 4;
+            memcpy(data_write_pos, pChests.data(), sizeof(Chest)*uNumChests);//5324 *
+            data_write_pos += sizeof(Chest)* uNumChests;
+            memcpy(data_write_pos, pIndoor->pDoors, 0x3E80);
+            data_write_pos += 16000;
+            memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata, pIndoor->blv.uDoors_ddata_Size);
+            data_write_pos += pIndoor->blv.uDoors_ddata_Size;
+            memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
+            data_write_pos += 200;
+            memcpy(data_write_pos, &pIndoor->stru1, 0x38);
+            data_write_pos += 56;
+
+        }
+        else//for Outdoor
+        {
+            pOutdoor->ddm.uNumFacesInBModels = 0;
+            for (int i = 0; i < pOutdoor->uNumBModels; ++i)
+                pOutdoor->ddm.uNumFacesInBModels += pOutdoor->pBModels[i].uNumFaces;
+            pOutdoor->ddm.uNumBModels = pOutdoor->uNumBModels;
+            pOutdoor->ddm.uNumDecorations = uNumLevelDecorations;
+            memcpy(data_write_pos, &pOutdoor->ddm, sizeof(DDM_DLV_Header));//0x28
+            data_write_pos += sizeof(DDM_DLV_Header);
+            memcpy(data_write_pos, pOutdoor->uFullyRevealedCellOnMap, 0x3C8);
+            data_write_pos += 968;
+            memcpy(data_write_pos, pOutdoor->uPartiallyRevealedCellOnMap, 0x3C8);
+            data_write_pos += 968;
+            for (int i = 0; i < pOutdoor->uNumBModels; ++i)
+                for (int j = 0; j < pOutdoor->pBModels[i].uNumFaces; ++j)//*(int *)&pOutdoor->pBModels->pModelName[v24]; ++j)
+                {
+                    memcpy(data_write_pos, &(pOutdoor->pBModels[i].pFaces[j].uAttributes), 4);
+                    data_write_pos += 4;
+                }
+
+            for (int i = 0; i < (signed int)uNumLevelDecorations; ++i)
+            {
+                memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
+                data_write_pos += 2;
+            }
+            memcpy(data_write_pos, &uNumActors, 4);
+            data_write_pos += 4;
+            memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
+            data_write_pos += uNumActors * sizeof(Actor);
+            memcpy(data_write_pos, &uNumSpriteObjects, 4);
+            data_write_pos += 4;
+            memcpy(data_write_pos, &pSpriteObjects, uNumSpriteObjects * sizeof(SpriteObject));
+            data_write_pos += uNumSpriteObjects * sizeof(SpriteObject);
+            memcpy(data_write_pos, &uNumChests, 4);
+            data_write_pos += 4;
+            memcpy(data_write_pos, pChests.data(), sizeof(Chest)* uNumChests);
+            data_write_pos += sizeof(Chest) * uNumChests;
+            memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
+            data_write_pos += 200;
+            memcpy(data_write_pos, &pOutdoor->loc_time, 0x38);
+            data_write_pos += 56;
+        }
+        strcpy(Source, pCurrentMapName);
+        _splitpath(Source, Drive, Dir, Filename, Ext);
+        Ext[1] = 'd';
+
+        Size = (int)data_write_pos - (int)uncompressed_buff;
+        compressed_block_size = 999984;
+        res = zlib::MemZip((char *)compressed_buf + 16, (unsigned int *)&compressed_block_size, uncompressed_buff, Size);
+        if (res || (signed int)compressed_block_size > (signed int)Size)
+        {
+            memcpy((void *)(compressed_buf + 16), uncompressed_buff, Size);
+            compressed_block_size = Size;
+        }
+        compressed_block_size += 16;
+        memcpy(&((ODMHeader *)compressed_buf)->uCompressedSize, &compressed_block_size, 4);
+        memcpy(&((ODMHeader *)compressed_buf)->uDecompressedSize, &Size, 4);
+        sprintf(Source, "%s%s", Filename, Ext);
+        strcpy(pLodDirectory.pFilename, Source);
+        pLodDirectory.uDataSize = compressed_block_size;
+        if (pNew_LOD->Write(&pLodDirectory, (const void *)compressed_buf, 0))
+        {
+            auto error_message = localization->FormatString(612, 208);
+            Log::Warning(L"%S", error_message.c_str());
+        }
+        free((void *)compressed_buf);
+    }
+    free(uncompressed_buff);
+    if (IsAutoSAve)
+    {
+        if (!CopyFile("data\\new.lod", "saves\\autosave.mm7"))
+        {
+            Log::Warning(L"Copy autosave.mm7 failed");
+        }
+    }
+    pParty->vPosition.x = pPositionX;
+    pParty->vPosition.y = pPositionY;
+    pParty->vPosition.z = pPositionZ;
+    pParty->uFallStartY = pPositionZ;
+    pParty->sRotationY = sPRotationY;
+    pParty->sRotationX = sPRotationX;
 }
 
 //----- (00460078) --------------------------------------------------------
 void DoSavegame(unsigned int uSlot)
 {
-  if ( _stricmp(pCurrentMapName, "d05.blv") )//Not Arena(не Арена)
-  {
-    LOD::Directory pDir; // [sp+Ch] [bp-28h]@2
-    SaveGame(0, 0);
-    strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName);
-    pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
-    strcpy(pDir.pFilename, "header.bin");
-    pDir.uDataSize = 100;
-    pNew_LOD->Write(&pDir, &pSavegameHeader[uSlot], 0);
-    pNew_LOD->CloseWriteFile();//закрыть 
-    CopyFileA("data\\new.lod", StringPrintf("saves\\save%03d.mm7", uSlot).c_str(), 0);
-  }
-  GUI_UpdateWindows();
-  pGUIWindow_CurrentMenu->Release();
-  current_screen_type = SCREEN_GAME;
+    if (_stricmp(pCurrentMapName, "d05.blv"))//Not Arena(не Арена)
+    {
+        LOD::Directory pDir; // [sp+Ch] [bp-28h]@2
+        SaveGame(0, 0);
+        strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName);
+        pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
+        strcpy(pDir.pFilename, "header.bin");
+        pDir.uDataSize = 100;
+        pNew_LOD->Write(&pDir, &pSavegameHeader[uSlot], 0);
+        pNew_LOD->CloseWriteFile();//закрыть 
+        CopyFile("data\\new.lod", StringPrintf("saves\\save%03d.mm7", uSlot).c_str());
+    }
+    GUI_UpdateWindows();
+    pGUIWindow_CurrentMenu->Release();
+    current_screen_type = SCREEN_GAME;
 
-  viewparams->bRedrawGameUI = true;
-  for (uint i = 0; i < 45; i++)
-  {
-      pSavegameThumbnails[i]->Release();
-      pSavegameThumbnails[i] = nullptr;
-  }
+    viewparams->bRedrawGameUI = true;
+    for (uint i = 0; i < 45; i++)
+    {
+        pSavegameThumbnails[i]->Release();
+        pSavegameThumbnails[i] = nullptr;
+    }
 
-  if ( _stricmp(pCurrentMapName, "d05.blv") )
-    pNew_LOD->_4621A7();
-  else
-    GameUI_StatusBar_OnEvent(localization->GetString(583), 2);// "No saving in the Arena"
+    if (_stricmp(pCurrentMapName, "d05.blv"))
+        pNew_LOD->_4621A7();
+    else
+        GameUI_StatusBar_OnEvent(localization->GetString(583), 2);// "No saving in the Arena"
 
-  pEventTimer->Resume();
-  GameUI_StatusBar_OnEvent(localization->GetString(656), 2);// "Game Saved!"
-  viewparams->bRedrawGameUI = true;
+    pEventTimer->Resume();
+    GameUI_StatusBar_OnEvent(localization->GetString(656), 2);// "Game Saved!"
+    viewparams->bRedrawGameUI = true;
 }
 
 //----- (0045E297) --------------------------------------------------------

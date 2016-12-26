@@ -30,7 +30,7 @@ void GameOver_Loop(int v15)
     const char *v7; // edx@10
     const char *v8; // ecx@12
     const char *v9; // eax@14
-    unsigned int v10; // eax@25
+    //unsigned int v10; // eax@25
     GUIWindow pWindow; // [sp+34h] [bp-9Ch]@1
     unsigned int v14; // [sp+A4h] [bp-2Ch]@5
     const char *pInString; // [sp+ACh] [bp-24h]@5
@@ -40,7 +40,6 @@ void GameOver_Loop(int v15)
     int v20; // [sp+BCh] [bp-14h]@7
     GUIFont *pFont; // [sp+C4h] [bp-Ch]@1
     unsigned __int64 v23; // [sp+C8h] [bp-8h]@5
-    MSG msg;
 
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
     bGameoverLoop = true;
@@ -96,7 +95,7 @@ void GameOver_Loop(int v15)
         pWindow.DrawTitleText(
             pFont,
             1,
-            i * (LOBYTE(pFont->uFontHeight) - 2) + LOBYTE(pFont->uFontHeight) + 46,
+            i * ((unsigned char)pFont->uFontHeight - 2) + (unsigned char)pFont->uFontHeight + 46,
             1,
             localization->FormatString(
                 129,
@@ -108,7 +107,7 @@ void GameOver_Loop(int v15)
     }
     v23 = (signed __int64)v23 / v19;
     v6 = FitTextInAWindow(pInString, pFont, &pWindow, 0xC);
-    pWindow.DrawTitleText(pFont, 1, 5 * (LOBYTE(pFont->uFontHeight) + 11), 1, v6, 0);
+    pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetFontHeight() + 11), 1, v6, 0);
 
 
     v7 = localization->GetString(56);
@@ -126,7 +125,7 @@ void GameOver_Loop(int v15)
     pWindow.DrawTitleText(
         pFont,
         1,
-        pWindow.uFrameHeight - 2 * LOBYTE(pFont->uFontHeight) - 5,
+        pWindow.uFrameHeight - 2 * pFont->GetFontHeight() - 5,
         1,
         localization->GetString(37) + StringPrintf(" %lu %s, %lu %s, %lu %s ", v14, v9, v18, v8, v17, v7), //Total Time:
         3
@@ -146,32 +145,21 @@ void GameOver_Loop(int v15)
         result = pMessageQueue_50CBD0->uNumMessages;
     else
     {
-        LODWORD(v23) = GetTickCount() + 5000;
-        while ((unsigned int)v23 > GetTickCount())
+        HEXRAYS_LODWORD(v23) = OS_GetTime() + 5000;
+        while ((unsigned int)v23 > OS_GetTime())
             ;
-        while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-        {
-            if (msg.message == WM_QUIT)
-                Engine_DeinitializeAndTerminate(0);
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
+
+        OS_PeekMessageLoop();
+
         if (pMessageQueue_50CBD0->uNumMessages)
         {
-            LOBYTE(v10) = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
-            pMessageQueue_50CBD0->uNumMessages = v10;
+            pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
         }
         pKeyActionMap->ResetKeys();
         pKeyActionMap->uLastKeyPressed = 0;
         do
         {
-            while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-            {
-                if (msg.message == WM_QUIT)
-                    Engine_DeinitializeAndTerminate(0);
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
+            OS_PeekMessageLoop();
         } while (!pKeyActionMap->uLastKeyPressed);
         if (pMessageQueue_50CBD0->uNumMessages)
         {

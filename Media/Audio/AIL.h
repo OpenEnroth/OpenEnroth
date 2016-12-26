@@ -1,5 +1,4 @@
 #pragma once
-#include "OSAPI.h"
 
 
 
@@ -70,25 +69,25 @@ void MSS32_DLL_Initialize();
 #define AILCALLBACK __stdcall
 
 
-typedef __int32 (AILCALLBACK FAR * AILASIFETCHCB) (unsigned __int32		user,			// User value passed to ASI_open_stream()
-												void FAR *dest,			// Location to which stream data should be copied by app
+typedef __int32 (AILCALLBACK * AILASIFETCHCB) (unsigned __int32		user,			// User value passed to ASI_open_stream()
+												void *dest,			// Location to which stream data should be copied by app
 												__int32		bytes_requested, // # of bytes requested by ASI codec
 												__int32		offset);		 // If not -1, application should seek to this point in stream
 
-typedef HASISTREAM (AILCALL FAR *ASI_STREAM_OPEN) (unsigned __int32			user,				// User value passed to fetch callback
+typedef HASISTREAM (AILCALL *ASI_STREAM_OPEN) (unsigned __int32			user,				// User value passed to fetch callback
 													AILASIFETCHCB fetch_CB,			// Source data fetch handler
 													unsigned __int32			total_size);		// Total size for %-done calculations (0=unknown)
-typedef __int32	(AILCALL FAR *ASI_STREAM_PROCESS) (HASISTREAM	stream,				// Handle of stream
-												void FAR	*buffer,				// Destination for processed data
+typedef __int32	(AILCALL *ASI_STREAM_PROCESS) (HASISTREAM	stream,				// Handle of stream
+												void *buffer,				// Destination for processed data
 												__int32		 buffer_size);		// # of bytes to return in buffer
-typedef __int32 (AILCALL FAR *ASI_STREAM_SEEK)	(HASISTREAM stream,
+typedef __int32 (AILCALL *ASI_STREAM_SEEK)	(HASISTREAM stream,
 													 __int32		stream_offset);
-typedef __int32 (AILCALL FAR *ASI_STREAM_CLOSE) (HASISTREAM stream);
-typedef __int32 (AILCALL FAR *ASI_STREAM_ATTRIBUTE) (HASISTREAM stream,
+typedef __int32 (AILCALL *ASI_STREAM_CLOSE) (HASISTREAM stream);
+typedef __int32 (AILCALL *ASI_STREAM_ATTRIBUTE) (HASISTREAM stream,
 												 HATTRIB	attrib);
-typedef __int32 (AILCALL FAR *ASI_STREAM_SET_PREFERENCE) (HASISTREAM stream,
+typedef __int32 (AILCALL *ASI_STREAM_SET_PREFERENCE) (HASISTREAM stream,
 														HATTRIB	preference,
-														void const FAR	*	value);
+														void const *	value);
 
 typedef struct
 	{
@@ -124,22 +123,22 @@ ASISTAGE;
 
 
 
-typedef void (AILCALLBACK FAR* AILSTREAMCB)(HSTREAM stream);
+typedef void (AILCALLBACK * AILSTREAMCB)(HSTREAM stream);
 typedef struct _STREAM {
 
 	__int32 block_oriented; // 1 if this is an ADPCM or ASI-compressed stream
 	__int32 using_ASI;		// 1 if using ASI decoder to uncompress stream data
-	ASISTAGE FAR *ASI;	// handy pointer to our ASI coded
+	ASISTAGE *ASI;	// handy pointer to our ASI coded
 
 	HSAMPLE samp;		// the sample handle
 
 	unsigned __int32 fileh;			// the open file handle
 
-	unsigned __int8 FAR* bufs[3];	// the data buffers
+	unsigned __int8 * bufs[3];	// the data buffers
 	unsigned __int32 bufsizes[3];	// the size of each buffer
 	__int32 reset_ASI[3];	// should we reset the ASI at the end of the buffer?
 	__int32 bufstart[3];	// offset of where this buffer started
-	void FAR* asyncs[3];// async read structures
+	void * asyncs[3];// async read structures
 
 	__int32 loadedbufstart[2]; // offset of where the loaded buffer started
 	__int32 loadedorder[2]; // order of the buffers as they were loaded
@@ -192,7 +191,7 @@ typedef struct _STREAM {
 	AILSTREAMCB callback;	// end of stream callback
 
 	__int32 user_data[8];	// Miscellaneous user data
-	void FAR* next;	 // pointer to next stream
+	void * next;	 // pointer to next stream
 
 #if defined(IS_WINDOWS) || defined(IS_MAC)
 	__int32 autostreaming;	// are we autostreaming this stream
@@ -222,16 +221,11 @@ typedef struct _STREAM {
 
 
 
-
-
-
-
-
 int __stdcall AIL_startup();
 HREDBOOK __stdcall AIL_redbook_open_drive(long drive);
 HREDBOOK __stdcall AIL_redbook_open(int);
 int __stdcall AIL_set_preference(unsigned int number, int value);
-int __stdcall AIL_waveOutOpen(HDIGDRIVER *drv, HWAVEOUT *phWaveOut, int wDeviceID, WAVEFORMAT *pFormat);
+int __stdcall AIL_waveOutOpen(HDIGDRIVER *drv, void *phWaveOut, int wDeviceID, void *waveformat);
 int __stdcall AIL_get_preference(unsigned int number);
 int __stdcall AIL_digital_configuration(HDIGDRIVER drv, int *rate, int *format, char *string);
 HSAMPLE __stdcall AIL_allocate_sample_handle(HDIGDRIVER hDrv);
@@ -245,7 +239,7 @@ void __stdcall AIL_redbook_track_info(HREDBOOK hRedbook, unsigned int uTrackNum,
 unsigned int __stdcall AIL_redbook_play(HREDBOOK hRedbook, unsigned int uStartMS, unsigned int uEndMS);  	
 unsigned int __stdcall AIL_redbook_resume(HREDBOOK);
 int __stdcall AIL_enumerate_3D_providers(int *a1, HPROVIDER *pOutProv, char **pOutName);
-DWORD __stdcall AIL_open_3D_provider(HPROVIDER a2);
+int __stdcall AIL_open_3D_provider(HPROVIDER a2);
 void __stdcall AIL_3D_provider_attribute(HPROVIDER lib, char *name, void *val);
 int __stdcall AIL_set_3D_provider_preference(HPROVIDER a1, const char *a2, int *a3);
 void __stdcall AIL_waveOutClose(HDIGDRIVER drvr);

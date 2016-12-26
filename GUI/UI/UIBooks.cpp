@@ -8,7 +8,7 @@
 #include "Engine/LOD.h"
 #include "Engine/Awards.h"
 
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIBooks.h"

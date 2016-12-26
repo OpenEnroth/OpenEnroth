@@ -5,55 +5,23 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
+#include "Engine/LOD.h"
+
+#include "Engine/Graphics/IRender.h"
 
 #include "MMT.h"
+
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIFont.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "IO/Mouse.h"
-#include "LOD.h"
-#include "Engine/Graphics/Render.h"
-#include "GUI/GUIFont.h"
-#include "lib/libpng/png.h"
 #include "Media/Video/Bink_Smacker.h"
 
+#include "IO/Mouse.h"
+
+#include "lib/libpng/png.h"
+
 #include "Game/MainMenu.h"
-
-bool FileExists(const char *fname)
-{
-    return access(fname, 0) != -1;
-}
-
-void ShowLogoVideo()
-{
-  pMediaPlayer->bStopBeforeSchedule = false;
-
-//  pMediaPlayer->pResetflag = 0;
-  bGameoverLoop = 1;
-  if (!bNoVideo)
-  {
-    render->PresentBlackScreen();
-    pMediaPlayer->PlayFullscreenMovie(MOVIE_3DOLogo, true);
-    if ( !pMediaPlayer->bStopBeforeSchedule )
-    {
-      pMediaPlayer->PlayFullscreenMovie(MOVIE_NWCLogo, true);
-      if ( !pMediaPlayer->bStopBeforeSchedule )
-      {
-        if ( !pMediaPlayer->bStopBeforeSchedule )
-        {
-          pMediaPlayer->PlayFullscreenMovie(MOVIE_JVC, true);
-          if ( !pMediaPlayer->bStopBeforeSchedule )
-          {
-            if (!use_MMT)
-              pMediaPlayer->PlayFullscreenMovie(MOVIE_Intro, true);
-          }
-        }
-      }
-    }
-  }
-
-  bGameoverLoop = 0;
-}
 
 
 Texture_MM7 *LoadPNG(const char *name)
@@ -349,7 +317,7 @@ void DrawMMTCopyrightWindow()
   Dst.uFrameX = 8;
   Dst.uFrameY = 30;
   Dst.uFrameHeight = pFontSmallnum->CalcTextHeight("Text Verification: Here we can write an explanation of the project", &Dst, 24)
-                   + 2 * LOBYTE(pFontSmallnum->uFontHeight)
+                   + 2 * pFontSmallnum->GetFontHeight()
                    + 24;
   Dst.uFrameY = 470 - Dst.uFrameHeight;
   Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;

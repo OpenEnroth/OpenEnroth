@@ -1,8 +1,6 @@
 #pragma once
-#include "Engine/Engine.h"
+#include "Engine/Strings.h"
 
-#include <stdio.h>
-#include <array>
 
 enum IMAGE_FORMAT
 {
@@ -15,20 +13,7 @@ enum IMAGE_FORMAT
 };
 
 
-inline unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format)
-{
-    switch (format)
-    {
-        case IMAGE_FORMAT_R5G6B5:   return 2;
-        case IMAGE_FORMAT_A1R5G5B5: return 2;
-        case IMAGE_FORMAT_A8R8G8B8: return 4;
-
-        default:
-            Error("Invalid format: %d", format);
-            return 0;
-    }
-}
-
+unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format);
 
 
 class ImageLoader;
@@ -150,7 +135,7 @@ enum TEXTURE_FRAME_TABLE_FLAGS
 };
 
 
-
+class Texture;
 class TextureFrame
 {
     public:
@@ -161,14 +146,7 @@ class TextureFrame
         __int16 uAnimLength;
         __int16 uFlags;
 
-        Texture *GetTexture()
-        {
-            if (!this->tex)
-            {
-                this->tex = assets->GetBitmap(this->name);
-            }
-            return this->tex;
-        }
+        Texture *GetTexture();
 
     protected:
         Texture *tex;
@@ -193,11 +171,11 @@ struct TextureFrameTable
 
 
     int sNumTextures;
-    struct TextureFrame *pTextures;
+    TextureFrame *pTextures;
 };
 #pragma pack(pop)
 
-extern struct TextureFrameTable *pTextureFrameTable;
+extern TextureFrameTable *pTextureFrameTable;
 
 
 
@@ -207,18 +185,18 @@ struct OptionsMenuSkin
        OptionsMenuSkin();
   void Relaease();
 
-  class Image *uTextureID_Background;      // 507C60
-  class Image *uTextureID_TurnSpeed[3];    // 507C64
-  class Image *uTextureID_ArrowLeft;       // 507C70
-  class Image *uTextureID_ArrowRight;      // 507C74
-  class Image *uTextureID_unused_0;        // 507C78
-  class Image *uTextureID_unused_1;        // 507C7C
-  class Image *uTextureID_unused_2;        // 507C80
-  class Image *uTextureID_FlipOnExit;      // 507C84
-  class Image *uTextureID_SoundLevels[10]; // 507C88
-  class Image *uTextureID_AlwaysRun;       // 507CB0
-  class Image *uTextureID_WalkSound;       // 507CB4
-  class Image *uTextureID_ShowDamage;      // 507CB8
+  Image *uTextureID_Background;      // 507C60
+  Image *uTextureID_TurnSpeed[3];    // 507C64
+  Image *uTextureID_ArrowLeft;       // 507C70
+  Image *uTextureID_ArrowRight;      // 507C74
+  Image *uTextureID_unused_0;        // 507C78
+  Image *uTextureID_unused_1;        // 507C7C
+  Image *uTextureID_unused_2;        // 507C80
+  Image *uTextureID_FlipOnExit;      // 507C84
+  Image *uTextureID_SoundLevels[10]; // 507C88
+  Image *uTextureID_AlwaysRun;       // 507CB0
+  Image *uTextureID_WalkSound;       // 507CB4
+  Image *uTextureID_ShowDamage;      // 507CB8
 };
 extern OptionsMenuSkin options_menu_skin; // 507C60
 
@@ -236,38 +214,39 @@ extern struct stru355 stru_4EFCBC;// = {0x20, 0x41, 0, 0x10, 0x7C00, 0x3E0, 0x1F
 
 struct stru355
 {
-  int field_0;
-  int field_4;
-  int field_8;
-  int field_C;
-  int field_10;
-  int field_14;
-  int field_18;
-  int field_1C;
+    int field_0;
+    int field_4;
+    int field_8;
+    int field_C;
+    int field_10;
+    int field_14;
+    int field_18;
+    int field_1C;
 };
 
 /*  390 */
 #pragma pack(push, 1)
 struct stru350
 {
-  stru350 *_450DDE();
-  bool _450DF1(const struct stru355 *p1, const struct stru355 *p2);
-  unsigned int _450F55(int a2);
-  int _450FB1(int a2);
-  int sub_451007_scale_image_bicubic(unsigned short *pSrc, int srcWidth, int srcHeight, int srcPitch,
-                                     unsigned short *pDst, int dstWidth, int dstHeight, int dstPitch,
-                                     int a9, int a10);
+    stru350 *_450DDE();
+    bool _450DF1(const struct stru355 *p1, const struct stru355 *p2);
+    unsigned int _450F55(int a2);
+    int _450FB1(int a2);
+    int sub_451007_scale_image_bicubic(
+        unsigned short *pSrc, int srcWidth, int srcHeight, int srcPitch,
+        unsigned short *pDst, int dstWidth, int dstHeight, int dstPitch,
+        int a9, int a10
+    );
 
-  struct stru355 field_0;
-  struct stru355 field_20;
-  int field_40;
-  int field_44;
-  int field_48;
-  int field_4C;
-  int field_50;
-  int field_54;
-  int field_58;
-  int field_5C;
+    struct stru355 field_0;
+    struct stru355 field_20;
+    int field_40;
+    int field_44;
+    int field_48;
+    int field_4C;
+    int field_50;
+    int field_54;
+    int field_58;
+    int field_5C;
 };
 #pragma pack(pop)
-

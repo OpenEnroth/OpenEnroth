@@ -1,7 +1,9 @@
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
-#include <crtdbg.h>
+#include <windows.h>
+#undef PlaySound // conflicts with Player method
+
+#include <tuple>
+#include <vector>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
@@ -20,11 +22,21 @@
 
 #include "GUI/GUIWindow.h"
 
-#include <tuple>
-#include <vector>
-#include <string>
+#include "Platform/Api.h"
+
 
 struct KeyboardActionMapping *pKeyActionMap;
+
+
+//----- (0044F07B) --------------------------------------------------------
+bool Engine::_44F07B()
+{
+    if (!pKeyboardInstance->IsKeyBeingHeld(VK_SHIFT) && !pKeyboardInstance->IsKeyBeingHeld(VK_LSHIFT) &&
+        !pKeyboardInstance->IsKeyBeingHeld(VK_LSHIFT) || (pKeyboardInstance->WasKeyPressed(VK_F11) == 0 &&
+            pKeyboardInstance->WasKeyPressed(VK_F11)))
+        return true;
+    return false;
+}
 
 
 class CKeyListElement
@@ -231,38 +243,38 @@ bool KeyboardActionMapping::ProcessTextInput(unsigned int a2)
 //----- (00459FFC) --------------------------------------------------------
 void KeyboardActionMapping::ReadMappings()
 {
-  char str[32];
+    char str[32];
 
-  for (size_t i = 0; i < keyMappingParams.size(); i++)
-  {
-    const char* keyName = keyMappingParams[i].m_keyName.c_str();
-    short commandDefaultKeyCode = keyMappingParams[i].m_keyDefaultCode;
-    short commandId = keyMappingParams[i].m_cmdId;
-    KeyToggleType toggType = keyMappingParams[i].m_toggType;
+    for (size_t i = 0; i < keyMappingParams.size(); i++)
+    {
+        const char* keyName = keyMappingParams[i].m_keyName.c_str();
+        short commandDefaultKeyCode = keyMappingParams[i].m_keyDefaultCode;
+        short commandId = keyMappingParams[i].m_cmdId;
+        KeyToggleType toggType = keyMappingParams[i].m_toggType;
 
-    ReadWindowsRegistryString(keyName, str, 32, "DEFAULT");
-    if ( strcmp(str, "DEFAULT") && ( TranslateKeyNameToKeyCode(str) != -1) )
-      pVirtualKeyCodesMapping[commandId] = TranslateKeyNameToKeyCode(str);
-    else
-      pVirtualKeyCodesMapping[commandId] = commandDefaultKeyCode;
-    pToggleTypes[commandId] = toggType;
-  }
+        OS_GetAppString(keyName, str, 32, "DEFAULT");
+        if (strcmp(str, "DEFAULT") && (TranslateKeyNameToKeyCode(str) != -1))
+            pVirtualKeyCodesMapping[commandId] = TranslateKeyNameToKeyCode(str);
+        else
+            pVirtualKeyCodesMapping[commandId] = commandDefaultKeyCode;
+        pToggleTypes[commandId] = toggType;
+    }
 
-  bAlwaysRun = ReadWindowsRegistryInt("valAlwaysRun", 0) != 0;
-  bFlipOnExit = ReadWindowsRegistryInt("FlipOnExit", 0) != 0;
+    bAlwaysRun = OS_GetAppInt("valAlwaysRun", 0) != 0;
+    bFlipOnExit = OS_GetAppInt("FlipOnExit", 0) != 0;
 }
 
 //----- (0045A960) --------------------------------------------------------
 void KeyboardActionMapping::StoreMappings()
 {
 
-  const char *v2; // eax@1
+    const char *v2; // eax@1
 
-  for ( size_t i = 0; i < keyMappingParams.size(); i++)
-  {
-    v2 = GetVKeyDisplayName(pVirtualKeyCodesMapping[keyMappingParams[i].m_cmdId]);
-    WriteWindowsRegistryString(keyMappingParams[i].m_keyName.c_str(), v2);
-  }
+    for (size_t i = 0; i < keyMappingParams.size(); i++)
+    {
+        v2 = GetVKeyDisplayName(pVirtualKeyCodesMapping[keyMappingParams[i].m_cmdId]);
+        OS_SetAppString(keyMappingParams[i].m_keyName.c_str(), v2);
+    }
 }
 
 //----- (0045ABCA) --------------------------------------------------------
@@ -331,126 +343,16 @@ bool Keyboard::IsKeyBeingHeld(int vKey)
 //----- (0045B0CE) --------------------------------------------------------
 bool Keyboard::WasKeyPressed(int vKey)
 {
-  return (GetAsyncKeyState(vKey) & 1) != 0;
+    return (GetAsyncKeyState(vKey) & 1) != 0;
 }
+
 //----- (0046A14B) --------------------------------------------------------
 void OnPressSpace()
 {
-
-  //if ( render->pRenderD3D )
-  {
     pEngine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
     int pid = pEngine->pVisInstance->get_picked_object_zbuf_val();
-    if ( pid != -1 )
-      DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
-    return;
-  }
-
-  
-  // software render stuff following
-  /*
-  static int dword_720660[100]; // 720660
-  static int dword_7207F0[100]; // 7207F0
-
-  v22 = 0;
-  v1 = (int *)((signed int)(viewparams->uScreen_BttmR_X + viewparams->uScreen_topL_X) >> 1);//wrong pointer
-  if ( (signed int)viewparams->uScreen_topL_Y < (signed int)viewparams->uScreen_BttmR_Y )
-  {
-	  v2 = (char *)v1 - 50;
-	  v1 = (int *)((char *)v1 + 50);
-	  v3 = 640 * viewparams->uScreen_topL_Y;
-	  v17 = v2;
-	  v20 = v1;
-	  v18 = ((viewparams->uScreen_BttmR_Y - viewparams->uScreen_topL_Y - 1) >> 1) + 1;
-	  do
-	  {
-		if ( (signed int)v2 < (signed int)v20 )
-		{
-			v1 = &render->pActiveZBuffer[(int)&v2[v3]];
-			v21 = &render->pActiveZBuffer[(int)&v2[v3]];
-			v4 = v22;
-			v5 = (((char *)v20 - v2 - 1) >> 1) + 1;
-			do
-			{
-			  v6 = 0;
-			  v7 = *v1 & 0xFFFF;
-			  v19 = 0;
-			  if ( v4 > 0 )
-			  {
-				do
-				{
-				  if ( dword_7207F0[v6] == v7 )
-					break;
-				  ++v6;
-				  v19 = v6;
-				}
-				while ( v6 < v22 );
-			  }
-			  if ( PID_TYPE(v7) == OBJECT_Decoration)
-			  {
-				v16 = (unsigned int)PID_ID(v7);
-				if ( (signed int)(((unsigned int)*v21 >> 16)
-								- pDecorationList->pDecorations[pLevelDecorations[(unsigned int)PID_ID(v7)].uDecorationDescID].uRadius) <= 512 )
-				  if ( v19 == v22 && v4 < 100 )
-				  {
-					++v22;
-					++v4;
-					v8 = *v21;
-					dword_7207F0[v4 - 1] = v7;
-					dword_720660[v4 - 1] = v8;
-				  }
-			  }
-			  else if ( (unsigned int)*v21 <= 0x2000000 )
-			  {
-				  if ( v19 == v22 && v4 < 100 )
-				  {
-					++v22;
-					++v4;
-					v8 = *v21;
-					dword_7207F0[v4 - 1] = v7;
-					dword_720660[v4 - 1] = v8;
-				  }
-			  }
-			  v1 = v21 + 2;
-			  --v5;
-			  v21 += 2;
-			}
-			while ( v5 );
-			v2 = v17;
-		}
-		v3 += 1280;
-		--v18;
-	  }
-	  while ( v18 );
-  }
-  if ( v22 > 0 )
-  {
-    v9 = dword_720660;
-    v10 = 1;
-    do
-    {
-      for ( i = v10; i < v22; ++i )
-      {
-        v12 = *v9;
-        v13 = dword_720660[i];
-        if ( v13 < *v9 )
-        {
-          *v9 = v13;
-          dword_720660[i] = v12;
-        }
-      }
-      ++v10;
-      ++v9;
-      LOBYTE(v1) = v10 - 1;
-    }
-    while ( v10 - 1 < v22 );
-  }
-  for ( j = 0; j < v22; ++j )
-  {
-    LOBYTE(v1) = DoInteractionWithTopmostZObject(dword_720660[j] & 0xFFFF, v16);
-    if ( !(char)v1 )
-      break;
-  }*/
+    if (pid != -1)
+        DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
 }
 
 

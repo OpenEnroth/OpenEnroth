@@ -26,8 +26,8 @@ int MakeColorMaskFromBitDepth(int a1)
   {
     do
     {
-      LODWORD(v1) = HIDWORD(v1) + v1;
-      HIDWORD(v1) *= 2;
+        HEXRAYS_LODWORD(v1) = HEXRAYS_HIDWORD(v1) + v1;
+        HEXRAYS_HIDWORD(v1) *= 2;
       --a1;
     }
     while ( a1 );
@@ -96,25 +96,25 @@ bool HSV2RGB(float *a1, float *a2, float *a3, float a4, float a5, float a6)
             *v7 = v11;
             goto LABEL_12;
           }
-          *(int *)v8 = LODWORD(a4a);
+          *(int *)v8 = HEXRAYS_LODWORD(a4a);
           *v7 = v11;
         }
         else
         {
           *v8 = v11;
           a3a = v12;
-          *(int *)v7 = LODWORD(a3a);
+          *(int *)v7 = HEXRAYS_LODWORD(a3a);
         }
         v17 = a6;
       }
       else
       {
         *v8 = v11;
-        *(int *)v7 = LODWORD(a6);
+        *(int *)v7 = HEXRAYS_LODWORD(a6);
         v17 = a4a;
       }
 LABEL_12:
-      *(int *)v6 = LODWORD(v17);
+      *(int *)v6 = HEXRAYS_LODWORD(v17);
       goto LABEL_20;
     }
     *v8 = v12;
@@ -123,7 +123,7 @@ LABEL_12:
   else
   {
     *v8 = a6;
-    *(int *)v7 = LODWORD(a4a);
+    *(int *)v7 = HEXRAYS_LODWORD(a4a);
   }
   *a3 = v11;
 LABEL_20:
@@ -631,7 +631,7 @@ void PaletteManager::CalcPalettes_LUT(int a2)
       v57 = v2->uNumTargetGBits;
       if ( v53 > (1 << v57) - 1 )
         v53 = (1 << v57) - 1;
-      HIDWORD(v54) = v2->uNumTargetBBits;
+      HEXRAYS_HIDWORD(v54) = v2->uNumTargetBBits;
       v59 = v2->uNumTargetBBits;
       if ( (signed int)v54 > (1 << v59) - 1 )
         v81 = (1 << v59) - 1;
@@ -784,7 +784,7 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID)
         {
           //LODWORD(a1) = tex.pPalette24[v4];
           a1 = (double)tex.pPalette24[v4] / 255.0f;
-          LODWORD(a2a) = (unsigned __int8)*(&v10 + v4 + v17 + (unsigned int)tex.pPalette24);
+          HEXRAYS_LODWORD(a2a) = (unsigned __int8)*(&v10 + v4 + v17 + (unsigned int)tex.pPalette24);
           a2a = (double)tex.pPalette24[v4 + 1] / 255.0f;
           //a3 = tex.pPalette24[v4 + 2];
           a3 = (double)tex.pPalette24[v4 + 2] / 255.0f;

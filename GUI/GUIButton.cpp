@@ -1,20 +1,13 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
+#include "GUI/GUIWindow.h"
+#include "GUI/GUIFont.h"
 
-#include "GUIButton.h"
-#include "GUIWindow.h"
-#include "GUIFont.h"
-
-#include "OSWindow.h"
+#include "Platform/OSWindow.h"
 
 
 

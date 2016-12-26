@@ -235,7 +235,7 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y)
   Sprite* ownerSprite = nullptr;
   for (int i = 0; i < pSprites_LOD->uNumLoadedSprites; ++i)
   {
-    if (pSprites_LOD->pHardwareSprites[i].pTexture == a1->pTexture)
+    if ((void *)pSprites_LOD->pHardwareSprites[i].pTexture == a1->gapi_texture)
     {
       ownerSprite = &pSprites_LOD->pHardwareSprites[i];
       break;
@@ -300,7 +300,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay, Vis_Select
             {
               pIndoorCameraD3D->ViewTransform(&a1, 1);
               v9 = fixpoint_from_float(/*v8, */a1.vWorldViewPosition.x);
-              LOWORD(v9) = 0;
+              HEXRAYS_LOWORD(v9) = 0;
               v15 = (void *)((PID(OBJECT_BModel,pFaceID)) + v9);
               pNumPointers = &list->uNumPointers;
               v12 = &list->object_pool[list->uNumPointers];
@@ -475,7 +475,7 @@ int Vis::get_object_zbuf_val(Vis_ObjectInfo *info)
       return info->sZValue;
 
     default:
-      MessageBoxW(nullptr, L"Undefined type requested for: CVis::get_object_zbuf_val()", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Vis.cpp:1037", 0);
+        Log::Warning(L"Undefined type requested for: CVis::get_object_zbuf_val()");
       return -1;
   }
 }
@@ -911,7 +911,7 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type)
     break;
 
     default:
-      MessageBoxW(nullptr, L"Unknown pointer creation flag passed to ::create_object_pointers()", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Vis.cpp:1358", 0);
+        Log::Warning(L"Unknown pointer creation flag passed to ::create_object_pointers()");
   }
 }
 
@@ -1280,7 +1280,7 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace, V
           return true;
         if (filter->object_id != OBJECT_Decoration)
         {
-          MessageBoxA(nullptr, "Unsupported \"exclusion if no event\" type in CVis::is_part_of_selection", "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Vis.cpp:207", 0);
+            Log::Warning(L"Unsupported \"exclusion if no event\" type in CVis::is_part_of_selection");
           return true;
         }
         if (pLevelDecorations[object_idx].uCog || pLevelDecorations[object_idx].uEventID)
@@ -1291,12 +1291,12 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace, V
       {
         if (object_type != OBJECT_Actor)
         {
-          MessageBoxA(nullptr, "Default case reached in VIS", "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Vis.cpp:245", 0);
+            Log::Warning(L"Default case reached in VIS");
           return true;
         }
 
         //v10 = &pActors[object_idx];
-        int result = 1 << LOBYTE(pActors[object_idx].uAIState);
+        int result = 1 << HEXRAYS_LOBYTE(pActors[object_idx].uAIState);
         if ( result & filter->no_at_ai_state
             || !(result & filter->at_ai_state)
             || filter->select_flags & 8 && (result = MonsterStats::BelongsToSupertype(pActors[object_idx].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) == 0 )

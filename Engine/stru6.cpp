@@ -1,9 +1,3 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
 #include "Engine/LOD.h"
@@ -26,8 +20,6 @@
 #include "Engine/Objects/Actor.h"
 
 #include "Engine/Tables/IconFrameTable.h"
-
-
 
 
 //----- (004A7063) --------------------------------------------------------
@@ -67,21 +59,16 @@ bool sr_42620A(RenderVertexSoft *p)
   unsigned __int8 v9; // c0@6
   char v10; // c2@6
   unsigned __int8 v11; // c3@6
-  double v12; // st6@7
   float v13; // ST04_4@7
   float v14; // ST00_4@7
-  double v15; // st7@7
-  double v16; // st6@8
   float v17; // ST04_4@8
   float v18; // ST00_4@8
-  double v19; // st7@8
 
-  //UNDEF(v1);
   if ( p->vWorldViewPosition.x < 300.0
     || (v2 = 300.0 < p[1].vWorldViewPosition.x,
         v3 = 0,
         v4 = 300.0 == p[1].vWorldViewPosition.x,
-        //BYTE1(result) = HIBYTE(v1),
+
         !(v2 | v4)) )
   {
     if ( p->vWorldViewPosition.x < 300.0 )
@@ -89,39 +76,38 @@ bool sr_42620A(RenderVertexSoft *p)
       v6 = 300.0 < p[1].vWorldViewPosition.x;
       v7 = 0;
       v8 = 300.0 == p[1].vWorldViewPosition.x;
-      //BYTE1(result) = HIBYTE(v1);
+
       if ( !(v6 | v8) )
       {
-        //LOBYTE(result) = 0;
         return false;
       }
     }
     v9 = 300.0 < p->vWorldViewPosition.x;
     v10 = 0;
     v11 = 300.0 == p->vWorldViewPosition.x;
-    //BYTE1(result) = HIBYTE(v1);
+
     if ( v9 | v11 )
     {
-      v16 = 1.0 / (p->vWorldViewPosition.x - p[1].vWorldViewPosition.x);
+      float v16 = 1.0f / (p->vWorldViewPosition.x - p[1].vWorldViewPosition.x);
       v17 = (p->vWorldViewPosition.y - p[1].vWorldViewPosition.y) * v16;
       v18 = (p->vWorldViewPosition.z - p[1].vWorldViewPosition.z) * v16;
-      v19 = 300.0 - p[1].vWorldViewPosition.x;
+      float v19 = 300.0 - p[1].vWorldViewPosition.x;
       p[1].vWorldViewPosition.x = v19 + p[1].vWorldViewPosition.x;
       p[1].vWorldViewPosition.y = v17 * v19 + p[1].vWorldViewPosition.y;
       p[1].vWorldViewPosition.z = v19 * v18 + p[1].vWorldViewPosition.z;
     }
     else
     {
-      v12 = 1.0 / (p[1].vWorldViewPosition.x - p->vWorldViewPosition.x);
+      float v12 = 1.0f / (p[1].vWorldViewPosition.x - p->vWorldViewPosition.x);
       v13 = (p[1].vWorldViewPosition.y - p->vWorldViewPosition.y) * v12;
       v14 = (p[1].vWorldViewPosition.z - p->vWorldViewPosition.z) * v12;
-      v15 = 300.0 - p->vWorldViewPosition.x;
+      float v15 = 300.0 - p->vWorldViewPosition.x;
       p->vWorldViewPosition.x = v15 + p->vWorldViewPosition.x;
       p->vWorldViewPosition.y = v13 * v15 + p->vWorldViewPosition.y;
       p->vWorldViewPosition.z = v15 * v14 + p->vWorldViewPosition.z;
     }
   }
-  //LOBYTE(result) = 1;
+
   return true;
 }
 
@@ -188,7 +174,7 @@ void stru6_stru1_indoor_sw_billboard::_47829F_sphere_particle(float x_offset, fl
 
 
 //----- (004A71FE) --------------------------------------------------------
-void stru6::DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, float dstY, float dstZ, unsigned int uTextureID)
+void stru6::DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, float dstY, float dstZ, Texture *texture)
 {
     //int v8; // eax@1
 
@@ -201,7 +187,8 @@ void stru6::DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, floa
         pProjectiles[uNumProjectiles].dstX = dstX;
         pProjectiles[uNumProjectiles].dstY = dstY;
         pProjectiles[uNumProjectiles].dstZ = dstZ;
-        pProjectiles[uNumProjectiles++].uTextureID = uTextureID;
+        pProjectiles[uNumProjectiles].texture = texture;
+        uNumProjectiles++;
     }
 }
 
@@ -210,7 +197,6 @@ void stru6::DrawProjectiles()
 {
     float v10; // ST1C_4@8
     float v11; // ST0C_4@8
-    IDirect3DTexture2 *v12; // [sp+20h] [bp-78h]@6
     RenderVertexSoft v[2]; // [sp+30h] [bp-68h]@1
 
     for (uint i = 0; i < uNumProjectiles; ++i)
@@ -229,13 +215,8 @@ void stru6::DrawProjectiles()
 
         pIndoorCameraD3D->Project(v, 2, 0);
 
-        if (p->uTextureID != -1)
-            v12 = pBitmaps_LOD->pHardwareTextures[p->uTextureID];
-        else
-            v12 = 0;
-
-        v10 = pIndoorCameraD3D->fov_x / v[1].vWorldViewPosition.x * 20.0;
-        v11 = pIndoorCameraD3D->fov_x / v[0].vWorldViewPosition.x * 20.0;
+        v10 = pIndoorCameraD3D->fov_x / v[1].vWorldViewPosition.x * 20.0f;
+        v11 = pIndoorCameraD3D->fov_x / v[0].vWorldViewPosition.x * 20.0f;
         render->DrawProjectile(
             v[0].vWorldViewProjX,
             v[0].vWorldViewProjY,
@@ -245,7 +226,7 @@ void stru6::DrawProjectiles()
             v[1].vWorldViewProjY,
             v[1].vWorldViewPosition.x,
             v10,
-            v12
+            p->texture
         );
     }
 }
@@ -270,9 +251,9 @@ void stru6::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(Spr
     if (v6)
     {
         v7 = &v4->array_4[v6 & 0x1F];
-        x = ((double)a2->vPosition.x - v7->flt_0_x) * 0.5 + v7->flt_0_x;
-        v8 = ((double)v5->vPosition.y - v7->flt_4_y) * 0.5 + v7->flt_4_y;
-        v9 = ((double)v5->vPosition.z - v7->flt_8_z) * 0.5 + v7->flt_8_z;
+        x = ((float)a2->vPosition.x - v7->flt_0_x) * 0.5f + v7->flt_0_x;
+        v8 = ((float)v5->vPosition.y - v7->flt_4_y) * 0.5f + v7->flt_4_y;
+        v9 = ((float)v5->vPosition.z - v7->flt_8_z) * 0.5f + v7->flt_8_z;
         local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
         local_0.uDiffuse = uDiffuse;
         local_0.x = x + 4.0;
@@ -283,40 +264,40 @@ void stru6::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(Spr
         local_0.b = 0.0;
         local_0.timeToLive = (rand() & 0x40) + 96;
         local_0.resource_id = resource_id;
-        local_0.flt_28 = 1.0;
+        local_0.flt_28 = 1.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
-        local_0.x = x - 4.0;
+        local_0.x = x - 4.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
-        local_0.x = (double)v5->vPosition.x + 4.0;
-        local_0.y = (double)v5->vPosition.y;
-        local_0.z = (double)v5->vPosition.z;
+        local_0.x = (float)v5->vPosition.x + 4.0f;
+        local_0.y = (float)v5->vPosition.y;
+        local_0.z = (float)v5->vPosition.z;
         pEngine->pParticleEngine->AddParticle(&local_0);
-        local_0.x = (double)v5->vPosition.x - 4.0;
+        local_0.x = (float)v5->vPosition.x - 4.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
-        v4->array_4[v5->field_54 & 0x1F].flt_0_x = (double)v5->vPosition.x;
-        v4->array_4[v5->field_54 & 0x1F].flt_4_y = (double)v5->vPosition.y;
-        v4->array_4[v5->field_54 & 0x1F].flt_8_z = (double)v5->vPosition.z;
+        v4->array_4[v5->field_54 & 0x1F].flt_0_x = (float)v5->vPosition.x;
+        v4->array_4[v5->field_54 & 0x1F].flt_4_y = (float)v5->vPosition.y;
+        v4->array_4[v5->field_54 & 0x1F].flt_8_z = (float)v5->vPosition.z;
     }
     else
     {
         a2->field_54 = v4->field_0++;
-        v4->array_4[a2->field_54 & 0x1F].flt_0_x = (double)a2->vPosition.x;
-        v4->array_4[a2->field_54 & 0x1F].flt_4_y = (double)a2->vPosition.y;
-        v4->array_4[a2->field_54 & 0x1F].flt_8_z = (double)a2->vPosition.z;
-        v10 = (double)a2->vPosition.x;
+        v4->array_4[a2->field_54 & 0x1F].flt_0_x = (float)a2->vPosition.x;
+        v4->array_4[a2->field_54 & 0x1F].flt_4_y = (float)a2->vPosition.y;
+        v4->array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
+        v10 = (float)a2->vPosition.x;
         local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
         local_0.uDiffuse = uDiffuse;
-        local_0.x = v10 + 4.0;
-        local_0.y = (double)a2->vPosition.y;
-        local_0.z = (double)a2->vPosition.z;
-        local_0.r = 0.0;
-        local_0.g = 0.0;
-        local_0.b = 0.0;
-        local_0.flt_28 = 1.0;
+        local_0.x = v10 + 4.0f;
+        local_0.y = (float)a2->vPosition.y;
+        local_0.z = (float)a2->vPosition.z;
+        local_0.r = 0.0f;
+        local_0.g = 0.0f;
+        local_0.b = 0.0f;
+        local_0.flt_28 = 1.0f;
         local_0.timeToLive = (rand() & 0x7F) + 128;
         local_0.resource_id = resource_id;
         pEngine->pParticleEngine->AddParticle(&local_0);
-        local_0.x = (double)a2->vPosition.x - 4.0;
+        local_0.x = (float)a2->vPosition.x - 4.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
     }
 }
@@ -330,20 +311,20 @@ void stru6::_4A75CC_single_spell_collision_particle(SpriteObject *a1, unsigned i
 
     memset(&local_0, 0, 0x68u);
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
-    local_0.x = (double)a1->vPosition.x;
-    local_0.y = (double)a1->vPosition.y;
-    v4 = (double)a1->vPosition.z;
+    local_0.x = (float)a1->vPosition.x;
+    local_0.y = (float)a1->vPosition.y;
+    v4 = (float)a1->vPosition.z;
     local_0.uDiffuse = uDiffuse;
     local_0.z = v4;
     v5 = 10;
     local_0.timeToLive = (rand() & 0x7F) + 128;
     local_0.resource_id = resource_id;
-    local_0.flt_28 = 1.0;
+    local_0.flt_28 = 1.0f;
     do
     {
-        local_0.r = (double)(rand() & 0x1FF) - 255.0;
-        local_0.g = (double)(rand() & 0x1FF) - 255.0;
-        local_0.b = (double)(rand() & 0x1FF) - 255.0;
+        local_0.r = (float)(rand() & 0x1FF) - 255.0f;
+        local_0.g = (float)(rand() & 0x1FF) - 255.0f;
+        local_0.b = (float)(rand() & 0x1FF) - 255.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
         --v5;
     } while (v5);
@@ -366,9 +347,9 @@ void stru6::_4A7688_fireball_collision_particle(SpriteObject *a2)
 
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
     local_0.uDiffuse = 0xFF3C1E;
-    local_0.x = (double)a2->vPosition.x;
-    local_0.y = (double)a2->vPosition.y;
-    local_0.z = (double)a2->vPosition.z;
+    local_0.x = (float)a2->vPosition.x;
+    local_0.y = (float)a2->vPosition.y;
+    local_0.z = (float)a2->vPosition.z;
     local_0.timeToLive = (rand() & 0x7F) + 128;
     local_0.resource_id = this->effpar01;
     local_0.flt_28 = 1.0;
@@ -383,8 +364,9 @@ void stru6::_4A7688_fireball_collision_particle(SpriteObject *a2)
     }
 
     pStru1->_47829F_sphere_particle(
-        (double)a2->vPosition.x, (double)a2->vPosition.y, (double)a2->vPosition.z,
-        (double)floorf(0.5f + (512.0 * v3)), ModulateColor(0xFF3C1E, v4)
+        (float)a2->vPosition.x, (float)a2->vPosition.y, (float)a2->vPosition.z,
+        floorf(0.5f + (512.0 * v3)),
+        ModulateColor(0xFF3C1E, v4)
     );
 }
 
@@ -408,10 +390,10 @@ void stru6::_4A77FD_implosion_particle_d3d(SpriteObject *a1)
         v5 = v4 * 1.333333333333333;
 
     v7 = ModulateColor(0x7E7E7E, v5);
-    v8 = (double)floorf(0.5f + v12);
-    v9 = (double)a1->vPosition.z;
-    v10 = (double)a1->vPosition.y;
-    v11 = (double)a1->vPosition.x;
+    v8 = (float)floorf(0.5f + v12);
+    v9 = (float)a1->vPosition.z;
+    v10 = (float)a1->vPosition.y;
+    v11 = (float)a1->vPosition.x;
     pStru1->_47829F_sphere_particle(v11, v10, v9, v8, v7);
 }
 
@@ -432,13 +414,13 @@ void stru6::_4A78AE_sparks_spell(SpriteObject *a1)
     local_0.uDiffuse = 0x7F7F7F;
     local_0.timeToLive = 1;
     local_0.y = v4;
-    local_0.z = (double)a1->vPosition.z;
-    local_0.r = 0.0;
-    local_0.g = 0.0;
-    local_0.b = 0.0;
-__debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
-    //local_0.uTextureID = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->pHwSpriteIDs[0];
-    LODWORD(local_0.flt_28) = 0x40000000u;
+    local_0.z = (float)a1->vPosition.z;
+    local_0.r = 0.0f;
+    local_0.g = 0.0f;
+    local_0.b = 0.0f;
+    local_0.resource_id = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->pHwSpriteIDs[0];
+__debugbreak();
+    HEXRAYS_LODWORD(local_0.flt_28) = 0x40000000u;
     pEngine->pParticleEngine->AddParticle(&local_0);
 }
 
@@ -455,12 +437,12 @@ void stru6::_4A7948_mind_blast_after_effect(SpriteObject *a1)
     v2 = &pObjectList->pObjects[a1->uObjectDescID];
     memset(&Dst, 0, 0x68u);
     v3 = a1->uSpriteFrameID;
-    Dst.x = (double)a1->vPosition.x;
-    v4 = (double)a1->vPosition.y;
+    Dst.x = (float)a1->vPosition.x;
+    v4 = (float)a1->vPosition.y;
     Dst.type = ParticleType_Sprite | ParticleType_Rotating | ParticleType_1;
     Dst.uDiffuse = 0x7F7F7F;
     Dst.y = v4;
-    Dst.z = (double)a1->vPosition.z;
+    Dst.z = (float)a1->vPosition.z;
 __debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
     //Dst.uTextureID = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->pHwSpriteIDs[0];
     v5 = rand();
@@ -469,9 +451,9 @@ __debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets
     Dst.timeToLive = (v5 & 0x7F) + 128;
     do
     {
-        Dst.r = (double)(rand() & 0x1FF) - 255.0;
-        Dst.g = (double)(rand() & 0x1FF) - 255.0;
-        Dst.b = (double)(rand() & 0x1FF) - 255.0;
+        Dst.r = (float)(rand() & 0x1FF) - 255.0f;
+        Dst.g = (float)(rand() & 0x1FF) - 255.0f;
+        Dst.b = (float)(rand() & 0x1FF) - 255.0f;
         pEngine->pParticleEngine->AddParticle(&Dst);
         --v6;
     } while (v6);
@@ -506,11 +488,11 @@ void stru6::_4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_li
 
     memset(&local_0, 0, 0x68u);
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
-    local_0.x = (double)a1->vPosition.x;
+    local_0.x = (float)a1->vPosition.x;
     v5 = a1->vPosition.z;
-    local_0.y = (double)a1->vPosition.y;
+    local_0.y = (float)a1->vPosition.y;
     local_0.uDiffuse = uDiffuse;
-    local_0.z = (double)(v5 + 32);
+    local_0.z = (float)(v5 + 32);
     v6 = rand();
     local_0.flt_28 = 1.0;
     v7 = 0.0 * a4;
@@ -582,51 +564,51 @@ void stru6::_4A7C07_stun_spell_fx(SpriteObject *a2)
     if (v4)
     {
         v6 = &v2->array_4[v4 & 0x1F];
-        v7 = ((double)a2->vPosition.x - v6->flt_0_x) * 0.5 + v6->flt_0_x;
-        v8 = ((double)a2->vPosition.y - v6->flt_4_y) * 0.5 + v6->flt_4_y;
-        v9 = ((double)a2->vPosition.z - v6->flt_8_z) * 0.5 + v6->flt_8_z;
+        v7 = ((float)a2->vPosition.x - v6->flt_0_x) * 0.5f + v6->flt_0_x;
+        v8 = ((float)a2->vPosition.y - v6->flt_4_y) * 0.5f + v6->flt_4_y;
+        v9 = ((float)a2->vPosition.z - v6->flt_8_z) * 0.5f + v6->flt_8_z;
         local_0.type = ParticleType_Sprite;
         local_0.uDiffuse = 0xFFFFFF;
         a2a = v9;
         local_0.x = v7;
         local_0.z = a2a;
         local_0.y = v8;
-        local_0.r = 0.0;
-        local_0.g = 0.0;
-        local_0.b = 0.0;
+        local_0.r = 0.0f;
+        local_0.g = 0.0f;
+        local_0.b = 0.0f;
         v10 = rand();
-        LODWORD(local_0.flt_28) = 0x40400000u;
+        HEXRAYS_LODWORD(local_0.flt_28) = 0x40400000u;
         local_0.timeToLive = (v10 & 0x3F) + 64;
 __debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
         //local_0.uTextureID = pSpriteFrameTable->GetFrame(v5->uSpriteID, v3->uSpriteFrameID)->pHwSpriteIDs[0];
         pEngine->pParticleEngine->AddParticle(&local_0);
-        v11 = (double)v3->vPosition.x;
-        LODWORD(local_0.flt_28) = 0x40800000u;
+        v11 = (float)v3->vPosition.x;
+        HEXRAYS_LODWORD(local_0.flt_28) = 0x40800000u;
         local_0.x = v11;
-        local_0.y = (double)v3->vPosition.y;
-        local_0.z = (double)v3->vPosition.z;
+        local_0.y = (float)v3->vPosition.y;
+        local_0.z = (float)v3->vPosition.z;
         local_0.timeToLive = (rand() & 0x3F) + 64;
         pEngine->pParticleEngine->AddParticle(&local_0);
-        v2->array_4[v3->field_54 & 0x1F].flt_0_x = (double)v3->vPosition.x;
-        v2->array_4[v3->field_54 & 0x1F].flt_4_y = (double)v3->vPosition.y;
-        v2->array_4[v3->field_54 & 0x1F].flt_8_z = (double)v3->vPosition.z;
+        v2->array_4[v3->field_54 & 0x1F].flt_0_x = (float)v3->vPosition.x;
+        v2->array_4[v3->field_54 & 0x1F].flt_4_y = (float)v3->vPosition.y;
+        v2->array_4[v3->field_54 & 0x1F].flt_8_z = (float)v3->vPosition.z;
     }
     else
     {
         a2->field_54 = v2->field_0++;
-        v2->array_4[a2->field_54 & 0x1F].flt_0_x = (double)a2->vPosition.x;
-        v2->array_4[a2->field_54 & 0x1F].flt_4_y = (double)a2->vPosition.y;
-        v2->array_4[a2->field_54 & 0x1F].flt_8_z = (double)a2->vPosition.z;
-        v12 = (double)a2->vPosition.x;
+        v2->array_4[a2->field_54 & 0x1F].flt_0_x = (float)a2->vPosition.x;
+        v2->array_4[a2->field_54 & 0x1F].flt_4_y = (float)a2->vPosition.y;
+        v2->array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
+        v12 = (float)a2->vPosition.x;
         local_0.type = ParticleType_Sprite;
         local_0.uDiffuse = 0xFFFFFF;
-        LODWORD(local_0.flt_28) = 0x40000000u;
+        HEXRAYS_LODWORD(local_0.flt_28) = 0x40000000u;
         local_0.x = v12;
-        local_0.y = (double)a2->vPosition.y;
-        local_0.z = (double)a2->vPosition.z;
-        local_0.r = 0.0;
-        local_0.g = 0.0;
-        local_0.b = 0.0;
+        local_0.y = (float)a2->vPosition.y;
+        local_0.z = (float)a2->vPosition.z;
+        local_0.r = 0.0f;
+        local_0.g = 0.0f;
+        local_0.b = 0.0f;
         local_0.timeToLive = (rand() & 0x3F) + 64;
 __debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
         //local_0.uTextureID = pSpriteFrameTable->GetFrame(v5->uSpriteID, a2->uSpriteFrameID)->pHwSpriteIDs[0];
@@ -635,7 +617,7 @@ __debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets
 }
 
 //----- (004A7E05) --------------------------------------------------------
-void stru6::AddProjectile(SpriteObject *a2, int a3, unsigned int uTextureID)
+void stru6::AddProjectile(SpriteObject *a2, int a3, Texture *texture)
 {
     if (a2->field_54)
     {
@@ -646,15 +628,15 @@ void stru6::AddProjectile(SpriteObject *a2, int a3, unsigned int uTextureID)
             a2->vPosition.x,
             a2->vPosition.y,
             a2->vPosition.z,
-            uTextureID
+            texture
         );
     }
     else
     {
         a2->field_54 = field_0++;
-        array_4[a2->field_54 & 0x1F].flt_0_x = (double)a2->vPosition.x;
-        array_4[a2->field_54 & 0x1F].flt_4_y = (double)a2->vPosition.y;
-        array_4[a2->field_54 & 0x1F].flt_8_z = (double)a2->vPosition.z;
+        array_4[a2->field_54 & 0x1F].flt_0_x = (float)a2->vPosition.x;
+        array_4[a2->field_54 & 0x1F].flt_4_y = (float)a2->vPosition.y;
+        array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
     }
 }
 
@@ -678,11 +660,11 @@ void stru6::_4A7E89_sparkles_on_actor_after_it_casts_buff(Actor *pActor, unsigne
     do
     {
         v7 = (unsigned __int8)rand() + v3->vPosition.x - 127;
-        Dst.x = (double)v7;
+        Dst.x = (float)v7;
         v7 = (unsigned __int8)rand() + v3->vPosition.y - 127;
-        Dst.y = (double)v7;
+        Dst.y = (float)v7;
         v7 = v3->vPosition.z + (unsigned __int8)rand();
-        Dst.z = (double)v7;
+        Dst.z = (float)v7;
         if (uDiffuse)
         {
             Dst.uDiffuse = uDiffuse;
@@ -717,20 +699,20 @@ void stru6::_4A7F74(int x, int y, int z)
     v6 = 8;
     local_0.timeToLive = (v5 & 0x7F) + 128;
 
-    v12 = (double)x;
+    v12 = (float)x;
     local_0.resource_id = this->effpar01;
-    v11 = (double)y;
+    v11 = (float)y;
     do
     {
         v8 = pRnd->GetRandom();
-        local_0.x = v8 * 40.0 - 20.0 + v12;
+        local_0.x = v8 * 40.0f - 20.0f + v12;
         v9 = pRnd->GetRandom();
-        z1 = (double)z;
+        z1 = (float)z;
         local_0.z = z1;
-        local_0.y = v9 * 40.0 - 20.0 + v11;
-        local_0.r = pRnd->GetRandom() * 400.0 - 200.0;
-        local_0.g = pRnd->GetRandom() * 400.0 - 200.0;
-        local_0.b = pRnd->GetRandom() * 150.0 + 50.0;
+        local_0.y = v9 * 40.0f - 20.0f + v11;
+        local_0.r = pRnd->GetRandom() * 400.0f - 200.0f;
+        local_0.g = pRnd->GetRandom() * 400.0f - 200.0f;
+        local_0.b = pRnd->GetRandom() * 150.0f + 50.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
         --v6;
     } while (v6);
@@ -964,7 +946,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
             memcpy(pContainer, "sp18h1", 7);
             pRnd->SetRange(1, 6);
             pContainer[5] = pRnd->GetInRange() + '0';
-            AddProjectile(a2, 100, pBitmaps_LOD->LoadTexture(pContainer));
+            AddProjectile(a2, 100, assets->GetBitmap(pContainer));
             return false;
         case SPRITE_SPELL_AIR_LIGHNING_BOLT_IMPACT:
             _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xC8C814, effpar02, 200.0);
@@ -1118,7 +1100,7 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
             AddMobileLight(a2, 0xFFFFFFu, 128);
             //if ( !render->pRenderD3D )
             //  return true;
-            AddProjectile(a2, 100, -1);
+            AddProjectile(a2, 100, nullptr);
             return false;
         case SPRITE_SPELL_LIGHT_SUNRAY_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, 0xFFFFFF, effpar03);
@@ -1505,13 +1487,13 @@ int stru6_stru1_indoor_sw_billboard::_4775ED(float a2)
 				*(float *)&v37 = (double)((unsigned __int8)v4[15] - (unsigned int)(unsigned __int8)*(v4 - 1)) * v36;
 				v10 = *(float *)&v37 + 6.7553994e15;
 				v11 = (unsigned __int8)*(v4 - 2);
-				v37 = LODWORD(v10) + (unsigned __int8)*(v4 - 1);
+				v37 = HEXRAYS_LODWORD(v10) + (unsigned __int8)*(v4 - 1);
 				v39 = (double)((unsigned int)(unsigned __int8)v4[14] - v11) * v36;
 				v12 = v39 + 6.7553994e15;
-				v13 = LODWORD(v12) + (unsigned __int8)*(v4 - 2);
+				v13 = HEXRAYS_LODWORD(v12) + (unsigned __int8)*(v4 - 2);
 				v39 = (double)((*(int *)(v4 + 13) & 0xFF) - (*(int *)(v4 - 3) & 0xFFu)) * v36;
 				v14 = v39 + 6.7553994e15;
-				v33 = (LODWORD(v14) + (*(int *)(v4 - 3) & 0xFF)) | ((v13 | ((v37 | ((LODWORD(v8) + v9) << 8)) << 8)) << 8);
+				v33 = (HEXRAYS_LODWORD(v14) + (*(int *)(v4 - 3) & 0xFF)) | ((v13 | ((v37 | ((HEXRAYS_LODWORD(v8) + v9) << 8)) << 8)) << 8);
 				//this = v35;
 				v5 = (char *)&v30 + 4;
 			}
@@ -1519,7 +1501,7 @@ int stru6_stru1_indoor_sw_billboard::_4775ED(float a2)
 			{
 				v15 = (a2 - *(float *)v5) / (*(float *)(v4 + 1) - *(float *)v5);
 				v16 = (unsigned __int8)*v4;
-				HIDWORD(v30) = LODWORD(a2);
+                HEXRAYS_HIDWORD(v30) = HEXRAYS_LODWORD(a2);
 				v17 = (unsigned __int8)v4[16] - v16;
 				v36 = v15;
 				v31 = (*(float *)(v4 + 5) - *(float *)(v4 - 11)) * v15 + *(float *)(v4 - 11);
@@ -1530,13 +1512,13 @@ int stru6_stru1_indoor_sw_billboard::_4775ED(float a2)
 				v39 = (double)((unsigned __int8)v4[15] - (unsigned int)(unsigned __int8)*(v4 - 1)) * v36;
 				v20 = v39 + 6.7553994e15;
 				v21 = (unsigned __int8)*(v4 - 2);
-				v37 = LODWORD(v20) + (unsigned __int8)*(v4 - 1);
+				v37 = HEXRAYS_LODWORD(v20) + (unsigned __int8)*(v4 - 1);
 				v39 = (double)((unsigned int)(unsigned __int8)v4[14] - v21) * v36;
 				v22 = v39 + 6.7553994e15;
-				v23 = LODWORD(v22) + (unsigned __int8)*(v4 - 2);
+				v23 = HEXRAYS_LODWORD(v22) + (unsigned __int8)*(v4 - 2);
 				v39 = (double)((*(int *)(v4 + 13) & 0xFF) - (*(int *)(v4 - 3) & 0xFFu)) * v36;
 				v24 = v39 + 6.7553994e15;
-				v33 = (LODWORD(v24) + (*(int *)(v4 - 3) & 0xFF)) | ((v23 | ((v37 | ((LODWORD(v18) + v19) << 8)) << 8)) << 8);
+				v33 = (HEXRAYS_LODWORD(v24) + (*(int *)(v4 - 3) & 0xFF)) | ((v23 | ((v37 | ((HEXRAYS_LODWORD(v18) + v19) << 8)) << 8)) << 8);
 				v25 = v40;
 				*v40 = *(int *)v5;
 				v26 = (int)(v5 + 4);
@@ -1653,13 +1635,13 @@ int stru6_stru1_indoor_sw_billboard::_477927(float a2)
 				*(float *)&v37 = (double)((unsigned __int8)v4[15] - (unsigned int)(unsigned __int8)*(v4 - 1)) * v36;
 				v10 = *(float *)&v37 + 6.7553994e15;
 				v11 = (unsigned __int8)*(v4 - 2);
-				v37 = LODWORD(v10) + (unsigned __int8)*(v4 - 1);
+				v37 = HEXRAYS_LODWORD(v10) + (unsigned __int8)*(v4 - 1);
 				v39 = (double)((unsigned int)(unsigned __int8)v4[14] - v11) * v36;
 				v12 = v39 + 6.7553994e15;
-				v13 = LODWORD(v12) + (unsigned __int8)*(v4 - 2);
+				v13 = HEXRAYS_LODWORD(v12) + (unsigned __int8)*(v4 - 2);
 				v39 = (double)((*(int *)(v4 + 13) & 0xFF) - (*(int *)(v4 - 3) & 0xFFu)) * v36;
 				v14 = v39 + 6.7553994e15;
-				v33 = (LODWORD(v14) + (*(int *)(v4 - 3) & 0xFF)) | ((v13 | ((v37 | ((LODWORD(v8) + v9) << 8)) << 8)) << 8);
+				v33 = (HEXRAYS_LODWORD(v14) + (*(int *)(v4 - 3) & 0xFF)) | ((v13 | ((v37 | ((HEXRAYS_LODWORD(v8) + v9) << 8)) << 8)) << 8);
 				//this = v35;
 				v5 = (char *)&v30 + 4;
 			}
@@ -1667,7 +1649,7 @@ int stru6_stru1_indoor_sw_billboard::_477927(float a2)
 			{
 				v15 = (a2 - *(float *)v5) / (*(float *)(v4 + 1) - *(float *)v5);
 				v16 = (unsigned __int8)*v4;
-				HIDWORD(v30) = LODWORD(a2);
+                HEXRAYS_HIDWORD(v30) = HEXRAYS_LODWORD(a2);
 				v17 = (unsigned __int8)v4[16] - v16;
 				v36 = v15;
 				v31 = (*(float *)(v4 + 5) - *(float *)(v4 - 11)) * v15 + *(float *)(v4 - 11);
@@ -1678,13 +1660,13 @@ int stru6_stru1_indoor_sw_billboard::_477927(float a2)
 				v39 = (double)((unsigned __int8)v4[15] - (unsigned int)(unsigned __int8)*(v4 - 1)) * v36;
 				v20 = v39 + 6.7553994e15;
 				v21 = (unsigned __int8)*(v4 - 2);
-				v37 = LODWORD(v20) + (unsigned __int8)*(v4 - 1);
+				v37 = HEXRAYS_LODWORD(v20) + (unsigned __int8)*(v4 - 1);
 				v39 = (double)((unsigned int)(unsigned __int8)v4[14] - v21) * v36;
 				v22 = v39 + 6.7553994e15;
-				v23 = LODWORD(v22) + (unsigned __int8)*(v4 - 2);
+				v23 = HEXRAYS_LODWORD(v22) + (unsigned __int8)*(v4 - 2);
 				v39 = (double)((*(int *)(v4 + 13) & 0xFF) - (*(int *)(v4 - 3) & 0xFFu)) * v36;
 				v24 = v39 + 6.7553994e15;
-				v33 = (LODWORD(v24) + (*(int *)(v4 - 3) & 0xFF)) | ((v23 | ((v37 | ((LODWORD(v18) + v19) << 8)) << 8)) << 8);
+				v33 = (HEXRAYS_LODWORD(v24) + (*(int *)(v4 - 3) & 0xFF)) | ((v23 | ((v37 | ((HEXRAYS_LODWORD(v18) + v19) << 8)) << 8)) << 8);
 				v25 = v40;
 				*v40 = *(int *)v5;
 				v26 = (int)(v5 + 4);
@@ -1774,8 +1756,8 @@ int stru6_stru1_indoor_sw_billboard::sub_477C61()
 			for (v2 = 0; v2 < this->uNumVertices; ++v2)
 			{
 				v4 = *(float *)(v3 - 4);
-				LODWORD(v37) = *(int *)v3;
-				LODWORD(v36) = *(int *)(v3 + 4);
+                HEXRAYS_LODWORD(v37) = *(int *)v3;
+                HEXRAYS_LODWORD(v36) = *(int *)(v3 + 4);
 				if (pIndoorCameraD3D->sRotationX)
 				{
 					v5 = v4 - (double)pIndoorCameraD3D->vPartyPos.x;
@@ -1814,7 +1796,7 @@ int stru6_stru1_indoor_sw_billboard::sub_477C61()
 				}
 				v13 = v12;
 				//++v2;
-				*(int *)(v3 + 84) = LODWORD(v13);
+				*(int *)(v3 + 84) = HEXRAYS_LODWORD(v13);
 				v14 = *(int *)(v3 + 8);
 				*(float *)(v3 + 76) = v10;
 				*(int *)(v3 + 88) = v14;
@@ -1835,14 +1817,14 @@ int stru6_stru1_indoor_sw_billboard::sub_477C61()
 			v34 = (double)stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY) * 0.0000152587890625;
 			v33 = (double)stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY) * 0.0000152587890625;
 			//v16 = stru_5C6E00->Sin(pODMRenderParams->rotation_y);
-			LODWORD(v38) = *(int *)v15;
+            HEXRAYS_LODWORD(v38) = *(int *)v15;
 			//UNDEF(v17);
 			v20 = *((float *)v15 - 1) - (double)pIndoorCameraD3D->vPartyPos.x;
 			//if ( v19 | v18 )
 			if (pIndoorCameraD3D->vPartyPos.x == 0)
 			{
 				v27 = v20;
-				LODWORD(v35) = *((int *)v15 + 1);
+                HEXRAYS_LODWORD(v35) = *((int *)v15 + 1);
 				v28 = v38 - (double)pIndoorCameraD3D->vPartyPos.y;
 				v25 = v33 * v28 + v34 * v27;
 				v26 = v34 * v28 - v33 * v27;
@@ -1857,7 +1839,7 @@ int stru6_stru1_indoor_sw_billboard::sub_477C61()
 				v26 = v34 * v22 - v33 * v21;
 				v35 = v40 * v24 - v32 * v23;
 			}
-			*((int *)v15 + 21) = LODWORD(v35);
+			*((int *)v15 + 21) = HEXRAYS_LODWORD(v35);
 			v29 = *((int *)v15 + 2);
 			*((float *)v15 + 19) = v25;
 			*((int *)v15 + 22) = v29;

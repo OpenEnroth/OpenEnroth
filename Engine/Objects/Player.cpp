@@ -2244,7 +2244,7 @@ int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor )
         if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) )
         {
           if ( i == EQUIP_BOW )
-            v46[v4++] = LOBYTE(this->pEquipment.uBow) - 1;
+            v46[v4++] = (unsigned char)(this->pEquipment.uBow) - 1;
           if ( (i == EQUIP_SINGLE_HANDED || i == EQUIP_TWO_HANDED)
             && (GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_SINGLE_HANDED || GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_TWO_HANDED) )
             v46[v4++] = this->pEquipment.pIndices[i] - 1;
@@ -5844,7 +5844,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value)
         return;
     case VAR_NPCs2:
         pParty->hirelingScrollPosition = 0;
-        LOBYTE(pNPCStats->pNewNPCData[var_value].uFlags) |= 0x80u;
+        pNPCStats->pNewNPCData[var_value].uFlags |= 0x80u;
         pParty->CountHirelings();
         viewparams->bRedrawGameUI = true;
         return;
@@ -6015,10 +6015,10 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value)
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound()
 {
-  int playerIndex = GetPlayerIndex();
-  signed int v25 = 8 * playerIndex + 400;
-  LOBYTE(v25) = PID(OBJECT_Player,playerIndex - 112);
-  pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0, 0, 0);
+    int playerIndex = GetPlayerIndex();
+    int v25 = 8 * playerIndex + 400;
+    HEXRAYS_LOBYTE(v25) = PID(OBJECT_Player, playerIndex - 112);
+    pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0, 0, 0);
 }
 
 //----- (new function) --------------------------------------------------------
@@ -6196,7 +6196,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val)
         else if (val >= ITEM_WAND_FIRE && val <= ITEM_WAND_INCENERATION)
         {
             item.uNumCharges = rand() % 6 + item.GetDamageMod() + 1;
-            item.uMaxCharges = LOBYTE(item.uNumCharges);
+            item.uMaxCharges = item.uNumCharges;
         }
         pParty->SetHoldingItem(&item);
         return;
@@ -6440,7 +6440,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val)
         return;
     case VAR_NPCs2:
         pParty->hirelingScrollPosition = 0;
-        LOBYTE(pNPCStats->pNewNPCData[val].uFlags) |= 0x80u;
+        pNPCStats->pNewNPCData[val].uFlags |= 0x80;
         pParty->CountHirelings();
         viewparams->bRedrawGameUI = true;
         return;
@@ -7113,7 +7113,7 @@ void Player::SubtractVariable( enum VariableType VarNum, signed int pValue )
       {
         npcIdToDismissAfterDialogue = 0;
         pParty->hirelingScrollPosition = 0;
-        LOBYTE(pNPCStats->pNewNPCData[(int)pValue].uFlags) &= 0x7Fu;
+        pNPCStats->pNewNPCData[(int)pValue].uFlags &= 0xFFFFFF7F;
         pParty->CountHirelings();
         viewparams->bRedrawGameUI = true;
       }
@@ -7123,7 +7123,7 @@ void Player::SubtractVariable( enum VariableType VarNum, signed int pValue )
       {
         if (pNPCStats->pNewNPCData[i].uProfession == pValue)
         {
-          LOBYTE(pNPCStats->pNewNPCData[(int)pValue].uFlags) &= 0x7Fu;
+          pNPCStats->pNewNPCData[(int)pValue].uFlags &= 0xFFFFFF7F;
         }
       }
       if ( pParty->pHirelings[0].uProfession == pValue )
@@ -7408,10 +7408,10 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
         case 1: damageType = actorPtr->pMonsterInfo.uAttack2Type;
             break;
         case 2: spellId = actorPtr->pMonsterInfo.uSpell1ID;
-            damageType = LOBYTE(pSpellStats->pInfos[spellId].uSchool);
+            damageType = pSpellStats->pInfos[spellId].uSchool;
             break;
         case 3: spellId = actorPtr->pMonsterInfo.uSpell2ID;
-            damageType = LOBYTE(pSpellStats->pInfos[spellId].uSchool);
+            damageType = pSpellStats->pInfos[spellId].uSchool;
             break;
         case 4: damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
             break;
@@ -7511,7 +7511,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
             {
                 int playerMaxHp = playerPtr->GetMaxHealth();
                 v68 = _43AFE3_calc_spell_damage(v37->spell_id, v37->spell_level, v37->spell_skill, playerMaxHp);
-                v69 = LOBYTE(pSpellStats->pInfos[v37->spell_id].uSchool);
+                v69 = pSpellStats->pInfos[v37->spell_id].uSchool;
             }
             else
             {
@@ -7598,11 +7598,11 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
                 break;
             case 2:
                 spellId = actorPtr->pMonsterInfo.uSpell1ID;
-                damageType = LOBYTE(pSpellStats->pInfos[spellId].uSchool);
+                damageType = pSpellStats->pInfos[spellId].uSchool;
                 break;
             case 3:
                 spellId = actorPtr->pMonsterInfo.uSpell2ID;
-                damageType = LOBYTE(pSpellStats->pInfos[spellId].uSchool);
+                damageType = pSpellStats->pInfos[spellId].uSchool;
                 break;
             case 4:
                 damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
@@ -8274,8 +8274,7 @@ void Player::_42FA66_do_explosive_impact(int a1, int a2, int a3, int a4, __int16
 
   int id = a1a.Create(0, 0, 0, 0);
   if (id != -1)
-    AttackerInfo.Add(PID(OBJECT_Item, id), a5, SLOWORD(a1a.vPosition.x), SLOWORD(a1a.vPosition.y),
-    SLOWORD(a1a.vPosition.z), 0, 0);
+    AttackerInfo.Add(PID(OBJECT_Item, id), a5, (short)a1a.vPosition.x, (short)a1a.vPosition.y, (short)a1a.vPosition.z, 0, 0);
 }
 
 //----- (00458244) --------------------------------------------------------

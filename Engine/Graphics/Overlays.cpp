@@ -8,16 +8,20 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
+#include "Engine/Party.h"
+#include "Engine/LOD.h"
+
+#include "Engine/Graphics/IRender.h"
+
+#include "Engine/Tables/FrameTableInc.h"
+#include "Engine/Tables/IconFrameTable.h"
+
+#include "Engine/TurnEngine/TurnEngine.h"
+
+#include "GUI/GUIWindow.h"
 
 #include "Overlays.h"
 #include "Sprites.h"
-#include "../Tables/FrameTableInc.h"
-#include "../Tables/IconFrameTable.h"
-#include "../Party.h"
-#include "../TurnEngine/TurnEngine.h"
-#include "../LOD.h"
-#include "Render.h"
-#include "GUI/GUIWindow.h"
 
 
 

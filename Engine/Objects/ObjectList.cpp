@@ -22,7 +22,7 @@ __int16 ObjectList::ObjectIDByItemID(unsigned __int16 uItemID)
   if ( (signed int)this->uNumObjects <= 0 )
   {
 LABEL_5:
-    LOWORD(v3) = 0;
+    v3 = 0;
   }
   else
   {
@@ -255,9 +255,9 @@ bool ObjectList::FromFileTxt(const char *Args)
           }
           v32 = v45.pProperties[v21];
           if ( !_stricmp(v45.pProperties[v21], "Fire") )
-            HIBYTE(v2->pObjects[v2->uNumObjects].uFlags) |= 2u;
+            v2->pObjects[v2->uNumObjects].uFlags |= 0x200;
           if ( !_stricmp(v32, "Lines") )
-            HIBYTE(v2->pObjects[v2->uNumObjects].uFlags) |= 4u;
+            v2->pObjects[v2->uNumObjects].uFlags |= 0x400;
           if ( !_stricmp(v44.pProperties[v21], "bits") )
           {
             v33 = v44.pProperties[v21 + 1];

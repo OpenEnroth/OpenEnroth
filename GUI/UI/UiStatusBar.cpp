@@ -2,11 +2,13 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/IRender.h"
 
 #include "GUI/UI/UiStatusBar.h"
 #include "GUI/UI/UiGame.h"
 #include "GUI/GUIFont.h"
+
+#include "Platform/Api.h"
 
 //----- (0041C0B8) --------------------------------------------------------
 void GameUI_StatusBar_Set(String &str)
@@ -29,7 +31,7 @@ void GameUI_StatusBar_Set(const char *pStr)
 void GameUI_StatusBar_OnEvent_Internal(String &str, unsigned int ms)
 {
     game_ui_status_bar_event_string = str;
-    game_ui_status_bar_event_string_time_left = GetTickCount() + ms;
+    game_ui_status_bar_event_string_time_left = OS_GetTime() + ms;
 }
 
 //----- (0044C175) --------------------------------------------------------

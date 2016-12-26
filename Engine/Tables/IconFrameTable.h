@@ -9,7 +9,7 @@ class Icon
             img(nullptr)
         {}
 
-        inline void          SetAnimationName(const char *name)      { strcpy(this->anim_name, name); }
+        inline void          SetAnimationName(const char *name)      { strcpy_s(this->anim_name, name); }
         inline const char   *GetAnimationName() const                { return anim_name; }
 
         inline void          SetAnimLength(unsigned int anim_length) { this->anim_length = anim_length; }
@@ -60,7 +60,7 @@ struct IconFrameTable
     //int GetIconAnimLength(unsigned int uIconID);
 
     unsigned int uNumIcons;
-    struct Icon *pIcons;
+    Icon *pIcons;
 };
 #pragma pack(pop)
 
@@ -86,9 +86,9 @@ class UIAnimation
 extern struct IconFrameTable *pIconsFrameTable;
 
 
-extern class UIAnimation *pUIAnim_Food;
-extern class UIAnimation *pUIAnim_Gold;
-extern class UIAnimation *pUIAnum_Torchlight;
-extern class UIAnimation *pUIAnim_WizardEye;
+extern UIAnimation *pUIAnim_Food;
+extern UIAnimation *pUIAnim_Gold;
+extern UIAnimation *pUIAnum_Torchlight;
+extern UIAnimation *pUIAnim_WizardEye;
 
-extern std::array<class UIAnimation *, 4> pUIAnims;
+extern std::array<UIAnimation *, 4> pUIAnims;

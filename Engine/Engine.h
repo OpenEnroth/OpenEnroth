@@ -4,21 +4,22 @@
 #include "Engine/Log.h"
 #include "Engine/MM7.h"
 #include "Engine/mm7_data.h"
+#include "Engine/VectorTypes.h"
+#include "Engine/MapInfo.h"
+#include "Engine/AssetsManager.h"
+
+#include "Engine/Graphics/Polygon.h"
+
 
 void SetCurrentMenuID(enum MENU_STATE);
 enum MENU_STATE GetCurrentMenuID();
 
 void Engine_DeinitializeAndTerminate(int exitCode);
 
+void ShowLogoVideo();
+bool FileExists(const char *fname);
 
 #pragma once
-#include "Engine/VectorTypes.h"
-
-#include "OSAPI.h"
-
-#include "Engine/MapInfo.h"
-#include "Engine/AssetsManager.h"
-
 
 #define GAME_FLAGS_1_01_lightmap_related    0x01
 #define GAME_FLAGS_1_DRAW_BLV_DEBUGS        0x08
@@ -104,8 +105,8 @@ struct Engine
     static Engine *Create();
     static void    Destroy();
 
-protected: Engine();
-protected: virtual ~Engine();
+    protected: Engine();
+    protected: virtual ~Engine();
 
 
 public:
@@ -213,17 +214,12 @@ void UpdateUserInput_and_MapSpecificStuff();
 void PrepareWorld(unsigned int _0_box_loading_1_fullscreen);
 void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box);
 
-//int __stdcall aWinProc(HWND hWnd, UINT Msg, WPARAM wParam, unsigned int lParam);
-int __stdcall InsertMM7CDDialogFunc(HWND hDlg, int a2, __int16 a3, int a4);
-bool FindMM7CD(HWND hWnd, char *pCDDrive);
-//bool Initialize(HINSTANCE hInst, char *pCmdLine);
-
 void FinalInitialization();
 bool CheckMM7CD(char c);
 void SecondaryInitialization();
 
 
-void MM6_Initialize(const wchar_t *pIniFilename);
+void MM6_Initialize();
 void MM7Initialization();
 
 void PrepareToLoadODM(unsigned int bLoading, struct ODMRenderParams *a2);

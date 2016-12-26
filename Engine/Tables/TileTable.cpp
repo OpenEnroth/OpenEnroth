@@ -480,14 +480,14 @@ LABEL_173:
     }
     else
     {
-      LOBYTE(v2->pTiles[v2->sNumTiles].tileset) = -1;
+      v2->pTiles[v2->sNumTiles].tileset = (Tileset)(v2->pTiles[v2->sNumTiles].tileset | 0xFF);
     }
     v35 = v84.pProperties[4];
     v2->pTiles[v2->sNumTiles].uSection = 0;
     v2->pTiles[v2->sNumTiles].uAttributes = 0;
     if ( !_stricmp(v35, "TTsect_NULL") )
     {
-      LOBYTE(v2->pTiles[v2->sNumTiles].uSection) = -1;
+      v2->pTiles[v2->sNumTiles].uSection |= 0xFF;
 LABEL_152:
       for ( j = 5; j < v84.uPropCount; ++j )
       {
@@ -545,7 +545,7 @@ LABEL_152:
               }
             }
             else
-              HIBYTE(v2->pTiles[v2->sNumTiles].uAttributes) |= 1;
+                HEXRAYS_HIBYTE(v2->pTiles[v2->sNumTiles].uAttributes) |= 1;
           }
           else
           {

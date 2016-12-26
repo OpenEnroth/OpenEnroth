@@ -530,65 +530,61 @@ bool ItemsTable::IsMaterialNonCommon(ItemGen *pItem)
 //----- (00453B3C) --------------------------------------------------------
 void ItemsTable::LoadPotions()
 {
+    char Text[90];
+    char* test_string;
+    unsigned int uRow;
+    unsigned int uColumn;
+    unsigned __int8 potion_value;
 
-  CHAR Text[90]; 
-  char* test_string;
-  unsigned int uRow;
-  unsigned int uColumn;
-  unsigned __int8 potion_value;
-
-  free(pPotionNotesTXT_Raw);
-  auto tokens = Tokenize("", '\t');
-  char* pPotionsTXT_Raw = (char *)pEvents_LOD->LoadRaw("potion.txt", 0);
-  test_string = strtok(pPotionsTXT_Raw ,"\r") + 1;
-  while (test_string)
-  {
-    tokens = Tokenize(test_string, '\t');
-    if (!strcmp(tokens[0], "222"))    
-      break;
-    test_string = strtok(NULL ,"\r") + 1;
-  }
-  if (!test_string)
-  {
-    MessageBoxA(0, "Error Pre-Parsing Potion Table", "Load Error", MB_ICONHAND|MB_CANCELTRYCONTINUE);
-    return;
-  }
-
-  for (uRow = 0;uRow < 50; ++uRow)
-  {
-    if (tokens.size() < 50)
+    free(pPotionNotesTXT_Raw);
+    auto tokens = Tokenize("", '\t');
+    char* pPotionsTXT_Raw = (char *)pEvents_LOD->LoadRaw("potion.txt", 0);
+    test_string = strtok(pPotionsTXT_Raw, "\r") + 1;
+    while (test_string)
     {
-      wsprintfA(Text, "Error Parsing Potion Table at Row: %d Column: %d", uRow, tokens.size());
-      MessageBoxA(0, Text, "Parsing Error", MB_ICONHAND|MB_CANCELTRYCONTINUE);
-      return;
+        tokens = Tokenize(test_string, '\t');
+        if (!strcmp(tokens[0], "222"))
+            break;
+        test_string = strtok(NULL, "\r") + 1;
     }
-    for (uColumn = 0; uColumn < 50; ++uColumn)
-    {
-      char* currValue = tokens[uColumn + 7];
-      potion_value = atoi(currValue);
-      if ( !potion_value && tolower(currValue[0]) == 'e')
-      {
-        potion_value = atoi(currValue + 1);
-      }      
-      this->potion_data[uRow][uColumn]=potion_value;
-    }
-
-    test_string = strtok(NULL ,"\r") + 1;
     if (!test_string)
     {
-      wsprintfA(Text, "Error Parsing Potion Table at Row: %d Column: %d", uRow, 0);
-      MessageBoxA(0, Text, "Parsing Error", MB_ICONHAND|MB_CANCELTRYCONTINUE);
-      return;
+        Log::Warning(L"Error Pre-Parsing Potion Table");
+        return;
     }
-    tokens = Tokenize(test_string, '\t');
-  }
+
+    for (uRow = 0; uRow < 50; ++uRow)
+    {
+        if (tokens.size() < 50)
+        {
+            Log::Warning(L"Error Parsing Potion Table at Row: %d Column: %d", uRow, tokens.size());
+            return;
+        }
+        for (uColumn = 0; uColumn < 50; ++uColumn)
+        {
+            char* currValue = tokens[uColumn + 7];
+            potion_value = atoi(currValue);
+            if (!potion_value && tolower(currValue[0]) == 'e')
+            {
+                potion_value = atoi(currValue + 1);
+            }
+            this->potion_data[uRow][uColumn] = potion_value;
+        }
+
+        test_string = strtok(NULL, "\r") + 1;
+        if (!test_string)
+        {
+            Log::Warning(L"Error Parsing Potion Table at Row: %d Column: %d", uRow, 0);
+            return;
+        }
+        tokens = Tokenize(test_string, '\t');
+    }
 }
 
 //----- (00453CE5) --------------------------------------------------------
 void ItemsTable::LoadPotionNotes()
 {
-
-  CHAR Text[90]; 
+  char Text[90]; 
   char* test_string;
   unsigned int uRow;
   unsigned int uColumn;
@@ -607,7 +603,7 @@ void ItemsTable::LoadPotionNotes()
   }
   if (!test_string)
   {
-    MessageBoxA(0, "Error Pre-Parsing Potion Table", "Load Error", MB_ICONHAND|MB_CANCELTRYCONTINUE);
+      Log::Warning(L"Error Pre-Parsing Potion Table");
     return;
   }
 
@@ -615,8 +611,7 @@ void ItemsTable::LoadPotionNotes()
   {
     if (tokens.size() < 50)
     {
-      wsprintfA(Text, "Error Parsing Potion Table at Row: %d Column: %d", uRow, tokens.size());
-      MessageBoxA(0, Text, "Parsing Error", MB_ICONHAND|MB_CANCELTRYCONTINUE);
+      Log::Warning(L"Error Parsing Potion Table at Row: %d Column: %d", uRow, tokens.size());
       return;
     }
     for (uColumn = 0; uColumn < 50; ++uColumn)
@@ -633,8 +628,7 @@ void ItemsTable::LoadPotionNotes()
     test_string = strtok(NULL ,"\r") + 1;
     if (!test_string)
     {
-      wsprintfA(Text, "Error Parsing Potion Table at Row: %d Column: %d", uRow, 0);
-      MessageBoxA(0, Text, "Parsing Error", MB_ICONHAND|MB_CANCELTRYCONTINUE);
+      Log::Warning(L"Error Parsing Potion Table at Row: %d Column: %d", uRow, 0);
       return;
     }
     tokens = Tokenize(test_string, '\t');
@@ -646,25 +640,25 @@ void ItemsTable::LoadPotionNotes()
 
 //----- (00456442) --------------------------------------------------------
 unsigned int ItemGen::GetValue()
-	{
-	unsigned int uBaseValue; // edi@1
-	unsigned int bonus;
+{
+    unsigned int uBaseValue; // edi@1
+    unsigned int bonus;
 
-	uBaseValue = pItemsTable->pItems[this->uItemID].uValue;
-	if ( this->uAttributes & ITEM_TEMP_BONUS || pItemsTable->IsMaterialNonCommon(this) )
-		return uBaseValue;
-	if (uEnchantmentType )
-		return uBaseValue + 100 * m_enchantmentStrength;;
-	if (special_enchantment )
-		{
-		bonus = pItemsTable->pSpecialEnchantments[special_enchantment].iTreasureLevel;
-		if ( bonus > 10 )
-			return uBaseValue + bonus;
-		else
-			return uBaseValue * bonus;
-		} 
-	return uBaseValue;
-	}
+    uBaseValue = pItemsTable->pItems[this->uItemID].uValue;
+    if (this->uAttributes & ITEM_TEMP_BONUS || pItemsTable->IsMaterialNonCommon(this))
+        return uBaseValue;
+    if (uEnchantmentType)
+        return uBaseValue + 100 * m_enchantmentStrength;;
+    if (special_enchantment)
+    {
+        bonus = pItemsTable->pSpecialEnchantments[special_enchantment].iTreasureLevel;
+        if (bonus > 10)
+            return uBaseValue + bonus;
+        else
+            return uBaseValue * bonus;
+    }
+    return uBaseValue;
+}
 
 //----- (00456499) --------------------------------------------------------
 String ItemGen::GetDisplayName()

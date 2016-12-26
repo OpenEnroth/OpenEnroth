@@ -8,6 +8,8 @@
 #include "RenderD3D11.h"
 #include "Sprites.h"
 
+#include "Platform/OsWindow.h"
+
 #define ErrorD3D(x)\
 {\
   HRESULT hr = x;\
@@ -19,13 +21,16 @@
 }
 
 
-RenderD3D11::RenderD3D11(): IRender() {}
+RenderD3D11::RenderD3D11() : IRender() { this->ui_clip_rect = new D3D11_RECT; }
 RenderD3D11::~RenderD3D11() {}
 
 
 bool CompileShader(ID3D11Device *d3dd, const wchar_t *pShaderSourceFile, D3D11_INPUT_ELEMENT_DESC *input_desc, int input_desc_size,
                    ID3D11VertexShader **vertex_out, ID3D11PixelShader **pixel_out, ID3D11InputLayout **layout_out);
 
+
+unsigned int RenderD3D11::GetRenderWidth() const { return window->GetWidth(); }
+unsigned int RenderD3D11::GetRenderHeight() const { return window->GetHeight(); }
 
 void RenderD3D11::ClearBlack() {__debugbreak();}
 void RenderD3D11::SaveWinnersCertificate(const char *a1) {__debugbreak();}
@@ -36,28 +41,26 @@ void RenderD3D11::Release() {__debugbreak();}
 void RenderD3D11::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor) {__debugbreak();}
 void RenderD3D11::SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW) {__debugbreak();}
 bool RenderD3D11::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags) {__debugbreak(); return 0;}
-void RenderD3D11::GetTargetPixelFormat(DDPIXELFORMAT *pOut) {__debugbreak();}
 void RenderD3D11::LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow) {__debugbreak();}
 void RenderD3D11::UnlockBackBuffer() {__debugbreak();}
 void RenderD3D11::LockFrontBuffer(void **pOutSurface, unsigned int *pOutPixelsPerRow) {__debugbreak();}
 void RenderD3D11::UnlockFrontBuffer() {__debugbreak();}
 void RenderD3D11::RestoreFrontBuffer() {}
 void RenderD3D11::RestoreBackBuffer() {}
-void RenderD3D11::BltToFront(RECT *pDstRect, IDirectDrawSurface *pSrcSurface, RECT *pSrcRect, unsigned int uBltFlags) {__debugbreak();}
-void RenderD3D11::BltBackToFontFast(int a2, int a3, RECT *a4) {__debugbreak();}
+void RenderD3D11::BltBackToFontFast(int a2, int a3, Rect *a4) {__debugbreak();}
 void RenderD3D11::BeginSceneD3D() {}
 unsigned int RenderD3D11::GetActorTintColor(float a2, int tint, int a4, int a5, RenderBillboard *a6) {__debugbreak(); return 0;}
 void RenderD3D11::DrawPolygon(struct Polygon *a3) {__debugbreak();}
 void RenderD3D11::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders) {__debugbreak();}
 void RenderD3D11::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) {__debugbreak();}
-void RenderD3D11::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
-void RenderD3D11::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
+void RenderD3D11::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
+void RenderD3D11::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
 void RenderD3D11::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {__debugbreak();}
 void RenderD3D11::DrawBillboard_Indoor(RenderBillboardTransform_local0 *pSoftBillboard, Sprite *pSprite, int dimming_level) {__debugbreak();}
 void RenderD3D11::_4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse) {__debugbreak();}
 void RenderD3D11::TransformBillboardsAndSetPalettesODM() {__debugbreak();}
 void RenderD3D11::DrawBillboardList_BLV() {__debugbreak();}
-void RenderD3D11::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, IDirect3DTexture2 *a9) {__debugbreak();}
+void RenderD3D11::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture) {__debugbreak();}
 void RenderD3D11::ScreenFade(unsigned int color, float t) {__debugbreak();}
 void RenderD3D11::DrawTextureOffset(int pX, int pY, int move_X, int move_Y, Image *pTexture) {__debugbreak();}
 void RenderD3D11::ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture, int a5) {__debugbreak();}
@@ -94,9 +97,9 @@ void RenderD3D11::EndDecals() {__debugbreak();}
 void RenderD3D11::DrawDecal(struct Decal *pDecal, float z_bias) {__debugbreak();}
 void RenderD3D11::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff) {__debugbreak();}
 void RenderD3D11::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {__debugbreak();}
-void RenderD3D11::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, IDirect3DTexture2 *texture) {__debugbreak();}
-void RenderD3D11::am_Blt_Copy(RECT *pSrcRect, POINT *pTargetXY, int blend_mode) {__debugbreak();}
-void RenderD3D11::am_Blt_Chroma(RECT *pSrcRect, POINT *pTargetPoint, int a3, int blend_mode) {__debugbreak();}
+void RenderD3D11::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, void *texture) {__debugbreak();}
+void RenderD3D11::am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY, int blend_mode) {__debugbreak();}
+void RenderD3D11::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {__debugbreak();}
 
 void RenderD3D11::Sub01() {__debugbreak();}
 
@@ -107,24 +110,24 @@ void RenderD3D11::PackScreenshot(unsigned int width, unsigned int height, void *
 
 void RenderD3D11::SetUIClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW)
 {
-  ui_clip_rect.left = uX;
-  ui_clip_rect.top = uY;
-  ui_clip_rect.right = uZ;
-  ui_clip_rect.bottom = uW;
+  ui_clip_rect->left = uX;
+  ui_clip_rect->top = uY;
+  ui_clip_rect->right = uZ;
+  ui_clip_rect->bottom = uW;
 }
 
 void RenderD3D11::ResetUIClipRect()
 {
-  ui_clip_rect.left = 0;
-  ui_clip_rect.top = 0;
-  ui_clip_rect.right = window->GetWidth();
-  ui_clip_rect.bottom = window->GetHeight();
+  ui_clip_rect->left = 0;
+  ui_clip_rect->top = 0;
+  ui_clip_rect->right = window->GetWidth();
+  ui_clip_rect->bottom = window->GetHeight();
 }
 
 void RenderD3D11::PresentBlackScreen()
 {
-  ClearTarget(0xFF000000);
-  ErrorD3D(pSwapChain->Present(0, 0));
+    ClearTarget(0xFF000000);
+    ErrorD3D(pSwapChain->Present(0, 0));
 }
 
 void RenderD3D11::BeginScene() {}
@@ -132,19 +135,19 @@ void RenderD3D11::EndScene() {}
 
 void RenderD3D11::ClearTarget(unsigned int uColor)
 {
-  float clear_color[] =
-  {
-    ((uColor & 0x00FF0000) >> 16) / 255.0f,
-    ((uColor & 0x0000FF00) >> 8) / 255.0f,
-    ((uColor & 0x000000FF) >> 0) / 255.0f,
-    ((uColor & 0xFF000000) >> 24) / 255.0f
-  };
-  d3dc->ClearRenderTargetView(primary_srv, clear_color);
+    float clear_color[] =
+    {
+      ((uColor & 0x00FF0000) >> 16) / 255.0f,
+      ((uColor & 0x0000FF00) >> 8) / 255.0f,
+      ((uColor & 0x000000FF) >> 0) / 255.0f,
+      ((uColor & 0xFF000000) >> 24) / 255.0f
+    };
+    d3dc->ClearRenderTargetView(primary_srv, clear_color);
 }
 
 void RenderD3D11::ClearZBuffer(int, int)
 {
-  d3dc->ClearDepthStencilView(default_depth_srv, D3D11_CLEAR_DEPTH, 1.0f, 0);
+    d3dc->ClearDepthStencilView(default_depth_srv, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 
@@ -163,27 +166,27 @@ void RenderD3D11::DrawTextureNew(float u, float v, Image *tex)
 
 void RenderD3D11::DrawText(signed int uX, signed int uY, unsigned __int8 *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, unsigned __int16 *pFontPalette, unsigned __int16 uFaceColor, unsigned __int16 uShadowColor)
 {
-  auto srv = PrepareFontTexture(pFontPixels, uCharWidth, uCharHeight, pFontPalette, uFaceColor, uShadowColor);
-  {
-    DrawTexture((float)uX / window->GetWidth(), (float)uY / window->GetHeight(), uCharWidth, uCharHeight, srv, ui_blend_alpha);
-  }
-  srv->Release();
+    auto srv = PrepareFontTexture(pFontPixels, uCharWidth, uCharHeight, pFontPalette, uFaceColor, uShadowColor);
+    {
+        DrawTexture((float)uX / window->GetWidth(), (float)uY / window->GetHeight(), uCharWidth, uCharHeight, srv, ui_blend_alpha);
+    }
+    srv->Release();
 }
 
 void RenderD3D11::DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, unsigned __int16 *pPalette, bool present_time_transparency)
 {
-  auto srv = PrepareFontTexture(font_pixels, a5, uFontHeight, pPalette);
-  {
-    DrawTexture((float)x / window->GetWidth(), (float)y / window->GetHeight(), a5, uFontHeight, srv, ui_blend_alpha);
-  }
-  srv->Release();
+    auto srv = PrepareFontTexture(font_pixels, a5, uFontHeight, pPalette);
+    {
+        DrawTexture((float)x / window->GetWidth(), (float)y / window->GetHeight(), a5, uFontHeight, srv, ui_blend_alpha);
+    }
+    srv->Release();
 }
 
 void RenderD3D11::DrawTexture(float u, float v, int texture_width, int texture_height, ID3D11ShaderResourceView *srv, ID3D11BlendState *blend)
 {
   bool clipping = false;
-  if (ui_clip_rect.left != 0 || ui_clip_rect.top != 0
-      || ui_clip_rect.right != window->GetWidth()  || ui_clip_rect.bottom != window->GetHeight())
+  if (ui_clip_rect->left != 0 || ui_clip_rect->top != 0
+      || ui_clip_rect->right != window->GetWidth()  || ui_clip_rect->bottom != window->GetHeight())
       clipping = true;
 
   float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -225,7 +228,7 @@ void RenderD3D11::DrawTexture(float u, float v, int texture_width, int texture_h
   if (clipping)
   {
     d3dc->RSSetState(ui_rasterizer);
-    d3dc->RSSetScissorRects(1, &ui_clip_rect);
+    d3dc->RSSetScissorRects(1, ui_clip_rect);
   }
   //d3dc->RSSetViewports(1, &ui_viewport);
 
@@ -338,7 +341,7 @@ bool RenderD3D11::Initialize(OSWindow *window)
   //swapChainDesc.SampleDesc.Quality = 0;
   swapChainDesc.BufferUsage =  DXGI_USAGE_RENDER_TARGET_OUTPUT;
   swapChainDesc.BufferCount = 2;
-  swapChainDesc.OutputWindow = window->GetApiHandle();
+  swapChainDesc.OutputWindow = (HWND)window->GetApiHandle();
   swapChainDesc.Windowed = true;
   //swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
   //swapChainDesc.Flags = 0;
@@ -992,7 +995,7 @@ void d3d11_release(ID3D11ShaderResourceView *srv)
 
 
 //----- (004A4DE1) --------------------------------------------------------
-bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, IDirectDrawSurface4 **pOutSurface, IDirect3DTexture2 **pOutTexture)
+bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture)
 {
   unsigned __int16 *v13; // ecx@19
   unsigned __int16 *v14; // eax@19

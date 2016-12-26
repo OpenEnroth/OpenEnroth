@@ -1,22 +1,6 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+#include "Platform/Win/Win.h"
 
-#define _CRT_SECURE_NO_WARNINGS
-#include "OSAPI.h"
-#include "OSInfo.h"
-#include "Engine/Log.h"
-
-
-bool           OSInfo::initialized = false;
-OSVERSIONINFOA OSInfo::info;
-
-
-
-
-
-
-bool ReadWindowsRegistryStringRecursive(HKEY parent_key, const char *path, char *out_string, int out_string_size)
+bool OS_GetAppStringRecursive(HKEY parent_key, const char *path, char *out_string, int out_string_size)
 {
     char current_key[128];
     char path_tail[1024];
@@ -60,13 +44,13 @@ bool ReadWindowsRegistryStringRecursive(HKEY parent_key, const char *path, char 
         {
             /*int idx = 0, r;
             do {
-                char value_name[1024];
-                DWORD value_name_size = sizeof(value_name);
-                r = RegEnumValueA(key, idx++, value_name, &value_name_size, nullptr, nullptr, nullptr, nullptr);
-                __debugbreak();
+            char value_name[1024];
+            DWORD value_name_size = sizeof(value_name);
+            r = RegEnumValueA(key, idx++, value_name, &value_name_size, nullptr, nullptr, nullptr, nullptr);
+            __debugbreak();
             } while (r == ERROR_SUCCESS);*/
-            
-            result = ReadWindowsRegistryStringRecursive(key, path_tail, out_string, out_string_size);
+
+            result = OS_GetAppStringRecursive(key, path_tail, out_string, out_string_size);
             RegCloseKey(key);
         }
 
@@ -81,90 +65,15 @@ bool ReadWindowsRegistryStringRecursive(HKEY parent_key, const char *path, char 
     }
 }
 
-bool ReadWindowsRegistryString(const char *path, char *out_string, int out_string_size)
+bool OS_GetAppString(const char *path, char *out_string, int out_string_size)
 {
-    return ReadWindowsRegistryStringRecursive(nullptr, path, out_string, out_string_size);
+    return OS_GetAppStringRecursive(nullptr, path, out_string, out_string_size);
 }
-
-
-
-//----- (00462C94) --------------------------------------------------------
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hprevinstance, wchar_t *lpCmdLine, int nShowCmd)
-{
-    #ifndef NDEBUG
-    {
-        //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
-    }
-    #endif
-
-    Log::Initialize();
-
-    bool mm7_installation_found = false;
-    char mm7_path[2048];
-
-    // standard 1.0 installation
-    if (!mm7_installation_found)
-    {
-        mm7_installation_found = ReadWindowsRegistryString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
-            mm7_path, sizeof(mm7_path)
-        );
-
-        if (mm7_installation_found)
-        {
-            Log::Warning(L"Standard MM7 installation found");
-        }
-    }
-
-    // GoG version
-    if (!mm7_installation_found)
-    {
-        mm7_installation_found = ReadWindowsRegistryString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-            mm7_path, sizeof(mm7_path)
-        );
-
-        if (mm7_installation_found)
-        {
-            Log::Warning(L"GoG MM7 installation found");
-        }
-    }
-
-
-    if (HWND hMM7Window = FindWindowW(L"M&MTrilogy", 0))//check whether the window is open
-    {
-        if (IsIconic(hMM7Window))
-            ShowWindow(hMM7Window, SW_RESTORE);
-        SetForegroundWindow(GetLastActivePopup(hMM7Window));
-        return 0;
-    }
-
-    HWND hPrevWindow = GetActiveWindow();
-    if (!hPrevWindow)
-    {
-        Log::Warning(L"OS init: ok");
-        extern bool MM_Main(const wchar_t *pCmdLine, const char *mm7_path);
-        MM_Main(lpCmdLine, mm7_path);
-    }
-    if (hPrevWindow)
-        SetActiveWindow(hPrevWindow);
-
-    return GetLastError();
-}
-
-
-
-
-void MsgBox(const wchar_t *msg, const wchar_t *title)
-{
-  MessageBoxW(nullptr, msg, title, 0);
-}
-
 
 
 
 //----- (004649EF) --------------------------------------------------------
-int ReadWindowsRegistryInt(const char *pKey, int uDefValue)
+int OS_GetAppInt(const char *pKey, int uDefValue)
 {
     DWORD cbData; // [sp+8h] [bp-20h]@1
     LPCSTR lpValueName; // [sp+Ch] [bp-1Ch]@1
@@ -210,7 +119,7 @@ int ReadWindowsRegistryInt(const char *pKey, int uDefValue)
 }
 
 //----- (00464B02) --------------------------------------------------------
-void WriteWindowsRegistryString(const char *pKey, const char *pString)
+void OS_SetAppString(const char *pKey, const char *pString)
 {
     size_t v2; // eax@5
     const char *lpValueName; // [sp+4h] [bp-1Ch]@1
@@ -249,7 +158,7 @@ void WriteWindowsRegistryString(const char *pKey, const char *pString)
 
 
 //----- (00464BEF) --------------------------------------------------------
-void ReadWindowsRegistryString(const char *pKeyName, char *pOutString, int uBufLen, const char *pDefaultValue)
+void OS_GetAppString(const char *pKeyName, char *pOutString, int uBufLen, const char *pDefaultValue)
 {
     //LSTATUS (__stdcall *v4)(HKEY); // esi@1
     LSTATUS result; // eax@7
@@ -296,7 +205,7 @@ void ReadWindowsRegistryString(const char *pKeyName, char *pOutString, int uBufL
 }
 
 //----- (00464D32) --------------------------------------------------------
-void WriteWindowsRegistryInt(const char *pKey, int val)
+void OS_SetAppInt(const char *pKey, int val)
 {
     const char *lpValueName; // [sp+4h] [bp-1Ch]@1
     BYTE Data[4]; // [sp+8h] [bp-18h]@1

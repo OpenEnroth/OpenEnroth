@@ -45,14 +45,15 @@ Image *messagebox_border_right = nullptr; // 5076A0
 void CharacterUI_DrawTooltip(const char *title, String &content)
 {
   GUIWindow popup_window; // [sp+Ch] [bp-5Ch]@1
-  POINT v6; // [sp+60h] [bp-8h]@1
+
+  Point pt = pMouse->GetCursorPos();
 
   memset(&popup_window, 0, 0x54u);
   popup_window.uFrameWidth = 384;
   popup_window.uFrameHeight = 256;
   popup_window.uFrameX = 128;
-  popup_window.uFrameY = pMouse->GetCursorPos(&v6)->y + 30;
-  popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(content, &popup_window, 24) + 2 * LOBYTE(pFontLucida->uFontHeight) + 24;
+  popup_window.uFrameY = pt.y + 30;
+  popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(content, &popup_window, 24) + 2 * pFontLucida->GetFontHeight() + 24;
   popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
   popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
   popup_window.DrawMessageBox(0);
@@ -66,7 +67,7 @@ void CharacterUI_DrawTooltip(const char *title, String &content)
 
   auto colored_title = StringPrintf("\f%05d%s\f00000\n", ui_character_tooltip_header_default_color, title);
   popup_window.DrawTitleText(pFontCreate, 0, 0, 0, colored_title, 3);
-  popup_window.DrawText(pFontSmallnum, 1, LOBYTE(pFontLucida->uFontHeight), 0, content, 0, popup_window.uFrameY + popup_window.uFrameHeight, 0);
+  popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetFontHeight(), 0, content, 0, popup_window.uFrameY + popup_window.uFrameHeight, 0);
 }
 
 void CharacterUI_DrawTooltip(const char *title, const char *content)
@@ -199,7 +200,6 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     int v77; // [sp+200h] [bp-78h]@12
     int v78; // [sp+204h] [bp-74h]@5
     GUIWindow iteminfo_window; // [sp+208h] [bp-70h]@2
-    POINT a2; // [sp+25Ch] [bp-1Ch]@2
     int v81; // [sp+264h] [bp-14h]@5
     PlayerSpeech v83; // [sp+26Ch] [bp-Ch]@18
     char* v84;
@@ -219,10 +219,12 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     iteminfo_window.uFrameWidth = 384;
     iteminfo_window.uFrameHeight = 180;
     iteminfo_window.uFrameY = 40;
-    if (pMouse->GetCursorPos(&a2)->x <= 320)
-        v2 = pMouse->GetCursorPos(&a2)->x + 30;
+
+    Point pt = pMouse->GetCursorPos();
+    if (pt.x <= 320)
+        v2 = pt.x + 30;
     else
-        v2 = pMouse->GetCursorPos(&a2)->x - iteminfo_window.uFrameWidth - 30;
+        v2 = pt.x - iteminfo_window.uFrameWidth - 30;
     iteminfo_window.uFrameX = v2;
     v78 = 100 - inspect_item_image->GetWidth();
     v81 = 144 - inspect_item_image->GetHeight();
@@ -403,7 +405,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     iteminfo_window.uFrameWidth -= 12;
     iteminfo_window.uFrameZ = iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
     iteminfo_window.uFrameW = iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-    Str = (char *)(3 * (LOBYTE(pFontArrus->uFontHeight) + 8));
+    Str = (char *)(3 * (pFontArrus->GetFontHeight() + 8));
     v84 = &out_text[0];
     for (uint i = 1; i <= 3; i++)
     {
@@ -418,7 +420,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     if ((signed int)Str > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS && (inspect_item->special_enchantment || inspect_item->uEnchantmentType))
-        iteminfo_window.uFrameHeight += LOBYTE(pFontComic->uFontHeight);
+        iteminfo_window.uFrameHeight += pFontComic->GetFontHeight();
     v85 = 0;
     if (pFontArrus->uFontHeight)
     {
@@ -466,7 +468,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     if (v77)
     {
         auto txt = StringPrintf("%s: %lu", localization->GetString(465), v77); // Value
-        iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - LOBYTE(pFontComic->uFontHeight), 0, txt, 0, 0, 0);
+        iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), 0, txt, 0, 0, 0);
         render->ResetUIClipRect();
     }
     else
@@ -492,11 +494,11 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
             {
                 txt4 += StringPrintf(" %d:mn", v67.field_4_expire_minute);
             }
-            iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - 2 * LOBYTE(pFontComic->uFontHeight), 0, txt4.data(), 0, 0, 0);
+            iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - 2 * pFontComic->GetFontHeight(), 0, txt4.data(), 0, 0, 0);
         }
 
         auto txt2 = StringPrintf("%s: %lu", localization->GetString(465), inspect_item->GetValue());
-        iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - LOBYTE(pFontComic->uFontHeight), 0, txt2.data(), 0, 0, 0);
+        iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), 0, txt2.data(), 0, 0, 0);
 
         String txt3;
         if (inspect_item->uAttributes & ITEM_STOLEN)
@@ -510,9 +512,9 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
             }
             txt3 = localization->GetString(651); //"Hardened"
         }
-        LOWORD(inspect_item->uAttributes) = r_mask;
+        inspect_item->uAttributes = (inspect_item->uAttributes & 0xFFFF0000) | r_mask;
         iteminfo_window.DrawText(pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
-            iteminfo_window.uFrameHeight - LOBYTE(pFontComic->uFontHeight), inspect_item->uAttributes, txt3, 0, 0, 0);
+            iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), inspect_item->uAttributes, txt3, 0, 0, 0);
         render->ResetUIClipRect();
     }
 }
@@ -528,9 +530,6 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     unsigned int skill_level; // eax@61
     int pTextHeight; // edi@90
     PlayerSpeech speech; // [sp-8h] [bp-1F4h]@79
-    DDBLTFX Dst; // [sp+Ch] [bp-1E0h]@18
-    DDSURFACEDESC2 pDesc; // [sp+70h] [bp-17Ch]@18
-    RECT dest_rect; // [sp+ECh] [bp-100h]@26
     const char *string_name[10]; // [sp+FCh] [bp-F0h]@145
     const char *content[11]; // [sp+124h] [bp-C8h]@127
     unsigned char resistances[11]; // [sp+124h] [bp-C8h]@127
@@ -550,12 +549,6 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     if (!uActiveCharacter) //
         uActiveCharacter = 1;
 
-    /*if ( !(bMonsterInfoUI_bDollInitialized & 1) )
-    {
-      bMonsterInfoUI_bDollInitialized |= 1u;
-      Actor::Actor(&pMonsterInfoUI_Doll);
-      atexit(nullsub_3);
-    }*/
     v106.sParentBillboardID = -1;
     v115 = monster_popup_y_offsets[((signed __int16)pActors[uActorID].pMonsterInfo.uID - 1) / 3] - 40;
     if (pActors[uActorID].pMonsterInfo.uID == pMonsterInfoUI_Doll.pMonsterInfo.uID)
@@ -611,14 +604,6 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     {
         v106.uScreenSpaceY = v115 + v106.uViewportY + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uBufferHeight;
 
-        memset(&Dst, 0, sizeof(Dst));
-        Dst.dwSize = sizeof(Dst);
-        Dst.dwFillColor = 0;
-
-        memset(&pDesc, 0, sizeof(pDesc));
-        pDesc.dwSize = sizeof(pDesc);
-
-        pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface->GetSurfaceDesc(&pDesc);
         v107 = 0;
         uint i = 0;
         int dst_x = v106.uScreenSpaceX + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaX - pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uBufferWidth / 2;
@@ -643,10 +628,26 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
             dst_w = v106.uViewportW;
         render->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0x7FF);
         render->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0x7FF);
+
+
+
+        /*DDBLTFX Dst; // [sp+Ch] [bp-1E0h]@18
+        DDSURFACEDESC2 pDesc; // [sp+70h] [bp-17Ch]@18
+        RECT dest_rect; // [sp+ECh] [bp-100h]@26
+
         dest_rect.left = v106.uViewportX;
         dest_rect.top = v106.uViewportY;
         dest_rect.right = v106.uViewportZ;
         dest_rect.bottom = v106.uViewportW;
+
+        memset(&Dst, 0, sizeof(Dst));
+        Dst.dwSize = sizeof(Dst);
+        Dst.dwFillColor = 0;
+
+        memset(&pDesc, 0, sizeof(pDesc));
+        pDesc.dwSize = sizeof(pDesc);
+
+        pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface->GetSurfaceDesc(&pDesc);
 
         ErrD3D(render->pBackBuffer4->Blt(&dest_rect, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &Dst));
         {
@@ -674,6 +675,38 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
                 }
                 pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface->Unlock(NULL);
             }
+        }*/
+        Rect rc;
+        rc.x = v106.uViewportX;
+        rc.y = v106.uViewportY;
+        rc.z = v106.uViewportZ;
+        rc.w = v106.uViewportW;
+
+        void *surface;
+        int pitch;
+        int width;
+        int height;
+        if (render->LockSurface(pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface, &rc, &surface, &pitch, &width, &height))
+        {
+            ushort* src = (unsigned __int16 *)surface;
+            uint num_top_scanlines_above_frame_y = i - dst_y;
+            for (uint y = dst_y; y < dst_w; ++y)
+            {
+                //ushort* dst = &render->pTargetSurface[y * render->uTargetSurfacePitch + dst_x];
+
+                uint src_y = num_top_scanlines_above_frame_y + y;
+                for (uint x = dst_x; x < dst_z; ++x)
+                {
+                    uint src_x = v107 - dst_x + x; // num scanlines left to frame_x  + current x
+
+                    uint idx = height * src_y / pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaHeight * (pitch / sizeof(short)) +
+                        width  * src_x / pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaWidth;
+                    uint b = src[idx] & 0x1F;
+                    //*dst++ = b | 2 * (src[idx] & 0xFFE0);
+                    render->WritePixel16(x, y, b | 2 * (src[idx] & 0xFFE0));
+                }
+            }
+            render->UnlockSurface(pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface);
         }
     }
     /*else
@@ -774,11 +807,11 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
 
     pWindow->DrawText(pFontSmallnum, 12, 196, Color16(0xE1u, 255, 0x9Bu), localization->GetString(631), 0, 0, 0);//Effects
     if (!for_effects && false)
-        pWindow->DrawText(pFontSmallnum, 28, LOBYTE(pFontSmallnum->uFontHeight) + 193, Color16(0xE1u, 255, 0x9Bu), localization->GetString(630), 0, 0, 0);//?
+        pWindow->DrawText(pFontSmallnum, 28, pFontSmallnum->GetFontHeight() + 193, Color16(0xE1u, 255, 0x9Bu), localization->GetString(630), 0, 0, 0);//?
     else
     {
         pText = "";
-        pTextHeight = LOBYTE(pFontSmallnum->uFontHeight) + 193;
+        pTextHeight = pFontSmallnum->GetFontHeight() + 193;
         for (uint i = 1; i <= 21; ++i)
         {
             if (pActors[uActorID].pActorBuffs[i].Active())
@@ -886,18 +919,18 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     {
         auto str = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(108), 0, pActors[uActorID].pMonsterInfo.uHP);
         pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
-        pTextHeight = v106.uViewportY + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+        pTextHeight = v106.uViewportY + pFontSmallnum->GetFontHeight() - 3;
         txt2 = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(12), 0, pActors[uActorID].pMonsterInfo.uAC);//Armor Class
     }
     else
     {
         auto str = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(108), 0, localization->GetString(630));//?   - [630] actually displays a question mark
         pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
-        pTextHeight = v106.uViewportY + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+        pTextHeight = v106.uViewportY + pFontSmallnum->GetFontHeight() - 3;
         txt2 = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(12), 0, localization->GetString(630));//?   - [630] actually displays a question mark
     }
     pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt2, 0, 0, 0);
-    pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 6 + LOBYTE(pFontSmallnum->uFontHeight);
+    pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 6 + pFontSmallnum->GetFontHeight();
 
     content[0] = localization->GetSpellSchoolName(0);
     content[1] = localization->GetSpellSchoolName(1);
@@ -917,7 +950,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         auto txt3 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(18), 0, content[pActors[uActorID].pMonsterInfo.uAttack1Type]); // Attack
         pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
 
-        pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+        pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
         if (pActors[uActorID].pMonsterInfo.uAttack1DamageBonus)
             txt4 = StringPrintf("%s\f%05u\t080%dd%d+%d\n", localization->GetString(53),
                 0, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides, pActors[uActorID].pMonsterInfo.uAttack1DamageBonus);
@@ -929,17 +962,17 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     {
         auto txt3 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(18), 0, localization->GetString(630));
         pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
-        pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+        pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
         txt4 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(53), 0, localization->GetString(630));
     }
     pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt4, 0, 0, 0);
 
-    pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 6 + LOBYTE(pFontSmallnum->uFontHeight);
+    pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 6 + pFontSmallnum->GetFontHeight();
     if (!master_level)
     {
         auto txt5 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(628), 0, localization->GetString(630)); // "Spell" "?"
         pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt5, 0, 0, 0);
-        pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+        pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
     }
     else
     {
@@ -950,25 +983,25 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         {
             auto txt6 = StringPrintf("%s\f%05u\t070%s\n", pText, 0, pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell1ID].pShortName);//"%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
-            pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
         }
         if (pActors[uActorID].pMonsterInfo.uSpell2ID)
         {
             auto txt6 = StringPrintf("\f%05u\t070%s\n", 0, pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell2ID].pShortName);//"%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
-            pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
         }
         if (!pActors[uActorID].pMonsterInfo.uSpell1ID && !pActors[uActorID].pMonsterInfo.uSpell2ID)
         {
             auto txt6 = StringPrintf("%s\f%05u\t070%s\n", localization->GetString(628), 0, localization->GetString(153));//"%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
-            pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
         }
     }
 
-    pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+    pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
     pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), localization->GetString(626), 0, 0, 0);//Immune
-    pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+    pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
 
     string_name[0] = localization->GetSpellSchoolName(0); //Fire
     string_name[1] = localization->GetSpellSchoolName(1); //Air
@@ -1010,7 +1043,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
 
             auto txt7 = StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, pText);
             pWindow->DrawText(pFontSmallnum, 170, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt7, 0, 0, 0);
-            pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
         }
     }
     else
@@ -1019,7 +1052,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         {
             auto txt8 = StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, localization->GetString(630)); // "?"
             pWindow->DrawText(pFontSmallnum, 170, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt8, 0, 0, 0);
-            pTextHeight = pTextHeight + LOBYTE(pFontSmallnum->uFontHeight) - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
         }
     }
 
@@ -1028,7 +1061,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     {
         auto txt9 = StringPrintf("%s: %d", localization->GetString(650), pActors[uActorID].sCurrentHP);//Current Hit Points
         pFontSmallnum->GetLineWidth(txt9);
-        pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - LOBYTE(pFontSmallnum->uFontHeight) - 12, 0, txt9, 3);
+        pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetFontHeight() - 12, 0, txt9, 3);
     }
 }
 
@@ -1132,16 +1165,15 @@ void  CharacterUI_StatsTab_ShowHint()
     const char *pHourWord; // ecx@17
     const char *pDayWord; // eax@20
     int v15; // ebx@28
-    POINT a2; // [sp+Ch] [bp-24h]@1
     int pHour; // [sp+14h] [bp-1Ch]@15
     unsigned int pDay; // [sp+24h] [bp-Ch]@15
 
-    pMouse->GetCursorPos(&a2);
+    Point pt = pMouse->GetCursorPos();
     for (pStringNum = 0; pStringNum < stat_string_coord.size(); ++pStringNum)
     {
-        if (a2.x >= stat_string_coord[pStringNum].x && a2.x <= stat_string_coord[pStringNum].x + stat_string_coord[pStringNum].width)
+        if (pt.x >= stat_string_coord[pStringNum].x && pt.x <= stat_string_coord[pStringNum].x + stat_string_coord[pStringNum].width)
         {
-            if (a2.y >= stat_string_coord[pStringNum].y && a2.y <= stat_string_coord[pStringNum].y + stat_string_coord[pStringNum].height)
+            if (pt.y >= stat_string_coord[pStringNum].y && pt.y <= stat_string_coord[pStringNum].y + stat_string_coord[pStringNum].height)
                 break;
         }
     }
@@ -1231,7 +1263,7 @@ void  CharacterUI_StatsTab_ShowHint()
             String str2;
             if (v15 > pPlayers[uActiveCharacter]->uLevel)
                 str1 = StringPrintf(localization->GetString(147), v15);
-            str2 = localization->FormatString(538, GetExperienceRequiredForLevel(v15) - LODWORD(pPlayers[uActiveCharacter]->uExperience), v15 + 1);
+            str2 = localization->FormatString(538, GetExperienceRequiredForLevel(v15) - (int)pPlayers[uActiveCharacter]->uExperience, v15 + 1);
             str1 += "\n" + str2;
 
             str2 = String(pPlayerExperienceAttributeDescription) + "\n \n" + str1;
@@ -1314,13 +1346,14 @@ void  DrawSpellDescriptionPopup(int spell_index)
 {
     SpellInfo *spell; // esi@1
     unsigned int v3; // eax@2
-    LONG v5; // ecx@4
+    long v5; // ecx@4
     GUIWindow spell_info_window; // [sp+Ch] [bp-68h]@4
-    POINT mouse; // [sp+64h] [bp-10h]@1
+
+    Point pt = pMouse->GetCursorPos();
 
     spell = &pSpellStats->pInfos[spell_index + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 1];
-    if (pMouse->GetCursorPos(&mouse)->y <= 250)
-        v3 = pMouse->GetCursorPos(&mouse)->y + 30;
+    if (pt.y <= 250)
+        v3 = pt.y + 30;
     else
         v3 = 30;
     spell_info_window.uFrameY = v3;
@@ -1363,7 +1396,7 @@ void  DrawSpellDescriptionPopup(int spell_index)
 
     auto str2 = StringPrintf("%s\n%d", localization->GetString(522), // SP Cost
         pSpellDatas[spell_index + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 1].mana_per_skill[skill_level - 1]);
-    spell_info_window.DrawTitleText(pFontComic, 12, spell_info_window.uFrameHeight - LOBYTE(pFontComic->uFontHeight) - 16, 0, str2, 3);
+    spell_info_window.DrawTitleText(pFontComic, 12, spell_info_window.uFrameHeight - pFontComic->GetFontHeight() - 16, 0, str2, 3);
     dword_507B00_spell_info_to_draw_in_popup = 0;
 }
 
@@ -1376,7 +1409,6 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
     const char *pStr; // edi@85
     const char *pHint; // edx@113
     GUIWindow popup_window; // [sp+4h] [bp-74h]@32
-    struct tagPOINT Point; // [sp+60h] [bp-18h]@6
     unsigned int pX; // [sp+70h] [bp-8h]@3
     unsigned int pY; // [sp+74h] [bp-4h]@3
 
@@ -1393,9 +1425,8 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
     }
     //if ( render->bWindowMode )
     {
-        GetCursorPos(&Point);
-        ScreenToClient(window->GetApiHandle(), &Point);
-        if (Point.x < 1 || Point.y < 1 || Point.x > 638 || Point.y > 478)
+        Point pt = pMouse->GetCursorPos();
+        if (pt.x < 1 || pt.y < 1 || pt.x > 638 || pt.y > 478)
         {
             back_to_game();
             return;
@@ -1651,7 +1682,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
             popup_window.uFrameHeight = 256;
             popup_window.uFrameX = 128;
             popup_window.uFrameY = 40;
-            popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(pHint, &popup_window, 24) + 2 * LOBYTE(pFontLucida->uFontHeight) + 24;
+            popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(pHint, &popup_window, 24) + 2 * pFontLucida->GetFontHeight() + 24;
             popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
             popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
             popup_window.DrawMessageBox(0);
@@ -1688,13 +1719,12 @@ void Inventory_ItemPopupAndAlchemy()
     double v31; // st7@112
     Vec3_int_ v39; // [sp-18h] [bp-A8h]@83
     GUIWindow message_window; // [sp+Ch] [bp-84h]@137
-    POINT cursor; // [sp+78h] [bp-18h]@2
     unsigned int damage_level; // [sp+8Ch] [bp-4h]@23
 
     if (no_rightlick_in_inventory)
         return;
 
-    pMouse->GetCursorPos(&cursor);
+    Point cursor = pMouse->GetCursorPos();
     int item_pid = (render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF) - 1;
     //if (item_pid == -1) //added here to avoid crash
     //    return;

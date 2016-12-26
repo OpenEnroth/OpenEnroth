@@ -5,7 +5,7 @@
 
 class Log
 {
-  public:
+public:
     static void Initialize();
     static void Warning(const wchar_t *pFormat, ...);
 };

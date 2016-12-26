@@ -1,5 +1,6 @@
 #pragma once
 
+class Texture;
 
 /*  120 */
 #pragma pack(push, 1)
@@ -75,7 +76,7 @@ struct ProjectileAnim
     float dstX;
     float dstY;
     float dstZ;
-    int uTextureID;
+    Texture *texture;//int uTextureID;
 };
 #pragma pack(pop)
 
@@ -117,7 +118,7 @@ struct stru6
         pStru1 = nullptr;
     }
 
-    void DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, float dstY, float dstZ, unsigned int resource_id);
+    void DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, float dstY, float dstZ, Texture *);
     void DrawProjectiles();
     void _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(struct SpriteObject *a2, unsigned int uDiffuse, unsigned int resource_id);
     void _4A75CC_single_spell_collision_particle(struct SpriteObject *a1, unsigned int uDiffuse, unsigned int resource_id);
@@ -128,7 +129,7 @@ struct stru6
     bool AddMobileLight(struct SpriteObject *a1, unsigned int uDiffuse, int uRadius);
     void _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(SpriteObject *a1, unsigned int uDiffuse, unsigned int resource_id, float a4);
     void _4A7C07_stun_spell_fx(struct SpriteObject *a2);
-    void AddProjectile(struct SpriteObject *a2, int a3, unsigned int resource_id);
+    void AddProjectile(struct SpriteObject *a2, int a3, Texture *);
     void _4A7E89_sparkles_on_actor_after_it_casts_buff(struct Actor *pActor, unsigned int uDiffuse);
     void _4A7F74(int x, int y, int z);
     int _4A806F_get_mass_distortion_value(struct Actor *pActor);

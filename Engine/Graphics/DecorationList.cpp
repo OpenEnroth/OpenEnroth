@@ -165,11 +165,11 @@ bool DecorationList::FromFileTxt(const char *Args)
                           if ( _stricmp(v27, "Dawn") )
                           {
                             if ( !_stricmp(v27, "Dusk") )
-                              HIBYTE(v2->pDecorations[v2->uNumDecorations].uFlags) |= 2u;
+                              v2->pDecorations[v2->uNumDecorations].uFlags |= 0x200;
                           }
                           else
                           {
-                            HIBYTE(v2->pDecorations[v2->uNumDecorations].uFlags) |= 1u;
+                            v2->pDecorations[v2->uNumDecorations].uFlags |= 0x100;
                           }
                         }
                         else

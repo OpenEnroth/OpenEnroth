@@ -1,11 +1,6 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+#include "Engine/Log.h"
 
-#define _CRT_SECURE_NO_WARNINGS
-#include <string>
-#include "Lights.h"
-#include "OSAPI.h"
+#include "Engine/Graphics/Lights.h"
 
 
 //----- (00467D88) --------------------------------------------------------
@@ -13,7 +8,7 @@ bool LightsStack_MobileLight_::AddLight(__int16 x, __int16 y, __int16 z, __int16
 {
   if (uNumLightsActive >= 400)
   {
-    MessageBoxW(nullptr, L"Too many mobile lights!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\MobileLightStack.cpp:51", 0);
+      Log::Warning(L"Too many mobile lights!");
     return false;
   }
 
@@ -40,7 +35,7 @@ bool LightsStack_StationaryLight_::AddLight( __int16 x, __int16 y, __int16 z, __
   //v9 = this->uNumLightsActive;
   if ( (signed int)this->uNumLightsActive >= 400 )
   {
-    MessageBoxW(nullptr, L"Too many stationary lights!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\StationaryLightStack.cpp:45", 0);
+      Log::Warning(L"Too many stationary lights!");
     return false;
   }
 

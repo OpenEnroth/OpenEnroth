@@ -11,7 +11,7 @@
 #include "Engine/Time.h"
 #include "Engine/MMT.h"
 
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "Engine/Tables/IconFrameTable.h"
@@ -177,7 +177,7 @@ void CreateParty_EventLoop()
         case UIMSG_PlayerCreationClickOK:
             new OnButtonClick2(580, 431, 0, 0, (int)pPlayerCreationUI_BtnOK, 0);
             if (PlayerCreation_GetUnspentAttributePointCount() || !PlayerCreation_Choose4Skills())
-                game_ui_status_bar_event_string_time_left = GetTickCount() + 4000;
+                game_ui_status_bar_event_string_time_left = OS_GetTime() + 4000;
             else
                 uGameState = GAME_STATE_STARTING_NEW_GAME;
             break;
@@ -299,7 +299,7 @@ void GUIWindow_PartyCreation::Update()
     //move sky
     render->BeginScene();
     render->DrawTextureNew(0, 0, main_menu_background);
-    int sky_slider_anim_timer = (GetTickCount() % (window->GetWidth() * 20)) / 20;
+    int sky_slider_anim_timer = (OS_GetTime() % (window->GetWidth() * 20)) / 20;
     render->DrawTextureAlphaNew(sky_slider_anim_timer / 640.0f, 2 / 480.0f, ui_partycreation_sky_scroller);
     render->DrawTextureAlphaNew((sky_slider_anim_timer - (int)window->GetWidth()) / 640.0f, 2 / 480.0f, ui_partycreation_sky_scroller);
     render->DrawTextureAlphaNew(0, 0, ui_partycreation_top);
@@ -326,7 +326,7 @@ void GUIWindow_PartyCreation::Update()
     pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uStartTime);
     render->DrawTextureAlphaNew(pX / 640.0f, 29 / 480.0f, pFrame->GetTexture());
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
-    uPlayerCreationUI_ArrowAnim = 18 - (GetTickCount() % 450) / 25;
+    uPlayerCreationUI_ArrowAnim = 18 - (OS_GetTime() % 450) / 25;
     render->DrawTextureAlphaNew((uPosActiveItem->uZ - 4) / 640.0f, uPosActiveItem->uY / 480.0f, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
     render->DrawTextureAlphaNew((uPosActiveItem->uX - 12) / 640.0f, uPosActiveItem->uY / 480.0f, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
 
@@ -547,7 +547,7 @@ void GUIWindow_PartyCreation::Update()
     auto unspent_attribute_bonus_label = StringPrintf("%d", pBonusNum);
     pTextCenter = pFontCreate->AlignText_Center(84, unspent_attribute_bonus_label);
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, pTextCenter + 530, 410, Color16(0xFF, 0xFF, 0xFF), unspent_attribute_bonus_label);
-    if (game_ui_status_bar_event_string_time_left > GetTickCount())
+    if (game_ui_status_bar_event_string_time_left > OS_GetTime())
     {
         message_window.Hint = localization->GetString(412);// "Create Party cannot be completed unless you have assigned all characters 2 extra skills and have spent all of your bonus points."
         if (pBonusNum < 0)
@@ -582,7 +582,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     current_screen_type = SCREEN_PARTY_CREATION;
     uPlayerCreationUI_ArrowAnim = 0;
     uPlayerCreationUI_SelectedCharacter = 0;
-    v0 = LOBYTE(pFontCreate->uFontHeight) - 2;
+    v0 = pFontCreate->GetFontHeight() - 2;
 
     ui_partycreation_class_icons[0] = assets->GetImage_16BitColorKey("IC_KNIGHT", 0x7FF);
     ui_partycreation_class_icons[1] = assets->GetImage_16BitColorKey("IC_THIEF", 0x7FF);
@@ -722,8 +722,6 @@ void PartyCreationUI_DeleteFont()
 //----- (00497526) --------------------------------------------------------
 bool PartyCreationUI_LoopInternal()
 {
-    LONG uMouseX; // edi@6
-    LONG uMouseY; // eax@6
     //GUIButton *pControlsHead; // edx@6
     //int pControlParam; // esi@12
     signed int v8; // edi@30
@@ -731,8 +729,6 @@ bool PartyCreationUI_LoopInternal()
   //  char *v10; // ebx@37
     ItemGen item; // [sp+Ch] [bp-74h]@37
     char v20[32]; // [sp+30h] [bp-50h]@29
-    MSG Msg; // [sp+50h] [bp-30h]@17
-    POINT v25; // [sp+6Ch] [bp-14h]@6
     bool party_not_creation_flag; // [sp+74h] [bp-Ch]@1
 
     party_not_creation_flag = false;
@@ -748,18 +744,11 @@ bool PartyCreationUI_LoopInternal()
     SetCurrentMenuID(MENU_CREATEPARTY);
     while (GetCurrentMenuID() == MENU_CREATEPARTY)
     {
-        uMouseX = pMouse->GetCursorPos(&v25)->x;
-        uMouseY = pMouse->GetCursorPos(&v25)->y;
-
-        while (PeekMessageA(&Msg, 0, 0, 0, PM_REMOVE))
-        {
-            if (Msg.message == WM_QUIT)
-                Engine_DeinitializeAndTerminate(0);
-            TranslateMessage(&Msg);
-            DispatchMessageA(&Msg);
-        }
+        OS_PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
-            WaitMessage();
+        {
+            OS_WaitMessage();
+        }
         else
         {
             //PlayerCreationUI_Draw();

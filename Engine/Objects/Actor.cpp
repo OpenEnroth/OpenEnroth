@@ -289,7 +289,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
         a1.spell_skill = 0;
         a1.vPosition.y = actorPtr->vPosition.y;
         a1.vPosition.z = actorPtr->vPosition.z + ((signed int)actorPtr->uActorHeight >> 1);
-        a1.uFacing = LOWORD(pDir->uYawAngle);
+        a1.uFacing = (short)pDir->uYawAngle;
         a1.uSoundID = 0;
         a1.uAttributes = 0;
         a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
@@ -431,7 +431,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
         {
             do
             {
-                a1.uFacing = v19 + LOWORD(pDir->uYawAngle);
+                a1.uFacing = v19 + (short)pDir->uYawAngle;
                 v20 = a1.Create((signed __int16)a1.uFacing, pDir->uPitchAngle,
                     pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
                 v19 += v118;
@@ -549,7 +549,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
     case SPELL_BODY_POWER_CURE:
         actorPtr->sCurrentHP += 5 * realPoints + 10;
         if (actorPtr->sCurrentHP >= (signed int)actorPtr->pMonsterInfo.uHP)
-            actorPtr->sCurrentHP = LOWORD(actorPtr->pMonsterInfo.uHP);
+            actorPtr->sCurrentHP = (short)actorPtr->pMonsterInfo.uHP;
         pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
         pAudioPlayer->PlaySound((SoundID)SOUND_Fate, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
@@ -577,17 +577,17 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             v96 = 5 * 60 * realPoints + 128 * 30;
         else if (masteryLevel == 3)
         {
-            LOWORD(realPoints) = 3 * realPoints;
+            HEXRAYS_LOWORD(realPoints) = 3 * realPoints;
             v96 = 15 * 60 * (uSkillLevel & 0x3F) + 128 * 30;
         }
         else if (masteryLevel == 4)
         {
             v96 = 20 * 60 * realPoints + 128 * 30;
-            LOWORD(realPoints) = 4 * realPoints;
+            HEXRAYS_LOWORD(realPoints) = 4 * realPoints;
         }
         else
         {
-            LOWORD(realPoints) = uSkillLevel;
+            HEXRAYS_LOWORD(realPoints) = uSkillLevel;
             v96 = 0;
         }
         actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(
@@ -652,7 +652,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             do
             {
                 v79 = pDir->uYawAngle;
-                a1.uFacing = a1c + LOWORD(pDir->uYawAngle);
+                a1.uFacing = a1c + (short)pDir->uYawAngle;
                 v80 = a1.Create(v79, pDir->uPitchAngle,
                     pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
                 a1c += v116;
@@ -1227,7 +1227,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid, struct 
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid, &a3, 0);
             v12 = &a3;
         }
-        pActors[uActorID].uYawAngle = LOWORD(v12->uYawAngle);
+        pActors[uActorID].uYawAngle = (short)v12->uYawAngle;
         pActors[uActorID].uCurrentActionLength = pSpriteFrameTable->pSpriteSFrames[pActors[uActorID].pSpriteIDs[ANIM_AtkMelee]].uAnimLength * 8;
         pActors[uActorID].uCurrentActionTime = 0;
         pActors[uActorID].uAIState = AttackingMelee;
@@ -1488,7 +1488,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0, AIDirection 
         }
         else
             v9 = pDir;
-        v3->uYawAngle = LOWORD(v9->uYawAngle);
+        v3->uYawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
         v3->uCurrentActionLength = 8 * v13;
         v3->uCurrentActionTime = 0;
@@ -1568,7 +1568,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid, AIDire
         }
         else
             v9 = pDir;
-        v3->uYawAngle = LOWORD(v9->uYawAngle);
+        v3->uYawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
         v3->uCurrentActionLength = 8 * v13;
         v3->uCurrentActionTime = 0;
@@ -1648,7 +1648,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid, AIDi
         }
         else
             v9 = pDir;
-        v3->uYawAngle = LOWORD(v9->uYawAngle);
+        v3->uYawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
         v3->uCurrentActionLength = 8 * v13;
         v3->uCurrentActionTime = 0;
@@ -1723,7 +1723,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid, AIDi
         }
         else
             v10 = pDir;
-        v3->uYawAngle = LOWORD(v10->uYawAngle);
+        v3->uYawAngle = (short)v10->uYawAngle;
         v14 = pSpriteFrameTable->pSpriteSFrames[v3->pSpriteIDs[ANIM_AtkRanged]].uAnimLength;
         v3->uCurrentActionLength = 8 * v14;
         v3->uCurrentActionTime = 0;
@@ -1886,7 +1886,7 @@ void Actor::AI_Stun(unsigned int uActorID, signed int edx0, int stunRegardlessOf
     {
         Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), edx0, &a3, 0);
         //v10 = &a3;
-        pActors[uActorID].uYawAngle = LOWORD(a3.uYawAngle);
+        pActors[uActorID].uYawAngle = (short)a3.uYawAngle;
         v7 = pSpriteFrameTable->pSpriteSFrames[pActors[uActorID].pSpriteIDs[ANIM_GotHit]].uAnimLength;
         pActors[uActorID].uCurrentActionTime = 0;
         pActors[uActorID].uAIState = Stunned;
@@ -1942,7 +1942,7 @@ void Actor::Resurrect(unsigned int uActorID)
   pActor->uAIState = Resurrected;
   pActor->uCurrentActionAnimation = ANIM_Dying;
   pActor->uCurrentActionLength = 8 * pSpriteFrameTable->pSpriteSFrames[pActor->pSpriteIDs[ANIM_Dying]].uAnimLength;
-  pActor->sCurrentHP = LOWORD(pActor->pMonsterInfo.uHP);
+  pActor->sCurrentHP = (short)pActor->pMonsterInfo.uHP;
   Actor::PlaySound(uActorID, 1);
   pActor->UpdateAnimation();
 }
@@ -2102,7 +2102,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0, 
     v7->uCurrentActionLength = uActionLength;
   else
     v7->uCurrentActionLength = 128;
-  v7->uPitchAngle = LOWORD(v10->uPitchAngle);
+  v7->uPitchAngle = (short)v10->uPitchAngle;
   v7->uAIState = Pursuing;
   v7->UpdateAnimation();
 }
@@ -2112,7 +2112,6 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid, int uActionLen
 {
   Actor *v5; // ebx@1
   int v7; // ecx@2
-  unsigned __int16 v9; // ax@15
   AIDirection v10; // [sp+8h] [bp-7Ch]@4
   AIDirection a3; // [sp+24h] [bp-60h]@3
   AIDirection* v13; // [sp+5Ch] [bp-28h]@4
@@ -2143,11 +2142,10 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid, int uActionLen
         v5->uCurrentActionLength = 0;
       if ( v5->uCurrentActionLength > 256 )
         v5->uCurrentActionLength = 256;
-      v5->uYawAngle = LOWORD(stru_5C6E00->uIntegerHalfPi) + LOWORD(a4->uYawAngle);
-      v5->uYawAngle = LOWORD(stru_5C6E00->uDoublePiMask) & (v5->uYawAngle + rand() % (signed int)stru_5C6E00->uIntegerPi);
-      v9 = LOWORD(a4->uPitchAngle);
+      v5->uYawAngle = (short)stru_5C6E00->uIntegerHalfPi + (short)a4->uYawAngle;
+      v5->uYawAngle = (short)stru_5C6E00->uDoublePiMask & (v5->uYawAngle + rand() % (signed int)stru_5C6E00->uIntegerPi);
       v5->uCurrentActionTime = 0;
-      v5->uPitchAngle = v9;
+      v5->uPitchAngle = (short)a4->uPitchAngle;
       v5->uAIState = Fleeing;
       v5->UpdateAnimation();
     }
@@ -2210,8 +2208,8 @@ void Actor::AI_Pursue2(unsigned int uActorID, unsigned int a2, signed int uActio
     if ( v7->uCurrentActionLength > 32 )
       v7->uCurrentActionLength = 32;
   }
-  v7->uYawAngle = LOWORD(v10->uYawAngle);
-  v14 = LOWORD(v10->uPitchAngle);
+  v7->uYawAngle = (short)v10->uYawAngle;
+  v14 = (short)v10->uPitchAngle;
   v7->uCurrentActionTime = 0;
   v7->uPitchAngle = v14;
   v7->uAIState = Pursuing;
@@ -2269,13 +2267,13 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2, signed int uActio
     if ( v6->uCurrentActionLength > 128 )
       v6->uCurrentActionLength = 128;
   }
-  v14 = LOWORD(a4->uYawAngle);
+  v14 = (short)a4->uYawAngle;
   if ( rand() % 2 )
     v14 += 256;
   else
     v14 -= 256;
   v6->uYawAngle = v14;
-  v16 = LOWORD(a4->uPitchAngle);
+  v16 = (short)a4->uPitchAngle;
   v6->uCurrentActionTime = 0;
   v6->uPitchAngle = v16;
   v6->uAIState = Pursuing;
@@ -2647,9 +2645,9 @@ void Actor::ActorDamageFromMonster(signed int attacker_id, unsigned int actor_id
                         pVelocity->x = (int32)fixpoint_mul(pushDistance, pVelocity->x);
                         pVelocity->y = (int32)fixpoint_mul(pushDistance, pVelocity->y);
                         pVelocity->z = (int32)fixpoint_mul(pushDistance, pVelocity->z);
-                        pActors[actor_id].vVelocity.x = 50 * LOWORD(pVelocity->x);
-                        pActors[actor_id].vVelocity.y = 50 * LOWORD(pVelocity->y);
-                        pActors[actor_id].vVelocity.z = 50 * LOWORD(pVelocity->z);
+                        pActors[actor_id].vVelocity.x = 50 * (short)pVelocity->x;
+                        pActors[actor_id].vVelocity.y = 50 * (short)pVelocity->y;
+                        pActors[actor_id].vVelocity.z = 50 * (short)pVelocity->z;
                     }
                     Actor::AddBloodsplatOnDamageOverlay(actor_id, 1, finalDmg);
                 }
@@ -2727,8 +2725,8 @@ void Actor::SummonMinion( int summonerId )
   actor = &pActors[uNumActors];
   v9 = &pMonsterStats->pInfos[v7 + 1];
   pActors[uNumActors].Reset();
-  strcpy(actor->pActorName, v9->pName);
-  actor->sCurrentHP = LOWORD(v9->uHP);
+  strcpy_s(actor->pActorName, v9->pName);
+  actor->sCurrentHP = (short)v9->uHP;
   memcpy(&actor->pMonsterInfo, v9, sizeof(actor->pMonsterInfo));
   actor->word_000086_some_monster_id = summonMonsterBaseType;
   actor->uActorRadius = pMonsterList->pMonsters[v7].uMonsterRadius;
@@ -3784,9 +3782,9 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         pVelocity->x = fixpoint_mul(knockbackValue, pVelocity->x);
         pVelocity->y = fixpoint_mul(knockbackValue, pVelocity->y);
         pVelocity->z = fixpoint_mul(knockbackValue, pVelocity->z);
-        pMonster->vVelocity.x = 50 * LOWORD(pVelocity->x);
-        pMonster->vVelocity.y = 50 * LOWORD(pVelocity->y);
-        pMonster->vVelocity.z = 50 * LOWORD(pVelocity->z);
+        pMonster->vVelocity.x = 50 * (short)pVelocity->x;
+        pMonster->vVelocity.y = 50 * (short)pVelocity->y;
+        pMonster->vVelocity.z = 50 * (short)pVelocity->z;
     }
     Actor::AddBloodsplatOnDamageOverlay(uActorID_Monster, 1, v61);
 }
@@ -3807,7 +3805,7 @@ void Actor::Arena_summon_actor( int monster_id, __int16 x, int y, int z )
       v16 = pIndoor->GetSector(x, y, z);
     pActors[uNumActors].Reset();
     strcpy(pActors[uNumActors].pActorName, pMonsterStats->pInfos[monster_id].pName);
-    pActors[uNumActors].sCurrentHP = LOWORD(pMonsterStats->pInfos[monster_id].uHP);
+    pActors[uNumActors].sCurrentHP = (short)pMonsterStats->pInfos[monster_id].uHP;
     memcpy(&pActors[uNumActors].pMonsterInfo, &pMonsterStats->pInfos[monster_id], 0x58u);
     pActors[uNumActors].word_000086_some_monster_id = monster_id;
     pActors[uNumActors].uActorRadius = pMonsterList->pMonsters[monster_id - 1].uMonsterRadius;
@@ -4005,7 +4003,7 @@ int stru319::FindClosestActor(int pick_depth, int a3, int a4)
 	{
 		v6 = a3 != 0;
 		if (a4)
-			LOBYTE(v6) = v6 | 8;
+			v6 |= 8;
 		v7 = pEngine->pVisInstance->PickClosestActor(OBJECT_Actor, pick_depth, v6, 657456, -1);
 		if (v7 != -1)
 			return (unsigned __int16)v7;
@@ -4567,7 +4565,7 @@ void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag, unsigned in
                 pActors[i].uAIState = Standing;
             }
           }
-          LODWORD(pActors[i].uAttributes) &= ~uFlag;
+          HEXRAYS_LODWORD(pActors[i].uAttributes) &= ~uFlag;
         }
       }
     }
@@ -5105,7 +5103,7 @@ bool SpawnActor(unsigned int uMonsterID)
       v1 = 0;
     memset(&actor, 0, sizeof(Actor));
     strcpy(actor.pActorName, pMonsterStats->pInfos[v1 + 1].pName);
-    actor.sCurrentHP = LOWORD(pMonsterStats->pInfos[v1 + 1].uHP);
+    actor.sCurrentHP = (short)pMonsterStats->pInfos[v1 + 1].uHP;
     memcpy(&actor.pMonsterInfo, &pMonsterStats->pInfos[v1 + 1], sizeof(MonsterInfo));
     actor.word_000086_some_monster_id = v1 + 1;
     actor.uActorRadius = pMonsterList->pMonsters[v1].uMonsterRadius;
@@ -5116,10 +5114,10 @@ bool SpawnActor(unsigned int uMonsterID)
     actor.vInitialPosition.x = pOut.x;
     actor.vPosition.x = pOut.x;
     actor.uTetherDistance = 256;
-    actor.vInitialPosition.y = LOWORD(pOut.z);
-    actor.vPosition.y = LOWORD(pOut.z);
-    actor.vInitialPosition.z = LOWORD(pOut.y);
-    actor.vPosition.z = LOWORD(pOut.y);
+    actor.vInitialPosition.y = (short)pOut.z;
+    actor.vPosition.y = (short)pOut.z;
+    actor.vInitialPosition.z = (short)pOut.y;
+    actor.vPosition.z = (short)pOut.y;
     pSprites_LOD->DeleteSomeSprites();
     pPaletteManager->ResetNonTestLocked();
     v6 = uNumActors - 1;
@@ -5414,9 +5412,8 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     pTexture = Str2;
     if ( (signed __int16)v50 == -1 )
     {
-      sprintf(Str, "Can't create random monster: '%s'! See MapStats.txt and Monsters.txt!", pTexture);
-      MessageBoxA(nullptr, Str, nullptr, 0);
-      ExitProcess(0);
+        Log::Warning(L"Can't create random monster: '%S'! See MapStats.txt and Monsters.txt!", pTexture);
+        Engine_DeinitializeAndTerminate(0);
     }
     v27 = &pMonsterList->pMonsters[(signed __int16)v50];
     v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
@@ -5697,9 +5694,9 @@ void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID, Vec3_int_ *
 						pVelocity->x = fixpoint_mul(a2a, pVelocity->x);
 						pVelocity->y = fixpoint_mul(a2a, pVelocity->y);
 						pVelocity->z = fixpoint_mul(a2a, pVelocity->z);
-						pActors[uActorID].vVelocity.x = 50 * LOWORD(pVelocity->x);
-						pActors[uActorID].vVelocity.y = 50 * LOWORD(pVelocity->y);
-						pActors[uActorID].vVelocity.z = 50 * LOWORD(pVelocity->z);
+						pActors[uActorID].vVelocity.x = 50 * (short)pVelocity->x;
+						pActors[uActorID].vVelocity.y = 50 * (short)pVelocity->y;
+						pActors[uActorID].vVelocity.z = 50 * (short)pVelocity->z;
 					}
 					Actor::AddBloodsplatOnDamageOverlay(uActorID, 1, damage);
 				}

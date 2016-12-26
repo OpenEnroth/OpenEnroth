@@ -10,24 +10,6 @@
 #include "Party.h"
 
 
-void ErrHR(HRESULT hr, const char *pAPI, const char *pFunction, const char *pFile, int line)
-{
-  if (SUCCEEDED(hr))
-    return;
-
-  char msg[4096];
-  sprintf(msg, "%s error (%08X) in\n\t%s\nin\n\t%s:%u",
-          pAPI, hr, pFunction, pFile, line);
-
-  char caption[1024];
-  sprintf(caption, "%s error", pAPI);
-
-  MessageBoxA(nullptr, msg, caption, MB_ICONEXCLAMATION);
-}
-
-
-
-
 #include "OurMath.h"
 struct stru193_math *stru_5C6E00 = new stru193_math;
 
@@ -885,7 +867,6 @@ float flt_69B138_dist;
 char byte_69BD41_unused;
 int pSaveListPosition;
 unsigned int uLoadGameUI_SelectedSlot;
-HWND hInsertCDWindow; // idb
 char cMM7GameCDDriveLetter; // idb
 MENU_STATE sCurrentMenuID;
 unsigned int uGameState;

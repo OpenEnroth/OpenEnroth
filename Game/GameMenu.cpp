@@ -212,11 +212,11 @@ void GameMenu_EventLoop()
                     {
                         if (v197)
                         {
-                            GUI_ReplaceHotkey(LOBYTE(pPrevVirtualCidesMapping[i]), pKeyActionMap->GetActionVKey((enum InputAction)i), 1);
+                            GUI_ReplaceHotkey((unsigned char)pPrevVirtualCidesMapping[i], pKeyActionMap->GetActionVKey((enum InputAction)i), 1);
                             v197 = 0;
                         }
                         else
-                            GUI_ReplaceHotkey(LOBYTE(pPrevVirtualCidesMapping[i]), pKeyActionMap->GetActionVKey((enum InputAction)i), 0);
+                            GUI_ReplaceHotkey((unsigned char)pPrevVirtualCidesMapping[i], pKeyActionMap->GetActionVKey((enum InputAction)i), 0);
                     }
                     pPrevVirtualCidesMapping[i] = pKeyActionMap->GetActionVKey((enum InputAction)i);
                     GameMenuUI_InvaligKeyBindingsFlags[i] = false;
@@ -276,8 +276,8 @@ void GameMenu_EventLoop()
                 }
                 else
                 {
-                    POINT a2;
-                    uGammaPos = (pMouse->GetCursorPos(&a2)->x - 42) / 17;
+                    Point pt = pMouse->GetCursorPos();
+                    uGammaPos = (pt.x - 42) / 17;
                     double v22 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                     //pEngine->pGammaController->Initialize(v22);
                 }
@@ -292,7 +292,9 @@ void GameMenu_EventLoop()
             case UIMSG_ToggleTint:
                 render->ToggleTint();
                 continue;
+
             case UIMSG_ChangeMusicVolume:
+            {
                 extern bool use_music_folder;
                 if (param == 4)//-
                 {
@@ -325,8 +327,8 @@ void GameMenu_EventLoop()
                     continue;
                 }
 
-                POINT v202;
-                uMusicVolimeMultiplier = (pMouse->GetCursorPos(&v202)->x - 263) / 17;//for mouse
+                Point pt = pMouse->GetCursorPos();
+                uMusicVolimeMultiplier = (pt.x - 263) / 17;//for mouse
                 if ((char)uMusicVolimeMultiplier > 9)
                     uMusicVolimeMultiplier = 9;
                 if (uMusicVolimeMultiplier)
@@ -336,7 +338,10 @@ void GameMenu_EventLoop()
                 else
                     pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
                 continue;
+            }
+
             case UIMSG_ChangeSoundVolume:
+            {
                 if (param == 4)//reduce sound level button left
                 {
                     if (uSoundVolumeMultiplier > 0)
@@ -364,13 +369,14 @@ void GameMenu_EventLoop()
                     continue;
                 }
 
-                POINT v207;
-                uSoundVolumeMultiplier = (pMouse->GetCursorPos(&v207)->x - 263) / 17;
+                Point pt = pMouse->GetCursorPos();
+                uSoundVolumeMultiplier = (pt.x - 263) / 17;
                 if ((char)uSoundVolumeMultiplier > 8)
                     uSoundVolumeMultiplier = 9;
                 pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
                 pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0, 0, 0);
                 continue;
+            }
             case UIMSG_ToggleFlipOnExit:
                 bFlipOnExit = bFlipOnExit == 0;
                 continue;
@@ -384,6 +390,7 @@ void GameMenu_EventLoop()
                 bShowDamage = bShowDamage == 0;
                 continue;
             case UIMSG_ChangeVoiceVolume:
+            {
                 if (param == 4)
                 {
                     --uVoicesVolumeMultiplier;
@@ -407,14 +414,15 @@ void GameMenu_EventLoop()
                     continue;
                 }
 
-                POINT v205;
-                uVoicesVolumeMultiplier = (pMouse->GetCursorPos(&v205)->x - 263) / 17;
+                Point pt = pMouse->GetCursorPos();
+                uVoicesVolumeMultiplier = (pt.x - 263) / 17;
                 if ((char)uVoicesVolumeMultiplier > 8)
                     uVoicesVolumeMultiplier = 9;
                 if (!uVoicesVolumeMultiplier)
                     continue;
                 pAudioPlayer->PlaySound(SOUND_hf445a, -1, 0, -1, 0, 0, pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f, 0);
                 continue;
+            }
             case UIMSG_SetTurnSpeed:
                 if (param)
                     pParty->sRotationY = param * pParty->sRotationY / param;
@@ -483,20 +491,20 @@ void GameMenu_EventLoop()
                 else if (current_screen_type == SCREEN_OPTIONS)
                 {
                     options_menu_skin.Relaease();
-                    WriteWindowsRegistryInt("soundflag", (char)uSoundVolumeMultiplier);
-                    WriteWindowsRegistryInt("musicflag", (char)uMusicVolimeMultiplier);
-                    WriteWindowsRegistryInt("CharVoices", (char)uVoicesVolumeMultiplier);
-                    WriteWindowsRegistryInt("WalkSound", bWalkSound);
-                    WriteWindowsRegistryInt("ShowDamage", bShowDamage);
-                    //WriteWindowsRegistryInt("graphicsmode", (unsigned __int8)byte_6BE388_graphicsmode);
-                    WriteWindowsRegistryInt("valAlwaysRun", bAlwaysRun);
-                    WriteWindowsRegistryInt("FlipOnExit", bFlipOnExit);
+                    OS_SetAppInt("soundflag", (char)uSoundVolumeMultiplier);
+                    OS_SetAppInt("musicflag", (char)uMusicVolimeMultiplier);
+                    OS_SetAppInt("CharVoices", (char)uVoicesVolumeMultiplier);
+                    OS_SetAppInt("WalkSound", bWalkSound);
+                    OS_SetAppInt("ShowDamage", bShowDamage);
+                    //OS_SetAppInt("graphicsmode", (unsigned __int8)byte_6BE388_graphicsmode);
+                    OS_SetAppInt("valAlwaysRun", bAlwaysRun);
+                    OS_SetAppInt("FlipOnExit", bFlipOnExit);
                     if (!uTurnSpeed)
-                        WriteWindowsRegistryInt("TurnDelta", 3);
+                        OS_SetAppInt("TurnDelta", 3);
                     else if (uTurnSpeed == 64)
-                        WriteWindowsRegistryInt("TurnDelta", 2);
+                        OS_SetAppInt("TurnDelta", 2);
                     else if (uTurnSpeed == 128)
-                        WriteWindowsRegistryInt("TurnDelta", 1);
+                        OS_SetAppInt("TurnDelta", 1);
 
                     pGUIWindow_CurrentMenu->Release();
                     current_screen_type = SCREEN_MENU;
@@ -506,9 +514,9 @@ void GameMenu_EventLoop()
                 {
                     //if ( render->pRenderD3D )
                     {
-                        WriteWindowsRegistryInt("Colored Lights", render->bUseColoredLights);
-                        WriteWindowsRegistryInt("Tinting", render->bTinting);
-                        WriteWindowsRegistryInt("Bloodsplats", (LOBYTE(pEngine->uFlags2) >> 5) & 1);
+                        OS_SetAppInt("Colored Lights", render->bUseColoredLights);
+                        OS_SetAppInt("Tinting", render->bTinting);
+                        OS_SetAppInt("Bloodsplats", ((pEngine->uFlags2 & 0xFF) >> 5) & 1);
                     }
 
                     pGUIWindow_CurrentMenu->Release();
@@ -543,11 +551,11 @@ void GameMenu_EventLoop()
                             {
                                 if (v197)
                                 {
-                                    GUI_ReplaceHotkey(pKeyActionMap->GetActionVKey((enum InputAction)i), LOBYTE(pPrevVirtualCidesMapping[i]), 1);
+                                    GUI_ReplaceHotkey(pKeyActionMap->GetActionVKey((enum InputAction)i), (unsigned char)pPrevVirtualCidesMapping[i], 1);
                                     v197 = 0;
                                 }
                                 else
-                                    GUI_ReplaceHotkey(pKeyActionMap->GetActionVKey((enum InputAction)i), LOBYTE(pPrevVirtualCidesMapping[i]), 0);
+                                    GUI_ReplaceHotkey(pKeyActionMap->GetActionVKey((enum InputAction)i), (unsigned char)pPrevVirtualCidesMapping[i], 0);
                             }
                             if (i > 3 && i != 25 && i != 26)
                                 pKeyToggleType = TOGGLE_OneTimePress;
@@ -599,17 +607,10 @@ void GameMenu_Loop()
         )
     )
     {
-        MSG msg;
-        while (PeekMessageW(&msg, 0, 0, 0, PM_REMOVE))
-        {
-            if (msg.message == WM_QUIT)
-                Engine_DeinitializeAndTerminate(0);
-            TranslateMessage(&msg);
-            DispatchMessageW(&msg);
-        }
+        OS_PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
         {
-            WaitMessage();
+            OS_WaitMessage();
             continue;
         }
 

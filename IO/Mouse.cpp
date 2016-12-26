@@ -89,29 +89,23 @@ void Mouse::SetCursorImage(const String &name)
 }
 
 //----- (00469AE4) --------------------------------------------------------
-LONG Mouse::_469AE4()
+void Mouse::_469AE4()
 {
-    LONG v2; // ecx@2
-    LONG result; // eax@2
-    struct tagPOINT Point; // [sp+Ch] [bp-8h]@2
-
     this->field_8 = 1;
 
-    GetCursorPos(&Point);
+    Point pt = OS_GetMouseCursorPos();
+    pt = window->TransformCursorPos(pt);
 
-    ScreenToClient(window->GetApiHandle(), &Point);
-    result = Point.y;
-    v2 = Point.x;
+    auto v3 = pt.y;
+    auto v2 = pt.x;
 
     this->uMouseClickX = v2;
-    this->uMouseClickY = result;
+    this->uMouseClickY = v3;
 
-    if (true/*render->bWindowMode*/ && (v2 < 0 || result < 0 || v2 > window->GetWidth() - 1 || result > window->GetHeight() - 1))
+    if (true/*render->bWindowMode*/ && (v2 < 0 || v3 < 0 || v2 > window->GetWidth() - 1 || v3 > window->GetHeight() - 1))
     {
         this->bActive = false;
-        //LABEL_24:
         this->field_8 = 0;
-        return result;
     }
 
     if (this->field_C)
@@ -120,7 +114,6 @@ LONG Mouse::_469AE4()
     }
 
     this->field_8 = 0;
-    return result;
 }
 
 //----- (00469BA3) --------------------------------------------------------
@@ -152,11 +145,9 @@ void *Mouse::DoAllocCursorMem()
 }
 
 //----- (00469C39) --------------------------------------------------------
-POINT *Mouse::GetCursorPos(POINT *a2)
+Point Mouse::GetCursorPos()
 {
-  a2->x = this->uMouseClickX;
-  a2->y = this->uMouseClickY;
-  return a2;
+    return Point(this->uMouseClickX, this->uMouseClickY);
 }
 
 //----- (00469C65) --------------------------------------------------------

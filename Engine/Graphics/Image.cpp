@@ -7,19 +7,21 @@
 
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
+#include "Engine/ZlibWrapper.h"
+#include "Engine/OurMath.h"
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/ImageFormatConverter.h"
+#include "Engine/Graphics/Texture.h"
 
 #include "Engine/Serialization/LegacyImages.h"
 
-#include "../Tables/FrameTableInc.h"
+#include "Engine/Tables/FrameTableInc.h"
+
+
 #include "PaletteManager.h"
-#include "../ZlibWrapper.h"
 
-
-#include "../OurMath.h"
 
 
 
@@ -42,6 +44,30 @@ stru355 stru_4EFCBC = {0x20, 0x41, 0, 0x10, 0x7C00, 0x3E0, 0x1F, 0x8000};
 
 
 
+
+unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format)
+{
+    switch (format)
+    {
+    case IMAGE_FORMAT_R5G6B5:   return 2;
+    case IMAGE_FORMAT_A1R5G5B5: return 2;
+    case IMAGE_FORMAT_A8R8G8B8: return 4;
+
+    default:
+        Error("Invalid format: %d", format);
+        return 0;
+    }
+}
+
+
+Texture *TextureFrame::GetTexture()
+{
+    if (!this->tex)
+    {
+        this->tex = assets->GetBitmap(this->name);
+    }
+    return this->tex;
+}
 
 
 //----- (0044E054) --------------------------------------------------------
@@ -367,7 +393,7 @@ int TextureFrameTable::FromFileTxt(const char *Args)
                 v16 += *(short *)(k + 14);
                 ++j;
             }
-            LOWORD(v16) = v15[j].uAnimTime + v16;
+            HEXRAYS_LOWORD(v16) = v15[j].uAnimTime + v16;
         }
         ++j;
     }
@@ -511,8 +537,6 @@ stru350 *stru350::_450DDE()
 //----- (00450DF1) --------------------------------------------------------
 bool stru350::_450DF1(const stru355 *p1, const stru355 *p2)
 {
-	//stru350 *v3; // esi@1
-	//void *result; // eax@1
 	unsigned int v5; // ecx@2
 	int v6; // edi@2
 	int v7; // edx@2
@@ -548,11 +572,9 @@ bool stru350::_450DF1(const stru355 *p1, const stru355 *p2)
 	int v37; // ecx@39
 	int v38; // ebx@39
 
-	//v3 = this;
 	memcpy(&field_0, p1, sizeof(stru355));
 	memcpy(&field_20, p2, sizeof(stru355));
-	//result = memcpy(&v3->field_20, p2, 0x20u);
-	//LOBYTE(result) = 1;
+
 	if (field_0.field_4 & 1)
 	{
 		v5 = field_0.field_1C;

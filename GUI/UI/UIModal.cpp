@@ -1,10 +1,10 @@
-#include "OSWindow.h"
-
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
 
 #include "GUI/UI/UIModal.h"
+
+#include "Platform/OSWindow.h"
 
 
 enum CURRENT_SCREEN modal_window_prev_screen_type;

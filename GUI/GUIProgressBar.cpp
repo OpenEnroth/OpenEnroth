@@ -1,17 +1,13 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
-
-#include "GUIProgressBar.h"
 #include "Engine/LOD.h"
 #include "Engine/Party.h"
-#include "Engine/Graphics/Render.h"
+
+#include "Engine/Graphics/IRender.h"
+
 #include "Engine/Tables/IconFrameTable.h"
 
+#include "GUI/GUIProgressBar.h"
 
 
 

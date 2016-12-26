@@ -28,6 +28,24 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Video/Bink_Smacker.h"
 
+#ifndef WAVE_FORMAT_PCM
+
+typedef struct {
+    unsigned __int16 wFormatTag;
+    unsigned __int16 nChannels;
+    unsigned __int32 nSamplesPerSec;
+    unsigned __int32 nAvgBytesPerSec;
+    unsigned __int16 nBlockAlign;
+} WAVEFORMAT;
+typedef void *HWAVEOUT;
+
+#define WAVE_FORMAT_PCM         1
+typedef struct pcmwaveformat_tag {
+    WAVEFORMAT  wf;
+    short       wBitsPerSample;
+} PCMWAVEFORMAT;
+#endif
+
 PCMWAVEFORMAT pcmWaveFormat;
 
 int uFindSound_BinSearch_ResultID;
@@ -198,72 +216,72 @@ __int16 SoundList::LoadSound(int a1, unsigned int a3)
 }
 
 //----- (004A9BBD) --------------------------------------------------------
-int SoundList::LoadSound(unsigned int a2, LPVOID lpBuffer, int uBufferSizeLeft, int *pOutSoundSize, int a6)
+int SoundList::LoadSound(unsigned int a2, void *lpBuffer, int uBufferSizeLeft, int *pOutSoundSize, int a6)
 {
-  void *v18; // ebx@19
-  DWORD NumberOfBytesRead;
+    void *v18; // ebx@19
+    int NumberOfBytesRead;
 
-  if (!sNumSounds)
-    return 0;
+    if (!sNumSounds)
+        return 0;
 
-  for ( uint i = 0; i < sNumSounds; ++i )
-  {
-    if ( a2 == pSL_Sounds[i].uSoundID )
+    for (uint i = 0; i < sNumSounds; ++i)
     {
-      if ( !a6 && pSL_Sounds[i].pSoundData )
-        return i;
-      for ( uint j = 0; j < (signed int)pAudioPlayer->uNumSoundHeaders; ++j )
-      {
-        if ( !_stricmp(pAudioPlayer->pSoundHeaders[j].pSoundName, pSL_Sounds[i].pSoundName) )
+        if (a2 == pSL_Sounds[i].uSoundID)
         {
-          if ( (signed int)pAudioPlayer->pSoundHeaders[j].uDecompressedSize > uBufferSizeLeft )
-            Error("Sound %s is size %i bytes, sound buffer size is %i bytes", pSL_Sounds[i].pSoundName, pAudioPlayer->pSoundHeaders[j].uDecompressedSize, uBufferSizeLeft);
-          SetFilePointer(pAudioPlayer->hAudioSnd, pAudioPlayer->pSoundHeaders[j].uFileOffset, 0, 0);
-          if ( (signed int)pAudioPlayer->pSoundHeaders[j].uCompressedSize >= (signed int)pAudioPlayer->pSoundHeaders[j].uDecompressedSize )
-          {
-            if ( pAudioPlayer->pSoundHeaders[j].uCompressedSize == pAudioPlayer->pSoundHeaders[j].uDecompressedSize )
-              ReadFile(pAudioPlayer->hAudioSnd, lpBuffer, pAudioPlayer->pSoundHeaders[j].uDecompressedSize, &NumberOfBytesRead, 0);
-            else
-              MessageBoxW(nullptr, L"Can't load sound file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Sound.cpp:666", 0);
-          }
-          else
-          {
-            v18 = malloc(pAudioPlayer->pSoundHeaders[j].uCompressedSize);
-            ReadFile(pAudioPlayer->hAudioSnd, v18, pAudioPlayer->pSoundHeaders[j].uCompressedSize, &NumberOfBytesRead, 0);
-            zlib::MemUnzip(lpBuffer, &pAudioPlayer->pSoundHeaders[j].uDecompressedSize, v18, pAudioPlayer->pSoundHeaders[j].uCompressedSize);
-            free(v18);
-          }
-          pSL_Sounds[i].pSoundData[a6] = (SoundData *)lpBuffer;
-          *pOutSoundSize = a2;
-          return i;
+            if (!a6 && pSL_Sounds[i].pSoundData)
+                return i;
+            for (uint j = 0; j < (signed int)pAudioPlayer->uNumSoundHeaders; ++j)
+            {
+                if (!_stricmp(pAudioPlayer->pSoundHeaders[j].pSoundName, pSL_Sounds[i].pSoundName))
+                {
+                    if ((signed int)pAudioPlayer->pSoundHeaders[j].uDecompressedSize > uBufferSizeLeft)
+                        Error("Sound %s is size %i bytes, sound buffer size is %i bytes", pSL_Sounds[i].pSoundName, pAudioPlayer->pSoundHeaders[j].uDecompressedSize, uBufferSizeLeft);
+                    fseek(pAudioPlayer->hAudioSnd, pAudioPlayer->pSoundHeaders[j].uFileOffset, SEEK_SET);
+                    if ((signed int)pAudioPlayer->pSoundHeaders[j].uCompressedSize >= (signed int)pAudioPlayer->pSoundHeaders[j].uDecompressedSize)
+                    {
+                        if (pAudioPlayer->pSoundHeaders[j].uCompressedSize == pAudioPlayer->pSoundHeaders[j].uDecompressedSize)
+                            fread(lpBuffer, 1, pAudioPlayer->pSoundHeaders[j].uDecompressedSize, pAudioPlayer->hAudioSnd);
+                        else
+                            Log::Warning(L"Can't load sound file!");
+                    }
+                    else
+                    {
+                        v18 = malloc(pAudioPlayer->pSoundHeaders[j].uCompressedSize);
+                        fread(v18, 1, pAudioPlayer->pSoundHeaders[j].uCompressedSize, pAudioPlayer->hAudioSnd);
+                        zlib::MemUnzip(lpBuffer, &pAudioPlayer->pSoundHeaders[j].uDecompressedSize, v18, pAudioPlayer->pSoundHeaders[j].uCompressedSize);
+                        free(v18);
+                    }
+                    pSL_Sounds[i].pSoundData[a6] = (SoundData *)lpBuffer;
+                    *pOutSoundSize = a2;
+                    return i;
+                }
+            }
         }
-      }
     }
-  }
-  return 0;
+    return 0;
 }
 
 //----- (004A9D3E) --------------------------------------------------------
 SoundDesc *SoundList::Release()
 {
-  SoundDesc *result; // eax@3
-  //void *v5; // ecx@3
+    SoundDesc *result; // eax@3
+    //void *v5; // ecx@3
 
-  if ( (signed int)this->sNumSounds > 0 )
-  {
-    for ( uint i = 0; i < (signed int)this->sNumSounds; ++i )
+    if ((signed int)this->sNumSounds > 0)
     {
-      result = this->pSL_Sounds;
-      //v5 = this->pSL_Sounds[i].pSoundData[0];
-      if ( this->pSL_Sounds[i].pSoundData[0] )
-      {
-        ReleaseSoundData(this->pSL_Sounds[i].pSoundData[0]);
-        this->pSL_Sounds[i].pSoundData[0] = nullptr;
-        this->pSL_Sounds[i].uFlags &= 0xFFFFFFFE;//~0x00000001
-      }
+        for (uint i = 0; i < (signed int)this->sNumSounds; ++i)
+        {
+            result = this->pSL_Sounds;
+            //v5 = this->pSL_Sounds[i].pSoundData[0];
+            if (this->pSL_Sounds[i].pSoundData[0])
+            {
+                ReleaseSoundData(this->pSL_Sounds[i].pSoundData[0]);
+                this->pSL_Sounds[i].pSoundData[0] = nullptr;
+                this->pSL_Sounds[i].uFlags &= 0xFFFFFFFE;//~0x00000001
+            }
+        }
     }
-  }
-  return result;
+    return result;
 }
 
 //----- (004A9D79) --------------------------------------------------------
@@ -446,7 +464,7 @@ void AudioPlayer::PlayMusicTrack(MusicID eTrack)
         Log::Warning(L"Music\\%d.mp3 not found", eTrack);
         return;
       }
-      LPWSTR wStr = new WCHAR[255];
+      wchar_t * wStr = new wchar_t[255];
       char2wchar_t(string, wStr);
       PlayAudio(wStr);
       delete [] wStr;
@@ -1248,7 +1266,7 @@ LABEL_67:
   v25 = v96;
   if ( v102 == v96 + 1 )
   {
-    LODWORD(v91) = -1;
+    HEXRAYS_LODWORD(v91) = -1;
     v103 = 0;
     *(float *)&varC = pRenderVertexSoft.vWorldViewPosition.y * -0.012207031;
     v93 = 0.0;
@@ -1278,11 +1296,11 @@ LABEL_67:
       if ( v35 && v90 < v103 )
       {
         v36 = sPlaybackRate;
-        LODWORD(v91) = sPlaybackRate;
+        HEXRAYS_LODWORD(v91) = sPlaybackRate;
       }
       else
       {
-        v36 = LODWORD(v91);
+        v36 = HEXRAYS_LODWORD(v91);
       }
       ++sPlaybackRate;
       ++pAudioPlayer_3DSample2;
@@ -1302,7 +1320,7 @@ LABEL_192:
     v102 = v36;
   }
   //v39 = v89;
-  if ( pSoundList->pSL_Sounds[sound_id].p3DSound || (LOWORD(v40) = pSoundList->LoadSound(eSoundID, 0), v40) )
+  if ( pSoundList->pSL_Sounds[sound_id].p3DSound || (HEXRAYS_LOWORD(v40) = pSoundList->LoadSound(eSoundID, 0), v40) )
   {
     v41 = (char *)pAudioPlayer + 16 * v102;
     v42 = (int)(v41 + 20);
@@ -1349,10 +1367,10 @@ LABEL_101:
           v52 = abs((signed __int64)v99);
           if ( int_get_vector_length(v52, v51, v50) <= 100 )
           {
-            AIL_set_3D_position((void *)*(int *)v42, LODWORD(v99), 0.0, LODWORD(uNumRepeatsa));
+            AIL_set_3D_position((void *)*(int *)v42, HEXRAYS_LODWORD(v99), 0.0, HEXRAYS_LODWORD(uNumRepeatsa));
             v53 = -uNumRepeatsa;
             v54 = -v99;
-            AIL_set_3D_orientation((void *)*(int *)v42, LODWORD(v54), 0.0, LODWORD(v53), 0.0, 1.0, 0.0);
+            AIL_set_3D_orientation((void *)*(int *)v42, HEXRAYS_LODWORD(v54), 0.0, HEXRAYS_LODWORD(v53), 0.0, 1.0, 0.0);
             //pAudioPlayer3 = pAudioPlayer;
             *((int *)v41 + 6) = pid;
             *((int *)v41 + 7) = sound_id;
@@ -1416,649 +1434,649 @@ void  AudioPlayer::MessWithChannels()
 //----- (004AAFCF) --------------------------------------------------------
 void AudioPlayer::UpdateSounds()
 {
-  int v2; // ebx@1
-  int v7; // ebx@6
-  int v8; // ebx@9
-  int v9; // ebx@10
-  int v10; // ebx@11
-  double v11; // st7@13
-  SpriteObject *v12; // eax@14
-  Actor *v13; // eax@15
-  BLVDoor *pDoor; // eax@19
-  double v16; // st7@22
-  double v17; // st6@22
-  double v18; // st5@23
-  double v19; // st4@24
-  double v20; // st3@24
-  double v21; // st6@28
-  double v22; // st7@32
-  int v23; // ST1C_4@32
-  int v24; // ebx@32
-  int v25; // eax@32
-  float v26; // ST10_4@34
-  float v27; // ST08_4@34
-  signed int v53; // eax@88
-  RenderVertexSoft a1; // [sp+24h] [bp-48h]@1
-  float v55; // [sp+54h] [bp-18h]@22
-  float v56; // [sp+58h] [bp-14h]@22
-  int uNumRepeats; // [sp+5Ch] [bp-10h]@15
-  float v58; // [sp+60h] [bp-Ch]@23
-  int v59; // [sp+64h] [bp-8h]@4
+    int v2; // ebx@1
+    int v7; // ebx@6
+    int v8; // ebx@9
+    int v9; // ebx@10
+    int v10; // ebx@11
+    double v11; // st7@13
+    SpriteObject *v12; // eax@14
+    Actor *v13; // eax@15
+    BLVDoor *pDoor; // eax@19
+    double v16; // st7@22
+    double v17; // st6@22
+    double v18; // st5@23
+    double v19; // st4@24
+    double v20; // st3@24
+    double v21; // st6@28
+    double v22; // st7@32
+    int v23; // ST1C_4@32
+    int v24; // ebx@32
+    int v25; // eax@32
+    float v26; // ST10_4@34
+    float v27; // ST08_4@34
+    signed int v53; // eax@88
+    RenderVertexSoft a1; // [sp+24h] [bp-48h]@1
+    float v55; // [sp+54h] [bp-18h]@22
+    float v56; // [sp+58h] [bp-14h]@22
+    int uNumRepeats; // [sp+5Ch] [bp-10h]@15
+    float v58; // [sp+60h] [bp-Ch]@23
+    int v59; // [sp+64h] [bp-8h]@4
 
-  v2 = 0;
-  if (!bPlayerReady)
-    return;
-  
-  //if (field_2D0_time_left <= pEventTimer->uTimeElapsed)
-    //field_2D0_time_left = 32;
-  //else
-  //{
-    //field_2D0_time_left -= pEventTimer->uTimeElapsed;
-    //return;
-  //}
-  field_2D0_time_left -= pEventTimer->uTimeElapsed;
-  if ( field_2D0_time_left <= 0 )
-  {
-  field_2D0_time_left = 32;
-  if ( b3DSoundInitialized )//for 3D sound
-  {
-    __debugbreak(); // refactor refactor
     v2 = 0;
-    for ( v59 = 0; v59 < pAudioPlayer->uNum3DSamples; ++v59 )
-    {
-      v7 = PID_TYPE(this->p3DSamples[v59].field_4);
-      if ( AIL_3D_sample_status(this->p3DSamples[v59].hSample) == AIL::Sample::Done )
-      {
-        AIL_end_3D_sample(this->p3DSamples[v59].hSample);
-        pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
-      }
-      if ( AIL_3D_sample_status(this->p3DSamples[v59].hSample) != AIL::Sample::Playing )
-        continue;
-      v8 = v7 - 1;//
-      if ( v8 )//> 1
-      {
-        v9 = v8 - 1;//
-        if ( v9 )//> 2
-        {
-          v10 = v9 - 1;//
-          if ( !v10 )//3
-          {
-            v13 = &pActors[PID_ID(this->p3DSamples[v59].field_4)];
-            //uNumRepeats = v13->vPosition.x;
-            //v14 = v13->vPosition.y;
-            a1.vWorldPosition.x = (double)v13->vPosition.x;
-            //uNumRepeats = v13->vPosition.z;
-            a1.vWorldPosition.y = (double)v13->vPosition.y;
-            //v11 = (double)uNumRepeats;
-            a1.vWorldPosition.z = v13->vPosition.z;
-            if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
-            {
-              v16 = pIndoorCameraD3D->fRotationXCosine;
-              v17 = pIndoorCameraD3D->fRotationXSine;
-              v55 = pIndoorCameraD3D->fRotationYCosine;
-              v56 = pIndoorCameraD3D->fRotationYSine;
-              if (pIndoorCameraD3D->sRotationX)
-              {
-                v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
-                *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-                v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-                //if ( render->pRenderD3D )
-                {
-                  v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
-                  v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
-                }
-                //else
-               // {
-                 // v19 = v58 * v55 - *(float *)&uNumRepeats * v56;
-                 // v20 = v58 * v56 + *(float *)&uNumRepeats * v55;
-                //}
-                a1.vWorldViewPosition.x = v19 * v16 - v18 * v17;
-                a1.vWorldViewPosition.y = v20;
-                a1.vWorldViewPosition.z = v19 * v17 + v18 * v16;
-              }
-              else
-              {
-                v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
-                *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-                //if ( render->pRenderD3D )
-                {
-                  a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
-                  v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
-                }
-                //else
-                //{
-                //  a1.vWorldViewPosition.x = v58 * v55 - *(float *)&uNumRepeats * v56;
-                //  v21 = v58 * v56 + *(float *)&uNumRepeats * v55;
-                //}
-                a1.vWorldViewPosition.y = v21;
-                a1.vWorldViewPosition.z = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-              }
-            }
-            else
-              pIndoorCameraD3D->ViewTransform(&a1, 1);
-            v58 = a1.vWorldViewPosition.y * -0.012207031;
-            v22 = a1.vWorldViewPosition.x * 0.012207031;
-            *(float *)&uNumRepeats = v22;
-            v23 = abs((signed __int64)v22);
-            v24 = abs(0);
-            v25 = abs((signed __int64)v58);
-            if ( int_get_vector_length(v25, v24, v23) <= 100 )
-            {
-              AIL_set_3D_position(this->p3DSamples[v59].hSample, LODWORD(v58), 0.0, uNumRepeats);
-              v26 = -*(float *)&uNumRepeats;
-              v27 = -v58;
-              AIL_set_3D_orientation(this->p3DSamples[v59].hSample, LODWORD(v27), 0.0, LODWORD(v26), 0.0, 1.0, 0.0);
-            }
-            else
-            {
-              AIL_end_3D_sample(this->p3DSamples[v59].hSample);
-              pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
-            }
-            continue;
-          }
-          if ( v10 != 2 )//4
-          {
-            a1.vWorldPosition.x = (double)pParty->vPosition.x;
-            a1.vWorldPosition.y = (double)pParty->vPosition.y;
-            v11 = (double)pParty->sEyelevel + (double)pParty->vPosition.z;
-            a1.vWorldPosition.z = v11;
-            if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
-            {
-              v16 = pIndoorCameraD3D->fRotationXCosine;
-              v17 = pIndoorCameraD3D->fRotationXSine;
-              v55 = pIndoorCameraD3D->fRotationYCosine;
-              v56 = pIndoorCameraD3D->fRotationYSine;
-              if (pIndoorCameraD3D->sRotationX)
-              {
-                v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
-                *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-                v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-                //if ( render->pRenderD3D )
-                {
-                  v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
-                  v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
-                }
-                //else
-                //{
-                 // v19 = v58 * v55 - *(float *)&uNumRepeats * v56;
-                 // v20 = v58 * v56 + *(float *)&uNumRepeats * v55;
-                //}
-                a1.vWorldViewPosition.x = v19 * v16 - v18 * v17;
-                a1.vWorldViewPosition.y = v20;
-                a1.vWorldViewPosition.z = v19 * v17 + v18 * v16;
-              }
-              else
-              {
-                v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
-                *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-                //if ( render->pRenderD3D )
-                {
-                  a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
-                  v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
-                }
-                //else
-                //{
-                 // a1.vWorldViewPosition.x = v58 * v55 - *(float *)&uNumRepeats * v56;
-                 // v21 = v58 * v56 + *(float *)&uNumRepeats * v55;
-                //}
-                a1.vWorldViewPosition.y = v21;
-                a1.vWorldViewPosition.z = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-              }
-            }
-            else
-              pIndoorCameraD3D->ViewTransform(&a1, 1);
-            v58 = a1.vWorldViewPosition.y * -0.012207031;
-            v22 = a1.vWorldViewPosition.x * 0.012207031;
-            *(float *)&uNumRepeats = v22;
-            v23 = abs((signed __int64)v22);
-            v24 = abs(0);
-            v25 = abs((signed __int64)v58);
-            if ( int_get_vector_length(v25, v24, v23) <= 100 )
-            {
-              AIL_set_3D_position(this->p3DSamples[v59].hSample, LODWORD(v58), 0.0, uNumRepeats);
-              v26 = -*(float *)&uNumRepeats;
-              v27 = -v58;
-              AIL_set_3D_orientation(this->p3DSamples[v59].hSample, LODWORD(v27), 0.0, LODWORD(v26), 0.0, 1.0, 0.0);
-            }
-            else
-            {
-              AIL_end_3D_sample(this->p3DSamples[v59].hSample);
-              pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
-            }
-            continue;
-          }//5
-          v12 = (SpriteObject *)&pLevelDecorations[PID_ID(this->p3DSamples[v59].field_4)];
-        }
-        else//2
-          v12 = &pSpriteObjects[PID_ID(this->p3DSamples[v59].field_4)];
-        a1.vWorldPosition.x = (double)v12->vPosition.x;
-        a1.vWorldPosition.y = (double)v12->vPosition.y;
-        v11 = (double)v12->vPosition.z;
-//LABEL_21:
-        a1.vWorldPosition.z = v11;
-        if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
-        {
-          v16 = pIndoorCameraD3D->fRotationXCosine;
-          v17 = pIndoorCameraD3D->fRotationXSine;
-          v55 = pIndoorCameraD3D->fRotationYCosine;
-          v56 = pIndoorCameraD3D->fRotationYSine;
-          if (pIndoorCameraD3D->sRotationX)
-          {
-            v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
-            *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-            v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-            //if ( render->pRenderD3D )
-            {
-              v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
-              v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
-            }
-            //else
-           // {
-            //  v19 = v58 * v55 - *(float *)&uNumRepeats * v56;
-           //   v20 = v58 * v56 + *(float *)&uNumRepeats * v55;
-            //}
-            a1.vWorldViewPosition.x = v19 * v16 - v18 * v17;
-            a1.vWorldViewPosition.y = v20;
-            a1.vWorldViewPosition.z = v19 * v17 + v18 * v16;
-          }
-          else
-          {
-            v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
-            *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-            //if ( render->pRenderD3D )
-            {
-              a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
-              v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
-            }
-            //else
-            //{
-              //a1.vWorldViewPosition.x = v58 * v55 - *(float *)&uNumRepeats * v56;
-              //v21 = v58 * v56 + *(float *)&uNumRepeats * v55;
-            //}
-            a1.vWorldViewPosition.y = v21;
-            a1.vWorldViewPosition.z = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-          }
-        }
-        else
-          pIndoorCameraD3D->ViewTransform(&a1, 1);
-        v58 = a1.vWorldViewPosition.y * -0.012207031;
-        v22 = a1.vWorldViewPosition.x * 0.012207031;
-        *(float *)&uNumRepeats = v22;
-        v23 = abs((signed __int64)v22);
-        v24 = abs(0);
-        v25 = abs((signed __int64)v58);
-        if ( int_get_vector_length(v25, v24, v23) <= 100 )
-        {
-          AIL_set_3D_position(this->p3DSamples[v59].hSample, LODWORD(v58), 0.0, uNumRepeats);
-          v26 = -*(float *)&uNumRepeats;
-          v27 = -v58;
-          AIL_set_3D_orientation(this->p3DSamples[v59].hSample, LODWORD(v27), 0.0, LODWORD(v26), 0.0, 1.0, 0.0);
-        }
-        else
-        {
-          AIL_end_3D_sample(this->p3DSamples[v59].hSample);
-          pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
-        }
-        continue;
-      }
-      if ( uCurrentlyLoadedLevelType != LEVEL_Indoor )//==1
-      {
-        pIndoorCameraD3D->ViewTransform(&a1, 1);
-        v58 = a1.vWorldViewPosition.y * -0.012207031;
-        v22 = a1.vWorldViewPosition.x * 0.012207031;
-        *(float *)&uNumRepeats = v22;
-        v23 = abs((signed __int64)v22);
-        v24 = abs(0);
-        v25 = abs((signed __int64)v58);
-        if ( int_get_vector_length(v25, v24, v23) <= 100 )
-        {
-          AIL_set_3D_position(this->p3DSamples[v59].hSample, LODWORD(v58), 0.0, uNumRepeats);
-          v26 = -*(float *)&uNumRepeats;
-          v27 = -v58;
-          AIL_set_3D_orientation(this->p3DSamples[v59].hSample, LODWORD(v27), 0.0, LODWORD(v26), 0.0, 1.0, 0.0);
-        }
-        else
-        {
-          AIL_end_3D_sample(this->p3DSamples[v59].hSample);
-          pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
-        }
-        continue;
-      }
-      pDoor = &pIndoor->pDoors[PID_ID(this->p3DSamples[v59].field_4)];
-      if ( pDoor->uDoorID )
-      {
-        uNumRepeats = *pDoor->pXOffsets;
-        a1.vWorldPosition.x = (double)uNumRepeats;
-        uNumRepeats = *pDoor->pYOffsets;
-        a1.vWorldPosition.y = (double)uNumRepeats;
-        uNumRepeats = *pDoor->pZOffsets;
-        v11 = (double)uNumRepeats;
-        a1.vWorldPosition.z = v11;
-        if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
-        {
-          v16 = pIndoorCameraD3D->fRotationXCosine;
-          v17 = pIndoorCameraD3D->fRotationXSine;
-          v55 = pIndoorCameraD3D->fRotationYCosine;
-          v56 = pIndoorCameraD3D->fRotationYSine;
-          if (pIndoorCameraD3D->sRotationX)
-          {
-            v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
-            *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-            v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-            //if ( render->pRenderD3D )
-            {
-              v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
-              v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
-            }
-            //else
-            //{
-             // v19 = v58 * v55 - *(float *)&uNumRepeats * v56;
-             // v20 = v58 * v56 + *(float *)&uNumRepeats * v55;
-            //}
-            a1.vWorldViewPosition.x = v19 * v16 - v18 * v17;
-            a1.vWorldViewPosition.y = v20;
-            a1.vWorldViewPosition.z = v19 * v17 + v18 * v16;
-          }
-          else
-          {
-            v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
-            *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
-            //if ( render->pRenderD3D )
-            {
-              a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
-              v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
-            }
-            //else
-            //{
-            //  a1.vWorldViewPosition.x = v58 * v55 - *(float *)&uNumRepeats * v56;
-            //  v21 = v58 * v56 + *(float *)&uNumRepeats * v55;
-            //}
-            a1.vWorldViewPosition.y = v21;
-            a1.vWorldViewPosition.z = a1.vWorldPosition.z - (double)pParty->vPosition.z;
-          }
-        }
-        else
-          pIndoorCameraD3D->ViewTransform(&a1, 1);
-        v58 = a1.vWorldViewPosition.y * -0.012207031;
-        v22 = a1.vWorldViewPosition.x * 0.012207031;
-        *(float *)&uNumRepeats = v22;
-        v23 = abs((signed __int64)v22);
-        v24 = abs(0);
-        v25 = abs((signed __int64)v58);
-        if ( int_get_vector_length(v25, v24, v23) <= 100 )
-        {
-          AIL_set_3D_position(this->p3DSamples[v59].hSample, LODWORD(v58), 0.0, uNumRepeats);
-          v26 = -*(float *)&uNumRepeats;
-          v27 = -v58;
-          AIL_set_3D_orientation(this->p3DSamples[v59].hSample, LODWORD(v27), 0.0, LODWORD(v26), 0.0, 1.0, 0.0);
-        }
-        else
-        {
-          AIL_end_3D_sample(this->p3DSamples[v59].hSample);
-          pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
-        }
-      }
-    }
+    if (!bPlayerReady)
+        return;
+
+    //if (field_2D0_time_left <= pEventTimer->uTimeElapsed)
+      //field_2D0_time_left = 32;
+    //else
+    //{
+      //field_2D0_time_left -= pEventTimer->uTimeElapsed;
+      //return;
     //}
-  }
-
-//LABEL_37:
-  for (int i = 0; i < uMixerChannels; ++i)
-  {
-    if (AIL_sample_status(pMixerChannels[i].hSample) == AIL::Sample::Done)
+    field_2D0_time_left -= pEventTimer->uTimeElapsed;
+    if (field_2D0_time_left <= 0)
     {
-      AIL_end_sample(pMixerChannels[i].hSample);
-      FreeChannel(&pMixerChannels[i]);
+        field_2D0_time_left = 32;
+        if (b3DSoundInitialized)//for 3D sound
+        {
+            __debugbreak(); // refactor refactor
+            v2 = 0;
+            for (v59 = 0; v59 < pAudioPlayer->uNum3DSamples; ++v59)
+            {
+                v7 = PID_TYPE(this->p3DSamples[v59].field_4);
+                if (AIL_3D_sample_status(this->p3DSamples[v59].hSample) == AIL::Sample::Done)
+                {
+                    AIL_end_3D_sample(this->p3DSamples[v59].hSample);
+                    pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
+                }
+                if (AIL_3D_sample_status(this->p3DSamples[v59].hSample) != AIL::Sample::Playing)
+                    continue;
+                v8 = v7 - 1;//
+                if (v8)//> 1
+                {
+                    v9 = v8 - 1;//
+                    if (v9)//> 2
+                    {
+                        v10 = v9 - 1;//
+                        if (!v10)//3
+                        {
+                            v13 = &pActors[PID_ID(this->p3DSamples[v59].field_4)];
+                            //uNumRepeats = v13->vPosition.x;
+                            //v14 = v13->vPosition.y;
+                            a1.vWorldPosition.x = (double)v13->vPosition.x;
+                            //uNumRepeats = v13->vPosition.z;
+                            a1.vWorldPosition.y = (double)v13->vPosition.y;
+                            //v11 = (double)uNumRepeats;
+                            a1.vWorldPosition.z = v13->vPosition.z;
+                            if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+                            {
+                                v16 = pIndoorCameraD3D->fRotationXCosine;
+                                v17 = pIndoorCameraD3D->fRotationXSine;
+                                v55 = pIndoorCameraD3D->fRotationYCosine;
+                                v56 = pIndoorCameraD3D->fRotationYSine;
+                                if (pIndoorCameraD3D->sRotationX)
+                                {
+                                    v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
+                                    *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
+                                    v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
+                                    //if ( render->pRenderD3D )
+                                    {
+                                        v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
+                                        v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
+                                    }
+                                    //else
+                                   // {
+                                     // v19 = v58 * v55 - *(float *)&uNumRepeats * v56;
+                                     // v20 = v58 * v56 + *(float *)&uNumRepeats * v55;
+                                    //}
+                                    a1.vWorldViewPosition.x = v19 * v16 - v18 * v17;
+                                    a1.vWorldViewPosition.y = v20;
+                                    a1.vWorldViewPosition.z = v19 * v17 + v18 * v16;
+                                }
+                                else
+                                {
+                                    v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
+                                    *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
+                                    //if ( render->pRenderD3D )
+                                    {
+                                        a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
+                                        v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
+                                    }
+                                    //else
+                                    //{
+                                    //  a1.vWorldViewPosition.x = v58 * v55 - *(float *)&uNumRepeats * v56;
+                                    //  v21 = v58 * v56 + *(float *)&uNumRepeats * v55;
+                                    //}
+                                    a1.vWorldViewPosition.y = v21;
+                                    a1.vWorldViewPosition.z = a1.vWorldPosition.z - (double)pParty->vPosition.z;
+                                }
+                            }
+                            else
+                                pIndoorCameraD3D->ViewTransform(&a1, 1);
+                            v58 = a1.vWorldViewPosition.y * -0.012207031;
+                            v22 = a1.vWorldViewPosition.x * 0.012207031;
+                            *(float *)&uNumRepeats = v22;
+                            v23 = abs((signed __int64)v22);
+                            v24 = abs(0);
+                            v25 = abs((signed __int64)v58);
+                            if (int_get_vector_length(v25, v24, v23) <= 100)
+                            {
+                                AIL_set_3D_position(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v58), 0.0, uNumRepeats);
+                                v26 = -*(float *)&uNumRepeats;
+                                v27 = -v58;
+                                AIL_set_3D_orientation(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v27), 0.0, HEXRAYS_LODWORD(v26), 0.0, 1.0, 0.0);
+                            }
+                            else
+                            {
+                                AIL_end_3D_sample(this->p3DSamples[v59].hSample);
+                                pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
+                            }
+                            continue;
+                        }
+                        if (v10 != 2)//4
+                        {
+                            a1.vWorldPosition.x = (double)pParty->vPosition.x;
+                            a1.vWorldPosition.y = (double)pParty->vPosition.y;
+                            v11 = (double)pParty->sEyelevel + (double)pParty->vPosition.z;
+                            a1.vWorldPosition.z = v11;
+                            if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+                            {
+                                v16 = pIndoorCameraD3D->fRotationXCosine;
+                                v17 = pIndoorCameraD3D->fRotationXSine;
+                                v55 = pIndoorCameraD3D->fRotationYCosine;
+                                v56 = pIndoorCameraD3D->fRotationYSine;
+                                if (pIndoorCameraD3D->sRotationX)
+                                {
+                                    v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
+                                    *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
+                                    v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
+                                    //if ( render->pRenderD3D )
+                                    {
+                                        v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
+                                        v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
+                                    }
+                                    //else
+                                    //{
+                                     // v19 = v58 * v55 - *(float *)&uNumRepeats * v56;
+                                     // v20 = v58 * v56 + *(float *)&uNumRepeats * v55;
+                                    //}
+                                    a1.vWorldViewPosition.x = v19 * v16 - v18 * v17;
+                                    a1.vWorldViewPosition.y = v20;
+                                    a1.vWorldViewPosition.z = v19 * v17 + v18 * v16;
+                                }
+                                else
+                                {
+                                    v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
+                                    *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
+                                    //if ( render->pRenderD3D )
+                                    {
+                                        a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
+                                        v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
+                                    }
+                                    //else
+                                    //{
+                                     // a1.vWorldViewPosition.x = v58 * v55 - *(float *)&uNumRepeats * v56;
+                                     // v21 = v58 * v56 + *(float *)&uNumRepeats * v55;
+                                    //}
+                                    a1.vWorldViewPosition.y = v21;
+                                    a1.vWorldViewPosition.z = a1.vWorldPosition.z - (double)pParty->vPosition.z;
+                                }
+                            }
+                            else
+                                pIndoorCameraD3D->ViewTransform(&a1, 1);
+                            v58 = a1.vWorldViewPosition.y * -0.012207031;
+                            v22 = a1.vWorldViewPosition.x * 0.012207031;
+                            *(float *)&uNumRepeats = v22;
+                            v23 = abs((signed __int64)v22);
+                            v24 = abs(0);
+                            v25 = abs((signed __int64)v58);
+                            if (int_get_vector_length(v25, v24, v23) <= 100)
+                            {
+                                AIL_set_3D_position(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v58), 0.0, uNumRepeats);
+                                v26 = -*(float *)&uNumRepeats;
+                                v27 = -v58;
+                                AIL_set_3D_orientation(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v27), 0.0, HEXRAYS_LODWORD(v26), 0.0, 1.0, 0.0);
+                            }
+                            else
+                            {
+                                AIL_end_3D_sample(this->p3DSamples[v59].hSample);
+                                pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
+                            }
+                            continue;
+                        }//5
+                        v12 = (SpriteObject *)&pLevelDecorations[PID_ID(this->p3DSamples[v59].field_4)];
+                    }
+                    else//2
+                        v12 = &pSpriteObjects[PID_ID(this->p3DSamples[v59].field_4)];
+                    a1.vWorldPosition.x = (double)v12->vPosition.x;
+                    a1.vWorldPosition.y = (double)v12->vPosition.y;
+                    v11 = (double)v12->vPosition.z;
+                    //LABEL_21:
+                    a1.vWorldPosition.z = v11;
+                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+                    {
+                        v16 = pIndoorCameraD3D->fRotationXCosine;
+                        v17 = pIndoorCameraD3D->fRotationXSine;
+                        v55 = pIndoorCameraD3D->fRotationYCosine;
+                        v56 = pIndoorCameraD3D->fRotationYSine;
+                        if (pIndoorCameraD3D->sRotationX)
+                        {
+                            v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
+                            *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
+                            v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
+                            //if ( render->pRenderD3D )
+                            {
+                                v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
+                                v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
+                            }
+                            //else
+                           // {
+                            //  v19 = v58 * v55 - *(float *)&uNumRepeats * v56;
+                           //   v20 = v58 * v56 + *(float *)&uNumRepeats * v55;
+                            //}
+                            a1.vWorldViewPosition.x = v19 * v16 - v18 * v17;
+                            a1.vWorldViewPosition.y = v20;
+                            a1.vWorldViewPosition.z = v19 * v17 + v18 * v16;
+                        }
+                        else
+                        {
+                            v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
+                            *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
+                            //if ( render->pRenderD3D )
+                            {
+                                a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
+                                v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
+                            }
+                            //else
+                            //{
+                              //a1.vWorldViewPosition.x = v58 * v55 - *(float *)&uNumRepeats * v56;
+                              //v21 = v58 * v56 + *(float *)&uNumRepeats * v55;
+                            //}
+                            a1.vWorldViewPosition.y = v21;
+                            a1.vWorldViewPosition.z = a1.vWorldPosition.z - (double)pParty->vPosition.z;
+                        }
+                    }
+                    else
+                        pIndoorCameraD3D->ViewTransform(&a1, 1);
+                    v58 = a1.vWorldViewPosition.y * -0.012207031;
+                    v22 = a1.vWorldViewPosition.x * 0.012207031;
+                    *(float *)&uNumRepeats = v22;
+                    v23 = abs((signed __int64)v22);
+                    v24 = abs(0);
+                    v25 = abs((signed __int64)v58);
+                    if (int_get_vector_length(v25, v24, v23) <= 100)
+                    {
+                        AIL_set_3D_position(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v58), 0.0, uNumRepeats);
+                        v26 = -*(float *)&uNumRepeats;
+                        v27 = -v58;
+                        AIL_set_3D_orientation(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v27), 0.0, HEXRAYS_LODWORD(v26), 0.0, 1.0, 0.0);
+                    }
+                    else
+                    {
+                        AIL_end_3D_sample(this->p3DSamples[v59].hSample);
+                        pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
+                    }
+                    continue;
+                }
+                if (uCurrentlyLoadedLevelType != LEVEL_Indoor)//==1
+                {
+                    pIndoorCameraD3D->ViewTransform(&a1, 1);
+                    v58 = a1.vWorldViewPosition.y * -0.012207031;
+                    v22 = a1.vWorldViewPosition.x * 0.012207031;
+                    *(float *)&uNumRepeats = v22;
+                    v23 = abs((signed __int64)v22);
+                    v24 = abs(0);
+                    v25 = abs((signed __int64)v58);
+                    if (int_get_vector_length(v25, v24, v23) <= 100)
+                    {
+                        AIL_set_3D_position(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v58), 0.0, uNumRepeats);
+                        v26 = -*(float *)&uNumRepeats;
+                        v27 = -v58;
+                        AIL_set_3D_orientation(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v27), 0.0, HEXRAYS_LODWORD(v26), 0.0, 1.0, 0.0);
+                    }
+                    else
+                    {
+                        AIL_end_3D_sample(this->p3DSamples[v59].hSample);
+                        pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
+                    }
+                    continue;
+                }
+                pDoor = &pIndoor->pDoors[PID_ID(this->p3DSamples[v59].field_4)];
+                if (pDoor->uDoorID)
+                {
+                    uNumRepeats = *pDoor->pXOffsets;
+                    a1.vWorldPosition.x = (double)uNumRepeats;
+                    uNumRepeats = *pDoor->pYOffsets;
+                    a1.vWorldPosition.y = (double)uNumRepeats;
+                    uNumRepeats = *pDoor->pZOffsets;
+                    v11 = (double)uNumRepeats;
+                    a1.vWorldPosition.z = v11;
+                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+                    {
+                        v16 = pIndoorCameraD3D->fRotationXCosine;
+                        v17 = pIndoorCameraD3D->fRotationXSine;
+                        v55 = pIndoorCameraD3D->fRotationYCosine;
+                        v56 = pIndoorCameraD3D->fRotationYSine;
+                        if (pIndoorCameraD3D->sRotationX)
+                        {
+                            v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
+                            *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
+                            v18 = a1.vWorldPosition.z - (double)pParty->vPosition.z;
+                            //if ( render->pRenderD3D )
+                            {
+                                v19 = *(float *)&uNumRepeats * v56 + v58 * v55;
+                                v20 = v58 * v56 - *(float *)&uNumRepeats * v55;
+                            }
+                            //else
+                            //{
+                             // v19 = v58 * v55 - *(float *)&uNumRepeats * v56;
+                             // v20 = v58 * v56 + *(float *)&uNumRepeats * v55;
+                            //}
+                            a1.vWorldViewPosition.x = v19 * v16 - v18 * v17;
+                            a1.vWorldViewPosition.y = v20;
+                            a1.vWorldViewPosition.z = v19 * v17 + v18 * v16;
+                        }
+                        else
+                        {
+                            v58 = a1.vWorldPosition.x - (double)pParty->vPosition.x;
+                            *(float *)&uNumRepeats = a1.vWorldPosition.y - (double)pParty->vPosition.y;
+                            //if ( render->pRenderD3D )
+                            {
+                                a1.vWorldViewPosition.x = *(float *)&uNumRepeats * v56 + v58 * v55;
+                                v21 = v58 * v56 - *(float *)&uNumRepeats * v55;
+                            }
+                            //else
+                            //{
+                            //  a1.vWorldViewPosition.x = v58 * v55 - *(float *)&uNumRepeats * v56;
+                            //  v21 = v58 * v56 + *(float *)&uNumRepeats * v55;
+                            //}
+                            a1.vWorldViewPosition.y = v21;
+                            a1.vWorldViewPosition.z = a1.vWorldPosition.z - (double)pParty->vPosition.z;
+                        }
+                    }
+                    else
+                        pIndoorCameraD3D->ViewTransform(&a1, 1);
+                    v58 = a1.vWorldViewPosition.y * -0.012207031;
+                    v22 = a1.vWorldViewPosition.x * 0.012207031;
+                    *(float *)&uNumRepeats = v22;
+                    v23 = abs((signed __int64)v22);
+                    v24 = abs(0);
+                    v25 = abs((signed __int64)v58);
+                    if (int_get_vector_length(v25, v24, v23) <= 100)
+                    {
+                        AIL_set_3D_position(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v58), 0.0, uNumRepeats);
+                        v26 = -*(float *)&uNumRepeats;
+                        v27 = -v58;
+                        AIL_set_3D_orientation(this->p3DSamples[v59].hSample, HEXRAYS_LODWORD(v27), 0.0, HEXRAYS_LODWORD(v26), 0.0, 1.0, 0.0);
+                    }
+                    else
+                    {
+                        AIL_end_3D_sample(this->p3DSamples[v59].hSample);
+                        pAudioPlayer->_4ABF23(&this->p3DSamples[v59]);
+                    }
+                }
+            }
+            //}
+        }
+
+        //LABEL_37:
+        for (int i = 0; i < uMixerChannels; ++i)
+        {
+            if (AIL_sample_status(pMixerChannels[i].hSample) == AIL::Sample::Done)
+            {
+                AIL_end_sample(pMixerChannels[i].hSample);
+                FreeChannel(&pMixerChannels[i]);
+            }
+        }
+
+        for (int i = 0; i < uMixerChannels; ++i)
+        {
+            if (pMixerChannels[i].source_pid <= 0)
+                continue;
+
+            int source_type = PID_TYPE(pMixerChannels[i].source_pid),
+                source_id = PID_ID(pMixerChannels[i].source_pid);
+            //    int source_x,
+            //       int source_y,
+            //        source_z;
+
+            switch (source_type)
+            {
+            case 0:
+            case OBJECT_Player:
+            case OBJECT_BModel:
+                continue;
+
+            case OBJECT_BLVDoor:
+            {
+                assert(uCurrentlyLoadedLevelType == LEVEL_Indoor);
+
+                assert(source_id < pIndoor->uNumDoors);
+                if (!pIndoor->pDoors[source_id].uDoorID)
+                    continue;
+
+                //source_x = pIndoor->pDoors[source_id].pXOffsets[0];
+                //source_y = pIndoor->pDoors[source_id].pYOffsets[0];
+                //source_z = pIndoor->pDoors[source_id].pZOffsets[0];
+                int sound_strength = GetSoundStrengthByDistanceFromParty(pIndoor->pDoors[source_id].pXOffsets[0],
+                    pIndoor->pDoors[source_id].pYOffsets[0],
+                    pIndoor->pDoors[source_id].pZOffsets[0]);
+                if (sound_strength)
+                {
+                    AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
+                    AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(pIndoor->pDoors[source_id].pXOffsets[0],
+                        pIndoor->pDoors[source_id].pYOffsets[0]));
+                }
+                else
+                {
+                    AIL_end_sample(pMixerChannels[i].hSample);
+                    FreeChannel(&pMixerChannels[i]);
+                }
+            }
+            continue;
+
+            case OBJECT_Item:
+            {
+                //assert(source_id < uNumSpriteObjects); // Ritor1:в ида до и после перехода одинаково
+
+                //source_x = pSpriteObjects[source_id].vPosition.x;
+                //source_y = pSpriteObjects[source_id].vPosition.y;
+                //source_z = pSpriteObjects[source_id].vPosition.z;
+                int sound_strength = GetSoundStrengthByDistanceFromParty(pSpriteObjects[source_id].vPosition.x,
+                    pSpriteObjects[source_id].vPosition.y,
+                    pSpriteObjects[source_id].vPosition.z);
+                if (sound_strength)
+                {
+                    AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
+                    AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(pSpriteObjects[source_id].vPosition.x,
+                        pSpriteObjects[source_id].vPosition.y));
+                }
+                else
+                {
+                    AIL_end_sample(pMixerChannels[i].hSample);
+                    FreeChannel(&pMixerChannels[i]);
+                }
+            }
+            continue;
+
+            case OBJECT_Decoration:
+            {
+                assert(source_id < uNumLevelDecorations);
+
+                //source_x = pLevelDecorations[source_id].vPosition.x;
+                //source_y = pLevelDecorations[source_id].vPosition.y;
+                //source_z = pLevelDecorations[source_id].vPosition.z;
+                int sound_strength = GetSoundStrengthByDistanceFromParty(pLevelDecorations[source_id].vPosition.x,
+                    pLevelDecorations[source_id].vPosition.y,
+                    pLevelDecorations[source_id].vPosition.z);
+                if (sound_strength)
+                {
+                    //AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
+                    AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(pLevelDecorations[source_id].vPosition.x,
+                        pLevelDecorations[source_id].vPosition.y));
+                }
+                else
+                {
+                    AIL_end_sample(pMixerChannels[i].hSample);
+                    FreeChannel(&pMixerChannels[i]);
+                }
+            }
+            continue;
+
+            case OBJECT_Actor:
+            {
+                assert(source_id < uNumActors);
+
+                //source_x = pActors[source_id].vPosition.x;
+                //source_y = pActors[source_id].vPosition.y;
+                //source_z = pActors[source_id].vPosition.z;
+                int sound_strength = GetSoundStrengthByDistanceFromParty(pActors[source_id].vPosition.x,
+                    pActors[source_id].vPosition.y,
+                    pActors[source_id].vPosition.z);
+                if (sound_strength)
+                {
+                    AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
+                    AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(pActors[source_id].vPosition.x,
+                        pActors[source_id].vPosition.y));
+                }
+                else
+                {
+                    AIL_end_sample(pMixerChannels[i].hSample);
+                    FreeChannel(&pMixerChannels[i]);
+                }
+            }
+            continue;
+
+            default:
+                assert(false);
+                continue;
+            }
+
+            /*if (int sound_strength = GetSoundStrengthByDistanceFromParty(source_x, source_y, source_z))
+            {
+              AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
+              AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(source_x, source_y));
+            }
+            else
+            {
+              AIL_end_sample(pMixerChannels[i].hSample);
+              FreeChannel(&pMixerChannels[i]);
+            } */
+        }
+
+        if (current_screen_type != SCREEN_GAME) //отключение звука декораций при переключении окна игры
+        {
+            if (AIL_sample_status(pMixerChannels[4].hSample) == AIL::Sample::Playing)
+                AIL_end_sample(pMixerChannels[4].hSample);
+            return;
+        }
+        if (!_6807E0_num_decorations_with_sounds_6807B8)
+            return;
+
+        v55 = 0;
+        //v59 = 0;
+        for (uint i = 0; i < _6807E0_num_decorations_with_sounds_6807B8; ++i)
+        {
+            HEXRAYS_LODWORD(v56) = 1;
+            //v43 = _6807B8_level_decorations_ids[v59];
+            //v44 = &pLevelDecorations[_6807B8_level_decorations_ids[v59]];
+            //v45 = abs(v44->vPosition.z - pParty->vPosition.z);
+            //v46 = abs(v44->vPosition.y - pParty->vPosition.y);
+            //v47 = abs(v44->vPosition.x - pParty->vPosition.x);
+            LevelDecoration* decor = &pLevelDecorations[_6807B8_level_decorations_ids[i]];
+            if (int_get_vector_length(abs(decor->vPosition.x - pParty->vPosition.x),
+                abs(decor->vPosition.y - pParty->vPosition.y),
+                abs(decor->vPosition.z - pParty->vPosition.z)) > 8192)
+                continue;
+
+            DecorationDesc* decor_desc = &pDecorationList->pDecorations[decor->uDecorationDescID];
+            //v48 = &pDecorationList->pDecorations[decor->uDecorationDescID];
+            //v49 = v48->uFlags;
+            uNumRepeats = (~(unsigned __int8)decor_desc->uFlags & DECORATION_DESC_SLOW_LOOP) >> 6;
+
+            if (decor_desc->SoundOnDawn() || decor_desc->SoundOnDusk())
+            {
+                //v50 = decor->field_1A;
+                v55 = 0.0;
+                uNumRepeats = 2;
+                if (decor->field_1A)
+                {
+                    //v51 = decor->field_1A - 32;
+                    decor->field_1A = decor->field_1A - 32;
+                    if (decor->field_1A < 0)
+                        decor->field_1A = 0;
+                }
+            }
+
+            //v52 = v48->uFlags;
+            if (!decor_desc->SoundOnDawn())
+            {
+                if (!decor_desc->SoundOnDusk())
+                {
+                    if (v55 == 0.0)
+                    {
+                        if (v56 != 0.0)
+                        {
+                            v53 = 8 * _6807B8_level_decorations_ids[i];
+                            v53 |= OBJECT_Decoration;
+                            PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);//sound of Boat and water(звуки корабля, плескания воды)
+                        }
+                        continue;
+                    }
+                    if (!decor->field_1A)
+                        decor->field_1A = (rand() % 15 + 1) << 7;
+                    if (v56 != 0.0)
+                    {
+                        v53 = 8 * _6807B8_level_decorations_ids[i];
+                        v53 |= OBJECT_Decoration;
+                        PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);
+                    }
+                    continue;
+                }
+                if (v55 != 0.0)
+                {
+                    if (!decor->field_1A)
+                        decor->field_1A = (rand() % 15 + 1) << 7;
+                    if (v56 != 0.0)
+                    {
+                        v53 = 8 * _6807B8_level_decorations_ids[i];
+                        v53 |= OBJECT_Decoration;
+                        PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);
+                    }
+                    continue;
+                }
+            }
+            v56 = 0.0;
+
+            if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 6 ||
+                pParty->uCurrentHour >= 20 && pParty->uCurrentHour < 21)
+            {
+                if (!decor->field_1A && rand() % 100 < 100)
+                    HEXRAYS_LODWORD(v56) = 1;
+                HEXRAYS_LODWORD(v55) = 1;
+            }
+            if (v55 == 0.0)
+            {
+                if (v56 != 0.0)
+                {
+                    v53 = 8 * _6807B8_level_decorations_ids[i];
+                    v53 |= OBJECT_Decoration;
+                    PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);
+                }
+                continue;
+            }
+            if (!decor->field_1A)
+                decor->field_1A = (rand() % 15 + 1) << 7;
+            if (v56 != 0.0)
+            {
+                v53 = 8 * _6807B8_level_decorations_ids[i];
+                v53 |= OBJECT_Decoration;
+                PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);
+            }
+            continue;
+        }
     }
-  }
-
-  for (int i = 0; i < uMixerChannels; ++i)
-  {
-    if (pMixerChannels[i].source_pid <= 0)
-      continue;
-
-    int source_type = PID_TYPE(pMixerChannels[i].source_pid),
-        source_id = PID_ID(pMixerChannels[i].source_pid);
-//    int source_x,
-//       int source_y,
-//        source_z;
-
-    switch (source_type)
-    {
-      case 0:
-      case OBJECT_Player:
-      case OBJECT_BModel:
-        continue;
-
-      case OBJECT_BLVDoor:
-      {
-        assert(uCurrentlyLoadedLevelType == LEVEL_Indoor);
-
-        assert(source_id < pIndoor->uNumDoors);
-        if (!pIndoor->pDoors[source_id].uDoorID)
-          continue;
-
-        //source_x = pIndoor->pDoors[source_id].pXOffsets[0];
-        //source_y = pIndoor->pDoors[source_id].pYOffsets[0];
-        //source_z = pIndoor->pDoors[source_id].pZOffsets[0];
-        int sound_strength = GetSoundStrengthByDistanceFromParty(pIndoor->pDoors[source_id].pXOffsets[0],
-                                                                 pIndoor->pDoors[source_id].pYOffsets[0],
-                                                                 pIndoor->pDoors[source_id].pZOffsets[0]);
-        if ( sound_strength )
-        {
-          AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
-          AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(pIndoor->pDoors[source_id].pXOffsets[0],
-                                                                 pIndoor->pDoors[source_id].pYOffsets[0]));
-        }
-        else
-        {
-          AIL_end_sample(pMixerChannels[i].hSample);
-          FreeChannel(&pMixerChannels[i]);
-        }
-      }
-      continue;
-
-      case OBJECT_Item:
-      {
-        //assert(source_id < uNumSpriteObjects); // Ritor1:в ида до и после перехода одинаково
-
-        //source_x = pSpriteObjects[source_id].vPosition.x;
-        //source_y = pSpriteObjects[source_id].vPosition.y;
-        //source_z = pSpriteObjects[source_id].vPosition.z;
-        int sound_strength = GetSoundStrengthByDistanceFromParty(pSpriteObjects[source_id].vPosition.x,
-                                                                 pSpriteObjects[source_id].vPosition.y,
-                                                                 pSpriteObjects[source_id].vPosition.z);
-        if ( sound_strength )
-        {
-          AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
-          AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(pSpriteObjects[source_id].vPosition.x,
-                                                                   pSpriteObjects[source_id].vPosition.y));
-        }
-        else
-        {
-          AIL_end_sample(pMixerChannels[i].hSample);
-          FreeChannel(&pMixerChannels[i]);
-        }
-      }
-      continue;
-
-      case OBJECT_Decoration:
-      {
-        assert(source_id < uNumLevelDecorations);
-
-        //source_x = pLevelDecorations[source_id].vPosition.x;
-        //source_y = pLevelDecorations[source_id].vPosition.y;
-        //source_z = pLevelDecorations[source_id].vPosition.z;
-        int sound_strength = GetSoundStrengthByDistanceFromParty(pLevelDecorations[source_id].vPosition.x,
-                                                                 pLevelDecorations[source_id].vPosition.y,
-                                                                 pLevelDecorations[source_id].vPosition.z);
-        if ( sound_strength )
-        {
-          //AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
-          AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(pLevelDecorations[source_id].vPosition.x,
-                                                                   pLevelDecorations[source_id].vPosition.y));
-        }
-        else
-        {
-          AIL_end_sample(pMixerChannels[i].hSample);
-          FreeChannel(&pMixerChannels[i]);
-        }
-      }
-      continue;
-
-      case OBJECT_Actor:
-      {
-        assert(source_id < uNumActors);
-
-        //source_x = pActors[source_id].vPosition.x;
-        //source_y = pActors[source_id].vPosition.y;
-        //source_z = pActors[source_id].vPosition.z;
-        int sound_strength = GetSoundStrengthByDistanceFromParty(pActors[source_id].vPosition.x,
-                                                                 pActors[source_id].vPosition.y,
-                                                                 pActors[source_id].vPosition.z);
-        if ( sound_strength )
-        {
-          AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
-          AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(pActors[source_id].vPosition.x,
-                                                                   pActors[source_id].vPosition.y));
-        }
-        else
-        {
-          AIL_end_sample(pMixerChannels[i].hSample);
-          FreeChannel(&pMixerChannels[i]);
-        }
-      }
-      continue;
-
-      default:
-        assert(false);
-        continue;
-    }
-
-    /*if (int sound_strength = GetSoundStrengthByDistanceFromParty(source_x, source_y, source_z))
-    {
-      AIL_set_sample_volume(pMixerChannels[i].hSample, sound_strength);
-      AIL_set_sample_pan(pMixerChannels[i].hSample, sub_4AB66C(source_x, source_y));
-    }
-    else
-    {
-      AIL_end_sample(pMixerChannels[i].hSample);
-      FreeChannel(&pMixerChannels[i]);
-    } */
-  }
-
-  if (current_screen_type != SCREEN_GAME) //отключение звука декораций при переключении окна игры
-  {
-    if (AIL_sample_status(pMixerChannels[4].hSample) == AIL::Sample::Playing)
-      AIL_end_sample(pMixerChannels[4].hSample);
-    return;
-  }
-  if (!_6807E0_num_decorations_with_sounds_6807B8)
-    return;
-
-  v55 = 0;
-      //v59 = 0;
-  for (uint i = 0; i < _6807E0_num_decorations_with_sounds_6807B8; ++i)
-  {
-    LODWORD(v56) = 1;
-        //v43 = _6807B8_level_decorations_ids[v59];
-        //v44 = &pLevelDecorations[_6807B8_level_decorations_ids[v59]];
-        //v45 = abs(v44->vPosition.z - pParty->vPosition.z);
-        //v46 = abs(v44->vPosition.y - pParty->vPosition.y);
-        //v47 = abs(v44->vPosition.x - pParty->vPosition.x);
-    LevelDecoration* decor = &pLevelDecorations[_6807B8_level_decorations_ids[i]];
-    if (int_get_vector_length(abs(decor->vPosition.x - pParty->vPosition.x),
-                              abs(decor->vPosition.y - pParty->vPosition.y),
-                              abs(decor->vPosition.z - pParty->vPosition.z)) > 8192)
-      continue;
-
-    DecorationDesc* decor_desc = &pDecorationList->pDecorations[decor->uDecorationDescID];
-      //v48 = &pDecorationList->pDecorations[decor->uDecorationDescID];
-      //v49 = v48->uFlags;
-      uNumRepeats = (~(unsigned __int8)decor_desc->uFlags & DECORATION_DESC_SLOW_LOOP) >> 6;
- 
-    if (decor_desc->SoundOnDawn() || decor_desc->SoundOnDusk())
-    {
-        //v50 = decor->field_1A;
-        v55 = 0.0;
-        uNumRepeats = 2;
-        if (decor->field_1A)
-        {
-          //v51 = decor->field_1A - 32;
-          decor->field_1A = decor->field_1A - 32;
-          if ( decor->field_1A < 0 )
-            decor->field_1A = 0;
-        }
-    }
-
-      //v52 = v48->uFlags;
-    if (!decor_desc->SoundOnDawn())
-    {
-      if (!decor_desc->SoundOnDusk())
-      {
-        if ( v55 == 0.0 )
-        {
-          if ( v56 != 0.0 )
-          {
-            v53 = 8 * _6807B8_level_decorations_ids[i];
-            LOBYTE(v53) = v53 | OBJECT_Decoration;
-            PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);//sound of Boat and water(звуки корабля, плескания воды)
-          }
-          continue;
-        }
-        if ( !decor->field_1A )
-          decor->field_1A = (rand() % 15 + 1) << 7;
-        if ( v56 != 0.0 )
-        {
-          v53 = 8 * _6807B8_level_decorations_ids[i];
-          LOBYTE(v53) = v53 | OBJECT_Decoration;
-          PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);
-        }
-        continue;
-      }
-      if ( v55 != 0.0 )
-      {
-        if ( !decor->field_1A )
-          decor->field_1A = (rand() % 15 + 1) << 7;
-        if ( v56 != 0.0 )
-        {
-          v53 = 8 * _6807B8_level_decorations_ids[i];
-          LOBYTE(v53) = v53 | OBJECT_Decoration;
-          PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);
-        }
-        continue;
-      }
-    }
-    v56 = 0.0;
-
-    if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 6 ||
-        pParty->uCurrentHour >= 20 && pParty->uCurrentHour < 21)
-    {
-        if ( !decor->field_1A && rand() % 100 < 100 )
-          LODWORD(v56) = 1;
-        LODWORD(v55) = 1;
-    }
-    if ( v55 == 0.0 )
-    {
-      if ( v56 != 0.0 )
-      {
-        v53 = 8 * _6807B8_level_decorations_ids[i];
-        LOBYTE(v53) = v53 | OBJECT_Decoration;
-        PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);
-      }
-      continue;
-    }
-    if ( !decor->field_1A )
-      decor->field_1A = (rand() % 15 + 1) << 7;
-    if ( v56 != 0.0 )
-    {
-      v53 = 8 * _6807B8_level_decorations_ids[i];
-      LOBYTE(v53) = v53 | OBJECT_Decoration;
-      PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);
-    }
-    continue;
-  }
-  }
 }
 
 //----- (004AB66C) --------------------------------------------------------
@@ -2134,19 +2152,19 @@ void AudioPlayer::StopChannels(int uStartChannel, int uEndChannel)
 //----- (004AB818) --------------------------------------------------------
 void AudioPlayer::LoadAudioSnd()
 {
-  DWORD NumberOfBytesRead; // [sp+Ch] [bp-4h]@3
+    int NumberOfBytesRead; // [sp+Ch] [bp-4h]@3
 
-  hAudioSnd = CreateFileA("Sounds\\Audio.snd", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL|FILE_FLAG_SEQUENTIAL_SCAN, 0);
-  if (hAudioSnd == INVALID_HANDLE_VALUE)
-  {
-    Log::Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
-    return;
-  }
+    hAudioSnd = fopen("Sounds\\Audio.snd", "rb");
+    if (!hAudioSnd)
+    {
+        Log::Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
+        return;
+    }
 
-  ReadFile(hAudioSnd, &uNumSoundHeaders, 4, &NumberOfBytesRead, 0);
-  pSoundHeaders = nullptr;
-  pSoundHeaders = (SoundHeader *)malloc(52 * uNumSoundHeaders + 2);
-  ReadFile(hAudioSnd, pSoundHeaders, 52 * uNumSoundHeaders, &NumberOfBytesRead, 0);
+    fread(&uNumSoundHeaders, 1, 4, hAudioSnd);
+    pSoundHeaders = nullptr;
+    pSoundHeaders = (SoundHeader *)malloc(52 * uNumSoundHeaders + 2);
+    fread(pSoundHeaders, 1, 52 * uNumSoundHeaders, hAudioSnd);
 }
 
 //----- (004AB8CE) --------------------------------------------------------
@@ -2158,7 +2176,7 @@ void AudioPlayer::Initialize()
   char *Str1; // [sp+10h] [bp-8h]@6
   int v14; // [sp+14h] [bp-4h]@5
 
-  //WriteWindowsRegistryString( "3DSoundProvider", "Aureal A3D Interactive(TM)");//запись в реестр для 3D звука(Microsoft DirectSound3D with Creative Labs EAX(TM))
+  //OS_SetAppString( "3DSoundProvider", "Aureal A3D Interactive(TM)");//запись в реестр для 3D звука(Microsoft DirectSound3D with Creative Labs EAX(TM))
 
   v3 = 0;
   //this->hWindow = hWnd;
@@ -2184,12 +2202,12 @@ void AudioPlayer::Initialize()
   hDigDriver = Audio_GetFirstHardwareDigitalDriver();
   if ( hDigDriver )
     SmackSoundUseMSS(hDigDriver);
-  if ( ReadWindowsRegistryInt("Disable3DSound", 0) != 1 && true)//pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT )
+  if ( OS_GetAppInt("Disable3DSound", 0) != 1 && true)//pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT )
   {
     v14 = 0;
     bEAXSupported = 0;
     b3DSoundInitialized = 0;
-    ReadWindowsRegistryString("3DSoundProvider", p3DSoundProvider, 128, "NONE");
+    OS_GetAppString("3DSoundProvider", p3DSoundProvider, 128, "NONE");
     CheckA3DSupport(true);
     HPROVIDER prov;
     while ( AIL_enumerate_3D_providers(&v14, &prov, &Str1) )
@@ -2325,84 +2343,97 @@ _DIG_DRIVER *Audio_GetFirstHardwareDigitalDriver(void)
 //----- (004ABC9B) --------------------------------------------------------
 void AudioPlayer::CheckA3DSupport(bool query)
 {
-  DWORD cbData; // [sp+8h] [bp-Ch]@1
-  HKEY hKey; // [sp+10h] [bp-4h]@1
-  hKey = 0;
-  cbData = 4;
-  if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Aureal\\A3D", 0, KEY_READ|KEY_WOW64_32KEY, &hKey))
-  {
-    int Aureal3D_SplashAudio = 0;
-    if (query)
-      RegQueryValueExA(hKey, "SplashAudio", 0, 0, (LPBYTE)&Aureal3D_SplashAudio, &cbData);
-    RegSetValueExA(hKey, "SplashAudio", 0, 4, (const BYTE *)&Aureal3D_SplashAudio, 4);
+    /*DWORD cbData; // [sp+8h] [bp-Ch]@1
+    HKEY hKey; // [sp+10h] [bp-4h]@1
+    hKey = 0;
+    cbData = 4;
+    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Aureal\\A3D", 0, KEY_READ | KEY_WOW64_32KEY, &hKey))
+    {
+        int Aureal3D_SplashAudio = 0;
+        if (query)
+            RegQueryValueExA(hKey, "SplashAudio", 0, 0, (LPBYTE)&Aureal3D_SplashAudio, &cbData);
+        RegSetValueExA(hKey, "SplashAudio", 0, 4, (const BYTE *)&Aureal3D_SplashAudio, 4);
 
-    int Aureal3D_SplashScreen = 0;
-    if (query)
-      RegQueryValueExA(hKey, "SplashScreen", 0, 0, (LPBYTE)&Aureal3D_SplashScreen, &cbData);
-    RegSetValueExA(hKey, "SplashScreen", 0, 4, (const BYTE *)&Aureal3D_SplashScreen, 4);
-    RegCloseKey(hKey);
-  }
+        int Aureal3D_SplashScreen = 0;
+        if (query)
+            RegQueryValueExA(hKey, "SplashScreen", 0, 0, (LPBYTE)&Aureal3D_SplashScreen, &cbData);
+        RegSetValueExA(hKey, "SplashScreen", 0, 4, (const BYTE *)&Aureal3D_SplashScreen, 4);
+        RegCloseKey(hKey);
+    }*/
 }
 
 
 //----- (004ABD5B) --------------------------------------------------------
 void AudioPlayer::Release() //Освободить
 {
-  MixerChannel *pMixerChannel; // ebx@3
-//  char v4; // dl@5
-  AudioPlayer_3DSample *p3DSample; // edi@7
-  void *v9; // ecx@15
+    MixerChannel *pMixerChannel; // ebx@3
+  //  char v4; // dl@5
+    AudioPlayer_3DSample *p3DSample; // edi@7
+    void *v9; // ecx@15
 
-  if ( this->bPlayerReady )
-  {
-	free(pSoundHeaders);
-    CloseHandle(pMediaPlayer->hMagicVid);
-    CloseHandle(pMediaPlayer->hMightVid);
-    pAudioPlayer->StopChannels(-1, -1);
-    if ( pAudioPlayer->uMixerChannels > 0 )
+    if (this->bPlayerReady)
     {
-      pMixerChannel = pAudioPlayer->pMixerChannels;
-      for ( uint i = 0; i < pAudioPlayer->uMixerChannels; ++i )
-      {
-        AIL_release_sample_handle(pMixerChannel->hSample);
-        ++pMixerChannel;
-      }
-    }
-    if ( ReadWindowsRegistryInt("Disable3DSound", 0) != 1 )
-    {
-      CheckA3DSupport(false);
-      if ( pAudioPlayer->uNum3DSamples > 0 )
-      {
-        p3DSample = pAudioPlayer->p3DSamples;
-        for ( uint i = 0; i < pAudioPlayer->uNum3DSamples; ++i )
+        free(pSoundHeaders);
+
+        if (pMediaPlayer->hMagicVid)
         {
-          if ( p3DSample->hSample )
-          {
-            AIL_release_3D_sample_handle(p3DSample->hSample);
-            p3DSample->hSample = 0;
-          }
-          ++p3DSample;
+            fclose(pMediaPlayer->hMagicVid);
+            pMediaPlayer->hMagicVid = nullptr;
         }
-      }
-      if ( pAudioPlayer->h3DSoundProvider )
-      {
-        AIL_close_3D_provider(pAudioPlayer->h3DSoundProvider);
-        pAudioPlayer->h3DSoundProvider = 0;
-      }
+
+        if (pMediaPlayer->hMightVid)
+        {
+            fclose(pMediaPlayer->hMightVid);
+            pMediaPlayer->hMightVid = nullptr;
+        }
+
+        pAudioPlayer->StopChannels(-1, -1);
+        if (pAudioPlayer->uMixerChannels > 0)
+        {
+            pMixerChannel = pAudioPlayer->pMixerChannels;
+            for (uint i = 0; i < pAudioPlayer->uMixerChannels; ++i)
+            {
+                AIL_release_sample_handle(pMixerChannel->hSample);
+                ++pMixerChannel;
+            }
+        }
+        if (OS_GetAppInt("Disable3DSound", 0) != 1)
+        {
+            CheckA3DSupport(false);
+            if (pAudioPlayer->uNum3DSamples > 0)
+            {
+                p3DSample = pAudioPlayer->p3DSamples;
+                for (uint i = 0; i < pAudioPlayer->uNum3DSamples; ++i)
+                {
+                    if (p3DSample->hSample)
+                    {
+                        AIL_release_3D_sample_handle(p3DSample->hSample);
+                        p3DSample->hSample = 0;
+                    }
+                    ++p3DSample;
+                }
+            }
+            if (pAudioPlayer->h3DSoundProvider)
+            {
+                AIL_close_3D_provider(pAudioPlayer->h3DSoundProvider);
+                pAudioPlayer->h3DSoundProvider = 0;
+            }
+        }
+        if (pAudioPlayer->hAILRedbook)
+        {
+            AIL_redbook_stop(pAudioPlayer->hAILRedbook);
+            AIL_redbook_set_volume((HREDBOOK)&pAudioPlayer->hAILRedbook, pAudioPlayer->sRedbookVolume);
+            AIL_redbook_close(pAudioPlayer->hAILRedbook);
+        }
+        AIL_shutdown();
+        pSoundList->Release();
+        v9 = *(void **)&pAudioPlayer->field_C78[0];
+        if (v9)
+            ReleaseSoundData(v9);
+
+        fclose(pAudioPlayer->hAudioSnd);
+        pAudioPlayer->hAudioSnd = nullptr;
     }
-    if ( pAudioPlayer->hAILRedbook )
-    {
-      AIL_redbook_stop(pAudioPlayer->hAILRedbook);
-      AIL_redbook_set_volume((HREDBOOK)&pAudioPlayer->hAILRedbook, pAudioPlayer->sRedbookVolume);
-      AIL_redbook_close(pAudioPlayer->hAILRedbook);
-    }
-    AIL_shutdown();
-    pSoundList->Release();
-    v9 = *(void **)&pAudioPlayer->field_C78[0];
-    if ( v9 )
-      ReleaseSoundData(v9);
-    CloseHandle(pAudioPlayer->hAudioSnd);
-  }
 }
 
 //----- (004ABE55) --------------------------------------------------------
@@ -2700,56 +2731,57 @@ LABEL_10:
 //----- (004A97C6) --------------------------------------------------------
 SoundData *LoadSound(const char *pSoundName, SoundData *pOutBuff, unsigned int uID)
 {
-  DWORD NumberOfBytesRead; // [sp+14h] [bp-8h]@8
+    int NumberOfBytesRead; // [sp+14h] [bp-8h]@8
 
-  for (uint i = 0; i < 3000; ++i)
-  {
-    if (pSounds[i].uID == uID)
-      return pSounds[i].pSoundData;
-  }
-  FindSound_BinSearch(0, pAudioPlayer->uNumSoundHeaders, pSoundName);
-  if ( uFindSound_BinSearch_ResultID == -1 )
-    return 0;
-  if ( pOutBuff == (SoundData *)-1 )
-    pOutBuff = (SoundData *)malloc(pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize + 4);
-  SetFilePointer(pAudioPlayer->hAudioSnd, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uFileOffset, 0, 0);
-  if ( (signed int)pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize >= (signed int)pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize )
-  {
-    pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize = pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize;
-    if ( pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize )
-      ReadFile(pAudioPlayer->hAudioSnd, pOutBuff->pData, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize, &NumberOfBytesRead, 0);// Ritor1: pSounds[20]
+    for (uint i = 0; i < 3000; ++i)
+    {
+        if (pSounds[i].uID == uID)
+            return pSounds[i].pSoundData;
+    }
+    FindSound_BinSearch(0, pAudioPlayer->uNumSoundHeaders, pSoundName);
+    if (uFindSound_BinSearch_ResultID == -1)
+        return 0;
+    if (pOutBuff == (SoundData *)-1)
+        pOutBuff = (SoundData *)malloc(pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize + 4);
+
+    fseek(pAudioPlayer->hAudioSnd, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uFileOffset, SEEK_SET);
+    if ((signed int)pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize >= (signed int)pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize)
+    {
+        pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize = pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize;
+        if (pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize)
+            NumberOfBytesRead = fread(pOutBuff->pData, 1, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize, pAudioPlayer->hAudioSnd);
+        else
+            Log::Warning(L"Can't load sound file!");
+    }
     else
-      MessageBoxW(nullptr, L"Can't load sound file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Sound.cpp:448", 0);
-  }
-  else
-  {
-    uID = (unsigned int)malloc(pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize);
-    ReadFile(pAudioPlayer->hAudioSnd, (LPVOID)uID, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize, &NumberOfBytesRead, 0);
-    zlib::MemUnzip(pOutBuff->pData, &pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize, (const void *)uID, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize);
-    free((void *)uID);
-  }
-  if ( pOutBuff )
-  {
-    pOutBuff->uDataSize = pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize;
+    {
+        uID = (unsigned int)malloc(pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize);
+        NumberOfBytesRead = fread((void *)uID, 1, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize, pAudioPlayer->hAudioSnd);
+        zlib::MemUnzip(pOutBuff->pData, &pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize, (const void *)uID, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize);
+        free((void *)uID);
+    }
+    if (pOutBuff)
+    {
+        pOutBuff->uDataSize = pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize;
 
-    if ( uID == SOUND_StartMainChoice02 )//Ritor1: code included (BUG)
-    {
-      char *p = (char *)pOutBuff->pData;
-      p = p+7;
-      memcpy(&pOutBuff->pData, p, NumberOfBytesRead - 7);
-	  pOutBuff->uDataSize = NumberOfBytesRead - 7;
+        if (uID == SOUND_StartMainChoice02)//Ritor1: code included (BUG)
+        {
+            char *p = (char *)pOutBuff->pData;
+            p = p + 7;
+            memcpy(&pOutBuff->pData, p, NumberOfBytesRead - 7);
+            pOutBuff->uDataSize = NumberOfBytesRead - 7;
+        }
+        uLastLoadedSoundID = 0;
+        if (pSounds[0].pSoundData)
+        {
+            for (uint i = 0; pSounds[i].pSoundData; i++)
+                ++uLastLoadedSoundID;
+        }
+        strcpy((char *)pSounds[uLastLoadedSoundID].SoundName, pSoundName);
+        pSoundList->uTotalLoadedSoundSize += pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize;
+        pSounds[uLastLoadedSoundID].pSoundData = pOutBuff;
+        return pOutBuff;
     }
-    uLastLoadedSoundID = 0;
-    if ( pSounds[0].pSoundData )
-    {
-      for ( uint i = 0; pSounds[i].pSoundData; i++ )
-        ++uLastLoadedSoundID;
-    }
-    strcpy((char *)pSounds[uLastLoadedSoundID].SoundName, pSoundName);
-    pSoundList->uTotalLoadedSoundSize += pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize;
-    pSounds[uLastLoadedSoundID].pSoundData = pOutBuff;
-    return pOutBuff;
-  }
-  else
-    return 0;
+    else
+        return 0;
 }

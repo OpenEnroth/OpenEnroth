@@ -1564,14 +1564,14 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
 
 
 //----- (004B6943) --------------------------------------------------------
-void  TravelByTransport()
+void TravelByTransport()
 {
   signed int v4; // ebx@1
   stru365_travel_info *pTravel; // esi@7
   signed int v12; // esi@13
   signed int v13; // edi@14
-  DWORD v14; // eax@26
-  DWORD v15; // edi@26
+  int v14; // eax@26
+  int v15; // edi@26
   int pTextHeight; // eax@36
   int pRealTextHeight; // esi@36
   int schedule_id; // esi@39
@@ -1607,7 +1607,7 @@ void  TravelByTransport()
 
       String str = localization->FormatString(405, pPrice); // Price: %lu gold
       pTextHeight = pFontArrus->CalcTextHeight(str, &travel_window, 0);
-      pRealTextHeight = pTextHeight + (LOBYTE(pFontArrus->uFontHeight) - 3) + 146;
+      pRealTextHeight = pTextHeight + (pFontArrus->GetFontHeight() - 3) + 146;
       pPrimaryTextHeight = pRealTextHeight;
       pCurrentButton = 2;
       for ( uint i = pDialogueWindow->pStartingPosActiveItem; i < (unsigned int)(pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem); ++i )
@@ -1664,7 +1664,7 @@ void  TravelByTransport()
             pTextHeight = pFontArrus->CalcTextHeight(str, &travel_window, 0);
             pButton->uHeight = pTextHeight;
             pButton->uW = pButton->uY + pTextHeight - 1;
-            pRealTextHeight += (LOBYTE(pFontArrus->uFontHeight) - 3) + pTextHeight;
+            pRealTextHeight += (pFontArrus->GetFontHeight() - 3) + pTextHeight;
           }
         }
         else
@@ -1763,12 +1763,12 @@ void  TravelByTransport()
           v12 = 1;
         RestAndHeal(24 * 60 * v12);
         pPlayers[uActiveCharacter]->PlaySound(pSpeech, 0);
-        v14 = GetTickCount();
+        v14 = OS_GetTime();
         v15 = v14 + v13;
         if ( v15 < v14 )
           v15 = v14;
-        while ( GetTickCount() < v15 )
-          sqrt(3.1415926);
+        while (OS_GetTime() < v15)
+            OS_Sleep(1);
         while ( HouseDialogPressCloseBtn() )
           ;
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
@@ -2141,20 +2141,20 @@ void  TavernDialog()
                 else if (pButton->msg_param == 16)
                 {
                     pButton->uHeight = pTopic2Height;
-                    pButton->uY = pTopic1Height + (LOBYTE(pFontArrus->uFontHeight) - 3) + 146;
-                    pButton->uW = (pTopic1Height + (LOBYTE(pFontArrus->uFontHeight) - 3) + 146) + pTopic2Height - 1;
+                    pButton->uY = pTopic1Height + (pFontArrus->GetFontHeight() - 3) + 146;
+                    pButton->uW = (pTopic1Height + (pFontArrus->GetFontHeight() - 3) + 146) + pTopic2Height - 1;
                 }
                 else if (pButton->msg_param == 96)
                 {
-                    pButton->uY = pTopic1Height + pTopic2Height + 2 * (LOBYTE(pFontArrus->uFontHeight) - 3) + 146;
+                    pButton->uY = pTopic1Height + pTopic2Height + 2 * (pFontArrus->GetFontHeight() - 3) + 146;
                     pButton->uHeight = pTopic3Height;
-                    pButton->uW = pTopic3Height + (pTopic1Height + pTopic2Height + 2 * (LOBYTE(pFontArrus->uFontHeight) - 3) + 146) - 1;
+                    pButton->uW = pTopic3Height + (pTopic1Height + pTopic2Height + 2 * (pFontArrus->GetFontHeight() - 3) + 146) - 1;
                 }
                 else if (pButton->msg_param == 101)
                 {
                     pButton->uHeight = pTopic4Height;
-                    pButton->uY = pTopic1Height + 3 * (LOBYTE(pFontArrus->uFontHeight) - 3) + pTopic4Height + pTopic2Height + 146;
-                    pButton->uW = (pTopic1Height + 3 * (LOBYTE(pFontArrus->uFontHeight) - 3) + pTopic4Height + pTopic2Height + 146) + pTopic4Height - 1;
+                    pButton->uY = pTopic1Height + 3 * (pFontArrus->GetFontHeight() - 3) + pTopic4Height + pTopic2Height + 146;
+                    pButton->uW = (pTopic1Height + 3 * (pFontArrus->GetFontHeight() - 3) + pTopic4Height + pTopic2Height + 146) + pTopic4Height - 1;
                 }
             }
             dialog_window.DrawTitleText(pFontArrus, 0, 146, 0, StringPrintf("%s\n \n%s\n \n%s\n \n%s", topic1.c_str(), topic2.c_str(), topic3.c_str(), topic4.c_str()), 3);
@@ -2529,31 +2529,31 @@ void TempleDialog()
                 if (v26->uReputation <= -5)
                 {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    LOBYTE(v30) = v30 | 0x80;
+                    v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(SPELL_AIR_WIZARD_EYE, uActiveCharacter - 1, v30, 48, 0);
                 }
                 if (v26->uReputation <= -10)
                 {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    LOBYTE(v30) = v30 | 0x80;
+                    v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_PRESERVATION, uActiveCharacter - 1, v30, 48, 0);
                 }
                 if (v26->uReputation <= -15)
                 {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    LOBYTE(v30) = v30 | 0x80;
+                    v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(SPELL_BODY_PROTECTION_FROM_MAGIC, uActiveCharacter - 1, v30, 48, 0);
                 }
                 if (v26->uReputation <= -20)
                 {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    LOBYTE(v30) = v30 | 0x80;
+                    v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(SPELL_LIGHT_HOUR_OF_POWER, uActiveCharacter - 1, v30, 48, 0);
                 }
                 if (v26->uReputation <= -25)
                 {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
-                    LOBYTE(v30) = v30 | 0x80;
+                    v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(SPELL_LIGHT_DAY_OF_PROTECTION, uActiveCharacter - 1, v30, 48, 0);
                 }
             }

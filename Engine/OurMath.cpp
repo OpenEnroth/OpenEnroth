@@ -1,9 +1,5 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#include "OurMath.h"
-#include "MM7_data.h"
+#include "Engine/Engine.h"
+#include "Engine/OurMath.h"
 
 //----- (00452969) --------------------------------------------------------
 stru193_math::stru193_math()
@@ -53,109 +49,109 @@ int stru193_math::Cos(int angle)
 // return value: angle in integer format (multiplier of Pi/1024)  
 unsigned int stru193_math::Atan2(int x, int y)
 {
-  signed int quadrant;
-  __int64 dividend;
-  int quotient;
-  int lowIdx;
-  int highIdx;
-  int angle;
+    signed int quadrant;
+    __int64 dividend;
+    int quotient;
+    int lowIdx;
+    int highIdx;
+    int angle;
 
-  int X = x;
-  int Y = y;
+    int X = x;
+    int Y = y;
 
-  if ( abs(X) < 65536 )
-  {
-    if ( (abs(Y) >> 15) >= abs(X) )
-      X = 0;
-  }
-
-  if ( !X )
-  {
-    if ( Y > 0 )
+    if (abs(X) < 65536)
     {
-      return uIntegerHalfPi;   //Pi/2
-    }
-    else
-    {
-      return uIntegerHalfPi + uIntegerPi; //3*(Pi/2)
-    }
-  }
-
-  if ( Y )
-  {
-    if ( X < 0 )
-    {
-      X = -X;
-      if ( Y > 0 )
-      {
-        quadrant = 4;        
-      }
-      else
-      {
-        quadrant = 3;        
-      }      
-    }
-    else
-    {
-      if ( Y > 0 )
-      {
-        quadrant = 1;       
-      }
-      else
-      {
-        quadrant = 2;
-      }      
+        if ((abs(Y) >> 15) >= abs(X))
+            X = 0;
     }
 
-    if ( Y < 0 )
-      Y = -Y;
-
-    LODWORD(dividend) = Y << 16;
-    HIDWORD(dividend) = Y >> 16;
-    quotient = dividend / X;        
-
-    //looks like binary search
+    if (!X)
     {
-      int i;
-      highIdx = uIntegerHalfPi;
-      lowIdx = 0;
-
-      for (i = 0; i < 6; ++i)
-      {        
-        if (quotient <= pTanTable[(lowIdx + highIdx) / 2])      
-          highIdx = (lowIdx + highIdx) / 2;
+        if (Y > 0)
+        {
+            return uIntegerHalfPi;   //Pi/2
+        }
         else
-          lowIdx = (lowIdx + highIdx) / 2;    
-      }
+        {
+            return uIntegerHalfPi + uIntegerPi; //3*(Pi/2)
+        }
     }
 
-    angle = lowIdx + 1;
-    while ( angle < (highIdx - 1) && quotient >= pTanTable[angle] )
-      ++angle;
-
-    switch (quadrant)
+    if (Y)
     {
-    case 1: //X > 0, Y > 0
-      return angle;        
+        if (X < 0)
+        {
+            X = -X;
+            if (Y > 0)
+            {
+                quadrant = 4;
+            }
+            else
+            {
+                quadrant = 3;
+            }
+        }
+        else
+        {
+            if (Y > 0)
+            {
+                quadrant = 1;
+            }
+            else
+            {
+                quadrant = 2;
+            }
+        }
 
-    case 2: //X > 0, Y < 0
-      return uIntegerDoublePi - angle;   //2*Pi - angle
+        if (Y < 0)
+            Y = -Y;
 
-    case 3: //X > 0, Y < 0
-      return uIntegerPi + angle;        //Pi + angle 
+        HEXRAYS_LODWORD(dividend) = Y << 16;
+        HEXRAYS_HIDWORD(dividend) = Y >> 16;
+        quotient = dividend / X;
 
-    case 4: //X < 0, Y > 0
-      return uIntegerPi - angle;        //Pi - angle  
+        //looks like binary search
+        {
+            int i;
+            highIdx = uIntegerHalfPi;
+            lowIdx = 0;
+
+            for (i = 0; i < 6; ++i)
+            {
+                if (quotient <= pTanTable[(lowIdx + highIdx) / 2])
+                    highIdx = (lowIdx + highIdx) / 2;
+                else
+                    lowIdx = (lowIdx + highIdx) / 2;
+            }
+        }
+
+        angle = lowIdx + 1;
+        while (angle < (highIdx - 1) && quotient >= pTanTable[angle])
+            ++angle;
+
+        switch (quadrant)
+        {
+            case 1: //X > 0, Y > 0
+                return angle;
+
+            case 2: //X > 0, Y < 0
+                return uIntegerDoublePi - angle;   //2*Pi - angle
+
+            case 3: //X > 0, Y < 0
+                return uIntegerPi + angle;        //Pi + angle 
+
+            case 4: //X < 0, Y > 0
+                return uIntegerPi - angle;        //Pi - angle  
+        }
+
+        //should never get here
+        return 0;
     }
 
-    //should newer get here
+    if (X < 0)    //Y == 0, X < 0
+        return uIntegerPi;
+
     return 0;
-  }
-
-  if ( X < 0 )    //Y == 0, X < 0
-    return uIntegerPi;  
-
-  return 0;
 }
 
 //----- (0042EBDB) --------------------------------------------------------
@@ -208,49 +204,47 @@ int fixpoint_from_int(int lhv, int rhv)
 //----- (00452A9E) --------------------------------------------------------
 int integer_sqrt(int val)
 {
-///////////////////////////////
-//Получение квадратного корня//
-///////////////////////////////
+    ///////////////////////////////
+    //Получение квадратного корня//
+    ///////////////////////////////
 
-  signed int result; // eax@2
-  unsigned int v2; // edx@3
-  unsigned int v3; // edi@3
-  int v5; // esi@4
+    int result; // eax@2
+    unsigned int v2; // edx@3
+    unsigned int v3; // edi@3
+    int v5; // esi@4
 
-  if (val < 1)
-    return val;
+    if (val < 1)
+        return val;
 
-  v2 = 0;
-  v3 = val;
-  result = 0;
-  for (uint i = 0; i < 16; ++i)
-  {
-    result *= 2;
-    v2 = (v3 >> 30) | 4 * v2;
-    v5 = 2 * result + 1;
-    v3 *= 4;
-    if ( v2 >= v5 )
+    v2 = 0;
+    v3 = val;
+    result = 0;
+    for (unsigned int i = 0; i < 16; ++i)
     {
-      ++result;
-      v2 -= v5;
+        result *= 2;
+        v2 = (v3 >> 30) | 4 * v2;
+        v5 = 2 * result + 1;
+        v3 *= 4;
+        if (v2 >= v5)
+        {
+            ++result;
+            v2 -= v5;
+        }
     }
-  }
-  if ( val - result * result >= (unsigned int)(result - 1) )
-    ++result;
-  return result;
+    if (val - result * result >= (unsigned int)(result - 1))
+        ++result;
+    return result;
 }
 
 //----- (00452B2E) --------------------------------------------------------
 int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides)
 {
-  int v3; // esi@1
-
-  v3 = 0;
-  if ( uDiceSides )
-  {
-    for ( uint i = 0; i < uNumDice; ++i)
-      v3 += rand() % uDiceSides + 1;
-    return v3;
-  }
-  return 0;
+    int v3 = 0;
+    if (uDiceSides)
+    {
+        for (unsigned int i = 0; i < uNumDice; ++i)
+            v3 += rand() % uDiceSides + 1;
+        return v3;
+    }
+    return 0;
 }

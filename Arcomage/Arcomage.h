@@ -1,9 +1,9 @@
 #pragma once
-#include "OSAPI.h"
+
+#include "Engine/Point.h"
+#include "Engine/Rect.h"
 
 #include "Engine/Graphics/Image.h"
-
-
 
 
 /*  272 */
@@ -91,10 +91,10 @@ struct AcromageCardOnTable
 {
   int uCardId;
   int field_4;
-  POINT field_8;
+  Point field_8;
   int field_10_xplus;
   int field_14_y_plus;
-  POINT field_18_point;
+  Point field_18_point;
 };
 #pragma pack(pop)
 
@@ -113,7 +113,7 @@ struct ArcomagePlayer
   int resource_gems;
   int resource_beasts;
   int cards_at_hand[10];
-  POINT card_shift[10];
+  Point card_shift[10];
 };
 #pragma pack(pop)
 
@@ -142,7 +142,7 @@ struct ArcomageGame
     static void PlaySound(unsigned int event_id);
     static void OnMouseClick(char right_left, bool bDown);
     static void OnMouseMove(int x, int y);
-    static void GetCardRect(unsigned int uCardID, RECT *pCardRect);
+    static void GetCardRect(unsigned int uCardID, Rect *pCardRect);
     static void PrepareArcomage();
     static void DoBlt_Copy(unsigned __int16 *pPixels); // idb
 
@@ -154,7 +154,6 @@ struct ArcomageGame
     char field_3;
     int field_4;
     ArcomageGame_stru1 stru1;
-    tagMSG msg;
     int mouse_x;
     int mouse_y;
     char mouse_left;
@@ -198,7 +197,7 @@ extern void set_stru1_field_8_InArcomage(int inValue);
 struct stru272_stru1
 {
   int have_spark;
-  POINT spark_position;
+  Point spark_position;
   int field_C;
   int field_10;
   int field_14;
@@ -210,22 +209,18 @@ struct stru272_stru1
 #pragma pack(push, 1)
 struct stru272_stru2
 {
-/*int field_0;
-int field_4;
-int field_8;
-int field_C;*/
-  RECT effect_area;
-  int field_10;
-  int field_14;
-  int field_18;
-  float field_1Cf;
-  int field_20;
-  float field_24f;
-  float field_28f;
-  float field_2Cf;
-  int field_30;
-  int field_34;
-  stru272_stru1* sparks_array;
+    Rect effect_area;
+    int field_10;
+    int field_14;
+    int field_18;
+    float field_1Cf;
+    int field_20;
+    float field_24f;
+    float field_28f;
+    float field_2Cf;
+    int field_30;
+    int field_34;
+    stru272_stru1* sparks_array;
 };
 #pragma pack(pop)
 
@@ -234,40 +229,40 @@ int field_C;*/
 #pragma pack(push, 1)
 struct stru272_stru0         // ARCOMAGE stuff
 {
-  static stru272_stru0 *New();
+    static stru272_stru0 *New();
 
-  int Free();
-  int StartFill(stru272_stru2* a2);
-  int Clear(char a2, char a3);
-  int DrawEffect();
-  int _40E2A7();
+    int Free();
+    int StartFill(stru272_stru2* a2);
+    int Clear(char a2, char a3);
+    int DrawEffect();
+    int _40E2A7();
 
-  int signature;
-  int field_4;
-  int position_in_sparks_arr;
-  int field_C;
-  int field_10;
-  int field_14;
-  int field_18;
-  int field_1C;
-  int field_20;
-  int field_24;
-  float field_28;
-  float field_2C;
-  float field_30;
-  int field_34;
-  int field_38;
-  int field_3C;
-  int field_40;
-  int field_44;
-  int field_48;
-  int field_4C;
-  int field_50;
-  stru272_stru1 * field_54;
-  char field_58;
-  char field_59;
-  char field_5A;
-  char field_5B;
+    int signature;
+    int field_4;
+    int position_in_sparks_arr;
+    int field_C;
+    int field_10;
+    int field_14;
+    int field_18;
+    int field_1C;
+    int field_20;
+    int field_24;
+    float field_28;
+    float field_2C;
+    float field_30;
+    int field_34;
+    int field_38;
+    int field_3C;
+    int field_40;
+    int field_44;
+    int field_48;
+    int field_4C;
+    int field_50;
+    stru272_stru1 * field_54;
+    char field_58;
+    char field_59;
+    char field_5A;
+    char field_5B;
 };
 #pragma pack(pop)
 
@@ -295,4 +290,3 @@ struct stru272
   stru272_stru1 effect_sparks[150];
 };
 #pragma pack(pop)
-

@@ -1,8 +1,5 @@
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
-#include <crtdbg.h>
 #include <direct.h>
+#include <io.h>
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
@@ -13,8 +10,11 @@
 #include "Engine/OurMath.h"
 #include "Engine/stru123.h"
 #include "Engine/LuaVM.h"
-#include "Engine/MMT.h"
+#include "Engine/stru6.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/MapsLongTimer.h"
+
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/LightmapBuilder.h"
@@ -27,20 +27,27 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Lights.h"
-#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/RenderD3D11.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/Tables/FrameTableInc.h"
+#include "Engine/Graphics/Level/Decoration.h"
+
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Chest.h"
 
-#include "Arcomage\Arcomage.h"
+#include "Engine/Tables/FrameTableInc.h"
+#include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/FactionTable.h"
+
+#include "Engine/TurnEngine/TurnEngine.h"
+
+#include "Engine/Spells/CastSpellInfo.h"
+
+#include "Arcomage/Arcomage.h"
 
 #include "IO/Mouse.h"
 #include "IO/Keyboard.h"
@@ -53,23 +60,16 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
-
 #include "GUI/NewUI/MainMenu.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Video/Bink_Smacker.h"
 
-#include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
-#include "Engine/Tables/FactionTable.h"
-#include "Engine/MapsLongTimer.h"
-
 #include "Game/Game.h"
 #include "Game/MainMenu.h"
 #include "Game/MainMenuLoad.h"
 
-#include "stru6.h"
+#include "Platform/Api.h"
 
 
 
@@ -116,7 +116,40 @@ Engine *pEngine = nullptr;
 
 
 
+bool FileExists(const char *fname)
+{
+    return access(fname, 0) != -1;
+}
 
+void ShowLogoVideo()
+{
+    pMediaPlayer->bStopBeforeSchedule = false;
+
+    //  pMediaPlayer->pResetflag = 0;
+    bGameoverLoop = 1;
+    if (!bNoVideo)
+    {
+        render->PresentBlackScreen();
+        pMediaPlayer->PlayFullscreenMovie(MOVIE_3DOLogo, true);
+        if (!pMediaPlayer->bStopBeforeSchedule)
+        {
+            pMediaPlayer->PlayFullscreenMovie(MOVIE_NWCLogo, true);
+            if (!pMediaPlayer->bStopBeforeSchedule)
+            {
+                if (!pMediaPlayer->bStopBeforeSchedule)
+                {
+                    pMediaPlayer->PlayFullscreenMovie(MOVIE_JVC, true);
+                    if (!pMediaPlayer->bStopBeforeSchedule)
+                    {
+                            pMediaPlayer->PlayFullscreenMovie(MOVIE_Intro, true);
+                    }
+                }
+            }
+        }
+    }
+
+    bGameoverLoop = 0;
+}
 
 //----- (00466C40) --------------------------------------------------------
 const wchar_t *MENU_STATE_to_string(MENU_STATE m)
@@ -159,13 +192,10 @@ MENU_STATE GetCurrentMenuID()
 //----- (00464761) --------------------------------------------------------
 void Engine_DeinitializeAndTerminate(int exitCode)
 {
-    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
     ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     pEngine->Deinitialize();
     render->Release();
     delete window;
-    //if ( !DestroyWindow(hWnd) )
-    //  GetLastError();
     exit(exitCode);
 }
 
@@ -317,15 +347,15 @@ void Engine::Draw()
     static bool render_framerate = false;
     static float framerate = 0.0f;
     static uint frames_this_second = 0;
-    static uint last_frame_time = GetTickCount();
+    static uint last_frame_time = OS_GetTime();
     static uint framerate_time_elapsed = 0;
 
     if (current_screen_type == SCREEN_GAME && uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         pWeather->Draw();//Ritor1: my include
 
     //while(GetTickCount() - last_frame_time < 33 );//FPS control 
-    uint frame_dt = GetTickCount() - last_frame_time;
-    last_frame_time = GetTickCount();
+    uint frame_dt = OS_GetTime() - last_frame_time;
+    last_frame_time = OS_GetTime();
 
     framerate_time_elapsed += frame_dt;
     if (framerate_time_elapsed >= 1000)
@@ -438,36 +468,17 @@ void Engine::ToggleFlags(uint uMask)
         uFlags |= uMask;
 }
 
-
-//----- (0044F07B) --------------------------------------------------------
-bool Engine::_44F07B()
-{
-    if (!pKeyboardInstance->IsKeyBeingHeld(VK_SHIFT) && !pKeyboardInstance->IsKeyBeingHeld(VK_LSHIFT) &&
-        !pKeyboardInstance->IsKeyBeingHeld(VK_LSHIFT) || (pKeyboardInstance->WasKeyPressed(VK_F11) == 0 &&
-        pKeyboardInstance->WasKeyPressed(VK_F11)))
-        return true;
-    return false;
-}
-
 //----- (0044EEA7) --------------------------------------------------------
 bool Engine::_44EEA7()
 {
-    //Game *v1; // esi@1
-    //double v2; // st7@2
     float depth; // ST00_4@9
-    //bool result; // eax@9
-    //unsigned int v5; // eax@14
     __int64 v6; // kr00_8@21
-    //unsigned int y; // [sp+4h] [bp-24h]@2
-    //unsigned int x; // [sp+8h] [bp-20h]@2
     Vis_SelectionFilter *v10; // [sp+10h] [bp-18h]@2
     Vis_SelectionFilter *v11; // [sp+14h] [bp-14h]@2
-    POINT cursor; // [sp+20h] [bp-8h]@1
 
-    //v1 = this;
     ++qword_5C6DF0;
     pParticleEngine->UpdateParticles();
-    pMouseInstance->GetCursorPos(&cursor);
+    Point pt = pMouseInstance->GetCursorPos();
 
     //x = cursor.y;
     //y = cursor.x;
@@ -493,7 +504,7 @@ bool Engine::_44EEA7()
     }
     //depth = v2;
 
-    PickMouse(depth, cursor.x, cursor.y, false, v10, v11);
+    PickMouse(depth, pt.x, pt.y, false, v10, v11);
     pLightmapBuilder->StationaryLightsCount = 0;
     pLightmapBuilder->MobileLightsCount = 0;
     pDecalBuilder->DecalsCount = 0;
@@ -554,13 +565,13 @@ bool Engine::AlterGamma_ODM(ODMFace *pFace, signed int *pColor)
 //----- (004645FA) --------------------------------------------------------
 void Engine::Deinitialize()
 {
-    WriteWindowsRegistryInt("startinwindow", 1);//render->bWindowMode);
+    OS_SetAppInt("startinwindow", 1);//render->bWindowMode);
     //if (render->bWindowMode)
     {
-        WriteWindowsRegistryInt("window X", window->GetX());
-        WriteWindowsRegistryInt("window Y", window->GetY());
+        OS_SetAppInt("window X", window->GetX());
+        OS_SetAppInt("window Y", window->GetY());
     }
-    WriteWindowsRegistryInt("valAlwaysRun", bAlwaysRun);
+    OS_SetAppInt("valAlwaysRun", bAlwaysRun);
     pItemsTable->Release();
     pNPCStats->Release();
 
@@ -571,7 +582,7 @@ void Engine::Deinitialize()
     pAudioPlayer->Release();//error
     pNew_LOD->FreeSubIndexAndIO();
     pGames_LOD->FreeSubIndexAndIO();
-    ClipCursor(0);
+
     Engine::Destroy();
     delete pEventTimer;
 }
@@ -588,7 +599,7 @@ bool Engine::draw_debug_outlines()
 }
 
 //----- (0044EC23) --------------------------------------------------------
-int Engine::_44EC23(struct Polygon *a2, int *a3, signed int a4)
+int Engine::_44EC23(Polygon *a2, int *a3, signed int a4)
 {
     double v4; // st7@4
     //double v5; // ST00_8@4
@@ -724,7 +735,6 @@ Engine::Engine()
     uFlags = 0;
     uFlags2 = 0;
 
-    //pThreadWardInstance = new ThreadWard;
     pThreadWardInstance = nullptr;
     pParticleEngine = new ParticleEngine;
     pMouse = pMouseInstance = new Mouse;
@@ -776,7 +786,7 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMou
 
     if (!pVisInstance)
     {
-        MessageBoxW(nullptr, L"The 'Vis' object pointer has not been instatiated, but CGame::Pick() is trying to call through it.", nullptr, 0);
+        Log::Warning(L"The 'Vis' object pointer has not been instatiated, but CGame::Pick() is trying to call through it.");
         return false;
     }
 
@@ -833,41 +843,43 @@ void Engine::OutlineSelection()
 
     Vis_ObjectInfo* object_info = pVisInstance->default_list.object_pointers[0];
     if (object_info)
-        switch (object_info->object_type)
     {
-        case VisObjectType_Sprite:
+        switch (object_info->object_type)
         {
-            Log::Warning(L"Sprite outline currently unsupported");
-            return;
-        }
+            case VisObjectType_Sprite:
+            {
+                Log::Warning(L"Sprite outline currently unsupported");
+                return;
+            }
 
-        case VisObjectType_Face:
-        {
-            if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+            case VisObjectType_Face:
             {
-                ODMFace* face = (ODMFace *)object_info->object;
-                if (face->uAttributes & FACE_OUTLINED)
-                    face->uAttributes &= ~FACE_OUTLINED;
+                if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+                {
+                    ODMFace* face = (ODMFace *)object_info->object;
+                    if (face->uAttributes & FACE_OUTLINED)
+                        face->uAttributes &= ~FACE_OUTLINED;
+                    else
+                        face->uAttributes |= FACE_OUTLINED;
+                }
+                else if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+                {
+                    BLVFace* face = (BLVFace *)object_info->object;
+                    if (face->uAttributes & FACE_OUTLINED)
+                        face->uAttributes &= ~FACE_OUTLINED;
+                    else
+                        face->uAttributes |= FACE_OUTLINED;
+                }
                 else
-                    face->uAttributes |= FACE_OUTLINED;
+                    Error("Invalid level type", uCurrentlyLoadedLevelType);
             }
-            else if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-            {
-                BLVFace* face = (BLVFace *)object_info->object;
-                if (face->uAttributes & FACE_OUTLINED)
-                    face->uAttributes &= ~FACE_OUTLINED;
-                else
-                    face->uAttributes |= FACE_OUTLINED;
-            }
-            else
-                Error("Invalid level type", uCurrentlyLoadedLevelType);
-        }
             break;
 
-        default:
-        {
-            MessageBoxW(nullptr, L"Undefined CObjectInfo type requested in CGame::outline_selection()", nullptr, 0);
-            ExitProcess(0);
+            default:
+            {
+                Error("Undefined CObjectInfo type requested in CGame::outline_selection()");
+                Engine_DeinitializeAndTerminate(0);
+            }
         }
     }
 }
@@ -1083,7 +1095,7 @@ void IntegrityTest()
     static_assert(sizeof(DecalBuilder) == 0x30C038, "Wrong type size");
     static_assert(sizeof(MonsterInfo) == 0x58, "Wrong type size");
     static_assert(sizeof(MonsterStats) == 0x5BA0, "Wrong type size");
-    static_assert(sizeof(RenderD3D) == 0x148, "Wrong type size");
+    //static_assert(sizeof(RenderD3D) == 0x148, "Wrong type size");
     //  static_assert(sizeof(Render) == 0x129844, "Wrong type size");
     static_assert(sizeof(Player) == 0x1B3C, "Wrong type size");
     static_assert(sizeof(PartyTimeStruct) == 0x678, "Wrong type size");
@@ -1135,198 +1147,6 @@ void FinalInitialization()
 
 
 
-//----- (00464E17) --------------------------------------------------------
-bool CheckMM7CD(char c)
-{
-    char DstBuf[256] = { 0 };
-    char strCommand[256] = { 0 }; // [sp+10Ch] [bp-118h]@1
-    char Filename[20] = { 0 }; // [sp+20Ch] [bp-18h]@1
-
-    wchar_t pMagicPath[1024];
-    swprintf(pMagicPath, wcslen(L"%C:\\anims\\magic7.vid"), L"%C:\\anims\\magic7.vid", c);
-    if (GetFileAttributesW(pMagicPath) == -1)
-        return false;
-
-    //Open CD audio
-    wsprintfA(strCommand, "open %c: type cdaudio alias CD", c);
-    if (!mciSendStringA(strCommand, DstBuf, 255, 0))
-    {
-        wsprintfA(strCommand, "info CD UPC wait");
-        mciSendStringA(strCommand, DstBuf, 255, 0);
-        wsprintfA(strCommand, "close CD");
-        mciSendStringA(strCommand, DstBuf, 255, 0);
-    }
-
-    memcpy(Filename, "X:\\anims\\magic7.vid", sizeof(Filename));
-    *Filename = c;
-
-    FILE* f = fopen(Filename, "rb");
-    if (!f)
-        return false;
-
-    if (!fseek(f, 0, SEEK_END))
-    {
-        if (!fseek(f, -100, SEEK_CUR))
-            fread(DstBuf, 1, 0x64u, f);
-
-        fclose(f);
-        return true;
-    }
-    fclose(f);
-    return false;
-}
-
-//----- (00464F1B) --------------------------------------------------------
-signed int __stdcall InsertMM7CDDialogFunc(HWND hDlg, int a2, __int16 a3, int a4)
-{
-    char v4; // zf@3
-    int v6; // eax@10
-    int v7; // eax@11
-    int v8; // eax@12
-    int v9; // eax@13
-    BOOL(__stdcall *v10)(HWND, int, LPCSTR); // edi@15
-    const CHAR *v11; // [sp-Ch] [bp-Ch]@15
-    INT_PTR v12; // [sp-4h] [bp-4h]@5
-
-    if (a2 == 272)
-    {
-        hInsertCDWindow = hDlg;
-        v6 = (GetUserDefaultLangID() & 0x3FF) - 7;
-        if (v6)
-        {
-            v7 = v6 - 3;
-            if (v7)
-            {
-                v8 = v7 - 2;
-                if (v8)
-                {
-                    v9 = v8 - 4;
-                    if (v9)
-                    {
-                        if (v9 != 5)
-                            return 0;
-                        SetWindowTextA(hDlg, "Wloz CD-ROM numer 2");
-                        v10 = SetDlgItemTextA;
-                        SetDlgItemTextA(hDlg, 1010, "Wloz CD-ROM numer 2 Might and Magic® VII.");
-                        v11 = "Odwolaj";
-                    }
-                    else
-                    {
-                        SetWindowTextA(hDlg, "Inserire il secondo CD");
-                        v10 = SetDlgItemTextA;
-                        SetDlgItemTextA(hDlg, 1010, "Inserire il secondo CD di Might and Magic® VII.");
-                        v11 = "Annulla";
-                    }
-                }
-                else
-                {
-                    SetWindowTextA(hDlg, "Insérez le CD 2");
-                    v10 = SetDlgItemTextA;
-                    SetDlgItemTextA(hDlg, 1010, "Insérez Might & Magic® VII CD 2.");
-                    v11 = "Supprimer";
-                }
-            }
-            else
-            {
-                SetWindowTextA(hDlg, "Por favor, inserte disco 2");
-                v10 = SetDlgItemTextA;
-                SetDlgItemTextA(hDlg, 1010, "Por favor, inserte disco 2 de Might & Magic® VII.");
-                v11 = "Cancelar";
-            }
-        }
-        else
-        {
-            SetWindowTextA(hDlg, "Bitte CD 2 einlegen");
-            v10 = SetDlgItemTextA;
-            SetDlgItemTextA(hDlg, 1010, "Bitte CD 2 von Might and Magic® VII einlegen.");
-            v11 = "Abbrechen";
-        }
-        v10(hDlg, 2, v11);
-        return 0;
-    }
-    if (a2 == 273)
-    {
-        if (a3 == 2)
-        {
-            v12 = 0;
-            EndDialog(hDlg, v12);
-            return 1;
-        }
-        v4 = a3 == 1;
-    }
-    else
-    {
-        v4 = a2 == 1025;
-    }
-    if (v4)
-    {
-        v12 = 1;
-        EndDialog(hDlg, v12);
-        return 1;
-    }
-    return 0;
-}
-
-//----- (00465061) --------------------------------------------------------
-bool FindMM7CD(HWND hWnd, char *pCDDrive)
-{
-    char drive[4] = { 'X', ':', '\\', 0 };
-
-    bool bGotCDFromRegistry = false;
-
-    HKEY hSoftware = nullptr,
-        hNWC = nullptr,
-        hMM7 = nullptr,
-        hVersion = nullptr;
-    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0, KEY_READ | KEY_WOW64_32KEY, &hSoftware))
-    {
-        if (!RegOpenKeyExA(hSoftware, "New World Computing", 0, KEY_READ | KEY_WOW64_32KEY, &hNWC))
-        {
-            if (!RegOpenKeyExA(hNWC, "Might and Magic VII", 0, KEY_READ | KEY_WOW64_32KEY, &hMM7))
-            {
-                if (!RegOpenKeyExA(hMM7, "1.0", 0, KEY_READ | KEY_WOW64_32KEY, &hVersion))
-                {
-                    DWORD cbData = 3;
-                    if (!RegQueryValueExA(hVersion, "CDDrive", 0, 0, (BYTE *)drive, &cbData))
-                        bGotCDFromRegistry = true;
-                }
-                RegCloseKey(hVersion);
-            }
-            RegCloseKey(hMM7);
-        }
-        RegCloseKey(hNWC);
-    }
-    RegCloseKey(hSoftware);
-
-    if (bGotCDFromRegistry)
-        if (CheckMM7CD(*drive))
-        {
-        cMM7GameCDDriveLetter = *drive;
-        return true;
-        }
-
-    while (true)
-    {
-        for (uint i = 0; i < 26; ++i)
-        {
-            drive[0] = 'A' + i;
-
-            if (GetDriveTypeA(drive) == DRIVE_CDROM)
-                if (CheckMM7CD(*drive))
-                {
-                cMM7GameCDDriveLetter = *drive;
-                WriteWindowsRegistryString("CDDrive", drive);
-                return true;
-                }
-        }
-
-        if (DialogBoxParamA(GetModuleHandleW(nullptr), "InsertCD", hWnd, (DLGPROC)InsertMM7CDDialogFunc, 0))
-            continue;
-        return false;
-    }
-}
-
-
 bool MM7_LoadLods(const char *mm7_path)
 {
     pIcons_LOD = new LODFile_IconsBitmaps;
@@ -1347,14 +1167,14 @@ bool MM7_LoadLods(const char *mm7_path)
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     if (!pBitmaps_LOD->Load(StringPrintf("%s\\data\\bitmaps.lod", mm7_path).c_str(), "bitmaps"))
     {
-        Error(localization->GetString(63), localization->GetString(184), MB_ICONEXCLAMATION);
+        Error(localization->GetString(63), localization->GetString(184));
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
     if (!pSprites_LOD->LoadSprites(StringPrintf("%s\\data\\sprites.lod", mm7_path).c_str()))
     {
-        Error(localization->GetString(63), localization->GetString(184), MB_ICONEXCLAMATION);
+        Error(localization->GetString(63), localization->GetString(184));
         return false;
     }
 
@@ -1365,35 +1185,25 @@ bool MM7_LoadLods(const char *mm7_path)
 //----- (004651F4) --------------------------------------------------------
 bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
 {
-    wchar_t pCurrentDir[1024];
-    _wgetcwd(pCurrentDir, 1024);
-
-    wchar_t pMM6IniFile[1024];
-    wsprintfW(pMM6IniFile, L"%s\\mm6.ini", pCurrentDir);
-
-    bCanLoadFromCD = GetPrivateProfileIntW(L"settings", L"use_cd", 1, pMM6IniFile);
+    bCanLoadFromCD = 1;
     if (bNoCD)
         bCanLoadFromCD = false;
     if (bCanLoadFromCD)
     {
         Log::Warning(L"Checking for CD...");
-        if (!FindMM7CD(nullptr, &cMM7GameCDDriveLetter))
+        if (!OS_FindMM7CD(&cMM7GameCDDriveLetter))
             return false;
         Log::Warning(L"...done.");
     }
 
 
-    srand(GetTickCount());
+    srand(OS_GetTime());
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
-    window = OSWindow::Create(L"Might and Magic® Trilogy", game_width, game_height);//Create  game window
+    window = OSWindow::Create(L"Might and Magic® Trilogy", game_width, game_height);
 
-    bool use_d3d11 = false;
-    if (use_d3d11)
-        render = RenderD3D11::Create();
-    else
-        render = Render::Create();//Create DirectX
+    render = IRender::Create();
     if (!render)
     {
         Log::Warning(L"Render creation failed");
@@ -1401,8 +1211,8 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
     }
     else
     {
-        //bool bWindowMode = ReadWindowsRegistryInt("startinwindow", false);
-        //uint uDefaultDevice = ReadWindowsRegistryInt("D3D Device", 1);
+        //bool bWindowMode = OS_GetAppInt("startinwindow", false);
+        //uint uDefaultDevice = OS_GetAppInt("D3D Device", 1);
 
         if (!render->Initialize(window/*, bColoredLights, uLevelOfDetail, bTinting*/))
         {
@@ -1415,13 +1225,13 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
 
     pParty = new Party;
     memset(&pParty->pHirelings, 0, sizeof(pParty->pHirelings));
-    pParty->uWalkSpeed = GetPrivateProfileIntW(L"debug", L"walkspeed", 384, pMM6IniFile);
-    pParty->uDefaultEyelevel = GetPrivateProfileIntW(L"party", L"eyelevel", 160, pMM6IniFile);
+    pParty->uWalkSpeed = 384;
+    pParty->uDefaultEyelevel = 160;
     pParty->sEyelevel = pParty->uDefaultEyelevel;
-    pParty->uDefaultPartyHeight = GetPrivateProfileIntW(L"party", L"height", 192, pMM6IniFile);
+    pParty->uDefaultPartyHeight = 192;
     pParty->uPartyHeight = pParty->uDefaultPartyHeight;
 
-    MM6_Initialize(pMM6IniFile);
+    MM6_Initialize();
 
     pKeyActionMap = new KeyboardActionMapping;
 
@@ -1551,20 +1361,20 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
         render->InitializeFullscreen();
     }
 
-    uSoundVolumeMultiplier = min(9, ReadWindowsRegistryInt("soundflag", 9));
-    uMusicVolimeMultiplier = min(9, ReadWindowsRegistryInt("musicflag", 9));
-    uVoicesVolumeMultiplier = min(9, ReadWindowsRegistryInt("CharVoices", 9));
-    bShowDamage = ReadWindowsRegistryInt("ShowDamage", 1) != 0;
+    uSoundVolumeMultiplier = min(9, OS_GetAppInt("soundflag", 9));
+    uMusicVolimeMultiplier = min(9, OS_GetAppInt("musicflag", 9));
+    uVoicesVolumeMultiplier = min(9, OS_GetAppInt("CharVoices", 9));
+    bShowDamage = OS_GetAppInt("ShowDamage", 1) != 0;
 
-    uGammaPos = min(4, ReadWindowsRegistryInt("GammaPos", 4));
+    uGammaPos = min(4, OS_GetAppInt("GammaPos", 4));
     //pEngine->pGammaController->Initialize(uGammaPos * 0.1 + 0.6);
 
-    if (ReadWindowsRegistryInt("Bloodsplats", 1))
+    if (OS_GetAppInt("Bloodsplats", 1))
         pEngine->uFlags2 |= GAME_FLAGS_2_DRAW_BLOODSPLATS;
     else
         pEngine->uFlags2 &= ~GAME_FLAGS_2_DRAW_BLOODSPLATS;
 
-    uTurnSpeed = ReadWindowsRegistryInt("TurnDelta", 3);
+    uTurnSpeed = OS_GetAppInt("TurnDelta", 3);
 
     if (!bNoSound)
         pAudioPlayer->Initialize();
@@ -1715,7 +1525,7 @@ void ParseCommandLine(const wchar_t *cmd)
     if (wcsstr(cmd, L"-nosound"))
         bNoSound = true; //dword_6BE364_game_settings_1 |= 0x10;
 
-    bWalkSound = ReadWindowsRegistryInt("WalkSound", 1) != 0;
+    bWalkSound = OS_GetAppInt("WalkSound", 1) != 0;
     if (wcsstr(cmd, L"-nowalksound"))
         bWalkSound = false;//dword_6BE364_game_settings_1 |= 0x20;
     if (wcsstr(cmd, L"-novideo"))
@@ -1882,7 +1692,7 @@ bool MM_Main(const wchar_t *pCmdLine, const char *mm7_path)
 
 
 //----- (00466082) --------------------------------------------------------
-void MM6_Initialize(const wchar_t *pIniFilename)
+void MM6_Initialize()
 {
     size_t v2; // eax@31
     size_t v3; // ebx@32
@@ -1893,23 +1703,24 @@ void MM6_Initialize(const wchar_t *pIniFilename)
     //_getcwd(v5, 120);
     //sprintfex(pIniFilename, "%s\\mm6.ini", v5);
     viewparams = new ViewingParams;
-    game_viewport_x = viewparams->uScreen_topL_X = GetPrivateProfileIntW(L"screen", L"vx1", 8, pIniFilename);
-    game_viewport_y = viewparams->uScreen_topL_Y = GetPrivateProfileIntW(L"screen", L"vy1", 8, pIniFilename);
-    game_viewport_z = viewparams->uScreen_BttmR_X = GetPrivateProfileIntW(L"screen", L"vx2", 468, pIniFilename);
-    game_viewport_w = viewparams->uScreen_BttmR_Y = GetPrivateProfileIntW(L"screen", L"vy2", 351, pIniFilename);
+    game_viewport_x = viewparams->uScreen_topL_X = 8;
+    game_viewport_y = viewparams->uScreen_topL_Y = 8;
+    game_viewport_z = viewparams->uScreen_BttmR_X = 468;
+    game_viewport_w = viewparams->uScreen_BttmR_Y = 351;
     game_viewport_width = game_viewport_z - game_viewport_x;
     game_viewport_height = game_viewport_w - game_viewport_y + 1;
 
 
     pAudioPlayer = new AudioPlayer;
-    pAudioPlayer->uMixerChannels = GetPrivateProfileIntW(L"settings", L"mixerchannels", 16, pIniFilename);
+    pAudioPlayer->uMixerChannels = 16;
     if (pAudioPlayer->uMixerChannels > 16)
         pAudioPlayer->uMixerChannels = 16;
 
 
+    /* 
     if (GetPrivateProfileIntW(L"debug", L"nomonster", 0, pIniFilename))
         dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_NO_ACTORS;
-    if (ReadWindowsRegistryInt("startinwindow", 0))
+    if (OS_GetAppInt("startinwindow", 0))
         dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_RUN_IN_WIDOW;
     if (GetPrivateProfileIntW(L"debug", L"showFR", 0, pIniFilename))
         dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_0002_SHOW_FR;
@@ -1921,6 +1732,8 @@ void MM6_Initialize(const wchar_t *pIniFilename)
     wchar_t pStartingMapNameW[1024];
     GetPrivateProfileStringW(L"file", L"startmap", L"out01.odm", pStartingMapNameW, 0x20u, pIniFilename);
     sprintf(pStartingMapName, "%S", pStartingMapNameW);
+    */
+    sprintf(pStartingMapName, "%s", "out01.odm");
 
     v9 = 0;
     if (strlen(pStartingMapName))
@@ -1935,34 +1748,25 @@ void MM6_Initialize(const wchar_t *pIniFilename)
     }
 
     pODMRenderParams = new ODMRenderParams;
-    pODMRenderParams->outdoor_no_mist = GetPrivateProfileIntW(L"debug", L"noMist", 0, pIniFilename);
-    pODMRenderParams->bNoSky = GetPrivateProfileIntW(L"outdoor", L"nosky", 0, pIniFilename);
-    pODMRenderParams->bDoNotRenderDecorations = GetPrivateProfileIntW(L"render", L"nodecorations", 0, pIniFilename);
-    pODMRenderParams->outdoor_no_wavy_water = GetPrivateProfileIntW(L"outdoor", L"nowavywater", 0, pIniFilename);
+    pODMRenderParams->outdoor_no_mist = 0;
+    pODMRenderParams->bNoSky = 0;
+    pODMRenderParams->bDoNotRenderDecorations = 0;
+    pODMRenderParams->outdoor_no_wavy_water = 0;
     //outdoor_grid_band_1 = GetPrivateProfileIntW(L"outdoor", L"gridband1", 10, pIniFilename);
     //outdoor_grid_band_2 = GetPrivateProfileIntW(L"outdoor", L"gridband2", 15, pIniFilename);
     //outdoor_grid_band_3 = GetPrivateProfileIntW(L"outdoor", L"gridband3", 25, pIniFilename);
-    pODMRenderParams->terrain_gamma = GetPrivateProfileIntW(L"outdoor", L"ter_gamma", 0, pIniFilename);
-    pODMRenderParams->building_gamme = GetPrivateProfileIntW(L"outdoor", L"bld_gamma", 0, pIniFilename);
-    pODMRenderParams->shading_dist_shade = GetPrivateProfileIntW(L"shading", L"dist_shade", 2048, pIniFilename);
-    pODMRenderParams->shading_dist_shademist = GetPrivateProfileIntW(L"shading", L"dist_shademist", 4096, pIniFilename);
+    pODMRenderParams->terrain_gamma = 0;
+    pODMRenderParams->building_gamme = 0;
+    pODMRenderParams->shading_dist_shade = 2048;
+    pODMRenderParams->shading_dist_shademist = 4096;
 
-    pODMRenderParams->shading_dist_mist = GetPrivateProfileIntW(L"shading", L"dist_mist", 0x2000, pIniFilename);//drawing dist 0x2000
+    pODMRenderParams->shading_dist_mist = 0x2000;//drawing dist 0x2000
 
-    wchar_t pDefaultSkyTextureW[1024];
-    GetPrivateProfileStringW(L"textures", L"sky", L"plansky1", pDefaultSkyTextureW, 0x10u, pIniFilename);
-    sprintf(pDefaultSkyTexture.data(), "%S", pDefaultSkyTextureW);
+    sprintf(pDefaultSkyTexture.data(), "%s", "plansky1");
+    sprintf(pDefaultGroundTexture, "%s", "dirt");
 
-    wchar_t pDefaultGroundTextureW[1024];
-    GetPrivateProfileStringW(L"textures", L"default", L"dirt", pDefaultGroundTextureW, 0x10u, pIniFilename);
-    sprintf(pDefaultGroundTexture, "%S", pDefaultGroundTextureW);
-
-    wchar_t pFloat[1024];
-    GetPrivateProfileStringW(L"debug", L"recmod1", L"1.0", pFloat, 0x10u, pIniFilename);
-    swscanf(pFloat, L"%f", &flt_6BE3A4_debug_recmod1);
-
-    GetPrivateProfileStringW(L"debug", L"recmod2", L"1.0", pFloat, 0x10u, pIniFilename);
-    swscanf(pFloat, L"%f", &flt_6BE3A8_debug_recmod2);
+    flt_6BE3A4_debug_recmod1 = 1.0;
+    flt_6BE3A8_debug_recmod2 = 1.0;
 
     flt_6BE3AC_debug_recmod1_x_1_6 = flt_6BE3A4_debug_recmod1 * 1.666666666666667;
 
@@ -1995,15 +1799,6 @@ void MM7Initialization()
 {
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
     {
-        /*if (byte_6BE388_graphicsmode == 0)
-        {
-        outdoor_grid_band_1 = 10;
-        outdoor_grid_band_2 = 15;
-        outdoor_grid_band_3 = 20;
-        pODMRenderParams->shading_dist_mist = 8192;
-        pODMRenderParams->bNoSky = false;
-        LOBYTE(viewparams->field_20) = 0;
-        }*/
         pODMRenderParams->shading_dist_shade = 2048;
         pODMRenderParams->terrain_gamma = 0;
         pODMRenderParams->building_gamme = 0;
@@ -2016,7 +1811,7 @@ void MM7Initialization()
         }
     }
     else
-        LOBYTE(viewparams->field_20) = 0;
+        viewparams->field_20 &= 0xFFFFFF00;
 
     pParty->uFlags |= 2;
     viewparams->uSomeY = viewparams->uScreen_topL_Y;
@@ -2233,7 +2028,7 @@ void _461103_load_level_sub()
         if (v17)
         {
             pNPCStats->InitializeAdditionalNPCs(&pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos], pActors[i].pMonsterInfo.uID, 0, v19);
-            v14 = LOWORD(pNPCStats->uNewlNPCBufPos) + 5000;
+            v14 = (unsigned short)pNPCStats->uNewlNPCBufPos + 5000;
             ++pNPCStats->uNewlNPCBufPos;
             pActors[i].sNPC_ID = v14;
             continue;
@@ -2339,17 +2134,15 @@ void InitializeTurnBasedAnimations(void *_this)
 //----- (0046BDA8) --------------------------------------------------------
 unsigned int GetGravityStrength()
 {
-    int v0; // eax@1
-
-    v0 = ~LOBYTE(pEngine->uFlags2) & 8;
-    LOBYTE(v0) = v0 | 2;
+    int v0 = ~(unsigned char)pEngine->uFlags2 & 8;
+    v0 |= 2;
     return (unsigned int)v0 >> 1;
 }
 
 //----- (00448B45) --------------------------------------------------------
 void GameUI_StatusBar_Update(bool force_hide)
 {
-    if (force_hide || game_ui_status_bar_event_string_time_left && GetTickCount() >= game_ui_status_bar_event_string_time_left)
+    if (force_hide || game_ui_status_bar_event_string_time_left && OS_GetTime() >= game_ui_status_bar_event_string_time_left)
     {
         game_ui_status_bar_event_string_time_left = 0;
     }

@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "Render.h"
+#include "Engine/Graphics/IRender.h"
 
 struct LightsStack_StationaryLight_;
 struct LightsStack_MobileLight_;

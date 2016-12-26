@@ -368,7 +368,6 @@ void MainMenu_Loop()
     unsigned int pY; // [sp-18h] [bp-54h]@39
     Texture_MM7 *pTexture; // [sp-14h] [bp-50h]@39
     GUIWindow *pWindow; // [sp+4h] [bp-38h]@11
-    MSG msg;
 
 
     pAudioPlayer->StopChannels(-1, -1);
@@ -408,26 +407,17 @@ void MainMenu_Loop()
     pWindow_MainMenu = new GUIWindow_MainMenu();
 
     SetCurrentMenuID(MENU_MAIN);
-    SetForegroundWindow(window->GetApiHandle());
-    SendMessageW(window->GetApiHandle(), WM_ACTIVATEAPP, 1, 0);
+    window->Activate();
 
     while (GetCurrentMenuID() == MENU_MAIN)
     {
-        POINT pt;
-        pMouse->GetCursorPos(&pt);
+        Point pt = pMouse->GetCursorPos();
         pWindow = pWindow_MainMenu;
 
-        while (PeekMessageW(&msg, 0, 0, 0, PM_REMOVE))
-        {
-            if (msg.message == WM_QUIT)
-                Engine_DeinitializeAndTerminate(0);
-            TranslateMessage(&msg);
-            DispatchMessageW(&msg);
-        }
-
+        OS_PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
         {
-            WaitMessage();
+            OS_WaitMessage();
             continue;
         }
 
@@ -477,7 +467,7 @@ void DrawMM7CopyrightWindow()
     Dst.uFrameX = 8;
     Dst.uFrameY = 30;                             // c 1999 The 3DO Company.
     Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(localization->GetString(157), &Dst, 24, 0)
-        + 2 * LOBYTE(pFontSmallnum->uFontHeight)
+        + 2 * (unsigned char)pFontSmallnum->uFontHeight
         + 24;
     Dst.uFrameY = 470 - Dst.uFrameHeight;
     Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;

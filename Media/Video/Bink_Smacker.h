@@ -1,7 +1,8 @@
 #pragma once
+
+#include "Engine/Rect.h"
+
 #include "Media/Audio/AIL.h"
-
-
 
 
 void BINKW32_DLL_Initialize();
@@ -78,6 +79,7 @@ struct _SMACKBLIT
   unsigned int    firstpalette;
 };
 
+
 struct _SMACKBUF
 {
         unsigned int Reversed;             // 1 if the buffer is upside down
@@ -95,7 +97,7 @@ struct _SMACKBUF
         unsigned int PalColorsInUse;       // Used colors in palette (usually 236)
         unsigned int StartPalColor;        // first usable color index (usually 10)
         unsigned int EndPalColor;          // last usable color index (usually 246)
-        RGBQUAD Palette[256];
+        int Palette[256];//RGBQUAD Palette[256];
         unsigned int PalType;
         unsigned int forceredraw;  // force a complete redraw on next blit (for >8bit)
         unsigned int didapalette;  // force an invalidate on the next palette change
@@ -119,13 +121,13 @@ struct _SMACKBUF
         int ddSoftwarecur;
         int didaddblit;
         int lastwasdd;
-        RECT ddscreen;
+        Rect ddscreen;
         int manyblits;
         int * blitrects;
         int * rectsptr;
         int maxrects;
         int numrects;
-        HDC lastdc;
+        void *lastdc;//HDC lastdc;
 };
 #define BINKFRAMERATE            0x00001000L // Override fr (call BinkFrameRate first)
 #define BINKPRELOADALL            0x00002000L // Preload the entire animation
@@ -185,7 +187,7 @@ struct _SMACKBUF
 
 int __stdcall SmackSoundUseMSS(HDIGDRIVER hDrv);
 unsigned int __stdcall SmackUseMMX(unsigned int flag);
-HSMACK __stdcall SmackOpen(HANDLE hSourceFile, unsigned int uFlags, unsigned int uExtraBuffers);
+HSMACK __stdcall SmackOpen(void *hSourceFile, unsigned int uFlags, unsigned int uExtraBuffers);
 HSMACKBLIT __stdcall SmackBlitOpen(unsigned int uSurfaceFormat);
 void __stdcall SmackToBuffer(HSMACK, unsigned int uX, unsigned int uY, unsigned int uPitch, unsigned int uHeight, void *pBuffer, unsigned int uFlags);
 void __stdcall SmackBlitSetPalette(HSMACKBLIT hBlit, void *pPalette, unsigned int uPalType);
@@ -204,7 +206,7 @@ int __stdcall SmackBlitClear(HSMACKBLIT a1, unsigned short *pFrameData, unsigned
 
 
 
-int __stdcall SmackBufferOpen(HWND a1, long a2, long a3, long a4, long a5, long a6);
+int __stdcall SmackBufferOpen(void *hwnd, long a2, long a3, long a4, long a5, long a6);
 int __stdcall SmackVolumePan(_SMACK *a3, long a4, long a5, long a6);
 
 int __stdcall SmackGoto(_SMACK *a1, long a2);

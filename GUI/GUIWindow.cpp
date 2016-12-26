@@ -158,7 +158,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned 
     if (par1C != 1)
     {
         int num_menu_buttons = 0;
-        int v11 = LOBYTE(pFontArrus->uFontHeight) - 3;
+        int v11 = pFontArrus->GetFontHeight() - 3;
         NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
         if (GetGreetType(sDialogue_SpeakingActorNPC_ID) == 1)//QuestsNPC_greet
         {
@@ -380,7 +380,6 @@ void GUIWindow::_41D73D_draw_buff_tooltip()
     if (!string_count)
         DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(153), 3);
 
-    GetTickCount();
     string_count = 0;
     for (int i = 0; i < 20; ++i)
     {
@@ -539,7 +538,6 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport)
 {
   unsigned int v16; // esi@19
   GUIWindow current_window; // [sp+Ch] [bp-60h]@18
-  POINT cursor; // [sp+60h] [bp-Ch]@8
   unsigned int v22; // [sp+74h] [bp+8h]@2
 
   int x = 0;
@@ -558,7 +556,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport)
     w = window->GetHeight();
   }
 
-  pMouse->GetCursorPos(&cursor);
+  Point cursor = pMouse->GetCursorPos();
   if ( (signed int)this->uFrameX >= x )
   {
     if ( (signed int)(this->uFrameWidth + this->uFrameX) > z )
@@ -638,11 +636,11 @@ void GUIWindow::HouseDialogManager()
     if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic)
     {
         pDialogWindow.uFrameWidth = 130;
-        pDialogWindow.uFrameHeight = 2 * LOBYTE(pFontCreate->uFontHeight);
+        pDialogWindow.uFrameHeight = 2 * pFontCreate->GetFontHeight();
         pHouseName = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName;
         if (pHouseName)
         {
-            v3 = 2 * LOBYTE(pFontCreate->uFontHeight) - 6 - pFontCreate->CalcTextHeight(pHouseName, &pDialogWindow, 0);
+            v3 = 2 * pFontCreate->GetFontHeight() - 6 - pFontCreate->CalcTextHeight(pHouseName, &pDialogWindow, 0);
             if (v3 < 0)
                 v3 = 0;
             pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, pWhiteColor,
@@ -940,7 +938,7 @@ void GUIWindow::DrawText(GUIFont *font, int uX, int uY, unsigned short uFontColo
   int left_margin = 0;
   if ( !Str )
   {
-    MessageBoxW(nullptr, L"Invalid string passed!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Font.cpp:859", 0);
+    Log::Warning(L"Invalid string passed!");
     return;
   }
   if (!strcmp(Str, "null"))
@@ -960,7 +958,7 @@ void GUIWindow::DrawText(GUIFont *font, int uX, int uY, unsigned short uFontColo
   int out_y = uY + uFrameY;
   v14 = 0;
 
-  if (max_text_height != 0 && out_y + LOBYTE(font->uFontHeight) > max_text_height)
+  if (max_text_height != 0 && out_y + font->GetFontHeight() > max_text_height)
     return;
 
   if ( (signed int)v30 > 0 )
@@ -984,12 +982,12 @@ void GUIWindow::DrawText(GUIFont *font, int uX, int uY, unsigned short uFontColo
             out_x = uX + uFrameX + left_margin;
             break;
           case '\n':
-            uY = uY + LOBYTE(font->uFontHeight) - 3;
+            uY = uY + font->GetFontHeight() - 3;
             out_y = uY + uFrameY;
             out_x = uX + uFrameX + left_margin;
             if ( max_text_height != 0 )
             {
-              if (LOBYTE(font->uFontHeight) + out_y - 3 > max_text_height )
+              if (font->GetFontHeight() + out_y - 3 > max_text_height )
                 return;
             }
             break;
@@ -1008,7 +1006,7 @@ void GUIWindow::DrawText(GUIFont *font, int uX, int uY, unsigned short uFontColo
             out_y = uY + uFrameY;
             if ( max_text_height != 0 )
             {
-              if (LOBYTE(font->uFontHeight) + out_y - 3 > max_text_height )
+              if (font->GetFontHeight() + out_y - 3 > max_text_height )
                 return;
               break;
             }
@@ -1024,10 +1022,10 @@ void GUIWindow::DrawText(GUIFont *font, int uX, int uY, unsigned short uFontColo
 
             unsigned char *letter_pixels = &font->pFontData[font->font_pixels_offset[c]];
             if ( uFontColor )
-              render->DrawText(out_x, out_y, letter_pixels, font->pMetrics[c].uWidth, LOBYTE(font->uFontHeight),
+              render->DrawText(out_x, out_y, letter_pixels, font->pMetrics[c].uWidth, font->GetFontHeight(),
                   font->pFontPalettes[0], uFontColor, uFontShadowColor);
             else
-              render->DrawTextAlpha(out_x, out_y, letter_pixels, font->pMetrics[c].uWidth, LOBYTE(font->uFontHeight),
+              render->DrawTextAlpha(out_x, out_y, letter_pixels, font->pMetrics[c].uWidth, font->GetFontHeight(),
                   font->pFontPalettes[0], present_time_transparency);
 
             out_x += font->pMetrics[c].uWidth;
@@ -1291,7 +1289,7 @@ void GUIWindow::InitializeGUI()
 //----- (00459C2B) --------------------------------------------------------
 void GUIWindow::DrawFlashingInputCursor( signed int uX, int uY, struct GUIFont *a2 )
 {
-  if ( GetTickCount() % 1000 > 500 )
+  if ( OS_GetTime() % 1000 > 500 )
     DrawText(a2, uX, uY, 0, "_", 0, 0, 0);
 }
 
@@ -1585,6 +1583,7 @@ void OnCancel3::Update()
 // 004156F0 GUI_UpdateWindows --- part
     if (Hint != (char *)1)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[0]);
     viewparams->bRedrawGameUI = true;
@@ -1596,121 +1595,33 @@ void OnCancel3::Update()
 }
 
 //----- (004156F0) --------------------------------------------------------
-void GUI_UpdateWindows() 
+void GUI_UpdateWindows()
 {
-  GUIWindow *pWindow; // esi@4
-  //unsigned int pWindowType; // eax@4
-  const char *pHint; // edx@66
-//  GUIButton *pButtonPtr_1C; // ebp@79
-//  char *pHint1; // edx@80
-  int v26; // eax@98
-  unsigned int v27; // ebp@106
-  GUIWindow *pGUIWindow2; // ecx@109
-//  GUIFont *pGUIFont; // ST1C_4@115
-  int v31; // eax@115
-  GUIButton *pButton; // ebp@118
-  int v39; // eax@129
-  GUIButton *pGUIButton; // ebp@146
-  //unsigned int pX; // [sp-1Ch] [bp-124h]@17
-  //unsigned int pY; // [sp-18h] [bp-120h]@17
-  //Texture_MM7 *pTexture; // [sp-14h] [bp-11Ch]@17
-  //Texture_MM7 *pTexture2; // [sp-14h] [bp-11Ch]@86
-  int i; // [sp+0h] [bp-108h]@3
-//  ItemGen pItemGen; // [sp+4h] [bp-104h]@98
-  GUIButton GUIButton2; // [sp+28h] [bp-E0h]@133
-  ItemGen ItemGen2; // [sp+E4h] [bp-24h]@129
+    GUIWindow *pWindow; // esi@4
+    const char *pHint; // edx@66
+    int v26; // eax@98
+    unsigned int v27; // ebp@106
+    GUIWindow *pGUIWindow2; // ecx@109
+    int v31; // eax@115
+    GUIButton *pButton; // ebp@118
+    int v39; // eax@129
+    GUIButton *pGUIButton; // ebp@146
+    GUIButton GUIButton2; // [sp+28h] [bp-E0h]@133
+    ItemGen ItemGen2; // [sp+E4h] [bp-24h]@129
 
-  if (GetCurrentMenuID() != MENU_CREATEPARTY)
-    Mouse::UI_OnKeyDown(VK_NEXT);
+    if (GetCurrentMenuID() != MENU_CREATEPARTY)
+        Mouse::UI_OnKeyDown(VK_NEXT);
 
-  for ( i = 1; i <= uNumVisibleWindows; ++i )
-  {
-    pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1];
-
-    pWindow->Update();
-    /*switch (pWindow->eWindowType)
+    for (unsigned int i = 1; i <= uNumVisibleWindows; ++i)
     {
-      case WINDOW_50:
-      {
-          __debugbreak(); // looks like debugging tools
-        v27 = Color16(255, 255, 255);
-        if ( ptr_507BD0->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
-        {
-          ptr_507BD0->DrawMessageBox(0);
-          ptr_507BD0->DrawText(pFontCreate, 30, 40, v27, pKeyActionMap->pPressedKeysBuffer, 0, 0, 0);
-          v31 = pFontCreate->GetLineWidth(pKeyActionMap->pPressedKeysBuffer);
-          ptr_507BD0->DrawFlashingInputCursor(v31 + 30, 40, pFontCreate);
-          continue;
-        }
-        if ( ptr_507BD0->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED)
-        {
-          pWindow->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-          pMessageQueue_50CBD0->AddGUIMessage((UIMessageType)(int)ptr_507BD0->ptr_1C, 0, 0);
-          pEventTimer->Resume();
-          ptr_507BD0->Release();
-          current_screen_type = SCREEN_GAME;
-          viewparams->bRedrawGameUI = true;
-          continue;
-        }
-        if ( ptr_507BD0->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED)
-        {
-          pWindow->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-          pEventTimer->Resume();
-          ptr_507BD0->Release();
-          continue;
-        }
+        pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1];
+        pWindow->Update();
+    }
 
-        __debugbreak(); // switch pass-through
-      }
-      case WINDOW_59:
-      {
-          __debugbreak(); // looks like debugging tools
-        pWindow->DrawMessageBox(0);
-        pWindow->DrawText(pFontLucida, 10, 20, 0, "Making item number", 0, 0, 0);
-        pWindow->DrawText(pFontLucida, 10, 40, 0, pKeyActionMap->pPressedKeysBuffer, 0, 0, 0);
-        if ( !pKeyActionMap->field_204 )
-        {
-          ItemGen2.Reset();
-          pWindow->Release();
-          pEventTimer->Resume();
-          current_screen_type = SCREEN_GAME;
-          viewparams->bRedrawGameUI = true;
-          v26 = atoi(pKeyActionMap->pPressedKeysBuffer);
-          if ( v26 > 0 )
-          {
-            if ( v26 < 800 )
-            {
-              ItemGen2.uAttributes |= 1;
-              ItemGen2.uItemID = v26;
-              if ( pItemsTable->pItems[v26].uEquipType == 12 )
-              {
-                ItemGen2.uNumCharges = rand() % 6 + ItemGen2.GetDamageMod() + 1;
-                ItemGen2.uMaxCharges = LOBYTE(ItemGen2.uNumCharges);
-              }
-              else
-              {
-                if ( v26 >= 221 && v26 < 271 )
-                  ItemGen2.uEnchantmentType = rand() % 10 + 1;
-              }
-              pItemsTable->SetSpecialBonus(&ItemGen2);
-              pParty->SetHoldingItem(&ItemGen2);
-            }
-          }
-        }
-        continue;
-      }
-      case WINDOW_MainMenu:
-      case WINDOW_null:
-          continue;
-      default:
-          __debugbreak();
-        continue;
-    }*/
-  }
-  if ( GetCurrentMenuID() == -1 )
-    GameUI_DrawFoodAndGold();
-  if ( sub_4637E0_is_there_popup_onscreen() )
-    UI_OnMouseRightClick(0);
+    if (GetCurrentMenuID() == -1)
+        GameUI_DrawFoodAndGold();
+    if (sub_4637E0_is_there_popup_onscreen())
+        UI_OnMouseRightClick(0);
 }
 
 
@@ -1726,7 +1637,7 @@ void CreateScrollWindow()
   a1.uFrameX = 1;
   a1.uFrameY = 1;
   a1.uFrameWidth = 468;
-  v0 = pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->par1C], &a1, 0) + 2 * LOBYTE(pFontCreate->uFontHeight) + 24;
+  v0 = pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->par1C], &a1, 0) + 2 * (unsigned char)pFontCreate->uFontHeight + 24;
   a1.uFrameHeight = v0;
   if ( (signed int)(v0 + a1.uFrameY) > 479 )
   {
@@ -1745,7 +1656,7 @@ void CreateScrollWindow()
   v1 = pItemsTable->pItems[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C + 700].pName;
 
   a1.DrawTitleText(pFontCreate, 0, 0, 0, StringPrintf(format_4E2D80, Color16(0xFFu, 0xFFu, 0x9Bu), v1), 3);
-  a1.DrawText(pFontSmallnum, 1, LOBYTE(pFontCreate->uFontHeight) - 3, 0,
+  a1.DrawText(pFontSmallnum, 1, (unsigned char)pFontCreate->uFontHeight - 3, 0,
               pScrolls[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C], 0, 0, 0);
 }
 //----- (00467F48) --------------------------------------------------------
@@ -2165,7 +2076,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType)
 				}
 				Party::TakeGold(pNPCStats->pProfessions[speakingNPC->uProfession].uHirePrice);
 			}
-			LOBYTE(speakingNPC->uFlags) |= 0x80u;
+			speakingNPC->uFlags |= 0x80u;
 			if (pParty->pHirelings[0].pName)
 			{
 				memcpy(&pParty->pHirelings[1], speakingNPC, sizeof(pParty->pHirelings[1]));
@@ -2538,7 +2449,7 @@ void ClickNPCTopic(signed int uMessageParam)
 		else
 			Party::TakeGold(pPrice);
 	}
-	//LOBYTE(v2->uFlags) |= 0x80u;
+
 	pCurrentNPCInfo->uFlags |= 128;
 	pParty->hirelingScrollPosition = 0;
 	pParty->CountHirelings();
@@ -2612,29 +2523,18 @@ void OracleDialogue()
 	uDialogueType = 84;
 	current_npc_text = (char *)pNPCTopics[667].pText;
 	v0 = _4F0882_evt_VAR_PlayerItemInHands_vals.data();
-	//while ( 1 )
+
 	for (uint i = 0; i <= 53; i++)
 	{
 		if ((unsigned __int16)_449B57_test_bit(pParty->_quest_bits, *v0))
 		{
-			//v1 = 0;
-			//v2 = pParty->pPlayers.data();
 			for (uint pl = 0; pl < 4; pl++)
 			{
-				//LOBYTE(v3) = pParty->pPlayers[pl].CompareVariable(VAR_PlayerItemInHands, *(v0+1));
 				if (pParty->pPlayers[pl].CompareVariable(VAR_PlayerItemInHands, *(v0 + 1)))
 					break;
-				//++v2;
-				//++v1;
 			}
-			//while ( (signed int)v2 < (signed int)pParty->pHirelings.data() );
-			//if ( v1 == 4 )
-			//break;
 		}
 		++v11;
-		//v0 += 2;
-		//if ( v0 > &_4F0882_evt_VAR_PlayerItemInHands_vals[53] )
-		//break;
 	}
 	if (v0 <= &_4F0882_evt_VAR_PlayerItemInHands_vals[53])
 	{
@@ -3122,9 +3022,9 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 			case 5:
 				v18 = pParty->GetPlayingTime().GetHoursOfDay();
 				pText = localization->GetString(397);// "evening"
-				if (SHIDWORD(v18) <= 0 && SHIDWORD(v18) >= 0 && (unsigned int)v18 >= 5 && SHIDWORD(v18) <= 0)
+				if (HEXRAYS_SHIDWORD(v18) <= 0 && HEXRAYS_SHIDWORD(v18) >= 0 && (unsigned int)v18 >= 5 && HEXRAYS_SHIDWORD(v18) <= 0)
 				{
-					if (SHIDWORD(v18) >= 0 && (unsigned int)v18 >= 11)
+					if (HEXRAYS_SHIDWORD(v18) >= 0 && (unsigned int)v18 >= 11)
 					{
 						if (v18 < 20)
 							pText = localization->GetString(396);// "day"

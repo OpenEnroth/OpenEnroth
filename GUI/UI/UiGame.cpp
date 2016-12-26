@@ -232,7 +232,7 @@ static unsigned int GameMenuUI_GetKeyBindingColor(int key_index)
 {
     if (uGameMenuUI_CurentlySelectedKeyIdx == key_index)
     {
-        if (GetTickCount() % 1000 < 500)
+        if (OS_GetTime() % 1000 < 500)
             return ui_gamemenu_keys_key_selection_blink_color_1;
         else
             return ui_gamemenu_keys_key_selection_blink_color_2;
@@ -241,7 +241,7 @@ static unsigned int GameMenuUI_GetKeyBindingColor(int key_index)
     {
         int intensity;
 
-        int time = GetTickCount() % 800;
+        int time = OS_GetTime() % 800;
         if (time < 400)
             intensity = -70 + 70 * time / 400;
         else
@@ -732,10 +732,10 @@ void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
 {
     int v1; // edi@2
     NPCData *pNPC; // eax@16
-    const CHAR *pText; // eax@18
+    const char *pText; // eax@18
     GUIWindow popup_window; // [sp+Ch] [bp-60h]@23
     int a2; // [sp+60h] [bp-Ch]@16
-    LPCSTR lpsz; // [sp+68h] [bp-4h]@6
+    const char *lpsz; // [sp+68h] [bp-4h]@6
 
     char buf[4096];
     if (bNoNPCHiring != 1)
@@ -789,11 +789,11 @@ void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
                 if (a2 == 57)
                     pText = pNPCTopics[512].pText; // Baby dragon
                 else
-                    pText = (const CHAR *)pNPCStats->pProfessions[pNPC->uProfession].pBenefits;
+                    pText = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pBenefits;
                 lpsz = pText;
                 if (!pText)
                 {
-                    lpsz = (LPCSTR)pNPCStats->pProfessions[pNPC->uProfession].pJoinText;
+                    lpsz = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pJoinText;
                     if (!lpsz)
                         lpsz = "";
                 }
@@ -802,7 +802,7 @@ void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
                 popup_window.uFrameY = 60;
                 popup_window.uFrameWidth = 276;
                 popup_window.uFrameZ = 313;
-                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, &popup_window, 0) + 2 * LOBYTE(pFontArrus->uFontHeight) + 24;
+                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, &popup_window, 0) + 2 * pFontArrus->GetFontHeight() + 24;
                 if ((signed int)popup_window.uFrameHeight < 130)
                     popup_window.uFrameHeight = 130;
                 popup_window.uFrameWidth = 400;
@@ -921,7 +921,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
             pNPCInfo->uProfession == 52       //Fallen Wizard
         )
         {
-            pDialogueWindow->CreateButton(480, 250, 140, LOBYTE(pFontArrus->uFontHeight) - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "", 0);
+            pDialogueWindow->CreateButton(480, 250, 140, pFontArrus->GetFontHeight() - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "", 0);
             pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
         }
     }
@@ -1772,7 +1772,7 @@ void GameUI_WritePointedObjectStatusString()
                         if (pX >= pButton->uX && pX <= pButton->uZ
                             && pY >= pButton->uY && pY <= pButton->uW)
                         {
-                            requiredSkillpoints = (LOBYTE(pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param]) & 0x3F) + 1;
+                            requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
 
                             String str;
                             if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
@@ -1899,7 +1899,7 @@ void GameUI_WritePointedObjectStatusString()
                 if (pX >= pButton->uX && pX <= pButton->uZ
                     && pY >= pButton->uY && pY <= pButton->uW)
                 {
-                    requiredSkillpoints = (LOBYTE(pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param]) & 0x3F) + 1;
+                    requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
 
                     String str;
                     if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
@@ -1941,7 +1941,7 @@ void GameUI_DrawPartySpells()
     Image *spell_texture; // [sp-4h] [bp-1Ch]@12
     //Texture_MM7 *v9; // [sp-4h] [bp-1Ch]@21
 
-    v0 = (signed __int64)((double)GetTickCount() * 0.050000001);
+    v0 = OS_GetTime() / 20;
     for (uint i = 0; i < 14; ++i)
     {
         if (pParty->pPartyBuffs[byte_4E5DD8[i]].Active())

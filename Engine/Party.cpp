@@ -40,16 +40,16 @@ char PickedPlayer4_unused; // byte_AE336B_
 
 struct
 {
-    struct UIAnimation _pUIAnim_Food;
-    struct UIAnimation _pUIAnim_Gold;
-    struct UIAnimation _pUIAnum_Torchlight;
-    struct UIAnimation _pUIAnim_WizardEye;
+    UIAnimation _pUIAnim_Food;
+    UIAnimation _pUIAnim_Gold;
+    UIAnimation _pUIAnum_Torchlight;
+    UIAnimation _pUIAnim_WizardEye;
 } _uianim;
 
-struct UIAnimation *pUIAnim_Food = &_uianim._pUIAnim_Food;
-struct UIAnimation *pUIAnim_Gold = &_uianim._pUIAnim_Gold;
-struct UIAnimation *pUIAnum_Torchlight = &_uianim._pUIAnum_Torchlight;
-struct UIAnimation *pUIAnim_WizardEye = &_uianim._pUIAnim_WizardEye;
+UIAnimation *pUIAnim_Food = &_uianim._pUIAnim_Food;
+UIAnimation *pUIAnim_Gold = &_uianim._pUIAnim_Gold;
+UIAnimation *pUIAnum_Torchlight = &_uianim._pUIAnum_Torchlight;
+UIAnimation *pUIAnim_WizardEye = &_uianim._pUIAnim_WizardEye;
 
 std::array<struct UIAnimation *, 4> pUIAnims =
 {
@@ -293,10 +293,10 @@ void Party::TakeGold(unsigned int uNumGold)
 //----- (0049135E) --------------------------------------------------------
 unsigned int Party::GetPartyFame()
 {
-  unsigned __int64 total_exp = 0;
-  for (uint i = 0; i < 4; ++i)
-    total_exp += pPlayers[i].uExperience;
-  return (unsigned int)(min(total_exp / 1000, UINT_MAX));     //min wasn't present, but could be incorrect without it
+    unsigned __int64 total_exp = 0;
+    for (uint i = 0; i < 4; ++i)
+        total_exp += pPlayers[i].uExperience;
+    return (unsigned int)(min(total_exp / 1000, UINT_MAX));     //min wasn't present, but could be incorrect without it
 }
 
 //----- (0049137D) --------------------------------------------------------
@@ -313,7 +313,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems)
   this->hirelingScrollPosition = 0;
   memset(&pHirelings, 0, sizeof(pHirelings));
 
-  strcpy(this->pPlayers[0].pName, localization->GetString(509)); // Zoltan
+  strcpy_s(this->pPlayers[0].pName, localization->GetString(509)); // Zoltan
   this->pPlayers[0].uPrevFace = 17;
   this->pPlayers[0].uCurrentFace = 17;
   this->pPlayers[0].uPrevVoiceID = 17;
@@ -330,7 +330,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems)
   this->pPlayers[0].pActiveSkills[PLAYER_SKILL_BOW] = 1;
   this->pPlayers[0].pActiveSkills[PLAYER_SKILL_SWORD] = 1;
 
-  strcpy(this->pPlayers[1].pName, localization->GetString(506)); // Roderic
+  strcpy_s(this->pPlayers[1].pName, localization->GetString(506)); // Roderic
   this->pPlayers[1].uPrevFace = 3;
   this->pPlayers[1].uCurrentFace = 3;
   this->pPlayers[1].uPrevVoiceID = 3;
@@ -347,7 +347,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems)
   this->pPlayers[1].pActiveSkills[PLAYER_SKILL_DAGGER] = 1;
   this->pPlayers[1].pActiveSkills[PLAYER_SKILL_TRAP_DISARM] = 1;
 
-  strcpy(this->pPlayers[2].pName, localization->GetString(508)); // Serena
+  strcpy_s(this->pPlayers[2].pName, localization->GetString(508)); // Serena
   this->pPlayers[2].uPrevFace = 14;
   this->pPlayers[2].uCurrentFace = 14;
   this->pPlayers[2].uPrevVoiceID = 14;
@@ -364,7 +364,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems)
   this->pPlayers[2].pActiveSkills[PLAYER_SKILL_BODY] = 1;
   this->pPlayers[2].pActiveSkills[PLAYER_SKILL_MACE] = 1;
 
-  strcpy(this->pPlayers[3].pName, localization->GetString(507)); // Alexis
+  strcpy_s(this->pPlayers[3].pName, localization->GetString(507)); // Alexis
   this->pPlayers[3].uPrevFace = 10;
   this->pPlayers[3].uCurrentFace = 10;
   this->pPlayers[3].uEndurance = 13;
@@ -532,8 +532,7 @@ void Party::Reset()
 
     pPlayers[0].uSex = pPlayers[0].GetSexByVoice();
     pPlayers[0].RandomizeName();
-    strcpy(pPlayers[0].pName, localization->GetString(509));
-
+    strcpy_s(pPlayers[0].pName, localization->GetString(509));
 
     pPlayers[1].Reset(PLAYER_CLASS_THEIF);
     pPlayers[1].uCurrentFace = 3;
@@ -542,7 +541,7 @@ void Party::Reset()
     pPlayers[1].SetInitialStats();
     pPlayers[1].uSex = pPlayers[1].GetSexByVoice();
     pPlayers[1].RandomizeName();
-    strcpy(pPlayers[1].pName, localization->GetString(506));
+    strcpy_s(pPlayers[1].pName, localization->GetString(506));
 
     pPlayers[2].Reset(PLAYER_CLASS_CLERIC);
     pPlayers[2].uCurrentFace = 14;
@@ -551,7 +550,7 @@ void Party::Reset()
     pPlayers[2].SetInitialStats();
     pPlayers[2].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[2].RandomizeName();
-    strcpy(pPlayers[2].pName, localization->GetString(508));
+    strcpy_s(pPlayers[2].pName, localization->GetString(508));
 
     pPlayers[3].Reset(PLAYER_CLASS_SORCERER);
     pPlayers[3].uCurrentFace = 10;
@@ -560,7 +559,7 @@ void Party::Reset()
     pPlayers[3].SetInitialStats();
     pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[3].RandomizeName();
-    strcpy(pPlayers[3].pName, localization->GetString(507));
+    strcpy_s(pPlayers[3].pName, localization->GetString(507));
 
     for (uint i = 0; i < 4; ++i)
     {
@@ -1142,59 +1141,57 @@ void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem()
 
 
 //----- (0048C6F6) --------------------------------------------------------
-bool Party::AddItemToParty(ItemGen *pItem) 
+bool Party::AddItemToParty(ItemGen *pItem)
 {
-  unsigned int v2; // eax@1
-  char *v5; // eax@8
-  //Texture_MM7 *v7; // ebx@10
-  signed int v8; // esi@10
-  Player *v9; // edi@11
-  int v10; // eax@11
-  //int v21; // [sp+24h] [bp-4h]@10
+    unsigned int v2; // eax@1
+    char *v5; // eax@8
+    //Texture_MM7 *v7; // ebx@10
+    signed int v8; // esi@10
+    Player *v9; // edi@11
+    int v10; // eax@11
+    //int v21; // [sp+24h] [bp-4h]@10
 
-  v2 = pItem->uItemID;
-  if ( !pItemsTable->pItems[v2].uItemID_Rep_St )
-    pItem->SetIdentified();
+    v2 = pItem->uItemID;
+    if (!pItemsTable->pItems[v2].uItemID_Rep_St)
+        pItem->SetIdentified();
 
-  v5 = pItemsTable->pItems[v2].pIconName;
-  if ( v5 )
-  {
-      auto texture = assets->GetImage_16BitColorKey(v5, 0x7FF);
-    v8 = 0;
-    uint current_player = uActiveCharacter;
-    for (int i = 0; i < 4; i++)
+    v5 = pItemsTable->pItems[v2].pIconName;
+    if (v5)
     {
-     current_player = current_player + i;
-     if ( current_player > 4 )
-       current_player = current_player - 4;
-      v9 = ::pPlayers[current_player];
-      v10 = v9->AddItem(-1, pItem->uItemID);
-      if ( v10 )
-      {
-        memcpy(&v9->pInventoryItemList[v10-1], pItem, 0x24u);
-        pItem->Reset();
-        pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0, 0, 0);
-        v9->PlaySound(SPEECH_60, 0);
+        auto texture = assets->GetImage_16BitColorKey(v5, 0x7FF);
+        v8 = 0;
+        uint current_player = uActiveCharacter;
+        for (int i = 0; i < 4; i++)
+        {
+            current_player = current_player + i;
+            if (current_player > 4)
+                current_player = current_player - 4;
+            v9 = ::pPlayers[current_player];
+            v10 = v9->AddItem(-1, pItem->uItemID);
+            if (v10)
+            {
+                memcpy(&v9->pInventoryItemList[v10 - 1], pItem, 0x24u);
+                pItem->Reset();
+                pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0, 0, 0);
+                v9->PlaySound(SPEECH_60, 0);
 
+                if (texture)
+                {
+                    texture->Release();
+                }
+                return true;
+            }
+        }
         if (texture)
         {
             texture->Release();
-            texture = nullptr;
         }
-        return true;
-      }
     }
-    if (texture)
+    else
     {
-        texture->Release();
-        texture = nullptr;
+        Log::Warning(L"Invalid picture_name detected ::addItem()");
     }
-  }
-  else
-  {
-    MessageBoxW(nullptr, L"Invalid picture_name detected ::addItem()", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Party.cpp:795", 0);
-  }
-  return false;
+    return false;
 }
 
 

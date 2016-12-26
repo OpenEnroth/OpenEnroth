@@ -178,7 +178,7 @@ void Game_EventLoop()
     unsigned int v33; // eax@277
     int v37; // eax@341
     int v38; // eax@358
-    SHORT v39; // ax@365
+    short v39; // ax@365
     char *v41; // eax@380
     int v42; // eax@396
     signed int v44; // eax@398
@@ -213,7 +213,7 @@ void Game_EventLoop()
     int v76; // esi@535
     int v77; // eax@537
     Player *pPlayer2; // ecx@549
-    signed int v81; // eax@552
+    //signed int v81; // eax@552
     signed int v83; // ecx@554
     signed int v84; // ecx@554
     GUIButton *pButton; // eax@578
@@ -233,7 +233,6 @@ void Game_EventLoop()
     int v105; // eax@718
     Player *pPlayer5; // ST78_4@758
     unsigned int v115; // eax@764
-    int v116; // eax@776
     unsigned int v118; // eax@785
     unsigned int v119; // ecx@786
     unsigned int v121; // [sp-28h] [bp-624h]@711
@@ -262,11 +261,6 @@ void Game_EventLoop()
     enum UIMessageType uMessage; // [sp+2Ch] [bp-5D0h]@7
     unsigned int v199; // [sp+30h] [bp-5CCh]@7
     char *v200; // [sp+34h] [bp-5C8h]@518
-    POINT v202; // [sp+40h] [bp-5BCh]@141
-    POINT a2; // [sp+48h] [bp-5B4h]@127
-    POINT v205; // [sp+58h] [bp-5A4h]@171
-    POINT v207; // [sp+68h] [bp-594h]@155
-    POINT v211; // [sp+88h] [bp-574h]@704
     int v213; // [sp+98h] [bp-564h]@385
     char pLevelName[32]; // [sp+9Ch] [bp-560h]@380
     char pOut[32]; // [sp+BCh] [bp-540h]@370
@@ -785,20 +779,20 @@ void Game_EventLoop()
                     else if (current_screen_type == SCREEN_OPTIONS)
                     {/*
                         options_menu_skin.Relaease();
-                        WriteWindowsRegistryInt("soundflag", (char)uSoundVolumeMultiplier);
-                        WriteWindowsRegistryInt("musicflag", (char)uMusicVolimeMultiplier);
-                        WriteWindowsRegistryInt("CharVoices", (char)uVoicesVolumeMultiplier);
-                        WriteWindowsRegistryInt("WalkSound", bWalkSound);
-                        WriteWindowsRegistryInt("ShowDamage", bShowDamage);
-                        //WriteWindowsRegistryInt("graphicsmode", (unsigned __int8)byte_6BE388_graphicsmode);
-                        WriteWindowsRegistryInt("valAlwaysRun", bAlwaysRun);
-                        WriteWindowsRegistryInt("FlipOnExit", bFlipOnExit);
+                        OS_SetAppInt("soundflag", (char)uSoundVolumeMultiplier);
+                        OS_SetAppInt("musicflag", (char)uMusicVolimeMultiplier);
+                        OS_SetAppInt("CharVoices", (char)uVoicesVolumeMultiplier);
+                        OS_SetAppInt("WalkSound", bWalkSound);
+                        OS_SetAppInt("ShowDamage", bShowDamage);
+                        //OS_SetAppInt("graphicsmode", (unsigned __int8)byte_6BE388_graphicsmode);
+                        OS_SetAppInt("valAlwaysRun", bAlwaysRun);
+                        OS_SetAppInt("FlipOnExit", bFlipOnExit);
                         if (uTurnSpeed == 0)
-                            WriteWindowsRegistryInt("TurnDelta", 3);
+                            OS_SetAppInt("TurnDelta", 3);
                         else if (uTurnSpeed == 64)
-                            WriteWindowsRegistryInt("TurnDelta", 2);
+                            OS_SetAppInt("TurnDelta", 2);
                         else if (uTurnSpeed == 128)
-                            WriteWindowsRegistryInt("TurnDelta", 1);
+                            OS_SetAppInt("TurnDelta", 1);
                         stru_506E40.Release();
                         Game_OnEscape();*/
                         break;
@@ -807,9 +801,9 @@ void Game_EventLoop()
                     {/*
                         //if ( render->pRenderD3D )
                         {
-                            WriteWindowsRegistryInt("Colored Lights", render->bUseColoredLights);
-                            WriteWindowsRegistryInt("Tinting", render->bTinting);
-                            WriteWindowsRegistryInt("Bloodsplats", (LOBYTE(pEngine->uFlags2) >> 5) & 1);
+                            OS_SetAppInt("Colored Lights", render->bUseColoredLights);
+                            OS_SetAppInt("Tinting", render->bTinting);
+                            OS_SetAppInt("Bloodsplats", (LOBYTE(pEngine->uFlags2) >> 5) & 1);
                         }
 
                         stru_506E40.Release();
@@ -885,7 +879,7 @@ void Game_EventLoop()
                                     }
                                     if (ptr_50C9A4_ItemToEnchant && ptr_50C9A4_ItemToEnchant->uItemID)
                                     {
-                                        LOBYTE(ptr_50C9A4_ItemToEnchant->uAttributes) &= 0xFu;
+                                        ptr_50C9A4_ItemToEnchant->uAttributes &= 0xFFFFFF0F;
                                         _50C9A8_item_enchantment_timer = 0;
                                         ptr_50C9A4_ItemToEnchant = nullptr;
                                     }
@@ -977,7 +971,7 @@ void Game_EventLoop()
                                     if (npcIdToDismissAfterDialogue)
                                     {
                                         pParty->hirelingScrollPosition = 0;
-                                        LOBYTE(pNPCStats->pNewNPCData[npcIdToDismissAfterDialogue].uFlags) &= 0x7Fu;
+                                        pNPCStats->pNewNPCData[npcIdToDismissAfterDialogue].uFlags &= 0xFFFFFF7F;
                                         pParty->CountHirelings();
                                         viewparams->bRedrawGameUI = true;
                                         npcIdToDismissAfterDialogue = 0;
@@ -990,7 +984,7 @@ void Game_EventLoop()
                                     if (npcIdToDismissAfterDialogue)
                                     {
                                         pParty->hirelingScrollPosition = 0;
-                                        LOBYTE(pNPCStats->pNewNPCData[npcIdToDismissAfterDialogue].uFlags) &= 0x7Fu;
+                                        pNPCStats->pNewNPCData[npcIdToDismissAfterDialogue].uFlags &= 0xFFFFFF7F;
                                         pParty->CountHirelings();
                                         viewparams->bRedrawGameUI = true;
                                         npcIdToDismissAfterDialogue = 0;
@@ -1141,8 +1135,7 @@ void Game_EventLoop()
                 viewparams->bRedrawGameUI = true;
                 continue;
             case UIMSG_CycleCharacters:
-                v39 = GetAsyncKeyState(VK_SHIFT);
-                uActiveCharacter = CycleCharacter(v39);
+                uActiveCharacter = CycleCharacter(OS_IfShiftPressed());
                 viewparams->bRedrawGameUI = true;
                 continue;
             case UIMSG_OnTravelByFoot:
@@ -1255,14 +1248,8 @@ void Game_EventLoop()
                 viewparams->bRedrawGameUI = true;
                 continue;
             case UIMSG_CastSpell_Telekinesis:
-                //if ( render->pRenderD3D )
-                LOWORD(v42) = pEngine->pVisInstance->get_picked_object_zbuf_val();
-                /*else
-                {
-                uNumSeconds = (unsigned int)pMouse->GetCursorPos(&v210);
-                pPoint = pMouse->GetCursorPos(&v208);
-                v42 = render->pActiveZBuffer[*(int *)uNumSeconds + pSRZBufferLineOffsets[pPoint->y]];
-                }*/
+                HEXRAYS_LOWORD(v42) = pEngine->pVisInstance->get_picked_object_zbuf_val();
+
                 v44 = (unsigned __int16)v42;
                 v45 = PID_TYPE(v44);
                 uNumSeconds = v44;
@@ -1535,8 +1522,8 @@ void Game_EventLoop()
                     pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_X = pParty->vPosition.x;
                     pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_Y = pParty->vPosition.y;
                     pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_Z = pParty->vPosition.z;
-                    pPlayer9->pInstalledBeacons[uMessageParam].PartyRot_X = LOWORD(pParty->sRotationY);
-                    pPlayer9->pInstalledBeacons[uMessageParam].PartyRot_Y = LOWORD(pParty->sRotationX);
+                    pPlayer9->pInstalledBeacons[uMessageParam].PartyRot_X = (short)pParty->sRotationY;
+                    pPlayer9->pInstalledBeacons[uMessageParam].PartyRot_Y = (short)pParty->sRotationX;
                     if ((signed int)pGames_LOD->uNumSubDirs / 2 <= 0)
                         continue;
                     for (thisg = 0; thisg < (signed int)pGames_LOD->uNumSubDirs / 2; ++thisg)
@@ -1835,18 +1822,8 @@ void Game_EventLoop()
 
             case UIMSG_CastSpell_Monster_Improvement:
             case UIMSG_CastSpell_Shoot_Monster://FireBlow, Lightning, Ice Lightning, Swarm, 
-                //if ( render->pRenderD3D )
-            {
-                v81 = pEngine->pVisInstance->get_picked_object_zbuf_val();
-            }
-                /*else
-                {
-                uNumSeconds = (unsigned int)pMouse->GetCursorPos(&v206);
-                pPoint2 = pMouse->GetCursorPos(&v201);
-                v81 = render->pActiveZBuffer[*(int *)uNumSeconds + pSRZBufferLineOffsets[pPoint2->y]];
-                }*/
-                v83 = v81;
-                v44 = (unsigned __int16)v81;
+                v83 = pEngine->pVisInstance->get_picked_object_zbuf_val();
+                v44 = (unsigned __int16)v83;
                 v84 = v83 >> 16;
                 if (PID_TYPE(v44) != 3 || v84 >= 5120)
                     continue;
@@ -2156,7 +2133,7 @@ void Game_EventLoop()
                     pAudioPlayer->PlaySound((SoundID)(rand() % 2 + SOUND_TurnPageU), 0, 0, -1, 0, 0, 0, 0);
                 else
                 {
-                    if (GetAsyncKeyState(VK_SHIFT))
+                    if (OS_IfShiftPressed())
                     {
                         --uAction;
                         if (uAction < 0)
@@ -2294,10 +2271,13 @@ void Game_EventLoop()
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                 continue;
             case UIMSG_ClickAwardScrollBar:
+            {
                 books_page_number = 1;
-                if (pMouse->GetCursorPos(&v211)->y > 178)
+                Point pt = pMouse->GetCursorPos();
+                if (pt.y > 178)
                     books_page_number = -1;
                 continue;
+            }
             case UIMSG_ClickAwardsUpBtn:
                 new OnButtonClick3(pBtn_Up->uX, pBtn_Up->uY, 0, 0, (int)pBtn_Up, 0);
                 BtnUp_flag = 1;
@@ -2315,7 +2295,7 @@ void Game_EventLoop()
             case UIMSG_SkillUp:
                 pPlayer4 = pPlayers[uActiveCharacter];
                 v105 = (int)&pPlayer4->pActiveSkills[uMessageParam];
-                LOWORD(v2) = *(short *)v105;
+                HEXRAYS_LOWORD(v2) = *(short *)v105;
                 uNumSeconds = v2;
                 if (pPlayer4->uSkillPoints < (v2 & 0x3F) + 1)
                 {
@@ -2551,17 +2531,7 @@ void Game_EventLoop()
                 continue;
             case UIMSG_F:
                 __debugbreak();
-                //if ( render->pRenderD3D )
-                {
-                    LOWORD(v116) = pEngine->pVisInstance->get_picked_object_zbuf_val();
-                }
-                /*else
-                {
-                uNumSeconds = (unsigned int)pMouse->GetCursorPos(&v209);
-                pPoint3 = pMouse->GetCursorPos(&v204);
-                v116 = render->pActiveZBuffer[*(int *)uNumSeconds + pSRZBufferLineOffsets[pPoint3->y]];
-                }*/
-                pButton2 = (GUIButton *)(unsigned __int16)v116;
+                pButton2 = (GUIButton *)(unsigned __int16)pEngine->pVisInstance->get_picked_object_zbuf_val();
                 __debugbreak();//GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
                 continue;
             case UIMSG_54:
@@ -2690,7 +2660,6 @@ void Game_Loop()
     const char *pLocationName; // [sp-4h] [bp-68h]@74
     bool bLoading; // [sp+10h] [bp-54h]@1
     signed int v16; // [sp+14h] [bp-50h]@8
-    MSG Msg; // [sp+28h] [bp-3Ch]@20
     char Source[64]; // [sp+44h] [bp-20h]@76
 
     bLoading = sCurrentMenuID == MENU_LoadingProcInMainMenu;
@@ -2748,18 +2717,13 @@ void Game_Loop()
         bool game_finished = false;
         do
         {
-            while (PeekMessageA(&Msg, 0, 0, 0, PM_REMOVE))
-            {
-                if (Msg.message == WM_QUIT)
-                    Engine_DeinitializeAndTerminate(0);
-                TranslateMessage(&Msg);
-                DispatchMessageA(&Msg);
-            }
+            OS_PeekMessageLoop();
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
             {
-                WaitMessage();
+                OS_WaitMessage();
                 continue;
             }
+
             pEngine->_44EEA7();
             GameUI_WritePointedObjectStatusString();
             Keyboard::ProcessInputActions();
@@ -2860,7 +2824,7 @@ void Game_Loop()
                     pParty->pPlayers[i].SetVariable(VAR_Award, 85);
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime() += GameTime::FromDays(7);// += 2580480
-                LOWORD(pParty->uFlags) &= ~0x204;
+                HEXRAYS_LOWORD(pParty->uFlags) &= ~0x204;
                 pParty->SetGold(0);
                 pOtherOverlayList->Reset();
                 memset(pParty->pPartyBuffs.data(), 0, 0x140u);

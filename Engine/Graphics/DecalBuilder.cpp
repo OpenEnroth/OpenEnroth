@@ -40,173 +40,139 @@ double DecalBuilder_stru0::_43B570_get_color_mult_by_time()
 //----- (0043B6EF) --------------------------------------------------------
 void BloodsplatContainer::AddBloodsplat(float x, float y, float z, float radius, unsigned char r, unsigned char g, unsigned char b)
 {
-  int i = this->uNumBloodsplats;
-  if ( this->uNumBloodsplats == 64 )
-    i = 0;
-  this->std__vector_pBloodsplats[i].x = x;
-  this->std__vector_pBloodsplats[i].y = y;
-  this->std__vector_pBloodsplats[i].z = z;
-  this->std__vector_pBloodsplats[i].radius = radius;
-  this->std__vector_pBloodsplats[i].r = r;
-  this->std__vector_pBloodsplats[i].g = g;
-  this->std__vector_pBloodsplats[i].b = b;
-  this->std__vector_pBloodsplats_size = min(this->std__vector_pBloodsplats_size + 1, 64);
+    int i = this->uNumBloodsplats;
+    if (this->uNumBloodsplats == 64)
+        i = 0;
+    this->std__vector_pBloodsplats[i].x = x;
+    this->std__vector_pBloodsplats[i].y = y;
+    this->std__vector_pBloodsplats[i].z = z;
+    this->std__vector_pBloodsplats[i].radius = radius;
+    this->std__vector_pBloodsplats[i].r = r;
+    this->std__vector_pBloodsplats[i].g = g;
+    this->std__vector_pBloodsplats[i].b = b;
+    this->std__vector_pBloodsplats_size = min(this->std__vector_pBloodsplats_size + 1, 64);
 }
 
 //----- (0049B490) --------------------------------------------------------
 void DecalBuilder::AddBloodsplat(float x, float y, float z, float r, float g, float b, float radius, int a8, int a9)
 {
-  //double v10; // ST1C_8@1
-//  char v11; // ST24_1@1
-  //double v12; // ST1C_8@1
-  //double v13; // ST1C_8@1
-//  int a7a; // [sp+40h] [bp+18h]@1
-  //float arg14a; // [sp+44h] [bp+1Ch]@1
-  //float arg14b; // [sp+44h] [bp+1Ch]@1
-  //float arg14c; // [sp+44h] [bp+1Ch]@1
-
-  /*arg14a = b * 255.0;
-  v10 = arg14a + 6.7553994e15;
-  v11 = LOBYTE(v10);
-  arg14b = g * 255.0;
-  v12 = arg14b + 6.7553994e15;
-  a7a = LODWORD(v12);
-  arg14c = r * 255.0;
-  v13 = arg14c + 6.7553994e15;*/
-  pBloodsplatContainer->AddBloodsplat(x, y, z, radius,
-                                             //SLOBYTE(v13), a7a, v11);
-                                             bankersRounding(r * 255.0f),
-                                             bankersRounding(g * 255.0f),
-                                             bankersRounding(b * 255.0f));
+    pBloodsplatContainer->AddBloodsplat(
+        x, y, z, radius,
+        bankersRounding(r * 255.0f),
+        bankersRounding(g * 255.0f),
+        bankersRounding(b * 255.0f)
+    );
 }
 
 //----- (0049B525) --------------------------------------------------------
 void DecalBuilder::Reset(unsigned int bPreserveBloodsplats)
 {
-  if ( !bPreserveBloodsplats )
-  {
-    pBloodsplatContainer->std__vector_pBloodsplats_size = 0;
-    pBloodsplatContainer->uNumBloodsplats = 0;
-  }
-  DecalsCount = 0;
+    if (!bPreserveBloodsplats)
+    {
+        pBloodsplatContainer->std__vector_pBloodsplats_size = 0;
+        pBloodsplatContainer->uNumBloodsplats = 0;
+    }
+    DecalsCount = 0;
 }
 
 //----- (0049B540) --------------------------------------------------------
 char DecalBuilder::ApplyDecals(int light_level, char a3, stru154 *a4, int a5, RenderVertexSoft *a6, IndoorCameraD3D_Vec4 *a7, char a8, unsigned int uSectorID)
 {
-  stru154 *v16; // esi@12
-  int v25; // ebx@21
-  int v43; // [sp+3Ch] [bp-Ch]@21
-  //DecalBuilder *thisa; // [sp+40h] [bp-8h]@1
-  //RenderVertexSoft *a11; // [sp+44h] [bp-4h]@8
-//  int a6a;
-  //int *a6b;
+    stru154 *v16; // esi@12
+    int v25; // ebx@21
+    int v43; // [sp+3Ch] [bp-Ch]@21
+    //DecalBuilder *thisa; // [sp+40h] [bp-8h]@1
+    //RenderVertexSoft *a11; // [sp+44h] [bp-4h]@8
+  //  int a6a;
+    //int *a6b;
 
 
-//  __debugbreak();
+  //  __debugbreak();
 
-  //auto a2 = light_level;
-  //auto a9 = uSectorID;
+    //auto a2 = light_level;
+    //auto a9 = uSectorID;
 
-  //thisa = this;
-  if ( !a5 )
-    return 0;
-
-  static RenderVertexSoft static_AE4F90[64];
-  static bool __init_flag1 = false;
-  if (!__init_flag1)
-  {
-    __init_flag1 = true;
-
-    for (uint i = 0; i < 64; ++i)
-      static_AE4F90[i].flt_2C = 0.0f;
-  }
-  
-  static stru314 static_AE4F60; // idb
-  /*static bool __init_flag2 = false;
-  if (!__init_flag2)
-  {
-    __init_flag2 = true;
-
-    stru314::stru314(&static_AE4F60);
-  }*/
-
-  //a11 = a6;
-  if ( a7 )
-  {
-	  for(int i=0; i < a5;i++)
-      {
-        memcpy(&static_AE4F90[i], a6, 0x30u);
-		++a6;
-      }
-    v16 = a4;
-    if ( pIndoorCameraD3D->_437376(a4, static_AE4F90, (unsigned int *)&a5) == 1 )
-    {
-      if ( !a5 )
+    //thisa = this;
+    if (!a5)
         return 0;
-      a6 = static_AE4F90;
-    }
-  }
-  else
-    v16 = a4;
-  //v18 = v16->face_plane.vNormal.z;
-  //v19 = v16->face_plane.vNormal.y;
-  //v20 = v16->face_plane.vNormal.x;
-  //v37 = (int)&static_AE4F60.field_1C;
-  static_AE4F60.Normal.y = v16->face_plane.vNormal.y;
-  static_AE4F60.Normal.x = v16->face_plane.vNormal.x;
-  //LODWORD(v36) = (DWORD)&static_AE4F60.field_10;
-  static_AE4F60.Normal.z = v16->face_plane.vNormal.z;
-  static_AE4F60.dist = v16->face_plane.dist;
-  if ( !pIndoorCameraD3D->GetFacetOrientation(v16->polygonType, &static_AE4F60.Normal,
-     &static_AE4F60.field_10, &static_AE4F60.field_1C) )
-      MessageBoxW(nullptr, L"Error: Failed to get the facet orientation", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\PolyProjector.cpp:101", 0);
-  
-  if ( this->uNumDecals > 0 )
-  {
-    //a6b = this->std__vector_30B00C;
-    for ( int i = 0; i < this->uNumDecals; ++i )
+
+    static RenderVertexSoft static_AE4F90[64];
+    static bool __init_flag1 = false;
+    if (!__init_flag1)
     {
-      //v21 = &pBloodsplatContainer->std__vector_pBloodsplats[*a6b];
-      int point_light_level = _43F5C8_get_point_light_level_with_respect_to_lights(light_level, uSectorID,
-                                  pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].x,
-                                  pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].y,
-                                  pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].z);
-      //v23 = pBloodsplatContainer->std__vector_pBloodsplats[*a6b].b;
-      //v24 = pBloodsplatContainer->std__vector_pBloodsplats[*a6b].x;
-      //v42 = v22;
-      //BYTE3(v22) = 0;
-      //*(short *)((char *)&v22 + 1) = pBloodsplatContainer->std__vector_pBloodsplats[*a6b].r;
-      //LOBYTE(v22) = pBloodsplatContainer->std__vector_pBloodsplats[*a6b].g;
-      v43 = pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].b |
-           ((unsigned int)pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].g << 8) |
-           ((unsigned int)pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].r << 16);
-      v25 = (signed __int64)pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].x;
-      //v27 = (signed __int64)pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].y;
-      //v37 = a8;
-      //v40 = (signed __int64)pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].z;
-      //v28 = pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].dot_dist;
-      //LODWORD(v36) = (uint32)a6;
-      //a5a = v25;
-      //v39 = v27;
-      //LODWORD(v35) = a5;
-      //v34 = &static_AE4F60;
-      //v33 = v28;
-      //v32 = pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].b | (v22 << 8);
-      //v29 = pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].radius;
-      //v30 = (int)v21;
-      //v31 = thisa;
-      if ( !this->_49B790_build_decal_geometry(point_light_level, a3,
-		  &pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]],
-		  (int)&v25,
-		  pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].radius,
-		  v43,
-		  pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].dot_dist,
-		  &static_AE4F60, a5, a6, a8) )
-        MessageBoxW(nullptr, L"Error: Failed to build decal geometry", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\PolyProjector.cpp:114", 0);
+        __init_flag1 = true;
+
+        for (uint i = 0; i < 64; ++i)
+            static_AE4F90[i].flt_2C = 0.0f;
     }
-  }
-  return 1;
+
+    static stru314 static_AE4F60; // idb
+    /*static bool __init_flag2 = false;
+    if (!__init_flag2)
+    {
+      __init_flag2 = true;
+
+      stru314::stru314(&static_AE4F60);
+    }*/
+
+    //a11 = a6;
+    if (a7)
+    {
+        for (int i = 0; i < a5; i++)
+        {
+            memcpy(&static_AE4F90[i], a6, 0x30u);
+            ++a6;
+        }
+        v16 = a4;
+        if (pIndoorCameraD3D->_437376(a4, static_AE4F90, (unsigned int *)&a5) == 1)
+        {
+            if (!a5)
+                return 0;
+            a6 = static_AE4F90;
+        }
+    }
+    else
+        v16 = a4;
+    //v18 = v16->face_plane.vNormal.z;
+    //v19 = v16->face_plane.vNormal.y;
+    //v20 = v16->face_plane.vNormal.x;
+    //v37 = (int)&static_AE4F60.field_1C;
+    static_AE4F60.Normal.y = v16->face_plane.vNormal.y;
+    static_AE4F60.Normal.x = v16->face_plane.vNormal.x;
+    //LODWORD(v36) = (DWORD)&static_AE4F60.field_10;
+    static_AE4F60.Normal.z = v16->face_plane.vNormal.z;
+    static_AE4F60.dist = v16->face_plane.dist;
+    if (!pIndoorCameraD3D->GetFacetOrientation(v16->polygonType, &static_AE4F60.Normal,
+        &static_AE4F60.field_10, &static_AE4F60.field_1C))
+        Log::Warning(L"Error: Failed to get the facet orientation");
+
+    if (this->uNumDecals > 0)
+    {
+        //a6b = this->std__vector_30B00C;
+        for (int i = 0; i < this->uNumDecals; ++i)
+        {
+            //v21 = &pBloodsplatContainer->std__vector_pBloodsplats[*a6b];
+            int point_light_level = _43F5C8_get_point_light_level_with_respect_to_lights(light_level, uSectorID,
+                pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].x,
+                pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].y,
+                pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].z);
+
+            v43 = pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].b |
+                ((unsigned int)pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].g << 8) |
+                ((unsigned int)pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].r << 16);
+            v25 = (signed __int64)pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].x;
+
+            if (!this->_49B790_build_decal_geometry(point_light_level, a3,
+                &pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]],
+                (int)&v25,
+                pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].radius,
+                v43,
+                pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].dot_dist,
+                &static_AE4F60, a5, a6, a8))
+                Log::Warning(L"Error: Failed to build decal geometry");
+        }
+    }
+    return 1;
 }
 
 //----- (0049B790) --------------------------------------------------------
@@ -300,23 +266,23 @@ char DecalBuilder::_49B790_build_decal_geometry(int a2, char a3, Bloodsplat *blo
       this->DecalsCount = v34;
       return 1;
     }
-    if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
     {
-      if ( uClipFlags & 2 )
-      {
-        pIndoorCameraD3D->LightmapNeerClip(decal->pVertices, decal->uNumVertices, this->pVertices, &a8b);
-        pIndoorCameraD3D->_437143(a8b, decal->pVertices, this->pVertices, (signed int *)&decal->uNumVertices);
-      }
-      else if ( uClipFlags & 4 )
-      {
-        pIndoorCameraD3D->LightmapFarClip(decal->pVertices, decal->uNumVertices, this->pVertices, &a8b);
-        pIndoorCameraD3D->_437143(a8b, decal->pVertices, this->pVertices, (signed int *)&decal->uNumVertices);
-      }
-      else
-        MessageBoxA(nullptr, "Undefined clip flag specified", "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\PolyProjector.cpp:258", 0);
+        if (uClipFlags & 2)
+        {
+            pIndoorCameraD3D->LightmapNeerClip(decal->pVertices, decal->uNumVertices, this->pVertices, &a8b);
+            pIndoorCameraD3D->_437143(a8b, decal->pVertices, this->pVertices, (signed int *)&decal->uNumVertices);
+        }
+        else if (uClipFlags & 4)
+        {
+            pIndoorCameraD3D->LightmapFarClip(decal->pVertices, decal->uNumVertices, this->pVertices, &a8b);
+            pIndoorCameraD3D->_437143(a8b, decal->pVertices, this->pVertices, (signed int *)&decal->uNumVertices);
+        }
+        else
+            Log::Warning(L"Undefined clip flag specified");
     }
     else
-      MessageBoxA(nullptr, "Lightpoly builder native indoor clipping not implemented", "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\PolyProjector.cpp:263", 0);
+        Log::Warning(L"Lightpoly builder native indoor clipping not implemented");
     if ( a8b != 0 )
     {
       ++this->curent_decal_id;
@@ -483,7 +449,7 @@ bool DecalBuilder::_49BE8A(struct Polygon *a2, Vec3_float_ *_a3, float *a4, Rend
 		  }
         }
 		else
-			MessageBoxW(nullptr, L"Uknown strip type detected!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\PolyProjector.cpp:434", 0);
+			Log::Warning(L"Uknown strip type detected!");
         //v21 = uStripType;
         //v13 = pIndoorCameraD3D->GetPolygonMinZ(v8, uStripType);
         //v21 = uStripType;
@@ -503,7 +469,7 @@ bool DecalBuilder::_49BE8A(struct Polygon *a2, Vec3_float_ *_a3, float *a4, Rend
 				+ *a4;
 			v22 = v26 + 0.5f;
 			//v25 = LODWORD(v22);
-			v14 = (double)SLODWORD(v22);
+			v14 = (double)HEXRAYS_SLODWORD(v22);
 			v28 = v14;
 			if ( v14 <= pBloodsplatContainer->std__vector_pBloodsplats[i].radius )
 			{
@@ -513,13 +479,13 @@ bool DecalBuilder::_49BE8A(struct Polygon *a2, Vec3_float_ *_a3, float *a4, Rend
 					v16 = pBloodsplatContainer->std__vector_pBloodsplats[i].field_1C;
 					if ( !(pBloodsplatContainer->std__vector_pBloodsplats[i].field_1C & 1) )
 					{
-						LOBYTE(v16) = v16 | 1;
+						v16 |= 1;
 						pBloodsplatContainer->std__vector_pBloodsplats[i].field_1C = v16;
 						pBloodsplatContainer->std__vector_pBloodsplats[i].field_20 = pEventTimer->Time();
 					}
 				}
 				//v17 = v32;
-				pBloodsplatContainer->std__vector_pBloodsplats[i].dot_dist = LODWORD(v28);
+				pBloodsplatContainer->std__vector_pBloodsplats[i].dot_dist = HEXRAYS_LODWORD(v28);
 				//v18 = this;
 				this->std__vector_30B00C[this->uNumDecals] = i;
 				++this->uNumDecals;
@@ -531,7 +497,7 @@ bool DecalBuilder::_49BE8A(struct Polygon *a2, Vec3_float_ *_a3, float *a4, Rend
       }
     }
   }
-  //LOBYTE(result) = 1;
+
   return true;
 }
 

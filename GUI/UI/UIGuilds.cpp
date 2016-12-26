@@ -13,7 +13,7 @@
 #include "Engine/Objects/Items.h"
 
 #include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/IRender.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIFont.h"
@@ -41,7 +41,6 @@ void GuildDialog()
     GUIButton *pButton; // eax@49
     int pTextHeight; // eax@55
     unsigned __int16 pTextColor; // ax@55
-    POINT cursor; // [sp+26Ch] [bp-80h]@30
     GUIWindow working_window; // [sp+274h] [bp-78h]@1
     int v58; // [sp+2D4h] [bp-18h]@1
     bool pSkillFlag; // [sp+2DCh] [bp-10h]@35
@@ -208,7 +207,7 @@ void GuildDialog()
                 if (pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].uItemID > 0)
                     ++v8;
             }
-            GetAsyncKeyState(VK_CONTROL);
+
             GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);//"Select the Item to Buy"
             if (!v8)
             {
@@ -217,8 +216,9 @@ void GuildDialog()
                 );//"Приходите через 14 дней"
                 return;
             }
-            pMouse->GetCursorPos(&cursor);
-            v13 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
+
+            Point pt = pMouse->GetCursorPos();
+            v13 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
             if (v13)
             {
                 v15 = (ItemGen *)(&pParty->pPlayers[1].uExpressionTimeLength + 18 * (v13 + 12 * (int)window_SpeakInHouse->ptr_1C));

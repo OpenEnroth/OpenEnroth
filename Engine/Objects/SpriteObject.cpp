@@ -152,22 +152,10 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID)
     //signed int v30; // edi@59
     BSPModel *bmodel; // ecx@61
     ODMFace *face; // edi@61
-  //  int v33; // eax@62
-  //  int v34; // ecx@62
-    int v35; // eax@63
     int v36; // ecx@67
     __int16 v37; // ax@67
     int v38; // eax@72
-    //int v39; // eax@72
-  //  unsigned __int64 v40; // qax@72
-  //  int v41; // eax@72
-  //  unsigned __int8 v42; // sf@74
-  //  unsigned __int8 v43; // of@74
     int v44; // eax@77
-  //  __int16 v45; // bx@81
-  //  int v46; // eax@85
-  //  const char *v47; // [sp-8h] [bp-B0h]@83
-  //  enum TEXTURE_TYPE v48; // [sp-4h] [bp-ACh]@46
     int v49; // [sp+Ch] [bp-9Ch]@52
     int v50; // [sp+10h] [bp-98h]@52
     Vec3_int_ v51; // [sp+14h] [bp-94h]@11
@@ -205,14 +193,14 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID)
     {
         if (v58)
         {
-            pSpriteObjects[uLayingItemID].vVelocity.z -= LOWORD(pEventTimer->uTimeElapsed) * GetGravityStrength();
+            pSpriteObjects[uLayingItemID].vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
             goto LABEL_13;
         }
         if (v57)
         {
             pSpriteObjects[uLayingItemID].vPosition.z = v8;
             ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, &v51);
-            pSpriteObjects[uLayingItemID].vVelocity.z -= LOWORD(pEventTimer->uTimeElapsed) * GetGravityStrength();
+            pSpriteObjects[uLayingItemID].vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
             v56 = abs(v51.y * pSpriteObjects[uLayingItemID].vVelocity.y + v51.z * pSpriteObjects[uLayingItemID].vVelocity.z + v51.x * pSpriteObjects[uLayingItemID].vVelocity.x) >> 16;
             //v60 = ((unsigned __int64)(v56 * (signed __int64)v51.x) >> 16);
             pSpriteObjects[uLayingItemID].vVelocity.x += fixpoint_mul(v56, v51.x);
@@ -348,7 +336,7 @@ LABEL_13:
                 pSpriteObjects[uLayingItemID].vPosition.x = stru_721530.normal2.x;
                 pSpriteObjects[uLayingItemID].vPosition.y = stru_721530.normal2.y;
                 pSpriteObjects[uLayingItemID].vPosition.z = stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
-                pSpriteObjects[uLayingItemID].uSectorID = LOWORD(stru_721530.uSectorID);
+                pSpriteObjects[uLayingItemID].uSectorID = (short)stru_721530.uSectorID;
                 memset(&Dst, 0, 0x68u);
                 Dst.x = (double)pSpriteObjects[uLayingItemID].vPosition.x;
                 Dst.y = (double)pSpriteObjects[uLayingItemID].vPosition.y;
@@ -392,7 +380,7 @@ LABEL_13:
             //v60 = ((unsigned __int64)(stru_721530.field_7C * (signed __int64)stru_721530.direction.y) >> 16);
             pSpriteObjects[uLayingItemID].vPosition.y += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
             //v60 = ((unsigned __int64)(stru_721530.field_7C * (signed __int64)stru_721530.direction.z) >> 16);
-            v28 = LOWORD(stru_721530.uSectorID);
+            v28 = (short)stru_721530.uSectorID;
             pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
             v29 = pSpriteObjects[uLayingItemID].vPosition.z;
             pSpriteObjects[uLayingItemID].uSectorID = v28;
@@ -421,10 +409,9 @@ LABEL_13:
                     }
                     else
                     {
-                        LOWORD(v35) = 0;
                         pSpriteObjects[uLayingItemID].vVelocity.z = 0;
                         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
-                        pSpriteObjects[uLayingItemID].vVelocity.y = v35;
+                        pSpriteObjects[uLayingItemID].vVelocity.y = 0;
                     }
                 }
                 else
@@ -562,8 +549,8 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
                 pSpriteObject->vPosition.x = stru_721530.normal2.x;
                 pSpriteObject->vPosition.y = stru_721530.normal2.y;
                 pSpriteObject->vPosition.z = stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
-                pSpriteObject->uSectorID = LOWORD(stru_721530.uSectorID);
-                if (!(HIBYTE(pObject->uFlags) & 1))
+                pSpriteObject->uSectorID = (short)stru_721530.uSectorID;
+                if (!(pObject->uFlags & 0x100))
                     return;
                 memset(&Dst, 0, 0x68u);
                 Dst.x = (double)pSpriteObject->vPosition.x;
@@ -686,7 +673,7 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
     //для падающих объектов(для примера выброс вещи из инвентаря)
     if (v42 <= pSpriteObject->vPosition.z - 3)
     {
-        pSpriteObject->vVelocity.z -= LOWORD(pEventTimer->uTimeElapsed) * GetGravityStrength();
+        pSpriteObject->vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
         goto LABEL_25;
     }
     if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) || _46BFFA_update_spell_fx(uLayingItemID, 0))
@@ -697,7 +684,7 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
         else
         {
             if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 45000)
-                pSpriteObject->vVelocity.z -= LOWORD(pEventTimer->uTimeElapsed) * GetGravityStrength();
+                pSpriteObject->vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
         }
         pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
         pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
@@ -894,7 +881,7 @@ void SpriteObject::_46BEF1_apply_spells_aoe()
                         pActors[i].pActorBuffs[this->spell_id].Apply(
                             pParty->GetPlayingTime() + GameTime::FromSeconds(this->spell_level),
                             this->spell_skill, 4, 0, 0);
-                        HIWORD(pActors[i].uAttributes) |= 8;
+                        pActors[i].uAttributes |= 0x80000;
                     }
                 }
             }
@@ -1007,7 +994,7 @@ void SpriteObject::sub_42F960_create_object(int x, int y, int z)
   if ( v8 != -1 )
   {
     v9 = 8 * v8;
-    LOBYTE(v9) = v9 | 2;
+    v9 |= 2;
     pAudioPlayer->PlaySound((SoundID)SOUND_splash, v9, 0, -1, 0, 0, 0, 0);
   }
 }
@@ -1152,7 +1139,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             else
                 v97 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
             v124 = 8 * uLayingItemID;
-            LOBYTE(v124) = v124 | 2;
+            v124 |= 2;
             v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
             pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
             return 0;
@@ -1172,7 +1159,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
         v13 = 8 * uLayingItemID;
-        LOBYTE(v13) = PID(OBJECT_Item, uLayingItemID);
+        v13 |= PID(OBJECT_Item, uLayingItemID);
         pAudioPlayer->PlaySound(SOUND_fireBall, v13, 0, -1, 0, 0, 0, 0);
         return 0;
     }
@@ -1206,7 +1193,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         if (pSpriteObjects[uLayingItemID].uType == 555)
         {
             v13 = 8 * uLayingItemID;
-            LOBYTE(v13) = PID(OBJECT_Item, uLayingItemID);
+            v13 |= PID(OBJECT_Item, uLayingItemID);
             pAudioPlayer->PlaySound(SOUND_fireBall, v13, 0, -1, 0, 0, 0, 0);
         }
         return 0;
@@ -1228,7 +1215,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             else
                 v16 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
             v124 = 8 * uLayingItemID;
-            LOBYTE(v124) = v124 | 2;
+            v124 |= 2;
             v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id] + 1;
             pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
             return 0;
@@ -1266,7 +1253,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         if (!v44)
         {
             v13 = 8 * uLayingItemID;
-            LOBYTE(v13) = PID(OBJECT_Item, uLayingItemID);
+            v13 |= PID(OBJECT_Item, uLayingItemID);
             pAudioPlayer->PlaySound(SOUND_fireBall, v13, 0, -1, 0, 0, 0, 0);
             return 0;
         }
@@ -1289,7 +1276,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         pSpriteObjects[uLayingItemID].vVelocity.z = 0;
         v38 = 8 * uLayingItemID;
         v39 = pSpriteObjects[uLayingItemID].vPosition.y;
-        LOBYTE(v38) = PID(OBJECT_Item, uLayingItemID);
+        v38 |= PID(OBJECT_Item, uLayingItemID);
         pSpriteObjects[uLayingItemID].vVelocity.y = 0;
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         v40 = pSpriteObjects[uLayingItemID].vPosition.x;
@@ -1336,7 +1323,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         else
             v97 = (signed __int16)v96 + 4;
         v124 = 8 * uLayingItemID;
-        LOBYTE(v124) = v124 | 2;
+        v124 |= v124 | 2;
         v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
         pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
         return 0;
@@ -1402,7 +1389,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         else
             v16 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
         v124 = 8 * uLayingItemID;
-        LOBYTE(v124) = v124 | 2;
+        v124 |= v124 | 2;
         v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
         pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
         return 0;
@@ -1430,7 +1417,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         else
             v16 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
         v124 = 8 * uLayingItemID;
-        LOBYTE(v124) = v124 | 2;
+        v124 |= v124 | 2;
         v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
         pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
         return 0;
@@ -1502,7 +1489,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         else
             v16 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
         v124 = 8 * uLayingItemID;
-        LOBYTE(v124) = v124 | 2;
+        v124 |= 2;
         v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
         pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
         return 0;
@@ -1564,7 +1551,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             v97 = (signed __int16)v96 + 4;
         v92 = uLayingItemID;
         v124 = 8 * v92;
-        LOBYTE(v124) = v124 | 2;
+        v124 |= 2;
         v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
         pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
         return 0;
@@ -1596,7 +1583,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         else
             v97 = (signed __int16)v96 + 4;
         v124 = 8 * uLayingItemID;
-        LOBYTE(v124) = v124 | 2;
+        v124 |= 2;
         v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
         pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
         return 0;
@@ -1650,7 +1637,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
                 else
                     v114 = 0;
                 v115 = 8 * uLayingItemID;
-                LOBYTE(v115) = PID(OBJECT_Item, uLayingItemID);
+                v115 |= PID(OBJECT_Item, uLayingItemID);
                 v125 = v143 + 1;
                 pAudioPlayer->PlaySound((SoundID)v125, v115, 0, -1, 0, v114, 0, 0);
             }
@@ -1748,7 +1735,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             else
                 v114 = 0;
             v115 = 8 * uLayingItemID;
-            LOBYTE(v115) = PID(OBJECT_Item, uLayingItemID);
+            v115 |= PID(OBJECT_Item, uLayingItemID);
             v125 = v143 + 1;
             pAudioPlayer->PlaySound((SoundID)v125, v115, 0, -1, 0, v114, 0, 0);
         }
@@ -1780,7 +1767,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         else
             v97 = (signed __int16)v96 + 4;
         v124 = 8 * uLayingItemID;
-        LOBYTE(v124) = v124 | 2;
+        v124 |= v124 | 2;
         v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
         pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
         return 0;
@@ -1848,7 +1835,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         v100 = pSpriteObjects[uLayingItemID].field_61;
         pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
         v102 = 8 * uLayingItemID;
-        LOBYTE(v102) = PID(OBJECT_Item, uLayingItemID);
+        v102 |= PID(OBJECT_Item, uLayingItemID);
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         pSpriteObjects[uLayingItemID].vVelocity.y = 0;
         pSpriteObjects[uLayingItemID].vVelocity.z = 0;

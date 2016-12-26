@@ -1196,7 +1196,7 @@ int sprintfex_internal(char *str)
   
   auto src = buf,
        dst = p;
-  strcpy(buf, str + (p - str));
+  strcpy_s(buf, str + (p - str));
   while (true)
   {
     switch (src[1])

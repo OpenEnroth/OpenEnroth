@@ -115,6 +115,12 @@
     <Filter Include="Engine\Serialization">
       <UniqueIdentifier>{74f93afa-5a55-4c13-976b-a34e4c9aad04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{e0a247c7-9211-4e03-a951-2cfebc15af91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Win">
+      <UniqueIdentifier>{b7a41e2d-1c0d-4ce5-87ea-cb25efafa153}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lib\zlib\adler32.c">
@@ -301,8 +307,6 @@
       <Filter>lib\libpng</Filter>
     </ClCompile>
     <ClCompile Include="..\..\_deleted.cpp" />
-    <ClCompile Include="..\..\OSAPI.cpp" />
-    <ClCompile Include="..\..\OSWindow.cpp" />
     <ClCompile Include="..\..\Arcomage\Arcomage.cpp">
       <Filter>Arcomage</Filter>
     </ClCompile>
@@ -623,6 +627,21 @@
     </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\Texture.cpp">
       <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\OSWindow.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\Win\AppSettings.cpp">
+      <Filter>Platform\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\Win\AppEntry.cpp">
+      <Filter>Platform\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\Win\Win.cpp">
+      <Filter>Platform\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\Win\CdCheck.cpp">
+      <Filter>Platform\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1049,9 +1068,6 @@
     <ClInclude Include="..\..\lib\libpng\pngstruct.h">
       <Filter>lib\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\OSAPI.h" />
-    <ClInclude Include="..\..\OSInfo.h" />
-    <ClInclude Include="..\..\OSWindow.h" />
     <ClInclude Include="..\..\Arcomage\Arcomage.h">
       <Filter>Arcomage</Filter>
     </ClInclude>
@@ -1244,9 +1260,6 @@
     <ClInclude Include="..\..\Engine\Random.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\resource.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Engine\SaveLoad.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -1416,6 +1429,24 @@
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Texture.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Point.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Rect.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\Win\Win.h">
+      <Filter>Platform\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\OSWindow.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\Api.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Polygon.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

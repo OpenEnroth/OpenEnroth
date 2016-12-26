@@ -1,8 +1,3 @@
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
-#include <crtdbg.h>
-
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
@@ -60,8 +55,7 @@ void GUIWindow_MainMenu::Update()
 {
 // -----------------------------------
 // 004627B7 void MainMenu_Loop -- part
-    POINT pt;
-    pMouse->GetCursorPos(&pt);
+    Point pt = pMouse->GetCursorPos();
     GUIWindow *pWindow = this;//pWindow_MainMenu;
     //if (GetCurrentMenuID() == MENU_SAVELOAD)
     //    pWindow = pGUIWindow_CurrentMenu;
@@ -304,32 +298,28 @@ void MainMenuUI_Create()
 //----- (00452AF3) --------------------------------------------------------
 void fill_pixels_fast(unsigned int a1, unsigned __int16 *pPixels, unsigned int uNumPixels)
 {
-  void *v3; // edi@1
-  unsigned int v4; // eax@1
-  unsigned __int16 *v5; // edi@3
-  unsigned int i; // ecx@3
+    void *v3; // edi@1
+    unsigned int v4; // eax@1
+    unsigned __int16 *v5; // edi@3
+    unsigned int i; // ecx@3
 
-  if (for_refactoring)
-  {
-    MessageBoxA(nullptr, "Nomad: sub operates on 16 bit pixels, we have 32 bits.", "", 0);
-    __debugbreak();
-  }
+    Log::Warning(L"Nomad: sub operates on 16 bit pixels, we have 32 bits.");
 
-  v3 = pPixels;
-  v4 = a1 | (a1 << 16);
-  if ( (unsigned __int8)pPixels & 2 )           // first 2 pixels
-  {
-    *pPixels = v4;
-    v3 = pPixels + 1;
-    --uNumPixels;
-  }
-  memset32(v3, v4, uNumPixels >> 1);            // 4 pixels at once
-  v5 = (unsigned __int16 *)((char *)v3 + 4 * (uNumPixels >> 1));
-  for ( i = uNumPixels & 1; i; --i )            // leftover pixels
-  {
-    *v5 = v4;
-    ++v5;
-  }
+    v3 = pPixels;
+    v4 = a1 | (a1 << 16);
+    if ((unsigned __int8)pPixels & 2)           // first 2 pixels
+    {
+        *pPixels = v4;
+        v3 = pPixels + 1;
+        --uNumPixels;
+    }
+    memset32(v3, v4, uNumPixels >> 1);            // 4 pixels at once
+    v5 = (unsigned __int16 *)((char *)v3 + 4 * (uNumPixels >> 1));
+    for (i = uNumPixels & 1; i; --i)            // leftover pixels
+    {
+        *v5 = v4;
+        ++v5;
+    }
 }
 
 //----- (004979D2) --------------------------------------------------------
@@ -338,7 +328,6 @@ MENU_STATE MainMenuUI_Credits_Loop()
     char *cred_texturet; // edi@5
     FILE *pFile; // eax@5
     unsigned int pSize; // esi@7
-    MSG Msg; // [sp+84h] [bp-B8h]@10
     GUIWindow credit_window;
     int move_Y; // [sp+128h] [bp-14h]@1
     char *pString; // [sp+12Ch] [bp-10h]@9
@@ -407,16 +396,10 @@ MENU_STATE MainMenuUI_Credits_Loop()
     move_Y = 0;
     do
     {
-        while (PeekMessageA(&Msg, 0, 0, 0, 1))
-        {
-            if (Msg.message == 18)
-                Engine_DeinitializeAndTerminate(0);
-            TranslateMessage(&Msg);
-            DispatchMessageA(&Msg);
-        }
+        OS_PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
         {
-            WaitMessage();
+            OS_WaitMessage();
         }
         else
         {

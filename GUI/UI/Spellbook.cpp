@@ -5,7 +5,7 @@
 #include "Engine/LOD.h"
 #include "Engine/Time.h"
 
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "IO/Mouse.h"
@@ -152,14 +152,10 @@ void GUIWindow_Spellbook::Update()
 // 00412B58 void DrawSpellBookContent(Player *player)
     auto player = pPlayers[uActiveCharacter];
 
-    //Texture_MM7 *PendingTexture; // edi@1
     Image *pTexture; // edx@5
     int v10; // eax@13
     unsigned int pX_coord; // esi@18
     unsigned int pY_coord; // edi@18
-    //Texture_MM7 *pPageTexture; // eax@21
-    //  signed int v22; // [sp-4h] [bp-24h]@22
-    POINT a2; // [sp+18h] [bp-8h]@13
 
     static unsigned int texture_tab_coord1[9][2] =
     { { 406, 9 }, { 406, 46 }, { 406, 84 }, { 406, 121 }, { 407, 158 }, { 405, 196 }, { 405, 234 }, { 405, 272 }, { 405, 309 } };
@@ -198,8 +194,8 @@ void GUIWindow_Spellbook::Update()
         }
     }
 
-    pMouse->GetCursorPos(&a2);
-    v10 = render->pActiveZBuffer[a2.x + pSRZBufferLineOffsets[a2.y]] & 0xFFFF;
+    Point pt = pMouse->GetCursorPos();
+    v10 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
     if (v10)
     {
         if (SBPageCSpellsTextureList[v10])

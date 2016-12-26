@@ -68,7 +68,6 @@ void GUIWindow_TownPortalBook::Update()
 // {
     int v3; // edi@17
     GUIWindow TownPortalWindow; // [sp+Ch] [bp-64h]@1
-    POINT a2; // [sp+68h] [bp-8h]@17
 
     render->ClearZBuffer(0, 479);
     render->DrawTextureNew(8/640.0f, 8/480.0f, ui_book_townportal_background);
@@ -101,8 +100,8 @@ void GUIWindow_TownPortalBook::Update()
             );
     }
 
-    pMouse->GetCursorPos(&a2);
-    v3 = render->pActiveZBuffer[a2.x + pSRZBufferLineOffsets[a2.y]] & 0xFFFF;
+    Point pt = pMouse->GetCursorPos();
+    v3 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
 
     if (v3)
     {

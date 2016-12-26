@@ -1,8 +1,5 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
+#include "lib\legacy_dx\ddraw.h"
+#include "lib\legacy_dx\d3d.h"
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
@@ -17,7 +14,17 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 
+#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/RenderStruct.h"
 #include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/Vis.h"
+#include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Level/Decoration.h"
 
 #include "Media/MediaPlayer.h"
@@ -26,26 +33,51 @@
 
 #include "IO/Mouse.h"
 
-#include "Render.h"
-#include "Sprites.h"
-#include "GammaControl.h"
-#include "DecalBuilder.h"
-#include "ParticleEngine.h"
-#include "Outdoor.h"
-#include "Viewport.h"
-#include "PaletteManager.h"
-#include "LightmapBuilder.h"
-#include "DecorationList.h"
-#include "Lights.h"
-#include "Vis.h"
-#include "Weather.h"
+#include "Arcomage/Arcomage.h"
 
+#include "Platform/Api.h"
+
+#include "Sprites.h"
+#include "PaletteManager.h"
+#include "DecorationList.h"
+
+
+
+IRender *IRender::Create() { return new Render(); }
+
+/*  384 */
+#pragma pack(push, 1)
+struct PCXHeader_1
+{
+    char manufacturer;
+    char version;
+    char encoding;
+    char bpp;
+    __int16 left;
+    __int16 up;
+    __int16 right;
+    __int16 bottom;
+    __int16 hdpi;
+    __int16 vdpi;
+};
+#pragma pack(pop)
+
+/*  385 */
+#pragma pack(push, 1)
+struct PCXHeader_2
+{
+    char reserved;
+    char planes;
+    __int16 pitch;
+    __int16 palette_info;
+};
+#pragma pack(pop)
 
 //#pragma comment(lib, "lib\\legacy_dx\\lib\\ddraw.lib")
 //#pragma comment(lib, "lib\\legacy_dx\\lib\\dxguid.lib")
 
 struct IDirectDrawClipper *pDDrawClipper;
-class IRender *render; // idb
+IRender *render = nullptr;
 struct RenderVertexD3D3  pVertices[50];
 int uNumDecorationsDrawnThisFrame;
 RenderBillboard pBillboardRenderList[500];
@@ -58,38 +90,69 @@ RenderVertexSoft array_73D150[20];
 
 RenderVertexD3D3 d3d_vertex_buffer[50];
 
-/*  384 */
-#pragma pack(push, 1)
-struct PCXHeader_1
-{
-  char manufacturer;
-  char version;
-  char encoding;
-  char bpp;
-  __int16 left;
-  __int16 up;
-  __int16 right;
-  __int16 bottom;
-  __int16 hdpi;
-  __int16 vdpi;
-};
-#pragma pack(pop)
+DDPIXELFORMAT ddpfPrimarySuface;
 
-/*  385 */
-#pragma pack(push, 1)
-struct PCXHeader_2
+
+void ErrHR(HRESULT hr, const char *pAPI, const char *pFunction, const char *pFile, int line)
 {
-  char reserved;
-  char planes;
-  __int16 pitch;
-  __int16 palette_info;
-};
-#pragma pack(pop)
+    if (SUCCEEDED(hr))
+        return;
+
+    char msg[4096];
+    sprintf(msg, "%s error (%08X) in\n\t%s\nin\n\t%s:%u", pAPI, hr, pFunction, pFile, line);
+
+    char caption[1024];
+    sprintf(caption, "%s error", pAPI);
+
+    Error(msg);
+}
+
+
+
 
 HRESULT __stdcall D3DZBufferFormatEnumerator(DDPIXELFORMAT *Src, DDPIXELFORMAT *Dst);
 HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc, __int16 *a2);
 HRESULT __stdcall D3DDeviceEnumerator(const GUID *lpGUID, const char *lpDeviceDesc, const char *lpDeviceName, D3DDEVICEDESC *pHWDesc, D3DDEVICEDESC *pSWDesc, struct RenderD3D_aux *a6);
-signed int __stdcall RenderD3D__DeviceEnumerator(GUID *lpGUID, const char *lpDevDesc, const char *lpDriverName, RenderD3D__DevInfo *pOut); // idb
+int __stdcall RenderD3D__DeviceEnumerator(GUID *lpGUID, const char *lpDevDesc, const char *lpDriverName, RenderD3D__DevInfo *pOut); // idb
+
+
+
+
+unsigned int Render::GetRenderWidth() const { return window->GetWidth(); }
+unsigned int Render::GetRenderHeight() const { return window->GetHeight(); }
+
+
+
+
+void Render::WritePixel16(int x, int y, unsigned __int16 color)
+{
+    if (ddpfPrimarySuface.dwRGBBitCount == 32)
+    {
+        auto p = (unsigned __int32 *)pTargetSurface + x + y * uTargetSurfacePitch;
+        *p = Color32(color);
+    }
+    else if (ddpfPrimarySuface.dwRGBBitCount == 16)
+    {
+        auto p = (unsigned __int16 *)pTargetSurface + x + y * uTargetSurfacePitch;
+        *p = color;
+    }
+    else __debugbreak();
+}
+
+unsigned __int16 Render::ReadPixel16(int x, int y)
+{
+    if (ddpfPrimarySuface.dwRGBBitCount == 32)
+    {
+        auto p = (unsigned __int32 *)pTargetSurface + x + y * uTargetSurfacePitch;
+        return Color16((*p >> 16) & 255, (*p >> 8) & 255, *p & 255);
+    }
+    else if (ddpfPrimarySuface.dwRGBBitCount == 16)
+    {
+        auto p = (unsigned __int16 *)pTargetSurface + x + y * uTargetSurfacePitch;
+        return *p;
+    }
+    else __debugbreak();
+}
 
 //----- (0049E79F) --------------------------------------------------------
 bool Render::CheckTextureStages()
@@ -579,10 +642,9 @@ void Render::DrawSpriteObjects_ODM()
             if (frame->uFlags & 0x40000)
                 v46 |= 0x40;
             if (frame->uFlags & 0x20000)
-                LOBYTE(v46) = v46 | 0x80;
+                v46 |= 0x80;
             if (a6)
             {
-                //LOBYTE(v11) = _4E94D3_light_type;
                 pMobileLightsStack->AddLight(x, y, z, object->uSectorID, a6, 0xFF, 0xFF, 0xFF, _4E94D3_light_type);
             }
             if (pIndoorCameraD3D->sRotationX)
@@ -599,8 +661,8 @@ void Render::DrawSpriteObjects_ODM()
                         - fixpoint_mul(v30, pIndoorCameraD3D->int_sine_x);
                     if (abs(v42) >= abs(v17))
                     {
-                        LODWORD(v23) = 0;
-                        HIDWORD(v23) = SLOWORD(pODMRenderParams->int_fov_rad);
+                        HEXRAYS_LODWORD(v23) = 0;
+                        HEXRAYS_HIDWORD(v23) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
 
                         object->uAttributes |= 1;
                         pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
@@ -614,8 +676,8 @@ void Render::DrawSpriteObjects_ODM()
                         pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
                         pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v23 / v42, v17) + 0x8000) >> 16);
                         pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = pViewport->uScreenCenterY - (((unsigned int)fixpoint_mul(v23 / v42, v18) + 0x8000) >> 16);
-                        HIWORD(v26) = HIWORD(v42);
-                        LOWORD(v26) = 0;
+                        HEXRAYS_HIWORD(v26) = HEXRAYS_HIWORD(v42);
+                        HEXRAYS_LOWORD(v26) = 0;
                         pBillboardRenderList[::uNumBillboardsToDraw].sZValue = v26 + (PID(OBJECT_Item, i));
                         pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
                         pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
@@ -646,8 +708,8 @@ void Render::DrawSpriteObjects_ODM()
                     v18 = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
                     if (abs(v42) >= abs(v17))
                     {
-                        LODWORD(v23) = 0;
-                        HIDWORD(v23) = SLOWORD(pODMRenderParams->int_fov_rad);
+                        HEXRAYS_LODWORD(v23) = 0;
+                        HEXRAYS_HIDWORD(v23) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
 
                         object->uAttributes |= 1;
                         pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
@@ -661,8 +723,8 @@ void Render::DrawSpriteObjects_ODM()
                         pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
                         pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v23 / v42, v17) + 0x8000) >> 16);
                         pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = pViewport->uScreenCenterY - (((unsigned int)fixpoint_mul(v23 / v42, v18) + 0x8000) >> 16);
-                        HIWORD(v26) = HIWORD(v42);
-                        LOWORD(v26) = 0;
+                        HEXRAYS_HIWORD(v26) = HEXRAYS_HIWORD(v42);
+                        HEXRAYS_LOWORD(v26) = 0;
                         pBillboardRenderList[::uNumBillboardsToDraw].sZValue = v26 + (PID(OBJECT_Item, i));
                         pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
                         pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
@@ -687,7 +749,7 @@ void Render::DrawSpriteObjects_ODM()
 }
 
 //----- (0049D9BC) --------------------------------------------------------
-signed int __stdcall RenderD3D__DeviceEnumerator(GUID *lpGUID, const char *lpDevDesc, const char *lpDriverName, RenderD3D__DevInfo *pOut)
+int __stdcall RenderD3D__DeviceEnumerator(GUID *lpGUID, const char *lpDevDesc, const char *lpDriverName, RenderD3D__DevInfo *pOut)
 {
   size_t v4; // eax@1
   size_t v5; // eax@1
@@ -816,10 +878,10 @@ HRESULT __stdcall D3DDeviceEnumerator(const GUID *lpGUID, const char *lpDeviceDe
       a6->pInfo[v7].uCaps |= 32;
     if ( !(pHWDesc->dpcTriCaps.dwDestBlendCaps & 4) )
       a6->pInfo[v7].uCaps |= 64;
-    if ( !(BYTE1(pHWDesc->dwDevCaps) & 0x10) )
-      BYTE1(a6->pInfo[v7].uCaps) |= 1;
+    if ( !(pHWDesc->dwDevCaps & 0x1000) )
+      a6->pInfo[v7].uCaps |= 0x100;
     if ( pHWDesc->dpcTriCaps.dwTextureCaps & 0x20 )
-      LOBYTE(a6->pInfo[v7].uCaps) |= 0x80;
+      a6->pInfo[v7].uCaps |= 0x80;
 
     a6->pInfo[v7].pName = new char[strlen(lpDeviceName) + 1];
     strcpy(a6->pInfo[v7].pName, lpDeviceName);
@@ -854,12 +916,12 @@ HRESULT __stdcall D3DDeviceEnumerator(const GUID *lpGUID, const char *lpDeviceDe
 //----- (0049D75C) --------------------------------------------------------
 HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc, __int16 *found_compatible_mode)
 {
-  if ( pSurfaceDesc->ddsCaps.dwCaps | DDSCAPS_3DDEVICE /*&& pSurfaceDesc->ddpfPixelFormat.dwRGBBitCount == 16*/ )
-  {
-    *found_compatible_mode = 1;
-	return S_OK;
-  }
-  return 1;
+    if (pSurfaceDesc->ddsCaps.dwCaps | DDSCAPS_3DDEVICE /*&& pSurfaceDesc->ddpfPixelFormat.dwRGBBitCount == 16*/)
+    {
+        *found_compatible_mode = 1;
+        return S_OK;
+    }
+    return 1;
 }
 
 //----- (0047A95E) --------------------------------------------------------
@@ -985,7 +1047,7 @@ void Render::PrepareDecorationsRenderList_ODM()
                     if (frame->uFlags & 0x40000)
                         v38 |= 0x40;
                     if (frame->uFlags & 0x20000)
-                        LOBYTE(v38) = v38 | 0x80;
+                        v38 |= 0x80;
 
                     //for light
                     if (frame->uGlowRadius)
@@ -1019,8 +1081,8 @@ void Render::PrepareDecorationsRenderList_ODM()
                             v22 = fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(v18, pIndoorCameraD3D->int_sine_x);
                             if (2 * abs(v20) >= abs(v21))
                             {
-                                LODWORD(v24) = 0;
-                                HIDWORD(v24) = SLOWORD(pODMRenderParams->int_fov_rad);
+                                HEXRAYS_LODWORD(v24) = 0;
+                                HEXRAYS_HIDWORD(v24) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
                                 v25 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v24 / v20, v21) + 0x8000) >> 16);
                                 v40 = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v24 / v20, v22) + 0x8000) >> 16);
                                 v41 = fixpoint_mul(frame->scale, v24 / v20);
@@ -1040,16 +1102,16 @@ void Render::PrepareDecorationsRenderList_ODM()
                                     pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = v41;
                                     v29 = v38;
                                     pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = v25;
-                                    HIBYTE(v29) |= 2;
+                                    HEXRAYS_HIBYTE(v29) |= 2;
                                     pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
                                     pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v29;
                                     pBillboardRenderList[::uNumBillboardsToDraw].world_x = pLevelDecorations[i].vPosition.x;
                                     pBillboardRenderList[::uNumBillboardsToDraw].world_y = pLevelDecorations[i].vPosition.y;
                                     pBillboardRenderList[::uNumBillboardsToDraw].world_z = pLevelDecorations[i].vPosition.z;
                                     pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = v40;
-                                    HIWORD(v30) = HIWORD(v20);
+                                    HEXRAYS_HIWORD(v30) = HEXRAYS_HIWORD(v20);
                                     v31 = PID(OBJECT_Decoration, i);
-                                    LOWORD(v30) = 0;
+                                    HEXRAYS_LOWORD(v30) = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw].sZValue = v30 + v31;
                                     pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
@@ -1074,8 +1136,8 @@ void Render::PrepareDecorationsRenderList_ODM()
                             v42 = v22;
                             if (2 * abs(v20) >= abs(v21))
                             {
-                                LODWORD(v24) = 0;
-                                HIDWORD(v24) = SLOWORD(pODMRenderParams->int_fov_rad);
+                                HEXRAYS_LODWORD(v24) = 0;
+                                HEXRAYS_HIDWORD(v24) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
                                 v25 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v24 / v20, v21) + 0x8000) >> 16);
                                 v40 = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v24 / v20, v42) + 0x8000) >> 16);
                                 v41 = fixpoint_mul(frame->scale, v24 / v20);
@@ -1095,16 +1157,16 @@ void Render::PrepareDecorationsRenderList_ODM()
                                     pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = v41;
                                     v29 = v38;
                                     pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = v25;
-                                    HIBYTE(v29) |= 2;
+                                    HEXRAYS_HIBYTE(v29) |= 2;
                                     pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
                                     pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v29;
                                     pBillboardRenderList[::uNumBillboardsToDraw].world_x = pLevelDecorations[i].vPosition.x;
                                     pBillboardRenderList[::uNumBillboardsToDraw].world_y = pLevelDecorations[i].vPosition.y;
                                     pBillboardRenderList[::uNumBillboardsToDraw].world_z = pLevelDecorations[i].vPosition.z;
                                     pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = v40;
-                                    HIWORD(v30) = HIWORD(v20);
+                                    HEXRAYS_HIWORD(v30) = HEXRAYS_HIWORD(v20);
                                     v31 = PID(OBJECT_Decoration, i);
-                                    LOWORD(v30) = 0;
+                                    HEXRAYS_LOWORD(v30) = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw].sZValue = v30 + v31;
                                     pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
@@ -1305,7 +1367,7 @@ bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *wi
   IDirectDrawClipper *lpddclipper; // [sp+C4h] [bp-14h]@18
   LPDIRECTDRAW lpDD; // [sp+C8h] [bp-10h]@1
 
-  auto hWnd = window->GetApiHandle();
+  auto hWnd = (HWND)window->GetApiHandle();
   int game_width = window->GetWidth();
   int game_height = window->GetHeight();
 
@@ -2165,7 +2227,7 @@ Render::Render() : IRender()
     //this->bColorKeySupported = 0;
     this->bRequiredTextureStagesAvailable = 0;
     this->bTinting = 1;
-    //LOBYTE(this->field_103668) = 0;
+
     uNumBillboardsToDraw = 0;
     bFogEnabled = false;
 
@@ -2175,18 +2237,18 @@ Render::Render() : IRender()
 
 bool Render::Initialize(OSWindow *window/*, bool bColoredLights, uint32_t uDetailLevel, bool bTinting*/)
 {
-  //bUserDirect3D = true;//ReadWindowsRegistryInt("Use D3D", 0);
+  //bUserDirect3D = true;//OS_GetAppInt("Use D3D", 0);
 
   this->window = window;
   //bStartInWindow = true;
   //windowed_mode_width = windowed_width;
   //windowed_mode_height = windowed_height;
 
-  uDesiredDirect3DDevice = ReadWindowsRegistryInt("D3D Device", 0);
+  uDesiredDirect3DDevice = OS_GetAppInt("D3D Device", 0);
 
-  bUseColoredLights = ReadWindowsRegistryInt("Colored Lights", false);
-  uLevelOfDetail = ReadWindowsRegistryInt("Detail Level", 1);
-  bTinting = ReadWindowsRegistryInt("Tinting", 1) != 0;
+  bUseColoredLights = OS_GetAppInt("Colored Lights", false);
+  uLevelOfDetail = OS_GetAppInt("Detail Level", 1);
+  bTinting = OS_GetAppInt("Tinting", 1) != 0;
 
   bool r1 = pD3DBitmaps.Load(L"data\\d3dbitmap.hwl");
   bool r2 = pD3DSprites.Load(L"data\\d3dsprite.hwl");
@@ -2217,7 +2279,7 @@ void Render::PresentBlackScreen()
   memset(&lpDDBltFx, 0, sizeof(DDBLTFX));
   lpDDBltFx.dwSize = sizeof(DDBLTFX);
 
-  GetWindowRect(window->GetApiHandle(), &dest_rect);
+  GetWindowRect((HWND)window->GetApiHandle(), &dest_rect);
   lpddsback = (IDirectDrawSurface *)this->pBackBuffer4;
 
   lpDDBltFx.dwFillColor = 0;
@@ -2271,16 +2333,16 @@ void Render::SavePCXScreenshot()
       {
         memset(&Dst, 0, sizeof(Dst));
         Dst.dwSize = sizeof(Dst);
-        if ( !render->LockSurface_DDraw4(render->pBackBuffer4, &Dst, DDLOCK_WAIT) )
+        if ( !this->LockSurface_DDraw4(this->pBackBuffer4, &Dst, DDLOCK_WAIT) )
           return;
         surface = Dst.lpSurface;
         v5 = Dst.lPitch / 2;
       }
       else
       {
-        render->BeginScene();
+        this->BeginScene();
         surface = render->pTargetSurface;
-        v5 = render->uTargetSurfacePitch;
+        v5 = this->uTargetSurfacePitch;
       }
       header1.right = GetRenderWidth() - 1;
       header1.left = 0;
@@ -2367,9 +2429,9 @@ void Render::SavePCXScreenshot()
         }
       }
       if ( this->pRenderD3D )
-        ErrD3D(render->pBackBuffer4->Unlock(NULL));
+        ErrD3D(this->pBackBuffer4->Unlock(NULL));
       else
-        render->EndScene();
+          this->EndScene();
 
       free(lineRGB);
       fclose(pOutFile);
@@ -2445,7 +2507,7 @@ void Render::SaveWinnersCertificate(const char *a1)
       {
         memset(&Dst, 0, 0x7C);
         Dst.dwSize = 124;
-        if ( !render->LockSurface_DDraw4(render->pBackBuffer4, (DDSURFACEDESC2 *)&Dst, DDLOCK_WAIT) )
+        if ( !this->LockSurface_DDraw4(this->pBackBuffer4, (DDSURFACEDESC2 *)&Dst, DDLOCK_WAIT) )
           return;
         surface = Dst.lpSurface;
         v6 = Dst.lPitch / 2;
@@ -2533,9 +2595,9 @@ void Render::SaveWinnersCertificate(const char *a1)
         }
       }
       if ( this->pRenderD3D )
-        ErrD3D(render->pBackBuffer4->Unlock(NULL));
+        ErrD3D(this->pBackBuffer4->Unlock(NULL));
       else
-        render->EndScene();
+          this->EndScene();
       free(lineRGB);
       fclose(File);
     }
@@ -3045,156 +3107,101 @@ void Present32(unsigned __int32 *src, unsigned int src_pitch,
 //----- (004A597D) --------------------------------------------------------
 void Present_NoColorKey()
 {
-  void *v2; // edi@4
-  int v9; // eax@10
-  unsigned int v10; // esi@10
-  unsigned __int32 v11; // edi@10
-  unsigned int v13; // ebx@10
-  DDSURFACEDESC2 Dst; // [sp+Ch] [bp-98h]@3
-  int v21; // [sp+8Ch] [bp-18h]@10
-  __int32 v22; // [sp+90h] [bp-14h]@10
-  unsigned int v24; // [sp+98h] [bp-Ch]@4
+    void *v2; // edi@4
+    int v9; // eax@10
+    unsigned int v10; // esi@10
+    unsigned __int32 v11; // edi@10
+    unsigned int v13; // ebx@10
+    DDSURFACEDESC2 Dst; // [sp+Ch] [bp-98h]@3
+    int v21; // [sp+8Ch] [bp-18h]@10
+    __int32 v22; // [sp+90h] [bp-14h]@10
+    unsigned int v24; // [sp+98h] [bp-Ch]@4
 
-  int r_mask = 0xF800;
-  int g_mask = 0x7E0;
-  int b_mask = 0x1F;
+    int r_mask = 0xF800;
+    int g_mask = 0x7E0;
+    int b_mask = 0x1F;
 
-  //if ( !render->uNumSceneBegins )
-  {
-    //if ( render->using_software_screen_buffer )
-    //{
-      memset(&Dst, 0, sizeof(Dst));
-      Dst.dwSize = sizeof(Dst);
-      if ( render->LockSurface_DDraw4(render->pBackBuffer4, &Dst, DDLOCK_WAIT) )
-      {
-        //v26 = Dst.lpSurface;
-        //render->pCurrentlyLockedSurfaceDataPtr = (unsigned __int16 *)Dst.lpSurface;
-        v24 = g_mask | b_mask | ((g_mask | b_mask) << 16);
-        //render->pCurrentlyLockedSoftSurface = render->pTargetSurface;
-        //render->uCurrentlyLockedSurfacePitch = Dst.lPitch;
-        //v1 = render->pTargetSurface;
-        v2 = Dst.lpSurface;
-
-
-        /*for (uint y = 0; y < 480; ++y)
+    auto r = (Render *)render;
+    //if ( !render->uNumSceneBegins )
+    {
+        //if ( render->using_software_screen_buffer )
+        //{
+        memset(&Dst, 0, sizeof(Dst));
+        Dst.dwSize = sizeof(Dst);
+        if (r->LockSurface_DDraw4(r->pBackBuffer4, &Dst, DDLOCK_WAIT))
         {
-          auto pDst = (unsigned short *)((char *)Dst.lpSurface + y * Dst.lPitch);
-          for (uint x = 0; x < 640; ++x)
-            pDst[x] = render->uTargetRMask | render->uTargetBMask;
-        }*/
-
-        if (!FORCE_16_BITS)
-          Present32((unsigned __int32 *)render->pTargetSurface, render->uTargetSurfacePitch, (unsigned __int32 *)Dst.lpSurface, Dst.lPitch / 4);
-        else
-        {        
-        ushort* pSrc = (unsigned short *)render->pTargetSurface;
-        short* pDst = (__int16 *)Dst.lpSurface;
-
-        for (uint y = 0; y < 8; ++y)
-          memcpy(pDst + y * Dst.lPitch / 2,
-
-		  pSrc + y * window->GetWidth(), window->GetWidth() * sizeof(__int16));
-
-        for (uint y = 8; y < 352; ++y)
-        {
-          memcpy(pDst + y * Dst.lPitch / 2,
-                 pSrc + y * window->GetWidth(), 8 * sizeof(__int16));
-          memcpy(pDst + 8 + game_viewport_width/*462*/ + y * Dst.lPitch / 2,
-                 pSrc + 8 + game_viewport_width/*462*/ + y * window->GetWidth(), 174/*172*/ * sizeof(__int16));
-        }
-
-        for (uint y = 352; y < window->GetHeight(); ++y)
-          memcpy(pDst + y * Dst.lPitch / 2,
-                 pSrc + y * window->GetWidth(), window->GetWidth() * sizeof(__int16));
+            //v26 = Dst.lpSurface;
+            //render->pCurrentlyLockedSurfaceDataPtr = (unsigned __int16 *)Dst.lpSurface;
+            v24 = g_mask | b_mask | ((g_mask | b_mask) << 16);
+            //render->pCurrentlyLockedSoftSurface = render->pTargetSurface;
+            //render->uCurrentlyLockedSurfacePitch = Dst.lPitch;
+            //v1 = render->pTargetSurface;
+            v2 = Dst.lpSurface;
 
 
-        ushort* pSrc_x1y1 = pSrc + window->GetWidth() * pViewport->uViewportTL_Y + pViewport->uViewportTL_X;
-        //_this = (unsigned int)&pSrc[2 * (((signed int)pViewport->uViewportX >> 1) + 320 * pViewport->uViewportY)];
-        short* pDst_x1y1 = pDst + Dst.lPitch * pViewport->uViewportTL_Y + pViewport->uViewportTL_X;
-        //v23 = (unsigned __int32)((char *)v26 + 4 * (((signed int)pViewport->uViewportX >> 1) + (Dst.lPitch >> 2) * pViewport->uViewportY));
-        v9 = ((signed int)pViewport->uViewportTL_X >> 1) - ((signed int)pViewport->uViewportBR_X >> 1);
-        //v20 = ((signed int)pViewport->uViewportZ >> 1) - ((signed int)pViewport->uViewportX >> 1);
-        v22 = 4 * ((Dst.lPitch / 4) + v9);
-        v21 = 4 * v9 + 1280;
-
-        //auto uNumLines = pViewport->uViewportW - pViewport->uViewportY + 1;
-        //v26 = (LPVOID)(pViewport->uViewportW - pViewport->uViewportY + 1);
-        v10 = (int)pSrc_x1y1;
-        v11 = (int)pDst_x1y1;
-        int uHalfWidth = (pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2;
-        v13 = v24;
-
-        for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y + 1; ++y)
-        {
-          //memcpy(pDst + pViewport->uViewportX + y * Dst.lPitch / 2,
-          //       pSrc + pViewport->uViewportX + y * 640, (pViewport->uViewportZ - pViewport->uViewportX) * sizeof(__int16));
-          for (uint x = pViewport->uViewportTL_X; x < pViewport->uViewportBR_X; ++x)
-          {
-            if (pSrc[y * window->GetWidth() + x] != (g_mask | b_mask))
-              pDst[y * Dst.lPitch / 2 + x] = pSrc[y * window->GetWidth() + x];
-          }
-        }
-        }
-
-              ErrD3D(render->pBackBuffer4->Unlock(NULL));
-
-       /* while ( 1 )
-        {
-          while ( 1 )
-          {
-            v14 = *(int *)v10;
-            v10 += 4;
-            if ( v14 == v13 )
-              break;
-            if ( (short)v14 == (short)v13 )
+            /*for (uint y = 0; y < 480; ++y)
             {
-              *(int *)v11 = *(int *)v11 & 0xFFFF | v14 & 0xFFFF0000;
-              v11 += 4;
-              --uHalfWidth;
-              if ( !uHalfWidth )
-                goto LABEL_21;
-            }
+              auto pDst = (unsigned short *)((char *)Dst.lpSurface + y * Dst.lPitch);
+              for (uint x = 0; x < 640; ++x)
+                pDst[x] = render->uTargetRMask | render->uTargetBMask;
+            }*/
+
+            if (!FORCE_16_BITS)
+                Present32((unsigned __int32 *)render->pTargetSurface, render->uTargetSurfacePitch, (unsigned __int32 *)Dst.lpSurface, Dst.lPitch / 4);
             else
             {
-              v15 = __ROL__(v14, 16);
-              if ( (short)v15 == (short)v13 )
-              {
-                v17 = __ROR__(v15, 16);
-                *(int *)v11 = *(int *)v11 & 0xFFFF0000 | (unsigned __int16)v17;
-                v11 += 4;
-                --uHalfWidth;
-                if ( !uHalfWidth )
-                  goto LABEL_21;
-              }
-              else
-              {
-                v16 = __ROR__(v15, 16);
-                *(int *)v11 = v16;
-                v11 += 4;
-                --uHalfWidth;
-                if ( !uHalfWidth )
-                  goto LABEL_21;
-              }
+                ushort* pSrc = (unsigned short *)render->pTargetSurface;
+                short* pDst = (__int16 *)Dst.lpSurface;
+
+                for (uint y = 0; y < 8; ++y)
+                    memcpy(pDst + y * Dst.lPitch / 2,
+
+                        pSrc + y * window->GetWidth(), window->GetWidth() * sizeof(__int16));
+
+                for (uint y = 8; y < 352; ++y)
+                {
+                    memcpy(pDst + y * Dst.lPitch / 2,
+                        pSrc + y * window->GetWidth(), 8 * sizeof(__int16));
+                    memcpy(pDst + 8 + game_viewport_width/*462*/ + y * Dst.lPitch / 2,
+                        pSrc + 8 + game_viewport_width/*462*/ + y * window->GetWidth(), 174/*172*/ * sizeof(__int16));
+                }
+
+                for (uint y = 352; y < window->GetHeight(); ++y)
+                    memcpy(pDst + y * Dst.lPitch / 2,
+                        pSrc + y * window->GetWidth(), window->GetWidth() * sizeof(__int16));
+
+
+                ushort* pSrc_x1y1 = pSrc + window->GetWidth() * pViewport->uViewportTL_Y + pViewport->uViewportTL_X;
+                //_this = (unsigned int)&pSrc[2 * (((signed int)pViewport->uViewportX >> 1) + 320 * pViewport->uViewportY)];
+                short* pDst_x1y1 = pDst + Dst.lPitch * pViewport->uViewportTL_Y + pViewport->uViewportTL_X;
+                //v23 = (unsigned __int32)((char *)v26 + 4 * (((signed int)pViewport->uViewportX >> 1) + (Dst.lPitch >> 2) * pViewport->uViewportY));
+                v9 = ((signed int)pViewport->uViewportTL_X >> 1) - ((signed int)pViewport->uViewportBR_X >> 1);
+                //v20 = ((signed int)pViewport->uViewportZ >> 1) - ((signed int)pViewport->uViewportX >> 1);
+                v22 = 4 * ((Dst.lPitch / 4) + v9);
+                v21 = 4 * v9 + 1280;
+
+                //auto uNumLines = pViewport->uViewportW - pViewport->uViewportY + 1;
+                //v26 = (LPVOID)(pViewport->uViewportW - pViewport->uViewportY + 1);
+                v10 = (int)pSrc_x1y1;
+                v11 = (int)pDst_x1y1;
+                int uHalfWidth = (pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2;
+                v13 = v24;
+
+                for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y + 1; ++y)
+                {
+                    //memcpy(pDst + pViewport->uViewportX + y * Dst.lPitch / 2,
+                    //       pSrc + pViewport->uViewportX + y * 640, (pViewport->uViewportZ - pViewport->uViewportX) * sizeof(__int16));
+                    for (uint x = pViewport->uViewportTL_X; x < pViewport->uViewportBR_X; ++x)
+                    {
+                        if (pSrc[y * window->GetWidth() + x] != (g_mask | b_mask))
+                            pDst[y * Dst.lPitch / 2 + x] = pSrc[y * window->GetWidth() + x];
+                    }
+                }
             }
-          }
-          v11 += 4;
-          --uHalfWidth;
-          if ( !uHalfWidth )
-          {
-LABEL_21:
-            v10 += v21;
-            v11 += v22;
-            uHalfWidth = v20;
-            if ( !--uNumLines )
-            {
-              ErrD3D(render->pBackBuffer4->Unlock(NULL));
-              return;
-            }
-          }
-        }*/
-      }
-    //}
-  }
+
+            ErrD3D(r->pBackBuffer4->Unlock(NULL));
+        }
+    }
 }
 
 
@@ -3302,7 +3309,7 @@ bool Render::InitializeFullscreen()
       pDirectDraw4 = nullptr;
       Error("Direct3D renderer:  The device doesn't support non-square textures.");
     }
-    //LOBYTE(field_10365C) = ~(unsigned __int8)(v10 >> 6) & 1;
+
     bRequiredTextureStagesAvailable = CheckTextureStages();
 
     memset(&halCaps, 0, sizeof(halCaps));
@@ -3376,12 +3383,12 @@ bool Render::InitializeFullscreen()
 		  return 0;
       memset(&pDesc, 0, sizeof(pDesc));
       pDesc.dwSize = sizeof(pDesc);
-      if ( !render->LockSurface_DDraw4(render->pBackBuffer4, &pDesc, v15) )
+      if ( !this->LockSurface_DDraw4(this->pBackBuffer4, &pDesc, v15) )
         return 0;
       pBackBuffer4->Unlock(NULL);
       v22 = (int *)pTargetSurface_unaligned + 4;
       v23 = (unsigned int)pDesc.lpSurface & 7;
-      LOBYTE(v22) = (unsigned __int8)v22 & 0xF8;
+      v22 = (int *)((unsigned int)v22 & 0xFFFFFFF8);
       uTargetSurfacePitch = window->GetWidth();
       pBeforePresentFunction = Present_NoColorKey;
       v15 = 1;
@@ -3393,6 +3400,206 @@ bool Render::InitializeFullscreen()
   pParty->uFlags |= 2;
   pViewport->SetFOV(flt_6BE3A0 * 65536.0f);
   return v15 != 0;
+}
+
+
+//----- (0040D7EC) --------------------------------------------------------
+void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode)
+{
+    unsigned __int16 *pSrc; // eax@2
+    int uSrcTotalWidth; // ecx@4
+    unsigned int v10; // esi@9
+    int v21; // [sp+Ch] [bp-18h]@8
+    unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
+    __int32 src_width; // [sp+14h] [bp-10h]@3
+    __int32 src_height; // [sp+18h] [bp-Ch]@3
+    int uSrcPitch; // [sp+1Ch] [bp-8h]@5
+
+    if (!uNumSceneBegins)
+        return;
+    if (!pArcomageGame->pBlit_Copy_pixels)
+        return;
+
+    //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
+    src_width = pSrcRect->z - pSrcRect->x;
+    src_height = pSrcRect->w - pSrcRect->y;
+
+    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
+        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
+    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
+        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
+
+    pSrc = pArcomageGame->pBlit_Copy_pixels;
+    uSrcPitch = uSrcTotalWidth;
+    src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
+    v10 = 0x1F;//0xFF >> (8 - (unsigned __int8)uTargetBBits);
+    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
+    if (blend_mode == 2)
+    {
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i)
+        {
+            for (int j = 0; j < src_width; ++j)
+            {
+                if (*src_surf_pos != v10)
+                {
+                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
+        }
+    }
+    else
+    {
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i)
+        {
+            for (int j = 0; j < src_width; ++j)
+            {
+                if (*src_surf_pos != v10)
+                {
+                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+                        //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) >> 1)) + (v21 & (*src_surf_pos >> 1)));
+                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
+        }
+    }
+}
+
+
+//----- (0045DAE8) --------------------------------------------------------
+bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult, float z_bias)
+{
+    //For outdoor terrain and indoor light (VII)(VII)
+    signed int dwFlags; // [sp-1Ch] [bp-670h]@13
+    RenderVertexD3D3 pVerticesD3D[64]; // [sp+0h] [bp-654h]@7
+
+    if (pLightmap->NumVertices < 3)
+    {
+        Log::Warning(L"Lightmap uNumVertices < 3");
+        return false;
+    }
+
+    uint uLightmapColorMaskR = (pLightmap->uColorMask >> 16) & 0xFF,
+        uLightmapColorMaskG = (pLightmap->uColorMask >> 8) & 0xFF,
+        uLightmapColorMaskB = pLightmap->uColorMask & 0xFF;
+
+    uint uLightmapColorR = floorf(uLightmapColorMaskR * pLightmap->fBrightness * pColorMult->x + 0.5f),
+        uLightmapColorG = floorf(uLightmapColorMaskG * pLightmap->fBrightness * pColorMult->y + 0.5f),
+        uLightmapColorB = floorf(uLightmapColorMaskB * pLightmap->fBrightness * pColorMult->z + 0.5f);
+
+    for (uint i = 0; i < pLightmap->NumVertices; ++i)
+    {
+        float v18;
+        if (fabs(z_bias) < 1e-5)
+            v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetShadingDistMist()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0);
+        else
+        {
+            v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetShadingDistMist()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0) - z_bias;
+            if (v18 < 0.000099999997)
+                v18 = 0.000099999997;
+        }
+
+        pVerticesD3D[i].pos.x = pLightmap->pVertices[i].vWorldViewProjX;
+        pVerticesD3D[i].pos.y = pLightmap->pVertices[i].vWorldViewProjY;
+        pVerticesD3D[i].pos.z = v18;
+
+        pVerticesD3D[i].rhw = 1.0 / pLightmap->pVertices[i].vWorldViewPosition.x;
+        pVerticesD3D[i].diffuse = (uLightmapColorMaskR << 16) | (uLightmapColorMaskG << 8) | uLightmapColorB;
+        pVerticesD3D[i].specular = 0;
+
+        pVerticesD3D[i].texcoord.x = pLightmap->pVertices[i].u;
+        pVerticesD3D[i].texcoord.y = pLightmap->pVertices[i].v;
+    }
+
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+        dwFlags = D3DDP_DONOTLIGHT | D3DDP_DONOTCLIP | D3DDP_DONOTUPDATEEXTENTS;
+    else
+        dwFlags = D3DDP_DONOTLIGHT;
+
+    ErrD3D(
+        pRenderD3D->pDevice->DrawPrimitive(
+            D3DPT_TRIANGLEFAN, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+            pVerticesD3D, pLightmap->NumVertices, dwFlags
+            )
+        );
+
+    return true;
+}
+
+//----- (0040D9B1) --------------------------------------------------------
+void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode)
+{
+    unsigned __int16 *pSrc; // eax@2
+    int uSrcTotalWidth; // ecx@4
+    int v21; // [sp+Ch] [bp-18h]@8
+    unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
+    __int32 src_width; // [sp+14h] [bp-10h]@3
+    __int32 src_height; // [sp+18h] [bp-Ch]@3
+    int uSrcPitch; // [sp+1Ch] [bp-8h]@5
+
+    if (!uNumSceneBegins)
+        return;
+    if (!pArcomageGame->pBlit_Copy_pixels)
+        return;
+
+    //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
+    src_width = pSrcRect->z - pSrcRect->x;
+    src_height = pSrcRect->w - pSrcRect->y;
+    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
+        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
+    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
+        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
+
+    pSrc = pArcomageGame->pBlit_Copy_pixels;
+    uSrcPitch = uSrcTotalWidth;
+    src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
+    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
+
+    if (blend_mode == 2)
+    {
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i)
+        {
+            for (int j = 0; j < src_width; ++j)
+            {
+                if (*src_surf_pos != v21)
+                {
+                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
+        }
+    }
+    else
+    {
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i)
+        {
+            for (int j = 0; j < src_width; ++j)
+            {
+                if (*src_surf_pos != v21)
+                {
+                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+                        //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) / 2)) + (v21 & (*src_surf_pos / 2)));
+                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
+        }
+    }
 }
 
 //----- (004A05F3) --------------------------------------------------------
@@ -3503,7 +3710,7 @@ bool Render::SwitchToWindow()
       pDirectDraw4 = nullptr;
       Error("Direct3D renderer:  The device doesn't support non-square textures.");
     }
-    //LOBYTE(field_10365C) = ~(unsigned __int8)(v9 >> 6) & 1;
+
     bRequiredTextureStagesAvailable = CheckTextureStages();
 
     memset(&halCaps, 0, sizeof(halCaps));
@@ -3584,7 +3791,7 @@ bool Render::SwitchToWindow()
 
   memset(&pDesc, 0, sizeof(pDesc));
   pDesc.dwSize = sizeof(pDesc);
-  if (!render->LockSurface_DDraw4(render->pBackBuffer4, &pDesc, DDLOCK_WAIT))
+  if (!this->LockSurface_DDraw4(this->pBackBuffer4, &pDesc, DDLOCK_WAIT))
   {
     delete [] pTargetSurface_unaligned;
     return false;
@@ -3592,7 +3799,7 @@ bool Render::SwitchToWindow()
 
   memset32(pTargetSurface_unaligned, -1, num_pixels);
 
-  render->pBackBuffer4->Unlock(NULL);
+  this->pBackBuffer4->Unlock(NULL);
   /*v19 = pTargetSurface_unaligned;
   v20 = (unsigned int)pDesc.lpSurface & 7;
   v21 = (unsigned int)ptr_400E8 & 7;
@@ -3883,7 +4090,7 @@ void Render::ParseTargetPixelFormat()
   //unsigned int v8; // ecx@13
 
   v2 = 0;
-  uRedMask = this->ddpfPrimarySuface.dwRBitMask;
+  uRedMask = ddpfPrimarySuface.dwRBitMask;
   this->uTargetBBits = 0;
   this->uTargetGBits = 0;
   this->uTargetRBits = 0;
@@ -3894,7 +4101,7 @@ void Render::ParseTargetPixelFormat()
     ++v2;
   }
   while ( v2 < 32 );
-  uGreenMask = this->ddpfPrimarySuface.dwGBitMask;
+  uGreenMask = ddpfPrimarySuface.dwGBitMask;
   v5 = 0;
   do
   {
@@ -3903,7 +4110,7 @@ void Render::ParseTargetPixelFormat()
     ++v5;
   }
   while ( v5 < 32 );
-  uBlueMask = this->ddpfPrimarySuface.dwBBitMask;
+  uBlueMask = ddpfPrimarySuface.dwBBitMask;
   v7 = 0;
   do
   {
@@ -3913,84 +4120,74 @@ void Render::ParseTargetPixelFormat()
   }
   while ( v7 < 32 );
   this->uTargetGMask = uGreenMask;
-  this->uTargetRMask = this->ddpfPrimarySuface.dwRBitMask;
+  this->uTargetRMask = ddpfPrimarySuface.dwRBitMask;
   this->uTargetBMask = uBlueMask;
 }
 
 //----- (004A0F40) --------------------------------------------------------
 bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags)
 {
-  HRESULT result; // eax@1
-  HRESULT v6; // eax@4
-  char v9; // [sp+Bh] [bp-1h]@1
+    HRESULT result; // eax@1
+    HRESULT v6; // eax@4
 
-  v9 = 1;
-  result = pSurface->Lock(NULL, pDesc, uLockFlags, NULL);
-  /*
-  Когда объект DirectDrawSurface теряет поверхностную память, методы возвратят DDERR_SURFACELOST
-  и не выполнят никакую другую функцию. Метод IDirectDrawSurface::Restore перераспределит поверхностную память
-  и повторно присоединит ее к объекту DirectDrawSurface. 
-  */
-  if ( result == DDERR_SURFACELOST )
-  {
-    v6 = pSurface->Restore();//Восстанавливает потерянную поверхность. Это происходит, когда поверхностная память,
-	                         //связанная с объектом DirectDrawSurface была освобождена. 
-    if ( v6 )
+    result = pSurface->Lock(NULL, pDesc, uLockFlags, NULL);
+    /*
+    Когда объект DirectDrawSurface теряет поверхностную память, методы возвратят DDERR_SURFACELOST
+    и не выполнят никакую другую функцию. Метод IDirectDrawSurface::Restore перераспределит поверхностную память
+    и повторно присоединит ее к объекту DirectDrawSurface.
+    */
+    if (result == DDERR_SURFACELOST)
     {
-      if ( v6 != DDERR_IMPLICITLYCREATED )//DDERR_IMPLICITLYCREATED - Поверхность не может быть восстановлена,   
-		                                  //потому что она - неявно созданная поверхность.										
-      {
-        v9 = 0;
-        result = (bool)memset(pDesc, 0, 4);
-        LOBYTE(result) = v9;
-        return 0;
-      }
-      render->pFrontBuffer4->Restore();
-      pSurface->Restore();
+        v6 = pSurface->Restore();//Восстанавливает потерянную поверхность. Это происходит, когда поверхностная память,
+                                 //связанная с объектом DirectDrawSurface была освобождена. 
+        if (v6)
+        {
+            if (v6 != DDERR_IMPLICITLYCREATED)//DDERR_IMPLICITLYCREATED - Поверхность не может быть восстановлена,   
+                                                //потому что она - неявно созданная поверхность.										
+            {
+                result = (bool)memset(pDesc, 0, 4);
+                return 0;
+            }
+            this->pFrontBuffer4->Restore();
+            pSurface->Restore();
+        }
+        result = pSurface->Lock(NULL, pDesc, DDLOCK_WAIT, NULL);
+        if (result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY)//DDERR_SURFACEBUSY - Доступ к этой поверхности отказан, 
+            //потому что поверхность блокирована другой нитью. DDERR_INVALIDRECT - Обеспечиваемый прямоугольник недопустим.
+        {
+            result = (bool)memset(pDesc, 0, 4);
+            return 0;
+        }
+        ErrD3D(result);
+        if (result)
+        {
+            //v8 = 0;
+            //v7 = 2161;
+      //LABEL_19:
+            //CheckHRESULT((CheckHRESULT_stru0 *)&pSurface, result, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Screen16.cpp", v7, v8);
+            result = (bool)memset(pDesc, 0, 4);
+            return result;
+        }
+        if (pRenderD3D)
+            pRenderD3D->HandleLostResources();
+        result = this->pDirectDraw4->RestoreAllSurfaces();
     }
-    result = pSurface->Lock(NULL, pDesc, DDLOCK_WAIT, NULL);
-    if ( result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY )//DDERR_SURFACEBUSY - Доступ к этой поверхности отказан, 
-		//потому что поверхность блокирована другой нитью. DDERR_INVALIDRECT - Обеспечиваемый прямоугольник недопустим.
-	{
-      v9 = 0;
-      result = (bool)memset(pDesc, 0, 4);
-      LOBYTE(result) = v9;
-      return result;
-	}
-    ErrD3D(result);
-    if ( result )
+    else
     {
-      //v8 = 0;
-      //v7 = 2161;
-//LABEL_19:
-      //CheckHRESULT((CheckHRESULT_stru0 *)&pSurface, result, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Screen16.cpp", v7, v8);
-      v9 = 0;
-      result = (bool)memset(pDesc, 0, 4);
-      LOBYTE(result) = v9;
-      return result;
+        if (result)
+        {
+            if (result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY)
+            {
+                result = (bool)memset(pDesc, 0, 4);
+                return result;
+            }
+            ErrD3D(result);
+            //v8 = 0;
+            //v7 = 2199;
+            //goto LABEL_19;
+        }
     }
-    if ( pRenderD3D )
-      pRenderD3D->HandleLostResources();
-    result = render->pDirectDraw4->RestoreAllSurfaces();
-  }
-  else
-  {
-    if ( result )
-    {
-      if ( result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY )
-	  {
-        v9 = 0;
-        result = (bool)memset(pDesc, 0, 4);
-        LOBYTE(result) = v9;
-        return result;
-	  }
-      ErrD3D(result);
-      //v8 = 0;
-      //v7 = 2199;
-      //goto LABEL_19;
-    }
-  }
-  return true;
+    return true;
 }
 
 
@@ -4016,14 +4213,14 @@ void Render::CreateDirectDraw()
 }
 
 //----- (004A1169) --------------------------------------------------------
-void Render::SetDirectDrawCooperationMode(HWND hWnd, bool bFullscreen)
+void Render::SetDirectDrawCooperationMode(OSWindow *window, bool bFullscreen)
 {
   DWORD flags; // eax@1
 
   //Установка взаимодействия для полноэкранного и оконного режимов
   flags = bFullscreen ? DDSCL_NORMAL | DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN : DDSCL_NORMAL;
 
-  ErrD3D(pDirectDraw4->SetCooperativeLevel(hWnd, flags | DDSCL_MULTITHREADED));
+  ErrD3D(pDirectDraw4->SetCooperativeLevel((HWND)window->GetApiHandle(), flags | DDSCL_MULTITHREADED));
 }
 
 //----- (004A11C6) --------------------------------------------------------
@@ -4176,11 +4373,11 @@ void Render::CreateDirectDrawPrimarySurface()
 }
 
 //----- (004A14F4) --------------------------------------------------------
-void Render::CreateClipper(HWND a2)
+void Render::CreateClipper(OSWindow *window)
 {
-  ErrD3D(pDirectDraw4->CreateClipper(0, &pDDrawClipper, NULL));
-  ErrD3D(pDDrawClipper->SetHWnd(0, a2));
-  ErrD3D(pFrontBuffer4->SetClipper(pDDrawClipper));
+    ErrD3D(pDirectDraw4->CreateClipper(0, &pDDrawClipper, NULL));
+    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->GetApiHandle()));
+    ErrD3D(pFrontBuffer4->SetClipper(pDDrawClipper));
 }
 
 //----- (004A15D8) --------------------------------------------------------
@@ -4272,14 +4469,8 @@ void Render::RestoreBackBuffer()
     pBackBuffer4->Restore();
 }
 
-//----- (004A18F5) --------------------------------------------------------
-void Render::BltToFront(RECT *pDstRect, IDirectDrawSurface *pSrcSurface, RECT *pSrcRect, unsigned int uBltFlags)
-{
-  ErrD3D(pFrontBuffer4->Blt(pDstRect, (IDirectDrawSurface4 *)pSrcSurface, pSrcRect, uBltFlags, nullptr));
-}
-
 //----- (004A194A) --------------------------------------------------------
-void Render::BltBackToFontFast(int a2, int a3, RECT *pSrcRect)
+void Render::BltBackToFontFast(int a2, int a3, Rect *pSrcRect)
 {
   IDirectDrawSurface *pFront; // eax@3
   IDirectDrawSurface *pBack; // [sp-Ch] [bp-Ch]@3
@@ -4294,7 +4485,7 @@ void Render::BltBackToFontFast(int a2, int a3, RECT *pSrcRect)
     pFront = (IDirectDrawSurface *)this->pFrontBuffer2;
     pBack = (IDirectDrawSurface *)this->pBackBuffer2;
   }*/
-  pFront->BltFast(NULL, NULL, pBack, pSrcRect, DDBLTFAST_WAIT);
+  pFront->BltFast(NULL, NULL, pBack, (RECT *)pSrcRect, DDBLTFAST_WAIT);
 }
 
 //----- (004A1B22) --------------------------------------------------------
@@ -4776,8 +4967,8 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
         v19 = -pSkyPolygon.field_24;
         v77 = -pSkyPolygon.field_24;
         X = (int)((char *)v79 + pSkyPolygon.v_18.x);
-        LODWORD(v76) = (signed __int64)v18;
-        v20 = (void *)(v72 * (v70 - LODWORD(v76)));
+        HEXRAYS_LODWORD(v76) = (signed __int64)v18;
+        v20 = (void *)(v72 * (v70 - HEXRAYS_LODWORD(v76)));
         while (1)
         {
             v79 = v20;
@@ -4786,34 +4977,34 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
             v21 = abs(v19 >> 14);
             if (v21 <= abs(X))//0x800 <= 0x28652
                 break;
-            if (SLODWORD(v76) <= (signed int)pViewport->uViewportTL_Y)
+            if (HEXRAYS_SLODWORD(v76) <= (signed int)pViewport->uViewportTL_Y)
                 break;
             v19 = v77;
             v20 = v79;
         LABEL_14:
             v79 = (void *)fixpoint_mul(pSkyPolygon.v_18.z, (int)v20);
             v22 = fixpoint_mul(pSkyPolygon.v_18.z, (int)v20);
-            --LODWORD(v76);
+            --HEXRAYS_LODWORD(v76);
             v20 = (char *)v20 + v72;
             X = v22 + pSkyPolygon.v_18.x;
             v78 = 1;
         }
         if (!v78)
         {
-            LODWORD(v23) = v77 << 16;
-            HIDWORD(v23) = v77 >> 16;//v23 = 0xfffffe0000000000
+            HEXRAYS_LODWORD(v23) = v77 << 16;
+            HEXRAYS_HIDWORD(v23) = v77 >> 16;//v23 = 0xfffffe0000000000
             v79 = (void *)(v23 / X);//X = FFFF9014(-28652)
             v77 = v17;
-            signed __int64 s = v74 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, v17);// s = 0xFFFFFFFF FFFF3EE6
-            LODWORD(v80) = v66 + ((signed int)fixpoint_mul(SLODWORD(s), v23 / X) >> 4);
-            array_507D30[_507D30_idx].u = ((double)SLODWORD(v80) * 0.000015259022) * (1.0 / (double)pSkyPolygon.texture->GetWidth());
+            __int64 s = v74 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, v17);// s = 0xFFFFFFFF FFFF3EE6
+            HEXRAYS_LODWORD(v80) = v66 + ((signed int)fixpoint_mul(HEXRAYS_SLODWORD(s), v23 / X) >> 4);
+            array_507D30[_507D30_idx].u = ((double)HEXRAYS_SLODWORD(v80) * 0.000015259022) * (1.0 / (double)pSkyPolygon.texture->GetWidth());
 
-            signed __int64 s2 = v74_ + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_south, v17);
-            LODWORD(v80) = v63 + ((signed int)fixpoint_mul(SLODWORD(s2), v23 / X) >> 4);
-            array_507D30[_507D30_idx].v = ((double)SLODWORD(v80) * 0.000015259022) * v68;
+            __int64 s2 = v74_ + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_south, v17);
+            HEXRAYS_LODWORD(v80) = v63 + ((signed int)fixpoint_mul(HEXRAYS_SLODWORD(s2), v23 / X) >> 4);
+            array_507D30[_507D30_idx].v = ((double)HEXRAYS_SLODWORD(v80) * 0.000015259022) * v68;
 
-            v77 = fixpoint_mul(SLODWORD(s), v23 / X);
-            LODWORD(v73) = fixpoint_mul(SLODWORD(s2), v23 / X);
+            v77 = fixpoint_mul(HEXRAYS_SLODWORD(s), v23 / X);
+            HEXRAYS_LODWORD(v73) = fixpoint_mul(HEXRAYS_SLODWORD(s2), v23 / X);
             array_507D30[_507D30_idx]._rhw = 65536.0 / (double)(signed int)v79;
 
             //if ( (int)v81 >= pSkyPolygon.uNumVertices )
@@ -4831,18 +5022,18 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
         render->DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
         return;
     }
-    LODWORD(v73) = 0;
+    HEXRAYS_LODWORD(v73) = 0;
     v80 = v76;
     if ((signed int)pSkyPolygon.uNumVertices > 0)
     {
-        v28 = (double)SLODWORD(v76);
-        LODWORD(v76) = (int)(char *)VertexRenderList + 28;
+        v28 = (double)HEXRAYS_SLODWORD(v76);
+        HEXRAYS_LODWORD(v76) = (int)(char *)VertexRenderList + 28;
         uint i = 0;
         for (v78 = pSkyPolygon.uNumVertices; v78; --v78)
         {
-            ++LODWORD(v73);
+            ++HEXRAYS_LODWORD(v73);
             memcpy(&VertexRenderList[i], &array_507D30[i], 0x30u);
-            LODWORD(v76) += 48;
+            HEXRAYS_LODWORD(v76) += 48;
             if (v28 < array_507D30[i].vWorldViewProjY | v28 == array_507D30[i].vWorldViewProjY
                 || v28 >= array_507D30[i + 1].vWorldViewProjY)
             {
@@ -4860,19 +5051,19 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
                     + array_507D30[i].vWorldViewProjX;
             }
             VertexRenderList[i + 1].vWorldViewProjX = v33;
-            ++LODWORD(v73);
-            *(unsigned int *)LODWORD(v76) = v28;
-            LODWORD(v76) += 48;
+            ++HEXRAYS_LODWORD(v73);
+            *(unsigned int *)HEXRAYS_LODWORD(v76) = v28;
+            HEXRAYS_LODWORD(v76) += 48;
             i++;
         }
     }
-    if (SLODWORD(v73) <= 0)
+    if (HEXRAYS_SLODWORD(v73) <= 0)
         goto LABEL_40;
     //v34 = (char *)&VertexRenderList[0].vWorldViewProjY;
     uint j = 0;
     v65 = v77 >> 14;
     //HIDWORD(v69) = LODWORD(v73);
-    for (int t = (int)LODWORD(v73); t > 1; t--)
+    for (int t = (int)HEXRAYS_LODWORD(v73); t > 1; t--)
     {
         v35 = (const void *)(v72 * (v70 - (unsigned __int64)(signed __int64)VertexRenderList[j].vWorldViewProjY));
 
@@ -4891,7 +5082,7 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
         v37 = (const void *)(v72 * (pBLVRenderParams->uViewportCenterX - (unsigned __int64)(signed __int64)VertexRenderList[j].vWorldViewProjX));
         v38 = (signed __int64)(VertexRenderList[j].vWorldViewProjY - 1.0);
         v81 = 0;
-        LODWORD(v76) = v38;
+        HEXRAYS_LODWORD(v76) = v38;
         v39 = v72 * (v70 - v38);
         while (1)
         {
@@ -4901,13 +5092,13 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
             v40 = abs(X);
             if (abs((signed __int64)v65) <= v40)
                 break;
-            if (SLODWORD(v76) <= (signed int)pViewport->uViewportTL_Y)
+            if (HEXRAYS_SLODWORD(v76) <= (signed int)pViewport->uViewportTL_Y)
                 break;
             v39 = v78;
         LABEL_36:
             v78 = pSkyPolygon.v_18.z;
             v41 = fixpoint_mul(pSkyPolygon.v_18.z, v39);
-            --LODWORD(v76);
+            --HEXRAYS_LODWORD(v76);
             v39 += v72;
             X = v41 + pSkyPolygon.v_18.x;
             v81 = (const void *)1;
@@ -4915,13 +5106,13 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
         if (v81)
         {
             v79 = (void *)pSkyPolygon.v_18.z;
-            v78 = 2 * LODWORD(v76);
-            v81 = (const void *)fixpoint_mul(pSkyPolygon.v_18.z, (((double)v70 - ((double)(2 * LODWORD(v76)) - VertexRenderList[j].vWorldViewProjY))
+            v78 = 2 * HEXRAYS_LODWORD(v76);
+            v81 = (const void *)fixpoint_mul(pSkyPolygon.v_18.z, (((double)v70 - ((double)(2 * HEXRAYS_LODWORD(v76)) - VertexRenderList[j].vWorldViewProjY))
                 * (double)v72));
             X = (int)((char *)v81 + pSkyPolygon.v_18.x);
         }
-        LODWORD(v42) = v77 << 16;
-        HIDWORD(v42) = v77 >> 16;
+        HEXRAYS_LODWORD(v42) = v77 << 16;
+        HEXRAYS_HIDWORD(v42) = v77 >> 16;
         v79 = (void *)(v42 / X);
         v81 = v37;
 
@@ -4929,7 +5120,7 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
         v81 = (const void *)fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, (int)v37);
         v43 = v74 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, (int)v37);
         v74 = (unsigned int)v37;
-        LODWORD(v76) = v43;
+        HEXRAYS_LODWORD(v76) = v43;
 
         //v78 = pSkyPolygon.ptr_38->angle_from_south;
         v75 = (RenderVertexSoft *)((char *)v75 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_south, (int)v37));
@@ -4951,10 +5142,10 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
     //while ( !v44 );
 LABEL_40:
     uint i = 0;
-    if (SLODWORD(v73) > 0)
+    if (HEXRAYS_SLODWORD(v73) > 0)
     {
-        v48 = (double)SLODWORD(v80);
-        for (HIDWORD(v69) = LODWORD(v73); HIDWORD(v69); --HIDWORD(v69))
+        v48 = (double)HEXRAYS_SLODWORD(v80);
+        for (HEXRAYS_HIDWORD(v69) = HEXRAYS_LODWORD(v73); HEXRAYS_HIDWORD(v69); --HEXRAYS_HIDWORD(v69))
         {
             if (v48 >= VertexRenderList[i].vWorldViewProjY)
             {
@@ -4966,10 +5157,10 @@ LABEL_40:
     pSkyPolygon.uNumVertices = i;
     render->DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
     int pNumVertices = 0;
-    if (SLODWORD(v73) > 0)
+    if (HEXRAYS_SLODWORD(v73) > 0)
     {
-        v51 = (double)SLODWORD(v80);
-        for (v80 = v73; v80 != 0.0; --LODWORD(v80))
+        v51 = (double)HEXRAYS_SLODWORD(v80);
+        for (v80 = v73; v80 != 0.0; --HEXRAYS_LODWORD(v80))
         {
             if (v51 <= VertexRenderList[pNumVertices].vWorldViewProjY)
             {
@@ -5202,12 +5393,12 @@ void Render::DrawBillboard_Indoor(RenderBillboardTransform_local0 *pSoftBillboar
     //v23 = pSprite->pTexture;
     pBillboardRenderListD3D[v7].uNumVertices = 4;
     pBillboardRenderListD3D[v7].z_order = pSoftBillboard->zbuffer_depth;
-    pBillboardRenderListD3D[v7].pTexture = pSprite->pTexture;
+    pBillboardRenderListD3D[v7].gapi_texture = pSprite->pTexture;
   }
 }
 
 //----- (004A354F) --------------------------------------------------------
-void Render::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle)
+void Render::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *gapi_texture, unsigned int uDiffuse, int angle)
 {
   unsigned int v8; // esi@3
   float v11; // ST28_4@3
@@ -5362,7 +5553,7 @@ void Render::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a
       pBillboardRenderListD3D[v8].pQuads[3].pos.z = v46;
       pBillboardRenderListD3D[v8].pQuads[3].rhw = pBillboardRenderListD3D[v8].pQuads[0].rhw;
       pBillboardRenderListD3D[v8].pQuads[3].diffuse = uDiffuse;
-      pBillboardRenderListD3D[v8].pTexture = a3;
+      pBillboardRenderListD3D[v8].gapi_texture = gapi_texture;
       pBillboardRenderListD3D[v8].z_order = a2->zbuffer_depth;
       pBillboardRenderListD3D[v8].uNumVertices = 4;
       pBillboardRenderListD3D[v8].pQuads[3].pos.y = v45;
@@ -5373,7 +5564,7 @@ void Render::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a
 }
 
 //----- (004A3AD9) --------------------------------------------------------
-void Render::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, IDirect3DTexture2 *a3, unsigned int uDiffuse, int angle)
+void Render::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle)
 {
   double v5; // st7@2
   float v6; // ST28_4@2
@@ -5423,7 +5614,7 @@ void Render::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a
     v5 = (double)a2->zbuffer_depth;
     v6 = v5;
     v7 = v5;
-    v8 = Billboard_ProbablyAddToListAndSortByZOrder(LODWORD(v7));
+    v8 = Billboard_ProbablyAddToListAndSortByZOrder(HEXRAYS_LODWORD(v7));
     pBillboardRenderListD3D[v8].opacity = RenderBillboardD3D::Opaque_1;
     pBillboardRenderListD3D[v8].field_90 = a2->field_44;
     pBillboardRenderListD3D[v8].sZValue = a2->sZValue;
@@ -5431,7 +5622,7 @@ void Render::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a
 
     //v9 = a2->uScreenSpaceX;
     //v10 = a2->uScreenSpaceY;
-    v11 = (a2->_screenspace_x_scaler_packedfloat & 0xFFFF) * 0.000015260186 + HIWORD(a2->_screenspace_x_scaler_packedfloat);
+    v11 = (a2->_screenspace_x_scaler_packedfloat & 0xFFFF) * 0.000015260186 + HEXRAYS_HIWORD(a2->_screenspace_x_scaler_packedfloat);
     v12 = (double)a2->uScreenSpaceX;
     v13 = (double)a2->uScreenSpaceX;
     v14 = (double)(a2->uScreenSpaceY - 12);
@@ -5531,7 +5722,7 @@ void Render::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a
     pBillboardRenderListD3D[v8].pQuads[3].pos.z = v24;
     pBillboardRenderListD3D[v8].pQuads[3].rhw = v25;
     pBillboardRenderListD3D[v8].pQuads[3].diffuse = uDiffuse;
-    pBillboardRenderListD3D[v8].pTexture = a3;
+    pBillboardRenderListD3D[v8].gapi_texture = a3;
     pBillboardRenderListD3D[v8].z_order = v6;
     pBillboardRenderListD3D[v8].uNumVertices = 4;
     pBillboardRenderListD3D[v8].pQuads[3].pos.y = v46;
@@ -5622,7 +5813,7 @@ void Render::TransformBillboard(RenderBillboardTransform_local0 *a2, Sprite *pSp
     pBillboardRenderListD3D[v8].pQuads[3].texcoord.y = 0.0;
 
   pBillboardRenderListD3D[v8].uNumVertices = 4;
-  pBillboardRenderListD3D[v8].pTexture = pSprite->pTexture;
+  pBillboardRenderListD3D[v8].gapi_texture = pSprite->pTexture;
   pBillboardRenderListD3D[v8].z_order = a2->zbuffer_depth;
   pBillboardRenderListD3D[v8].field_90 = a2->field_44;
   pBillboardRenderListD3D[v8].sZValue = a2->sZValue;
@@ -5636,7 +5827,7 @@ void Render::TransformBillboard(RenderBillboardTransform_local0 *a2, Sprite *pSp
 
 
 //----- (004A49D0) --------------------------------------------------------
-void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, IDirect3DTexture2 *a9)
+void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture)
 {
   int absXDifference; // eax@1
   int absYDifference; // eax@1
@@ -5723,7 +5914,7 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float ds
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
-  ErrD3D(pRenderD3D->pDevice->SetTexture(0, a9));
+  ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
   ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
     D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1, v29, 4, 24));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
@@ -5756,7 +5947,7 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1, int d
   pBillboardRenderListD3D[v5].field_90 = 0;
   pBillboardRenderListD3D[v5].sParentBillboardID = -1;
   pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
-  pBillboardRenderListD3D[v5].pTexture = 0;
+  pBillboardRenderListD3D[v5].gapi_texture = 0;
   pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
   pBillboardRenderListD3D[v5].z_order = depth;
 
@@ -5796,7 +5987,7 @@ HWLTexture *Render::LoadHwlSprite(const char *name)
 }
 
 //----- (004A4DE1) --------------------------------------------------------
-bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, IDirectDrawSurface4 **pOutSurface, IDirect3DTexture2 **pOutTexture)
+bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture)
 {
     unsigned __int16 *v13; // ecx@19
     unsigned __int16 *v14; // eax@19
@@ -5808,7 +5999,7 @@ bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, IDirectDrawSu
         return false;
 
     bMipMaps = !strncmp(pName, "HDWTR", 5);
-    if (!pRenderD3D->CreateTexture(pHWLTexture->uWidth, pHWLTexture->uHeight, pOutSurface, pOutTexture, true,
+    if (!pRenderD3D->CreateTexture(pHWLTexture->uWidth, pHWLTexture->uHeight, (IDirectDrawSurface4 **)pOutSurface, (IDirect3DTexture2 **)pOutTexture, true,
         bMipMaps, uMinDeviceTextureDim))
         Error("HiScreen16::LoadTexture - D3Drend->CreateTexture() failed: %x", 0);
     if (bMipMaps)
@@ -5816,7 +6007,7 @@ bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, IDirectDrawSu
         Dst._450DDE();
         Dst._450DF1(&stru_4EFCBC, &stru_4EFCBC);
 
-        IDirectDrawSurface4 *pNextSurf = *pOutSurface;
+        IDirectDrawSurface4 *pNextSurf = (IDirectDrawSurface4 *)*pOutSurface;
         while (1)
         {
             DDSCAPS2 v19;
@@ -5866,7 +6057,7 @@ bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, IDirectDrawSu
         memset(&desc, 0, sizeof(DDSURFACEDESC2));
         desc.dwSize = sizeof(DDSURFACEDESC2);
 
-        if (LockSurface_DDraw4(*pOutSurface, &desc, DDLOCK_WAIT | DDLOCK_WRITEONLY))
+        if (LockSurface_DDraw4((IDirectDrawSurface4 *)*pOutSurface, &desc, DDLOCK_WAIT | DDLOCK_WRITEONLY))
         {
             bMipMaps = 0;
             v13 = pHWLTexture->pPixels;
@@ -5881,7 +6072,7 @@ bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, IDirectDrawSu
                 }
                 v14 += (desc.lPitch >> 1) - desc.dwWidth;
             }
-            ErrD3D((*pOutSurface)->Unlock(NULL));
+            ErrD3D(((IDirectDrawSurface4 *)(*pOutSurface))->Unlock(NULL));
         }
     }
     delete[] pHWLTexture->pPixels;
@@ -6212,12 +6403,10 @@ unsigned __int32 Color32_SwapRedBlue(unsigned __int16 color16)
 //----- (0040DEF3) --------------------------------------------------------
 unsigned __int16 Color16(unsigned __int32 r, unsigned __int32 g, unsigned __int32 b)
 {
-  //return ((unsigned int)b >> (8 - LOBYTE(render->uTargetBBits))) | render->uTargetGMask & (g << (LOBYTE(render->uTargetGBits) + 
-  //                         LOBYTE(render->uTargetBBits) - 8)) | render->uTargetRMask & (r << (LOBYTE(render->uTargetGBits) + 
-  //                         LOBYTE(render->uTargetRBits) + LOBYTE(render->uTargetBBits) - 8));
-  return (b >> (8 - 5)) |
-         0x7E0 & (g << (6 + 5 - 8)) |
-         0xF800 & (r << (6 + 5 + 5 - 8));
+    return
+        (b >> (8 - 5)) |
+        0x7E0 & (g << (6 + 5 - 8)) |
+        0xF800 & (r << (6 + 5 + 5 - 8));
 }
 
 
@@ -6376,6 +6565,45 @@ void Render::_4A6DF5(unsigned __int16 *pBitmap, unsigned int uBitmapPitch, Vec2_
         }
         pixels += uTargetPitch - width;
     }
+}
+
+
+bool Render::LockSurface(void *surface, Rect *dest_rect, void **out_surface, int *out_pitch, int *out_width, int *out_height)
+{
+    auto dds = (IDirectDrawSurface4 *)surface;
+
+    DDBLTFX Dst; // [sp+Ch] [bp-1E0h]@18
+    DDSURFACEDESC2 pDesc; // [sp+70h] [bp-17Ch]@18
+
+    memset(&Dst, 0, sizeof(Dst));
+    Dst.dwSize = sizeof(Dst);
+    Dst.dwFillColor = 0;
+
+    memset(&pDesc, 0, sizeof(pDesc));
+    pDesc.dwSize = sizeof(pDesc);
+
+    dds->GetSurfaceDesc(&pDesc);
+
+    ErrD3D(this->pBackBuffer4->Blt((RECT *)dest_rect, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &Dst));
+    {
+        memset(&pDesc, 0, sizeof(pDesc));
+        pDesc.dwSize = sizeof(pDesc);
+        if (this->LockSurface_DDraw4(dds, &pDesc, DDLOCK_WAIT))
+        {
+            *out_surface = pDesc.lpSurface;
+            *out_pitch = pDesc.lPitch;
+            *out_width = pDesc.dwWidth;
+            *out_height = pDesc.dwHeight;
+
+            return true;
+        }
+    }
+    return false;
+}
+
+void Render::UnlockSurface(void *surface)
+{
+    ((IDirectDrawSurface *)surface)->Unlock(nullptr);
 }
 
 //----- (004A6D87) --------------------------------------------------------
@@ -7476,8 +7704,8 @@ HWLTexture *RenderHWLContainer::LoadTexture(const char *pName, int bMipMaps)
                         v20 = pDestb + 2 * v18;
                         v21 = (int)&v19[2 * (pDestb + v17)];
                         v22 = (int)&v19[2 * v20];
-                        LOWORD(v20) = *(unsigned short *)(v21 + 2);
-                        LOWORD(v21) = *(unsigned short *)v21;
+                        HEXRAYS_LOWORD(v20) = *(unsigned short *)(v21 + 2);
+                        HEXRAYS_LOWORD(v21) = *(unsigned short *)v21;
                         v23 = pDestb + v18;
                         pDestb++;
 
@@ -7619,7 +7847,7 @@ void Render::DoRenderBillboards_D3D()
         if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend)
             SetBillboardBlendOptions(pBillboardRenderListD3D[i].opacity);
 
-        pRenderD3D->pDevice->SetTexture(0, pBillboardRenderListD3D[i].pTexture);
+        pRenderD3D->pDevice->SetTexture(0, (IDirect3DTexture2 *)pBillboardRenderListD3D[i].gapi_texture);
         ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             pBillboardRenderListD3D[i].pQuads, pBillboardRenderListD3D[i].uNumVertices,
@@ -7971,7 +8199,7 @@ void Render::DrawBuildingsD3D()
                             poly->uBModelFaceID = face_id;
                             poly->uBModelID = model_id;
                             v27 = 8 * (face_id | (model_id << 6));
-                            LOBYTE(v27) = v27 | 6;
+                            v27 |= 6;
                             poly->field_50 = v27;
                             for (int vertex_id = 0; vertex_id < pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; ++vertex_id)
                             {
@@ -8144,8 +8372,8 @@ void Render::DrawOutdoorSkyD3D()
                 v14 += v33;
                 v10 = pSkyPolygon.v_18.x + v16;
             }
-            LODWORD(v17) = LODWORD(v34) << 16;
-            HIDWORD(v17) = v34 >> 16;
+            HEXRAYS_LODWORD(v17) = HEXRAYS_LODWORD(v34) << 16;
+            HEXRAYS_HIDWORD(v17) = v34 >> 16;
             v18 = v17 / v10;
             if (v18 < 0)
                 v18 = pODMRenderParams->shading_dist_mist;
@@ -8519,9 +8747,9 @@ void Render::DrawDecal(Decal *pDecal, float z_bias)
 }
 
 
-void Render::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, IDirect3DTexture2 *texture)
+void Render::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, void *gapi_texture)
 {
-  ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture));
+  ErrD3D(pRenderD3D->pDevice->SetTexture(0, (IDirect3DTexture2 *)gapi_texture));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
@@ -8529,9 +8757,11 @@ void Render::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, IDirect3DT
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS));
-  ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-                                     D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-                                     (void *)vertices, 4, 28));
+  ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
+      D3DPT_TRIANGLEFAN,
+      D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+      (void *)vertices, 4, 28)
+  );
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
@@ -8558,15 +8788,15 @@ unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3,
 	v6 = (unsigned __int16)a4 >> 2;
 	v8 = a1 >> 2;
 	a3a = (unsigned __int16)a3 >> 2;
-	LOWORD(v7) = a3a;
+    HEXRAYS_LOWORD(v7) = a3a;
 	v9 = v7;
-	LOWORD(v4) = ((unsigned __int16)a4 >> 2) & 0xE0;
-	LOWORD(v7) = a3a & 0xE0;
-	LOWORD(v9) = v9 & 0x1C00;
+    HEXRAYS_LOWORD(v4) = ((unsigned __int16)a4 >> 2) & 0xE0;
+    HEXRAYS_LOWORD(v7) = a3a & 0xE0;
+    HEXRAYS_LOWORD(v9) = v9 & 0x1C00;
 	v11 = v7 + v4;
-	LOWORD(v7) = v5 & 0xE0;
+    HEXRAYS_LOWORD(v7) = v5 & 0xE0;
 	v12 = v7 + v11;
-	LOWORD(v7) = v8 & 0xE0;
+    HEXRAYS_LOWORD(v7) = v8 & 0xE0;
 	__debugbreak(); // warning C4700: uninitialized local variable 'v10' used
 	return (PID_TYPE(v8) + PID_TYPE(v5) + PID_TYPE(a3a) + PID_TYPE(v6)) | (v7 + v12) | ((v8 & 0x1C00)
 		+ (v5 & 0x1C00)
@@ -8960,7 +9190,7 @@ int  _46E44E_collide_against_faces_and_portals(unsigned int b1)
 							{
 								stru_721530.field_7C = v17;
 								v18 = 8 * pSector->pFloors[v26];
-								LOBYTE(v18) = v18 | 6;
+								v18 |= 6;
 								stru_721530.uFaceID = v18;
 							}
 						}
@@ -8993,7 +9223,7 @@ int  _46E44E_collide_against_faces_and_portals(unsigned int b1)
 					{
 						stru_721530.field_7C = v23;
 						v24 = 8 * pSector->pFloors[v26];
-						LOBYTE(v24) = v24 | 6;
+						v24 |= 6;
 						stru_721530.uFaceID = v24;
 					}
 				}
@@ -9105,7 +9335,7 @@ int _46E889_collide_against_bmodels(unsigned int ecx0)
 									{
 										stru_721530.field_7C = v10;
 										v14 = 8 * (j | (i << 6));
-										LOBYTE(v14) = v14 | 6;
+										v14 |= 6;
 										stru_721530.uFaceID = v14;
 									}
 								}
@@ -9134,7 +9364,7 @@ int _46E889_collide_against_bmodels(unsigned int ecx0)
 											{
 												stru_721530.field_7C = a2;
 												v17 = 8 * (j | (i << 6));
-												LOBYTE(v17) = v17 | 6;
+												v17 |= 6;
 												stru_721530.uFaceID = v17;
 											}
 										}
@@ -9150,7 +9380,7 @@ int _46E889_collide_against_bmodels(unsigned int ecx0)
 												{
 													stru_721530.field_7C = v21;
 													v22 = 8 * (j | (i << 6));
-													LOBYTE(v22) = v22 | 6;
+													v22 |= 6;
 													stru_721530.uFaceID = v22;
 												}
 											}
@@ -9339,7 +9569,7 @@ void  _46E0B2_collide_against_decorations()
 									{
 										stru_721530.field_7C = v12;
 										v13 = 8 * sector->pDecorationIDs[i];
-										LOBYTE(v13) = v13 | 5;
+										v13 |= 5;
 										stru_721530.uFaceID = v13;
 									}
 								}
@@ -9536,8 +9766,8 @@ bool sub_47531C(int a1, int *a2, int pos_x, int pos_y, int pos_z, int dir_x, int
 		a10c = abs(v13) >> 14;
 		if (a10c > abs(v12))
 			return 0;
-		LODWORD(v15) = v13 << 16;
-		HIDWORD(v15) = v13 >> 16;
+        HEXRAYS_LODWORD(v15) = v13 << 16;
+        HEXRAYS_HIDWORD(v15) = v13 >> 16;
 		v14 = a1;
 		a10a = v15 / a9a;
 	}
@@ -9547,8 +9777,8 @@ bool sub_47531C(int a1, int *a2, int pos_x, int pos_y, int pos_z, int dir_x, int
 		v14 = abs(v13) >> 16;
 	}
 	//v16 = pos_y + ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16);
-	LOWORD(a7a) = (short)pos_x + ((unsigned int)fixpoint_mul(a10a, dir_x) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.x);
-	HIWORD(a7a) = pos_y + ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.y);
+    HEXRAYS_LOWORD(a7a) = (short)pos_x + ((unsigned int)fixpoint_mul(a10a, dir_x) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.x);
+    HEXRAYS_HIWORD(a7a) = pos_y + ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.y);
 	if (!sub_475665(face, a7a, (short)pos_z + ((unsigned int)fixpoint_mul(a10a, dir_z) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.z)))
 		return 0;
 	*a2 = a10a >> 16;
@@ -9594,8 +9824,8 @@ bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y, int 
 		a11c = abs(v14) >> 14;
 		if (a11c > abs(v13))
 			return false;
-		LODWORD(v16) = v14 << 16;
-		HIDWORD(v16) = v14 >> 16;
+        HEXRAYS_LODWORD(v16) = v14 << 16;
+        HEXRAYS_HIDWORD(v16) = v14 >> 16;
 		v15 = a1;
 		a11a = v16 / a1a;
 	}
@@ -9605,8 +9835,8 @@ bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y, int 
 		v15 = abs(v14) >> 16;
 	}
 	//v17 = Y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16);
-	LOWORD(a7a) = (short)X + ((unsigned int)fixpoint_mul(a11a, dir_x) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.x);
-	HIWORD(a7a) = Y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.y);
+    HEXRAYS_LOWORD(a7a) = (short)X + ((unsigned int)fixpoint_mul(a11a, dir_x) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.x);
+    HEXRAYS_HIWORD(a7a) = Y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.y);
 	if (!sub_4759C9(face, a10, a7a, (short)Z + ((unsigned int)fixpoint_mul(a11a, dir_z) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.z)))
 		return false;
 	*a2 = a11a >> 16;
@@ -9635,7 +9865,7 @@ int sub_475665(BLVFace *face, int a2, __int16 a3)
 	if (face->uAttributes & FACE_XY_PLANE)
 	{
 		v26 = (signed __int16)a2;
-		v27 = SHIWORD(a2);
+		v27 = HEXRAYS_SHIWORD(a2);
 		if (face->uNumVertices)
 		{
 			for (v28 = 0; v28 < face->uNumVertices; v28++)
@@ -9666,7 +9896,7 @@ int sub_475665(BLVFace *face, int a2, __int16 a3)
 		}
 		else
 		{
-			v26 = SHIWORD(a2);
+			v26 = HEXRAYS_SHIWORD(a2);
 			v27 = a3;
 			if (face->uNumVertices)
 			{
@@ -9700,8 +9930,8 @@ int sub_475665(BLVFace *face, int a2, __int16 a3)
 			if (v21 != 3)
 			{
 				v22 = word_720C10_intercepts_xs[v25 + 1] - word_720C10_intercepts_xs[v25];
-				LODWORD(v23) = v22 << 16;
-				HIDWORD(v23) = v22 >> 16;
+                HEXRAYS_LODWORD(v23) = v22 << 16;
+                HEXRAYS_HIDWORD(v23) = v22 >> 16;
 				if (!v21
 					|| (word_720C10_intercepts_xs[v25] + ((signed int)(((unsigned __int64)(v23
 					/ (word_720B40_intercepts_zs[v25 + 1] - word_720B40_intercepts_zs[v25])
@@ -9736,7 +9966,7 @@ bool sub_4759C9(BLVFace *face, int a2, int a3, __int16 a4)
 	if (face->uAttributes & FACE_XY_PLANE)
 	{
 		v23 = (signed __int16)a3;
-		v24 = SHIWORD(a3);
+		v24 = HEXRAYS_SHIWORD(a3);
 		if (face->uNumVertices)
 		{
 			for (v22 = 0; v22 < face->uNumVertices; ++v22)
@@ -9767,7 +9997,7 @@ bool sub_4759C9(BLVFace *face, int a2, int a3, __int16 a4)
 		}
 		else
 		{
-			v23 = SHIWORD(a3);
+			v23 = HEXRAYS_SHIWORD(a3);
 			v24 = a4;
 			if (face->uNumVertices)
 			{
@@ -9801,8 +10031,8 @@ bool sub_4759C9(BLVFace *face, int a2, int a3, __int16 a4)
 			if (v17 != 3)
 			{
 				v18 = word_720A70_intercepts_xs_plus_xs[v21 + 1] - word_720A70_intercepts_xs_plus_xs[v21];
-				LODWORD(v19) = v18 << 16;
-				HIDWORD(v19) = v18 >> 16;
+                HEXRAYS_LODWORD(v19) = v18 << 16;
+                HEXRAYS_HIDWORD(v19) = v18 >> 16;
 				if (!v17
 					|| (word_720A70_intercepts_xs_plus_xs[v21] + ((signed int)(((unsigned __int64)(v19
 					/ (word_7209A0_intercepts_ys_plus_ys[v21 + 1] - word_7209A0_intercepts_ys_plus_ys[v21])
@@ -9863,12 +10093,12 @@ bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, BLVFace *a4)
 	}
 	a4c = abs(-(v4->pFacePlane_old.dist + v8 + a1->y * v4->pFacePlane_old.vNormal.y + a1->x * v4->pFacePlane_old.vNormal.x)) >> 14;
 	v11 = v14;
-	LODWORD(v10) = v9 << 16;
-	HIDWORD(v10) = v9 >> 16;
+    HEXRAYS_LODWORD(v10) = v9 << 16;
+    HEXRAYS_HIDWORD(v10) = v9 >> 16;
 	a4a = v10 / v7;
 	v17 = v10 / v7;
-	LOWORD(v12) = LOWORD(v14->x) + (((unsigned int)fixpoint_mul(v17, v15->x) + 0x8000) >> 16);
-	HIWORD(v12) = LOWORD(v11->y) + (((unsigned int)fixpoint_mul(v17, v15->y) + 0x8000) >> 16);
+    HEXRAYS_LOWORD(v12) = HEXRAYS_LOWORD(v14->x) + (((unsigned int)fixpoint_mul(v17, v15->x) + 0x8000) >> 16);
+    HEXRAYS_HIWORD(v12) = HEXRAYS_LOWORD(v11->y) + (((unsigned int)fixpoint_mul(v17, v15->y) + 0x8000) >> 16);
 	if (a4c > abs(v7) || (v17 > *a3 << 16) || !sub_475665(v4, v12, LOWORD(v11->z) + (((unsigned int)fixpoint_mul(v17, v15->z) + 0x8000) >> 16)))
 		return 0;
 	*a3 = a4a >> 16;
@@ -9911,12 +10141,12 @@ bool sub_475F30(int *a1, BLVFace *a2, int a3, int a4, int a5, int a6, int a7, in
 			return 0;
 	}
 	v17 = abs(-(a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y + a3 * a2->pFacePlane_old.vNormal.x + a5 * a2->pFacePlane_old.vNormal.z)) >> 14;
-	LODWORD(v18) = v16 << 16;
-	HIDWORD(v18) = v16 >> 16;
+    HEXRAYS_LODWORD(v18) = v16 << 16;
+    HEXRAYS_HIDWORD(v18) = v16 >> 16;
 	v24 = v18 / v22;
 	v23 = v18 / v22;
-	LOWORD(v19) = a3 + (((unsigned int)fixpoint_mul(v23, a6) + 0x8000) >> 16);
-	HIWORD(v19) = a4 + (((unsigned int)fixpoint_mul(v23, a7) + 0x8000) >> 16);
+    HEXRAYS_LOWORD(v19) = a3 + (((unsigned int)fixpoint_mul(v23, a6) + 0x8000) >> 16);
+    HEXRAYS_HIWORD(v19) = a4 + (((unsigned int)fixpoint_mul(v23, a7) + 0x8000) >> 16);
 	if (v17 > abs(v14) || v23 > *a1 << 16 || !sub_4759C9(a2, a9, v19, a5 + (((unsigned int)fixpoint_mul(v23, a8) + 0x8000) >> 16)))
 		return 0;
 	*a1 = v24 >> 16;
@@ -9961,7 +10191,7 @@ bool IsBModelVisible(unsigned int uModelID, int *reachable)
 		if (abs(v12) > pOutdoor->pBModels[uModelID].sBoundingRadius + 512)
 		{
 			result = v12 < 0;
-			LOBYTE(result) = v12 >= 0;
+            HEXRAYS_LOBYTE(result) = v12 >= 0;
 			return result;
 		}
 		else
@@ -10332,7 +10562,8 @@ bool DrawSkyD3D_Skybox()
 
 	DDSURFACEDESC2 desc;
 	desc.dwSize = sizeof(desc);
-	if (!render->LockSurface_DDraw4(skybox_surface, &desc, DDLOCK_WAIT | DDLOCK_WRITEONLY))
+    auto r = (Render *)render;
+	if (!r->LockSurface_DDraw4(skybox_surface, &desc, DDLOCK_WAIT | DDLOCK_WRITEONLY))
 		return false;
 
 	last_camera_rot_y = pParty->sRotationY;

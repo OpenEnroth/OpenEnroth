@@ -1,8 +1,6 @@
 #pragma once
 
-#include <cstdint>
-
-#include "Render.h"
+#include "Engine/Graphics/IRender.h"
 
 /*  158 */
 #pragma pack(push, 1)

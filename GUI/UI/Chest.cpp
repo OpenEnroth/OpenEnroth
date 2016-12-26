@@ -9,6 +9,8 @@
 
 #include "GUI/UI/Chest.h"
 
+#include "Platform/Api.h"
+
 
 
 int pChestPixelOffsetX[8] = { 42, 18, 18, 42, 42, 42, 18, 42 };

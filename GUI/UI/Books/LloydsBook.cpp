@@ -118,15 +118,15 @@ void GUIWindow_LloydsBook::Update()
         render->DrawTextureAlphaNew(pBtn_Book_2->uX/640.0f, pBtn_Book_2->uY/480.0f, ui_book_button1_on);
     }
     uNumMaxBeacons = 1;
-    if (HIBYTE(pPlayer->pActiveSkills[PLAYER_SKILL_WATER]) & 1 || (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x80u) != 0)
+    if ((pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x100) || (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x80))
     {
         uNumMaxBeacons = 5;
     }
-    else
+    else if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x40)
     {
-        if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x40)
-            uNumMaxBeacons = 3;
+        uNumMaxBeacons = 3;
     }
+
     if (uNumMaxBeacons > 0)
     {
         for (BeaconID = 0; BeaconID < uNumMaxBeacons; BeaconID++)

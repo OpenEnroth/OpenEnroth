@@ -1,6 +1,7 @@
 #pragma once
+#include "Engine/Graphics/IRender.h"
+
 #include "Core/UIControl.h"
-#include "..\..\Engine/Graphics/Render.h"
 
 
 class MainMenuWindow : public UIControl

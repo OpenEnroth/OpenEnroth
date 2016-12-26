@@ -60,7 +60,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
     journal_window.uFrameWidth = 360;
     journal_window.uFrameHeight = 264;
     journal_window.uFrameZ = 407;
-    journal_window.uFrameHeight = (LOBYTE(pAutonoteFont->uFontHeight) - 3) * 264 / LOBYTE(pAutonoteFont->uFontHeight) - 3;
+    journal_window.uFrameHeight = (pAutonoteFont->GetFontHeight() - 3) * 264 / pAutonoteFont->GetFontHeight() - 3;
     journal_window.uFrameW = journal_window.uFrameHeight + 69;
     memset(&achieved_awards, 0, 4000);
     memset(Journal_limitation_factor.data(), 0, 100);

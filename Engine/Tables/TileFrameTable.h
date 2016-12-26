@@ -89,6 +89,6 @@ struct TileTable
     int FromFileTxt(const char *pFilename);
 
     int sNumTiles;
-    struct TileDesc *pTiles;
+    TileDesc *pTiles;
 };
 #pragma pack(pop)

@@ -1,24 +1,19 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "Engine/Engine.h"
 #include "Engine/Strings.h"
 #include "Engine/Time.h"
 #include "Engine/Localization.h"
-
-#include "Engine/Graphics/Render.h"
-#include "Arcomage.h"
-#include "Media/Audio/AudioPlayer.h"
-#include "Engine/Graphics/Viewport.h"
-#include "GUI/GUIFont.h"
 #include "Engine/Party.h"
+
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Viewport.h"
+
+#include "Arcomage/Arcomage.h"
+
+#include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
-#include <windef.h>
 #include "GUI/UI/UIHouses.h"
 
+#include "Media/Audio/AudioPlayer.h"
 
 
 void SetStartConditions();
@@ -36,10 +31,10 @@ void DrawGameUI(int  animation_stage);
 void DrawSparks();
 void DrawRectanglesForText();
 void DrawPlayersText();
-void DrawPlayerLevels(const String &str, POINT *pXY); 
-void DrawBricksCount(const String &str, POINT *pXY); 
-void DrawGemsCount(const String &str, POINT* pXY);
-void DrawBeastsCount(const String &str, POINT *pXY);
+void DrawPlayerLevels(const String &str, Point *pXY);
+void DrawBricksCount(const String &str, Point *pXY);
+void DrawGemsCount(const String &str, Point *pXY);
+void DrawBeastsCount(const String &str, Point *pXY);
 void DrawPlayersTowers();
 void DrawPlayersWall();
 void DrawCards();
@@ -50,23 +45,23 @@ bool DiscardCard(int player_num, int card_slot_index);
 bool PlayCard(int player_num, int card_slot_num);
 bool CanCardBePlayed(int player_num, int hand_card_indx);
 void ApplyCardToPlayer(int player_num, unsigned int uCardID); 
-int  am_40D2B4(POINT* a1, int a2);
+int  am_40D2B4(Point *a1, int a2);
 int  ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
-void am_DrawText(const String &str, POINT *pXY);
+void am_DrawText(const String &str, Point *pXY);
 void am_BeginScene(unsigned __int16 *pPcxPixels, int a2, int a3); // idb
 void am_EndScene();
-void DrawRect(RECT *pXYZW, unsigned __int16 uColor, char bSolidFill);
-void DrawSquare( POINT *pTargetXY, unsigned __int16 uColor );
-void DrawPixel(POINT *pTargetXY, unsigned __int16 uColor);
+void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill);
+void DrawSquare(Point *pTargetXY, unsigned __int16 uColor );
+void DrawPixel(Point *pTargetXY, unsigned __int16 uColor);
 int  rand_interval(int min, int max); // idb
 void am_IntToString(int val, char *pOut);
 
 //----- (0040DEDB) --------------------------------------------------------
 unsigned int R8G8B8_to_TargetFormat(int uColor)
 {
-  return Color16(LOBYTE(uColor), BYTE1(uColor), BYTE2(uColor));
+    return Color16(uColor & 0xFF, (uColor >> 8) & 0xFF, (uColor >> 16) & 0xFF);
 }
 
 /*  388 */
@@ -124,7 +119,7 @@ char Player1Name[] = "Player";
 struct stru273
 {
   bool _40DD2F();
-  bool Inside(RECT*pXYZW);
+  bool Inside(Rect *pXYZW);
 
   int x;
   int y;
@@ -185,10 +180,10 @@ int start_bricks_amount;
 int start_gems_amount; 
 int start_beasts_amount; 
 
-POINT amuint_4FAA3C_blt_xy;
-POINT am_uint_4FAA44_blt_xy;
-POINT amuint_4FAA54_blt_xy;
-POINT amuint_4FAA5C_blt_xy;
+Point amuint_4FAA3C_blt_xy;
+Point am_uint_4FAA44_blt_xy;
+Point amuint_4FAA54_blt_xy;
+Point amuint_4FAA5C_blt_xy;
 
 int dword_4FAA64;
 int dword_4FAA68;
@@ -230,11 +225,13 @@ bool stru273::_40DD2F()
 }
 
 //----- (0040DD93) --------------------------------------------------------
-bool stru273::Inside(RECT*pXYZW )
-    {
+bool stru273::Inside(Rect *pXYZW)
+{
 
-  return (x >= pXYZW->left) && (x <= pXYZW->right) && 
-          (y>= pXYZW->top) && (y <= pXYZW->bottom);
+    return
+        (x >= pXYZW->x) && (x <= pXYZW->z)
+        &&
+        (y >= pXYZW->y) && (y <= pXYZW->w);
 }
 
 //----- (0040DFD1) --------------------------------------------------------
@@ -253,352 +250,315 @@ stru272_stru0 *stru272_stru0::New()
 //----- (0040DFFE) --------------------------------------------------------
 int stru272_stru0::Free()
 {
-  if ( this->signature == SIG_trpg )
-  {
-    this->signature = SIG_xxxx;
-    free(this);
-    return 0;
-  }
-  else
-    return 2;
+    if (this->signature == SIG_trpg)
+    {
+        this->signature = SIG_xxxx;
+        free(this);
+        return 0;
+    }
+    else
+        return 2;
 }
 
 //----- (0040E01A) --------------------------------------------------------
-int stru272_stru0::StartFill( stru272_stru2* a2 )
+int stru272_stru0::StartFill(stru272_stru2* a2)
 {
-  //stru272_stru0* a1 = this;
-  if ( this->signature == SIG_trpg )
-  {
-    this->field_4 = a2->field_20;
-    this->field_C = a2->effect_area.left << 16;
-    this->field_10 = a2->effect_area.top << 16;
-    this->field_14 = a2->effect_area.right << 16;
-    this->field_18 = a2->effect_area.bottom << 16;
-    this->field_1C = a2->field_10;
-    this->field_20 = a2->field_14;
-    this->field_24 = a2->field_18;
-    this->field_28 = (float)(a2->field_1Cf * 65536.0);
-    this->field_2C = a2->field_24f;
-    this->field_34 = (int)(a2->field_28f * 65536.0);
-    this->field_38 = (int)(a2->field_2Cf * 65536.0);
-    this->field_3C = a2->field_30;
-    this->field_40 = a2->field_34;
-    this->field_54 = a2->sparks_array;
-    this->field_59 = 1;
-    return 0;
-  }
-  else
-    return 2;
+    //stru272_stru0* a1 = this;
+    if (this->signature == SIG_trpg)
+    {
+        this->field_4 = a2->field_20;
+        this->field_C = a2->effect_area.x << 16;
+        this->field_10 = a2->effect_area.y << 16;
+        this->field_14 = a2->effect_area.z << 16;
+        this->field_18 = a2->effect_area.w << 16;
+        this->field_1C = a2->field_10;
+        this->field_20 = a2->field_14;
+        this->field_24 = a2->field_18;
+        this->field_28 = (float)(a2->field_1Cf * 65536.0);
+        this->field_2C = a2->field_24f;
+        this->field_34 = (int)(a2->field_28f * 65536.0);
+        this->field_38 = (int)(a2->field_2Cf * 65536.0);
+        this->field_3C = a2->field_30;
+        this->field_40 = a2->field_34;
+        this->field_54 = a2->sparks_array;
+        this->field_59 = 1;
+        return 0;
+    }
+    else
+        return 2;
 }
 
 //----- (0040E0F5) --------------------------------------------------------
 int stru272_stru0::Clear(char a2, char a3)
+{
+    if (signature == SIG_trpg)
     {
-    if ( signature == SIG_trpg)
+        if (a2)
         {
-        if ( a2 )
-            {
             position_in_sparks_arr = 0;
             field_30 = 0.0;
-            }
-        if ( field_59 && a3 )
-            {
-
-            for (int i=0; i<field_4; ++i)
-                field_54[i].have_spark = 0;
-             field_58 = 0;
-            }
-        return 0;
         }
+        if (field_59 && a3)
+        {
+
+            for (int i = 0; i < field_4; ++i)
+                field_54[i].have_spark = 0;
+            field_58 = 0;
+        }
+        return 0;
+    }
     else
         return 2;
-    }
+}
 
 //----- (0040E133) --------------------------------------------------------
 int stru272_stru0::DrawEffect()
 {
-//    stru272_stru0 *v1; // edi@1
-  int v3; // ST18_4@3
-  double v4; // st7@3
-  double v5; // st6@4
-  char v6; // bl@8
-  stru272_stru1 *v7; // esi@8
-  int v8; // ecx@10
-  signed int v9; // eax@10
-  int v10; // ecx@10
-  signed int v11; // eax@10
-  int v12; // ebx@12
-  int v13; // ST1C_4@12
-  int v14; // ebx@12
-  int v15; // ST1C_4@12
-  signed int v16; // edx@12
-  int v17; // ebx@12
-  int v18; // ST1C_4@12
-  signed int v19; // edx@12
-  int v20; // [sp+8h] [bp-10h]@8
-  int v21; // [sp+Ch] [bp-Ch]@8
-  float v22; // [sp+14h] [bp-4h]@3
+    //    stru272_stru0 *v1; // edi@1
+    int v3; // ST18_4@3
+    double v4; // st7@3
+    double v5; // st6@4
+    char v6; // bl@8
+    stru272_stru1 *v7; // esi@8
+    int v8; // ecx@10
+    signed int v9; // eax@10
+    int v10; // ecx@10
+    signed int v11; // eax@10
+    int v12; // ebx@12
+    int v13; // ST1C_4@12
+    int v14; // ebx@12
+    int v15; // ST1C_4@12
+    signed int v16; // edx@12
+    int v17; // ebx@12
+    int v18; // ST1C_4@12
+    signed int v19; // edx@12
+    int v20; // [sp+8h] [bp-10h]@8
+    int v21; // [sp+Ch] [bp-Ch]@8
+    float v22; // [sp+14h] [bp-4h]@3
 
-  if ( this->signature != SIG_trpg )
-    return 2;
-  v3 = this->position_in_sparks_arr;
-  v22 = this->field_30;
-  v4 = v3;
-  if ( v3 > 0 )
-  {
-    v5 = v22 + this->field_2C;
-    v22 = v5;
-    if ( v5 > v4 )
-      v22 = v4;
-  }
-  if ( v22 >= 1.0 || this->field_58 )
-  {
-    v6 = 0;
-    v7 = this->field_54;
-    v20 = this->field_28;
-
-    for ( v21 = this->field_4; v21; v21-- )
+    if (this->signature != SIG_trpg)
+        return 2;
+    v3 = this->position_in_sparks_arr;
+    v22 = this->field_30;
+    v4 = v3;
+    if (v3 > 0)
     {
-		if ( v7->have_spark > 0  )
-		{
-    v8 = v7->field_14;
-    --v7->have_spark;
-    v9 = v8 + v7->field_C;
-    v10 = v20 + v7->field_18;
-    v7->field_C = v9;
-    v7->spark_position.x = v9 >> 16;
-    v11 = v10 + v7->field_10;
-    v7->field_18 = v10;
-    v7->field_10 = v11;
-    v7->spark_position.y = v11 >> 16;
-    v6 = 1;
-    //goto LABEL_14;
-		}
-		else
-		{
-      if ( v22 >= 1.0 )
-      {
-        v12 = this->field_40;
-        v13 = this->field_3C;
-        v7->have_spark = rand_interval(v13,v12);
-        v7->field_14 = (rand() % 17 - 8) << 16;
-        v7->field_18 = (rand() % 17 - 8) << 16;
-        v14 = this->field_14 - 1;
-        v15 = this->field_C;
-        v16 = rand_interval(v15,v14);
-        v7->field_C = v16;
-        v7->spark_position.x = v16 >> 16;
-        v17 = this->field_18 - 1;
-        v18 = this->field_10;
-        v19 = rand_interval(v17, v18);
-        v7->field_10 = v19;
-        v7->spark_position.y = v19 >> 16;
-        --this->position_in_sparks_arr;
-        v22 = v22 - 1.0;
-        v6 = 1;
-      }
-		}
-//LABEL_14:
-      ++v7;
-      //--v21;
-      //if ( !v21 )
-      //{
-        //this->field_58 = v6;
-        //this->field_30 = v22;
-        //return 0;
-      //}
+        v5 = v22 + this->field_2C;
+        v22 = v5;
+        if (v5 > v4)
+            v22 = v4;
     }
-    this->field_58 = v6;
-    this->field_30 = v22;
-  }
-  return 0;
+    if (v22 >= 1.0 || this->field_58)
+    {
+        v6 = 0;
+        v7 = this->field_54;
+        v20 = this->field_28;
+
+        for (v21 = this->field_4; v21; v21--)
+        {
+            if (v7->have_spark > 0)
+            {
+                v8 = v7->field_14;
+                --v7->have_spark;
+                v9 = v8 + v7->field_C;
+                v10 = v20 + v7->field_18;
+                v7->field_C = v9;
+                v7->spark_position.x = v9 >> 16;
+                v11 = v10 + v7->field_10;
+                v7->field_18 = v10;
+                v7->field_10 = v11;
+                v7->spark_position.y = v11 >> 16;
+                v6 = 1;
+                //goto LABEL_14;
+            }
+            else
+            {
+                if (v22 >= 1.0)
+                {
+                    v12 = this->field_40;
+                    v13 = this->field_3C;
+                    v7->have_spark = rand_interval(v13, v12);
+                    v7->field_14 = (rand() % 17 - 8) << 16;
+                    v7->field_18 = (rand() % 17 - 8) << 16;
+                    v14 = this->field_14 - 1;
+                    v15 = this->field_C;
+                    v16 = rand_interval(v15, v14);
+                    v7->field_C = v16;
+                    v7->spark_position.x = v16 >> 16;
+                    v17 = this->field_18 - 1;
+                    v18 = this->field_10;
+                    v19 = rand_interval(v17, v18);
+                    v7->field_10 = v19;
+                    v7->spark_position.y = v19 >> 16;
+                    --this->position_in_sparks_arr;
+                    v22 = v22 - 1.0;
+                    v6 = 1;
+                }
+            }
+            //LABEL_14:
+            ++v7;
+            //--v21;
+            //if ( !v21 )
+            //{
+              //this->field_58 = v6;
+              //this->field_30 = v22;
+              //return 0;
+            //}
+        }
+        this->field_58 = v6;
+        this->field_30 = v22;
+    }
+    return 0;
 }
 
 //----- (0040E2A7) --------------------------------------------------------
 int stru272_stru0::_40E2A7()
 {
-  if (signature == SIG_trpg )
-  {
-    if ( position_in_sparks_arr <= 0 )
-      return field_58 != 0 ? 2 : 0;
+    if (signature == SIG_trpg)
+    {
+        if (position_in_sparks_arr <= 0)
+            return field_58 != 0 ? 2 : 0;
+        else
+            return 1;
+    }
     else
-      return 1;
-  }
-  else
-    return 3;
+        return 3;
 }
 
 //----- (0040DFAF) --------------------------------------------------------
 void ArcomageGame::OnMouseClick(char right_left, bool bDown)
 {
-  if ( right_left )
-    pArcomageGame->mouse_right = bDown;
-  else
-    pArcomageGame->mouse_left = bDown;
+    if (right_left)
+        pArcomageGame->mouse_right = bDown;
+    else
+        pArcomageGame->mouse_left = bDown;
 }
 
 //----- (0040DFC1) --------------------------------------------------------
 void ArcomageGame::OnMouseMove(int x, int y)
 {
-  pArcomageGame->mouse_x = x;
-  pArcomageGame->mouse_y = y;
+    pArcomageGame->mouse_x = x;
+    pArcomageGame->mouse_y = y;
 }
 
 //----- (0040DF47) --------------------------------------------------------
-void DoBlt_Copy(unsigned __int16 *pPixels)
+void ArcomageGame::DoBlt_Copy(unsigned __int16 *pPixels)
 {
-  RECT pSrcRect;
-  POINT pTargetPoint; // [sp+1Ch] [bp-8h]@1
+    Rect pSrcRect;
+    Point pTargetPoint; // [sp+1Ch] [bp-8h]@1
 
-  render->Present();
+    render->Present();
 
-  pTargetPoint.x = 0;
-  pTargetPoint.y = 0;
+    pTargetPoint.x = 0;
+    pTargetPoint.y = 0;
 
-  pSrcRect.left   = 0;
-  pSrcRect.top    = 0;
-  pSrcRect.right  = window->GetWidth();
-  pSrcRect.bottom = window->GetHeight();
+    pSrcRect.x = 0;
+    pSrcRect.y = 0;
+    pSrcRect.z = window->GetWidth();
+    pSrcRect.w = window->GetHeight();
 
-  render->BeginScene();
-  pArcomageGame->pBlit_Copy_pixels = pPixels;
-  render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
-  render->EndScene();
-  pArcomageGame->pBlit_Copy_pixels = nullptr;
+    render->BeginScene();
+    pArcomageGame->pBlit_Copy_pixels = pPixels;
+    render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
+    render->EndScene();
+    pArcomageGame->pBlit_Copy_pixels = nullptr;
 }
 
 //----- (0040DDC9) --------------------------------------------------------
-void ArcomageGame::PlaySound( unsigned int event_id )
+void ArcomageGame::PlaySound(unsigned int event_id)
 {
-  SoundID play_sound_id; // eax@10
+    SoundID play_sound_id; // eax@10
 
-  switch ( event_id )
-      {
-  case 40:
-  case 43:
-  case 46:
-      play_sound_id = SOUND_bricks_down;
-      break;
-  case 39:
-  case 41:
-  case 42:
-  case 44:
-  case 45:
-  case 47:
-      play_sound_id = SOUND_bricks_up;
-      break;
-  case 0:
-  case 12:
-  case 14:
-  case 15:
-  case 16:
-  case 48:
-  case 50:
-  case 53:
-      play_sound_id = SOUND_damage;
-      break;
-  case 21:
-  case 22:
-  case 23:
-      play_sound_id = SOUND_deal;
-      break;
-  case 56:
-      play_sound_id = SOUND_defeat;
-      break;
-  case 31:
-  case 34:
-  case 37:
-      play_sound_id = SOUND_querry_up;
-      break;
-  case 1:
-  case 30:
-  case 32:
-  case 33:
-  case 35:
-  case 36:
-  case 38:
-      play_sound_id = SOUND_querry_down;
-     break;
-  case 20:
-      play_sound_id = SOUND_shuffle;
-      break;
-  case 3:
-      play_sound_id = SOUND_title;
-      break;
-  case 52:
-  case 54:
-      play_sound_id = SOUND_tower_up;
-      break;
-  case 10:
-  case 11:
-  case 13:
-      play_sound_id = SOUND_typing;
-      break;
-  case 55:
-      play_sound_id = SOUND_victory;
-      break;
-  case 49:
-  case 51:
-      play_sound_id = SOUND_wall_up;
-      break;
-  default:
-      return;
-  }
-  pAudioPlayer->PlaySound(play_sound_id, 0, 0, -1, 0, 0, 0, 0);
+    switch (event_id)
+    {
+        case 40:
+        case 43:
+        case 46:
+            play_sound_id = SOUND_bricks_down;
+            break;
+        case 39:
+        case 41:
+        case 42:
+        case 44:
+        case 45:
+        case 47:
+            play_sound_id = SOUND_bricks_up;
+            break;
+        case 0:
+        case 12:
+        case 14:
+        case 15:
+        case 16:
+        case 48:
+        case 50:
+        case 53:
+            play_sound_id = SOUND_damage;
+            break;
+        case 21:
+        case 22:
+        case 23:
+            play_sound_id = SOUND_deal;
+            break;
+        case 56:
+            play_sound_id = SOUND_defeat;
+            break;
+        case 31:
+        case 34:
+        case 37:
+            play_sound_id = SOUND_querry_up;
+            break;
+        case 1:
+        case 30:
+        case 32:
+        case 33:
+        case 35:
+        case 36:
+        case 38:
+            play_sound_id = SOUND_querry_down;
+            break;
+        case 20:
+            play_sound_id = SOUND_shuffle;
+            break;
+        case 3:
+            play_sound_id = SOUND_title;
+            break;
+        case 52:
+        case 54:
+            play_sound_id = SOUND_tower_up;
+            break;
+        case 10:
+        case 11:
+        case 13:
+            play_sound_id = SOUND_typing;
+            break;
+        case 55:
+            play_sound_id = SOUND_victory;
+            break;
+        case 49:
+        case 51:
+            play_sound_id = SOUND_wall_up;
+            break;
+        default:
+            return;
+    }
+    pAudioPlayer->PlaySound(play_sound_id, 0, 0, -1, 0, 0, 0, 0);
 }
 
 //----- (0040DC2D) --------------------------------------------------------
 bool ArcomageGame::MsgLoop(int a1, ArcomageGame_stru1 *a2)
 {
-  void *v2; // ebp@1
-  //BOOL v3; // eax@1
+    void *v2; // ebp@1
+    //BOOL v3; // eax@1
 
-  v2 = a2;
-  pArcomageGame->field_0 = 0;
-  pArcomageGame->stru1.field_0 = 0;
-  //v3 = PeekMessageA(&pArcomageGame->msg, 0, 0, 0, PM_REMOVE);
-  //if ( pArcomageGame->msg.message == WM_QUIT )
-    //Engine_DeinitializeAndTerminate(0);
-  if ( PeekMessageA(&pArcomageGame->msg, 0, 0, 0, PM_REMOVE) )
-  {
-    if ( pArcomageGame->msg.message == WM_QUIT )
-      Engine_DeinitializeAndTerminate(0);
-    TranslateMessage(&pArcomageGame->msg);
-    DispatchMessageA(&pArcomageGame->msg);
-  }
-  /*if (pAsyncMouse)
-  {
-    EnterCriticalSection(&pEngine->pThreadWardInstance->csAsyncMouse);
-    v4 = *((unsigned int *)pAsyncMouse + 7);
-    pArcomageGame->mouse_x = *((unsigned int *)pAsyncMouse + 6);
-    pArcomageGame->mouse_y = v4;
-    v5 = *((unsigned int *)pAsyncMouse + 27);
-    v6 = *(unsigned int *)v5;
-    if ( *(unsigned int *)v5 != v5 )
-    {
-      do
-      {
-        v7 = *(unsigned int *)(v6 + 20);
-        if ( v7 & 1 )
-        {
-          pArcomageGame->stru1.field_0 = 7;
-        }
-        else
-        {
-          if ( v7 & 2 )
-            pArcomageGame->stru1.field_0 = 8;
-        }
-        v6 = *(unsigned int *)v6;
-      }
-      while ( v6 != *((unsigned int *)pAsyncMouse + 27) );
-    }
-    pAsyncMouse->_46B944();
-    if ( !*((unsigned char *)pAsyncMouse + 90) )
-      pArcomageGame->field_F6 = 1;
-    LeaveCriticalSection(&pEngine->pThreadWardInstance->csAsyncMouse);
-  }*/
-  memcpy(v2, &pArcomageGame->stru1, 0xCu);
-  return pArcomageGame->stru1.field_0 != 0;
+    v2 = a2;
+    pArcomageGame->field_0 = 0;
+    pArcomageGame->stru1.field_0 = 0;
+
+    extern void OS_PeekMessage();
+    OS_PeekMessage();
+
+    memcpy(v2, &pArcomageGame->stru1, 0xCu);
+    return pArcomageGame->stru1.field_0 != 0;
 }
 
 //----- (0040D7D5) --------------------------------------------------------
@@ -606,144 +566,6 @@ void am_BeginScene(unsigned __int16 *pPcxPixels, int a2, int a3)
 {
   render->BeginScene();
   pArcomageGame->pBlit_Copy_pixels = pPcxPixels;
-}
-
-//----- (0040D7EC) --------------------------------------------------------
-void Render::am_Blt_Chroma(RECT *pSrcRect, POINT *pTargetPoint, int a3, int blend_mode)
-{
-    unsigned __int16 *pSrc; // eax@2
-    int uSrcTotalWidth; // ecx@4
-    unsigned int v10; // esi@9
-    int v21; // [sp+Ch] [bp-18h]@8
-    unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
-    __int32 src_width; // [sp+14h] [bp-10h]@3
-    __int32 src_height; // [sp+18h] [bp-Ch]@3
-    int uSrcPitch; // [sp+1Ch] [bp-8h]@5
-
-    if (!uNumSceneBegins)
-        return;
-    if (!pArcomageGame->pBlit_Copy_pixels)
-        return;
-
-    //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
-    src_width = pSrcRect->right - pSrcRect->left;
-    src_height = pSrcRect->bottom - pSrcRect->top;
-
-    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
-        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
-    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
-        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
-
-    pSrc = pArcomageGame->pBlit_Copy_pixels;
-    uSrcPitch = uSrcTotalWidth;
-    src_surf_pos = &pSrc[pSrcRect->left + uSrcPitch * pSrcRect->top];
-    v10 = 0x1F;//0xFF >> (8 - (unsigned __int8)uTargetBBits);
-    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
-    if (blend_mode == 2)
-    {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i)
-        {
-            for (int j = 0; j < src_width; ++j)
-            {
-                if (*src_surf_pos != v10)
-                {
-                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    }
-    else
-    {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i)
-        {
-            for (int j = 0; j < src_width; ++j)
-            {
-                if (*src_surf_pos != v10)
-                {
-                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) >> 1)) + (v21 & (*src_surf_pos >> 1)));
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    }
-}
-
-//----- (0040D9B1) --------------------------------------------------------
-void Render::am_Blt_Copy(RECT *pSrcRect, POINT *pTargetPoint, int blend_mode)
-{
-    unsigned __int16 *pSrc; // eax@2
-    int uSrcTotalWidth; // ecx@4
-    int v21; // [sp+Ch] [bp-18h]@8
-    unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
-    __int32 src_width; // [sp+14h] [bp-10h]@3
-    __int32 src_height; // [sp+18h] [bp-Ch]@3
-    int uSrcPitch; // [sp+1Ch] [bp-8h]@5
-
-    if (!uNumSceneBegins)
-        return;
-    if (!pArcomageGame->pBlit_Copy_pixels)
-        return;
-
-    //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
-    src_width = pSrcRect->right - pSrcRect->left;
-    src_height = pSrcRect->bottom - pSrcRect->top;
-    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
-        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
-    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
-        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
-
-    pSrc = pArcomageGame->pBlit_Copy_pixels;
-    uSrcPitch = uSrcTotalWidth;
-    src_surf_pos = &pSrc[pSrcRect->left + uSrcPitch * pSrcRect->top];
-    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
-
-    if (blend_mode == 2)
-    {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i)
-        {
-            for (int j = 0; j < src_width; ++j)
-            {
-                if (*src_surf_pos != v21)
-                {
-                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    }
-    else
-    {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i)
-        {
-            for (int j = 0; j < src_width; ++j)
-            {
-                if (*src_surf_pos != v21)
-                {
-                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) / 2)) + (v21 & (*src_surf_pos / 2)));
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    }
 }
 
 //----- (0040DB10) --------------------------------------------------------
@@ -1207,7 +1029,7 @@ void SetStartGameData()
   {
     if ( i )
     {
-      strcpy(am_Players[1].pPlayerName, pArcomageGame->pPlayer2Name);
+        strcpy_s(am_Players[1].pPlayerName, pArcomageGame->pPlayer2Name);
       if ( byte_4E185C )
         am_Players[1].IsHisTurn = 0;
       else
@@ -1215,7 +1037,7 @@ void SetStartGameData()
     }
     else
     {
-      strcpy(am_Players[0].pPlayerName, pArcomageGame->pPlayer1Name);
+        strcpy_s(am_Players[0].pPlayerName, pArcomageGame->pPlayer1Name);
       am_Players[0].IsHisTurn = 1;
     }
     am_Players[i].tower_height    = start_tower_height;
@@ -1242,7 +1064,7 @@ void SetStartGameData()
       }
     }  
   }
-  strcpy(deckMaster.name, "Master Deck");
+  strcpy_s(deckMaster.name, "Master Deck");
   for ( i = 0, card_dispenser_counter = -2, card_id_counter = 0; i < DECK_SIZE; ++i, ++card_dispenser_counter)
   {
     deckMaster.cardsInUse[i] = 0;
@@ -1280,49 +1102,48 @@ void SetStartGameData()
 
 //----- (0040A198) --------------------------------------------------------
 void FillPlayerDeck()
-    {
-  signed int m;
-  int rand_deck_pos; 
-  char card_taken_flags[DECK_SIZE]; 
-  int i,j;
+{
+    signed int m;
+    int rand_deck_pos;
+    char card_taken_flags[DECK_SIZE];
+    int i, j;
 
-  ArcomageGame::PlaySound(20);
-  memset(deckMaster.cardsInUse, 0,DECK_SIZE );
-  memset(card_taken_flags, 0, DECK_SIZE);
+    ArcomageGame::PlaySound(20);
+    memset(deckMaster.cardsInUse, 0, DECK_SIZE);
+    memset(card_taken_flags, 0, DECK_SIZE);
 
-  for ( i = 0; i < 2; ++i )
-  {
-    for ( j = 0; j < 10; ++j )
+    for (i = 0; i < 2; ++i)
     {
-      if ( am_Players[i].cards_at_hand[j] > -1 )
-      {
-        for (m = 0; m<DECK_SIZE; ++m)
+        for (j = 0; j < 10; ++j)
         {
-          if (deckMaster.cards_IDs[m] == am_Players[i].cards_at_hand[j] && deckMaster.cardsInUse[m] == 0)
-          {
-            deckMaster.cardsInUse[m] = 1;
-            break;
-          }
+            if (am_Players[i].cards_at_hand[j] > -1)
+            {
+                for (m = 0; m < DECK_SIZE; ++m)
+                {
+                    if (deckMaster.cards_IDs[m] == am_Players[i].cards_at_hand[j] && deckMaster.cardsInUse[m] == 0)
+                    {
+                        deckMaster.cardsInUse[m] = 1;
+                        break;
+                    }
+                }
+            }
         }
-      }
     }
-  }
 
-  for ( i = 0; i < DECK_SIZE; ++i )
-  {
-    do
-      rand_deck_pos = rand() % DECK_SIZE;
-    while (card_taken_flags[rand_deck_pos] == 1 );
+    for (i = 0; i < DECK_SIZE; ++i)
+    {
+        do
+            rand_deck_pos = rand() % DECK_SIZE;
+        while (card_taken_flags[rand_deck_pos] == 1);
 
-    card_taken_flags[rand_deck_pos]=1;
-    playDeck.cards_IDs[i]  = deckMaster.cards_IDs[rand_deck_pos];
-    playDeck.cardsInUse[i] = deckMaster.cardsInUse[rand_deck_pos];
-  }
+        card_taken_flags[rand_deck_pos] = 1;
+        playDeck.cards_IDs[i] = deckMaster.cards_IDs[rand_deck_pos];
+        playDeck.cardsInUse[i] = deckMaster.cardsInUse[rand_deck_pos];
+    }
 
-  deck_walk_index = 0;
-  amuint_4FABC4 = -1;
-  pArcomageGame->field_F6 = 1;
-
+    deck_walk_index = 0;
+    amuint_4FABC4 = -1;
+    pArcomageGame->field_F6 = 1;
 }
 
 //----- (0040A255) --------------------------------------------------------
@@ -1401,7 +1222,7 @@ void TurnChange()
 {
   char player_name[64]; // [sp+4h] [bp-64h]@4
   ArcomageGame_stru1 v10; // [sp+54h] [bp-14h]@7
-  POINT v11; // [sp+60h] [bp-8h]@4
+  Point v11; // [sp+60h] [bp-8h]@4
 
   if ( !pArcomageGame->field_F4 )
   {
@@ -1417,7 +1238,7 @@ void TurnChange()
       //nullsub_1();
    //   v11.x = 0;
    //   v11.y = 0;
-      strcpy(player_name, "The Next Player is: ");//"След"
+        strcpy_s(player_name, "The Next Player is: ");//"След"
       // v0 = 0;
       v11.y = 200;
       v11.x = 320; // - 12 * v0 / 2;
@@ -1426,7 +1247,7 @@ void TurnChange()
       ++current_player_num;
       if ( current_player_num >= 2  )
         current_player_num = 0;
-      strcpy(player_name, am_Players[current_player_num].pPlayerName);
+      strcpy_s(player_name, am_Players[current_player_num].pPlayerName);
       // v4 = 0;
       v11.y = 260;
       v11.x = 320;// - 12 * v4 / 2;
@@ -1492,210 +1313,175 @@ bool IsGameOver()
 }
 
 //----- (0040A560) --------------------------------------------------------
-char PlayerTurn( int player_num )
+char PlayerTurn(int player_num)
 {
-  unsigned __int64 v3; // kr00_8@3
- 
-  RECT pSrcXYZW; // [sp+70h] [bp-40h]@75
-  POINT pTargetXY; // [sp+90h] [bp-20h]@75
-  ArcomageGame_stru1 a2; // [sp+98h] [bp-18h]@8
-  int animation_stage; // [sp+A4h] [bp-Ch]@1
-  bool break_loop; // [sp+AFh] [bp-1h]@1
+    unsigned __int64 v3; // kr00_8@3
 
-  uCardID = -1;
-  break_loop = false;
-  animation_stage = 20;
-  byte_4FAA00 = 0;
-  dword_4FAA68 = 0;
-  amuint_4FAA38 = 10;
-  amuint_4FAA34 = 5;
-  if ( amuint_4FAA4C != -1 )
-    byte_4FAA2D = 1;
-  do
-  {
+    Rect pSrcXYZW; // [sp+70h] [bp-40h]@75
+    Point pTargetXY; // [sp+90h] [bp-20h]@75
+    ArcomageGame_stru1 a2; // [sp+98h] [bp-18h]@8
+    int animation_stage; // [sp+A4h] [bp-Ch]@1
+    bool break_loop; // [sp+AFh] [bp-1h]@1
+
+    uCardID = -1;
+    break_loop = false;
+    animation_stage = 20;
+    byte_4FAA00 = 0;
+    dword_4FAA68 = 0;
+    amuint_4FAA38 = 10;
+    amuint_4FAA34 = 5;
+    if (amuint_4FAA4C != -1)
+        byte_4FAA2D = 1;
     do
     {
-      v3 = pEventTimer->Time() - pArcomageGame->event_timer_time;
-    }
-    while (v3 < 6);
-    pArcomageGame->event_timer_time = (unsigned int)pEventTimer->Time();
-    if ( pArcomageGame->field_F4 )
-      break_loop = true;
-    ArcomageGame::MsgLoop(0, &a2);
-    switch ( a2.field_0 )
-    {
-      case 2:
-        if ( a2.field_4 == 129 && a2.field_8 == 1 )
+        do
         {
-          pAudioPlayer->StopChannels(-1, -1);
-          dword_4FAA68 = 0;
-          break_loop = true;
-          pArcomageGame->field_F4 = 1;
-        }
-        break;
-      case 9:
-        pArcomageGame->field_F6 = 1;
-        break;
-      case 10:
-        pAudioPlayer->StopChannels(-1, -1);
-        byte_4FAA74 = 1;
-        break_loop = true;
-        pArcomageGame->field_F4 = 1;
-        break;
-    }
-
-    if (am_Players[current_player_num].IsHisTurn != 1 && 
-        !byte_4FAA00 && !byte_4FAA2E && !byte_4FAA2D )
-    {
-      if ( am_byte_4FAA75 )
-        am_byte_4FAA76 = 1;
-      OpponentsAITurn(current_player_num);
-      byte_4FAA2E = 1;
-    }
-    if ( amuint_4FAA4C != -1 && amuint_4FAA38 > 10 )
-      amuint_4FAA38 = 10;
-    if ( byte_4FAA2E || byte_4FAA2D ||am_Players[current_player_num].IsHisTurn != 1 )
-    {
-      pArcomageGame->field_F6 = 1;
-      if ( byte_4FAA2D )
-      {
-        --amuint_4FAA38;
-        if ( amuint_4FAA38 < 0 )
-        {
-          byte_4FAA2D = 0;
-          amuint_4FAA38 = 10;
-          break_loop = false;
-        }
-      }
-      if ( byte_4FAA2E )
-      {
-        --animation_stage;
-        if ( animation_stage < 0 )
-        {
-          if ( dword_4FAA68 > 1 )
-          {
-            --dword_4FAA68;
-            byte_4FAA00 = 0;
-          }
-          else
+            v3 = pEventTimer->Time() - pArcomageGame->event_timer_time;
+        } while (v3 < 6);
+        pArcomageGame->event_timer_time = (unsigned int)pEventTimer->Time();
+        if (pArcomageGame->field_F4)
             break_loop = true;
-          byte_4FAA2E = 0;
-          animation_stage = 20;
-        }
-      }
-    }
-    else
-    {
-      if ( need_to_discard_card )
-      {
-        if ( a2.field_0 == 7 && DiscardCard(player_num, current_card_slot_index) )
+        ArcomageGame::MsgLoop(0, &a2);
+        switch (a2.field_0)
         {
-          if ( am_byte_4FAA75 )
-            am_byte_4FAA76 = 1;
-          if ( dword_4FAA64 > 0 )
-          {
-            --dword_4FAA64;
-            need_to_discard_card = GetPlayerHandCardCount(player_num) > minimum_cards_at_hand;
-          }
-          byte_4FAA2E = 1;
+        case 2:
+            if (a2.field_4 == 129 && a2.field_8 == 1)
+            {
+                pAudioPlayer->StopChannels(-1, -1);
+                dword_4FAA68 = 0;
+                break_loop = true;
+                pArcomageGame->field_F4 = 1;
+            }
+            break;
+        case 9:
+            pArcomageGame->field_F6 = 1;
+            break;
+        case 10:
+            pAudioPlayer->StopChannels(-1, -1);
+            byte_4FAA74 = 1;
+            break_loop = true;
+            pArcomageGame->field_F4 = 1;
+            break;
         }
-        if ( a2.field_0 == 8 && DiscardCard(player_num, current_card_slot_index) )
+
+        if (am_Players[current_player_num].IsHisTurn != 1 &&
+            !byte_4FAA00 && !byte_4FAA2E && !byte_4FAA2D)
         {
-          if ( am_byte_4FAA75 )
-            am_byte_4FAA76 = 1;
-          if ( dword_4FAA64 > 0 )
-          {
-            --dword_4FAA64;
-            need_to_discard_card = GetPlayerHandCardCount(player_num) > minimum_cards_at_hand;
-          }
-          byte_4FAA2E = 1;
-        }
-      }
-      else
-      {
-        if ( a2.field_0 == 7 )
-        {
-          if ( PlayCard(player_num, current_card_slot_index) )
-          {
+            if (am_byte_4FAA75)
+                am_byte_4FAA76 = 1;
+            OpponentsAITurn(current_player_num);
             byte_4FAA2E = 1;
-            if ( am_byte_4FAA75 )
-              am_byte_4FAA76 = 1;
-          }
         }
-        if ( a2.field_0 == 8 )
+        if (amuint_4FAA4C != -1 && amuint_4FAA38 > 10)
+            amuint_4FAA38 = 10;
+        if (byte_4FAA2E || byte_4FAA2D || am_Players[current_player_num].IsHisTurn != 1)
         {
-          if ( DiscardCard(player_num, current_card_slot_index) )
-          {
-            byte_4FAA2E = 1;
-            if ( am_byte_4FAA75 )
-              am_byte_4FAA76 = 1;
-          }
+            pArcomageGame->field_F6 = 1;
+            if (byte_4FAA2D)
+            {
+                --amuint_4FAA38;
+                if (amuint_4FAA38 < 0)
+                {
+                    byte_4FAA2D = 0;
+                    amuint_4FAA38 = 10;
+                    break_loop = false;
+                }
+            }
+            if (byte_4FAA2E)
+            {
+                --animation_stage;
+                if (animation_stage < 0)
+                {
+                    if (dword_4FAA68 > 1)
+                    {
+                        --dword_4FAA68;
+                        byte_4FAA00 = 0;
+                    }
+                    else
+                        break_loop = true;
+                    byte_4FAA2E = 0;
+                    animation_stage = 20;
+                }
+            }
         }
-      }
-    }
-    //nullsub_1();
-    //if ( false )
-    //{
-    //  if ( !v15 )
-    //  {
-    //    //nullsub_1();
-    //    v15 = 1;
-    //  }
-    //}
-    //else
-    //{
-    //  v15 = 0;
-  //  }
-    //if ( false )
-    //{
-    //  //nullsub_1();
-    //  //nullsub_1();
-    // // assert(false && "Invalid strcpy params");
-    // // inv_strcpy(nullptr, Dest);
-    //  v5 = 0;//unk::const_0(&unk_4E19FC, 0);
-    //  //nullsub_1();
-    //  if ( v5 == 1 )
-    //  {
-    //    pAudioPlayer->StopChannels(-1, -1);
-    //    v16 = 1;
-    //    pArcomageGame->field_F4 = 1;
-    //    dword_4FAA68 = 0;
-    //  }
-    //  /*v10[0] = 0;
-    //  v10[2] = 640;
-    //  v10[1] = 0;
-    //  v10[3] = 480;*/
-    //  //nullsub_1();
-    //}
-    if ( dword_4FABB8 != DrawCardsRectangles(player_num) )
-    {
-        dword_4FABB8 = DrawCardsRectangles(player_num);
-        pArcomageGame->field_F6 = 1;
-    }
-    if ( pArcomageGame->field_F6 )
-    {
-      DrawGameUI(animation_stage);
-      DoBlt_Copy(pArcomageGame->pBackgroundPixels);
-      pArcomageGame->field_F6 = 0;
-    }
-    if ( pArcomageGame->field_F9 )
-    {
-      pTargetXY.x = 0;
-      pTargetXY.y = 0;
-      pSrcXYZW.left = 0;
-      pSrcXYZW.right = window->GetWidth();
-      pSrcXYZW.top = 0;
-      pSrcXYZW.bottom = window->GetHeight();
-      am_BeginScene(pArcomageGame->pBackgroundPixels, -1, 1);
-      render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
-      am_EndScene();
-      DrawGameUI(animation_stage);
-      render->Present();
-      pArcomageGame->field_F9 = 0;
-    }
-  }
-  while ( !break_loop );
-  return dword_4FAA68 > 0;
+        else
+        {
+            if (need_to_discard_card)
+            {
+                if (a2.field_0 == 7 && DiscardCard(player_num, current_card_slot_index))
+                {
+                    if (am_byte_4FAA75)
+                        am_byte_4FAA76 = 1;
+                    if (dword_4FAA64 > 0)
+                    {
+                        --dword_4FAA64;
+                        need_to_discard_card = GetPlayerHandCardCount(player_num) > minimum_cards_at_hand;
+                    }
+                    byte_4FAA2E = 1;
+                }
+                if (a2.field_0 == 8 && DiscardCard(player_num, current_card_slot_index))
+                {
+                    if (am_byte_4FAA75)
+                        am_byte_4FAA76 = 1;
+                    if (dword_4FAA64 > 0)
+                    {
+                        --dword_4FAA64;
+                        need_to_discard_card = GetPlayerHandCardCount(player_num) > minimum_cards_at_hand;
+                    }
+                    byte_4FAA2E = 1;
+                }
+            }
+            else
+            {
+                if (a2.field_0 == 7)
+                {
+                    if (PlayCard(player_num, current_card_slot_index))
+                    {
+                        byte_4FAA2E = 1;
+                        if (am_byte_4FAA75)
+                            am_byte_4FAA76 = 1;
+                    }
+                }
+                if (a2.field_0 == 8)
+                {
+                    if (DiscardCard(player_num, current_card_slot_index))
+                    {
+                        byte_4FAA2E = 1;
+                        if (am_byte_4FAA75)
+                            am_byte_4FAA76 = 1;
+                    }
+                }
+            }
+        }
+
+        if (dword_4FABB8 != DrawCardsRectangles(player_num))
+        {
+            dword_4FABB8 = DrawCardsRectangles(player_num);
+            pArcomageGame->field_F6 = 1;
+        }
+        if (pArcomageGame->field_F6)
+        {
+            DrawGameUI(animation_stage);
+            ArcomageGame::DoBlt_Copy(pArcomageGame->pBackgroundPixels);
+            pArcomageGame->field_F6 = 0;
+        }
+        if (pArcomageGame->field_F9)
+        {
+            pTargetXY.x = 0;
+            pTargetXY.y = 0;
+            pSrcXYZW.x = 0;
+            pSrcXYZW.z = window->GetWidth();
+            pSrcXYZW.y = 0;
+            pSrcXYZW.w = window->GetHeight();
+            am_BeginScene(pArcomageGame->pBackgroundPixels, -1, 1);
+            render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
+            am_EndScene();
+            DrawGameUI(animation_stage);
+            render->Present();
+            pArcomageGame->field_F9 = 0;
+        }
+    } while (!break_loop);
+    return dword_4FAA68 > 0;
 }
 
 
@@ -1757,14 +1543,14 @@ void DrawSparks()
 //----- (0040AB0A) --------------------------------------------------------
 void DrawRectanglesForText()
 {
-  RECT pSrcRect; // [sp+Ch] [bp-18h]@1
-  POINT pTargetXY; // [sp+1Ch] [bp-8h]@1
+  Rect pSrcRect; // [sp+Ch] [bp-18h]@1
+  Point pTargetXY; // [sp+1Ch] [bp-8h]@1
 
 //resources rectangles
-  pSrcRect.left    = 765;
-  pSrcRect.top     = 0;
-  pSrcRect.right   = 843;
-  pSrcRect.bottom  = 216;
+  pSrcRect.x    = 765;
+  pSrcRect.y     = 0;
+  pSrcRect.z   = 843;
+  pSrcRect.w  = 216;
 
   pTargetXY.x = 8;
   pTargetXY.y = 56;
@@ -1775,10 +1561,10 @@ void DrawRectanglesForText()
   render->am_Blt_Copy(&pSrcRect, &pTargetXY, 2);
 
   //players name rectangle
-  pSrcRect.left   = 283;
-  pSrcRect.top    = 166;
-  pSrcRect.right  = 361;
-  pSrcRect.bottom = 190;
+  pSrcRect.x   = 283;
+  pSrcRect.y    = 166;
+  pSrcRect.z  = 361;
+  pSrcRect.w = 190;
   pTargetXY.x = 8;
   pTargetXY.y = 13;
   render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
@@ -1788,10 +1574,10 @@ void DrawRectanglesForText()
   render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
   //tower height rectangle
-  pSrcRect.left   = 234;
-  pSrcRect.top    = 166;
-  pSrcRect.right  = 283;
-  pSrcRect.bottom = 190;
+  pSrcRect.x   = 234;
+  pSrcRect.y    = 166;
+  pSrcRect.z  = 283;
+  pSrcRect.w = 190;
   pTargetXY.x = 100;
   pTargetXY.y = 296;
   render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
@@ -1801,10 +1587,10 @@ void DrawRectanglesForText()
   render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
   //wall height rectangle
-  pSrcRect.left   = 192; 
-  pSrcRect.top    = 166;
-  pSrcRect.right  = 234;
-  pSrcRect.bottom = 190;
+  pSrcRect.x   = 192; 
+  pSrcRect.y    = 166;
+  pSrcRect.z  = 234;
+  pSrcRect.w = 190;
   pTargetXY.x = 168;
   pTargetXY.y = 296;
   render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
@@ -1819,25 +1605,25 @@ void DrawPlayersText()
 {
     int res_value; // ecx@18
     char text_buff[32]; // [sp+Ch] [bp-28h]@2
-    POINT text_position; // [sp+2Ch] [bp-8h]@2
+    Point text_position; // [sp+2Ch] [bp-8h]@2
 
     if (need_to_discard_card)
     {
-        strcpy(text_buff, localization->GetString(266));// DISCARD A CARD
+        strcpy_s(text_buff, localization->GetString(266));// DISCARD A CARD
         text_position.x = 320 - pArcomageGame->pfntArrus->GetLineWidth(text_buff) / 2;
         text_position.y = 306;
         am_DrawText(text_buff, &text_position);
     }
-    strcpy(text_buff, am_Players[0].pPlayerName);
+    strcpy_s(text_buff, am_Players[0].pPlayerName);
     if (!current_player_num)
-        strcat(text_buff, "***");
+        strcat_s(text_buff, "***");
     text_position.x = 47 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 21;
     am_DrawText(text_buff, &text_position);
 
-    strcpy(text_buff, am_Players[1].pPlayerName);
+    strcpy_s(text_buff, am_Players[1].pPlayerName);
     if (current_player_num == 1)
-        strcat(text_buff, "***");
+        strcat_s(text_buff, "***");
     text_position.x = 595 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 21;
     am_DrawText(text_buff, &text_position);
@@ -1931,12 +1717,11 @@ void DrawPlayersText()
 
 
 //----- (0040B102) --------------------------------------------------------
-void DrawPlayerLevels(const String &str, POINT *pXY)
+void DrawPlayerLevels(const String &str, Point *pXY)
 {
-    unsigned char test_char; // bl@2
     int v7; // eax@3
-    RECT pSrcRect;
-    POINT pTargetPoint;
+    Rect pSrcRect;
+    Point pTargetPoint;
 
     am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
     {
@@ -1946,10 +1731,10 @@ void DrawPlayerLevels(const String &str, POINT *pXY)
         for (auto i = str.begin(); i != str.end(); ++i)
         {
             v7 = 22 * *i;
-            pSrcRect.right = v7 - 842;
-            pSrcRect.left = v7 - 864;
-            pSrcRect.top = 190;
-            pSrcRect.bottom = 207;
+            pSrcRect.z = v7 - 842;
+            pSrcRect.x = v7 - 864;
+            pSrcRect.y = 190;
+            pSrcRect.w = 207;
             render->am_Blt_Chroma(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
             pTargetPoint.x += 22;
         }
@@ -1958,11 +1743,11 @@ void DrawPlayerLevels(const String &str, POINT *pXY)
 }
 
 //----- (0040B17E) --------------------------------------------------------
-void DrawBricksCount(const String &str, POINT *pXY)
+void DrawBricksCount(const String &str, Point *pXY)
 {
     int v7; // eax@3
-    RECT pSrcRect;
-    POINT pTargetPoint;
+    Rect pSrcRect;
+    Point pTargetPoint;
 
     am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
     {
@@ -1973,10 +1758,10 @@ void DrawBricksCount(const String &str, POINT *pXY)
             if (*i)
             {
                 v7 = 13 * *i;
-                pSrcRect.left = v7 - 370;
-                pSrcRect.right = v7 - 357;
-                pSrcRect.top = 128;
-                pSrcRect.bottom = 138;
+                pSrcRect.x = v7 - 370;
+                pSrcRect.z = v7 - 357;
+                pSrcRect.y = 128;
+                pSrcRect.w = 138;
                 render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
                 pTargetPoint.x += 13;
             }
@@ -1986,11 +1771,11 @@ void DrawBricksCount(const String &str, POINT *pXY)
 }
 
 //----- (0040B1F3) --------------------------------------------------------
-void DrawGemsCount(const String &str, POINT* pXY)
+void DrawGemsCount(const String &str, Point * pXY)
 {
     int v7; // eax@3
-    RECT pSrcRect;
-    POINT pTargetPoint;
+    Rect pSrcRect;
+    Point pTargetPoint;
 
     am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
     {
@@ -2001,10 +1786,10 @@ void DrawGemsCount(const String &str, POINT* pXY)
             if (*i)
             {
                 v7 = 13 * *i;
-                pSrcRect.left = v7 - 370;
-                pSrcRect.right = v7 - 357;
-                pSrcRect.top = 138;
-                pSrcRect.bottom = 148;
+                pSrcRect.x = v7 - 370;
+                pSrcRect.z = v7 - 357;
+                pSrcRect.y = 138;
+                pSrcRect.w = 148;
                 render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
                 pTargetPoint.x += 13;
             }
@@ -2014,11 +1799,11 @@ void DrawGemsCount(const String &str, POINT* pXY)
 }
 
 //----- (0040B268) --------------------------------------------------------
-void DrawBeastsCount(const String &str, POINT *pXY)
+void DrawBeastsCount(const String &str, Point *pXY)
 {
     int v7; // eax@3
-    RECT pSrcRect;
-    POINT pTargetPoint;
+    Rect pSrcRect;
+    Point pTargetPoint;
 
     am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
     {
@@ -2029,10 +1814,10 @@ void DrawBeastsCount(const String &str, POINT *pXY)
             if (*i)
             {
                 v7 = 13 * *i;
-                pSrcRect.left = v7 - 370;
-                pSrcRect.right = v7 - 357;
-                pSrcRect.top = 148;
-                pSrcRect.bottom = 158;
+                pSrcRect.x = v7 - 370;
+                pSrcRect.z = v7 - 357;
+                pSrcRect.y = 148;
+                pSrcRect.w = 158;
                 render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
                 pTargetPoint.x += 13;
             }
@@ -2046,25 +1831,25 @@ void DrawPlayersTowers()
 {
     int tower_height; // eax@1
     int tower_top; // esi@3
-    RECT pSrcXYZW; // [sp+0h] [bp-18h]@3
-    POINT pTargetXY; // [sp+10h] [bp-8h]@3
+    Rect pSrcXYZW; // [sp+0h] [bp-18h]@3
+    Point pTargetXY; // [sp+10h] [bp-8h]@3
 
     tower_height = am_Players[0].tower_height;
     if (am_Players[0].tower_height > max_tower_height)
         tower_height = max_tower_height;
-    pSrcXYZW.top = 0;
-    pSrcXYZW.left = 892;
-    pSrcXYZW.right = 937;
+    pSrcXYZW.y = 0;
+    pSrcXYZW.x = 892;
+    pSrcXYZW.z = 937;
     tower_top = 200 * tower_height / max_tower_height;
-    pSrcXYZW.bottom = tower_top;
+    pSrcXYZW.w = tower_top;
     pTargetXY.x = 102;
     pTargetXY.y = 297 - tower_top;
     render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//стена башни
 
-    pSrcXYZW.top = 0;
-    pSrcXYZW.left = 384;
-    pSrcXYZW.right = 452;
-    pSrcXYZW.bottom = 94;
+    pSrcXYZW.y = 0;
+    pSrcXYZW.x = 384;
+    pSrcXYZW.z = 452;
+    pSrcXYZW.w = 94;
     pTargetXY.y = 203 - tower_top;
     pTargetXY.x = 91;
     render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);//верхушка башни
@@ -2073,19 +1858,19 @@ void DrawPlayersTowers()
     if (am_Players[1].tower_height > max_tower_height)
         tower_height = max_tower_height;
     tower_top = 200 * tower_height / max_tower_height;
-    pSrcXYZW.top = 0;
-    pSrcXYZW.left = 892;
-    pSrcXYZW.right = 937;
-    pSrcXYZW.bottom = tower_top;
+    pSrcXYZW.y = 0;
+    pSrcXYZW.x = 892;
+    pSrcXYZW.z = 937;
+    pSrcXYZW.w = tower_top;
 
     pTargetXY.x = 494;
     pTargetXY.y = 297 - tower_top;
     render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);
     //draw tower up cone
-    pSrcXYZW.left = 384;
-    pSrcXYZW.right = 452;
-    pSrcXYZW.top = 94;
-    pSrcXYZW.bottom = 188;
+    pSrcXYZW.x = 384;
+    pSrcXYZW.z = 452;
+    pSrcXYZW.y = 94;
+    pSrcXYZW.w = 188;
 
     pTargetXY.x = 483;
     pTargetXY.y = 203 - tower_top;
@@ -2097,43 +1882,44 @@ void DrawPlayersTowers()
 //----- (0040B400) --------------------------------------------------------
 void DrawPlayersWall()
 {
-  int v0; // eax@1
-  int v1; // eax@4
-  int v3; // eax@5
-  int v4; // eax@8
-  RECT pSrcXYZW; // [sp+4h] [bp-18h]@4
-  POINT pTargetXY; // [sp+14h] [bp-8h]@4
+    int v0; // eax@1
+    int v1; // eax@4
+    int v3; // eax@5
+    int v4; // eax@8
+    Rect pSrcXYZW; // [sp+4h] [bp-18h]@4
+    Point pTargetXY; // [sp+14h] [bp-8h]@4
 
-  v0 = am_Players[0].wall_height;
+    v0 = am_Players[0].wall_height;
 
-  if ( am_Players[0].wall_height > 100 )
-    v0 = 100;
+    if (am_Players[0].wall_height > 100)
+        v0 = 100;
 
-  if ( am_Players[0].wall_height > 0 )
-  {
-    pSrcXYZW.top = 0;
-    pSrcXYZW.left = 843;
-    v1 = 200 * v0 / 100;
-    pSrcXYZW.right = 867;
-    pSrcXYZW.bottom = v1;
-    pTargetXY.x = 177;
-    pTargetXY.y = 297 - v1;
-    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
-  }
-  v3 = am_Players[1].wall_height;
-  if ( am_Players[1].wall_height > 100 )
-    v3 = 100;
-  if ( am_Players[1].wall_height > 0 )
-  {
-    pSrcXYZW.top = 0;
-    pSrcXYZW.left = 843;
-    v4 = 200 * v3 / 100;
-    pSrcXYZW.right = 867;
-    pSrcXYZW.bottom = v4;
-    pTargetXY.x = 439;
-    pTargetXY.y =  297 - v4;
-    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
-  }
+    if (am_Players[0].wall_height > 0)
+    {
+        pSrcXYZW.y = 0;
+        pSrcXYZW.x = 843;
+        v1 = 200 * v0 / 100;
+        pSrcXYZW.z = 867;
+        pSrcXYZW.w = v1;
+        pTargetXY.x = 177;
+        pTargetXY.y = 297 - v1;
+        render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+    }
+
+    v3 = am_Players[1].wall_height;
+    if (am_Players[1].wall_height > 100)
+        v3 = 100;
+    if (am_Players[1].wall_height > 0)
+    {
+        pSrcXYZW.y = 0;
+        pSrcXYZW.x = 843;
+        v4 = 200 * v3 / 100;
+        pSrcXYZW.z = 867;
+        pSrcXYZW.w = v4;
+        pTargetXY.x = 439;
+        pTargetXY.y = 297 - v4;
+        render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+    }
 }
 
 
@@ -2145,8 +1931,8 @@ void DrawCards()
     int v2; // edi@1
     unsigned int v7; // ecx@4
     signed int v11; // edi@18
-    RECT pSrcXYZW; // [sp+Ch] [bp-1Ch]@8
-    POINT pTargetXY; // [sp+1Ch] [bp-Ch]@1
+    Rect pSrcXYZW; // [sp+Ch] [bp-1Ch]@8
+    Point pTargetXY; // [sp+1Ch] [bp-Ch]@1
     int v24; // [sp+24h] [bp-4h]@1
 
     v0 = GetPlayerHandCardCount(current_player_num);
@@ -2170,10 +1956,10 @@ void DrawCards()
         {
             if (am_Players[current_player_num].IsHisTurn == 0 && byte_505881 == 0)
             {
-                pSrcXYZW.left = 192;
-                pSrcXYZW.right = 288;
-                pSrcXYZW.top = 0;
-                pSrcXYZW.bottom = 128;
+                pSrcXYZW.x = 192;
+                pSrcXYZW.z = 288;
+                pSrcXYZW.y = 0;
+                pSrcXYZW.w = 128;
                 render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуется оборотные стороны карт противника
                 pTargetXY.x += v24 + 96;
             }
@@ -2216,10 +2002,10 @@ void DrawCards()
             {
                 pTargetXY.x = shown_cards[v11].field_18_point.x + 12;
                 pTargetXY.y = shown_cards[v11].field_18_point.y + 40;
-                pSrcXYZW.left = 843;
-                pSrcXYZW.right = 916;
-                pSrcXYZW.top = 200;
-                pSrcXYZW.bottom = 216;
+                pSrcXYZW.x = 843;
+                pSrcXYZW.z = 916;
+                pSrcXYZW.y = 200;
+                pSrcXYZW.w = 216;
                 render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
             }
         }
@@ -2251,10 +2037,10 @@ void DrawCards()
     }
     if (am_byte_4FAA76 != 0)
         --amuint_4FAA34;
-    pSrcXYZW.left = 192;
-    pSrcXYZW.right = 288;
-    pSrcXYZW.top = 0;
-    pSrcXYZW.bottom = 128;
+    pSrcXYZW.x = 192;
+    pSrcXYZW.z = 288;
+    pSrcXYZW.y = 0;
+    pSrcXYZW.w = 128;
     pTargetXY.x = 120;
     pTargetXY.y = 18;
     render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);
@@ -2273,8 +2059,8 @@ void DrawCardAnimation(int animation_stage)
     int v17; // eax@32
     char v18; // zf@37
     int v19; // eax@41
-    RECT pSrcXYZW; // [sp+Ch] [bp-1Ch]@6
-    POINT pTargetXY; // [sp+1Ch] [bp-Ch]@20
+    Rect pSrcXYZW; // [sp+Ch] [bp-1Ch]@6
+    Point pTargetXY; // [sp+1Ch] [bp-Ch]@20
     int v26; // [sp+24h] [bp-4h]@1
 
     v26 = animation_stage;
@@ -2301,18 +2087,18 @@ void DrawCardAnimation(int animation_stage)
             am_uint_4FAA44_blt_xy.y += v4;
             am_uint_4FAA44_blt_xy.x += amuint_4FAA3C_blt_xy.x;
             amuint_4FAA3C_blt_xy.y = v4;
-            pSrcXYZW.left = 192;
-            pSrcXYZW.top = 0;
-            pSrcXYZW.right = 288;
-            pSrcXYZW.bottom = 128;
+            pSrcXYZW.x = 192;
+            pSrcXYZW.y = 0;
+            pSrcXYZW.z = 288;
+            pSrcXYZW.w = 128;
             render->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
         }
         else
         {
-            pSrcXYZW.left = 192;
-            pSrcXYZW.top = 0;
-            pSrcXYZW.right = 288;
-            pSrcXYZW.bottom = 128;
+            pSrcXYZW.x = 192;
+            pSrcXYZW.y = 0;
+            pSrcXYZW.z = 288;
+            pSrcXYZW.w = 128;
             am_uint_4FAA44_blt_xy.x += amuint_4FAA3C_blt_xy.x;
             am_uint_4FAA44_blt_xy.y += amuint_4FAA3C_blt_xy.y;
             render->am_Blt_Copy(&pSrcXYZW, &am_uint_4FAA44_blt_xy, 2);
@@ -2441,17 +2227,17 @@ void DrawCardAnimation(int animation_stage)
 
 
 //----- (0040BB12) --------------------------------------------------------
-void ArcomageGame::GetCardRect(unsigned int uCardID, RECT *pCardRect)
+void ArcomageGame::GetCardRect(unsigned int uCardID, Rect *pCardRect)
 {
     int v3; // edx@1
     int v4; // ecx@1
 
     v3 = pCards[uCardID].slot % 10;
     v4 = (pCards[uCardID].slot / 10 << 7) + 220;
-    pCardRect->top = v4;
-    pCardRect->left = 96 * v3;
-    pCardRect->bottom = v4 + 128;
-    pCardRect->right = 96 * v3 + 96;
+    pCardRect->y = v4;
+    pCardRect->x = 96 * v3;
+    pCardRect->w = v4 + 128;
+    pCardRect->z = 96 * v3 + 96;
 }
 
 //----- (0040BB49) --------------------------------------------------------
@@ -2473,7 +2259,7 @@ signed int DrawCardsRectangles(int player_num)
 {
     int v5; // eax@3
     int color; // ST00_4@19
-    RECT pXYZW; // [sp+Ch] [bp-3Ch]@3
+    Rect pXYZW; // [sp+Ch] [bp-3Ch]@3
     stru273 v26; // [sp+1Ch] [bp-2Ch]@2
     __int32 var18; // [sp+30h] [bp-18h]@3
     int hand_index; // [sp+3Ch] [bp-Ch]@3
@@ -2485,11 +2271,11 @@ signed int DrawCardsRectangles(int player_num)
         if (v26._40DD2F())
         {
             v5 = GetPlayerHandCardCount(player_num);
-            pXYZW.top = 327;
-            pXYZW.bottom = 455;
-            pXYZW.left = (window->GetWidth() - 96 * v5) / (v5 + 1);
-            var18 = pXYZW.left + 96;
-            pXYZW.right = pXYZW.left + 96;
+            pXYZW.y = 327;
+            pXYZW.w = 455;
+            pXYZW.x = (window->GetWidth() - 96 * v5) / (v5 + 1);
+            var18 = pXYZW.x + 96;
+            pXYZW.z = pXYZW.x + 96;
             for (hand_index = 0; hand_index < v5; hand_index++)
             {
                 //for ( i = 0; i < 10; ++i )
@@ -2500,10 +2286,10 @@ signed int DrawCardsRectangles(int player_num)
                 //}
                     if (am_byte_4E185D)
                     {
-                        pXYZW.left += am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.right += am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.top += am_Players[player_num].card_shift[hand_index].y;
-                        pXYZW.bottom += am_Players[player_num].card_shift[hand_index].y;
+                        pXYZW.x += am_Players[player_num].card_shift[hand_index].x;
+                        pXYZW.z += am_Players[player_num].card_shift[hand_index].x;
+                        pXYZW.y += am_Players[player_num].card_shift[hand_index].y;
+                        pXYZW.w += am_Players[player_num].card_shift[hand_index].y;
                     }
                     if (v26.Inside(&pXYZW))
                     {
@@ -2517,13 +2303,13 @@ signed int DrawCardsRectangles(int player_num)
                     DrawRect(&pXYZW, R8G8B8_to_TargetFormat(0), 0);//рамка чёрного цвета
                     if (am_byte_4E185D)
                     {
-                        pXYZW.left -= am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.right -= am_Players[player_num].card_shift[hand_index].x;
-                        pXYZW.top -= am_Players[player_num].card_shift[hand_index].y;
-                        pXYZW.bottom -= am_Players[player_num].card_shift[hand_index].y;
+                        pXYZW.x -= am_Players[player_num].card_shift[hand_index].x;
+                        pXYZW.z -= am_Players[player_num].card_shift[hand_index].x;
+                        pXYZW.y -= am_Players[player_num].card_shift[hand_index].y;
+                        pXYZW.w -= am_Players[player_num].card_shift[hand_index].y;
                     }
-                    pXYZW.left += var18;
-                    pXYZW.right += var18;
+                    pXYZW.x += var18;
+                    pXYZW.z += var18;
                 }
             }
         }
@@ -2706,7 +2492,7 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID)
     int v103;
     int v104;
 
-    POINT v184; // [sp+Ch] [bp-64h]@488
+    Point v184; // [sp+Ch] [bp-64h]@488
     int enemy_num; // [sp+14h] [bp-5Ch]@1
     ArcomageCard *pCard; // [sp+18h] [bp-58h]@1
     int buildings_e; // [sp+1Ch] [bp-54h]@1
@@ -3228,7 +3014,7 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID)
 }
 
 //----- (0040D2B4) --------------------------------------------------------
-int am_40D2B4(POINT* startXY, int effect_value)
+int am_40D2B4(Point * startXY, int effect_value)
 {
     int v2; // ebp@1
     int result; // eax@3
@@ -3260,10 +3046,10 @@ int am_40D2B4(POINT* startXY, int effect_value)
     }
     else
         array_4FABD0[v6].effect_sign = 1;
-    array_4FABD0[v6].field_4.effect_area.left = startXY->x - 20;
-    array_4FABD0[v6].field_4.effect_area.right = startXY->x + 20;
-    array_4FABD0[v6].field_4.effect_area.top = startXY->y - 20;
-    array_4FABD0[v6].field_4.effect_area.bottom = startXY->y + 20;
+    array_4FABD0[v6].field_4.effect_area.x = startXY->x - 20;
+    array_4FABD0[v6].field_4.effect_area.z = startXY->x + 20;
+    array_4FABD0[v6].field_4.effect_area.y = startXY->y - 20;
+    array_4FABD0[v6].field_4.effect_area.w = startXY->y + 20;
     array_4FABD0[v6].field_4.field_10 = -60;
     array_4FABD0[v6].field_4.field_14 = 60;
     array_4FABD0[v6].field_4.field_18 = 180;
@@ -3518,12 +3304,12 @@ void ArcomageGame::PrepareArcomage()
     int v2; // esi@4
     int v3; // esi@5
     signed int v4; // edi@5
-    RECT pXYZW; // [sp+8h] [bp-1Ch]@5
-    POINT pXY; // [sp+18h] [bp-Ch]@5
+    Rect pXYZW; // [sp+8h] [bp-1Ch]@5
+    Point pXY; // [sp+18h] [bp-Ch]@5
 
     pAudioPlayer->StopChannels(-1, -1);
-    strcpy(pArcomageGame->pPlayer1Name, Player1Name);
-    strcpy(pArcomageGame->pPlayer2Name, Player2Name);
+    strcpy_s(pArcomageGame->pPlayer1Name, Player1Name);
+    strcpy_s(pArcomageGame->pPlayer2Name, Player2Name);
     am_byte_4FAA76 = 0;
     am_byte_4FAA75 = 0;
 
@@ -3544,10 +3330,10 @@ void ArcomageGame::PrepareArcomage()
     pXY.x = 0;
     pXY.y = 0;
     ArcomageGame::LoadBackground();
-    pXYZW.left = 0;
-    pXYZW.right = window->GetWidth();
-    pXYZW.top = 0;
-    pXYZW.bottom = window->GetHeight();
+    pXYZW.x = 0;
+    pXYZW.z = window->GetWidth();
+    pXYZW.y = 0;
+    pXYZW.w = window->GetHeight();
     am_BeginScene(pArcomageGame->pBackgroundPixels, -1, 1);
     render->am_Blt_Copy(&pXYZW, &pXY, 2);
     am_EndScene();
@@ -3618,7 +3404,7 @@ void SetStartConditions()
 
 
 //----- (0040D75D) --------------------------------------------------------
-void am_DrawText(const String &str, POINT *pXY)
+void am_DrawText(const String &str, Point *pXY)
 {
     pPrimaryWindow->DrawText(pFontComic, pXY->x, pXY->y - ((pFontComic->uFontHeight - 3) / 2) + 3, 0, str, 0, 0, 0);
 }
@@ -3626,28 +3412,28 @@ void am_DrawText(const String &str, POINT *pXY)
 
 
 //----- (0040DB27) --------------------------------------------------------
-void DrawRect(RECT *pXYZW, unsigned __int16 uColor, char bSolidFill)
+void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill)
 {
     render->BeginScene();
     render->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
     if (bSolidFill)
     {
-        for (int i = pXYZW->top; i <= pXYZW->bottom; ++i)
-            render->RasterLine2D(pXYZW->left, i, pXYZW->right, i, uColor);
+        for (int i = pXYZW->y; i <= pXYZW->w; ++i)
+            render->RasterLine2D(pXYZW->x, i, pXYZW->z, i, uColor);
     }
     else
     {
-        render->RasterLine2D(pXYZW->left, pXYZW->top, pXYZW->right, pXYZW->top, uColor);
-        render->RasterLine2D(pXYZW->right, pXYZW->top, pXYZW->right, pXYZW->bottom, uColor);
-        render->RasterLine2D(pXYZW->right, pXYZW->bottom, pXYZW->left, pXYZW->bottom, uColor);
-        render->RasterLine2D(pXYZW->left, pXYZW->bottom, pXYZW->left, pXYZW->top, uColor);
+        render->RasterLine2D(pXYZW->x, pXYZW->y, pXYZW->z, pXYZW->y, uColor);
+        render->RasterLine2D(pXYZW->z, pXYZW->y, pXYZW->z, pXYZW->w, uColor);
+        render->RasterLine2D(pXYZW->z, pXYZW->w, pXYZW->x, pXYZW->w, uColor);
+        render->RasterLine2D(pXYZW->x, pXYZW->w, pXYZW->x, pXYZW->y, uColor);
     }
     render->EndScene();
 }
 
 
 
-void DrawSquare(POINT *pTargetXY, unsigned __int16 uColor)
+void DrawSquare(Point *pTargetXY, unsigned __int16 uColor)
 {
     render->BeginScene();
     //if ( uNumSceneBegins )
@@ -3667,7 +3453,7 @@ void DrawSquare(POINT *pTargetXY, unsigned __int16 uColor)
 
 
 //----- (0040DBD3) --------------------------------------------------------
-void DrawPixel(POINT *pTargetXY, unsigned __int16 uColor)
+void DrawPixel(Point *pTargetXY, unsigned __int16 uColor)
 {
     render->BeginScene();
     //if ( render->uNumSceneBegins )
@@ -3709,26 +3495,27 @@ void set_stru1_field_8_InArcomage(int inValue)
 {
     switch (inValue)
     {
-    case 91:LOBYTE(pArcomageGame->stru1.field_8) = 123; break;
-    case 92:LOBYTE(pArcomageGame->stru1.field_8) = 124; break;
-    case 93:LOBYTE(pArcomageGame->stru1.field_8) = 125; break;
-    case 96:LOBYTE(pArcomageGame->stru1.field_8) = 126; break;
-    case 61:LOBYTE(pArcomageGame->stru1.field_8) = 43; break;
-    case 55:LOBYTE(pArcomageGame->stru1.field_8) = 38; break;
-    case 56:LOBYTE(pArcomageGame->stru1.field_8) = 42; break;
-    case 57:LOBYTE(pArcomageGame->stru1.field_8) = 40; break;
-    case 59:LOBYTE(pArcomageGame->stru1.field_8) = 58; break;
-    case 54:LOBYTE(pArcomageGame->stru1.field_8) = 94; break;
-    case 50:LOBYTE(pArcomageGame->stru1.field_8) = 64; break;
-    case 51:LOBYTE(pArcomageGame->stru1.field_8) = 35; break;
-    case 52:LOBYTE(pArcomageGame->stru1.field_8) = 36; break;
-    case 53:LOBYTE(pArcomageGame->stru1.field_8) = 37; break;
-    case 49:LOBYTE(pArcomageGame->stru1.field_8) = 33; break;
-    case 39:LOBYTE(pArcomageGame->stru1.field_8) = 34; break;
-    case 44:LOBYTE(pArcomageGame->stru1.field_8) = 60; break;
-    case 46:LOBYTE(pArcomageGame->stru1.field_8) = 62; break;
-    case 47:LOBYTE(pArcomageGame->stru1.field_8) = 63; break;
-    case 48:LOBYTE(pArcomageGame->stru1.field_8) = 41; break;
-    default:LOBYTE(pArcomageGame->stru1.field_8) = inValue; break;
+        case 91: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 123; break;
+        case 92: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 124; break;
+        case 93: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 125; break;
+        case 96: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 126; break;
+        case 61: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 43; break;
+        case 55: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 38; break;
+        case 56: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 42; break;
+        case 57: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 40; break;
+        case 59: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 58; break;
+        case 54: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 94; break;
+        case 50: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 64; break;
+        case 51: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 35; break;
+        case 52: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 36; break;
+        case 53: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 37; break;
+        case 49: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 33; break;
+        case 39: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 34; break;
+        case 44: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 60; break;
+        case 46: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 62; break;
+        case 47: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 63; break;
+        case 48: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = 41; break;
+        default: HEXRAYS_LOBYTE(pArcomageGame->stru1.field_8) = inValue;
+            break;
     }
 }

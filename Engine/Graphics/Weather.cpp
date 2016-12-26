@@ -1,15 +1,7 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+#include "Engine/Graphics/IRender.h"
 
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
-
-#include "Weather.h"
-#include "Viewport.h"
-#include "Render.h"
-
-#include "../mm7_data.h"   ////TODO: remove this once LOWORD/HIWRD stuff is refactored
+#include "Engine/Graphics/Weather.h"
+#include "Engine/Graphics/Viewport.h"
 
 
 
@@ -21,10 +13,7 @@ struct Weather *pWeather = new Weather;
 //----- (004C2AA6) --------------------------------------------------------
 int Weather::DrawSnow()
 {
-
-    //  if (!FORCE_16_BITS)
-      //  __debugbreak(); // function expects 16bit target buffer, will fail otherwise
-    for (uint i = 0; i < 700; ++i)
+    for (unsigned int i = 0; i < 700; ++i)
     {
         int x = 2 * i;
         int y = 2 * i + 1;
@@ -47,7 +36,7 @@ int Weather::DrawSnow()
         render->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y], 0xFFFF);//snowflake - point(снежинка - точка)
     }
 
-    for (uint i = 700; i < 950; ++i)
+    for (unsigned int i = 700; i < 950; ++i)
     {
         int x = 2 * i;
         int y = 2 * i + 1;
@@ -73,7 +62,7 @@ int Weather::DrawSnow()
         //v1[this->Screen_Coord[2 * i] + 640 * this->Screen_Coord[2 * i + 1] + 641] = 0xFFFFu;
     }
 
-    for (uint i = 0; i < 50; i++)
+    for (unsigned int i = 0; i < 50; i++)
     {
         this->Screen_Coord[1901 + (i * 2)] += 8;
         this->Screen_Coord[1901 + ((i * 2) - 1)] += rand() % 11 - 5;
@@ -113,15 +102,12 @@ int Weather::DrawSnow()
 //----- (004C2EA0) --------------------------------------------------------
 int Weather::Initialize()
 {
-    signed int v3; // ebx@1
-    signed int v4; // ebp@1
-
-    v3 = pViewport->uScreen_BR_X - pViewport->uScreen_TL_X - 4;
-    v4 = pViewport->uScreen_BR_Y - pViewport->uScreen_TL_Y - 4;
-    for (uint i = 0; i < 1000; i++)
+    int v3 = pViewport->uScreen_BR_X - pViewport->uScreen_TL_X - 4;
+    int v4 = pViewport->uScreen_BR_Y - pViewport->uScreen_TL_Y - 4;
+    for (unsigned int i = 0; i < 1000; i++)
     {
-        this->Screen_Coord[2 * i] = LOWORD(pViewport->uViewportTL_X) + rand() % v3;
-        this->Screen_Coord[(2 * (i + 1)) - 1] = LOWORD(pViewport->uViewportTL_Y) + rand() % v4;
+        this->Screen_Coord[2 * i] = (unsigned short)pViewport->uViewportTL_X + rand() % v3;
+        this->Screen_Coord[(2 * (i + 1)) - 1] = (unsigned short)pViewport->uViewportTL_Y + rand() % v4;
     }
     return 0;
 }
@@ -129,6 +115,7 @@ int Weather::Initialize()
 //----- (004C2EFA) --------------------------------------------------------
 int Weather::Draw()
 {
+    extern bool bSnow;
     if (bRenderSnow || bSnow)
         DrawSnow();
     return 0;
@@ -137,23 +124,23 @@ int Weather::Draw()
 //----- (004C2F0B) --------------------------------------------------------
 bool Weather::OnPlayerTurn(__int16 a2)
 {
-  unsigned int screen_width; // esi@3
+    unsigned int screen_width; // esi@3
 
-  if ( this->bRenderSnow != true )
-    return 0;
-  screen_width = viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X;
+    if (this->bRenderSnow != true)
+        return 0;
+    screen_width = viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X;
 
-  for ( uint i = 0; i < 1000; ++i )
-  {
-    this->Screen_Coord[2 * i] += a2;
-    if ( this->Screen_Coord[2 * i] < (signed int)viewparams->uScreen_BttmR_X - 4 )
+    for (unsigned int i = 0; i < 1000; ++i)
     {
-      if ( this->Screen_Coord[2 * i] >= (signed int)viewparams->uScreen_topL_X )
-        continue;
-      this->Screen_Coord[2 * i] += screen_width;
+        this->Screen_Coord[2 * i] += a2;
+        if (this->Screen_Coord[2 * i] < (signed int)viewparams->uScreen_BttmR_X - 4)
+        {
+            if (this->Screen_Coord[2 * i] >= (signed int)viewparams->uScreen_topL_X)
+                continue;
+            this->Screen_Coord[2 * i] += screen_width;
+        }
+        else
+            this->Screen_Coord[2 * i] = this->Screen_Coord[2 * i] - screen_width + 4;
     }
-    else
-      this->Screen_Coord[2 * i] = this->Screen_Coord[2 * i] - screen_width + 4;
-  }
-  return 1;
+    return 1;
 }

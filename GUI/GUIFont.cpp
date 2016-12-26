@@ -1,16 +1,10 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
-#include <string>
-
 #include "Engine/Engine.h"
-
 #include "Engine/LOD.h"
-#include "GUIFont.h"
-#include "GUIWindow.h"
-#include "Engine/Graphics/Render.h"
+
+#include "Engine/Graphics/IRender.h"
+
+#include "GUI/GUIFont.h"
+#include "GUI/GUIWindow.h"
 
 
 extern LODFile_IconsBitmaps *pIcons_LOD;
@@ -261,125 +255,124 @@ void GUIFont::DrawTextLineToBuff( int uColor, int a3, unsigned short* uX_buff_po
 
 
 //----- (0044C933) --------------------------------------------------------
-char * GUIFont::FitTwoFontStringINWindow( const char *pString, GUIFont *pFontMain, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6 )
+char * GUIFont::FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6)
+{
+
+    GUIFont *currentFont; // esi@3
+    unsigned char c;
+    int uInStrLen;
+    char digits[4];
+    int possible_transition_point;
+    int string_pixel_Width;
+    int start_pixel_offset;
+
+    if (!pString)
     {
- 
-  GUIFont *currentFont; // esi@3
-  unsigned char c;
-  int uInStrLen;
-  char digits[4];
-  int possible_transition_point;
-  int string_pixel_Width;
-  int start_pixel_offset;
+        Log::Warning(L"Invalid string passed !");
+        return 0;
+    }
+    currentFont = pFontMain; // esi@3
+    uInStrLen = strlen(pString);
+    Assert(uInStrLen < sizeof(pTmpBuf3));
+    strcpy(pTmpBuf3.data(), pString);
+    if (uInStrLen == 0)
+        return pTmpBuf3.data();
 
-  if (!pString)
-      {
-      MessageBoxW(nullptr, L"Invalid string passed !", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Font.cpp:445", 0);
-      return 0;
-      }
-  currentFont=pFontMain; // esi@3
-  uInStrLen = strlen(pString);
-  Assert(uInStrLen < sizeof(pTmpBuf3));
-  strcpy(pTmpBuf3.data(), pString);
-  if (uInStrLen==0)
-      return pTmpBuf3.data();
+    start_pixel_offset = string_pixel_Width = startPixlOff;
+    possible_transition_point = 0;
+    for (int i = 0; i < uInStrLen; ++i)
+    {
+        c = pTmpBuf3[i];
+        if (pFontMain->IsCharValid(c))
+        {
+            switch (c)
+            {
+            case '\t':	// Horizontal tab 09
+            {
+                strncpy(digits, &pTmpBuf3[i + 1], 3);
+                digits[3] = 0;
+                string_pixel_Width = atoi(digits) + startPixlOff;
+                i += 3;
+                break;
+            }
+            case  '\n':	//Line Feed 0A 10
+            {
+                string_pixel_Width = start_pixel_offset;
+                possible_transition_point = i;
+                currentFont = pFontMain;
+                break;
+            }
+            case  '\f':   //Form Feed, page eject  0C 12
+            {
+                i += 5;
+                break;
+            }
+            case  '\r':   //Carriage Return 0D 13
+            {
+                if (!a6)
+                    return (char*)pString;
+                break;
+            }
+            case ' ':
+            {
+                string_pixel_Width += currentFont->pMetrics[c].uWidth;
+                possible_transition_point = i;
+                break;
+            }
+            case '_':
+                currentFont = pFontSecond;
+                break;
+            default:
 
-  start_pixel_offset=string_pixel_Width=startPixlOff;
-  possible_transition_point=0;
-  for(int i=0; i<uInStrLen; ++i) 
-      {
-      c=pTmpBuf3[i];
-      if (pFontMain->IsCharValid(c))
-          {
-          switch (c)
-              {
-          case '\t':	// Horizontal tab 09
-              {
-              strncpy(digits, &pTmpBuf3[i+1],3);
-              digits[3]=0;
-              string_pixel_Width = atoi(digits)+startPixlOff;
-              i+=3;
-              break;
-              }
-          case  '\n':	//Line Feed 0A 10
-              {
-              string_pixel_Width=start_pixel_offset;
-              possible_transition_point=i;
-              currentFont=pFontMain;
-              break;
-              }
-          case  '\f':   //Form Feed, page eject  0C 12
-              {
-              i+=5;  
-              break;
-              }
-          case  '\r':   //Carriage Return 0D 13
-              {
-              if (!a6)
-                  return (char*)pString;
-              break;
-              }
-          case ' ' :
-              {
-              string_pixel_Width+=currentFont->pMetrics[c].uWidth;
-              possible_transition_point=i;
-              break;
-              }
-          case '_' :
-              currentFont=pFontSecond;
-              break;
-          default:
+                if ((string_pixel_Width + currentFont->pMetrics[c].uWidth + currentFont->pMetrics[c].uLeftSpacing +
+                    currentFont->pMetrics[c].uRightSpacing) < pWindow->uFrameWidth)
+                {
+                    if (i > possible_transition_point)
+                        string_pixel_Width += currentFont->pMetrics[c].uLeftSpacing;
+                    string_pixel_Width += currentFont->pMetrics[c].uWidth;
+                    if (i < uInStrLen)
+                        string_pixel_Width += currentFont->pMetrics[c].uRightSpacing;
+                }
+                else
+                {
+                    pTmpBuf3[possible_transition_point] = '\n';
 
-              if ((string_pixel_Width+currentFont->pMetrics[c].uWidth+ currentFont->pMetrics[c].uLeftSpacing+
-                  currentFont->pMetrics[c].uRightSpacing)<pWindow->uFrameWidth)
-                  {
-                  if(i>possible_transition_point)
-                      string_pixel_Width+=currentFont->pMetrics[c].uLeftSpacing;
-                  string_pixel_Width+=currentFont->pMetrics[c].uWidth;
-                  if (i<uInStrLen)
-                      string_pixel_Width+=currentFont->pMetrics[c].uRightSpacing;
-                  }
-              else
-                  {
-                  pTmpBuf3[possible_transition_point]='\n';
-                      
-                  if ( currentFont== pFontSecond)
-                      {
+                    if (currentFont == pFontSecond)
+                    {
 
-                      for(int k=uInStrLen-1; k>=possible_transition_point+1; --k)
-                          pTmpBuf3[k] = pTmpBuf3[k-1];
+                        for (int k = uInStrLen - 1; k >= possible_transition_point + 1; --k)
+                            pTmpBuf3[k] = pTmpBuf3[k - 1];
 
-                      ++uInStrLen;
-                      ++possible_transition_point;
-                      pTmpBuf3[possible_transition_point] = '_';
-                      
-                      }
-                     string_pixel_Width=start_pixel_offset;
+                        ++uInStrLen;
+                        ++possible_transition_point;
+                        pTmpBuf3[possible_transition_point] = '_';
 
-                      for(int j=possible_transition_point;j<i; ++j ) 
-                          {
-                          c=pTmpBuf3[j];
-                          if (pFontMain->IsCharValid(c))
-                              {
-                              if(j>possible_transition_point)
-                                  string_pixel_Width+=pFontMain->pMetrics[c].uLeftSpacing;
-                              string_pixel_Width+=pFontMain->pMetrics[c].uWidth;
-                              if (j<i)
-                                  string_pixel_Width+=pFontMain->pMetrics[c].uRightSpacing;
+                    }
+                    string_pixel_Width = start_pixel_offset;
 
-                              }
-                          }                    
-                  }
-              }
-          }
-      }
-  return pTmpBuf3.data();
+                    for (int j = possible_transition_point; j < i; ++j)
+                    {
+                        c = pTmpBuf3[j];
+                        if (pFontMain->IsCharValid(c))
+                        {
+                            if (j > possible_transition_point)
+                                string_pixel_Width += pFontMain->pMetrics[c].uLeftSpacing;
+                            string_pixel_Width += pFontMain->pMetrics[c].uWidth;
+                            if (j < i)
+                                string_pixel_Width += pFontMain->pMetrics[c].uRightSpacing;
 
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return pTmpBuf3.data();
 }
 
 
 //----- (0044C6C2) --------------------------------------------------------
-char* GUIFont::GetPageTop( const char *pInString, GUIWindow *pWindow, unsigned int uX, int a5 )
+char *GUIFont::GetPageTop( const char *pInString, GUIWindow *pWindow, unsigned int uX, int a5 )
 {
   int text_height; // edi@1
   char *text_str; // ebx@3
@@ -579,7 +572,7 @@ char *FitTextInAWindow(const char *pInString, GUIFont *pFont, GUIWindow *pWindow
 
     if (!pInString)
     {
-        MessageBoxW(nullptr, L"Invalid string passed !", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Font.cpp:445", 0);
+        Log::Warning(L"Invalid string passed !");
         return 0;
     }
     uInStrLen = strlen(pInString);

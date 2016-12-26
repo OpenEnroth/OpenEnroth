@@ -215,7 +215,7 @@ int PlayerFrameTable::FromFileTxt(const char *Args)
 				v19 += *(short *)(l + 4);
 				++k;
 			}
-			LOWORD(v19) = this->pFrames[k].uAnimTime + v19;
+			HEXRAYS_LOWORD(v19) = this->pFrames[k].uAnimTime + v19;
 		}
 		++k;
 	}

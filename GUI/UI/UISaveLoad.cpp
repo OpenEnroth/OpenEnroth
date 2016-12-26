@@ -1,14 +1,10 @@
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
-#include <crtdbg.h>
 #include <io.h>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/SaveLoad.h"
 
@@ -18,6 +14,9 @@
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Game/MainMenu.h"
+
+#include "Platform/Api.h"
+
 
 void UI_DrawSaveLoad(bool save);
 

@@ -281,8 +281,8 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
     //v4 = pParticle->flt_5C;
     pParticle->flt_60 = pIndoorCameraD3D->fov_y;
     //v5 = v4 + 6.7553994e15;
-    LODWORD(v6) = 0;
-    HIDWORD(v6) = floorf(pParticle->flt_5C + 0.5f);
+    HEXRAYS_LODWORD(v6) = 0;
+    HEXRAYS_HIDWORD(v6) = floorf(pParticle->flt_5C + 0.5f);
     //v7 = pParticle->flt_28;
     //pParticle->_screenspace_scale = v6 / x;
     //v8 = v7;
@@ -328,8 +328,8 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_ODM(unsigned int uID)
             v11 = fixpoint_sub_unknown(pParticles[uID].x - pIndoorCameraD3D->vPartyPos.x, v4)
                 + fixpoint_sub_unknown(pParticles[uID].y - pIndoorCameraD3D->vPartyPos.y, v5);
             long long _hidword_v12 = fixpoint_mul(v11, v3) + fixpoint_sub_unknown(pParticles[uID].z - pIndoorCameraD3D->vPartyPos.z, v44);
-            LODWORD(v13) = 0;
-            HIDWORD(v13) = SLOWORD(pODMRenderParams->int_fov_rad);
+            HEXRAYS_LODWORD(v13) = 0;
+            HEXRAYS_HIDWORD(v13) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
             pParticles[uID]._screenspace_scale = v13 / _hidword_v12;
             pParticles[uID].uScreenSpaceX = pViewport->uScreenCenterX
                 - ((signed int)fixpoint_mul(pParticles[uID]._screenspace_scale, (fixpoint_sub_unknown(pParticles[uID].y
@@ -354,8 +354,8 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_ODM(unsigned int uID)
     {
         if (pParticles[uID].type & ParticleType_Line)
         {
-            LODWORD(v22) = 0;
-            HIDWORD(v22) = SLOWORD(pODMRenderParams->int_fov_rad);
+            HEXRAYS_LODWORD(v22) = 0;
+            HEXRAYS_HIDWORD(v22) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
             long long _var_123 = fixpoint_sub_unknown(pParticles[uID].x - pIndoorCameraD3D->vPartyPos.x, v4)
                 + fixpoint_sub_unknown(pParticles[uID].y - pIndoorCameraD3D->vPartyPos.y, v5);
             pParticles[uID]._screenspace_scale = v22 / _var_123;
@@ -378,8 +378,8 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_ODM(unsigned int uID)
     v28 = abs(v16);
     if (abs(X_4) >= v28)
     {
-        LODWORD(v29) = 0;
-        HIDWORD(v29) = SLOWORD(pODMRenderParams->int_fov_rad);
+        HEXRAYS_LODWORD(v29) = 0;
+        HEXRAYS_HIDWORD(v29) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
         pParticles[uID]._screenspace_scale = v29 / X_4;
         pParticles[uID].uScreenSpaceX = pViewport->uScreenCenterX - ((signed int)fixpoint_mul(pParticles[uID]._screenspace_scale, v16) >> 16);
         pParticles[uID].uScreenSpaceY = pViewport->uScreenCenterY - ((signed int)fixpoint_mul(pParticles[uID]._screenspace_scale, v40) >> 16);

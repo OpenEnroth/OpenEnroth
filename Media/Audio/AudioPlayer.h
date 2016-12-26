@@ -1,5 +1,4 @@
 #pragma once
-#include "OSAPI.h"
 #include "Media/MediaPlayer.h"
 
 
@@ -248,7 +247,7 @@ struct AudioPlayer
   struct _SEQUENCE *hSequence;
   int dword_0002B4;
   struct SoundHeader *pSoundHeaders;
-  HANDLE hAudioSnd;
+  FILE *hAudioSnd;
   unsigned int uNumSoundHeaders;
   unsigned int uMasterVolume;
   int dword_0002C8;
@@ -289,16 +288,6 @@ enum SOUND_DESC_TYPE : __int32
   SOUND_DESC_LOCK = 0x4,
 };
 
-struct TSearchRec
-{
-int Time;
-int Size;
-int Attr;
-char Name[32];
-int ExcludeAttr;
-int FindHandle;
-_WIN32_FIND_DATAA FindData;
-} ;
 
 /*  326 */
 enum SOUND_DESC_FLAGS
@@ -344,7 +333,7 @@ struct SoundList
 
   void Initialize();
   __int16 LoadSound(int a1, unsigned int a3);
-  int LoadSound(unsigned int a2, LPVOID lpBuffer, int uBufferSizeLeft, int *pOutSoundSize, int a6);
+  int LoadSound(unsigned int a2, void *lpBuffer, int uBufferSizeLeft, int *pOutSoundSize, int a6);
   SoundDesc *Release();
   void _4A9D79(int a2);
   void UnloadSound(unsigned int uSoundID, char a3);
@@ -374,9 +363,6 @@ struct Sound
 
 
 
-
-extern int Aureal3D_SplashScreen;
-extern int Aureal3D_SplashAudio;
 extern int uFindSound_BinSearch_ResultID;
 extern int uLastLoadedSoundID;
 extern int sLastTrackLengthMS;

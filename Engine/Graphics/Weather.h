@@ -1,27 +1,22 @@
 #pragma once
 
-
-#pragma pack(push, 1)
-
-
-
 /*  255 */
+#pragma pack(push, 1)
 struct Weather
 {
-  inline Weather():
-    bNight(false), bRenderSnow(false)
-  {}
+    inline Weather() :
+        bNight(false), bRenderSnow(false)
+    {}
 
-  int DrawSnow();
-  int Initialize();
-  int Draw();
-  bool OnPlayerTurn(__int16 dangle);
+    int DrawSnow();
+    int Initialize();
+    int Draw();
+    bool OnPlayerTurn(__int16 dangle);
 
 
-
-  __int16 Screen_Coord[2000];
-  int bNight;
-  int bRenderSnow;
+    __int16 Screen_Coord[2000];
+    int bNight;
+    int bRenderSnow;
 };
 #pragma pack(pop)
 

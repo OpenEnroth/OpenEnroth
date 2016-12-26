@@ -1588,8 +1588,8 @@ int UseNPCSkill(NPCProf profession)
                 Player* player = &pParty->pPlayers[i];
                 pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
 
-                int v5 = LODWORD(player->conditions_times[19]);//*((int *)v4 - 32);
-                int v6 = HIDWORD(player->conditions_times[19]);//*((int *)v4 - 31);
+                int v5 = HEXRAYS_LODWORD(player->conditions_times[19]);//*((int *)v4 - 32);
+                int v6 = HEXRAYS_HIDWORD(player->conditions_times[19]);//*((int *)v4 - 31);
                 memset(&pParty->pPlayers[i].conditions_times, 0, sizeof(pParty->pPlayers[i].conditions_times));
 
                 *(int *)&player->pActiveSkills[PLAYER_SKILL_SHIELD] = v5;

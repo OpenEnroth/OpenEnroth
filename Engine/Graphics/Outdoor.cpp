@@ -386,7 +386,7 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX, signed int sParty
         uDefaultTravelTime_ByFoot = 1;
         strcpy(pOut, "out15.odm");// Shoals
         uLevel_StartingPointType = MapStartPoint_East;
-        LOWORD(pParty->uFlags) &= 0xFD7Bu;
+        HEXRAYS_LOWORD(pParty->uFlags) &= 0xFD7Bu;
         return true;
       }
   }
@@ -395,7 +395,7 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX, signed int sParty
     uDefaultTravelTime_ByFoot = 1;
     strcpy(pOut, "out14.odm"); // Avlee
     uLevel_StartingPointType = MapStartPoint_West;
-    LOWORD(pParty->uFlags) &= 0xFD7Bu;
+    HEXRAYS_LOWORD(pParty->uFlags) &= 0xFD7Bu;
     return true;
   }
   destinationMap = foot_travel_destinations[mapNumberAsInt - 1][direction - 1];
@@ -1093,8 +1093,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i')
     {
-        MessageBoxW(nullptr, L"Can't load file!",
-            L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Odmap.cpp:507", 0);
+        Log::Warning(L"Can't load file!");
     }
 
     uchar* pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
@@ -1247,8 +1246,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     memcpy(&uNumLevelDecorations, pSrc, 4);
     //uSourceLen = (char *)uSourceLen + 4;
     if (uNumLevelDecorations > 3000)
-        MessageBoxW(nullptr, L"Can't load file!",
-            L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Odmap.cpp:678", 0);
+        Log::Warning(L"Can't load file!");
 
     assert(sizeof(LevelDecoration) == 32);
     //pFilename = (char *)(32 * uNumLevelDecorations);
@@ -1326,7 +1324,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i')
     {
-        MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Odmap.cpp:746", 0);
+        Log::Warning(L"Can't load file!");
         Str2 = (char *)1;
     }
 
@@ -1347,7 +1345,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
             free(compressedMem);
         }
         else
-            MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Odmap.cpp:765", 0);
+            Log::Warning(L"Can't load file!");
 
         assert(sizeof(DDM_DLV_Header) == 0x28);
         memcpy(&ddm, pSrc, sizeof(DDM_DLV_Header));
@@ -1413,7 +1411,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
             free(compressedMem);
         }
         else
-            MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Odmap.cpp:857", 0);
+            Log::Warning(L"Can't load file!");
 
         pSrc = pSrcMem + 40;
     }
@@ -1466,7 +1464,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
 
     memcpy(&uNumActors, pSrc, 4);
     if (uNumActors > 500)
-        MessageBoxW(nullptr, L"Can't load file!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Odmap.cpp:939", 0);
+        Log::Warning(L"Can't load file!");
 
     pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
 
@@ -1493,8 +1491,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     memcpy(&uNumChests, pSrc, 4);
     //v95 = (char *)v94 + 4;
     if (uNumChests > 20)
-        MessageBoxW(nullptr, L"Can't load file!",
-            L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Odmap.cpp:968", 0);
+        Log::Warning(L"Can't load file!");
 
     pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
 
@@ -1546,14 +1543,6 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     else
         strcpy(loc_time.sky_texture_name, "plansky3");
 
-    //New_SKY_NIGHT_ID = pBitmaps_LOD->LoadTexture("SKY13");
-    //if (New_SKY_NIGHT_ID != -1)
-     // pBitmaps_LOD->pTextures[New_SKY_NIGHT_ID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[New_SKY_NIGHT_ID].palette_id1);
-
-    //v101 = pBitmaps_LOD->LoadTexture(field_4F8);
-    //sSky_TextureID = pBitmaps_LOD->LoadTexture(loc_time.sky_texture_name);
-    //if (sSky_TextureID != -1)
-    //    pBitmaps_LOD->pTextures[sSky_TextureID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[sSky_TextureID].palette_id1);
     this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
 
     pPaletteManager->RecalculateAll();
@@ -2041,7 +2030,7 @@ void OutdoorLocation::PrepareActorsDrawList()
             pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
             pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y
         );
-        LOWORD(v9) = pActors[i].uYawAngle;
+        HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
         v41 = ((signed int)(stru_5C6E00->uIntegerPi + ((signed int)stru_5C6E00->uIntegerPi >> 3) + v9 - v8) >> 8) & 7;
         if (pParty->bTurnBasedModeOn)
         {
@@ -2071,12 +2060,11 @@ void OutdoorLocation::PrepareActorsDrawList()
         if (v14->uFlags & 0x40000)
             v62 |= 0x40;
         if (v14->uFlags & 0x20000)
-            LOBYTE(v62) = v62 | 0x80;
+            v62 |= 0x80;
         if ((256 << v41) & v14->uFlags)
             v62 |= 4;
         if (v15->uGlowRadius)
         {
-            //LOBYTE(v16) = _4E94D3_light_type;
             pMobileLightsStack->AddLight(x, y, z, 0, v15->uGlowRadius, 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
         }
         v17 = (x - pIndoorCameraD3D->vPartyPos.x) << 16;
@@ -2112,12 +2100,12 @@ void OutdoorLocation::PrepareActorsDrawList()
         v24 = abs(v20);
         if (abs(X) >= v24)
         {
-            LODWORD(v25) = 0;
-            HIDWORD(v25) = SLOWORD(pODMRenderParams->int_fov_rad);
+            HEXRAYS_LODWORD(v25) = 0;
+            HEXRAYS_HIDWORD(v25) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
             v58 = v25 / X;
             v26 = v25 / X;
-            LODWORD(v25) = 0;
-            HIDWORD(v25) = SLOWORD(pODMRenderParams->int_fov_rad);
+            HEXRAYS_LODWORD(v25) = 0;
+            HEXRAYS_HIDWORD(v25) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
             v57 = v25 / X;
             v27 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v26, v42) + 0x8000) >> 16);
             v43 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v26, v42) + 0x8000) >> 16);
@@ -2140,7 +2128,7 @@ void OutdoorLocation::PrepareActorsDrawList()
                     65536 / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower,
                     pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
                 );
-                LOWORD(v27) = v43;
+                HEXRAYS_LOWORD(v27) = v43;
             }
             else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
             {
@@ -2148,7 +2136,7 @@ void OutdoorLocation::PrepareActorsDrawList()
                     pEngine->pStru6Instance->_4A806F_get_mass_distortion_value(&pActors[i]),
                     pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
                 );
-                LOWORD(v27) = v43;
+                HEXRAYS_LOWORD(v27) = v43;
             }
 
             pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v27;
@@ -2156,8 +2144,8 @@ void OutdoorLocation::PrepareActorsDrawList()
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
-            HIWORD(v34) = HIWORD(X);
-            LOWORD(v34) = 0;
+            HEXRAYS_HIWORD(v34) = HEXRAYS_HIWORD(X);
+            HEXRAYS_LOWORD(v34) = 0;
             pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
             pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v34 + PID(OBJECT_Actor, i);
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
@@ -2349,8 +2337,8 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, int *pIsOnWater,
                       ++number_hits;
                     else
                     {
-                      LODWORD(v23) = (Y - odm_floor_face_vert_coord_Y[i]) << 16;
-                      HIDWORD(v23) = (Y - odm_floor_face_vert_coord_Y[i]) >> 16;
+                        HEXRAYS_LODWORD(v23) = (Y - odm_floor_face_vert_coord_Y[i]) << 16;
+                        HEXRAYS_HIDWORD(v23) = (Y - odm_floor_face_vert_coord_Y[i]) >> 16;
                       v22 = ((((odm_floor_face_vert_coord_X[i + 1] - odm_floor_face_vert_coord_X[i]) * v23 / (odm_floor_face_vert_coord_Y[i + 1]
                               - odm_floor_face_vert_coord_Y[i])) >> 16) + odm_floor_face_vert_coord_X[i]);
                       if ( v22 >= X) 
@@ -2572,53 +2560,55 @@ OutdoorLocation::OutdoorLocation()
 //----- (004626CD) --------------------------------------------------------
 void OutdoorLocation::subconstuctor()
 {
-  //OutdoorLocationTerrain::OutdoorLocationTerrain(&this->pTerrain);
-  field_F0 = 0;
-  field_F4 = 0x40000000u;
-  //DLVHeader::DLVHeader(&v1->ddm);
-  pSpawnPoints = 0;
-  pBModels = 0;
-  pCmap = 0;
-  pFaceIDLIST = 0;
-  pOMAP = 0;
+    //OutdoorLocationTerrain::OutdoorLocationTerrain(&this->pTerrain);
+    field_F0 = 0;
+    field_F4 = 0x40000000u;
+    //DLVHeader::DLVHeader(&v1->ddm);
+    pSpawnPoints = 0;
+    pBModels = 0;
+    pCmap = 0;
+    pFaceIDLIST = 0;
+    pOMAP = 0;
 }
 
 //----- (00481E55) --------------------------------------------------------
 void ODM_Project(unsigned int uNumVertices)
 {
-  for ( uint i = 0; i < uNumVertices; i++ )
-   {
-    memcpy(&VertexRenderList[i], &array_507D30[i], sizeof(VertexRenderList[i]));
-    VertexRenderList[i].vWorldViewProjX = (double)pViewport->uScreenCenterX 
-        - ((double)pODMRenderParams->int_fov_rad * array_507D30[i]._rhw) * array_507D30[i].vWorldViewPosition.y;
-    VertexRenderList[i].vWorldViewProjY = (double)pViewport->uScreenCenterY
-        - ((double)pODMRenderParams->int_fov_rad * array_507D30[i]._rhw) * array_507D30[i].vWorldViewPosition.z;
-   }
- }
+    for (uint i = 0; i < uNumVertices; i++)
+    {
+        memcpy(&VertexRenderList[i], &array_507D30[i], sizeof(VertexRenderList[i]));
+        VertexRenderList[i].vWorldViewProjX = (double)pViewport->uScreenCenterX
+            - ((double)pODMRenderParams->int_fov_rad * array_507D30[i]._rhw) * array_507D30[i].vWorldViewPosition.y;
+        VertexRenderList[i].vWorldViewProjY = (double)pViewport->uScreenCenterY
+            - ((double)pODMRenderParams->int_fov_rad * array_507D30[i]._rhw) * array_507D30[i].vWorldViewPosition.z;
+    }
+}
+
 //----- (00485F64) --------------------------------------------------------
 void ODMRenderParams::Initialize()
 {
-  int v1; // eax@1
-  int v2; // eax@2
-  signed __int64 v3; // qtt@4
-  int v4; // eax@4
+    int v1; // eax@1
+    int v2; // eax@2
+    signed __int64 v3; // qtt@4
+    int v4; // eax@4
 
-  this->uCameraFovInDegrees = 75;
-  v1 = stru_5C6E00->uPiMask & 0xD5;
-  if ( v1 >= (signed int)stru_5C6E00->uIntegerHalfPi )
-    v2 = -stru_5C6E00->pTanTable[stru_5C6E00->uIntegerPi - v1];
-  else
-    v2 = stru_5C6E00->pTanTable[v1];
-  LODWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 31;
-  HIDWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 15 >> 16;
-  v4 = (signed int)(v3 / v2) >> 16;
-  this->int_fov_rad = v4;
-  this->field_4C = 360000;
-  this->int_fov_rad_inv = 65536 / v4;
-  this->field_50 = 115;
-  //sr_6BE060[1] = 1;
-  //RotationToInts();
+    this->uCameraFovInDegrees = 75;
+    v1 = stru_5C6E00->uPiMask & 0xD5;
+    if (v1 >= (signed int)stru_5C6E00->uIntegerHalfPi)
+        v2 = -stru_5C6E00->pTanTable[stru_5C6E00->uIntegerPi - v1];
+    else
+        v2 = stru_5C6E00->pTanTable[v1];
+    HEXRAYS_LODWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 31;
+    HEXRAYS_HIDWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 15 >> 16;
+    v4 = (signed int)(v3 / v2) >> 16;
+    this->int_fov_rad = v4;
+    this->field_4C = 360000;
+    this->int_fov_rad_inv = 65536 / v4;
+    this->field_50 = 115;
+    //sr_6BE060[1] = 1;
+    //RotationToInts();
 }
+
 //----- (00473893) --------------------------------------------------------
 void ODM_ProcessPartyActions()
 {
@@ -2716,7 +2706,6 @@ void ODM_ProcessPartyActions()
     pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
     if (pParty->WaterWalkActive())
     {
-        //LOBYTE(pParty->uFlags) &= 0x7Fu;
         bWaterWalk = true;
         *(short *)&stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |= 1;
         if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1) &&
@@ -3128,7 +3117,7 @@ void ODM_ProcessPartyActions()
     //-------------------------------------------
     if (pParty->bFlying)
     {
-        v129 = fixpoint_mul(4, stru_5C6E00->Cos(GetTickCount()));
+        v129 = fixpoint_mul(4, stru_5C6E00->Cos(OS_GetTime()));
         party_new_Z = v113 + v129;
         if (pModel_)
             party_new_Z = v113;
@@ -3587,7 +3576,7 @@ void ODM_ProcessPartyActions()
         pParty->uFallStartY = 8160;
         pParty->vPosition.z = 8160;
     }
-    LOWORD(pParty->uFlags) &= 0xFDFBu;
+    HEXRAYS_LOWORD(pParty->uFlags) &= 0xFDFBu;
     pParty->uFallSpeed = fall_speed;
     pParty->field_6F0 = v113;
     if (party_drowning_flag)//группа тонет
@@ -3675,10 +3664,10 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int pFa
         {
           for ( uint v = 0; v < pOutdoor->pBModels[i].pFaces[j].uNumVertices; v++ )
           {
-            word_720DB0_xs[2 * v] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + LOWORD(pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v]].x);
-            word_720CE0_ys[2 * v] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + LOWORD(pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v]].y);
-            word_720DB0_xs[2 * v + 1] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + LOWORD(pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v + 1]].x);
-            word_720CE0_ys[2 * v + 1] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + LOWORD(pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v + 1]].y);
+            word_720DB0_xs[2 * v] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + (short)pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v]].x;
+            word_720CE0_ys[2 * v] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + (short)pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v]].y;
+            word_720DB0_xs[2 * v + 1] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + (short)pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v + 1]].x;
+            word_720CE0_ys[2 * v + 1] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + (short)pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v + 1]].y;
           }
           v27 = 2 * pOutdoor->pBModels[i].pFaces[j].uNumVertices;
           word_720DB0_xs[2 * pOutdoor->pBModels[i].pFaces[j].uNumVertices] = word_720DB0_xs[0];
@@ -3698,8 +3687,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int pFa
               {
                 if ( !v14 || ( v16 = word_720CE0_ys[v + 1] - word_720CE0_ys[v],
                   v17 = Party_Y - word_720CE0_ys[v],
-                  LODWORD(v18) = v17 << 16,
-                  HIDWORD(v18) = v17 >> 16,
+                    HEXRAYS_LODWORD(v18) = v17 << 16,
+                    HEXRAYS_HIDWORD(v18) = v17 >> 16,
                   (signed int)(((unsigned __int64)(((signed int)word_720DB0_xs[v + 1]
                   - (signed int)word_720DB0_xs[v]) * v18 / v16) >> 16) + word_720DB0_xs[v]) >= Party_X) )
                   ++v37;
@@ -3715,7 +3704,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int pFa
               v19 = pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[0]].z;
             else
               v19 = fixpoint_mul(pOutdoor->pBModels[i].pFaces[j].zCalc1, Party_X) + fixpoint_mul(pOutdoor->pBModels[i].pFaces[j].zCalc2, Party_Y)
-                  + HIWORD(pOutdoor->pBModels[i].pFaces[j].zCalc3);
+                  + HEXRAYS_HIWORD(pOutdoor->pBModels[i].pFaces[j].zCalc3);
             v20 = v39++;
             ceiling_height_level[v20] = v19;
             dword_720ED0[v20] = i;
@@ -3889,7 +3878,7 @@ void UpdateActors_ODM()
 				//v21 = v62.y;
 				//v22 = v62.z;
 				//v23 = v62.y * v0->vVelocity.y;
-				pActors[v75].vVelocity.z += -8 * LOWORD(pEventTimer->uTimeElapsed) * v20;
+				pActors[v75].vVelocity.z += -8 * (short)pEventTimer->uTimeElapsed * v20;
 				int v73 = abs(v62.x * pActors[v75].vVelocity.x + v62.z * pActors[v75].vVelocity.z + v62.y * pActors[v75].vVelocity.y) >> 16;
 				//v72b = v21;
 				pActors[v75].vVelocity.x += fixpoint_mul(v73, v62.x);
@@ -3900,7 +3889,7 @@ void UpdateActors_ODM()
 		}
 		else
 		{
-			pActors[v75].vVelocity.z -= LOWORD(pEventTimer->uTimeElapsed) * GetGravityStrength();
+			pActors[v75].vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
 		}
 		if (pParty->armageddon_timer != 0 && pActors[v75].CanAct())
 		{
@@ -3986,9 +3975,9 @@ void UpdateActors_ODM()
 			}
 			if (stru_721530.field_7C >= stru_721530.field_6C)
 			{
-				pActors[v75].vPosition.x = LOWORD(stru_721530.normal2.x);
-				pActors[v75].vPosition.y = LOWORD(stru_721530.normal2.y);
-				pActors[v75].vPosition.z = LOWORD(stru_721530.normal2.z) - LOWORD(stru_721530.prolly_normal_d) - 1;
+				pActors[v75].vPosition.x = (short)stru_721530.normal2.x;
+				pActors[v75].vPosition.y = (short)stru_721530.normal2.y;
+				pActors[v75].vPosition.z = (short)stru_721530.normal2.z - (short)stru_721530.prolly_normal_d - 1;
 				break;
 			}
 			//v72b = fixpoint_mul(stru_721530.field_7C, stru_721530.field_58.x);
@@ -4053,7 +4042,7 @@ void UpdateActors_ODM()
 					if (face->uPolygonType == 3)
 					{
 						pActors[v75].vVelocity.z = 0;
-						pActors[v75].vPosition.z = LOWORD(pOutdoor->pBModels[stru_721530.uFaceID >> 9].pVertices.pVertices[face->pVertexIDs[0]].z) + 1;
+						pActors[v75].vPosition.z = (short)pOutdoor->pBModels[stru_721530.uFaceID >> 9].pVertices.pVertices[face->pVertexIDs[0]].z + 1;
 						if (pActors[v75].vVelocity.x * pActors[v75].vVelocity.x
 							+ pActors[v75].vVelocity.y * pActors[v75].vVelocity.y < 400)
 						{
@@ -4237,7 +4226,7 @@ unsigned int GetLevelFogColor()
 		{
           if (for_refactoring)
            {
-              MessageBoxA(nullptr, "Nomad: decompilation can be inaccurate, please send savegame to Nomad", "", 0);
+              Log::Warning(L"decompilation can be inaccurate, please send savegame to Nomad");
               __debugbreak();
            }
 			v2 = -(pWeather->bNight != 1);

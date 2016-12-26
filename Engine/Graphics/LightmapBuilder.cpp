@@ -1,16 +1,10 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
 #include "Engine/Engine.h"
-#include "LightmapBuilder.h"
 #include "Engine/stru314.h"
-#include "Outdoor.h"
 
-#include "Lights.h"
-#include "Engine/MMT.h"
-#include "stru9.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/stru9.h"
 
 LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
 //StationaryLight pStationaryLights[400];
@@ -134,7 +128,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight, Vec3_float
     }
   }
   else
-	MessageBoxW(nullptr, L"Uknown strip type detected!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Light.cpp:981", 0);
+	Log::Warning(L"Uknown strip type detected!");
 
   minz = pIndoorCameraD3D->GetPolygonMinZ(TerrainVertices, uStripType);
   maxz = pIndoorCameraD3D->GetPolygonMaxZ(TerrainVertices, uStripType);
@@ -567,8 +561,8 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3, unsigned int
   if (!pIndoorCameraD3D->GetFacetOrientation(a3->polygonType, &static_69B110.Normal,
           &static_69B110.field_10, &static_69B110.field_1C))
   {
-    MessageBoxW(nullptr, L"Error: Failed to get the facet orientation", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Light.cpp:119", 0);
-    ExitProcess(0);
+      Log::Warning(L"Error: Failed to get the facet orientation");
+      Engine_DeinitializeAndTerminate(0);
   }
 
   for (uint i = 0; i < pLights->uNumLightsApplied; ++i)
@@ -587,7 +581,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3, unsigned int
     if (!_45BE86_build_light_polygon(&pos, pLights->_blv_lights_radii[i], uColor, pLights->_blv_lights_light_dot_faces[i],
               pLights->_blv_lights_types[i], &static_69B110, uNumVertices, a9, uClipFlag) )
     {
-      MessageBoxW(nullptr, L"Error: Failed to build light polygon", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Light.cpp:138", 0);
+        Log::Warning(L"Error: Failed to build light polygon");
     }
   }
   return true;
@@ -701,7 +695,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
         lightmap->fBrightness = v40 - ((1 / radius) * v38);
     }
     else
-        MessageBoxW(nullptr, L"Invalid light type!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Light.cpp:277", 0);
+        Log::Warning(L"Invalid light type!");
   }
  //Brightness(€ркость)/////////////////////////////////////////////////////
 
@@ -736,10 +730,10 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
       pIndoorCameraD3D->_437143(_a4, lightmap->pVertices, field_3C8C34, &lightmap->NumVertices);
     }
     else
-      MessageBoxW(nullptr, L"Undefined clip flag specified", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Light.cpp:330", 0);
+        Log::Warning(L"Undefined clip flag specified");
   }
   else
-    MessageBoxW(nullptr, L"Lightpoly builder native indoor clipping not implemented", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Light.cpp:335", 0);
+      Log::Warning(L"Lightpoly builder native indoor clipping not implemented");
 
   if (_a4)
   {
@@ -866,62 +860,6 @@ bool LightmapBuilder::DrawLightmaps(int indices)
   return true;
 }
 
-//----- (0045DAE8) --------------------------------------------------------
-bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult, float z_bias)
-{
-  //For outdoor terrain and indoor light (VII)(VII)
-  signed int dwFlags; // [sp-1Ch] [bp-670h]@13
-  RenderVertexD3D3 pVerticesD3D[64]; // [sp+0h] [bp-654h]@7
-
-  if (pLightmap->NumVertices < 3)
-  {
-    Log::Warning(L"Lightmap uNumVertices < 3");
-    return false;
-  }
-
-  uint uLightmapColorMaskR = (pLightmap->uColorMask >> 16) & 0xFF,
-       uLightmapColorMaskG = (pLightmap->uColorMask >> 8) & 0xFF,
-       uLightmapColorMaskB = pLightmap->uColorMask & 0xFF;
-
-  uint uLightmapColorR = floorf(uLightmapColorMaskR * pLightmap->fBrightness * pColorMult->x + 0.5f),
-       uLightmapColorG = floorf(uLightmapColorMaskG * pLightmap->fBrightness * pColorMult->y + 0.5f),
-       uLightmapColorB = floorf(uLightmapColorMaskB * pLightmap->fBrightness * pColorMult->z + 0.5f);
- 
-  for (uint i = 0; i < pLightmap->NumVertices; ++i)
-  {
-    float v18;
-    if (fabs(z_bias) < 1e-5)
-      v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetShadingDistMist()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0);
-	else
-    {
-      v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetShadingDistMist()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0) - z_bias;
-      if (v18 < 0.000099999997)
-        v18 = 0.000099999997;
-    }
-
-    pVerticesD3D[i].pos.x = pLightmap->pVertices[i].vWorldViewProjX;
-    pVerticesD3D[i].pos.y = pLightmap->pVertices[i].vWorldViewProjY;
-    pVerticesD3D[i].pos.z = v18;
-
-    pVerticesD3D[i].rhw = 1.0 / pLightmap->pVertices[i].vWorldViewPosition.x;
-    pVerticesD3D[i].diffuse = (uLightmapColorMaskR << 16) | (uLightmapColorMaskG << 8) | uLightmapColorB;
-    pVerticesD3D[i].specular = 0;
-
-    pVerticesD3D[i].texcoord.x = pLightmap->pVertices[i].u;
-    pVerticesD3D[i].texcoord.y = pLightmap->pVertices[i].v;
-  }
-
-  if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-    dwFlags = D3DDP_DONOTLIGHT | D3DDP_DONOTCLIP | D3DDP_DONOTUPDATEEXTENTS;
-  else
-    dwFlags = D3DDP_DONOTLIGHT;
-
-  ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-            pVerticesD3D, pLightmap->NumVertices, dwFlags));
-
-  return true;
-}
 
 //----- (0045DCA9) --------------------------------------------------------
 void LightmapBuilder::Draw_183808_Lightmaps()
@@ -988,11 +926,11 @@ int LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4, Vec3_
       for ( j = a2->_blv_lights_ys; ; v10 = (char *)j )
       {
         v11 = (double)*((signed int *)v10 - 60);
-        LODWORD(v12) = *((unsigned int *)v10 - 20);
-        HIDWORD(v12) = *(unsigned int *)v10;
-        LODWORD(v13) = *((unsigned int *)v10 + 60);
+        HEXRAYS_LODWORD(v12) = *((unsigned int *)v10 - 20);
+        HEXRAYS_HIDWORD(v12) = *(unsigned int *)v10;
+        HEXRAYS_LODWORD(v13) = *((unsigned int *)v10 + 60);
         v14 = a3a;
-        LOBYTE(v14) = v6->_blv_lights_types[a3a];
+        HEXRAYS_LOBYTE(v14) = v6->_blv_lights_types[a3a];
         v15 = v11;
         *(_QWORD *)&v16.x = v12;
         v16.z = v13;
@@ -1033,13 +971,13 @@ int LightmapBuilder::_45CB89(RenderVertexSoft *a1, int a2)
   v3 = a2;
   if ( a2 > 0 )
   {
-    HIWORD(result) = HIWORD(a1);
+      HEXRAYS_HIWORD(result) = HEXRAYS_HIWORD(a1);
     v5 = (char *)&a1->flt_2C;
     do
     {
       __debugbreak(); // warning C4700: uninitialized local variable 'v7' used
       if ( *(float *)v5 < 0.0
-        || (v6 = *(float *)v5, /*UNDEF(v7),*/ v8 = 1.0 < v6, v9 = 0, v10 = 1.0 == v6, LOWORD(result) = v7, v6 <= 1.0) )
+        || (v6 = *(float *)v5, /*UNDEF(v7),*/ v8 = 1.0 < v6, v9 = 0, v10 = 1.0 == v6, HEXRAYS_LOWORD(result) = v7, v6 <= 1.0) )
       {
         v12 = *(float *)v5;
         //UNDEF(v13);
@@ -1047,7 +985,7 @@ int LightmapBuilder::_45CB89(RenderVertexSoft *a1, int a2)
         v15 = 0;
         v16 = 0.0 == v12;
       __debugbreak(); // warning C4700: uninitialized local variable 'v13' used
-        LOWORD(result) = v13;
+      HEXRAYS_LOWORD(result) = v13;
         if ( v12 >= 0.0 )
           v11 = *(float *)v5;
         else
@@ -1126,32 +1064,32 @@ double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3, Vec3_f
 
   __debugbreak();//Not used?
   v7 = a5;
-  LODWORD(a5) = *(unsigned int *)(LODWORD(a5) + 8);
+  HEXRAYS_LODWORD(a5) = *(unsigned int *)(HEXRAYS_LODWORD(a5) + 8);
   //v24 = a5 + 6.7553994e15;
   v26 = floorf(a5 + 0.5f);//LODWORD(v24);
-  LODWORD(a5) = *(unsigned int *)(LODWORD(v7) + 4);
+  HEXRAYS_LODWORD(a5) = *(unsigned int *)(HEXRAYS_LODWORD(v7) + 4);
   //v24 = a5 + 6.7553994e15;
   auto _v24 = floorf(a5 + 0.5f);
-  LODWORD(a5) = *(unsigned int *)LODWORD(v7);
+  HEXRAYS_LODWORD(a5) = *(unsigned int *)HEXRAYS_LODWORD(v7);
   //v23 = a5 + 6.7553994e15;
   auto _v23 = floorf(a5 + 0.5f);
   //*(_QWORD *)((char *)&v24 + 4) = __PAIR__(LODWORD(v24), LODWORD(v23));
-  v26 = abs((signed)LODWORD(a1.z) - v26);
+  v26 = abs((signed)HEXRAYS_LODWORD(a1.z) - v26);
   //v25 = abs((signed)LODWORD(a1.y) - (signed)LODWORD(v24));
   //v8 = abs((int)a1.x - (signed)LODWORD(v23));
-  v25 = abs((signed)LODWORD(a1.y) - (signed)_v24);
+  v25 = abs((signed)HEXRAYS_LODWORD(a1.y) - (signed)_v24);
   v8 = abs((int)a1.x - (signed)_v23);
   v14 = int_get_vector_length(v26, v25, v8);
   if ( v14 <= a3 )
   {
     a5 = v14 / a3;
     v16 = (double)(signed int)a1.x;
-    *(float *)&v23 = (double)SLODWORD(a1.y);
-    LODWORD(a1.x) = *(unsigned int *)LODWORD(v7);
-    v17 = LODWORD(v7) + 4;
-    *((float *)&v23 + 1) = (double)SLODWORD(a1.z);
-    LODWORD(a1.y) = *(unsigned int *)v17;
-    LODWORD(a1.z) = *(unsigned int *)(v17 + 4);
+    *(float *)&v23 = (double)HEXRAYS_SLODWORD(a1.y);
+    HEXRAYS_LODWORD(a1.x) = *(unsigned int *)HEXRAYS_LODWORD(v7);
+    v17 = HEXRAYS_LODWORD(v7) + 4;
+    *((float *)&v23 + 1) = (double)HEXRAYS_SLODWORD(a1.z);
+    HEXRAYS_LODWORD(a1.y) = *(unsigned int *)v17;
+    HEXRAYS_LODWORD(a1.z) = *(unsigned int *)(v17 + 4);
     a3 = *((float *)&v23 + 1) - a1.z;
     a1.z = a3;
     a1.x = v16 - a1.x;
@@ -1174,7 +1112,7 @@ double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3, Vec3_f
       }
       else
       {
-        MessageBoxW(nullptr, L"Invalid light type detected!", L"E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Light.cpp:783", 0);
+        Log::Warning(L"Invalid light type detected!");
         v20 = *(float *)&uLightType;
       }
     }
@@ -1187,21 +1125,18 @@ double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3, Vec3_f
   return result;
 }
 
-// 4D86D8: using guessed type int dword_4D86D8;
-// 4E94D2: using guessed type char _4E94D2_light_type;
-// 519AB4: using guessed type int uNumStationaryLightsApplied;
 
 //----- (0045D698) --------------------------------------------------------
 void LightmapBuilder::DrawDebugOutlines(char bit_one_for_list1__bit_two_for_list2)
 {
-  if ( bit_one_for_list1__bit_two_for_list2 & 1 )
-  {
-	for (int i = 0; i < this->StationaryLightsCount; ++i)
-      pIndoorCameraD3D->debug_outline_sw(this->StationaryLights[i].pVertices, this->StationaryLights[i].NumVertices, 0xFF00, 0.0f);
-  }
-  if ( bit_one_for_list1__bit_two_for_list2 & 2 )
-  {
-	for (uint i = 0; i < this->MobileLightsCount; ++i)
-	  pIndoorCameraD3D->debug_outline_sw(this->MobileLights[i].pVertices, this->MobileLights[i].NumVertices, 0xC04000, 0.00019999999f);
-  }
+    if (bit_one_for_list1__bit_two_for_list2 & 1)
+    {
+        for (int i = 0; i < this->StationaryLightsCount; ++i)
+            pIndoorCameraD3D->debug_outline_sw(this->StationaryLights[i].pVertices, this->StationaryLights[i].NumVertices, 0xFF00, 0.0f);
+    }
+    if (bit_one_for_list1__bit_two_for_list2 & 2)
+    {
+        for (uint i = 0; i < this->MobileLightsCount; ++i)
+            pIndoorCameraD3D->debug_outline_sw(this->MobileLights[i].pVertices, this->MobileLights[i].NumVertices, 0xC04000, 0.00019999999f);
+    }
 }

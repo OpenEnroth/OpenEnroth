@@ -1,4 +1,4 @@
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
 
@@ -61,8 +61,8 @@ bool Texture::LoadImageData()
             this->initialized = render->LoadTexture(
                 this->loader->GetResourceName().c_str(),
                 resample,
-                (IDirectDrawSurface4 **)&this->dds,
-                &this->d3dt
+                (void **)&this->dds,
+                (void **)&this->d3dt
             );
         }
     }

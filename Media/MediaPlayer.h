@@ -1,17 +1,9 @@
 #pragma once
-#include "OSWindow.h"
-
 #include "Engine/Engine.h"
 
 #include "Engine/Graphics/Image.h"
 
-#pragma pack(push, 1)
-
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-#pragma pack(pop)
-
+#include "Platform/Api.h"
 
 
 extern "C"
@@ -100,16 +92,16 @@ namespace Media
         char pVideoFrameTextureFilename[32];
         MovieHeader *pMightVideoHeaders;
         MovieHeader *pMagicVideoHeaders;
-        HANDLE hMightVid;
-        HANDLE hMagicVid;
+        FILE *hMightVid;
+        FILE *hMagicVid;
         unsigned int uNumMightVideoHeaders;
         unsigned int uNumMagicVideoHeaders;
         bool bPlaying_Movie;
         bool loop_current_file;
-        DWORD time_video_begin;
+        int time_video_begin;
         int current_movie_width;
         int current_movie_height;
-        HANDLE hVidFile;
+        FILE *hVidFile;
         int uSize;
         int uOffset;
 
@@ -149,10 +141,10 @@ namespace Media
         ///////////////////////////////////////////////
 
         IMovie *LoadMovie(const wchar_t *name, int width, int height, int cache_ms);
-        IMovie *LoadMovieFromLOD(HANDLE h, int readFunction(void*, uint8_t*, int), int64_t seekFunction(void*, int64_t, int), int width, int height);
+        IMovie *LoadMovieFromLOD(FILE *, int readFunction(FILE *, uint8_t*, int), int64_t seekFunction(FILE *, int64_t, int), int width, int height);
 
         //for audio////////////////////////////////////
-        HANDLE hAudioSnd;
+        FILE *hAudioSnd;
         unsigned int uNumSoundHeaders;
         struct SoundHeader *pSoundHeaders;
 
@@ -163,8 +155,8 @@ namespace Media
         ITrack *LoadTrack(const wchar_t *name);
 
     protected:
-        static int readFunction(void *, uint8_t *, int);
-        static int64_t seekFunction(void *, int64_t, int);
+        static int readFunction(FILE *, uint8_t *, int);
+        static int64_t seekFunction(FILE *, int64_t, int);
     };
 };
 #pragma pack(pop)

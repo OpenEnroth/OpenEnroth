@@ -272,7 +272,7 @@ bool stru9::_498774(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2, st
   v6 = a1;
   static_AE3378.x = a1->vWorldPosition.x - a3->vWorldPosition.x;
   static_AE3378.y = a1->vWorldPosition.y - a3->vWorldPosition.y;
-  HIWORD(result) = HIWORD(a4);
+  HEXRAYS_HIWORD(result) = HEXRAYS_HIWORD(a4);
   static_AE3378.z = a1->vWorldPosition.z - a3->vWorldPosition.z;
   static_AE3388.x = a2->vWorldPosition.x - a1->vWorldPosition.x;
   static_AE3388.y = a2->vWorldPosition.y - a1->vWorldPosition.y;

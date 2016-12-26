@@ -135,9 +135,6 @@ enum ActorAnimation : __int32
 #define ACTOR_HAS_ITEM            0x00800000
 #define ACTOR_HOSTILE             0x01000000
 
-#pragma pack(push, 1)
-
-
 
 
 /*  247 */

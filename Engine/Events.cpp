@@ -1,19 +1,27 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
+#include "Engine/MapsLongTimer.h"
+#include "Engine/LOD.h"
+#include "Engine/Party.h"
+#include "Engine/OurMath.h"
+#include "Engine/stru123.h"
+#include "Engine/stru159.h"
+#include "Engine/Events.h"
+#include "Engine/Events2D.h"
+#include "Engine/LuaVM.h"
 
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
+
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/Chest.h"
+#include "Engine/Objects/Actor.h"
 
 #include "IO/Mouse.h"
 
@@ -26,19 +34,6 @@
 #include "Media/MediaPlayer.h"
 
 
-#include "MapInfo.h"
-#include "Objects/SpriteObject.h"
-#include "Objects/Chest.h"
-#include "MapsLongTimer.h"
-#include "LOD.h"
-#include "Objects/Actor.h"
-#include "Party.h"
-#include "OurMath.h"
-#include "stru123.h"
-#include "stru159.h"
-#include "Events.h"
-#include "Events2D.h"
-#include "LuaVM.h"
 
 std::array<EventIndex, 4400> pSomeOtherEVT_Events;
 signed int uSomeOtherEVT_NumEvents;
@@ -407,7 +402,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages, int entry_
 
       case EVENT_ShowMovie:
       {
-        strcpy(Source, (char *)&_evt->v7);
+          strcpy_s(Source, (char *)&_evt->v7);
         v12 = (char *)&item.expirte_time + strlen(Source) + 7;
         if ( *v12 == 32 )
           *v12 = 0;
@@ -417,14 +412,14 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages, int entry_
 //        pMediaPlayer->pResetflag = 0;
 
         v128 = current_screen_type;
-        strcpy(Str, Source);
+        strcpy_s(Str, Source);
         v16 = RemoveQuotes(Str);
 		pMediaPlayer->FullscreenMovieLoop(v16, 0/*, _evt->v5*/);
         if ( !_stricmp(v16, "arbiter good") )
         {
           pParty->alignment = PartyAlignment_Good;
           v18 = 0;
-          LOBYTE(v17) = 1;
+          v17 = 1;
           SetUserInterface(PartyAlignment_Good, v17);
           if (!_evt->v6 || v128 == SCREEN_BOOKS)
           {
@@ -441,7 +436,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages, int entry_
         {
           v18 = 2;
           pParty->alignment = PartyAlignment_Evil;
-          LOBYTE(v17) = 1;
+          v17 = 1;
           SetUserInterface(PartyAlignment_Evil, v17);
           if (!_evt->v6 || v128 == SCREEN_BOOKS)
           {
@@ -489,7 +484,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages, int entry_
               v20 = 0;
               v21 = 3486 * v130 + _evt->v5;
               v136 = 1;
-              LOWORD(v21) = pParty->pPlayers[0].pActiveSkills[v21];
+              HEXRAYS_LOWORD(v21) = pParty->pPlayers[0].pActiveSkills[v21];
               v137 = v21 & 0x40;
               v138 = v21 & 0x80;
               v22 = v21 & 0x100;

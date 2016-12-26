@@ -1,7 +1,7 @@
+#include "Engine/Log.h"
 #include "Engine/ZlibWrapper.h"
 
-#include "Engine/Graphics/Render.h"
-#include "Engine/Graphics/RenderStruct.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/ImageFormatConverter.h"
 
@@ -202,7 +202,7 @@ bool PCX_Loader::DecodePCX(const unsigned char *pcx_data, unsigned __int16 *pOut
     PCXHeader1 psx_head1;
     PCXHeader2 psx_head2;
     //	short int width, height;
-    BYTE  color_map[48];	// Colormap for 16-color images
+    char color_map[48];	// Colormap for 16-color images
 
 
     memcpy(&psx_head1, pcx_data, 16);

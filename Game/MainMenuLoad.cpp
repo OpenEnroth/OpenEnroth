@@ -14,6 +14,8 @@
 #include "Game/MainMenu.h"
 #include "Game/MainMenuLoad.h"
 
+#include "Platform/Api.h"
+
 void MainMenuLoad_EventLoop()
 {
     while (pMessageQueue_50CBD0->uNumMessages)
@@ -133,17 +135,10 @@ void MainMenuLoad_Loop()
 
     while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == SCREEN_LOADGAME)
     {
-        MSG msg;
-        while (PeekMessageW(&msg, 0, 0, 0, PM_REMOVE))
-        {
-            if (msg.message == WM_QUIT)
-                Engine_DeinitializeAndTerminate(0);
-            TranslateMessage(&msg);
-            DispatchMessageW(&msg);
-        }
+        OS_PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
         {
-            WaitMessage();
+            OS_WaitMessage();
             continue;
         }
 
