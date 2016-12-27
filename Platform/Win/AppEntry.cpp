@@ -46,6 +46,13 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hprevinstance, wchar_t *lp
         }
     }
 
+	// Hack path fix - pskelton
+	if (!mm7_installation_found) {
+		mm7_installation_found = 1;
+		strcpy(mm7_path, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
+		Log::Warning(L"Hack Path MM7 installation found");
+	}
+
 
     if (HWND hMM7Window = FindWindowW(L"M&MTrilogy", 0))//check whether the window is open
     {
