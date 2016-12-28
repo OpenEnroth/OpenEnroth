@@ -125,7 +125,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height, v
 
         auto width = tex->uTextureWidth;
         auto height = tex->uTextureHeight;
-        auto pixels = new unsigned __int32[width * height];
+        auto pixels = new unsigned __int32[width * height]; //Unhandled exception at 0x759DA832 in World of Might and Magic.exe: Microsoft C++ exception: std::bad_alloc at memory location 0x009CEA4C.
         if (pixels)
         {
             for (unsigned int y = 0; y < height; ++y)
