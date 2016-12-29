@@ -337,8 +337,10 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, signed int uChestID)
             return 0;
         for (int _i = 0; _i < v5; _i++)
         {
-            if (Chest::CanPlaceItemAt(_i, v4->uItemID, pChestWindow->par1C))
-                v21 = _i;
+			if (Chest::CanPlaceItemAt(_i, v4->uItemID, pChestWindow->par1C)) {
+				v21 = _i;
+				break;
+			}
         }
         if (v21 == v5)
         {
@@ -613,8 +615,7 @@ int ChestList::FromFileTxt(const char *Args)
 }
 
 //----- (00420B13) --------------------------------------------------------
-void sub_420B13(int a1, int a2)
-{	//Give item from chest(rus: Взять предмет из ящика)
+void sub_420B13(int a1, int a2) {	//Give item from chest(rus: Взять предмет из ящика)
     signed int v6; // eax@1
     signed int v7; // edi@3
     signed int v8; // eax@3
@@ -675,37 +676,60 @@ void sub_420B13(int a1, int a2)
 }
 
 //----- (00420E01) --------------------------------------------------------
-void Chest::OnChestLeftClick()
-{
-    int v2; // eax@2
-    int v3; // ebx@4
-    int v4; // esi@6
+void Chest::OnChestLeftClick() {
 
-    SpriteObject v6; // [sp+Ch] [bp-80h]@1
-    if (pParty->pPickedItem.uItemID)
-    {
-        if (Chest::PutItemInChest(-1, &pParty->pPickedItem, pGUIWindow_CurrentMenu->par1C))
-            pMouse->RemoveHoldingItem();
-    }
-    else
-    {
-        Point pt = pMouse->GetCursorPos();
-        v2 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
-        if (v2)
-        {
-            if (v2)
-                v3 = v2 - 1;
-            else
-                v3 = -1;
-            v4 = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[v3] - 1;
-            if (pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[v4].GetItemEquipType() == EQUIP_GOLD)
-            {
-                pParty->PartyFindsGold(pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[v4].special_enchantment, 0);
-                viewparams->bRedrawGameUI = 1;
-            }
-            else
-                pParty->SetHoldingItem(&pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[v4]);
-            sub_420B13(v4, v3);
-        }
-    }
+	unsigned int pX;
+	unsigned int pY;
+	int inventoryXCoord; // ecx@2
+	int inventoryYCoord; // eax@2
+	int invMatrixIndex; // eax@2
+
+	int chestheight = pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+	int chestwidth = pChestWidthsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+
+	pMouse->GetClickPos(&pX, &pY);
+	inventoryYCoord = (pY - 17) / 32; 
+	inventoryXCoord = (pX - 14) / 32;
+
+	//chest boundry offset
+	inventoryXCoord -= 1;
+	//inventoryYCoord -= 1;
+
+	invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
+
+	//limits check
+	if (inventoryYCoord >= 0 && inventoryYCoord < chestheight && inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
+
+		if (pParty->pPickedItem.uItemID) { // item held
+			if (Chest::PutItemInChest(-1, &pParty->pPickedItem, pGUIWindow_CurrentMenu->par1C)) //invMatrixIndex
+				pMouse->RemoveHoldingItem();
+		}
+		else {
+
+			int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+
+			if (chestindex < 0) {
+				chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[(-(chestindex + 1))];
+			}
+
+			// zbufferfill not used anymore??
+			//v2 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
+
+			if (chestindex) {
+				int itemindex = chestindex - 1;
+
+				if (pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex].GetItemEquipType() == EQUIP_GOLD) {
+					//sweet gold
+					pParty->PartyFindsGold(pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex].special_enchantment, 0);
+					viewparams->bRedrawGameUI = 1;
+				}
+				else {
+					pParty->SetHoldingItem(&pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex]);
+				}
+				//give item from chest
+				sub_420B13(itemindex, invMatrixIndex);
+
+			}
+		}
+	}
 }
