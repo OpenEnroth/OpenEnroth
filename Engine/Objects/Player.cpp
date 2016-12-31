@@ -779,21 +779,25 @@ void Player::SetCondition(unsigned int uConditionIdx, int a3)
 }
 
 //----- (00492528) --------------------------------------------------------
-bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID)
-{
+bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID) {
+
     auto img = assets->GetImage_16BitColorKey(pItemsTable->pItems[uItemID].pIconName, 0x7FF);
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
 
+	if (img) {
+		img->Release();
+		img = nullptr;
+	}
+
     Assert(slotHeight > 0 && slotWidth > 0, "Items should have nonzero dimensions");
-    if ((slotWidth + uSlot % INVETORYSLOTSWIDTH) <= INVETORYSLOTSWIDTH && (slotHeight + uSlot / INVETORYSLOTSWIDTH) <= INVETORYSLOTSHEIGHT)
-    {
-        for (unsigned int x = 0; x < slotWidth; x++)
-        {
-            for (unsigned int y = 0; y < slotHeight; y++)
-            {
-                if (pInventoryMatrix[y * INVETORYSLOTSWIDTH + x + uSlot] != 0)
-                {
+    if ((slotWidth + uSlot % INVETORYSLOTSWIDTH) <= INVETORYSLOTSWIDTH && (slotHeight + uSlot / INVETORYSLOTSWIDTH) <= INVETORYSLOTSHEIGHT) {
+
+        for (unsigned int x = 0; x < slotWidth; x++) {
+
+            for (unsigned int y = 0; y < slotHeight; y++) {
+
+                if (pInventoryMatrix[y * INVETORYSLOTSWIDTH + x + uSlot] != 0) {
                     return false;
                 }
             }
@@ -963,22 +967,20 @@ void Player::PutItemArInventoryIndex(int uItemID, int itemListPos, int index)   
 }
 
 //----- (00492A36) --------------------------------------------------------
-void Player::RemoveItemAtInventoryIndex(unsigned int index)
-{
+void Player::RemoveItemAtInventoryIndex(unsigned int index) {
+
     ItemGen *item_in_slot = &this->pInventoryItemList[pInventoryMatrix[index] - 1];
     
-
     auto img = assets->GetImage_16BitColorKey(item_in_slot->GetIconName(), 0x7FF);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
 	item_in_slot->Reset(); // must get img details before reset
 
-    if (slot_width > 0)
-    {
+    if (slot_width > 0) {
+
         int *pInvPos = &pInventoryMatrix[index];
-        for (unsigned int i = 0; i < slot_height; i++)
-        {
+        for (unsigned int i = 0; i < slot_height; i++) {
             memset32(pInvPos, 0, slot_width);
             pInvPos += INVETORYSLOTSWIDTH;
         }

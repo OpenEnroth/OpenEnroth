@@ -65,11 +65,11 @@ struct Chest //0x14cc
   unsigned __int16 uChestBitmapID; //0
   unsigned __int16 uFlags; //2
   struct ItemGen igChestItems[140]; //4
-  signed __int16 pInventoryIndices[140]; //0x13b4
+  signed __int16 pInventoryIndices[140]; //0x13b4 why is this a short?
 };
 #pragma pack(pop)
 
-void sub_420B13(int a1, int a2);
+void RemoveItemAtChestIndex(int index);
 
 
 extern size_t uNumChests; // idb
