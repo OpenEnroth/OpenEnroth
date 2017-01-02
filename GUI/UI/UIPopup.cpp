@@ -1725,7 +1725,12 @@ void Inventory_ItemPopupAndAlchemy()
         return;
 
     Point cursor = pMouse->GetCursorPos();
-    int item_pid = (render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF) - 1;
+    
+	//zbuffer no longer used so this wont find an item
+
+	int item_pid = (render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF) - 1;
+
+
     //if (item_pid == -1) //added here to avoid crash
     //    return;
 

@@ -187,23 +187,33 @@ bool Chest::Open(signed int uChestID)
 }
 
 //----- (0042038D) --------------------------------------------------------
-void Chest::ChestUI_WritePointedObjectStatusString()
-{
-    int v1; // ecx@2
+void Chest::ChestUI_WritePointedObjectStatusString() {
 
-    Point pt = pMouse->GetCursorPos();
-    if (pt.y < 350)
-    {
-        v1 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]];
-        if (v1 != 0 && v1 != -65536)
-        {
-            if (v1)
-            {
-                ItemGen* item = &pChests[pChestWindow->par1C].igChestItems[pChests[pChestWindow->par1C].pInventoryIndices[(v1 & 0xFFFF) - 1] - 1];
-                GameUI_StatusBar_Set(item->GetDisplayName());
-            }
-        }
-    }
+	Point pt = pMouse->GetCursorPos();
+	unsigned int pX=pt.x;
+	unsigned int pY=pt.y;
+
+	int chestheight = pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+	int chestwidth = pChestWidthsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+
+	int inventoryYCoord = (pY - 34) / 32;	//use pchestoffsets??
+	int inventoryXCoord = (pX - 42) / 32;
+	int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
+
+	if (inventoryYCoord >= 0 && inventoryYCoord < chestheight && inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
+
+			int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+			if (chestindex < 0) {
+				invMatrixIndex = (-(chestindex + 1));
+				chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+			}
+
+			if (chestindex) {
+				int itemindex = chestindex - 1;
+				ItemGen* item = &pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex];
+				GameUI_StatusBar_Set(item->GetDisplayName());
+			}
+	}
 }
 
 
