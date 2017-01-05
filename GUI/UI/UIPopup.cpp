@@ -1762,39 +1762,48 @@ void Inventory_ItemPopupAndAlchemy()
 	unsigned int pX;
     //Point cursor = pMouse->GetCursorPos();
     
-	//zbuffer no longer used so this wont find an item
+	ItemGen *item = nullptr;
+
+	
 
 	pMouse->GetClickPos(&pX, &pY);
 	inventoryYCoord = (pY - 17) / 32;
 	inventoryXCoord = (pX - 14) / 32;
 	invMatrixIndex = inventoryXCoord + ( 14 * inventoryYCoord); //INVETORYSLOTSWIDTH
+
+
+	if (pX <= 13 || pX >= 462)//items out of inventory(вещи вне инвентаря)  this is for player ragdoll items??
+	{
+
+		int item_pid = (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1;
+					//zbuffer still used for paperdolls
+
+		if (item_pid == -1)
+			return;
+
+		item = &pPlayers[uActiveCharacter]->pInventoryItemList[item_pid];
+		GameUI_DrawItemInfo(item);
+		return;
+	}
+
+
+
 	
 	//limits check ?
 	//if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT && inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
-	ItemGen *item = nullptr;
+	
 	item = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(&invMatrixIndex);
 
 	if (!item) { // no item
 		return;
 	}
 
-	//int item_pid = (render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF) - 1;
+	
 	 //if (item_pid == -1) //added here to avoid crash
     //    return;
 
     
-    if (pX <= 13 || pX >= 462)//items out of inventory(вещи вне инвентаря)  this is for player ragdoll items??
-    {
-        
-		// how to find ragdoll items id??
-		
-		//if (item_pid == -1)
-          //  return;
-
-        //item = &pPlayers[uActiveCharacter]->pInventoryItemList[item_pid];
-       // GameUI_DrawItemInfo(item);
-        return;
-    }
+ 
 
 
     //check character condition(проверка состояния персонажа)
