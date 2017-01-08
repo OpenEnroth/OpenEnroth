@@ -1827,8 +1827,9 @@ void GameUI_WritePointedObjectStatusString()
             uLastPointedObjectID = 0;
             return;
         }
-        if (pY < 350)
+        if (pY < 350)		// inventory poitned 
         {
+
             v14 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
             if (v14 == 0 || v14 == -65536 || v14 >= 5000)
             {

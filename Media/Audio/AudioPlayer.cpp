@@ -2377,7 +2377,7 @@ void AudioPlayer::Release() //Освободить
 
         if (pMediaPlayer->hMagicVid)
         {
-            fclose(pMediaPlayer->hMagicVid);
+            fclose(pMediaPlayer->hMagicVid); // Exception thrown at 0x0FAAA6D2 (ucrtbased.dll) in World of Might and Magic.exe: 0xC0000005: Access violation reading location 0xCDCDCDD9.
             pMediaPlayer->hMagicVid = nullptr;
         }
 
