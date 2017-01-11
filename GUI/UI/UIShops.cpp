@@ -126,33 +126,44 @@ void WeaponShopDialog()
 
             if (item_num)
             {
-                if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
-                {
-                    item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+				int testx = (mouse.x-30 ) / 70;
+				// testx limits check
+				if (testx >= 0 && testx < 6) {
 
-                    String str;
-                    if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-                    {
-                        str = BuildDialogueString(
-                            pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 2)],
-                            uActiveCharacter - 1,
-                            item,
-                            (char *)window_SpeakInHouse->ptr_1C,
-                            2
-                        );
-                    }
-                    else
-                    {
-                        str = BuildDialogueString(
-                            localization->GetString(181),
-                            uActiveCharacter - 1,
-                            item,
-                            (char *)window_SpeakInHouse->ptr_1C,
-                            2
-                        );
-                    }
-                    dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-                }
+					item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+					
+					if (item->uItemID) // item picking
+					{
+						//could check x coords imits here?
+						if (mouse.y >= weapons_Ypos[testx]+30 && mouse.y < (weapons_Ypos[testx] +30+ shop_ui_items_in_store[testx]->GetHeight())) {
+
+							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+
+							String str;
+							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
+							{
+								str = BuildDialogueString(
+									pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 2)],
+									uActiveCharacter - 1,
+									item,
+									(char *)window_SpeakInHouse->ptr_1C,
+									2
+								);
+							}
+							else
+							{
+								str = BuildDialogueString(
+									localization->GetString(181),
+									uActiveCharacter - 1,
+									item,
+									(char *)window_SpeakInHouse->ptr_1C,
+									2
+								);
+							}
+							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+						}
+					}
+				}
             }
             else
             {
@@ -196,33 +207,45 @@ void WeaponShopDialog()
 
             if (item_num)
             {
-                if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
-                {
-                    item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+				int testx = (mouse.x-30) / 70;
+				// testx limits check
+				if (testx >= 0 && testx < 6) {
 
-                    String str;
-                    if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-                    {
-                        str = BuildDialogueString(
-                            pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 2)],
-                            uActiveCharacter - 1,
-                            item,
-                            (char *)window_SpeakInHouse->ptr_1C,
-                            2
-                        );
-                    }
-                    else
-                    {
-                        str = BuildDialogueString(
-                            localization->GetString(181),
-                            uActiveCharacter - 1,
-                            item,
-                            (char *)window_SpeakInHouse->ptr_1C,
-                            2
-                        );
-                    }
-                    dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-                }
+					item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+
+					if (item->uItemID) // item picking
+					{
+						//could check x coords imits here?
+						if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
+							// if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
+							 //{
+							   //  item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+
+							String str;
+							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
+							{
+								str = BuildDialogueString(
+									pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 2)],
+									uActiveCharacter - 1,
+									item,
+									(char *)window_SpeakInHouse->ptr_1C,
+									2
+								);
+							}
+							else
+							{
+								str = BuildDialogueString(
+									localization->GetString(181),
+									uActiveCharacter - 1,
+									item,
+									(char *)window_SpeakInHouse->ptr_1C,
+									2
+								);
+							}
+							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+						}
+					}
+					}
             }
             else
                 dialog_window.DrawShops_next_generation_time_string(
@@ -1786,13 +1809,54 @@ void  UIShop_Buy_Identify_Repair()
     case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
     case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
     {
-        v18 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
-        if (!v18)
-            return;
-        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
-            bought_item = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][v18 - 1];
-        else
-            bought_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][v18 - 1];
+		// item picking
+		Point mouse = pMouse->GetCursorPos();
+		int testx = (mouse.x - 30) / 70;
+		
+
+		switch (in_current_building_type){
+			case BuildingType_WeaponShop:
+				
+				
+				// testx limits check
+				if (testx >= 0 && testx < 6) {
+
+					if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+						bought_item = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+					else
+						bought_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+
+
+					if (bought_item->uItemID) {
+						//could check x coords imits here?
+						if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
+							//good
+						}
+						else {
+							bought_item = nullptr;
+							return;
+						}
+					}
+					else
+						return;
+
+				}
+				break;
+
+			default:
+				v18 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
+				if (!v18)
+					return;
+				if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+					bought_item = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][v18 - 1];
+				else
+					bought_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][v18 - 1];
+				break;
+		}
+		
+        
+        
+
         uPriceItemService = pPlayers[uActiveCharacter]->GetBuyingPrice(bought_item->GetValue(), p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier);
         uNumSeconds = 0;
         a3 = 0;

@@ -1116,7 +1116,7 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uP
         sprintf(
             static_sub_417BB5_out_string,
             a2,
-            localization->GetSkillDescription(uPlayerSkillType), // no line truncating text atm
+            localization->GetSkillDescription(uPlayerSkillType),
             localization->GetString(431), v35 + 3, v35 + 5, localization->GetSkillDescriptionNormal(uPlayerSkillType),
             localization->GetString(433), v35 + 3, v35 + 5, localization->GetSkillDescriptionExpert(uPlayerSkillType),
             localization->GetString(432), v35 + 3, v35 + 5, localization->GetSkillDescriptionMaster(uPlayerSkillType),
@@ -1707,31 +1707,6 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
         }
         if (popup_window.Hint)
         {
-
-			/*void CharacterUI_DrawTooltip(const char *title, String &content)
-{
-  GUIWindow popup_window; // [sp+Ch] [bp-5Ch]@1
-
-  Point pt = pMouse->GetCursorPos();
-
-  memset(&popup_window, 0, 0x54u);
-   
-  popup_window.uFrameY = pt.y + 30;
-   
-  
-  
-
-  
- 
-  
-  
-  
-
-  auto colored_title = StringPrintf("\f%05d%s\f00000\n", ui_character_tooltip_header_default_color, title);
-  popup_window.DrawTitleText(pFontCreate, 0, 0, 0, colored_title, 3);
-  popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetFontHeight(), 0, content, 0, popup_window.uFrameY + popup_window.uFrameHeight, 0);
-}*/
-
             pHint = popup_window.Hint;
             popup_window.Hint = nullptr;
             popup_window.uFrameWidth = 384;
