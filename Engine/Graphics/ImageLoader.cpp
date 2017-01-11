@@ -21,7 +21,7 @@ bool ColorKey_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height
     auto tex = lod->GetTexture(lod->LoadTexture(this->resource_name.c_str(), TEXTURE_16BIT_PALETTE));
     if (tex->pBits & 512)
     {
-        Log::Warning(L"Alpha texture is loaded as ColorKey (%S)", this->resource_name.c_str());
+        logger->Warning(L"Alpha texture is loaded as ColorKey (%S)", this->resource_name.c_str());
     }
 
     if (tex->pPalette16 && tex->paletted_pixels)
@@ -68,7 +68,7 @@ bool Image16bit_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_heig
 
     auto tex = lod->GetTexture(lod->LoadTexture(this->resource_name.c_str(), TEXTURE_16BIT_PALETTE));
     if (tex->pBits & 512)
-        Log::Warning(L"Alpha texture is loaded as Image16bit (%S)", this->resource_name.c_str());
+        logger->Warning(L"Alpha texture is loaded as Image16bit (%S)", this->resource_name.c_str());
 
     if (tex->pPalette16 && tex->paletted_pixels)
     {
@@ -115,7 +115,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height, v
     );
     if (~tex->pBits & 512)
     {
-        Log::Warning(L"ColorKey texture is loaded as Alpha (%S)", this->resource_name.c_str());
+        logger->Warning(L"ColorKey texture is loaded as Alpha (%S)", this->resource_name.c_str());
     }
 
     if (tex->pPalette16 && tex->paletted_pixels)
@@ -384,7 +384,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height, void **pix
     FILE *file = fopen(this->resource_name.c_str(), "rb");
     if (!file)
     {
-        Log::Warning(L"Unable to load %s", this->resource_name.c_str());
+        logger->Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
@@ -449,7 +449,7 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **pixe
     file = lod->FindContainer(this->resource_name.c_str(), 0);
     if (!file)
     {
-        Log::Warning(L"Unable to load %s", this->resource_name.c_str());
+        logger->Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
@@ -460,7 +460,7 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **pixe
         Str1a = (unsigned char *)malloc(DstBuf.uDecompressedSize);
         v6 = malloc(DstBuf.uTextureSize);
         fread(v6, 1, Count, file);
-        zlib::MemUnzip(Str1a, &DstBuf.uDecompressedSize, v6, DstBuf.uTextureSize);
+        zlib::Uncompress(Str1a, &DstBuf.uDecompressedSize, v6, DstBuf.uTextureSize);
         DstBuf.uTextureSize = DstBuf.uDecompressedSize;
         free(v6);
     }

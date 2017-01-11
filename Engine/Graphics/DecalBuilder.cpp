@@ -144,7 +144,7 @@ char DecalBuilder::ApplyDecals(int light_level, char a3, stru154 *a4, int a5, Re
     static_AE4F60.dist = v16->face_plane.dist;
     if (!pIndoorCameraD3D->GetFacetOrientation(v16->polygonType, &static_AE4F60.Normal,
         &static_AE4F60.field_10, &static_AE4F60.field_1C))
-        Log::Warning(L"Error: Failed to get the facet orientation");
+        logger->Warning(L"Error: Failed to get the facet orientation");
 
     if (this->uNumDecals > 0)
     {
@@ -169,7 +169,7 @@ char DecalBuilder::ApplyDecals(int light_level, char a3, stru154 *a4, int a5, Re
                 v43,
                 pBloodsplatContainer->std__vector_pBloodsplats[this->std__vector_30B00C[i]].dot_dist,
                 &static_AE4F60, a5, a6, a8))
-                Log::Warning(L"Error: Failed to build decal geometry");
+                logger->Warning(L"Error: Failed to build decal geometry");
         }
     }
     return 1;
@@ -279,10 +279,10 @@ char DecalBuilder::_49B790_build_decal_geometry(int a2, char a3, Bloodsplat *blo
             pIndoorCameraD3D->_437143(a8b, decal->pVertices, this->pVertices, (signed int *)&decal->uNumVertices);
         }
         else
-            Log::Warning(L"Undefined clip flag specified");
+            logger->Warning(L"Undefined clip flag specified");
     }
     else
-        Log::Warning(L"Lightpoly builder native indoor clipping not implemented");
+        logger->Warning(L"Lightpoly builder native indoor clipping not implemented");
     if ( a8b != 0 )
     {
       ++this->curent_decal_id;
@@ -449,7 +449,7 @@ bool DecalBuilder::_49BE8A(struct Polygon *a2, Vec3_float_ *_a3, float *a4, Rend
 		  }
         }
 		else
-			Log::Warning(L"Uknown strip type detected!");
+			logger->Warning(L"Uknown strip type detected!");
         //v21 = uStripType;
         //v13 = pIndoorCameraD3D->GetPolygonMinZ(v8, uStripType);
         //v21 = uStripType;

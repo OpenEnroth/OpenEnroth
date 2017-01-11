@@ -32,6 +32,7 @@ bool CompileShader(ID3D11Device *d3dd, const wchar_t *pShaderSourceFile, D3D11_I
 unsigned int RenderD3D11::GetRenderWidth() const { return window->GetWidth(); }
 unsigned int RenderD3D11::GetRenderHeight() const { return window->GetHeight(); }
 
+Texture *RenderD3D11::CreateTexture(const String &name) { __debugbreak(); return nullptr; }
 void RenderD3D11::ClearBlack() {__debugbreak();}
 void RenderD3D11::SaveWinnersCertificate(const char *a1) {__debugbreak();}
 void RenderD3D11::_49FD3A_fullscreen() {__debugbreak();}
@@ -78,7 +79,7 @@ void RenderD3D11::DrawTextureGrayShade(float a2, float a3, Image *a4) {__debugbr
 void RenderD3D11::DrawBuildingsD3D() {__debugbreak();}
 void RenderD3D11::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {__debugbreak();}
 void RenderD3D11::DrawOutdoorSkyD3D() {__debugbreak();}
-void RenderD3D11::DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon) {__debugbreak();}
+void RenderD3D11::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {__debugbreak();}
 void RenderD3D11::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {__debugbreak();}
 void RenderD3D11::PrepareDecorationsRenderList_ODM() {__debugbreak();}
 void RenderD3D11::DrawSpriteObjects_ODM() {__debugbreak();}
@@ -808,7 +809,7 @@ ID3DBlob *DoD3DCompiling(const wchar_t *shader_name, const char *pShaderSource, 
   }
   else if (pErrors)
   {
-    Log::Warning(L"%s (%S) build warnings:\n\n%S", shader_name, pVersionString, pErrors->GetBufferPointer());
+    logger->Warning(L"%s (%S) build warnings:\n\n%S", shader_name, pVersionString, pErrors->GetBufferPointer());
     pErrors->Release();
   }
 

@@ -841,7 +841,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
 
     if (bLoaded)
     {
-        Log::Warning(L"BLV is already loaded");
+        logger->Warning(L"BLV is already loaded");
         return true;
     }
 
@@ -873,7 +873,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
         header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i')
     {
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
     }
     //v83 = header.uCompressedSize;
     //pSource = header.uDecompressedSize;
@@ -892,16 +892,16 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
             fread(pTmpMem, header.uCompressedSize, 1, File);
 
             uint uDecompressedSize = header.uDecompressedSize;
-            zlib::MemUnzip(pRawBLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
+            zlib::Uncompress(pRawBLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
 
             if (uDecompressedSize != header.uDecompressedSize)
-                Log::Warning(L"uDecompressedSize != header.uDecompressedSize in BLV");
+                logger->Warning(L"uDecompressedSize != header.uDecompressedSize in BLV");
         }
         free(pTmpMem);
     }
     else
     {
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
         return 0;
     }
 
@@ -1133,7 +1133,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
         header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i')
     {
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
         _v244 = true;
     }
     else
@@ -1148,15 +1148,15 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
                 fread(pTmpMem, header.uCompressedSize, 1, File);
 
                 uint uDecompressedSize = header.uDecompressedSize;
-                zlib::MemUnzip(pRawDLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
+                zlib::Uncompress(pRawDLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
 
                 if (uDecompressedSize != header.uDecompressedSize)
-                    Log::Warning(L"uDecompressedSize != header.uDecompressedSize in DLV");
+                    logger->Warning(L"uDecompressedSize != header.uDecompressedSize in DLV");
             }
             free(pTmpMem);
         }
         else
-            Log::Warning(L"Can't load file!");
+            logger->Warning(L"Can't load file!");
 
         pData = (char *)pRawDLV;
     }
@@ -1215,12 +1215,12 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
             {
                 void* _uSourceLen = malloc(v155);
                 fread(_uSourceLen, v155, 1, File);
-                zlib::MemUnzip(Src, &Count, _uSourceLen, v155);
+                zlib::Uncompress(Src, &Count, _uSourceLen, v155);
                 free(_uSourceLen);
             }
         }
         else
-            Log::Warning(L"Can't load file!");
+            logger->Warning(L"Can't load file!");
         pData = ((char *)Src + 40);
         //v154 = 875;
     }
@@ -1427,7 +1427,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ)
         pSector->pBounding.z1 - 64 > sZ || pSector->pBounding.z2 + 64 < sZ)
       continue;
 
-          //Log::Warning(L"Sector[%u]", i);
+          //logger->Warning(L"Sector[%u]", i);
     v51 = pSector->uNumFloors + pSector->uNumPortals;
     if (!v51)
       continue;
@@ -2507,11 +2507,9 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
     bool current_vertices_Y; // [sp+28h] [bp-18h]@10
     bool v49; // [sp+28h] [bp-18h]@41
     bool next_vertices_Y; // [sp+2Ch] [bp-14h]@12
-    signed int number_hits; // [sp+30h] [bp-10h]@10
-    signed int v54; // [sp+30h] [bp-10h]@41
-    signed int v55; // [sp+34h] [bp-Ch]@1
-
-    //LOG_DECOMPILATION_WARNING();
+    int number_hits; // [sp+30h] [bp-10h]@10
+    int v54; // [sp+30h] [bp-10h]@41
+    int v55; // [sp+34h] [bp-Ch]@1
 
     static int blv_floor_id[50]; // 00721200
     static int blv_floor_level[50]; // 007212C8
@@ -2969,7 +2967,7 @@ void AddBspNodeToRenderList(unsigned int node_id)
     //if ( render->pRenderD3D )
     {
         for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
-            //Log::Warning(L"Non-BSP face: %X", v3->pFaceIDs[v2]);
+            //logger->Warning(L"Non-BSP face: %X", v3->pFaceIDs[v2]);
             pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);//рекурсия\recursion
     }
     /*else
@@ -2994,7 +2992,7 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode)
     __int16 v9; // di@18
     BspRenderer_stru0 *node; // [sp+18h] [bp-4h]@1
 
-    //Log::Warning(L"sub_4406BC(%u, %u)", a1, uFirstNode);
+    //logger->Warning(L"sub_4406BC(%u, %u)", a1, uFirstNode);
 
     //v10 = a1;
     node = &pBspRenderer->nodes[node_id];
@@ -3019,7 +3017,7 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode)
         v7 = pNode->uCoplanarOffset;
         v8 = v7 + pNode->uCoplanarSize;
 
-        //Log::Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8, v2->pFaceIDs[v7]);
+        //logger->Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8, v2->pFaceIDs[v7]);
 
         //if ( render->pRenderD3D )
         {
@@ -3787,7 +3785,7 @@ char DoInteractionWithTopmostZObject(int a1, int a2)
       break;
 
     default:
-        Log::Warning(L"Warning: Invalid ID reached!");
+        logger->Warning(L"Warning: Invalid ID reached!");
       return 1;
 
     case OBJECT_BModel:

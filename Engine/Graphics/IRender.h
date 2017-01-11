@@ -287,6 +287,8 @@ class IRender
 
     virtual bool Initialize(OSWindow *window) = 0;
 
+	virtual Texture *CreateTexture(const String &name) = 0;
+
     virtual void ClearBlack() = 0;
     virtual void PresentBlackScreen() = 0;
 
@@ -333,6 +335,7 @@ class IRender
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture) = 0;
     virtual bool LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture) = 0;
+	virtual bool LoadTextureOpenGL(const String &name, bool mipmaps, int *out_texture) = 0;
     virtual bool MoveSpriteToDevice(Sprite *pSprite) = 0;
 
     virtual void BeginScene() = 0;
@@ -368,7 +371,7 @@ class IRender
 
     virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID = 0) = 0;
     virtual void DrawOutdoorSkyD3D() = 0;
-    virtual void DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon) = 0;
+    virtual void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) = 0;
     virtual void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) = 0;
 
     virtual void PrepareDecorationsRenderList_ODM() = 0;

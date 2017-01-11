@@ -424,20 +424,20 @@ void PaletteManager::CalcPalettes_LUT(int a2)
       //v22 = v21;
       HSV2RGB(&a1, &a2a, &a3, v64[j], v63[j], v21);
       v23 = v2->uNumTargetGBits;
-      if ( v23 == 6 )  // r5g6b5
-      {
-        a1 = a1 * 31.0;
-        a2a = a2a * 62.0;
-        a3 = a3 * 31.0;
-      }
-      else if (v23 == 5)             // r5g5b5
-      {
-        a1 = a1 * 31.0;
-        a2a = a2a * 31.0;
-        a3 = a3 * 31.0;
-      }
-      else if (v23 == 0)
-        Log::Warning(L"Calling palette manager with num_target_bits == 0");
+	  if (v23 == 6)  // r5g6b5
+	  {
+		  a1 = a1 * 31.0;
+		  a2a = a2a * 62.0;
+		  a3 = a3 * 31.0;
+	  }
+	  else if (v23 == 5)             // r5g5b5
+	  {
+		  a1 = a1 * 31.0;
+		  a2a = a2a * 31.0;
+		  a3 = a3 * 31.0;
+	  }
+	  else if (v23 == 0)
+		  ;// logger->Warning(L"Calling palette manager with num_target_bits == 0");
       else Error("(%u)", v23);
       //v24 = (unsigned __int32)a3 | ((unsigned __int32)a2a << v2->uNumTargetBBits) | ((unsigned __int32)a1 << (v2->uNumTargetBBits + v2->uNumTargetGBits));
       //v25 = v73;
@@ -473,20 +473,20 @@ void PaletteManager::CalcPalettes_LUT(int a2)
       //v27 = v26;
       HSV2RGB(&a1, &a2a, &a3, 1.0, 1.0, v26);
       v28 = v2->uNumTargetGBits;
-      if ( v28 == 6 )
-      {
-        a1 = a1 * 31.0;
-        a2a = a2a * 62.0;
-        a3 = a3 * 31.0;
-      }
-      else if (v28 == 5)
-      {
-        a1 = a1 * 31.0;
-        a2a = a2a * 31.0;
-        a3 = a3 * 31.0;
-      }
-      else if (v23 == 0)
-        Log::Warning(L"Calling palette manager with num_target_bits == 0");
+	  if (v28 == 6)
+	  {
+		  a1 = a1 * 31.0;
+		  a2a = a2a * 62.0;
+		  a3 = a3 * 31.0;
+	  }
+	  else if (v28 == 5)
+	  {
+		  a1 = a1 * 31.0;
+		  a2a = a2a * 31.0;
+		  a3 = a3 * 31.0;
+	  }
+	  else if (v23 == 0)
+		  ;// logger->Warning(L"Calling palette manager with num_target_bits == 0");
       else Error("(%u)", v23);
 
       //v29 = (unsigned __int64)(signed __int64)a3 | ((unsigned __int16)(signed __int64)a2a << v2->uNumTargetBBits) | (unsigned __int16)((unsigned __int16)(signed __int64)a1 << (v2->uNumTargetBBits + v28));
@@ -518,20 +518,20 @@ void PaletteManager::CalcPalettes_LUT(int a2)
     //v34 = v63[i] * 0.7034339229968783;
     HSV2RGB(&a1, &a2a, &a3, v64[i], v63[i] * 0.7034339229968783, v32);
     v35 = v2->uNumTargetGBits;
-    if ( v35 == 6 )
-    {
-      a1 = a1 * 31.0;
-      a2a = a2a * 62.0;
-      a3 = a3 * 31.0;
-    }
-    else if (v35 == 5)
-    {
-      a1 = a1 * 31.0;
-      a2a = a2a * 31.0;
-      a3 = a3 * 31.0;
-    }
-      else if (v23 == 0)
-        Log::Warning(L"Calling palette manager with num_target_bits == 0");
+	if (v35 == 6)
+	{
+		a1 = a1 * 31.0;
+		a2a = a2a * 62.0;
+		a3 = a3 * 31.0;
+	}
+	else if (v35 == 5)
+	{
+		a1 = a1 * 31.0;
+		a2a = a2a * 31.0;
+		a3 = a3 * 31.0;
+	}
+	else if (v23 == 0)
+		;// logger->Warning(L"Calling palette manager with num_target_bits == 0");
     else Error("(%u)", v23);
 
     v36 = (signed __int64)((a1 + a2a + a3) * 0.3333333333333333 * 8.0);
@@ -594,20 +594,20 @@ void PaletteManager::CalcPalettes_LUT(int a2)
       //v50 = v49;
       HSV2RGB(&a1, &a2a, &a3, v64[j], v49, a6[j]);
       //v51 = v2->uNumTargetGBits;
-      if ( v2->uNumTargetGBits == 6 )
-      {
-        a1 = a1 * 31.0;
-        a2a = a2a * 62.0;
-        a3 = a3 * 31.0;
-      }
-      else if (v2->uNumTargetGBits == 5)
-      {
-        a1 = a1 * 31.0;
-        a2a = a2a * 31.0;
-        a3 = a3 * 31.0;
-      }
-      else if (v23 == 0)
-        Log::Warning(L"Calling palette manager with num_target_bits == 0");
+	  if (v2->uNumTargetGBits == 6)
+	  {
+		  a1 = a1 * 31.0;
+		  a2a = a2a * 62.0;
+		  a3 = a3 * 31.0;
+	  }
+	  else if (v2->uNumTargetGBits == 5)
+	  {
+		  a1 = a1 * 31.0;
+		  a2a = a2a * 31.0;
+		  a3 = a3 * 31.0;
+	  }
+	  else if (v23 == 0)
+		  ;// logger->Warning(L"Calling palette manager with num_target_bits == 0");
       else Error("(%u)", v23);
 
       if (pPalette_mistColor[0] || pPalette_mistColor[1] || pPalette_mistColor[2])

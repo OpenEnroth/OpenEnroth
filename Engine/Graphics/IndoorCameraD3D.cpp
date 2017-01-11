@@ -694,50 +694,53 @@ void IndoorCameraD3D::MatrixMultiply(Matrix3x3_float_ *ma, Matrix3x3_float_ *mb,
 //----- (004376E7) --------------------------------------------------------
 void IndoorCameraD3D::CreateWorldMatrixAndSomeStuff()
 {
-  Matrix3x3_float_ m1; // [sp+10h] [bp-B8h]@1
-  Matrix3x3_float_ m2; // [sp+34h] [bp-94h]@1
-  Matrix3x3_float_ m3; // [sp+58h] [bp-70h]@1
-  Matrix3x3_float_ m4; // [sp+7Ch] [bp-4Ch]@1
-  Matrix3x3_float_ m5; // [sp+A0h] [bp-28h]@1
+	Matrix3x3_float_ m1; // [sp+10h] [bp-B8h]@1
+	Matrix3x3_float_ m2; // [sp+34h] [bp-94h]@1
+	Matrix3x3_float_ m3; // [sp+58h] [bp-70h]@1
+	Matrix3x3_float_ m4; // [sp+7Ch] [bp-4Ch]@1
+	Matrix3x3_float_ m5; // [sp+A0h] [bp-28h]@1
 
- //RotationZ(0)
-  m5._11 = cosf(0);         m5._12 = sinf(0);        m5._13 = 0;
-  m5._21 = -sinf(0);        m5._22 = cosf(0);        m5._23 = 0;
-  m5._31 = 0;               m5._32 = 0;              m5._33 = 1;
+   //RotationZ(0)
+	m5._11 = cosf(0);         m5._12 = sinf(0);        m5._13 = 0;
+	m5._21 = -sinf(0);        m5._22 = cosf(0);        m5._23 = 0;
+	m5._31 = 0;               m5._32 = 0;              m5._33 = 1;
 
-  float cos_x1 = fRotationXCosine,
-        sin_x1 = fRotationXSine;
- //RotationX(x)
-  m4._11 = 1;               m4._12 = 0;              m4._13 = 0;
-  m4._21 = 0;               m4._22 = cos_x1;         m4._23 = sin_x1;
-  m4._31 = 0;               m4._32 = -sin_x1;        m4._33 = cos_x1;
-  
-  float cos_y1 = fRotationYCosine,
-        sin_y1 = fRotationYSine;
- //RotationY(some_angle)
-  m3._11 = cos_y1;          m3._12 = 0;              m3._13 = -sin_y1;
-  m3._21 = 0;               m3._22 = 1;              m3._23 = 0;
-  m3._31 = sin_y1;          m3._32 = 0;              m3._33 = cos_y1;
+	float cos_x1 = fRotationXCosine,
+		sin_x1 = fRotationXSine;
+	//RotationX(x)
+	m4._11 = 1;               m4._12 = 0;              m4._13 = 0;
+	m4._21 = 0;               m4._22 = cos_x1;         m4._23 = sin_x1;
+	m4._31 = 0;               m4._32 = -sin_x1;        m4._33 = cos_x1;
 
-  MatrixMultiply(&m5, &m3, &m1);
-  MatrixMultiply(&m4, &m1, &m2);
+	float cos_y1 = fRotationYCosine,
+		sin_y1 = fRotationYSine;
+	//RotationY(some_angle)
+	m3._11 = cos_y1;          m3._12 = 0;              m3._13 = -sin_y1;
+	m3._21 = 0;               m3._22 = 1;              m3._23 = 0;
+	m3._31 = sin_y1;          m3._32 = 0;              m3._33 = cos_y1;
 
-  for (uint i = 0; i < 3; ++i)
-  {
-    field_4[0].v[i] = m2.v[1][i];
-    field_4[1].v[i] = m2.v[0][i];
-    field_4[2].v[i] = m2.v[2][i];
-  }
+	MatrixMultiply(&m5, &m3, &m1);
+	MatrixMultiply(&m4, &m1, &m2);
 
-  inv_fov = 1.1344639;
-  fov_x = (double)pViewport->uScreenWidth * 0.8814736;
+	for (uint i = 0; i < 3; ++i)
+	{
+		field_4[0].v[i] = m2.v[1][i];
+		field_4[1].v[i] = m2.v[0][i];
+		field_4[2].v[i] = m2.v[2][i];
+	}
 
-  fov_y = 0.8814736 * (double)pViewport->uScreenHeight;
-  fov = fov_y;
-  if ( fov_x > fov )
-    fov = fov_x;
-  screenCenterX = (double)pViewport->uScreenCenterX;
-  screenCenterY = (double)(pViewport->uScreenCenterY - pViewport->uScreen_TL_Y);
+	fov = 0.8814736;
+	inv_fov = 1.0 / fov;
+
+	fov_x = (double)pViewport->uScreenWidth * fov;
+	fov_y = (double)pViewport->uScreenHeight * fov;
+
+	fov = fov_y;
+	if (fov_x > fov)
+		fov = fov_x;
+
+	screenCenterX = (double)pViewport->uScreenCenterX;
+	screenCenterY = (double)(pViewport->uScreenCenterY - pViewport->uScreen_TL_Y);
 }
 
 //----- (00437691) --------------------------------------------------------

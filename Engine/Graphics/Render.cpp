@@ -16,7 +16,8 @@
 
 #include "Engine/Graphics/Render.h"
 #include "Engine/Graphics/RenderStruct.h"
-#include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/ImageLoader.h"
+#include "Engine/Graphics/Direct3D/TextureD3D.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -43,7 +44,11 @@
 
 
 
-IRender *IRender::Create() { return new Render(); }
+
+//IRender *IRender::Create() { return new Render(); }
+
+
+
 
 /*  384 */
 #pragma pack(push, 1)
@@ -121,6 +126,15 @@ int __stdcall RenderD3D__DeviceEnumerator(GUID *lpGUID, const char *lpDevDesc, c
 unsigned int Render::GetRenderWidth() const { return window->GetWidth(); }
 unsigned int Render::GetRenderHeight() const { return window->GetHeight(); }
 
+
+
+
+Texture *Render::CreateTexture(const String &name)
+{
+	return TextureD3D::Create(
+		new Bitmaps_LOD_Loader(pBitmaps_LOD, name)
+	);
+}
 
 
 
@@ -2014,6 +2028,7 @@ void Render::DrawPolygon(struct Polygon *a3)
     //unsigned int v54; // [sp+5Ch] [bp-Ch]@3
     signed int a2; // [sp+64h] [bp-4h]@4
 
+	auto texture = (TextureD3D *)a3->texture;
     auto a4 = a3->pODMFace;
     auto uNumVertices = a3->uNumVertices;
 
@@ -2071,7 +2086,7 @@ void Render::DrawPolygon(struct Polygon *a3)
                         d3d_vertex_buffer[i].diffuse = color;
                 }
 
-                pRenderD3D->pDevice->SetTexture(0, a3->texture->GetDirect3DTexture());
+                pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture());
                 pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
                     D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                     d3d_vertex_buffer,
@@ -2116,7 +2131,7 @@ void Render::DrawPolygon(struct Polygon *a3)
                 {
                     d3d_vertex_buffer[i].diffuse = a2;
                 }
-                ErrD3D(pRenderD3D->pDevice->SetTexture(0, a3->texture->GetDirect3DTexture()));
+                ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
                 ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
                 if (!render->bUsingSpecular)
                     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
@@ -2946,11 +2961,11 @@ void Render::_49FD3A_fullscreen()
 //----- (0049FDBF) --------------------------------------------------------
 void Render::CreateZBuffer()
 {
-  if (!pDefaultZBuffer)
-  {
-    pDefaultZBuffer = pActiveZBuffer = (int *)malloc(0x12C000);
-    memset32(pActiveZBuffer, 0xFFFF0000, 0x4B000u); //    // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
-  }
+    if (!pDefaultZBuffer)
+    {
+        pDefaultZBuffer = pActiveZBuffer = (int *)malloc(0x12C000);
+        memset32(pActiveZBuffer, 0xFFFF0000, 0x4B000u); //    // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
+    }
 }
 
 //----- (0049FE05) --------------------------------------------------------
@@ -3074,34 +3089,36 @@ void Render::Release()
   }*/
 }
 
-void Present32(unsigned __int32 *src, unsigned int src_pitch,
-               unsigned __int32 *dst, unsigned int dst_pitch)
+void Present32(
+    unsigned __int32 *src, unsigned int src_pitch,
+    unsigned __int32 *dst, unsigned int dst_pitch
+)
 {
-        for (uint y = 0; y < 8; ++y)
-          memcpy(dst + y * dst_pitch,
-                 src + y * src_pitch, src_pitch * sizeof(__int32));
+    for (uint y = 0; y < 8; ++y)
+        memcpy(dst + y * dst_pitch,
+            src + y * src_pitch, src_pitch * sizeof(__int32));
 
-        for (uint y = 8; y < 352; ++y)
+    for (uint y = 8; y < 352; ++y)
+    {
+        memcpy(dst + y * dst_pitch,
+            src + y * src_pitch, 8 * sizeof(__int32));
+        memcpy(dst + 8 + game_viewport_width + y * dst_pitch,
+            src + 8 + game_viewport_width + y * src_pitch, 174/*172*/ * sizeof(__int32));
+    }
+
+    for (uint y = 352; y < 480; ++y)
+        memcpy(dst + y * dst_pitch,
+            src + y * src_pitch, src_pitch * sizeof(__int32));
+
+    for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y + 1; ++y)
+    {
+        for (uint x = pViewport->uViewportTL_X; x < pViewport->uViewportBR_X; ++x)
         {
-          memcpy(dst + y * dst_pitch,
-                 src + y * src_pitch, 8 * sizeof(__int32));
-          memcpy(dst + 8 + game_viewport_width + y * dst_pitch,
-                 src + 8 + game_viewport_width + y * src_pitch, 174/*172*/ * sizeof(__int32));
-        }
-
-        for (uint y = 352; y < 480; ++y)
-          memcpy(dst + y * dst_pitch,
-                 src + y * src_pitch, src_pitch * sizeof(__int32));
-
-        for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y + 1; ++y)
-        {
-          for (uint x = pViewport->uViewportTL_X; x < pViewport->uViewportBR_X; ++x)
-          {
             //if (src[x + y * src_pitch] != (render->uTargetGMask | render->uTargetBMask))
             if (src[x + y * src_pitch] != 0xFF00FCF8)  // FFF8FCF8 =  Color32(Color16(g_mask | b_mask))
-              dst[x + y * dst_pitch] = src[x + y * src_pitch];
-          }
+                dst[x + y * dst_pitch] = src[x + y * src_pitch];
         }
+    }
 }
 
 //----- (004A597D) --------------------------------------------------------
@@ -3398,7 +3415,7 @@ bool Render::InitializeFullscreen()
   //}
   bWindowMode = 0;
   pParty->uFlags |= 2;
-  pViewport->SetFOV(flt_6BE3A0 * 65536.0f);
+  pViewport->SetFOV(_6BE3A0_fov * 65536.0f);
   return v15 != 0;
 }
 
@@ -3483,7 +3500,7 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult, float z_
 
     if (pLightmap->NumVertices < 3)
     {
-        Log::Warning(L"Lightmap uNumVertices < 3");
+        logger->Warning(L"Lightmap uNumVertices < 3");
         return false;
     }
 
@@ -3615,7 +3632,7 @@ bool Render::SwitchToWindow()
   int v29; // [sp+308h] [bp-4h]@2
 
   pParty->uFlags |= PARTY_FLAGS_1_0002;
-  pViewport->SetFOV(flt_6BE3A0 * 65536.0f);
+  pViewport->SetFOV(_6BE3A0_fov * 65536.0f);
   using_software_screen_buffer = 0;
   Release();
   //pColorKeySurface4 = 0;
@@ -4633,6 +4650,8 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clamp
 
     unsigned int uNumVertices = a4->uNumVertices;
 
+	auto texture = (TextureD3D *)a4->texture;
+
     if (!this->uNumD3DSceneBegins)
         return;
     if (uNumVertices < 3)
@@ -4684,7 +4703,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clamp
             d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
         }
 
-        this->pRenderD3D->pDevice->SetTexture(0, a4->texture->GetDirect3DTexture());
+        this->pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture());
         this->pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1, d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT);
         if (transparent)
         {
@@ -4726,7 +4745,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clamp
         {
             d3d_vertex_buffer[i].diffuse = -1;
         }
-        ErrD3D(pRenderD3D->pDevice->SetTexture(0, a4->texture->GetDirect3DTexture()));//текстурка 
+        ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));//текстурка 
         ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
         if (!render->bUsingSpecular)
         {
@@ -4776,9 +4795,12 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clamp
 }
 
 //----- (004A2DA3) --------------------------------------------------------
-void Render::DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon)
+void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon)
 {
   int v7; // eax@7
+
+  unsigned int uNumVertices = pSkyPolygon->uNumVertices;
+  auto texture = (TextureD3D *)pSkyPolygon->texture;
 
   if ( !this->uNumD3DSceneBegins )
     return;
@@ -4806,7 +4828,7 @@ void Render::DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pS
       pVertices[i].texcoord.x = VertexRenderList[i].u;
       pVertices[i].texcoord.y = VertexRenderList[i].v;
     }
-    pRenderD3D->pDevice->SetTexture(0, pSkyPolygon->texture->GetDirect3DTexture());
+    pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture());
     pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                                        pVertices, uNumVertices, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTLIGHT);
   }
@@ -4816,6 +4838,8 @@ void Render::DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pS
 void Render::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon)
 {
   int v5; // eax@3
+
+  auto texture = (TextureD3D *)pSkyPolygon->texture;
 
   if ( this->uNumD3DSceneBegins )
   {
@@ -4836,7 +4860,7 @@ void Render::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyP
         d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u;
         d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v;
       }
-      ErrD3D(pRenderD3D->pDevice->SetTexture(0, pSkyPolygon->texture->GetDirect3DTexture()));
+      ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
       ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
         d3d_vertex_buffer, uNumVertices, 28));
     }
@@ -5180,6 +5204,8 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
 
     int sCorrectedColor = uColor;
 
+	auto face_texture = (TextureD3D *)pFace->GetTexture();
+
     if (pEngine->pLightmapBuilder->StationaryLightsCount)
         sCorrectedColor = -1;
     pEngine->AlterGamma_BLV(pFace, &sCorrectedColor);
@@ -5233,7 +5259,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
             }
 
             ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-            ErrD3D(pRenderD3D->pDevice->SetTexture(0, pFace->GetTexture()->GetDirect3DTexture()));
+            ErrD3D(pRenderD3D->pDevice->SetTexture(0, face_texture->GetDirect3DTexture()));
             ErrD3D(
                 pRenderD3D->pDevice->DrawPrimitive(
                     D3DPT_TRIANGLEFAN,
@@ -5268,7 +5294,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
             for (uint i = 0; i < uNumVertices; ++i)
                 d3d_vertex_buffer[i].diffuse = sCorrectedColor;
 
-            ErrD3D(pRenderD3D->pDevice->SetTexture(0, pFace->GetTexture()->GetDirect3DTexture()));
+            ErrD3D(pRenderD3D->pDevice->SetTexture(0, face_texture->GetDirect3DTexture()));
             ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
@@ -5848,6 +5874,8 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float ds
   signed int v32; // [sp+8Ch] [bp-8h]@1
   int yDifference; // [sp+90h] [bp-4h]@1
 
+  auto textured3d = (TextureD3D *)texture;
+
   xDifference = bankersRounding(dstX - srcX);
   yDifference = bankersRounding(dstY - srcY);
   absYDifference = abs(yDifference);
@@ -5914,7 +5942,7 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float ds
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
-  ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
+  ErrD3D(pRenderD3D->pDevice->SetTexture(0, textured3d->GetDirect3DTexture()));
   ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
     D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1, v29, 4, 24));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
@@ -6732,25 +6760,25 @@ void Render::DrawTextureCustomHeight(unsigned int x, unsigned int y, Texture_MM7
 }*/
 
 //----- (004A6AB1) --------------------------------------------------------
-void Render::DrawTextAlpha( int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, unsigned __int16 *pPalette, bool present_time_transparency )
-    {
-  int v8; // edi@2
-  unsigned int v9; // esi@2
-  unsigned char *v11; // edx@2
-  int v14; // edx@6
-  signed int v15; // ebx@7
-  signed int v17; // edi@10
-  signed int v18; // ebx@13
-  signed int v20; // esi@16
-  unsigned __int16 v24; // si@35
-  int v25; // [sp+Ch] [bp-4h]@2
-  unsigned int v28; // [sp+20h] [bp+10h]@30
+void Render::DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, unsigned __int16 *pPalette, bool present_time_transparency)
+{
+    int v8; // edi@2
+    unsigned int v9; // esi@2
+    unsigned char *v11; // edx@2
+    int v14; // edx@6
+    signed int v15; // ebx@7
+    signed int v17; // edi@10
+    signed int v18; // ebx@13
+    signed int v20; // esi@16
+    unsigned __int16 v24; // si@35
+    int v25; // [sp+Ch] [bp-4h]@2
+    unsigned int v28; // [sp+20h] [bp+10h]@30
 
-  int a2 = x;
-  int a3 = y;
-  uint a6 = uFontHeight;
-  if (!this->uNumSceneBegins)
-    return;
+    int a2 = x;
+    int a3 = y;
+    uint a6 = uFontHeight;
+    if (!this->uNumSceneBegins)
+        return;
 
     v8 = a5;
     v9 = a6;
@@ -6759,136 +6787,76 @@ void Render::DrawTextAlpha( int x, int y, unsigned char* font_pixels, int a5, un
     v25 = (int)font_pixels;
     int clipped_out_x = x;
     int clipped_out_y = y;
-    if ( this->bClip )
+    if (this->bClip)
     {
-      if ( a2 < (signed int)this->uClipX )
-      {
-        v25 = this->uClipX - a2 + (int)font_pixels;
-        //v10 += v12 - a2;
-        v8 = a5 + a2 - this->uClipX;
-        clipped_out_x = uClipX;
-      }
-      if ( a3 < this->uClipY )
-      {
-        v14 = this->uClipY - a3;
-        v25 += a5 * v14;
-        v9 = a6 + a3 - this->uClipY;
-        //v10 += this->uTargetSurfacePitch * v14;
-        clipped_out_y = uClipY;
-      }
-      v15 = this->uClipX;
-      if ( this->uClipX < a2 )
-        v15 = a2;
-      if ( v8 + v15 > (signed int)this->uClipZ )
-      {
-        v17 = this->uClipX;
-        if ( v17 < a2 )
-          v17 = a2;
-        v8 = this->uClipZ - v17;
-      }
-      v18 = this->uClipY;
-      if ( this->uClipY < a3 )
-        v18 = a3;
-      if ( (signed int)(v9 + v18) > (signed int)this->uClipW )
-      {
-        v20 = this->uClipY;
-        if ( this->uClipY < a3 )
-          v20 = a3;
-        v9 = this->uClipW - v20;
-      }
-      v11 = (unsigned char *)v25;
+        if (a2 < (signed int)this->uClipX)
+        {
+            v25 = this->uClipX - a2 + (int)font_pixels;
+            //v10 += v12 - a2;
+            v8 = a5 + a2 - this->uClipX;
+            clipped_out_x = uClipX;
+        }
+        if (a3 < this->uClipY)
+        {
+            v14 = this->uClipY - a3;
+            v25 += a5 * v14;
+            v9 = a6 + a3 - this->uClipY;
+            //v10 += this->uTargetSurfacePitch * v14;
+            clipped_out_y = uClipY;
+        }
+        v15 = this->uClipX;
+        if (this->uClipX < a2)
+            v15 = a2;
+        if (v8 + v15 > (signed int)this->uClipZ)
+        {
+            v17 = this->uClipX;
+            if (v17 < a2)
+                v17 = a2;
+            v8 = this->uClipZ - v17;
+        }
+        v18 = this->uClipY;
+        if (this->uClipY < a3)
+            v18 = a3;
+        if ((signed int)(v9 + v18) >(signed int)this->uClipW)
+        {
+            v20 = this->uClipY;
+            if (this->uClipY < a3)
+                v20 = a3;
+            v9 = this->uClipW - v20;
+        }
+        v11 = (unsigned char *)v25;
     }
 
-    if ( present_time_transparency )
+    if (present_time_transparency)
     {
-      v28 = 0x7FF; // transparent color 16bit render->uTargetGMask | render->uTargetBMask;
-      for (uint dy = 0; dy < v9; ++dy)
-      {
-        for (int dx = 0; dx < v8; ++dx)
+        v28 = 0x7FF; // transparent color 16bit render->uTargetGMask | render->uTargetBMask;
+        for (uint dy = 0; dy < v9; ++dy)
         {
-              if ( *v11 )
-                v24 = pPalette[*v11];
-              else
-                v24 = v28;
-              WritePixel16(clipped_out_x + dx, clipped_out_y + dy, v24);
-              //*v10 = v24;
-              //++v10;
-              ++v11;
-              //--v27;
-
-        }
-          v11 += a5 - v8;
-      }
-      /*if ( (signed int)v9 > 0 )
-      {
-        v23 = a5;
-        v30 = v9;
-        do
-        {
-          if ( v8 > 0 )
-          {
-            v27 = v8;
-            do
+            for (int dx = 0; dx < v8; ++dx)
             {
-              if ( *v11 )
-                v24 = pPalette[*v11];
-              else
-                v24 = v28;
-              *v10 = v24;
-              ++v10;
-              ++v11;
-              --v27;
+                if (*v11)
+                    v24 = pPalette[*v11];
+                else
+                    v24 = v28;
+                WritePixel16(clipped_out_x + dx, clipped_out_y + dy, v24);
+                ++v11;
+
             }
-            while ( v27 );
-          }
-          v11 += v23 - v8;
-          v22 = v30-- == 1;
-          v10 += this->uTargetSurfacePitch - v8;
+            v11 += a5 - v8;
         }
-        while ( !v22 );
-      }*/
     }
     else
     {
-      for (uint dy = 0; dy < v9; ++dy)
-      {
-        for (int dx = 0; dx < v8; ++dx)
+        for (uint dy = 0; dy < v9; ++dy)
         {
-            if ( *v11 )       
-              WritePixel16(clipped_out_x + dx, clipped_out_y + dy, pPalette[*v11]);
-              //*v10 = v24;
-              //++v10;
-              ++v11;
-              //--v27;
-        }
-          v11 += a5 - v8;
-      }
-
-      /*if ( (signed int)v9 > 0 )
-      {
-        v21 = a5;
-        v29 = v9;
-        do
-        {
-          if ( v8 > 0 )
-          {
-            v26 = v8;
-            do
+            for (int dx = 0; dx < v8; ++dx)
             {
-              if ( *v11 )
-                *v10 = pPalette[*v11];
-              ++v10;
-              ++v11;
-              --v26;
+                if (*v11)
+                    WritePixel16(clipped_out_x + dx, clipped_out_y + dy, pPalette[*v11]);
+                ++v11;
             }
-            while ( v26 );
-          }
-          v11 += v21 - v8;
-          v22 = v29-- == 1;
-          v10 += this->uTargetSurfacePitch - v8;
+            v11 += a5 - v8;
         }
-        while ( !v22 );
-      }*/
     }
 }
 
@@ -7673,7 +7641,7 @@ HWLTexture *RenderHWLContainer::LoadTexture(const char *pName, int bMipMaps)
         char* pCompressedData = new char[uCompressedSize];
         fread(pCompressedData, 1, uCompressedSize, pFile);
         uint uDecompressedSize = pTex->uWidth * pTex->uHeight * sizeof(short);
-        zlib::MemUnzip(pTex->pPixels, &uDecompressedSize, pCompressedData, uCompressedSize);
+        zlib::Uncompress(pTex->pPixels, &uDecompressedSize, pCompressedData, uCompressedSize);
         delete[] pCompressedData;
     }
     else
@@ -7777,14 +7745,14 @@ bool RenderHWLContainer::Load(const wchar_t *pFilename)
   pFile = _wfopen(pFilename, L"rb");
   if (!pFile)
   {
-    Log::Warning(L"Failed to open file: %s", pFilename);
+    logger->Warning(L"Failed to open file: %s", pFilename);
     return false;
   }
 
   fread(&uSignature, 1, 4, pFile);
   if (uSignature != 'TD3D')
   {
-    Log::Warning(L"Invalid format: %s", pFilename);
+    logger->Warning(L"Invalid format: %s", pFilename);
     return false;
   }
   
@@ -7910,7 +7878,7 @@ void Render::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1)
     break;
 
     default:
-      Log::Warning(L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
+      logger->Warning(L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
       assert(false);
     break;
   }
@@ -8388,13 +8356,14 @@ void Render::DrawOutdoorSkyD3D()
             VertexRenderList[i].vWorldViewPosition.x = (double)0x2000;//pODMRenderParams->shading_dist_mist 8192
             VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
         }
-        render->DrawOutdoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
+
+		//pSkyPolygon.uNumVertices = 3;
+        render->DrawOutdoorSkyPolygon(&pSkyPolygon);
         VertexRenderList[0].vWorldViewProjY = (double)v10;
         VertexRenderList[1].vWorldViewProjY = VertexRenderList[1].vWorldViewProjY + 30.0;
         VertexRenderList[2].vWorldViewProjY = VertexRenderList[2].vWorldViewProjY + 30.0;
         VertexRenderList[3].vWorldViewProjY = (double)v10;
-        render->DrawOutdoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
-        return;
+        render->DrawOutdoorSkyPolygon(&pSkyPolygon);
     }
 }
 
@@ -8688,7 +8657,7 @@ void Render::DrawDecal(Decal *pDecal, float z_bias)
 
   if (pDecal->uNumVertices < 3)
   {
-    Log::Warning(L"Decal has < 3 vertices");
+    logger->Warning(L"Decal has < 3 vertices");
     return;
   }
 
@@ -8894,19 +8863,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, Render
 		fog_density_mult += distance / (double)pODMRenderParams->shading_dist_shade * 32.0;
 
 	v6 = v11 + floorf(pOutdoor->fFogDensity * fog_density_mult + 0.5f);
-	/*if ( a4 )
-	{
-	//a3b = pOutdoor->fFogDensity * 216.0;
-	//v14 = a3b + 6.7553994e15;
-	//a4a = floorf(a3b + 0.5f);//LODWORD(v14);
-	}
-	else
-	{
-	//a3a = (distance / (double)pODMRenderParams->shading_dist_shade * 32.0 + 216.0) * pOutdoor->fFogDensity;
-	//v13 = a3a + 6.7553994e15;
-	//a4a = floorf(a3a + 0.5f);//LODWORD(v13);
-	}
-	v6 = a4a + v11;*/
+
 	if (a5)
 		v6 = 8 * _43F55F_get_billboard_light_level(a5, v6 >> 3);
 	if (v6 > 216)
@@ -8932,7 +8889,6 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, Render
 		return (int)floorf(a3c * 153.0 + 0.5f)/*LODWORD(v19)*/ | ((v18 | (a5a << 8)) << 8);
 	}
 }
-// 6BE3C4: using guessed type char bUnderwater;
 
 //----- (0043F55F) --------------------------------------------------------
 int _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseLightLevel)
@@ -10675,7 +10631,7 @@ bool DrawSkyD3D_Skybox()
 			{
 			__debugbreak();
 			// -y
-			//Log::Warning(L"(%03u, %03u): -y", x, y);
+			//logger->Warning(L"(%03u, %03u): -y", x, y);
 			}*/
 		}
 		else if (dir_z >= 0)

@@ -475,7 +475,7 @@ int Vis::get_object_zbuf_val(Vis_ObjectInfo *info)
       return info->sZValue;
 
     default:
-        Log::Warning(L"Undefined type requested for: CVis::get_object_zbuf_val()");
+        logger->Warning(L"Undefined type requested for: CVis::get_object_zbuf_val()");
       return -1;
   }
 }
@@ -911,7 +911,7 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type)
     break;
 
     default:
-        Log::Warning(L"Unknown pointer creation flag passed to ::create_object_pointers()");
+        logger->Warning(L"Unknown pointer creation flag passed to ::create_object_pointers()");
   }
 }
 
@@ -1210,7 +1210,7 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY, Vis_SelectionFil
     PickOutdoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter, false);
   else
   {
-    Log::Warning(L"Picking mouse in undefined level"); // picking in main menu is default (buggy) game behaviour. should've returned false in Game::PickMouse
+    logger->Warning(L"Picking mouse in undefined level"); // picking in main menu is default (buggy) game behaviour. should've returned false in Game::PickMouse
     return false;
   }
   default_list.create_object_pointers(Vis_SelectionList::All);
@@ -1280,7 +1280,7 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace, V
           return true;
         if (filter->object_id != OBJECT_Decoration)
         {
-            Log::Warning(L"Unsupported \"exclusion if no event\" type in CVis::is_part_of_selection");
+            logger->Warning(L"Unsupported \"exclusion if no event\" type in CVis::is_part_of_selection");
           return true;
         }
         if (pLevelDecorations[object_idx].uCog || pLevelDecorations[object_idx].uEventID)
@@ -1291,7 +1291,7 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace, V
       {
         if (object_type != OBJECT_Actor)
         {
-            Log::Warning(L"Default case reached in VIS");
+            logger->Warning(L"Default case reached in VIS");
           return true;
         }
 

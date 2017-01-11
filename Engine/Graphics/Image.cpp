@@ -203,7 +203,7 @@ void *Texture_MM7::UnzipPalette()
     pSource = this;
     v1 = this;
     v2 = malloc(this->uDecompressedSize);
-    zlib::MemUnzip(v2, (unsigned int *)&pSource, v1->paletted_pixels, v1->uTextureSize);
+    zlib::Uncompress(v2, (unsigned int *)&pSource, v1->paletted_pixels, v1->uTextureSize);
     return v2;
 }
 

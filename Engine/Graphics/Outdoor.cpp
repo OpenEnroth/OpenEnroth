@@ -269,7 +269,7 @@ bool OutdoorLocation::Initialize(const String &filename, int days_played, int re
 
         if (!this->Load(filename, days_played, respawn_interval_days, thisa))
         {
-            Log::Warning(L"Couldn't Load Map!");
+            logger->Warning(L"Couldn't Load Map!");
             CreateDebugLocation();
         }
 
@@ -1093,7 +1093,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i')
     {
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
     }
 
     uchar* pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
@@ -1105,7 +1105,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         fread(pComressedSrc, header.uCompressedSize, 1, pFile);
 
         uint actualDecompressedSize = header.uDecompressedSize;
-        zlib::MemUnzip(pSrc, &actualDecompressedSize, pComressedSrc, header.uCompressedSize);
+        zlib::Uncompress(pSrc, &actualDecompressedSize, pComressedSrc, header.uCompressedSize);
         free(pComressedSrc);
     }
     else
@@ -1246,7 +1246,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     memcpy(&uNumLevelDecorations, pSrc, 4);
     //uSourceLen = (char *)uSourceLen + 4;
     if (uNumLevelDecorations > 3000)
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
 
     assert(sizeof(LevelDecoration) == 32);
     //pFilename = (char *)(32 * uNumLevelDecorations);
@@ -1324,7 +1324,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i')
     {
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
         Str2 = (char *)1;
     }
 
@@ -1341,11 +1341,11 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
             fread(compressedMem, header.uCompressedSize, 1, pFile);
 
             uint actualDecompressedSize = header.uDecompressedSize;
-            zlib::MemUnzip(pSrc, &actualDecompressedSize, compressedMem, header.uCompressedSize);
+            zlib::Uncompress(pSrc, &actualDecompressedSize, compressedMem, header.uCompressedSize);
             free(compressedMem);
         }
         else
-            Log::Warning(L"Can't load file!");
+            logger->Warning(L"Can't load file!");
 
         assert(sizeof(DDM_DLV_Header) == 0x28);
         memcpy(&ddm, pSrc, sizeof(DDM_DLV_Header));
@@ -1407,11 +1407,11 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
             fread(compressedMem, header.uCompressedSize, 1, pFile);
 
             uint actualDecompressedSize = header.uDecompressedSize;
-            zlib::MemUnzip(pSrcMem, &actualDecompressedSize, compressedMem, header.uCompressedSize);
+            zlib::Uncompress(pSrcMem, &actualDecompressedSize, compressedMem, header.uCompressedSize);
             free(compressedMem);
         }
         else
-            Log::Warning(L"Can't load file!");
+            logger->Warning(L"Can't load file!");
 
         pSrc = pSrcMem + 40;
     }
@@ -1464,7 +1464,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
 
     memcpy(&uNumActors, pSrc, 4);
     if (uNumActors > 500)
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
 
     pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
 
@@ -1491,7 +1491,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     memcpy(&uNumChests, pSrc, 4);
     //v95 = (char *)v94 + 4;
     if (uNumChests > 20)
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
 
     pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
 
@@ -2450,7 +2450,7 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_z, Vec3_int_ *out)
     side1_dx = 0.0;//(double)(grid_pos_x1 - grid_pos_x1);
     side1_dz = (double)(grid_pos_z1 - grid_pos_z2);  //       z1 - z2 yes
     side1_dy = (double)(x1z1_y - x1z2_y);
-    //Log::Warning(L"%S %S %u\n", __FILE__, __FUNCTION__, __LINE__);
+    //logger->Warning(L"%S %S %u\n", __FILE__, __FUNCTION__, __LINE__);
     /*       |\
        side1 |  \
              |____\
@@ -4226,7 +4226,7 @@ unsigned int GetLevelFogColor()
 		{
           if (for_refactoring)
            {
-              Log::Warning(L"decompilation can be inaccurate, please send savegame to Nomad");
+              logger->Warning(L"decompilation can be inaccurate, please send savegame to Nomad");
               __debugbreak();
            }
 			v2 = -(pWeather->bNight != 1);

@@ -683,7 +683,7 @@ bool SpriteFrameTable::FromFileTxt(const char *Args)
   }
   else
   {
-    Log::Warning(L"CSpriteFrameTable::load - Out of Memory!");
+    logger->Warning(L"CSpriteFrameTable::load - Out of Memory!");
     fclose(File);
     result = 0;
   }
