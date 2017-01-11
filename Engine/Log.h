@@ -1,11 +1,16 @@
 #pragma once
 
-
-#define LOG_DECOMPILATION_WARNING()  Log::Warning(L"%S [%S:%u]", __FUNCTION__, __FILE__, __LINE__);
-
 class Log
 {
-public:
-    static void Initialize();
-    static void Warning(const wchar_t *pFormat, ...);
+	public:
+		inline Log() : initialized(false) {}
+
+		bool Initialize();
+		void Info(const wchar_t *pFormat, ...);
+		void Warning(const wchar_t *pFormat, ...);
+
+	protected:
+		bool initialized;
 };
+
+extern Log *logger;

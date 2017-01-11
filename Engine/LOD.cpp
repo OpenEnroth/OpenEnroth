@@ -148,7 +148,7 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSpriteHeader, const char *pC
       pSpriteHeader->pDecompressedBytes = malloc(pSpriteHeader->uDecompressedSize);
       DstBufa = malloc(Sizea);
       fread(DstBufa, 1, Sizea, File);
-      zlib::MemUnzip(pSpriteHeader->pDecompressedBytes, (unsigned int *)&pSpriteHeader->uDecompressedSize, DstBufa, pSpriteHeader->uSpriteSize);
+      zlib::Uncompress(pSpriteHeader->pDecompressedBytes, (unsigned int *)&pSpriteHeader->uDecompressedSize, DstBufa, pSpriteHeader->uSpriteSize);
       pSpriteHeader->uSpriteSize = pSpriteHeader->uDecompressedSize;
       free(DstBufa);
     }
@@ -1290,14 +1290,14 @@ void LOD::File::AllocSubIndicesAndIO(unsigned int uNumSubIndices, unsigned int u
 {
     if (pSubIndices)
     {
-        Log::Warning(L"Attempt to reset a LOD subindex!");
+        logger->Warning(L"Attempt to reset a LOD subindex!");
         free(pSubIndices);
         pSubIndices = nullptr;
     }
     pSubIndices = (LOD::Directory *)malloc(32 * uNumSubIndices);
     if (pIOBuffer)
     {
-        Log::Warning(L"Attempt to reset a LOD IObuffer!");
+        logger->Warning(L"Attempt to reset a LOD IObuffer!");
         free(pIOBuffer);
         pIOBuffer = nullptr;
         uIOBufferSize = 0;
@@ -1588,7 +1588,7 @@ void *LOD::File::LoadRaw(const char *pContainer, int a3)
       v7 = malloc(DstBuf.uDecompressedSize+1);
     v8 = malloc(DstBuf.uTextureSize+1);
     fread(v8, 1, DstBuf.uTextureSize, File);
-    zlib::MemUnzip(v7, &DstBuf.uDecompressedSize, v8, DstBuf.uTextureSize);
+    zlib::Uncompress(v7, &DstBuf.uDecompressedSize, v8, DstBuf.uTextureSize);
     DstBuf.uTextureSize = DstBuf.uDecompressedSize;
     free(v8);
   }
@@ -1631,7 +1631,7 @@ int LODFile_IconsBitmaps::PlacementLoadTexture(Texture_MM7 *pDst, const char *pC
     pDst->paletted_pixels = (unsigned __int8 *)malloc(pDst->uDecompressedSize);
     v9 = malloc(pDst->uTextureSize);
     fread((void *)v9, 1, (size_t)pDst->uTextureSize, File);
-    zlib::MemUnzip(pDst->paletted_pixels, &pDst->uDecompressedSize, v9, pDst->uTextureSize);
+    zlib::Uncompress(pDst->paletted_pixels, &pDst->uDecompressedSize, v9, pDst->uTextureSize);
     pDst->uTextureSize = pDst->uDecompressedSize;
     free(v9);
   }
@@ -1845,7 +1845,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst, const char *pContaine
       Sourcea = malloc(pDst->uDecompressedSize);
       DstBufa = malloc(pDst->uTextureSize);
       fread(DstBufa, 1, pDst->uTextureSize, File);
-      zlib::MemUnzip(Sourcea, &v6->uDecompressedSize, DstBufa, v6->uTextureSize);
+      zlib::Uncompress(Sourcea, &v6->uDecompressedSize, DstBufa, v6->uTextureSize);
       v6->uTextureSize = pDst->uDecompressedSize;
       free(DstBufa);
       memcpy(v6->paletted_pixels, Sourcea, pDst->uDecompressedSize);
@@ -1935,7 +1935,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
         pContainer = (const char *)malloc(v8->uDecompressedSize);
         v19 = malloc(v8->uTextureSize);
         fread(v19, 1, (size_t)v8->uTextureSize, pFile);
-        zlib::MemUnzip((void *)pContainer, &v8->uDecompressedSize, v19, v8->uTextureSize);
+        zlib::Uncompress((void *)pContainer, &v8->uDecompressedSize, v19, v8->uTextureSize);
         v8->uTextureSize = v8->uDecompressedSize;
         free(v19);
         if ( /*bUseLoResSprites*/false && v8->pBits & 2)
@@ -2134,7 +2134,7 @@ Texture_MM7 * LODFile_IconsBitmaps::GetTexture( int idx )
   Assert(idx < MAX_LOD_TEXTURES, "Texture_MM7 index out of bounds (%u)", idx);
   if (idx == -1) 
   {
-    //Log::Warning(L"Texture_MM7 id = %d missing", idx);
+    //logger->Warning(L"Texture_MM7 id = %d missing", idx);
     return pTextures + LoadDummyTexture();
   }
   return pTextures + idx;

@@ -59,7 +59,7 @@ NPCData *GetNPCData(signed int npcid)
         {
             if (npcid >= 501)
             {
-                Log::Warning(L"NPC id exceeds MAX_DATA!");
+                logger->Warning(L"NPC id exceeds MAX_DATA!");
             }
             return &pNPCStats->pNewNPCData[v1];// - 1];
         }
@@ -126,7 +126,7 @@ struct NPCData * GetNewNPCData(signed int npcid, int* npc_indx)
         {
             if (npcid >= 501)
             {
-                Log::Warning(L"NPC id exceeds MAX_DATA!");
+                logger->Warning(L"NPC id exceeds MAX_DATA!");
             }
             *v3 = npcid;
             return &pNPCStats->pNewNPCData[npcid];

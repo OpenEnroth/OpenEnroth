@@ -1,26 +1,59 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include <time.h>
 
 #include "Engine/Log.h"
 
 #include "Platform/Api.h"
 
-void Log::Initialize()
+Log *logger = nullptr;
+
+
+bool Log::Initialize()
 {
-    OS_OpenConsole();
+    return this->initialized = OS_OpenConsole();
 }
 
+void Log::Info(const wchar_t *pFormat, ...)
+{
+	if (this->initialized)
+	{
+		va_list args;
+		wchar_t pMsg[8192];
+
+		va_start(args, pFormat);
+		vswprintf_s(pMsg, 8192, pFormat, args);
+		va_end(args);
+
+		time_t t = time(NULL);
+		struct tm tm = *localtime(&t);
+		printf(
+			"[%04d/%02d/%02d %02d:%02d:%02d] %S\n",
+			tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec,
+			pMsg
+		);
+	}
+}
 
 void Log::Warning(const wchar_t *pFormat, ...)
 {
-    va_list args;
-    wchar_t pMsg[8192];
+	if (this->initialized)
+	{
+		va_list args;
+		wchar_t pMsg[8192];
 
-    va_start(args, pFormat);
-    vswprintf_s(pMsg, 8192, pFormat, args);
-    va_end(args);
+		va_start(args, pFormat);
+		vswprintf_s(pMsg, 8192, pFormat, args);
+		va_end(args);
 
-    printf("%S\n", pMsg);
+		time_t t = time(NULL);
+		struct tm tm = *localtime(&t);
+		printf(
+			"[%04d/%02d/%02d %02d:%02d:%02d] %S\n",
+			tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec,
+			pMsg
+		);
+	}
 }
 
 //----- (004BE386) --------------------------------------------------------

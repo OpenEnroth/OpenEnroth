@@ -3438,7 +3438,7 @@ void Actor::InitializeActors()
   if (pParty->IsPartyEvil())
     evil = true;
 
-  Log::Warning(L"%S %S %u", __FILE__, __FUNCTION__, __LINE__); // ai_near_actors_targets_pid[i] for AI_Stand seems always 0;  original code behaviour is identical
+  logger->Warning(L"%S %S %u", __FILE__, __FUNCTION__, __LINE__); // ai_near_actors_targets_pid[i] for AI_Stand seems always 0;  original code behaviour is identical
   for (uint i = 0; i < uNumActors; ++i)
   {
     Actor* actor = &pActors[i];
@@ -5412,7 +5412,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     pTexture = Str2;
     if ( (signed __int16)v50 == -1 )
     {
-        Log::Warning(L"Can't create random monster: '%S'! See MapStats.txt and Monsters.txt!", pTexture);
+        logger->Warning(L"Can't create random monster: '%S'! See MapStats.txt and Monsters.txt!", pTexture);
         Engine_DeinitializeAndTerminate(0);
     }
     v27 = &pMonsterList->pMonsters[(signed __int16)v50];

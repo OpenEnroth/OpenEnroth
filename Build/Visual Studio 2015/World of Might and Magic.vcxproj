@@ -114,6 +114,7 @@
     <ClCompile Include="..\..\Engine\Graphics\ParticleEngine.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Render.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\RenderD3D11.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\RenderOpenGL.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Sprites.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\stru10.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\stru9.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="..\..\Engine\Graphics\Polygon.h" />
     <ClInclude Include="..\..\Engine\Graphics\Render.h" />
     <ClInclude Include="..\..\Engine\Graphics\RenderD3D11.h" />
+    <ClInclude Include="..\..\Engine\Graphics\RenderOpenGL.h" />
     <ClInclude Include="..\..\Engine\Graphics\RenderStruct.h" />
     <ClInclude Include="..\..\Engine\Graphics\Sprites.h" />
     <ClInclude Include="..\..\Engine\Graphics\stru10.h" />

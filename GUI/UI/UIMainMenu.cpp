@@ -303,7 +303,7 @@ void fill_pixels_fast(unsigned int a1, unsigned __int16 *pPixels, unsigned int u
     unsigned __int16 *v5; // edi@3
     unsigned int i; // ecx@3
 
-    Log::Warning(L"Nomad: sub operates on 16 bit pixels, we have 32 bits.");
+    logger->Warning(L"Nomad: sub operates on 16 bit pixels, we have 32 bits.");
 
     v3 = pPixels;
     v4 = a1 | (a1 << 16);

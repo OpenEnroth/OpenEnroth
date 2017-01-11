@@ -13,4 +13,5 @@ class LuaVM
     
     const char *GetScriptFileLocation(const char *script_name);
 };
+
 extern LuaVM *lua;

@@ -896,7 +896,7 @@ int bShowDamage; // idb
 unsigned int bAlwaysRun;
 unsigned int bFlipOnExit;
 unsigned int uTurnSpeed;
-float flt_6BE3A0 = 0.55000001f;
+float _6BE3A0_fov = 0.55000001f;
 float flt_6BE3A4_debug_recmod1;
 float flt_6BE3A8_debug_recmod2;
 float flt_6BE3AC_debug_recmod1_x_1_6;

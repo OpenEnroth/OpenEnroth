@@ -15,11 +15,11 @@ LuaVM *lua = nullptr;
 void LuaVM::Initialize()
 {
   if (L)
-    Log::Warning(L"Overwriting previous Lua state");
+    logger->Warning(L"Overwriting previous Lua state");
 
   L = luaL_newstate();
   if (!L)
-    Log::Warning(L"Error creating Lua context.\n");
+    logger->Warning(L"Error creating Lua context.\n");
 
   // open default lua libs
   luaL_openlibs(L);
@@ -28,14 +28,14 @@ void LuaVM::Initialize()
   luaopen_UIControl(L);
 
   //if ( luaL_dofile(L,GetScriptFileLocation("script.lua")))
-  //    Log::Warning(L"Error opening script.lua\n");
+  //    logger->Warning(L"Error opening script.lua\n");
 }
 
 bool LuaVM::DoFile(const char *filename)
 {
     if (luaL_dofile(L, GetScriptFileLocation(filename)))
     {
-        Log::Warning(L"Error opening script %s", filename);
+        logger->Warning(L"Error opening script %s", filename);
         return false;
     }
     return true;

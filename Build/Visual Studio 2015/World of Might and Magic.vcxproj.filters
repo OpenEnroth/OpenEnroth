@@ -643,6 +643,9 @@
     <ClCompile Include="..\..\Platform\Win\CdCheck.cpp">
       <Filter>Platform\Win</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\RenderOpenGL.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\libavcodec\avcodec.h">
@@ -1447,6 +1450,9 @@
       <Filter>Platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Polygon.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\RenderOpenGL.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

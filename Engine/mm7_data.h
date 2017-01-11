@@ -345,7 +345,7 @@ extern int bShowDamage; // idb
 extern unsigned int bAlwaysRun;
 extern unsigned int bFlipOnExit;
 extern unsigned int uTurnSpeed;
-extern float flt_6BE3A0;
+extern float _6BE3A0_fov;
 extern float flt_6BE3A4_debug_recmod1;
 extern float flt_6BE3A8_debug_recmod2;
 extern float flt_6BE3AC_debug_recmod1_x_1_6;

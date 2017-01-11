@@ -266,7 +266,7 @@ void RenderOpenGL::RenderTerrainD3D()
 	gluLookAt(
 		camera_x, camera_y, camera_z,
 
-		camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationY / 2048.0),
+		camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationY / 2048.0)-3,
 		camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationX / 2048.0),
 		camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
 

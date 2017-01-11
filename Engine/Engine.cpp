@@ -156,21 +156,21 @@ const wchar_t *MENU_STATE_to_string(MENU_STATE m)
 {
     switch (m)
     {
-    case -1:                return L"-1";
-    case MENU_MAIN:         return L"MENU_MAIN";
-    case MENU_NEWGAME:      return L"MENU_NEWGAME";
-    case MENU_CREDITS:      return L"MENU_CREDITS";
-    case MENU_SAVELOAD:     return L"MENU_SAVELOAD";
-    case MENU_EXIT_GAME:    return L"MENU_EXIT_GAME";
-    case MENU_5:            return L"MENU_5";
-    case MENU_CREATEPARTY:  return L"MENU_CREATEPARTY";
-    case MENU_NAMEPANELESC: return L"MENU_NAMEPANELESC";
-    case MENU_CREDITSPROC:  return L"MENU_CREDITSPROC";
-    case MENU_LoadingProcInMainMenu: return L"MENU_LoadingProcInMainMenu";
-    case MENU_DebugBLVLevel:         return L"MENU_DebugBLVLevel";
-    case MENU_CREDITSCLOSE: return L"MENU_CREDITSCLOSE";
-    case MENU_MMT_MAIN_MENU: return L"MENU_MMT_MAIN_MENU";
-    default:                return L"unk";
+		case -1:							return L"-1";
+		case MENU_MAIN:						return L"MENU_MAIN";
+		case MENU_NEWGAME:					return L"MENU_NEWGAME";
+		case MENU_CREDITS:					return L"MENU_CREDITS";
+		case MENU_SAVELOAD:					return L"MENU_SAVELOAD";
+		case MENU_EXIT_GAME:				return L"MENU_EXIT_GAME";
+		case MENU_5:						return L"MENU_5";
+		case MENU_CREATEPARTY:				return L"MENU_CREATEPARTY";
+		case MENU_NAMEPANELESC:				return L"MENU_NAMEPANELESC";
+		case MENU_CREDITSPROC:				return L"MENU_CREDITSPROC";
+		case MENU_LoadingProcInMainMenu:	return L"MENU_LoadingProcInMainMenu";
+		case MENU_DebugBLVLevel:		    return L"MENU_DebugBLVLevel";
+		case MENU_CREDITSCLOSE:				return L"MENU_CREDITSCLOSE";
+		case MENU_MMT_MAIN_MENU:			return L"MENU_MMT_MAIN_MENU";
+		default:							return L"invalid";
     };
 };
 
@@ -178,7 +178,7 @@ const wchar_t *MENU_STATE_to_string(MENU_STATE m)
 void SetCurrentMenuID(MENU_STATE uMenu)
 {
     sCurrentMenuID = uMenu;
-    Log::Warning(L"CurrentMenu = %s \n", MENU_STATE_to_string(uMenu));
+    logger->Warning(L"CurrentMenu = %s \n", MENU_STATE_to_string(uMenu));
 }
 
 //----- (00466CA0) --------------------------------------------------------
@@ -380,9 +380,9 @@ void Engine::Draw()
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
             int sector_id = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-            pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255), StringPrintf("Party Sector ID:        %u/%u\n", sector_id, pIndoor->uNumSectors), 0, 0, Color16(255, 255, 255));
+            pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255), StringPrintf("Party Sector ID:        %u/%u\n", sector_id, pIndoor->uNumSectors), 0, 0, 0);
         }
-        pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset + 16, Color16(255, 255, 255), StringPrintf("Party Position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, Color16(255, 255, 255));
+        pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset + 16, Color16(255, 255, 255), StringPrintf("Party Position:         % d % d % d", pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z), 0, 0, 0);
 
         String floor_level_str;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
@@ -398,7 +398,7 @@ void Engine::Draw()
             int floor_level = ODM_GetFloorLevel(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z, 0, &on_water, &_a6, false);
             floor_level_str = StringPrintf("ODM_GetFloorLevel: %d   on_water: %s    a6 = %d\n", floor_level, on_water ? "true" : "false", _a6);
         }
-        pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset + 16 + 16, Color16(255, 255, 255), floor_level_str, 0, 0, Color16(255, 255, 255));
+        pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset + 16 + 16, Color16(255, 255, 255), floor_level_str, 0, 0, 0);
     }
 
     GUI_UpdateWindows();
@@ -786,7 +786,7 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMou
 
     if (!pVisInstance)
     {
-        Log::Warning(L"The 'Vis' object pointer has not been instatiated, but CGame::Pick() is trying to call through it.");
+        logger->Warning(L"The 'Vis' object pointer has not been instatiated, but CGame::Pick() is trying to call through it.");
         return false;
     }
 
@@ -848,7 +848,7 @@ void Engine::OutlineSelection()
         {
             case VisObjectType_Sprite:
             {
-                Log::Warning(L"Sprite outline currently unsupported");
+                logger->Warning(L"Sprite outline currently unsupported");
                 return;
             }
 
@@ -1133,7 +1133,7 @@ void IntegrityTest()
 void FinalInitialization()
 {
     pViewport->SetScreen(viewparams->uSomeX, viewparams->uSomeY, viewparams->uSomeZ, viewparams->uSomeW);
-    pViewport->SetFOV(flt_6BE3A0 * 65536.0f);
+    pViewport->SetFOV(_6BE3A0_fov * 65536.0f);
 
     //pIndoorCamera = new IndoorCamera;
     //pIndoorCamera->Initialize(65, viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X + 1,
@@ -1190,10 +1190,10 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
         bCanLoadFromCD = false;
     if (bCanLoadFromCD)
     {
-        Log::Warning(L"Checking for CD...");
+        logger->Info(L"Checking for CD...");
         if (!OS_FindMM7CD(&cMM7GameCDDriveLetter))
             return false;
-        Log::Warning(L"...done.");
+        logger->Info(L"...done.");
     }
 
 
@@ -1206,7 +1206,7 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
     render = IRender::Create();
     if (!render)
     {
-        Log::Warning(L"Render creation failed");
+        logger->Warning(L"Render creation failed");
         return false;
     }
     else
@@ -1216,7 +1216,7 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
 
         if (!render->Initialize(window/*, bColoredLights, uLevelOfDetail, bTinting*/))
         {
-            Log::Warning(L"Render failed to initialize");
+            logger->Warning(L"Render failed to initialize");
             return false;
         }
     }
@@ -1392,12 +1392,12 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
         break;
 
     case 1:             // 16x
-        Log::Warning(L"x16 Turn Speed"); // really shouldn't use this mode
+        logger->Warning(L"x16 Turn Speed"); // really shouldn't use this mode
         uTurnSpeed = 128;
         break;
 
     case 2:             // 32x
-        Log::Warning(L"x32 Turn Speed"); // really shouldn't use this mode
+        logger->Warning(L"x32 Turn Speed"); // really shouldn't use this mode
         uTurnSpeed = 64;
         break;
 
@@ -1648,19 +1648,59 @@ bool GameLoop()
 }
 
 //----- (00462C94) --------------------------------------------------------
-bool MM_Main(const wchar_t *pCmdLine, const char *mm7_path)
+bool MM_Main(const wchar_t *pCmdLine)
 {
-    IntegrityTest();
+	#ifndef NDEBUG
+	{
+		//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
+	}
+	#endif
 
-    lua = new LuaVM;
-    lua->Initialize();
+	logger = new Log();
+	logger->Initialize();
+	logger->Info(L"World of Might and Magic build %S %S", __DATE__, __TIME__);
+
+	bool mm7_installation_found = false;
+	char mm7_path[2048];
+
+	// standard 1.0 installation
+	if (!mm7_installation_found)
+	{
+		mm7_installation_found = OS_GetAppString(
+			"HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
+			mm7_path, sizeof(mm7_path)
+		);
+
+		if (mm7_installation_found)
+		{
+			logger->Info(L"Standard MM7 installation found");
+		}
+	}
+
+	// GoG version
+	if (!mm7_installation_found)
+	{
+		mm7_installation_found = OS_GetAppString(
+			"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
+			mm7_path, sizeof(mm7_path)
+		);
+
+		if (mm7_installation_found)
+		{
+			logger->Info(L"GoG MM7 installation found");
+		}
+	}
+
+
+
+    IntegrityTest();
 
     if (pCmdLine && *pCmdLine)
         ParseCommandLine(pCmdLine);
 
     if (!MM7_Initialize(640, 480, mm7_path))
     {
-        Log::Warning(L"MM init: failed");
+        logger->Warning(L"MM7_Initialize: failed");
         pEngine->Deinitialize();
         return false;
     }
@@ -1673,7 +1713,7 @@ bool MM_Main(const wchar_t *pCmdLine, const char *mm7_path)
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
-    Log::Warning(L"MM: entering main loop");
+    //logger->Warning(L"MM: entering main loop");
     while (1)
     {
         MainMenu_Loop();
@@ -1698,7 +1738,6 @@ void MM6_Initialize()
     size_t v3; // ebx@32
     size_t v4; // edi@36
     char pDefaultGroundTexture[16]; // [sp+FCh] [bp-8Ch]@32
-    unsigned int v9; // [sp+184h] [bp-4h]@28
 
     //_getcwd(v5, 120);
     //sprintfex(pIniFilename, "%s\\mm6.ini", v5);
@@ -1734,18 +1773,6 @@ void MM6_Initialize()
     sprintf(pStartingMapName, "%S", pStartingMapNameW);
     */
     sprintf(pStartingMapName, "%s", "out01.odm");
-
-    v9 = 0;
-    if (strlen(pStartingMapName))
-    {
-        do
-        {
-            if (pStartingMapName[v9] == ' ')
-                pStartingMapName[v9] = 0;
-            ++v9;
-            v2 = strlen(pStartingMapName);
-        } while (v9 < v2);
-    }
 
     pODMRenderParams = new ODMRenderParams;
     pODMRenderParams->outdoor_no_mist = 0;
@@ -2994,7 +3021,7 @@ void LoadLevel_InitializeLevelStr()
     int prev_string_offset;
 
     if (sizeof(pLevelStrOffsets) != 2000)
-        Log::Warning(L"pLevelStrOffsets: deserialization warning");
+        logger->Warning(L"pLevelStrOffsets: deserialization warning");
     memset(pLevelStrOffsets.data(), 0, 2000);
 
     max_string_length = 0;

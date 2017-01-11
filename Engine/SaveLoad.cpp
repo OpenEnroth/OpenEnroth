@@ -116,7 +116,7 @@ void LoadGame(unsigned int uSlot)
     if (!pSavegameUsedSlots[uSlot])
     {
         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-        Log::Warning(L"LoadGame: slot %u is empty", uSlot);
+		logger->Warning(L"LoadGame: slot %u is empty", uSlot);
         return;
     }
 
@@ -166,7 +166,7 @@ void LoadGame(unsigned int uSlot)
     FILE *file = pNew_LOD->FindContainer("header.bin", 1);
     if (!file)
     {
-        Log::Warning(
+        logger->Warning(
             L"%S",
             localization->FormatString(612, 100).c_str()
         ); // Savegame damaged! Code=%d
@@ -177,7 +177,7 @@ void LoadGame(unsigned int uSlot)
         file = pNew_LOD->FindContainer("party.bin", 1);
         if (!file)
         {
-            Log::Warning(
+			logger->Warning(
                 L"%S",
                 localization->FormatString(612, 101).c_str()
             ); // Savegame damaged! Code=%d
@@ -195,7 +195,7 @@ void LoadGame(unsigned int uSlot)
         file = pNew_LOD->FindContainer("clock.bin", 1);
         if (!file)
         {
-            Log::Warning(
+            logger->Warning(
                 L"%S",
                 localization->FormatString(612, 102).c_str()
             ); // Savegame damaged! Code=%d
@@ -213,7 +213,7 @@ void LoadGame(unsigned int uSlot)
         file = pNew_LOD->FindContainer("overlay.bin", 1);
         if (!file)
         {
-            Log::Warning(
+            logger->Warning(
                 L"%S",
                 localization->FormatString(612, 103).c_str()
             ); // Savegame damaged! Code=%d
@@ -231,7 +231,7 @@ void LoadGame(unsigned int uSlot)
         file = pNew_LOD->FindContainer("npcdata.bin", 0);
         if (!file)
         {
-            Log::Warning(
+            logger->Warning(
                 L"%S",
                 localization->FormatString(612, 104).c_str()
             ); // Savegame damaged! Code=%d
@@ -251,13 +251,13 @@ void LoadGame(unsigned int uSlot)
     file = pNew_LOD->FindContainer("npcgroup.bin", 0);
     if (!file)
     {
-        Log::Warning(
+        logger->Warning(
             L"%S",
             localization->FormatString(612, 105).c_str()
         ); // Savegame damaged! Code=%d
     }
     if (sizeof(pNPCStats->pGroups_copy) != 0x66)
-        Log::Warning(L"NPCStats: deserialization warning");
+        logger->Warning(L"NPCStats: deserialization warning");
     fread(pNPCStats->pGroups_copy, sizeof(pNPCStats->pGroups_copy), 1, file);
 
     uActiveCharacter = 0;
@@ -396,7 +396,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     if (pNew_LOD->Write(&pLodDirectory, uncompressed_buff, 0))
     {
         auto error_message = localization->FormatString(612, 200); // Savegame damaged! Code=%d
-        Log::Warning(L"%S", error_message.c_str());
+        logger->Warning(L"%S", error_message.c_str());
     }
 
     Assert(sizeof(SavegameHeader) == 100);
@@ -410,7 +410,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     if (pNew_LOD->Write(&pLodDirectory, &save_header, 0))
     {
         auto error_message = localization->FormatString(612, 201);
-        Log::Warning(L"%S", error_message.c_str());
+        logger->Warning(L"%S", error_message.c_str());
     }
 
 
@@ -423,7 +423,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         if (pNew_LOD->Write(&pLodDirectory, &serialization, 0))
         {
             auto error_message = localization->FormatString(612, 202);
-            Log::Warning(L"%S", error_message.c_str());
+            logger->Warning(L"%S", error_message.c_str());
         }
     }
 
@@ -436,7 +436,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         if (pNew_LOD->Write(&pLodDirectory, &serialization, 0))
         {
             auto error_message = localization->FormatString(612, 203);
-            Log::Warning(L"%S", error_message.c_str());
+            logger->Warning(L"%S", error_message.c_str());
         }
     }
 
@@ -449,7 +449,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         if (pNew_LOD->Write(&pLodDirectory, &serialization, 0))
         {
             auto error_message = localization->FormatString(612, 204);
-            Log::Warning(L"%S", error_message.c_str());
+            logger->Warning(L"%S", error_message.c_str());
         }
     }
 
@@ -463,7 +463,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         if (pNew_LOD->Write(&pLodDirectory, serialization, 0))
         {
             auto error_message = localization->FormatString(612, 205);
-            Log::Warning(L"%S", error_message.c_str());
+            logger->Warning(L"%S", error_message.c_str());
         }
     }
 
@@ -472,7 +472,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     if (pNew_LOD->Write(&pLodDirectory, pNPCStats->pGroups_copy, 0))
     {
         auto error_message = localization->FormatString(612, 206);
-        Log::Warning(L"%S", error_message.c_str());
+        logger->Warning(L"%S", error_message.c_str());
     }
 
     for (int i = 1; i <= 4; ++i) // 4 - players
@@ -496,7 +496,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
                 if (pNew_LOD->Write(&pLodDirectory, uncompressed_buff, 0))
                 {
                     auto error_message = localization->FormatString(612, 207);
-                    Log::Warning(L"%S", error_message.c_str());
+                    logger->Warning(L"%S", error_message.c_str());
                 }
             }
         }
@@ -606,7 +606,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
 
         Size = (int)data_write_pos - (int)uncompressed_buff;
         compressed_block_size = 999984;
-        res = zlib::MemZip((char *)compressed_buf + 16, (unsigned int *)&compressed_block_size, uncompressed_buff, Size);
+        res = zlib::Compress(compressed_buf + 16, &compressed_block_size, uncompressed_buff, Size);
         if (res || (signed int)compressed_block_size > (signed int)Size)
         {
             memcpy((void *)(compressed_buf + 16), uncompressed_buff, Size);
@@ -621,7 +621,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         if (pNew_LOD->Write(&pLodDirectory, (const void *)compressed_buf, 0))
         {
             auto error_message = localization->FormatString(612, 208);
-            Log::Warning(L"%S", error_message.c_str());
+            logger->Warning(L"%S", error_message.c_str());
         }
         free((void *)compressed_buf);
     }
@@ -630,7 +630,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     {
         if (!CopyFile("data\\new.lod", "saves\\autosave.mm7"))
         {
-            Log::Warning(L"Copy autosave.mm7 failed");
+            logger->Warning(L"Copy autosave.mm7 failed");
         }
     }
     pParty->vPosition.x = pPositionX;

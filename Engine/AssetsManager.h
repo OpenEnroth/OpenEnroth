@@ -1,4 +1,6 @@
 #pragma once
+#include <map>
+
 #include "Engine/Strings.h"
 
 class Image;
@@ -21,6 +23,7 @@ class AssetsManager
         Texture *GetBitmap(const String &name);
 
     protected:
+		std::map<String, Texture *> bitmaps;
 };
 
 extern AssetsManager *assets;

@@ -2863,7 +2863,7 @@ bool Player::Recover(int dt)
 
   v3 = (int)(dt * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt);
 
-  //Log::Warning(L"Recover(dt = %u/%u - %u", dt, (uint)v3, (uint)uTimeToRecovery);
+  //logger->Warning(L"Recover(dt = %u/%u - %u", dt, (uint)v3, (uint)uTimeToRecovery);
 
   if (uTimeToRecovery > v3)
   {

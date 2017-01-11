@@ -7,3 +7,5 @@ text eol=lf
 *.hpp text
 
 *.sln text eol=crlf
+*.vcxproj text eol=crlf
+*.vcxproj.filters text eol=crlf
