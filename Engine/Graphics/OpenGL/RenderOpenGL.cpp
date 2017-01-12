@@ -14,6 +14,7 @@
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"
+#include "Engine/Graphics/LightmapBuilder.h"
 
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
@@ -63,7 +64,6 @@ void RenderOpenGL::BeginSceneD3D()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 unsigned int RenderOpenGL::GetActorTintColor(float a2, int tint, int a4, int a5, RenderBillboard *a6) { __debugbreak(); return 0; }
-void RenderOpenGL::DrawPolygon(struct Polygon *a3) { __debugbreak(); }
 void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) { __debugbreak(); }
 void RenderOpenGL::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
 void RenderOpenGL::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
@@ -105,13 +105,6 @@ void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, in
 
 
 
-
-
-void RenderOpenGL::DrawBuildingsD3D()
-{
-    //__debugbreak();
-}
-
 void RenderOpenGL::PrepareDecorationsRenderList_ODM()
 {
     //__debugbreak();
@@ -134,7 +127,7 @@ void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene()
 
 
 
-#pragma pack(push, 1)
+/*#pragma pack(push, 1)
 typedef struct {
 	char  idlength;
 	char  colourmaptype;
@@ -172,7 +165,7 @@ FILE *CreateTga(const char *filename, int image_width, int image_height)
 	fwrite(&tga_header, 1, sizeof(tga_header), f);
 
 	return f;
-}
+}*/
 
 
 
@@ -202,7 +195,7 @@ bool RenderOpenGL::LoadTextureOpenGL(const String &name, bool mipmaps, int *out_
 		rgb[i * 4 + 0] = 8 * ((pHWLTexture->pPixels[i] >> 10) & 0x1F);
 	}
 
-if (filename == "plansky3")
+/*if (filename == "plansky3")
 {
 if (auto f = CreateTga((name + ".tga").c_str(), pHWLTexture->uWidth, pHWLTexture->uHeight))
 {
@@ -218,7 +211,7 @@ if (auto f = CreateTga((name + ".tga").c_str(), pHWLTexture->uWidth, pHWLTexture
 	}
 	fclose(f);
 }
-}
+}*/
 
 
 	glGenTextures(1, (GLuint *)out_texture);
@@ -237,42 +230,49 @@ if (auto f = CreateTga((name + ".tga").c_str(), pHWLTexture->uWidth, pHWLTexture
 	return true;
 }
 
+void _set_3d_projection_matrix()
+{
+    float near_clip = 8.0;
+    float far_clip = 4 * pODMRenderParams->shading_dist_mist;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(65.0f, (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(), near_clip, far_clip);
+
+}
+void _set_3d_modelview_matrix()
+{
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glScalef(1.0f, 1.0f, -1.0f);
+
+    int camera_x = pParty->vPosition.x;
+    int camera_y = pParty->vPosition.z + pParty->sEyelevel;
+    int camera_z = pParty->vPosition.y;
+    gluLookAt(
+        camera_x, camera_y, camera_z,
+
+        camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationY / 2048.0) - 3,
+        camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationX / 2048.0),
+        camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
+
+        0, 1, 0
+    );
+}
 
 const int terrain_block_scale = 512;
 const int terrain_height_scale = 32;
 void RenderOpenGL::RenderTerrainD3D()
 {
+    glEnable(GL_TEXTURE_2D);
+
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
 
-	float near_clip = 8.0;
-	float far_clip = 4 * pODMRenderParams->shading_dist_mist;
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(65.0f, (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(), near_clip, far_clip);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glScalef(1.0f, 1.0f, -1.0f);
-
-	glEnable(GL_TEXTURE_2D);
-
-	int camera_x = pParty->vPosition.x;
-	int camera_y = pParty->vPosition.z + pParty->sEyelevel;
-	int camera_z = pParty->vPosition.y;
-	gluLookAt(
-		camera_x, camera_y, camera_z,
-
-		camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationY / 2048.0)-3,
-		camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationX / 2048.0),
-		camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
-
-		0, 1, 0
-	);
-
+    _set_3d_projection_matrix();
+    _set_3d_modelview_matrix();
 
 	for (int z = 0; z < 128 - 1; ++z)
 	{
@@ -1153,10 +1153,335 @@ void RenderOpenGL::Present()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-bool RenderOpenGL::IsGammaSupported()
+
+
+
+RenderVertexSoft ogl_draw_buildings_vertices[20];
+void RenderOpenGL::DrawBuildingsD3D()
 {
-    return false;
+    int v27; // eax@57
+    unsigned int v34; // eax@80
+    int v49; // [sp+2Ch] [bp-2Ch]@10
+    int v50; // [sp+30h] [bp-28h]@34
+    int v51; // [sp+34h] [bp-24h]@35
+    int v52; // [sp+38h] [bp-20h]@36
+    int v53; // [sp+3Ch] [bp-1Ch]@8
+
+    _set_3d_projection_matrix();
+    _set_3d_modelview_matrix();
+
+    for (uint model_id = 0; model_id < pOutdoor->uNumBModels; model_id++)
+    {
+        int reachable;
+        if (IsBModelVisible(model_id, &reachable))
+        {
+            pOutdoor->pBModels[model_id].field_40 |= 1;
+            if (pOutdoor->pBModels[model_id].uNumFaces > 0)
+            {
+                for (int face_id = 0; face_id < pOutdoor->pBModels[model_id].uNumFaces; face_id++)
+                {
+                    if (!pOutdoor->pBModels[model_id].pFaces[face_id].Invisible())
+                    {
+                        v53 = 0;
+                        auto poly = &array_77EC08[pODMRenderParams->uNumPolygons];
+
+                        poly->flags = 0;
+                        poly->field_32 = 0;
+                        poly->texture = pOutdoor->pBModels[model_id].pFaces[face_id].GetTexture();
+
+                        if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLUID)
+                            poly->flags |= 2;
+                        if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_INDOOR_SKY)
+                            poly->flags |= 0x400;
+
+                        if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_DIAGONAL)
+                            poly->flags |= 0x400;
+                        else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_VERTICAL)
+                            poly->flags |= 0x800;
+
+                        if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_HORIZONTAL)
+                            poly->flags |= 0x2000;
+                        else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_DONT_CACHE_TEXTURE)
+                            poly->flags |= 0x1000;
+
+                        poly->sTextureDeltaU = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaU;
+                        poly->sTextureDeltaV = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaV;
+
+                        unsigned int flow_anim_timer = GetTickCount() >> 4;
+                        unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
+                        unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
+
+                        if (pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z && abs(pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z) >= 59082)
+                        {
+                            if (poly->flags & 0x400)
+                                poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
+                            if (poly->flags & 0x800)
+                                poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
+                        }
+                        else
+                        {
+                            if (poly->flags & 0x400)
+                                poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
+                            if (poly->flags & 0x800)
+                                poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
+                        }
+
+                        if (poly->flags & 0x1000)
+                            poly->sTextureDeltaU -= flow_anim_timer & flow_u_mod;
+                        else if (poly->flags & 0x2000)
+                            poly->sTextureDeltaU += flow_anim_timer & flow_u_mod;
+
+                        v50 = 0;
+                        v49 = 0;
+
+                        for (uint vertex_id = 1; vertex_id <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; vertex_id++)
+                        {
+                            array_73D150[vertex_id - 1].vWorldPosition.x = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].x;
+                            array_73D150[vertex_id - 1].vWorldPosition.y = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].y;
+                            array_73D150[vertex_id - 1].vWorldPosition.z = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].z;
+                            array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureUIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetWidth());
+                            array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureVIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetHeight());
+                        }
+                        memcpy(ogl_draw_buildings_vertices, array_73D150, sizeof(array_73D150));
+
+                        for (uint i = 1; i <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; i++)
+                        {
+                            if (pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[0]].z == array_73D150[i - 1].vWorldPosition.z)
+                                ++v53;
+                            pIndoorCameraD3D->ViewTransform(&array_73D150[i - 1], 1);
+                            if (array_73D150[i - 1].vWorldViewPosition.x < 8.0 || array_73D150[i - 1].vWorldViewPosition.x > pODMRenderParams->shading_dist_mist)
+                            {
+                                if (array_73D150[i - 1].vWorldViewPosition.x >= 8.0)
+                                    v49 = 1;
+                                else
+                                    v50 = 1;
+                            }
+                            else
+                                pIndoorCameraD3D->Project(&array_73D150[i - 1], 1, 0);
+                        }
+
+                        if (v53 == pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices)
+                            poly->field_32 |= 1;
+                        poly->pODMFace = &pOutdoor->pBModels[model_id].pFaces[face_id];
+                        poly->uNumVertices = pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices;
+                        poly->field_59 = 5;
+                        v51 = fixpoint_mul(-pOutdoor->vSunlight.x, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.x);
+                        v53 = fixpoint_mul(-pOutdoor->vSunlight.y, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.y);
+                        v52 = fixpoint_mul(-pOutdoor->vSunlight.z, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z);
+                        poly->dimming_level = 20 - fixpoint_mul(20, v51 + v53 + v52);
+                        if (poly->dimming_level < 0)
+                            poly->dimming_level = 0;
+                        if (poly->dimming_level > 31)
+                            poly->dimming_level = 31;
+                        if (pODMRenderParams->uNumPolygons >= 1999 + 5000)
+                            return;
+                        if (ODMFace::IsBackfaceNotCulled(array_73D150, poly))
+                        {
+                            pOutdoor->pBModels[model_id].pFaces[face_id].bVisible = 1;
+                            poly->uBModelFaceID = face_id;
+                            poly->uBModelID = model_id;
+                            v27 = 8 * (face_id | (model_id << 6));
+                            v27 |= 6;
+                            poly->field_50 = v27;
+                            for (int vertex_id = 0; vertex_id < pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; ++vertex_id)
+                            {
+                                memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
+                                VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
+                            }
+
+                            if (v50)
+                            {
+                                poly->uNumVertices = ODM_NearClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
+                                ODM_Project(poly->uNumVertices);
+                            }
+                            if (v49)
+                            {
+                                poly->uNumVertices = ODM_FarClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
+                                ODM_Project(poly->uNumVertices);
+                            }
+
+                            if (poly->uNumVertices)
+                            {
+                                if (poly->IsWater())
+                                {
+                                    if (poly->IsWaterAnimDisabled())
+                                        poly->texture = render->hd_water_tile_anim[0];
+                                    else
+                                        poly->texture = render->hd_water_tile_anim[render->hd_water_current_frame];
+                                }
+
+                                render->DrawPolygon(poly);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
+
+
+void RenderOpenGL::DrawPolygon(struct Polygon *poly)
+{
+    auto texture = (TextureOpenGL *)poly->texture;
+    auto a4 = poly->pODMFace;
+    auto uNumVertices = poly->uNumVertices;
+
+    if (poly->uNumVertices >= 3)
+    {
+        //v54 = pEngine->pLightmapBuilder->StationaryLightsCount;
+
+        int a2 = 0xFFFFFFFF;
+        pEngine->AlterGamma_ODM(a4, &a2);
+
+        if (!pEngine->pLightmapBuilder->StationaryLightsCount || byte_4D864C && pEngine->uFlags & 2)
+        {
+            glEnable(GL_TEXTURE_2D);
+            glDisable(GL_BLEND);
+            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+            glBegin(GL_TRIANGLE_FAN);
+
+            int outline_color;
+            if (GetTickCount() % 300 >= 150)
+                outline_color = 0xFFFF2020;
+            else outline_color = 0xFF901010;
+
+            for (uint i = 0; i < uNumVertices; ++i)
+            {
+                d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
+                d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
+                d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / (double)pODMRenderParams->shading_dist_mist);
+                d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
+                d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(poly->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
+                pEngine->AlterGamma_ODM(a4, &d3d_vertex_buffer[i].diffuse);
+
+                if (a4->uAttributes & FACE_OUTLINED)
+                {
+                    d3d_vertex_buffer[i].diffuse = outline_color;
+                }
+
+                if (this->bUsingSpecular)
+                    d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
+                else
+                    d3d_vertex_buffer[i].specular = 0;
+                d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
+                d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
+
+                glTexCoord2f(ogl_draw_buildings_vertices[i].u, ogl_draw_buildings_vertices[i].v);
+
+                glColor4f(
+                    ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
+                    ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
+                    ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
+                    bUsingSpecular ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f : 1.0f
+                );
+
+                glVertex3f(
+                    //d3d_vertex_buffer[i].pos.x /*/ d3d_vertex_buffer[i].rhw*/,
+                    //d3d_vertex_buffer[i].pos.y /*/ d3d_vertex_buffer[i].rhw*/,
+                    //d3d_vertex_buffer[i].pos.z /*/ d3d_vertex_buffer[i].rhw*/
+
+                    ogl_draw_buildings_vertices[i].vWorldPosition.x,
+                    ogl_draw_buildings_vertices[i].vWorldPosition.z,
+                    ogl_draw_buildings_vertices[i].vWorldPosition.y
+                );
+
+            }
+
+            glEnd();
+        }
+        else
+        {
+            /*for (uint i = 0; i < uNumVertices; ++i)
+            {
+
+                d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
+                d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
+                d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / (double)pODMRenderParams->shading_dist_mist);
+                d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
+                d3d_vertex_buffer[i].diffuse = GetActorTintColor(a3->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
+                if (this->bUsingSpecular)
+                    d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
+                else
+                    d3d_vertex_buffer[i].specular = 0;
+                d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
+                d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
+
+            }
+
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
+            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+            if (bUsingSpecular)
+                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
+
+            ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+            ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+                D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
+                d3d_vertex_buffer,
+                uNumVertices,
+                D3DDP_DONOTLIGHT));
+            //v50 = (const char *)v5->pRenderD3D->pDevice;
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
+            //(*(void (**)(void))(*(int *)v50 + 88))();
+            pEngine->pLightmapBuilder->DrawLightmaps(-1);
+            for (uint i = 0; i < uNumVertices; ++i)
+            {
+                d3d_vertex_buffer[i].diffuse = a2;
+            }
+            ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
+            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+            if (!render->bUsingSpecular)
+                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR));
+            ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+                D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
+                d3d_vertex_buffer,
+                uNumVertices,
+                D3DDP_DONOTLIGHT));
+            if (bUsingSpecular)
+            {
+                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+
+                for (uint i = 0; i < uNumVertices; ++i)
+                {
+                    d3d_vertex_buffer[i].diffuse = render->uFogColor | d3d_vertex_buffer[i].specular & 0xFF000000;
+                    d3d_vertex_buffer[i].specular = 0;
+                }
+
+                ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_INVSRCALPHA));
+                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCALPHA));
+                ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+                    D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
+                    d3d_vertex_buffer,
+                    uNumVertices,
+                    D3DDP_DONOTLIGHT));
+                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
+                //v40 = render->pRenderD3D->pDevice->lpVtbl;
+                v41 = GetLevelFogColor();
+                pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF);
+                v6 = 0;
+                pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0);
+            }
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, v6));*/
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
 
 bool RenderOpenGL::SwitchToWindow()
 {

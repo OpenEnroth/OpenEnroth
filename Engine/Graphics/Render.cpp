@@ -2022,22 +2022,20 @@ void RenderD3D::HandleLostResources()
 //----- (004A2050) --------------------------------------------------------
 void Render::DrawPolygon(struct Polygon *a3)
 {
-    unsigned int v6; // ebx@1
     int v8; // eax@7
     unsigned int v41; // eax@29
-    //unsigned int v54; // [sp+5Ch] [bp-Ch]@3
     signed int a2; // [sp+64h] [bp-4h]@4
 
 	auto texture = (TextureD3D *)a3->texture;
     auto a4 = a3->pODMFace;
     auto uNumVertices = a3->uNumVertices;
 
-    v6 = 0;
+    //v6 = 0;
     if (this->uNumD3DSceneBegins && (signed int)uNumVertices >= 3)
     {
         //v54 = pEngine->pLightmapBuilder->StationaryLightsCount;
         if (pEngine->pLightmapBuilder->StationaryLightsCount)
-            a2 = -1;
+            a2 = 0xFFFFFFFF;
         pEngine->AlterGamma_ODM(a4, &a2);
         if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related)
         {
@@ -2166,12 +2164,11 @@ void Render::DrawPolygon(struct Polygon *a3)
                     //v40 = render->pRenderD3D->pDevice->lpVtbl;
                     v41 = GetLevelFogColor();
                     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF);
-                    v6 = 0;
                     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0);
                 }
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, v6));
+                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0));
             }
         }
     }
@@ -3838,25 +3835,6 @@ bool Render::SwitchToWindow()
   return 0;
 }
 
-
-//----- (0044F2B2) --------------------------------------------------------
-bool Render::IsGammaSupported()
-{
-//  bool result; // eax@3
-//  HRESULT v1; // eax@4
-
-  //if ( pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT || pVersion->pVersionInfo.dwMajorVersion != 4 )
-  {
-    DDCAPS halCaps; // [sp+0h] [bp-180h]@4
-    memset(&halCaps, 0, sizeof(DDCAPS));
-    halCaps.dwSize = sizeof(DDCAPS);
-
-    ErrD3D(pDirectDraw4->GetCaps(&halCaps, 0));
-    return (halCaps.dwCaps2 >> 17) & 1;
-  }
-  /*else
-    return false;*/
-}
 
 //----- (004A0BEE) --------------------------------------------------------
 void Render::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor)
