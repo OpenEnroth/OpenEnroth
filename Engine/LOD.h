@@ -149,7 +149,7 @@ struct LODFile_IconsBitmaps : public LOD::File
     int ReloadTexture(struct Texture_MM7 *pDst, const char *pContainer, int mode);
     void ReleaseHardwareTextures();
     void ReleaseLostHardwareTextures();
-    void _410423_move_textures_to_device();
+    //void _410423_move_textures_to_device();
     int PlacementLoadTexture(struct Texture_MM7 *pDst, const char *pContainer, unsigned int uTextureType);
     void SetupPalettes(unsigned int uTargetRBits, unsigned int uTargetGBits, unsigned int uTargetBBits);
     void ReleaseAll2();

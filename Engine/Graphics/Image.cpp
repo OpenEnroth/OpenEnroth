@@ -45,17 +45,35 @@ stru355 stru_4EFCBC = {0x20, 0x41, 0, 0x10, 0x7C00, 0x3E0, 0x1F, 0x8000};
 
 
 
+const wchar_t *IMAGE_FORMAT_ToString(IMAGE_FORMAT format)
+{
+    switch (format)
+    {
+        case IMAGE_FORMAT_R5G6B5:   return L"IMAGE_FORMAT_R5G6B5";
+        case IMAGE_FORMAT_A1R5G5B5: return L"IMAGE_FORMAT_A1R5G5B5";
+        case IMAGE_FORMAT_A8R8G8B8: return L"IMAGE_FORMAT_A8R8G8B8";
+        case IMAGE_FORMAT_R8G8B8:   return L"IMAGE_FORMAT_R8G8B8";
+        case IMAGE_FORMAT_R8G8B8A8: return L"IMAGE_FORMAT_R8G8B8A8";
+
+        default:
+            Error("Invalid format: %d", format);
+            return L"Invalid format";
+    }
+}
+
 unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format)
 {
     switch (format)
     {
-    case IMAGE_FORMAT_R5G6B5:   return 2;
-    case IMAGE_FORMAT_A1R5G5B5: return 2;
-    case IMAGE_FORMAT_A8R8G8B8: return 4;
+        case IMAGE_FORMAT_R5G6B5:   return 2;
+        case IMAGE_FORMAT_A1R5G5B5: return 2;
+        case IMAGE_FORMAT_A8R8G8B8: return 4;
+        case IMAGE_FORMAT_R8G8B8:   return 3;
+        case IMAGE_FORMAT_R8G8B8A8: return 4;
 
-    default:
-        Error("Invalid format: %d", format);
-        return 0;
+        default:
+            Error("Invalid format: %d", format);
+            return 0;
     }
 }
 
@@ -857,21 +875,27 @@ const void *Image::GetPixels(IMAGE_FORMAT format)
                 {
                     nullptr, // IMAGE_FORMAT_R5G6B5
                     nullptr, // IMAGE_FORMAT_A1R5G5B5
-                    Image_R5G6B5_to_A8R8G8B8  // IMAGE_FORMAT_A8R8G8B8
+                    Image_R5G6B5_to_A8R8G8B8, // IMAGE_FORMAT_A8R8G8B8
+                    Image_R5G6B5_to_R8G8B8,   // IMAGE_FORMAT_R8G8B8
+                    nullptr, // IMAGE_FORMAT_R8G8B8A8
                 },
 
                 // IMAGE_FORMAT_A1R5G5B5 ->
                 {
                     nullptr, // IMAGE_FORMAT_R5G6B5
                     nullptr, // IMAGE_FORMAT_A1R5G5B5
-                    nullptr  // IMAGE_FORMAT_A8R8G8B8
+                    nullptr, // IMAGE_FORMAT_A8R8G8B8
+                    nullptr, // IMAGE_FORMAT_R8G8B8
+                    Image_A1R5G5B5_to_R8G8B8A8, // IMAGE_FORMAT_R8G8B8A8
                 },
 
                 // IMAGE_FORMAT_A8R8G8B8 ->
                 {
                     Image_A8R8G8B8_to_R5G6B5, // IMAGE_FORMAT_R5G6B5
                     nullptr, // IMAGE_FORMAT_A1R5G5B5
-                    nullptr  // IMAGE_FORMAT_A8R8G8B8
+                    nullptr, // IMAGE_FORMAT_A8R8G8B8
+                    nullptr, // IMAGE_FORMAT_R8G8B8
+                    nullptr, // IMAGE_FORMAT_R8G8B8A8
                 },
             };
 
@@ -890,6 +914,10 @@ const void *Image::GetPixels(IMAGE_FORMAT format)
                     delete[] cvt_pixels;
                     cvt_pixels = nullptr;
                 }
+            }
+            else
+            {
+                logger->Warning(L"No ImageConverter defined from %s to %s", IMAGE_FORMAT_ToString(this->native_format), IMAGE_FORMAT_ToString(format));
             }
         }
     }

@@ -1999,7 +1999,7 @@ LABEL_12:
 void RenderD3D::HandleLostResources()
 {
   pBitmaps_LOD->ReleaseLostHardwareTextures();
-  pBitmaps_LOD->_410423_move_textures_to_device();
+  //pBitmaps_LOD->_410423_move_textures_to_device();
   pSprites_LOD->ReleaseLostHardwareSprites();
 }
 
@@ -5982,7 +5982,7 @@ bool Render::MoveTextureToDevice(Texture *texture)
     auto t = (TextureD3D *)texture;
     if (t)
     {
-        auto pixels = (unsigned __int16 *)t->GetPixels(IMAGE_FORMAT_R5G6B5);
+        auto pixels = (unsigned __int16 *)t->GetPixels(IMAGE_FORMAT_A1R5G5B5);
 
         IDirectDrawSurface4 *dds;
         IDirect3DTexture2 *d3dt;
@@ -6024,7 +6024,7 @@ bool Render::MoveTextureToDevice(Texture *texture)
 }
 
 //----- (004A4DE1) --------------------------------------------------------
-bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture)
+/*bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture)
 {
     unsigned __int16 *v13; // ecx@19
     unsigned __int16 *v14; // eax@19
@@ -6115,10 +6115,10 @@ bool Render::LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSu
     delete[] pHWLTexture->pPixels;
     delete pHWLTexture;
     return true;
-}
+}*/
 
 //----- (004A5048) --------------------------------------------------------
-bool Render::MoveSpriteToDevice(Sprite *pSprite)
+/*bool Render::MoveSpriteToDevice(Sprite *pSprite)
 {
     HWLTexture *sprite_texture; // eax@1
     unsigned __int16 *v9; // edx@5
@@ -6137,11 +6137,11 @@ bool Render::MoveSpriteToDevice(Sprite *pSprite)
         pSprite->uBufferHeight = sprite_texture->uBufferHeight;
         pSprite->uAreaWidth = sprite_texture->uAreaWidth;
         pSprite->uAreaHeight = sprite_texture->uAreaHeigth;
-        if (!pRenderD3D->CreateTexture(sprite_texture->uWidth, sprite_texture->uHeight, &/*pSprite->*/pTextureSurface, &/*pSprite->*/pTexture, 1u, 0, uMinDeviceTextureDim))
+        if (!pRenderD3D->CreateTexture(sprite_texture->uWidth, sprite_texture->uHeight, &pSprite->pTextureSurface, &pSprite->pTexture, 1u, 0, uMinDeviceTextureDim))
             Error("HiScreen16::LoadTexture - D3Drend->CreateTexture() failed: %x", 0);
         memset(&Dst, 0, sizeof(DDSURFACEDESC2));
         Dst.dwSize = 124;
-        if (LockSurface_DDraw4((IDirectDrawSurface4 *)/*pSprite->*/pTextureSurface, &Dst, DDLOCK_WAIT | DDLOCK_WRITEONLY))
+        if (LockSurface_DDraw4((IDirectDrawSurface4 *)pSprite->pTextureSurface, &Dst, DDLOCK_WAIT | DDLOCK_WRITEONLY))
         {
             v9 = sprite_texture->pPixels;
             v10 = Dst.lpSurface;
@@ -6155,14 +6155,14 @@ bool Render::MoveSpriteToDevice(Sprite *pSprite)
                 }
                 v10 = (char *)v10 + Dst.lPitch - sprite_texture->uWidth * 2;
             }
-            ErrD3D(/*pSprite->*/pTextureSurface->Unlock(NULL));
+            ErrD3D(pSprite->pTextureSurface->Unlock(NULL));
         }
         delete[] sprite_texture->pPixels;
         delete sprite_texture;
         return true;
     }
     return false;
-}
+}*/
 
 //----- (004A51CB) --------------------------------------------------------
 void Render::BeginScene()

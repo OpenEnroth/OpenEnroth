@@ -334,9 +334,6 @@ class IRender
     virtual void DrawBillboardList_BLV() = 0;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture) = 0;
-    virtual bool LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture) = 0;
-	virtual bool LoadTextureOpenGL(const String &name, bool mipmaps, int *out_texture) = 0;
-    virtual bool MoveSpriteToDevice(Sprite *pSprite) = 0;
     virtual bool MoveTextureToDevice(Texture *texture) = 0;
 
     virtual void BeginScene() = 0;

@@ -1787,7 +1787,7 @@ int LODFile_IconsBitmaps::PlacementLoadTexture(Texture_MM7 *pDst, const char *pC
 }
 
 //----- (00410423) --------------------------------------------------------
-void LODFile_IconsBitmaps::_410423_move_textures_to_device()
+/*void LODFile_IconsBitmaps::_410423_move_textures_to_device()
 {
     size_t v4; // eax@9
     char *v5; // ST1C_4@9
@@ -1816,7 +1816,7 @@ void LODFile_IconsBitmaps::_410423_move_textures_to_device()
         if (this->uNumLoadedFiles > 1)
             memset(this->ptr_011BB4, 0, this->uNumLoadedFiles - 1);
     }
-}
+}*/
 
 //----- (004103BB) --------------------------------------------------------
 void LODFile_IconsBitmaps::ReleaseHardwareTextures()
@@ -1906,7 +1906,9 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
     v8 = pOutTex;
     fread(pOutTex, 1, 0x30, pFile);
     strcpy(pOutTex->pName, pContainer);
-    if (/*render->pRenderD3D &&*/ (pOutTex->pBits & 2) && strcmp(v8->pName, "sptext01"))//Ritor1: "&& strcmp(v8->pName, "sptext01")" - temporarily for red_aura
+
+    // BITMAPS
+    if (/*render->pRenderD3D &&*/ (pOutTex->pBits & 2) && strcmp(v8->pName, "sptext01"))
     {
         if (!pHardwareSurfaces || !pHardwareTextures)
         {
@@ -1928,7 +1930,8 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
                 render->hd_water_tile_id = uNumLoadedFiles;
                 v14 = uNumLoadedFiles;
             }
-            result = render->LoadTexture(pContainer, pOutTex->palette_id1, (void **)&pHardwareSurfaces[v14], (void **)&pHardwareTextures[v14]);
+            //result = render->LoadTexture(pContainer, pOutTex->palette_id1, (void **)&pHardwareSurfaces[v14], (void **)&pHardwareTextures[v14]);
+            result = 1;
         }
         else
         {
@@ -1936,12 +1939,16 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
             temp_container = (char *)malloc(strlen(pContainer) + 2);
             *temp_container = 104;//'h'
             strcpy(temp_container + 1, pContainer);
-            result = render->LoadTexture((const char *)temp_container, pOutTex->palette_id1,
-                (void **)&pHardwareSurfaces[uNumLoadedFiles], (void **)&pHardwareTextures[uNumLoadedFiles]);
+            //result = render->LoadTexture((const char *)temp_container, pOutTex->palette_id1,
+            //    (void **)&pHardwareSurfaces[uNumLoadedFiles], (void **)&pHardwareTextures[uNumLoadedFiles]);
+            result = 1;
             free((void *)temp_container);
         }
         return result;
     }
+
+
+    // ICONS
     if (!v8->uDecompressedSize || _011BA4_debug_paletted_pixels_uncompressed)
     {
         v8->paletted_pixels = (unsigned __int8 *)malloc(v8->uTextureSize);

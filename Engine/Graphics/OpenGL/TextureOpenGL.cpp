@@ -4,46 +4,41 @@
 
 Texture *TextureOpenGL::Create(ImageLoader *loader)
 {
-	auto tex = new TextureOpenGL();
-	if (tex)
-	{
-		tex->loader = loader;
-	}
+    auto tex = new TextureOpenGL();
+    if (tex)
+    {
+        tex->loader = loader;
+    }
 
-	return tex;
+    return tex;
 }
 
 int TextureOpenGL::GetOpenGlTexture()
 {
-	if (!this->initialized)
-	{
-		this->LoadImageData();
-	}
+    if (!this->initialized)
+    {
+        this->LoadImageData();
+    }
 
-	return this->ogl_texture;
+    return this->ogl_texture;
 }
 
 
 bool TextureOpenGL::LoadImageData()
 {
-	if (!this->initialized)
-	{
-		void *pixels;
+    if (!this->initialized)
+    {
+        void *pixels;
 
-		this->initialized = this->loader->Load(&width, &height, &pixels, &native_format);
-		if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT)
-		{
-			this->pixels[native_format] = pixels;
+        this->initialized = this->loader->Load(&width, &height, &pixels, &native_format);
+        if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT)
+        {
+            this->pixels[native_format] = pixels;
 
-			bool resample = false;
-__debugbreak();render->MoveTextureToDevice(this);
-			this->initialized = render->LoadTextureOpenGL(
-				this->loader->GetResourceName(),
-				resample,
-				&this->ogl_texture
-			);
-		}
-	}
+            bool resample = false;
+            this->initialized = render->MoveTextureToDevice(this);
+        }
+    }
 
-	return this->initialized;
+    return this->initialized;
 }

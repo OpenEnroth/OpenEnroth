@@ -7,13 +7,16 @@ enum IMAGE_FORMAT
     IMAGE_FORMAT_R5G6B5 = 0,
     IMAGE_FORMAT_A1R5G5B5,
     IMAGE_FORMAT_A8R8G8B8,
+    IMAGE_FORMAT_R8G8B8,
+    IMAGE_FORMAT_R8G8B8A8,
 
     IMAGE_NUM_FORMATS,
     IMAGE_INVALID_FORMAT = -1,
 };
 
 
-unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format);
+unsigned int   IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format);
+const wchar_t *IMAGE_FORMAT_ToString(IMAGE_FORMAT format);
 
 
 class ImageLoader;
@@ -37,6 +40,7 @@ class Image
         unsigned int  GetWidth();
         unsigned int  GetHeight();
         const void   *GetPixels(IMAGE_FORMAT format);
+        IMAGE_FORMAT  GetFormat() const { return native_format; }
 
         bool Release();
 

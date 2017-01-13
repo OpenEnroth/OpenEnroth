@@ -4,58 +4,53 @@
 
 Texture *TextureD3D::Create(ImageLoader *loader)
 {
-	auto tex = new TextureD3D();
-	if (tex)
-	{
-		tex->loader = loader;
-	}
+    auto tex = new TextureD3D();
+    if (tex)
+    {
+        tex->loader = loader;
+    }
 
-	return tex;
+    return tex;
 }
 
 IDirectDrawSurface *TextureD3D::GetDirectDrawSurface()
 {
-	if (!this->initialized)
-	{
-		this->LoadImageData();
-	}
+    if (!this->initialized)
+    {
+        this->LoadImageData();
+    }
 
-	return this->dds;
+    return this->dds;
 }
 
 
 
 IDirect3DTexture2  *TextureD3D::GetDirect3DTexture()
 {
-	if (!this->initialized)
-	{
-		this->LoadImageData();
-	}
+    if (!this->initialized)
+    {
+        this->LoadImageData();
+    }
 
-	return this->d3dt;
+    return this->d3dt;
 }
 
 
 bool TextureD3D::LoadImageData()
 {
-	if (!this->initialized)
-	{
-		void *pixels;
+    if (!this->initialized)
+    {
+        void *pixels;
 
-		this->initialized = this->loader->Load(&width, &height, &pixels, &native_format);
-		if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT)
-		{
-			this->pixels[native_format] = pixels;
+        this->initialized = this->loader->Load(&width, &height, &pixels, &native_format);
+        if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT)
+        {
+            this->pixels[native_format] = pixels;
 
-			bool resample = false;
-            this->initialized = render->MoveTextureToDevice(this); /*render->LoadTexture(
-				this->loader->GetResourceName().c_str(),
-				resample,
-				(void **)&this->dds,
-				(void **)&this->d3dt
-			);*/
-		}
-	}
+            bool resample = false;
+            this->initialized = render->MoveTextureToDevice(this);
+        }
+    }
 
-	return this->initialized;
+    return this->initialized;
 }

@@ -572,7 +572,7 @@ HWLTexture *RenderD3D11::LoadHwlSprite(const char *name)
 }
 
 
-bool RenderD3D11::MoveSpriteToDevice(Sprite *pSprite)
+/*bool RenderD3D11::MoveSpriteToDevice(Sprite *pSprite)
 {
   HWLTexture *sprite_texture; // eax@1
   unsigned __int16 *v9; // edx@5
@@ -636,34 +636,15 @@ bool RenderD3D11::MoveSpriteToDevice(Sprite *pSprite)
       ErrorD3D(d3dd->CreateShaderResourceView(vram_texture, nullptr, &srv));
       vram_texture->Release();
 
-      //pSprite->d3d11_srv = srv;
+      pSprite->d3d11_srv = srv;
     }
-    /*if (!pRenderD3D->CreateTexture(sprite_texture->uWidth, sprite_texture->uHeight, &pSprite->pTextureSurface, &pSprite->pTexture, 1u, 0, uMinDeviceTextureDim))
-      Error("HiScreen16::LoadTexture - D3Drend->CreateTexture() failed: %x", 0);
-    memset(&Dst, 0, sizeof(DDSURFACEDESC2));
-    Dst.dwSize = 124;
-    if ( LockSurface_DDraw4((IDirectDrawSurface4 *)pSprite->pTextureSurface, &Dst, DDLOCK_WAIT | DDLOCK_WRITEONLY) )
-    {
-      v9 = sprite_texture->pPixels;
-      v10 = Dst.lpSurface;
-      for (uint i=0; i<sprite_texture->uHeight; ++i)
-      {
-        for (uint j=0; j<sprite_texture->uWidth/2; ++j)
-        {
-          *(int *)v10 = *(int *)v9;
-          v9 += 2;
-          v10 = (char *)v10 + 4;
-        }
-        v10 = (char *)v10 + Dst.lPitch-sprite_texture->uWidth*2;
-      }
-      ErrD3D(pSprite->pTextureSurface->Unlock(NULL));
-    }*/
+
     delete [] sprite_texture->pPixels;
     delete sprite_texture;
 	return true;
   }
   return false;
-}
+}*/
 
 
 ID3DBlob *DoD3DCompiling(const wchar_t *shader_name, const char *pShaderSource, uint uShaderSourceLen, const char *pEntry, const char *pVersionString, uint uCompileOptions);
@@ -993,7 +974,7 @@ void d3d11_release(ID3D11ShaderResourceView *srv)
 
 
 //----- (004A4DE1) --------------------------------------------------------
-bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture)
+/*bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture)
 {
   unsigned __int16 *v13; // ecx@19
   unsigned __int16 *v14; // eax@19
@@ -1024,7 +1005,7 @@ bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, void **p
       desc.SampleDesc.Count = 1;
       desc.SampleDesc.Quality = 0;
       desc.Usage = D3D11_USAGE_DEFAULT;
-      desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET/* for mipmap generation */;
+      desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;// for mipmap generation;
       desc.CPUAccessFlags = 0;
       desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
     
@@ -1069,5 +1050,4 @@ bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, void **p
     delete [] pHWLTexture->pPixels;
     delete pHWLTexture;
     return true;
-}
-
+}*/

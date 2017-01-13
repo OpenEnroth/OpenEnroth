@@ -3,22 +3,22 @@
 
 class TextureOpenGL : public Texture
 {
-	public:
-		int GetOpenGlTexture();
+    public:
+        int GetOpenGlTexture();
 
-	protected:
-		friend class RenderOpenGL;
+    protected:
+        friend class RenderOpenGL;
 
-		static Texture *Create(ImageLoader *loader);
+        static Texture *Create(ImageLoader *loader);
 
         void SetOpenGlTexture(int ogl_texture) { this->ogl_texture = ogl_texture; }
 
-		inline TextureOpenGL(bool lazy_initialization = true) :
-			Texture(lazy_initialization),
-			ogl_texture(-1)
-		{}
+        inline TextureOpenGL(bool lazy_initialization = true) :
+            Texture(lazy_initialization),
+            ogl_texture(-1)
+        {}
 
-		int ogl_texture;
+        int ogl_texture;
 
-		virtual bool LoadImageData() override;
+        virtual bool LoadImageData() override;
 };

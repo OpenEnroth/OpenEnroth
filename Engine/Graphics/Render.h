@@ -75,9 +75,6 @@ class Render : public IRender
         virtual void DrawBillboardList_BLV();
 
         virtual void DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture);
-        virtual bool LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture);
-		virtual bool LoadTextureOpenGL(const String &name, bool mipmaps, int *out_texture) { return false; }
-        virtual bool MoveSpriteToDevice(Sprite *pSprite);
         virtual bool MoveTextureToDevice(Texture *texture) override;
 
         virtual void BeginScene();

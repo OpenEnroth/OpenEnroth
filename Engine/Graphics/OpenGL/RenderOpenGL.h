@@ -50,15 +50,12 @@ class RenderOpenGL : public IRender
         virtual void MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle);
 
         virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
-        virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, Sprite *pSprite, int dimming_level);
+        virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillboard *) override;
         virtual void _4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse);
         virtual void TransformBillboardsAndSetPalettesODM();
         virtual void DrawBillboardList_BLV();
 
         virtual void DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture);
-		virtual bool LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture) { return false; }
-		virtual bool LoadTextureOpenGL(const String &name, bool mipmaps, int *out_texture);
-        virtual bool MoveSpriteToDevice(Sprite *pSprite);
         virtual bool MoveTextureToDevice(Texture *texture) override;
 
         virtual void BeginScene();
@@ -149,6 +146,8 @@ class RenderOpenGL : public IRender
         protected:
             void DoRenderBillboards_D3D();
             void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
+            void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
+            unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
 
 
 

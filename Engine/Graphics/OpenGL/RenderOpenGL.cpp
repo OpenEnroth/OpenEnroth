@@ -16,6 +16,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/Sprites.h"
 
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
@@ -27,6 +28,8 @@
 
 
 
+unsigned int BlendColors(unsigned int a1, unsigned int a2);
+
 
 
 //IRender *IRender::Create() { return new RenderOpenGL(); }
@@ -34,7 +37,7 @@
 
 
 
-RenderOpenGL::RenderOpenGL() : IRender() {}
+RenderOpenGL::RenderOpenGL() : IRender() { bFogEnabled = false; }
 RenderOpenGL::~RenderOpenGL() {}
 
 unsigned int RenderOpenGL::GetRenderWidth() const { return window->GetWidth(); }
@@ -68,7 +71,7 @@ unsigned int RenderOpenGL::GetActorTintColor(float a2, int tint, int a4, int a5,
 void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) { __debugbreak(); }
 void RenderOpenGL::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
 void RenderOpenGL::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
-void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, Sprite *pSprite, int dimming_level) { __debugbreak(); }
+void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillboard *) { __debugbreak(); }
 void RenderOpenGL::_4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse) { __debugbreak(); }
 void RenderOpenGL::DrawBillboardList_BLV() { __debugbreak(); }
 void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture) { __debugbreak(); }
@@ -115,10 +118,572 @@ void RenderOpenGL::DrawSpriteObjects_ODM()
     //__debugbreak();
 }
 
-void RenderOpenGL::TransformBillboardsAndSetPalettesODM()
+
+
+/*#pragma pack(push, 1)
+typedef struct {
+	char  idlength;
+	char  colourmaptype;
+	char  datatypecode;
+	short int colourmaporigin;
+	short int colourmaplength;
+	char  colourmapdepth;
+	short int x_origin;
+	short int y_origin;
+	short width;
+	short height;
+	char  bitsperpixel;
+	char  imagedescriptor;
+} tga;
+#pragma pack(pop)
+
+FILE *CreateTga(const char *filename, int image_width, int image_height)
 {
-    //__debugbreak();
+	auto f = fopen(filename, "w+b");
+
+	tga tga_header;
+	memset(&tga_header, 0, sizeof(tga_header));
+
+	tga_header.colourmaptype = 0;
+	tga_header.datatypecode = 2;
+	//tga_header.colourmaporigin = 0;
+	//tga_header.colourmaplength = image_width * image_height;
+	//tga_header.colourmapdepth = 32;
+	tga_header.x_origin = 0;
+	tga_header.y_origin = 0;
+	tga_header.width = image_width;
+	tga_header.height = image_height;
+	tga_header.bitsperpixel = 32;
+	tga_header.imagedescriptor = 32; // top-down
+	fwrite(&tga_header, 1, sizeof(tga_header), f);
+
+	return f;
+}*/
+
+
+
+
+Texture *RenderOpenGL::CreateTexture(const String &name)
+{
+    return TextureOpenGL::Create(
+        new Bitmaps_LOD_Loader(pBitmaps_LOD, name)
+    );
 }
+
+Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id)
+{
+    return TextureOpenGL::Create(
+        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id)
+    );
+}
+
+
+bool RenderOpenGL::MoveTextureToDevice(Texture *texture)
+{
+    auto t = (TextureOpenGL *)texture;
+/*    return false;
+}
+
+bool RenderOpenGL::LoadTextureOpenGL(const String &name, bool mipmaps, int *out_texture)
+{*/
+    /*String filename = name;
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+    HWLTexture* pHWLTexture = pD3DBitmaps.LoadTexture(filename.c_str(), mipmaps);
+    if (!pHWLTexture)
+        return false;
+
+    auto rgb = new unsigned char[pHWLTexture->uWidth * pHWLTexture->uHeight * 4];
+    for (unsigned int i = 0; i < pHWLTexture->uWidth * pHWLTexture->uHeight; ++i)
+    {
+        rgb[i * 4 + 3] = pHWLTexture->pPixels[i] & 0x8000 ? 0xFF : 0x00;
+        rgb[i * 4 + 2] = 8 * ((pHWLTexture->pPixels[i] >> 0) & 0x1F);
+        rgb[i * 4 + 1] = 8 * ((pHWLTexture->pPixels[i] >> 5) & 0x1F);
+        rgb[i * 4 + 0] = 8 * ((pHWLTexture->pPixels[i] >> 10) & 0x1F);
+    }*/
+
+    /*if (filename == "plansky3")
+    {
+    if (auto f = CreateTga((name + ".tga").c_str(), pHWLTexture->uWidth, pHWLTexture->uHeight))
+    {
+        for (unsigned int i = 0; i < pHWLTexture->uWidth * pHWLTexture->uHeight; ++i)
+        {
+            int r = rgb[i * 4 + 0];
+            int g = rgb[i * 4 + 1];
+            int b = rgb[i * 4 + 2];
+            int a = rgb[i * 4 + 2];
+            int c = (a << 24 ) | (r << 16) | (g << 8) | b;
+
+            fwrite(&c, 4, 1, f);
+        }
+        fclose(f);
+    }
+    }*/
+
+    auto native_format = t->GetFormat();
+    unsigned __int8 *pixels = nullptr;
+    if (native_format == IMAGE_FORMAT_R5G6B5)
+        pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8);
+    else if (native_format == IMAGE_FORMAT_A1R5G5B5)
+        pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+
+    if (pixels)
+    {
+        GLuint texid;
+        glGenTextures(1, &texid);
+        t->SetOpenGlTexture(texid);
+
+        int gl_format = native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
+
+        glBindTexture(GL_TEXTURE_2D, texid);
+        glTexImage2D(GL_TEXTURE_2D, 0, gl_format, t->GetWidth(), t->GetHeight(), 0, gl_format, GL_UNSIGNED_BYTE, pixels);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+
+        return true;
+    }
+    return false;
+}
+
+void _set_3d_projection_matrix()
+{
+    float near_clip = 8.0;
+    float far_clip = 4 * pODMRenderParams->shading_dist_mist;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(65.0f, (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(), near_clip, far_clip);
+
+}
+void _set_3d_modelview_matrix()
+{
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glScalef(1.0f, 1.0f, -1.0f);
+
+    int camera_x = pParty->vPosition.x;
+    int camera_y = pParty->vPosition.z + pParty->sEyelevel;
+    int camera_z = pParty->vPosition.y;
+    gluLookAt(
+        camera_x, camera_y, camera_z,
+
+        camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationY / 2048.0) - 3,
+        camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationX / 2048.0),
+        camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
+
+        0, 1, 0
+    );
+}
+
+
+void _set_ortho_projection()
+{
+    glViewport(0, 0, window->GetWidth(), window->GetHeight());
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
+}
+
+void _set_ortho_modelview()
+{
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+const int terrain_block_scale = 512;
+const int terrain_height_scale = 32;
+void RenderOpenGL::RenderTerrainD3D()
+{
+    glEnable(GL_TEXTURE_2D);
+
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
+    _set_3d_projection_matrix();
+    _set_3d_modelview_matrix();
+
+    for (int z = 0; z < 128 - 1; ++z)
+    {
+        for (int x = 0; x < 128 - 1; ++x)
+        {
+            auto tile = pOutdoor->DoGetTile(x, z);
+            if (!tile)
+                continue;
+
+            struct Polygon p;
+            auto *poly = &p;
+
+            poly->texture = tile->GetTexture();
+            if (tile->IsWaterTile())
+            {
+                poly->texture = this->hd_water_tile_anim[this->hd_water_current_frame];
+            }
+
+            //√енераци€ местоположени€ вершин-------------------------------------------------------------------------
+            //решЄтка вершин делитс€ на две части от -64 до 0 и от 0 до 64
+            //
+            //          X
+            // -64      0     64
+            //   --------------- 64
+            //   |      |      |
+            //   |      |      |
+            //   |      |      |
+            //  0|------+------|  Z
+            //   |      |      |
+            //   |      |      |
+            //   |      |      |
+            //   ---------------
+            //                  -64
+
+            int x1 = x;
+            int x2 = x + 1;
+            int z1 = z;
+            int z2 = z + 1;
+            int y11 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x1];
+            int y21 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x2];
+            int y12 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x1];
+            int y22 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x2];
+
+
+            /*auto norm = &pTerrainNormals[x * 128 + z];
+            float dim =
+                (norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
+                (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
+                (norm->z * (float)pOutdoor->vSunlight.z / 65536.0);
+
+            poly->dimming_level = 20.0 - floorf(20.0 * dim + 0.5f);*/
+            poly->dimming_level = 20.0f;
+
+            poly->uEdgeList1Size = x;
+            poly->uEdgeList2Size = z;
+
+            // draw animated water under shore
+            bool water_border_tile = false;
+            if (tile->IsWaterBorderTile())
+            {
+                glDepthMask(GL_FALSE);
+                {
+                    poly->texture = this->hd_water_tile_anim[this->hd_water_current_frame];
+                    this->DrawTerrainPolygon(poly, true, true);
+
+                    poly->texture = tile->GetTexture();
+                }
+                glDepthMask(GL_TRUE);
+
+                water_border_tile = true;
+            }
+
+            this->DrawTerrainPolygon(poly, water_border_tile, true);
+        }
+    }
+}
+
+
+void RenderOpenGL::DrawTerrainPolygon(struct Polygon *a3, bool transparent, bool clampAtTextureBorders)
+{
+    auto texture = (TextureOpenGL *)a3->texture;
+
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    // clamping doesnt really help here in opengl so had to alter texture coordinates a bit
+    float clamp_fix_u = 1.0f / texture->GetWidth();
+    float clamp_fix_v = 1.0f / texture->GetHeight();
+    if (clampAtTextureBorders)
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    }
+    else
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    }
+
+    if (transparent)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    float dim = 1.0f;// a3->dimming_level / 20.0f;
+    int x1 = a3->uEdgeList1Size;
+    int z1 = a3->uEdgeList2Size;
+    int x2 = x1 + 1;
+    int z2 = z1 + 1;
+
+    int y11 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x1];
+    int y21 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x2];
+    int y12 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x1];
+    int y22 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x2];
+
+    glBegin(GL_TRIANGLES);
+    {
+        glTexCoord2f(0.0f + clamp_fix_u, 0.0f + clamp_fix_v);
+        glColor3f(dim, dim, dim);
+        glVertex3f((x1 - 64) * terrain_block_scale, y11 * terrain_height_scale, (64 - z1) * terrain_block_scale);
+
+        glTexCoord2f(0.0f + clamp_fix_u, 1.0f - clamp_fix_v);
+        glColor3f(dim, dim, dim);
+        glVertex3f((x1 - 64) * terrain_block_scale, y12 * terrain_height_scale, (64 - z2) * terrain_block_scale);
+
+        glTexCoord2f(1.0f - clamp_fix_u, 1.0f - clamp_fix_v);
+        glColor3f(dim, dim, dim);
+        glVertex3f((x2 - 64) * terrain_block_scale, y22 * terrain_height_scale, (64 - z2) * terrain_block_scale);
+
+        // ---
+
+        glTexCoord2f(0.0f + clamp_fix_u, 0.0f + clamp_fix_v);
+        glColor3f(dim, dim, dim);
+        glVertex3f((x1 - 64) * terrain_block_scale, y11 * terrain_height_scale, (64 - z1) * terrain_block_scale);
+
+        glTexCoord2f(1.0f - clamp_fix_u, 1.0f - clamp_fix_v);
+        glColor3f(dim, dim, dim);
+        glVertex3f((x2 - 64) * terrain_block_scale, y22 * terrain_height_scale, (64 - z2) * terrain_block_scale);
+
+        glTexCoord2f(1.0f - clamp_fix_u, 0.0f + clamp_fix_v);
+        glColor3f(dim, dim, dim);
+        glVertex3f((x2 - 64) * terrain_block_scale, y21 * terrain_height_scale, (64 - z1) * terrain_block_scale);
+    }
+    glEnd();
+
+    if (transparent)
+    {
+        glDisable(GL_BLEND);
+    }
+}
+
+
+
+
+
+
+
+void RenderOpenGL::DrawOutdoorSkyD3D()
+{
+    int v9; // eax@4
+    int v10; // ebx@4
+    int v13; // edi@6
+    int v14; // ecx@6
+    int v15; // eax@8
+    int v16; // eax@12
+    signed __int64 v17; // qtt@13
+    signed int v18; // ecx@13
+    struct Polygon pSkyPolygon; // [sp+14h] [bp-150h]@1
+    int v30; // [sp+134h] [bp-30h]@1
+    int v32; // [sp+13Ch] [bp-28h]@6
+    int v33; // [sp+140h] [bp-24h]@2
+    signed __int64 v34; // [sp+144h] [bp-20h]@1
+    int v35; // [sp+148h] [bp-1Ch]@4
+    int v36; // [sp+14Ch] [bp-18h]@2
+    int v37; // [sp+154h] [bp-10h]@8
+    int v38; // [sp+158h] [bp-Ch]@1
+    int v39; // [sp+15Ch] [bp-8h]@4
+
+    v30 = (signed __int64)((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
+        / ((double)pODMRenderParams->int_fov_rad + 8192.0)
+        + (double)(pViewport->uScreenCenterY));
+    v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) * (double)pODMRenderParams->shading_dist_mist;
+    v38 = (signed __int64)((double)(pViewport->uScreenCenterY)
+        - (double)pODMRenderParams->int_fov_rad
+        / (v34 + 0.0000001)
+        * (sin((double)pIndoorCameraD3D->sRotationX * 0.0030664064)
+            * -(double)pODMRenderParams->shading_dist_mist
+            - (double)pIndoorCameraD3D->vPartyPos.z));
+    pSkyPolygon.Create_48607B(&stru_8019C8);//заполн€етс€ ptr_38
+    pSkyPolygon.ptr_38->_48694B_frustum_sky();
+
+    //if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
+    //pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
+    //else
+    //pSkyPolygon.uTileBitmapID = pOutdoor->sSky_TextureID;//179(original 166)
+    //pSkyPolygon.pTexture = (Texture_MM7 *)(pSkyPolygon.uTileBitmapID != -1 ? (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
+    pSkyPolygon.texture = pOutdoor->sky_texture;
+    if (pSkyPolygon.texture)
+    {
+        pSkyPolygon.dimming_level = 0;
+        pSkyPolygon.uNumVertices = 4;
+        //centering(центруем)-----------------------------------------------------------------
+        pSkyPolygon.v_18.x = -stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX + 16);
+        pSkyPolygon.v_18.y = 0;
+        pSkyPolygon.v_18.z = -stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX + 16);
+
+        //sky wiew position(положение неба на экране)------------------------------------------
+        //                X
+        // 0._____________________________.3
+        //  |8,8                    468,8 |
+        //  |                             |
+        //  |                             |
+        // Y|                             |
+        //  |                             |
+        //  |8,351                468,351 |
+        // 1._____________________________.2
+        // 
+        VertexRenderList[0].vWorldViewProjX = (double)(signed int)pViewport->uViewportTL_X;//8
+        VertexRenderList[0].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;//8
+
+        VertexRenderList[1].vWorldViewProjX = (double)(signed int)pViewport->uViewportTL_X;//8
+        VertexRenderList[1].vWorldViewProjY = (double)v38;//247
+
+        VertexRenderList[2].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;//468
+        VertexRenderList[2].vWorldViewProjY = (double)v38;//247
+
+        VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;//468
+        VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;//8
+
+        pSkyPolygon.sTextureDeltaU = 224 * pMiscTimer->uTotalGameTimeElapsed;//7168
+        pSkyPolygon.sTextureDeltaV = 224 * pMiscTimer->uTotalGameTimeElapsed;//7168
+
+        pSkyPolygon.field_24 = 0x2000000;//maybe attributes
+        v33 = 65536 / (signed int)(signed __int64)(((double)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2) / tan(0.6457717418670654) + 0.5);
+        for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i)
+        {
+            //rotate skydome(вращение купола неба)--------------------------------------
+            // ¬ игре прин€та сво€ система измерени€ углов. ѕолный угол (180). «начению угла 0 соответствует 
+            // направление на север и/или юг (либо на восток и/или запад), значению 65536 еденицам(0х10000) соответствует угол 90.
+            // две переменные хран€т данные по углу обзора. field_14 по западу и востоку. field_20 по югу и северу
+            // от -25080 до 25080
+            v39 = fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_west_east, v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
+            v35 = v39 + pSkyPolygon.ptr_38->angle_from_north;
+
+            v39 = fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_north_south, v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
+            v36 = v39 + pSkyPolygon.ptr_38->angle_from_east;
+
+            v9 = fixpoint_mul(pSkyPolygon.v_18.z, v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
+            v10 = pSkyPolygon.v_18.x + v9;
+            if (v10 > 0)
+                v10 = 0;
+            v13 = v33 * (pViewport->uScreenCenterX - (signed __int64)VertexRenderList[i].vWorldViewProjX);
+            v34 = -pSkyPolygon.field_24;
+            v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0;
+            v14 = v33 * (v30 - v32);
+            while (1)
+            {
+                if (v10)
+                {
+                    v37 = abs((int)v34 >> 14);
+                    v15 = abs(v10);
+                    if (v37 <= v15 || v32 <= (signed int)pViewport->uViewportTL_Y)
+                    {
+                        if (v10 <= 0)
+                            break;
+                    }
+                }
+                v16 = fixpoint_mul(pSkyPolygon.v_18.z, v14);
+                --v32;
+                v14 += v33;
+                v10 = pSkyPolygon.v_18.x + v16;
+            }
+            HEXRAYS_LODWORD(v17) = HEXRAYS_LODWORD(v34) << 16;
+            HEXRAYS_HIDWORD(v17) = v34 >> 16;
+            v18 = v17 / v10;
+            if (v18 < 0)
+                v18 = pODMRenderParams->shading_dist_mist;
+            v37 = v35 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, v13);
+            v35 = 224 * pMiscTimer->uTotalGameTimeElapsed + ((signed int)fixpoint_mul(v37, v18) >> 3);
+            VertexRenderList[i].u = (double)v35 / (2 * (double)pSkyPolygon.texture->GetWidth() * 65536.0);
+
+            v36 = v36 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_south, v13);
+            v35 = 224 * pMiscTimer->uTotalGameTimeElapsed + ((signed int)fixpoint_mul(v36, v18) >> 3);
+            VertexRenderList[i].v = (double)v35 / (2 * (double)pSkyPolygon.texture->GetHeight() * 65536.0);
+
+            VertexRenderList[i].vWorldViewPosition.x = (double)pODMRenderParams->shading_dist_mist;
+            VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
+        }
+
+
+        _set_ortho_projection();
+        _set_ortho_modelview();
+
+
+        VertexRenderList[1].vWorldViewProjY = VertexRenderList[1].vWorldViewProjY + 80.0;
+        VertexRenderList[2].vWorldViewProjY = VertexRenderList[2].vWorldViewProjY + 80.0;
+
+        this->DrawOutdoorSkyPolygon(&pSkyPolygon);
+
+        VertexRenderList[0].vWorldViewProjY = (double)v10;
+        VertexRenderList[1].vWorldViewProjY = VertexRenderList[1].vWorldViewProjY + 30.0;
+        VertexRenderList[2].vWorldViewProjY = VertexRenderList[2].vWorldViewProjY + 30.0;
+        VertexRenderList[3].vWorldViewProjY = (double)v10;
+
+        //this->DrawOutdoorSkyPolygon(&pSkyPolygon);
+    }
+}
+
+
+
+//----- (004A2DA3) --------------------------------------------------------
+void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon)
+{
+    auto texture = (TextureOpenGL *)pSkyPolygon->texture;
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    VertexRenderList[0].u = 0 - (float)pParty->sRotationY / 512;
+    VertexRenderList[1].u = 0 - (float)pParty->sRotationY / 512;
+    VertexRenderList[2].u = 1 - (float)pParty->sRotationY / 512;
+    VertexRenderList[3].u = 1 - (float)pParty->sRotationY / 512;
+
+    if (pParty->sRotationX > 0)
+    {
+        VertexRenderList[0].v = 0 - (float)pParty->sRotationX / 1024;
+        VertexRenderList[1].v = 1 - (float)pParty->sRotationX / 1024;
+        VertexRenderList[2].v = 1 - (float)pParty->sRotationX / 1024;
+        VertexRenderList[3].v = 0 - (float)pParty->sRotationX / 1024;
+    }
+    else
+    {
+        VertexRenderList[0].v = 0 - (float)pParty->sRotationX / 256;
+        VertexRenderList[1].v = 1 - (float)pParty->sRotationX / 256;
+        VertexRenderList[2].v = 1 - (float)pParty->sRotationX / 256;
+        VertexRenderList[3].v = 0 - (float)pParty->sRotationX / 256;
+    }
+
+    glBegin(GL_QUADS);
+    {
+        for (int i = 0; i < pSkyPolygon->uNumVertices; ++i)
+        {
+            unsigned int diffuse = ::GetActorTintColor(31, 0, VertexRenderList[i].vWorldViewPosition.x, 1, 0);
+
+            glColor4f(
+                ((diffuse >> 16) & 0xFF) / 255.0f,
+                ((diffuse >> 8) & 0xFF) / 255.0f,
+                (diffuse & 0xFF) / 255.0f,
+                1.0f
+            );
+
+            glTexCoord2f(
+                VertexRenderList[i].u,
+                /*max_v*/ -VertexRenderList[i].v
+            );
+
+            glVertex3f(
+                VertexRenderList[i].vWorldViewProjX,
+                VertexRenderList[i].vWorldViewProjY,
+                -0.99989998 // z is negative in OpenGL
+            );
+        }
+    }
+    glEnd();
+}
+
+
+
+
+
+
+
+
 
 void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene()
 {
@@ -131,8 +696,13 @@ void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene()
 //----- (004A1C1E) --------------------------------------------------------
 void RenderOpenGL::DoRenderBillboards_D3D()
 {
-    /*glEnable(GL_BLEND);
+    glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);
+
+    _set_ortho_projection();
+    _set_ortho_modelview();
+    //_set_3d_projection_matrix();
+    //_set_3d_modelview_matrix();
 
     for (int i = uNumBillboardsToDraw - 1; i >= 0; --i)
     {
@@ -141,27 +711,74 @@ void RenderOpenGL::DoRenderBillboards_D3D()
             SetBillboardBlendOptions(pBillboardRenderListD3D[i].opacity);
         }
 
+        auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
-        pRenderD3D->pDevice->SetTexture(0, (IDirect3DTexture2 *)pBillboardRenderListD3D[i].gapi_texture);
-        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-            pBillboardRenderListD3D[i].pQuads, pBillboardRenderListD3D[i].uNumVertices,
-            D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS));
+        glBegin(GL_TRIANGLE_FAN);
+        {
+            auto billboard = &pBillboardRenderListD3D[i];
+            auto b = &pBillboardRenderList[i];
+
+            // since OpenGL 1.0 can't mirror texture borders, we should offset UV to avoid black edges
+            billboard->pQuads[0].texcoord.x += 0.5f / texture->GetWidth();
+            billboard->pQuads[0].texcoord.y += 0.5f / texture->GetHeight();
+            billboard->pQuads[1].texcoord.x += 0.5f / texture->GetWidth();
+            billboard->pQuads[1].texcoord.y -= 0.5f / texture->GetHeight();
+            billboard->pQuads[2].texcoord.x -= 0.5f / texture->GetWidth();
+            billboard->pQuads[2].texcoord.y -= 0.5f / texture->GetHeight();
+            billboard->pQuads[3].texcoord.x -= 0.5f / texture->GetWidth();
+            billboard->pQuads[3].texcoord.y += 0.5f / texture->GetHeight();
+
+            for (unsigned int j = 0; j < billboard->uNumVertices; ++j)
+            {
+                glColor4f(
+                    ((billboard->pQuads[j].diffuse >> 16) & 0xFF) / 255.0f,
+                    ((billboard->pQuads[j].diffuse >> 8) & 0xFF) / 255.0f,
+                    ((billboard->pQuads[j].diffuse >> 0) & 0xFF) / 255.0f,
+                    1.0f
+                );
+
+                glTexCoord2f(
+                    billboard->pQuads[j].texcoord.x,
+                    //-billboard->pQuads[j].texcoord.y
+                    billboard->pQuads[j].texcoord.y
+                );
+
+                glVertex3f(
+                    b->world_x + (billboard->pQuads[j].texcoord.x - 0.5f) * b->pSpriteFrame->scale,
+                    b->world_z + (billboard->pQuads[j].texcoord.y - 0.0f) * b->pSpriteFrame->scale,
+                    b->world_y
+                    //billboard->pQuads[j].pos.x /** billboard->pQuads[j].rhw*/,
+                    //billboard->pQuads[j].pos.y /** billboard->pQuads[j].rhw*/,
+                    //billboard->pQuads[j].pos.z /** billboard->pQuads[j].rhw*/
+                    //1.0f/billboard->pQuads[j].rhw
+                );
+            }
+        }
+        glEnd();
     }
+    uNumBillboardsToDraw = 0;
 
     if (bFogEnabled)
     {
         bFogEnabled = false;
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF));
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0));
+        glEnable(GL_FOG);
+        glFogi(GL_FOG_MODE, GL_EXP);
+
+        GLfloat fog_color[] =
+        {
+            ((GetLevelFogColor() >> 16) & 0xFF) / 255.0f,
+            ((GetLevelFogColor() >> 8) & 0xFF) / 255.0f,
+            ((GetLevelFogColor() >> 0) & 0xFF) / 255.0f,
+            1.0f
+        };
+        glFogfv(GL_FOG_COLOR, fog_color);
     }
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));*/
+
+
+    glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
 }
 
 
@@ -219,317 +836,196 @@ void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1)
 
 
 
-
-
-
-
-/*#pragma pack(push, 1)
-typedef struct {
-	char  idlength;
-	char  colourmaptype;
-	char  datatypecode;
-	short int colourmaporigin;
-	short int colourmaplength;
-	char  colourmapdepth;
-	short int x_origin;
-	short int y_origin;
-	short width;
-	short height;
-	char  bitsperpixel;
-	char  imagedescriptor;
-} tga;
-#pragma pack(pop)
-
-FILE *CreateTga(const char *filename, int image_width, int image_height)
+void RenderOpenGL::TransformBillboardsAndSetPalettesODM()
 {
-	auto f = fopen(filename, "w+b");
+    SoftwareBillboard billboard; // [sp+4h] [bp-60h]@1
 
-	tga tga_header;
-	memset(&tga_header, 0, sizeof(tga_header));
+    billboard.sParentBillboardID = -1;
+    billboard.pTarget = render->pTargetSurface;
+    billboard.pTargetZ = render->pActiveZBuffer;
+    billboard.uTargetPitch = render->uTargetSurfacePitch;
+    billboard.uViewportX = pViewport->uViewportTL_X;
+    billboard.uViewportY = pViewport->uViewportTL_Y;
+    billboard.uViewportZ = pViewport->uViewportBR_X - 1;
+    billboard.uViewportW = pViewport->uViewportBR_Y;
+    pODMRenderParams->uNumBillboards = ::uNumBillboardsToDraw;
 
-	tga_header.colourmaptype = 0;
-	tga_header.datatypecode = 2;
-	//tga_header.colourmaporigin = 0;
-	//tga_header.colourmaplength = image_width * image_height;
-	//tga_header.colourmapdepth = 32;
-	tga_header.x_origin = 0;
-	tga_header.y_origin = 0;
-	tga_header.width = image_width;
-	tga_header.height = image_height;
-	tga_header.bitsperpixel = 32;
-	tga_header.imagedescriptor = 32; // top-down
-	fwrite(&tga_header, 1, sizeof(tga_header), f);
-
-	return f;
-}*/
-
-
-
-
-Texture *RenderOpenGL::CreateTexture(const String &name)
-{
-	return TextureOpenGL::Create(
-		new Bitmaps_LOD_Loader(pBitmaps_LOD, name)
-	);
-}
-
-Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id)
-{
-    return TextureOpenGL::Create(
-        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id)
-    );
+    for (unsigned int i = 0; i < ::uNumBillboardsToDraw; ++i)
+    {
+        billboard.uScreenSpaceX = pBillboardRenderList[i].uScreenSpaceX;
+        billboard.uScreenSpaceY = pBillboardRenderList[i].uScreenSpaceY;
+        billboard.sParentBillboardID = i;
+        billboard._screenspace_x_scaler_packedfloat = pBillboardRenderList[i]._screenspace_x_scaler_packedfloat;
+        billboard.sTintColor = pBillboardRenderList[i].sTintColor;
+        billboard._screenspace_y_scaler_packedfloat = pBillboardRenderList[i]._screenspace_y_scaler_packedfloat;
+        billboard.sZValue = pBillboardRenderList[i].sZValue;
+        billboard.uFlags = pBillboardRenderList[i].field_1E;
+        if (pBillboardRenderList[i].hwsprite)
+        {
+            TransformBillboard(
+                &billboard,
+                &pBillboardRenderList[i]
+            );
+        }
+    }
 }
 
 
-bool RenderOpenGL::MoveTextureToDevice(Texture *texture)
+
+//----- (004A4023) --------------------------------------------------------
+void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard)
 {
-    return false;
-}
-
-bool RenderOpenGL::LoadTextureOpenGL(const String &name, bool mipmaps, int *out_texture)
-{
-	String filename = name;
-	std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
-
-	HWLTexture* pHWLTexture = pD3DBitmaps.LoadTexture(filename.c_str(), mipmaps);
-	if (!pHWLTexture)
-		return false;
-
-	auto rgb = new unsigned char[pHWLTexture->uWidth * pHWLTexture->uHeight * 4];
-	for (unsigned int i = 0; i < pHWLTexture->uWidth * pHWLTexture->uHeight; ++i)
-	{
-		rgb[i * 4 + 3] = pHWLTexture->pPixels[i] & 0x8000 ? 0xFF : 0x00;
-		rgb[i * 4 + 2] = 8 * ((pHWLTexture->pPixels[i] >> 0) & 0x1F);
-		rgb[i * 4 + 1] = 8 * ((pHWLTexture->pPixels[i] >> 5) & 0x1F);
-		rgb[i * 4 + 0] = 8 * ((pHWLTexture->pPixels[i] >> 10) & 0x1F);
-	}
-
-/*if (filename == "plansky3")
-{
-if (auto f = CreateTga((name + ".tga").c_str(), pHWLTexture->uWidth, pHWLTexture->uHeight))
-{
-	for (unsigned int i = 0; i < pHWLTexture->uWidth * pHWLTexture->uHeight; ++i)
-	{
-		int r = rgb[i * 4 + 0];
-		int g = rgb[i * 4 + 1];
-		int b = rgb[i * 4 + 2];
-		int a = rgb[i * 4 + 2];
-		int c = (a << 24 ) | (r << 16) | (g << 8) | b;
-
-		fwrite(&c, 4, 1, f);
-	}
-	fclose(f);
-}
-}*/
+    unsigned int v8; // esi@2
+    double v14; // st6@14
+    double v15; // st5@14
+    float v29; // [sp+28h] [bp-8h]@5
+    float v30; // [sp+2Ch] [bp-4h]@5
 
 
-	glGenTextures(1, (GLuint *)out_texture);
-	glBindTexture(GL_TEXTURE_2D, *out_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pHWLTexture->uWidth, pHWLTexture->uHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgb);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    Sprite *pSprite = pBillboard->hwsprite;
+    int dimming_level = pBillboard->dimming_level;
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+    v8 = Billboard_ProbablyAddToListAndSortByZOrder(a2->zbuffer_depth);
 
-	delete[] rgb;
-	delete[] pHWLTexture->pPixels;
-	delete pHWLTexture;
-	return true;
-}
+    v30 = (a2->_screenspace_x_scaler_packedfloat & 0xFFFF) / 65530.0 + HIWORD(a2->_screenspace_x_scaler_packedfloat);
+    v29 = (a2->_screenspace_y_scaler_packedfloat & 0xFFFF) / 65530.0 + HIWORD(a2->_screenspace_y_scaler_packedfloat);
 
-void _set_3d_projection_matrix()
-{
-    float near_clip = 8.0;
-    float far_clip = 4 * pODMRenderParams->shading_dist_mist;
+    unsigned int diffuse = ::GetActorTintColor(dimming_level, 0, a2->zbuffer_depth, 0, pBillboard);
+    if (a2->sTintColor & 0x00FFFFFF && bTinting)
+    {
+        diffuse = BlendColors(a2->sTintColor, diffuse);
+        if (a2->sTintColor & 0xFF000000)
+            diffuse = 0x007F7F7F & ((unsigned int)diffuse >> 1);
+    }
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(65.0f, (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(), near_clip, far_clip);
+    unsigned int specular = 0;
+    if (bUsingSpecular)
+        specular = sub_47C3D7_get_fog_specular(0, 0, a2->zbuffer_depth);
 
-}
-void _set_3d_modelview_matrix()
-{
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glScalef(1.0f, 1.0f, -1.0f);
+    v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
+    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
+    if (a2->uFlags & 4)
+        v14 *= -1.0;
+    pBillboardRenderListD3D[v8].pQuads[0].diffuse = diffuse;
+    pBillboardRenderListD3D[v8].pQuads[0].pos.x = (double)a2->uScreenSpaceX - v14 * v30;
+    pBillboardRenderListD3D[v8].pQuads[0].pos.y = (double)a2->uScreenSpaceY - v15 * v29;
+    pBillboardRenderListD3D[v8].pQuads[0].pos.z = 1.0 - 1.0 / (a2->zbuffer_depth * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[0].rhw = 1.0 / a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].pQuads[0].specular = specular;
+    pBillboardRenderListD3D[v8].pQuads[0].texcoord.x = 0.0;
+    pBillboardRenderListD3D[v8].pQuads[0].texcoord.y = 0.0;
 
-    int camera_x = pParty->vPosition.x;
-    int camera_y = pParty->vPosition.z + pParty->sEyelevel;
-    int camera_z = pParty->vPosition.y;
-    gluLookAt(
-        camera_x, camera_y, camera_z,
+    v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
+    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
+    if (a2->uFlags & 4)
+        v14 = v14 * -1.0;
+    pBillboardRenderListD3D[v8].pQuads[1].specular = specular;
+    pBillboardRenderListD3D[v8].pQuads[1].diffuse = diffuse;
+    pBillboardRenderListD3D[v8].pQuads[1].pos.x = (double)a2->uScreenSpaceX - v14 * v30;
+    pBillboardRenderListD3D[v8].pQuads[1].pos.y = (double)a2->uScreenSpaceY - v15 * v29;
+    pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->zbuffer_depth * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[1].rhw = 1.0 / a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].pQuads[1].texcoord.x = 0.0;
+    pBillboardRenderListD3D[v8].pQuads[1].texcoord.y = 1.0;
 
-        camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationY / 2048.0) - 3,
-        camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationX / 2048.0),
-        camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
+    v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
+    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
+    if (a2->uFlags & 4)
+        v14 *= -1.0;
+    pBillboardRenderListD3D[v8].pQuads[2].diffuse = diffuse;
+    pBillboardRenderListD3D[v8].pQuads[2].specular = specular;
+    pBillboardRenderListD3D[v8].pQuads[2].pos.x = (double)a2->uScreenSpaceX + v14 * v30;
+    pBillboardRenderListD3D[v8].pQuads[2].pos.y = (double)a2->uScreenSpaceY - v15 * v29;
+    pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->zbuffer_depth * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[2].rhw = 1.0 / a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].pQuads[2].texcoord.x = 1.0;
+    pBillboardRenderListD3D[v8].pQuads[2].texcoord.y = 1.0;
 
-        0, 1, 0
-    );
-}
+    v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
+    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
+    if (a2->uFlags & 4)
+        v14 *= -1.0;
+    pBillboardRenderListD3D[v8].pQuads[3].diffuse = diffuse;
+    pBillboardRenderListD3D[v8].pQuads[3].specular = specular;
+    pBillboardRenderListD3D[v8].pQuads[3].pos.x = (double)a2->uScreenSpaceX + v14 * v30;
+    pBillboardRenderListD3D[v8].pQuads[3].pos.y = (double)a2->uScreenSpaceY - v15 * v29;
+    pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->zbuffer_depth * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[3].rhw = 1.0 / a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].pQuads[3].texcoord.x = 1.0;
+    pBillboardRenderListD3D[v8].pQuads[3].texcoord.y = 0.0;
 
-const int terrain_block_scale = 512;
-const int terrain_height_scale = 32;
-void RenderOpenGL::RenderTerrainD3D()
-{
-    glEnable(GL_TEXTURE_2D);
+    pBillboardRenderListD3D[v8].uNumVertices = 4;
+    pBillboardRenderListD3D[v8].texture = pSprite->texture;
+    pBillboardRenderListD3D[v8].z_order = a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].field_90 = a2->field_44;
+    pBillboardRenderListD3D[v8].sZValue = a2->sZValue;
+    pBillboardRenderListD3D[v8].sParentBillboardID = a2->sParentBillboardID;
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
-
-    _set_3d_projection_matrix();
-    _set_3d_modelview_matrix();
-
-	for (int z = 0; z < 128 - 1; ++z)
-	{
-		for (int x = 0; x < 128 - 1; ++x)
-		{
-			auto tile = pOutdoor->DoGetTile(x, z);
-			if (!tile)
-				continue;
-
-			struct Polygon p;
-			auto *poly = &p;
-
-			poly->texture = tile->GetTexture();
-			if (tile->IsWaterTile())
-			{
-				poly->texture = this->hd_water_tile_anim[this->hd_water_current_frame];
-			}
-
-			//√енераци€ местоположени€ вершин-------------------------------------------------------------------------
-			//решЄтка вершин делитс€ на две части от -64 до 0 и от 0 до 64
-			//
-			//          X
-			// -64      0     64
-			//   --------------- 64
-			//   |      |      |
-			//   |      |      |
-			//   |      |      |
-			//  0|------+------|  Z
-			//   |      |      |
-			//   |      |      |
-			//   |      |      |
-			//   ---------------
-			//                  -64
-
-			int x1 = x;
-			int x2 = x + 1;
-			int z1 = z;
-			int z2 = z + 1;
-			int y11 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x1];
-			int y21 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x2];
-			int y12 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x1];
-			int y22 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x2];
-
-
-			auto norm = &pTerrainNormals[x1 * 128 + z1];
-			float dim =
-				(norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-				(norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-				(norm->z * (float)pOutdoor->vSunlight.z / 65536.0);
-
-			poly->dimming_level = 20.0 - floorf(20.0 * dim + 0.5f);
-
-			poly->uEdgeList1Size = x;
-			poly->uEdgeList2Size = z;
-
-			// draw animated water under shore
-			bool water_border_tile = false;
-			if (tile->IsWaterBorderTile())
-			{
-				glDepthMask(GL_FALSE);
-				{
-					poly->texture = this->hd_water_tile_anim[this->hd_water_current_frame];
-					this->DrawTerrainPolygon(poly, true, true);
-
-					poly->texture = tile->GetTexture();
-				}
-				glDepthMask(GL_TRUE);
-
-				water_border_tile = true;
-			}
-
-			this->DrawTerrainPolygon(poly, water_border_tile, true);
-		}
-	}
+    if (a2->sTintColor & 0xFF000000)
+        pBillboardRenderListD3D[v8].opacity = RenderBillboardD3D::Opaque_3;
+    else
+        pBillboardRenderListD3D[v8].opacity = RenderBillboardD3D::Transparent;
 }
 
 
-void RenderOpenGL::DrawTerrainPolygon(struct Polygon *a3, bool transparent, bool clampAtTextureBorders)
+
+//----- (004A1B22) --------------------------------------------------------
+unsigned int RenderOpenGL::Billboard_ProbablyAddToListAndSortByZOrder(float z)
 {
-	auto texture = (TextureOpenGL *)a3->texture;
+    unsigned int v7; // edx@6
 
-	glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+    if (uNumBillboardsToDraw >= 999)
+        return 0;
+    if (!uNumBillboardsToDraw)
+    {
+        uNumBillboardsToDraw = 1;
+        return 0;
+    }
 
-	// clamping doesnt really help here in opengl so had to alter texture coordinates a bit
-	float clamp_fix_u = 1.0f / texture->GetWidth();
-	float clamp_fix_v = 1.0f / texture->GetHeight();
-	if (clampAtTextureBorders)
-	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	}
-	else
-	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	}
+    for (int left = 0, right = uNumBillboardsToDraw; left < right; ) // binsearch
+    {
+        v7 = left + (right - left) / 2;
+        if (z <= render->pBillboardRenderListD3D[v7].z_order)
+            right = v7;
+        else
+            left = v7 + 1;
+    }
 
-	if (transparent)
-	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-
-	float dim = 1.0f;// a3->dimming_level / 20.0f;
-	int x1 = a3->uEdgeList1Size;
-	int z1 = a3->uEdgeList2Size;
-	int x2 = x1 + 1;
-	int z2 = z1 + 1;
-
-	int y11 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x1];
-	int y21 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x2];
-	int y12 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x1];
-	int y22 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x2];
-
-	glBegin(GL_TRIANGLES);
-	{
-		glTexCoord2f(0.0f + clamp_fix_u, 0.0f + clamp_fix_v);
-		glColor3f(dim, dim, dim);
-		glVertex3f((x1 - 64) * terrain_block_scale, y11 * terrain_height_scale, (64 - z1) * terrain_block_scale);
-
-		glTexCoord2f(0.0f + clamp_fix_u, 1.0f - clamp_fix_v);
-		glColor3f(dim, dim, dim);
-		glVertex3f((x1 - 64) * terrain_block_scale, y12 * terrain_height_scale, (64 - z2) * terrain_block_scale);
-
-		glTexCoord2f(1.0f - clamp_fix_u, 1.0f - clamp_fix_v);
-		glColor3f(dim, dim, dim);
-		glVertex3f((x2 - 64) * terrain_block_scale, y22 * terrain_height_scale, (64 - z2) * terrain_block_scale);
-
-		// ---
-
-		glTexCoord2f(0.0f + clamp_fix_u, 0.0f + clamp_fix_v);
-		glColor3f(dim, dim, dim);
-		glVertex3f((x1 - 64) * terrain_block_scale, y11 * terrain_height_scale, (64 - z1) * terrain_block_scale);
-
-		glTexCoord2f(1.0f - clamp_fix_u, 1.0f - clamp_fix_v);
-		glColor3f(dim, dim, dim);
-		glVertex3f((x2 - 64) * terrain_block_scale, y22 * terrain_height_scale, (64 - z2) * terrain_block_scale);
-
-		glTexCoord2f(1.0f - clamp_fix_u, 0.0f + clamp_fix_v);
-		glColor3f(dim, dim, dim);
-		glVertex3f((x2 - 64) * terrain_block_scale, y21 * terrain_height_scale, (64 - z1) * terrain_block_scale);
-	}
-	glEnd();
-
-	if (transparent)
-	{
-		glDisable(GL_BLEND);
-	}
+    if (z > render->pBillboardRenderListD3D[v7].z_order)
+    {
+        if (v7 == render->uNumBillboardsToDraw - 1)
+            v7 = render->uNumBillboardsToDraw;
+        else
+        {
+            if ((signed int)render->uNumBillboardsToDraw > (signed int)v7)
+            {
+                for (uint i = 0; i < render->uNumBillboardsToDraw - v7; i++)
+                {
+                    memcpy(&render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i],
+                        &render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)],
+                        sizeof(render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i]));
+                }
+            }
+            ++v7;
+        }
+        uNumBillboardsToDraw++;
+        return v7;
+    }
+    if (z <= render->pBillboardRenderListD3D[v7].z_order)
+    {
+        if ((signed int)render->uNumBillboardsToDraw > (signed int)v7)
+        {
+            for (uint i = 0; i < render->uNumBillboardsToDraw - v7; i++)
+            {
+                memcpy(&render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i],
+                    &render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)],
+                    sizeof(render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i]));
+            }
+        }
+        uNumBillboardsToDraw++;
+        return v7;
+    }
+    return v7;
 }
 
 
@@ -537,224 +1033,6 @@ void RenderOpenGL::DrawTerrainPolygon(struct Polygon *a3, bool transparent, bool
 
 
 
-
-void RenderOpenGL::DrawOutdoorSkyD3D()
-{
-	int v9; // eax@4
-	int v10; // ebx@4
-	int v13; // edi@6
-	int v14; // ecx@6
-	int v15; // eax@8
-	int v16; // eax@12
-	signed __int64 v17; // qtt@13
-	signed int v18; // ecx@13
-	struct Polygon pSkyPolygon; // [sp+14h] [bp-150h]@1
-	int v30; // [sp+134h] [bp-30h]@1
-	int v32; // [sp+13Ch] [bp-28h]@6
-	int v33; // [sp+140h] [bp-24h]@2
-	signed __int64 v34; // [sp+144h] [bp-20h]@1
-	int v35; // [sp+148h] [bp-1Ch]@4
-	int v36; // [sp+14Ch] [bp-18h]@2
-	int v37; // [sp+154h] [bp-10h]@8
-	int v38; // [sp+158h] [bp-Ch]@1
-	int v39; // [sp+15Ch] [bp-8h]@4
-
-	v30 = (signed __int64)((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
-		/ ((double)pODMRenderParams->int_fov_rad + 8192.0)
-		+ (double)(pViewport->uScreenCenterY));
-    v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) * (double)pODMRenderParams->shading_dist_mist;
-	v38 = (signed __int64)((double)(pViewport->uScreenCenterY)
-		- (double)pODMRenderParams->int_fov_rad
-		/ (v34 + 0.0000001)
-		* (sin((double)pIndoorCameraD3D->sRotationX * 0.0030664064)
-			* -(double)pODMRenderParams->shading_dist_mist
-			- (double)pIndoorCameraD3D->vPartyPos.z));
-	pSkyPolygon.Create_48607B(&stru_8019C8);//заполн€етс€ ptr_38
-	pSkyPolygon.ptr_38->_48694B_frustum_sky();
-
-	//if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
-	//pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
-	//else
-	//pSkyPolygon.uTileBitmapID = pOutdoor->sSky_TextureID;//179(original 166)
-	//pSkyPolygon.pTexture = (Texture_MM7 *)(pSkyPolygon.uTileBitmapID != -1 ? (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
-	pSkyPolygon.texture = pOutdoor->sky_texture;
-	if (pSkyPolygon.texture)
-	{
-		pSkyPolygon.dimming_level = 0;
-		pSkyPolygon.uNumVertices = 4;
-		//centering(центруем)-----------------------------------------------------------------
-		pSkyPolygon.v_18.x = -stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX + 16);
-		pSkyPolygon.v_18.y = 0;
-		pSkyPolygon.v_18.z = -stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX + 16);
-
-		//sky wiew position(положение неба на экране)------------------------------------------
-		//                X
-		// 0._____________________________.3
-		//  |8,8                    468,8 |
-		//  |                             |
-		//  |                             |
-		// Y|                             |
-		//  |                             |
-		//  |8,351                468,351 |
-		// 1._____________________________.2
-		// 
-		VertexRenderList[0].vWorldViewProjX = (double)(signed int)pViewport->uViewportTL_X;//8
-		VertexRenderList[0].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;//8
-
-		VertexRenderList[1].vWorldViewProjX = (double)(signed int)pViewport->uViewportTL_X;//8
-		VertexRenderList[1].vWorldViewProjY = (double)v38;//247
-
-		VertexRenderList[2].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;//468
-		VertexRenderList[2].vWorldViewProjY = (double)v38;//247
-
-		VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;//468
-		VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;//8
-
-		pSkyPolygon.sTextureDeltaU = 224 * pMiscTimer->uTotalGameTimeElapsed;//7168
-		pSkyPolygon.sTextureDeltaV = 224 * pMiscTimer->uTotalGameTimeElapsed;//7168
-
-		pSkyPolygon.field_24 = 0x2000000;//maybe attributes
-		v33 = 65536 / (signed int)(signed __int64)(((double)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2) / tan(0.6457717418670654) + 0.5);
-		for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i)
-		{
-			//rotate skydome(вращение купола неба)--------------------------------------
-			// ¬ игре прин€та сво€ система измерени€ углов. ѕолный угол (180). «начению угла 0 соответствует 
-			// направление на север и/или юг (либо на восток и/или запад), значению 65536 еденицам(0х10000) соответствует угол 90.
-			// две переменные хран€т данные по углу обзора. field_14 по западу и востоку. field_20 по югу и северу
-			// от -25080 до 25080
-			v39 = fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_west_east, v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-			v35 = v39 + pSkyPolygon.ptr_38->angle_from_north;
-
-			v39 = fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_north_south, v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
-			v36 = v39 + pSkyPolygon.ptr_38->angle_from_east;
-
-			v9 = fixpoint_mul(pSkyPolygon.v_18.z, v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-			v10 = pSkyPolygon.v_18.x + v9;
-			if (v10 > 0)
-				v10 = 0;
-			v13 = v33 * (pViewport->uScreenCenterX - (signed __int64)VertexRenderList[i].vWorldViewProjX);
-			v34 = -pSkyPolygon.field_24;
-			v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0;
-			v14 = v33 * (v30 - v32);
-			while (1)
-			{
-				if (v10)
-				{
-					v37 = abs((int)v34 >> 14);
-					v15 = abs(v10);
-					if (v37 <= v15 || v32 <= (signed int)pViewport->uViewportTL_Y)
-					{
-						if (v10 <= 0)
-							break;
-					}
-				}
-				v16 = fixpoint_mul(pSkyPolygon.v_18.z, v14);
-				--v32;
-				v14 += v33;
-				v10 = pSkyPolygon.v_18.x + v16;
-			}
-			HEXRAYS_LODWORD(v17) = HEXRAYS_LODWORD(v34) << 16;
-			HEXRAYS_HIDWORD(v17) = v34 >> 16;
-			v18 = v17 / v10;
-			if (v18 < 0)
-				v18 = pODMRenderParams->shading_dist_mist;
-			v37 = v35 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, v13);
-			v35 = 224 * pMiscTimer->uTotalGameTimeElapsed + ((signed int)fixpoint_mul(v37, v18) >> 3);
-			VertexRenderList[i].u = (double)v35 / (2*(double)pSkyPolygon.texture->GetWidth() * 65536.0);
-
-			v36 = v36 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_south, v13);
-			v35 = 224 * pMiscTimer->uTotalGameTimeElapsed + ((signed int)fixpoint_mul(v36, v18) >> 3);
-			VertexRenderList[i].v = (double)v35 / (2*(double)pSkyPolygon.texture->GetHeight() * 65536.0);
-
-            VertexRenderList[i].vWorldViewPosition.x = (double)pODMRenderParams->shading_dist_mist;
-			VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
-		}
-
-
-
-		glViewport(0, 0, window->GetWidth(), window->GetHeight());
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
-
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-
-
-		VertexRenderList[1].vWorldViewProjY = VertexRenderList[1].vWorldViewProjY + 80.0;
-		VertexRenderList[2].vWorldViewProjY = VertexRenderList[2].vWorldViewProjY + 80.0;
-
-		this->DrawOutdoorSkyPolygon(&pSkyPolygon);
-
-		VertexRenderList[0].vWorldViewProjY = (double)v10;
-		VertexRenderList[1].vWorldViewProjY = VertexRenderList[1].vWorldViewProjY + 30.0;
-		VertexRenderList[2].vWorldViewProjY = VertexRenderList[2].vWorldViewProjY + 30.0;
-		VertexRenderList[3].vWorldViewProjY = (double)v10;
-
-		//this->DrawOutdoorSkyPolygon(&pSkyPolygon);
-	}
-}
-
-
-
-//----- (004A2DA3) --------------------------------------------------------
-void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon)
-{
-	auto texture = (TextureOpenGL *)pSkyPolygon->texture;
-
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-VertexRenderList[0].u = 0 - (float)pParty->sRotationY / 512;
-VertexRenderList[1].u = 0 - (float)pParty->sRotationY / 512;
-VertexRenderList[2].u = 1 - (float)pParty->sRotationY / 512;
-VertexRenderList[3].u = 1 - (float)pParty->sRotationY / 512;
-
-if (pParty->sRotationX > 0)
-{
-	VertexRenderList[0].v = 0 - (float)pParty->sRotationX / 1024;
-	VertexRenderList[1].v = 1 - (float)pParty->sRotationX / 1024;
-	VertexRenderList[2].v = 1 - (float)pParty->sRotationX / 1024;
-	VertexRenderList[3].v = 0 - (float)pParty->sRotationX / 1024;
-}
-else
-{
-	VertexRenderList[0].v = 0 - (float)pParty->sRotationX / 256;
-	VertexRenderList[1].v = 1 - (float)pParty->sRotationX / 256;
-	VertexRenderList[2].v = 1 - (float)pParty->sRotationX / 256;
-	VertexRenderList[3].v = 0 - (float)pParty->sRotationX / 256;
-}
-
-	glBegin(GL_QUADS);
-	{
-		for (int i = 0; i < pSkyPolygon->uNumVertices; ++i)
-		{
-			unsigned int diffuse = ::GetActorTintColor(31, 0, VertexRenderList[i].vWorldViewPosition.x, 1, 0);
-
-			glColor4f(
-				((diffuse >> 16) & 0xFF) / 255.0f,
-				((diffuse >> 8) & 0xFF) / 255.0f,
-				(diffuse & 0xFF) / 255.0f,
-				1.0f
-			);
-
-			glTexCoord2f(
-				VertexRenderList[i].u,
-				/*max_v*/ - VertexRenderList[i].v
-			);
-
-			glVertex3f(
-				VertexRenderList[i].vWorldViewProjX,
-				VertexRenderList[i].vWorldViewProjY,
-				-0.99989998 // z is negative in OpenGL
-			);
-		}
-	}
-	glEnd();
-}
 
 
 
@@ -1231,16 +1509,8 @@ void RenderOpenGL::Present()
         delete[] alpha_blended;
     }
 
-
-
-    glViewport(0, 0, window->GetWidth(), window->GetHeight());
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    _set_ortho_projection();
+    _set_ortho_modelview();
 
     glBindTexture(GL_TEXTURE_2D, screen_quad_id);
     glEnable(GL_BLEND);
@@ -1728,12 +1998,6 @@ HWLTexture *RenderOpenGL::LoadHwlBitmap(const char *name)
 HWLTexture *RenderOpenGL::LoadHwlSprite(const char *name)
 {
     return pD3DSprites.LoadTexture(name, 0);
-}
-
-
-bool RenderOpenGL::MoveSpriteToDevice(Sprite *pSprite)
-{
-    return true;
 }
 
 void RenderOpenGL::WritePixel16(int x, int y, unsigned __int16 color)

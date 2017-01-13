@@ -515,13 +515,13 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **
     );
 
     int num_pixels = tex->uTextureWidth * tex->uTextureHeight;
-    int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R5G6B5);
+    int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A1R5G5B5);
     auto pixels = new unsigned __int16[num_pixels];
     if (pixels)
     {
         *width = tex->uTextureWidth;
         *height = tex->uTextureHeight;
-        *format = IMAGE_FORMAT_R5G6B5;
+        *format = IMAGE_FORMAT_A1R5G5B5;
 
         if (tex->pBits & 2) // hardware bitmap
         {
@@ -572,7 +572,7 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **
         int dst_height = hwl->uHeight;
 
         int num_pixels = dst_width * dst_height;
-        int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R5G6B5);
+        int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A1R5G5B5);
         auto pixels = new unsigned __int16[num_pixels];
         if (pixels)
         {
@@ -597,7 +597,7 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **
 
             *width = dst_width;
             *height = dst_height;
-            *format = IMAGE_FORMAT_R5G6B5;
+            *format = IMAGE_FORMAT_A1R5G5B5;
         }
 
         *out_pixels = pixels;
