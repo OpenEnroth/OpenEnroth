@@ -169,11 +169,10 @@ bool Party::_497FC5_check_party_perception_against_level()
 }
 
 //----- (004936E1) --------------------------------------------------------
-void Party::SetHoldingItem(ItemGen *pItem)
-{
-  sub_421B2C_PlaceInInventory_or_DropPickedItem();
-  memcpy(&pPickedItem, pItem, sizeof(pPickedItem));
-  pMouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
+void Party::SetHoldingItem(ItemGen *pItem) {
+	sub_421B2C_PlaceInInventory_or_DropPickedItem();
+	memcpy(&pPickedItem, pItem, sizeof(pPickedItem));
+	pMouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
 }
 
 //----- (0049370F) --------------------------------------------------------
