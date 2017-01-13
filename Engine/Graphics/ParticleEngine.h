@@ -28,7 +28,7 @@ struct Particle_sw
     float b;
     unsigned int uDiffuse;
     int timeToLive;
-    unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
+    Texture *texture;//unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
     float flt_28;
     int field_2C;
     int field_30;
@@ -59,7 +59,7 @@ struct Particle
         unsigned int uParticleColor;
     };
     int timeToLive;
-    unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
+    Texture *texture;//unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
     float flt_28;
     float _x;
     float _y;

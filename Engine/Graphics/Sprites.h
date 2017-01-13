@@ -8,7 +8,6 @@ class Sprite  //28h
 public:
     inline Sprite()
     {
-        d3d11_srv = nullptr;
     }
     ~Sprite();
 
@@ -16,44 +15,42 @@ public:
 
     const char *pName;  //0
     int uPaletteID; //4
-    struct IDirectDrawSurface4 *pTextureSurface;  //8
-    struct IDirect3DTexture2 *pTexture;   //ch
+    //struct IDirectDrawSurface4 *pTextureSurface;  //8
+    //struct IDirect3DTexture2 *pTexture;   //ch
+    Texture *texture;
     int uAreaX;  //10h
     int uAreaY;  //14h
-    int uBufferWidth;  //18h
-    int uBufferHeight;  //1ch
+    int uBufferWidth;  //18h  hardware width  (as opposed to LODSprite::Width)
+    int uBufferHeight;  //1ch  hardware sprite height
     int uAreaWidth;  //20h
     int uAreaHeight; //24h
 
-    struct ID3D11ShaderResourceView *d3d11_srv;
+    struct LODSprite *sprite_header;
+    //struct ID3D11ShaderResourceView *d3d11_srv;
 };
 #pragma pack(pop)
 
 
-/*   42 */
-#pragma pack(push, 1)
-struct SpriteFrame_mm6
+
+class SpriteFrame
 {
-    char pIconName[12]; 
-    char pTextureName[12]; //c
-    __int16 pHwSpriteIDs[8]; //18h
-    int scale; //28h
-    int uFlags; //2c
-    __int16 uGlowRadius; //30
-    __int16 uPaletteID;  //32
-    __int16 uPaletteIndex;
-    __int16 uAnimTime;
-    //__int16 uAnimLength;
-    //__int16 _pad;
+    public:
+        bool Deserialize(const struct SpriteFrame_MM6 *);
+        bool Deserialize(const struct SpriteFrame_MM7 *);
+
+        String icon_name;
+        String texture_name;
+
+        Sprite *hw_sprites[8];
+        int scale;
+        int uFlags;
+        int uGlowRadius;
+        int uPaletteID;
+        int uPaletteIndex;
+        int uAnimTime;
+        int uAnimLength;
 };
 
-class SpriteFrame: public SpriteFrame_mm6
-{
-public:
-    __int16 uAnimLength;
-    __int16 _pad;
-};
-#pragma pack(pop)
 
 /*   43 */
 #pragma pack(push, 1)

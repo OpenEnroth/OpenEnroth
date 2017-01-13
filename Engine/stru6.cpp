@@ -174,7 +174,7 @@ void stru6_stru1_indoor_sw_billboard::_47829F_sphere_particle(float x_offset, fl
 
 
 //----- (004A71FE) --------------------------------------------------------
-void stru6::DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, float dstY, float dstZ, Texture *texture)
+void SpellFxRenderer::DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, float dstY, float dstZ, Texture *texture)
 {
     //int v8; // eax@1
 
@@ -193,7 +193,7 @@ void stru6::DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, floa
 }
 
 //----- (004A7298) --------------------------------------------------------
-void stru6::DrawProjectiles()
+void SpellFxRenderer::DrawProjectiles()
 {
     float v10; // ST1C_4@8
     float v11; // ST0C_4@8
@@ -232,9 +232,9 @@ void stru6::DrawProjectiles()
 }
 
 //----- (004A73AA) --------------------------------------------------------
-void stru6::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(SpriteObject *a2, unsigned int uDiffuse, unsigned int resource_id)
+void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(SpriteObject *a2, unsigned int uDiffuse, Texture *texture)
 {
-    stru6 *v4; // edi@1
+    SpellFxRenderer *v4; // edi@1
     SpriteObject *v5; // esi@1
     int v6; // eax@1
     stru6_stru2 *v7; // eax@2
@@ -263,7 +263,7 @@ void stru6::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(Spr
         local_0.g = 0.0;
         local_0.b = 0.0;
         local_0.timeToLive = (rand() & 0x40) + 96;
-        local_0.resource_id = resource_id;
+        local_0.texture = texture;
         local_0.flt_28 = 1.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
         local_0.x = x - 4.0f;
@@ -295,7 +295,7 @@ void stru6::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(Spr
         local_0.b = 0.0f;
         local_0.flt_28 = 1.0f;
         local_0.timeToLive = (rand() & 0x7F) + 128;
-        local_0.resource_id = resource_id;
+        local_0.texture = texture;
         pEngine->pParticleEngine->AddParticle(&local_0);
         local_0.x = (float)a2->vPosition.x - 4.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
@@ -303,7 +303,7 @@ void stru6::_4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(Spr
 }
 
 //----- (004A75CC) --------------------------------------------------------
-void stru6::_4A75CC_single_spell_collision_particle(SpriteObject *a1, unsigned int uDiffuse, unsigned int resource_id)
+void SpellFxRenderer::_4A75CC_single_spell_collision_particle(SpriteObject *a1, unsigned int uDiffuse, Texture *texture)
 {
     double v4; // st7@1
     signed int v5; // edi@1
@@ -318,7 +318,7 @@ void stru6::_4A75CC_single_spell_collision_particle(SpriteObject *a1, unsigned i
     local_0.z = v4;
     v5 = 10;
     local_0.timeToLive = (rand() & 0x7F) + 128;
-    local_0.resource_id = resource_id;
+    local_0.texture = texture;
     local_0.flt_28 = 1.0f;
     do
     {
@@ -331,7 +331,7 @@ void stru6::_4A75CC_single_spell_collision_particle(SpriteObject *a1, unsigned i
 }
 
 //----- (004A7688) --------------------------------------------------------
-void stru6::_4A7688_fireball_collision_particle(SpriteObject *a2)
+void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2)
 {
     double v3; // st7@1
     double v4; // st7@2
@@ -351,7 +351,7 @@ void stru6::_4A7688_fireball_collision_particle(SpriteObject *a2)
     local_0.y = (float)a2->vPosition.y;
     local_0.z = (float)a2->vPosition.z;
     local_0.timeToLive = (rand() & 0x7F) + 128;
-    local_0.resource_id = this->effpar01;
+    local_0.texture = this->effpar01;
     local_0.flt_28 = 1.0;
 
     // 10 fireball sparks 
@@ -371,7 +371,7 @@ void stru6::_4A7688_fireball_collision_particle(SpriteObject *a2)
 }
 
 //----- (004A77FD) --------------------------------------------------------
-void stru6::_4A77FD_implosion_particle_d3d(SpriteObject *a1)
+void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1)
 {
     double v4; // st7@1
     double v5; // st7@2
@@ -398,7 +398,7 @@ void stru6::_4A77FD_implosion_particle_d3d(SpriteObject *a1)
 }
 
 //----- (004A78AE) --------------------------------------------------------
-void stru6::_4A78AE_sparks_spell(SpriteObject *a1)
+void SpellFxRenderer::_4A78AE_sparks_spell(SpriteObject *a1)
 {
     ObjectDesc *v2; // esi@1
     unsigned int v3; // eax@1
@@ -418,14 +418,14 @@ void stru6::_4A78AE_sparks_spell(SpriteObject *a1)
     local_0.r = 0.0f;
     local_0.g = 0.0f;
     local_0.b = 0.0f;
-    local_0.resource_id = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->pHwSpriteIDs[0];
-__debugbreak();
+    local_0.texture = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->hw_sprites[0]->texture;
+__debugbreak(); // fix float
     HEXRAYS_LODWORD(local_0.flt_28) = 0x40000000u;
     pEngine->pParticleEngine->AddParticle(&local_0);
 }
 
 //----- (004A7948) --------------------------------------------------------
-void stru6::_4A7948_mind_blast_after_effect(SpriteObject *a1)
+void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1)
 {
     ObjectDesc *v2; // esi@1
     unsigned int v3; // eax@1
@@ -460,7 +460,7 @@ __debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets
 }
 
 //----- (004A7A27) --------------------------------------------------------
-bool stru6::AddMobileLight(SpriteObject *a1, unsigned int uDiffuse, int uRadius)
+bool SpellFxRenderer::AddMobileLight(SpriteObject *a1, unsigned int uDiffuse, int uRadius)
 {
     return pMobileLightsStack->AddLight(
         a1->vPosition.x, a1->vPosition.y, a1->vPosition.z, a1->uSectorID, uRadius,
@@ -472,7 +472,7 @@ bool stru6::AddMobileLight(SpriteObject *a1, unsigned int uDiffuse, int uRadius)
 }
 
 //----- (004A7A66) --------------------------------------------------------
-void stru6::_4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(SpriteObject *a1, unsigned int uDiffuse, unsigned int resource_id, float a4)
+void SpellFxRenderer::_4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(SpriteObject *a1, unsigned int uDiffuse, Texture *texture, float a4)
 {
     int v5; // eax@1
     char v6; // al@1
@@ -497,7 +497,7 @@ void stru6::_4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_li
     local_0.flt_28 = 1.0;
     v7 = 0.0 * a4;
     local_0.timeToLive = (v6 & 0x7F) + 128;
-    local_0.resource_id = resource_id;
+    local_0.texture = texture;
     a1a = v7;
     local_0.r = v7;
     local_0.g = a4;
@@ -540,9 +540,9 @@ void stru6::_4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_li
 }
 
 //----- (004A7C07) --------------------------------------------------------
-void stru6::_4A7C07_stun_spell_fx(SpriteObject *a2)
+void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2)
 {
-    stru6 *v2; // edi@1
+    SpellFxRenderer *v2; // edi@1
     SpriteObject *v3; // esi@1
     int v4; // eax@1
     ObjectDesc *v5; // ebx@1
@@ -617,7 +617,7 @@ __debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets
 }
 
 //----- (004A7E05) --------------------------------------------------------
-void stru6::AddProjectile(SpriteObject *a2, int a3, Texture *texture)
+void SpellFxRenderer::AddProjectile(SpriteObject *a2, int a3, Texture *texture)
 {
     if (a2->field_54)
     {
@@ -641,7 +641,7 @@ void stru6::AddProjectile(SpriteObject *a2, int a3, Texture *texture)
 }
 
 //----- (004A7E89) --------------------------------------------------------
-void stru6::_4A7E89_sparkles_on_actor_after_it_casts_buff(Actor *pActor, unsigned int uDiffuse)
+void SpellFxRenderer::_4A7E89_sparkles_on_actor_after_it_casts_buff(Actor *pActor, unsigned int uDiffuse)
 {
     Actor *v3; // edi@1
     int v4; // ebx@3
@@ -654,7 +654,7 @@ void stru6::_4A7E89_sparkles_on_actor_after_it_casts_buff(Actor *pActor, unsigne
     Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
     Dst.timeToLive = (rand() & 0x7F) + 128;
     v3 = pActor;
-    Dst.resource_id = this->effpar02;
+    Dst.texture = this->effpar02;
     pActora = 50;
     Dst.flt_28 = 1.0;
     do
@@ -680,7 +680,7 @@ void stru6::_4A7E89_sparkles_on_actor_after_it_casts_buff(Actor *pActor, unsigne
 }
 
 //----- (004A7F74) --------------------------------------------------------
-void stru6::_4A7F74(int x, int y, int z)
+void SpellFxRenderer::_4A7F74(int x, int y, int z)
 {
     char v5; // al@1
     signed int v6; // edi@1
@@ -700,7 +700,7 @@ void stru6::_4A7F74(int x, int y, int z)
     local_0.timeToLive = (v5 & 0x7F) + 128;
 
     v12 = (float)x;
-    local_0.resource_id = this->effpar01;
+    local_0.texture = this->effpar01;
     v11 = (float)y;
     do
     {
@@ -719,7 +719,7 @@ void stru6::_4A7F74(int x, int y, int z)
 }
 
 //----- (004A806F) --------------------------------------------------------
-int stru6::_4A806F_get_mass_distortion_value(Actor *pActor)
+int SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor)
 {
     int v2; // ecx@1
     int v3; // eax@1
@@ -746,9 +746,9 @@ int stru6::_4A806F_get_mass_distortion_value(Actor *pActor)
 }
 
 //----- (004A81CA) --------------------------------------------------------
-bool stru6::RenderAsSprite(SpriteObject *a2)
+bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2)
 {
-  //stru6 *v2; // ebx@1
+  //SpellFxRenderer *v2; // ebx@1
   int result; // eax@1
 //  int v4; // eax@27
   //unsigned int diffuse; // esi@41
@@ -1131,9 +1131,9 @@ bool stru6::RenderAsSprite(SpriteObject *a2)
 }
 
 //----- (004A89BD) --------------------------------------------------------
-void stru6::SetPlayerBuffAnim(unsigned __int16 uSpellID, unsigned __int16 uPlayerID)
+void SpellFxRenderer::SetPlayerBuffAnim(unsigned __int16 uSpellID, unsigned __int16 uPlayerID)
 {
-  //stru6 *v3; // edi@1
+  //SpellFxRenderer *v3; // edi@1
   PlayerBuffAnim *v4; // esi@1
   const char *v6; // [sp-4h] [bp-10h]@2
 
@@ -1222,7 +1222,7 @@ void stru6::SetPlayerBuffAnim(unsigned __int16 uSpellID, unsigned __int16 uPlaye
 }
 
 //----- (004A8BDF) --------------------------------------------------------
-void stru6::FadeScreen__like_Turn_Undead_and_mb_Armageddon(unsigned int uDiffuseColor, unsigned int uFadeTime)
+void SpellFxRenderer::FadeScreen__like_Turn_Undead_and_mb_Armageddon(unsigned int uDiffuseColor, unsigned int uFadeTime)
 {
   this->uFadeTime = uFadeTime;
   this->uFadeLength = uFadeTime;
@@ -1230,21 +1230,21 @@ void stru6::FadeScreen__like_Turn_Undead_and_mb_Armageddon(unsigned int uDiffuse
 }
 
 //----- (004A8BFC) --------------------------------------------------------
-int stru6::_4A8BFC() //for SPELL_LIGHT_PRISMATIC_LIGHT
+int SpellFxRenderer::_4A8BFC() //for SPELL_LIGHT_PRISMATIC_LIGHT
 {
   uAnimLength = 8 * pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength;
   return uAnimLength;
 }
 
 //----- (004A8C27) --------------------------------------------------------
-void stru6::RenderSpecialEffects()
+void SpellFxRenderer::RenderSpecialEffects()
 {
     double v4; // st7@4
     double v5; // st6@4
     float v7; // ST14_4@6
     unsigned int v8; // ST14_4@8
     SpriteFrame *v10; // eax@8
-    int v11; // edi@8
+    //int v11; // edi@8
     RenderVertexD3D3 vd3d[4]; // [sp+60h] [bp-8Ch]@9
 
     if (uNumProjectiles)
@@ -1270,7 +1270,7 @@ void stru6::RenderSpecialEffects()
     {
         v8 = 8 * pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
         v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
-        v11 = v10->pHwSpriteIDs[0];
+
         uAnimLength -= pEventTimer->uTimeElapsed;
         //if ( render->pRenderD3D )
         //{
@@ -1310,12 +1310,12 @@ void stru6::RenderSpecialEffects()
         vd3d[3].texcoord.x = 1.0;
         vd3d[3].texcoord.y = 0.0;
 
-        render->DrawSpecialEffectsQuad(vd3d, pSprites_LOD->pHardwareSprites[v11].pTexture);
+        render->DrawSpecialEffectsQuad(vd3d, v10->hw_sprites[0]->texture);
     }
 }
 
 //----- (004A902A) --------------------------------------------------------
-void stru6::DrawPlayerBuffAnims()
+void SpellFxRenderer::DrawPlayerBuffAnims()
 {
     for (uint i = 0; i < 4; ++i)
     {
@@ -1342,13 +1342,14 @@ void stru6::DrawPlayerBuffAnims()
 }
 
 //----- (004A90A0) --------------------------------------------------------
-void stru6::LoadAnimations()
+void SpellFxRenderer::LoadAnimations()
 {
-    effpar01 = pBitmaps_LOD->LoadTexture("effpar01");
-    effpar02 = pBitmaps_LOD->LoadTexture("effpar02");
-    effpar03 = pBitmaps_LOD->LoadTexture("effpar03");
+    effpar01 = assets->GetBitmap("effpar01");// pBitmaps_LOD->LoadTexture("effpar01");
+    effpar02 = assets->GetBitmap("effpar02");// pBitmaps_LOD->LoadTexture("effpar02");
+    effpar03 = assets->GetBitmap("effpar03");// pBitmaps_LOD->LoadTexture("effpar03");
 
-    uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);
+    // spell not implemented in the game
+    //uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);
 
     pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("zapp"));
     pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal1"));

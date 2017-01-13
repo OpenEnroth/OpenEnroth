@@ -14,6 +14,9 @@ class TextureD3D : public Texture
 
 		static Texture *Create(ImageLoader *loader);
 
+        void SetDirectDrawSurface(IDirectDrawSurface *dds) { this->dds = dds; }
+        void SetDirect3DTexture2(IDirect3DTexture2 *d3dt) { this->d3dt = d3dt; }
+
 		inline TextureD3D(bool lazy_initialization = true) :
 			Texture(lazy_initialization),
 			dds(nullptr),

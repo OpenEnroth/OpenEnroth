@@ -168,11 +168,13 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSpriteHeader, const char *pC
 //----- (004AC795) --------------------------------------------------------
 bool LODFile_Sprites::LoadSprites(const char *pFilename)
 {
-  if (LoadHeader(pFilename, 1))
+    if (LoadHeader(pFilename, 1) == 0)
+    {
+        return LoadSubIndices("sprites08") == 0;
+    }
     return false;
-  else
-    return LoadSubIndices("sprites08") == 0;
 }
+
 
 //----- (004AC7C0) --------------------------------------------------------
 int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPaletteID)
@@ -198,8 +200,8 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
         for (i = 0; i < 1500; ++i)
         {
             pHardwareSprites[i].pName = nullptr;
-            pHardwareSprites[i].pTextureSurface = nullptr;
-            pHardwareSprites[i].pTexture = nullptr;
+            //pHardwareSprites[i].pTextureSurface = nullptr;
+            //pHardwareSprites[i].pTexture = nullptr;
         }
     }
     temp_sprite_hdr.uHeight = 0;
@@ -212,17 +214,32 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
         return -1;
 
     fread(&temp_sprite_hdr, 1, 0x20, sprite_file);
-    pHardwareSprites[uNumLoadedSprites].uBufferWidth = temp_sprite_hdr.uWidth;
-    pHardwareSprites[uNumLoadedSprites].uBufferHeight = temp_sprite_hdr.uHeight;
     pSpriteHeaders[uNumLoadedSprites].uWidth = temp_sprite_hdr.uWidth;
     pSpriteHeaders[uNumLoadedSprites].uHeight = temp_sprite_hdr.uHeight;
     LoadSpriteFromFile(&pSpriteHeaders[uNumLoadedSprites], pContainerName);        //this line is not present here in the original. necessary for Grayface's mouse picking fix
 
-
+    pHardwareSprites[uNumLoadedSprites].uBufferWidth = temp_sprite_hdr.uWidth;
+    pHardwareSprites[uNumLoadedSprites].uBufferHeight = temp_sprite_hdr.uHeight;
     pHardwareSprites[uNumLoadedSprites].pName = (const char *)malloc(20);
     strcpy((char *)pHardwareSprites[uNumLoadedSprites].pName, pContainerName);
     pHardwareSprites[uNumLoadedSprites].uPaletteID = uPaletteID;
-    render->MoveSpriteToDevice(&pHardwareSprites[uNumLoadedSprites]);
+    //render->MoveSpriteToDevice(&pHardwareSprites[uNumLoadedSprites]);
+    pHardwareSprites[uNumLoadedSprites].texture = assets->GetSprite(pContainerName, uPaletteID, uNumLoadedSprites);
+    pHardwareSprites[uNumLoadedSprites].sprite_header = &pSpriteHeaders[uNumLoadedSprites];
+
+    HWLTexture *hwl = render->LoadHwlSprite(pContainerName);
+    if (hwl)
+    {
+        pHardwareSprites[uNumLoadedSprites].uBufferWidth = hwl->uBufferWidth;
+        pHardwareSprites[uNumLoadedSprites].uBufferHeight = hwl->uBufferHeight;
+        pHardwareSprites[uNumLoadedSprites].uAreaX = hwl->uAreaX;
+        pHardwareSprites[uNumLoadedSprites].uAreaY = hwl->uAreaY;
+        pHardwareSprites[uNumLoadedSprites].uAreaWidth = hwl->uAreaWidth;
+        pHardwareSprites[uNumLoadedSprites].uAreaHeight = hwl->uAreaHeigth;
+
+        delete[] hwl->pPixels;
+        delete hwl;
+    }
 
     ++uNumLoadedSprites;
     return uNumLoadedSprites - 1;
@@ -244,9 +261,9 @@ void LODFile_Sprites::MoveSpritesToVideoMemory()
 }
 
 //----- (004ACC38) --------------------------------------------------------
-int LODSprite::DrawSprite_sw(RenderBillboardTransform_local0 *a2, char a3)
+int LODSprite::DrawSprite_sw(SoftwareBillboard *a2, char a3)
 {
-  RenderBillboardTransform_local0 *v3; // edi@1
+  SoftwareBillboard *v3; // edi@1
   int result; // eax@1
   int v5; // esi@2
   int v6; // ST18_4@2
@@ -623,7 +640,7 @@ LABEL_51:
 }
 
 //----- (004AD2D1) --------------------------------------------------------
-int LODSprite::_4AD2D1(struct RenderBillboardTransform_local0 *a2, int a3)
+int LODSprite::_4AD2D1(struct SoftwareBillboard *a2, int a3)
 {
   int result; // eax@1
   unsigned int v4; // esi@1

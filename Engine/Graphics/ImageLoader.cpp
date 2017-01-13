@@ -4,6 +4,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/ImageFormatConverter.h"
+#include "Engine/Graphics/Sprites.h"
 
 
 
@@ -524,7 +525,7 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **
 
         if (tex->pBits & 2) // hardware bitmap
         {
-            HWLTexture* hwl = render->LoadHwlBitmap(this->resource_name.c_str());
+            HWLTexture *hwl = render->LoadHwlBitmap(this->resource_name.c_str());
             if (hwl)
             {
                 // linear scaling
@@ -547,6 +548,60 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **
             *out_pixels = pixels;
             return true;
         }
+    }
+
+    return false;
+}
+
+
+
+bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height, void **out_pixels, IMAGE_FORMAT *format)
+{
+    *width = 0;
+    *height = 0;
+    *out_pixels = nullptr;
+    *format = IMAGE_INVALID_FORMAT;
+
+    HWLTexture *hwl = render->LoadHwlSprite(this->resource_name.c_str());
+    if (hwl)
+    {
+        auto lod_sprite = &lod->pSpriteHeaders[this->lod_sprite_id];
+        auto lod_hd_sprite = &lod->pHardwareSprites[this->lod_sprite_id];
+
+        int dst_width = hwl->uWidth;
+        int dst_height = hwl->uHeight;
+
+        int num_pixels = dst_width * dst_height;
+        int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R5G6B5);
+        auto pixels = new unsigned __int16[num_pixels];
+        if (pixels)
+        {
+            // linear scaling
+            for (int s = 0; s < dst_height; ++s)
+            {
+                for (int t = 0; t < dst_width; ++t)
+                {
+                    unsigned int
+                        resampled_x = t * hwl->uWidth / dst_width,
+                        resampled_y = s * hwl->uHeight / dst_height;
+
+                    unsigned short sample = hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
+
+                    pixels[s * dst_width + t] = sample;
+                }
+            }
+
+            delete[] hwl->pPixels;
+            delete hwl;
+
+
+            *width = dst_width;
+            *height = dst_height;
+            *format = IMAGE_FORMAT_R5G6B5;
+        }
+
+        *out_pixels = pixels;
+        return true;
     }
 
     return false;

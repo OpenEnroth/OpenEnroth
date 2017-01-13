@@ -2299,112 +2299,112 @@ int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor )
       case SPECIAL_ATTACK_CURSE:
         SetCondition(Condition_Cursed, 1);
         pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_WEAK:
         SetCondition(Condition_Weak, 1);
         pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_SLEEP:
         SetCondition(Condition_Sleep, 1);
         pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_DRUNK:
         SetCondition(Condition_Drunk, 1);
         pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_INSANE:
         SetCondition(Condition_Insane, 1);
         pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_POISON_WEAK:
         SetCondition(Condition_Poison_Weak, 1);
         pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_POISON_MEDIUM:
         SetCondition(Condition_Poison_Medium, 1);
         pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_POISON_SEVERE:
         SetCondition(Condition_Poison_Severe, 1);
         pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_DISEASE_WEAK:
         SetCondition(Condition_Disease_Weak, 1);
         pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_DISEASE_MEDIUM:
         SetCondition(Condition_Disease_Medium, 1);
         pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_DISEASE_SEVERE:
         SetCondition(Condition_Disease_Severe, 1);
         pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_PARALYZED:
         SetCondition(Condition_Paralyzed, 1);
         pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_UNCONSCIOUS:
         SetCondition(Condition_Unconcious, 1);
         pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_DEAD:
         SetCondition(Condition_Dead, 1);
         pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_PETRIFIED:
         SetCondition(Condition_Pertified, 1);
         pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_ERADICATED:
         SetCondition(Condition_Eradicated, 1);
         pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
@@ -2417,7 +2417,7 @@ int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor )
           v48->SetBroken();
           pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
         }
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
@@ -2429,14 +2429,14 @@ int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor )
           v27 = &pActor->ActorHasItems[1];
           if ( pActor->ActorHasItems[1].uItemID )
           {
-            pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
             return 1;
           }
         }
         memcpy(v27, &this->pInventoryItemList[this->pInventoryMatrix[v47]-1], 0x24u);
         RemoveItemAtInventoryIndex(v47);
         pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
@@ -2444,7 +2444,7 @@ int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor )
         PlaySound(SPEECH_42, 0);
         ++this->sAgeModifier;
         pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
@@ -2452,14 +2452,14 @@ int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor )
         PlaySound(SPEECH_41, 0);
         this->sMana = 0;
         pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
       case SPECIAL_ATTACK_FEAR:
         SetCondition(Condition_Fear, 1);
         pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(0x99u, v3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
         return 1;
         break;
 
@@ -4960,7 +4960,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
             GameUI_StatusBar_OnEvent(status);
 
             pMouse->RemoveHoldingItem();
-            pEngine->pStru6Instance->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
+            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
             playerAffected->PlaySound(SPEECH_93, 0);
             pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0, 0, 0);
             if (pParty->uCurrentDayOfMonth == 6 || pParty->uCurrentDayOfMonth == 20)
@@ -5002,7 +5002,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
         }
         else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE)
         {
-            pEngine->pStru6Instance->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
+            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
             v5 = PID(OBJECT_Player, player_num + 49);
             pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0, 0, 0);
             playerAffected->AddVariable(VAR_NumSkillPoints, 2);
@@ -5576,7 +5576,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value)
         if (!_449B57_test_bit(pParty->_quest_bits, var_value) && pQuestTable[var_value - 1])
         {
             bFlashQuestBook = 1;
-            pEngine->pStru6Instance->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
+            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
             PlayAwardSound();
             this->PlaySound(SPEECH_93, 0);
         }
@@ -5831,7 +5831,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value)
     case VAR_AutoNotes:
         if (!_449B57_test_bit(pParty->_autonote_bits, var_value) && pAutonoteTxt[var_value - 1].pText)
         {
-            pEngine->pStru6Instance->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
+            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
             this->PlaySound(SPEECH_96, 0);
             bFlashAutonotesBook = 1;
             _506568_autonote_type = pAutonoteTxt[var_value - 1].eType;// dword_72371C[2 * a3];
@@ -6025,7 +6025,7 @@ void Player::PlayAwardSound()
 void Player::PlayAwardSound_Anim()
 {
   int playerIndex = GetPlayerIndex();
-  pEngine->pStru6Instance->SetPlayerBuffAnim(0x96u, playerIndex);
+  pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x96u, playerIndex);
   PlayAwardSound();
 }
 
@@ -6049,7 +6049,7 @@ void Player::SetSkillByEvent( unsigned __int16 Player::* skillToSet, unsigned __
     this->*skillToSet = skillValue | currSkillValue & 0xC0;
   }
   int playerIndex = GetPlayerIndex();
-  pEngine->pStru6Instance->SetPlayerBuffAnim(0x96u, playerIndex);
+  pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x96u, playerIndex);
   PlayAwardSound();
 }
 
@@ -6430,7 +6430,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val)
             this->PlaySound(SPEECH_96, 0);
             bFlashAutonotesBook = 1;
             _506568_autonote_type = pAutonoteTxt[val].eType;
-            pEngine->pStru6Instance->SetPlayerBuffAnim(0x97u, GetPlayerIndex());
+            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x97u, GetPlayerIndex());
         }
         _449B7E_toggle_bit(pParty->_autonote_bits, val, 1);
         PlayAwardSound();
@@ -6599,7 +6599,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val)
 void Player::PlayAwardSound_Anim97()
 {
   int playerIndex = GetPlayerIndex();
-  pEngine->pStru6Instance->SetPlayerBuffAnim(0x97u, playerIndex);
+  pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x97u, playerIndex);
   PlayAwardSound();
 }
 
@@ -7191,7 +7191,7 @@ void Player::SubtractVariable( enum VariableType VarNum, signed int pValue )
 void Player::PlayAwardSound_Anim98()
 {
   int playerIndex = GetPlayerIndex();
-  pEngine->pStru6Instance->SetPlayerBuffAnim(0x98u, playerIndex);
+  pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x98u, playerIndex);
   PlayAwardSound();
 }
 

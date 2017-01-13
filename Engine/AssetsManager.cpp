@@ -86,3 +86,21 @@ Texture *AssetsManager::GetBitmap(const String &name)
 
 	return i->second;
 }
+
+
+Texture *AssetsManager::GetSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id)
+{
+    auto filename = name;
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+    auto i = this->sprites.find(filename);
+    if (i == this->sprites.end())
+    {
+        auto texture = render->CreateSprite(filename, palette_id, lod_sprite_id);
+        this->sprites[filename] = texture;
+
+        return texture;
+    }
+
+    return i->second;
+}

@@ -11,6 +11,8 @@ class TextureOpenGL : public Texture
 
 		static Texture *Create(ImageLoader *loader);
 
+        void SetOpenGlTexture(int ogl_texture) { this->ogl_texture = ogl_texture; }
+
 		inline TextureOpenGL(bool lazy_initialization = true) :
 			Texture(lazy_initialization),
 			ogl_texture(-1)

@@ -9,6 +9,8 @@
 
 class Sprite;
 
+struct IDirectDrawSurface4;
+
 
 #define MAX_LOD_TEXTURES 1000
 #define MAX_LOD_SPRITES  1500
@@ -200,13 +202,13 @@ struct LODSprite
     ~LODSprite();
 
     void Release();
-    int DrawSprite_sw(struct RenderBillboardTransform_local0 *a2, char a3);
-    int _4AD2D1(struct RenderBillboardTransform_local0 *a2, int a3);
+    int DrawSprite_sw(struct SoftwareBillboard *a2, char a3);
+    int _4AD2D1(struct SoftwareBillboard *a2, int a3);
 
     char pName[12]; //0
     int uSpriteSize; //C
-    __int16 uWidth; //10
-    __int16 uHeight; //12
+    __int16 uWidth; //10  SW width (as opposed to Sprite::BufferWidth)
+    __int16 uHeight; //12  SW height
     __int16 uPaletteId; //14
     __int16 word_16;  //16
     __int16 uTexturePitch; //18

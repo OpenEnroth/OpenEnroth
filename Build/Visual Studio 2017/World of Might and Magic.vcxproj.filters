@@ -631,9 +631,6 @@
     <ClCompile Include="..\..\Engine\Graphics\Image.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\Graphics\Texture.cpp">
-      <Filter>Engine\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Platform\OSWindow.cpp">
       <Filter>Platform</Filter>
     </ClCompile>
@@ -1511,6 +1508,10 @@
     <None Include="..\..\Engine\Graphics\Shaders\UI.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </None>
+    <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.gitignore" />
+    <None Include="..\..\README.md" />
+    <None Include="..\..\TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\lib\OpenAL\lib\OpenAL\OpenAL32.lib">

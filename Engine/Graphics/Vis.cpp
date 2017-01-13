@@ -5,15 +5,18 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
-
-#include "Vis.h"
-#include "Sprites.h"
-#include "../Lod.h"
-#include "Outdoor.h"
-#include "Engine/Objects/Actor.h"
-#include "Viewport.h"
 #include "Engine/OurMath.h"
-#include "Level/Decoration.h"
+#include "Engine/LOD.h"
+
+#include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Vis.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Level/Decoration.h"
+
+#include "Engine/Objects/Actor.h"
+
 
 
 static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
@@ -214,60 +217,60 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY, Vis_Selecti
 
 
 //----- (004C1607) --------------------------------------------------------
-bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) 
+bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y)
 {
-  /*Not the original implementation. 
-  This function is redone to use Grayface's mouse pick implementation to take only the visible 
-  parts of billboards into account - I don't really have too much of an idea how it actually works*/
-  float drX; // st7@2
-  float drY; // ecx@2
-  float drH; // [sp+4h] [bp-8h]@2
-  float drW; // [sp+14h] [bp+8h]@2
+    /*Not the original implementation.
+    This function is redone to use Grayface's mouse pick implementation to take only the visible
+    parts of billboards into account - I don't really have too much of an idea how it actually works*/
+    float drX; // st7@2
+    float drY; // ecx@2
+    float drH; // [sp+4h] [bp-8h]@2
+    float drW; // [sp+14h] [bp+8h]@2
 
-  if ( a1->sParentBillboardID == -1 )
-    return false;
+    if (a1->sParentBillboardID == -1)
+        return false;
 
-  drX = a1->pQuads[0].pos.x;
-  drW = a1->pQuads[3].pos.x - drX;
-  drY = a1->pQuads[0].pos.y;
-  drH = a1->pQuads[1].pos.y - drY;
+    drX = a1->pQuads[0].pos.x;
+    drW = a1->pQuads[3].pos.x - drX;
+    drY = a1->pQuads[0].pos.y;
+    drH = a1->pQuads[1].pos.y - drY;
 
-  Sprite* ownerSprite = nullptr;
-  for (int i = 0; i < pSprites_LOD->uNumLoadedSprites; ++i)
-  {
-    if ((void *)pSprites_LOD->pHardwareSprites[i].pTexture == a1->gapi_texture)
+    Sprite* ownerSprite = nullptr;
+    for (int i = 0; i < pSprites_LOD->uNumLoadedSprites; ++i)
     {
-      ownerSprite = &pSprites_LOD->pHardwareSprites[i];
-      break;
+        if ((void *)pSprites_LOD->pHardwareSprites[i].texture == a1->texture)
+        {
+            ownerSprite = &pSprites_LOD->pHardwareSprites[i];
+            break;
+        }
     }
-  }
 
-  if (ownerSprite == nullptr)
-	  return false;
+    if (ownerSprite == nullptr)
+        return false;
 
-  int i = ownerSprite->uAreaX + int(ownerSprite->uAreaWidth * (x - drX) / drW);
-  int j = ownerSprite->uAreaY + int(ownerSprite->uAreaHeight * (y - drY) / drH);
+    int i = ownerSprite->uAreaX + int(ownerSprite->uAreaWidth * (x - drX) / drW);
+    int j = ownerSprite->uAreaY + int(ownerSprite->uAreaHeight * (y - drY) / drH);
 
 
-  LODSprite* spriteHeader = nullptr;
+    LODSprite* spriteHeader = nullptr;
 
-  for (int i = 0; i < MAX_LOD_SPRITES; ++i)
-  {
-    if (strcmp(pSprites_LOD->pSpriteHeaders[i].pName, ownerSprite->pName) == 0)
+    for (int i = 0; i < MAX_LOD_SPRITES; ++i)
     {
-      spriteHeader = &pSprites_LOD->pSpriteHeaders[i];
-      break;
+        if (strcmp(pSprites_LOD->pSpriteHeaders[i].pName, ownerSprite->pName) == 0)
+        {
+            spriteHeader = &pSprites_LOD->pSpriteHeaders[i];
+            break;
+        }
     }
-  }
 
-  if (j < 0 || j >= spriteHeader->uHeight)
-    return false;
+    if (j < 0 || j >= spriteHeader->uHeight)
+        return false;
 
-  if (spriteHeader->pSpriteLines[j].a1 < 0 || i > spriteHeader->pSpriteLines[j].a2 ||  i < spriteHeader->pSpriteLines[j].a1)
-  {
-    return false;
-  }
-  return *(spriteHeader->pSpriteLines[j].pos + i - spriteHeader->pSpriteLines[j].a1) != 0;
+    if (spriteHeader->pSpriteLines[j].a1 < 0 || i > spriteHeader->pSpriteLines[j].a2 || i < spriteHeader->pSpriteLines[j].a1)
+    {
+        return false;
+    }
+    return *(spriteHeader->pSpriteLines[j].pos + i - spriteHeader->pSpriteLines[j].a1) != 0;
 }
 
 //----- (004C16B4) --------------------------------------------------------

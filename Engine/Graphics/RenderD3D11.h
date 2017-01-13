@@ -29,6 +29,7 @@ class RenderD3D11 : public IRender
         virtual bool Initialize(OSWindow *window);
 
 		virtual Texture *CreateTexture(const String &name);
+        virtual Texture *CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id) override { __debugbreak(); return nullptr; }
 
         virtual void ClearBlack();
         virtual void PresentBlackScreen();
@@ -63,11 +64,11 @@ class RenderD3D11 : public IRender
         virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders);
         virtual void DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8);
 
-        virtual void MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *gapi_texture, unsigned int uDiffuse, int angle);
-        virtual void MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *gapi_texture, unsigned int uDiffuse, int angle);
+        virtual void MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle);
+        virtual void MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle);
 
         virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
-        virtual void DrawBillboard_Indoor(RenderBillboardTransform_local0 *pSoftBillboard, Sprite *pSprite, int dimming_level);
+        virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, Sprite *pSprite, int dimming_level);
         virtual void _4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse);
         virtual void TransformBillboardsAndSetPalettesODM();
         virtual void DrawBillboardList_BLV();
@@ -119,7 +120,6 @@ class RenderD3D11 : public IRender
         virtual void RenderTerrainD3D();
 
         virtual bool AreRenderSurfacesOk();
-        virtual bool IsGammaSupported();
 
         virtual void SaveScreenshot(const String &filename, unsigned int width, unsigned int height);
         virtual void PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size);
@@ -140,7 +140,7 @@ class RenderD3D11 : public IRender
         virtual void do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff);
         virtual void DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices);
 
-        virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, void *texture);
+        virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) override;
 
         virtual void am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY, int a3);
         virtual void am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode);

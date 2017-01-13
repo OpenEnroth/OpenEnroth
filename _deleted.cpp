@@ -13042,7 +13042,7 @@ void BspRenderer::DrawFaceOutlines()
 
 
 //----- (004A80DC) --------------------------------------------------------
-void stru6::_4A80DC_implosion_particle_sw(SpriteObject *a2)
+void SpellFxRenderer::_4A80DC_implosion_particle_sw(SpriteObject *a2)
 {
   signed int v3; // ebx@1
   Particle_sw local_0; // [sp+Ch] [bp-68h]@1

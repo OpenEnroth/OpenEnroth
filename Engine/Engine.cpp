@@ -20,7 +20,6 @@
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/GammaControl.h"
 #include "Engine/Graphics/stru9.h"
 #include "Engine/Graphics/stru10.h"
 #include "Engine/Graphics/Viewport.h"
@@ -338,7 +337,7 @@ void Engine::Draw()
         GameUI_DrawRightPanel();
     if (!pMovie_Track)
     {
-        pStru6Instance->DrawPlayerBuffAnims();
+        GetSpellFxRenderer()->DrawPlayerBuffAnims();
         pOtherOverlayList->DrawTurnBasedIcon(v4);
         GameUI_DrawTorchlightAndWizardEye();
     }
@@ -740,7 +739,7 @@ Engine::Engine()
     pMouse = pMouseInstance = new Mouse;
     pLightmapBuilder = new LightmapBuilder;
     pVisInstance = new Vis;
-    pStru6Instance = new stru6;
+    spellfx = new SpellFxRenderer;
     pIndoorCameraD3D = new IndoorCameraD3D;
     pStru9Instance = new stru9;
     pStru10Instance = new stru10;
@@ -770,7 +769,7 @@ Engine::~Engine()
     delete pStru10Instance;
     delete pStru9Instance;
     delete pIndoorCameraD3D;
-    delete pStru6Instance;
+    delete spellfx;
     delete pVisInstance;
     delete pLightmapBuilder;
     delete pMouseInstance;
@@ -1009,9 +1008,7 @@ void IntegrityTest()
     static_assert(sizeof(DecorationDesc) == 84, "Wrong type size");
     static_assert(sizeof(PlayerFrame) == 10, "Wrong type size");
     //static_assert(sizeof(TextureFrame) == 20, "Wrong type size");
-    static_assert(sizeof(SpriteFrame) == 60, "Wrong type size");
     static_assert(sizeof(RenderVertexSoft) == 0x30, "Wrong type size");
-    static_assert(sizeof(RenderBillboard) == 0x34, "Wrong type size");
     //static_assert(sizeof(LODFile_IconsBitmaps) == 0x11BB8 + 4, "Wrong type size"); // + virtual dtor ptr
     static_assert(sizeof(AudioPlayer) == 0xC84, "Wrong type size");
     static_assert(sizeof(SoundDesc) == 0x78, "Wrong type size");
@@ -1064,7 +1061,7 @@ void IntegrityTest()
     static_assert(sizeof(Vis) == 0x20D0, "Wrong type size");
     static_assert(sizeof(PlayerBuffAnim) == 0x10, "Wrong type size");
     static_assert(sizeof(ProjectileAnim) == 0x1C, "Wrong type size");
-    static_assert(sizeof(stru6) == 0x5F8, "Wrong type size");
+    static_assert(sizeof(SpellFxRenderer) == 0x5F8, "Wrong type size");
     static_assert(sizeof(IndoorCameraD3D_Vec3) == 0x10, "Wrong type size");
     static_assert(sizeof(IndoorCameraD3D_Vec4) == 0x18, "Wrong type size"); //should be 14 (10 vec3 + 4 vdtor)  but 18 coz of his +4 from own vdtor, but it is odd since vdtor already present from vec3
     //static_assert(sizeof(IndoorCameraD3D) == 0x1A1384, "Wrong type size");
@@ -1471,7 +1468,7 @@ void SecondaryInitialization()
     }
 
     MainMenuUI_Create();
-    pEngine->pStru6Instance->LoadAnimations();
+    pEngine->GetSpellFxRenderer()->LoadAnimations();
 
     for (uint i = 0; i < 7; ++i)
     {
@@ -1650,6 +1647,8 @@ bool GameLoop()
 //----- (00462C94) --------------------------------------------------------
 bool MM_Main(const wchar_t *pCmdLine)
 {
+    IntegrityTest();
+
 	#ifndef NDEBUG
 	{
 		//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
@@ -1691,9 +1690,6 @@ bool MM_Main(const wchar_t *pCmdLine)
 		}
 	}
 
-
-
-    IntegrityTest();
 
     if (pCmdLine && *pCmdLine)
         ParseCommandLine(pCmdLine);

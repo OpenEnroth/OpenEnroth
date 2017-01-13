@@ -7,6 +7,19 @@
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Serialization/LegacyImages.h"
 
+
+SpriteFrame_MM6::SpriteFrame_MM6()
+{
+    Assert(sizeof(*this) == 56);
+    memset(this, 0, sizeof(*this));
+}
+
+SpriteFrame_MM7::SpriteFrame_MM7()
+{
+    Assert(sizeof(*this) == 60);
+    memset(this, 0, sizeof(*this));
+}
+
 NPCData_Image_MM7::NPCData_Image_MM7()
 {
     Assert(sizeof(*this) == 0x4C);

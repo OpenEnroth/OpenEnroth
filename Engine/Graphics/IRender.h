@@ -9,7 +9,7 @@ class OSWindow;
 
 class Sprite;
 class SpriteFrame;
-struct RenderBillboardTransform_local0;
+struct SoftwareBillboard;
 
 
 bool PauseGameDrawing();
@@ -32,7 +32,7 @@ struct RenderBillboard
         };
     };
     int field_14_actor_id;
-    signed __int16 HwSpriteID;
+    Sprite *hwsprite;//signed __int16 HwSpriteID;
     __int16 uPalette;
     __int16 uIndoorSectorID;
     __int16 field_1E;
@@ -71,9 +71,9 @@ struct ODMRenderParams
     ODMRenderParams()
     {
         uPickDepth = 0;
-        this->shading_dist_shade = 2048;
-        shading_dist_shademist = 4096;
-        shading_dist_mist = 8192;
+        this->shading_dist_shade = 0x800;
+        shading_dist_shademist = 0x1000;
+        shading_dist_mist = 0x2000 * 2;
         int_fov_rad = 0;
         this->bNoSky = 0;
         this->bDoNotRenderDecorations = 0;
@@ -174,7 +174,7 @@ struct RenderBillboardD3D
         NoBlend = 0xFFFFFFFF
     };
 
-    void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
+    Texture *texture;//void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
     unsigned int uNumVertices;
     RenderVertexD3D3 pQuads[4];
     float z_order;
@@ -190,7 +190,7 @@ struct RenderBillboardD3D
 
 /*  248 */
 #pragma pack(push, 1)
-struct RenderBillboardTransform_local0
+struct SoftwareBillboard
 {
     void *pTarget;
     int *pTargetZ;
@@ -288,6 +288,7 @@ class IRender
     virtual bool Initialize(OSWindow *window) = 0;
 
 	virtual Texture *CreateTexture(const String &name) = 0;
+    virtual Texture *CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id) = 0;
 
     virtual void ClearBlack() = 0;
     virtual void PresentBlackScreen() = 0;
@@ -306,9 +307,8 @@ class IRender
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor) = 0;
     virtual void ClearZBuffer(int a2, int a3) = 0;
     virtual void SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW) = 0;
-    //virtual bool LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags) = 0;
-    virtual bool LockSurface(void *surface, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height) = 0; // IDirectDrawSurface for ddraw
-    virtual void UnlockSurface(void *surface) = 0;// IDirectDrawSurface for ddraw
+    virtual bool LockSurface(Texture *surface, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height) = 0;
+    virtual void UnlockSurface(Texture *surface) = 0;
     virtual void LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow) = 0;
     virtual void UnlockBackBuffer() = 0;
     virtual void LockFrontBuffer(void **pOutSurface, unsigned int *pOutPixelsPerRow) = 0;
@@ -324,11 +324,11 @@ class IRender
     virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders) = 0;
     virtual void DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) = 0;
 
-    virtual void MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *gapi_texture, unsigned int uDiffuse, int angle) = 0;
-    virtual void MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *gapi_texture, unsigned int uDiffuse, int angle) = 0;
+    virtual void MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle) = 0;
+    virtual void MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle) = 0;
 
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
-    virtual void DrawBillboard_Indoor(RenderBillboardTransform_local0 *pSoftBillboard, Sprite *pSprite, int dimming_level) = 0;
+    virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillboard *billboard) = 0;
     virtual void _4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse) = 0;
     virtual void TransformBillboardsAndSetPalettesODM() = 0;
     virtual void DrawBillboardList_BLV() = 0;
@@ -337,6 +337,7 @@ class IRender
     virtual bool LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture) = 0;
 	virtual bool LoadTextureOpenGL(const String &name, bool mipmaps, int *out_texture) = 0;
     virtual bool MoveSpriteToDevice(Sprite *pSprite) = 0;
+    virtual bool MoveTextureToDevice(Texture *texture) = 0;
 
     virtual void BeginScene() = 0;
     virtual void EndScene() = 0;
@@ -380,7 +381,6 @@ class IRender
     virtual void RenderTerrainD3D() = 0;
 
     virtual bool AreRenderSurfacesOk() = 0;
-    virtual bool IsGammaSupported() = 0;
 
     virtual void SaveScreenshot(const String &filename, unsigned int width, unsigned int height) = 0;
     virtual void PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size) = 0;
@@ -401,7 +401,7 @@ class IRender
     virtual void do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff) = 0;
     virtual void DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
-    virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, void *gapi_texture) = 0;
+    virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) = 0;
 
     virtual void am_Blt_Copy(struct Rect *pSrcRect, struct Point *pTargetXY, int a3) = 0;
     virtual void am_Blt_Chroma(struct Rect *pSrcRect, struct Point *pTargetPoint, int a3, int blend_mode) = 0;

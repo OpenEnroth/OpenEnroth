@@ -36,6 +36,7 @@ bool TextureOpenGL::LoadImageData()
 			this->pixels[native_format] = pixels;
 
 			bool resample = false;
+__debugbreak();render->MoveTextureToDevice(this);
 			this->initialized = render->LoadTextureOpenGL(
 				this->loader->GetResourceName(),
 				resample,

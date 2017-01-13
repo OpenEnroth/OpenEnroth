@@ -2018,7 +2018,7 @@ void OutdoorLocation::PrepareActorsDrawList()
             else
             {
                 v49 = 1;
-                pEngine->pStru6Instance->_4A7F74(pActors[i].vPosition.x, pActors[i].vPosition.y, z);
+                pEngine->GetSpellFxRenderer()->_4A7F74(pActors[i].vPosition.x, pActors[i].vPosition.y, z);
                 v4 = (1.0 - (double)pActors[i].uCurrentActionTime / (double)pActors[i].uCurrentActionLength) *
                     (double)(2 * pActors[i].uActorHeight);
                 z -= floorf(v4 + 0.5f);
@@ -2117,7 +2117,7 @@ void OutdoorLocation::PrepareActorsDrawList()
             ++uNumBillboardsToDraw;
             ++uNumSpritesDrawnThisFrame;
             pActors[i].uAttributes |= ACTOR_UNKNOW2;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v15->pHwSpriteIDs[v41];
+            pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[v41];
             pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
             pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
             pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v15->scale, v58);
@@ -2133,7 +2133,7 @@ void OutdoorLocation::PrepareActorsDrawList()
             else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
             {
                 pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
-                    pEngine->pStru6Instance->_4A806F_get_mass_distortion_value(&pActors[i]),
+                    pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]),
                     pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
                 );
                 HEXRAYS_LOWORD(v27) = v43;

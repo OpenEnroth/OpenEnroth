@@ -274,25 +274,25 @@ void BLVRenderParams::Reset()
 //----- (00440B44) --------------------------------------------------------
 void IndoorLocation::ExecDraw(bool bD3D)
 {
-  if (bD3D)
-  {
-    pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-    for (uint i = 0; i < pBspRenderer->num_faces; ++i)
+    if (bD3D)
     {
-      if (pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].viewing_portal_id == -1)
-        IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID, nullptr, 4, nullptr);
-      else
-        IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
-                pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].std__vector_0007AC, 4,
-                pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);
+        pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+        for (uint i = 0; i < pBspRenderer->num_faces; ++i)
+        {
+            if (pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].viewing_portal_id == -1)
+                IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID, nullptr, 4, nullptr);
+            else
+                IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
+                    pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].std__vector_0007AC, 4,
+                    pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);
+        }
     }
-  }
-  else for (uint j = 0; j < pBspRenderer->num_faces; ++j )
-  {
-    __debugbreak(); // no SW
-    //pBLVRenderParams->field_7C = &pBspRenderer->nodes[pBspRenderer->faces[j].uNodeID].PortalScreenData;
-    //IndoorLocation::ExecDraw_sw(pBspRenderer->faces[j].uFaceID);
-  }
+    else for (uint j = 0; j < pBspRenderer->num_faces; ++j)
+    {
+        __debugbreak(); // no SW
+        //pBLVRenderParams->field_7C = &pBspRenderer->nodes[pBspRenderer->faces[j].uNodeID].PortalScreenData;
+        //IndoorLocation::ExecDraw_sw(pBspRenderer->faces[j].uFaceID);
+    }
 }
 
 
@@ -2775,7 +2775,7 @@ void PrepareActorRenderList_BLV()
                 ++uNumBillboardsToDraw;
                 ++uNumSpritesDrawnThisFrame;
                 pActors[i].uAttributes |= ACTOR_UNKNOW2;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v9->pHwSpriteIDs[v6];
+                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v9->hw_sprites[v6];
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v9->uPaletteIndex;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].uSectorID;
                 /*if ( !render->pRenderD3D )
@@ -2800,7 +2800,7 @@ void PrepareActorRenderList_BLV()
                     if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
                     {
                         pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
-                            pEngine->pStru6Instance->_4A806F_get_mass_distortion_value(&pActors[i]),
+                            pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]),
                             pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
                             );
                     }
@@ -2870,7 +2870,7 @@ void PrepareItemsRenderList_BLV()
                 if ((pSpriteObjects[i].uType < 1000 || pSpriteObjects[i].uType >= 10000)
                     && (pSpriteObjects[i].uType < 500 || pSpriteObjects[i].uType >= 600)
                     && (pSpriteObjects[i].uType < 811 || pSpriteObjects[i].uType >= 815)
-                    || pEngine->pStru6Instance->RenderAsSprite(&pSpriteObjects[i]))
+                    || pEngine->GetSpellFxRenderer()->RenderAsSprite(&pSpriteObjects[i]))
                 {
                     v4 = pSpriteFrameTable->GetFrame(pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uSpriteID, pSpriteObjects[i].uSpriteFrameID);
                     a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
@@ -2878,9 +2878,9 @@ void PrepareItemsRenderList_BLV()
                         pSpriteObjects[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
                     HEXRAYS_LOWORD(v7) = pSpriteObjects[i].uFacing;
                     v9 = ((signed int)(stru_5C6E00->uIntegerPi + ((signed int)stru_5C6E00->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
-                    pBillboardRenderList[uNumBillboardsToDraw].HwSpriteID = v4->pHwSpriteIDs[v9];
+                    pBillboardRenderList[uNumBillboardsToDraw].hwsprite = v4->hw_sprites[v9];
                     if (v4->uFlags & 0x20)
-                        pSpriteObjects[i].vPosition.z -= (signed int)(fixpoint_mul(v4->scale, pSprites_LOD->pSpriteHeaders[pBillboardRenderList[uNumBillboardsToDraw].HwSpriteID].uHeight) / 2);
+                        pSpriteObjects[i].vPosition.z -= (signed int)(fixpoint_mul(v4->scale, v4->hw_sprites[v9]->uBufferHeight) / 2);
 
                     v34 = 0;
                     if (v4->uFlags & 2)
@@ -3069,7 +3069,7 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
         particle.b = 0.0;
         particle.flt_28 = 1.0;
         particle.timeToLive = (rand() & 0x80) + 128;
-        particle.resource_id = pBitmaps_LOD->LoadTexture("effpar01");
+        particle.texture = pEngine->GetSpellFxRenderer()->effpar01;
         pEngine->pParticleEngine->AddParticle(&particle);
         return;
     }
@@ -3107,7 +3107,7 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
 
             ++uNumBillboardsToDraw;
             ++uNumDecorationsDrawnThisFrame;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v11->pHwSpriteIDs[v9];
+            pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v11->hw_sprites[v9];
             pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v11->uPaletteIndex;
             pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
 

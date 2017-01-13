@@ -11,6 +11,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 #include "Engine/OurMath.h"
+#include "Engine/stru6.h"
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"
@@ -28,7 +29,7 @@
 
 
 
-IRender *IRender::Create() { return new RenderOpenGL(); }
+//IRender *IRender::Create() { return new RenderOpenGL(); }
 
 
 
@@ -65,9 +66,9 @@ void RenderOpenGL::BeginSceneD3D()
 }
 unsigned int RenderOpenGL::GetActorTintColor(float a2, int tint, int a4, int a5, RenderBillboard *a6) { __debugbreak(); return 0; }
 void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) { __debugbreak(); }
-void RenderOpenGL::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
-void RenderOpenGL::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
-void RenderOpenGL::DrawBillboard_Indoor(RenderBillboardTransform_local0 *pSoftBillboard, Sprite *pSprite, int dimming_level) { __debugbreak(); }
+void RenderOpenGL::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
+void RenderOpenGL::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
+void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, Sprite *pSprite, int dimming_level) { __debugbreak(); }
 void RenderOpenGL::_4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse) { __debugbreak(); }
 void RenderOpenGL::DrawBillboardList_BLV() { __debugbreak(); }
 void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture) { __debugbreak(); }
@@ -99,7 +100,7 @@ void RenderOpenGL::EndDecals() { __debugbreak(); }
 void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) { __debugbreak(); }
 void RenderOpenGL::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff) { __debugbreak(); }
 void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) { __debugbreak(); }
-void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, void *texture) { __debugbreak(); }
+void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) { __debugbreak(); }
 void RenderOpenGL::am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY, int blend_mode) { __debugbreak(); }
 void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) { __debugbreak(); }
 
@@ -121,8 +122,103 @@ void RenderOpenGL::TransformBillboardsAndSetPalettesODM()
 
 void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene()
 {
-    //__debugbreak();
+    pEngine->draw_debug_outlines();
+    this->DoRenderBillboards_D3D();
+    pEngine->GetSpellFxRenderer()->RenderSpecialEffects();
 }
+
+
+//----- (004A1C1E) --------------------------------------------------------
+void RenderOpenGL::DoRenderBillboards_D3D()
+{
+    /*glEnable(GL_BLEND);
+    glDepthMask(GL_FALSE);
+
+    for (int i = uNumBillboardsToDraw - 1; i >= 0; --i)
+    {
+        if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend)
+        {
+            SetBillboardBlendOptions(pBillboardRenderListD3D[i].opacity);
+        }
+
+
+        pRenderD3D->pDevice->SetTexture(0, (IDirect3DTexture2 *)pBillboardRenderListD3D[i].gapi_texture);
+        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+            pBillboardRenderListD3D[i].pQuads, pBillboardRenderListD3D[i].uNumVertices,
+            D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS));
+    }
+
+    if (bFogEnabled)
+    {
+        bFogEnabled = false;
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF));
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0));
+    }
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));*/
+}
+
+
+//----- (004A1DA8) --------------------------------------------------------
+void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1)
+{
+    switch (a1)
+    {
+        case RenderBillboardD3D::Transparent:
+        {
+            if (bFogEnabled)
+            {
+                bFogEnabled = false;
+                glEnable(GL_FOG);
+                glFogi(GL_FOG_MODE, GL_EXP);
+
+                GLfloat fog_color[] =
+                {
+                    ((GetLevelFogColor() >> 16) & 0xFF) / 255.0f,
+                    ((GetLevelFogColor() >> 8) & 0xFF) / 255.0f,
+                    ((GetLevelFogColor() >> 0) & 0xFF) / 255.0f,
+                    1.0f
+                };
+                glFogfv(GL_FOG_COLOR, fog_color);
+            }
+
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+        break;
+
+        case RenderBillboardD3D::Opaque_1:
+        case RenderBillboardD3D::Opaque_2:
+        case RenderBillboardD3D::Opaque_3:
+        {
+            if (bUsingSpecular)
+            {
+                if (!bFogEnabled)
+                {
+                    bFogEnabled = true;
+                    glDisable(GL_FOG);
+                }
+            }
+
+            glBlendFunc(GL_ONE, GL_ZERO);
+        }
+        break;
+
+        default:
+            logger->Warning(L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
+            assert(false);
+            break;
+    }
+}
+
+
+
+
 
 
 
@@ -175,6 +271,19 @@ Texture *RenderOpenGL::CreateTexture(const String &name)
 	return TextureOpenGL::Create(
 		new Bitmaps_LOD_Loader(pBitmaps_LOD, name)
 	);
+}
+
+Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id)
+{
+    return TextureOpenGL::Create(
+        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id)
+    );
+}
+
+
+bool RenderOpenGL::MoveTextureToDevice(Texture *texture)
+{
+    return false;
 }
 
 bool RenderOpenGL::LoadTextureOpenGL(const String &name, bool mipmaps, int *out_texture)
@@ -453,12 +562,12 @@ void RenderOpenGL::DrawOutdoorSkyD3D()
 	v30 = (signed __int64)((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
 		/ ((double)pODMRenderParams->int_fov_rad + 8192.0)
 		+ (double)(pViewport->uScreenCenterY));
-	v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) * 0x2000;//(double)pODMRenderParams->shading_dist_mist, 8192
+    v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) * (double)pODMRenderParams->shading_dist_mist;
 	v38 = (signed __int64)((double)(pViewport->uScreenCenterY)
 		- (double)pODMRenderParams->int_fov_rad
 		/ (v34 + 0.0000001)
 		* (sin((double)pIndoorCameraD3D->sRotationX * 0.0030664064)
-			* (double)-0x2000//(double)pODMRenderParams->shading_dist_mist
+			* -(double)pODMRenderParams->shading_dist_mist
 			- (double)pIndoorCameraD3D->vPartyPos.z));
 	pSkyPolygon.Create_48607B(&stru_8019C8);//заполняется ptr_38
 	pSkyPolygon.ptr_38->_48694B_frustum_sky();
@@ -557,7 +666,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D()
 			v35 = 224 * pMiscTimer->uTotalGameTimeElapsed + ((signed int)fixpoint_mul(v36, v18) >> 3);
 			VertexRenderList[i].v = (double)v35 / (2*(double)pSkyPolygon.texture->GetHeight() * 65536.0);
 
-			VertexRenderList[i].vWorldViewPosition.x = (double)0x2000;//pODMRenderParams->shading_dist_mist 8192
+            VertexRenderList[i].vWorldViewPosition.x = (double)pODMRenderParams->shading_dist_mist;
 			VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
 		}
 
@@ -1646,12 +1755,12 @@ unsigned __int16 RenderOpenGL::ReadPixel16(int x, int y)
     );
 }
 
-void RenderOpenGL::UnlockSurface(void *surface)
+void RenderOpenGL::UnlockSurface(Texture *texture)
 {
     __debugbreak();
 }
 
-bool RenderOpenGL::LockSurface(void *surface, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height)
+bool RenderOpenGL::LockSurface(Texture *texture, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height)
 {
     __debugbreak();
     return false;

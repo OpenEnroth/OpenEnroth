@@ -224,11 +224,11 @@ struct stru355
     int field_1C;
 };
 
-/*  390 */
+/* BicubicMipmapGenerator 390 */
 #pragma pack(push, 1)
-struct stru350
+struct BicubicMipmapGenerator
 {
-    stru350 *_450DDE();
+    BicubicMipmapGenerator *_450DDE();
     bool _450DF1(const struct stru355 *p1, const struct stru355 *p2);
     unsigned int _450F55(int a2);
     int _450FB1(int a2);

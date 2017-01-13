@@ -113,7 +113,7 @@ class PCX_LOD_Loader : public PCX_Loader
             this->lod = lod;
         }
 
-        virtual bool Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format) override;
+        virtual bool Load(unsigned int *width, unsigned int *height, void **out_pixels, IMAGE_FORMAT *format) override;
 
 
 
@@ -132,10 +132,32 @@ class Bitmaps_LOD_Loader : public ImageLoader
             this->lod = lod;
         }
 
-        virtual bool Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format) override;
+        virtual bool Load(unsigned int *width, unsigned int *height, void **out_pixels, IMAGE_FORMAT *format) override;
 
 
 
     protected:
         LODFile_IconsBitmaps *lod;
+};
+
+
+class Sprites_LOD_Loader : public ImageLoader
+{
+    public:
+        inline Sprites_LOD_Loader(LODFile_Sprites *lod, unsigned int palette_id, const String &filename, /*refactor*/unsigned int lod_sprite_id)
+        {
+            this->resource_name = filename;
+            this->lod = lod;
+            this->palette_id = palette_id;
+            this->lod_sprite_id = lod_sprite_id;
+        }
+
+        virtual bool Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format) override;
+
+
+
+    protected:
+        LODFile_Sprites *lod;
+        unsigned int     palette_id;
+        /*refactor*/unsigned int lod_sprite_id;
 };

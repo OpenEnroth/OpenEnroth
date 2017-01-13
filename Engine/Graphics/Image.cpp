@@ -401,7 +401,7 @@ int TextureFrameTable::FromFileTxt(const char *Args)
 }
 
 //----- (00451007) --------------------------------------------------------
-int stru350::sub_451007_scale_image_bicubic(unsigned short *pSrc, int srcWidth, int srcHeight, int srcPitch,          //changing this to some library function might be a good idea
+int BicubicMipmapGenerator::sub_451007_scale_image_bicubic(unsigned short *pSrc, int srcWidth, int srcHeight, int srcPitch,          //changing this to some library function might be a good idea
 	unsigned short *pDst, int dstWidth, int dstHeight, int dstPitch,
 	int a10, int a11)
 {
@@ -528,14 +528,14 @@ int stru350::sub_451007_scale_image_bicubic(unsigned short *pSrc, int srcWidth, 
 
 
 //----- (00450DDE) --------------------------------------------------------
-stru350 *stru350::_450DDE()
+BicubicMipmapGenerator *BicubicMipmapGenerator::_450DDE()
 {
 	_450DF1(&stru_4E82A4, &stru_4E82A4);
 	return this;
 }
 
 //----- (00450DF1) --------------------------------------------------------
-bool stru350::_450DF1(const stru355 *p1, const stru355 *p2)
+bool BicubicMipmapGenerator::_450DF1(const stru355 *p1, const stru355 *p2)
 {
 	unsigned int v5; // ecx@2
 	int v6; // edi@2
@@ -722,7 +722,7 @@ bool stru350::_450DF1(const stru355 *p1, const stru355 *p2)
 }
 
 //----- (00450F55) --------------------------------------------------------
-unsigned int stru350::_450F55(int a2)
+unsigned int BicubicMipmapGenerator::_450F55(int a2)
 {
 	int v2 = a2 & stru_4E82A4.field_1C;
 	if (field_20.field_4 & 1)
@@ -734,7 +734,7 @@ unsigned int stru350::_450F55(int a2)
 }
 
 //----- (00450FB1) --------------------------------------------------------
-int stru350::_450FB1(int a2)
+int BicubicMipmapGenerator::_450FB1(int a2)
 {
 	int v2 = 0;
 	int v4 = field_0.field_4 & 1;

@@ -48,12 +48,12 @@ bool TextureD3D::LoadImageData()
 			this->pixels[native_format] = pixels;
 
 			bool resample = false;
-			this->initialized = render->LoadTexture(
+            this->initialized = render->MoveTextureToDevice(this); /*render->LoadTexture(
 				this->loader->GetResourceName().c_str(),
 				resample,
 				(void **)&this->dds,
 				(void **)&this->d3dt
-			);
+			);*/
 		}
 	}
 

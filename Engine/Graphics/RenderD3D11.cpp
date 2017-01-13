@@ -54,10 +54,10 @@ unsigned int RenderD3D11::GetActorTintColor(float a2, int tint, int a4, int a5, 
 void RenderD3D11::DrawPolygon(struct Polygon *a3) {__debugbreak();}
 void RenderD3D11::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders) {__debugbreak();}
 void RenderD3D11::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) {__debugbreak();}
-void RenderD3D11::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
-void RenderD3D11::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
+void RenderD3D11::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
+void RenderD3D11::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
 void RenderD3D11::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {__debugbreak();}
-void RenderD3D11::DrawBillboard_Indoor(RenderBillboardTransform_local0 *pSoftBillboard, Sprite *pSprite, int dimming_level) {__debugbreak();}
+void RenderD3D11::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, Sprite *pSprite, int dimming_level) {__debugbreak();}
 void RenderD3D11::_4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse) {__debugbreak();}
 void RenderD3D11::TransformBillboardsAndSetPalettesODM() {__debugbreak();}
 void RenderD3D11::DrawBillboardList_BLV() {__debugbreak();}
@@ -98,7 +98,7 @@ void RenderD3D11::EndDecals() {__debugbreak();}
 void RenderD3D11::DrawDecal(struct Decal *pDecal, float z_bias) {__debugbreak();}
 void RenderD3D11::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff) {__debugbreak();}
 void RenderD3D11::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {__debugbreak();}
-void RenderD3D11::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, void *texture) {__debugbreak();}
+void RenderD3D11::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) {__debugbreak();}
 void RenderD3D11::am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY, int blend_mode) {__debugbreak();}
 void RenderD3D11::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {__debugbreak();}
 
@@ -255,10 +255,7 @@ void RenderD3D11::Present()
   pSwapChain->Present(0, 0);
 }
 
-bool RenderD3D11::IsGammaSupported()
-{
-  return false;
-}
+
 
 struct
 {
@@ -639,7 +636,7 @@ bool RenderD3D11::MoveSpriteToDevice(Sprite *pSprite)
       ErrorD3D(d3dd->CreateShaderResourceView(vram_texture, nullptr, &srv));
       vram_texture->Release();
 
-      pSprite->d3d11_srv = srv;
+      //pSprite->d3d11_srv = srv;
     }
     /*if (!pRenderD3D->CreateTexture(sprite_texture->uWidth, sprite_texture->uHeight, &pSprite->pTextureSurface, &pSprite->pTexture, 1u, 0, uMinDeviceTextureDim))
       Error("HiScreen16::LoadTexture - D3Drend->CreateTexture() failed: %x", 0);

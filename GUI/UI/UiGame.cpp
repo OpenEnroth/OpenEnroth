@@ -2627,7 +2627,7 @@ __int16 sub_441A4E(int a1)//for blessing
 	//SpriteFrame *v7; // edi@6
 	int v8; // eax@6
 	//  unsigned __int16 v9; // ax@6
-	RenderBillboardTransform_local0 v10; // [sp+Ch] [bp-5Ch]@1
+	SoftwareBillboard v10; // [sp+Ch] [bp-5Ch]@1
 	int v11; // [sp+5Ch] [bp-Ch]@6
 	int v12; // [sp+60h] [bp-8h]@1
 	//int v13; // [sp+64h] [bp-4h]@6
@@ -2678,8 +2678,8 @@ __int16 sub_441A4E(int a1)//for blessing
 						v10.uFlags = 0;
 						//v9 = pOverlayList->pOverlays[v8].uOverlayType;
 						if (!pOverlayList->pOverlays[v8].uOverlayType || pOverlayList->pOverlays[v8].uOverlayType == 2)
-							v10.uScreenSpaceY += pSprites_LOD->pSpriteHeaders[pFrame->pHwSpriteIDs[0]].uHeight / 2;
-						result = pSprites_LOD->pSpriteHeaders[pFrame->pHwSpriteIDs[0]]._4AD2D1(&v10, 0);
+							v10.uScreenSpaceY += pFrame->hw_sprites[0]->sprite_header->uHeight / 2;
+						result = pFrame->hw_sprites[0]->sprite_header->_4AD2D1(&v10, 0);
 						++v12;
 						if (v12 == 5)
 							break;

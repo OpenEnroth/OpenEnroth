@@ -121,7 +121,6 @@
     <ClCompile Include="..\..\Engine\Graphics\stru10.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\stru9.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Image.cpp" />
-    <ClCompile Include="..\..\Engine\Graphics\Texture.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Viewport.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Vis.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Weather.cpp" />
@@ -544,6 +543,8 @@
     <ClInclude Include="..\..\Platform\Win\Win.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.gitignore" />
     <None Include="..\..\Engine\Graphics\Shaders\UI.hlsl" />
     <None Include="..\..\Engine\Objects\Player.swig" />
     <None Include="..\..\GUI\NewUI\Core\UIControlModule.swig" />
@@ -557,6 +558,8 @@
     <None Include="..\..\lib\OpenAL\lib\x86\swresample-0.def" />
     <None Include="..\..\lib\OpenAL\lib\x86\swscale-2.def" />
     <None Include="..\..\lib\swig.bat" />
+    <None Include="..\..\README.md" />
+    <None Include="..\..\TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\lib\legacy_dx\lib\d3dxof.lib" />

@@ -132,7 +132,7 @@ public:
     void Draw();
 
     //----- (0042EB6A) --------------------------------------------------------
-    struct stru6 *GetStru6() { return this->pStru6Instance; }
+    struct SpellFxRenderer *GetSpellFxRenderer() { return this->spellfx; }
     //----- (0042EB71) --------------------------------------------------------
     //struct IndoorCameraD3D *GetIndoorCamera() { return this->pIndoorCameraD3D; }
 
@@ -186,7 +186,7 @@ public:
     Mouse *pMouseInstance;
     LightmapBuilder *pLightmapBuilder;
     Vis *pVisInstance;
-    stru6 *pStru6Instance;
+    SpellFxRenderer *spellfx;
     void *__depricated5;//IndoorCameraD3D *pIndoorCameraD3D;
     stru9 *pStru9Instance;
     stru10 *pStru10Instance;
