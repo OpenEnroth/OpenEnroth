@@ -1797,7 +1797,7 @@ void GameUI_WritePointedObjectStatusString()
         //TODO fix these and move them up before the window check loop.
         if (current_screen_type == SCREEN_CHEST)
         {
-            Chest::ChestUI_WritePointedObjectStatusString();
+            Chest::ChestUI_WritePointedObjectStatusString(); //this should work now
             if (uLastPointedObjectID != 0)
             {
                 game_ui_status_bar_string[0] = 0;

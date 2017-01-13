@@ -1427,9 +1427,40 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
         }
         else
         {
-            if (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF)
-                GameUI_DrawItemInfo(&pChests[pChestWindow->par1C].igChestItems[pChests[pChestWindow->par1C].pInventoryIndices[(render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1] - 1]);
-        }
+
+			// this could be put into a chest function
+
+			int chestheight = 9;//pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+			int chestwidth = 9;
+			int inventoryYCoord = (pY - 34) / 32;	//use pchestoffsets??
+			int inventoryXCoord = (pX - 42) / 32;
+			int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
+
+
+			if (inventoryYCoord >= 0 && inventoryYCoord < chestheight && inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
+
+					int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+					if (chestindex < 0) {
+						invMatrixIndex = (-(chestindex + 1));
+						chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+					}
+
+					if (chestindex) {
+
+						int itemindex = chestindex - 1;
+
+						GameUI_DrawItemInfo(&pChests[pChestWindow->par1C].igChestItems[itemindex]);
+
+					}
+				
+			}
+
+			
+
+           
+		
+		
+		}
         break;
     }
 
@@ -1679,39 +1710,56 @@ void Inventory_ItemPopupAndAlchemy()
     if (no_rightlick_in_inventory)
         return;
 
-    Point cursor = pMouse->GetCursorPos();
-    int item_pid = (render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF) - 1;
-    //if (item_pid == -1) //added here to avoid crash
+	signed int inventoryXCoord; // ecx@2
+	int inventoryYCoord; // eax@2
+	int invMatrixIndex; // eax@2
+	unsigned int pY; // [sp+3Ch] [bp-Ch]@2
+	unsigned int pX;
+    //Point cursor = pMouse->GetCursorPos();
+    
+	ItemGen *item = nullptr;
+
+	
+
+	pMouse->GetClickPos(&pX, &pY);
+	inventoryYCoord = (pY - 17) / 32;
+	inventoryXCoord = (pX - 14) / 32;
+	invMatrixIndex = inventoryXCoord + ( 14 * inventoryYCoord); //INVETORYSLOTSWIDTH
+
+
+	if (pX <= 13 || pX >= 462)//items out of inventory(вещи вне инвентаря)  this is for player ragdoll items??
+	{
+
+		int item_pid = (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1;
+					//zbuffer still used for paperdolls
+
+		if (item_pid == -1)
+			return;
+
+		item = &pPlayers[uActiveCharacter]->pInventoryItemList[item_pid];
+		GameUI_DrawItemInfo(item);
+		return;
+	}
+
+
+
+	
+	//limits check ?
+	//if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT && inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
+	
+	item = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(&invMatrixIndex);
+
+	if (!item) { // no item
+		return;
+	}
+
+	
+	 //if (item_pid == -1) //added here to avoid crash
     //    return;
 
-    ItemGen *item = nullptr;
-    if (cursor.x <= 13 || cursor.x >= 462)//items out of inventory(вещи вне инвентаря)
-    {
-        if (item_pid == -1)
-            return;
+    
+ 
 
-        item = &pPlayers[uActiveCharacter]->pInventoryItemList[item_pid];
-        GameUI_DrawItemInfo(item);
-        return;
-    }
-
-    if (item_pid <= 0)
-    {
-        int inventory_mouse_x = cursor.x - 14;
-        int inventory_mouse_y = cursor.y - 17;
-
-        int mouse_cell_x = inventory_mouse_x / 32;
-        int mouse_cell_y = inventory_mouse_y / 32;
-
-        if (mouse_cell_x + mouse_cell_y < 0)
-            return;
-
-        int cell_idx = mouse_cell_x + 14 * mouse_cell_y;
-        item = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(&cell_idx);
-
-        if (!item)
-            return;
-    }
 
     //check character condition(проверка состояния персонажа)
     if (!pPlayers[uActiveCharacter]->CanAct())
@@ -1722,10 +1770,10 @@ void Inventory_ItemPopupAndAlchemy()
         message_window.Hint = hint_reference.c_str();
         message_window.uFrameWidth = 384;
         message_window.uFrameHeight = 180;
-        if (cursor.x <= 320)
-            message_window.uFrameX = cursor.x + 30;
+        if (pX <= 320)
+            message_window.uFrameX = pX + 30;
         else
-            message_window.uFrameX = cursor.x - 414;
+            message_window.uFrameX = pX - 414;
         message_window.uFrameY = 40;
         message_window.DrawMessageBox(0);
         return;
@@ -1844,9 +1892,9 @@ void Inventory_ItemPopupAndAlchemy()
     }
     // use reagents(применение реагентов)
     if (pParty->pPickedItem.uItemID >= ITEM_REAGENT_WIDOWSWEEP_BERRIES && pParty->pPickedItem.uItemID <= ITEM_REAGENT_PHILOSOPHERS_STONE &&
-        pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID == ITEM_POTION_BOTTLE)
+        item->uItemID == ITEM_POTION_BOTTLE)
     {
-        pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uEnchantmentType = alchemy_skill_points + pParty->pPickedItem.GetDamageDice();
+        item->uEnchantmentType = alchemy_skill_points + pParty->pPickedItem.GetDamageDice();
         switch (pParty->pPickedItem.uItemID)
         {
         case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
@@ -1854,7 +1902,7 @@ void Inventory_ItemPopupAndAlchemy()
         case ITEM_TROLL_BLOOD:
         case ITEM_TROLL_RUBY:
         case ITEM_DRAGON_EYE:
-            pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID = ITEM_POTION_CURE_WOUNDS;
+            item->uItemID = ITEM_POTION_CURE_WOUNDS;
             break;
 
         case ITEM_PHIMA_ROOT:
@@ -1862,7 +1910,7 @@ void Inventory_ItemPopupAndAlchemy()
         case ITEM_HARPY_FEATHER:
         case ITEM_MOONSTONE:
         case ITEM_ELVISH_TOADSTOOL:
-            pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID = ITEM_POTION_MAGIC_POTION;
+            item->uItemID = ITEM_POTION_MAGIC_POTION;
             break;
 
         case ITEM_POPPYSNAPS:
@@ -1870,7 +1918,7 @@ void Inventory_ItemPopupAndAlchemy()
         case ITEM_SULFUR:
         case ITEM_GARNET:
         case ITEM_DEVIL_ICHOR:
-            pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID = ITEM_POTION_CURE_WEAKNESS;
+            item->uItemID = ITEM_POTION_CURE_WEAKNESS;
             break;
 
         case ITEM_MUSHROOM:
@@ -1878,7 +1926,7 @@ void Inventory_ItemPopupAndAlchemy()
         case ITEM_OOZE_ENDOPLASM_VIAL:
         case ITEM_MERCURY:
         case ITEM_REAGENT_PHILOSOPHERS_STONE:
-            pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID = ITEM_POTION_CATALYST;
+            item->uItemID = ITEM_POTION_CATALYST;
             break;
         default:
             break;
@@ -1894,8 +1942,8 @@ void Inventory_ItemPopupAndAlchemy()
     }
     //potions mixing(смешивание двух зелий)
     if (pParty->pPickedItem.uItemID >= ITEM_POTION_CATALYST && pParty->pPickedItem.uItemID <= ITEM_POTION_REJUVENATION &&
-        pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID >= ITEM_POTION_CATALYST &&
-        pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID <= ITEM_POTION_REJUVENATION)
+        item->uItemID >= ITEM_POTION_CATALYST &&
+        item->uItemID <= ITEM_POTION_REJUVENATION)
     {
         potion1_id = item->uItemID - ITEM_POTION_CURE_WOUNDS;
         potion2_id = pParty->pPickedItem.uItemID - ITEM_POTION_CURE_WOUNDS;
@@ -1929,6 +1977,7 @@ void Inventory_ItemPopupAndAlchemy()
                 damage_level = 4;
         }
 
+		int item_pid = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invMatrixIndex);
         int pOut_x = item_pid + 1;
         for (uint i = 0; i < 126; ++i)
         {
@@ -1992,25 +2041,25 @@ void Inventory_ItemPopupAndAlchemy()
         {
             if (alchemy_skill_points)
             {
-                if (pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID == ITEM_POTION_CATALYST || pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST)
+                if (item->uItemID == ITEM_POTION_CATALYST || pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST)
                 {
-                    if (pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID == ITEM_POTION_CATALYST)
-                        pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID = pParty->pPickedItem.uItemID;
+                    if (item->uItemID == ITEM_POTION_CATALYST)
+						item->uItemID = pParty->pPickedItem.uItemID;
                     if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST)
-                        pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uEnchantmentType = pParty->pPickedItem.uEnchantmentType;
+                        item->uEnchantmentType = pParty->pPickedItem.uEnchantmentType;
                 }
                 else
                 {
-                    pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID = potionID;
-                    pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uEnchantmentType = (pParty->pPickedItem.uEnchantmentType
-                        + pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uEnchantmentType) / 2;
+					item->uItemID = potionID;
+					item->uEnchantmentType = (pParty->pPickedItem.uEnchantmentType
+                        + item->uEnchantmentType) / 2;
                     pPlayers[uActiveCharacter]->SetVariable(VAR_AutoNotes, pItemsTable->potion_note[potion1_id][potion2_id]);
                 }
                 int bottle = pPlayers[uActiveCharacter]->AddItem(-1, ITEM_POTION_BOTTLE);
                 if (bottle)
                     pPlayers[uActiveCharacter]->pOwnItems[bottle - 1].uAttributes = ITEM_IDENTIFIED;
-                if (!(pItemsTable->pItems[pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uItemID].uItemID_Rep_St))
-                    pPlayers[uActiveCharacter]->pInventoryItemList[item_pid].uAttributes |= 1;
+                if (!(pItemsTable->pItems[item->uItemID].uItemID_Rep_St))
+					item->uAttributes |= 1;
                 if (!dword_4E455C)
                 {
                     pMouse->RemoveHoldingItem();

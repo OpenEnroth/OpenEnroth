@@ -187,112 +187,81 @@ bool Chest::Open(signed int uChestID)
 }
 
 //----- (0042038D) --------------------------------------------------------
-void Chest::ChestUI_WritePointedObjectStatusString()
-{
-    int v1; // ecx@2
+void Chest::ChestUI_WritePointedObjectStatusString() {
 
-    Point pt = pMouse->GetCursorPos();
-    if (pt.y < 350)
-    {
-        v1 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]];
-        if (v1 != 0 && v1 != -65536)
-        {
-            if (v1)
-            {
-                ItemGen* item = &pChests[pChestWindow->par1C].igChestItems[pChests[pChestWindow->par1C].pInventoryIndices[(v1 & 0xFFFF) - 1] - 1];
-                GameUI_StatusBar_Set(item->GetDisplayName());
-            }
-        }
-    }
+	Point pt = pMouse->GetCursorPos();
+	unsigned int pX=pt.x;
+	unsigned int pY=pt.y;
+
+	int chestheight = pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+	int chestwidth = pChestWidthsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+
+	int inventoryYCoord = (pY - 34) / 32;	//use pchestoffsets??
+	int inventoryXCoord = (pX - 42) / 32;
+	int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
+
+	if (inventoryYCoord >= 0 && inventoryYCoord < chestheight && inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
+
+			int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+			if (chestindex < 0) {
+				invMatrixIndex = (-(chestindex + 1));
+				chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+			}
+
+			if (chestindex) {
+				int itemindex = chestindex - 1;
+				ItemGen* item = &pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex];
+				GameUI_StatusBar_Set(item->GetDisplayName());
+			}
+	}
 }
 
 
 
 //----- (0041FE71) --------------------------------------------------------
-bool Chest::CanPlaceItemAt(signed int test_cell_position, int item_id, signed int uChestID)
-{
-    //    int v3; // eax@1
-        //unsigned int item_texture_id; // eax@1
-        //Image *item_texture; // ecx@1
-    signed int v6; // eax@1
-//    signed int v7; // edi@3
-    signed int v8; // eax@3
-    int texture_cell_width; // edi@3
-    int texture_cell_height; // ebx@5
-    int _row; // esi@9
-    int _cell_rows; // edx@10
-    int _column; // ecx@11
-//    char *v14; // eax@12
-    int chest_cell_heght; // [sp+Ch] [bp-Ch]@1
-//    signed int v17; // [sp+10h] [bp-8h]@1
-    signed int chest_cell_width; // [sp+14h] [bp-4h]@1
+bool Chest::CanPlaceItemAt(signed int test_cell_position, int item_id, signed int uChestID) {
+	
+    int chest_cell_heght = pChestHeightsByType[pChests[uChestID].uChestBitmapID];
+    int chest_cell_width = pChestWidthsByType[pChests[uChestID].uChestBitmapID];
 
-    chest_cell_heght = pChestHeightsByType[pChests[uChestID].uChestBitmapID];
-    chest_cell_width = pChestWidthsByType[pChests[uChestID].uChestBitmapID];
+	auto img = assets->GetImage_16BitColorKey(pItemsTable->pItems[item_id].pIconName, 0x7FF);
+	unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
+	unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
-    auto item_texture = assets->GetImage_16BitColorKey(pItemsTable->pItems[item_id].pIconName, 0x7FF);
-    v6 = item_texture->GetWidth();
-    if (v6 < 14)
-        v6 = 14;
-    texture_cell_width = ((v6 - 14) >> 5) + 1;
-    v8 = item_texture->GetHeight();
-    if (v8 < 14)
-        v8 = 14;
-    texture_cell_height = ((v8 - 14) >> 5) + 1;
-
-    if (item_texture)
-    {
-        item_texture->Release();
-        item_texture = nullptr;
+    if (img) {
+        img->Release();
+        img = nullptr;
     }
 
-    if ((texture_cell_width + test_cell_position % chest_cell_width <= chest_cell_width) &&
-        (texture_cell_height + test_cell_position / chest_cell_width <= chest_cell_heght))
-    { //we not put over borders
-        _row = 0;
-        if (texture_cell_height <= 0)
-            return true;
-        _cell_rows = 0;
-        while (1)
-        {
-            _column = 0;
-            if (texture_cell_width > 0)
-            {
-                while (pChests[uChestID].pInventoryIndices[test_cell_position + _cell_rows + _column] == 0)
-                {
-                    ++_column;
-                    if (_column >= texture_cell_width)
-                        break;
-                }
-                if (pChests[uChestID].pInventoryIndices[test_cell_position + _cell_rows + _column] != 0)
-                    return false;
-            }
-            _cell_rows += chest_cell_width;
-            ++_row;
-            if (_row >= texture_cell_height)
-                return true;
-        }
+	Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
+    if ((slot_width + test_cell_position % chest_cell_width <= chest_cell_width) && (slot_height + test_cell_position / chest_cell_width <= chest_cell_heght)) {
 
+		for (unsigned int x = 0; x < slot_width; x++) {
+			for (unsigned int y = 0; y < slot_height; y++) {
+				if (pChests[uChestID].pInventoryIndices[y * chest_cell_width + x + test_cell_position] != 0) {
+					return false;
+				}
+			}
+		}
+		return true;
     }
     return false;
 }
 
 //----- (0041FF64) --------------------------------------------------------
-int Chest::CountChestItems(signed int uChestID)
-{
-    signed int item_count; // eax@1
-    int max_items; // edx@1
-    item_count = 0;
-    max_items = pChestWidthsByType[pChests[uChestID].uChestBitmapID] * pChestHeightsByType[pChests[uChestID].uChestBitmapID];
+int Chest::CountChestItems(signed int uChestID) { // this returns first free slot rather than an actual count
+
+    signed int item_count=0;
+    int max_items = pChestWidthsByType[pChests[uChestID].uChestBitmapID] * pChestHeightsByType[pChests[uChestID].uChestBitmapID];
+
     if (max_items <= 0)
         item_count = -1;
-    else
-    {
-        while (pChests[uChestID].igChestItems[item_count].uItemID)
-        {
+    else {
+
+        while (pChests[uChestID].igChestItems[item_count].uItemID) {
+
             ++item_count;
-            if (item_count >= max_items)
-            {
+            if (item_count >= max_items) {
                 item_count = -1;
                 break;
             }
@@ -302,98 +271,68 @@ int Chest::CountChestItems(signed int uChestID)
 }
 
 //----- (0041FFA2) --------------------------------------------------------
-int Chest::PutItemInChest(int position, ItemGen *put_item, signed int uChestID)
-{//(rus: положить предмет в ящик)
-    ItemGen *v4; // edi@1
-    int v5; // esi@1
-    int result; // eax@11
-    //unsigned int v7; // eax@12
-    int v8; // edx@12
-    //Texture_MM7 *texture; // ecx@12
-    signed int v10; // eax@12
-    signed int v11; // edi@14
-    unsigned int v12; // esi@14
-    int v13; // edi@16
-    void *v14; // edi@21
-    int v15; // edi@21
-    int i; // ecx@21
-    ItemGen *Src; // [sp+Ch] [bp-18h]@1
-    signed int item_in_chest_count; // [sp+10h] [bp-14h]@2
-    int v19; // [sp+14h] [bp-10h]@1
-    int v20; // [sp+18h] [bp-Ch]@19
-    signed int v21; // [sp+1Ch] [bp-8h]@1
-  //  signed int v22; // [sp+20h] [bp-4h]@3
-    int v23; // [sp+20h] [bp-4h]@19
+int Chest::PutItemInChest(int position, ItemGen *put_item, signed int uChestID) {
 
-    v21 = 0;
-    v4 = put_item;
-    v5 = pChestWidthsByType[pChests[uChestID].uChestBitmapID] * pChestHeightsByType[pChests[uChestID].uChestBitmapID];
-    Src = put_item;
-    v19 = pChestWidthsByType[pChests[uChestID].uChestBitmapID];
-    if (position == -1)
-    {
-        item_in_chest_count = CountChestItems(uChestID);
-        if (item_in_chest_count == -1)
-            return 0;
-        for (int _i = 0; _i < v5; _i++)
-        {
-            if (Chest::CanPlaceItemAt(_i, v4->uItemID, pChestWindow->par1C))
-                v21 = _i;
-        }
-        if (v21 == v5)
-        {
-            if (uActiveCharacter)
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
-            return 0;
-        }
-        HEXRAYS_HIWORD(v8) = 0;
+	signed int item_in_chest_count = CountChestItems(uChestID);
+	signed int test_pos = 0;
 
-        auto texture = assets->GetImage_16BitColorKey(v4->GetIconName(), 0x7FF);
+	int max_size = pChestWidthsByType[pChests[uChestID].uChestBitmapID] * pChestHeightsByType[pChests[uChestID].uChestBitmapID];
+	int chest_width = pChestWidthsByType[pChests[uChestID].uChestBitmapID];
 
-        v10 = texture->GetWidth();
-        if (v10 < 14)
-            v10 = 14;
-        v12 = ((v10 - 14) >> 5) + 1;
-        v11 = texture->GetHeight();
-        if (v11 < 14)
-            v11 = 14;
-        v13 = ((v11 - 14) >> 5) + 1;
+	if (item_in_chest_count == -1)
+		return 0;
 
-        if (v13 > 0)
-        {
-            v23 = 0;
-            v20 = v13;
-            do
-            {
-                if ((signed int)v12 > 0)
-                {
-                    v14 = &pChests[uChestID].pInventoryIndices[v21 + v23];
-                    HEXRAYS_LOWORD(v8) = -1 - v21;
-                    v8 <<= 16;
-                    HEXRAYS_LOWORD(v8) = -1 - v21;
-                    memset32(v14, v8, v12 >> 1);
-                    v15 = (int)((char *)v14 + 4 * (v12 >> 1));
-                    for (i = v12 & 1; i; --i)
-                    {
-                        *(short *)v15 = v8;
-                        v15 += 2;
-                    }
-                }
-                v23 += v19;
-                --v20;
-            } while (v20);
-        }
-        pChests[uChestID].pInventoryIndices[v21] = item_in_chest_count + 1;
+	if (position != -1) {
+		if (CanPlaceItemAt(position, put_item->uItemID, uChestID)) {
+			test_pos = position;
+		}
+		else
+			position = -1; // try another position?? is this the right behavior
+	}
+
+	if (position == -1) { // no position specified
+
+		for (int _i = 0; _i < max_size; _i++) {
+			if (Chest::CanPlaceItemAt(_i, put_item->uItemID, pChestWindow->par1C)) {
+				test_pos = _i; // found somewhere to place item
+				break;
+			}
+		}
+
+		if (test_pos == max_size) { // limits check no room
+			if (uActiveCharacter)
+				pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
+			return 0;
+		}
+
+	}
+
+	auto texture = assets->GetImage_16BitColorKey(put_item->GetIconName(), 0x7FF);
+	unsigned int slot_width = GetSizeInInventorySlots(texture->GetWidth());
+	unsigned int slot_height = GetSizeInInventorySlots(texture->GetHeight());
+
+	if (texture) {
+		texture->Release();
+		texture = nullptr;
+	}
+
+	Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
+
+		// set inventory indices - memset was eratic??
+		for (unsigned int x = 0; x < slot_width; x++) {
+			for (unsigned int y = 0; y < slot_height; y++) {
+				pChests[uChestID].pInventoryIndices[y * chest_width + x + test_pos] = (-1 - test_pos);
+			}
+		}
+
+        pChests[uChestID].pInventoryIndices[test_pos] = item_in_chest_count + 1;
         memcpy(&pChests[uChestID].igChestItems[item_in_chest_count], put_item, sizeof(ItemGen));
-        result = v21 + 1;
-    }
-    else
-        result = 1;
-    return result;
+       
+    return (test_pos + 1);
 }
 
 //----- (0042013E) --------------------------------------------------------
-void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, signed int uChestID)
+void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, signed int uChestID) //only used for setup?
 {
     int uItemID; // edi@1
     int v6; // edx@4
@@ -436,7 +375,7 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, si
 }
 
 //----- (00420284) --------------------------------------------------------
-void Chest::PlaceItems(signed int uChestID)
+void Chest::PlaceItems(signed int uChestID) // only sued for setup
 {
     int uChestArea; // edi@1
     int random_chest_pos; // eax@2
@@ -613,99 +552,73 @@ int ChestList::FromFileTxt(const char *Args)
 }
 
 //----- (00420B13) --------------------------------------------------------
-void sub_420B13(int a1, int a2)
-{	//Give item from chest(rus: Взять предмет из ящика)
-    signed int v6; // eax@1
-    signed int v7; // edi@3
-    signed int v8; // eax@3
-    int v9; // edi@3
-    int v10; // eax@5
-    int v11; // esi@8
-    unsigned int v12; // ecx@10
-    void *v13; // edi@10
-    unsigned __int8 v14; // cf@10
-    int v15; // edi@10
-    int i; // ecx@10
-    int v17; // [sp+Ch] [bp-14h]@1
-    int v18; // [sp+10h] [bp-10h]@3
-    int v21; // [sp+1Ch] [bp-4h]@5
-    int v22; // [sp+1Ch] [bp-4h]@8
+void RemoveItemAtChestIndex(int index) {
 
-    v17 = pChestWidthsByType[pChests[(int)pChestWindow->ptr_1C].uChestBitmapID];
+	int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[index];
+	ItemGen *item_in_slot = &pChests[(int)pChestWindow->ptr_1C].igChestItems[chestindex - 1];
 
-    auto img = assets->GetImage_16BitColorKey(pChests[(int)pChestWindow->ptr_1C].igChestItems[a1].GetIconName(), 0x7FF);
+	auto img = assets->GetImage_16BitColorKey(item_in_slot->GetIconName(), 0x7FF);
+	unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
+	unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
-    v6 = img->GetWidth();
-    if (v6 < 14)
-        v6 = 14;
-    v7 = v6 - 14;
-    v9 = (v7 >> 5) + 1;
-    v18 = v9;
+	int chestwidth = pChestWidthsByType[pChests[(int)pChestWindow->ptr_1C].uChestBitmapID];
 
-    v8 = img->GetHeight();
-    if (v8 < 14)
-        v8 = 14;
-    v10 = ((v8 - 14) >> 5) + 1;
-    v21 = v10;
+	item_in_slot->Reset();
 
-    if (v10 > 0)
-    {
-        v11 = 0;
-        for (v22 = v10; v22; --v22)
-        {
-            if (v9 > 0)
-            {
-                v12 = v9;
-                v13 = &pChests[(int)pChestWindow->ptr_1C].pInventoryIndices[a2 + v11];
-                v14 = v12 & 1;
-                v12 >>= 1;
-                memset(&pChests[(int)pChestWindow->ptr_1C].pInventoryIndices[a2 + v11], 0, 4 * v12);
-                v15 = (int)((char *)v13 + 4 * v12);
-                for (i = v14; i; --i)
-                {
-                    *(short *)v15 = 0;
-                    v15 += 2;
-                }
-                v9 = v18;
-            }
-            v11 += v17;
-        }
-    }
-    pChests[(int)pChestWindow->ptr_1C].igChestItems[a1].Reset();
+	if (slot_width > 0) {
+		// blank inventory indices - memset was eratic??
+		for (unsigned int x = 0; x < slot_width; x++) {
+			for (unsigned int y = 0; y < slot_height; y++) {
+				pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[y * chestwidth + x + index] = 0;				
+			}
+		}
+	}
 }
 
 //----- (00420E01) --------------------------------------------------------
-void Chest::OnChestLeftClick()
-{
-    int v2; // eax@2
-    int v3; // ebx@4
-    int v4; // esi@6
+void Chest::OnChestLeftClick() {
 
-    SpriteObject v6; // [sp+Ch] [bp-80h]@1
-    if (pParty->pPickedItem.uItemID)
-    {
-        if (Chest::PutItemInChest(-1, &pParty->pPickedItem, pGUIWindow_CurrentMenu->par1C))
-            pMouse->RemoveHoldingItem();
-    }
-    else
-    {
-        Point pt = pMouse->GetCursorPos();
-        v2 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
-        if (v2)
-        {
-            if (v2)
-                v3 = v2 - 1;
-            else
-                v3 = -1;
-            v4 = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[v3] - 1;
-            if (pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[v4].GetItemEquipType() == EQUIP_GOLD)
-            {
-                pParty->PartyFindsGold(pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[v4].special_enchantment, 0);
-                viewparams->bRedrawGameUI = 1;
-            }
-            else
-                pParty->SetHoldingItem(&pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[v4]);
-            sub_420B13(v4, v3);
-        }
-    }
+	unsigned int pX;
+	unsigned int pY;
+
+	int chestheight = pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+	int chestwidth = pChestWidthsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+
+	pMouse->GetClickPos(&pX, &pY);
+	int inventoryYCoord = (pY - 34) / 32;	//use pchestoffsets??
+	int inventoryXCoord = (pX - 42) / 32;
+	int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
+
+	if (inventoryYCoord >= 0 && inventoryYCoord < chestheight && inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
+
+		if (pParty->pPickedItem.uItemID) { // item held
+
+			if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, pGUIWindow_CurrentMenu->par1C))
+				pMouse->RemoveHoldingItem();
+
+		}
+		else {
+
+			int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+			if (chestindex < 0) {
+				invMatrixIndex = (-(chestindex + 1));
+				chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+			}
+
+			if (chestindex) {
+
+				int itemindex = chestindex - 1;
+
+				if (pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex].GetItemEquipType() == EQUIP_GOLD) {
+					pParty->PartyFindsGold(pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex].special_enchantment, 0);
+					viewparams->bRedrawGameUI = 1;
+				}
+				else {
+					pParty->SetHoldingItem(&pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex]);
+				}
+
+				RemoveItemAtChestIndex(invMatrixIndex);
+			}
+		}
+	}
 }
