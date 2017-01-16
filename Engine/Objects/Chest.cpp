@@ -187,7 +187,7 @@ bool Chest::Open(signed int uChestID)
 }
 
 //----- (0042038D) --------------------------------------------------------
-void Chest::ChestUI_WritePointedObjectStatusString() {
+bool Chest::ChestUI_WritePointedObjectStatusString() {
 
 	Point pt = pMouse->GetCursorPos();
 	unsigned int pX=pt.x;
@@ -212,8 +212,11 @@ void Chest::ChestUI_WritePointedObjectStatusString() {
 				int itemindex = chestindex - 1;
 				ItemGen* item = &pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex];
 				GameUI_StatusBar_Set(item->GetDisplayName());
+				uLastPointedObjectID = 1;
+				return 1;
 			}
 	}
+	return 0;
 }
 
 

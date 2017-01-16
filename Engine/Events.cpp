@@ -1048,7 +1048,7 @@ LABEL_47:
         break;
       case EVENT_MouseOver:
       case EVENT_LocationName:
-        --curr_seq_num;
+        --curr_seq_num;//eh?
         ++curr_seq_num;
         break;
       case EVENT_ChangeDoorState:
