@@ -598,6 +598,7 @@ void ArmorShopDialog()
                 
                 return;
             }
+
             dialog_window.DrawShops_next_generation_time_string(
                 pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->par1C] - pParty->GetPlayingTime()
             );
@@ -648,6 +649,46 @@ void ArmorShopDialog()
 
             if (pItemCount)
             {
+				int testx = (mouse.x - 40) / 105;
+				// testx limits check
+				if (testx >= 0 && testx < 4) {
+					if (mouse.y >= 126) {
+						testx += 4;
+					}
+					//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
+					//	return;
+					//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+					selected_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+
+					if (selected_item->uItemID) // item picking
+					{
+						//could check x coords imits here?
+						if ((mouse.y >= 126 && mouse.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
+							(mouse.y <= 98 && mouse.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
+							// y is 126 to 126 + height low or 98-height to 98
+
+							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+
+							String str;
+							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
+							{
+								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(selected_item, BuildingType_ArmorShop, window_SpeakInHouse->par1C, 2)],
+									uActiveCharacter - 1, selected_item, (char *)window_SpeakInHouse->ptr_1C, 2);
+							}
+							else
+							{
+								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, selected_item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
+							}
+							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+						}
+					}
+				}
+
+
+
+				return;
+				
+/*
                 if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
                     return;
                 pItemCount = (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1;
@@ -668,6 +709,7 @@ void ArmorShopDialog()
                 }
                 dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
                 return;
+				*/
             }
             dialog_window.DrawShops_next_generation_time_string(
                 pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->par1C] - pParty->GetPlayingTime()
@@ -1834,13 +1876,14 @@ void  UIShop_Buy_Identify_Repair()
     {
 		// item picking
 		Point mouse = pMouse->GetCursorPos();
-		int testx = (mouse.x - 30) / 70;
+		int testx;
 		
 
 		switch (in_current_building_type){
+
 			case BuildingType_WeaponShop:
 				
-				
+				testx = (mouse.x - 30) / 70;
 				// testx limits check
 				if (testx >= 0 && testx < 6) {
 
@@ -1853,6 +1896,37 @@ void  UIShop_Buy_Identify_Repair()
 					if (bought_item->uItemID) {
 						//could check x coords imits here?
 						if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
+							//good
+						}
+						else {
+							bought_item = nullptr;
+							return;
+						}
+					}
+					else
+						return;
+
+				}
+				break;
+
+			case BuildingType_ArmorShop:
+
+				testx = (mouse.x - 40) / 105;
+				// testx limits check
+				if (testx >= 0 && testx < 4) {
+					if (mouse.y >= 126) {
+						testx += 4;
+					}
+
+					if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+						bought_item = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+					else
+						bought_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+
+					if (bought_item->uItemID) {
+						//could check x coords imits here?
+						if ((mouse.y >= 126 && mouse.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
+							(mouse.y <= 98 && mouse.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
 							//good
 						}
 						else {
@@ -1992,11 +2066,14 @@ void  ShowPopupShopItem()
 
 			// item picking
 			Point mouse = pMouse->GetCursorPos();
-			int testx = (mouse.x - 30) / 70;
+			int testx;
 
 
 			switch (in_current_building_type) {
+
 				case BuildingType_WeaponShop:
+
+					testx = (mouse.x - 30) / 70;
 					if (testx >= 0 && testx < 6) {
 						if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
 							v7 = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
@@ -2016,6 +2093,36 @@ void  ShowPopupShopItem()
 					else
 						return;
 					
+					break;
+
+				case BuildingType_ArmorShop:
+
+					testx = (mouse.x - 40) / 105;
+					// testx limits check
+					if (testx >= 0 && testx < 4) {
+						if (mouse.y >= 126) {
+							testx += 4;
+						}
+
+						if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+							v7 = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+						else
+							v7 = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+
+						if (v7->uItemID) {
+							//could check x coords imits here?
+							if ((mouse.y >= 126 && mouse.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
+								(mouse.y <= 98 && mouse.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
+								GameUI_DrawItemInfo(v7);
+							}
+							else {
+								return;
+							}
+						}
+						else
+							return;
+
+					}
 					break;
 
 			default:
