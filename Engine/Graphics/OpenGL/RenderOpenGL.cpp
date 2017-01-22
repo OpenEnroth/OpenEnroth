@@ -746,8 +746,8 @@ void RenderOpenGL::DoRenderBillboards_D3D()
                 );
 
                 glVertex3f(
-                    b->world_x + (billboard->pQuads[j].texcoord.x - 0.5f) * b->pSpriteFrame->scale,
-                    b->world_z + (billboard->pQuads[j].texcoord.y - 0.0f) * b->pSpriteFrame->scale,
+                    b->world_x + (billboard->pQuads[j].texcoord.x - 0.5f) * b->pSpriteFrame->scale.GetFloat(),
+                    b->world_z + (billboard->pQuads[j].texcoord.y - 0.0f) * b->pSpriteFrame->scale.GetFloat(),
                     b->world_y
                     //billboard->pQuads[j].pos.x /** billboard->pQuads[j].rhw*/,
                     //billboard->pQuads[j].pos.y /** billboard->pQuads[j].rhw*/,

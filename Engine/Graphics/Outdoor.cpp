@@ -2120,8 +2120,8 @@ void OutdoorLocation::PrepareActorsDrawList()
             pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[v41];
             pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
             pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v15->scale, v58);
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(v15->scale, v57);
+            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v15->scale._internal, v58);
+            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(v15->scale._internal, v57);
             if (!pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
             {
                 pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(

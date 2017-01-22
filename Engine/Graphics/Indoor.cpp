@@ -2791,8 +2791,8 @@ void PrepareActorRenderList_BLV()
                 pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
                 HEXRAYS_LODWORD(v18) = 0;
                 HEXRAYS_HIDWORD(v18) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v9->scale, v18 / x);
-                a5a = fixpoint_mul(v9->scale, v18 / x);
+                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v9->scale._internal, v18 / x);
+                a5a = fixpoint_mul(v9->scale._internal, v18 / x);
                 //}
                 pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = a5a;
                 if (!pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active())
@@ -2880,7 +2880,7 @@ void PrepareItemsRenderList_BLV()
                     v9 = ((signed int)(stru_5C6E00->uIntegerPi + ((signed int)stru_5C6E00->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
                     pBillboardRenderList[uNumBillboardsToDraw].hwsprite = v4->hw_sprites[v9];
                     if (v4->uFlags & 0x20)
-                        pSpriteObjects[i].vPosition.z -= (signed int)(fixpoint_mul(v4->scale, v4->hw_sprites[v9]->uBufferHeight) / 2);
+                        pSpriteObjects[i].vPosition.z -= (signed int)(fixpoint_mul(v4->scale._internal, v4->hw_sprites[v9]->uBufferHeight) / 2);
 
                     v34 = 0;
                     if (v4->uFlags & 2)
@@ -2918,8 +2918,8 @@ void PrepareItemsRenderList_BLV()
                             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
                             HEXRAYS_LODWORD(v18) = 0;
                             HEXRAYS_HIDWORD(v18) = (int)floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v4->scale, v18 / x);
-                            v31 = fixpoint_mul(v4->scale, v18 / x);
+                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v4->scale._internal, v18 / x);
+                            v31 = fixpoint_mul(v4->scale._internal, v18 / x);
                         }
                         /*else
                         {
@@ -3115,10 +3115,10 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
             HEXRAYS_LODWORD(v20) = 0;
             HEXRAYS_HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v11->scale, v20 / x);
+            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v11->scale._internal, v20 / x);
             HEXRAYS_LODWORD(v20) = 0;
             HEXRAYS_HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y + 0.5f);
-            v37 = fixpoint_mul(v11->scale, v20 / x);
+            v37 = fixpoint_mul(v11->scale._internal, v20 / x);
 
             pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = v37;
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;

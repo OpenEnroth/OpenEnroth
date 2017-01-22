@@ -18,7 +18,7 @@ struct SpriteFrame_MM6
     char pIconName[12];
     char pTextureName[12]; //c
     __int16 pHwSpriteIDs[8]; //18h
-    int scale; //28h
+    __int32 scale; //28h
     int uFlags; //2c
     __int16 uGlowRadius; //30
     __int16 uPaletteID;  //32

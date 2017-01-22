@@ -2670,8 +2670,8 @@ __int16 sub_441A4E(int a1)//for blessing
 						//v13 = fixpoint_mul(v11, pFrame->scale);
 						v10.uScreenSpaceX = pOtherOverlayList->pOverlays[i].field_8;
 						v10.uScreenSpaceY = pOtherOverlayList->pOverlays[i].field_A;
-						v10._screenspace_x_scaler_packedfloat = fixpoint_mul(v11, pFrame->scale);
-						v10._screenspace_y_scaler_packedfloat = fixpoint_mul(v11, pFrame->scale);
+						v10._screenspace_x_scaler_packedfloat = fixpoint_mul(v11, pFrame->scale._internal);
+						v10._screenspace_y_scaler_packedfloat = fixpoint_mul(v11, pFrame->scale._internal);
 						v10.pPalette = PaletteManager::Get_Dark_or_Red_LUT(pFrame->uPaletteIndex, 0, 1);
 						v8 = pOtherOverlayList->pOverlays[i].field_2;
 						v10.sZValue = 0;
