@@ -858,7 +858,8 @@ void RenderOpenGL::TransformBillboardsAndSetPalettesODM()
         billboard._screenspace_x_scaler_packedfloat = pBillboardRenderList[i]._screenspace_x_scaler_packedfloat;
         billboard.sTintColor = pBillboardRenderList[i].sTintColor;
         billboard._screenspace_y_scaler_packedfloat = pBillboardRenderList[i]._screenspace_y_scaler_packedfloat;
-        billboard.sZValue = pBillboardRenderList[i].sZValue;
+        billboard.zbuffer_depth = pBillboardRenderList[i].actual_z;
+        billboard.object_pid = pBillboardRenderList[i].object_pid;
         billboard.uFlags = pBillboardRenderList[i].field_1E;
         if (pBillboardRenderList[i].hwsprite)
         {
@@ -958,7 +959,8 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
     pBillboardRenderListD3D[v8].texture = pSprite->texture;
     pBillboardRenderListD3D[v8].z_order = a2->zbuffer_depth;
     pBillboardRenderListD3D[v8].field_90 = a2->field_44;
-    pBillboardRenderListD3D[v8].sZValue = a2->sZValue;
+    pBillboardRenderListD3D[v8].object_pid = a2->object_pid;
+    pBillboardRenderListD3D[v8].screen_space_z = a2->zbuffer_depth;
     pBillboardRenderListD3D[v8].sParentBillboardID = a2->sParentBillboardID;
 
     if (a2->sTintColor & 0xFF000000)

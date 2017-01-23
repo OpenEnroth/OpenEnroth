@@ -24,7 +24,7 @@ struct RenderBillboard
     float fov_y;
     union
     {
-        int sZValue;
+        //int sZValue;
         struct
         {
             unsigned __int16 object_pid;
@@ -180,7 +180,15 @@ struct RenderBillboardD3D
     float z_order;
     OpacityType opacity;
     int field_90;
-    int sZValue;
+    union
+    {
+        //int sZValue;
+        struct
+        {
+            unsigned short object_pid;
+            short screen_space_z;
+        };
+    };
     signed int sParentBillboardID;
 };
 #pragma pack(pop)
@@ -203,7 +211,7 @@ struct SoftwareBillboard
     unsigned __int16 *pPalette2;
     union
     {
-        int sZValue;
+        //int sZValue;
         struct
         {
             unsigned short object_pid;

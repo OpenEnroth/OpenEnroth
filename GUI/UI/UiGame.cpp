@@ -2674,7 +2674,8 @@ __int16 sub_441A4E(int a1)//for blessing
 						v10._screenspace_y_scaler_packedfloat = fixpoint_mul(v11, pFrame->scale._internal);
 						v10.pPalette = PaletteManager::Get_Dark_or_Red_LUT(pFrame->uPaletteIndex, 0, 1);
 						v8 = pOtherOverlayList->pOverlays[i].field_2;
-						v10.sZValue = 0;
+                        v10.zbuffer_depth = 0;
+                        v10.object_pid = 0;
 						v10.uFlags = 0;
 						//v9 = pOverlayList->pOverlays[v8].uOverlayType;
 						if (!pOverlayList->pOverlays[v8].uOverlayType || pOverlayList->pOverlays[v8].uOverlayType == 2)

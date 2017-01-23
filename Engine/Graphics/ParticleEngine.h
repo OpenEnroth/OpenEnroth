@@ -72,7 +72,7 @@ struct Particle
     int uScreenSpaceW;  // line end y
     union
     {
-        int sZValue;
+        //int sZValue;
         struct
         {
             unsigned short object_pid;

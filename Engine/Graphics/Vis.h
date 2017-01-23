@@ -36,7 +36,7 @@ struct Vis_ObjectInfo
   void *object;
   union
   {
-    int sZValue;
+    //int sZValue;
     struct
     {
       unsigned __int16 object_pid;
@@ -63,11 +63,13 @@ struct Vis_SelectionList
   Vis_ObjectInfo *SelectionPointers(int a2, int a3);
   void            create_object_pointers(PointerCreationType type = All);
 
-  inline void AddObject(void *object, VisObjectType type, int packed_zval)
+  inline void AddObject(void *object, VisObjectType type, int depth, int pid)
   {
     object_pool[uNumPointers].object = object;
     object_pool[uNumPointers].object_type = type;
-    object_pool[uNumPointers++].sZValue = packed_zval;
+    object_pool[uNumPointers].actual_z = depth;
+    object_pool[uNumPointers].object_pid = pid;
+    uNumPointers++;
   }
 
   void ( ***vdestructor_ptr)(Vis_SelectionList *, bool);
@@ -106,7 +108,7 @@ public:
   void GetPolygonCenter(struct RenderVertexD3D3 *pVertices, unsigned int uNumVertices, float *pCenterX, float *pCenterY);
   void GetPolygonScreenSpaceCenter(struct RenderVertexSoft *vertices, int num_vertices, float *out_center_x, float *out_center_y);
   bool IsPointInsideD3DBillboard(struct RenderBillboardD3D *a1, float x, float y);
-  int PickClosestActor(int object_id, unsigned int pick_depth, int a4, int a5, int a6);
+  unsigned short PickClosestActor(int object_id, unsigned int pick_depth, int a4, int a5, int a6);
   void _4C1A02();
   void SortVectors_x(RenderVertexSoft *pArray, int start, int end);
   int get_object_zbuf_val(Vis_ObjectInfo *info);

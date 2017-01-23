@@ -593,7 +593,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     v106._screenspace_y_scaler_packedfloat = 65536;
     v106.uScreenSpaceY = v115 + (pWindow->uFrameY + 52) + v10->hw_sprites[0]->sprite_header->uHeight;
     v106.pPalette = PaletteManager::Get_Dark_or_Red_LUT(v10->uPaletteIndex, 0, 1);
-    v106.sZValue = 0;
+    v106.zbuffer_depth = 0;
+    v106.object_pid = 0;
     v106.uFlags = 0;
     render->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
     render->RasterLine2D(v106.uViewportX - 1, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));//горизонтальная верхняя линия

@@ -1969,7 +1969,7 @@ void OutdoorLocation::PrepareActorsDrawList()
     signed __int64 v25; // qtt@45
     int v26; // ST54_4@45
     int v27; // ecx@45
-    int v34; // ecx@54
+    //int v34; // ecx@54
     int v41; // [sp+24h] [bp-3Ch]@11
     int v42; // [sp+28h] [bp-38h]@38
     int v43; // [sp+28h] [bp-38h]@45
@@ -2144,10 +2144,9 @@ void OutdoorLocation::PrepareActorsDrawList()
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
-            HEXRAYS_HIWORD(v34) = HEXRAYS_HIWORD(X);
-            HEXRAYS_LOWORD(v34) = 0;
             pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v34 + PID(OBJECT_Actor, i);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HEXRAYS_HIWORD(X);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
 
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v62 | 0x200;
