@@ -822,7 +822,6 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
   int pRotY; // esi@1
   Vec3_int_ pStartR; // ST08_12@1
   int pRotX; // ST04_4@1
-  int pDepth; // eax@1
   RenderVertexSoft v11[2]; // [sp+2Ch] [bp-74h]@1
   int outx;
   int outz; // [sp+94h] [bp-Ch]@1
@@ -839,8 +838,8 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
   v11[1].vWorldPosition.y = (double)pIndoorCameraD3D->vPartyPos.y;
   v11[1].vWorldPosition.z = (double)pIndoorCameraD3D->vPartyPos.z;
 
-  pDepth = fixpoint_from_float(fPickDepth);
-  Vec3_int_::Rotate(pDepth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
+  int depth = fixpoint_from_float(fPickDepth);
+  Vec3_int_::Rotate(depth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
 
   v11[0].vWorldPosition.x = (double)outx;
   v11[0].vWorldPosition.y = (double)outy;

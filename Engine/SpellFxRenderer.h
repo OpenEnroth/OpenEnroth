@@ -132,7 +132,7 @@ struct SpellFxRenderer
     void AddProjectile(struct SpriteObject *a2, int a3, Texture *);
     void _4A7E89_sparkles_on_actor_after_it_casts_buff(struct Actor *pActor, unsigned int uDiffuse);
     void _4A7F74(int x, int y, int z);
-    int _4A806F_get_mass_distortion_value(struct Actor *pActor);
+    float _4A806F_get_mass_distortion_value(struct Actor *pActor);
     //void _4A80DC_implosion_particle_sw(struct SpriteObject *a2);
     bool RenderAsSprite(struct SpriteObject *a2);
     void SetPlayerBuffAnim(unsigned __int16 uSpellID, unsigned __int16 uPlayerID);

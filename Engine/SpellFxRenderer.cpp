@@ -264,7 +264,7 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         local_0.b = 0.0;
         local_0.timeToLive = (rand() & 0x40) + 96;
         local_0.texture = texture;
-        local_0.flt_28 = 1.0f;
+        local_0.particle_size = 1.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
         local_0.x = x - 4.0f;
         pEngine->pParticleEngine->AddParticle(&local_0);
@@ -293,7 +293,7 @@ void SpellFxRenderer::_4A73AA_hanging_trace_particles___like_fire_strike_ice_bla
         local_0.r = 0.0f;
         local_0.g = 0.0f;
         local_0.b = 0.0f;
-        local_0.flt_28 = 1.0f;
+        local_0.particle_size = 1.0f;
         local_0.timeToLive = (rand() & 0x7F) + 128;
         local_0.texture = texture;
         pEngine->pParticleEngine->AddParticle(&local_0);
@@ -319,7 +319,7 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(SpriteObject *a1, 
     v5 = 10;
     local_0.timeToLive = (rand() & 0x7F) + 128;
     local_0.texture = texture;
-    local_0.flt_28 = 1.0f;
+    local_0.particle_size = 1.0f;
     do
     {
         local_0.r = (float)(rand() & 0x1FF) - 255.0f;
@@ -352,7 +352,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2)
     local_0.z = (float)a2->vPosition.z;
     local_0.timeToLive = (rand() & 0x7F) + 128;
     local_0.texture = this->effpar01;
-    local_0.flt_28 = 1.0;
+    local_0.particle_size = 1.0;
 
     // 10 fireball sparks 
     for (unsigned int i = 0; i < 10; ++i)
@@ -419,7 +419,7 @@ void SpellFxRenderer::_4A78AE_sparks_spell(SpriteObject *a1)
     local_0.g = 0.0f;
     local_0.b = 0.0f;
     local_0.texture = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->hw_sprites[0]->texture;
-    local_0.flt_28 = 2.0f;
+    local_0.particle_size = 2.0f;
     pEngine->pParticleEngine->AddParticle(&local_0);
 }
 
@@ -442,11 +442,10 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1)
     Dst.uDiffuse = 0x7F7F7F;
     Dst.y = v4;
     Dst.z = (float)a1->vPosition.z;
-__debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
-    //Dst.uTextureID = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->pHwSpriteIDs[0];
+    Dst.texture = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->hw_sprites[0]->texture;
     v5 = rand();
     v6 = 10;
-    Dst.flt_28 = 1.0;
+    Dst.particle_size = 1.0;
     Dst.timeToLive = (v5 & 0x7F) + 128;
     do
     {
@@ -493,7 +492,7 @@ void SpellFxRenderer::_4A7A66_miltiple_spell_collision_partifles___like_after_sp
     local_0.uDiffuse = uDiffuse;
     local_0.z = (float)(v5 + 32);
     v6 = rand();
-    local_0.flt_28 = 1.0;
+    local_0.particle_size = 1.0;
     v7 = 0.0 * a4;
     local_0.timeToLive = (v6 & 0x7F) + 128;
     local_0.texture = texture;
@@ -556,7 +555,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2)
     float a2a; // [sp+7Ch] [bp+8h]@2
 
     v2 = this;
-    memset(&local_0, 0, 0x68u);
+    memset(&local_0, 0, sizeof(local_0));
     v3 = a2;
     v4 = a2->field_54;
     v5 = &pObjectList->pObjects[a2->uObjectDescID];
@@ -576,13 +575,14 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2)
         local_0.g = 0.0f;
         local_0.b = 0.0f;
         v10 = rand();
-        HEXRAYS_LODWORD(local_0.flt_28) = 0x40400000u;
+
+__debugbreak(); // fix float values
+        HEXRAYS_LODWORD(local_0.particle_size) = 0x40400000u;
         local_0.timeToLive = (v10 & 0x3F) + 64;
-__debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
-        //local_0.uTextureID = pSpriteFrameTable->GetFrame(v5->uSpriteID, v3->uSpriteFrameID)->pHwSpriteIDs[0];
+        local_0.texture = pSpriteFrameTable->GetFrame(v5->uSpriteID, v3->uSpriteFrameID)->hw_sprites[0]->texture;
         pEngine->pParticleEngine->AddParticle(&local_0);
         v11 = (float)v3->vPosition.x;
-        HEXRAYS_LODWORD(local_0.flt_28) = 0x40800000u;
+        HEXRAYS_LODWORD(local_0.particle_size) = 0x40800000u;
         local_0.x = v11;
         local_0.y = (float)v3->vPosition.y;
         local_0.z = (float)v3->vPosition.z;
@@ -601,7 +601,8 @@ __debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets
         v12 = (float)a2->vPosition.x;
         local_0.type = ParticleType_Sprite;
         local_0.uDiffuse = 0xFFFFFF;
-        HEXRAYS_LODWORD(local_0.flt_28) = 0x40000000u;
+__debugbreak(); // fix float values
+        HEXRAYS_LODWORD(local_0.particle_size) = 0x40000000u;
         local_0.x = v12;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
@@ -609,8 +610,7 @@ __debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets
         local_0.g = 0.0f;
         local_0.b = 0.0f;
         local_0.timeToLive = (rand() & 0x3F) + 64;
-__debugbreak(); // investigate: HwSpriteIds are Direct3D2Texture pointer offsets, expected LOD texture idx
-        //local_0.uTextureID = pSpriteFrameTable->GetFrame(v5->uSpriteID, a2->uSpriteFrameID)->pHwSpriteIDs[0];
+        local_0.texture = pSpriteFrameTable->GetFrame(v5->uSpriteID, a2->uSpriteFrameID)->hw_sprites[0]->texture;
         pEngine->pParticleEngine->AddParticle(&local_0);
     }
 }
@@ -655,7 +655,7 @@ void SpellFxRenderer::_4A7E89_sparkles_on_actor_after_it_casts_buff(Actor *pActo
     v3 = pActor;
     Dst.texture = this->effpar02;
     pActora = 50;
-    Dst.flt_28 = 1.0;
+    Dst.particle_size = 1.0;
     do
     {
         v7 = (unsigned __int8)rand() + v3->vPosition.x - 127;
@@ -690,11 +690,11 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z)
     double v12; // [sp+78h] [bp-8h]@1
     float z1; // [sp+88h] [bp+8h]@2
 
-    memset(&local_0, 0, 0x68u);
+    memset(&local_0, 0, sizeof(local_0));
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
     local_0.uDiffuse = 0x7E7E7E;
     v5 = rand();
-    local_0.flt_28 = 1.0;
+    local_0.particle_size = 1.0;
     v6 = 8;
     local_0.timeToLive = (v5 & 0x7F) + 128;
 
@@ -718,7 +718,7 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z)
 }
 
 //----- (004A806F) --------------------------------------------------------
-int SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor)
+float SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor)
 {
     int v2; // ecx@1
     int v3; // eax@1
@@ -741,7 +741,7 @@ int SpellFxRenderer::_4A806F_get_mass_distortion_value(Actor *pActor)
         v4 = 1.0;
     }
 
-    return fixpoint_from_float(v4);
+    return v4;
 }
 
 //----- (004A81CA) --------------------------------------------------------

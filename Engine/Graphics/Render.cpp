@@ -1278,7 +1278,7 @@ void Render::PrepareDecorationsRenderList_ODM()
                 local_0.r = 0.0;
                 local_0.g = 0.0;
                 local_0.b = 0.0;
-                local_0.flt_28 = 1.0;
+                local_0.particle_size = 1.0;
                 local_0.timeToLive = (rand() & 0x80) + 128;
                 local_0.texture = pEngine->GetSpellFxRenderer()->effpar01;
                 pEngine->pParticleEngine->AddParticle(&local_0);

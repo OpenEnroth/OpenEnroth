@@ -2800,7 +2800,7 @@ void PrepareActorRenderList_BLV()
                     if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
                     {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(fixpoint_mul(
-                            pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]),
+                            fixpoint_from_float(pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i])),
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y._internal
                             )
                             );
@@ -3068,7 +3068,7 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
         particle.r = 0.0;
         particle.g = 0.0;
         particle.b = 0.0;
-        particle.flt_28 = 1.0;
+        particle.particle_size = 1.0;
         particle.timeToLive = (rand() & 0x80) + 128;
         particle.texture = pEngine->GetSpellFxRenderer()->effpar01;
         pEngine->pParticleEngine->AddParticle(&particle);

@@ -117,7 +117,7 @@ void ParticleEngine::AddParticle(Particle_sw *a2)
             //v6 = (v4->uType & 4) == 0;
             v4->timeToLive = a2->timeToLive;
             v4->texture = a2->texture;
-            v4->flt_28 = a2->flt_28;
+            v4->particle_size = a2->particle_size;
             if (v4->type & ParticleType_Rotating)
             {
                 v4->rotation_speed = (rand() % 256) - 128;
@@ -286,8 +286,8 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
     //v7 = pParticle->flt_28;
     //pParticle->_screenspace_scale = v6 / x;
     //v8 = v7;
-    pParticle->_screenspace_scale = fixpoint_mul(fixpoint_from_float(pParticle->flt_28), v6 / x);
-    pParticle->zbuffer_depth = x;
+    pParticle->screenspace_scale = fixed::FromFloat(pParticle->particle_size) * fixed::FromFloat(pParticle->flt_5C) / fixed::Raw(x);
+    pParticle->zbuffer_depth = x >> 16;
     return true;
 }
 
@@ -330,13 +330,13 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_ODM(unsigned int uID)
             long long _hidword_v12 = fixpoint_mul(v11, v3) + fixpoint_sub_unknown(pParticles[uID].z - pIndoorCameraD3D->vPartyPos.z, v44);
             HEXRAYS_LODWORD(v13) = 0;
             HEXRAYS_HIDWORD(v13) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
-            pParticles[uID]._screenspace_scale = v13 / _hidword_v12;
+            pParticles[uID].screenspace_scale = fixed::Raw(v13 / _hidword_v12);
             pParticles[uID].uScreenSpaceX = pViewport->uScreenCenterX
-                - ((signed int)fixpoint_mul(pParticles[uID]._screenspace_scale, (fixpoint_sub_unknown(pParticles[uID].y
+                - ((signed int)fixpoint_mul(pParticles[uID].screenspace_scale._internal, (fixpoint_sub_unknown(pParticles[uID].y
                     - pIndoorCameraD3D->vPartyPos.y, v4)
                     - fixpoint_sub_unknown(pParticles[uID].x - pIndoorCameraD3D->vPartyPos.x, v5))) >> 16);
             pParticles[uID].uScreenSpaceY = pViewport->uScreenCenterY
-                - ((signed int)fixpoint_mul(pParticles[uID]._screenspace_scale, (fixpoint_sub_unknown(pParticles[uID].z
+                - ((signed int)fixpoint_mul(pParticles[uID].screenspace_scale._internal, (fixpoint_sub_unknown(pParticles[uID].z
                     - pIndoorCameraD3D->vPartyPos.z, v3)
                     - fixpoint_mul(v11, v44))) >> 16);
             pParticles[uID].zbuffer_depth = _hidword_v12;
@@ -358,12 +358,12 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_ODM(unsigned int uID)
             HEXRAYS_HIDWORD(v22) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
             long long _var_123 = fixpoint_sub_unknown(pParticles[uID].x - pIndoorCameraD3D->vPartyPos.x, v4)
                 + fixpoint_sub_unknown(pParticles[uID].y - pIndoorCameraD3D->vPartyPos.y, v5);
-            pParticles[uID]._screenspace_scale = v22 / _var_123;
+            pParticles[uID].screenspace_scale = fixed::Raw(v22 / _var_123);
             pParticles[uID].uScreenSpaceX = pViewport->uScreenCenterX
-                - ((signed int)fixpoint_mul(pParticles[uID]._screenspace_scale, (fixpoint_sub_unknown(pParticles[uID].y
+                - ((signed int)fixpoint_mul(pParticles[uID].screenspace_scale._internal, (fixpoint_sub_unknown(pParticles[uID].y
                     - pIndoorCameraD3D->vPartyPos.y, v4)
                     - fixpoint_sub_unknown(pParticles[uID].x - pIndoorCameraD3D->vPartyPos.x, v5))) >> 16);
-            pParticles[uID].uScreenSpaceY = pViewport->uScreenCenterY - (fixpoint_sub_unknown(pParticles[uID].z, pParticles[uID]._screenspace_scale) >> 16);
+            pParticles[uID].uScreenSpaceY = pViewport->uScreenCenterY - (fixpoint_sub_unknown(pParticles[uID].z, pParticles[uID].screenspace_scale._internal) >> 16);
             pParticles[uID].zbuffer_depth = _var_123;
         }
         v26 = fixpoint_sub_unknown(pParticles[uID].y - pIndoorCameraD3D->vPartyPos.y, v5);
@@ -380,10 +380,10 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_ODM(unsigned int uID)
     {
         HEXRAYS_LODWORD(v29) = 0;
         HEXRAYS_HIDWORD(v29) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
-        pParticles[uID]._screenspace_scale = v29 / X_4;
-        pParticles[uID].uScreenSpaceX = pViewport->uScreenCenterX - ((signed int)fixpoint_mul(pParticles[uID]._screenspace_scale, v16) >> 16);
-        pParticles[uID].uScreenSpaceY = pViewport->uScreenCenterY - ((signed int)fixpoint_mul(pParticles[uID]._screenspace_scale, v40) >> 16);
-        pParticles[uID]._screenspace_scale = fixpoint_mul(fixpoint_from_float(pParticles[uID].flt_28), pParticles[uID]._screenspace_scale);
+        pParticles[uID].screenspace_scale = fixed::Raw(v29 / X_4);
+        pParticles[uID].uScreenSpaceX = pViewport->uScreenCenterX - ((signed int)fixpoint_mul(pParticles[uID].screenspace_scale._internal, v16) >> 16);
+        pParticles[uID].uScreenSpaceY = pViewport->uScreenCenterY - ((signed int)fixpoint_mul(pParticles[uID].screenspace_scale._internal, v40) >> 16);
+        pParticles[uID].screenspace_scale = fixed::FromFloat(pParticles[uID].particle_size) * pParticles[uID].screenspace_scale;
         pParticles[uID].zbuffer_depth = X_4;
         if (pParticles[uID].uScreenSpaceX >= (signed int)pViewport->uViewportTL_X
             && pParticles[uID].uScreenSpaceX < (signed int)pViewport->uViewportBR_X
@@ -421,8 +421,8 @@ void ParticleEngine::DrawParticles_BLV()
             if (p->type & ParticleType_Diffuse)
             {
                 //v14 = &pParticles[i];
-                v15.screenspace_projection_factor_x = fixed::Raw(p->_screenspace_scale / 4);
-                v15.screenspace_projection_factor_y = fixed::Raw(p->_screenspace_scale / 4);
+                v15.screenspace_projection_factor_x = p->screenspace_scale;
+                v15.screenspace_projection_factor_y = p->screenspace_scale;
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
@@ -454,8 +454,8 @@ void ParticleEngine::DrawParticles_BLV()
             }
             else if (p->type & ParticleType_Bitmap)
             {
-                v15.screenspace_projection_factor_x = fixed::Raw(p->_screenspace_scale);
-                v15.screenspace_projection_factor_y = fixed::Raw(p->_screenspace_scale);
+                v15.screenspace_projection_factor_x = p->screenspace_scale;
+                v15.screenspace_projection_factor_y = p->screenspace_scale;
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
@@ -464,8 +464,8 @@ void ParticleEngine::DrawParticles_BLV()
             }
             else if (p->type & ParticleType_Sprite)
             {
-                v15.screenspace_projection_factor_x = fixed::Raw(p->_screenspace_scale);
-                v15.screenspace_projection_factor_y = fixed::Raw(p->_screenspace_scale);
+                v15.screenspace_projection_factor_x = p->screenspace_scale;
+                v15.screenspace_projection_factor_y = p->screenspace_scale;
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
@@ -491,8 +491,8 @@ void ParticleEngine::DrawParticles_ODM()
 
         if (particle->type & ParticleType_Diffuse)
         {
-            pBillboard.screenspace_projection_factor_x = fixed::Raw(particle->_screenspace_scale / 4);
-            pBillboard.screenspace_projection_factor_y = fixed::Raw(particle->_screenspace_scale / 4);
+            pBillboard.screenspace_projection_factor_x = particle->screenspace_scale;
+            pBillboard.screenspace_projection_factor_y = particle->screenspace_scale;
             pBillboard.screen_space_x = particle->uScreenSpaceX;
             pBillboard.screen_space_y = particle->uScreenSpaceY;
             pBillboard.object_pid = particle->object_pid;
@@ -526,8 +526,8 @@ void ParticleEngine::DrawParticles_ODM()
         }
         else if (particle->type & ParticleType_Bitmap)
         {
-            pBillboard.screenspace_projection_factor_x = fixed::Raw(particle->_screenspace_scale);
-            pBillboard.screenspace_projection_factor_y = fixed::Raw(particle->_screenspace_scale);
+            pBillboard.screenspace_projection_factor_x = particle->screenspace_scale;
+            pBillboard.screenspace_projection_factor_y = particle->screenspace_scale;
             pBillboard.screen_space_x = particle->uScreenSpaceX;
             pBillboard.screen_space_y = particle->uScreenSpaceY;
             pBillboard.object_pid = particle->object_pid;
@@ -536,8 +536,8 @@ void ParticleEngine::DrawParticles_ODM()
         }
         else if (particle->type & ParticleType_Sprite)
         {
-            pBillboard.screenspace_projection_factor_x = fixed::Raw(particle->_screenspace_scale);
-            pBillboard.screenspace_projection_factor_y = fixed::Raw(particle->_screenspace_scale);
+            pBillboard.screenspace_projection_factor_x = particle->screenspace_scale;
+            pBillboard.screenspace_projection_factor_y = particle->screenspace_scale;
             pBillboard.screen_space_x = particle->uScreenSpaceX;
             pBillboard.screen_space_y = particle->uScreenSpaceY;
             pBillboard.object_pid = particle->object_pid;
