@@ -4,7 +4,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
 #include "Engine/OurMath.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/ZlibWrapper.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"

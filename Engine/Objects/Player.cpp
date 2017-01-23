@@ -6,7 +6,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 
 #include "Player.h"
 #include "../Tables/PlayerFrameTable.h"

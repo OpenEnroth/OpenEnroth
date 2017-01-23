@@ -6,7 +6,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"

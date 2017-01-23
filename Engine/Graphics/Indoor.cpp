@@ -9,7 +9,7 @@
 #include "Engine/Events.h"
 #include "Engine/ZlibWrapper.h"
 #include "Engine/stru367.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/LOD.h"
 
 #include "Engine/Serialization/LegacyImages.h"

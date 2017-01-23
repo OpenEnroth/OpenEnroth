@@ -1,7 +1,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
 #include "Engine/LOD.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/Random.h"
 #include "Engine/stru160.h"
 #include "Engine/OurMath.h"

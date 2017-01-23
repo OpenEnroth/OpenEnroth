@@ -11,7 +11,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 #include "Engine/OurMath.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"

@@ -6,9 +6,11 @@
 
 #include "Engine/Engine.h"
 
-#include "ObjectList.h"
-#include "../Graphics/Sprites.h"
-#include "../Tables/FrameTableInc.h"
+#include "Engine/Objects/ObjectList.h"
+
+#include "Engine/Graphics/Sprites.h"
+
+#include "Engine/Tables/FrameTableInc.h"
 
 //----- (0042EB42) --------------------------------------------------------
 __int16 ObjectList::ObjectIDByItemID(unsigned __int16 uItemID)
