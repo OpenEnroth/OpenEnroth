@@ -2791,17 +2791,18 @@ void PrepareActorRenderList_BLV()
                 pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
                 HEXRAYS_LODWORD(v18) = 0;
                 HEXRAYS_HIDWORD(v18) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v9->scale._internal, v18 / x);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v9->scale._internal, v18 / x));
                 a5a = fixpoint_mul(v9->scale._internal, v18 / x);
                 //}
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = a5a;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(a5a);
                 if (!pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active())
                 {
                     if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
                     {
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(fixpoint_mul(
                             pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]),
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y._internal
+                            )
                             );
                     }
                 }
@@ -2809,10 +2810,10 @@ void PrepareActorRenderList_BLV()
                 {
                     if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
                     {
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(fixpoint_mul(
                             65536 / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower,
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat
-                        );
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y._internal
+                        ));
                     }
                 }
 
@@ -2820,13 +2821,13 @@ void PrepareActorRenderList_BLV()
                 pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pActors[i].vPosition.x;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pActors[i].vPosition.y;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pActors[i].vPosition.z;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v43;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = a6;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = v43;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = a6;
                 HEXRAYS_LOWORD(v25) = 0;
                 HEXRAYS_LOBYTE(v26) = v41;
 
                 //v0->sZValue = v25 + (PID(OBJECT_Actor,i));
-                pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HEXRAYS_HIWORD(x);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = HEXRAYS_HIWORD(x);
                 pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
 
                 //v29 = HIDWORD(p->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime) == 0;
@@ -2918,7 +2919,7 @@ void PrepareItemsRenderList_BLV()
                             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
                             HEXRAYS_LODWORD(v18) = 0;
                             HEXRAYS_HIDWORD(v18) = (int)floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v4->scale._internal, v18 / x);
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v4->scale._internal, v18 / x));
                             v31 = fixpoint_mul(v4->scale._internal, v18 / x);
                         }
                         /*else
@@ -2932,19 +2933,19 @@ void PrepareItemsRenderList_BLV()
                         }*/
                         //HIWORD(v21) = HIWORD(x);
                         //LOWORD(v21) = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = v31;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(v31);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pSpriteObjects[i].vPosition.y;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pSpriteObjects[i].vPosition.z;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v36;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = v36;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = v35;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = v35;
                         //v23 = 8 * i;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v4;
                         //v12 = (p->uAttributes & 0x20) == 0;
                         //pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v21 + v23;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HEXRAYS_HIWORD(x);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = HEXRAYS_HIWORD(x);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item, i);
                         /*if (pSpriteObjects[i].uAttributes & 0x20)
                         {
@@ -3115,20 +3116,19 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
             HEXRAYS_LODWORD(v20) = 0;
             HEXRAYS_HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v11->scale._internal, v20 / x);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v11->scale._internal, v20 / x));
             HEXRAYS_LODWORD(v20) = 0;
             HEXRAYS_HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y + 0.5f);
             v37 = fixpoint_mul(v11->scale._internal, v20 / x);
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = v37;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(v37);
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pLevelDecorations[uDecorationID].vPosition.x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pLevelDecorations[uDecorationID].vPosition.y;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pLevelDecorations[uDecorationID].vPosition.z;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = a5;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = a6;
-
-            pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HEXRAYS_HIWORD(x);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = a5;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = a6;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = HEXRAYS_HIWORD(x);
             pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, uDecorationID);
 
             pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;

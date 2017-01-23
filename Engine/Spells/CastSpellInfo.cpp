@@ -3439,8 +3439,12 @@ void CastSpellInfoHelpers::_427D48()
         if (pCastSpellInfo[i].uSpellID && pCastSpellInfo[i].uFlags & ON_CAST_CastingInProgress)
         {
             pCastSpellInfo[i].uSpellID = 0;
-            pGUIWindow_CastTargetedSpell->Release();
-            pGUIWindow_CastTargetedSpell = nullptr;
+
+            if (pGUIWindow_CastTargetedSpell)
+            {
+                pGUIWindow_CastTargetedSpell->Release();
+                pGUIWindow_CastTargetedSpell = nullptr;
+            }
             pMouse->SetCursorImage("MICON1");
             GameUI_StatusBar_Update(true);
             _50C9A0_IsEnchantingInProgress = 0;

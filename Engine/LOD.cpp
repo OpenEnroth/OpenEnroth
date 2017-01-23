@@ -262,7 +262,7 @@ void LODFile_Sprites::MoveSpritesToVideoMemory()
 
 
 //----- (004AD2D1) --------------------------------------------------------
-int LODSprite::_4AD2D1(struct SoftwareBillboard *a2, int a3)
+int LODSprite::_4AD2D1_overlays(struct SoftwareBillboard *a2, int a3)
 {
   int result; // eax@1
   unsigned int v4; // esi@1
@@ -287,7 +287,7 @@ int LODSprite::_4AD2D1(struct SoftwareBillboard *a2, int a3)
   v16 = (unsigned short *)a2->pTarget;
   v15 = a2->pPalette;
   v5 = this->uHeight - 1;
-  for ( i = v4 * a2->uScreenSpaceY - (this->uWidth >> 1) + a2->uScreenSpaceX + 1; v5 >= 0; --v5 )
+  for ( i = v4 * a2->screen_space_y - (this->uWidth >> 1) + a2->screen_space_x + 1; v5 >= 0; --v5 )
   {
     v6 = &this->pSpriteLines[v5];
     v7 = this->pSpriteLines[v5].a1;

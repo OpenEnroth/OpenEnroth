@@ -33,17 +33,17 @@ extern Vis_SelectionFilter vis_sprite_filter_4; // static to sub_44EEA7
 #pragma pack(push, 1)
 struct Vis_ObjectInfo
 {
-  void *object;
-  union
-  {
-    //int sZValue;
-    struct
+    void *object;
+    union
     {
-      unsigned __int16 object_pid;
-      signed __int16 actual_z;
+        //int sZValue;
+        struct
+        {
+            unsigned __int16 object_pid;
+            __int16 depth;
+        };
     };
-  };
-  VisObjectType object_type;
+    VisObjectType object_type;
 };
 #pragma pack(pop)
 
@@ -51,31 +51,31 @@ struct Vis_ObjectInfo
 #pragma pack(push, 1)
 struct Vis_SelectionList
 {
-  enum PointerCreationType
-  {
-    All = 0,
-    Unique = 1
-  };
+    enum PointerCreationType
+    {
+        All = 0,
+        Unique = 1
+    };
 
-  Vis_SelectionList();
-  //----- (004C0585) --------------------------------------------------------
-  ~Vis_SelectionList() {}
-  Vis_ObjectInfo *SelectionPointers(int a2, int a3);
-  void            create_object_pointers(PointerCreationType type = All);
+    Vis_SelectionList();
+    //----- (004C0585) --------------------------------------------------------
+    ~Vis_SelectionList() {}
+    Vis_ObjectInfo *SelectionPointers(int a2, int a3);
+    void            create_object_pointers(PointerCreationType type = All);
 
-  inline void AddObject(void *object, VisObjectType type, int depth, int pid)
-  {
-    object_pool[uNumPointers].object = object;
-    object_pool[uNumPointers].object_type = type;
-    object_pool[uNumPointers].actual_z = depth;
-    object_pool[uNumPointers].object_pid = pid;
-    uNumPointers++;
-  }
+    inline void AddObject(void *object, VisObjectType type, int depth, int pid)
+    {
+        object_pool[uNumPointers].object = object;
+        object_pool[uNumPointers].object_type = type;
+        object_pool[uNumPointers].depth = depth;
+        object_pool[uNumPointers].object_pid = pid;
+        uNumPointers++;
+    }
 
-  void ( ***vdestructor_ptr)(Vis_SelectionList *, bool);
-  Vis_ObjectInfo  object_pool[512];
-  Vis_ObjectInfo *object_pointers[512];
-  unsigned int    uNumPointers;
+    void(***vdestructor_ptr)(Vis_SelectionList *, bool);
+    Vis_ObjectInfo  object_pool[512];
+    Vis_ObjectInfo *object_pointers[512];
+    unsigned int    uNumPointers;
 };
 #pragma pack(pop)
 

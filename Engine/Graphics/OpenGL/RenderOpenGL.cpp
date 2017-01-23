@@ -852,20 +852,23 @@ void RenderOpenGL::TransformBillboardsAndSetPalettesODM()
 
     for (unsigned int i = 0; i < ::uNumBillboardsToDraw; ++i)
     {
-        billboard.uScreenSpaceX = pBillboardRenderList[i].uScreenSpaceX;
-        billboard.uScreenSpaceY = pBillboardRenderList[i].uScreenSpaceY;
-        billboard.sParentBillboardID = i;
-        billboard._screenspace_x_scaler_packedfloat = pBillboardRenderList[i]._screenspace_x_scaler_packedfloat;
-        billboard.sTintColor = pBillboardRenderList[i].sTintColor;
-        billboard._screenspace_y_scaler_packedfloat = pBillboardRenderList[i]._screenspace_y_scaler_packedfloat;
-        billboard.zbuffer_depth = pBillboardRenderList[i].actual_z;
-        billboard.object_pid = pBillboardRenderList[i].object_pid;
-        billboard.uFlags = pBillboardRenderList[i].field_1E;
-        if (pBillboardRenderList[i].hwsprite)
+        auto p = &pBillboardRenderList[i];
+
+        if (p->hwsprite)
         {
+            billboard.screen_space_x = p->screen_space_x;
+            billboard.screen_space_y = p->screen_space_y;
+            billboard.screen_space_z = p->screen_space_z;
+            billboard.sParentBillboardID = i;
+            billboard.screenspace_projection_factor_x = p->screenspace_projection_factor_x;
+            billboard.screenspace_projection_factor_y = p->screenspace_projection_factor_y;
+            billboard.sTintColor = p->sTintColor;
+            billboard.object_pid = p->object_pid;
+            billboard.uFlags = p->field_1E;
+
             TransformBillboard(
                 &billboard,
-                &pBillboardRenderList[i]
+                p
             );
         }
     }
@@ -886,12 +889,12 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
     Sprite *pSprite = pBillboard->hwsprite;
     int dimming_level = pBillboard->dimming_level;
 
-    v8 = Billboard_ProbablyAddToListAndSortByZOrder(a2->zbuffer_depth);
+    v8 = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
 
-    v30 = (a2->_screenspace_x_scaler_packedfloat & 0xFFFF) / 65530.0 + HIWORD(a2->_screenspace_x_scaler_packedfloat);
-    v29 = (a2->_screenspace_y_scaler_packedfloat & 0xFFFF) / 65530.0 + HIWORD(a2->_screenspace_y_scaler_packedfloat);
+    v30 = a2->screenspace_projection_factor_x.GetFloat();
+    v29 = a2->screenspace_projection_factor_y.GetFloat();
 
-    unsigned int diffuse = ::GetActorTintColor(dimming_level, 0, a2->zbuffer_depth, 0, pBillboard);
+    unsigned int diffuse = ::GetActorTintColor(dimming_level, 0, a2->screen_space_z, 0, pBillboard);
     if (a2->sTintColor & 0x00FFFFFF && bTinting)
     {
         diffuse = BlendColors(a2->sTintColor, diffuse);
@@ -901,17 +904,17 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
 
     unsigned int specular = 0;
     if (bUsingSpecular)
-        specular = sub_47C3D7_get_fog_specular(0, 0, a2->zbuffer_depth);
+        specular = sub_47C3D7_get_fog_specular(0, 0, a2->screen_space_z);
 
     v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
     v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
     if (a2->uFlags & 4)
         v14 *= -1.0;
     pBillboardRenderListD3D[v8].pQuads[0].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.x = (double)a2->uScreenSpaceX - v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.y = (double)a2->uScreenSpaceY - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.z = 1.0 - 1.0 / (a2->zbuffer_depth * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
-    pBillboardRenderListD3D[v8].pQuads[0].rhw = 1.0 / a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].pQuads[0].pos.x = (double)a2->screen_space_x - v14 * v30;
+    pBillboardRenderListD3D[v8].pQuads[0].pos.y = (double)a2->screen_space_y - v15 * v29;
+    pBillboardRenderListD3D[v8].pQuads[0].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[0].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[0].specular = specular;
     pBillboardRenderListD3D[v8].pQuads[0].texcoord.x = 0.0;
     pBillboardRenderListD3D[v8].pQuads[0].texcoord.y = 0.0;
@@ -922,10 +925,10 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
         v14 = v14 * -1.0;
     pBillboardRenderListD3D[v8].pQuads[1].specular = specular;
     pBillboardRenderListD3D[v8].pQuads[1].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.x = (double)a2->uScreenSpaceX - v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.y = (double)a2->uScreenSpaceY - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->zbuffer_depth * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
-    pBillboardRenderListD3D[v8].pQuads[1].rhw = 1.0 / a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].pQuads[1].pos.x = (double)a2->screen_space_x - v14 * v30;
+    pBillboardRenderListD3D[v8].pQuads[1].pos.y = (double)a2->screen_space_y - v15 * v29;
+    pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[1].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[1].texcoord.x = 0.0;
     pBillboardRenderListD3D[v8].pQuads[1].texcoord.y = 1.0;
 
@@ -935,10 +938,10 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
         v14 *= -1.0;
     pBillboardRenderListD3D[v8].pQuads[2].diffuse = diffuse;
     pBillboardRenderListD3D[v8].pQuads[2].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.x = (double)a2->uScreenSpaceX + v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.y = (double)a2->uScreenSpaceY - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->zbuffer_depth * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
-    pBillboardRenderListD3D[v8].pQuads[2].rhw = 1.0 / a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].pQuads[2].pos.x = (double)a2->screen_space_x + v14 * v30;
+    pBillboardRenderListD3D[v8].pQuads[2].pos.y = (double)a2->screen_space_y - v15 * v29;
+    pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[2].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[2].texcoord.x = 1.0;
     pBillboardRenderListD3D[v8].pQuads[2].texcoord.y = 1.0;
 
@@ -948,19 +951,19 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
         v14 *= -1.0;
     pBillboardRenderListD3D[v8].pQuads[3].diffuse = diffuse;
     pBillboardRenderListD3D[v8].pQuads[3].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.x = (double)a2->uScreenSpaceX + v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.y = (double)a2->uScreenSpaceY - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->zbuffer_depth * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
-    pBillboardRenderListD3D[v8].pQuads[3].rhw = 1.0 / a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].pQuads[3].pos.x = (double)a2->screen_space_x + v14 * v30;
+    pBillboardRenderListD3D[v8].pQuads[3].pos.y = (double)a2->screen_space_y - v15 * v29;
+    pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[3].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[3].texcoord.x = 1.0;
     pBillboardRenderListD3D[v8].pQuads[3].texcoord.y = 0.0;
 
     pBillboardRenderListD3D[v8].uNumVertices = 4;
     pBillboardRenderListD3D[v8].texture = pSprite->texture;
-    pBillboardRenderListD3D[v8].z_order = a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].z_order = a2->screen_space_z;
     pBillboardRenderListD3D[v8].field_90 = a2->field_44;
     pBillboardRenderListD3D[v8].object_pid = a2->object_pid;
-    pBillboardRenderListD3D[v8].screen_space_z = a2->zbuffer_depth;
+    pBillboardRenderListD3D[v8].screen_space_z = a2->screen_space_z;
     pBillboardRenderListD3D[v8].sParentBillboardID = a2->sParentBillboardID;
 
     if (a2->sTintColor & 0xFF000000)

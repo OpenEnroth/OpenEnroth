@@ -124,8 +124,8 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices, int num_verti
     {
       if (v13 == -1)
         v13 = i;
-      else  if (pBillboardRenderList[billboard->sParentBillboardID].actual_z < 
-                  pBillboardRenderList[render->pBillboardRenderListD3D[v13].sParentBillboardID].actual_z)
+      else  if (pBillboardRenderList[billboard->sParentBillboardID].screen_space_z < 
+                  pBillboardRenderList[render->pBillboardRenderListD3D[v13].sParentBillboardID].screen_space_z)
         v13 = i;
     }
   }
@@ -209,7 +209,7 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY, Vis_Selecti
       {
         RenderBillboard* billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
-        list->AddObject((void *)d3d_billboard->sParentBillboardID, VisObjectType_Sprite, billboard->actual_z, billboard->object_pid);
+        list->AddObject((void *)d3d_billboard->sParentBillboardID, VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
       }
     }
   }
@@ -308,7 +308,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay, Vis_Select
               pNumPointers = &list->uNumPointers;
               v12 = &list->object_pool[list->uNumPointers];
               v12->object = &pIndoor->pFaces[pFaceID];
-              v12->actual_z = a1.vWorldViewPosition.x;
+              v12->depth = a1.vWorldViewPosition.x;
               v12->object_pid = PID(OBJECT_BModel, pFaceID);
               v12->object_type = VisObjectType_Face;
               ++*pNumPointers;
@@ -474,10 +474,13 @@ int Vis::get_object_zbuf_val(Vis_ObjectInfo *info)
         {
             //return info->sZValue;
 
-            int res = 0;
-            HEXRAYS_HIWORD(res) = info->actual_z;
-            HEXRAYS_LOWORD(res) = info->object_pid;
-            return res;
+            struct {
+                unsigned short object_pid;
+                short depth;
+            } res;
+            res.depth = info->depth;
+            res.object_pid = info->object_pid;
+            return *(int *)&res;
         }
 
         default:
@@ -927,11 +930,11 @@ void Vis::sort_object_pointers(Vis_ObjectInfo **pPointers, int start, int end)//
             backward_sort_index = end;
             do
             {
-                last_z_val = pPointers[end]->actual_z;
+                last_z_val = pPointers[end]->depth;
                 do
                 {
                     ++forward_sort_index;
-                    more_lz_val = pPointers[forward_sort_index]->actual_z;
+                    more_lz_val = pPointers[forward_sort_index]->depth;
                 } while (more_lz_val < last_z_val);
 
                 do
@@ -939,7 +942,7 @@ void Vis::sort_object_pointers(Vis_ObjectInfo **pPointers, int start, int end)//
                     if (backward_sort_index < 1)
                         break;
                     --backward_sort_index;
-                    less_lz_val = pPointers[backward_sort_index]->actual_z;
+                    less_lz_val = pPointers[backward_sort_index]->depth;
                 } while (less_lz_val > last_z_val);
 
                 temp_pointer = pPointers[forward_sort_index];
@@ -1156,7 +1159,7 @@ Vis_SelectionList::Vis_SelectionList()
     for (uint i = 0; i < 512; ++i)
     {
         object_pool[i].object = nullptr;
-        object_pool[i].actual_z = -1;
+        object_pool[i].depth = -1;
         object_pool[i].object_pid = PID_INVALID;
         object_pool[i].object_type = VisObjectType_Any;
     }
@@ -1220,7 +1223,7 @@ void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list, Vis
             {
                 RenderBillboard* billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
-                list->AddObject((void *)d3d_billboard->sParentBillboardID, VisObjectType_Sprite, billboard->actual_z, billboard->object_pid);
+                list->AddObject((void *)d3d_billboard->sParentBillboardID, VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
             }
         }
     }
@@ -1384,7 +1387,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
   if (v3 == -1)
     return false;
 
-  if (pBillboardRenderList[v3].actual_z > fDepth)
+  if (pBillboardRenderList[v3].screen_space_z > fDepth)
     return false;
 
 
@@ -1398,7 +1401,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
     sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0, Vis_static_stru_F91E10.uNumPointers - 1);
     if (Vis_static_stru_F91E10.uNumPointers)
     {
-       if (Vis_static_stru_F91E10.object_pointers[0]->actual_z > pBillboardRenderList[v3].actual_z)
+       if (Vis_static_stru_F91E10.object_pointers[0]->depth > pBillboardRenderList[v3].screen_space_z)
          return true;
     }
     else if ((double)(pViewport->uScreen_TL_X) <= test_x &&
@@ -1425,7 +1428,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
             sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0, Vis_static_stru_F91E10.uNumPointers - 1);
             if ( !Vis_static_stru_F91E10.uNumPointers )
                 return true;
-            if (Vis_static_stru_F91E10.object_pointers[0]->actual_z > pBillboardRenderList[v3].actual_z)
+            if (Vis_static_stru_F91E10.object_pointers[0]->depth > pBillboardRenderList[v3].screen_space_z)
                 return true;
             }
 
@@ -1468,7 +1471,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
               sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0, Vis_static_stru_F91E10.uNumPointers - 1);
               if ( !Vis_static_stru_F91E10.uNumPointers )
                   return true;
-              if (Vis_static_stru_F91E10.object_pointers[0]->actual_z > pBillboardRenderList[v3].actual_z)
+              if (Vis_static_stru_F91E10.object_pointers[0]->depth > pBillboardRenderList[v3].screen_space_z)
                   return true;
 
               }
@@ -1503,7 +1506,7 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vi
                     {
                         v8 = DetermineFacetIntersection(pFace, PID(OBJECT_BModel, pFaceID), pick_depth);
                         if (v8)
-                            list->AddObject(v8->object, v8->object_type, v8->actual_z, v8->object_pid);
+                            list->AddObject(v8->object, v8->object_type, v8->depth, v8->object_pid);
                     }
                 }
             }
@@ -1535,7 +1538,7 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, V
                 int pid = PID(OBJECT_BModel, j | (i << 6));
                 if (Vis_ObjectInfo* object_info = DetermineFacetIntersection(&blv_face, pid, pick_depth))
                 {
-                    list->AddObject(object_info->object, object_info->object_type, object_info->actual_z, object_info->object_pid);
+                    list->AddObject(object_info->object, object_info->object_type, object_info->depth, object_info->object_pid);
                 }
             }
         }

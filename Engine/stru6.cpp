@@ -419,8 +419,7 @@ void SpellFxRenderer::_4A78AE_sparks_spell(SpriteObject *a1)
     local_0.g = 0.0f;
     local_0.b = 0.0f;
     local_0.texture = pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->hw_sprites[0]->texture;
-__debugbreak(); // fix float
-    HEXRAYS_LODWORD(local_0.flt_28) = 0x40000000u;
+    local_0.flt_28 = 2.0f;
     pEngine->pParticleEngine->AddParticle(&local_0);
 }
 

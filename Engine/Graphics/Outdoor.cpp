@@ -2120,32 +2120,34 @@ void OutdoorLocation::PrepareActorsDrawList()
             pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[v41];
             pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
             pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v15->scale._internal, v58);
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(v15->scale._internal, v57);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v15->scale._internal, v58));
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(fixpoint_mul(v15->scale._internal, v57));
             if (!pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
             {
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(fixpoint_mul(
                     65536 / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower,
-                    pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
-                );
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y._internal
+                )
+                    );
                 HEXRAYS_LOWORD(v27) = v43;
             }
             else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
             {
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(fixpoint_mul(
                     pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]),
-                    pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
-                );
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y._internal
+                )
+                    );
                 HEXRAYS_LOWORD(v27) = v43;
             }
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v27;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = v46;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = v27;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = v46;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
             pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HEXRAYS_HIWORD(X);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = HEXRAYS_HIWORD(X);
             pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
 
