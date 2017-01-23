@@ -1399,7 +1399,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
   if (v3 == -1)
     return false;
 
-  if (pBillboardRenderList[v3].GetFloatZ() > fDepth)
+  if (pBillboardRenderList[v3].actual_z > fDepth)
     return false;
 
 

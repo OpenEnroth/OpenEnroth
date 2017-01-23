@@ -45,10 +45,10 @@ struct RenderBillboard
     signed int sTintColor;
     SpriteFrame *pSpriteFrame;
 
-    inline float GetFloatZ() const
+    /*inline float GetFloatZ() const
     {
         return (float)object_pid / 65535.0f + (float)actual_z;
-    }
+    }*/
 };
 #pragma pack(pop)
 

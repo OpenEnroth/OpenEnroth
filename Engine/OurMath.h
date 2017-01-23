@@ -4,12 +4,27 @@
 
 #define pi_double 3.14159265358979323846
 
+__int64 fixpoint_mul(int, int);
+__int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
+__int64 fixpoint_div(int, int);
+__int64 fixpoint_sub_unknown(int, int);
+int fixpoint_from_float(float value);
+int fixpoint_from_int(int lhv, int rhv);
+int integer_sqrt(int val);
+int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides); // idb
+inline int round_to_int(float x) { return (int)floor(x + 0.5f); }
+
 
 #pragma pack(push, 1)
 struct fixed // fixed-point decimal
 {
     inline fixed() : _internal(0) {}
     inline fixed(int _bits) : _internal(_bits) {}
+
+    static fixed FromFloat(float f)
+    {
+        return fixed::Raw(fixpoint_from_float(f));
+    }
 
     static fixed FromInt(int value)
     {
@@ -43,8 +58,12 @@ struct fixed // fixed-point decimal
         );
     }
 
-    inline fixed operator +(const fixed &rhs) { return fixed::Raw(this->_internal + rhs._internal); }
-    inline fixed operator -(const fixed &rhs) { return fixed::Raw(this->_internal - rhs._internal); }
+    inline fixed operator +(const fixed &rhs)   { return fixed::Raw(this->_internal + rhs._internal); }
+    inline fixed operator -(const fixed &rhs)   { return fixed::Raw(this->_internal - rhs._internal); }
+    inline bool operator >=(const fixed &rhs)   { return this->_internal >= rhs._internal; }
+    inline bool operator <=(const fixed &rhs)   { return this->_internal <= rhs._internal; }
+    inline bool operator >(const fixed &rhs)    { return this->_internal > rhs._internal; }
+    inline bool operator <(const fixed &rhs)    { return this->_internal < rhs._internal; }
 
     __int32 _internal;
 };
@@ -73,15 +92,6 @@ struct stru193_math
 };
 #pragma pack(pop)
 
-__int64 fixpoint_mul(int, int);
-__int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
-__int64 fixpoint_div(int, int);
-__int64 fixpoint_sub_unknown(int, int);
-int fixpoint_from_float(float value);
-int fixpoint_from_int(int lhv, int rhv);
-int integer_sqrt(int val);
-int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides); // idb
-inline int round_to_int(float x) { return (int)floor(x + 0.5f); }
 
 template <typename FloatType>
 inline int bankersRounding(const FloatType& value)
