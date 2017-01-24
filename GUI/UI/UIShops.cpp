@@ -1451,22 +1451,44 @@ void MagicShopDialog()
                     );
                 return;
             }
+			if (item_num) { // this should go into func??
 
-            if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
-            {
-                item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+				int testx = (mouse.x) / 75;
+				// testx limits check
+				if (testx >= 0 && testx < 6) {
+					if (mouse.y >= 152) {
+						testx += 6;
+					}
+					//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
+					//	return;
+					//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+					item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 
-                String str;
-                if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-                    str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);// "Steal %24"
-                else
-                {
-                    v75 = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_MagicShop, (int)window_SpeakInHouse->ptr_1C, 2);
-                    str = BuildDialogueString(pMerchantsBuyPhrases[v75], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
-                }
-                dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(255, 255, 255), str, 3);
-                return;
-            }
+					if (item->uItemID) // item picking
+					{
+						//could check x coords imits here?
+						if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
+							(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
+							// y is 152-h to 152 or 308-height to 308
+
+							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+
+							String str;
+							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
+							{
+								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_MagicShop, window_SpeakInHouse->par1C, 2)],
+									uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
+							}
+							else
+							{
+								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
+							}
+							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+						}
+					}
+				}
+			}
+
         }
         return;
     }
@@ -1544,21 +1566,43 @@ void MagicShopDialog()
                 return;
             }
 
-            if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
-            {
-                item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+			if (item_num) { // this should go into func??
 
-                String str;
-                if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-                    str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);// "Steal %24"
-                else
-                {
-                    v75 = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_MagicShop, (int)window_SpeakInHouse->ptr_1C, 2);
-                    str = BuildDialogueString(pMerchantsBuyPhrases[v75], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
-                }
-                dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(255, 255, 255), str, 3);
-                return;
-            }
+				int testx = (mouse.x) / 75;
+				// testx limits check
+				if (testx >= 0 && testx < 6) {
+					if (mouse.y >= 152) {
+						testx += 6;
+					}
+					//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
+					//	return;
+					//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+					item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+
+					if (item->uItemID) // item picking
+					{
+						//could check x coords imits here?
+						if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
+							(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
+							// y is 152-h to 152 or 308-height to 308
+
+							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+
+							String str;
+							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
+							{
+								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_MagicShop, window_SpeakInHouse->par1C, 2)],
+									uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
+							}
+							else
+							{
+								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
+							}
+							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+						}
+					}
+				}
+			}
         }
         return;
     }
@@ -1980,6 +2024,7 @@ void  UIShop_Buy_Identify_Repair()
 				break;
 
 			case BuildingType_AlchemistShop:
+			case BuildingType_MagicShop:
 
 				testx = (mouse.x) / 75;
 				// testx limits check
@@ -2199,6 +2244,7 @@ void  ShowPopupShopItem()
 					break;
 
 				case BuildingType_AlchemistShop:
+				case BuildingType_MagicShop:
 
 					testx = (mouse.x) / 75;
 					// testx limits check
