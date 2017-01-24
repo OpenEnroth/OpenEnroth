@@ -904,7 +904,7 @@ bool  HouseUI_CheckIfPlayerCanInteract()
 
     if (pPlayers[uActiveCharacter]->CanAct())
     {
-        pDialogueWindow->pNumPresenceButton = dword_F8B1E0;
+       pDialogueWindow->pNumPresenceButton = dword_F8B1E0;
         return true;
     }
     else

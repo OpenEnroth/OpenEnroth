@@ -432,10 +432,8 @@ void Chest::PlaceItems(signed int uChestID) // only sued for setup
 }
 
 //----- (00448A17) --------------------------------------------------------
-void Chest::ToggleFlag(signed int uChestID, unsigned __int16 uFlag, unsigned int bToggle)
-{
-    if (uChestID >= 0 && uChestID <= 19)
-    {
+void Chest::ToggleFlag(signed int uChestID, unsigned __int16 uFlag, unsigned int bToggle) {
+	if (uChestID >= 0 && uChestID <= 19) {
         if (bToggle)
             pChests[uChestID].uFlags |= uFlag;
         else

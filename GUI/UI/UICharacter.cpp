@@ -1718,10 +1718,14 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool a2)
     unsigned int uCellY; // [sp+34h] [bp-4h]@5
 
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, ui_character_inventory_background);
-    if (a2)
-        render->DrawTextureAlphaNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
-
-    for (uint i = 0; i < 126; ++i)
+	if (a2) {
+		if (ui_character_inventory_background_strip == nullptr) { // strip doesnt load if you havent already look at inventorys
+			ui_character_inventory_background_strip = assets->GetImage_16BitColorKey("fr_strip", 0x7FF);
+		}
+		render->DrawTextureAlphaNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
+	}
+    
+	for (uint i = 0; i < 126; ++i)
     {
         if (player->pInventoryMatrix[i] <= 0)
             continue;
