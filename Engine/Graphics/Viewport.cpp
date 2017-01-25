@@ -63,9 +63,9 @@ void Viewport::SetScreen( signed int sTL_X, signed int sTL_Y, signed int sBR_X, 
     }
 
 //----- (004C02F8) --------------------------------------------------------
-void Viewport::SetFOV(int field_of_view)
+void Viewport::SetFOV(float field_of_view)
 {
-  this->field_of_view = field_of_view;
+  this->field_of_view = field_of_view * 65536.0f;
   SetScreen(uScreen_TL_X, uScreen_TL_Y, uScreen_BR_X, uScreen_BR_Y);
 }
 

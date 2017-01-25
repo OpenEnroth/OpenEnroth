@@ -639,154 +639,54 @@ void Render::DrawSpriteObjects_ODM()
             }
 
 
-            int party_to_sprite_x = x - pIndoorCameraD3D->vPartyPos.x;
-            int party_to_sprite_y = y - pIndoorCameraD3D->vPartyPos.y;
-            int party_to_sprite_z = z - pIndoorCameraD3D->vPartyPos.z;
-            //if (pIndoorCameraD3D->sRotationX)
+            int view_x = 0;
+            int view_y = 0;
+            int view_z = 0;
+
+            bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+            if (visible)
             {
-                //int v30 = fixpoint_mul(party_to_sprite_x << 16, pIndoorCameraD3D->int_cosine_y)
-                //    + fixpoint_mul(party_to_sprite_y << 16, pIndoorCameraD3D->int_sine_y);
-                auto _v30 =
-                    fixed::FromInt(party_to_sprite_x) * fixed::Raw(pIndoorCameraD3D->int_cosine_y)
-                    + fixed::FromInt(party_to_sprite_y) * fixed::Raw(pIndoorCameraD3D->int_sine_y);
-                //int v37 = fixpoint_mul(party_to_sprite_x << 16, pIndoorCameraD3D->int_sine_y);
-                auto _v37 = fixed::FromInt(party_to_sprite_x) * fixed::Raw(pIndoorCameraD3D->int_sine_y);
-                //int v42 = fixpoint_mul(party_to_sprite_z << 16, pIndoorCameraD3D->int_sine_x)
-                //    + fixpoint_mul(v30, pIndoorCameraD3D->int_cosine_x);
-                auto distance =
-                    fixed::FromInt(party_to_sprite_z) * fixed::Raw(pIndoorCameraD3D->int_sine_x)
-                    + _v30 * fixed::Raw(pIndoorCameraD3D->int_cosine_x);
-                //if (v42 >= 0x40000 && v42 <= pODMRenderParams->shading_dist_mist << 16)
-                if (distance >= fixed::FromFloat(pIndoorCameraD3D->GetNearClip()) && distance <= fixed::FromFloat(pIndoorCameraD3D->GetFarClip()))
+                if (abs(view_x) >= abs(view_y))
                 {
-                    //int v17 = fixpoint_mul(party_to_sprite_y << 16, pIndoorCameraD3D->int_cosine_y) - v37;
-                    auto _v17 = fixed::FromInt(party_to_sprite_y) * fixed::Raw(pIndoorCameraD3D->int_cosine_y) - _v37;
-                    //int v18 = fixpoint_mul(party_to_sprite_z << 16, pIndoorCameraD3D->int_cosine_x)
-                    //    - fixpoint_mul(v30, pIndoorCameraD3D->int_sine_x);
-                    auto _v18 =
-                        fixed::FromInt(party_to_sprite_z) * fixed::Raw(pIndoorCameraD3D->int_cosine_x)
-                        - _v30 * fixed::Raw(pIndoorCameraD3D->int_sine_x);
-                    //if (abs(v42) >= abs(v17))
-                    if (abs(distance.GetFloat()) >= abs(_v17.GetFloat()))
+                    int projected_x = 0;
+                    int projected_y = 0;
+                    pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+
+                    object->uAttributes |= 1;
+                    pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
+                    pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
+                    pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
+
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = frame->scale * fixed::FromInt(pODMRenderParams->int_fov_rad) / fixed::FromInt(view_x);
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = frame->scale * fixed::FromInt(pODMRenderParams->int_fov_rad) / fixed::FromInt(view_x);
+
+                    pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v46;
+                    pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].world_y = y;
+                    pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
+
+                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = projected_x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = view_x;
+
+                    pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
+                    pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
+                    pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
+                    if (!(object->uAttributes & 0x20))
                     {
-                        //__int64 v23;
-                        //HEXRAYS_LODWORD(v23) = 0;
-                        //HEXRAYS_HIDWORD(v23) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
-
-                        object->uAttributes |= 1;
-                        pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
-                        pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
-                        pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
-
-                        //pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_x_scaler_packedfloat = fixpoint_mul(frame->scale._internal, v23 / v42);
-                        //pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = fixpoint_mul(frame->scale._internal, v23 / v42);
-                        pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = frame->scale * fixed::FromInt(pODMRenderParams->int_fov_rad) / distance._internal;
-                        pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = frame->scale * fixed::FromInt(pODMRenderParams->int_fov_rad) / distance._internal;
-
-                        pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v46;
-                        pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
-                        pBillboardRenderList[::uNumBillboardsToDraw].world_y = y;
-                        pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
-
-                        //pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v23 / v42, v17) + 0x8000) >> 16);
-                        //pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v23 / v42, v18) + 0x8000) >> 16);
-                        pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = pViewport->uScreenCenterX - (fixed::FromInt(pODMRenderParams->int_fov_rad) / distance * _v17 + fixed::FromFloat(0.5f)).GetInt();
-                        pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = pViewport->uScreenCenterY - (fixed::FromInt(pODMRenderParams->int_fov_rad) / distance * _v18 + fixed::FromFloat(0.5f)).GetInt();
-                        pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = distance.GetInt();
-
-                        pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
-                        pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
-                        pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
-                        if (!(object->uAttributes & 0x20))
+                        if (!pRenderD3D)
                         {
-                            if (!pRenderD3D)
-                            {
-                                __debugbreak();
-                                pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = 0;
-                                pBillboardRenderList[::uNumBillboardsToDraw].object_pid = 0;
-                            }
+                            __debugbreak();
+                            pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = 0;
+                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = 0;
                         }
-
-                        assert(::uNumBillboardsToDraw < 500);
-                        ++::uNumBillboardsToDraw;
-                        ++uNumSpritesDrawnThisFrame;
                     }
+
+                    assert(::uNumBillboardsToDraw < 500);
+                    ++::uNumBillboardsToDraw;
+                    ++uNumSpritesDrawnThisFrame;
                 }
             }
-            /*else
-            {
-                //int v42 = fixpoint_mul(sprite_to_party_y << 16, pIndoorCameraD3D->int_sine_y)
-                //    + fixpoint_mul(sprite_to_party_x << 16, pIndoorCameraD3D->int_cosine_y);
-                auto distance_xz =
-                    fixed::FromInt(party_to_sprite_y) * fixed::Raw(pIndoorCameraD3D->int_sine_y)
-                    + fixed::FromInt(party_to_sprite_x) * fixed::Raw(pIndoorCameraD3D->int_cosine_y);
-
-                if (distance_xz >= fixed::FromInt(4) && distance_xz <= fixed::FromInt(pODMRenderParams->shading_dist_mist))
-                //if (v42 >= 0x40000 && v42 <= (pODMRenderParams->shading_dist_mist << 16))
-                {
-                    //v17 = fixpoint_mul(sprite_to_party_y << 16, pIndoorCameraD3D->int_cosine_y)
-                    //    - fixpoint_mul(sprite_to_party_x << 16, pIndoorCameraD3D->int_sine_y);
-                    auto distance_xz_rot = // as if view was rotated 90 deg counter-clockwise
-                        fixed::FromInt(party_to_sprite_y) * fixed::Raw(pIndoorCameraD3D->int_cosine_y)
-                        - fixed::FromInt(party_to_sprite_x) * fixed::Raw(pIndoorCameraD3D->int_sine_y);
-
-                    //v18 = sprite_to_party_z << 16;
-                    auto distance_y = fixed::FromInt(party_to_sprite_z);
-
-                    if (abs(distance_xz._internal) >= abs(distance_xz_rot._internal))
-                    {
-                        //__int64 v23;
-                        //HEXRAYS_LODWORD(v23) = 0;
-                        //HEXRAYS_HIDWORD(v23) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
-
-                        object->uAttributes |= 1;
-                        pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
-                        pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
-
-                        //pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_x_scaler_packedfloat = fixpoint_mul(frame->scale._internal, v23 / v42);
-                        //pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = fixpoint_mul(frame->scale._internal, v23 / v42);
-                        auto _screenspace_x_scaler_packedfloat = frame->scale * fixed::FromInt(pODMRenderParams->int_fov_rad) / distance_xz;
-                        auto _screenspace_y_scaler_packedfloat = frame->scale * fixed::FromInt(pODMRenderParams->int_fov_rad) / distance_xz;
-                        pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_x_scaler_packedfloat = _screenspace_x_scaler_packedfloat._internal;
-                        pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = _screenspace_y_scaler_packedfloat._internal;
-
-                        pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
-                        pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v46;
-                        pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
-                        pBillboardRenderList[::uNumBillboardsToDraw].world_y = y;
-                        pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
-
-                        //pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v23 / v42, v17) + 0x8000) >> 16);
-                        //pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v23 / v42, v18) + 0x8000) >> 16);
-                        int uScreenSpaceX = pViewport->uScreenCenterX - (fixed::FromInt(pODMRenderParams->int_fov_rad) / distance_xz * distance_xz_rot + fixed::FromFloat(0.5f)).GetInt();
-                        int uScreenSpaceY = pViewport->uScreenCenterY - (fixed::FromInt(pODMRenderParams->int_fov_rad) / distance_xz * distance_y + fixed::FromFloat(0.5f)).GetInt();
-                        pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = uScreenSpaceX;
-                        pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = uScreenSpaceY;
-
-                        //int v26;
-                        //HEXRAYS_HIWORD(v26) = HEXRAYS_HIWORD(v42);
-                        //HEXRAYS_LOWORD(v26) = 0;
-                        //pBillboardRenderList[::uNumBillboardsToDraw].sZValue = v26 + (PID(OBJECT_Item, i));
-                        pBillboardRenderList[::uNumBillboardsToDraw].actual_z = distance_xz.GetInt();
-                        pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
-
-                        pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
-                        pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
-                        if (!(object->uAttributes & 0x20))
-                        {
-                            if (!pRenderD3D)
-                            {
-                                __debugbreak();
-                                pBillboardRenderList[::uNumBillboardsToDraw].sZValue = 0;
-                            }
-                        }
-
-                        assert(::uNumBillboardsToDraw < 500);
-                        ++::uNumBillboardsToDraw;
-                        ++uNumSpritesDrawnThisFrame;
-                    }
-                }
-            }*/
         }
     }
 }
@@ -1138,133 +1038,58 @@ void Render::PrepareDecorationsRenderList_ODM()
                     int party_to_decor_y = pLevelDecorations[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y;
                     int party_to_decor_z = pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z;
 
-                    //if (pIndoorCameraD3D->sRotationX)
+                    int view_x = 0;
+                    int view_y = 0;
+                    int view_z = 0;
+                    bool visible = pIndoorCameraD3D->ViewClip(
+                        pLevelDecorations[i].vPosition.x, pLevelDecorations[i].vPosition.y, pLevelDecorations[i].vPosition.z,
+                        &view_x, &view_y, &view_z
+                    );
+
+                    if (visible)
                     {
-                        //v18 = fixpoint_mul(party_to_decor_x << 16, pIndoorCameraD3D->int_cosine_y) + fixpoint_mul(party_to_decor_y << 16, pIndoorCameraD3D->int_sine_y);
-                        auto _v18 =
-                            fixed::FromInt(party_to_decor_x) * fixed::Raw(pIndoorCameraD3D->int_cosine_y)
-                            + fixed::FromInt(party_to_decor_y) * fixed::Raw(pIndoorCameraD3D->int_sine_y);
-                        //v41 = fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_sine_x);
-                        auto _v41 = fixed::FromInt(party_to_decor_y) * fixed::Raw(pIndoorCameraD3D->int_sine_x);
-                        //v19 = fixpoint_mul(v18, pIndoorCameraD3D->int_cosine_x);
-                        auto _v19 = _v18 * fixed::Raw(pIndoorCameraD3D->int_cosine_x);
-                        //v20 = v19 + fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_sine_x);
-                        auto _v20 = _v19 + fixed::FromInt(party_to_decor_z) * fixed::Raw(pIndoorCameraD3D->int_sine_x);
-                        //if (v20 >= 0x40000 && v20 <= pODMRenderParams->shading_dist_mist << 16)
-                        if (_v20 >= fixed::FromFloat(pIndoorCameraD3D->GetNearClip()) && _v20 <= fixed::FromFloat(pIndoorCameraD3D->GetFarClip()))
+                        if (2 * abs(view_x) >= abs(view_y))
                         {
-                            //v21 = fixpoint_mul(party_to_decor_y << 16, pIndoorCameraD3D->int_cosine_y) - fixpoint_mul(party_to_decor_x << 16, pIndoorCameraD3D->int_sine_y);
-                            auto _v21 =
-                                fixed::FromInt(party_to_decor_y) * fixed::Raw(pIndoorCameraD3D->int_cosine_y)
-                                - fixed::FromInt(party_to_decor_x) * fixed::Raw(pIndoorCameraD3D->int_sine_y);
-                            //v22 = fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(v18, pIndoorCameraD3D->int_sine_x);
-                            auto _v22 =
-                                fixed::FromInt(party_to_decor_z) * fixed::Raw(pIndoorCameraD3D->int_cosine_x)
-                                - _v18 * fixed::Raw(pIndoorCameraD3D->int_sine_x);
-                            //if (2 * abs(v20) >= abs(v21))
-                            if (2 * abs(_v20.GetFloat()) >= abs(_v21.GetFloat()))
+                            int projected_x = 0;
+                            int projected_y = 0;
+                            pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+
+                            auto _v41 = frame->scale * fixed::FromInt(pODMRenderParams->int_fov_rad) / fixed::FromInt(view_x);
+
+                            int screen_space_half_width = 0;
+                            //if (pRenderD3D)
                             {
-                                //__int64 v24;
-                                //HEXRAYS_LODWORD(v24) = 0;
-                                //HEXRAYS_HIDWORD(v24) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
-                                //v25 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v24 / v20, v21) + 0x8000) >> 16);
-                                int screen_space_x = pViewport->uScreenCenterX - (fixed::FromInt(pODMRenderParams->int_fov_rad) / _v20 * _v21 + fixed::FromFloat(0.5f)).GetInt();
-                                //int v40 = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v24 / v20, v22) + 0x8000) >> 16);
-                                int screen_space_y = pViewport->uScreenCenterY - (fixed::FromInt(pODMRenderParams->int_fov_rad) / _v20 * _v22 + fixed::FromFloat(0.5f)).GetInt();
-                                auto _v41 = frame->scale * fixed::FromInt(pODMRenderParams->int_fov_rad) / _v20;
-
-                                int screen_space_half_width = 0;
-                                //if (pRenderD3D)
-                                {
-                                    //b = fixpoint_mul(frame->hw_sprites[(int)v37]->uBufferWidth / 2, v41);
-                                    screen_space_half_width = _v41.GetInt() * frame->hw_sprites[(int)v37]->uBufferWidth / 2;
-                                }
-
-                                if (screen_space_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X
-                                    && screen_space_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X)
-                                {
-                                    if (::uNumBillboardsToDraw >= 500)
-                                        return;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[(int)v37];
-                                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = _v41;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = _v41;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = screen_space_x;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = screen_space_y;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = _v20.GetInt();
-                                    pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v38 | 0x200;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].world_x = pLevelDecorations[i].vPosition.x;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].world_y = pLevelDecorations[i].vPosition.y;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].world_z = pLevelDecorations[i].vPosition.z;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = 0;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Decoration, i);
-                                    pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
-
-                                    ::uNumBillboardsToDraw++;
-                                    ++uNumDecorationsDrawnThisFrame;
-                                }
+                                screen_space_half_width = _v41.GetInt() * frame->hw_sprites[(int)v37]->uBufferWidth / 2;
                             }
-                            continue;
+
+                            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X
+                                && projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X)
+                            {
+                                if (::uNumBillboardsToDraw >= 500)
+                                    return;
+                                ::uNumBillboardsToDraw++;
+                                ++uNumDecorationsDrawnThisFrame;
+
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].hwsprite = frame->hw_sprites[(int)v37];
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].world_x = pLevelDecorations[i].vPosition.x;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].world_y = pLevelDecorations[i].vPosition.y;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].world_z = pLevelDecorations[i].vPosition.z;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v41;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v41;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].uPalette = frame->uPaletteIndex;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].field_1E = v38 | 0x200;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, i);
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].dimming_level = 0;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].pSpriteFrame = frame;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1].sTintColor = 0;
+
+                            }
                         }
                     }
-                    /*else
-                    {
-                        v42 = (pLevelDecorations[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x) << 16;
-                        v40 = (pLevelDecorations[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y) << 16;
-                        v20 = fixpoint_mul(v17, pIndoorCameraD3D->int_cosine_y) + fixpoint_mul(v40, pIndoorCameraD3D->int_sine_y);
-                        if (v20 >= 0x40000 && v20 <= pODMRenderParams->shading_dist_mist << 16)
-                        {
-                            v21 = fixpoint_mul(v40, pIndoorCameraD3D->int_cosine_y) - fixpoint_mul(v42, pIndoorCameraD3D->int_sine_y);
-                            v22 = (pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16;
-                            v42 = v22;
-                            if (2 * abs(v20) >= abs(v21))
-                            {
-                                HEXRAYS_LODWORD(v24) = 0;
-                                HEXRAYS_HIDWORD(v24) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
-                                v25 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v24 / v20, v21) + 0x8000) >> 16);
-                                v40 = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v24 / v20, v42) + 0x8000) >> 16);
-                                v41 = fixpoint_mul(frame->scale._internal, v24 / v20);
-                                //if (pRenderD3D)
-                                    b = fixpoint_mul(frame->hw_sprites[(int)v37]->uBufferWidth / 2, v41);
-                                //else
-                                //{
-                                //    __debugbreak();
-                                //    b = fixpoint_mul(pSprites_LOD->pSpriteHeaders[frame->pHwSpriteIDs[(int)v37]].uWidth / 2, v41);
-                                //}
-                                if (b + v25 >= (signed int)pViewport->uViewportTL_X && v25 - b <= (signed int)pViewport->uViewportBR_X)
-                                {
-                                    if (::uNumBillboardsToDraw >= 500)
-                                        return;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[(int)v37];
-                                    pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_x_scaler_packedfloat = v41;
-                                    pBillboardRenderList[::uNumBillboardsToDraw]._screenspace_y_scaler_packedfloat = v41;
-                                    v29 = v38;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceX = v25;
-                                    HEXRAYS_HIBYTE(v29) |= 2;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v29;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].world_x = pLevelDecorations[i].vPosition.x;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].world_y = pLevelDecorations[i].vPosition.y;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].world_z = pLevelDecorations[i].vPosition.z;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].uScreenSpaceY = v40;
-                                    //HEXRAYS_HIWORD(v30) = HEXRAYS_HIWORD(v20);
-                                    //v31 = PID(OBJECT_Decoration, i);
-                                    //HEXRAYS_LOWORD(v30) = 0;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = 0;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].actual_z = HEXRAYS_HIWORD(v20);
-                                    pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Decoration, i);
-                                    pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
-                                    pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
-                                    ::uNumBillboardsToDraw++;
-                                    ++uNumDecorationsDrawnThisFrame;
-                                }
-                            }
-                            continue;
-                        }
-                    }*/
                 }
             }
             else
@@ -3484,7 +3309,7 @@ bool Render::InitializeFullscreen()
   //}
   bWindowMode = 0;
   pParty->uFlags |= 2;
-  pViewport->SetFOV(_6BE3A0_fov * 65536.0f);
+  pViewport->SetFOV(_6BE3A0_fov);
   return v15 != 0;
 }
 
@@ -3701,7 +3526,7 @@ bool Render::SwitchToWindow()
   int v29; // [sp+308h] [bp-4h]@2
 
   pParty->uFlags |= PARTY_FLAGS_1_0002;
-  pViewport->SetFOV(_6BE3A0_fov * 65536.0f);
+  pViewport->SetFOV(_6BE3A0_fov);
   using_software_screen_buffer = 0;
   Release();
   //pColorKeySurface4 = 0;

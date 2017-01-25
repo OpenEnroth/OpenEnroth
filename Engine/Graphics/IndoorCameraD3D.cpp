@@ -4,13 +4,15 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "Engine/Engine.h"
-#include "IndoorCameraD3D.h"
-#include "Indoor.h"
-#include "Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
+#include "Engine/Log.h"
 
-#include "stru9.h"
+#include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Viewport.h"
+
+#include "Engine/Graphics/stru9.h"
 
 
 // calculates FOV (Field of View) angle in radians for IndoorCamera::Initialize and BLVRenderParams::Reset
@@ -160,7 +162,6 @@ bool IndoorCameraD3D::IsCulled(BLVFace *pFace)
   Vec3_short__to_RenderVertexSoft(&v, &pIndoor->pVertices[*pFace->pVertexIDs]);
   return is_face_faced_to_camera(pFace, &v);
 }
-
 
 
 
@@ -1071,8 +1072,6 @@ void IndoorCameraD3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVert
     double v11; // st7@16
     double v12; // st6@17
     double v13; // st5@19
-    //float uNumVerticesa; // [sp+14h] [bp+Ch]@13
-    //float uNumVerticesb; // [sp+14h] [bp+Ch]@20
 
     for (uint i = 0; i < uNumVertices; ++i)
     {

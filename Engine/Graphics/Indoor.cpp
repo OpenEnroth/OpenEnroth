@@ -213,7 +213,7 @@ void BLVRenderParams::Reset()
     //this->fSineY = sin((3.141592653589793 + 3.141592653589793) * (double)pIndoorCameraD3D->sRotationY * 0.00048828125);
     //this->fCosineNegX = cos((3.141592653589793 + 3.141592653589793) * (double)-pIndoorCameraD3D->sRotationX * 0.00048828125);
     //this->fSineNegX = sin((3.141592653589793 + 3.141592653589793) * (double)-pIndoorCameraD3D->sRotationX * 0.00048828125);
-    this->field_64 = pViewport->field_of_view;
+    this->fov = pViewport->field_of_view;
     
     this->uViewportX = pViewport->uScreen_TL_X;
     this->uViewportY = pViewport->uScreen_TL_Y;
@@ -258,7 +258,7 @@ void BLVRenderParams::Reset()
   //                                             + 0.5) << 16;
   extern float _calc_fov(int viewport_width, int angle_degree);
   this->fov_rad_fixpoint = fixpoint_from_int(_calc_fov(uViewportWidth, 65), 0);
-  this->fov_rad_inv_fixpoint = 0x100000000i64 / this->fov_rad_fixpoint;
+  this->fov_rad_inv_fixpoint = (65536i64 << 16) / this->fov_rad_fixpoint;
   this->pRenderTarget = render->pTargetSurface;
   this->uTargetWidth = window->GetWidth();
   this->uTargetHeight = window->GetHeight();
@@ -2786,7 +2786,7 @@ void PrepareActorRenderList_BLV()
                         pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
 
-                        auto _v18_over_x = fixed::FromInt(floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f)) / fixed::FromInt(view_x);
+                        auto _v18_over_x = fixed::FromInt(floorf(pIndoorCameraD3D->fov_x + 0.5f)) / fixed::FromInt(view_x);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v9->scale * _v18_over_x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v9->scale * _v18_over_x;
 
@@ -2882,6 +2882,7 @@ void PrepareItemsRenderList_BLV()
                             pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uParticleTrailColorB, _4E94D3_light_type);
                     }
 
+
                     fixed view_x, view_y, view_z;
                     if (pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pSpriteObjects[i].vPosition.x, pSpriteObjects[i].vPosition.y,
                         pSpriteObjects[i].vPosition.z, &view_x, &view_y, &view_z, 1))
@@ -2905,17 +2906,7 @@ void PrepareItemsRenderList_BLV()
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v4->scale._internal, v18 / view_x._internal));
                             v31 = fixpoint_mul(v4->scale._internal, v18 / view_x._internal);
                         }
-                        /*else
-                        {
-                          __debugbreak(); // sw rendering
-                          LODWORD(v19) = pBLVRenderParams->field_40 << 16;
-                          HIDWORD(v19) = pBLVRenderParams->field_40 >> 16;
-                          v20 = v19 / x;
-                          pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v24->scale, v19 / x);
-                          v31 = fixpoint_mul(v24->scale, v20);
-                        }*/
-                        //HIWORD(v21) = HIWORD(x);
-                        //LOWORD(v21) = 0;
+
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(v31);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;

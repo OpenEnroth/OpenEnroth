@@ -11,7 +11,7 @@ struct Viewport
     }
 
     void SetScreen(int uX, int uY, int uZ, int uW);
-    void SetFOV(int a2);
+    void SetFOV(float fov);
     void SetViewport(int uX, int uY, int uZ, int uW);
 
 
