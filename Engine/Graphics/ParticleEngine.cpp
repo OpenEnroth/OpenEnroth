@@ -241,16 +241,9 @@ void ParticleEngine::UpdateParticles()
 bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID)
 {
     Particle *pParticle; // esi@1
-    signed __int64 v6; // qtt@4
     int y_int_; // [sp+10h] [bp-40h]@2
-  //  int a2; // [sp+18h] [bp-38h]@10
     int x_int; // [sp+20h] [bp-30h]@2
     int z_int_; // [sp+24h] [bp-2Ch]@2
-  //  int z_int_4; // [sp+28h] [bp-28h]@8
-    int z; // [sp+3Ch] [bp-14h]@3
-  //  double a5; // [sp+40h] [bp-10h]@4
-  //  int a6; // [sp+48h] [bp-8h]@4
-    int y; // [sp+4Ch] [bp-4h]@3
 
     pParticle = &this->pParticles[uParticleID];
     if (pParticle->type == ParticleType_Invalid)
@@ -265,7 +258,7 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
     //z_int_ = *(float *)&uParticleID + 6.7553994e15;
     z_int_ = floorf(pParticle->z + 0.5f);
 
-    int x;
+    fixed x, y, z;
     if (!pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(
         x_int,
         y_int_,
@@ -276,18 +269,14 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID
         1)
     )
         return false;
-    pIndoorCameraD3D->Project(x, y, z, &pParticle->uScreenSpaceX, &pParticle->uScreenSpaceY);
-    pParticle->flt_5C = pIndoorCameraD3D->fov_x;
-    //v4 = pParticle->flt_5C;
-    pParticle->flt_60 = pIndoorCameraD3D->fov_y;
-    //v5 = v4 + 6.7553994e15;
-    HEXRAYS_LODWORD(v6) = 0;
-    HEXRAYS_HIDWORD(v6) = floorf(pParticle->flt_5C + 0.5f);
-    //v7 = pParticle->flt_28;
-    //pParticle->_screenspace_scale = v6 / x;
-    //v8 = v7;
-    pParticle->screenspace_scale = fixed::FromFloat(pParticle->particle_size) * fixed::FromFloat(pParticle->flt_5C) / fixed::Raw(x);
-    pParticle->zbuffer_depth = x >> 16;
+    pIndoorCameraD3D->Project(x.GetInt(), y.GetInt(), z.GetInt(), &pParticle->uScreenSpaceX, &pParticle->uScreenSpaceY);
+
+    pParticle->fov_x = pIndoorCameraD3D->fov_x;
+    pParticle->fov_y = pIndoorCameraD3D->fov_y;
+
+    pParticle->screenspace_scale = fixed::FromFloat(pParticle->particle_size) * fixed::FromFloat(pParticle->fov_x) / x;
+    pParticle->zbuffer_depth = x.GetInt();
+
     return true;
 }
 

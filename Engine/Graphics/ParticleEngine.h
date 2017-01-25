@@ -82,8 +82,8 @@ struct Particle
     };
     int sZValue2;  // line end z
     fixed screenspace_scale;//int _screenspace_scale;
-    float flt_5C;
-    float flt_60;
+    float fov_x;
+    float fov_y;
     int uLightColor_bgr;
 };
 #pragma pack(pop)

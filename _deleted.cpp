@@ -15327,4 +15327,49 @@ float IndoorCameraD3D::GetShadingDistMist()
         return (double)pODMRenderParams->shading_dist_mist;
     else
         return 16192.0;
+}
+//----- (00481D77) --------------------------------------------------------
+void _outdoor_project(RenderVertexSoft *v)
+{
+    double v1; // st7@1
+    double v2; // st7@1
+
+    v1 = 1.0 / (v->vWorldViewPosition.x + 0.0000001);
+    v->_rhw = v1;
+    v2 = v1 * (double)pODMRenderParams->int_fov_rad;
+    v->vWorldViewProjX = (double)pViewport->uScreenCenterX - v2 * v->vWorldViewPosition.y;
+    v->vWorldViewProjY = (double)pViewport->uScreenCenterY - v2 * v->vWorldViewPosition.z;
+}
+//----- (00436A9A) --------------------------------------------------------
+void IndoorCameraD3D::Project_Blv(int x, int y, int z, int *screenspace_x, int *screenspace_y)
+{
+    double v6; // ST00_8@2
+               //double v7; // ST08_8@2
+               //double v8; // ST00_8@2
+               //  signed __int64 v9; // qtt@3
+               //  int v10; // ST04_4@3
+    float a2a; // [sp+18h] [bp+8h]@2
+    float a2b; // [sp+18h] [bp+8h]@2
+
+               //if ( render->pRenderD3D )
+    {
+        v6 = 1.0 / (double)x;
+        a2a = screenCenterX + (double)y * fov * v6;
+        //v7 = a2a + 6.7553994e15;
+        *screenspace_x = floorf(a2a + 0.5f);
+        a2b = screenCenterY + (double)z * fov * v6;
+        //v8 = a2b + 6.7553994e15;
+        *screenspace_y = pViewport->uViewportBR_Y - floorf(a2b + 0.5f);
+    }
+    //else
+    //{
+    //    LODWORD(v9) = pBLVRenderParams->fov_rad_fixpoint << 16;
+    //    HIDWORD(v9) = pBLVRenderParams->fov_rad_fixpoint >> 16;
+    //    v10 = v9 / x;
+    //    LODWORD(v9) = pBLVRenderParams->fov_rad_fixpoint << 16;
+    //    HIDWORD(v9) = pBLVRenderParams->fov_rad_fixpoint >> 16;
+    //    *a5 = pBLVRenderParams->uViewportCenterX
+    //        - ((signed int)(((unsigned __int64)(v10 * (signed __int64)y) >> 16) + 32768) >> 16);
+    //    *a6 = pBLVRenderParams->uViewportCenterY - ((signed int)(((unsigned __int64)(v9 / x * z) >> 16) + 32768) >> 16);
+    //}
 }*/

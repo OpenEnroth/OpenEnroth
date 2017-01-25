@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/VectorTypes.h"
+#include "Engine/OurMath.h"
 
 #include "Engine/Graphics/IRender.h"
 
@@ -138,15 +139,14 @@ struct IndoorCameraD3D
     void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);
     bool ViewClip(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z, bool dont_show = false);
 
-    void Project_Odm(int x, int y, int z, int *a5, int *a6);
+    void Project(int x, int y, int z, int *screenspace_x, int *screenspace_y);
+    void Project(struct RenderVertexSoft *pVertices, unsigned int uNumVertices, bool fit_into_viewport = false);
 
     void ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices);
 
     double GetPolygonMaxZ(struct RenderVertexSoft *pVertex, unsigned int uStripType);
     double GetPolygonMinZ(struct RenderVertexSoft *pVertices, unsigned int uStripType);
 
-    void Project(signed int x, signed int y, signed int z, int *a5, int *a6);
-    void Project(struct RenderVertexSoft *pVertices, unsigned int uNumVertices, char a4);
     void LightmapNeerClip(struct RenderVertexSoft *pInVertices, int uNumInVertices, struct RenderVertexSoft *pOutVertices, unsigned int *pOutNumVertices);
     void LightmapFarClip(struct RenderVertexSoft *pInVertices, int uNumInVertices, struct RenderVertexSoft *pOutVertices, unsigned int *pOutNumVertices);
     void _437143(unsigned int uNumInVertices, struct RenderVertexSoft *pOutVertices, struct RenderVertexSoft *pInVertices, signed int *pOutNumVertices);
@@ -170,7 +170,7 @@ struct IndoorCameraD3D
     bool GetFacetOrientation(char polyType, struct Vec3_float_ *a2, struct Vec3_float_ *a3, struct Vec3_float_ *a4);
     bool IsCulled(struct BLVFace *pFace);
     void ViewTransfrom_OffsetUV(struct RenderVertexSoft *pVertices, unsigned int uNumVertices, struct RenderVertexSoft *pOutVertices, struct LightsData *a5);
-    bool ApplyViewTransform_TrueIfStillVisible_BLV(int x, int y, int z, signed int *pOutX, int *pOutZ, int *pOutY, char bDoNotShow);
+    bool ApplyViewTransform_TrueIfStillVisible_BLV(int x, int y, int z, fixed *pOutX, fixed *pOutZ, fixed *pOutY, bool clip_plane_test);
     float GetPickDepth();
     //float GetShadingDistMist();
 

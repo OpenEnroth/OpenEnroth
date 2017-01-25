@@ -1829,7 +1829,6 @@ bool OutdoorLocation::PrepareDecorations()
   pGameLoadingUI_ProgressBar->Progress();
   return true;
 }
-// 6807E0: using guessed type int _6807E0_num_decorations_6807B8;
 
 //----- (0047F223) --------------------------------------------------------
 void OutdoorLocation::ArrangeSpriteObjects()
@@ -1949,43 +1948,21 @@ bool OutdoorLocation::LoadTileGroupIds()
 //----- (0047B42C) --------------------------------------------------------
 void OutdoorLocation::PrepareActorsDrawList()
 {
-    //unsigned int result; // eax@1
     int z; // esi@5
     float v4; // ST48_4@8
     unsigned int v8; // eax@11
     signed int v12; // eax@16
     SpriteFrame *v14; // eax@24
     SpriteFrame *v15; // ebx@25
-    //int v17; // eax@35
-    //int v18; // ST78_4@36
-    //int v19; // eax@36
-    //int v20; // ecx@38
-    //int v21; // eax@38
     int v22; // ecx@41
     int v23; // ST5C_4@43
-    //int v24; // esi@44
-    //signed __int64 v25; // qtt@45
-    //int v26; // ST54_4@45
-    //int v27; // ecx@45
-    //int v34; // ecx@54
     int v41; // [sp+24h] [bp-3Ch]@11
-    //int v42; // [sp+28h] [bp-38h]@38
-    //int v43; // [sp+28h] [bp-38h]@45
-    //int v44; // [sp+2Ch] [bp-34h]@36
-    //int v45; // [sp+2Ch] [bp-34h]@44
-    //int v46; // [sp+2Ch] [bp-34h]@45
-    //int v47; // [sp+30h] [bp-30h]@36
     int v48; // [sp+30h] [bp-30h]@41
     signed int v49; // [sp+34h] [bp-2Ch]@5
-    //int v50; // [sp+34h] [bp-2Ch]@36
     int v51; // [sp+34h] [bp-2Ch]@41
-    //int v53; // [sp+38h] [bp-28h]@36
     int y; // [sp+40h] [bp-20h]@5
     int x; // [sp+44h] [bp-1Ch]@5
-    //int v57; // [sp+48h] [bp-18h]@45
-    //int v58; // [sp+4Ch] [bp-14h]@45
-    //int X; // [sp+54h] [bp-Ch]@36
-    signed __int16 v62; // [sp+5Ch] [bp-4h]@25
+    __int16 v62; // [sp+5Ch] [bp-4h]@25
 
     for (int i = 0; i < uNumActors; ++i)
     {
@@ -2063,87 +2040,60 @@ void OutdoorLocation::PrepareActorsDrawList()
             pMobileLightsStack->AddLight(x, y, z, 0, v15->uGlowRadius, 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
         }
 
-        //int v17 = (x - pIndoorCameraD3D->vPartyPos.x) << 16;
-        //int v18 = (y - pIndoorCameraD3D->vPartyPos.y) << 16;
-        //int v44 = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-        int party_to_actor_x = x - pIndoorCameraD3D->vPartyPos.x;
-        int party_to_actor_y = y - pIndoorCameraD3D->vPartyPos.y;
-        int party_to_actor_z = z - pIndoorCameraD3D->vPartyPos.z;
-        //if (pIndoorCameraD3D->sRotationX)
-        //{
-            //int v47 = fixpoint_mul(party_to_actor_x << 16, pIndoorCameraD3D->int_cosine_y) + fixpoint_mul(party_to_actor_y << 16, pIndoorCameraD3D->int_sine_y);
-            auto _v47 =
-                fixed::FromInt(party_to_actor_x) * fixed::Raw(pIndoorCameraD3D->int_cosine_y)
-                + fixed::FromInt(party_to_actor_y) * fixed::Raw(pIndoorCameraD3D->int_sine_y);
-            //int v50 = fixpoint_mul(party_to_actor_x << 16, pIndoorCameraD3D->int_sine_y);
-            //int v53 = fixpoint_mul(party_to_actor_y << 16, pIndoorCameraD3D->int_cosine_y);
-            //int v19 = fixpoint_mul(party_to_actor_z << 16, pIndoorCameraD3D->int_sine_x) + fixpoint_mul(_v47._internal, pIndoorCameraD3D->int_cosine_x);
-            auto _v19 =
-                fixed::FromInt(party_to_actor_z) * fixed::Raw(pIndoorCameraD3D->int_sine_x)
-                + _v47 * fixed::Raw(pIndoorCameraD3D->int_cosine_x);
-            //X = fixpoint_mul(party_to_actor_z << 16, pIndoorCameraD3D->int_sine_x) + fixpoint_mul(_v47._internal, pIndoorCameraD3D->int_cosine_x);
-            auto _v59 =
-                fixed::FromInt(party_to_actor_z) * fixed::Raw(pIndoorCameraD3D->int_sine_x)
-                + _v47 * fixed::Raw(pIndoorCameraD3D->int_cosine_x);
-            if (_v19 < fixed::FromFloat(pIndoorCameraD3D->GetNearClip()) || _v19 > fixed::FromFloat(pIndoorCameraD3D->GetFarClip()))
-                continue;
-            //v20 = (_v53 - _v50)._internal;
-            //v42 = (_v53 - _v50)._internal;
-            auto _v42 =
-                fixed::FromInt(party_to_actor_y) * fixed::Raw(pIndoorCameraD3D->int_cosine_y)
-                - fixed::FromInt(party_to_actor_x) * fixed::Raw(pIndoorCameraD3D->int_sine_y);
-            //v21 = fixpoint_mul(party_to_actor_z << 16, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(_v47._internal, pIndoorCameraD3D->int_sine_x);
-            auto _v21 =
-                fixed::FromInt(party_to_actor_z) * fixed::Raw(pIndoorCameraD3D->int_cosine_x)
-                - _v47 * fixed::Raw(pIndoorCameraD3D->int_sine_x);
-        //}
-
-        //v45 = v21;
-        if (abs(_v59.GetFloat()) >= abs(_v42.GetFloat()))
+        int view_x = 0, view_y = 0, view_z = 0;
+        bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+        if (visible)
         {
-            if (uNumBillboardsToDraw >= 500)
-                return;
-            ++uNumBillboardsToDraw;
-            ++uNumSpritesDrawnThisFrame;
-
-            pActors[i].uAttributes |= ACTOR_UNKNOW2;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[v41];
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
-
-            auto _v26 = fixed::FromInt(pODMRenderParams->int_fov_rad) / _v59;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v15->scale * _v26;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v15->scale * _v26;
-
-            if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
+            if (abs(view_x) >= abs(view_y))
             {
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
-                    fixed::FromFloat(1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
-                    * pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
-            }
-            else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
-            {
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
-                    fixed::FromFloat(pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]))
-                    * pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
-            }
+                int projected_x = 0;
+                int projected_y = 0;
+                pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = pViewport->uScreenCenterX - (_v26 * _v42 + fixed::FromFloat(0.5f)).GetInt();
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = pViewport->uScreenCenterY - (_v26 * _v21 + fixed::FromFloat(0.5f)).GetInt();
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = _v59.GetInt();
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
-            pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
+                if (uNumBillboardsToDraw >= 500)
+                    return;
+                ++uNumBillboardsToDraw;
+                ++uNumSpritesDrawnThisFrame;
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v62 | 0x200;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v15;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;//*((int *)&v35[v36] - 36);
-            if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active())
-            {
+                pActors[i].uAttributes |= ACTOR_UNKNOW2;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[v41];
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
+
+                auto _v26 = fixed::FromInt(pODMRenderParams->int_fov_rad) / fixed::FromInt(view_x);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v15->scale * _v26;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v15->scale * _v26;
+
+                if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
+                {
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                        fixed::FromFloat(1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
+                        * pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                }
+                else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
+                {
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                        fixed::FromFloat(pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]))
+                        * pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                }
+
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
+
                 pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v62 | 0x200;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v15;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;//*((int *)&v35[v36] - 36);
+                if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active())
+                {
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v62 | 0x200;
+                }
             }
         }
     }
