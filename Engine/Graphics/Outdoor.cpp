@@ -115,27 +115,11 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw)
         render->RenderTerrainD3D();
         //render->DrawBezierTerrain();
     }
-    /*else
-    {
-      if (!bRedraw)
-        render->OnOutdoorRedrawSW();
-      else
-      {
-        render->DrawBuildingsSW();
-        render->DrawBezierTerrain();
-        sr_sub_486F92_MessWithEdgesAndSpans();
-        pODMRenderParams->ApplyLightmapsSW();
-      }
-    }*/
 
 
     pMobileLightsStack->uNumLightsActive = 0;
     pStationaryLightsStack->uNumLightsActive = 0;
-    /*if ( !render->pRenderD3D )
-    {
-      render->ExecOutdoorDrawSW();
-      pIndoorCameraD3D->sr_438240_draw_lits();
-    }*/
+
     pEngine->PushStationaryLights(-1);
     pEngine->PrepareBloodsplats();
     if (bRedraw)

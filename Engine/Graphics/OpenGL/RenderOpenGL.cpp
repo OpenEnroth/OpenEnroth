@@ -1870,7 +1870,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly)
 bool RenderOpenGL::SwitchToWindow()
 {
     pParty->uFlags |= PARTY_FLAGS_1_0002;
-    pViewport->SetFOV(_6BE3A0_fov * 65536.0f);
+    pViewport->SetFOV(_6BE3A0_fov);
     CreateZBuffer();
 
     return true;

@@ -798,7 +798,7 @@ struct BLVRenderParams
     unsigned int uViewportY;
     unsigned int uViewportZ;
     unsigned int uViewportW;
-    int field_64;
+    int fov;
     int *pTargetZBuffer;
     int uViewportHeight;
     int uViewportWidth;
