@@ -85,7 +85,6 @@ int dword_4EC2AC=7;
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw)
 {
-
     pIndoorCameraD3D->debug_flags = 0;
     if (viewparams->draw_d3d_outlines)
         pIndoorCameraD3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;
@@ -2086,7 +2085,7 @@ void OutdoorLocation::PrepareActorsDrawList()
             auto _v59 =
                 fixed::FromInt(party_to_actor_z) * fixed::Raw(pIndoorCameraD3D->int_sine_x)
                 + _v47 * fixed::Raw(pIndoorCameraD3D->int_cosine_x);
-            if (_v19 < fixed::FromInt(4) || _v19 > fixed::FromInt(pODMRenderParams->shading_dist_mist))
+            if (_v19 < fixed::FromFloat(pIndoorCameraD3D->GetNearClip()) || _v19 > fixed::FromFloat(pIndoorCameraD3D->GetFarClip()))
                 continue;
             //v20 = (_v53 - _v50)._internal;
             //v42 = (_v53 - _v50)._internal;
@@ -2116,7 +2115,7 @@ void OutdoorLocation::PrepareActorsDrawList()
             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v15->scale * _v26;
             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v15->scale * _v26;
 
-            if (!pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
+            if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
             {
                 pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
                     fixed::FromFloat(1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)

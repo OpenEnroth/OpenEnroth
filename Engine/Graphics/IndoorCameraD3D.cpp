@@ -72,15 +72,6 @@ float IndoorCameraD3D::GetPickDepth()
     return 16192.0;
 }
 
-//----- (00436427) --------------------------------------------------------
-float IndoorCameraD3D::GetShadingDistMist()
-{
-  if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-    return (double)pODMRenderParams->shading_dist_mist;
-  else
-    return 16192.0;
-}
-
 //----- (004364C5) --------------------------------------------------------
 void IndoorCameraD3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices, unsigned int uNumVertices, RenderVertexSoft *pOutVertices, LightsData *a5)
 {
@@ -99,51 +90,55 @@ void IndoorCameraD3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices, unsign
 //----- (0043669D) --------------------------------------------------------
 bool IndoorCameraD3D::ApplyViewTransform_TrueIfStillVisible_BLV(int x, int y, int z, signed int *pOutX, int *pOutZ, int *pOutY, char bDoNotShow)
 {
-  int to_z; // esi@2
-  int v9; // ecx@3
-  //signed int *v10; // esi@5
-  //int pOutY_; // ecx@5
-  //signed int v12; // esi@7
-  int v14; // [sp+8h] [bp-4h]@3
-  int to_x; // [sp+14h] [bp+8h]@1
-  int to_y; // [sp+18h] [bp+Ch]@1
-//  int a2b; // [sp+18h] [bp+Ch]@5
-  int a3a; // [sp+1Ch] [bp+10h]@5
+    int to_z; // esi@2
+    int v9; // ecx@3
+    //signed int *v10; // esi@5
+    //int pOutY_; // ecx@5
+    //signed int v12; // esi@7
+    int v14; // [sp+8h] [bp-4h]@3
+    int to_x; // [sp+14h] [bp+8h]@1
+    int to_y; // [sp+18h] [bp+Ch]@1
+  //  int a2b; // [sp+18h] [bp+Ch]@5
+    int a3a; // [sp+1Ch] [bp+10h]@5
 
-  to_x = x - pIndoorCameraD3D->vPartyPos.x;
-  to_y = y - pIndoorCameraD3D->vPartyPos.y;
-  if (pIndoorCameraD3D->sRotationX)
-  {
-    to_z = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-    //if ( render->pRenderD3D )
-    //{
-      v14 = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
-          + (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_sine_y);
-      v9 = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_sine_y)
-         - (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_cosine_y);
-    //}
-    a3a = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-    *pOutX = fixpoint_mul(v14, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(to_z, pIndoorCameraD3D->int_sine_x);
-    *pOutZ = v9;
-    *pOutY = fixpoint_mul(v14, pIndoorCameraD3D->int_sine_x) + fixpoint_mul(a3a, pIndoorCameraD3D->int_cosine_x);
-  }
-  else
-  {
-    *pOutY = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-    //if ( render->pRenderD3D )
-    //{
-      //v10 = pOutX;
-      *pOutX = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
-             + (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_sine_y);
-      *pOutZ = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_sine_y)
-             - (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_cosine_y);
-    //}
-  }
-  if (!bDoNotShow)
-    return false;
+    to_x = x - pIndoorCameraD3D->vPartyPos.x;
+    to_y = y - pIndoorCameraD3D->vPartyPos.y;
+    if (pIndoorCameraD3D->sRotationX)
+    {
+        to_z = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
+        //if ( render->pRenderD3D )
+        //{
+        v14 = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
+            + (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_sine_y);
+        v9 = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_sine_y)
+            - (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_cosine_y);
+        //}
+        a3a = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
+        *pOutX = fixpoint_mul(v14, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(to_z, pIndoorCameraD3D->int_sine_x);
+        *pOutZ = v9;
+        *pOutY = fixpoint_mul(v14, pIndoorCameraD3D->int_sine_x) + fixpoint_mul(a3a, pIndoorCameraD3D->int_cosine_x);
+    }
+    else
+    {
+        *pOutY = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
+        //if ( render->pRenderD3D )
+        //{
+          //v10 = pOutX;
+        *pOutX = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
+            + (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_sine_y);
+        *pOutZ = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_sine_y)
+            - (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_cosine_y);
+        //}
+    }
+    if (!bDoNotShow)
+        return false;
 
-  return *pOutX >= fixpoint_from_int(4, 0) &&
-         *pOutX <= fixpoint_from_int(8000, 0);
+    //return *pOutX >= fixpoint_from_int(4, 0) &&
+    //    *pOutX <= fixpoint_from_int(8000, 0);
+    return
+        *pOutX >= fixpoint_from_float(this->GetNearClip())
+        &&
+        *pOutX <= fixpoint_from_float(this->GetFarClip());
 }
 
 //----- (00436455) --------------------------------------------------------
@@ -166,6 +161,77 @@ bool IndoorCameraD3D::IsCulled(BLVFace *pFace)
   return is_face_faced_to_camera(pFace, &v);
 }
 
+
+
+
+float IndoorCameraD3D::GetNearClip() const
+{
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    {
+        if (pODMRenderParams)
+        {
+            return pODMRenderParams->near_clip;
+        }
+
+        return 4.0f;
+    }
+    else
+    {
+        //return (double)pBLVRenderParams->fov_rad_fixpoint / 65536.0f;
+        return 4.0f;
+    }
+}
+
+float IndoorCameraD3D::GetFarClip() const
+{
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+    {
+        if (pODMRenderParams)
+        {
+            return pODMRenderParams->far_clip;
+        }
+
+        return (float)0x2000;
+    }
+    else
+        return 16192.0f;
+}
+
+bool IndoorCameraD3D::ViewClip(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z, bool dont_show)
+{
+    if (!dont_show)
+    {
+        return false;
+    }
+
+    this->ViewTransform(x, y, z, transformed_x, transformed_y, transformed_z);
+
+    return *transformed_x >= this->GetNearClip() && *transformed_x <= this->GetFarClip();
+}
+
+void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)
+{
+    RenderVertexSoft v;
+    v.vWorldPosition.x = x;
+    v.vWorldPosition.y = y;
+    v.vWorldPosition.z = z;
+
+    this->ViewTransform(&v, 1);
+    if (transformed_x)
+    {
+        *transformed_x = floorf(v.vWorldViewPosition.x + 0.5f);
+    }
+
+    if (transformed_y)
+    {
+        *transformed_y = floorf(v.vWorldViewPosition.y + 0.5f);
+    }
+
+    if (transformed_z)
+    {
+        *transformed_z = floorf(v.vWorldViewPosition.z + 0.5f);
+    }
+}
 
 //----- (00436523) --------------------------------------------------------
 void IndoorCameraD3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices)
@@ -1033,7 +1099,7 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices, int uNumInV
   memcpy(&pInVertices[uNumInVertices], &pInVertices[0], sizeof(pInVertices[uNumInVertices]));
   depth_num_vertices = 0;
   current_vertices_flag = false;
-  if ( pInVertices[0].vWorldViewPosition.x >= pODMRenderParams->shading_dist_mist )
+  if ( pInVertices[0].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip())
     current_vertices_flag = true;//настоящая вершина больше границы видимости
   if ( (signed int)uNumInVertices <= 0 )
     return;
@@ -1050,34 +1116,34 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices, int uNumInV
 
   for ( uint i = 0; i < uNumInVertices; ++i )
   {
-    next_vertices_flag = pInVertices[i + 1].vWorldViewPosition.x >= pODMRenderParams->shading_dist_mist;
+    next_vertices_flag = pInVertices[i + 1].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip();
     if ( current_vertices_flag ^ next_vertices_flag )//одна из граней за границей видимости
     {
       if ( next_vertices_flag )//следующая вершина больше границы видимости(настоящая вершина меньше границы видимости) - v3
       {
         //t = far_clip - v2.x / v3.x - v2.x (формула получения точки пересечения отрезка с плоскостью)
-        t = (pODMRenderParams->shading_dist_mist - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i].vWorldViewPosition.x - pInVertices[i + 1].vWorldViewPosition.x);
-        pOutVertices[depth_num_vertices].vWorldViewPosition.x = pODMRenderParams->shading_dist_mist;
+        t = (pIndoorCameraD3D->GetFarClip() - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i].vWorldViewPosition.x - pInVertices[i + 1].vWorldViewPosition.x);
+        pOutVertices[depth_num_vertices].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
         //New_y = v2.y + (v3.y - v2.y)*t
         pOutVertices[depth_num_vertices].vWorldViewPosition.y = pInVertices[i].vWorldViewPosition.y + (pInVertices[i].vWorldViewPosition.y - pInVertices[i + 1].vWorldViewPosition.y) * t;
         //New_z = v2.z + (v3.z - v2.z)*t
         pOutVertices[depth_num_vertices].vWorldViewPosition.z = pInVertices[i].vWorldViewPosition.z + (pInVertices[i].vWorldViewPosition.z - pInVertices[i + 1].vWorldViewPosition.z) * t;
         pOutVertices[depth_num_vertices].u = pInVertices[i].u + (pInVertices[i].u - pInVertices[i + 1].u) * t;
         pOutVertices[depth_num_vertices].v = pInVertices[i].v + (pInVertices[i].v - pInVertices[i + 1].v) * t;
-        pOutVertices[depth_num_vertices]._rhw = 1.0 / pODMRenderParams->shading_dist_mist;
+        pOutVertices[depth_num_vertices]._rhw = 1.0 / pIndoorCameraD3D->GetFarClip();
       }
       else//настоящая вершина больше границы видимости(следующая вершина меньше границы видимости) - v0
       {
         //t = far_clip - v1.x / v0.x - v1.x
-        t = (pODMRenderParams->shading_dist_mist - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i + 1].vWorldViewPosition.x - pInVertices[i].vWorldViewPosition.x);
-        pOutVertices[depth_num_vertices].vWorldViewPosition.x = pODMRenderParams->shading_dist_mist;
+        t = (pIndoorCameraD3D->GetFarClip() - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i + 1].vWorldViewPosition.x - pInVertices[i].vWorldViewPosition.x);
+        pOutVertices[depth_num_vertices].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
         //New_y = (v0.y - v1.y)*t + v1.y
         pOutVertices[depth_num_vertices].vWorldViewPosition.y = pInVertices[i].vWorldViewPosition.y + (pInVertices[i + 1].vWorldViewPosition.y - pInVertices[i].vWorldViewPosition.y) * t;
         //New_z = (v0.z - v1.z)*t + v1.z
         pOutVertices[depth_num_vertices].vWorldViewPosition.z = pInVertices[i].vWorldViewPosition.z + (pInVertices[i + 1].vWorldViewPosition.z - pInVertices[i].vWorldViewPosition.z) * t;
         pOutVertices[depth_num_vertices].u = pInVertices[i].u + (pInVertices[i + 1].u - pInVertices[i].u) * t;
         pOutVertices[depth_num_vertices].v = pInVertices[i].v + (pInVertices[i + 1].v - pInVertices[i].v) * t;
-        pOutVertices[depth_num_vertices]._rhw = 1.0 / pODMRenderParams->shading_dist_mist;
+        pOutVertices[depth_num_vertices]._rhw = 1.0 / pIndoorCameraD3D->GetFarClip();
       }
       ++depth_num_vertices;
     }
@@ -1261,10 +1327,10 @@ void IndoorCameraD3D::Project(signed int x, signed int y, signed int z, int *a5,
   //if ( render->pRenderD3D )
   {
     v6 = 1.0 / (double)x;
-    a2a = (double)y * fov * v6 + screenCenterX;
+    a2a = screenCenterX + (double)y * fov * v6;
     //v7 = a2a + 6.7553994e15;
     *a5 = floorf(a2a + 0.5f);
-    a2b = (double)z * fov * v6 + screenCenterY;
+    a2b = screenCenterY + (double)z * fov * v6;
     //v8 = a2b + 6.7553994e15;
     *a6 = pViewport->uViewportBR_Y - floorf(a2b + 0.5f);
   }
@@ -1293,12 +1359,6 @@ double IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int
       result = pVertices[i].vWorldPosition.z;
   }
   return result;
-}
-
-//----- (00436A24) --------------------------------------------------------
-struct IDirect3DTexture2 *IndoorCameraD3D::LoadTextureAndGetHardwarePtr(char *Str1)
-{
-  return pBitmaps_LOD->pHardwareTextures[pBitmaps_LOD->LoadTexture(Str1)];
 }
 
 //----- (00436A40) --------------------------------------------------------

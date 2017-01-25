@@ -20,7 +20,7 @@
 #include "Platform/Win/Win.h"
 #include "Platform/OSWindow.h"
 
-bool wizard_eye = false;          // wizard eye always on / включить на постоянно око чародея
+bool wizard_eye = true;          // wizard eye always on / включить на постоянно око чародея
 bool change_seasons = true;       // toggle seasons change / смена времён года
 bool all_magic = false;           // toggle full spellbook / включить всю магию
 bool debug_information = true;   // toggle debug info / информация fps, положение группы, уровень пола и т.п.
@@ -940,8 +940,8 @@ bool OSWindow::OnOSMenu(int item_id)
         //SubMenu "Other"
         case 40101:  wizard_eye = true;  break;
         case 40102:  wizard_eye = false;  break;
-        case 40103:  pODMRenderParams->shading_dist_mist = 0x6000;  break;
-        case 40104:  pODMRenderParams->shading_dist_mist = 0x2000;  break;
+        case 40103:  pODMRenderParams->far_clip = 0x6000;  break;
+        case 40104:  pODMRenderParams->far_clip = 0x2000;  break;
         case 40105:  change_seasons = true;  break;
         case 40106:  change_seasons = false;  break;
         case 40107:  all_magic = true;  break;

@@ -402,10 +402,10 @@ void Render::RenderTerrainD3D() // New function
                 && array_73D150[2].vWorldViewPosition.x < 8.0
                 && array_73D150[3].vWorldViewPosition.x < 8.0)
                 continue;
-            if ((double)pODMRenderParams->shading_dist_mist < array_73D150[0].vWorldViewPosition.x
-                && (double)pODMRenderParams->shading_dist_mist < array_73D150[1].vWorldViewPosition.x
-                && (double)pODMRenderParams->shading_dist_mist < array_73D150[2].vWorldViewPosition.x
-                && (double)pODMRenderParams->shading_dist_mist < array_73D150[3].vWorldViewPosition.x)
+            if (pIndoorCameraD3D->GetFarClip() < array_73D150[0].vWorldViewPosition.x
+                && pIndoorCameraD3D->GetFarClip() < array_73D150[1].vWorldViewPosition.x
+                && pIndoorCameraD3D->GetFarClip() < array_73D150[2].vWorldViewPosition.x
+                && pIndoorCameraD3D->GetFarClip() < array_73D150[3].vWorldViewPosition.x)
                 continue;
             //----------------------------------------------------------------------------
 
@@ -447,17 +447,17 @@ void Render::RenderTerrainD3D() // New function
             unsigned int a5 = 4;
 
             //---------Draw distance(Дальность отрисовки)-------------------------------
-            int temp = pODMRenderParams->shading_dist_mist;
+            int temp = pIndoorCameraD3D->GetFarClip();
             if (draw_terrain_dist_mist)
-                pODMRenderParams->shading_dist_mist = 0x5000;
+                temp = 0x5000;
             bool neer_clip = array_73D150[0].vWorldViewPosition.x < 8.0
                 || array_73D150[1].vWorldViewPosition.x < 8.0
                 || array_73D150[2].vWorldViewPosition.x < 8.0
                 || array_73D150[3].vWorldViewPosition.x < 8.0;
-            bool far_clip = (double)pODMRenderParams->shading_dist_mist < array_73D150[0].vWorldViewPosition.x
-                || (double)pODMRenderParams->shading_dist_mist < array_73D150[1].vWorldViewPosition.x
-                || (double)pODMRenderParams->shading_dist_mist < array_73D150[2].vWorldViewPosition.x
-                || (double)pODMRenderParams->shading_dist_mist < array_73D150[3].vWorldViewPosition.x;
+            bool far_clip = (float)temp < array_73D150[0].vWorldViewPosition.x
+                || (float)temp < array_73D150[1].vWorldViewPosition.x
+                || (float)temp < array_73D150[2].vWorldViewPosition.x
+                || (float)temp < array_73D150[3].vWorldViewPosition.x;
 
             int uClipFlag = 0;
             static stru154 static_sub_0048034E_stru_154;
@@ -488,7 +488,7 @@ void Render::RenderTerrainD3D() // New function
                     ODM_Project(pTilePolygon->uNumVertices);
                 }
             }
-            pODMRenderParams->shading_dist_mist = temp;
+            //pODMRenderParams->shading_dist_mist = temp;
 
             // check the transparency and texture (tiles) mapping (проверка прозрачности и наложение текстур (тайлов))----------------------
             bool transparent = false;
@@ -657,7 +657,7 @@ void Render::DrawSpriteObjects_ODM()
                     fixed::FromInt(party_to_sprite_z) * fixed::Raw(pIndoorCameraD3D->int_sine_x)
                     + _v30 * fixed::Raw(pIndoorCameraD3D->int_cosine_x);
                 //if (v42 >= 0x40000 && v42 <= pODMRenderParams->shading_dist_mist << 16)
-                if (distance >= fixed::FromInt(4) && distance <= fixed::FromInt(pODMRenderParams->shading_dist_mist))
+                if (distance >= fixed::FromFloat(pIndoorCameraD3D->GetNearClip()) && distance <= fixed::FromFloat(pIndoorCameraD3D->GetFarClip()))
                 {
                     //int v17 = fixpoint_mul(party_to_sprite_y << 16, pIndoorCameraD3D->int_cosine_y) - v37;
                     auto _v17 = fixed::FromInt(party_to_sprite_y) * fixed::Raw(pIndoorCameraD3D->int_cosine_y) - _v37;
@@ -1151,7 +1151,7 @@ void Render::PrepareDecorationsRenderList_ODM()
                         //v20 = v19 + fixpoint_mul((pLevelDecorations[i].vPosition.z - pIndoorCameraD3D->vPartyPos.z) << 16, pIndoorCameraD3D->int_sine_x);
                         auto _v20 = _v19 + fixed::FromInt(party_to_decor_z) * fixed::Raw(pIndoorCameraD3D->int_sine_x);
                         //if (v20 >= 0x40000 && v20 <= pODMRenderParams->shading_dist_mist << 16)
-                        if (_v20 >= fixed::FromInt(4) && _v20 <= fixed::FromInt(pODMRenderParams->shading_dist_mist))
+                        if (_v20 >= fixed::FromFloat(pIndoorCameraD3D->GetNearClip()) && _v20 <= fixed::FromFloat(pIndoorCameraD3D->GetFarClip()))
                         {
                             //v21 = fixpoint_mul(party_to_decor_y << 16, pIndoorCameraD3D->int_cosine_y) - fixpoint_mul(party_to_decor_x << 16, pIndoorCameraD3D->int_sine_y);
                             auto _v21 =
@@ -2131,7 +2131,7 @@ void Render::DrawPolygon(struct Polygon *a3)
 
                     d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
                     d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-                    d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / (double)pODMRenderParams->shading_dist_mist);
+                    d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
                     d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
                     d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(a3->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
                     pEngine->AlterGamma_ODM(a4, &d3d_vertex_buffer[i].diffuse);
@@ -2170,7 +2170,7 @@ void Render::DrawPolygon(struct Polygon *a3)
 
                     d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
                     d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-                    d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / (double)pODMRenderParams->shading_dist_mist);
+                    d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
                     d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
                     d3d_vertex_buffer[i].diffuse = GetActorTintColor(a3->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
                     if (this->bUsingSpecular)
@@ -3585,10 +3585,10 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult, float z_
     {
         float v18;
         if (fabs(z_bias) < 1e-5)
-            v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetShadingDistMist()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0);
+            v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0);
         else
         {
-            v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetShadingDistMist()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0) - z_bias;
+            v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0) - z_bias;
             if (v18 < 0.000099999997)
                 v18 = 0.000099999997;
         }
@@ -4737,7 +4737,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clamp
 
             d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
             d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-            d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / (double)pODMRenderParams->shading_dist_mist);
+            d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
             d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
             d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(a4->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
             d3d_vertex_buffer[i].specular = 0;
@@ -4764,7 +4764,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clamp
 
             d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
             d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-            d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / (double)pODMRenderParams->shading_dist_mist);
+            d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
             d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
             d3d_vertex_buffer[i].diffuse = GetActorTintColor(a4->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
             d3d_vertex_buffer[i].specular = 0;
@@ -5723,7 +5723,7 @@ void Render::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *te
     pBillboardRenderListD3D[v8].pQuads[0].specular = 0;
     pBillboardRenderListD3D[v8].pQuads[0].diffuse = uDiffuse;
     pBillboardRenderListD3D[v8].pQuads[0].pos.y = v23;
-    v24 = 1.0 - 1.0 / (v6 * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    v24 = 1.0 - 1.0 / (v6 * 1000.0 / pIndoorCameraD3D->GetFarClip());
     pBillboardRenderListD3D[v8].pQuads[0].pos.z = v24;
     v25 = 1.0 / v6;
     pBillboardRenderListD3D[v8].pQuads[0].rhw = v25;
@@ -5846,7 +5846,7 @@ void Render::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboa
   pBillboardRenderListD3D[v8].pQuads[0].diffuse = diffuse;
   pBillboardRenderListD3D[v8].pQuads[0].pos.x = (double)a2->screen_space_x - v14 * v30;
   pBillboardRenderListD3D[v8].pQuads[0].pos.y = (double)a2->screen_space_y - v15 * v29;
-  pBillboardRenderListD3D[v8].pQuads[0].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+  pBillboardRenderListD3D[v8].pQuads[0].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
   pBillboardRenderListD3D[v8].pQuads[0].rhw = 1.0 / a2->screen_space_z;
   pBillboardRenderListD3D[v8].pQuads[0].specular = specular;
   pBillboardRenderListD3D[v8].pQuads[0].texcoord.x = 0.0;
@@ -5860,7 +5860,7 @@ void Render::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboa
     pBillboardRenderListD3D[v8].pQuads[1].diffuse = diffuse;
     pBillboardRenderListD3D[v8].pQuads[1].pos.x = (double)a2->screen_space_x - v14 * v30;
     pBillboardRenderListD3D[v8].pQuads[1].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
     pBillboardRenderListD3D[v8].pQuads[1].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[1].texcoord.x = 0.0;
     pBillboardRenderListD3D[v8].pQuads[1].texcoord.y = 1.0;
@@ -5873,7 +5873,7 @@ void Render::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboa
     pBillboardRenderListD3D[v8].pQuads[2].specular = specular;
     pBillboardRenderListD3D[v8].pQuads[2].pos.x = (double)a2->screen_space_x + v14 * v30;
     pBillboardRenderListD3D[v8].pQuads[2].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
     pBillboardRenderListD3D[v8].pQuads[2].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[2].texcoord.x = 1.0;
     pBillboardRenderListD3D[v8].pQuads[2].texcoord.y = 1.0;
@@ -5886,7 +5886,7 @@ void Render::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboa
     pBillboardRenderListD3D[v8].pQuads[3].specular = specular;
     pBillboardRenderListD3D[v8].pQuads[3].pos.x = (double)a2->screen_space_x + v14 * v30;
     pBillboardRenderListD3D[v8].pQuads[3].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
     pBillboardRenderListD3D[v8].pQuads[3].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[3].texcoord.x = 1.0;
     pBillboardRenderListD3D[v8].pQuads[3].texcoord.y = 0.0;
@@ -5942,8 +5942,8 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float ds
   v18 = (double)xDifference * v16 * a4;
   if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
   {
-    v20 = a3 * 1000.0 / (double)pODMRenderParams->shading_dist_mist;
-    v25 = a7 * 1000.0 / (double)pODMRenderParams->shading_dist_mist;
+    v20 = a3 * 1000.0 / pIndoorCameraD3D->GetFarClip();
+    v25 = a7 * 1000.0 / pIndoorCameraD3D->GetFarClip();
   }
   else
   {
@@ -6042,7 +6042,7 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1, int d
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
       v11 = v10 * 0.061758894;
     else
-      v11 = v10 * 1000.0 / (double)pODMRenderParams->shading_dist_mist;
+      v11 = v10 * 1000.0 / pIndoorCameraD3D->GetFarClip();
     pBillboardRenderListD3D[v5].pQuads[i].pos.z = 1.0 - 1.0 / v11;
     pBillboardRenderListD3D[v5].pQuads[i].rhw = 1.0 / a1->field_104[i].z;
 
@@ -8053,13 +8053,13 @@ int ODM_FarClip(unsigned int uNumVertices)
   memcpy(&VertexRenderList[uNumVertices], &VertexRenderList[0], sizeof(VertexRenderList[uNumVertices]));
   depth_num_vertices = 0;
   current_vertices_flag = false;
-  if ( VertexRenderList[0].vWorldViewPosition.x >= pODMRenderParams->shading_dist_mist )
+  if ( VertexRenderList[0].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip())
     current_vertices_flag = true;//настоящая вершина больше границы видимости
   if ( (signed int)uNumVertices <= 0 )
     return 0;
   for (uint i = 0; i < uNumVertices; ++i)// есть ли пограничные вершины
   {
-    if ( VertexRenderList[i].vWorldViewPosition.x < pODMRenderParams->shading_dist_mist )
+    if ( VertexRenderList[i].vWorldViewPosition.x < pIndoorCameraD3D->GetFarClip())
     {
       bFound = true;
       break;
@@ -8080,34 +8080,34 @@ int ODM_FarClip(unsigned int uNumVertices)
 
   for ( uint i = 0; i < uNumVertices; ++i )
   {
-    next_vertices_flag = VertexRenderList[i + 1].vWorldViewPosition.x >= pODMRenderParams->shading_dist_mist;
+    next_vertices_flag = VertexRenderList[i + 1].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip();
     if ( current_vertices_flag ^ next_vertices_flag )//одна из граней за границей видимости
     {
       if ( next_vertices_flag )//следующая вершина больше границы видимости(настоящая вершина меньше границы видимости) - v3
       {
         //t = far_clip - v2.x / v3.x - v2.x (формула получения точки пересечения отрезка с плоскостью)
-        t = (pODMRenderParams->shading_dist_mist - VertexRenderList[i].vWorldViewPosition.x) / (VertexRenderList[i].vWorldViewPosition.x - VertexRenderList[i + 1].vWorldViewPosition.x);
-        array_507D30[depth_num_vertices].vWorldViewPosition.x = pODMRenderParams->shading_dist_mist;
+        t = (pIndoorCameraD3D->GetFarClip() - VertexRenderList[i].vWorldViewPosition.x) / (VertexRenderList[i].vWorldViewPosition.x - VertexRenderList[i + 1].vWorldViewPosition.x);
+        array_507D30[depth_num_vertices].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
         //New_y = v2.y + (v3.y - v2.y)*t
         array_507D30[depth_num_vertices].vWorldViewPosition.y = VertexRenderList[i].vWorldViewPosition.y + (VertexRenderList[i].vWorldViewPosition.y - VertexRenderList[i + 1].vWorldViewPosition.y) * t;
         //New_z = v2.z + (v3.z - v2.z)*t
         array_507D30[depth_num_vertices].vWorldViewPosition.z = VertexRenderList[i].vWorldViewPosition.z + (VertexRenderList[i].vWorldViewPosition.z - VertexRenderList[i + 1].vWorldViewPosition.z) * t;
         array_507D30[depth_num_vertices].u = VertexRenderList[i].u + (VertexRenderList[i].u - VertexRenderList[i + 1].u) * t;
         array_507D30[depth_num_vertices].v = VertexRenderList[i].v + (VertexRenderList[i].v - VertexRenderList[i + 1].v) * t;
-        array_507D30[depth_num_vertices]._rhw = 1.0 / pODMRenderParams->shading_dist_mist;
+        array_507D30[depth_num_vertices]._rhw = 1.0 / pIndoorCameraD3D->GetFarClip();
       }
       else//настоящая вершина больше границы видимости(следующая вершина меньше границы видимости) - v0
       {
         //t = far_clip - v1.x / v0.x - v1.x
-        t = (pODMRenderParams->shading_dist_mist - VertexRenderList[i].vWorldViewPosition.x) / (VertexRenderList[i + 1].vWorldViewPosition.x - VertexRenderList[i].vWorldViewPosition.x);
-        array_507D30[depth_num_vertices].vWorldViewPosition.x = pODMRenderParams->shading_dist_mist;
+        t = (pIndoorCameraD3D->GetFarClip() - VertexRenderList[i].vWorldViewPosition.x) / (VertexRenderList[i + 1].vWorldViewPosition.x - VertexRenderList[i].vWorldViewPosition.x);
+        array_507D30[depth_num_vertices].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
         //New_y = (v0.y - v1.y)*t + v1.y
         array_507D30[depth_num_vertices].vWorldViewPosition.y = VertexRenderList[i].vWorldViewPosition.y + (VertexRenderList[i + 1].vWorldViewPosition.y - VertexRenderList[i].vWorldViewPosition.y) * t;
         //New_z = (v0.z - v1.z)*t + v1.z
         array_507D30[depth_num_vertices].vWorldViewPosition.z = VertexRenderList[i].vWorldViewPosition.z + (VertexRenderList[i + 1].vWorldViewPosition.z - VertexRenderList[i].vWorldViewPosition.z) * t;
         array_507D30[depth_num_vertices].u = VertexRenderList[i].u + (VertexRenderList[i + 1].u - VertexRenderList[i].u) * t;
         array_507D30[depth_num_vertices].v = VertexRenderList[i].v + (VertexRenderList[i + 1].v - VertexRenderList[i].v) * t;
-        array_507D30[depth_num_vertices]._rhw = 1.0 / pODMRenderParams->shading_dist_mist;
+        array_507D30[depth_num_vertices]._rhw = 1.0 / pIndoorCameraD3D->GetFarClip();
       }
       ++depth_num_vertices;
     }
@@ -8211,9 +8211,9 @@ void Render::DrawBuildingsD3D()
                             if (pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[0]].z == array_73D150[i - 1].vWorldPosition.z)
                                 ++v53;
                             pIndoorCameraD3D->ViewTransform(&array_73D150[i - 1], 1);
-                            if (array_73D150[i - 1].vWorldViewPosition.x < 8.0 || array_73D150[i - 1].vWorldViewPosition.x > pODMRenderParams->shading_dist_mist)
+                            if (array_73D150[i - 1].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() || array_73D150[i - 1].vWorldViewPosition.x > pIndoorCameraD3D->GetFarClip())
                             {
-                                if (array_73D150[i - 1].vWorldViewPosition.x >= 8.0)
+                                if (array_73D150[i - 1].vWorldViewPosition.x >= pIndoorCameraD3D->GetNearClip())
                                     v49 = 1;
                                 else
                                     v50 = 1;
@@ -8325,12 +8325,12 @@ void Render::DrawOutdoorSkyD3D()
     v30 = (signed __int64)((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
         / ((double)pODMRenderParams->int_fov_rad + 8192.0)
         + (double)(pViewport->uScreenCenterY));
-    v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) * (double)pODMRenderParams->shading_dist_mist;
+    v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) * pIndoorCameraD3D->GetFarClip();
     v38 = (signed __int64)((double)(pViewport->uScreenCenterY)
         - (double)pODMRenderParams->int_fov_rad
         / (v34 + 0.0000001)
         * (sin((double)pIndoorCameraD3D->sRotationX * 0.0030664064)
-            * -(double)pODMRenderParams->shading_dist_mist
+            * -pIndoorCameraD3D->GetFarClip()
             - (double)pIndoorCameraD3D->vPartyPos.z));
     pSkyPolygon.Create_48607B(&stru_8019C8);//заполняется ptr_38
     pSkyPolygon.ptr_38->_48694B_frustum_sky();
@@ -8420,7 +8420,7 @@ void Render::DrawOutdoorSkyD3D()
             HEXRAYS_HIDWORD(v17) = v34 >> 16;
             v18 = v17 / v10;
             if (v18 < 0)
-                v18 = pODMRenderParams->shading_dist_mist;
+                v18 = pIndoorCameraD3D->GetFarClip();
             v37 = v35 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, v13);
             v35 = 224 * pMiscTimer->uTotalGameTimeElapsed + ((signed int)fixpoint_mul(v37, v18) >> 3);
             VertexRenderList[i].u = (double)v35 / ((double)pSkyPolygon.texture->GetWidth() * 65536.0);
@@ -8429,7 +8429,7 @@ void Render::DrawOutdoorSkyD3D()
             v35 = 224 * pMiscTimer->uTotalGameTimeElapsed + ((signed int)fixpoint_mul(v36, v18) >> 3);
             VertexRenderList[i].v = (double)v35 / ((double)pSkyPolygon.texture->GetHeight() * 65536.0);
 
-            VertexRenderList[i].vWorldViewPosition.x = (double)pODMRenderParams->shading_dist_mist;
+            VertexRenderList[i].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
             VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
         }
 
@@ -8583,16 +8583,20 @@ int Render::_46А6АС_GetActorsInViewport(int pDepth)
 
 void Render::BeginLightmaps()
 {
-  ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));
+    ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));
 
-  if (bUsingSpecular)
-    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
+    if (bUsingSpecular)
+        pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
-  ErrD3D(pRenderD3D->pDevice->SetTexture(0, pIndoorCameraD3D->LoadTextureAndGetHardwarePtr("effpar03")));
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
+
+    //ErrD3D(pRenderD3D->pDevice->SetTexture(0, pIndoorCameraD3D->LoadTextureAndGetHardwarePtr("effpar03")));
+    auto effpar03 = assets->GetBitmap("effpar03");
+    ErrD3D(pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)effpar03)->GetDirect3DTexture()));
+
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
 }
 
 void Render::EndLightmaps()
@@ -8620,7 +8624,11 @@ void Render::BeginLightmaps2()
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
-  ErrD3D(pRenderD3D->pDevice->SetTexture(0, pIndoorCameraD3D->LoadTextureAndGetHardwarePtr("effpar03")));
+
+  //ErrD3D(pRenderD3D->pDevice->SetTexture(0, pIndoorCameraD3D->LoadTextureAndGetHardwarePtr("effpar03")));
+  auto effpar03 = assets->GetBitmap("effpar03");
+  ErrD3D(pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)effpar03)->GetDirect3DTexture()));
+
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
 }
@@ -8694,19 +8702,21 @@ void Render::DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int 
 
 void Render::BeginDecals()
 {
-  // code chunk from 0049C304
-  if (bUsingSpecular)
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
-  ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));
+    // code chunk from 0049C304
+    if (bUsingSpecular)
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
+    ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));
 
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
-  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
 
-  ErrD3D(pRenderD3D->pDevice->SetTexture(0, pIndoorCameraD3D->LoadTextureAndGetHardwarePtr("hwsplat04")));
+    //ErrD3D(pRenderD3D->pDevice->SetTexture(0, pIndoorCameraD3D->LoadTextureAndGetHardwarePtr("hwsplat04")));
+    auto hwsplat04 = assets->GetBitmap("hwsplat04");
+    ErrD3D(pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)hwsplat04)->GetDirect3DTexture()));
 }
 
 
@@ -8761,10 +8771,10 @@ void Render::DrawDecal(Decal *pDecal, float z_bias)
 
     float v15;
     if (fabs(z_bias) < 1e-5)
-      v15 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetShadingDistMist()) * pDecal->pVertices[i].vWorldViewPosition.x * 1000.0);
+      v15 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) * pDecal->pVertices[i].vWorldViewPosition.x * 1000.0);
     else
     {
-      v15 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetShadingDistMist()) * pDecal->pVertices[i].vWorldViewPosition.x * 1000.0) - z_bias;
+      v15 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) * pDecal->pVertices[i].vWorldViewPosition.x * 1000.0) - z_bias;
       if (v15 < 0.000099999997)
         v15 = 0.000099999997;
     }
@@ -10218,7 +10228,7 @@ bool IsBModelVisible(unsigned int uModelID, int *reachable)
 	else
 		v11 = fixpoint_mul(stru_5C6E00->Cos(angle), v19) + fixpoint_mul(stru_5C6E00->Sin(angle), v17);
 	v12 = v11 >> 16;
-	if (v9 <= pODMRenderParams->shading_dist_mist + 2048)
+	if (v9 <= pIndoorCameraD3D->GetFarClip() + 2048)
 	{
 		//if ( abs(v12) > *(int *)((char *)&pOutdoor->pBModels->sBoundingRadius + v10) + 512 )
 		if (abs(v12) > pOutdoor->pBModels[uModelID].sBoundingRadius + 512)

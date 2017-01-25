@@ -7400,7 +7400,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
         if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active())
         {
             __int16 spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
-            if (spellPower)
+            if (spellPower > 0)
                 dmgToReceive /= spellPower;
         }
 
@@ -7588,7 +7588,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
             if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active())
             {
                 int spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
-                if (spellPower)
+                if (spellPower > 0)
                     dmgToReceive /= spellPower;
             }
             int damageType;

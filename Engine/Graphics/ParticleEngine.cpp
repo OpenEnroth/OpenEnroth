@@ -506,7 +506,7 @@ void ParticleEngine::DrawParticles_ODM()
             {
                 pLines.pLineVertices[2 * pLines.uNumLines].pos.x = particle->uScreenSpaceX;
                 pLines.pLineVertices[2 * pLines.uNumLines].pos.y = particle->uScreenSpaceY;
-                pLines.pLineVertices[2 * pLines.uNumLines].pos.z = 1.0 - 1.0 / ((double)particle->zbuffer_depth * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+                pLines.pLineVertices[2 * pLines.uNumLines].pos.z = 1.0 - 1.0 / ((double)particle->zbuffer_depth * 1000.0 / pIndoorCameraD3D->GetFarClip());
                 pLines.pLineVertices[2 * pLines.uNumLines].rhw = 1.0;
                 pLines.pLineVertices[2 * pLines.uNumLines].diffuse = particle->uLightColor_bgr;
                 pLines.pLineVertices[2 * pLines.uNumLines].specular = 0;
@@ -515,7 +515,7 @@ void ParticleEngine::DrawParticles_ODM()
 
                 pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.x = particle->uScreenSpaceZ;
                 pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.y = particle->uScreenSpaceW;
-                pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.z = 1.0 - 1.0 / ((double)particle->sZValue2 * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+                pLines.pLineVertices[2 * pLines.uNumLines + 1].pos.z = 1.0 - 1.0 / ((double)particle->sZValue2 * 1000.0 / pIndoorCameraD3D->GetFarClip());
                 pLines.pLineVertices[2 * pLines.uNumLines + 1].rhw = 1.0;
                 pLines.pLineVertices[2 * pLines.uNumLines + 1].diffuse = particle->uLightColor_bgr;
                 pLines.pLineVertices[2 * pLines.uNumLines + 1].specular = 0;

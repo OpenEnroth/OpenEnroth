@@ -1868,7 +1868,7 @@ bool stru6_stru1_indoor_sw_billboard::sub_477F63()
 	//__debugbreak();// почистить
 	v1 = 0;
 	v9 = 0;
-	if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+	/*if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
 	{
 		v10 = 16192.0;
 		v3 = (double)pBLVRenderParams->fov_rad_fixpoint * 0.000015258789;
@@ -1877,9 +1877,10 @@ bool stru6_stru1_indoor_sw_billboard::sub_477F63()
 	{
 		v10 = (double)pODMRenderParams->shading_dist_mist;
 		v3 = 8.0;
-	}
-	else
-		__debugbreak();//Error
+	}*/
+    v3 = pIndoorCameraD3D->GetNearClip();
+    v10 = pIndoorCameraD3D->GetFarClip();
+
 	if (this->uNumVertices <= 0)
 	{
 		memcpy(&this->field_14[40], &this->field_14[20], 16 * this->uNumVertices);

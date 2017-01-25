@@ -252,8 +252,8 @@ bool RenderOpenGL::LoadTextureOpenGL(const String &name, bool mipmaps, int *out_
 
 void _set_3d_projection_matrix()
 {
-    float near_clip = 8.0;
-    float far_clip = 4 * pODMRenderParams->shading_dist_mist;
+    float near_clip = pIndoorCameraD3D->GetNearClip();
+    float far_clip = pIndoorCameraD3D->GetFarClip();
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -490,12 +490,12 @@ void RenderOpenGL::DrawOutdoorSkyD3D()
     v30 = (signed __int64)((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
         / ((double)pODMRenderParams->int_fov_rad + 8192.0)
         + (double)(pViewport->uScreenCenterY));
-    v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) * (double)pODMRenderParams->shading_dist_mist;
+    v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) * pIndoorCameraD3D->GetFarClip();
     v38 = (signed __int64)((double)(pViewport->uScreenCenterY)
         - (double)pODMRenderParams->int_fov_rad
         / (v34 + 0.0000001)
         * (sin((double)pIndoorCameraD3D->sRotationX * 0.0030664064)
-            * -(double)pODMRenderParams->shading_dist_mist
+            * -pIndoorCameraD3D->GetFarClip()
             - (double)pIndoorCameraD3D->vPartyPos.z));
     pSkyPolygon.Create_48607B(&stru_8019C8);//заполняется ptr_38
     pSkyPolygon.ptr_38->_48694B_frustum_sky();
@@ -585,7 +585,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D()
             HEXRAYS_HIDWORD(v17) = v34 >> 16;
             v18 = v17 / v10;
             if (v18 < 0)
-                v18 = pODMRenderParams->shading_dist_mist;
+                v18 = pIndoorCameraD3D->GetFarClip();
             v37 = v35 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, v13);
             v35 = 224 * pMiscTimer->uTotalGameTimeElapsed + ((signed int)fixpoint_mul(v37, v18) >> 3);
             VertexRenderList[i].u = (double)v35 / (2 * (double)pSkyPolygon.texture->GetWidth() * 65536.0);
@@ -594,7 +594,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D()
             v35 = 224 * pMiscTimer->uTotalGameTimeElapsed + ((signed int)fixpoint_mul(v36, v18) >> 3);
             VertexRenderList[i].v = (double)v35 / (2 * (double)pSkyPolygon.texture->GetHeight() * 65536.0);
 
-            VertexRenderList[i].vWorldViewPosition.x = (double)pODMRenderParams->shading_dist_mist;
+            VertexRenderList[i].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
             VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
         }
 
@@ -913,7 +913,7 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
     pBillboardRenderListD3D[v8].pQuads[0].diffuse = diffuse;
     pBillboardRenderListD3D[v8].pQuads[0].pos.x = (double)a2->screen_space_x - v14 * v30;
     pBillboardRenderListD3D[v8].pQuads[0].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[0].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
     pBillboardRenderListD3D[v8].pQuads[0].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[0].specular = specular;
     pBillboardRenderListD3D[v8].pQuads[0].texcoord.x = 0.0;
@@ -927,7 +927,7 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
     pBillboardRenderListD3D[v8].pQuads[1].diffuse = diffuse;
     pBillboardRenderListD3D[v8].pQuads[1].pos.x = (double)a2->screen_space_x - v14 * v30;
     pBillboardRenderListD3D[v8].pQuads[1].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
     pBillboardRenderListD3D[v8].pQuads[1].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[1].texcoord.x = 0.0;
     pBillboardRenderListD3D[v8].pQuads[1].texcoord.y = 1.0;
@@ -940,7 +940,7 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
     pBillboardRenderListD3D[v8].pQuads[2].specular = specular;
     pBillboardRenderListD3D[v8].pQuads[2].pos.x = (double)a2->screen_space_x + v14 * v30;
     pBillboardRenderListD3D[v8].pQuads[2].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
     pBillboardRenderListD3D[v8].pQuads[2].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[2].texcoord.x = 1.0;
     pBillboardRenderListD3D[v8].pQuads[2].texcoord.y = 1.0;
@@ -953,7 +953,7 @@ void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pB
     pBillboardRenderListD3D[v8].pQuads[3].specular = specular;
     pBillboardRenderListD3D[v8].pQuads[3].pos.x = (double)a2->screen_space_x + v14 * v30;
     pBillboardRenderListD3D[v8].pQuads[3].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / (double)pODMRenderParams->shading_dist_mist);
+    pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
     pBillboardRenderListD3D[v8].pQuads[3].rhw = 1.0 / a2->screen_space_z;
     pBillboardRenderListD3D[v8].pQuads[3].texcoord.x = 1.0;
     pBillboardRenderListD3D[v8].pQuads[3].texcoord.y = 0.0;
@@ -1633,9 +1633,9 @@ void RenderOpenGL::DrawBuildingsD3D()
                             if (pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[0]].z == array_73D150[i - 1].vWorldPosition.z)
                                 ++v53;
                             pIndoorCameraD3D->ViewTransform(&array_73D150[i - 1], 1);
-                            if (array_73D150[i - 1].vWorldViewPosition.x < 8.0 || array_73D150[i - 1].vWorldViewPosition.x > pODMRenderParams->shading_dist_mist)
+                            if (array_73D150[i - 1].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() || array_73D150[i - 1].vWorldViewPosition.x > pIndoorCameraD3D->GetFarClip())
                             {
-                                if (array_73D150[i - 1].vWorldViewPosition.x >= 8.0)
+                                if (array_73D150[i - 1].vWorldViewPosition.x >= pIndoorCameraD3D->GetNearClip())
                                     v49 = 1;
                                 else
                                     v50 = 1;
@@ -1735,7 +1735,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly)
             {
                 d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
                 d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / (double)pODMRenderParams->shading_dist_mist);
+                d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
                 d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
                 d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(poly->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
                 pEngine->AlterGamma_ODM(a4, &d3d_vertex_buffer[i].diffuse);

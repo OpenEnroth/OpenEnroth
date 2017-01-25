@@ -61,7 +61,8 @@ struct ODMRenderParams
         uPickDepth = 0;
         this->shading_dist_shade = 0x800;
         shading_dist_shademist = 0x1000;
-        shading_dist_mist = 0x2000 * 2;
+        this->near_clip = 4;
+        this->far_clip = 2 * 0x2000;
         int_fov_rad = 0;
         this->bNoSky = 0;
         this->bDoNotRenderDecorations = 0;
@@ -76,7 +77,8 @@ struct ODMRenderParams
     int uPickDepth;
     int shading_dist_shade;
     int shading_dist_shademist;
-    int shading_dist_mist;
+    int near_clip;
+    int far_clip;         // far clip (shading_dist_mist in M&M6 terms)
     unsigned int uCameraFovInDegrees;
     int int_fov_rad;                          // 157 struct IndoorCamera::fov_rad
     int int_fov_rad_inv;                      // 157 struct IndoorCamera::fov_rad_inv

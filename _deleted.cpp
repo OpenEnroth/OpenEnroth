@@ -15314,4 +15314,17 @@ int LODSprite::DrawSprite_sw(SoftwareBillboard *a2, char a3)
         goto LABEL_54;
     }
     return result;
+}
+//----- (00436A24) --------------------------------------------------------
+struct IDirect3DTexture2 *IndoorCameraD3D::LoadTextureAndGetHardwarePtr(char *Str1)
+{
+    return pBitmaps_LOD->pHardwareTextures[pBitmaps_LOD->LoadTexture(Str1)];
+}
+//----- (00436427) --------------------------------------------------------
+float IndoorCameraD3D::GetShadingDistMist()
+{
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+        return (double)pODMRenderParams->shading_dist_mist;
+    else
+        return 16192.0;
 }*/
