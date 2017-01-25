@@ -69,7 +69,6 @@ class Render : public IRender
 
         virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillboard *billboard);
-        virtual void DrawBillboard_Indoor_SW(SoftwareBillboard * soft_billboard, RenderBillboard *p);
         virtual void _4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse);
         virtual void TransformBillboardsAndSetPalettesODM();
         virtual void DrawBillboardList_BLV();

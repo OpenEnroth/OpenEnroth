@@ -588,12 +588,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     v106.uViewportY = pWindow->uFrameY + 52;
     v106.uViewportW = (pWindow->uFrameY + 52) + 128;
     v106.uViewportZ = v106.uViewportX + 128;
-    v106.uScreenSpaceX = (signed int)(v106.uViewportX + 128 + v106.uViewportX) / 2;
-    v106._screenspace_x_scaler_packedfloat = 65536;
-    v106._screenspace_y_scaler_packedfloat = 65536;
-    v106.uScreenSpaceY = v115 + (pWindow->uFrameY + 52) + v10->hw_sprites[0]->sprite_header->uHeight;
+    v106.screen_space_x = (signed int)(v106.uViewportX + 128 + v106.uViewportX) / 2;
+    v106.screenspace_projection_factor_x = fixed::FromInt(1);
+    v106.screenspace_projection_factor_y = fixed::FromInt(1);
+    v106.screen_space_y = v115 + (pWindow->uFrameY + 52) + v10->hw_sprites[0]->sprite_header->uHeight;
     v106.pPalette = PaletteManager::Get_Dark_or_Red_LUT(v10->uPaletteIndex, 0, 1);
-    v106.sZValue = 0;
+    v106.screen_space_z = 0;
+    v106.object_pid = 0;
     v106.uFlags = 0;
     render->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
     render->RasterLine2D(v106.uViewportX - 1, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));//горизонтальная верхняя линия
@@ -602,14 +603,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     render->RasterLine2D(v106.uViewportX + 129, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));//правая вертикальная линия
     //if ( render->pRenderD3D )
     {
-        v106.uScreenSpaceY = v115 + v106.uViewportY + v10->hw_sprites[0]->uBufferHeight;
+        v106.screen_space_y = v115 + v106.uViewportY + v10->hw_sprites[0]->uBufferHeight;
 
         v107 = 0;
         uint i = 0;
-        int dst_x = v106.uScreenSpaceX + v10->hw_sprites[0]->uAreaX - v10->hw_sprites[0]->uBufferWidth / 2;
-        int dst_y = v106.uScreenSpaceY + v10->hw_sprites[0]->uAreaY - v10->hw_sprites[0]->uBufferHeight;
-        uint dst_z = v106.uScreenSpaceX + v10->hw_sprites[0]->uAreaX + v10->hw_sprites[0]->uAreaWidth + v10->hw_sprites[0]->uBufferWidth / 2 - v10->hw_sprites[0]->uBufferWidth;
-        uint dst_w = v106.uScreenSpaceY + v10->hw_sprites[0]->uAreaY + v10->hw_sprites[0]->uAreaHeight - v10->hw_sprites[0]->uBufferHeight;
+        int dst_x = v106.screen_space_x + v10->hw_sprites[0]->uAreaX - v10->hw_sprites[0]->uBufferWidth / 2;
+        int dst_y = v106.screen_space_y + v10->hw_sprites[0]->uAreaY - v10->hw_sprites[0]->uBufferHeight;
+        uint dst_z = v106.screen_space_x + v10->hw_sprites[0]->uAreaX + v10->hw_sprites[0]->uAreaWidth + v10->hw_sprites[0]->uBufferWidth / 2 - v10->hw_sprites[0]->uBufferWidth;
+        uint dst_w = v106.screen_space_y + v10->hw_sprites[0]->uAreaY + v10->hw_sprites[0]->uAreaHeight - v10->hw_sprites[0]->uBufferHeight;
         if (dst_x < v106.uViewportX)
         {
             v18 = v106.uViewportX - dst_x;

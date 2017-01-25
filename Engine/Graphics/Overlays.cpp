@@ -60,8 +60,8 @@ int OtherOverlayList::_4418B6(int uOverlayID, __int16 a3, int a4, int a5, __int1
     if ( this->pOverlays[i].field_6 <= 0 )
     {
       this->pOverlays[i].field_0 = 0;
-      this->pOverlays[i].field_A = 0;
-      this->pOverlays[i].field_8 = 0;
+      this->pOverlays[i].screen_space_y = 0;
+      this->pOverlays[i].screen_space_x = 0;
       this->pOverlays[i].field_C = a3;
       v9 = 0;
       for ( v9; v9 < (signed int)pOverlayList->uNumOverlays; ++v9 )
@@ -70,7 +70,7 @@ int OtherOverlayList::_4418B6(int uOverlayID, __int16 a3, int a4, int a5, __int1
           break;
       }
       this->pOverlays[i].field_2 = v9;
-      this->pOverlays[i].field_4 = 0;
+      this->pOverlays[i].sprite_frame_time = 0;
       if ( a4 )
         v11 = a4;
       else
@@ -235,10 +235,10 @@ void OtherOverlay::Reset()
 {
   this->field_0 = 0;
   this->field_2 = 0;
-  this->field_4 = 0;
+  this->sprite_frame_time = 0;
   this->field_6 = 0;
-  this->field_8 = 0;
-  this->field_A = 0;
+  this->screen_space_x = 0;
+  this->screen_space_y = 0;
   this->field_C = 0;
   this->field_E = 0;
   this->field_10 = 65536;
@@ -247,13 +247,5 @@ void OtherOverlay::Reset()
 //----- (004584B8) --------------------------------------------------------
 OtherOverlay::OtherOverlay()
 {
-  this->field_0 = 0;
-  this->field_2 = 0;
-  this->field_4 = 0;
-  this->field_6 = 0;
-  this->field_8 = 0;
-  this->field_A = 0;
-  this->field_C = 0;
-  this->field_E = 0;
-  this->field_10 = 65536;
+    this->Reset();
 }

@@ -145,11 +145,11 @@
     <ClCompile Include="..\..\Engine\Random.cpp" />
     <ClCompile Include="..\..\Engine\SaveLoad.cpp" />
     <ClCompile Include="..\..\Engine\Serialization\LegacyImages.cpp" />
+    <ClCompile Include="..\..\Engine\SpellFxRenderer.cpp" />
     <ClCompile Include="..\..\Engine\Spells\CastSpellInfo.cpp" />
     <ClCompile Include="..\..\Engine\Spells\Spells.cpp" />
     <ClCompile Include="..\..\Engine\Strings.cpp" />
     <ClCompile Include="..\..\Engine\stru298.cpp" />
-    <ClCompile Include="..\..\Engine\stru6.cpp" />
     <ClCompile Include="..\..\Engine\Tables\FactionTable.cpp" />
     <ClCompile Include="..\..\Engine\Tables\FrameTableInc.cpp" />
     <ClCompile Include="..\..\Engine\Tables\IconFrameTable.cpp" />
@@ -334,6 +334,7 @@
     <ClInclude Include="..\..\Engine\Rect.h" />
     <ClInclude Include="..\..\Engine\SaveLoad.h" />
     <ClInclude Include="..\..\Engine\Serialization\LegacyImages.h" />
+    <ClInclude Include="..\..\Engine\SpellFxRenderer.h" />
     <ClInclude Include="..\..\Engine\Spells\CastSpellInfo.h" />
     <ClInclude Include="..\..\Engine\Spells\Spells.h" />
     <ClInclude Include="..\..\Engine\Strings.h" />
@@ -343,7 +344,6 @@
     <ClInclude Include="..\..\Engine\stru298.h" />
     <ClInclude Include="..\..\Engine\stru314.h" />
     <ClInclude Include="..\..\Engine\stru367.h" />
-    <ClInclude Include="..\..\Engine\stru6.h" />
     <ClInclude Include="..\..\Engine\Tables\FactionTable.h" />
     <ClInclude Include="..\..\Engine\Tables\FrameTableInc.h" />
     <ClInclude Include="..\..\Engine\Tables\IconFrameTable.h" />

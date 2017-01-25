@@ -124,8 +124,8 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices, int num_verti
     {
       if (v13 == -1)
         v13 = i;
-      else  if (pBillboardRenderList[billboard->sParentBillboardID].sZValue < 
-                  pBillboardRenderList[render->pBillboardRenderListD3D[v13].sParentBillboardID].sZValue)
+      else  if (pBillboardRenderList[billboard->sParentBillboardID].screen_space_z < 
+                  pBillboardRenderList[render->pBillboardRenderListD3D[v13].sParentBillboardID].screen_space_z)
         v13 = i;
     }
   }
@@ -209,7 +209,7 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY, Vis_Selecti
       {
         RenderBillboard* billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
-        list->AddObject((void *)d3d_billboard->sParentBillboardID, VisObjectType_Sprite, billboard->sZValue);
+        list->AddObject((void *)d3d_billboard->sParentBillboardID, VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
       }
     }
   }
@@ -278,11 +278,11 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay, Vis_Select
 {
   int v5; // eax@1
   signed int pFaceID; // edi@2
-  int v9; // eax@7
+  //int v9; // eax@7
   unsigned int *pNumPointers; // eax@7
   Vis_ObjectInfo *v12; // edi@7
   RenderVertexSoft a1; // [sp+Ch] [bp-44h]@1
-  void *v15; // [sp+40h] [bp-10h]@7
+  //void *v15; // [sp+40h] [bp-10h]@7
   int v17; // [sp+48h] [bp-8h]@1
 
   v5 = 0;
@@ -302,15 +302,15 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay, Vis_Select
             if ( Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &a1, face, 0xFFFFFFFFu) )
             {
               pIndoorCameraD3D->ViewTransform(&a1, 1);
-              v9 = fixpoint_from_float(/*v8, */a1.vWorldViewPosition.x);
-              HEXRAYS_LOWORD(v9) = 0;
-              v15 = (void *)((PID(OBJECT_BModel,pFaceID)) + v9);
+              //v9 = fixpoint_from_float(/*v8, */a1.vWorldViewPosition.x);
+              //HEXRAYS_LOWORD(v9) = 0;
+              //v15 = (void *)((PID(OBJECT_BModel,pFaceID)) + v9);
               pNumPointers = &list->uNumPointers;
               v12 = &list->object_pool[list->uNumPointers];
               v12->object = &pIndoor->pFaces[pFaceID];
-              v12 = (Vis_ObjectInfo *) &v12->sZValue;
-              v12->object = v15;
-              v12->sZValue = 2;
+              v12->depth = a1.vWorldViewPosition.x;
+              v12->object_pid = PID(OBJECT_BModel, pFaceID);
+              v12->object_type = VisObjectType_Face;
               ++*pNumPointers;
             }
           }
@@ -354,11 +354,11 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay, Vis_Selec
         if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &intersection, &blv_face, i))
         {
           pIndoorCameraD3D->ViewTransform(&intersection, 1);
-          int v13 = fixpoint_from_float(/*v12, */intersection.vWorldViewPosition.x);
-          v13 &= 0xFFFF0000;
-          v13 += PID(OBJECT_BModel, j | (i << 6));
+          //int v13 = fixpoint_from_float(/*v12, */intersection.vWorldViewPosition.x);
+          //v13 &= 0xFFFF0000;
+          //v13 += PID(OBJECT_BModel, j | (i << 6));
 
-          list->AddObject(face, VisObjectType_Face, v13);
+          list->AddObject(face, VisObjectType_Face, intersection.vWorldViewPosition.x, PID(OBJECT_BModel, j | (i << 6)));
         }
 
         if (blv_face.uAttributes & FACE_PICKED)
@@ -371,12 +371,8 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay, Vis_Selec
   }
 }
 
-//----- (004C1930) --------------------------------------------------------
-//bool Vis::j_DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
-//{return DoesRayIntersectBillboard(fDepth, uD3DBillboardIdx);}
-
 //----- (004C1944) --------------------------------------------------------
-int Vis::PickClosestActor(int object_id, unsigned int pick_depth, int a4, int a5, int a6)
+unsigned short Vis::PickClosestActor(int object_id, unsigned int pick_depth, int a4, int a5, int a6)
 {
   Vis_SelectionFilter v8; // [sp+18h] [bp-20h]@3
 
@@ -394,7 +390,7 @@ int Vis::PickClosestActor(int object_id, unsigned int pick_depth, int a4, int a5
 
   if (!Vis_static_sub_4C1944_stru_F8BDE8.uNumPointers)
     return -1;
-  return Vis_static_sub_4C1944_stru_F8BDE8.object_pointers[0]->sZValue;
+  return Vis_static_sub_4C1944_stru_F8BDE8.object_pointers[0]->object_pid;
 }
 
 //----- (004C1A02) --------------------------------------------------------
@@ -471,16 +467,26 @@ void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end)
 //----- (004C1BAA) --------------------------------------------------------
 int Vis::get_object_zbuf_val(Vis_ObjectInfo *info)
 {
-  switch (info->object_type)
-  {
-    case VisObjectType_Sprite:
-    case VisObjectType_Face:
-      return info->sZValue;
+    switch (info->object_type)
+    {
+        case VisObjectType_Sprite:
+        case VisObjectType_Face:
+        {
+            //return info->sZValue;
 
-    default:
-        logger->Warning(L"Undefined type requested for: CVis::get_object_zbuf_val()");
-      return -1;
-  }
+            struct {
+                unsigned short object_pid;
+                short depth;
+            } res;
+            res.depth = info->depth;
+            res.object_pid = info->object_pid;
+            return *(int *)&res;
+        }
+
+        default:
+            logger->Warning(L"Undefined type requested for: CVis::get_object_zbuf_val()");
+            return -1;
+    }
 }
 
 //----- (004C1BF1) --------------------------------------------------------
@@ -816,7 +822,6 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
   int pRotY; // esi@1
   Vec3_int_ pStartR; // ST08_12@1
   int pRotX; // ST04_4@1
-  int pDepth; // eax@1
   RenderVertexSoft v11[2]; // [sp+2Ch] [bp-74h]@1
   int outx;
   int outz; // [sp+94h] [bp-Ch]@1
@@ -833,8 +838,8 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
   v11[1].vWorldPosition.y = (double)pIndoorCameraD3D->vPartyPos.y;
   v11[1].vWorldPosition.z = (double)pIndoorCameraD3D->vPartyPos.z;
 
-  pDepth = fixpoint_from_float(fPickDepth);
-  Vec3_int_::Rotate(pDepth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
+  int depth = fixpoint_from_float(fPickDepth);
+  Vec3_int_::Rotate(depth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
 
   v11[0].vWorldPosition.x = (double)outx;
   v11[0].vWorldPosition.y = (double)outy;
@@ -847,37 +852,21 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
 //----- (004C2551) --------------------------------------------------------
 Vis_ObjectInfo *Vis_SelectionList::SelectionPointers(int pVisObjectType, int pid)
 {
-  //unsigned int v3; // esi@1
-  //signed int v4; // edx@1
-  //char *v5; // eax@2
-  //Vis_ObjectInfo *result; // eax@6
+    //unsigned int v3; // esi@1
+    //signed int v4; // edx@1
+    //char *v5; // eax@2
+    //Vis_ObjectInfo *result; // eax@6
 
-  //v3 = this->uNumPointers;
-  if ( this->uNumPointers > 0 )
-  {
-    for ( uint i = 0; i < this->uNumPointers; ++i )
+    //v3 = this->uNumPointers;
+    if (this->uNumPointers > 0)
     {
-      if ( this->object_pool[i].object_type == pVisObjectType && (this->object_pool[i].sZValue & 0xFFFF) == pid )
-        return &this->object_pool[i];
+        for (uint i = 0; i < this->uNumPointers; ++i)
+        {
+            if (this->object_pool[i].object_type == pVisObjectType && this->object_pool[i].object_pid == pid)
+                return &this->object_pool[i];
+        }
     }
-  }
-  return nullptr;
-  /*v4 = 0;
-  if ( this->uNumPointers <= 0 )
-    return false;
-  else
-  {
-    //v5 = (char *)&this->object_pool[0].sZValue;
-    while ( this->object_pool[v4].object_type != a2 || (this->object_pool[v4].sZValue & 0xFFFF) != a3 )
-    {
-      ++v4;
-      //v5 += 12;
-      if ( v4 >= this->uNumPointers )
-       return false;
-    }
-    result = &this->object_pool[v4];
-  }
-  return result;*/
+    return nullptr;
 }
 
 //----- (004C2591) --------------------------------------------------------
@@ -919,63 +908,60 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type)
 }
 
 //----- (004C264A) --------------------------------------------------------
-void Vis::sort_object_pointers( Vis_ObjectInfo **pPointers, int start, int end )//сортировка
+void Vis::sort_object_pointers(Vis_ObjectInfo **pPointers, int start, int end)//сортировка
 {
-  int sort_start; // edx@1
-  int forward_sort_index; // esi@2
-  signed int backward_sort_index; // ecx@2
-  unsigned int last_z_val; // eax@3
-  unsigned int more_lz_val; // ebx@4
-  unsigned int less_lz_val; // ebx@6
-  Vis_ObjectInfo *temp_pointer; // eax@7
-//  Vis_ObjectInfo *a3a; // [sp+14h] [bp+Ch]@2
+    int sort_start; // edx@1
+    int forward_sort_index; // esi@2
+    signed int backward_sort_index; // ecx@2
+    unsigned int last_z_val; // eax@3
+    unsigned int more_lz_val; // ebx@4
+    unsigned int less_lz_val; // ebx@6
+    Vis_ObjectInfo *temp_pointer; // eax@7
+  //  Vis_ObjectInfo *a3a; // [sp+14h] [bp+Ch]@2
 
-  sort_start = start;
+    sort_start = start;
 
-  if ( end > start )
-  {
-    do
+    if (end > start)
     {
-      forward_sort_index = sort_start - 1;
-      backward_sort_index = end;
-      do
-      {
-        last_z_val = pPointers[end]->sZValue & 0xFFFF0000;
         do
         {
-          ++forward_sort_index;
-          more_lz_val = pPointers[forward_sort_index]->sZValue & 0xFFFF0000;
-        }
-        while ( more_lz_val < last_z_val );
-
-        do
-        {
-          if ( backward_sort_index < 1 )
-            break;
-          --backward_sort_index;
-          less_lz_val = pPointers[backward_sort_index]->sZValue & 0xFFFF0000;
-        }
-        while ( less_lz_val > last_z_val );
-
-        temp_pointer = pPointers[forward_sort_index];
-        if ( forward_sort_index >= backward_sort_index )
+            forward_sort_index = sort_start - 1;
+            backward_sort_index = end;
+            do
             {
-            pPointers[forward_sort_index] = pPointers[end];
-            pPointers[end] = temp_pointer;
-            }
-        else
-            {
-            pPointers[forward_sort_index] = pPointers[backward_sort_index];
-            pPointers[backward_sort_index] = temp_pointer;
-            }
-       
-      } while ( forward_sort_index < backward_sort_index );
+                last_z_val = pPointers[end]->depth;
+                do
+                {
+                    ++forward_sort_index;
+                    more_lz_val = pPointers[forward_sort_index]->depth;
+                } while (more_lz_val < last_z_val);
 
-      sort_object_pointers(pPointers, sort_start, forward_sort_index - 1);
-      sort_start = forward_sort_index + 1;
+                do
+                {
+                    if (backward_sort_index < 1)
+                        break;
+                    --backward_sort_index;
+                    less_lz_val = pPointers[backward_sort_index]->depth;
+                } while (less_lz_val > last_z_val);
+
+                temp_pointer = pPointers[forward_sort_index];
+                if (forward_sort_index >= backward_sort_index)
+                {
+                    pPointers[forward_sort_index] = pPointers[end];
+                    pPointers[end] = temp_pointer;
+                }
+                else
+                {
+                    pPointers[forward_sort_index] = pPointers[backward_sort_index];
+                    pPointers[backward_sort_index] = temp_pointer;
+                }
+
+            } while (forward_sort_index < backward_sort_index);
+
+            sort_object_pointers(pPointers, sort_start, forward_sort_index - 1);
+            sort_start = forward_sort_index + 1;
+        } while (end > forward_sort_index + 1);
     }
-    while ( end > forward_sort_index + 1 );
-  }
 }
 
 //----- (004C26D0) --------------------------------------------------------
@@ -1169,13 +1155,14 @@ Vis::Vis()
 //----- (004C055C) --------------------------------------------------------
 Vis_SelectionList::Vis_SelectionList()
 {
-  for (uint i = 0; i < 512; ++i)
-  {
-    object_pool[i].object = nullptr;
-    object_pool[i].sZValue = -1;
-    object_pool[i].object_type = VisObjectType_Any;
-  }
-  uNumPointers = 0;
+    for (uint i = 0; i < 512; ++i)
+    {
+        object_pool[i].object = nullptr;
+        object_pool[i].depth = -1;
+        object_pool[i].object_pid = PID_INVALID;
+        object_pool[i].object_type = VisObjectType_Any;
+    }
+    uNumPointers = 0;
 }
 
 //----- (004C05CC) --------------------------------------------------------
@@ -1225,20 +1212,20 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY, Vis_SelectionFil
 //----- (004C06F8) --------------------------------------------------------
 void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter)
 {
-  for (uint i = 0; i < render->uNumBillboardsToDraw; ++i)
-  {
-    RenderBillboardD3D* d3d_billboard = &render->pBillboardRenderListD3D[i];
-
-    if (is_part_of_selection((void *)i, filter))
+    for (uint i = 0; i < render->uNumBillboardsToDraw; ++i)
     {
-      if (DoesRayIntersectBillboard(pick_depth, i))
-      {
-        RenderBillboard* billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
+        RenderBillboardD3D* d3d_billboard = &render->pBillboardRenderListD3D[i];
 
-        list->AddObject((void *)d3d_billboard->sParentBillboardID, VisObjectType_Sprite, billboard->sZValue);
-      }
+        if (is_part_of_selection((void *)i, filter))
+        {
+            if (DoesRayIntersectBillboard(pick_depth, i))
+            {
+                RenderBillboard* billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
+
+                list->AddObject((void *)d3d_billboard->sParentBillboardID, VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
+            }
+        }
     }
-  }
 }
 
 
@@ -1399,7 +1386,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
   if (v3 == -1)
     return false;
 
-  if (pBillboardRenderList[v3].GetFloatZ() > fDepth)
+  if (pBillboardRenderList[v3].screen_space_z > fDepth)
     return false;
 
 
@@ -1413,7 +1400,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
     sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0, Vis_static_stru_F91E10.uNumPointers - 1);
     if (Vis_static_stru_F91E10.uNumPointers)
     {
-       if (Vis_static_stru_F91E10.object_pointers[0]->actual_z > pBillboardRenderList[v3].actual_z)
+       if (Vis_static_stru_F91E10.object_pointers[0]->depth > pBillboardRenderList[v3].screen_space_z)
          return true;
     }
     else if ((double)(pViewport->uScreen_TL_X) <= test_x &&
@@ -1440,7 +1427,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
             sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0, Vis_static_stru_F91E10.uNumPointers - 1);
             if ( !Vis_static_stru_F91E10.uNumPointers )
                 return true;
-            if (Vis_static_stru_F91E10.object_pointers[0]->actual_z > pBillboardRenderList[v3].actual_z)
+            if (Vis_static_stru_F91E10.object_pointers[0]->depth > pBillboardRenderList[v3].screen_space_z)
                 return true;
             }
 
@@ -1483,7 +1470,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
               sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0, Vis_static_stru_F91E10.uNumPointers - 1);
               if ( !Vis_static_stru_F91E10.uNumPointers )
                   return true;
-              if (Vis_static_stru_F91E10.object_pointers[0]->actual_z > pBillboardRenderList[v3].actual_z)
+              if (Vis_static_stru_F91E10.object_pointers[0]->depth > pBillboardRenderList[v3].screen_space_z)
                   return true;
 
               }
@@ -1496,62 +1483,63 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 //----- (004C0D32) --------------------------------------------------------
 void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter)
 {
-  int result; // eax@1
-  signed int pFaceID; // esi@2
-  BLVFace *pFace; // edi@4
-  //unsigned int v7; // eax@6
-  Vis_ObjectInfo *v8; // eax@6
-  signed int i; // [sp+18h] [bp-8h]@1
+    int result; // eax@1
+    signed int pFaceID; // esi@2
+    BLVFace *pFace; // edi@4
+    //unsigned int v7; // eax@6
+    Vis_ObjectInfo *v8; // eax@6
+    signed int i; // [sp+18h] [bp-8h]@1
 
-  result = 0;
-  for ( i = 0; i < (signed int)pBspRenderer->num_faces; ++i )
-  {
-    pFaceID = pBspRenderer->faces[result].uFaceID;
-    if ( pFaceID >= 0 )
+    result = 0;
+    for (i = 0; i < (signed int)pBspRenderer->num_faces; ++i)
     {
-      if ( pFaceID < (signed int)pIndoor->uNumFaces )
-      {
-        pFace = &pIndoor->pFaces[pFaceID];
-        if ( !pIndoorCameraD3D->IsCulled(&pIndoor->pFaces[pFaceID]) )
+        pFaceID = pBspRenderer->faces[result].uFaceID;
+        if (pFaceID >= 0)
         {
-          if ( is_part_of_selection(pFace, filter) )
-          {
-            v8 = DetermineFacetIntersection(pFace, PID(OBJECT_BModel, pFaceID), pick_depth);
-            if ( v8 )
-              list->AddObject(v8->object, v8->object_type, v8->sZValue);
-          }
+            if (pFaceID < (signed int)pIndoor->uNumFaces)
+            {
+                pFace = &pIndoor->pFaces[pFaceID];
+                if (!pIndoorCameraD3D->IsCulled(&pIndoor->pFaces[pFaceID]))
+                {
+                    if (is_part_of_selection(pFace, filter))
+                    {
+                        v8 = DetermineFacetIntersection(pFace, PID(OBJECT_BModel, pFaceID), pick_depth);
+                        if (v8)
+                            list->AddObject(v8->object, v8->object_type, v8->depth, v8->object_pid);
+                    }
+                }
+            }
         }
-      }
+        result = i + 1;
     }
-    result = i + 1;
-  }
 }
 
 //----- (004C0DEA) --------------------------------------------------------
 void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter)
 {
-  for (int i = 0; i < pOutdoor->uNumBModels; ++i)
-  {
-    int v17;
-    if (!IsBModelVisible(i, &v17))
-      continue;
-    if (!v17)
-      continue;
-
-    BSPModel* bmodel = &pOutdoor->pBModels[i];
-    for (int j = 0; j < bmodel->uNumFaces; ++j)
+    for (int i = 0; i < pOutdoor->uNumBModels; ++i)
     {
-      //ODMFace* face = &bmodel->pFaces[j];
+        int v17;
+        if (!IsBModelVisible(i, &v17))
+            continue;
+        if (!v17)
+            continue;
 
-      if (is_part_of_selection(&bmodel->pFaces[j], filter) )
-      {
-        BLVFace blv_face;
-        blv_face.FromODM(&bmodel->pFaces[j]);
+        BSPModel* bmodel = &pOutdoor->pBModels[i];
+        for (int j = 0; j < bmodel->uNumFaces; ++j)
+        {
+            ODMFace* face = &bmodel->pFaces[j];
+            if (is_part_of_selection(face, filter))
+            {
+                BLVFace blv_face;
+                blv_face.FromODM(face);
 
-        int pid = PID(OBJECT_BModel, j | (i << 6));
-        if (Vis_ObjectInfo* object_info = DetermineFacetIntersection(&blv_face, pid, pick_depth))
-          list->AddObject(object_info->object, object_info->object_type, object_info->sZValue);
-      }
+                int pid = PID(OBJECT_BModel, j | (i << 6));
+                if (Vis_ObjectInfo* object_info = DetermineFacetIntersection(&blv_face, pid, pick_depth))
+                {
+                    list->AddObject(object_info->object, object_info->object_type, object_info->depth, object_info->object_pid);
+                }
+            }
+        }
     }
-  }
 }

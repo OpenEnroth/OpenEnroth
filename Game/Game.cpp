@@ -2672,10 +2672,12 @@ void Game_Loop()
     }
 
     for (uint i = 1; i < 5; ++i)
+    {
         for (uint j = 1; j < 6; ++j)
         {
             remove(StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str());
         }
+    }
 
     extern bool use_music_folder;
     GameUI_LoadPlayerPortraintsAndVoices();

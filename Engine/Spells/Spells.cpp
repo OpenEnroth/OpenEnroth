@@ -7,7 +7,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/SpriteObject.h"

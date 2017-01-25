@@ -6,7 +6,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 
 #include "Player.h"
 #include "../Tables/PlayerFrameTable.h"
@@ -7400,7 +7400,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
         if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active())
         {
             __int16 spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
-            if (spellPower)
+            if (spellPower > 0)
                 dmgToReceive /= spellPower;
         }
 
@@ -7588,7 +7588,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
             if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active())
             {
                 int spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
-                if (spellPower)
+                if (spellPower > 0)
                     dmgToReceive /= spellPower;
             }
             int damageType;

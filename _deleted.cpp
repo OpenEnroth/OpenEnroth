@@ -14924,4 +14924,452 @@ pGammaController->InitializeFromSurface(render->pFrontBuffer4);
 uSomeGammaStartTime = pEventTimer->Time();
 return true;
 }
-*/
+
+
+void Render::DrawBillboard_Indoor_SW(SoftwareBillboard *soft_billboard, RenderBillboard *p)
+{
+    soft_billboard->pPalette = PaletteManager::Get_Dark_or_Red_LUT(p->uPalette, p->dimming_level, 1);
+    if (p->field_1E & 0x0100)
+        soft_billboard->pPalette = pPaletteManager->field_261600[p->uPalette];
+    if (!(soft_billboard->uFlags & 0x40) && soft_billboard->uFlags & 0x80)
+        soft_billboard->pPalette2 = PaletteManager::Get_Dark_or_Red_LUT(p->uPalette, 0, 1);
+    if (p->hwsprite >= 0)
+        pSprites_LOD->pSpriteHeaders[p->HwSpriteID].DrawSprite_sw(&soft_billboard, 1);
+}
+
+//----- (004ACC38) --------------------------------------------------------
+int LODSprite::DrawSprite_sw(SoftwareBillboard *a2, char a3)
+{
+    SoftwareBillboard *v3; // edi@1
+    int result; // eax@1
+    int v5; // esi@2
+    int v6; // ST18_4@2
+            //signed int v7; // eax@2
+    signed int v8; // ebx@2
+    int v9; // ebx@2
+    int *v10; // ecx@2
+    int v11; // esi@2
+    unsigned int v12; // edx@4
+    int v13; // esi@13
+    int v14; // esi@17
+    int v15; // ecx@17
+    char *v16; // edx@17
+    int v17; // esi@17
+    int v18; // ecx@18
+    int v19; // esi@18
+    LODSprite_stru0 *v20; // edx@21
+    int v21; // eax@22
+    int v22; // esi@22
+    int v23; // eax@25
+    int v24; // ecx@25
+    signed __int64 v25; // qtt@27
+    int v26; // eax@27
+    unsigned __int16 *v27; // eax@29
+    LODSprite_stru0 *v28; // edx@29
+    signed int v29; // ecx@30
+    int v30; // ecx@37
+    int v31; // ecx@38
+    signed int v32; // ecx@41
+    int v33; // ecx@47
+    int v34; // ecx@56
+    int v35; // esi@58
+    __int16 v36; // ax@58
+    int v37; // ecx@59
+    int v38; // eax@59
+    int v39; // ecx@62
+    signed int v40; // ST30_4@64
+    signed __int64 v41; // qtt@64
+    int v42; // ecx@64
+    unsigned __int16 *v43; // eax@66
+    LODSprite_stru0 *v44; // ecx@66
+    int v45; // edx@69
+    int v46; // edx@77
+             //unsigned __int16 *pTarget; // [sp+Ch] [bp-50h]@2
+    signed int v48; // [sp+10h] [bp-4Ch]@2
+    signed int v49; // [sp+14h] [bp-48h]@2
+    int v50; // [sp+14h] [bp-48h]@19
+    int v51; // [sp+14h] [bp-48h]@57
+    int v52; // [sp+18h] [bp-44h]@13
+    int v53; // [sp+1Ch] [bp-40h]@2
+    int v54; // [sp+1Ch] [bp-40h]@22
+    int v55; // [sp+1Ch] [bp-40h]@32
+    int v56; // [sp+1Ch] [bp-40h]@69
+    int v57; // [sp+20h] [bp-3Ch]@2
+    int v58; // [sp+24h] [bp-38h]@1
+    int v59; // [sp+28h] [bp-34h]@2
+    int v60; // [sp+28h] [bp-34h]@13
+    unsigned __int16 *v61; // [sp+2Ch] [bp-30h]@2
+    int v62; // [sp+30h] [bp-2Ch]@2
+    void *v63; // [sp+30h] [bp-2Ch]@29
+    void *v64; // [sp+30h] [bp-2Ch]@66
+    int v65; // [sp+34h] [bp-28h]@2
+    int v66; // [sp+34h] [bp-28h]@22
+    int v67; // [sp+34h] [bp-28h]@59
+    int v68; // [sp+38h] [bp-24h]@13
+    unsigned int v69; // [sp+3Ch] [bp-20h]@2
+    int v70; // [sp+40h] [bp-1Ch]@2
+    signed int v71; // [sp+40h] [bp-1Ch]@15
+    int v72; // [sp+44h] [bp-18h]@2
+    unsigned __int16 *v73; // [sp+44h] [bp-18h]@29
+    unsigned __int16 *v74; // [sp+44h] [bp-18h]@66
+    int v75; // [sp+48h] [bp-14h]@4
+    int v76; // [sp+48h] [bp-14h]@22
+    int v77; // [sp+48h] [bp-14h]@59
+             //LODSprite *v78; // [sp+4Ch] [bp-10h]@1
+    int v79; // [sp+50h] [bp-Ch]@4
+    int v80; // [sp+50h] [bp-Ch]@21
+    int v81; // [sp+50h] [bp-Ch]@62
+    int v82; // [sp+50h] [bp-Ch]@67
+    int v83; // [sp+50h] [bp-Ch]@75
+    int *pTargetZ; // [sp+54h] [bp-8h]@4
+    int v85; // [sp+58h] [bp-4h]@18
+    int v86; // [sp+58h] [bp-4h]@56
+    signed int v87; // [sp+64h] [bp+8h]@2
+    int v88; // [sp+68h] [bp+Ch]@18
+    int v89; // [sp+68h] [bp+Ch]@56
+
+    v3 = a2;
+    //v78 = this;
+    result = a2->_screenspace_x_scaler_packedfloat;
+    v58 = a2->_screenspace_x_scaler_packedfloat;
+    if (result <= 0)
+        return result;
+    v5 = a2->_screenspace_y_scaler_packedfloat;
+    v6 = a2->_screenspace_x_scaler_packedfloat;
+    v87 = (signed __int64)0x100000000ui64 / result;
+    v48 = (signed __int64)0x100000000ui64 / result;
+    v62 = (signed __int64)0x100000000ui64 / v5;
+    //v7 = this->uHeight;
+    v8 = (signed int)((signed __int64)0x100000000ui64 / v5) >> 1;
+    v53 = v8;
+    v70 = (this->uHeight << 16) - v8;
+    v49 = this->uHeight;
+    v69 = v3->uTargetPitch;
+
+    __debugbreak(); // target surface  will most likely be 32bit, but this sub awaits 16bits
+    auto pTarget = (unsigned __int16 *)v3->pTarget;
+    v57 = v3->sZValue;
+    v61 = v3->pPalette;
+    v9 = (v6 * this->uWidth + 0x8000) >> 16;
+    v72 = v3->uScreenSpaceY;
+    result = (v5 * this->uHeight + 0x8000) >> 16;
+    v10 = (int *)(v72 - result + 1);
+    v11 = v3->uScreenSpaceX - (v9 >> 1) + 1;
+    v65 = v72 - result + 1;
+    v59 = v11 + v9 - 1;
+    if (v3->uFlags & 0x800)
+    {
+        v10 = (int *)((char *)v10 + (v49 >> 1));
+        v72 += v49 >> 1;
+        v65 = (int)v10;
+    }
+    v12 = v72;
+    pTargetZ = v10;
+    v75 = v3->uScreenSpaceX - (v9 >> 1) + 1;
+    v79 = v11 + v9 - 1;
+    if (!(v3->uFlags & 8))
+    {
+        if (v65 < (signed int)v3->uViewportY)
+            pTargetZ = (int *)v3->uViewportY;
+        if (v72 >(signed int)v3->uViewportW)
+            v12 = v3->uViewportW;
+        if (v11 < (signed int)v3->uViewportX)
+            v75 = v3->uViewportX;
+        if (v59 >(signed int)v3->uViewportZ)
+            v79 = v3->uViewportZ;
+    }
+    v68 = v75 - v11;
+    v13 = -v62;
+    v60 = v59 - v79;
+    v52 = -v62;
+    if (v3->uFlags & 1)
+    {
+        v13 = v62;
+        v70 = v53;
+        v52 = v62;
+    }
+    v71 = v13 * (v72 - v12) + v70;
+    if (viewparams->field_20 & 0xFF)
+    {
+        if (a3)
+            return result;
+    }
+    v14 = 5 * v12;
+    v15 = v69 * v12;
+    result = v12 - v72 + result - 1;
+    v16 = (char *)pTargetZ - v65;
+    v17 = v14 << 7;
+    if (v3->uFlags & 4)
+    {
+        v34 = v79 + v15;
+        v89 = v34;
+        v86 = v79 + v17;
+        if (result < (signed int)v16)
+            return result;
+        v51 = result - (int)v16 + 1;
+        while (1)
+        {
+            v35 = v71 >> 16;
+            v36 = this->pSpriteLines[v35].a1;
+            if (v36 == -1)
+            {
+                v34 -= v69;
+                v89 = v34;
+                goto LABEL_84;
+            }
+            v37 = v9 - ((unsigned __int64)(v36 * (signed __int64)v58) >> 16);
+            v67 = v87 * ((unsigned __int64)(this->pSpriteLines[v35].a2 * (signed __int64)v58) >> 16);
+            v38 = v9 - v60;
+            v77 = v9 - v60;
+            if (v9 - v60 <= (signed int)(v9 - ((unsigned __int64)(this->pSpriteLines[v35].a2 * (signed __int64)v58) >> 16))
+                || v68 >= v37)
+            {
+                v89 -= v69;
+                v34 = v89;
+            LABEL_84:
+                v86 -= window->GetWidth();
+                goto LABEL_85;
+            }
+            if (v38 < v37)
+                v81 = (v87 >> 1) + v87 * (v37 - v38);
+            else
+            {
+                v77 = v37;
+                v81 = v87 >> 1;
+                v39 = v37 - v9;
+                v89 += v39 + v60;
+                v86 += v60 + v39;
+            }
+            v40 = ((this->pSpriteLines[v35].a2 + 1) << 16) - v81 - v67;
+            HEXRAYS_LODWORD(v41) = v40 << 16;
+            HEXRAYS_HIDWORD(v41) = v40 >> 16;
+            v42 = v77 - (((signed int)((unsigned __int64)(v41 / v48) - 0x8000) >> 16) + 1);
+            if (v68 >= v42)
+                v42 = v68;
+            v43 = &pTarget[v89];
+            v74 = &v43[v42 - v77 + 1];
+            v44 = &this->pSpriteLines[v35];
+            v64 = v44->pos;
+            if (!v57)
+            {
+                v83 = v67 + v81;
+                if (((v83 - (v44->a1 << 16)) & 0xFFFF0000) < 0)
+                {
+                    v83 += v87;
+                    --v43;
+                    --pTargetZ;
+                }
+                while (v43 >= v74)
+                {
+                    v46 = (v83 - ((signed int)this->pSpriteLines[v35].a1 << 16)) >> 16;
+                    if (*((char *)v64 + v46))
+                        *v43 = v61[*((char *)v64 + v46)];
+                    v83 += v87;
+                    --v43;
+                }
+                goto LABEL_81;
+            }
+            pTargetZ = &v3->pTargetZ[v86];
+            v82 = v67 + v81;
+            if (((v82 - (v44->a1 << 16)) & 0xFFFF0000) < 0)
+                goto LABEL_72;
+        LABEL_73:
+            if (v43 >= v74)
+                break;
+        LABEL_81:
+            v89 += v9 - v77 - v60 - v69;
+            v34 = v89;
+            v86 = v86 + v9 - v77 - v60 - window->GetWidth();
+        LABEL_85:
+            result = v52;
+            v71 += v52;
+            --v51;
+            if (!v51)
+                return result;
+        }
+        v45 = (v82 - ((signed int)this->pSpriteLines[v35].a1 << 16)) >> 16;
+        v56 = *((char *)v64 + v45);
+        if (*((char *)v64 + v45) && v57 <= (unsigned int)*pTargetZ)
+        {
+            *pTargetZ = v57;
+            *v43 = v61[v56];
+        }
+    LABEL_72:
+        v82 += v87;
+        --v43;
+        --pTargetZ;
+        goto LABEL_73;
+    }
+    v18 = v75 + v15;
+    v19 = v75 + v17;
+    v88 = v18;
+    v85 = v19;
+    if (result >= (signed int)v16)
+    {
+        v50 = result - (int)v16 + 1;
+        while (1)
+        {
+            v20 = &this->pSpriteLines[v71 >> 16];
+            v80 = v71 >> 16;
+            if (v20->a1 != -1)
+                break;
+            v18 -= v69;
+            v85 = v19 - window->GetWidth();
+            v88 = v18;
+        LABEL_54:
+            result = v52;
+            v71 += v52;
+            --v50;
+            if (!v50)
+                return result;
+            v19 = v85;
+        }
+        v21 = (v58 * v20->a1 + 32768) >> 16;
+        v66 = v21 * v87;
+        v76 = v68;
+        v54 = v20->a2;
+        v22 = v9 - v60;
+        if (v68 >= (v58 * v54 + 32768) >> 16 || v22 <= v21)
+        {
+            v88 -= v69;
+            v85 -= window->GetWidth();
+            goto LABEL_51;
+        }
+        if (v68 > v21)
+        {
+            v24 = (v87 >> 1) + v87 * (v68 - v21);
+        }
+        else
+        {
+            v76 = (v58 * v20->a1 + 0x8000) >> 16;
+            v23 = v21 - v68;
+            v88 += v23;
+            v24 = v87 >> 1;
+            v85 += v23;
+        }
+        HEXRAYS_LODWORD(v25) = (((v54 + 1) << 16) - v24 - v66) << 16;
+        HEXRAYS_HIDWORD(v25) = (((v54 + 1) << 16) - v24 - v66) >> 16;
+        v26 = v76 + ((signed int)(v25 / v48) >> 16) + 1;
+        if (v22 > v26)
+            v22 = v26;
+        v27 = &pTarget[v88];
+        v73 = &v27[v22 - v76 - 1];
+        v28 = &this->pSpriteLines[v80];
+        v63 = v28->pos;
+        if (v57)
+        {
+            pTargetZ = &v3->pTargetZ[v85];
+            v29 = v66 - (v28->a1 << 16) + v24;
+            if ((v29 & 0xFFFF0000) >= 0)
+                goto LABEL_36;
+            while (1)
+            {
+                v29 += v87;
+                ++v27;
+                ++pTargetZ;
+            LABEL_36:
+                if (v27 >= v73)
+                    break;
+                v55 = *((char *)v63 + (v29 >> 16));
+                if (*((char *)v63 + (v29 >> 16)) && v57 <= (unsigned int)*pTargetZ)
+                {
+                    *pTargetZ = v57;
+                    *v27 = v61[v55];
+                }
+            }
+            v30 = v29 >> 16;
+            if (v30 > this->pSpriteLines[v80].a2 - (signed int)this->pSpriteLines[v80].a1
+                || (v31 = *((char *)v63 + v30)) == 0
+                || v57 > (unsigned int)*pTargetZ)
+                goto LABEL_50;
+            *pTargetZ = v57;
+        }
+        else
+        {
+            v32 = v66 - (v28->a1 << 16) + v24;
+            if ((v32 & 0xFFFF0000) < 0)
+            {
+                v32 += v87;
+                ++v27;
+                ++pTargetZ;
+            }
+            while (v27 < v73)
+            {
+                if (*((char *)v63 + (v32 >> 16)))
+                    *v27 = v61[*((char *)v63 + (v32 >> 16))];
+                v32 += v87;
+                ++v27;
+            }
+            v33 = v32 >> 16;
+            if (v33 > this->pSpriteLines[v80].a2 - (signed int)this->pSpriteLines[v80].a1
+                || (v31 = *((char *)v63 + v33)) == 0)
+                goto LABEL_50;
+        }
+        *v27 = v61[v31];
+    LABEL_50:
+        v88 += v68 - v76 - v69;
+        v85 = v85 + v68 - v76 - window->GetWidth();
+    LABEL_51:
+        v18 = v88;
+        goto LABEL_54;
+    }
+    return result;
+}
+//----- (00436A24) --------------------------------------------------------
+struct IDirect3DTexture2 *IndoorCameraD3D::LoadTextureAndGetHardwarePtr(char *Str1)
+{
+    return pBitmaps_LOD->pHardwareTextures[pBitmaps_LOD->LoadTexture(Str1)];
+}
+//----- (00436427) --------------------------------------------------------
+float IndoorCameraD3D::GetShadingDistMist()
+{
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
+        return (double)pODMRenderParams->shading_dist_mist;
+    else
+        return 16192.0;
+}
+//----- (00481D77) --------------------------------------------------------
+void _outdoor_project(RenderVertexSoft *v)
+{
+    double v1; // st7@1
+    double v2; // st7@1
+
+    v1 = 1.0 / (v->vWorldViewPosition.x + 0.0000001);
+    v->_rhw = v1;
+    v2 = v1 * (double)pODMRenderParams->int_fov_rad;
+    v->vWorldViewProjX = (double)pViewport->uScreenCenterX - v2 * v->vWorldViewPosition.y;
+    v->vWorldViewProjY = (double)pViewport->uScreenCenterY - v2 * v->vWorldViewPosition.z;
+}
+//----- (00436A9A) --------------------------------------------------------
+void IndoorCameraD3D::Project_Blv(int x, int y, int z, int *screenspace_x, int *screenspace_y)
+{
+    double v6; // ST00_8@2
+               //double v7; // ST08_8@2
+               //double v8; // ST00_8@2
+               //  signed __int64 v9; // qtt@3
+               //  int v10; // ST04_4@3
+    float a2a; // [sp+18h] [bp+8h]@2
+    float a2b; // [sp+18h] [bp+8h]@2
+
+               //if ( render->pRenderD3D )
+    {
+        v6 = 1.0 / (double)x;
+        a2a = screenCenterX + (double)y * fov * v6;
+        //v7 = a2a + 6.7553994e15;
+        *screenspace_x = floorf(a2a + 0.5f);
+        a2b = screenCenterY + (double)z * fov * v6;
+        //v8 = a2b + 6.7553994e15;
+        *screenspace_y = pViewport->uViewportBR_Y - floorf(a2b + 0.5f);
+    }
+    //else
+    //{
+    //    LODWORD(v9) = pBLVRenderParams->fov_rad_fixpoint << 16;
+    //    HIDWORD(v9) = pBLVRenderParams->fov_rad_fixpoint >> 16;
+    //    v10 = v9 / x;
+    //    LODWORD(v9) = pBLVRenderParams->fov_rad_fixpoint << 16;
+    //    HIDWORD(v9) = pBLVRenderParams->fov_rad_fixpoint >> 16;
+    //    *a5 = pBLVRenderParams->uViewportCenterX
+    //        - ((signed int)(((unsigned __int64)(v10 * (signed __int64)y) >> 16) + 32768) >> 16);
+    //    *a6 = pBLVRenderParams->uViewportCenterY - ((signed int)(((unsigned __int64)(v9 / x * z) >> 16) + 32768) >> 16);
+    //}
+}*/

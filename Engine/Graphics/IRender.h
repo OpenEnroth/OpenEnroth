@@ -1,7 +1,7 @@
 #pragma once
-
 #include "Engine/Rect.h"
 #include "Engine/VectorTypes.h"
+#include "Engine/OurMath.h"
 
 #include "Engine/Graphics/Image.h"
 
@@ -18,19 +18,10 @@ bool PauseGameDrawing();
 #pragma pack(push, 1)
 struct RenderBillboard
 {
-    int _screenspace_x_scaler_packedfloat;
-    int _screenspace_y_scaler_packedfloat;
+    fixed screenspace_projection_factor_x;
+    fixed screenspace_projection_factor_y;
     float fov_x;
     float fov_y;
-    union
-    {
-        int sZValue;
-        struct
-        {
-            unsigned __int16 object_pid;
-            signed __int16 actual_z;
-        };
-    };
     int field_14_actor_id;
     Sprite *hwsprite;//signed __int16 HwSpriteID;
     __int16 uPalette;
@@ -39,16 +30,13 @@ struct RenderBillboard
     __int16 world_x;
     __int16 world_y;
     __int16 world_z;
-    __int16 uScreenSpaceX;
-    __int16 uScreenSpaceY;
+    __int16 screen_space_x;
+    __int16 screen_space_y;
+    __int16 screen_space_z;
+    unsigned __int16 object_pid;
     unsigned __int16 dimming_level;
-    signed int sTintColor;
+    unsigned int sTintColor;
     SpriteFrame *pSpriteFrame;
-
-    inline float GetFloatZ() const
-    {
-        return (float)object_pid / 65535.0f + (float)actual_z;
-    }
 };
 #pragma pack(pop)
 
@@ -73,7 +61,8 @@ struct ODMRenderParams
         uPickDepth = 0;
         this->shading_dist_shade = 0x800;
         shading_dist_shademist = 0x1000;
-        shading_dist_mist = 0x2000 * 2;
+        this->near_clip = 4;
+        this->far_clip = 2 * 0x2000;
         int_fov_rad = 0;
         this->bNoSky = 0;
         this->bDoNotRenderDecorations = 0;
@@ -88,7 +77,8 @@ struct ODMRenderParams
     int uPickDepth;
     int shading_dist_shade;
     int shading_dist_shademist;
-    int shading_dist_mist;
+    int near_clip;
+    int far_clip;         // far clip (shading_dist_mist in M&M6 terms)
     unsigned int uCameraFovInDegrees;
     int int_fov_rad;                          // 157 struct IndoorCamera::fov_rad
     int int_fov_rad_inv;                      // 157 struct IndoorCamera::fov_rad_inv
@@ -180,7 +170,9 @@ struct RenderBillboardD3D
     float z_order;
     OpacityType opacity;
     int field_90;
-    int sZValue;
+
+    unsigned short object_pid;
+    short screen_space_z;
     signed int sParentBillboardID;
 };
 #pragma pack(pop)
@@ -194,22 +186,14 @@ struct SoftwareBillboard
 {
     void *pTarget;
     int *pTargetZ;
-    int uScreenSpaceX;
-    int uScreenSpaceY;
-    int _screenspace_x_scaler_packedfloat;
-    int _screenspace_y_scaler_packedfloat;
+    int screen_space_x;
+    int screen_space_y;
+    short screen_space_z;
+    fixed screenspace_projection_factor_x;
+    fixed screenspace_projection_factor_y;
     char field_18[8];
     unsigned __int16 *pPalette;
     unsigned __int16 *pPalette2;
-    union
-    {
-        int sZValue;
-        struct
-        {
-            unsigned short object_pid;
-            short          zbuffer_depth;
-        };
-    };
     unsigned int uFlags;        // & 4   - mirror horizontally
     unsigned int uTargetPitch;
     unsigned int uViewportX;
@@ -219,6 +203,7 @@ struct SoftwareBillboard
     int field_44;
     int sParentBillboardID;
     int sTintColor;
+    unsigned short object_pid;
 };
 #pragma pack(pop)
 

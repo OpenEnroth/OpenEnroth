@@ -10,7 +10,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/stru123.h"
 #include "Engine/LuaVM.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/MapsLongTimer.h"
 
@@ -1783,7 +1783,7 @@ void MM6_Initialize()
     pODMRenderParams->shading_dist_shade = 2048;
     pODMRenderParams->shading_dist_shademist = 4096;
 
-    pODMRenderParams->shading_dist_mist = 0x2000;//drawing dist 0x2000
+    //pODMRenderParams->shading_dist_mist = 0x2000;//drawing dist 0x2000
 
     sprintf(pDefaultSkyTexture.data(), "%s", "plansky1");
     sprintf(pDefaultGroundTexture, "%s", "dirt");

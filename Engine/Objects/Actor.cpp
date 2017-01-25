@@ -7,7 +7,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
@@ -2607,7 +2607,7 @@ void Actor::ActorDamageFromMonster(signed int attacker_id, unsigned int actor_id
                 dmgToRecv = pActors[PID_ID(attacker_id)]._43B3E0_CalcDamage(a4);
                 if (pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].Active())
                 {
-                    if (pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
+                    if (pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
                         dmgToRecv = dmgToRecv / pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
                 }
                 if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_STONED].Active())

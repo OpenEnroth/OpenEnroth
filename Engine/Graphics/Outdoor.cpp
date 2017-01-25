@@ -17,7 +17,7 @@
 #include "Engine/Events.h"
 #include "Engine/ZlibWrapper.h"
 #include "Engine/MMT.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 
 #include "Engine/Serialization/LegacyImages.h"
 
@@ -85,7 +85,6 @@ int dword_4EC2AC=7;
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw)
 {
-
     pIndoorCameraD3D->debug_flags = 0;
     if (viewparams->draw_d3d_outlines)
         pIndoorCameraD3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;
@@ -1830,7 +1829,6 @@ bool OutdoorLocation::PrepareDecorations()
   pGameLoadingUI_ProgressBar->Progress();
   return true;
 }
-// 6807E0: using guessed type int _6807E0_num_decorations_6807B8;
 
 //----- (0047F223) --------------------------------------------------------
 void OutdoorLocation::ArrangeSpriteObjects()
@@ -1941,68 +1939,38 @@ bool OutdoorLocation::LoadRoadTileset()
 //----- (0047F420) --------------------------------------------------------
 bool OutdoorLocation::LoadTileGroupIds()
 {
-  for (uint i = 0; i < 3; ++i)
-    pTileTypes[i].uTileID = pTileTable->GetTileForTerrainType(pTileTypes[i].tileset, 1);
+    for (uint i = 0; i < 3; ++i)
+        pTileTypes[i].uTileID = pTileTable->GetTileForTerrainType(pTileTypes[i].tileset, 1);
 
-  return true;
+    return true;
 }
 
 //----- (0047B42C) --------------------------------------------------------
 void OutdoorLocation::PrepareActorsDrawList()
 {
-    unsigned int result; // eax@1
     int z; // esi@5
     float v4; // ST48_4@8
     unsigned int v8; // eax@11
-    int v9; // edx@11
     signed int v12; // eax@16
     SpriteFrame *v14; // eax@24
     SpriteFrame *v15; // ebx@25
-    int v17; // eax@35
-    int v18; // ST78_4@36
-    int v19; // eax@36
-    int v20; // ecx@38
-    int v21; // eax@38
     int v22; // ecx@41
     int v23; // ST5C_4@43
-    int v24; // esi@44
-    signed __int64 v25; // qtt@45
-    int v26; // ST54_4@45
-    int v27; // ecx@45
-    int v34; // ecx@54
     int v41; // [sp+24h] [bp-3Ch]@11
-    int v42; // [sp+28h] [bp-38h]@38
-    int v43; // [sp+28h] [bp-38h]@45
-    int v44; // [sp+2Ch] [bp-34h]@36
-    int v45; // [sp+2Ch] [bp-34h]@44
-    int v46; // [sp+2Ch] [bp-34h]@45
-    int v47; // [sp+30h] [bp-30h]@36
     int v48; // [sp+30h] [bp-30h]@41
     signed int v49; // [sp+34h] [bp-2Ch]@5
-    int v50; // [sp+34h] [bp-2Ch]@36
     int v51; // [sp+34h] [bp-2Ch]@41
-    int v53; // [sp+38h] [bp-28h]@36
     int y; // [sp+40h] [bp-20h]@5
     int x; // [sp+44h] [bp-1Ch]@5
-    int v57; // [sp+48h] [bp-18h]@45
-    int v58; // [sp+4Ch] [bp-14h]@45
-    int X; // [sp+54h] [bp-Ch]@36
-    signed __int16 v62; // [sp+5Ch] [bp-4h]@25
+    __int16 v62; // [sp+5Ch] [bp-4h]@25
 
-    //result = 0;
-    //v59 = 0;
     for (int i = 0; i < uNumActors; ++i)
     {
-        //v54 = 0;
-        //v1 = pActors;//[0].vPosition.z;
-        //do
-        //{
-        //Actor* actor = &pActors[i];
-          //v2 = actor->uAIState;
-
         pActors[i].uAttributes &= 0xFFFFFFF7;//~0x8
         if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled)
+        {
             continue;
+        }
 
         z = pActors[i].vPosition.z;
         v49 = 0;
@@ -2026,10 +1994,13 @@ void OutdoorLocation::PrepareActorsDrawList()
                     z = pActors[i].vPosition.z;
             }
         }
+
         v8 = stru_5C6E00->Atan2(
             pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
             pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y
         );
+
+        int v9 = 0;
         HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
         v41 = ((signed int)(stru_5C6E00->uIntegerPi + ((signed int)stru_5C6E00->uIntegerPi >> 3) + v9 - v8) >> 8) & 7;
         if (pParty->bTurnBasedModeOn)
@@ -2044,6 +2015,7 @@ void OutdoorLocation::PrepareActorsDrawList()
             if (pActors[i].uCurrentActionAnimation == 1)
                 v12 = 32 * i + pEventTimer->uTotalGameTimeElapsed;
         }
+
         if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active() || pActors[i].pActorBuffs[ACTOR_BUFF_PARALYZED].Active())
             v12 = 0;
         if (pActors[i].uAIState == Summoned && !v49)
@@ -2067,95 +2039,61 @@ void OutdoorLocation::PrepareActorsDrawList()
         {
             pMobileLightsStack->AddLight(x, y, z, 0, v15->uGlowRadius, 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
         }
-        v17 = (x - pIndoorCameraD3D->vPartyPos.x) << 16;
-        if (pIndoorCameraD3D->sRotationX)
-        {
-            v18 = (y - pIndoorCameraD3D->vPartyPos.y) << 16;
-            v47 = (fixpoint_mul(v17, pIndoorCameraD3D->int_cosine_y) + fixpoint_mul(v18, pIndoorCameraD3D->int_sine_y));
-            v50 = fixpoint_mul(v17, pIndoorCameraD3D->int_sine_y);
-            v53 = fixpoint_mul(v18, pIndoorCameraD3D->int_cosine_y);
-            v44 = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-            v19 = (fixpoint_mul(v44, pIndoorCameraD3D->int_sine_x) + fixpoint_mul(v47, pIndoorCameraD3D->int_cosine_x));
-            X = fixpoint_mul(v44, pIndoorCameraD3D->int_sine_x) + fixpoint_mul(v47, pIndoorCameraD3D->int_cosine_x);
-            if (v19 < 262144 || v19 > pODMRenderParams->shading_dist_mist << 16)
-                continue;
-            v20 = v53 - v50;
-            v42 = v53 - v50;
-            v21 = (fixpoint_mul(v44, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(v47, pIndoorCameraD3D->int_sine_x));
-        }
-        else
-        {
-            v48 = (y - pIndoorCameraD3D->vPartyPos.y) << 16;
-            v51 = fixpoint_mul(v17, pIndoorCameraD3D->int_cosine_y);
-            v22 = fixpoint_mul(v48, pIndoorCameraD3D->int_sine_y);
-            X = v22 + v51;
-            if (v22 + v51 < 262144 || v22 + v51 > pODMRenderParams->shading_dist_mist << 16)
-                continue;
-            v23 = fixpoint_mul(((x - pIndoorCameraD3D->vPartyPos.x) << 16), pIndoorCameraD3D->int_sine_y);
-            v20 = fixpoint_mul(v48, pIndoorCameraD3D->int_cosine_y) - v23;
-            v42 = fixpoint_mul(v48, pIndoorCameraD3D->int_cosine_y) - v23;
-            v21 = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-        }
-        v45 = v21;
-        v24 = abs(v20);
-        if (abs(X) >= v24)
-        {
-            HEXRAYS_LODWORD(v25) = 0;
-            HEXRAYS_HIDWORD(v25) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
-            v58 = v25 / X;
-            v26 = v25 / X;
-            HEXRAYS_LODWORD(v25) = 0;
-            HEXRAYS_HIDWORD(v25) = HEXRAYS_SLOWORD(pODMRenderParams->int_fov_rad);
-            v57 = v25 / X;
-            v27 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v26, v42) + 0x8000) >> 16);
-            v43 = pViewport->uScreenCenterX - ((signed int)(fixpoint_mul(v26, v42) + 0x8000) >> 16);
-            v46 = pViewport->uScreenCenterY - ((signed int)(fixpoint_mul(v25 / X, v45) + 0x8000) >> 16);
-            result = uNumBillboardsToDraw;
-            //v28 = &pBillboardRenderList[uNumBillboardsToDraw];
-            if (uNumBillboardsToDraw >= 500)
-                return;
-            ++uNumBillboardsToDraw;
-            ++uNumSpritesDrawnThisFrame;
-            pActors[i].uAttributes |= ACTOR_UNKNOW2;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[v41];
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v15->scale, v58);
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(v15->scale, v57);
-            if (!pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
-            {
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
-                    65536 / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower,
-                    pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
-                );
-                HEXRAYS_LOWORD(v27) = v43;
-            }
-            else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
-            {
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
-                    pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]),
-                    pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
-                );
-                HEXRAYS_LOWORD(v27) = v43;
-            }
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v27;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = v46;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
-            HEXRAYS_HIWORD(v34) = HEXRAYS_HIWORD(X);
-            HEXRAYS_LOWORD(v34) = 0;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v34 + PID(OBJECT_Actor, i);
-            pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
-
-            pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v62 | 0x200;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v15;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;//*((int *)&v35[v36] - 36);
-            if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active())
+        int view_x = 0, view_y = 0, view_z = 0;
+        bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+        if (visible)
+        {
+            if (abs(view_x) >= abs(view_y))
             {
+                int projected_x = 0;
+                int projected_y = 0;
+                pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+
+                if (uNumBillboardsToDraw >= 500)
+                    return;
+                ++uNumBillboardsToDraw;
+                ++uNumSpritesDrawnThisFrame;
+
+                pActors[i].uAttributes |= ACTOR_UNKNOW2;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[v41];
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
+
+                auto _v26 = fixed::FromInt(pODMRenderParams->int_fov_rad) / fixed::FromInt(view_x);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v15->scale * _v26;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v15->scale * _v26;
+
+                if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
+                {
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                        fixed::FromFloat(1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
+                        * pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                }
+                else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
+                {
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                        fixed::FromFloat(pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]))
+                        * pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                }
+
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
+
                 pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v62 | 0x200;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v15;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;//*((int *)&v35[v36] - 36);
+                if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active())
+                {
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v62 | 0x200;
+                }
             }
         }
     }

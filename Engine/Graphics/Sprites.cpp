@@ -366,7 +366,7 @@ bool SpriteFrame::Deserialize(const struct SpriteFrame_MM7 *data)
             this->hw_sprites[i] = nullptr;
         }
 
-        this->scale = data->scale;
+        this->scale = fixed(data->scale);
         this->uFlags = data->uFlags;
 
         this->uGlowRadius = data->uGlowRadius;
@@ -545,7 +545,7 @@ bool SpriteFrameTable::FromFileTxt(const char *Args)
         v11 = atof(v10) * 65536.0;
         v12 = abs((signed __int64)v11);
         v13 = v43.pProperties[5];
-        v2->pSpriteSFrames[v2->uNumSpriteFrames].scale = v12;
+        v2->pSpriteSFrames[v2->uNumSpriteFrames].scale = fixed(v12);
         v14 = atoi(v13);
         v15 = v43.pProperties[6];
         v2->pSpriteSFrames[v2->uNumSpriteFrames].uGlowRadius = v14;

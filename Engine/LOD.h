@@ -202,8 +202,7 @@ struct LODSprite
     ~LODSprite();
 
     void Release();
-    int DrawSprite_sw(struct SoftwareBillboard *a2, char a3);
-    int _4AD2D1(struct SoftwareBillboard *a2, int a3);
+    int _4AD2D1_overlays(struct SoftwareBillboard *a2, int a3);
 
     char pName[12]; //0
     int uSpriteSize; //C

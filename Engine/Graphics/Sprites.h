@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Engine/OurMath.h"
 
 /*   18 */
 #pragma pack(push, 1)
@@ -42,7 +42,7 @@ class SpriteFrame
         String texture_name;
 
         Sprite *hw_sprites[8];
-        int scale;
+        fixed scale; // used in screen space scaling
         int uFlags;
         int uGlowRadius;
         int uPaletteID;

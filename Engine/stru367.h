@@ -1,6 +1,7 @@
 #pragma once
-
 #include <array>
+
+#include "Engine/OurMath.h"
 
 /*  152 */
 #pragma pack(push, 1)
