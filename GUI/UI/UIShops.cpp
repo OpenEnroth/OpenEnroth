@@ -35,6 +35,45 @@ Image *shop_ui_background = nullptr;
 std::array<Image *, 12> shop_ui_items_in_store;
 
 
+void ShopDialogMain(GUIWindow dialogwin) {
+
+	if (HouseUI_CheckIfPlayerCanInteract()) {
+
+		pShopOptions[0] = localization->GetString(134);
+		pShopOptions[1] = localization->GetString(152);
+		pShopOptions[2] = localization->GetString(159);
+		pShopOptions[3] = localization->GetString(160);
+
+		int all_text_height = 0;
+		for (int i = 0; i < 4; ++i)
+			all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], &dialogwin, 0);
+
+		int textspacings = (174 - all_text_height) / 4;
+		int textoffset = 138 - (textspacings / 2);
+		
+		int pNumString = 0;
+		GUIButton *pButton;
+		int pColorText;
+
+		for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
+			
+			pButton = pDialogueWindow->GetControl(i);
+			pButton->uY = textspacings + textoffset;
+			pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialogwin, 0);
+			textoffset = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialogwin, 0) - 1;
+			pButton->uW = textoffset;
+			
+			pColorText = Color16(0xE1u, 0xCDu, 0x23u);
+			if (pDialogueWindow->pCurrentPosActiveItem != i)
+				pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
+
+			dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText, pShopOptions[pNumString], 3);
+			++pNumString;
+		}
+	}
+
+}
+
 //----- (004B910F) --------------------------------------------------------
 void WeaponShopDialog()
 {
@@ -60,37 +99,10 @@ void WeaponShopDialog()
 
     Point mouse = pMouse->GetCursorPos();
 
-    switch (dialog_menu_id)
-    {
-        case HOUSE_DIALOGUE_MAIN:
-        {
-            if (HouseUI_CheckIfPlayerCanInteract())
-            {
-                pShopOptions[0] = localization->GetString(134);
-                pShopOptions[1] = localization->GetString(152);
-                pShopOptions[2] = localization->GetString(159);
-                pShopOptions[3] = localization->GetString(160);
+    switch (dialog_menu_id) {
 
-                all_text_height = 0;
-                for (int i = 0; i < 4; ++i)
-                    all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], &dialog_window, 0);
-                v103 = (174 - all_text_height) / 4;
-                v19 = (174 - 4 * (174 - all_text_height) / 4 - all_text_height) / 2 - (174 - all_text_height) / 4 / 2 + 138;
-                pNumString = 0;
-                for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-                {
-                    pButton = pDialogueWindow->GetControl(i);
-                    pButton->uY = v103 + v19;
-                    pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialog_window, 0);
-                    v19 = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialog_window, 0) - 1;
-                    pButton->uW = v19;
-                    pColorText = Color16(0xE1u, 0xCDu, 0x23u);
-                    if (pDialogueWindow->pCurrentPosActiveItem != i)
-                        pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
-                    dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText, pShopOptions[pNumString], 3);
-                    ++pNumString;
-                }
-            }
+        case HOUSE_DIALOGUE_MAIN: {
+			ShopDialogMain(dialog_window);
             break;
         }
 
@@ -126,6 +138,8 @@ void WeaponShopDialog()
 
             if (item_num)
             { // this shoudl go into func??
+
+				//((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X)
 				int testx = (mouse.x-30 ) / 70;
 				// testx limits check
 				if (testx >= 0 && testx < 6) {
@@ -134,33 +148,37 @@ void WeaponShopDialog()
 					
 					if (item->uItemID) // item picking
 					{
-						//could check x coords imits here?
-						if (mouse.y >= weapons_Ypos[testx]+30 && mouse.y < (weapons_Ypos[testx] +30+ shop_ui_items_in_store[testx]->GetHeight())) {
+						int testpos = ((60 - ((signed int)shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 70);
+						if (mouse.x >= testpos && mouse.x < (testpos + (signed int)shop_ui_items_in_store[testx]->GetWidth())) {
 
-							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+							//could check x coords imits here?
+							if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
 
-							String str;
-							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-							{
-								str = BuildDialogueString(
-									pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 2)],
-									uActiveCharacter - 1,
-									item,
-									(char *)window_SpeakInHouse->ptr_1C,
-									2
-								);
+								//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+
+								String str;
+								if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
+								{
+									str = BuildDialogueString(
+										pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 2)],
+										uActiveCharacter - 1,
+										item,
+										(char *)window_SpeakInHouse->ptr_1C,
+										2
+									);
+								}
+								else
+								{
+									str = BuildDialogueString(
+										localization->GetString(181),
+										uActiveCharacter - 1,
+										item,
+										(char *)window_SpeakInHouse->ptr_1C,
+										2
+									);
+								}
+								dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 							}
-							else
-							{
-								str = BuildDialogueString(
-									localization->GetString(181),
-									uActiveCharacter - 1,
-									item,
-									(char *)window_SpeakInHouse->ptr_1C,
-									2
-								);
-							}
-							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 						}
 					}
 				}
@@ -478,39 +496,10 @@ void ArmorShopDialog()
     dialog_window.uFrameZ = 334;
 
     Point mouse = pMouse->GetCursorPos();
-    switch (dialog_menu_id)
-    {
-        case HOUSE_DIALOGUE_MAIN:
-        {
-            if (!HouseUI_CheckIfPlayerCanInteract())
-                return;
-            pShopOptions[0] = localization->GetString(134); // Buy Standard
-            pShopOptions[1] = localization->GetString(152); // Buy Special
-            pShopOptions[2] = localization->GetString(159); // Display Inventory
-            pShopOptions[3] = localization->GetString(160);
-            all_text_height = 0;
-            for (int i = 0; i < 4; ++i)
-                all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], &dialog_window, 0);
-            v146 = (174 - all_text_height) / 4;
-            v23 = (174 - 4 * (174 - all_text_height) / 4 - all_text_height) / 2 - (174 - all_text_height) / 4 / 2 + 138;
-            pNumString = 0;
-            for (
-                int i = pDialogueWindow->pStartingPosActiveItem;
-                i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem;
-                ++i
-            )
-            {
-                pButton = pDialogueWindow->GetControl(i);
-                pButton->uY = v146 + v23;
-                pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialog_window, 0);
-                v23 = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialog_window, 0) - 1;
-                pButton->uW = v23;
-                pTextColor = Color16(0xE1u, 0xCDu, 0x23u);
-                if (pDialogueWindow->pCurrentPosActiveItem != i)
-                    pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
-                dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pShopOptions[pNumString], 3);
-                ++pNumString;
-            }
+    switch (dialog_menu_id) {
+
+        case HOUSE_DIALOGUE_MAIN: {
+			ShopDialogMain(dialog_window);
             break;
         }
 
@@ -898,39 +887,12 @@ void  AlchemistDialog()
     dialog_window.uFrameZ = 334;
 
     Point mouse = pMouse->GetCursorPos();
-    switch (dialog_menu_id)
-    {
-    case HOUSE_DIALOGUE_MAIN:
-    {
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
-            pShopOptions[0] = localization->GetString(134);
-            pShopOptions[1] = localization->GetString(152);
-            pShopOptions[2] = localization->GetString(159);
-            pShopOptions[3] = localization->GetString(160);
-            all_text_height = 0;
-            for (int i = 0; i < 4; ++i)
-                all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], &dialog_window, 0);
-            v18 = (174 - all_text_height) / 4;
-            v105 = (174 - 4 * (174 - all_text_height) / 4 - all_text_height) / 2 - (174 - all_text_height) / 4 / 2 + 138;
-            pNumString = 0;
-            for (int i = pDialogueWindow->pStartingPosActiveItem;
-            i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-            {
-                pButton = pDialogueWindow->GetControl(i);
-                pButton->uY = v18 + v105;
-                pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialog_window, 0);
-                v105 = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialog_window, 0) - 1;
-                pButton->uW = v105;
-                pColorText = Color16(0xE1u, 0xCDu, 0x23u);
-                if (pDialogueWindow->pCurrentPosActiveItem != i)
-                    pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
-                dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText, pShopOptions[pNumString], 3);
-                ++pNumString;
-            }
-        }
-        return;
-    }
+    switch (dialog_menu_id) {
+
+		case HOUSE_DIALOGUE_MAIN: {
+			ShopDialogMain(dialog_window);
+			break;
+       }
 
     case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
     {
@@ -1351,35 +1313,10 @@ void MagicShopDialog()
     dialog_window.uFrameZ = 334;
 
     Point mouse = pMouse->GetCursorPos();
-    if (dialog_menu_id == HOUSE_DIALOGUE_MAIN)
+
+    if (dialog_menu_id == HOUSE_DIALOGUE_MAIN) //change to switch ??
     {
-        if (!HouseUI_CheckIfPlayerCanInteract())
-            return;
-        pShopOptions[0] = localization->GetString(134); //"Buy Standard"
-        pShopOptions[1] = localization->GetString(152); //"Buy Special"
-        pShopOptions[2] = localization->GetString(159); //"Display Inventory"
-        pShopOptions[3] = localization->GetString(160);
-        all_text_height = 0;
-        for (int i = 0; i < 4; ++i)
-            all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], &dialog_window, 0);
-        one_string = (174 - all_text_height) / 4;
-        v23 = (174 - 4 * one_string - all_text_height) / 2 - one_string / 2 + 138;
-        int pNumString = 0;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-        i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem;  ++i)
-        {
-            control_button = pDialogueWindow->GetControl(i);
-            control_button->uY = one_string + v23;
-            control_button->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialog_window, 0);
-            v23 = control_button->uY + control_button->uHeight - 1;
-            control_button->uW = v23;
-            text_color = Color16(225, 205, 35);
-            if (pDialogueWindow->pCurrentPosActiveItem != i)
-                text_color = Color16(255, 255, 255);
-            dialog_window.DrawTitleText(pFontArrus, 0, control_button->uY, text_color, pShopOptions[pNumString], 3);
-            ++pNumString;
-        }
-        return;
+		ShopDialogMain(dialog_window);
     }
 
     if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
