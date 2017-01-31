@@ -18,6 +18,9 @@ bool AssetsManager::ReleaseAllImages()
 
 Image *AssetsManager::GetImage_16BitColorKey(const String &name, unsigned __int16 colorkey)
 {
+
+	// should this check if "name" is already in assets list??
+
     return Image::Create(
         new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey)
     );

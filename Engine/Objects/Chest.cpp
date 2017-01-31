@@ -209,11 +209,63 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
 			}
 
 			if (chestindex) {
+
+				
+
 				int itemindex = chestindex - 1;
 				ItemGen* item = &pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex];
+
 				GameUI_StatusBar_Set(item->GetDisplayName());
 				uLastPointedObjectID = 1;
 				return 1;
+
+
+
+				//per pixel transparency check tests
+				/*
+
+				auto img = assets->GetImage_16BitColorKey(item->GetIconName(), 0x7FF);
+				
+				int imgwidth = img->GetWidth();
+				int imgheight = img->GetHeight();
+				auto pixels = (signed __int32 *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+				
+				Assert(pixels != nullptr, "Cannot get pixels");
+
+				if (imgwidth < 14)
+					imgwidth = 14;
+
+				int v12 = imgwidth - 14;
+				v12 = v12 & 0xFFFFFFE0;
+				 int v13 = v12 + 32;
+
+				if (imgheight < 14)
+					imgheight = 14;
+
+				int chest_offs_x = 42;//pChestPixelOffsetX[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+				int chest_offs_y = 34; // pChestPixelOffsetY[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+							  
+				int imgX = chest_offs_x + 32 * (invMatrixIndex % chestwidth) + ((signed int)(v13 - imgwidth) / 2);
+				
+				int imgY = chest_offs_y + 32 * (invMatrixIndex / chestheight) +
+					((signed int)(((imgheight - 14) & 0xFFFFFFE0) + 32 - imgheight) / 2);
+
+				int pix_chk_x = pX-imgX;
+				int pix_chk_y = pY-imgY;
+				
+				if (pix_chk_x > 0 && pix_chk_x <= imgwidth && pix_chk_y > 0 && pix_chk_y <= imgheight) {
+					
+					pixels += pix_chk_x + pix_chk_y*imgwidth;
+					
+					if (*pixels & 0xFF000000) {
+						GameUI_StatusBar_Set(item->GetDisplayName());
+						uLastPointedObjectID = 1;
+						return 1;
+					}
+				}
+				*/
+
+				
 			}
 	}
 	return 0;
