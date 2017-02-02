@@ -129,20 +129,15 @@ struct IndoorCameraD3D
     //----- (004363C6) --------------------------------------------------------
     virtual ~IndoorCameraD3D()
     {
-        //this->vdestructor_ptr = &stru8_pvdtor;
-        //_eh_vector_destructor_iterator_(this->std__vector_000034_prolly_frustrum, 24, 6, IndoorCameraD3D_Vec4::dtor);
-        //IndoorCameraD3D_Vec3::dtor(&v1->field_24);
-        //IndoorCameraD3D_Vec3::dtor(&v1->field_14);
-        //IndoorCameraD3D_Vec3::dtor(&v1->field_4);
     }
 
     void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);
+    void ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices);
+
     bool ViewClip(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z, bool dont_show = false);
 
     void Project(int x, int y, int z, int *screenspace_x, int *screenspace_y);
     void Project(struct RenderVertexSoft *pVertices, unsigned int uNumVertices, bool fit_into_viewport = false);
-
-    void ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices);
 
     double GetPolygonMaxZ(struct RenderVertexSoft *pVertex, unsigned int uStripType);
     double GetPolygonMinZ(struct RenderVertexSoft *pVertices, unsigned int uStripType);
@@ -162,17 +157,12 @@ struct IndoorCameraD3D
     void debug_outline_sw(struct RenderVertexSoft *a2, unsigned int uNumVertices, unsigned int uDiffuse, float a5);
     void debug_outline_d3d(const struct RenderVertexD3D3 *pLineVertices, unsigned int uNumLines, int uDiffuse, float z_stuff);
     void do_draw_debug_line_sw(struct RenderVertexSoft *pLineBegin, signed int sStartDiffuse, struct RenderVertexSoft *pLineEnd, signed int sEndDiffuse, unsigned int uOutNumVertices, float z_stuff);
-    //void sr_437D4A_draw_some_vertices(float x, float y, float z, unsigned int a5, char a6, float a7);
-    //void sr_438141_draw_list_0037C();
-    //void sr_438240_draw_lits();
-    //void sr_Reset_list_0037C();
     bool is_face_faced_to_camera(struct BLVFace *pFace, struct RenderVertexSoft *a2);
     bool GetFacetOrientation(char polyType, struct Vec3_float_ *a2, struct Vec3_float_ *a3, struct Vec3_float_ *a4);
     bool IsCulled(struct BLVFace *pFace);
     void ViewTransfrom_OffsetUV(struct RenderVertexSoft *pVertices, unsigned int uNumVertices, struct RenderVertexSoft *pOutVertices, struct LightsData *a5);
     bool ApplyViewTransform_TrueIfStillVisible_BLV(int x, int y, int z, fixed *pOutX, fixed *pOutZ, fixed *pOutY, bool clip_plane_test);
     float GetPickDepth();
-    //float GetShadingDistMist();
 
     void DebugDrawPortal(struct BLVFace *pFace);
 
