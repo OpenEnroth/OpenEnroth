@@ -512,9 +512,11 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
             }
             txt3 = localization->GetString(651); //"Hardened"
         }
-        inspect_item->uAttributes = (inspect_item->uAttributes & 0xFFFF0000) | r_mask;
-        iteminfo_window.DrawText(pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
-            iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), inspect_item->uAttributes, txt3, 0, 0, 0);
+        
+		int tempatt = (inspect_item->uAttributes & 0xFFFF0000) | r_mask;
+		
+		iteminfo_window.DrawText(pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
+            iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), tempatt, txt3, 0, 0, 0);
         render->ResetUIClipRect();
     }
 }

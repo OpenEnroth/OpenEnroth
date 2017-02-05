@@ -28,12 +28,9 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-
-
 Image *shop_ui_background = nullptr;
 
 std::array<Image *, 12> shop_ui_items_in_store;
-
 
 void ShopDialogMain(GUIWindow dialogwin) {
 
@@ -74,22 +71,28 @@ void ShopDialogMain(GUIWindow dialogwin) {
 
 }
 
-void ShopDialogDisplayEquip(GUIWindow dialogwin) {
-
-	//alchemy shop doesnt get repair ??
+void ShopDialogDisplayEquip(GUIWindow dialogwin, BuildingType building = BuildingType_WeaponShop) {
 
 	draw_leather();
 	CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
 
 	pShopOptions[0] = localization->GetString(200); //sell
 	pShopOptions[1] = localization->GetString(113); //identify
-	pShopOptions[2] = localization->GetString(179); //repair
+	pShopOptions[2] = localization->GetString(179); //repair - not for alchemy
 
+	int options;
+	if (building == BuildingType_AlchemistShop) {
+		options = 2;
+	}
+	else {
+		options = 3;
+	}
+	
 	int all_text_height = 0;
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < options; ++i)
 		all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], &dialogwin, 0);
 
-	int textspacings = (174 - all_text_height) / 3;
+	int textspacings = (174 - all_text_height) / options;
 	int textoffset = 138 - (textspacings / 2);
 
 	int pNumString = 0;
@@ -139,174 +142,199 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
 
 }
 
-//----- (004B910F) --------------------------------------------------------
-void WeaponShopDialog() {
+void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 
-    int phrases_id; // eax@16
-    int v19; // edi@25
-    GUIButton *pButton; // esi@27
-    unsigned int pColorText; // ax@27
-    signed int v32; // esi@41
-    int all_text_height; // esi@96
-    ItemGen *item;
-    int pItemID;
-    GUIWindow dialog_window; // [sp+7Ch] [bp-7Ch]@1
-    __int32 v103; // [sp+D4h] [bp-24h]@25
-    int pPrice; // [sp+ECh] [bp-Ch]@26
-    unsigned int v109;
-    int pNumString;
-    int item_X;
+	if (HouseUI_CheckIfPlayerCanInteract()) {
 
-    memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
-    dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
-    dialog_window.uFrameZ = 334;
+		draw_leather();
+		CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+		GameUI_StatusBar_DrawImmediate(localization->GetString(197), 0);
+		
+		Point mouse = pMouse->GetCursorPos();
 
-    Point mouse = pMouse->GetCursorPos();
+		int invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
+		if (mouse.x <= 13 || mouse.x >= 462)
+			return;
 
-    switch (dialog_menu_id) {
+		int pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invindex);
+		
+		if (pItemID) {
+			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
 
-        case HOUSE_DIALOGUE_MAIN: {
-			ShopDialogMain(dialog_window);
-            break;
-        }
+			String str;
+			if (!item->IsIdentified()) {
+				int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 4);
+				str = BuildDialogueString(pMerchantsIdentifyPhrases[phrases_id], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 4 );
+			}
+			else {
+				str = BuildDialogueString("%24", uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 4 );
+			}
 
-    case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
-    {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-        item_X = 0;
-        for (uint i = 0; i < 6; ++i)
-        {
-            if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-            {
-                render->DrawTextureAlphaNew(
-                    ((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f,
-                    (weapons_Ypos[i] + 30) / 480.0f,
-                    shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&render->pActiveZBuffer[(60 - ((signed int)shop_ui_items_in_store[i]->uTextureWidth / 2)) + item_X + window->GetWidth() * (weapons_Ypos[i] + 30)], shop_ui_items_in_store[i], i + 1);
-            }
-            item_X += 70;
-        }
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
-            uint item_num = 0;
-            for (uint i = 0; i < 6; ++i)
-            {
-                if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-                    ++item_num;
-            }
+			dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 
-            if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-                GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0); // Steal item  /  Украсть предмет
-            else
-                GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0); // Buy item  /  Выберите предмет для покупки
+		}
+	}
+}
 
-            if (item_num)
-            { // this shoudl go into func??
+void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
 
-				//((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X)
-				int testx = (mouse.x-30 ) / 70;
-				// testx limits check
-				if (testx >= 0 && testx < 6) {
+	if (!HouseUI_CheckIfPlayerCanInteract()) {
+		
+		draw_leather();
+		CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+		GameUI_StatusBar_DrawImmediate(localization->GetString(198), 0);
+		
+		Point mouse = pMouse->GetCursorPos();
 
-					item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
-					
-					if (item->uItemID) // item picking
-					{
-						int testpos = ((60 - ((signed int)shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 70);
-						if (mouse.x >= testpos && mouse.x < (testpos + (signed int)shop_ui_items_in_store[testx]->GetWidth())) {
+		int invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
+		if (mouse.x <= 13 || mouse.x >= 462)
+			return;
 
-							//could check x coords imits here?
-							if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
+		int pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invindex);
 
-								//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+		if (pItemID || (pPlayers[uActiveCharacter]->pOwnItems[pItemID - 1].uAttributes & 2) ) {
+			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
+			int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, building, (int)window_SpeakInHouse->ptr_1C, 5);
+			String str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 5);
+			dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+		}
+	}
+	
+}
 
-								String str;
-								if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-								{
-									str = BuildDialogueString(
-										pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 2)],
-										uActiveCharacter - 1,
-										item,
-										(char *)window_SpeakInHouse->ptr_1C,
-										2
-									);
-								}
-								else
-								{
-									str = BuildDialogueString(
-										localization->GetString(181),
-										uActiveCharacter - 1,
-										item,
-										(char *)window_SpeakInHouse->ptr_1C,
-										2
-									);
-								}
-								dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-							}
-						}
-					}
+void ShopDialogLearn(GUIWindow dialogwin) {
+
+	if (HouseUI_CheckIfPlayerCanInteract()) {
+
+		uint item_num = 0;
+		int all_text_height = 0;
+
+		int baseprice = (signed __int64)(p2DEvents[(signed int)window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+		int pPrice = baseprice * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+		if (pPrice < baseprice / 3)
+			pPrice = baseprice / 3;
+
+		for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
+
+			if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pDialogueWindow->GetControl(i)->msg_param - 36]
+				&& !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36]) {
+
+				all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(pDialogueWindow->GetControl(i)->msg_param - 36), &dialogwin, 0);
+				item_num++;
+			}
+		}
+
+		if (item_num) {
+
+			auto str = localization->FormatString(401, pPrice); // Skill price: %lu   /   Стоимость навыка: %lu
+			dialogwin.DrawTitleText(pFontArrus, 0, 0x92u, 0, str, 3);
+			
+			int textspacings = (149 - all_text_height) / item_num;
+			if (textspacings > 32)
+				textspacings = 32;
+
+			int textoffset = 162 - textspacings / 2;
+
+			GUIButton *pButton;
+			int pColorText;
+			
+			for (uint i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
+
+				pButton = pDialogueWindow->GetControl(i);
+				
+				if (!byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pButton->msg_param - 36] || pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param - 36]) {
+					pButton->uW = 0;
+					pButton->uHeight = 0;
+					pButton->uY = 0;
 				}
-            }
-            else
-            {
-                dialog_window.DrawShops_next_generation_time_string(
-                    pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
-                );//Приходите через 7 дней
-            }
-        }
-        break;
-    }
+				else {
+					pButton->uY = textspacings + textoffset;
+					pButton->uHeight = pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialogwin, 0);
+					textoffset = pButton->uY + pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialogwin, 0) - 1;
+					pButton->uW = textoffset;
+					pColorText = Color16(0xE1u, 0xCDu, 0x23u);
+					if (pDialogueWindow->pCurrentPosActiveItem != i)
+						pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
+					dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText, localization->GetSkillName(pButton->msg_param - 36), 3);
+				}
+			}
+			return;
+			
+		}
 
-    case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
-    {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-        item_X = 0;
-        for (uint i = 0; i < 6; ++i)
-        {
-            if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-            {
-                render->DrawTextureAlphaNew(
-                    ((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f,
-                    (weapons_Ypos[i] + 30) / 480.0f,
-                    shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&render->pActiveZBuffer[(60 - ((signed int)shop_ui_items_in_store[i]->uTextureWidth / 2)) + item_X + window->GetWidth() * (weapons_Ypos[i] + 30)], shop_ui_items_in_store[i], i + 1);
-            }
-            item_X += 70;
-        }
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
-            uint item_num = 0;
-            for (uint i = 0; i < 6; ++i)
-            {
-                if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-                    ++item_num;
-            }
+		//seek knowledge elsewhere
+		auto str = localization->FormatString( 544, pPlayers[uActiveCharacter]->pName, localization->GetClassName(pPlayers[uActiveCharacter]->classType) ) + "\n \n" + localization->GetString(528);//Больше ничего не могу предложить.
+		dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0, 0)) / 2 + 138, Color16(0xE1u, 0xCDu, 0x23u), str, 3);
+		
+	}
+	
+}
 
-            if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-                GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0); // Steal item  /  Украсть предмет
-            else
-                GameUI_StatusBar_DrawImmediate(localization->GetString(196), 0); // Buy item  /  Выберите предмет для покупки
+void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
 
-            if (item_num)
-            {
-				int testx = (mouse.x-30) / 70;
-				// testx limits check
-				if (testx >= 0 && testx < 6) {
+	render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+	int item_X = 0;
 
+	for (uint i = 0; i < 6; ++i) {
+
+		if (special == 0) {
+			if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID) {
+				render->DrawTextureAlphaNew(((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f, (weapons_Ypos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
+			}
+		}
+		else {
+			if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID) {
+				render->DrawTextureAlphaNew(((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f, (weapons_Ypos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
+			}
+		}
+		
+		item_X += 70;
+	}
+
+	if (HouseUI_CheckIfPlayerCanInteract()) {
+
+		uint item_num = 0;
+		for (uint i = 0; i < 6; ++i) {
+			if (special == 0) {
+				if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
+					++item_num;
+			}
+			else {
+				if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
+					++item_num;
+			}
+		}
+
+		if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
+			GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0); // Steal item  /  Украсть предмет
+		else
+			GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0); // Buy item  /  Выберите предмет для покупки
+
+		if (item_num) { // this shoudl go into func??
+
+			Point mouse = pMouse->GetCursorPos();
+			ItemGen *item;
+
+			int testx = (mouse.x - 30) / 70;
+			
+			if (testx >= 0 && testx < 6) { // testx limits check
+
+				if (special == 0) {
+					item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+				}
+				else {
 					item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+				}
 
-					if (item->uItemID) // item picking
-					{
-						//could check x coords imits here?
+				if (item->uItemID) { // item picking
+
+					int testpos = ((60 - ((signed int)shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 70);
+
+					if (mouse.x >= testpos && mouse.x < (testpos + (signed int)shop_ui_items_in_store[testx]->GetWidth())) {
 						if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
-							// if (render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF)
-							 //{
-							   //  item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
 							String str;
-							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-							{
+							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal()) {
 								str = BuildDialogueString(
 									pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 2)],
 									uActiveCharacter - 1,
@@ -315,8 +343,7 @@ void WeaponShopDialog() {
 									2
 								);
 							}
-							else
-							{
+							else {
 								str = BuildDialogueString(
 									localization->GetString(181),
 									uActiveCharacter - 1,
@@ -325,172 +352,78 @@ void WeaponShopDialog() {
 									2
 								);
 							}
-							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+							dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 						}
 					}
-					}
-            }
-            else
-                dialog_window.DrawShops_next_generation_time_string(
-                    pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
-                );
-        }
-        break;
-    }
+				}
+			}
+		}
+		else { //shop empty
+			dialogwin.DrawShops_next_generation_time_string(
+				pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
+				);//Приходите через 7 дней
+		}
+	}
 
+}
 
-    case HOUSE_DIALOGUE_SHOP_SELL: {
-		ShopDialogSellEquip(dialog_window, BuildingType_WeaponShop);
-		break;
-    }
+//----- (004B910F) --------------------------------------------------------
+void WeaponShopDialog() {
 
+	GUIWindow dialog_window; // [sp+7Ch] [bp-7Ch]@1
+   
+    memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
+    dialog_window.uFrameX = 483;
+    dialog_window.uFrameWidth = 148;
+    dialog_window.uFrameZ = 334;
 
-    case HOUSE_DIALOGUE_SHOP_IDENTIFY:
-    {
-        draw_leather();
-        CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        GameUI_StatusBar_DrawImmediate(localization->GetString(197), 0);
-        if (!HouseUI_CheckIfPlayerCanInteract())
-            return;
+	switch (dialog_menu_id) {
 
-        v109 = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-        if (mouse.x <= 13 || mouse.x >= 462)
-            return;
-        pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v109);
-        if (!pItemID)
-            return;
-        item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
+		case HOUSE_DIALOGUE_MAIN: {
+			ShopDialogMain(dialog_window);
+			break;
+		}
 
-        String str;
-        if (!item->IsIdentified())
-        {
-            phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 4);
-            str = BuildDialogueString(
-                pMerchantsIdentifyPhrases[phrases_id],
-                uActiveCharacter - 1,
-                item,
-                (char *)window_SpeakInHouse->ptr_1C,
-                4
-            );
-        }
-        else
-        {
-            str = BuildDialogueString(
-                "%24",
-                uActiveCharacter - 1,
-                item,
-                (char *)window_SpeakInHouse->ptr_1C,
-                4
-            );
-        }
-        dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-        break;
-    }
+		case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+			WeaponShopWares(dialog_window);
+			break;
+		}
 
-    case HOUSE_DIALOGUE_SHOP_REPAIR:
-    {
-        draw_leather();
-        CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        GameUI_StatusBar_DrawImmediate(localization->GetString(198), 0);
-        if (!HouseUI_CheckIfPlayerCanInteract())
-            return;
+		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+			WeaponShopWares(dialog_window, 1);
+			break;
+		}
 
-        v109 = ((mouse.x - 14) >> 5) + 14 * (mouse.y - 17) >> 5;
-        if ((mouse.x <= 13) || mouse.x >= 462)
-            return;
-        pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v109);
-        if (!pItemID || (!(pPlayers[uActiveCharacter]->pOwnItems[pItemID - 1].uAttributes & 2)))
-            return;
-        item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
-        phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_ArmorShop, (int)window_SpeakInHouse->ptr_1C, 5);
-        auto str = BuildDialogueString(
-            pMerchantsRepairPhrases[phrases_id],
-            uActiveCharacter - 1,
-            item,
-            (char *)window_SpeakInHouse->ptr_1C,
-            5
-        );
-        dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-        return;
-    }
-    break;
+		case HOUSE_DIALOGUE_SHOP_SELL: {
+			ShopDialogSellEquip(dialog_window, BuildingType_WeaponShop);
+			break;
+		}
 
-    case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
-		ShopDialogDisplayEquip(dialog_window);
-		break;
-    }
+		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+			ShopDialogIdentify(dialog_window, BuildingType_WeaponShop);
+			break;
+		}
 
-    case HOUSE_DIALOGUE_LEARN_SKILLS:
-    {
-        if (!HouseUI_CheckIfPlayerCanInteract())
-            return;
-        uint item_num = 0;
-        all_text_height = 0;
-        v32 = (signed __int64)(p2DEvents[(signed int)window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
-        pPrice = v32 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
-        if (pPrice < v32 / 3)
-            pPrice = v32 / 3;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-        i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-        {
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pDialogueWindow->GetControl(i)->msg_param - 36]
-                && !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36])
-            {
-                all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(pDialogueWindow->GetControl(i)->msg_param - 36), &dialog_window, 0);
-                item_num++;
-            }
-        }
-        if (item_num)
-        {
-            auto str = localization->FormatString(401, pPrice); // Skill price: %lu   /   Стоимость навыка: %lu
-            dialog_window.DrawTitleText(pFontArrus, 0, 0x92u, 0, str, 3);
-            v103 = (149 - all_text_height) / item_num;
-            if ((149 - all_text_height) / item_num > 32)
-                v103 = 32;
-            v19 = (149 - item_num * v103 - all_text_height) / 2 - v103 / 2 + 162;
-            for (uint i = pDialogueWindow->pStartingPosActiveItem;
-            i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-            {
-                pButton = pDialogueWindow->GetControl(i);
-                if (!byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pButton->msg_param - 36] || pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param - 36])
-                {
-                    pButton->uW = 0;
-                    pButton->uHeight = 0;
-                    pButton->uY = 0;
-                }
-                else
-                {
-                    pButton->uY = v103 + v19;
-                    pButton->uHeight = pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialog_window, 0);
-                    v19 = pButton->uY + pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialog_window, 0) - 1;
-                    pButton->uW = v19;
-                    pColorText = Color16(0xE1u, 0xCDu, 0x23u);
-                    if (pDialogueWindow->pCurrentPosActiveItem != i)
-                        pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
-                    dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText, localization->GetSkillName(pButton->msg_param - 36), 3);
-                }
-            }
-            break;
-        }
+		case HOUSE_DIALOGUE_SHOP_REPAIR: {
+			ShopDialogRepair(dialog_window, BuildingType_WeaponShop);
+			break;
+		}
 
-        auto str =
-            localization->FormatString(
-                544,
-                pPlayers[uActiveCharacter]->pName,
-                localization->GetClassName(pPlayers[uActiveCharacter]->classType)
-            )
-            + "\n \n"
-            + localization->GetString(528);//Больше ничего не могу предложить.
+		case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+			ShopDialogDisplayEquip(dialog_window);
+			break;
+		}
 
-        dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0, 0)) / 2 + 138, Color16(0xE1u, 0xCDu, 0x23u), str, 3);
-        return;
-    }
-    default:
-    {
-        __debugbreak();
-        break;
-    }
-    }
+		case HOUSE_DIALOGUE_LEARN_SKILLS: {
+			ShopDialogLearn(dialog_window);
+			break;
+		}
+
+		default: {
+			__debugbreak();
+			break;
+		}
+	}
 }
 
 //----- (004BA928) --------------------------------------------------------
@@ -717,127 +650,26 @@ void ArmorShopDialog()
 			ShopDialogSellEquip(dialog_window, BuildingType_ArmorShop);
 			break;
 		}
-
     
-    case HOUSE_DIALOGUE_SHOP_IDENTIFY:
-    {
-        draw_leather();
-        CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        GameUI_StatusBar_DrawImmediate(localization->GetString(197), 0); //"Select the Item to Identify"	
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
+		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+			ShopDialogIdentify(dialog_window, BuildingType_ArmorShop);
+			break;
+		}
 
-            v153 = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-            if (mouse.x > 13 && mouse.x < 462)
-            {
-                if (pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v153))
-                {
-                    selected_item = &pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v153) - 1];
+		case HOUSE_DIALOGUE_SHOP_REPAIR: {
+			ShopDialogRepair(dialog_window, BuildingType_ArmorShop);
+			break;
+		}
 
-                    String str;
-                    if (selected_item->IsIdentified())
-                        str = BuildDialogueString("%24", uActiveCharacter - 1, selected_item, (char *)window_SpeakInHouse->ptr_1C, 4);
-                    else
-                        str = BuildDialogueString(pMerchantsIdentifyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(selected_item, BuildingType_ArmorShop,
-                            (int)window_SpeakInHouse->ptr_1C, 4)], uActiveCharacter - 1, selected_item, (char *)window_SpeakInHouse->ptr_1C, 4);
-                    dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-                    return;
-                }
-            }
-        }
-    }
-    break;
-    case HOUSE_DIALOGUE_SHOP_REPAIR:
-    {
-        draw_leather();
-        CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        GameUI_StatusBar_DrawImmediate(localization->GetString(198), 0);
-        if (!HouseUI_CheckIfPlayerCanInteract())
-            return;
-
-        v153 = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-        if (mouse.x <= 13 || mouse.x >= 462)
-            return;
-        if (!pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v153)
-            || (!(pPlayers[uActiveCharacter]->pOwnItems[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v153) - 1].uAttributes & 2)))
-            return;
-        selected_item = &pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v153) - 1];
-        phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(&pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v153) - 1],
-            BuildingType_ArmorShop, window_SpeakInHouse->par1C, 5);
-        auto str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], uActiveCharacter - 1, selected_item, (char *)window_SpeakInHouse->ptr_1C, 5);
-        dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-        return;
-    }
-    break;
-
-    case HOUSE_DIALOGUE_LEARN_SKILLS:
-    {
-        if (!HouseUI_CheckIfPlayerCanInteract())
-            return;
-        uint item_num = 0;
-        v38 = (signed __int64)(p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
-        pPrice = v38 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
-        if ((signed int)pPrice < v38 / 3)
-            pPrice = v38 / 3;
-        all_text_height = 0;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-        i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-        {
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pDialogueWindow->GetControl(i)->msg_param - 36]
-                && !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36])
-            {
-                all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(pDialogueWindow->GetControl(i)->msg_param - 36), &dialog_window, 0);
-                item_num++;
-            }
-        }
-        if (item_num)
-        {
-            auto str = localization->FormatString(401, pPrice);
-            dialog_window.DrawTitleText(pFontArrus, 0, 0x92u, 0, str, 3);
-            v146 = (149 - all_text_height) / item_num;
-            if ((149 - all_text_height) / item_num > 32)
-                v146 = 32;
-            v23 = (149 - v146 * item_num - all_text_height) / 2 - v146 / 2 + 162;
-            for (int i = pDialogueWindow->pStartingPosActiveItem;
-            i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-            {
-                pButton = pDialogueWindow->GetControl(i);
-                if (!byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pButton->msg_param - 36]
-                    || pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param - 36])
-                {
-                    pButton->uW = 0;
-                    pButton->uHeight = 0;
-                    pButton->uY = 0;
-                }
-                else
-                {
-                    pButton->uY = v146 + v23;
-                    pButton->uHeight = pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialog_window, 0);
-                    v23 = pButton->uY + pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialog_window, 0) - 1;
-                    pButton->uW = v23;
-                    pTextColor = Color16(0xE1u, 0xCDu, 0x23u);
-                    if (pDialogueWindow->pCurrentPosActiveItem != i)
-                        pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
-                    dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, localization->GetSkillName(pButton->msg_param - 36), 3);
-                }
-            }
-            return;
-        }
-
-        auto str =
-            localization->FormatString(
-                544,
-                pPlayers[uActiveCharacter]->pName,
-                localization->GetClassName(pPlayers[uActiveCharacter]->classType) // Seek knowledge elsewhere %s the %s
-                )
-            + "\n \n"
-            + localization->GetString(528); // I can offer you nothing further.
-        dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xE1u, 0xCDu, 0x23u), str, 3);
-        return;
-    }
-    break;
-    default:
-        __debugbreak();
+		case HOUSE_DIALOGUE_LEARN_SKILLS: {
+			ShopDialogLearn(dialog_window);
+			break;
+		}
+        
+		default: {
+			__debugbreak();
+			break;
+		}
     }
 }
 
@@ -871,38 +703,38 @@ void  AlchemistDialog()
     Point mouse = pMouse->GetCursorPos();
     switch (dialog_menu_id) {
 
-		case HOUSE_DIALOGUE_MAIN: {
-			ShopDialogMain(dialog_window);
-			break;
-       }
+			case HOUSE_DIALOGUE_MAIN: {
+				ShopDialogMain(dialog_window);
+				break;
+		   }
 
-    case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
-    {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-        for (uint i = 0; i < 6; ++i)
-        {
-            if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-            {
+		case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
+		{
+			render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+			for (uint i = 0; i < 6; ++i)
+			{
+				if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
+				{
              
 				
 				
 				
-				product_height_1row = 152 - shop_ui_items_in_store[i]->GetHeight();
-                if ((signed int)product_height_1row < 1)
-                    product_height_1row = 0;
-                product_width_1row = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
-                if (i)
-                {
-                    if (i == 5)
-                    {
-                        if ((signed int)product_width_1row > 457 - shop_ui_items_in_store[5]->GetWidth())
-                            product_width_1row = 457 - shop_ui_items_in_store[5]->GetWidth();
-                    }
-                }
-                else if ((signed int)product_width_1row < 18)
-                    product_width_1row = 18;
-                render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
+					product_height_1row = 152 - shop_ui_items_in_store[i]->GetHeight();
+					if ((signed int)product_height_1row < 1)
+						product_height_1row = 0;
+					product_width_1row = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
+					if (i)
+					{
+						if (i == 5)
+						{
+							if ((signed int)product_width_1row > 457 - shop_ui_items_in_store[5]->GetWidth())
+								product_width_1row = 457 - shop_ui_items_in_store[5]->GetWidth();
+						}
+					}
+					else if ((signed int)product_width_1row < 18)
+						product_width_1row = 18;
+					render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
+					//ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
 
 		
 
@@ -910,347 +742,239 @@ void  AlchemistDialog()
 
 
 
-            }
+				}
 
-			if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i + 6].uItemID)
+				if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i + 6].uItemID)
+				{
+					product_height_2row = 308 - shop_ui_items_in_store[i + 6]->GetHeight();
+					if ((signed int)product_height_2row < 1)
+						product_height_2row = 0;
+					product_width_2row = 75 * i - shop_ui_items_in_store[i + 6]->GetWidth() / 2 + 40;
+					if (i)
+					{
+						if (i == 5)
+						{
+							if ((signed int)product_width_2row > 457 - shop_ui_items_in_store[11]->GetWidth())
+								product_width_2row = 457 - shop_ui_items_in_store[11]->GetWidth();
+						}
+					}
+					else
+					{
+						if ((signed int)product_width_2row < 18)
+							product_width_2row = 18;
+					}
+					render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
+					//ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
+				}
+
+
+
+
+			}
+
+
+			if (HouseUI_CheckIfPlayerCanInteract())
 			{
-				product_height_2row = 308 - shop_ui_items_in_store[i + 6]->GetHeight();
-				if ((signed int)product_height_2row < 1)
-					product_height_2row = 0;
-				product_width_2row = 75 * i - shop_ui_items_in_store[i + 6]->GetWidth() / 2 + 40;
-				if (i)
+				item_num = 0;
+				for (uint i = 0; i < 12; ++i)
 				{
-					if (i == 5)
-					{
-						if ((signed int)product_width_2row > 457 - shop_ui_items_in_store[11]->GetWidth())
-							product_width_2row = 457 - shop_ui_items_in_store[11]->GetWidth();
-					}
+					if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
+						++item_num;
 				}
+				if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
+					GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
 				else
+					GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);
+				if (!item_num)
 				{
-					if ((signed int)product_width_2row < 18)
-						product_width_2row = 18;
+					dialog_window.DrawShops_next_generation_time_string(
+						pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
+						);
+					return;
 				}
-				render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
-				//ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
-			}
 
+				if (item_num) { // this should go into func??
 
+					int testx = (mouse.x) / 75;
+					// testx limits check
+					if (testx >= 0 && testx < 6) {
+						if (mouse.y >= 152) {
+							testx += 6;
+						}
+						//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
+						//	return;
+						//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+						item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 
+						if (item->uItemID) // item picking
+						{
+							//could check x coords imits here?
+							if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
+								(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
+								// y is 152-h to 152 or 308-height to 308
 
-        }
+								//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
 
-
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
-            item_num = 0;
-            for (uint i = 0; i < 12; ++i)
-            {
-                if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-                    ++item_num;
-            }
-            if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-                GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
-            else
-                GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);
-            if (!item_num)
-            {
-                dialog_window.DrawShops_next_generation_time_string(
-                    pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
-                    );
-                return;
-            }
-
-			if (item_num) { // this should go into func??
-
-				int testx = (mouse.x) / 75;
-				// testx limits check
-				if (testx >= 0 && testx < 6) {
-					if (mouse.y >= 152) {
-						testx += 6;
-					}
-					//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
-					//	return;
-					//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-					item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
-
-					if (item->uItemID) // item picking
-					{
-						//could check x coords imits here?
-						if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
-							(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
-							// y is 152-h to 152 or 308-height to 308
-
-							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-
-							String str;
-							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-							{
-								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_AlchemistShop, window_SpeakInHouse->par1C, 2)],
-									uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
+								String str;
+								if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
+								{
+									str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_AlchemistShop, window_SpeakInHouse->par1C, 2)],
+										uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
+								}
+								else
+								{
+									str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
+								}
+								dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 							}
-							else
-							{
-								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
-							}
-							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 						}
 					}
 				}
 			}
-        }
-        return;
-    }
+			return;
+		}
 
-    case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
-    {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-        for (uint i = 0; i < 6; ++i)
-        {
-            if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-            {
-                product_height_1row = 152 - shop_ui_items_in_store[i]->GetHeight();
-                if ((signed int)product_height_1row < 1)
-                    product_height_1row = 0;
-                product_width_1row = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
-                if (i)
-                {
-                    if (i == 5)
-                    {
-                        if ((signed int)product_width_1row > 457 - shop_ui_items_in_store[5]->GetWidth())
-                            product_width_1row = 457 - shop_ui_items_in_store[5]->GetWidth();
-                    }
-                }
-                else
-                {
-                    if ((signed int)product_width_1row < 18)
-                        product_width_1row = 18;
-                }
-                render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
-            }
-        }
-        for (uint i = 0; i < 6; ++i)
-        {
-            if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][(signed int)i + 6].uItemID) //not itemid
-            {
-                product_height_2row = 308 - shop_ui_items_in_store[i + 6]->GetHeight();
-                if ((signed int)product_height_2row < 1)
-                    product_height_2row = 0;
-                product_width_2row = 75 * i - shop_ui_items_in_store[i + 6]->GetWidth() / 2 + 40;
-                if (i)
-                {
-                    if (i == 5)
-                    {
-                        if ((signed int)product_width_2row > 457 - shop_ui_items_in_store[11]->GetWidth())
-                            product_width_2row = 457 - shop_ui_items_in_store[11]->GetWidth();
-                    }
-                }
-                else
-                {
-                    if ((signed int)product_width_2row < 18)
-                        product_width_2row = 18;
-                }
-                render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
-                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
-            }
-        }
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
-            item_num = 0;
-            for (uint i = 0; i < 12; ++i)
-            {
-                if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-                    ++item_num;
-            }
-            if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-                GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
-            else
-                GameUI_StatusBar_DrawImmediate(localization->GetString(196), 0);
-            if (!item_num)
-            {
-                dialog_window.DrawShops_next_generation_time_string(
-                    pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
-                    );
-                return;
-            }
-
-			if (item_num) { // this should go into func??
-
-				int testx = (mouse.x) / 75;
-				// testx limits check
-				if (testx >= 0 && testx < 6) {
-					if (mouse.y >= 152) {
-						testx += 6;
-					}
-					//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
-					//	return;
-					//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-					item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
-
-					if (item->uItemID) // item picking
+		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
+		{
+			render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+			for (uint i = 0; i < 6; ++i)
+			{
+				if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
+				{
+					product_height_1row = 152 - shop_ui_items_in_store[i]->GetHeight();
+					if ((signed int)product_height_1row < 1)
+						product_height_1row = 0;
+					product_width_1row = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
+					if (i)
 					{
-						//could check x coords imits here?
-						if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
-							(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
-							// y is 152-h to 152 or 308-height to 308
+						if (i == 5)
+						{
+							if ((signed int)product_width_1row > 457 - shop_ui_items_in_store[5]->GetWidth())
+								product_width_1row = 457 - shop_ui_items_in_store[5]->GetWidth();
+						}
+					}
+					else
+					{
+						if ((signed int)product_width_1row < 18)
+							product_width_1row = 18;
+					}
+					render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
+					//ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
+				}
+			}
+			for (uint i = 0; i < 6; ++i)
+			{
+				if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][(signed int)i + 6].uItemID) //not itemid
+				{
+					product_height_2row = 308 - shop_ui_items_in_store[i + 6]->GetHeight();
+					if ((signed int)product_height_2row < 1)
+						product_height_2row = 0;
+					product_width_2row = 75 * i - shop_ui_items_in_store[i + 6]->GetWidth() / 2 + 40;
+					if (i)
+					{
+						if (i == 5)
+						{
+							if ((signed int)product_width_2row > 457 - shop_ui_items_in_store[11]->GetWidth())
+								product_width_2row = 457 - shop_ui_items_in_store[11]->GetWidth();
+						}
+					}
+					else
+					{
+						if ((signed int)product_width_2row < 18)
+							product_width_2row = 18;
+					}
+					render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
+					//ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
+				}
+			}
+			if (HouseUI_CheckIfPlayerCanInteract())
+			{
+				item_num = 0;
+				for (uint i = 0; i < 12; ++i)
+				{
+					if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
+						++item_num;
+				}
+				if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
+					GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
+				else
+					GameUI_StatusBar_DrawImmediate(localization->GetString(196), 0);
+				if (!item_num)
+				{
+					dialog_window.DrawShops_next_generation_time_string(
+						pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
+						);
+					return;
+				}
 
-							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+				if (item_num) { // this should go into func??
 
-							String str;
-							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-							{
-								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_AlchemistShop, window_SpeakInHouse->par1C, 2)],
-									uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
+					int testx = (mouse.x) / 75;
+					// testx limits check
+					if (testx >= 0 && testx < 6) {
+						if (mouse.y >= 152) {
+							testx += 6;
+						}
+						//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
+						//	return;
+						//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+						item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+
+						if (item->uItemID) // item picking
+						{
+							//could check x coords imits here?
+							if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
+								(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
+								// y is 152-h to 152 or 308-height to 308
+
+								//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+
+								String str;
+								if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
+								{
+									str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_AlchemistShop, window_SpeakInHouse->par1C, 2)],
+										uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
+								}
+								else
+								{
+									str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
+								}
+								dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 							}
-							else
-							{
-								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
-							}
-							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 						}
 					}
 				}
+
 			}
+			return;
+		}
 
-        }
-        return;
-    }
+		case HOUSE_DIALOGUE_SHOP_SELL: {
+			ShopDialogSellEquip(dialog_window, BuildingType_AlchemistShop);
+			break;
+		}
 
-	case HOUSE_DIALOGUE_SHOP_SELL: {
-		ShopDialogSellEquip(dialog_window, BuildingType_AlchemistShop);
-		break;
+		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+			ShopDialogIdentify(dialog_window, BuildingType_AlchemistShop);
+			break;
+		}
+
+		case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+			ShopDialogDisplayEquip(dialog_window, BuildingType_AlchemistShop);
+			break;
+		}
+
+		case HOUSE_DIALOGUE_LEARN_SKILLS: {
+			ShopDialogLearn(dialog_window);
+			break;
+		}
+    
+		default: {
+			__debugbreak();
+			break;
+		}
+
 	}
-
-
-    case HOUSE_DIALOGUE_SHOP_IDENTIFY:
-    {
-        draw_leather();
-        CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        GameUI_StatusBar_DrawImmediate(localization->GetString(197), 0);
-        if (HouseUI_CheckIfPlayerCanInteract())
-            return;
-
-        index = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-        if (mouse.x <= 13 || mouse.x >= 462)
-            return;
-        if (!pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&index))
-            return;
-        item = &pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&index) - 1];
-
-        String str;
-        if (!item->IsIdentified())
-        {
-            v71 = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_AlchemistShop, (int)window_SpeakInHouse->ptr_1C, 4);
-            str = BuildDialogueString(pMerchantsIdentifyPhrases[v71], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 4);
-        }
-        else
-            str = BuildDialogueString("%24", uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 4);
-        dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-        return;
-    }
-
-    case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: //alchemy doesnt get repair add buildingtype variable to call ???
-    {
-        draw_leather();
-        CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        pShopOptions[0] = localization->GetString(200);
-        pShopOptions[1] = localization->GetString(113);
-        all_text_height = 0;
-        for (int i = 0; i < 2; ++i)
-            all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], &dialog_window, 0);
-        v18 = (174 - all_text_height) / 2;
-        v105 = (2 * (87 - (174 - all_text_height) / 2) - all_text_height) / 2 - (174 - all_text_height) / 2 / 2 + 138;
-        pNumString = 0;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-        i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-        {
-            pButton = pDialogueWindow->GetControl(i);
-            pButton->uY = v18 + v105;
-            pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialog_window, 0);
-            v105 = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialog_window, 0) - 1;
-            pButton->uW = v105;
-            pColorText = Color16(0xE1u, 0xCDu, 0x23u);
-            if (pDialogueWindow->pCurrentPosActiveItem != i)
-                pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
-            dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText, pShopOptions[pNumString], 3);
-            ++pNumString;
-        }
-        return;
-    }
-
-    case HOUSE_DIALOGUE_LEARN_SKILLS:
-    {
-        if (!HouseUI_CheckIfPlayerCanInteract())
-            return;
-        all_text_height = 0;
-        v5 = (signed __int64)(p2DEvents[(signed int)window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
-        pPrice = v5 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
-        if (pPrice < v5 / 3)
-            pPrice = v5 / 3;
-        item_num = 0;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-        i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-        {
-            pButton = pDialogueWindow->GetControl(i);
-            if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pButton->msg_param - 36]
-                && !pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param - 36])
-            {
-                all_text_height = pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialog_window, 0);
-                ++item_num;
-            }
-        }
-        if (!item_num)
-        {
-            auto str =
-                localization->FormatString(
-                    544,
-                    pPlayers[uActiveCharacter]->pName,
-                    localization->GetClassName(pPlayers[uActiveCharacter]->classType)
-                    )
-                + "\n \n"
-                + localization->GetString(528);
-            dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xE1u, 0xCDu, 0x23u), str, 3);
-            return;
-        }
-        if (item_num)
-        {
-            auto str = localization->FormatString(401, pPrice);
-            dialog_window.DrawTitleText(pFontArrus, 0, 0x92u, 0, str, 3);
-
-            v18 = (149 - all_text_height) / item_num;
-            if ((149 - all_text_height) / item_num > 32)
-                v18 = 32;
-            v105 = (149 - item_num * v18 - all_text_height) / 2 - v18 / 2 + 162;
-            for (int i = pDialogueWindow->pStartingPosActiveItem;
-            i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; i++)
-            {
-                pButton = pDialogueWindow->GetControl(i);
-                if (!byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pButton->msg_param - 36]
-                    || pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param - 36])
-                {
-                    pButton->uW = 0;
-                    pButton->uHeight = 0;
-                    pButton->uY = 0;
-                }
-                else
-                {
-                    pButton->uY = v18 + v105;
-                    pButton->uHeight = pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialog_window, 0);
-                    v105 = pButton->uY + pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialog_window, 0) - 1;
-                    pButton->uW = v105;
-                    pColorText = Color16(0xE1u, 0xCDu, 0x23u);
-                    if (pDialogueWindow->pCurrentPosActiveItem != i)
-                        pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
-                    dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText, localization->GetSkillName(pButton->msg_param - 36), 3);
-                }
-            }
-            return;
-        }
-    }
-    default:
-        __debugbreak();
-    }
 }
 
 //----- (004B4FCF) --------------------------------------------------------
@@ -1520,126 +1244,18 @@ void MagicShopDialog()
 		ShopDialogSellEquip(dialog_window, BuildingType_MagicShop);
     }
 
-    if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_IDENTIFY)
-    {
-        draw_leather();
-        CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        GameUI_StatusBar_DrawImmediate(localization->GetString(197), 0);// "Select the Item to Identify"
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
-            v117 = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-            if (mouse.x > 13 && mouse.x < 462)
-            {
-                if (pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v117))
-                {
-                    item = &pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v117) - 1];
-                    if (item->uAttributes & ITEM_IDENTIFIED)
-                    {
-                        auto str = BuildDialogueString("%24", uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 4);
-                        dialog_window.DrawTitleText(pFontArrus, 0, (212 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 101,
-                            Color16(255, 255, 255), str, 3);
-                        return;
-                    }
-                    v75 = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_MagicShop, (int)window_SpeakInHouse->ptr_1C, 4);
-                    auto str = BuildDialogueString(pMerchantsIdentifyPhrases[v75], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 4);
-                    dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(255, 255, 255), str, 3);
-                    return;
-                }
-            }
-        }
-        return;
+	if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_IDENTIFY) {
+		ShopDialogIdentify(dialog_window, BuildingType_MagicShop);
+	}
+
+	if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_REPAIR) {
+		ShopDialogRepair(dialog_window, BuildingType_MagicShop);
+	}
+
+	if (dialog_menu_id == HOUSE_DIALOGUE_LEARN_SKILLS) {
+		ShopDialogLearn(dialog_window);
     }
 
-    if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_REPAIR)
-    {
-        draw_leather();
-        CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        GameUI_StatusBar_DrawImmediate(localization->GetString(198), 0);// "Select the Item to Repair"
-        if (!HouseUI_CheckIfPlayerCanInteract())
-            return;
-
-        v117 = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-        if (mouse.x <= 13 || mouse.x >= 462)
-            return;
-        if (!pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v117)
-            || !(pPlayers[uActiveCharacter]->pOwnItems[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v117) - 1].uAttributes & 2))
-            return;
-        item = &pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v117) - 1];
-        v75 = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(&pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v117) - 1],
-            BuildingType_MagicShop, (int)window_SpeakInHouse->ptr_1C, 5);
-        auto str = BuildDialogueString(pMerchantsRepairPhrases[v75], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 5);
-        dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(255, 255, 255), str, 3);
-        return;
-    }
-
-    if (dialog_menu_id == HOUSE_DIALOGUE_LEARN_SKILLS)
-    {
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
-            all_text_height = 0;
-            v33 = (signed __int64)(p2DEvents[(signed int)window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
-            pPrice = v33 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
-            if (pPrice < v33 / 3)
-                pPrice = v33 / 3;
-            item_num = 0;
-            for (int i = pDialogueWindow->pStartingPosActiveItem;
-            i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-            {
-                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pDialogueWindow->GetControl(i)->msg_param - 36]
-                    && !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36])
-                {
-                    all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(pDialogueWindow->GetControl(i)->msg_param - 36), &dialog_window, 0);
-                    ++item_num;
-                }
-            }
-            if (!item_num)
-            {
-                auto str =
-                    localization->FormatString(
-                        544,
-                        pPlayers[uActiveCharacter]->pName,
-                        localization->GetClassName(pPlayers[uActiveCharacter]->classType) // Seek knowledge elsewhere %s the %s
-                        )
-                    + "\n \n"
-                    + localization->GetString(528); // I can offer you nothing further.
-                dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(225, 205, 35), str, 3);
-                return;
-            }
-
-            auto str = localization->FormatString(401, pPrice);// "Skill Cost: %lu"
-            dialog_window.DrawTitleText(pFontArrus, 0, 0x92u, 0, str, 3);
-
-            one_string = (149 - all_text_height) / item_num;
-            if (one_string > 32)
-                one_string = 32;
-            v23 = (149 - item_num * one_string - all_text_height) / 2 - one_string / 2 + 162;
-            for (int i = pDialogueWindow->pStartingPosActiveItem;
-            i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i)
-            {
-                control_button = pDialogueWindow->GetControl(i);
-                if (!byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][control_button->msg_param - 36]
-                    || pPlayers[uActiveCharacter]->pActiveSkills[control_button->msg_param - 36])
-                {
-                    control_button->uW = 0;
-                    control_button->uHeight = 0;
-                    control_button->uY = 0;
-                }
-                else
-                {
-                    control_button->uY = one_string + v23;
-                    control_button->uHeight = pFontArrus->CalcTextHeight(localization->GetSkillName(control_button->msg_param - 36), &dialog_window, 0);
-                    v23 = control_button->uY + control_button->uHeight - 1;
-                    control_button->uW = v23;
-                    text_color = Color16(225, 205, 35);
-                    if (pDialogueWindow->pCurrentPosActiveItem != i)
-                        text_color = Color16(255, 255, 255);
-                    dialog_window.DrawTitleText(pFontArrus, 0, control_button->uY, text_color, localization->GetSkillName(control_button->msg_param - 36), 3);
-                }
-            }
-        }
-        return;
-    }
-    return;
 }
 
 //----- (004BDB56) --------------------------------------------------------
