@@ -277,17 +277,11 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
 
 	for (uint i = 0; i < 6; ++i) {
 
-		if (special == 0) {
-			if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID) {
-				render->DrawTextureAlphaNew(((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f, (weapons_Ypos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
-			}
+		if ( (special == 0 && pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID) || 
+				( special == 1 && pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID )) {
+						render->DrawTextureAlphaNew(((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f, (weapons_Ypos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
 		}
-		else {
-			if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID) {
-				render->DrawTextureAlphaNew(((60 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_X) / 640.0f, (weapons_Ypos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
-			}
-		}
-		
+
 		item_X += 70;
 	}
 
@@ -295,13 +289,9 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
 
 		uint item_num = 0;
 		for (uint i = 0; i < 6; ++i) {
-			if (special == 0) {
-				if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-					++item_num;
-			}
-			else {
-				if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-					++item_num;
+			if ( (special == 0 && pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID) ||
+					( special == 1 && pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID )) {
+						++item_num;
 			}
 		}
 
@@ -426,31 +416,105 @@ void WeaponShopDialog() {
 	}
 }
 
+void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
+
+	render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+	int item_x = 0;
+
+	for (int i = 0; i < 8; ++i) {
+		
+		if ( (special ==  0 && pParty->StandartItemsInShops[window_SpeakInHouse->par1C][i].uItemID) ||
+				( special == 1 && pParty->SpecialItemsInShops[window_SpeakInHouse->par1C][i].uItemID )) {
+			
+			if (i >= 4) {  //low row
+				render->DrawTextureAlphaNew( ((90 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x - 420) / 640.0f, 126 / 480.0f, shop_ui_items_in_store[i]);
+			}
+			else {
+				render->DrawTextureAlphaNew( ((86 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x) / 640.0f, (98 - shop_ui_items_in_store[i]->GetHeight()) / 480.0f,
+					shop_ui_items_in_store[i]);
+			}
+		}
+		item_x += 105;
+	}
+
+	if (HouseUI_CheckIfPlayerCanInteract()) {
+
+		int pItemCount = 0;
+		for (int i = 0; i < 8; ++i) {
+			if ( (special==0 && pParty->StandartItemsInShops[window_SpeakInHouse->par1C][i].uItemID) || (special==1 && pParty->SpecialItemsInShops[window_SpeakInHouse->par1C][i].uItemID) )
+				++pItemCount;
+		}
+
+		if (OS_IfCtrlPressed() == 0 || pPlayers[uActiveCharacter]->CanSteal() == 0)
+			GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0); // Select the Item to Buy
+		else
+			GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0); // Steal item
+
+		if (pItemCount) { // this should go into func??
+
+			Point mouse = pMouse->GetCursorPos();
+
+			int testx = (mouse.x - 40) / 105;
+			// testx limits check
+			if (testx >= 0 && testx < 4) {
+				if (mouse.y >= 126) {
+					testx += 4;
+				}
+
+				ItemGen *item;
+				if (special == 0) {
+					item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+				}
+				else {
+					item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+				}
+
+				if (item->uItemID) {
+
+					int testpos;
+					if (testx >= 4) {
+						testpos = ((90 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + (testx * 105) - 420); //low row
+					}
+					else {
+						testpos = ((86 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 105 );
+					}
+
+					if (mouse.x >= testpos && mouse.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+						if ((mouse.y >= 126 && mouse.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
+								(mouse.y <= 98 && mouse.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
+							// y is 126 to 126 + height low or 98-height to 98
+
+							String str;
+							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal()) {
+								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_ArmorShop, window_SpeakInHouse->par1C, 2)],
+										uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
+							}
+							else {
+								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
+							}
+							dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+						}
+					}
+				}
+			}
+		} 
+		else {
+			//empty shop
+			dialogwin.DrawShops_next_generation_time_string(pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->par1C] - pParty->GetPlayingTime());
+		}
+	}
+}
+
 //----- (004BA928) --------------------------------------------------------
-void ArmorShopDialog()
-{
-    int phrases_id; // eax@20
-    int all_text_height; // ebx@22
-    int v146; // [sp+E4h] [bp-20h]@24
-    int v23; // ebx@24
-    GUIButton *pButton; // eax@26
-    signed int v38; // esi@42
-    int v59; // eax@68
-    ItemGen *selected_item; // ecx@99
-    int pNumString; // edx@109
-    unsigned __int16 pTextColor; // ax@109
+void ArmorShopDialog() {
+ 
     GUIWindow dialog_window; // [sp+8Ch] [bp-78h]@1
-    __int32 pItemCount; // [sp+F0h] [bp-14h]@8
-    int item_x; // [sp+100h] [bp-4h]@44
-    int pPrice;
-    unsigned int v153;
 
     memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
     dialog_window.uFrameX = 483;
     dialog_window.uFrameWidth = 148;
     dialog_window.uFrameZ = 334;
 
-    Point mouse = pMouse->GetCursorPos();
     switch (dialog_menu_id) {
 
         case HOUSE_DIALOGUE_MAIN: {
@@ -458,190 +522,17 @@ void ArmorShopDialog()
             break;
         }
 
-        case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
-        {
-            render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-            item_x = 0;
-            for (int i = 0; i < 8; ++i)// разместить вещи
-            {
-                if (pParty->StandartItemsInShops[window_SpeakInHouse->par1C][i].uItemID)
-                {
-                    if (i >= 4)  //low row
-                    {
-                        render->DrawTextureAlphaNew(
-                            ((90 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x - 420) / 640.0f,
-                            126 / 480.0f,
-                            shop_ui_items_in_store[i]);
-                        v59 = (90 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x + 80220;
-                    }
-                    else
-                    {
-                        render->DrawTextureAlphaNew(
-                            ((86 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x) / 640.0f,
-                            (98 - shop_ui_items_in_store[i]->GetHeight()) / 480.0f,
-                            shop_ui_items_in_store[i]);
-                        v59 = item_x + (86 - (shop_ui_items_in_store[i]->GetWidth() / 2)) + window->GetWidth() * (98 - shop_ui_items_in_store[i]->GetHeight());
-                    }
-                    //ZBuffer_DoFill(&render->pActiveZBuffer[v59], shop_ui_items_in_store[i], i + 1);
-                }
-                item_x += 105;
-            }
-            if (!HouseUI_CheckIfPlayerCanInteract())
-                return;
-            pItemCount = 0;
-            for (int i = 0; i < 8; ++i)
-            {
-                if (pParty->StandartItemsInShops[window_SpeakInHouse->par1C][i].uItemID)
-                    ++pItemCount;
-            }
-
-            if (OS_IfCtrlPressed() == 0 || pPlayers[uActiveCharacter]->CanSteal() == 0)
-                GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0); // Select the Item to Buy
-            else
-                GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0); // Steal item
-
-            if (pItemCount)
-            { // this should go into func??
-
-				int testx = (mouse.x-40 ) / 105;
-				// testx limits check
-				if (testx >= 0 && testx < 4) {
-					if (mouse.y >= 126){
-						testx += 4;
-					}
-					//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
-					//	return;
-					//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-					selected_item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
-					
-					if (selected_item->uItemID) // item picking
-					{
-						//could check x coords imits here?
-						if ( (mouse.y >= 126 && mouse.y < (126 +shop_ui_items_in_store[testx]->GetHeight())) || 
-							( mouse.y <= 98 && mouse.y >= (98-shop_ui_items_in_store[testx]->GetHeight() ) ) ) {
-							// y is 126 to 126 + height low or 98-height to 98
-
-							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-
-							String str;
-				         if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-					         {
-				             str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(selected_item, BuildingType_ArmorShop, window_SpeakInHouse->par1C, 2)],
-			                uActiveCharacter - 1, selected_item, (char *)window_SpeakInHouse->ptr_1C, 2);
-					        }
-				        else
-				       {
-				           str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, selected_item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
-				      }
-					      dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-						}
-					}
-				}
-                
-
-                
-                return;
-            }
-
-            dialog_window.DrawShops_next_generation_time_string(
-                pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->par1C] - pParty->GetPlayingTime()
-            );
-
-            return;
+        case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+			ArmorShopWares(dialog_window);
+			break;            
         }
 
-        case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: // could special and standard be collapsed into 1 very similar codes ??
-        {
-            render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-            item_x = 0;
-            for (int i = 0; i < 8; ++i)
-            {
-                if (pParty->SpecialItemsInShops[window_SpeakInHouse->par1C][i].uItemID)
-                {
-                    if (i >= 4)
-                    {
-                        render->DrawTextureAlphaNew(
-                            (item_x + (90 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) - 420) / 640.0f,
-                            126 / 480.0f,
-                            shop_ui_items_in_store[i]);
-                        v59 = item_x + (90 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + 80220;
-                    }
-                    else
-                    {
-                        render->DrawTextureAlphaNew(
-                            (86 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2) + item_x) / 640.0f,
-                            (98 - shop_ui_items_in_store[i]->GetHeight()) / 480.0f,
-                            shop_ui_items_in_store[i]);
-                        v59 = (86 - ((signed int)shop_ui_items_in_store[i]->GetWidth() / 2)) + item_x + window->GetWidth() * (98 - shop_ui_items_in_store[i]->GetHeight());
-                    }
-                    //ZBuffer_DoFill(&render->pActiveZBuffer[v59], shop_ui_items_in_store[i], i + 1);
-                }
-                item_x += 105;
-            }
-            if (!HouseUI_CheckIfPlayerCanInteract())
-                return;
-            pItemCount = 0;
-            for (uint i = 0; i < 6; ++i)
-            {
-                if (pParty->SpecialItemsInShops[window_SpeakInHouse->par1C][i].uItemID)
-                    ++pItemCount;
-            }
-            if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-                GameUI_StatusBar_DrawImmediate(localization->GetString(196), 0); //Select the Special Item to Buy
-            else
-                GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
-
-            if (pItemCount)
-            {
-				int testx = (mouse.x - 40) / 105;
-				// testx limits check
-				if (testx >= 0 && testx < 4) {
-					if (mouse.y >= 126) {
-						testx += 4;
-					}
-					//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
-					//	return;
-					//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-					selected_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
-
-					if (selected_item->uItemID) // item picking
-					{
-						//could check x coords imits here?
-						if ((mouse.y >= 126 && mouse.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
-							(mouse.y <= 98 && mouse.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
-							// y is 126 to 126 + height low or 98-height to 98
-
-							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-
-							String str;
-							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-							{
-								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(selected_item, BuildingType_ArmorShop, window_SpeakInHouse->par1C, 2)],
-									uActiveCharacter - 1, selected_item, (char *)window_SpeakInHouse->ptr_1C, 2);
-							}
-							else
-							{
-								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, selected_item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
-							}
-							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-						}
-					}
-				}
-
-
-
-				return;
-				
-
-            }
-            dialog_window.DrawShops_next_generation_time_string(
-                pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->par1C] - pParty->GetPlayingTime()
-            );
-
-            return;
-        }
-
-		case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+			ArmorShopWares(dialog_window, 1);
+			break;
+		}
+      
+  		case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
 			ShopDialogDisplayEquip(dialog_window);
 			break;
 		}
@@ -673,280 +564,144 @@ void ArmorShopDialog()
     }
 }
 
-//----- (004B9CC6) --------------------------------------------------------
-void  AlchemistDialog()
-{
-    int index; // eax@7
-    signed int v5; // esi@9
-    int v18; // eax@23
-    const char *pText; // edx@29
-    unsigned int product_height_1row; // edi@55
-    unsigned int product_width_1row; // esi@57
-    unsigned int product_height_2row; // edi@67
-    unsigned int product_width_2row; // esi@69
-    ItemGen *item; // esi@118
-    int v71; // eax@123
-    int all_text_height; // edi@125
-    GUIButton *pButton; // esi@129
-    unsigned int pColorText; // ax@129
-    GUIWindow dialog_window; // [sp+5Ch] [bp-7Ch]@1
-    int v105; // [sp+B0h] [bp-28h]@19
-    int pNumString; // [sp+C8h] [bp-10h]@9
-    int item_num; // [sp+D4h] [bp-4h]@11
-    int pPrice;
+void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building, bool special = 0) {
 
-    memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
+	render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
+
+	int itemx;
+	int itemy;
+
+	for (uint i = 0; i < 12; ++i) {
+
+		if ((special == 0 && pParty->StandartItemsInShops[window_SpeakInHouse->par1C][i].uItemID) ||
+			(special == 1 && pParty->SpecialItemsInShops[window_SpeakInHouse->par1C][i].uItemID)) {
+
+			if (i >= 6) {  //low row
+				itemy = 308 - shop_ui_items_in_store[i]->GetHeight();
+				if (itemy < 0)
+					itemy = 0;
+
+				itemx = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40 - 450;
+
+			}
+			else {
+				itemy = 152 - shop_ui_items_in_store[i]->GetHeight();
+				if (itemy < 0)
+					itemy = 0;
+
+				itemx = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
+			}
+
+			if (i == 0 || i == 6) {
+				if (itemx < 18)
+					itemx = 18;
+			}
+
+			if (i == 5 || i == 11) {
+				if (itemx > 457 - shop_ui_items_in_store[i]->GetWidth())
+					itemx = 457 - shop_ui_items_in_store[i]->GetWidth();
+			}
+
+			render->DrawTextureAlphaNew(itemx / 640.0f, itemy / 480.0f, shop_ui_items_in_store[i]);
+		}
+	}
+		
+
+	if (HouseUI_CheckIfPlayerCanInteract()) {
+
+		int item_num = 0;
+
+		for (uint i = 0; i < 12; ++i) {
+			if (special == 0 && pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID ||
+				special == 1 && pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
+					++item_num;
+		}
+
+		if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
+			GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
+		else
+			GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);
+
+		if (item_num) { 
+
+			Point mouse = pMouse->GetCursorPos();
+
+			int testx = (mouse.x) / 75;
+			// testx limits check
+			if (testx >= 0 && testx < 6) {
+				if (mouse.y > 152) {
+					testx += 6;
+				}
+
+				ItemGen *item;
+				if (special == 0) {
+					item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+				}
+				else {
+					item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+				}
+
+				if (item->uItemID) {// item picking
+
+					int testpos;
+					if (mouse.y > 152) {
+						testpos = itemx = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40 - 450;
+					}
+					else {
+						testpos = itemx = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40;
+					}
+
+					if (mouse.x >= testpos && mouse.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+						if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
+							(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
+							// y is 152-h to 152 or 308-height to 308
+
+							String str;
+							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal()) {
+								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, building, window_SpeakInHouse->par1C, 2)],
+											uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
+							}
+							else {
+								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
+							}
+							dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+						}
+					}
+				}
+			}
+		}
+		else {
+			//shop empty
+			dialogwin.DrawShops_next_generation_time_string( pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime() );
+		}
+	}
+}
+	
+//----- (004B9CC6) --------------------------------------------------------
+void  AlchemistDialog() {
+
+    GUIWindow dialog_window; // [sp+5Ch] [bp-7Ch]@1
+
+	memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
     dialog_window.uFrameX = 483;
     dialog_window.uFrameWidth = 148;
     dialog_window.uFrameZ = 334;
 
-    Point mouse = pMouse->GetCursorPos();
     switch (dialog_menu_id) {
 
-			case HOUSE_DIALOGUE_MAIN: {
-				ShopDialogMain(dialog_window);
-				break;
-		   }
-
-		case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
-		{
-			render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-			for (uint i = 0; i < 6; ++i)
-			{
-				if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-				{
-             
-				
-				
-				
-					product_height_1row = 152 - shop_ui_items_in_store[i]->GetHeight();
-					if ((signed int)product_height_1row < 1)
-						product_height_1row = 0;
-					product_width_1row = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
-					if (i)
-					{
-						if (i == 5)
-						{
-							if ((signed int)product_width_1row > 457 - shop_ui_items_in_store[5]->GetWidth())
-								product_width_1row = 457 - shop_ui_items_in_store[5]->GetWidth();
-						}
-					}
-					else if ((signed int)product_width_1row < 18)
-						product_width_1row = 18;
-					render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
-					//ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
-
-		
-
-
-
-
-
-				}
-
-				if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i + 6].uItemID)
-				{
-					product_height_2row = 308 - shop_ui_items_in_store[i + 6]->GetHeight();
-					if ((signed int)product_height_2row < 1)
-						product_height_2row = 0;
-					product_width_2row = 75 * i - shop_ui_items_in_store[i + 6]->GetWidth() / 2 + 40;
-					if (i)
-					{
-						if (i == 5)
-						{
-							if ((signed int)product_width_2row > 457 - shop_ui_items_in_store[11]->GetWidth())
-								product_width_2row = 457 - shop_ui_items_in_store[11]->GetWidth();
-						}
-					}
-					else
-					{
-						if ((signed int)product_width_2row < 18)
-							product_width_2row = 18;
-					}
-					render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
-					//ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
-				}
-
-
-
-
-			}
-
-
-			if (HouseUI_CheckIfPlayerCanInteract())
-			{
-				item_num = 0;
-				for (uint i = 0; i < 12; ++i)
-				{
-					if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-						++item_num;
-				}
-				if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-					GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
-				else
-					GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);
-				if (!item_num)
-				{
-					dialog_window.DrawShops_next_generation_time_string(
-						pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
-						);
-					return;
-				}
-
-				if (item_num) { // this should go into func??
-
-					int testx = (mouse.x) / 75;
-					// testx limits check
-					if (testx >= 0 && testx < 6) {
-						if (mouse.y >= 152) {
-							testx += 6;
-						}
-						//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
-						//	return;
-						//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-						item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
-
-						if (item->uItemID) // item picking
-						{
-							//could check x coords imits here?
-							if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
-								(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
-								// y is 152-h to 152 or 308-height to 308
-
-								//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-
-								String str;
-								if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-								{
-									str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_AlchemistShop, window_SpeakInHouse->par1C, 2)],
-										uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
-								}
-								else
-								{
-									str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
-								}
-								dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-							}
-						}
-					}
-				}
-			}
-			return;
+		case HOUSE_DIALOGUE_MAIN: {
+			ShopDialogMain(dialog_window);
+			break;
 		}
 
-		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
-		{
-			render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-			for (uint i = 0; i < 6; ++i)
-			{
-				if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-				{
-					product_height_1row = 152 - shop_ui_items_in_store[i]->GetHeight();
-					if ((signed int)product_height_1row < 1)
-						product_height_1row = 0;
-					product_width_1row = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
-					if (i)
-					{
-						if (i == 5)
-						{
-							if ((signed int)product_width_1row > 457 - shop_ui_items_in_store[5]->GetWidth())
-								product_width_1row = 457 - shop_ui_items_in_store[5]->GetWidth();
-						}
-					}
-					else
-					{
-						if ((signed int)product_width_1row < 18)
-							product_width_1row = 18;
-					}
-					render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
-					//ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
-				}
-			}
-			for (uint i = 0; i < 6; ++i)
-			{
-				if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][(signed int)i + 6].uItemID) //not itemid
-				{
-					product_height_2row = 308 - shop_ui_items_in_store[i + 6]->GetHeight();
-					if ((signed int)product_height_2row < 1)
-						product_height_2row = 0;
-					product_width_2row = 75 * i - shop_ui_items_in_store[i + 6]->GetWidth() / 2 + 40;
-					if (i)
-					{
-						if (i == 5)
-						{
-							if ((signed int)product_width_2row > 457 - shop_ui_items_in_store[11]->GetWidth())
-								product_width_2row = 457 - shop_ui_items_in_store[11]->GetWidth();
-						}
-					}
-					else
-					{
-						if ((signed int)product_width_2row < 18)
-							product_width_2row = 18;
-					}
-					render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
-					//ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
-				}
-			}
-			if (HouseUI_CheckIfPlayerCanInteract())
-			{
-				item_num = 0;
-				for (uint i = 0; i < 12; ++i)
-				{
-					if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-						++item_num;
-				}
-				if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-					GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
-				else
-					GameUI_StatusBar_DrawImmediate(localization->GetString(196), 0);
-				if (!item_num)
-				{
-					dialog_window.DrawShops_next_generation_time_string(
-						pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
-						);
-					return;
-				}
+		case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+			AlchemyMagicShopWares(dialog_window,BuildingType_AlchemistShop);
+			break;
+		}
 
-				if (item_num) { // this should go into func??
-
-					int testx = (mouse.x) / 75;
-					// testx limits check
-					if (testx >= 0 && testx < 6) {
-						if (mouse.y >= 152) {
-							testx += 6;
-						}
-						//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
-						//	return;
-						//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-						item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
-
-						if (item->uItemID) // item picking
-						{
-							//could check x coords imits here?
-							if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
-								(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
-								// y is 152-h to 152 or 308-height to 308
-
-								//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-
-								String str;
-								if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-								{
-									str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_AlchemistShop, window_SpeakInHouse->par1C, 2)],
-										uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
-								}
-								else
-								{
-									str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
-								}
-								dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-							}
-						}
-					}
-				}
-
-			}
-			return;
+		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+			AlchemyMagicShopWares(dialog_window, BuildingType_AlchemistShop, 1);
+			break;
 		}
 
 		case HOUSE_DIALOGUE_SHOP_SELL: {
@@ -978,284 +733,63 @@ void  AlchemistDialog()
 }
 
 //----- (004B4FCF) --------------------------------------------------------
-void MagicShopDialog()
-{
-    int all_text_height; // edi@21
-    GUIButton *control_button; // esi@25
-    int v23; // eax@25
-    unsigned __int16 text_color; // ax@25
-    signed int v33; // esi@40
-    unsigned int product_height_1row; // edi@64
-    unsigned int product_width_1row; // esi@66
-    unsigned int product_height_2row; // edi@76
-    unsigned int product_width_2row; // esi@76
-    int v75; // eax@130
+void MagicShopDialog() {
+ 
     GUIWindow dialog_window; // [sp+7Ch] [bp-7Ch]@1
-    int item_num; // [sp+E0h] [bp-18h]@8
-    int v117; // [sp+E4h] [bp-14h]@40
-    int pPrice; // [sp+E8h] [bp-10h]@24
-    int one_string; // [sp+ECh] [bp-Ch]@1
-    int pSrtingNum;
-    ItemGen *item;
-
+ 
     memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
     dialog_window.uFrameX = 483;
     dialog_window.uFrameWidth = 148;
     dialog_window.uFrameZ = 334;
 
-    Point mouse = pMouse->GetCursorPos();
+	switch (dialog_menu_id) {
 
-    if (dialog_menu_id == HOUSE_DIALOGUE_MAIN) //change to switch ??
-    {
-		ShopDialogMain(dialog_window);
-    }
+		case HOUSE_DIALOGUE_MAIN: {
+			ShopDialogMain(dialog_window);
+			break;
+		}
 
-    if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
-    {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-        for (uint i = 0; i < 6; ++i)
-        {
-            if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-            {
-                product_height_1row = 152 - shop_ui_items_in_store[i]->GetHeight();
-                if ((signed int)product_height_1row < 1)
-                    product_height_1row = 0;
-                product_width_1row = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
-                if (i)
-                {
-                    if (i == 5)
-                    {
-                        if ((signed int)product_width_1row > 457 - shop_ui_items_in_store[5]->GetWidth())
-                            product_width_1row = 457 - shop_ui_items_in_store[5]->GetWidth();
-                    }
-                }
-                else
-                {
-                    if ((signed int)product_width_1row < 18)
-                        product_width_1row = 18;
-                }
-                render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
-            }
-        }
-        for (uint i = 0; i < 6; ++i)
-        {
-            if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i + 6].uItemID)
-            {
-                product_height_2row = 306 - shop_ui_items_in_store[i + 6]->GetHeight();
-                product_width_2row = 75 * i - shop_ui_items_in_store[i + 6]->GetWidth() / 2 + 40;
-                if (i)
-                {
-                    if (i == 5)
-                    {
-                        if ((signed int)product_width_2row > 457 - shop_ui_items_in_store[11]->GetWidth())
-                            product_width_2row = 457 - shop_ui_items_in_store[11]->GetWidth();
-                    }
-                }
-                else
-                {
-                    if ((signed int)product_width_2row < 18)
-                        product_width_2row = 18;
-                }
-                render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
-            }
-        }
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
-            item_num = 0;
-            for (uint i = 0; i < 12; ++i)
-            {
-                if (pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-                    ++item_num;
-            }
-            if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-                GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);// "Steal item"
-            else
-                GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);// "Select the Item to Buy"
-            if (!item_num)
-            {
-                dialog_window.DrawShops_next_generation_time_string(
-                    pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
-                    );
-                return;
-            }
-			if (item_num) { // this should go into func??
+		case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+			AlchemyMagicShopWares(dialog_window, BuildingType_MagicShop);
+			break;
+		}
 
-				int testx = (mouse.x) / 75;
-				// testx limits check
-				if (testx >= 0 && testx < 6) {
-					if (mouse.y >= 152) {
-						testx += 6;
-					}
-					//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
-					//	return;
-					//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-					item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+			AlchemyMagicShopWares(dialog_window, BuildingType_MagicShop, 1);
+			break;
+		}
 
-					if (item->uItemID) // item picking
-					{
-						//could check x coords imits here?
-						if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
-							(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
-							// y is 152-h to 152 or 308-height to 308
+		case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+			ShopDialogDisplayEquip(dialog_window);
+			break;
+		}
 
-							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
+		case HOUSE_DIALOGUE_SHOP_SELL: {
+			ShopDialogSellEquip(dialog_window, BuildingType_MagicShop);
+			break;
+		}
 
-							String str;
-							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-							{
-								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_MagicShop, window_SpeakInHouse->par1C, 2)],
-									uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
-							}
-							else
-							{
-								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
-							}
-							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-						}
-					}
-				}
-			}
+		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+			ShopDialogIdentify(dialog_window, BuildingType_MagicShop);
+			break;
+		}
 
-        }
-        return;
-    }
+		case HOUSE_DIALOGUE_SHOP_REPAIR: {
+			ShopDialogRepair(dialog_window, BuildingType_MagicShop);
+			break;
+		}
 
-    if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL)
-    {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
-        for (uint i = 0; i < 6; ++i)
-        {
-            if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-            {
-                product_height_1row = 152 - shop_ui_items_in_store[i]->GetHeight();
-                if ((signed int)product_height_1row < 1)
-                    product_height_1row = 0;
-                product_width_1row = 75 * i - shop_ui_items_in_store[i]->GetWidth() / 2 + 40;
-                if (i)
-                {
-                    if (i == 5)
-                    {
-                        if ((signed int)product_width_1row > 457 - shop_ui_items_in_store[5]->GetWidth())
-                            product_width_1row = 457 - shop_ui_items_in_store[5]->GetWidth();
-                    }
-                }
-                else
-                {
-                    if ((signed int)product_width_1row < 18)
-                        product_width_1row = 18;
-                }
-                render->DrawTextureAlphaNew(product_width_1row / 640.0f, product_height_1row / 480.0f, shop_ui_items_in_store[i]);
-                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_1row + window->GetWidth() * product_height_1row], shop_ui_items_in_store[i], i + 1);
-            }
-        }
-        for (uint i = 0; i < 6; ++i)
-        {
-            if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i + 6].uItemID)
-            {
-                product_height_2row = 306 - shop_ui_items_in_store[i + 6]->GetHeight();
-                if ((signed int)product_height_2row < 1)
-                    product_height_2row = 0;
-                product_width_2row = 75 * i - shop_ui_items_in_store[i + 6]->GetWidth() / 2 + 40;
-                if (i)
-                {
-                    if (i == 5)
-                    {
-                        if ((signed int)product_width_2row > 457 - shop_ui_items_in_store[11]->GetWidth())
-                            product_width_2row = 457 - shop_ui_items_in_store[11]->GetWidth();
-                    }
-                }
-                else
-                {
-                    if ((signed int)product_width_2row < 18)
-                        product_width_2row = 18;
-                }
-                render->DrawTextureAlphaNew(product_width_2row / 640.0f, product_height_2row / 480.0f, shop_ui_items_in_store[i + 6]);
-                //ZBuffer_DoFill2(&render->pActiveZBuffer[product_width_2row + window->GetWidth() * product_height_2row], shop_ui_items_in_store[i + 6], i + 7);
-            }
-        }
-        if (HouseUI_CheckIfPlayerCanInteract())
-        {
-            item_num = 0;
-            for (uint i = 0; i < 12; ++i)
-            {
-                if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-                    ++item_num;
-            }
-            if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-                GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);// "Steal item"
-            else
-                GameUI_StatusBar_DrawImmediate(localization->GetString(196), 0);// "Select the Special Item to Buy"
-            if (!item_num)
-            {
-                dialog_window.DrawShops_next_generation_time_string(
-                    pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
-                    );
-                return;
-            }
+		case HOUSE_DIALOGUE_LEARN_SKILLS: {
+			ShopDialogLearn(dialog_window);
+			break;
+		}
 
-			if (item_num) { // this should go into func??
+		default: {
+			__debugbreak();
+			break;
+		}
 
-				int testx = (mouse.x) / 75;
-				// testx limits check
-				if (testx >= 0 && testx < 6) {
-					if (mouse.y >= 152) {
-						testx += 6;
-					}
-					//if (!(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF))
-					//	return;
-					//selected_item = &pParty->StandartItemsInShops[window_SpeakInHouse->par1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-					item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
-
-					if (item->uItemID) // item picking
-					{
-						//could check x coords imits here?
-						if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
-							(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
-							// y is 152-h to 152 or 308-height to 308
-
-							//item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][(render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF) - 1];
-
-							String str;
-							if (!OS_IfCtrlPressed() || !pPlayers[uActiveCharacter]->CanSteal())
-							{
-								str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_MagicShop, window_SpeakInHouse->par1C, 2)],
-									uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2);
-							}
-							else
-							{
-								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
-							}
-							dialog_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
-						}
-					}
-				}
-			}
-        }
-        return;
-    }
-
-    if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT) // replace with switch ??
-    {
-		ShopDialogDisplayEquip(dialog_window);
-    }
-
-    if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_SELL) {
-		ShopDialogSellEquip(dialog_window, BuildingType_MagicShop);
-    }
-
-	if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_IDENTIFY) {
-		ShopDialogIdentify(dialog_window, BuildingType_MagicShop);
 	}
-
-	if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_REPAIR) {
-		ShopDialogRepair(dialog_window, BuildingType_MagicShop);
-	}
-
-	if (dialog_menu_id == HOUSE_DIALOGUE_LEARN_SKILLS) {
-		ShopDialogLearn(dialog_window);
-    }
-
 }
 
 //----- (004BDB56) --------------------------------------------------------
