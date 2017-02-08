@@ -54,7 +54,7 @@ class MemoryStream
 
     inline ~MemoryStream()
     {
-      //Log::Warning(L"Destructor: data delete %u", data);
+      //logger->Warning(L"Destructor: data delete %u", data);
       if (data)
         delete [] data;
     }
@@ -65,17 +65,17 @@ class MemoryStream
       {
         data_size = 32 + num_bytes;
         data = new char[data_size];
-        //Log::Warning(L"new data %u", data);
+        //logger->Warning(L"new data %u", data);
         current_pos = 0;
       }
       else if (current_pos + num_bytes >= data_size)
       {
         int  new_data_size = data_size + num_bytes + data_size / 8 + 4;
         auto new_data = new char[new_data_size];
-        //Log::Warning(L"new new_data %u", new_data);
+        //logger->Warning(L"new new_data %u", new_data);
 
         memcpy(new_data, data, data_size);
-        //Log::Warning(L"data delete %u", data);
+        //logger->Warning(L"data delete %u", data);
         delete [] data;
 
         data_size = new_data_size;
@@ -186,7 +186,7 @@ struct AVStreamWrapper
     {
 	  // Close the codec
       avcodec_close(dec_ctx);
-	  Log::Warning(L"close decoder context file\n");
+	  logger->Warning(L"close decoder context file\n");
       dec_ctx = nullptr;
     }
   }
@@ -318,7 +318,7 @@ void InterleaveAudioData(MemoryStream *stream, AVSampleFormat src_format, int nu
 
       if (swr_init(converter) < 0)
       {
-          Log::Warning(L"swr_init: failed");
+          logger->Warning(L"swr_init: failed");
         //__debugbreak();
         swr_free(&converter);
         return;
@@ -329,7 +329,7 @@ void InterleaveAudioData(MemoryStream *stream, AVSampleFormat src_format, int nu
       //int dst_nb_channels = av_get_channel_layout_nb_channels(dst_channel_layout);
       if (av_samples_alloc_array_and_samples(&dst_channels, dst_linesize, 2, num_channels * num_samples, AV_SAMPLE_FMT_S16, 0) < 0)
       {
-          Log::Warning(L"av_samples_alloc_array_and_samples: failed");
+          logger->Warning(L"av_samples_alloc_array_and_samples: failed");
         //__debugbreak();
         swr_free(&converter);
         return;
@@ -340,7 +340,7 @@ void InterleaveAudioData(MemoryStream *stream, AVSampleFormat src_format, int nu
           stream->Write(dst_channels[0], num_channels * num_samples * sizeof(__int16));
       else
           //__debugbreak();
-          Log::Warning(L"swr_convert: failed");
+          logger->Warning(L"swr_convert: failed");
 
       av_free(dst_channels[0]);
       swr_free(&converter);
@@ -655,7 +655,7 @@ class Track: public Media::ITrack
       if (format_ctx)
       {
         av_close_input_file(format_ctx);
-		Log::Warning(L"close audio format context file\n");
+		logger->Warning(L"close audio format context file\n");
         format_ctx = nullptr;
       }
     }
@@ -774,7 +774,7 @@ public:
         {
             // Close the video file
             av_close_input_file(format_ctx);
-            Log::Warning(L"close video format context file\n");
+            logger->Warning(L"close video format context file\n");
             format_ctx = nullptr;
         }
         if (avioContext)
@@ -998,11 +998,11 @@ protected:
 ITrack *MPlayer::LoadTrack(const wchar_t *filename)
 {
   auto audio_track = new Track;
-  Log::Warning(L"allocation dynamic memory for audio_track\n");
+  logger->Warning(L"allocation dynamic memory for audio_track\n");
   if (!audio_track->LoadAudio(filename))
   {
     delete audio_track;
-	Log::Warning(L"delete dynamic memory for audio_track\n");
+	logger->Warning(L"delete dynamic memory for audio_track\n");
     audio_track = nullptr;
   }
   return audio_track;
@@ -1011,11 +1011,11 @@ ITrack *MPlayer::LoadTrack(const wchar_t *filename)
 IMovie *MPlayer::LoadMovie(const wchar_t *filename, int width, int height, int cache_ms)	//Загрузить видео
 {
   movie = new Movie;
-  Log::Warning(L"allocation dynamic memory for movie\n");
+  logger->Warning(L"allocation dynamic memory for movie\n");
   if (!movie->Load(filename, width, height, cache_ms))
   {
     delete movie;
-	Log::Warning(L"delete dynamic memory for movie\n");
+	logger->Warning(L"delete dynamic memory for movie\n");
     movie = nullptr;
   }
   return movie;
@@ -1050,7 +1050,7 @@ void MPlayer::Initialize(OSWindow *target_window)
     hMightVid = fopen(filename, "rb");
     if (!hMightVid)
     {
-        Log::Warning(L"Can't open video file: anims\\might7.vid");
+        logger->Warning(L"Can't open video file: anims\\might7.vid");
         return;
     }
 
@@ -1060,7 +1060,7 @@ void MPlayer::Initialize(OSWindow *target_window)
     {
         if (!bCanLoadFromCD)
         {
-            Log::Warning(L"Can't open video file: anims\\magic7.vid");
+            logger->Warning(L"Can't open video file: anims\\magic7.vid");
             return;
         }
 
@@ -1069,7 +1069,7 @@ void MPlayer::Initialize(OSWindow *target_window)
         hMagicVid = fopen(filename2, "rb");
         if (!hMagicVid)
         {
-            Log::Warning(L"Can't open video file: %S", filename2);
+            logger->Warning(L"Can't open video file: %S", filename2);
             return;
         }
     }
@@ -1228,7 +1228,7 @@ void MPlayer::HouseMovieLoop()
 		render->BeginScene();
 		pMouse->DrawCursorToTarget();
 
-        Log::Warning(L"smacker");
+        logger->Warning(L"smacker");
         loop_current_file = true;
         render->BeginScene();
         if (!bPlaying_Movie)//reload
@@ -1239,7 +1239,7 @@ void MPlayer::HouseMovieLoop()
 
           fseek(hVidFile, uOffset, SEEK_SET);
           pMovie_Track = nullptr;
-	      Log::Warning(L"reload pMovie_Track");
+	      logger->Warning(L"reload pMovie_Track");
           pMovie_Track = pMediaPlayer->LoadMovieFromLOD(hVidFile, &readFunction, &seekFunction, width, height);
           bPlaying_Movie = true;
         }
@@ -1328,7 +1328,7 @@ void MPlayer::LoadMovie(const char *pFilename)
     if (!hVidFile)
     {
         pMediaPlayer->Unload();
-        Log::Warning(L"MediaPlayer error");
+        logger->Warning(L"MediaPlayer error");
         return;
     }
 
@@ -1430,13 +1430,13 @@ int64_t MPlayer::seekFunction(FILE *opaque, int64_t offset, int whence)
 IMovie *MPlayer::LoadMovieFromLOD(FILE *f, int readFunction(FILE *, uint8_t*, int), int64_t seekFunction(FILE *, int64_t, int), int width, int height)
 {
 	movie = new Movie;
-	Log::Warning(L"allocation dynamic memory for movie\n");
+	logger->Warning(L"allocation dynamic memory for movie\n");
 	if (movie)
 	{
 		if (movie->LoadFromLOD(f, readFunction, seekFunction, width, height))
 		  return movie;
 		delete movie;
-		Log::Warning(L"delete dynamic memory for movie\n");
+		logger->Warning(L"delete dynamic memory for movie\n");
 	}
 	return nullptr;
 }
@@ -1445,7 +1445,7 @@ void MovieRelease()
 {
   movie->Release();
   delete movie;
-  Log::Warning(L"delete dynamic memory for movie\n");
+  logger->Warning(L"delete dynamic memory for movie\n");
   movie = nullptr;
 }
 
@@ -1456,7 +1456,7 @@ void MPlayer::LoadAudioSnd()
     hAudioSnd = fopen("Sounds\\Audio.snd", "rb");
     if (!hAudioSnd)
     {
-        Log::Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
+        logger->Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
         return;
     }
 
@@ -1500,7 +1500,7 @@ MPlayer::MPlayer()
   if (!provider)
   {
     provider = new OpenALSoundProvider;
-	Log::Warning(L"allocation dynamic memory for provider\n");
+	//logger->Warning(L"allocation dynamic memory for provider\n");
     provider->Initialize();
   }
   LoadAudioSnd();
@@ -1509,7 +1509,7 @@ MPlayer::MPlayer()
 MPlayer::~MPlayer()
 {
 	delete provider;
-	Log::Warning(L"delete dynamic memory for provider\n");
+	//logger->Warning(L"delete dynamic memory for provider\n");
 
     bStopBeforeSchedule = false;
 //    pResetflag = 0;
@@ -1521,7 +1521,7 @@ void PlayAudio(const wchar_t * pFilename)
   pAudio_Track = pMediaPlayer->LoadTrack(pFilename);
   pAudio_Track->Play();
   delete pAudio_Track;
-  Log::Warning(L"delete dynamic memory for pAudio_Track\n");
+  logger->Warning(L"delete dynamic memory for pAudio_Track\n");
   pAudio_Track = nullptr;
 }
 

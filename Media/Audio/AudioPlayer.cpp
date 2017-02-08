@@ -242,13 +242,13 @@ int SoundList::LoadSound(unsigned int a2, void *lpBuffer, int uBufferSizeLeft, i
                         if (pAudioPlayer->pSoundHeaders[j].uCompressedSize == pAudioPlayer->pSoundHeaders[j].uDecompressedSize)
                             fread(lpBuffer, 1, pAudioPlayer->pSoundHeaders[j].uDecompressedSize, pAudioPlayer->hAudioSnd);
                         else
-                            Log::Warning(L"Can't load sound file!");
+                            logger->Warning(L"Can't load sound file!");
                     }
                     else
                     {
                         v18 = malloc(pAudioPlayer->pSoundHeaders[j].uCompressedSize);
                         fread(v18, 1, pAudioPlayer->pSoundHeaders[j].uCompressedSize, pAudioPlayer->hAudioSnd);
-                        zlib::MemUnzip(lpBuffer, &pAudioPlayer->pSoundHeaders[j].uDecompressedSize, v18, pAudioPlayer->pSoundHeaders[j].uCompressedSize);
+                        zlib::Uncompress(lpBuffer, &pAudioPlayer->pSoundHeaders[j].uDecompressedSize, v18, pAudioPlayer->pSoundHeaders[j].uCompressedSize);
                         free(v18);
                     }
                     pSL_Sounds[i].pSoundData[a6] = (SoundData *)lpBuffer;
@@ -461,7 +461,7 @@ void AudioPlayer::PlayMusicTrack(MusicID eTrack)
 
       if (!FileExists(string))
       {
-        Log::Warning(L"Music\\%d.mp3 not found", eTrack);
+        logger->Warning(L"Music\\%d.mp3 not found", eTrack);
         return;
       }
       wchar_t * wStr = new wchar_t[255];
@@ -607,7 +607,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, signed int pid, unsigned int uNumR
 
   if (!sound_id)
   {
-    Log::Warning(L"SoundID = %u not found", eSoundID);
+    logger->Warning(L"SoundID = %u not found", eSoundID);
     return;
   }
   assert(sound_id < pSoundList->sNumSounds);
@@ -2157,7 +2157,7 @@ void AudioPlayer::LoadAudioSnd()
     hAudioSnd = fopen("Sounds\\Audio.snd", "rb");
     if (!hAudioSnd)
     {
-        Log::Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
+        logger->Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
         return;
     }
 
@@ -2751,13 +2751,13 @@ SoundData *LoadSound(const char *pSoundName, SoundData *pOutBuff, unsigned int u
         if (pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize)
             NumberOfBytesRead = fread(pOutBuff->pData, 1, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize, pAudioPlayer->hAudioSnd);
         else
-            Log::Warning(L"Can't load sound file!");
+            logger->Warning(L"Can't load sound file!");
     }
     else
     {
         uID = (unsigned int)malloc(pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize);
         NumberOfBytesRead = fread((void *)uID, 1, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize, pAudioPlayer->hAudioSnd);
-        zlib::MemUnzip(pOutBuff->pData, &pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize, (const void *)uID, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize);
+        zlib::Uncompress(pOutBuff->pData, &pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uDecompressedSize, (const void *)uID, pAudioPlayer->pSoundHeaders[uFindSound_BinSearch_ResultID].uCompressedSize);
         free((void *)uID);
     }
     if (pOutBuff)

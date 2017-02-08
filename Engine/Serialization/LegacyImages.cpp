@@ -7,6 +7,19 @@
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Serialization/LegacyImages.h"
 
+
+SpriteFrame_MM6::SpriteFrame_MM6()
+{
+    Assert(sizeof(*this) == 56);
+    memset(this, 0, sizeof(*this));
+}
+
+SpriteFrame_MM7::SpriteFrame_MM7()
+{
+    Assert(sizeof(*this) == 60);
+    memset(this, 0, sizeof(*this));
+}
+
 NPCData_Image_MM7::NPCData_Image_MM7()
 {
     Assert(sizeof(*this) == 0x4C);
@@ -193,10 +206,10 @@ void OtherOverlayList_Image_MM7::Serialize(OtherOverlayList *list)
 
         this->pOverlays[i].field_0 = list->pOverlays[i].field_0;
         this->pOverlays[i].field_2 = list->pOverlays[i].field_2;
-        this->pOverlays[i].field_4 = list->pOverlays[i].field_4;
+        this->pOverlays[i].sprite_frame_time = list->pOverlays[i].sprite_frame_time;
         this->pOverlays[i].field_6 = list->pOverlays[i].field_6;
-        this->pOverlays[i].field_8 = list->pOverlays[i].field_8;
-        this->pOverlays[i].field_A = list->pOverlays[i].field_A;
+        this->pOverlays[i].screen_space_x = list->pOverlays[i].screen_space_x;
+        this->pOverlays[i].screen_space_y = list->pOverlays[i].screen_space_y;
         this->pOverlays[i].field_C = list->pOverlays[i].field_C;
         this->pOverlays[i].field_E = list->pOverlays[i].field_E;
         this->pOverlays[i].field_10 = list->pOverlays[i].field_10;
@@ -215,10 +228,10 @@ void OtherOverlayList_Image_MM7::Deserialize(OtherOverlayList *list)
 
         list->pOverlays[i].field_0 = this->pOverlays[i].field_0;
         list->pOverlays[i].field_2 = this->pOverlays[i].field_2;
-        list->pOverlays[i].field_4 = this->pOverlays[i].field_4;
+        list->pOverlays[i].sprite_frame_time = this->pOverlays[i].sprite_frame_time;
         list->pOverlays[i].field_6 = this->pOverlays[i].field_6;
-        list->pOverlays[i].field_8 = this->pOverlays[i].field_8;
-        list->pOverlays[i].field_A = this->pOverlays[i].field_A;
+        list->pOverlays[i].screen_space_x = this->pOverlays[i].screen_space_x;
+        list->pOverlays[i].screen_space_y = this->pOverlays[i].screen_space_y;
         list->pOverlays[i].field_C = this->pOverlays[i].field_C;
         list->pOverlays[i].field_E = this->pOverlays[i].field_E;
         list->pOverlays[i].field_10 = this->pOverlays[i].field_10;

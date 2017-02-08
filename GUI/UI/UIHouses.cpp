@@ -1618,7 +1618,7 @@ void TravelByTransport()
         if (schedule_id != 255)
         {
           //if (schedule_id >= 25)
-            //Log::Warning(L"Transport UI: schedule overflow");
+            //logger->Warning(L"Transport UI: schedule overflow");
           if ( pCurrentButton >= 6 )
             v25 = true;
           else

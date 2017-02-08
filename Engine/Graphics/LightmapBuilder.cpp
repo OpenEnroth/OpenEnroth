@@ -128,7 +128,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight, Vec3_float
     }
   }
   else
-	Log::Warning(L"Uknown strip type detected!");
+	logger->Warning(L"Uknown strip type detected!");
 
   minz = pIndoorCameraD3D->GetPolygonMinZ(TerrainVertices, uStripType);
   maxz = pIndoorCameraD3D->GetPolygonMaxZ(TerrainVertices, uStripType);
@@ -561,7 +561,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3, unsigned int
   if (!pIndoorCameraD3D->GetFacetOrientation(a3->polygonType, &static_69B110.Normal,
           &static_69B110.field_10, &static_69B110.field_1C))
   {
-      Log::Warning(L"Error: Failed to get the facet orientation");
+      logger->Warning(L"Error: Failed to get the facet orientation");
       Engine_DeinitializeAndTerminate(0);
   }
 
@@ -581,7 +581,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3, unsigned int
     if (!_45BE86_build_light_polygon(&pos, pLights->_blv_lights_radii[i], uColor, pLights->_blv_lights_light_dot_faces[i],
               pLights->_blv_lights_types[i], &static_69B110, uNumVertices, a9, uClipFlag) )
     {
-        Log::Warning(L"Error: Failed to build light polygon");
+        logger->Warning(L"Error: Failed to build light polygon");
     }
   }
   return true;
@@ -695,7 +695,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
         lightmap->fBrightness = v40 - ((1 / radius) * v38);
     }
     else
-        Log::Warning(L"Invalid light type!");
+        logger->Warning(L"Invalid light type!");
   }
  //Brightness(€ркость)/////////////////////////////////////////////////////
 
@@ -730,10 +730,10 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
       pIndoorCameraD3D->_437143(_a4, lightmap->pVertices, field_3C8C34, &lightmap->NumVertices);
     }
     else
-        Log::Warning(L"Undefined clip flag specified");
+        logger->Warning(L"Undefined clip flag specified");
   }
   else
-      Log::Warning(L"Lightpoly builder native indoor clipping not implemented");
+      logger->Warning(L"Lightpoly builder native indoor clipping not implemented");
 
   if (_a4)
   {
@@ -1112,7 +1112,7 @@ double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3, Vec3_f
       }
       else
       {
-        Log::Warning(L"Invalid light type detected!");
+        logger->Warning(L"Invalid light type detected!");
         v20 = *(float *)&uLightType;
       }
     }

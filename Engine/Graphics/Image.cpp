@@ -45,17 +45,35 @@ stru355 stru_4EFCBC = {0x20, 0x41, 0, 0x10, 0x7C00, 0x3E0, 0x1F, 0x8000};
 
 
 
+const wchar_t *IMAGE_FORMAT_ToString(IMAGE_FORMAT format)
+{
+    switch (format)
+    {
+        case IMAGE_FORMAT_R5G6B5:   return L"IMAGE_FORMAT_R5G6B5";
+        case IMAGE_FORMAT_A1R5G5B5: return L"IMAGE_FORMAT_A1R5G5B5";
+        case IMAGE_FORMAT_A8R8G8B8: return L"IMAGE_FORMAT_A8R8G8B8";
+        case IMAGE_FORMAT_R8G8B8:   return L"IMAGE_FORMAT_R8G8B8";
+        case IMAGE_FORMAT_R8G8B8A8: return L"IMAGE_FORMAT_R8G8B8A8";
+
+        default:
+            Error("Invalid format: %d", format);
+            return L"Invalid format";
+    }
+}
+
 unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format)
 {
     switch (format)
     {
-    case IMAGE_FORMAT_R5G6B5:   return 2;
-    case IMAGE_FORMAT_A1R5G5B5: return 2;
-    case IMAGE_FORMAT_A8R8G8B8: return 4;
+        case IMAGE_FORMAT_R5G6B5:   return 2;
+        case IMAGE_FORMAT_A1R5G5B5: return 2;
+        case IMAGE_FORMAT_A8R8G8B8: return 4;
+        case IMAGE_FORMAT_R8G8B8:   return 3;
+        case IMAGE_FORMAT_R8G8B8A8: return 4;
 
-    default:
-        Error("Invalid format: %d", format);
-        return 0;
+        default:
+            Error("Invalid format: %d", format);
+            return 0;
     }
 }
 
@@ -203,7 +221,7 @@ void *Texture_MM7::UnzipPalette()
     pSource = this;
     v1 = this;
     v2 = malloc(this->uDecompressedSize);
-    zlib::MemUnzip(v2, (unsigned int *)&pSource, v1->paletted_pixels, v1->uTextureSize);
+    zlib::Uncompress(v2, (unsigned int *)&pSource, v1->paletted_pixels, v1->uTextureSize);
     return v2;
 }
 
@@ -401,7 +419,7 @@ int TextureFrameTable::FromFileTxt(const char *Args)
 }
 
 //----- (00451007) --------------------------------------------------------
-int stru350::sub_451007_scale_image_bicubic(unsigned short *pSrc, int srcWidth, int srcHeight, int srcPitch,          //changing this to some library function might be a good idea
+int BicubicMipmapGenerator::sub_451007_scale_image_bicubic(unsigned short *pSrc, int srcWidth, int srcHeight, int srcPitch,          //changing this to some library function might be a good idea
 	unsigned short *pDst, int dstWidth, int dstHeight, int dstPitch,
 	int a10, int a11)
 {
@@ -528,14 +546,14 @@ int stru350::sub_451007_scale_image_bicubic(unsigned short *pSrc, int srcWidth, 
 
 
 //----- (00450DDE) --------------------------------------------------------
-stru350 *stru350::_450DDE()
+BicubicMipmapGenerator *BicubicMipmapGenerator::_450DDE()
 {
 	_450DF1(&stru_4E82A4, &stru_4E82A4);
 	return this;
 }
 
 //----- (00450DF1) --------------------------------------------------------
-bool stru350::_450DF1(const stru355 *p1, const stru355 *p2)
+bool BicubicMipmapGenerator::_450DF1(const stru355 *p1, const stru355 *p2)
 {
 	unsigned int v5; // ecx@2
 	int v6; // edi@2
@@ -722,7 +740,7 @@ bool stru350::_450DF1(const stru355 *p1, const stru355 *p2)
 }
 
 //----- (00450F55) --------------------------------------------------------
-unsigned int stru350::_450F55(int a2)
+unsigned int BicubicMipmapGenerator::_450F55(int a2)
 {
 	int v2 = a2 & stru_4E82A4.field_1C;
 	if (field_20.field_4 & 1)
@@ -734,7 +752,7 @@ unsigned int stru350::_450F55(int a2)
 }
 
 //----- (00450FB1) --------------------------------------------------------
-int stru350::_450FB1(int a2)
+int BicubicMipmapGenerator::_450FB1(int a2)
 {
 	int v2 = 0;
 	int v4 = field_0.field_4 & 1;
@@ -860,21 +878,27 @@ const void *Image::GetPixels(IMAGE_FORMAT format)
                 {
                     nullptr, // IMAGE_FORMAT_R5G6B5
                     nullptr, // IMAGE_FORMAT_A1R5G5B5
-                    Image_R5G6B5_to_A8R8G8B8  // IMAGE_FORMAT_A8R8G8B8
+                    Image_R5G6B5_to_A8R8G8B8, // IMAGE_FORMAT_A8R8G8B8
+                    Image_R5G6B5_to_R8G8B8,   // IMAGE_FORMAT_R8G8B8
+                    nullptr, // IMAGE_FORMAT_R8G8B8A8
                 },
 
                 // IMAGE_FORMAT_A1R5G5B5 ->
                 {
                     nullptr, // IMAGE_FORMAT_R5G6B5
                     nullptr, // IMAGE_FORMAT_A1R5G5B5
-                    nullptr  // IMAGE_FORMAT_A8R8G8B8
+                    nullptr, // IMAGE_FORMAT_A8R8G8B8
+                    nullptr, // IMAGE_FORMAT_R8G8B8
+                    Image_A1R5G5B5_to_R8G8B8A8, // IMAGE_FORMAT_R8G8B8A8
                 },
 
                 // IMAGE_FORMAT_A8R8G8B8 ->
                 {
                     Image_A8R8G8B8_to_R5G6B5, // IMAGE_FORMAT_R5G6B5
                     nullptr, // IMAGE_FORMAT_A1R5G5B5
-                    nullptr  // IMAGE_FORMAT_A8R8G8B8
+                    nullptr, // IMAGE_FORMAT_A8R8G8B8
+                    nullptr, // IMAGE_FORMAT_R8G8B8
+                    nullptr, // IMAGE_FORMAT_R8G8B8A8
                 },
             };
 
@@ -893,6 +917,10 @@ const void *Image::GetPixels(IMAGE_FORMAT format)
                     delete[] cvt_pixels;
                     cvt_pixels = nullptr;
                 }
+            }
+            else
+            {
+                logger->Warning(L"No ImageConverter defined from %s to %s", IMAGE_FORMAT_ToString(this->native_format), IMAGE_FORMAT_ToString(format));
             }
         }
     }

@@ -1188,7 +1188,7 @@ bool Party::AddItemToParty(ItemGen *pItem)
     }
     else
     {
-        Log::Warning(L"Invalid picture_name detected ::addItem()");
+        logger->Warning(L"Invalid picture_name detected ::addItem()");
     }
     return false;
 }

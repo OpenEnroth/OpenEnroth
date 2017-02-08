@@ -7,7 +7,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
@@ -325,7 +325,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
         else
             v39 = 0;
         actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply(pParty->GetPlayingTime() + GameTime::FromMinutes(v39 / 60), masteryLevel, 0, 0, 0);
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFF3C1Eu);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFF3C1Eu);
         pAudioPlayer->PlaySound((SoundID)SOUND_Haste, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
 
@@ -472,7 +472,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             pParty->GetPlayingTime() + GameTime::FromMinutes(v44 / 60),
             masteryLevel, realPoints + 5, 0, 0
         );
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x5C310Eu);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x5C310Eu);
         pAudioPlayer->PlaySound((SoundID)SOUND_Stoneskin, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
 
@@ -491,7 +491,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             masteryLevel, realPoints + 5, 0, 0
         );
 
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
         pAudioPlayer->PlaySound((SoundID)SOUND_Bless, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
 
@@ -509,7 +509,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             pParty->GetPlayingTime() + GameTime::FromMinutes(5),
             masteryLevel, v48, 0, 0
         );
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
         pAudioPlayer->PlaySound((SoundID)SOUND_Fate, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
 
@@ -526,7 +526,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             pParty->GetPlayingTime() + GameTime::FromMinutes(v54 / 60),
             masteryLevel, realPoints + 5, 0, 0
         );
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
         pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
 
@@ -542,7 +542,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             0,
             0
         );
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
         pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
 
@@ -550,7 +550,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
         actorPtr->sCurrentHP += 5 * realPoints + 10;
         if (actorPtr->sCurrentHP >= (signed int)actorPtr->pMonsterInfo.uHP)
             actorPtr->sCurrentHP = (short)actorPtr->pMonsterInfo.uHP;
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
         pAudioPlayer->PlaySound((SoundID)SOUND_Fate, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
 
@@ -594,7 +594,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             pParty->GetPlayingTime() + GameTime::FromMinutes(v96 / 60),
             masteryLevel, realPoints, 0, 0
         );
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
         pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
 
@@ -611,7 +611,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             pParty->GetPlayingTime() + GameTime::FromMinutes(v94 / 60),
             masteryLevel, realPoints + 5, 0, 0
         );
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
         pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
 
@@ -676,7 +676,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             pParty->GetPlayingTime() + GameTime::FromMinutes(v68 / 60),
             masteryLevel, 0, 0, 0
         );
-        pEngine->pStru6Instance->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x7E7E7Eu);
+        pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x7E7E7Eu);
         pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
         return;
     }
@@ -2491,7 +2491,7 @@ void Actor::UpdateAnimation()
     break;
 
     case Dead:
-      if (pSpriteFrameTable->pSpriteSFrames[pSpriteIDs[ANIM_Dead]].pHwSpriteIDs[0] <= 0)
+      if (pSpriteFrameTable->pSpriteSFrames[pSpriteIDs[ANIM_Dead]].hw_sprites[0] == nullptr)
         uAIState = Removed;
       else
         uCurrentActionAnimation = ANIM_Dead;
@@ -2607,7 +2607,7 @@ void Actor::ActorDamageFromMonster(signed int attacker_id, unsigned int actor_id
                 dmgToRecv = pActors[PID_ID(attacker_id)]._43B3E0_CalcDamage(a4);
                 if (pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].Active())
                 {
-                    if (pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
+                    if (pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
                         dmgToRecv = dmgToRecv / pActors[PID_ID(attacker_id)].pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
                 }
                 if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_STONED].Active())
@@ -3438,7 +3438,7 @@ void Actor::InitializeActors()
   if (pParty->IsPartyEvil())
     evil = true;
 
-  Log::Warning(L"%S %S %u", __FILE__, __FUNCTION__, __LINE__); // ai_near_actors_targets_pid[i] for AI_Stand seems always 0;  original code behaviour is identical
+  logger->Warning(L"%S %S %u", __FILE__, __FUNCTION__, __LINE__); // ai_near_actors_targets_pid[i] for AI_Stand seems always 0;  original code behaviour is identical
   for (uint i = 0; i < uNumActors; ++i)
   {
     Actor* actor = &pActors[i];
@@ -5412,7 +5412,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     pTexture = Str2;
     if ( (signed __int16)v50 == -1 )
     {
-        Log::Warning(L"Can't create random monster: '%S'! See MapStats.txt and Monsters.txt!", pTexture);
+        logger->Warning(L"Can't create random monster: '%S'! See MapStats.txt and Monsters.txt!", pTexture);
         Engine_DeinitializeAndTerminate(0);
     }
     v27 = &pMonsterList->pMonsters[(signed __int16)v50];

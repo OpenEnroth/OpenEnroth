@@ -95,12 +95,12 @@ struct stru6_stru2
 
 
 
-/*  121 */
+/* stru6 121 */
 #pragma pack(push, 1)
-struct stru6
+struct SpellFxRenderer
 {
     //----- (004A7155) --------------------------------------------------------
-    stru6()
+    SpellFxRenderer()
     {
         this->field_204 = 0;
         this->uFadeTime = 0;
@@ -112,7 +112,7 @@ struct stru6
         pStru1->Initialize(0xFF3C1Eu);
     }
     //----- (004A71DC) --------------------------------------------------------
-    ~stru6()
+    ~SpellFxRenderer()
     {
         delete pStru1;
         pStru1 = nullptr;
@@ -120,19 +120,19 @@ struct stru6
 
     void DoAddProjectile(float srcX, float srcY, float srcZ, float dstX, float dstY, float dstZ, Texture *);
     void DrawProjectiles();
-    void _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(struct SpriteObject *a2, unsigned int uDiffuse, unsigned int resource_id);
-    void _4A75CC_single_spell_collision_particle(struct SpriteObject *a1, unsigned int uDiffuse, unsigned int resource_id);
+    void _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(struct SpriteObject *a2, unsigned int uDiffuse, Texture *texture);
+    void _4A75CC_single_spell_collision_particle(struct SpriteObject *a1, unsigned int uDiffuse, Texture *texture);
     void _4A7688_fireball_collision_particle(struct SpriteObject *a2);
     void _4A77FD_implosion_particle_d3d(struct SpriteObject *a1);
     void _4A78AE_sparks_spell(struct SpriteObject *a1);
     void _4A7948_mind_blast_after_effect(struct SpriteObject *a1);
     bool AddMobileLight(struct SpriteObject *a1, unsigned int uDiffuse, int uRadius);
-    void _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(SpriteObject *a1, unsigned int uDiffuse, unsigned int resource_id, float a4);
+    void _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(SpriteObject *a1, unsigned int uDiffuse, Texture *texture, float a4);
     void _4A7C07_stun_spell_fx(struct SpriteObject *a2);
     void AddProjectile(struct SpriteObject *a2, int a3, Texture *);
     void _4A7E89_sparkles_on_actor_after_it_casts_buff(struct Actor *pActor, unsigned int uDiffuse);
     void _4A7F74(int x, int y, int z);
-    int _4A806F_get_mass_distortion_value(struct Actor *pActor);
+    float _4A806F_get_mass_distortion_value(struct Actor *pActor);
     //void _4A80DC_implosion_particle_sw(struct SpriteObject *a2);
     bool RenderAsSprite(struct SpriteObject *a2);
     void SetPlayerBuffAnim(unsigned __int16 uSpellID, unsigned __int16 uPlayerID);
@@ -159,10 +159,10 @@ struct stru6
     int uFadeTime;
     int uFadeLength;
     int uFadeColor;
-    unsigned int effpar01;
-    unsigned int effpar02;
-    unsigned int effpar03;
-    unsigned int uSpriteID_sp57c;
+    Texture *effpar01;//unsigned int effpar01; // trail fire
+    Texture *effpar02;//unsigned int effpar02;
+    Texture *effpar03;//unsigned int effpar03; // trail particle
+    unsigned int _unused_uSpriteID_sp57c;
     int field_5F4;
 };
 #pragma pack(pop)

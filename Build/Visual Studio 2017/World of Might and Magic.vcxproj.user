@@ -4,6 +4,6 @@
     <LocalDebuggerCommand>$(OutDir)$(TargetName)$(TargetExt)</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-nomarg -window -nointro -nologo -nocd</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-nomarg -window -nointro -nologo -nocd -novideo</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

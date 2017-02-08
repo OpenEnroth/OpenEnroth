@@ -9,7 +9,7 @@
 #include "Engine/Events.h"
 #include "Engine/ZlibWrapper.h"
 #include "Engine/stru367.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/LOD.h"
 
 #include "Engine/Serialization/LegacyImages.h"
@@ -213,7 +213,7 @@ void BLVRenderParams::Reset()
     //this->fSineY = sin((3.141592653589793 + 3.141592653589793) * (double)pIndoorCameraD3D->sRotationY * 0.00048828125);
     //this->fCosineNegX = cos((3.141592653589793 + 3.141592653589793) * (double)-pIndoorCameraD3D->sRotationX * 0.00048828125);
     //this->fSineNegX = sin((3.141592653589793 + 3.141592653589793) * (double)-pIndoorCameraD3D->sRotationX * 0.00048828125);
-    this->field_64 = pViewport->field_of_view;
+    this->fov = pViewport->field_of_view;
     
     this->uViewportX = pViewport->uScreen_TL_X;
     this->uViewportY = pViewport->uScreen_TL_Y;
@@ -258,7 +258,7 @@ void BLVRenderParams::Reset()
   //                                             + 0.5) << 16;
   extern float _calc_fov(int viewport_width, int angle_degree);
   this->fov_rad_fixpoint = fixpoint_from_int(_calc_fov(uViewportWidth, 65), 0);
-  this->fov_rad_inv_fixpoint = 0x100000000i64 / this->fov_rad_fixpoint;
+  this->fov_rad_inv_fixpoint = (65536i64 << 16) / this->fov_rad_fixpoint;
   this->pRenderTarget = render->pTargetSurface;
   this->uTargetWidth = window->GetWidth();
   this->uTargetHeight = window->GetHeight();
@@ -274,25 +274,25 @@ void BLVRenderParams::Reset()
 //----- (00440B44) --------------------------------------------------------
 void IndoorLocation::ExecDraw(bool bD3D)
 {
-  if (bD3D)
-  {
-    pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-    for (uint i = 0; i < pBspRenderer->num_faces; ++i)
+    if (bD3D)
     {
-      if (pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].viewing_portal_id == -1)
-        IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID, nullptr, 4, nullptr);
-      else
-        IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
-                pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].std__vector_0007AC, 4,
-                pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);
+        pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+        for (uint i = 0; i < pBspRenderer->num_faces; ++i)
+        {
+            if (pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].viewing_portal_id == -1)
+                IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID, nullptr, 4, nullptr);
+            else
+                IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
+                    pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].std__vector_0007AC, 4,
+                    pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);
+        }
     }
-  }
-  else for (uint j = 0; j < pBspRenderer->num_faces; ++j )
-  {
-    __debugbreak(); // no SW
-    //pBLVRenderParams->field_7C = &pBspRenderer->nodes[pBspRenderer->faces[j].uNodeID].PortalScreenData;
-    //IndoorLocation::ExecDraw_sw(pBspRenderer->faces[j].uFaceID);
-  }
+    else for (uint j = 0; j < pBspRenderer->num_faces; ++j)
+    {
+        __debugbreak(); // no SW
+        //pBLVRenderParams->field_7C = &pBspRenderer->nodes[pBspRenderer->faces[j].uNodeID].PortalScreenData;
+        //IndoorLocation::ExecDraw_sw(pBspRenderer->faces[j].uFaceID);
+    }
 }
 
 
@@ -841,7 +841,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
 
     if (bLoaded)
     {
-        Log::Warning(L"BLV is already loaded");
+        logger->Warning(L"BLV is already loaded");
         return true;
     }
 
@@ -873,7 +873,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
         header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i')
     {
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
     }
     //v83 = header.uCompressedSize;
     //pSource = header.uDecompressedSize;
@@ -892,16 +892,16 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
             fread(pTmpMem, header.uCompressedSize, 1, File);
 
             uint uDecompressedSize = header.uDecompressedSize;
-            zlib::MemUnzip(pRawBLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
+            zlib::Uncompress(pRawBLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
 
             if (uDecompressedSize != header.uDecompressedSize)
-                Log::Warning(L"uDecompressedSize != header.uDecompressedSize in BLV");
+                logger->Warning(L"uDecompressedSize != header.uDecompressedSize in BLV");
         }
         free(pTmpMem);
     }
     else
     {
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
         return 0;
     }
 
@@ -1133,7 +1133,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
         header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i')
     {
-        Log::Warning(L"Can't load file!");
+        logger->Warning(L"Can't load file!");
         _v244 = true;
     }
     else
@@ -1148,15 +1148,15 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
                 fread(pTmpMem, header.uCompressedSize, 1, File);
 
                 uint uDecompressedSize = header.uDecompressedSize;
-                zlib::MemUnzip(pRawDLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
+                zlib::Uncompress(pRawDLV, &uDecompressedSize, pTmpMem, header.uCompressedSize);
 
                 if (uDecompressedSize != header.uDecompressedSize)
-                    Log::Warning(L"uDecompressedSize != header.uDecompressedSize in DLV");
+                    logger->Warning(L"uDecompressedSize != header.uDecompressedSize in DLV");
             }
             free(pTmpMem);
         }
         else
-            Log::Warning(L"Can't load file!");
+            logger->Warning(L"Can't load file!");
 
         pData = (char *)pRawDLV;
     }
@@ -1215,12 +1215,12 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
             {
                 void* _uSourceLen = malloc(v155);
                 fread(_uSourceLen, v155, 1, File);
-                zlib::MemUnzip(Src, &Count, _uSourceLen, v155);
+                zlib::Uncompress(Src, &Count, _uSourceLen, v155);
                 free(_uSourceLen);
             }
         }
         else
-            Log::Warning(L"Can't load file!");
+            logger->Warning(L"Can't load file!");
         pData = ((char *)Src + 40);
         //v154 = 875;
     }
@@ -1427,7 +1427,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ)
         pSector->pBounding.z1 - 64 > sZ || pSector->pBounding.z2 + 64 < sZ)
       continue;
 
-          //Log::Warning(L"Sector[%u]", i);
+          //logger->Warning(L"Sector[%u]", i);
     v51 = pSector->uNumFloors + pSector->uNumPortals;
     if (!v51)
       continue;
@@ -2507,11 +2507,9 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
     bool current_vertices_Y; // [sp+28h] [bp-18h]@10
     bool v49; // [sp+28h] [bp-18h]@41
     bool next_vertices_Y; // [sp+2Ch] [bp-14h]@12
-    signed int number_hits; // [sp+30h] [bp-10h]@10
-    signed int v54; // [sp+30h] [bp-10h]@41
-    signed int v55; // [sp+34h] [bp-Ch]@1
-
-    //LOG_DECOMPILATION_WARNING();
+    int number_hits; // [sp+30h] [bp-10h]@10
+    int v54; // [sp+30h] [bp-10h]@41
+    int v55; // [sp+34h] [bp-Ch]@1
 
     static int blv_floor_id[50]; // 00721200
     static int blv_floor_level[50]; // 007212C8
@@ -2714,16 +2712,10 @@ void PrepareActorRenderList_BLV()
     int v8; // eax@10
     SpriteFrame *v9; // eax@16
     int v12; // ecx@28
-    signed __int64 v18; // qtt@36
-    int v25; // edx@44
-    __int16 v26; // ax@44
-    int a5a; // [sp+2Ch] [bp-28h]@36
     __int16 v41; // [sp+3Ch] [bp-18h]@18
-    int a6; // [sp+40h] [bp-14h]@34
-    int v43; // [sp+44h] [bp-10h]@34
-    int z; // [sp+48h] [bp-Ch]@32
-    signed int y; // [sp+4Ch] [bp-8h]@32
-    int x; // [sp+50h] [bp-4h]@32
+    //int z; // [sp+48h] [bp-Ch]@32
+    //signed int y; // [sp+4Ch] [bp-8h]@32
+    //int x; // [sp+50h] [bp-4h]@32
 
     for (uint i = 0; i < uNumActors; ++i)
     {
@@ -2764,82 +2756,70 @@ void PrepareActorRenderList_BLV()
         {
             pMobileLightsStack->AddLight(pActors[i].vPosition.x, pActors[i].vPosition.y, pActors[i].vPosition.z, pActors[i].uSectorID, v9->uGlowRadius, 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
         }
+
         for (v12 = 0; v12 < pBspRenderer->uNumVisibleNotEmptySectors; ++v12)
         {
             if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[v12] == pActors[i].uSectorID)
             {
-                if (!pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pActors[i].vPosition.x, pActors[i].vPosition.y, pActors[i].vPosition.z, &x, &y, &z, 1)
-                    || abs(x) < abs(y))
-                    continue;
-                pIndoorCameraD3D->Project(x, y, z, &v43, &a6);
-                if (uNumBillboardsToDraw >= 500)
-                    break;
-                ++uNumBillboardsToDraw;
-                ++uNumSpritesDrawnThisFrame;
-                pActors[i].uAttributes |= ACTOR_UNKNOW2;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v9->pHwSpriteIDs[v6];
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v9->uPaletteIndex;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].uSectorID;
-                /*if ( !render->pRenderD3D )
+                int view_x = 0;
+                int view_y = 0;
+                int view_z = 0;
+                bool visible = pIndoorCameraD3D->ViewClip(pActors[i].vPosition.x, pActors[i].vPosition.y, pActors[i].vPosition.z, &view_x, &view_y, &view_z);
+                if (visible)
                 {
-                  LODWORD(v20) = pBLVRenderParams->fov_rad_fixpoint << 16;
-                  HIDWORD(v20) = pBLVRenderParams->fov_rad_fixpoint >> 16;
-                  v0->_screenspace_x_scaler_packedfloat = fixpoint_mul(v10->scale, v20 / x);
-                  a5a = fixpoint_mul(v10->scale, v20 / x);
-                }
-                else
-                {*/
-                pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
-                HEXRAYS_LODWORD(v18) = 0;
-                HEXRAYS_HIDWORD(v18) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v9->scale, v18 / x);
-                a5a = fixpoint_mul(v9->scale, v18 / x);
-                //}
-                pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = a5a;
-                if (!pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active())
-                {
-                    if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
+                    if (abs(view_x) >= abs(view_y))
                     {
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = fixpoint_mul(
-                            pEngine->pStru6Instance->_4A806F_get_mass_distortion_value(&pActors[i]),
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat
-                            );
+                        int projected_x = 0;
+                        int projected_y = 0;
+                        pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+
+                        if (uNumBillboardsToDraw >= 500)
+                            break;
+                        ++uNumBillboardsToDraw;
+                        ++uNumSpritesDrawnThisFrame;
+
+                        pActors[i].uAttributes |= ACTOR_UNKNOW2;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v9->hw_sprites[v6];
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v9->uPaletteIndex;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].uSectorID;
+
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
+
+                        auto _v18_over_x = fixed::FromInt(floorf(pIndoorCameraD3D->fov_x + 0.5f)) / fixed::FromInt(view_x);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v9->scale * _v18_over_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v9->scale * _v18_over_x;
+
+
+                        if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active())
+                        {
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                                fixed::FromFloat(pEngine->GetSpellFxRenderer()->_4A806F_get_mass_distortion_value(&pActors[i]))
+                                * pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                        }
+                        else if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
+                        {
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                                fixed::FromFloat(1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower)
+                                * pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                        }
+
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pActors[i].vPosition.x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pActors[i].vPosition.y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pActors[i].vPosition.z;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v41 & 0xFF;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v9;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;
+
+                        if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active())
+                        {
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E |= 0x100;
+                        }
                     }
-                }
-                else
-                {
-                    if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0)
-                    {
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(
-                            65536 / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower,
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat
-                        );
-                    }
-                }
-
-                HEXRAYS_HIWORD(v25) = HEXRAYS_HIWORD(x);
-                pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pActors[i].vPosition.x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pActors[i].vPosition.y;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pActors[i].vPosition.z;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v43;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = a6;
-                HEXRAYS_LOWORD(v25) = 0;
-                HEXRAYS_LOBYTE(v26) = v41;
-
-                //v0->sZValue = v25 + (PID(OBJECT_Actor,i));
-                pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HEXRAYS_HIWORD(x);
-                pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
-
-                //v29 = HIDWORD(p->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime) == 0;
-                //v30 = HIDWORD(p->pActorBuffs[ACTOR_BUFF_STONED].uExpireTime) < 0;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v41;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v9;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;
-                if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active())
-                {
-                    HEXRAYS_HIBYTE(v26) = HEXRAYS_HIBYTE(v41) | 1;
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v26;
                 }
             }
         }
@@ -2859,9 +2839,9 @@ void PrepareItemsRenderList_BLV()
     signed __int16 v34; // [sp+44h] [bp-18h]@14
     int v35; // [sp+48h] [bp-14h]@25
     int v36; // [sp+4Ch] [bp-10h]@25
-    signed int z; // [sp+50h] [bp-Ch]@24
-    signed int y; // [sp+54h] [bp-8h]@24
-    signed int x; // [sp+58h] [bp-4h]@24
+    //signed int z; // [sp+50h] [bp-Ch]@24
+    //signed int y; // [sp+54h] [bp-8h]@24
+    //signed int x; // [sp+58h] [bp-4h]@24
 
     for (uint i = 0; i < uNumSpriteObjects; ++i)
     {
@@ -2872,7 +2852,7 @@ void PrepareItemsRenderList_BLV()
                 if ((pSpriteObjects[i].uType < 1000 || pSpriteObjects[i].uType >= 10000)
                     && (pSpriteObjects[i].uType < 500 || pSpriteObjects[i].uType >= 600)
                     && (pSpriteObjects[i].uType < 811 || pSpriteObjects[i].uType >= 815)
-                    || pEngine->pStru6Instance->RenderAsSprite(&pSpriteObjects[i]))
+                    || pEngine->GetSpellFxRenderer()->RenderAsSprite(&pSpriteObjects[i]))
                 {
                     v4 = pSpriteFrameTable->GetFrame(pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uSpriteID, pSpriteObjects[i].uSpriteFrameID);
                     a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
@@ -2880,9 +2860,9 @@ void PrepareItemsRenderList_BLV()
                         pSpriteObjects[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
                     HEXRAYS_LOWORD(v7) = pSpriteObjects[i].uFacing;
                     v9 = ((signed int)(stru_5C6E00->uIntegerPi + ((signed int)stru_5C6E00->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
-                    pBillboardRenderList[uNumBillboardsToDraw].HwSpriteID = v4->pHwSpriteIDs[v9];
+                    pBillboardRenderList[uNumBillboardsToDraw].hwsprite = v4->hw_sprites[v9];
                     if (v4->uFlags & 0x20)
-                        pSpriteObjects[i].vPosition.z -= (signed int)(fixpoint_mul(v4->scale, pSprites_LOD->pSpriteHeaders[pBillboardRenderList[uNumBillboardsToDraw].HwSpriteID].uHeight) / 2);
+                        pSpriteObjects[i].vPosition.z -= (signed int)(fixpoint_mul(v4->scale._internal, v4->hw_sprites[v9]->uBufferHeight) / 2);
 
                     v34 = 0;
                     if (v4->uFlags & 2)
@@ -2901,10 +2881,13 @@ void PrepareItemsRenderList_BLV()
                             pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uParticleTrailColorG,
                             pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uParticleTrailColorB, _4E94D3_light_type);
                     }
+
+
+                    fixed view_x, view_y, view_z;
                     if (pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pSpriteObjects[i].vPosition.x, pSpriteObjects[i].vPosition.y,
-                        pSpriteObjects[i].vPosition.z, &x, &y, &z, 1))
+                        pSpriteObjects[i].vPosition.z, &view_x, &view_y, &view_z, 1))
                     {
-                        pIndoorCameraD3D->Project(x, y, z, &v36, &v35);
+                        pIndoorCameraD3D->Project(view_x.GetInt(), view_y.GetInt(), view_z.GetInt(), &v36, &v35);
 
                         assert(uNumBillboardsToDraw < 500);
                         //if ( (signed int)uNumBillboardsToDraw >= 500 )
@@ -2920,33 +2903,23 @@ void PrepareItemsRenderList_BLV()
                             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
                             HEXRAYS_LODWORD(v18) = 0;
                             HEXRAYS_HIDWORD(v18) = (int)floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v4->scale, v18 / x);
-                            v31 = fixpoint_mul(v4->scale, v18 / x);
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v4->scale._internal, v18 / view_x._internal));
+                            v31 = fixpoint_mul(v4->scale._internal, v18 / view_x._internal);
                         }
-                        /*else
-                        {
-                          __debugbreak(); // sw rendering
-                          LODWORD(v19) = pBLVRenderParams->field_40 << 16;
-                          HIDWORD(v19) = pBLVRenderParams->field_40 >> 16;
-                          v20 = v19 / x;
-                          pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v24->scale, v19 / x);
-                          v31 = fixpoint_mul(v24->scale, v20);
-                        }*/
-                        //HIWORD(v21) = HIWORD(x);
-                        //LOWORD(v21) = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = v31;
+
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(v31);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pSpriteObjects[i].vPosition.y;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pSpriteObjects[i].vPosition.z;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = v36;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = v36;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = v35;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = v35;
                         //v23 = 8 * i;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v4;
                         //v12 = (p->uAttributes & 0x20) == 0;
                         //pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v21 + v23;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HEXRAYS_HIWORD(x);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x.GetInt();
                         pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item, i);
                         /*if (pSpriteObjects[i].uAttributes & 0x20)
                         {
@@ -2969,7 +2942,7 @@ void AddBspNodeToRenderList(unsigned int node_id)
     //if ( render->pRenderD3D )
     {
         for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
-            //Log::Warning(L"Non-BSP face: %X", v3->pFaceIDs[v2]);
+            //logger->Warning(L"Non-BSP face: %X", v3->pFaceIDs[v2]);
             pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);//рекурсия\recursion
     }
     /*else
@@ -2994,7 +2967,7 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode)
     __int16 v9; // di@18
     BspRenderer_stru0 *node; // [sp+18h] [bp-4h]@1
 
-    //Log::Warning(L"sub_4406BC(%u, %u)", a1, uFirstNode);
+    //logger->Warning(L"sub_4406BC(%u, %u)", a1, uFirstNode);
 
     //v10 = a1;
     node = &pBspRenderer->nodes[node_id];
@@ -3019,7 +2992,7 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode)
         v7 = pNode->uCoplanarOffset;
         v8 = v7 + pNode->uCoplanarSize;
 
-        //Log::Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8, v2->pFaceIDs[v7]);
+        //logger->Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8, v2->pFaceIDs[v7]);
 
         //if ( render->pRenderD3D )
         {
@@ -3049,10 +3022,10 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
     Particle_sw particle; // [sp+Ch] [bp-A0h]@3
     int v30; // [sp+8Ch] [bp-20h]@7
     int a5; // [sp+94h] [bp-18h]@17
-    int z; // [sp+98h] [bp-14h]@15
+    //int z; // [sp+98h] [bp-14h]@15
     int a6; // [sp+9Ch] [bp-10h]@17
-    int y; // [sp+A0h] [bp-Ch]@15
-    int x; // [sp+A4h] [bp-8h]@15
+    //int y; // [sp+A0h] [bp-Ch]@15
+    //int x; // [sp+A4h] [bp-8h]@15
     int v37; // [sp+A8h] [bp-4h]@5
 
     if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
@@ -3069,9 +3042,9 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
         particle.r = 0.0;
         particle.g = 0.0;
         particle.b = 0.0;
-        particle.flt_28 = 1.0;
+        particle.particle_size = 1.0;
         particle.timeToLive = (rand() & 0x80) + 128;
-        particle.resource_id = pBitmaps_LOD->LoadTexture("effpar01");
+        particle.texture = pEngine->GetSpellFxRenderer()->effpar01;
         pEngine->pParticleEngine->AddParticle(&particle);
         return;
     }
@@ -3097,19 +3070,21 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
         v30 |= 0x80;
     if ((256 << v9) & v11->uFlags)
         v30 |= 4;
+
+    fixed view_x, view_y, view_z;
     if (pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pLevelDecorations[uDecorationID].vPosition.x,
         pLevelDecorations[uDecorationID].vPosition.y,
-        pLevelDecorations[uDecorationID].vPosition.z, &x, &y, &z, 1))
+        pLevelDecorations[uDecorationID].vPosition.z, &view_x, &view_y, &view_z, 1))
     {
-        if (abs(x) >= abs(y))
+        if (abs(view_x.GetFloat()) >= abs(view_y.GetFloat()))
         {
-            pIndoorCameraD3D->Project(x, y, z, &a5, &a6);
+            pIndoorCameraD3D->Project(view_x.GetInt(), view_y.GetInt(), view_z.GetInt(), &a5, &a6);
 
             assert(uNumBillboardsToDraw < 500);
 
             ++uNumBillboardsToDraw;
             ++uNumDecorationsDrawnThisFrame;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].HwSpriteID = v11->pHwSpriteIDs[v9];
+            pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v11->hw_sprites[v9];
             pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v11->uPaletteIndex;
             pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
 
@@ -3117,20 +3092,19 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
             HEXRAYS_LODWORD(v20) = 0;
             HEXRAYS_HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_x_scaler_packedfloat = fixpoint_mul(v11->scale, v20 / x);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v11->scale._internal, v20 / view_x._internal));
             HEXRAYS_LODWORD(v20) = 0;
             HEXRAYS_HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y + 0.5f);
-            v37 = fixpoint_mul(v11->scale, v20 / x);
+            v37 = fixpoint_mul(v11->scale._internal, v20 / view_x._internal);
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1]._screenspace_y_scaler_packedfloat = v37;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(v37);
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pLevelDecorations[uDecorationID].vPosition.x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pLevelDecorations[uDecorationID].vPosition.y;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pLevelDecorations[uDecorationID].vPosition.z;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceX = a5;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uScreenSpaceY = a6;
-
-            pBillboardRenderList[uNumBillboardsToDraw - 1].actual_z = HEXRAYS_HIWORD(x);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = a5;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = a6;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x.GetInt();
             pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, uDecorationID);
 
             pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
@@ -3787,7 +3761,7 @@ char DoInteractionWithTopmostZObject(int a1, int a2)
       break;
 
     default:
-        Log::Warning(L"Warning: Invalid ID reached!");
+        logger->Warning(L"Warning: Invalid ID reached!");
       return 1;
 
     case OBJECT_BModel:
@@ -4130,7 +4104,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
       return 0;
   }
   //*****************************************************************************************************************************************
-  //generate/cinvertetion in camera location coordinates(генерация/конвертирование в координаты пространства камеры)
+  //transform to camera coordinates (генерация/конвертирование в координаты пространства камеры)
 
   //for new coordinates:
   //int x = 0x AAAA BBBB;
@@ -4152,10 +4126,15 @@ int GetPortalScreenCoord(unsigned int uFaceID)
   {
     for (uint i = 0; i < pFace->uNumVertices; ++i)
     {
-      pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pIndoor->pVertices[pFace->pVertexIDs[i]].x,
-                                                                     pIndoor->pVertices[pFace->pVertexIDs[i]].y,
-                                                                     pIndoor->pVertices[pFace->pVertexIDs[i]].z,
-        &PortalFace._view_transformed_z[i + 3], &PortalFace._view_transformed_x[i + 3], &PortalFace._view_transformed_y[i + 3], 0);
+      pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(
+          pIndoor->pVertices[pFace->pVertexIDs[i]].x,
+          pIndoor->pVertices[pFace->pVertexIDs[i]].y,
+          pIndoor->pVertices[pFace->pVertexIDs[i]].z,
+          (fixed *)&PortalFace._view_transformed_z[i + 3],
+          (fixed *)&PortalFace._view_transformed_x[i + 3],
+          (fixed *)&PortalFace._view_transformed_y[i + 3],
+          false
+      );
     }
   }
   //*****************************************************************************************************************************************
@@ -4165,7 +4144,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
   bool bFound = false;
   for (uint i = 0; i < pFace->uNumVertices; ++i)
   {
-    if ( PortalFace._view_transformed_z[i + 3] >= 524288 )// 8.0(0x80000) 0x196A9FF >=0x80000
+    if ( PortalFace._view_transformed_z[i + 3] >= 0x80000)// 8.0(0x80000) 0x196A9FF >=0x80000
     {
       bFound = true;
       break;

@@ -2,6 +2,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/LOD.h"
 
+#include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
 
@@ -71,7 +72,38 @@ Image *AssetsManager::GetImage_PCXFromFile(const String &filename)
 
 Texture *AssetsManager::GetBitmap(const String &name)
 {
-    return Texture::Create(
-        new Bitmaps_LOD_Loader(pBitmaps_LOD, name)
-    );
+	/*return Texture::Create(
+	new Bitmaps_LOD_Loader(pBitmaps_LOD, name)
+	);*/
+	auto filename = name;
+	std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+	auto i = this->bitmaps.find(filename);
+	if (i == this->bitmaps.end())
+	{
+		auto texture = render->CreateTexture(filename);
+		this->bitmaps[filename] = texture;
+
+		return texture;
+	}
+
+	return i->second;
+}
+
+
+Texture *AssetsManager::GetSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id)
+{
+    auto filename = name;
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+    auto i = this->sprites.find(filename);
+    if (i == this->sprites.end())
+    {
+        auto texture = render->CreateSprite(filename, palette_id, lod_sprite_id);
+        this->sprites[filename] = texture;
+
+        return texture;
+    }
+
+    return i->second;
 }

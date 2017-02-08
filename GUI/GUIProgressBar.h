@@ -23,8 +23,8 @@ struct GUIProgressBar
     __int16 uY;
     __int16 uWidth;
     __int16 uHeight;
-    char field_8;
-    char field_9;
+    //char field_8;
+    //char field_9;
     char uProgressMax;
     char uProgressCurrent;
     Type uType;

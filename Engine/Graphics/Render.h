@@ -27,6 +27,9 @@ class Render : public IRender
 
         virtual bool Initialize(OSWindow *window);
 
+		virtual Texture *CreateTexture(const String &name) override;
+        virtual Texture *CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id) override;
+
         virtual void ClearBlack();
         virtual void PresentBlackScreen();
 
@@ -44,8 +47,8 @@ class Render : public IRender
         virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor);
         virtual void ClearZBuffer(int a2, int a3);
         virtual void SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW);
-        virtual bool LockSurface(void *surface, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height); // IDirectDrawSurface for ddraw
-        virtual void UnlockSurface(void *surface);// IDirectDrawSurface for ddraw
+        virtual bool LockSurface(Texture *texture, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height);
+        virtual void UnlockSurface(Texture *texture);
         virtual void LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow);
         virtual void UnlockBackBuffer();
         virtual void LockFrontBuffer(void **pOutSurface, unsigned int *pOutPixelsPerRow);
@@ -61,18 +64,17 @@ class Render : public IRender
         virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders);
         virtual void DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8);
 
-        virtual void MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *gapi_texture, unsigned int uDiffuse, int angle);
-        virtual void MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *gapi_texture, unsigned int uDiffuse, int angle);
+        virtual void MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle);
+        virtual void MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle);
 
         virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
-        virtual void DrawBillboard_Indoor(RenderBillboardTransform_local0 *pSoftBillboard, Sprite *pSprite, int dimming_level);
+        virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillboard *billboard);
         virtual void _4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse);
         virtual void TransformBillboardsAndSetPalettesODM();
         virtual void DrawBillboardList_BLV();
 
         virtual void DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture);
-        virtual bool LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture);
-        virtual bool MoveSpriteToDevice(Sprite *pSprite);
+        virtual bool MoveTextureToDevice(Texture *texture) override;
 
         virtual void BeginScene();
         virtual void EndScene();
@@ -110,7 +112,7 @@ class Render : public IRender
         virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID);
         virtual void DrawOutdoorSkyD3D();
         //int DrawSkySW(struct Span *a1, Polygon *a2, int a3);
-        virtual void DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon);
+        virtual void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
         virtual void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon);
 
         virtual void PrepareDecorationsRenderList_ODM();
@@ -119,7 +121,6 @@ class Render : public IRender
         virtual void RenderTerrainD3D();
 
         virtual bool AreRenderSurfacesOk();
-        virtual bool IsGammaSupported();
 
         virtual void SaveScreenshot(const String &filename, unsigned int width, unsigned int height);
         virtual void PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size);
@@ -140,7 +141,7 @@ class Render : public IRender
         virtual void do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff);
         virtual void DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices);
 
-        virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, void *texture);
+        virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) override;
 
         virtual void am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY, int a3);
         virtual void am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode);
@@ -207,7 +208,7 @@ class Render : public IRender
 
         void DoRenderBillboards_D3D();
         void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
-        void TransformBillboard(RenderBillboardTransform_local0 *a2, Sprite *pSprite, int dimming_level, RenderBillboard *pBillboard);
+        void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
         unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
         unsigned int GetParentBillboardID(unsigned int uBillboardID);
         unsigned int GetBillboardDrawListSize();

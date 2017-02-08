@@ -148,7 +148,7 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSpriteHeader, const char *pC
       pSpriteHeader->pDecompressedBytes = malloc(pSpriteHeader->uDecompressedSize);
       DstBufa = malloc(Sizea);
       fread(DstBufa, 1, Sizea, File);
-      zlib::MemUnzip(pSpriteHeader->pDecompressedBytes, (unsigned int *)&pSpriteHeader->uDecompressedSize, DstBufa, pSpriteHeader->uSpriteSize);
+      zlib::Uncompress(pSpriteHeader->pDecompressedBytes, (unsigned int *)&pSpriteHeader->uDecompressedSize, DstBufa, pSpriteHeader->uSpriteSize);
       pSpriteHeader->uSpriteSize = pSpriteHeader->uDecompressedSize;
       free(DstBufa);
     }
@@ -168,11 +168,13 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSpriteHeader, const char *pC
 //----- (004AC795) --------------------------------------------------------
 bool LODFile_Sprites::LoadSprites(const char *pFilename)
 {
-  if (LoadHeader(pFilename, 1))
+    if (LoadHeader(pFilename, 1) == 0)
+    {
+        return LoadSubIndices("sprites08") == 0;
+    }
     return false;
-  else
-    return LoadSubIndices("sprites08") == 0;
 }
+
 
 //----- (004AC7C0) --------------------------------------------------------
 int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPaletteID)
@@ -198,8 +200,8 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
         for (i = 0; i < 1500; ++i)
         {
             pHardwareSprites[i].pName = nullptr;
-            pHardwareSprites[i].pTextureSurface = nullptr;
-            pHardwareSprites[i].pTexture = nullptr;
+            //pHardwareSprites[i].pTextureSurface = nullptr;
+            //pHardwareSprites[i].pTexture = nullptr;
         }
     }
     temp_sprite_hdr.uHeight = 0;
@@ -212,17 +214,32 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
         return -1;
 
     fread(&temp_sprite_hdr, 1, 0x20, sprite_file);
-    pHardwareSprites[uNumLoadedSprites].uBufferWidth = temp_sprite_hdr.uWidth;
-    pHardwareSprites[uNumLoadedSprites].uBufferHeight = temp_sprite_hdr.uHeight;
     pSpriteHeaders[uNumLoadedSprites].uWidth = temp_sprite_hdr.uWidth;
     pSpriteHeaders[uNumLoadedSprites].uHeight = temp_sprite_hdr.uHeight;
     LoadSpriteFromFile(&pSpriteHeaders[uNumLoadedSprites], pContainerName);        //this line is not present here in the original. necessary for Grayface's mouse picking fix
 
-
+    pHardwareSprites[uNumLoadedSprites].uBufferWidth = temp_sprite_hdr.uWidth;
+    pHardwareSprites[uNumLoadedSprites].uBufferHeight = temp_sprite_hdr.uHeight;
     pHardwareSprites[uNumLoadedSprites].pName = (const char *)malloc(20);
     strcpy((char *)pHardwareSprites[uNumLoadedSprites].pName, pContainerName);
     pHardwareSprites[uNumLoadedSprites].uPaletteID = uPaletteID;
-    render->MoveSpriteToDevice(&pHardwareSprites[uNumLoadedSprites]);
+    //render->MoveSpriteToDevice(&pHardwareSprites[uNumLoadedSprites]);
+    pHardwareSprites[uNumLoadedSprites].texture = assets->GetSprite(pContainerName, uPaletteID, uNumLoadedSprites);
+    pHardwareSprites[uNumLoadedSprites].sprite_header = &pSpriteHeaders[uNumLoadedSprites];
+
+    HWLTexture *hwl = render->LoadHwlSprite(pContainerName);
+    if (hwl)
+    {
+        pHardwareSprites[uNumLoadedSprites].uBufferWidth = hwl->uBufferWidth;
+        pHardwareSprites[uNumLoadedSprites].uBufferHeight = hwl->uBufferHeight;
+        pHardwareSprites[uNumLoadedSprites].uAreaX = hwl->uAreaX;
+        pHardwareSprites[uNumLoadedSprites].uAreaY = hwl->uAreaY;
+        pHardwareSprites[uNumLoadedSprites].uAreaWidth = hwl->uAreaWidth;
+        pHardwareSprites[uNumLoadedSprites].uAreaHeight = hwl->uAreaHeigth;
+
+        delete[] hwl->pPixels;
+        delete hwl;
+    }
 
     ++uNumLoadedSprites;
     return uNumLoadedSprites - 1;
@@ -243,387 +260,9 @@ void LODFile_Sprites::MoveSpritesToVideoMemory()
 {
 }
 
-//----- (004ACC38) --------------------------------------------------------
-int LODSprite::DrawSprite_sw(RenderBillboardTransform_local0 *a2, char a3)
-{
-  RenderBillboardTransform_local0 *v3; // edi@1
-  int result; // eax@1
-  int v5; // esi@2
-  int v6; // ST18_4@2
-  //signed int v7; // eax@2
-  signed int v8; // ebx@2
-  int v9; // ebx@2
-  int *v10; // ecx@2
-  int v11; // esi@2
-  unsigned int v12; // edx@4
-  int v13; // esi@13
-  int v14; // esi@17
-  int v15; // ecx@17
-  char *v16; // edx@17
-  int v17; // esi@17
-  int v18; // ecx@18
-  int v19; // esi@18
-  LODSprite_stru0 *v20; // edx@21
-  int v21; // eax@22
-  int v22; // esi@22
-  int v23; // eax@25
-  int v24; // ecx@25
-  signed __int64 v25; // qtt@27
-  int v26; // eax@27
-  unsigned __int16 *v27; // eax@29
-  LODSprite_stru0 *v28; // edx@29
-  signed int v29; // ecx@30
-  int v30; // ecx@37
-  int v31; // ecx@38
-  signed int v32; // ecx@41
-  int v33; // ecx@47
-  int v34; // ecx@56
-  int v35; // esi@58
-  __int16 v36; // ax@58
-  int v37; // ecx@59
-  int v38; // eax@59
-  int v39; // ecx@62
-  signed int v40; // ST30_4@64
-  signed __int64 v41; // qtt@64
-  int v42; // ecx@64
-  unsigned __int16 *v43; // eax@66
-  LODSprite_stru0 *v44; // ecx@66
-  int v45; // edx@69
-  int v46; // edx@77
-  //unsigned __int16 *pTarget; // [sp+Ch] [bp-50h]@2
-  signed int v48; // [sp+10h] [bp-4Ch]@2
-  signed int v49; // [sp+14h] [bp-48h]@2
-  int v50; // [sp+14h] [bp-48h]@19
-  int v51; // [sp+14h] [bp-48h]@57
-  int v52; // [sp+18h] [bp-44h]@13
-  int v53; // [sp+1Ch] [bp-40h]@2
-  int v54; // [sp+1Ch] [bp-40h]@22
-  int v55; // [sp+1Ch] [bp-40h]@32
-  int v56; // [sp+1Ch] [bp-40h]@69
-  int v57; // [sp+20h] [bp-3Ch]@2
-  int v58; // [sp+24h] [bp-38h]@1
-  int v59; // [sp+28h] [bp-34h]@2
-  int v60; // [sp+28h] [bp-34h]@13
-  unsigned __int16 *v61; // [sp+2Ch] [bp-30h]@2
-  int v62; // [sp+30h] [bp-2Ch]@2
-  void *v63; // [sp+30h] [bp-2Ch]@29
-  void *v64; // [sp+30h] [bp-2Ch]@66
-  int v65; // [sp+34h] [bp-28h]@2
-  int v66; // [sp+34h] [bp-28h]@22
-  int v67; // [sp+34h] [bp-28h]@59
-  int v68; // [sp+38h] [bp-24h]@13
-  unsigned int v69; // [sp+3Ch] [bp-20h]@2
-  int v70; // [sp+40h] [bp-1Ch]@2
-  signed int v71; // [sp+40h] [bp-1Ch]@15
-  int v72; // [sp+44h] [bp-18h]@2
-  unsigned __int16 *v73; // [sp+44h] [bp-18h]@29
-  unsigned __int16 *v74; // [sp+44h] [bp-18h]@66
-  int v75; // [sp+48h] [bp-14h]@4
-  int v76; // [sp+48h] [bp-14h]@22
-  int v77; // [sp+48h] [bp-14h]@59
-  //LODSprite *v78; // [sp+4Ch] [bp-10h]@1
-  int v79; // [sp+50h] [bp-Ch]@4
-  int v80; // [sp+50h] [bp-Ch]@21
-  int v81; // [sp+50h] [bp-Ch]@62
-  int v82; // [sp+50h] [bp-Ch]@67
-  int v83; // [sp+50h] [bp-Ch]@75
-  int *pTargetZ; // [sp+54h] [bp-8h]@4
-  int v85; // [sp+58h] [bp-4h]@18
-  int v86; // [sp+58h] [bp-4h]@56
-  signed int v87; // [sp+64h] [bp+8h]@2
-  int v88; // [sp+68h] [bp+Ch]@18
-  int v89; // [sp+68h] [bp+Ch]@56
-
-  v3 = a2;
-  //v78 = this;
-  result = a2->_screenspace_x_scaler_packedfloat;
-  v58 = a2->_screenspace_x_scaler_packedfloat;
-  if ( result <= 0 )
-    return result;
-  v5 = a2->_screenspace_y_scaler_packedfloat;
-  v6 = a2->_screenspace_x_scaler_packedfloat;
-  v87 = (signed __int64)0x100000000ui64 / result;
-  v48 = (signed __int64)0x100000000ui64 / result;
-  v62 = (signed __int64)0x100000000ui64 / v5;
-  //v7 = this->uHeight;
-  v8 = (signed int)((signed __int64)0x100000000ui64 / v5) >> 1;
-  v53 = v8;
-  v70 = (this->uHeight << 16) - v8;
-  v49 = this->uHeight;
-  v69 = v3->uTargetPitch;
-
-  __debugbreak(); // target surface  will most likely be 32bit, but this sub awaits 16bits
-  auto pTarget = (unsigned __int16 *)v3->pTarget;
-  v57 = v3->sZValue;
-  v61 = v3->pPalette;
-  v9 = (v6 * this->uWidth + 0x8000) >> 16;
-  v72 = v3->uScreenSpaceY;
-  result = (v5 * this->uHeight + 0x8000) >> 16;
-  v10 = (int *)(v72 - result + 1);
-  v11 = v3->uScreenSpaceX - (v9 >> 1) + 1;
-  v65 = v72 - result + 1;
-  v59 = v11 + v9 - 1;
-  if ( v3->uFlags & 0x800 )
-  {
-    v10 = (int *)((char *)v10 + (v49 >> 1));
-    v72 += v49 >> 1;
-    v65 = (int)v10;
-  }
-  v12 = v72;
-  pTargetZ = v10;
-  v75 = v3->uScreenSpaceX - (v9 >> 1) + 1;
-  v79 = v11 + v9 - 1;
-  if ( !(v3->uFlags & 8) )
-  {
-    if ( v65 < (signed int)v3->uViewportY )
-      pTargetZ = (int *)v3->uViewportY;
-    if ( v72 > (signed int)v3->uViewportW )
-      v12 = v3->uViewportW;
-    if ( v11 < (signed int)v3->uViewportX )
-      v75 = v3->uViewportX;
-    if ( v59 > (signed int)v3->uViewportZ )
-      v79 = v3->uViewportZ;
-  }
-  v68 = v75 - v11;
-  v13 = -v62;
-  v60 = v59 - v79;
-  v52 = -v62;
-  if ( v3->uFlags & 1 )
-  {
-    v13 = v62;
-    v70 = v53;
-    v52 = v62;
-  }
-  v71 = v13 * (v72 - v12) + v70;
-  if ( viewparams->field_20 & 0xFF )
-  {
-    if ( a3 )
-      return result;
-  }
-  v14 = 5 * v12;
-  v15 = v69 * v12;
-  result = v12 - v72 + result - 1;
-  v16 = (char *)pTargetZ - v65;
-  v17 = v14 << 7;
-  if ( v3->uFlags & 4 )
-  {
-    v34 = v79 + v15;
-    v89 = v34;
-    v86 = v79 + v17;
-    if ( result < (signed int)v16 )
-      return result;
-    v51 = result - (int)v16 + 1;
-    while ( 1 )
-    {
-      v35 = v71 >> 16;
-      v36 = this->pSpriteLines[v35].a1;
-      if ( v36 == -1 )
-      {
-        v34 -= v69;
-        v89 = v34;
-        goto LABEL_84;
-      }
-      v37 = v9 - ((unsigned __int64)(v36 * (signed __int64)v58) >> 16);
-      v67 = v87 * ((unsigned __int64)(this->pSpriteLines[v35].a2 * (signed __int64)v58) >> 16);
-      v38 = v9 - v60;
-      v77 = v9 - v60;
-      if ( v9 - v60 <= (signed int)(v9 - ((unsigned __int64)(this->pSpriteLines[v35].a2 * (signed __int64)v58) >> 16))
-        || v68 >= v37 )
-      {
-        v89 -= v69;
-        v34 = v89;
-LABEL_84:
-        v86 -= window->GetWidth();
-        goto LABEL_85;
-      }
-      if ( v38 < v37 )
-        v81 = (v87 >> 1) + v87 * (v37 - v38);
-      else
-      {
-        v77 = v37;
-        v81 = v87 >> 1;
-        v39 = v37 - v9;
-        v89 += v39 + v60;
-        v86 += v60 + v39;
-      }
-      v40 = ((this->pSpriteLines[v35].a2 + 1) << 16) - v81 - v67;
-      HEXRAYS_LODWORD(v41) = v40 << 16;
-      HEXRAYS_HIDWORD(v41) = v40 >> 16;
-      v42 = v77 - (((signed int)((unsigned __int64)(v41 / v48) - 0x8000) >> 16) + 1);
-      if ( v68 >= v42 )
-        v42 = v68;
-      v43 = &pTarget[v89];
-      v74 = &v43[v42 - v77 + 1];
-      v44 = &this->pSpriteLines[v35];
-      v64 = v44->pos;
-      if ( !v57 )
-      {
-        v83 = v67 + v81;
-        if ( ((v83 - (v44->a1 << 16)) & 0xFFFF0000) < 0 )
-        {
-          v83 += v87;
-          --v43;
-          --pTargetZ;
-        }
-        while ( v43 >= v74 )
-        {
-          v46 = (v83 - ((signed int)this->pSpriteLines[v35].a1 << 16)) >> 16;
-          if ( *((char *)v64 + v46) )
-            *v43 = v61[*((char *)v64 + v46)];
-          v83 += v87;
-          --v43;
-        }
-        goto LABEL_81;
-      }
-      pTargetZ = &v3->pTargetZ[v86];
-      v82 = v67 + v81;
-      if ( ((v82 - (v44->a1 << 16)) & 0xFFFF0000) < 0 )
-        goto LABEL_72;
-LABEL_73:
-      if ( v43 >= v74 )
-        break;
-LABEL_81:
-      v89 += v9 - v77 - v60 - v69;
-      v34 = v89;
-      v86 = v86 + v9 - v77 - v60 - window->GetWidth();
-LABEL_85:
-      result = v52;
-      v71 += v52;
-      --v51;
-      if ( !v51 )
-        return result;
-    }
-    v45 = (v82 - ((signed int)this->pSpriteLines[v35].a1 << 16)) >> 16;
-    v56 = *((char *)v64 + v45);
-    if ( *((char *)v64 + v45) && v57 <= (unsigned int)*pTargetZ )
-    {
-      *pTargetZ = v57;
-      *v43 = v61[v56];
-    }
-LABEL_72:
-    v82 += v87;
-    --v43;
-    --pTargetZ;
-    goto LABEL_73;
-  }
-  v18 = v75 + v15;
-  v19 = v75 + v17;
-  v88 = v18;
-  v85 = v19;
-  if ( result >= (signed int)v16 )
-  {
-    v50 = result - (int)v16 + 1;
-    while ( 1 )
-    {
-      v20 = &this->pSpriteLines[v71 >> 16];
-      v80 = v71 >> 16;
-      if ( v20->a1 != -1 )
-        break;
-      v18 -= v69;
-      v85 = v19 - window->GetWidth();
-      v88 = v18;
-LABEL_54:
-      result = v52;
-      v71 += v52;
-      --v50;
-      if ( !v50 )
-        return result;
-      v19 = v85;
-    }
-    v21 = (v58 * v20->a1 + 32768) >> 16;
-    v66 = v21 * v87;
-    v76 = v68;
-    v54 = v20->a2;
-    v22 = v9 - v60;
-    if ( v68 >= (v58 * v54 + 32768) >> 16 || v22 <= v21 )
-    {
-      v88 -= v69;
-      v85 -= window->GetWidth();
-      goto LABEL_51;
-    }
-    if ( v68 > v21 )
-    {
-      v24 = (v87 >> 1) + v87 * (v68 - v21);
-    }
-    else
-    {
-      v76 = (v58 * v20->a1 + 0x8000) >> 16;
-      v23 = v21 - v68;
-      v88 += v23;
-      v24 = v87 >> 1;
-      v85 += v23;
-    }
-    HEXRAYS_LODWORD(v25) = (((v54 + 1) << 16) - v24 - v66) << 16;
-    HEXRAYS_HIDWORD(v25) = (((v54 + 1) << 16) - v24 - v66) >> 16;
-    v26 = v76 + ((signed int)(v25 / v48) >> 16) + 1;
-    if ( v22 > v26 )
-      v22 = v26;
-    v27 = &pTarget[v88];
-    v73 = &v27[v22 - v76 - 1];
-    v28 = &this->pSpriteLines[v80];
-    v63 = v28->pos;
-    if ( v57 )
-    {
-      pTargetZ = &v3->pTargetZ[v85];
-      v29 = v66 - (v28->a1 << 16) + v24;
-      if ( (v29 & 0xFFFF0000) >= 0 )
-        goto LABEL_36;
-      while ( 1 )
-      {
-        v29 += v87;
-        ++v27;
-        ++pTargetZ;
-LABEL_36:
-        if ( v27 >= v73 )
-          break;
-        v55 = *((char *)v63 + (v29 >> 16));
-        if ( *((char *)v63 + (v29 >> 16)) && v57 <= (unsigned int)*pTargetZ )
-        {
-          *pTargetZ = v57;
-          *v27 = v61[v55];
-        }
-      }
-      v30 = v29 >> 16;
-      if ( v30 > this->pSpriteLines[v80].a2 - (signed int)this->pSpriteLines[v80].a1
-        || (v31 = *((char *)v63 + v30)) == 0
-        || v57 > (unsigned int)*pTargetZ )
-        goto LABEL_50;
-      *pTargetZ = v57;
-    }
-    else
-    {
-      v32 = v66 - (v28->a1 << 16) + v24;
-      if ( (v32 & 0xFFFF0000) < 0 )
-      {
-        v32 += v87;
-        ++v27;
-        ++pTargetZ;
-      }
-      while ( v27 < v73 )
-      {
-        if ( *((char *)v63 + (v32 >> 16)) )
-          *v27 = v61[*((char *)v63 + (v32 >> 16))];
-        v32 += v87;
-        ++v27;
-      }
-      v33 = v32 >> 16;
-      if ( v33 > this->pSpriteLines[v80].a2 - (signed int)this->pSpriteLines[v80].a1
-        || (v31 = *((char *)v63 + v33)) == 0 )
-        goto LABEL_50;
-    }
-    *v27 = v61[v31];
-LABEL_50:
-    v88 += v68 - v76 - v69;
-    v85 = v85 + v68 - v76 - window->GetWidth();
-LABEL_51:
-    v18 = v88;
-    goto LABEL_54;
-  }
-  return result;
-}
 
 //----- (004AD2D1) --------------------------------------------------------
-int LODSprite::_4AD2D1(struct RenderBillboardTransform_local0 *a2, int a3)
+int LODSprite::_4AD2D1_overlays(struct SoftwareBillboard *a2, int a3)
 {
   int result; // eax@1
   unsigned int v4; // esi@1
@@ -648,7 +287,7 @@ int LODSprite::_4AD2D1(struct RenderBillboardTransform_local0 *a2, int a3)
   v16 = (unsigned short *)a2->pTarget;
   v15 = a2->pPalette;
   v5 = this->uHeight - 1;
-  for ( i = v4 * a2->uScreenSpaceY - (this->uWidth >> 1) + a2->uScreenSpaceX + 1; v5 >= 0; --v5 )
+  for ( i = v4 * a2->screen_space_y - (this->uWidth >> 1) + a2->screen_space_x + 1; v5 >= 0; --v5 )
   {
     v6 = &this->pSpriteLines[v5];
     v7 = this->pSpriteLines[v5].a1;
@@ -1290,14 +929,14 @@ void LOD::File::AllocSubIndicesAndIO(unsigned int uNumSubIndices, unsigned int u
 {
     if (pSubIndices)
     {
-        Log::Warning(L"Attempt to reset a LOD subindex!");
+        logger->Warning(L"Attempt to reset a LOD subindex!");
         free(pSubIndices);
         pSubIndices = nullptr;
     }
     pSubIndices = (LOD::Directory *)malloc(32 * uNumSubIndices);
     if (pIOBuffer)
     {
-        Log::Warning(L"Attempt to reset a LOD IObuffer!");
+        logger->Warning(L"Attempt to reset a LOD IObuffer!");
         free(pIOBuffer);
         pIOBuffer = nullptr;
         uIOBufferSize = 0;
@@ -1588,7 +1227,7 @@ void *LOD::File::LoadRaw(const char *pContainer, int a3)
       v7 = malloc(DstBuf.uDecompressedSize+1);
     v8 = malloc(DstBuf.uTextureSize+1);
     fread(v8, 1, DstBuf.uTextureSize, File);
-    zlib::MemUnzip(v7, &DstBuf.uDecompressedSize, v8, DstBuf.uTextureSize);
+    zlib::Uncompress(v7, &DstBuf.uDecompressedSize, v8, DstBuf.uTextureSize);
     DstBuf.uTextureSize = DstBuf.uDecompressedSize;
     free(v8);
   }
@@ -1631,7 +1270,7 @@ int LODFile_IconsBitmaps::PlacementLoadTexture(Texture_MM7 *pDst, const char *pC
     pDst->paletted_pixels = (unsigned __int8 *)malloc(pDst->uDecompressedSize);
     v9 = malloc(pDst->uTextureSize);
     fread((void *)v9, 1, (size_t)pDst->uTextureSize, File);
-    zlib::MemUnzip(pDst->paletted_pixels, &pDst->uDecompressedSize, v9, pDst->uTextureSize);
+    zlib::Uncompress(pDst->paletted_pixels, &pDst->uDecompressedSize, v9, pDst->uTextureSize);
     pDst->uTextureSize = pDst->uDecompressedSize;
     free(v9);
   }
@@ -1770,7 +1409,7 @@ int LODFile_IconsBitmaps::PlacementLoadTexture(Texture_MM7 *pDst, const char *pC
 }
 
 //----- (00410423) --------------------------------------------------------
-void LODFile_IconsBitmaps::_410423_move_textures_to_device()
+/*void LODFile_IconsBitmaps::_410423_move_textures_to_device()
 {
     size_t v4; // eax@9
     char *v5; // ST1C_4@9
@@ -1799,7 +1438,7 @@ void LODFile_IconsBitmaps::_410423_move_textures_to_device()
         if (this->uNumLoadedFiles > 1)
             memset(this->ptr_011BB4, 0, this->uNumLoadedFiles - 1);
     }
-}
+}*/
 
 //----- (004103BB) --------------------------------------------------------
 void LODFile_IconsBitmaps::ReleaseHardwareTextures()
@@ -1845,7 +1484,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst, const char *pContaine
       Sourcea = malloc(pDst->uDecompressedSize);
       DstBufa = malloc(pDst->uTextureSize);
       fread(DstBufa, 1, pDst->uTextureSize, File);
-      zlib::MemUnzip(Sourcea, &v6->uDecompressedSize, DstBufa, v6->uTextureSize);
+      zlib::Uncompress(Sourcea, &v6->uDecompressedSize, DstBufa, v6->uTextureSize);
       v6->uTextureSize = pDst->uDecompressedSize;
       free(DstBufa);
       memcpy(v6->paletted_pixels, Sourcea, pDst->uDecompressedSize);
@@ -1889,7 +1528,9 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
     v8 = pOutTex;
     fread(pOutTex, 1, 0x30, pFile);
     strcpy(pOutTex->pName, pContainer);
-    if (/*render->pRenderD3D &&*/ (pOutTex->pBits & 2) && strcmp(v8->pName, "sptext01"))//Ritor1: "&& strcmp(v8->pName, "sptext01")" - temporarily for red_aura
+
+    // BITMAPS
+    if (/*render->pRenderD3D &&*/ (pOutTex->pBits & 2) && strcmp(v8->pName, "sptext01"))
     {
         if (!pHardwareSurfaces || !pHardwareTextures)
         {
@@ -1911,7 +1552,8 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
                 render->hd_water_tile_id = uNumLoadedFiles;
                 v14 = uNumLoadedFiles;
             }
-            result = render->LoadTexture(pContainer, pOutTex->palette_id1, (void **)&pHardwareSurfaces[v14], (void **)&pHardwareTextures[v14]);
+            //result = render->LoadTexture(pContainer, pOutTex->palette_id1, (void **)&pHardwareSurfaces[v14], (void **)&pHardwareTextures[v14]);
+            result = 1;
         }
         else
         {
@@ -1919,12 +1561,16 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
             temp_container = (char *)malloc(strlen(pContainer) + 2);
             *temp_container = 104;//'h'
             strcpy(temp_container + 1, pContainer);
-            result = render->LoadTexture((const char *)temp_container, pOutTex->palette_id1,
-                (void **)&pHardwareSurfaces[uNumLoadedFiles], (void **)&pHardwareTextures[uNumLoadedFiles]);
+            //result = render->LoadTexture((const char *)temp_container, pOutTex->palette_id1,
+            //    (void **)&pHardwareSurfaces[uNumLoadedFiles], (void **)&pHardwareTextures[uNumLoadedFiles]);
+            result = 1;
             free((void *)temp_container);
         }
         return result;
     }
+
+
+    // ICONS
     if (!v8->uDecompressedSize || _011BA4_debug_paletted_pixels_uncompressed)
     {
         v8->paletted_pixels = (unsigned __int8 *)malloc(v8->uTextureSize);
@@ -1935,7 +1581,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *p
         pContainer = (const char *)malloc(v8->uDecompressedSize);
         v19 = malloc(v8->uTextureSize);
         fread(v19, 1, (size_t)v8->uTextureSize, pFile);
-        zlib::MemUnzip((void *)pContainer, &v8->uDecompressedSize, v19, v8->uTextureSize);
+        zlib::Uncompress((void *)pContainer, &v8->uDecompressedSize, v19, v8->uTextureSize);
         v8->uTextureSize = v8->uDecompressedSize;
         free(v19);
         if ( /*bUseLoResSprites*/false && v8->pBits & 2)
@@ -2134,7 +1780,7 @@ Texture_MM7 * LODFile_IconsBitmaps::GetTexture( int idx )
   Assert(idx < MAX_LOD_TEXTURES, "Texture_MM7 index out of bounds (%u)", idx);
   if (idx == -1) 
   {
-    //Log::Warning(L"Texture_MM7 id = %d missing", idx);
+    //logger->Warning(L"Texture_MM7 id = %d missing", idx);
     return pTextures + LoadDummyTexture();
   }
   return pTextures + idx;

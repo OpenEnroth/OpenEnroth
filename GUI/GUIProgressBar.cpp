@@ -97,7 +97,6 @@ bool GUIProgressBar::Initialize(Type type)
 //----- (004435BB) --------------------------------------------------------
 void GUIProgressBar::Reset(unsigned __int8 uMaxProgress)
 {
-    field_9 = 0;
     uProgressCurrent = 0;
     uProgressMax = uMaxProgress;
 }
@@ -108,7 +107,7 @@ void GUIProgressBar::Progress()
     ++this->uProgressCurrent;
     if (this->uProgressCurrent > this->uProgressMax)
         this->uProgressCurrent = this->uProgressMax;
-    Draw();
+    this->Draw();
 }
 
 //----- (004435E2) --------------------------------------------------------
@@ -159,7 +158,8 @@ void GUIProgressBar::Draw()
         render->FillRectFast(
             174, 164,
             floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) + 0.5f),
-            16, 0xF800);
+            16, 0xF800
+		);
     }
     else
     {

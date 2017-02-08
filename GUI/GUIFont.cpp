@@ -268,7 +268,7 @@ char * GUIFont::FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain
 
     if (!pString)
     {
-        Log::Warning(L"Invalid string passed !");
+        logger->Warning(L"Invalid string passed !");
         return 0;
     }
     currentFont = pFontMain; // esi@3
@@ -572,7 +572,7 @@ char *FitTextInAWindow(const char *pInString, GUIFont *pFont, GUIWindow *pWindow
 
     if (!pInString)
     {
-        Log::Warning(L"Invalid string passed !");
+        logger->Warning(L"Invalid string passed !");
         return 0;
     }
     uInStrLen = strlen(pInString);

@@ -115,6 +115,18 @@
     <Filter Include="Engine\Serialization">
       <UniqueIdentifier>{74f93afa-5a55-4c13-976b-a34e4c9aad04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{e0a247c7-9211-4e03-a951-2cfebc15af91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Win">
+      <UniqueIdentifier>{b7a41e2d-1c0d-4ce5-87ea-cb25efafa153}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\Direct3D">
+      <UniqueIdentifier>{d9f99fec-7cd5-45d3-9062-00d54d102522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\OpenGL">
+      <UniqueIdentifier>{8017d785-0058-4d59-9203-d614405bb5fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lib\zlib\adler32.c">
@@ -301,8 +313,6 @@
       <Filter>lib\libpng</Filter>
     </ClCompile>
     <ClCompile Include="..\..\_deleted.cpp" />
-    <ClCompile Include="..\..\OSAPI.cpp" />
-    <ClCompile Include="..\..\OSWindow.cpp" />
     <ClCompile Include="..\..\Arcomage\Arcomage.cpp">
       <Filter>Arcomage</Filter>
     </ClCompile>
@@ -352,9 +362,6 @@
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\stru10.cpp">
-      <Filter>Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Engine\Graphics\Texture.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\Sprites.cpp">
@@ -426,12 +433,6 @@
     <ClCompile Include="..\..\Engine\stru298.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\texts.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Engine\Timer.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\VectorTypes.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -456,9 +457,6 @@
     <ClCompile Include="..\..\Engine\MapInfo.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\mm7_7.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\mm7_data.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -475,9 +473,6 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Engine\Random.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Engine\Registry.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Engine\SaveLoad.cpp">
@@ -606,16 +601,55 @@
     <ClCompile Include="..\..\Game\MainMenuLoad.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Game\CreateParty.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Game\GameMenu.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Engine\Serialization\LegacyImages.cpp">
       <Filter>Engine\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\stru6.cpp">
+    <ClCompile Include="..\..\Engine\AssetsManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Localization.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Strings.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GUI\UI\UiStatusBar.cpp">
+      <Filter>GUI\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Time.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\ImageLoader.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\Image.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\OSWindow.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\Win\AppSettings.cpp">
+      <Filter>Platform\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\Win\Win.cpp">
+      <Filter>Platform\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\Win\CdCheck.cpp">
+      <Filter>Platform\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\OpenGL\RenderOpenGL.cpp">
+      <Filter>Engine\Graphics\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\OpenGL\TextureOpenGL.cpp">
+      <Filter>Engine\Graphics\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\Direct3D\TextureD3D.cpp">
+      <Filter>Engine\Graphics\Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\SpellFxRenderer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1043,9 +1077,6 @@
     <ClInclude Include="..\..\lib\libpng\pngstruct.h">
       <Filter>lib\libpng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\OSAPI.h" />
-    <ClInclude Include="..\..\OSInfo.h" />
-    <ClInclude Include="..\..\OSWindow.h" />
     <ClInclude Include="..\..\Arcomage\Arcomage.h">
       <Filter>Arcomage</Filter>
     </ClInclude>
@@ -1098,9 +1129,6 @@
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\stru10.h">
-      <Filter>Engine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Engine\Graphics\Texture.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Sprites.h">
@@ -1181,12 +1209,6 @@
     <ClInclude Include="..\..\Engine\stru367.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\texts.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Engine\Timer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Engine\VectorTypes.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -1245,12 +1267,6 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Random.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Engine\Registry.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Engine\resource.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\SaveLoad.h">
@@ -1388,16 +1404,67 @@
     <ClInclude Include="..\..\Game\MainMenuLoad.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Game\CreateParty.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Game\GameMenu.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Serialization\LegacyImages.h">
       <Filter>Engine\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\stru6.h">
+    <ClInclude Include="..\..\Engine\AssetsManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Localization.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Strings.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GUI\UI\UiStatusBar.h">
+      <Filter>GUI\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Time.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\ImageLoader.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Image.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\ImageFormatConverter.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Texture.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Point.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Rect.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\Win\Win.h">
+      <Filter>Platform\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\OSWindow.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\Api.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Polygon.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\OpenGL\RenderOpenGL.h">
+      <Filter>Engine\Graphics\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\OpenGL\TextureOpenGL.h">
+      <Filter>Engine\Graphics\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Direct3D\TextureD3D.h">
+      <Filter>Engine\Graphics\Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\SpellFxRenderer.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1441,6 +1508,10 @@
     <None Include="..\..\Engine\Graphics\Shaders\UI.hlsl">
       <Filter>Engine\Graphics\Shaders</Filter>
     </None>
+    <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.gitignore" />
+    <None Include="..\..\README.md" />
+    <None Include="..\..\TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\lib\OpenAL\lib\OpenAL\OpenAL32.lib">

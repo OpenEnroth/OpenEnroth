@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/OurMath.h"
 #include "Engine/Graphics/IRender.h"
 
 
@@ -28,8 +29,8 @@ struct Particle_sw
     float b;
     unsigned int uDiffuse;
     int timeToLive;
-    unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
-    float flt_28;
+    Texture *texture;//unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
+    float particle_size; // flt_28
     int field_2C;
     int field_30;
     int field_34;
@@ -59,8 +60,8 @@ struct Particle
         unsigned int uParticleColor;
     };
     int timeToLive;
-    unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
-    float flt_28;
+    Texture *texture;//unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
+    float particle_size; // field_28
     float _x;
     float _y;
     float _z;
@@ -72,7 +73,7 @@ struct Particle
     int uScreenSpaceW;  // line end y
     union
     {
-        int sZValue;
+        //int sZValue;
         struct
         {
             unsigned short object_pid;
@@ -80,9 +81,9 @@ struct Particle
         };
     };
     int sZValue2;  // line end z
-    int _screenspace_scale;
-    float flt_5C;
-    float flt_60;
+    fixed screenspace_scale;//int _screenspace_scale;
+    float fov_x;
+    float fov_y;
     int uLightColor_bgr;
 };
 #pragma pack(pop)

@@ -4,13 +4,15 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "Engine/Engine.h"
-#include "IndoorCameraD3D.h"
-#include "Indoor.h"
-#include "Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
+#include "Engine/Log.h"
 
-#include "stru9.h"
+#include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Viewport.h"
+
+#include "Engine/Graphics/stru9.h"
 
 
 // calculates FOV (Field of View) angle in radians for IndoorCamera::Initialize and BLVRenderParams::Reset
@@ -72,15 +74,6 @@ float IndoorCameraD3D::GetPickDepth()
     return 16192.0;
 }
 
-//----- (00436427) --------------------------------------------------------
-float IndoorCameraD3D::GetShadingDistMist()
-{
-  if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-    return (double)pODMRenderParams->shading_dist_mist;
-  else
-    return 16192.0;
-}
-
 //----- (004364C5) --------------------------------------------------------
 void IndoorCameraD3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices, unsigned int uNumVertices, RenderVertexSoft *pOutVertices, LightsData *a5)
 {
@@ -97,53 +90,57 @@ void IndoorCameraD3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices, unsign
 }
 
 //----- (0043669D) --------------------------------------------------------
-bool IndoorCameraD3D::ApplyViewTransform_TrueIfStillVisible_BLV(int x, int y, int z, signed int *pOutX, int *pOutZ, int *pOutY, char bDoNotShow)
+bool IndoorCameraD3D::ApplyViewTransform_TrueIfStillVisible_BLV(int x, int y, int z, fixed *pOutX, fixed *pOutZ, fixed *pOutY, bool do_clip_test)
 {
-  int to_z; // esi@2
-  int v9; // ecx@3
-  //signed int *v10; // esi@5
-  //int pOutY_; // ecx@5
-  //signed int v12; // esi@7
-  int v14; // [sp+8h] [bp-4h]@3
-  int to_x; // [sp+14h] [bp+8h]@1
-  int to_y; // [sp+18h] [bp+Ch]@1
-//  int a2b; // [sp+18h] [bp+Ch]@5
-  int a3a; // [sp+1Ch] [bp+10h]@5
+    int to_z; // esi@2
+    int v9; // ecx@3
+    //signed int *v10; // esi@5
+    //int pOutY_; // ecx@5
+    //signed int v12; // esi@7
+    int v14; // [sp+8h] [bp-4h]@3
+    int to_x; // [sp+14h] [bp+8h]@1
+    int to_y; // [sp+18h] [bp+Ch]@1
+  //  int a2b; // [sp+18h] [bp+Ch]@5
+    int a3a; // [sp+1Ch] [bp+10h]@5
 
-  to_x = x - pIndoorCameraD3D->vPartyPos.x;
-  to_y = y - pIndoorCameraD3D->vPartyPos.y;
-  if (pIndoorCameraD3D->sRotationX)
-  {
-    to_z = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-    //if ( render->pRenderD3D )
-    //{
-      v14 = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
-          + (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_sine_y);
-      v9 = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_sine_y)
-         - (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_cosine_y);
-    //}
-    a3a = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-    *pOutX = fixpoint_mul(v14, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(to_z, pIndoorCameraD3D->int_sine_x);
-    *pOutZ = v9;
-    *pOutY = fixpoint_mul(v14, pIndoorCameraD3D->int_sine_x) + fixpoint_mul(a3a, pIndoorCameraD3D->int_cosine_x);
-  }
-  else
-  {
-    *pOutY = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
-    //if ( render->pRenderD3D )
-    //{
-      //v10 = pOutX;
-      *pOutX = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
-             + (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_sine_y);
-      *pOutZ = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_sine_y)
-             - (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_cosine_y);
-    //}
-  }
-  if (!bDoNotShow)
-    return false;
+    to_x = x - pIndoorCameraD3D->vPartyPos.x;
+    to_y = y - pIndoorCameraD3D->vPartyPos.y;
+    if (pIndoorCameraD3D->sRotationX)
+    {
+        to_z = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
+        //if ( render->pRenderD3D )
+        //{
+        v14 = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
+            + (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_sine_y);
+        v9 = (unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_sine_y)
+            - (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_cosine_y);
+        //}
+        a3a = (z - pIndoorCameraD3D->vPartyPos.z) << 16;
+        *pOutX = fixed::Raw(fixpoint_mul(v14, pIndoorCameraD3D->int_cosine_x) - fixpoint_mul(to_z, pIndoorCameraD3D->int_sine_x));
+        *pOutZ = fixed::Raw(v9);
+        *pOutY = fixed::Raw(fixpoint_mul(v14, pIndoorCameraD3D->int_sine_x) + fixpoint_mul(a3a, pIndoorCameraD3D->int_cosine_x));
+    }
+    else
+    {
+        *pOutY = fixed::FromInt(z - pIndoorCameraD3D->vPartyPos.z);
+        //if ( render->pRenderD3D )
+        //{
+          //v10 = pOutX;
+        *pOutX = fixed::Raw((unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_cosine_y)
+            + (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_sine_y));
+        *pOutZ = fixed::Raw((unsigned __int64)(to_x * (signed __int64)pIndoorCameraD3D->int_sine_y)
+            - (unsigned __int64)(to_y * (signed __int64)pIndoorCameraD3D->int_cosine_y));
+        //}
+    }
+    if (!do_clip_test)
+        return false;
 
-  return *pOutX >= fixpoint_from_int(4, 0) &&
-         *pOutX <= fixpoint_from_int(8000, 0);
+    //return *pOutX >= fixpoint_from_int(4, 0) &&
+    //    *pOutX <= fixpoint_from_int(8000, 0);
+    return
+        *pOutX >= fixed::FromFloat(this->GetNearClip())
+        &&
+        *pOutX <= fixed::FromFloat(this->GetFarClip());
 }
 
 //----- (00436455) --------------------------------------------------------
@@ -167,272 +164,172 @@ bool IndoorCameraD3D::IsCulled(BLVFace *pFace)
 }
 
 
-//----- (00436523) --------------------------------------------------------
-void IndoorCameraD3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices)
+
+float IndoorCameraD3D::GetNearClip() const
 {
-  if (byte_4D864C && pEngine->uFlags & 0x80 ||
-      uCurrentlyLoadedLevelType == LEVEL_Indoor)
-  {
-    float sin_x = fRotationXSine,
-          cos_x = fRotationXCosine;
-    float sin_y = fRotationYSine,
-          cos_y = fRotationYCosine;
-
-    //v4 = uNumVertices;
-    //v7 = pIndoorCamera->fRotationXSine;
-    if (pIndoorCameraD3D->sRotationX)
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
     {
+        if (pODMRenderParams)
+        {
+            return pODMRenderParams->near_clip;
+        }
 
-        //_EAX = a1a;
-    for (uint i = 0; i < uNumVertices; ++i)
-    {
-          float st0, st1, st2;
-          //if ( render->pRenderD3D )
-          {
-            /*__asm
-            {
-              fld     [ebp+uNumVertices] // [(a1a[i].y - pIndoorCamera->pos.y)]   [(a1a[i].z - pIndoorCamera->pos.z)]   [pIndoorCamera->fRotationXCosine]   [pIndoorCamera->fRotationYSine]   [pIndoorCamera->fRotationYCosine]
-              fmul    st, st(3)          // [pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]   [(a1a[i].z - pIndoorCamera->pos.z)]   [pIndoorCamera->fRotationXCosine]   [pIndoorCamera->fRotationYSine]   [pIndoorCamera->fRotationYCosine]
-              fld     [ebp+a1]           // [(a1a[i].x - pIndoorCamera->pos.x)]   [pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]   [(a1a[i].z - pIndoorCamera->pos.z)]   [pIndoorCamera->fRotationXCosine]   [pIndoorCamera->fRotationYSine]   [pIndoorCamera->fRotationYCosine]
-              fmul    st, st(5)          // 0[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 1[pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 3[pIndoorCamera->fRotationXCosine]
-                                         // 4[pIndoorCamera->fRotationYSine]
-                                         // 5[pIndoorCamera->fRotationYCosine]
-              faddp   st(1), st          // [pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) + pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]   [(a1a[i].z - pIndoorCamera->pos.z)]   [pIndoorCamera->fRotationXCosine]   [pIndoorCamera->fRotationYSine]   [pIndoorCamera->fRotationYCosine]
-              fld     [ebp+a1]           // [(a1a[i].x - pIndoorCamera->pos.x)]   [pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) + pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]   [(a1a[i].z - pIndoorCamera->pos.z)]   [pIndoorCamera->fRotationXCosine]   [pIndoorCamera->fRotationYSine]   [pIndoorCamera->fRotationYCosine]
-              fmul    st, st(4)          // [pIndoorCamera->fRotationYSine * (a1a[i].x - pIndoorCamera->pos.x)]   [pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) + pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]   [(a1a[i].z - pIndoorCamera->pos.z)]   [pIndoorCamera->fRotationXCosine]   [pIndoorCamera->fRotationYSine]   [pIndoorCamera->fRotationYCosine]
-
-              fld     [ebp+uNumVertices] // 0[a1a[i].y - pIndoorCamera->pos.y]
-                                         // 1[pIndoorCamera->fRotationYSine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 2[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) + pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 3[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 4[pIndoorCamera->fRotationXCosine]
-                                         // 5[pIndoorCamera->fRotationYSine]
-                                         // 6[pIndoorCamera->fRotationYCosine]
-
-              fmul    st, st(6)          // 0[pIndoorCamera->fRotationYCosine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 1[pIndoorCamera->fRotationYSine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 2[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) + pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 3[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 4[pIndoorCamera->fRotationXCosine]
-                                         // 5[pIndoorCamera->fRotationYSine]
-                                         // 6[pIndoorCamera->fRotationYCosine]
-
-              fsubp   st(1), st          // 0[pIndoorCamera->fRotationYSine * (a1a[i].x - pIndoorCamera->pos.x) - pIndoorCamera->fRotationYCosine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 1[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) + pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 3[pIndoorCamera->fRotationXCosine]
-                                         // 4[pIndoorCamera->fRotationYSine]
-                                         // 5[pIndoorCamera->fRotationYCosine]
-            }*/
-            st0 = sin_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) - cos_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
-            st1 = cos_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) + sin_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
-            st2 = (a1a[i].vWorldPosition.z - pIndoorCameraD3D->vPartyPos.z);
-          }
-          if (false)//else
-          {
-            /*__asm
-            {
-              fld     [ebp+a1]           // 0[(a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 1[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 2[pIndoorCamera->fRotationXCosine]
-                                         // 3[pIndoorCamera->fRotationYSine]
-                                         // 4[pIndoorCamera->fRotationYCosine]
-              fmul    st, st(4)          // 0[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 1[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 2[pIndoorCamera->fRotationXCosine]
-                                         // 3[pIndoorCamera->fRotationYSine]
-                                         // 4[pIndoorCamera->fRotationYCosine]
-              fld     [ebp+uNumVertices] // 0[(a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 1[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 3[pIndoorCamera->fRotationXCosine]
-                                         // 4[pIndoorCamera->fRotationYSine]
-                                         // 5[pIndoorCamera->fRotationYCosine]
-              fmul    st, st(4)          // 0[pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 1[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 3[pIndoorCamera->fRotationXCosine]
-                                         // 4[pIndoorCamera->fRotationYSine]
-                                         // 5[pIndoorCamera->fRotationYCosine]
-              fsubp   st(1), st          // 0[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) - pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 1[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 2[pIndoorCamera->fRotationXCosine]
-                                         // 3[pIndoorCamera->fRotationYSine]
-                                         // 4[pIndoorCamera->fRotationYCosine]
-              fld     [ebp+a1]           // 0[(a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 1[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) - pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 3[pIndoorCamera->fRotationXCosine]
-                                         // 4[pIndoorCamera->fRotationYSine]
-                                         // 5[pIndoorCamera->fRotationYCosine]
-              fmul    st, st(4)          // 0[pIndoorCamera->fRotationYSine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 1[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) - pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 3[pIndoorCamera->fRotationXCosine]
-                                         // 4[pIndoorCamera->fRotationYSine]
-                                         // 5[pIndoorCamera->fRotationYCosine]
-              fld     [ebp+uNumVertices] // 0[(a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 1[pIndoorCamera->fRotationYSine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 2[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) - pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 3[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 4[pIndoorCamera->fRotationXCosine]
-                                         // 5[pIndoorCamera->fRotationYSine]
-                                         // 6[pIndoorCamera->fRotationYCosine]
-              fmul    st, st(6)          // 0[pIndoorCamera->fRotationYCosine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 1[pIndoorCamera->fRotationYSine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 2[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) - pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 3[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 4[pIndoorCamera->fRotationXCosine]
-                                         // 5[pIndoorCamera->fRotationYSine]
-                                         // 6[pIndoorCamera->fRotationYCosine]
-              faddp   st(1), st          // 0[pIndoorCamera->fRotationYCosine * (a1a[i].y - pIndoorCamera->pos.y) + pIndoorCamera->fRotationYSine * (a1a[i].x - pIndoorCamera->pos.x)]
-                                         // 1[pIndoorCamera->fRotationYCosine * (a1a[i].x - pIndoorCamera->pos.x) - pIndoorCamera->fRotationYSine * (a1a[i].y - pIndoorCamera->pos.y)]
-                                         // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                         // 3[pIndoorCamera->fRotationXCosine]
-                                         // 4[pIndoorCamera->fRotationYSine]
-                                         // 5[pIndoorCamera->fRotationYCosine]
-            }*/
-            st0 = cos_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y) + sin_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x);
-            st1 = cos_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) - sin_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
-            st2 = (a1a[i].vWorldPosition.z - pIndoorCameraD3D->vPartyPos.z);
-          }
-
-          a1a[i].vWorldViewPosition.x = st1*cos_x - st2*sin_x;
-          a1a[i].vWorldViewPosition.y = st0;
-          a1a[i].vWorldViewPosition.z = st2*cos_x + st1*sin_x;
-      }
+        return 4.0f;
     }
     else
     {
-      for (uint i = 0; i < uNumVertices; ++i)
-      {
-          //if ( render->pRenderD3D )
-          {
-            /*__asm
-            {
-              fld     [ebp+uNumVertices]   // 0[(a1a[i].y - pIndoorCamera->pos.y)]
-                                           // 1[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 2[sin_y]
-                                           // 3[cos_y]
-              fmul    st, st(2)            // 0[sin_y * (a1a[i].y - pIndoorCamera->pos.y)]
-                                           // 1[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 2[sin_y]
-                                           // 3[cos_y]
-              fld     [ebp+a1]             // 0[(a1a[i].x - pIndoorCamera->pos.x)]
-                                           // 1[sin_y * (a1a[i].y - pIndoorCamera->pos.y)]
-                                           // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 3[sin_y]
-                                           // 4[cos_y]
-              fmul    st, st(4)            // 0[cos_y * (a1a[i].x - pIndoorCamera->pos.x)]
-                                           // 1[sin_y * (a1a[i].y - pIndoorCamera->pos.y)]
-                                           // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 3[sin_y]
-                                           // 4[cos_y]
-              faddp   st(1), st            // 0[cos_y * (a1a[i].x - pIndoorCamera->pos.x) + sin_y * (a1a[i].y - pIndoorCamera->pos.y)]
-                                           // 1[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 2[sin_y]
-                                           // 3[cos_y]
-              fstp    dword ptr [eax+0Ch]
-              fld     [ebp+a1]             // 0[(a1a[i].x - pIndoorCamera->pos.x)]
-                                           // 1[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 2[sin_y]
-                                           // 3[cos_y]
-              fmul    st, st(2)            // 0[sin_y * (a1a[i].x - pIndoorCamera->pos.x)]
-                                           // 1[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 2[sin_y]
-                                           // 3[cos_y]
-              fld     [ebp+uNumVertices]   // 0[(a1a[i].y - pIndoorCamera->pos.y)]
-                                           // 1[sin_y * (a1a[i].x - pIndoorCamera->pos.x)]
-                                           // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 3[sin_y]
-                                           // 4[cos_y]
-              fmul    st, st(4)            // 0[cos_y * (a1a[i].y - pIndoorCamera->pos.y)]
-                                           // 1[sin_y * (a1a[i].x - pIndoorCamera->pos.x)]
-                                           // 2[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 3[sin_y]
-                                           // 4[cos_y]
-              fsubp   st(1), st            // 0[sin_y * (a1a[i].x - pIndoorCamera->pos.x) - cos_y * (a1a[i].y - pIndoorCamera->pos.y)]
-                                           // 1[(a1a[i].z - pIndoorCamera->pos.z)]
-                                           // 2[sin_y]
-                                           // 3[cos_y]
-              fstp    dword ptr [eax+10h]
-              fstp    dword ptr [eax+14h]
-            }*/
-            a1a[i].vWorldViewPosition.x = cos_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) + sin_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
-            a1a[i].vWorldViewPosition.y = sin_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) - cos_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
-            a1a[i].vWorldViewPosition.z = (a1a[i].vWorldPosition.z - pIndoorCameraD3D->vPartyPos.z);
-          }
-          if (false)//else
-          {
-            __debugbreak();
-            /*__asm
-            {
-              fld     [ebp+a1]
-              fmul    st, st(3)
-              fld     [ebp+uNumVertices]
-              fmul    st, st(3)
-              fsubp   st(1), st
-              fstp    dword ptr [eax+0Ch]
-              fld     [ebp+a1]
-              fmul    st, st(2)
-              fld     [ebp+uNumVertices]
-              fmul    st, st(4)
-              faddp   st(1), st
-
-              fstp    dword ptr [eax+10h]
-              fstp    dword ptr [eax+14h]
-            }*/
-          }
-      }
+        //return (double)pBLVRenderParams->fov_rad_fixpoint / 65536.0f;
+        return 4.0f;
     }
-  }
-  else for (uint i = 0; i < uNumVertices; ++i)
-    //pIndoorCamera->ViewTransform_ODM(a1a + i);
-  {
-    //ViewTransform_ODM(a1a + i);
+}
 
-    RenderVertexSoft* a1 = &a1a[i];
-    //----- (00481CCE) --------------------------------------------------------
-    //void ViewTransform_ODM(RenderVertexSoft *a1)
+float IndoorCameraD3D::GetFarClip() const
+{
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
     {
-  float result; // eax@1
-  double vCamToVertexZ; // st7@1
-  double v3; // st6@1
-  double v4; // st5@1
-  double v5; // st4@1
-  float v6; // ST04_4@3
-  float v7; // [sp+0h] [bp-14h]@1
-  float v8; // [sp+8h] [bp-Ch]@1
-  float vCamToVertexX; // [sp+Ch] [bp-8h]@1
-  float vCamToVertexY; // [sp+10h] [bp-4h]@1
+        if (pODMRenderParams)
+        {
+            return pODMRenderParams->far_clip;
+        }
 
-  v8 = fRotationXCosine;
-  result = fRotationXSine;
-  v7 = fRotationXSine;
-  vCamToVertexX = a1->vWorldPosition.x - (double)pIndoorCameraD3D->vPartyPos.x;
-  vCamToVertexY = a1->vWorldPosition.y - (double)pIndoorCameraD3D->vPartyPos.y;
-  vCamToVertexZ = a1->vWorldPosition.z - (double)pIndoorCameraD3D->vPartyPos.z;
-  v3 = fRotationYCosine;
-  v4 = fRotationYSine;
-  v5 = vCamToVertexY * fRotationYSine + fRotationYCosine * vCamToVertexX;
-  if (pIndoorCameraD3D->sRotationX)
-  {
-    v6 = vCamToVertexY * fRotationYSine + fRotationYCosine * vCamToVertexX;
-    a1->vWorldViewPosition.x = v5 * fRotationXCosine + fRotationXSine * vCamToVertexZ;
-    a1->vWorldViewPosition.y = v3 * vCamToVertexY - v4 * vCamToVertexX;
-    a1->vWorldViewPosition.z = v8 * vCamToVertexZ - v6 * v7;
-  }
-  else
-  {
-    a1->vWorldViewPosition.x = vCamToVertexY * fRotationYSine + fRotationYCosine * vCamToVertexX;
-    a1->vWorldViewPosition.y = v3 * vCamToVertexY - v4 * vCamToVertexX;
-    a1->vWorldViewPosition.z = vCamToVertexZ;
-  }
+        return (float)0x2000;
     }
-  }
+    else
+        return 16192.0f;
+}
+
+bool IndoorCameraD3D::ViewClip(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z, bool dont_show)
+{
+    this->ViewTransform(x, y, z, transformed_x, transformed_y, transformed_z);
+
+    if (dont_show)
+    {
+        return false;
+    }
+    return *transformed_x >= this->GetNearClip() && *transformed_x <= this->GetFarClip();
+}
+
+void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)
+{
+    RenderVertexSoft v;
+    v.vWorldPosition.x = x;
+    v.vWorldPosition.y = y;
+    v.vWorldPosition.z = z;
+
+    this->ViewTransform(&v, 1);
+    if (transformed_x)
+    {
+        *transformed_x = floorf(v.vWorldViewPosition.x + 0.5f);
+    }
+
+    if (transformed_y)
+    {
+        *transformed_y = floorf(v.vWorldViewPosition.y + 0.5f);
+    }
+
+    if (transformed_z)
+    {
+        *transformed_z = floorf(v.vWorldViewPosition.z + 0.5f);
+    }
+}
+
+//----- (00436523) --------------------------------------------------------
+void IndoorCameraD3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices)
+{
+    if (byte_4D864C && pEngine->uFlags & 0x80 ||
+        uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    {
+        float sin_x = fRotationXSine,
+            cos_x = fRotationXCosine;
+        float sin_y = fRotationYSine,
+            cos_y = fRotationYCosine;
+
+        //v4 = uNumVertices;
+        //v7 = pIndoorCamera->fRotationXSine;
+        if (pIndoorCameraD3D->sRotationX)
+        {
+
+            //_EAX = a1a;
+            for (uint i = 0; i < uNumVertices; ++i)
+            {
+                float st0, st1, st2;
+                //if ( render->pRenderD3D )
+                {
+                    st0 = sin_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) - cos_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                    st1 = cos_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) + sin_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                    st2 = (a1a[i].vWorldPosition.z - pIndoorCameraD3D->vPartyPos.z);
+                }
+                if (false)//else
+                {
+                    st0 = cos_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y) + sin_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x);
+                    st1 = cos_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) - sin_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                    st2 = (a1a[i].vWorldPosition.z - pIndoorCameraD3D->vPartyPos.z);
+                }
+
+                a1a[i].vWorldViewPosition.x = st1*cos_x - st2*sin_x;
+                a1a[i].vWorldViewPosition.y = st0;
+                a1a[i].vWorldViewPosition.z = st2*cos_x + st1*sin_x;
+            }
+        }
+        else
+        {
+            for (uint i = 0; i < uNumVertices; ++i)
+            {
+                //if ( render->pRenderD3D )
+                {
+                    a1a[i].vWorldViewPosition.x = cos_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) + sin_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                    a1a[i].vWorldViewPosition.y = sin_y * (a1a[i].vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) - cos_y * (a1a[i].vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                    a1a[i].vWorldViewPosition.z = (a1a[i].vWorldPosition.z - pIndoorCameraD3D->vPartyPos.z);
+                }
+                if (false)//else
+                {
+                    __debugbreak();
+                }
+            }
+        }
+    }
+    else for (uint i = 0; i < uNumVertices; ++i)
+        //pIndoorCamera->ViewTransform_ODM(a1a + i);
+    {
+        RenderVertexSoft* a1 = &a1a[i];
+        //----- (00481CCE) --------------------------------------------------------
+        //void ViewTransform_ODM(RenderVertexSoft *a1)
+        {
+            float result; // eax@1
+            double vCamToVertexZ; // st7@1
+            double v3; // st6@1
+            double v4; // st5@1
+            double v5; // st4@1
+            float v6; // ST04_4@3
+            float v7; // [sp+0h] [bp-14h]@1
+            float v8; // [sp+8h] [bp-Ch]@1
+            float vCamToVertexX; // [sp+Ch] [bp-8h]@1
+            float vCamToVertexY; // [sp+10h] [bp-4h]@1
+
+            v8 = fRotationXCosine;
+            result = fRotationXSine;
+            v7 = fRotationXSine;
+            vCamToVertexX = a1->vWorldPosition.x - (double)pIndoorCameraD3D->vPartyPos.x;
+            vCamToVertexY = a1->vWorldPosition.y - (double)pIndoorCameraD3D->vPartyPos.y;
+            vCamToVertexZ = a1->vWorldPosition.z - (double)pIndoorCameraD3D->vPartyPos.z;
+            v3 = fRotationYCosine;
+            v4 = fRotationYSine;
+            v5 = vCamToVertexY * fRotationYSine + fRotationYCosine * vCamToVertexX;
+            if (pIndoorCameraD3D->sRotationX)
+            {
+                v6 = vCamToVertexY * fRotationYSine + fRotationYCosine * vCamToVertexX;
+                a1->vWorldViewPosition.x = v5 * fRotationXCosine + fRotationXSine * vCamToVertexZ;
+                a1->vWorldViewPosition.y = v3 * vCamToVertexY - v4 * vCamToVertexX;
+                a1->vWorldViewPosition.z = v8 * vCamToVertexZ - v6 * v7;
+            }
+            else
+            {
+                a1->vWorldViewPosition.x = vCamToVertexY * fRotationYSine + fRotationYCosine * vCamToVertexX;
+                a1->vWorldViewPosition.y = v3 * vCamToVertexY - v4 * vCamToVertexX;
+                a1->vWorldViewPosition.z = vCamToVertexZ;
+            }
+        }
+    }
 }
 
 
@@ -694,50 +591,53 @@ void IndoorCameraD3D::MatrixMultiply(Matrix3x3_float_ *ma, Matrix3x3_float_ *mb,
 //----- (004376E7) --------------------------------------------------------
 void IndoorCameraD3D::CreateWorldMatrixAndSomeStuff()
 {
-  Matrix3x3_float_ m1; // [sp+10h] [bp-B8h]@1
-  Matrix3x3_float_ m2; // [sp+34h] [bp-94h]@1
-  Matrix3x3_float_ m3; // [sp+58h] [bp-70h]@1
-  Matrix3x3_float_ m4; // [sp+7Ch] [bp-4Ch]@1
-  Matrix3x3_float_ m5; // [sp+A0h] [bp-28h]@1
+	Matrix3x3_float_ m1; // [sp+10h] [bp-B8h]@1
+	Matrix3x3_float_ m2; // [sp+34h] [bp-94h]@1
+	Matrix3x3_float_ m3; // [sp+58h] [bp-70h]@1
+	Matrix3x3_float_ m4; // [sp+7Ch] [bp-4Ch]@1
+	Matrix3x3_float_ m5; // [sp+A0h] [bp-28h]@1
 
- //RotationZ(0)
-  m5._11 = cosf(0);         m5._12 = sinf(0);        m5._13 = 0;
-  m5._21 = -sinf(0);        m5._22 = cosf(0);        m5._23 = 0;
-  m5._31 = 0;               m5._32 = 0;              m5._33 = 1;
+   //RotationZ(0)
+	m5._11 = cosf(0);         m5._12 = sinf(0);        m5._13 = 0;
+	m5._21 = -sinf(0);        m5._22 = cosf(0);        m5._23 = 0;
+	m5._31 = 0;               m5._32 = 0;              m5._33 = 1;
 
-  float cos_x1 = fRotationXCosine,
-        sin_x1 = fRotationXSine;
- //RotationX(x)
-  m4._11 = 1;               m4._12 = 0;              m4._13 = 0;
-  m4._21 = 0;               m4._22 = cos_x1;         m4._23 = sin_x1;
-  m4._31 = 0;               m4._32 = -sin_x1;        m4._33 = cos_x1;
-  
-  float cos_y1 = fRotationYCosine,
-        sin_y1 = fRotationYSine;
- //RotationY(some_angle)
-  m3._11 = cos_y1;          m3._12 = 0;              m3._13 = -sin_y1;
-  m3._21 = 0;               m3._22 = 1;              m3._23 = 0;
-  m3._31 = sin_y1;          m3._32 = 0;              m3._33 = cos_y1;
+	float cos_x1 = fRotationXCosine,
+		sin_x1 = fRotationXSine;
+	//RotationX(x)
+	m4._11 = 1;               m4._12 = 0;              m4._13 = 0;
+	m4._21 = 0;               m4._22 = cos_x1;         m4._23 = sin_x1;
+	m4._31 = 0;               m4._32 = -sin_x1;        m4._33 = cos_x1;
 
-  MatrixMultiply(&m5, &m3, &m1);
-  MatrixMultiply(&m4, &m1, &m2);
+	float cos_y1 = fRotationYCosine,
+		sin_y1 = fRotationYSine;
+	//RotationY(some_angle)
+	m3._11 = cos_y1;          m3._12 = 0;              m3._13 = -sin_y1;
+	m3._21 = 0;               m3._22 = 1;              m3._23 = 0;
+	m3._31 = sin_y1;          m3._32 = 0;              m3._33 = cos_y1;
 
-  for (uint i = 0; i < 3; ++i)
-  {
-    field_4[0].v[i] = m2.v[1][i];
-    field_4[1].v[i] = m2.v[0][i];
-    field_4[2].v[i] = m2.v[2][i];
-  }
+	MatrixMultiply(&m5, &m3, &m1);
+	MatrixMultiply(&m4, &m1, &m2);
 
-  inv_fov = 1.1344639;
-  fov_x = (double)pViewport->uScreenWidth * 0.8814736;
+	for (uint i = 0; i < 3; ++i)
+	{
+		field_4[0].v[i] = m2.v[1][i];
+		field_4[1].v[i] = m2.v[0][i];
+		field_4[2].v[i] = m2.v[2][i];
+	}
 
-  fov_y = 0.8814736 * (double)pViewport->uScreenHeight;
-  fov = fov_y;
-  if ( fov_x > fov )
-    fov = fov_x;
-  screenCenterX = (double)pViewport->uScreenCenterX;
-  screenCenterY = (double)(pViewport->uScreenCenterY - pViewport->uScreen_TL_Y);
+	fov = 0.8814736;
+	inv_fov = 1.0 / fov;
+
+	fov_x = (double)pViewport->uScreenWidth * fov;
+	fov_y = (double)pViewport->uScreenHeight * fov;
+
+	fov = fov_y;
+	if (fov_x > fov)
+		fov = fov_x;
+
+	screenCenterX = (double)pViewport->uScreenCenterX;
+	screenCenterY = (double)(pViewport->uScreenCenterY - pViewport->uScreen_TL_Y);
 }
 
 //----- (00437691) --------------------------------------------------------
@@ -1030,7 +930,7 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices, int uNumInV
   memcpy(&pInVertices[uNumInVertices], &pInVertices[0], sizeof(pInVertices[uNumInVertices]));
   depth_num_vertices = 0;
   current_vertices_flag = false;
-  if ( pInVertices[0].vWorldViewPosition.x >= pODMRenderParams->shading_dist_mist )
+  if ( pInVertices[0].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip())
     current_vertices_flag = true;//настоящая вершина больше границы видимости
   if ( (signed int)uNumInVertices <= 0 )
     return;
@@ -1047,34 +947,34 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices, int uNumInV
 
   for ( uint i = 0; i < uNumInVertices; ++i )
   {
-    next_vertices_flag = pInVertices[i + 1].vWorldViewPosition.x >= pODMRenderParams->shading_dist_mist;
+    next_vertices_flag = pInVertices[i + 1].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip();
     if ( current_vertices_flag ^ next_vertices_flag )//одна из граней за границей видимости
     {
       if ( next_vertices_flag )//следующая вершина больше границы видимости(настоящая вершина меньше границы видимости) - v3
       {
         //t = far_clip - v2.x / v3.x - v2.x (формула получения точки пересечения отрезка с плоскостью)
-        t = (pODMRenderParams->shading_dist_mist - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i].vWorldViewPosition.x - pInVertices[i + 1].vWorldViewPosition.x);
-        pOutVertices[depth_num_vertices].vWorldViewPosition.x = pODMRenderParams->shading_dist_mist;
+        t = (pIndoorCameraD3D->GetFarClip() - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i].vWorldViewPosition.x - pInVertices[i + 1].vWorldViewPosition.x);
+        pOutVertices[depth_num_vertices].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
         //New_y = v2.y + (v3.y - v2.y)*t
         pOutVertices[depth_num_vertices].vWorldViewPosition.y = pInVertices[i].vWorldViewPosition.y + (pInVertices[i].vWorldViewPosition.y - pInVertices[i + 1].vWorldViewPosition.y) * t;
         //New_z = v2.z + (v3.z - v2.z)*t
         pOutVertices[depth_num_vertices].vWorldViewPosition.z = pInVertices[i].vWorldViewPosition.z + (pInVertices[i].vWorldViewPosition.z - pInVertices[i + 1].vWorldViewPosition.z) * t;
         pOutVertices[depth_num_vertices].u = pInVertices[i].u + (pInVertices[i].u - pInVertices[i + 1].u) * t;
         pOutVertices[depth_num_vertices].v = pInVertices[i].v + (pInVertices[i].v - pInVertices[i + 1].v) * t;
-        pOutVertices[depth_num_vertices]._rhw = 1.0 / pODMRenderParams->shading_dist_mist;
+        pOutVertices[depth_num_vertices]._rhw = 1.0 / pIndoorCameraD3D->GetFarClip();
       }
       else//настоящая вершина больше границы видимости(следующая вершина меньше границы видимости) - v0
       {
         //t = far_clip - v1.x / v0.x - v1.x
-        t = (pODMRenderParams->shading_dist_mist - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i + 1].vWorldViewPosition.x - pInVertices[i].vWorldViewPosition.x);
-        pOutVertices[depth_num_vertices].vWorldViewPosition.x = pODMRenderParams->shading_dist_mist;
+        t = (pIndoorCameraD3D->GetFarClip() - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i + 1].vWorldViewPosition.x - pInVertices[i].vWorldViewPosition.x);
+        pOutVertices[depth_num_vertices].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
         //New_y = (v0.y - v1.y)*t + v1.y
         pOutVertices[depth_num_vertices].vWorldViewPosition.y = pInVertices[i].vWorldViewPosition.y + (pInVertices[i + 1].vWorldViewPosition.y - pInVertices[i].vWorldViewPosition.y) * t;
         //New_z = (v0.z - v1.z)*t + v1.z
         pOutVertices[depth_num_vertices].vWorldViewPosition.z = pInVertices[i].vWorldViewPosition.z + (pInVertices[i + 1].vWorldViewPosition.z - pInVertices[i].vWorldViewPosition.z) * t;
         pOutVertices[depth_num_vertices].u = pInVertices[i].u + (pInVertices[i + 1].u - pInVertices[i].u) * t;
         pOutVertices[depth_num_vertices].v = pInVertices[i].v + (pInVertices[i + 1].v - pInVertices[i].v) * t;
-        pOutVertices[depth_num_vertices]._rhw = 1.0 / pODMRenderParams->shading_dist_mist;
+        pOutVertices[depth_num_vertices]._rhw = 1.0 / pIndoorCameraD3D->GetFarClip();
       }
       ++depth_num_vertices;
     }
@@ -1162,121 +1062,101 @@ void IndoorCameraD3D::LightmapNeerClip(RenderVertexSoft *pInVertices, int uNumIn
 	}
 }
 
-//----- (00481D77) --------------------------------------------------------
-void _outdoor_project(RenderVertexSoft *v)
-{
-	double v1; // st7@1
-	double v2; // st7@1
-
-	v1 = 1.0 / (v->vWorldViewPosition.x + 0.0000001);
-	v->_rhw = v1;
-	v2 = v1 * (double)pODMRenderParams->int_fov_rad;
-	v->vWorldViewProjX = (double)pViewport->uScreenCenterX - v2 * v->vWorldViewPosition.y;
-	v->vWorldViewProjY = (double)pViewport->uScreenCenterY - v2 * v->vWorldViewPosition.z;
-}
-
 //----- (00436BB7) --------------------------------------------------------
-void IndoorCameraD3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, char a4)
+void IndoorCameraD3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, bool fit_into_viewport)
 {
-  double v7; // st7@7
-  double v8; // st7@9
-  double v9; // st6@10
-  double v10; // st5@12
-  double v11; // st7@16
-  double v12; // st6@17
-  double v13; // st5@19
-  float uNumVerticesa; // [sp+14h] [bp+Ch]@13
-  float uNumVerticesb; // [sp+14h] [bp+Ch]@20
+    double v7; // st7@7
+    double v8; // st7@9
+    double v9; // st6@10
+    double v10; // st5@12
+    double v11; // st7@16
+    double v12; // st6@17
+    double v13; // st5@19
 
-  for (uint i = 0; i < uNumVertices; ++i)
-  {
-    if (byte_4D864C && pEngine->uFlags & 0x80 || uCurrentlyLoadedLevelType == LEVEL_Indoor)
+    for (uint i = 0; i < uNumVertices; ++i)
     {
-      v7 = 1.0 / pVertices[i].vWorldViewPosition.x;
+        if (byte_4D864C && pEngine->uFlags & 0x80 || uCurrentlyLoadedLevelType == LEVEL_Indoor)
+        {
+            v7 = 1.0 / pVertices[i].vWorldViewPosition.x;
 
-      pVertices[i].vWorldViewProjX = pVertices[i].vWorldViewPosition.y * fov * v7 + screenCenterX;
-      pVertices[i].vWorldViewProjY = (signed int)pViewport->uViewportBR_Y - (pVertices[i].vWorldViewPosition.z * fov * v7 + screenCenterY);
-    }
-    else
-    {
-      extern void _outdoor_project(RenderVertexSoft *v);
-      _outdoor_project(pVertices + i);
-    }
+            pVertices[i].vWorldViewProjX = pVertices[i].vWorldViewPosition.y * fov * v7 + screenCenterX;
+            pVertices[i].vWorldViewProjY = (signed int)pViewport->uViewportBR_Y - (pVertices[i].vWorldViewPosition.z * fov * v7 + screenCenterY);
+        }
+        else
+        {
+            auto v = pVertices + i;
 
-      if ( a4 )
-      {
-//        __debugbreak();
-        v8 = (double)(signed int)pViewport->uViewportBR_X;
-        if ( v8 >= pVertices[i].vWorldViewProjX )
-          v9 = pVertices[i].vWorldViewProjX;
-        else
-          v9 = v8;
-        v10 = (double)(signed int)pViewport->uViewportTL_X;
-        if ( v10 <= v9 )
-        {
-          if ( v8 >= pVertices[i].vWorldViewProjX)
-            v8 = pVertices[i].vWorldViewProjX;
+            //----- (00481D77) --------------------------------------------------------
+            double v1; // st7@1
+            double v2; // st7@1
+
+            v1 = 1.0 / (v->vWorldViewPosition.x + 0.0000001);
+            v->_rhw = v1;
+            v2 = v1 * (double)pODMRenderParams->int_fov_rad;
+            v->vWorldViewProjX = (double)pViewport->uScreenCenterX - v2 * v->vWorldViewPosition.y;
+            v->vWorldViewProjY = (double)pViewport->uScreenCenterY - v2 * v->vWorldViewPosition.z;
         }
-        else
+
+
+        if (fit_into_viewport)
         {
-          uNumVerticesa = v10;
-          v8 = uNumVerticesa;
+            //        __debugbreak();
+            v8 = (double)(signed int)pViewport->uViewportBR_X;
+            if (v8 >= pVertices[i].vWorldViewProjX)
+                v9 = pVertices[i].vWorldViewProjX;
+            else
+                v9 = v8;
+            v10 = (double)(signed int)pViewport->uViewportTL_X;
+            if (v10 <= v9)
+            {
+                if (v8 >= pVertices[i].vWorldViewProjX)
+                    v8 = pVertices[i].vWorldViewProjX;
+            }
+            else
+            {
+                v8 = v10;
+            }
+            pVertices[i].vWorldViewProjX = v8;
+            v11 = (double)(signed int)pViewport->uViewportBR_Y;
+            if (v11 >= pVertices[i].vWorldViewProjY)
+                v12 = pVertices[i].vWorldViewProjY;
+            else
+                v12 = v11;
+            v13 = (double)(signed int)pViewport->uViewportTL_Y;
+            if (v13 <= v12)
+            {
+                if (v11 >= pVertices[i].vWorldViewProjY)
+                    v11 = pVertices[i].vWorldViewProjY;
+            }
+            else
+            {
+                v11 = v13;
+            }
+            pVertices[i].vWorldViewProjY = v11;
         }
-        pVertices[i].vWorldViewProjX = v8;
-        v11 = (double)(signed int)pViewport->uViewportBR_Y;
-        if ( v11 >= pVertices[i].vWorldViewProjY)
-          v12 = pVertices[i].vWorldViewProjY;
-        else
-          v12 = v11;
-        v13 = (double)(signed int)pViewport->uViewportTL_Y;
-        if ( v13 <= v12 )
-        {
-          if ( v11 >= pVertices[i].vWorldViewProjY)
-            v11 = pVertices[i].vWorldViewProjY;
-        }
-        else
-        {
-          uNumVerticesb = v13;
-          v11 = uNumVerticesb;
-        }
-        pVertices[i].vWorldViewProjY = v11;
-      }
-  }
+    }
 }
 
-//----- (00436A9A) --------------------------------------------------------
-void IndoorCameraD3D::Project(signed int x, signed int y, signed int z, int *a5, int *a6)
+void IndoorCameraD3D::Project(int x, int y, int z, int *screenspace_x, int *screenspace_y)
 {
-  double v6; // ST00_8@2
-  //double v7; // ST08_8@2
-  //double v8; // ST00_8@2
-//  signed __int64 v9; // qtt@3
-//  int v10; // ST04_4@3
-  float a2a; // [sp+18h] [bp+8h]@2
-  float a2b; // [sp+18h] [bp+8h]@2
+    RenderVertexSoft v;
+    v.vWorldViewPosition.x = x;
+    v.vWorldViewPosition.y = y;
+    v.vWorldViewPosition.z = z;
 
-  //if ( render->pRenderD3D )
-  {
-    v6 = 1.0 / (double)x;
-    a2a = (double)y * fov * v6 + screenCenterX;
-    //v7 = a2a + 6.7553994e15;
-    *a5 = floorf(a2a + 0.5f);
-    a2b = (double)z * fov * v6 + screenCenterY;
-    //v8 = a2b + 6.7553994e15;
-    *a6 = pViewport->uViewportBR_Y - floorf(a2b + 0.5f);
-  }
-  /*else
-  {
-    LODWORD(v9) = pBLVRenderParams->fov_rad_fixpoint << 16;
-    HIDWORD(v9) = pBLVRenderParams->fov_rad_fixpoint >> 16;
-    v10 = v9 / x;
-    LODWORD(v9) = pBLVRenderParams->fov_rad_fixpoint << 16;
-    HIDWORD(v9) = pBLVRenderParams->fov_rad_fixpoint >> 16;
-    *a5 = pBLVRenderParams->uViewportCenterX
-        - ((signed int)(((unsigned __int64)(v10 * (signed __int64)y) >> 16) + 32768) >> 16);
-    *a6 = pBLVRenderParams->uViewportCenterY - ((signed int)(((unsigned __int64)(v9 / x * z) >> 16) + 32768) >> 16);
-  }*/
+    this->Project(&v, 1, false);
+
+    if (screenspace_x)
+    {
+        *screenspace_x = floorf(v.vWorldViewProjX + 0.5f);
+    }
+
+    if (screenspace_y)
+    {
+        *screenspace_y = floorf(v.vWorldViewProjY + 0.5f);
+    }
 }
+
 
 //----- (00436A6D) --------------------------------------------------------
 double IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripType)
@@ -1290,12 +1170,6 @@ double IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int
       result = pVertices[i].vWorldPosition.z;
   }
   return result;
-}
-
-//----- (00436A24) --------------------------------------------------------
-struct IDirect3DTexture2 *IndoorCameraD3D::LoadTextureAndGetHardwarePtr(char *Str1)
-{
-  return pBitmaps_LOD->pHardwareTextures[pBitmaps_LOD->LoadTexture(Str1)];
 }
 
 //----- (00436A40) --------------------------------------------------------

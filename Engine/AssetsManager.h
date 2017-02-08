@@ -1,4 +1,6 @@
 #pragma once
+#include <map>
+
 #include "Engine/Strings.h"
 
 class Image;
@@ -19,8 +21,11 @@ class AssetsManager
         Image *GetImage_PCXFromNewLOD(const String &name);
 
         Texture *GetBitmap(const String &name);
+        Texture *GetSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id);
 
     protected:
+		std::map<String, Texture *> bitmaps;
+        std::map<String, Texture *> sprites;
 };
 
 extern AssetsManager *assets;

@@ -535,7 +535,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     const char *string_name[10]; // [sp+FCh] [bp-F0h]@145
     const char *content[11]; // [sp+124h] [bp-C8h]@127
     unsigned char resistances[11]; // [sp+124h] [bp-C8h]@127
-    RenderBillboardTransform_local0 v106; // [sp+150h] [bp-9Ch]@3
+    SoftwareBillboard v106; // [sp+150h] [bp-9Ch]@3
     unsigned int v107; // [sp+1A0h] [bp-4Ch]@18
     bool for_effects; // [sp+1C0h] [bp-2Ch]@3
     bool normal_level; // [sp+1D0h] [bp-1Ch]@18
@@ -590,12 +590,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     v106.uViewportY = pWindow->uFrameY + 52;
     v106.uViewportW = (pWindow->uFrameY + 52) + 128;
     v106.uViewportZ = v106.uViewportX + 128;
-    v106.uScreenSpaceX = (signed int)(v106.uViewportX + 128 + v106.uViewportX) / 2;
-    v106._screenspace_x_scaler_packedfloat = 65536;
-    v106._screenspace_y_scaler_packedfloat = 65536;
-    v106.uScreenSpaceY = v115 + (pWindow->uFrameY + 52) + pSprites_LOD->pSpriteHeaders[v10->pHwSpriteIDs[0]].uHeight;
+    v106.screen_space_x = (signed int)(v106.uViewportX + 128 + v106.uViewportX) / 2;
+    v106.screenspace_projection_factor_x = fixed::FromInt(1);
+    v106.screenspace_projection_factor_y = fixed::FromInt(1);
+    v106.screen_space_y = v115 + (pWindow->uFrameY + 52) + v10->hw_sprites[0]->sprite_header->uHeight;
     v106.pPalette = PaletteManager::Get_Dark_or_Red_LUT(v10->uPaletteIndex, 0, 1);
-    v106.sZValue = 0;
+    v106.screen_space_z = 0;
+    v106.object_pid = 0;
     v106.uFlags = 0;
     render->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
     render->RasterLine2D(v106.uViewportX - 1, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));//горизонтальная верхняя линия
@@ -604,14 +605,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     render->RasterLine2D(v106.uViewportX + 129, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));//правая вертикальная линия
     //if ( render->pRenderD3D )
     {
-        v106.uScreenSpaceY = v115 + v106.uViewportY + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uBufferHeight;
+        v106.screen_space_y = v115 + v106.uViewportY + v10->hw_sprites[0]->uBufferHeight;
 
         v107 = 0;
         uint i = 0;
-        int dst_x = v106.uScreenSpaceX + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaX - pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uBufferWidth / 2;
-        int dst_y = v106.uScreenSpaceY + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaY - pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uBufferHeight;
-        uint dst_z = v106.uScreenSpaceX + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaX + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaWidth + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uBufferWidth / 2 - pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uBufferWidth;
-        uint dst_w = v106.uScreenSpaceY + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaY + pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaHeight - pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uBufferHeight;
+        int dst_x = v106.screen_space_x + v10->hw_sprites[0]->uAreaX - v10->hw_sprites[0]->uBufferWidth / 2;
+        int dst_y = v106.screen_space_y + v10->hw_sprites[0]->uAreaY - v10->hw_sprites[0]->uBufferHeight;
+        uint dst_z = v106.screen_space_x + v10->hw_sprites[0]->uAreaX + v10->hw_sprites[0]->uAreaWidth + v10->hw_sprites[0]->uBufferWidth / 2 - v10->hw_sprites[0]->uBufferWidth;
+        uint dst_w = v106.screen_space_y + v10->hw_sprites[0]->uAreaY + v10->hw_sprites[0]->uAreaHeight - v10->hw_sprites[0]->uBufferHeight;
         if (dst_x < v106.uViewportX)
         {
             v18 = v106.uViewportX - dst_x;
@@ -632,52 +633,6 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         render->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0x7FF);
 
 
-
-        /*DDBLTFX Dst; // [sp+Ch] [bp-1E0h]@18
-        DDSURFACEDESC2 pDesc; // [sp+70h] [bp-17Ch]@18
-        RECT dest_rect; // [sp+ECh] [bp-100h]@26
-
-        dest_rect.left = v106.uViewportX;
-        dest_rect.top = v106.uViewportY;
-        dest_rect.right = v106.uViewportZ;
-        dest_rect.bottom = v106.uViewportW;
-
-        memset(&Dst, 0, sizeof(Dst));
-        Dst.dwSize = sizeof(Dst);
-        Dst.dwFillColor = 0;
-
-        memset(&pDesc, 0, sizeof(pDesc));
-        pDesc.dwSize = sizeof(pDesc);
-
-        pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface->GetSurfaceDesc(&pDesc);
-
-        ErrD3D(render->pBackBuffer4->Blt(&dest_rect, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &Dst));
-        {
-            memset(&pDesc, 0, sizeof(pDesc));
-            pDesc.dwSize = sizeof(pDesc);
-            if (render->LockSurface_DDraw4(pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface, &pDesc, DDLOCK_WAIT))
-            {
-                ushort* src = (unsigned __int16 *)pDesc.lpSurface;
-                uint num_top_scanlines_above_frame_y = i - dst_y;
-                for (uint y = dst_y; y < dst_w; ++y)
-                {
-                    //ushort* dst = &render->pTargetSurface[y * render->uTargetSurfacePitch + dst_x];
-
-                    uint src_y = num_top_scanlines_above_frame_y + y;
-                    for (uint x = dst_x; x < dst_z; ++x)
-                    {
-                        uint src_x = v107 - dst_x + x; // num scanlines left to frame_x  + current x
-
-                        uint idx = pDesc.dwHeight * src_y / pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaHeight * (pDesc.lPitch / sizeof(short)) +
-                            pDesc.dwWidth  * src_x / pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaWidth;
-                        uint b = src[idx] & 0x1F;
-                        //*dst++ = b | 2 * (src[idx] & 0xFFE0);
-                        render->WritePixel16(x, y, b | 2 * (src[idx] & 0xFFE0));
-                    }
-                }
-                pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface->Unlock(NULL);
-            }
-        }*/
         Rect rc;
         rc.x = v106.uViewportX;
         rc.y = v106.uViewportY;
@@ -688,7 +643,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         int pitch;
         int width;
         int height;
-        if (render->LockSurface(pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface, &rc, &surface, &pitch, &width, &height))
+        if (render->LockSurface(v10->hw_sprites[0]->texture, &rc, &surface, &pitch, &width, &height))
         {
             ushort* src = (unsigned __int16 *)surface;
             uint num_top_scanlines_above_frame_y = i - dst_y;
@@ -701,14 +656,15 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
                 {
                     uint src_x = v107 - dst_x + x; // num scanlines left to frame_x  + current x
 
-                    uint idx = height * src_y / pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaHeight * (pitch / sizeof(short)) +
-                        width  * src_x / pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].uAreaWidth;
+                    uint idx =
+                        height * src_y / v10->hw_sprites[0]->uAreaHeight * (pitch / sizeof(short)) +
+                        width  * src_x / v10->hw_sprites[0]->uAreaWidth;
                     uint b = src[idx] & 0x1F;
                     //*dst++ = b | 2 * (src[idx] & 0xFFE0);
                     render->WritePixel16(x, y, b | 2 * (src[idx] & 0xFFE0));
                 }
             }
-            render->UnlockSurface(pSprites_LOD->pHardwareSprites[v10->pHwSpriteIDs[0]].pTextureSurface);
+            render->UnlockSurface(v10->hw_sprites[0]->texture);
         }
     }
     /*else

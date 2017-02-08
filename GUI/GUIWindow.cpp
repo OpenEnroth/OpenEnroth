@@ -939,7 +939,7 @@ void GUIWindow::DrawText(GUIFont *font, int uX, int uY, unsigned short uFontColo
   int left_margin = 0;
   if ( !Str )
   {
-    Log::Warning(L"Invalid string passed!");
+    logger->Warning(L"Invalid string passed!");
     return;
   }
   if (!strcmp(Str, "null"))
@@ -1962,7 +1962,7 @@ void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, GameTime r
 //----- (0042EB8D) --------------------------------------------------------
 void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param, unsigned int a4, const char *file, int line)
 {
-    //Log::Warning(L"%s @ (%S %u)", UIMessage2String(msg), file, line);
+    //logger->Warning(L"%s @ (%S %u)", UIMessage2String(msg), file, line);
     if (uNumMessages < 40)
     {
         files[uNumMessages] = file;

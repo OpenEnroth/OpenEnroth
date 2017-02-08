@@ -97,7 +97,7 @@ Texture_MM7 *LoadPNG(const char *name)
     for (x=0; x<width; x++)
     {
       png_byte* ptr = &(row[x*4]);
-      //Log::Warning(L"Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d - %d\n",
+      //logger->Warning(L"Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d - %d\n",
       //                   x, y, ptr[0], ptr[1], ptr[2], ptr[3]);
       png_byte tmp = ptr[2];
       ptr[2] = ptr[0];

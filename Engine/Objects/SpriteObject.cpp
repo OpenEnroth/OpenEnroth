@@ -6,6 +6,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
+#include "Engine/SpellFxRenderer.h"
 
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -242,8 +243,8 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID)
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
                 Dst.uDiffuse = 0xFF3C1E;
                 Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                Dst.resource_id = pBitmaps_LOD->LoadTexture("effpar01", TEXTURE_DEFAULT);
-                Dst.flt_28 = 1.0;
+                Dst.texture = pEngine->GetSpellFxRenderer()->effpar01;
+                Dst.particle_size = 1.0f;
                 pEngine->pParticleEngine->AddParticle(&Dst);
             }
             else if (object->uFlags & OBJECT_DESC_TRIAL_LINE)
@@ -251,8 +252,8 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID)
                 Dst.type = ParticleType_Line;
                 Dst.uDiffuse = rand();
                 Dst.timeToLive = 64;
-                Dst.resource_id = 0;
-                Dst.flt_28 = 1.0;
+                Dst.texture = nullptr;
+                Dst.particle_size = 1.0f;
                 pEngine->pParticleEngine->AddParticle(&Dst);
             }
             else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE)
@@ -260,8 +261,8 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID)
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
                 Dst.uDiffuse = rand();
                 Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                Dst.resource_id = pBitmaps_LOD->LoadTexture("effpar03", TEXTURE_DEFAULT);
-                Dst.flt_28 = 1.0;
+                Dst.texture = pEngine->GetSpellFxRenderer()->effpar03;
+                Dst.particle_size = 1.0f;
                 pEngine->pParticleEngine->AddParticle(&Dst);
             }
             return;
@@ -349,18 +350,18 @@ LABEL_13:
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
                     Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                    Dst.resource_id = pBitmaps_LOD->LoadTexture("effpar01", TEXTURE_DEFAULT);
-                    Dst.flt_28 = 1.0;
+                    Dst.texture = pEngine->GetSpellFxRenderer()->effpar01;
+                    Dst.particle_size = 1.0f;
                     pEngine->pParticleEngine->AddParticle(&Dst);
                     return;
                 }
                 else if (object->uFlags & OBJECT_DESC_TRIAL_LINE)
                 {
                     Dst.type = ParticleType_Line;
-                    Dst.resource_id = 0;
+                    Dst.texture = nullptr;
                     Dst.uDiffuse = rand();
                     Dst.timeToLive = 64;
-                    Dst.flt_28 = 1.0;
+                    Dst.particle_size = 1.0f;
                     pEngine->pParticleEngine->AddParticle(&Dst);
                     return;
                 }
@@ -369,8 +370,8 @@ LABEL_13:
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
                     Dst.uDiffuse = rand();
                     Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                    Dst.resource_id = pBitmaps_LOD->LoadTexture("effpar03", TEXTURE_DEFAULT);
-                    Dst.flt_28 = 1.0;
+                    Dst.texture = pEngine->GetSpellFxRenderer()->effpar03;
+                    Dst.particle_size = 1.0f;
                     pEngine->pParticleEngine->AddParticle(&Dst);
                 }
                 return;
@@ -564,8 +565,8 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
                     Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                    Dst.resource_id = pBitmaps_LOD->LoadTexture("effpar01", TEXTURE_DEFAULT);
-                    Dst.flt_28 = 1.0;
+                    Dst.texture = pEngine->GetSpellFxRenderer()->effpar01;
+                    Dst.particle_size = 1.0f;
                     pEngine->pParticleEngine->AddParticle(&Dst);
                     return;
                 }
@@ -574,8 +575,8 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
                     Dst.type = ParticleType_Line;
                     Dst.uDiffuse = rand();
                     Dst.timeToLive = 64;
-                    Dst.resource_id = 0;
-                    Dst.flt_28 = 1.0;
+                    Dst.texture = 0;
+                    Dst.particle_size = 1.0f;
                     pEngine->pParticleEngine->AddParticle(&Dst);
                     return;
                 }
@@ -584,8 +585,8 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
                     Dst.uDiffuse = rand();
                     Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                    Dst.resource_id = pBitmaps_LOD->LoadTexture("effpar03", TEXTURE_DEFAULT);
-                    Dst.flt_28 = 1.0;
+                    Dst.texture = pEngine->GetSpellFxRenderer()->effpar03;
+                    Dst.particle_size = 1.0f;
                     pEngine->pParticleEngine->AddParticle(&Dst);
                 }
                 return;
@@ -707,9 +708,9 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
             {
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
                 Dst.uDiffuse = 0xFF3C1E;
-                Dst.flt_28 = 1.0;
+                Dst.particle_size = 1.0f;
                 Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                Dst.resource_id = pBitmaps_LOD->LoadTexture("effpar01", TEXTURE_DEFAULT);
+                Dst.texture = pEngine->GetSpellFxRenderer()->effpar01;
                 pEngine->pParticleEngine->AddParticle(&Dst);
                 return;
             }
@@ -718,8 +719,8 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
                 Dst.type = ParticleType_Line;
                 Dst.uDiffuse = rand();
                 Dst.timeToLive = 64;
-                Dst.resource_id = 0;
-                Dst.flt_28 = 1.0;
+                Dst.texture = nullptr;
+                Dst.particle_size = 1.0f;
                 pEngine->pParticleEngine->AddParticle(&Dst);
                 return;
             }
@@ -727,9 +728,9 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
             {
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
                 Dst.uDiffuse = rand();
-                Dst.flt_28 = 1.0;
+                Dst.particle_size = 1.0f;
                 Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                Dst.resource_id = pBitmaps_LOD->LoadTexture("effpar03", TEXTURE_DEFAULT);
+                Dst.texture = pEngine->GetSpellFxRenderer()->effpar03;
                 pEngine->pParticleEngine->AddParticle(&Dst);
             }
             return;

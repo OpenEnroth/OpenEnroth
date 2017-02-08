@@ -4,6 +4,14 @@
 #include "Platform/Win/Win.h"
 
 
+//----- (00462C94) --------------------------------------------------------
+int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hprevinstance, wchar_t *lpCmdLine, int nShowCmd)
+{
+	extern bool MM_Main(const wchar_t *pCmdLine);
+	return MM_Main(lpCmdLine) != false;
+}
+
+
 void OS_MsgBox(const wchar_t *msg, const wchar_t *title)
 {
     MessageBoxW(nullptr, msg, title, 0);

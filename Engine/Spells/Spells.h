@@ -4,7 +4,7 @@
 
 #include "Engine/Objects/SpriteObject.h"
 
-#include "../VectorTypes.h"
+#include "Engine/VectorTypes.h"
 
 /*  360 */
 enum SPELL_TYPE

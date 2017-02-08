@@ -62,7 +62,7 @@ public:
         device = alcOpenDevice(nullptr);
         if (!device || CheckError())
         {
-            Log::Warning(L"Default sound device not present");
+            logger->Warning(L"Default sound device not present");
             return false;
         }
 

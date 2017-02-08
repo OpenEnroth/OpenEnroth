@@ -232,7 +232,7 @@ struct MonsterDesc
   unsigned __int16 uMonsterRadius;
   unsigned __int16 uMovementSpeed;
   __int16 uToHitRadius;
-  signed int sTintColor;
+  unsigned int sTintColor;
   unsigned __int16 pSoundSampleIDs[4];
   char pMonsterName[32];
   char pSpriteNames[10][10];

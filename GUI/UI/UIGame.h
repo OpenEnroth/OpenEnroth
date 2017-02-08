@@ -6,7 +6,7 @@ void GameUI_ReloadPlayerPortraits(int player_id, int face_id);
 void GameUI_WritePointedObjectStatusString();
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID); // idb
 
-__int16 sub_441A4E(int a1);
+__int16 _441A4E_overlay_on_portrait(int a1);
 
 
 

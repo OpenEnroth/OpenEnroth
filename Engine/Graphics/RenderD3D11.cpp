@@ -32,6 +32,7 @@ bool CompileShader(ID3D11Device *d3dd, const wchar_t *pShaderSourceFile, D3D11_I
 unsigned int RenderD3D11::GetRenderWidth() const { return window->GetWidth(); }
 unsigned int RenderD3D11::GetRenderHeight() const { return window->GetHeight(); }
 
+Texture *RenderD3D11::CreateTexture(const String &name) { __debugbreak(); return nullptr; }
 void RenderD3D11::ClearBlack() {__debugbreak();}
 void RenderD3D11::SaveWinnersCertificate(const char *a1) {__debugbreak();}
 void RenderD3D11::_49FD3A_fullscreen() {__debugbreak();}
@@ -53,10 +54,10 @@ unsigned int RenderD3D11::GetActorTintColor(float a2, int tint, int a4, int a5, 
 void RenderD3D11::DrawPolygon(struct Polygon *a3) {__debugbreak();}
 void RenderD3D11::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders) {__debugbreak();}
 void RenderD3D11::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) {__debugbreak();}
-void RenderD3D11::MakeParticleBillboardAndPush_BLV(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
-void RenderD3D11::MakeParticleBillboardAndPush_ODM(RenderBillboardTransform_local0 *a2, void *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
+void RenderD3D11::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
+void RenderD3D11::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) {__debugbreak();}
 void RenderD3D11::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {__debugbreak();}
-void RenderD3D11::DrawBillboard_Indoor(RenderBillboardTransform_local0 *pSoftBillboard, Sprite *pSprite, int dimming_level) {__debugbreak();}
+void RenderD3D11::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, Sprite *pSprite, int dimming_level) {__debugbreak();}
 void RenderD3D11::_4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse) {__debugbreak();}
 void RenderD3D11::TransformBillboardsAndSetPalettesODM() {__debugbreak();}
 void RenderD3D11::DrawBillboardList_BLV() {__debugbreak();}
@@ -78,7 +79,7 @@ void RenderD3D11::DrawTextureGrayShade(float a2, float a3, Image *a4) {__debugbr
 void RenderD3D11::DrawBuildingsD3D() {__debugbreak();}
 void RenderD3D11::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {__debugbreak();}
 void RenderD3D11::DrawOutdoorSkyD3D() {__debugbreak();}
-void RenderD3D11::DrawOutdoorSkyPolygon(unsigned int uNumVertices, struct Polygon *pSkyPolygon) {__debugbreak();}
+void RenderD3D11::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {__debugbreak();}
 void RenderD3D11::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {__debugbreak();}
 void RenderD3D11::PrepareDecorationsRenderList_ODM() {__debugbreak();}
 void RenderD3D11::DrawSpriteObjects_ODM() {__debugbreak();}
@@ -97,7 +98,7 @@ void RenderD3D11::EndDecals() {__debugbreak();}
 void RenderD3D11::DrawDecal(struct Decal *pDecal, float z_bias) {__debugbreak();}
 void RenderD3D11::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff) {__debugbreak();}
 void RenderD3D11::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {__debugbreak();}
-void RenderD3D11::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, void *texture) {__debugbreak();}
+void RenderD3D11::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) {__debugbreak();}
 void RenderD3D11::am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY, int blend_mode) {__debugbreak();}
 void RenderD3D11::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {__debugbreak();}
 
@@ -254,10 +255,7 @@ void RenderD3D11::Present()
   pSwapChain->Present(0, 0);
 }
 
-bool RenderD3D11::IsGammaSupported()
-{
-  return false;
-}
+
 
 struct
 {
@@ -574,7 +572,7 @@ HWLTexture *RenderD3D11::LoadHwlSprite(const char *name)
 }
 
 
-bool RenderD3D11::MoveSpriteToDevice(Sprite *pSprite)
+/*bool RenderD3D11::MoveSpriteToDevice(Sprite *pSprite)
 {
   HWLTexture *sprite_texture; // eax@1
   unsigned __int16 *v9; // edx@5
@@ -640,32 +638,13 @@ bool RenderD3D11::MoveSpriteToDevice(Sprite *pSprite)
 
       pSprite->d3d11_srv = srv;
     }
-    /*if (!pRenderD3D->CreateTexture(sprite_texture->uWidth, sprite_texture->uHeight, &pSprite->pTextureSurface, &pSprite->pTexture, 1u, 0, uMinDeviceTextureDim))
-      Error("HiScreen16::LoadTexture - D3Drend->CreateTexture() failed: %x", 0);
-    memset(&Dst, 0, sizeof(DDSURFACEDESC2));
-    Dst.dwSize = 124;
-    if ( LockSurface_DDraw4((IDirectDrawSurface4 *)pSprite->pTextureSurface, &Dst, DDLOCK_WAIT | DDLOCK_WRITEONLY) )
-    {
-      v9 = sprite_texture->pPixels;
-      v10 = Dst.lpSurface;
-      for (uint i=0; i<sprite_texture->uHeight; ++i)
-      {
-        for (uint j=0; j<sprite_texture->uWidth/2; ++j)
-        {
-          *(int *)v10 = *(int *)v9;
-          v9 += 2;
-          v10 = (char *)v10 + 4;
-        }
-        v10 = (char *)v10 + Dst.lPitch-sprite_texture->uWidth*2;
-      }
-      ErrD3D(pSprite->pTextureSurface->Unlock(NULL));
-    }*/
+
     delete [] sprite_texture->pPixels;
     delete sprite_texture;
 	return true;
   }
   return false;
-}
+}*/
 
 
 ID3DBlob *DoD3DCompiling(const wchar_t *shader_name, const char *pShaderSource, uint uShaderSourceLen, const char *pEntry, const char *pVersionString, uint uCompileOptions);
@@ -808,7 +787,7 @@ ID3DBlob *DoD3DCompiling(const wchar_t *shader_name, const char *pShaderSource, 
   }
   else if (pErrors)
   {
-    Log::Warning(L"%s (%S) build warnings:\n\n%S", shader_name, pVersionString, pErrors->GetBufferPointer());
+    logger->Warning(L"%s (%S) build warnings:\n\n%S", shader_name, pVersionString, pErrors->GetBufferPointer());
     pErrors->Release();
   }
 
@@ -995,7 +974,7 @@ void d3d11_release(ID3D11ShaderResourceView *srv)
 
 
 //----- (004A4DE1) --------------------------------------------------------
-bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture)
+/*bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, void **pOutSurface, void **pOutTexture)
 {
   unsigned __int16 *v13; // ecx@19
   unsigned __int16 *v14; // eax@19
@@ -1026,7 +1005,7 @@ bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, void **p
       desc.SampleDesc.Count = 1;
       desc.SampleDesc.Quality = 0;
       desc.Usage = D3D11_USAGE_DEFAULT;
-      desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET/* for mipmap generation */;
+      desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;// for mipmap generation;
       desc.CPUAccessFlags = 0;
       desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
     
@@ -1071,5 +1050,4 @@ bool RenderD3D11::LoadTexture(const char *pName, unsigned int bMipMaps, void **p
     delete [] pHWLTexture->pPixels;
     delete pHWLTexture;
     return true;
-}
-
+}*/

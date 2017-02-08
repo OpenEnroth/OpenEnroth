@@ -168,7 +168,7 @@ unsigned int ParseSpellType(struct FrameTableTxtLine * tbl, int* next_token)
         return 73;
     else
     {
-        Log::Warning(L"%S", StringPrintf("Unknown monster spell %s", tbl->pProperties[0]).c_str());
+        logger->Warning(L"%S", StringPrintf("Unknown monster spell %s", tbl->pProperties[0]).c_str());
         ++*next_token;
         return 0;
     }
@@ -1141,7 +1141,7 @@ void MonsterStats::Initialize()
                                         pInfos[curr_rec_num].field_3C_some_special_attack = pMonsterList->GetMonsterIDByName(str.c_str()) + 1;
                                         if (pInfos[curr_rec_num].field_3C_some_special_attack == -1)
                                         {
-                                            Log::Warning(L"%S", StringPrintf("Can't create random monster: '%s' See MapStats!", str.c_str()));
+                                            logger->Warning(L"%S", StringPrintf("Can't create random monster: '%s' See MapStats!", str.c_str()));
                                         }
                                     }
                                     pInfos[curr_rec_num].uSpecialAbilityDamageDiceSides = 0;

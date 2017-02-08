@@ -7,7 +7,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
-#include "Engine/stru6.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -652,10 +652,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fr
             pParty->GetPlayingTime() + GameTime::FromSeconds(v9),
             skillMasteryPlusOne, 0, 0, 0
             );
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 1);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 2);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
         pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID], 0, 0, fromx, fromy, 0, 0, 0);//звук алтаря
         return;
     case SPELL_AIR_SHIELD:
@@ -689,10 +689,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fr
             uSkill = 9;
             break;
         }
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 1);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 2);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
         v36 = pParty->GetPlayingTime() + GameTime::FromSeconds(v9);
         pParty->pPartyBuffs[uSkill].Apply(v36, skillMasteryPlusOne, v60, 0, 0);
         pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID], 0, 0, fromx, fromy, 0, 0, 0);
@@ -702,10 +702,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fr
             v38 = 600 * uSkill;
         else
             v38 = 60 * uSkill;
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 1);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 2);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
 
         v36 = pParty->GetPlayingTime() + GameTime::FromSeconds(v38);
         pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(v36, skillMasteryPlusOne, uSkill, 0, 0);
@@ -754,10 +754,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fr
             uSkill = PARTY_BUFF_RESIST_BODY;
             break;
         }
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 1);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 2);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
         pParty->pPartyBuffs[uSkill].Apply(
             pParty->GetPlayingTime() + GameTime::FromSeconds(a6_4), skillMasteryPlusOne, v60, 0, 0);
         pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID], 0, 0, fromx, fromy, 0, 0, 0);
@@ -778,10 +778,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fr
             v43 = 4 * uSkill + 10;
             break;
         }
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 0);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 1);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 2);
-        pEngine->pStru6Instance->SetPlayerBuffAnim(uSpellID, 3);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
+        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
 
         v36 = pParty->GetPlayingTime() + GameTime::FromSeconds(v42);
         pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(v36, skillMasteryPlusOne, v43, 0, 0);

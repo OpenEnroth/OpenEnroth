@@ -8,6 +8,35 @@
 
 
 
+
+/*   42 */
+#pragma pack(push, 1)
+struct SpriteFrame_MM6
+{
+    SpriteFrame_MM6();
+
+    char pIconName[12];
+    char pTextureName[12]; //c
+    __int16 pHwSpriteIDs[8]; //18h
+    __int32 scale; //28h
+    int uFlags; //2c
+    __int16 uGlowRadius; //30
+    __int16 uPaletteID;  //32
+    __int16 uPaletteIndex;
+    __int16 uAnimTime;
+};
+
+struct SpriteFrame_MM7 : public SpriteFrame_MM6
+{
+    SpriteFrame_MM7();
+
+    __int16 uAnimLength;
+    __int16 _pad;
+};
+#pragma pack(pop)
+
+
+
 /*   81 */
 #pragma pack(push, 1)
 struct ODMFace_MM7
@@ -590,10 +619,10 @@ struct OtherOverlay_Image_MM7
 
     /* 00 */ __int16 field_0;
     /* 02 */ __int16 field_2;
-    /* 04 */ __int16 field_4;
+    /* 04 */ __int16 sprite_frame_time;
     /* 06 */ __int16 field_6;
-    /* 08 */ __int16 field_8;
-    /* 0A */ __int16 field_A;
+    /* 08 */ __int16 screen_space_x;
+    /* 0A */ __int16 screen_space_y;
     /* 0C */ __int16 field_C;
     /* 0E */ __int16 field_E;
     /* 10 */ int field_10;
