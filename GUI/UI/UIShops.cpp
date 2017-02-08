@@ -645,10 +645,10 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building, bool spec
 
 					int testpos;
 					if (mouse.y > 152) {
-						testpos = itemx = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40 - 450;
+						testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40 - 450;
 					}
 					else {
-						testpos = itemx = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40;
+						testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40;
 					}
 
 					if (mouse.x >= testpos && mouse.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
@@ -793,12 +793,11 @@ void MagicShopDialog() {
 }
 
 //----- (004BDB56) --------------------------------------------------------
-void  UIShop_Buy_Identify_Repair()
-{
-    //int v8; // eax@15
-    unsigned int pItemID; // esi@20
+void  UIShop_Buy_Identify_Repair() {
+
+	unsigned int pItemID; // esi@20
     ItemGen *item; // esi@21
-    unsigned int v15; // eax@33
+  
     int v18; // ecx@37
     float pPriceMultiplier; // ST1C_4@38
     int taken_item; // eax@40
@@ -812,175 +811,187 @@ void  UIShop_Buy_Identify_Repair()
     int a6; // [sp+98h] [bp-1Ch]@57
     int a3; // [sp+9Ch] [bp-18h]@53
     unsigned int uNumSeconds; // [sp+A4h] [bp-10h]@53
-    unsigned int v79; // [sp+A8h] [bp-Ch]@9
+    unsigned int invindex; // [sp+A8h] [bp-Ch]@9
     int uPriceItemService; // [sp+ACh] [bp-8h]@12
 
-    if (current_screen_type == SCREEN_E)
-    {
+    if (current_screen_type == SCREEN_E) {
         pPlayers[uActiveCharacter]->OnInventoryLeftClick();
         return;
     }
-    if (!HouseUI_CheckIfPlayerCanInteract())
-    {
+
+    if (!HouseUI_CheckIfPlayerCanInteract()) {
         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
         return;
     }
 
-    Point cursor = pMouse->GetCursorPos();
-    switch (dialog_menu_id)
-    {
-        case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
-        {
+    Point mouse = pMouse->GetCursorPos();
+
+    switch (dialog_menu_id) {
+
+        case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             pPlayers[uActiveCharacter]->OnInventoryLeftClick();
             break;
         }
 
-        case HOUSE_DIALOGUE_GUILD_BUY_BOOKS:
-        {
-            v18 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
-            if (!v18)
-                return;
-            bought_item = (ItemGen *)(&pParty->pPlayers[1].uExpressionTimeLength + 18 * (v18 + 12 * (int)window_SpeakInHouse->ptr_1C));
-            pPriceMultiplier = p2DEvents[(signed int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
-            uPriceItemService = pPlayers[uActiveCharacter]->GetBuyingPrice(bought_item->GetValue(), pPriceMultiplier);
+        case HOUSE_DIALOGUE_GUILD_BUY_BOOKS: {
 
-            if (pParty->uNumGold < uPriceItemService)
-            {
-                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)2);
-                GameUI_StatusBar_OnEvent(localization->GetString(155));
-                return;
-            }
-            taken_item = pPlayers[uActiveCharacter]->AddItem(-1, bought_item->uItemID);
-            if (taken_item)
-            {
-                bought_item->SetIdentified();
-                memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[taken_item - 1], bought_item, 0x24u);
-                dword_F8B1E4 = 1;
-                Party::TakeGold(uPriceItemService);
-                viewparams->bRedrawGameUI = 1;
-                bought_item->Reset();
-                render->ClearZBuffer(0, 479);
-                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_75, 0);
-                return;
-            }
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
-            GameUI_StatusBar_OnEvent(localization->GetString(563));  // "Pack is Full!"
-            break;
+			int testx = (mouse.x - 32) / 70;
+			if (testx >= 0 && testx < 6) {
+				if (mouse.y >= 250) {
+					testx += 6;
+				}
+
+				bought_item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][testx];
+
+				if (bought_item->uItemID) {
+
+					int testpos;
+					if (mouse.y >= 250) {
+						testpos = 32 + 70 * testx - 420;
+					}
+					else {
+						testpos = 32 + 70 * testx;
+					}
+
+					if (mouse.x >= testpos && mouse.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+						if ((mouse.y >= 90 && mouse.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
+							(mouse.y >= 250 && mouse.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
+
+							pPriceMultiplier = p2DEvents[(signed int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
+							uPriceItemService = pPlayers[uActiveCharacter]->GetBuyingPrice(bought_item->GetValue(), pPriceMultiplier);
+
+							if (pParty->uNumGold < uPriceItemService) { // not enought gold
+								PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)2);
+								GameUI_StatusBar_OnEvent(localization->GetString(155));
+								return;
+							}
+
+							taken_item = pPlayers[uActiveCharacter]->AddItem(-1, bought_item->uItemID);
+							if (taken_item) {
+								bought_item->SetIdentified();
+								memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[taken_item - 1], bought_item, 0x24u);
+								dword_F8B1E4 = 1;
+								Party::TakeGold(uPriceItemService);
+								viewparams->bRedrawGameUI = 1;
+								bought_item->Reset();
+								render->ClearZBuffer(0, 479);
+								pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_75, 0);
+								return;
+							}
+
+							pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
+							GameUI_StatusBar_OnEvent(localization->GetString(563));  // "Pack is Full!"
+							break;
+						}
+					}
+				}
+			}
+			
+			return; //no item
+			break;
         }
 
-    case HOUSE_DIALOGUE_SHOP_SELL:
-    {
-        v79 = ((cursor.x - 14) >> 5) + 14 * ((cursor.y - 17) >> 5);
-        if (cursor.x <= 13
-            || cursor.x >= 462
-            || (v15 = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v79), !v15))
-            return;
-        if (pPlayers[uActiveCharacter]->pInventoryItemList[v15 - 1].MerchandiseTest((int)window_SpeakInHouse->ptr_1C))
-        {
-            dword_F8B1E4 = 1;
-            pPlayers[uActiveCharacter]->SalesProcess(v79, v15 - 1, (int)window_SpeakInHouse->ptr_1C);
-            viewparams->bRedrawGameUI = 1;
-            render->ClearZBuffer(0, 479);
-            pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)77, 0);
-            return;
-        }
-        pPlayers[uActiveCharacter]->PlaySound(SPEECH_79, 0);
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-        break;
-    }
-    case HOUSE_DIALOGUE_SHOP_IDENTIFY:
-    {
-        v79 = ((cursor.x - 14) >> 5) + 14 * ((cursor.y - 17) >> 5);
-        if (cursor.x > 13 && cursor.x < 462)
-        {
-            pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v79);
-            if (pItemID)
-            {
-                uPriceItemService = pPlayers[uActiveCharacter]->GetPriceIdentification(p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier);
-                item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
-                if (!(item->uAttributes & ITEM_IDENTIFIED))
-                {
-                    if (item->MerchandiseTest((int)window_SpeakInHouse->ptr_1C))
-                    {
-                        if (pParty->uNumGold >= uPriceItemService)
-                        {
-                            dword_F8B1E4 = 1;
-                            Party::TakeGold(uPriceItemService);
-                            item->uAttributes |= ITEM_IDENTIFIED;
-                            pPlayers[uActiveCharacter]->PlaySound(SPEECH_73, 0);
-                            GameUI_StatusBar_OnEvent(localization->GetString(569));
-                            return;
-                        }
-                        PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)2);
-                        return;
-                    }
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)79, 0);
-                    return;
-                }
-                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)76, 0);
-                return;
-            }
-        }
-        break;
-    }
+		case HOUSE_DIALOGUE_SHOP_SELL: {
+			
+			invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
+			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&invindex), !pItemID) )
+				return;
 
-    case HOUSE_DIALOGUE_SHOP_REPAIR:
-    {
-        v79 = ((cursor.x - 14) >> 5) + 14 * ((cursor.y - 17) >> 5);
-        if (cursor.x > 13)
-        {
-            if (cursor.x < 462)
-            {
-                pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&v79);
-                if (pItemID)
-                {
-                    item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
-                    pPriceMultiplier = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
-                    ItemGen* _v = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
-                    uPriceItemService = pPlayers[uActiveCharacter]->GetPriceRepair(_v->GetValue(), pPriceMultiplier);
-                    if (item->uAttributes & ITEM_BROKEN)
-                    {
-                        if (item->MerchandiseTest((int)window_SpeakInHouse->ptr_1C))
-                        {
-                            if (pParty->uNumGold >= uPriceItemService)
-                            {
-                                dword_F8B1E4 = 1;
-                                Party::TakeGold(uPriceItemService);
-                                item->uAttributes = (item->uAttributes & 0xFFFFFFFD) | 1;
-                                pPlayers[uActiveCharacter]->PlaySound(SPEECH_74, 0);
-                                GameUI_StatusBar_OnEvent(localization->GetString(570));
-                                return;
-                            }
-                            PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)2);
-                            return;
-                        }
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-                        pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)79, 0);
-                        return;
-                    }
-                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)76, 0);
-                    return;
-                }
-            }
-        }
-        break;
-    }
-    case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
-    case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL:
-    {
-		// item picking
-		Point mouse = pMouse->GetCursorPos();
-		int testx;
+			if (pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1].MerchandiseTest((int)window_SpeakInHouse->ptr_1C)) {
+				dword_F8B1E4 = 1;
+				pPlayers[uActiveCharacter]->SalesProcess(invindex, pItemID - 1, (int)window_SpeakInHouse->ptr_1C);
+				viewparams->bRedrawGameUI = 1;
+				render->ClearZBuffer(0, 479);
+				pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)77, 0);
+				return;
+			}
+
+			pPlayers[uActiveCharacter]->PlaySound(SPEECH_79, 0);
+			pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+			break;
 		
+		}
+
+		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+
+			invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
+			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&invindex), !pItemID))
+				return;
+       
+			uPriceItemService = pPlayers[uActiveCharacter]->GetPriceIdentification(p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier);
+			item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
+            
+			if (!(item->uAttributes & ITEM_IDENTIFIED)) {
+				if (item->MerchandiseTest((int)window_SpeakInHouse->ptr_1C)) {
+					
+					if (pParty->uNumGold >= uPriceItemService) {
+						dword_F8B1E4 = 1;
+						Party::TakeGold(uPriceItemService);
+						item->uAttributes |= ITEM_IDENTIFIED;
+						pPlayers[uActiveCharacter]->PlaySound(SPEECH_73, 0);
+						GameUI_StatusBar_OnEvent(localization->GetString(569));
+						return;
+					}
+                    
+					PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)2);
+                    return;
+				}
+
+				pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)79, 0);
+                return;
+            }
+
+			pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)76, 0);
+			break;
+		}
+
+		case HOUSE_DIALOGUE_SHOP_REPAIR: {
+
+			invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
+			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&invindex), !pItemID))
+				return;
+
+			item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
+			pPriceMultiplier = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
+			uPriceItemService = pPlayers[uActiveCharacter]->GetPriceRepair(item->GetValue(), pPriceMultiplier);
+
+			if (item->uAttributes & ITEM_BROKEN) {
+				if (item->MerchandiseTest((int)window_SpeakInHouse->ptr_1C)) {
+					if (pParty->uNumGold >= uPriceItemService) {
+						dword_F8B1E4 = 1;
+						Party::TakeGold(uPriceItemService);
+						item->uAttributes = (item->uAttributes & 0xFFFFFFFD) | 1;
+						pPlayers[uActiveCharacter]->PlaySound(SPEECH_74, 0);
+						GameUI_StatusBar_OnEvent(localization->GetString(570));
+						return;
+					}
+				
+					PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)2);
+					return;
+				}
+
+				pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+				pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)79, 0);
+				return;
+			}
+
+			pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)76, 0);
+			break;
+		}
+
+    case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
+    case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+
+		int testx;
+		int testpos;
 
 		switch (in_current_building_type){
 
 			case BuildingType_WeaponShop:
 				
 				testx = (mouse.x - 30) / 70;
-				// testx limits check
 				if (testx >= 0 && testx < 6) {
 
 					if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
@@ -988,11 +999,12 @@ void  UIShop_Buy_Identify_Repair()
 					else
 						bought_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 
-
 					if (bought_item->uItemID) {
-						//could check x coords imits here?
-						if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
-							//good
+						testpos = ((60 - ((signed int)shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 70);
+						if (mouse.x >= testpos && mouse.x < (testpos + (signed int)shop_ui_items_in_store[testx]->GetWidth())) {
+							if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
+								break; //good
+							}
 						}
 						else {
 							bought_item = nullptr;
@@ -1008,7 +1020,6 @@ void  UIShop_Buy_Identify_Repair()
 			case BuildingType_ArmorShop:
 
 				testx = (mouse.x - 40) / 105;
-				// testx limits check
 				if (testx >= 0 && testx < 4) {
 					if (mouse.y >= 126) {
 						testx += 4;
@@ -1020,10 +1031,19 @@ void  UIShop_Buy_Identify_Repair()
 						bought_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 
 					if (bought_item->uItemID) {
-						//could check x coords imits here?
-						if ((mouse.y >= 126 && mouse.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
-							(mouse.y <= 98 && mouse.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
-							//good
+
+						if (testx >= 4) {
+							testpos = ((90 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + (testx * 105) - 420); //low row
+						}
+						else {
+							testpos = ((86 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 105);
+						}
+
+						if (mouse.x >= testpos && mouse.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+							if ((mouse.y >= 126 && mouse.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
+								(mouse.y <= 98 && mouse.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
+									break;//good
+							}
 						}
 						else {
 							bought_item = nullptr;
@@ -1040,9 +1060,8 @@ void  UIShop_Buy_Identify_Repair()
 			case BuildingType_MagicShop:
 
 				testx = (mouse.x) / 75;
-				// testx limits check
 				if (testx >= 0 && testx < 6) {
-					if (mouse.y >= 152) {
+					if (mouse.y > 152) {
 						testx += 6;
 					}
 					
@@ -1051,14 +1070,21 @@ void  UIShop_Buy_Identify_Repair()
 					else
 						bought_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 
-					if (bought_item->uItemID) // item picking
-					{
-						//could check x coords imits here?
-						if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
-							(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
-							// y is 152-h to 152 or 308-height to 308
+					if (bought_item->uItemID) {
 
-							//good
+						if (mouse.y > 152) {
+							testpos =  75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40 - 450;
+						}
+						else {
+							testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40;
+						}
+
+						if (mouse.x >= testpos && mouse.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+							if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
+								(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
+									// y is 152-h to 152 or 308-height to 308
+									break; //good
+							}
 						}
 						else {
 							bought_item = nullptr;
@@ -1072,14 +1098,7 @@ void  UIShop_Buy_Identify_Repair()
 				
 
 			default:
-				v18 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
-				if (!v18)
-					return;
-				if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
-					bought_item = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][v18 - 1];
-				else
-					bought_item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][v18 - 1];
-				break;
+				return;
 		}
 		
         
@@ -1176,78 +1195,84 @@ void  UIShop_Buy_Identify_Repair()
 
 
 //----- (004B1A2D) --------------------------------------------------------
-void  ShowPopupShopItem()
-{
-    int v3; // ecx@5
-  //  unsigned int v6; // eax@13
-    ItemGen *v7; // ecx@13
+void  ShowPopupShopItem() {
 
+    ItemGen *item; // ecx@13
+	int invindex;
+	int testpos;
 
-    if (in_current_building_type <= 0)
+	if (in_current_building_type <= 0)
         return;
     if (dialog_menu_id < HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
         return;
 
-    Point cursor = pMouse->GetCursorPos();
-    if (in_current_building_type <= BuildingType_AlchemistShop)
-    {
-        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL)
-        {
-            //select case weapons armour...
+	Point mouse = pMouse->GetCursorPos();
+	int testx;
 
-			// item picking
-			Point mouse = pMouse->GetCursorPos();
-			int testx;
-
-
+    if (in_current_building_type <= BuildingType_AlchemistShop) {
+        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL) {
+            
 			switch (in_current_building_type) {
 
-				case BuildingType_WeaponShop:
+				case BuildingType_WeaponShop: {
 
 					testx = (mouse.x - 30) / 70;
 					if (testx >= 0 && testx < 6) {
 						if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
-							v7 = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+							item = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 						else
-							v7 = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+							item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 
-						if (v7->uItemID) {
-							//could check x coords imits here?
-							if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
-								GameUI_DrawItemInfo(v7);
+						if (item->uItemID) {
+
+							testpos = ((60 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 70);
+							if (mouse.x >= testpos && mouse.x < (testpos + shop_ui_items_in_store[testx]->GetWidth())) {
+								if (mouse.y >= weapons_Ypos[testx] + 30 && mouse.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
+									GameUI_DrawItemInfo(item);
+								}
 							}
-						}
-						else {
-							return;
+							else {
+								return;
+							}
 						}
 					}
 					else
 						return;
-					
+
 					break;
+				}
 
 				case BuildingType_ArmorShop:
 
 					testx = (mouse.x - 40) / 105;
-					// testx limits check
 					if (testx >= 0 && testx < 4) {
 						if (mouse.y >= 126) {
 							testx += 4;
 						}
 
 						if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
-							v7 = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+							item = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 						else
-							v7 = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+							item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 
-						if (v7->uItemID) {
-							//could check x coords imits here?
-							if ((mouse.y >= 126 && mouse.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
-								(mouse.y <= 98 && mouse.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
-								GameUI_DrawItemInfo(v7);
+						if (item->uItemID) {
+
+							
+							if (testx >= 4) {
+								testpos = ((90 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + (testx * 105) - 420); //low row
 							}
 							else {
-								return;
+								testpos = ((86 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) + testx * 105);
+							}
+
+							if (mouse.x >= testpos && mouse.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+								if ((mouse.y >= 126 && mouse.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
+									(mouse.y <= 98 && mouse.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
+									GameUI_DrawItemInfo(item);
+								}
+								else {
+									return;
+								}
 							}
 						}
 						else
@@ -1267,18 +1292,27 @@ void  ShowPopupShopItem()
 						}
 
 						if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
-							v7 = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+							item = (ItemGen *)&pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 						else
-							v7 = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
+							item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
 
-						if (v7->uItemID) {
-							//could check x coords imits here?
-							if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
-								(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
-								GameUI_DrawItemInfo(v7);
+						if (item->uItemID) {
+
+							if (mouse.y > 152) {
+								testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40 - 450;
 							}
 							else {
-								return;
+								testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40;
+							}
+
+							if (mouse.x >= testpos && mouse.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+								if ((mouse.y <= 308 && mouse.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
+									(mouse.y <= 152 && mouse.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
+									GameUI_DrawItemInfo(item);
+								}
+								else {
+									return;
+								}
 							}
 						}
 						else
@@ -1288,13 +1322,13 @@ void  ShowPopupShopItem()
 					break;
 
 			default:
-				v3 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
-				if (!v3)
-					return;
-				v7 = &pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][v3 - 1];
-				if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL)
-					v7 = &pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][v3 - 1];
-				GameUI_DrawItemInfo(v7);
+				//v3 = render->pActiveZBuffer[mouse.x + pSRZBufferLineOffsets[mouse.y]] & 0xFFFF;
+				//if (!v3)
+			//		return;
+			//	v7 = &pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][v3 - 1];
+			//	if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL)
+			//		v7 = &pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][v3 - 1];
+			//	GameUI_DrawItemInfo(v7);
 				return;
 				break;
 			}
@@ -1304,24 +1338,48 @@ void  ShowPopupShopItem()
         }
 
         if (dialog_menu_id >= HOUSE_DIALOGUE_SHOP_SELL && dialog_menu_id <= HOUSE_DIALOGUE_SHOP_REPAIR
-            || dialog_menu_id == HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT)
-        {
-            v3 = ((cursor.x - 14) >> 5) + 14 * ((cursor.y - 17) >> 5);
-            if (cursor.x <= 13 || cursor.x >= 462
-                || !pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&v3))
+            || dialog_menu_id == HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
+
+            invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
+            if (mouse.x <= 13 || mouse.x >= 462
+                || !pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invindex))
                 return;
-            GameUI_DrawItemInfo(&pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&v3) - 1]);
+
+            GameUI_DrawItemInfo(&pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invindex) - 1]);
             return;
         }
     }
-    if (in_current_building_type <= BuildingType_16 && dialog_menu_id == HOUSE_DIALOGUE_GUILD_BUY_BOOKS)
-    {
 
-        v3 = render->pActiveZBuffer[cursor.x + pSRZBufferLineOffsets[cursor.y]] & 0xFFFF;
-        if (v3)
-        {
-            unsigned int guildId = (unsigned int)window_SpeakInHouse->ptr_1C - 139;
-            sub_4B1523_showSpellbookInfo(pParty->SpellBooksInGuilds[guildId][v3].uItemID);
+    if (in_current_building_type <= BuildingType_16 && dialog_menu_id == HOUSE_DIALOGUE_GUILD_BUY_BOOKS) {
+
+		int testx = (mouse.x - 32) / 70;
+		if (testx >= 0 && testx < 6) {
+			if (mouse.y >= 250) {
+				testx += 6;
+			}
+
+			item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][testx];
+
+			if (item->uItemID) {
+
+				int testpos;
+				if (mouse.y >= 250) {
+					testpos = 32 + 70 * testx - 420;
+				}
+				else {
+					testpos = 32 + 70 * testx;
+				}
+
+				if (mouse.x >= testpos && mouse.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+					if ((mouse.y >= 90 && mouse.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
+						(mouse.y >= 250 && mouse.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
+
+							unsigned int guildId = (unsigned int)window_SpeakInHouse->ptr_1C - 139;
+							sub_4B1523_showSpellbookInfo(pParty->SpellBooksInGuilds[guildId][testx].uItemID);
+
+					}
+				}
+			}
         }
     }
 }
