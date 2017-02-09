@@ -148,7 +148,6 @@
     <ClCompile Include="..\..\Engine\Spells\Spells.cpp" />
     <ClCompile Include="..\..\Engine\Strings.cpp" />
     <ClCompile Include="..\..\Engine\stru298.cpp" />
-    <ClCompile Include="..\..\Engine\stru6.cpp" />
     <ClCompile Include="..\..\Engine\Tables\FactionTable.cpp" />
     <ClCompile Include="..\..\Engine\Tables\FrameTableInc.cpp" />
     <ClCompile Include="..\..\Engine\Tables\IconFrameTable.cpp" />
@@ -341,7 +340,6 @@
     <ClInclude Include="..\..\Engine\stru298.h" />
     <ClInclude Include="..\..\Engine\stru314.h" />
     <ClInclude Include="..\..\Engine\stru367.h" />
-    <ClInclude Include="..\..\Engine\stru6.h" />
     <ClInclude Include="..\..\Engine\Tables\FactionTable.h" />
     <ClInclude Include="..\..\Engine\Tables\FrameTableInc.h" />
     <ClInclude Include="..\..\Engine\Tables\IconFrameTable.h" />

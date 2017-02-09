@@ -601,9 +601,6 @@
     <ClCompile Include="..\..\Engine\Serialization\LegacyImages.cpp">
       <Filter>Engine\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\stru6.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\AssetsManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -1403,9 +1400,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\Serialization\LegacyImages.h">
       <Filter>Engine\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Engine\stru6.h">
-      <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\AssetsManager.h">
       <Filter>Engine</Filter>
