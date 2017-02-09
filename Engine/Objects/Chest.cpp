@@ -215,11 +215,15 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
 				int itemindex = chestindex - 1;
 				ItemGen* item = &pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex];
 
+			
+///////////////////////////////////////////////		
+				// normal picking
+				
 				GameUI_StatusBar_Set(item->GetDisplayName());
 				uLastPointedObjectID = 1;
 				return 1;
 
-
+////////////////////////////////////////////////////
 
 				//per pixel transparency check tests
 				/*
@@ -263,6 +267,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
 						return 1;
 					}
 				}
+
 				*/
 
 				

@@ -1335,6 +1335,8 @@ GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
             break;
     }
 
+	logger->Info(L"New window");
+
 	//pwindowlist not freeing/resetting properly?? above is work around
 	Assert(pWindowList[uNextFreeWindowID] == nullptr || (pWindowList[uNextFreeWindowID]->eWindowType == WINDOW_null), "Window out of range!");
 
