@@ -400,6 +400,11 @@ void OnGameViewportClick()
 
     Point pt = pMouse->GetCursorPos();
     //if ( render->pRenderD3D )
+
+	if (current_screen_type == SCREEN_NPC_DIALOGUE) // bug fix - stops you entering shops while dialog still open.
+		return;
+
+
     v0 = pEngine->pVisInstance->get_picked_object_zbuf_val();
     int distance = HEXRAYS_HIWORD(v0);
     bool in_range = distance < clickable_distance;

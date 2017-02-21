@@ -1156,10 +1156,12 @@ void  UIShop_Buy_Identify_Repair() {
     }
     default:// if click video screen in shop
     {
-        __debugbreak(); // please do record these dialogue ids to the HOUSE_DIALOGUE_MENU  enum
+       
         if (dialog_menu_id >= 36 && dialog_menu_id <= 72)
         {
-            v42 = dialog_menu_id - 36;
+			 __debugbreak(); // please do record these dialogue ids to the HOUSE_DIALOGUE_MENU  enum
+			
+			v42 = dialog_menu_id - 36;
             //v43 = (signed __int64)(*(float *)&p2DEvents_minus1__24[13 * (unsigned int)ptr_507BC0->ptr_1C] * 500.0);
             v43 = (signed __int64)(p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
             uPriceItemService = v43 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
