@@ -17,56 +17,136 @@ bool AssetsManager::ReleaseAllImages()
     return true;
 }
 
+
+bool AssetsManager::ReleaseImage(const String &name)
+{
+	auto filename = name;
+	std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+	this->images.erase(filename);
+
+	return true;
+}
+
+
 Image *AssetsManager::GetImage_16BitColorKey(const String &name, unsigned __int16 colorkey)
 {
 
-	// should this check if "name" is already in assets list??
+	auto filename = name;
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
-    return Image::Create(
-        new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey)
-    );
+    auto i = this->images.find(filename);
+    if (i == this->images.end())
+    {
+        auto image = Image::Create( new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey) );
+        this->images[filename] = image;
+
+        return image;
+    }
+
+    return i->second;
+
 }
 
 
 Image *AssetsManager::GetImage_16Bit(const String &name)
 {
-    return Image::Create(
-        new Image16bit_LOD_Loader(pIcons_LOD, name)
-    );
+    
+	auto filename = name;
+	std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+	auto i = this->images.find(filename);
+	if (i == this->images.end())
+	{
+		auto image = Image::Create(new Image16bit_LOD_Loader(pIcons_LOD, name));
+		this->images[filename] = image;
+
+		return image;
+	}
+
+	return i->second;
+	
 }
 
 
 Image *AssetsManager::GetImage_16BitAlpha(const String &name)
 {
-    return Image::Create(
-        new Alpha_LOD_Loader(pIcons_LOD, name)
-    );
+    
+	auto filename = name;
+	std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+	auto i = this->images.find(filename);
+	if (i == this->images.end())
+	{
+		auto image = Image::Create(new Alpha_LOD_Loader(pIcons_LOD, name));
+		this->images[filename] = image;
+
+		return image;
+	}
+
+	return i->second;
+	
 }
 
 
-Image *AssetsManager::GetImage_PCXFromIconsLOD(const String &filename)
+Image *AssetsManager::GetImage_PCXFromIconsLOD(const String &name)
 {
-    return Image::Create(
-        new PCX_LOD_Loader(pIcons_LOD, filename)
-    );
+
+	auto filename = name;
+	std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+	auto i = this->images.find(filename);
+	if (i == this->images.end())
+	{
+		auto image = Image::Create(new PCX_LOD_Loader(pIcons_LOD, filename));
+		this->images[filename] = image;
+
+		return image;
+	}
+
+	return i->second;
+
 }
 
 
-Image *AssetsManager::GetImage_PCXFromNewLOD(const String &filename)
+Image *AssetsManager::GetImage_PCXFromNewLOD(const String &name)
 {
-    return Image::Create(
-        new PCX_LOD_Loader(pNew_LOD, filename)
-    );
+
+	auto filename = name;
+	std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+	auto i = this->images.find(filename);
+	if (i == this->images.end())
+	{
+		auto image = Image::Create(new PCX_LOD_Loader(pNew_LOD, filename));
+		this->images[filename] = image;
+
+		return image;
+	}
+
+	return i->second;
+
 }
 
 
-Image *AssetsManager::GetImage_PCXFromFile(const String &filename)
+Image *AssetsManager::GetImage_PCXFromFile(const String &name)
 {
-    return Image::Create(
-        new PCX_File_Loader(pIcons_LOD, filename)
-    );
-}
 
+	auto filename = name;
+	std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+	auto i = this->images.find(filename);
+	if (i == this->images.end())
+	{
+		auto image = Image::Create(new PCX_File_Loader(pIcons_LOD, filename));
+		this->images[filename] = image;
+
+		return image;
+	}
+
+	return i->second;
+
+}
 
 
 

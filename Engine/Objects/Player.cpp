@@ -785,11 +785,6 @@ bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID) {
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
 
-	if (img) {
-		img->Release();
-		img = nullptr;
-	}
-
     Assert(slotHeight > 0 && slotWidth > 0, "Items should have nonzero dimensions");
     if ((slotWidth + uSlot % INVETORYSLOTSWIDTH) <= INVETORYSLOTSWIDTH && (slotHeight + uSlot / INVETORYSLOTSWIDTH) <= INVETORYSLOTSHEIGHT) {
 

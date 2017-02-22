@@ -12,6 +12,8 @@ class AssetsManager
 
         bool ReleaseAllImages();
 
+		bool ReleaseImage(const String & name);
+
         Image *GetImage_16Bit(const String &name);
         Image *GetImage_16BitColorKey(const String &name, unsigned __int16 colorkey);
         Image *GetImage_16BitAlpha(const String &name);
@@ -26,6 +28,9 @@ class AssetsManager
     protected:
 		std::map<String, Texture *> bitmaps;
         std::map<String, Texture *> sprites;
+
+		std::map<String, Image *> images;
+
 };
 
 extern AssetsManager *assets;

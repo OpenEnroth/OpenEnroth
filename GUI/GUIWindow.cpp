@@ -430,8 +430,8 @@ void GUIWindow_Dialogue::Release()
 
     if (game_ui_dialogue_background)
     {
-        game_ui_dialogue_background->Release();
-        game_ui_dialogue_background = nullptr;
+        game_ui_dialogue_background->Release();  
+       game_ui_dialogue_background = nullptr;
     }
 
     current_screen_type = prev_screen_type;
@@ -465,8 +465,8 @@ void GUIWindow_House::Release()
 
     if (game_ui_dialogue_background)
     {
-        game_ui_dialogue_background->Release();
-        game_ui_dialogue_background = nullptr;
+        game_ui_dialogue_background->Release(); 
+       game_ui_dialogue_background = nullptr;
     }
 
     dword_5C35D4 = 0;

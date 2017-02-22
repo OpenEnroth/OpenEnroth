@@ -930,7 +930,10 @@ const void *Image::GetPixels(IMAGE_FORMAT format)
 
 bool Image::Release()
 {
-    if (initialized)
+
+	assets->ReleaseImage(this->loader->GetResourceName());
+	
+	if (initialized)
     {
         if (loader)
         {

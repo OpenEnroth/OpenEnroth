@@ -117,7 +117,7 @@ void GUIProgressBar::Release()
 
     if (loading_bg)
     {
-        loading_bg->Release();
+        loading_bg->Release(); 
         loading_bg = nullptr;
     }
 
@@ -131,7 +131,7 @@ void GUIProgressBar::Release()
 
         if (progressbar_loading)
         {
-            progressbar_loading->Release();
+            progressbar_loading->Release(); 
             progressbar_loading = nullptr;
         }
     }
@@ -139,7 +139,7 @@ void GUIProgressBar::Release()
     {
         if (progressbar_dungeon)
         {
-            progressbar_dungeon->Release();
+            progressbar_dungeon->Release(); 
             progressbar_dungeon = nullptr;
         }
     }

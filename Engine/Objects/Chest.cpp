@@ -288,11 +288,6 @@ bool Chest::CanPlaceItemAt(signed int test_cell_position, int item_id, signed in
 	unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
 	unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
-    if (img) {
-        img->Release();
-        img = nullptr;
-    }
-
 	Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
     if ((slot_width + test_cell_position % chest_cell_width <= chest_cell_width) && (slot_height + test_cell_position / chest_cell_width <= chest_cell_heght)) {
 
@@ -370,11 +365,6 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, signed int uChestID) 
 	auto texture = assets->GetImage_16BitColorKey(put_item->GetIconName(), 0x7FF);
 	unsigned int slot_width = GetSizeInInventorySlots(texture->GetWidth());
 	unsigned int slot_height = GetSizeInInventorySlots(texture->GetHeight());
-
-	if (texture) {
-		texture->Release();
-		texture = nullptr;
-	}
 
 	Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
 
