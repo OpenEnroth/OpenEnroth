@@ -6971,7 +6971,13 @@ void Render::_4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a
                     WritePixel16(clipped_out_x + dx, clipped_out_y + dy, a4->pPalette16[v21]);
                 }
                 ++v24;*/
-                WritePixel16(clipped_out_x + dx, clipped_out_y + dy, *v24);
+
+				if (*v24 != 0) // black pixel check
+				{
+					WritePixel16(clipped_out_x + dx, clipped_out_y + dy, *v24);
+				}
+				                
+				++v24;
             }
             v24 += a4->GetWidth() - Width;
         }

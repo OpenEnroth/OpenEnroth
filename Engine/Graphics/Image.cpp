@@ -775,9 +775,7 @@ int BicubicMipmapGenerator::_450FB1(int a2)
 
 Image *Image::Create(ImageLoader *loader)
 {
-    
-	//check is image already loaded??
-	
+    	
 	auto img = new Image();
     if (img)
     {
