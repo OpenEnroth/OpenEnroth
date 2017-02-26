@@ -4542,9 +4542,9 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
             break;
 
         case 252://Divine Restoration
-            v30 = playerAffected->conditions_times[Condition_Dead];
-            v32 = playerAffected->conditions_times[Condition_Pertified];
-            v34 = playerAffected->conditions_times[Condition_Eradicated];
+			v30 = playerAffected->conditions_times[Condition_Dead];
+			v32 = playerAffected->conditions_times[Condition_Pertified];
+			v34 = playerAffected->conditions_times[Condition_Eradicated];
             conditions_times.fill(0);
             playerAffected->conditions_times[Condition_Dead] = v30;
             playerAffected->conditions_times[Condition_Pertified] = v32;

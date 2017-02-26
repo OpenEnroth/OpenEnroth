@@ -352,8 +352,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         }
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
           break;
-        pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Apply(
-            pParty->GetPlayingTime() + GameTime::FromSeconds(3600 * spell_level), skill_level, amount, 0, 0
+        
+		pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Apply(
+			pParty->GetPlayingTime() + (GameTime::FromSeconds(3600 * spell_level)) , skill_level, amount, 0, 0
         );
         spell_sound_flag = true;
         break;

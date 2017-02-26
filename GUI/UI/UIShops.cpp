@@ -290,7 +290,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
 		uint item_num = 0;
 		for (uint i = 0; i < 6; ++i) {
 			if ( (special == 0 && pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID) ||
-					( special == 1 && pParty->StandartItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID )) {
+					( special == 1 && pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID )) {
 						++item_num;
 			}
 		}
