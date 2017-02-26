@@ -373,9 +373,9 @@ void DropHeldItem()
     a1.uSpriteFrameID = 0;
     memcpy(&a1.containing_item, &pParty->pPickedItem, 0x24u);
 
-    extern int UnprojectX(int);
+   // extern int UnprojectX(int);
     //v9 = UnprojectX(v1->x);
-    a1.Create(pParty->sRotationY + UnprojectX(v1->x), 184, 200, 0);
+	a1.Create(pParty->sRotationY, 184, 200, 0); //+ UnprojectX(v1->x), 184, 200, 0);
 
     pMouse->RemoveHoldingItem();
 }

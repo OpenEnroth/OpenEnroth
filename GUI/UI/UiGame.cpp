@@ -1449,26 +1449,23 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player)
 void GameUI_DrawRightPanelItems()
 {
     if (GameUI_RightPanel_BookFlashTimer > pParty->GetPlayingTime())
-        GameUI_RightPanel_BookFlashTimer = 0;
+		GameUI_RightPanel_BookFlashTimer = 0;
 
-    if (pParty->GetPlayingTime() - GameUI_RightPanel_BookFlashTimer > 128)
+	static bool _50697C_book_flasher;
+	
+	if (pParty->GetPlayingTime() - GameUI_RightPanel_BookFlashTimer > 128)
+	{
+		GameUI_RightPanel_BookFlashTimer = pParty->GetPlayingTime();
+		_50697C_book_flasher = !_50697C_book_flasher;
+	}
+
+    if (_50697C_book_flasher && current_screen_type != SCREEN_REST)
     {
-        GameUI_RightPanel_BookFlashTimer = pParty->GetPlayingTime();
-
-        static bool _50697C_book_flasher = false; // 50697C
-        _50697C_book_flasher = !_50697C_book_flasher;
-        if (_50697C_book_flasher && current_screen_type != SCREEN_REST)
-        {
-            if (bFlashQuestBook)     render->DrawTextureAlphaNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
-            if (bFlashAutonotesBook) render->DrawTextureAlphaNew(527 / 640.0f, 353 / 480.0f, game_ui_tome_autonotes);
-            if (bFlashHistoryBook)   render->DrawTextureAlphaNew(600 / 640.0f, 361 / 480.0f, game_ui_tome_storyline);
-        }
-        else
-        {
-            render->DrawTextureNew(468 / 640.0f, 0, game_ui_rightframe);
-            GameUI_DrawHiredNPCs();
-        }
+        if (bFlashQuestBook)     render->DrawTextureAlphaNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
+        if (bFlashAutonotesBook) render->DrawTextureAlphaNew(527 / 640.0f, 353 / 480.0f, game_ui_tome_autonotes);
+        if (bFlashHistoryBook)   render->DrawTextureAlphaNew(600 / 640.0f, 361 / 480.0f, game_ui_tome_storyline);
     }
+   
 }
 
 //----- (0041AEBB) --------------------------------------------------------
@@ -1630,7 +1627,7 @@ void GameUI_WritePointedObjectStatusString()
                 else
                 {
                     GameUI_StatusBar_Set(
-                        localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()) // Get %s
+                        localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()) // Get %s   does not display properly ??
                         );
                 } //intentional fallthrough
             }

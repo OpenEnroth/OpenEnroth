@@ -1379,7 +1379,8 @@ void DrawJoinGuildWindow( int pEventCode )
 void DialogueEnding()
 {
   sDialogue_SpeakingActorNPC_ID = 0;
-  pDialogueWindow->Release();
+  if (pDialogueWindow)
+		pDialogueWindow->Release();
   pDialogueWindow = 0;
   pMiscTimer->Resume();
   pEventTimer->Resume();
