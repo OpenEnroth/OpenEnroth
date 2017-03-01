@@ -360,13 +360,15 @@ void Mouse::UI_OnMouseLeftClick(int *pXY)
   unsigned int pX; // [sp+14h] [bp-8h]@7
   unsigned int pY; // [sp+18h] [bp-4h]@7
 
-  if ( current_screen_type == SCREEN_VIDEO || sub_4637E0_is_there_popup_onscreen() )
+  if ( current_screen_type == SCREEN_VIDEO || sub_4637E0_is_there_popup_onscreen() )  
     return;
+
   if ( pGUIWindow2 && pGUIWindow2->ptr_1C == (void *)33 )
   {
     sub_4452BB();
     return;
   }
+
   if ( pXY )
   {
     x = *pXY;

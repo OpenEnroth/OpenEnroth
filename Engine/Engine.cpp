@@ -1690,6 +1690,13 @@ bool MM_Main(const wchar_t *pCmdLine)
 		}
 	}
 
+		// Hack path fix - pskelton
+	if (!mm7_installation_found) {
+		mm7_installation_found = 1;
+		strcpy(mm7_path, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
+		logger->Info(L"Hack Path MM7 installation found");
+	}
+
 
     if (pCmdLine && *pCmdLine)
         ParseCommandLine(pCmdLine);

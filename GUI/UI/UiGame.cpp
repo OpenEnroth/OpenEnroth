@@ -1449,26 +1449,23 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player)
 void GameUI_DrawRightPanelItems()
 {
     if (GameUI_RightPanel_BookFlashTimer > pParty->GetPlayingTime())
-        GameUI_RightPanel_BookFlashTimer = 0;
+		GameUI_RightPanel_BookFlashTimer = 0;
 
-    if (pParty->GetPlayingTime() - GameUI_RightPanel_BookFlashTimer > 128)
+	static bool _50697C_book_flasher;
+	
+	if (pParty->GetPlayingTime() - GameUI_RightPanel_BookFlashTimer > 128)
+	{
+		GameUI_RightPanel_BookFlashTimer = pParty->GetPlayingTime();
+		_50697C_book_flasher = !_50697C_book_flasher;
+	}
+
+    if (_50697C_book_flasher && current_screen_type != SCREEN_REST)
     {
-        GameUI_RightPanel_BookFlashTimer = pParty->GetPlayingTime();
-
-        static bool _50697C_book_flasher = false; // 50697C
-        _50697C_book_flasher = !_50697C_book_flasher;
-        if (_50697C_book_flasher && current_screen_type != SCREEN_REST)
-        {
-            if (bFlashQuestBook)     render->DrawTextureAlphaNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
-            if (bFlashAutonotesBook) render->DrawTextureAlphaNew(527 / 640.0f, 353 / 480.0f, game_ui_tome_autonotes);
-            if (bFlashHistoryBook)   render->DrawTextureAlphaNew(600 / 640.0f, 361 / 480.0f, game_ui_tome_storyline);
-        }
-        else
-        {
-            render->DrawTextureNew(468 / 640.0f, 0, game_ui_rightframe);
-            GameUI_DrawHiredNPCs();
-        }
+        if (bFlashQuestBook)     render->DrawTextureAlphaNew(493 / 640.0f, 355 / 480.0f, game_ui_tome_quests);
+        if (bFlashAutonotesBook) render->DrawTextureAlphaNew(527 / 640.0f, 353 / 480.0f, game_ui_tome_autonotes);
+        if (bFlashHistoryBook)   render->DrawTextureAlphaNew(600 / 640.0f, 361 / 480.0f, game_ui_tome_storyline);
     }
+   
 }
 
 //----- (0041AEBB) --------------------------------------------------------
@@ -1585,6 +1582,7 @@ void GameUI_WritePointedObjectStatusString()
     pMouse->GetClickPos(&pX, &pY);
     if (pX < 0 || pX > window->GetWidth() - 1 || pY < 0 || pY > window->GetHeight() - 1)
         return;
+
     if (current_screen_type == SCREEN_GAME)
     {
         if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125)
@@ -1629,7 +1627,7 @@ void GameUI_WritePointedObjectStatusString()
                 else
                 {
                     GameUI_StatusBar_Set(
-                        localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()) // Get %s
+                        localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()) // Get %s   does not display properly ??
                         );
                 } //intentional fallthrough
             }
@@ -1724,134 +1722,182 @@ void GameUI_WritePointedObjectStatusString()
             return;
         }
     }
-    else
-    {
-        for (int i = uNumVisibleWindows; i > 0; --i)
-        {
-            pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1];
-            if ((signed int)pX >= (signed int)pWindow->uFrameX && (signed int)pX <= (signed int)pWindow->uFrameZ
-                && (signed int)pY >= (signed int)pWindow->uFrameY && (signed int)pY <= (signed int)pWindow->uFrameW)
-            {
-                for (pButton = pWindow->pControlsHead; pButton != nullptr; pButton = pButton->pNext)
-                {
-                    switch (pButton->uButtonType)
-                    {
-                    case 1://for dialogue window
-                        if ((signed int)pX >= (signed int)pButton->uX && (signed int)pX <= (signed int)pButton->uZ
-                            && (signed int)pY >= (signed int)pButton->uY && (signed int)pY <= (signed int)pButton->uW)
-                        {
-                            pMessageType1 = (UIMessageType)pButton->field_1C;
-                            if (pMessageType1)
-                                pMessageQueue_50CBD0->AddGUIMessage(pMessageType1, pButton->msg_param, 0);
-                            GameUI_StatusBar_Set(pButton->pButtonName);
-                            uLastPointedObjectID = 1;
-                            return;
-                        }
-                        break;
-                    case 2://hovering over portraits
-                        if (pButton->uWidth != 0 && pButton->uHeight != 0)
-                        {
-                            uint distW = pX - pButton->uX;
-                            uint distY = pY - pButton->uY;
+	else if (current_screen_type == SCREEN_CHEST) {
+		if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125) { // if in chest area
+			if (Chest::ChestUI_WritePointedObjectStatusString()) {
+				return;
+			}
+			else if (uLastPointedObjectID != 0) { // not found so reset
+				game_ui_status_bar_string[0] = 0;
+				bForceDrawFooter = 1;
+			}
+			uLastPointedObjectID = 0;
+			return;
 
-                            double ratioX = 1.0 * (distW*distW) / (pButton->uWidth*pButton->uWidth);
-                            double ratioY = 1.0 * (distY*distY) / (pButton->uHeight*pButton->uHeight);
+		}
+	}
+	//else if (current_screen_type == SCREEN_CHEST_INVENTORY) {
+		
+	//}
+    else {
+		//if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125) {
+		if (current_screen_type == SCREEN_CHARACTERS) {
+			if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
 
-                            if (ratioX + ratioY < 1.0)
-                            {
-                                pMessageType2 = (UIMessageType)pButton->field_1C;
-                                if (pMessageType2 != 0)
-                                    pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
-                                GameUI_StatusBar_Set(pButton->pButtonName); // for character name
-                                uLastPointedObjectID = 1;
-                                return;
-                            }
-                        }
-                        break;
-                    case 3:// click on skill
-                        if (pX >= pButton->uX && pX <= pButton->uZ
-                            && pY >= pButton->uY && pY <= pButton->uW)
-                        {
-                            requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
+				if (pY > 0 && pY < 350 && pX >= 13 && pX <= 462) {		// inventory poitned 
 
-                            String str;
-                            if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
-                                str = localization->FormatString(469, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints);// "You need %d more Skill Points to advance here"
-                            else
-                                str = localization->FormatString(468, requiredSkillpoints);// "Clicking here will spend %d Skill Points"
-                            GameUI_StatusBar_Set(str);
-                            uLastPointedObjectID = 1;
-                            return;
-                        }
-                        break;
-                    }
-                }
-            }
-            if (pWindow->uFrameHeight == 480)
-            {
-                //DebugBreak(); //Why is this condition here (in the original too)? Might check fullscreen windows. Let Silvo know if you find out
-                return;
-            }
-        }
-        //The game never gets to this point even in the original. It's also bugged(neither branch displays anything). 
-        //TODO fix these and move them up before the window check loop.
-        if (current_screen_type == SCREEN_CHEST)
-        {
-            Chest::ChestUI_WritePointedObjectStatusString(); //this should work now
-            if (uLastPointedObjectID != 0)
-            {
-                game_ui_status_bar_string[0] = 0;
-                bForceDrawFooter = 1;
-            }
-            uLastPointedObjectID = 0;
-            return;
-        }
-        else if (current_screen_type == SCREEN_HOUSE)
-        {
-            if (dialog_menu_id != HOUSE_DIALOGUE_SHOP_BUY_STANDARD
-                || (v16 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]], v16 == 0)
-                || v16 == -65536)
-            {
-                if (uLastPointedObjectID != 0)
-                {
-                    game_ui_status_bar_string[0] = 0;
-                    bForceDrawFooter = 1;
-                }
-                uLastPointedObjectID = 0;
-                return;
-            }
-            pItemGen = (ItemGen *)((char *)&pParty->pPickedItem + 36 * (v16 + 12 * (unsigned int)window_SpeakInHouse->ptr_1C) + 4);
-            GameUI_StatusBar_Set(pItemGen->GetDisplayName());
-            game_ui_status_bar_string[0] = 0;
-            bForceDrawFooter = 1;
-            uLastPointedObjectID = 0;
-            return;
-        }
-        if (pY < 350)
-        {
-            v14 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
-            if (v14 == 0 || v14 == -65536 || v14 >= 5000)
-            {
-                if (pMouse->uPointingObjectID == 0)
-                {
-                    if (uLastPointedObjectID != 0)
-                    {
-                        game_ui_status_bar_string[0] = 0;
-                        bForceDrawFooter = 1;
-                    }
-                }
-                uLastPointedObjectID = pMouse->uPointingObjectID;
-                return;
-            }
-            pItemGen = (ItemGen *)&pPlayers[uActiveCharacter]->pInventoryItemList[v14 - 1];
-            GameUI_StatusBar_Set(pItemGen->GetDisplayName());
-            game_ui_status_bar_string[0] = 0;
-            bForceDrawFooter = 1;
-            uLastPointedObjectID = 0;
-            return;
-        }
+					//inventoryYCoord = (pY - 17) / 32;
+					//inventoryXCoord = (pX - 14) / 32;
+					//invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
+					v14 = ((pX - 14) / 32) + 14 * ((pY - 17) / 32);
+					//if (mouse.x <= 13 || mouse.x >= 462)
+					//return;
+					pickedObjectID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&v14);
+					//if (!pItemID)
+				//return;
+			//item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
+
+					//v14 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
+					if (pickedObjectID == 0 || pickedObjectID == -65536 || pickedObjectID >= 5000) {
+						//if (pMouse->uPointingObjectID == 0) {
+						if (uLastPointedObjectID != 0) {
+							game_ui_status_bar_string[0] = 0;
+							bForceDrawFooter = 1;
+						}
+						//}
+						uLastPointedObjectID = 0;
+						//return;
+					}
+					else {
+						pItemGen = (ItemGen *)&pPlayers[uActiveCharacter]->pInventoryItemList[pickedObjectID - 1];
+						GameUI_StatusBar_Set(pItemGen->GetDisplayName());
+						uLastPointedObjectID = 1;
+						return;
+					}
+				}
+			}
+		}
+
+			//else if inventory
+
+
+			for (int i = uNumVisibleWindows; i > 0; --i) {
+				pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1];
+				if ((signed int)pX >= (signed int)pWindow->uFrameX && (signed int)pX <= (signed int)pWindow->uFrameZ
+					&& (signed int)pY >= (signed int)pWindow->uFrameY && (signed int)pY <= (signed int)pWindow->uFrameW) {
+
+					for (pButton = pWindow->pControlsHead; pButton != nullptr; pButton = pButton->pNext) {
+						switch (pButton->uButtonType) {
+						case 1://for dialogue window
+							if ((signed int)pX >= (signed int)pButton->uX && (signed int)pX <= (signed int)pButton->uZ
+								&& (signed int)pY >= (signed int)pButton->uY && (signed int)pY <= (signed int)pButton->uW) {
+
+								pMessageType1 = (UIMessageType)pButton->field_1C;
+								if (pMessageType1)
+									pMessageQueue_50CBD0->AddGUIMessage(pMessageType1, pButton->msg_param, 0);
+								GameUI_StatusBar_Set(pButton->pButtonName);
+								uLastPointedObjectID = 1;
+								return;
+							}
+							break;
+						case 2://hovering over portraits
+							if (pButton->uWidth != 0 && pButton->uHeight != 0) {
+								uint distW = pX - pButton->uX;
+								uint distY = pY - pButton->uY;
+
+								double ratioX = 1.0 * (distW*distW) / (pButton->uWidth*pButton->uWidth);
+								double ratioY = 1.0 * (distY*distY) / (pButton->uHeight*pButton->uHeight);
+
+								if (ratioX + ratioY < 1.0) {
+									pMessageType2 = (UIMessageType)pButton->field_1C;
+									if (pMessageType2 != 0)
+										pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
+									GameUI_StatusBar_Set(pButton->pButtonName); // for character name
+									uLastPointedObjectID = 1;
+									return;
+								}
+							}
+							break;
+						case 3:// click on skill
+							if (pX >= pButton->uX && pX <= pButton->uZ
+								&& pY >= pButton->uY && pY <= pButton->uW) {
+								requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
+
+								String str;
+								if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
+									str = localization->FormatString(469, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints);// "You need %d more Skill Points to advance here"
+								else
+									str = localization->FormatString(468, requiredSkillpoints);// "Clicking here will spend %d Skill Points"
+
+								GameUI_StatusBar_Set(str);
+								uLastPointedObjectID = 1;
+								return;
+							}
+							break;
+						}
+					}
+				}
+
+
+				// ?? if we get here nothing is curos over??
+				if (uLastPointedObjectID != 0) { // not found so reset
+					game_ui_status_bar_string[0] = 0;
+					bForceDrawFooter = 1;
+				}
+				uLastPointedObjectID = 0;
+				
+				if (pWindow->uFrameHeight == 480)
+				{
+					//DebugBreak(); //Why is this condition here (in the original too)? Might check fullscreen windows. Let Silvo know if you find out
+
+					// this is to stop the no windows active code below runnning
+
+
+					return;
+				}
+
+
+
+
+
+			}
+			//The game never gets to this point even in the original. It's also bugged(neither branch displays anything). 
+			//TODO fix these and move them up before the window check loop.
+
+			// gets here when glitched
+
+
+
+		/*	if (current_screen_type == SCREEN_HOUSE)  // this is required when displaying inventory in a house/shop??
+			{
+				if (dialog_menu_id != HOUSE_DIALOGUE_SHOP_BUY_STANDARD
+					|| (v16 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]], v16 == 0)
+					|| v16 == -65536)
+				{
+					if (uLastPointedObjectID != 0)
+					{
+						game_ui_status_bar_string[0] = 0;
+						bForceDrawFooter = 1;
+					}
+					uLastPointedObjectID = 0;
+					return;
+				}
+				pItemGen = (ItemGen *)((char *)&pParty->pPickedItem + 36 * (v16 + 12 * (unsigned int)window_SpeakInHouse->ptr_1C) + 4);
+				GameUI_StatusBar_Set(pItemGen->GetDisplayName());
+				game_ui_status_bar_string[0] = 0;
+				bForceDrawFooter = 1;
+				uLastPointedObjectID = 0;
+				return;
+			}
+			*/
+
+
+
+		//}
     }
-    if ((signed int)pX >= (signed int)pWindowList[0]->uFrameX && (signed int)pX <= (signed int)pWindowList[0]->uFrameZ
+ 
+	// no windows active -outside of game screen area only
+	if ((signed int)pX >= (signed int)pWindowList[0]->uFrameX && (signed int)pX <= (signed int)pWindowList[0]->uFrameZ
         && (signed int)pY >= (signed int)pWindowList[0]->uFrameY && (signed int)pY <= (signed int)pWindowList[0]->uFrameW)
     {
         for (pButton = pWindowList[0]->pControlsHead; pButton != nullptr; pButton = pButton->pNext)
@@ -1895,8 +1941,8 @@ void GameUI_WritePointedObjectStatusString()
                     }
                 }
                 break;
-            case 3:
-                if (pX >= pButton->uX && pX <= pButton->uZ
+            case 3: // is this one needed?
+/*                if (pX >= pButton->uX && pX <= pButton->uZ
                     && pY >= pButton->uY && pY <= pButton->uW)
                 {
                     requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
@@ -1909,11 +1955,12 @@ void GameUI_WritePointedObjectStatusString()
                     GameUI_StatusBar_Set(str);
                     uLastPointedObjectID = 1;
                     return;
-                }
+                }*/
                 break;
             }
         }
     }
+	
     //pMouse->uPointingObjectID = sub_46A99B(); //for software
     if (uLastPointedObjectID != 0)
     {

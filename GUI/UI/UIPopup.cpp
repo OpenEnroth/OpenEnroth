@@ -67,7 +67,7 @@ void CharacterUI_DrawTooltip(const char *title, String &content)
 
   auto colored_title = StringPrintf("\f%05d%s\f00000\n", ui_character_tooltip_header_default_color, title);
   popup_window.DrawTitleText(pFontCreate, 0, 0, 0, colored_title, 3);
-  popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetFontHeight(), 0, content, 0, popup_window.uFrameY + popup_window.uFrameHeight, 0);
+  popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetFontHeight(), 0, content, 0, 0, 0); //popup_window.uFrameY + popup_window.uFrameHeight
 }
 
 void CharacterUI_DrawTooltip(const char *title, const char *content)
@@ -512,9 +512,11 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
             }
             txt3 = localization->GetString(651); //"Hardened"
         }
-        inspect_item->uAttributes = (inspect_item->uAttributes & 0xFFFF0000) | r_mask;
-        iteminfo_window.DrawText(pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
-            iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), inspect_item->uAttributes, txt3, 0, 0, 0);
+        
+		int tempatt = (inspect_item->uAttributes & 0xFFFF0000) | r_mask;
+		
+		iteminfo_window.DrawText(pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
+            iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), tempatt, txt3, 0, 0, 0);
         render->ResetUIClipRect();
     }
 }

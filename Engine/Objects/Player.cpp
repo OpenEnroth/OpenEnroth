@@ -785,11 +785,6 @@ bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID) {
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
 
-	if (img) {
-		img->Release();
-		img = nullptr;
-	}
-
     Assert(slotHeight > 0 && slotWidth > 0, "Items should have nonzero dimensions");
     if ((slotWidth + uSlot % INVETORYSLOTSWIDTH) <= INVETORYSLOTSWIDTH && (slotHeight + uSlot / INVETORYSLOTSWIDTH) <= INVETORYSLOTSHEIGHT) {
 
@@ -4547,9 +4542,9 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
             break;
 
         case 252://Divine Restoration
-            v30 = playerAffected->conditions_times[Condition_Dead];
-            v32 = playerAffected->conditions_times[Condition_Pertified];
-            v34 = playerAffected->conditions_times[Condition_Eradicated];
+			v30 = playerAffected->conditions_times[Condition_Dead];
+			v32 = playerAffected->conditions_times[Condition_Pertified];
+			v34 = playerAffected->conditions_times[Condition_Eradicated];
             conditions_times.fill(0);
             playerAffected->conditions_times[Condition_Dead] = v30;
             playerAffected->conditions_times[Condition_Pertified] = v32;

@@ -694,29 +694,30 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow()
     return CS_inventory_window;
 }
 
-static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int y, const int *skill_list, int skill_list_size, int right_margin, const char *skill_group_name)
-{
-    int y_offset = y;
+static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int y, const int *skill_list, int skill_list_size, int right_margin, const char *skill_group_name) {
 
-    auto str = StringPrintf("%s\r%03d%s", skill_group_name, right_margin, localization->GetString(131)); //"Level"
+	int y_offset = y;
+
+    auto str = StringPrintf("%s\r%03d%s", skill_group_name, right_margin, localization->GetString(131)); //"Magic"    "Level"
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, x, y, ui_character_header_text_color, str, 0, 0, 0);
 
     int num_skills_drawn = 0;
-    for (int i = 0; i < skill_list_size; ++i)
-    {
+    for (int i = 0; i < skill_list_size; ++i) {
+
         PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)skill_list[i];
-        for (uint j = 0; j < pGUIWindow_CurrentMenu->uNumControls; ++j)
-        {
+        for (uint j = 0; j < pGUIWindow_CurrentMenu->uNumControls; ++j) {
+
             GUIButton* v8 = pGUIWindow_CurrentMenu->pControlsHead;
 
             for (int v7 = j; v7 > 0; --v7)
-                v8 = v8->pNext;
+                v8 = v8->pNext; // skip through buttons
 
             int v9 = v8->field_1C;
             if ((short)(v8->field_1C) >= 0)
-                continue;
+                continue; // skips an of the stats skills innv awards buttons
+
             if ((v9 & 0x7FFF) != skill)
-                continue;
+                continue; // skips buttons that dont match skill
 
             ++num_skills_drawn;
             y_offset = v8->uY;
@@ -729,7 +730,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int
             if (player->uSkillPoints > skill_level)
                 skill_color = ui_character_skill_upgradeable_color;
 
-            if (pGUIWindow_CurrentMenu->pCurrentPosActiveItem == j)
+            if (pGUIWindow_CurrentMenu->pCurrentPosActiveItem == j) // this needs to reset??
             {
                 if (player->uSkillPoints > skill_level)
                     skill_mastery_color = ui_character_bonus_text_color;
@@ -740,8 +741,8 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int
 
             if (SkillToMastery(skill_value) == 1)
             {
-                auto Str = StringPrintf("%s\r%03d%2d", localization->GetSkillName(skill), right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, str, 0, 0, 0);
+                auto Strsk = StringPrintf("%s\r%03d%2d", localization->GetSkillName(skill), right_margin, skill_level);
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0);
             }
             else
             {
@@ -757,14 +758,13 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int
                 if (!skill_mastery_color)
                     skill_mastery_color = ui_character_header_text_color;
 
-                auto Str = StringPrintf("%s \f%05d%s\f%05d\r%03d%2d", localization->GetSkillName(skill), skill_mastery_color, skill_level_str, skill_color, right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, str, 0, 0, 0);
+                auto Strsk = StringPrintf("%s \f%05d%s\f%05d\r%03d%2d", localization->GetSkillName(skill), skill_mastery_color, skill_level_str, skill_color, right_margin, skill_level);
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0);
             }
         }
     }
 
-    if (!num_skills_drawn)
-    {
+    if (!num_skills_drawn) {
         y_offset += pFontLucida->GetFontHeight() - 3;
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, y_offset, 0, localization->GetString(153), 0, 0, 0); // None
     }
@@ -778,7 +778,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player)
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, ui_character_skills_background);
 
     auto str = StringPrintf(
-        "%s \f%05d^Pv[%s]\f00000\r177%s: \f%05d%d\f00000",
+        "%s \f%05d%s\f00000\r177%s: \f%05d%d\f00000", //^Pv[]
         localization->GetString(206),        // Skills for
         ui_character_header_text_color,
         player->pName,
@@ -1718,10 +1718,14 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool a2)
     unsigned int uCellY; // [sp+34h] [bp-4h]@5
 
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, ui_character_inventory_background);
-    if (a2)
-        render->DrawTextureAlphaNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
-
-    for (uint i = 0; i < 126; ++i)
+	if (a2) {
+		if (ui_character_inventory_background_strip == nullptr) { // strip doesnt load if you havent already look at inventorys
+			ui_character_inventory_background_strip = assets->GetImage_16BitColorKey("fr_strip", 0x7FF);
+		}
+		render->DrawTextureAlphaNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
+	}
+    
+	for (uint i = 0; i < 126; ++i)
     {
         if (player->pInventoryMatrix[i] <= 0)
             continue;

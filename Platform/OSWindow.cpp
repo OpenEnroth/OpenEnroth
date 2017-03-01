@@ -619,6 +619,7 @@ void *OSWindow::CreateDebugMenuPanel()
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40007, L"Give Gold (10 000)");
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40008, L"Give Exp (20 000)");
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40059, L"Give Skills (50 each)");
+				AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40060, L"Learn Skills");
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40013, L"Remove Gold");
 
                 HMENU debug_party_setconditions = CreatePopupMenu();
@@ -860,6 +861,168 @@ bool OSWindow::OnOSMenu(int item_id)
             for (uint i = 0; i < 4; ++i)
                 pParty->pPlayers[i].uSkillPoints = 50;
             break;
+
+		// learn all skills for class
+		case 40060:
+			for (uint i = 1; i < 5; ++i) { //loop over players
+				for (int ski = 0; ski < 37; ++ski) { // loop over skills
+					if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[i]->classType][ski] > 0) { //if class can learn this skill
+						switch (ski) { //	give skils
+							case 0: //PLAYER_SKILL_STAFF = 0,
+								if (pPlayers[i]->skillStaff == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillStaff, 1);
+								break;
+							case 1: //PLAYER_SKILL_SWORD = 1,
+								if (pPlayers[i]->skillSword == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillSword, 1);
+								break;
+							case 2: //PLAYER_SKILL_DAGGER = 2,
+								if (pPlayers[i]->skillDagger == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillDagger, 1);
+								break;
+							case 3: //PLAYER_SKILL_AXE = 3,
+								if (pPlayers[i]->skillAxe == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillAxe, 1);
+								break;
+							case 4: //PLAYER_SKILL_SPEAR = 4,
+								if (pPlayers[i]->skillSpear == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillSpear, 1);
+								break;
+							case 5: //PLAYER_SKILL_BOW = 5,
+								if (pPlayers[i]->skillBow == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillBow, 1);
+								break;
+							case 6: //PLAYER_SKILL_MACE = 6,
+								if (pPlayers[i]->skillMace == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillMace, 1);
+								break;
+							case 7: //PLAYER_SKILL_BLASTER = 7,
+								if (pPlayers[i]->skillBlaster == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillBlaster, 1);
+								break;
+							case 8: //PLAYER_SKILL_SHIELD = 8,
+								if (pPlayers[i]->skillShield == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillShield, 1);
+								break;
+							case 9: //PLAYER_SKILL_LEATHER = 9,
+								if (pPlayers[i]->skillLeather == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillLeather, 1);
+								break;
+							case 10: //PLAYER_SKILL_CHAIN = 10,
+								if (pPlayers[i]->skillChain == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillChain, 1);
+								break;
+							case 11: //PLAYER_SKILL_PLATE = 11,
+								if (pPlayers[i]->skillPlate == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillPlate, 1);
+								break;
+							case 12: //PLAYER_SKILL_FIRE = 12,
+								if (pPlayers[i]->skillFire == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillFire, 1);
+								break;
+							case 13: //PLAYER_SKILL_AIR = 13,
+								if (pPlayers[i]->skillAir == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillAir, 1);
+								break;
+							case 14: //PLAYER_SKILL_WATER = 14,
+								if (pPlayers[i]->skillWater == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillWater, 1);
+								break;
+							case 15: //PLAYER_SKILL_EARTH = 15,
+								if (pPlayers[i]->skillEarth == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillEarth, 1);
+								break;
+							case 16: //PLAYER_SKILL_SPIRIT = 16,
+								if (pPlayers[i]->skillSpirit == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillSpirit, 1);
+								break;
+							case 17: //PLAYER_SKILL_MIND = 17,
+								if (pPlayers[i]->skillMind == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillMind, 1);
+								break;
+							case 18: //PLAYER_SKILL_BODY = 18,
+								if (pPlayers[i]->skillBody == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillBody, 1);
+								break;
+							case 19: //PLAYER_SKILL_LIGHT = 19,
+								if (pPlayers[i]->skillLight == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillLight, 1);
+								break;
+							case 20: //	PLAYER_SKILL_DARK = 20,
+								if (pPlayers[i]->skillDark == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillDark, 1);
+								break;
+							case 21: //PLAYER_SKILL_ITEM_ID = 21,
+								if (pPlayers[i]->skillItemId == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillItemId, 1);
+								break;
+							case 22: //PLAYER_SKILL_MERCHANT = 22,
+								if (pPlayers[i]->skillMerchant == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillMerchant, 1);
+								break;
+							case 23: //PLAYER_SKILL_REPAIR = 23,
+								if (pPlayers[i]->skillRepair == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillRepair, 1);
+								break;
+							case 24: //PLAYER_SKILL_BODYBUILDING = 24,
+								if (pPlayers[i]->skillBodybuilding == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillBodybuilding, 1);
+								break;
+							case 25: //PLAYER_SKILL_MEDITATION = 25,
+								if (pPlayers[i]->skillMeditation == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillMeditation, 1);
+								break;
+							case 26: //PLAYER_SKILL_PERCEPTION = 26,
+								if (pPlayers[i]->skillPerception == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillPerception, 1);
+								break;
+							case 27: // PLAYER_SKILL_DIPLOMACY = 27,
+								break;
+							case 28: //PLAYER_SKILL_TIEVERY = 28,
+								break;
+							case 29: //PLAYER_SKILL_TRAP_DISARM = 29,
+								if (pPlayers[i]->skillDisarmTrap == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillDisarmTrap, 1);
+								break;
+							case 30: //PLAYER_SKILL_DODGE = 30,
+								if (pPlayers[i]->skillDodge == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillDodge, 1);
+								break;
+							case 31: //PLAYER_SKILL_UNARMED = 31,
+								if (pPlayers[i]->skillUnarmed == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillUnarmed, 1);
+								break;
+							case 32: //PLAYER_SKILL_MONSTER_ID = 32,
+								if (pPlayers[i]->skillMonsterId == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillMonsterId, 1);
+								break;
+							case 33: //PLAYER_SKILL_ARMSMASTER = 33,
+								if (pPlayers[i]->skillArmsmaster == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillArmsmaster, 1);
+								break;
+							case 34: //PLAYER_SKILL_STEALING = 34,
+								if (pPlayers[i]->skillStealing == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillStealing, 1);
+								break;
+							case 35: //PLAYER_SKILL_ALCHEMY = 35,
+								if (pPlayers[i]->skillAlchemy == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillAlchemy, 1);
+								break;
+							case 36: //PLAYER_SKILL_LEARNING = 36,
+								if (pPlayers[i]->skillLearning == 0)
+									pPlayers[i]->AddSkillByEvent(&Player::skillLearning, 1);
+								break;
+
+								//PLAYER_SKILL_CLUB = 37,
+								//PLAYER_SKILL_MISC = 38,
+								//PLAYER_SKILL_INVALID = -1
+							
+						}
+					}
+				}
+			}
+			break;
+
 
         case 40029:  pPlayers[uActiveCharacter]->SetPertified(pParty->GetPlayingTime());  break;
         case 40030:  pPlayers[uActiveCharacter]->SetWeak(pParty->GetPlayingTime());       break;

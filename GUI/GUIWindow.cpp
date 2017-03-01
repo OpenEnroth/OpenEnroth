@@ -430,8 +430,8 @@ void GUIWindow_Dialogue::Release()
 
     if (game_ui_dialogue_background)
     {
-        game_ui_dialogue_background->Release();
-        game_ui_dialogue_background = nullptr;
+        game_ui_dialogue_background->Release();  
+       game_ui_dialogue_background = nullptr;
     }
 
     current_screen_type = prev_screen_type;
@@ -465,8 +465,8 @@ void GUIWindow_House::Release()
 
     if (game_ui_dialogue_background)
     {
-        game_ui_dialogue_background->Release();
-        game_ui_dialogue_background = nullptr;
+        game_ui_dialogue_background->Release(); 
+       game_ui_dialogue_background = nullptr;
     }
 
     dword_5C35D4 = 0;
@@ -519,6 +519,7 @@ void GUIWindow::Release()
   }
   pVisibleWindowsIdxs[uNumVisibleWindows] = 0;
   uNumVisibleWindows = uNumVisibleWindows - 1;
+  //should pwindowlist[x] = nullptr;??
 }
 
 //----- (0041CD3B) --------------------------------------------------------
@@ -1278,7 +1279,7 @@ void GUIWindow::InitializeGUI()
 {
     SetUserInterface(PartyAlignment_Neutral, false);
 
-    for (uint i = 0; i < 20; ++i)
+    for (uint i = 0; i < 20; ++i) //should this be 50??
         pWindowList[i] = nullptr;
     uNumVisibleWindows = -1;
     memset(pVisibleWindowsIdxs.data(), 0, sizeof(pVisibleWindowsIdxs));
@@ -1328,11 +1329,16 @@ GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
     //  int uWidtha; // [sp+14h] [bp+4h]@66
     int num_menu_buttons; // [sp+20h] [bp+10h]@15
 
-    for (uNextFreeWindowID = 0; uNextFreeWindowID < 20; ++uNextFreeWindowID)
+    for (uNextFreeWindowID = 0; uNextFreeWindowID < 20; ++uNextFreeWindowID) // should this limit be 50  as pwindowlist is size 50??
     {
-        if (pWindowList[uNextFreeWindowID] == nullptr)
+        if (pWindowList[uNextFreeWindowID] == nullptr || (pWindowList[uNextFreeWindowID]->eWindowType== WINDOW_null)) // ??testy test
             break;
     }
+
+	logger->Info(L"New window");
+
+	//pwindowlist not freeing/resetting properly?? above is work around
+	Assert(pWindowList[uNextFreeWindowID] == nullptr || (pWindowList[uNextFreeWindowID]->eWindowType == WINDOW_null), "Window out of range!");
 
     //GUIWindow* pWindow = &pWindowList[uNextFreeWindowID];
     pWindowList[uNextFreeWindowID] = this;//sometimes uNextFreeWindowID == 20. it's result crash
@@ -1373,7 +1379,8 @@ void DrawJoinGuildWindow( int pEventCode )
 void DialogueEnding()
 {
   sDialogue_SpeakingActorNPC_ID = 0;
-  pDialogueWindow->Release();
+  if (pDialogueWindow)
+		pDialogueWindow->Release();
   pDialogueWindow = 0;
   pMiscTimer->Resume();
   pEventTimer->Resume();
@@ -1614,7 +1621,7 @@ void GUI_UpdateWindows()
 
     for (unsigned int i = 1; i <= uNumVisibleWindows; ++i)
     {
-        pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1];
+		pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1]; //pVisibleWindowsIdxs[i] = 21 then problems
         pWindow->Update();
     }
 

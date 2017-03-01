@@ -775,7 +775,8 @@ int BicubicMipmapGenerator::_450FB1(int a2)
 
 Image *Image::Create(ImageLoader *loader)
 {
-    auto img = new Image();
+    	
+	auto img = new Image();
     if (img)
     {
         img->loader = loader;
@@ -927,7 +928,10 @@ const void *Image::GetPixels(IMAGE_FORMAT format)
 
 bool Image::Release()
 {
-    if (initialized)
+
+	assets->ReleaseImage(this->loader->GetResourceName());
+	
+	if (initialized)
     {
         if (loader)
         {

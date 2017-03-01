@@ -904,7 +904,7 @@ bool  HouseUI_CheckIfPlayerCanInteract()
 
     if (pPlayers[uActiveCharacter]->CanAct())
     {
-        pDialogueWindow->pNumPresenceButton = dword_F8B1E0;
+       pDialogueWindow->pNumPresenceButton = dword_F8B1E0;
         return true;
     }
     else
@@ -3536,7 +3536,7 @@ int HouseDialogPressCloseBtn()
 
   if ( dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL && shop_ui_background)
   {
-      shop_ui_background->Release();
+      shop_ui_background->Release(); 
       shop_ui_background = nullptr;
   }
 

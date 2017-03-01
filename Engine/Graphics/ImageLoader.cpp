@@ -31,7 +31,7 @@ bool ColorKey_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height
         auto paletted_pixels = tex->paletted_pixels;
 
         auto width = tex->uTextureWidth;
-        auto height = tex->uTextureHeight;
+        auto height = tex->uTextureHeight;					//memory leak - background keeps relaoding?
         auto pixels = new unsigned __int32[width * height]; //Unhandled exception at 0x759DA832 in World of Might and Magic.exe: Microsoft C++ exception: std::bad_alloc at memory location 0x01CFEB10.
         if (pixels)
         {

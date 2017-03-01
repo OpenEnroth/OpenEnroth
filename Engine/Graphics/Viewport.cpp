@@ -373,9 +373,9 @@ void DropHeldItem()
     a1.uSpriteFrameID = 0;
     memcpy(&a1.containing_item, &pParty->pPickedItem, 0x24u);
 
-    extern int UnprojectX(int);
+   // extern int UnprojectX(int);
     //v9 = UnprojectX(v1->x);
-    a1.Create(pParty->sRotationY + UnprojectX(v1->x), 184, 200, 0);
+	a1.Create(pParty->sRotationY, 184, 200, 0); //+ UnprojectX(v1->x), 184, 200, 0);
 
     pMouse->RemoveHoldingItem();
 }
@@ -400,6 +400,11 @@ void OnGameViewportClick()
 
     Point pt = pMouse->GetCursorPos();
     //if ( render->pRenderD3D )
+
+	if (current_screen_type == SCREEN_NPC_DIALOGUE) // bug fix - stops you entering shops while dialog still open.
+		return;
+
+
     v0 = pEngine->pVisInstance->get_picked_object_zbuf_val();
     int distance = HEXRAYS_HIWORD(v0);
     bool in_range = distance < clickable_distance;

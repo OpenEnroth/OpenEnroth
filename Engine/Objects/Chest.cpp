@@ -187,7 +187,7 @@ bool Chest::Open(signed int uChestID)
 }
 
 //----- (0042038D) --------------------------------------------------------
-void Chest::ChestUI_WritePointedObjectStatusString() {
+bool Chest::ChestUI_WritePointedObjectStatusString() {
 
 	Point pt = pMouse->GetCursorPos();
 	unsigned int pX=pt.x;
@@ -209,11 +209,71 @@ void Chest::ChestUI_WritePointedObjectStatusString() {
 			}
 
 			if (chestindex) {
+
+				
+
 				int itemindex = chestindex - 1;
 				ItemGen* item = &pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex];
+
+			
+///////////////////////////////////////////////		
+				// normal picking
+				
 				GameUI_StatusBar_Set(item->GetDisplayName());
+				uLastPointedObjectID = 1;
+				return 1;
+
+////////////////////////////////////////////////////
+
+				//per pixel transparency check tests
+				/*
+
+				auto img = assets->GetImage_16BitColorKey(item->GetIconName(), 0x7FF);
+				
+				int imgwidth = img->GetWidth();
+				int imgheight = img->GetHeight();
+				auto pixels = (signed __int32 *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+				
+				Assert(pixels != nullptr, "Cannot get pixels");
+
+				if (imgwidth < 14)
+					imgwidth = 14;
+
+				int v12 = imgwidth - 14;
+				v12 = v12 & 0xFFFFFFE0;
+				 int v13 = v12 + 32;
+
+				if (imgheight < 14)
+					imgheight = 14;
+
+				int chest_offs_x = 42;//pChestPixelOffsetX[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+				int chest_offs_y = 34; // pChestPixelOffsetY[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+							  
+				int imgX = chest_offs_x + 32 * (invMatrixIndex % chestwidth) + ((signed int)(v13 - imgwidth) / 2);
+				
+				int imgY = chest_offs_y + 32 * (invMatrixIndex / chestheight) +
+					((signed int)(((imgheight - 14) & 0xFFFFFFE0) + 32 - imgheight) / 2);
+
+				int pix_chk_x = pX-imgX;
+				int pix_chk_y = pY-imgY;
+				
+				if (pix_chk_x > 0 && pix_chk_x <= imgwidth && pix_chk_y > 0 && pix_chk_y <= imgheight) {
+					
+					pixels += pix_chk_x + pix_chk_y*imgwidth;
+					
+					if (*pixels & 0xFF000000) {
+						GameUI_StatusBar_Set(item->GetDisplayName());
+						uLastPointedObjectID = 1;
+						return 1;
+					}
+				}
+
+				*/
+
+				
 			}
 	}
+	return 0;
 }
 
 
@@ -227,11 +287,6 @@ bool Chest::CanPlaceItemAt(signed int test_cell_position, int item_id, signed in
 	auto img = assets->GetImage_16BitColorKey(pItemsTable->pItems[item_id].pIconName, 0x7FF);
 	unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
 	unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
-
-    if (img) {
-        img->Release();
-        img = nullptr;
-    }
 
 	Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
     if ((slot_width + test_cell_position % chest_cell_width <= chest_cell_width) && (slot_height + test_cell_position / chest_cell_width <= chest_cell_heght)) {
@@ -310,11 +365,6 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, signed int uChestID) 
 	auto texture = assets->GetImage_16BitColorKey(put_item->GetIconName(), 0x7FF);
 	unsigned int slot_width = GetSizeInInventorySlots(texture->GetWidth());
 	unsigned int slot_height = GetSizeInInventorySlots(texture->GetHeight());
-
-	if (texture) {
-		texture->Release();
-		texture = nullptr;
-	}
 
 	Assert(slot_height > 0 && slot_width > 0, "Items should have nonzero dimensions");
 
@@ -429,10 +479,8 @@ void Chest::PlaceItems(signed int uChestID) // only sued for setup
 }
 
 //----- (00448A17) --------------------------------------------------------
-void Chest::ToggleFlag(signed int uChestID, unsigned __int16 uFlag, unsigned int bToggle)
-{
-    if (uChestID >= 0 && uChestID <= 19)
-    {
+void Chest::ToggleFlag(signed int uChestID, unsigned __int16 uFlag, unsigned int bToggle) {
+	if (uChestID >= 0 && uChestID <= 19) {
         if (bToggle)
             pChests[uChestID].uFlags |= uFlag;
         else

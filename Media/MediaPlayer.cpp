@@ -1126,7 +1126,7 @@ void MPlayer::OpenHouseMovie(const char *pMovieName, unsigned int a3_1)
 }
 
 //----- (004BE70E) --------------------------------------------------------
-void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSizeFlag, int a4*/)
+void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSizeFlag, int a4*/) // ?? blank
 {
   int v4; // ebp@1
   /*

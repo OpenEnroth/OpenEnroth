@@ -209,17 +209,17 @@ struct Party
   static void TakeFood(unsigned int uNumFood);
   static void GiveFood(unsigned int _this);
 
-  static void Sleep6Hours();
+  static void Sleep8Hours();
 
-  inline bool WizardEyeActive()     { return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time; }
+  inline bool WizardEyeActive()     { return bool(pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time); }
   inline int  WizardEyeSkillLevel() { return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].uSkill; }
-  inline bool TorchlightActive()    { return pPartyBuffs[PARTY_BUFF_TORCHLIGHT].expire_time; }
-  inline bool FlyActive()           { return pPartyBuffs[PARTY_BUFF_FLY].expire_time; }
-  inline bool WaterWalkActive()     { return pPartyBuffs[PARTY_BUFF_WATER_WALK].expire_time; }
-  inline bool ImmolationActive()    { return pPartyBuffs[PARTY_BUFF_IMMOLATION].expire_time; }
+  inline bool TorchlightActive()    { return bool(pPartyBuffs[PARTY_BUFF_TORCHLIGHT].expire_time); }
+  inline bool FlyActive()           { return bool(pPartyBuffs[PARTY_BUFF_FLY].expire_time); }
+  inline bool WaterWalkActive()     { return bool(pPartyBuffs[PARTY_BUFF_WATER_WALK].expire_time); }
+  inline bool ImmolationActive()    { return bool(pPartyBuffs[PARTY_BUFF_IMMOLATION].expire_time); }
   inline int ImmolationSkillLevel() { return pPartyBuffs[PARTY_BUFF_IMMOLATION].uSkill; }
-  inline bool FeatherFallActive()   { return pPartyBuffs[PARTY_BUFF_FEATHER_FALL].expire_time; }
-  inline bool Invisible()           { return pPartyBuffs[PARTY_BUFF_INVISIBILITY].expire_time; }
+  inline bool FeatherFallActive()   { return bool(pPartyBuffs[PARTY_BUFF_FEATHER_FALL].expire_time); }
+  inline bool Invisible()           { return bool(pPartyBuffs[PARTY_BUFF_INVISIBILITY].expire_time); }
 
   inline bool GetRedAlert()    {return (uFlags & PARTY_FLAGS_1_ALERT_RED) != 0;}
   inline void SetRedAlert()    {uFlags |= PARTY_FLAGS_1_ALERT_RED;}

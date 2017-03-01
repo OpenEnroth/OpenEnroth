@@ -211,7 +211,7 @@ void GUIWindow_Rest::Update()
         auto str5 = StringPrintf("%s\r190%d", localization->GetString(245), pParty->uCurrentYear);//Год
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 254, Color16(10, 0, 0), str5, 0, 0, Color16(230, 214, 193));
         if (_506F14_resting_stage)
-            Party::Sleep6Hours();
+            Party::Sleep8Hours();
     }
     else
         new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0, (int)pButton_RestUI_Exit, localization->GetString(81)); // "Exit Rest"

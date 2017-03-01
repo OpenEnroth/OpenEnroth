@@ -844,17 +844,18 @@ void Party::RestAndHeal()
 }
 
 //----- (004938D1) --------------------------------------------------------
-void Rest(unsigned int uHoursToSleep)
+void Rest(unsigned int uMinsToRest) // this is passed mins not hours
 {
-    auto rest_time = GameTime(0, 0, uHoursToSleep);
+    auto rest_time = GameTime(0, uMinsToRest );
 
-    if (uHoursToSleep > 240)
+    if (uMinsToRest > 240)
         Actor::InitializeActors();
 
     pParty->GetPlayingTime() += rest_time;
-    for (int i = 1; i <= 4; i++)
+   
+	for (int i = 1; i <= 4; i++)
     {
-        pPlayers[i]->Recover(rest_time);
+        pPlayers[i]->Recover(rest_time); // ??
     }
 
     _494035_timed_effects__water_walking_damage__etc();
@@ -889,7 +890,7 @@ void RestAndHeal(__int64 minutes)
     pParty->UpdatePlayersAndHirelingsEmotions();
 }
 //----- (0041F5BE) --------------------------------------------------------
-void  Party::Sleep6Hours()
+void  Party::Sleep8Hours()
 {
   if ( _506F18_num_minutes_to_sleep < 6 )
   {

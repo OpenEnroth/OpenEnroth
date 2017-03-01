@@ -64,7 +64,9 @@ struct GameTime
     bool operator <(GameTime &rhs) { return this->value < rhs.value; }
     bool operator <=(GameTime &rhs) { return this->value <= rhs.value; }
 
-    operator bool() { return this->Valid(); }
+   explicit operator bool() { return this->Valid(); } // unsafe bool was casuing many problems
+
+   operator int() { return this->value; } // cast operator conversion require
 
     static GameTime FromSeconds(int seconds) { return GameTime(seconds, 0, 0, 0, 0, 0, 0); }
     static GameTime FromMinutes(int minutes) { return GameTime(0, minutes, 0, 0, 0, 0, 0); }

@@ -253,7 +253,7 @@ void KeyboardActionMapping::ReadMappings()
         KeyToggleType toggType = keyMappingParams[i].m_toggType;
 
         OS_GetAppString(keyName, str, 32, "DEFAULT");
-        if (strcmp(str, "DEFAULT") && (TranslateKeyNameToKeyCode(str) != -1))
+        if (strcmp(str, "DEFAULT") && (TranslateKeyNameToKeyCode(str) != 0xff )) // returns 0xff on error not -1
             pVirtualKeyCodesMapping[commandId] = TranslateKeyNameToKeyCode(str);
         else
             pVirtualKeyCodesMapping[commandId] = commandDefaultKeyCode;

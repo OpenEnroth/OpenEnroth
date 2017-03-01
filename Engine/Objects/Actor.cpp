@@ -3765,7 +3765,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     {
         v43 = player->GetActualSkillLevel(PLAYER_SKILL_MACE);
         v45 = SkillToMastery(v43);
-        v46 = pParty->GetPlayingTime() + GameTime(0, v43 & 63);
+        GameTime v46 = pParty->GetPlayingTime() + GameTime(0, v43 & 63); // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply(v46, v45, 0, 0, 0);
         if (bShowDamage)
         {

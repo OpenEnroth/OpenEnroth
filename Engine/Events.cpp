@@ -451,7 +451,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages, int entry_
         }
         if ( !_stricmp(v16, "pcout01") )    // moving to harmondale from emerald isle
         {
-          Rest(0x2760u);
+          Rest(0x2760u); // 7 dys
           pParty->RestAndHeal();
           pParty->days_played_without_rest = 0;
         }
@@ -1048,7 +1048,7 @@ LABEL_47:
         break;
       case EVENT_MouseOver:
       case EVENT_LocationName:
-        --curr_seq_num;
+        --curr_seq_num;//eh?
         ++curr_seq_num;
         break;
       case EVENT_ChangeDoorState:

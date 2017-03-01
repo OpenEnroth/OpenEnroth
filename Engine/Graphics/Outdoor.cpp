@@ -2565,7 +2565,7 @@ void ODM_ProcessPartyActions()
     Vec3_int_ v98;
     bool not_high_fall; // [sp+1Ch] [bp-78h]@33
     int v102; // [sp+20h] [bp-74h]@1
-    int trigger_id; // [sp+24h] [bp-70h]@1
+    int trigger_id=0; // [sp+24h] [bp-70h]@1
     bool bFeatherFall; // [sp+28h] [bp-6Ch]@4
     int bonus;
     int on_ground; // [sp+2Ch] [bp-68h]@24
@@ -2590,7 +2590,6 @@ void ODM_ProcessPartyActions()
     int v129; // [sp+8Ch] [bp-8h]@92
 
     v1 = 0;
-    trigger_id = 0;
     v2 = 0;
     //*(float *)&v128 = 0.0;
     int fall_speed = pParty->uFallSpeed;
@@ -3264,7 +3263,7 @@ void ODM_ProcessPartyActions()
                 if (pParty->floor_face_pid != v45 && pODMFace->Pressure_Plate())
                 {
                     pParty->floor_face_pid = v45;
-                    trigger_id = pODMFace->sCogTriggeredID;
+                    trigger_id = pODMFace->sCogTriggeredID;  // this one triggers tour events??
                 }
             }
             if (!v129 && (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall || v119))// упёрся в столб

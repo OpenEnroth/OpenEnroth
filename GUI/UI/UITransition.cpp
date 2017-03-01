@@ -60,7 +60,7 @@ void GUIWindow_Transition::Release()
     //pVideoPlayer->Unload();
     if (transition_ui_icon)
     {
-        transition_ui_icon->Release();
+        transition_ui_icon->Release(); 
         transition_ui_icon = nullptr;
     }
 
