@@ -1927,10 +1927,13 @@ int stru6_stru1_indoor_sw_billboard::sub_47802A()
 	{
 		for (int i = 0; i < this->uNumVertices; i++)
 		{
-			v6 = (double)pBLVRenderParams->fov_rad_fixpoint * 0.000015258789 / this->field_B4[i * 4];
+			v6 = ((double)pBLVRenderParams->bsp_fov_rad / 65536.0) / this->field_B4[i * 4];
 			//if ( render->pRenderD3D )
 			{
-				pIndoorCameraD3D->Project(round_to_int(this->field_B4[i * 4]), round_to_int(this->field_B4[i * 4 + 1]), round_to_int(this->field_B4[i * 4 + 2]),
+				pIndoorCameraD3D->Project(
+                    round_to_int(this->field_B4[i * 4]),
+                    round_to_int(this->field_B4[i * 4 + 1]),
+                    round_to_int(this->field_B4[i * 4 + 2]),
 					&a5, &a6);
 				this->field_B4[i * 4 + 16] = (double)a5;
 				this->field_B4[i * 4 + 17] = (double)a6;

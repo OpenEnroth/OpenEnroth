@@ -257,8 +257,8 @@ void BLVRenderParams::Reset()
   //                                             / tan((double)(v2->fov_deg >> 1) * 0.01745329)
   //                                             + 0.5) << 16;
   extern float _calc_fov(int viewport_width, int angle_degree);
-  this->fov_rad_fixpoint = fixpoint_from_int(_calc_fov(uViewportWidth, 65), 0);
-  this->fov_rad_inv_fixpoint = (65536i64 << 16) / this->fov_rad_fixpoint;
+  this->bsp_fov_rad = fixpoint_from_int(_calc_fov(uViewportWidth, 65), 0);
+  this->bsp_fov_rad_inv = fixpoint_div(1 << 16, this->bsp_fov_rad);
   this->pRenderTarget = render->pTargetSurface;
   this->uTargetWidth = window->GetWidth();
   this->uTargetHeight = window->GetHeight();
@@ -4088,22 +4088,6 @@ int GetPortalScreenCoord(unsigned int uFaceID)
     //*****************************************************************************************************************************************
     //transform to camera coordinates (генерация/конвертирование в координаты пространства камеры)
 
-    //for new coordinates:
-    //int x = 0x AAAA BBBB;
-    //AAAA - integer(целая часть), BBBB - fractional(дробная)
-    //float v = HIWORD(x) + LOWORD(x) / 65535.0f;
-    //0x0351A281 это 849(351 в шестнадцатиричной) в целой части и A281 в дробной(хотя как точно BBBB считалась не помню)
-    //if in HIWORD: FFFF = -1
-    //FFFE = -2
-    //FFFD = -3
-    //....
-    //8000 = -32767
-    //7FFF = 32767
-    //7FFE = 32766
-    //если в LOWORD например лежит FFFF то не совсем понятно, что это
-    //потому что если и hiword и loword равны FFFF FFFF то двойное отрицание как бы, нужно тестировать что конкретно получается чтобы понять что это значит
-    //всё что больше 7FFF для верхнего слова это идёт уже с минусом/Nomad/
-
     if ((signed int)pFace->uNumVertices > 0)
     {
         for (uint i = 0; i < pFace->uNumVertices; ++i)
@@ -4119,6 +4103,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
             );
         }
     }
+
     //*****************************************************************************************************************************************
     //check vertices for the nearest plane(проверка вершин есть ли в области за ближайшей плоскостью)
     if (pFace->uNumVertices <= 0)
@@ -4159,33 +4144,74 @@ int GetPortalScreenCoord(unsigned int uFaceID)
         for (uint i = 1; i <= pFace->uNumVertices; ++i)
         {
             next_vertices_flag = PortalFace._view_transformed_z[i + 3] >= 0x80000; //524288;// 8.0
-            if (current_vertices_flag ^ next_vertices_flag)//или текущая или следующая вершина за ближней границей - v5
+            if (current_vertices_flag ^ next_vertices_flag) // current or next vertex is near-clipped / или текущая или следующая вершина за ближней границей - v5
             {
-                if (next_vertices_flag)//следующая вершина за ближней границей
+                if (next_vertices_flag) // next vertex is near-clipped / следующая вершина за ближней границей
                 {
                     //t = near_clip - v4.z / v5.z - v4.z
-                    t = fixpoint_div(0x80000 - PortalFace._view_transformed_z[i + 2], PortalFace._view_transformed_z[i + 3] - PortalFace._view_transformed_z[i + 2]);
+                    t = fixpoint_div(
+                        0x80000 - PortalFace._view_transformed_z[i + 2],
+                        PortalFace._view_transformed_z[i + 3] - PortalFace._view_transformed_z[i + 2]
+                    );
                     //New_x = (v5.x - v4.x)*t + v4.x
-                    PortalFace._view_transformed_x[depth_num_vertices] = fixpoint_mul((PortalFace._view_transformed_x[i + 3] - PortalFace._view_transformed_x[i + 2]), t)
-                        + PortalFace._view_transformed_x[i + 2];
+                    PortalFace._view_transformed_x[depth_num_vertices] =
+                        PortalFace._view_transformed_x[i + 2]
+                        + fixpoint_mul(
+                            t, (PortalFace._view_transformed_x[i + 3] - PortalFace._view_transformed_x[i + 2])
+                        );
                     //New_y = (v5.y - v4.y)*t + v4.y
-                    PortalFace._view_transformed_y[depth_num_vertices] = fixpoint_mul((PortalFace._view_transformed_y[i + 3] - PortalFace._view_transformed_y[i + 2]), t)
-                        + PortalFace._view_transformed_y[i + 2];
+                    PortalFace._view_transformed_y[depth_num_vertices] =
+                        PortalFace._view_transformed_y[i + 2]
+                        + fixpoint_mul(
+                            t, (PortalFace._view_transformed_y[i + 3] - PortalFace._view_transformed_y[i + 2])
+                        );
                     //New_z = 8.0(0x80000)
                     PortalFace._view_transformed_z[depth_num_vertices] = 0x80000; //524288
+
+                    // test new code
+                    auto _t = (fixed::FromInt(8) - fixed::Raw(PortalFace._view_transformed_z[i + 2])) / (fixed::Raw(PortalFace._view_transformed_z[i + 3]) - fixed::Raw(PortalFace._view_transformed_z[i + 2]));
+                    auto _x = fixed::Raw(PortalFace._view_transformed_x[i + 2]) + _t * (fixed::Raw(PortalFace._view_transformed_x[i + 3]) - fixed::Raw(PortalFace._view_transformed_x[i + 2]));
+                    auto _y = fixed::Raw(PortalFace._view_transformed_y[i + 2]) + _t * (fixed::Raw(PortalFace._view_transformed_y[i + 3]) - fixed::Raw(PortalFace._view_transformed_y[i + 2]));
+                    auto _z = fixed::FromInt(8);
+
+                    assert(_t._internal == t);
+                    assert(_x._internal == PortalFace._view_transformed_x[depth_num_vertices]);
+                    assert(_y._internal == PortalFace._view_transformed_y[depth_num_vertices]);
+                    assert(_z._internal == PortalFace._view_transformed_z[depth_num_vertices]);
                 }
-                else// текущая вершина за ближней границей
+                else // current vertex is near-clipped / текущая вершина за ближней границей
                 {
                     //t = near_clip - v1.z / v0.z - v1.z
-                    t = fixpoint_div(524288 - PortalFace._view_transformed_z[i + 3], PortalFace._view_transformed_z[i + 2] - PortalFace._view_transformed_z[i + 3]);
+                    t = fixpoint_div(
+                        524288 - PortalFace._view_transformed_z[i + 3],
+                        PortalFace._view_transformed_z[i + 2] - PortalFace._view_transformed_z[i + 3]
+                    );
                     //New_x = (v0.x - v1.x)*t + v1.x
-                    PortalFace._view_transformed_x[depth_num_vertices] = fixpoint_mul((PortalFace._view_transformed_x[i + 2] - PortalFace._view_transformed_x[i + 3]), t)
-                        + PortalFace._view_transformed_x[i + 3];
+                    PortalFace._view_transformed_x[depth_num_vertices] =
+                        PortalFace._view_transformed_x[i + 3]
+                        + fixpoint_mul(
+                            t, (PortalFace._view_transformed_x[i + 2] - PortalFace._view_transformed_x[i + 3])
+                        );
                     //New_y = (v0.x - v1.y)*t + v1.y
-                    PortalFace._view_transformed_y[depth_num_vertices] = fixpoint_mul((PortalFace._view_transformed_y[i + 2] - PortalFace._view_transformed_y[i + 3]), t)
-                        + PortalFace._view_transformed_y[i + 3];
+                    PortalFace._view_transformed_y[depth_num_vertices] =
+                        PortalFace._view_transformed_y[i + 3]
+                        + fixpoint_mul(
+                            t, (PortalFace._view_transformed_y[i + 2] - PortalFace._view_transformed_y[i + 3])
+                        );
                     //New_z = 8.0(0x80000)
                     PortalFace._view_transformed_z[depth_num_vertices] = 0x80000; //524288
+
+                    // test new code
+                    auto _t = (fixed::FromInt(8) - fixed::Raw(PortalFace._view_transformed_z[i + 3])) / (fixed::Raw(PortalFace._view_transformed_z[i + 2]) - fixed::Raw(PortalFace._view_transformed_z[i + 3]));
+                    auto _x = fixed::Raw(PortalFace._view_transformed_x[i + 3]) + _t * (fixed::Raw(PortalFace._view_transformed_x[i + 2]) - fixed::Raw(PortalFace._view_transformed_x[i + 3]));
+                    auto _y = fixed::Raw(PortalFace._view_transformed_y[i + 3]) + _t * (fixed::Raw(PortalFace._view_transformed_y[i + 2]) - fixed::Raw(PortalFace._view_transformed_y[i + 3]));
+                    auto _z = fixed::FromInt(8);
+
+                    // test new projection against old
+                    //assert(_t._internal == t);
+                    //assert(_x._internal == PortalFace._view_transformed_x[depth_num_vertices]);
+                    //assert(_y._internal == PortalFace._view_transformed_y[depth_num_vertices]);
+                    //assert(_z._internal == PortalFace._view_transformed_z[depth_num_vertices]);
                 }
                 depth_num_vertices++;
             }
@@ -4199,6 +4225,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
             current_vertices_flag = next_vertices_flag;
         }
     }
+
     //результат: нет моргания на границе портала(когда проходим сквозь портал)
     //************************************************************************************************************************************
     //convertion in screen coordinates(конвертирование в координаты экрана)
@@ -4246,13 +4273,22 @@ int GetPortalScreenCoord(unsigned int uFaceID)
                     pScreenY = 0x400000;  // 64.0
             }
         }
-        PortalFace._screen_space_x[i + 12] = pBLVRenderParams->uViewportCenterX - fixpoint_mul(HEXRAYS_SHIWORD(pBLVRenderParams->fov_rad_fixpoint), pScreenX);
-        PortalFace._screen_space_y[i + 12] = pBLVRenderParams->uViewportCenterY - fixpoint_mul(HEXRAYS_SHIWORD(pBLVRenderParams->fov_rad_fixpoint), pScreenY);
+        PortalFace._screen_space_x[i + 12] = pBLVRenderParams->uViewportCenterX - fixpoint_mul(HEXRAYS_SHIWORD(pBLVRenderParams->bsp_fov_rad), pScreenX);
+        PortalFace._screen_space_y[i + 12] = pBLVRenderParams->uViewportCenterY - fixpoint_mul(HEXRAYS_SHIWORD(pBLVRenderParams->bsp_fov_rad), pScreenY);
+
+        // test new projection against old
+        auto _x = pBLVRenderParams->uViewportCenterX - (fixed::Raw(pBLVRenderParams->bsp_fov_rad) * fixed::Raw(pScreenX)).GetInt();
+        auto _y = pBLVRenderParams->uViewportCenterY - (fixed::Raw(pBLVRenderParams->bsp_fov_rad) * fixed::Raw(pScreenY)).GetInt();
+        //assert(PortalFace._screen_space_x[i + 12] == _x);
+        //assert(PortalFace._screen_space_y[i + 12] == _y);
     }
     // результат: при повороте камеры, когда граница портала сдвигается к краю экрана, портал остается прозрачным(видимым)
+
     //******************************************************************************************************************************************
     //координаты как в Ида-базе игры так и в данном проекте перевёрнутые,т.е. портал который в правой части экрана имеет экранные координаты 
     //которые для левой части экрана. Например, x(оригинал) = 8, у нас х = 468(противоположный край экрана), точно также и с у.
+    // coordinates (original and here) are flipped horizontaly, e.g. portal on right side of the screen x(original) = 8 becomes x = 468 (opposite
+    // side of the screen). the same holds true for y
     //
     //check for left_clip plane(порверка по левой границе)
     left_num_vertices = 0;
@@ -4269,22 +4305,51 @@ int GetPortalScreenCoord(unsigned int uFaceID)
             if (next_vertices_flag)
             {
                 //t = left_clip - v0.x / v1.x - v0.x
-                t = fixpoint_div(pBLVRenderParams->uViewportX - PortalFace._screen_space_x[i + 11], PortalFace._screen_space_x[i + 12] - PortalFace._screen_space_x[i + 11]);
+                t = fixpoint_div(
+                    pBLVRenderParams->uViewportX - PortalFace._screen_space_x[i + 11],
+                    PortalFace._screen_space_x[i + 12] - PortalFace._screen_space_x[i + 11]
+                );
                 //New_y = (v1.y - v0.y)*t + v0.y
-                PortalFace._screen_space_y[left_num_vertices + 9] = fixpoint_mul((PortalFace._screen_space_y[i + 12] - PortalFace._screen_space_y[i + 11]), t)
-                    + PortalFace._screen_space_y[i + 11];
+                PortalFace._screen_space_y[left_num_vertices + 9] =
+                    PortalFace._screen_space_y[i + 11]
+                    + fixpoint_mul(
+                        t, (PortalFace._screen_space_y[i + 12] - PortalFace._screen_space_y[i + 11])
+                    );
                 //New_x = left_clip
                 PortalFace._screen_space_x[left_num_vertices + 9] = pBLVRenderParams->uViewportX;
+
+                auto _t = (fixed::FromInt(pBLVRenderParams->uViewportX) - fixed::FromInt(PortalFace._screen_space_x[i + 11])) / (fixed::FromInt(PortalFace._screen_space_x[i + 12]) - fixed::FromInt(PortalFace._screen_space_x[i + 11]));
+                auto _x = fixed::FromInt(pBLVRenderParams->uViewportX);
+                auto _y = fixed::FromInt(PortalFace._screen_space_y[i + 11]) + _t * (fixed::FromInt(PortalFace._screen_space_y[i + 12]) - fixed::FromInt(PortalFace._screen_space_y[i + 11]));
+
+                //assert(_t._internal == t);
+                //assert(_x.GetInt() == PortalFace._screen_space_x[left_num_vertices + 9]);
+                //assert(_y.GetInt() == PortalFace._screen_space_y[left_num_vertices + 9]);
             }
             else
             {
                 //t = left_clip - v1.x / v0.x - v1.x
-                t = fixpoint_div(pBLVRenderParams->uViewportX - PortalFace._screen_space_x[i + 12], PortalFace._screen_space_x[i + 11] - PortalFace._screen_space_x[i + 12]);
+                t = fixpoint_div(
+                    pBLVRenderParams->uViewportX - PortalFace._screen_space_x[i + 12],
+                    PortalFace._screen_space_x[i + 11] - PortalFace._screen_space_x[i + 12]
+                );
                 //New_y = (v0.y - v1.y)*t + v1.y
-                PortalFace._screen_space_y[left_num_vertices + 9] = fixpoint_mul((PortalFace._screen_space_y[i + 11] - PortalFace._screen_space_y[i + 12]), t)
-                    + PortalFace._screen_space_y[i + 12];
+                PortalFace._screen_space_y[left_num_vertices + 9] =
+                    PortalFace._screen_space_y[i + 12]
+                    + fixpoint_mul(
+                        t, (PortalFace._screen_space_y[i + 11] - PortalFace._screen_space_y[i + 12])
+                    );
                 //New_x = left_clip
                 PortalFace._screen_space_x[left_num_vertices + 9] = pBLVRenderParams->uViewportX;
+
+                auto _t = (fixed::FromInt(pBLVRenderParams->uViewportX) - fixed::FromInt(PortalFace._screen_space_x[i + 12])) / (fixed::FromInt(PortalFace._screen_space_x[i + 11]) - fixed::FromInt(PortalFace._screen_space_x[i + 12]));
+                auto _x = fixed::FromInt(pBLVRenderParams->uViewportX);
+                auto _y = fixed::FromInt(PortalFace._screen_space_y[i + 12]) + _t * (fixed::FromInt(PortalFace._screen_space_y[i + 11]) - fixed::FromInt(PortalFace._screen_space_y[i + 12]));
+
+                // test new projection against old
+                //assert(_t._internal == t);
+                //assert(_x.GetInt() == PortalFace._screen_space_x[left_num_vertices + 9]);
+                //assert(_y.GetInt() == PortalFace._screen_space_y[left_num_vertices + 9]);
             }
             left_num_vertices++;
         }

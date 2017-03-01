@@ -4799,13 +4799,13 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID)
         return;
     }
     //---------------------------------------
-    v70 = (signed __int64)((double)(pBLVRenderParams->fov_rad_fixpoint * pIndoorCameraD3D->vPartyPos.z)//179
-        / (((double)pBLVRenderParams->fov_rad_fixpoint + 16192.0)
+    v70 = (signed __int64)((double)(pBLVRenderParams->bsp_fov_rad * pIndoorCameraD3D->vPartyPos.z)//179
+        / (((double)pBLVRenderParams->bsp_fov_rad + 16192.0)
             * 65536.0)
         + (double)pBLVRenderParams->uViewportCenterY);
     v5 = (double)pIndoorCameraD3D->sRotationX * 0.0030664064;//0
     v6 = (signed __int64)((double)pBLVRenderParams->uViewportCenterY//183
-        - (double)pBLVRenderParams->fov_rad_fixpoint
+        - (double)pBLVRenderParams->bsp_fov_rad
         / ((cos(v5) * 16192.0 + 0.0000001)
             * 65535.0)
         * (sin(v5) * -16192.0 - (double)pIndoorCameraD3D->vPartyPos.z));
