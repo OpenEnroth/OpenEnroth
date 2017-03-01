@@ -257,8 +257,8 @@ void BLVRenderParams::Reset()
   //                                             / tan((double)(v2->fov_deg >> 1) * 0.01745329)
   //                                             + 0.5) << 16;
   extern float _calc_fov(int viewport_width, int angle_degree);
-  this->fov_rad_fixpoint = fixpoint_from_int(_calc_fov(uViewportWidth, 65), 0);
-  this->fov_rad_inv_fixpoint = (65536i64 << 16) / this->fov_rad_fixpoint;
+  this->bsp_fov_rad = fixpoint_from_int(_calc_fov(uViewportWidth, 65), 0);
+  this->bsp_fov_rad_inv = fixpoint_div(1 << 16, this->bsp_fov_rad);
   this->pRenderTarget = render->pTargetSurface;
   this->uTargetWidth = window->GetWidth();
   this->uTargetHeight = window->GetHeight();
@@ -2833,15 +2833,8 @@ void PrepareItemsRenderList_BLV()
     unsigned int v6; // eax@12
     int v7; // ecx@12
     int v9; // ecx@12
-    __int64 v18; // ST5C_4@27
     int a6; // [sp+2Ch] [bp-30h]@12
-    int v31; // [sp+38h] [bp-24h]@27
     signed __int16 v34; // [sp+44h] [bp-18h]@14
-    int v35; // [sp+48h] [bp-14h]@25
-    int v36; // [sp+4Ch] [bp-10h]@25
-    //signed int z; // [sp+50h] [bp-Ch]@24
-    //signed int y; // [sp+54h] [bp-8h]@24
-    //signed int x; // [sp+58h] [bp-4h]@24
 
     for (uint i = 0; i < uNumSpriteObjects; ++i)
     {
@@ -2883,17 +2876,21 @@ void PrepareItemsRenderList_BLV()
                     }
 
 
-                    fixed view_x, view_y, view_z;
-                    if (pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pSpriteObjects[i].vPosition.x, pSpriteObjects[i].vPosition.y,
-                        pSpriteObjects[i].vPosition.z, &view_x, &view_y, &view_z, 1))
+                    int view_x = 0;
+                    int view_y = 0;
+                    int view_z = 0;
+
+                    bool visible = pIndoorCameraD3D->ViewClip(pSpriteObjects[i].vPosition.x, pSpriteObjects[i].vPosition.y, pSpriteObjects[i].vPosition.z, &view_x, &view_y, &view_z);
+                    if (visible)
                     {
-                        pIndoorCameraD3D->Project(view_x.GetInt(), view_y.GetInt(), view_z.GetInt(), &v36, &v35);
+                        int projected_x = 0;
+                        int projected_y = 0;
+                        pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
                         assert(uNumBillboardsToDraw < 500);
-                        //if ( (signed int)uNumBillboardsToDraw >= 500 )
-                        //  return;
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
+
                         pSpriteObjects[i].uAttributes |= 1;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
@@ -2901,31 +2898,20 @@ void PrepareItemsRenderList_BLV()
                         {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
                             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
-                            HEXRAYS_LODWORD(v18) = 0;
-                            HEXRAYS_HIDWORD(v18) = (int)floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v4->scale._internal, v18 / view_x._internal));
-                            v31 = fixpoint_mul(v4->scale._internal, v18 / view_x._internal);
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v4->scale * fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_x + 0.5f)) / fixed::FromInt(view_x);
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v4->scale * fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_x + 0.5f)) / fixed::FromInt(view_x);
                         }
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(v31);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pSpriteObjects[i].vPosition.y;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pSpriteObjects[i].vPosition.z;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = v36;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = v35;
-                        //v23 = 8 * i;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v4;
-                        //v12 = (p->uAttributes & 0x20) == 0;
-                        //pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = v21 + v23;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x.GetInt();
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item, i);
-                        /*if (pSpriteObjects[i].uAttributes & 0x20)
-                        {
-                          if ( !render->pRenderD3D )
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].sZValue = 0;
-                        }*/
                     }
                 }
             }
@@ -3018,15 +3004,8 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
     int v9; // edi@5
     int v10; // eax@7
     SpriteFrame *v11; // eax@7
-    signed __int64 v20; // qtt@19
     Particle_sw particle; // [sp+Ch] [bp-A0h]@3
     int v30; // [sp+8Ch] [bp-20h]@7
-    int a5; // [sp+94h] [bp-18h]@17
-    //int z; // [sp+98h] [bp-14h]@15
-    int a6; // [sp+9Ch] [bp-10h]@17
-    //int y; // [sp+A0h] [bp-Ch]@15
-    //int x; // [sp+A4h] [bp-8h]@15
-    int v37; // [sp+A8h] [bp-4h]@5
 
     if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
@@ -3056,7 +3035,7 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
         - stru_5C6E00->Atan2(pLevelDecorations[uDecorationID].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
             pLevelDecorations[uDecorationID].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
     v9 = ((signed int)(stru_5C6E00->uIntegerPi + v8) >> 8) & 7;
-    v37 = pBLVRenderParams->field_0_timer_;
+    int v37 = pBLVRenderParams->field_0_timer_;
     if (pParty->bTurnBasedModeOn)
         v37 = pMiscTimer->uTotalGameTimeElapsed;
     v10 = abs(pLevelDecorations[uDecorationID].vPosition.x + pLevelDecorations[uDecorationID].vPosition.y);
@@ -3071,40 +3050,43 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int u
     if ((256 << v9) & v11->uFlags)
         v30 |= 4;
 
-    fixed view_x, view_y, view_z;
-    if (pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(pLevelDecorations[uDecorationID].vPosition.x,
+    int view_x = 0;
+    int view_y = 0;
+    int view_z = 0;
+    bool visible = pIndoorCameraD3D->ViewClip(
+        pLevelDecorations[uDecorationID].vPosition.x,
         pLevelDecorations[uDecorationID].vPosition.y,
-        pLevelDecorations[uDecorationID].vPosition.z, &view_x, &view_y, &view_z, 1))
+        pLevelDecorations[uDecorationID].vPosition.z,
+        &view_x, &view_y, &view_z
+    );
+
+    if (visible)
     {
-        if (abs(view_x.GetFloat()) >= abs(view_y.GetFloat()))
+        if (abs(view_x) >= abs(view_y))
         {
-            pIndoorCameraD3D->Project(view_x.GetInt(), view_y.GetInt(), view_z.GetInt(), &a5, &a6);
+            int projected_x = 0;
+            int projected_y = 0;
+            pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
             assert(uNumBillboardsToDraw < 500);
-
             ++uNumBillboardsToDraw;
             ++uNumDecorationsDrawnThisFrame;
+
             pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v11->hw_sprites[v9];
             pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v11->uPaletteIndex;
             pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = uSectorID;
 
             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
-            HEXRAYS_LODWORD(v20) = 0;
-            HEXRAYS_HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x + 0.5f);
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v11->scale._internal, v20 / view_x._internal));
-            HEXRAYS_LODWORD(v20) = 0;
-            HEXRAYS_HIDWORD(v20) = floorf(pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y + 0.5f);
-            v37 = fixpoint_mul(v11->scale._internal, v20 / view_x._internal);
-
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = fixed::Raw(v37);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v11->scale * fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_x + 0.5f)) / fixed::FromInt(view_x);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v11->scale * fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_y + 0.5f)) / fixed::FromInt(view_x);
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pLevelDecorations[uDecorationID].vPosition.x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pLevelDecorations[uDecorationID].vPosition.y;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pLevelDecorations[uDecorationID].vPosition.z;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = a5;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = a6;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x.GetInt();
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, uDecorationID);
 
             pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
@@ -4072,421 +4054,486 @@ bool PortalFrustrum(int pNumVertices, BspRenderer_PortalViewportData *far_portal
 //----- (00423B5D) --------------------------------------------------------
 int GetPortalScreenCoord(unsigned int uFaceID)
 {
-  BLVFace *pFace; // ebx@1
-  int pNextVertices; // edx@11
-  int t; // ST28_4@12
-  int pScreenX; // eax@22
-  int pScreenY; // eax@27
-  signed int left_num_vertices; // edi@31
-  signed int right_num_vertices; // ebx@41
-  signed int top_num_vertices; // edi@51
-  int bottom_num_vertices; // ebx@61
-  bool current_vertices_flag; // [sp+18h] [bp-10h]@9
-  signed int depth_num_vertices; // [sp+1Ch] [bp-Ch]@9
-  bool next_vertices_flag; // [sp+20h] [bp-8h]@10
+    BLVFace *pFace; // ebx@1
+    int pNextVertices; // edx@11
+    int t; // ST28_4@12
+    int pScreenX; // eax@22
+    int pScreenY; // eax@27
+    signed int left_num_vertices; // edi@31
+    signed int right_num_vertices; // ebx@41
+    signed int top_num_vertices; // edi@51
+    int bottom_num_vertices; // ebx@61
+    bool current_vertices_flag; // [sp+18h] [bp-10h]@9
+    signed int depth_num_vertices; // [sp+1Ch] [bp-Ch]@9
+    bool next_vertices_flag; // [sp+20h] [bp-8h]@10
 
-  //Доп инфо "Программирование трёхмерных игр для windows" Ламот стр 910
+    //Доп инфо "Программирование трёхмерных игр для windows" Ламот стр 910
 
-  pFace = &pIndoor->pFaces[uFaceID];
-  memset(&PortalFace, 0, sizeof(stru367));
+    pFace = &pIndoor->pFaces[uFaceID];
+    memset(&PortalFace, 0, sizeof(stru367));
 
-  //get direction the face(определение направленности фейса)*********************************************************************************
-  if ( pFace->pFacePlane_old.vNormal.x * (pIndoor->pVertices[pIndoor->pFaces[uFaceID].pVertexIDs[0]].x - pIndoorCameraD3D->vPartyPos.x)
-     + pFace->pFacePlane_old.vNormal.y * (pIndoor->pVertices[pIndoor->pFaces[uFaceID].pVertexIDs[0]].y - pIndoorCameraD3D->vPartyPos.y)
-     + pFace->pFacePlane_old.vNormal.z * (pIndoor->pVertices[pIndoor->pFaces[uFaceID].pVertexIDs[0]].z - pIndoorCameraD3D->vPartyPos.z) < 0 )
-  {
-    PortalFace.direction = true;
-  }
-  else
-  {
-    PortalFace.direction = false;
-    if ( !(pFace->Portal()) )
-      return 0;
-  }
-  //*****************************************************************************************************************************************
-  //transform to camera coordinates (генерация/конвертирование в координаты пространства камеры)
+    //get direction the face(определение направленности фейса)*********************************************************************************
+    if (pFace->pFacePlane_old.vNormal.x * (pIndoor->pVertices[pIndoor->pFaces[uFaceID].pVertexIDs[0]].x - pIndoorCameraD3D->vPartyPos.x)
+        + pFace->pFacePlane_old.vNormal.y * (pIndoor->pVertices[pIndoor->pFaces[uFaceID].pVertexIDs[0]].y - pIndoorCameraD3D->vPartyPos.y)
+        + pFace->pFacePlane_old.vNormal.z * (pIndoor->pVertices[pIndoor->pFaces[uFaceID].pVertexIDs[0]].z - pIndoorCameraD3D->vPartyPos.z) < 0)
+    {
+        PortalFace.direction = true;
+    }
+    else
+    {
+        PortalFace.direction = false;
+        if (!(pFace->Portal()))
+            return 0;
+    }
+    //*****************************************************************************************************************************************
+    //transform to camera coordinates (генерация/конвертирование в координаты пространства камеры)
 
-  //for new coordinates:
-  //int x = 0x AAAA BBBB;
-  //AAAA - integer(целая часть), BBBB - fractional(дробная)
-  //float v = HIWORD(x) + LOWORD(x) / 65535.0f;
-  //0x0351A281 это 849(351 в шестнадцатиричной) в целой части и A281 в дробной(хотя как точно BBBB считалась не помню)
-  //if in HIWORD: FFFF = -1
-  //FFFE = -2
-  //FFFD = -3
-  //....
-  //8000 = -32767
-  //7FFF = 32767
-  //7FFE = 32766
-  //если в LOWORD например лежит FFFF то не совсем понятно, что это
-  //потому что если и hiword и loword равны FFFF FFFF то двойное отрицание как бы, нужно тестировать что конкретно получается чтобы понять что это значит
-  //всё что больше 7FFF для верхнего слова это идёт уже с минусом/Nomad/
+    if ((signed int)pFace->uNumVertices > 0)
+    {
+        for (uint i = 0; i < pFace->uNumVertices; ++i)
+        {
+            pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(
+                pIndoor->pVertices[pFace->pVertexIDs[i]].x,
+                pIndoor->pVertices[pFace->pVertexIDs[i]].y,
+                pIndoor->pVertices[pFace->pVertexIDs[i]].z,
+                (fixed *)&PortalFace._view_transformed_z[i + 3],
+                (fixed *)&PortalFace._view_transformed_x[i + 3],
+                (fixed *)&PortalFace._view_transformed_y[i + 3],
+                false
+            );
+        }
+    }
 
-  if ( (signed int)pFace->uNumVertices > 0 )
-  {
+    //*****************************************************************************************************************************************
+    //check vertices for the nearest plane(проверка вершин есть ли в области за ближайшей плоскостью)
+    if (pFace->uNumVertices <= 0)
+        return 0;
+    bool bFound = false;
     for (uint i = 0; i < pFace->uNumVertices; ++i)
     {
-      pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(
-          pIndoor->pVertices[pFace->pVertexIDs[i]].x,
-          pIndoor->pVertices[pFace->pVertexIDs[i]].y,
-          pIndoor->pVertices[pFace->pVertexIDs[i]].z,
-          (fixed *)&PortalFace._view_transformed_z[i + 3],
-          (fixed *)&PortalFace._view_transformed_x[i + 3],
-          (fixed *)&PortalFace._view_transformed_y[i + 3],
-          false
-      );
-    }
-  }
-  //*****************************************************************************************************************************************
-  //check vertices for the nearest plane(проверка вершин есть ли в области за ближайшей плоскостью)
-  if ( pFace->uNumVertices <= 0 )
-    return 0;
-  bool bFound = false;
-  for (uint i = 0; i < pFace->uNumVertices; ++i)
-  {
-    if ( PortalFace._view_transformed_z[i + 3] >= 0x80000)// 8.0(0x80000) 0x196A9FF >=0x80000
-    {
-      bFound = true;
-      break;
-    }
-  }
-  if ( !bFound )
-    return 0;
-  //*****************************************************************************************************************************************
-  //check for near clip plane(проверка по ближней границе)
-  //   
-  //     v0                 v1
-  //      ._________________.
-  //     /                   \
-  //    /                     \
-  // v5.                       . v2
-  //   |                       |
-  //   |                       |
-  //   |                       |
-  //  ---------------------------- 8.0(near_clip)
-  //   |                       |
-  //   ._______________________.
-  //  v4                        v3
-  depth_num_vertices = 0;
-  PortalFace._view_transformed_z[pFace->uNumVertices + 3] = PortalFace._view_transformed_z[3];
-  PortalFace._view_transformed_x[pFace->uNumVertices + 3] = PortalFace._view_transformed_x[3];
-  PortalFace._view_transformed_y[pFace->uNumVertices + 3] = PortalFace._view_transformed_y[3];
-  current_vertices_flag = PortalFace._view_transformed_z[3] >= 0x80000; //524288
-  if ( pFace->uNumVertices >= 1 )
-  {
-    for ( uint i = 1; i <= pFace->uNumVertices; ++i)
-    {
-      next_vertices_flag = PortalFace._view_transformed_z[i + 3] >= 0x80000; //524288;// 8.0
-      if ( current_vertices_flag ^ next_vertices_flag )//или текущая или следующая вершина за ближней границей - v5
-      {
-        if ( next_vertices_flag )//следующая вершина за ближней границей
+        if (PortalFace._view_transformed_z[i + 3] >= 0x80000)// 8.0(0x80000) 0x196A9FF >=0x80000
         {
-          //t = near_clip - v4.z / v5.z - v4.z
-          t = fixpoint_div(0x80000 - PortalFace._view_transformed_z[i + 2], PortalFace._view_transformed_z[i + 3] - PortalFace._view_transformed_z[i + 2]);
-          //New_x = (v5.x - v4.x)*t + v4.x
-          PortalFace._view_transformed_x[depth_num_vertices] = fixpoint_mul((PortalFace._view_transformed_x[i + 3] - PortalFace._view_transformed_x[i + 2]), t) 
-                                                               + PortalFace._view_transformed_x[i + 2];
-          //New_y = (v5.y - v4.y)*t + v4.y
-          PortalFace._view_transformed_y[depth_num_vertices] = fixpoint_mul((PortalFace._view_transformed_y[i + 3] - PortalFace._view_transformed_y[i + 2]), t)
-                                                               + PortalFace._view_transformed_y[i + 2];
-          //New_z = 8.0(0x80000)
-          PortalFace._view_transformed_z[depth_num_vertices] = 0x80000; //524288
+            bFound = true;
+            break;
         }
-        else// текущая вершина за ближней границей
-        {
-          //t = near_clip - v1.z / v0.z - v1.z
-          t = fixpoint_div(524288 - PortalFace._view_transformed_z[i + 3], PortalFace._view_transformed_z[i + 2] - PortalFace._view_transformed_z[i + 3]);
-          //New_x = (v0.x - v1.x)*t + v1.x
-          PortalFace._view_transformed_x[depth_num_vertices] = fixpoint_mul((PortalFace._view_transformed_x[i + 2] - PortalFace._view_transformed_x[i + 3]), t)
-                                                               + PortalFace._view_transformed_x[i + 3];
-          //New_y = (v0.x - v1.y)*t + v1.y
-          PortalFace._view_transformed_y[depth_num_vertices] = fixpoint_mul((PortalFace._view_transformed_y[i + 2] - PortalFace._view_transformed_y[i + 3]), t)
-                                                               + PortalFace._view_transformed_y[i + 3];
-          //New_z = 8.0(0x80000)
-          PortalFace._view_transformed_z[depth_num_vertices] = 0x80000; //524288
-        }
-        depth_num_vertices++;
-      }
-      if ( next_vertices_flag )//если следующая вершина за ближней границей 
-      {
-        pNextVertices = depth_num_vertices++;
-        PortalFace._view_transformed_z[pNextVertices] = PortalFace._view_transformed_z[i + 3];
-        PortalFace._view_transformed_x[pNextVertices] = PortalFace._view_transformed_x[i + 3];
-        PortalFace._view_transformed_y[pNextVertices] = PortalFace._view_transformed_y[i + 3];
-      }
-      current_vertices_flag = next_vertices_flag;
     }
-  }
-  //результат: нет моргания на границе портала(когда проходим сквозь портал)
-  //************************************************************************************************************************************
-  //convertion in screen coordinates(конвертирование в координаты экрана)
-  PortalFace._view_transformed_z[depth_num_vertices] = PortalFace._view_transformed_z[0];
-  PortalFace._view_transformed_x[depth_num_vertices] = PortalFace._view_transformed_x[0];
-  PortalFace._view_transformed_y[depth_num_vertices] = PortalFace._view_transformed_y[0];
-  for ( uint i = 0; i < depth_num_vertices; ++i )
-  {
-    if ( (abs(PortalFace._view_transformed_x[i]) >> 13) <= abs(PortalFace._view_transformed_z[i]) )
-      pScreenX = fixpoint_div(PortalFace._view_transformed_x[i],  PortalFace._view_transformed_z[i]);
-    else
+    if (!bFound)
+        return 0;
+    //*****************************************************************************************************************************************
+    //check for near clip plane(проверка по ближней границе)
+    //   
+    //     v0                 v1
+    //      ._________________.
+    //     /                   \
+    //    /                     \
+    // v5.                       . v2
+    //   |                       |
+    //   |                       |
+    //   |                       |
+    //  ---------------------------- 8.0(near_clip)
+    //   |                       |
+    //   ._______________________.
+    //  v4                        v3
+    depth_num_vertices = 0;
+    PortalFace._view_transformed_z[pFace->uNumVertices + 3] = PortalFace._view_transformed_z[3];
+    PortalFace._view_transformed_x[pFace->uNumVertices + 3] = PortalFace._view_transformed_x[3];
+    PortalFace._view_transformed_y[pFace->uNumVertices + 3] = PortalFace._view_transformed_y[3];
+    current_vertices_flag = PortalFace._view_transformed_z[3] >= 0x80000; //524288
+    if (pFace->uNumVertices >= 1)
     {
-      if ( PortalFace._view_transformed_x[i] >= 0 )
-      {
-        if (PortalFace._view_transformed_z[i] >= 0)
-          pScreenX = 0x400000;   // 64.0
-        else
-          pScreenX = 0xFFC00000;  // -63.0
-      }
-      else
-      {
-        if (PortalFace._view_transformed_z[i] >= 0)
-          pScreenX = 0xFFC00000;  // -63.0
-        else
-          pScreenX = 0x400000; // 64.0
-      }
+        for (uint i = 1; i <= pFace->uNumVertices; ++i)
+        {
+            next_vertices_flag = PortalFace._view_transformed_z[i + 3] >= 0x80000; //524288;// 8.0
+            if (current_vertices_flag ^ next_vertices_flag) // current or next vertex is near-clipped / или текущая или следующая вершина за ближней границей - v5
+            {
+                if (next_vertices_flag) // next vertex is near-clipped / следующая вершина за ближней границей
+                {
+                    //t = near_clip - v4.z / v5.z - v4.z
+                    t = fixpoint_div(
+                        0x80000 - PortalFace._view_transformed_z[i + 2],
+                        PortalFace._view_transformed_z[i + 3] - PortalFace._view_transformed_z[i + 2]
+                    );
+                    //New_x = (v5.x - v4.x)*t + v4.x
+                    PortalFace._view_transformed_x[depth_num_vertices] =
+                        PortalFace._view_transformed_x[i + 2]
+                        + fixpoint_mul(
+                            t, (PortalFace._view_transformed_x[i + 3] - PortalFace._view_transformed_x[i + 2])
+                        );
+                    //New_y = (v5.y - v4.y)*t + v4.y
+                    PortalFace._view_transformed_y[depth_num_vertices] =
+                        PortalFace._view_transformed_y[i + 2]
+                        + fixpoint_mul(
+                            t, (PortalFace._view_transformed_y[i + 3] - PortalFace._view_transformed_y[i + 2])
+                        );
+                    //New_z = 8.0(0x80000)
+                    PortalFace._view_transformed_z[depth_num_vertices] = 0x80000; //524288
+
+                    // test new code
+                    auto _t = (fixed::FromInt(8) - fixed::Raw(PortalFace._view_transformed_z[i + 2])) / (fixed::Raw(PortalFace._view_transformed_z[i + 3]) - fixed::Raw(PortalFace._view_transformed_z[i + 2]));
+                    auto _x = fixed::Raw(PortalFace._view_transformed_x[i + 2]) + _t * (fixed::Raw(PortalFace._view_transformed_x[i + 3]) - fixed::Raw(PortalFace._view_transformed_x[i + 2]));
+                    auto _y = fixed::Raw(PortalFace._view_transformed_y[i + 2]) + _t * (fixed::Raw(PortalFace._view_transformed_y[i + 3]) - fixed::Raw(PortalFace._view_transformed_y[i + 2]));
+                    auto _z = fixed::FromInt(8);
+
+                    assert(_t._internal == t);
+                    assert(_x._internal == PortalFace._view_transformed_x[depth_num_vertices]);
+                    assert(_y._internal == PortalFace._view_transformed_y[depth_num_vertices]);
+                    assert(_z._internal == PortalFace._view_transformed_z[depth_num_vertices]);
+                }
+                else // current vertex is near-clipped / текущая вершина за ближней границей
+                {
+                    //t = near_clip - v1.z / v0.z - v1.z
+                    t = fixpoint_div(
+                        524288 - PortalFace._view_transformed_z[i + 3],
+                        PortalFace._view_transformed_z[i + 2] - PortalFace._view_transformed_z[i + 3]
+                    );
+                    //New_x = (v0.x - v1.x)*t + v1.x
+                    PortalFace._view_transformed_x[depth_num_vertices] =
+                        PortalFace._view_transformed_x[i + 3]
+                        + fixpoint_mul(
+                            t, (PortalFace._view_transformed_x[i + 2] - PortalFace._view_transformed_x[i + 3])
+                        );
+                    //New_y = (v0.x - v1.y)*t + v1.y
+                    PortalFace._view_transformed_y[depth_num_vertices] =
+                        PortalFace._view_transformed_y[i + 3]
+                        + fixpoint_mul(
+                            t, (PortalFace._view_transformed_y[i + 2] - PortalFace._view_transformed_y[i + 3])
+                        );
+                    //New_z = 8.0(0x80000)
+                    PortalFace._view_transformed_z[depth_num_vertices] = 0x80000; //524288
+
+                    // test new code
+                    auto _t = (fixed::FromInt(8) - fixed::Raw(PortalFace._view_transformed_z[i + 3])) / (fixed::Raw(PortalFace._view_transformed_z[i + 2]) - fixed::Raw(PortalFace._view_transformed_z[i + 3]));
+                    auto _x = fixed::Raw(PortalFace._view_transformed_x[i + 3]) + _t * (fixed::Raw(PortalFace._view_transformed_x[i + 2]) - fixed::Raw(PortalFace._view_transformed_x[i + 3]));
+                    auto _y = fixed::Raw(PortalFace._view_transformed_y[i + 3]) + _t * (fixed::Raw(PortalFace._view_transformed_y[i + 2]) - fixed::Raw(PortalFace._view_transformed_y[i + 3]));
+                    auto _z = fixed::FromInt(8);
+
+                    // test new projection against old
+                    //assert(_t._internal == t);
+                    //assert(_x._internal == PortalFace._view_transformed_x[depth_num_vertices]);
+                    //assert(_y._internal == PortalFace._view_transformed_y[depth_num_vertices]);
+                    //assert(_z._internal == PortalFace._view_transformed_z[depth_num_vertices]);
+                }
+                depth_num_vertices++;
+            }
+            if (next_vertices_flag)//если следующая вершина за ближней границей 
+            {
+                pNextVertices = depth_num_vertices++;
+                PortalFace._view_transformed_z[pNextVertices] = PortalFace._view_transformed_z[i + 3];
+                PortalFace._view_transformed_x[pNextVertices] = PortalFace._view_transformed_x[i + 3];
+                PortalFace._view_transformed_y[pNextVertices] = PortalFace._view_transformed_y[i + 3];
+            }
+            current_vertices_flag = next_vertices_flag;
+        }
     }
 
-    if ( (abs(PortalFace._view_transformed_y[i]) >> 13) <= abs(PortalFace._view_transformed_z[i]) )
-      pScreenY = fixpoint_div(PortalFace._view_transformed_y[i],  PortalFace._view_transformed_z[i]);
-    else
+    //результат: нет моргания на границе портала(когда проходим сквозь портал)
+    //************************************************************************************************************************************
+    //convertion in screen coordinates(конвертирование в координаты экрана)
+    PortalFace._view_transformed_z[depth_num_vertices] = PortalFace._view_transformed_z[0];
+    PortalFace._view_transformed_x[depth_num_vertices] = PortalFace._view_transformed_x[0];
+    PortalFace._view_transformed_y[depth_num_vertices] = PortalFace._view_transformed_y[0];
+    for (uint i = 0; i < depth_num_vertices; ++i)
     {
-      if ( PortalFace._view_transformed_y[i] >= 0 )
-      {
-        if (PortalFace._view_transformed_z[i] >= 0)
-          pScreenY = 0x400000;   // 64.0
-        else
-          pScreenY = 0xFFC00000;  // -63.0
-      }
-      else
-      {
-        if (PortalFace._view_transformed_z[i] >= 0)
-          pScreenY = 0xFFC00000;  // -63.0
-        else
-          pScreenY = 0x400000;  // 64.0
-      }
-    }
-    PortalFace._screen_space_x[i + 12] = pBLVRenderParams->uViewportCenterX - fixpoint_mul(HEXRAYS_SHIWORD(pBLVRenderParams->fov_rad_fixpoint), pScreenX);
-    PortalFace._screen_space_y[i + 12] = pBLVRenderParams->uViewportCenterY - fixpoint_mul(HEXRAYS_SHIWORD(pBLVRenderParams->fov_rad_fixpoint), pScreenY);
-  }
-  // результат: при повороте камеры, когда граница портала сдвигается к краю экрана, портал остается прозрачным(видимым)
-  //******************************************************************************************************************************************
-  //координаты как в Ида-базе игры так и в данном проекте перевёрнутые,т.е. портал который в правой части экрана имеет экранные координаты 
-  //которые для левой части экрана. Например, x(оригинал) = 8, у нас х = 468(противоположный край экрана), точно также и с у.
-  //
-  //check for left_clip plane(порверка по левой границе)
-  left_num_vertices = 0;
-  PortalFace._screen_space_x[depth_num_vertices + 12] = PortalFace._screen_space_x[12];
-  PortalFace._screen_space_y[depth_num_vertices + 12] = PortalFace._screen_space_y[12];
-  current_vertices_flag = PortalFace._screen_space_x[12] >= (signed int)pBLVRenderParams->uViewportX;//8.0
-  if ( depth_num_vertices < 1 )
-    return 0;
-  for ( uint i = 1; i <= depth_num_vertices; ++i )
-  {
-    next_vertices_flag = PortalFace._screen_space_x[i + 12] >= (signed int)pBLVRenderParams->uViewportX;
-    if ( current_vertices_flag ^ next_vertices_flag )
-    {
-      if ( next_vertices_flag )
-      {
-        //t = left_clip - v0.x / v1.x - v0.x
-        t = fixpoint_div(pBLVRenderParams->uViewportX - PortalFace._screen_space_x[i + 11], PortalFace._screen_space_x[i + 12] - PortalFace._screen_space_x[i + 11]);
-        //New_y = (v1.y - v0.y)*t + v0.y
-        PortalFace._screen_space_y[left_num_vertices + 9] = fixpoint_mul((PortalFace._screen_space_y[i + 12]- PortalFace._screen_space_y[i + 11]), t)
-                                                            + PortalFace._screen_space_y[i + 11];
-        //New_x = left_clip
-        PortalFace._screen_space_x[left_num_vertices + 9] = pBLVRenderParams->uViewportX;
-      }
-      else
-      {
-        //t = left_clip - v1.x / v0.x - v1.x
-        t = fixpoint_div(pBLVRenderParams->uViewportX - PortalFace._screen_space_x[i + 12], PortalFace._screen_space_x[i + 11] - PortalFace._screen_space_x[i + 12]);
-        //New_y = (v0.y - v1.y)*t + v1.y
-        PortalFace._screen_space_y[left_num_vertices + 9] = fixpoint_mul((PortalFace._screen_space_y[i + 11] - PortalFace._screen_space_y[i + 12]), t)
-                                                            + PortalFace._screen_space_y[i + 12];
-        //New_x = left_clip
-        PortalFace._screen_space_x[left_num_vertices + 9] = pBLVRenderParams->uViewportX;
-      }
-      left_num_vertices++;
-    }
-    if ( next_vertices_flag )
-    {
-      pNextVertices = left_num_vertices++;
-      PortalFace._screen_space_x[pNextVertices + 9] = PortalFace._screen_space_x[i + 12];
-      PortalFace._screen_space_y[pNextVertices + 9] = PortalFace._screen_space_y[i + 12];
-    }
-    current_vertices_flag = next_vertices_flag;
-  }
-//*********************************************************************************************************************************
-//for right_clip plane(проверка по правой плоскости)
-  right_num_vertices = 0;
-  PortalFace._screen_space_x[left_num_vertices + 9] = PortalFace._screen_space_x[9];
-  PortalFace._screen_space_y[left_num_vertices + 9] = PortalFace._screen_space_y[9];
-  current_vertices_flag = PortalFace._screen_space_x[9] <= (signed int)pBLVRenderParams->uViewportZ;//468.0
-  if (left_num_vertices < 1)
-    return 0;
-  for ( uint i = 1; i <= left_num_vertices; ++i )
-  {
-    next_vertices_flag = PortalFace._screen_space_x[i + 9] <= (signed int)pBLVRenderParams->uViewportZ;
-    if ( current_vertices_flag ^ next_vertices_flag )
-    {
-      if ( next_vertices_flag )
-      {
-        //t = right_clip - v1.x / v0.x - v1.x
-        t = fixpoint_div(pBLVRenderParams->uViewportZ - PortalFace._screen_space_x[i + 8], PortalFace._screen_space_x[i + 9] - PortalFace._screen_space_x[i + 8]);
-        //New_y = (v0.y - v1.y)*t + v1.y
-        PortalFace._screen_space_y[right_num_vertices + 6] = fixpoint_mul((PortalFace._screen_space_y[i + 9] - PortalFace._screen_space_y[i + 8]), t)
-                                                             + PortalFace._screen_space_y[i + 8];
-        //New_x = right_clip
-        PortalFace._screen_space_x[right_num_vertices + 6] = pBLVRenderParams->uViewportZ;
-      }
-      else
-      {
-        //t = right_clip - v0.x / v1.x - v0.x
-        t = fixpoint_div(pBLVRenderParams->uViewportZ - PortalFace._screen_space_x[i + 9], PortalFace._screen_space_x[i + 8] - PortalFace._screen_space_x[i + 9]);
-        //New_y = (v1.y - v0.y)*t + v0.y
-        PortalFace._screen_space_y[right_num_vertices + 6] = fixpoint_mul((PortalFace._screen_space_y[i + 8] - PortalFace._screen_space_y[i + 9]), t)
-                                                             + PortalFace._screen_space_y[i + 9];
-        //New_x = right_clip
-        PortalFace._screen_space_x[right_num_vertices + 6] = pBLVRenderParams->uViewportZ;
-      }
-      right_num_vertices++;
-    }
-    if ( next_vertices_flag )
-    {
-      pNextVertices = right_num_vertices++;
-      PortalFace._screen_space_x[pNextVertices + 6] = PortalFace._screen_space_x[i + 9];
-      PortalFace._screen_space_y[pNextVertices + 6] = PortalFace._screen_space_y[i + 9];
-    }
-    current_vertices_flag = next_vertices_flag;
-  }
-  //************************************************************************************************************************************
-  // for top clip plane
-  top_num_vertices = 0;
-  PortalFace._screen_space_x[right_num_vertices + 6] = PortalFace._screen_space_x[6];
-  PortalFace._screen_space_y[right_num_vertices + 6] = PortalFace._screen_space_y[6];
-
-  current_vertices_flag = PortalFace._screen_space_y[6] >= (signed int)pBLVRenderParams->uViewportY;//8.0
-  if ( right_num_vertices < 1 )
-    return 0;
-  for ( uint i = 1; i <= right_num_vertices; ++i )
-  {
-    next_vertices_flag = PortalFace._screen_space_y[i + 6] >= (signed int)pBLVRenderParams->uViewportY;
-    if ( current_vertices_flag ^ next_vertices_flag )
-    {
-      if ( next_vertices_flag )
-      {
-        t = fixpoint_div(pBLVRenderParams->uViewportY  - PortalFace._screen_space_y[i + 5], PortalFace._screen_space_y[i + 6] - PortalFace._screen_space_y[i + 5]);
-        PortalFace._screen_space_x[top_num_vertices + 3] = ((signed int)((PortalFace._screen_space_x[i + 6] - PortalFace._screen_space_x[i + 5])
-            * t) >> 16) + PortalFace._screen_space_x[i + 5];
-        PortalFace._screen_space_y[top_num_vertices + 3] = pBLVRenderParams->uViewportY;
-      }
-      else
-      {
-        t = fixpoint_div(pBLVRenderParams->uViewportY - PortalFace._screen_space_y[i + 6], PortalFace._screen_space_y[i + 5] - PortalFace._screen_space_y[i + 6]);
-        PortalFace._screen_space_x[top_num_vertices + 3] = fixpoint_mul((PortalFace._screen_space_x[i + 5]- PortalFace._screen_space_x[i + 6]), t)
-                                                           + PortalFace._screen_space_x[i + 6];
-        PortalFace._screen_space_y[top_num_vertices + 3] = pBLVRenderParams->uViewportY;
-      }
-      top_num_vertices++;
-    }
-    current_vertices_flag = next_vertices_flag;
-    if ( next_vertices_flag )
-    {
-      pNextVertices = top_num_vertices++;
-      PortalFace._screen_space_x[pNextVertices + 3] = PortalFace._screen_space_x[i + 6];
-      PortalFace._screen_space_y[pNextVertices + 3] = PortalFace._screen_space_y[i + 6];
-    }
-  }
-//**********************************************************************************************************************************
-//for bottom_clip plane(проверка по нижней плоскости)
-  bottom_num_vertices = 0;
-  PortalFace._screen_space_x[top_num_vertices + 3] = PortalFace._screen_space_x[3];
-  PortalFace._screen_space_y[top_num_vertices + 3] = PortalFace._screen_space_y[3];
-  current_vertices_flag = PortalFace._screen_space_y[3] <= (signed int)pBLVRenderParams->uViewportW;//351.0
-  if ( top_num_vertices < 1 )
-    return 0;
-  for ( uint i =1; i <= top_num_vertices; ++i )
-  {
-    next_vertices_flag = PortalFace._screen_space_y[i + 3] <= (signed int)pBLVRenderParams->uViewportW;
-    if ( current_vertices_flag ^ next_vertices_flag )
-    {
-      if ( next_vertices_flag )
-      {
-        t = fixpoint_div(pBLVRenderParams->uViewportW - PortalFace._screen_space_y[i + 2], PortalFace._screen_space_y[i + 3] - PortalFace._screen_space_y[i + 2]);
-        PortalFace._screen_space_x[bottom_num_vertices] = fixpoint_mul((PortalFace._screen_space_x[i + 3] - PortalFace._screen_space_x[i + 2]), t)
-                                                          + PortalFace._screen_space_x[i + 2];
-        PortalFace._screen_space_y[bottom_num_vertices] = pBLVRenderParams->uViewportW;
-      }
-      else
-      {
-        t = fixpoint_div(pBLVRenderParams->uViewportW - PortalFace._screen_space_y[i + 3], PortalFace._screen_space_y[i + 2] - PortalFace._screen_space_y[i + 3]);
-        PortalFace._screen_space_x[bottom_num_vertices] = fixpoint_mul((PortalFace._screen_space_x[i + 2] - PortalFace._screen_space_x[i + 3]), t) 
-                                                          + PortalFace._screen_space_x[i + 3];
-        PortalFace._screen_space_y[bottom_num_vertices] = pBLVRenderParams->uViewportW;
-      }
-      bottom_num_vertices++;
-    }
-    if ( next_vertices_flag )
-    {
-      pNextVertices = bottom_num_vertices++;
-      PortalFace._screen_space_x[pNextVertices] = PortalFace._screen_space_x[i + 3];
-      PortalFace._screen_space_y[pNextVertices] = PortalFace._screen_space_y[i + 3];
-    }
-    current_vertices_flag = next_vertices_flag;
-  }
-//***************************************************************************************************************************************
-
-  if ( !bottom_num_vertices )
-    return 0;
-  PortalFace._screen_space_x[bottom_num_vertices] = PortalFace._screen_space_x[0];
-  PortalFace._screen_space_y[bottom_num_vertices] = PortalFace._screen_space_y[0];
-//check for software(проверка для софтвар)
-  /*if ( !render->pRenderD3D && bottom_num_vertices > 3 )
-  {
-    PortalFace._screen_space_x[bottom_num_vertices + 1] = PortalFace._screen_space_x[1];
-    PortalFace._screen_space_y[bottom_num_vertices + 1] = PortalFace._screen_space_y[1];
-    thisf = PortalFace.direction == true ? 1 : - 1;
-    if ( bottom_num_vertices > 0 )
-    {
-      v62 = 1;
-      v71 = 1;
-      do
-      {
-        v63 = v62 - 1;
-        v64 = v62 + 1;
-        v80 = v62 + 1;
-        if ( v62 - 1 >= bottom_num_vertices )
-          v63 -= bottom_num_vertices;
-        if ( v62 >= bottom_num_vertices )
-          v62 -= bottom_num_vertices;
-        if ( v64 >= bottom_num_vertices )
-          v64 -= bottom_num_vertices;
-        if ( thisf * ((PortalFace._screen_space_y[v64] - PortalFace._screen_space_y[v63])
-                   * (PortalFace._screen_space_x[v62] - PortalFace._screen_space_x[v63])
-                   - (PortalFace._screen_space_y[v62] - PortalFace._screen_space_y[v63])
-                   * (PortalFace._screen_space_x[v64] - PortalFace._screen_space_x[v63])) < 0 )
-        {
-          v62 = v80;
-          v71 = v80;
-        }
+        if ((abs(PortalFace._view_transformed_x[i]) >> 13) <= abs(PortalFace._view_transformed_z[i]))
+            pScreenX = fixpoint_div(PortalFace._view_transformed_x[i], PortalFace._view_transformed_z[i]);
         else
         {
-          v62 = v71;
-          v65 = v71;
-          if ( v71 < bottom_num_vertices || (v65 = v71 - bottom_num_vertices, v71 - bottom_num_vertices < bottom_num_vertices) )
-          {
-            memcpy(&PortalFace._screen_space_y[v65], &PortalFace._screen_space_y[v65 + 1],
-              4 * ((unsigned int)(4 * (bottom_num_vertices - v65)) >> 2));
-            memcpy(&PortalFace._screen_space_x[v65], &PortalFace._screen_space_x[v65 + 1],
-              4 * ((unsigned int)(4 * (bottom_num_vertices - v65)) >> 2));
-          }
-          --bottom_num_vertices;
+            if (PortalFace._view_transformed_x[i] >= 0)
+            {
+                if (PortalFace._view_transformed_z[i] >= 0)
+                    pScreenX = 0x400000;   // 64.0
+                else
+                    pScreenX = 0xFFC00000;  // -63.0
+            }
+            else
+            {
+                if (PortalFace._view_transformed_z[i] >= 0)
+                    pScreenX = 0xFFC00000;  // -63.0
+                else
+                    pScreenX = 0x400000; // 64.0
+            }
         }
-      }
-      while ( v62 - 1 < bottom_num_vertices );
+
+        if ((abs(PortalFace._view_transformed_y[i]) >> 13) <= abs(PortalFace._view_transformed_z[i]))
+            pScreenY = fixpoint_div(PortalFace._view_transformed_y[i], PortalFace._view_transformed_z[i]);
+        else
+        {
+            if (PortalFace._view_transformed_y[i] >= 0)
+            {
+                if (PortalFace._view_transformed_z[i] >= 0)
+                    pScreenY = 0x400000;   // 64.0
+                else
+                    pScreenY = 0xFFC00000;  // -63.0
+            }
+            else
+            {
+                if (PortalFace._view_transformed_z[i] >= 0)
+                    pScreenY = 0xFFC00000;  // -63.0
+                else
+                    pScreenY = 0x400000;  // 64.0
+            }
+        }
+        PortalFace._screen_space_x[i + 12] = pBLVRenderParams->uViewportCenterX - fixpoint_mul(HEXRAYS_SHIWORD(pBLVRenderParams->bsp_fov_rad), pScreenX);
+        PortalFace._screen_space_y[i + 12] = pBLVRenderParams->uViewportCenterY - fixpoint_mul(HEXRAYS_SHIWORD(pBLVRenderParams->bsp_fov_rad), pScreenY);
+
+        // test new projection against old
+        auto _x = pBLVRenderParams->uViewportCenterX - (fixed::Raw(pBLVRenderParams->bsp_fov_rad) * fixed::Raw(pScreenX)).GetInt();
+        auto _y = pBLVRenderParams->uViewportCenterY - (fixed::Raw(pBLVRenderParams->bsp_fov_rad) * fixed::Raw(pScreenY)).GetInt();
+        //assert(PortalFace._screen_space_x[i + 12] == _x);
+        //assert(PortalFace._screen_space_y[i + 12] == _y);
     }
+    // результат: при повороте камеры, когда граница портала сдвигается к краю экрана, портал остается прозрачным(видимым)
+
+    //******************************************************************************************************************************************
+    //координаты как в Ида-базе игры так и в данном проекте перевёрнутые,т.е. портал который в правой части экрана имеет экранные координаты 
+    //которые для левой части экрана. Например, x(оригинал) = 8, у нас х = 468(противоположный край экрана), точно также и с у.
+    // coordinates (original and here) are flipped horizontaly, e.g. portal on right side of the screen x(original) = 8 becomes x = 468 (opposite
+    // side of the screen). the same holds true for y
+    //
+    //check for left_clip plane(порверка по левой границе)
+    left_num_vertices = 0;
+    PortalFace._screen_space_x[depth_num_vertices + 12] = PortalFace._screen_space_x[12];
+    PortalFace._screen_space_y[depth_num_vertices + 12] = PortalFace._screen_space_y[12];
+    current_vertices_flag = PortalFace._screen_space_x[12] >= (signed int)pBLVRenderParams->uViewportX;//8.0
+    if (depth_num_vertices < 1)
+        return 0;
+    for (uint i = 1; i <= depth_num_vertices; ++i)
+    {
+        next_vertices_flag = PortalFace._screen_space_x[i + 12] >= (signed int)pBLVRenderParams->uViewportX;
+        if (current_vertices_flag ^ next_vertices_flag)
+        {
+            if (next_vertices_flag)
+            {
+                //t = left_clip - v0.x / v1.x - v0.x
+                t = fixpoint_div(
+                    pBLVRenderParams->uViewportX - PortalFace._screen_space_x[i + 11],
+                    PortalFace._screen_space_x[i + 12] - PortalFace._screen_space_x[i + 11]
+                );
+                //New_y = (v1.y - v0.y)*t + v0.y
+                PortalFace._screen_space_y[left_num_vertices + 9] =
+                    PortalFace._screen_space_y[i + 11]
+                    + fixpoint_mul(
+                        t, (PortalFace._screen_space_y[i + 12] - PortalFace._screen_space_y[i + 11])
+                    );
+                //New_x = left_clip
+                PortalFace._screen_space_x[left_num_vertices + 9] = pBLVRenderParams->uViewportX;
+
+                auto _t = (fixed::FromInt(pBLVRenderParams->uViewportX) - fixed::FromInt(PortalFace._screen_space_x[i + 11])) / (fixed::FromInt(PortalFace._screen_space_x[i + 12]) - fixed::FromInt(PortalFace._screen_space_x[i + 11]));
+                auto _x = fixed::FromInt(pBLVRenderParams->uViewportX);
+                auto _y = fixed::FromInt(PortalFace._screen_space_y[i + 11]) + _t * (fixed::FromInt(PortalFace._screen_space_y[i + 12]) - fixed::FromInt(PortalFace._screen_space_y[i + 11]));
+
+                //assert(_t._internal == t);
+                //assert(_x.GetInt() == PortalFace._screen_space_x[left_num_vertices + 9]);
+                //assert(_y.GetInt() == PortalFace._screen_space_y[left_num_vertices + 9]);
+            }
+            else
+            {
+                //t = left_clip - v1.x / v0.x - v1.x
+                t = fixpoint_div(
+                    pBLVRenderParams->uViewportX - PortalFace._screen_space_x[i + 12],
+                    PortalFace._screen_space_x[i + 11] - PortalFace._screen_space_x[i + 12]
+                );
+                //New_y = (v0.y - v1.y)*t + v1.y
+                PortalFace._screen_space_y[left_num_vertices + 9] =
+                    PortalFace._screen_space_y[i + 12]
+                    + fixpoint_mul(
+                        t, (PortalFace._screen_space_y[i + 11] - PortalFace._screen_space_y[i + 12])
+                    );
+                //New_x = left_clip
+                PortalFace._screen_space_x[left_num_vertices + 9] = pBLVRenderParams->uViewportX;
+
+                auto _t = (fixed::FromInt(pBLVRenderParams->uViewportX) - fixed::FromInt(PortalFace._screen_space_x[i + 12])) / (fixed::FromInt(PortalFace._screen_space_x[i + 11]) - fixed::FromInt(PortalFace._screen_space_x[i + 12]));
+                auto _x = fixed::FromInt(pBLVRenderParams->uViewportX);
+                auto _y = fixed::FromInt(PortalFace._screen_space_y[i + 12]) + _t * (fixed::FromInt(PortalFace._screen_space_y[i + 11]) - fixed::FromInt(PortalFace._screen_space_y[i + 12]));
+
+                // test new projection against old
+                //assert(_t._internal == t);
+                //assert(_x.GetInt() == PortalFace._screen_space_x[left_num_vertices + 9]);
+                //assert(_y.GetInt() == PortalFace._screen_space_y[left_num_vertices + 9]);
+            }
+            left_num_vertices++;
+        }
+        if (next_vertices_flag)
+        {
+            pNextVertices = left_num_vertices++;
+            PortalFace._screen_space_x[pNextVertices + 9] = PortalFace._screen_space_x[i + 12];
+            PortalFace._screen_space_y[pNextVertices + 9] = PortalFace._screen_space_y[i + 12];
+        }
+        current_vertices_flag = next_vertices_flag;
+    }
+    //*********************************************************************************************************************************
+    //for right_clip plane(проверка по правой плоскости)
+    right_num_vertices = 0;
+    PortalFace._screen_space_x[left_num_vertices + 9] = PortalFace._screen_space_x[9];
+    PortalFace._screen_space_y[left_num_vertices + 9] = PortalFace._screen_space_y[9];
+    current_vertices_flag = PortalFace._screen_space_x[9] <= (signed int)pBLVRenderParams->uViewportZ;//468.0
+    if (left_num_vertices < 1)
+        return 0;
+    for (uint i = 1; i <= left_num_vertices; ++i)
+    {
+        next_vertices_flag = PortalFace._screen_space_x[i + 9] <= (signed int)pBLVRenderParams->uViewportZ;
+        if (current_vertices_flag ^ next_vertices_flag)
+        {
+            if (next_vertices_flag)
+            {
+                //t = right_clip - v1.x / v0.x - v1.x
+                t = fixpoint_div(pBLVRenderParams->uViewportZ - PortalFace._screen_space_x[i + 8], PortalFace._screen_space_x[i + 9] - PortalFace._screen_space_x[i + 8]);
+                //New_y = (v0.y - v1.y)*t + v1.y
+                PortalFace._screen_space_y[right_num_vertices + 6] = fixpoint_mul((PortalFace._screen_space_y[i + 9] - PortalFace._screen_space_y[i + 8]), t)
+                    + PortalFace._screen_space_y[i + 8];
+                //New_x = right_clip
+                PortalFace._screen_space_x[right_num_vertices + 6] = pBLVRenderParams->uViewportZ;
+            }
+            else
+            {
+                //t = right_clip - v0.x / v1.x - v0.x
+                t = fixpoint_div(pBLVRenderParams->uViewportZ - PortalFace._screen_space_x[i + 9], PortalFace._screen_space_x[i + 8] - PortalFace._screen_space_x[i + 9]);
+                //New_y = (v1.y - v0.y)*t + v0.y
+                PortalFace._screen_space_y[right_num_vertices + 6] = fixpoint_mul((PortalFace._screen_space_y[i + 8] - PortalFace._screen_space_y[i + 9]), t)
+                    + PortalFace._screen_space_y[i + 9];
+                //New_x = right_clip
+                PortalFace._screen_space_x[right_num_vertices + 6] = pBLVRenderParams->uViewportZ;
+            }
+            right_num_vertices++;
+        }
+        if (next_vertices_flag)
+        {
+            pNextVertices = right_num_vertices++;
+            PortalFace._screen_space_x[pNextVertices + 6] = PortalFace._screen_space_x[i + 9];
+            PortalFace._screen_space_y[pNextVertices + 6] = PortalFace._screen_space_y[i + 9];
+        }
+        current_vertices_flag = next_vertices_flag;
+    }
+    //************************************************************************************************************************************
+    // for top clip plane
+    top_num_vertices = 0;
+    PortalFace._screen_space_x[right_num_vertices + 6] = PortalFace._screen_space_x[6];
+    PortalFace._screen_space_y[right_num_vertices + 6] = PortalFace._screen_space_y[6];
+
+    current_vertices_flag = PortalFace._screen_space_y[6] >= (signed int)pBLVRenderParams->uViewportY;//8.0
+    if (right_num_vertices < 1)
+        return 0;
+    for (uint i = 1; i <= right_num_vertices; ++i)
+    {
+        next_vertices_flag = PortalFace._screen_space_y[i + 6] >= (signed int)pBLVRenderParams->uViewportY;
+        if (current_vertices_flag ^ next_vertices_flag)
+        {
+            if (next_vertices_flag)
+            {
+                t = fixpoint_div(pBLVRenderParams->uViewportY - PortalFace._screen_space_y[i + 5], PortalFace._screen_space_y[i + 6] - PortalFace._screen_space_y[i + 5]);
+                PortalFace._screen_space_x[top_num_vertices + 3] = ((signed int)((PortalFace._screen_space_x[i + 6] - PortalFace._screen_space_x[i + 5])
+                    * t) >> 16) + PortalFace._screen_space_x[i + 5];
+                PortalFace._screen_space_y[top_num_vertices + 3] = pBLVRenderParams->uViewportY;
+            }
+            else
+            {
+                t = fixpoint_div(pBLVRenderParams->uViewportY - PortalFace._screen_space_y[i + 6], PortalFace._screen_space_y[i + 5] - PortalFace._screen_space_y[i + 6]);
+                PortalFace._screen_space_x[top_num_vertices + 3] = fixpoint_mul((PortalFace._screen_space_x[i + 5] - PortalFace._screen_space_x[i + 6]), t)
+                    + PortalFace._screen_space_x[i + 6];
+                PortalFace._screen_space_y[top_num_vertices + 3] = pBLVRenderParams->uViewportY;
+            }
+            top_num_vertices++;
+        }
+        current_vertices_flag = next_vertices_flag;
+        if (next_vertices_flag)
+        {
+            pNextVertices = top_num_vertices++;
+            PortalFace._screen_space_x[pNextVertices + 3] = PortalFace._screen_space_x[i + 6];
+            PortalFace._screen_space_y[pNextVertices + 3] = PortalFace._screen_space_y[i + 6];
+        }
+    }
+    //**********************************************************************************************************************************
+    //for bottom_clip plane(проверка по нижней плоскости)
+    bottom_num_vertices = 0;
+    PortalFace._screen_space_x[top_num_vertices + 3] = PortalFace._screen_space_x[3];
+    PortalFace._screen_space_y[top_num_vertices + 3] = PortalFace._screen_space_y[3];
+    current_vertices_flag = PortalFace._screen_space_y[3] <= (signed int)pBLVRenderParams->uViewportW;//351.0
+    if (top_num_vertices < 1)
+        return 0;
+    for (uint i = 1; i <= top_num_vertices; ++i)
+    {
+        next_vertices_flag = PortalFace._screen_space_y[i + 3] <= (signed int)pBLVRenderParams->uViewportW;
+        if (current_vertices_flag ^ next_vertices_flag)
+        {
+            if (next_vertices_flag)
+            {
+                t = fixpoint_div(pBLVRenderParams->uViewportW - PortalFace._screen_space_y[i + 2], PortalFace._screen_space_y[i + 3] - PortalFace._screen_space_y[i + 2]);
+                PortalFace._screen_space_x[bottom_num_vertices] = fixpoint_mul((PortalFace._screen_space_x[i + 3] - PortalFace._screen_space_x[i + 2]), t)
+                    + PortalFace._screen_space_x[i + 2];
+                PortalFace._screen_space_y[bottom_num_vertices] = pBLVRenderParams->uViewportW;
+            }
+            else
+            {
+                t = fixpoint_div(pBLVRenderParams->uViewportW - PortalFace._screen_space_y[i + 3], PortalFace._screen_space_y[i + 2] - PortalFace._screen_space_y[i + 3]);
+                PortalFace._screen_space_x[bottom_num_vertices] = fixpoint_mul((PortalFace._screen_space_x[i + 2] - PortalFace._screen_space_x[i + 3]), t)
+                    + PortalFace._screen_space_x[i + 3];
+                PortalFace._screen_space_y[bottom_num_vertices] = pBLVRenderParams->uViewportW;
+            }
+            bottom_num_vertices++;
+        }
+        if (next_vertices_flag)
+        {
+            pNextVertices = bottom_num_vertices++;
+            PortalFace._screen_space_x[pNextVertices] = PortalFace._screen_space_x[i + 3];
+            PortalFace._screen_space_y[pNextVertices] = PortalFace._screen_space_y[i + 3];
+        }
+        current_vertices_flag = next_vertices_flag;
+    }
+    //***************************************************************************************************************************************
+
+    if (!bottom_num_vertices)
+        return 0;
     PortalFace._screen_space_x[bottom_num_vertices] = PortalFace._screen_space_x[0];
     PortalFace._screen_space_y[bottom_num_vertices] = PortalFace._screen_space_y[0];
-  }*/
-  return bottom_num_vertices;
+    //check for software(проверка для софтвар)
+      /*if ( !render->pRenderD3D && bottom_num_vertices > 3 )
+      {
+        PortalFace._screen_space_x[bottom_num_vertices + 1] = PortalFace._screen_space_x[1];
+        PortalFace._screen_space_y[bottom_num_vertices + 1] = PortalFace._screen_space_y[1];
+        thisf = PortalFace.direction == true ? 1 : - 1;
+        if ( bottom_num_vertices > 0 )
+        {
+          v62 = 1;
+          v71 = 1;
+          do
+          {
+            v63 = v62 - 1;
+            v64 = v62 + 1;
+            v80 = v62 + 1;
+            if ( v62 - 1 >= bottom_num_vertices )
+              v63 -= bottom_num_vertices;
+            if ( v62 >= bottom_num_vertices )
+              v62 -= bottom_num_vertices;
+            if ( v64 >= bottom_num_vertices )
+              v64 -= bottom_num_vertices;
+            if ( thisf * ((PortalFace._screen_space_y[v64] - PortalFace._screen_space_y[v63])
+                       * (PortalFace._screen_space_x[v62] - PortalFace._screen_space_x[v63])
+                       - (PortalFace._screen_space_y[v62] - PortalFace._screen_space_y[v63])
+                       * (PortalFace._screen_space_x[v64] - PortalFace._screen_space_x[v63])) < 0 )
+            {
+              v62 = v80;
+              v71 = v80;
+            }
+            else
+            {
+              v62 = v71;
+              v65 = v71;
+              if ( v71 < bottom_num_vertices || (v65 = v71 - bottom_num_vertices, v71 - bottom_num_vertices < bottom_num_vertices) )
+              {
+                memcpy(&PortalFace._screen_space_y[v65], &PortalFace._screen_space_y[v65 + 1],
+                  4 * ((unsigned int)(4 * (bottom_num_vertices - v65)) >> 2));
+                memcpy(&PortalFace._screen_space_x[v65], &PortalFace._screen_space_x[v65 + 1],
+                  4 * ((unsigned int)(4 * (bottom_num_vertices - v65)) >> 2));
+              }
+              --bottom_num_vertices;
+            }
+          }
+          while ( v62 - 1 < bottom_num_vertices );
+        }
+        PortalFace._screen_space_x[bottom_num_vertices] = PortalFace._screen_space_x[0];
+        PortalFace._screen_space_y[bottom_num_vertices] = PortalFace._screen_space_y[0];
+      }*/
+    return bottom_num_vertices;
 }
 
 //----- (004AAEA6) --------------------------------------------------------

@@ -789,8 +789,8 @@ struct BLVRenderParams
     float _unused_fSineY;      // matches old IndoorCamera::fRotationSineY   (new IndoorCameraD3D::fRotationSineY)
     float _unused_fCosineNegX; // the same
     float _unused_fSineNegX;   // the same
-    int fov_rad_fixpoint;
-    int fov_rad_inv_fixpoint;//float
+    int bsp_fov_rad;     // fixpoint FOV in radians for BSP calculation
+    int bsp_fov_rad_inv;
     void *pRenderTarget;
     unsigned int uTargetWidth;
     unsigned int uTargetHeight;

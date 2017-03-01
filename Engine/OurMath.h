@@ -37,9 +37,10 @@ struct fixed // fixed-point decimal
     }
 
 
-    float GetFloatFraction() const  { return (float)((double)(this->_internal & 0xFFFF) / 65530.0); }
+    float GetFloatFraction() const  { return (float)((double)((unsigned int)this->_internal & 0xFFFF) / 65530.0); }
     float GetFloat() const          { return (float)this->GetInt() + this->GetFloatFraction(); }
     int   GetInt() const            { return this->_internal >> 16; }
+    int   GetUnsignedInt() const    { return (unsigned int)this->_internal >> 16; }
 
     //----- (0042EBBE) --------------------------------------------------------
     //----- (004453C0) mm6-----------------------------------------------------
