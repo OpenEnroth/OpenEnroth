@@ -2695,20 +2695,24 @@ void TrainingDialog(const char *s)
             if (HouseUI_CheckIfPlayerCanInteract())
             {
                 index = 0;
-                pShopOptions[0] = s;
+                pShopOptions[0] = s; // set first item to fucntion param - this always gets overwritten below??
                 pShopOptions[1] = localization->GetString(160);// "Learn Skills"
                 if (pDialogueWindow->pStartingPosActiveItem < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton)
                 {
-                    for (int i = pDialogueWindow->pStartingPosActiveItem;
-                    i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-                    {
-                        if (pDialogueWindow->GetControl(i)->msg_param == HOUSE_DIALOGUE_TRAININGHALL_TRAIN)
-                        {
-                            if (pPlayers[uActiveCharacter]->uLevel >= pMaxLevelPerTrainingHallType[(unsigned int)window_SpeakInHouse->ptr_1C - HOUSE_TRAINING_HALL_EMERALD_ISLE])
-                                sprintf((char *)pShopOptions[index], "%s\n \n%s", localization->GetString(536), localization->GetString(529)); //"With your skills, you should be working here as a teacher."    "Sorry, but we are unable to train you."
-                            else
+					for (int i = pDialogueWindow->pStartingPosActiveItem;
+						i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
+					{
+						if (pDialogueWindow->GetControl(i)->msg_param == HOUSE_DIALOGUE_TRAININGHALL_TRAIN)
+						{
+							static String shop_option_str_container;
+							if (pPlayers[uActiveCharacter]->uLevel >= pMaxLevelPerTrainingHallType[(unsigned int)window_SpeakInHouse->ptr_1C - HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
+
+								shop_option_str_container = String(localization->GetString(536)) + "\n \n" + localization->GetString(529); //"With your skills, you should be working here as a teacher."    "Sorry, but we are unable to train you."
+								pShopOptions[index] = shop_option_str_container.c_str();
+
+							}
+							else
                             {
-                                static String shop_option_str_container;
                                 if (pPlayers[uActiveCharacter]->uExperience < v5)
                                     shop_option_str_container = localization->FormatString(538, (uint)(v5 - pPlayers[uActiveCharacter]->uExperience), pPlayers[uActiveCharacter]->uLevel + 1); // "You need %d more experience to train to level %d"
                                 else

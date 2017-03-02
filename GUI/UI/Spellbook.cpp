@@ -105,8 +105,9 @@ void GUIWindow_Spellbook::OpenSpellbook()
     PlayerSpellbookChapter* chapter = &pPlayer->spellbook.pChapters[pPlayer->lastOpenedSpellbookPage];
     for (uint i = 0; i < 11; ++i)
     {
-        if (!chapter->bIsSpellAvailable[i])
+        if (!chapter->bIsSpellAvailable[i] && !all_magic)
             continue;
+
         v4 = pPlayer->lastOpenedSpellbookPage;
         //v4 = (12 * pPlayer->lastOpenedSpellbookPage + pSpellbookSpellIndices[pPlayer->lastOpenedSpellbookPage][i + 1]);
         CreateButton(
@@ -124,15 +125,15 @@ void GUIWindow_Spellbook::OpenSpellbook()
     if (a2)
         _41D08F_set_keyboard_control_group(a2, 0, 0, 0);
 
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_FIRE])   CreateButton(399, 10, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 0, 0, localization->GetSpellSchoolName(0), 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_AIR])    CreateButton(399, 46, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 1, 0, localization->GetSpellSchoolName(1), 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER])  CreateButton(399, 83, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 2, 0, localization->GetSpellSchoolName(2), 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_EARTH])  CreateButton(399, 121, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 3, 0, localization->GetSpellSchoolName(3), 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_SPIRIT]) CreateButton(399, 158, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 4, 0, localization->GetSpellSchoolName(5), 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_MIND])   CreateButton(400, 196, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 5, 0, localization->GetSpellSchoolName(4), 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_BODY])   CreateButton(400, 234, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 6, 0, localization->GetSpellSchoolName(6), 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_LIGHT])  CreateButton(400, 271, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 7, 0, localization->GetSpellSchoolName(7), 0);
-    if (pPlayer->pActiveSkills[PLAYER_SKILL_DARK])   CreateButton(400, 307, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 8, 0, localization->GetSpellSchoolName(8), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_FIRE] || all_magic)   CreateButton(399, 10, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 0, 0, localization->GetSpellSchoolName(0), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_AIR] || all_magic)    CreateButton(399, 46, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 1, 0, localization->GetSpellSchoolName(1), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] || all_magic)  CreateButton(399, 83, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 2, 0, localization->GetSpellSchoolName(2), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_EARTH] || all_magic)  CreateButton(399, 121, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 3, 0, localization->GetSpellSchoolName(3), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_SPIRIT] || all_magic) CreateButton(399, 158, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 4, 0, localization->GetSpellSchoolName(5), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_MIND] || all_magic)   CreateButton(400, 196, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 5, 0, localization->GetSpellSchoolName(4), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_BODY] || all_magic)   CreateButton(400, 234, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 6, 0, localization->GetSpellSchoolName(6), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_LIGHT] || all_magic)  CreateButton(400, 271, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 7, 0, localization->GetSpellSchoolName(7), 0);
+    if (pPlayer->pActiveSkills[PLAYER_SKILL_DARK] || all_magic)   CreateButton(400, 307, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 8, 0, localization->GetSpellSchoolName(8), 0);
 
     CreateButton(476, 450, ui_spellbook_btn_quckspell->GetWidth(), ui_spellbook_btn_quckspell->GetHeight(), 1, 78, UIMSG_ClickInstallRemoveQuickSpellBtn, 0, 0, "", 0);
     pBtn_InstallRemoveSpell = CreateButton(476, 450, 48, 32, 1, 78, UIMSG_ClickInstallRemoveQuickSpellBtn, 0, 0, "", ui_spellbook_btn_quckspell_click, 0);
@@ -166,33 +167,67 @@ void GUIWindow_Spellbook::Update()
     BookUI_Spellbook_DrawCurrentSchoolBackground();
 
     render->ClearZBuffer(0, 479);
-    if ((11 * player->lastOpenedSpellbookPage) || ((11 * player->lastOpenedSpellbookPage) + 11))//??? maybe structure need fix
-    {
-        for (uint i = 1; i <= 11; ++i)
-        {
-            if (player->_achieved_awards_bits[(11 * player->lastOpenedSpellbookPage) + i + 63])
-            {
-                if (SBPageSSpellsTextureList[i])
-                {
-                    if (quick_spell_at_page == i)
-                        pTexture = SBPageCSpellsTextureList[i];
-                    else
-                        pTexture = SBPageSSpellsTextureList[i];
-                    if (pTexture)
-                    {
-                        pX_coord = pViewport->uViewportTL_X + pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Xpos;
-                        pY_coord = pViewport->uViewportTL_Y + pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Ypos;
 
-                        render->DrawTextureAlphaNew(pX_coord/640.0f, pY_coord/480.0f, pTexture);
-                        render->ZDrawTextureAlpha(
-                            pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Xpos/640.0f,
-                            pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Ypos/480.0f,
-                            pTexture, i);
-                    }
-                }
-            }
-        }
-    }
+
+	for (uint i = 0; i < 9; i++)
+	{
+		if (player->pActiveSkills[PLAYER_SKILL_FIRE + i] || all_magic)
+		{
+			auto pPageTexture = ui_spellbook_school_tabs[i][0];
+			if (player->lastOpenedSpellbookPage == i)
+			{
+				pPageTexture = ui_spellbook_school_tabs[i][1];
+				pX_coord = texture_tab_coord1[i][0];
+				pY_coord = texture_tab_coord1[i][1];
+			}
+			else
+			{
+				pPageTexture = ui_spellbook_school_tabs[i][0];
+				pX_coord = texture_tab_coord0[i][0];
+				pY_coord = texture_tab_coord0[i][1];
+			}
+			render->DrawTextureAlphaNew(pX_coord / 640.0f, pY_coord / 480.0f, pPageTexture);
+
+			for (uint i = 1; i <= 11; ++i)
+			{
+				if (player->_achieved_awards_bits[(11 * player->lastOpenedSpellbookPage) + i + 63] || all_magic) //this should check if oplayer knows spell
+				{
+					if (SBPageSSpellsTextureList[i])
+					{
+						if (quick_spell_at_page == i)
+							pTexture = SBPageCSpellsTextureList[i];
+						else
+							pTexture = SBPageSSpellsTextureList[i];
+						if (pTexture)
+						{
+							pX_coord = pViewport->uViewportTL_X + pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Xpos;
+							pY_coord = pViewport->uViewportTL_Y + pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Ypos;
+
+							render->DrawTextureAlphaNew(pX_coord / 640.0f, pY_coord / 480.0f, pTexture);
+
+							//
+
+							render->ZDrawTextureAlpha(
+								pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Xpos / 640.0f,
+								pIconPos[player->lastOpenedSpellbookPage][pSpellbookSpellIndices[player->lastOpenedSpellbookPage][i]].Ypos / 480.0f,
+								pTexture, i);
+						}
+					}
+				}
+			}
+
+
+
+
+		}
+	}
+
+
+
+   // if ((11 * player->lastOpenedSpellbookPage) || ((11 * player->lastOpenedSpellbookPage) + 11))//??? maybe structure need fix
+    //{
+       
+   // }
 
     Point pt = pMouse->GetCursorPos();
     v10 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
@@ -207,27 +242,7 @@ void GUIWindow_Spellbook::Update()
         }
     }
 
-    for (uint i = 0; i < 9; i++)
-    {
-        if (player->pActiveSkills[PLAYER_SKILL_FIRE + i])
-        {
-            auto pPageTexture = ui_spellbook_school_tabs[i][0];
-            if (player->lastOpenedSpellbookPage == i)
-            {
-                pPageTexture = ui_spellbook_school_tabs[i][1];
-                pX_coord = texture_tab_coord1[i][0];
-                pY_coord = texture_tab_coord1[i][1];
-            }
-            else
-            {
-                pPageTexture = ui_spellbook_school_tabs[i][0];
-                pX_coord = texture_tab_coord0[i][0];
-                pY_coord = texture_tab_coord0[i][1];
-            }
-
-            render->DrawTextureAlphaNew(pX_coord/640.0f, pY_coord/480.0f, pPageTexture);
-        }
-    }
+    
 }
 
 
@@ -255,7 +270,7 @@ void LoadSpellbook(unsigned int spell_school)
 
   for (uint i = 1; i <= 11; ++i)
   {
-    if (pPlayers[uActiveCharacter]->spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1])
+    if (pPlayers[uActiveCharacter]->spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] || all_magic)
     {
       sprintf(pContainer, "SB%sS%02d", spellbook_texture_filename_suffices[spell_school], pSpellbookSpellIndices[spell_school][i]);
       SBPageSSpellsTextureList[i] = assets->GetImage_16BitAlpha(pContainer);

@@ -1505,7 +1505,7 @@ int max_flight_height = 4000;    //maximum altitude
 bool use_MMT = false;
 bool use_music_folder = false;
 bool for_refactoring = false;
-bool all_spells = true;
+bool all_spells = false; // is this needed with all_magic as well??
 bool bNoMargareth = false;
 
 void ParseCommandLine(const wchar_t *cmd)

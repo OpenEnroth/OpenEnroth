@@ -2075,13 +2075,13 @@ void Game_EventLoop()
             }
 
             case UIMSG_SPellbook_ShowHightlightedSpellInfo:
-            {
-                if (!uActiveCharacter || (uNumSeconds = (unsigned int)pPlayers[uActiveCharacter],
-                    !*(char *)(uNumSeconds + 11 * *(char *)(uNumSeconds + 6734) + uMessageParam + 402)))
-                    continue;
-                if (sub_4637E0_is_there_popup_onscreen())
-                    dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
-                v98 = *(char *)(uNumSeconds + 6734);
+			{
+				if (!uActiveCharacter)//|| (uNumSeconds = (unsigned int)pPlayers[uActiveCharacter],!*(char *)(uNumSeconds + 11 * *(char *)(uNumSeconds + 6734) + uMessageParam + 402)))
+					continue;
+
+				if (sub_4637E0_is_there_popup_onscreen())
+					dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
+				v98 = pPlayers[uActiveCharacter]->lastOpenedSpellbookPage;//  *(char *)(uNumSeconds + 6734);
                 if (quick_spell_at_page - 1 == uMessageParam)
                 {
                     GameUI_StatusBar_Set(localization->FormatString(485, pSpellStats->pInfos[uMessageParam + 11 * v98 + 1].pName));
@@ -2122,7 +2122,7 @@ void Game_EventLoop()
                 uAction = 0;
                 for (uint i = 0; i < 9; i++)
                 {
-                    if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i])
+                    if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i] || all_magic)
                     {
                         if (pPlayers[uActiveCharacter]->lastOpenedSpellbookPage == i)
                             uAction = skill_count;
@@ -2163,7 +2163,7 @@ void Game_EventLoop()
 
                 //  uNumSeconds = (unsigned int)pPlayers[uActiveCharacter];
                 Player* player = pPlayers[uActiveCharacter];
-                if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam])
+                if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam] || all_magic)
                     //if ( *(char *)(uNumSeconds + 11 * *(char *)(uNumSeconds + &lastOpenedSpellbookPage) + uMessageParam + 402) )
                 {
                     if (quick_spell_at_page - 1 == uMessageParam)

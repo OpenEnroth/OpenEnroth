@@ -801,7 +801,8 @@ void GUIWindow::HouseDialogManager()
             TravelByTransport();
             break;
         case BuildingType_Training:
-            __debugbreak(); // param was passed via pTmpBuf, investiage
+           // __debugbreak(); // param was passed via pTmpBuf, investiage ??
+			// no idea why this could pass an argument - its always reset
             TrainingDialog("");
             break;
         case BuildingType_Jail:

@@ -1627,7 +1627,7 @@ void GameUI_WritePointedObjectStatusString()
                 else
                 {
                     GameUI_StatusBar_Set(
-                        localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()) // Get %s   does not display properly ??
+                        localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName().c_str()) // Get %s
                         );
                 } //intentional fallthrough
             }
@@ -2219,6 +2219,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsig
         bWizardEyeActive = true;
         uWizardEyeSkillLevel = 3;
     }
+
     render->SetRasterClipRect(uX, uY, uZ - 1, uW - 1);
     uHeight = uW - uY;
     uWidth = uZ - uX;

@@ -24,10 +24,10 @@ String Localization::FormatString(unsigned int index, ...) const
 {
     va_list args_ptr;
 
-    const char *format = this->GetString(index);
+    const char *format = (this->GetString(index));
     char buf[2048];
 
-    va_start(args_ptr, index);
+    va_start(args_ptr, index); // ?? sometimes args_ptr has junk at start ?? args must pass as type c_str() ??
     {
         vsprintf(buf, format, args_ptr);
     }

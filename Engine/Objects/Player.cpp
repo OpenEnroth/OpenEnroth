@@ -3925,7 +3925,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls)
 
     pActiveSkills[i] = 1;
 
-    switch (i)
+ /*   switch (i)
     {
       case PLAYER_SKILL_FIRE:
         spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;//its temporary, for test spells
@@ -4044,7 +4044,12 @@ void Player::Reset(PLAYER_CLASS_TYPE cls)
         spellbook.pDarkSpellbook.bIsSpellAvailable[0] = true;
         break;
     }
+
+	*/
+
   }
+
+
 
   memset(&pEquipment, 0, sizeof(PlayerEquipment));
   pInventoryMatrix.fill(0);
