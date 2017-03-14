@@ -134,6 +134,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
   HEXRAYS_LODWORD(v733) = 0;
   v723 = 0;
   spell_sound_flag = false;
+
   for(n = 0; n < CastSpellInfoCount; ++n)
   {
     pCastSpell = &pCastSpellInfo[n];

@@ -2077,7 +2077,7 @@ void Game_EventLoop()
             case UIMSG_SPellbook_ShowHightlightedSpellInfo:
 			{
 				if (!uActiveCharacter)//|| (uNumSeconds = (unsigned int)pPlayers[uActiveCharacter],!*(char *)(uNumSeconds + 11 * *(char *)(uNumSeconds + 6734) + uMessageParam + 402)))
-					continue;
+					continue; // this used to check if player had the spell activated - no longer rquired here ??
 
 				if (sub_4637E0_is_there_popup_onscreen())
 					dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
@@ -2688,13 +2688,14 @@ void Game_Loop()
         pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
 
 
-    extern bool all_spells;
+ /*   extern bool all_spells;
     if (all_spells)
     {
         for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 99; ++j)
                 pParty->pPlayers[i].spellbook.bHaveSpell[j] = true;
-    }
+   }
+   */
 
     while (2)
     {
