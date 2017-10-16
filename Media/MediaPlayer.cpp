@@ -796,7 +796,7 @@ public:
 
     }
 
-    bool Load(const wchar_t *filename, int dst_width, int dst_height, int cache_ms)	//Çàãðóçêà
+    bool Load(const wchar_t *filename, int dst_width, int dst_height, int cache_ms)	//Ð—Ð°Ð³Ñ€ÑƒÐ·ÐºÐ°
     {
         char filenamea[1024];
         sprintf(filenamea, "%S", filename);
@@ -1008,7 +1008,7 @@ ITrack *MPlayer::LoadTrack(const wchar_t *filename)
   return audio_track;
 }
 
-IMovie *MPlayer::LoadMovie(const wchar_t *filename, int width, int height, int cache_ms)	//Çàãðóçèòü âèäåî
+IMovie *MPlayer::LoadMovie(const wchar_t *filename, int width, int height, int cache_ms)	//Ð—Ð°Ð³Ñ€ÑƒÐ·Ð¸Ñ‚ÑŒ Ð²Ð¸Ð´ÐµÐ¾
 {
   movie = new Movie;
   logger->Warning(L"allocation dynamic memory for movie\n");
@@ -1259,7 +1259,7 @@ void MPlayer::HouseMovieLoop()
           if (image)
           {
             memcpy(image_array, image, sizeof (image_array));
-            for (unsigned int y = 8; y < 8 + game_viewport_height; ++y)//êîîðäèíàòû ìåñòîïîëîæåíèÿ âèäåîðîëèêà
+            for (unsigned int y = 8; y < 8 + game_viewport_height; ++y)//ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚Ñ‹ Ð¼ÐµÑÑ‚Ð¾Ð¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ Ð²Ð¸Ð´ÐµÐ¾Ñ€Ð¾Ð»Ð¸ÐºÐ°
             {
               for (unsigned int x = 8; x < 8 + game_viewport_width; ++x)
               {

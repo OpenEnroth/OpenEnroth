@@ -116,7 +116,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
         v15 = pCurrentMapName;
     if (pMapStats->GetMapInfo(v15))
     {
-        transition_button_label = localization->FormatString(411, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName); // Enter %s   Войти в ^Pv[%s]
+        transition_button_label = localization->FormatString(411, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName); // Enter %s   Р’РѕР№С‚Рё РІ ^Pv[%s]
 
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->uFlags & 0x30)
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
@@ -125,7 +125,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
     }
     else
     {
-        transition_button_label = localization->GetString(73); // Enter    Войти
+        transition_button_label = localization->GetString(73); // Enter    Р’РѕР№С‚Рё
         //if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId )
         //  PlayHouseSound(anim_id, HouseSound_Greeting);
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->uFlags & 0x30)
@@ -165,7 +165,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
 // 0041C432 GUIWindow c-tor -- part
   prev_screen_type = current_screen_type;
   current_screen_type = SCREEN_INPUT_BLV;
-  pBtn_ExitCancel = CreateButton(0x236u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionWindowCloseBtn, 0, 'N', localization->GetString(34), ui_buttdesc2, 0); // Cancel / Отмена
+  pBtn_ExitCancel = CreateButton(0x236u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionWindowCloseBtn, 0, 'N', localization->GetString(34), ui_buttdesc2, 0); // Cancel / РћС‚РјРµРЅР°
   pBtn_YES = CreateButton(0x1E6u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionUI_Confirm, 0, 'Y', hint, ui_buttyes2, 0);
   CreateButton(pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 0x3Fu, 0x49u, 1, 0, UIMSG_TransitionUI_Confirm, 1, 0x20u, hint, 0);
   CreateButton(8, 8, 0x1CCu, 0x158u, 1, 0, UIMSG_TransitionUI_Confirm, 1u, 0, hint, 0);
@@ -214,7 +214,7 @@ GUIWindow_Travel::GUIWindow_Travel() :
       localization->GetString(156),
       ui_buttdesc2,
       0
-  );// Stay in this area / Остаться в этой области
+  );// Stay in this area / РћСЃС‚Р°С‚СЊСЃСЏ РІ СЌС‚РѕР№ РѕР±Р»Р°СЃС‚Рё
   pBtn_YES = CreateButton(
       486, 445, 75, 33, 1, 0,
       UIMSG_OnTravelByFoot,

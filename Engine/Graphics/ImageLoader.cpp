@@ -228,8 +228,8 @@ bool PCX_Loader::DecodePCX(const unsigned char *pcx_data, unsigned __int16 *pOut
     unsigned int b_mask = 0x001F;
     unsigned int num_b_bits = 5;
 
-    //При сохранении изображения подряд идущие пиксели одинакового цвета объединяются и вместо указания цвета для каждого пикселя
-    //указывается цвет группы пикселей и их количество.
+    //РџСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РїРѕРґСЂСЏРґ РёРґСѓС‰РёРµ РїРёРєСЃРµР»Рё РѕРґРёРЅР°РєРѕРІРѕРіРѕ С†РІРµС‚Р° РѕР±СЉРµРґРёРЅСЏСЋС‚СЃСЏ Рё РІРјРµСЃС‚Рѕ СѓРєР°Р·Р°РЅРёСЏ С†РІРµС‚Р° РґР»СЏ РєР°Р¶РґРѕРіРѕ РїРёРєСЃРµР»СЏ
+    //СѓРєР°Р·С‹РІР°РµС‚СЃСЏ С†РІРµС‚ РіСЂСѓРїРїС‹ РїРёРєСЃРµР»РµР№ Рё РёС… РєРѕР»РёС‡РµСЃС‚РІРѕ.
     read_offset = 128;
     if (psx_head2.planes != 3)
         return 0;
@@ -248,14 +248,14 @@ bool PCX_Loader::DecodePCX(const unsigned char *pcx_data, unsigned __int16 *pOut
                 {
                     test_byte = pcx_data[read_offset];
                     ++read_offset;
-                    if ((test_byte & 0xC0) == 0xC0)//имеется ли объединение
+                    if ((test_byte & 0xC0) == 0xC0)//РёРјРµРµС‚СЃСЏ Р»Рё РѕР±СЉРµРґРёРЅРµРЅРёРµ
                     {
                         value = pcx_data[read_offset];
                         ++read_offset;
 
                         if ((test_byte & 0x3F) > 0)
                         {
-                            count = test_byte & 0x3F;//количество одинаковых пикселей
+                            count = test_byte & 0x3F;//РєРѕР»РёС‡РµСЃС‚РІРѕ РѕРґРёРЅР°РєРѕРІС‹С… РїРёРєСЃРµР»РµР№
                             do
                             {
                                 ++row_position;

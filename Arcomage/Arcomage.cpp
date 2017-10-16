@@ -1238,7 +1238,7 @@ void TurnChange()
       //nullsub_1();
    //   v11.x = 0;
    //   v11.y = 0;
-        strcpy_s(player_name, "The Next Player is: ");//"След"
+        strcpy_s(player_name, "The Next Player is: ");//"РЎР»РµРґ"
       // v0 = 0;
       v11.y = 200;
       v11.x = 320; // - 12 * v0 / 2;
@@ -1493,10 +1493,10 @@ void DrawGameUI( int animation_stage )
   am_EndScene();
 
   am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
-  DrawCards();//рисуем карты
-  DrawPlayersTowers();//рисуем башню
-  DrawPlayersWall();//рисуем стену
-  DrawPlayersText();//рисуем текст
+  DrawCards();//СЂРёСЃСѓРµРј РєР°СЂС‚С‹
+  DrawPlayersTowers();//СЂРёСЃСѓРµРј Р±Р°С€РЅСЋ
+  DrawPlayersWall();//СЂРёСЃСѓРµРј СЃС‚РµРЅСѓ
+  DrawPlayersText();//СЂРёСЃСѓРµРј С‚РµРєСЃС‚
   am_EndScene();
 
   am_BeginScene(pArcomageGame->pSpritesPixels, -1, 1);
@@ -1844,7 +1844,7 @@ void DrawPlayersTowers()
     pSrcXYZW.w = tower_top;
     pTargetXY.x = 102;
     pTargetXY.y = 297 - tower_top;
-    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//стена башни
+    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//СЃС‚РµРЅР° Р±Р°С€РЅРё
 
     pSrcXYZW.y = 0;
     pSrcXYZW.x = 384;
@@ -1852,7 +1852,7 @@ void DrawPlayersTowers()
     pSrcXYZW.w = 94;
     pTargetXY.y = 203 - tower_top;
     pTargetXY.x = 91;
-    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);//верхушка башни
+    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);//РІРµСЂС…СѓС€РєР° Р±Р°С€РЅРё
 
     tower_height = am_Players[1].tower_height;
     if (am_Players[1].tower_height > max_tower_height)
@@ -1960,7 +1960,7 @@ void DrawCards()
                 pSrcXYZW.z = 288;
                 pSrcXYZW.y = 0;
                 pSrcXYZW.w = 128;
-                render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуется оборотные стороны карт противника
+                render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//СЂРёСЃСѓРµС‚СЃСЏ РѕР±РѕСЂРѕС‚РЅС‹Рµ СЃС‚РѕСЂРѕРЅС‹ РєР°СЂС‚ РїСЂРѕС‚РёРІРЅРёРєР°
                 pTargetXY.x += v24 + 96;
             }
             else
@@ -1969,12 +1969,12 @@ void DrawCards()
                 pArcomageGame->GetCardRect(v7, &pSrcXYZW);
                 if (!CanCardBePlayed(current_player_num, v2))
                 {
-                    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);//рисуются неактивные карты
+                    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 0);//СЂРёСЃСѓСЋС‚СЃСЏ РЅРµР°РєС‚РёРІРЅС‹Рµ РєР°СЂС‚С‹
                     pTargetXY.x += v24 + 96;
                 }
                 else
                 {
-                    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//рисуются активные карты
+                    render->am_Blt_Copy(&pSrcXYZW, &pTargetXY, 2);//СЂРёСЃСѓСЋС‚СЃСЏ Р°РєС‚РёРІРЅС‹Рµ РєР°СЂС‚С‹
                     pTargetXY.x += v24 + 96;
                 }
             }
@@ -2294,13 +2294,13 @@ signed int DrawCardsRectangles(int player_num)
                     if (v26.Inside(&pXYZW))
                     {
                         if (CanCardBePlayed(player_num, hand_index))
-                            color = 0x00FFFFFF;//белый цвет
+                            color = 0x00FFFFFF;//Р±РµР»С‹Р№ С†РІРµС‚
                         else
-                            color = 0x000000FF;//красный цвет
+                            color = 0x000000FF;//РєСЂР°СЃРЅС‹Р№ С†РІРµС‚
                         DrawRect(&pXYZW, R8G8B8_to_TargetFormat(color), 0);
                         return hand_index;
                     }
-                    DrawRect(&pXYZW, R8G8B8_to_TargetFormat(0), 0);//рамка чёрного цвета
+                    DrawRect(&pXYZW, R8G8B8_to_TargetFormat(0), 0);//СЂР°РјРєР° С‡С‘СЂРЅРѕРіРѕ С†РІРµС‚Р°
                     if (am_byte_4E185D)
                     {
                         pXYZW.x -= am_Players[player_num].card_shift[hand_index].x;
@@ -2544,7 +2544,7 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID)
     switch (pCard->compare_param)
     {
     case 2:
-        if (player->quarry_level < enemy->quarry_level)//если рудники < рудника врага
+        if (player->quarry_level < enemy->quarry_level)//РµСЃР»Рё СЂСѓРґРЅРёРєРё < СЂСѓРґРЅРёРєР° РІСЂР°РіР°
             goto LABEL_26;
         goto LABEL_231;
     case 3:
@@ -2552,7 +2552,7 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID)
             goto LABEL_26;
         goto LABEL_231;
     case 4:
-        if (player->zoo_level < enemy->zoo_level)//если зверинец < зверинца врага
+        if (player->zoo_level < enemy->zoo_level)//РµСЃР»Рё Р·РІРµСЂРёРЅРµС† < Р·РІРµСЂРёРЅС†Р° РІСЂР°РіР°
             goto LABEL_26;
         goto LABEL_231;
     case 5:
@@ -3127,143 +3127,143 @@ void GameResultsApply()
     winner = -1;
     victory_type = -1;
     //nullsub_1();
-    /*strcpy(pText, "The Winner is: ");//"Победил: " Ritor1: архаизм
+    /*strcpy(pText, "The Winner is: ");//"РџРѕР±РµРґРёР»: " Ritor1: Р°СЂС…Р°РёР·Рј
     xy.y = 160;
     xy.x = 320; //- 12 * v2 / 2;
     am_DrawText(-1, pText, &xy);*/
 
-    //проверка построена ли башня
-    if (am_Players[0].tower_height < max_tower_height && am_Players[1].tower_height >= max_tower_height)//наша башня не построена, а у врага построена
+    //РїСЂРѕРІРµСЂРєР° РїРѕСЃС‚СЂРѕРµРЅР° Р»Рё Р±Р°С€РЅСЏ
+    if (am_Players[0].tower_height < max_tower_height && am_Players[1].tower_height >= max_tower_height)//РЅР°С€Р° Р±Р°С€РЅСЏ РЅРµ РїРѕСЃС‚СЂРѕРµРЅР°, Р° Сѓ РІСЂР°РіР° РїРѕСЃС‚СЂРѕРµРЅР°
     {
-        winner = 2;//победил игрок 2(враг)
+        winner = 2;//РїРѕР±РµРґРёР» РёРіСЂРѕРє 2(РІСЂР°Рі)
         victory_type = 0;
     }
-    else if (am_Players[0].tower_height >= max_tower_height && am_Players[1].tower_height < max_tower_height)//наша башня построена, а у врага нет
+    else if (am_Players[0].tower_height >= max_tower_height && am_Players[1].tower_height < max_tower_height)//РЅР°С€Р° Р±Р°С€РЅСЏ РїРѕСЃС‚СЂРѕРµРЅР°, Р° Сѓ РІСЂР°РіР° РЅРµС‚
     {
-        winner = 1;//победил игрок 1(мы)
+        winner = 1;//РїРѕР±РµРґРёР» РёРіСЂРѕРє 1(РјС‹)
         victory_type = 0;
     }
-    else if (am_Players[0].tower_height >= max_tower_height && am_Players[1].tower_height >= max_tower_height)//и у нас, и у врага построена
+    else if (am_Players[0].tower_height >= max_tower_height && am_Players[1].tower_height >= max_tower_height)//Рё Сѓ РЅР°СЃ, Рё Сѓ РІСЂР°РіР° РїРѕСЃС‚СЂРѕРµРЅР°
     {
-        if (am_Players[0].tower_height == am_Players[1].tower_height)//наши башни равны
+        if (am_Players[0].tower_height == am_Players[1].tower_height)//РЅР°С€Рё Р±Р°С€РЅРё СЂР°РІРЅС‹
         {
-            winner = 0;//никто не победил
-            victory_type = 4;//ничья
+            winner = 0;//РЅРёРєС‚Рѕ РЅРµ РїРѕР±РµРґРёР»
+            victory_type = 4;//РЅРёС‡СЊСЏ
         }
-        else//наши башни не равны
+        else//РЅР°С€Рё Р±Р°С€РЅРё РЅРµ СЂР°РІРЅС‹
         {
-            winner = (am_Players[0].tower_height <= am_Players[1].tower_height) + 1;//победил тот, у кого выше
+            winner = (am_Players[0].tower_height <= am_Players[1].tower_height) + 1;//РїРѕР±РµРґРёР» С‚РѕС‚, Сѓ РєРѕРіРѕ РІС‹С€Рµ
             victory_type = 0;
         }
     }
 
-    //проверка разрушена ли башня
-    if (am_Players[0].tower_height <= 0 && am_Players[1].tower_height > 0)//наша башня разрушена, а у врага нет
+    //РїСЂРѕРІРµСЂРєР° СЂР°Р·СЂСѓС€РµРЅР° Р»Рё Р±Р°С€РЅСЏ
+    if (am_Players[0].tower_height <= 0 && am_Players[1].tower_height > 0)//РЅР°С€Р° Р±Р°С€РЅСЏ СЂР°Р·СЂСѓС€РµРЅР°, Р° Сѓ РІСЂР°РіР° РЅРµС‚
     {
-        winner = 2;// победил игрок 2(враг)
-        victory_type = 2;//победил разрушив башню врага
+        winner = 2;// РїРѕР±РµРґРёР» РёРіСЂРѕРє 2(РІСЂР°Рі)
+        victory_type = 2;//РїРѕР±РµРґРёР» СЂР°Р·СЂСѓС€РёРІ Р±Р°С€РЅСЋ РІСЂР°РіР°
     }
-    else if (am_Players[0].tower_height > 0 && am_Players[1].tower_height <= 0)//у врага башня разрушена, а у нас нет
+    else if (am_Players[0].tower_height > 0 && am_Players[1].tower_height <= 0)//Сѓ РІСЂР°РіР° Р±Р°С€РЅСЏ СЂР°Р·СЂСѓС€РµРЅР°, Р° Сѓ РЅР°СЃ РЅРµС‚
     {
-        winner = 1;//победил игрок 1(мы)
-        victory_type = 2;//победил разрушив башню врага
+        winner = 1;//РїРѕР±РµРґРёР» РёРіСЂРѕРє 1(РјС‹)
+        victory_type = 2;//РїРѕР±РµРґРёР» СЂР°Р·СЂСѓС€РёРІ Р±Р°С€РЅСЋ РІСЂР°РіР°
     }
-    else if (am_Players[0].tower_height <= 0 && am_Players[1].tower_height <= 0)//наша башня разрушена, и у врага разрушена
+    else if (am_Players[0].tower_height <= 0 && am_Players[1].tower_height <= 0)//РЅР°С€Р° Р±Р°С€РЅСЏ СЂР°Р·СЂСѓС€РµРЅР°, Рё Сѓ РІСЂР°РіР° СЂР°Р·СЂСѓС€РµРЅР°
     {
-        if (am_Players[0].tower_height == am_Players[1].tower_height)//если башни равны
+        if (am_Players[0].tower_height == am_Players[1].tower_height)//РµСЃР»Рё Р±Р°С€РЅРё СЂР°РІРЅС‹
         {
-            if (am_Players[0].wall_height == am_Players[1].wall_height)//если стены равны
+            if (am_Players[0].wall_height == am_Players[1].wall_height)//РµСЃР»Рё СЃС‚РµРЅС‹ СЂР°РІРЅС‹
             {
                 winner = 0;
                 victory_type = 4;
             }
-            else//если стены не равны
+            else//РµСЃР»Рё СЃС‚РµРЅС‹ РЅРµ СЂР°РІРЅС‹
             {
-                winner = (am_Players[0].wall_height <= am_Players[1].wall_height) + 1;//победил тот, у кого стена выше
-                victory_type = 1;//победа когда больше стена при ничье
+                winner = (am_Players[0].wall_height <= am_Players[1].wall_height) + 1;//РїРѕР±РµРґРёР» С‚РѕС‚, Сѓ РєРѕРіРѕ СЃС‚РµРЅР° РІС‹С€Рµ
+                victory_type = 1;//РїРѕР±РµРґР° РєРѕРіРґР° Р±РѕР»СЊС€Рµ СЃС‚РµРЅР° РїСЂРё РЅРёС‡СЊРµ
             }
         }
-        else//башни не равны
+        else//Р±Р°С€РЅРё РЅРµ СЂР°РІРЅС‹
         {
-            winner = (am_Players[0].tower_height <= am_Players[1].tower_height) + 1;// побеждает тот у кого башня больше
-            victory_type = 2;//победил разрушив башню врага
+            winner = (am_Players[0].tower_height <= am_Players[1].tower_height) + 1;// РїРѕР±РµР¶РґР°РµС‚ С‚РѕС‚ Сѓ РєРѕРіРѕ Р±Р°С€РЅСЏ Р±РѕР»СЊС€Рµ
+            victory_type = 2;//РїРѕР±РµРґРёР» СЂР°Р·СЂСѓС€РёРІ Р±Р°С€РЅСЋ РІСЂР°РіР°
         }
     }
 
-    //проверка набраны ли ресурсы
-    //проверка какого ресурса больше всего у игрока 1(нас)
-    pl_resource = am_Players[0].resource_bricks;//кирпичей больше чем др. ресурсов
+    //РїСЂРѕРІРµСЂРєР° РЅР°Р±СЂР°РЅС‹ Р»Рё СЂРµСЃСѓСЂСЃС‹
+    //РїСЂРѕРІРµСЂРєР° РєР°РєРѕРіРѕ СЂРµСЃСѓСЂСЃР° Р±РѕР»СЊС€Рµ РІСЃРµРіРѕ Сѓ РёРіСЂРѕРєР° 1(РЅР°СЃ)
+    pl_resource = am_Players[0].resource_bricks;//РєРёСЂРїРёС‡РµР№ Р±РѕР»СЊС€Рµ С‡РµРј РґСЂ. СЂРµСЃСѓСЂСЃРѕРІ
     if (am_Players[0].resource_gems > am_Players[0].resource_bricks
-        && am_Players[0].resource_gems > am_Players[0].resource_beasts)//драг.камней больше всего
+        && am_Players[0].resource_gems > am_Players[0].resource_beasts)//РґСЂР°Рі.РєР°РјРЅРµР№ Р±РѕР»СЊС€Рµ РІСЃРµРіРѕ
         pl_resource = am_Players[0].resource_gems;
     else if (am_Players[0].resource_beasts > am_Players[0].resource_gems
-        && am_Players[0].resource_beasts > am_Players[0].resource_bricks)//зверей больше всего
+        && am_Players[0].resource_beasts > am_Players[0].resource_bricks)//Р·РІРµСЂРµР№ Р±РѕР»СЊС€Рµ РІСЃРµРіРѕ
         pl_resource = am_Players[0].resource_beasts;
 
-    //проверка какого ресурса больше у игрока 2(врага)
-    en_resource = am_Players[1].resource_bricks;//кирпичей больше чем др. ресурсов
+    //РїСЂРѕРІРµСЂРєР° РєР°РєРѕРіРѕ СЂРµСЃСѓСЂСЃР° Р±РѕР»СЊС€Рµ Сѓ РёРіСЂРѕРєР° 2(РІСЂР°РіР°)
+    en_resource = am_Players[1].resource_bricks;//РєРёСЂРїРёС‡РµР№ Р±РѕР»СЊС€Рµ С‡РµРј РґСЂ. СЂРµСЃСѓСЂСЃРѕРІ
     if (am_Players[1].resource_gems > am_Players[1].resource_bricks
-        && am_Players[1].resource_gems > am_Players[1].resource_beasts)//драг.камней больше всего
+        && am_Players[1].resource_gems > am_Players[1].resource_beasts)//РґСЂР°Рі.РєР°РјРЅРµР№ Р±РѕР»СЊС€Рµ РІСЃРµРіРѕ
         en_resource = am_Players[1].resource_gems;
     else if (am_Players[1].resource_beasts > am_Players[1].resource_gems
-        && am_Players[1].resource_beasts > am_Players[1].resource_bricks)//зверей больше всего
+        && am_Players[1].resource_beasts > am_Players[1].resource_bricks)//Р·РІРµСЂРµР№ Р±РѕР»СЊС€Рµ РІСЃРµРіРѕ
         en_resource = am_Players[1].resource_beasts;
 
-    //сравнение ресурсов игроков
-    if (winner == -1 && victory_type == -1)//нет победителя по башням
+    //СЃСЂР°РІРЅРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ РёРіСЂРѕРєРѕРІ
+    if (winner == -1 && victory_type == -1)//РЅРµС‚ РїРѕР±РµРґРёС‚РµР»СЏ РїРѕ Р±Р°С€РЅСЏРј
     {
-        if (pl_resource < max_resources_amount && en_resource >= max_resources_amount)//враг набрал нужное количество
+        if (pl_resource < max_resources_amount && en_resource >= max_resources_amount)//РІСЂР°Рі РЅР°Р±СЂР°Р» РЅСѓР¶РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ
         {
-            winner = 2;// враг победил
-            victory_type = 3;//победа собрав нужное количество ресурсов
+            winner = 2;// РІСЂР°Рі РїРѕР±РµРґРёР»
+            victory_type = 3;//РїРѕР±РµРґР° СЃРѕР±СЂР°РІ РЅСѓР¶РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµСЃСѓСЂСЃРѕРІ
         }
-        else if (pl_resource >= max_resources_amount && en_resource < max_resources_amount)//мы набрали нужное количество
+        else if (pl_resource >= max_resources_amount && en_resource < max_resources_amount)//РјС‹ РЅР°Р±СЂР°Р»Рё РЅСѓР¶РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ
         {
-            winner = 1;// мы победили
-            victory_type = 3;//победа собрав нужное количество ресурсов
+            winner = 1;// РјС‹ РїРѕР±РµРґРёР»Рё
+            victory_type = 3;//РїРѕР±РµРґР° СЃРѕР±СЂР°РІ РЅСѓР¶РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµСЃСѓСЂСЃРѕРІ
         }
-        else if (pl_resource >= max_resources_amount && en_resource >= max_resources_amount)//и у нас и у врага нужное количество ресурсов
+        else if (pl_resource >= max_resources_amount && en_resource >= max_resources_amount)//Рё Сѓ РЅР°СЃ Рё Сѓ РІСЂР°РіР° РЅСѓР¶РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµСЃСѓСЂСЃРѕРІ
         {
-            if (pl_resource == en_resource)// ресурсы равны
+            if (pl_resource == en_resource)// СЂРµСЃСѓСЂСЃС‹ СЂР°РІРЅС‹
             {
-                winner = 0;//ресурсы равны
-                victory_type = 4; //ничья
+                winner = 0;//СЂРµСЃСѓСЂСЃС‹ СЂР°РІРЅС‹
+                victory_type = 4; //РЅРёС‡СЊСЏ
             }
             else
             {
-                winner = (pl_resource <= en_resource) + 1;//ресурсы не равны, побеждает тот у кого больше
-                victory_type = 3;//победа собрав нужное количество ресурсов
+                winner = (pl_resource <= en_resource) + 1;//СЂРµСЃСѓСЂСЃС‹ РЅРµ СЂР°РІРЅС‹, РїРѕР±РµР¶РґР°РµС‚ С‚РѕС‚ Сѓ РєРѕРіРѕ Р±РѕР»СЊС€Рµ
+                victory_type = 3;//РїРѕР±РµРґР° СЃРѕР±СЂР°РІ РЅСѓР¶РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµСЃСѓСЂСЃРѕРІ
             }
         }
     }
-    else if (winner == 0 && victory_type == 4)// при ничье по башням и стене
+    else if (winner == 0 && victory_type == 4)// РїСЂРё РЅРёС‡СЊРµ РїРѕ Р±Р°С€РЅСЏРј Рё СЃС‚РµРЅРµ
     {
-        if (pl_resource != en_resource)//ресурсы не равны
+        if (pl_resource != en_resource)//СЂРµСЃСѓСЂСЃС‹ РЅРµ СЂР°РІРЅС‹
         {
-            winner = (pl_resource <= en_resource) + 1;//победил тот у кого больше
-            victory_type = 5;//победа когда при ничье большее количество ресурсов
+            winner = (pl_resource <= en_resource) + 1;//РїРѕР±РµРґРёР» С‚РѕС‚ Сѓ РєРѕРіРѕ Р±РѕР»СЊС€Рµ
+            victory_type = 5;//РїРѕР±РµРґР° РєРѕРіРґР° РїСЂРё РЅРёС‡СЊРµ Р±РѕР»СЊС€РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµСЃСѓСЂСЃРѕРІ
         }
-        else //ресурсы равны
+        else //СЂРµСЃСѓСЂСЃС‹ СЂР°РІРЅС‹
         {
-            winner = 0;//нет победителя
-            victory_type = 4; //ничья
+            winner = 0;//РЅРµС‚ РїРѕР±РµРґРёС‚РµР»СЏ
+            victory_type = 4; //РЅРёС‡СЊСЏ
         }
     }
 
-    //подведение итогов
+    //РїРѕРґРІРµРґРµРЅРёРµ РёС‚РѕРіРѕРІ
     pArcomageGame->Victory_type = victory_type;
     pArcomageGame->uGameWinner = winner;
-    if (winner == 1)//победитель игрок 1(мы)
+    if (winner == 1)//РїРѕР±РµРґРёС‚РµР»СЊ РёРіСЂРѕРє 1(РјС‹)
     {
-        if ((window_SpeakInHouse->par1C >= 108) && (window_SpeakInHouse->par1C <= 120))//таверны
+        if ((window_SpeakInHouse->par1C >= 108) && (window_SpeakInHouse->par1C <= 120))//С‚Р°РІРµСЂРЅС‹
         {
             if (!pParty->pArcomageWins[window_SpeakInHouse->par1C - 108])
             {
                 pParty->pArcomageWins[window_SpeakInHouse->par1C - 108] = 1;
-                pParty->PartyFindsGold(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100.0, 0);//вознаграждение
+                pParty->PartyFindsGold(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100.0, 0);//РІРѕР·РЅР°РіСЂР°Р¶РґРµРЅРёРµ
             }
         }
-        //проверка выполнен ли квест по аркомагу
+        //РїСЂРѕРІРµСЂРєР° РІС‹РїРѕР»РЅРµРЅ Р»Рё РєРІРµСЃС‚ РїРѕ Р°СЂРєРѕРјР°РіСѓ
         tavern_num = 0;
         for (uint i = 108; i <= 120; ++i)
         {
@@ -3274,24 +3274,24 @@ void GameResultsApply()
         if (tavern_num == 13)
             _449B7E_toggle_bit(pParty->_quest_bits, 238, 1);// 238 - Won all Arcomage games
 
-        for (int i = 0; i < 4; ++i)//внесение записи в Заслуги
+        for (int i = 0; i < 4; ++i)//РІРЅРµСЃРµРЅРёРµ Р·Р°РїРёСЃРё РІ Р—Р°СЃР»СѓРіРё
         {
             if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, 1))
                 _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__ARCOMAGE_WIN, 1);
         }
         ++pParty->uNumArcomageWins;
-        if (pParty->uNumArcomageWins > 1000000)//ограничение количества побед
+        if (pParty->uNumArcomageWins > 1000000)//РѕРіСЂР°РЅРёС‡РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° РїРѕР±РµРґ
             pParty->uNumArcomageWins = 1000000;
     }
-    else//проигрыш
+    else//РїСЂРѕРёРіСЂС‹С€
     {
-        for (int i = 0; i < 4; ++i)//внесение записи в Заслуги
+        for (int i = 0; i < 4; ++i)//РІРЅРµСЃРµРЅРёРµ Р·Р°РїРёСЃРё РІ Р—Р°СЃР»СѓРіРё
         {
             if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, 1))
                 _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__ARCOMAGE_LOSE, 1);
         }
         ++pParty->uNumArcomageLoses;
-        if (pParty->uNumArcomageLoses > 1000000)//ограничение количества проигрышей
+        if (pParty->uNumArcomageLoses > 1000000)//РѕРіСЂР°РЅРёС‡РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° РїСЂРѕРёРіСЂС‹С€РµР№
             pParty->uNumArcomageLoses = 1000000;
     }
 }

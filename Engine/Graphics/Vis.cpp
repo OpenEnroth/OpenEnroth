@@ -133,7 +133,7 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices, int num_verti
   if ( v13 == -1 )
     return false;
   
-  // //Bounding rectangle(Ограничивающий прямоугольник)-------------------------
+  // //Bounding rectangle(РћРіСЂР°РЅРёС‡РёРІР°СЋС‰РёР№ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє)-------------------------
   //v7 = 3.4028235e38;
   float min_x = FLT_MAX;
   //a4a = 3.4028235e38;
@@ -509,7 +509,7 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart, RenderVertexSoft *pRay
   if (pFace->Portal() || pFace->Invisible())
     return false;
 
-  int ray_dir_x = pRayEnd->vWorldPosition.x - pRayStart->vWorldPosition.x,//calculate the direction vector of the line(вычислим вектор направления линий)
+  int ray_dir_x = pRayEnd->vWorldPosition.x - pRayStart->vWorldPosition.x,//calculate the direction vector of the line(РІС‹С‡РёСЃР»РёРј РІРµРєС‚РѕСЂ РЅР°РїСЂР°РІР»РµРЅРёСЏ Р»РёРЅРёР№)
       ray_dir_y = pRayEnd->vWorldPosition.y - pRayStart->vWorldPosition.y,
       ray_dir_z = pRayEnd->vWorldPosition.z - pRayStart->vWorldPosition.z;
 
@@ -521,20 +521,20 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart, RenderVertexSoft *pRay
     return false;
 #define EPSILON 1e-6
 //c2 = n*u
-  c2 = pFace->pFacePlane.vNormal.x * ray_dir_y// get length of the line(Это дает нам длину линии)
+  c2 = pFace->pFacePlane.vNormal.x * ray_dir_y// get length of the line(Р­С‚Рѕ РґР°РµС‚ РЅР°Рј РґР»РёРЅСѓ Р»РёРЅРёРё)
        + pFace->pFacePlane.vNormal.y * ray_dir_x 
        + pFace->pFacePlane.vNormal.z * ray_dir_z;
   if (c2 > -EPSILON && c2 < EPSILON)   // ray faces face's normal ( > 0) or parallel ( == 0)
     return false;
 
 //t = -d-(n*p0)/n*u
-  float t = c1 / c2;//How far is crossing the line in percent for 0 to 1(Как далеко пересечение линии в процентах от 0 до 1 )
+  float t = c1 / c2;//How far is crossing the line in percent for 0 to 1(РљР°Рє РґР°Р»РµРєРѕ РїРµСЂРµСЃРµС‡РµРЅРёРµ Р»РёРЅРёРё РІ РїСЂРѕС†РµРЅС‚Р°С… РѕС‚ 0 РґРѕ 1 )
 
   if (t < 0 || t > 1)
     return false;
 
 // p(t) = p0 + tu;
-  Intersection->vWorldPosition.x = pRayStart->vWorldPosition.x + t * ray_dir_y;// add the interest to the start line(прибавляем процент линии к линии старта)
+  Intersection->vWorldPosition.x = pRayStart->vWorldPosition.x + t * ray_dir_y;// add the interest to the start line(РїСЂРёР±Р°РІР»СЏРµРј РїСЂРѕС†РµРЅС‚ Р»РёРЅРёРё Рє Р»РёРЅРёРё СЃС‚Р°СЂС‚Р°)
   Intersection->vWorldPosition.y = pRayStart->vWorldPosition.y + t * ray_dir_x;
   Intersection->vWorldPosition.z = pRayStart->vWorldPosition.z + t * ray_dir_z;
 
@@ -545,7 +545,7 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart, RenderVertexSoft *pRay
   if ( !CheckIntersectBModel(pFace, IntersectPoint, pBModelID) )
     return false;
 
-  *pDepth = t;//Record the distance from the origin of the ray (Записываем дистанцию от начала луча)
+  *pDepth = t;//Record the distance from the origin of the ray (Р—Р°РїРёСЃС‹РІР°РµРј РґРёСЃС‚Р°РЅС†РёСЋ РѕС‚ РЅР°С‡Р°Р»Р° Р»СѓС‡Р°)
   return true;
 }
 
@@ -908,7 +908,7 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type)
 }
 
 //----- (004C264A) --------------------------------------------------------
-void Vis::sort_object_pointers(Vis_ObjectInfo **pPointers, int start, int end)//сортировка
+void Vis::sort_object_pointers(Vis_ObjectInfo **pPointers, int start, int end)//СЃРѕСЂС‚РёСЂРѕРІРєР°
 {
     int sort_start; // edx@1
     int forward_sort_index; // esi@2
@@ -1043,7 +1043,7 @@ void Vis::SortVerticesByY(RenderVertexD3D3 *pArray, unsigned int uStart, unsigne
 }
 
 //----- (004C288E) --------------------------------------------------------
-void Vis::SortByScreenSpaceX(RenderVertexSoft *pArray, int start, int end)//сортировка по возрастанию экранных координат х
+void Vis::SortByScreenSpaceX(RenderVertexSoft *pArray, int start, int end)//СЃРѕСЂС‚РёСЂРѕРІРєР° РїРѕ РІРѕР·СЂР°СЃС‚Р°РЅРёСЋ СЌРєСЂР°РЅРЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚ С…
 {
   int left_sort_index; // ebx@2
   int right_sort_index; // ecx@2

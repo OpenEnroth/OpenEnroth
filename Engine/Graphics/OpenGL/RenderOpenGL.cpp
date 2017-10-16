@@ -92,7 +92,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
 bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
 void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width, unsigned int height) { __debugbreak(); }
 void RenderOpenGL::SavePCXScreenshot() { __debugbreak(); }
-int RenderOpenGL::_46À6ÀÑ_GetActorsInViewport(int pDepth) { __debugbreak(); return 0; }
+int RenderOpenGL::_46Ð6ÐÐ¡_GetActorsInViewport(int pDepth) { __debugbreak(); return 0; }
 void RenderOpenGL::BeginLightmaps() { __debugbreak(); }
 void RenderOpenGL::EndLightmaps() { __debugbreak(); }
 void RenderOpenGL::BeginLightmaps2() { __debugbreak(); }
@@ -327,8 +327,8 @@ void RenderOpenGL::RenderTerrainD3D()
                 poly->texture = this->hd_water_tile_anim[this->hd_water_current_frame];
             }
 
-            //Ãåíåðàöèÿ ìåñòîïîëîæåíèÿ âåðøèí-------------------------------------------------------------------------
-            //ðåø¸òêà âåðøèí äåëèòñÿ íà äâå ÷àñòè îò -64 äî 0 è îò 0 äî 64
+            //Ð“ÐµÐ½ÐµÑ€Ð°Ñ†Ð¸Ñ Ð¼ÐµÑÑ‚Ð¾Ð¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ Ð²ÐµÑ€ÑˆÐ¸Ð½-------------------------------------------------------------------------
+            //Ñ€ÐµÑˆÑ‘Ñ‚ÐºÐ° Ð²ÐµÑ€ÑˆÐ¸Ð½ Ð´ÐµÐ»Ð¸Ñ‚ÑÑ Ð½Ð° Ð´Ð²Ðµ Ñ‡Ð°ÑÑ‚Ð¸ Ð¾Ñ‚ -64 Ð´Ð¾ 0 Ð¸ Ð¾Ñ‚ 0 Ð´Ð¾ 64
             //
             //          X
             // -64      0     64
@@ -497,7 +497,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D()
         * (sin((double)pIndoorCameraD3D->sRotationX * 0.0030664064)
             * -pIndoorCameraD3D->GetFarClip()
             - (double)pIndoorCameraD3D->vPartyPos.z));
-    pSkyPolygon.Create_48607B(&stru_8019C8);//çàïîëíÿåòñÿ ptr_38
+    pSkyPolygon.Create_48607B(&stru_8019C8);//Ð·Ð°Ð¿Ð¾Ð»Ð½ÑÐµÑ‚ÑÑ ptr_38
     pSkyPolygon.ptr_38->_48694B_frustum_sky();
 
     //if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
@@ -510,12 +510,12 @@ void RenderOpenGL::DrawOutdoorSkyD3D()
     {
         pSkyPolygon.dimming_level = 0;
         pSkyPolygon.uNumVertices = 4;
-        //centering(öåíòðóåì)-----------------------------------------------------------------
+        //centering(Ñ†ÐµÐ½Ñ‚Ñ€ÑƒÐµÐ¼)-----------------------------------------------------------------
         pSkyPolygon.v_18.x = -stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX + 16);
         pSkyPolygon.v_18.y = 0;
         pSkyPolygon.v_18.z = -stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX + 16);
 
-        //sky wiew position(ïîëîæåíèå íåáà íà ýêðàíå)------------------------------------------
+        //sky wiew position(Ð¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð½ÐµÐ±Ð° Ð½Ð° ÑÐºÑ€Ð°Ð½Ðµ)------------------------------------------
         //                X
         // 0._____________________________.3
         //  |8,8                    468,8 |
@@ -545,11 +545,11 @@ void RenderOpenGL::DrawOutdoorSkyD3D()
         v33 = 65536 / (signed int)(signed __int64)(((double)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2) / tan(0.6457717418670654) + 0.5);
         for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i)
         {
-            //rotate skydome(âðàùåíèå êóïîëà íåáà)--------------------------------------
-            // Â èãðå ïðèíÿòà ñâîÿ ñèñòåìà èçìåðåíèÿ óãëîâ. Ïîëíûé óãîë (180). Çíà÷åíèþ óãëà 0 ñîîòâåòñòâóåò 
-            // íàïðàâëåíèå íà ñåâåð è/èëè þã (ëèáî íà âîñòîê è/èëè çàïàä), çíà÷åíèþ 65536 åäåíèöàì(0õ10000) ñîîòâåòñòâóåò óãîë 90.
-            // äâå ïåðåìåííûå õðàíÿò äàííûå ïî óãëó îáçîðà. field_14 ïî çàïàäó è âîñòîêó. field_20 ïî þãó è ñåâåðó
-            // îò -25080 äî 25080
+            //rotate skydome(Ð²Ñ€Ð°Ñ‰ÐµÐ½Ð¸Ðµ ÐºÑƒÐ¿Ð¾Ð»Ð° Ð½ÐµÐ±Ð°)--------------------------------------
+            // Ð’ Ð¸Ð³Ñ€Ðµ Ð¿Ñ€Ð¸Ð½ÑÑ‚Ð° ÑÐ²Ð¾Ñ ÑÐ¸ÑÑ‚ÐµÐ¼Ð° Ð¸Ð·Ð¼ÐµÑ€ÐµÐ½Ð¸Ñ ÑƒÐ³Ð»Ð¾Ð². ÐŸÐ¾Ð»Ð½Ñ‹Ð¹ ÑƒÐ³Ð¾Ð» (180). Ð—Ð½Ð°Ñ‡ÐµÐ½Ð¸ÑŽ ÑƒÐ³Ð»Ð° 0 ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ 
+            // Ð½Ð°Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð½Ð° ÑÐµÐ²ÐµÑ€ Ð¸/Ð¸Ð»Ð¸ ÑŽÐ³ (Ð»Ð¸Ð±Ð¾ Ð½Ð° Ð²Ð¾ÑÑ‚Ð¾Ðº Ð¸/Ð¸Ð»Ð¸ Ð·Ð°Ð¿Ð°Ð´), Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸ÑŽ 65536 ÐµÐ´ÐµÐ½Ð¸Ñ†Ð°Ð¼(0Ñ…10000) ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ ÑƒÐ³Ð¾Ð» 90.
+            // Ð´Ð²Ðµ Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ðµ Ñ…Ñ€Ð°Ð½ÑÑ‚ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¿Ð¾ ÑƒÐ³Ð»Ñƒ Ð¾Ð±Ð·Ð¾Ñ€Ð°. field_14 Ð¿Ð¾ Ð·Ð°Ð¿Ð°Ð´Ñƒ Ð¸ Ð²Ð¾ÑÑ‚Ð¾ÐºÑƒ. field_20 Ð¿Ð¾ ÑŽÐ³Ñƒ Ð¸ ÑÐµÐ²ÐµÑ€Ñƒ
+            // Ð¾Ñ‚ -25080 Ð´Ð¾ 25080
             v39 = fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_west_east, v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
             v35 = v39 + pSkyPolygon.ptr_38->angle_from_north;
 

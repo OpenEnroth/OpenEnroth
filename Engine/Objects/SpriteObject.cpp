@@ -495,7 +495,7 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
         SpriteObject::OnInteraction(uLayingItemID);
         return;
     }
-    if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY)//не падающие объекты
+    if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY)//РЅРµ РїР°РґР°СЋС‰РёРµ РѕР±СЉРµРєС‚С‹
     {
     LABEL_25:
         stru_721530.field_0 = 0;
@@ -671,7 +671,7 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
             pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
         }
     }
-    //для падающих объектов(для примера выброс вещи из инвентаря)
+    //РґР»СЏ РїР°РґР°СЋС‰РёС… РѕР±СЉРµРєС‚РѕРІ(РґР»СЏ РїСЂРёРјРµСЂР° РІС‹Р±СЂРѕСЃ РІРµС‰Рё РёР· РёРЅРІРµРЅС‚Р°СЂСЏ)
     if (v42 <= pSpriteObject->vPosition.z - 3)
     {
         pSpriteObject->vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();

@@ -179,7 +179,7 @@ void GUIWindow_LloydsBook::Update()
             {
                 render->DrawTextureAlphaNew(pLloydsBeacons_SomeXs[BeaconID]/640.0f, pLloydsBeacons_SomeYs[BeaconID]/480.0f, ui_book_lloyds_border);
                 pTextHeight = pSpellFont->CalcTextHeight(localization->GetString(19), &pWindow, 0);
-                pWindow.DrawTitleText(pSpellFont, 0, (signed int)pWindow.uFrameHeight / 2 - pTextHeight / 2, 1, localization->GetString(19), 3);//Доступно
+                pWindow.DrawTitleText(pSpellFont, 0, (signed int)pWindow.uFrameHeight / 2 - pTextHeight / 2, 1, localization->GetString(19), 3);//Р”РѕСЃС‚СѓРїРЅРѕ
             }
         }
     }

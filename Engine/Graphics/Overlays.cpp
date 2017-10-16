@@ -94,17 +94,17 @@ void OtherOverlayList::DrawTurnBasedIcon(int a2)
     if (current_screen_type != SCREEN_GAME || !pParty->bTurnBasedModeOn)
         return;
 
-    if (pTurnEngine->turn_stage == TE_MOVEMENT)//âñå ïåðñû îòñòðåëÿëèñü(ñæàòûé êóëàê)
+    if (pTurnEngine->turn_stage == TE_MOVEMENT)//Ð²ÑÐµ Ð¿ÐµÑ€ÑÑ‹ Ð¾Ñ‚ÑÑ‚Ñ€ÐµÐ»ÑÐ»Ð¸ÑÑŒ(ÑÐ¶Ð°Ñ‚Ñ‹Ð¹ ÐºÑƒÐ»Ð°Ðº)
         frame = pIconsFrameTable->GetFrame(pIconIDs_Turn[5 - pTurnEngine->uActionPointsLeft / 26], pEventTimer->uStartTime);
     else  if (pTurnEngine->turn_stage == TE_WAIT)
     {
         if (dword_50C998_turnbased_icon_1A)
-            v5 = uIconID_TurnStart;//àíèìàöèÿ ðóêè(çàïóñê ïîøàãîâîãî ðåæèìà)
+            v5 = uIconID_TurnStart;//Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸Ñ Ñ€ÑƒÐºÐ¸(Ð·Ð°Ð¿ÑƒÑÐº Ð¿Ð¾ÑˆÐ°Ð³Ð¾Ð²Ð¾Ð³Ð¾ Ñ€ÐµÐ¶Ð¸Ð¼Ð°)
         else
-            v5 = uIconID_TurnHour; //ãðóïïà îæèäàåò(÷àñû)
+            v5 = uIconID_TurnHour; //Ð³Ñ€ÑƒÐ¿Ð¿Ð° Ð¾Ð¶Ð¸Ð´Ð°ÐµÑ‚(Ñ‡Ð°ÑÑ‹)
         frame = pIconsFrameTable->GetFrame(v5, dword_50C994);
     }
-    else if (pTurnEngine->turn_stage == TE_ATTACK)//ãðóïïà àòàêóåò(ëàäîíü)
+    else if (pTurnEngine->turn_stage == TE_ATTACK)//Ð³Ñ€ÑƒÐ¿Ð¿Ð° Ð°Ñ‚Ð°ÐºÑƒÐµÑ‚(Ð»Ð°Ð´Ð¾Ð½ÑŒ)
         frame = pIconsFrameTable->GetFrame(uIconID_TurnStop, pEventTimer->uStartTime);
     //if ( render->pRenderD3D )
     render->DrawTextureAlphaNew(394 / 640.0f, 288 / 480.0f, frame->GetTexture());

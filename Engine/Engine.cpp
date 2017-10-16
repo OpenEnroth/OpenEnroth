@@ -1198,7 +1198,7 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
-    window = OSWindow::Create(L"Might and Magic® Trilogy", game_width, game_height);
+    window = OSWindow::Create(L"Might and MagicВ® Trilogy", game_width, game_height);
 
     render = IRender::Create();
     if (!render)
@@ -2427,7 +2427,7 @@ void _494035_timed_effects__water_walking_damage__etc()
     _493938_regenerate();
     uint party_condition_flag = 4;
     a2a = pEventTimer->uTimeElapsed;
-    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING)//замедление восстановления при беге
+    if (pParty->uFlags2 & PARTY_FLAGS_2_RUNNING)//Р·Р°РјРµРґР»РµРЅРёРµ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ РїСЂРё Р±РµРіРµ
     {
         a2a *= 0.5f;
         if (a2a < 1)
@@ -2437,7 +2437,7 @@ void _494035_timed_effects__water_walking_damage__etc()
     for (uint pl = 1; pl <= 4; pl++)
     {
         if (pPlayers[pl]->uTimeToRecovery)
-            pPlayers[pl]->Recover(a2a);//восстановление активности
+            pPlayers[pl]->Recover(a2a);//РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ Р°РєС‚РёРІРЅРѕСЃС‚Рё
         if (pPlayers[pl]->GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) + pPlayers[pl]->sHealth + pPlayers[pl]->uEndurance >= 1
             || pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
         {
@@ -2586,7 +2586,7 @@ void _494035_timed_effects__water_walking_damage__etc()
             pParty->pPlayers[i].SetCondition(Condition_Weak, 0);
     }
 
-    for (uint i = 0; i < 2; ++i)//Проверка в сознании ли перс сделавший закл на полёт и хождение по воде
+    for (uint i = 0; i < 2; ++i)//РџСЂРѕРІРµСЂРєР° РІ СЃРѕР·РЅР°РЅРёРё Р»Рё РїРµСЂСЃ СЃРґРµР»Р°РІС€РёР№ Р·Р°РєР» РЅР° РїРѕР»С‘С‚ Рё С…РѕР¶РґРµРЅРёРµ РїРѕ РІРѕРґРµ
     {
         SpellBuff* pBuf = &pParty->pPartyBuffs[Party_Spec_Motion_status_ids[i]];
         if (!pBuf->expire_time)
@@ -2621,7 +2621,7 @@ void _494035_timed_effects__water_walking_damage__etc()
         }
     }
 
-    if (uActiveCharacter)//выбор следующего после пропускающего ход
+    if (uActiveCharacter)//РІС‹Р±РѕСЂ СЃР»РµРґСѓСЋС‰РµРіРѕ РїРѕСЃР»Рµ РїСЂРѕРїСѓСЃРєР°СЋС‰РµРіРѕ С…РѕРґ
     {
         if (current_screen_type != SCREEN_REST)
         {
@@ -2714,7 +2714,7 @@ void _493938_regenerate()
             }
         }
 
-        if (pParty->ImmolationActive())//Жертва
+        if (pParty->ImmolationActive())//Р–РµСЂС‚РІР°
         {
             a3.z = 0;
             a3.y = 0;

@@ -66,7 +66,7 @@ void GUIWindow_QuickReference::Update()
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 94 * i + 89, 18, ui_character_header_text_color, player->pName, 84, 0);
 
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, 47, 0, localization->GetString(131), 60, 0); //”Ó‚.
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, 47, 0, localization->GetString(131), 60, 0); //–£—Ä–æ–≤.
         if (player->GetActualLevel() <= player->GetBaseLevel())
             pTextColor = player->GetExperienceDisplayColor();
         else
@@ -75,50 +75,50 @@ void GUIWindow_QuickReference::Update()
 
         pY = pFontHeight + 47;
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pFontHeight + 47, 0, localization->GetString(41), 60, 0);// Î‡ÒÒ
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pFontHeight + 47, 0, localization->GetString(41), 60, 0);//–ö–ª–∞—Å—Å
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, localization->GetClassName(player->classType), 84, 0);
         pY = pFontHeight + pY;
 
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(107), 60, 0);//«‰Ó.
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(107), 60, 0);//–ó–¥–æ—Ä.
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player->sHealth, player->GetMaxHealth());
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, StringPrintf("%d", player->sHealth), 84, 0);
         pY = pFontHeight + pY;
 
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(209), 60, 0);//Ã‡Ì‡
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(209), 60, 0);//–ú–∞–Ω–∞
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana());
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, StringPrintf("%d", player->sMana), 84, 0);
         pY = pFontHeight + pY;
 
         if (i == 0)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(0), 60, 0);// Î‡ÒÒ ·ÓÌË
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(0), 60, 0);//–ö–ª–∞—Å—Å –±—Ä–æ–Ω–∏
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAC(), player->GetBaseAC());
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, StringPrintf("%d", player->GetActualAC()), 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(18), 60, 0);//¿Ú‡Í‡
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(18), 60, 0);//–ê—Ç–∞–∫–∞
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, StringPrintf("%+d", player->GetActualAttack(false)), 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(66), 60, 0); // Damage   œÓ‚.
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(66), 60, 0); // Damage   –ü–æ–≤—Ä.
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, player->GetMeleeDamageString(), 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(203), 60, 0);// —ÚÂÎˇÚ¸
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(203), 60, 0);// –°—Ç—Ä–µ–ª—è—Ç—å
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, StringPrintf("%+d", player->GetRangedAttack()), 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(66), 60, 0);//œÓ‚.
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(66), 60, 0);//–ü–æ–≤—Ä.
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, player->GetRangedDamageString(), 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(205), 60, 0);//Õ‡‚˚ÍË
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(205), 60, 0);//–ù–∞–≤—ã–∫–∏
         pSkillsCount = 0;
         for (uint j = 0; j <= 36; ++j)
         {
@@ -129,21 +129,21 @@ void GUIWindow_QuickReference::Update()
         pY = pFontHeight + pY;
 
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(168), 60, 0);//Œ˜ÍË
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(168), 60, 0);//–û—á–∫–∏
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color, StringPrintf("%lu", player->uSkillPoints), 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(45), 60, 0);//—ÓÒÚ.
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(45), 60, 0);//–°–æ—Å—Ç.
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, pTextColor, localization->GetCharacterConditionName(player->GetMajorConditionIdx()), 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
-            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(170), 60, 0);//¡.œËÏ.
+            pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0, localization->GetString(170), 60, 0);//–ë.–ü—Ä–∏–º.
         if (player->uQuickSpell)
             pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
         else
-            pText = localization->GetString(153);//ÕÂÚ
+            pText = localization->GetString(153);//–ù–µ—Ç
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, pX, pY, 0, pText, 84, 0);
     }
 
@@ -159,6 +159,6 @@ void GUIWindow_QuickReference::Update()
 
     auto str1 = StringPrintf("%s: \f%05d%s\f00000", localization->GetString(180), pTextColor, GetReputationString(pParty->GetPartyReputation()).c_str());//Reputation
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 22, 323, 0, str1, 0, 0, 0);
-    auto str2 = StringPrintf("\r261%s: %d", localization->GetString(84), pParty->GetPartyFame());// Fame —Î‡‚‡
+    auto str2 = StringPrintf("\r261%s: %d", localization->GetString(84), pParty->GetPartyFame());// Fame –°–ª–∞–≤–∞
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 0, 323, 0, str2, 0, 0, 0);
 }

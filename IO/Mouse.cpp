@@ -197,7 +197,7 @@ void Mouse::DrawCursor()
     if (this->bInitialized)
     {
         if (!this->field_8 && this->bActive && !this->field_C) //Uninitialized memory access(this->field_8)
-            pMouse->_469AE4();//Ritor1: странная, непонятная функция
+            pMouse->_469AE4();//Ritor1: СЃС‚СЂР°РЅРЅР°СЏ, РЅРµРїРѕРЅСЏС‚РЅР°СЏ С„СѓРЅРєС†РёСЏ
         this->field_F4 = 1;
         if (this->field_C)
         {
@@ -238,7 +238,7 @@ void Mouse::DrawCursor()
             render->_4A6DF5(
                 this->pCursorBitmap_sysmem, v9, &this->pCursorBitmapPos, render->pTargetSurface, render->uTargetSurfacePitch,
                 &this->pCursorBitmapRect
-            );//срабатывает когда берём курсором вещь в инвенторе
+            );//СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РєРѕРіРґР° Р±РµСЂС‘Рј РєСѓСЂСЃРѕСЂРѕРј РІРµС‰СЊ РІ РёРЅРІРµРЅС‚РѕСЂРµ
             this->bRedraw = false;
         }
     }
@@ -262,7 +262,7 @@ void Mouse::DrawCursorToTarget()//??? DrawCursorWithItem
 {
   if (!pCursorBitmap3_sysmembits_16bit)
     return;
-  //пишем на экран курсор с вещью
+  //РїРёС€РµРј РЅР° СЌРєСЂР°РЅ РєСѓСЂСЃРѕСЂ СЃ РІРµС‰СЊСЋ
   ushort* pSrc = pCursorBitmap3_sysmembits_16bit;
   for (int y = uCursorWithItemY; y < uCursorWithItemZ; ++y)
     for (int x = uCursorWithItemX; x < uCursorWithItemW; ++x)
@@ -413,7 +413,7 @@ void Mouse::UI_OnMouseLeftClick(int *pXY)
             }
             continue;
           }
-          if ( control->uButtonType == 2 )//когда нажимаешь на партреты персов
+          if ( control->uButtonType == 2 )//РєРѕРіРґР° РЅР°Р¶РёРјР°РµС€СЊ РЅР° РїР°СЂС‚СЂРµС‚С‹ РїРµСЂСЃРѕРІ
           {
             if ( (signed int)(signed __int64)sqrt((double)((x - control->uX) * (x - control->uX) + (y - control->uY) * (y - control->uY))) < (signed int)control->uWidth )
             {
@@ -429,7 +429,7 @@ void Mouse::UI_OnMouseLeftClick(int *pXY)
             }
             continue;
           }
-          if ( control->uButtonType == 3 )//когда нажимаешь на скиллы
+          if ( control->uButtonType == 3 )//РєРѕРіРґР° РЅР°Р¶РёРјР°РµС€СЊ РЅР° СЃРєРёР»Р»С‹
           {
             if ( x >= (signed int)control->uX && x <= (signed int)control->uZ && y >= (signed int)control->uY && y <= (signed int)control->uW )
             {

@@ -226,7 +226,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
 
 		if (item_num) {
 
-			auto str = localization->FormatString(401, pPrice); // Skill price: %lu   /   Стоимость навыка: %lu
+			auto str = localization->FormatString(401, pPrice); // Skill price: %lu   /   РЎС‚РѕРёРјРѕСЃС‚СЊ РЅР°РІС‹РєР°: %lu
 			dialogwin.DrawTitleText(pFontArrus, 0, 0x92u, 0, str, 3);
 			
 			int textspacings = (149 - all_text_height) / item_num;
@@ -263,7 +263,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
 		}
 
 		//seek knowledge elsewhere
-		auto str = localization->FormatString( 544, pPlayers[uActiveCharacter]->pName, localization->GetClassName(pPlayers[uActiveCharacter]->classType) ) + "\n \n" + localization->GetString(528);//Больше ничего не могу предложить.
+		auto str = localization->FormatString( 544, pPlayers[uActiveCharacter]->pName, localization->GetClassName(pPlayers[uActiveCharacter]->classType) ) + "\n \n" + localization->GetString(528);//Р‘РѕР»СЊС€Рµ РЅРёС‡РµРіРѕ РЅРµ РјРѕРіСѓ РїСЂРµРґР»РѕР¶РёС‚СЊ.
 		dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0, 0)) / 2 + 138, Color16(0xE1u, 0xCDu, 0x23u), str, 3);
 		
 	}
@@ -296,9 +296,9 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
 		}
 
 		if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
-			GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0); // Steal item  /  Украсть предмет
+			GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0); // Steal item  /  РЈРєСЂР°СЃС‚СЊ РїСЂРµРґРјРµС‚
 		else
-			GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0); // Buy item  /  Выберите предмет для покупки
+			GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0); // Buy item  /  Р’С‹Р±РµСЂРёС‚Рµ РїСЂРµРґРјРµС‚ РґР»СЏ РїРѕРєСѓРїРєРё
 
 		if (item_num) { // this shoudl go into func??
 
@@ -351,7 +351,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
 		else { //shop empty
 			dialogwin.DrawShops_next_generation_time_string(
 				pParty->PartyTimes.Shops_next_generation_time[(unsigned int)window_SpeakInHouse->ptr_1C] - pParty->GetPlayingTime()
-				);//Приходите через 7 дней
+				);//РџСЂРёС…РѕРґРёС‚Рµ С‡РµСЂРµР· 7 РґРЅРµР№
 		}
 	}
 

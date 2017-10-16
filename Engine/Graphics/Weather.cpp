@@ -33,7 +33,7 @@ int Weather::DrawSnow()
             this->Screen_Coord[x] = viewparams->uScreen_topL_X + (rand() % (signed int)((viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X) - 2));
         }
         //v1[this->Screen_Coord[2 * i] + 640 * this->Screen_Coord[2 * i + 1]] = 0xFFFFu;
-        render->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y], 0xFFFF);//snowflake - point(снежинка - точка)
+        render->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y], 0xFFFF);//snowflake - point(СЃРЅРµР¶РёРЅРєР° - С‚РѕС‡РєР°)
     }
 
     for (unsigned int i = 700; i < 950; ++i)
@@ -51,7 +51,7 @@ int Weather::DrawSnow()
             this->Screen_Coord[y] = viewparams->uScreen_topL_Y;
             this->Screen_Coord[x] = viewparams->uScreen_topL_X + (rand() % (signed int)((viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X) - 2));
         }
-        render->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y], 0xFFFF);//x, y  квадратная снежинка)
+        render->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y], 0xFFFF);//x, y  РєРІР°РґСЂР°С‚РЅР°СЏ СЃРЅРµР¶РёРЅРєР°)
         render->WritePixel16(this->Screen_Coord[x] + 1, this->Screen_Coord[y], 0xFFFF);//x + 1, y
         render->WritePixel16(this->Screen_Coord[x], this->Screen_Coord[y] + 1, 0xFFFF);//x , y + 1
         render->WritePixel16(this->Screen_Coord[x] + 1, this->Screen_Coord[y] + 1, 0xFFFF);//x + 1, y + 1

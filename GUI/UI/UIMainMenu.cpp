@@ -356,13 +356,13 @@ MENU_STATE MainMenuUI_Credits_Loop()
                                             // Please re-install to fix this problem. Note: Re-installing will not destroy your save games."
     }
 
-      //для получения размера-----------------------
+      //РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЂР°Р·РјРµСЂР°-----------------------
     fread(&pTemporaryTexture, 1, 0x30, pFile);
     pSize = pTemporaryTexture.uDecompressedSize;
     if (!pSize)
         pSize = pTemporaryTexture.uTextureSize;
-    memset(&pTemporaryTexture, 0, 0x48);//обнуление
-    cred_texturet[pSize] = 0;//конец текста
+    memset(&pTemporaryTexture, 0, 0x48);//РѕР±РЅСѓР»РµРЅРёРµ
+    cred_texturet[pSize] = 0;//РєРѕРЅРµС† С‚РµРєСЃС‚Р°
 
     credit_window.uFrameWidth = 250;
     credit_window.uFrameHeight = 440;
@@ -377,7 +377,7 @@ MENU_STATE MainMenuUI_Credits_Loop()
 
     auto credits_texture = Image::Create(credits_width, credits_height, IMAGE_FORMAT_R5G6B5, credits_pixels);
 
-    //дать шрифт и цвета тексту
+    //РґР°С‚СЊ С€СЂРёС„С‚ Рё С†РІРµС‚Р° С‚РµРєСЃС‚Сѓ
     pString = (char *)malloc(2 * pSize);
     strncpy(pString, cred_texturet, pSize);
     pString[pSize] = 0;
