@@ -152,34 +152,34 @@ void OutdoorLocation::Draw()
   pOutdoor->ExecDraw(redrawWorld);
 
   pEngine->DrawParticles();
-  //pWeather->Draw();//если раскомментировать скорость снега быстрее
+  //pWeather->Draw();//РµСЃР»Рё СЂР°СЃРєРѕРјРјРµРЅС‚РёСЂРѕРІР°С‚СЊ СЃРєРѕСЂРѕСЃС‚СЊ СЃРЅРµРіР° Р±С‹СЃС‚СЂРµРµ
   trail_particle_generator.UpdateParticles();
 }
 
 //----- (00488E23) --------------------------------------------------------
 double OutdoorLocation::GetFogDensityByTime()
 {
-  if ( pParty->uCurrentHour < 5 )//ночь
+  if ( pParty->uCurrentHour < 5 )//РЅРѕС‡СЊ
   {
     pWeather->bNight = true;
     return 60.0 * 0.016666668;
   }
-  else if ( pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 6 )//рассвет
+  else if ( pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 6 )//СЂР°СЃСЃРІРµС‚
   {
     pWeather->bNight = false;
     return (60.0 - (double)(60 * pParty->uCurrentHour + pParty->uCurrentMinute - 300)) * 0.016666668;
   }
-  else if ( pParty->uCurrentHour >= 6 && pParty->uCurrentHour < 20 )//день
+  else if ( pParty->uCurrentHour >= 6 && pParty->uCurrentHour < 20 )//РґРµРЅСЊ
   {
     pWeather->bNight = false;
      return 0.0;
   }
-  else if ( pParty->uCurrentHour >= 20 && pParty->uCurrentHour < 21 )//сумерки
+  else if ( pParty->uCurrentHour >= 20 && pParty->uCurrentHour < 21 )//СЃСѓРјРµСЂРєРё
   {
     pWeather->bNight = false;
     return ((double)(pParty->uCurrentHour - 20) * 60.0 + (double)(signed int)pParty->uCurrentMinute) * 0.016666668;
   }
-  else//ночь
+  else//РЅРѕС‡СЊ
   {
     pWeather->bNight = true;
     return 60.0 * 0.016666668;
@@ -225,11 +225,11 @@ TileDesc *OutdoorLocation::GetTile(signed int sX, signed int sY)
 
 //----- (00488F2E) --------------------------------------------------------
 int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ)
-   /* Функция предоставляет возможность перемещать камеру таким образом, чтобы она имитировала ходьбу по ландшафту. 
-   То есть нам надо менять высоту камеры (координату Y) в зависимости от того, в каком месте ландшафта мы находимся. 
-   Для этого мы сначала должны определить по координатам X и Z камеры квадрат ландшафта в котором мы находимся. 
-   Все это делает функция Terrain::getHeight; в своих параметрах она получает координаты X и Z камеры и возвращает высоту, 
-   на которой должна быть расположена камера, чтобы она оказалась над ландшафтом.*/
+   /* Р¤СѓРЅРєС†РёСЏ РїСЂРµРґРѕСЃС‚Р°РІР»СЏРµС‚ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РїРµСЂРµРјРµС‰Р°С‚СЊ РєР°РјРµСЂСѓ С‚Р°РєРёРј РѕР±СЂР°Р·РѕРј, С‡С‚РѕР±С‹ РѕРЅР° РёРјРёС‚РёСЂРѕРІР°Р»Р° С…РѕРґСЊР±Сѓ РїРѕ Р»Р°РЅРґС€Р°С„С‚Сѓ. 
+   РўРѕ РµСЃС‚СЊ РЅР°Рј РЅР°РґРѕ РјРµРЅСЏС‚СЊ РІС‹СЃРѕС‚Сѓ РєР°РјРµСЂС‹ (РєРѕРѕСЂРґРёРЅР°С‚Сѓ Y) РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, РІ РєР°РєРѕРј РјРµСЃС‚Рµ Р»Р°РЅРґС€Р°С„С‚Р° РјС‹ РЅР°С…РѕРґРёРјСЃСЏ. 
+   Р”Р»СЏ СЌС‚РѕРіРѕ РјС‹ СЃРЅР°С‡Р°Р»Р° РґРѕР»Р¶РЅС‹ РѕРїСЂРµРґРµР»РёС‚СЊ РїРѕ РєРѕРѕСЂРґРёРЅР°С‚Р°Рј X Рё Z РєР°РјРµСЂС‹ РєРІР°РґСЂР°С‚ Р»Р°РЅРґС€Р°С„С‚Р° РІ РєРѕС‚РѕСЂРѕРј РјС‹ РЅР°С…РѕРґРёРјСЃСЏ. 
+   Р’СЃРµ СЌС‚Рѕ РґРµР»Р°РµС‚ С„СѓРЅРєС†РёСЏ Terrain::getHeight; РІ СЃРІРѕРёС… РїР°СЂР°РјРµС‚СЂР°С… РѕРЅР° РїРѕР»СѓС‡Р°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ X Рё Z РєР°РјРµСЂС‹ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РІС‹СЃРѕС‚Сѓ, 
+   РЅР° РєРѕС‚РѕСЂРѕР№ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ СЂР°СЃРїРѕР»РѕР¶РµРЅР° РєР°РјРµСЂР°, С‡С‚РѕР±С‹ РѕРЅР° РѕРєР°Р·Р°Р»Р°СЃСЊ РЅР°Рґ Р»Р°РЅРґС€Р°С„С‚РѕРј.*/
 {
   int result; // eax@5
 
@@ -346,9 +346,9 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX, signed int sParty
   mapNumberAsStr = strtok(Str, "out");
   mapNumberAsStr[2] = 0;
   mapNumberAsInt = atoi(mapNumberAsStr);
-  if ( a5 < 10 || this->level_filename.length() != 9 || mapNumberAsInt < 1 || mapNumberAsInt > 15 ) //длина  .odm и количество локаций
+  if ( a5 < 10 || this->level_filename.length() != 9 || mapNumberAsInt < 1 || mapNumberAsInt > 15 ) //РґР»РёРЅР°  .odm Рё РєРѕР»РёС‡РµСЃС‚РІРѕ Р»РѕРєР°С†РёР№
     return 0;
-  if ( sPartyX < -22528 )//граница карты
+  if ( sPartyX < -22528 )//РіСЂР°РЅРёС†Р° РєР°СЂС‚С‹
     direction = 4;
   else if ( sPartyX > 22528 )
     direction = 3;
@@ -389,7 +389,7 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX, signed int sParty
 
   uDefaultTravelTime_ByFoot = foot_travel_times[mapNumberAsInt - 1][direction - 1];
   uLevel_StartingPointType = foot_travel_arrival_points[mapNumberAsInt - 1][direction - 1];
-  sprintf(pOut, "out%02d.odm", destinationMap); //локация направления
+  sprintf(pOut, "out%02d.odm", destinationMap); //Р»РѕРєР°С†РёСЏ РЅР°РїСЂР°РІР»РµРЅРёСЏ
   return true;
 }
 
@@ -473,22 +473,22 @@ int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, signed int y, i
   is_on_water = 0;
   bmodel_standing_on_pid = 0;
   ODM_GetFloorLevel(x, y, z, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
-  if ( pParty->uFlags & 8 || bmodel_standing_on_pid || is_on_water )//на bmodel,и или на воде
+  if ( pParty->uFlags & 8 || bmodel_standing_on_pid || is_on_water )//РЅР° bmodel,Рё РёР»Рё РЅР° РІРѕРґРµ
     return 2;
   v7 = _47ED83(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellZ(pParty->vPosition.y) - 1);
   switch ( pTileTable->pTiles[GetTileIdByTileMapId(v7)].tileset )
   {
-    case Tileset_Grass://на траве
+    case Tileset_Grass://РЅР° С‚СЂР°РІРµ
       return 1;
-    case Tileset_Snow://на снегу
+    case Tileset_Snow://РЅР° СЃРЅРµРіСѓ
       return 3;
-    case Tilset_Desert://на песке
+    case Tilset_Desert://РЅР° РїРµСЃРєРµ
       return 5;
     case Tileset_CooledLava:
-    case Tileset_Dirt:// на грязи
+    case Tileset_Dirt:// РЅР° РіСЂСЏР·Рё
       return 4;
-    case Tileset_Water:// on water(на воде)
-      return 3;//еденицы еды
+    case Tileset_Water:// on water(РЅР° РІРѕРґРµ)
+      return 3;//РµРґРµРЅРёС†С‹ РµРґС‹
     default:
       return 2;
   }
@@ -628,7 +628,7 @@ void OutdoorLocationTerrain::_47C7A9()
 }
 
 //----- (0047C7C2) --------------------------------------------------------
-void OutdoorLocationTerrain::Release()//очистить локацию
+void OutdoorLocationTerrain::Release()//РѕС‡РёСЃС‚РёС‚СЊ Р»РѕРєР°С†РёСЋ
 {
   free(this->pHeightmap);
   pHeightmap = nullptr;
@@ -928,7 +928,7 @@ bool OutdoorLocationTerrain::Initialize()
 {
   pHeightmap = (unsigned __int8 *)malloc(0x4000);//height map
   pTilemap = (unsigned __int8 *)malloc(0x4000);//tile map
-  pAttributemap = (unsigned __int8 *)malloc(0x4000);//карта атрибутов
+  pAttributemap = (unsigned __int8 *)malloc(0x4000);//РєР°СЂС‚Р° Р°С‚СЂРёР±СѓС‚РѕРІ
   pDmap = (struct DMap *)malloc(0x8000);
   if (pHeightmap && pTilemap && pAttributemap && pDmap )
     return true;
@@ -1109,17 +1109,17 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     LoadRoadTileset();
     this->ground_tileset = "grastyl";
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     //*******************Terrain**************************//
     pTerrain.Initialize();
-    memcpy(pTerrain.pHeightmap, pSrc, 0x4000);				//карта высот
+    memcpy(pTerrain.pHeightmap, pSrc, 0x4000);				//РєР°СЂС‚Р° РІС‹СЃРѕС‚
     pSrc += 0x4000;
 
-    memcpy(pTerrain.pTilemap, pSrc, 0x4000);					//карта тайлов
+    memcpy(pTerrain.pTilemap, pSrc, 0x4000);					//РєР°СЂС‚Р° С‚Р°Р№Р»РѕРІ
     pSrc += 0x4000;
 
-    memcpy(pTerrain.pAttributemap, pSrc, 0x4000);				// карта аттрибутов
+    memcpy(pTerrain.pAttributemap, pSrc, 0x4000);				// РєР°СЂС‚Р° Р°С‚С‚СЂРёР±СѓС‚РѕРІ
     pSrc += 0x4000;
 
     //v43 = (char *)v43 + 16384;
@@ -1128,18 +1128,18 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     pCmap = malloc(0x8000);
     pTerrain.FillDMap(0, 0, 128, 128);						//
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
-    memcpy(&uNumTerrainNormals, pSrc, 4);						// количество нормалей
+    memcpy(&uNumTerrainNormals, pSrc, 4);						// РєРѕР»РёС‡РµСЃС‚РІРѕ РЅРѕСЂРјР°Р»РµР№
     memcpy(pTerrainSomeOtherData.data(), pSrc + 4, 0x20000);
     pSrc += 4 + 0x20000;
     //v43 = (char *)v43 + 131072;
-    memcpy(pTerrainNormalIndices.data(), pSrc, 0x10000);		//индексы нормалей
+    memcpy(pTerrainNormalIndices.data(), pSrc, 0x10000);		//РёРЅРґРµРєСЃС‹ РЅРѕСЂРјР°Р»РµР№
     pSrc += 0x10000;
     //v43 = (char *)v43 + 65536;
 
     //pFilename = (char *)(12 * uNumTerrainNormals);
-    pTerrainNormals = (Vec3_float_ *)malloc(sizeof(Vec3_float_) * uNumTerrainNormals);//карта нормалей
+    pTerrainNormals = (Vec3_float_ *)malloc(sizeof(Vec3_float_) * uNumTerrainNormals);//РєР°СЂС‚Р° РЅРѕСЂРјР°Р»РµР№
     memcpy(pTerrainNormals, pSrc, 12 * uNumTerrainNormals);
     pSrc += 12 * uNumTerrainNormals;
     //v44 = (char *)v43 + (int)pFilename;
@@ -1147,19 +1147,19 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     //v45 = uNumBModels;
     //v108 = (int)"BDdata";
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     //************BModels************************//
     //v107 = 188 * v45;
     //v106 = (char *)pBModels;
     //v46 = (BSPModel *)malloc(v106, 188 * v45, "BDdata");
     //v47 = uNumBModels;
-    memcpy(&uNumBModels, pSrc, 4);							//количество BModel'ей
+    memcpy(&uNumBModels, pSrc, 4);							//РєРѕР»РёС‡РµСЃС‚РІРѕ BModel'РµР№
     pBModels = (BSPModel *)malloc(188 * uNumBModels);
-    memcpy(pBModels, pSrc + 4, 188 * uNumBModels);			//BModel'и
+    memcpy(pBModels, pSrc + 4, 188 * uNumBModels);			//BModel'Рё
     pSrc += 4 + 188 * uNumBModels;
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     //uSourceLen = (char *)v44 + (int)pFilename;
     //v151 = 0;
@@ -1223,7 +1223,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
 
         free((void *)textureFilenames);
     }
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     //******************Decorations**********************//
     memcpy(&uNumLevelDecorations, pSrc, 4);
@@ -1249,7 +1249,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
     }
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     memcpy(&numFaceIDListElems, pSrc, 4);
 
@@ -1265,7 +1265,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     pSrc += 4 + faceIDListSize;
 
     //uSourceLen = (char *)uSourceLen + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     free(pOMAP);
     //v69 = malloc(0, 0x10000u, "OMAP");
@@ -1280,7 +1280,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
 
     memcpy(&uNumSpawnPoints, pSrc, 4);
     //uSourceLen = (char *)uSourceLen + 4;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     assert(sizeof(SpawnPointMM7) == 24);
     uint spawnPointsSize = uNumSpawnPoints * sizeof(SpawnPointMM7);
@@ -1290,7 +1290,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     memcpy(pSpawnPoints, pSrc + 4, spawnPointsSize);
     pSrc += 4 + spawnPointsSize;
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     //****************.ddm file*********************//
     free(pSrcMem);
@@ -1404,7 +1404,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     memcpy(uPartiallyRevealedCellOnMap, pSrc + 968, 968);
     pSrc += 2 * 968;
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     if (*thisa)
     {
@@ -1435,7 +1435,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         }
     }
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     for (uint i = 0; i < uNumLevelDecorations; ++i)
     {
@@ -1443,52 +1443,52 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
         pSrc += 2;
     }
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     memcpy(&uNumActors, pSrc, 4);
     if (uNumActors > 500)
         logger->Warning(L"Can't load file!");
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     assert(sizeof(Actor) == 836);
     //pFilename = (char *)(836 * uNumActors);
     memcpy(pActors.data(), pSrc + 4, uNumActors * sizeof(Actor));
     pSrc += 4 + uNumActors * sizeof(Actor);
     //v92 = (char *)v91 + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     memcpy(&uNumSpriteObjects, pSrc, 4);
     assert(uNumSpriteObjects <= 1000 && "Too many objects");
     assert(sizeof(SpriteObject) == 112);
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     //pFilename = (char *)(112 * uNumSpriteObjects);
     memcpy(pSpriteObjects.data(), pSrc + 4, uNumSpriteObjects * sizeof(SpriteObject));
     pSrc += 4 + uNumSpriteObjects * sizeof(SpriteObject);
 
     //v94 = (char *)v93 + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     memcpy(&uNumChests, pSrc, 4);
     //v95 = (char *)v94 + 4;
     if (uNumChests > 20)
         logger->Warning(L"Can't load file!");
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     assert(sizeof(Chest) == 5324);
     //pFilename = (char *)(5324 * uNumChests);
     memcpy(pChests.data(), pSrc + 4, uNumChests * sizeof(Chest));
     pSrc += 4 + uNumChests * sizeof(Chest);
     //v96 = (char *)v95 + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
 
     memcpy(&stru_5E4C90_MapPersistVars, pSrc, 0xC8);
     pSrc += 0xC8;
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();					//РїСЂРѕРіСЂРµСЃСЃ Р·Р°РіСЂСѓР·РєРё
     memcpy(&loc_time, pSrc, 0x38u);
 
     free(pSrcMem);
@@ -1529,42 +1529,42 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
 
     pPaletteManager->RecalculateAll();
-    pSoundList->LoadSound(SOUND_RunDirt, 0);			//For Dirt tyle(для звука хождения по грязи)
-    pSoundList->LoadSound(SOUND_WalkDirt, 0);			//для бега
-    pSoundList->LoadSound(SOUND_RunRoad, 0);			//для звука хождения по дороге
+    pSoundList->LoadSound(SOUND_RunDirt, 0);			//For Dirt tyle(РґР»СЏ Р·РІСѓРєР° С…РѕР¶РґРµРЅРёСЏ РїРѕ РіСЂСЏР·Рё)
+    pSoundList->LoadSound(SOUND_WalkDirt, 0);			//РґР»СЏ Р±РµРіР°
+    pSoundList->LoadSound(SOUND_RunRoad, 0);			//РґР»СЏ Р·РІСѓРєР° С…РѕР¶РґРµРЅРёСЏ РїРѕ РґРѕСЂРѕРіРµ
     pSoundList->LoadSound(SOUND_WalkRoad, 0);
-    pSoundList->LoadSound(SOUND_RunWood, 0);			//для звука хождения по дереву
+    pSoundList->LoadSound(SOUND_RunWood, 0);			//РґР»СЏ Р·РІСѓРєР° С…РѕР¶РґРµРЅРёСЏ РїРѕ РґРµСЂРµРІСѓ
     pSoundList->LoadSound(SOUND_WalkWood, 0);
     for (int i = 0; i < 3; ++i)
     {
         switch (pTileTypes[i].tileset)
         {
         case Tileset_Grass:
-            pSoundList->LoadSound(SOUND_RunGrass, 0);	//для звука хождения по траве
+            pSoundList->LoadSound(SOUND_RunGrass, 0);	//РґР»СЏ Р·РІСѓРєР° С…РѕР¶РґРµРЅРёСЏ РїРѕ С‚СЂР°РІРµ
             pSoundList->LoadSound(SOUND_WalkGrass, 0);
             break;
         case Tileset_Snow:
-            pSoundList->LoadSound(SOUND_RunSnow, 0);	//по снегу
+            pSoundList->LoadSound(SOUND_RunSnow, 0);	//РїРѕ СЃРЅРµРіСѓ
             pSoundList->LoadSound(SOUND_WalkSnow, 0);
             break;
         case Tilset_Desert:
-            pSoundList->LoadSound(SOUND_RunDesert, 0);	//по пустыне
+            pSoundList->LoadSound(SOUND_RunDesert, 0);	//РїРѕ РїСѓСЃС‚С‹РЅРµ
             pSoundList->LoadSound(SOUND_WalkDesert, 0);
             break;
         case Tileset_CooledLava:
-            pSoundList->LoadSound(SOUND_RunCooledLava, 0);//по лаве
+            pSoundList->LoadSound(SOUND_RunCooledLava, 0);//РїРѕ Р»Р°РІРµ
             pSoundList->LoadSound(SOUND_WalkCooledLava, 0);
             break;
         case Tileset_Water:
-            pSoundList->LoadSound(SOUND_RunWater, 0);		//по воде
+            pSoundList->LoadSound(SOUND_RunWater, 0);		//РїРѕ РІРѕРґРµ
             pSoundList->LoadSound(SOUND_WalkWater, 0);
             break;
         case Tileset_Badlands:
-            pSoundList->LoadSound(SOUND_RunBadlands, 0);	//для звука ходьбы по бесплодным землям
+            pSoundList->LoadSound(SOUND_RunBadlands, 0);	//РґР»СЏ Р·РІСѓРєР° С…РѕРґСЊР±С‹ РїРѕ Р±РµСЃРїР»РѕРґРЅС‹Рј Р·РµРјР»СЏРј
             pSoundList->LoadSound(SOUND_WalkBadlands, 0);
             break;
         case Tileset_Swamp:
-            pSoundList->LoadSound(SOUND_RunSwamp, 0);		//по болоту
+            pSoundList->LoadSound(SOUND_RunSwamp, 0);		//РїРѕ Р±РѕР»РѕС‚Сѓ
             pSoundList->LoadSound(SOUND_WalkSwamp, 0);
             break;
         }
@@ -2249,7 +2249,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, int *pIsOnWater,
                   break;
                 //v36 = odm_floor_face_vert_coord_Y[i + 1];
                 next_vertices_Y = odm_floor_face_vert_coord_Y[i + 1] >= Y;
-                if ( current_vertices_Y != next_vertices_Y )//проверка по Y
+                if ( current_vertices_Y != next_vertices_Y )//РїСЂРѕРІРµСЂРєР° РїРѕ Y
                 {
                   v18 = odm_floor_face_vert_coord_X[i + 1] >= X ? 0 : 2;
                   v19 = v18 | (odm_floor_face_vert_coord_X[i] < X);
@@ -2609,7 +2609,7 @@ void ODM_ProcessPartyActions()
     pModel_ = false;
     bWaterWalk = false;
     //************************************
-    //Проверка падение пера
+    //РџСЂРѕРІРµСЂРєР° РїР°РґРµРЅРёРµ РїРµСЂР°
     if (!pParty->FeatherFallActive())
     {
         bFeatherFall = false;
@@ -2623,7 +2623,7 @@ void ODM_ProcessPartyActions()
     else
         bFeatherFall = true;
     //************************************
-    //Проверка хождения по воде
+    //РџСЂРѕРІРµСЂРєР° С…РѕР¶РґРµРЅРёСЏ РїРѕ РІРѕРґРµ
     pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
     if (pParty->WaterWalkActive())
     {
@@ -2634,21 +2634,21 @@ void ODM_ProcessPartyActions()
             bWaterWalk = false;
     }
     //*************************************
-    //определение уровня пола
-    int bmodel_standing_on_pid;                           //данные 3D model'и
-    int is_on_water = false;                              //на воду
+    //РѕРїСЂРµРґРµР»РµРЅРёРµ СѓСЂРѕРІРЅСЏ РїРѕР»Р°
+    int bmodel_standing_on_pid;                           //РґР°РЅРЅС‹Рµ 3D model'Рё
+    int is_on_water = false;                              //РЅР° РІРѕРґСѓ
     floor_level = ODM_GetFloorLevel(pX, pY, party_new_Z, pParty->uPartyHeight, &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
-    int is_not_on_bmodel = bmodel_standing_on_pid == 0;   //не на 3D model
+    int is_not_on_bmodel = bmodel_standing_on_pid == 0;   //РЅРµ РЅР° 3D model
 
     v111 = floor_level;                 //???
     //************************************
-    //определение высоты падения
-    if (bFeatherFall)                 //падение пера
+    //РѕРїСЂРµРґРµР»РµРЅРёРµ РІС‹СЃРѕС‚С‹ РїР°РґРµРЅРёСЏ
+    if (bFeatherFall)                 //РїР°РґРµРЅРёРµ РїРµСЂР°
         pParty->uFallStartY = floor_level;
     else
         floor_level = pParty->uFallStartY;
     //*************************************
-    //падение на 3D Model
+    //РїР°РґРµРЅРёРµ РЅР° 3D Model
     if (floor_level - party_new_Z > 512 && !bFeatherFall && party_new_Z <= v111 + 1)
     {
         if (pParty->uFlags & PARTY_FLAGS_1_LANDING)
@@ -2665,15 +2665,15 @@ void ODM_ProcessPartyActions()
         }
     }
     //*********************************
-    //определение высоты потолка
+    //РѕРїСЂРµРґРµР»РµРЅРёРµ РІС‹СЃРѕС‚С‹ РїРѕС‚РѕР»РєР°
     ceiling_height = -1;
-    if (pParty->bFlying)    //в полёте
-        ceiling_height = GetCeilingHeight(pX, pY, party_new_Z + pParty->uPartyHeight, (int)&v102);//высота потолка
+    if (pParty->bFlying)    //РІ РїРѕР»С‘С‚Рµ
+        ceiling_height = GetCeilingHeight(pX, pY, party_new_Z + pParty->uPartyHeight, (int)&v102);//РІС‹СЃРѕС‚Р° РїРѕС‚РѕР»РєР°
       //v107 = bmodel_standing_on_pid == 0;
-    on_ground = v111 + 1;     //на земле
+    on_ground = v111 + 1;     //РЅР° Р·РµРјР»Рµ
     //**************************************
 
-    if (party_new_Z <= on_ground)//полёт: посадка
+    if (party_new_Z <= on_ground)//РїРѕР»С‘С‚: РїРѕСЃР°РґРєР°
     {
         ceiling_height = -1;
         pParty->bFlying = false;
@@ -2682,7 +2682,7 @@ void ODM_ProcessPartyActions()
         hovering = true;
     not_high_fall = party_new_Z - v111 <= 32;
     //****************************************
-    //timer update(обновить таймер звука ходьбы)
+    //timer update(РѕР±РЅРѕРІРёС‚СЊ С‚Р°Р№РјРµСЂ Р·РІСѓРєР° С…РѕРґСЊР±С‹)
     if (bWalkSound && pParty->walk_sound_timer)
     {
         if (pParty->walk_sound_timer >= pEventTimer->uTimeElapsed)
@@ -2697,8 +2697,8 @@ void ODM_ProcessPartyActions()
         pParty->bFlying = false;
 
     //*****************************************
-    // установить на чём стоит группа
-    if (!hovering)//не в воздухе
+    // СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РЅР° С‡С‘Рј СЃС‚РѕРёС‚ РіСЂСѓРїРїР°
+    if (!hovering)//РЅРµ РІ РІРѕР·РґСѓС…Рµ
     {
         if (pParty->floor_face_pid != PID(OBJECT_BModel, bmodel_standing_on_pid))
         {
@@ -2717,12 +2717,12 @@ void ODM_ProcessPartyActions()
                     if (face[face_id].uAttributes & FACE_PRESSURE_PLATE)
                     {
                         pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);
-                        trigger_id = face[face_id].sCogTriggeredID; //EVT, панель имеет событие
+                        trigger_id = face[face_id].sCogTriggeredID; //EVT, РїР°РЅРµР»СЊ РёРјРµРµС‚ СЃРѕР±С‹С‚РёРµ
                     }
                 }
             }
         }
-        pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);//6 - на земле
+        pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);//6 - РЅР° Р·РµРјР»Рµ
     }
     //***********************************************
     _walk_speed = pParty->uWalkSpeed;
@@ -2738,7 +2738,7 @@ void ODM_ProcessPartyActions()
     {
         switch (pPartyActionQueue->Next())
         {
-        case PARTY_FlyUp://полёт вверх
+        case PARTY_FlyUp://РїРѕР»С‘С‚ РІРІРµСЂС…
         {
             if (!pParty->FlyActive() && !bUnderwater)
                 break;
@@ -2763,7 +2763,7 @@ void ODM_ProcessPartyActions()
                     v2 = 0;
                     fall_speed = 0;
                     *(float *)&v128 = 0.0;
-                    if (v102 && party_new_Z < ceiling_height && (signed int)(pParty->uPartyHeight + party_new_Z) >= ceiling_height)//столкновение с потолком
+                    if (v102 && party_new_Z < ceiling_height && (signed int)(pParty->uPartyHeight + party_new_Z) >= ceiling_height)//СЃС‚РѕР»РєРЅРѕРІРµРЅРёРµ СЃ РїРѕС‚РѕР»РєРѕРј
                     {
                         pParty->field_6E0 = 0;
                         pParty->field_6E4 = 0;
@@ -2782,7 +2782,7 @@ void ODM_ProcessPartyActions()
         }
         break;
 
-        case PARTY_FlyDown://полёт вниз
+        case PARTY_FlyDown://РїРѕР»С‘С‚ РІРЅРёР·
             if (pParty->FlyActive() || bUnderwater)
             {
                 pParty->bFlying = false;
@@ -2805,7 +2805,7 @@ void ODM_ProcessPartyActions()
             }
             break;
 
-        case PARTY_TurnLeft://поворот влево
+        case PARTY_TurnLeft://РїРѕРІРѕСЂРѕС‚ РІР»РµРІРѕ
             if (uTurnSpeed)
                 _angle_y += uTurnSpeed;   //descrete turn
             else
@@ -2814,7 +2814,7 @@ void ODM_ProcessPartyActions()
             _angle_y &= stru_5C6E00->uDoublePiMask;
             break;
 
-        case PARTY_TurnRight://поворот вправо
+        case PARTY_TurnRight://РїРѕРІРѕСЂРѕС‚ РІРїСЂР°РІРѕ
             if (uTurnSpeed)
                 _angle_y -= uTurnSpeed;
             else
@@ -2823,7 +2823,7 @@ void ODM_ProcessPartyActions()
             _angle_y &= stru_5C6E00->uDoublePiMask;
             break;
 
-        case PARTY_FastTurnLeft://быстрый поворот влево
+        case PARTY_FastTurnLeft://Р±С‹СЃС‚СЂС‹Р№ РїРѕРІРѕСЂРѕС‚ РІР»РµРІРѕ
             if (uTurnSpeed)
                 _angle_y += uTurnSpeed;
             else
@@ -2832,7 +2832,7 @@ void ODM_ProcessPartyActions()
             _angle_y &= stru_5C6E00->uDoublePiMask;
             break;
 
-        case PARTY_FastTurnRight://быстрый поворот вправо
+        case PARTY_FastTurnRight://Р±С‹СЃС‚СЂС‹Р№ РїРѕРІРѕСЂРѕС‚ РІРїСЂР°РІРѕ
             if (!uTurnSpeed)
                 _angle_y -= 2.0f * fTurnSpeedMultiplier * (double)dturn;
             else
@@ -2841,7 +2841,7 @@ void ODM_ProcessPartyActions()
             _angle_y &= stru_5C6E00->uDoublePiMask;
             break;
 
-        case PARTY_StrafeLeft://хождение боком в влево
+        case PARTY_StrafeLeft://С…РѕР¶РґРµРЅРёРµ Р±РѕРєРѕРј РІ РІР»РµРІРѕ
         {
             *(float *)&v128 = pParty->uWalkSpeed;
 
@@ -2858,7 +2858,7 @@ void ODM_ProcessPartyActions()
         }
         break;
 
-        case PARTY_StrafeRight://хождение боком в вправо
+        case PARTY_StrafeRight://С…РѕР¶РґРµРЅРёРµ Р±РѕРєРѕРј РІ РІРїСЂР°РІРѕ
         {
             *(float *)&v128 = pParty->uWalkSpeed;
 
@@ -2875,7 +2875,7 @@ void ODM_ProcessPartyActions()
         }
         break;
 
-        case PARTY_WalkForward:// идти вперёд
+        case PARTY_WalkForward:// РёРґС‚Рё РІРїРµСЂС‘Рґ
         {
             *(float *)&v128 = _walk_speed;
 
@@ -2901,7 +2901,7 @@ void ODM_ProcessPartyActions()
         }
         break;
 
-        case PARTY_RunForward://бежать вперёд
+        case PARTY_RunForward://Р±РµР¶Р°С‚СЊ РІРїРµСЂС‘Рґ
         {
             *(float *)&v128 = _walk_speed;
 
@@ -2911,14 +2911,14 @@ void ODM_ProcessPartyActions()
             int dx = cos_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
             int dy = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
 
-            if (pParty->bFlying)//лететь вперёд
+            if (pParty->bFlying)//Р»РµС‚РµС‚СЊ РІРїРµСЂС‘Рґ
             {
                 v2 += 4 * dx;
                 v1 += 4 * dy;
 
                 v128 = v1;
             }
-            else if (partyAtHighSlope && !bmodel_standing_on_pid)//сбегание со склона
+            else if (partyAtHighSlope && !bmodel_standing_on_pid)//СЃР±РµРіР°РЅРёРµ СЃРѕ СЃРєР»РѕРЅР°
             {
                 v2 += dx;
                 v1 += dy;
@@ -2943,7 +2943,7 @@ void ODM_ProcessPartyActions()
         break;
 
 
-        case PARTY_WalkBackward://идти назад
+        case PARTY_WalkBackward://РёРґС‚Рё РЅР°Р·Р°Рґ
         {
             *(float *)&v128 = _walk_speed;
 
@@ -2962,7 +2962,7 @@ void ODM_ProcessPartyActions()
         break;
 
 
-        case PARTY_RunBackward://бежать назад
+        case PARTY_RunBackward://Р±РµР¶Р°С‚СЊ РЅР°Р·Р°Рґ
         {
             float sin_y = sinf(2 * 3.141592653589 * _angle_y / 2048.0),
                 cos_y = cosf(2 * 3.141592653589 * _angle_y / 2048.0);
@@ -2987,11 +2987,11 @@ void ODM_ProcessPartyActions()
         }
         break;
 
-        case PARTY_CenterView://смотреть прямо
+        case PARTY_CenterView://СЃРјРѕС‚СЂРµС‚СЊ РїСЂСЏРјРѕ
             _angle_x = 0;
             break;
 
-        case PARTY_LookUp://смотреть вверх
+        case PARTY_LookUp://СЃРјРѕС‚СЂРµС‚СЊ РІРІРµСЂС…
             _angle_x += (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
             if (_angle_x > 128)
                 _angle_x = 128;
@@ -2999,7 +2999,7 @@ void ODM_ProcessPartyActions()
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_63, 0);
             break;
 
-        case PARTY_LookDown://смотреть вниз
+        case PARTY_LookDown://СЃРјРѕС‚СЂРµС‚СЊ РІРЅРёР·
             _angle_x += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
             if (_angle_x < -128)
                 _angle_x = -128;
@@ -3007,7 +3007,7 @@ void ODM_ProcessPartyActions()
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_64, 0);
             break;
 
-        case PARTY_Jump://прыжок
+        case PARTY_Jump://РїСЂС‹Р¶РѕРє
             if ((!partyAtHighSlope || bmodel_standing_on_pid) && !hovering && pParty->field_24 && !(pParty->uFlags & 4) && !(pParty->uFlags & 0x200))
             {
                 //v126 = pParty->field_24 << 6;
@@ -3016,7 +3016,7 @@ void ODM_ProcessPartyActions()
             }
             break;
 
-        case PARTY_Land://приземление(клавиша Home)
+        case PARTY_Land://РїСЂРёР·РµРјР»РµРЅРёРµ(РєР»Р°РІРёС€Р° Home)
             if (pParty->bFlying)
             {
                 pParty->uFlags |= PARTY_FLAGS_1_LANDING;
@@ -3064,7 +3064,7 @@ void ODM_ProcessPartyActions()
             stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
     }
     //------------------------------------------
-    if (hovering && !pParty->bFlying)//расчёт скорости падения
+    if (hovering && !pParty->bFlying)//СЂР°СЃС‡С‘С‚ СЃРєРѕСЂРѕСЃС‚Рё РїР°РґРµРЅРёСЏ
     {
         //v33 = -(pEventTimer->uTimeElapsed * GetGravityStrength());
         v34 = fall_speed + (-(pEventTimer->uTimeElapsed * GetGravityStrength()) << 1);
@@ -3093,7 +3093,7 @@ void ODM_ProcessPartyActions()
     else
         v34 = fall_speed;
 
-    if (hovering)//блок для крика падения
+    if (hovering)//Р±Р»РѕРє РґР»СЏ РєСЂРёРєР° РїР°РґРµРЅРёСЏ
     {
         if (!bUnderwater && v34 <= 0)
         {
@@ -3104,7 +3104,7 @@ void ODM_ProcessPartyActions()
                     if (!pParty->pPlayers[i].HasEnchantedItemEquipped(72)
                         && !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS)
                         && pParty->pPlayers[i].CanAct())
-                        pParty->pPlayers[i].PlaySound(SPEECH_Falling_scream, 0);//крик падения
+                        pParty->pPlayers[i].PlaySound(SPEECH_Falling_scream, 0);//РєСЂРёРє РїР°РґРµРЅРёСЏ
                 }
             }
         }
@@ -3117,7 +3117,7 @@ void ODM_ProcessPartyActions()
         *(float *)&v128 = 0.0;
         v2 = 0;
     }
-    //--(столкновения)-------------------------------------------------------------------
+    //--(СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ)-------------------------------------------------------------------
     stru_721530.field_84 = -1;
     stru_721530.field_70 = 0;
     stru_721530.prolly_normal_d = pParty->field_14_radius;
@@ -3266,7 +3266,7 @@ void ODM_ProcessPartyActions()
                     trigger_id = pODMFace->sCogTriggeredID;  // this one triggers tour events??
                 }
             }
-            if (!v129 && (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall || v119))// упёрся в столб
+            if (!v129 && (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall || v119))// СѓРїС‘СЂСЃСЏ РІ СЃС‚РѕР»Р±
             {
                 v118 = abs(v128 * pODMFace->pFacePlane.vNormal.y + fall_speed * pODMFace->pFacePlane.vNormal.z
                     + v2 * pODMFace->pFacePlane.vNormal.x) >> 16;
@@ -3324,7 +3324,7 @@ void ODM_ProcessPartyActions()
         fall_speed = fixpoint_mul(58500, fall_speed);
     }
 
-    //Воспроизведение звуков ходьбы/бега------------------------
+    //Р’РѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёРµ Р·РІСѓРєРѕРІ С…РѕРґСЊР±С‹/Р±РµРіР°------------------------
     uint pX_ = abs(pParty->vPosition.x - pX);
     uint pY_ = abs(pParty->vPosition.y - pY);
     uint pZ_ = abs(pParty->vPosition.z - party_new_Z);
@@ -3336,13 +3336,13 @@ void ODM_ProcessPartyActions()
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16)
             {
                 if (!is_not_on_bmodel && pOutdoor->pBModels[pParty->floor_face_pid >> 9].pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible())
-                    pAudioPlayer->PlaySound(SOUND_RunWood, 804, 1, -1, 0, 0, 0, 0);//бег на 3D Modelи
+                    pAudioPlayer->PlaySound(SOUND_RunWood, 804, 1, -1, 0, 0, 0, 0);//Р±РµРі РЅР° 3D ModelРё
                 else
                 {
                     v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellZ(pParty->vPosition.y) - 1, 1);
-                    pAudioPlayer->PlaySound((SoundID)v87, 804, 1, -1, 0, 0, 0, 0);//бег по земле 56
+                    pAudioPlayer->PlaySound((SoundID)v87, 804, 1, -1, 0, 0, 0, 0);//Р±РµРі РїРѕ Р·РµРјР»Рµ 56
                 }
-                pParty->walk_sound_timer = 96;//таймер для бега
+                pParty->walk_sound_timer = 96;//С‚Р°Р№РјРµСЂ РґР»СЏ Р±РµРіР°
             }
         }
         else if (party_walking_flag && (!hovering || not_high_fall))
@@ -3350,20 +3350,20 @@ void ODM_ProcessPartyActions()
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8)
             {
                 if (!is_not_on_bmodel && pOutdoor->pBModels[pParty->floor_face_pid >> 9].pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible())
-                    pAudioPlayer->PlaySound(SOUND_WalkWood, 804, 1, -1, 0, 0, 0, 0);// хождение на 3D Modelи
+                    pAudioPlayer->PlaySound(SOUND_WalkWood, 804, 1, -1, 0, 0, 0, 0);// С…РѕР¶РґРµРЅРёРµ РЅР° 3D ModelРё
                 else
                 {
                     v87 = pOutdoor->GetSoundIdByPosition(WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellZ(pParty->vPosition.y) - 1, 0);
-                    pAudioPlayer->PlaySound((SoundID)v87, 804, 1, -1, 0, 0, 0, 0);// хождение по земле
+                    pAudioPlayer->PlaySound((SoundID)v87, 804, 1, -1, 0, 0, 0, 0);// С…РѕР¶РґРµРЅРёРµ РїРѕ Р·РµРјР»Рµ
                 }
-                pParty->walk_sound_timer = 144;//таймер для ходьбы
+                pParty->walk_sound_timer = 144;//С‚Р°Р№РјРµСЂ РґР»СЏ С…РѕРґСЊР±С‹
             }
         }
     }
-    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)//отключить  звук ходьбы при остановке
+    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)//РѕС‚РєР»СЋС‡РёС‚СЊ  Р·РІСѓРє С…РѕРґСЊР±С‹ РїСЂРё РѕСЃС‚Р°РЅРѕРІРєРµ
         pAudioPlayer->_4AA258(804);
     //------------------------------------------------------------------------
-    if (!hovering || !not_high_fall)//  или не высокое падение
+    if (!hovering || !not_high_fall)//  РёР»Рё РЅРµ РІС‹СЃРѕРєРѕРµ РїР°РґРµРЅРёРµ
         pParty->uFlags &= ~PARTY_FLAGS_1_FALLING;
     else
         pParty->uFlags |= PARTY_FLAGS_1_FALLING;
@@ -3375,11 +3375,11 @@ void ODM_ProcessPartyActions()
     v122 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(v114_a, pMap_Y) / 2) & 1;
     v69 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(pMap_X, v66) / 2) & 1;
 
-    //-(обновление координат группы)---------------------------------------
+    //-(РѕР±РЅРѕРІР»РµРЅРёРµ РєРѕРѕСЂРґРёРЅР°С‚ РіСЂСѓРїРїС‹)---------------------------------------
     v68 = 0;
     if (v114_a == pMap_X && v66 == pMap_Y && v122 && v69)
         v68 = 1;
-    if (!is_not_on_bmodel) // на bmodel,и
+    if (!is_not_on_bmodel) // РЅР° bmodel,Рё
         v68 = 1;
     if (v68)
     {
@@ -3388,14 +3388,14 @@ void ODM_ProcessPartyActions()
         pParty->vPosition.z = party_new_Z;
         pParty->field_6F0 = v113;
         pParty->uFallSpeed = fall_speed;
-        if (party_new_Z > 8160) //ограничение высоты
+        if (party_new_Z > 8160) //РѕРіСЂР°РЅРёС‡РµРЅРёРµ РІС‹СЃРѕС‚С‹
         {
             party_new_Z = 8160;
             pParty->uFallStartY = 8160;
             pParty->vPosition.z = 8160;
         }
 
-        if (!trigger_id //падение на землю
+        if (!trigger_id //РїР°РґРµРЅРёРµ РЅР° Р·РµРјР»СЋ
             || (EventProcessor(trigger_id, 0, 1),
                 pParty->vPosition.x == pX)
             && pParty->vPosition.y == pY
@@ -3407,7 +3407,7 @@ void ODM_ProcessPartyActions()
                 //v73 = v105;
                 pParty->vPosition.z = on_ground;
                 if (pParty->uFallStartY - party_new_Z > 512 && !bFeatherFall
-                    && party_new_Z <= on_ground && !bUnderwater)//Fall to the ground(падение на землю с высоты)
+                    && party_new_Z <= on_ground && !bUnderwater)//Fall to the ground(РїР°РґРµРЅРёРµ РЅР° Р·РµРјР»СЋ СЃ РІС‹СЃРѕС‚С‹)
                 {
                     if (pParty->uFlags & PARTY_FLAGS_1_LANDING)
                         pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
@@ -3439,18 +3439,18 @@ void ODM_ProcessPartyActions()
     }
     //-----------------------------------------------------------------
       //v76 = pParty->bFlying;
-    if (pParty->bFlying || !not_high_fall || bWaterWalk || !v122_a)// полёт или высокое падение или хождение по воде или 
+    if (pParty->bFlying || !not_high_fall || bWaterWalk || !v122_a)// РїРѕР»С‘С‚ РёР»Рё РІС‹СЃРѕРєРѕРµ РїР°РґРµРЅРёРµ РёР»Рё С…РѕР¶РґРµРЅРёРµ РїРѕ РІРѕРґРµ РёР»Рё 
         v77 = 1;
     else
         v77 = v122 != 0;
     bool party_drowning_flag = false;
-    if (!pParty->bFlying && not_high_fall && !bWaterWalk) //не полёт и не высокое падение и не хождение по воде
+    if (!pParty->bFlying && not_high_fall && !bWaterWalk) //РЅРµ РїРѕР»С‘С‚ Рё РЅРµ РІС‹СЃРѕРєРѕРµ РїР°РґРµРЅРёРµ Рё РЅРµ С…РѕР¶РґРµРЅРёРµ РїРѕ РІРѕРґРµ
     {
         if (v122_a)
             v78 = v69 != 0;
         else
         {
-            party_drowning_flag = true;//утопление
+            party_drowning_flag = true;//СѓС‚РѕРїР»РµРЅРёРµ
             v78 = true;
         }
     }
@@ -3491,7 +3491,7 @@ void ODM_ProcessPartyActions()
     //v81 = pZ;
     //v82 = pZ;
     pParty->vPosition.z = party_new_Z;
-    if (party_new_Z > 8160)//опять ограничение высоты
+    if (party_new_Z > 8160)//РѕРїСЏС‚СЊ РѕРіСЂР°РЅРёС‡РµРЅРёРµ РІС‹СЃРѕС‚С‹
     {
         //v82 = 8160;
         pParty->uFallStartY = 8160;
@@ -3500,14 +3500,14 @@ void ODM_ProcessPartyActions()
     HEXRAYS_LOWORD(pParty->uFlags) &= 0xFDFBu;
     pParty->uFallSpeed = fall_speed;
     pParty->field_6F0 = v113;
-    if (party_drowning_flag)//группа тонет
+    if (party_drowning_flag)//РіСЂСѓРїРїР° С‚РѕРЅРµС‚
     {
         pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->vPosition.x, pParty->vPosition.y, &v110, 1);
-        if (pParty->vPosition.z <= pTerrainHeight + 1)//положение группы всегда +1
+        if (pParty->vPosition.z <= pTerrainHeight + 1)//РїРѕР»РѕР¶РµРЅРёРµ РіСЂСѓРїРїС‹ РІСЃРµРіРґР° +1
             pParty->uFlags |= PARTY_FLAGS_1_WATER_DAMAGE;
     }
 
-    if (!trigger_id//падение на воду
+    if (!trigger_id//РїР°РґРµРЅРёРµ РЅР° РІРѕРґСѓ
         || (EventProcessor(trigger_id, 0, 1),
             pParty->vPosition.x == pX)
         && pParty->vPosition.y == pY
@@ -3519,7 +3519,7 @@ void ODM_ProcessPartyActions()
             pParty->uFallSpeed = 0;
             pParty->vPosition.z = on_ground;
             if (pParty->uFallStartY - party_new_Z > 512
-                && !bFeatherFall && party_new_Z <= on_ground && !bUnderwater)//Fall to the water(падение на воду с высоты)
+                && !bFeatherFall && party_new_Z <= on_ground && !bUnderwater)//Fall to the water(РїР°РґРµРЅРёРµ РЅР° РІРѕРґСѓ СЃ РІС‹СЃРѕС‚С‹)
             {
                 if (pParty->uFlags & PARTY_FLAGS_1_LANDING)
                     pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
@@ -3569,7 +3569,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int pFa
   dword_720ED0[0] = -1;
   dword_720E80[0] = -1;
   v39 = 1;
-  ceiling_height_level[0] = 10000;//нет потолка
+  ceiling_height_level[0] = 10000;//РЅРµС‚ РїРѕС‚РѕР»РєР°
   for ( uint i = 0; i < (signed int)pOutdoor->uNumBModels; ++i )
   {
     if ( Party_X <= pOutdoor->pBModels[i].sMaxX && Party_X >= pOutdoor->pBModels[i].sMinX
@@ -3653,10 +3653,10 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int pFa
   if ( v22 )
   {
     *(int *)pFaceID = dword_720E80[v22] | (dword_720ED0[v22] << 6);
-    return ceiling_height_level[v22];//если есть преграда
+    return ceiling_height_level[v22];//РµСЃР»Рё РµСЃС‚СЊ РїСЂРµРіСЂР°РґР°
   }
   pFaceID = 0;
-  return ceiling_height_level[v22];// нет никакой преграды
+  return ceiling_height_level[v22];// РЅРµС‚ РЅРёРєР°РєРѕР№ РїСЂРµРіСЂР°РґС‹
 }
 
 
@@ -4338,7 +4338,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_z)
 		y3     */
 	}
 
-	int y_min = min(y1, min(y2, y3));// не верно при подъёме на склон
+	int y_min = min(y1, min(y2, y3));// РЅРµ РІРµСЂРЅРѕ РїСЂРё РїРѕРґСЉС‘РјРµ РЅР° СЃРєР»РѕРЅ
 	int y_max = max(y1, max(y2, y3));
 	return (y_max - y_min) > 512;
 }

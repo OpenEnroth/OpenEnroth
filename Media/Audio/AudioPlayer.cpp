@@ -654,7 +654,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, signed int pid, unsigned int uNumR
             sample_volume = uVolume;
           int object_type = PID_TYPE(pid),
               object_id = PID_ID(pid);
-          if (source_x != -1)//срабатывает например у форта в Хермондейле звук выстрелов пушек
+          if (source_x != -1)//СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РЅР°РїСЂРёРјРµСЂ Сѓ С„РѕСЂС‚Р° РІ РҐРµСЂРјРѕРЅРґРµР№Р»Рµ Р·РІСѓРє РІС‹СЃС‚СЂРµР»РѕРІ РїСѓС€РµРє
           {
             //if (!source_x)
               //source_x = pParty->vPosition.x;
@@ -909,7 +909,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, signed int pid, unsigned int uNumR
 			{
             for (uint i = start_channel; i <= end_channel; ++i)
             {
-              if ( pMixerChannels[i].source_pid == pid && AIL_sample_status(pMixerChannels[i].hSample) == AIL::Sample::Playing )//звук фонтана и шагов не проходят проверку на повтор
+              if ( pMixerChannels[i].source_pid == pid && AIL_sample_status(pMixerChannels[i].hSample) == AIL::Sample::Playing )//Р·РІСѓРє С„РѕРЅС‚Р°РЅР° Рё С€Р°РіРѕРІ РЅРµ РїСЂРѕС…РѕРґСЏС‚ РїСЂРѕРІРµСЂРєСѓ РЅР° РїРѕРІС‚РѕСЂ
               {
                 if ( pMixerChannels[i].uSourceTrackIdx == sound_id )
                   return;                          // already playing the same sound from the same source - return
@@ -1878,7 +1878,7 @@ void AudioPlayer::UpdateSounds()
 
             case OBJECT_Item:
             {
-                //assert(source_id < uNumSpriteObjects); // Ritor1:в ида до и после перехода одинаково
+                //assert(source_id < uNumSpriteObjects); // Ritor1:РІ РёРґР° РґРѕ Рё РїРѕСЃР»Рµ РїРµСЂРµС…РѕРґР° РѕРґРёРЅР°РєРѕРІРѕ
 
                 //source_x = pSpriteObjects[source_id].vPosition.x;
                 //source_y = pSpriteObjects[source_id].vPosition.y;
@@ -1965,7 +1965,7 @@ void AudioPlayer::UpdateSounds()
             } */
         }
 
-        if (current_screen_type != SCREEN_GAME) //отключение звука декораций при переключении окна игры
+        if (current_screen_type != SCREEN_GAME) //РѕС‚РєР»СЋС‡РµРЅРёРµ Р·РІСѓРєР° РґРµРєРѕСЂР°С†РёР№ РїСЂРё РїРµСЂРµРєР»СЋС‡РµРЅРёРё РѕРєРЅР° РёРіСЂС‹
         {
             if (AIL_sample_status(pMixerChannels[4].hSample) == AIL::Sample::Playing)
                 AIL_end_sample(pMixerChannels[4].hSample);
@@ -2020,7 +2020,7 @@ void AudioPlayer::UpdateSounds()
                         {
                             v53 = 8 * _6807B8_level_decorations_ids[i];
                             v53 |= OBJECT_Decoration;
-                            PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);//sound of Boat and water(звуки корабля, плескания воды)
+                            PlaySound((SoundID)decor_desc->uSoundID, v53, uNumRepeats, -1, 0, 0, 0, 0);//sound of Boat and water(Р·РІСѓРєРё РєРѕСЂР°Р±Р»СЏ, РїР»РµСЃРєР°РЅРёСЏ РІРѕРґС‹)
                         }
                         continue;
                     }
@@ -2134,7 +2134,7 @@ void AudioPlayer::StopChannels(int uStartChannel, int uEndChannel)
       for ( int i = 0; i < uMixerChannels; ++i )
       {
         if ( (uStartChannel == -1 || i < uStartChannel || i > uEndChannel)
-          && pSoundList->pSL_Sounds[pMixerChannels[i].uSourceTrackIdx].eType != SOUND_DESC_SYSTEM)//все, кроме системных звуков, отключаются
+          && pSoundList->pSL_Sounds[pMixerChannels[i].uSourceTrackIdx].eType != SOUND_DESC_SYSTEM)//РІСЃРµ, РєСЂРѕРјРµ СЃРёСЃС‚РµРјРЅС‹С… Р·РІСѓРєРѕРІ, РѕС‚РєР»СЋС‡Р°СЋС‚СЃСЏ
         {
           AIL_end_sample(pMixerChannels[i].hSample);
           FreeChannel(&pMixerChannels[i]);
@@ -2176,7 +2176,7 @@ void AudioPlayer::Initialize()
   char *Str1; // [sp+10h] [bp-8h]@6
   int v14; // [sp+14h] [bp-4h]@5
 
-  //OS_SetAppString( "3DSoundProvider", "Aureal A3D Interactive(TM)");//запись в реестр для 3D звука(Microsoft DirectSound3D with Creative Labs EAX(TM))
+  //OS_SetAppString( "3DSoundProvider", "Aureal A3D Interactive(TM)");//Р·Р°РїРёСЃСЊ РІ СЂРµРµСЃС‚СЂ РґР»СЏ 3D Р·РІСѓРєР°(Microsoft DirectSound3D with Creative Labs EAX(TM))
 
   v3 = 0;
   //this->hWindow = hWnd;
@@ -2294,8 +2294,8 @@ _DIG_DRIVER *Audio_GetFirstHardwareDigitalDriver(void)
     {
       pcmWaveFormat.wf.wFormatTag = WAVE_FORMAT_PCM;
       pcmWaveFormat.wf.nChannels = channels;                                   // Channels: 1 = mono, 2 = stereo
-      pcmWaveFormat.wf.nSamplesPerSec = v0;                                    //частота оцифровки
-      pcmWaveFormat.wf.nBlockAlign = channels * bitsPerSample / 8;             //количество данных в блоке
+      pcmWaveFormat.wf.nSamplesPerSec = v0;                                    //С‡Р°СЃС‚РѕС‚Р° РѕС†РёС„СЂРѕРІРєРё
+      pcmWaveFormat.wf.nBlockAlign = channels * bitsPerSample / 8;             //РєРѕР»РёС‡РµСЃС‚РІРѕ РґР°РЅРЅС‹С… РІ Р±Р»РѕРєРµ
       pcmWaveFormat.wBitsPerSample = bitsPerSample;
       pcmWaveFormat.wf.nAvgBytesPerSec = pcmWaveFormat.wf.nSamplesPerSec * pcmWaveFormat.wf.nBlockAlign;
       if ( !AIL_waveOutOpen(&hDrv, 0, -1, &pcmWaveFormat.wf) )
@@ -2364,7 +2364,7 @@ void AudioPlayer::CheckA3DSupport(bool query)
 
 
 //----- (004ABD5B) --------------------------------------------------------
-void AudioPlayer::Release() //Освободить
+void AudioPlayer::Release() //РћСЃРІРѕР±РѕРґРёС‚СЊ
 {
     MixerChannel *pMixerChannel; // ebx@3
   //  char v4; // dl@5

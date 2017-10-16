@@ -107,9 +107,9 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, uns
     GUIWindow(x, y, width, height, button, hint)
 {
     pMouse->SetCursorImage("MICON2");
-    pBtn_ExitCancel = CreateButton(392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(34), // Cancel    Отмена
+    pBtn_ExitCancel = CreateButton(392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(34), // Cancel    РћС‚РјРµРЅР°
         ui_buttdesc2, nullptr);
-    GameUI_StatusBar_OnEvent(localization->GetString(39), 2); // Choose target / Выбрать цель
+    GameUI_StatusBar_OnEvent(localization->GetString(39), 2); // Choose target / Р’С‹Р±СЂР°С‚СЊ С†РµР»СЊ
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     current_screen_type = SCREEN_CASTING;
 }
@@ -118,7 +118,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
     GUIWindow(x, y, width, height, button, hint)
 {
     current_screen_type = SCREEN_HOUSE;
-    pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(80), // Quit building / Выйти из здания
+    pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(80), // Quit building / Р’С‹Р№С‚Рё РёР· Р·РґР°РЅРёСЏ
         ui_exit_cancel_button_background, 0);
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26)
     {
@@ -226,17 +226,17 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned 
         {
             if (speakingNPC->joins)
             {
-                CreateButton(0x1E0u, 0x82u, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Du, 0, localization->GetString(407), 0); // Подробнее
+                CreateButton(0x1E0u, 0x82u, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Du, 0, localization->GetString(407), 0); // РџРѕРґСЂРѕР±РЅРµРµ
                 if (speakingNPC->Hired())
                 {
                     CreateButton(
                         0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0,
-                        localization->FormatString(408, speakingNPC->pName), // Release %s    Отпустить %s
+                        localization->FormatString(408, speakingNPC->pName), // Release %s    РћС‚РїСѓСЃС‚РёС‚СЊ %s
                         0
                     );
                 }
                 else
-                    CreateButton(0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0, localization->GetString(406), 0); // Hire    Нанять
+                    CreateButton(0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0, localization->GetString(406), 0); // Hire    РќР°РЅСЏС‚СЊ
                 num_menu_buttons = 2;
             }
         }
@@ -259,7 +259,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y, unsigne
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     pMouse->SetCursorImage("MICON2");
-    GameUI_StatusBar_OnEvent(localization->GetString(39)); // Choose target / Выберите цель
+    GameUI_StatusBar_OnEvent(localization->GetString(39)); // Choose target / Р’С‹Р±РµСЂРёС‚Рµ С†РµР»СЊ
 }
 
 
@@ -742,7 +742,7 @@ void GUIWindow::HouseDialogManager()
             render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
         return;
     }
-    if (v4 || !dword_591080)// emerald isle ship before quest's done   /   на изумрудном острове заходит на корабле пока не выполнены квесты
+    if (v4 || !dword_591080)// emerald isle ship before quest's done   /   РЅР° РёР·СѓРјСЂСѓРґРЅРѕРј РѕСЃС‚СЂРѕРІРµ Р·Р°С…РѕРґРёС‚ РЅР° РєРѕСЂР°Р±Р»Рµ РїРѕРєР° РЅРµ РІС‹РїРѕР»РЅРµРЅС‹ РєРІРµСЃС‚С‹
         SimpleHouseDialog();
     else
     {
@@ -2104,7 +2104,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType)
 				pPlayers[uActiveCharacter]->PlaySound(SPEECH_61, 0);
 		}
 	}
-	else if ((signed int)newDialogueType > DIALOGUE_84 && (signed int)newDialogueType <= DIALOGUE_ARENA_SELECT_CHAMPION) //выбор уровня сложности боя
+	else if ((signed int)newDialogueType > DIALOGUE_84 && (signed int)newDialogueType <= DIALOGUE_ARENA_SELECT_CHAMPION) //РІС‹Р±РѕСЂ СѓСЂРѕРІРЅСЏ СЃР»РѕР¶РЅРѕСЃС‚Рё Р±РѕСЏ
 	{
 		ArenaFight();
 		return;
@@ -2205,10 +2205,10 @@ void sub_4B3E1E()
     pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 1, 0);
 	if (pNPCStats->pProfessions[v0->uProfession].pBenefits)//*(&pNPCStats->field_13A5C + 5 * v0->uProfession) )
 	{
-		pDialogueWindow->CreateButton(480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, 0, localization->GetString(407), 0); // Details / Подробнее
+		pDialogueWindow->CreateButton(480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, 0, localization->GetString(407), 0); // Details / РџРѕРґСЂРѕР±РЅРµРµ
 		v1 = 1;
 	}
-	pDialogueWindow->CreateButton(480, 30 * v1 + 160, 140, 30, 1, 0, UIMSG_SelectNPCDialogueOption, 76, 0, localization->GetString(406), 0); // Hire    Нанять
+	pDialogueWindow->CreateButton(480, 30 * v1 + 160, 140, 30, 1, 0, UIMSG_SelectNPCDialogueOption, 76, 0, localization->GetString(406), 0); // Hire    РќР°РЅСЏС‚СЊ
 	pDialogueWindow->_41D08F_set_keyboard_control_group(v1 + 1, 1, 0, 1);
 }
 
@@ -2671,25 +2671,25 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo)
 
         if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 1][skillBeingTaught] >= masteryLevelBeingTaught)
         {
-            return localization->FormatString(633, localization->GetClassName(classBaseId + 1)); // You have to be promoted to %s to learn this skill level.   /   Вы должны достичь звания %s для обучения этому уровню навыка.
+            return localization->FormatString(633, localization->GetClassName(classBaseId + 1)); // You have to be promoted to %s to learn this skill level.   /   Р’С‹ РґРѕР»Р¶РЅС‹ РґРѕСЃС‚РёС‡СЊ Р·РІР°РЅРёСЏ %s РґР»СЏ РѕР±СѓС‡РµРЅРёСЏ СЌС‚РѕРјСѓ СѓСЂРѕРІРЅСЋ РЅР°РІС‹РєР°.
         }
         else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught
             && byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught
             )
         {
-            return localization->FormatString(634, localization->GetClassName(classBaseId + 2), localization->GetClassName(classBaseId + 3)); // You have to be promoted to %s or %s to learn this skill level.   /   Вы должны достичь звания %s или %s для обучения этому уровню навыка.
+            return localization->FormatString(634, localization->GetClassName(classBaseId + 2), localization->GetClassName(classBaseId + 3)); // You have to be promoted to %s or %s to learn this skill level.   /   Р’С‹ РґРѕР»Р¶РЅС‹ РґРѕСЃС‚РёС‡СЊ Р·РІР°РЅРёСЏ %s РёР»Рё %s РґР»СЏ РѕР±СѓС‡РµРЅРёСЏ СЌС‚РѕРјСѓ СѓСЂРѕРІРЅСЋ РЅР°РІС‹РєР°.
         }
         else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught)
         {
-            return localization->FormatString(633, localization->GetClassName(classBaseId + 2)); // You have to be promoted to %s to learn this skill level.   /   Вы должны достичь звания %s для обучения этому уровню навыка.
+            return localization->FormatString(633, localization->GetClassName(classBaseId + 2)); // You have to be promoted to %s to learn this skill level.   /   Р’С‹ РґРѕР»Р¶РЅС‹ РґРѕСЃС‚РёС‡СЊ Р·РІР°РЅРёСЏ %s РґР»СЏ РѕР±СѓС‡РµРЅРёСЏ СЌС‚РѕРјСѓ СѓСЂРѕРІРЅСЋ РЅР°РІС‹РєР°.
         }
         else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught)
         {
-            return localization->FormatString(633, localization->GetClassName(classBaseId + 3)); // You have to be promoted to %s to learn this skill level.   /   Вы должны достичь звания %s для обучения этому уровню навыка.
+            return localization->FormatString(633, localization->GetClassName(classBaseId + 3)); // You have to be promoted to %s to learn this skill level.   /   Р’С‹ РґРѕР»Р¶РЅС‹ РґРѕСЃС‚РёС‡СЊ Р·РІР°РЅРёСЏ %s РґР»СЏ РѕР±СѓС‡РµРЅРёСЏ СЌС‚РѕРјСѓ СѓСЂРѕРІРЅСЋ РЅР°РІС‹РєР°.
         }
         else
         {
-            return localization->FormatString(632, localization->GetClassName(pClassType)); // This skill level can not be learned by the %s class.   /   Этот уровень навыка не может быть постигнут классом %s.
+            return localization->FormatString(632, localization->GetClassName(pClassType)); // This skill level can not be learned by the %s class.   /   Р­С‚РѕС‚ СѓСЂРѕРІРµРЅСЊ РЅР°РІС‹РєР° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїРѕСЃС‚РёРіРЅСѓС‚ РєР»Р°СЃСЃРѕРј %s.
         }
 	}
 
@@ -2943,7 +2943,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo)
 	if (masteryLevelBeingTaught == 2)
 	{
         return localization->FormatString(
-            534, // Получить степень ^Pr[%s] в навыке ^Pr[%s] за ^I[%lu] золот^L[ой;ых;ых]
+            534, // РџРѕР»СѓС‡РёС‚СЊ СЃС‚РµРїРµРЅСЊ ^Pr[%s] РІ РЅР°РІС‹РєРµ ^Pr[%s] Р·Р° ^I[%lu] Р·РѕР»РѕС‚^L[РѕР№;С‹С…;С‹С…]
 			localization->GetString(433), // Expert
             localization->GetSkillName(dword_F8B1AC_award_bit_number),
             gold_transaction_amount
@@ -3113,7 +3113,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 				else
                     result += localization->GetString(390);// "brother"
 				break;
-			case 17: // hired npc text   текст наёмного НПС
+			case 17: // hired npc text   С‚РµРєСЃС‚ РЅР°С‘РјРЅРѕРіРѕ РќРџРЎ
 			{
 						uint pay_percentage = pNPCStats->pProfessions[npc->uProfession].uHirePrice / 100;
 						if (!pay_percentage)
@@ -3138,7 +3138,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 				else
                     result += localization->GetString(394);// "Unknown"
 				break;
-			case 24://название товара в продаже
+			case 24://РЅР°Р·РІР°РЅРёРµ С‚РѕРІР°СЂР° РІ РїСЂРѕРґР°Р¶Рµ
 				sprintf(v1, format_4E2D80, Color16(255, 255, 155), a3->GetDisplayName().c_str());
                 result += v1;
 				break;
@@ -3162,7 +3162,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 				sprintf(v1, "%lu", v29);
                 result += v1;
 				break;
-			case 27://текст продажи
+			case 27://С‚РµРєСЃС‚ РїСЂРѕРґР°Р¶Рё
 				v29 = pPlayer->GetBuyingPrice(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
 				if (a5 == 3)
 				{
@@ -3198,7 +3198,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 				sprintf(v1, "%lu", pPlayer->GetPriceIdentification(p2DEvents[(signed int)a4 - 1].fPriceMultiplier));
                 result += v1;
 				break;
-			case 28: //профессия
+			case 28: //РїСЂРѕС„РµСЃСЃРёСЏ
                 result += p2DEvents[(signed int)a4 - 1].pProprieterTitle;
 				break;
 			case 29:

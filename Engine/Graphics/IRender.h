@@ -368,7 +368,7 @@ class IRender
     virtual void PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size) = 0;
     virtual void SavePCXScreenshot() = 0;
 
-    virtual int _46ภ6ภั_GetActorsInViewport(int pDepth) = 0;
+    virtual int _46ะ6ะะก_GetActorsInViewport(int pDepth) = 0;
 
     virtual void BeginLightmaps() = 0;
     virtual void EndLightmaps() = 0;

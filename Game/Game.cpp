@@ -706,7 +706,7 @@ void Game_EventLoop()
                     pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_JournalBook();
                 continue;
-            case UIMSG_Escape:// нажатие Escape and return to game
+            case UIMSG_Escape:// РЅР°Р¶Р°С‚РёРµ Escape and return to game
                 back_to_game();
                 DoThatMessageThing();
                 switch (current_screen_type)
@@ -2114,7 +2114,7 @@ void Game_EventLoop()
                 continue;
             }
 
-            case UIMSG_SpellBook_PressTab://перелистывание страниц клавишей Tab
+            case UIMSG_SpellBook_PressTab://РїРµСЂРµР»РёСЃС‚С‹РІР°РЅРёРµ СЃС‚СЂР°РЅРёС† РєР»Р°РІРёС€РµР№ Tab
             {
                 if (!uActiveCharacter)
                     continue;
@@ -2129,7 +2129,7 @@ void Game_EventLoop()
                         v217[skill_count++] = i;
                     }
                 }
-                if (!skill_count)//нет скиллов
+                if (!skill_count)//РЅРµС‚ СЃРєРёР»Р»РѕРІ
                     pAudioPlayer->PlaySound((SoundID)(rand() % 2 + SOUND_TurnPageU), 0, 0, -1, 0, 0, 0, 0);
                 else
                 {
@@ -2525,7 +2525,7 @@ void Game_EventLoop()
                     }*/
                 }
                 continue;
-            case UIMSG_MouseLeftClickInScreen://срабатывает при нажатии на правую кнопку мыши после UIMSG_MouseLeftClickInGame
+            case UIMSG_MouseLeftClickInScreen://СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РїСЂРё РЅР°Р¶Р°С‚РёРё РЅР° РїСЂР°РІСѓСЋ РєРЅРѕРїРєСѓ РјС‹С€Рё РїРѕСЃР»Рµ UIMSG_MouseLeftClickInGame
                 DoThatMessageThing();
                 OnGameViewportClick();
                 continue;
@@ -2777,7 +2777,7 @@ void Game_Loop()
                 game_finished = true;
                 continue;
             }
-            if (uGameState == GAME_STATE_CHANGE_LOCATION)// смена локации
+            if (uGameState == GAME_STATE_CHANGE_LOCATION)// СЃРјРµРЅР° Р»РѕРєР°С†РёРё
             {
                 pAudioPlayer->StopChannels(-1, -1);
                 PrepareWorld(0);
@@ -2892,7 +2892,7 @@ void Game_Loop()
                     pParty->pPlayers[idx].PlaySound(SPEECH_99, 0);
                 }
 
-                GameUI_StatusBar_OnEvent(localization->GetString(524));// "Once again you've cheated death!.." "Вы снова обхитрили смерть! …"
+                GameUI_StatusBar_OnEvent(localization->GetString(524));// "Once again you've cheated death!.." "Р’С‹ СЃРЅРѕРІР° РѕР±С…РёС‚СЂРёР»Рё СЃРјРµСЂС‚СЊ! вЂ¦"
                 uGameState = GAME_STATE_PLAYING;
             }
         } while (!game_finished);

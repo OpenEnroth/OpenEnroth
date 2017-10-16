@@ -87,7 +87,7 @@ void RenderD3D11::RenderTerrainD3D() {__debugbreak();}
 bool RenderD3D11::AreRenderSurfacesOk() {return true;}
 void RenderD3D11::SaveScreenshot(const String &filename, unsigned int width, unsigned int height) {__debugbreak();}
 void RenderD3D11::SavePCXScreenshot() {__debugbreak();}
-int RenderD3D11::_46ภ6ภั_GetActorsInViewport(int pDepth) {__debugbreak(); return 0;}
+int RenderD3D11::_46ะ6ะะก_GetActorsInViewport(int pDepth) {__debugbreak(); return 0;}
 void RenderD3D11::BeginLightmaps() {__debugbreak();}
 void RenderD3D11::EndLightmaps() {__debugbreak();}
 void RenderD3D11::BeginLightmaps2() {__debugbreak();}

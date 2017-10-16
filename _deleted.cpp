@@ -10952,7 +10952,7 @@ void CreateDefaultBLVLevel()
   ofn.nMaxFile = 260;
   ofn.nMaxFileTitle = 512;
   ofn.lpstrInitialDir = "levels";
-  ofn.lpstrTitle = "Might and Magic® VII - Load Which Level?";
+  ofn.lpstrTitle = "Might and MagicÂ® VII - Load Which Level?";
   ofn.Flags = 4;
   ofn.nFileOffset = 0;
   ofn.nFileExtension = 0;
@@ -13226,7 +13226,7 @@ int _46A6AC_spell_render(int a1, int a2, int a3)
 
   if ( render->pRenderD3D )
   {
-    result = _46À6ÀÑ_GetActorsInViewport(a3);
+    result = _46Ð6ÐÐ¡_GetActorsInViewport(a3);
   }
   else
   {
@@ -13531,7 +13531,7 @@ float Render::DrawBezierTerrain()
   v17 = j - 1;
   v18 = _i - 1;
 
-  switch ( v105 )//íàïðâëåíèå êàìåðû
+  switch ( v105 )//Ð½Ð°Ð¿Ñ€Ð²Ð»ÐµÐ½Ð¸Ðµ ÐºÐ°Ð¼ÐµÑ€Ñ‹
   {
     case 0:
     case 7:
@@ -13939,7 +13939,7 @@ float Render::DrawBezierTerrain()
   ptr_801A04 = pVerticesSR_801A10;
   //v126 = v69;
 
-  if ( v105 && v105 != 7 && v105 != 3 && v105 != 4 )//áëîê, îðèåíòàöèÿ êàìåðû 1(ÑÂ), 2(Ñ), 5(ÞÇ), 6(Þ)
+  if ( v105 && v105 != 7 && v105 != 3 && v105 != 4 )//Ð±Ð»Ð¾Ðº, Ð¾Ñ€Ð¸ÐµÐ½Ñ‚Ð°Ñ†Ð¸Ñ ÐºÐ°Ð¼ÐµÑ€Ñ‹ 1(Ð¡Ð’), 2(Ð¡), 5(Ð®Ð—), 6(Ð®)
   {
     for ( i = v16 - 1; i >= 1; --i )
     {
@@ -14004,7 +14004,7 @@ float Render::DrawBezierTerrain()
         //Render::DrawTerrainSW(v111, 0, v103, v104);
     }
   }
-  else//îðèåíòàöèÿ êàìåðû 0(Â), 3(ÑÇ), 4(Ç), 7(ÞÂ)
+  else//Ð¾Ñ€Ð¸ÐµÐ½Ñ‚Ð°Ñ†Ð¸Ñ ÐºÐ°Ð¼ÐµÑ€Ñ‹ 0(Ð’), 3(Ð¡Ð—), 4(Ð—), 7(Ð®Ð’)
   {
     for ( i = v16 - 1; i >= 1; --i )
     {

@@ -88,12 +88,12 @@ void GUIWindow_QuestBook::Update()
     GUIWindow questbook_window; // [sp+Ch] [bp-54h]@9
 
     render->DrawTextureNew(pViewport->uViewportTL_X/640.0f, pViewport->uViewportTL_Y/480.0f, ui_book_quests_background);
-    if (BtnUp_flag || !books_primary_item_per_page)//Bookmark Up(Çàêëàäêà ââåðõ)
+    if (BtnUp_flag || !books_primary_item_per_page)//Bookmark Up(Ð—Ð°ÐºÐ»Ð°Ð´ÐºÐ° Ð²Ð²ÐµÑ€Ñ…)
         render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407)/640.0f, (pViewport->uViewportTL_Y + 2)/480.0f, ui_book_button1_off);
     else
         render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 1)/480.0f, ui_book_button1_on);
 
-    if (BtnDown_flag || books_primary_item_per_page + num_achieved_awards >= full_num_items_in_book)//Bookmark Down(Çàêëàäêà âíèç)
+    if (BtnDown_flag || books_primary_item_per_page + num_achieved_awards >= full_num_items_in_book)//Bookmark Down(Ð—Ð°ÐºÐ»Ð°Ð´ÐºÐ° Ð²Ð½Ð¸Ð·)
         render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 407)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_off);
     else
         render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 38)/480.0f, ui_book_button2_on);
@@ -114,13 +114,13 @@ void GUIWindow_QuestBook::Update()
     questbook_window.uFrameHeight = 264;
     questbook_window.uFrameZ = 407;
     questbook_window.uFrameW = 333;
-    if (BtnDown_flag && books_primary_item_per_page + num_achieved_awards < full_num_items_in_book)//Click Bookmark Down(íàæàòèå çàêëàäêè âíèç)
+    if (BtnDown_flag && books_primary_item_per_page + num_achieved_awards < full_num_items_in_book)//Click Bookmark Down(Ð½Ð°Ð¶Ð°Ñ‚Ð¸Ðµ Ð·Ð°ÐºÐ»Ð°Ð´ÐºÐ¸ Ð²Ð½Ð¸Ð·)
     {
         pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
         books_primary_item_per_page += num_achieved_awards;
         books_num_items_per_page[books_page_number++] = num_achieved_awards;
     }
-    if (BtnUp_flag && books_page_number)//Click Bookmark Up(Íàæàòèå çàêëàäêè ââåðõ)
+    if (BtnUp_flag && books_page_number)//Click Bookmark Up(ÐÐ°Ð¶Ð°Ñ‚Ð¸Ðµ Ð·Ð°ÐºÐ»Ð°Ð´ÐºÐ¸ Ð²Ð²ÐµÑ€Ñ…)
     {
         pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
         --books_page_number;

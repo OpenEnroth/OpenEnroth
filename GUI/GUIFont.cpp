@@ -597,7 +597,7 @@ char *FitTextInAWindow(const char *pInString, GUIFont *pFont, GUIWindow *pWindow
                 i += 3;
                 break;
             }
-            case  '\n':	//Line Feed 0A 10 (конец строки)
+            case  '\n':	//Line Feed 0A 10 (РєРѕРЅРµС† СЃС‚СЂРѕРєРё)
             {
                 string_pixel_Width = start_pixel_offset;
                 possible_transition_point = i;
@@ -614,7 +614,7 @@ char *FitTextInAWindow(const char *pInString, GUIFont *pFont, GUIWindow *pWindow
                     return (char*)pInString;
                 break;
             }
-            case ' '://пробел
+            case ' '://РїСЂРѕР±РµР»
             {
                 string_pixel_Width += pFont->pMetrics[c].uWidth;
                 possible_transition_point = i;
@@ -622,7 +622,7 @@ char *FitTextInAWindow(const char *pInString, GUIFont *pFont, GUIWindow *pWindow
             }
             default:
                 if ((string_pixel_Width + pFont->pMetrics[c].uWidth + pFont->pMetrics[c].uLeftSpacing +
-                    pFont->pMetrics[c].uRightSpacing) < pWindow->uFrameWidth)//наращивание длины строки или перенос
+                    pFont->pMetrics[c].uRightSpacing) < pWindow->uFrameWidth)//РЅР°СЂР°С‰РёРІР°РЅРёРµ РґР»РёРЅС‹ СЃС‚СЂРѕРєРё РёР»Рё РїРµСЂРµРЅРѕСЃ
                 {
                     if (i > possible_transition_point)
                         string_pixel_Width += pFont->pMetrics[c].uLeftSpacing;
@@ -630,7 +630,7 @@ char *FitTextInAWindow(const char *pInString, GUIFont *pFont, GUIWindow *pWindow
                     if (i < uInStrLen)
                         string_pixel_Width += pFont->pMetrics[c].uRightSpacing;
                 }
-                else//перенос строки и слова
+                else//РїРµСЂРµРЅРѕСЃ СЃС‚СЂРѕРєРё Рё СЃР»РѕРІР°
                 {
                     temp_string[possible_transition_point] = '\n';
                     string_pixel_Width = start_pixel_offset;

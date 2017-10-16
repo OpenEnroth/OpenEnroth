@@ -253,7 +253,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits, uns
   switch (pFace->uPolygonType)
   {
     case POLYGON_VerticalWall:
-      a1.x = -pFace->pFacePlane.vNormal.y;// направление полигона
+      a1.x = -pFace->pFacePlane.vNormal.y;// РЅР°РїСЂР°РІР»РµРЅРёРµ РїРѕР»РёРіРѕРЅР°
       a1.y = pFace->pFacePlane.vNormal.x;
       a1.z = 0.0f;
       a1.Normalize();
@@ -294,12 +294,12 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits, uns
   }
   if (pFace->uAttributes & FACE_XZ_PLANE)
   {
-    face_center_x = (pFaceLimits[0].vWorldPosition.x + pFaceLimits[2].vWorldPosition.x) / 2;// центр полигона
+    face_center_x = (pFaceLimits[0].vWorldPosition.x + pFaceLimits[2].vWorldPosition.x) / 2;// С†РµРЅС‚СЂ РїРѕР»РёРіРѕРЅР°
     face_center_y = (pFaceLimits[0].vWorldPosition.y + pFaceLimits[2].vWorldPosition.y) / 2;
     face_center_z = (pFaceLimits[1].vWorldPosition.z + pFaceLimits[3].vWorldPosition.z) / 2;
 
-    a3 = face_center_x - pFaceLimits[0].vWorldPosition.x;//от центра до верхнего края
-    var_8 = face_center_z - pFaceLimits[1].vWorldPosition.z;// высота от центра
+    a3 = face_center_x - pFaceLimits[0].vWorldPosition.x;//РѕС‚ С†РµРЅС‚СЂР° РґРѕ РІРµСЂС…РЅРµРіРѕ РєСЂР°СЏ
+    var_8 = face_center_z - pFaceLimits[1].vWorldPosition.z;// РІС‹СЃРѕС‚Р° РѕС‚ С†РµРЅС‚СЂР°
 
     if (pFace->uPolygonType == POLYGON_VerticalWall)
       a3 /= a1.x;
@@ -769,7 +769,7 @@ bool stru10::CalcPortalShape(BLVFace *pFace, IndoorCameraD3D_Vec4 *pPortalDataFr
 {
   RenderVertexSoft pLimits[4]; // [sp+Ch] [bp-C0h]@1
 
-  CalcPolygonLimits(pFace, pLimits);//определение границ портала
+  CalcPolygonLimits(pFace, pLimits);//РѕРїСЂРµРґРµР»РµРЅРёРµ РіСЂР°РЅРёС† РїРѕСЂС‚Р°Р»Р°
   //if ( byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_DRAW_BLV_DEBUGS)
  //   pIndoorCameraD3D->debug_outline_sw(pLimits, 4, 0xFF1E1E, 0.000099999997);
   if (CalcFaceBounding(pFace, pLimits, 4, pOutBounding))

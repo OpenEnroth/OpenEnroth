@@ -90,22 +90,22 @@ int __stdcall InsertMM7CDDialogFunc(HWND hDlg, int a2, __int16 a3, int a4)
                             return 0;
                         SetWindowTextA(hDlg, "Wloz CD-ROM numer 2");
                         v10 = SetDlgItemTextA;
-                        SetDlgItemTextA(hDlg, 1010, "Wloz CD-ROM numer 2 Might and Magic® VII.");
+                        SetDlgItemTextA(hDlg, 1010, "Wloz CD-ROM numer 2 Might and MagicÂ® VII.");
                         v11 = "Odwolaj";
                     }
                     else
                     {
                         SetWindowTextA(hDlg, "Inserire il secondo CD");
                         v10 = SetDlgItemTextA;
-                        SetDlgItemTextA(hDlg, 1010, "Inserire il secondo CD di Might and Magic® VII.");
+                        SetDlgItemTextA(hDlg, 1010, "Inserire il secondo CD di Might and MagicÂ® VII.");
                         v11 = "Annulla";
                     }
                 }
                 else
                 {
-                    SetWindowTextA(hDlg, "Insérez le CD 2");
+                    SetWindowTextA(hDlg, "InsÐ¹rez le CD 2");
                     v10 = SetDlgItemTextA;
-                    SetDlgItemTextA(hDlg, 1010, "Insérez Might & Magic® VII CD 2.");
+                    SetDlgItemTextA(hDlg, 1010, "InsÐ¹rez Might & MagicÂ® VII CD 2.");
                     v11 = "Supprimer";
                 }
             }
@@ -113,7 +113,7 @@ int __stdcall InsertMM7CDDialogFunc(HWND hDlg, int a2, __int16 a3, int a4)
             {
                 SetWindowTextA(hDlg, "Por favor, inserte disco 2");
                 v10 = SetDlgItemTextA;
-                SetDlgItemTextA(hDlg, 1010, "Por favor, inserte disco 2 de Might & Magic® VII.");
+                SetDlgItemTextA(hDlg, 1010, "Por favor, inserte disco 2 de Might & MagicÂ® VII.");
                 v11 = "Cancelar";
             }
         }
@@ -121,7 +121,7 @@ int __stdcall InsertMM7CDDialogFunc(HWND hDlg, int a2, __int16 a3, int a4)
         {
             SetWindowTextA(hDlg, "Bitte CD 2 einlegen");
             v10 = SetDlgItemTextA;
-            SetDlgItemTextA(hDlg, 1010, "Bitte CD 2 von Might and Magic® VII einlegen.");
+            SetDlgItemTextA(hDlg, 1010, "Bitte CD 2 von Might and MagicÂ® VII einlegen.");
             v11 = "Abbrechen";
         }
         v10(hDlg, 2, v11);

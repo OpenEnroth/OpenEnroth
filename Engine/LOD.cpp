@@ -602,7 +602,7 @@ LODFile_IconsBitmaps::LODFile_IconsBitmaps():
 }
 
 //----- (004621A7) --------------------------------------------------------
-bool LODWriteableFile::_4621A7()//закрыть и загрузить записываемый ф-л(при сохранении)
+bool LODWriteableFile::_4621A7()//Р·Р°РєСЂС‹С‚СЊ Рё Р·Р°РіСЂСѓР·РёС‚СЊ Р·Р°РїРёСЃС‹РІР°РµРјС‹Р№ С„-Р»(РїСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё)
 {
   CloseWriteFile();
   return LoadFile(pLODName, 0);
@@ -809,13 +809,13 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir, const void *pDi
   Lindx.uDataSize = total_data_size;
   uNumSubDirs = Lindx.uNumSubIndices;
   //move indexes +1 after insert point
-  if ( !bRewrite_data && (insert_index < uNumSubDirs) )//перезаписывание файлов для освобождения места для нового ф-ла
+  if ( !bRewrite_data && (insert_index < uNumSubDirs) )//РїРµСЂРµР·Р°РїРёСЃС‹РІР°РЅРёРµ С„Р°Р№Р»РѕРІ РґР»СЏ РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ РјРµСЃС‚Р° РґР»СЏ РЅРѕРІРѕРіРѕ С„-Р»Р°
   {
     for( int i = uNumSubDirs; i > insert_index; --i )
       memcpy(&pSubIndices[i], &pSubIndices[i - 1], sizeof(LOD::Directory));	//Uninitialized memory access
   }
   //insert
-  memcpy(&pSubIndices[insert_index], pDir, sizeof(LOD::Directory));//записать текущий файл
+  memcpy(&pSubIndices[insert_index], pDir, sizeof(LOD::Directory));//Р·Р°РїРёСЃР°С‚СЊ С‚РµРєСѓС‰РёР№ С„Р°Р№Р»
   //correct offsets to data
   if (uNumSubDirs > 0)
   {
@@ -891,7 +891,7 @@ bool LODWriteableFile::LoadFile(const char *pFilename, bool bWriting)
   if (!pFile)
   {
 	 // __debugbreak();
-    return false;// возможно файл не закрыт, поэтому не открывается
+    return false;// РІРѕР·РјРѕР¶РЅРѕ С„Р°Р№Р» РЅРµ Р·Р°РєСЂС‹С‚, РїРѕСЌС‚РѕРјСѓ РЅРµ РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ
   }
 
   strcpy_s(pLODName, pFilename);
@@ -1070,7 +1070,7 @@ int LOD::File::CalcIndexFast(int startIndex, int maxIndex, const char *pContaine
         _6A0CA4_lod_binary_search = -1;
         return result;
       }
-      if ( result < 0 )//первая строка меньше второй
+      if ( result < 0 )//РїРµСЂРІР°СЏ СЃС‚СЂРѕРєР° РјРµРЅСЊС€Рµ РІС‚РѕСЂРѕР№
         break;
       if ( v5 <= 4 )
       {
@@ -1080,7 +1080,7 @@ int LOD::File::CalcIndexFast(int startIndex, int maxIndex, const char *pContaine
           if ( !_stricmp(pContainerName, this->pSubIndices[i].pFilename) )
           {
             _6A0CA4_lod_binary_search = i;
-            return 0;//строки ровны
+            return 0;//СЃС‚СЂРѕРєРё СЂРѕРІРЅС‹
           }
         }
         _6A0CA4_lod_binary_search = -1;

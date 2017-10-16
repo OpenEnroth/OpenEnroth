@@ -281,7 +281,7 @@ void LoadGame(unsigned int uSlot)
             if (uEquipIdx)
             {
                 int pItemID = pParty->pPlayers[i].pInventoryItemList[uEquipIdx - 1].uItemID;
-                if (pItemsTable->pItems[pItemID].uEquipType == EQUIP_WAND && pItemID)//æåçë
+                if (pItemsTable->pItems[pItemID].uEquipType == EQUIP_WAND && pItemID)//Ð¶ÐµÐ·Ð»
                 {
                     __debugbreak();  // looks like offset in player's inventory and wand_lut much like case in 0042ECB5
                     stru_A750F8[i].AddPartySpellSound(wand_spell_ids[pItemID - ITEM_WAND_FIRE], i + 9);
@@ -377,7 +377,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     else
         pOutdoor->loc_time.last_visit = pParty->GetPlayingTime();
 
-    render->PackScreenshot(150, 112, uncompressed_buff, 1000000, &pLodDirectory.uDataSize);//ñîçäàíèå ñêðèíøîòà
+    render->PackScreenshot(150, 112, uncompressed_buff, 1000000, &pLodDirectory.uDataSize);//ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ ÑÐºÑ€Ð¸Ð½ÑˆÐ¾Ñ‚Ð°
     strcpy(pLodDirectory.pFilename, "image.pcx");
 
     if (current_screen_type == SCREEN_SAVEGAME)
@@ -385,11 +385,11 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
         render->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f, saveload_ui_loadsave);
         text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
-        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->GetString(190), 0, 0, 0); //Ñîõðàíåíèå
+        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->GetString(190), 0, 0, 0); //Ð¡Ð¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ðµ
         text_pos = pFontSmallnum->AlignText_Center(186, pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
         pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, text_pos + 25, 259, 0, pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
         text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(165));
-        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, localization->GetString(165), 0, 0, 0); //Ïîæàëóéñòà, ïîäîæäèòå
+        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, localization->GetString(165), 0, 0, 0); //ÐŸÐ¾Ð¶Ð°Ð»ÑƒÐ¹ÑÑ‚Ð°, Ð¿Ð¾Ð´Ð¾Ð¶Ð´Ð¸Ñ‚Ðµ
         render->Present();
     }
 
@@ -644,7 +644,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
 //----- (00460078) --------------------------------------------------------
 void DoSavegame(unsigned int uSlot)
 {
-    if (_stricmp(pCurrentMapName, "d05.blv"))//Not Arena(íå Àðåíà)
+    if (_stricmp(pCurrentMapName, "d05.blv"))//Not Arena(Ð½Ðµ ÐÑ€ÐµÐ½Ð°)
     {
         LOD::Directory pDir; // [sp+Ch] [bp-28h]@2
         SaveGame(0, 0);
@@ -653,7 +653,7 @@ void DoSavegame(unsigned int uSlot)
         strcpy(pDir.pFilename, "header.bin");
         pDir.uDataSize = 100;
         pNew_LOD->Write(&pDir, &pSavegameHeader[uSlot], 0);
-        pNew_LOD->CloseWriteFile();//çàêðûòü 
+        pNew_LOD->CloseWriteFile();//Ð·Ð°ÐºÑ€Ñ‹Ñ‚ÑŒ 
         CopyFile("data\\new.lod", StringPrintf("saves\\save%03d.mm7", uSlot).c_str());
     }
     GUI_UpdateWindows();
@@ -680,7 +680,7 @@ void DoSavegame(unsigned int uSlot)
 //----- (0045E297) --------------------------------------------------------
 void SavegameList::Initialize(unsigned int bHideEmptySlots)
 {
-  //memset(pSavegameList, 0, sizeof(pSavegameList));//Ritor1: âûçûâàåò çàòèðàíèå
+  //memset(pSavegameList, 0, sizeof(pSavegameList));//Ritor1: Ð²Ñ‹Ð·Ñ‹Ð²Ð°ÐµÑ‚ Ð·Ð°Ñ‚Ð¸Ñ€Ð°Ð½Ð¸Ðµ
   pSavegameList->Reset();
   uNumSavegameFiles = 0;
 
@@ -715,9 +715,9 @@ void SaveNewGame()
     pMediaPlayer->Unload();
   pSave = malloc(1000000);
   pNew_LOD->CloseWriteFile();
-  remove("data\\new.lod");//óäàëèòü new.lod
+  remove("data\\new.lod");//ÑƒÐ´Ð°Ð»Ð¸Ñ‚ÑŒ new.lod
 
-  LOD::FileHeader header; // [sp+Ch] [bp-16Ch]@3 çàãîëîâîê
+  LOD::FileHeader header; // [sp+Ch] [bp-16Ch]@3 Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº
   strcpy(header.LodVersion, "MMVII");
   strcpy(header.LodDescription, "newmaps for MMVII");
   header.LODSize = 100;
@@ -727,16 +727,16 @@ void SaveNewGame()
   a3.dword_000018 = 0;
   a3.word_00001E = 0;
   strcpy(a3.pFilename, "current");
-  pNew_LOD->CreateNewLod(&header, &a3, "data\\new.lod");//ñîçäà¸òñÿ new.lod â äèððåêòîðèè
-  if (pNew_LOD->LoadFile("data\\new.lod", false))//çàãðóçèòü ôàéë new.lod(isFileOpened = true)
+  pNew_LOD->CreateNewLod(&header, &a3, "data\\new.lod");//ÑÐ¾Ð·Ð´Ð°Ñ‘Ñ‚ÑÑ new.lod Ð² Ð´Ð¸Ñ€Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸Ð¸
+  if (pNew_LOD->LoadFile("data\\new.lod", false))//Ð·Ð°Ð³Ñ€ÑƒÐ·Ð¸Ñ‚ÑŒ Ñ„Ð°Ð¹Ð» new.lod(isFileOpened = true)
   {
-    pNew_LOD->CreateTempFile();//ñîçäà¸òñÿ âðåìåííûé ôàéë OutputFileHandle
+    pNew_LOD->CreateTempFile();//ÑÐ¾Ð·Ð´Ð°Ñ‘Ñ‚ÑÑ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ð¹ Ñ„Ð°Ð¹Ð» OutputFileHandle
     pNew_LOD->uNumSubDirs = 0;
 
     LOD::Directory pDir; // [sp+10Ch] [bp-6Ch]@4
-    for (int i = pGames_LOD->uNumSubDirs / 2; i < pGames_LOD->uNumSubDirs; ++i)//êîïèðîâàíèå ôàéëîâ ñ 76 ïî 151
+    for (int i = pGames_LOD->uNumSubDirs / 2; i < pGames_LOD->uNumSubDirs; ++i)//ÐºÐ¾Ð¿Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ñ„Ð°Ð¹Ð»Ð¾Ð² Ñ 76 Ð¿Ð¾ 151
     {
-      memcpy(&pDir, &pGames_LOD->pSubIndices[i], sizeof(pDir));//êîïèðîâàíèå òåêóùåãî ôàéëà â pDir
+      memcpy(&pDir, &pGames_LOD->pSubIndices[i], sizeof(pDir));//ÐºÐ¾Ð¿Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ñ‚ÐµÐºÑƒÑ‰ÐµÐ³Ð¾ Ñ„Ð°Ð¹Ð»Ð° Ð² pDir
       file = pGames_LOD->FindContainer(pGames_LOD->pSubIndices[i].pFilename, 1);
       fread(pSave, pGames_LOD->pSubIndices[i].uDataSize, 1, file);
       pNew_LOD->AppendDirectory(&pDir, pSave);

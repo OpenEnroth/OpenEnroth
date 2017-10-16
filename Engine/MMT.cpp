@@ -193,7 +193,7 @@ void MMT_MainMenu_Loop()
       render->BeginScene();
       render->DrawTextureRGB(0, 0, &main_menu_background);
 
-      MMT_MenuMessageProc();//for ÌÌÒ menu
+      MMT_MenuMessageProc();//for ÐœÐœÐ¢ menu
       GUI_UpdateWindows();
 
       if ( !pModalWindow )// ???
@@ -277,7 +277,7 @@ void MMT_MenuMessageProc()
 		  alSourcef (mSourceID, AL_GAIN,    0.5f);
           pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);//temporarily
           break;
-        case UIMSG_MMT_MainMenu_MM7: //new button for ÌÌ7
+        case UIMSG_MMT_MainMenu_MM7: //new button for ÐœÐœ7
           //GUIWindow::Create(495, 172, 0, 0, WINDOW_PressedButton2, (int)pMainMenu_BtnNew, 0);
           alSourceStop(mSourceID);
           pMediaPlayer->ShowMM7IntroVideo_and_LoadingScreen();

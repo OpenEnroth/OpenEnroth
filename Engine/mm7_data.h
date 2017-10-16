@@ -120,8 +120,8 @@ extern int _506348_current_lloyd_playerid;
 extern __int64 lloyds_beacon_spell_level; // qword_506350
 extern int dword_506364;
 //extern Texture_MM7 *dword_50640C[];
-extern int books_page_number; // number for page in books(номер страницы в книгах)
-extern int books_primary_item_per_page; // number primary item in book page(номер начальной записи на странице)
+extern int books_page_number; // number for page in books(РЅРѕРјРµСЂ СЃС‚СЂР°РЅРёС†С‹ РІ РєРЅРёРіР°С…)
+extern int books_primary_item_per_page; // number primary item in book page(РЅРѕРјРµСЂ РЅР°С‡Р°Р»СЊРЅРѕР№ Р·Р°РїРёСЃРё РЅР° СЃС‚СЂР°РЅРёС†Рµ)
 extern int Autonotes_Instructors_page_flag; // dword_50652C
 extern int Autonotes_Misc_page_flag; //dword_506530
 extern int Book_PageBtn6_flag; //dword_506534

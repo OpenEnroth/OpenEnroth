@@ -126,7 +126,7 @@ class Render : public IRender
         virtual void PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size);
         virtual void SavePCXScreenshot();
 
-        virtual int _46ภ6ภั_GetActorsInViewport(int pDepth);
+        virtual int _46ะ6ะะก_GetActorsInViewport(int pDepth);
 
         virtual void BeginLightmaps();
         virtual void EndLightmaps();

@@ -330,66 +330,66 @@ void GUIWindow_GameKeyBindings::Update()
     {
         render->DrawTextureAlphaNew(19/640.0f, 302/480.0f, game_ui_options_controls[3]);
 
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142, ui_gamemenu_keys_action_name_color, "ÂÏÅÐ¨Ä", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142, ui_gamemenu_keys_action_name_color, "Ð’ÐŸÐ•Ð ÐÐ”", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 142, GameMenuUI_GetKeyBindingColor(0), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[0]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 163, ui_gamemenu_keys_action_name_color, "ÍÀÇÀÄ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 163, ui_gamemenu_keys_action_name_color, "ÐÐÐ—ÐÐ”", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 163, GameMenuUI_GetKeyBindingColor(1), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[1]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 184, ui_gamemenu_keys_action_name_color, "ÂËÅÂÎ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 184, ui_gamemenu_keys_action_name_color, "Ð’Ð›Ð•Ð’Ðž", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 184, GameMenuUI_GetKeyBindingColor(2), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[2]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 205, ui_gamemenu_keys_action_name_color, "ÂÏÐÀÂÎ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 205, ui_gamemenu_keys_action_name_color, "Ð’ÐŸÐ ÐÐ’Ðž", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 205, GameMenuUI_GetKeyBindingColor(3), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[3]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 226, ui_gamemenu_keys_action_name_color, "ÊÐÈÊ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 226, ui_gamemenu_keys_action_name_color, "ÐšÐ Ð˜Ðš", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 226, GameMenuUI_GetKeyBindingColor(4), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[4]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 247, ui_gamemenu_keys_action_name_color, "ÏÐÛÆÎÊ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 247, ui_gamemenu_keys_action_name_color, "ÐŸÐ Ð«Ð–ÐžÐš", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 247, GameMenuUI_GetKeyBindingColor(5), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[5]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 268, ui_gamemenu_keys_action_name_color, "Ï.ÐÅÆÈÌ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 268, ui_gamemenu_keys_action_name_color, "ÐŸ.Ð Ð•Ð–Ð˜Ðœ", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 268, GameMenuUI_GetKeyBindingColor(6), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[6]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 142, ui_gamemenu_keys_action_name_color, "ÏÐÈÌ. ÇÀÊË.", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 142, ui_gamemenu_keys_action_name_color, "ÐŸÐ Ð˜Ðœ. Ð—ÐÐšÐ›.", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 142, GameMenuUI_GetKeyBindingColor(7), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[7]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 163, ui_gamemenu_keys_action_name_color, "ÀÒÀÊÀ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 163, ui_gamemenu_keys_action_name_color, "ÐÐ¢ÐÐšÐ", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 163, GameMenuUI_GetKeyBindingColor(8), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[8]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 184, ui_gamemenu_keys_action_name_color, "ÄÅÉÑÒÂ.", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 184, ui_gamemenu_keys_action_name_color, "Ð”Ð•Ð™Ð¡Ð¢Ð’.", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 184, GameMenuUI_GetKeyBindingColor(9), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[9]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 205, ui_gamemenu_keys_action_name_color, "ÇÀÊËÈÍ.", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 205, ui_gamemenu_keys_action_name_color, "Ð—ÐÐšÐ›Ð˜Ð.", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 205, GameMenuUI_GetKeyBindingColor(10), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[10]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 226, ui_gamemenu_keys_action_name_color, "ÈÃÐÎÊ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 226, ui_gamemenu_keys_action_name_color, "Ð˜Ð“Ð ÐžÐš", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 226, GameMenuUI_GetKeyBindingColor(11), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[11]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 247, ui_gamemenu_keys_action_name_color, "ÑËÅÄ. ÈÃÐÎÊ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 247, ui_gamemenu_keys_action_name_color, "Ð¡Ð›Ð•Ð”. Ð˜Ð“Ð ÐžÐš", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 247, GameMenuUI_GetKeyBindingColor(12), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[12]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 268, ui_gamemenu_keys_action_name_color, "ÇÀÄÀÍÈß", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 268, ui_gamemenu_keys_action_name_color, "Ð—ÐÐ”ÐÐÐ˜Ð¯", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 268, GameMenuUI_GetKeyBindingColor(13), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[13]), 0, 0, 0);
     }
     else
     {
         render->DrawTextureAlphaNew(127/640.0f, 302/480.0f, game_ui_options_controls[4]);
 
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142, ui_gamemenu_keys_action_name_color, "Á. ÑÏÐÀÂÊÀ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142, ui_gamemenu_keys_action_name_color, "Ð‘. Ð¡ÐŸÐ ÐÐ’ÐšÐ", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 142, GameMenuUI_GetKeyBindingColor(14), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[14]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 163, ui_gamemenu_keys_action_name_color, "ÎÒÄÛÕ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 163, ui_gamemenu_keys_action_name_color, "ÐžÐ¢Ð”Ð«Ð¥", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 163, GameMenuUI_GetKeyBindingColor(15), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[15]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 184, ui_gamemenu_keys_action_name_color, "ÒÅÊ. ÂÐÅÌß", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 184, ui_gamemenu_keys_action_name_color, "Ð¢Ð•Ðš. Ð’Ð Ð•ÐœÐ¯", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 184, GameMenuUI_GetKeyBindingColor(16), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[16]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 205, ui_gamemenu_keys_action_name_color, "ÀÂÒÎÇÀÌÅÒÊÈ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 205, ui_gamemenu_keys_action_name_color, "ÐÐ’Ð¢ÐžÐ—ÐÐœÐ•Ð¢ÐšÐ˜", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 205, GameMenuUI_GetKeyBindingColor(17), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[17]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 226, ui_gamemenu_keys_action_name_color, "ÊÀÐÒÀ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 226, ui_gamemenu_keys_action_name_color, "ÐšÐÐ Ð¢Ð", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 226, GameMenuUI_GetKeyBindingColor(18), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[18]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 247, ui_gamemenu_keys_action_name_color, "ÁÅÆÀÒÜ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 247, ui_gamemenu_keys_action_name_color, "Ð‘Ð•Ð–ÐÐ¢Ð¬", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 247, GameMenuUI_GetKeyBindingColor(19), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[19]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 268, ui_gamemenu_keys_action_name_color, "ÑÌ. ÂÂÅÐÕ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 268, ui_gamemenu_keys_action_name_color, "Ð¡Ðœ. Ð’Ð’Ð•Ð Ð¥", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 127, 268, GameMenuUI_GetKeyBindingColor(20), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[20]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 142, ui_gamemenu_keys_action_name_color, "ÑÌ. ÂÍÈÇ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 142, ui_gamemenu_keys_action_name_color, "Ð¡Ðœ. Ð’ÐÐ˜Ð—", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 142, GameMenuUI_GetKeyBindingColor(21), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[21]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 163, ui_gamemenu_keys_action_name_color, "ÑÌ. ÂÏÅÐ¨Ä", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 163, ui_gamemenu_keys_action_name_color, "Ð¡Ðœ. Ð’ÐŸÐ•Ð ÐÐ”", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 163, GameMenuUI_GetKeyBindingColor(22), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[22]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 184, ui_gamemenu_keys_action_name_color, "ÏÐÈÁËÈÇ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 184, ui_gamemenu_keys_action_name_color, "ÐŸÐ Ð˜Ð‘Ð›Ð˜Ð—", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 184, GameMenuUI_GetKeyBindingColor(23), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[23]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 205, ui_gamemenu_keys_action_name_color, "ÎÒÄÀËÈÒÜ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 205, ui_gamemenu_keys_action_name_color, "ÐžÐ¢Ð”ÐÐ›Ð˜Ð¢Ð¬", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 205, GameMenuUI_GetKeyBindingColor(24), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[24]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 226, ui_gamemenu_keys_action_name_color, "Ï. ÂÂÅÐÕ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 226, ui_gamemenu_keys_action_name_color, "ÐŸ. Ð’Ð’Ð•Ð Ð¥", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 226, GameMenuUI_GetKeyBindingColor(25), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[25]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 247, ui_gamemenu_keys_action_name_color, "Ï. ÂÍÈÇ", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 247, ui_gamemenu_keys_action_name_color, "ÐŸ. Ð’ÐÐ˜Ð—", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 247, GameMenuUI_GetKeyBindingColor(26), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[26]), 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 268, ui_gamemenu_keys_action_name_color, "ÏÐÈÇÅÌË", 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 268, ui_gamemenu_keys_action_name_color, "ÐŸÐ Ð˜Ð—Ð•ÐœÐ›", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 350, 268, GameMenuUI_GetKeyBindingColor(27), pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[27]), 0, 0, 0);
     }
 }
@@ -958,7 +958,7 @@ void GameUI_DrawDialogue()
     if (!pDialogueWindow)
         return;
 
-    // Window title(Çàãîëîâîê îêíà)----
+    // Window title(Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº Ð¾ÐºÐ½Ð°)----
     memcpy(&window, pDialogueWindow, sizeof(window));
     pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
     pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
@@ -1045,7 +1045,7 @@ void GameUI_DrawDialogue()
         break;
     }
 
-    // Message window(Îêíî ñîîáùåíèÿ)---- 
+    // Message window(ÐžÐºÐ½Ð¾ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ñ)---- 
     if (!dialogue_string.empty())
     {
         window.uFrameWidth = game_viewport_width;
@@ -1069,7 +1069,7 @@ void GameUI_DrawDialogue()
         pDialogueWindow->DrawText(font, 13, 354 - pTextHeight, 0, FitTextInAWindow(dialogue_string, font, &window, 13), 0, 0, 0);
     }
 
-    // Right panel(Ïðàâàÿ ïàíåëü)------- 
+    // Right panel(ÐŸÑ€Ð°Ð²Ð°Ñ Ð¿Ð°Ð½ÐµÐ»ÑŒ)------- 
     memcpy(&window, pDialogueWindow, sizeof(window));
     window.uFrameX = 483;
     window.uFrameWidth = 148;
@@ -1190,7 +1190,7 @@ void GameUI_DrawDialogue()
         }
     }
 
-    // Install Buttons(Óñòàíîâêà êíîïîê)-------- 
+    // Install Buttons(Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° ÐºÐ½Ð¾Ð¿Ð¾Ðº)-------- 
     index = 0;
     all_text_height = 0;
     for (int i = pDialogueWindow->pStartingPosActiveItem;
@@ -1636,7 +1636,7 @@ void GameUI_WritePointedObjectStatusString()
                 if (!pLevelDecorations[pickedObjectID].uEventID)
                 {
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
-                        pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events[pLevelDecorations[pickedObjectID]._idx_in_stru123 - 75] + 380].pTopic;//íåâåðíî äëÿ êîñòðà
+                        pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events[pLevelDecorations[pickedObjectID]._idx_in_stru123 - 75] + 380].pTopic;//Ð½ÐµÐ²ÐµÑ€Ð½Ð¾ Ð´Ð»Ñ ÐºÐ¾ÑÑ‚Ñ€Ð°
                     else
                         pText = pDecorationList->pDecorations[pLevelDecorations[pickedObjectID].uDecorationDescID].field_20;
                     GameUI_StatusBar_Set(pText);
@@ -2417,7 +2417,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsig
                 }
             }
         }
-        for (uint i = 0; i < uNumActors; ++i)//draw actors(îòðèñîâêà ìîíñòðîâ è íïñ)
+        for (uint i = 0; i < uNumActors; ++i)//draw actors(Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° Ð¼Ð¾Ð½ÑÑ‚Ñ€Ð¾Ð² Ð¸ Ð½Ð¿Ñ)
         {
             if (pActors[i].uAIState != Removed && pActors[i].uAIState != Disabled
                 && (pActors[i].uAIState == Dead || pActors[i].ActorNearby()))
@@ -2448,7 +2448,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsig
                 }
             }
         }
-        for (uint i = 0; i < (signed int)uNumLevelDecorations; ++i)//draw items(îòðèñîâêà ïðåäìåòîâ)
+        for (uint i = 0; i < (signed int)uNumLevelDecorations; ++i)//draw items(Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð¾Ð²)
         {
             if (pLevelDecorations[i].uFlags & 8)
             {

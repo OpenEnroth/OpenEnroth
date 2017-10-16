@@ -94,9 +94,9 @@ std::array<std::tuple<const char*, const unsigned __int8>, 26> keyNameToCodeTran
   std::tuple<const char*, const unsigned __int8>("UP", VK_UP),
   std::tuple<const char*, const unsigned __int8>("DOWN", VK_DOWN),
   std::tuple<const char*, const unsigned __int8>("LEFT", VK_LEFT),
-  std::tuple<const char*, const unsigned __int8>("бкебн", VK_LEFT),
+  std::tuple<const char*, const unsigned __int8>("п▓п⌡п∙п▓п·", VK_LEFT),
   std::tuple<const char*, const unsigned __int8>("RIGHT", VK_RIGHT),
-  std::tuple<const char*, const unsigned __int8>("бопюбн", VK_RIGHT),
+  std::tuple<const char*, const unsigned __int8>("п▓п÷п═п░п▓п·", VK_RIGHT),
   std::tuple<const char*, const unsigned __int8>("RETURN", VK_RETURN),
   std::tuple<const char*, const unsigned __int8>("SPACE", VK_SPACE),
   std::tuple<const char*, const unsigned __int8>("PAGE_DOWN", VK_NEXT),
@@ -318,7 +318,7 @@ const char * KeyboardActionMapping::GetVKeyDisplayName(unsigned char a1)
     }
   }
 
-  strcpy_s(static_sub_45AE2C_string_69ADE0_keyName, "-мер -");
+  strcpy_s(static_sub_45AE2C_string_69ADE0_keyName, "-п²п∙п╒ -");
   return static_sub_45AE2C_string_69ADE0_keyName;
 }
 

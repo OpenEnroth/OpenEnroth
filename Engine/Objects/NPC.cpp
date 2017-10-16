@@ -1584,7 +1584,7 @@ int UseNPCSkill(NPCProf profession)
         {
             for (int i = 0; i < 4; ++i)
             {
-                __debugbreak();	//Ritor1:needed cleaned(Íåîáõîäèìî ïî÷èñòèòü)
+                __debugbreak();	//Ritor1:needed cleaned(ÐÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ Ð¿Ð¾Ñ‡Ð¸ÑÑ‚Ð¸Ñ‚ÑŒ)
                 Player* player = &pParty->pPlayers[i];
                 pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
 
@@ -1623,7 +1623,7 @@ int UseNPCSkill(NPCProf profession)
         {
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
             {
-                GameUI_StatusBar_OnEvent(localization->GetString(494)); // Can't fly indoors     Íåëüçÿ ïðèìåíèòü çíàíèå Ïîëåò â ïîìåùåíèè!
+                GameUI_StatusBar_OnEvent(localization->GetString(494)); // Can't fly indoors     ÐÐµÐ»ÑŒÐ·Ñ Ð¿Ñ€Ð¸Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð·Ð½Ð°Ð½Ð¸Ðµ ÐŸÐ¾Ð»ÐµÑ‚ Ð² Ð¿Ð¾Ð¼ÐµÑ‰ÐµÐ½Ð¸Ð¸!
                 pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0, 0, 0);
             }
             else

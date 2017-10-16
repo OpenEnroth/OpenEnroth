@@ -175,13 +175,13 @@ void MainMenu_EventLoop()
             case UIMSG_PlayerCreationRemoveUpSkill:
                 v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
                 pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * pParam;
-                if (pPlayer[pParam].GetSkillIdxByOrder(2) != 37)//37 - None(Íåò)
+                if (pPlayer[pParam].GetSkillIdxByOrder(2) != 37)//37 - None(ÐÐµÑ‚)
                     pParty->pPlayers[pParam].pActiveSkills[pPlayer[pParam].GetSkillIdxByOrder(2)] = 0;
                 break;
             case UIMSG_PlayerCreationRemoveDownSkill:
                 v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
                 pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * pParam;
-                if (pPlayer[pParam].GetSkillIdxByOrder(3) != 37)//37 - None(Íåò)
+                if (pPlayer[pParam].GetSkillIdxByOrder(3) != 37)//37 - None(ÐÐµÑ‚)
                     pParty->pPlayers[pParam].pActiveSkills[pPlayer[pParam].GetSkillIdxByOrder(3)] = 0;
                 break;
             case UIMSG_PlayerCreationChangeName:
@@ -280,14 +280,14 @@ void MainMenu_EventLoop()
                 {
                     //if ( current_screen_type == SCREEN_VIDEO )
                     //pVideoPlayer->FastForwardToFrame(pVideoPlayer->pResetflag);			  
-                    if (GetCurrentMenuID() == MENU_NAMEPANELESC)  //èç ïàíåëè èçìåíåíèÿ èìåíè
+                    if (GetCurrentMenuID() == MENU_NAMEPANELESC)  //Ð¸Ð· Ð¿Ð°Ð½ÐµÐ»Ð¸ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ Ð¸Ð¼ÐµÐ½Ð¸
                     {
-                        SetCurrentMenuID(MENU_CREATEPARTY);//â îêíî ñîçäàíèÿ ãðóïïû
+                        SetCurrentMenuID(MENU_CREATEPARTY);//Ð² Ð¾ÐºÐ½Ð¾ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ñ Ð³Ñ€ÑƒÐ¿Ð¿Ñ‹
                         break;
                     }
-                    if (GetCurrentMenuID() == MENU_CREDITSPROC)	//èç îêíà Ñîçäàòåëè
+                    if (GetCurrentMenuID() == MENU_CREDITSPROC)	//Ð¸Ð· Ð¾ÐºÐ½Ð° Ð¡Ð¾Ð·Ð´Ð°Ñ‚ÐµÐ»Ð¸
                     {
-                        SetCurrentMenuID(MENU_CREDITSCLOSE);//â çàêðûòèå Ñîçäàòåëè
+                        SetCurrentMenuID(MENU_CREDITSCLOSE);//Ð² Ð·Ð°ÐºÑ€Ñ‹Ñ‚Ð¸Ðµ Ð¡Ð¾Ð·Ð´Ð°Ñ‚ÐµÐ»Ð¸
                         break;
                     }
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_ChangeGameState, 0, 0);

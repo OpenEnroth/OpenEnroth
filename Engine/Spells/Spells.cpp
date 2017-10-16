@@ -656,7 +656,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx, int fr
         pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
         pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
         pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
-        pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID], 0, 0, fromx, fromy, 0, 0, 0);//Á‚ÛÍ ‡ÎÚ‡ˇ
+        pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID], 0, 0, fromx, fromy, 0, 0, 0);//–∑–≤—É–∫ –∞–ª—Ç–∞—Ä—è
         return;
     case SPELL_AIR_SHIELD:
     case SPELL_EARTH_STONESKIN:

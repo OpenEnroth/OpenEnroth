@@ -1382,9 +1382,9 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
             bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)];
             if (!pParty->monster_for_hunting_killed[(int)((char *)window_SpeakInHouse->ptr_1C - 102)])
             {
-                bountyHunting_text = pNPCTopics[351].pText;//"¬ ˝ÚÓÏ ÏÂÒˇˆÛ Ì‡ÁÌ‡˜ÂÌ‡ Ì‡„‡‰‡ Á‡ „ÓÎÓ‚Û %s..."
+                bountyHunting_text = pNPCTopics[351].pText;//"–í —ç—Ç–æ–º –º–µ—Å—è—Ü—É –Ω–∞–∑–Ω–∞—á–µ–Ω–∞ –Ω–∞–≥—Ä–∞–¥–∞ –∑–∞ –≥–æ–ª–æ–≤—É %s..."
                 if (!pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)])
-                    bountyHunting_text = pNPCTopics[353].pText;//" ÓÂ ÍÚÓ ÛÊÂ ÔËıÓ‰ËÎ ‚ ˝ÚÓÏ ÏÂÒˇˆÂ Á‡ Ì‡„‡‰ÓÈ"
+                    bountyHunting_text = pNPCTopics[353].pText;//"–ö–æ–µ –∫—Ç–æ —É–∂–µ –ø—Ä–∏—Ö–æ–¥–∏–ª –≤ —ç—Ç–æ–º –º–µ—Å—è—Ü–µ –∑–∞ –Ω–∞–≥—Ä–∞–¥–æ–π"
             }
             else
             {
@@ -1397,7 +1397,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
                     pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] = 0;
                     pParty->monster_for_hunting_killed[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
                 }
-                bountyHunting_text = pNPCTopics[352].pText;//"œÓÁ‰‡‚Îˇ˛! ¬˚ ÛÒÔÂ¯ÌÓ..."
+                bountyHunting_text = pNPCTopics[352].pText;//"–ü–æ–∑–¥—Ä–∞–≤–ª—è—é! –í—ã —É—Å–ø–µ—à–Ω–æ..."
             }
         }
         else if (uMessageParam == HOUSE_DIALOGUE_TOWNHALL_PAY_FINE)
@@ -1626,14 +1626,14 @@ void TravelByTransport()
         }
 
         if (schedule_id != 255 && v25 && (!transport_schedule[schedule_id].uQuestBit
-           || _449B57_test_bit(pParty->_quest_bits, transport_schedule[schedule_id].uQuestBit)) )//Ó¯Ë·Í‡: ËÒÛÂÚÒˇ ÌÂÒÍÓÎ¸ÍÓ ÒÚÓ˜ÂÍ Ó‰ÌÓ„Ó Ì‡Ô‡‚ÎÂÌËˇ ÔÛÚÂ¯ÂÒÚ‚Ëˇ
+           || _449B57_test_bit(pParty->_quest_bits, transport_schedule[schedule_id].uQuestBit)) )//–æ—à–∏–±–∫–∞: —Ä–∏—Å—É–µ—Ç—Å—è –Ω–µ—Å–∫–æ–ª—å–∫–æ —Å—Ç—Ä–æ—á–µ–∫ –æ–¥–Ω–æ–≥–æ –Ω–∞–ø—Ä–∞–≤–ª–µ–Ω–∏—è –ø—É—Ç–µ—à–µ—Å—Ç–≤–∏—è
         {
-  //get color for current string(ÓÔÂ‰ÂÎÂÌËÂ ˆ‚ÂÚ‡ ÚÂÍÛ˘ÂÈ ÒÚÓÍË)----------
+  //get color for current string(–æ–ø—Ä–µ–¥–µ–ª–µ–Ω–∏–µ —Ü–≤–µ—Ç–∞ —Ç–µ–∫—É—â–µ–π —Å—Ç—Ä–æ–∫–∏)----------
           if ( pDialogueWindow->pCurrentPosActiveItem == pCurrentButton )
             sprintf(pTopicArray[index], "\f%05d", Color16(255, 255, 155));
           else
             sprintf(pTopicArray[index], "\f%05d", Color16(255, 255, 255));
-  //hired NPC premium(ÔÂÏËˇ Ì‡∏ÏÌÓ„Ó Õœ—)----------------------------------
+  //hired NPC premium(–ø—Ä–µ–º–∏—è –Ω–∞—ë–º–Ω–æ–≥–æ –ù–ü–°)----------------------------------
           travel_time = transport_schedule[schedule_id].uTravelTime;
           if ( (unsigned int)window_SpeakInHouse->ptr_1C >= HOUSE_BOATS_EMERALD_ISLE )
           {
@@ -1687,19 +1687,19 @@ void TravelByTransport()
       }
       else
       {
-        travel_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(localization->GetString(561), &travel_window, 0)) / 2 + 138,//"»Á‚ËÌËÚÂ, ÔËıÓ‰ËÚÂ ‚ ‰Û„ÓÈ ‰ÂÌ¸"
+        travel_window.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(localization->GetString(561), &travel_window, 0)) / 2 + 138,//"–ò–∑–≤–∏–Ω–∏—Ç–µ, –ø—Ä–∏—Ö–æ–¥–∏—Ç–µ –≤ –¥—Ä—É–≥–æ–π –¥–µ–Ω—å"
                           Color16(255, 255, 255), localization->GetString(561), 3);
         pAudioPlayer->StopChannels(-1, -1);
       }
     }
   }
-  else//ÔÓÒÎÂ Ì‡Ê‡ÚËˇ ÚÓÔËÍ‡
+  else//–ø–æ—Å–ª–µ –Ω–∞–∂–∞—Ç–∏—è —Ç–æ–ø–∏–∫–∞
   {
     if ( dialog_menu_id >= HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_1 && dialog_menu_id <= HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_4 )
     {
       if ( pParty->uNumGold < pPrice )
       {
-        GameUI_StatusBar_OnEvent(localization->GetString(155));//"” ‚‡Ò ÌÂ ı‚‡Ú‡ÂÚ ÁÓÎÓÚ‡"
+        GameUI_StatusBar_OnEvent(localization->GetString(155));//"–£ –≤–∞—Å –Ω–µ —Ö–≤–∞—Ç–∞–µ—Ç –∑–æ–ª–æ—Ç–∞"
         PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_Greeting_2);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
@@ -1818,7 +1818,7 @@ void TownHallDialog()
   townHall_window.uFrameWidth = 148;
   townHall_window.uFrameZ = 334;
 
-  auto fine_str = StringPrintf("%s: %d", localization->GetString(605), pParty->uFine); // Fine: %d   /   “ÂÍÛ˘ËÈ ¯Ú‡Ù: %d
+  auto fine_str = StringPrintf("%s: %d", localization->GetString(605), pParty->uFine); // Fine: %d   /   –¢–µ–∫—É—â–∏–π —à—Ç—Ä–∞—Ñ: %d
   townHall_window.DrawTitleText(pFontArrus, 0, 260, Color16(0xFFu, 0xFFu, 0x9Bu), fine_str, 3);
 
   switch(dialog_menu_id)
@@ -1827,10 +1827,10 @@ void TownHallDialog()
     {
       pStringSum = 1;
       pTextHeight = 0;
-      pShopOptions[0] = localization->GetString(604); // Bounty Hunting     ŒıÓÚ‡ Á‡ ‚ÓÁÌ‡„‡Ê‰ÂÌËÂ
+      pShopOptions[0] = localization->GetString(604); // Bounty Hunting     –û—Ö–æ—Ç–∞ –∑–∞ –≤–æ–∑–Ω–∞–≥—Ä–∞–∂–¥–µ–Ω–∏–µ
       if ( pParty->uFine > 0 )
       {
-        pShopOptions[1] = localization->GetString(603); // Pay fine     «‡ÔÎ‡ÚËÚ¸ ¯Ú‡Ù
+        pShopOptions[1] = localization->GetString(603); // Pay fine     –ó–∞–ø–ª–∞—Ç–∏—Ç—å —à—Ç—Ä–∞—Ñ
         pStringSum = 2;
       }
       for ( uint i = 0; i < pStringSum; ++i )
@@ -1944,7 +1944,7 @@ void  BankDialog()
   bank_window.uFrameX = 483;
   bank_window.uFrameWidth = 148;
   bank_window.uFrameZ = 334;
-  bank_window.DrawTitleText(pFontArrus, 0, 220, Color16(0xFFu, 0xFFu, 0x9Bu), StringPrintf("%s: %d", localization->GetString(25), pParty->uNumGoldInBank), 3); // Balance   /   ¡‡Î‡ÌÒ
+  bank_window.DrawTitleText(pFontArrus, 0, 220, Color16(0xFFu, 0xFFu, 0x9Bu), StringPrintf("%s: %d", localization->GetString(25), pParty->uNumGoldInBank), 3); // Balance   /   –ë–∞–ª–∞–Ω—Å
   switch(dialog_menu_id)
   {
     case HOUSE_DIALOGUE_MAIN:
@@ -1963,7 +1963,7 @@ void  BankDialog()
     {
       if ( window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
       {
-          bank_window.DrawTitleText(pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu), StringPrintf("%s\n%s", localization->GetString(60), localization->GetString(112)), 3);// Deposit  How much?   /   "œÓÎÓÊËÚ¸" "—ÍÓÎ¸ÍÓ?"
+          bank_window.DrawTitleText(pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu), StringPrintf("%s\n%s", localization->GetString(60), localization->GetString(112)), 3);// Deposit  How much?   /   "–ü–æ–ª–æ–∂–∏—Ç—å" "–°–∫–æ–ª—å–∫–æ?"
         bank_window.DrawTitleText(pFontArrus, 0, 186, Color16(0xFFu, 0xFFu, 0xFFu), pKeyActionMap->pPressedKeysBuffer, 3);
         bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(pKeyActionMap->pPressedKeysBuffer) / 2 + 80, 185, pFontArrus);
         return;
@@ -2004,7 +2004,7 @@ void  BankDialog()
     {
       if ( window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
       {
-        bank_window.DrawTitleText(pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu), StringPrintf("%s\n%s", localization->GetString(244), localization->GetString(112)), 3); // Withdraw  How much?   /   "—ÌˇÚ¸" "—ÍÓÎ¸ÍÓ?"
+        bank_window.DrawTitleText(pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu), StringPrintf("%s\n%s", localization->GetString(244), localization->GetString(112)), 3); // Withdraw  How much?   /   "–°–Ω—è—Ç—å" "–°–∫–æ–ª—å–∫–æ?"
         bank_window.DrawTitleText(pFontArrus, 0, 186, Color16(0xFFu, 0xFFu, 0xFFu), pKeyActionMap->pPressedKeysBuffer, 3);
         bank_window.DrawFlashingInputCursor(pFontArrus->GetLineWidth(pKeyActionMap->pPressedKeysBuffer) / 2 + 80, 185, pFontArrus);
         return;
@@ -2232,7 +2232,7 @@ void  TavernDialog()
             window_SpeakInHouse = 0;
             return;
         }
-        GameUI_StatusBar_OnEvent(localization->GetString(155));//” ‚‡Ò ÌÂ ı‚‡Ú‡ÂÚ ÁÓÎÓÚ‡
+        GameUI_StatusBar_OnEvent(localization->GetString(155));//–£ –≤–∞—Å –Ω–µ —Ö–≤–∞—Ç–∞–µ—Ç –∑–æ–ª–æ—Ç–∞
         PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
@@ -2260,7 +2260,7 @@ void  TavernDialog()
         }
         if (pSkillCount)
         {
-            auto label = localization->FormatString(401, pPriceSkill);//—ÚÓËÏÓÒÚ¸ Ì‡‚˚Í‡: %lu
+            auto label = localization->FormatString(401, pPriceSkill);//–°—Ç–æ–∏–º–æ—Å—Ç—å –Ω–∞–≤—ã–∫–∞: %lu
             dialog_window.DrawTitleText(pFontArrus, 0, 0x92u, 0, label, 3);
             v91 = (149 - all_text_height) / pSkillCount;
             if ((149 - all_text_height) / pSkillCount > 32)
@@ -2297,10 +2297,10 @@ void  TavernDialog()
             localization->FormatString(
                 544,
                 pPlayers[uActiveCharacter]->pName,
-                localization->GetClassName(pPlayers[uActiveCharacter]->classType) // —Ó‚ÂÚÛ˛ ‚‡Ï %s %s ÔÓËÒÍ‡Ú¸ ÁÌ‡ÌËˇ Â˘Â „‰Â-ÌË·Û‰¸
+                localization->GetClassName(pPlayers[uActiveCharacter]->classType) // –°–æ–≤–µ—Ç—É—é –≤–∞–º %s %s –ø–æ–∏—Å–∫–∞—Ç—å –∑–Ω–∞–Ω–∏—è –µ—â–µ –≥–¥–µ-–Ω–∏–±—É–¥—å
             )
             + "\n \n"
-            + localization->GetString(528);//¡ÓÎ¸¯Â ÌË˜Â„Ó ÌÂ ÏÓ„Û ÔÂ‰ÎÓÊËÚ¸.
+            + localization->GetString(528);//–ë–æ–ª—å—à–µ –Ω–∏—á–µ–≥–æ –Ω–µ –º–æ–≥—É –ø—Ä–µ–¥–ª–æ–∂–∏—Ç—å.
         pTextHeight = (174 - pFontArrus->CalcTextHeight(str, &dialog_window, 0)) / 2 + 138;
         dialog_window.DrawTitleText(pFontArrus, 0, pTextHeight, Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
         return;
@@ -2310,7 +2310,7 @@ void  TavernDialog()
     {
         if ((double)pParty->uNumFoodRations >= p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier)
         {
-            GameUI_StatusBar_OnEvent(localization->GetString(140));//¬˚ ÛÊÂ ÍÛÔËÎË Â‰Û!
+            GameUI_StatusBar_OnEvent(localization->GetString(140));//–í—ã —É–∂–µ –∫—É–ø–∏–ª–∏ –µ–¥—É!
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_67, 0);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2335,11 +2335,11 @@ void  TavernDialog()
         if (HouseUI_CheckIfPlayerCanInteract())
         {
             pOptionsCount = 2;
-            pShopOptions[0] = localization->GetString(620);//œ‡‚ËÎ‡
-            pShopOptions[1] = localization->GetString(622);//”ÒÎÓ‚Ëˇ ÔÓ·Â‰˚
-            if (pParty->HasItem(651))//651 -  ÓÎÓ‰‡ ‰Îˇ Ë„˚ ‚ ¿ÍÓÃ˝È‰Ê ‚ Items.txt
+            pShopOptions[0] = localization->GetString(620);//–ü—Ä–∞–≤–∏–ª–∞
+            pShopOptions[1] = localization->GetString(622);//–£—Å–ª–æ–≤–∏—è –ø–æ–±–µ–¥—ã
+            if (pParty->HasItem(651))//651 - –ö–æ–ª–æ–¥–∞ –¥–ª—è –∏–≥—Ä—ã –≤ –ê—Ä–∫–æ–ú—ç–π–¥–∂ –≤ Items.txt
             {
-                pShopOptions[2] = localization->GetString(621);//»„‡Ú¸
+                pShopOptions[2] = localization->GetString(621);//–ò–≥—Ä–∞—Ç—å
                 pOptionsCount = 3;
             }
             for (i = 0; i < pOptionsCount; ++i)
@@ -2403,12 +2403,12 @@ void TempleDialog()
         if (pPlayers[uActiveCharacter]->IsPlayerHealableByTemple())
         {
             static String shop_option_container;
-            shop_option_container = StringPrintf("%s %d %s", localization->GetString(104), pPrice, localization->GetString(97)); //"ÀÂ˜ËÚ¸" "«ÓÎÓÚÓ"
+            shop_option_container = StringPrintf("%s %d %s", localization->GetString(104), pPrice, localization->GetString(97)); //"–õ–µ—á–∏—Ç—å" "–ó–æ–ª–æ—Ç–æ"
             pShopOptions[0] = shop_option_container.c_str();
             index = 0;
         }
-        pShopOptions[1] = localization->GetString(68);//"œÓÊÂÚ‚Ó‚‡Ú¸"
-        pShopOptions[2] = localization->GetString(160);//"Œ·Û˜ËÚ¸Òˇ Ì‡‚˚Í‡Ï"
+        pShopOptions[1] = localization->GetString(68);//"–ü–æ–∂–µ—Ä—Ç–≤–æ–≤–∞—Ç—å"
+        pShopOptions[2] = localization->GetString(160);//"–û–±—É—á–∏—Ç—å—Å—è –Ω–∞–≤—ã–∫–∞–º"
         all_text_height = 0;
         if (index < pDialogueWindow->pNumPresenceButton)
         {
@@ -2452,7 +2452,7 @@ void TempleDialog()
             return;
         if (pParty->uNumGold < pPrice)
         {
-            GameUI_StatusBar_OnEvent(localization->GetString(155));//"” ‚‡Ò ÌÂ ı‚‡Ú‡ÂÚ ÁÓÎÓÚ‡"
+            GameUI_StatusBar_OnEvent(localization->GetString(155));//"–£ –≤–∞—Å –Ω–µ —Ö–≤–∞—Ç–∞–µ—Ç –∑–æ–ª–æ—Ç–∞"
             PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_NotEnoughMoney_TrainingSuccessful);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -2464,7 +2464,7 @@ void TempleDialog()
         pPlayers[uActiveCharacter]->sMana = pPlayers[uActiveCharacter]->GetMaxMana();
         if ((signed int)window_SpeakInHouse->ptr_1C != 78 && ((signed int)window_SpeakInHouse->ptr_1C <= 80 || (signed int)window_SpeakInHouse->ptr_1C > 82))
         {
-            if (pPlayers[uActiveCharacter]->conditions_times[Condition_Zombie].Valid())// ÂÒÎË ÒÓÒÚÓˇÌËÂ ÁÓÏ·Ë
+            if (pPlayers[uActiveCharacter]->conditions_times[Condition_Zombie].Valid())// –µ—Å–ª–∏ —Å–æ—Å—Ç–æ—è–Ω–∏–µ –∑–æ–º–±–∏
             {
                 pPlayers[uActiveCharacter]->uCurrentFace = pPlayers[uActiveCharacter]->uPrevFace;
                 pPlayers[uActiveCharacter]->uVoiceID = pPlayers[uActiveCharacter]->uPrevVoiceID;
@@ -2563,7 +2563,7 @@ void TempleDialog()
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        GameUI_StatusBar_OnEvent(localization->GetString(155));//"” ‚‡Ò ÌÂ ı‚‡Ú‡ÂÚ ÁÓÎÓÚ‡"
+        GameUI_StatusBar_OnEvent(localization->GetString(155));//"–£ –≤–∞—Å –Ω–µ —Ö–≤–∞—Ç–∞–µ—Ç –∑–æ–ª–æ—Ç–∞"
         PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_NotEnoughMoney_TrainingSuccessful);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
@@ -2632,10 +2632,10 @@ void TempleDialog()
                     localization->FormatString(
                         544,
                         pPlayers[uActiveCharacter]->pName,
-                        localization->GetClassName(pPlayers[uActiveCharacter]->classType) // —Ó‚ÂÚÛ˛ ‚‡Ï %s %s ÔÓËÒÍ‡Ú¸ ÁÌ‡ÌËˇ Â˘Â „‰Â-ÌË·Û‰¸
+                        localization->GetClassName(pPlayers[uActiveCharacter]->classType) // –°–æ–≤–µ—Ç—É—é –≤–∞–º %s %s –ø–æ–∏—Å–∫–∞—Ç—å –∑–Ω–∞–Ω–∏—è –µ—â–µ –≥–¥–µ-–Ω–∏–±—É–¥—å
                     )
                     + "\n \n"
-                    + localization->GetString(528);//¡ÓÎ¸¯Â ÌË˜Â„Ó ÌÂ ÏÓ„Û ÔÂ‰ÎÓÊËÚ¸.
+                    + localization->GetString(528);//–ë–æ–ª—å—à–µ –Ω–∏—á–µ–≥–æ –Ω–µ –º–æ–≥—É –ø—Ä–µ–¥–ª–æ–∂–∏—Ç—å.
 
                 pTextHeight = pFontArrus->CalcTextHeight(str, &tample_window, 0);
                 tample_window.DrawTitleText(pFontArrus, 0, (174 - pTextHeight) / 2 + 138, Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
@@ -2957,13 +2957,13 @@ void sub_4B6478()
               localization->GetClassName(pPlayers[uActiveCharacter]->classType)
           )
           + "\n \n"
-          + localization->GetString(528); // ¡ÓÎ¸¯Â ÌË˜Â„Ó ÌÂ ÏÓ„Û ÔÂ‰ÎÓÊËÚ¸.
+          + localization->GetString(528); // –ë–æ–ª—å—à–µ –Ω–∏—á–µ–≥–æ –Ω–µ –º–æ–≥—É –ø—Ä–µ–¥–ª–æ–∂–∏—Ç—å.
       pTextHeight = pFontArrus->CalcTextHeight(str, &dialog_window, 0);
       dialog_window.DrawTitleText(pFontArrus, 0, (174 - pTextHeight) / 2 + 138, Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
       return; 
     }
 
-    auto skill_price_label = localization->FormatString(401, pPrice);//—ÚÓËÏÓÒÚ¸ Ì‡‚˚Í‡: %lu
+    auto skill_price_label = localization->FormatString(401, pPrice);//–°—Ç–æ–∏–º–æ—Å—Ç—å –Ω–∞–≤—ã–∫–∞: %lu
     dialog_window.DrawTitleText(pFontArrus, 0, 0x92u, 0, skill_price_label, 3);
 
     v32 = (149 - all_text_height) / index;
@@ -3022,7 +3022,7 @@ void sub_4B6478()
     {
       if ( pParty->uNumGold < pPrice )
       {
-        GameUI_StatusBar_OnEvent(localization->GetString(155));//” ‚‡Ò ÌÂ ı‚‡Ú‡ÂÚ ÁÓÎÓÚ‡
+        GameUI_StatusBar_OnEvent(localization->GetString(155));//–£ –≤–∞—Å –Ω–µ —Ö–≤–∞—Ç–∞–µ—Ç –∑–æ–ª–æ—Ç–∞
         v27 = 4;
       }
       else
@@ -3074,7 +3074,7 @@ void SimpleHouseDialog()
     house_window.uFrameZ = 334;
     if ( !pTransitionStrings[uHouse_ExitPic] )
     {
-      auto str = localization->FormatString(411, pMapStats->pInfos[uHouse_ExitPic].pName); // Enter %s   /   ¬ÓÈÚË ‚ ^Pv[%s]
+      auto str = localization->FormatString(411, pMapStats->pInfos[uHouse_ExitPic].pName); // Enter %s   /   –í–æ–π—Ç–∏ –≤ ^Pv[%s]
       house_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, &house_window, 0)) / 2 + 101, 0, str, 3);
       return;
     }
@@ -3194,10 +3194,10 @@ void SimpleHouseDialog()
         strcpy(pButton->pButtonName, v15);
         continue;
       case 76:
-        strcpy(pButton->pButtonName, localization->GetString(406)); // Hire / Õ‡ÌˇÚ¸
+        strcpy(pButton->pButtonName, localization->GetString(406)); // Hire / –ù–∞–Ω—è—Ç—å
         continue;
       case 77:
-        strcpy(pButton->pButtonName, localization->GetString(407)); // Details / œÓ‰Ó·ÌÂÂ
+        strcpy(pButton->pButtonName, localization->GetString(407)); // Details / –ü–æ–¥—Ä–æ–±–Ω–µ–µ
         continue;
       case 79:
         strcpy(pButton->pButtonName, _4B254D_SkillMasteryTeacher((int)right_panel_window.ptr_1C).c_str());
@@ -3222,7 +3222,7 @@ void SimpleHouseDialog()
     }
     if ( pButton->msg_param > 0 && pButton->msg_param < 13 )
     {
-      strcpy(pButton->pButtonName, localization->GetString(122));//¬ÒÚÛÔËÚ¸
+      strcpy(pButton->pButtonName, localization->GetString(122));//–í—Å—Ç—É–ø–∏—Ç—å
       continue;
     }
     if ( pButton->msg_param > 13 && pButton->msg_param < 19 )
@@ -3292,7 +3292,7 @@ void JailDialog()
   jail_dialogue_window.uFrameWidth = 148;
   jail_dialogue_window.uFrameZ = 334;
   jail_dialogue_window.DrawTitleText(pFontArrus, 0, (310 - pFontArrus->CalcTextHeight(localization->GetString(672), &jail_dialogue_window, 0)) / 2 + 18,
-     Color16(0xFFu, 0xFFu, 0x9Bu), localization->GetString(672), 3);//"«‡ ÏÌÓ„Ó˜ËÒÎÂÌÌ˚Â ÔÂÒÚÛÔÎÂÌËˇ Ë ÁÎÓ‰ÂˇÌËˇ ‚˚ ·˚ÎË ÔË„Ó‚ÓÂÌ˚ Í Ó‰ÌÓÏÛ „Ó‰Û Á‡ÍÎ˛˜ÂÌËˇ."
+     Color16(0xFFu, 0xFFu, 0x9Bu), localization->GetString(672), 3);//"–ó–∞ –º–Ω–æ–≥–æ—á–∏—Å–ª–µ–Ω–Ω—ã–µ –ø—Ä–µ—Å—Ç—É–ø–ª–µ–Ω–∏—è –∏ –∑–ª–æ–¥–µ—è–Ω–∏—è –≤—ã –±—ã–ª–∏ –ø—Ä–∏–≥–æ–≤–æ—Ä–µ–Ω—ã –∫ –æ–¥–Ω–æ–º—É –≥–æ–¥—É –∑–∞–∫–ª—é—á–µ–Ω–∏—è."
 }
 
 
