@@ -51,7 +51,7 @@ UIAnimation *pUIAnim_Gold = &_uianim._pUIAnim_Gold;
 UIAnimation *pUIAnum_Torchlight = &_uianim._pUIAnum_Torchlight;
 UIAnimation *pUIAnim_WizardEye = &_uianim._pUIAnim_WizardEye;
 
-std::array<struct UIAnimation *, 4> pUIAnims =
+std::array<class UIAnimation *, 4> pUIAnims = //was struct byt defined as class
 {
     &_uianim._pUIAnim_Food,
     &_uianim._pUIAnim_Gold,
@@ -862,7 +862,7 @@ void Rest(unsigned int uMinsToRest) // this is passed mins not hours
 }
 
 //----- (004B1BDB) --------------------------------------------------------
-void RestAndHeal(__int64 minutes)
+void RestAndHeal(int minutes)
 {
     pParty->GetPlayingTime().AddMinutes(minutes);
 

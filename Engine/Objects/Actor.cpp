@@ -3478,7 +3478,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     int extraRecoveryTime; // qax@125
     unsigned __int16 v43; // ax@132
     unsigned __int16 v45; // ax@132
-    unsigned __int64 v46; // [sp+Ch] [bp-60h]@6
+   // unsigned __int64 v46; // [sp+Ch] [bp-60h]@6
     char *pPlayerName; // [sp+18h] [bp-54h]@12
     char *pMonsterName; // [sp+1Ch] [bp-50h]@6
     signed int a4; // [sp+44h] [bp-28h]@1
@@ -4155,7 +4155,7 @@ void Actor::LootActor()
   unsigned __int8 v7; // al@30
   char *v9; // [sp-4h] [bp-3Ch]@10
   char *v10; // [sp-4h] [bp-3Ch]@31
-  char *v11; // [sp-4h] [bp-3Ch]@38
+//  char *v11; // [sp-4h] [bp-3Ch]@38
   ItemGen Dst; // [sp+Ch] [bp-2Ch]@1
   bool itemFound; // [sp+30h] [bp-8h]@1
   int v14; // [sp+34h] [bp-4h]@1
@@ -4578,7 +4578,7 @@ void Actor::MakeActorAIList_ODM()
   int v1; // eax@4
   unsigned int v7; // ST20_4@10
   int distance; // edi@10
-  int v10; // ebx@14
+//  int v10; // ebx@14
   int v21; // [sp+Ch] [bp-14h]@4
   int v22; // [sp+10h] [bp-10h]@4
   
@@ -5235,7 +5235,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
   std::string v40; // [sp-18h] [bp-100h]@60
   const char *v44; // [sp-8h] [bp-F0h]@13
   char *pTexture; // [sp-4h] [bp-ECh]@9
-  char Str[32]; // [sp+Ch] [bp-DCh]@60
+//  char Str[32]; // [sp+Ch] [bp-DCh]@60
   char Str2[120]; // [sp+2Ch] [bp-BCh]@29
   unsigned int uFaceID; // [sp+A4h] [bp-44h]@52
   MonsterInfo *Src; // [sp+A8h] [bp-40h]@50

@@ -549,6 +549,7 @@ struct Player
   int GetItemsBonus(enum CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false);
   int GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2);
   int GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType);
+  int GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType);
   int GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE a2);
   enum CHARACTER_RACE GetRace() const;
   String GetRaceName() const;
@@ -592,16 +593,16 @@ struct Player
   unsigned int GetItemIDAtInventoryIndex(int *inout_item_cell);
   struct ItemGen *GetItemAtInventoryIndex(int *inout_item_cell);
   bool IsPlayerHealableByTemple();
-  int GetBaseIdentifyPrice(float a2);
-  int GetBaseRepairPrice(int a2, float a3);
-  int GetBaseBuyingPrice(int a2, float a3);
-  int GetBaseSellingPrice(int a2, float a3);
-  int GetPriceRepair(int a2, float a3);
-  int GetPriceIdentification(float a2);
+  int GetBaseIdentifyPrice(float price_multiplier);
+  int GetBaseRepairPrice(int uRealValue, float price_multiplier);
+  int GetBaseBuyingPrice(int uRealValue, float price_multiplier);
+  int GetBaseSellingPrice(int uRealValue, float price_multiplier);
+  int GetPriceRepair(int uRealValue, float price_multiplier);
+  int GetPriceIdentification(float price_multiplier);
   int GetBuyingPrice(unsigned int uRealValue, float price_multiplier);
-  int GetPriceSell(int uRealValue, float price_multiplier);
-  int GetTempleHealCostModifier(float a2);
-  int GetConditionDayOfWeek(unsigned int uCondition);
+  int GetPriceSell(ItemGen itemx, float price_multiplier);
+  int GetTempleHealCostModifier(float price_multi);
+  int GetConditionDaysPassed(unsigned int uCondition);
   bool NothingOrJustBlastersEquipped();
   void SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx);//0x4BE2DD
   bool Recover(signed int a2);
@@ -765,7 +766,7 @@ struct Player
       unsigned __int16 skillAlchemy;
       unsigned __int16 skillLearning;
     };
-    std::array<unsigned __int16, 37> pActiveSkills;
+    std::array<unsigned __int16, 37> pActiveSkills; // this encodes level and mastery using bitwise comparison   ( & 0x3F for level) ( & 0x1C0 mastery 1-4)
   };
   unsigned char _achieved_awards_bits[64];
   PlayerSpells spellbook;

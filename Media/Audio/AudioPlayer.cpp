@@ -219,7 +219,7 @@ __int16 SoundList::LoadSound(int a1, unsigned int a3)
 int SoundList::LoadSound(unsigned int a2, void *lpBuffer, int uBufferSizeLeft, int *pOutSoundSize, int a6)
 {
     void *v18; // ebx@19
-    int NumberOfBytesRead;
+//    int NumberOfBytesRead;
 
     if (!sNumSounds)
         return 0;
@@ -2152,7 +2152,7 @@ void AudioPlayer::StopChannels(int uStartChannel, int uEndChannel)
 //----- (004AB818) --------------------------------------------------------
 void AudioPlayer::LoadAudioSnd()
 {
-    int NumberOfBytesRead; // [sp+Ch] [bp-4h]@3
+//    int NumberOfBytesRead; // [sp+Ch] [bp-4h]@3
 
     hAudioSnd = fopen("Sounds\\Audio.snd", "rb");
     if (!hAudioSnd)
@@ -2269,7 +2269,7 @@ _DIG_DRIVER *Audio_GetFirstHardwareDigitalDriver(void)
 {
   int v0; // ecx@1
   size_t v2; // eax@4
-  signed int v3; // kr14_4@9
+//  signed int v3; // kr14_4@9
   int v5; // [sp+10h] [bp-Ch]@2
   unsigned int pNum_devices; // [sp+14h] [bp-8h]@1
   _DIG_DRIVER *hDrv; // [sp+18h] [bp-4h]@3

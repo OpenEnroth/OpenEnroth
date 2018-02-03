@@ -45,7 +45,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
   
   CastSpellInfo *pCastSpell; // ebx@2
   signed int spell_pointed_target; // eax@14
-  unsigned __int16 mastery_level; // cx@45
+//  unsigned __int16 mastery_level; // cx@45
   int monster_id; // ecx@184
   int spell_overlay_id; // eax@274
   int dist_X; // eax@278
@@ -115,16 +115,15 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
   ItemGen *v730c;
   int skill_level; // [sp+E6Ch] [bp-18h]@48
   signed int v732; // [sp+E70h] [bp-14h]@325
-  unsigned __int64 v733; // [sp+E74h] [bp-10h]@1
+  unsigned __int64 v733; // [sp+E74h] [bp-10h]@1 ??used sometimes for spell duration??
   int duration;
   signed int spell_targeted_at; // [sp+E7Ch] [bp-8h]@14
-  int amount; // [sp+E80h] [bp-4h]@1
+  int amount=0; // [sp+E80h] [bp-4h]@1
   int obj_type;
   ItemDesc* _item;
 
   SpriteObject pSpellSprite; // [sp+DDCh] [bp-A8h]@1
 
-  amount = 0;
   HEXRAYS_LODWORD(v733) = 0;
  
 
@@ -214,12 +213,12 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         which_skill = PLAYER_SKILL_BLASTER;
       else assert(false && "Unknown spell");
 
-      spell_level = (pPlayer->GetActualSkillLevel(which_skill)) & 0x3F;
-     
-      mastery_level = pPlayer->pActiveSkills[which_skill];
+	  spell_level = pPlayer->GetActualSkillLevel(which_skill);// &0x3F;
+	  skill_level = pPlayer->GetActualSkillMastery(which_skill);
+      //mastery_level = pPlayer->pActiveSkills[which_skill];
     }
 
-    skill_level = SkillToMastery(mastery_level);
+    //skill_level = SkillToMastery(mastery_level);
 
 	if (all_magic)// add all_magic clause
 	{
@@ -278,11 +277,14 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
     {
       case SPELL_101:
         assert(false && "Unknown spell effect #101 (prolly flaming bow arrow");
+
+
       case SPELL_BOW_ARROW://стрельба из лука
       {
         amount = 1;
-        if ( SkillToMastery(pPlayer->pActiveSkills[PLAYER_SKILL_BOW]) >= 3 )
+        if ( skill_level >= 3 )
           amount = 2;
+
         sRecoveryTime = pPlayer->GetAttackRecoveryTime(true);
         pSpellSprite.containing_item.Reset();
         pSpellSprite.spell_level = spell_level;
@@ -372,6 +374,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         spell_sound_flag = true;
         break;
       }
+
+
+
 
       case SPELL_FIRE_FIRE_SPIKE://огненный шип
       {
@@ -1268,6 +1273,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         spell_sound_flag = true;
         break;
       }
+
       case SPELL_AIR_SPARKS://Искры
       {
         switch (skill_level)

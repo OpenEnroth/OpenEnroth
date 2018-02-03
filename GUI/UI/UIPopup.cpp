@@ -1998,7 +1998,7 @@ void Inventory_ItemPopupAndAlchemy()
 
         if (damage_level > 0)
         {
-            pPlayers[uActiveCharacter]->RemoveItemAtInventoryIndex(pOut_y);
+			pPlayers[uActiveCharacter]->RemoveItemAtInventoryIndex(invMatrixIndex);//pOut_y); ?? quickfix needs checking
 
             if (damage_level == 1)
             {

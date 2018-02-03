@@ -484,7 +484,7 @@ void GUIWindow_House::Release()
 void GUIWindow::Release()
 {
   //GUIWindow *v1; // esi@1
-  int i; // edi@20
+//  int i; // edi@20
   //GUIButton *v8; // eax@26
   GUIButton *pNextBtn; // edi@27
   //int v10; // esi@28
@@ -539,7 +539,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport)
 {
   unsigned int v16; // esi@19
   GUIWindow current_window; // [sp+Ch] [bp-60h]@18
-  unsigned int v22; // [sp+74h] [bp+8h]@2
+//  unsigned int v22; // [sp+74h] [bp+8h]@2
 
   int x = 0;
   int y = 0;
@@ -1314,21 +1314,21 @@ GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
     //int *v8; // eax@1
     //GUIWindow *pWindow; // esi@4
     //int v10; // eax@4
-    unsigned int v11; // ebx@15
-    NPCData *speakingNPC; // ebp@15
-    int v14; // eax@20
-    int v16; // eax@25
-    int v18; // eax@30
-    int v20; // eax@35
-    int v22; // eax@40
-    int v24; // eax@45
+//    unsigned int v11; // ebx@15
+//    NPCData *speakingNPC; // ebp@15
+//    int v14; // eax@20
+//    int v16; // eax@25
+//    int v18; // eax@30
+//    int v20; // eax@35
+//    int v22; // eax@40
+//    int v24; // eax@45
     //  int v25; // eax@65
-    unsigned int v26; // ebx@65
-    char *v27; // eax@71
-    const char *v29; // [sp-8h] [bp-18h]@68
-    char *v30; // [sp-4h] [bp-14h]@68
+//    unsigned int v26; // ebx@65
+//    char *v27; // eax@71
+//    const char *v29; // [sp-8h] [bp-18h]@68
+//    char *v30; // [sp-4h] [bp-14h]@68
     //  int uWidtha; // [sp+14h] [bp+4h]@66
-    int num_menu_buttons; // [sp+20h] [bp+10h]@15
+//    int num_menu_buttons; // [sp+20h] [bp+10h]@15
 
     for (uNextFreeWindowID = 0; uNextFreeWindowID < 20; ++uNextFreeWindowID) // should this limit be 50  as pwindowlist is size 50??
     {
@@ -1606,14 +1606,14 @@ void OnCancel3::Update()
 void GUI_UpdateWindows()
 {
     GUIWindow *pWindow; // esi@4
-    const char *pHint; // edx@66
-    int v26; // eax@98
-    unsigned int v27; // ebp@106
-    GUIWindow *pGUIWindow2; // ecx@109
-    int v31; // eax@115
-    GUIButton *pButton; // ebp@118
-    int v39; // eax@129
-    GUIButton *pGUIButton; // ebp@146
+//    const char *pHint; // edx@66
+//    int v26; // eax@98
+//    unsigned int v27; // ebp@106
+//    GUIWindow *pGUIWindow2; // ecx@109
+//    int v31; // eax@115
+//    GUIButton *pButton; // ebp@118
+//    int v39; // eax@129
+//    GUIButton *pGUIButton; // ebp@146
     GUIButton GUIButton2; // [sp+28h] [bp-E0h]@133
     ItemGen ItemGen2; // [sp+E4h] [bp-24h]@129
 
@@ -2223,7 +2223,7 @@ void ClickNPCTopic(signed int uMessageParam)
 	char *v13; // eax@56
 	char *v14; // eax@57
 	char *v15; // eax@58
-	char *v17; // ecx@63
+//	char *v17; // ecx@63
 	signed int pPrice; // ecx@70
 	char *v22; // [sp-Ch] [bp-18h]@73
 	char *v24; // [sp-8h] [bp-14h]@73
@@ -2499,7 +2499,7 @@ _return:
 //But it the name gets immediately overwritten
 void _4B3FE5_training_dialogue(int a4)
 {
-	const char *v2; // edi@1
+//	const char *v2; // edi@1
 
 	//__debugbreak();
 	uDialogueType = DIALOGUE_SKILL_TRAINER;
@@ -2978,7 +2978,7 @@ String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, ItemGen 
 }
 
 //----- (00495461) --------------------------------------------------------
-String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, char *a4, int a5, GameTime *a6)
+String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, char *a4, int shop_screen, GameTime *a6)
 {
     char v1[256];
 	Player *pPlayer; // ebx@3
@@ -3006,12 +3006,12 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 	uint len = str.length();
 	for (int i = 0, dst = 0; i < len; ++i)
 	{
-		char c = str[i];
+		char c = str[i]; //skip through string till we find insertion point
 		if (c != '%')
-			result += c;
+			result += c; // add char to result string
 		else
 		{
-			v17 = 10 * (int)(str[i + 1] - '0') + str[i + 2] - '0';
+			v17 = 10 * (int)(str[i + 1] - '0') + str[i + 2] - '0'; //v17 tells what the gap needs filling with
             i += 2;
 
 			switch (v17)
@@ -3139,13 +3139,15 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 				else
                     result += localization->GetString(394);// "Unknown"
 				break;
-			case 24://название товара в продаже
+
+			case 24://item name
 				sprintf(v1, format_4E2D80, Color16(255, 255, 155), a3->GetDisplayName().c_str());
                 result += v1;
 				break;
-			case 25:
+
+			case 25: // base prices
 				v29 = pPlayer->GetBaseBuyingPrice(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
-				switch (a5)
+				switch (shop_screen)
 				{
 				case 3:
 					v29 = pPlayer->GetBaseSellingPrice(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
@@ -3163,29 +3165,32 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 				sprintf(v1, "%lu", v29);
                 result += v1;
 				break;
-			case 27://текст продажи
+
+			case 27://actual price
 				v29 = pPlayer->GetBuyingPrice(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
-				if (a5 == 3)
+				if (shop_screen == 3)
 				{
-					v29 = pPlayer->GetPriceSell(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
-					if (a3->IsBroken())
-						v29 = 1;
+					//v29 = pPlayer->GetPriceSell(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+					v29 = pPlayer->GetPriceSell(*a3, p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+					//if (a3->IsBroken())
+						//v29 = 1;
 					sprintf(v1, "%lu", v29);
                     result += v1;
 					break;
 				}
-				if (a5 != 4)
+				if (shop_screen != 4)
 				{
-					if (a5 == 5)
+					if (shop_screen == 5)
 						v29 = pPlayer->GetPriceRepair(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
 					else
 					{
-						if (a5 == 6)
+						if (shop_screen == 6)
 						{
-							v29 = pPlayer->GetPriceSell(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier) / 2;
-							if (a3->IsBroken())
-								v29 = 1;
-							if (!v29)
+							//v29 = pPlayer->GetPriceSell(a3->GetValue(), p2DEvents[(signed int)a4 - 1].fPriceMultiplier) / 2;
+							v29 = pPlayer->GetPriceSell(*a3, p2DEvents[(signed int)a4 - 1].fPriceMultiplier) / 2;
+							//if (a3->IsBroken())
+							//	v29 = 1;
+							if (!v29) // cannot be 0
 								v29 = 1;
 							sprintf(v1, "%lu", v29);
                             result += v1;
@@ -3199,10 +3204,12 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 				sprintf(v1, "%lu", pPlayer->GetPriceIdentification(p2DEvents[(signed int)a4 - 1].fPriceMultiplier));
                 result += v1;
 				break;
-			case 28: //профессия
+
+			case 28: //shop type - blacksmith ect..
                 result += p2DEvents[(signed int)a4 - 1].pProprieterTitle;
 				break;
-			case 29:
+
+			case 29: // identify cost
 				sprintf(v1, "%lu", pPlayer->GetPriceIdentification(p2DEvents[(signed int)a4 - 1].fPriceMultiplier));
                 result += v1;
 				break;

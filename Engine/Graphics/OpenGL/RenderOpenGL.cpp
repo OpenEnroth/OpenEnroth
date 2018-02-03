@@ -49,7 +49,7 @@ void RenderOpenGL::_49FD3A_fullscreen() { __debugbreak(); }
 bool RenderOpenGL::InitializeFullscreen() { __debugbreak(); return 0; }
 void RenderOpenGL::CreateZBuffer()
 {
-    pActiveZBuffer = (int *)malloc(0x12C000);
+    pActiveZBuffer = (int *)malloc(0x12C000); // 640 * 480 * 4
     memset32(pActiveZBuffer, 0xFFFF0000, 0x4B000u); //    // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
 }
 void RenderOpenGL::Release() { __debugbreak(); }

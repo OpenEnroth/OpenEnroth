@@ -43,24 +43,15 @@
 NZIArray<struct Player *, 5> pPlayers;
 
 
-/*  381 */
-#pragma pack(push, 1)
-struct PlayerCreation_AttributeProps
-{
-  unsigned __int8 uBaseValue;
-  char uMaxValue;
-  char uDroppedStep;
-  char uBaseStep;
+// Race Stat Points Bonus/ Penalty
+struct PlayerCreation_AttributeProps {
+	unsigned char uBaseValue;
+	unsigned char uMaxValue;
+	unsigned char uDroppedStep;
+	unsigned char uBaseStep;
 };
-#pragma pack(pop)
 
-
-#pragma pack(push, 1)
-
-
-
-#pragma pack(pop)
-PlayerCreation_AttributeProps StatTable[4][7] = //0x4ED7B0
+PlayerCreation_AttributeProps StatTable[4][7] = // [human , elf, goblin, dwarf] [might, int, per , end, acc, speed, luck]
 {
   {{11, 25, 1, 1}, {11, 25, 1, 1}, {11, 25, 1, 1}, { 9, 25, 1, 1}, {11, 25, 1, 1}, {11, 25, 1, 1}, {9, 25, 1, 1},},
   {{ 7, 15, 2, 1}, {14, 30, 1, 2}, {11, 25, 1, 1}, { 7, 15, 2, 1}, {14, 30, 1, 2}, {11, 25, 1, 1}, {9, 20, 1, 1},},
@@ -69,11 +60,9 @@ PlayerCreation_AttributeProps StatTable[4][7] = //0x4ED7B0
 };
 
 
-
 std::array<int, 5> StealingMasteryBonuses = {0, 100, 200, 300, 500};  //dword_4EDEA0        //the zeroth element isn't accessed, it just helps avoid -1 indexing, originally 4 element array off by one
 std::array<int, 5> StealingRandomBonuses = {-200, -100, 0, 100, 200};  //dword_4EDEB4
 std::array<int, 5> StealingEnchantmentBonusForSkill = {0, 2, 4, 6, 10}; //dword_4EDEC4      //the zeroth element isn't accessed, it just helps avoid -1 indexing, originally 4 element array off by one
-
 
 
  // available skills per class ( 9 classes X 37 skills )
@@ -170,257 +159,277 @@ unsigned short base_recovery_times_per_weapon_type[12] =
 };
 
 //----- (00490913) --------------------------------------------------------
-int PlayerCreation_GetUnspentAttributePointCount()
-{
-  signed int v0; // edi@1
-  int raceId; // ebx@2
-  signed int v4; // eax@17
-  int v5; // edx@18
-  signed int v6; // ecx@18
-  signed int remainingStatPoints; // [sp+Ch] [bp-8h]@1
+int PlayerCreation_GetUnspentAttributePointCount() {
+	
+	int CurrentStatValue = 50;
+	int RemainingStatPoints = 50;
+	int raceId;
+	int StatBaseValue;
+	int PenaltyMult;
+	int BonusMult;
 
-  remainingStatPoints = 50;
-  v0 = 50;
-  for (int playerNum = 0; playerNum < 4; playerNum++)
-  {
-    raceId = pParty->pPlayers[playerNum].GetRace();
-    for (int statNum = 0; statNum <= 6; statNum++)
-    {
-      switch ( statNum )
-      {
-      case 0:
-        v0 = pParty->pPlayers[playerNum].uMight;
-        break;
-      case 1:
-        v0 = pParty->pPlayers[playerNum].uIntelligence;
-        break;
-      case 2:
-        v0 = pParty->pPlayers[playerNum].uWillpower;
-        break;
-      case 3:
-        v0 = pParty->pPlayers[playerNum].uEndurance;
-        break;
-      case 4:
-        v0 = pParty->pPlayers[playerNum].uAccuracy;
-        break;
-      case 5:
-        v0 = pParty->pPlayers[playerNum].uSpeed;
-        break;
-      case 6:
-        v0 = pParty->pPlayers[playerNum].uLuck;
-        break;
-      }
-      v4 = StatTable[raceId][statNum].uBaseValue;
-      if ( v0 >= v4 )
-      {
-        v5 = StatTable[raceId][statNum].uDroppedStep;
-        v6 = StatTable[raceId][statNum].uBaseStep;
-      }
-      else
-      {
-        v5 = StatTable[raceId][statNum].uBaseStep;
-        v6 = StatTable[raceId][statNum].uDroppedStep;
-      }
-      remainingStatPoints += v5 * (v4 - v0) / v6;
-    }
-  }
-  return remainingStatPoints;
+	for (int playerNum = 0; playerNum < 4; playerNum++) {
+		raceId = pParty->pPlayers[playerNum].GetRace();
+	  
+		for (int statNum = 0; statNum <= 6; statNum++) {
+			switch ( statNum ) {
+				case 0:
+					CurrentStatValue = pParty->pPlayers[playerNum].uMight;
+					break;
+				case 1:
+					CurrentStatValue = pParty->pPlayers[playerNum].uIntelligence;
+					break;
+				case 2:
+					CurrentStatValue = pParty->pPlayers[playerNum].uWillpower;
+					break;
+				case 3:
+					CurrentStatValue = pParty->pPlayers[playerNum].uEndurance;
+					break;
+				case 4:
+					CurrentStatValue = pParty->pPlayers[playerNum].uAccuracy;
+					break;
+				case 5:
+					CurrentStatValue = pParty->pPlayers[playerNum].uSpeed;
+					break;
+				case 6:
+					CurrentStatValue = pParty->pPlayers[playerNum].uLuck;
+					break;
+			}
+
+			StatBaseValue = StatTable[raceId][statNum].uBaseValue;
+
+			if (CurrentStatValue >= StatBaseValue) { // bonus or penalty increase
+				PenaltyMult = StatTable[raceId][statNum].uDroppedStep;
+				BonusMult = StatTable[raceId][statNum].uBaseStep;
+			}
+			else { // less than base
+				PenaltyMult = StatTable[raceId][statNum].uBaseStep;
+				BonusMult = StatTable[raceId][statNum].uDroppedStep;
+			}
+
+			RemainingStatPoints += PenaltyMult * (StatBaseValue - CurrentStatValue) / BonusMult;
+
+		}
+	}
+
+  return RemainingStatPoints;
 }
 
 //----- (00427730) --------------------------------------------------------
-bool Player::CanCastSpell(unsigned int uRequiredMana)
-{
-  if (sMana >= (signed int)uRequiredMana)
-  {
-    sMana -= (signed int)uRequiredMana;
-    return true;
-  }
+bool Player::CanCastSpell(unsigned int uRequiredMana) {
+	
+	if (sMana >= uRequiredMana) { // enough mana
+		sMana -= uRequiredMana;	// removes mana
+		return true;
+	}
 
-  pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
-  return false;
+	// not enough mana
+	pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
+	return false;
+
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Player::SalesProcess( unsigned int inventory_idnx, int item_index, int _2devent_idx )
-    {
-  float v6; // ST04_4@1
-  signed int item_value; // eax@1
-  signed int sell_price; // ebx@1
+void Player::SalesProcess( unsigned int inventory_idnx, int item_index, int _2devent_idx ) {
 
-  item_value =pOwnItems[item_index].GetValue();
-  v6 = p2DEvents[ _2devent_idx - 1].fPriceMultiplier;
-  sell_price = GetPriceSell(item_value, v6);
-  if ( pOwnItems[item_index].IsBroken() )
-    sell_price = 1;
-  if ( sell_price < 1 )
-    sell_price = 1;
-  RemoveItemAtInventoryIndex(inventory_idnx);
-  Party::SetGold(pParty->uNumGold + sell_price);
+	float shop_mult = p2DEvents[_2devent_idx - 1].fPriceMultiplier;
+	int sell_price = GetPriceSell(pOwnItems[item_index], shop_mult);
+
+	//remove item and add gold
+	RemoveItemAtInventoryIndex(inventory_idnx);
+	Party::SetGold(pParty->uNumGold + sell_price);
+
 }
 
 //----- (0043EEF3) --------------------------------------------------------
-bool Player::NothingOrJustBlastersEquipped()
-{
-  signed int item_idx; // esi@1
-  signed int item_id; // esi@1
-  for (int i = 0; i < 16; ++i)
-  {
-    item_idx = pEquipment.pIndices[i];
-    if (item_idx)
-    {
-      item_id = pOwnItems[item_idx - 1].uItemID;
-      if ( item_id != ITEM_BLASTER && item_id != ITEM_LASER_RIFLE ) //blaster& blaster rifle
-          return false;
-    }
-  }
-  return true;
+bool Player::NothingOrJustBlastersEquipped() {
+
+	signed int item_idx;
+	signed int item_id;
+
+	//scan through all equipped items
+	for (int i = 0; i < 16; ++i) {
+		item_idx = pEquipment.pIndices[i];
+
+		if (item_idx) {
+			item_id = pOwnItems[item_idx - 1].uItemID;
+			
+			if ( item_id != ITEM_BLASTER && item_id != ITEM_LASER_RIFLE ) //soemthing other than blaster& blaster rifle
+				return false;
+		}
+	}
+
+	// nothing or just blaster equipped
+	return true;
 }
 
 //----- (004B8040) --------------------------------------------------------
-int Player::GetConditionDayOfWeek(unsigned int condition)
-{
-    return this->conditions_times[condition].GetDays() % 7 + 1;
+int Player::GetConditionDaysPassed(unsigned int condition) { // ?? is this the intedned behavior
+
+	if (this->conditions_times[condition].Valid() == false)
+		return 0;
+	
+	GameTime playtime = pParty->GetPlayingTime();
+	GameTime condtime = this->conditions_times[condition];
+	GameTime diff = playtime - condtime;
+
+	return diff.GetDays() + 1;
+
 }
 
 //----- (004B807C) --------------------------------------------------------
-int Player::GetTempleHealCostModifier(float a2)
-{
-  unsigned int conditionIdx; // eax@1
-  int conditionTimeMultiplier; // esi@1
-  int v6; // eax@8
-  signed int result; // qax@13
-  signed int baseConditionMultiplier; // [sp+8h] [bp-8h]@4
+int Player::GetTempleHealCostModifier(float price_multi) {
 
-  conditionIdx = GetMajorConditionIdx();
-  if ( conditionIdx >= 14 && conditionIdx <= 16)
-  {
-    if ( conditionIdx <= 15 )
-      baseConditionMultiplier = 5;
-    else //if ( conditionIdx == 16 )
-      baseConditionMultiplier = 10;
-    conditionTimeMultiplier = GetConditionDayOfWeek(conditionIdx);
-  }
-  else 
-  {
-    conditionTimeMultiplier = 1;
-    baseConditionMultiplier = 1;
-    if (conditionIdx < 14)
-    {
-      for (int i = 0; i <= 13; i++)
-      {
-        v6 = GetConditionDayOfWeek(i);
-        if ( v6 > conditionTimeMultiplier )
-          conditionTimeMultiplier = v6;
-      }
-    }
-  }
-  result = (int)((double)conditionTimeMultiplier * (double)baseConditionMultiplier * a2);
-  if ( result < 1 )
-    result = 1;
-  return result;
+	unsigned int conditionIdx = GetMajorConditionIdx(); // get worse condition
+	int conditionTimeMultiplier = 1; 
+	int baseConditionMultiplier = 1; // condition good unless otherwise , base price for health and mana
+	int high_mult;
+	int result;
+
+	if ( conditionIdx >= 14 && conditionIdx <= 16) { // dead, petri, erad - serious
+
+		if ( conditionIdx <= 15 )
+			baseConditionMultiplier = 5;	// dead or petri
+		else
+			baseConditionMultiplier = 10; // erad
+
+		conditionTimeMultiplier = GetConditionDaysPassed(conditionIdx);
+
+	}
+
+	else if (conditionIdx < 14) { // all other conditions
+
+		for (int i = 0; i <= 13; i++) {
+
+			high_mult = GetConditionDaysPassed(i);
+
+			if ( high_mult > conditionTimeMultiplier ) // get worst other condition
+				conditionTimeMultiplier = high_mult;
+
+		}
+	}
+
+	result = (int)((double)conditionTimeMultiplier * (double)baseConditionMultiplier * price_multi); // calc heal price
+
+	if ( result < 1 ) // min cost
+		result = 1;
+
+	if (result > 10000) // max cost
+		result = 10000;
+
+	return result;
+
 }
 
 //----- (004B8102) --------------------------------------------------------
-int Player::GetPriceSell(int uRealValue, float price_multiplier)
-{
-  signed int v3; // esi@1
-  signed int result; // eax@3
+int Player::GetPriceSell( ItemGen itemx, float price_multiplier) {
 
-  v3 = (signed int)((signed __int64)((double)uRealValue / (price_multiplier + 2.0)) + uRealValue * GetMerchant() / 100);
-  if ( v3 > uRealValue )
-    v3 = uRealValue;
-  result = 1;
-  if ( v3 >= 1 )
-    result = v3;
-  return result;
+	int uRealValue = itemx.GetValue();
+	signed int result = (signed int) ( ( (double)uRealValue / (price_multiplier + 2.0) ) + uRealValue * GetMerchant() / 100);
+
+	if ( result > uRealValue )
+		result = uRealValue;
+
+	if (itemx.IsBroken())
+		result = 1;
+
+	if (result < 1)
+		result = 1;
+
+	return result;
+
 }
 
 //----- (004B8142) --------------------------------------------------------
-int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier)
-{
-  uint price = (uint)(((100 - GetMerchant()) * (uRealValue * price_multiplier)) / 100);
+int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier) {
 
-  if (price < uRealValue)
-    price = uRealValue;
-  return price;
+	uint price = (uint)(((100 - GetMerchant()) * (uRealValue * price_multiplier)) / 100);
+
+	if (price < uRealValue) // price should always be at least item value
+		price = uRealValue;
+
+	return price;
+
 }
 
 //----- (004B8179) --------------------------------------------------------
-int Player::GetPriceIdentification(float a2)
-{
-  signed int v2; // esi@1
-  int v3; // ecx@1
-  signed int result; // eax@3
+int Player::GetPriceIdentification(float price_multiplier) {
 
-  v2 = (signed int)(a2 * 50.0);
-  v3 = v2 * (100 - GetMerchant()) / 100;
-  if ( v3 < v2 / 3 )
-    v3 = v2 / 3;
-  result = 1;
-  if ( v3 >= 1 )
-    result = v3;
-  return result;
+	signed int basecost = (price_multiplier * 50.0);
+	int actcost = basecost * (100 - GetMerchant()) / 100;
+	
+	if ( actcost < basecost / 3 ) // minimum price
+		actcost = basecost / 3;
+
+	if (actcost > 1)
+		return actcost;
+	else
+		return 1;
+
 }
 
 //----- (004B81C3) --------------------------------------------------------
-int Player::GetPriceRepair(int a2, float a3)
-{
-  signed int v3; // esi@1
-  int v4; // ecx@1
-  signed int result; // eax@3
+int Player::GetPriceRepair(int uRealValue, float price_multiplier) {
 
-  v3 = (signed int)((double)a2 / (6.0 - a3));
-  v4 = v3 * (100 - GetMerchant()) / 100;
-  if ( v4 < v3 / 3 )
-    v4 = v3 / 3;
-  result = 1;
-  if ( v4 >= 1 )
-    result = v4;
-  return result;
+	signed int basecost = (uRealValue / (6.0 - price_multiplier));
+	int actcost = basecost * (100 - GetMerchant()) / 100;
+
+	if (actcost < basecost / 3) // min price
+		actcost = basecost / 3;
+
+	if (actcost > 1)
+		return actcost;
+	else
+		return 1;
+
 }
 
 //----- (004B8213) --------------------------------------------------------
-int Player::GetBaseSellingPrice(int a2, float a3)
-{
-  signed int v3; // qax@1
+int Player::GetBaseSellingPrice(int uRealValue, float price_multiplier) {
 
-  v3 = (signed int)((double)a2 / (a3 + 2.0));
-  if ( v3 < 1 )
-    v3 = 1;
-  return v3;
+	signed int basecost = (uRealValue / (price_multiplier + 2.0));
+
+	if ( basecost < 1 ) // min price
+		basecost = 1;
+
+	return basecost;
+
 }
 
 //----- (004B8233) --------------------------------------------------------
-int Player::GetBaseBuyingPrice(int a2, float a3)
-{
-  signed int v3; // qax@1
+int Player::GetBaseBuyingPrice(int uRealValue, float price_multiplier) {
 
-  v3 = (signed int)((double)a2 * a3);
-  if ( v3 < 1 )
-    v3 = 1;
-  return v3;
+	signed int basecost = uRealValue * price_multiplier;
+
+	if ( basecost < 1 ) // min price
+		basecost = 1;
+
+	return basecost;
+
 }
 
 //----- (004B824B) --------------------------------------------------------
-int Player::GetBaseIdentifyPrice(float a2)
-{
-  signed int v2; // qax@1
+int Player::GetBaseIdentifyPrice(float price_multiplier) {
 
-  v2 = (signed int)(a2 * 50.0);
-  if ( v2 < 1 )
-    v2 = 1;
-  return v2;
+	signed int basecost = price_multiplier * 50.0;
+
+	if ( basecost < 1 ) // min price
+		basecost = 1;
+
+	return basecost;
+
 }
 
 //----- (004B8265) --------------------------------------------------------
-int Player::GetBaseRepairPrice(int a2, float a3)
-{
-  signed int v3; // qax@1
+int Player::GetBaseRepairPrice(int uRealValue, float price_multiplier) {
 
-  v3 = (signed int)((double)a2 / (6.0 - a3));
-  if ( v3 < 1 )
-    v3 = 1;
-  return v3;
+	signed int basecost = (uRealValue / (6.0 - price_multiplier));
+
+	if ( basecost < 1 ) // min price
+		basecost = 1;
+
+	return basecost;
+
 }
 
 //----- (004B6FF9) --------------------------------------------------------
@@ -471,7 +480,7 @@ unsigned int Player::GetItemIDAtInventoryIndex(int *inout_item_cell)
 }
 
 //----- (004160CA) --------------------------------------------------------
-void Player::ItemsEnchant( int enchant_count )
+void Player::ItemsEnchant( int enchant_count ) // falied potion mixing damage
     {
   int avalible_items; // ebx@1
   int i; // edx@8
@@ -493,12 +502,12 @@ void Player::ItemsEnchant( int enchant_count )
       for ( i = 0; i < enchant_count; ++i )
       {
         if (!(pInventoryItemList[item_index_tabl[i]].uAttributes&ITEM_HARDENED))
-          pInventoryItemList[item_index_tabl[rand() % avalible_items]].uAttributes |= ITEM_HARDENED; 
+          pInventoryItemList[item_index_tabl[rand() % avalible_items]].uAttributes |= ITEM_HARDENED; // this should break things not harden them??
       }
     }
     else
     {
-      for ( i = 0; i < avalible_items; ++i )
+      for ( i = 0; i < avalible_items; ++i ) // break everything
       {
           pInventoryItemList[item_index_tabl[i]].uAttributes |= ITEM_HARDENED;
       }
@@ -1037,10 +1046,10 @@ int Player::SelectPhrasesTransaction(ItemGen *pItem, int building_type, int Buil
       price = GetBuyingPrice(itemValue, multiplier);
     break;
     case 3:
-      if (pItem->IsBroken())
-        price = 1;
-      else
-        price = this->GetPriceSell(itemValue, multiplier);
+      //if (pItem->IsBroken())
+        //price = 1;
+      //else
+		price = this->GetPriceSell(*pItem, multiplier);//itemValue, multiplier);
     break;
     case 4:
       price = this->GetPriceIdentification(multiplier);
@@ -2909,7 +2918,7 @@ unsigned int Player::GetMajorConditionIdx()
         if (conditions_times[pConditionImportancyTable[i]].Valid())
             return pConditionImportancyTable[i];
     }
-    return 18;
+    return 18; // condition good
 }
 
 //----- (0048EA1B) --------------------------------------------------------
@@ -3290,7 +3299,7 @@ int Player::GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2)
 }
 
 //----- (0048F882) --------------------------------------------------------
-int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType )
+int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType ) // bitwise check & 0x3F when using this can now be removed
 {
   signed int bonus_value; // esi@1
   unsigned __int16 skill_value; // ax@126
@@ -3494,14 +3503,32 @@ int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType )
     break;
   }
 
-  skill_value = pActiveSkills[uSkillType];
-  if ( bonus_value + (skill_value & 0x3F) < 60 )
-    result = bonus_value + skill_value;
-  else
-    result = skill_value & 0xFFFC | 0x3C; //al
+  // cap skill and bonus at 60
+  skill_value = pActiveSkills[uSkillType] & 0x3F;
+  result = bonus_value + skill_value;
+
+  if (result > 60) result = 60;
+
+
+ // if ( bonus_value + (skill_value & 0x3F) < 60 )
+ // /  result = 
+ // else
+ //   result = skill_value & 0xFFFC | 0x3C; //al
   return result;
 }
 
+
+int Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) {
+	switch (uSkillType & 0x1C0)	{
+		case 0x100: return 4;     // Grandmaster
+		case 0x80:  return 3;     // Master
+		case 0x40:  return 2;     // Expert
+		case 0x00:  return 1;     // Normal
+	}
+
+	assert(false);
+	return 0;
+}
 
 //----- (0048FC00) --------------------------------------------------------
 int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move the individual implementations to attribute classes once possible
@@ -4298,7 +4325,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
     int v16; // edx@73
     unsigned __int16 v17; // edi@73
     unsigned int v18; // eax@73
-    const char *v22; // eax@84
+//    const char *v22; // eax@84
     int scroll_id; // esi@96
     int v25; // eax@109
     int v26; // eax@113
@@ -8291,7 +8318,7 @@ void Player::_42FA66_do_explosive_impact(int a1, int a2, int a3, int a4, __int16
 }
 
 //----- (00458244) --------------------------------------------------------
-unsigned int SkillToMastery( unsigned int skill_value )
+unsigned int SkillToMastery( unsigned int skill_value ) //attempt to depreciate ?
 {
   switch (skill_value & 0x1C0)
   {

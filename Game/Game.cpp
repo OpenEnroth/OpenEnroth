@@ -164,21 +164,21 @@ void Game_OnEscape()
 void Game_EventLoop()
 {
     unsigned int v2; // edx@7
-    Actor *pActor; // ecx@13
-    int v4; // ecx@18
-    unsigned int v10; // ecx@73
-    int v14; // eax@98
-    int v18; // eax@106
-    float v19; // ST64_4@121
-    float v21; // ST64_4@126
-    float v22; // ST64_4@127
-    unsigned int v24; // ecx@149
+//    Actor *pActor; // ecx@13
+//    int v4; // ecx@18
+//    unsigned int v10; // ecx@73
+//    int v14; // eax@98
+//    int v18; // eax@106
+//    float v19; // ST64_4@121
+//    float v21; // ST64_4@126
+//    float v22; // ST64_4@127
+//    unsigned int v24; // ecx@149
     GUIWindow *pWindow2; // ecx@248
-    bool pKeyBindingFlag; // eax@269
-    unsigned int v33; // eax@277
+//    bool pKeyBindingFlag; // eax@269
+//    unsigned int v33; // eax@277
     int v37; // eax@341
     int v38; // eax@358
-    short v39; // ax@365
+//    short v39; // ax@365
     char *v41; // eax@380
     int v42; // eax@396
     signed int v44; // eax@398
@@ -235,15 +235,15 @@ void Game_EventLoop()
     unsigned int v115; // eax@764
     unsigned int v118; // eax@785
     unsigned int v119; // ecx@786
-    unsigned int v121; // [sp-28h] [bp-624h]@711
-    unsigned int v123; // [sp-24h] [bp-620h]@711
-    unsigned int v125; // [sp-20h] [bp-61Ch]@711
+//    unsigned int v121; // [sp-28h] [bp-624h]@711
+//    unsigned int v123; // [sp-24h] [bp-620h]@711
+//    unsigned int v125; // [sp-20h] [bp-61Ch]@711
     int v127; // [sp-1Ch] [bp-618h]@107
-    unsigned int v128; // [sp-1Ch] [bp-618h]@711
+//    unsigned int v128; // [sp-1Ch] [bp-618h]@711
     GUIButton *pButton2; // [sp-4h] [bp-600h]@59
-    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
+//    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
     char *v173; // [sp+0h] [bp-5FCh]@444
-    signed int thisb; // [sp+14h] [bp-5E8h]@272
+//    signed int thisb; // [sp+14h] [bp-5E8h]@272
     Player *pPlayer7; // [sp+14h] [bp-5E8h]@373
     Player *pPlayer8; // [sp+14h] [bp-5E8h]@377
     char *pMapName; // [sp+14h] [bp-5E8h]@445
@@ -257,7 +257,7 @@ void Game_EventLoop()
     int uAction; // [sp+1Ch] [bp-5E0h]@18
     NPCData *pNPCData4; // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds; // [sp+24h] [bp-5D8h]@18
-    char v197; // [sp+2Bh] [bp-5D1h]@101
+//    char v197; // [sp+2Bh] [bp-5D1h]@101
     enum UIMessageType uMessage; // [sp+2Ch] [bp-5D0h]@7
     unsigned int v199; // [sp+30h] [bp-5CCh]@7
     char *v200; // [sp+34h] [bp-5C8h]@518

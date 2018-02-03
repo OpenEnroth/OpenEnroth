@@ -1737,7 +1737,7 @@ bool MM_Main(const wchar_t *pCmdLine)
 //----- (00466082) --------------------------------------------------------
 void MM6_Initialize()
 {
-    size_t v2; // eax@31
+//    size_t v2; // eax@31
     size_t v3; // ebx@32
     size_t v4; // edi@36
     char pDefaultGroundTexture[16]; // [sp+FCh] [bp-8Ch]@32
@@ -2314,7 +2314,7 @@ void back_to_game()
 //----- (00494035) --------------------------------------------------------
 void _494035_timed_effects__water_walking_damage__etc()
 {
-    unsigned int v4; // edi@1
+//    unsigned int v4; // edi@1
     int v24; // ecx@60
     int v26; // ecx@64
     int v28; // ecx@68
@@ -2942,7 +2942,7 @@ void sub_491E3A()
     signed int v1; // esi@3
     unsigned int v3; // eax@7
     unsigned int v4; // edx@8
-    int v6; // edi@17
+//    int v6; // edi@17
 
     //__debugbreak();//Ritor1
     for (uint pl = 0; pl < 4; pl++)
