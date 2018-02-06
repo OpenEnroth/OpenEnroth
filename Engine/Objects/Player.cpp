@@ -433,30 +433,29 @@ int Player::GetBaseRepairPrice(int uRealValue, float price_multiplier) {
 }
 
 //----- (004B6FF9) --------------------------------------------------------
-bool Player::IsPlayerHealableByTemple()
-{
-  if (this->sHealth >= GetMaxHealth() && this->sMana >= GetMaxMana() && GetMajorConditionIdx() == Condition_Good)
-    return false;
-  else
-  {
-    if (GetMajorConditionIdx() == Condition_Zombie)
-    {
-      if (((signed int)window_SpeakInHouse->ptr_1C == 78 || (signed int)window_SpeakInHouse->ptr_1C == 81 || (signed int)window_SpeakInHouse->ptr_1C == 82))
-        return false;
-      else
-        return true;
-    }
-    else
-      return true;
-  }
+bool Player::IsPlayerHealableByTemple() {
+
+	if (this->sHealth >= GetMaxHealth() && this->sMana >= GetMaxMana() && GetMajorConditionIdx() == Condition_Good)
+		return false; // fully healthy
+	
+	else {
+		 if (GetMajorConditionIdx() == Condition_Zombie) {
+			 if (((signed int)window_SpeakInHouse->ptr_1C == 78 || (signed int)window_SpeakInHouse->ptr_1C == 81 || (signed int)window_SpeakInHouse->ptr_1C == 82))
+				 return false; // zombie cant be healed at these tmeples
+			 else
+				 return true;
+		}
+		else
+			return true;
+	}
 }
 
 
-ItemGen *Player::GetItemAtInventoryIndex(int *inout_item_cell)
-{
+ItemGen *Player::GetItemAtInventoryIndex(int *inout_item_cell) {
+
     int inventory_index = this->GetItemIDAtInventoryIndex(inout_item_cell);
-    if (!inventory_index)
-    {
+    
+	if (!inventory_index) {
         return nullptr;
     }
 
@@ -464,55 +463,54 @@ ItemGen *Player::GetItemAtInventoryIndex(int *inout_item_cell)
 }
 
 //----- (00421E75) --------------------------------------------------------
-unsigned int Player::GetItemIDAtInventoryIndex(int *inout_item_cell)
-{
+unsigned int Player::GetItemIDAtInventoryIndex(int *inout_item_cell) {
+
     int cell_idx = *inout_item_cell;
     if (cell_idx > 125 || cell_idx < 0)
         return 0;
 
     int inventory_index = this->pInventoryMatrix[cell_idx];
-    if (inventory_index < 0)
-    {
+    if (inventory_index < 0) {
         *inout_item_cell = -1 - inventory_index;
         inventory_index = this->pInventoryMatrix[-1 - inventory_index];
     }
+
     return inventory_index;
 }
 
 //----- (004160CA) --------------------------------------------------------
-void Player::ItemsEnchant( int enchant_count ) // falied potion mixing damage
-    {
-  int avalible_items; // ebx@1
-  int i; // edx@8
-  __int16 item_index_tabl[138]; // [sp+Ch] [bp-118h]@1
- 
-  avalible_items = 0;
-  memset (item_index_tabl,0,sizeof(item_index_tabl));
+void Player::ItemsPotionDmgBreak( int enchant_count ) { // falied potion mixing damage
 
-  for (i = 0; i < 138; ++i)
-  {
-    if (( pOwnItems[i].uItemID>0)&&(pOwnItems[i].uItemID <= 134))
-      item_index_tabl[avalible_items++] = i;
-  }
+	int avalible_items = 0;
 
-  if ( avalible_items )
-  {
-    if ( enchant_count )
-    {
-      for ( i = 0; i < enchant_count; ++i )
-      {
-        if (!(pInventoryItemList[item_index_tabl[i]].uAttributes&ITEM_HARDENED))
-          pInventoryItemList[item_index_tabl[rand() % avalible_items]].uAttributes |= ITEM_HARDENED; // this should break things not harden them??
-      }
-    }
-    else
-    {
-      for ( i = 0; i < avalible_items; ++i ) // break everything
-      {
-          pInventoryItemList[item_index_tabl[i]].uAttributes |= ITEM_HARDENED;
-      }
-    }
-  }
+	__int16 item_index_tabl[138]; // table holding items
+	memset (item_index_tabl,0,sizeof(item_index_tabl)); // set to zero
+
+	for (int i = 0; i < 138; ++i) { // scan through and log in table
+
+		if (( pOwnItems[i].uItemID>0)&&(pOwnItems[i].uItemID <= 134))
+			item_index_tabl[avalible_items++] = i;
+	}
+
+	if ( avalible_items ) { // is there anything to break
+		if ( enchant_count ) { 
+
+			for ( int i = 0; i < enchant_count; ++i ) {
+
+				int indexbreak = item_index_tabl[rand() % avalible_items]; // random item
+
+				if (!(pInventoryItemList[indexbreak].uAttributes&ITEM_HARDENED)) // if its not hardened
+					pInventoryItemList[indexbreak].uAttributes |= ITEM_BROKEN; // break it
+			}
+		}
+		else {
+		
+			for ( int i = 0; i < avalible_items; ++i ) { // break everything
+
+				pInventoryItemList[item_index_tabl[i]].uAttributes |= ITEM_BROKEN;
+			}
+		}
+	}
 }
 
 //----- (004948B1) --------------------------------------------------------
@@ -650,19 +648,18 @@ bool Player::ProfessionOrGuildFlagsCorrect( unsigned int uClass, int a3 )
 
 
 //----- (00492C0B) --------------------------------------------------------
-bool Player::CanAct()
-{
-  if ( this->IsAsleep() || this->IsParalyzed() || 
-       this->IsUnconcious() || this->IsDead() || 
-       this->IsPertified() || this->IsEradicated() )
-    return false;
-  else
-    return true;
+bool Player::CanAct() {
+
+	if ( this->IsAsleep() || this->IsParalyzed() || this->IsUnconcious()
+		|| this->IsDead() || this->IsPertified() || this->IsEradicated() )
+
+		return false;
+	else
+		return true;
 }
 
 //----- (00492C40) --------------------------------------------------------
-bool Player::CanSteal()
-{
+bool Player::CanSteal() {
   return GetActualSkillLevel(PLAYER_SKILL_STEALING) != 0;
 }
 
@@ -813,53 +810,50 @@ bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID) {
 
 
 //----- (004925E6) --------------------------------------------------------
-int Player::FindFreeInventoryListSlot()
-{
-  for (int i = 0; i < 126; i++ )
-  {
-    if (pInventoryItemList[i].uItemID == ITEM_NULL)
-    {
-      return i;
-    }
-  }
-  return -1;
+int Player::FindFreeInventoryListSlot() {
+
+	for (int i = 0; i < 126; i++ ) {
+		if (pInventoryItemList[i].uItemID == ITEM_NULL) {
+			return i; // space at i
+		}
+	}
+
+  return -1; // no room
 }
 
 //----- (00492600) --------------------------------------------------------
-int Player::CreateItemInInventory(unsigned int uSlot, unsigned int uItemID)
-{
-  int result; // eax@8
-  signed int freeSlot; // [sp+8h] [bp-4h]@4
+int Player::CreateItemInInventory(unsigned int uSlot, unsigned int uItemID) {
 
-  freeSlot = FindFreeInventoryListSlot();
-  if ( freeSlot == -1 )
-  {
-    if ( uActiveCharacter )
-      pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
-    return 0;
-  }
-  else
-  {
-    PutItemArInventoryIndex(uItemID, freeSlot, uSlot);
-    result = freeSlot + 1;
-    this->pInventoryItemList[freeSlot].uItemID = uItemID;
-  }
-  return result;
+	int result;
+	signed int freeSlot = FindFreeInventoryListSlot();
+
+	if ( freeSlot == -1 ) { // no room
+		if ( uActiveCharacter )
+			pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
+
+		return 0;
+	}
+	else { // place items
+		PutItemArInventoryIndex(uItemID, freeSlot, uSlot);
+		result = freeSlot + 1;
+		this->pInventoryItemList[freeSlot].uItemID = uItemID;
+	}
+
+  return result; // return slot id
 }
 
 
 //----- (00492700) --------------------------------------------------------
-int Player::HasSkill(unsigned int uSkillType)
-{
-    if (uSkillType >= 37 || this->pActiveSkills[uSkillType])
-    {
-        return 1;
+int Player::HasSkill(unsigned int uSkillType) {
+
+	if (uSkillType >= 37 || this->pActiveSkills[uSkillType]) {
+		return 1;
     }
-    else
-    {
+    else {
         GameUI_StatusBar_OnEvent(localization->FormatString(67, this->pName));
         return 0;
     }
+
 }
 
 
@@ -880,33 +874,30 @@ void Player::WearItem(unsigned int uItemID)
 }
 
 //----- (004927A8) --------------------------------------------------------
-int Player::AddItem(int index, unsigned int uItemID)
-{
-    if (index == -1)
-    {
-        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++)
-        {
-            for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++)
-            {
-                if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord, uItemID))
-                {
+int Player::AddItem(int index, unsigned int uItemID) {
+
+	if (index == -1) { // no location specified - search for space
+        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
+            for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++) {
+                if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord, uItemID)) { // found space
                     return CreateItemInInventory(ycoord * INVETORYSLOTSWIDTH + xcoord, uItemID);
                 }
             }
         }
-        return 0;
+
+        return 0; // no space cant add item
     }
 
-    if (!CanFitItem(index, uItemID))
-    {
+    if (!CanFitItem(index, uItemID)) {
         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-        return 0;
+        return 0; // cant fit item
     }
-    return CreateItemInInventory(index, uItemID);
+
+    return CreateItemInInventory(index, uItemID); // return location
 }
 
 //----- (00492826) --------------------------------------------------------
-int Player::AddItem2(int index, ItemGen *Src)
+int Player::AddItem2(int index, ItemGen *Src) // ??
 {
     pItemsTable->SetSpecialBonus(Src);
 
@@ -932,7 +923,7 @@ int Player::AddItem2(int index, ItemGen *Src)
 }
 
 //----- (0049289C) --------------------------------------------------------
-int Player::CreateItemInInventory2(unsigned int index, ItemGen *Src)
+int Player::CreateItemInInventory2(unsigned int index, ItemGen *Src) // ??
 {
     signed int freeSlot; // ebx@1
     int result; // eax@6
@@ -1079,82 +1070,77 @@ int Player::SelectPhrasesTransaction(ItemGen *pItem, int building_type, int Buil
 }
 
 //----- (0049107D) --------------------------------------------------------
-int Player::GetBodybuilding()
-{
-  int v1; // al@1
+int Player::GetBodybuilding() {
 
-  v1 = GetActualSkillLevel(PLAYER_SKILL_BODYBUILDING);
-  int multiplier = GetMultiplierForSkillLevel(v1, 1, 2, 3, 5);
-  return multiplier * (v1 & 0x3F);
+	int skill = GetActualSkillLevel(PLAYER_SKILL_BODYBUILDING);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BODYBUILDING, 1, 2, 3, 5);
+
+	return multiplier * skill;
 }
 
 //----- (004910A8) --------------------------------------------------------
-int Player::GetMeditation()
-{
-  int v1; // al@1
+int Player::GetMeditation() {
 
-  v1 = GetActualSkillLevel(PLAYER_SKILL_MEDITATION);
-  int multiplier = GetMultiplierForSkillLevel(v1, 1, 2, 3, 5);
-  return multiplier * (v1 & 0x3F);
+	int skill = GetActualSkillLevel(PLAYER_SKILL_MEDITATION);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_MEDITATION, 1, 2, 3, 5);
+
+	return multiplier * skill;
 }
 
 //----- (004910D3) --------------------------------------------------------
-bool Player::CanIdentify( ItemGen *pItem )
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@7
-  if (CheckHiredNPCSpeciality(Scholar))
-    return true;
+bool Player::CanIdentify( ItemGen *pItem ) {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_ITEM_ID);
-  if ( (signed int)SkillToMastery(v2) >= 4 )
-    return true;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_ITEM_ID);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_ITEM_ID);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_ITEM_ID, 1, 2, 3, 5);
 
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
-  v5 = multiplier * (v2 & 0x3F);
-  return v5 >= pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+	if (CheckHiredNPCSpeciality(Scholar) || skillmaster == 4) // always identify
+		return true;
+	
+	// check item level against skill
+	bool result = (multiplier * skill) >= pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+
+	return result;
 }
 
 //----- (00491151) --------------------------------------------------------
-bool Player::CanRepair( ItemGen *pItem )
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@7
+bool Player::CanRepair( ItemGen *pItem ) {
 
-  ITEM_EQUIP_TYPE equipType = pItem->GetItemEquipType();
-  if (CheckHiredNPCSpeciality(Smith) && equipType <= 2 ||
-      CheckHiredNPCSpeciality(Armorer) && equipType >= 3 && equipType <= 9 ||
-      CheckHiredNPCSpeciality(Alchemist) && equipType >= 9 )
-    return true;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_REPAIR);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_REPAIR);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_REPAIR, 1, 2, 3, 5);
+	ITEM_EQUIP_TYPE equipType = pItem->GetItemEquipType();
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_REPAIR);
-  if ( (signed int)SkillToMastery(v2) >= 4 )
-    return true;
+	if (CheckHiredNPCSpeciality(Smith) && equipType <= 2 || CheckHiredNPCSpeciality(Armorer) && equipType >= 3 && equipType <= 9
+		|| CheckHiredNPCSpeciality(Alchemist) && equipType >= 9 )
+			return true; // check against hired help
 
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
-  v5 = multiplier * (v2 & 0x3F);
-  return v5 >= pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+	if ( skillmaster == 4 ) // gm repair
+		return true;
+
+	// check item level against skill
+	bool result = (multiplier * skill) >= pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+
+	return result;
 }
 
 //----- (004911F3) --------------------------------------------------------
-int Player::GetMerchant()
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@1
-  int v7; // eax@3
+int Player::GetMerchant() {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
-  if ( SkillToMastery(v2) >= 4 )
-    return 10000;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_MERCHANT);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_MERCHANT, 1, 2, 3, 5);
 
-  v7 = pParty->GetPartyReputation();
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
-  v5 = multiplier * (v2 & 0x3F);
-  if (v5 == 0)
-  {
-    return -v7;
-  }
-  return v5 - v7 + 7;
+	if  (skillmaster == 4) // gm merchant
+		return 10000;
+
+	int rep = pParty->GetPartyReputation();
+	int bonus = multiplier * skill;
+
+	if (bonus == 0) // no skill so trading on rep alone
+		return -rep; 
+
+	return bonus - rep + 7;
 }
 
 //----- (0049125A) --------------------------------------------------------
@@ -1167,7 +1153,7 @@ int Player::GetPerception()
   if ( SkillToMastery(v2) >= 4 )
     return 10000;
 
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
+  int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_PERCEPTION, 1, 2, 3, 5);
   v5 = multiplier * (v2 & 0x3F);
   return v5;
 }
@@ -1182,7 +1168,7 @@ int Player::GetDisarmTrap()
   if ( (signed int)SkillToMastery(v2) >= 4 )
     return 10000;
 
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
+  int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_TRAP_DISARM, 1, 2, 3, 5);
   if ( HasEnchantedItemEquipped(35) )  //only the real skill level is supposed to be added again, not the multiplied value
     multiplier++;
   v5 = multiplier * (v2 & 0x3F);
@@ -1195,7 +1181,7 @@ char Player::GetLearningPercent()
   int v2; // eax@1
 
   v2 = GetActualSkillLevel(PLAYER_SKILL_LEARNING);
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
+  int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_LEARNING, 1, 2, 3, 5);
   return multiplier * v2 + 9;
 }
 
@@ -3299,7 +3285,7 @@ int Player::GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2)
 }
 
 //----- (0048F882) --------------------------------------------------------
-int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType ) // bitwise check & 0x3F when using this can now be removed
+int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType ) // bitwise check & 0x3F when using this can now be removed ?? must check behavior
 {
   signed int bonus_value; // esi@1
   unsigned __int16 skill_value; // ax@126
@@ -3531,7 +3517,7 @@ int Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) {
 }
 
 //----- (0048FC00) --------------------------------------------------------
-int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move the individual implementations to attribute classes once possible
+int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move the individual implementations to attribute classes once possible ?? check
 {
   int armsMasterBonus;
 
@@ -3542,11 +3528,11 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
     int multiplier = 0;
     if ( inSkill == CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS )
     {
-      multiplier = GetMultiplierForSkillLevel(armmaster_skill, 0, 0, 1, 2);
+      multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 0, 1, 2);
     }
     else if ( inSkill == CHARACTER_ATTRIBUTE_ATTACK )
     {
-      multiplier = GetMultiplierForSkillLevel(armmaster_skill, 0, 1, 1, 2);
+      multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 1, 1, 2);
     } 
     armsMasterBonus = multiplier * (armmaster_skill & 0x3F);
   }
@@ -3556,7 +3542,7 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
   case CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS:
     if (HasItemEquipped(EQUIP_BOW))
     {
-      int bowSkillLevel = GetActualSkillLevel(PLAYER_SKILL_DODGE);
+      int bowSkillLevel = GetActualSkillLevel(PLAYER_SKILL_DODGE); // ?? eh
       int multiplier = GetMultiplierForSkillLevel(bowSkillLevel, 0, 0, 0, 1);
       return multiplier * (bowSkillLevel & 0x3F);
     }
@@ -3594,32 +3580,32 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
           {
           case PLAYER_SKILL_STAFF:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 0, 1, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 0, 1, 1, 1);
             break;
           case PLAYER_SKILL_SWORD:
           case PLAYER_SKILL_SPEAR:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 0, 0, 0, 1);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 0, 0, 0, 1);
             break;
           case PLAYER_SKILL_SHIELD:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
             wearingArmor = true;
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 1, 1, 2, 2);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 2, 2);
             break;
           case PLAYER_SKILL_LEATHER:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
             wearingLeather = true;
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 1, 1, 2, 2);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 2, 2);
             break;
           case PLAYER_SKILL_CHAIN:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
             wearingArmor = true;
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 1, 1, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 1, 1);
             break;
           case PLAYER_SKILL_PLATE:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
             wearingArmor = true; 
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 1, 1, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 1, 1);
             break;
           }
           ACSum += multiplier * (currArmorSkillLevel & 0x3F);
@@ -3628,7 +3614,7 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
 
       int dodgeSkillLevel = GetActualSkillLevel(PLAYER_SKILL_DODGE);
       int dodgeMastery = SkillToMastery(dodgeSkillLevel);
-      int multiplier = GetMultiplierForSkillLevel(dodgeSkillLevel, 1, 2, 3, 3);
+      int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_DODGE, 1, 2, 3, 3);
       if ( !wearingArmor && (!wearingLeather || dodgeMastery == 4) )
       {
         ACSum += multiplier * (dodgeSkillLevel & 0x3F);
@@ -3644,7 +3630,7 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
       {
         return 0;
       }
-      int multiplier = GetMultiplierForSkillLevel(unarmedSkill, 0, 1, 2, 2);
+      int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
       return armsMasterBonus + multiplier * (unarmedSkill & 0x3F);
     }
     for (int i = 0; i < 16; ++i)
@@ -3772,9 +3758,11 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
   }
 }
 
-unsigned int Player::GetMultiplierForSkillLevel(unsigned int skillValue, int mult1, int mult2, int mult3, int mult4)
+unsigned int Player::GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4) // ?? needs changing - check behavious
 {
-  int masteryLvl = SkillToMastery(skillValue);
+
+	
+  int masteryLvl = GetActualSkillMastery(uSkillType);
   switch (masteryLvl)
   {
     case 1: return mult1;

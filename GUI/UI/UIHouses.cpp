@@ -2459,9 +2459,10 @@ void TempleDialog()
         }
         Party::TakeGold(pPrice);
 
-        memset(pPlayers[uActiveCharacter], 0, 0xA0u);
+        memset(pPlayers[uActiveCharacter], 0, 0xA0u); // ?? sets all condition times to zero
         pPlayers[uActiveCharacter]->sHealth = pPlayers[uActiveCharacter]->GetMaxHealth();
         pPlayers[uActiveCharacter]->sMana = pPlayers[uActiveCharacter]->GetMaxMana();
+
         if ((signed int)window_SpeakInHouse->ptr_1C != 78 && ((signed int)window_SpeakInHouse->ptr_1C <= 80 || (signed int)window_SpeakInHouse->ptr_1C > 82))
         {
             if (pPlayers[uActiveCharacter]->conditions_times[Condition_Zombie].Valid())// если состояние зомби

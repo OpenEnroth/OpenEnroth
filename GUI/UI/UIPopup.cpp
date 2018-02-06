@@ -2007,17 +2007,17 @@ void Inventory_ItemPopupAndAlchemy()
             else if (damage_level == 2)
             {
                 pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 71 + 30, DMGT_FIRE);
-                pPlayers[uActiveCharacter]->ItemsEnchant(1);
+                pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(1); // break 1
             }
             else if (damage_level == 3)
             {
                 pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 201 + 50, DMGT_FIRE);
-                pPlayers[uActiveCharacter]->ItemsEnchant(5);
+                pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(5); // break 5
             }
             else if (damage_level >= 4)
             {
                 pPlayers[uActiveCharacter]->SetCondition(Condition_Eradicated, 0);
-                pPlayers[uActiveCharacter]->ItemsEnchant(0);
+                pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(0); // break everything
             }
 
             pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0, 0, 0);

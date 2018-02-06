@@ -643,6 +643,7 @@ void *OSWindow::CreateDebugMenuPanel()
                     AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40040, L"Unconscious");
                     AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40030, L"Weak");
                     AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40073, L"Zombie");
+					AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40046, L"Good");
                 }
 
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40006, L"Set Food (20)");
@@ -1042,6 +1043,11 @@ bool OSWindow::OnOSMenu(int item_id)
         case 40044:  pPlayers[uActiveCharacter]->SetAfraid(pParty->GetPlayingTime());     break;
         case 40045:  pPlayers[uActiveCharacter]->SetParalyzed(pParty->GetPlayingTime());  break;
         case 40073:  pPlayers[uActiveCharacter]->SetZombie(pParty->GetPlayingTime());     break;
+		case 40046:   memset(pPlayers[uActiveCharacter], 0, 0xA0u); // ??
+						pPlayers[uActiveCharacter]->sHealth = pPlayers[uActiveCharacter]->GetMaxHealth();
+						pPlayers[uActiveCharacter]->sMana = pPlayers[uActiveCharacter]->GetMaxMana();
+						break;
+		//40046
 
         case 40062:
             pParty->alignment = PartyAlignment_Good;

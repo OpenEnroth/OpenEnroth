@@ -589,7 +589,7 @@ struct Player
   bool ProfessionOrGuildFlagsCorrect(unsigned int uClass, int a3);
   void PlaySound(PlayerSpeech speech, int a3);
   void PlayEmotion(CHARACTER_EXPRESSION_ID expression, int a3);
-  void ItemsEnchant(int enchant_count);
+  void ItemsPotionDmgBreak(int enchant_count);
   unsigned int GetItemIDAtInventoryIndex(int *inout_item_cell);
   struct ItemGen *GetItemAtInventoryIndex(int *inout_item_cell);
   bool IsPlayerHealableByTemple();
@@ -615,7 +615,7 @@ struct Player
 
   bool PlayerHitOrMiss(Actor *pActor, int a3, int a4);
 
-  unsigned int GetMultiplierForSkillLevel(unsigned int skillValue, int mult1, int mult2, int mult3, int mult4);
+  unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4);
   int CalculateMeleeDmgToEnemyWithWeapon( ItemGen * weapon, unsigned int uTargetActorID , bool addOneDice);
   bool WearsItemAnyWhere(int item_id);
   float GetArmorRecoveryMultiplierFromSkillLevel( unsigned char armour_skill_type, float param2, float param3, float param4, float param5 );
