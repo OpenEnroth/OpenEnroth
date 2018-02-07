@@ -1144,45 +1144,41 @@ int Player::GetMerchant() {
 }
 
 //----- (0049125A) --------------------------------------------------------
-int Player::GetPerception()
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@1
+int Player::GetPerception() {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_PERCEPTION);
-  if ( SkillToMastery(v2) >= 4 )
-    return 10000;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_PERCEPTION);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_PERCEPTION);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_PERCEPTION, 1, 2, 3, 5);
 
-  int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_PERCEPTION, 1, 2, 3, 5);
-  v5 = multiplier * (v2 & 0x3F);
-  return v5;
+	if (skillmaster == 4) // gm percept
+		return 10000;
+
+	return multiplier * skill;
 }
 
 //----- (004912B0) --------------------------------------------------------
-int Player::GetDisarmTrap()
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@1
+int Player::GetDisarmTrap() {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_TRAP_DISARM);
-  if ( (signed int)SkillToMastery(v2) >= 4 )
-    return 10000;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_TRAP_DISARM);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_TRAP_DISARM);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_TRAP_DISARM, 1, 2, 3, 5);
 
-  int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_TRAP_DISARM, 1, 2, 3, 5);
-  if ( HasEnchantedItemEquipped(35) )  //only the real skill level is supposed to be added again, not the multiplied value
-    multiplier++;
-  v5 = multiplier * (v2 & 0x3F);
-  return v5;
+	if ( skillmaster == 4 ) // gm disarm
+		return 10000;
+
+	if ( HasEnchantedItemEquipped(35) )  //item has increased disarm
+		multiplier++;
+
+	return multiplier * skill;
 }
 
 //----- (00491317) --------------------------------------------------------
-char Player::GetLearningPercent()
-{
-  int v2; // eax@1
+char Player::GetLearningPercent() {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_LEARNING);
-  int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_LEARNING, 1, 2, 3, 5);
-  return multiplier * v2 + 9;
+	int skill =  GetActualSkillLevel(PLAYER_SKILL_LEARNING);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_LEARNING, 1, 2, 3, 5);
+
+	return multiplier * skill + 9;
 }
 
 //----- (0048C6AF) --------------------------------------------------------
@@ -1298,189 +1294,158 @@ Player::Player()
 
 
 //----- (0048C855) --------------------------------------------------------
-int Player::GetBaseStrength()
-{
-  return this->uMight + GetItemsBonus(CHARACTER_ATTRIBUTE_STRENGTH);
+int Player::GetBaseStrength() {
+	return this->uMight + GetItemsBonus(CHARACTER_ATTRIBUTE_STRENGTH);
 }
 
 //----- (0048C86C) --------------------------------------------------------
-int Player::GetBaseIntelligence()
-{
-  return this->uIntelligence + GetItemsBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE);
+int Player::GetBaseIntelligence() {
+	return this->uIntelligence + GetItemsBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE);
 }
 
 //----- (0048C883) --------------------------------------------------------
-int Player::GetBaseWillpower()
-{
-  return this->uWillpower + GetItemsBonus(CHARACTER_ATTRIBUTE_WILLPOWER);
+int Player::GetBaseWillpower() {
+	return this->uWillpower + GetItemsBonus(CHARACTER_ATTRIBUTE_WILLPOWER);
 }
 
 //----- (0048C89A) --------------------------------------------------------
-int Player::GetBaseEndurance()
-{
-  return this->uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+int Player::GetBaseEndurance() {
+	return this->uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
 }
 
 //----- (0048C8B1) --------------------------------------------------------
-int Player::GetBaseAccuracy()
-{
-  return this->uAccuracy + GetItemsBonus(CHARACTER_ATTRIBUTE_ACCURACY);
+int Player::GetBaseAccuracy() {
+	return this->uAccuracy + GetItemsBonus(CHARACTER_ATTRIBUTE_ACCURACY);
 }
 
 //----- (0048C8C8) --------------------------------------------------------
-int Player::GetBaseSpeed()
-{
-  return this->uSpeed + GetItemsBonus(CHARACTER_ATTRIBUTE_SPEED);
+int Player::GetBaseSpeed() {
+	return this->uSpeed + GetItemsBonus(CHARACTER_ATTRIBUTE_SPEED);
 }
 
 //----- (0048C8DF) --------------------------------------------------------
-int Player::GetBaseLuck()
-{
-  return this->uLuck + GetItemsBonus(CHARACTER_ATTRIBUTE_LUCK);
+int Player::GetBaseLuck() {
+	return this->uLuck + GetItemsBonus(CHARACTER_ATTRIBUTE_LUCK);
 }
 
 //----- (0048C8F6) --------------------------------------------------------
-int Player::GetBaseLevel()
-{
+int Player::GetBaseLevel() {
   return this->uLevel + GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
 }
 
 //----- (0048C90D) --------------------------------------------------------
-int Player::GetActualLevel()
-{
-  return uLevel + sLevelModifier +
-         GetMagicalBonus(CHARACTER_ATTRIBUTE_LEVEL) +
-         GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
+int Player::GetActualLevel() {
+	return uLevel + sLevelModifier + GetMagicalBonus(CHARACTER_ATTRIBUTE_LEVEL)
+		+ GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
 }
 
 //----- (0048C93C) --------------------------------------------------------
-int Player::GetActualMight()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_STRENGTH, &Player::uMight, &Player::uMightBonus);
+int Player::GetActualMight() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_STRENGTH, &Player::uMight, &Player::uMightBonus);
 }
 
 //----- (0048C9C2) --------------------------------------------------------
-int Player::GetActualIntelligence()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_INTELLIGENCE, &Player::uIntelligence, &Player::uIntelligenceBonus);
+int Player::GetActualIntelligence() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_INTELLIGENCE, &Player::uIntelligence, &Player::uIntelligenceBonus);
 }
 
 //----- (0048CA3F) --------------------------------------------------------
-int Player::GetActualWillpower()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_WILLPOWER, &Player::uWillpower, &Player::uWillpowerBonus);
+int Player::GetActualWillpower() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_WILLPOWER, &Player::uWillpower, &Player::uWillpowerBonus);
 }
 
 //----- (0048CABC) --------------------------------------------------------
-int Player::GetActualEndurance()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_ENDURANCE, &Player::uEndurance, &Player::uEnduranceBonus);
+int Player::GetActualEndurance() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_ENDURANCE, &Player::uEndurance, &Player::uEnduranceBonus);
 }
 
 //----- (0048CB39) --------------------------------------------------------
-int Player::GetActualAccuracy()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY, &Player::uAccuracy, &Player::uAccuracyBonus);
+int Player::GetActualAccuracy() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY, &Player::uAccuracy, &Player::uAccuracyBonus);
 }
 
 //----- (0048CBB6) --------------------------------------------------------
-int Player::GetActualSpeed()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED, &Player::uSpeed, &Player::uSpeedBonus);
+int Player::GetActualSpeed() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED, &Player::uSpeed, &Player::uSpeedBonus);
 }
 
 //----- (0048CC33) --------------------------------------------------------
-int Player::GetActualLuck()
-{
-  signed int npc_luck_bonus; // [sp+10h] [bp-4h]@1
+int Player::GetActualLuck() {
 
-  npc_luck_bonus = 0;
-  if ( CheckHiredNPCSpeciality(Fool) )
-    npc_luck_bonus = 5;
-  if ( CheckHiredNPCSpeciality(ChimneySweep) )
-    npc_luck_bonus += 20;
-  if ( CheckHiredNPCSpeciality(Psychic) )
-    npc_luck_bonus += 10;
+	signed int npc_luck_bonus = 0;
 
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_LUCK, &Player::uLuck, &Player::uLuckBonus)
-       + npc_luck_bonus;
+	if ( CheckHiredNPCSpeciality(Fool) )
+		npc_luck_bonus = 5;
+
+	if ( CheckHiredNPCSpeciality(ChimneySweep) )
+		npc_luck_bonus += 20;
+
+	if ( CheckHiredNPCSpeciality(Psychic) )
+		npc_luck_bonus += 10;
+
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_LUCK, &Player::uLuck, &Player::uLuckBonus)
+		+ npc_luck_bonus;
 }
 
 //----- (new function) --------------------------------------------------------
-int Player::GetActualAttribute( CHARACTER_ATTRIBUTE_TYPE attrId, unsigned short Player::* attrValue, unsigned short Player::* attrBonus )
-{
-  uint uActualAge = this->sAgeModifier + GetBaseAge();
-  uint uAgeingMultiplier = 100;
-  for (uint i = 0; i < 4; ++i)
-  {
-    if (uActualAge >= pAgeingTable[i])
-      uAgeingMultiplier = pAgingAttributeModifier[attrId][i];
-    else 
-      break;
-  }
+int Player::GetActualAttribute( CHARACTER_ATTRIBUTE_TYPE attrId, unsigned short Player::* attrValue, unsigned short Player::* attrBonus ) {
 
-  uchar uConditionMult = pConditionAttributeModifier[attrId][GetMajorConditionIdx()];
-  int magicBonus = GetMagicalBonus(attrId);
-  int itemBonus = GetItemsBonus(attrId);
-  return uConditionMult * uAgeingMultiplier * this->*attrValue / 100 / 100
-    + magicBonus
-    + itemBonus
-    + this->*attrBonus;
+	uint uActualAge = this->sAgeModifier + GetBaseAge();
+	uint uAgeingMultiplier = 100;
+
+	for (uint i = 0; i < 4; ++i) {
+		if (uActualAge >= pAgeingTable[i]) // is the player old enough to need attrib adjust
+			uAgeingMultiplier = pAgingAttributeModifier[attrId][i];
+		else
+			break;
+	}
+
+	uchar uConditionMult = pConditionAttributeModifier[attrId][GetMajorConditionIdx()]; // weak from disease or poison ect
+	int magicBonus = GetMagicalBonus(attrId);
+	int itemBonus = GetItemsBonus(attrId);
+
+	return uConditionMult * uAgeingMultiplier * this->*attrValue / 100 / 100
+		+ magicBonus + itemBonus + this->*attrBonus;
 }
 
 //----- (0048CCF5) --------------------------------------------------------
-int Player::GetActualAttack( bool onlyMainHandDmg )
-{
-  int v3; // eax@1
-  int v4; // edi@1
-  int v5; // ebx@1
-  int v6; // ebp@1
+int Player::GetActualAttack( bool onlyMainHandDmg ) {
 
-  v3 = GetActualAccuracy();
-  v4 = GetParameterBonus(v3);
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_ATTACK);
-  v6 = GetItemsBonus(CHARACTER_ATTRIBUTE_ATTACK, onlyMainHandDmg);
-  return v4 + v5 + v6 + GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK) + this->_some_attack_bonus;
+	int parbonus = GetParameterBonus(GetActualAccuracy()); // bonus points for steps of accuracy level
+	int atkskillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_ATTACK); // bonus for skill with weapon
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_ATTACK, onlyMainHandDmg); // how good is weapon
+
+	return parbonus + atkskillbonus + weapbonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK) + this->_some_attack_bonus;
 }
 
 //----- (0048CD45) --------------------------------------------------------
-int Player::GetMeleeDamageMinimal()
-{
-  int v2; // eax@1
-  int v3; // esi@1
-  int v4; // esi@1
-  int v5; // esi@1
-  signed int result; // eax@1
- 
-  v2 = GetActualMight();
-  v3 = GetParameterBonus(v2);
-  v4 = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN) + v3;
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + v4;
-  result = _melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + v5;
-  if ( result < 1 )
-    result = 1;
-  return result;
+int Player::GetMeleeDamageMinimal() {
+
+	int parbonus = GetParameterBonus(GetActualMight());
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN) + parbonus;
+	int atkskillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + weapbonus;
+
+	int result = _melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + atkskillbonus;
+	
+	if ( result < 1 )
+		result = 1;
+
+	return result;
 }
 
 //----- (0048CD90) --------------------------------------------------------
-int Player::GetMeleeDamageMaximal()
-{
-  int v2; // eax@1
-  int v3; // esi@1
-  int v4; // esi@1
-  int v5; // esi@1
-  int v6; // esi@1
-  signed int result; // eax@1
+int Player::GetMeleeDamageMaximal() {
 
-  v2 = GetActualMight();
-  v3 = GetParameterBonus(v2);
-  v4 = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX) + v3;
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + v4;
-  v6 = this->_melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + v5;
-  result = 1;
-  if ( v6 >= 1 )
-    result = v6;
-  return result;
+	int parbonus = GetParameterBonus(GetActualMight());
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX) + parbonus;
+	int atkskillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + weapbonus;
+
+	int result = this->_melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + atkskillbonus;
+
+	if ( result < 1 )
+		result = 1;
+
+	return result;
 }
 
 //----- (0048CDDB) --------------------------------------------------------
@@ -3542,8 +3507,8 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
   case CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS:
     if (HasItemEquipped(EQUIP_BOW))
     {
-      int bowSkillLevel = GetActualSkillLevel(PLAYER_SKILL_DODGE); // ?? eh
-      int multiplier = GetMultiplierForSkillLevel(bowSkillLevel, 0, 0, 0, 1);
+      int bowSkillLevel = GetActualSkillLevel(PLAYER_SKILL_BOW); 
+      int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BOW, 0, 0, 0, 1);
       return multiplier * (bowSkillLevel & 0x3F);
     }
     return 0;
@@ -3633,7 +3598,7 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
       int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
       return armsMasterBonus + multiplier * (unarmedSkill & 0x3F);
     }
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < 16; ++i) // ?? what eh check behaviour
     {
       if ( this->HasItemEquipped((ITEM_EQUIP_TYPE)i) )
       {
@@ -3644,13 +3609,13 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
           int currentItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
           if (currItemSkillType == PLAYER_SKILL_BLASTER)
           {
-            int multiplier = GetMultiplierForSkillLevel(currentItemSkillLevel, 1, 2, 3, 5);
+            int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
             return multiplier * (currentItemSkillLevel & 0x3F);
           }
           else if (currItemSkillType == PLAYER_SKILL_STAFF && this->GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0)
           {
             int unarmedSkillLevel = this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
-            int multiplier = GetMultiplierForSkillLevel(currentItemSkillLevel, 1, 1, 2, 2);
+            int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 1, 1, 2, 2);
             return multiplier * (unarmedSkillLevel & 0x3F) + armsMasterBonus + (currentItemSkillLevel & 0x3F);
           }
           else
@@ -3675,12 +3640,12 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
           int currentItemSkillLevel = this->GetActualSkillLevel(currentItemSkillType);
           if ( currentItemSkillType == PLAYER_SKILL_BOW )
           {
-            int multiplier = GetMultiplierForSkillLevel(currentItemSkillLevel, 1, 1, 1, 1);
+            int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BOW, 1, 1, 1, 1);
             return multiplier * (currentItemSkillLevel & 0x3F);
           }
           else if ( currentItemSkillType == PLAYER_SKILL_BLASTER )
           {
-            int multiplier = GetMultiplierForSkillLevel(currentItemSkillLevel, 1, 2, 3, 5);
+            int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BLASTER, 1, 2, 3, 5);
             return multiplier * (currentItemSkillLevel & 0x3F);
           }
         }
@@ -3697,7 +3662,7 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
       {
         return 0;
       }
-      int multiplier = GetMultiplierForSkillLevel(unarmedSkillLevel, 0, 1, 2, 2);
+      int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
       return multiplier * (unarmedSkillLevel & 0x3F);
     }
     for (int i = 0; i < 16; i++)
@@ -3717,7 +3682,7 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
             if ( SkillToMastery(currItemSkillLevel) >= 4 && this->GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0)
             {
               int unarmedSkillLevel = this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
-              int multiplier = GetMultiplierForSkillLevel(unarmedSkillLevel, 0, 1, 2, 2);
+              int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
               return multiplier * (unarmedSkillLevel & 0x3F);
             }
             else
@@ -3727,23 +3692,23 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
             break;
 
           case PLAYER_SKILL_DAGGER:
-            multiplier = GetMultiplierForSkillLevel(currItemSkillLevel, 0, 0, 0, 1);
+            multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_DAGGER, 0, 0, 0, 1);
             baseSkillBonus = multiplier * (currItemSkillLevel & 0x3F);
             return armsMasterBonus + baseSkillBonus;
             break;
           case PLAYER_SKILL_SWORD:
-            multiplier = GetMultiplierForSkillLevel(currItemSkillLevel, 0, 0, 0, 0);
+            multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_SWORD, 0, 0, 0, 0);
             baseSkillBonus = multiplier * (currItemSkillLevel & 0x3F);
             return armsMasterBonus + baseSkillBonus;
             break;
           case PLAYER_SKILL_MACE:
           case PLAYER_SKILL_SPEAR:
-            multiplier = GetMultiplierForSkillLevel(currItemSkillLevel, 0, 1, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(currItemSkillType, 0, 1, 1, 1);
             baseSkillBonus = multiplier * (currItemSkillLevel & 0x3F);
             return armsMasterBonus + baseSkillBonus;
             break;
           case PLAYER_SKILL_AXE:
-            multiplier = GetMultiplierForSkillLevel(currItemSkillLevel, 0, 0, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_AXE, 0, 0, 1, 1);
             baseSkillBonus = multiplier * (currItemSkillLevel & 0x3F);
             return armsMasterBonus + baseSkillBonus;
             break;
