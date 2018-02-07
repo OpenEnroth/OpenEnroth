@@ -149,7 +149,7 @@ void Render::WritePixel16(int x, int y, unsigned __int16 color)
     if (ddpfPrimarySuface.dwRGBBitCount == 32)
     {
         auto p = (unsigned __int32 *)pTargetSurface + x + y * uTargetSurfacePitch;
-        *p = Color32(color);
+        *p = Color32(color); // write access violation
     }
     else if (ddpfPrimarySuface.dwRGBBitCount == 16)
     {

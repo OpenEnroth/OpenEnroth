@@ -71,11 +71,17 @@ GUIWindow_Save::GUIWindow_Save() :
         else
         {
             pLODFile.LoadFile(str.c_str(), 1);
-            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", 1));
+            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", 1)); // problesm new maps mm7
             if (pLODFile.FindContainer("image.pcx", 1))
             {
+
+				//0x0ae97078 {_Placeholder=0x1230d06c }
+				//_Placeholder: 0x1230d06c
+
+
                 //pSavegameThumbnails[i].LoadFromFILE(pLODFile.FindContainer("image.pcx", 1), 0, 1);
-                pLODFile.CloseWriteFile();
+                
+				pLODFile.CloseWriteFile();
                 pSavegameUsedSlots[i] = 1;
             }
             else
@@ -216,7 +222,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         }
         else
         {
-            //pSavegameThumbnails[i].LoadFromFILE(pLODFile.FindContainer("image.pcx", true), 0, true);
+            //pSavegameThumbnails[i].LoadFromFILE(pLODFile.FindContainer("image.pcx", true), 0, true); ??
             pLODFile.CloseWriteFile();
             pSavegameUsedSlots[i] = 1;
         }

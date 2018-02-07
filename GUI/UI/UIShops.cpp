@@ -163,7 +163,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 
 			String str;
 			if (!item->IsIdentified()) {
-				int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 4);
+				int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, building, (int)window_SpeakInHouse->ptr_1C, 4);
 				str = BuildDialogueString(pMerchantsIdentifyPhrases[phrases_id], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 4 );
 			}
 			else {

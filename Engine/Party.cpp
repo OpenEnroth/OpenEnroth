@@ -947,6 +947,7 @@ void Party::GivePartyExp(unsigned int pEXPNum)
 {
     signed int pActivePlayerCount; // ecx@1
     int pLearningPercent; // eax@13
+	int playermodexp;
 
     if (pEXPNum > 0)
     {
@@ -973,8 +974,8 @@ void Party::GivePartyExp(unsigned int pEXPNum)
                     !pParty->pPlayers[i].conditions_times[Condition_Eradicated])
                 {
                     pLearningPercent = pParty->pPlayers[i].GetLearningPercent();
-                    pEXPNum = pEXPNum + pEXPNum * pLearningPercent / 100;
-                    pParty->pPlayers[i].uExperience += pEXPNum;
+					playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
+                    pParty->pPlayers[i].uExperience += playermodexp;
                     if (pParty->pPlayers[i].uExperience > 4000000000i64)
                     {
                         pParty->pPlayers[i].uExperience = 0;

@@ -1548,28 +1548,24 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon( ItemGen * weapon, unsigned int u
 
 
 //----- (0048D0B9) --------------------------------------------------------
-int Player::GetRangedAttack()
-{
-  int v3; // edi@3
-  //int v4; // eax@4
-  //int v5; // edi@4
-  int v6; // edi@4
-  int v7; // edi@4
+int Player::GetRangedAttack() {
 
-  ItemGen* mainHandItem = GetMainHandItem();
-  if ( mainHandItem != nullptr && ( mainHandItem->uItemID < ITEM_BLASTER || mainHandItem->uItemID > ITEM_LASER_RIFLE ))
-  {
-    //v4 = GetActualAccuracy();
-    //v5 = GetParameterBonus(GetActualAccuracy());
-    v6 = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + GetParameterBonus(GetActualAccuracy());
-    v7 = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + v6;
-    v3 = this->_ranged_atk_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + v7;
-  }
-  else
-  {
-    v3 = GetActualAttack(true);
-  }
-  return v3;
+	int result;
+	int weapbonus;
+	int skillbonus;
+
+	ItemGen* mainHandItem = GetMainHandItem();
+	
+	if ( mainHandItem != nullptr && ( mainHandItem->uItemID < ITEM_BLASTER || mainHandItem->uItemID > ITEM_LASER_RIFLE )) { //no blasters
+		weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + GetParameterBonus(GetActualAccuracy());
+		skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + weapbonus;
+		result = this->_ranged_atk_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + skillbonus;
+	}
+	else {
+		result = GetActualAttack(true);
+	}
+
+  return result;
 }
 
 //----- (0048D124) --------------------------------------------------------
@@ -3455,7 +3451,7 @@ int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType ) // bitwise check
   }
 
   // cap skill and bonus at 60
-  skill_value = pActiveSkills[uSkillType] & 0x3F;
+  skill_value = pActiveSkills[uSkillType] & 0x3F; // player_skill_club out of bounds
   result = bonus_value + skill_value;
 
   if (result > 60) result = 60;
@@ -3825,16 +3821,17 @@ PLAYER_SEX Player::GetSexByVoice()
 }
 
 //----- (00490188) --------------------------------------------------------
-void Player::SetInitialStats()
-{
-  CHARACTER_RACE v1 = GetRace();
-  uMight = StatTable[v1][0].uBaseValue;
-  uIntelligence = StatTable[v1][1].uBaseValue;
-  uWillpower = StatTable[v1][2].uBaseValue;
-  uEndurance = StatTable[v1][3].uBaseValue;
-  uAccuracy = StatTable[v1][4].uBaseValue;
-  uSpeed = StatTable[v1][5].uBaseValue;
-  uLuck = StatTable[v1][6].uBaseValue;
+void Player::SetInitialStats() {
+
+	CHARACTER_RACE race = GetRace();
+	uMight = StatTable[race][0].uBaseValue;
+	uIntelligence = StatTable[race][1].uBaseValue;
+	uWillpower = StatTable[race][2].uBaseValue;
+	uEndurance = StatTable[race][3].uBaseValue;
+	uAccuracy = StatTable[race][4].uBaseValue;
+	uSpeed = StatTable[race][5].uBaseValue;
+	uLuck = StatTable[race][6].uBaseValue;
+
 }
 
 //----- (004901FC) --------------------------------------------------------
@@ -8095,7 +8092,7 @@ void Player::_42ECB5_PlayerAttacksActor()
     //v32 = 0;
   int wand_item_id = 0;
     //v33 = 0;
-    //v4 = v1->pEquipment.uMainHand;
+   
   int laser_weapon_item_id = 0;
 
   int main_hand_idx = player->pEquipment.uMainHand;

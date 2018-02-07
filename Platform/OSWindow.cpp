@@ -860,7 +860,7 @@ bool OSWindow::OnOSMenu(int item_id)
 
         case 40059:
             for (uint i = 0; i < 4; ++i)
-                pParty->pPlayers[i].uSkillPoints = 50;
+                pParty->pPlayers[i].uSkillPoints += 50;
             break;
 
 		// learn all skills for class
