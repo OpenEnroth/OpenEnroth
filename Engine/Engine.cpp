@@ -391,7 +391,7 @@ void Engine::Draw()
             int floor_level = BLV_GetFloorLevel(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + 40, sector_id, &uFaceID);
             floor_level_str = StringPrintf("BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         }
-        else
+        else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         {
             int on_water, _a6;
             int floor_level = ODM_GetFloorLevel(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z, 0, &on_water, &_a6, false);
@@ -1712,7 +1712,8 @@ bool MM_Main(const wchar_t *pCmdLine)
 
     GUIWindow::InitializeGUI();
 
-    ShowLogoVideo();
+	//ShowLogoVideo(); old
+	pMediaPlayer->ShowMM7IntroVideo_and_LoadingScreen(); //new
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 

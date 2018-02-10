@@ -110,7 +110,7 @@ void LoadGame(unsigned int uSlot)
     bool v25; // esi@62
     bool v26; // eax@62
     SavegameHeader header; // [sp+Ch] [bp-E4h]@23
-    char Str[123]; // [sp+70h] [bp-80h]@25
+//    char Str[123]; // [sp+70h] [bp-80h]@25
 
     MapsLongTimers_count = 0;
     if (!pSavegameUsedSlots[uSlot])
@@ -333,7 +333,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     FILE *pLLoidFile; // edi@24
     char* compressed_buf; // edi@30
     char *data_write_pos; // esi@41
-    char Buffer[128]; // [sp+Ch] [bp-264h]@59
+//    char Buffer[128]; // [sp+Ch] [bp-264h]@59
     char Dir[255]; // [sp+8Ch] [bp-1E4h]@51
     char Drive[255]; // [sp+ACh] [bp-1C4h]@51
     SavegameHeader save_header; // [sp+CCh] [bp-1A4h]@10

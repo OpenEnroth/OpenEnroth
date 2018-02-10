@@ -4213,7 +4213,7 @@ void Render::CreateDirectDrawPrimarySurface()
 {
   IDirectDrawSurface *pFrontBuffer; // eax@3
   DDSCAPS2 *v6; // edx@3
-  IDirectDraw4 *v7; // eax@4
+//  IDirectDraw4 *v7; // eax@4
   int v9; // ST14_4@5
   IDirectDrawSurface *v10; // ST10_4@5
   IDirectDrawSurface **ppBackBuffer; // [sp-4h] [bp-A4h]@3
@@ -4515,7 +4515,7 @@ unsigned int Render::GetActorTintColor(float a2, int tint, int a4, int a5, Rende
 void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders)
 {
     int v11; // eax@5
-    int v20; // eax@14
+//    int v20; // eax@14
     unsigned int v45; // eax@28
 
     unsigned int uNumVertices = a4->uNumVertices;
@@ -6910,8 +6910,8 @@ void Render::_4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a
     unsigned int v16; // edx@14
     unsigned int v17; // edx@17
     unsigned int v19; // edx@20
-    int v20; // eax@27
-    int v21; // edx@29
+//    int v20; // eax@27
+//    int v21; // edx@29
     unsigned __int16 *v24; // [sp+14h] [bp-4h]@6
     int Width; // [sp+2Ch] [bp+14h]@6
 
@@ -6991,8 +6991,8 @@ void Render::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int star
     unsigned int v16; // edx@14
     unsigned int v17; // edx@17
     unsigned int v19; // edx@20
-    int v20; // eax@27
-    int v21; // edx@29
+//    int v20; // eax@27
+//    int v21; // edx@29
     int Height; // [sp+10h] [bp-8h]@6
     int Width; // [sp+14h] [bp-4h]@6
     int v27; // [sp+24h] [bp+Ch]@23
@@ -7957,7 +7957,7 @@ void Render::DrawBuildingsD3D()
 {
     int v27; // eax@57
   //  int vertex_id; // eax@58
-    unsigned int v34; // eax@80
+//    unsigned int v34; // eax@80
     //int v40; // [sp-4h] [bp-5Ch]@2
     int v49; // [sp+2Ch] [bp-2Ch]@10
     int v50; // [sp+30h] [bp-28h]@34

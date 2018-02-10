@@ -514,8 +514,9 @@ void Player::ItemsPotionDmgBreak( int enchant_count ) { // falied potion mixing 
 }
 
 //----- (004948B1) --------------------------------------------------------
-void Player::PlaySound(PlayerSpeech speech, int a3)
-{
+void Player::PlaySound(PlayerSpeech speech, int a3) {
+
+
   signed int speechCount = 0; // esi@4
   signed int expressionCount = 0; // esi@4
   int pickedVariant; // esi@10
@@ -525,6 +526,11 @@ void Player::PlaySound(PlayerSpeech speech, int a3)
   int expressionVariantArray[5]; 
   unsigned int pickedSoundID; // [sp+30h] [bp+8h]@4
   unsigned int expressionDuration = 0;
+
+  //pMediaPlayer->
+
+ // pMediaPlayer->
+	
 
   pickedSoundID = 0;
   if (uVoicesVolumeMultiplier)
@@ -1569,89 +1575,72 @@ int Player::GetRangedAttack() {
 }
 
 //----- (0048D124) --------------------------------------------------------
-int Player::GetRangedDamageMin()
-{
-  int v2; // edi@1
-  int v3; // edi@1
-  int v4; // edi@1
-  int result; // eax@6
+int Player::GetRangedDamageMin() {
 
-  v2 = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MIN);
-  v3 = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + v2;
-  v4 = this->_ranged_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + v3;
-  if ( v4 >= 1 )
-    result = v4;
-  else
-    result = 0;
-  return result;
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MIN);
+	int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + weapbonus;
+	int result = this->_ranged_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + skillbonus;
+
+	if (result < 0) // cant be less than 0
+		result = 0;
+
+	return result;
 }
 
 //----- (0048D191) --------------------------------------------------------
-int Player::GetRangedDamageMax()
-{
-  int v2; // edi@1
-  int v3; // edi@1
-  int v4; // edi@1
-  int result; // eax@6
+int Player::GetRangedDamageMax() {
 
-  v2 = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MAX);
-  v3 = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + v2;
-  v4 = this->_ranged_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + v3;
-  if ( v4 >= 1 )
-    result = v4;
-  else
-    result = 0;
-  return result;
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MAX);
+	int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + weapbonus;
+	int result = this->_ranged_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + skillbonus;
+
+	if (result < 0)
+		result = 0;
+
+	return result;
 }
 
 //----- (0048D1FE) --------------------------------------------------------
-int Player::CalculateRangedDamageTo( int a2 )
-{
-  ItemGen *v4; // ebx@2
-  unsigned int v5; // edi@2
-  int v9; // esi@5
-  int v10; // ebx@6
-  signed int v15; // [sp+8h] [bp-Ch]@2
-  int v17; // [sp+10h] [bp-4h]@1
+int Player::CalculateRangedDamageTo( int uMonsterInfoID) {
 
-  v17 = 0;
-  if ( !HasItemEquipped(EQUIP_BOW) )
-    return 0;
-  v4 = (ItemGen *)&this->pInventoryItemList[this->pEquipment.uBow-1];
-  v5 = v4->uItemID;
-  v15 = pItemsTable->pItems[v5].uDamageRoll;
-  for( int i = 0; i < pItemsTable->pItems[v5].uDamageDice; i++ )
-  {
-    int v7 = rand() % v15;
-    v17 += v7 + 1;
-  }
-  v9 = pItemsTable->pItems[v5].uDamageMod + v17;
-  if ( a2 )
-  {
-    v10 = v4->special_enchantment;
-    if ( v10 == 64 && MonsterStats::BelongsToSupertype(a2, MONSTER_SUPERTYPE_UNDEAD))
-    {
-      v9 *= 2;
-    }
-    else if ( v10 == 39 && MonsterStats::BelongsToSupertype(a2, MONSTER_SUPERTYPE_KREEGAN))
-    {
-      v9 *= 2;
-    }
-    else if ( v10 == 40 && MonsterStats::BelongsToSupertype(a2, MONSTER_SUPERTYPE_DRAGON))
-    {
-      v9 *= 2;
-    }
-    else if ( v10 == 63 && MonsterStats::BelongsToSupertype(a2, MONSTER_SUPERTYPE_ELF))
-    {
-      v9 *= 2;
-    }
-  }
-  return v9 + this->GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS);
+	if (!HasItemEquipped(EQUIP_BOW)) // no bow
+		return 0;	
+	
+	ItemGen *bow = (ItemGen *)&this->pInventoryItemList[this->pEquipment.uBow - 1];
+	int itemenchant = bow->special_enchantment;
+	
+	signed int dmgperroll = pItemsTable->pItems[bow->uItemID].uDamageRoll;
+	int damagefromroll = 0;
+	int damage = 0;
+
+	for( int i = 0; i < pItemsTable->pItems[bow->uItemID].uDamageDice; i++ ) { // roll damage dice
+		damagefromroll += ((rand() % dmgperroll) + 1);
+	}
+
+	damage = pItemsTable->pItems[bow->uItemID].uDamageMod + damagefromroll; // total damage
+
+	if (uMonsterInfoID) { // check against bow enchantments
+
+		if (itemenchant == 64 && MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_UNDEAD)) { //double damage vs undead
+			damage *= 2;
+		}
+		else if (itemenchant == 39 && MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_KREEGAN)) { // double vs devils
+			damage *= 2;
+		}
+		else if (itemenchant == 40 && MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_DRAGON)) { // double vs dragons
+			damage *= 2;
+		}
+		else if (itemenchant == 63 && MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_ELF)) { // double vs elf
+			damage *= 2;
+		}
+	}
+
+	return damage + this->GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS);
 }
 
 //----- (0048D2EA) --------------------------------------------------------
-String Player::GetMeleeDamageString()
-{
+String Player::GetMeleeDamageString() {
+
     int min_damage; // edi@3
     int max_damage; // eax@3
 
@@ -1722,20 +1711,20 @@ String Player::GetRangedDamageString()
 }
 
 //----- (0048D45A) --------------------------------------------------------
-bool Player::CanTrainToNextLevel()
-{
-  int lvl = this->uLevel + 1;
-  int neededExp = ((lvl * (lvl - 1)) / 2 * 1000);
-  return this->uExperience >= neededExp;
+bool Player::CanTrainToNextLevel() {
+
+	int lvl = this->uLevel + 1;
+	int neededExp = ((lvl * (lvl - 1)) / 2 * 1000);
+	return this->uExperience >= neededExp;
 }
 
 //----- (0048D498) --------------------------------------------------------
-unsigned int Player::GetExperienceDisplayColor()
-{
-  if ( CanTrainToNextLevel() )
-    return ui_character_bonus_text_color;
-  else
-    return ui_character_default_text_color;
+unsigned int Player::GetExperienceDisplayColor() {
+
+	if ( CanTrainToNextLevel() )
+		return ui_character_bonus_text_color;
+	else
+		return ui_character_default_text_color;
 }
 
 //----- (0048D4B3) --------------------------------------------------------
@@ -1797,15 +1786,13 @@ int Player::CalculateIncommingDamage( DAMAGE_TYPE dmg_type, int dmg )
 }
 
 //----- (0048D62C) --------------------------------------------------------
-ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_EQUIP_TYPE uEquipSlot)
-{
-  return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
+ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_EQUIP_TYPE uEquipSlot) {
+	return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
 }
 
 //----- (0048D651) --------------------------------------------------------
-PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_EQUIP_TYPE uEquipSlot)
-{
-  return (PLAYER_SKILL_TYPE)GetNthEquippedIndexItem(uEquipSlot)->GetPlayerSkillType();
+PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_EQUIP_TYPE uEquipSlot) {
+	return (PLAYER_SKILL_TYPE)GetNthEquippedIndexItem(uEquipSlot)->GetPlayerSkillType();
 }
 
 //----- (0048D676) --------------------------------------------------------
@@ -2579,130 +2566,126 @@ float Player::GetArmorRecoveryMultiplierFromSkillLevel( unsigned char armour_ski
 }
 
 //----- (0048E4F8) --------------------------------------------------------
-int Player::GetMaxHealth()
-{
-  int v3; // esi@1
-  int v4; // esi@1
-  int v6; // esi@1
+int Player::GetMaxHealth() {
 
-  v3 = GetParameterBonus(GetActualEndurance());
-  v4 = pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + v3);
-  v6 = uFullHealthBonus
-     + pBaseHealthByClass[classType / 4]
-     + GetSkillBonus(CHARACTER_ATTRIBUTE_HEALTH)
-     + GetItemsBonus(CHARACTER_ATTRIBUTE_HEALTH) + v4;
-  return max(1, v6);
+	int endbonus = GetParameterBonus(GetActualEndurance());
+	int healthbylevel = pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + endbonus);
+	int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_HEALTH) + healthbylevel;
+	int maxhealth = uFullHealthBonus + pBaseHealthByClass[classType / 4] + GetSkillBonus(CHARACTER_ATTRIBUTE_HEALTH) + itembonus;
+
+	if (maxhealth < 0) // min zero
+		maxhealth = 0;
+
+	return maxhealth;
 }
 
 //----- (0048E565) --------------------------------------------------------
-int Player::GetMaxMana()
-{
-  int v2; // eax@2
-  int v3; // esi@4
-  int v4; // eax@5
-  int v5; // esi@5
-  int v6; // eax@5
-  int v7; // esi@6
-  int v8; // esi@6
-  int v9; // esi@6
-  
-  switch (classType)
-  {
-    case PLAYER_CLASS_ROGUE:
-    case PLAYER_CLASS_SPY:
-    case PLAYER_CLASS_ASSASSIN:
-    case PLAYER_CLASS_ARCHER:
-    case PLAYER_CLASS_WARRIOR_MAGE:
-    case PLAYER_CLASS_MASTER_ARCHER:
-    case PLAYER_CLASS_SNIPER:
-    case PLAYER_CLASS_SORCERER:
-    case PLAYER_CLASS_WIZARD:
-    case PLAYER_CLASS_ARCHMAGE:
-    case PLAYER_CLASS_LICH:
-      v2 = GetActualIntelligence();
-      v3 = GetParameterBonus(v2);
-      break;
-    case PLAYER_CLASS_INITIATE:
-    case PLAYER_CLASS_MASTER:
-    case PLAYER_CLASS_NINJA:
-    case PLAYER_CLASS_PALADIN:
-    case PLAYER_CLASS_CRUSADER:
-    case PLAYER_CLASS_HERO:
-    case PLAYER_CLASS_VILLIAN:
-    case PLAYER_CLASS_CLERIC:
-    case PLAYER_CLASS_PRIEST:
-    case PLAYER_CLASS_PRIEST_OF_SUN:
-    case PLAYER_CLASS_PRIEST_OF_MOON:
-      v2 = GetActualWillpower();
-      v3 = GetParameterBonus(v2);
-      break;
-    case PLAYER_CLASS_HUNTER:
-    case PLAYER_CLASS_RANGER_LORD:
-    case PLAYER_CLASS_BOUNTY_HUNTER:
-    case PLAYER_CLASS_DRUID:
-    case PLAYER_CLASS_GREAT_DRUID:
-    case PLAYER_CLASS_ARCH_DRUID:
-    case PLAYER_CLASS_WARLOCK:
-      v4 = GetActualWillpower();
-      v5 = GetParameterBonus(v4);
-      v6 = GetActualIntelligence();
-      v3 = GetParameterBonus(v6) + v5;
-      break;
-    default:
-      return 0;
-      break;
-  }
-  v7 = pBaseManaPerLevelByClass[classType] * (GetActualLevel() + v3);
-  v8 = GetItemsBonus(CHARACTER_ATTRIBUTE_MANA) + v7;
-  v9 = uFullManaBonus
-      + pBaseManaByClass[classType / 4]
-  + GetSkillBonus(CHARACTER_ATTRIBUTE_MANA)
-      + v8;
-  return max(0,v9);
+int Player::GetMaxMana() {
+
+	int mainmanastat;
+	int statbonus;
+	int addmanastat;
+
+	switch (classType) {
+		case PLAYER_CLASS_ROGUE:
+		case PLAYER_CLASS_SPY:
+		case PLAYER_CLASS_ASSASSIN:
+		case PLAYER_CLASS_ARCHER:
+		case PLAYER_CLASS_WARRIOR_MAGE:
+		case PLAYER_CLASS_MASTER_ARCHER:
+		case PLAYER_CLASS_SNIPER:
+		case PLAYER_CLASS_SORCERER:
+		case PLAYER_CLASS_WIZARD:
+		case PLAYER_CLASS_ARCHMAGE:
+		case PLAYER_CLASS_LICH:
+			// intelligence based mana
+			mainmanastat = GetActualIntelligence();
+			statbonus = GetParameterBonus(mainmanastat);
+			break;
+
+		case PLAYER_CLASS_INITIATE:
+		case PLAYER_CLASS_MASTER:
+		case PLAYER_CLASS_NINJA:
+		case PLAYER_CLASS_PALADIN:
+		case PLAYER_CLASS_CRUSADER:
+		case PLAYER_CLASS_HERO:
+		case PLAYER_CLASS_VILLIAN:
+		case PLAYER_CLASS_CLERIC:
+		case PLAYER_CLASS_PRIEST:
+		case PLAYER_CLASS_PRIEST_OF_SUN:
+		case PLAYER_CLASS_PRIEST_OF_MOON:
+			// personality based mana
+			mainmanastat = GetActualWillpower();
+			statbonus = GetParameterBonus(mainmanastat);
+			break;
+
+		case PLAYER_CLASS_HUNTER:
+		case PLAYER_CLASS_RANGER_LORD:
+		case PLAYER_CLASS_BOUNTY_HUNTER:
+		case PLAYER_CLASS_DRUID:
+		case PLAYER_CLASS_GREAT_DRUID:
+		case PLAYER_CLASS_ARCH_DRUID:
+		case PLAYER_CLASS_WARLOCK:
+			// mixed base mana
+			mainmanastat = GetActualWillpower();
+			statbonus = GetParameterBonus(mainmanastat);
+			addmanastat = GetActualIntelligence();
+			statbonus += GetParameterBonus(addmanastat);
+			break;
+
+		default: // no magic
+			return 0;
+			break;
+	}
+
+	int manabylevel = pBaseManaPerLevelByClass[classType] * (GetActualLevel() + statbonus);
+	int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MANA) + manabylevel;
+	int maxmana = uFullManaBonus + pBaseManaByClass[classType / 4] + GetSkillBonus(CHARACTER_ATTRIBUTE_MANA) + itembonus;
+
+	if (maxmana < 0) // min of 0 
+		maxmana = 0;
+
+	return maxmana;
 }
 
 //----- (0048E656) --------------------------------------------------------
-int Player::GetBaseAC()
-{
-  int v2; // eax@1
-  int v3; // esi@1
-  int v4; // esi@1
-  int v5; // esi@1
+int Player::GetBaseAC() {
 
-  v2 = GetActualSpeed();
-  v3 = GetParameterBonus(v2);
-  v4 = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v3;
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v4;
-  return max(0, v5);
+	int acc = GetActualAccuracy();
+	int accbonus = GetParameterBonus(acc);
+	int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + accbonus;
+	int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + itembonus;
+
+	if (skillbonus < 0) // min zero
+		skillbonus = 0;
+
+	return skillbonus;
 }
 
 //----- (0048E68F) --------------------------------------------------------
-int Player::GetActualAC()
-{
-  int v2; // eax@1
-  int v3; // esi@1
-  int v4; // esi@1
-  int v5; // esi@1
-  int v6; // esi@1
+int Player::GetActualAC() {
 
-  v2 = GetActualSpeed();
-  v3 = GetParameterBonus(v2);
-  v4 = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v3;
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v4;
-  v6 = this->sACModifier + GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v5;
-  return max(0, v6);
+	int acc = GetActualAccuracy();
+	int accbonus = GetParameterBonus(acc);
+	int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + accbonus;
+	int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + itembonus;
+
+	int result = this->sACModifier + GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + skillbonus;
+
+	if (result < 0) // min zero
+		result = 0;
+
+	return result;
 }
 
 //----- (0048E6DC) --------------------------------------------------------
-unsigned int Player::GetBaseAge()
-{
-    return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
+unsigned int Player::GetBaseAge() {
+	return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
 }
 
 //----- (0048E72C) --------------------------------------------------------
-unsigned int Player::GetActualAge()
-{
-  return this->sAgeModifier + GetBaseAge();
+unsigned int Player::GetActualAge() {
+	return this->sAgeModifier + GetBaseAge();
 }
 
 //----- (0048E73F) --------------------------------------------------------

@@ -510,7 +510,7 @@ struct Player
   int GetRangedAttack();
   int GetRangedDamageMin();
   int GetRangedDamageMax();
-  int CalculateRangedDamageTo(int a2);
+  int CalculateRangedDamageTo(int uMonsterInfoID);
   String GetMeleeDamageString();
   String GetRangedDamageString();
   bool CanTrainToNextLevel();
@@ -605,7 +605,7 @@ struct Player
   int GetConditionDaysPassed(unsigned int uCondition);
   bool NothingOrJustBlastersEquipped();
   void SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx);//0x4BE2DD
-  bool Recover(signed int a2);
+  bool Recover(int dt);
   bool CanCastSpell(unsigned int uRequiredMana);
   void PlayAwardSound();
   void EquipBody(ITEM_EQUIP_TYPE uEquipType);

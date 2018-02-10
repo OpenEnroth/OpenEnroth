@@ -752,20 +752,20 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2)
 //  int v4; // eax@27
   //unsigned int diffuse; // esi@41
   //int v6; // ecx@49
-  int v7; // eax@54
-  int v8; // eax@55
-  char v9; // zf@56
-  int v10; // eax@59
-  int v11; // eax@61
-  int v12; // eax@85
-  int v13; // eax@86
-  int v14; // eax@96
-  int v15; // eax@111
-  int v16; // eax@118
-  int v17; // eax@139
-  int v18; // eax@140
-  int v19; // eax@141
-  int v20; // eax@151
+//  int v7; // eax@54
+//  int v8; // eax@55
+//  char v9; // zf@56
+//  int v10; // eax@59
+//  int v11; // eax@61
+//  int v12; // eax@85
+//  int v13; // eax@86
+//  int v14; // eax@96
+//  int v15; // eax@111
+//  int v16; // eax@118
+//  int v17; // eax@139
+//  int v18; // eax@140
+//  int v19; // eax@141
+//  int v20; // eax@151
   char pContainer[7]; // [sp+10h] [bp-8h]@81
 
   //__debugbreak(); // need to refactor carefully & collect data

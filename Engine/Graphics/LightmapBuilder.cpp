@@ -76,13 +76,13 @@ bool LightmapBuilder::ApplyLights_OutdoorFace(ODMFace *pFace)
 bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight, Vec3_float_ *pNormal, float *light_tile_dist, RenderVertexSoft *TerrainVertices, unsigned int uStripType, int X, unsigned int *pSlot)
 {
   //For outdoor terrain light (II)
-  bool result; // eax@1
+//  bool result; // eax@1
   double maxz; // st7@11
-  char v20; // c2@11
-  signed int v52; // ecx@17
+//  char v20; // c2@11
+//  signed int v52; // ecx@17
   char v57; // dl@18
   std::string v58; // [sp-18h] [bp-38h]@10
-  double v61; // [sp+Ch] [bp-14h]@11
+//  double v61; // [sp+Ch] [bp-14h]@11
   float minz; // [sp+14h] [bp-Ch]@11
   float tX_0;
   float tX_1;
@@ -592,7 +592,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
 {
   //For outdoor terrain and indoor light (IV)(IV)
   Lightmap *lightmap; // edi@3
-  double v17; // st7@5
+//  double v17; // st7@5
   double v24; // st7@6
   double v38; // st7@14
   double v39; // st7@16
@@ -825,7 +825,7 @@ void LightmapBuilder::DrawLightmapsType(int type)
 bool LightmapBuilder::DrawLightmaps(int indices)
 {
   //For outdoor terrain and indoor light (VI)(VI)
-  Lightmap *v28; // [sp+50h] [bp-38h]@2
+//  Lightmap *v28; // [sp+50h] [bp-38h]@2
   Vec3_float_ arg4;
 
   if (StationaryLightsCount == 0)

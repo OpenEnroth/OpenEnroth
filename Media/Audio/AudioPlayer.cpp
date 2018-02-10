@@ -592,7 +592,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, signed int pid, unsigned int uNumR
   int v102; // [sp+90h] [bp+1Ch]@60
   int v103; // [sp+90h] [bp+1Ch]@68
 
-  if ( !bPlayerReady || !uSoundVolumeMultiplier || !hDigDriver || eSoundID == SOUND_Invalid )
+  if ( !bPlayerReady || !uSoundVolumeMultiplier  || eSoundID == SOUND_Invalid ) //|| !hDigDriver)
     return;
 
   float sample_volume = 10000;
@@ -2168,7 +2168,7 @@ void AudioPlayer::LoadAudioSnd()
 }
 
 //----- (004AB8CE) --------------------------------------------------------
-void AudioPlayer::Initialize()
+void AudioPlayer::Initialize() //?? depreciate move to openal
 {
   int v3; // ebx@1
   _PROVIDER *v6; // eax@9
@@ -2188,11 +2188,15 @@ void AudioPlayer::Initialize()
   this->dword_0002C8 = 64;
   this->dword_0002CC = 2;
 
+
+
   MSS32_DLL_Initialize();
   BINKW32_DLL_Initialize();
   SMACKW32_DLL_Initialize();
   
-  AIL_startup();
+  AIL_startup(); // ?? eh
+
+
   if (bCanLoadFromCD)
     hAILRedbook = AIL_redbook_open_drive(cMM7GameCDDriveLetter/*cGameCDDriveLetter*/);
   //else
@@ -2202,7 +2206,8 @@ void AudioPlayer::Initialize()
   hDigDriver = Audio_GetFirstHardwareDigitalDriver();
   if ( hDigDriver )
     SmackSoundUseMSS(hDigDriver);
-  if ( OS_GetAppInt("Disable3DSound", 0) != 1 && true)//pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT )
+
+  if ( OS_GetAppInt("Disable3DSound", 0) != 1 && false)//pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT )
   {
     v14 = 0;
     bEAXSupported = 0;
@@ -2236,6 +2241,7 @@ void AudioPlayer::Initialize()
       }
     }
   }
+
   for ( v3; v3 < uMixerChannels; ++v3 )
   {
     pMixerChannels[v3].hSample = AIL_allocate_sample_handle(hDigDriver);
@@ -2298,7 +2304,8 @@ _DIG_DRIVER *Audio_GetFirstHardwareDigitalDriver(void)
       pcmWaveFormat.wf.nBlockAlign = channels * bitsPerSample / 8;             //количество данных в блоке
       pcmWaveFormat.wBitsPerSample = bitsPerSample;
       pcmWaveFormat.wf.nAvgBytesPerSec = pcmWaveFormat.wf.nSamplesPerSec * pcmWaveFormat.wf.nBlockAlign;
-      if ( !AIL_waveOutOpen(&hDrv, 0, -1, &pcmWaveFormat.wf) )
+      
+	  if ( !AIL_waveOutOpen(&hDrv, 0, -1, &pcmWaveFormat.wf) )
       {
         strcpy(pAudioPlayer->pDeviceNames[v5], "Device: ");
         v2 = strlen(pAudioPlayer->pDeviceNames[v5]);

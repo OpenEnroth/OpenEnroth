@@ -530,7 +530,7 @@ bool ItemsTable::IsMaterialNonCommon(ItemGen *pItem)
 //----- (00453B3C) --------------------------------------------------------
 void ItemsTable::LoadPotions()
 {
-    char Text[90];
+//    char Text[90];
     char* test_string;
     unsigned int uRow;
     unsigned int uColumn;
@@ -584,7 +584,7 @@ void ItemsTable::LoadPotions()
 //----- (00453CE5) --------------------------------------------------------
 void ItemsTable::LoadPotionNotes()
 {
-  char Text[90]; 
+//  char Text[90]; 
   char* test_string;
   unsigned int uRow;
   unsigned int uColumn;

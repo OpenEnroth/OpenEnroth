@@ -155,9 +155,9 @@ unsigned int __stdcall AIL_redbook_stop(HREDBOOK hRedbook)
 }
 
 // sub_4D835C: using guessed type int __stdcall AIL_startup();
-int __stdcall AIL_startup()
+int  __stdcall AIL_startup()
 {
-    return (mss32_AIL_startup)();
+	return (mss32_AIL_startup)();
 }
 
 // sub_4D8360: using guessed type int __stdcall AIL_redbook_open_drive(_DWORD);

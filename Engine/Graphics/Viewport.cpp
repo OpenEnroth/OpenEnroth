@@ -341,7 +341,7 @@ void DropHeldItem()
         return;
 
     SpriteObject a1; // [sp+Ch] [bp-80h]@1
-    Point *v1; // esi@3
+//    Point *v1; // esi@3
     __debugbreak();//no checker
     int v6 = 0;
     a1.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
@@ -385,12 +385,12 @@ void DropHeldItem()
 void OnGameViewportClick()
 {
     signed int v0; // ebx@2
-    signed int v6; // eax@14
-    char *v7; // esi@15
-    int v9; // eax@19
-    unsigned int pTextureID; // eax@19
+//    signed int v6; // eax@14
+//    char *v7; // esi@15
+//    int v9; // eax@19
+//    unsigned int pTextureID; // eax@19
     int pEventID; // ecx@21
-    int v15; // ecx@29
+//    int v15; // ecx@29
   //  signed int v16; // edx@30
   //  int v18; // ebx@47
   //  signed int v21; // eax@58

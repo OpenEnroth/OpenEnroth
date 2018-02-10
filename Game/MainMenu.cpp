@@ -34,22 +34,22 @@ Image *main_menu_background = nullptr;
 void MainMenu_EventLoop()
 {
     Player *pPlayer; // ebx@2
-    void *v3; // edi@21
+//    void *v3; // edi@21
     signed int v4; // eax@29
     //  int v5; // ecx@29
     //  PLAYER_SKILL_TYPE v6; // edi@37
-    GUIWindow *pWindow; // eax@56
-    GUIButton *pButton; // eax@59
+//    GUIWindow *pWindow; // eax@56
+//    GUIButton *pButton; // eax@59
     int v15; // edi@70
     char v20; // dl@116
-    unsigned int v21; // eax@116
+//    unsigned int v21; // eax@116
     unsigned int v25; // eax@120
-    unsigned int v26; // ecx@127
+//    unsigned int v26; // ecx@127
     //  SoundID pSoundID; // [sp-2Ch] [bp-3Ch]@36
     //  signed int v41; // [sp-10h] [bp-20h]@29
     int pParam; // [sp+4h] [bp-Ch]@3
     UIMessageType pUIMessageType; // [sp+8h] [bp-8h]@3
-    int pSex; // [sp+Ch] [bp-4h]@3
+//    int pSex; // [sp+Ch] [bp-4h]@3
 
     if (pMessageQueue_50CBD0->uNumMessages)
     {
@@ -457,7 +457,13 @@ void MainMenu_Loop()
 //----- (00415485) --------------------------------------------------------
 void DrawMM7CopyrightWindow()
 {
-    render->DrawTextureNew(0, 0, main_menu_bg);
+	if (!main_menu_background)
+	{
+		main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
+	}
+
+
+    render->DrawTextureNew(0, 0, main_menu_background);
 
     GUIWindow Dst; // [sp+8h] [bp-54h]@1
 

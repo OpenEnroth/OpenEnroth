@@ -1544,7 +1544,7 @@ RenderVertexSoft ogl_draw_buildings_vertices[20];
 void RenderOpenGL::DrawBuildingsD3D()
 {
     int v27; // eax@57
-    unsigned int v34; // eax@80
+//    unsigned int v34; // eax@80
     int v49; // [sp+2Ch] [bp-2Ch]@10
     int v50; // [sp+30h] [bp-28h]@34
     int v51; // [sp+34h] [bp-24h]@35
