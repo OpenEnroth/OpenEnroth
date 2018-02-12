@@ -69,21 +69,21 @@ enum PlayerSpeech
   SPEECH_GoodDay = 22,     // greets on dialogue start
   SPEECH_GoodEvening = 23,
   SPEECH_24 = 24,
-  SPEECH_25 = 25,
-  SPEECH_26 = 26,
-  SPEECH_27 = 27,
-  SPEECH_28 = 28,
-  SPEECH_29 = 29,
-  SPEECH_30 = 30,
-  SPEECH_31 = 31,
-  SPEECH_32 = 32,
-  SPEECH_33 = 33,
-  SPEECH_34 = 34,
-  SPEECH_35 = 35,
+  SPEECH_25 = 25, // weak
+  SPEECH_26 = 26, // fear
+  SPEECH_27 = 27, // poisoned
+  SPEECH_28 = 28, // diseased
+  SPEECH_29 = 29, // insane
+  SPEECH_30 = 30, // cursed
+  SPEECH_31 = 31, // drunk
+  SPEECH_32 = 32, // uncnocious
+  SPEECH_33 = 33, // dead
+  SPEECH_34 = 34, // petrified
+  SPEECH_35 = 35, // eradicated
   SPEECH_36 = 36,
   SPEECH_37 = 37,
   SPEECH_NotEnoughGold = 38,
-  SPEECH_39 = 39,
+  SPEECH_39 = 39, // cant use that
   SPEECH_40 = 40,
   SPEECH_41 = 41,
   SPEECH_42 = 42,
@@ -96,7 +96,7 @@ enum PlayerSpeech
   SPEECH_49 = 49,
   SPEECH_50 = 50,
   SPEECH_51 = 51,
-  SPEECH_52 = 52,
+  SPEECH_52 = 52, //ATTACK MISSED??
   SPEECH_53 = 53,
   SPEECH_54 = 54,
   SPEECH_55 = 55,
@@ -143,7 +143,7 @@ enum PlayerSpeech
   SPEECH_96 = 96,
   SPEECH_97 = 97,
   SPEECH_98 = 98,
-  SPEECH_99 = 99,
+  SPEECH_99 = 99, // zombie
   SPEECH_100 = 100,
   SPEECH_101 = 101,
   SPEECH_PickMe = 102,
@@ -151,7 +151,7 @@ enum PlayerSpeech
   SPEECH_IDENTIFY_MONSTER_WEAKER = 104,
   SPEECH_IDENTIFY_MONSTER_STRONGER = 105,
   SPEECH_IDENTIFY_MONSTER_106 = 106,
-  SPEECH_107 = 107,
+  SPEECH_107 = 107, // its just you and me now
   SPEECH_108 = 108,
   SPEECH_109 = 109,
   SPEECH_110 = 110,
@@ -585,13 +585,13 @@ struct Player
   bool CanAct();
   bool CanSteal();
   bool CanEquip_RaceAndAlignmentCheck(unsigned int uItemID);
-  void SetCondition(unsigned int uConditionIdx, int a3);
+  void SetCondition(unsigned int uConditionIdx, int blockable);
   bool ProfessionOrGuildFlagsCorrect(unsigned int uClass, int a3);
   void PlaySound(PlayerSpeech speech, int a3);
-  void PlayEmotion(CHARACTER_EXPRESSION_ID expression, int a3);
+  void PlayEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
   void ItemsPotionDmgBreak(int enchant_count);
-  unsigned int GetItemIDAtInventoryIndex(int *inout_item_cell);
-  struct ItemGen *GetItemAtInventoryIndex(int *inout_item_cell);
+  unsigned int GetItemIDAtInventoryIndex(int inout_item_cell);
+  struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
   bool IsPlayerHealableByTemple();
   int GetBaseIdentifyPrice(float price_multiplier);
   int GetBaseRepairPrice(int uRealValue, float price_multiplier);
@@ -613,12 +613,12 @@ struct Player
   bool HasItem(unsigned int uItemID, bool checkHeldItem);
   void OnInventoryLeftClick();
 
-  bool PlayerHitOrMiss(Actor *pActor, int a3, int a4);
+  bool PlayerHitOrMiss(Actor *pActor, int distancemod, int skillmod);
 
   unsigned int GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4);
   int CalculateMeleeDmgToEnemyWithWeapon( ItemGen * weapon, unsigned int uTargetActorID , bool addOneDice);
   bool WearsItemAnyWhere(int item_id);
-  float GetArmorRecoveryMultiplierFromSkillLevel( unsigned char armour_skill_type, float param2, float param3, float param4, float param5 );
+  float GetArmorRecoveryMultiplierFromSkillLevel(unsigned char armour_skill_type, float param2, float param3, float param4, float param5 );
   void SetSkillByEvent(unsigned __int16 Player::* skillToSet, unsigned __int16 skillValue);
   void AddSkillByEvent( unsigned __int16 Player::* skillToSet, unsigned __int16 addSkillValue);
   void PlayAwardSound_Anim();
@@ -687,7 +687,7 @@ struct Player
   int GetPlayerIndex();
 
   static void _42ECB5_PlayerAttacksActor();
-  static void _42FA66_do_explosive_impact(int a1, int a2, int a3, int a4, __int16 a5, signed int a6);
+  static void _42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4, __int16 a5, signed int actchar);
 
   std::array<GameTime, 20> conditions_times;
   unsigned __int64 uExperience;

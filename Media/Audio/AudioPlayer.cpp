@@ -535,6 +535,9 @@ void AudioPlayer::_4AA258(int a2)
 //----- (004AA306) --------------------------------------------------------
 void AudioPlayer::PlaySound(SoundID eSoundID, signed int pid, unsigned int uNumRepeats, signed int source_x, signed int source_y, int sound_data_id, float uVolume, int sPlaybackRate)
 {
+	// need changind to openal audio player
+
+
   int v12; // edi@13
   signed int v13; // ecx@17
   signed int v14; // eax@20
@@ -592,7 +595,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, signed int pid, unsigned int uNumR
   int v102; // [sp+90h] [bp+1Ch]@60
   int v103; // [sp+90h] [bp+1Ch]@68
 
-  if ( !bPlayerReady || !uSoundVolumeMultiplier  || eSoundID == SOUND_Invalid ) //|| !hDigDriver)
+  if ( !bPlayerReady || !uSoundVolumeMultiplier  || eSoundID == SOUND_Invalid || !hDigDriver)
     return;
 
   float sample_volume = 10000;

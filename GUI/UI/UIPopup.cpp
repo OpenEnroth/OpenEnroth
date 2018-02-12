@@ -1715,7 +1715,7 @@ void Inventory_ItemPopupAndAlchemy()
 
 	signed int inventoryXCoord; // ecx@2
 	int inventoryYCoord; // eax@2
-	int invMatrixIndex; // eax@2
+	
 	unsigned int pY; // [sp+3Ch] [bp-Ch]@2
 	unsigned int pX;
     //Point cursor = pMouse->GetCursorPos();
@@ -1727,7 +1727,7 @@ void Inventory_ItemPopupAndAlchemy()
 	pMouse->GetClickPos(&pX, &pY);
 	inventoryYCoord = (pY - 17) / 32;
 	inventoryXCoord = (pX - 14) / 32;
-	invMatrixIndex = inventoryXCoord + ( 14 * inventoryYCoord); //INVETORYSLOTSWIDTH
+	int invMatrixIndex = inventoryXCoord + ( 14 * inventoryYCoord); //INVETORYSLOTSWIDTH
 
 
 	if (pX <= 13 || pX >= 462)//items out of inventory(вещи вне инвентаря)  this is for player ragdoll items??
@@ -1750,7 +1750,7 @@ void Inventory_ItemPopupAndAlchemy()
 	//limits check ?
 	//if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT && inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
 	
-	item = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(&invMatrixIndex);
+	item = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invMatrixIndex); // invmatrixindex is changed
 
 	if (!item) { // no item
 		return;
@@ -1980,7 +1980,7 @@ void Inventory_ItemPopupAndAlchemy()
                 damage_level = 4;
         }
 
-		int item_pid = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invMatrixIndex);
+		int item_pid = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invMatrixIndex); //invmatricindex changed
         int pOut_x = item_pid + 1;
         for (uint i = 0; i < 126; ++i)
         {

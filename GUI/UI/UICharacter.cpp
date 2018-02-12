@@ -1823,7 +1823,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id)
         else
             render->DrawTextureAlphaNew(x / 640.0f, y / 480.0f, item_texture);
 
-        render->ZBuffer_Fill_2(x, y, item_texture, id);
+        render->ZBuffer_Fill_2(x, y, item_texture, id); // blank functions
     }
 }
 
@@ -2880,62 +2880,179 @@ void  OnPaperdollLeftClick()
     return;
   }
 
-  v34 = render->pActiveZBuffer[pMouse->uMouseClickX + pSRZBufferLineOffsets[pMouse->uMouseClickY]] & 0xFFFF;
-  if ( v34 )
-  {
-    //v36 = v34 - 1;
-    //v38 = &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
-    pEquipType = pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].GetItemEquipType();
-    if ( pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_WETSUIT )
-    {
-      if ( bUnderwater )
-      {
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-        return;
-      }
-      WetsuitOff(uActiveCharacter);
-    }
-    if ( _50C9A0_IsEnchantingInProgress )//наложить закл на экипировку
-    {
-      /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &= 0x7Fu;//CastSpellInfo
-      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) = uActiveCharacter - 1;
-      *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
-      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = pEquipType;*/
-      pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
-      pSpellInfo->uFlags &= 0x7F;
-      pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
-      pSpellInfo->spell_target_pid = v34 - 1;
-      pSpellInfo->field_6 = pEquipType;
+  // check if on rings screen - it doesnt use zbuffer
+  if (bRingsShownInCharScreen) {
 
-      ptr_50C9A4_ItemToEnchant = &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
-      _50C9A0_IsEnchantingInProgress = 0;
-      if ( pMessageQueue_50CBD0->uNumMessages )
-        pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
-      pMouse->SetCursorImage("MICON1");
-      _50C9D4_AfterEnchClickEventSecondParam = 0;
-      _50C9D0_AfterEnchClickEventId = 113;
-      _50C9D8_AfterEnchClickEventTimeout = 256;
-    }
-    else
-    {
-      if ( !ptr_50C9A4_ItemToEnchant )//снять вещь
-      {
-        pParty->SetHoldingItem(&pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1]);
-        pPlayers[uActiveCharacter]->pEquipment.pIndices[pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uBodyAnchor - 1] = 0;
-        pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].Reset();
-      }
-    }
+	  //assume slot width 32 as per inventory
+	  
+	  static int RingsX[6] = { 0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248 };
+	  static int RingsY[6] = { 0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA };
+
+	  static int glovex = 586;
+	  static int glovey = 88;
+
+	  static int amuletx = 493;
+	  static int amulety = 91;
+
+	  int mousex = pMouse->uMouseClickX;
+	  int mousey = pMouse->uMouseClickY;
+	  int slot = 32;
+
+	  ItemGen *pitem = NULL;
+	  int pos=NULL;
+
+	  if ( mousex < 490 || mousex > 618)
+		  return;
+
+	  if (mousey < 88 || mousey > 282)
+		  return;
+
+	  if (mousex >= amuletx && mousex <= (amuletx + slot) && mousey >= amulety && mousey <= (amulety + 2 * slot)) {
+		  //amulet
+		  //pitem = pPlayers[uActiveCharacter]->GetAmuletItem(); //9
+		  pos = 9;
+	  }
+
+	  if (mousex >= glovex && mousex <= (glovex + slot) && mousey >= glovey && mousey <= (glovey + 2 * slot)) {
+		  //glove
+		  //pitem = pPlayers[uActiveCharacter]->GetGloveItem(); //7
+		  pos = 7;
+	  }
+
+	  for (int i = 0; i < 6; ++i) {
+		  if (mousex >= RingsX[i] && mousex <= (RingsX[i] + slot) && mousey >= RingsY[i] && mousey <= (RingsY[i] + slot)) {
+			  //ring
+			 // pitem = pPlayers[uActiveCharacter]->GetNthRingItem(i); //10+i
+			  pos = 10 + i;
+		  }
+	  }
+
+	  if (pos != NULL)
+		  pitem = pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
+
+	  if (!pitem)
+		  return;
+	 // pPlayers[uActiveCharacter]->get
+
+	  //enchanting??
+	  if (_50C9A0_IsEnchantingInProgress)//наложить закл на экипировку
+	  {
+		  /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &= 0x7Fu;//CastSpellInfo
+		  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) = uActiveCharacter - 1;
+		  *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
+		  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = pEquipType;*/
+		  pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+		  pSpellInfo->uFlags &= 0x7F;
+		  pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
+		  pSpellInfo->spell_target_pid = pPlayers[uActiveCharacter]->pEquipment.pIndices[pos];
+		  pSpellInfo->field_6 = pEquipType;
+
+		  ptr_50C9A4_ItemToEnchant = pitem;
+		  _50C9A0_IsEnchantingInProgress = 0;
+		  if (pMessageQueue_50CBD0->uNumMessages)
+			  pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
+		  pMouse->SetCursorImage("MICON1");
+		  _50C9D4_AfterEnchClickEventSecondParam = 0;
+		  _50C9D0_AfterEnchClickEventId = 113;
+		  _50C9D8_AfterEnchClickEventTimeout = 256;
+	  }
+	  else
+	  {
+
+		  if (!ptr_50C9A4_ItemToEnchant)//снять вещь
+		  {
+			  pParty->SetHoldingItem(pitem);
+			  pPlayers[uActiveCharacter]->pEquipment.pIndices[pitem->uBodyAnchor - 1] = 0;
+			  pitem->Reset();
+
+			  // pParty->SetHoldingItem(&pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1]);
+			 //  pPlayers[uActiveCharacter]->pEquipment.pIndices[pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uBodyAnchor - 1] = 0;
+			 //  pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].Reset();
+
+			  //return &this->pInventoryItemList[this->pEquipment.pIndices[index] - 1];
+		  }
+
+	  }
+
+	  //for (uint i = 0; i < 6; ++i)
+	  //{
+		 // if (!player->pEquipment.uRings[i])
+			//  continue;
+
+		 // CharacterUI_DrawItem(pPaperdollRingsX[i], pPaperdollRingsY[i], &player->pInventoryItemList[player->pEquipment.uRings[i] - 1],
+			//  player->pEquipment.uRings[i]);
+	  //}
+	  //if (player->pEquipment.uAmulet)
+		 // CharacterUI_DrawItem(493, 91, player->GetAmuletItem(), player->pEquipment.uAmulet);
+	  //if (player->pEquipment.uGlove)
+		 // CharacterUI_DrawItem(586, 88, player->GetGloveItem(), player->pEquipment.uGlove);
+
+
   }
-  else//снять лук
-  {
-    if ( pPlayers[uActiveCharacter]->pEquipment.uBow )
-    {
-      _this = pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->pEquipment.uBow - 1];
-      pParty->SetHoldingItem(&_this);
-      _this.Reset();
-      pPlayers[uActiveCharacter]->pEquipment.uBow = 0;
-    }
+  else { // z picking as before
+
+	  v34 = render->pActiveZBuffer[pMouse->uMouseClickX + pSRZBufferLineOffsets[pMouse->uMouseClickY]] & 0xFFFF;
+	  if (v34)
+	  {
+		  //v36 = v34 - 1;
+		  //v38 = &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
+		  pEquipType = pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].GetItemEquipType();
+		  if (pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_WETSUIT)
+		  {
+			  if (bUnderwater)
+			  {
+				  pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+				  return;
+			  }
+			  WetsuitOff(uActiveCharacter);
+		  }
+
+		  if (_50C9A0_IsEnchantingInProgress)//наложить закл на экипировку
+		  {
+			  /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &= 0x7Fu;//CastSpellInfo
+			  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) = uActiveCharacter - 1;
+			  *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
+			  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = pEquipType;*/
+			  pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+			  pSpellInfo->uFlags &= 0x7F;
+			  pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
+			  pSpellInfo->spell_target_pid = v34 - 1;
+			  pSpellInfo->field_6 = pEquipType;
+
+			  ptr_50C9A4_ItemToEnchant = &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
+			  _50C9A0_IsEnchantingInProgress = 0;
+			  if (pMessageQueue_50CBD0->uNumMessages)
+				  pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
+			  pMouse->SetCursorImage("MICON1");
+			  _50C9D4_AfterEnchClickEventSecondParam = 0;
+			  _50C9D0_AfterEnchClickEventId = 113;
+			  _50C9D8_AfterEnchClickEventTimeout = 256;
+		  }
+		  else
+		  {
+			  if (!ptr_50C9A4_ItemToEnchant)//снять вещь
+			  {
+				  pParty->SetHoldingItem(&pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1]);
+				  pPlayers[uActiveCharacter]->pEquipment.pIndices[pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uBodyAnchor - 1] = 0;
+				  pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].Reset();
+			  }
+		  }
+	  }
+	  else//снять лук
+	  {
+		  if (pPlayers[uActiveCharacter]->pEquipment.uBow)
+		  {
+			  _this = pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->pEquipment.uBow - 1];
+			  pParty->SetHoldingItem(&_this);
+			  _this.Reset();
+			  pPlayers[uActiveCharacter]->pEquipment.uBow = 0;
+		  }
+	  }
   }
+
+
+
+
 }
 
 //----- (004196A0) --------------------------------------------------------

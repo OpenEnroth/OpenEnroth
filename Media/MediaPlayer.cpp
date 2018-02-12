@@ -416,8 +416,8 @@ bool DecodeAudioFrame(AVCodecContext *dec_ctx, AVPacket *avpacket, AVFrame *avfr
 
       bink_next_pts = avpacket->pts + /*dec_ctx->channels *  avframe->nb_samples; */
 
-		AVFrame *frame; //??testing
-		frame = av_frame_alloc();
+		AVFrame *frame; 
+		frame = av_frame_alloc(); // fixes overflow
 
 
   int first;
@@ -518,9 +518,8 @@ bool DecodeAudioFrame(AVCodecContext *dec_ctx, AVPacket *avpacket, AVFrame *avfr
 
        //ff_rdft_init(&trans.rdft, frame_len_bits, DFT_C2R);
 
-	   // here??
-	   //(int *)&decoded
-       avcodec_get_frame_defaults(frame); // stack overfow?? decoded gets altered here ///////////////////////////////////////////////////
+	  
+       avcodec_get_frame_defaults(frame);
        dec_ctx->coded_frame = frame;
     }
     break;
@@ -1519,7 +1518,9 @@ MPlayer::~MPlayer()
 
 void PlayAudio(const wchar_t * pFilename)
 {
-  pAudio_Track = pMediaPlayer->LoadTrack(pFilename);
+
+	pAudio_Track = pMediaPlayer->LoadTrack(pFilename);
+
   pAudio_Track->Play();
   delete pAudio_Track;
   logger->Warning(L"delete dynamic memory for pAudio_Track\n");

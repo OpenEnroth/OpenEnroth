@@ -2837,11 +2837,14 @@ void Game_Loop()
                     pTurnEngine->End(true);
                     pParty->bTurnBasedModeOn = 0;
                 }
-                for (int i = 0; i < 4; ++i)
+                for (int i = 1; i < 5; ++i)
                 {
-                    memset(pParty->pPlayers[i].conditions_times.data(), 0, 0xA0u);//(pConditions, 0, 160)
-                    memset(pParty->pPlayers[i].pPlayerBuffs.data(), 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
-                    pParty->pPlayers[i].sHealth = 1;
+					pPlayers[i]->conditions_times.fill(0);
+					pPlayers[i]->pPlayerBuffs.fill(SpellBuff()); // ???
+
+					//memset(pParty->pPlayers[i].conditions_times.data(), 0, 0xA0u);//(pConditions, 0, 160)
+                    //memset(pParty->pPlayers[i].pPlayerBuffs.data(), 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
+                    pPlayers[i]->sHealth = 1;
                     uActiveCharacter = 1;
                 }
                 if (_449B57_test_bit(pParty->_quest_bits, PARTY_QUEST_FINISHED_EMERALD_ISLE))
@@ -2895,6 +2898,9 @@ void Game_Loop()
 
                 GameUI_StatusBar_OnEvent(localization->GetString(524));// "Once again you've cheated death!.." "Вы снова обхитрили смерть! …"
                 uGameState = GAME_STATE_PLAYING;
+
+				// need to flush messages here??
+
             }
         } while (!game_finished);
 

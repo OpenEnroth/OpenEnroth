@@ -117,7 +117,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
   signed int v732; // [sp+E70h] [bp-14h]@325
   unsigned __int64 v733; // [sp+E74h] [bp-10h]@1 ??used sometimes for spell duration??
   int duration;
-  signed int spell_targeted_at; // [sp+E7Ch] [bp-8h]@14
+  signed int spell_targeted_at=NULL; // [sp+E7Ch] [bp-8h]@14
   int amount=0; // [sp+E80h] [bp-4h]@1
   int obj_type;
   ItemDesc* _item;
@@ -149,7 +149,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
     pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
 
     spell_targeted_at = pCastSpell->spell_target_pid;
-    if (!pCastSpell->spell_target_pid)	// no target
+    if (pCastSpell->spell_target_pid=NULL)	// no target ?? test
     {
       if (pCastSpell->uSpellID == SPELL_LIGHT_DESTROY_UNDEAD ||
           pCastSpell->uSpellID == SPELL_SPIRIT_TURN_UNDEAD ||

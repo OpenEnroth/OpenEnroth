@@ -2459,7 +2459,7 @@ void TempleDialog()
         }
         Party::TakeGold(pPrice);
 
-        memset(pPlayers[uActiveCharacter], 0, 0xA0u); // ?? sets all condition times to zero
+		pPlayers[uActiveCharacter]->conditions_times.fill(0); // sets all condition times to zero
         pPlayers[uActiveCharacter]->sHealth = pPlayers[uActiveCharacter]->GetMaxHealth();
         pPlayers[uActiveCharacter]->sMana = pPlayers[uActiveCharacter]->GetMaxMana();
 

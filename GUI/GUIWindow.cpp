@@ -1622,7 +1622,7 @@ void GUI_UpdateWindows()
 
     for (unsigned int i = 1; i <= uNumVisibleWindows; ++i)
     {
-		pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1]; //pVisibleWindowsIdxs[i] = 21 then problems
+		pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1]; //pVisibleWindowsIdxs[i] = 21 then problems //enchanting window problems visiblewindows -1??
         pWindow->Update();
     }
 

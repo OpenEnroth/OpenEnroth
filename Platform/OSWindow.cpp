@@ -1043,7 +1043,7 @@ bool OSWindow::OnOSMenu(int item_id)
         case 40044:  pPlayers[uActiveCharacter]->SetAfraid(pParty->GetPlayingTime());     break;
         case 40045:  pPlayers[uActiveCharacter]->SetParalyzed(pParty->GetPlayingTime());  break;
         case 40073:  pPlayers[uActiveCharacter]->SetZombie(pParty->GetPlayingTime());     break;
-		case 40046:   memset(pPlayers[uActiveCharacter], 0, 0xA0u); // ??
+		case 40046:  pPlayers[uActiveCharacter]->conditions_times.fill(0);
 						pPlayers[uActiveCharacter]->sHealth = pPlayers[uActiveCharacter]->GetMaxHealth();
 						pPlayers[uActiveCharacter]->sMana = pPlayers[uActiveCharacter]->GetMaxMana();
 						break;
