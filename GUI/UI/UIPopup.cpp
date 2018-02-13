@@ -28,6 +28,8 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UiStatusBar.h"
 
+#include "GUI/UI/UICharacter.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
 
@@ -1722,6 +1724,23 @@ void Inventory_ItemPopupAndAlchemy()
     
 	ItemGen *item = nullptr;
 
+
+
+	int mousex = pMouse->uMouseClickX; // condense
+	int mousey = pMouse->uMouseClickY; // condense
+
+	static int RingsX[6] = { 0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248 };
+	static int RingsY[6] = { 0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA };
+
+	static int glovex = 586;
+	static int glovey = 88;
+
+	static int amuletx = 493;
+	static int amulety = 91;
+
+	int slot = 32;
+	int pos = -1;
+
 	
 
 	pMouse->GetClickPos(&pX, &pY);
@@ -1735,17 +1754,68 @@ void Inventory_ItemPopupAndAlchemy()
 
 
 		// popup checks if ringscreen up here
+		
+		if (!ringscreenactive()) { // rings not displayd
 
+			int item_pid = (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1;
+			//zbuffer still used for paperdolls
 
-		int item_pid = (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1;
-					//zbuffer still used for paperdolls
+			if (item_pid == -1)
+				return;
 
-		if (item_pid == -1)
+			item = &pPlayers[uActiveCharacter]->pInventoryItemList[item_pid];
+			GameUI_DrawItemInfo(item);
 			return;
 
-		item = &pPlayers[uActiveCharacter]->pInventoryItemList[item_pid];
-		GameUI_DrawItemInfo(item);
-		return;
+		}
+		else { // rings displayed
+
+			if (mousex < 490 || mousex > 618)
+				return;
+
+			if (mousey < 88 || mousey > 282)
+				return;
+
+			if (mousex >= amuletx && mousex <= (amuletx + slot) && mousey >= amulety && mousey <= (amulety + 2 * slot)) {
+				//amulet
+				//pitem = pPlayers[uActiveCharacter]->GetAmuletItem(); //9
+				pos = 9;
+			}
+
+			if (mousex >= glovex && mousex <= (glovex + slot) && mousey >= glovey && mousey <= (glovey + 2 * slot)) {
+				//glove
+				//pitem = pPlayers[uActiveCharacter]->GetGloveItem(); //7
+				pos = 7;
+			}
+
+			for (int i = 0; i < 6; ++i) {
+				if (mousex >= RingsX[i] && mousex <= (RingsX[i] + slot) && mousey >= RingsY[i] && mousey <= (RingsY[i] + slot)) {
+					//ring
+					// pitem = pPlayers[uActiveCharacter]->GetNthRingItem(i); //10+i
+					pos = 10 + i;
+				}
+			}
+
+			if (pos != -1)
+				item = pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
+
+			if (!item)
+				return;
+
+
+
+
+
+
+			GameUI_DrawItemInfo(item);
+			
+			return;
+		
+		}
+
+
+
+		
 	}
 
 
@@ -1845,6 +1915,7 @@ void Inventory_ItemPopupAndAlchemy()
         GameUI_DrawItemInfo(item);
         return;
     }
+
     // several potions(несколько зелий)
     else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING_POTION && pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT_POTION ||
         pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING_POTION)
@@ -1897,6 +1968,7 @@ void Inventory_ItemPopupAndAlchemy()
         GameUI_DrawItemInfo(item);
         return;
     }
+
     // use reagents(применение реагентов)
     if (pParty->pPickedItem.uItemID >= ITEM_REAGENT_WIDOWSWEEP_BERRIES && pParty->pPickedItem.uItemID <= ITEM_REAGENT_PHILOSOPHERS_STONE &&
         item->uItemID == ITEM_POTION_BOTTLE)
@@ -1947,6 +2019,7 @@ void Inventory_ItemPopupAndAlchemy()
         }
         return;
     }
+
     //potions mixing(смешивание двух зелий)
     if (pParty->pPickedItem.uItemID >= ITEM_POTION_CATALYST && pParty->pPickedItem.uItemID <= ITEM_POTION_REJUVENATION &&
         item->uItemID >= ITEM_POTION_CATALYST &&
@@ -2084,6 +2157,7 @@ void Inventory_ItemPopupAndAlchemy()
             return;
         }
     }
+
     GameUI_DrawItemInfo(item);
     return;
 }

@@ -2553,9 +2553,14 @@ void  OnPaperdollLeftClick() {
 	static int amulety = 91;
 
 	int slot = 32;
-
-	ItemGen *pitem = NULL; // condesnse with this??
 	int pos = -1;
+
+
+
+	ItemGen *pitem=NULL; // condesnse with this??
+	//pitem.Reset();
+
+	
 
 
   unsigned int pSkillType; // esi@5
@@ -2703,7 +2708,7 @@ void  OnPaperdollLeftClick() {
 
 					if (pos != -1) { // we have a position to aim for
 
-						pitem = pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
+						pitem = pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos+10);
 						if (!pitem) { // no item in slot so just drop
 
 							freeslot = pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
@@ -3145,4 +3150,8 @@ void CharacterUI_ReleaseButtons()
       }
     }
   }
+}
+
+bool ringscreenactive() {
+	return bRingsShownInCharScreen;
 }
