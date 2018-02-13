@@ -436,10 +436,9 @@ bool Player::IsPlayerHealableByTemple() {
 	}
 }
 
-
 ItemGen *Player::GetItemAtInventoryIndex(int inout_item_cell) {
 
-    int inventory_index = this->GetItemIDAtInventoryIndex(inout_item_cell); //inout changed
+    int inventory_index = this->GetItemListAtInventoryIndex(inout_item_cell);
     
 	if (!inventory_index) {
         return nullptr;
@@ -449,7 +448,7 @@ ItemGen *Player::GetItemAtInventoryIndex(int inout_item_cell) {
 }
 
 //----- (00421E75) --------------------------------------------------------
-unsigned int Player::GetItemIDAtInventoryIndex(int inout_item_cell) { // WARNING - THIS CHANGES inout_item_cell
+unsigned int Player::GetItemListAtInventoryIndex(int inout_item_cell) {
 
     int cell_idx = inout_item_cell;
     if (cell_idx > 125 || cell_idx < 0)
@@ -457,11 +456,10 @@ unsigned int Player::GetItemIDAtInventoryIndex(int inout_item_cell) { // WARNING
 
     int inventory_index = this->pInventoryMatrix[cell_idx];
     if (inventory_index < 0) { // not pointed to main item cell so redirect
-		//*inout_item_cell = -1 - inventory_index;
-        inventory_index = this->pInventoryMatrix[-1 - inventory_index];
+		inventory_index = this->pInventoryMatrix[-1 - inventory_index];
     }
 
-    return inventory_index;
+    return inventory_index; // returns item list position + 1
 }
 
 //----- (004160CA) --------------------------------------------------------
@@ -704,7 +702,6 @@ int Player::FindFreeInventoryListSlot() {
 //----- (00492600) --------------------------------------------------------
 int Player::CreateItemInInventory(unsigned int uSlot, unsigned int uItemID) {
 
-	int result;
 	signed int freeSlot = FindFreeInventoryListSlot();
 
 	if ( freeSlot == -1 ) { // no room
@@ -715,11 +712,10 @@ int Player::CreateItemInInventory(unsigned int uSlot, unsigned int uItemID) {
 	}
 	else { // place items
 		PutItemArInventoryIndex(uItemID, freeSlot, uSlot);
-		result = freeSlot + 1;
 		this->pInventoryItemList[freeSlot].uItemID = uItemID;
 	}
 
-  return result; // return slot id
+  return freeSlot+1; // return slot no + 1
 }
 
 //----- (00492700) --------------------------------------------------------
@@ -836,7 +832,7 @@ void Player::PutItemArInventoryIndex(int uItemID, int itemListPos, int index) { 
 //----- (00492A36) --------------------------------------------------------
 void Player::RemoveItemAtInventoryIndex(unsigned int index) {
 
-	ItemGen *item_in_slot = this->GetItemAtInventoryIndex(index);//&this->pInventoryItemList[pInventoryMatrix[index] - 1];
+	ItemGen *item_in_slot = this->GetItemAtInventoryIndex(index);
     
     auto img = assets->GetImage_16BitColorKey(item_in_slot->GetIconName(), 0x7FF);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
@@ -846,10 +842,8 @@ void Player::RemoveItemAtInventoryIndex(unsigned int index) {
 
 	int inventory_index = this->pInventoryMatrix[index];
 	if (inventory_index < 0) { // not pointed to main item cell so redirect
-							   //*inout_item_cell = -1 - inventory_index;
 		index =(-1 - inventory_index);
 	}
-
 
     if (slot_width > 0) {
 
@@ -1142,7 +1136,7 @@ int Player::CalculateMeleeDamageTo( bool ignoreSkillBonus, bool ignoreOffhand, u
 			ItemGen *mainHandItemGen = this->GetMainHandItem();
 			int itemId = mainHandItemGen->uItemID;
 			bool addOneDice = false;
-			if ( pItemsTable->pItems[itemId].uSkillType == PLAYER_SKILL_SPEAR && !this->pEquipment.uShield )
+			if ( pItemsTable->pItems[itemId].uSkillType == PLAYER_SKILL_SPEAR && !this->pEquipment.uShield ) // using spear in two hands adds a dice roll
 				addOneDice = true;
 			
 			mainWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(mainHandItemGen, uTargetActorID, addOneDice);
@@ -7334,7 +7328,7 @@ void Player::OnInventoryLeftClick() {
 
 			if ( _50C9A0_IsEnchantingInProgress ) {
 
-				enchantedItemPos = this->GetItemIDAtInventoryIndex(invMatrixIndex); //invmatrixindex is changed
+				enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
 				if ( enchantedItemPos ) {
 
@@ -7345,8 +7339,8 @@ void Player::OnInventoryLeftClick() {
 					pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
 					pSpellInfo->uFlags &= 0x7F;
 					pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
-					pSpellInfo->spell_target_pid = enchantedItemPos - 1; // ?? this is wrong
-					pSpellInfo->field_6 = (-1 - enchantedItemPos);
+					pSpellInfo->spell_target_pid = enchantedItemPos - 1; 
+					pSpellInfo->field_6 = (-1 - enchantedItemPos); // check
 					ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos-1];
 					_50C9A0_IsEnchantingInProgress = 0;
 
@@ -7368,7 +7362,7 @@ void Player::OnInventoryLeftClick() {
 				return;
 
 			pickedItemId = pParty->pPickedItem.uItemID;
-			invItemIndex = this->GetItemIDAtInventoryIndex(invMatrixIndex); // invmateixindex is changed
+			invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
 			if (!pickedItemId) { // no hold item
 				if ( !invItemIndex )

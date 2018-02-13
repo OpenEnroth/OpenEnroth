@@ -590,7 +590,7 @@ struct Player
   void PlaySound(PlayerSpeech speech, int a3);
   void PlayEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
   void ItemsPotionDmgBreak(int enchant_count);
-  unsigned int GetItemIDAtInventoryIndex(int inout_item_cell);
+  unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
   struct ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
   bool IsPlayerHealableByTemple();
   int GetBaseIdentifyPrice(float price_multiplier);

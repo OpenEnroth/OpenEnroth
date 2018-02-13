@@ -130,7 +130,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
 		if (mouse.x <= 13 || mouse.x >= 462)
 			return;
 
-		int pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invindex); //invindex is changed
+		int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
 		
 		if (pItemID) {
 			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
@@ -156,7 +156,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 		if (mouse.x <= 13 || mouse.x >= 462)
 			return;
 
-		int pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invindex); // invindex is changed
+		int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
 		
 		if (pItemID) {
 			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
@@ -190,7 +190,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
 		if (mouse.x <= 13 || mouse.x >= 462)
 			return;
 
-		int pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invindex); // invindex is changed
+		int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
 
 		if (pItemID || (pPlayers[uActiveCharacter]->pOwnItems[pItemID - 1].uAttributes & 2) ) {
 			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
@@ -895,7 +895,7 @@ void  UIShop_Buy_Identify_Repair() {
 		case HOUSE_DIALOGUE_SHOP_SELL: {
 			
 			invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invindex), !pItemID) ) //invindex is changed
+			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex), !pItemID) )
 				return;
 
 			if (pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1].MerchandiseTest((int)window_SpeakInHouse->ptr_1C)) {
@@ -916,7 +916,7 @@ void  UIShop_Buy_Identify_Repair() {
 		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
 
 			invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invindex), !pItemID) ) //invindex is changed
+			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex), !pItemID) )
 				return;
        
 			uPriceItemService = pPlayers[uActiveCharacter]->GetPriceIdentification(p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier);
@@ -950,7 +950,7 @@ void  UIShop_Buy_Identify_Repair() {
 		case HOUSE_DIALOGUE_SHOP_REPAIR: {
 
 			invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invindex), !pItemID)) //invindex is changed
+			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex), !pItemID)) 
 				return;
 
 			item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
@@ -1344,10 +1344,10 @@ void  ShowPopupShopItem() {
 
             invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
             if (mouse.x <= 13 || mouse.x >= 462
-                || !pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invindex)) //invindex is changed
+                || !pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex)) 
                 return;
 
-            GameUI_DrawItemInfo( pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invindex) ); //invindex is changed
+            GameUI_DrawItemInfo( pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invindex) ); 
             return;
         }
     }

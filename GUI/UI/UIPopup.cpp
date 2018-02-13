@@ -1733,6 +1733,10 @@ void Inventory_ItemPopupAndAlchemy()
 	if (pX <= 13 || pX >= 462)//items out of inventory(вещи вне инвентаря)  this is for player ragdoll items??
 	{
 
+
+		// popup checks if ringscreen up here
+
+
 		int item_pid = (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1;
 					//zbuffer still used for paperdolls
 
@@ -1750,7 +1754,7 @@ void Inventory_ItemPopupAndAlchemy()
 	//limits check ?
 	//if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT && inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
 	
-	item = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invMatrixIndex); // invmatrixindex is changed
+	item = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invMatrixIndex);
 
 	if (!item) { // no item
 		return;
@@ -1955,6 +1959,7 @@ void Inventory_ItemPopupAndAlchemy()
             potionID = 5;
         else
             potionID = pItemsTable->potion_data[potion2_id][potion1_id];
+
         damage_level = 0;
         if (alchemy_skill_points)
         {
@@ -1980,16 +1985,16 @@ void Inventory_ItemPopupAndAlchemy()
                 damage_level = 4;
         }
 
-		int item_pid = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invMatrixIndex); //invmatricindex changed
-        int pOut_x = item_pid + 1;
-        for (uint i = 0; i < 126; ++i)
-        {
-            if (pPlayers[uActiveCharacter]->pInventoryMatrix[i] == pOut_x)
-            {
-                pOut_y = i;
-                break;
-            }
-        }
+		int item_pid = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invMatrixIndex);
+        //int pOut_x = item_pid + 1;
+        //for (uint i = 0; i < 126; ++i)
+        //{
+          //  if (pPlayers[uActiveCharacter]->pInventoryMatrix[i] == pOut_x)
+           // {
+            //    pOut_y = i;
+             //   break;
+            //}
+        //}
         if (!potionID)
         {
             GameUI_DrawItemInfo(item);
