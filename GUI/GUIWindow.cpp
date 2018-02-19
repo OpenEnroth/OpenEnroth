@@ -1426,7 +1426,8 @@ void GUIWindow_House::Update()
             pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] = 0;
         return;
     }
-    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+	//dialog_menu_id = HOUSE_DIALOGUE_MAIN; 
+    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0); // banned from shop so leaving
 }
 
 void GUIWindow_Scroll::Update()

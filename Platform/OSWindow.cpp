@@ -109,7 +109,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
         case WM_KEYUP:
         {
             if (wparam == VK_CONTROL)
-                _507B98_ctrl_pressed = false;
+                _507B98_ctrl_pressed = false; // this gets stuck
             if (wparam == VK_SNAPSHOT)
                 render->SavePCXScreenshot();
 
@@ -259,7 +259,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
                 }
                 if (wparam == VK_CONTROL)
                 {
-                    _507B98_ctrl_pressed = true;
+                    _507B98_ctrl_pressed = true; // this gets stuck
                     return false;
                 }
                 if (wparam == VK_ESCAPE)

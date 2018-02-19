@@ -1701,7 +1701,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
 
 int no_rightlick_in_inventory = false; // 0050CDCC
 //----- (00416196) --------------------------------------------------------
-void Inventory_ItemPopupAndAlchemy()
+void Inventory_ItemPopupAndAlchemy() // needs cleaning
 {
     int potion1_id; // edx@25
     unsigned int potion2_id; // edi@25

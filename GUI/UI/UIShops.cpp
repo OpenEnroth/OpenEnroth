@@ -1115,7 +1115,7 @@ void  UIShop_Buy_Identify_Repair() {
             uNumSeconds = pPlayers[uActiveCharacter]->StealFromShop(bought_item, a3, party_reputation, 0, &a6);
             if (!uNumSeconds)
             {
-                sub_4B1447_party_fine((int)window_SpeakInHouse->ptr_1C, 0, a6);
+                sub_4B1447_party_fine((int)window_SpeakInHouse->ptr_1C, 0, a6); // caught stealing no item
                 return;
             }
         }
@@ -1125,12 +1125,13 @@ void  UIShop_Buy_Identify_Repair() {
             GameUI_StatusBar_OnEvent(localization->GetString(155));// "You don't have enough gold"
             return;
         }
+
         v39 = pPlayers[uActiveCharacter]->AddItem(-1, bought_item->uItemID);
         if (v39)
         {
             bought_item->SetIdentified();
             memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[v39 - 1], bought_item, sizeof(ItemGen));
-            if (uNumSeconds != 0)
+            if (uNumSeconds != 0) // stolen
             {
                 pPlayers[uActiveCharacter]->pInventoryItemList[v39 - 1].SetStolen();
                 sub_4B1447_party_fine((int)window_SpeakInHouse->ptr_1C, uNumSeconds, a6);
@@ -1512,7 +1513,7 @@ void  GetHouseGoodbyeSpeech()
                 }
             }
         }
-        else
+        else // caught stealing
         {
             if (!_A750D8_player_speech_timer)
             {
@@ -1535,12 +1536,12 @@ void  GetHouseGoodbyeSpeech()
 }
 
 //----- (004B1447) --------------------------------------------------------
-void sub_4B1447_party_fine(int shopId, int stealingResult, int fineToAdd)
+void sub_4B1447_party_fine(int shopId, int stealingResult, int fineToAdd) // not working properly??
 {
 	signed int v3; // esi@1
 	DDM_DLV_Header *v7; // eax@14
 
-	if (stealingResult == 0 || stealingResult == 1)
+	if (stealingResult == 0 || stealingResult == 1) // got caught
 	{
 		if (pParty->uFine < 4000000)
 		{
@@ -1563,10 +1564,16 @@ void sub_4B1447_party_fine(int shopId, int stealingResult, int fineToAdd)
 			v3 = 2;
 		else
 			v3 = 1;
+
+		pParty->PartyTimes._shop_ban_times[shopId] = pParty->GetPlayingTime() + GameTime::FromDays(1); // only ban when caught
+
 	}
 	else
 		v3 = 2;
-	pParty->PartyTimes._shop_ban_times[shopId] = pParty->GetPlayingTime() + GameTime::FromDays(1);
+
+	
+
+	
 	pParty->InTheShopFlags[shopId] = 1;
 	v7 = &pOutdoor->ddm;
 	if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)

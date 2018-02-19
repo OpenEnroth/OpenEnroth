@@ -522,7 +522,7 @@ struct Player
   bool HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex);
   bool HasEnchantedItemEquipped(int uEnchantment);
   bool WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type);
-  int StealFromShop( ItemGen *itemToSteal, int a3, int reputation, int a5, int *fineIfFailed);
+  int StealFromShop( ItemGen *itemToSteal, int extraStealDifficulty, int reputation, int extraStealFine, int *fineIfFailed);
   int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
   void Heal(int amount);
   int ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type);

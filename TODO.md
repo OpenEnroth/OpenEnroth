@@ -7,7 +7,11 @@
 
 * use of memset is unsafe sometimes if structs are rearranged
 
-* right click paperdoll rings info
+* issues with stickling control _507B98_ctrl_pressed - stealing
+- only used a couple of times remove?? OS_IfCtrlPressed instead??
+
+* can get attacked whilst in a shop
+
 * problems with enchanting
 
 * Rename unidentifed variables
