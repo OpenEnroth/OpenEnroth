@@ -10,7 +10,6 @@
 * issues with stickling control _507B98_ctrl_pressed - stealing
 - only used a couple of times remove?? OS_IfCtrlPressed instead??
 
-* can get attacked whilst in a shop
 
 * problems with enchanting
 

@@ -175,6 +175,19 @@ void Party::SetHoldingItem(ItemGen *pItem) {
 	pMouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
 }
 
+
+int Party::GetFirstCanAct() { // added to fix some nzi problems entering shops
+
+	for (int i = 0; i < 4; ++i) {
+		if (this->pPlayers[i].CanAct())
+			return i+1;
+	}
+
+	__debugbreak(); // should not get here
+	return 1;
+}
+
+
 //----- (0049370F) --------------------------------------------------------
 int Party::GetNextActiveCharacter()
 {
@@ -193,6 +206,7 @@ int Party::GetNextActiveCharacter()
 
   if ( playerAlreadyPicked[0] && playerAlreadyPicked[1] && playerAlreadyPicked[2] && playerAlreadyPicked[3] )
     playerAlreadyPicked.fill(false);
+
   for (int i = 0; i < 4; i++)
   {
     if ( !this->pPlayers[i].CanAct() || this->pPlayers[i].uTimeToRecovery > 0)
@@ -219,6 +233,10 @@ int Party::GetNextActiveCharacter()
   }
   return v12;
 }
+
+
+
+
 
 
 //----- (00493244) --------------------------------------------------------

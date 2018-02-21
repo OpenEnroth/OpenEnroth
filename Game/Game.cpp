@@ -147,8 +147,8 @@ void Game_CloseTargetedSpellWindow()
 void Game_OnEscape()
 {
     Game_CloseTargetedSpellWindow();
-    if ((signed int)uActiveCharacter < 1 || (signed int)uActiveCharacter > 4)
-        uActiveCharacter = pParty->GetNextActiveCharacter();
+   // if ((signed int)uActiveCharacter < 1 || (signed int)uActiveCharacter > 4)
+        uActiveCharacter = pParty->GetNextActiveCharacter(); // always check this - could leave shops with characters who couldnt act sctive
     pGUIWindow_CurrentMenu->Release();
     if (pGUIWindow_CurrentMenu == window_SpeakInHouse)
         window_SpeakInHouse = 0;
@@ -157,6 +157,7 @@ void Game_OnEscape()
     current_screen_type = SCREEN_GAME;
     viewparams->bRedrawGameUI = true;
 }
+
 
 
 
@@ -962,6 +963,7 @@ void Game_EventLoop()
                                     pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 814, 0, -1, 0, 0, 0, 0);
                                     pMediaPlayer->Unload();
                                     pGUIWindow_CurrentMenu = window_SpeakInHouse;
+
                                     Game_OnEscape();
                                     continue;
                                 case SCREEN_INPUT_BLV://click escape

@@ -190,6 +190,7 @@ struct Party
   void ResetPosMiscAndSpellBuffs();
   bool HasItem(unsigned int uItemID);
   void SetHoldingItem(ItemGen *pItem);
+  int GetFirstCanAct(); // added to fix some nzi access problems
   int GetNextActiveCharacter();
   bool _497FC5_check_party_perception_against_level();
   bool AddItemToParty(ItemGen *pItem);

@@ -1644,26 +1644,25 @@ int Player::StealFromActor(unsigned int uActorID, int _steal_perm, int reputatio
 
 
 //----- (0048DBB9) --------------------------------------------------------
-void Player::Heal(int amount)
-{
-  signed int max_health; // eax@3
+void Player::Heal(int amount) {
+	
+	if ( !IsEradicated() && !IsDead() ) { // cant heal
 
-  if ( !IsEradicated() && !IsDead() )
-  {
-    max_health = GetMaxHealth();
-    if ( IsZombie() )
-      max_health /= 2;
-    sHealth += amount;
-    if ( sHealth > max_health )
-        sHealth = max_health;
-    if ( IsUnconcious() )
-    {
-      if ( sHealth > 0 )
-      {
-        SetUnconcious(false);
-      }
-    }
-  }
+		signed int max_health = GetMaxHealth();
+		
+		if ( IsZombie() ) // zombie health is halved
+			max_health /= 2;
+
+		sHealth += amount; // add health
+		if ( sHealth > max_health ) // limits check
+			sHealth = max_health;
+
+		if ( IsUnconcious() ) { 
+			if ( sHealth > 0 ) { // wake up if health rises above 0
+				SetUnconcious(false);
+			}
+		}
+	}
 }
 
 //----- (0048DC1E) --------------------------------------------------------

@@ -901,6 +901,10 @@ LABEL_43:*/
 bool  HouseUI_CheckIfPlayerCanInteract()
 {
     GUIWindow window; // [sp+4h] [bp-54h]@3
+	
+
+	if (uActiveCharacter == 0) // to avoid access zeroeleement
+		return false;
 
     if (pPlayers[uActiveCharacter]->CanAct())
     {
@@ -1063,6 +1067,10 @@ bool EnterHouse(enum HOUSE_ID uHouseID)
             v19 = guild_mambership_flags[uHouseID - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]; //guilds flags 
             //v20 = uHouseID;
             //if ( !((unsigned __int8)(0x80u >> v19 % 8) & pPlayers[uActiveCharacter]->_guilds_member_bits[v19 /8]) )
+
+			if (uActiveCharacter == 0) // avoid nzi
+				uActiveCharacter = pParty->GetFirstCanAct();
+
             if (!_449B57_test_bit(pPlayers[uActiveCharacter]->_achieved_awards_bits, v19))
             {
                 PlayHouseSound(uHouseID, HouseSound_Greeting_2);
@@ -2080,7 +2088,10 @@ void  TavernDialog()
     dialog_window.uFrameZ = 334;
     v2 = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
 
-    pPriceRoom = ((v2 * v2) / 10) * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+	if (uActiveCharacter == 0) // avoid nzi
+		uActiveCharacter = pParty->GetFirstCanAct();
+
+    pPriceRoom = ((v2 * v2) / 10) * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100; // nzi
     if (pPriceRoom < ((v2 * v2) / 10) / 3)
         pPriceRoom = ((v2 * v2) / 10) / 3;
     if (pPriceRoom <= 0)
@@ -2393,6 +2404,10 @@ void TempleDialog()
     tample_window.uFrameX = 483;
     tample_window.uFrameWidth = 148;
     tample_window.uFrameZ = 334;
+
+	if (uActiveCharacter == 0) // avoid nzi
+		uActiveCharacter = pParty->GetFirstCanAct();
+
     pPrice = pPlayers[uActiveCharacter]->GetTempleHealCostModifier(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier);
     if (dialog_menu_id == HOUSE_DIALOGUE_MAIN)
     {
@@ -2673,6 +2688,10 @@ void TrainingDialog(const char *s)
     training_dialog_window.uFrameX = 483;
     training_dialog_window.uFrameWidth = 148;
     training_dialog_window.uFrameZ = 334;
+
+	if (uActiveCharacter == 0) // avoid nzi
+		uActiveCharacter = pParty->GetFirstCanAct();
+
     v5 = 1000ui64 * pPlayers[uActiveCharacter]->uLevel * (pPlayers[uActiveCharacter]->uLevel + 1) / 2;  // E n = n(n + 1) / 2
     //v68 = pMaxLevelPerTrainingHallType[(unsigned int)window_SpeakInHouse->ptr_1C - HOUSE_TRAINING_HALL_EMERALD_ISLE];
     if (pPlayers[uActiveCharacter]->uExperience >= v5)

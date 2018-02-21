@@ -117,7 +117,11 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, uns
 GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
     GUIWindow(x, y, width, height, button, hint)
 {
-    current_screen_type = SCREEN_HOUSE;
+    
+	pEventTimer->Pause(); // pause timer so not attacked
+	pAudioPlayer->StopChannels(-1, -1);
+	
+	current_screen_type = SCREEN_HOUSE;
     pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(80), // Quit building / Выйти из здания
         ui_exit_cancel_button_background, 0);
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26)

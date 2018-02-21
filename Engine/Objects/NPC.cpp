@@ -1240,6 +1240,10 @@ const char * ContractSelectText( int pEventCode )
   contract_approved = 0;
   dword_F8B1AC_award_bit_number = pEventCode + 50;
   gold_transaction_amount = price_for_membership[pEventCode];
+
+  if (uActiveCharacter == 0)
+	  uActiveCharacter = pParty->GetFirstCanAct(); // avoid nzi
+
   if ( pPlayers[uActiveCharacter]->CanAct() )
   {
     if ( (unsigned __int16)_449B57_test_bit((unsigned __int8 *)pPlayers[uActiveCharacter]->_achieved_awards_bits, dword_F8B1AC_award_bit_number) )
