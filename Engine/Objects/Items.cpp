@@ -1498,7 +1498,11 @@ bool ItemGen::IsRegularEnchanmentForAttribute( CHARACTER_ATTRIBUTE_TYPE attrToGe
 
 ITEM_EQUIP_TYPE ItemGen::GetItemEquipType()
 {
-  return pItemsTable->pItems[this->uItemID].uEquipType;
+	// to avoid nzi - is this safe??
+	if (this->uItemID == 0)
+		return EQUIP_NONE;
+	else
+		return pItemsTable->pItems[this->uItemID].uEquipType;
 }
 
 unsigned char ItemGen::GetPlayerSkillType()

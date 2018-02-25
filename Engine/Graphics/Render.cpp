@@ -7057,7 +7057,7 @@ void Render::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int star
                         {
                             for (int x = 0; x < Width; ++x)
                             {
-__debugbreak(); // find out what's that spell
+__debugbreak(); // find out what's that spell - vampiric weapon??
                                 /*if (*v28)
                                 {
                                     v20 = *((unsigned __int16 *)a5->GetPixels(IMAGE_FORMAT_R5G6B5) + x & (a5->GetWidth() - 1) + a5->GetWidth() * (v27 & (a5->GetHeight() - 1)));

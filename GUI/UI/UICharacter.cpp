@@ -722,8 +722,8 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int
             ++num_skills_drawn;
             y_offset = v8->uY;
 
-            ushort skill_value = player->pActiveSkills[skill];
-            int skill_level = skill_value & 0x3F;
+           // ushort skill_value = player->pActiveSkills[skill];
+            int skill_level = player->GetActualSkillLevel(skill);
 
             uint skill_color = 0;
             uint skill_mastery_color = 0;
@@ -739,7 +739,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int
                 skill_color = skill_mastery_color;
             }
 
-            if (SkillToMastery(skill_value) == 1)
+            if (player->GetActualSkillMastery(skill) == 1)
             {
                 auto Strsk = StringPrintf("%s\r%03d%2d", localization->GetSkillName(skill), right_margin, skill_level);
                 pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0);
@@ -748,7 +748,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int
             {
                 const char *skill_level_str = nullptr;
 
-                switch (SkillToMastery(skill_value))
+                switch (player->GetActualSkillMastery(skill))
                 {
                 case 4: skill_level_str = localization->GetString(96);  break; // Grand
                 case 3: skill_level_str = localization->GetString(432); break; // Master
@@ -2598,8 +2598,9 @@ void  OnPaperdollLeftClick() {
 
 		if ( pSkillType == 4 ) { // PLAYER_SKILL_SPEAR
 			if (shieldequip) {
-				if ( SkillToMastery(pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_SPEAR)) < 3 ) { // cant use spear in one hand till master
+				if ( pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_SPEAR) < 3 ) { // cant use spear in one hand till master
 					pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
+					
 					return;
 				}
 
@@ -2610,7 +2611,7 @@ void  OnPaperdollLeftClick() {
 			if ( (pSkillType == 8 || pSkillType == 1 || pSkillType == 2) //shield  sword or dagger to place
 				&& mainhandequip && pPlayers[uActiveCharacter]->pInventoryItemList[mainhandequip - 1].GetPlayerSkillType() == 4 ) { // spear in mainhand
 
-				if ( SkillToMastery(pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_SPEAR)) < 3 ) { // cant use spear in one hand till master
+				if ( pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_SPEAR) < 3 ) { // cant use spear in one hand till master
 					pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
 					return;
 				}
@@ -2811,8 +2812,11 @@ void  OnPaperdollLeftClick() {
           return;
         }
         v50 = 0;
-        if ( pSkillType == 2 && (unsigned __int16)(pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_DAGGER] & 0xFFC0)
-          || pSkillType == 1 && (signed int)SkillToMastery(pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_SWORD]) >= 3 )
+
+		;
+
+        if ( pSkillType == 2 && ( pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_DAGGER) > 1 )  // dagger in left hand at expert
+          || pSkillType == 1 && ( pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_SWORD) > 2 ) ) // sword in left hand at master
         {
           //v18 = pMouse->uMouseClickX;
           //v19 = pMouse->uMouseClickY;

@@ -11,10 +11,16 @@
 - only used a couple of times remove?? OS_IfCtrlPressed instead??
 
 
-* problems with enchanting
+* change how classes are loaded - seperate file for easy modifications?
+
+* problems with enchanting - how windows are used uNumVisibleWindows gets to -1 - maybe fixed?
 
 * Rename unidentifed variables
+* cleanup functions
 * Currently around 2600 warnings across the project
+* consider making some struct members private??
+
+*is spirit resistacne a thing or not
 
 
-* resizing game windows 
+* resizing game windows - need to change use of co-ords to x/640 y/480

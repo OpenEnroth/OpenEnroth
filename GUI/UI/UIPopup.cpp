@@ -705,8 +705,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
     if (pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID))
     {
-        skill_points = (unsigned __int8)pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID) & 0x3F;
-        skill_level = SkillToMastery(pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID)) - 1;
+        skill_points = (unsigned __int8)pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
+        skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID) - 1;
         if (skill_level == 0)//(normal)
         {
             if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel)
@@ -753,7 +753,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         pPlayers[uActiveCharacter]->PlaySound(speech, 0);
     }
 
-    if ((signed int)SkillToMastery(pParty->pPlayers[uActiveCharacter - 1].GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID)) >= 3)
+    if ((signed int)(pParty->pPlayers[uActiveCharacter - 1].GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID)) >= 3)
         for_effects = 1;
 
     if (monster_full_informations == true)
@@ -1856,8 +1856,8 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
         return;
     }
 
-    int alchemy_skill_points = (int8_t)pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY) & 0x3F;
-    int alchemy_skill_level = SkillToMastery(pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY));
+    int alchemy_skill_points = pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY);
+    int alchemy_skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
 
     // for potion bottle(простая бутылка)
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE)

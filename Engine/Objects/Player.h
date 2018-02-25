@@ -68,7 +68,7 @@ enum PlayerSpeech
   SPEECH_21 = 21,
   SPEECH_GoodDay = 22,     // greets on dialogue start
   SPEECH_GoodEvening = 23,
-  SPEECH_24 = 24,
+  SPEECH_24 = 24, // damage - owww
   SPEECH_25 = 25, // weak
   SPEECH_26 = 26, // fear
   SPEECH_27 = 27, // poisoned

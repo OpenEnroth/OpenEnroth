@@ -134,8 +134,8 @@ void Game_CloseTargetedSpellWindow()
             pMouse->SetCursorImage("MICON2");
         else
         {
-            pGUIWindow_CastTargetedSpell->Release();
-            pGUIWindow_CastTargetedSpell = nullptr;
+            //pGUIWindow_CastTargetedSpell->Release(); //test to fix enchanting issue
+            pGUIWindow_CastTargetedSpell = nullptr; //test to fix enchanting issue
             pMouse->SetCursorImage("MICON1");
             game_ui_status_bar_event_string_time_left = 0;
             _50C9A0_IsEnchantingInProgress = 0;
@@ -149,7 +149,7 @@ void Game_OnEscape()
     Game_CloseTargetedSpellWindow();
    // if ((signed int)uActiveCharacter < 1 || (signed int)uActiveCharacter > 4)
         uActiveCharacter = pParty->GetNextActiveCharacter(); // always check this - could leave shops with characters who couldnt act sctive
-    pGUIWindow_CurrentMenu->Release();
+    pGUIWindow_CurrentMenu->Release(); // check this
     if (pGUIWindow_CurrentMenu == window_SpeakInHouse)
         window_SpeakInHouse = 0;
     pGUIWindow_CurrentMenu = 0;
@@ -2170,8 +2170,8 @@ void Game_EventLoop()
                 {
                     if (quick_spell_at_page - 1 == uMessageParam)
                     {
-                        pGUIWindow_CurrentMenu->Release();
-                        pEventTimer->Resume();
+                        pGUIWindow_CurrentMenu->Release(); 
+						pEventTimer->Resume();
                         viewparams->bRedrawGameUI = 1;
                         current_screen_type = SCREEN_GAME;
                         v103 = quick_spell_at_page + 11 * player->lastOpenedSpellbookPage;
@@ -2726,7 +2726,7 @@ void Game_Loop()
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
             {
                 OS_WaitMessage();
-                continue;
+                //continue;
             }
 
             pEngine->_44EEA7();

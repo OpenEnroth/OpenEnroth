@@ -1528,7 +1528,7 @@ int Player::StealFromShop( ItemGen *itemToSteal, int extraStealDifficulty, int r
 }
 
 //----- (0048D88B) --------------------------------------------------------
-int Player::StealFromActor(unsigned int uActorID, int _steal_perm, int reputation) { // returns not used
+int Player::StealFromActor(unsigned int uActorID, int _steal_perm, int reputation) { // returns not used - should luck attribute affect
 
 	Actor *actroPtr;
 	actroPtr = &pActors[uActorID];
@@ -1557,7 +1557,7 @@ int Player::StealFromActor(unsigned int uActorID, int _steal_perm, int reputatio
 			
 			if (actroPtr->ActorHasItems[3].GetItemEquipType() != EQUIP_GOLD) { // no gold to steal fail
 				GameUI_StatusBar_OnEvent(localization->FormatString(377, this->pName));   // %s failed to steal anything
-				return 2;
+				return 1;
 			}
 
 			unsigned int enchBonusSum = 0; // how much to steal
@@ -1582,30 +1582,19 @@ int Player::StealFromActor(unsigned int uActorID, int _steal_perm, int reputatio
 			else
 				GameUI_StatusBar_OnEvent(localization->FormatString(377, this->pName));   // %s failed to steal anything
 				
-			return 2;
+			return 2; // stole gold
 		}
 		else if ( random % 100 >= 40 ) {   //stealing an item
 
 			ItemGen tempItem;
 			tempItem.Reset();
 
-			bool HasFullItemSlots = false;
+			int randslot = rand() % 4;
+			unsigned int carriedItemId = actroPtr->uCarriedItemID; // carried items are special items the ncp carries (ie lute from bard)
 
-			int counter;
-			for (counter = 0; counter < 4; counter++) {
-				if ( actroPtr->ActorHasItems[counter].uItemID != 0 && actroPtr->ActorHasItems[counter].GetItemEquipType() != EQUIP_GOLD )
-					break;
-			}
-
-			if (counter == 4)
-				HasFullItemSlots = true;
-
-			unsigned int carriedItemId = actroPtr->uCarriedItemID;
-			if ( carriedItemId != 0 || HasFullItemSlots ) {
-				tempItem.Reset();
-
-
-				if ( carriedItemId != 0 ) {
+			if ( carriedItemId != 0 || actroPtr->ActorHasItems[randslot].uItemID != 0 && actroPtr->ActorHasItems[randslot].GetItemEquipType() != EQUIP_GOLD) { // check we have an item to steal
+				
+				if ( carriedItemId != 0 ) { // load item into tempitem
 					actroPtr->uCarriedItemID = 0;
 					tempItem.uItemID = carriedItemId;
 					if ( pItemsTable->pItems[carriedItemId].uEquipType == EQUIP_WAND )
@@ -1614,34 +1603,32 @@ int Player::StealFromActor(unsigned int uActorID, int _steal_perm, int reputatio
 						tempItem.uEnchantmentType = 2 * rand() % 4 + 2;
 				}
 				else {
-					ItemGen* itemToSteal = &actroPtr->ActorHasItems[rand() % 4];
+					ItemGen* itemToSteal = &actroPtr->ActorHasItems[randslot];
 					memcpy(&tempItem, itemToSteal, sizeof(tempItem));
 					itemToSteal->Reset();
 					carriedItemId = tempItem.uItemID;
 				}
 
 				if (carriedItemId != 0) {     // looks odd in current context, but avoids accessing zeroth element of pItemsTable->pItems
-					pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
-
+					
 					GameUI_StatusBar_OnEvent( localization->FormatString(
 				    304,   // Official                   //TODO: add a normal "%d stole %d" message
 				    this->pName,
 				    pItemsTable->pItems[carriedItemId].pUnidentifiedName ) );
 
-					pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
-					memcpy(&pParty->pPickedItem, &tempItem, sizeof(ItemGen));
+					pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem(); // drop or place picked item
+
+					memcpy(&pParty->pPickedItem, &tempItem, sizeof(ItemGen)); // copy item in to mouse picked item
 					pMouse->SetCursorBitmapFromItemID(carriedItemId);
-					return 2;
+					return 2; // stole item
 				}
 			}
 		}
 
 		GameUI_StatusBar_OnEvent(localization->FormatString(377, this->pName));   // %s failed to steal anything
-		return 2;
-
+		return 1;
 	}
 }
-
 
 //----- (0048DBB9) --------------------------------------------------------
 void Player::Heal(int amount) {
@@ -1666,376 +1653,363 @@ void Player::Heal(int amount) {
 }
 
 //----- (0048DC1E) --------------------------------------------------------
-int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type)
-{
-    signed int recieved_dmg; // eax@1
-    bool broke_armor;
+int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
 
-    SetAsleep(false);
-    recieved_dmg = CalculateIncommingDamage(dmg_type, amount);
-    sHealth -= recieved_dmg;
-    broke_armor = sHealth <= -10;
-    if (sHealth < 1) //
-    {
-        if ((sHealth + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1)
-            || pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
-        {
-            SetCondUnconsciousWithBlockCheck(false);
-        }
-        else
-        {
-            SetCondDeadWithBlockCheck(false);
-            if (sHealth > 0)
-                sHealth = 0;
-        }
-        if (broke_armor)
-        {
+	SetAsleep(false); // wake up if asleep
+	signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount); // get damage
+	sHealth -= recieved_dmg; // reduce health
+
+	if (sHealth < 1) { // player unconscious or if too hurt - dead
+
+        if ((sHealth + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1) || pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
+			SetCondUnconsciousWithBlockCheck(false);
+		}
+		else {
+			SetCondDeadWithBlockCheck(false);
+		}
+
+        if (sHealth <= -10) { // break armor if health has dropped below -10
             ItemGen* equippedArmor = GetArmorItem();
-            if (equippedArmor != nullptr)
-            {
-                if (!(equippedArmor->uAttributes & ITEM_HARDENED))
-                {
-                    equippedArmor->SetBroken();
+            if (equippedArmor != nullptr) { // check there is some armor
+				if (!(equippedArmor->uAttributes & ITEM_HARDENED)) { // if its not hardened
+                    equippedArmor->SetBroken(); // break it
                 }
             }
         }
     }
+
     if (recieved_dmg && CanAct())
-        PlaySound(SPEECH_24, 0);
+        PlaySound(SPEECH_24, 0); // oww
+
     return recieved_dmg;
 }
 
 //----- (0048DCF6) --------------------------------------------------------
-int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor )
-{
-  SPECIAL_ATTACK_TYPE attTypeCast = (SPECIAL_ATTACK_TYPE) attType;
-  signed int v3; // edi@1
-  signed int v4; // ebx@1
-  int v6; // eax@2
-  int v8; // eax@8
-  int v10; // eax@8
-  int v11; // ebx@8
-  ItemGen *v13; // eax@9
-  int v22; // eax@49
-  signed int v23; // ebx@49
-  void *v27; // ecx@76
-  char v46[140]; // [sp+Ch] [bp-94h]@13
-  unsigned int v47; // [sp+98h] [bp-8h]@1
-  ItemGen* v48; // [sp+9Ch] [bp-4h]@1
+int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor ) { // long function - consider breaking into two??
 
-  v4 = 0;
-  v47 = 0;
-  v48 = nullptr;
-  switch ( attTypeCast )
-  {
-    case SPECIAL_ATTACK_CURSE:
-      v6 = GetActualWillpower();
-      v11 = GetParameterBonus(v6);
-      break;
+	SPECIAL_ATTACK_TYPE attTypeCast = (SPECIAL_ATTACK_TYPE) attType;
 
-    case SPECIAL_ATTACK_WEAK:
-    case SPECIAL_ATTACK_SLEEP:
-    case SPECIAL_ATTACK_DRUNK:
-    case SPECIAL_ATTACK_DISEASE_WEAK:
-    case SPECIAL_ATTACK_DISEASE_MEDIUM:
-    case SPECIAL_ATTACK_DISEASE_SEVERE:
-    case SPECIAL_ATTACK_UNCONSCIOUS:
-    case SPECIAL_ATTACK_AGING:
-      v6 = GetActualEndurance();
-      v11 = GetParameterBonus(v6);
-      break;
+	int statcheck;
+	int statcheckbonus;
+	int luckstat = GetActualLuck();
+	signed int itemstobreakcounter = 0;
+	char itemstobreaklist[140];
+	ItemGen* itemtocheck = nullptr;
+	ItemGen* itemtobreak = nullptr;
+	unsigned int itemtostealinvindex = 0;
 
-    case SPECIAL_ATTACK_INSANE:
-    case SPECIAL_ATTACK_PARALYZED:
-    case SPECIAL_ATTACK_FEAR:
-      v11 = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND);
-      break;
+	switch ( attTypeCast ) {
 
-    case SPECIAL_ATTACK_PETRIFIED:
-      v11 = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
-      break;
+		case SPECIAL_ATTACK_CURSE:
+			statcheck = GetActualWillpower();
+			statcheckbonus = GetParameterBonus(statcheck);
+			break;
 
-    case SPECIAL_ATTACK_POISON_WEAK:
-    case SPECIAL_ATTACK_POISON_MEDIUM:
-    case SPECIAL_ATTACK_POISON_SEVERE:
-    case SPECIAL_ATTACK_DEAD:
-    case SPECIAL_ATTACK_ERADICATED:
-      v11 = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
-      break;
+		case SPECIAL_ATTACK_WEAK:
+		case SPECIAL_ATTACK_SLEEP:
+		case SPECIAL_ATTACK_DRUNK:
+		case SPECIAL_ATTACK_DISEASE_WEAK:
+		case SPECIAL_ATTACK_DISEASE_MEDIUM:
+		case SPECIAL_ATTACK_DISEASE_SEVERE:
+		case SPECIAL_ATTACK_UNCONSCIOUS:
+		case SPECIAL_ATTACK_AGING:
+			statcheck = GetActualEndurance();
+			statcheckbonus = GetParameterBonus(statcheck);
+			break;
 
-    case SPECIAL_ATTACK_MANA_DRAIN:
-      v8 = GetActualWillpower();
-      v10 = GetActualIntelligence();
-      v11 = (GetParameterBonus(v10) + GetParameterBonus(v8)) / 2;
-      break;
+		case SPECIAL_ATTACK_INSANE:
+		case SPECIAL_ATTACK_PARALYZED:
+		case SPECIAL_ATTACK_FEAR:
+			statcheckbonus = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND);
+			break;
 
-    case SPECIAL_ATTACK_BREAK_ANY:
-      for (int i = 0; i < 138; i++)
-      {
-        v13 = &this->pInventoryItemList[i];
-        if ( v13->uItemID > 0 && v13->uItemID <= 134 && !v13->IsBroken())
-          v46[v4++] = i;
-      }
-      if ( !v4 )
-        return 0;
-      v48 = &this->pInventoryItemList[v46[rand() % v4]];
-      v11 = 3 * (pItemsTable->pItems[v48->uItemID].uMaterial + v48->GetDamageMod());
-      break;
+		case SPECIAL_ATTACK_PETRIFIED:
+			statcheckbonus = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
+			break;
 
-    case SPECIAL_ATTACK_BREAK_ARMOR:
-      for (int i = 0; i < 16; i++ )
-      {
-        if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) )
-        {
-          if ( i == EQUIP_ARMOUR )
-            v46[v4++] = this->pEquipment.uArmor - 1;
-          if ( (i == EQUIP_SINGLE_HANDED || i == EQUIP_TWO_HANDED) && GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_SHIELD )
-            v46[v4++] = this->pEquipment.pIndices[i] - 1;
-        }
-      }
-      if ( !v4 )
-        return 0;
-      v48 = &this->pInventoryItemList[v46[rand() % v4]];
-      v11 = 3 * (pItemsTable->pItems[v48->uItemID].uMaterial + v48->GetDamageMod());
-      break;
+		case SPECIAL_ATTACK_POISON_WEAK:
+		case SPECIAL_ATTACK_POISON_MEDIUM:
+		case SPECIAL_ATTACK_POISON_SEVERE:
+		case SPECIAL_ATTACK_DEAD:
+		case SPECIAL_ATTACK_ERADICATED:
+			statcheckbonus = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
+			break;
 
-    case SPECIAL_ATTACK_BREAK_WEAPON:
-      for (int i = 0; i < 16; i++ )
-      {
-        if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) )
-        {
-          if ( i == EQUIP_BOW )
-            v46[v4++] = (unsigned char)(this->pEquipment.uBow) - 1;
-          if ( (i == EQUIP_SINGLE_HANDED || i == EQUIP_TWO_HANDED)
-            && (GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_SINGLE_HANDED || GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_TWO_HANDED) )
-            v46[v4++] = this->pEquipment.pIndices[i] - 1;
-        }
-      }
-      if ( !v4 )
-        return 0;
-      v48 = &this->pInventoryItemList[v46[rand() % v4]];
-      v11 = 3 * (pItemsTable->pItems[v48->uItemID].uMaterial + v48->GetDamageMod());
-      break;
+		case SPECIAL_ATTACK_MANA_DRAIN:
+			statcheckbonus = (GetParameterBonus(GetActualIntelligence()) + GetParameterBonus(GetActualWillpower())) / 2;
+			break;
 
-    case SPECIAL_ATTACK_STEAL:
-      for ( int i = 0; i < 126; i++ )
-      {
-        int ItemPosInList = this->pInventoryMatrix[i];
-        if (ItemPosInList > 0)
-        {
-          ItemGen* v21 = &this->pInventoryItemList[ItemPosInList - 1];
-          if ( v21->uItemID > 0 && v21->uItemID <= 134 )
-          {
-              v46[v4++] = i;
-          }
-        }
-      }
-      if ( !v4 )
-        return 0;
-      v47 = v46[rand() % v4];
-      v6 = GetActualAccuracy();
-      v11 = GetParameterBonus(v6);
-      break;
+		case SPECIAL_ATTACK_BREAK_ANY:
+			for (int i = 0; i < 138; i++) {
+				itemtocheck = &this->pInventoryItemList[i];
 
-    default:
-      v11 = 0;
-      break;
-  }
-  v22 = GetActualLuck();
-  v23 = GetParameterBonus(v22) + v11 + 30;
-  if ( rand() % v23 >= 30 )
-  {
-    return 0;
-  }
-  else
-  {
-    for ( v3 = 0; v3 < 4; v3++ )
-    {
-      if ( this == pPlayers[v3 + 1] )
-        break;
-    }
+				if ( itemtocheck->uItemID > 0 && itemtocheck->uItemID <= 134 && !itemtocheck->IsBroken()) 
+					itemstobreaklist[itemstobreakcounter++] = i;
+			}
 
-    switch ( attTypeCast )
-    {
-      case SPECIAL_ATTACK_CURSE:
-        SetCondition(Condition_Cursed, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			if ( !itemstobreakcounter )
+				return 0;
 
-      case SPECIAL_ATTACK_WEAK:
-        SetCondition(Condition_Weak, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			itemtobreak = &this->pInventoryItemList[itemstobreaklist[rand() % itemstobreakcounter]];
+			statcheckbonus = 3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial + itemtobreak->GetDamageMod());
+			break;
 
-      case SPECIAL_ATTACK_SLEEP:
-        SetCondition(Condition_Sleep, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+		case SPECIAL_ATTACK_BREAK_ARMOR:
+			for (int i = 0; i < 16; i++ ) {
+				if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) ) {
+					if ( i == EQUIP_ARMOUR )
+						itemstobreaklist[itemstobreakcounter++] = this->pEquipment.uArmor - 1;
 
-      case SPECIAL_ATTACK_DRUNK:
-        SetCondition(Condition_Drunk, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+					if ( (i == EQUIP_SINGLE_HANDED || i == EQUIP_TWO_HANDED) && GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_SHIELD )
+						itemstobreaklist[itemstobreakcounter++] = this->pEquipment.pIndices[i] - 1;
+				}
+			}
 
-      case SPECIAL_ATTACK_INSANE:
-        SetCondition(Condition_Insane, 1);
-        pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			if ( !itemstobreakcounter )
+				return 0;
 
-      case SPECIAL_ATTACK_POISON_WEAK:
-        SetCondition(Condition_Poison_Weak, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			itemtobreak = &this->pInventoryItemList[itemstobreaklist[rand() % itemstobreakcounter]];
+			statcheckbonus = 3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial + itemtobreak->GetDamageMod());
+			break;
 
-      case SPECIAL_ATTACK_POISON_MEDIUM:
-        SetCondition(Condition_Poison_Medium, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+		case SPECIAL_ATTACK_BREAK_WEAPON:
+			for (int i = 0; i < 16; i++ ) {
+				if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) ) {
+					if ( i == EQUIP_BOW )
+						itemstobreaklist[itemstobreakcounter++] = (unsigned char)(this->pEquipment.uBow) - 1;
 
-      case SPECIAL_ATTACK_POISON_SEVERE:
-        SetCondition(Condition_Poison_Severe, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+					if ( (i == EQUIP_SINGLE_HANDED || i == EQUIP_TWO_HANDED) && (GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_SINGLE_HANDED || GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_TWO_HANDED) )
+						itemstobreaklist[itemstobreakcounter++] = this->pEquipment.pIndices[i] - 1;
+				}
+			}
 
-      case SPECIAL_ATTACK_DISEASE_WEAK:
-        SetCondition(Condition_Disease_Weak, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			if ( !itemstobreakcounter )
+				return 0;
 
-      case SPECIAL_ATTACK_DISEASE_MEDIUM:
-        SetCondition(Condition_Disease_Medium, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			itemtobreak = &this->pInventoryItemList[itemstobreaklist[rand() % itemstobreakcounter]];
+			statcheckbonus = 3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial + itemtobreak->GetDamageMod());
+			break;
 
-      case SPECIAL_ATTACK_DISEASE_SEVERE:
-        SetCondition(Condition_Disease_Severe, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+		case SPECIAL_ATTACK_STEAL:
+			for ( int i = 0; i < 126; i++ ) {
+				int ItemPosInList = this->pInventoryMatrix[i];
 
-      case SPECIAL_ATTACK_PARALYZED:
-        SetCondition(Condition_Paralyzed, 1);
-        pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+				if (ItemPosInList > 0) {
+					itemtocheck = &this->pInventoryItemList[ItemPosInList - 1];
+					
+					if (itemtocheck->uItemID > 0 && itemtocheck->uItemID <= 134 ) {
+						itemstobreaklist[itemstobreakcounter++] = i;
+					}
+				}
+			}
 
-      case SPECIAL_ATTACK_UNCONSCIOUS:
-        SetCondition(Condition_Unconcious, 1);
-        pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			if ( !itemstobreakcounter )
+				return 0;
 
-      case SPECIAL_ATTACK_DEAD:
-        SetCondition(Condition_Dead, 1);
-        pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			itemtostealinvindex = itemstobreaklist[rand() % itemstobreakcounter];
+			statcheck = GetActualAccuracy();
+			statcheckbonus = GetParameterBonus(statcheck);
+			break;
+		
+		default:
+			statcheckbonus = 0;
+			break;
+	}
 
-      case SPECIAL_ATTACK_PETRIFIED:
-        SetCondition(Condition_Pertified, 1);
-        pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+	signed int savecheck = GetParameterBonus(luckstat) + statcheckbonus + 30;
+	signed int whichplayer;
 
-      case SPECIAL_ATTACK_ERADICATED:
-        SetCondition(Condition_Eradicated, 1);
-        pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+	if ( rand() % savecheck >= 30 ) { // saving throw if attacke is avoided
+		return 0;
+	}
+	else {
+		for ( whichplayer = 0; whichplayer < 4; whichplayer++ ) {
+			if ( this == pPlayers[whichplayer + 1] )
+				break;
+		}
 
-      case SPECIAL_ATTACK_BREAK_ANY:
-      case SPECIAL_ATTACK_BREAK_ARMOR:
-      case SPECIAL_ATTACK_BREAK_WEAPON:
-        if ( !(v48->uAttributes & ITEM_HARDENED) )
-        {
-          PlaySound(SPEECH_40, 0);
-          v48->SetBroken();
-          pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
-        }
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+		// pass this to new fucntion??
+		// atttypecast - whichplayer - itemtobreak - itemtostealinvindex
 
-      case SPECIAL_ATTACK_STEAL:
-        PlaySound(SPEECH_40, 0);
-        v27 = pActor->ActorHasItems;
-        if ( pActor->ActorHasItems[0].uItemID )
-        {
-          v27 = &pActor->ActorHasItems[1];
-          if ( pActor->ActorHasItems[1].uItemID )
-          {
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-            return 1;
-          }
-        }
-        memcpy(v27, &this->pInventoryItemList[this->pInventoryMatrix[v47]-1], 0x24u);
-        RemoveItemAtInventoryIndex(v47);
-        pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+		switch ( attTypeCast ) {
+			
+			case SPECIAL_ATTACK_CURSE:
+				SetCondition(Condition_Cursed, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
 
-      case SPECIAL_ATTACK_AGING:
-        PlaySound(SPEECH_42, 0);
-        ++this->sAgeModifier;
-        pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			case SPECIAL_ATTACK_WEAK:
+				SetCondition(Condition_Weak, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
 
-      case SPECIAL_ATTACK_MANA_DRAIN:
-        PlaySound(SPEECH_41, 0);
-        this->sMana = 0;
-        pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			case SPECIAL_ATTACK_SLEEP:
+				SetCondition(Condition_Sleep, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
 
-      case SPECIAL_ATTACK_FEAR:
-        SetCondition(Condition_Fear, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			case SPECIAL_ATTACK_DRUNK:
+				SetCondition(Condition_Drunk, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
 
-      default:
-        return 0;
-    }
-  }
+			case SPECIAL_ATTACK_INSANE:
+				SetCondition(Condition_Insane, 1);
+				pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_POISON_WEAK:
+				SetCondition(Condition_Poison_Weak, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_POISON_MEDIUM:
+				SetCondition(Condition_Poison_Medium, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_POISON_SEVERE:
+				SetCondition(Condition_Poison_Severe, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_DISEASE_WEAK:
+				SetCondition(Condition_Disease_Weak, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_DISEASE_MEDIUM:
+				SetCondition(Condition_Disease_Medium, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_DISEASE_SEVERE:
+				SetCondition(Condition_Disease_Severe, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_PARALYZED:
+				SetCondition(Condition_Paralyzed, 1);
+				pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_UNCONSCIOUS:
+				SetCondition(Condition_Unconcious, 1);
+				pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_DEAD:
+				SetCondition(Condition_Dead, 1);
+				pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_PETRIFIED:
+				SetCondition(Condition_Pertified, 1);
+				pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_ERADICATED:
+				SetCondition(Condition_Eradicated, 1);
+				pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_BREAK_ANY:
+			case SPECIAL_ATTACK_BREAK_ARMOR:
+			case SPECIAL_ATTACK_BREAK_WEAPON:
+				if ( !(itemtobreak->uAttributes & ITEM_HARDENED) ) {
+					PlaySound(SPEECH_40, 0);
+					itemtobreak->SetBroken();
+					pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
+				}
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+			
+			case SPECIAL_ATTACK_STEAL:
+				PlaySound(SPEECH_40, 0);
+				void *actoritems;
+				actoritems = pActor->ActorHasItems;
+				if ( pActor->ActorHasItems[0].uItemID ) {
+					actoritems = &pActor->ActorHasItems[1];
+					if ( pActor->ActorHasItems[1].uItemID ) {
+						pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+						return 1;
+					}
+				}
+
+				memcpy(actoritems, &this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex]-1], 0x24u);
+				RemoveItemAtInventoryIndex(itemtostealinvindex);
+				pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_AGING:
+				PlaySound(SPEECH_42, 0);
+				++this->sAgeModifier;
+				pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_MANA_DRAIN:
+				PlaySound(SPEECH_41, 0);
+				this->sMana = 0;
+				pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_FEAR:
+				SetCondition(Condition_Fear, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+				
+			default:
+				return 0;
+		}
+	}
 }
 
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-unsigned int Player::GetSpellSchool(unsigned int uSpellID)
-{
-  return pSpellStats->pInfos[uSpellID].uSchool;
+unsigned int Player::GetSpellSchool(unsigned int uSpellID) {
+	return pSpellStats->pInfos[uSpellID].uSchool;
 }
 
 //----- (0048E1B5) --------------------------------------------------------
@@ -2416,43 +2390,39 @@ int Player::GetActualResistance(enum CHARACTER_ATTRIBUTE_TYPE a2)
 }
 
 //----- (0048E8F5) --------------------------------------------------------
-bool Player::Recover(int dt)
-{
-  int v3; // qax@1
+bool Player::Recover(int dt) {
 
-  v3 = (int)(dt * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt);
+	int timepassed = (int)(dt * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt);
+	
+	if (uTimeToRecovery > timepassed) { // need more time till recovery
+		uTimeToRecovery -= timepassed;
+		return true;
+	}
+	else {
+		uTimeToRecovery = 0; // recovered
+		viewparams->bRedrawGameUI = true;
 
-  //logger->Warning(L"Recover(dt = %u/%u - %u", dt, (uint)v3, (uint)uTimeToRecovery);
+		if (!uActiveCharacter) // set recoverd char as active
+			uActiveCharacter = pParty->GetNextActiveCharacter();
 
-  if (uTimeToRecovery > v3)
-  {
-    uTimeToRecovery -= v3;
-    return true;
-  }
-  else
-  {
-    uTimeToRecovery = 0;
-    viewparams->bRedrawGameUI = true;
-    if (!uActiveCharacter)
-      uActiveCharacter = pParty->GetNextActiveCharacter();
-    return false;
-  }
+		return false;
+	}
 }
 
 //----- (0048E96A) --------------------------------------------------------
-void Player::SetRecoveryTime(signed int rec)
-{
-  Assert(rec >= 0);
+void Player::SetRecoveryTime(signed int rec) {
 
-  if (rec > uTimeToRecovery)
-    uTimeToRecovery = rec;
+	Assert(rec >= 0);
 
-  if (uActiveCharacter != 0 && pPlayers[uActiveCharacter] == this && !some_active_character)
-    uActiveCharacter = pParty->GetNextActiveCharacter();
+	if (rec > uTimeToRecovery)
+		uTimeToRecovery = rec;
 
-  viewparams->bRedrawGameUI = true;
+	if (uActiveCharacter != 0 && pPlayers[uActiveCharacter] == this && !some_active_character)
+		uActiveCharacter = pParty->GetNextActiveCharacter();
+
+	viewparams->bRedrawGameUI = true;
 }
-// 50C0C4: using guessed type int some_active_character;
+
 
 //----- (0048E9B7) --------------------------------------------------------
 void Player::RandomizeName()
@@ -2462,12 +2432,11 @@ void Player::RandomizeName()
 }
 
 //----- (0048E9F4) --------------------------------------------------------
-unsigned int Player::GetMajorConditionIdx()
-{
-    for (uint i = 0; i < 18; ++i)
-    {
-        if (conditions_times[pConditionImportancyTable[i]].Valid())
-            return pConditionImportancyTable[i];
+unsigned int Player::GetMajorConditionIdx() {
+
+	for (uint i = 0; i < 18; ++i) {
+		if (conditions_times[pConditionImportancyTable[i]].Valid())
+            return pConditionImportancyTable[i]; // return worst condition
     }
     return 18; // condition good
 }
@@ -7260,31 +7229,29 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
 
 //----- (00421EA6) --------------------------------------------------------
 void Player::OnInventoryLeftClick() {
-	
-	signed int inventoryXCoord; // ecx@2
-	int inventoryYCoord; // eax@2
-	int invMatrixIndex; // eax@2
-	unsigned int enchantedItemPos; // eax@7
+
 	unsigned int pickedItemId; // esi@12
 	unsigned int invItemIndex; // eax@12
 	unsigned int itemPos; // eax@18
 	ItemGen tmpItem; // [sp+Ch] [bp-3Ch]@1
-	unsigned int pY; // [sp+3Ch] [bp-Ch]@2
-	unsigned int pX; // [sp+40h] [bp-8h]@2
+	
 	CastSpellInfo *pSpellInfo;
 
 	if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
-		
+
+		unsigned int pY;
+		unsigned int pX;
 		pMouse->GetClickPos(&pX, &pY);
-		inventoryYCoord = (pY - 17) / 32;
-		inventoryXCoord = (pX - 14) / 32;
-		invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
+
+		int inventoryYCoord = (pY - 17) / 32;
+		int inventoryXCoord = (pX - 14) / 32;
+		int invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
 
 		if ( inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT && inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
 
 			if ( _50C9A0_IsEnchantingInProgress ) {
 
-				enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
+				unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
 				if ( enchantedItemPos ) {
 
@@ -7310,7 +7277,7 @@ void Player::OnInventoryLeftClick() {
 
 				}
 
-			return;
+				return;
 
 			}
 
@@ -7381,6 +7348,7 @@ void Player::OnInventoryLeftClick() {
 bool Player::IsWeak() const {
     return this->conditions_times[Condition_Weak].Valid();
 }
+
 bool Player::IsDead() const {
     return this->conditions_times[Condition_Dead].Valid();
 }
@@ -7489,24 +7457,20 @@ void Player::SetZombie(GameTime time) {
     this->conditions_times[Condition_Zombie] = time;
 }
 
-void Player::SetCondWeakWithBlockCheck( int blockable )
-{
-  SetCondition(Condition_Weak, blockable);
+void Player::SetCondWeakWithBlockCheck( int blockable ) {
+	SetCondition(Condition_Weak, blockable);
 }
 
-void Player::SetCondInsaneWithBlockCheck( int blockable )
-{
-  SetCondition(Condition_Insane, blockable);
+void Player::SetCondInsaneWithBlockCheck( int blockable ) {
+	SetCondition(Condition_Insane, blockable);
 }
 
-void Player::SetCondDeadWithBlockCheck( int blockable )
-{
-  SetCondition(Condition_Dead, blockable);
+void Player::SetCondDeadWithBlockCheck( int blockable ) {
+	SetCondition(Condition_Dead, blockable);
 }
 
-void Player::SetCondUnconsciousWithBlockCheck( int blockable )
-{
-  SetCondition(Condition_Dead, blockable);
+void Player::SetCondUnconsciousWithBlockCheck( int blockable ) {
+	SetCondition(Condition_Dead, blockable);
 }
 
 ItemGen* Player::GetOffHandItem() {
