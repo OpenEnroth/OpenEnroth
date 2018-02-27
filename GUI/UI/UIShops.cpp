@@ -118,10 +118,12 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin, BuildingType building = Buildin
 
 void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
 
+	draw_leather();
+	CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+
 	if (HouseUI_CheckIfPlayerCanInteract()) {
 
-		draw_leather();
-		CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+		
 		GameUI_StatusBar_DrawImmediate(localization->GetString(199), 0);
 
 		Point mouse = pMouse->GetCursorPos();
@@ -144,10 +146,12 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
 
 void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 
+	draw_leather();
+	CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+	
 	if (HouseUI_CheckIfPlayerCanInteract()) {
 
-		draw_leather();
-		CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+		
 		GameUI_StatusBar_DrawImmediate(localization->GetString(197), 0);
 		
 		Point mouse = pMouse->GetCursorPos();
@@ -178,10 +182,12 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 
 void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
 
-	if (!HouseUI_CheckIfPlayerCanInteract()) {
+	draw_leather();
+	CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+	
+	if (HouseUI_CheckIfPlayerCanInteract()) {
 		
-		draw_leather();
-		CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+		
 		GameUI_StatusBar_DrawImmediate(localization->GetString(198), 0);
 		
 		Point mouse = pMouse->GetCursorPos();
@@ -192,7 +198,10 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
 
 		int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
 
-		if (pItemID || (pPlayers[uActiveCharacter]->pOwnItems[pItemID - 1].uAttributes & 2) ) {
+		if (pItemID == 0)
+			return;
+
+		if ( (pPlayers[uActiveCharacter]->pOwnItems[pItemID - 1].uAttributes & ITEM_BROKEN ) ) {
 			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
 			int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, building, (int)window_SpeakInHouse->ptr_1C, 5);
 			String str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 5);

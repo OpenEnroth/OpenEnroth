@@ -1062,10 +1062,10 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uP
             static_sub_417BB5_out_string,
             a2,
             localization->GetSkillDescription(uPlayerSkillType),
-            localization->GetString(431), v35 + 3, v35 + 5, localization->GetSkillDescriptionNormal(uPlayerSkillType),
-            localization->GetString(433), v35 + 3, v35 + 5, localization->GetSkillDescriptionExpert(uPlayerSkillType),
-            localization->GetString(432), v35 + 3, v35 + 5, localization->GetSkillDescriptionMaster(uPlayerSkillType),
-            localization->GetString(96), v35 + 3, v35 + 5, localization->GetSkillDescriptionGrand(uPlayerSkillType)
+            localization->GetString(431), v35 + 3, v35 + 15, localization->GetSkillDescriptionNormal(uPlayerSkillType), // changed from 5 to 15 to add space after ':'
+            localization->GetString(433), v35 + 3, v35 + 15, localization->GetSkillDescriptionExpert(uPlayerSkillType),
+            localization->GetString(432), v35 + 3, v35 + 15, localization->GetSkillDescriptionMaster(uPlayerSkillType),
+            localization->GetString(96), v35 + 3, v35 + 15, localization->GetSkillDescriptionGrand(uPlayerSkillType)
         );
     }
     else

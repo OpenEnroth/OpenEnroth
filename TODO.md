@@ -13,7 +13,8 @@
 
 * change how classes are loaded - seperate file for easy modifications?
 
-* problems with enchanting - how windows are used uNumVisibleWindows gets to -1 - maybe fixed?
+
+* shop texts sometimes out of bounds
 
 * Rename unidentifed variables
 * cleanup functions
@@ -23,4 +24,4 @@
 *is spirit resistacne a thing or not
 
 
-* resizing game windows - need to change use of co-ords to x/640 y/480
+* resizing game windows - need to change use of co-ords to x/640 y/480 - normalised

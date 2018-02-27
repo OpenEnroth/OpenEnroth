@@ -40,12 +40,11 @@ const size_t CastSpellInfoCount = 10;
 std::array<CastSpellInfo, CastSpellInfoCount> pCastSpellInfo;
 
 //----- (00427E01) --------------------------------------------------------
-void CastSpellInfoHelpers::_427E01_cast_spell()
-{
-  
-  CastSpellInfo *pCastSpell; // ebx@2
+void CastSpellInfoHelpers::_427E01_cast_spell() {
+
+	CastSpellInfo *pCastSpell; // ebx@2
   signed int spell_pointed_target; // eax@14
-//  unsigned __int16 mastery_level; // cx@45
+
   int monster_id; // ecx@184
   int spell_overlay_id; // eax@274
   int dist_X; // eax@278
@@ -113,10 +112,11 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
   Player *pPlayer; // [sp+E64h] [bp-20h]@8
   int v730; // [sp+E68h] [bp-1Ch]@53
   ItemGen *v730c;
-  int skill_level; // [sp+E6Ch] [bp-18h]@48
+  int skill_level = 0; // [sp+E6Ch] [bp-18h]@48
   signed int v732; // [sp+E70h] [bp-14h]@325
-  unsigned __int64 v733; // [sp+E74h] [bp-10h]@1 ??used sometimes for spell duration??
-  int duration;
+  
+
+  int spellduration;
   signed int spell_targeted_at=NULL; // [sp+E7Ch] [bp-8h]@14
   int amount=0; // [sp+E80h] [bp-4h]@1
   int obj_type;
@@ -124,151 +124,134 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
 
   SpriteObject pSpellSprite; // [sp+DDCh] [bp-A8h]@1
 
-  HEXRAYS_LODWORD(v733) = 0;
+  
  
+	
+	
+	for(int n = 0; n < CastSpellInfoCount; ++n) {  // cycle through spell queue
+
+		pCastSpell = &pCastSpellInfo[n];
+		if ( pCastSpell->uSpellID == 0 )
+			continue;	// spell item blank skip to next
+
+		if (pParty->Invisible())
+			pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();	//no longer invisible
+
+		if ( pCastSpell->uFlags & ON_CAST_CastingInProgress ) {
+			if ( !pParty->pPlayers[pCastSpell->uPlayerID].CanAct() )
+				_427D48();			// this cancels the spell cast if the player can no longer act
+			
+			continue;
+		}
+
+		pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
+		
+		spell_targeted_at = pCastSpell->spell_target_pid;
+
+		if (spell_targeted_at = NULL) {	// no target ?? test
+
+			if (pCastSpell->uSpellID == SPELL_LIGHT_DESTROY_UNDEAD ||
+				pCastSpell->uSpellID == SPELL_SPIRIT_TURN_UNDEAD ||
+				pCastSpell->uSpellID == SPELL_DARK_CONTROL_UNDEAD )
+					target_undead = 1;
+			else
+				target_undead = 0;
+
+			spell_targeted_at = stru_50C198.FindClosestActor(5120, 1, target_undead);	// find closest target
+			spell_pointed_target = pMouse->uPointingObjectID;
+
+			if ( pMouse->uPointingObjectID && PID_TYPE(spell_pointed_target) == OBJECT_Actor && pActors[PID_ID(spell_pointed_target)].CanAct() ) // check can act
+				spell_targeted_at = pMouse->uPointingObjectID;
+		}
+
+		pSpellSprite.uType = spell_sprite_mapping[pCastSpell->uSpellID].uSpriteType;
+		
+		if (pSpellSprite.uType != SPRITE_NULL) {
+			if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
+				Actor::GetDirectionInfo(PID(OBJECT_Player, pCastSpell->uPlayerID + 1), spell_targeted_at, &target_direction, 0); // target direciton
+			}
+			else {
+				target_direction.uYawAngle = pParty->sRotationY; // spray infront of party
+				target_direction.uPitchAngle = pParty->sRotationX;
+			}
+		}
+
+		if (pCastSpell->forced_spell_skill_level) { // for spell scrolls - decode spell power and mastery
+			spell_level = (pCastSpell->forced_spell_skill_level) & 0x3F; // 6 bytes
+			skill_level = ((pCastSpell->forced_spell_skill_level) & 0x1C0)/64 + 1; 
+		}
+		else {
+
+			if (pCastSpell->uSpellID < SPELL_AIR_WIZARD_EYE)
+				which_skill = PLAYER_SKILL_FIRE;
+			else if (pCastSpell->uSpellID < SPELL_WATER_AWAKEN)
+				which_skill = PLAYER_SKILL_AIR;
+			else if (pCastSpell->uSpellID < SPELL_EARTH_STUN)
+				which_skill = PLAYER_SKILL_WATER;
+			else if (pCastSpell->uSpellID < SPELL_SPIRIT_DETECT_LIFE)
+				which_skill = PLAYER_SKILL_EARTH;
+			else if (pCastSpell->uSpellID < SPELL_MIND_REMOVE_FEAR)
+				which_skill = PLAYER_SKILL_SPIRIT;
+			else if (pCastSpell->uSpellID < SPELL_BODY_CURE_WEAKNESS)
+				which_skill = PLAYER_SKILL_MIND;
+			else if (pCastSpell->uSpellID < SPELL_LIGHT_LIGHT_BOLT)
+				which_skill = PLAYER_SKILL_BODY;
+			else if (pCastSpell->uSpellID < SPELL_DARK_REANIMATE)
+				which_skill = PLAYER_SKILL_LIGHT;
+			else if (pCastSpell->uSpellID < SPELL_BOW_ARROW)
+				which_skill = PLAYER_SKILL_DARK;
+			else if (pCastSpell->uSpellID == SPELL_BOW_ARROW)
+				 which_skill = PLAYER_SKILL_BOW;
+			else if (pCastSpell->uSpellID == SPELL_101 || pCastSpell->uSpellID == SPELL_LASER_PROJECTILE )
+				which_skill = PLAYER_SKILL_BLASTER;
+			else assert(false && "Unknown spell");
+
+			spell_level = pPlayer->GetActualSkillLevel(which_skill);
+			skill_level = pPlayer->GetActualSkillMastery(which_skill);
+			
+			if (all_magic) { // add all_magic clause 
+				spell_level = 10;
+				skill_level = 4;
+			}
+		}
+
+		if (pCastSpell->uSpellID < SPELL_BOW_ARROW ) {
+			if (pCastSpell->forced_spell_skill_level || all_magic)
+				uRequiredMana = 0;
+			else 
+				uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[skill_level - 1];
+
+			sRecoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[skill_level - 1];
+		}
+
+		if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
+			which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 && pParty->uCurrentMinute == 0) // free spells at midnight or midday
+				uRequiredMana = 0;
+
+		if (pCastSpell->uSpellID < SPELL_BOW_ARROW && pPlayer->sMana < uRequiredMana) {
+			GameUI_StatusBar_OnEvent(localization->GetString(586)); // "Not enough spell points"
+			pCastSpell->uSpellID = 0;
+			continue;
+		}
+
+		if (pPlayer->IsCursed() && pCastSpell->uSpellID < SPELL_BOW_ARROW && rand() % 100 < 50) { //неудачное кастование - player is cursed
+			if (!pParty->bTurnBasedModeOn)
+				pPlayer->SetRecoveryTime((signed __int64)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
+			else {
+				pParty->pTurnBasedPlayerRecoveryTimes[pCastSpellInfo[n].uPlayerID] = 100;
+				pPlayer->SetRecoveryTime(sRecoveryTime);
+				pTurnEngine->ApplyPlayerAction();
+			}
+			
+			GameUI_StatusBar_OnEvent(localization->GetString(428)); // "Spell failed"
+			pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
+			pCastSpellInfo[n].uSpellID = 0;
+			pPlayer->sMana -= uRequiredMana;
+			return;
+		}
 
 
-  for(int n = 0; n < CastSpellInfoCount; ++n)  // cycle through spell queue
-  {
-    
-	  pCastSpell = &pCastSpellInfo[n];
-    HEXRAYS_HIDWORD(v733) = (int)pCastSpell;
-    if ( pCastSpell->uSpellID == 0 )
-      continue;	// spell item blank skip to next
-
-    if (pParty->Invisible())
-      pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();	//no longer invisible 
-
-    if ( pCastSpell->uFlags & ON_CAST_CastingInProgress )
-    {
-      if ( !pParty->pPlayers[pCastSpell->uPlayerID].CanAct() )
-        _427D48();			// this cancels the spell cast if the player can no longer act
-      continue;
-    }
-
-    pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
-
-    spell_targeted_at = pCastSpell->spell_target_pid;
-    if (pCastSpell->spell_target_pid=NULL)	// no target ?? test
-    {
-      if (pCastSpell->uSpellID == SPELL_LIGHT_DESTROY_UNDEAD ||
-          pCastSpell->uSpellID == SPELL_SPIRIT_TURN_UNDEAD ||
-          pCastSpell->uSpellID == SPELL_DARK_CONTROL_UNDEAD )
-        target_undead = 1;
-      else
-        target_undead = 0;
-
-      spell_targeted_at = stru_50C198.FindClosestActor(5120, 1, target_undead);	// find closest target
-      spell_pointed_target = pMouse->uPointingObjectID;
-      if ( pMouse->uPointingObjectID && PID_TYPE(spell_pointed_target) == OBJECT_Actor && pActors[PID_ID(spell_pointed_target)].CanAct() ) // check can act
-        spell_targeted_at = pMouse->uPointingObjectID;
-    }
-
-
-    pSpellSprite.uType = spell_sprite_mapping[pCastSpell->uSpellID].uSpriteType;
-    if (pSpellSprite.uType != SPRITE_NULL)
-    {
-      if (PID_TYPE(spell_targeted_at) == OBJECT_Actor)
-      {
-        Actor::GetDirectionInfo(PID(OBJECT_Player, pCastSpell->uPlayerID + 1), spell_targeted_at, &target_direction, 0);
-       
-      }
-      else
-      {
-        target_direction.uYawAngle = pParty->sRotationY;
-        target_direction.uPitchAngle = pParty->sRotationX;
-      }
-    }
-
-   
-    if (pCastSpell->forced_spell_skill_level)
-    {
-      spell_level = (pCastSpell->forced_spell_skill_level) & 0x3F; // 6 bytes
-
-    }
-    else
-    {
-      //which_skill = PLAYER_SKILL_STAFF;
-      if (pCastSpell->uSpellID < SPELL_AIR_WIZARD_EYE)
-        which_skill = PLAYER_SKILL_FIRE;
-      else if (pCastSpell->uSpellID < SPELL_WATER_AWAKEN)
-        which_skill = PLAYER_SKILL_AIR;
-      else if (pCastSpell->uSpellID < SPELL_EARTH_STUN)
-        which_skill = PLAYER_SKILL_WATER;
-      else if (pCastSpell->uSpellID < SPELL_SPIRIT_DETECT_LIFE)
-        which_skill = PLAYER_SKILL_EARTH;
-      else if (pCastSpell->uSpellID < SPELL_MIND_REMOVE_FEAR)
-        which_skill = PLAYER_SKILL_SPIRIT;
-      else if (pCastSpell->uSpellID < SPELL_BODY_CURE_WEAKNESS)
-        which_skill = PLAYER_SKILL_MIND;
-      else if (pCastSpell->uSpellID < SPELL_LIGHT_LIGHT_BOLT)
-        which_skill = PLAYER_SKILL_BODY;
-      else if (pCastSpell->uSpellID < SPELL_DARK_REANIMATE)
-        which_skill = PLAYER_SKILL_LIGHT;
-      else if (pCastSpell->uSpellID < SPELL_BOW_ARROW)
-        which_skill = PLAYER_SKILL_DARK;
-      else if (pCastSpell->uSpellID == SPELL_BOW_ARROW)
-        which_skill = PLAYER_SKILL_BOW;
-      else if (pCastSpell->uSpellID == SPELL_101 || pCastSpell->uSpellID == SPELL_LASER_PROJECTILE )
-        which_skill = PLAYER_SKILL_BLASTER;
-      else assert(false && "Unknown spell");
-
-	  spell_level = pPlayer->GetActualSkillLevel(which_skill);// &0x3F;
-	  skill_level = pPlayer->GetActualSkillMastery(which_skill);
-      //mastery_level = pPlayer->pActiveSkills[which_skill];
-    }
-
-    //skill_level = SkillToMastery(mastery_level);
-
-	if (all_magic)// add all_magic clause
-	{
-		spell_level = 10;
-		skill_level = 4;
-	}
-
-
-
-    if (pCastSpell->uSpellID < SPELL_BOW_ARROW )
-    {
-      if (pCastSpell->forced_spell_skill_level || all_magic)
-        uRequiredMana = 0;
-      else 
-        uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[skill_level - 1];
-
-      sRecoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[skill_level - 1];
-    }
-
-    if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
-        which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 && pParty->uCurrentMinute == 0)
-      uRequiredMana = 0;
-
-    if (pCastSpell->uSpellID < SPELL_BOW_ARROW && pPlayer->sMana < uRequiredMana)
-    {
-      GameUI_StatusBar_OnEvent(localization->GetString(586)); // "Not enough spell points"
-      pCastSpell->uSpellID = 0;
-      continue;
-    }
-
-    v730 = pCastSpell->uSpellID;
-    if (pPlayer->IsCursed() && pCastSpell->uSpellID < SPELL_BOW_ARROW && rand() % 100 < 50)//неудачное кастование
-    {
-      if (!pParty->bTurnBasedModeOn)
-        pPlayer->SetRecoveryTime((signed __int64)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
-      else
-      {
-        pParty->pTurnBasedPlayerRecoveryTimes[pCastSpellInfo[n].uPlayerID] = 100;
-        pPlayer->SetRecoveryTime(sRecoveryTime);
-        pTurnEngine->ApplyPlayerAction();
-      }
-
-      GameUI_StatusBar_OnEvent(localization->GetString(428)); // "Spell failed"
-      pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
-      pCastSpellInfo[n].uSpellID = 0;
-      pPlayer->sMana -= uRequiredMana;
-      return;
-    }
-
-
+		// do mana check here?
 
 
 
@@ -513,7 +496,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         if ( !pPlayer->CanCastSpell(uRequiredMana) || !spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor)
           break;
         //v730 = spell_targeted_at >> 3;
-        //HIDWORD(v733) = (int)&pActors[PID_ID(spell_targeted_at)];
+        //HIDWORD(spellduration) = (int)&pActors[PID_ID(spell_targeted_at)];
         v691.x = 0;
         v691.y = 0;
         v691.z = 0;
@@ -694,10 +677,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         switch (skill_level)
         {
-          case 1: HEXRAYS_LODWORD(v733) = 180 * spell_level; amount = 2; break;//LODWORD(v733)???не применяется далее
-          case 2: HEXRAYS_LODWORD(v733) = 300 * spell_level; amount = 2; break;
-          case 3: HEXRAYS_LODWORD(v733) = 300 * spell_level; amount = 4; break;
-          case 4: HEXRAYS_LODWORD(v733) = 300 * spell_level; amount = 8; break;
+          case 1: spellduration = 180 * spell_level; amount = 2; break;//LODWORD(spellduration)???не применяется далее
+          case 2: spellduration = 300 * spell_level; amount = 2; break;
+          case 3: spellduration = 300 * spell_level; amount = 4; break;
+          case 4: spellduration = 300 * spell_level; amount = 8; break;
           default:
             assert(false);
         }
@@ -708,7 +691,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         if (PID_TYPE(spell_targeted_at) == OBJECT_Actor && pActors[monster_id].DoesDmgTypeDoDamage((DAMAGE_TYPE)3) )
         {
           pActors[monster_id].pActorBuffs[ACTOR_BUFF_SLOWED].Apply(
-              pParty->GetPlayingTime() + GameTime::FromSeconds(3 * 60 * spell_level), skill_level, amount, 0, 0
+              pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0 
           );
           pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
           pEngine->GetSpellFxRenderer()->_4A7E89_sparkles_on_actor_after_it_casts_buff(&pActors[monster_id], 0);
@@ -797,10 +780,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
           switch (skill_level)
           {
-          case 1: duration = 3600 * spell_level; amount = 10; break; //Огня
-          case 2: duration = 3600 * spell_level; amount = 11; break; //Огненного жара
-          case 3: duration = 3600 * spell_level; amount = 12; break;
-          case 4: duration = 0; amount = 12; break;
+          case 1: spellduration = 3600 * spell_level; amount = 10; break; //Огня
+          case 2: spellduration = 3600 * spell_level; amount = 11; break; //Огненного жара
+          case 3: spellduration = 3600 * spell_level; amount = 12; break;
+          case 4: spellduration = 0; amount = 12; break;
           default:
               assert(false);
           }
@@ -819,7 +802,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
               v730c->special_enchantment = (ITEM_ENCHANTMENT)amount;
               if (skill_level != 4)
               {
-                  v730c->expirte_time = pParty->GetPlayingTime() + GameTime::FromSeconds(duration);
+                  v730c->expirte_time = pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration);
                   v730c->uAttributes |= ITEM_TEMP_BONUS;
               }
               v730c->uAttributes |= ITEM_AURA_EFFECT_RED;
@@ -921,10 +904,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         switch (skill_level)
         {
-          case 1: duration = 60 * (spell_level + 60); break;
-          case 2: duration = 60 * (spell_level + 60); break;
-          case 3: duration = 180 * (spell_level + 20); break;
-          case 4: duration = 240 * (spell_level + 15); break;
+          case 1: spellduration = 60 * (spell_level + 60); break;
+          case 2: spellduration = 60 * (spell_level + 60); break;
+          case 3: spellduration = 180 * (spell_level + 20); break;
+          case 4: spellduration = 240 * (spell_level + 15); break;
           default:
             assert(false);
         }
@@ -939,7 +922,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           if ( spell_sound_flag )
           {
             pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(
-                pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, 0, 0, 0
+                pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, 0, 0, 0
             );
             pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
             pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
@@ -957,10 +940,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
           switch (skill_level)
           {
-          case 1: duration = 300 * (spell_level + 12); break;
-          case 2: duration = 300 * (spell_level + 12); break;
-          case 3: duration = 900 * (spell_level + 4); break;
-          case 4: duration = 3600 * (spell_level + 1); break;
+          case 1: spellduration = 300 * (spell_level + 12); break;
+          case 2: spellduration = 300 * (spell_level + 12); break;
+          case 3: spellduration = 900 * (spell_level + 4); break;
+          case 4: spellduration = 3600 * (spell_level + 1); break;
           default:
               assert(false);
           }
@@ -972,7 +955,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
               pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
               spell_overlay_id = pOtherOverlayList->_4418B1(10000, pCastSpell->uPlayerID_2 + 310, 0, 65536);
               pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_BLESS].Apply(
-                  pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+                  pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
                   1, amount, spell_overlay_id, 0
               );
               spell_sound_flag = true;
@@ -983,7 +966,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
               pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_id);
               spell_overlay_id = pOtherOverlayList->_4418B1(10000, pl_id + 310, 0, 65536);
               pParty->pPlayers[pl_id].pPlayerBuffs[1].Apply(
-                  pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+                  pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
                   skill_level, amount, spell_overlay_id, 0
               );
           }
@@ -1046,10 +1029,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         switch (skill_level)
         {
-          case 1: duration = 300 * (spell_level + 12); break;
-          case 2: duration = 300 * (spell_level + 12); break;
-          case 3: duration = 900 * (spell_level + 4); break;
-          case 4: duration = 3600 * (spell_level + 1); break;
+          case 1: spellduration = 300 * (spell_level + 12); break;
+          case 2: spellduration = 300 * (spell_level + 12); break;
+          case 3: spellduration = 900 * (spell_level + 4); break;
+          case 4: spellduration = 3600 * (spell_level + 1); break;
           default:
             assert(false);
         }
@@ -1078,7 +1061,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
         pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
         pParty->pPartyBuffs[buff_resist].Apply(
-            pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+            pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
             skill_level, amount, 0, 0
         );
         spell_sound_flag = true;
@@ -1091,9 +1074,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       case SPELL_FIRE_IMMOLATION://Кольцо огня
       {
         if ( skill_level == 4 )
-          duration = 600 * spell_level;
+          spellduration = 600 * spell_level;
         else
-          duration = 60 * spell_level;
+          spellduration = 60 * spell_level;
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
           break;
         pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
@@ -1101,7 +1084,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
         pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
         pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(
-            pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+            pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
             skill_level, spell_level, 0, 0
         );
         spell_sound_flag = true;
@@ -1233,13 +1216,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
 
       case SPELL_AIR_WIZARD_EYE://Око чародея
       {
-          duration = 3600 * spell_level;
+          spellduration = 3600 * spell_level;
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
           for (uint pl_id = 0; pl_id < 4; pl_id++)
               spell_overlay_id = pOtherOverlayList->_4418B1(2000, pl_id + 100, 0, 65536);
           pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(
-              pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+              pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
               skill_level, 0, spell_overlay_id, 0
           );
           spell_sound_flag = true;
@@ -1250,10 +1233,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         switch (skill_level)
         {
-          case 1: duration = 300 * spell_level; break;
-          case 2: duration = 600 * spell_level; break;
-          case 3: duration = 3600 * spell_level; break;
-          case 4: duration = 3600 * spell_level; break;
+          case 1: spellduration = 300 * spell_level; break;
+          case 2: spellduration = 600 * spell_level; break;
+          case 3: spellduration = 3600 * spell_level; break;
+          case 4: spellduration = 3600 * spell_level; break;
           default:
             assert(false);
         }
@@ -1267,7 +1250,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
         pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
 
         pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(
-            pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+            pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
             skill_level, 0, 0, 0
         );
         spell_sound_flag = true;
@@ -1347,10 +1330,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
         switch (skill_level)
         {
-          case 1: duration = 600 * spell_level; amount = spell_level; break;
-          case 2: duration = 600 * spell_level; amount = 2 * spell_level; break;
-          case 3: duration = 600 * spell_level; amount = 3 * spell_level; break;
-          case 4: duration = 3600 * spell_level; amount = 4 * spell_level; break;
+          case 1: spellduration = 600 * spell_level; amount = spell_level; break;
+          case 2: spellduration = 600 * spell_level; amount = 2 * spell_level; break;
+          case 3: spellduration = 600 * spell_level; amount = 3 * spell_level; break;
+          case 4: spellduration = 3600 * spell_level; amount = 4 * spell_level; break;
           default:
             assert(false);
         }
@@ -1368,7 +1351,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
           pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Apply(
-              pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+              pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
               skill_level, amount, 0, 0
           );
           spell_sound_flag = true;
@@ -1612,9 +1595,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           switch (skill_level)
           {
           case 1: //break;
-          case 2: duration = 600 * spell_level; break;
+          case 2: spellduration = 600 * spell_level; break;
           case 3:
-          case 4: duration = 3600 * spell_level; break;
+          case 4: spellduration = 3600 * spell_level; break;
           default:
               assert(false);
           }
@@ -1626,7 +1609,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
           pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].Apply(
-              pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+              pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
               skill_level, amount, spell_overlay_id, pCastSpell->uPlayerID + 1
           );
           if (skill_level == 4)
@@ -2041,7 +2024,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           default:
               assert(false);
           }
-          //LODWORD(v733) = 300;
+          //LODWORD(spellduration) = 300;
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
           if (pCastSpell->spell_target_pid == 0)
@@ -2115,16 +2098,16 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       case SPELL_SPIRIT_PRESERVATION://Сохранение
       {
           if (skill_level == 4)
-              duration = 900 * (spell_level + 4);
+              spellduration = 900 * (spell_level + 4);
           else
-              duration = 300 * (spell_level + 12);
+              spellduration = 300 * (spell_level + 12);
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
           if (skill_level == 1 || skill_level == 2)
           {
               pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
               pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Apply(
-                  pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+                  pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
                   skill_level, 0, 0, 0
               );
               spell_sound_flag = true;
@@ -2134,7 +2117,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           {
               pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_id);
               pParty->pPlayers[pl_id].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Apply(
-                  pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+                  pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
                   skill_level, 0, 0, 0
               );
           }
@@ -2148,9 +2131,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       case SPELL_SPIRIT_TURN_UNDEAD://Бег мертвецов
       {
           if (skill_level == 1 || skill_level == 2)
-              duration = 60 * (spell_level + 3);
+              spellduration = 60 * (spell_level + 3);
           else
-              duration = 300 * spell_level + 180;
+              spellduration = 300 * spell_level + 180;
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
           int mon_num = render->_46А6АС_GetActorsInViewport(4096);
@@ -2179,7 +2162,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
                   pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[spell_targeted_at]);
                   pSpellSprite.Create(0, 0, 0, 0);
                   pActors[_50BF30_actors_in_viewport_ids[spell_targeted_at]].pActorBuffs[ACTOR_BUFF_AFRAID].Apply(
-                      pParty->GetPlayingTime() + GameTime::FromSeconds(duration),
+                      pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration),
                       skill_level, 0, 0, 0
                   );
               }
@@ -2940,10 +2923,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
           switch (skill_level)
           {
-          case 1: v733 = 300 * spell_level; amount = 1; break;
-          case 2: v733 = 300 * spell_level; amount = 1; break;
-          case 3: v733 = 900 * spell_level; amount = 3; break;
-          case 4: v733 = 900 * spell_level; amount = 5; break;
+          case 1: spellduration = 300 * spell_level; amount = 1; break;
+          case 2: spellduration = 300 * spell_level; amount = 1; break;
+          case 3: spellduration = 900 * spell_level; amount = 3; break;
+          case 4: spellduration = 900 * spell_level; amount = 5; break;
           default:
               assert(false);
           }
@@ -2963,7 +2946,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           }
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          sub_44FA4C_spawn_light_elemental(pCastSpell->uPlayerID, skill_level, v733);
+          sub_44FA4C_spawn_light_elemental(pCastSpell->uPlayerID, skill_level, spellduration);
           spell_sound_flag = true;
           break;
       }
@@ -2972,10 +2955,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
           switch (skill_level)
           {
-          case 1: duration = 10800 * spell_level; amount = 3 * spell_level + 10; break;
-          case 2: duration = 10800 * spell_level; amount = 3 * spell_level + 10; break;
-          case 3: duration = 14400 * spell_level; amount = 4 * spell_level + 10; break;
-          case 4: duration = 18000 * spell_level; amount = 5 * spell_level + 10; break;
+          case 1: spellduration = 10800 * spell_level; amount = 3 * spell_level + 10; break;
+          case 2: spellduration = 10800 * spell_level; amount = 3 * spell_level + 10; break;
+          case 3: spellduration = 14400 * spell_level; amount = 4 * spell_level + 10; break;
+          case 4: spellduration = 18000 * spell_level; amount = 5 * spell_level + 10; break;
           default:
               assert(false);
           }
@@ -2985,7 +2968,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
-          pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, amount, 0, 0);
+          pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0);
           spell_sound_flag = true;
           break;
       }
@@ -3037,10 +3020,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
           switch (skill_level)
           {
-          case 1: duration = 14400 * spell_level; amount = 4 * spell_level; break;
-          case 2: duration = 14400 * spell_level; amount = 4 * spell_level; break;
-          case 3: duration = 14400 * spell_level; amount = 4 * spell_level; break;
-          case 4: duration = 18000 * spell_level; amount = 5 * spell_level; break;
+          case 1: spellduration = 14400 * spell_level; amount = 4 * spell_level; break;
+          case 2: spellduration = 14400 * spell_level; amount = 4 * spell_level; break;
+          case 3: spellduration = 14400 * spell_level; amount = 4 * spell_level; break;
+          case 4: spellduration = 18000 * spell_level; amount = 5 * spell_level; break;
           default:
               assert(false);
           }
@@ -3050,14 +3033,14 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
           pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
-          pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, amount, 0, 0);
-          pParty->pPartyBuffs[PARTY_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, amount, 0, 0);
-          pParty->pPartyBuffs[PARTY_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, amount, 0, 0);
-          pParty->pPartyBuffs[PARTY_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, amount, 0, 0);
-          pParty->pPartyBuffs[PARTY_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, amount, 0, 0);
-          pParty->pPartyBuffs[PARTY_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, amount, 0, 0);
-          pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, spell_level + 5, 0, 0);
-          pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, spell_level + 5, 0, 0);
+          pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0);
+          pParty->pPartyBuffs[PARTY_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0);
+          pParty->pPartyBuffs[PARTY_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0);
+          pParty->pPartyBuffs[PARTY_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0);
+          pParty->pPartyBuffs[PARTY_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0);
+          pParty->pPartyBuffs[PARTY_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0);
+          pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, spell_level + 5, 0, 0);
+          pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, spell_level + 5, 0, 0);
           spell_sound_flag = true;
           break;
       }
@@ -3066,10 +3049,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
           switch (skill_level)
           {
-          case 1: duration = 4; amount = 4; break;
-          case 2: duration = 4; amount = 4; break;
-          case 3: duration = 12; amount = 12; break;
-          case 4: duration = 20; amount = 15; break;
+          case 1: spellduration = 4; amount = 4; break;
+          case 2: spellduration = 4; amount = 4; break;
+          case 3: spellduration = 12; amount = 12; break;
+          case 4: spellduration = 20; amount = 15; break;
           default:
               assert(false);
           }
@@ -3104,7 +3087,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           );
           if (!player_weak)
               pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(
-                  pParty->GetPlayingTime() + GameTime::FromSeconds(60 * (spell_level * duration + 60)),
+                  pParty->GetPlayingTime() + GameTime::FromSeconds(60 * (spell_level * spellduration + 60)),
                   skill_level, spell_level + 5, 0, 0
               );
           spell_sound_flag = true;
@@ -3225,9 +3208,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
           amount = 16;
           if (skill_level == 4)
-              duration = 0;
+              spellduration = 0;
           else
-              duration = 3600 * spell_level;
+              spellduration = 3600 * spell_level;
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
           ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[spell_targeted_at];
@@ -3252,7 +3235,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           item->special_enchantment = ITEM_ENCHANTMENT_VAMPIRIC;
           if (skill_level != 4)
           {
-              item->expirte_time = pParty->GetPlayingTime() + GameTime::FromSeconds(duration);
+              item->expirte_time = pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration);
               item->uAttributes |= 8;
           }
           item->uAttributes |= 0x80;
@@ -3317,10 +3300,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
               break;
           switch (skill_level)
           {
-          case 1: duration = 180 * spell_level; break;
-          case 2: duration = 180 * spell_level; break;
-          case 3: duration = 300 * spell_level; break;
-          case 4: duration = 29030400; break;
+          case 1: spellduration = 180 * spell_level; break;
+          case 2: spellduration = 180 * spell_level; break;
+          case 3: spellduration = 300 * spell_level; break;
+          case 4: spellduration = 29030400; break;
           default:
               assert(false);
           }
@@ -3339,7 +3322,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
               pActors[monster_id].pActorBuffs[ACTOR_BUFF_BERSERK].Reset();
               pActors[monster_id].pActorBuffs[ACTOR_BUFF_CHARM].Reset();
               pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Apply(
-                  pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, 0, 0, 0
+                  pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, 0, 0, 0
               );
               pSpellSprite.containing_item.Reset();
               pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -3405,10 +3388,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
       {
           switch (skill_level)
           {
-          case 1: duration = 300 * (spell_level + 12); break;
-          case 2: duration = 300 * (spell_level + 12); break;
-          case 3: duration = 300 * (spell_level + 12); break;
-          case 4: duration = 900 * (spell_level + 4); break;
+          case 1: spellduration = 300 * (spell_level + 12); break;
+          case 2: spellduration = 300 * (spell_level + 12); break;
+          case 3: spellduration = 300 * (spell_level + 12); break;
+          case 4: spellduration = 900 * (spell_level + 4); break;
           default:
               assert(false);
           }
@@ -3419,7 +3402,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           {
               pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
               pParty->pPlayers[pCastSpell->uPlayerID_2].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Apply(
-                  pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, amount, 0, 0
+                  pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0
                   );
               spell_sound_flag = true;
               break;
@@ -3428,7 +3411,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell()
           {
               pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_id);
               pParty->pPlayers[pl_id].pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Apply(
-                  pParty->GetPlayingTime() + GameTime::FromSeconds(duration), skill_level, amount, 0, 0
+                  pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration), skill_level, amount, 0, 0
                   );
           }
           spell_sound_flag = true;

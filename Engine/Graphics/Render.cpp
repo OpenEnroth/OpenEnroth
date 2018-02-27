@@ -6987,6 +6987,9 @@ void Render::_4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a
 //----- (004A63E6) --------------------------------------------------------
 void Render::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity)
 {
+	// x,y,item_texture,enchant_texture, time, start opac, end opac
+
+
     unsigned int v14; // edx@11
     unsigned int v16; // edx@14
     unsigned int v17; // edx@17
@@ -7057,7 +7060,7 @@ void Render::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int star
                         {
                             for (int x = 0; x < Width; ++x)
                             {
-__debugbreak(); // find out what's that spell - vampiric weapon??
+__debugbreak(); // find out what's that spell - enchanting effects ??
                                 /*if (*v28)
                                 {
                                     v20 = *((unsigned __int16 *)a5->GetPixels(IMAGE_FORMAT_R5G6B5) + x & (a5->GetWidth() - 1) + a5->GetWidth() * (v27 & (a5->GetHeight() - 1)));

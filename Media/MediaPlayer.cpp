@@ -1336,6 +1336,43 @@ void MPlayer::LoadMovie(const char *pFilename)
     pMovie_Track = pMediaPlayer->LoadMovieFromLOD(hVidFile, &readFunction, &seekFunction, window->GetWidth(), window->GetHeight());
 }
 
+
+
+
+
+//void ShowLogoVideo()
+//{
+//	pMediaPlayer->bStopBeforeSchedule = false;
+//
+//	//  pMediaPlayer->pResetflag = 0;
+//	bGameoverLoop = 1;
+//	if (!bNoVideo)
+//	{
+//		render->PresentBlackScreen();
+//		pMediaPlayer->PlayFullscreenMovie(MOVIE_3DOLogo, true);
+//		if (!pMediaPlayer->bStopBeforeSchedule)
+//		{
+//			pMediaPlayer->PlayFullscreenMovie(MOVIE_NWCLogo, true);
+//			if (!pMediaPlayer->bStopBeforeSchedule)
+//			{
+//				if (!pMediaPlayer->bStopBeforeSchedule)
+//				{
+//					pMediaPlayer->PlayFullscreenMovie(MOVIE_JVC, true);
+//					if (!pMediaPlayer->bStopBeforeSchedule)
+//					{
+//						pMediaPlayer->PlayFullscreenMovie(MOVIE_Intro, true);
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	bGameoverLoop = 0;
+//}
+
+
+
+
 //----- (004BF794) --------------------------------------------------------
 void MPlayer::ShowMM7IntroVideo_and_LoadingScreen()
 {

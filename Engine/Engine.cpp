@@ -120,35 +120,7 @@ bool FileExists(const char *fname)
     return access(fname, 0) != -1;
 }
 
-void ShowLogoVideo()
-{
-    pMediaPlayer->bStopBeforeSchedule = false;
 
-    //  pMediaPlayer->pResetflag = 0;
-    bGameoverLoop = 1;
-    if (!bNoVideo)
-    {
-        render->PresentBlackScreen();
-        pMediaPlayer->PlayFullscreenMovie(MOVIE_3DOLogo, true);
-        if (!pMediaPlayer->bStopBeforeSchedule)
-        {
-            pMediaPlayer->PlayFullscreenMovie(MOVIE_NWCLogo, true);
-            if (!pMediaPlayer->bStopBeforeSchedule)
-            {
-                if (!pMediaPlayer->bStopBeforeSchedule)
-                {
-                    pMediaPlayer->PlayFullscreenMovie(MOVIE_JVC, true);
-                    if (!pMediaPlayer->bStopBeforeSchedule)
-                    {
-                            pMediaPlayer->PlayFullscreenMovie(MOVIE_Intro, true);
-                    }
-                }
-            }
-        }
-    }
-
-    bGameoverLoop = 0;
-}
 
 //----- (00466C40) --------------------------------------------------------
 const wchar_t *MENU_STATE_to_string(MENU_STATE m)
@@ -1506,7 +1478,7 @@ bool use_MMT = false;
 bool use_music_folder = false;
 bool for_refactoring = false;
 bool all_spells = false; // is this needed with all_magic as well??
-bool bNoMargareth = false;
+bool bNoMargareth = true;
 
 void ParseCommandLine(const wchar_t *cmd)
 {

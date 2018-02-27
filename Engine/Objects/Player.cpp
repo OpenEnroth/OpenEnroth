@@ -2144,9 +2144,10 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack)
 
 
 //----- new --------------------------------------------------------
-float Player::GetArmorRecoveryMultiplierFromSkillLevel( unsigned char armour_skill_type, float mult1, float mult2, float mult3, float mult4 )
-{
-  uint skill_mastery = SkillToMastery(pActiveSkills[armour_skill_type]);
+float Player::GetArmorRecoveryMultiplierFromSkillLevel( unsigned char armour_skill_type, float mult1, float mult2, float mult3, float mult4 ) {
+
+	uint skill_mastery = SkillToMastery(pActiveSkills[armour_skill_type]);
+
   switch (skill_mastery)
   {
     case 1: return mult1; break;
@@ -3040,14 +3041,14 @@ int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType ) // bitwise check
 
 int Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) {
 
-	switch (pActiveSkills[uSkillType] & 0x1C0)	{
+	switch (pActiveSkills[uSkillType] & 0x1C0)	{ // could chnage to /64 + 1 ?
 		case 0x100: return 4;     // Grandmaster
 		case 0x80:  return 3;     // Master
 		case 0x40:  return 2;     // Expert
 		case 0x00:  return 1;     // Normal
 	}
 
-	assert(false);
+	assert(false); // should never get here
 	return 0;
 }
 
