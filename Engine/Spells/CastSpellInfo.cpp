@@ -117,7 +117,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
   
 
   int spellduration;
-  signed int spell_targeted_at=NULL; // [sp+E7Ch] [bp-8h]@14
+  signed int spell_targeted_at=0; // [sp+E7Ch] [bp-8h]@14
   int amount=0; // [sp+E80h] [bp-4h]@1
   int obj_type;
   ItemDesc* _item;
@@ -148,7 +148,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 		
 		spell_targeted_at = pCastSpell->spell_target_pid;
 
-		if (spell_targeted_at = NULL) {	// no target ?? test
+		if (spell_targeted_at == 0) {	// no target ?? test
 
 			if (pCastSpell->uSpellID == SPELL_LIGHT_DESTROY_UNDEAD ||
 				pCastSpell->uSpellID == SPELL_SPIRIT_TURN_UNDEAD ||
@@ -789,7 +789,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           }
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          v730c = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[spell_targeted_at];
+          v730c = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[spell_targeted_at-1];
           _item = &pItemsTable->pItems[v730c->uItemID];
           v730c->UpdateTempBonus(pParty->GetPlayingTime());
           if (v730c->uItemID < 64 || v730c->uItemID > 65
@@ -1675,8 +1675,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
         amount = 10 * spell_level;
         bool item_not_broken = true;
         int rnd = rand() % 100;
-        pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2];
-        spell_item_to_enchant = &pPlayer->pInventoryItemList[spell_targeted_at];
+        pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2]; 
+        spell_item_to_enchant = &pPlayer->pInventoryItemList[spell_targeted_at-1];
         ItemDesc *_v725 = &pItemsTable->pItems[spell_item_to_enchant->uItemID];
         if ((skill_level == 1 || skill_level == 2 /*&& _v725->uEquipType > EQUIP_BOW*/ || skill_level == 3 || skill_level == 4) && 
             spell_item_to_enchant->uItemID <= 134 &&
@@ -1687,9 +1687,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           || (spell_item_to_enchant->GetValue() < 450 && (skill_level == 3|| skill_level == 4 ) && _v725->uEquipType >= EQUIP_SINGLE_HANDED && _v725->uEquipType <= EQUIP_BOW)
           || (spell_item_to_enchant->GetValue() < 250 && (skill_level == 3 || skill_level == 4 )&& _v725->uEquipType > EQUIP_BOW) )//Условия поломки
           {
-            if ( !(spell_item_to_enchant->uAttributes & 0x200) )// предмет не сломан
+            if ( !(spell_item_to_enchant->uAttributes & ITEM_HARDENED) )// предмет не сломан
             {
-              spell_item_to_enchant->uAttributes |= 2;//теперь сломан
+              spell_item_to_enchant->uAttributes |= ITEM_BROKEN;//теперь сломан
             }
             item_not_broken = false;
           }
@@ -3525,11 +3525,17 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     {
         if (sRecoveryTime < 0)
             sRecoveryTime = 0;
+
+		pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID]; // reset to player who actually cast spell
+
         if (pParty->bTurnBasedModeOn)
         {
             //v645 = sRecoveryTime;
             pParty->pTurnBasedPlayerRecoveryTimes[pCastSpell->uPlayerID] = sRecoveryTime;
+
+			
             pPlayer->SetRecoveryTime(sRecoveryTime);
+
             if (!some_active_character)
                 pTurnEngine->ApplyPlayerAction();
         }

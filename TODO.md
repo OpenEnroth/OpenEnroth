@@ -14,6 +14,11 @@
 * change how classes are loaded - seperate file for easy modifications?
 
 
+
+* char switching when close inventory - Party::GetNextActiveCharacter() needs checking
+
+
+
 * shop texts sometimes out of bounds
 
 * Rename unidentifed variables

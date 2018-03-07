@@ -496,7 +496,7 @@ void GUIWindow::Release()
   int v12; // edx@29
 
   //v1 = this;
-  if ( !this )
+  if ( !this || this->eWindowType == WINDOW_null) // added check to avoid releasing windows already released
     return;
 
   //v8 = this->pControlsHead;
@@ -523,6 +523,7 @@ void GUIWindow::Release()
   }
   pVisibleWindowsIdxs[uNumVisibleWindows] = 0;
   uNumVisibleWindows = uNumVisibleWindows - 1;
+  logger->Info(L"Window Release");
   //should pwindowlist[x] = nullptr;??
 }
 

@@ -7263,7 +7263,7 @@ void Player::OnInventoryLeftClick() {
 					pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
 					pSpellInfo->uFlags &= 0x7F;
 					pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
-					pSpellInfo->spell_target_pid = enchantedItemPos - 1; 
+					pSpellInfo->spell_target_pid = enchantedItemPos;// - 1; 
 					pSpellInfo->field_6 = (-1 - enchantedItemPos); // check
 					ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos-1];
 					_50C9A0_IsEnchantingInProgress = 0;

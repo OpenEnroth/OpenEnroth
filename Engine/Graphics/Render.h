@@ -90,7 +90,7 @@ class Render : public IRender
 
         virtual void ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture, int a5);
         virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal);
-        virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity);
+        virtual void BlendTextures(int x, int y, Image *imgin, Image *imgblend, int time, int start_opacity, int end_opacity);
         virtual void _4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a6, int a7, int a8);
 
         virtual void DrawMasked(float u, float v, class Image *img, unsigned int color_dimming_level, unsigned __int16 mask);

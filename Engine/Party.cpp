@@ -195,6 +195,12 @@ int Party::GetNextActiveCharacter()
   signed int v8; // esi@23
   int v12; // [sp+Ch] [bp-4h]@1
 
+
+
+  if (this->pPlayers[uActiveCharacter-1].CanAct() && this->pPlayers[uActiveCharacter-1].uTimeToRecovery < 1) // avoid switching away from char that can act
+	  return uActiveCharacter;
+
+
   v12 = 0;
   if ( pParty->bTurnBasedModeOn == 1 )
   {

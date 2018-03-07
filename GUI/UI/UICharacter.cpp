@@ -989,7 +989,8 @@ void CharacterUI_DrawPaperdoll(Player *player)
                     item->ResetEnchantAnimation();
                     ptr_50C9A4_ItemToEnchant = nullptr;
                 }
-                render->BlendTextures(item_X, item_Y, texture, assets->GetImage_16BitColorKey(container, 0x7FF), OS_GetTime() / 10, 0, 255);
+                render->BlendTextures(item_X, item_Y, texture, assets->GetImage_16BitColorKey(container, 0x7FF), OS_GetTime() / 10, 0, 255); // should this pass enchant timer?
+	
             }
             else if (item->uAttributes & ITEM_BROKEN)
                 render->DrawTransparentRedShade(item_X / 640.0f, item_Y / 480.0f, texture);
@@ -1748,7 +1749,12 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool a2)
             height = 14;
         v17 = uCellX + (((int)((width - 14) & 0xE0) + 32 - width) / 2)
             + pSRZBufferLineOffsets[uCellY + (((int)((height - 14) & 0xFFFFFFE0) - height + 32) / 2)];   //added typecast. without it the value in the brackets got cat to unsigned which messed stuff up
-        if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uAttributes & ITEM_ENCHANT_ANIMATION)
+        
+		if (_50C9A8_item_enchantment_timer > 0)
+			v17=0;
+
+
+		if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uAttributes & ITEM_ENCHANT_ANIMATION)
         {
             const char *container = nullptr;
             switch (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uAttributes & ITEM_ENCHANT_ANIMATION)
@@ -1766,11 +1772,8 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool a2)
                 ptr_50C9A4_ItemToEnchant = nullptr;
             }
 
-            render->BlendTextures(
-                uCellX, uCellY, pTexture,
-                assets->GetImage_16BitColorKey(container, 0x7FF),
-                OS_GetTime() / 10, 0, 255
-            );
+            render->BlendTextures(uCellX, uCellY, pTexture, assets->GetImage_16BitColorKey(container, 0x7FF), OS_GetTime() / 10, 0, 255 );
+			//render->DrawTextureAlphaNew(uCellX / 640.0f, uCellY / 480.0f, pTexture);
             //ZBuffer_Fill(&render->pActiveZBuffer[v17], item_texture_id, player->pInventoryMatrix[i]);
         }
         else
