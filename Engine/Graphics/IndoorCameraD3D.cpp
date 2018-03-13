@@ -718,7 +718,7 @@ char IndoorCameraD3D::_437376(stru154 *thisa, RenderVertexSoft *a2, unsigned int
   int v13; // eax@15
   signed int v14; // ebx@17
   RenderVertexSoft v18; // [sp+Ch] [bp-34h]@2
-  signed int thisb; // [sp+48h] [bp+8h]@6
+//  signed int thisb; // [sp+48h] [bp+8h]@6
   bool result; // [sp+4Fh] [bp+Fh]@5
 
   memcpy(&v18, a2, sizeof(v18));

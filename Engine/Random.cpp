@@ -53,7 +53,7 @@ int Random::GetInRange()
 void Random::Initialize(int seed)
 {
     int v2; // eax@1
-    Random *this_; // esi@1
+//    Random *this_; // esi@1
     signed int v4; // ecx@3
     unsigned int v5; // eax@4
     signed int v6; // edi@5

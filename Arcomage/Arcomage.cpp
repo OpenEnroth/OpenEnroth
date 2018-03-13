@@ -2487,10 +2487,10 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID)
        }
     ArcomagePlayer *player; // esi@1
     ArcomagePlayer *enemy; // edi@1
-    int v23; // eax@26
-    signed int v24; // ebx@26
-    int v103;
-    int v104;
+//    int v23; // eax@26
+//    signed int v24; // ebx@26
+//    int v103;
+//    int v104;
 
     Point v184; // [sp+Ch] [bp-64h]@488
     int enemy_num; // [sp+14h] [bp-5Ch]@1

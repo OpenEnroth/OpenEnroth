@@ -149,7 +149,7 @@ void Render::WritePixel16(int x, int y, unsigned __int16 color)
     if (ddpfPrimarySuface.dwRGBBitCount == 32)
     {
         auto p = (unsigned __int32 *)pTargetSurface + x + y * uTargetSurfacePitch;
-        *p = Color32(color);
+        *p = Color32(color); // write access violation
     }
     else if (ddpfPrimarySuface.dwRGBBitCount == 16)
     {
@@ -4213,7 +4213,7 @@ void Render::CreateDirectDrawPrimarySurface()
 {
   IDirectDrawSurface *pFrontBuffer; // eax@3
   DDSCAPS2 *v6; // edx@3
-  IDirectDraw4 *v7; // eax@4
+//  IDirectDraw4 *v7; // eax@4
   int v9; // ST14_4@5
   IDirectDrawSurface *v10; // ST10_4@5
   IDirectDrawSurface **ppBackBuffer; // [sp-4h] [bp-A4h]@3
@@ -4515,7 +4515,7 @@ unsigned int Render::GetActorTintColor(float a2, int tint, int a4, int a5, Rende
 void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders)
 {
     int v11; // eax@5
-    int v20; // eax@14
+//    int v20; // eax@14
     unsigned int v45; // eax@28
 
     unsigned int uNumVertices = a4->uNumVertices;
@@ -6903,15 +6903,15 @@ void Render::DrawMasked(float u, float v, Image *pTexture, unsigned int color_di
 
 
 //----- (004A65CC) --------------------------------------------------------
-void Render::_4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a6, int a7, int a8)
+void Render::_4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a6, int a7, int a8) //haster
 {
     unsigned int uHeight; // edi@6
     unsigned int v14; // edx@11
     unsigned int v16; // edx@14
     unsigned int v17; // edx@17
     unsigned int v19; // edx@20
-    int v20; // eax@27
-    int v21; // edx@29
+//    int v20; // eax@27
+//    int v21; // edx@29
     unsigned __int16 *v24; // [sp+14h] [bp-4h]@6
     int Width; // [sp+2Ch] [bp+14h]@6
 
@@ -6985,103 +6985,115 @@ void Render::_4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a
 }
 
 //----- (004A63E6) --------------------------------------------------------
-void Render::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity)
-{
-    unsigned int v14; // edx@11
-    unsigned int v16; // edx@14
-    unsigned int v17; // edx@17
-    unsigned int v19; // edx@20
-    int v20; // eax@27
-    int v21; // edx@29
-    int Height; // [sp+10h] [bp-8h]@6
-    int Width; // [sp+14h] [bp-4h]@6
-    int v27; // [sp+24h] [bp+Ch]@23
-    unsigned __int16 *v28; // [sp+28h] [bp+10h]@6
+void Render::BlendTextures(int x, int y, Image *imgin, Image *imgblend, int time, int start_opacity, int end_opacity) { // thrown together as a crude estimate of the enchaintg effects
 
-    if (this->uNumSceneBegins)
-    {
-        if (a4 && a5)
-        {
-            //if ( a4->pPalette16 )
-            {
-                //if ( a5 )
-                {
-                    //if ( a5->pPalette16 )
-                    {
-                        v28 = (unsigned __int16 *)a4->GetPixels(IMAGE_FORMAT_R5G6B5);
-                        Width = a4->GetWidth();
-                        Height = a4->GetHeight();
-                        int clipped_out_x = a2;
-                        int clipped_out_y = a3;
-                        if (this->bClip)
-                        {
-                            if ((signed int)a2 < (signed int)this->uClipX)
-                            {
-                                v28 += this->uClipX - a2;
-                                Width += a2 - this->uClipX;
-                                clipped_out_x = uClipX;
-                            }
+	// change to IMAGE_FORMAT_A8R8G8B8 ???
+	// leaves gap where it shouldnt on dark pixels currently
+	// doesnt use opacity params
 
-                            if ((signed int)a3 < (signed int)this->uClipY)
-                            {
-                                v28 += a4->GetWidth() * (this->uClipY - a3);
-                                Height += a3 - this->uClipY;
-                                clipped_out_y = uClipY;
-                            }
+	const unsigned __int16 *pixelpoint;
+	const unsigned __int16 *pixelpointblend;
 
-                            v14 = this->uClipX;
-                            if ((signed int)this->uClipX < (signed int)a2)
-                                v14 = a2;
-                            if ((signed int)(Width + v14) >(signed int)this->uClipZ)
-                            {
-                                v16 = this->uClipX;
-                                if ((signed int)this->uClipX < (signed int)a2)
-                                    v16 = a2;
-                                Width = this->uClipZ - v16;
-                            }
+	if (this->uNumSceneBegins) { // something to draw to
+		if (imgin && imgblend) { // 2 images to blend
 
-                            v17 = this->uClipY;
-                            if ((signed int)this->uClipY < (signed int)a3)
-                                v17 = a3;
-                            if ((signed int)(Height + v17) >(signed int)this->uClipW)
-                            {
-                                v19 = this->uClipY;
-                                if ((signed int)this->uClipY < (signed int)a3)
-                                    v19 = a3;
-                                Height = this->uClipW - v19;
-                            }
-                        }
+			pixelpoint = (const unsigned __int16 *)imgin->GetPixels(IMAGE_FORMAT_R5G6B5);
+			pixelpointblend = (const unsigned __int16 *)imgblend->GetPixels(IMAGE_FORMAT_R5G6B5);
 
-                        v27 = 0;
-                        for (int y = 0; y < Height; ++y)
-                        {
-                            for (int x = 0; x < Width; ++x)
-                            {
-__debugbreak(); // find out what's that spell
-                                /*if (*v28)
-                                {
-                                    v20 = *((unsigned __int16 *)a5->GetPixels(IMAGE_FORMAT_R5G6B5) + x & (a5->GetWidth() - 1) + a5->GetWidth() * (v27 & (a5->GetHeight() - 1)));
-                                    if (v20 >= start_opacity)
-                                    {
-                                        if (v20 <= end_opacity)
-                                        {
-                                            v21 = start_opacity + (t + v20) % (2 * (end_opacity - start_opacity));
-                                            if ((t + v20) % (2 * (end_opacity - start_opacity)) >= end_opacity - start_opacity)
-                                                v21 = 2 * end_opacity - v21 - start_opacity;
+			int Width = imgin->GetWidth();
+			int Height = imgin->GetHeight();
+			int clipped_out_x = x;
+			int clipped_out_y = y;
 
-                                            WritePixel16(clipped_out_x + x, clipped_out_y + y, a5->pPalette16[v21]);
-                                        }
-                                    }
-                                }*/
-                                v28++;
-                            }
-                            v28 += a4->GetWidth() - Width;
-                        }
-                    }
-                }
-            }
-        }
-    }
+			if (this->bClip) { // do we need clipping
+
+				if (x < this->uClipX) { // x less than zero
+					pixelpoint += this->uClipX - x;
+					Width += x - this->uClipX;
+					clipped_out_x = uClipX;
+				}
+
+				if (y < this->uClipY) { // y less than zero
+					pixelpoint += imgin->GetWidth() * (this->uClipY - y);
+					Height += y - this->uClipY;
+					clipped_out_y = uClipY;
+				}
+
+				int startx = this->uClipX;
+				if (this->uClipX < x)
+					startx = x;
+
+				if ((Width + startx) > this->uClipZ) { // x overruns 640
+					Width = this->uClipZ - startx;
+				}
+
+				int starty = this->uClipY;
+				if (this->uClipY < y)
+					starty = y;
+
+				if ((Height + starty) > this->uClipW) { // y overruns 480
+					Height = this->uClipW - starty;
+				}
+			}
+
+			unsigned __int16 c = *(pixelpointblend + 2700); // guess at brightest pixel
+			unsigned int bmax = (c & 31) * 8;
+			unsigned int gmax = ((c >> 5) & 63) * 4;
+			unsigned int rmax = ((c >> 11) & 31) * 8;
+
+			unsigned int bmin = bmax / 10;
+			unsigned int gmin = gmax / 10;
+			unsigned int rmin = rmax / 10;
+
+			unsigned int bstep = (bmax - bmin) / 128;
+			unsigned int gstep = (gmax - gmin) / 128;
+			unsigned int rstep = (rmax - rmin) / 128;
+
+			for (int ydraw = 0; ydraw < Height; ++ydraw) {
+				for (int xdraw = 0; xdraw < Width; ++xdraw) {
+
+					//should go blue -> black -> blue reverse
+					// patchy -> solid -> patchy
+
+					if (*pixelpoint) { //check orig item not got blakc pixel 
+
+						__int16 nudge = (xdraw % imgblend->GetWidth()) + (ydraw % imgblend->GetHeight())*imgblend->GetWidth();
+						__int16 pixcol = *(pixelpointblend + nudge);
+
+						unsigned int bcur = (pixcol & 31) * 8;
+						unsigned int gcur = ((pixcol >> 5) & 63) * 4;
+						unsigned int rcur = ((pixcol >> 11) & 31) * 8;
+
+						int steps = (time) % 128;
+
+						if ((time) % 256 >= 128) { // step down
+							bcur += bstep * (128 - steps);
+							gcur += gstep * (128 - steps);
+							rcur += rstep * (128 - steps);
+						}
+						else { // step up
+							bcur += bstep * steps;
+							gcur += gstep * steps;
+							rcur += rstep * steps;
+						}
+
+						if (bcur > bmax) bcur = bmax; // limit check
+						if (gcur > gmax) gcur = gmax;
+						if (rcur > rmax) rcur = rmax;
+						if (bcur < bmin) bcur = bmin;
+						if (gcur < gmin) gcur = gmin;
+						if (rcur < rmin) rcur = rmin;
+
+						WritePixel16(clipped_out_x + xdraw, clipped_out_y + ydraw, Color16(rcur, gcur, bcur));
+					}
+
+					pixelpoint++;
+				}
+
+				pixelpoint += imgin->GetWidth() - Width;
+			}
+		}
+	}
 }
 
 
@@ -7089,64 +7101,69 @@ __debugbreak(); // find out what's that spell
 
 void Render::DrawTextureAlphaNew(float u, float v, Image *img)
 {
-    int uHeight; // ebx@4
-    unsigned int v11; // edx@9
-    unsigned int v12; // esi@12
-    unsigned int v13; // esi@15
-    unsigned int v15; // esi@18
+   // int uHeight; // ebx@4
+    unsigned int startx; // edx@9
+    //unsigned int v12; // esi@12
+    unsigned int starty; // esi@15
+   // unsigned int v15; // esi@18
     //unsigned __int8 *v19; // [sp+18h] [bp-8h]@4
-    int uWidth; // [sp+1Ch] [bp-4h]@4
+   // int uWidth; // [sp+1Ch] [bp-4h]@4
 
     if (!uNumSceneBegins || !img)
         return;
 
-    uHeight = img->GetHeight();
+    int uHeight = img->GetHeight();
     ///v19 = pTexture->paletted_pixels;
-    uWidth = img->GetWidth();
+    int uWidth = img->GetWidth();
 
     auto pixels = (const unsigned __int32 *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
     int uX = u * 640.0f;
     int uY = v * 480.0f;
-    int clipped_out_x = uX;
+	int clipped_out_x = uX;
     int clipped_out_y = uY;
+
     if (this->bClip)
     {
-        if ((signed int)uX < (signed int)this->uClipX)
+        if (uX < this->uClipX) // x less than 0
         {
             pixels += this->uClipX - uX;
             uWidth += uX - this->uClipX;
             clipped_out_x = uClipX;
         }
 
-        uHeight = img->GetHeight();
-        if ((signed int)uY < (signed int)this->uClipY)
+       // uHeight = img->GetHeight();
+        if (uY < this->uClipY) // y less than 0
         {
             pixels += img->GetWidth() * (this->uClipY - uY);
             uHeight = uY - this->uClipY + img->GetHeight();
             clipped_out_y = uClipY;
         }
-        v11 = this->uClipX;
-        if ((signed int)this->uClipX < (signed int)uX)
-            v11 = uX;
+	
 
-        if ((signed int)(v11 + uWidth) >(signed int)this->uClipZ)
+        startx = this->uClipX;
+        if (this->uClipX < uX)
+            startx = uX;
+
+        if ((startx + uWidth) > this->uClipZ) // overruns 640
         {
-            v12 = this->uClipX;
-            if ((signed int)this->uClipX < (signed int)uX)
-                v12 = uX;
-            uWidth = this->uClipZ - v12;
+           // v12 = this->uClipX;
+          //  if ((signed int)this->uClipX < (signed int)uX)
+               // v12 = uX;
+            uWidth = this->uClipZ - startx;
         }
-        v13 = this->uClipY;
-        if ((signed int)this->uClipY < (signed int)uY)
-            v13 = uY;
 
-        if ((signed int)(uHeight + v13) >(signed int)this->uClipW)
+
+        starty = this->uClipY;
+        if (this->uClipY < uY)
+            starty = uY;
+
+        if ((uHeight + starty) >this->uClipW) // overrun 480
         {
-            v15 = this->uClipY;
-            if ((signed int)this->uClipY < (signed int)uY)
-                v15 = uY;
-            uHeight = this->uClipW - v15;
+            //v15 = this->uClipY;
+           // if ((signed int)this->uClipY < (signed int)uY)
+           //     v15 = uY;
+            uHeight = this->uClipW - starty;
         }
     }
 
@@ -7957,7 +7974,7 @@ void Render::DrawBuildingsD3D()
 {
     int v27; // eax@57
   //  int vertex_id; // eax@58
-    unsigned int v34; // eax@80
+//    unsigned int v34; // eax@80
     //int v40; // [sp-4h] [bp-5Ch]@2
     int v49; // [sp+2Ch] [bp-2Ch]@10
     int v50; // [sp+30h] [bp-28h]@34

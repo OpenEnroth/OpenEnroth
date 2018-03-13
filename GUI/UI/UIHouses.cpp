@@ -901,6 +901,10 @@ LABEL_43:*/
 bool  HouseUI_CheckIfPlayerCanInteract()
 {
     GUIWindow window; // [sp+4h] [bp-54h]@3
+	
+
+	if (uActiveCharacter == 0) // to avoid access zeroeleement
+		return false;
 
     if (pPlayers[uActiveCharacter]->CanAct())
     {
@@ -1063,6 +1067,10 @@ bool EnterHouse(enum HOUSE_ID uHouseID)
             v19 = guild_mambership_flags[uHouseID - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE]; //guilds flags 
             //v20 = uHouseID;
             //if ( !((unsigned __int8)(0x80u >> v19 % 8) & pPlayers[uActiveCharacter]->_guilds_member_bits[v19 /8]) )
+
+			if (uActiveCharacter == 0) // avoid nzi
+				uActiveCharacter = pParty->GetFirstCanAct();
+
             if (!_449B57_test_bit(pPlayers[uActiveCharacter]->_achieved_awards_bits, v19))
             {
                 PlayHouseSound(uHouseID, HouseSound_Greeting_2);
@@ -2080,7 +2088,10 @@ void  TavernDialog()
     dialog_window.uFrameZ = 334;
     v2 = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
 
-    pPriceRoom = ((v2 * v2) / 10) * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+	if (uActiveCharacter == 0) // avoid nzi
+		uActiveCharacter = pParty->GetFirstCanAct();
+
+    pPriceRoom = ((v2 * v2) / 10) * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100; // nzi
     if (pPriceRoom < ((v2 * v2) / 10) / 3)
         pPriceRoom = ((v2 * v2) / 10) / 3;
     if (pPriceRoom <= 0)
@@ -2393,6 +2404,10 @@ void TempleDialog()
     tample_window.uFrameX = 483;
     tample_window.uFrameWidth = 148;
     tample_window.uFrameZ = 334;
+
+	if (uActiveCharacter == 0) // avoid nzi
+		uActiveCharacter = pParty->GetFirstCanAct();
+
     pPrice = pPlayers[uActiveCharacter]->GetTempleHealCostModifier(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier);
     if (dialog_menu_id == HOUSE_DIALOGUE_MAIN)
     {
@@ -2459,9 +2474,10 @@ void TempleDialog()
         }
         Party::TakeGold(pPrice);
 
-        memset(pPlayers[uActiveCharacter], 0, 0xA0u);
+		pPlayers[uActiveCharacter]->conditions_times.fill(0); // sets all condition times to zero
         pPlayers[uActiveCharacter]->sHealth = pPlayers[uActiveCharacter]->GetMaxHealth();
         pPlayers[uActiveCharacter]->sMana = pPlayers[uActiveCharacter]->GetMaxMana();
+
         if ((signed int)window_SpeakInHouse->ptr_1C != 78 && ((signed int)window_SpeakInHouse->ptr_1C <= 80 || (signed int)window_SpeakInHouse->ptr_1C > 82))
         {
             if (pPlayers[uActiveCharacter]->conditions_times[Condition_Zombie].Valid())// если состояние зомби
@@ -2672,6 +2688,10 @@ void TrainingDialog(const char *s)
     training_dialog_window.uFrameX = 483;
     training_dialog_window.uFrameWidth = 148;
     training_dialog_window.uFrameZ = 334;
+
+	if (uActiveCharacter == 0) // avoid nzi
+		uActiveCharacter = pParty->GetFirstCanAct();
+
     v5 = 1000ui64 * pPlayers[uActiveCharacter]->uLevel * (pPlayers[uActiveCharacter]->uLevel + 1) / 2;  // E n = n(n + 1) / 2
     //v68 = pMaxLevelPerTrainingHallType[(unsigned int)window_SpeakInHouse->ptr_1C - HOUSE_TRAINING_HALL_EMERALD_ISLE];
     if (pPlayers[uActiveCharacter]->uExperience >= v5)
@@ -2695,20 +2715,24 @@ void TrainingDialog(const char *s)
             if (HouseUI_CheckIfPlayerCanInteract())
             {
                 index = 0;
-                pShopOptions[0] = s;
+                pShopOptions[0] = s; // set first item to fucntion param - this always gets overwritten below??
                 pShopOptions[1] = localization->GetString(160);// "Learn Skills"
                 if (pDialogueWindow->pStartingPosActiveItem < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton)
                 {
-                    for (int i = pDialogueWindow->pStartingPosActiveItem;
-                    i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-                    {
-                        if (pDialogueWindow->GetControl(i)->msg_param == HOUSE_DIALOGUE_TRAININGHALL_TRAIN)
-                        {
-                            if (pPlayers[uActiveCharacter]->uLevel >= pMaxLevelPerTrainingHallType[(unsigned int)window_SpeakInHouse->ptr_1C - HOUSE_TRAINING_HALL_EMERALD_ISLE])
-                                sprintf((char *)pShopOptions[index], "%s\n \n%s", localization->GetString(536), localization->GetString(529)); //"With your skills, you should be working here as a teacher."    "Sorry, but we are unable to train you."
-                            else
+					for (int i = pDialogueWindow->pStartingPosActiveItem;
+						i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
+					{
+						if (pDialogueWindow->GetControl(i)->msg_param == HOUSE_DIALOGUE_TRAININGHALL_TRAIN)
+						{
+							static String shop_option_str_container;
+							if (pPlayers[uActiveCharacter]->uLevel >= pMaxLevelPerTrainingHallType[(unsigned int)window_SpeakInHouse->ptr_1C - HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
+
+								shop_option_str_container = String(localization->GetString(536)) + "\n \n" + localization->GetString(529); //"With your skills, you should be working here as a teacher."    "Sorry, but we are unable to train you."
+								pShopOptions[index] = shop_option_str_container.c_str();
+
+							}
+							else
                             {
-                                static String shop_option_str_container;
                                 if (pPlayers[uActiveCharacter]->uExperience < v5)
                                     shop_option_str_container = localization->FormatString(538, (uint)(v5 - pPlayers[uActiveCharacter]->uExperience), pPlayers[uActiveCharacter]->uLevel + 1); // "You need %d more experience to train to level %d"
                                 else

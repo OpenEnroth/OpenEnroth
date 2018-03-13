@@ -219,7 +219,7 @@ __int16 SoundList::LoadSound(int a1, unsigned int a3)
 int SoundList::LoadSound(unsigned int a2, void *lpBuffer, int uBufferSizeLeft, int *pOutSoundSize, int a6)
 {
     void *v18; // ebx@19
-    int NumberOfBytesRead;
+//    int NumberOfBytesRead;
 
     if (!sNumSounds)
         return 0;
@@ -535,6 +535,9 @@ void AudioPlayer::_4AA258(int a2)
 //----- (004AA306) --------------------------------------------------------
 void AudioPlayer::PlaySound(SoundID eSoundID, signed int pid, unsigned int uNumRepeats, signed int source_x, signed int source_y, int sound_data_id, float uVolume, int sPlaybackRate)
 {
+	// need changind to openal audio player
+
+
   int v12; // edi@13
   signed int v13; // ecx@17
   signed int v14; // eax@20
@@ -592,7 +595,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, signed int pid, unsigned int uNumR
   int v102; // [sp+90h] [bp+1Ch]@60
   int v103; // [sp+90h] [bp+1Ch]@68
 
-  if ( !bPlayerReady || !uSoundVolumeMultiplier || !hDigDriver || eSoundID == SOUND_Invalid )
+  if ( !bPlayerReady || !uSoundVolumeMultiplier  || eSoundID == SOUND_Invalid || !hDigDriver)
     return;
 
   float sample_volume = 10000;
@@ -2152,7 +2155,7 @@ void AudioPlayer::StopChannels(int uStartChannel, int uEndChannel)
 //----- (004AB818) --------------------------------------------------------
 void AudioPlayer::LoadAudioSnd()
 {
-    int NumberOfBytesRead; // [sp+Ch] [bp-4h]@3
+//    int NumberOfBytesRead; // [sp+Ch] [bp-4h]@3
 
     hAudioSnd = fopen("Sounds\\Audio.snd", "rb");
     if (!hAudioSnd)
@@ -2168,7 +2171,7 @@ void AudioPlayer::LoadAudioSnd()
 }
 
 //----- (004AB8CE) --------------------------------------------------------
-void AudioPlayer::Initialize()
+void AudioPlayer::Initialize() //?? depreciate move to openal
 {
   int v3; // ebx@1
   _PROVIDER *v6; // eax@9
@@ -2188,11 +2191,15 @@ void AudioPlayer::Initialize()
   this->dword_0002C8 = 64;
   this->dword_0002CC = 2;
 
+
+
   MSS32_DLL_Initialize();
   BINKW32_DLL_Initialize();
   SMACKW32_DLL_Initialize();
   
-  AIL_startup();
+  AIL_startup(); // ?? eh
+
+
   if (bCanLoadFromCD)
     hAILRedbook = AIL_redbook_open_drive(cMM7GameCDDriveLetter/*cGameCDDriveLetter*/);
   //else
@@ -2202,7 +2209,8 @@ void AudioPlayer::Initialize()
   hDigDriver = Audio_GetFirstHardwareDigitalDriver();
   if ( hDigDriver )
     SmackSoundUseMSS(hDigDriver);
-  if ( OS_GetAppInt("Disable3DSound", 0) != 1 && true)//pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT )
+
+  if ( OS_GetAppInt("Disable3DSound", 0) != 1 && false)//pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT )
   {
     v14 = 0;
     bEAXSupported = 0;
@@ -2236,6 +2244,7 @@ void AudioPlayer::Initialize()
       }
     }
   }
+
   for ( v3; v3 < uMixerChannels; ++v3 )
   {
     pMixerChannels[v3].hSample = AIL_allocate_sample_handle(hDigDriver);
@@ -2269,7 +2278,7 @@ _DIG_DRIVER *Audio_GetFirstHardwareDigitalDriver(void)
 {
   int v0; // ecx@1
   size_t v2; // eax@4
-  signed int v3; // kr14_4@9
+//  signed int v3; // kr14_4@9
   int v5; // [sp+10h] [bp-Ch]@2
   unsigned int pNum_devices; // [sp+14h] [bp-8h]@1
   _DIG_DRIVER *hDrv; // [sp+18h] [bp-4h]@3
@@ -2298,7 +2307,8 @@ _DIG_DRIVER *Audio_GetFirstHardwareDigitalDriver(void)
       pcmWaveFormat.wf.nBlockAlign = channels * bitsPerSample / 8;             //количество данных в блоке
       pcmWaveFormat.wBitsPerSample = bitsPerSample;
       pcmWaveFormat.wf.nAvgBytesPerSec = pcmWaveFormat.wf.nSamplesPerSec * pcmWaveFormat.wf.nBlockAlign;
-      if ( !AIL_waveOutOpen(&hDrv, 0, -1, &pcmWaveFormat.wf) )
+      
+	  if ( !AIL_waveOutOpen(&hDrv, 0, -1, &pcmWaveFormat.wf) )
       {
         strcpy(pAudioPlayer->pDeviceNames[v5], "Device: ");
         v2 = strlen(pAudioPlayer->pDeviceNames[v5]);

@@ -113,7 +113,7 @@ void GUIProgressBar::Progress()
 //----- (004435E2) --------------------------------------------------------
 void GUIProgressBar::Release()
 {
-    int v3; // edi@7
+//    int v3; // edi@7
 
     if (loading_bg)
     {

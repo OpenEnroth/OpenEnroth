@@ -1565,18 +1565,20 @@ void GameUI_WritePointedObjectStatusString()
     GUIButton *pButton; // ecx@11
     int requiredSkillpoints; // ecx@19
     enum UIMessageType pMessageType1; // esi@24
-    int v14; // eax@41
+    int invmatrixindex; // eax@41
     ItemGen *pItemGen; // ecx@44
     int v16; // ecx@46
     signed int pickedObjectPID; // eax@55
     signed int v18b;
-    signed int pickedObjectID; // ecx@63
+    signed int pickedObjectID=0; // ecx@63
     BLVFace *pFace; // eax@69
     const char *pText; // ecx@79
     enum UIMessageType pMessageType2; // esi@110
     enum UIMessageType pMessageType3; // edx@117
     unsigned int pX; // [sp+D4h] [bp-Ch]@1
     unsigned int pY; // [sp+D8h] [bp-8h]@1
+
+	int testing;
 
     pMouse->uPointingObjectID = 0;
     pMouse->GetClickPos(&pX, &pY);
@@ -1627,7 +1629,7 @@ void GameUI_WritePointedObjectStatusString()
                 else
                 {
                     GameUI_StatusBar_Set(
-                        localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()) // Get %s   does not display properly ??
+                        localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName().c_str()) // Get %s
                         );
                 } //intentional fallthrough
             }
@@ -1749,10 +1751,14 @@ void GameUI_WritePointedObjectStatusString()
 					//inventoryYCoord = (pY - 17) / 32;
 					//inventoryXCoord = (pX - 14) / 32;
 					//invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
-					v14 = ((pX - 14) / 32) + 14 * ((pY - 17) / 32);
+					invmatrixindex = ((pX - 14) / 32) + 14 * ((pY - 17) / 32);
 					//if (mouse.x <= 13 || mouse.x >= 462)
 					//return;
-					pickedObjectID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&v14);
+					//testing = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invmatrixindex);
+					pItemGen = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invmatrixindex);//(ItemGen *)&pPlayers[uActiveCharacter]->pInventoryItemList[testing - 1];
+					
+					if (!pItemGen==NULL)
+						pickedObjectID = pItemGen->uItemID;
 					//if (!pItemID)
 				//return;
 			//item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
@@ -1769,7 +1775,7 @@ void GameUI_WritePointedObjectStatusString()
 						//return;
 					}
 					else {
-						pItemGen = (ItemGen *)&pPlayers[uActiveCharacter]->pInventoryItemList[pickedObjectID - 1];
+						
 						GameUI_StatusBar_Set(pItemGen->GetDisplayName());
 						uLastPointedObjectID = 1;
 						return;
@@ -2219,6 +2225,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsig
         bWizardEyeActive = true;
         uWizardEyeSkillLevel = 3;
     }
+
     render->SetRasterClipRect(uX, uY, uZ - 1, uW - 1);
     uHeight = uW - uY;
     uWidth = uZ - uX;

@@ -28,6 +28,8 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UiStatusBar.h"
 
+#include "GUI/UI/UICharacter.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
 
@@ -703,8 +705,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
     if (pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID))
     {
-        skill_points = (unsigned __int8)pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID) & 0x3F;
-        skill_level = SkillToMastery(pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID)) - 1;
+        skill_points = (unsigned __int8)pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
+        skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID) - 1;
         if (skill_level == 0)//(normal)
         {
             if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel)
@@ -751,7 +753,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         pPlayers[uActiveCharacter]->PlaySound(speech, 0);
     }
 
-    if ((signed int)SkillToMastery(pParty->pPlayers[uActiveCharacter - 1].GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID)) >= 3)
+    if ((signed int)(pParty->pPlayers[uActiveCharacter - 1].GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID)) >= 3)
         for_effects = 1;
 
     if (monster_full_informations == true)
@@ -1060,10 +1062,10 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uP
             static_sub_417BB5_out_string,
             a2,
             localization->GetSkillDescription(uPlayerSkillType),
-            localization->GetString(431), v35 + 3, v35 + 5, localization->GetSkillDescriptionNormal(uPlayerSkillType),
-            localization->GetString(433), v35 + 3, v35 + 5, localization->GetSkillDescriptionExpert(uPlayerSkillType),
-            localization->GetString(432), v35 + 3, v35 + 5, localization->GetSkillDescriptionMaster(uPlayerSkillType),
-            localization->GetString(96), v35 + 3, v35 + 5, localization->GetSkillDescriptionGrand(uPlayerSkillType)
+            localization->GetString(431), v35 + 3, v35 + 15, localization->GetSkillDescriptionNormal(uPlayerSkillType), // changed from 5 to 15 to add space after ':'
+            localization->GetString(433), v35 + 3, v35 + 15, localization->GetSkillDescriptionExpert(uPlayerSkillType),
+            localization->GetString(432), v35 + 3, v35 + 15, localization->GetSkillDescriptionMaster(uPlayerSkillType),
+            localization->GetString(96), v35 + 3, v35 + 15, localization->GetSkillDescriptionGrand(uPlayerSkillType)
         );
     }
     else
@@ -1699,7 +1701,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
 
 int no_rightlick_in_inventory = false; // 0050CDCC
 //----- (00416196) --------------------------------------------------------
-void Inventory_ItemPopupAndAlchemy()
+void Inventory_ItemPopupAndAlchemy() // needs cleaning
 {
     int potion1_id; // edx@25
     unsigned int potion2_id; // edi@25
@@ -1715,33 +1717,105 @@ void Inventory_ItemPopupAndAlchemy()
 
 	signed int inventoryXCoord; // ecx@2
 	int inventoryYCoord; // eax@2
-	int invMatrixIndex; // eax@2
+	
 	unsigned int pY; // [sp+3Ch] [bp-Ch]@2
 	unsigned int pX;
     //Point cursor = pMouse->GetCursorPos();
     
 	ItemGen *item = nullptr;
 
+
+
+	int mousex = pMouse->uMouseClickX; // condense
+	int mousey = pMouse->uMouseClickY; // condense
+
+	static int RingsX[6] = { 0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248 };
+	static int RingsY[6] = { 0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA };
+
+	static int glovex = 586;
+	static int glovey = 88;
+
+	static int amuletx = 493;
+	static int amulety = 91;
+
+	int slot = 32;
+	int pos = -1;
+
 	
 
 	pMouse->GetClickPos(&pX, &pY);
 	inventoryYCoord = (pY - 17) / 32;
 	inventoryXCoord = (pX - 14) / 32;
-	invMatrixIndex = inventoryXCoord + ( 14 * inventoryYCoord); //INVETORYSLOTSWIDTH
+	int invMatrixIndex = inventoryXCoord + ( 14 * inventoryYCoord); //INVETORYSLOTSWIDTH
 
 
 	if (pX <= 13 || pX >= 462)//items out of inventory(вещи вне инвентаря)  this is for player ragdoll items??
 	{
 
-		int item_pid = (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1;
-					//zbuffer still used for paperdolls
 
-		if (item_pid == -1)
+		// popup checks if ringscreen up here
+		
+		if (!ringscreenactive()) { // rings not displayd
+
+			int item_pid = (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] & 0xFFFF) - 1;
+			//zbuffer still used for paperdolls
+
+			if (item_pid == -1)
+				return;
+
+			item = &pPlayers[uActiveCharacter]->pInventoryItemList[item_pid];
+			GameUI_DrawItemInfo(item);
 			return;
 
-		item = &pPlayers[uActiveCharacter]->pInventoryItemList[item_pid];
-		GameUI_DrawItemInfo(item);
-		return;
+		}
+		else { // rings displayed
+
+			if (mousex < 490 || mousex > 618)
+				return;
+
+			if (mousey < 88 || mousey > 282)
+				return;
+
+			if (mousex >= amuletx && mousex <= (amuletx + slot) && mousey >= amulety && mousey <= (amulety + 2 * slot)) {
+				//amulet
+				//pitem = pPlayers[uActiveCharacter]->GetAmuletItem(); //9
+				pos = 9;
+			}
+
+			if (mousex >= glovex && mousex <= (glovex + slot) && mousey >= glovey && mousey <= (glovey + 2 * slot)) {
+				//glove
+				//pitem = pPlayers[uActiveCharacter]->GetGloveItem(); //7
+				pos = 7;
+			}
+
+			for (int i = 0; i < 6; ++i) {
+				if (mousex >= RingsX[i] && mousex <= (RingsX[i] + slot) && mousey >= RingsY[i] && mousey <= (RingsY[i] + slot)) {
+					//ring
+					// pitem = pPlayers[uActiveCharacter]->GetNthRingItem(i); //10+i
+					pos = 10 + i;
+				}
+			}
+
+			if (pos != -1)
+				item = pPlayers[uActiveCharacter]->GetNthEquippedIndexItem(pos);
+
+			if (!item)
+				return;
+
+
+
+
+
+
+			GameUI_DrawItemInfo(item);
+			
+			return;
+		
+		}
+
+
+
+		
 	}
 
 
@@ -1750,7 +1824,7 @@ void Inventory_ItemPopupAndAlchemy()
 	//limits check ?
 	//if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT && inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
 	
-	item = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(&invMatrixIndex);
+	item = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invMatrixIndex);
 
 	if (!item) { // no item
 		return;
@@ -1782,8 +1856,8 @@ void Inventory_ItemPopupAndAlchemy()
         return;
     }
 
-    int alchemy_skill_points = (int8_t)pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY) & 0x3F;
-    int alchemy_skill_level = SkillToMastery(pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY));
+    int alchemy_skill_points = pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY);
+    int alchemy_skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
 
     // for potion bottle(простая бутылка)
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE)
@@ -1841,6 +1915,7 @@ void Inventory_ItemPopupAndAlchemy()
         GameUI_DrawItemInfo(item);
         return;
     }
+
     // several potions(несколько зелий)
     else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING_POTION && pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT_POTION ||
         pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING_POTION)
@@ -1893,6 +1968,7 @@ void Inventory_ItemPopupAndAlchemy()
         GameUI_DrawItemInfo(item);
         return;
     }
+
     // use reagents(применение реагентов)
     if (pParty->pPickedItem.uItemID >= ITEM_REAGENT_WIDOWSWEEP_BERRIES && pParty->pPickedItem.uItemID <= ITEM_REAGENT_PHILOSOPHERS_STONE &&
         item->uItemID == ITEM_POTION_BOTTLE)
@@ -1943,6 +2019,7 @@ void Inventory_ItemPopupAndAlchemy()
         }
         return;
     }
+
     //potions mixing(смешивание двух зелий)
     if (pParty->pPickedItem.uItemID >= ITEM_POTION_CATALYST && pParty->pPickedItem.uItemID <= ITEM_POTION_REJUVENATION &&
         item->uItemID >= ITEM_POTION_CATALYST &&
@@ -1955,6 +2032,7 @@ void Inventory_ItemPopupAndAlchemy()
             potionID = 5;
         else
             potionID = pItemsTable->potion_data[potion2_id][potion1_id];
+
         damage_level = 0;
         if (alchemy_skill_points)
         {
@@ -1980,16 +2058,16 @@ void Inventory_ItemPopupAndAlchemy()
                 damage_level = 4;
         }
 
-		int item_pid = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invMatrixIndex);
-        int pOut_x = item_pid + 1;
-        for (uint i = 0; i < 126; ++i)
-        {
-            if (pPlayers[uActiveCharacter]->pInventoryMatrix[i] == pOut_x)
-            {
-                pOut_y = i;
-                break;
-            }
-        }
+		int item_pid = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invMatrixIndex);
+        //int pOut_x = item_pid + 1;
+        //for (uint i = 0; i < 126; ++i)
+        //{
+          //  if (pPlayers[uActiveCharacter]->pInventoryMatrix[i] == pOut_x)
+           // {
+            //    pOut_y = i;
+             //   break;
+            //}
+        //}
         if (!potionID)
         {
             GameUI_DrawItemInfo(item);
@@ -1998,7 +2076,7 @@ void Inventory_ItemPopupAndAlchemy()
 
         if (damage_level > 0)
         {
-            pPlayers[uActiveCharacter]->RemoveItemAtInventoryIndex(pOut_y);
+			pPlayers[uActiveCharacter]->RemoveItemAtInventoryIndex(invMatrixIndex);//pOut_y); ?? quickfix needs checking
 
             if (damage_level == 1)
             {
@@ -2007,17 +2085,17 @@ void Inventory_ItemPopupAndAlchemy()
             else if (damage_level == 2)
             {
                 pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 71 + 30, DMGT_FIRE);
-                pPlayers[uActiveCharacter]->ItemsEnchant(1);
+                pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(1); // break 1
             }
             else if (damage_level == 3)
             {
                 pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 201 + 50, DMGT_FIRE);
-                pPlayers[uActiveCharacter]->ItemsEnchant(5);
+                pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(5); // break 5
             }
             else if (damage_level >= 4)
             {
                 pPlayers[uActiveCharacter]->SetCondition(Condition_Eradicated, 0);
-                pPlayers[uActiveCharacter]->ItemsEnchant(0);
+                pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(0); // break everything
             }
 
             pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0, 0, 0);
@@ -2079,6 +2157,7 @@ void Inventory_ItemPopupAndAlchemy()
             return;
         }
     }
+
     GameUI_DrawItemInfo(item);
     return;
 }

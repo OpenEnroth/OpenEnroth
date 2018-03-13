@@ -22,7 +22,7 @@ struct GUIWindow_CharacterRecord : public GUIWindow
         void CharacterUI_SkillsTab_CreateButtons();
 };
 
-
+bool ringscreenactive();
 
 class Image;
 extern Image *ui_character_skills_background;

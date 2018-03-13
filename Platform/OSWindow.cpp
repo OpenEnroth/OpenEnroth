@@ -27,7 +27,7 @@ bool debug_information = true;   // toggle debug info / информация fps, положени
 bool show_picked_face = false;    // highlight picked face / выделить активный фейс
 bool draw_portals_loops = false;  // show portal frames / видны рамки порталов
 bool new_speed = true;            // debug turbo speed
-bool bSnow = true;
+bool bSnow = false;
 bool draw_terrain_dist_mist = false;//новая дальность отрисовки тайлов
 bool no_actors = false;           // remove all monsters / убрать всех монстров
 bool lights_flag = true;
@@ -109,7 +109,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
         case WM_KEYUP:
         {
             if (wparam == VK_CONTROL)
-                _507B98_ctrl_pressed = false;
+                _507B98_ctrl_pressed = false; // this gets stuck
             if (wparam == VK_SNAPSHOT)
                 render->SavePCXScreenshot();
 
@@ -259,7 +259,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
                 }
                 if (wparam == VK_CONTROL)
                 {
-                    _507B98_ctrl_pressed = true;
+                    _507B98_ctrl_pressed = true; // this gets stuck
                     return false;
                 }
                 if (wparam == VK_ESCAPE)
@@ -643,6 +643,7 @@ void *OSWindow::CreateDebugMenuPanel()
                     AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40040, L"Unconscious");
                     AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40030, L"Weak");
                     AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40073, L"Zombie");
+					AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40046, L"Good");
                 }
 
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40006, L"Set Food (20)");
@@ -859,7 +860,7 @@ bool OSWindow::OnOSMenu(int item_id)
 
         case 40059:
             for (uint i = 0; i < 4; ++i)
-                pParty->pPlayers[i].uSkillPoints = 50;
+                pParty->pPlayers[i].uSkillPoints += 50;
             break;
 
 		// learn all skills for class
@@ -1042,6 +1043,11 @@ bool OSWindow::OnOSMenu(int item_id)
         case 40044:  pPlayers[uActiveCharacter]->SetAfraid(pParty->GetPlayingTime());     break;
         case 40045:  pPlayers[uActiveCharacter]->SetParalyzed(pParty->GetPlayingTime());  break;
         case 40073:  pPlayers[uActiveCharacter]->SetZombie(pParty->GetPlayingTime());     break;
+		case 40046:  pPlayers[uActiveCharacter]->conditions_times.fill(0);
+						pPlayers[uActiveCharacter]->sHealth = pPlayers[uActiveCharacter]->GetMaxHealth();
+						pPlayers[uActiveCharacter]->sMana = pPlayers[uActiveCharacter]->GetMaxMana();
+						break;
+		//40046
 
         case 40062:
             pParty->alignment = PartyAlignment_Good;
@@ -1107,8 +1113,8 @@ bool OSWindow::OnOSMenu(int item_id)
         case 40104:  pODMRenderParams->far_clip = 0x2000;  break;
         case 40105:  change_seasons = true;  break;
         case 40106:  change_seasons = false;  break;
-        case 40107:  all_magic = true;  break;
-        case 40108:  all_magic = false;  break;
+        case 40107:  all_magic = true; 	break; // may need to close and reopen spellbook when changed??
+        case 40108:  all_magic = false;  break; // may need to close and reopen spellbook when changed??
         case 40109:  debug_information = true;  break;
         case 40110:  debug_information = false;  break;
         case 40111:  show_picked_face = true;  break;

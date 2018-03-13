@@ -416,7 +416,10 @@ bool DecodeAudioFrame(AVCodecContext *dec_ctx, AVPacket *avpacket, AVFrame *avfr
 
       bink_next_pts = avpacket->pts + /*dec_ctx->channels *  avframe->nb_samples; */
 
-  AVFrame frame;
+		AVFrame *frame; 
+		frame = av_frame_alloc(); // fixes overflow
+
+
   int first;
   int version_b;
   int frame_len;
@@ -501,7 +504,7 @@ bool DecodeAudioFrame(AVCodecContext *dec_ctx, AVPacket *avpacket, AVFrame *avfr
          if (sample_rate_half <= ff_wma_critical_freqs[num_bands - 1])
             break;
 
-       bands = (unsigned int *)(av_malloc((num_bands + 1) * sizeof(*bands)));
+       bands = (unsigned int *)(av_malloc((num_bands + 1) * sizeof(*bands))); //??
        if (!bands)
          return AVERROR(ENOMEM);
 
@@ -515,8 +518,9 @@ bool DecodeAudioFrame(AVCodecContext *dec_ctx, AVPacket *avpacket, AVFrame *avfr
 
        //ff_rdft_init(&trans.rdft, frame_len_bits, DFT_C2R);
 
-       avcodec_get_frame_defaults(&frame);
-       dec_ctx->coded_frame = &frame;
+	  
+       avcodec_get_frame_defaults(frame);
+       dec_ctx->coded_frame = frame;
     }
     break;
                 /*
@@ -591,10 +595,17 @@ bool DecodeAudioFrame(AVCodecContext *dec_ctx, AVPacket *avpacket, AVFrame *avfr
   }
 
   *out_num_audio_samples = dec_ctx->channels * avframe->nb_samples;
+
+  //2940 for 3d0
+
+//  *out_num_audio_samples = 2940;//1920; //2048 //128
+
   InterleaveAudioData(out_audio_data, dec_ctx->sample_fmt,
                       dec_ctx->channels, avframe->nb_samples, avframe->data);
   return true;
-}
+}  
+
+
 
 bool LoadAudioTrack(AVFormatContext *format_ctx, AVCodecContext *dec_ctx, int audio_stream_idx, MemoryStream *out_audio_stream, int *out_num_audio_frames, int *out_num_audio_samples)
 {
@@ -1099,6 +1110,7 @@ void MPlayer::OpenFullscreenMovie(const char *pFilename, unsigned int bLoop/*, i
 	bFirstFrame = false;
 	this->bLoopPlaying = bLoop;
 	LoadMovie(pFilename);
+	time_video_begin = OS_GetTime();
 	return;
   }
 }
@@ -1126,88 +1138,73 @@ void MPlayer::OpenHouseMovie(const char *pMovieName, unsigned int a3_1)
 }
 
 //----- (004BE70E) --------------------------------------------------------
-void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSizeFlag, int a4*/) // ?? blank
+void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSizeFlag, int a4*/) // ?? this is a mess - needs checking
 {
-  int v4; // ebp@1
-  /*
-  v4 = a2;
-  if ( dword_6BE364_game_settings_1 & (GAME_SETTINGS_NO_HOUSE_ANIM | GAME_SETTINGS_NO_INTRO) ||
-	   bNoVideo)
-    return;
+  
+	//choppy sounds still??
 
-    if ( a2 == 2 )
-      v4 = 0;
-
-    OS_ShowCursor(false);
+	//return; // debug
+ 
+	OS_ShowCursor(false); 
     OpenFullscreenMovie(pMovieName, 0);
     bPlaying_Movie = 1;
-    field_44 = v4;
-    render->ClearTarget(0);
+
     current_screen_type = SCREEN_VIDEO;
 
-    auto hwnd = pMediaPlayer->window->GetApiHandle();
+	logger->Warning(L"full screen movie");
+	loop_current_file = false;
 
-    RECT rc_client;
-    GetClientRect(hwnd, &rc_client);
-    int client_width = rc_client.right - rc_client.left,
-        client_height = rc_client.bottom - rc_client.top;
+	auto image = new int[current_movie_width * current_movie_height * 4 ];
+	//auto image_array = new int[640*480]; // stack overfow tto large so dynamic
 
-    HDC     dc = GetDC(hwnd);
-    HDC     back_dc = CreateCompatibleDC(dc);
-	HBITMAP back_bmp = CreateCompatibleBitmap(dc, client_width, client_height);
-	auto    frame_buffer = new char[client_width * client_height * 4];
-    SelectObject(back_dc, back_bmp);
+	while (true) {
 
-	DWORD t = OS_GetTime();
+		if (pMediaPlayer->bStopBeforeSchedule)
+			break;
 
-	bPlaying_Movie = true;
+		render->BeginScene();
+		//pMouse->DrawCursorToTarget();
 
-    while (true)
-    {
-      if (pMediaPlayer->bStopBeforeSchedule)
-        break;
+		OS_PeekMessageLoop();
 
-      OS_PeekMessageLoop();
+		double dt = (OS_GetTime() - time_video_begin) / 1000.0;
+		//dt = 1.0/15.0;
+		time_video_begin = OS_GetTime();
+		
+		pMovie_Track->GetNextFrame(dt, image);
 
-      double dt = (OS_GetTime() - t) / 1000.0; 
-      t = GetTickCount();
+		if (!bPlaying_Movie)
+			break;
+				
+		if (image)
+		{
+			//memcpy(image_array, image, sizeof(image_array));
+			for (unsigned int y = 0; y < 480; ++y)//координаты местоположения видеоролика
+			{
+				for (unsigned int x = 0; x < 640; ++x)
+				{
+					auto p = (unsigned __int32 *)render->pTargetSurface + (x + y * render->uTargetSurfacePitch);
+					//*p = image_array[((x ) + ((y )*640))];
+					*p = image[x + (y * 640)];
+				}
+			}
+			//delete[] image;
+		}
 
-      pMovie_Track->GetNextFrame(dt, frame_buffer);	
+		//if (pMediaPlayer->bStopBeforeSchedule == 1)
+		//	Sleep(1000);
 
-      if (!bPlaying_Movie)
-        break;
+		render->EndScene();
+		
+			render->Present();
+		
+	}
 
-      if (frame_buffer)
-      {
-        // draw to hwnd
-        BITMAPINFO bmi;
-        bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        bmi.bmiHeader.biWidth = client_width;
-        bmi.bmiHeader.biHeight = -client_height;
-        bmi.bmiHeader.biPlanes = 1;
-        bmi.bmiHeader.biBitCount = 32;
-        bmi.bmiHeader.biCompression = BI_RGB;
-        bmi.bmiHeader.biSizeImage = 0;
-        bmi.bmiHeader.biXPelsPerMeter = 0;
-        bmi.bmiHeader.biYPelsPerMeter = 0;
-        bmi.bmiHeader.biClrUsed = 0;
-        bmi.bmiHeader.biClrImportant = 0;
-        GetDIBits(back_dc, back_bmp, 0, client_height, 0, &bmi, DIB_RGB_COLORS);
-        SetDIBits(back_dc, back_bmp, 0, client_height, frame_buffer, &bmi, DIB_RGB_COLORS);
-        BitBlt(dc, 0, 0, client_width, client_height, back_dc, 0, 0, SRCCOPY);
-      }
 
-      MainMenu_EventLoop();  
 
-      if (pMediaPlayer->bStopBeforeSchedule == 1)
-        Sleep(1000); 
-    }
-	delete [] frame_buffer;
-	DeleteObject(back_bmp);
-	DeleteObject(back_dc);
-	ReleaseDC(hwnd, dc);
+	delete[] image;
+	//delete[] image_array;
 
-    pMediaPlayer->Unload();
 
     //if (a4 == 1)
       current_screen_type = SCREEN_GAME;
@@ -1218,7 +1215,7 @@ void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSi
 
     //if ( current_screen_type == SCREEN_VIDEO )
     //  current_screen_type = SCREEN_GAME;
-    */
+    
 }
 
 void MPlayer::HouseMovieLoop()
@@ -1273,6 +1270,7 @@ void MPlayer::HouseMovieLoop()
         render->EndScene();
 		pMouse->ReadCursorWithItem();
 		render->EndScene();
+		
 	}
 }
  
@@ -1338,6 +1336,43 @@ void MPlayer::LoadMovie(const char *pFilename)
     pMovie_Track = pMediaPlayer->LoadMovieFromLOD(hVidFile, &readFunction, &seekFunction, window->GetWidth(), window->GetHeight());
 }
 
+
+
+
+
+//void ShowLogoVideo()
+//{
+//	pMediaPlayer->bStopBeforeSchedule = false;
+//
+//	//  pMediaPlayer->pResetflag = 0;
+//	bGameoverLoop = 1;
+//	if (!bNoVideo)
+//	{
+//		render->PresentBlackScreen();
+//		pMediaPlayer->PlayFullscreenMovie(MOVIE_3DOLogo, true);
+//		if (!pMediaPlayer->bStopBeforeSchedule)
+//		{
+//			pMediaPlayer->PlayFullscreenMovie(MOVIE_NWCLogo, true);
+//			if (!pMediaPlayer->bStopBeforeSchedule)
+//			{
+//				if (!pMediaPlayer->bStopBeforeSchedule)
+//				{
+//					pMediaPlayer->PlayFullscreenMovie(MOVIE_JVC, true);
+//					if (!pMediaPlayer->bStopBeforeSchedule)
+//					{
+//						pMediaPlayer->PlayFullscreenMovie(MOVIE_Intro, true);
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	bGameoverLoop = 0;
+//}
+
+
+
+
 //----- (004BF794) --------------------------------------------------------
 void MPlayer::ShowMM7IntroVideo_and_LoadingScreen()
 {
@@ -1347,7 +1382,9 @@ void MPlayer::ShowMM7IntroVideo_and_LoadingScreen()
   if (!bNoVideo)
   {
     render->PresentBlackScreen();
-    if ( !pMediaPlayer->bStopBeforeSchedule )
+	if (!pMediaPlayer->bStopBeforeSchedule)
+		PlayFullscreenMovie(MOVIE_3DOLogo, true);
+	PlayFullscreenMovie(MOVIE_NWCLogo, true);
       PlayFullscreenMovie(MOVIE_Intro, true);
   }
 
@@ -1518,7 +1555,9 @@ MPlayer::~MPlayer()
 
 void PlayAudio(const wchar_t * pFilename)
 {
-  pAudio_Track = pMediaPlayer->LoadTrack(pFilename);
+
+	pAudio_Track = pMediaPlayer->LoadTrack(pFilename);
+
   pAudio_Track->Play();
   delete pAudio_Track;
   logger->Warning(L"delete dynamic memory for pAudio_Track\n");

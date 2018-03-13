@@ -51,7 +51,7 @@ UIAnimation *pUIAnim_Gold = &_uianim._pUIAnim_Gold;
 UIAnimation *pUIAnum_Torchlight = &_uianim._pUIAnum_Torchlight;
 UIAnimation *pUIAnim_WizardEye = &_uianim._pUIAnim_WizardEye;
 
-std::array<struct UIAnimation *, 4> pUIAnims =
+std::array<class UIAnimation *, 4> pUIAnims = //was struct byt defined as class
 {
     &_uianim._pUIAnim_Food,
     &_uianim._pUIAnim_Gold,
@@ -175,12 +175,31 @@ void Party::SetHoldingItem(ItemGen *pItem) {
 	pMouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
 }
 
+
+int Party::GetFirstCanAct() { // added to fix some nzi problems entering shops
+
+	for (int i = 0; i < 4; ++i) {
+		if (this->pPlayers[i].CanAct())
+			return i+1;
+	}
+
+	__debugbreak(); // should not get here
+	return 1;
+}
+
+
 //----- (0049370F) --------------------------------------------------------
 int Party::GetNextActiveCharacter()
 {
   int v2; // eax@4
   signed int v8; // esi@23
   int v12; // [sp+Ch] [bp-4h]@1
+
+
+
+  if (this->pPlayers[uActiveCharacter-1].CanAct() && this->pPlayers[uActiveCharacter-1].uTimeToRecovery < 1) // avoid switching away from char that can act
+	  return uActiveCharacter;
+
 
   v12 = 0;
   if ( pParty->bTurnBasedModeOn == 1 )
@@ -193,6 +212,7 @@ int Party::GetNextActiveCharacter()
 
   if ( playerAlreadyPicked[0] && playerAlreadyPicked[1] && playerAlreadyPicked[2] && playerAlreadyPicked[3] )
     playerAlreadyPicked.fill(false);
+
   for (int i = 0; i < 4; i++)
   {
     if ( !this->pPlayers[i].CanAct() || this->pPlayers[i].uTimeToRecovery > 0)
@@ -219,6 +239,10 @@ int Party::GetNextActiveCharacter()
   }
   return v12;
 }
+
+
+
+
 
 
 //----- (00493244) --------------------------------------------------------
@@ -862,7 +886,7 @@ void Rest(unsigned int uMinsToRest) // this is passed mins not hours
 }
 
 //----- (004B1BDB) --------------------------------------------------------
-void RestAndHeal(__int64 minutes)
+void RestAndHeal(int minutes)
 {
     pParty->GetPlayingTime().AddMinutes(minutes);
 
@@ -947,6 +971,7 @@ void Party::GivePartyExp(unsigned int pEXPNum)
 {
     signed int pActivePlayerCount; // ecx@1
     int pLearningPercent; // eax@13
+	int playermodexp;
 
     if (pEXPNum > 0)
     {
@@ -973,8 +998,8 @@ void Party::GivePartyExp(unsigned int pEXPNum)
                     !pParty->pPlayers[i].conditions_times[Condition_Eradicated])
                 {
                     pLearningPercent = pParty->pPlayers[i].GetLearningPercent();
-                    pEXPNum = pEXPNum + pEXPNum * pLearningPercent / 100;
-                    pParty->pPlayers[i].uExperience += pEXPNum;
+					playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
+                    pParty->pPlayers[i].uExperience += playermodexp;
                     if (pParty->pPlayers[i].uExperience > 4000000000i64)
                     {
                         pParty->pPlayers[i].uExperience = 0;

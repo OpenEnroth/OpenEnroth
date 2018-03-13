@@ -1018,7 +1018,7 @@ void OutdoorLocation::Release()
 bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_interval_days, int *thisa)
 {
     FILE *pFile; // eax@50
-    unsigned __int16 v62; // ax@65
+//    unsigned __int16 v62; // ax@65
     int v108; // [sp+0h] [bp-B80h]@10
     char Src[968]; // [sp+10h] [bp-B70h]@110
     char Dst[968]; // [sp+3D8h] [bp-7A8h]@50
@@ -1938,12 +1938,12 @@ void OutdoorLocation::PrepareActorsDrawList()
     signed int v12; // eax@16
     SpriteFrame *v14; // eax@24
     SpriteFrame *v15; // ebx@25
-    int v22; // ecx@41
-    int v23; // ST5C_4@43
+//    int v22; // ecx@41
+//    int v23; // ST5C_4@43
     int v41; // [sp+24h] [bp-3Ch]@11
-    int v48; // [sp+30h] [bp-30h]@41
+//    int v48; // [sp+30h] [bp-30h]@41
     signed int v49; // [sp+34h] [bp-2Ch]@5
-    int v51; // [sp+34h] [bp-2Ch]@41
+//    int v51; // [sp+34h] [bp-2Ch]@41
     int y; // [sp+40h] [bp-20h]@5
     int x; // [sp+44h] [bp-1Ch]@5
     __int16 v62; // [sp+5Ch] [bp-4h]@25

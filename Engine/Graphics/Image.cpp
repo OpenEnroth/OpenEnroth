@@ -310,7 +310,7 @@ int TextureFrameTable::FromFileTxt(const char *Args)
     FILE *v7; // ST0C_4@12
     char *i; // eax@12
     signed int v9; // esi@15
-    int v10; // eax@17
+//    int v10; // eax@17
     int v11; // edx@22
     int v12; // ecx@23
     int v13; // eax@24
@@ -929,7 +929,7 @@ const void *Image::GetPixels(IMAGE_FORMAT format)
 bool Image::Release()
 {
 
-	assets->ReleaseImage(this->loader->GetResourceName());
+	assets->ReleaseImage(this->loader->GetResourceName()); // exception this nullptr
 	
 	if (initialized)
     {

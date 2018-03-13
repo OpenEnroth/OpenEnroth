@@ -903,7 +903,7 @@ float flt_6BE3AC_debug_recmod1_x_1_6;
 std::array<char, 20> byte_6BE3B0; // idb
 char bUnderwater = false;
 char bNoNPCHiring = false;
-unsigned int bNoVideo = false;
+unsigned int bNoVideo = true;
 bool bNoIntro = false;
 bool bNoLogo = false;
 bool bNoCD = false;

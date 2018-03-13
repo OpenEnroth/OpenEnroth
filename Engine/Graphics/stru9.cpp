@@ -255,7 +255,7 @@ bool stru9::_498774(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2, st
   RenderVertexSoft *v6; // ecx@5
   int result; // eax@5
   double v8; // st7@5
-  __int16 v9; // fps@5
+//  __int16 v9; // fps@5
   double v10; // st7@6
   double v11; // st6@8
   double v12; // st6@18

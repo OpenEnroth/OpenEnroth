@@ -530,7 +530,7 @@ bool ItemsTable::IsMaterialNonCommon(ItemGen *pItem)
 //----- (00453B3C) --------------------------------------------------------
 void ItemsTable::LoadPotions()
 {
-    char Text[90];
+//    char Text[90];
     char* test_string;
     unsigned int uRow;
     unsigned int uColumn;
@@ -584,7 +584,7 @@ void ItemsTable::LoadPotions()
 //----- (00453CE5) --------------------------------------------------------
 void ItemsTable::LoadPotionNotes()
 {
-  char Text[90]; 
+//  char Text[90]; 
   char* test_string;
   unsigned int uRow;
   unsigned int uColumn;
@@ -1498,7 +1498,11 @@ bool ItemGen::IsRegularEnchanmentForAttribute( CHARACTER_ATTRIBUTE_TYPE attrToGe
 
 ITEM_EQUIP_TYPE ItemGen::GetItemEquipType()
 {
-  return pItemsTable->pItems[this->uItemID].uEquipType;
+	// to avoid nzi - is this safe??
+	if (this->uItemID == 0)
+		return EQUIP_NONE;
+	else
+		return pItemsTable->pItems[this->uItemID].uEquipType;
 }
 
 unsigned char ItemGen::GetPlayerSkillType()

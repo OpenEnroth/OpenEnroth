@@ -120,35 +120,7 @@ bool FileExists(const char *fname)
     return access(fname, 0) != -1;
 }
 
-void ShowLogoVideo()
-{
-    pMediaPlayer->bStopBeforeSchedule = false;
 
-    //  pMediaPlayer->pResetflag = 0;
-    bGameoverLoop = 1;
-    if (!bNoVideo)
-    {
-        render->PresentBlackScreen();
-        pMediaPlayer->PlayFullscreenMovie(MOVIE_3DOLogo, true);
-        if (!pMediaPlayer->bStopBeforeSchedule)
-        {
-            pMediaPlayer->PlayFullscreenMovie(MOVIE_NWCLogo, true);
-            if (!pMediaPlayer->bStopBeforeSchedule)
-            {
-                if (!pMediaPlayer->bStopBeforeSchedule)
-                {
-                    pMediaPlayer->PlayFullscreenMovie(MOVIE_JVC, true);
-                    if (!pMediaPlayer->bStopBeforeSchedule)
-                    {
-                            pMediaPlayer->PlayFullscreenMovie(MOVIE_Intro, true);
-                    }
-                }
-            }
-        }
-    }
-
-    bGameoverLoop = 0;
-}
 
 //----- (00466C40) --------------------------------------------------------
 const wchar_t *MENU_STATE_to_string(MENU_STATE m)
@@ -391,7 +363,7 @@ void Engine::Draw()
             int floor_level = BLV_GetFloorLevel(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + 40, sector_id, &uFaceID);
             floor_level_str = StringPrintf("BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         }
-        else
+        else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         {
             int on_water, _a6;
             int floor_level = ODM_GetFloorLevel(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z, 0, &on_water, &_a6, false);
@@ -1505,8 +1477,8 @@ int max_flight_height = 4000;    //maximum altitude
 bool use_MMT = false;
 bool use_music_folder = false;
 bool for_refactoring = false;
-bool all_spells = true;
-bool bNoMargareth = false;
+bool all_spells = false; // is this needed with all_magic as well??
+bool bNoMargareth = true;
 
 void ParseCommandLine(const wchar_t *cmd)
 {
@@ -1712,7 +1684,8 @@ bool MM_Main(const wchar_t *pCmdLine)
 
     GUIWindow::InitializeGUI();
 
-    ShowLogoVideo();
+	//ShowLogoVideo(); old
+	pMediaPlayer->ShowMM7IntroVideo_and_LoadingScreen(); //new
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
@@ -1737,7 +1710,7 @@ bool MM_Main(const wchar_t *pCmdLine)
 //----- (00466082) --------------------------------------------------------
 void MM6_Initialize()
 {
-    size_t v2; // eax@31
+//    size_t v2; // eax@31
     size_t v3; // ebx@32
     size_t v4; // edi@36
     char pDefaultGroundTexture[16]; // [sp+FCh] [bp-8Ch]@32
@@ -2314,7 +2287,7 @@ void back_to_game()
 //----- (00494035) --------------------------------------------------------
 void _494035_timed_effects__water_walking_damage__etc()
 {
-    unsigned int v4; // edi@1
+//    unsigned int v4; // edi@1
     int v24; // ecx@60
     int v26; // ecx@64
     int v28; // ecx@68
@@ -2942,7 +2915,7 @@ void sub_491E3A()
     signed int v1; // esi@3
     unsigned int v3; // eax@7
     unsigned int v4; // edx@8
-    int v6; // edi@17
+//    int v6; // edi@17
 
     //__debugbreak();//Ritor1
     for (uint pl = 0; pl < 4; pl++)

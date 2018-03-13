@@ -118,10 +118,12 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin, BuildingType building = Buildin
 
 void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
 
+	draw_leather();
+	CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+
 	if (HouseUI_CheckIfPlayerCanInteract()) {
 
-		draw_leather();
-		CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+		
 		GameUI_StatusBar_DrawImmediate(localization->GetString(199), 0);
 
 		Point mouse = pMouse->GetCursorPos();
@@ -130,7 +132,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
 		if (mouse.x <= 13 || mouse.x >= 462)
 			return;
 
-		int pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invindex);
+		int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
 		
 		if (pItemID) {
 			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
@@ -144,10 +146,12 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
 
 void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 
+	draw_leather();
+	CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+	
 	if (HouseUI_CheckIfPlayerCanInteract()) {
 
-		draw_leather();
-		CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+		
 		GameUI_StatusBar_DrawImmediate(localization->GetString(197), 0);
 		
 		Point mouse = pMouse->GetCursorPos();
@@ -156,14 +160,14 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 		if (mouse.x <= 13 || mouse.x >= 462)
 			return;
 
-		int pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invindex);
+		int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
 		
 		if (pItemID) {
 			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
 
 			String str;
 			if (!item->IsIdentified()) {
-				int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, BuildingType_WeaponShop, (int)window_SpeakInHouse->ptr_1C, 4);
+				int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, building, (int)window_SpeakInHouse->ptr_1C, 4);
 				str = BuildDialogueString(pMerchantsIdentifyPhrases[phrases_id], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 4 );
 			}
 			else {
@@ -178,10 +182,12 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 
 void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
 
-	if (!HouseUI_CheckIfPlayerCanInteract()) {
+	draw_leather();
+	CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+	
+	if (HouseUI_CheckIfPlayerCanInteract()) {
 		
-		draw_leather();
-		CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+		
 		GameUI_StatusBar_DrawImmediate(localization->GetString(198), 0);
 		
 		Point mouse = pMouse->GetCursorPos();
@@ -190,9 +196,12 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
 		if (mouse.x <= 13 || mouse.x >= 462)
 			return;
 
-		int pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invindex);
+		int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
 
-		if (pItemID || (pPlayers[uActiveCharacter]->pOwnItems[pItemID - 1].uAttributes & 2) ) {
+		if (pItemID == 0)
+			return;
+
+		if ( (pPlayers[uActiveCharacter]->pOwnItems[pItemID - 1].uAttributes & ITEM_BROKEN ) ) {
 			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
 			int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, building, (int)window_SpeakInHouse->ptr_1C, 5);
 			String str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 5);
@@ -895,7 +904,7 @@ void  UIShop_Buy_Identify_Repair() {
 		case HOUSE_DIALOGUE_SHOP_SELL: {
 			
 			invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&invindex), !pItemID) )
+			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex), !pItemID) )
 				return;
 
 			if (pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1].MerchandiseTest((int)window_SpeakInHouse->ptr_1C)) {
@@ -916,7 +925,7 @@ void  UIShop_Buy_Identify_Repair() {
 		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
 
 			invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&invindex), !pItemID))
+			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex), !pItemID) )
 				return;
        
 			uPriceItemService = pPlayers[uActiveCharacter]->GetPriceIdentification(p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier);
@@ -950,7 +959,7 @@ void  UIShop_Buy_Identify_Repair() {
 		case HOUSE_DIALOGUE_SHOP_REPAIR: {
 
 			invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex((int *)&invindex), !pItemID))
+			if (mouse.x <= 13 || mouse.x >= 462 || (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex), !pItemID)) 
 				return;
 
 			item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
@@ -1115,7 +1124,7 @@ void  UIShop_Buy_Identify_Repair() {
             uNumSeconds = pPlayers[uActiveCharacter]->StealFromShop(bought_item, a3, party_reputation, 0, &a6);
             if (!uNumSeconds)
             {
-                sub_4B1447_party_fine((int)window_SpeakInHouse->ptr_1C, 0, a6);
+                sub_4B1447_party_fine((int)window_SpeakInHouse->ptr_1C, 0, a6); // caught stealing no item
                 return;
             }
         }
@@ -1125,12 +1134,13 @@ void  UIShop_Buy_Identify_Repair() {
             GameUI_StatusBar_OnEvent(localization->GetString(155));// "You don't have enough gold"
             return;
         }
+
         v39 = pPlayers[uActiveCharacter]->AddItem(-1, bought_item->uItemID);
         if (v39)
         {
             bought_item->SetIdentified();
             memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[v39 - 1], bought_item, sizeof(ItemGen));
-            if (uNumSeconds != 0)
+            if (uNumSeconds != 0) // stolen
             {
                 pPlayers[uActiveCharacter]->pInventoryItemList[v39 - 1].SetStolen();
                 sub_4B1447_party_fine((int)window_SpeakInHouse->ptr_1C, uNumSeconds, a6);
@@ -1344,10 +1354,10 @@ void  ShowPopupShopItem() {
 
             invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
             if (mouse.x <= 13 || mouse.x >= 462
-                || !pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invindex))
+                || !pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex)) 
                 return;
 
-            GameUI_DrawItemInfo(&pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(&invindex) - 1]);
+            GameUI_DrawItemInfo( pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invindex) ); 
             return;
         }
     }
@@ -1512,7 +1522,7 @@ void  GetHouseGoodbyeSpeech()
                 }
             }
         }
-        else
+        else // caught stealing
         {
             if (!_A750D8_player_speech_timer)
             {
@@ -1535,12 +1545,12 @@ void  GetHouseGoodbyeSpeech()
 }
 
 //----- (004B1447) --------------------------------------------------------
-void sub_4B1447_party_fine(int shopId, int stealingResult, int fineToAdd)
+void sub_4B1447_party_fine(int shopId, int stealingResult, int fineToAdd) // not working properly??
 {
 	signed int v3; // esi@1
 	DDM_DLV_Header *v7; // eax@14
 
-	if (stealingResult == 0 || stealingResult == 1)
+	if (stealingResult == 0 || stealingResult == 1) // got caught
 	{
 		if (pParty->uFine < 4000000)
 		{
@@ -1563,10 +1573,16 @@ void sub_4B1447_party_fine(int shopId, int stealingResult, int fineToAdd)
 			v3 = 2;
 		else
 			v3 = 1;
+
+		pParty->PartyTimes._shop_ban_times[shopId] = pParty->GetPlayingTime() + GameTime::FromDays(1); // only ban when caught
+
 	}
 	else
 		v3 = 2;
-	pParty->PartyTimes._shop_ban_times[shopId] = pParty->GetPlayingTime() + GameTime::FromDays(1);
+
+	
+
+	
 	pParty->InTheShopFlags[shopId] = 1;
 	v7 = &pOutdoor->ddm;
 	if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)

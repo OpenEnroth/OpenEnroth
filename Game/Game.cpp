@@ -134,8 +134,8 @@ void Game_CloseTargetedSpellWindow()
             pMouse->SetCursorImage("MICON2");
         else
         {
-            pGUIWindow_CastTargetedSpell->Release();
-            pGUIWindow_CastTargetedSpell = nullptr;
+            pGUIWindow_CastTargetedSpell->Release(); //test to fix enchanting issue
+            pGUIWindow_CastTargetedSpell = nullptr; //test to fix enchanting issue
             pMouse->SetCursorImage("MICON1");
             game_ui_status_bar_event_string_time_left = 0;
             _50C9A0_IsEnchantingInProgress = 0;
@@ -147,9 +147,12 @@ void Game_CloseTargetedSpellWindow()
 void Game_OnEscape()
 {
     Game_CloseTargetedSpellWindow();
-    if ((signed int)uActiveCharacter < 1 || (signed int)uActiveCharacter > 4)
-        uActiveCharacter = pParty->GetNextActiveCharacter();
-    pGUIWindow_CurrentMenu->Release();
+
+   // if ((signed int)uActiveCharacter < 1 || (signed int)uActiveCharacter > 4)
+	
+        uActiveCharacter = pParty->GetNextActiveCharacter(); // always check this - could leave shops with characters who couldnt act sctive
+
+    pGUIWindow_CurrentMenu->Release(); // check this
     if (pGUIWindow_CurrentMenu == window_SpeakInHouse)
         window_SpeakInHouse = 0;
     pGUIWindow_CurrentMenu = 0;
@@ -160,25 +163,26 @@ void Game_OnEscape()
 
 
 
+
 //----- (004304E7) --------------------------------------------------------
 void Game_EventLoop()
 {
     unsigned int v2; // edx@7
-    Actor *pActor; // ecx@13
-    int v4; // ecx@18
-    unsigned int v10; // ecx@73
-    int v14; // eax@98
-    int v18; // eax@106
-    float v19; // ST64_4@121
-    float v21; // ST64_4@126
-    float v22; // ST64_4@127
-    unsigned int v24; // ecx@149
+//    Actor *pActor; // ecx@13
+//    int v4; // ecx@18
+//    unsigned int v10; // ecx@73
+//    int v14; // eax@98
+//    int v18; // eax@106
+//    float v19; // ST64_4@121
+//    float v21; // ST64_4@126
+//    float v22; // ST64_4@127
+//    unsigned int v24; // ecx@149
     GUIWindow *pWindow2; // ecx@248
-    bool pKeyBindingFlag; // eax@269
-    unsigned int v33; // eax@277
+//    bool pKeyBindingFlag; // eax@269
+//    unsigned int v33; // eax@277
     int v37; // eax@341
     int v38; // eax@358
-    short v39; // ax@365
+//    short v39; // ax@365
     char *v41; // eax@380
     int v42; // eax@396
     signed int v44; // eax@398
@@ -235,15 +239,15 @@ void Game_EventLoop()
     unsigned int v115; // eax@764
     unsigned int v118; // eax@785
     unsigned int v119; // ecx@786
-    unsigned int v121; // [sp-28h] [bp-624h]@711
-    unsigned int v123; // [sp-24h] [bp-620h]@711
-    unsigned int v125; // [sp-20h] [bp-61Ch]@711
+//    unsigned int v121; // [sp-28h] [bp-624h]@711
+//    unsigned int v123; // [sp-24h] [bp-620h]@711
+//    unsigned int v125; // [sp-20h] [bp-61Ch]@711
     int v127; // [sp-1Ch] [bp-618h]@107
-    unsigned int v128; // [sp-1Ch] [bp-618h]@711
+//    unsigned int v128; // [sp-1Ch] [bp-618h]@711
     GUIButton *pButton2; // [sp-4h] [bp-600h]@59
-    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
+//    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
     char *v173; // [sp+0h] [bp-5FCh]@444
-    signed int thisb; // [sp+14h] [bp-5E8h]@272
+//    signed int thisb; // [sp+14h] [bp-5E8h]@272
     Player *pPlayer7; // [sp+14h] [bp-5E8h]@373
     Player *pPlayer8; // [sp+14h] [bp-5E8h]@377
     char *pMapName; // [sp+14h] [bp-5E8h]@445
@@ -257,7 +261,7 @@ void Game_EventLoop()
     int uAction; // [sp+1Ch] [bp-5E0h]@18
     NPCData *pNPCData4; // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds; // [sp+24h] [bp-5D8h]@18
-    char v197; // [sp+2Bh] [bp-5D1h]@101
+//    char v197; // [sp+2Bh] [bp-5D1h]@101
     enum UIMessageType uMessage; // [sp+2Ch] [bp-5D0h]@7
     unsigned int v199; // [sp+30h] [bp-5CCh]@7
     char *v200; // [sp+34h] [bp-5C8h]@518
@@ -962,6 +966,7 @@ void Game_EventLoop()
                                     pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 814, 0, -1, 0, 0, 0, 0);
                                     pMediaPlayer->Unload();
                                     pGUIWindow_CurrentMenu = window_SpeakInHouse;
+
                                     Game_OnEscape();
                                     continue;
                                 case SCREEN_INPUT_BLV://click escape
@@ -2075,13 +2080,13 @@ void Game_EventLoop()
             }
 
             case UIMSG_SPellbook_ShowHightlightedSpellInfo:
-            {
-                if (!uActiveCharacter || (uNumSeconds = (unsigned int)pPlayers[uActiveCharacter],
-                    !*(char *)(uNumSeconds + 11 * *(char *)(uNumSeconds + 6734) + uMessageParam + 402)))
-                    continue;
-                if (sub_4637E0_is_there_popup_onscreen())
-                    dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
-                v98 = *(char *)(uNumSeconds + 6734);
+			{
+				if (!uActiveCharacter)//|| (uNumSeconds = (unsigned int)pPlayers[uActiveCharacter],!*(char *)(uNumSeconds + 11 * *(char *)(uNumSeconds + 6734) + uMessageParam + 402)))
+					continue; // this used to check if player had the spell activated - no longer rquired here ??
+
+				if (sub_4637E0_is_there_popup_onscreen())
+					dword_507B00_spell_info_to_draw_in_popup = uMessageParam + 1;
+				v98 = pPlayers[uActiveCharacter]->lastOpenedSpellbookPage;//  *(char *)(uNumSeconds + 6734);
                 if (quick_spell_at_page - 1 == uMessageParam)
                 {
                     GameUI_StatusBar_Set(localization->FormatString(485, pSpellStats->pInfos[uMessageParam + 11 * v98 + 1].pName));
@@ -2122,7 +2127,7 @@ void Game_EventLoop()
                 uAction = 0;
                 for (uint i = 0; i < 9; i++)
                 {
-                    if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i])
+                    if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i] || all_magic)
                     {
                         if (pPlayers[uActiveCharacter]->lastOpenedSpellbookPage == i)
                             uAction = skill_count;
@@ -2163,13 +2168,13 @@ void Game_EventLoop()
 
                 //  uNumSeconds = (unsigned int)pPlayers[uActiveCharacter];
                 Player* player = pPlayers[uActiveCharacter];
-                if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam])
+                if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam] || all_magic)
                     //if ( *(char *)(uNumSeconds + 11 * *(char *)(uNumSeconds + &lastOpenedSpellbookPage) + uMessageParam + 402) )
                 {
                     if (quick_spell_at_page - 1 == uMessageParam)
                     {
-                        pGUIWindow_CurrentMenu->Release();
-                        pEventTimer->Resume();
+                        pGUIWindow_CurrentMenu->Release(); //spellbook close
+						pEventTimer->Resume();
                         viewparams->bRedrawGameUI = 1;
                         current_screen_type = SCREEN_GAME;
                         v103 = quick_spell_at_page + 11 * player->lastOpenedSpellbookPage;
@@ -2688,13 +2693,14 @@ void Game_Loop()
         pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
 
 
-    extern bool all_spells;
+ /*   extern bool all_spells;
     if (all_spells)
     {
         for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 99; ++j)
                 pParty->pPlayers[i].spellbook.bHaveSpell[j] = true;
-    }
+   }
+   */
 
     while (2)
     {
@@ -2723,7 +2729,7 @@ void Game_Loop()
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
             {
                 OS_WaitMessage();
-                continue;
+                //continue;
             }
 
             pEngine->_44EEA7();
@@ -2836,11 +2842,14 @@ void Game_Loop()
                     pTurnEngine->End(true);
                     pParty->bTurnBasedModeOn = 0;
                 }
-                for (int i = 0; i < 4; ++i)
+                for (int i = 1; i < 5; ++i)
                 {
-                    memset(pParty->pPlayers[i].conditions_times.data(), 0, 0xA0u);//(pConditions, 0, 160)
-                    memset(pParty->pPlayers[i].pPlayerBuffs.data(), 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
-                    pParty->pPlayers[i].sHealth = 1;
+					pPlayers[i]->conditions_times.fill(0);
+					pPlayers[i]->pPlayerBuffs.fill(SpellBuff()); // ???
+
+					//memset(pParty->pPlayers[i].conditions_times.data(), 0, 0xA0u);//(pConditions, 0, 160)
+                    //memset(pParty->pPlayers[i].pPlayerBuffs.data(), 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
+                    pPlayers[i]->sHealth = 1;
                     uActiveCharacter = 1;
                 }
                 if (_449B57_test_bit(pParty->_quest_bits, PARTY_QUEST_FINISHED_EMERALD_ISLE))
@@ -2894,6 +2903,9 @@ void Game_Loop()
 
                 GameUI_StatusBar_OnEvent(localization->GetString(524));// "Once again you've cheated death!.." "Вы снова обхитрили смерть! …"
                 uGameState = GAME_STATE_PLAYING;
+
+				// need to flush messages here??
+
             }
         } while (!game_finished);
 

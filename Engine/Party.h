@@ -190,6 +190,7 @@ struct Party
   void ResetPosMiscAndSpellBuffs();
   bool HasItem(unsigned int uItemID);
   void SetHoldingItem(ItemGen *pItem);
+  int GetFirstCanAct(); // added to fix some nzi access problems
   int GetNextActiveCharacter();
   bool _497FC5_check_party_perception_against_level();
   bool AddItemToParty(ItemGen *pItem);
@@ -302,7 +303,7 @@ struct Party
   std::array<char, 32> field_854;
   int uNumArcomageWins;
   int uNumArcomageLoses;
-  unsigned int bTurnBasedModeOn;
+  int bTurnBasedModeOn; // this should be bool?? - will need to alter size check in engine to change
   int field_880;
   int uFlags2;
   PartyAlignment alignment;
@@ -337,7 +338,7 @@ extern struct ActionQueue *pPartyActionQueue;
 
 bool TestPartyQuestBit(PARTY_QUEST_BITS bit);
 void Rest(unsigned int uHoursToSleep);
-void RestAndHeal(__int64 uNumMinutes); // idb
+void RestAndHeal( int uNumMinutes); // idb
 int GetTravelTime();
 
 bool _449B57_test_bit(unsigned __int8 *a1, __int16 a2);

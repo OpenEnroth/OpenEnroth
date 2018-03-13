@@ -385,8 +385,8 @@ void Mouse::UI_OnMouseLeftClick(int *pXY)
 
   extern bool _507B98_ctrl_pressed;
   x = pX;
-  if ( GetCurrentMenuID() != -1 || current_screen_type != SCREEN_GAME || !_507B98_ctrl_pressed // stealing cursor
-      || (signed int)pX < (signed int)pViewport->uViewportTL_X || (signed int)pX > (signed int)pViewport->uViewportBR_X
+  if ( GetCurrentMenuID() != -1 || current_screen_type != SCREEN_GAME || !OS_IfCtrlPressed()//_507B98_ctrl_pressed // stealing cursor - gets stuck
+      || (signed int)pX < (signed int)pViewport->uViewportTL_X || (signed int)pX > (signed int)pViewport->uViewportBR_X // is this right?? 
       || (signed int)pY < (signed int)pViewport->uViewportTL_Y || (signed int)pY > (signed int)pViewport->uViewportBR_Y)
   {
     y = pY;

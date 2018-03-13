@@ -59,7 +59,7 @@ unsigned int IconFrameTable::FindIcon(const char *pIconName)
 //----- (00494F70) --------------------------------------------------------
 Icon *IconFrameTable::GetFrame(unsigned int uIconID, unsigned int frame_time)
 {
-    int v6; // edx@3
+//    int v6; // edx@3
     uint i;
 
     if (this->pIcons[uIconID].uFlags & 1 && this->pIcons[uIconID].GetAnimLength() != 0)

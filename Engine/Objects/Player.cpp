@@ -43,24 +43,15 @@
 NZIArray<struct Player *, 5> pPlayers;
 
 
-/*  381 */
-#pragma pack(push, 1)
-struct PlayerCreation_AttributeProps
-{
-  unsigned __int8 uBaseValue;
-  char uMaxValue;
-  char uDroppedStep;
-  char uBaseStep;
+// Race Stat Points Bonus/ Penalty
+struct PlayerCreation_AttributeProps {
+	unsigned char uBaseValue;
+	unsigned char uMaxValue;
+	unsigned char uDroppedStep;
+	unsigned char uBaseStep;
 };
-#pragma pack(pop)
 
-
-#pragma pack(push, 1)
-
-
-
-#pragma pack(pop)
-PlayerCreation_AttributeProps StatTable[4][7] = //0x4ED7B0
+PlayerCreation_AttributeProps StatTable[4][7] = // [human , elf, goblin, dwarf] [might, int, per , end, acc, speed, luck]
 {
   {{11, 25, 1, 1}, {11, 25, 1, 1}, {11, 25, 1, 1}, { 9, 25, 1, 1}, {11, 25, 1, 1}, {11, 25, 1, 1}, {9, 25, 1, 1},},
   {{ 7, 15, 2, 1}, {14, 30, 1, 2}, {11, 25, 1, 1}, { 7, 15, 2, 1}, {14, 30, 1, 2}, {11, 25, 1, 1}, {9, 20, 1, 1},},
@@ -69,11 +60,9 @@ PlayerCreation_AttributeProps StatTable[4][7] = //0x4ED7B0
 };
 
 
-
 std::array<int, 5> StealingMasteryBonuses = {0, 100, 200, 300, 500};  //dword_4EDEA0        //the zeroth element isn't accessed, it just helps avoid -1 indexing, originally 4 element array off by one
 std::array<int, 5> StealingRandomBonuses = {-200, -100, 0, 100, 200};  //dword_4EDEB4
 std::array<int, 5> StealingEnchantmentBonusForSkill = {0, 2, 4, 6, 10}; //dword_4EDEC4      //the zeroth element isn't accessed, it just helps avoid -1 indexing, originally 4 element array off by one
-
 
 
  // available skills per class ( 9 classes X 37 skills )
@@ -170,284 +159,288 @@ unsigned short base_recovery_times_per_weapon_type[12] =
 };
 
 //----- (00490913) --------------------------------------------------------
-int PlayerCreation_GetUnspentAttributePointCount()
-{
-  signed int v0; // edi@1
-  int raceId; // ebx@2
-  signed int v4; // eax@17
-  int v5; // edx@18
-  signed int v6; // ecx@18
-  signed int remainingStatPoints; // [sp+Ch] [bp-8h]@1
+int PlayerCreation_GetUnspentAttributePointCount() {
 
-  remainingStatPoints = 50;
-  v0 = 50;
-  for (int playerNum = 0; playerNum < 4; playerNum++)
-  {
-    raceId = pParty->pPlayers[playerNum].GetRace();
-    for (int statNum = 0; statNum <= 6; statNum++)
-    {
-      switch ( statNum )
-      {
-      case 0:
-        v0 = pParty->pPlayers[playerNum].uMight;
-        break;
-      case 1:
-        v0 = pParty->pPlayers[playerNum].uIntelligence;
-        break;
-      case 2:
-        v0 = pParty->pPlayers[playerNum].uWillpower;
-        break;
-      case 3:
-        v0 = pParty->pPlayers[playerNum].uEndurance;
-        break;
-      case 4:
-        v0 = pParty->pPlayers[playerNum].uAccuracy;
-        break;
-      case 5:
-        v0 = pParty->pPlayers[playerNum].uSpeed;
-        break;
-      case 6:
-        v0 = pParty->pPlayers[playerNum].uLuck;
-        break;
-      }
-      v4 = StatTable[raceId][statNum].uBaseValue;
-      if ( v0 >= v4 )
-      {
-        v5 = StatTable[raceId][statNum].uDroppedStep;
-        v6 = StatTable[raceId][statNum].uBaseStep;
-      }
-      else
-      {
-        v5 = StatTable[raceId][statNum].uBaseStep;
-        v6 = StatTable[raceId][statNum].uDroppedStep;
-      }
-      remainingStatPoints += v5 * (v4 - v0) / v6;
-    }
-  }
-  return remainingStatPoints;
+	int CurrentStatValue = 50;
+	int RemainingStatPoints = 50;
+	int raceId;
+	int StatBaseValue;
+	int PenaltyMult;
+	int BonusMult;
+
+	for (int playerNum = 0; playerNum < 4; playerNum++) {
+		raceId = pParty->pPlayers[playerNum].GetRace();
+	  
+		for (int statNum = 0; statNum <= 6; statNum++) {
+			switch ( statNum ) {
+				case 0:
+					CurrentStatValue = pParty->pPlayers[playerNum].uMight;
+					break;
+				case 1:
+					CurrentStatValue = pParty->pPlayers[playerNum].uIntelligence;
+					break;
+				case 2:
+					CurrentStatValue = pParty->pPlayers[playerNum].uWillpower;
+					break;
+				case 3:
+					CurrentStatValue = pParty->pPlayers[playerNum].uEndurance;
+					break;
+				case 4:
+					CurrentStatValue = pParty->pPlayers[playerNum].uAccuracy;
+					break;
+				case 5:
+					CurrentStatValue = pParty->pPlayers[playerNum].uSpeed;
+					break;
+				case 6:
+					CurrentStatValue = pParty->pPlayers[playerNum].uLuck;
+					break;
+			}
+
+			StatBaseValue = StatTable[raceId][statNum].uBaseValue;
+
+			if (CurrentStatValue >= StatBaseValue) { // bonus or penalty increase
+				PenaltyMult = StatTable[raceId][statNum].uDroppedStep;
+				BonusMult = StatTable[raceId][statNum].uBaseStep;
+			}
+			else { // less than base
+				PenaltyMult = StatTable[raceId][statNum].uBaseStep;
+				BonusMult = StatTable[raceId][statNum].uDroppedStep;
+			}
+
+			RemainingStatPoints += PenaltyMult * (StatBaseValue - CurrentStatValue) / BonusMult;
+
+		}
+	}
+
+  return RemainingStatPoints;
 }
 
 //----- (00427730) --------------------------------------------------------
-bool Player::CanCastSpell(unsigned int uRequiredMana)
-{
-  if (sMana >= (signed int)uRequiredMana)
-  {
-    sMana -= (signed int)uRequiredMana;
-    return true;
-  }
+bool Player::CanCastSpell(unsigned int uRequiredMana) {
+	
+	if (sMana >= uRequiredMana) { // enough mana
+		sMana -= uRequiredMana;	// removes mana
+		return true;
+	}
 
-  pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
-  return false;
+	// not enough mana
+	pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
+	return false;
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Player::SalesProcess( unsigned int inventory_idnx, int item_index, int _2devent_idx )
-    {
-  float v6; // ST04_4@1
-  signed int item_value; // eax@1
-  signed int sell_price; // ebx@1
+void Player::SalesProcess( unsigned int inventory_idnx, int item_index, int _2devent_idx ) {
 
-  item_value =pOwnItems[item_index].GetValue();
-  v6 = p2DEvents[ _2devent_idx - 1].fPriceMultiplier;
-  sell_price = GetPriceSell(item_value, v6);
-  if ( pOwnItems[item_index].IsBroken() )
-    sell_price = 1;
-  if ( sell_price < 1 )
-    sell_price = 1;
-  RemoveItemAtInventoryIndex(inventory_idnx);
-  Party::SetGold(pParty->uNumGold + sell_price);
+	float shop_mult = p2DEvents[_2devent_idx - 1].fPriceMultiplier;
+	int sell_price = GetPriceSell(pOwnItems[item_index], shop_mult);
+
+	//remove item and add gold
+	RemoveItemAtInventoryIndex(inventory_idnx);
+	Party::SetGold(pParty->uNumGold + sell_price);
 }
 
 //----- (0043EEF3) --------------------------------------------------------
-bool Player::NothingOrJustBlastersEquipped()
-{
-  signed int item_idx; // esi@1
-  signed int item_id; // esi@1
-  for (int i = 0; i < 16; ++i)
-  {
-    item_idx = pEquipment.pIndices[i];
-    if (item_idx)
-    {
-      item_id = pOwnItems[item_idx - 1].uItemID;
-      if ( item_id != ITEM_BLASTER && item_id != ITEM_LASER_RIFLE ) //blaster& blaster rifle
-          return false;
-    }
-  }
-  return true;
+bool Player::NothingOrJustBlastersEquipped() {
+
+	signed int item_idx;
+	signed int item_id;
+
+	//scan through all equipped items
+	for (int i = 0; i < 16; ++i) {
+		item_idx = pEquipment.pIndices[i];
+
+		if (item_idx) {
+			item_id = pOwnItems[item_idx - 1].uItemID;
+			
+			if ( item_id != ITEM_BLASTER && item_id != ITEM_LASER_RIFLE ) //soemthing other than blaster& blaster rifle
+				return false;
+		}
+	}
+		
+	return true; // nothing or just blaster equipped
 }
 
 //----- (004B8040) --------------------------------------------------------
-int Player::GetConditionDayOfWeek(unsigned int condition)
-{
-    return this->conditions_times[condition].GetDays() % 7 + 1;
+int Player::GetConditionDaysPassed(unsigned int condition) { // PS - CHECK ?? is this the intedned behavior - RETURN NUMBER OF DAYS CONDITION HAS BEEN ACTIVE FOR
+
+	if (this->conditions_times[condition].Valid() == false)
+		return 0;
+	
+	GameTime playtime = pParty->GetPlayingTime();
+	GameTime condtime = this->conditions_times[condition];
+	GameTime diff = playtime - condtime;
+
+	return diff.GetDays() + 1;
+
 }
 
 //----- (004B807C) --------------------------------------------------------
-int Player::GetTempleHealCostModifier(float a2)
-{
-  unsigned int conditionIdx; // eax@1
-  int conditionTimeMultiplier; // esi@1
-  int v6; // eax@8
-  signed int result; // qax@13
-  signed int baseConditionMultiplier; // [sp+8h] [bp-8h]@4
+int Player::GetTempleHealCostModifier(float price_multi) {
 
-  conditionIdx = GetMajorConditionIdx();
-  if ( conditionIdx >= 14 && conditionIdx <= 16)
-  {
-    if ( conditionIdx <= 15 )
-      baseConditionMultiplier = 5;
-    else //if ( conditionIdx == 16 )
-      baseConditionMultiplier = 10;
-    conditionTimeMultiplier = GetConditionDayOfWeek(conditionIdx);
-  }
-  else 
-  {
-    conditionTimeMultiplier = 1;
-    baseConditionMultiplier = 1;
-    if (conditionIdx < 14)
-    {
-      for (int i = 0; i <= 13; i++)
-      {
-        v6 = GetConditionDayOfWeek(i);
-        if ( v6 > conditionTimeMultiplier )
-          conditionTimeMultiplier = v6;
-      }
-    }
-  }
-  result = (int)((double)conditionTimeMultiplier * (double)baseConditionMultiplier * a2);
-  if ( result < 1 )
-    result = 1;
-  return result;
+	unsigned int conditionIdx = GetMajorConditionIdx(); // get worse condition
+	int conditionTimeMultiplier = 1; 
+	int baseConditionMultiplier = 1; // condition good unless otherwise , base price for health and mana
+	int high_mult;
+	int result;
+
+	if ( conditionIdx >= 14 && conditionIdx <= 16) { // dead, petri, erad - serious
+
+		if ( conditionIdx <= 15 )
+			baseConditionMultiplier = 5;	// dead or petri
+		else
+			baseConditionMultiplier = 10; // erad
+
+		conditionTimeMultiplier = GetConditionDaysPassed(conditionIdx);
+	}
+
+	else if (conditionIdx < 14) { // all other conditions
+
+		for (int i = 0; i <= 13; i++) {
+
+			high_mult = GetConditionDaysPassed(i);
+
+			if ( high_mult > conditionTimeMultiplier ) // get worst other condition
+				conditionTimeMultiplier = high_mult;
+		}
+	}
+
+	result = (int)((double)conditionTimeMultiplier * (double)baseConditionMultiplier * price_multi); // calc heal price
+
+	if ( result < 1 ) // min cost
+		result = 1;
+
+	if (result > 10000) // max cost
+		result = 10000;
+
+	return result;
 }
 
 //----- (004B8102) --------------------------------------------------------
-int Player::GetPriceSell(int uRealValue, float price_multiplier)
-{
-  signed int v3; // esi@1
-  signed int result; // eax@3
+int Player::GetPriceSell( ItemGen itemx, float price_multiplier) {
 
-  v3 = (signed int)((signed __int64)((double)uRealValue / (price_multiplier + 2.0)) + uRealValue * GetMerchant() / 100);
-  if ( v3 > uRealValue )
-    v3 = uRealValue;
-  result = 1;
-  if ( v3 >= 1 )
-    result = v3;
-  return result;
+	int uRealValue = itemx.GetValue();
+	signed int result = (signed int) ( ( (double)uRealValue / (price_multiplier + 2.0) ) + uRealValue * GetMerchant() / 100);
+
+	if ( result > uRealValue )
+		result = uRealValue;
+
+	if (itemx.IsBroken())
+		result = 1;
+
+	if (result < 1)
+		result = 1;
+
+	return result;
 }
 
 //----- (004B8142) --------------------------------------------------------
-int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier)
-{
-  uint price = (uint)(((100 - GetMerchant()) * (uRealValue * price_multiplier)) / 100);
+int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier) {
 
-  if (price < uRealValue)
-    price = uRealValue;
-  return price;
+	uint price = (uint)(((100 - GetMerchant()) * (uRealValue * price_multiplier)) / 100);
+
+	if (price < uRealValue) // price should always be at least item value
+		price = uRealValue;
+
+	return price;
 }
 
 //----- (004B8179) --------------------------------------------------------
-int Player::GetPriceIdentification(float a2)
-{
-  signed int v2; // esi@1
-  int v3; // ecx@1
-  signed int result; // eax@3
+int Player::GetPriceIdentification(float price_multiplier) {
 
-  v2 = (signed int)(a2 * 50.0);
-  v3 = v2 * (100 - GetMerchant()) / 100;
-  if ( v3 < v2 / 3 )
-    v3 = v2 / 3;
-  result = 1;
-  if ( v3 >= 1 )
-    result = v3;
-  return result;
+	signed int basecost = (price_multiplier * 50.0);
+	int actcost = basecost * (100 - GetMerchant()) / 100;
+	
+	if ( actcost < basecost / 3 ) // minimum price
+		actcost = basecost / 3;
+
+	if (actcost > 1)
+		return actcost;
+	else
+		return 1;
 }
 
 //----- (004B81C3) --------------------------------------------------------
-int Player::GetPriceRepair(int a2, float a3)
-{
-  signed int v3; // esi@1
-  int v4; // ecx@1
-  signed int result; // eax@3
+int Player::GetPriceRepair(int uRealValue, float price_multiplier) {
 
-  v3 = (signed int)((double)a2 / (6.0 - a3));
-  v4 = v3 * (100 - GetMerchant()) / 100;
-  if ( v4 < v3 / 3 )
-    v4 = v3 / 3;
-  result = 1;
-  if ( v4 >= 1 )
-    result = v4;
-  return result;
+	signed int basecost = (uRealValue / (6.0 - price_multiplier));
+	int actcost = basecost * (100 - GetMerchant()) / 100;
+
+	if (actcost < basecost / 3) // min price
+		actcost = basecost / 3;
+
+	if (actcost > 1)
+		return actcost;
+	else
+		return 1;
 }
 
 //----- (004B8213) --------------------------------------------------------
-int Player::GetBaseSellingPrice(int a2, float a3)
-{
-  signed int v3; // qax@1
+int Player::GetBaseSellingPrice(int uRealValue, float price_multiplier) {
 
-  v3 = (signed int)((double)a2 / (a3 + 2.0));
-  if ( v3 < 1 )
-    v3 = 1;
-  return v3;
+	signed int basecost = (uRealValue / (price_multiplier + 2.0));
+
+	if ( basecost < 1 ) // min price
+		basecost = 1;
+
+	return basecost;
 }
 
 //----- (004B8233) --------------------------------------------------------
-int Player::GetBaseBuyingPrice(int a2, float a3)
-{
-  signed int v3; // qax@1
+int Player::GetBaseBuyingPrice(int uRealValue, float price_multiplier) {
 
-  v3 = (signed int)((double)a2 * a3);
-  if ( v3 < 1 )
-    v3 = 1;
-  return v3;
+	signed int basecost = uRealValue * price_multiplier;
+
+	if ( basecost < 1 ) // min price
+		basecost = 1;
+
+	return basecost;
 }
 
 //----- (004B824B) --------------------------------------------------------
-int Player::GetBaseIdentifyPrice(float a2)
-{
-  signed int v2; // qax@1
+int Player::GetBaseIdentifyPrice(float price_multiplier) {
 
-  v2 = (signed int)(a2 * 50.0);
-  if ( v2 < 1 )
-    v2 = 1;
-  return v2;
+	signed int basecost = price_multiplier * 50.0;
+
+	if ( basecost < 1 ) // min price
+		basecost = 1;
+
+	return basecost;
 }
 
 //----- (004B8265) --------------------------------------------------------
-int Player::GetBaseRepairPrice(int a2, float a3)
-{
-  signed int v3; // qax@1
+int Player::GetBaseRepairPrice(int uRealValue, float price_multiplier) {
 
-  v3 = (signed int)((double)a2 / (6.0 - a3));
-  if ( v3 < 1 )
-    v3 = 1;
-  return v3;
+	signed int basecost = (uRealValue / (6.0 - price_multiplier));
+
+	if ( basecost < 1 ) // min price
+		basecost = 1;
+
+	return basecost;
 }
 
 //----- (004B6FF9) --------------------------------------------------------
-bool Player::IsPlayerHealableByTemple()
-{
-  if (this->sHealth >= GetMaxHealth() && this->sMana >= GetMaxMana() && GetMajorConditionIdx() == Condition_Good)
-    return false;
-  else
-  {
-    if (GetMajorConditionIdx() == Condition_Zombie)
-    {
-      if (((signed int)window_SpeakInHouse->ptr_1C == 78 || (signed int)window_SpeakInHouse->ptr_1C == 81 || (signed int)window_SpeakInHouse->ptr_1C == 82))
-        return false;
-      else
-        return true;
-    }
-    else
-      return true;
-  }
+bool Player::IsPlayerHealableByTemple() {
+
+	if (this->sHealth >= GetMaxHealth() && this->sMana >= GetMaxMana() && GetMajorConditionIdx() == Condition_Good)
+		return false; // fully healthy
+	
+	else {
+		 if (GetMajorConditionIdx() == Condition_Zombie) {
+			 if (((signed int)window_SpeakInHouse->ptr_1C == 78 || (signed int)window_SpeakInHouse->ptr_1C == 81 || (signed int)window_SpeakInHouse->ptr_1C == 82))
+				 return false; // zombie cant be healed at these tmeples
+			 else
+				 return true;
+		}
+		else
+			return true;
+	}
 }
 
+ItemGen *Player::GetItemAtInventoryIndex(int inout_item_cell) {
 
-ItemGen *Player::GetItemAtInventoryIndex(int *inout_item_cell)
-{
-    int inventory_index = this->GetItemIDAtInventoryIndex(inout_item_cell);
-    if (!inventory_index)
-    {
+    int inventory_index = this->GetItemListAtInventoryIndex(inout_item_cell);
+    
+	if (!inventory_index) {
         return nullptr;
     }
 
@@ -455,326 +448,218 @@ ItemGen *Player::GetItemAtInventoryIndex(int *inout_item_cell)
 }
 
 //----- (00421E75) --------------------------------------------------------
-unsigned int Player::GetItemIDAtInventoryIndex(int *inout_item_cell)
-{
-    int cell_idx = *inout_item_cell;
+unsigned int Player::GetItemListAtInventoryIndex(int inout_item_cell) {
+
+    int cell_idx = inout_item_cell;
     if (cell_idx > 125 || cell_idx < 0)
         return 0;
 
     int inventory_index = this->pInventoryMatrix[cell_idx];
-    if (inventory_index < 0)
-    {
-        *inout_item_cell = -1 - inventory_index;
-        inventory_index = this->pInventoryMatrix[-1 - inventory_index];
+    if (inventory_index < 0) { // not pointed to main item cell so redirect
+		inventory_index = this->pInventoryMatrix[-1 - inventory_index];
     }
-    return inventory_index;
+
+    return inventory_index; // returns item list position + 1
 }
 
 //----- (004160CA) --------------------------------------------------------
-void Player::ItemsEnchant( int enchant_count )
-    {
-  int avalible_items; // ebx@1
-  int i; // edx@8
-  __int16 item_index_tabl[138]; // [sp+Ch] [bp-118h]@1
- 
-  avalible_items = 0;
-  memset (item_index_tabl,0,sizeof(item_index_tabl));
+void Player::ItemsPotionDmgBreak( int enchant_count ) {
 
-  for (i = 0; i < 138; ++i)
-  {
-    if (( pOwnItems[i].uItemID>0)&&(pOwnItems[i].uItemID <= 134))
-      item_index_tabl[avalible_items++] = i;
-  }
+	int avalible_items = 0;
 
-  if ( avalible_items )
-  {
-    if ( enchant_count )
-    {
-      for ( i = 0; i < enchant_count; ++i )
-      {
-        if (!(pInventoryItemList[item_index_tabl[i]].uAttributes&ITEM_HARDENED))
-          pInventoryItemList[item_index_tabl[rand() % avalible_items]].uAttributes |= ITEM_HARDENED; 
-      }
-    }
-    else
-    {
-      for ( i = 0; i < avalible_items; ++i )
-      {
-          pInventoryItemList[item_index_tabl[i]].uAttributes |= ITEM_HARDENED;
-      }
-    }
-  }
+	__int16 item_index_tabl[138]; // table holding items
+	memset (item_index_tabl,0,sizeof(item_index_tabl)); // set to zero
+
+	for (int i = 0; i < 138; ++i) { // scan through and log in table
+
+		if (( pOwnItems[i].uItemID>0)&&(pOwnItems[i].uItemID <= 134))
+			item_index_tabl[avalible_items++] = i;
+	}
+
+	if ( avalible_items ) { // is there anything to break
+		if ( enchant_count ) { 
+
+			for ( int i = 0; i < enchant_count; ++i ) {
+
+				int indexbreak = item_index_tabl[rand() % avalible_items]; // random item
+
+				if (!(pInventoryItemList[indexbreak].uAttributes&ITEM_HARDENED)) // if its not hardened
+					pInventoryItemList[indexbreak].uAttributes |= ITEM_BROKEN; // break it
+			}
+		}
+		else {
+		
+			for ( int i = 0; i < avalible_items; ++i ) { // break everything
+				pInventoryItemList[item_index_tabl[i]].uAttributes |= ITEM_BROKEN;
+			}
+		}
+	}
 }
-
-//----- (004948B1) --------------------------------------------------------
-void Player::PlaySound(PlayerSpeech speech, int a3)
-{
-  signed int speechCount = 0; // esi@4
-  signed int expressionCount = 0; // esi@4
-  int pickedVariant; // esi@10
-  CHARACTER_EXPRESSION_ID expression; // ebx@17
-  signed int pSoundID; // ecx@19
-  int speechVariantArray[5]; // [sp+Ch] [bp-1Ch]@7
-  int expressionVariantArray[5]; 
-  unsigned int pickedSoundID; // [sp+30h] [bp+8h]@4
-  unsigned int expressionDuration = 0;
-
-  pickedSoundID = 0;
-  if (uVoicesVolumeMultiplier)
-  {
-    for (int i = 0; i < 2; i++)
-    {
-      if ( SoundSetAction[speech][i] )
-      {
-        speechVariantArray[speechCount] = SoundSetAction[speech][i];
-        speechCount++;
-      }
-    }
-    if ( speechCount )
-    {
-      pickedVariant = speechVariantArray[rand() % speechCount];
-      int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
-      if (numberOfSubvariants > 0)
-      {
-        pickedSoundID = rand() % numberOfSubvariants + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-        pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, uActiveCharacter + 39), 0, -1, 0, 0, (int)(pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f), 0);
-      }
-    }
-  }
-
-  for (int i = 0; i < 5; i++)
-  {
-    if ( SoundSetAction[speech][i + 3] )
-    {
-      expressionVariantArray[expressionCount] = SoundSetAction[speech][i + 3];
-      expressionCount++;
-    }
-  }
-  if ( expressionCount )
-  {
-    expression = (CHARACTER_EXPRESSION_ID)expressionVariantArray[rand() % expressionCount];
-    if (expression == CHARACTER_EXPRESSION_21 && pickedSoundID )
-    {
-      pSoundID = 0;
-      if ( pSoundList->sNumSounds )
-      {
-        for (int i = 0; i < pSoundList->sNumSounds; i++)
-        {
-          if (pSoundList->pSL_Sounds[i].uSoundID == pickedSoundID)
-            pSoundID = i;
-        }
-      }
-      if ( pSoundList->pSL_Sounds[pSoundID].pSoundData[0] )
-        expressionDuration = (sLastTrackLengthMS << 7) / 1000;
-    }
-    PlayEmotion(expression, expressionDuration);
-  }
-}
-// 4948B1: using guessed type int var_1C[5];
-
-//----- (00494A25) --------------------------------------------------------
-void Player::PlayEmotion(CHARACTER_EXPRESSION_ID new_expression, int a3)
-{
-  unsigned int v3 = expression;
-  if (expression == CHARACTER_EXPRESSION_DEAD || expression == CHARACTER_EXPRESSION_ERADICATED)
-  {
-    return;
-  }
-  else if (expression == CHARACTER_EXPRESSION_PERTIFIED && new_expression != CHARACTER_EXPRESSION_FALLING)
-  {
-    return;
-  }
-  else 
-  {
-    if (expression != CHARACTER_EXPRESSION_SLEEP || new_expression != CHARACTER_EXPRESSION_FALLING)
-    {
-      if (v3 >= 2 && v3 <= 11 && v3 != 8 && !(new_expression == CHARACTER_EXPRESSION_DMGRECVD_MINOR || new_expression == CHARACTER_EXPRESSION_DMGRECVD_MODERATE || new_expression == CHARACTER_EXPRESSION_DMGRECVD_MAJOR))
-      {
-        return;
-      }
-    }
-  }
-  this->uExpressionTimePassed = 0;
-  if ( !a3 )
-  {
-    this->uExpressionTimeLength = 8 * pPlayerFrameTable->pFrames[a3].uAnimLength;
-  }
-  else
-  {
-    this->uExpressionTimeLength = 0;
-  }
-  expression = new_expression;
-  viewparams->bRedrawGameUI = 1;
-}
-
-//----- (0049327B) --------------------------------------------------------
-bool Player::ProfessionOrGuildFlagsCorrect( unsigned int uClass, int a3 )
-{
-  if ( this->classType == uClass )
-  {
-    return true;
-  }
-  else
-  {
-    if (!a3)
-    {
-      return false;
-    }
-    switch ( uClass )
-    {
-      case 0x1Au:
-        return(_449B57_test_bit((unsigned __int8 *)this->_achieved_awards_bits, 65));
-      case 0x1Bu:
-        return(_449B57_test_bit((unsigned __int8 *)this->_achieved_awards_bits, 67));
-      case 0x22u:
-        return(_449B57_test_bit((unsigned __int8 *)this->_achieved_awards_bits, 77));
-      case 0x23u:
-        return(_449B57_test_bit((unsigned __int8 *)this->_achieved_awards_bits, 79));
-        break;
-      default:
-        Error("Should not be able to get here (%u)", uClass);
-        break;
-    }
-    return false;
-  }
-}
-
 
 //----- (00492C0B) --------------------------------------------------------
-bool Player::CanAct()
-{
-  if ( this->IsAsleep() || this->IsParalyzed() || 
-       this->IsUnconcious() || this->IsDead() || 
-       this->IsPertified() || this->IsEradicated() )
-    return false;
-  else
-    return true;
+bool Player::CanAct() {
+
+	if ( this->IsAsleep() || this->IsParalyzed() || this->IsUnconcious()
+		|| this->IsDead() || this->IsPertified() || this->IsEradicated() )
+
+		return false;
+	else
+		return true;
 }
 
 //----- (00492C40) --------------------------------------------------------
-bool Player::CanSteal()
-{
+bool Player::CanSteal() {
   return GetActualSkillLevel(PLAYER_SKILL_STEALING) != 0;
 }
 
 //----- (00492C4E) --------------------------------------------------------
-bool Player::CanEquip_RaceAndAlignmentCheck(unsigned int uItemID)
-{
-  switch (uItemID)
-  {
-  case ITEM_RELIC_ETHRICS_STAFF: 
-  case ITEM_RELIC_OLD_NICK: 
-  case ITEM_RELIC_TWILIGHT: return pParty->IsPartyEvil(); break;
-  case ITEM_RELIC_TALEDONS_HELM: 
-  case ITEM_RELIC_JUSTICE: return pParty->IsPartyGood(); break;
-  case ITEM_ARTIFACT_ELFBANE: return IsRaceGoblin(); break;
-  case ITEM_ARTIFACT_MINDS_EYE: return IsRaceHuman(); break;
-  case ITEM_ELVEN_CHAINMAIL: return IsRaceElf(); break;
-  case ITEM_FORGE_GAUNTLETS: return IsRaceDwarf(); break;
-  case ITEM_ARTIFACT_HEROS_BELT: return IsMale(); break;
-  case ITEM_ARTIFACT_LADYS_ESCORT: return IsFemale(); break;
-  case ITEM_WETSUIT: return NothingOrJustBlastersEquipped(); break;
-  default: return 1; break;
-  }
+bool Player::CanEquip_RaceAndAlignmentCheck(unsigned int uItemID) {
+
+	switch (uItemID) {
+
+		case ITEM_RELIC_ETHRICS_STAFF:
+		case ITEM_RELIC_OLD_NICK:
+		case ITEM_RELIC_TWILIGHT:
+			return pParty->IsPartyEvil();
+			break;
+
+		case ITEM_RELIC_TALEDONS_HELM:
+		case ITEM_RELIC_JUSTICE:
+			return pParty->IsPartyGood();
+			break;
+
+		case ITEM_ARTIFACT_ELFBANE:
+			return IsRaceGoblin();
+			break;
+
+		case ITEM_ARTIFACT_MINDS_EYE:
+			return IsRaceHuman();
+			break;
+
+		case ITEM_ELVEN_CHAINMAIL:
+			return IsRaceElf();
+			break;
+
+		case ITEM_FORGE_GAUNTLETS:
+			return IsRaceDwarf();
+			break;
+
+		case ITEM_ARTIFACT_HEROS_BELT:
+			return IsMale();
+			break;
+
+		case ITEM_ARTIFACT_LADYS_ESCORT:
+			return IsFemale();
+			break;
+
+		case ITEM_WETSUIT:
+			return NothingOrJustBlastersEquipped();
+			break;
+
+		default:
+			return 1;
+			break;
+	}
 }
 
 //----- (00492D65) --------------------------------------------------------
-void Player::SetCondition(unsigned int uConditionIdx, int a3)
-{
-    signed int player_sex; // ecx@77
-    signed int remainig_player; // ebx@82
-    int players_before; // [sp+10h] [bp-4h]@2
-    int players_after; // [sp+20h] [bp+Ch]@82
+void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
 
-    if (conditions_times[uConditionIdx])
-        return;
+	if (conditions_times[uConditionIdx]) // cant get the same condition twice
+		return;
 
-    if (!ConditionProcessor::IsPlayerAffected(this, uConditionIdx, a3))
-    {
+    if (!ConditionProcessor::IsPlayerAffected(this, uConditionIdx, blockable)) { // block check
         return;
     }
 
-    switch (uConditionIdx)
-    {
-    case Condition_Cursed: PlaySound(SPEECH_30, 0); break;
-    case Condition_Weak: PlaySound(SPEECH_25, 0); break;
-    case Condition_Sleep: break; //nosound
-    case Condition_Fear: PlaySound(SPEECH_26, 0); break;
-    case Condition_Drunk: PlaySound(SPEECH_31, 0); break;
-    case Condition_Insane: PlaySound(SPEECH_29, 0); break;
-    case Condition_Poison_Weak:
-    case Condition_Poison_Medium:
-    case Condition_Poison_Severe: PlaySound(SPEECH_27, 0); break;
-    case Condition_Disease_Weak:
-    case Condition_Disease_Medium:
-    case Condition_Disease_Severe: PlaySound(SPEECH_28, 0); break;
-    case Condition_Paralyzed: break;  //nosound
-    case Condition_Unconcious:
-        PlaySound(SPEECH_32, 0);
-        if (sHealth > 0)
-            sHealth = 0;
-        break;
-    case Condition_Dead:
-        PlaySound(SPEECH_33, 0);
-        if (sHealth > 0)
-            sHealth = 0;
-        if (sMana > 0)
-            sMana = 0;
-        break;
-    case Condition_Pertified:
-        PlaySound(SPEECH_34, 0);
-        break;
-    case Condition_Eradicated:
-        PlaySound(SPEECH_35, 0);
-        if (sHealth > 0)
-            sHealth = 0;
-        if (sMana > 0)
-            sMana = 0;
-        break;
-    case Condition_Zombie:
-        if (classType == PLAYER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead())
-            return;
-        conditions_times.fill(0);
-        sHealth = GetMaxHealth();
-        sMana = 0;
-        player_sex = 0;
-        uPrevFace = uCurrentFace;
-        uPrevVoiceID = uVoiceID;
-        if (IsMale())
-        {
-            uCurrentFace = 23;
-            uVoiceID = 23;
-        }
-        else
-        {
-            uCurrentFace = 24;
-            uVoiceID = 24;
-        }
-        PlaySound(SPEECH_99, 0);
-        break;
+    switch (uConditionIdx) { // conditions noises
+		
+		case Condition_Cursed: PlaySound(SPEECH_30, 0); break;
+		case Condition_Weak: PlaySound(SPEECH_25, 0); break;
+		case Condition_Sleep: break; //nosound
+		case Condition_Fear: PlaySound(SPEECH_26, 0); break;
+		case Condition_Drunk: PlaySound(SPEECH_31, 0); break;
+		case Condition_Insane: PlaySound(SPEECH_29, 0); break;
+
+		case Condition_Poison_Weak:
+		case Condition_Poison_Medium:
+		case Condition_Poison_Severe: PlaySound(SPEECH_27, 0); break;
+
+		case Condition_Disease_Weak:
+		case Condition_Disease_Medium:
+		case Condition_Disease_Severe: PlaySound(SPEECH_28, 0); break;
+
+		case Condition_Paralyzed: break;  //nosound
+
+		case Condition_Unconcious:
+			PlaySound(SPEECH_32, 0);
+			if (sHealth > 0)
+				sHealth = 0;
+			break;
+
+		case Condition_Dead:
+			PlaySound(SPEECH_33, 0);
+			if (sHealth > 0)
+				sHealth = 0;
+			if (sMana > 0)
+				sMana = 0;
+			break;
+
+		case Condition_Pertified: PlaySound(SPEECH_34, 0); break;
+
+		case Condition_Eradicated:
+			PlaySound(SPEECH_35, 0);
+			if (sHealth > 0)
+				sHealth = 0;
+			if (sMana > 0)
+				sMana = 0;
+			break;
+
+
+		case Condition_Zombie:
+			if (classType == PLAYER_CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) // cant zombified 
+				return;
+
+			conditions_times.fill(0);
+			sHealth = GetMaxHealth();
+			sMana = 0;
+			uPrevFace = uCurrentFace;
+			uPrevVoiceID = uVoiceID;
+
+			if (IsMale()) {
+				uCurrentFace = 23;
+				uVoiceID = 23;
+			}
+			else {
+				uCurrentFace = 24;
+				uVoiceID = 24;
+			}
+			
+			PlaySound(SPEECH_99, 0);
+			break;
     }
 
-    players_before = 0;
-    for (int i = 1; i < 5; ++i)
-    {
+
+    int players_before = 0;
+    for (int i = 1; i < 5; ++i) { // count active players veofre activating condition
         if (pPlayers[i]->CanAct())
             ++players_before;
     }
 
-    conditions_times[uConditionIdx] = pParty->GetPlayingTime();
+    conditions_times[uConditionIdx] = pParty->GetPlayingTime(); // set ocndition
 
-    remainig_player = 0;
-    players_after = 0;
-    for (int i = 1; i < 5; ++i)
-    {
-        if (pPlayers[i]->CanAct())
-        {
+    int remainig_player = 0; // who is left now
+    int players_after = 0;
+    for (int i = 1; i < 5; ++i) {
+        if (pPlayers[i]->CanAct()) {
             remainig_player = i;
             ++players_after;
         }
     }
-    if ((players_before == 2) && (players_after == 1))
+
+    if ((players_before == 2) && (players_after == 1)) // if was 2 and now down to 1 - "its just you and me now"
         pPlayers[remainig_player]->PlaySound(SPEECH_107, 0);//скорее всего обнадёжывающий возглас последнего
+
     return;
 }
 
@@ -802,67 +687,57 @@ bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID) {
     return false;
 }
 
-
 //----- (004925E6) --------------------------------------------------------
-int Player::FindFreeInventoryListSlot()
-{
-  for (int i = 0; i < 126; i++ )
-  {
-    if (pInventoryItemList[i].uItemID == ITEM_NULL)
-    {
-      return i;
-    }
-  }
-  return -1;
+int Player::FindFreeInventoryListSlot() {
+
+	for (int i = 0; i < 126; i++ ) {
+		if (pInventoryItemList[i].uItemID == ITEM_NULL) {
+			return i; // space at i
+		}
+	}
+
+  return -1; // no room
 }
 
 //----- (00492600) --------------------------------------------------------
-int Player::CreateItemInInventory(unsigned int uSlot, unsigned int uItemID)
-{
-  int result; // eax@8
-  signed int freeSlot; // [sp+8h] [bp-4h]@4
+int Player::CreateItemInInventory(unsigned int uSlot, unsigned int uItemID) {
 
-  freeSlot = FindFreeInventoryListSlot();
-  if ( freeSlot == -1 )
-  {
-    if ( uActiveCharacter )
-      pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
-    return 0;
-  }
-  else
-  {
-    PutItemArInventoryIndex(uItemID, freeSlot, uSlot);
-    result = freeSlot + 1;
-    this->pInventoryItemList[freeSlot].uItemID = uItemID;
-  }
-  return result;
+	signed int freeSlot = FindFreeInventoryListSlot();
+
+	if ( freeSlot == -1 ) { // no room
+		if ( uActiveCharacter )
+			pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
+
+		return 0;
+	}
+	else { // place items
+		PutItemArInventoryIndex(uItemID, freeSlot, uSlot);
+		this->pInventoryItemList[freeSlot].uItemID = uItemID;
+	}
+
+  return freeSlot+1; // return slot no + 1
 }
 
-
 //----- (00492700) --------------------------------------------------------
-int Player::HasSkill(unsigned int uSkillType)
-{
-    if (uSkillType >= 37 || this->pActiveSkills[uSkillType])
-    {
-        return 1;
+int Player::HasSkill(unsigned int uSkillType) {
+
+	if (uSkillType >= 37 || this->pActiveSkills[uSkillType]) {
+		return 1;
     }
-    else
-    {
-        GameUI_StatusBar_OnEvent(localization->FormatString(67, this->pName));
+    else {
+        GameUI_StatusBar_OnEvent(localization->FormatString(67, this->pName)); // *** does not have the skill
         return 0;
     }
 }
 
-
 //----- (00492745) --------------------------------------------------------
-void Player::WearItem(unsigned int uItemID)
-{
-    int item_body_anch; // edi@6
+void Player::WearItem(unsigned int uItemID) {
+
+    int item_body_anch;
     int item_indx;
     item_indx = FindFreeInventoryListSlot();
 
-    if (item_indx != -1)
-    {
+    if (item_indx != -1) {
         pInventoryItemList[item_indx].uItemID = uItemID;
         item_body_anch = pEquipTypeToBodyAnchor[pItemsTable->pItems[uItemID].uEquipType];
         pEquipment.pIndices[item_body_anch] = item_indx + 1;
@@ -871,48 +746,43 @@ void Player::WearItem(unsigned int uItemID)
 }
 
 //----- (004927A8) --------------------------------------------------------
-int Player::AddItem(int index, unsigned int uItemID)
-{
-    if (index == -1)
-    {
-        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++)
-        {
-            for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++)
-            {
-                if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord, uItemID))
-                {
+int Player::AddItem(int index, unsigned int uItemID) {
+
+	if (index == -1) { // no location specified - search for space
+        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
+            for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++) {
+                if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord, uItemID)) { // found space
                     return CreateItemInInventory(ycoord * INVETORYSLOTSWIDTH + xcoord, uItemID);
                 }
             }
         }
-        return 0;
+
+		pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+        return 0; // no space cant add item
     }
 
-    if (!CanFitItem(index, uItemID))
-    {
+    if (!CanFitItem(index, uItemID)) {
         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-        return 0;
+        return 0; // cant fit item
     }
-    return CreateItemInInventory(index, uItemID);
+
+    return CreateItemInInventory(index, uItemID); // return location
 }
 
 //----- (00492826) --------------------------------------------------------
-int Player::AddItem2(int index, ItemGen *Src)
-{
-    pItemsTable->SetSpecialBonus(Src);
+int Player::AddItem2(int index, ItemGen *Src) { // are both required - check
 
-    if (index == -1)
-    {
-        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++)
-        {
-            for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++)      //TODO: change pInventoryMatrix to 2 dimensional array.
-            {
-                if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord, Src->uItemID))
-                {
+	pItemsTable->SetSpecialBonus(Src);
+
+    if (index == -1) { // no loaction specified
+        for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
+			for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++) {
+				if (CanFitItem(ycoord * INVETORYSLOTSWIDTH + xcoord, Src->uItemID)) { // found space
                     return CreateItemInInventory2(ycoord * INVETORYSLOTSWIDTH + xcoord, Src);
                 }
             }
         }
+
         return 0;
     }
 
@@ -923,54 +793,57 @@ int Player::AddItem2(int index, ItemGen *Src)
 }
 
 //----- (0049289C) --------------------------------------------------------
-int Player::CreateItemInInventory2(unsigned int index, ItemGen *Src)
-{
-    signed int freeSlot; // ebx@1
-    int result; // eax@6
+int Player::CreateItemInInventory2(unsigned int index, ItemGen *Src) { // are both required - check
 
-    freeSlot = FindFreeInventoryListSlot();
-    if (freeSlot == -1)
-    {
+    signed int freeSlot = FindFreeInventoryListSlot();
+    int result;
+
+    if (freeSlot == -1) { // no room
         result = 0;
     }
-    else
-    {
+    else {
         PutItemArInventoryIndex(Src->uItemID, freeSlot, index);
         memcpy(&pInventoryItemList[freeSlot], Src, sizeof(ItemGen));
         result = freeSlot + 1;
     }
+
     return result;
 }
 
 //----- (0049298B) --------------------------------------------------------
-void Player::PutItemArInventoryIndex(int uItemID, int itemListPos, int index)   //originally accepted ItemGen* but needed only its uItemID
-{
+void Player::PutItemArInventoryIndex(int uItemID, int itemListPos, int index) { //originally accepted ItemGen* but needed only its uItemID
+	
     auto img = assets->GetImage_16BitColorKey(pItemsTable->pItems[uItemID].pIconName, 0x7FF);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
-    if (slot_width > 0)
-    {
+    if (slot_width > 0) {
+
         int *pInvPos = &pInventoryMatrix[index];
-        for (unsigned int i = 0; i < slot_height; i++)
-        {
+        for (unsigned int i = 0; i < slot_height; i++) {
             memset32(pInvPos, -1 - index, slot_width);//TODO: try to come up with a better solution. negative values are used when drawing the inventory - nothing is drawn
             pInvPos += INVETORYSLOTSWIDTH;
         }
     }
+
     pInventoryMatrix[index] = itemListPos + 1;
 }
 
 //----- (00492A36) --------------------------------------------------------
 void Player::RemoveItemAtInventoryIndex(unsigned int index) {
 
-    ItemGen *item_in_slot = &this->pInventoryItemList[pInventoryMatrix[index] - 1];
+	ItemGen *item_in_slot = this->GetItemAtInventoryIndex(index);
     
     auto img = assets->GetImage_16BitColorKey(item_in_slot->GetIconName(), 0x7FF);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
 	item_in_slot->Reset(); // must get img details before reset
+
+	int inventory_index = this->pInventoryMatrix[index];
+	if (inventory_index < 0) { // not pointed to main item cell so redirect
+		index =(-1 - inventory_index);
+	}
 
     if (slot_width > 0) {
 
@@ -982,1498 +855,1161 @@ void Player::RemoveItemAtInventoryIndex(unsigned int index) {
     }
 }
 
-//----- (00490EEE) --------------------------------------------------------
-int Player::SelectPhrasesTransaction(ItemGen *pItem, int building_type, int BuildID_2Events, int ShopMenuType)  //TODO: probably move this somewhere else, not really Player:: stuff
-{
-  unsigned int idemId; // edx@1
-  signed int equipType; // esi@1
-  float multiplier; // ST04_4@26
-  int price; // edi@26
-  int merchantLevel; // [sp+10h] [bp-8h]@1
-  int itemValue;
-
-  merchantLevel = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
-  idemId = pItem->uItemID;
-  equipType = pItem->GetItemEquipType();
-  itemValue = pItem->GetValue();
-
-  switch (building_type)
-  {
-    case BuildingType_WeaponShop:
-      if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
-        return 5;
-      if (equipType > EQUIP_BOW)
-        return 4;
-    break;
-    case BuildingType_ArmorShop:
-      if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
-        return 5;
-      if ( equipType < EQUIP_ARMOUR || equipType > EQUIP_BOOTS)
-        return 4;
-    break;
-    case BuildingType_MagicShop:
-      if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
-        return 5;
-      if ( pItemsTable->pItems[idemId].uSkillType != PLAYER_SKILL_MISC )
-        return 4;
-    break;
-    case BuildingType_AlchemistShop:
-      if ((idemId >= ITEM_ARTIFACT_HERMES_SANDALS && idemId < ITEM_RECIPE_REJUVENATION) || idemId > ITEM_RECIPE_BODY_RESISTANCE)
-        return 5;
-      if ( !(equipType == EQUIP_REAGENT || equipType == EQUIP_POTION || equipType == EQUIP_MESSAGE_SCROLL))
-        return 4;
-    break;
-    default:
-      Error("(%u)", building_type);
-    break;
-  }
-  if (pItem->IsStolen())
-    return 6;
-
-  multiplier = p2DEvents[BuildID_2Events - 1].fPriceMultiplier;
-  switch (ShopMenuType)
-  {
-    case 2:
-      price = GetBuyingPrice(itemValue, multiplier);
-    break;
-    case 3:
-      if (pItem->IsBroken())
-        price = 1;
-      else
-        price = this->GetPriceSell(itemValue, multiplier);
-    break;
-    case 4:
-      price = this->GetPriceIdentification(multiplier);
-    break;
-    case 5:
-      price = this->GetPriceRepair(itemValue, multiplier);
-      break;
-    default:
-      Error("(%u)", ShopMenuType);
-    break;
-  }
-  if ( merchantLevel )
-  {
-    if (price == itemValue)
-    {
-      return 3;
-    }
-    else
-    {
-      return 2;
-    }
-  }
-  else
-  {
-    return 1;
-  }
-}
-
 //----- (0049107D) --------------------------------------------------------
-int Player::GetBodybuilding()
-{
-  int v1; // al@1
+int Player::GetBodybuilding() {
 
-  v1 = GetActualSkillLevel(PLAYER_SKILL_BODYBUILDING);
-  int multiplier = GetMultiplierForSkillLevel(v1, 1, 2, 3, 5);
-  return multiplier * (v1 & 0x3F);
+	int skill = GetActualSkillLevel(PLAYER_SKILL_BODYBUILDING);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BODYBUILDING, 1, 2, 3, 5);
+
+	return multiplier * skill;
 }
 
 //----- (004910A8) --------------------------------------------------------
-int Player::GetMeditation()
-{
-  int v1; // al@1
+int Player::GetMeditation() {
 
-  v1 = GetActualSkillLevel(PLAYER_SKILL_MEDITATION);
-  int multiplier = GetMultiplierForSkillLevel(v1, 1, 2, 3, 5);
-  return multiplier * (v1 & 0x3F);
+	int skill = GetActualSkillLevel(PLAYER_SKILL_MEDITATION);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_MEDITATION, 1, 2, 3, 5);
+
+	return multiplier * skill;
 }
 
 //----- (004910D3) --------------------------------------------------------
-bool Player::CanIdentify( ItemGen *pItem )
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@7
-  if (CheckHiredNPCSpeciality(Scholar))
-    return true;
+bool Player::CanIdentify( ItemGen *pItem ) {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_ITEM_ID);
-  if ( (signed int)SkillToMastery(v2) >= 4 )
-    return true;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_ITEM_ID);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_ITEM_ID);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_ITEM_ID, 1, 2, 3, 5);
 
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
-  v5 = multiplier * (v2 & 0x3F);
-  return v5 >= pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+	if (CheckHiredNPCSpeciality(Scholar) || skillmaster == 4) // always identify
+		return true;
+	
+	// check item level against skill
+	bool result = (multiplier * skill) >= pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+
+	return result;
 }
 
 //----- (00491151) --------------------------------------------------------
-bool Player::CanRepair( ItemGen *pItem )
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@7
+bool Player::CanRepair( ItemGen *pItem ) {
 
-  ITEM_EQUIP_TYPE equipType = pItem->GetItemEquipType();
-  if (CheckHiredNPCSpeciality(Smith) && equipType <= 2 ||
-      CheckHiredNPCSpeciality(Armorer) && equipType >= 3 && equipType <= 9 ||
-      CheckHiredNPCSpeciality(Alchemist) && equipType >= 9 )
-    return true;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_REPAIR);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_REPAIR);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_REPAIR, 1, 2, 3, 5);
+	ITEM_EQUIP_TYPE equipType = pItem->GetItemEquipType();
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_REPAIR);
-  if ( (signed int)SkillToMastery(v2) >= 4 )
-    return true;
+	if (CheckHiredNPCSpeciality(Smith) && equipType <= 2 || CheckHiredNPCSpeciality(Armorer) && equipType >= 3 && equipType <= 9
+		|| CheckHiredNPCSpeciality(Alchemist) && equipType >= 9 )
+			return true; // check against hired help
 
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
-  v5 = multiplier * (v2 & 0x3F);
-  return v5 >= pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+	if ( skillmaster == 4 ) // gm repair
+		return true;
+
+	// check item level against skill
+	bool result = (multiplier * skill) >= pItemsTable->pItems[pItem->uItemID].uItemID_Rep_St;
+
+	return result;
 }
 
 //----- (004911F3) --------------------------------------------------------
-int Player::GetMerchant()
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@1
-  int v7; // eax@3
+int Player::GetMerchant() {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
-  if ( SkillToMastery(v2) >= 4 )
-    return 10000;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_MERCHANT);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_MERCHANT, 1, 2, 3, 5);
 
-  v7 = pParty->GetPartyReputation();
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
-  v5 = multiplier * (v2 & 0x3F);
-  if (v5 == 0)
-  {
-    return -v7;
-  }
-  return v5 - v7 + 7;
+	if  (skillmaster == 4) // gm merchant
+		return 10000;
+
+	int rep = pParty->GetPartyReputation();
+	int bonus = multiplier * skill;
+
+	if (bonus == 0) // no skill so trading on rep alone
+		return -rep; 
+
+	return bonus - rep + 7;
 }
 
 //----- (0049125A) --------------------------------------------------------
-int Player::GetPerception()
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@1
+int Player::GetPerception() {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_PERCEPTION);
-  if ( SkillToMastery(v2) >= 4 )
-    return 10000;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_PERCEPTION);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_PERCEPTION);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_PERCEPTION, 1, 2, 3, 5);
 
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
-  v5 = multiplier * (v2 & 0x3F);
-  return v5;
+	if (skillmaster == 4) // gm percept
+		return 10000;
+
+	return multiplier * skill;
 }
 
 //----- (004912B0) --------------------------------------------------------
-int Player::GetDisarmTrap()
-{
-  unsigned __int16 v2; // ax@1
-  int v5; // edi@1
+int Player::GetDisarmTrap() {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_TRAP_DISARM);
-  if ( (signed int)SkillToMastery(v2) >= 4 )
-    return 10000;
+	int skill = GetActualSkillLevel(PLAYER_SKILL_TRAP_DISARM);
+	int skillmaster = GetActualSkillMastery(PLAYER_SKILL_TRAP_DISARM);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_TRAP_DISARM, 1, 2, 3, 5);
 
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
-  if ( HasEnchantedItemEquipped(35) )  //only the real skill level is supposed to be added again, not the multiplied value
-    multiplier++;
-  v5 = multiplier * (v2 & 0x3F);
-  return v5;
+	if ( skillmaster == 4 ) // gm disarm
+		return 10000;
+
+	if ( HasEnchantedItemEquipped(35) )  //item has increased disarm
+		multiplier++;
+
+	return multiplier * skill;
 }
 
 //----- (00491317) --------------------------------------------------------
-char Player::GetLearningPercent()
-{
-  int v2; // eax@1
+char Player::GetLearningPercent() {
 
-  v2 = GetActualSkillLevel(PLAYER_SKILL_LEARNING);
-  int multiplier = GetMultiplierForSkillLevel(v2, 1, 2, 3, 5);
-  return multiplier * v2 + 9;
+	int skill =  GetActualSkillLevel(PLAYER_SKILL_LEARNING);
+	int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_LEARNING, 1, 2, 3, 5);
+
+	return multiplier * skill + 9;
 }
-
-//----- (0048C6AF) --------------------------------------------------------
-Player::Player()
-{  
-  memset(&pEquipment, 0, sizeof(PlayerEquipment));
-  pInventoryMatrix.fill(0);
-  for (uint i = 0; i < 126; ++i)
-    pInventoryItemList[i].Reset();
-  for (uint i = 0; i < 12; ++i)
-    pEquippedItems[i].Reset();
-
-
-  for (uint i = 0; i < 24; ++i)
-  {
-    pPlayerBuffs[i].uSkill = 0;
-    pPlayerBuffs[i].uSkill = 0;
-    pPlayerBuffs[i].uPower = 0;
-    pPlayerBuffs[i].expire_time.Reset();
-    pPlayerBuffs[i].uCaster = 0;
-    pPlayerBuffs[i].uFlags = 0;
-  }
-
-  pName[0] = 0;
-  uCurrentFace = 0;
-  uVoiceID = 0;
-  conditions_times.fill(0);
-
-  field_BB = 0;
-
-  uMight = uMightBonus = 0;
-  uIntelligence = uIntelligenceBonus = 0;
-  uWillpower = uWillpowerBonus = 0;
-  uEndurance = uEnduranceBonus = 0;
-  uSpeed = uSpeedBonus = 0;
-  uAccuracy = uAccuracyBonus = 0;
-  uLuck = uLuckBonus = 0;
-  uLevel = sLevelModifier = 0;
-  sAgeModifier = 0;
-  sACModifier = 0;
-
-//  memset(field_1F5, 0, 30);
-  pure_luck_used=0;      
-  pure_speed_used=0; 
-  pure_intellect_used=0;  
-  pure_endurance_used=0;  
-  pure_willpower_used=0;       
-  pure_accuracy_used=0;      
-  pure_might_used=0;  
-
-  sResFireBase = sResFireBonus = 0;
-  sResAirBase = sResAirBonus = 0;
-  sResWaterBase = sResWaterBonus = 0;
-  sResEarthBase = sResEarthBonus = 0;
-  sResMagicBase = sResMagicBonus = 0;
-  sResSpiritBase = sResSpiritBonus = 0;
-  sResMindBase = sResMindBonus = 0;
-  sResBodyBase = sResBodyBonus = 0;
-  sResLightBase = sResLightBonus = 0;
-  sResDarkBase = sResDarkBonus = 0;
-
-  uTimeToRecovery = 0;
-
-  uSkillPoints = 0;
-
-  sHealth = 0;
-  uFullHealthBonus = 0;
-  _health_related = 0;
-
-  sMana = 0;
-  uFullManaBonus = 0;
-  _mana_related = 0;
-
-  uQuickSpell = 0;
-  memset(pInstalledBeacons.data(), 0, 5 * sizeof(LloydBeacon));
-
-  _some_attack_bonus = 0;
-  field_1A91 = 0;
-  _melee_dmg_bonus = 0;
-  field_1A93 = 0;
-  _ranged_atk_bonus = 0;
-  field_1A95 = 0;
-  _ranged_dmg_bonus = 0;
-  field_1A97 = 0;
-
-  expression = CHARACTER_EXPRESSION_INVALID;
-  uExpressionTimePassed = 0;
-  uExpressionTimeLength = 0;
-
-  uNumDivineInterventionCastsThisDay = 0;
-  uNumArmageddonCasts = 0;
-  uNumFireSpikeCasts = 0;
-
-  memset(field_1988, 0, sizeof(field_1988));
-  memset(playerEventBits, 0, sizeof(playerEventBits));
-
-  field_E0 = 0;
-  field_E4 = 0;
-  field_E8 = 0;
-  field_EC = 0;
-  field_F0 = 0;
-  field_F4 = 0;
-  field_F8 = 0;
-  field_FC = 0;
-  field_100 = 0;
-  field_104 = 0;
-
-  _expression21_animtime = 0;
-  _expression21_frameset = 0;
-
-  lastOpenedSpellbookPage = 0;
-}
-
 
 //----- (0048C855) --------------------------------------------------------
-int Player::GetBaseStrength()
-{
-  return this->uMight + GetItemsBonus(CHARACTER_ATTRIBUTE_STRENGTH);
+int Player::GetBaseStrength() {
+	return this->uMight + GetItemsBonus(CHARACTER_ATTRIBUTE_STRENGTH);
 }
 
 //----- (0048C86C) --------------------------------------------------------
-int Player::GetBaseIntelligence()
-{
-  return this->uIntelligence + GetItemsBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE);
+int Player::GetBaseIntelligence() {
+	return this->uIntelligence + GetItemsBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE);
 }
 
 //----- (0048C883) --------------------------------------------------------
-int Player::GetBaseWillpower()
-{
-  return this->uWillpower + GetItemsBonus(CHARACTER_ATTRIBUTE_WILLPOWER);
+int Player::GetBaseWillpower() {
+	return this->uWillpower + GetItemsBonus(CHARACTER_ATTRIBUTE_WILLPOWER);
 }
 
 //----- (0048C89A) --------------------------------------------------------
-int Player::GetBaseEndurance()
-{
-  return this->uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+int Player::GetBaseEndurance() {
+	return this->uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
 }
 
 //----- (0048C8B1) --------------------------------------------------------
-int Player::GetBaseAccuracy()
-{
-  return this->uAccuracy + GetItemsBonus(CHARACTER_ATTRIBUTE_ACCURACY);
+int Player::GetBaseAccuracy() {
+	return this->uAccuracy + GetItemsBonus(CHARACTER_ATTRIBUTE_ACCURACY);
 }
 
 //----- (0048C8C8) --------------------------------------------------------
-int Player::GetBaseSpeed()
-{
-  return this->uSpeed + GetItemsBonus(CHARACTER_ATTRIBUTE_SPEED);
+int Player::GetBaseSpeed() {
+	return this->uSpeed + GetItemsBonus(CHARACTER_ATTRIBUTE_SPEED);
 }
 
 //----- (0048C8DF) --------------------------------------------------------
-int Player::GetBaseLuck()
-{
-  return this->uLuck + GetItemsBonus(CHARACTER_ATTRIBUTE_LUCK);
+int Player::GetBaseLuck() {
+	return this->uLuck + GetItemsBonus(CHARACTER_ATTRIBUTE_LUCK);
 }
 
 //----- (0048C8F6) --------------------------------------------------------
-int Player::GetBaseLevel()
-{
+int Player::GetBaseLevel() {
   return this->uLevel + GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
 }
 
 //----- (0048C90D) --------------------------------------------------------
-int Player::GetActualLevel()
-{
-  return uLevel + sLevelModifier +
-         GetMagicalBonus(CHARACTER_ATTRIBUTE_LEVEL) +
-         GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
+int Player::GetActualLevel() {
+	return uLevel + sLevelModifier + GetMagicalBonus(CHARACTER_ATTRIBUTE_LEVEL)
+		+ GetItemsBonus(CHARACTER_ATTRIBUTE_LEVEL);
 }
 
 //----- (0048C93C) --------------------------------------------------------
-int Player::GetActualMight()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_STRENGTH, &Player::uMight, &Player::uMightBonus);
+int Player::GetActualMight() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_STRENGTH, &Player::uMight, &Player::uMightBonus);
 }
 
 //----- (0048C9C2) --------------------------------------------------------
-int Player::GetActualIntelligence()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_INTELLIGENCE, &Player::uIntelligence, &Player::uIntelligenceBonus);
+int Player::GetActualIntelligence() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_INTELLIGENCE, &Player::uIntelligence, &Player::uIntelligenceBonus);
 }
 
 //----- (0048CA3F) --------------------------------------------------------
-int Player::GetActualWillpower()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_WILLPOWER, &Player::uWillpower, &Player::uWillpowerBonus);
+int Player::GetActualWillpower() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_WILLPOWER, &Player::uWillpower, &Player::uWillpowerBonus);
 }
 
 //----- (0048CABC) --------------------------------------------------------
-int Player::GetActualEndurance()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_ENDURANCE, &Player::uEndurance, &Player::uEnduranceBonus);
+int Player::GetActualEndurance() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_ENDURANCE, &Player::uEndurance, &Player::uEnduranceBonus);
 }
 
 //----- (0048CB39) --------------------------------------------------------
-int Player::GetActualAccuracy()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY, &Player::uAccuracy, &Player::uAccuracyBonus);
+int Player::GetActualAccuracy() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY, &Player::uAccuracy, &Player::uAccuracyBonus);
 }
 
 //----- (0048CBB6) --------------------------------------------------------
-int Player::GetActualSpeed()
-{
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED, &Player::uSpeed, &Player::uSpeedBonus);
+int Player::GetActualSpeed() {
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED, &Player::uSpeed, &Player::uSpeedBonus);
 }
 
 //----- (0048CC33) --------------------------------------------------------
-int Player::GetActualLuck()
-{
-  signed int npc_luck_bonus; // [sp+10h] [bp-4h]@1
+int Player::GetActualLuck() {
 
-  npc_luck_bonus = 0;
-  if ( CheckHiredNPCSpeciality(Fool) )
-    npc_luck_bonus = 5;
-  if ( CheckHiredNPCSpeciality(ChimneySweep) )
-    npc_luck_bonus += 20;
-  if ( CheckHiredNPCSpeciality(Psychic) )
-    npc_luck_bonus += 10;
+	signed int npc_luck_bonus = 0;
 
-  return GetActualAttribute(CHARACTER_ATTRIBUTE_LUCK, &Player::uLuck, &Player::uLuckBonus)
-       + npc_luck_bonus;
+	if ( CheckHiredNPCSpeciality(Fool) )
+		npc_luck_bonus = 5;
+
+	if ( CheckHiredNPCSpeciality(ChimneySweep) )
+		npc_luck_bonus += 20;
+
+	if ( CheckHiredNPCSpeciality(Psychic) )
+		npc_luck_bonus += 10;
+
+	return GetActualAttribute(CHARACTER_ATTRIBUTE_LUCK, &Player::uLuck, &Player::uLuckBonus)
+		+ npc_luck_bonus;
 }
 
 //----- (new function) --------------------------------------------------------
-int Player::GetActualAttribute( CHARACTER_ATTRIBUTE_TYPE attrId, unsigned short Player::* attrValue, unsigned short Player::* attrBonus )
-{
-  uint uActualAge = this->sAgeModifier + GetBaseAge();
-  uint uAgeingMultiplier = 100;
-  for (uint i = 0; i < 4; ++i)
-  {
-    if (uActualAge >= pAgeingTable[i])
-      uAgeingMultiplier = pAgingAttributeModifier[attrId][i];
-    else 
-      break;
-  }
+int Player::GetActualAttribute( CHARACTER_ATTRIBUTE_TYPE attrId, unsigned short Player::* attrValue, unsigned short Player::* attrBonus ) {
 
-  uchar uConditionMult = pConditionAttributeModifier[attrId][GetMajorConditionIdx()];
-  int magicBonus = GetMagicalBonus(attrId);
-  int itemBonus = GetItemsBonus(attrId);
-  return uConditionMult * uAgeingMultiplier * this->*attrValue / 100 / 100
-    + magicBonus
-    + itemBonus
-    + this->*attrBonus;
+	uint uActualAge = this->sAgeModifier + GetBaseAge();
+	uint uAgeingMultiplier = 100;
+
+	for (uint i = 0; i < 4; ++i) {
+		if (uActualAge >= pAgeingTable[i]) // is the player old enough to need attrib adjust
+			uAgeingMultiplier = pAgingAttributeModifier[attrId][i];
+		else
+			break;
+	}
+
+	uchar uConditionMult = pConditionAttributeModifier[attrId][GetMajorConditionIdx()]; // weak from disease or poison ect
+	int magicBonus = GetMagicalBonus(attrId);
+	int itemBonus = GetItemsBonus(attrId);
+
+	return uConditionMult * uAgeingMultiplier * this->*attrValue / 100 / 100
+		+ magicBonus + itemBonus + this->*attrBonus;
 }
 
 //----- (0048CCF5) --------------------------------------------------------
-int Player::GetActualAttack( bool onlyMainHandDmg )
-{
-  int v3; // eax@1
-  int v4; // edi@1
-  int v5; // ebx@1
-  int v6; // ebp@1
+int Player::GetActualAttack( bool onlyMainHandDmg ) {
 
-  v3 = GetActualAccuracy();
-  v4 = GetParameterBonus(v3);
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_ATTACK);
-  v6 = GetItemsBonus(CHARACTER_ATTRIBUTE_ATTACK, onlyMainHandDmg);
-  return v4 + v5 + v6 + GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK) + this->_some_attack_bonus;
+	int parbonus = GetParameterBonus(GetActualAccuracy()); // bonus points for steps of accuracy level
+	int atkskillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_ATTACK); // bonus for skill with weapon
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_ATTACK, onlyMainHandDmg); // how good is weapon
+
+	return parbonus + atkskillbonus + weapbonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK) + this->_some_attack_bonus;
 }
 
 //----- (0048CD45) --------------------------------------------------------
-int Player::GetMeleeDamageMinimal()
-{
-  int v2; // eax@1
-  int v3; // esi@1
-  int v4; // esi@1
-  int v5; // esi@1
-  signed int result; // eax@1
- 
-  v2 = GetActualMight();
-  v3 = GetParameterBonus(v2);
-  v4 = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN) + v3;
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + v4;
-  result = _melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + v5;
-  if ( result < 1 )
-    result = 1;
-  return result;
+int Player::GetMeleeDamageMinimal() {
+
+	int parbonus = GetParameterBonus(GetActualMight());
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN) + parbonus;
+	int atkskillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + weapbonus;
+
+	int result = _melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + atkskillbonus;
+	
+	if ( result < 1 )
+		result = 1;
+
+	return result;
 }
 
 //----- (0048CD90) --------------------------------------------------------
-int Player::GetMeleeDamageMaximal()
-{
-  int v2; // eax@1
-  int v3; // esi@1
-  int v4; // esi@1
-  int v5; // esi@1
-  int v6; // esi@1
-  signed int result; // eax@1
+int Player::GetMeleeDamageMaximal() {
 
-  v2 = GetActualMight();
-  v3 = GetParameterBonus(v2);
-  v4 = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX) + v3;
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + v4;
-  v6 = this->_melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + v5;
-  result = 1;
-  if ( v6 >= 1 )
-    result = v6;
-  return result;
+	int parbonus = GetParameterBonus(GetActualMight());
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX) + parbonus;
+	int atkskillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + weapbonus;
+
+	int result = this->_melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + atkskillbonus;
+
+	if ( result < 1 )
+		result = 1;
+
+	return result;
 }
 
 //----- (0048CDDB) --------------------------------------------------------
-int Player::CalculateMeleeDamageTo( bool ignoreSkillBonus, bool ignoreOffhand, unsigned int uTargetActorID )
-{
-  int dmgSum; // esi@62
-  signed int result; // eax@64
-  int mainWpnDmg; // [sp+18h] [bp-8h]@1
-  int offHndWpnDmg; // [sp+1Ch] [bp-4h]@1
+int Player::CalculateMeleeDamageTo( bool ignoreSkillBonus, bool ignoreOffhand, unsigned int uTargetActorID ) {
 
-  offHndWpnDmg = 0;
-  mainWpnDmg = 0;
-  if ( IsUnarmed() )
-  {
-    mainWpnDmg = rand() % 3 + 1;
-  }
-  else
-  {
-    if ( HasItemEquipped(EQUIP_TWO_HANDED) )
-    {
-      ItemGen *mainHandItemGen = this->GetMainHandItem();
-      int itemId = mainHandItemGen->uItemID;
-      bool addOneDice = false;
-      if ( pItemsTable->pItems[itemId].uSkillType == PLAYER_SKILL_SPEAR && !this->pEquipment.uShield )
-        addOneDice = true;
-      mainWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(mainHandItemGen, uTargetActorID, addOneDice);
-    }
-    if ( !ignoreOffhand )
-    {
-      if ( this->HasItemEquipped(EQUIP_SINGLE_HANDED) )
-      {
-        ItemGen *offHandItemGen = (ItemGen *)&this->pInventoryItemList[this->pEquipment.uShield - 1];
-        if ( offHandItemGen->GetItemEquipType() != EQUIP_SHIELD )
-        {
-          offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(offHandItemGen, uTargetActorID, false);
-        }
-      }
-    }
-  }
-  dmgSum = mainWpnDmg + offHndWpnDmg;
-  if ( !ignoreSkillBonus )
-  {
-    int might = GetActualMight();
-    int mightBonus = GetParameterBonus(might);
-    int mightAndSkillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + mightBonus;
-    dmgSum += this->_melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + mightAndSkillbonus;
-  }
-  result = 1;
-  if ( dmgSum >= 1 )
-    result = dmgSum;
-  return result;
+	int mainWpnDmg = 0;
+	int offHndWpnDmg = 0;
+
+	if ( IsUnarmed() ) { // no weapons
+		mainWpnDmg = rand() % 3 + 1;
+	}
+	else {
+		if ( HasItemEquipped(EQUIP_TWO_HANDED) ) { // misleading - checks main hand has something
+			ItemGen *mainHandItemGen = this->GetMainHandItem();
+			int itemId = mainHandItemGen->uItemID;
+			bool addOneDice = false;
+			if ( pItemsTable->pItems[itemId].uSkillType == PLAYER_SKILL_SPEAR && !this->pEquipment.uShield ) // using spear in two hands adds a dice roll
+				addOneDice = true;
+			
+			mainWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(mainHandItemGen, uTargetActorID, addOneDice);
+		}
+
+		if ( !ignoreOffhand ) {
+			if ( this->HasItemEquipped(EQUIP_SINGLE_HANDED) ) { // has second hand got a weapon that not a shield
+				ItemGen *offHandItemGen = (ItemGen *)&this->pInventoryItemList[this->pEquipment.uShield - 1];
+
+				if ( offHandItemGen->GetItemEquipType() != EQUIP_SHIELD ) {
+					offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(offHandItemGen, uTargetActorID, false);
+				}
+			}
+		}
+	}
+
+	int dmgSum = mainWpnDmg + offHndWpnDmg;
+
+	if ( !ignoreSkillBonus ) {
+		int mightBonus = GetParameterBonus(GetActualMight());
+		int mightAndSkillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + mightBonus;
+		dmgSum += this->_melee_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS) + mightAndSkillbonus;
+	}
+
+	if ( dmgSum < 1 )
+		dmgSum = 1;
+	
+	return dmgSum;
 }
 
+int Player::CalculateMeleeDmgToEnemyWithWeapon( ItemGen * weapon, unsigned int uTargetActorID , bool addOneDice ) {
 
-int Player::CalculateMeleeDmgToEnemyWithWeapon( ItemGen * weapon, unsigned int uTargetActorID , bool addOneDice )
-{
-  int itemId = weapon->uItemID;
-  int diceCount = pItemsTable->pItems[itemId].uDamageDice;
-  if (addOneDice)
-  {
-    diceCount++;
-  }
-  int diceSides = pItemsTable->pItems[itemId].uDamageRoll;
-  int diceResult = 0;
-  for (int i = 0; i < diceCount; i++)
-  {
-    diceResult += rand() % diceSides + 1;
-  }
-  int totalDmg = pItemsTable->pItems[itemId].uDamageMod + diceResult;
-  if ( uTargetActorID > 0)
-  {
-    int enchType = weapon->special_enchantment;
-    if ( MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_UNDEAD) && (enchType == 64 || itemId == ITEM_ARTIFACT_GHOULSBANE || itemId == ITEM_ARTIFACT_GIBBET || itemId == ITEM_RELIC_JUSTICE) )
-    {
-      totalDmg *= 2;
-    }
-    else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_KREEGAN) && ( enchType == 39 || itemId == ITEM_ARTIFACT_GIBBET))
-    {
-      totalDmg *= 2;
-    }
-    else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_DRAGON) && ( enchType == 40 || itemId == ITEM_ARTIFACT_GIBBET))
-    {
-      totalDmg *= 2;
-    }
-    else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_ELF) && ( enchType == 63 || itemId == ITEM_RELIC_OLD_NICK))
-    {
-      totalDmg *= 2;
-    }
-    else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_TITAN) && ( enchType == 65 ))
-    {
-      totalDmg *= 2;
-    }
-  }
-  if ( (signed int)SkillToMastery(this->pActiveSkills[PLAYER_SKILL_DAGGER]) >= 3
-    && pItemsTable->pItems[itemId].uSkillType == 2
-    && rand() % 100 < 10 )
-    totalDmg *= 3;
-  return totalDmg;
+	int itemId = weapon->uItemID;
+	int diceCount = pItemsTable->pItems[itemId].uDamageDice;
+
+	if (addOneDice)
+		diceCount++;
+	
+	int diceSides = pItemsTable->pItems[itemId].uDamageRoll;
+	int diceResult = 0;
+
+	for (int i = 0; i < diceCount; i++) { // roll dice 
+		diceResult += rand() % diceSides + 1;
+	}
+
+	int totalDmg = pItemsTable->pItems[itemId].uDamageMod + diceResult; // add modifer
+
+	if ( uTargetActorID > 0) { // if an actor has been provided
+
+		int enchType = weapon->special_enchantment; // check against enchantments
+
+		if ( MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_UNDEAD) && (enchType == 64 || itemId == ITEM_ARTIFACT_GHOULSBANE || itemId == ITEM_ARTIFACT_GIBBET || itemId == ITEM_RELIC_JUSTICE) ) {
+			totalDmg *= 2; // double damage vs undead
+		}
+		else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_KREEGAN) && ( enchType == 39 || itemId == ITEM_ARTIFACT_GIBBET)) {
+			totalDmg *= 2; // double damage vs devils
+		}
+		else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_DRAGON) && ( enchType == 40 || itemId == ITEM_ARTIFACT_GIBBET)) {
+			totalDmg *= 2; // double damage vs dragons
+		}
+		else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_ELF) && ( enchType == 63 || itemId == ITEM_RELIC_OLD_NICK)) {
+			totalDmg *= 2; // double damage vs elf
+		}
+		else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_TITAN) && ( enchType == 65 )) {
+			totalDmg *= 2; // double damage vs titan
+		}
+	}
+
+	if ( GetActualSkillMastery(PLAYER_SKILL_DAGGER) >= 3 && pItemsTable->pItems[itemId].uSkillType == 2 && rand() % 100 < 10 ) //master dagger
+		totalDmg *= 3; // triple damage backstab
+
+	return totalDmg;
 }
-
 
 //----- (0048D0B9) --------------------------------------------------------
-int Player::GetRangedAttack()
-{
-  int v3; // edi@3
-  //int v4; // eax@4
-  //int v5; // edi@4
-  int v6; // edi@4
-  int v7; // edi@4
+int Player::GetRangedAttack() {
 
-  ItemGen* mainHandItem = GetMainHandItem();
-  if ( mainHandItem != nullptr && ( mainHandItem->uItemID < ITEM_BLASTER || mainHandItem->uItemID > ITEM_LASER_RIFLE ))
-  {
-    //v4 = GetActualAccuracy();
-    //v5 = GetParameterBonus(GetActualAccuracy());
-    v6 = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + GetParameterBonus(GetActualAccuracy());
-    v7 = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + v6;
-    v3 = this->_ranged_atk_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + v7;
-  }
-  else
-  {
-    v3 = GetActualAttack(true);
-  }
-  return v3;
+	int result;
+	int weapbonus;
+	int skillbonus;
+
+	ItemGen* mainHandItem = GetMainHandItem();
+	
+	if ( mainHandItem != nullptr && ( mainHandItem->uItemID < ITEM_BLASTER || mainHandItem->uItemID > ITEM_LASER_RIFLE )) { //no blasters
+		weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + GetParameterBonus(GetActualAccuracy());
+		skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + weapbonus;
+		result = this->_ranged_atk_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK) + skillbonus;
+	}
+	else {
+		result = GetActualAttack(true);
+	}
+
+	return result;
 }
 
 //----- (0048D124) --------------------------------------------------------
-int Player::GetRangedDamageMin()
-{
-  int v2; // edi@1
-  int v3; // edi@1
-  int v4; // edi@1
-  int result; // eax@6
+int Player::GetRangedDamageMin() {
 
-  v2 = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MIN);
-  v3 = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + v2;
-  v4 = this->_ranged_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + v3;
-  if ( v4 >= 1 )
-    result = v4;
-  else
-    result = 0;
-  return result;
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MIN);
+	int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + weapbonus;
+	int result = this->_ranged_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + skillbonus;
+
+	if (result < 0) // cant be less than 0
+		result = 0;
+
+	return result;
 }
 
 //----- (0048D191) --------------------------------------------------------
-int Player::GetRangedDamageMax()
-{
-  int v2; // edi@1
-  int v3; // edi@1
-  int v4; // edi@1
-  int result; // eax@6
+int Player::GetRangedDamageMax() {
 
-  v2 = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MAX);
-  v3 = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + v2;
-  v4 = this->_ranged_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + v3;
-  if ( v4 >= 1 )
-    result = v4;
-  else
-    result = 0;
-  return result;
+	int weapbonus = GetItemsBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_MAX);
+	int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + weapbonus;
+	int result = this->_ranged_dmg_bonus + GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS) + skillbonus;
+
+	if (result < 0)
+		result = 0;
+
+	return result;
 }
 
 //----- (0048D1FE) --------------------------------------------------------
-int Player::CalculateRangedDamageTo( int a2 )
-{
-  ItemGen *v4; // ebx@2
-  unsigned int v5; // edi@2
-  int v9; // esi@5
-  int v10; // ebx@6
-  signed int v15; // [sp+8h] [bp-Ch]@2
-  int v17; // [sp+10h] [bp-4h]@1
+int Player::CalculateRangedDamageTo( int uMonsterInfoID) {
 
-  v17 = 0;
-  if ( !HasItemEquipped(EQUIP_BOW) )
-    return 0;
-  v4 = (ItemGen *)&this->pInventoryItemList[this->pEquipment.uBow-1];
-  v5 = v4->uItemID;
-  v15 = pItemsTable->pItems[v5].uDamageRoll;
-  for( int i = 0; i < pItemsTable->pItems[v5].uDamageDice; i++ )
-  {
-    int v7 = rand() % v15;
-    v17 += v7 + 1;
-  }
-  v9 = pItemsTable->pItems[v5].uDamageMod + v17;
-  if ( a2 )
-  {
-    v10 = v4->special_enchantment;
-    if ( v10 == 64 && MonsterStats::BelongsToSupertype(a2, MONSTER_SUPERTYPE_UNDEAD))
-    {
-      v9 *= 2;
-    }
-    else if ( v10 == 39 && MonsterStats::BelongsToSupertype(a2, MONSTER_SUPERTYPE_KREEGAN))
-    {
-      v9 *= 2;
-    }
-    else if ( v10 == 40 && MonsterStats::BelongsToSupertype(a2, MONSTER_SUPERTYPE_DRAGON))
-    {
-      v9 *= 2;
-    }
-    else if ( v10 == 63 && MonsterStats::BelongsToSupertype(a2, MONSTER_SUPERTYPE_ELF))
-    {
-      v9 *= 2;
-    }
-  }
-  return v9 + this->GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS);
+	if (!HasItemEquipped(EQUIP_BOW)) // no bow
+		return 0;	
+	
+	ItemGen *bow = (ItemGen *)&this->pInventoryItemList[this->pEquipment.uBow - 1];
+	int itemenchant = bow->special_enchantment;
+	
+	signed int dmgperroll = pItemsTable->pItems[bow->uItemID].uDamageRoll;
+	int damagefromroll = 0;
+	int damage = 0;
+
+	for( int i = 0; i < pItemsTable->pItems[bow->uItemID].uDamageDice; i++ ) { // roll damage dice
+		damagefromroll += ((rand() % dmgperroll) + 1);
+	}
+
+	damage = pItemsTable->pItems[bow->uItemID].uDamageMod + damagefromroll; // total damage
+
+	if (uMonsterInfoID) { // check against bow enchantments
+
+		if (itemenchant == 64 && MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_UNDEAD)) { //double damage vs undead
+			damage *= 2;
+		}
+		else if (itemenchant == 39 && MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_KREEGAN)) { // double vs devils
+			damage *= 2;
+		}
+		else if (itemenchant == 40 && MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_DRAGON)) { // double vs dragons
+			damage *= 2;
+		}
+		else if (itemenchant == 63 && MonsterStats::BelongsToSupertype(uMonsterInfoID, MONSTER_SUPERTYPE_ELF)) { // double vs elf
+			damage *= 2;
+		}
+	}
+
+	return damage + this->GetSkillBonus(CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS);
 }
 
 //----- (0048D2EA) --------------------------------------------------------
-String Player::GetMeleeDamageString()
-{
-    int min_damage; // edi@3
-    int max_damage; // eax@3
+String Player::GetMeleeDamageString() {
+
+    int min_damage;
+    int max_damage;
 
     ItemGen* mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr && (mainHandItem->uItemID >= ITEM_WAND_FIRE) && (mainHandItem->uItemID <= ITEM_WAND_INCENERATION))
-    {
-        return String(localization->GetString(595)); // Wand
+    if (mainHandItem != nullptr && (mainHandItem->uItemID >= ITEM_WAND_FIRE) && (mainHandItem->uItemID <= ITEM_WAND_INCENERATION)) {
+		return String(localization->GetString(595)); // Wand
     }
-    else if (mainHandItem != nullptr && (mainHandItem->uItemID == ITEM_BLASTER || mainHandItem->uItemID == ITEM_LASER_RIFLE))
-    {
-        min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);
+    else if (mainHandItem != nullptr && (mainHandItem->uItemID == ITEM_BLASTER || mainHandItem->uItemID == ITEM_LASER_RIFLE)) {
+        min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true); //blasters
         max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX, true);
     }
-    else
-    {
-        min_damage = GetMeleeDamageMinimal();
+    else {
+        min_damage = GetMeleeDamageMinimal(); // weapons
         max_damage = GetMeleeDamageMaximal();
     }
 
-    if (min_damage == max_damage)
-    {
-        return StringPrintf("%d", min_damage);
+    if (min_damage == max_damage) {
+        return StringPrintf("%d", min_damage); // build string
     }
-    else
-    {
-        return StringPrintf("%d - %d", min_damage, max_damage);
+    else {
+        return StringPrintf("%d - %d", min_damage, max_damage); //build string
     }
 }
 
 //----- (0048D396) --------------------------------------------------------
 String Player::GetRangedDamageString()
 {
-    int min_damage; // edi@3
-    int max_damage; // eax@3
+    int min_damage;
+    int max_damage;
 
     ItemGen *mainHandItem = GetMainHandItem();
-    if (mainHandItem != nullptr && (mainHandItem->uItemID >= 135) && (mainHandItem->uItemID <= 159))
-    {
-        return String(localization->GetString(595)); // Wand
-    }
-    else if (mainHandItem != nullptr && (mainHandItem->uItemID == ITEM_BLASTER || mainHandItem->uItemID == ITEM_LASER_RIFLE))
-    {
-        min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);
+
+    if (mainHandItem != nullptr && (mainHandItem->uItemID >= 135) && (mainHandItem->uItemID <= 159)) {
+		return String(localization->GetString(595)); // Wand
+	}
+    else if (mainHandItem != nullptr && (mainHandItem->uItemID == ITEM_BLASTER || mainHandItem->uItemID == ITEM_LASER_RIFLE)) {
+        min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true); // blasters
         max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX, true);
     }
-    else
-    {
-        min_damage = GetRangedDamageMin();
+    else {
+        min_damage = GetRangedDamageMin(); // weaposn
         max_damage = GetRangedDamageMax();
     }
 
-    if (max_damage > 0)
-    {
-        if (min_damage == max_damage)
-        {
-            return StringPrintf("%d", min_damage);
+    if (max_damage > 0) {
+        if (min_damage == max_damage) {
+            return StringPrintf("%d", min_damage); // build string
         }
-        else
-        {
-            return StringPrintf("%d - %d", min_damage, max_damage);
+        else {
+            return StringPrintf("%d - %d", min_damage, max_damage); // build string
         }
     }
-    else
-    {
-        return String("N/A");
+    else {
+        return String("N/A"); // no bow equipped
     }
 }
 
 //----- (0048D45A) --------------------------------------------------------
-bool Player::CanTrainToNextLevel()
-{
-  int lvl = this->uLevel + 1;
-  int neededExp = ((lvl * (lvl - 1)) / 2 * 1000);
-  return this->uExperience >= neededExp;
+bool Player::CanTrainToNextLevel() {
+
+	int lvl = this->uLevel + 1;
+	int neededExp = ((lvl * (lvl - 1)) / 2 * 1000);
+	return this->uExperience >= neededExp;
 }
 
 //----- (0048D498) --------------------------------------------------------
-unsigned int Player::GetExperienceDisplayColor()
-{
-  if ( CanTrainToNextLevel() )
-    return ui_character_bonus_text_color;
-  else
-    return ui_character_default_text_color;
+unsigned int Player::GetExperienceDisplayColor() {
+
+	if ( CanTrainToNextLevel() )
+		return ui_character_bonus_text_color;
+	else
+		return ui_character_default_text_color;
 }
 
 //----- (0048D4B3) --------------------------------------------------------
-int Player::CalculateIncommingDamage( DAMAGE_TYPE dmg_type, int dmg )
-{
-  int resist_value; // edi@8
-  int player_luck; // eax@21
-  signed int res_rand_divider; // ebx@2
-  int armor_skill; // eax@29
+int Player::CalculateIncommingDamage( DAMAGE_TYPE dmg_type, int dmg ) {
 
-  if ( classType == PLAYER_CLASS_LICH && (dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND || dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY || dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT )) //TODO: determine if spirit resistance should be handled by body res. modifier
-    return 0;
+	if ( classType == PLAYER_CLASS_LICH && (dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND || dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY || dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT )) //TODO: determine if spirit resistance should be handled by body res. modifier
+		return 0; // liches are not affected by self magics
 
-  resist_value = 0;
-  switch(dmg_type)
-      {
-      case DMGT_FIRE:   resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE); break;
-      case DMGT_ELECTR: resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR);  break;
-      case DMGT_COLD:   resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER); break;
-      case DMGT_EARTH:  resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH); break;
-      
-      case DMGT_SPIRIT: resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_SPIRIT);break;
-      case DMGT_MIND:   resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND); break;
-      case DMGT_BODY:   resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY); break;
-      }
+	int resist_value = 0;
 
-  player_luck = GetActualLuck();
-  res_rand_divider = GetParameterBonus(player_luck) + resist_value + 30;
+	switch(dmg_type) { // get resistance
+		case DMGT_FIRE:   resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE); break;
+		case DMGT_ELECTR: resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR);  break;
+		case DMGT_COLD:   resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER); break;
+		case DMGT_EARTH:  resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH); break;
 
-  if ( GetParameterBonus(player_luck) + resist_value > 0 )
-  { 
-    for (int i = 0; i < 4; i++)
-    {
-      if ( rand() % res_rand_divider >= 30 )
-        dmg >>= 1;
-      else
-        break;
-    }
-  }
-  ItemGen* equippedArmor = GetArmorItem();
-  if (( dmg_type == DMGT_PHISYCAL ) && ( equippedArmor != nullptr ))
-  {
-      if (!equippedArmor->IsBroken()) 
-      {
-        armor_skill = equippedArmor->GetPlayerSkillType();
-        if ( armor_skill==PLAYER_SKILL_PLATE )
-        {
-          if ( SkillToMastery(pActiveSkills[PLAYER_SKILL_PLATE]) >= 3 )
-              return dmg / 2;
-        }
-        if (armor_skill==PLAYER_SKILL_CHAIN )
-        {
-          if (SkillToMastery(pActiveSkills[PLAYER_SKILL_CHAIN]) == 4) 
-             return dmg * 2 / 3;
-        }
-      }
-  }
-  return dmg;
+		case DMGT_SPIRIT: resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_SPIRIT);break;
+		case DMGT_MIND:   resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND); break;
+		case DMGT_BODY:   resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY); break;
+	}
+
+	int player_luck = GetActualLuck();
+	signed int res_rand_divider = GetParameterBonus(player_luck) + resist_value + 30;
+
+	if ( GetParameterBonus(player_luck) + resist_value > 0 ) {
+		for (int i = 0; i < 4; i++) {
+			if ( rand() % res_rand_divider >= 30 )
+				dmg /= 2; // damage reduction on successful check
+			else
+				break;
+		}
+	}
+
+	ItemGen* equippedArmor = GetArmorItem();
+	if (( dmg_type == DMGT_PHISYCAL ) && ( equippedArmor != nullptr )) { // physical damage and wearing armour
+		if (!equippedArmor->IsBroken()) { // armour isnt broken
+
+			int armor_skill = equippedArmor->GetPlayerSkillType();
+			
+			if ( armor_skill==PLAYER_SKILL_PLATE ) {
+				if ( GetActualSkillMastery(PLAYER_SKILL_PLATE) >= 3 ) // master and above half incoming damage
+					return dmg / 2;
+			}
+
+			if (armor_skill==PLAYER_SKILL_CHAIN ) {
+				if ( GetActualSkillMastery(PLAYER_SKILL_CHAIN) == 4) // gm cahin reducing damage 
+					return dmg * 2 / 3;
+			}
+		}
+	}
+
+	return dmg;
 }
 
 //----- (0048D62C) --------------------------------------------------------
-ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_EQUIP_TYPE uEquipSlot)
-{
-  return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
+ITEM_EQUIP_TYPE Player::GetEquippedItemEquipType(ITEM_EQUIP_TYPE uEquipSlot) {
+
+	return GetNthEquippedIndexItem(uEquipSlot)->GetItemEquipType();
 }
 
 //----- (0048D651) --------------------------------------------------------
-PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_EQUIP_TYPE uEquipSlot)
-{
-  return (PLAYER_SKILL_TYPE)GetNthEquippedIndexItem(uEquipSlot)->GetPlayerSkillType();
+PLAYER_SKILL_TYPE Player::GetEquippedItemSkillType(ITEM_EQUIP_TYPE uEquipSlot) {
+
+	return (PLAYER_SKILL_TYPE)GetNthEquippedIndexItem(uEquipSlot)->GetPlayerSkillType();
 }
 
 //----- (0048D676) --------------------------------------------------------
-bool Player::IsUnarmed()
-{
+bool Player::IsUnarmed() {
+
   return !HasItemEquipped(EQUIP_TWO_HANDED) &&
         (!HasItemEquipped(EQUIP_SINGLE_HANDED) || GetOffHandItem()->GetItemEquipType() == EQUIP_SHIELD);
 }
 
 //----- (0048D6AA) --------------------------------------------------------
-bool Player::HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex)
-{
-  uint i = pEquipment.pIndices[uEquipIndex];
-  if (i)
-    return !pOwnItems[i - 1].IsBroken();
-  else 
-    return false;
+bool Player::HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex) {
+
+	uint i = pEquipment.pIndices[uEquipIndex];
+	if (i)
+		return !pOwnItems[i - 1].IsBroken();
+	else 
+		return false;
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Player::HasEnchantedItemEquipped(int uEnchantment)
-{
-  for (uint i = 0; i < 16; ++i)
-  {
-    if (HasItemEquipped((ITEM_EQUIP_TYPE)i) &&
-      GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
-      return true;
-  }
-  return false;
+bool Player::HasEnchantedItemEquipped(int uEnchantment) {
+
+	for (uint i = 0; i < 16; ++i) { // search over equipped inventory
+		if (HasItemEquipped((ITEM_EQUIP_TYPE)i) && GetNthEquippedIndexItem(i)->special_enchantment == uEnchantment)
+			return true; // check item equipped and is enchanted
+	}
+	
+	return false; // no echanted items equipped
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Player::WearsItem( int item_id, ITEM_EQUIP_TYPE equip_type )
-{
-  return ( HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id );
+bool Player::WearsItem( int item_id, ITEM_EQUIP_TYPE equip_type ) {
+
+	//check aginst specific item and slot 
+	return ( HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id );
 }
 
-bool Player::WearsItemAnyWhere(int item_id)
-{
-  for (int i = 0; i < 16; i++)
-  {
-    if (WearsItem(item_id, (ITEM_EQUIP_TYPE) i))
-    {
-      return true;
-    }
-  }
-  return false;
+bool Player::WearsItemAnyWhere(int item_id) {
+
+	for (int i = 0; i < 16; i++) { // check over equipped inventory
+		if (WearsItem(item_id, (ITEM_EQUIP_TYPE) i)) {
+			return true; // foudn item
+		}
+	}
+
+	return false; // item not equipped
 }
 
 //----- (0048D76C) --------------------------------------------------------
-int Player::StealFromShop( ItemGen *itemToSteal, int extraStealDifficulty, int reputation, int a5, int *fineIfFailed )      //returns an int, but is the return value is compared to zero, so might change to bool
-{
-  unsigned __int16 v6; // cx@8
-  int v7; // edi@8
-  unsigned int v8; // ebx@8
-  unsigned int itemvalue; // esi@8
-  int v10; // eax@8
-  int currMaxItemValue; // edi@12
+int Player::StealFromShop( ItemGen *itemToSteal, int extraStealDifficulty, int reputation, int extraStealFine, int *fineIfFailed ) {      //returns an int, but is the return value is compared to zero, so might change to bool
+	
+	// fineiffailed is changed!
+	
+	if ( !itemToSteal || !CanAct() ) {
+		return 0; // no item or cant act - no stealing
+	}
+	else {
+		unsigned int stealskill = this->GetActualSkillLevel(PLAYER_SKILL_STEALING);
+		unsigned int stealmaster = this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
+		unsigned int itemvalue = itemToSteal->GetValue();
+		int equiptype = itemToSteal->GetItemEquipType();
 
-  if ( !itemToSteal
-    || this->IsEradicated()
-    || this->IsDead()
-    || this->IsPertified()
-    || this->IsDrunk()
-    || this->IsUnconcious()
-    || this->IsAsleep() )
-  {
-    return 0;
-  }
-  else
-  {
-    v6 = this->pActiveSkills[PLAYER_SKILL_STEALING];
-    v7 = v6 & 0x3F;
-    v8 = SkillToMastery(v6);
-    itemvalue = itemToSteal->GetValue();
-    v10 = itemToSteal->GetItemEquipType();
-    if ( v10 == EQUIP_SINGLE_HANDED || v10 == EQUIP_TWO_HANDED || v10 == EQUIP_BOW )
-      itemvalue *= 3;
-    currMaxItemValue = StealingRandomBonuses[rand() % 5] + v7 * StealingMasteryBonuses[v8];
-    *fineIfFailed = 100 * (reputation + extraStealDifficulty) + itemvalue;
-    if (a5)
-    {
-      *fineIfFailed += 500;
-    }
-    if ( rand() % 100 >= 5 )
-    {
-      if ( *fineIfFailed > currMaxItemValue )
-        if (*fineIfFailed - currMaxItemValue < 500)
-        {
-          return 1;
-        }
-        else
-        {
-          return 0;
-        }
-      else
-        return 2;
-    }
-    else
-    {
-      return 0;
-    }
-  }
+		if (equiptype == EQUIP_SINGLE_HANDED || equiptype == EQUIP_TWO_HANDED || equiptype == EQUIP_BOW )
+			itemvalue *= 3;
+
+		int currMaxItemValue = StealingRandomBonuses[rand() % 5] + stealskill * StealingMasteryBonuses[stealmaster];
+		*fineIfFailed = 100 * (reputation + extraStealDifficulty) + itemvalue;
+
+		if (extraStealFine) {
+			*fineIfFailed += 500;
+		}
+
+		if ( rand() % 100 >= 5 ) {
+			if (*fineIfFailed > currMaxItemValue) {
+				if (*fineIfFailed - currMaxItemValue < 500) {
+					return 1; // fail with item
+				}
+				else {
+					return 0; // failed no item
+				}
+			}
+			else {
+				return 2; // perfect crime
+			}
+		}
+		else {
+			return 0; // failed no item
+		}
+	}
 }
 
 //----- (0048D88B) --------------------------------------------------------
-int Player::StealFromActor(unsigned int uActorID, int _steal_perm, int reputation)
-{
-  Actor *actroPtr; // edi@1
-  int v7; // ebx@10
-  unsigned int stealingMastery; // esi@10
-  int fineIfFailed; // esi@10
-  int v11; // eax@13
-  bool HasFullItemSlots; // ebx@15
-  unsigned __int16 carriedItemId; // si@21
-  unsigned int enchBonusSum; // esi@31
-  int *enchTypePtr; // eax@34
-  ItemGen tempItem; // [sp+8h] [bp-34h]@15
-  int currMaxItemValue;
+int Player::StealFromActor(unsigned int uActorID, int _steal_perm, int reputation) { // returns not used - should luck attribute affect
 
-  actroPtr = &pActors[uActorID];
-  if ( !actroPtr
-    || this->IsEradicated()
-    || this->IsDead()
-    || this->IsPertified()
-    || this->IsDrunk()
-    || this->IsUnconcious()
-    || this->IsAsleep() )
-  {
-    return 0;
-  }
-  if ( !actroPtr->ActorHasItem() )
-    actroPtr->SetRandomGoldIfTheresNoItem();
-  unsigned __int16 v6 = this->pActiveSkills[PLAYER_SKILL_STEALING];
-  v7 = v6 & 0x3F;
-  stealingMastery = SkillToMastery(v6);
-  int v30 = StealingMasteryBonuses[stealingMastery];
-  int v29 = StealingRandomBonuses[rand() % 5];
-  fineIfFailed = actroPtr->pMonsterInfo.uLevel + 100 * (_steal_perm + reputation);
-  currMaxItemValue = v29 + v7 * v30;
-  if ( rand() % 100 < 5 || fineIfFailed > currMaxItemValue || actroPtr->ActorEnemy() )
-  {
-    Actor::AggroSurroundingPeasants(uActorID, 1);
-    GameUI_StatusBar_OnEvent(localization->FormatString(376, this->pName)); // %s was caught stealing!
-    return 0;
-  }
-  else
-  {
-    v11 = rand();
-    if ( v11 % 100 >= 70 )    //stealing gold
-    {
-      enchBonusSum = 0;
-      for (int i = 0; i < v7; i++)
-        enchBonusSum += rand() % StealingEnchantmentBonusForSkill[stealingMastery] + 1;
-      if ( actroPtr->ActorHasItems[3].GetItemEquipType() != EQUIP_GOLD )
-        return 2;
-      enchTypePtr = (int *)&actroPtr->ActorHasItems[3].special_enchantment;
-      if ( (int)enchBonusSum >= *enchTypePtr )
-      {
-        actroPtr->ActorHasItems[3].uItemID = ITEM_NULL;
-        *enchTypePtr = 0;
-      }
-      else
-        *enchTypePtr -= enchBonusSum;
-      if ( enchBonusSum )
-      {
-        pParty->PartyFindsGold(enchBonusSum, 2);
-        GameUI_StatusBar_OnEvent(localization->FormatString(302, this->pName, enchBonusSum));     //%s stole %d gold
-      }
-      else
-          GameUI_StatusBar_OnEvent(localization->FormatString(377, this->pName));   // %s failed to steal anything
-      return 2;
-    }
-    else if ( v11 % 100 >= 40 )   //stealing an item      
-    {
-      tempItem.Reset();
-      HasFullItemSlots = false;
-      int i;
-      for (i = 0; i < 4; i++)
-      {
-        if ( actroPtr->ActorHasItems[i].uItemID != 0 && actroPtr->ActorHasItems[i].GetItemEquipType() != EQUIP_GOLD )
-          break;
-      }
-      if (i == 4)
-        HasFullItemSlots = true;
-      carriedItemId = actroPtr->uCarriedItemID;
-      if ( carriedItemId != 0 || HasFullItemSlots )
-      {
-        tempItem.Reset();
-        if ( carriedItemId != 0 )
-        {
-          actroPtr->uCarriedItemID = 0;
-          tempItem.uItemID = carriedItemId;
-          if ( pItemsTable->pItems[carriedItemId].uEquipType == EQUIP_WAND )
-            tempItem.uNumCharges = rand() % 6 + pItemsTable->pItems[carriedItemId].uDamageMod + 1;
-          else if ( pItemsTable->pItems[carriedItemId].uEquipType == EQUIP_POTION && carriedItemId != ITEM_POTION_BOTTLE)
-            tempItem.uEnchantmentType = 2 * rand() % 4 + 2;
-        }
-        else
-        {
-          ItemGen* itemToSteal = &actroPtr->ActorHasItems[rand() % 4];
-          memcpy(&tempItem, itemToSteal, sizeof(tempItem));
-          itemToSteal->Reset();
-          carriedItemId = tempItem.uItemID;
-        }
-        if (carriedItemId != 0)     // looks odd in current context, but avoids accessing zeroth element of pItemsTable->pItems
-        {
-          pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+	Actor *actroPtr;
+	actroPtr = &pActors[uActorID];
 
-          GameUI_StatusBar_OnEvent(
-              localization->FormatString(
-                  304,   // Official                   //TODO: add a normal "%d stole %d" message
-                  this->pName,
-                  pItemsTable->pItems[carriedItemId].pUnidentifiedName
-              )
-          );
+	if (!actroPtr || !CanAct()) { // no actor to steal from or player cant act
+		return 0;
+	}
 
-          pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
-          memcpy(&pParty->pPickedItem, &tempItem, sizeof(ItemGen));
-          pMouse->SetCursorBitmapFromItemID(carriedItemId);
-          return 2;
-        }
-      }
-    }
-    GameUI_StatusBar_OnEvent(localization->FormatString(377, this->pName));   // %s failed to steal anything
-    return 2;
-  }
+	if (!actroPtr->ActorHasItem()) // if actor does not have an item
+		actroPtr->SetRandomGoldIfTheresNoItem(); // add some gold
+
+	unsigned int stealskill = this->GetActualSkillLevel(PLAYER_SKILL_STEALING);
+	unsigned int stealingMastery = this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
+	int currMaxItemValue = StealingRandomBonuses[rand() % 5] + stealskill * StealingMasteryBonuses[stealingMastery];
+	int fineIfFailed = actroPtr->pMonsterInfo.uLevel + 100 * (_steal_perm + reputation);
+
+	if ( rand() % 100 < 5 || fineIfFailed > currMaxItemValue || actroPtr->ActorEnemy() ) { // busted
+		Actor::AggroSurroundingPeasants(uActorID, 1);
+		GameUI_StatusBar_OnEvent(localization->FormatString(376, this->pName)); // %s was caught stealing!
+		return 0; // no item fail
+	}
+	else {
+		int random = rand();
+
+		if ( random % 100 >= 70 ) {    //stealing gold
+			
+			if (actroPtr->ActorHasItems[3].GetItemEquipType() != EQUIP_GOLD) { // no gold to steal fail
+				GameUI_StatusBar_OnEvent(localization->FormatString(377, this->pName));   // %s failed to steal anything
+				return 1;
+			}
+
+			unsigned int enchBonusSum = 0; // how much to steal
+			for (int i = 0; i < stealskill; i++)
+				enchBonusSum += rand() % StealingEnchantmentBonusForSkill[stealingMastery] + 1; // add random stealing bonuses
+
+			int *enchTypePtr;
+			enchTypePtr = (int *)&actroPtr->ActorHasItems[3].special_enchantment; // this is the amount of gold the actor has
+
+			if ( (int)enchBonusSum >= *enchTypePtr ) { // steal all the gold
+				enchBonusSum = *enchTypePtr;
+				actroPtr->ActorHasItems[3].uItemID = ITEM_NULL;
+				*enchTypePtr = 0;
+			}
+			else
+				*enchTypePtr -= enchBonusSum; // steal some of the gold
+
+			if ( enchBonusSum ) {
+				pParty->PartyFindsGold(enchBonusSum, 2);
+				GameUI_StatusBar_OnEvent(localization->FormatString(302, this->pName, enchBonusSum));     //%s stole %d gold
+			}
+			else
+				GameUI_StatusBar_OnEvent(localization->FormatString(377, this->pName));   // %s failed to steal anything
+				
+			return 2; // stole gold
+		}
+		else if ( random % 100 >= 40 ) {   //stealing an item
+
+			ItemGen tempItem;
+			tempItem.Reset();
+
+			int randslot = rand() % 4;
+			unsigned int carriedItemId = actroPtr->uCarriedItemID; // carried items are special items the ncp carries (ie lute from bard)
+
+			if ( carriedItemId != 0 || actroPtr->ActorHasItems[randslot].uItemID != 0 && actroPtr->ActorHasItems[randslot].GetItemEquipType() != EQUIP_GOLD) { // check we have an item to steal
+				
+				if ( carriedItemId != 0 ) { // load item into tempitem
+					actroPtr->uCarriedItemID = 0;
+					tempItem.uItemID = carriedItemId;
+					if ( pItemsTable->pItems[carriedItemId].uEquipType == EQUIP_WAND )
+						tempItem.uNumCharges = rand() % 6 + pItemsTable->pItems[carriedItemId].uDamageMod + 1;
+					else if ( pItemsTable->pItems[carriedItemId].uEquipType == EQUIP_POTION && carriedItemId != ITEM_POTION_BOTTLE)
+						tempItem.uEnchantmentType = 2 * rand() % 4 + 2;
+				}
+				else {
+					ItemGen* itemToSteal = &actroPtr->ActorHasItems[randslot];
+					memcpy(&tempItem, itemToSteal, sizeof(tempItem));
+					itemToSteal->Reset();
+					carriedItemId = tempItem.uItemID;
+				}
+
+				if (carriedItemId != 0) {     // looks odd in current context, but avoids accessing zeroth element of pItemsTable->pItems
+					
+					GameUI_StatusBar_OnEvent( localization->FormatString(
+				    304,   // Official                   //TODO: add a normal "%d stole %d" message
+				    this->pName,
+				    pItemsTable->pItems[carriedItemId].pUnidentifiedName ) );
+
+					pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem(); // drop or place picked item
+
+					memcpy(&pParty->pPickedItem, &tempItem, sizeof(ItemGen)); // copy item in to mouse picked item
+					pMouse->SetCursorBitmapFromItemID(carriedItemId);
+					return 2; // stole item
+				}
+			}
+		}
+
+		GameUI_StatusBar_OnEvent(localization->FormatString(377, this->pName));   // %s failed to steal anything
+		return 1;
+	}
 }
 
-
 //----- (0048DBB9) --------------------------------------------------------
-void Player::Heal(int amount)
-{
-  signed int max_health; // eax@3
+void Player::Heal(int amount) {
+	
+	if ( !IsEradicated() && !IsDead() ) { // cant heal
 
-  if ( !IsEradicated() && !IsDead() )
-  {
-    max_health = GetMaxHealth();
-    if ( IsZombie() )
-      max_health /= 2;
-    sHealth += amount;
-    if ( sHealth > max_health )
-        sHealth = max_health;
-    if ( IsUnconcious() )
-    {
-      if ( sHealth > 0 )
-      {
-        SetUnconcious(false);
-      }
-    }
-  }
+		signed int max_health = GetMaxHealth();
+		
+		if ( IsZombie() ) // zombie health is halved
+			max_health /= 2;
+
+		sHealth += amount; // add health
+		if ( sHealth > max_health ) // limits check
+			sHealth = max_health;
+
+		if ( IsUnconcious() ) { 
+			if ( sHealth > 0 ) { // wake up if health rises above 0
+				SetUnconcious(false);
+			}
+		}
+	}
 }
 
 //----- (0048DC1E) --------------------------------------------------------
-int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type)
-{
-    signed int recieved_dmg; // eax@1
-    bool broke_armor;
+int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
 
-    SetAsleep(false);
-    recieved_dmg = CalculateIncommingDamage(dmg_type, amount);
-    sHealth -= recieved_dmg;
-    broke_armor = sHealth <= -10;
-    if (sHealth < 1) //
-    {
-        if ((sHealth + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1)
-            || pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active())
-        {
-            SetCondUnconsciousWithBlockCheck(false);
-        }
-        else
-        {
-            SetCondDeadWithBlockCheck(false);
-            if (sHealth > 0)
-                sHealth = 0;
-        }
-        if (broke_armor)
-        {
+	SetAsleep(false); // wake up if asleep
+	signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount); // get damage
+	sHealth -= recieved_dmg; // reduce health
+
+	if (sHealth < 1) { // player unconscious or if too hurt - dead
+
+        if ((sHealth + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1) || pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
+			SetCondUnconsciousWithBlockCheck(false);
+		}
+		else {
+			SetCondDeadWithBlockCheck(false);
+		}
+
+        if (sHealth <= -10) { // break armor if health has dropped below -10
             ItemGen* equippedArmor = GetArmorItem();
-            if (equippedArmor != nullptr)
-            {
-                if (!(equippedArmor->uAttributes & ITEM_HARDENED))
-                {
-                    equippedArmor->SetBroken();
+            if (equippedArmor != nullptr) { // check there is some armor
+				if (!(equippedArmor->uAttributes & ITEM_HARDENED)) { // if its not hardened
+                    equippedArmor->SetBroken(); // break it
                 }
             }
         }
     }
+
     if (recieved_dmg && CanAct())
-        PlaySound(SPEECH_24, 0);
+        PlaySound(SPEECH_24, 0); // oww
+
     return recieved_dmg;
 }
 
 //----- (0048DCF6) --------------------------------------------------------
-int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor )
-{
-  SPECIAL_ATTACK_TYPE attTypeCast = (SPECIAL_ATTACK_TYPE) attType;
-  signed int v3; // edi@1
-  signed int v4; // ebx@1
-  int v6; // eax@2
-  int v8; // eax@8
-  int v10; // eax@8
-  int v11; // ebx@8
-  ItemGen *v13; // eax@9
-  int v22; // eax@49
-  signed int v23; // ebx@49
-  void *v27; // ecx@76
-  char v46[140]; // [sp+Ch] [bp-94h]@13
-  unsigned int v47; // [sp+98h] [bp-8h]@1
-  ItemGen* v48; // [sp+9Ch] [bp-4h]@1
+int Player::ReceiveSpecialAttackEffect( int attType, struct Actor *pActor ) { // long function - consider breaking into two??
 
-  v4 = 0;
-  v47 = 0;
-  v48 = nullptr;
-  switch ( attTypeCast )
-  {
-    case SPECIAL_ATTACK_CURSE:
-      v6 = GetActualWillpower();
-      v11 = GetParameterBonus(v6);
-      break;
+	SPECIAL_ATTACK_TYPE attTypeCast = (SPECIAL_ATTACK_TYPE) attType;
 
-    case SPECIAL_ATTACK_WEAK:
-    case SPECIAL_ATTACK_SLEEP:
-    case SPECIAL_ATTACK_DRUNK:
-    case SPECIAL_ATTACK_DISEASE_WEAK:
-    case SPECIAL_ATTACK_DISEASE_MEDIUM:
-    case SPECIAL_ATTACK_DISEASE_SEVERE:
-    case SPECIAL_ATTACK_UNCONSCIOUS:
-    case SPECIAL_ATTACK_AGING:
-      v6 = GetActualEndurance();
-      v11 = GetParameterBonus(v6);
-      break;
+	int statcheck;
+	int statcheckbonus;
+	int luckstat = GetActualLuck();
+	signed int itemstobreakcounter = 0;
+	char itemstobreaklist[140];
+	ItemGen* itemtocheck = nullptr;
+	ItemGen* itemtobreak = nullptr;
+	unsigned int itemtostealinvindex = 0;
 
-    case SPECIAL_ATTACK_INSANE:
-    case SPECIAL_ATTACK_PARALYZED:
-    case SPECIAL_ATTACK_FEAR:
-      v11 = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND);
-      break;
+	switch ( attTypeCast ) {
 
-    case SPECIAL_ATTACK_PETRIFIED:
-      v11 = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
-      break;
+		case SPECIAL_ATTACK_CURSE:
+			statcheck = GetActualWillpower();
+			statcheckbonus = GetParameterBonus(statcheck);
+			break;
 
-    case SPECIAL_ATTACK_POISON_WEAK:
-    case SPECIAL_ATTACK_POISON_MEDIUM:
-    case SPECIAL_ATTACK_POISON_SEVERE:
-    case SPECIAL_ATTACK_DEAD:
-    case SPECIAL_ATTACK_ERADICATED:
-      v11 = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
-      break;
+		case SPECIAL_ATTACK_WEAK:
+		case SPECIAL_ATTACK_SLEEP:
+		case SPECIAL_ATTACK_DRUNK:
+		case SPECIAL_ATTACK_DISEASE_WEAK:
+		case SPECIAL_ATTACK_DISEASE_MEDIUM:
+		case SPECIAL_ATTACK_DISEASE_SEVERE:
+		case SPECIAL_ATTACK_UNCONSCIOUS:
+		case SPECIAL_ATTACK_AGING:
+			statcheck = GetActualEndurance();
+			statcheckbonus = GetParameterBonus(statcheck);
+			break;
 
-    case SPECIAL_ATTACK_MANA_DRAIN:
-      v8 = GetActualWillpower();
-      v10 = GetActualIntelligence();
-      v11 = (GetParameterBonus(v10) + GetParameterBonus(v8)) / 2;
-      break;
+		case SPECIAL_ATTACK_INSANE:
+		case SPECIAL_ATTACK_PARALYZED:
+		case SPECIAL_ATTACK_FEAR:
+			statcheckbonus = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND);
+			break;
 
-    case SPECIAL_ATTACK_BREAK_ANY:
-      for (int i = 0; i < 138; i++)
-      {
-        v13 = &this->pInventoryItemList[i];
-        if ( v13->uItemID > 0 && v13->uItemID <= 134 && !v13->IsBroken())
-          v46[v4++] = i;
-      }
-      if ( !v4 )
-        return 0;
-      v48 = &this->pInventoryItemList[v46[rand() % v4]];
-      v11 = 3 * (pItemsTable->pItems[v48->uItemID].uMaterial + v48->GetDamageMod());
-      break;
+		case SPECIAL_ATTACK_PETRIFIED:
+			statcheckbonus = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
+			break;
 
-    case SPECIAL_ATTACK_BREAK_ARMOR:
-      for (int i = 0; i < 16; i++ )
-      {
-        if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) )
-        {
-          if ( i == EQUIP_ARMOUR )
-            v46[v4++] = this->pEquipment.uArmor - 1;
-          if ( (i == EQUIP_SINGLE_HANDED || i == EQUIP_TWO_HANDED) && GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_SHIELD )
-            v46[v4++] = this->pEquipment.pIndices[i] - 1;
-        }
-      }
-      if ( !v4 )
-        return 0;
-      v48 = &this->pInventoryItemList[v46[rand() % v4]];
-      v11 = 3 * (pItemsTable->pItems[v48->uItemID].uMaterial + v48->GetDamageMod());
-      break;
+		case SPECIAL_ATTACK_POISON_WEAK:
+		case SPECIAL_ATTACK_POISON_MEDIUM:
+		case SPECIAL_ATTACK_POISON_SEVERE:
+		case SPECIAL_ATTACK_DEAD:
+		case SPECIAL_ATTACK_ERADICATED:
+			statcheckbonus = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
+			break;
 
-    case SPECIAL_ATTACK_BREAK_WEAPON:
-      for (int i = 0; i < 16; i++ )
-      {
-        if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) )
-        {
-          if ( i == EQUIP_BOW )
-            v46[v4++] = (unsigned char)(this->pEquipment.uBow) - 1;
-          if ( (i == EQUIP_SINGLE_HANDED || i == EQUIP_TWO_HANDED)
-            && (GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_SINGLE_HANDED || GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_TWO_HANDED) )
-            v46[v4++] = this->pEquipment.pIndices[i] - 1;
-        }
-      }
-      if ( !v4 )
-        return 0;
-      v48 = &this->pInventoryItemList[v46[rand() % v4]];
-      v11 = 3 * (pItemsTable->pItems[v48->uItemID].uMaterial + v48->GetDamageMod());
-      break;
+		case SPECIAL_ATTACK_MANA_DRAIN:
+			statcheckbonus = (GetParameterBonus(GetActualIntelligence()) + GetParameterBonus(GetActualWillpower())) / 2;
+			break;
 
-    case SPECIAL_ATTACK_STEAL:
-      for ( int i = 0; i < 126; i++ )
-      {
-        int ItemPosInList = this->pInventoryMatrix[i];
-        if (ItemPosInList > 0)
-        {
-          ItemGen* v21 = &this->pInventoryItemList[ItemPosInList - 1];
-          if ( v21->uItemID > 0 && v21->uItemID <= 134 )
-          {
-              v46[v4++] = i;
-          }
-        }
-      }
-      if ( !v4 )
-        return 0;
-      v47 = v46[rand() % v4];
-      v6 = GetActualAccuracy();
-      v11 = GetParameterBonus(v6);
-      break;
+		case SPECIAL_ATTACK_BREAK_ANY:
+			for (int i = 0; i < 138; i++) {
+				itemtocheck = &this->pInventoryItemList[i];
 
-    default:
-      v11 = 0;
-      break;
-  }
-  v22 = GetActualLuck();
-  v23 = GetParameterBonus(v22) + v11 + 30;
-  if ( rand() % v23 >= 30 )
-  {
-    return 0;
-  }
-  else
-  {
-    for ( v3 = 0; v3 < 4; v3++ )
-    {
-      if ( this == pPlayers[v3 + 1] )
-        break;
-    }
+				if ( itemtocheck->uItemID > 0 && itemtocheck->uItemID <= 134 && !itemtocheck->IsBroken()) 
+					itemstobreaklist[itemstobreakcounter++] = i;
+			}
 
-    switch ( attTypeCast )
-    {
-      case SPECIAL_ATTACK_CURSE:
-        SetCondition(Condition_Cursed, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			if ( !itemstobreakcounter )
+				return 0;
 
-      case SPECIAL_ATTACK_WEAK:
-        SetCondition(Condition_Weak, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			itemtobreak = &this->pInventoryItemList[itemstobreaklist[rand() % itemstobreakcounter]];
+			statcheckbonus = 3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial + itemtobreak->GetDamageMod());
+			break;
 
-      case SPECIAL_ATTACK_SLEEP:
-        SetCondition(Condition_Sleep, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+		case SPECIAL_ATTACK_BREAK_ARMOR:
+			for (int i = 0; i < 16; i++ ) {
+				if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) ) {
+					if ( i == EQUIP_ARMOUR )
+						itemstobreaklist[itemstobreakcounter++] = this->pEquipment.uArmor - 1;
 
-      case SPECIAL_ATTACK_DRUNK:
-        SetCondition(Condition_Drunk, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+					if ( (i == EQUIP_SINGLE_HANDED || i == EQUIP_TWO_HANDED) && GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_SHIELD )
+						itemstobreaklist[itemstobreakcounter++] = this->pEquipment.pIndices[i] - 1;
+				}
+			}
 
-      case SPECIAL_ATTACK_INSANE:
-        SetCondition(Condition_Insane, 1);
-        pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			if ( !itemstobreakcounter )
+				return 0;
 
-      case SPECIAL_ATTACK_POISON_WEAK:
-        SetCondition(Condition_Poison_Weak, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			itemtobreak = &this->pInventoryItemList[itemstobreaklist[rand() % itemstobreakcounter]];
+			statcheckbonus = 3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial + itemtobreak->GetDamageMod());
+			break;
 
-      case SPECIAL_ATTACK_POISON_MEDIUM:
-        SetCondition(Condition_Poison_Medium, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+		case SPECIAL_ATTACK_BREAK_WEAPON:
+			for (int i = 0; i < 16; i++ ) {
+				if ( HasItemEquipped((ITEM_EQUIP_TYPE)i) ) {
+					if ( i == EQUIP_BOW )
+						itemstobreaklist[itemstobreakcounter++] = (unsigned char)(this->pEquipment.uBow) - 1;
 
-      case SPECIAL_ATTACK_POISON_SEVERE:
-        SetCondition(Condition_Poison_Severe, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+					if ( (i == EQUIP_SINGLE_HANDED || i == EQUIP_TWO_HANDED) && (GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_SINGLE_HANDED || GetEquippedItemEquipType((ITEM_EQUIP_TYPE)i) == EQUIP_TWO_HANDED) )
+						itemstobreaklist[itemstobreakcounter++] = this->pEquipment.pIndices[i] - 1;
+				}
+			}
 
-      case SPECIAL_ATTACK_DISEASE_WEAK:
-        SetCondition(Condition_Disease_Weak, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			if ( !itemstobreakcounter )
+				return 0;
 
-      case SPECIAL_ATTACK_DISEASE_MEDIUM:
-        SetCondition(Condition_Disease_Medium, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+			itemtobreak = &this->pInventoryItemList[itemstobreaklist[rand() % itemstobreakcounter]];
+			statcheckbonus = 3 * (pItemsTable->pItems[itemtobreak->uItemID].uMaterial + itemtobreak->GetDamageMod());
+			break;
 
-      case SPECIAL_ATTACK_DISEASE_SEVERE:
-        SetCondition(Condition_Disease_Severe, 1);
-        pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, v3);
-        return 1;
-        break;
+		case SPECIAL_ATTACK_STEAL:
+			for ( int i = 0; i < 126; i++ ) {
+				int ItemPosInList = this->pInventoryMatrix[i];
 
-      case SPECIAL_ATTACK_PARALYZED:
-        SetCondition(Condition_Paralyzed, 1);
-        pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+				if (ItemPosInList > 0) {
+					itemtocheck = &this->pInventoryItemList[ItemPosInList - 1];
+					
+					if (itemtocheck->uItemID > 0 && itemtocheck->uItemID <= 134 ) {
+						itemstobreaklist[itemstobreakcounter++] = i;
+					}
+				}
+			}
 
-      case SPECIAL_ATTACK_UNCONSCIOUS:
-        SetCondition(Condition_Unconcious, 1);
-        pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			if ( !itemstobreakcounter )
+				return 0;
 
-      case SPECIAL_ATTACK_DEAD:
-        SetCondition(Condition_Dead, 1);
-        pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			itemtostealinvindex = itemstobreaklist[rand() % itemstobreakcounter];
+			statcheck = GetActualAccuracy();
+			statcheckbonus = GetParameterBonus(statcheck);
+			break;
+		
+		default:
+			statcheckbonus = 0;
+			break;
+	}
 
-      case SPECIAL_ATTACK_PETRIFIED:
-        SetCondition(Condition_Pertified, 1);
-        pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+	signed int savecheck = GetParameterBonus(luckstat) + statcheckbonus + 30;
+	signed int whichplayer;
 
-      case SPECIAL_ATTACK_ERADICATED:
-        SetCondition(Condition_Eradicated, 1);
-        pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+	if ( rand() % savecheck >= 30 ) { // saving throw if attacke is avoided
+		return 0;
+	}
+	else {
+		for ( whichplayer = 0; whichplayer < 4; whichplayer++ ) {
+			if ( this == pPlayers[whichplayer + 1] )
+				break;
+		}
 
-      case SPECIAL_ATTACK_BREAK_ANY:
-      case SPECIAL_ATTACK_BREAK_ARMOR:
-      case SPECIAL_ATTACK_BREAK_WEAPON:
-        if ( !(v48->uAttributes & ITEM_HARDENED) )
-        {
-          PlaySound(SPEECH_40, 0);
-          v48->SetBroken();
-          pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
-        }
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+		// pass this to new fucntion??
+		// atttypecast - whichplayer - itemtobreak - itemtostealinvindex
 
-      case SPECIAL_ATTACK_STEAL:
-        PlaySound(SPEECH_40, 0);
-        v27 = pActor->ActorHasItems;
-        if ( pActor->ActorHasItems[0].uItemID )
-        {
-          v27 = &pActor->ActorHasItems[1];
-          if ( pActor->ActorHasItems[1].uItemID )
-          {
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-            return 1;
-          }
-        }
-        memcpy(v27, &this->pInventoryItemList[this->pInventoryMatrix[v47]-1], 0x24u);
-        RemoveItemAtInventoryIndex(v47);
-        pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+		switch ( attTypeCast ) {
+			
+			case SPECIAL_ATTACK_CURSE:
+				SetCondition(Condition_Cursed, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
 
-      case SPECIAL_ATTACK_AGING:
-        PlaySound(SPEECH_42, 0);
-        ++this->sAgeModifier;
-        pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			case SPECIAL_ATTACK_WEAK:
+				SetCondition(Condition_Weak, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
 
-      case SPECIAL_ATTACK_MANA_DRAIN:
-        PlaySound(SPEECH_41, 0);
-        this->sMana = 0;
-        pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			case SPECIAL_ATTACK_SLEEP:
+				SetCondition(Condition_Sleep, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
 
-      case SPECIAL_ATTACK_FEAR:
-        SetCondition(Condition_Fear, 1);
-        pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
-        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, v3);
-        return 1;
-        break;
+			case SPECIAL_ATTACK_DRUNK:
+				SetCondition(Condition_Drunk, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
 
-      default:
-        return 0;
-    }
-  }
+			case SPECIAL_ATTACK_INSANE:
+				SetCondition(Condition_Insane, 1);
+				pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_POISON_WEAK:
+				SetCondition(Condition_Poison_Weak, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_POISON_MEDIUM:
+				SetCondition(Condition_Poison_Medium, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_POISON_SEVERE:
+				SetCondition(Condition_Poison_Severe, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_DISEASE_WEAK:
+				SetCondition(Condition_Disease_Weak, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_DISEASE_MEDIUM:
+				SetCondition(Condition_Disease_Medium, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_DISEASE_SEVERE:
+				SetCondition(Condition_Disease_Severe, 1);
+				pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_PARALYZED:
+				SetCondition(Condition_Paralyzed, 1);
+				pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_UNCONSCIOUS:
+				SetCondition(Condition_Unconcious, 1);
+				pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_DEAD:
+				SetCondition(Condition_Dead, 1);
+				pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_PETRIFIED:
+				SetCondition(Condition_Pertified, 1);
+				pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_ERADICATED:
+				SetCondition(Condition_Eradicated, 1);
+				pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_BREAK_ANY:
+			case SPECIAL_ATTACK_BREAK_ARMOR:
+			case SPECIAL_ATTACK_BREAK_WEAPON:
+				if ( !(itemtobreak->uAttributes & ITEM_HARDENED) ) {
+					PlaySound(SPEECH_40, 0);
+					itemtobreak->SetBroken();
+					pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
+				}
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+			
+			case SPECIAL_ATTACK_STEAL:
+				PlaySound(SPEECH_40, 0);
+				void *actoritems;
+				actoritems = pActor->ActorHasItems;
+				if ( pActor->ActorHasItems[0].uItemID ) {
+					actoritems = &pActor->ActorHasItems[1];
+					if ( pActor->ActorHasItems[1].uItemID ) {
+						pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+						return 1;
+					}
+				}
+
+				memcpy(actoritems, &this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex]-1], 0x24u);
+				RemoveItemAtInventoryIndex(itemtostealinvindex);
+				pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_AGING:
+				PlaySound(SPEECH_42, 0);
+				++this->sAgeModifier;
+				pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+
+			case SPECIAL_ATTACK_MANA_DRAIN:
+				PlaySound(SPEECH_41, 0);
+				this->sMana = 0;
+				pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+				
+			case SPECIAL_ATTACK_FEAR:
+				SetCondition(Condition_Fear, 1);
+				pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+				pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+				return 1;
+				break;
+				
+			default:
+				return 0;
+		}
+	}
 }
 
 // 48DCF6: using guessed type char var_94[140];
 
 //----- (0048E1A3) --------------------------------------------------------
-unsigned int Player::GetSpellSchool(unsigned int uSpellID)
-{
-  return pSpellStats->pInfos[uSpellID].uSchool;
+unsigned int Player::GetSpellSchool(unsigned int uSpellID) {
+	return pSpellStats->pInfos[uSpellID].uSchool;
 }
 
 //----- (0048E1B5) --------------------------------------------------------
@@ -2608,9 +2144,10 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack)
 
 
 //----- new --------------------------------------------------------
-float Player::GetArmorRecoveryMultiplierFromSkillLevel( unsigned char armour_skill_type, float mult1, float mult2, float mult3, float mult4 )
-{
-  uint skill_mastery = SkillToMastery(pActiveSkills[armour_skill_type]);
+float Player::GetArmorRecoveryMultiplierFromSkillLevel( unsigned char armour_skill_type, float mult1, float mult2, float mult3, float mult4 ) {
+
+	uint skill_mastery = SkillToMastery(pActiveSkills[armour_skill_type]);
+
   switch (skill_mastery)
   {
     case 1: return mult1; break;
@@ -2623,130 +2160,126 @@ float Player::GetArmorRecoveryMultiplierFromSkillLevel( unsigned char armour_ski
 }
 
 //----- (0048E4F8) --------------------------------------------------------
-int Player::GetMaxHealth()
-{
-  int v3; // esi@1
-  int v4; // esi@1
-  int v6; // esi@1
+int Player::GetMaxHealth() {
 
-  v3 = GetParameterBonus(GetActualEndurance());
-  v4 = pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + v3);
-  v6 = uFullHealthBonus
-     + pBaseHealthByClass[classType / 4]
-     + GetSkillBonus(CHARACTER_ATTRIBUTE_HEALTH)
-     + GetItemsBonus(CHARACTER_ATTRIBUTE_HEALTH) + v4;
-  return max(1, v6);
+	int endbonus = GetParameterBonus(GetActualEndurance());
+	int healthbylevel = pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + endbonus);
+	int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_HEALTH) + healthbylevel;
+	int maxhealth = uFullHealthBonus + pBaseHealthByClass[classType / 4] + GetSkillBonus(CHARACTER_ATTRIBUTE_HEALTH) + itembonus;
+
+	if (maxhealth < 0) // min zero
+		maxhealth = 0;
+
+	return maxhealth;
 }
 
 //----- (0048E565) --------------------------------------------------------
-int Player::GetMaxMana()
-{
-  int v2; // eax@2
-  int v3; // esi@4
-  int v4; // eax@5
-  int v5; // esi@5
-  int v6; // eax@5
-  int v7; // esi@6
-  int v8; // esi@6
-  int v9; // esi@6
-  
-  switch (classType)
-  {
-    case PLAYER_CLASS_ROGUE:
-    case PLAYER_CLASS_SPY:
-    case PLAYER_CLASS_ASSASSIN:
-    case PLAYER_CLASS_ARCHER:
-    case PLAYER_CLASS_WARRIOR_MAGE:
-    case PLAYER_CLASS_MASTER_ARCHER:
-    case PLAYER_CLASS_SNIPER:
-    case PLAYER_CLASS_SORCERER:
-    case PLAYER_CLASS_WIZARD:
-    case PLAYER_CLASS_ARCHMAGE:
-    case PLAYER_CLASS_LICH:
-      v2 = GetActualIntelligence();
-      v3 = GetParameterBonus(v2);
-      break;
-    case PLAYER_CLASS_INITIATE:
-    case PLAYER_CLASS_MASTER:
-    case PLAYER_CLASS_NINJA:
-    case PLAYER_CLASS_PALADIN:
-    case PLAYER_CLASS_CRUSADER:
-    case PLAYER_CLASS_HERO:
-    case PLAYER_CLASS_VILLIAN:
-    case PLAYER_CLASS_CLERIC:
-    case PLAYER_CLASS_PRIEST:
-    case PLAYER_CLASS_PRIEST_OF_SUN:
-    case PLAYER_CLASS_PRIEST_OF_MOON:
-      v2 = GetActualWillpower();
-      v3 = GetParameterBonus(v2);
-      break;
-    case PLAYER_CLASS_HUNTER:
-    case PLAYER_CLASS_RANGER_LORD:
-    case PLAYER_CLASS_BOUNTY_HUNTER:
-    case PLAYER_CLASS_DRUID:
-    case PLAYER_CLASS_GREAT_DRUID:
-    case PLAYER_CLASS_ARCH_DRUID:
-    case PLAYER_CLASS_WARLOCK:
-      v4 = GetActualWillpower();
-      v5 = GetParameterBonus(v4);
-      v6 = GetActualIntelligence();
-      v3 = GetParameterBonus(v6) + v5;
-      break;
-    default:
-      return 0;
-      break;
-  }
-  v7 = pBaseManaPerLevelByClass[classType] * (GetActualLevel() + v3);
-  v8 = GetItemsBonus(CHARACTER_ATTRIBUTE_MANA) + v7;
-  v9 = uFullManaBonus
-      + pBaseManaByClass[classType / 4]
-  + GetSkillBonus(CHARACTER_ATTRIBUTE_MANA)
-      + v8;
-  return max(0,v9);
+int Player::GetMaxMana() {
+
+	int mainmanastat;
+	int statbonus;
+	int addmanastat;
+
+	switch (classType) {
+		case PLAYER_CLASS_ROGUE:
+		case PLAYER_CLASS_SPY:
+		case PLAYER_CLASS_ASSASSIN:
+		case PLAYER_CLASS_ARCHER:
+		case PLAYER_CLASS_WARRIOR_MAGE:
+		case PLAYER_CLASS_MASTER_ARCHER:
+		case PLAYER_CLASS_SNIPER:
+		case PLAYER_CLASS_SORCERER:
+		case PLAYER_CLASS_WIZARD:
+		case PLAYER_CLASS_ARCHMAGE:
+		case PLAYER_CLASS_LICH:
+			// intelligence based mana
+			mainmanastat = GetActualIntelligence();
+			statbonus = GetParameterBonus(mainmanastat);
+			break;
+
+		case PLAYER_CLASS_INITIATE:
+		case PLAYER_CLASS_MASTER:
+		case PLAYER_CLASS_NINJA:
+		case PLAYER_CLASS_PALADIN:
+		case PLAYER_CLASS_CRUSADER:
+		case PLAYER_CLASS_HERO:
+		case PLAYER_CLASS_VILLIAN:
+		case PLAYER_CLASS_CLERIC:
+		case PLAYER_CLASS_PRIEST:
+		case PLAYER_CLASS_PRIEST_OF_SUN:
+		case PLAYER_CLASS_PRIEST_OF_MOON:
+			// personality based mana
+			mainmanastat = GetActualWillpower();
+			statbonus = GetParameterBonus(mainmanastat);
+			break;
+
+		case PLAYER_CLASS_HUNTER:
+		case PLAYER_CLASS_RANGER_LORD:
+		case PLAYER_CLASS_BOUNTY_HUNTER:
+		case PLAYER_CLASS_DRUID:
+		case PLAYER_CLASS_GREAT_DRUID:
+		case PLAYER_CLASS_ARCH_DRUID:
+		case PLAYER_CLASS_WARLOCK:
+			// mixed base mana
+			mainmanastat = GetActualWillpower();
+			statbonus = GetParameterBonus(mainmanastat);
+			addmanastat = GetActualIntelligence();
+			statbonus += GetParameterBonus(addmanastat);
+			break;
+
+		default: // no magic
+			return 0;
+			break;
+	}
+
+	int manabylevel = pBaseManaPerLevelByClass[classType] * (GetActualLevel() + statbonus);
+	int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_MANA) + manabylevel;
+	int maxmana = uFullManaBonus + pBaseManaByClass[classType / 4] + GetSkillBonus(CHARACTER_ATTRIBUTE_MANA) + itembonus;
+
+	if (maxmana < 0) // min of 0 
+		maxmana = 0;
+
+	return maxmana;
 }
 
 //----- (0048E656) --------------------------------------------------------
-int Player::GetBaseAC()
-{
-  int v2; // eax@1
-  int v3; // esi@1
-  int v4; // esi@1
-  int v5; // esi@1
+int Player::GetBaseAC() {
 
-  v2 = GetActualSpeed();
-  v3 = GetParameterBonus(v2);
-  v4 = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v3;
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v4;
-  return max(0, v5);
+	int acc = GetActualAccuracy();
+	int accbonus = GetParameterBonus(acc);
+	int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + accbonus;
+	int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + itembonus;
+
+	if (skillbonus < 0) // min zero
+		skillbonus = 0;
+
+	return skillbonus;
 }
 
 //----- (0048E68F) --------------------------------------------------------
-int Player::GetActualAC()
-{
-  int v2; // eax@1
-  int v3; // esi@1
-  int v4; // esi@1
-  int v5; // esi@1
-  int v6; // esi@1
+int Player::GetActualAC() {
 
-  v2 = GetActualSpeed();
-  v3 = GetParameterBonus(v2);
-  v4 = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v3;
-  v5 = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v4;
-  v6 = this->sACModifier + GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + v5;
-  return max(0, v6);
+	int acc = GetActualAccuracy();
+	int accbonus = GetParameterBonus(acc);
+	int itembonus = GetItemsBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + accbonus;
+	int skillbonus = GetSkillBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + itembonus;
+
+	int result = this->sACModifier + GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS) + skillbonus;
+
+	if (result < 0) // min zero
+		result = 0;
+
+	return result;
 }
 
 //----- (0048E6DC) --------------------------------------------------------
-unsigned int Player::GetBaseAge()
-{
-    return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
+unsigned int Player::GetBaseAge() {
+	return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
 }
 
 //----- (0048E72C) --------------------------------------------------------
-unsigned int Player::GetActualAge()
-{
-  return this->sAgeModifier + GetBaseAge();
+unsigned int Player::GetActualAge() {
+	return this->sAgeModifier + GetBaseAge();
 }
 
 //----- (0048E73F) --------------------------------------------------------
@@ -2812,16 +2345,18 @@ int Player::GetActualResistance(enum CHARACTER_ATTRIBUTE_TYPE a2)
   int baseRes;
 
   int leatherArmorSkillLevel = GetActualSkillLevel(PLAYER_SKILL_LEATHER);
+
   if ( CheckHiredNPCSpeciality(Enchanter) )
     v10 = 20;
-  if ( (a2 == CHARACTER_ATTRIBUTE_RESIST_FIRE
-     || a2 == CHARACTER_ATTRIBUTE_RESIST_AIR
-     || a2 == CHARACTER_ATTRIBUTE_RESIST_WATER
-     || a2 == CHARACTER_ATTRIBUTE_RESIST_EARTH)
-    && SkillToMastery(leatherArmorSkillLevel) == 4
-    && HasItemEquipped(EQUIP_ARMOUR)
-    && GetEquippedItemSkillType(EQUIP_ARMOUR) == PLAYER_SKILL_LEATHER )
-    v10 += leatherArmorSkillLevel & 0x3F;
+  if ((a2 == CHARACTER_ATTRIBUTE_RESIST_FIRE
+	  || a2 == CHARACTER_ATTRIBUTE_RESIST_AIR
+	  || a2 == CHARACTER_ATTRIBUTE_RESIST_WATER
+	  || a2 == CHARACTER_ATTRIBUTE_RESIST_EARTH)
+	  && GetActualSkillMastery(PLAYER_SKILL_LEATHER) == 4
+	  && HasItemEquipped(EQUIP_ARMOUR)
+	  && GetEquippedItemSkillType(EQUIP_ARMOUR) == PLAYER_SKILL_LEATHER)
+	  v10 += leatherArmorSkillLevel;// &0x3F;
+
   switch (a2)
   {
     case CHARACTER_ATTRIBUTE_RESIST_FIRE:
@@ -2856,43 +2391,39 @@ int Player::GetActualResistance(enum CHARACTER_ATTRIBUTE_TYPE a2)
 }
 
 //----- (0048E8F5) --------------------------------------------------------
-bool Player::Recover(int dt)
-{
-  int v3; // qax@1
+bool Player::Recover(int dt) {
 
-  v3 = (int)(dt * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt);
+	int timepassed = (int)(dt * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt);
+	
+	if (uTimeToRecovery > timepassed) { // need more time till recovery
+		uTimeToRecovery -= timepassed;
+		return true;
+	}
+	else {
+		uTimeToRecovery = 0; // recovered
+		viewparams->bRedrawGameUI = true;
 
-  //logger->Warning(L"Recover(dt = %u/%u - %u", dt, (uint)v3, (uint)uTimeToRecovery);
+		if (!uActiveCharacter) // set recoverd char as active
+			uActiveCharacter = pParty->GetNextActiveCharacter();
 
-  if (uTimeToRecovery > v3)
-  {
-    uTimeToRecovery -= v3;
-    return true;
-  }
-  else
-  {
-    uTimeToRecovery = 0;
-    viewparams->bRedrawGameUI = true;
-    if (!uActiveCharacter)
-      uActiveCharacter = pParty->GetNextActiveCharacter();
-    return false;
-  }
+		return false;
+	}
 }
 
 //----- (0048E96A) --------------------------------------------------------
-void Player::SetRecoveryTime(signed int rec)
-{
-  Assert(rec >= 0);
+void Player::SetRecoveryTime(signed int rec) {
 
-  if (rec > uTimeToRecovery)
-    uTimeToRecovery = rec;
+	Assert(rec >= 0);
 
-  if (uActiveCharacter != 0 && pPlayers[uActiveCharacter] == this && !some_active_character)
-    uActiveCharacter = pParty->GetNextActiveCharacter();
+	if (rec > uTimeToRecovery)
+		uTimeToRecovery = rec;
 
-  viewparams->bRedrawGameUI = true;
+	if (uActiveCharacter != 0 && pPlayers[uActiveCharacter] == this && !some_active_character)
+		uActiveCharacter = pParty->GetNextActiveCharacter();
+
+	viewparams->bRedrawGameUI = true;
 }
-// 50C0C4: using guessed type int some_active_character;
+
 
 //----- (0048E9B7) --------------------------------------------------------
 void Player::RandomizeName()
@@ -2902,14 +2433,13 @@ void Player::RandomizeName()
 }
 
 //----- (0048E9F4) --------------------------------------------------------
-unsigned int Player::GetMajorConditionIdx()
-{
-    for (uint i = 0; i < 18; ++i)
-    {
-        if (conditions_times[pConditionImportancyTable[i]].Valid())
-            return pConditionImportancyTable[i];
+unsigned int Player::GetMajorConditionIdx() {
+
+	for (uint i = 0; i < 18; ++i) {
+		if (conditions_times[pConditionImportancyTable[i]].Valid())
+            return pConditionImportancyTable[i]; // return worst condition
     }
-    return 18;
+    return 18; // condition good
 }
 
 //----- (0048EA1B) --------------------------------------------------------
@@ -3290,7 +2820,7 @@ int Player::GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2)
 }
 
 //----- (0048F882) --------------------------------------------------------
-int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType )
+int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType ) // bitwise check & 0x3F when using this can now be removed ?? must check behavior
 {
   signed int bonus_value; // esi@1
   unsigned __int16 skill_value; // ax@126
@@ -3494,17 +3024,36 @@ int Player::GetActualSkillLevel( PLAYER_SKILL_TYPE uSkillType )
     break;
   }
 
-  skill_value = pActiveSkills[uSkillType];
-  if ( bonus_value + (skill_value & 0x3F) < 60 )
-    result = bonus_value + skill_value;
-  else
-    result = skill_value & 0xFFFC | 0x3C; //al
+  // cap skill and bonus at 60
+  skill_value = pActiveSkills[uSkillType] & 0x3F; // player_skill_club out of bounds
+  result = bonus_value + skill_value;
+
+  if (result > 60) result = 60;
+
+
+ // if ( bonus_value + (skill_value & 0x3F) < 60 )
+ // /  result = 
+ // else
+ //   result = skill_value & 0xFFFC | 0x3C; //al
   return result;
 }
 
 
+int Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) {
+
+	switch (pActiveSkills[uSkillType] & 0x1C0)	{ // could chnage to /64 + 1 ?
+		case 0x100: return 4;     // Grandmaster
+		case 0x80:  return 3;     // Master
+		case 0x40:  return 2;     // Expert
+		case 0x00:  return 1;     // Normal
+	}
+
+	assert(false); // should never get here
+	return 0;
+}
+
 //----- (0048FC00) --------------------------------------------------------
-int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move the individual implementations to attribute classes once possible
+int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move the individual implementations to attribute classes once possible ?? check
 {
   int armsMasterBonus;
 
@@ -3515,13 +3064,13 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
     int multiplier = 0;
     if ( inSkill == CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS )
     {
-      multiplier = GetMultiplierForSkillLevel(armmaster_skill, 0, 0, 1, 2);
+      multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 0, 1, 2);
     }
     else if ( inSkill == CHARACTER_ATTRIBUTE_ATTACK )
     {
-      multiplier = GetMultiplierForSkillLevel(armmaster_skill, 0, 1, 1, 2);
+      multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_ARMSMASTER, 0, 1, 1, 2);
     } 
-    armsMasterBonus = multiplier * (armmaster_skill & 0x3F);
+	armsMasterBonus = multiplier * (armmaster_skill);//& 0x3F);
   }
 
   switch(inSkill)
@@ -3529,8 +3078,8 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
   case CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS:
     if (HasItemEquipped(EQUIP_BOW))
     {
-      int bowSkillLevel = GetActualSkillLevel(PLAYER_SKILL_DODGE);
-      int multiplier = GetMultiplierForSkillLevel(bowSkillLevel, 0, 0, 0, 1);
+      int bowSkillLevel = GetActualSkillLevel(PLAYER_SKILL_BOW); 
+      int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BOW, 0, 0, 0, 1);
       return multiplier * (bowSkillLevel & 0x3F);
     }
     return 0;
@@ -3567,32 +3116,32 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
           {
           case PLAYER_SKILL_STAFF:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 0, 1, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 0, 1, 1, 1);
             break;
           case PLAYER_SKILL_SWORD:
           case PLAYER_SKILL_SPEAR:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 0, 0, 0, 1);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 0, 0, 0, 1);
             break;
           case PLAYER_SKILL_SHIELD:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
             wearingArmor = true;
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 1, 1, 2, 2);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 2, 2);
             break;
           case PLAYER_SKILL_LEATHER:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
             wearingLeather = true;
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 1, 1, 2, 2);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 2, 2);
             break;
           case PLAYER_SKILL_CHAIN:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
             wearingArmor = true;
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 1, 1, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 1, 1);
             break;
           case PLAYER_SKILL_PLATE:
             currArmorSkillLevel = GetActualSkillLevel(itemSkillType);
             wearingArmor = true; 
-            multiplier = GetMultiplierForSkillLevel(currArmorSkillLevel, 1, 1, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 1, 1);
             break;
           }
           ACSum += multiplier * (currArmorSkillLevel & 0x3F);
@@ -3600,8 +3149,8 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
       }
 
       int dodgeSkillLevel = GetActualSkillLevel(PLAYER_SKILL_DODGE);
-      int dodgeMastery = SkillToMastery(dodgeSkillLevel);
-      int multiplier = GetMultiplierForSkillLevel(dodgeSkillLevel, 1, 2, 3, 3);
+      int dodgeMastery = GetActualSkillMastery(PLAYER_SKILL_DODGE);
+      int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_DODGE, 1, 2, 3, 3);
       if ( !wearingArmor && (!wearingLeather || dodgeMastery == 4) )
       {
         ACSum += multiplier * (dodgeSkillLevel & 0x3F);
@@ -3617,10 +3166,10 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
       {
         return 0;
       }
-      int multiplier = GetMultiplierForSkillLevel(unarmedSkill, 0, 1, 2, 2);
+      int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
       return armsMasterBonus + multiplier * (unarmedSkill & 0x3F);
     }
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < 16; ++i) // ?? what eh check behaviour
     {
       if ( this->HasItemEquipped((ITEM_EQUIP_TYPE)i) )
       {
@@ -3631,13 +3180,13 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
           int currentItemSkillLevel = this->GetActualSkillLevel(currItemSkillType);
           if (currItemSkillType == PLAYER_SKILL_BLASTER)
           {
-            int multiplier = GetMultiplierForSkillLevel(currentItemSkillLevel, 1, 2, 3, 5);
+            int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
             return multiplier * (currentItemSkillLevel & 0x3F);
           }
           else if (currItemSkillType == PLAYER_SKILL_STAFF && this->GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0)
           {
             int unarmedSkillLevel = this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
-            int multiplier = GetMultiplierForSkillLevel(currentItemSkillLevel, 1, 1, 2, 2);
+            int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 1, 1, 2, 2);
             return multiplier * (unarmedSkillLevel & 0x3F) + armsMasterBonus + (currentItemSkillLevel & 0x3F);
           }
           else
@@ -3662,12 +3211,12 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
           int currentItemSkillLevel = this->GetActualSkillLevel(currentItemSkillType);
           if ( currentItemSkillType == PLAYER_SKILL_BOW )
           {
-            int multiplier = GetMultiplierForSkillLevel(currentItemSkillLevel, 1, 1, 1, 1);
+            int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BOW, 1, 1, 1, 1);
             return multiplier * (currentItemSkillLevel & 0x3F);
           }
           else if ( currentItemSkillType == PLAYER_SKILL_BLASTER )
           {
-            int multiplier = GetMultiplierForSkillLevel(currentItemSkillLevel, 1, 2, 3, 5);
+            int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_BLASTER, 1, 2, 3, 5);
             return multiplier * (currentItemSkillLevel & 0x3F);
           }
         }
@@ -3684,7 +3233,7 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
       {
         return 0;
       }
-      int multiplier = GetMultiplierForSkillLevel(unarmedSkillLevel, 0, 1, 2, 2);
+      int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
       return multiplier * (unarmedSkillLevel & 0x3F);
     }
     for (int i = 0; i < 16; i++)
@@ -3701,10 +3250,10 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
           switch (currItemSkillType)
           {
           case PLAYER_SKILL_STAFF:
-            if ( SkillToMastery(currItemSkillLevel) >= 4 && this->GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0)
+            if ( this->GetActualSkillMastery(PLAYER_SKILL_STAFF) >= 4 && this->GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0)
             {
               int unarmedSkillLevel = this->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
-              int multiplier = GetMultiplierForSkillLevel(unarmedSkillLevel, 0, 1, 2, 2);
+              int multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_UNARMED, 0, 1, 2, 2);
               return multiplier * (unarmedSkillLevel & 0x3F);
             }
             else
@@ -3714,23 +3263,23 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
             break;
 
           case PLAYER_SKILL_DAGGER:
-            multiplier = GetMultiplierForSkillLevel(currItemSkillLevel, 0, 0, 0, 1);
+            multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_DAGGER, 0, 0, 0, 1);
             baseSkillBonus = multiplier * (currItemSkillLevel & 0x3F);
             return armsMasterBonus + baseSkillBonus;
             break;
           case PLAYER_SKILL_SWORD:
-            multiplier = GetMultiplierForSkillLevel(currItemSkillLevel, 0, 0, 0, 0);
+            multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_SWORD, 0, 0, 0, 0);
             baseSkillBonus = multiplier * (currItemSkillLevel & 0x3F);
             return armsMasterBonus + baseSkillBonus;
             break;
           case PLAYER_SKILL_MACE:
           case PLAYER_SKILL_SPEAR:
-            multiplier = GetMultiplierForSkillLevel(currItemSkillLevel, 0, 1, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(currItemSkillType, 0, 1, 1, 1);
             baseSkillBonus = multiplier * (currItemSkillLevel & 0x3F);
             return armsMasterBonus + baseSkillBonus;
             break;
           case PLAYER_SKILL_AXE:
-            multiplier = GetMultiplierForSkillLevel(currItemSkillLevel, 0, 0, 1, 1);
+            multiplier = GetMultiplierForSkillLevel(PLAYER_SKILL_AXE, 0, 0, 1, 1);
             baseSkillBonus = multiplier * (currItemSkillLevel & 0x3F);
             return armsMasterBonus + baseSkillBonus;
             break;
@@ -3745,9 +3294,11 @@ int Player::GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE inSkill)    //TODO: move
   }
 }
 
-unsigned int Player::GetMultiplierForSkillLevel(unsigned int skillValue, int mult1, int mult2, int mult3, int mult4)
+unsigned int Player::GetMultiplierForSkillLevel(PLAYER_SKILL_TYPE uSkillType, int mult1, int mult2, int mult3, int mult4) // ?? needs changing - check behavious
 {
-  int masteryLvl = SkillToMastery(skillValue);
+
+	
+  int masteryLvl = GetActualSkillMastery(uSkillType);
   switch (masteryLvl)
   {
     case 1: return mult1;
@@ -3845,16 +3396,17 @@ PLAYER_SEX Player::GetSexByVoice()
 }
 
 //----- (00490188) --------------------------------------------------------
-void Player::SetInitialStats()
-{
-  CHARACTER_RACE v1 = GetRace();
-  uMight = StatTable[v1][0].uBaseValue;
-  uIntelligence = StatTable[v1][1].uBaseValue;
-  uWillpower = StatTable[v1][2].uBaseValue;
-  uEndurance = StatTable[v1][3].uBaseValue;
-  uAccuracy = StatTable[v1][4].uBaseValue;
-  uSpeed = StatTable[v1][5].uBaseValue;
-  uLuck = StatTable[v1][6].uBaseValue;
+void Player::SetInitialStats() {
+
+	CHARACTER_RACE race = GetRace();
+	uMight = StatTable[race][0].uBaseValue;
+	uIntelligence = StatTable[race][1].uBaseValue;
+	uWillpower = StatTable[race][2].uBaseValue;
+	uEndurance = StatTable[race][3].uBaseValue;
+	uAccuracy = StatTable[race][4].uBaseValue;
+	uSpeed = StatTable[race][5].uBaseValue;
+	uLuck = StatTable[race][6].uBaseValue;
+
 }
 
 //----- (004901FC) --------------------------------------------------------
@@ -3925,7 +3477,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls)
 
     pActiveSkills[i] = 1;
 
-    switch (i)
+ /*   switch (i)
     {
       case PLAYER_SKILL_FIRE:
         spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;//its temporary, for test spells
@@ -4044,7 +3596,12 @@ void Player::Reset(PLAYER_CLASS_TYPE cls)
         spellbook.pDarkSpellbook.bIsSpellAvailable[0] = true;
         break;
     }
+
+	*/
+
   }
+
+
 
   memset(&pEquipment, 0, sizeof(PlayerEquipment));
   pInventoryMatrix.fill(0);
@@ -4293,7 +3850,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3)
     int v16; // edx@73
     unsigned __int16 v17; // edi@73
     unsigned int v18; // eax@73
-    const char *v22; // eax@84
+//    const char *v22; // eax@84
     int scroll_id; // esi@96
     int v25; // eax@109
     int v26; // eax@113
@@ -7536,9 +7093,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
             unsigned __int16 spriteType = v37->uType;
             if (v37->uType == 545)
             {
-                __int16 skillLevel = playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
-                if (SkillToMastery(skillLevel) >= 4 && rand() % 100 < (skillLevel & 0x3F))
-                {
+                //__int16 skillLevel = playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
+                if ( playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 && rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
                     auto str = localization->FormatString(637, playerPtr->pName);
                     GameUI_StatusBar_OnEvent(str);
                     playerPtr->PlaySound(SPEECH_6, 0);
@@ -7570,13 +7126,13 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
                 if (playerPtr->HasItemEquipped(EQUIP_TWO_HANDED))
                 {
                     ItemGen* mainHandItem = playerPtr->GetMainHandItem();
-                    if (mainHandItem->uItemID == ITEM_RELIC_KELEBRIM || mainHandItem->uItemID == ITEM_ARTIFACT_ELFBANE || (mainHandItem->GetItemEquipType() == EQUIP_SHIELD && SkillToMastery(playerPtr->pActiveSkills[PLAYER_SKILL_SHIELD]) == 4))
+                    if (mainHandItem->uItemID == ITEM_RELIC_KELEBRIM || mainHandItem->uItemID == ITEM_ARTIFACT_ELFBANE || (mainHandItem->GetItemEquipType() == EQUIP_SHIELD && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == 4))
                         dmgToReceive >>= 1;
                 }
                 if (playerPtr->HasItemEquipped(EQUIP_SINGLE_HANDED))
                 {
                     ItemGen* offHandItem = playerPtr->GetOffHandItem();
-                    if (offHandItem->uItemID == ITEM_RELIC_KELEBRIM || offHandItem->uItemID == ITEM_ARTIFACT_ELFBANE || (offHandItem->GetItemEquipType() == EQUIP_SHIELD && SkillToMastery(playerPtr->pActiveSkills[PLAYER_SKILL_SHIELD]) == 4))
+                    if (offHandItem->uItemID == ITEM_RELIC_KELEBRIM || offHandItem->uItemID == ITEM_ARTIFACT_ELFBANE || (offHandItem->GetItemEquipType() == EQUIP_SHIELD && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == 4))
                         dmgToReceive >>= 1;
                 }
             }
@@ -7674,31 +7230,29 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
 
 //----- (00421EA6) --------------------------------------------------------
 void Player::OnInventoryLeftClick() {
-	
-	signed int inventoryXCoord; // ecx@2
-	int inventoryYCoord; // eax@2
-	int invMatrixIndex; // eax@2
-	unsigned int enchantedItemPos; // eax@7
+
 	unsigned int pickedItemId; // esi@12
 	unsigned int invItemIndex; // eax@12
 	unsigned int itemPos; // eax@18
 	ItemGen tmpItem; // [sp+Ch] [bp-3Ch]@1
-	unsigned int pY; // [sp+3Ch] [bp-Ch]@2
-	unsigned int pX; // [sp+40h] [bp-8h]@2
+	
 	CastSpellInfo *pSpellInfo;
 
 	if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
-		
+
+		unsigned int pY;
+		unsigned int pX;
 		pMouse->GetClickPos(&pX, &pY);
-		inventoryYCoord = (pY - 17) / 32;
-		inventoryXCoord = (pX - 14) / 32;
-		invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
+
+		int inventoryYCoord = (pY - 17) / 32;
+		int inventoryXCoord = (pX - 14) / 32;
+		int invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
 
 		if ( inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT && inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
 
 			if ( _50C9A0_IsEnchantingInProgress ) {
 
-				enchantedItemPos = this->GetItemIDAtInventoryIndex(&invMatrixIndex);
+				unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
 				if ( enchantedItemPos ) {
 
@@ -7709,8 +7263,8 @@ void Player::OnInventoryLeftClick() {
 					pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
 					pSpellInfo->uFlags &= 0x7F;
 					pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
-					pSpellInfo->spell_target_pid = enchantedItemPos - 1;
-					pSpellInfo->field_6 = invMatrixIndex;
+					pSpellInfo->spell_target_pid = enchantedItemPos;// - 1; 
+					pSpellInfo->field_6 = (-1 - enchantedItemPos); // check
 					ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos-1];
 					_50C9A0_IsEnchantingInProgress = 0;
 
@@ -7724,7 +7278,7 @@ void Player::OnInventoryLeftClick() {
 
 				}
 
-			return;
+				return;
 
 			}
 
@@ -7732,7 +7286,7 @@ void Player::OnInventoryLeftClick() {
 				return;
 
 			pickedItemId = pParty->pPickedItem.uItemID;
-			invItemIndex = this->GetItemIDAtInventoryIndex(&invMatrixIndex);
+			invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
 			if (!pickedItemId) { // no hold item
 				if ( !invItemIndex )
@@ -7776,13 +7330,15 @@ void Player::OnInventoryLeftClick() {
 						return;
 					}
 
-					itemPos = this->AddItem(-1, pickedItemId);
+				//	itemPos = this->AddItem(-1, pickedItemId);
 
-					if ( itemPos ) {
-						memcpy(&this->pInventoryItemList[itemPos-1], &pParty->pPickedItem, sizeof(ItemGen));
-						pMouse->RemoveHoldingItem();
-				        return;
-					}
+				//	if ( itemPos ) {
+				//		memcpy(&this->pInventoryItemList[itemPos-1], &pParty->pPickedItem, sizeof(ItemGen));
+				//		pMouse->RemoveHoldingItem();
+				 //       return;
+					//}
+
+
 				}
 			} //held item or no
 
@@ -7790,296 +7346,264 @@ void Player::OnInventoryLeftClick() {
 	} // char wind
 } //func
 
-bool Player::IsWeak() const
-{
+bool Player::IsWeak() const {
     return this->conditions_times[Condition_Weak].Valid();
 }
-bool Player::IsDead() const
-{
+
+bool Player::IsDead() const {
     return this->conditions_times[Condition_Dead].Valid();
 }
 
-bool Player::IsEradicated() const
-{
+bool Player::IsEradicated() const {
     return this->conditions_times[Condition_Eradicated].Valid();
 }
 
-bool Player::IsZombie() const
-{
+bool Player::IsZombie() const {
     return this->conditions_times[Condition_Zombie].Valid();
 }
 
-bool Player::IsCursed() const
-{
+bool Player::IsCursed() const {
     return this->conditions_times[Condition_Cursed].Valid();
 }
 
-bool Player::IsPertified() const
-{
+bool Player::IsPertified() const {
     return this->conditions_times[Condition_Pertified].Valid();
 }
 
-bool Player::IsUnconcious() const
-{
+bool Player::IsUnconcious() const {
     return this->conditions_times[Condition_Unconcious].Valid();
 }
 
-bool Player::IsAsleep() const
-{
+bool Player::IsAsleep() const {
     return this->conditions_times[Condition_Sleep].Valid();
 }
 
-bool Player::IsParalyzed() const
-{
+bool Player::IsParalyzed() const {
     return this->conditions_times[Condition_Paralyzed].Valid();
 }
 
-bool Player::IsDrunk() const
-{
+bool Player::IsDrunk() const {
     return this->conditions_times[Condition_Drunk].Valid();
 }
 
-void Player::SetCursed(GameTime time)
-{
+void Player::SetCursed(GameTime time) {
     this->conditions_times[Condition_Cursed] = time;
 }
 
-void Player::SetWeak(GameTime time)
-{
+void Player::SetWeak(GameTime time) {
     this->conditions_times[Condition_Weak] = time;
 }
 
-void Player::SetAsleep(GameTime time)
-{
+void Player::SetAsleep(GameTime time) {
     this->conditions_times[Condition_Sleep] = time;
 }
 
-void Player::SetAfraid(GameTime time)
-{
+void Player::SetAfraid(GameTime time) {
     this->conditions_times[Condition_Fear] = time;
 }
 
-void Player::SetDrunk(GameTime time)
-{
+void Player::SetDrunk(GameTime time) {
     this->conditions_times[Condition_Drunk] = time;
 }
 
-void Player::SetInsane(GameTime time)
-{
+void Player::SetInsane(GameTime time) {
     this->conditions_times[Condition_Insane] = time;
 }
 
-void Player::SetPoisonWeak(GameTime time)
-{
+void Player::SetPoisonWeak(GameTime time) {
     this->conditions_times[Condition_Poison_Weak] = time;
 }
 
-void Player::SetDiseaseWeak(GameTime time)
-{
+void Player::SetDiseaseWeak(GameTime time) {
     this->conditions_times[Condition_Disease_Weak] = time;
 }
 
-void Player::SetPoisonMedium(GameTime time)
-{
+void Player::SetPoisonMedium(GameTime time) {
     this->conditions_times[Condition_Poison_Medium] = time;
 }
 
-void Player::SetDiseaseMedium(GameTime time)
-{
+void Player::SetDiseaseMedium(GameTime time) {
     this->conditions_times[Condition_Disease_Medium] = time;
 }
 
-void Player::SetPoisonSevere(GameTime time)
-{
+void Player::SetPoisonSevere(GameTime time) {
     this->conditions_times[Condition_Poison_Severe] = time;
 }
 
-void Player::SetDiseaseSevere(GameTime time)
-{
+void Player::SetDiseaseSevere(GameTime time) {
     this->conditions_times[Condition_Disease_Severe] = time;
 }
 
-void Player::SetParalyzed(GameTime time)
-{
+void Player::SetParalyzed(GameTime time) {
     this->conditions_times[Condition_Paralyzed] = time;
 }
 
-void Player::SetUnconcious(GameTime time)
-{
+void Player::SetUnconcious(GameTime time) {
     this->conditions_times[Condition_Unconcious] = time;
 }
 
-void Player::SetDead(GameTime time)
-{
+void Player::SetDead(GameTime time) {
     this->conditions_times[Condition_Dead] = time;
 }
 
-void Player::SetPertified(GameTime time)
-{
+void Player::SetPertified(GameTime time) {
     this->conditions_times[Condition_Pertified] = time;
 }
 
-void Player::SetEradicated(GameTime time)
-{
+void Player::SetEradicated(GameTime time) {
     this->conditions_times[Condition_Eradicated] = time;
 }
 
-void Player::SetZombie(GameTime time)
-{
+void Player::SetZombie(GameTime time) {
     this->conditions_times[Condition_Zombie] = time;
 }
 
-void Player::SetCondWeakWithBlockCheck( int blockable )
-{
-  SetCondition(Condition_Weak, blockable);
+void Player::SetCondWeakWithBlockCheck( int blockable ) {
+	SetCondition(Condition_Weak, blockable);
 }
 
-void Player::SetCondInsaneWithBlockCheck( int blockable )
-{
-  SetCondition(Condition_Insane, blockable);
+void Player::SetCondInsaneWithBlockCheck( int blockable ) {
+	SetCondition(Condition_Insane, blockable);
 }
 
-void Player::SetCondDeadWithBlockCheck( int blockable )
-{
-  SetCondition(Condition_Dead, blockable);
+void Player::SetCondDeadWithBlockCheck( int blockable ) {
+	SetCondition(Condition_Dead, blockable);
 }
 
-void Player::SetCondUnconsciousWithBlockCheck( int blockable )
-{
-  SetCondition(Condition_Dead, blockable);
+void Player::SetCondUnconsciousWithBlockCheck( int blockable ) {
+	SetCondition(Condition_Dead, blockable);
 }
 
-ItemGen* Player::GetOffHandItem()
-{
-  return GetItem(&PlayerEquipment::uShield);
+ItemGen* Player::GetOffHandItem() {
+
+	return GetItem(&PlayerEquipment::uShield);
 }
 
-ItemGen* Player::GetMainHandItem()
-{
-  return GetItem(&PlayerEquipment::uMainHand);
+ItemGen* Player::GetMainHandItem() {
+
+	return GetItem(&PlayerEquipment::uMainHand);
 }
 
-ItemGen* Player::GetBowItem()
-{
-  return GetItem(&PlayerEquipment::uBow);
+ItemGen* Player::GetBowItem() {
+
+	return GetItem(&PlayerEquipment::uBow);
 }
 
-ItemGen* Player::GetArmorItem()
-{
-  return GetItem(&PlayerEquipment::uArmor);
+ItemGen* Player::GetArmorItem() {
+
+	return GetItem(&PlayerEquipment::uArmor);
 }
 
-ItemGen* Player::GetHelmItem()
-{
-  return GetItem(&PlayerEquipment::uHelm);
+ItemGen* Player::GetHelmItem() {
+
+	return GetItem(&PlayerEquipment::uHelm);
 }
 
-ItemGen* Player::GetBeltItem()
-{
-  return GetItem(&PlayerEquipment::uBelt);
+ItemGen* Player::GetBeltItem() {
+
+	return GetItem(&PlayerEquipment::uBelt);
 }
 
-ItemGen* Player::GetCloakItem()
-{
-  return GetItem(&PlayerEquipment::uCloak);
+ItemGen* Player::GetCloakItem() {
+
+	return GetItem(&PlayerEquipment::uCloak);
 }
 
-ItemGen* Player::GetGloveItem()
-{
-  return GetItem(&PlayerEquipment::uGlove);
+ItemGen* Player::GetGloveItem() {
+
+	return GetItem(&PlayerEquipment::uGlove);
 }
 
-ItemGen* Player::GetBootItem()
-{
-  return GetItem(&PlayerEquipment::uBoot);
+ItemGen* Player::GetBootItem() {
+	
+	return GetItem(&PlayerEquipment::uBoot);
 }
 
-ItemGen* Player::GetAmuletItem()
-{
-  return GetItem(&PlayerEquipment::uAmulet);
+ItemGen* Player::GetAmuletItem() {
+	
+	return GetItem(&PlayerEquipment::uAmulet);
 }
 
-ItemGen* Player::GetNthRingItem(int ringNum)
-{
-  return GetNthEquippedIndexItem(ringNum + 10);
+ItemGen* Player::GetNthRingItem(int ringNum) {
+
+	return GetNthEquippedIndexItem(ringNum + 10);
 }
 
-ItemGen* Player::GetNthEquippedIndexItem(int index)
-{
-  if (this->pEquipment.pIndices[index] == 0)
-  {
-    return nullptr;
-  }
-  return &this->pInventoryItemList[this->pEquipment.pIndices[index] - 1];
+ItemGen* Player::GetNthEquippedIndexItem(int index) {
+
+	if (this->pEquipment.pIndices[index] == 0) {
+		return nullptr;
+	}
+
+	return &this->pInventoryItemList[this->pEquipment.pIndices[index] - 1];
 }
 
-ItemGen* Player::GetItem(unsigned int PlayerEquipment::* itemPos)
-{
-  if (this->pEquipment.*itemPos == 0)
-  {
-    return nullptr;
-  }
-  return &this->pInventoryItemList[this->pEquipment.*itemPos - 1];
+ItemGen* Player::GetItem(unsigned int PlayerEquipment::* itemPos) {
+
+	if (this->pEquipment.*itemPos == 0) {
+		return nullptr;
+	}
+
+	return &this->pInventoryItemList[this->pEquipment.*itemPos - 1];
 }
 
-int Player::GetPlayerIndex()
-{
-  int uPlayerIdx = 0;
-  if ( this == pPlayers[1] )
-    uPlayerIdx = 0;
-  else if( this == pPlayers[2] )
-    uPlayerIdx = 1;
-  else if ( this == pPlayers[3] )
-    uPlayerIdx = 2;
-  else if ( this == pPlayers[4] )  
-    uPlayerIdx = 3;
-  else
-    Error("Unexpected player pointer");
-  return uPlayerIdx;
+int Player::GetPlayerIndex() { // PS - RETURN PLAYER INDEX
+
+	int uPlayerIdx = 0;
+
+	if ( this == pPlayers[1] )
+		uPlayerIdx = 0;
+	else if( this == pPlayers[2] )
+		uPlayerIdx = 1;
+	else if ( this == pPlayers[3] )
+		uPlayerIdx = 2;
+	else if ( this == pPlayers[4] )  
+		uPlayerIdx = 3;
+	else
+		Error("Unexpected player pointer");
+
+	return uPlayerIdx;
 }
 
 //----- (004272F5) --------------------------------------------------------
-bool Player::PlayerHitOrMiss(Actor *pActor, int a3, int a4)
-{
-    signed int naturalArmor; // esi@1
-    signed int armorBuff; // edi@1
-    int effectiveActorArmor; // esi@8
-    int attBonus; // eax@9
-    int v9; // edx@11
-  //  unsigned __int8 v12; // sf@13
-  //  unsigned __int8 v13; // of@13
-    int attPositiveMod; // edx@14
-    int attNegativeMod; // eax@14
-  //  signed int result; // eax@17
+bool Player::PlayerHitOrMiss(Actor *pActor, int distancemod, int skillmod) { // PS - RETURN IF ATTACK WILL HIT
 
-    naturalArmor = pActor->pMonsterInfo.uAC;
-    armorBuff = 0;
-    if (pActor->pActorBuffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC].Active())
-        naturalArmor /= 2;
-    if (pActor->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
-        armorBuff = pActor->pActorBuffs[ACTOR_BUFF_SHIELD].uPower;
-    if (pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].Active() && pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower > armorBuff)
-        armorBuff = pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower;
-    effectiveActorArmor = armorBuff + naturalArmor;
-    if (a3)
-        attBonus = this->GetRangedAttack();
-    else
-        attBonus = this->GetActualAttack(false);
-    v9 = rand() % (effectiveActorArmor + 2 * attBonus + 30);
-    attPositiveMod = a4 + v9;
-    if (a3 == 2)
-    {
-        attNegativeMod = ((effectiveActorArmor + 15) / 2) + effectiveActorArmor + 15;
+	signed int naturalArmor = pActor->pMonsterInfo.uAC; // actor usual armour
+    signed int armorBuff = 0;
+   
+ 	if (pActor->pActorBuffs[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC].Active()) //gm axe effect??
+		naturalArmor /= 2;
+
+	if (pActor->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
+		armorBuff = pActor->pActorBuffs[ACTOR_BUFF_SHIELD].uPower;
+
+	if (pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].Active() && pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower > armorBuff)
+		armorBuff = pActor->pActorBuffs[ACTOR_BUFF_STONESKIN].uPower;
+
+	int effectiveActorArmor = armorBuff + naturalArmor;
+
+	int attBonus; // player attack bonus
+	if (distancemod)
+		attBonus = this->GetRangedAttack(); //range
+	else
+		attBonus = this->GetActualAttack(false); //melee
+	
+	
+	int attPositiveMod = skillmod + rand() % (effectiveActorArmor + 2 * attBonus + 30); // positive effects to hit on attack
+
+	int attNegativeMod; // negative effects to hit on attack
+	
+	if (distancemod == 2) { //medium range
+		attNegativeMod = ((effectiveActorArmor + 15) / 2) + effectiveActorArmor + 15;
+	}
+	else if (distancemod == 3) { //far range
+		attNegativeMod = 2 * effectiveActorArmor + 30;
+	}
+    else { // close range
+		attNegativeMod = effectiveActorArmor + 15;
     }
-    else if (a3 == 3)
-    {
-        attNegativeMod = 2 * effectiveActorArmor + 30;
-    }
-    else
-    {
-        attNegativeMod = effectiveActorArmor + 15;
-    }
-    return (attPositiveMod > attNegativeMod);
+	
+    return (attPositiveMod > attNegativeMod); // do the pos outweight the negs
 }
 
 
@@ -8110,7 +7634,7 @@ void Player::_42ECB5_PlayerAttacksActor()
     //v32 = 0;
   int wand_item_id = 0;
     //v33 = 0;
-    //v4 = v1->pEquipment.uMainHand;
+   
   int laser_weapon_item_id = 0;
 
   int main_hand_idx = player->pEquipment.uMainHand;
@@ -8149,7 +7673,11 @@ void Player::_42ECB5_PlayerAttacksActor()
     target_id = PID_ID(target_pid);
   }
 
-  Actor* actor = &pActors[target_id];
+  Actor* actor;
+  if (target_id < 500) {
+	  actor = &pActors[target_id]; // prevent crash
+  }
+ 
   int actor_distance = 0;
   if (target_type == OBJECT_Actor)
   {
@@ -8202,7 +7730,7 @@ void Player::_42ECB5_PlayerAttacksActor()
   else
   {
     melee_attack = true;
-    ; // actor out of range or no actor; no ranged weapon so melee attacking air
+    //; // actor out of range or no actor; no ranged weapon so melee attacking air
   }
 
   if (!pParty->bTurnBasedModeOn && melee_attack) // wands, bows & lasers will add recovery while shooting spell effect
@@ -8246,37 +7774,39 @@ void Player::_42ECB5_PlayerAttacksActor()
 
 
 //----- (0042FA66) --------------------------------------------------------
-void Player::_42FA66_do_explosive_impact(int a1, int a2, int a3, int a4, __int16 a5, signed int a6)
-{
-  unsigned __int16 v9; // ax@5
+void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4, __int16 a5, signed int actchar) {
 
-  SpriteObject a1a; // [sp+Ch] [bp-74h]@1
-  //SpriteObject::SpriteObject(&a1a);
-  a1a.uType = SPRITE_600;
-  a1a.containing_item.Reset();
+	//EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
+	
+	unsigned __int16 v9 =0; // ax@5
+	SpriteObject a1a; // [sp+Ch] [bp-74h]@1
+	//SpriteObject::SpriteObject(&a1a);
+	a1a.uType = SPRITE_600;
+	a1a.containing_item.Reset();
+	a1a.spell_id = SPELL_FIRE_FIREBALL;
+	a1a.spell_level = 8;
+	a1a.spell_skill = 3;
 
-  a1a.spell_id = SPELL_FIRE_FIREBALL;
-  a1a.spell_level = 8;
-  a1a.spell_skill = 3;
-  v9 = 0;
-  for ( uint i = 0; i < pObjectList->uNumObjects; ++i )
-  {
-    if ( a1a.uType == pObjectList->pObjects[i].uObjectID )
-      v9 = i;
-  }
+	for ( uint i = 0; i < pObjectList->uNumObjects; ++i ) {
+		if ( a1a.uType == pObjectList->pObjects[i].uObjectID )
+			v9 = i;
+	}
+
+
   a1a.uObjectDescID = v9;
-  a1a.vPosition.x = a1;
-  a1a.vPosition.y = a2;
-  a1a.vPosition.z = a3;
+  a1a.vPosition.x = xpos;
+  a1a.vPosition.y = ypos;
+  a1a.vPosition.z = zpos;
   a1a.uAttributes = 0;
-  a1a.uSectorID = pIndoor->GetSector(a1, a2, a3);
+  a1a.uSectorID = pIndoor->GetSector(xpos, ypos, zpos);
   a1a.uSpriteFrameID = 0;
   a1a.spell_target_pid = 0;
   a1a.field_60_distance_related_prolly_lod = 0;
   a1a.uFacing = 0;
   a1a.uSoundID = 0;
-  if ( a6 >= 1 || a6 <= 4 )
-    a1a.spell_caster_pid = PID(OBJECT_Player, a6 - 1);
+
+  if ( actchar >= 1 || actchar <= 4 )
+    a1a.spell_caster_pid = PID(OBJECT_Player, actchar - 1);
   else
     a1a.spell_caster_pid = 0;
 
@@ -8286,15 +7816,352 @@ void Player::_42FA66_do_explosive_impact(int a1, int a2, int a3, int a4, __int16
 }
 
 //----- (00458244) --------------------------------------------------------
-unsigned int SkillToMastery( unsigned int skill_value )
+unsigned int SkillToMastery( unsigned int skill_value ) {
+
+	//attempt to depreciate ?
+	// use GetActualSkillMastery instead
+
+	switch (skill_value & 0x1C0) {
+		case 0x100: return 4;     // Grandmaster
+		case 0x80:  return 3;     // Master
+		case 0x40:  return 2;     // Expert
+		case 0x00:  return 1;     // Normal
+	}
+	
+	assert(false); // should not get here
+	return 0;
+}
+
+//----- (004948B1) --------------------------------------------------------
+void Player::PlaySound(PlayerSpeech speech, int a3) { // ?? need to swith over to openal
+
+
+	signed int speechCount = 0; // esi@4
+	signed int expressionCount = 0; // esi@4
+	int pickedVariant; // esi@10
+	CHARACTER_EXPRESSION_ID expression; // ebx@17
+	signed int pSoundID; // ecx@19
+	int speechVariantArray[5]; // [sp+Ch] [bp-1Ch]@7
+	int expressionVariantArray[5];
+	unsigned int pickedSoundID; // [sp+30h] [bp+8h]@4
+	unsigned int expressionDuration = 0;
+
+	//pMediaPlayer->
+
+	//pMediaPlayer->
+
+
+	pickedSoundID = 0;
+	if (uVoicesVolumeMultiplier)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			if (SoundSetAction[speech][i])
+			{
+				speechVariantArray[speechCount] = SoundSetAction[speech][i];
+				speechCount++;
+			}
+		}
+		if (speechCount)
+		{
+			pickedVariant = speechVariantArray[rand() % speechCount];
+			int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
+			if (numberOfSubvariants > 0)
+			{
+				pickedSoundID = rand() % numberOfSubvariants + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
+				pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, uActiveCharacter + 39), 0, -1, 0, 0, (int)(pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f), 0);
+			}
+		}
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		if (SoundSetAction[speech][i + 3])
+		{
+			expressionVariantArray[expressionCount] = SoundSetAction[speech][i + 3];
+			expressionCount++;
+		}
+	}
+	if (expressionCount)
+	{
+		expression = (CHARACTER_EXPRESSION_ID)expressionVariantArray[rand() % expressionCount];
+		if (expression == CHARACTER_EXPRESSION_21 && pickedSoundID)
+		{
+			pSoundID = 0;
+			if (pSoundList->sNumSounds)
+			{
+				for (int i = 0; i < pSoundList->sNumSounds; i++)
+				{
+					if (pSoundList->pSL_Sounds[i].uSoundID == pickedSoundID)
+						pSoundID = i;
+				}
+			}
+			if (pSoundList->pSL_Sounds[pSoundID].pSoundData[0])
+				expressionDuration = (sLastTrackLengthMS << 7) / 1000;
+		}
+		PlayEmotion(expression, expressionDuration);
+	}
+}
+
+//----- (00494A25) --------------------------------------------------------
+void Player::PlayEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
+	//38 - sparkles 1 player?
+
+	unsigned int currexpr = expression;
+
+	if (expression == CHARACTER_EXPRESSION_DEAD || expression == CHARACTER_EXPRESSION_ERADICATED) {
+		return; // no react
+	}
+	else if (expression == CHARACTER_EXPRESSION_PERTIFIED && new_expression != CHARACTER_EXPRESSION_FALLING) {
+		return; // no react
+	}
+	else {
+		if (expression != CHARACTER_EXPRESSION_SLEEP || new_expression != CHARACTER_EXPRESSION_FALLING) {
+			if (currexpr >= 2 && currexpr <= 11 && currexpr != 8 && !(new_expression == CHARACTER_EXPRESSION_DMGRECVD_MINOR || new_expression == CHARACTER_EXPRESSION_DMGRECVD_MODERATE || new_expression == CHARACTER_EXPRESSION_DMGRECVD_MAJOR)) {
+				return; // no react
+			}
+		}
+	}
+
+	this->uExpressionTimePassed = 0;
+
+	if (!duration) {
+		this->uExpressionTimeLength = 8 * pPlayerFrameTable->pFrames[duration].uAnimLength;
+	}
+	else {
+		this->uExpressionTimeLength = 0;
+	}
+
+	expression = new_expression;
+	viewparams->bRedrawGameUI = 1;
+}
+
+//----- (0049327B) --------------------------------------------------------
+bool Player::ProfessionOrGuildFlagsCorrect(unsigned int uClass, int a3)
 {
-  switch (skill_value & 0x1C0)
-  {
-  case 0x100: return 4;     // Grandmaster
-  case 0x80:  return 3;     // Master
-  case 0x40:  return 2;     // Expert
-  case 0x00:  return 1;     // Normal
-  }
-  assert(false);
-  return 0;
+	if (this->classType == uClass)
+	{
+		return true;
+	}
+	else
+	{
+		if (!a3)
+		{
+			return false;
+		}
+		switch (uClass)
+		{
+		case 0x1Au:
+			return(_449B57_test_bit((unsigned __int8 *)this->_achieved_awards_bits, 65));
+		case 0x1Bu:
+			return(_449B57_test_bit((unsigned __int8 *)this->_achieved_awards_bits, 67));
+		case 0x22u:
+			return(_449B57_test_bit((unsigned __int8 *)this->_achieved_awards_bits, 77));
+		case 0x23u:
+			return(_449B57_test_bit((unsigned __int8 *)this->_achieved_awards_bits, 79));
+			break;
+		default:
+			Error("Should not be able to get here (%u)", uClass);
+			break;
+		}
+		return false;
+	}
+}
+
+//----- (00490EEE) --------------------------------------------------------
+int Player::SelectPhrasesTransaction(ItemGen *pItem, int building_type, int BuildID_2Events, int ShopMenuType)  //TODO: probably move this somewhere else, not really Player:: stuff
+{
+	unsigned int idemId; // edx@1
+	signed int equipType; // esi@1
+	float multiplier; // ST04_4@26
+	int price; // edi@26
+	int merchantLevel; // [sp+10h] [bp-8h]@1
+	int itemValue;
+
+	merchantLevel = GetActualSkillLevel(PLAYER_SKILL_MERCHANT);
+	idemId = pItem->uItemID;
+	equipType = pItem->GetItemEquipType();
+	itemValue = pItem->GetValue();
+
+	switch (building_type)
+	{
+	case BuildingType_WeaponShop:
+		if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
+			return 5;
+		if (equipType > EQUIP_BOW)
+			return 4;
+		break;
+	case BuildingType_ArmorShop:
+		if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
+			return 5;
+		if (equipType < EQUIP_ARMOUR || equipType > EQUIP_BOOTS)
+			return 4;
+		break;
+	case BuildingType_MagicShop:
+		if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
+			return 5;
+		if (pItemsTable->pItems[idemId].uSkillType != PLAYER_SKILL_MISC)
+			return 4;
+		break;
+	case BuildingType_AlchemistShop:
+		if ((idemId >= ITEM_ARTIFACT_HERMES_SANDALS && idemId < ITEM_RECIPE_REJUVENATION) || idemId > ITEM_RECIPE_BODY_RESISTANCE)
+			return 5;
+		if (!(equipType == EQUIP_REAGENT || equipType == EQUIP_POTION || equipType == EQUIP_MESSAGE_SCROLL))
+			return 4;
+		break;
+	default:
+		Error("(%u)", building_type);
+		break;
+	}
+	if (pItem->IsStolen())
+		return 6;
+
+	multiplier = p2DEvents[BuildID_2Events - 1].fPriceMultiplier;
+	switch (ShopMenuType)
+	{
+	case 2:
+		price = GetBuyingPrice(itemValue, multiplier);
+		break;
+	case 3:
+		//if (pItem->IsBroken())
+		//price = 1;
+		//else
+		price = this->GetPriceSell(*pItem, multiplier);//itemValue, multiplier);
+		break;
+	case 4:
+		price = this->GetPriceIdentification(multiplier);
+		break;
+	case 5:
+		price = this->GetPriceRepair(itemValue, multiplier);
+		break;
+	default:
+		Error("(%u)", ShopMenuType);
+		break;
+	}
+	if (merchantLevel)
+	{
+		if (price == itemValue)
+		{
+			return 3;
+		}
+		else
+		{
+			return 2;
+		}
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+//----- (0048C6AF) --------------------------------------------------------
+Player::Player()
+{
+	memset(&pEquipment, 0, sizeof(PlayerEquipment));
+	pInventoryMatrix.fill(0);
+	for (uint i = 0; i < 126; ++i)
+		pInventoryItemList[i].Reset();
+	for (uint i = 0; i < 12; ++i)
+		pEquippedItems[i].Reset();
+
+
+	for (uint i = 0; i < 24; ++i)
+	{
+		pPlayerBuffs[i].uSkill = 0;
+		pPlayerBuffs[i].uSkill = 0;
+		pPlayerBuffs[i].uPower = 0;
+		pPlayerBuffs[i].expire_time.Reset();
+		pPlayerBuffs[i].uCaster = 0;
+		pPlayerBuffs[i].uFlags = 0;
+	}
+
+	pName[0] = 0;
+	uCurrentFace = 0;
+	uVoiceID = 0;
+	conditions_times.fill(0);
+
+	field_BB = 0;
+
+	uMight = uMightBonus = 0;
+	uIntelligence = uIntelligenceBonus = 0;
+	uWillpower = uWillpowerBonus = 0;
+	uEndurance = uEnduranceBonus = 0;
+	uSpeed = uSpeedBonus = 0;
+	uAccuracy = uAccuracyBonus = 0;
+	uLuck = uLuckBonus = 0;
+	uLevel = sLevelModifier = 0;
+	sAgeModifier = 0;
+	sACModifier = 0;
+
+	//  memset(field_1F5, 0, 30);
+	pure_luck_used = 0;
+	pure_speed_used = 0;
+	pure_intellect_used = 0;
+	pure_endurance_used = 0;
+	pure_willpower_used = 0;
+	pure_accuracy_used = 0;
+	pure_might_used = 0;
+
+	sResFireBase = sResFireBonus = 0;
+	sResAirBase = sResAirBonus = 0;
+	sResWaterBase = sResWaterBonus = 0;
+	sResEarthBase = sResEarthBonus = 0;
+	sResMagicBase = sResMagicBonus = 0;
+	sResSpiritBase = sResSpiritBonus = 0;
+	sResMindBase = sResMindBonus = 0;
+	sResBodyBase = sResBodyBonus = 0;
+	sResLightBase = sResLightBonus = 0;
+	sResDarkBase = sResDarkBonus = 0;
+
+	uTimeToRecovery = 0;
+
+	uSkillPoints = 0;
+
+	sHealth = 0;
+	uFullHealthBonus = 0;
+	_health_related = 0;
+
+	sMana = 0;
+	uFullManaBonus = 0;
+	_mana_related = 0;
+
+	uQuickSpell = 0;
+	memset(pInstalledBeacons.data(), 0, 5 * sizeof(LloydBeacon));
+
+	_some_attack_bonus = 0;
+	field_1A91 = 0;
+	_melee_dmg_bonus = 0;
+	field_1A93 = 0;
+	_ranged_atk_bonus = 0;
+	field_1A95 = 0;
+	_ranged_dmg_bonus = 0;
+	field_1A97 = 0;
+
+	expression = CHARACTER_EXPRESSION_INVALID;
+	uExpressionTimePassed = 0;
+	uExpressionTimeLength = 0;
+
+	uNumDivineInterventionCastsThisDay = 0;
+	uNumArmageddonCasts = 0;
+	uNumFireSpikeCasts = 0;
+
+	memset(field_1988, 0, sizeof(field_1988));
+	memset(playerEventBits, 0, sizeof(playerEventBits));
+
+	field_E0 = 0;
+	field_E4 = 0;
+	field_E8 = 0;
+	field_EC = 0;
+	field_F0 = 0;
+	field_F4 = 0;
+	field_F8 = 0;
+	field_FC = 0;
+	field_100 = 0;
+	field_104 = 0;
+
+	_expression21_animtime = 0;
+	_expression21_frameset = 0;
+
+	lastOpenedSpellbookPage = 0;
 }

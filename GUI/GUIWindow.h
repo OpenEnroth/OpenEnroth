@@ -715,7 +715,7 @@ void OracleDialogue();
 void CheckBountyRespawnAndAward();
 String _4B254D_SkillMasteryTeacher(int trainerInfo);
 String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int a5, GameTime *a6 = nullptr);
-String BuildDialogueString(String &str, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int a5, GameTime *a6 = nullptr);
+String BuildDialogueString(String &str, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int shop_screen, GameTime *a6 = nullptr);
 int const_2();
 
 

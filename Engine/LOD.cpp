@@ -1512,13 +1512,13 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst, const char *pContaine
 int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *pContainer, enum TEXTURE_TYPE eTextureType)
 {
     Texture_MM7 *v8; // esi@3
-    enum TEXTURE_TYPE v12; // eax@14
+//    enum TEXTURE_TYPE v12; // eax@14
     signed int result; // esi@14
     unsigned int v14; // eax@21
     void *v19; // ST3C_4@27
     size_t v22; // ST2C_4@29
     const void *v23; // ecx@29
-    void *v30; // eax@30
+//    void *v30; // eax@30
     signed int v41; // ecx@43
     signed int v42; // ecx@48
 
