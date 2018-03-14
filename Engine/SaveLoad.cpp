@@ -156,7 +156,7 @@ void LoadGame(unsigned int uSlot)
 
     pNew_LOD->CloseWriteFile();
 
-    String filename = StringPrintf("saves\\%s", pSavegameList->pFileList[uSlot].pSaveFileName);
+    String filename = "saves\\" + pSavegameList->pFileList[uSlot];
     filename = MakeDataPath(filename.c_str());
     String to_file_path = MakeDataPath("data\\new.lod");
     remove(to_file_path.c_str());
@@ -699,7 +699,7 @@ void SavegameList::Initialize() {
 
   do {
     if ((ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-      strcpy(pSavegameList->pFileList[uNumSavegameFiles++].pSaveFileName, ffd.cFileName);
+      pSavegameList->pFileList[uNumSavegameFiles++] = ffd.cFileName;
     }
   } while (FindNextFileA(hFind, &ffd) != 0);
 
@@ -712,10 +712,7 @@ SavegameList::SavegameList() {
 
 void SavegameList::Reset() {
   for (int j = 0; j < 45; j++) {
-    for (int i = 0; i < 20; ++i)
-      this->pFileList[j].field_0[i] = 0;
-    for (int i = 0; i < 260; ++i)
-      this->pFileList[j].pSaveFileName[i] = 0;
+    this->pFileList[j].clear();
   }
 }
 

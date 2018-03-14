@@ -7,6 +7,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Graphics/ImageLoader.h"
 
 #include "IO/Keyboard.h"
 
@@ -35,7 +36,7 @@ GUIWindow_Save::GUIWindow_Save() :
 {
     // ------------------------------------------------
     // 0045E93E SaveUI_Load(enum CURRENT_SCREEN screen)
-    char *v3; // eax@7
+    std::string file_name; // eax@7
     LODWriteableFile pLODFile; // [sp+1Ch] [bp-248h]@1
 
     memset(&pSavegameUsedSlots, 0, sizeof(pSavegameUsedSlots));
@@ -56,13 +57,14 @@ GUIWindow_Save::GUIWindow_Save() :
     render->Present();
     pSavegameList->Initialize();
     pLODFile.AllocSubIndicesAndIO(300, 0);
-    for (uint i = 0; i < 40; ++i)
-    {
-        v3 = pSavegameList->pFileList[i].pSaveFileName;
-        if (!*pSavegameList->pFileList[i].pSaveFileName)
-            v3 = "1.mm7";
+    for (uint i = 0; i < 40; ++i) {
+        file_name = pSavegameList->pFileList[i];
+        if (file_name.empty()) {
+            file_name = "1.mm7";
+        }
 
-        auto str = StringPrintf("saves\\%s", v3);
+        std::string str = "saves\\" + file_name;
+        str = MakeDataPath(str.c_str());
         if (_access(str.c_str(), 0) || _access(str.c_str(), 6))
         {
             pSavegameUsedSlots[i] = 0;
@@ -74,14 +76,8 @@ GUIWindow_Save::GUIWindow_Save() :
             fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", 1)); // problesm new maps mm7
             if (pLODFile.FindContainer("image.pcx", 1))
             {
-
-				//0x0ae97078 {_Placeholder=0x1230d06c }
-				//_Placeholder: 0x1230d06c
-
-
                 //pSavegameThumbnails[i].LoadFromFILE(pLODFile.FindContainer("image.pcx", 1), 0, 1);
-                
-				pLODFile.CloseWriteFile();
+                pLODFile.CloseWriteFile();
                 pSavegameUsedSlots[i] = 1;
             }
             else
@@ -137,12 +133,7 @@ void GUIWindow_Save::Update()
 GUIWindow_Load::GUIWindow_Load(bool ingame) :
     GUIWindow(0, 0, 0, 0, 0, nullptr)
 {
-// ----- (0045E361) --------------------------------------------------------
-// void LoadUI_Load(unsigned int uDialogueType)
-// {
     current_screen_type = SCREEN_LOADGAME;
-
-    LODWriteableFile pLODFile; // [sp+1Ch] [bp-248h]@1
 
     dword_6BE138 = -1;
     pIcons_LOD->_inlined_sub2();
@@ -199,11 +190,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         pSaveListPosition = 0;
         uLoadGameUI_SelectedSlot = 0;
     }
+    LODWriteableFile pLODFile;
     pLODFile.AllocSubIndicesAndIO(300, 0);
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i)
     {
-        String str = StringPrintf("saves\\%s", pSavegameList->pFileList[i].pSaveFileName);
+        String str = "saves\\" + pSavegameList->pFileList[i];
         str = MakeDataPath(str.c_str());
         if (_access(str.c_str(), 6))
         {
@@ -214,16 +206,18 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         pLODFile.LoadFile(str.c_str(), 1);
         if (pLODFile.FindContainer("header.bin", true))
             fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", true));
-        if (!_stricmp(pSavegameList->pFileList[i].pSaveFileName, localization->GetString(613)))// "AutoSave.MM7"
-            strcpy(pSavegameHeader[i].pName, localization->GetString(16));// "Autosave"
-        if (!pLODFile.FindContainer("image.pcx", true))
-        {
-            pSavegameUsedSlots[i] = 0;
-            strcpy(pSavegameList->pFileList[i].pSaveFileName, "");
+        if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(613))) {  // "AutoSave.MM7"
+            strcpy(pSavegameHeader[i].pName, localization->GetString(16));  // "Autosave"
         }
-        else
-        {
-//            pSavegameThumbnails[i]->LoadFromFILE(pLODFile.FindContainer("image.pcx", true), 0, true);
+        if (!pLODFile.FindContainer("image.pcx", true)) {
+            pSavegameUsedSlots[i] = 0;
+            pSavegameList->pFileList[i].clear();
+        } else {
+            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_File_Loader(&pLODFile, "image.pcx"));
+            if (pSavegameThumbnails[i]->GetWidth() == 0) {
+                pSavegameThumbnails[i]->Release();
+                pSavegameThumbnails[i] = nullptr;
+            }
             pLODFile.CloseWriteFile();
             pSavegameUsedSlots[i] = 1;
         }

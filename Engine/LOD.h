@@ -81,8 +81,8 @@ namespace LOD
         File();
         virtual ~File();
         void *LoadRaw(const char *pContainer, int a3);
-        FILE *FindContainer(const char *pContainerName, bool bLinearSearch);
-        FILE *FindContainer(const String &filename, bool bLinearSearch);
+        FILE *FindContainer(const char *pContainerName, bool bLinearSearch, size_t *data_size = nullptr);
+        FILE *FindContainer(const String &filename, bool bLinearSearch, size_t *data_size = nullptr);
         bool DoesContainerExist(const char *pContainer);
         bool DoesContainerExist(const String &filename);
         int CalcIndexFast(int startIndex, int maxIndex, const char *pContainerName);

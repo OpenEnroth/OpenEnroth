@@ -3,22 +3,13 @@
 
 #include "Engine/Time.h"
 
-#pragma pack(push, 1)
-struct SaveFile_
-{
-    char field_0[20];
-    char pSaveFileName[260];
-};
-#pragma pack(pop)
-
-/*  243 */
 struct SavegameList {
     static void Initialize();
     SavegameList();
 
     void Reset();
 
-    SaveFile_ pFileList[45];
+    std::array<std::string, 45> pFileList;
 };
 
 

@@ -1067,7 +1067,6 @@ void IntegrityTest()
     static_assert(sizeof(_2devent) == 0x34, "Wrong type size");
     static_assert(sizeof(MapsLongTimer) == 0x20, "Wrong type size");
     static_assert(sizeof(SavegameHeader) == 0x64, "Wrong type size");
-    static_assert(sizeof(SavegameList) == 0x3138, "Wrong type size");
     static_assert(sizeof(StorylineText) == 0x160, "Wrong type size");
     static_assert(sizeof(FactionTable) == 0x1EF1, "Wrong type size");
     static_assert(sizeof(Decal) == 0xC20, "Wrong type size");

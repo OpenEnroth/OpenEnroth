@@ -97,12 +97,25 @@ class PCX_File_Loader : public PCX_Loader
         virtual bool Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format) override;
 
 
-
     protected:
+        bool InternalLoad(FILE* file, size_t size, unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format);
         LODFile_IconsBitmaps *lod;
 };
 
+class PCX_LOD_File_Loader : public PCX_File_Loader
+{
+    public:
+        inline PCX_LOD_File_Loader(LOD::File *lod, const String &filename)
+            : PCX_File_Loader(nullptr, filename)
+        {
+            this->lod = lod;
+        }
 
+        virtual bool Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format) override;
+
+    protected:
+        LOD::File *lod;
+};
 
 class PCX_LOD_Loader : public PCX_Loader
 {

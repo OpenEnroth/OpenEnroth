@@ -373,10 +373,6 @@ bool PCX_Loader::DecodePCX(const unsigned char *pcx_data, unsigned __int16 *pOut
 
 bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format)
 {
-    char color_map[48]; // [sp+Ch] [bp-98h]@7
-    PCXHeader1 header1; // [sp+84h] [bp-20h]@7
-    PCXHeader2 header2; // [sp+94h] [bp-10h]@7
-
     *width = 0;
     *height = 0;
     *pixels = nullptr;
@@ -390,44 +386,59 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height, void **pix
     }
 
     fseek(file, 0, SEEK_END);
-    int filesize = ftell(file);
+    size_t filesize = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    auto file_image = new unsigned char[filesize];
-    fread(file_image, 1, filesize, file);
+    bool res = InternalLoad(file, filesize, width, height, pixels, format);
+
     fclose(file);
 
+    return res;
+}
 
-    memcpy(&header1, file_image, 0x10u);
-    memcpy(color_map, file_image + 16, 0x30u);
-    memcpy(&header2, file_image + 64, 6);
-    if (header1.bpp != 8)
-    {
-        delete[] file_image;
+bool PCX_File_Loader::InternalLoad(FILE* file, size_t filesize, unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format)
+{
+    auto file_image = new unsigned char[filesize];
+    fread(file_image, 1, filesize, file);
+
+    PCXHeader1 *header1 = (PCXHeader1*)file_image;
+    if (header1->bpp != 8) {
         return false;
     }
 
-    *width = header1.right - header1.left + 1;
-    *height = header1.bottom - header1.up + 1;
+    *width = header1->right - header1->left + 1;
+    *height = header1->bottom - header1->up + 1;
     unsigned int num_pixels = *width * *height;
     *pixels = new unsigned short[num_pixels + 2];
 
-    if (pixels)
-    {
-        if (!this->DecodePCX(file_image, (unsigned __int16 *)*pixels, width, height))
-        {
+    if (pixels) {
+        if (!this->DecodePCX(file_image, (unsigned __int16 *)*pixels, width, height)) {
             delete[] * pixels;
             *pixels = nullptr;
-        }
-        else
+        } else {
             *format = IMAGE_FORMAT_R5G6B5;
+        }
     }
-
-    delete[] file_image;
 
     return *pixels != nullptr;
 }
 
+bool PCX_LOD_File_Loader::Load(unsigned int *width, unsigned int *height, void **pixels, IMAGE_FORMAT *format)
+{
+    *width = 0;
+    *height = 0;
+    *pixels = nullptr;
+    *format = IMAGE_INVALID_FORMAT;
+
+    size_t size;
+    FILE *file = lod->FindContainer(this->resource_name.c_str(), 0, &size);
+    if (!file) {
+        logger->Warning(L"Unable to load %s", this->resource_name.c_str());
+        return false;
+    }
+
+    return InternalLoad(file, size, width, height, pixels, format);
+}
 
 
 
