@@ -48,9 +48,13 @@ int (__stdcall *mss32_AIL_WAV_info)(void *, AILSOUNDINFO *) = 0;
 int (__stdcall *mss32_AIL_decompress_ADPCM)(AILSOUNDINFO *, void *, void *) = 0;
 HREDBOOK (__stdcall *mss32_AIL_redbook_open)(int) = 0;
 void (__stdcall *mss32_AIL_release_sample_handle)(HSAMPLE) = 0;
-void MSS32_DLL_Initialize()
+int(__stdcall *mss32_AIL_shutdown)() = 0;
+
+void MSS32_DLL_Initialize(const char *data_path)
 {
-    HMODULE pDll = LoadLibraryW(L"mss32.dll");
+    wchar_t buf[1024];
+    wsprintf(buf, L"%S\\mss32.dll", data_path);
+    HMODULE pDll = LoadLibraryW(buf);
 
     mss32_AIL_startup = (int(__stdcall *)())GetProcAddress(pDll, "_AIL_startup@0");
     mss32_AIL_redbook_open_drive = (HREDBOOK(__stdcall *)(long))GetProcAddress(pDll, "_AIL_redbook_open_drive@4");
@@ -90,6 +94,7 @@ void MSS32_DLL_Initialize()
     mss32_AIL_decompress_ADPCM = (int(__stdcall *)(AILSOUNDINFO *, void *, void *))GetProcAddress(pDll, "_AIL_decompress_ADPCM@12");
     mss32_AIL_redbook_open = (HREDBOOK(__stdcall *)(int))GetProcAddress(pDll, "_AIL_redbook_open@4");
     mss32_AIL_release_sample_handle = (void(__stdcall *)(HSAMPLE))GetProcAddress(pDll, "_AIL_release_sample_handle@4");
+    mss32_AIL_shutdown = (int(__stdcall *)())GetProcAddress(pDll, "_AIL_shutdown@0");
 }
 
 
@@ -274,8 +279,7 @@ int __stdcall AIL_redbook_close(HREDBOOK a1)
 // sub_4D8344: using guessed type int __stdcall AIL_shutdown();
 int __stdcall AIL_shutdown()
 {
- __asm int 3
- return 0;
+  return (mss32_AIL_shutdown)();
 }
 
 int __stdcall AIL_end_sample(HSAMPLE a1)

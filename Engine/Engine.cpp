@@ -108,6 +108,16 @@ render->DrawTextureAlphaNew((64 + torchA.icon->texture->GetWidth() + torchB.icon
 
 */
 
+static std::string s_data_path;
+
+void SetDataPath(const char *data_path) {
+  s_data_path = data_path;
+}
+
+std::string MakeDataPath(const char *file_rel_path) {
+  return s_data_path + "\\" + file_rel_path;
+}
+
 
 Engine *pEngine = nullptr;
 
@@ -1355,11 +1365,6 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
 
     switch (uTurnSpeed)
     {
-    case 0: // undefined turn option
-        __debugbreak(); // really shouldn't use this mode
-        uTurnSpeed = 64; //(unsigned int)uCPUSpeed < 199/*MHz*/ ? 128 : 64; // adjust turn speed to estimated fps
-        break;
-
     case 1:             // 16x
         logger->Warning(L"x16 Turn Speed"); // really shouldn't use this mode
         uTurnSpeed = 128;
@@ -1459,14 +1464,15 @@ void SecondaryInitialization()
     pSprites_LOD->_inlined_sub0();
     pPaletteManager->LockAll();
 
-    _mkdir("Saves");
-    for (uint i = 0; i < 5; ++i)
-        for (uint j = 0; j < 6; ++j)
-        {
-            remove(
-                StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str()
-            );
+    std::string savesDir = MakeDataPath("Saves");
+    _mkdir(savesDir.c_str());
+    for (uint i = 0; i < 5; ++i) {
+        for (uint j = 0; j < 6; ++j) {
+            String file_path = StringPrintf("data\\lloyd%d%d.pcx", i, j);
+            file_path = MakeDataPath(file_path.c_str());
+            remove(file_path.c_str());
         }
+    }
 
     Initialize_GamesLOD_NewLOD();
     _576E2C_current_minimap_zoom = 512;
@@ -1662,6 +1668,15 @@ bool MM_Main(const wchar_t *pCmdLine)
 		}
 	}
 
+    if (!mm7_installation_found) {
+        char *path = getenv("WoMM_MM7_INSTALL_DIR");
+        if (path != nullptr) {
+          strcpy(mm7_path, path);
+          mm7_installation_found = true;
+          logger->Info(L"MM7 installation path from env var");
+        }
+    }
+
 		// Hack path fix - pskelton
 	if (!mm7_installation_found) {
 		mm7_installation_found = 1;
@@ -1669,6 +1684,7 @@ bool MM_Main(const wchar_t *pCmdLine)
 		logger->Info(L"Hack Path MM7 installation found");
 	}
 
+    SetDataPath(mm7_path);
 
     if (pCmdLine && *pCmdLine)
         ParseCommandLine(pCmdLine);
@@ -1676,7 +1692,9 @@ bool MM_Main(const wchar_t *pCmdLine)
     if (!MM7_Initialize(640, 480, mm7_path))
     {
         logger->Warning(L"MM7_Initialize: failed");
-        pEngine->Deinitialize();
+        if (pEngine != nullptr) {
+          pEngine->Deinitialize();
+        }
         return false;
     }
 
@@ -1684,8 +1702,8 @@ bool MM_Main(const wchar_t *pCmdLine)
 
     GUIWindow::InitializeGUI();
 
-	//ShowLogoVideo(); old
-	pMediaPlayer->ShowMM7IntroVideo_and_LoadingScreen(); //new
+    //ShowLogoVideo(); old
+    pMediaPlayer->ShowMM7IntroVideo_and_LoadingScreen(); //new
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
@@ -1701,7 +1719,10 @@ bool MM_Main(const wchar_t *pCmdLine)
         }
     }
 
-    pEngine->Deinitialize();
+    if (pEngine != nullptr) {
+       pEngine->Deinitialize();
+    }
+
     return true;
 }
 

@@ -12,26 +12,14 @@ struct SaveFile_
 #pragma pack(pop)
 
 /*  243 */
-#pragma pack(push, 1)
-struct SavegameList
-{
-    static void Initialize(unsigned int a1);
-    SavegameList() { Reset(); }
+struct SavegameList {
+    static void Initialize();
+    SavegameList();
 
-    inline void Reset()
-    {
-        for (int j = 0; j < 45; j++)
-        {
-            for (int i = 0; i < 20; ++i)
-                this->pFileList[j].field_0[i] = 0;
-            for (int i = 0; i < 260; ++i)
-                this->pFileList[j].pSaveFileName[i] = 0;
-        }
-    }
+    void Reset();
 
     SaveFile_ pFileList[45];
 };
-#pragma pack(pop)
 
 
 /*  244 */

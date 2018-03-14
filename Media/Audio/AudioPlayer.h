@@ -185,7 +185,8 @@ struct AudioPlayer
   //----- (004A9669) --------------------------------------------------------
   AudioPlayer():
     bPlayerReady(false), b3DSoundInitialized(false),
-    hAILRedbook(nullptr), hStream(nullptr)
+    hAILRedbook(nullptr), hStream(nullptr),
+    h3DSoundProvider(nullptr)
   {
 	/*AudioPlayer_3DSample *v0; //ecx@1
 	signed int v1; //edi@1

@@ -1791,7 +1791,7 @@ bool Initialize_GamesLOD_NewLOD()
 {
   pGames_LOD = new LODWriteableFile;
   pGames_LOD->AllocSubIndicesAndIO(300, 0);
-  if (pGames_LOD->LoadFile("data\\games.lod", 1))
+  if (pGames_LOD->LoadFile(MakeDataPath("data\\games.lod").c_str(), 1))
   {
     pNew_LOD = new LODWriteableFile;
     pNew_LOD->AllocSubIndicesAndIO(300, 100000);

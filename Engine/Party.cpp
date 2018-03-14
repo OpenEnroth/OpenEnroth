@@ -197,7 +197,7 @@ int Party::GetNextActiveCharacter()
 
 
 
-  if (this->pPlayers[uActiveCharacter-1].CanAct() && this->pPlayers[uActiveCharacter-1].uTimeToRecovery < 1) // avoid switching away from char that can act
+  if (uActiveCharacter > 0 && this->pPlayers[uActiveCharacter-1].CanAct() && this->pPlayers[uActiveCharacter-1].uTimeToRecovery < 1) // avoid switching away from char that can act
 	  return uActiveCharacter;
 
 

@@ -249,3 +249,6 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4);
 
 void OnTimer(int);
 bool TeleportToNWCDungeon();
+
+void SetDataPath(const char *data_path);
+std::string MakeDataPath(const char *file_rel_path);

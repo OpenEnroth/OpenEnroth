@@ -1,12 +1,9 @@
 #env`s
+*.user
+*.sdf
+*.opensdf
+.vs
 Debug
 Release
 Build/Visual Studio 2015/Debug
-Build/Visual Studio 2015/*.sdf
-Build/Visual Studio 2015/*.opensdf
-
 Build/Visual Studio 2017/Debug
-Build/Visual Studio 2017/*.sdf
-Build/Visual Studio 2017/.vs
-!Build/Visual Studio 2017/.vs/World of Might and Magic/v14/.suo
-!Build/Visual Studio 2017/.vs/World of Might and Magic/v15/.suo

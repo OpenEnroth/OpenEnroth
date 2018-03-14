@@ -2158,9 +2158,8 @@ bool Render::Initialize(OSWindow *window/*, bool bColoredLights, uint32_t uDetai
   bUseColoredLights = OS_GetAppInt("Colored Lights", false);
   uLevelOfDetail = OS_GetAppInt("Detail Level", 1);
   bTinting = OS_GetAppInt("Tinting", 1) != 0;
-
-  bool r1 = pD3DBitmaps.Load(L"data\\d3dbitmap.hwl");
-  bool r2 = pD3DSprites.Load(L"data\\d3dsprite.hwl");
+  bool r1 = pD3DBitmaps.Load(MakeDataPath("data\\d3dbitmap.hwl").c_str());
+  bool r2 = pD3DSprites.Load(MakeDataPath("data\\d3dsprite.hwl").c_str());
 
   return r1 && r2;
 }
@@ -7693,9 +7692,9 @@ RenderHWLContainer::RenderHWLContainer():
 }
 
 //----- (0045237F) --------------------------------------------------------
-bool RenderHWLContainer::Load(const wchar_t *pFilename)
+bool RenderHWLContainer::Load(const char *pFilename)
 {
-  pFile = _wfopen(pFilename, L"rb");
+  pFile = fopen(pFilename, "rb");
   if (!pFile)
   {
     logger->Warning(L"Failed to open file: %s", pFilename);

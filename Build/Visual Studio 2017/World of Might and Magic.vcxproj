@@ -43,7 +43,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(Configuration)\</IntDir>
-    <OutDir>$(WoMM_MM7_INSTALL_DIR)\</OutDir>
+    <OutDir>$(Configuration)\</OutDir>
     <GenerateManifest>false</GenerateManifest>
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
@@ -56,13 +56,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ObjectFileName>$(IntDir)%(Directory)</ObjectFileName>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ShowIncludes>true</ShowIncludes>
-      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -71,9 +67,13 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY "$(SolutionDir)../../Scripts" "$(OutDir)data/scripts/lua/core" /E /I /F /R /Y</Command>
+      <Command>copy "$(ProjectDir)..\..\required dlls\*.dll" $(configuration)</Command>
       <Message>-------------------------------------------------------Post-Build Event</Message>
     </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -178,7 +178,7 @@
     <ClCompile Include="..\..\GUI\UI\Books\MapBook.cpp" />
     <ClCompile Include="..\..\GUI\UI\Books\QuestBook.cpp" />
     <ClCompile Include="..\..\GUI\UI\Books\TownPortalBook.cpp" />
-    <ClCompile Include="..\..\GUI\UI\Chest.cpp" />
+    <ClCompile Include="..\..\GUI\UI\UIChest.cpp" />
     <ClCompile Include="..\..\GUI\UI\Spellbook.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIArena.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIBooks.cpp" />
@@ -372,7 +372,7 @@
     <ClInclude Include="..\..\GUI\UI\Books\MapBook.h" />
     <ClInclude Include="..\..\GUI\UI\Books\QuestBook.h" />
     <ClInclude Include="..\..\GUI\UI\Books\TownPortalBook.h" />
-    <ClInclude Include="..\..\GUI\UI\Chest.h" />
+    <ClInclude Include="..\..\GUI\UI\UIChest.h" />
     <ClInclude Include="..\..\GUI\UI\Spellbook.h" />
     <ClInclude Include="..\..\GUI\UI\UIArena.h" />
     <ClInclude Include="..\..\GUI\UI\UIBooks.h" />

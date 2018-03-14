@@ -54,7 +54,7 @@ GUIWindow_Save::GUIWindow_Save() :
     render->DrawTextureAlphaNew(18/640.0f, 141/480.0f, saveload_ui_save_up);
 
     render->Present();
-    pSavegameList->Initialize(1);
+    pSavegameList->Initialize();
     pLODFile.AllocSubIndicesAndIO(300, 0);
     for (uint i = 0; i < 40; ++i)
     {
@@ -193,7 +193,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
 
     DrawText(pFontSmallnum, 25, 199, 0, localization->GetString(505), 0, 0, 0);// "Reading..."
     render->Present();
-    pSavegameList->Initialize(0);
+    pSavegameList->Initialize();
     if (pSaveListPosition > (signed int)uNumSavegameFiles)
     {
         pSaveListPosition = 0;
@@ -203,7 +203,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i)
     {
-        auto str = StringPrintf("saves\\%s", pSavegameList->pFileList[i].pSaveFileName);
+        String str = StringPrintf("saves\\%s", pSavegameList->pFileList[i].pSaveFileName);
+        str = MakeDataPath(str.c_str());
         if (_access(str.c_str(), 6))
         {
             pSavegameUsedSlots[i] = 0;
@@ -222,7 +223,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         }
         else
         {
-            //pSavegameThumbnails[i].LoadFromFILE(pLODFile.FindContainer("image.pcx", true), 0, true); ??
+//            pSavegameThumbnails[i]->LoadFromFILE(pLODFile.FindContainer("image.pcx", true), 0, true);
             pLODFile.CloseWriteFile();
             pSavegameUsedSlots[i] = 1;
         }

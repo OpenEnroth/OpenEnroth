@@ -1533,6 +1533,8 @@ MPlayer::MPlayer()
 
   bStopBeforeSchedule = false;
   pMovie_Track = nullptr;
+  hMagicVid = nullptr;
+  hMightVid = nullptr;
 
   if (!provider)
   {

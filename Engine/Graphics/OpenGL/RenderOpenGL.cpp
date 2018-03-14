@@ -1881,8 +1881,8 @@ bool RenderOpenGL::SwitchToWindow()
 
 bool RenderOpenGL::Initialize(OSWindow *window)
 {
-	pD3DBitmaps.Load(L"data\\d3dbitmap.hwl");
-	pD3DSprites.Load(L"data\\d3dsprite.hwl");
+    pD3DBitmaps.Load(MakeDataPath("data\\d3dbitmap.hwl").c_str());
+    pD3DSprites.Load(MakeDataPath("data\\d3dsprite.hwl").c_str());
 
     if (this->window = window)
     {
