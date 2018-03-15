@@ -3,7 +3,7 @@
 #include <crtdbg.h>
 
 #define _CRT_SECURE_NO_WARNINGS
-#include "MainMenu.h"
+#include "NewUIMainMenu.h"
 #include "..\..\Engine/LOD.h"
 
 bool MainMenuWindow::OnMouseLeftClick(int x, int y)

@@ -608,6 +608,7 @@ void *OSWindow::CreateDebugMenuPanel()
         AppendMenuW(menu, MF_ENABLED | MF_STRING | MF_POPUP, (UINT_PTR)file, L"&File");
         {
             AppendMenuW(file, MF_ENABLED | MF_STRING, 40001, L"Exit");
+            AppendMenuW(file, MF_ENABLED | MF_STRING, 40002, L"Take Screenshot");
         }
 
         HMENU debug = CreatePopupMenu();
@@ -619,7 +620,7 @@ void *OSWindow::CreateDebugMenuPanel()
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40007, L"Give Gold (10 000)");
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40008, L"Give Exp (20 000)");
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40059, L"Give Skills (50 each)");
-				AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40060, L"Learn Skills");
+                AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40060, L"Learn Skills");
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40013, L"Remove Gold");
 
                 HMENU debug_party_setconditions = CreatePopupMenu();
@@ -643,7 +644,7 @@ void *OSWindow::CreateDebugMenuPanel()
                     AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40040, L"Unconscious");
                     AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40030, L"Weak");
                     AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40073, L"Zombie");
-					AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40046, L"Good");
+                    AppendMenuW(debug_party_setconditions, MF_ENABLED | MF_STRING, 40046, L"Good");
                 }
 
                 AppendMenuW(debug_party, MF_ENABLED | MF_STRING, 40006, L"Set Food (20)");
@@ -844,6 +845,10 @@ bool OSWindow::OnOSMenu(int item_id)
         case 40001: // Menu "File"-> "Exit"
             pEngine->Deinitialize();
             SendMessageW((HWND)this->GetApiHandle(), WM_DESTROY, 0, 0);
+            break;
+
+        case 40002:  // Menu "File"-> "Take Screenshot"
+            render->SavePCXScreenshot();
             break;
 
         /*case 104: //F4 button

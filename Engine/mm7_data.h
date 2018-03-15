@@ -349,7 +349,7 @@ extern float _6BE3A0_fov;
 extern float flt_6BE3A4_debug_recmod1;
 extern float flt_6BE3A8_debug_recmod2;
 extern float flt_6BE3AC_debug_recmod1_x_1_6;
-extern std::array<char, 20> byte_6BE3B0; // idb
+extern std::string s_SavedMapName;
 extern char bUnderwater;
 extern char bNoNPCHiring;
 extern unsigned int bNoVideo;

@@ -116,7 +116,7 @@ void LoadGame(unsigned int uSlot)
     if (!pSavegameUsedSlots[uSlot])
     {
         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-		logger->Warning(L"LoadGame: slot %u is empty", uSlot);
+        logger->Warning(L"LoadGame: slot %u is empty", uSlot);
         return;
     }
 
@@ -356,7 +356,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     unsigned int compressed_block_size; // [sp+260h] [bp-10h]@23
 
     //v66 = a2;
-    strcpy(byte_6BE3B0.data(), pCurrentMapName);//byte_6BE3B0 - save_map_name
+    s_SavedMapName = pCurrentMapName;
     if (!_stricmp(pCurrentMapName, "d05.blv")) // arena
         return;
 
@@ -381,7 +381,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     else
         pOutdoor->loc_time.last_visit = pParty->GetPlayingTime();
 
-    render->PackScreenshot(150, 112, uncompressed_buff, 1000000, &pLodDirectory.uDataSize);//создание скриншота
+    render->PackScreenshot(150, 112, uncompressed_buff, 1000000, &pLodDirectory.uDataSize);  //создание скриншота
     strcpy(pLodDirectory.pFilename, "image.pcx");
 
     if (current_screen_type == SCREEN_SAVEGAME)
@@ -670,8 +670,10 @@ void DoSavegame(unsigned int uSlot)
     viewparams->bRedrawGameUI = true;
     for (uint i = 0; i < 45; i++)
     {
-        pSavegameThumbnails[i]->Release();
-        pSavegameThumbnails[i] = nullptr;
+        if (pSavegameThumbnails[i] != nullptr) {
+            pSavegameThumbnails[i]->Release();
+            pSavegameThumbnails[i] = nullptr;
+        }
     }
 
     if (_stricmp(pCurrentMapName, "d05.blv"))

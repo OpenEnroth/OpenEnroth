@@ -115,6 +115,7 @@
     <ClCompile Include="..\..\Engine\Graphics\Overlays.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\PaletteManager.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\ParticleEngine.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\PCX.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Render.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\RenderD3D11.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Sprites.cpp" />
@@ -170,7 +171,7 @@
     <ClCompile Include="..\..\GUI\GUIProgressBar.cpp" />
     <ClCompile Include="..\..\GUI\GUIWindow.cpp" />
     <ClCompile Include="..\..\GUI\NewUI\Core\UIControlModule_wrap.cxx" />
-    <ClCompile Include="..\..\GUI\NewUI\MainMenu.cpp" />
+    <ClCompile Include="..\..\GUI\NewUI\NewUIMainMenu.cpp" />
     <ClCompile Include="..\..\GUI\UI\Books\AutonotesBook.cpp" />
     <ClCompile Include="..\..\GUI\UI\Books\CalendarBook.cpp" />
     <ClCompile Include="..\..\GUI\UI\Books\JournalBook.cpp" />
@@ -297,6 +298,7 @@
     <ClInclude Include="..\..\Engine\Graphics\Overlays.h" />
     <ClInclude Include="..\..\Engine\Graphics\PaletteManager.h" />
     <ClInclude Include="..\..\Engine\Graphics\ParticleEngine.h" />
+    <ClInclude Include="..\..\Engine\Graphics\PCX.h" />
     <ClInclude Include="..\..\Engine\Graphics\Polygon.h" />
     <ClInclude Include="..\..\Engine\Graphics\Render.h" />
     <ClInclude Include="..\..\Engine\Graphics\RenderD3D11.h" />
@@ -364,7 +366,7 @@
     <ClInclude Include="..\..\GUI\GUIProgressBar.h" />
     <ClInclude Include="..\..\GUI\GUIWindow.h" />
     <ClInclude Include="..\..\GUI\NewUI\Core\UIControl.h" />
-    <ClInclude Include="..\..\GUI\NewUI\MainMenu.h" />
+    <ClInclude Include="..\..\GUI\NewUI\NewUIMainMenu.h" />
     <ClInclude Include="..\..\GUI\UI\Books\AutonotesBook.h" />
     <ClInclude Include="..\..\GUI\UI\Books\CalendarBook.h" />
     <ClInclude Include="..\..\GUI\UI\Books\JournalBook.h" />

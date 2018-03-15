@@ -481,9 +481,6 @@
     <ClCompile Include="..\..\GUI\NewUI\Core\UIControlModule_wrap.cxx">
       <Filter>GUI\NewUI\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GUI\NewUI\MainMenu.cpp">
-      <Filter>GUI\NewUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\GUI\UI\UIGuilds.cpp">
       <Filter>GUI\UI</Filter>
     </ClCompile>
@@ -651,6 +648,12 @@
     </ClCompile>
     <ClCompile Include="..\..\GUI\UI\UIChest.cpp">
       <Filter>GUI\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GUI\NewUI\NewUIMainMenu.cpp">
+      <Filter>GUI\NewUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\PCX.cpp">
+      <Filter>Engine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1281,9 +1284,6 @@
     <ClInclude Include="..\..\GUI\NewUI\Core\UIControl.h">
       <Filter>GUI\NewUI\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GUI\NewUI\MainMenu.h">
-      <Filter>GUI\NewUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\GUI\UI\UIGame.h">
       <Filter>GUI\UI</Filter>
     </ClInclude>
@@ -1466,6 +1466,12 @@
     </ClInclude>
     <ClInclude Include="..\..\GUI\UI\UIChest.h">
       <Filter>GUI\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GUI\NewUI\NewUIMainMenu.h">
+      <Filter>GUI\NewUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\PCX.h">
+      <Filter>Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

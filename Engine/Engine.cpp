@@ -59,7 +59,7 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/NewUI/MainMenu.h"
+#include "GUI/NewUI/NewUIMainMenu.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Video/Bink_Smacker.h"
