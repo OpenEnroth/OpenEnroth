@@ -506,25 +506,20 @@ void AudioPlayer::SetMasterVolume(float fVolume)
 // 4D8304: using guessed type int __stdcall AIL_set_digital_master_volume(int, int);
 
 //----- (004AA258) --------------------------------------------------------
-void AudioPlayer::_4AA258(int a2)
-{
+void AudioPlayer::StopAll(int sample_id) {
   if (!bPlayerReady)
     return;
 
-  if ( this->b3DSoundInitialized && a2 )
-  {
-    for ( uint i = 0; i < this->uNum3DSamples; ++i )
-    {
-      if ( this->p3DSamples[i].field_4 == a2 && AIL_3D_sample_status(this->p3DSamples[i].hSample) == AIL::Sample::Playing )
+  if (this->b3DSoundInitialized && sample_id) {
+    for (uint i = 0; i < this->uNum3DSamples; ++i) {
+      if (this->p3DSamples[i].field_4 == sample_id && AIL_3D_sample_status(this->p3DSamples[i].hSample) == AIL::Sample::Playing)
         AIL_end_3D_sample(this->p3DSamples[i].hSample);
     }
   }
-  if ( this->hDigDriver && a2 )
-  {
-    for ( uint i = 0; i < this->uMixerChannels; ++i )
-    {
-      if ( this->pMixerChannels[i].source_pid == a2 && AIL_sample_status(this->pMixerChannels[i].hSample) == AIL::Sample::Playing)
-      {
+  if (this->hDigDriver && sample_id) {
+    for (uint i = 0; i < this->uMixerChannels; ++i) {
+      if (this->pMixerChannels[i].source_pid == sample_id
+        && AIL_sample_status(this->pMixerChannels[i].hSample) == AIL::Sample::Playing) {
         AIL_end_sample(this->pMixerChannels[i].hSample);
         FreeChannel(&this->pMixerChannels[i]);
       }

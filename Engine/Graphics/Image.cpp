@@ -928,10 +928,11 @@ const void *Image::GetPixels(IMAGE_FORMAT format)
 
 bool Image::Release()
 {
+    if (loader) {
+        assets->ReleaseImage(loader->GetResourceName()); // exception this nullptr
+    }
 
-	assets->ReleaseImage(this->loader->GetResourceName()); // exception this nullptr
-	
-	if (initialized)
+    if (initialized)
     {
         if (loader)
         {

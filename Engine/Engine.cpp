@@ -58,6 +58,7 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIPartyCreation.h"
+#include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/NewUI/NewUIMainMenu.h"
 
@@ -1562,14 +1563,14 @@ bool GameLoop()
         }
         else if (GetCurrentMenuID() == MENU_CREDITS)
         {
-            if (use_music_folder)
-                alSourceStop(mSourceID);
-            else
-            {
-                if (pAudioPlayer->hAILRedbook)
-                    AIL_redbook_stop(pAudioPlayer->hAILRedbook);
+            if (use_music_folder) {
+              alSourceStop(mSourceID);
+            } else {
+              if (pAudioPlayer->hAILRedbook) {
+                AIL_redbook_stop(pAudioPlayer->hAILRedbook);
+              }
             }
-            MainMenuUI_Credits_Loop();
+            GUICredits::ExecuteCredits();
             break;
         }
         else if (GetCurrentMenuID() == MENU_5 || GetCurrentMenuID() == MENU_LoadingProcInMainMenu)
