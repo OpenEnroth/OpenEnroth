@@ -1135,16 +1135,19 @@ int LODFile_Sprites::_461397()
 }
 
 
-FILE *LOD::File::FindContainer(const String &filename, bool linear_search)
+FILE *LOD::File::FindContainer(const String &filename, bool linear_search, size_t *data_size)
 {
-    return this->FindContainer(filename.c_str(), linear_search);
+    return this->FindContainer(filename.c_str(), linear_search, data_size);
 }
 
 //----- (00461580) --------------------------------------------------------
-FILE *LOD::File::FindContainer(const char *pContainer_Name, bool bLinearSearch)
+FILE *LOD::File::FindContainer(const char *pContainer_Name, bool bLinearSearch, size_t *data_size)
 {
   if (!isFileOpened)
     return 0;
+  if (data_size != nullptr) {
+    *data_size = 0;
+  }
 
   if (bLinearSearch)
   {
@@ -1152,6 +1155,9 @@ FILE *LOD::File::FindContainer(const char *pContainer_Name, bool bLinearSearch)
       if (!_stricmp(pContainer_Name, pSubIndices[i].pFilename))
       {
         fseek(pFile, uOffsetToSubIndex + pSubIndices[i].uOfsetFromSubindicesStart, SEEK_SET);
+        if (data_size != nullptr) {
+          *data_size = pSubIndices[i].uDataSize;
+        }
         return pFile;
       }
     return nullptr;
@@ -1162,6 +1168,9 @@ FILE *LOD::File::FindContainer(const char *pContainer_Name, bool bLinearSearch)
     if ( _6A0CA4_lod_binary_search < 0 )
       return 0;
     fseek(pFile, uOffsetToSubIndex + pSubIndices[_6A0CA4_lod_binary_search].uOfsetFromSubindicesStart, SEEK_SET);
+    if (data_size != nullptr) {
+      *data_size = pSubIndices[_6A0CA4_lod_binary_search].uDataSize;
+    }
     return pFile;
   }
 }
@@ -1791,7 +1800,7 @@ bool Initialize_GamesLOD_NewLOD()
 {
   pGames_LOD = new LODWriteableFile;
   pGames_LOD->AllocSubIndicesAndIO(300, 0);
-  if (pGames_LOD->LoadFile("data\\games.lod", 1))
+  if (pGames_LOD->LoadFile(MakeDataPath("data\\games.lod").c_str(), 1))
   {
     pNew_LOD = new LODWriteableFile;
     pNew_LOD->AllocSubIndicesAndIO(300, 100000);

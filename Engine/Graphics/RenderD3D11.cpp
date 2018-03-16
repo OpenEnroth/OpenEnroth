@@ -557,7 +557,8 @@ bool RenderD3D11::Initialize(OSWindow *window)
   ErrorD3D(d3dd->CreateBlendState(&ui_blend_alpha_desc, &ui_blend_alpha));
 
 
-  return pD3DBitmaps.Load(L"data\\d3dbitmap.hwl") && pD3DSprites.Load(L"data\\d3dsprite.hwl");
+  return pD3DBitmaps.Load(MakeDataPath("data\\d3dbitmap.hwl").c_str()) &&
+         pD3DSprites.Load(MakeDataPath("data\\d3dsprite.hwl").c_str());
 }
 
 

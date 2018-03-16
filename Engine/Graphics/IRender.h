@@ -242,7 +242,7 @@ struct HWLTexture
 struct RenderHWLContainer
 {
     RenderHWLContainer();
-    bool Load(const wchar_t *pFilename);
+    bool Load(const char *pFilename);
     bool Release();
 
     HWLTexture *LoadTexture(const char *pName, int bMipMaps);

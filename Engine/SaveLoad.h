@@ -3,35 +3,14 @@
 
 #include "Engine/Time.h"
 
-#pragma pack(push, 1)
-struct SaveFile_
-{
-    char field_0[20];
-    char pSaveFileName[260];
+struct SavegameList {
+    static void Initialize();
+    SavegameList();
+
+    void Reset();
+
+    std::array<std::string, 45> pFileList;
 };
-#pragma pack(pop)
-
-/*  243 */
-#pragma pack(push, 1)
-struct SavegameList
-{
-    static void Initialize(unsigned int a1);
-    SavegameList() { Reset(); }
-
-    inline void Reset()
-    {
-        for (int j = 0; j < 45; j++)
-        {
-            for (int i = 0; i < 20; ++i)
-                this->pFileList[j].field_0[i] = 0;
-            for (int i = 0; i < 260; ++i)
-                this->pFileList[j].pSaveFileName[i] = 0;
-        }
-    }
-
-    SaveFile_ pFileList[45];
-};
-#pragma pack(pop)
 
 
 /*  244 */

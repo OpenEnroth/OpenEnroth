@@ -9,7 +9,7 @@
 
 #include "IO/Mouse.h"
 
-#include "GUI/UI/Chest.h"
+#include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"

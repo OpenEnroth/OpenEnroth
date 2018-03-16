@@ -27,6 +27,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/PCX.h"
 
 #include "Media/MediaPlayer.h"
 
@@ -46,40 +47,6 @@
 
 
 IRender *IRender::Create() { return new Render(); }
-
-
-
-
-/*  384 */
-#pragma pack(push, 1)
-struct PCXHeader_1
-{
-    char manufacturer;
-    char version;
-    char encoding;
-    char bpp;
-    __int16 left;
-    __int16 up;
-    __int16 right;
-    __int16 bottom;
-    __int16 hdpi;
-    __int16 vdpi;
-};
-#pragma pack(pop)
-
-/*  385 */
-#pragma pack(push, 1)
-struct PCXHeader_2
-{
-    char reserved;
-    char planes;
-    __int16 pitch;
-    __int16 palette_info;
-};
-#pragma pack(pop)
-
-//#pragma comment(lib, "lib\\legacy_dx\\lib\\ddraw.lib")
-//#pragma comment(lib, "lib\\legacy_dx\\lib\\dxguid.lib")
 
 struct IDirectDrawClipper *pDDrawClipper;
 IRender *render = nullptr;
@@ -2158,9 +2125,8 @@ bool Render::Initialize(OSWindow *window/*, bool bColoredLights, uint32_t uDetai
   bUseColoredLights = OS_GetAppInt("Colored Lights", false);
   uLevelOfDetail = OS_GetAppInt("Detail Level", 1);
   bTinting = OS_GetAppInt("Tinting", 1) != 0;
-
-  bool r1 = pD3DBitmaps.Load(L"data\\d3dbitmap.hwl");
-  bool r2 = pD3DSprites.Load(L"data\\d3dsprite.hwl");
+  bool r1 = pD3DBitmaps.Load(MakeDataPath("data\\d3dbitmap.hwl").c_str());
+  bool r2 = pD3DSprites.Load(MakeDataPath("data\\d3dsprite.hwl").c_str());
 
   return r1 && r2;
 }
@@ -2196,583 +2162,68 @@ void Render::PresentBlackScreen()
   render->Present();
 }
 
-//----- (0049EDB6) --------------------------------------------------------
-void Render::SavePCXScreenshot()
-{
-  int v5; // eax@8
-  FILE *pOutFile; // edi@10
-  unsigned short *v8; // eax@11
-  signed int v12; // eax@18
-  char v15[56]; // [sp+Ch] [bp-158h]@10
-  DDSURFACEDESC2 Dst; // [sp+48h] [bp-11Ch]@7
-  char color_map[48]; // [sp+C4h] [bp-A0h]@10
-  char Filename[40]; // [sp+F4h] [bp-70h]@3
-  char *lineB; // [sp+11Ch] [bp-48h]@14
-  char *lineG; // [sp+120h] [bp-44h]@14
-  FILE *File; // [sp+128h] [bp-3Ch]@3
-  PCXHeader_1 header1; // [sp+130h] [bp-34h]@10
-  PCXHeader_2 header2; // [sp+140h] [bp-24h]@10
-  char *lineRGB; // [sp+148h] [bp-1Ch]@10
-  void *surface; // [sp+14Ch] [bp-18h]@8
-  unsigned int image_width; // [sp+150h] [bp-14h]@4
-  int pitch; // [sp+154h] [bp-10h]@4
-  char v31; // [sp+15Ah] [bp-Ah]@25
-  unsigned char pict_byte; // [sp+15Bh] [bp-9h]@17
-  unsigned short *line_picture_data; // [sp+15Ch] [bp-8h]@10
-  byte test_byte; // [sp+163h] [bp-1h]@17
-
-  int num_r_bits = 5;
-  int num_g_bits = 6;
-  int num_b_bits = 5;
-
-  int r_mask = 0xF800;
-  int g_mask = 0x7E0;
-  int b_mask = 0x1F;
-
-  if ( !this->pRenderD3D || this->using_software_screen_buffer )
-  {
-    sprintf(Filename, "screen%0.2i.pcx", ScreenshotFileNumber++ % 100);
-    File = fopen(Filename, "wb");
-    if ( File )
-    {
-      pitch = this->GetRenderWidth();
-      if ( pitch & 1 )
-        pitch = pitch + 1;
-      if ( this->pRenderD3D )
-      {
-        memset(&Dst, 0, sizeof(Dst));
-        Dst.dwSize = sizeof(Dst);
-        if ( !this->LockSurface_DDraw4(this->pBackBuffer4, &Dst, DDLOCK_WAIT) )
-          return;
-        surface = Dst.lpSurface;
-        v5 = Dst.lPitch / 2;
-      }
-      else
-      {
-        this->BeginScene();
-        surface = render->pTargetSurface;
-        v5 = this->uTargetSurfacePitch;
-      }
-      header1.right = GetRenderWidth() - 1;
-      header1.left = 0;
-      header1.bottom = this->GetRenderHeight() - 1;
-      header1.up = 0;
-      header2.pitch = pitch;
-      memset(color_map, 0, sizeof(color_map));
-      memset(v15, 0, sizeof(v15));
-      header2.reserved = 0;
-      header1.manufacturer = 10;
-      pOutFile = File;
-      header1.version = 5;
-      header1.encoding = 1;
-      header1.bpp = 8;
-      header1.hdpi = 75;
-      header1.vdpi = 75;
-      header2.planes = 3;
-      header2.palette_info = 1;
-      fwrite(&header1, 1, 1, File);
-      fwrite(&header1.version, 1, 1, pOutFile);
-      fwrite(&header1.encoding, 1, 1, pOutFile);
-      fwrite(&header1.bpp, 1, 1, pOutFile);
-      fwrite(&header1.left, 2, 1, pOutFile);
-      fwrite(&header1.up, 2, 1, pOutFile);
-      fwrite(&header1.right, 2, 1, pOutFile);
-      fwrite(&header1.bottom, 2, 1, pOutFile);
-      fwrite(&header1.hdpi, 2, 1, pOutFile);
-      fwrite(&header1.vdpi, 2, 1, pOutFile);
-      fwrite(color_map, 0x30, 1, pOutFile);
-      fwrite(&header2, 1, 1, pOutFile);
-      fwrite(&header2.planes, 1, 1, pOutFile);
-      fwrite(&header2.pitch, 2, 1, pOutFile);
-      fwrite(&header2.palette_info, 2, 1, pOutFile);
-      fwrite(v15, 0x3Au, 1, pOutFile);
-      lineRGB = (char *)malloc(3 * GetRenderWidth() + 6);
-      if ( this->GetRenderHeight() > 0 )
-      {
-        image_width = 3 * pitch;
-        //v24 = 2 * v5;
-        v8 = (unsigned short *)surface;
-        for ( unsigned int y = 0; y < this->GetRenderHeight(); y++ )
-        {
-          line_picture_data = v8;
-          if ( GetRenderWidth() > 0 )
-          {
-            lineG = (char *)lineRGB + pitch;
-            lineB = (char *)lineRGB + 2 * pitch;
-            for ( uint x = 0; x < this->GetRenderWidth(); x++ )
-            {
-			  //int p = *line_picture_data; //0x2818
-              //int for_rad = (render->uTargetGBits + render->uTargetBBits );//16 = 8 + 8
-			  //int value = (render->uTargetRMask & *line_picture_data);//0 = 0xFF0000 & 0x2818
-			  //int result = (render->uTargetRMask & *line_picture_data) >> (render->uTargetGBits + render->uTargetBBits );
-              lineRGB[x] = (uTargetRMask & *line_picture_data) >> (uTargetGBits + uTargetBBits );// + render->uTargetRBits - 8);
-              lineG[x] = (uTargetGMask & *line_picture_data) >> (uTargetBBits);// + render->uTargetGBits - 8);
-			  //int value2 = (render->uTargetGMask & *line_picture_data); //10240 = 0xFF00 & 0x2818
-			  //int result2 = (render->uTargetGMask & *line_picture_data) >> (render->uTargetBBits);
-              lineB[x] = (uTargetBMask & *line_picture_data);// << (8 - render->uTargetBBits);
-		      //int value3 = (render->uTargetBMask & *line_picture_data);//24 = 0xFF & 0x2818
-              line_picture_data += 2;
-            }
-          }
-          for ( uint i = 0; i < image_width; i += test_byte )
-          {
-            pict_byte = lineRGB[i];
-            for ( test_byte = 1; test_byte < 0x3F; ++test_byte )
-            {
-              v12 = i + test_byte;
-              if ( lineRGB[v12] != pict_byte )
-                break;
-              if ( !(v12 % pitch) )
-                break;
-            }
-            if ( i + test_byte > image_width )
-              test_byte = 3 * pitch - i;
-            if ( test_byte > 1 || pict_byte >= 0xC0 )
-            {
-              v31 = test_byte | 0xC0;
-              fwrite(&v31, 1, 1, pOutFile);
-            }
-            fwrite(&pict_byte, 1, 1, pOutFile);
-          }
-          v8 += v5;
-        }
-      }
-      if ( this->pRenderD3D )
-        ErrD3D(this->pBackBuffer4->Unlock(NULL));
-      else
-          this->EndScene();
-
-      free(lineRGB);
-      fclose(pOutFile);
-    }
+void Render::SavePCXScreenshot() {
+  if (this->pRenderD3D && !this->using_software_screen_buffer) {
+    return;
   }
+
+  char file_name[40];
+  sprintf(file_name, "screen%0.2i.pcx", ScreenshotFileNumber++ % 100);
+
+  SaveWinnersCertificate(file_name);
 }
 
-//----- (0049F1BC) --------------------------------------------------------
-void Render::SaveWinnersCertificate(const char *a1)
-{
-  unsigned int v6; // eax@8
-  //FILE *v7; // edi@10
-//  int v8; // ecx@11
-  unsigned short *v9; // eax@11
-  int v10; // eax@13
-  signed int v13; // eax@18
-//  char v14; // zf@27
-//  HRESULT v15; // eax@29
-  char v16[56]; // [sp+Ch] [bp-12Ch]@10
-  __int16 v17; // [sp+44h] [bp-F4h]@10
-  DDSURFACEDESC2 Dst; // [sp+48h] [bp-F0h]@7
-//  int v19; // [sp+58h] [bp-E0h]@8
-//  unsigned __int16 *v20; // [sp+6Ch] [bp-CCh]@8
-  char color_map[48]; // [sp+C4h] [bp-74h]@10
-//  unsigned int v22; // [sp+F4h] [bp-44h]@11
-  char *lineB; // [sp+F8h] [bp-40h]@14
-  int image_width; // [sp+FCh] [bp-3Ch]@11
-  int v25; // [sp+100h] [bp-38h]@4
-  FILE *File; // [sp+104h] [bp-34h]@3
-  char Str; // [sp+108h] [bp-30h]@10
-  char v28; // [sp+109h] [bp-2Fh]@10
-  char v29; // [sp+10Ah] [bp-2Eh]@10
-  char v30; // [sp+10Bh] [bp-2Dh]@10
-  __int16 v31; // [sp+10Ch] [bp-2Ch]@10
-  __int16 v32; // [sp+10Eh] [bp-2Ah]@10
-  __int16 v33; // [sp+110h] [bp-28h]@10
-  __int16 v34; // [sp+112h] [bp-26h]@10
-  __int16 v35; // [sp+114h] [bp-24h]@10
-  __int16 v36; // [sp+116h] [bp-22h]@10
-  char v37; // [sp+118h] [bp-20h]@10
-  char v38; // [sp+119h] [bp-1Fh]@10
-  __int16 v39; // [sp+11Ah] [bp-1Eh]@10
-  __int16 v40; // [sp+11Ch] [bp-1Ch]@10
-  char *lineRGB; // [sp+120h] [bp-18h]@10
-  void *surface; // [sp+124h] [bp-14h]@8
-  int pitch; // [sp+128h] [bp-10h]@4
-  char v44; // [sp+12Fh] [bp-9h]@25
-  char *lineG; // [sp+130h] [bp-8h]@10
-  unsigned char pict_byte; // [sp+137h] [bp-1h]@17
-  byte test_byte;
-
-  int num_r_bits = 5;
-  int num_g_bits = 6;
-  int num_b_bits = 5;
-
-  int r_mask = 0xF800;
-  int g_mask = 0x7E0;
-  int b_mask = 0x1F;
-
-  if ( !this->pRenderD3D || this->using_software_screen_buffer )
-  {
-    static int _4EFA84_num_winners_certificates = 0;
-    ++_4EFA84_num_winners_certificates;
-
-    File = fopen(a1, "wb");
-    if ( File )
-    {
-      v25 = this->GetRenderWidth();
-      pitch = v25;
-      if ( pitch & 1 )
-        pitch = pitch + 1;
-      if ( this->pRenderD3D )
-      {
-        memset(&Dst, 0, 0x7C);
-        Dst.dwSize = 124;
-        if ( !this->LockSurface_DDraw4(this->pBackBuffer4, (DDSURFACEDESC2 *)&Dst, DDLOCK_WAIT) )
-          return;
-        surface = Dst.lpSurface;
-        v6 = Dst.lPitch / 2;
-      }
-      else
-      {
-        render->BeginScene();
-        surface = render->pTargetSurface;
-        v6 = render->uTargetSurfacePitch;
-      }
-      v33 = this->GetRenderWidth() - 1;
-      v31 = 0;
-      v34 = (short)this->GetRenderHeight() - 1;
-      v32 = 0;
-      v39 = pitch;
-      memset(&color_map, 0, sizeof(color_map));
-      memset(&v16, 0, sizeof(v16));
-      v37 = 0;
-      Str = 10;
-      v17 = 0;
-      v28 = 5;
-      v29 = 1;
-      v30 = 8;
-      v35 = 75;
-      v36 = 75;
-      v38 = 3;
-      v40 = 1;
-      fwrite(&Str, 1, 1, File);
-      fwrite(&v28, 1, 1, File);
-      fwrite(&v29, 1, 1, File);
-      fwrite(&v30, 1, 1, File);
-      fwrite(&v31, 2, 1, File);
-      fwrite(&v32, 2, 1, File);
-      fwrite(&v33, 2, 1, File);
-      fwrite(&v34, 2, 1, File);
-      fwrite(&v35, 2, 1, File);
-      fwrite(&v36, 2, 1, File);
-      fwrite(&color_map, 0x30, 1, File);
-      fwrite(&v37, 1, 1, File);
-      fwrite(&v38, 1, 1, File);
-      fwrite(&v39, 2, 1, File);
-      fwrite(&v40, 2, 1, File);
-      fwrite(&v16, 0x3A, 1, File);
-      lineRGB = (char *)malloc(3 * (v25 + 2));
-      if ( (signed int)this->GetRenderHeight() > 0 )
-      {
-        image_width = 3 * pitch;
-        v9 = (unsigned short *)surface;
-        for ( uint j = 0; j < this->GetRenderHeight(); j++)
-        {
-          a1 = (const char *)v9;
-          if ( v25 > 0 )
-          {
-            lineG = (char *)lineRGB + pitch;
-            lineB = (char *)lineRGB + 2 * pitch;
-            for ( v10 = 0; v10 < v25; v10++ )
-            {
-              lineRGB[v10] = (signed int)(r_mask & *(short *)a1) >> (num_g_bits + num_b_bits + num_r_bits - 8);
-              lineG[v10] = (signed int)(g_mask & *(short *)a1) >> (num_b_bits + num_g_bits - 8);
-              lineB[v10] = (b_mask & *(short *)a1) << (8 - num_b_bits);
-              a1 += 2;
-            }
-          }
-          for ( uint i = 0; i < image_width; i += test_byte )
-          {
-            pict_byte = lineRGB[i];
-            for ( test_byte = 1; test_byte < 0x3F; test_byte )
-            {
-              v13 = i + test_byte;
-              if ( lineRGB[v13] != pict_byte )
-                break;
-              if ( !(v13 % pitch) )
-                break;
-            }
-            if ( i + test_byte > image_width )
-              test_byte = 3 * pitch - i;
-            if ( test_byte > 1 || pict_byte >= 0xC0 )
-            {
-              v44 = test_byte | 0xC0;
-              fwrite(&v44, 1, 1, File);
-            }
-            fwrite(&pict_byte, 1, 1, File);
-          }
-          v9 += pitch;
-        }
-      }
-      if ( this->pRenderD3D )
-        ErrD3D(this->pBackBuffer4->Unlock(NULL));
-      else
-          this->EndScene();
-      free(lineRGB);
-      fclose(File);
-    }
+void Render::SaveWinnersCertificate(const char *file_name) {
+  if (this->pRenderD3D && !this->using_software_screen_buffer) {
+    return;
   }
-}
 
-//----- (0049F5A2) --------------------------------------------------------
-void Render::PackPCXpicture( unsigned short* picture_data, int wight, int heidth, void *data_buff, int max_buff_size,unsigned int* packed_size )
-{
-  void *v8; // esi@3
-  void *v9; // esi@3
-  unsigned short* v11; // eax@4
-//  int v13; // eax@8
-//  int v14; // ecx@8
-  signed int v15; // eax@11
-//  char v16; // zf@20
-//  int result; // eax@21
-  char v18[58]; // [sp+Ch] [bp-ACh]@3
-  char v20[48]; // [sp+48h] [bp-70h]@3
-  char *lineG; // [sp+78h] [bp-40h]@7
-  char *lineB; // [sp+7Ch] [bp-3Ch]@7
-  int v23; // [sp+80h] [bp-38h]@4
-  int v24; // [sp+84h] [bp-34h]@4
-  int v25; // [sp+88h] [bp-30h]@4
-  int v26; // [sp+8Ch] [bp-2Ch]@4
-  PCXHeader_1 Src; // [sp+90h] [bp-28h]@3
-  PCXHeader_2 v27; // [sp+A0h] [bp-18h]@3
-  char *lineRGB; // [sp+A8h] [bp-10h]@3
-  int pitch; // [sp+ACh] [bp-Ch]@1
-  char v43; // [sp+B3h] [bp-5h]@18
-  int i; // [sp+B4h] [bp-4h]@6
-  unsigned short* line_picture_data;
-  byte test_byte;
-  unsigned char pict_byte;
-
-  int num_r_bits = 5;
-  int num_g_bits = 6;
-  int num_b_bits = 5;
-
-  int r_mask = 0xF800;
-  int g_mask = 0x7E0;
-  int b_mask = 0x1F;
-
-  pitch = wight;
-  if ( wight & 1 )
-      pitch = wight + 1;
-  Src.left = 0;
-  Src.up = 0;
-  Src.right = wight - 1;
-  Src.bottom = heidth - 1;
-  v27.pitch = pitch;
-  memset(&v20, 0, 0x30u);
-  memset(&v18, 0, 0x38u);
-  v8 = data_buff;
-  v27.reserved = 0;
-  *(_WORD *)&v18[56] = 0;
-  Src.manufacturer = 10;
-  Src.version = 5;
-  Src.encoding = 1;
-  Src.bpp = 8;
-  Src.hdpi = 75;
-  Src.vdpi = 75;
-  v27.planes = 3;
-  v27.palette_info = 1;
-  memcpy(data_buff, &Src, 1);
-  v8 = (char *)v8 + 1;
-  memcpy(v8, &Src.version, 1);
-  v8 = (char *)v8 + 1;
-  memcpy(v8, &Src.encoding, 1);
-  v8 = (char *)v8 + 1;
-  memcpy(v8, &Src.bpp, 1);
-  v8 = (char *)v8 + 1;
-  memcpy(v8, &Src.left, 2);
-  v8 = (char *)v8 + 2;
-  memcpy(v8, &Src.up, 2);
-  v8 = (char *)v8 + 2;
-  memcpy(v8, &Src.right, 2);
-  v8 = (char *)v8 + 2;
-  memcpy(v8, &Src.bottom, 2);
-  v8 = (char *)v8 + 2;
-  memcpy(v8, &Src.hdpi, 2);
-  v8 = (char *)v8 + 2;
-  memcpy(v8, &Src.vdpi, 2);
-  v8 = (char *)v8 + 2;
-  memcpy(v8, &v20, 0x30u);
-  v8 = (char *)v8 + 48;
-  memcpy(v8, &v27, 1u);
-  v8 = (char *)v8 + 1;
-  memcpy(v8, &v27.planes, 1);
-  v8 = (char *)v8 + 1;
-  memcpy(v8, &v27.pitch, 2);
-  v8 = (char *)v8 + 2;
-  memcpy(v8, &v27.palette_info, 2);
-  v8 = (char *)v8 + 2;
-  memcpy(v8, &v18, 0x3Au);
-  v9 = (char *)v8 + 58;
-
-  lineRGB = (char*)malloc(3 * (wight + 2));
-  if ( heidth > 0 )
-  {
-    v26 = 3 * pitch;
-    v23 = 2 * wight;
-    v11 = picture_data;
-    v24 = (int)picture_data;
-    for ( v25 = heidth; v25; v25-- )
-    {
-      line_picture_data = v11;
-      if ( wight > 0 )
-      {
-        lineG = (char *)lineRGB + pitch;
-        lineB = (char *)lineRGB + 2 * pitch;
-        for ( uint i = 0; i < wight; i++ )
-        {
-          lineRGB[i] = (signed int)(r_mask & *line_picture_data) >> (num_g_bits  + num_b_bits  + num_r_bits  - 8);
-          lineG[i] = (signed int)(g_mask & *line_picture_data) >> ( num_b_bits + num_g_bits- 8);
-          lineB[i] = (b_mask & *line_picture_data) << (8 - num_b_bits);
-          line_picture_data += 1;
-        }
-      }
-      for ( i = 0; i < v26; v9 = (char *)v9 + 1 )
-      {
-        pict_byte = lineRGB[i];
-        for ( test_byte = 1; test_byte < 63; ++test_byte )
-        {
-          v15 = i + test_byte;
-          if ( lineRGB[v15] != pict_byte )//Uninitialized memory access
-            break;
-          if ( !(v15 % pitch) )
-            break;
-        }
-        if ( i + test_byte > v26 )
-          test_byte = 3 * pitch - i;
-        if ( test_byte > 1 || pict_byte >= 192 )
-        {
-          v43 = test_byte | 0xC0;
-          memcpy(v9, &v43, 1);
-          v9 = (char *)v9 + 1;
-        }
-        memcpy(v9, &pict_byte, 1);
-        i += test_byte;
-      }
-      v11 += wight;
+  if (this->pRenderD3D) {
+    DDSURFACEDESC2 Dst = { 0 };
+    Dst.dwSize = sizeof(Dst);
+    if (!this->LockSurface_DDraw4(this->pBackBuffer4, &Dst, DDLOCK_WAIT)) {
+      return;
     }
+    SavePCXImage32(file_name, (unsigned short*)Dst.lpSurface, Dst.dwWidth, Dst.dwHeight);
+    ErrD3D(this->pBackBuffer4->Unlock(NULL));
+  } else {
+    this->BeginScene();
+    SavePCXImage32(file_name, (unsigned short*)render->pTargetSurface, render->GetRenderWidth(), render->GetRenderHeight());
+    this->EndScene();
   }
-  free(lineRGB);
-  *(int *)packed_size = (char *)v9 - data_buff;
 }
 
 //----- (0049F8B5) --------------------------------------------------------
-void Render::SavePCXImage(const String &filename, unsigned short* picture_data, int width, int height)
+void Render::SavePCXImage32(const String &filename, unsigned short* picture_data, int width, int height)
 {
-    FILE *result; // eax@1
-    FILE *pOutFile; // edi@4
-    unsigned short* v9; // eax@5
-  //  int v10; // eax@7
-    signed int v12; // eax@12
-  //  char v13; // zf@21
-    char v14[56]; // [sp+4h] [bp-A0h]@4
-    __int16 v15; // [sp+3Ch] [bp-68h]@4
-    char color_map[48]; // [sp+40h] [bp-64h]@4
-    int v18; // [sp+74h] [bp-30h]@5
-  //  char *v19; // [sp+78h] [bp-2Ch]@5
-    int image_width; // [sp+7Ch] [bp-28h]@5
-    PCXHeader_1 header1; // [sp+80h] [bp-24h]@4
-    PCXHeader_2 header2; // [sp+90h] [bp-14h]@4
-    char *lineRGB; // [sp+98h] [bp-Ch]@4
-    int pitch; // [sp+9Ch] [bp-8h]@2
-    char *lineB; // [sp+A0h] [bp-4h]@8
-    char *lineG;
-    unsigned short* line_pictute_data;
-    byte test_byte;
-    char v43;
+  FILE *result = fopen(filename.c_str(), "wb");
+  if (result == nullptr) {
+    return;
+  }
 
-    int num_r_bits = 5;
-    int num_g_bits = 6;
-    int num_b_bits = 5;
+  unsigned int pcx_data_size = width * height * 5;
+  uint8_t *pcx_data = new uint8_t[pcx_data_size];
+  unsigned int pcx_data_real_size = 0;
+  PCX::Encode32(picture_data, width, height, pcx_data, pcx_data_size, &pcx_data_real_size);
+  fwrite(pcx_data, pcx_data_real_size, 1, result);
+  delete[] pcx_data;
+  fclose(result);
+}
 
-    int r_mask = 0xF800;
-    int g_mask = 0x7E0;
-    int b_mask = 0x1F;
+void Render::SavePCXImage16(const String &filename, unsigned short* picture_data, int width, int height)
+{
+  FILE *result = fopen(filename.c_str(), "wb");
+  if (result == nullptr) {
+    return;
+  }
 
-    result = fopen(filename.c_str(), "wb");
-    if (result)
-    {
-        pitch = width;
-        if (width & 1)
-            pitch = width + 1;
-        header1.left = 0;
-        header1.up = 0;
-        header1.right = width - 1;
-        header1.bottom = height - 1;
-        header2.pitch = pitch;
-        memset(color_map, 0, sizeof(color_map));
-        header2.reserved = 0;
-        memset(v14, 0, sizeof(v14));
-        v15 = 0;
-        header1.manufacturer = 10;
-        header1.version = 5;
-        header1.encoding = 1;
-        header1.bpp = 8;
-        header1.hdpi = 75;
-        header1.vdpi = 75;
-        header2.planes = 3;
-        header2.palette_info = 1;
-        fwrite(&header1, 1, 1, result);
-        pOutFile = result;
-        fwrite(&header1.version, 1, 1, result);
-        fwrite(&header1.encoding, 1, 1, pOutFile);
-        fwrite(&header1.bpp, 1, 1, pOutFile);
-        fwrite(&header1.left, 2, 1, pOutFile);
-        fwrite(&header1.up, 2, 1, pOutFile);
-        fwrite(&header1.right, 2, 1, pOutFile);
-        fwrite(&header1.bottom, 2, 1, pOutFile);
-        fwrite(&header1.hdpi, 2, 1, pOutFile);
-        fwrite(&header1.vdpi, 2, 1, pOutFile);
-        fwrite(color_map, 0x30u, 1, pOutFile);
-        fwrite(&header2, 1, 1, pOutFile);
-        fwrite(&header2.planes, 1, 1, pOutFile);
-        fwrite(&header2.pitch, 2, 1, pOutFile);
-        fwrite(&header2.palette_info, 2, 1, pOutFile);
-        fwrite(v14, 0x3Au, 1, pOutFile);
-
-        lineRGB = (char *)malloc(3 * (width + 2));
-        //При сохранении изображения подряд идущие пиксели одинакового цвета объединяются и вместо указания цвета для каждого пикселя
-        //указывается цвет группы пикселей и их количество.
-        image_width = 3 * pitch;
-        v9 = picture_data;
-        for (v18 = 0; v18 < height; v18++)//столбец
-        {
-            line_pictute_data = v9;
-            lineG = (char *)lineRGB + pitch;
-            lineB = (char *)lineRGB + 2 * pitch;
-
-            for (int i = 0; i < width; i++)//строка
-            {
-                lineRGB[i] = (signed int)(r_mask & *line_pictute_data) >> (num_g_bits + num_b_bits + num_r_bits - 8);
-                lineG[i] = (signed int)(g_mask & *line_pictute_data) >> (num_b_bits + num_g_bits - 8);
-                lineB[i] = (b_mask & *line_pictute_data) << (8 - num_b_bits);
-                line_pictute_data += 1;
-            }
-            test_byte = 1;
-            for (int i = 0; (signed int)i < image_width; i += test_byte)
-            {
-                unsigned char pic_byte = lineRGB[i];
-                for (test_byte; test_byte < 63; ++test_byte)// расчёт количества одинаковых цветов
-                {
-                    v12 = i + test_byte;
-                    if (lineRGB[v12] != pic_byte)
-                        break;
-                    if (!(v12 % pitch))
-                        break;
-                }
-                if (i + test_byte > image_width)
-                    test_byte = 3 * pitch - i;
-                if (test_byte > 1 || pic_byte >= 0xC0)
-                {
-                    v43 = test_byte | 0xC0;//тест-байт объединения
-                    fwrite(&v43, 1, 1, pOutFile);
-                }
-                fwrite(&pic_byte, 1, 1, pOutFile);
-            }
-            v9 += width;
-        }
-        free(lineRGB);
-        fclose(pOutFile);
-    }
+  unsigned int pcx_data_size = width * height * 5;
+  uint8_t *pcx_data = new uint8_t[pcx_data_size];
+  unsigned int pcx_data_real_size = 0;
+  PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_size, &pcx_data_real_size);
+  fwrite(pcx_data, pcx_data_real_size, 1, result);
+  delete[] pcx_data;
+  fclose(result);
 }
 
 //----- (0049FBCD) --------------------------------------------------------
@@ -7693,9 +7144,9 @@ RenderHWLContainer::RenderHWLContainer():
 }
 
 //----- (0045237F) --------------------------------------------------------
-bool RenderHWLContainer::Load(const wchar_t *pFilename)
+bool RenderHWLContainer::Load(const char *pFilename)
 {
-  pFile = _wfopen(pFilename, L"rb");
+  pFile = fopen(pFilename, "rb");
   if (!pFile)
   {
     logger->Warning(L"Failed to open file: %s", pFilename);
@@ -8369,14 +7820,14 @@ unsigned short *Render::MakeScreenshot(signed int width, signed int height)
 void Render::SaveScreenshot(const String &filename, unsigned int width, unsigned int height)
 {
     auto pixels = MakeScreenshot(width, height);
-    SavePCXImage(filename, pixels, width, height);
+    SavePCXImage16(filename, pixels, width, height);
     free(pixels);
 }
 
 void Render::PackScreenshot(unsigned int width, unsigned int height, void *data, unsigned int data_size, unsigned int *out_screenshot_size)
 {
     auto pixels = MakeScreenshot(150, 112);
-    PackPCXpicture(pixels, 150, 112, data, 1000000, out_screenshot_size);
+    PCX::Encode16(pixels, width, height, data, data_size, out_screenshot_size);
     free(pixels);
 }
 
@@ -8405,10 +7856,10 @@ int Render::_46А6АС_GetActorsInViewport(int pDepth)
         {
           v6 = PID_ID(v5);
           if ( pActors[v6].uAIState != Dead 
-		    && pActors[v6].uAIState != Dying
-			&& pActors[v6].uAIState != Removed
+            && pActors[v6].uAIState != Dying
+            && pActors[v6].uAIState != Removed
             && pActors[v6].uAIState != Disabled
-			&& pActors[v6].uAIState != Summoned )
+            && pActors[v6].uAIState != Summoned )
           {
             if ( pEngine->pVisInstance->DoesRayIntersectBillboard((double)pDepth, a1a) )
             {

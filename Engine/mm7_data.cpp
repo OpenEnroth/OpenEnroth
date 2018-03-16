@@ -900,7 +900,7 @@ float _6BE3A0_fov = 0.55000001f;
 float flt_6BE3A4_debug_recmod1;
 float flt_6BE3A8_debug_recmod2;
 float flt_6BE3AC_debug_recmod1_x_1_6;
-std::array<char, 20> byte_6BE3B0; // idb
+std::string s_SavedMapName; // idb
 char bUnderwater = false;
 char bNoNPCHiring = false;
 unsigned int bNoVideo = true;

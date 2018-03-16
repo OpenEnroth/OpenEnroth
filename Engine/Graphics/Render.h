@@ -227,6 +227,6 @@ class Render : public IRender
         void CreateDirectDrawPrimarySurface();
         void CreateClipper(OSWindow *);
 
-        void PackPCXpicture(unsigned short* picture_data, int wight, int heidth, void *data_buff, int max_buff_size, unsigned int* packed_size);
-        void SavePCXImage(const String &filename, unsigned short* picture_data, int width, int height);
+        void SavePCXImage16(const String &filename, unsigned short* picture_data, int width, int height);
+        void SavePCXImage32(const String &filename, unsigned short* picture_data, int width, int height);
 };

@@ -63,7 +63,7 @@ typedef __int32             HASISTREAM; // Handle to stream being managed by ASI
 
 
 
-void MSS32_DLL_Initialize();
+void MSS32_DLL_Initialize(const char *data_path);
 
 #define AILCALL __stdcall
 #define AILCALLBACK __stdcall

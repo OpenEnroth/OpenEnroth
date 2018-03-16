@@ -2156,8 +2156,7 @@ void AudioPlayer::StopChannels(int uStartChannel, int uEndChannel)
 void AudioPlayer::LoadAudioSnd()
 {
 //    int NumberOfBytesRead; // [sp+Ch] [bp-4h]@3
-
-    hAudioSnd = fopen("Sounds\\Audio.snd", "rb");
+    hAudioSnd = fopen(MakeDataPath("Sounds\\Audio.snd").c_str(), "rb");
     if (!hAudioSnd)
     {
         logger->Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
@@ -2193,7 +2192,7 @@ void AudioPlayer::Initialize() //?? depreciate move to openal
 
 
 
-  MSS32_DLL_Initialize();
+  MSS32_DLL_Initialize(MakeDataPath("").c_str());
   BINKW32_DLL_Initialize();
   SMACKW32_DLL_Initialize();
   

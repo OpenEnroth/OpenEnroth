@@ -4,6 +4,9 @@
 #include <crtdbg.h>
 #include <io.h>
 #include <direct.h>
+#include <windows.h>
+#undef PlaySound
+#undef DrawText
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
@@ -34,27 +37,25 @@
 
 #include "MMT.h"
 
-
-
 struct SavegameList *pSavegameList = new SavegameList;
 unsigned int uNumSavegameFiles;
 std::array<unsigned int, 45> pSavegameUsedSlots;
-std::array<Image *, 45> pSavegameThumbnails;
+std::array<Image*, 45> pSavegameThumbnails;
 std::array<SavegameHeader, 45> pSavegameHeader;
 
 
 
 
-bool CopyFile(const char *from, const char *to)
+bool CopyFile(std::string from, std::string to)
 {
     int file_size = -1;
     int bytes_read = 0;
     int bytes_wrote = 0;
 
-    FILE *copy_from = fopen(from, "r");
+    FILE *copy_from = fopen(from.c_str(), "rb");
     if (copy_from)
     {
-        FILE *copy_to = fopen(to, "w+");
+        FILE *copy_to = fopen(to.c_str(), "wb+");
         if (copy_to)
         {
             fseek(copy_from, 0, SEEK_END);
@@ -64,7 +65,7 @@ bool CopyFile(const char *from, const char *to)
             unsigned char *buf = new unsigned char[file_size];
             if (buf)
             {
-                int bytes_read = fread(buf, 1, file_size, copy_from);
+                bytes_read = fread(buf, 1, file_size, copy_from);
                 if (bytes_read == file_size)
                 {
                     bytes_wrote = fwrite(buf, 1, file_size, copy_to);
@@ -90,16 +91,15 @@ void LoadThumbnailLloydTexture(unsigned int uSlot, unsigned int uPlayer)
         pSavegameThumbnails[uSlot] = nullptr;
     }
 
-
-    pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromFile(
-        StringPrintf("data\\lloyd%d%d.pcx", uPlayer, uSlot + 1)
-    );
+    String str = StringPrintf("data\\lloyd%d%d.pcx", uPlayer, uSlot + 1);
+    str = MakeDataPath(str.c_str());
+    pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromFile(str);
 
     if (!pSavegameThumbnails[uSlot])
     {
-        pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromNewLOD(
-            StringPrintf("lloyd%d%d.pcx", uPlayer, uSlot + 1)
-        );
+        String str = StringPrintf("lloyd%d%d.pcx", uPlayer, uSlot + 1);
+        str = MakeDataPath(str.c_str());
+        pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromNewLOD(str);
     }
 }
 
@@ -116,7 +116,7 @@ void LoadGame(unsigned int uSlot)
     if (!pSavegameUsedSlots[uSlot])
     {
         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
-		logger->Warning(L"LoadGame: slot %u is empty", uSlot);
+        logger->Warning(L"LoadGame: slot %u is empty", uSlot);
         return;
     }
 
@@ -124,9 +124,9 @@ void LoadGame(unsigned int uSlot)
     {
         for (uint j = 1; j < 6; ++j)
         {
-            remove(
-                StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str()
-            );
+            String file_path = StringPrintf("data\\lloyd%d%d.pcx", i, j);
+            file_path = MakeDataPath(file_path.c_str());
+            remove(file_path.c_str());
         }
     }
 
@@ -156,13 +156,16 @@ void LoadGame(unsigned int uSlot)
 
     pNew_LOD->CloseWriteFile();
 
-    auto filename = StringPrintf("saves\\%s", pSavegameList->pFileList[uSlot].pSaveFileName);
-    if (!CopyFile(filename.c_str(), "data\\new.lod"))
+    String filename = "saves\\" + pSavegameList->pFileList[uSlot];
+    filename = MakeDataPath(filename.c_str());
+    String to_file_path = MakeDataPath("data\\new.lod");
+    remove(to_file_path.c_str());
+    if (!CopyFile(filename, to_file_path))
     {
         Error("Failed to copy: %s", filename.c_str());
     }
 
-    pNew_LOD->LoadFile("data\\new.lod", 0);
+    pNew_LOD->LoadFile(to_file_path.c_str(), 0);
     FILE *file = pNew_LOD->FindContainer("header.bin", 1);
     if (!file)
     {
@@ -308,10 +311,11 @@ void LoadGame(unsigned int uSlot)
     strcpy(pCurrentMapName, header.pLocationName);
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_2000 | GAME_SETTINGS_0001;
 
-    for (uint i = 0; i < uNumSavegameFiles; ++i)
-    {
-        pSavegameThumbnails[i]->Release();
-        pSavegameThumbnails[i] = nullptr;
+    for (uint i = 0; i < uNumSavegameFiles; ++i) {
+        if (pSavegameThumbnails[i] != nullptr) {
+            pSavegameThumbnails[i]->Release();
+            pSavegameThumbnails[i] = nullptr;
+        }
     }
 
     if (use_music_folder)
@@ -352,7 +356,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     unsigned int compressed_block_size; // [sp+260h] [bp-10h]@23
 
     //v66 = a2;
-    strcpy(byte_6BE3B0.data(), pCurrentMapName);//byte_6BE3B0 - save_map_name
+    s_SavedMapName = pCurrentMapName;
     if (!_stricmp(pCurrentMapName, "d05.blv")) // arena
         return;
 
@@ -377,7 +381,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     else
         pOutdoor->loc_time.last_visit = pParty->GetPlayingTime();
 
-    render->PackScreenshot(150, 112, uncompressed_buff, 1000000, &pLodDirectory.uDataSize);//создание скриншота
+    render->PackScreenshot(150, 112, uncompressed_buff, 1000000, &pLodDirectory.uDataSize);  //создание скриншота
     strcpy(pLodDirectory.pFilename, "image.pcx");
 
     if (current_screen_type == SCREEN_SAVEGAME)
@@ -481,7 +485,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         {
             char work_string[120];
             sprintf(work_string, "data\\lloyd%d%d.pcx", i, j);
-            pLLoidFile = fopen(work_string, "rb");
+            std::string file_path = MakeDataPath(work_string);
+            pLLoidFile = fopen(file_path.c_str(), "rb");
             if (pLLoidFile)
             {
                 __debugbreak();
@@ -628,7 +633,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
     free(uncompressed_buff);
     if (IsAutoSAve)
     {
-        if (!CopyFile("data\\new.lod", "saves\\autosave.mm7"))
+        if (!CopyFile(MakeDataPath("data\\new.lod"), MakeDataPath("saves\\autosave.mm7")))
         {
             logger->Warning(L"Copy autosave.mm7 failed");
         }
@@ -653,8 +658,10 @@ void DoSavegame(unsigned int uSlot)
         strcpy(pDir.pFilename, "header.bin");
         pDir.uDataSize = 100;
         pNew_LOD->Write(&pDir, &pSavegameHeader[uSlot], 0);
-        pNew_LOD->CloseWriteFile();//закрыть 
-        CopyFile("data\\new.lod", StringPrintf("saves\\save%03d.mm7", uSlot).c_str());
+        pNew_LOD->CloseWriteFile();  //закрыть
+        String file_path = StringPrintf("saves\\save%03d.mm7", uSlot);
+        file_path = MakeDataPath(file_path.c_str());
+        CopyFile(MakeDataPath("data\\new.lod"), file_path);
     }
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu->Release();
@@ -663,8 +670,10 @@ void DoSavegame(unsigned int uSlot)
     viewparams->bRedrawGameUI = true;
     for (uint i = 0; i < 45; i++)
     {
-        pSavegameThumbnails[i]->Release();
-        pSavegameThumbnails[i] = nullptr;
+        if (pSavegameThumbnails[i] != nullptr) {
+            pSavegameThumbnails[i]->Release();
+            pSavegameThumbnails[i] = nullptr;
+        }
     }
 
     if (_stricmp(pCurrentMapName, "d05.blv"))
@@ -678,44 +687,52 @@ void DoSavegame(unsigned int uSlot)
 }
 
 //----- (0045E297) --------------------------------------------------------
-void SavegameList::Initialize(unsigned int bHideEmptySlots)
-{
-  //memset(pSavegameList, 0, sizeof(pSavegameList));//Ritor1: вызывает затирание
+void SavegameList::Initialize() {
   pSavegameList->Reset();
   uNumSavegameFiles = 0;
 
-  _chdir("saves");
-  {
-    if (!bHideEmptySlots && _access(localization->GetString(613), 0) != -1 ) // AutoSave.MM7
-      strcpy(pSavegameList->pFileList[uNumSavegameFiles++].pSaveFileName, localization->GetString(613));
+  std::string saves_dir = MakeDataPath("Saves\\*.mm7");
 
-    for (uint i = 0; i < 40; ++i)
-    {
-      auto filename = StringPrintf("save%03d.mm7", i);
-      if (_access(filename.c_str(), 0) == -1)
-        continue;
-
-      uint idx = i;
-      if (!bHideEmptySlots)
-        idx = uNumSavegameFiles;
-      strcpy(pSavegameList->pFileList[idx].pSaveFileName, filename.c_str());
-
-      ++uNumSavegameFiles;
-    }
+  WIN32_FIND_DATAA ffd = { 0 };
+  HANDLE hFind = FindFirstFileA(saves_dir.c_str(), &ffd);
+  if (INVALID_HANDLE_VALUE == hFind) {
+    return;
   }
-  _chdir("..");
+
+  do {
+    if ((ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+      pSavegameList->pFileList[uNumSavegameFiles++] = ffd.cFileName;
+    }
+  } while (FindNextFileA(hFind, &ffd) != 0);
+
+  FindClose(hFind);
 }
+
+SavegameList::SavegameList() {
+  Reset();
+}
+
+void SavegameList::Reset() {
+  for (int j = 0; j < 45; j++) {
+    this->pFileList[j].clear();
+  }
+}
+
 //----- (0046086A) --------------------------------------------------------
 void SaveNewGame()
 {
+  std::string file_path = MakeDataPath("data\\new.lod");
+
   FILE *file; // eax@7
   void *pSave; // [sp+170h] [bp-8h]@3
 
   if ( pMovie_Track )
     pMediaPlayer->Unload();
   pSave = malloc(1000000);
-  pNew_LOD->CloseWriteFile();
-  remove("data\\new.lod");//удалить new.lod
+  if (pNew_LOD != nullptr) {
+    pNew_LOD->CloseWriteFile();
+  }
+  remove(file_path.c_str());//удалить new.lod
 
   LOD::FileHeader header; // [sp+Ch] [bp-16Ch]@3 заголовок
   strcpy(header.LodVersion, "MMVII");
@@ -727,8 +744,8 @@ void SaveNewGame()
   a3.dword_000018 = 0;
   a3.word_00001E = 0;
   strcpy(a3.pFilename, "current");
-  pNew_LOD->CreateNewLod(&header, &a3, "data\\new.lod");//создаётся new.lod в дирректории
-  if (pNew_LOD->LoadFile("data\\new.lod", false))//загрузить файл new.lod(isFileOpened = true)
+  pNew_LOD->CreateNewLod(&header, &a3, file_path.c_str());  //создаётся new.lod в дирректории
+  if (pNew_LOD->LoadFile(file_path.c_str(), false))  //загрузить файл new.lod(isFileOpened = true)
   {
     pNew_LOD->CreateTempFile();//создаётся временный файл OutputFileHandle
     pNew_LOD->uNumSubDirs = 0;
