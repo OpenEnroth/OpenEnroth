@@ -155,7 +155,7 @@ void GUIButton::DrawLabel( const char *label_text, struct GUIFont *pFont, int a5
   //strlen(edx0);
   return pParent->DrawText(pFont,
            this->uX + (signed int)(this->uWidth - pFont->GetLineWidth(label_text)) / 2,
-           this->uY + (signed int)(this->uHeight - pFont->uFontHeight) / 2,
+           this->uY + (signed int)(this->uHeight - pFont->GetHeight()) / 2,
            a5, label_text, 0, 0, uFontShadowColor);
 }
 //----- (004B36CC) --------------------------------------------------------

@@ -1,6 +1,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#include <sstream>
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -162,7 +163,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned 
     if (par1C != 1)
     {
         int num_menu_buttons = 0;
-        int v11 = pFontArrus->GetFontHeight() - 3;
+        int v11 = pFontArrus->GetHeight() - 3;
         NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
         if (GetGreetType(sDialogue_SpeakingActorNPC_ID) == 1)//QuestsNPC_greet
         {
@@ -375,8 +376,8 @@ void GUIWindow::_41D73D_draw_buff_tooltip()
             ++string_count;
     }
 
-    uFrameHeight = pFontArrus->uFontHeight + 72;
-    uFrameHeight += (string_count - 1) * pFontArrus->uFontHeight;
+    uFrameHeight = pFontArrus->GetHeight() + 72;
+    uFrameHeight += (string_count - 1) * pFontArrus->GetHeight();
     uFrameZ = uFrameWidth + uFrameX - 1;
     uFrameW = uFrameY + uFrameHeight - 1;
     DrawMessageBox(0);
@@ -390,7 +391,7 @@ void GUIWindow::_41D73D_draw_buff_tooltip()
         if (pParty->pPartyBuffs[i].Active())
         {
             auto remaing_time = pParty->pPartyBuffs[i].expire_time - pParty->GetPlayingTime();
-            Y_pos = string_count * pFontComic->uFontHeight + 40;
+            Y_pos = string_count * pFontComic->GetHeight() + 40;
             text_color = Color16(spell_tooltip_colors[i].R, spell_tooltip_colors[i].G, spell_tooltip_colors[i].B);
             DrawText(pFontComic, 52, Y_pos, text_color, localization->GetSpellName(i), 0, 0, 0);
             DrawBuff_remaining_time_string(Y_pos, this, remaing_time, pFontComic);
@@ -642,11 +643,11 @@ void GUIWindow::HouseDialogManager()
     if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic)
     {
         pDialogWindow.uFrameWidth = 130;
-        pDialogWindow.uFrameHeight = 2 * pFontCreate->GetFontHeight();
+        pDialogWindow.uFrameHeight = 2 * pFontCreate->GetHeight();
         pHouseName = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName;
         if (pHouseName)
         {
-            v3 = 2 * pFontCreate->GetFontHeight() - 6 - pFontCreate->CalcTextHeight(pHouseName, &pDialogWindow, 0);
+            v3 = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(pHouseName, &pDialogWindow, 0);
             if (v3 < 0)
                 v3 = 0;
             pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, pWhiteColor,
@@ -682,7 +683,7 @@ void GUIWindow::HouseDialogManager()
                 ui_leather_mm7,
                 pTextHeight + 7);
             render->DrawTextureAlphaNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
-            window_SpeakInHouse->DrawText(pFontArrus, 13, 354 - v6, 0, FitTextInAWindow(current_npc_text, pFontArrus, &pDialogWindow, 13), 0, 0, 0);
+            window_SpeakInHouse->DrawText(pFontArrus, 13, 354 - v6, 0, pFontArrus->FitTextInAWindow(current_npc_text, &pDialogWindow, 13), 0, 0, 0);
         }
         if (uNumDialogueNPCPortraits <= 0)
         {
@@ -896,37 +897,21 @@ void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin, int vertical
 }
 
 //----- (0044D406) --------------------------------------------------------
-void GUIWindow::DrawTitleText(GUIFont *a2, int uHorizontalMargin, int uVerticalMargin, unsigned __int16 uDefaultColor,
+void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVerticalMargin, unsigned __int16 uDefaultColor,
     const char *pInString, int uLineSpacing)
 {
-    //GUIWindow *pWindow; // esi@1
-    unsigned int v8; // ebx@1
-    char *v9; // eax@1
-    unsigned int v11; // edi@1
-    signed int v12; // esi@1
-    int v13; // eax@2
-    GUIFont *pFont; // [sp+Ch] [bp-4h]@1
-    const char *Stra; // [sp+24h] [bp+14h]@5
-
-    //pWindow = this;
-    pFont = a2;
-    v8 = this->uFrameWidth - uHorizontalMargin;
-    ui_current_text_color = uDefaultColor;
-    v9 = FitTextInAWindow(pInString, a2, this, uHorizontalMargin);
-    Stra = strtok(v9, "\n");
-    v11 = uHorizontalMargin + this->uFrameX;
-    v12 = uVerticalMargin + this->uFrameY;
-    while (1)
-    {
-        if (!Stra)
-            break;
-        v13 = (signed int)(v8 - pFont->GetLineWidth(Stra)) >> 1;
-        if (v13 < 0)
-            v13 = 0;
-        pFont->DrawTextLine(uDefaultColor, v11 + v13, v12, Stra, window->GetWidth());
-        v12 += pFont->uFontHeight - uLineSpacing;
-        Stra = strtok(0, "\n");
-    }
+  int width = this->uFrameWidth - uHorizontalMargin;
+  ui_current_text_color = uDefaultColor;
+  String resString = pFont->FitTextInAWindow(pInString, this, uHorizontalMargin);
+  std::istringstream stream(resString);
+  String line;
+  int x = uHorizontalMargin + this->uFrameX;
+  int y = uVerticalMargin + this->uFrameY;
+  while (std::getline(stream, line)) {
+    unsigned int x_offset = pFont->AlignText_Center(width, line);
+    pFont->DrawTextLine(line, uDefaultColor, x + x_offset, y, window->GetWidth());
+    y += pFont->GetHeight() - uLineSpacing;
+  }
 }
 
 
@@ -938,112 +923,7 @@ void GUIWindow::DrawText(GUIFont *font, int x, int y, unsigned short uFontColor,
 //----- (0044CE08) --------------------------------------------------------
 void GUIWindow::DrawText(GUIFont *font, int uX, int uY, unsigned short uFontColor, const char *Str, bool present_time_transparency, int max_text_height, int uFontShadowColor)
 {
-  int v14; // edx@9
-  char Dest[6]; // [sp+Ch] [bp-2Ch]@32
-  size_t v30; // [sp+2Ch] [bp-Ch]@4
-
-  int left_margin = 0;
-  if ( !Str )
-  {
-    logger->Warning(L"Invalid string passed!");
-    return;
-  }
-  if (!strcmp(Str, "null"))
-    return;
-
-  v30 = strlen(Str);
-  if ( !uX )
-    uX = 12;
-
-  const char *string_begin = Str;
-  if ( max_text_height == 0 )
-    string_begin = FitTextInAWindow(Str, font, this, uX);
-  auto string_end = string_begin;
-  auto string_base = string_begin;
-
-  int out_x = uX + uFrameX;
-  int out_y = uY + uFrameY;
-  v14 = 0;
-
-  if (max_text_height != 0 && out_y + font->GetFontHeight() > max_text_height)
-    return;
-
-  if ( (signed int)v30 > 0 )
-  {
-    do
-    {
-      unsigned char c = string_base[v14];
-      if ( c >= font->cFirstChar && c <= font->cLastChar
-        || c == '\f'
-        || c == '\r'
-        || c == '\t'
-        || c == '\n' )
-      {
-        switch ( c )
-        {
-          case '\t':
-            strncpy(Dest, &string_base[v14 + 1], 3);
-            Dest[3] = 0;
-            v14 += 3;
-            left_margin = atoi(Dest);
-            out_x = uX + uFrameX + left_margin;
-            break;
-          case '\n':
-            uY = uY + font->GetFontHeight() - 3;
-            out_y = uY + uFrameY;
-            out_x = uX + uFrameX + left_margin;
-            if ( max_text_height != 0 )
-            {
-              if (font->GetFontHeight() + out_y - 3 > max_text_height )
-                return;
-            }
-            break;
-          case '\f':
-            strncpy(Dest, &string_base[v14 + 1], 5);
-            Dest[5] = 0;
-            uFontColor = atoi(Dest);
-            v14 += 5;
-            break;
-          case '\r':
-            strncpy(Dest, &string_base[v14 + 1], 3);
-            Dest[3] = 0;
-            v14 += 3;
-            left_margin = atoi(Dest);
-            out_x = uFrameZ - font->GetLineWidth(&string_base[v14]) - left_margin;
-            out_y = uY + uFrameY;
-            if ( max_text_height != 0 )
-            {
-              if (font->GetFontHeight() + out_y - 3 > max_text_height )
-                return;
-              break;
-            }
-            break;
-
-          default:
-            if (c == '\"' && string_base[v14 + 1] == '\"')
-              ++v14;
-                
-            c = (unsigned __int8)string_base[v14];
-            if ( v14 > 0 )
-              out_x += font->pMetrics[c].uLeftSpacing;
-
-            unsigned char *letter_pixels = &font->pFontData[font->font_pixels_offset[c]];
-            if ( uFontColor )
-              render->DrawText(out_x, out_y, letter_pixels, font->pMetrics[c].uWidth, font->GetFontHeight(),
-                  font->pFontPalettes[0], uFontColor, uFontShadowColor);
-            else
-              render->DrawTextAlpha(out_x, out_y, letter_pixels, font->pMetrics[c].uWidth, font->GetFontHeight(),
-                  font->pFontPalettes[0], present_time_transparency);
-
-            out_x += font->pMetrics[c].uWidth;
-            if ( (signed int)v14 < (signed int)v30 )
-              out_x += font->pMetrics[c].uRightSpacing;
-            break;
-          }
-        }
-      }
-      while ( (signed int)++v14 < (signed int)v30 );
-    }
+  font->DrawText(this, uX, uY, uFontColor, Str, present_time_transparency, max_text_height, uFontShadowColor);
 }
 
 
@@ -1055,142 +935,7 @@ int GUIWindow::DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, uns
 //----- (0044CB4F) --------------------------------------------------------
 int GUIWindow::DrawTextInRect(GUIFont *pFont, unsigned int uX, unsigned int uY, unsigned int uColor, String &str, int rect_width, int reverse_text)
 {
-  int pLineWidth; // ebx@1
-  int text_width; // esi@3
-  unsigned __int8 v12; // cl@7
-  signed int v13; // esi@19
-  signed int v14; // ebx@19
-  unsigned __int8 v15; // cl@21
-//  int v16; // eax@22
-//  int v17; // ecx@22
-//  int v18; // ecx@23
-//  int v19; // ecx@24
-  unsigned int v20; // ecx@26
-  unsigned char* v21; // eax@28
-//  int v22; // ebx@34
-  int v23; // eax@34
-  int v24; // ebx@36
-  char Str[6]; // [sp+Ch] [bp-20h]@34
-//  char v26; // [sp+Fh] [bp-1Dh]@34
-//  char v27; // [sp+11h] [bp-1Bh]@35
-  int v28; // [sp+20h] [bp-Ch]@17
-  GUIWindow *pWindow; // [sp+24h] [bp-8h]@1
-  size_t pNumLen; // [sp+28h] [bp-4h]@1
-  size_t Str1a; // [sp+40h] [bp+14h]@5
-//  size_t Str1b; // [sp+40h] [bp+14h]@19
-//  const char *Sourcea; // [sp+44h] [bp+18h]@20
-//  int v34; // [sp+48h] [bp+1Ch]@26
-  int i;
-
-  char text[4096];
-  Assert(str.length() < sizeof(text));
-  strcpy(text, str.c_str());
-
-  pWindow = this;
-  pNumLen = strlen(text);
-  pLineWidth = pFont->GetLineWidth(text);
-  if ( pLineWidth < rect_width )
-  {
-    pWindow->DrawText(pFont, uX, uY, uColor, text, 0, 0, 0);
-    return pLineWidth;
-  }
-
-  text_width = 0;
-  if ( reverse_text )
-    _strrev(text);
-  Str1a = 0;
-  for ( i = 0; i < pNumLen; ++i )
-    {
-      if ( text_width >= rect_width )
-        break;
-      v12 = text[i];
-      if ( pFont->IsCharValid(v12) )
-      {
-      switch (v12)
-          {
-      case '\t':// Horizontal tab 09
-      case '\n': //Line Feed 0A 10
-      case '\r': //Form Feed, page eject  0C 12
-          break;
-      case '\f': //Carriage Return 0D 13
-          i += 5;	  
-          break;
-      default:
-          if ( i > 0 )
-            text_width += pFont->pMetrics[v12].uLeftSpacing;
-          text_width += pFont->pMetrics[v12].uWidth;
-          if ( i < pNumLen )
-              text_width += pFont->pMetrics[v12].uRightSpacing;
-          }
-      }
-    }
-  text[i - 1] = 0;
-
-
-  pNumLen = strlen(text);
-  v28 = pFont->GetLineWidth(text);
-  if ( reverse_text )
-    _strrev(text);
-
-  v13 = uX + pWindow->uFrameX;
-  v14 = uY + pWindow->uFrameY;
-  for (i=0; i<pNumLen; ++i)
-  {
-      v15 = text[i];
-      if ( pFont->IsCharValid(v15) )
-      {
-      switch (v12)
-          {
-      case '\t':// Horizontal tab 09
-          {
-          strncpy(Str,  &text[i+1], 3);
-          Str[3] = 0;
-       //   atoi(Str);
-          i += 3;
-          break;
-          }
-      case '\n': //Line Feed 0A 10
-          {
-          v24 = pFont->uFontHeight;
-          v13 = uX;
-          uY = uY + pFont->uFontHeight - 3;
-          v14 = uY+pFont->uFontHeight - 3;
-          break;
-          }
-      case '\r': //Form Feed, page eject  0C 12
-          {
-          strncpy(Str, &text[i+1], 5);
-          Str[5] = 0;
-          i += 5;
-          uColor = atoi(Str);
-          break;
-          }
-      case '\f': //Carriage Return 0D 13
-          {
-          strncpy(Str, &text[i+1], 3);
-          Str[3] = 0;
-          i += 3;
-          v23 = pFont->GetLineWidth(&text[i]);
-          v13 = pWindow->uFrameZ - v23 - atoi(Str);
-          v14 = uY;
-          break;
-          }
-      default:
-          v20 = pFont->pMetrics[v15].uWidth;
-          if ( i > 0 )
-              v13 += pFont->pMetrics[v15].uLeftSpacing;
-          v21 = &pFont->pFontData[pFont->font_pixels_offset[v15]];
-          if ( uColor )
-              render->DrawText(v13, v14,  v21, v20, pFont->uFontHeight, pFont->pFontPalettes[0], uColor, 0);
-          else
-              render->DrawTextAlpha(v13, v14, v21, v20, pFont->uFontHeight, pFont->pFontPalettes[0], false);
-          v13 += v20;
-          if ( i < (signed int)pNumLen )
-              v13 += pFont->pMetrics[v15].uRightSpacing;
-          }
-      }
-  }
-  return v28;
+  return pFont->DrawTextInRect(this, uX, uY, uColor, str, rect_width, reverse_text);
 }
 
 
@@ -1651,7 +1396,7 @@ void CreateScrollWindow()
   a1.uFrameX = 1;
   a1.uFrameY = 1;
   a1.uFrameWidth = 468;
-  v0 = pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->par1C], &a1, 0) + 2 * (unsigned char)pFontCreate->uFontHeight + 24;
+  v0 = pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->par1C], &a1, 0) + 2 * (unsigned char)pFontCreate->GetHeight() + 24;
   a1.uFrameHeight = v0;
   if ( (signed int)(v0 + a1.uFrameY) > 479 )
   {
@@ -1670,7 +1415,7 @@ void CreateScrollWindow()
   v1 = pItemsTable->pItems[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C + 700].pName;
 
   a1.DrawTitleText(pFontCreate, 0, 0, 0, StringPrintf(format_4E2D80, Color16(0xFFu, 0xFFu, 0x9Bu), v1), 3);
-  a1.DrawText(pFontSmallnum, 1, (unsigned char)pFontCreate->uFontHeight - 3, 0,
+  a1.DrawText(pFontSmallnum, 1, (unsigned char)pFontCreate->GetHeight() - 3, 0,
               pScrolls[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C], 0, 0, 0);
 }
 //----- (00467F48) --------------------------------------------------------

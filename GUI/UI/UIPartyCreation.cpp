@@ -336,7 +336,7 @@ void GUIWindow_PartyCreation::Update()
         pText[i] = toupper((unsigned __int8)pText[i]);
 
     pIntervalX = 18;
-    pIntervalY = pFontCreate->uFontHeight - 2;
+    pIntervalY = pFontCreate->GetHeight() - 2;
     uX = 32;
     pX_Numbers = 493;
 
@@ -582,7 +582,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     current_screen_type = SCREEN_PARTY_CREATION;
     uPlayerCreationUI_ArrowAnim = 0;
     uPlayerCreationUI_SelectedCharacter = 0;
-    v0 = pFontCreate->GetFontHeight() - 2;
+    v0 = pFontCreate->GetHeight() - 2;
 
     ui_partycreation_class_icons[0] = assets->GetImage_16BitColorKey("IC_KNIGHT", 0x7FF);
     ui_partycreation_class_icons[1] = assets->GetImage_16BitColorKey("IC_THIEF", 0x7FF);
@@ -708,7 +708,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     pPlayerCreationUI_BtnMinus = CreateButton(523, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickMinus, 0, '-', "", ui_partycreation_minus, 0);
     pPlayerCreationUI_BtnPlus = CreateButton(613, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickPlus, 1, '+', "", ui_partycreation_plus, 0);
 
-    ui_partycreation_font = LoadFont("cchar.fnt", "FONTPAL", NULL);
+    ui_partycreation_font = GUIFont::LoadFont("cchar.fnt", "FONTPAL", NULL);
 }
 
 

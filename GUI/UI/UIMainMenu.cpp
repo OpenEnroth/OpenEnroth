@@ -113,17 +113,11 @@ void MainMenuUI_LoadFontsAndSomeStuff()
   for (uint i = 0; i < window->GetHeight(); ++i)
     pSRZBufferLineOffsets[i] = window->GetWidth() * i;
 
-  pFontArrus = LoadFont("arrus.fnt", "FONTPAL", nullptr);
-  pFontArrus->field_3 = 0;
-
-  pFontLucida = LoadFont("lucida.fnt", "FONTPAL", nullptr);
-  pFontLucida->field_3 = 0;
-
-  pFontCreate = LoadFont("create.fnt", "FONTPAL", nullptr);
-  pFontCreate->field_3 = 0;
-
-  pFontSmallnum = LoadFont("smallnum.fnt", "FONTPAL", nullptr);
-  pFontComic = LoadFont("comic.fnt", "FONTPAL", nullptr);
+  pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL", nullptr);
+  pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL", nullptr);
+  pFontCreate = GUIFont::LoadFont("create.fnt", "FONTPAL", nullptr);
+  pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL", nullptr);
+  pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL", nullptr);
 }
 
 //----- (004415C5) --------------------------------------------------------

@@ -129,7 +129,7 @@ void GUIWindow_CalendarBook::Update()
         pParty->uCurrentDayOfMonth + 1,
         localization->GetDayName(pParty->uCurrentDayOfMonth % 7)
     );
-    calendar_window.DrawText(pBookFont, 70, 2 * (unsigned char)pBookFont->uFontHeight + 49, ui_book_calendar_day_color, str, 0, 0, 0);
+    calendar_window.DrawText(pBookFont, 70, 2 * pBookFont->GetHeight() + 49, ui_book_calendar_day_color, str, 0, 0, 0);
 
     str = StringPrintf(
         "%s\t100:\t110%d - %s",
@@ -137,17 +137,17 @@ void GUIWindow_CalendarBook::Update()
         pParty->uCurrentMonth + 1,
         localization->GetMonthName(pParty->uCurrentMonth)
     );
-    calendar_window.DrawText(pBookFont, 70, 4 * (unsigned char)pBookFont->uFontHeight + 43, ui_book_calendar_month_color, str, 0, 0, 0);
+    calendar_window.DrawText(pBookFont, 70, 4 * pBookFont->GetHeight() + 43, ui_book_calendar_month_color, str, 0, 0, 0);
 
     str = StringPrintf("%s\t100:\t110%d", localization->GetString(245), pParty->uCurrentYear); // "Year"
-    calendar_window.DrawText(pBookFont, 70, 6 * (unsigned char)pBookFont->uFontHeight + 37, ui_book_calendar_year_color, str, 0, 0, 0);
+    calendar_window.DrawText(pBookFont, 70, 6 * pBookFont->GetHeight() + 37, ui_book_calendar_year_color, str, 0, 0, 0);
 
     str = StringPrintf(
         "%s\t100:\t110%s",
         localization->GetString(530), // Moon
         localization->GetMoonPhaseName(pDayMoonPhase[pParty->uCurrentDayOfMonth])
      );
-    calendar_window.DrawText(pBookFont, 70, 8 * (unsigned char)pBookFont->uFontHeight + 31, ui_book_calendar_moon_color, str, 0, 0, 0);
+    calendar_window.DrawText(pBookFont, 70, 8 * (unsigned char)pBookFont->GetHeight() + 31, ui_book_calendar_moon_color, str, 0, 0, 0);
 
     pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     if (pMapID)
@@ -156,5 +156,5 @@ void GUIWindow_CalendarBook::Update()
         pMapName = "Unknown";
 
     str = StringPrintf("%s\t100:\t110%s", localization->GetString(531), pMapName); // "Location"
-    calendar_window.DrawText(pBookFont, 70, 10 * (unsigned char)pBookFont->uFontHeight + 25, ui_book_calendar_location_color, str, 0, 0, 0);
+    calendar_window.DrawText(pBookFont, 70, 10 * (unsigned char)pBookFont->GetHeight() + 25, ui_book_calendar_location_color, str, 0, 0, 0);
 }

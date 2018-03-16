@@ -126,7 +126,6 @@ void  Arena_SelectionFightLevel()
 void ArenaFight()
 {
   int v0; // edi@1
-  char *v1; // eax@7
   int v3; // eax@10
   signed int v4; // esi@10
   signed int v6; // ebx@34
@@ -172,7 +171,7 @@ void ArenaFight()
       v0);
 
   render->DrawTextureAlphaNew(8/640.0f, (347 - v0)/480.0f, _591428_endcap);
-  v1 = FitTextInAWindow(localization->GetString(575), pFontArrus, &window, 0xDu);//Пожалуйста, подождите пока я вызываю существ. Удачи.
+  String v1 = pFontArrus->FitTextInAWindow(localization->GetString(575), &window, 0xDu);  // Пожалуйста, подождите пока я вызываю существ. Удачи.
   pDialogueWindow->DrawText(pFontArrus, 13, 354 - v0, 0, v1, 0, 0, 0);
   render->EndScene();
   render->Present();

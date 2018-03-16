@@ -60,7 +60,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
     journal_window.uFrameWidth = 360;
     journal_window.uFrameHeight = 264;
     journal_window.uFrameZ = 407;
-    journal_window.uFrameHeight = (pAutonoteFont->GetFontHeight() - 3) * 264 / pAutonoteFont->GetFontHeight() - 3;
+    journal_window.uFrameHeight = (pAutonoteFont->GetHeight() - 3) * 264 / pAutonoteFont->GetHeight() - 3;
     journal_window.uFrameW = journal_window.uFrameHeight + 69;
     memset(&achieved_awards, 0, 4000);
     memset(Journal_limitation_factor.data(), 0, 100);
@@ -79,7 +79,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
                         &pParty->PartyTimes.HistoryEventTimes[i]
                     );
                     pTextHeight = pAutonoteFont->CalcTextHeight(str, &journal_window, 1);
-                    page_count = ((pTextHeight - (pAutonoteFont->uFontHeight - 3)) / (signed int)journal_window.uFrameHeight) + 1;
+                    page_count = ((pTextHeight - (pAutonoteFont->GetHeight() - 3)) / (signed int)journal_window.uFrameHeight) + 1;
                     memset32((char *)&achieved_awards[num_achieved_awards], i + 1, page_count);
                     for (uint j = 0; j <= page_count - 1; ++j)
                         Journal_limitation_factor[num_achieved_awards++] = j;
@@ -111,7 +111,6 @@ void GUIWindow_JournalBook::Update()
 // void BookUI_Journal_Draw()
 // {
     //char *pDialogueString; // eax@21
-    char* pStringOnPage; // eax@22
     GUIWindow journal_window; // [sp+8h] [bp-54h]@10
 
     render->DrawTextureAlphaNew(pViewport->uViewportTL_X/640.0f, pViewport->uViewportTL_Y/480.0f, ui_book_journal_background);
@@ -173,7 +172,7 @@ void GUIWindow_JournalBook::Update()
             0, 0, 0,
             &pParty->PartyTimes.HistoryEventTimes[index]
         );
-        pStringOnPage = pAutonoteFont->GetPageTop(str.c_str(), &journal_window, 1, (unsigned __int8)Journal_limitation_factor[books_primary_item_per_page]);
+        String pStringOnPage = pAutonoteFont->GetPageTop(str.c_str(), &journal_window, 1, (unsigned __int8)Journal_limitation_factor[books_primary_item_per_page]);
         journal_window.DrawText(pAutonoteFont, 1, 0, ui_book_journal_text_color, pStringOnPage, 0,
             journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);
         ++num_achieved_awards;

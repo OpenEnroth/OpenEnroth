@@ -26,7 +26,6 @@ void GameOver_Loop(int v15)
 {
     const char *v1; // eax@2
     unsigned int result; // eax@3
-    const char *v6; // eax@10
     const char *v7; // edx@10
     const char *v8; // ecx@12
     const char *v9; // eax@14
@@ -69,7 +68,7 @@ void GameOver_Loop(int v15)
     pWindow.uFrameHeight = 338;
     pWindow.uFrameZ = 543;
     pWindow.uFrameW = 397;
-    pFont = LoadFont("endgame.fnt", "FONTPAL", NULL);
+    pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL", NULL);
     if (pParty->IsPartyGood())
         v1 = localization->GetString(675);//"Splendid job!  With the activation of the Gate, a thousand worlds lie at your feet.  Perhaps on one of them you will find the Ancients themselves, and return with the fruits their great civilization has to offer your world and your kingdom."
     else if (pParty->IsPartyEvil())
@@ -95,7 +94,7 @@ void GameOver_Loop(int v15)
         pWindow.DrawTitleText(
             pFont,
             1,
-            i * ((unsigned char)pFont->uFontHeight - 2) + (unsigned char)pFont->uFontHeight + 46,
+            i * ((unsigned char)pFont->GetHeight() - 2) + (unsigned char)pFont->GetHeight() + 46,
             1,
             localization->FormatString(
                 129,
@@ -106,8 +105,8 @@ void GameOver_Loop(int v15)
         v23 += pParty->pPlayers[i].uExperience;//__PAIR__(*(int *)(i - 4), *(int *)(i - 8));
     }
     v23 = (signed __int64)v23 / v19;
-    v6 = FitTextInAWindow(pInString, pFont, &pWindow, 0xC);
-    pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetFontHeight() + 11), 1, v6, 0);
+    String v6 = pFont->FitTextInAWindow(pInString, &pWindow, 12);
+    pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetHeight() + 11), 1, v6, 0);
 
 
     v7 = localization->GetString(56);
@@ -125,7 +124,7 @@ void GameOver_Loop(int v15)
     pWindow.DrawTitleText(
         pFont,
         1,
-        pWindow.uFrameHeight - 2 * pFont->GetFontHeight() - 5,
+        pWindow.uFrameHeight - 2 * pFont->GetHeight() - 5,
         1,
         localization->GetString(37) + StringPrintf(" %lu %s, %lu %s, %lu %s ", v14, v9, v18, v8, v17, v7), //Total Time:
         3

@@ -1082,7 +1082,6 @@ void IntegrityTest()
     //static_assert(sizeof(GUIButton) == 0xBC, "Wrong type size");
     //static_assert(sizeof(GUIWindow) == 0x54, "Wrong type size");
     //static_assert(sizeof(GUIProgressBar) == 0x1B8, "Wrong type size");
-    static_assert(sizeof(GUIFont) == 0x1020, "Wrong type size");
     // static_assert(sizeof(stru262_TurnBased) == 0x40, "Wrong type size");
     //static_assert(sizeof(ArcomageGame) == 0xFB, "Wrong type size");
     static_assert(sizeof(CastSpellInfo) == 0x14, "Wrong type size");

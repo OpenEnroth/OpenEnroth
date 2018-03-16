@@ -301,10 +301,10 @@ static void UI_DrawSaveLoad(bool save)
         memset(&save_load_window, 0, 0x54);
         save_load_window.uFrameX = pGUIWindow_CurrentMenu->uFrameX + 240;
         save_load_window.uFrameWidth = 220;
-        save_load_window.uFrameY = (pGUIWindow_CurrentMenu->uFrameY - pFontSmallnum->uFontHeight) + 157;
+        save_load_window.uFrameY = (pGUIWindow_CurrentMenu->uFrameY - pFontSmallnum->GetHeight()) + 157;
         save_load_window.uFrameZ = save_load_window.uFrameX + 219;
-        save_load_window.uFrameHeight = pFontSmallnum->uFontHeight;
-        save_load_window.uFrameW = pFontSmallnum->uFontHeight + save_load_window.uFrameY - 1;
+        save_load_window.uFrameHeight = pFontSmallnum->GetHeight();
+        save_load_window.uFrameW = pFontSmallnum->GetHeight() + save_load_window.uFrameY - 1;
         if (pSavegameThumbnails[uLoadGameUI_SelectedSlot])
             render->DrawTextureNew((pGUIWindow_CurrentMenu->uFrameX + 276) / 640.0f, (pGUIWindow_CurrentMenu->uFrameY + 171) / 480.0f, pSavegameThumbnails[uLoadGameUI_SelectedSlot]);
         //Draw map name

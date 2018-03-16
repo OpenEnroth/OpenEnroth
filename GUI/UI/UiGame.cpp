@@ -802,7 +802,7 @@ void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
                 popup_window.uFrameY = 60;
                 popup_window.uFrameWidth = 276;
                 popup_window.uFrameZ = 313;
-                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, &popup_window, 0) + 2 * pFontArrus->GetFontHeight() + 24;
+                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, &popup_window, 0) + 2 * pFontArrus->GetHeight() + 24;
                 if ((signed int)popup_window.uFrameHeight < 130)
                     popup_window.uFrameHeight = 130;
                 popup_window.uFrameWidth = 400;
@@ -921,7 +921,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
             pNPCInfo->uProfession == 52       //Fallen Wizard
         )
         {
-            pDialogueWindow->CreateButton(480, 250, 140, pFontArrus->GetFontHeight() - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "", 0);
+            pDialogueWindow->CreateButton(480, 250, 140, pFontArrus->GetHeight() - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "", 0);
             pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
         }
     }
@@ -1066,7 +1066,7 @@ void GameUI_DrawDialogue()
                 pTextHeight);
 
         render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        pDialogueWindow->DrawText(font, 13, 354 - pTextHeight, 0, FitTextInAWindow(dialogue_string, font, &window, 13), 0, 0, 0);
+        pDialogueWindow->DrawText(font, 13, 354 - pTextHeight, 0, font->FitTextInAWindow(dialogue_string, &window, 13), 0, 0, 0);
     }
 
     // Right panel(Правая панель)------- 
@@ -1253,7 +1253,7 @@ void GameUI_DrawBranchlessDialogue()
         ui_leather_mm7,
         pTextHeight);
     render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    pGUIWindow2->DrawText(pFont, 12, 354 - pTextHeight, 0, FitTextInAWindow(byte_5B0938.data(), pFont, &BranchlessDlg_window, 12), 0, 0, 0);
+    pGUIWindow2->DrawText(pFont, 12, 354 - pTextHeight, 0, pFont->FitTextInAWindow(byte_5B0938.data(), &BranchlessDlg_window, 12), 0, 0, 0);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     if (pGUIWindow2->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS)
     {
@@ -1370,9 +1370,9 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player)
             ++numActivePlayerBuffs;
     }
 
-    window->uFrameHeight = ((pFontArrus->uFontHeight + 162) + ((numActivePlayerBuffs - 1) * pFontArrus->uFontHeight));
+    window->uFrameHeight = ((pFontArrus->GetHeight() + 162) + ((numActivePlayerBuffs - 1) * pFontArrus->GetHeight()));
     window->uFrameZ = window->uFrameWidth + window->uFrameX - 1;
-    window->uFrameW = ((pFontArrus->uFontHeight + 162) + ((numActivePlayerBuffs - 1) * pFontArrus->uFontHeight)) + window->uFrameY - 1;
+    window->uFrameW = ((pFontArrus->GetHeight() + 162) + ((numActivePlayerBuffs - 1) * pFontArrus->GetHeight())) + window->uFrameY - 1;
     window->DrawMessageBox(0);
 
     if (player->IsEradicated())
@@ -1432,7 +1432,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player)
         SpellBuff* buff = &player->pPlayerBuffs[i];
         if (buff->Active())
         {
-            v36 = uFramesetIDa++ * pFontComic->uFontHeight + 134;
+            v36 = uFramesetIDa++ * pFontComic->GetHeight() + 134;
             window->DrawText(pFontComic, 52, v36, ui_game_character_record_playerbuff_colors[i], localization->GetSpellName(20 + i), 0, 0, 0);
             DrawBuff_remaining_time_string(v36, window, buff->expire_time - pParty->GetPlayingTime(), pFontComic);
         }

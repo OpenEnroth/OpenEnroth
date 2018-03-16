@@ -3406,7 +3406,7 @@ void SetStartConditions()
 //----- (0040D75D) --------------------------------------------------------
 void am_DrawText(const String &str, Point *pXY)
 {
-    pPrimaryWindow->DrawText(pFontComic, pXY->x, pXY->y - ((pFontComic->uFontHeight - 3) / 2) + 3, 0, str, 0, 0, 0);
+    pPrimaryWindow->DrawText(pFontComic, pXY->x, pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3, 0, str, 0, 0, 0);
 }
 
 
