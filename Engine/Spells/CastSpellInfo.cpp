@@ -3543,8 +3543,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             pPlayer->SetRecoveryTime((signed __int64)(flt_6BE3A4_debug_recmod1 * (double)sRecoveryTime * 2.133333333333333));
         pPlayer->PlaySound(SPEECH_49, 0);
     }
-    if (spell_sound_flag)
-        pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[pCastSpell->uSpellID], 0, 0, -1, 0, pCastSpell->sound_id, 0, 0);
+    if (spell_sound_flag) {
+//      pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[pCastSpell->uSpellID], 0, 0, -1, 0, pCastSpell->sound_id, 0, 0);
+      pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, 0);
+    }
 
     pCastSpell->uSpellID = 0;
    // spell_level = spell_level;

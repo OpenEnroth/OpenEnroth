@@ -9,10 +9,10 @@
 
 #include "GUI/UI/UITransition.h"
 
-#include "../LOD.h"
-#include "../Autonotes.h"
-#include "../Awards.h"
-#include "../Party.h"
+#include "Engine/LOD.h"
+#include "Engine/Autonotes.h"
+#include "Engine/Awards.h"
+#include "Engine/Party.h"
 #include "NPC.h"
 #include "../Events.h"
 #include "..\..\GUI\UI\UIHouses.h"
@@ -24,6 +24,8 @@
 #include "../Graphics/Overlays.h"
 
 #include "GUI/UI/UIStatusBar.h"
+
+#include "Platform/Api.h"
 
 
 int pDialogueNPCCount;

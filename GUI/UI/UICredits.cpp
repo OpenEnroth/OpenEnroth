@@ -13,8 +13,7 @@
 #include "Platform/OSWindow.h"
 #include "lib/OpenAL/al.h"
 #include "Game/MainMenu.h"
-
-extern bool use_music_folder;
+#include "Platform/Api.h"
 
 bool GUICredits::ExecuteCredits() {
   GUIFont *pFontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL", NULL);
@@ -26,11 +25,7 @@ bool GUICredits::ExecuteCredits() {
     pIcons_LOD->uNumPrevLoadedFiles = pIcons_LOD->uNumLoadedFiles;
   }
 
-  if (use_music_folder) {
-    PlayAudio(L"Music\\15.mp3");
-  } else {
-    pAudioPlayer->PlayMusicTrack(MUSIC_Credits);
-  }
+  pAudioPlayer->MusicPlayTrack(MUSIC_Credits);
 
   Image *mm6title = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
 
@@ -80,9 +75,7 @@ bool GUICredits::ExecuteCredits() {
     }
   } while (GetCurrentMenuID() == MENU_CREDITSPROC);
 
-  if (use_music_folder) {
-    alSourceStop(mSourceID);
-  }
+  pAudioPlayer->MusicStop();
   pAudioPlayer->StopAll(1);
   free(text);
   pWindow_Credits->Release();

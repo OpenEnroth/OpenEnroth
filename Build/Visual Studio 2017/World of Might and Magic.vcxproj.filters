@@ -49,9 +49,6 @@
     <Filter Include="Media\Audio">
       <UniqueIdentifier>{a6cca40d-7b3a-479d-85ed-3b588f7ac28d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Media\Video">
-      <UniqueIdentifier>{d560cdfc-2d5b-4419-adaf-f569bff0ed4e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Graphics">
       <UniqueIdentifier>{5aa47db6-59dc-455b-80d7-10b2a6424759}</UniqueIdentifier>
     </Filter>
@@ -99,6 +96,9 @@
     </Filter>
     <Filter Include="Engine\Graphics\Direct3D">
       <UniqueIdentifier>{c4e473d3-7f99-4068-8a76-7bd82dc8a39a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Media\Video">
+      <UniqueIdentifier>{90fa739c-7e1c-42dc-8222-f43c519a80c7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -351,14 +351,8 @@
     <ClCompile Include="..\..\IO\Keyboard.cpp">
       <Filter>IO</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Media\Audio\AIL.cpp">
-      <Filter>Media\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Media\Audio\AudioPlayer.cpp">
       <Filter>Media\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Media\MediaPlayer.cpp">
-      <Filter>Media</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Game\Game.cpp">
       <Filter>Game</Filter>
@@ -468,6 +462,15 @@
     <ClCompile Include="..\..\Engine\Graphics\RenderD3D.cpp">
       <Filter>Engine\Graphics\Direct3D</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Media\Audio\OpenALSoundProvider.cpp">
+      <Filter>Media\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Media\Media.cpp">
+      <Filter>Media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Media\MediaPlayer.cpp">
+      <Filter>Media\Video</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\libavcodec\avcodec.h">
@@ -477,9 +480,6 @@
       <Filter>lib\libavcodec</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libavcodec\dxva2.h">
-      <Filter>lib\libavcodec</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libavcodec\old_codec_ids.h">
       <Filter>lib\libavcodec</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libavcodec\vaapi.h">
@@ -513,9 +513,6 @@
       <Filter>lib\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libavutil\attributes.h">
-      <Filter>lib\libavutil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libavutil\audioconvert.h">
       <Filter>lib\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libavutil\audio_fifo.h">
@@ -587,9 +584,6 @@
     <ClInclude Include="..\..\lib\libavutil\intfloat.h">
       <Filter>lib\libavutil</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\libavutil\intfloat_readwrite.h">
-      <Filter>lib\libavutil</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\libavutil\intreadwrite.h">
       <Filter>lib\libavutil</Filter>
     </ClInclude>
@@ -612,9 +606,6 @@
       <Filter>lib\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libavutil\murmur3.h">
-      <Filter>lib\libavutil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libavutil\old_pix_fmts.h">
       <Filter>lib\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libavutil\opt.h">
@@ -968,12 +959,6 @@
     <ClInclude Include="..\..\Media\Audio\OpenALSoundProvider.h">
       <Filter>Media\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Media\Audio\AIL.h">
-      <Filter>Media\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Media\MediaPlayer.h">
-      <Filter>Media</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Game\Game.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -1093,6 +1078,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\RenderD3D.h">
       <Filter>Engine\Graphics\Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Media\Media.h">
+      <Filter>Media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Media\MediaPlayer.h">
+      <Filter>Media\Video</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

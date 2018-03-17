@@ -19,7 +19,7 @@
 #include "GUI/GUIFont.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/Audio/AIL.h"
+#include "Media/MediaPlayer.h"
 
 #include "Game/MainMenu.h"
 
@@ -84,8 +84,7 @@ void MainMenu_EventLoop() {
         SetCurrentMenuID(MENU_DebugBLVLevel);
         break;
       case UIMSG_Escape:
-        if (pModalWindow)
-        {
+        if (pModalWindow) {
           pModalWindow->Release();
           pModalWindow = nullptr;
           break;
@@ -93,7 +92,7 @@ void MainMenu_EventLoop() {
         if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000))
           break;
         v15 = 1;
-        pMediaPlayer->bStopBeforeSchedule = 1;
+        pMediaPlayer->StopMovie();
         viewparams->bRedrawGameUI = 1;
         viewparams->field_48 = 1;
         if (GetCurrentMenuID() == MENU_MAIN || GetCurrentMenuID() == MENU_MMT_MAIN_MENU
@@ -189,10 +188,9 @@ void MainMenu_Loop() {
   Texture_MM7 *pTexture; // [sp-14h] [bp-50h]@39
   GUIWindow *pWindow; // [sp+4h] [bp-38h]@11
 
-
   pAudioPlayer->StopChannels(-1, -1);
   if (!bNoSound && pAudioPlayer)
-    pAudioPlayer->PlayMusicTrack(MUSIC_MainMenu);
+      pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
 
   if (first_initialization) {
     first_initialization = false;

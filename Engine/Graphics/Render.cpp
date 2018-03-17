@@ -3322,6 +3322,18 @@ void Render::DrawTextureOffset(int x, int y, int offset_x, int offset_y, Image *
   delete bitmap;
 }
 
+void Render::DrawImage(Image *image, const Rect &rect) {
+  Gdiplus::Bitmap *bitmap = BitmapWithImage(image);
+  if (bitmap == nullptr) {
+    return;
+  }
+
+  Gdiplus::Rect r(rect.x, rect.y, rect.z - rect.x, rect.w - rect.y);
+  p2DGraphics->DrawImage(bitmap, r);
+
+  delete bitmap;
+}
+
 void Render::DrawTextureGrayShade(float u, float v, Image *img) {
   DrawMasked(u, v, img, 1, 0x7BEF);
 }

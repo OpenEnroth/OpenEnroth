@@ -167,23 +167,13 @@ bool stru9::_498377(struct RenderVertexSoft *pPortalBounding, unsigned int uNumV
 //----- (004985FB) --------------------------------------------------------
 bool stru9::CalcPortalShape(struct RenderVertexSoft *a1, signed int a2, struct RenderVertexSoft *pVertices, unsigned int *pOutNumVertices, struct Vec3_float_ *a5, float a6, char *a7, int unused)
 {
-  //RenderVertexSoft *v9; // ecx@1
-  //Vec3_float_ *v10; // esi@1
-  //char *v11; // ebx@1
-  //RenderVertexSoft *pVertices; // edi@1
   double pLinelength1; // st7@1
-  //bool result; // eax@4
-  signed int v15; // edx@9
   RenderVertexSoft *pLineEnd; // ecx@9
   double pLinelength2; // st7@9
   double t; // st6@12
-  signed int v19; // [sp+Ch] [bp-Ch]@7
-  //float v20; // [sp+10h] [bp-8h]@1
+  int v19; // [sp+Ch] [bp-Ch]@7
   bool v21; // [sp+14h] [bp-4h]@2
 
-  //v9 = a1;
-  //v10 = a5;
-  //v11 = (char *)&a1->vWorldPosition.z;
   RenderVertexSoft* pLineStart = &a1[0];
   //pVertices = a3;
   pLinelength1 = a5->x * a1[0].vWorldPosition.x + a1[0].vWorldPosition.y * a5->y + a1[0].vWorldPosition.z * a5->z;
@@ -191,14 +181,12 @@ bool stru9::CalcPortalShape(struct RenderVertexSoft *a1, signed int a2, struct R
   v21 = pLinelength1 >= a6;
 
   *pOutNumVertices = 0;
-  if ( a2 <= 0 )
+  if (a2 <= 0)
     return false;
   v19 = 1;
 
-  while ( 1 )
-  {
-    if ( v21 )
-    {
+  while (true) {
+    if (v21) {
       //++pVertices;
       memcpy(pVertices, pLineStart, sizeof(RenderVertexSoft));
       ++*pOutNumVertices;
@@ -206,14 +194,13 @@ bool stru9::CalcPortalShape(struct RenderVertexSoft *a1, signed int a2, struct R
       pVertices++;
       //v9 = a1;
     }
-    v15 = 0;
+    bool v15 = false;
     pLineEnd = &a1[v19 % a2];
     pLinelength2 = a5->x * pLineEnd->vWorldPosition.x + pLineEnd->vWorldPosition.y * a5->y + pLineEnd->vWorldPosition.z * a5->z;
-    if ( pLinelength2 >= a6 )
-      v15 = 1;
+    if (pLinelength2 >= a6)
+      v15 = true;
 
-    if ( v21 != v15 )
-    {
+    if (v21 != v15) {
       t = (a6 - pLinelength1) / (pLinelength2 - pLinelength1);
       pVertices->vWorldPosition.x = pLineStart->vWorldPosition.x + (pLineEnd->vWorldPosition.x - pLineStart->vWorldPosition.x) * t;
       pVertices->vWorldPosition.y = pLineStart->vWorldPosition.y + (pLineEnd->vWorldPosition.y - pLineStart->vWorldPosition.y) * t;
@@ -229,7 +216,7 @@ bool stru9::CalcPortalShape(struct RenderVertexSoft *a1, signed int a2, struct R
     pLineStart++;
     v21 = v15;
     pLinelength1 = pLinelength2;
-    if ( v19 >= a2 )
+    if (v19 >= a2)
       break;
     //v9 = a1;
     v19++;

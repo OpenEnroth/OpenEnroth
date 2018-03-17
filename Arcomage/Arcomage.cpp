@@ -14,6 +14,9 @@
 #include "GUI/UI/UIHouses.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Media/MediaPlayer.h"
+
+#include "Platform/Api.h"
 
 void SetStartConditions();
 void SetStartGameData();
@@ -936,8 +939,8 @@ void ArcomageGame::Loop() {
   viewparams->bRedrawGameUI = true;
   if (pMovie_Track)
     BackToHouseMenu();
-  for (int i = 0; i < 12; ++i)
-    pSoundList->UnloadSound(am_sounds[i], 1);
+//  for (int i = 0; i < 12; ++i)
+//    pSoundList->UnloadSound(am_sounds[i], 1);
 }
 
 void SetStartGameData()
@@ -3185,9 +3188,9 @@ void ArcomageGame::PrepareArcomage() {
   ArcomageGame::LoadSprites();
   render->Present();
 
-  v4 = 120;
-  for (int i = 0; i < 12; ++i)
-    am_sounds[i] = pSoundList->LoadSound(v4++, 0);
+//  v4 = 120;
+//  for (int i = 0; i < 12; ++i)
+//    am_sounds[i] = pSoundList->LoadSound(v4++, 0);
 
   for (int i = 0; i < 10; ++i)
     array_4FABD0[i].field_40 = stru272_stru0::New();

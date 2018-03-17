@@ -76,7 +76,6 @@ enum EventType
   EVENT_ReceiveDamage = 0x9,
   EVENT_SetSnow = 0xA,
   EVENT_SetTexture = 0xB,
-  EVENT_ShowMovie = 0xC,
   EVENT_SetSprite = 0xD,
   EVENT_Compare = 0xE,
   EVENT_ChangeDoorState = 0xF,

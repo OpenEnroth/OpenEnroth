@@ -382,7 +382,6 @@ String GUIFont::FitTextInAWindow(const String &inString, unsigned int width, int
 void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, const String &str, bool present_time_transparency, int max_text_height, int uFontShadowColor) {
   int left_margin = 0;
   if (str.empty()) {
-    logger->Warning(L"Invalid string passed!");
     return;
   }
   if (str == "null") {

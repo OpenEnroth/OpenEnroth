@@ -22,23 +22,10 @@ class OSWindow {
 
   bool OnOSMenu(int item_id);
 
-  // UIControl
   virtual void Show();
-
-  // UIControl
   virtual bool Focused();
-
-  // UIControl
-  //virtual bool OnKey(int key) override;
-  // UIControl
   virtual bool OnMouseLeftClick(int x, int y);
-  // UIControl
   virtual bool OnMouseRightClick(int x, int y);
-  // UIControl
-  //virtual bool OnMouseEnter() override;
-  // UIControl
-  //virtual bool OnMouseLeave() override;
-
   virtual bool Activate();
 
  protected:

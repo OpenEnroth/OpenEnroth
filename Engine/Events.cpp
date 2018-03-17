@@ -391,72 +391,6 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages, int entry_
           ++curr_seq_num;
         break;
 
-      case EVENT_ShowMovie:
-      {
-          strcpy_s(Source, (char *)&_evt->v7);
-        v12 = (char *)&item.expirte_time + strlen(Source) + 7;
-        if ( *v12 == 32 )
-          *v12 = 0;
-        if (pMediaPlayer->bPlaying_Movie)
-          pMediaPlayer->Unload();
-        pMediaPlayer->bStopBeforeSchedule = 0;
-//        pMediaPlayer->pResetflag = 0;
-
-        v128 = current_screen_type;
-        strcpy_s(Str, Source);
-        v16 = RemoveQuotes(Str);
-		pMediaPlayer->FullscreenMovieLoop(v16, 0/*, _evt->v5*/);
-        if ( !_stricmp(v16, "arbiter good") )
-        {
-          pParty->alignment = PartyAlignment_Good;
-          v18 = 0;
-          v17 = 1;
-          SetUserInterface(PartyAlignment_Good, v17);
-          if (!_evt->v6 || v128 == SCREEN_BOOKS)
-          {
-              current_screen_type = (CURRENT_SCREEN)v128;
-              if (v128 == SCREEN_BOOKS)
-                  pGameLoadingUI_ProgressBar->uType = GUIProgressBar::TYPE_Fullscreen;
-              if (v128 == SCREEN_HOUSE)
-                  pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1);
-          }
-          ++curr_seq_num;
-          break;
-        }
-        if ( !_stricmp(v16, "arbiter evil") )
-        {
-          v18 = 2;
-          pParty->alignment = PartyAlignment_Evil;
-          v17 = 1;
-          SetUserInterface(PartyAlignment_Evil, v17);
-          if (!_evt->v6 || v128 == SCREEN_BOOKS)
-          {
-              current_screen_type = (CURRENT_SCREEN)v128;
-              if (v128 == SCREEN_BOOKS)
-                  pGameLoadingUI_ProgressBar->uType = GUIProgressBar::TYPE_Fullscreen;
-              if (v128 == SCREEN_HOUSE)
-                  pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1);
-          }
-          ++curr_seq_num;
-          break;
-        }
-        if ( !_stricmp(v16, "pcout01") )    // moving to harmondale from emerald isle
-        {
-          Rest(0x2760u); // 7 dys
-          pParty->RestAndHeal();
-          pParty->days_played_without_rest = 0;
-        }
-        if (!_evt->v6 || v128 == SCREEN_BOOKS)
-        {
-            current_screen_type = (CURRENT_SCREEN)v128;
-            if (v128 == SCREEN_BOOKS)
-                pGameLoadingUI_ProgressBar->uType = GUIProgressBar::TYPE_Fullscreen;
-            if (v128 == SCREEN_HOUSE)
-                pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1);
-        }
-        ++curr_seq_num;
-        }
-        break;
       case EVENT_CheckSkill:
       {
         v19 = _evt->v7 + ((_evt->v8 + ((_evt->v9 + ((unsigned int)_evt->v10 << 8)) << 8)) << 8);
@@ -627,26 +561,28 @@ LABEL_47:
         break;
       case EVENT_MoveNPC: {
         pNPCStats->pNewNPCData[EVT_DWORD(_evt->v5)].Location2D =EVT_DWORD(_evt->v9);
-        if ( window_SpeakInHouse ) {
-          if ( window_SpeakInHouse->par1C == 165 ) {
+        if (window_SpeakInHouse) {
+          if (window_SpeakInHouse->par1C == 165) {
             HouseDialogPressCloseBtn();
             pMediaPlayer->Unload();
             window_SpeakInHouse->Release();
             pParty->uFlags &= ~2;
             activeLevelDecoration = (LevelDecoration*)1;
-            if ( EnterHouse(HOUSE_BODY_GUILD_ERATHIA) ) {
+            if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
               pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0, 0, 0);
               window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), 165, 0);
               window_SpeakInHouse->DeleteButtons();
             }
-          } else {
-            if ( window_SpeakInHouse->par1C == 553 )
-              pMediaPlayer->bLoopPlaying = 0;
-            }
+//          else {
+//            if ( window_SpeakInHouse->par1C == 553 ) {
+//              pMediaPlayer->bLoopPlaying = 0;
+//            }
+//          }
           }
         }
         ++curr_seq_num;
         break;
+      }
       case EVENT_Jmp:
         curr_seq_num = _evt->v5 - 1;
         ++curr_seq_num;

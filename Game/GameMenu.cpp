@@ -18,7 +18,6 @@
 #include "GUI/UI/UiStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/Audio/AIL.h"
 
 #include "Game/Game.h"
 
@@ -291,10 +290,7 @@ void GameMenu_EventLoop() {
         if (uMusicVolimeMultiplier)
           pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0, pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f, 0);
 
-        if (use_music_folder)
-          alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
-        else
-          pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
+        pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
 
         continue;
       }
@@ -306,10 +302,7 @@ void GameMenu_EventLoop() {
         new OnButtonClick2(435, 216, 0, 0, (int)pBtn_SliderRight, String(), false);
         if (uMusicVolimeMultiplier)
           pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0, pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f, 0);
-        if (use_music_folder)
-          alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
-        else
-          pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
+        pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
         continue;
       }
 
@@ -319,10 +312,7 @@ void GameMenu_EventLoop() {
         uMusicVolimeMultiplier = 9;
       if (uMusicVolimeMultiplier)
         pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0, pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f, 0);
-      if (use_music_folder)
-        alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
-      else
-        pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
+      pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
       continue;
     }
 

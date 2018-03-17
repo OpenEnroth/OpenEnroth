@@ -3485,18 +3485,14 @@ int HouseDialogPressCloseBtn() {
   return 1;
 }
 
-//----- (004BF5B2) --------------------------------------------------------
-void BackToHouseMenu()
-{
+void BackToHouseMenu() {
   pMouse->ClearPickedItem();
-  if ( window_SpeakInHouse && window_SpeakInHouse->ptr_1C == (void *)165 && !pMovie_Track)//!this->pSmackerMovie )
-  {
+  if ( window_SpeakInHouse && window_SpeakInHouse->ptr_1C == (void *)165 && !pMovie_Track) {
     bGameoverLoop = true;
     HouseDialogPressCloseBtn();
     window_SpeakInHouse->Release();
     pParty->uFlags &= 0xFFFFFFFD;
-    if ( EnterHouse(HOUSE_BODY_GUILD_ERATHIA) )
-    {
+    if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
       pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0, 0, 0);
       window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), 165, 0);
       window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 1, 0x31, "");

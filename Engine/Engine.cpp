@@ -62,7 +62,7 @@
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/Audio/AIL.h"
+#include "Media/MediaPlayer.h"
 
 #include "Game/Game.h"
 #include "Game/MainMenu.h"
@@ -956,7 +956,6 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box)
         PrepareToLoadODM(bLoading, 0);
     else
         PrepareToLoadBLV(bLoading);
-    pAudioPlayer->SetMapEAX();
     _461103_load_level_sub();
     if (!_stricmp(pCurrentMapName, "d11.blv") || !_stricmp(pCurrentMapName, "d10.blv"))
     {
@@ -977,30 +976,18 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box)
     _flushall();
 }
 
-void IntegrityTest()
-{
-    static_assert(sizeof(MovieHeader) == 44, "Wrong type size");
-    static_assert(sizeof(SoundDesc_mm6) == 112, "Wrong type size");
-    static_assert(sizeof(SoundDesc) == 120, "Wrong type size");
+void IntegrityTest() {
     static_assert(sizeof(OverlayDesc) == 8, "Wrong type size");
     static_assert(sizeof(ChestDesc) == 36, "Wrong type size");
     static_assert(sizeof(ObjectDesc_mm6) == 52, "Wrong type size");
     static_assert(sizeof(ObjectDesc) == 56, "Wrong type size");
     static_assert(sizeof(DecorationDesc) == 84, "Wrong type size");
     static_assert(sizeof(PlayerFrame) == 10, "Wrong type size");
-    //static_assert(sizeof(TextureFrame) == 20, "Wrong type size");
     static_assert(sizeof(RenderVertexSoft) == 0x30, "Wrong type size");
-    //static_assert(sizeof(LODFile_IconsBitmaps) == 0x11BB8 + 4, "Wrong type size"); // + virtual dtor ptr
-    static_assert(sizeof(AudioPlayer) == 0xC84, "Wrong type size");
-    static_assert(sizeof(SoundDesc) == 0x78, "Wrong type size");
-    static_assert(sizeof(stru339_spell_sound) == 0xAFD8, "Wrong type size");
-    //static_assert(sizeof(VideoPlayer) == 0x108 + 4, "Wrong type size");
-    static_assert(sizeof(MovieHeader) == 0x2C, "Wrong type size");
     static_assert(sizeof(DecorationDesc) == 0x54, "Wrong type size");
     static_assert(sizeof(ObjectDesc) == 0x38, "Wrong type size");
     static_assert(sizeof(OverlayDesc) == 0x8, "Wrong type size");
     static_assert(sizeof(ChestDesc) == 0x24, "Wrong type size");
-    //static_assert(sizeof(TileDesc) == 0x1A, "Wrong type size");
     static_assert(sizeof(MonsterDesc_mm6) == 148, "Wrong type size");
     static_assert(sizeof(MonsterDesc) == 152, "Wrong type size");
     static_assert(sizeof(Timer) == 0x28, "Wrong type size");
@@ -1355,8 +1342,8 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path)
     if (!bNoSound)
         pAudioPlayer->Initialize();
 
-    pMediaPlayer = new Media::MPlayer();
-    pMediaPlayer->Initialize(window);
+    pMediaPlayer = new MPlayer();
+    pMediaPlayer->Initialize();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
@@ -1478,7 +1465,6 @@ void SecondaryInitialization()
 
 int max_flight_height = 4000;    //maximum altitude
 bool use_MMT = false;
-bool use_music_folder = false;
 bool for_refactoring = false;
 bool all_spells = false; // is this needed with all_magic as well??
 bool bNoMargareth = true;
@@ -1543,7 +1529,7 @@ bool GameLoop()
 
             strcpy(pCurrentMapName, pStartingMapName);
             bFlashQuestBook = true;
-            pMediaPlayer->PlayFullscreenMovie(MOVIE_Emerald, true);
+            pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
             if (bNoMargareth)
                 _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_MARGARETH_OFF, 1);
@@ -1558,17 +1544,10 @@ bool GameLoop()
                 break;
             assert(false && "Invalid game state");
         }
-        else if (GetCurrentMenuID() == MENU_CREDITS)
-        {
-            if (use_music_folder) {
-              alSourceStop(mSourceID);
-            } else {
-              if (pAudioPlayer->hAILRedbook) {
-                AIL_redbook_stop(pAudioPlayer->hAILRedbook);
-              }
-            }
-            GUICredits::ExecuteCredits();
-            break;
+        else if (GetCurrentMenuID() == MENU_CREDITS) {
+          pAudioPlayer->MusicStop();
+          GUICredits::ExecuteCredits();
+          break;
         }
         else if (GetCurrentMenuID() == MENU_5 || GetCurrentMenuID() == MENU_LoadingProcInMainMenu)
         {
@@ -1619,108 +1598,118 @@ bool GameLoop()
     return true;
 }
 
-//----- (00462C94) --------------------------------------------------------
-bool MM_Main(const wchar_t *pCmdLine)
-{
-    IntegrityTest();
+void ShowMM7IntroVideo_and_LoadingScreen() {
+  bGameoverLoop = true;
+  if (!bNoVideo) {
+    render->PresentBlackScreen();
+    pMediaPlayer->PlayFullscreenMovie("3dologo");
+    pMediaPlayer->PlayFullscreenMovie("new world logo");
+    pMediaPlayer->PlayFullscreenMovie("Intro");
+  }
 
-	#ifndef NDEBUG
-	{
-		//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
-	}
-	#endif
+  Image *tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
 
-	logger = new Log();
-	logger->Initialize();
-	logger->Info(L"World of Might and Magic build %S %S", __DATE__, __TIME__);
+  render->BeginScene();
+  render->DrawTextureNew(0, 0, tex);
 
-	bool mm7_installation_found = false;
-	char mm7_path[2048];
+  DrawMM7CopyrightWindow();
 
-	// standard 1.0 installation
-	if (!mm7_installation_found)
-	{
-		mm7_installation_found = OS_GetAppString(
-			"HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
-			mm7_path, sizeof(mm7_path)
-		);
+  render->EndScene();
+  render->Present();
 
-		if (mm7_installation_found)
-		{
-			logger->Info(L"Standard MM7 installation found");
-		}
-	}
+  tex->Release();
+  tex = nullptr;
 
-	// GoG version
-	if (!mm7_installation_found)
-	{
-		mm7_installation_found = OS_GetAppString(
-			"HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-			mm7_path, sizeof(mm7_path)
-		);
+  bGameoverLoop = false;
+}
 
-		if (mm7_installation_found)
-		{
-			logger->Info(L"GoG MM7 installation found");
-		}
-	}
+bool MM_Main(const wchar_t *pCmdLine) {
+  IntegrityTest();
 
-    if (!mm7_installation_found) {
-        char *path = getenv("WoMM_MM7_INSTALL_DIR");
-        if (path != nullptr) {
-          strcpy(mm7_path, path);
-          mm7_installation_found = true;
-          logger->Info(L"MM7 installation path from env var");
-        }
+  logger = new Log();
+  logger->Initialize();
+  logger->Info(L"World of Might and Magic build %S %S", __DATE__, __TIME__);
+
+  bool mm7_installation_found = false;
+  char mm7_path[2048];
+
+  // standard 1.0 installation
+  if (!mm7_installation_found) {
+    mm7_installation_found = OS_GetAppString(
+      "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
+      mm7_path, sizeof(mm7_path)
+    );
+
+    if (mm7_installation_found) {
+      logger->Info(L"Standard MM7 installation found");
     }
+  }
 
-		// Hack path fix - pskelton
-	if (!mm7_installation_found) {
-		mm7_installation_found = 1;
-		strcpy(mm7_path, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
-		logger->Info(L"Hack Path MM7 installation found");
-	}
+  // GoG version
+  if (!mm7_installation_found) {
+    mm7_installation_found = OS_GetAppString(
+      "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
+      mm7_path, sizeof(mm7_path)
+    );
 
-    SetDataPath(mm7_path);
-
-    if (pCmdLine && *pCmdLine)
-        ParseCommandLine(pCmdLine);
-
-    if (!MM7_Initialize(640, 480, mm7_path))
-    {
-        logger->Warning(L"MM7_Initialize: failed");
-        if (pEngine != nullptr) {
-          pEngine->Deinitialize();
-        }
-        return false;
+    if (mm7_installation_found) {
+      logger->Info(L"GoG MM7 installation found");
     }
+  }
 
-    pEventTimer->Pause();
-
-    GUIWindow::InitializeGUI();
-
-    //ShowLogoVideo(); old
-    pMediaPlayer->ShowMM7IntroVideo_and_LoadingScreen(); //new
-
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-
-    //logger->Warning(L"MM: entering main loop");
-    while (1)
-    {
-        MainMenu_Loop();
-        uGameState = GAME_STATE_PLAYING;
-
-        if (!GameLoop())
-        {
-            break;
-        }
+  if (!mm7_installation_found) {
+    char *path = getenv("WoMM_MM7_INSTALL_DIR");
+    if (path != nullptr) {
+      strcpy(mm7_path, path);
+      mm7_installation_found = true;
+      logger->Info(L"MM7 installation path from env var");
     }
+  }
 
+  // Hack path fix - pskelton
+  if (!mm7_installation_found) {
+    mm7_installation_found = 1;
+    strcpy(mm7_path, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
+    logger->Info(L"Hack Path MM7 installation found");
+  }
+
+  SetDataPath(mm7_path);
+
+  if (pCmdLine && *pCmdLine) {
+    ParseCommandLine(pCmdLine);
+  }
+
+  if (!MM7_Initialize(640, 480, mm7_path)) {
+    logger->Warning(L"MM7_Initialize: failed");
     if (pEngine != nullptr) {
-       pEngine->Deinitialize();
+      pEngine->Deinitialize();
     }
+    return false;
+  }
 
-    return true;
+  pEventTimer->Pause();
+
+  GUIWindow::InitializeGUI();
+
+  ShowMM7IntroVideo_and_LoadingScreen();
+
+  dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
+
+  //logger->Warning(L"MM: entering main loop");
+  while (true) {
+    MainMenu_Loop();
+    uGameState = GAME_STATE_PLAYING;
+
+    if (!GameLoop()) {
+      break;
+    }
+  }
+
+  if (pEngine != nullptr) {
+    pEngine->Deinitialize();
+  }
+
+  return true;
 }
 
 
@@ -1745,10 +1734,6 @@ void MM6_Initialize()
 
 
     pAudioPlayer = new AudioPlayer;
-    pAudioPlayer->uMixerChannels = 16;
-    if (pAudioPlayer->uMixerChannels > 16)
-        pAudioPlayer->uMixerChannels = 16;
-
 
     /* 
     if (GetPrivateProfileIntW(L"debug", L"nomonster", 0, pIniFilename))
@@ -1849,7 +1834,6 @@ void MM7Initialization()
 void PrepareToLoadODM(unsigned int bLoading, ODMRenderParams *a2)
 {
     pGameLoadingUI_ProgressBar->Reset(27);
-    pSoundList->_4A9D79(0);
     uCurrentlyLoadedLevelType = LEVEL_Outdoor;
     ODM_LoadAndInitialize(pCurrentMapName, a2);
     if (!bLoading)
@@ -1876,7 +1860,6 @@ void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows()
         pOutdoor->Release();
 
     pAudioPlayer->StopChannels(-1, -1);
-    pSoundList->_4A9D79(0);
     uCurrentlyLoadedLevelType = LEVEL_null;
     pSpriteFrameTable->ResetSomeSpriteFlags();
     pParty->armageddon_timer = 0;
@@ -2084,20 +2067,6 @@ void _461103_load_level_sub()
         //}
         //while ( v16 < (signed int)v5 );
     }
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    for (int _v0 = 0; _v0 < v6; ++_v0)
-    {
-        for (v18 = 4; v18; --v18)
-            pSoundList->LoadSound(pMonsterList->pMonsters[v21[_v0]].pSoundSampleIDs[4 - v18], 0);
-        v12 = 0;
-        do
-            v13 = pSoundList->LoadSound(v12++ + word_4EE088_sound_ids[pMonsterStats->pInfos[v21[_v0] + 1].uSpell1ID], 1);
-        while (v13);
-    }
-    //v0 = pGameLoadingUI_ProgressBar;
-    //v1 = 0;
 
     pGameLoadingUI_ProgressBar->Progress();
 
@@ -2921,33 +2890,7 @@ void _493938_regenerate()
 }
 
 //----- (00491E3A) --------------------------------------------------------
-void sub_491E3A()
-{
-    signed int v1; // esi@3
-    unsigned int v3; // eax@7
-    unsigned int v4; // edx@8
-//    int v6; // edi@17
-
-    //__debugbreak();//Ritor1
-    for (uint pl = 0; pl < 4; pl++)
-    {
-        if (SoundSetAction[24][0])
-        {
-            v3 = 0;
-            for (v1 = 0; v1 < (signed int)pSoundList->sNumSounds; ++v1)
-            {
-                int ps = 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[pl].uVoiceID) + 4998;//6728
-                if (pSoundList->pSL_Sounds[v1].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[pl].uVoiceID) + 4998)
-                    v3 = v1;
-            }
-            pSoundList->UnloadSound(v3, 1);
-            for (v4 = 0; (signed int)v4 < (signed int)pSoundList->sNumSounds; ++v4)
-            {
-                if (pSoundList->pSL_Sounds[v4].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[pl].uVoiceID) + 4999)
-                    pSoundList->UnloadSound(v4, 1);
-            }
-        }
-    }
+void sub_491E3A() {
 }
 
 //----- (00494820) --------------------------------------------------------
@@ -2959,42 +2902,6 @@ unsigned int _494820_training_time(unsigned int a1)
     if (a1 % 24 >= 5)
         v1 = 29;
     return v1 - a1 % 24;
-}
-
-//----- (00494836) --------------------------------------------------------
-int stru339_spell_sound::AddPartySpellSound(int uSoundID, int a6)
-{
-    int v3; // esi@1
-    int result; // eax@1
-    //stru339_spell_sound *v5; // ebx@1
-    //int *v6; // edi@2
-    unsigned int v7; // eax@3
-    int v8; // [sp+Ch] [bp-8h]@3
-    int v9; // [sp+10h] [bp-4h]@2
-    int a2a; // [sp+1Ch] [bp+8h]@1
-    //return 0;
-    v3 = 0;
-    result = word_4EE088_sound_ids[uSoundID];
-    //v5 = this;
-    a2a = word_4EE088_sound_ids[uSoundID];
-    if (word_4EE088_sound_ids[uSoundID])
-    {
-        //v6 = this->pSoundsOffsets;
-        for (v9 = 0; v9 < 2; ++v9)
-        {
-            v7 = a2a++;
-            result = pSoundList->LoadSound(v7, (char *)this + v3, 44744 - v3, &v8, a6);
-            if (!result)
-                break;
-            a6 += 4;
-            result = v8 + 256;
-            this->pSoundsOffsets[v9] = v3;
-            v3 += result;
-            this->pSoundsSizes[v9] = v8 + 256;
-            //++v6;
-        }
-    }
-    return result;
 }
 
 //----- (00443E31) --------------------------------------------------------
@@ -3078,9 +2985,10 @@ void OnMapLoad()
 
         _evt_raw* _evt = (_evt_raw *)(&pLevelEVT[pEvent.uEventOffsetInEVT]);
 
-        if (_evt->_e_type == EVENT_PlaySound)
-            pSoundList->LoadSound(EVT_DWORD(_evt->v5), 0);
-        else if (_evt->_e_type == EVENT_OnMapReload)
+//        if (_evt->_e_type == EVENT_PlaySound)
+//            pSoundList->LoadSound(EVT_DWORD(_evt->v5), 0);
+//        else
+        if (_evt->_e_type == EVENT_OnMapReload)
             EventProcessor(pEvent.uEventID, 0, 0, pEvent.event_sequence_num);
         else if (_evt->_e_type == EVENT_OnTimer || _evt->_e_type == EVENT_OnLongTimer)
         {

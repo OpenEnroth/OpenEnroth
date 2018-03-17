@@ -35,7 +35,7 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/Audio/AIL.h"
+#include "Media/MediaPlayer.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIProgressBar.h"
@@ -837,7 +837,6 @@ void Game_EventLoop() {
           if (!_stricmp(pCurrentMapName, "out15.odm") || !_stricmp(pCurrentMapName, "d47.blv"))
             bNoNPCHiring = 1;
           PrepareToLoadODM(1u, (ODMRenderParams *)1);
-          pAudioPlayer->SetMapEAX();
           bDialogueUI_InitializeActor_NPC_ID = 0;
           OnMapLoad();
           pOutdoor->SetFog();
@@ -1097,7 +1096,7 @@ void Game_EventLoop() {
         {
           pPlayer9->SetRecoveryTime((signed __int64)(flt_6BE3A4_debug_recmod1 * (double)sRecoveryTime * 2.133333333333333));
         }
-        pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[lloyds_beacon_spell_id], 0, 0, -1, 0, lloyds_beacon_sound_id, 0, 0);
+        pAudioPlayer->PlaySpellSound(lloyds_beacon_spell_id, 0);
         if (bRecallingBeacon)
         {
           if (_stricmp(pCurrentMapName, (const char *)&pGames_LOD->pSubIndices[pPlayer9->pInstalledBeacons[uMessageParam].SaveFileID]))
@@ -2216,10 +2215,7 @@ void Game_Loop() {
   extern bool use_music_folder;
   GameUI_LoadPlayerPortraintsAndVoices();
   pIcons_LOD->_inlined_sub1();
-  if (use_music_folder)
-    alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
-  else
-    pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
+  pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
 
 
   /*   extern bool all_spells;
@@ -2351,8 +2347,7 @@ void Game_Loop() {
           if (pNPCStats->pNewNPCData[i].field_24)
             pNPCStats->pNewNPCData[i].uFlags &= 0xFFFFFF7Fu;
         }
-        pMediaPlayer->bStopBeforeSchedule = 0;
-        pMediaPlayer->PlayFullscreenMovie(MOVIE_Death, true);
+        pMediaPlayer->PlayFullscreenMovie("losegame");
         if (pMovie_Track)
           pMediaPlayer->Unload();
         SaveGame(0, 0);
@@ -2375,7 +2370,6 @@ void Game_Loop() {
         {
           pPlayers[i]->conditions_times.fill(0);
           pPlayers[i]->pPlayerBuffs.fill(SpellBuff()); // ???
-
                                                        //memset(pParty->pPlayers[i].conditions_times.data(), 0, 0xA0u);//(pConditions, 0, 160)
                                                        //memset(pParty->pPlayers[i].pPlayerBuffs.data(), 0, 0x180u);//(pPlayerBuffs[0], 0, 384)
           pPlayers[i]->sHealth = 1;

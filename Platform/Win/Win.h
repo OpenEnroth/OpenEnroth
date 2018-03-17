@@ -3,4 +3,3 @@
 #include <windows.h>
 
 #include <MMSystem.h>
-#pragma comment(lib, "winmm.lib")

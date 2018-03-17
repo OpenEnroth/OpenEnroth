@@ -23,7 +23,6 @@
 #include "GUI/UI/UIGame.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/Audio/AIL.h"
 
 #include "Game/Game.h"
 #include "Game/MainMenu.h"
@@ -215,40 +214,27 @@ void CreateParty_EventLoop() {
   }
 }
 
-bool PartyCreationUI_Loop()
-{
-    // -------------------------------------------------------
-    // 00462C94 bool MM_Main(const wchar_t *pCmdLine) --- part
-    extern bool use_music_folder;
-    if (use_music_folder)
-        alSourceStop(mSourceID);
-    else
-    {
-        if (pAudioPlayer->hAILRedbook)
-            AIL_redbook_stop(pAudioPlayer->hAILRedbook);
-    }
+bool PartyCreationUI_Loop() {
+  pAudioPlayer->MusicStop();
 
-    pParty->Reset();
-    pParty->CreateDefaultParty();
+  pParty->Reset();
+  pParty->CreateDefaultParty();
 
-    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_RED_POTION_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_SEASHELL_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_LONGBOW_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_PLATE_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_LUTE_ACTIVE, 1);
-    _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_HAT_ACTIVE, 1);
+  _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_RED_POTION_ACTIVE, 1);
+  _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_SEASHELL_ACTIVE, 1);
+  _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_LONGBOW_ACTIVE, 1);
+  _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_PLATE_ACTIVE, 1);
+  _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_LUTE_ACTIVE, 1);
+  _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_HAT_ACTIVE, 1);
 
-    pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
-    if (PartyCreationUI_LoopInternal())
-    {
-        PartyCreationUI_DeleteFont();
-        return false;
-    }
-    else
-    {
-        PartyCreationUI_DeleteFont();
-        return true;
-    }
+  pGUIWindow_CurrentMenu = new GUIWindow_PartyCreation();
+  if (PartyCreationUI_LoopInternal()) {
+    PartyCreationUI_DeleteFont();
+    return false;
+  } else {
+    PartyCreationUI_DeleteFont();
+    return true;
+  }
 }
 
 
@@ -551,7 +537,6 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
   GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
   pMessageQueue_50CBD0->Flush();
-  alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
 
   current_screen_type = SCREEN_PARTY_CREATION;
   uPlayerCreationUI_ArrowAnim = 0;

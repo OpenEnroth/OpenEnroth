@@ -622,20 +622,6 @@ std::array< std::array<char, 37>, 36> byte_4ED970_skill_learn_ability_by_class_t
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX = {489, 559};
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY = {152, 152};
 std::array<int, 2> Party_Spec_Motion_status_ids = {7, 18}; //dword_4EE07C
-std::array<__int16, 101> word_4EE088_sound_ids =
-{{
-      0, 10000, 10010, 10020, 10030, 10040, 10050, 10060, 10070, 10080,
-  10090, 10100, 11000, 11010, 11020, 11030, 11040, 11050, 11060, 11070,
-  11080, 11090, 11100, 12000, 12010, 12020, 12030, 12040, 12050, 12060,
-  12070, 12080, 12090, 12100, 13000, 13010, 13020, 13030, 13040, 13050,
-  13060, 13070, 13080, 13090, 13100, 14000, 14010, 14020, 14030, 14040,
-  14050, 14060, 14070, 14080, 14090, 14100, 15000, 15010, 15020, 15030,
-  15040, 15050, 15060, 15070, 15080, 15090, 15100, 16000, 16010, 16020,
-  16030, 16040, 16050, 16060, 16070, 16080, 16090, 16100, 17000, 17010,
-  17020, 17030, 17040, 17050, 17060, 17070, 17080, 17090, 17100, 18000,
-  18010, 18020, 18030, 18040, 18050, 18060, 18070, 18080, 18090, 18100,
-	  1
-}};
 std::array<short, 28> word_4EE150 =
 {{
    1,  2,  3,  4,  5,  7, 32, 33, 36, 37, 38, 40, 41, 42, 43, 45, 46,
@@ -900,7 +886,7 @@ float flt_6BE3AC_debug_recmod1_x_1_6;
 std::string s_SavedMapName; // idb
 char bUnderwater = false;
 char bNoNPCHiring = false;
-unsigned int bNoVideo = true;
+bool bNoVideo = false;
 bool bNoIntro = false;
 bool bNoLogo = false;
 bool bNoCD = true;

@@ -3,6 +3,7 @@
 #include "Platform/Api.h"
 #include "Platform/Win/Win.h"
 
+#pragma comment(lib, "winmm.lib")
 
 //----- (00462C94) --------------------------------------------------------
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hprevinstance, wchar_t *lpCmdLine, int nShowCmd)
