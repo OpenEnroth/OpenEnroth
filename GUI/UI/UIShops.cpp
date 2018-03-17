@@ -1468,7 +1468,7 @@ void sub_4B1523_showSpellbookInfo(int spellItemId)
     a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0, localization->GetSkillName(spellSchool / 4 + 12), 3u);
 
     str = StringPrintf("%s\n%d", localization->GetString(522), *(&pSpellDatas[0].uNormalLevelMana + 10 * spellId));
-    a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetFontHeight() - 16, 0, str, 3);
+    a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
 }
 
 //----- (004B1D27) --------------------------------------------------------

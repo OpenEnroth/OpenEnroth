@@ -184,6 +184,7 @@
     <ClCompile Include="..\..\GUI\UI\UIArena.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIBooks.cpp" />
     <ClCompile Include="..\..\GUI\UI\UICharacter.cpp" />
+    <ClCompile Include="..\..\GUI\UI\UICredits.cpp" />
     <ClCompile Include="..\..\GUI\UI\UiGame.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIGuilds.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIHouses.cpp" />
@@ -379,6 +380,7 @@
     <ClInclude Include="..\..\GUI\UI\UIArena.h" />
     <ClInclude Include="..\..\GUI\UI\UIBooks.h" />
     <ClInclude Include="..\..\GUI\UI\UICharacter.h" />
+    <ClInclude Include="..\..\GUI\UI\UICredits.h" />
     <ClInclude Include="..\..\GUI\UI\UIGame.h" />
     <ClInclude Include="..\..\GUI\UI\UIGuilds.h" />
     <ClInclude Include="..\..\GUI\UI\UIHouses.h" />

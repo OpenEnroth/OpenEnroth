@@ -213,7 +213,7 @@ struct AudioPlayer
   inline ~AudioPlayer(){ Release(); };
   void SetMusicVolume(int vol);
   void SetMasterVolume(float fVolume);
-  void _4AA258(int a2);
+  void StopAll(int sample_id);
   void PlaySound(SoundID eSoundID, signed int a3, unsigned int uNumRepeats, signed int a5, signed int a6, int a7, float uVolume, int sPlaybackRate);
   void UpdateSounds();
   void StopChannels(int uStartChannel, int uEndChannel);

@@ -55,7 +55,7 @@ void CharacterUI_DrawTooltip(const char *title, String &content)
   popup_window.uFrameHeight = 256;
   popup_window.uFrameX = 128;
   popup_window.uFrameY = pt.y + 30;
-  popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(content, &popup_window, 24) + 2 * pFontLucida->GetFontHeight() + 24;
+  popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(content, &popup_window, 24) + 2 * pFontLucida->GetHeight() + 24;
   popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
   popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
   popup_window.DrawMessageBox(0);
@@ -69,7 +69,7 @@ void CharacterUI_DrawTooltip(const char *title, String &content)
 
   auto colored_title = StringPrintf("\f%05d%s\f00000\n", ui_character_tooltip_header_default_color, title);
   popup_window.DrawTitleText(pFontCreate, 0, 0, 0, colored_title, 3);
-  popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetFontHeight(), 0, content, 0, 0, 0); //popup_window.uFrameY + popup_window.uFrameHeight
+  popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetHeight(), 0, content, 0, 0, 0); //popup_window.uFrameY + popup_window.uFrameHeight
 }
 
 void CharacterUI_DrawTooltip(const char *title, const char *content)
@@ -407,7 +407,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     iteminfo_window.uFrameWidth -= 12;
     iteminfo_window.uFrameZ = iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
     iteminfo_window.uFrameW = iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-    Str = (char *)(3 * (pFontArrus->GetFontHeight() + 8));
+    Str = (char *)(3 * (pFontArrus->GetHeight() + 8));
     v84 = &out_text[0];
     for (uint i = 1; i <= 3; i++)
     {
@@ -422,13 +422,13 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     if ((signed int)Str > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS && (inspect_item->special_enchantment || inspect_item->uEnchantmentType))
-        iteminfo_window.uFrameHeight += pFontComic->GetFontHeight();
+        iteminfo_window.uFrameHeight += pFontComic->GetHeight();
     v85 = 0;
-    if (pFontArrus->uFontHeight)
+    if (pFontArrus->GetHeight())
     {
         iteminfo_window.uFrameWidth -= 24;
-        if (pFontArrus->CalcTextHeight(inspect_item->GetIdentifiedName(), &iteminfo_window, 0) / (signed int)pFontArrus->uFontHeight)
-            v85 = pFontArrus->uFontHeight;
+        if (pFontArrus->CalcTextHeight(inspect_item->GetIdentifiedName(), &iteminfo_window, 0) / (signed int)pFontArrus->GetHeight())
+            v85 = pFontArrus->GetHeight();
         iteminfo_window.uFrameWidth += 24;
     }
     iteminfo_window.uFrameWidth += 12;
@@ -470,7 +470,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     if (v77)
     {
         auto txt = StringPrintf("%s: %lu", localization->GetString(465), v77); // Value
-        iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), 0, txt, 0, 0, 0);
+        iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - pFontComic->GetHeight(), 0, txt, 0, 0, 0);
         render->ResetUIClipRect();
     }
     else
@@ -496,11 +496,11 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
             {
                 txt4 += StringPrintf(" %d:mn", v67.field_4_expire_minute);
             }
-            iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - 2 * pFontComic->GetFontHeight(), 0, txt4.data(), 0, 0, 0);
+            iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - 2 * pFontComic->GetHeight(), 0, txt4.data(), 0, 0, 0);
         }
 
         auto txt2 = StringPrintf("%s: %lu", localization->GetString(465), inspect_item->GetValue());
-        iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), 0, txt2.data(), 0, 0, 0);
+        iteminfo_window.DrawText(pFontComic, 100, iteminfo_window.uFrameHeight - pFontComic->GetHeight(), 0, txt2.data(), 0, 0, 0);
 
         String txt3;
         if (inspect_item->uAttributes & ITEM_STOLEN)
@@ -518,7 +518,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
 		int tempatt = (inspect_item->uAttributes & 0xFFFF0000) | r_mask;
 		
 		iteminfo_window.DrawText(pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
-            iteminfo_window.uFrameHeight - pFontComic->GetFontHeight(), tempatt, txt3, 0, 0, 0);
+            iteminfo_window.uFrameHeight - pFontComic->GetHeight(), tempatt, txt3, 0, 0, 0);
         render->ResetUIClipRect();
     }
 }
@@ -767,11 +767,11 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
 
     pWindow->DrawText(pFontSmallnum, 12, 196, Color16(0xE1u, 255, 0x9Bu), localization->GetString(631), 0, 0, 0);//Effects
     if (!for_effects && false)
-        pWindow->DrawText(pFontSmallnum, 28, pFontSmallnum->GetFontHeight() + 193, Color16(0xE1u, 255, 0x9Bu), localization->GetString(630), 0, 0, 0);//?
+        pWindow->DrawText(pFontSmallnum, 28, pFontSmallnum->GetHeight() + 193, Color16(0xE1u, 255, 0x9Bu), localization->GetString(630), 0, 0, 0);//?
     else
     {
         pText = "";
-        pTextHeight = pFontSmallnum->GetFontHeight() + 193;
+        pTextHeight = pFontSmallnum->GetHeight() + 193;
         for (uint i = 1; i <= 21; ++i)
         {
             if (pActors[uActorID].pActorBuffs[i].Active())
@@ -879,18 +879,18 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     {
         auto str = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(108), 0, pActors[uActorID].pMonsterInfo.uHP);
         pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
-        pTextHeight = v106.uViewportY + pFontSmallnum->GetFontHeight() - 3;
+        pTextHeight = v106.uViewportY + pFontSmallnum->GetHeight() - 3;
         txt2 = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(12), 0, pActors[uActorID].pMonsterInfo.uAC);//Armor Class
     }
     else
     {
         auto str = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(108), 0, localization->GetString(630));//?   - [630] actually displays a question mark
         pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
-        pTextHeight = v106.uViewportY + pFontSmallnum->GetFontHeight() - 3;
+        pTextHeight = v106.uViewportY + pFontSmallnum->GetHeight() - 3;
         txt2 = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(12), 0, localization->GetString(630));//?   - [630] actually displays a question mark
     }
     pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt2, 0, 0, 0);
-    pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 6 + pFontSmallnum->GetFontHeight();
+    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
 
     content[0] = localization->GetSpellSchoolName(0);
     content[1] = localization->GetSpellSchoolName(1);
@@ -910,7 +910,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         auto txt3 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(18), 0, content[pActors[uActorID].pMonsterInfo.uAttack1Type]); // Attack
         pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
 
-        pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+        pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         if (pActors[uActorID].pMonsterInfo.uAttack1DamageBonus)
             txt4 = StringPrintf("%s\f%05u\t080%dd%d+%d\n", localization->GetString(53),
                 0, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides, pActors[uActorID].pMonsterInfo.uAttack1DamageBonus);
@@ -922,17 +922,17 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     {
         auto txt3 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(18), 0, localization->GetString(630));
         pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
-        pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+        pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         txt4 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(53), 0, localization->GetString(630));
     }
     pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt4, 0, 0, 0);
 
-    pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 6 + pFontSmallnum->GetFontHeight();
+    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
     if (!master_level)
     {
         auto txt5 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(628), 0, localization->GetString(630)); // "Spell" "?"
         pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt5, 0, 0, 0);
-        pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+        pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
     }
     else
     {
@@ -943,25 +943,25 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         {
             auto txt6 = StringPrintf("%s\f%05u\t070%s\n", pText, 0, pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell1ID].pShortName);//"%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
         if (pActors[uActorID].pMonsterInfo.uSpell2ID)
         {
             auto txt6 = StringPrintf("\f%05u\t070%s\n", 0, pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell2ID].pShortName);//"%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
         if (!pActors[uActorID].pMonsterInfo.uSpell1ID && !pActors[uActorID].pMonsterInfo.uSpell2ID)
         {
             auto txt6 = StringPrintf("%s\f%05u\t070%s\n", localization->GetString(628), 0, localization->GetString(153));//"%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
     }
 
-    pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
     pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), localization->GetString(626), 0, 0, 0);//Immune
-    pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
 
     string_name[0] = localization->GetSpellSchoolName(0); //Fire
     string_name[1] = localization->GetSpellSchoolName(1); //Air
@@ -1003,7 +1003,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
 
             auto txt7 = StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, pText);
             pWindow->DrawText(pFontSmallnum, 170, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt7, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
     }
     else
@@ -1012,7 +1012,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         {
             auto txt8 = StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, localization->GetString(630)); // "?"
             pWindow->DrawText(pFontSmallnum, 170, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt8, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetFontHeight() - 3;
+            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         }
     }
 
@@ -1021,7 +1021,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     {
         auto txt9 = StringPrintf("%s: %d", localization->GetString(650), pActors[uActorID].sCurrentHP);//Current Hit Points
         pFontSmallnum->GetLineWidth(txt9);
-        pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetFontHeight() - 12, 0, txt9, 3);
+        pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, txt9, 3);
     }
 }
 
@@ -1356,7 +1356,7 @@ void  DrawSpellDescriptionPopup(int spell_index)
 
     auto str2 = StringPrintf("%s\n%d", localization->GetString(522), // SP Cost
         pSpellDatas[spell_index + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 1].mana_per_skill[skill_level - 1]);
-    spell_info_window.DrawTitleText(pFontComic, 12, spell_info_window.uFrameHeight - pFontComic->GetFontHeight() - 16, 0, str2, 3);
+    spell_info_window.DrawTitleText(pFontComic, 12, spell_info_window.uFrameHeight - pFontComic->GetHeight() - 16, 0, str2, 3);
     dword_507B00_spell_info_to_draw_in_popup = 0;
 }
 
@@ -1673,7 +1673,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
             popup_window.uFrameHeight = 256;
             popup_window.uFrameX = 128;
             popup_window.uFrameY = 40;
-            popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(pHint, &popup_window, 24) + 2 * pFontLucida->GetFontHeight() + 24;
+            popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(pHint, &popup_window, 24) + 2 * pFontLucida->GetHeight() + 24;
             popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
             popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
             popup_window.DrawMessageBox(0);
@@ -1686,7 +1686,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
 
             auto str = StringPrintf("\f%05d%s\f00000\n", Color16(0xFF, 0xFF, 0x9B), pStr);
             popup_window.DrawTitleText(pFontCreate, 0, 0, 0, str.c_str(), 3);
-            popup_window.DrawText(pFontSmallnum, 1, pFontLucida->uFontHeight, 0, pHint, 0, 0, 0);
+            popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetHeight(), 0, pHint, 0, 0, 0);
         }
         break;
     }

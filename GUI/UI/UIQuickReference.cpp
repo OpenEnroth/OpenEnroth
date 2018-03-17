@@ -56,7 +56,7 @@ void GUIWindow_QuickReference::Update()
 
     render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, ui_game_quickref_background);
 
-    pFontHeight = pFontArrus->GetFontHeight() + 1;
+    pFontHeight = pFontArrus->GetHeight() + 1;
     for (uint i = 0; i < 4; ++i)
     {
         Player* player = &pParty->pPlayers[i];

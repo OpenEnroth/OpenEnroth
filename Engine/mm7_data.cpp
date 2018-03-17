@@ -890,7 +890,7 @@ class OSWindow *window = nullptr;
 char pCurrentMapName[32]; // idb
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
-int dword_6BE368_debug_settings_2 = 0;
+int dword_6BE368_debug_settings_2 = DEBUG_SETTINGS_RUN_IN_WIDOW;
 unsigned __int8 bCanLoadFromCD = false;
 int bShowDamage; // idb
 unsigned int bAlwaysRun;
@@ -906,7 +906,7 @@ char bNoNPCHiring = false;
 unsigned int bNoVideo = true;
 bool bNoIntro = false;
 bool bNoLogo = false;
-bool bNoCD = false;
+bool bNoCD = true;
 bool bNoSound = false;
 std::array<int, 100> dword_720020_zvalues;
 std::array<int, 299> dword_7201B0_zvalues;

@@ -765,7 +765,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int
     }
 
     if (!num_skills_drawn) {
-        y_offset += pFontLucida->GetFontHeight() - 3;
+        y_offset += pFontLucida->GetHeight() - 3;
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, y_offset, 0, localization->GetString(153), 0, 0, 0); // None
     }
 
@@ -788,16 +788,16 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player)
     );
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 24, 18, 0, str, 0, 0, 0);
 
-    int y = 2 * pFontLucida->GetFontHeight() + 13;
+    int y = 2 * pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, pWeaponSkills, 9, 400, localization->GetString(242)); // "Weapons"
 
-    y += 2 * pFontLucida->GetFontHeight() - 10;
+    y += 2 * pFontLucida->GetHeight() - 10;
     CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 24, y, pMagicSkills, 9, 400, localization->GetString(138)); // "Magic"
 
-    y = 2 * pFontLucida->GetFontHeight() + 13;
+    y = 2 * pFontLucida->GetHeight() + 13;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, pArmorSkills, 5, 177, localization->GetString(11)); // "Armor"
 
-    y += 2 * pFontLucida->GetFontHeight() - 10;
+    y += 2 * pFontLucida->GetHeight() - 10;
     y = CharacterUI_SkillsTab_Draw__DrawSkillTable(player, 248, y, pMiscSkills, 12, 177, localization->GetString(143)); //"Misc"
 }
 
@@ -2121,7 +2121,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons()
   int a5 = pGUIWindow_CurrentMenu->uNumControls;
   curr_player = &pParty->pPlayers[uActiveCharacter-1];
 
-  uCurrFontHeght=pFontLucida->uFontHeight;
+  uCurrFontHeght=pFontLucida->GetHeight();
   current_Y = 2 *uCurrFontHeght  + 13;
   for( i = 0; i < 9; ++i )
   {
@@ -2203,37 +2203,37 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
         player->GetActualMight(), player->GetBaseStrength()); // Might
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str2);
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str3 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(116),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualIntelligence(), player->GetBaseIntelligence()),
         player->GetActualIntelligence(), player->GetBaseIntelligence()); // Intellect
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str3);
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str4 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(163),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualWillpower(), player->GetBaseWillpower()),
         player->GetActualWillpower(), player->GetBaseWillpower()); // Willpower
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str4);
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str5 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(75),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualEndurance(), player->GetBaseEndurance()),
         player->GetActualEndurance(), player->GetBaseEndurance());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str5);
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str6 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(1),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAccuracy(), player->GetBaseAccuracy()),
         player->GetActualAccuracy(), player->GetBaseAccuracy());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str6);
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str7 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(211),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualSpeed(), player->GetBaseSpeed()),
         player->GetActualSpeed(), player->GetBaseSpeed());
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str7);
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str8 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n", localization->GetString(136),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLuck(), player->GetBaseLuck()),
         player->GetActualLuck(), player->GetBaseLuck());
@@ -2242,7 +2242,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
     if (player->GetMaxHealth() >= 1000)
         text_format = "%s\f%05u\r388%d\f00000 / %d\n";
-    pY += 2 * pFontArrus->GetFontHeight() + 5;
+    pY += 2 * pFontArrus->GetHeight() + 5;
     auto str9 = StringPrintf(text_format, localization->GetString(108),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->sHealth, player->GetMaxHealth()),
         player->sHealth, player->GetMaxHealth()
@@ -2252,21 +2252,21 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
     if (player->GetMaxMana() >= 1000)
         text_format = "%s\f%05u\r388%d\f00000 / %d\n";
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str10 = StringPrintf(text_format, localization->GetString(212),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
         player->sMana, player->GetMaxMana()
     );
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str10);
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str11 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n", localization->GetString(12),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAC(), player->GetBaseAC()),
         player->GetActualAC(), player->GetBaseAC()
     );
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str11);
 
-    pY += 2 * pFontArrus->GetFontHeight() - 2;
+    pY += 2 * pFontArrus->GetHeight() - 2;
     auto str12 = StringPrintf(
         "%s: \f%05d%s\n",
         localization->GetString(47), // Condition   /   Состояние
@@ -2275,7 +2275,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     );
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str12, 226, 0);
 
-    pY += pFontArrus->GetFontHeight() + -1;
+    pY += pFontArrus->GetHeight() + -1;
     pText = localization->GetString(153); // Нет
     if (player->uQuickSpell)
         pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
@@ -2297,25 +2297,25 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     if (player->GetBaseLevel() > 99)
         text_format = Stat_string_format_2_column_over_100;
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str15 = StringPrintf(text_format, localization->GetString(131), // Уров.
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLevel(), player->GetBaseLevel()),
         player->GetActualLevel(), player->GetBaseLevel()
     );
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str15);
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     pText = localization->GetString(17); // Exp.
     if (player->uExperience <= 9999999)
         pText = localization->GetString(83); // Experience
     auto str16 = StringPrintf("%s\r180\f%05d%lu\f00000\n\n", pText, player->GetExperienceDisplayColor(), player->uExperience);
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str16);
 
-    pY += 2 * pFontArrus->GetFontHeight();
+    pY += 2 * pFontArrus->GetHeight();
     auto str17 = StringPrintf("%s\t100%+d\n", localization->GetString(18), player->GetActualAttack(false));
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str17);
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(
         pFontArrus,
         266,
@@ -2324,7 +2324,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
         StringPrintf("%s\t100 %s\n", localization->GetString(53), player->GetMeleeDamageString().c_str())
     );
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(
         pFontArrus,
         266,
@@ -2333,7 +2333,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
         StringPrintf("%s\t100%+d\n", localization->GetString(203), player->GetRangedAttack())
     );
 
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(
         pFontArrus,
         266,
@@ -2345,7 +2345,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99)
         text_format = Stat_string_format_2_column_over_100;
-    pY += 2 * pFontArrus->GetFontHeight() - 4;
+    pY += 2 * pFontArrus->GetHeight() - 4;
     auto str18 = StringPrintf(text_format, localization->GetSpellSchoolName(0),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)),
         player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE));
@@ -2354,7 +2354,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99)
         text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str19 = StringPrintf(text_format, localization->GetSpellSchoolName(1),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)),
         player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR));
@@ -2363,7 +2363,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99)
         text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str20 = StringPrintf(text_format, localization->GetSpellSchoolName(2),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)),
         player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER));
@@ -2372,7 +2372,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH) > 99)
         text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str21 = StringPrintf(text_format, localization->GetSpellSchoolName(3),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)),
         player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH));
@@ -2381,7 +2381,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99)
         text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     auto str22 = StringPrintf(text_format, localization->GetSpellSchoolName(4),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND)),
         player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND));
@@ -2395,7 +2395,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99)
         text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetFontHeight() - 2;
+    pY += pFontArrus->GetHeight() - 2;
     int it = player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
     auto str23 = StringPrintf(text_format, localization->GetSpellSchoolName(6),
         UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY)),

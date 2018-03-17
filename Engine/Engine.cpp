@@ -58,6 +58,7 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIPartyCreation.h"
+#include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/NewUI/NewUIMainMenu.h"
 
@@ -1081,7 +1082,6 @@ void IntegrityTest()
     //static_assert(sizeof(GUIButton) == 0xBC, "Wrong type size");
     //static_assert(sizeof(GUIWindow) == 0x54, "Wrong type size");
     //static_assert(sizeof(GUIProgressBar) == 0x1B8, "Wrong type size");
-    static_assert(sizeof(GUIFont) == 0x1020, "Wrong type size");
     // static_assert(sizeof(stru262_TurnBased) == 0x40, "Wrong type size");
     //static_assert(sizeof(ArcomageGame) == 0xFB, "Wrong type size");
     static_assert(sizeof(CastSpellInfo) == 0x14, "Wrong type size");
@@ -1562,14 +1562,14 @@ bool GameLoop()
         }
         else if (GetCurrentMenuID() == MENU_CREDITS)
         {
-            if (use_music_folder)
-                alSourceStop(mSourceID);
-            else
-            {
-                if (pAudioPlayer->hAILRedbook)
-                    AIL_redbook_stop(pAudioPlayer->hAILRedbook);
+            if (use_music_folder) {
+              alSourceStop(mSourceID);
+            } else {
+              if (pAudioPlayer->hAILRedbook) {
+                AIL_redbook_stop(pAudioPlayer->hAILRedbook);
+              }
             }
-            MainMenuUI_Credits_Loop();
+            GUICredits::ExecuteCredits();
             break;
         }
         else if (GetCurrentMenuID() == MENU_5 || GetCurrentMenuID() == MENU_LoadingProcInMainMenu)

@@ -3330,7 +3330,7 @@ void ODM_ProcessPartyActions()
     uint pZ_ = abs(pParty->vPosition.z - party_new_Z);
     if (bWalkSound && pParty->walk_sound_timer <= 0)
     {
-        pAudioPlayer->_4AA258(804);//stop sound
+        pAudioPlayer->StopAll(804);//stop sound
         if (party_running_flag && (!hovering || not_high_fall))
         {
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16)
@@ -3361,7 +3361,7 @@ void ODM_ProcessPartyActions()
         }
     }
     if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)//отключить  звук ходьбы при остановке
-        pAudioPlayer->_4AA258(804);
+        pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------
     if (!hovering || !not_high_fall)//  или не высокое падение
         pParty->uFlags &= ~PARTY_FLAGS_1_FALLING;
@@ -3484,7 +3484,7 @@ void ODM_ProcessPartyActions()
     }
     else if (bWalkSound && pParty->walk_sound_timer <= 0)
     {
-        pAudioPlayer->_4AA258(804);
+        pAudioPlayer->StopAll(804);
         pParty->walk_sound_timer = 64;
     }
 

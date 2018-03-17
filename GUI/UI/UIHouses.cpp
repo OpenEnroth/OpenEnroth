@@ -1615,7 +1615,7 @@ void TravelByTransport()
 
       String str = localization->FormatString(405, pPrice); // Price: %lu gold
       pTextHeight = pFontArrus->CalcTextHeight(str, &travel_window, 0);
-      pRealTextHeight = pTextHeight + (pFontArrus->GetFontHeight() - 3) + 146;
+      pRealTextHeight = pTextHeight + (pFontArrus->GetHeight() - 3) + 146;
       pPrimaryTextHeight = pRealTextHeight;
       pCurrentButton = 2;
       for ( uint i = pDialogueWindow->pStartingPosActiveItem; i < (unsigned int)(pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem); ++i )
@@ -1672,7 +1672,7 @@ void TravelByTransport()
             pTextHeight = pFontArrus->CalcTextHeight(str, &travel_window, 0);
             pButton->uHeight = pTextHeight;
             pButton->uW = pButton->uY + pTextHeight - 1;
-            pRealTextHeight += (pFontArrus->GetFontHeight() - 3) + pTextHeight;
+            pRealTextHeight += (pFontArrus->GetHeight() - 3) + pTextHeight;
           }
         }
         else
@@ -1892,7 +1892,7 @@ void TownHallDialog()
       }
       render->DrawTextureCustomHeight(8/640.0f, (352 - pTextHeight)/480.0f, ui_leather_mm7, pTextHeight);
       render->DrawTextureAlphaNew(8/640.0f, (347 - pTextHeight)/480.0f, _591428_endcap);
-      window.DrawText(pOutString, 13, 354 - pTextHeight, 0, FitTextInAWindow(current_npc_text, pOutString, &window, 13), 0, 0, 0);
+      window.DrawText(pOutString, 13, 354 - pTextHeight, 0, pOutString->FitTextInAWindow(current_npc_text, &window, 13), 0, 0, 0);
       break;
     }
     case HOUSE_DIALOGUE_TOWNHALL_PAY_FINE:
@@ -2152,20 +2152,20 @@ void  TavernDialog()
                 else if (pButton->msg_param == 16)
                 {
                     pButton->uHeight = pTopic2Height;
-                    pButton->uY = pTopic1Height + (pFontArrus->GetFontHeight() - 3) + 146;
-                    pButton->uW = (pTopic1Height + (pFontArrus->GetFontHeight() - 3) + 146) + pTopic2Height - 1;
+                    pButton->uY = pTopic1Height + (pFontArrus->GetHeight() - 3) + 146;
+                    pButton->uW = (pTopic1Height + (pFontArrus->GetHeight() - 3) + 146) + pTopic2Height - 1;
                 }
                 else if (pButton->msg_param == 96)
                 {
-                    pButton->uY = pTopic1Height + pTopic2Height + 2 * (pFontArrus->GetFontHeight() - 3) + 146;
+                    pButton->uY = pTopic1Height + pTopic2Height + 2 * (pFontArrus->GetHeight() - 3) + 146;
                     pButton->uHeight = pTopic3Height;
-                    pButton->uW = pTopic3Height + (pTopic1Height + pTopic2Height + 2 * (pFontArrus->GetFontHeight() - 3) + 146) - 1;
+                    pButton->uW = pTopic3Height + (pTopic1Height + pTopic2Height + 2 * (pFontArrus->GetHeight() - 3) + 146) - 1;
                 }
                 else if (pButton->msg_param == 101)
                 {
                     pButton->uHeight = pTopic4Height;
-                    pButton->uY = pTopic1Height + 3 * (pFontArrus->GetFontHeight() - 3) + pTopic4Height + pTopic2Height + 146;
-                    pButton->uW = (pTopic1Height + 3 * (pFontArrus->GetFontHeight() - 3) + pTopic4Height + pTopic2Height + 146) + pTopic4Height - 1;
+                    pButton->uY = pTopic1Height + 3 * (pFontArrus->GetHeight() - 3) + pTopic4Height + pTopic2Height + 146;
+                    pButton->uW = (pTopic1Height + 3 * (pFontArrus->GetHeight() - 3) + pTopic4Height + pTopic2Height + 146) + pTopic4Height - 1;
                 }
             }
             dialog_window.DrawTitleText(pFontArrus, 0, 146, 0, StringPrintf("%s\n \n%s\n \n%s\n \n%s", topic1.c_str(), topic2.c_str(), topic3.c_str(), topic4.c_str()), 3);
@@ -2187,7 +2187,7 @@ void  TavernDialog()
         }
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(pOutString, 12, 354 - pTextHeight, 0, FitTextInAWindow(str, pOutString, &dialog_window, 12), 0, 0, 0);
+        window_SpeakInHouse->DrawText(pOutString, 12, 354 - pTextHeight, 0, pOutString->FitTextInAWindow(str, &dialog_window, 12), 0, 0, 0);
         break;
     }
 
@@ -2199,7 +2199,7 @@ void  TavernDialog()
         pTextHeight = pFontArrus->CalcTextHeight(label, &dialog_window, 12) + 7;
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window_SpeakInHouse->DrawText(pFontArrus, 12, 354 - pTextHeight, 0, FitTextInAWindow(label, pFontArrus, &dialog_window, 12));
+        window_SpeakInHouse->DrawText(pFontArrus, 12, 354 - pTextHeight, 0, pFontArrus->FitTextInAWindow(label, &dialog_window, 12));
         break;
     }
 
@@ -3136,7 +3136,7 @@ void SimpleHouseDialog()
 
         int h = (pFontArrus->CalcTextHeight(pInString, &house_window, 13) + 7);
         render->DrawTextureAlphaNew(8/640.0f, (347 - h)/480.0f, _591428_endcap);
-        pDialogueWindow->DrawText(pFontArrus, 13, 354 - h, 0, FitTextInAWindow(pInString, pFontArrus, &house_window, 13), 0, 0, 0);
+        pDialogueWindow->DrawText(pFontArrus, 13, 354 - h, 0, pFontArrus->FitTextInAWindow(pInString, &house_window, 13), 0, 0, 0);
       }
     }
   }
@@ -3302,7 +3302,7 @@ void SimpleHouseDialog()
     }
     render->DrawTextureCustomHeight(8/640.0f, (352 - pTextHeight)/480.0f, ui_leather_mm7, pTextHeight);
     render->DrawTextureAlphaNew(8/640.0f, (347 - pTextHeight)/480.0f, _591428_endcap);
-    house_window.DrawText(pTextFont, 13, 354 - pTextHeight, 0, FitTextInAWindow(current_npc_text, pTextFont, &w, 13), 0, 0, 0);
+    house_window.DrawText(pTextFont, 13, 354 - pTextHeight, 0, pTextFont->FitTextInAWindow(current_npc_text, &w, 13), 0, 0, 0);
   }
 }
 

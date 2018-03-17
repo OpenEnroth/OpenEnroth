@@ -635,7 +635,6 @@ void draw_leather();
 // main menu ui
 void MainMenuUI_LoadFontsAndSomeStuff();
 void MainMenuUI_Create();
-MENU_STATE MainMenuUI_Credits_Loop();
 
 // game ui
 void GameUI_DrawRightPanel();
