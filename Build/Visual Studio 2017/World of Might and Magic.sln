@@ -1,19 +1,38 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "World of Might and Magic", "World of Might and Magic.vcxproj", "{5DA49362-EF43-4753-85DC-88CC41F26764}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher.Windows", "..\..\Launcher\Launcher.Windows\Launcher.Windows.vcxproj", "{4687EA86-59B9-4BDD-A21F-5564A7F25A85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5DA49362-EF43-4753-85DC-88CC41F26764}.Debug|Win32.ActiveCfg = Debug|Win32
 		{5DA49362-EF43-4753-85DC-88CC41F26764}.Debug|Win32.Build.0 = Debug|Win32
+		{5DA49362-EF43-4753-85DC-88CC41F26764}.Debug|x64.ActiveCfg = Debug|Win32
 		{5DA49362-EF43-4753-85DC-88CC41F26764}.Release|Win32.ActiveCfg = Release|Win32
 		{5DA49362-EF43-4753-85DC-88CC41F26764}.Release|Win32.Build.0 = Release|Win32
+		{5DA49362-EF43-4753-85DC-88CC41F26764}.Release|x64.ActiveCfg = Release|Win32
+		{4687EA86-59B9-4BDD-A21F-5564A7F25A85}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4687EA86-59B9-4BDD-A21F-5564A7F25A85}.Debug|Win32.Build.0 = Debug|Win32
+		{4687EA86-59B9-4BDD-A21F-5564A7F25A85}.Debug|x64.ActiveCfg = Debug|x64
+		{4687EA86-59B9-4BDD-A21F-5564A7F25A85}.Debug|x64.Build.0 = Debug|x64
+		{4687EA86-59B9-4BDD-A21F-5564A7F25A85}.Release|Win32.ActiveCfg = Release|Win32
+		{4687EA86-59B9-4BDD-A21F-5564A7F25A85}.Release|Win32.Build.0 = Release|Win32
+		{4687EA86-59B9-4BDD-A21F-5564A7F25A85}.Release|x64.ActiveCfg = Release|x64
+		{4687EA86-59B9-4BDD-A21F-5564A7F25A85}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A249B69B-8497-4159-B6D3-C5E0B47EC75B}
 	EndGlobalSection
 EndGlobal

@@ -1366,7 +1366,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player)
     uint numActivePlayerBuffs = 0;
     for (uint i = 0; i < 24; ++i)
     {
-        if (player->pPlayerBuffs[i].Active() > 0)
+        if (player->pPlayerBuffs[i].Active())
             ++numActivePlayerBuffs;
     }
 
