@@ -586,9 +586,6 @@
     <ClCompile Include="..\..\GUI\UI\Spellbook.cpp">
       <Filter>GUI\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Game\MainMenuLoad.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Game\GameMenu.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -1394,9 +1391,6 @@
     </ClInclude>
     <ClInclude Include="..\..\GUI\UI\Spellbook.h">
       <Filter>GUI\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Game\MainMenuLoad.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Game\GameMenu.h">
       <Filter>Game</Filter>
