@@ -17,6 +17,8 @@ struct GUIWindow_Load : public GUIWindow
     virtual void Update();
 };
 
+void MainMenuLoad_Loop();
+void MainMenuLoad_EventLoop();
 
 class Image;
 extern Image *saveload_ui_save_up;

@@ -61,13 +61,13 @@
 #include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/NewUI/NewUIMainMenu.h"
+#include "GUI/UI/UISaveLoad.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Video/Bink_Smacker.h"
 
 #include "Game/Game.h"
 #include "Game/MainMenu.h"
-#include "Game/MainMenuLoad.h"
 
 #include "Platform/Api.h"
 

@@ -19,13 +19,13 @@ int __stdcall BrowseFolderCallback(HWND hwnd, UINT msg, LPARAM lparam, LPARAM da
 
 INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    Application *app = (Application *)GetWindowLongPtr(hwnd, GWL_USERDATA);
+    Application *app = (Application *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
     switch (msg)
     {
         case WM_INITDIALOG:
         {
             app = (Application *)lparam;
-            SetWindowLongPtr(hwnd, GWL_USERDATA, (LONG)app);
+            SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)app);
             break;
         }
 
@@ -44,16 +44,16 @@ INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
                 bi.ulFlags = BIF_USENEWUI;
                 PIDLIST_ABSOLUTE list = SHBrowseForFolder(&bi);
 
-                SHGetPathFromIDList(list, choice);
+                SHGetPathFromIDListA(list, choice);
                 app->SetMm7InstallPath(std::string(choice));
-                SendDlgItemMessage(hwnd, IDC_EDIT_MM7_INSTALL_DIR, WM_SETTEXT, 0, (LPARAM)choice);
+                SendDlgItemMessageA(hwnd, IDC_EDIT_MM7_INSTALL_DIR, WM_SETTEXT, 0, (LPARAM)choice);
 
                 return TRUE;
             }
             else if (LOWORD(wparam) == IDC_BUTTON_LAUNCH)
             {
                 char mm7_install_dir[2000];
-                GetWindowText(
+                GetWindowTextA(
                     GetDlgItem(hwnd, IDC_EDIT_MM7_INSTALL_DIR),
                     mm7_install_dir,
                     2000
@@ -64,7 +64,7 @@ INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
                 std::string config_errors;
                 if (!app->ValidateConfig(config_errors))
                 {
-                    MessageBox(hwnd, config_errors.c_str(), "Configuration error", MB_OK);
+                    MessageBoxA(hwnd, config_errors.c_str(), "Configuration error", MB_OK);
                 }
                 else
                 {
@@ -98,7 +98,7 @@ const std::string &Application::GetMm7InstallPath() const
 static std::string GetExeFilename()
 {
     char buf[2000];
-    GetModuleFileName(GetModuleHandle(0), buf, 2000);
+    GetModuleFileNameA(GetModuleHandle(0), buf, 2000);
     return std::string(buf);
 }
 
@@ -113,7 +113,7 @@ bool Application::ValidateConfig(std::string &out_errors)
     out_errors = "";
 
     std::string mm7_exe_path = config.mm7_install_path + "/MM7.exe";
-    if (!PathFileExists(mm7_exe_path.c_str()))
+    if (!PathFileExistsA(mm7_exe_path.c_str()))
     {
         out_errors = "Might and Magic VII exe not found in: " + config.mm7_install_path;
         return false;
@@ -127,10 +127,10 @@ void Application::Run()
     CoInitializeEx(0, COINIT_APARTMENTTHREADED); // SHBrowseForFolder
 
     auto module = GetModuleHandle(nullptr);
-    HWND dialog = CreateDialogParamA(module, MAKEINTRESOURCE(IDD_FORMVIEW), nullptr, DialogProc, (LPARAM)this);
+    HWND dialog = CreateDialogParamA(module, MAKEINTRESOURCEA(IDD_FORMVIEW), nullptr, DialogProc, (LPARAM)this);
     HICON icon = (HICON)LoadImage(module, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
     SendMessage(dialog, WM_SETICON, ICON_BIG, (LPARAM)icon);
-    SendDlgItemMessage(dialog, IDC_EDIT_MM7_INSTALL_DIR, WM_SETTEXT, 0, (LPARAM)config.mm7_install_path.c_str());
+    SendDlgItemMessageA(dialog, IDC_EDIT_MM7_INSTALL_DIR, WM_SETTEXT, 0, (LPARAM)config.mm7_install_path.c_str());
 
     MSG msg;
     //while (PeekMessageA(&msg, dialog, 0, 0, PM_REMOVE))
@@ -141,7 +141,7 @@ void Application::Run()
     }
 
 
-    STARTUPINFO si;
+    STARTUPINFOA si;
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
 
@@ -149,7 +149,7 @@ void Application::Run()
     ZeroMemory(&pi, sizeof(pi));
 
     std::string womm_filename = GetExePath() + "/" + "World of Might and Magic.exe";
-    CreateProcess(
+    CreateProcessA(
         womm_filename.c_str(),
         "",
         nullptr,

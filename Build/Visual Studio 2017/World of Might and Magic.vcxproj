@@ -165,7 +165,6 @@
     <ClCompile Include="..\..\Game\GameMenu.cpp" />
     <ClCompile Include="..\..\Game\GameOver.cpp" />
     <ClCompile Include="..\..\Game\MainMenu.cpp" />
-    <ClCompile Include="..\..\Game\MainMenuLoad.cpp" />
     <ClCompile Include="..\..\GUI\GUIButton.cpp" />
     <ClCompile Include="..\..\GUI\GUIFont.cpp" />
     <ClCompile Include="..\..\GUI\GUIProgressBar.cpp" />
@@ -361,7 +360,6 @@
     <ClInclude Include="..\..\Game\GameMenu.h" />
     <ClInclude Include="..\..\Game\GameOver.h" />
     <ClInclude Include="..\..\Game\MainMenu.h" />
-    <ClInclude Include="..\..\Game\MainMenuLoad.h" />
     <ClInclude Include="..\..\GUI\GUIButton.h" />
     <ClInclude Include="..\..\GUI\GUIFont.h" />
     <ClInclude Include="..\..\GUI\GUIProgressBar.h" />
