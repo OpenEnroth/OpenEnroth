@@ -4,8 +4,8 @@
 #include <cstdio>
 #include <array>
 */
-#include "lib\legacy_dx\d3d.h"
-#include "lib\legacy_dx\ddraw.h"
+#include <d3d.h>
+#include <ddraw.h>
 
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"

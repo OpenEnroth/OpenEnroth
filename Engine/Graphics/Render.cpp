@@ -1,5 +1,5 @@
-#include "lib\legacy_dx\ddraw.h"
-#include "lib\legacy_dx\d3d.h"
+#include <ddraw.h>
+#include <d3d.h>
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"

@@ -15,7 +15,6 @@
 #include "GUI/GUIFont.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/Video/Bink_Smacker.h"
 
 #include "IO/Mouse.h"
 

@@ -4,9 +4,6 @@
     <Filter Include="lib">
       <UniqueIdentifier>{01df770d-32ca-4bfa-8448-de7b6ae4b15c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\legacy_dx">
-      <UniqueIdentifier>{23711e0a-ee63-4da3-9c0d-22d02dd41747}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib\lua">
       <UniqueIdentifier>{9448e73a-c435-43ee-8586-08607774a0d0}</UniqueIdentifier>
     </Filter>
@@ -102,9 +99,6 @@
     </Filter>
     <Filter Include="GUI\NewUI\Core">
       <UniqueIdentifier>{80539c98-aa5a-44ca-ad0e-68f50d81de6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="lib\legacy_dx\lib">
-      <UniqueIdentifier>{20adc48e-74d5-48a4-a357-a8b133eef51f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Graphics\Shaders">
       <UniqueIdentifier>{740b8731-e3ff-44cb-b6c8-85a64c7cbfc0}</UniqueIdentifier>
@@ -537,9 +531,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Media\Audio\AudioPlayer.cpp">
       <Filter>Media\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Media\Video\Bink_Smacker.cpp">
-      <Filter>Media\Video</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Media\MediaPlayer.cpp">
       <Filter>Media</Filter>
@@ -981,84 +972,6 @@
     <ClInclude Include="..\..\lib\lua\lua-5.2.2\lzio.h">
       <Filter>lib\lua\lua-5.2.2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\d3d.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\d3dcaps.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\d3drm.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\d3drmdef.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\d3drmobj.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\d3drmwin.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\d3dtypes.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\ddraw.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dinput.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dinputd.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dmdls.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dmerror.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dmksctrl.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dmplugin.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dmusbuff.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dmusicc.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dmusicf.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dmusici.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dmusics.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dsconf.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dsound.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\dvoice.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\multimon.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\rmxfguid.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\rmxftmpl.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\legacy_dx\strsafe.h">
-      <Filter>lib\legacy_dx</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\libpng\png.h">
       <Filter>lib\libpng</Filter>
     </ClInclude>
@@ -1344,9 +1257,6 @@
     <ClInclude Include="..\..\Media\Audio\AIL.h">
       <Filter>Media\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Media\Video\Bink_Smacker.h">
-      <Filter>Media\Video</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Media\MediaPlayer.h">
       <Filter>Media</Filter>
     </ClInclude>
@@ -1499,9 +1409,6 @@
     <None Include="..\..\lib\OpenAL\lib\x86\swscale-2.def">
       <Filter>lib\OpenAL\lib\x86</Filter>
     </None>
-    <None Include="..\..\lib\legacy_dx\d3dvec.inl">
-      <Filter>lib\legacy_dx</Filter>
-    </None>
     <None Include="..\..\lib\swig.bat">
       <Filter>lib</Filter>
     </None>
@@ -1546,21 +1453,6 @@
     </Library>
     <Library Include="..\..\lib\OpenAL\lib\x86\swscale.lib">
       <Filter>lib\OpenAL\lib\x86</Filter>
-    </Library>
-    <Library Include="..\..\lib\legacy_dx\lib\d3dxof.lib">
-      <Filter>lib\legacy_dx\lib</Filter>
-    </Library>
-    <Library Include="..\..\lib\legacy_dx\lib\ddraw.lib">
-      <Filter>lib\legacy_dx\lib</Filter>
-    </Library>
-    <Library Include="..\..\lib\legacy_dx\lib\dinput.lib">
-      <Filter>lib\legacy_dx\lib</Filter>
-    </Library>
-    <Library Include="..\..\lib\legacy_dx\lib\dinput8.lib">
-      <Filter>lib\legacy_dx\lib</Filter>
-    </Library>
-    <Library Include="..\..\lib\legacy_dx\lib\dxguid.lib">
-      <Filter>lib\legacy_dx\lib</Filter>
     </Library>
   </ItemGroup>
 </Project>

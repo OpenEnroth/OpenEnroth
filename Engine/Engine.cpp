@@ -64,7 +64,7 @@
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/Video/Bink_Smacker.h"
+#include "Media/Audio/AIL.h"
 
 #include "Game/Game.h"
 #include "Game/MainMenu.h"

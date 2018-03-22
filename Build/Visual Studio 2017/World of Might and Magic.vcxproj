@@ -63,7 +63,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\lib\legacy_dx\lib\ddraw.lib;..\..\lib\legacy_dx\lib\dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ddraw.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
@@ -263,7 +263,6 @@
     <ClCompile Include="..\..\Media\Audio\AIL.cpp" />
     <ClCompile Include="..\..\Media\Audio\AudioPlayer.cpp" />
     <ClCompile Include="..\..\Media\MediaPlayer.cpp" />
-    <ClCompile Include="..\..\Media\Video\Bink_Smacker.cpp" />
     <ClCompile Include="..\..\Platform\OSWindow.cpp" />
     <ClCompile Include="..\..\Platform\Win\AppSettings.cpp" />
     <ClCompile Include="..\..\Platform\Win\CdCheck.cpp" />
@@ -394,32 +393,6 @@
     <ClInclude Include="..\..\GUI\UI\UITransition.h" />
     <ClInclude Include="..\..\IO\Keyboard.h" />
     <ClInclude Include="..\..\IO\Mouse.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\d3d.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\d3dcaps.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\d3drm.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\d3drmdef.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\d3drmobj.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\d3drmwin.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\d3dtypes.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\ddraw.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dinput.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dinputd.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dmdls.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dmerror.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dmksctrl.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dmplugin.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dmusbuff.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dmusicc.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dmusicf.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dmusici.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dmusics.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dsconf.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dsound.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\dvoice.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\multimon.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\rmxfguid.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\rmxftmpl.h" />
-    <ClInclude Include="..\..\lib\legacy_dx\strsafe.h" />
     <ClInclude Include="..\..\lib\libavcodec\avcodec.h" />
     <ClInclude Include="..\..\lib\libavcodec\avfft.h" />
     <ClInclude Include="..\..\lib\libavcodec\dxva2.h" />
@@ -539,7 +512,6 @@
     <ClInclude Include="..\..\Media\Audio\AudioPlayer.h" />
     <ClInclude Include="..\..\Media\Audio\OpenALSoundProvider.h" />
     <ClInclude Include="..\..\Media\MediaPlayer.h" />
-    <ClInclude Include="..\..\Media\Video\Bink_Smacker.h" />
     <ClInclude Include="..\..\Platform\OSWindow.h" />
     <ClInclude Include="..\..\Platform\Api.h" />
     <ClInclude Include="..\..\Platform\Win\Win.h" />
@@ -550,7 +522,6 @@
     <None Include="..\..\Engine\Graphics\Shaders\UI.hlsl" />
     <None Include="..\..\Engine\Objects\Player.swig" />
     <None Include="..\..\GUI\NewUI\Core\UIControlModule.swig" />
-    <None Include="..\..\lib\legacy_dx\d3dvec.inl" />
     <None Include="..\..\lib\OpenAL\lib\x86\avcodec-55.def" />
     <None Include="..\..\lib\OpenAL\lib\x86\avdevice-55.def" />
     <None Include="..\..\lib\OpenAL\lib\x86\avfilter-3.def" />
@@ -564,11 +535,6 @@
     <None Include="..\..\TODO.md" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\lib\legacy_dx\lib\d3dxof.lib" />
-    <Library Include="..\..\lib\legacy_dx\lib\ddraw.lib" />
-    <Library Include="..\..\lib\legacy_dx\lib\dinput.lib" />
-    <Library Include="..\..\lib\legacy_dx\lib\dinput8.lib" />
-    <Library Include="..\..\lib\legacy_dx\lib\dxguid.lib" />
     <Library Include="..\..\lib\OpenAL\lib\OpenAL\OpenAL32.lib" />
     <Library Include="..\..\lib\OpenAL\lib\x86\avcodec.lib" />
     <Library Include="..\..\lib\OpenAL\lib\x86\avdevice.lib" />
