@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include "Application/Configuration.h"
-#include "Application/GameMenu.h"
-#include "Application/IocContainer.h"
+#include "src/Application/Configuration.h"
+#include "src/Application/GameMenu.h"
+#include "src/Application/IocContainer.h"
 
 #include "Engine/Engine.h"
 #include "Engine/IocContainer.h"

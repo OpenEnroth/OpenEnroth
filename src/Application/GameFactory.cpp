@@ -1,7 +1,7 @@
-#include "Application/GameFactory.h"
+#include "src/Application/GameFactory.h"
 
-#include "Application/Configuration.h"
-#include "Application/Game.h"
+#include "src/Application/Configuration.h"
+#include "src/Application/Game.h"
 
 using Application::GameFactory;
 using Application::Configuration;

@@ -13,8 +13,8 @@
 #include <cstdio>
 #include <cstring>
 
-#include "lib/OpenAL/al.h"
-#include "lib/OpenAL/alc.h"
+#include <al.h>
+#include <alc.h>
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/Log.h"

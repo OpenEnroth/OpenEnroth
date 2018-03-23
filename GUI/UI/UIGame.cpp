@@ -1,6 +1,6 @@
 #include "GUI/UI/UIGame.h"
 
-#include "Application/Game.h"
+#include "src/Application/Game.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"

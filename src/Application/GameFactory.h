@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "Application/Game.h"
+#include "src/Application/Game.h"
 
 namespace Application {
 
