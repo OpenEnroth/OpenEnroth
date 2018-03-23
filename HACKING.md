@@ -24,3 +24,5 @@ Dependencies
 * [FFmpeg](https://ffmpeg.zeranoe.com/builds/) - video support
 * [OpenAL](https://www.openal.org/downloads/OpenAL11CoreSDK.zip) - audio support
 * [zlib](http://gnuwin32.sourceforge.net/packages/zlib.htm) - compression
+
+On Windows you may run `win/WinPrebuild.ps1 %some_folder_to_install%` PowerShell script for download and install dependencies.

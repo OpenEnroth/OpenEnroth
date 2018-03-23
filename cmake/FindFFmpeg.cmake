@@ -76,11 +76,18 @@ macro(find_component _component _pkgconfig _library _header)
       ffmpeg
   )
 
+  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(VC_LIB_PATH_SUFFIX Win64)
+  else()
+    set(VC_LIB_PATH_SUFFIX Win32)
+  endif()
+
   find_library(${_component}_LIBRARIES NAMES ${_library}
       HINTS
       ${PC_LIB${_component}_LIBDIR}
       ${PC_LIB${_component}_LIBRARY_DIRS}
       $ENV{FFMPEGDIR}/lib
+      $ENV{FFMPEGDIR}/lib/${VC_LIB_PATH_SUFFIX}
   )
 
   set(${_component}_DEFINITIONS  ${PC_${_component}_CFLAGS_OTHER} CACHE STRING "The ${_component} CFLAGS.")
