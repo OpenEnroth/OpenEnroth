@@ -9,7 +9,6 @@
 #include "Engine/Events.h"
 #include "Engine/OurMath.h"
 #include "Engine/stru123.h"
-#include "Engine/LuaVM.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/MapsLongTimer.h"
