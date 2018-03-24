@@ -46,9 +46,6 @@
     <Filter Include="lib\libswscale">
       <UniqueIdentifier>{293e30b6-9ded-426f-a0be-425b0a877e93}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\libpng">
-      <UniqueIdentifier>{a768f30d-81a0-4858-a264-dd7120e64106}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Arcomage">
       <UniqueIdentifier>{2cf3b968-ac0f-4f3f-ab51-8e340423e5ae}</UniqueIdentifier>
     </Filter>
@@ -261,52 +258,6 @@
     <ClCompile Include="..\..\lib\lua\lua-5.2.2\lzio.c">
       <Filter>lib\lua\lua-5.2.2</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\png.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngerror.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngget.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngmem.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngpread.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngread.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngrio.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngrtran.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngrutil.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngset.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngtrans.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngwio.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngwrite.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngwtran.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libpng\pngwutil.c">
-      <Filter>lib\libpng</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\_deleted.cpp" />
     <ClCompile Include="..\..\Arcomage\Arcomage.cpp">
       <Filter>Arcomage</Filter>
     </ClCompile>
@@ -971,27 +922,6 @@
     </ClInclude>
     <ClInclude Include="..\..\lib\lua\lua-5.2.2\lzio.h">
       <Filter>lib\lua\lua-5.2.2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libpng\png.h">
-      <Filter>lib\libpng</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libpng\pngconf.h">
-      <Filter>lib\libpng</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libpng\pngdebug.h">
-      <Filter>lib\libpng</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libpng\pnginfo.h">
-      <Filter>lib\libpng</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libpng\pnglibconf.h">
-      <Filter>lib\libpng</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libpng\pngpriv.h">
-      <Filter>lib\libpng</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libpng\pngstruct.h">
-      <Filter>lib\libpng</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Arcomage\Arcomage.h">
       <Filter>Arcomage</Filter>
