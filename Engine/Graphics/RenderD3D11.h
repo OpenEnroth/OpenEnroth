@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 
-#include "lib\legacy_dx\d3d.h"
+#include <d3d.h>
 #include <d3d11.h>
 
 // pesky win macros

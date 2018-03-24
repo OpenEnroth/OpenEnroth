@@ -26,7 +26,7 @@
 
 #include "Media/MediaPlayer.h"
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/Video/Bink_Smacker.h"
+#include "Media/Audio/AIL.h"
 
 #ifndef WAVE_FORMAT_PCM
 
@@ -2188,9 +2188,7 @@ void AudioPlayer::Initialize() //?? depreciate move to openal
 
 
   MSS32_DLL_Initialize(MakeDataPath("").c_str());
-  BINKW32_DLL_Initialize();
-  SMACKW32_DLL_Initialize();
-  
+
   AIL_startup(); // ?? eh
 
 
@@ -2201,8 +2199,6 @@ void AudioPlayer::Initialize() //?? depreciate move to openal
   //v4 = Audio_GetFirstHardwareDigitalDriver();
 
   hDigDriver = Audio_GetFirstHardwareDigitalDriver();
-  if ( hDigDriver )
-    SmackSoundUseMSS(hDigDriver);
 
   if ( OS_GetAppInt("Disable3DSound", 0) != 1 && false)//pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT )
   {
