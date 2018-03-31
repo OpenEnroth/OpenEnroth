@@ -9,7 +9,6 @@
 #include "Engine/stru159.h"
 #include "Engine/Events.h"
 #include "Engine/Events2D.h"
-#include "Engine/LuaVM.h"
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Weather.h"
