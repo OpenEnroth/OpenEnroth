@@ -659,27 +659,12 @@ void Keyboard::ProcessInputActions()
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
             break;
           case INPUT_EventTrigger:
-            if (current_screen_type == SCREEN_GAME)
-            {
+            if (current_screen_type == SCREEN_GAME) {
               pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Game_Action, 0, 0);
               break;
             }
-            if ( current_screen_type == SCREEN_NPC_DIALOGUE )
-            {
-              if ( pMessageQueue_50CBD0->uNumMessages )
-              {
-                pMessageQueue_50CBD0->uNumMessages = 0;
-                if ( pMessageQueue_50CBD0->pMessages[0].field_8 )
-                {
-                  pMessageQueue_50CBD0->uNumMessages = 1;
-                  pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType = UIMSG_Escape;
-                  pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 0;
-                  pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].field_8 = 0;
-                  ++pMessageQueue_50CBD0->uNumMessages;
-                  break;
-                }
-                break;
-              }
+            if (current_screen_type == SCREEN_NPC_DIALOGUE) {
+              pMessageQueue_50CBD0->Clear();
               pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
             }
             break;

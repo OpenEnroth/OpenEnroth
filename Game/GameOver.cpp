@@ -141,7 +141,7 @@ void GameOver_Loop(int v15)
     window_SpeakInHouse->Release();
     window_SpeakInHouse = 0;
     if (v15 == 2)
-        result = pMessageQueue_50CBD0->uNumMessages;
+        result = pMessageQueue_50CBD0->qMessages.size();
     else
     {
         HEXRAYS_LODWORD(v23) = OS_GetTime() + 5000;
@@ -150,20 +150,13 @@ void GameOver_Loop(int v15)
 
         OS_PeekMessageLoop();
 
-        if (pMessageQueue_50CBD0->uNumMessages)
-        {
-            pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
-        }
+        pMessageQueue_50CBD0->Flush();
         pKeyActionMap->ResetKeys();
         pKeyActionMap->uLastKeyPressed = 0;
-        do
-        {
+        do {
             OS_PeekMessageLoop();
         } while (!pKeyActionMap->uLastKeyPressed);
-        if (pMessageQueue_50CBD0->uNumMessages)
-        {
-            pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
-        }
+        pMessageQueue_50CBD0->Flush();
     }
     if (v15)
     {

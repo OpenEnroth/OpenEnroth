@@ -11,7 +11,6 @@
 #include "Engine/OurMath.h"
 #include "Engine/MapInfo.h"
 #include "Engine/ZlibWrapper.h"
-#include "Engine/MMT.h"
 
 #include "Engine/Tables/FrameTableInc.h"
 
@@ -447,45 +446,28 @@ bool char2wchar_t(char *str1, wchar_t *str2)
   st << str1;
   return !(st >> str2).fail();
 }
-//----- (004AA13F) --------------------------------------------------------
-void AudioPlayer::PlayMusicTrack(MusicID eTrack)
-{
-  if (!bNoSound && bPlayerReady && uMusicVolimeMultiplier)
-  {
-    if ( use_music_folder )
-    {
-      alSourceStop(mSourceID);
 
-      char string[256];
-      sprintf(string, "Music\\%d.mp3", eTrack);
+void AudioPlayer::PlayMusicTrack(MusicID eTrack) {
+  if (!bNoSound && bPlayerReady && uMusicVolimeMultiplier) {
+    alSourceStop(mSourceID);
 
-      if (!FileExists(string))
-      {
-        logger->Warning(L"Music\\%d.mp3 not found", eTrack);
-        return;
-      }
-      wchar_t * wStr = new wchar_t[255];
-      char2wchar_t(string, wStr);
-      PlayAudio(wStr);
-      delete [] wStr;
-      alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
+    char string[256];
+    sprintf(string, "Music\\%d.mp3", eTrack);
+
+    if (!FileExists(string)) {
+      logger->Warning(L"Music\\%d.mp3 not found", eTrack);
+      return;
     }
-    else if ( hAILRedbook )
-    {
-      AIL_redbook_stop(hAILRedbook);
-      AIL_redbook_set_volume(hAILRedbook, 64.0f * pSoundVolumeLevels[uMusicVolimeMultiplier]);
-      AIL_redbook_track_info(hAILRedbook, eTrack, &uCurrentMusicTrackStartMS, &uCurrentMusicTrackEndMS);
-      AIL_redbook_play(hAILRedbook, uCurrentMusicTrackStartMS + 1, uCurrentMusicTrackEndMS);
-      uCurrentMusicTrackLength = ((uCurrentMusicTrackEndMS - uCurrentMusicTrackStartMS) * 128) / 1000;
-    }
+    wchar_t * wStr = new wchar_t[255];
+    char2wchar_t(string, wStr);
+    PlayAudio(wStr);
+    delete[] wStr;
+    alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
   }
 }
 
-//----- (004AA1F3) --------------------------------------------------------
-void AudioPlayer::SetMusicVolume(int vol)
-{
-  if (bPlayerReady)
-  {
+void AudioPlayer::SetMusicVolume(int vol) {
+  if (bPlayerReady) {
     if (hAILRedbook)
       AIL_redbook_set_volume(hAILRedbook, vol);
   }
@@ -2164,16 +2146,14 @@ void AudioPlayer::LoadAudioSnd()
     fread(pSoundHeaders, 1, 52 * uNumSoundHeaders, hAudioSnd);
 }
 
-//----- (004AB8CE) --------------------------------------------------------
-void AudioPlayer::Initialize() //?? depreciate move to openal
-{
+void AudioPlayer::Initialize() {  //?? depreciate move to openal
   int v3; // ebx@1
   _PROVIDER *v6; // eax@9
   int v12; // [sp+Ch] [bp-Ch]@9
   char *Str1; // [sp+10h] [bp-8h]@6
   int v14; // [sp+14h] [bp-4h]@5
 
-  //OS_SetAppString( "3DSoundProvider", "Aureal A3D Interactive(TM)");//запись в реестр для 3D звука(Microsoft DirectSound3D with Creative Labs EAX(TM))
+           //OS_SetAppString( "3DSoundProvider", "Aureal A3D Interactive(TM)");//запись в реестр для 3D звука(Microsoft DirectSound3D with Creative Labs EAX(TM))
 
   v3 = 0;
   //this->hWindow = hWnd;
@@ -2200,7 +2180,7 @@ void AudioPlayer::Initialize() //?? depreciate move to openal
 
   hDigDriver = Audio_GetFirstHardwareDigitalDriver();
 
-  if ( OS_GetAppInt("Disable3DSound", 0) != 1 && false)//pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT )
+  if (OS_GetAppInt("Disable3DSound", 0) != 1 && false)//pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT )
   {
     v14 = 0;
     bEAXSupported = 0;
@@ -2208,11 +2188,11 @@ void AudioPlayer::Initialize() //?? depreciate move to openal
     OS_GetAppString("3DSoundProvider", p3DSoundProvider, 128, "NONE");
     CheckA3DSupport(true);
     HPROVIDER prov;
-    while ( AIL_enumerate_3D_providers(&v14, &prov, &Str1) )
+    while (AIL_enumerate_3D_providers(&v14, &prov, &Str1))
     {
-      if ( !strcmp(Str1, p3DSoundProvider) )
+      if (!strcmp(Str1, p3DSoundProvider))
       {
-        if ( AIL_open_3D_provider(prov) )
+        if (AIL_open_3D_provider(prov))
         {
           bEAXSupported = 0;
           b3DSoundInitialized = 0;
@@ -2226,7 +2206,7 @@ void AudioPlayer::Initialize() //?? depreciate move to openal
           h3DSoundProvider = v6;
           uNum3DSamples = 4;
           AIL_3D_provider_attribute(prov, "EAX environment selection", &v12);
-          if ( v12 != -1 )
+          if (v12 != -1)
             bEAXSupported = 1;
         }
         pAudioPlayer->_4AC0A2();
@@ -2235,30 +2215,25 @@ void AudioPlayer::Initialize() //?? depreciate move to openal
     }
   }
 
-  for ( v3; v3 < uMixerChannels; ++v3 )
-  {
+  for (v3; v3 < uMixerChannels; ++v3) {
     pMixerChannels[v3].hSample = AIL_allocate_sample_handle(hDigDriver);
-    if ( !pMixerChannels[v3].hSample )
+    if (!pMixerChannels[v3].hSample)
       break;
   }
   uMixerChannels = v3;
-  if ( bPlayerReady )
+  if (bPlayerReady)
     StopChannels(-1, -1);
   //v10 = hAILRedbook;
   bPlayerReady = true;
-  if ( hAILRedbook )
+  if (hAILRedbook)
   {
     AIL_redbook_stop(hAILRedbook);
     uNumRedbookTracks = AIL_redbook_tracks(hAILRedbook);
   }
   pAudioPlayer->sRedbookVolume = AIL_redbook_volume(hAILRedbook);
   pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
-  if ( bPlayerReady )
-  {
-    if ( use_music_folder )
-      alSourcef (mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
-	else if ( hAILRedbook )
-	  AIL_redbook_set_volume(hAILRedbook, (unsigned __int64)(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f) >> 32);
+  if (bPlayerReady) {
+    alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
   }
   LoadAudioSnd();
 }

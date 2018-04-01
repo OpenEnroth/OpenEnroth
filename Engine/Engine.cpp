@@ -1881,8 +1881,7 @@ void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows()
     pSpriteFrameTable->ResetSomeSpriteFlags();
     pParty->armageddon_timer = 0;
 
-    while (uNumVisibleWindows > 0)
-    {
+    while (uNumVisibleWindows > 0) {
         pWindowList[pVisibleWindowsIdxs[uNumVisibleWindows] - 1]->Release();
         delete pWindowList[pVisibleWindowsIdxs[uNumVisibleWindows] - 1];
         pWindowList[pVisibleWindowsIdxs[uNumVisibleWindows] - 1] = nullptr;

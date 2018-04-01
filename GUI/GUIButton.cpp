@@ -109,44 +109,12 @@ std::array<GUIButton*, 4> pCreationUI_BtnPressLeft2;
 std::array<GUIButton*, 4> pCreationUI_BtnPressLeft;
 std::array<GUIButton*, 4> pCreationUI_BtnPressRight;
 
-
-
-
-
-
-//----- (0041D0D8) --------------------------------------------------------
-void GUIButton::Release()
-{
-  if ( this )
-  {
-    if ( this == this->pParent->pControlsHead )
-    {
-      if ( this->pNext )
-      {
-        this->pParent->pControlsHead = this->pNext;
-        this->pNext->pPrev = 0;
-      }
-      else
-      {
-        this->pParent->pControlsHead = 0;
-        this->pParent->pControlsTail = 0;
-      }
-    }
-    else
-    {
-      if ( this->pNext )
-      {
-        this->pPrev->pNext = this->pNext;
-        this->pNext->pPrev = this->pPrev;
-      }
-      else
-      {
-        this->pPrev->pNext = 0;
-        this->pParent->pControlsTail = this->pPrev;
-      }
-    }
-    --this->pParent->uNumControls;
+void GUIButton::Release() {
+  std::vector<GUIButton*>::iterator it = std::find(pParent->vButtons.begin(), pParent->vButtons.end(), this);
+  if (it != pParent->vButtons.end()) {
+    pParent->vButtons.erase(it);
   }
+  delete this;
 }
 
 void GUIButton::DrawLabel(const String &label_text, struct GUIFont *pFont, int a5, int uFontShadowColor) {
@@ -161,8 +129,6 @@ void CreateButtonInColumn( int column_pos, unsigned int control_id ) {
 }
 
 void ReleaseAwardsScrollBar() {
-  GUIButton *pButton; // esi@2
-
   if (awards_scroll_bar_created) {
     awards_scroll_bar_created = false;
     ptr_507BA4->Release();
@@ -170,7 +136,7 @@ void ReleaseAwardsScrollBar() {
     pBtn_Down->Release();
     pBtn_Down = 0;
     pBtn_Up = 0;
-    for (pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext) {
+    for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
       if (pButton->msg == UIMSG_InventoryLeftClick) {
         pButton->uX = dword_50698C_uX;
         pButton->uY = dword_506988_uY;
@@ -183,11 +149,9 @@ void ReleaseAwardsScrollBar() {
 }
 
 void CreateAwardsScrollBar() {
-  GUIButton *pButton; // eax@2
-
   if (!awards_scroll_bar_created) {
     awards_scroll_bar_created = 1;
-    for (pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext) {
+    for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
       if (pButton->msg == UIMSG_InventoryLeftClick) {
         dword_50698C_uX = pButton->uX;
         dword_506988_uY = pButton->uY;

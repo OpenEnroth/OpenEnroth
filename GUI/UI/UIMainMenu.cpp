@@ -2,7 +2,6 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
-#include "Engine/MMT.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -48,49 +47,44 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 void GUIWindow_MainMenu::Update() {
-    Point pt = pMouse->GetCursorPos();
-    GUIWindow *pWindow = this;//pWindow_MainMenu;
-    //if (GetCurrentMenuID() == MENU_SAVELOAD)
-    //    pWindow = pGUIWindow_CurrentMenu;
+  Point pt = pMouse->GetCursorPos();
+  GUIWindow *pWindow = this;//pWindow_MainMenu;
+                            //if (GetCurrentMenuID() == MENU_SAVELOAD)
+                            //    pWindow = pGUIWindow_CurrentMenu;
 
-    if (GetCurrentMenuID() == MENU_MAIN)
-    {
-        Image *pTexture = nullptr;
-        if (!pModalWindow)// ???
+  if (GetCurrentMenuID() == MENU_MAIN) {
+    Image *pTexture = nullptr;
+    if (!pModalWindow) {  // ???
+      for (GUIButton *pButton : pWindow->vButtons) {
+        if (pt.x >= (int)pButton->uX && pt.x <= (int)pButton->uZ
+          && pt.y >= (int)pButton->uY && pt.y <= (int)pButton->uW
+          && pWindow == pWindow_MainMenu)
         {
-            auto pButton = pWindow->pControlsHead;
-            for (pButton = pWindow->pControlsHead; pButton; pButton = pButton->pNext)
-            {
-                if (pt.x >= (signed int)pButton->uX && pt.x <= (signed int)pButton->uZ
-                    && pt.y >= (signed int)pButton->uY && pt.y <= (signed int)pButton->uW
-                    && pWindow == pWindow_MainMenu)
-                {
-                    auto pControlParam = pButton->msg_param;
-                    int pY = 0;
-                    switch (pControlParam) // backlight for buttons
-                    {
-                    case 0:
-                        pTexture = assets->GetImage_16BitColorKey("title_new", 0x7FF);
-                        pY = 172;
-                        break;
-                    case 1:
-                        pTexture = assets->GetImage_16BitColorKey("title_load", 0x7FF);
-                        pY = 227;
-                        break;
-                    case 2:
-                        pTexture = assets->GetImage_16BitColorKey("title_cred", 0x7FF);
-                        pY = 282;
-                        break;
-                    case 3:
-                        pTexture = assets->GetImage_16BitColorKey("title_exit", 0x7FF);
-                        pY = 337;
-                        break;
-                    }
-                    render->DrawTextureAlphaNew(495/640.0f, pY/480.0f, pTexture);
-                }
-            }
+          auto pControlParam = pButton->msg_param;
+          int pY = 0;
+          switch (pControlParam) {  // backlight for buttons
+            case 0:
+              pTexture = assets->GetImage_16BitColorKey("title_new", 0x7FF);
+              pY = 172;
+              break;
+            case 1:
+              pTexture = assets->GetImage_16BitColorKey("title_load", 0x7FF);
+              pY = 227;
+              break;
+            case 2:
+              pTexture = assets->GetImage_16BitColorKey("title_cred", 0x7FF);
+              pY = 282;
+              break;
+            case 3:
+              pTexture = assets->GetImage_16BitColorKey("title_exit", 0x7FF);
+              pY = 337;
+              break;
+          }
+          render->DrawTextureAlphaNew(495 / 640.0f, pY / 480.0f, pTexture);
         }
+      }
     }
+  }
 }
 
 

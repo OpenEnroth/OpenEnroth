@@ -35,8 +35,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "MMT.h"
-
 struct SavegameList *pSavegameList = new SavegameList;
 unsigned int uNumSavegameFiles;
 std::array<unsigned int, 45> pSavegameUsedSlots;
@@ -317,11 +315,8 @@ void LoadGame(unsigned int uSlot)
             pSavegameThumbnails[i] = nullptr;
         }
     }
-
-    if (use_music_folder)
-        alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
-    else
-        pAudioPlayer->SetMusicVolume(pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f);
+ 
+    alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
     pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
     if (uTurnSpeed)
         pParty->sRotationY = uTurnSpeed * pParty->sRotationY / (signed int)uTurnSpeed;

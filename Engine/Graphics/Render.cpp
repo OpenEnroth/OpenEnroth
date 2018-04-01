@@ -8,7 +8,6 @@
 #include "Engine/ZlibWrapper.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
-#include "Engine/MMT.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"

@@ -131,7 +131,6 @@
     <ClCompile Include="..\..\Engine\MapInfo.cpp" />
     <ClCompile Include="..\..\Engine\mm7text_ru.cpp" />
     <ClCompile Include="..\..\Engine\mm7_data.cpp" />
-    <ClCompile Include="..\..\Engine\MMT.cpp" />
     <ClCompile Include="..\..\Engine\Objects\Actor.cpp" />
     <ClCompile Include="..\..\Engine\Objects\Chest.cpp" />
     <ClCompile Include="..\..\Engine\Objects\Items.cpp" />
@@ -265,7 +264,6 @@
     <ClInclude Include="..\..\Engine\MapsLongTimer.h" />
     <ClInclude Include="..\..\Engine\MM7.h" />
     <ClInclude Include="..\..\Engine\mm7_data.h" />
-    <ClInclude Include="..\..\Engine\MMT.h" />
     <ClInclude Include="..\..\Engine\NZIArray.h" />
     <ClInclude Include="..\..\Engine\Objects\Actor.h" />
     <ClInclude Include="..\..\Engine\Objects\Chest.h" />

@@ -7228,122 +7228,120 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_ *pPos
     }
 }
 
-//----- (00421EA6) --------------------------------------------------------
 void Player::OnInventoryLeftClick() {
 
-	unsigned int pickedItemId; // esi@12
-	unsigned int invItemIndex; // eax@12
-	unsigned int itemPos; // eax@18
-	ItemGen tmpItem; // [sp+Ch] [bp-3Ch]@1
-	
-	CastSpellInfo *pSpellInfo;
+  unsigned int pickedItemId; // esi@12
+  unsigned int invItemIndex; // eax@12
+  unsigned int itemPos; // eax@18
+  ItemGen tmpItem; // [sp+Ch] [bp-3Ch]@1
 
-	if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
+  CastSpellInfo *pSpellInfo;
 
-		unsigned int pY;
-		unsigned int pX;
-		pMouse->GetClickPos(&pX, &pY);
+  if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
 
-		int inventoryYCoord = (pY - 17) / 32;
-		int inventoryXCoord = (pX - 14) / 32;
-		int invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
+    unsigned int pY;
+    unsigned int pX;
+    pMouse->GetClickPos(&pX, &pY);
 
-		if ( inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT && inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
+    int inventoryYCoord = (pY - 17) / 32;
+    int inventoryXCoord = (pX - 14) / 32;
+    int invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
 
-			if ( _50C9A0_IsEnchantingInProgress ) {
+    if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT && inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
 
-				unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
+      if (_50C9A0_IsEnchantingInProgress) {
 
-				if ( enchantedItemPos ) {
+        unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
-					/* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &= 0x7Fu;
-					*((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) = uActiveCharacter - 1;
-					*((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = enchantedItemPos - 1;
-					*((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = invMatrixIndex;*/
-					pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
-					pSpellInfo->uFlags &= 0x7F;
-					pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
-					pSpellInfo->spell_target_pid = enchantedItemPos;// - 1; 
-					pSpellInfo->field_6 = (-1 - enchantedItemPos); // check
-					ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos-1];
-					_50C9A0_IsEnchantingInProgress = 0;
+        if (enchantedItemPos) {
 
-					if ( pMessageQueue_50CBD0->uNumMessages )
-						pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
+          /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &= 0x7Fu;
+          *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) = uActiveCharacter - 1;
+          *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = enchantedItemPos - 1;
+          *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = invMatrixIndex;*/
+          pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+          pSpellInfo->uFlags &= 0x7F;
+          pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
+          pSpellInfo->spell_target_pid = enchantedItemPos;// - 1; 
+          pSpellInfo->field_6 = (-1 - enchantedItemPos); // check
+          ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
+          _50C9A0_IsEnchantingInProgress = 0;
 
-					pMouse->SetCursorImage("MICON1");
-					_50C9D0_AfterEnchClickEventId = 113;
-					_50C9D4_AfterEnchClickEventSecondParam = 0;
-					_50C9D8_AfterEnchClickEventTimeout = 256;
+          pMessageQueue_50CBD0->Flush();
 
-				}
+          pMouse->SetCursorImage("MICON1");
+          _50C9D0_AfterEnchClickEventId = 113;
+          _50C9D4_AfterEnchClickEventSecondParam = 0;
+          _50C9D8_AfterEnchClickEventTimeout = 256;
 
-				return;
+        }
 
-			}
+        return;
 
-			if ( ptr_50C9A4_ItemToEnchant )
-				return;
+      }
 
-			pickedItemId = pParty->pPickedItem.uItemID;
-			invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
+      if (ptr_50C9A4_ItemToEnchant)
+        return;
 
-			if (!pickedItemId) { // no hold item
-				if ( !invItemIndex )
-					return;
-				else {
-					memcpy(&pParty->pPickedItem, &this->pInventoryItemList[invItemIndex-1], sizeof(pParty->pPickedItem));
-					this->RemoveItemAtInventoryIndex(invMatrixIndex);
-					pickedItemId = pParty->pPickedItem.uItemID;
-					pMouse->SetCursorImage(pItemsTable->pItems[pickedItemId].pIconName);
-					return;
-				}
-			}
+      pickedItemId = pParty->pPickedItem.uItemID;
+      invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
-			else { // hold item
+      if (!pickedItemId) { // no hold item
+        if (!invItemIndex)
+          return;
+        else {
+          memcpy(&pParty->pPickedItem, &this->pInventoryItemList[invItemIndex - 1], sizeof(pParty->pPickedItem));
+          this->RemoveItemAtInventoryIndex(invMatrixIndex);
+          pickedItemId = pParty->pPickedItem.uItemID;
+          pMouse->SetCursorImage(pItemsTable->pItems[pickedItemId].pIconName);
+          return;
+        }
+      }
 
-				if ( invItemIndex ) {
-					ItemGen* invItemPtr = &this->pInventoryItemList[invItemIndex-1];
-					 memcpy(&tmpItem, invItemPtr, sizeof(tmpItem));
-					 this->RemoveItemAtInventoryIndex(invMatrixIndex);
-					 int emptyIndex = this->AddItem2(invMatrixIndex, &pParty->pPickedItem);
+      else { // hold item
 
-					 if ( !emptyIndex ) {
-						 emptyIndex = this->AddItem2(-1, &pParty->pPickedItem);
-						 if ( !emptyIndex ) {
-							 this->PutItemArInventoryIndex(tmpItem.uItemID, invItemIndex - 1, invMatrixIndex);
-							 memcpy(invItemPtr, &tmpItem, sizeof(ItemGen));
-							 return;
-						}
-					}
+        if (invItemIndex) {
+          ItemGen* invItemPtr = &this->pInventoryItemList[invItemIndex - 1];
+          memcpy(&tmpItem, invItemPtr, sizeof(tmpItem));
+          this->RemoveItemAtInventoryIndex(invMatrixIndex);
+          int emptyIndex = this->AddItem2(invMatrixIndex, &pParty->pPickedItem);
 
-					 memcpy(&pParty->pPickedItem, &tmpItem, sizeof(ItemGen));
-					 pMouse->SetCursorImage(pParty->pPickedItem.GetIconName());
-					 return;
-				}
-				else {
-					itemPos = this->AddItem(invMatrixIndex, pickedItemId);
+          if (!emptyIndex) {
+            emptyIndex = this->AddItem2(-1, &pParty->pPickedItem);
+            if (!emptyIndex) {
+              this->PutItemArInventoryIndex(tmpItem.uItemID, invItemIndex - 1, invMatrixIndex);
+              memcpy(invItemPtr, &tmpItem, sizeof(ItemGen));
+              return;
+            }
+          }
 
-					if ( itemPos ) {
-						memcpy(&this->pInventoryItemList[itemPos-1], &pParty->pPickedItem, sizeof(ItemGen));
-						pMouse->RemoveHoldingItem();
-						return;
-					}
+          memcpy(&pParty->pPickedItem, &tmpItem, sizeof(ItemGen));
+          pMouse->SetCursorImage(pParty->pPickedItem.GetIconName());
+          return;
+        }
+        else {
+          itemPos = this->AddItem(invMatrixIndex, pickedItemId);
 
-				//	itemPos = this->AddItem(-1, pickedItemId);
+          if (itemPos) {
+            memcpy(&this->pInventoryItemList[itemPos - 1], &pParty->pPickedItem, sizeof(ItemGen));
+            pMouse->RemoveHoldingItem();
+            return;
+          }
 
-				//	if ( itemPos ) {
-				//		memcpy(&this->pInventoryItemList[itemPos-1], &pParty->pPickedItem, sizeof(ItemGen));
-				//		pMouse->RemoveHoldingItem();
-				 //       return;
-					//}
+          //	itemPos = this->AddItem(-1, pickedItemId);
+
+          //	if ( itemPos ) {
+          //		memcpy(&this->pInventoryItemList[itemPos-1], &pParty->pPickedItem, sizeof(ItemGen));
+          //		pMouse->RemoveHoldingItem();
+          //       return;
+          //}
 
 
-				}
-			} //held item or no
+        }
+      } //held item or no
 
-	    } //limits
-	} // char wind
+    } //limits
+  } // char wind
 } //func
 
 bool Player::IsWeak() const {

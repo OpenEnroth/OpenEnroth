@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <array>
 #include <vector>
+#include <queue>
 
 #include "Engine/Strings.h"
 #include "Engine/Objects/Player.h"
@@ -356,6 +357,7 @@ struct GUIWindow {
 
   virtual void Update() {}
   virtual void Release();
+  void DeleteButtons();
 
   static void InitializeGUI();
 
@@ -370,7 +372,6 @@ struct GUIWindow {
     void *ptr_1C;// sometimes BuildID_2Events
     unsigned int par1C;
   };
-  unsigned int uNumControls;
   int field_24;
   int pNumPresenceButton;
   int pCurrentPosActiveItem;
@@ -381,8 +382,7 @@ struct GUIWindow {
   int receives_keyboard_input_2; //  0  no input   1 currently typing   2 enter pressed   3 escape pressed
   bool receives_keyboard_input;
   String sHint;
-  GUIButton *pControlsHead;
-  GUIButton *pControlsTail;
+  std::vector<GUIButton*> vButtons;
 };
 
 struct GUIWindow_Dialogue : public GUIWindow
@@ -567,42 +567,27 @@ enum CURRENT_SCREEN
   SCREEN_QUICK_REFERENCE = 0x68,
 };
 
-
-
-
-/*  249 */
-#pragma pack(push, 1)
-struct GUIMessage
-{
+struct GUIMessage {
   enum UIMessageType eType;
   int param;
   int field_8;
+  String file;
+  unsigned int line;
 };
-#pragma pack(pop)
-
-
-
 
 #define AddGUIMessage(msg, param, a4) AddMessageImpl((msg), (param), (a4), __FILE__, __LINE__)
-/*  250 */
-#pragma pack(push, 1)
-struct GUIMessageQueue
-{
-  inline GUIMessageQueue():
-    uNumMessages(0)
-  {}
+
+struct GUIMessageQueue {
+  GUIMessageQueue() {}
 
   void Flush();
+  void Clear();
+  bool Empty() { return qMessages.empty(); }
   void PopMessage(UIMessageType *pMsg, int *pParam, int *a4);
   void AddMessageImpl(UIMessageType msg, int param, unsigned int a4, const char *file = nullptr, int line = 0);
 
-  unsigned int uNumMessages;
-  GUIMessage pMessages[40];
-
-  const char *files[40];
-  int          lines[40];
+  std::queue<GUIMessage> qMessages;
 };
-#pragma pack(pop)
 
 extern struct GUIMessageQueue *pMessageQueue_50CBD0; // idb
 
@@ -714,8 +699,6 @@ int const_2();
 
 struct GUIButton {
   GUIButton() {
-    pPrev = nullptr;
-    pNext = nullptr;
     pParent = nullptr;
   }
 
@@ -735,8 +718,6 @@ struct GUIButton {
   unsigned int  msg_param;
   int field_28;
   bool field_2C_is_pushed;
-  GUIButton *pPrev;
-  GUIButton *pNext;
   struct GUIWindow *pParent;
   std::vector<Image*> vTextures;
   uint8_t uHotkey;

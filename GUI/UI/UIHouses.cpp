@@ -943,8 +943,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID)
     game_ui_status_bar_event_string[0] = 0;
     game_ui_status_bar_string[0] = 0;
     GameUI_StatusBar_OnEvent("");
-    if (pMessageQueue_50CBD0->uNumMessages)
-        pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
+    pMessageQueue_50CBD0->Flush();
     viewparams->bRedrawGameUI = 1;
     uDialogueType = 0;
     pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
@@ -3409,26 +3408,21 @@ void InitializeBuildingResidents() {
 
 }
 
-//----- (004BD8B5) --------------------------------------------------------
-int HouseDialogPressCloseBtn()
-{
-  if ( pMessageQueue_50CBD0->uNumMessages )
-    pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
+int HouseDialogPressCloseBtn() {
+  pMessageQueue_50CBD0->Flush();
   pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
   pKeyActionMap->ResetKeys();
   activeLevelDecoration = nullptr;
   current_npc_text.clear();
-  if ( pDialogueNPCCount == 0)
+  if (pDialogueNPCCount == 0)
     return 0;
 
-  if ( dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL && shop_ui_background)
-  {
-      shop_ui_background->Release(); 
-      shop_ui_background = nullptr;
+  if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL && shop_ui_background) {
+    shop_ui_background->Release();
+    shop_ui_background = nullptr;
   }
 
-  switch(dialog_menu_id)
-  {
+  switch (dialog_menu_id) {
     case -1:
       _4B4224_UpdateNPCTopics((int)((char *)pDialogueNPCCount - 1));
       BackToHouseMenu();
@@ -3467,17 +3461,15 @@ int HouseDialogPressCloseBtn()
       dialog_menu_id = HOUSE_DIALOGUE_NULL;
       pDialogueWindow = 0;
 
-      if ( uNumDialogueNPCPortraits == 1 )
+      if (uNumDialogueNPCPortraits == 1)
         return 0;
 
-      pBtn_ExitCancel = window_SpeakInHouse->pControlsHead;
-      if ( uNumDialogueNPCPortraits > 0 )
-      {
-        for ( uint i = 0; i < (unsigned int)uNumDialogueNPCPortraits; ++i )
-        {
+      pBtn_ExitCancel = window_SpeakInHouse->vButtons.front();
+      if (uNumDialogueNPCPortraits > 0) {
+        for (uint i = 0; i < (unsigned int)uNumDialogueNPCPortraits; ++i) {
           HouseNPCPortraitsButtonsList[i] = window_SpeakInHouse->CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i],
-                                            pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i],
-                                            63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, i, 0, byte_591180[i].data());
+            pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i],
+            63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, i, 0, byte_591180[i].data());
         }
       }
 

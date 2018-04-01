@@ -4,7 +4,6 @@
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Time.h"
-#include "Engine/MMT.h"
 
 #include "Engine/Graphics/IRender.h"
 
@@ -1095,37 +1094,25 @@ void MPlayer::Initialize(OSWindow *target_window)
     fread(pMagicVideoHeaders, 1, 44 * uNumMagicVideoHeaders, hMagicVid);
 }
 
-//----- (004BF411) --------------------------------------------------------
-void MPlayer::OpenFullscreenMovie(const char *pFilename, unsigned int bLoop/*, int ScreenSizeFlag*/)
-{
-  if (!this->bPlaying_Movie)
-  {
+void MPlayer::OpenFullscreenMovie(const char *pFilename, unsigned int bLoop/*, int ScreenSizeFlag*/) {
+  if (!this->bPlaying_Movie) {
     pEventTimer->Pause();
-	if ( use_music_folder )
-      alSourcePause(mSourceID);
-    else if (pAudioPlayer->hAILRedbook)
-	  AIL_redbook_pause(pAudioPlayer->hAILRedbook);
+    alSourcePause(mSourceID);
 
-	bStopBeforeSchedule = false;
-	bFirstFrame = false;
-	this->bLoopPlaying = bLoop;
-	LoadMovie(pFilename);
-	time_video_begin = OS_GetTime();
-	return;
+    bStopBeforeSchedule = false;
+    bFirstFrame = false;
+    this->bLoopPlaying = bLoop;
+    LoadMovie(pFilename);
+    time_video_begin = OS_GetTime();
+    return;
   }
 }
 
-//----- (004BF28F) --------------------------------------------------------
-void MPlayer::OpenHouseMovie(const char *pMovieName, unsigned int a3_1)
-{
-  if (!this->bPlaying_Movie)
-  {
+void MPlayer::OpenHouseMovie(const char *pMovieName, unsigned int a3_1) {
+  if (!this->bPlaying_Movie) {
     //Prepare();
     pEventTimer->Pause();
-    if ( use_music_folder )
-      alSourcePause(mSourceID);
-    else if (pAudioPlayer->hAILRedbook)
-      AIL_redbook_pause(pAudioPlayer->hAILRedbook);
+    alSourcePause(mSourceID);
 
     bStopBeforeSchedule = false;
     bFirstFrame = false;
@@ -1133,7 +1120,7 @@ void MPlayer::OpenHouseMovie(const char *pMovieName, unsigned int a3_1)
     this->bLoopPlaying = a3_1;
 
     LoadMovie(pMovieName);
-	time_video_begin = OS_GetTime();
+    time_video_begin = OS_GetTime();
   }
 }
 
@@ -1412,25 +1399,18 @@ void MPlayer::ShowMM7IntroVideo_and_LoadingScreen()
   bGameoverLoop = false;
 }
 
-//----- (004BEBD7) --------------------------------------------------------
-void MPlayer::Unload()
-{
+void MPlayer::Unload() {
   bPlaying_Movie = false;
   uMovieType = 0;
   memset(pCurrentMovieName, 0, 0x40);
-  if ( !bGameoverLoop && pMediaPlayer->current_movie_width == 460)
-  {
-    if ( use_music_folder )
-      alSourcePlay(mSourceID);
-    else if ( pAudioPlayer->hAILRedbook )
-      AIL_redbook_resume(pAudioPlayer->hAILRedbook);
+  if (!bGameoverLoop && pMediaPlayer->current_movie_width == 460) {
+    alSourcePlay(mSourceID);
   }
   pEventTimer->Resume();
 
-  if (pMovie_Track)
-  {
-      pMovie_Track->Release();
-      delete pMovie_Track;
+  if (pMovie_Track) {
+    pMovie_Track->Release();
+    delete pMovie_Track;
   }
   pMovie_Track = nullptr;
 }

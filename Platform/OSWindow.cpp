@@ -1,7 +1,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
 #include "Engine/Party.h"
-#include "Engine/MMT.h"
 
 #include "Engine/Graphics/IndoorCameraD3D.h"
 #include "Engine/Graphics/Viewport.h"
@@ -325,10 +324,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
             }
           }
           if (!bGameoverLoop && !pMovie_Track) {  // continue an audio track
-            if (use_music_folder)
-              alSourcePlay(mSourceID);
-            else if (pAudioPlayer->hAILRedbook)//!pVideoPlayer->pSmackerMovie )
-              AIL_redbook_resume(pAudioPlayer->hAILRedbook);
+            alSourcePlay(mSourceID);
           }
         }
       } else {
@@ -350,10 +346,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
 
           if (pAudioPlayer != nullptr) {
             pAudioPlayer->StopChannels(-1, -1);//приостановка воспроизведения звуков при неактивном окне игры
-            if (use_music_folder)
-              alSourcePause(mSourceID);
-            else if (pAudioPlayer->hAILRedbook)
-              AIL_redbook_pause(pAudioPlayer->hAILRedbook);
+            alSourcePause(mSourceID);
           }
         }
       }
@@ -481,33 +474,30 @@ void OSWindow::Show()
     UpdateWindow((HWND)this->GetApiHandle());
 }
 
-void OSWindow::SetCursor(const char *cursor_name)
-{
-    POINT cursor_pos;
-    GetCursorPos(&cursor_pos);
+void OSWindow::SetCursor(const char *cursor_name) {
+  POINT cursor_pos;
+  GetCursorPos(&cursor_pos);
 
-    if (!strcmp(cursor_name, "MICON1"))
-        //SetClassLongPtrW(api_handle, GCLP_HCURSOR, (LONG)LoadCursorW(GetModuleHandleW(nullptr), IDC_ARROW));
-        SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG)LoadCursorW(NULL, IDC_ARROW));
-    else if (!strcmp(cursor_name, "MICON2"))
-    {
-        //HCURSOR hCurs1;
+  if (!strcmp(cursor_name, "MICON1"))
+    //SetClassLongPtrW(api_handle, GCLP_HCURSOR, (LONG)LoadCursorW(GetModuleHandleW(nullptr), IDC_ARROW));
+    SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG)LoadCursorW(NULL, IDC_ARROW));
+  else if (!strcmp(cursor_name, "MICON2")) {
+    //HCURSOR hCurs1;
 
-        // Create target 
+    // Create target 
 
-        if (for_refactoring)
-        {
-            MessageBoxA(nullptr, "Ritor1: original cursor(Target) isn't loading", "", 0);
-            __debugbreak();
-        }
-        SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG)LoadCursorW(NULL, IDC_CROSS));
-
+    if (false) {
+      MessageBoxA(nullptr, "Ritor1: original cursor(Target) isn't loading", "", 0);
+      __debugbreak();
     }
-    else if (!strcmp(cursor_name, "MICON3"))
-        SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG)LoadCursorW(NULL, IDC_WAIT));
+    SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG)LoadCursorW(NULL, IDC_CROSS));
 
-    //ClientToScreen(api_handle, &cursor_pos); //???
-    SetCursorPos(cursor_pos.x, cursor_pos.y);
+  }
+  else if (!strcmp(cursor_name, "MICON3"))
+    SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG)LoadCursorW(NULL, IDC_WAIT));
+
+  //ClientToScreen(api_handle, &cursor_pos); //???
+  SetCursorPos(cursor_pos.x, cursor_pos.y);
 }
 
 void OSWindow::SetFullscreenMode()

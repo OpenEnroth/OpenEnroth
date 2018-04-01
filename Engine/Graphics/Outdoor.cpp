@@ -16,7 +16,6 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Events.h"
 #include "Engine/ZlibWrapper.h"
-#include "Engine/MMT.h"
 #include "Engine/SpellFxRenderer.h"
 
 #include "Engine/Serialization/LegacyImages.h"
@@ -4132,109 +4131,97 @@ void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa)
 	MM7Initialization();
 }
 
-//----- (0047C370) --------------------------------------------------------
-unsigned int GetLevelFogColor()
-{
-	signed __int64 v1; // qax@5
-	int v2; // eax@6
+unsigned int GetLevelFogColor() {
+  if (bUnderwater) {
+    return 0xFF258F5C;
+  }
 
-	if (bUnderwater)
-		return 0xFF258F5C;
+  if (day_attrib & DAY_ATTRIB_FOG) {
+    if (pWeather->bNight) {  // night-time fog
+      if (false) {
+        logger->Warning(L"decompilation can be inaccurate, please send savegame to Nomad");
+        __debugbreak();
+      }
+      int v2 = -(pWeather->bNight != 1);
+      return (v2 & 0xE0E0E1) - 0xE0E0E1;
+    } else {
+      __int64 v1 = (__int64)((1.0 - pOutdoor->fFogDensity) * 200.0 + pOutdoor->fFogDensity * 31.0);
+      return v1 | (((unsigned int)v1 | (((unsigned int)v1 | 0xFFFFFF00) << 8)) << 8);
+    }
+  }
 
-	if (day_attrib & DAY_ATTRIB_FOG)
-	{
-		if (pWeather->bNight) // night-time fog
-		{
-          if (for_refactoring)
-           {
-              logger->Warning(L"decompilation can be inaccurate, please send savegame to Nomad");
-              __debugbreak();
-           }
-			v2 = -(pWeather->bNight != 1);
-			return (v2 & 0xE0E0E1) - 0xE0E0E1;
-		}
-		else
-		{
-			v1 = (signed __int64)((1.0 - pOutdoor->fFogDensity) * 200.0 + pOutdoor->fFogDensity * 31.0);
-			return v1 | (((unsigned int)v1 | (((unsigned int)v1 | 0xFFFFFF00) << 8)) << 8);
-		}
-	}
-
-	return 0;
+  return 0;
 }
 
-//----- (0047C3D7) --------------------------------------------------------
-int sub_47C3D7_get_fog_specular(int a1, int a2, float a3)
-{
-	int v3; // ecx@1
-	signed int v7; // ecx@11
+int sub_47C3D7_get_fog_specular(int a1, int a2, float a3) {
+  int v7;
 
-	v3 = pWeather->bNight;
-	if (bUnderwater == 1)
-		v3 = 0;
-	if (pParty->armageddon_timer || !(day_attrib & DAY_ATTRIB_FOG) && !bUnderwater)
-		return 0xFF000000;
-	if (v3)
-	{
-		if (a3 < (double)day_fogrange_1)
-		{
-			v7 = 0;
-			if (a3 == 0.0)
-				v7 = 216;
-			if (a2)
-				v7 = 248;
-			return (-1 - v7) << 24;
-		}
-		else
-		{
-			if (a3 > (double)day_fogrange_2)
-			{
-				v7 = 216;
-				if (a3 == 0.0)
-					v7 = 216;
-				if (a2)
-					v7 = 248;
-				return (-1 - v7) << 24;
-			}
-			v7 = (signed __int64)((a3 - (double)day_fogrange_1) / ((double)day_fogrange_2 - (double)day_fogrange_1) * 216.0);
-		}
-	}
-	else
-	{
-		if (a3 < (double)day_fogrange_1)
-		{
-			v7 = 0;
-			if (a3 == 0.0)
-				v7 = 216;
-			if (a2)
-				v7 = 248;
-			return (-1 - v7) << 24;
-		}
-		else
-		{
-			if (a3 > (double)day_fogrange_2)
-			{
-				v7 = 216;
-				if (a3 == 0.0)
-					v7 = 216;
-				if (a2)
-					v7 = 248;
-				return (-1 - v7) << 24;
-			}
-			else
-				v7 = floorf(((a3 - (double)day_fogrange_1) * 216.0 / ((double)day_fogrange_2 - (double)day_fogrange_1)) + 0.5f);
-		}
-	}
-	if (v7 > 216)
-		v7 = 216;
-	else
-	{
-		if (a3 == 0.0)
-			v7 = 216;
-	}
-	if (a2)
-		v7 = 248;
-	return (-1 - v7) << 24;
+  int v3 = pWeather->bNight;
+  if (bUnderwater == 1)
+    v3 = 0;
+  if (pParty->armageddon_timer || !(day_attrib & DAY_ATTRIB_FOG) && !bUnderwater)
+    return 0xFF000000;
+  if (v3)
+  {
+    if (a3 < (double)day_fogrange_1)
+    {
+      v7 = 0;
+      if (a3 == 0.0)
+        v7 = 216;
+      if (a2)
+        v7 = 248;
+      return (-1 - v7) << 24;
+    }
+    else
+    {
+      if (a3 > (double)day_fogrange_2)
+      {
+        v7 = 216;
+        if (a3 == 0.0)
+          v7 = 216;
+        if (a2)
+          v7 = 248;
+        return (-1 - v7) << 24;
+      }
+      v7 = (signed __int64)((a3 - (double)day_fogrange_1) / ((double)day_fogrange_2 - (double)day_fogrange_1) * 216.0);
+    }
+  }
+  else
+  {
+    if (a3 < (double)day_fogrange_1)
+    {
+      v7 = 0;
+      if (a3 == 0.0)
+        v7 = 216;
+      if (a2)
+        v7 = 248;
+      return (-1 - v7) << 24;
+    }
+    else
+    {
+      if (a3 > (double)day_fogrange_2)
+      {
+        v7 = 216;
+        if (a3 == 0.0)
+          v7 = 216;
+        if (a2)
+          v7 = 248;
+        return (-1 - v7) << 24;
+      }
+      else
+        v7 = floorf(((a3 - (double)day_fogrange_1) * 216.0 / ((double)day_fogrange_2 - (double)day_fogrange_1)) + 0.5f);
+    }
+  }
+  if (v7 > 216)
+    v7 = 216;
+  else
+  {
+    if (a3 == 0.0)
+      v7 = 216;
+  }
+  if (a2)
+    v7 = 248;
+  return (-1 - v7) << 24;
 }
 
 

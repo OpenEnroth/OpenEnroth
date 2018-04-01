@@ -1088,27 +1088,22 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID, PLAYER_SKILL_TYPE uP
     return String(static_sub_417BB5_out_string);
 }
 
-//----- (00417FE5) --------------------------------------------------------
-void CharacterUI_SkillsTab_ShowHint()
-{
-  GUIButton *pButton; // esi@6
-  unsigned int pX; // [sp+4h] [bp-8h]@1
-  unsigned int pY; // [sp+8h] [bp-4h]@1
-
+void CharacterUI_SkillsTab_ShowHint() {
+  unsigned int pX = 0;
+  unsigned int pY = 0;
   pMouse->GetClickPos(&pX, &pY);
-  if ( (signed int)pX < 24 || (signed int)pX > 455 || (signed int)pY < 18 || (signed int)pY > 36 )
-  {
-    for ( pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext )
-    {
-      if ( pButton->msg == UIMSG_SkillUp
-        && (signed int)pX >= (signed int)pButton->uX
-        && (signed int)pX <= (signed int)pButton->uZ
-        && (signed int)pY >= (signed int)pButton->uY
-        && (signed int)pY <= (signed int)pButton->uW )
+
+  if (pX < 24 || pX > 455 || pY < 18 || pY > 36) {
+    for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
+      if (pButton->msg == UIMSG_SkillUp
+        && pX >= pButton->uX
+        && pX <= pButton->uZ
+        && pY >= pButton->uY
+        && pY <= pButton->uW)
       {
         CharacterUI_DrawTooltip(
-            localization->GetSkillName(pButton->msg_param),
-            CharacterUI_GetSkillDescText(uActiveCharacter - 1, (PLAYER_SKILL_TYPE)pButton->msg_param)
+          localization->GetSkillName(pButton->msg_param),
+          CharacterUI_GetSkillDescText(uActiveCharacter - 1, (PLAYER_SKILL_TYPE)pButton->msg_param)
         );
       }
     }
@@ -1600,7 +1595,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
   case SCREEN_PARTY_CREATION: {
     popup_window.sHint.clear();
     pStr = 0;
-    for (pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext) {
+    for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
       if (pButton->uButtonType == 1 && pButton->uButtonType != 3 && (signed int)pX >(signed int)pButton->uX && (signed int)pX < (signed int)pButton->uZ
         && (signed int)pY >(signed int)pButton->uY && (signed int)pY < (signed int)pButton->uW)
       {

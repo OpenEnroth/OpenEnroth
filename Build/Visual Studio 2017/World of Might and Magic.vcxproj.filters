@@ -282,9 +282,6 @@
     <ClCompile Include="..\..\Engine\mm7text_ru.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\MMT.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\OurMath.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -888,9 +885,6 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\mm7_data.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Engine\MMT.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\NZIArray.h">

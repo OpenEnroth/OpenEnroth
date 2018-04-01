@@ -83,17 +83,7 @@ void  Arena_SelectionFightLevel() {
     }
   } else {
     uDialogueType = DIALOGUE_ARENA_WELCOME;
-    v5 = pDialogueWindow->pControlsHead;
-    if (v5) {
-      do {
-        v6 = v5->pNext;
-        free(v5);
-        v5 = v6;
-      } while (v6);
-    }
-    pDialogueWindow->pControlsHead = 0;
-    pDialogueWindow->pControlsTail = 0;
-    pDialogueWindow->uNumControls = 0;
+    pDialogueWindow->DeleteButtons();
     pBtn_ExitCancel = pDialogueWindow->CreateButton(471, 445, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0,
       localization->GetString(79), //Close, Закрыть
       { {ui_exit_cancel_button_background} });

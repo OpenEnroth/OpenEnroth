@@ -235,65 +235,52 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y, unsigne
     GameUI_StatusBar_OnEvent(localization->GetString(39)); // Choose target / Выберите цель
 }
 
-
-// inlined
-//----- (mm6c::00420520) --------------------------------------------------
-void GUIMessageQueue::Flush()
-{
-  if (uNumMessages)
-    uNumMessages = pMessages[0].field_8 != 0;
+void GUIMessageQueue::Flush() {
+  if (qMessages.size()) {
+    GUIMessage message = qMessages.front();
+    Clear();
+    if (message.field_8 != 0) {
+      qMessages.push(message);
+    }
+  }
 }
 
-//----- (004356B9) --------------------------------------------------------
-void GUIMessageQueue::PopMessage(enum UIMessageType *pType, int *pParam, int *a4)
-{
-  if ( this->uNumMessages )
-  {
-    *pType = this->pMessages[0].eType;
-    *pParam = this->pMessages[0].param;
-    *a4 = this->pMessages[0].field_8;
-    if ( (signed int)(this->uNumMessages - 1) > 0 )
-    {
-      for ( uint i = 0; i < (signed int)(this->uNumMessages - 1); ++i )
-      {
-        this->pMessages[i].eType = this->pMessages[i + 1].eType;
-        this->pMessages[i].param = this->pMessages[i + 1].param;
-        this->pMessages[i].field_8 = this->pMessages[i + 1].field_8;
+void GUIMessageQueue::Clear() {
+  std::queue<GUIMessage> empty;
+  std::swap(qMessages, empty);
+}
+
+void GUIMessageQueue::PopMessage(enum UIMessageType *pType, int *pParam, int *a4) {
+  *pType = (UIMessageType)-1;
+  *pParam = 0;
+  *a4 = 0;
+
+  if (qMessages.empty()) {
+    return;
+  }
+
+  GUIMessage message = qMessages.front();
+  qMessages.pop();
+
+  *pType = message.eType;
+  *pParam = message.param;
+  *a4 = message.field_8;
+}
+
+void GUI_ReplaceHotkey(uint8_t uOldHotkey, uint8_t uNewHotkey, char bFirstCall) {
+  char old_hot_key = toupper(uOldHotkey);
+  uint8_t v9 = toupper(uNewHotkey);
+  if (bFirstCall) {
+    for (int i = uNumVisibleWindows; i >= 0; --i) {
+      for (GUIButton *j : pWindowList[pVisibleWindowsIdxs[i] - 1]->vButtons) {
+        j->field_28 = 0;
       }
     }
-    --this->uNumMessages;
   }
-}
-
-//----- (0041B4E1) --------------------------------------------------------
-void GUI_ReplaceHotkey(unsigned __int8 uOldHotkey, unsigned __int8 uNewHotkey, char bFirstCall)
-{
-  int i; // edx@2
-  GUIButton *j; // ecx@3
-  int k; // edx@7
-  GUIButton *l; // ecx@8
-  unsigned __int8 v9; // [sp+4h] [bp-8h]@1
-  char old_hot_key; // [sp+8h] [bp-4h]@1
-
-  //v3 = uNewHotkey;
-  old_hot_key = toupper(uOldHotkey);
-  v9 = toupper(uNewHotkey);
-  if ( bFirstCall )
-  {
-    for ( i = uNumVisibleWindows; i >= 0; --i )
-    {
-      for ( j = pWindowList[pVisibleWindowsIdxs[i] - 1]->pControlsHead; j; j = j->pNext )
-        j->field_28 = 0;
-    }
-  }
-  for ( k = uNumVisibleWindows; k >= 0; --k )
-  {
-    for ( l = pWindowList[pVisibleWindowsIdxs[k] - 1]->pControlsHead; l; l = l->pNext )
-    {
-      if ( l->uHotkey == old_hot_key )
-      {
-        if ( !l->field_28 )
-        {
+  for (int k = uNumVisibleWindows; k >= 0; --k) {
+    for (GUIButton *l : pWindowList[pVisibleWindowsIdxs[k] - 1]->vButtons) {
+      if (l->uHotkey == old_hot_key) {
+        if (!l->field_28) {
           l->field_28 = 1;
           l->uHotkey = v9;
         }
@@ -302,28 +289,19 @@ void GUI_ReplaceHotkey(unsigned __int8 uOldHotkey, unsigned __int8 uNewHotkey, c
   }
 }
 
-//----- (0041B438) --------------------------------------------------------
-GUIButton *GUI_HandleHotkey(unsigned __int8 uHotkey)
-{
-  char Hot_key_num; // al@1
-  GUIWindow *current_window; // ecx@2
-  GUIButton *result; // eax@2
-
-  Hot_key_num = toupper(uHotkey);
-  for( int i = uNumVisibleWindows; i >= 0 && pVisibleWindowsIdxs[i] > 0; i-- )
-  {
-	current_window = pWindowList[pVisibleWindowsIdxs[i] - 1];
-	for ( result = current_window->pControlsHead; result; result = result->pNext )
-	{
-	  if ( result->uHotkey == Hot_key_num )
-	  {
-		pMessageQueue_50CBD0->AddGUIMessage(result->msg, result->msg_param, 0);
-		return result;
-	  }
-	}
-	if ( !current_window->uFrameX && !current_window->uFrameY
-		&& (current_window->uFrameWidth == window->GetWidth() && current_window->uFrameHeight == window->GetWidth()) )
-	  break;
+GUIButton *GUI_HandleHotkey(uint8_t uHotkey) {
+  char Hot_key_num = toupper(uHotkey);
+  for (int i = uNumVisibleWindows; i >= 0 && pVisibleWindowsIdxs[i] > 0; i--) {
+    GUIWindow *current_window = pWindowList[pVisibleWindowsIdxs[i] - 1];
+    for (GUIButton *result : current_window->vButtons) {
+      if (result->uHotkey == Hot_key_num) {
+        pMessageQueue_50CBD0->AddGUIMessage(result->msg, result->msg_param, 0);
+        return result;
+      }
+    }
+    if (!current_window->uFrameX && !current_window->uFrameY
+      && (current_window->uFrameWidth == window->GetWidth() && current_window->uFrameHeight == window->GetWidth()))
+      break;
   }
   return 0;
 }
@@ -422,70 +400,40 @@ void GUIWindow_GenericDialogue::Release()
     GUIWindow::Release();
 }
 
-void GUIWindow_House::Release()
-{
-// -----------------------------------------
-// 0041C26A void GUIWindow::Release --- part
-    for (int i = 0; i < uNumDialogueNPCPortraits; ++i)
-    {
-        if (pDialogueNPCPortraits[i])
-        {
-            pDialogueNPCPortraits[i]->Release();
-            pDialogueNPCPortraits[i] = nullptr;
-        }
+void GUIWindow_House::Release() {
+  for (int i = 0; i < uNumDialogueNPCPortraits; ++i) {
+    if (pDialogueNPCPortraits[i]) {
+      pDialogueNPCPortraits[i]->Release();
+      pDialogueNPCPortraits[i] = nullptr;
     }
-    uNumDialogueNPCPortraits = 0;
+  }
+  uNumDialogueNPCPortraits = 0;
 
-    if (game_ui_dialogue_background)
-    {
-        game_ui_dialogue_background->Release(); 
-       game_ui_dialogue_background = nullptr;
-    }
+  if (game_ui_dialogue_background) {
+    game_ui_dialogue_background->Release();
+    game_ui_dialogue_background = nullptr;
+  }
 
-    dword_5C35D4 = 0;
-    if (bFlipOnExit)
-    {
-        pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (stru_5C6E00->uIntegerPi + pParty->sRotationY);
-        pIndoorCameraD3D->sRotationY = pParty->sRotationY;
-    }
-    pParty->uFlags |= 2u;
+  dword_5C35D4 = 0;
+  if (bFlipOnExit) {
+    pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (stru_5C6E00->uIntegerPi + pParty->sRotationY);
+    pIndoorCameraD3D->sRotationY = pParty->sRotationY;
+  }
+  pParty->uFlags |= 2u;
 
-    GUIWindow::Release();
+  GUIWindow::Release();
 }
 
-//----- (0041C26A) --------------------------------------------------------
-void GUIWindow::Release()
-{
-  //GUIWindow *v1; // esi@1
-//  int i; // edi@20
-  //GUIButton *v8; // eax@26
-  GUIButton *pNextBtn; // edi@27
-  //int v10; // esi@28
-  //int v11; // ecx@28
-  int v12; // edx@29
-
-  //v1 = this;
-  if ( !this || this->eWindowType == WINDOW_null) // added check to avoid releasing windows already released
+void GUIWindow::Release() {
+  if (!this || this->eWindowType == WINDOW_null) {  // added check to avoid releasing windows already released
     return;
-
-  //v8 = this->pControlsHead;
-  if ( this->pControlsHead )
-  {
-    do
-    {
-      pNextBtn = this->pControlsHead->pNext;
-      free(this->pControlsHead);
-      this->pControlsHead = pNextBtn;
-    }
-    while ( pNextBtn );
   }
-  this->pControlsHead = 0;
-  this->pControlsTail = 0;
-  this->uNumControls = 0;
+
+  DeleteButtons();
+
   this->eWindowType = WINDOW_null;
-  while ( this->numVisibleWindows < uNumVisibleWindows )
-  {
-    v12 = pVisibleWindowsIdxs[this->numVisibleWindows + 1];
+  while (this->numVisibleWindows < uNumVisibleWindows) {
+    int v12 = pVisibleWindowsIdxs[this->numVisibleWindows + 1];
     pVisibleWindowsIdxs[this->numVisibleWindows] = v12;
     --pWindowList[v12 - 1]->numVisibleWindows;
     ++this->numVisibleWindows;
@@ -496,15 +444,14 @@ void GUIWindow::Release()
   //should pwindowlist[x] = nullptr;??
 }
 
-//----- (0041CD3B) --------------------------------------------------------
-GUIButton *GUIWindow::GetControl(unsigned int uID)
-{
-  GUIButton *result; // eax@1
+void GUIWindow::DeleteButtons() {
+  while (vButtons.size()) {
+    vButtons.front()->Release();
+  }
+}
 
-  result = this->pControlsHead;
-  for ( uID; uID; --uID )
-    result = result->pNext;
-  return result;
+GUIButton *GUIWindow::GetControl(unsigned int uID) {
+  return vButtons[uID];
 }
 
 void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
@@ -871,14 +818,15 @@ GUIButton *GUIWindow::CreateButton(
     int uX, int uY, int uWidth, int uHeight, int a6, int a7, UIMessageType msg,
     unsigned int msg_param, uint8_t uHotkey, const String &label, const std::vector<Image*> &textures)
 {
-  auto pButton = new GUIButton();
+  GUIButton *pButton = new GUIButton();
 
   pButton->pParent = this;
   pButton->uWidth = uWidth;
   pButton->uHeight = uHeight;
   
-  if ( a6 == 2 && !uHeight )
+  if (a6 == 2 && !uHeight) {
     pButton->uHeight = uWidth;
+  }
 
   pButton->uButtonType = a6;
   pButton->uX = uX + this->uFrameX;
@@ -890,19 +838,11 @@ GUIButton *GUIWindow::CreateButton(
   pButton->msg = msg;
   pButton->msg_param = msg_param;
   pButton->uHotkey = uHotkey;
-
   pButton->sLabel = label;
-
   pButton->vTextures = textures;
 
-  if ( this->pControlsTail )
-    this->pControlsTail->pNext = pButton;
-  else
-    this->pControlsHead = pButton;
-  pButton->pPrev = this->pControlsTail;
-  this->pControlsTail = pButton;
-  pButton->pNext = 0;
-  ++this->uNumControls;
+  vButtons.push_back(pButton);
+
   return pButton;
 }
 
@@ -927,18 +867,10 @@ void GUIWindow::DrawFlashingInputCursor( signed int uX, int uY, struct GUIFont *
 }
 
 
-GUIWindow::GUIWindow() :
-    uNumControls(0),
-    pControlsHead(nullptr),
-    pControlsTail(nullptr),
-    eWindowType(WINDOW_null)
+GUIWindow::GUIWindow() : eWindowType(WINDOW_null)
 {}
 
-//----- (0041C432) --------------------------------------------------------
 GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const String &hint) :
-  uNumControls(0),
-  pControlsHead(nullptr),
-  pControlsTail(nullptr),
   eWindowType(WINDOW_MainMenu)
 {
   unsigned int uNextFreeWindowID; // ebp@1
@@ -1518,32 +1450,23 @@ void SetUserInterface(PartyAlignment align, bool bReplace)
     else Error("Invalid alignment type: %u", align);
 }
 
-//----- (0041D20D) --------------------------------------------------------
-void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, GameTime remaining_time, struct GUIFont *Font)
-{
-    window->DrawText(Font, 32, uY, 0, "\r020" + MakeDateTimeString(remaining_time), 0, 0, 0);
+void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, GameTime remaining_time, struct GUIFont *Font) {
+  window->DrawText(Font, 32, uY, 0, "\r020" + MakeDateTimeString(remaining_time), 0, 0, 0);
 }
 
-
-//----- (0042EB8D) --------------------------------------------------------
-void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param, unsigned int a4, const char *file, int line)
-{
-    //logger->Warning(L"%s @ (%S %u)", UIMessage2String(msg), file, line);
-    if (uNumMessages < 40)
-    {
-        files[uNumMessages] = file;
-        lines[uNumMessages] = line;
-
-        pMessages[uNumMessages].eType = msg;
-        pMessages[uNumMessages].param = param;
-        pMessages[uNumMessages++].field_8 = a4;
-    }
+void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param, unsigned int a4, const char *file, int line) {
+  //logger->Warning(L"%s @ (%S %u)", UIMessage2String(msg), file, line);
+  GUIMessage message;
+  message.eType = msg;
+  message.param = param;
+  message.field_8 = a4;
+  message.file = file;
+  message.line = line;
+  qMessages.push(message);
 }
 
-//----- (004637E0) --------------------------------------------------------
-char sub_4637E0_is_there_popup_onscreen()
-{
-    return dword_507BF0_is_there_popup_onscreen == 1;
+char sub_4637E0_is_there_popup_onscreen() {
+  return dword_507BF0_is_there_popup_onscreen == 1;
 }
 
 //----- (00417AD4) --------------------------------------------------------
