@@ -168,7 +168,6 @@
     <ClCompile Include="..\..\GUI\GUIFont.cpp" />
     <ClCompile Include="..\..\GUI\GUIProgressBar.cpp" />
     <ClCompile Include="..\..\GUI\GUIWindow.cpp" />
-    <ClCompile Include="..\..\GUI\NewUI\NewUIMainMenu.cpp" />
     <ClCompile Include="..\..\GUI\UI\Books\AutonotesBook.cpp" />
     <ClCompile Include="..\..\GUI\UI\Books\CalendarBook.cpp" />
     <ClCompile Include="..\..\GUI\UI\Books\JournalBook.cpp" />
@@ -311,8 +310,6 @@
     <ClInclude Include="..\..\GUI\GUIFont.h" />
     <ClInclude Include="..\..\GUI\GUIProgressBar.h" />
     <ClInclude Include="..\..\GUI\GUIWindow.h" />
-    <ClInclude Include="..\..\GUI\NewUI\Core\UIControl.h" />
-    <ClInclude Include="..\..\GUI\NewUI\NewUIMainMenu.h" />
     <ClInclude Include="..\..\GUI\UI\Books\AutonotesBook.h" />
     <ClInclude Include="..\..\GUI\UI\Books\CalendarBook.h" />
     <ClInclude Include="..\..\GUI\UI\Books\JournalBook.h" />

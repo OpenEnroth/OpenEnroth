@@ -79,12 +79,6 @@
     <Filter Include="GUI\UI\Books">
       <UniqueIdentifier>{a80dd654-44b5-44d5-bec0-e9cf09ea9b22}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GUI\NewUI">
-      <UniqueIdentifier>{d5299bd5-cbfb-4182-af47-745b6a08830f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GUI\NewUI\Core">
-      <UniqueIdentifier>{80539c98-aa5a-44ca-ad0e-68f50d81de6c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Graphics\Shaders">
       <UniqueIdentifier>{740b8731-e3ff-44cb-b6c8-85a64c7cbfc0}</UniqueIdentifier>
     </Filter>
@@ -464,9 +458,6 @@
     </ClCompile>
     <ClCompile Include="..\..\GUI\UI\UIChest.cpp">
       <Filter>GUI\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\GUI\NewUI\NewUIMainMenu.cpp">
-      <Filter>GUI\NewUI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\PCX.cpp">
       <Filter>Engine\Graphics</Filter>
@@ -923,9 +914,6 @@
     <ClInclude Include="..\..\Engine\stru159.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GUI\NewUI\Core\UIControl.h">
-      <Filter>GUI\NewUI\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\GUI\UI\UIGame.h">
       <Filter>GUI\UI</Filter>
     </ClInclude>
@@ -1102,9 +1090,6 @@
     </ClInclude>
     <ClInclude Include="..\..\GUI\UI\UIChest.h">
       <Filter>GUI\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\GUI\NewUI\NewUIMainMenu.h">
-      <Filter>GUI\NewUI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\PCX.h">
       <Filter>Engine\Graphics</Filter>

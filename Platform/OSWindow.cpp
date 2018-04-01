@@ -52,371 +52,345 @@ Point OSWindow::TransformCursorPos(Point &pt) const
     return transformed;
 }
 
-bool OSWindow::OnMouseLeftClick(int x, int y)
-{
-    if (UIControl::OnMouseLeftClick(x, y))
-        return true;
+bool OSWindow::OnMouseLeftClick(int x, int y) {
+  //if (pMediaPlayer->bPlaying_Movie)
+  //pMediaPlayer->bPlaying_Movie = false;
 
-    //if (pMediaPlayer->bPlaying_Movie)
-      //pMediaPlayer->bPlaying_Movie = false;
+  pMouse->SetMouseClick(x, y);
 
-    pMouse->SetMouseClick(x, y);
+  if (GetCurrentMenuID() == MENU_CREATEPARTY) {
+    Mouse::UI_OnKeyDown(VK_SELECT);
+  }
 
-    if (GetCurrentMenuID() == MENU_CREATEPARTY)
-        Mouse::UI_OnKeyDown(VK_SELECT);
+  if (pEngine) {
+    pEngine->PickMouse(512.0, x, y, false, &vis_sprite_filter_3, &vis_door_filter);
+  }
 
-    if (pEngine)
-        pEngine->PickMouse(512.0, x, y, false, &vis_sprite_filter_3, &vis_door_filter);
-
-    Mouse::UI_OnMouseLeftClick(0);
-    return true;
+  Mouse::UI_OnMouseLeftClick(0);
+  return true;
 }
 
-bool OSWindow::OnMouseRightClick(int x, int y)
-{
-    if (UIControl::OnMouseRightClick(x, y))
-        return true;
+bool OSWindow::OnMouseRightClick(int x, int y) {
+  if (pMediaPlayer->bPlaying_Movie) {
+    pMediaPlayer->bPlaying_Movie = false;
+  }
 
-    if (pMediaPlayer->bPlaying_Movie)
-        pMediaPlayer->bPlaying_Movie = false;
+  pMouse->SetMouseClick(x, y);
 
-    pMouse->SetMouseClick(x, y);
+  if (pEngine) {
+    pEngine->PickMouse(pIndoorCameraD3D->GetPickDepth(), x, y, 0, &vis_sprite_filter_2, &vis_door_filter);
+  }
 
-    if (pEngine)
-        pEngine->PickMouse(pIndoorCameraD3D->GetPickDepth(), x, y, 0, &vis_sprite_filter_2, &vis_door_filter);
-
-    UI_OnMouseRightClick(0);
-    return true;
+  UI_OnMouseRightClick(0);
+  return true;
 }
 
+bool OSWindow::Activate() {
+  HWND hwnd = (HWND)this->GetApiHandle();
 
-bool OSWindow::Activate()
-{
-    auto hwnd = (HWND)this->GetApiHandle();
+  SetForegroundWindow(hwnd);
+  SendMessageW(hwnd, WM_ACTIVATEAPP, 1, 0);
 
-    SetForegroundWindow(hwnd);
-    SendMessageW(hwnd, WM_ACTIVATEAPP, 1, 0);
-
-    return true;
+  return true;
 }
 
 
 bool _507B98_ctrl_pressed = false;
-bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **result)
-{
-    switch (msg)
+bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **result) {
+  switch (msg) {
+    case WM_KEYUP: {
+      if (wparam == VK_CONTROL)
+        _507B98_ctrl_pressed = false; // this gets stuck
+      if (wparam == VK_SNAPSHOT)
+        render->SavePCXScreenshot();
+
+      return *result = 0, true;
+    }
+
+    case WM_SIZING: return *result = (void *)1, true;
+    case WM_WINDOWPOSCHANGED:
+      //if (pVideoPlayer && pVideoPlayer->AnyMovieLoaded() && pVideoPlayer->pBinkBuffer)
+      //BinkBufferSetOffset(pVideoPlayer->pBinkBuffer, 0, 0);
+      return false;
+
+    case WM_CHAR:
+      if (!pKeyActionMap->ProcessTextInput(wparam) && !viewparams->field_4C)
+        GUI_HandleHotkey(wparam);
+      return false;
+
+    case WM_DESTROY:
+      ExitProcess(GetLastError());
+      //  SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+      //  PostQuitMessage(0);
+      //  return 0;
+
+      //case WM_DEVICECHANGE:
+      //{
+      //  if (wParam == 0x8000)          // CD or some device has been inserted - notify InsertCD dialog
+      //    PostMessageW(hInsertCDWindow, WM_USER + 1, 0, 0);
+      //  return 0;
+      //}
+
+    case WM_COMMAND:
+      if (OnOSMenu(wparam))
+        return *result = 0, true;
+      return false;
+
+    case WM_LBUTTONDOWN:
     {
-        case WM_KEYUP:
-        {
-            if (wparam == VK_CONTROL)
-                _507B98_ctrl_pressed = false; // this gets stuck
-            if (wparam == VK_SNAPSHOT)
-                render->SavePCXScreenshot();
-
-            OnKey(wparam);
-            return *result = 0, true;
-        }
-
-        case WM_SIZING: return *result = (void *)1, true;
-        case WM_WINDOWPOSCHANGED:
-            //if (pVideoPlayer && pVideoPlayer->AnyMovieLoaded() && pVideoPlayer->pBinkBuffer)
-            //BinkBufferSetOffset(pVideoPlayer->pBinkBuffer, 0, 0);
-            return false;
-
-        case WM_CHAR:
-            if (!pKeyActionMap->ProcessTextInput(wparam) && !viewparams->field_4C)
-                GUI_HandleHotkey(wparam);
-            return false;
-
-        case WM_DESTROY:
-            ExitProcess(GetLastError());
-            //  SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-            //  PostQuitMessage(0);
-            //  return 0;
-
-            //case WM_DEVICECHANGE:
-            //{
-            //  if (wParam == 0x8000)          // CD or some device has been inserted - notify InsertCD dialog
-            //    PostMessageW(hInsertCDWindow, WM_USER + 1, 0, 0);
-            //  return 0;
-            //}
-
-        case WM_COMMAND:
-            if (OnOSMenu(wparam))
-                return *result = 0, true;
-            return false;
-
-        case WM_LBUTTONDOWN:
-        {
-            if (pArcomageGame->bGameInProgress)
-            {
-                pArcomageGame->stru1.field_0 = 7;
-                ArcomageGame::OnMouseClick(0, true);
-                return false;
-            }
-
-            OnMouseLeftClick(LOWORD(lparam), HIWORD(lparam));
-        }
+      if (pArcomageGame->bGameInProgress)
+      {
+        pArcomageGame->stru1.field_0 = 7;
+        ArcomageGame::OnMouseClick(0, true);
         return false;
+      }
+
+      OnMouseLeftClick(LOWORD(lparam), HIWORD(lparam));
+    }
+    return false;
 
 
-        case WM_RBUTTONDOWN:
-        {
-            if (pArcomageGame->bGameInProgress)
-            {
-                pArcomageGame->stru1.field_0 = 8;
-                ArcomageGame::OnMouseClick(1, true);
-                return false;
-            }
-
-            OnMouseRightClick(LOWORD(lparam), HIWORD(lparam));
-        }
+    case WM_RBUTTONDOWN:
+    {
+      if (pArcomageGame->bGameInProgress)
+      {
+        pArcomageGame->stru1.field_0 = 8;
+        ArcomageGame::OnMouseClick(1, true);
         return false;
+      }
+
+      OnMouseRightClick(LOWORD(lparam), HIWORD(lparam));
+    }
+    return false;
 
 
-        case WM_LBUTTONUP:
-            if (!pArcomageGame->bGameInProgress)
-            {
-                back_to_game();
-                return false;
-            }
-            pArcomageGame->stru1.field_0 = 3;
-            ArcomageGame::OnMouseClick(0, 0);
-            return false;
-
-        case WM_RBUTTONUP:
-            if (!pArcomageGame->bGameInProgress)
-            {
-                back_to_game();
-                return false;
-            }
-            pArcomageGame->stru1.field_0 = 4;
-            ArcomageGame::OnMouseClick(1, false);
-            return false;
-
-        case WM_LBUTTONDBLCLK:
-        {
-            if (pArcomageGame->bGameInProgress)
-            {
-                pArcomageGame->stru1.field_0 = 7;
-                return false;
-            }
-
-            OnMouseLeftClick(LOWORD(lparam), HIWORD(lparam));
-        }
+    case WM_LBUTTONUP:
+      if (!pArcomageGame->bGameInProgress)
+      {
+        back_to_game();
         return false;
+      }
+      pArcomageGame->stru1.field_0 = 3;
+      ArcomageGame::OnMouseClick(0, 0);
+      return false;
 
-        case WM_RBUTTONDBLCLK:
-        {
-            if (pArcomageGame->bGameInProgress)
-            {
-                pArcomageGame->stru1.field_0 = 8;
-                return false;
-            }
-
-            OnMouseRightClick(LOWORD(lparam), HIWORD(lparam));
-        }
+    case WM_RBUTTONUP:
+      if (!pArcomageGame->bGameInProgress)
+      {
+        back_to_game();
         return false;
+      }
+      pArcomageGame->stru1.field_0 = 4;
+      ArcomageGame::OnMouseClick(1, false);
+      return false;
+
+    case WM_LBUTTONDBLCLK:
+    {
+      if (pArcomageGame->bGameInProgress)
+      {
+        pArcomageGame->stru1.field_0 = 7;
+        return false;
+      }
+
+      OnMouseLeftClick(LOWORD(lparam), HIWORD(lparam));
+    }
+    return false;
+
+    case WM_RBUTTONDBLCLK:
+    {
+      if (pArcomageGame->bGameInProgress)
+      {
+        pArcomageGame->stru1.field_0 = 8;
+        return false;
+      }
+
+      OnMouseRightClick(LOWORD(lparam), HIWORD(lparam));
+    }
+    return false;
 
     /*case WM_MBUTTONDOWN:
-      if (render->pRenderD3D && pEngine)
-      {
-        pEngine->PickMouse(pIndoorCameraD3D->GetPickDepth(), LOWORD(lParam), HIWORD(lParam), 1, &vis_sprite_filter_3, &vis_face_filter);
-      }
-      return false;*/
-
-        case WM_MOUSEMOVE:
-            if (pArcomageGame->bGameInProgress)
-            {
-                ArcomageGame::OnMouseMove(LOWORD(lparam), HIWORD(lparam));
-                ArcomageGame::OnMouseClick(0, wparam == MK_LBUTTON);
-                ArcomageGame::OnMouseClick(1, wparam == MK_RBUTTON);
-            }
-            else if (pMouse)
-                pMouse->SetMouseClick(LOWORD(lparam), HIWORD(lparam));
-            return false;
-
-        case WM_SYSCOMMAND:
-            if (wparam == SC_SCREENSAVE || wparam == SC_MONITORPOWER)
-                return *result = 0, true;
-            return false;
-
-        case WM_KEYDOWN:
-            if (uGameMenuUI_CurentlySelectedKeyIdx != -1)
-            {
-                pKeyActionMap->ProcessTextInput(wparam);
-                return false;
-            }
-            if (!pArcomageGame->bGameInProgress)
-            {
-                if (pMediaPlayer->bPlaying_Movie)
-                    pMediaPlayer->bPlaying_Movie = false;
-                if (wparam == VK_RETURN)
-                {
-                    if (!viewparams->field_4C)
-                        Mouse::UI_OnKeyDown(wparam);
-                    return 0;
-                }
-                if (wparam == VK_CONTROL)
-                {
-                    _507B98_ctrl_pressed = true; // this gets stuck
-                    return false;
-                }
-                if (wparam == VK_ESCAPE)
-                {
-                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-                    return 0;
-                }
-                if (wparam <= VK_HOME)
-                    return 0;
-                if (wparam > VK_DOWN)
-                {
-                    if (wparam != VK_F4 || pMovie_Track)
-                        return 0;
-
-                    // F4 - toggle fullscreen
-                    SendMessageW((HWND)this->GetApiHandle(), WM_COMMAND, 104, 0);
-                    return 0;
-                }
-                if (wparam >= VK_LEFT && wparam <= VK_DOWN)
-                {
-                    if (current_screen_type != SCREEN_GAME && current_screen_type != SCREEN_MODAL_WINDOW)
-                    {
-                        if (!viewparams->field_4C)
-                            Mouse::UI_OnKeyDown(wparam);
-                        return 0;
-                    }
-                }
-                if (current_screen_type != SCREEN_GAME && current_screen_type != SCREEN_MODAL_WINDOW)
-                    return 0;
-            }
-
-            pArcomageGame->stru1.field_0 = 1;
-
-            set_stru1_field_8_InArcomage(MapVirtualKey(wparam, MAPVK_VK_TO_CHAR));
-            if (wparam == 27)
-            {
-                pArcomageGame->GameOver = 1;
-                pArcomageGame->field_F4 = 1;
-                pArcomageGame->uGameWinner = 2;
-                pArcomageGame->Victory_type = -2;
-                return false;
-            }
-            if (wparam != 114)
-            {
-                if (wparam == 115 && !pMovie_Track)
-                    SendMessage((HWND)this->GetApiHandle(), WM_COMMAND, 104, 0);
-                return false;
-            }
-            SendMessageW((HWND)this->GetApiHandle(), WM_COMMAND, 103, 0);
-            return *result = 0, true;
-
-        case WM_ACTIVATEAPP:    
-            if (wparam && (GetForegroundWindow() == (HWND)this->GetApiHandle() || GetForegroundWindow() == hInsertCDWindow))
-            {
-                if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)
-                {
-                    dword_4E98BC_bApplicationActive = 1;
-
-                    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
-
-                    if (pArcomageGame->bGameInProgress)
-                    {
-                        pArcomageGame->field_F9 = 1;
-                    }
-                    else
-                    {
-                        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER)
-                            dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0200_EVENT_TIMER;
-                        else
-                            pEventTimer->Resume();
-                        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0400_MISC_TIMER)
-                            dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0400_MISC_TIMER;
-                        else
-                            pMiscTimer->Resume();
-
-                        viewparams->bRedrawGameUI = true;
-                        if (pMovie_Track)//pVideoPlayer->pSmackerMovie )
-                        {
-                            render->RestoreFrontBuffer();
-                            render->RestoreBackBuffer();
-                            //BackToHouseMenu();
-                        }
-                    }
-                    if (!bGameoverLoop && !pMovie_Track)//continue an audio track
-                    {
-                        if (use_music_folder)
-                            alSourcePlay(mSourceID);
-                        else if (pAudioPlayer->hAILRedbook)//!pVideoPlayer->pSmackerMovie )
-                            AIL_redbook_resume(pAudioPlayer->hAILRedbook);
-                    }
-                }
-            }
-            else
-            {
-                if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE))
-                {
-                    dword_4E98BC_bApplicationActive = 0;
-                    if (pMovie_Track)
-                        pMediaPlayer->bPlaying_Movie = true;
-
-                    ClipCursor(0);
-                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_APP_INACTIVE;
-                    if (pEventTimer->bPaused)
-                        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
-                    else
-                        pEventTimer->Pause();
-                    if (pMiscTimer->bPaused)
-                        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
-                    else
-                        pMiscTimer->Pause();
-
-                    if (pAudioPlayer != nullptr)
-                    {
-                        pAudioPlayer->StopChannels(-1, -1);//приостановка воспроизведения звуков при неактивном окне игры
-                        if (use_music_folder)
-                            alSourcePause(mSourceID);
-                        else if (pAudioPlayer->hAILRedbook)
-                            AIL_redbook_pause(pAudioPlayer->hAILRedbook);
-                    }
-                }
-            }
-            return *result = 0, true;
-
-        case WM_SETFOCUS:
-            dword_4E98BC_bApplicationActive = 0;
-            ClipCursor(0);
-            return false;
-
-        case WM_KILLFOCUS:
-            dword_4E98BC_bApplicationActive = 1;
-            return false;
-
-        case WM_PAINT:
-            if (!api_handle || !render)
-                return false;
-
-            if (!GetUpdateRect((HWND)this->GetApiHandle(), 0, 0))// || !dword_4E98BC_bApplicationActive && !render->bWindowMode )
-                return *result = 0, true;
-
-            PAINTSTRUCT Paint;
-            BeginPaint((HWND)this->GetApiHandle(), &Paint);
-            if (pArcomageGame->bGameInProgress)
-            {
-                pArcomageGame->field_F9 = 1;
-            }
-            if (render->AreRenderSurfacesOk())
-            {
-                render->Present();
-                //EndPaint(api_handle, &Paint);
-                //return *result = 0, true;
-            }
-
-            EndPaint((HWND)this->GetApiHandle(), &Paint);
-            return *result = 0, true;
-
+    if (render->pRenderD3D && pEngine)
+    {
+    pEngine->PickMouse(pIndoorCameraD3D->GetPickDepth(), LOWORD(lParam), HIWORD(lParam), 1, &vis_sprite_filter_3, &vis_face_filter);
     }
-    return *result = 0, false;
+    return false;*/
+
+    case WM_MOUSEMOVE:
+      if (pArcomageGame->bGameInProgress)
+      {
+        ArcomageGame::OnMouseMove(LOWORD(lparam), HIWORD(lparam));
+        ArcomageGame::OnMouseClick(0, wparam == MK_LBUTTON);
+        ArcomageGame::OnMouseClick(1, wparam == MK_RBUTTON);
+      }
+      else if (pMouse)
+        pMouse->SetMouseClick(LOWORD(lparam), HIWORD(lparam));
+      return false;
+
+    case WM_SYSCOMMAND:
+      if (wparam == SC_SCREENSAVE || wparam == SC_MONITORPOWER)
+        return *result = 0, true;
+      return false;
+
+    case WM_KEYDOWN:
+      if (uGameMenuUI_CurentlySelectedKeyIdx != -1)
+      {
+        pKeyActionMap->ProcessTextInput(wparam);
+        return false;
+      }
+      if (!pArcomageGame->bGameInProgress)
+      {
+        if (pMediaPlayer->bPlaying_Movie)
+          pMediaPlayer->bPlaying_Movie = false;
+        if (wparam == VK_RETURN)
+        {
+          if (!viewparams->field_4C)
+            Mouse::UI_OnKeyDown(wparam);
+          return 0;
+        }
+        if (wparam == VK_CONTROL)
+        {
+          _507B98_ctrl_pressed = true; // this gets stuck
+          return false;
+        }
+        if (wparam == VK_ESCAPE)
+        {
+          pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
+          return 0;
+        }
+        if (wparam <= VK_HOME)
+          return 0;
+        if (wparam > VK_DOWN)
+        {
+          if (wparam != VK_F4 || pMovie_Track)
+            return 0;
+
+          // F4 - toggle fullscreen
+          SendMessageW((HWND)this->GetApiHandle(), WM_COMMAND, 104, 0);
+          return 0;
+        }
+        if (wparam >= VK_LEFT && wparam <= VK_DOWN) {
+          if (current_screen_type != SCREEN_GAME && current_screen_type != SCREEN_MODAL_WINDOW) {
+            if (!viewparams->field_4C)
+              Mouse::UI_OnKeyDown(wparam);
+            return 0;
+          }
+        }
+        if (current_screen_type != SCREEN_GAME && current_screen_type != SCREEN_MODAL_WINDOW)
+          return 0;
+      }
+
+      pArcomageGame->stru1.field_0 = 1;
+
+      set_stru1_field_8_InArcomage(MapVirtualKey(wparam, MAPVK_VK_TO_CHAR));
+      if (wparam == 27) {
+        pArcomageGame->GameOver = 1;
+        pArcomageGame->field_F4 = 1;
+        pArcomageGame->uGameWinner = 2;
+        pArcomageGame->Victory_type = -2;
+        return false;
+      }
+      if (wparam != 114) {
+        if (wparam == 115 && !pMovie_Track)
+          SendMessage((HWND)this->GetApiHandle(), WM_COMMAND, 104, 0);
+        return false;
+      }
+      SendMessageW((HWND)this->GetApiHandle(), WM_COMMAND, 103, 0);
+      return *result = 0, true;
+
+    case WM_ACTIVATEAPP:
+      if (wparam && (GetForegroundWindow() == (HWND)this->GetApiHandle() || GetForegroundWindow() == hInsertCDWindow))
+      {
+        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
+          dword_4E98BC_bApplicationActive = 1;
+
+          dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
+
+          if (pArcomageGame->bGameInProgress) {
+            pArcomageGame->field_F9 = 1;
+          } else {
+            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER)
+              dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0200_EVENT_TIMER;
+            else
+              pEventTimer->Resume();
+            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0400_MISC_TIMER)
+              dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0400_MISC_TIMER;
+            else
+              pMiscTimer->Resume();
+
+            viewparams->bRedrawGameUI = true;
+            if (pMovie_Track) {  // pVideoPlayer->pSmackerMovie )
+              render->RestoreFrontBuffer();
+              render->RestoreBackBuffer();
+              //BackToHouseMenu();
+            }
+          }
+          if (!bGameoverLoop && !pMovie_Track) {  // continue an audio track
+            if (use_music_folder)
+              alSourcePlay(mSourceID);
+            else if (pAudioPlayer->hAILRedbook)//!pVideoPlayer->pSmackerMovie )
+              AIL_redbook_resume(pAudioPlayer->hAILRedbook);
+          }
+        }
+      } else {
+        if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)) {
+          dword_4E98BC_bApplicationActive = 0;
+          if (pMovie_Track)
+            pMediaPlayer->bPlaying_Movie = true;
+
+          ClipCursor(0);
+          dword_6BE364_game_settings_1 |= GAME_SETTINGS_APP_INACTIVE;
+          if (pEventTimer->bPaused)
+            dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
+          else
+            pEventTimer->Pause();
+          if (pMiscTimer->bPaused)
+            dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
+          else
+            pMiscTimer->Pause();
+
+          if (pAudioPlayer != nullptr) {
+            pAudioPlayer->StopChannels(-1, -1);//приостановка воспроизведения звуков при неактивном окне игры
+            if (use_music_folder)
+              alSourcePause(mSourceID);
+            else if (pAudioPlayer->hAILRedbook)
+              AIL_redbook_pause(pAudioPlayer->hAILRedbook);
+          }
+        }
+      }
+      return *result = 0, true;
+
+    case WM_SETFOCUS:
+      dword_4E98BC_bApplicationActive = 0;
+      ClipCursor(0);
+      return false;
+
+    case WM_KILLFOCUS:
+      dword_4E98BC_bApplicationActive = 1;
+      return false;
+
+    case WM_PAINT:
+      if (!api_handle || !render)
+        return false;
+
+      if (!GetUpdateRect((HWND)this->GetApiHandle(), 0, 0))// || !dword_4E98BC_bApplicationActive && !render->bWindowMode )
+        return *result = 0, true;
+
+      PAINTSTRUCT Paint;
+      BeginPaint((HWND)this->GetApiHandle(), &Paint);
+      if (pArcomageGame->bGameInProgress) {
+        pArcomageGame->field_F9 = 1;
+      }
+      if (render->AreRenderSurfacesOk()) {
+        render->Present();
+        //EndPaint(api_handle, &Paint);
+        //return *result = 0, true;
+      }
+
+      EndPaint((HWND)this->GetApiHandle(), &Paint);
+      return *result = 0, true;
+
+  }
+  return *result = 0, false;
 }
 
 

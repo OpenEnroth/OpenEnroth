@@ -59,7 +59,6 @@
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIStatusBar.h"
-#include "GUI/NewUI/NewUIMainMenu.h"
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Media/Audio/AudioPlayer.h"
