@@ -539,293 +539,253 @@ GUIButton *GUIWindow::GetControl(unsigned int uID)
   return result;
 }
 
-
-//----- (00415551) --------------------------------------------------------
-void GUIWindow::DrawMessageBox(bool inside_game_viewport)
-{
-  unsigned int v16; // esi@19
-  GUIWindow current_window; // [sp+Ch] [bp-60h]@18
-//  unsigned int v22; // [sp+74h] [bp+8h]@2
-
+void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
   int x = 0;
   int y = 0;
   int z, w;
-  if (inside_game_viewport)
-  {
+  if (inside_game_viewport) {
     x = pViewport->uViewportTL_X;
     z = pViewport->uViewportBR_X;
     y = pViewport->uViewportTL_Y;
     w = pViewport->uViewportBR_Y;
-  }
-  else
-  {
+  } else {
     z = window->GetWidth();
     w = window->GetHeight();
   }
 
   Point cursor = pMouse->GetCursorPos();
-  if ( (signed int)this->uFrameX >= x )
-  {
-    if ( (signed int)(this->uFrameWidth + this->uFrameX) > z )
-    {
+  if ((int)this->uFrameX >= x) {
+    if ((int)(this->uFrameWidth + this->uFrameX) > z) {
       this->uFrameX = z - this->uFrameWidth;
       this->uFrameY = cursor.y + 30;
     }
-  }
-  else
-  {
+  } else {
     this->uFrameX = x;
     this->uFrameY = cursor.y + 30;
   }
 
-  if ( (signed int)this->uFrameY >= y )
-  {
-    if ( (signed int)(this->uFrameY + this->uFrameHeight) > w)
+  if ((int)this->uFrameY >= y) {
+    if ((int)(this->uFrameY + this->uFrameHeight) > w) {
       this->uFrameY = cursor.y - this->uFrameHeight - 30;
-  }
-  else
+    }
+  } else {
     this->uFrameY = cursor.y + 30;
-  if ( (signed int)this->uFrameY < y )
+  }
+  if ((signed int)this->uFrameY < y) {
     this->uFrameY = y;
-  if ( (signed int)this->uFrameX < x )
+  }
+  if ((signed int)this->uFrameX < x) {
     this->uFrameX = x;
+  }
   this->uFrameZ = this->uFrameWidth + this->uFrameX - 1;
   this->uFrameW = this->uFrameHeight + this->uFrameY - 1;
-  memcpy(&current_window, this, sizeof(current_window));
+
+  GUIWindow current_window = *this;
   current_window.uFrameX += 12;
   current_window.uFrameWidth -= 24;
   current_window.uFrameY += 12;
   current_window.uFrameHeight -= 12;
   current_window.uFrameZ = current_window.uFrameWidth + current_window.uFrameX - 1;
   current_window.uFrameW = current_window.uFrameHeight + current_window.uFrameY - 1;
-  if ( this->Hint )
-    v16 = pFontLucida->CalcTextHeight(this->Hint, &current_window, 0) + 24;
-  else
-    v16 = this->uFrameHeight;
-  if ( (signed int)v16 < 64 )
-    v16 = 64;
-  if ( (signed int)(v16 + this->uFrameY) > 479 )
-    v16 = 479 - this->uFrameY;
-  DrawPopupWindow(this->uFrameX, this->uFrameY, this->uFrameWidth, v16);
-  if ( this->Hint )
-    current_window.DrawTitleText(pFontLucida, 0, (signed int)(v16 - pFontLucida->CalcTextHeight(this->Hint, &current_window, 0)) / 2 - 14, 0, this->Hint, 3);
+  unsigned int uBoxHeight;
+  if (sHint != nullptr) {
+    uBoxHeight = pFontLucida->CalcTextHeight(sHint, current_window.uFrameWidth, 0) + 24;
+  } else {
+    uBoxHeight = uFrameHeight;
+  }
+  if (uBoxHeight < 64) {
+    uBoxHeight = 64;
+  }
+  if ((int)(uBoxHeight + this->uFrameY) > 479) {
+    uBoxHeight = 479 - this->uFrameY;
+  }
+  DrawPopupWindow(this->uFrameX, this->uFrameY, this->uFrameWidth, uBoxHeight);
+  if (this->sHint) {
+    current_window.DrawTitleText(pFontLucida, 0, (int)(uBoxHeight - pFontLucida->CalcTextHeight(this->sHint, current_window.uFrameWidth, 0)) / 2 - 14, 0, this->sHint, 3);
+  }
 }
 
-
-
-
-//----- (004B3157) --------------------------------------------------------
-void GUIWindow::HouseDialogManager()
-{
-    unsigned __int16 pWhiteColor; // di@2
-    const char *pHouseName; // edx@4
-    signed int v3; // edx@5
-    char *v4; // edi@9
-    int pTextHeight; // eax@45
-    int v6; // edi@45
-    int v8; // edi@46
-    int v9; // eax@50
-    unsigned int v10; // [sp-10h] [bp-C8h]@53
-    char *pTitleText; // [sp-8h] [bp-C0h]@50
-    GUIWindow pDialogWindow; // [sp+Ch] [bp-ACh]@4
-    GUIWindow pWindow; // [sp+60h] [bp-58h]@2
-    int pColor2; // [sp+B4h] [bp-4h]@2
-
-    if (!window_SpeakInHouse)
-        return;
-    memcpy(&pWindow, this, sizeof(pWindow));
-    pWindow.uFrameWidth -= 18;
-    pWindow.uFrameZ -= 18;
-    pWhiteColor = Color16(0xFFu, 0xFFu, 0xFFu);
-    pColor2 = Color16(0x15u, 0x99u, 0xE9u);
-    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic)
-    {
-        pDialogWindow.uFrameWidth = 130;
-        pDialogWindow.uFrameHeight = 2 * pFontCreate->GetHeight();
-        pHouseName = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName;
-        if (pHouseName)
-        {
-            v3 = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(pHouseName, &pDialogWindow, 0);
-            if (v3 < 0)
-                v3 = 0;
-            pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, pWhiteColor,
-                //(const char *)p2DEvents_minus1_::04[13 * (unsigned int)ptr_507BC0->ptr_1C],
-                p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName, 3);
-        }
+void GUIWindow::HouseDialogManager() {
+  if (!window_SpeakInHouse) {
+    return;
+  }
+  GUIWindow pWindow = *this;
+  pWindow.uFrameWidth -= 18;
+  pWindow.uFrameZ -= 18;
+  uint16_t pWhiteColor = Color16(0xFFu, 0xFFu, 0xFFu);
+  uint16_t pColor2 = Color16(0x15u, 0x99u, 0xE9u);
+  render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+  render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+  if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic) {
+    const char *pHouseName = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName;
+    if (pHouseName) {
+      int v3 = 2 * pFontCreate->GetHeight() - 6 - pFontCreate->CalcTextHeight(pHouseName, 130, 0);
+      if (v3 < 0)
+        v3 = 0;
+      pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, pWhiteColor,
+        p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName, 3);
     }
-    pWindow.uFrameWidth += 8;
-    pWindow.uFrameZ += 8;
-    if (!pDialogueNPCCount)
-    {
-        if (in_current_building_type == BuildingType_Jail)
-        {
-            JailDialog();
-            if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic)
-            {
-                render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-                render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-            }
-            else
-                render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-            return;
-        }
-        if (!current_npc_text.empty())
-        {
-            pDialogWindow.uFrameWidth = 458;
-            pDialogWindow.uFrameZ = 457;
-            pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, &pDialogWindow, 13);
-            v6 = pTextHeight + 7;
-            render->DrawTextureCustomHeight(
-                8 / 640.0f,
-                (352 - (pTextHeight + 7)) / 480.0f,
-                ui_leather_mm7,
-                pTextHeight + 7);
-            render->DrawTextureAlphaNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
-            window_SpeakInHouse->DrawText(pFontArrus, 13, 354 - v6, 0, pFontArrus->FitTextInAWindow(current_npc_text, &pDialogWindow, 13), 0, 0, 0);
-        }
-        if (uNumDialogueNPCPortraits <= 0)
-        {
-            if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic)
-            {
-                render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-                render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-            }
-            else
-                render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-            return;
-        }
-        for (v8 = 0; v8 < uNumDialogueNPCPortraits; ++v8)
-        {
-            render->DrawTextureAlphaNew((pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8] - 4) / 640.0f,
-                (pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] - 4) / 480.0f, game_ui_evtnpc);
-            render->DrawTextureAlphaNew(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8] / 640.0f,
-                pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] / 480.0f, pDialogueNPCPortraits[v8]);
-            if (uNumDialogueNPCPortraits < 4)
-            {
-                if (v8 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic)
-                {
-                    pTitleText = pMapStats->pInfos[uHouse_ExitPic].pName;
-                    v9 = 94 * v8 + 113;
-                }
-                else
-                {
-                    if (!v8 && dword_591080)
-                    {
-                        pTitleText = (char *)p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterTitle;
-                        pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, pColor2, pTitleText, 3);
-                        continue;
-                    }
-                    pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
-                    v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
-                }
-                v10 = v9;
-                pWindow.DrawTitleText(pFontCreate, 483, v10, pColor2, pTitleText, 3);
-            }
-        }
-        if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic)
-        {
-            render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-            render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-        }
-        else
-            render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-        return;
-    }
-    v4 = (char *)pDialogueNPCCount - 1;
-    render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[(signed int)v4]);
-    if (current_screen_type == SCREEN_E)
-    {
-        CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-        if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic)
-        {
-            render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-            render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-        }
-        else
-            render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
-        return;
-    }
-    if (v4 || !dword_591080)// emerald isle ship before quest's done   /   на изумрудном острове заходит на корабле пока не выполнены квесты
-        SimpleHouseDialog();
-    else
-    {
-        pWindow.DrawTitleText(
-            pFontCreate, 0x1E3u, 0x71u, pColor2,
-            localization->FormatString(
-                429,
-                p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterName,
-                p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterTitle
-                ),
-            3
-            );
-        switch (in_current_building_type)
-        {
-        case BuildingType_WeaponShop:
-            WeaponShopDialog();
-            break;
-        case BuildingType_ArmorShop:
-            ArmorShopDialog();
-            break;
-        case BuildingType_MagicShop:
-            MagicShopDialog();
-            break;
-        case BuildingType_AlchemistShop:
-            AlchemistDialog();
-            break;
-        case BuildingType_FireGuild:
-        case BuildingType_AirGuild:
-        case BuildingType_WaterGuild:
-        case BuildingType_EarthGuild:
-        case BuildingType_SpiritGuild:
-        case BuildingType_MindGuild:
-        case BuildingType_BodyGuild:
-        case BuildingType_LightGuild:
-        case BuildingType_DarkGuild:
-            GuildDialog();
-            break;
-        case BuildingType_18:
-            __debugbreak(); //What over the dialog?
-            sub_4B6478();
-            break;
-        case BuildingType_TownHall:
-            TownHallDialog();
-            break;
-        case BuildingType_Tavern:
-            TavernDialog();
-            break;
-        case BuildingType_Bank:
-            BankDialog();
-            break;
-        case BuildingType_Temple:
-            TempleDialog();
-            break;
-        case BuildingType_Stables:
-        case BuildingType_Boats:
-            TravelByTransport();
-            break;
-        case BuildingType_Training:
-           // __debugbreak(); // param was passed via pTmpBuf, investiage ??
-			// no idea why this could pass an argument - its always reset
-            TrainingDialog("");
-            break;
-        case BuildingType_Jail:
-            JailDialog();
-            break;
-        default:
-            //__debugbreak();//New BuildingType (if enter Boat)
-            break;
-        }
-    }
-    if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic)
-    {
+  }
+  pWindow.uFrameWidth += 8;
+  pWindow.uFrameZ += 8;
+  if (!pDialogueNPCCount) {
+    if (in_current_building_type == BuildingType_Jail) {
+      JailDialog();
+      if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
         render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
         render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-    }
-    else
+      }
+      else
         render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+      return;
+    }
+    if (!current_npc_text.empty()) {
+      GUIWindow pDialogWindow;
+      pDialogWindow.uFrameWidth = 458;
+      pDialogWindow.uFrameZ = 457;
+      int pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, pDialogWindow.uFrameWidth, 13);
+      int v6 = pTextHeight + 7;
+      render->DrawTextureCustomHeight(
+        8 / 640.0f,
+        (352 - (pTextHeight + 7)) / 480.0f,
+        ui_leather_mm7,
+        pTextHeight + 7);
+      render->DrawTextureAlphaNew(8 / 640.0f, (347 - v6) / 480.0f, _591428_endcap);
+      window_SpeakInHouse->DrawText(pFontArrus, 13, 354 - v6, 0, pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13), 0, 0, 0);
+    }
+    if (uNumDialogueNPCPortraits <= 0) {
+      if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+        render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+        render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+      } else {
+        render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+      }
+      return;
+    }
+
+    unsigned int v10 = 0;
+
+    for (int v8 = 0; v8 < uNumDialogueNPCPortraits; ++v8) {
+      render->DrawTextureAlphaNew((pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8] - 4) / 640.0f,
+        (pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] - 4) / 480.0f, game_ui_evtnpc);
+      render->DrawTextureAlphaNew(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v8] / 640.0f,
+        pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] / 480.0f, pDialogueNPCPortraits[v8]);
+      if (uNumDialogueNPCPortraits < 4) {
+        char *pTitleText = nullptr;
+        int v9 = 0;
+        if (v8 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+          pTitleText = pMapStats->pInfos[uHouse_ExitPic].pName;
+          v9 = 94 * v8 + 113;
+        } else {
+          if (!v8 && dword_591080) {
+            pTitleText = (char *)p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterTitle;
+            pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, pColor2, pTitleText, 3);
+            continue;
+          }
+          pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
+          v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
+        }
+        v10 = v9;
+        pWindow.DrawTitleText(pFontCreate, 483, v10, pColor2, pTitleText, 3);
+      }
+    }
+    if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+      render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+      render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    } else {
+      render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    }
+    return;
+  }
+
+  char *v4 = (char *)pDialogueNPCCount - 1;
+  render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
+  render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[(signed int)v4]);
+  if (current_screen_type == SCREEN_E) {
+    CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
+    if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+      render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+      render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+    } else {
+      render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    }
+    return;
+  }
+  if (v4 || !dword_591080) {  // emerald isle ship before quest's done   /   на изумрудном острове заходит на корабле пока не выполнены квесты
+    SimpleHouseDialog();
+  } else {
+    pWindow.DrawTitleText(
+      pFontCreate, 0x1E3u, 0x71u, pColor2,
+      localization->FormatString(
+        429,
+        p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterName,
+        p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterTitle
+      ),
+      3
+    );
+    switch (in_current_building_type) {
+      case BuildingType_WeaponShop:
+        WeaponShopDialog();
+        break;
+      case BuildingType_ArmorShop:
+        ArmorShopDialog();
+        break;
+      case BuildingType_MagicShop:
+        MagicShopDialog();
+        break;
+      case BuildingType_AlchemistShop:
+        AlchemistDialog();
+        break;
+      case BuildingType_FireGuild:
+      case BuildingType_AirGuild:
+      case BuildingType_WaterGuild:
+      case BuildingType_EarthGuild:
+      case BuildingType_SpiritGuild:
+      case BuildingType_MindGuild:
+      case BuildingType_BodyGuild:
+      case BuildingType_LightGuild:
+      case BuildingType_DarkGuild:
+        GuildDialog();
+        break;
+      case BuildingType_18:
+        __debugbreak(); //What over the dialog?
+        sub_4B6478();
+        break;
+      case BuildingType_TownHall:
+        TownHallDialog();
+        break;
+      case BuildingType_Tavern:
+        TavernDialog();
+        break;
+      case BuildingType_Bank:
+        BankDialog();
+        break;
+      case BuildingType_Temple:
+        TempleDialog();
+        break;
+      case BuildingType_Stables:
+      case BuildingType_Boats:
+        TravelByTransport();
+        break;
+      case BuildingType_Training:
+        // __debugbreak(); // param was passed via pTmpBuf, investiage ??
+        // no idea why this could pass an argument - its always reset
+        TrainingDialog("");
+        break;
+      case BuildingType_Jail:
+        JailDialog();
+        break;
+      default:
+        //__debugbreak();//New BuildingType (if enter Boat)
+        break;
+    }
+  }
+  if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+    render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+    render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+  } else {
+    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+  }
 }
 
 
@@ -883,7 +843,7 @@ void GUIWindow::DrawShops_next_generation_time_string(GameTime time)
     this->DrawTitleText(
         pFontArrus,
         0,
-        (212 - pFontArrus->CalcTextHeight(str, this, 0)) / 2 + 101,
+        (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101,
         Color16(0xFFu, 0xFFu, 0x9Bu),
         localization->GetString(532) + str,
         3
@@ -902,7 +862,7 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin, int uVertic
 {
   int width = this->uFrameWidth - uHorizontalMargin;
   ui_current_text_color = uDefaultColor;
-  String resString = pFont->FitTextInAWindow(pInString, this, uHorizontalMargin);
+  String resString = pFont->FitTextInAWindow(pInString, this->uFrameWidth, uHorizontalMargin);
   std::istringstream stream(resString);
   String line;
   int x = uHorizontalMargin + this->uFrameX;
@@ -1067,7 +1027,7 @@ GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
 //    unsigned int v11; // ebx@15
 //    NPCData *speakingNPC; // ebp@15
 //    int v14; // eax@20
-//    int v16; // eax@25
+//    int uBoxHeight; // eax@25
 //    int v18; // eax@30
 //    int v20; // eax@35
 //    int v22; // eax@40
@@ -1102,7 +1062,7 @@ GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
     this->uFrameW = uY + uHeight - 1;
 
     this->ptr_1C = (void *)pButton;
-    this->Hint = hint;
+    this->sHint = hint;
 
     //this->eWindowType = eWindowType;
     this->receives_keyboard_input = false;
@@ -1223,13 +1183,13 @@ void OnButtonClick::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    if (Hint != (char *)1)
+    if (sHint != (char *)1)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
     GUIButton *pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[0]);
     viewparams->bRedrawGameUI = true;
-    if (Hint && Hint != (char *)1)
-        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    if (sHint && sHint != (char *)1)
+        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     Release();
 }
 
@@ -1237,7 +1197,7 @@ void OnButtonClick2::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    if (Hint != (char *)1)
+    if (sHint != (char *)1)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
     GUIButton *pButton = (GUIButton *)ptr_1C;
     if (pButton->uX >= 0 && pButton->uX <= window->GetWidth())
@@ -1246,15 +1206,15 @@ void OnButtonClick2::Update()
         {
             render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[0]);
             viewparams->bRedrawGameUI = true;
-            if (Hint && Hint != (char *)1)
-                pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+            if (sHint && sHint != (char *)1)
+                pButton->DrawLabel(sHint, pFontCreate, 0, 0);
             Release();
             return;
         }
     }
     viewparams->bRedrawGameUI = true;
-    if (Hint && Hint != (char *)1)
-        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    if (sHint && sHint != (char *)1)
+        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     Release();
 }
 
@@ -1262,13 +1222,13 @@ void OnButtonClick3::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    if (Hint != (char *)1)
+    if (sHint != (char *)1)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[1]);
     viewparams->bRedrawGameUI = 1;
-    if (Hint && Hint != (char *)1)
-        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    if (sHint && sHint != (char *)1)
+        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     Release();
 }
 
@@ -1276,7 +1236,7 @@ void OnButtonClick4::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    if (Hint != (char *)1)
+    if (sHint != (char *)1)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[1]);
@@ -1289,13 +1249,13 @@ void OnSaveLoad::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    if (Hint != (char *)1)
+    if (sHint != (char *)1)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[0]);
     viewparams->bRedrawGameUI = true;
-    if (Hint && Hint != (char *)1)
-        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    if (sHint && sHint != (char *)1)
+        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     Release();
 
     if (current_screen_type == SCREEN_SAVEGAME)
@@ -1308,13 +1268,13 @@ void OnCancel::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    if (Hint != (char *)1)
+    if (sHint != (char *)1)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
     auto pGUIButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pGUIButton->pTextures[0]);
     viewparams->bRedrawGameUI = true;
-    if (Hint && Hint != (char *)1)
-        pGUIButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    if (sHint && sHint != (char *)1)
+        pGUIButton->DrawLabel(sHint, pFontCreate, 0, 0);
     Release();
 
     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
@@ -1324,13 +1284,13 @@ void OnCancel2::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    if (Hint != (char *)1)
+    if (sHint != (char *)1)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[1]);
     viewparams->bRedrawGameUI = true;
-    if (Hint && Hint != (char *)1)
-        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    if (sHint && sHint != (char *)1)
+        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     Release();
 
     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
@@ -1340,14 +1300,14 @@ void OnCancel3::Update()
 {
 // -----------------------------------
 // 004156F0 GUI_UpdateWindows --- part
-    if (Hint != (char *)1)
+    if (sHint != (char *)1)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
 
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, pButton->pTextures[0]);
     viewparams->bRedrawGameUI = true;
-    if (Hint && Hint != (char *)1)
-        pButton->DrawLabel(Hint, pFontCreate, 0, 0);
+    if (sHint && sHint != (char *)1)
+        pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     Release();
 
     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
@@ -1384,22 +1344,15 @@ void GUI_UpdateWindows()
 }
 
 
-//----- (00467FB6) --------------------------------------------------------
-void CreateScrollWindow()
-{
-  unsigned int v0; // eax@1
-  char *v1; // ST18_4@3
-  GUIWindow a1; // [sp+Ch] [bp-54h]@1
-
-  memcpy(&a1, pGUIWindow_ScrollWindow, sizeof(a1));
-  a1.Hint = 0;
+void CreateScrollWindow() {
+  GUIWindow a1 = *pGUIWindow_ScrollWindow;
+  a1.sHint = 0;
   a1.uFrameX = 1;
   a1.uFrameY = 1;
   a1.uFrameWidth = 468;
-  v0 = pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->par1C], &a1, 0) + 2 * (unsigned char)pFontCreate->GetHeight() + 24;
+  unsigned int v0 = pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->par1C], a1.uFrameWidth, 0) + 2 * (unsigned char)pFontCreate->GetHeight() + 24;
   a1.uFrameHeight = v0;
-  if ( (signed int)(v0 + a1.uFrameY) > 479 )
-  {
+  if ((v0 + a1.uFrameY) > 479) {
     v0 = 479 - a1.uFrameY;
     a1.uFrameHeight = 479 - a1.uFrameY;
   }
@@ -1412,12 +1365,13 @@ void CreateScrollWindow()
   a1.uFrameHeight -= 12;
   a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
   a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
-  v1 = pItemsTable->pItems[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C + 700].pName;
+  char *v1 = pItemsTable->pItems[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C + 700].pName;
 
   a1.DrawTitleText(pFontCreate, 0, 0, 0, StringPrintf(format_4E2D80, Color16(0xFFu, 0xFFu, 0x9Bu), v1), 3);
-  a1.DrawText(pFontSmallnum, 1, (unsigned char)pFontCreate->GetHeight() - 3, 0,
-              pScrolls[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C], 0, 0, 0);
+  a1.DrawText(pFontSmallnum, 1, pFontCreate->GetHeight() - 3, 0,
+    pScrolls[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C], 0, 0, 0);
 }
+
 //----- (00467F48) --------------------------------------------------------
 void CreateMsgScrollWindow(signed int mscroll_id)
 {
@@ -2062,7 +2016,7 @@ void ClickNPCTopic(signed int uMessageParam)
 	{
 		if (uMessageParam == 77)
 		{
-			//v16 = pCurrentNPCInfo->uProfession;
+			//uBoxHeight = pCurrentNPCInfo->uProfession;
 			__debugbreak();  // probably hirelings found in buildings, not present in MM7, changed "pCurrentNPCInfo->uProfession - 1" to "pCurrentNPCInfo->uProfession", have to check in other versions whether it's ok
 			if (dialogue_show_profession_details)
             {

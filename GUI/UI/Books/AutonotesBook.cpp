@@ -330,7 +330,7 @@ void GUIWindow_AutonotesBook::Update()
     {
         ++num_achieved_awards;
         autonotes_window.DrawText(pAutonoteFont, 1, 0, ui_book_autonotes_text_color, pAutonoteTxt[achieved_awards[i]].pText, 0, 0, 0);
-        pTextHeight = pAutonoteFont->CalcTextHeight(pAutonoteTxt[achieved_awards[i]].pText, &autonotes_window, 1);
+        pTextHeight = pAutonoteFont->CalcTextHeight(pAutonoteTxt[achieved_awards[i]].pText, autonotes_window.uFrameWidth, 1);
         if ((signed int)(autonotes_window.uFrameY + pTextHeight) > (signed int)autonotes_window.uFrameHeight)
             break;
 

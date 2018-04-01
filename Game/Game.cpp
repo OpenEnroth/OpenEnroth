@@ -1237,7 +1237,7 @@ void Game_EventLoop()
                                 _5B65B8_npcdata_hiword_house_or_other = v66;
                                 Actor::InitializeActors();
                             }
-                            v67 = (char*)pGUIWindow_CurrentMenu->Hint;
+                            v67 = (char*)pGUIWindow_CurrentMenu->sHint;
                             if (v67)
                                 *((int *)v67 + 17) = 1;
                             else

@@ -105,7 +105,7 @@ void GameOver_Loop(int v15)
         v23 += pParty->pPlayers[i].uExperience;//__PAIR__(*(int *)(i - 4), *(int *)(i - 8));
     }
     v23 = (signed __int64)v23 / v19;
-    String v6 = pFont->FitTextInAWindow(pInString, &pWindow, 12);
+    String v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetHeight() + 11), 1, v6, 0);
 
 

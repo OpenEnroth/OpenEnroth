@@ -78,7 +78,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
                         0, 0, 0,
                         &pParty->PartyTimes.HistoryEventTimes[i]
                     );
-                    pTextHeight = pAutonoteFont->CalcTextHeight(str, &journal_window, 1);
+                    pTextHeight = pAutonoteFont->CalcTextHeight(str, journal_window.uFrameWidth, 1);
                     page_count = ((pTextHeight - (pAutonoteFont->GetHeight() - 3)) / (signed int)journal_window.uFrameHeight) + 1;
                     memset32((char *)&achieved_awards[num_achieved_awards], i + 1, page_count);
                     for (uint j = 0; j <= page_count - 1; ++j)

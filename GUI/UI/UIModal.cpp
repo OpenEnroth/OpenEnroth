@@ -36,9 +36,9 @@ void GUIWindow_Modal::Update()
     GUIWindow pWindow; // [sp+4h] [bp-54h]@1
 
     static String label_container;
-    label_container = StringPrintf("%s\n \n%s", pModalWindow->Hint, localization->GetString(61)); // Press Escape
+    label_container = StringPrintf("%s\n \n%s", pModalWindow->sHint, localization->GetString(61)); // Press Escape
 
-    pWindow.Hint = label_container.c_str();
+    pWindow.sHint = label_container.c_str();
     pWindow.uFrameWidth = 400;
     pWindow.uFrameHeight = 100;
     pWindow.uFrameX = 120;

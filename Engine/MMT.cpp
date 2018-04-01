@@ -219,13 +219,13 @@ void DrawMMTCopyrightWindow()
   Dst.uFrameHeight = 256;
   Dst.uFrameX = 8;
   Dst.uFrameY = 30;
-  Dst.uFrameHeight = pFontSmallnum->CalcTextHeight("Text Verification: Here we can write an explanation of the project", &Dst, 24)
+  Dst.uFrameHeight = pFontSmallnum->CalcTextHeight("Text Verification: Here we can write an explanation of the project", Dst.uFrameWidth, 24)
                    + 2 * pFontSmallnum->GetHeight()
                    + 24;
   Dst.uFrameY = 470 - Dst.uFrameHeight;
   Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
   Dst.uFrameW = 469;
-  //Dst.Hint = "abcagfdsgsg ljsrengvlkjesnfkjwnef";
+  //Dst.sHint = "abcagfdsgsg ljsrengvlkjesnfkjwnef";
   Dst.DrawMessageBox(0);
 
   Dst.uFrameWidth -= 24;

@@ -879,7 +879,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player)
         str = String(v6);
 
     awards_window.DrawText(pFontArrus, 0, 0, ui_character_award_color[pAwards[achieved_awards[i]].uPriority % 6], str, 0, 0, 0);
-    awards_window.uFrameY = pFontArrus->CalcTextHeight(str, &awards_window, 0) + awards_window.uFrameY + 8;
+    awards_window.uFrameY = pFontArrus->CalcTextHeight(str, awards_window.uFrameWidth, 0) + awards_window.uFrameY + 8;
     if (awards_window.uFrameY > awards_window.uFrameHeight)
       break;
 

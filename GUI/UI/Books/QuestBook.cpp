@@ -138,7 +138,7 @@ void GUIWindow_QuestBook::Update()
     {
         ++num_achieved_awards;
         questbook_window.DrawText(pAutonoteFont, 1, 0, ui_book_quests_text_color, pQuestTable[achieved_awards[i]], 0, 0, 0);
-        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[achieved_awards[i]], &questbook_window, 1);
+        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[achieved_awards[i]], questbook_window.uFrameWidth, 1);
         if ((signed int)(questbook_window.uFrameY + pTextHeight) > (signed int)questbook_window.uFrameHeight)
             break;
 

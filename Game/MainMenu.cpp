@@ -300,7 +300,7 @@ void DrawMM7CopyrightWindow()
     Dst.uFrameHeight = 256;
     Dst.uFrameX = 8;
     Dst.uFrameY = 30;                             // c 1999 The 3DO Company.
-    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(localization->GetString(157), &Dst, 24, 0)
+    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(localization->GetString(157), Dst.uFrameWidth, 24, 0)
         + 2 * (unsigned char)pFontSmallnum->GetHeight()
         + 24;
     Dst.uFrameY = 470 - Dst.uFrameHeight;

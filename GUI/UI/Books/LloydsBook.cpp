@@ -143,7 +143,7 @@ void GUIWindow_LloydsBook::Update()
                 render->DrawTextureAlphaNew(pLloydsBeacons_SomeXs[BeaconID]/640.0f, pLloydsBeacons_SomeYs[BeaconID]/480.0f, ui_book_lloyds_border);
                 render->DrawTextureNew(pLloydsBeaconsPreviewXs[BeaconID]/640.0f, pLloydsBeaconsPreviewYs[BeaconID]/480.0f, pSavegameThumbnails[BeaconID]);
                 Str = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(pPlayer->pInstalledBeacons[BeaconID].SaveFileID)].pName;
-                pTextHeight = pSpellFont->CalcTextHeight(Str, &pWindow, 0);
+                pTextHeight = pSpellFont->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
                 pWindow.uFrameY += -6 - pTextHeight;
                 pWindow.DrawTitleText(pSpellFont, 0, 0, 1, Str, 3);
                 RemainingTime = pPlayer->pInstalledBeacons[BeaconID].uBeaconTime - pParty->GetPlayingTime();
@@ -178,7 +178,7 @@ void GUIWindow_LloydsBook::Update()
             if (!bRecallingBeacon)
             {
                 render->DrawTextureAlphaNew(pLloydsBeacons_SomeXs[BeaconID]/640.0f, pLloydsBeacons_SomeYs[BeaconID]/480.0f, ui_book_lloyds_border);
-                pTextHeight = pSpellFont->CalcTextHeight(localization->GetString(19), &pWindow, 0);
+                pTextHeight = pSpellFont->CalcTextHeight(localization->GetString(19), pWindow.uFrameWidth, 0);
                 pWindow.DrawTitleText(pSpellFont, 0, (signed int)pWindow.uFrameHeight / 2 - pTextHeight / 2, 1, localization->GetString(19), 3);//Доступно
             }
         }

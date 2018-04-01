@@ -386,7 +386,7 @@ struct GUIWindow
   int numVisibleWindows;
   int receives_keyboard_input_2; //  0  no input   1 currently typing   2 enter pressed   3 escape pressed
   int receives_keyboard_input;
-  const char *Hint;
+  const char *sHint;
   GUIButton *pControlsHead;
   GUIButton *pControlsTail;
 };

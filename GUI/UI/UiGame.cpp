@@ -797,12 +797,12 @@ void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
                     if (!lpsz)
                         lpsz = "";
                 }
-                popup_window.Hint = nullptr;
+                popup_window.sHint = nullptr;
                 popup_window.uFrameX = 38;
                 popup_window.uFrameY = 60;
                 popup_window.uFrameWidth = 276;
                 popup_window.uFrameZ = 313;
-                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, &popup_window, 0) + 2 * pFontArrus->GetHeight() + 24;
+                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, popup_window.uFrameWidth, 0) + 2 * pFontArrus->GetHeight() + 24;
                 if ((signed int)popup_window.uFrameHeight < 130)
                     popup_window.uFrameHeight = 130;
                 popup_window.uFrameWidth = 400;
@@ -943,289 +943,273 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
 //----- (00445350) --------------------------------------------------------
 void GameUI_DrawDialogue()
 {
-    NPCData *pNPC; // ebx@2
-    int pGreetType; // eax@2
-    int pTextHeight; // esi@39
-    GUIButton *pButton; // eax@43
-    int all_text_height; // ebx@93
-    signed int index; // esi@99
-    int v42; // edi@102
-    int v45;
-    unsigned __int16 pTextColor; // ax@104
-    GUIWindow window; // [sp+ACh] [bp-68h]@42
-  //  GUIFont *pOutString; // [sp+10Ch] [bp-8h]@39
+  NPCData *pNPC; // ebx@2
+  int pGreetType; // eax@2
+  int pTextHeight; // esi@39
+  GUIButton *pButton; // eax@43
+  int all_text_height; // ebx@93
+  signed int index; // esi@99
+  int v42; // edi@102
+  int v45;
+  unsigned __int16 pTextColor; // ax@104
 
-    if (!pDialogueWindow)
-        return;
+  if (!pDialogueWindow)
+    return;
 
-    // Window title(Заголовок окна)----
-    memcpy(&window, pDialogueWindow, sizeof(window));
-    pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
-    window.uFrameWidth -= 10;
-    window.uFrameZ -= 10;
-    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[0]);
+  // Window title(Заголовок окна)----
+  GUIWindow window = *pDialogueWindow;
+  pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+  pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
+  window.uFrameWidth -= 10;
+  window.uFrameZ -= 10;
+  render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+  render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+  render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
+  render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[0]);
 
-    String title;
-    if (pNPC->uProfession)
-    {
-        assert(pNPC->uProfession < 59); // sometimes buffer overflows; errors emerge both here and in dialogue text
-        title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));//^Pi[%s] %s
-    }
-    else if (pNPC->pName)
-        title = pNPC->pName;
+  String title;
+  if (pNPC->uProfession) {
+    assert(pNPC->uProfession < 59); // sometimes buffer overflows; errors emerge both here and in dialogue text
+    title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));//^Pi[%s] %s
+  } else if (pNPC->pName) {
+    title = pNPC->pName;
+  }
 
-    window.DrawTitleText(pFontArrus, 483, 112, ui_game_dialogue_npc_name_color, title, 3);
+  window.DrawTitleText(pFontArrus, 483, 112, ui_game_dialogue_npc_name_color, title, 3);
 
-    pParty->GetPartyFame();
+  pParty->GetPartyFame();
 
-    String dialogue_string;
-    switch (uDialogueType)
-    {
-    case DIALOGUE_13:
-        dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
-        break;
-
-    case DIALOGUE_PROFESSION_DETAILS:
-    {
-        //auto prof = pNPCStats->pProfessions[pNPC->uProfession];
-
-        if (dialogue_show_profession_details)
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0);
-        else if (pNPC->Hired())
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pDismissText, uActiveCharacter - 1, 0, 0, 0);
-        else
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
-    }
+  String dialogue_string;
+  switch (uDialogueType)
+  {
+  case DIALOGUE_13:
+    dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
     break;
 
-    case DIALOGUE_ARENA_WELCOME:
-        dialogue_string = localization->GetString(574); // "Welcome to the Arena of Life and Death.  Remember, you are only allowed one arena combat per visit.  To fight an arena battle, select the option that best describes your abilities and return to me- if you survive:"
-        break;
+  case DIALOGUE_PROFESSION_DETAILS:
+  {
+    //auto prof = pNPCStats->pProfessions[pNPC->uProfession];
 
-    case DIALOGUE_ARENA_FIGHT_NOT_OVER_YET:
-        dialogue_string = localization->GetString(577); //"Get back in there you wimps:"
-        break;
+    if (dialogue_show_profession_details)
+      dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0);
+    else if (pNPC->Hired())
+      dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pDismissText, uActiveCharacter - 1, 0, 0, 0);
+    else
+      dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
+  }
+  break;
 
-    case DIALOGUE_ARENA_REWARD:
-        dialogue_string = localization->FormatString(576, gold_transaction_amount);// "Congratulations on your win: here's your stuff: %u gold."
-        break;
+  case DIALOGUE_ARENA_WELCOME:
+    dialogue_string = localization->GetString(574); // "Welcome to the Arena of Life and Death.  Remember, you are only allowed one arena combat per visit.  To fight an arena battle, select the option that best describes your abilities and return to me- if you survive:"
+    break;
 
-    case DIALOGUE_ARENA_ALREADY_WON:
-        dialogue_string = localization->GetString(582); // "You already won this trip to the Arena:"
-        break;
+  case DIALOGUE_ARENA_FIGHT_NOT_OVER_YET:
+    dialogue_string = localization->GetString(577); //"Get back in there you wimps:"
+    break;
 
-    default:
-        if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E && !byte_5B0938[0])
-        {
-            dialogue_string = current_npc_text;
-        }
-        else if (pGreetType == 1)//QuestNPC_greet
-        {
-            if (pNPC->greet)
-            {
-                if ((pNPC->uFlags & 3) == 2)
-                    dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
-                else
-                    dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
-            }
-        }
-        else if (pGreetType == 2)//HiredNPC_greet
-        {
-            NPCProfession* prof = &pNPCStats->pProfessions[pNPC->uProfession];
+  case DIALOGUE_ARENA_REWARD:
+    dialogue_string = localization->FormatString(576, gold_transaction_amount);// "Congratulations on your win: here's your stuff: %u gold."
+    break;
 
-            if (pNPC->Hired())
-                dialogue_string = BuildDialogueString(prof->pDismissText, uActiveCharacter - 1, 0, 0, 0);
-            else
-                dialogue_string = BuildDialogueString(prof->pJoinText, uActiveCharacter - 1, 0, 0, 0);
-        }
-        break;
-    }
+  case DIALOGUE_ARENA_ALREADY_WON:
+    dialogue_string = localization->GetString(582); // "You already won this trip to the Arena:"
+    break;
 
-    // Message window(Окно сообщения)---- 
-    if (!dialogue_string.empty())
+  default:
+    if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E && !byte_5B0938[0])
     {
-        window.uFrameWidth = game_viewport_width;
-        window.uFrameZ = 452;
-        GUIFont* font = pFontArrus;
-        pTextHeight = pFontArrus->CalcTextHeight(dialogue_string, &window, 13) + 7;
-        if (352 - pTextHeight < 8)
-        {
-            font = pFontCreate;
-            pTextHeight = pFontCreate->CalcTextHeight(dialogue_string, &window, 13) + 7;
-        }
-
-        if (ui_leather_mm7)
-            render->DrawTextureCustomHeight(
-                8 / 640.0f,
-                (352 - pTextHeight) / 480.0f,
-                ui_leather_mm7,
-                pTextHeight);
-
-        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        pDialogueWindow->DrawText(font, 13, 354 - pTextHeight, 0, font->FitTextInAWindow(dialogue_string, &window, 13), 0, 0, 0);
+      dialogue_string = current_npc_text;
     }
-
-    // Right panel(Правая панель)------- 
-    memcpy(&window, pDialogueWindow, sizeof(window));
-    window.uFrameX = 483;
-    window.uFrameWidth = 148;
-    window.uFrameZ = 334;
-    for (int i = window.pStartingPosActiveItem; i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i)
+    else if (pGreetType == 1)//QuestNPC_greet
     {
-        pButton = window.GetControl(i);
-        if (!pButton)
-            break;
-
-        if (pButton->msg_param > 88)
-            pButton->pButtonName[0] = 0;
-        else if (pButton->msg_param == 88)
-            strcpy(pButton->pButtonName, localization->GetString(581)); // Lord
-        else if (pButton->msg_param == 87)
-            strcpy(pButton->pButtonName, localization->GetString(580)); // Knight
-        else if (pButton->msg_param == 86)
-            strcpy(pButton->pButtonName, localization->GetString(579)); // Squire
-        else if (pButton->msg_param == 85)
-            strcpy(pButton->pButtonName, localization->GetString(578)); // Page
-        else if (pButton->msg_param == 77)
-            strcpy(pButton->pButtonName, localization->GetString(407)); // Details
-        else if (pButton->msg_param == 76)
-        {
-            if (pNPC->Hired())
-                sprintf(pButton->pButtonName, localization->GetString(408), pNPC->pName); // Release %s
-            else
-                strcpy(pButton->pButtonName, localization->GetString(406)); // Hire
-        }
-        else if (pButton->msg_param == 24)
-        {
-            __debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_F)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else
-                strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_F].pTopic);
-        }
-        else if (pButton->msg_param == 9)
-            strcpy(pButton->pButtonName, GetProfessionActionText(pNPC->uProfession));
-        else if (pButton->msg_param == 19) // Scavenger Hunt
-        {
-            if (!pNPC->evt_A)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else
-                strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_A].pTopic);
-        }
-        else if (pButton->msg_param == 20) // Scavenger Hunt
-        {
-            if (!pNPC->evt_B)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_B].pTopic);
-        }
-        else if (pButton->msg_param == 21)
-        {
-            //__debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_C)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_C].pTopic);
-        }
-        else if (pButton->msg_param == 22)
-        {
-            //__debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_D)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_D].pTopic);
-        }
-        else if (pButton->msg_param == 23)
-        {
-            //__debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_E)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_E].pTopic);
-        }
-        else if (pButton->msg_param == 13)
-        {
-            if (pNPC->Hired())
-                sprintf(pButton->pButtonName, localization->GetString(408), pNPC->pName); // Release %s
-            else
-                strcpy(pButton->pButtonName, localization->GetString(122)); // Join
-        }
+      if (pNPC->greet)
+      {
+        if ((pNPC->uFlags & 3) == 2)
+          dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
         else
-            pButton->pButtonName[0] = 0;
+          dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
+      }
+    }
+    else if (pGreetType == 2)//HiredNPC_greet
+    {
+      NPCProfession* prof = &pNPCStats->pProfessions[pNPC->uProfession];
 
-        if (pParty->field_7B5_in_arena_quest && pParty->field_7B5_in_arena_quest != -1)
-        {
-            int num_dead_actors = 0;
-            for (uint i = 0; i < uNumActors; ++i)
-            {
-                if (pActors[i].uAIState == Dead || pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled)
-                    ++num_dead_actors;
-                else
-                {
-                    int sumonner_type = PID_TYPE(pActors[i].uSummonerID);
-                    if (sumonner_type == OBJECT_Player)
-                        ++num_dead_actors;
-                }
-            }
-            if (num_dead_actors == uNumActors)
-                strcpy(pButton->pButtonName, localization->GetString(658)); // Collect Prize
-        }
+      if (pNPC->Hired())
+        dialogue_string = BuildDialogueString(prof->pDismissText, uActiveCharacter - 1, 0, 0, 0);
+      else
+        dialogue_string = BuildDialogueString(prof->pJoinText, uActiveCharacter - 1, 0, 0, 0);
+    }
+    break;
+  }
+
+  // Message window(Окно сообщения)---- 
+  if (!dialogue_string.empty())
+  {
+    window.uFrameWidth = game_viewport_width;
+    window.uFrameZ = 452;
+    GUIFont* font = pFontArrus;
+    pTextHeight = pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
+    if (352 - pTextHeight < 8)
+    {
+      font = pFontCreate;
+      pTextHeight = pFontCreate->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
     }
 
-    // Install Buttons(Установка кнопок)-------- 
-    index = 0;
-    all_text_height = 0;
-    for (int i = pDialogueWindow->pStartingPosActiveItem;
+    if (ui_leather_mm7)
+      render->DrawTextureCustomHeight(
+        8 / 640.0f,
+        (352 - pTextHeight) / 480.0f,
+        ui_leather_mm7,
+        pTextHeight);
+
+    render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+    pDialogueWindow->DrawText(font, 13, 354 - pTextHeight, 0, font->FitTextInAWindow(dialogue_string, window.uFrameWidth, 13), 0, 0, 0);
+  }
+
+  // Right panel(Правая панель)------- 
+  window = *pDialogueWindow;
+  window.uFrameX = 483;
+  window.uFrameWidth = 148;
+  window.uFrameZ = 334;
+  for (int i = window.pStartingPosActiveItem; i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
+    pButton = window.GetControl(i);
+    if (!pButton)
+      break;
+
+    if (pButton->msg_param > 88)
+      pButton->pButtonName[0] = 0;
+    else if (pButton->msg_param == 88)
+      strcpy(pButton->pButtonName, localization->GetString(581)); // Lord
+    else if (pButton->msg_param == 87)
+      strcpy(pButton->pButtonName, localization->GetString(580)); // Knight
+    else if (pButton->msg_param == 86)
+      strcpy(pButton->pButtonName, localization->GetString(579)); // Squire
+    else if (pButton->msg_param == 85)
+      strcpy(pButton->pButtonName, localization->GetString(578)); // Page
+    else if (pButton->msg_param == 77)
+      strcpy(pButton->pButtonName, localization->GetString(407)); // Details
+    else if (pButton->msg_param == 76)
+    {
+      if (pNPC->Hired())
+        sprintf(pButton->pButtonName, localization->GetString(408), pNPC->pName); // Release %s
+      else
+        strcpy(pButton->pButtonName, localization->GetString(406)); // Hire
+    }
+    else if (pButton->msg_param == 24)
+    {
+      __debugbreak(); // learn conditions of this event
+      if (!pNPC->evt_F)
+      {
+        pButton->pButtonName[0] = 0;
+        pButton->msg_param = 0;
+      }
+      else
+        strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_F].pTopic);
+    }
+    else if (pButton->msg_param == 9)
+      strcpy(pButton->pButtonName, GetProfessionActionText(pNPC->uProfession));
+    else if (pButton->msg_param == 19) // Scavenger Hunt
+    {
+      if (!pNPC->evt_A)
+      {
+        pButton->pButtonName[0] = 0;
+        pButton->msg_param = 0;
+      }
+      else
+        strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_A].pTopic);
+    }
+    else if (pButton->msg_param == 20) // Scavenger Hunt
+    {
+      if (!pNPC->evt_B)
+      {
+        pButton->pButtonName[0] = 0;
+        pButton->msg_param = 0;
+      }
+      else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_B].pTopic);
+    }
+    else if (pButton->msg_param == 21)
+    {
+      //__debugbreak(); // learn conditions of this event
+      if (!pNPC->evt_C)
+      {
+        pButton->pButtonName[0] = 0;
+        pButton->msg_param = 0;
+      }
+      else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_C].pTopic);
+    } else if (pButton->msg_param == 22) {
+      //__debugbreak(); // learn conditions of this event
+      if (!pNPC->evt_D) {
+        pButton->pButtonName[0] = 0;
+        pButton->msg_param = 0;
+      }
+      else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_D].pTopic);
+    } else if (pButton->msg_param == 23) {
+      //__debugbreak(); // learn conditions of this event
+      if (!pNPC->evt_E) {
+        pButton->pButtonName[0] = 0;
+        pButton->msg_param = 0;
+      }
+      else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_E].pTopic);
+    } else if (pButton->msg_param == 13) {
+      if (pNPC->Hired())
+        sprintf(pButton->pButtonName, localization->GetString(408), pNPC->pName); // Release %s
+      else
+        strcpy(pButton->pButtonName, localization->GetString(122)); // Join
+    } else {
+      pButton->pButtonName[0] = 0;
+    }
+
+    if (pParty->field_7B5_in_arena_quest && pParty->field_7B5_in_arena_quest != -1) {
+      int num_dead_actors = 0;
+      for (uint i = 0; i < uNumActors; ++i) {
+        if (pActors[i].uAIState == Dead || pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled) {
+          ++num_dead_actors;
+        } else {
+          int sumonner_type = PID_TYPE(pActors[i].uSummonerID);
+          if (sumonner_type == OBJECT_Player)
+            ++num_dead_actors;
+        }
+      }
+      if (num_dead_actors == uNumActors)
+        strcpy(pButton->pButtonName, localization->GetString(658)); // Collect Prize
+    }
+  }
+
+  // Install Buttons(Установка кнопок)-------- 
+  index = 0;
+  all_text_height = 0;
+  for (int i = pDialogueWindow->pStartingPosActiveItem;
     i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i)
+  {
+    pButton = pDialogueWindow->GetControl(i);
+    if (!pButton)
+      break;
+    all_text_height += pFontArrus->CalcTextHeight(pButton->pButtonName, window.uFrameWidth, 0);
+    index++;
+  }
+  if (index) {
+    v45 = (174 - all_text_height) / index;
+    if (v45 > 32)
+      v45 = 32;
+    v42 = (174 - v45 * index - all_text_height) / 2 - v45 / 2 + 138;
+    for (int i = pDialogueWindow->pStartingPosActiveItem;
+      i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
     {
-        pButton = pDialogueWindow->GetControl(i);
-        if (!pButton)
-            break;
-        all_text_height += pFontArrus->CalcTextHeight(pButton->pButtonName, &window, 0);
-        index++;
+      pButton = pDialogueWindow->GetControl(i);
+      if (!pButton)
+        break;
+      pButton->uY = (unsigned int)(v45 + v42);
+      pTextHeight = pFontArrus->CalcTextHeight(pButton->pButtonName, window.uFrameWidth, 0);
+      pButton->uHeight = pTextHeight;
+      v42 = pButton->uY + pTextHeight - 1;
+      pButton->uW = v42;
+      pTextColor = ui_game_dialogue_option_normal_color;
+      if (pDialogueWindow->pCurrentPosActiveItem == i)
+        pTextColor = ui_game_dialogue_option_highlight_color;
+      window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->pButtonName, 3);
     }
-    if (index)
-    {
-        v45 = (174 - all_text_height) / index;
-        if (v45 > 32)
-            v45 = 32;
-        v42 = (174 - v45 * index - all_text_height) / 2 - v45 / 2 + 138;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-        i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-        {
-            pButton = pDialogueWindow->GetControl(i);
-            if (!pButton)
-                break;
-            pButton->uY = (unsigned int)(v45 + v42);
-            pTextHeight = pFontArrus->CalcTextHeight(pButton->pButtonName, &window, 0);
-            pButton->uHeight = pTextHeight;
-            v42 = pButton->uY + pTextHeight - 1;
-            pButton->uW = v42;
-            pTextColor = ui_game_dialogue_option_normal_color;
-            if (pDialogueWindow->pCurrentPosActiveItem == i)
-                pTextColor = ui_game_dialogue_option_highlight_color;
-            window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->pButtonName, 3);
-        }
-    }
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+  }
+  render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 }
 
 //----- (00444FBE) --------------------------------------------------------
@@ -1240,11 +1224,11 @@ void GameUI_DrawBranchlessDialogue()
         strcpy(byte_5B0938.data(), current_npc_text.c_str());
     BranchlessDlg_window.uFrameWidth = game_viewport_width;
     BranchlessDlg_window.uFrameZ = 452;
-    pTextHeight = pFontArrus->CalcTextHeight(byte_5B0938.data(), &BranchlessDlg_window, 12) + 7;
+    pTextHeight = pFontArrus->CalcTextHeight(byte_5B0938.data(), BranchlessDlg_window.uFrameWidth, 12) + 7;
     if (352 - pTextHeight < 8)
     {
         pFont = pFontCreate;
-        pTextHeight = pFontCreate->CalcTextHeight(byte_5B0938.data(), &BranchlessDlg_window, 12) + 7;
+        pTextHeight = pFontCreate->CalcTextHeight(byte_5B0938.data(), BranchlessDlg_window.uFrameWidth, 12) + 7;
     }
 
     render->DrawTextureCustomHeight(
@@ -1253,7 +1237,7 @@ void GameUI_DrawBranchlessDialogue()
         ui_leather_mm7,
         pTextHeight);
     render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    pGUIWindow2->DrawText(pFont, 12, 354 - pTextHeight, 0, pFont->FitTextInAWindow(byte_5B0938.data(), &BranchlessDlg_window, 12), 0, 0, 0);
+    pGUIWindow2->DrawText(pFont, 12, 354 - pTextHeight, 0, pFont->FitTextInAWindow(byte_5B0938.data(), BranchlessDlg_window.uFrameWidth, 12), 0, 0, 0);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     if (pGUIWindow2->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS)
     {

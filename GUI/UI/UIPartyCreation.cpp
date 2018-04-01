@@ -549,9 +549,9 @@ void GUIWindow_PartyCreation::Update()
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, pTextCenter + 530, 410, Color16(0xFF, 0xFF, 0xFF), unspent_attribute_bonus_label);
     if (game_ui_status_bar_event_string_time_left > OS_GetTime())
     {
-        message_window.Hint = localization->GetString(412);// "Create Party cannot be completed unless you have assigned all characters 2 extra skills and have spent all of your bonus points."
+        message_window.sHint = localization->GetString(412);// "Create Party cannot be completed unless you have assigned all characters 2 extra skills and have spent all of your bonus points."
         if (pBonusNum < 0)
-            message_window.Hint = localization->GetString(413);// "You can't spend more than 50 points."
+            message_window.sHint = localization->GetString(413);// "You can't spend more than 50 points."
         message_window.uFrameWidth = 300;
         message_window.uFrameHeight = 100;
         message_window.uFrameX = 170;

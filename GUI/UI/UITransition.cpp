@@ -158,7 +158,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
     }
   }
 
-  auto hint = this->Hint = transition_button_label.c_str();
+  auto hint = this->sHint = transition_button_label.c_str();
 
 //
 // --------------------------------
@@ -200,7 +200,7 @@ GUIWindow_Travel::GUIWindow_Travel() :
 
 
 
-  auto hint = this->Hint = transition_button_label.c_str();
+  auto hint = this->sHint = transition_button_label.c_str();
 
 // --------------------------------
 // 0041C432 GUIWindow c-tor -- part
@@ -228,90 +228,72 @@ GUIWindow_Travel::GUIWindow_Travel() :
   CreateButton(8, 8, 460, 344, 1, 0, UIMSG_OnTravelByFoot, 1, 0, hint, 0);
 }
 
+void GUIWindow_Travel::Update() {
+  char pDestinationMapName[32];
 
+  pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, pDestinationMapName, 20);
+  render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+  render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+  render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
+  render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+  render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+  if (pMapStats->GetMapInfo(pDestinationMapName)) {
+    GUIWindow travel_window = *pPrimaryWindow;
+    travel_window.uFrameX = 493;
+    travel_window.uFrameWidth = 126;
+    travel_window.uFrameZ = 366;
+    travel_window.DrawTitleText(pFontCreate, 0, 4, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName, 3);
+    travel_window.uFrameX = 483;
+    travel_window.uFrameWidth = 148;
+    travel_window.uFrameZ = 334;
 
-//----- (00444DCA) --------------------------------------------------------
-void GUIWindow_Travel::Update()
-{
-    // -----------------------------------
-    // 004156F0 GUI_UpdateWindows --- part
-    GUIWindow travel_window; // [sp+Ch] [bp-78h]@1
-    char pDestinationMapName[32]; // [sp+60h] [bp-24h]@1
-
-    memcpy(&travel_window, pPrimaryWindow, sizeof(travel_window));
-    pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y, pDestinationMapName, 20);
-    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
-    render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-    render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-    if (pMapStats->GetMapInfo(pDestinationMapName))
-    {
-        travel_window.uFrameX = 493;
-        travel_window.uFrameWidth = 126;
-        travel_window.uFrameZ = 366;
-        travel_window.DrawTitleText(pFontCreate, 0, 4, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName, 3);
-        travel_window.uFrameX = 483;
-        travel_window.uFrameWidth = 148;
-        travel_window.uFrameZ = 334;
-
-        String str;
-        if (GetTravelTime() == 1)
-            str = localization->FormatString(663, 1, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName); // It will take %d day to cross to %s.
-        else
-            str = localization->FormatString(128, GetTravelTime(), pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName); // It will take %d days to travel to %s.
-        str += "\n \n";
-        str += localization->FormatString(126, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);
-
-        travel_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, &travel_window, 0)) / 2 + 101, 0, str, 3);
-        _unused_5B5924_is_travel_ui_drawn = 1;
+    String str;
+    if (GetTravelTime() == 1) {
+      str = localization->FormatString(663, 1, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName); // It will take %d day to cross to %s.
+    } else {
+      str = localization->FormatString(128, GetTravelTime(), pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName); // It will take %d days to travel to %s.
     }
+    str += "\n \n";
+    str += localization->FormatString(126, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);
+
+    travel_window.DrawTitleText(pFontCreate, 0, (212 - pFontCreate->CalcTextHeight(str, travel_window.uFrameWidth, 0)) / 2 + 101, 0, str, 3);
+    _unused_5B5924_is_travel_ui_drawn = 1;
+  }
 }
 
+void GUIWindow_Transition::Update() {
+  unsigned int v9 = IndoorLocation::GetLocationIndex(dword_591164_teleport_map_name);
+  render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+  render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
+  render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
 
+  render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+  render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
+  render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
+  unsigned int map_id = pMapStats->GetMapInfo(pCurrentMapName);
+  if ((pMovie_Track || v9) && *dword_591164_teleport_map_name != ' ') {
+    map_id = pMapStats->GetMapInfo(dword_591164_teleport_map_name);
+  }
 
-//----- (00444A51) --------------------------------------------------------
-void GUIWindow_Transition::Update()
-{
-    // -----------------------------------
-    // 004156F0 GUI_UpdateWindows --- part
-    unsigned int v4; // [sp-10h] [bp-7Ch]@12
-    GUIWindow transition_window; // [sp+Ch] [bp-60h]@1
-    unsigned int v9; // [sp+60h] [bp-Ch]@1
-    unsigned int map_id; // [sp+64h] [bp-8h]@1
+  GUIWindow transition_window = *pPrimaryWindow;
+  transition_window.uFrameX = 493;
+  transition_window.uFrameWidth = 126;
+  transition_window.uFrameZ = 366;
+  transition_window.DrawTitleText(pFontCreate, 0, 5, 0, pMapStats->pInfos[map_id].pName, 3);
+  transition_window.uFrameX = 483;
+  transition_window.uFrameWidth = 148;
+  transition_window.uFrameZ = 334;
 
-    memcpy(&transition_window, pPrimaryWindow, sizeof(transition_window));
-    v9 = IndoorLocation::GetLocationIndex(dword_591164_teleport_map_name);
-    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
+  if (uCurrentHouse_Animation) {
+    unsigned int v4 = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uCurrentHouse_Animation], transition_window.uFrameWidth, 0)) / 2 + 101;
+    transition_window.DrawTitleText(pFontCreate, 0, v4, 0, pTransitionStrings[uCurrentHouse_Animation], 3);
+  } else if (map_id) {
+    String str = localization->FormatString(409, pMapStats->pInfos[map_id].pName); // Do you wish to leave %s?
+    unsigned int v4 = (212 - pFontCreate->CalcTextHeight(str, transition_window.uFrameWidth, 0)) / 2 + 101;
+    transition_window.DrawTitleText(pFontCreate, 0, v4, 0, str, 3);
+  } else {
+    Error("Troubles in da house");
+  }
 
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
-    render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-    map_id = pMapStats->GetMapInfo(pCurrentMapName);
-    if ((pMovie_Track || v9) && *dword_591164_teleport_map_name != ' ')
-        map_id = pMapStats->GetMapInfo(dword_591164_teleport_map_name);
-    transition_window.uFrameX = 493;
-    transition_window.uFrameWidth = 126;
-    transition_window.uFrameZ = 366;
-    transition_window.DrawTitleText(pFontCreate, 0, 5, 0, pMapStats->pInfos[map_id].pName, 3);
-    transition_window.uFrameX = 483;
-    transition_window.uFrameWidth = 148;
-    transition_window.uFrameZ = 334;
-
-    if (uCurrentHouse_Animation)
-    {
-        v4 = (212 - pFontCreate->CalcTextHeight(pTransitionStrings[uCurrentHouse_Animation], &transition_window, 0)) / 2 + 101;
-        transition_window.DrawTitleText(pFontCreate, 0, v4, 0, pTransitionStrings[uCurrentHouse_Animation], 3);
-    }
-    else if (map_id)
-    {
-        auto str = localization->FormatString(409, pMapStats->pInfos[map_id].pName); // Do you wish to leave %s?
-        v4 = (212 - pFontCreate->CalcTextHeight(str, &transition_window, 0)) / 2 + 101;
-        transition_window.DrawTitleText(pFontCreate, 0, v4, 0, str, 3);
-    }
-    else Error("Troubles in da house");
-
-    _unused_5B5924_is_travel_ui_drawn = true;
+  _unused_5B5924_is_travel_ui_drawn = true;
 }

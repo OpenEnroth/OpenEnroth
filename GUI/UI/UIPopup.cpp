@@ -55,7 +55,7 @@ void CharacterUI_DrawTooltip(const char *title, String &content)
   popup_window.uFrameHeight = 256;
   popup_window.uFrameX = 128;
   popup_window.uFrameY = pt.y + 30;
-  popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(content, &popup_window, 24) + 2 * pFontLucida->GetHeight() + 24;
+  popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(content, popup_window.uFrameWidth, 24) + 2 * pFontLucida->GetHeight() + 24;
   popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
   popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
   popup_window.DrawMessageBox(0);
@@ -217,7 +217,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
 
     auto inspect_item_image = assets->GetImage_16BitColorKey(inspect_item->GetIconName(), 0x7FF);
 
-    iteminfo_window.Hint = nullptr;
+    iteminfo_window.sHint = nullptr;
     iteminfo_window.uFrameWidth = 384;
     iteminfo_window.uFrameHeight = 180;
     iteminfo_window.uFrameY = 40;
@@ -300,7 +300,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
             pFontArrus, 0, 0xCu,
             Color16(0xFFu, 0xFFu, 0x9Bu), inspect_item->GetDisplayName().c_str(), 3);
         iteminfo_window.DrawTitleText(
-            pFontArrus, 0x64u, ((signed int)iteminfo_window.uFrameHeight >> 1) - pFontArrus->CalcTextHeight(localization->GetString(32), &iteminfo_window, 0) / 2,
+            pFontArrus, 0x64u, ((signed int)iteminfo_window.uFrameHeight >> 1) - pFontArrus->CalcTextHeight(localization->GetString(32), iteminfo_window.uFrameWidth, 0) / 2,
             Color16(0xFFu, 0x19u, 0x19u), localization->GetString(32), 3); //"Broken Item"
         render->ResetUIClipRect();
 
@@ -326,7 +326,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
             (v81 + iteminfo_window.uFrameY + 30) / 480.0f,
             inspect_item_image);
         iteminfo_window.DrawTitleText(pFontArrus, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu), pItemsTable->pItems[inspect_item->uItemID].pUnidentifiedName, 3);
-        iteminfo_window.DrawTitleText(pFontArrus, 0x64u, ((signed int)iteminfo_window.uFrameHeight >> 1) - pFontArrus->CalcTextHeight(localization->GetString(232), &iteminfo_window, 0) / 2,
+        iteminfo_window.DrawTitleText(pFontArrus, 0x64u, ((signed int)iteminfo_window.uFrameHeight >> 1) - pFontArrus->CalcTextHeight(localization->GetString(232), iteminfo_window.uFrameWidth, 0) / 2,
             Color16(0xFFu, 0x19u, 0x19u), localization->GetString(232), 3); // Not Identified
         render->ResetUIClipRect();
 
@@ -412,12 +412,12 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     for (uint i = 1; i <= 3; i++)
     {
         if (*v84)
-            Str += pFontComic->CalcTextHeight(v84, &iteminfo_window, 100) + 3;
+            Str += pFontComic->CalcTextHeight(v84, iteminfo_window.uFrameWidth, 100) + 3;
         v84 += 100;
     }
     v28 = pItemsTable->pItems[inspect_item->uItemID].pDescription;
     if (*v28)
-        Str += pFontSmallnum->CalcTextHeight(pItemsTable->pItems[inspect_item->uItemID].pDescription, &iteminfo_window, 100);
+        Str += pFontSmallnum->CalcTextHeight(pItemsTable->pItems[inspect_item->uItemID].pDescription, iteminfo_window.uFrameWidth, 100);
     iteminfo_window.uFrameHeight = assets->GetImage_16BitColorKey(inspect_item->GetIconName(), 0x7FF)->GetHeight() + v81 + 54;
     if ((signed int)Str > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str;
@@ -427,7 +427,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     if (pFontArrus->GetHeight())
     {
         iteminfo_window.uFrameWidth -= 24;
-        if (pFontArrus->CalcTextHeight(inspect_item->GetIdentifiedName(), &iteminfo_window, 0) / (signed int)pFontArrus->GetHeight())
+        if (pFontArrus->CalcTextHeight(inspect_item->GetIdentifiedName(), iteminfo_window.uFrameWidth, 0) / (signed int)pFontArrus->GetHeight())
             v85 = pFontArrus->GetHeight();
         iteminfo_window.uFrameWidth += 24;
     }
@@ -455,7 +455,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
         if (*Str)
         {
             iteminfo_window.DrawText(pFontComic, 100, v34, 0, Str, 0, 0, 0);
-            v34 += pFontComic->CalcTextHeight(Str, &iteminfo_window, 100, 0) + 3;
+            v34 += pFontComic->CalcTextHeight(Str, iteminfo_window.uFrameWidth, 100, 0) + 3;
         }
         Str += 100;
     }
@@ -1322,7 +1322,7 @@ void  DrawSpellDescriptionPopup(int spell_index)
     spell_info_window.uFrameX = 90;
     spell_info_window.uFrameZ = 417;
     spell_info_window.uFrameW = v3 + 67;
-    spell_info_window.Hint = nullptr;
+    spell_info_window.sHint = nullptr;
     v5 = pFontSmallnum->GetLineWidth(localization->GetString(431)); // Normal
     if (pFontSmallnum->GetLineWidth(localization->GetString(432)) > v5) // Master
         v5 = pFontSmallnum->GetLineWidth(localization->GetString(432)); // Master
@@ -1338,7 +1338,7 @@ void  DrawSpellDescriptionPopup(int spell_index)
         localization->GetString(433), v5 + 3, v5 + 10, spell->pExpertSkillDesc, // Expert
         localization->GetString(432), v5 + 3, v5 + 10, spell->pMasterSkillDesc, // Master
         localization->GetString(96), v5 + 3, v5 + 10, spell->pGrandmasterSkillDesc); // Grand
-    spell_info_window.uFrameHeight += pFontSmallnum->CalcTextHeight(str, &spell_info_window, 0);
+    spell_info_window.uFrameHeight += pFontSmallnum->CalcTextHeight(str, spell_info_window.uFrameWidth, 0);
     if ((signed int)spell_info_window.uFrameHeight < 150)
         spell_info_window.uFrameHeight = 150;
     spell_info_window.uFrameWidth = game_viewport_width;
@@ -1420,7 +1420,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
             static String hint_reference;
             hint_reference = localization->FormatString(427, pPlayers[uActiveCharacter]->pName, localization->GetString(541));//%s не в состоянии %s Опознать предметы
 
-            popup_window.Hint = hint_reference.c_str();
+            popup_window.sHint = hint_reference.c_str();
             popup_window.uFrameWidth = 384;
             popup_window.uFrameHeight = 180;
             popup_window.uFrameY = 40;
@@ -1478,7 +1478,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
             popup_window.ptr_1C = (void *)((signed int)pX / 118);
             if ((signed int)pX / 118 < 4)//portaits zone
             {
-                popup_window.Hint = nullptr;
+                popup_window.sHint = nullptr;
                 popup_window.uFrameWidth = 400;
                 popup_window.uFrameHeight = 200;
                 popup_window.uFrameX = 38;
@@ -1493,7 +1493,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
             {
                 if ((signed int)pX >= 476 && (signed int)pX <= 636 && (signed int)pY >= 240 && (signed int)pY <= 300)//buff_tooltip zone
                 {
-                    popup_window.Hint = nullptr;
+                    popup_window.sHint = nullptr;
                     popup_window.uFrameWidth = 400;
                     popup_window.uFrameHeight = 200;
                     popup_window.uFrameX = 38;
@@ -1517,7 +1517,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
             }
             else//minimap zone
             {
-                popup_window.Hint = (char *)GameUI_GetMinimapHintText();
+                popup_window.sHint = (char *)GameUI_GetMinimapHintText();
                 popup_window.uFrameWidth = 256;
                 popup_window.uFrameX = 130;
                 popup_window.uFrameY = 140;
@@ -1528,7 +1528,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
         }
         else//game zone
         {
-            popup_window.Hint = nullptr;
+            popup_window.sHint = nullptr;
             popup_window.uFrameWidth = 320;
             popup_window.uFrameHeight = 320;
             popup_window.uFrameX = pX - 350;
@@ -1569,9 +1569,9 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
         if (!dword_506364
             || (signed int)pX < (signed int)pViewport->uViewportTL_X || (signed int)pX >(signed int)pViewport->uViewportBR_X
             || (signed int)pY < (signed int)pViewport->uViewportTL_Y || (signed int)pY >(signed int)pViewport->uViewportBR_Y
-            || ((popup_window.Hint = (char *)GetMapBookHintText()) == 0))
+            || ((popup_window.sHint = (char *)GetMapBookHintText()) == 0))
             break;
-        popup_window.uFrameWidth = (pFontArrus->GetLineWidth(popup_window.Hint) + 32) + 0.5f;
+        popup_window.uFrameWidth = (pFontArrus->GetLineWidth(popup_window.sHint) + 32) + 0.5f;
         popup_window.uFrameX = pX + 5;
         popup_window.uFrameY = pY + 5;
         popup_window.uFrameHeight = 64;
@@ -1609,7 +1609,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
     }
     case SCREEN_PARTY_CREATION:
     {
-        popup_window.Hint = nullptr;
+        popup_window.sHint = nullptr;
         pStr = 0;
         for (pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext)
         {
@@ -1619,36 +1619,36 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
                 switch (pButton->msg)
                 {
                 case UIMSG_0: //stats info
-                    popup_window.Hint = localization->GetAttributeDescription((int)pButton->msg_param % 7);
+                    popup_window.sHint = localization->GetAttributeDescription((int)pButton->msg_param % 7);
                     pStr = localization->GetAttirubteName((int)pButton->msg_param % 7);
                     break;
                 case UIMSG_PlayerCreationClickPlus: //Plus button info 
                     pStr = localization->GetString(670);//Добавить
-                    popup_window.Hint = localization->GetString(671);//"Добавляет очко к выделенному навыку, забирая его из накопителя очков"
+                    popup_window.sHint = localization->GetString(671);//"Добавляет очко к выделенному навыку, забирая его из накопителя очков"
                     break;
                 case UIMSG_PlayerCreationClickMinus: //Minus button info
                     pStr = localization->GetString(668);//Вычесть
-                    popup_window.Hint = localization->GetString(669);//"Вычитает очко из выделенного навыка, возвращая его в накопитель очков"
+                    popup_window.sHint = localization->GetString(669);//"Вычитает очко из выделенного навыка, возвращая его в накопитель очков"
                     break;
                 case UIMSG_PlayerCreationSelectActiveSkill: //Available skill button info
                     pStr = localization->GetSkillName(pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(pButton->msg_param + 4));
-                    popup_window.Hint = localization->GetSkillDescription(pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(pButton->msg_param + 4));
+                    popup_window.sHint = localization->GetSkillDescription(pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(pButton->msg_param + 4));
                     break;
                 case UIMSG_PlayerCreationSelectClass: //Available Class Info
-                    popup_window.Hint = localization->GetClassDescription(pButton->msg_param);
+                    popup_window.sHint = localization->GetClassDescription(pButton->msg_param);
                     pStr = localization->GetClassName(pButton->msg_param);
                     break;
                 case UIMSG_PlayerCreationClickOK: //OK Info
-                    popup_window.Hint = localization->GetString(664);//Щелкните здесь для утверждения состава отряда и продолжения игры.
+                    popup_window.sHint = localization->GetString(664);//Щелкните здесь для утверждения состава отряда и продолжения игры.
                     pStr = localization->GetString(665);//Кнопка ОК
                     break;
                 case UIMSG_PlayerCreationClickReset: //Clear info
-                    popup_window.Hint = localization->GetString(666);//Сбрасывает все параметры и навыки отряда.
+                    popup_window.sHint = localization->GetString(666);//Сбрасывает все параметры и навыки отряда.
                     pStr = localization->GetString(667);//Кнопка Очистить
                     break;
                 case UIMSG_PlayerCreation_SelectAttribute: // Character info
                     pStr = pParty->pPlayers[pButton->msg_param].pName;
-                    popup_window.Hint = localization->GetClassDescription(pParty->pPlayers[pButton->msg_param].classType);
+                    popup_window.sHint = localization->GetClassDescription(pParty->pPlayers[pButton->msg_param].classType);
                     break;
                 }
                 if (pButton->msg > UIMSG_44 && pButton->msg <= UIMSG_PlayerCreationRemoveDownSkill) //Sellected skills info
@@ -1659,21 +1659,21 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
                         static String hint_reference;
                         hint_reference = CharacterUI_GetSkillDescText(pButton->msg_param, (PLAYER_SKILL_TYPE)pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48));
 
-                        popup_window.Hint = hint_reference.c_str();
+                        popup_window.sHint = hint_reference.c_str();
                         pStr = localization->GetSkillName(pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48));
                     }
                 }
             }
         }
-        if (popup_window.Hint)
+        if (popup_window.sHint)
         {
-            pHint = popup_window.Hint;
-            popup_window.Hint = nullptr;
+            pHint = popup_window.sHint;
+            popup_window.sHint = nullptr;
             popup_window.uFrameWidth = 384;
             popup_window.uFrameHeight = 256;
             popup_window.uFrameX = 128;
             popup_window.uFrameY = 40;
-            popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(pHint, &popup_window, 24) + 2 * pFontLucida->GetHeight() + 24;
+            popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(pHint, popup_window.uFrameWidth, 24) + 2 * pFontLucida->GetHeight() + 24;
             popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
             popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
             popup_window.DrawMessageBox(0);
@@ -1844,7 +1844,7 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
         static String hint_reference;
         hint_reference = localization->FormatString(427, pPlayers[uActiveCharacter]->pName, localization->GetString(541));//%s не в состоянии %s Опознать предметы
 
-        message_window.Hint = hint_reference.c_str();
+        message_window.sHint = hint_reference.c_str();
         message_window.uFrameWidth = 384;
         message_window.uFrameHeight = 180;
         if (pX <= 320)
