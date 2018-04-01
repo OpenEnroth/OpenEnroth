@@ -401,7 +401,7 @@ void Mouse::UI_OnMouseLeftClick(int *pXY)
           {
             if ( x >= (signed int)control->uX && x <= (signed int)control->uZ && y >= (signed int)control->uY && y <= (signed int)control->uW )
             {
-              control->field_2C_is_pushed = 1;
+              control->field_2C_is_pushed = true;
               v10 = pMessageQueue_50CBD0->uNumMessages;
               if ( pMessageQueue_50CBD0->uNumMessages )
               {
@@ -417,7 +417,7 @@ void Mouse::UI_OnMouseLeftClick(int *pXY)
           {
             if ( (signed int)(signed __int64)sqrt((double)((x - control->uX) * (x - control->uX) + (y - control->uY) * (y - control->uY))) < (signed int)control->uWidth )
             {
-              control->field_2C_is_pushed = 1;
+              control->field_2C_is_pushed = true;
               v10 = pMessageQueue_50CBD0->uNumMessages;
               if ( pMessageQueue_50CBD0->uNumMessages )
               {
@@ -433,7 +433,7 @@ void Mouse::UI_OnMouseLeftClick(int *pXY)
           {
             if ( x >= (signed int)control->uX && x <= (signed int)control->uZ && y >= (signed int)control->uY && y <= (signed int)control->uW )
             {
-              control->field_2C_is_pushed = 1;
+              control->field_2C_is_pushed = true;
               v10 = pMessageQueue_50CBD0->uNumMessages;
               if ( pMessageQueue_50CBD0->uNumMessages )
               {

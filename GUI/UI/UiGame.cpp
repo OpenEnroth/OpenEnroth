@@ -118,55 +118,47 @@ Image *game_ui_playerbuff_preservation = nullptr;
 Image *game_ui_playerbuff_bless = nullptr;
 
 GUIWindow_GameMenu::GUIWindow_GameMenu() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-// -----------------------
-// GameMenuUI_Load -- part
-    game_ui_menu_options = assets->GetImage_16BitAlpha("options");
-    game_ui_menu_new = assets->GetImage_16BitAlpha("new1");
-    game_ui_menu_load = assets->GetImage_16BitAlpha("load1");
-    game_ui_menu_save = assets->GetImage_16BitAlpha("save1");
-    game_ui_menu_controls = assets->GetImage_16BitAlpha("controls1");
-    game_ui_menu_resume = assets->GetImage_16BitAlpha("resume1");
-    game_ui_menu_quit = assets->GetImage_16BitAlpha("quit1");
+  game_ui_menu_options = assets->GetImage_16BitAlpha("options");
+  game_ui_menu_new = assets->GetImage_16BitAlpha("new1");
+  game_ui_menu_load = assets->GetImage_16BitAlpha("load1");
+  game_ui_menu_save = assets->GetImage_16BitAlpha("save1");
+  game_ui_menu_controls = assets->GetImage_16BitAlpha("controls1");
+  game_ui_menu_resume = assets->GetImage_16BitAlpha("resume1");
+  game_ui_menu_quit = assets->GetImage_16BitAlpha("quit1");
 
-    pBtn_NewGame = CreateButton(
-        0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0, UIMSG_StartNewGame, 0, 0x4Eu,
-        localization->GetString(614),// "New Game"
-        game_ui_menu_new,
-        0
-    );
-    pBtn_SaveGame = CreateButton(
-        0x13u, 0xD1u, 0xD6u, 0x28u, 1, 0, UIMSG_Game_OpenSaveGameDialog, 0, 0x53u,
-        localization->GetString(615),// "Save Game"
-        game_ui_menu_save,
-        0
-    );
-    pBtn_LoadGame = CreateButton(
-        19, 263, 0xD6u, 0x28u, 1, 0, UIMSG_Game_OpenLoadGameDialog, 0, 0x4Cu,
-        localization->GetString(616),// "Load Game"
-        game_ui_menu_load,
-        0
-    );
-    pBtn_GameControls = CreateButton(
-        241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0x43u,
-        localization->GetString(617),// ""Sound, Keyboard, Game Options:""
-        game_ui_menu_controls,
-        0
-    );
-    pBtn_QuitGame = CreateButton(
-        241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, 0x51u,
-        localization->GetString(618),// "Quit"
-        game_ui_menu_quit,
-        0
-    );
-    pBtn_Resume = CreateButton(
-        241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, 0x52u,
-        localization->GetString(619),// "Return to Game"
-        game_ui_menu_resume,
-        0
-    );
-    _41D08F_set_keyboard_control_group(6, 1, 0, 0);
+  pBtn_NewGame = CreateButton(
+    0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0, UIMSG_StartNewGame, 0, 0x4Eu,
+    localization->GetString(614),// "New Game"
+    { { game_ui_menu_new } }
+  );
+  pBtn_SaveGame = CreateButton(
+    0x13u, 0xD1u, 0xD6u, 0x28u, 1, 0, UIMSG_Game_OpenSaveGameDialog, 0, 0x53u,
+    localization->GetString(615),// "Save Game"
+    { {game_ui_menu_save} }
+  );
+  pBtn_LoadGame = CreateButton(
+    19, 263, 0xD6u, 0x28u, 1, 0, UIMSG_Game_OpenLoadGameDialog, 0, 0x4Cu,
+    localization->GetString(616),// "Load Game"
+    { {game_ui_menu_load} }
+  );
+  pBtn_GameControls = CreateButton(
+    241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0x43u,
+    localization->GetString(617),// ""Sound, Keyboard, Game Options:""
+    { {game_ui_menu_controls} }
+  );
+  pBtn_QuitGame = CreateButton(
+    241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, 0x51u,
+    localization->GetString(618),// "Quit"
+    { {game_ui_menu_quit} }
+  );
+  pBtn_Resume = CreateButton(
+    241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, 0x52u,
+    localization->GetString(619),// "Return to Game"
+    { {game_ui_menu_resume} }
+  );
+  _41D08F_set_keyboard_control_group(6, 1, 0, 0);
 }
 
 void GUIWindow_GameMenu::Update()
@@ -253,46 +245,42 @@ static unsigned int GameMenuUI_GetKeyBindingColor(int key_index)
     return ui_gamemenu_keys_key_default_color;
 }
 
-
-
-GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings():
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings() :
+  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-// ------------------------------------------
-// GameMenuUI_OptionsKeymapping_Load --- part
-    game_ui_options_controls[0] = assets->GetImage_16BitColorKey("optkb", 0x7FF);
-    game_ui_options_controls[1] = assets->GetImage_16BitColorKey("optkb_h", 0x7FF);
-    game_ui_options_controls[2] = assets->GetImage_16BitColorKey("resume1", 0x7FF);
-    game_ui_options_controls[3] = assets->GetImage_16BitColorKey("optkb_1", 0x7FF);
-    game_ui_options_controls[4] = assets->GetImage_16BitColorKey("optkb_2", 0x7FF);
+  game_ui_options_controls[0] = assets->GetImage_16BitColorKey("optkb", 0x7FF);
+  game_ui_options_controls[1] = assets->GetImage_16BitColorKey("optkb_h", 0x7FF);
+  game_ui_options_controls[2] = assets->GetImage_16BitColorKey("resume1", 0x7FF);
+  game_ui_options_controls[3] = assets->GetImage_16BitColorKey("optkb_1", 0x7FF);
+  game_ui_options_controls[4] = assets->GetImage_16BitColorKey("optkb_2", 0x7FF);
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, "", 0);
+  CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, "");
 
-    CreateButton(19, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage1, 0, 0, "", 0);
-    CreateButton(127, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage2, 0, 0, "", 0);
-    CreateButton(127, 324, 108, 20, 1, 0, UIMSG_ResetKeyMapping, 0, 0, "", 0);
-    CreateButton(19, 324, 108, 20, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0, "", 0);
+  CreateButton(19, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage1, 0, 0, "");
+  CreateButton(127, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage2, 0, 0, "");
+  CreateButton(127, 324, 108, 20, 1, 0, UIMSG_ResetKeyMapping, 0, 0, "");
+  CreateButton(19, 324, 108, 20, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0, "");
 
-    CreateButton(129, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 0, 0, "", 0);
-    CreateButton(129, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 1, 0, "", 0);
-    CreateButton(129, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 2, 0, "", 0);
-    CreateButton(129, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 3, 0, "", 0);
-    CreateButton(129, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 4, 0, "", 0);
-    CreateButton(129, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 5, 0, "", 0);
-    CreateButton(129, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 6, 0, "", 0);
+  CreateButton(129, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 0, 0, "");
+  CreateButton(129, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 1, 0, "");
+  CreateButton(129, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 2, 0, "");
+  CreateButton(129, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 3, 0, "");
+  CreateButton(129, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 4, 0, "");
+  CreateButton(129, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 5, 0, "");
+  CreateButton(129, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 6, 0, "");
 
-    CreateButton(350, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 7, 0, "", 0);
-    CreateButton(350, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 8, 0, "", 0);
-    CreateButton(350, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 9, 0, "", 0);
-    CreateButton(350, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 10, 0, "", 0);
-    CreateButton(350, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 11, 0, "", 0);
-    CreateButton(350, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 12, 0, "", 0);
-    CreateButton(350, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 13, 0, "", 0);
+  CreateButton(350, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 7, 0, "");
+  CreateButton(350, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 8, 0, "");
+  CreateButton(350, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 9, 0, "");
+  CreateButton(350, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 10, 0, "");
+  CreateButton(350, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 11, 0, "");
+  CreateButton(350, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 12, 0, "");
+  CreateButton(350, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 13, 0, "");
 
-    uGameMenuUI_CurentlySelectedKeyIdx = -1;
-    KeyboardPageNum = 1;
-    memset(GameMenuUI_InvaligKeyBindingsFlags.data(), 0, sizeof(GameMenuUI_InvaligKeyBindingsFlags));
-    memcpy(pPrevVirtualCidesMapping.data(), pKeyActionMap->pVirtualKeyCodesMapping, 0x78u);
+  uGameMenuUI_CurentlySelectedKeyIdx = -1;
+  KeyboardPageNum = 1;
+  memset(GameMenuUI_InvaligKeyBindingsFlags.data(), 0, sizeof(GameMenuUI_InvaligKeyBindingsFlags));
+  memcpy(pPrevVirtualCidesMapping.data(), pKeyActionMap->pVirtualKeyCodesMapping, 0x78u);
 }
 
 //----- (004142D3) --------------------------------------------------------
@@ -397,7 +385,7 @@ void GUIWindow_GameKeyBindings::Update()
 
 
 GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
 // -------------------------------------
 // GameMenuUI_OptionsVideo_Load --- part
@@ -420,12 +408,12 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions() :
     //not_available_us_colored_lights_texture_id = pIcons_LOD->LoadTexture("opvdG-cl", TEXTURE_16BIT_PALETTE);
     //not_available_tinting_texture_id = pIcons_LOD->LoadTexture("opvdG-tn", TEXTURE_16BIT_PALETTE);
 
-    CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0, 0, "", 0);
+    CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0, 0, "");
     //if ( render->pRenderD3D )
     {
-        CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats, 0, 0, "", 0);
-        CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleColoredLights, 0, 0, "", 0);
-        CreateButton(0x13u, 0x144u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleTint, 0, 0, "", 0);
+        CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats, 0, 0, "");
+        CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleColoredLights, 0, 0, "");
+        CreateButton(0x13u, 0x144u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleTint, 0, 0, "");
     }
 }
 
@@ -519,145 +507,124 @@ void OptionsMenuSkin::Relaease()
 #undef RELEASE
 }
 
-
 GUIWindow_GameOptions::GUIWindow_GameOptions() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-// GameMenuUI_Options_Load -- part
-    options_menu_skin.uTextureID_Background = assets->GetImage_16BitColorKey("ControlBG", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_16BitColorKey("con_16x", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_16BitColorKey("con_32x", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[0] = assets->GetImage_16BitColorKey("con_Smoo", 0x7FF);
-    options_menu_skin.uTextureID_ArrowLeft = assets->GetImage_16BitAlpha("con_ArrL");
-    options_menu_skin.uTextureID_ArrowRight = assets->GetImage_16BitAlpha("con_ArrR");
-    options_menu_skin.uTextureID_SoundLevels[0] = assets->GetImage_16BitColorKey("convol10", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[1] = assets->GetImage_16BitColorKey("convol20", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[2] = assets->GetImage_16BitColorKey("convol30", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[3] = assets->GetImage_16BitColorKey("convol40", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[4] = assets->GetImage_16BitColorKey("convol50", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[5] = assets->GetImage_16BitColorKey("convol60", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[6] = assets->GetImage_16BitColorKey("convol70", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[7] = assets->GetImage_16BitColorKey("convol80", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[8] = assets->GetImage_16BitColorKey("convol90", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[9] = assets->GetImage_16BitColorKey("convol00", 0x7FF);
-    options_menu_skin.uTextureID_FlipOnExit = assets->GetImage_16BitColorKey("option04", 0x7FF);
-    options_menu_skin.uTextureID_AlwaysRun = assets->GetImage_16BitColorKey("option03", 0x7FF);
-    options_menu_skin.uTextureID_ShowDamage = assets->GetImage_16BitColorKey("option02", 0x7FF);
-    options_menu_skin.uTextureID_WalkSound = assets->GetImage_16BitColorKey("option01", 0x7FF);
+  options_menu_skin.uTextureID_Background = assets->GetImage_16BitColorKey("ControlBG", 0x7FF);
+  options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_16BitColorKey("con_16x", 0x7FF);
+  options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_16BitColorKey("con_32x", 0x7FF);
+  options_menu_skin.uTextureID_TurnSpeed[0] = assets->GetImage_16BitColorKey("con_Smoo", 0x7FF);
+  options_menu_skin.uTextureID_ArrowLeft = assets->GetImage_16BitAlpha("con_ArrL");
+  options_menu_skin.uTextureID_ArrowRight = assets->GetImage_16BitAlpha("con_ArrR");
+  options_menu_skin.uTextureID_SoundLevels[0] = assets->GetImage_16BitColorKey("convol10", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[1] = assets->GetImage_16BitColorKey("convol20", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[2] = assets->GetImage_16BitColorKey("convol30", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[3] = assets->GetImage_16BitColorKey("convol40", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[4] = assets->GetImage_16BitColorKey("convol50", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[5] = assets->GetImage_16BitColorKey("convol60", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[6] = assets->GetImage_16BitColorKey("convol70", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[7] = assets->GetImage_16BitColorKey("convol80", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[8] = assets->GetImage_16BitColorKey("convol90", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[9] = assets->GetImage_16BitColorKey("convol00", 0x7FF);
+  options_menu_skin.uTextureID_FlipOnExit = assets->GetImage_16BitColorKey("option04", 0x7FF);
+  options_menu_skin.uTextureID_AlwaysRun = assets->GetImage_16BitColorKey("option03", 0x7FF);
+  options_menu_skin.uTextureID_ShowDamage = assets->GetImage_16BitColorKey("option02", 0x7FF);
+  options_menu_skin.uTextureID_WalkSound = assets->GetImage_16BitColorKey("option01", 0x7FF);
 
-    CreateButton(22, 270,
-        options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(),
-        options_menu_skin.uTextureID_TurnSpeed[2]->GetHeight(),
-        1, 0, UIMSG_SetTurnSpeed, 0x80, 0, "", 0);
-    CreateButton(93, 270,
-        options_menu_skin.uTextureID_TurnSpeed[1]->GetWidth(),
-        options_menu_skin.uTextureID_TurnSpeed[1]->GetHeight(),
-        1, 0, UIMSG_SetTurnSpeed, 0x40u, 0, "", 0);
-    CreateButton(164, 270,
-        options_menu_skin.uTextureID_TurnSpeed[0]->GetWidth(),
-        options_menu_skin.uTextureID_TurnSpeed[0]->GetHeight(),
-        1, 0, UIMSG_SetTurnSpeed, 0, 0, "", 0);
+  CreateButton(22, 270,
+    options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(),
+    options_menu_skin.uTextureID_TurnSpeed[2]->GetHeight(),
+    1, 0, UIMSG_SetTurnSpeed, 0x80, 0, "");
+  CreateButton(93, 270,
+    options_menu_skin.uTextureID_TurnSpeed[1]->GetWidth(),
+    options_menu_skin.uTextureID_TurnSpeed[1]->GetHeight(),
+    1, 0, UIMSG_SetTurnSpeed, 0x40u, 0, "");
+  CreateButton(164, 270,
+    options_menu_skin.uTextureID_TurnSpeed[0]->GetWidth(),
+    options_menu_skin.uTextureID_TurnSpeed[0]->GetHeight(),
+    1, 0, UIMSG_SetTurnSpeed, 0, 0, "");
 
-    CreateButton(20, 303,
-        options_menu_skin.uTextureID_WalkSound->GetWidth(),
-        options_menu_skin.uTextureID_WalkSound->GetHeight(),
-        1, 0, UIMSG_ToggleWalkSound, 0, 0, "", 0);
-    CreateButton(128, 303,
-        options_menu_skin.uTextureID_ShowDamage->GetWidth(),
-        options_menu_skin.uTextureID_ShowDamage->GetHeight(),
-        1, 0, UIMSG_ToggleShowDamage, 0, 0, "", 0);
-    CreateButton(20, 325,
-        options_menu_skin.uTextureID_AlwaysRun->GetWidth(),
-        options_menu_skin.uTextureID_AlwaysRun->GetHeight(),
-        1, 0, UIMSG_ToggleAlwaysRun, 0, 0, "", 0);
-    CreateButton(128, 325,
-        options_menu_skin.uTextureID_FlipOnExit->GetWidth(),
-        options_menu_skin.uTextureID_FlipOnExit->GetHeight(),
-        1, 0, UIMSG_ToggleFlipOnExit, 0, 0, "", 0);
+  CreateButton(20, 303,
+    options_menu_skin.uTextureID_WalkSound->GetWidth(),
+    options_menu_skin.uTextureID_WalkSound->GetHeight(),
+    1, 0, UIMSG_ToggleWalkSound, 0, 0, "");
+  CreateButton(128, 303,
+    options_menu_skin.uTextureID_ShowDamage->GetWidth(),
+    options_menu_skin.uTextureID_ShowDamage->GetHeight(),
+    1, 0, UIMSG_ToggleShowDamage, 0, 0, "");
+  CreateButton(20, 325,
+    options_menu_skin.uTextureID_AlwaysRun->GetWidth(),
+    options_menu_skin.uTextureID_AlwaysRun->GetHeight(),
+    1, 0, UIMSG_ToggleAlwaysRun, 0, 0, "");
+  CreateButton(128, 325,
+    options_menu_skin.uTextureID_FlipOnExit->GetWidth(),
+    options_menu_skin.uTextureID_FlipOnExit->GetHeight(),
+    1, 0, UIMSG_ToggleFlipOnExit, 0, 0, "");
 
-    pBtn_SliderLeft = CreateButton(243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, 0, "", options_menu_skin.uTextureID_ArrowLeft, 0);
-    pBtn_SliderRight = CreateButton(435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, 0, "", options_menu_skin.uTextureID_ArrowRight, 0);
-    CreateButton(263, 162, 172, 17, 1, 0, UIMSG_ChangeSoundVolume, 0, 0, "", 0);
+  pBtn_SliderLeft = CreateButton(243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, 0, "", { { options_menu_skin.uTextureID_ArrowLeft } });
+  pBtn_SliderRight = CreateButton(435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, 0, "", { { options_menu_skin.uTextureID_ArrowRight } });
+  CreateButton(263, 162, 172, 17, 1, 0, UIMSG_ChangeSoundVolume, 0, 0, "");
 
-    pBtn_SliderLeft = CreateButton(243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, 0, "", options_menu_skin.uTextureID_ArrowLeft, 0);
-    pBtn_SliderRight = CreateButton(435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, 0, "", options_menu_skin.uTextureID_ArrowRight, 0);
-    CreateButton(263, 216, 172, 17, 1, 0, UIMSG_ChangeMusicVolume, 0, 0, "", 0);
+  pBtn_SliderLeft = CreateButton(243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, 0, "", { { options_menu_skin.uTextureID_ArrowLeft } });
+  pBtn_SliderRight = CreateButton(435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, 0, "", { { options_menu_skin.uTextureID_ArrowRight } });
+  CreateButton(263, 216, 172, 17, 1, 0, UIMSG_ChangeMusicVolume, 0, 0, "");
 
-    pBtn_SliderLeft = CreateButton(243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, 0, "", options_menu_skin.uTextureID_ArrowLeft, 0);
-    pBtn_SliderRight = CreateButton(435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, 0, "", options_menu_skin.uTextureID_ArrowRight, 0);
-    CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0, 0, "", 0);
+  pBtn_SliderLeft = CreateButton(243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, 0, "", { { options_menu_skin.uTextureID_ArrowLeft } });
+  pBtn_SliderRight = CreateButton(435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, 0, "", { { options_menu_skin.uTextureID_ArrowRight } });
+  CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0, 0, "");
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(619), 0); // "Return to Game"
-    CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, 0x4Bu, "", 0);
-    CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, 86, "", 0);
+  CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(619));  // "Return to Game"
+  CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, 0x4Bu, "");
+  CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, 86, "");
 }
 
+void GUIWindow_GameOptions::Update() {
+  render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, game_ui_menu_options);
+  render->DrawTextureAlphaNew(8 / 640.0f, 132 / 480.0f, options_menu_skin.uTextureID_Background);
 
+  switch (uTurnSpeed) {
+    case 64:
+      render->DrawTextureAlphaNew(BtnTurnCoord[1] / 640.0f, 270 / 480.0f, options_menu_skin.uTextureID_TurnSpeed[1]); break;
+    case 128:
+      render->DrawTextureAlphaNew(BtnTurnCoord[2] / 640.0f, 270 / 480.0f, options_menu_skin.uTextureID_TurnSpeed[2]); break;
+    default:
+      render->DrawTextureAlphaNew(BtnTurnCoord[0] / 640.0f, 270 / 480.0f, options_menu_skin.uTextureID_TurnSpeed[0]); break;
+  }
 
+  if (bWalkSound)  render->DrawTextureAlphaNew(20 / 640.0f, 303 / 480.0f, options_menu_skin.uTextureID_WalkSound);
+  if (bShowDamage) render->DrawTextureAlphaNew(128 / 640.0f, 303 / 480.0f, options_menu_skin.uTextureID_ShowDamage);
+  if (bFlipOnExit) render->DrawTextureAlphaNew(128 / 640.0f, 325 / 480.0f, options_menu_skin.uTextureID_FlipOnExit);
+  if (bAlwaysRun)  render->DrawTextureAlphaNew(20 / 640.0f, 325 / 480.0f, options_menu_skin.uTextureID_AlwaysRun);
 
-//----- (00414F82) --------------------------------------------------------
-void GUIWindow_GameOptions::Update()
-{
-// -----------------------------------
-// 004156F0 GUI_UpdateWindows --- part
-    render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, game_ui_menu_options);
-    render->DrawTextureAlphaNew(8/640.0f, 132/480.0f, options_menu_skin.uTextureID_Background);
-
-    switch (uTurnSpeed)
-    {
-        case 64:   render->DrawTextureAlphaNew(BtnTurnCoord[1]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[1]); break;
-        case 128:  render->DrawTextureAlphaNew(BtnTurnCoord[2]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[2]); break;
-        default:   render->DrawTextureAlphaNew(BtnTurnCoord[0]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[0]); break;
-    }
-
-    if (bWalkSound)  render->DrawTextureAlphaNew(20/640.0f, 303/480.0f, options_menu_skin.uTextureID_WalkSound);
-    if (bShowDamage) render->DrawTextureAlphaNew(128/640.0f, 303/480.0f, options_menu_skin.uTextureID_ShowDamage);
-    if (bFlipOnExit) render->DrawTextureAlphaNew(128/640.0f, 325/480.0f, options_menu_skin.uTextureID_FlipOnExit);
-    if (bAlwaysRun)  render->DrawTextureAlphaNew(20/640.0f, 325/480.0f, options_menu_skin.uTextureID_AlwaysRun);
-
-    render->DrawTextureAlphaNew((265 + 17 * uSoundVolumeMultiplier)/640.0f, 162/480.0f, options_menu_skin.uTextureID_SoundLevels[uSoundVolumeMultiplier]);
-    render->DrawTextureAlphaNew((265 + 17 * uMusicVolimeMultiplier)/640.0f, 216/480.0f, options_menu_skin.uTextureID_SoundLevels[uMusicVolimeMultiplier]);
-    render->DrawTextureAlphaNew((265 + 17 * uVoicesVolumeMultiplier)/640.0f, 270/480.0f, options_menu_skin.uTextureID_SoundLevels[uVoicesVolumeMultiplier]);
+  render->DrawTextureAlphaNew((265 + 17 * uSoundVolumeMultiplier) / 640.0f, 162 / 480.0f, options_menu_skin.uTextureID_SoundLevels[uSoundVolumeMultiplier]);
+  render->DrawTextureAlphaNew((265 + 17 * uMusicVolimeMultiplier) / 640.0f, 216 / 480.0f, options_menu_skin.uTextureID_SoundLevels[uMusicVolimeMultiplier]);
+  render->DrawTextureAlphaNew((265 + 17 * uVoicesVolumeMultiplier) / 640.0f, 270 / 480.0f, options_menu_skin.uTextureID_SoundLevels[uVoicesVolumeMultiplier]);
 }
 
-
-
-
-
-
-
-
-
-
-//----- (00421D00) --------------------------------------------------------
-void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID)
-{
+void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
   Player* player = &pParty->pPlayers[uPlayerID - 1];
-  if (pParty->pPickedItem.uItemID)
-  {
-    if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID))
-    {
-      memcpy(&player->pInventoryItemList[slot-1], &pParty->pPickedItem, 0x24u);
+  if (pParty->pPickedItem.uItemID) {
+    if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID)) {
+      memcpy(&player->pInventoryItemList[slot - 1], &pParty->pPickedItem, 0x24u);
       viewparams->bRedrawGameUI = true;
       pMouse->RemoveHoldingItem();
       return;
     }
 
-    if (!player->CanAct())
-    {
+    if (!player->CanAct()) {
       player = pPlayers[uActiveCharacter];
     }
-    if( player->CanAct() || !pPlayers[uActiveCharacter]->CanAct() )
+    if (player->CanAct() || !pPlayers[uActiveCharacter]->CanAct()) {
       player->PlaySound(SPEECH_NoRoom, 0);
+    }
   }
 
-  if (current_screen_type == SCREEN_GAME)
-  {
+  if (current_screen_type == SCREEN_GAME) {
     viewparams->bRedrawGameUI = true;
-    if ( uActiveCharacter != uPlayerID )
-    {
-      if ( pPlayers[uPlayerID]->uTimeToRecovery )
+    if (uActiveCharacter != uPlayerID) {
+      if (pPlayers[uPlayerID]->uTimeToRecovery) {
         return;
+      }
 
       uActiveCharacter = uPlayerID;
       return;
@@ -665,61 +632,57 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID)
     pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(uActiveCharacter, SCREEN_CHARACTERS);//CharacterUI_Initialize(SCREEN_CHARACTERS);
     return;
   }
-  if ( current_screen_type == SCREEN_SPELL_BOOK )
+  if (current_screen_type == SCREEN_SPELL_BOOK)
     return;
-  if ( current_screen_type == SCREEN_CHEST )
-  {
+  if (current_screen_type == SCREEN_CHEST) {
     viewparams->bRedrawGameUI = true;
-    if ( uActiveCharacter == uPlayerID )
-    {
-        current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+    if (uActiveCharacter == uPlayerID) {
+      current_character_screen_window = WINDOW_CharacterWindow_Inventory;
       current_screen_type = SCREEN_CHEST_INVENTORY;
       uActiveCharacter = uPlayerID;
       return;
     }
-    if ( pPlayers[uPlayerID]->uTimeToRecovery )
+    if (pPlayers[uPlayerID]->uTimeToRecovery) {
       return;
+    }
     uActiveCharacter = uPlayerID;
     return;
   }
-  if ( current_screen_type != SCREEN_HOUSE )
-  {
-    if ( current_screen_type == SCREEN_E )
-    {
+  if (current_screen_type != SCREEN_HOUSE) {
+    if (current_screen_type == SCREEN_E) {
       uActiveCharacter = uPlayerID;
       return;
     }
-    if ( current_screen_type != SCREEN_CHEST_INVENTORY )
-    {
+    if (current_screen_type != SCREEN_CHEST_INVENTORY) {
       viewparams->bRedrawGameUI = true;
       uActiveCharacter = uPlayerID;
-      if (current_character_screen_window == WINDOW_CharacterWindow_Awards)
+      if (current_character_screen_window == WINDOW_CharacterWindow_Awards) {
         FillAwardsData();
+      }
       return;
     }
     viewparams->bRedrawGameUI = true;
-    if ( uActiveCharacter == uPlayerID )
-    {
-        current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+    if (uActiveCharacter == uPlayerID) {
+      current_character_screen_window = WINDOW_CharacterWindow_Inventory;
       current_screen_type = SCREEN_CHEST_INVENTORY;
       uActiveCharacter = uPlayerID;
       return;
     }
-    if ( pPlayers[uPlayerID]->uTimeToRecovery )
+    if (pPlayers[uPlayerID]->uTimeToRecovery) {
       return;
+    }
     uActiveCharacter = uPlayerID;
     return;
   }
-  if ( window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
+  if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS) {
     return;
+  }
   viewparams->bRedrawGameUI = true;
-  if ( uActiveCharacter != uPlayerID )
-  {
+  if (uActiveCharacter != uPlayerID) {
     uActiveCharacter = uPlayerID;
     return;
   }
-  if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == HOUSE_DIALOGUE_SHOP_6)
-  {
+  if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == HOUSE_DIALOGUE_SHOP_6) {
     __debugbreak(); // fix indexing
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(uActiveCharacter, SCREEN_E);//CharacterUI_Initialize(SCREEN_E);
@@ -727,111 +690,108 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID)
   }
 }
 
-//----- (00416B01) --------------------------------------------------------
 void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
 {
-    int v1; // edi@2
-    NPCData *pNPC; // eax@16
-    const char *pText; // eax@18
-    GUIWindow popup_window; // [sp+Ch] [bp-60h]@23
-    int a2; // [sp+60h] [bp-Ch]@16
-    const char *lpsz; // [sp+68h] [bp-4h]@6
+  int v1; // edi@2
+  NPCData *pNPC; // eax@16
+  const char *pText; // eax@18
+  GUIWindow popup_window; // [sp+Ch] [bp-60h]@23
+  int a2; // [sp+60h] [bp-Ch]@16
+  const char *lpsz; // [sp+68h] [bp-4h]@6
 
-    char buf[4096];
-    if (bNoNPCHiring != 1)
+  char buf[4096];
+  if (bNoNPCHiring != 1)
+  {
+    v1 = 0;
+    /*do
     {
-        v1 = 0;
-        /*do
-        {
-          if ( v3->pName )
-            tmp_str[v1++] = v2;
-          ++v3;
-          ++v2;
-        }
-        while ( (signed int)v3 < (signed int)&pParty->pPickedItem );*/
-        for (int i = 0; i < 2; ++i)
-        {
-            if (pParty->pHirelings[i].pName)
-                buf[v1++] = i;
-        }
-        lpsz = 0;
-        if ((signed int)pNPCStats->uNumNewNPCs > 0)
-        {
-            /*v4 = pNPCStats->pNewNPCData;
-            do
-            {
-              if ( v4->uFlags & 0x80
-                && (!pParty->pHirelings[0].pName || strcmp(v4->pName, pParty->pHirelings[0].pName))
-                && (!pParty->pHirelings[1].pName || strcmp(v4->pName, pParty->pHirelings[1].pName)) )
-                tmp_str[v1++] = (char)lpsz + 2;
-              ++lpsz;
-              ++v4;
-            }
-            while ( (signed int)lpsz < (signed int)pNPCStats->uNumNewNPCs );*/
-            for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i)
-            {
-                if (pNPCStats->pNewNPCData[i].Hired())
-                {
-                    if (!pParty->pHirelings[0].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[0].pName))
-                    {
-                        if (!pParty->pHirelings[1].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[1].pName))
-                            buf[v1++] = i + 2;
-                    }
-                }
-            }
-        }
-        if ((signed int)((char *)_this + pParty->hirelingScrollPosition) < v1)
-        {
-            sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - (int)_this;
-            pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
-            if (pNPC)
-            {
-                if (a2 == 57)
-                    pText = pNPCTopics[512].pText; // Baby dragon
-                else
-                    pText = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pBenefits;
-                lpsz = pText;
-                if (!pText)
-                {
-                    lpsz = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pJoinText;
-                    if (!lpsz)
-                        lpsz = "";
-                }
-                popup_window.sHint = nullptr;
-                popup_window.uFrameX = 38;
-                popup_window.uFrameY = 60;
-                popup_window.uFrameWidth = 276;
-                popup_window.uFrameZ = 313;
-                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, popup_window.uFrameWidth, 0) + 2 * pFontArrus->GetHeight() + 24;
-                if ((signed int)popup_window.uFrameHeight < 130)
-                    popup_window.uFrameHeight = 130;
-                popup_window.uFrameWidth = 400;
-                popup_window.uFrameZ = popup_window.uFrameX + 399;
-                popup_window.DrawMessageBox(0);
-
-                auto tex_name = StringPrintf("NPC%03d", pNPC->uPortraitID);
-                render->DrawTextureAlphaNew(
-                    (popup_window.uFrameX + 22) / 640.0f,
-                    (popup_window.uFrameY + 36) / 480.0f,
-                    assets->GetImage_16BitColorKey(tex_name, 0x7FF)
-                    );
-
-                String title;
-                if (pNPC->uProfession)
-                {
-                    title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));
-                }
-                else
-                {
-                    title = pNPC->pName;
-                }
-                popup_window.DrawTitleText(pFontArrus, 0, 12, Color16(0xFFu, 0xFFu, 0x9Bu), title, 3);
-                popup_window.uFrameWidth -= 24;
-                popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(pFontArrus, 100, 36, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
-            }
-        }
+    if ( v3->pName )
+    tmp_str[v1++] = v2;
+    ++v3;
+    ++v2;
     }
+    while ( (signed int)v3 < (signed int)&pParty->pPickedItem );*/
+    for (int i = 0; i < 2; ++i)
+    {
+      if (pParty->pHirelings[i].pName)
+        buf[v1++] = i;
+    }
+    lpsz = 0;
+    if ((signed int)pNPCStats->uNumNewNPCs > 0)
+    {
+      /*v4 = pNPCStats->pNewNPCData;
+      do
+      {
+      if ( v4->uFlags & 0x80
+      && (!pParty->pHirelings[0].pName || strcmp(v4->pName, pParty->pHirelings[0].pName))
+      && (!pParty->pHirelings[1].pName || strcmp(v4->pName, pParty->pHirelings[1].pName)) )
+      tmp_str[v1++] = (char)lpsz + 2;
+      ++lpsz;
+      ++v4;
+      }
+      while ( (signed int)lpsz < (signed int)pNPCStats->uNumNewNPCs );*/
+      for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i)
+      {
+        if (pNPCStats->pNewNPCData[i].Hired())
+        {
+          if (!pParty->pHirelings[0].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[0].pName))
+          {
+            if (!pParty->pHirelings[1].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[1].pName))
+              buf[v1++] = i + 2;
+          }
+        }
+      }
+    }
+    if ((signed int)((char *)_this + pParty->hirelingScrollPosition) < v1) {
+      sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - (int)_this;
+      pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
+      if (pNPC) {
+        if (a2 == 57)
+          pText = pNPCTopics[512].pText; // Baby dragon
+        else
+          pText = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pBenefits;
+        lpsz = pText;
+        if (!pText)
+        {
+          lpsz = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pJoinText;
+          if (!lpsz)
+            lpsz = "";
+        }
+        popup_window.sHint.clear();
+        popup_window.uFrameX = 38;
+        popup_window.uFrameY = 60;
+        popup_window.uFrameWidth = 276;
+        popup_window.uFrameZ = 313;
+        popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, popup_window.uFrameWidth, 0) + 2 * pFontArrus->GetHeight() + 24;
+        if ((signed int)popup_window.uFrameHeight < 130)
+          popup_window.uFrameHeight = 130;
+        popup_window.uFrameWidth = 400;
+        popup_window.uFrameZ = popup_window.uFrameX + 399;
+        popup_window.DrawMessageBox(0);
+
+        auto tex_name = StringPrintf("NPC%03d", pNPC->uPortraitID);
+        render->DrawTextureAlphaNew(
+          (popup_window.uFrameX + 22) / 640.0f,
+          (popup_window.uFrameY + 36) / 480.0f,
+          assets->GetImage_16BitColorKey(tex_name, 0x7FF)
+        );
+
+        String title;
+        if (pNPC->uProfession)
+        {
+          title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));
+        }
+        else
+        {
+          title = pNPC->pName;
+        }
+        popup_window.DrawTitleText(pFontArrus, 0, 12, Color16(0xFFu, 0xFFu, 0x9Bu), title, 3);
+        popup_window.uFrameWidth -= 24;
+        popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
+        popup_window.DrawText(pFontArrus, 100, 36, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
+      }
+    }
+  }
 }
 
 //----- (00445D4A) --------------------------------------------------------
@@ -921,15 +881,15 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
             pNPCInfo->uProfession == 52       //Fallen Wizard
         )
         {
-            pDialogueWindow->CreateButton(480, 250, 140, pFontArrus->GetHeight() - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "", 0);
+            pDialogueWindow->CreateButton(480, 250, 140, pFontArrus->GetHeight() - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "");
             pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
         }
     }
 
-    pDialogueWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
-    pDialogueWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-    pDialogueWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-    pDialogueWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
+    pDialogueWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
+    pDialogueWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
+    pDialogueWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
+    pDialogueWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
 
     if (bPlayerSaysHello && uActiveCharacter && !pNPCInfo->Hired())
     {
@@ -1077,86 +1037,79 @@ void GameUI_DrawDialogue()
       break;
 
     if (pButton->msg_param > 88)
-      pButton->pButtonName[0] = 0;
+      pButton->sLabel.clear();
     else if (pButton->msg_param == 88)
-      strcpy(pButton->pButtonName, localization->GetString(581)); // Lord
+      pButton->sLabel = localization->GetString(581); // Lord
     else if (pButton->msg_param == 87)
-      strcpy(pButton->pButtonName, localization->GetString(580)); // Knight
+      pButton->sLabel = localization->GetString(580); // Knight
     else if (pButton->msg_param == 86)
-      strcpy(pButton->pButtonName, localization->GetString(579)); // Squire
+      pButton->sLabel = localization->GetString(579); // Squire
     else if (pButton->msg_param == 85)
-      strcpy(pButton->pButtonName, localization->GetString(578)); // Page
+      pButton->sLabel = localization->GetString(578); // Page
     else if (pButton->msg_param == 77)
-      strcpy(pButton->pButtonName, localization->GetString(407)); // Details
-    else if (pButton->msg_param == 76)
-    {
-      if (pNPC->Hired())
-        sprintf(pButton->pButtonName, localization->GetString(408), pNPC->pName); // Release %s
-      else
-        strcpy(pButton->pButtonName, localization->GetString(406)); // Hire
-    }
-    else if (pButton->msg_param == 24)
-    {
+      pButton->sLabel = localization->GetString(407); // Details
+    else if (pButton->msg_param == 76) {
+      if (pNPC->Hired()) {
+        pButton->sLabel = StringPrintf(localization->GetString(408), pNPC->pName);  // Release %s
+      } else {
+        pButton->sLabel = localization->GetString(406);  // Hire
+      }
+    } else if (pButton->msg_param == 24) {
       __debugbreak(); // learn conditions of this event
-      if (!pNPC->evt_F)
-      {
-        pButton->pButtonName[0] = 0;
+      if (!pNPC->evt_F) {
+        pButton->sLabel.clear();
         pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_F].pTopic;
       }
-      else
-        strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_F].pTopic);
-    }
-    else if (pButton->msg_param == 9)
-      strcpy(pButton->pButtonName, GetProfessionActionText(pNPC->uProfession));
-    else if (pButton->msg_param == 19) // Scavenger Hunt
-    {
-      if (!pNPC->evt_A)
-      {
-        pButton->pButtonName[0] = 0;
+    } else if (pButton->msg_param == 9) {
+      pButton->sLabel = GetProfessionActionText(pNPC->uProfession);
+    } else if (pButton->msg_param == 19) {  // Scavenger Hunt
+      if (!pNPC->evt_A) {
+        pButton->sLabel.clear();
         pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_A].pTopic;
       }
-      else
-        strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_A].pTopic);
-    }
-    else if (pButton->msg_param == 20) // Scavenger Hunt
-    {
-      if (!pNPC->evt_B)
-      {
-        pButton->pButtonName[0] = 0;
+    } else if (pButton->msg_param == 20) {  // Scavenger Hunt
+      if (!pNPC->evt_B) {
+        pButton->sLabel.clear();
         pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_B].pTopic;
       }
-      else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_B].pTopic);
-    }
-    else if (pButton->msg_param == 21)
-    {
+    } else if (pButton->msg_param == 21) {
       //__debugbreak(); // learn conditions of this event
-      if (!pNPC->evt_C)
-      {
-        pButton->pButtonName[0] = 0;
+      if (!pNPC->evt_C) {
+        pButton->sLabel.clear();
         pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_C].pTopic;
       }
-      else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_C].pTopic);
     } else if (pButton->msg_param == 22) {
       //__debugbreak(); // learn conditions of this event
       if (!pNPC->evt_D) {
-        pButton->pButtonName[0] = 0;
+        pButton->sLabel.clear();
         pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_D].pTopic;
       }
-      else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_D].pTopic);
     } else if (pButton->msg_param == 23) {
       //__debugbreak(); // learn conditions of this event
       if (!pNPC->evt_E) {
-        pButton->pButtonName[0] = 0;
+        pButton->sLabel.clear();
         pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_E].pTopic;
       }
-      else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_E].pTopic);
     } else if (pButton->msg_param == 13) {
-      if (pNPC->Hired())
-        sprintf(pButton->pButtonName, localization->GetString(408), pNPC->pName); // Release %s
-      else
-        strcpy(pButton->pButtonName, localization->GetString(122)); // Join
+      if (pNPC->Hired()) {
+        pButton->sLabel = StringPrintf(localization->GetString(408), pNPC->pName);  // Release %s
+      } else {
+        pButton->sLabel = localization->GetString(122);  // Join
+      }
     } else {
-      pButton->pButtonName[0] = 0;
+      pButton->sLabel.clear();
     }
 
     if (pParty->field_7B5_in_arena_quest && pParty->field_7B5_in_arena_quest != -1) {
@@ -1170,8 +1123,9 @@ void GameUI_DrawDialogue()
             ++num_dead_actors;
         }
       }
-      if (num_dead_actors == uNumActors)
-        strcpy(pButton->pButtonName, localization->GetString(658)); // Collect Prize
+      if (num_dead_actors == uNumActors) {
+        pButton->sLabel = localization->GetString(658);  // Collect Prize
+      }
     }
   }
 
@@ -1184,7 +1138,7 @@ void GameUI_DrawDialogue()
     pButton = pDialogueWindow->GetControl(i);
     if (!pButton)
       break;
-    all_text_height += pFontArrus->CalcTextHeight(pButton->pButtonName, window.uFrameWidth, 0);
+    all_text_height += pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
     index++;
   }
   if (index) {
@@ -1199,14 +1153,14 @@ void GameUI_DrawDialogue()
       if (!pButton)
         break;
       pButton->uY = (unsigned int)(v45 + v42);
-      pTextHeight = pFontArrus->CalcTextHeight(pButton->pButtonName, window.uFrameWidth, 0);
+      pTextHeight = pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
       pButton->uHeight = pTextHeight;
       v42 = pButton->uY + pTextHeight - 1;
       pButton->uW = v42;
       pTextColor = ui_game_dialogue_option_normal_color;
       if (pDialogueWindow->pCurrentPosActiveItem == i)
         pTextColor = ui_game_dialogue_option_highlight_color;
-      window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->pButtonName, 3);
+      window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->sLabel, 3);
     }
   }
   render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
@@ -1785,7 +1739,7 @@ void GameUI_WritePointedObjectStatusString()
 								pMessageType1 = (UIMessageType)pButton->field_1C;
 								if (pMessageType1)
 									pMessageQueue_50CBD0->AddGUIMessage(pMessageType1, pButton->msg_param, 0);
-								GameUI_StatusBar_Set(pButton->pButtonName);
+								GameUI_StatusBar_Set(pButton->sLabel);
 								uLastPointedObjectID = 1;
 								return;
 							}
@@ -1802,7 +1756,7 @@ void GameUI_WritePointedObjectStatusString()
 									pMessageType2 = (UIMessageType)pButton->field_1C;
 									if (pMessageType2 != 0)
 										pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
-									GameUI_StatusBar_Set(pButton->pButtonName); // for character name
+									GameUI_StatusBar_Set(pButton->sLabel); // for character name
 									uLastPointedObjectID = 1;
 									return;
 								}
@@ -1901,7 +1855,7 @@ void GameUI_WritePointedObjectStatusString()
                     pMessageType3 = (UIMessageType)pButton->field_1C;
                     if (pMessageType3 == 0) // For books
                     {
-                        GameUI_StatusBar_Set(pButton->pButtonName);
+                        GameUI_StatusBar_Set(pButton->sLabel);
                     }
                     else
                     {
@@ -1925,7 +1879,7 @@ void GameUI_WritePointedObjectStatusString()
                         pMessageType2 = (UIMessageType)pButton->field_1C;
                         if (pMessageType2 != 0)
                             pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
-                        GameUI_StatusBar_Set(pButton->pButtonName); // for character name
+                        GameUI_StatusBar_Set(pButton->sLabel); // for character name
                         uLastPointedObjectID = 1;
                         return;
                     }

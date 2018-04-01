@@ -37,8 +37,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() :
     ui_book_button1_on = assets->GetImage_16BitAlpha("tab-an-6b");
     ui_book_button1_off = assets->GetImage_16BitAlpha("tab-an-6a");
 
-    pBtn_Book_1 = CreateButton(415, 13, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, 0, localization->GetString(375), 0); // Set Beacon
-    pBtn_Book_2 = CreateButton(415, 48, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, 0, localization->GetString(523), 0); // Recall Beacon
+    pBtn_Book_1 = CreateButton(415, 13, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, 0, localization->GetString(375)); // Set Beacon
+    pBtn_Book_2 = CreateButton(415, 48, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, 0, localization->GetString(523)); // Recall Beacon
 
     int max_beacons = 1;
     int v18 = pParty->pPlayers[_506348_current_lloyd_playerid].pActiveSkills[PLAYER_SKILL_WATER];
@@ -47,12 +47,10 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() :
     else if (v18 & 0x40)
         max_beacons = 3;
 
-    for (int i = 0; i < max_beacons; ++i)
-    {
+    for (int i = 0; i < max_beacons; ++i) {
         CreateButton(
             pLloydsBeaconsPreviewXs[i], pLloydsBeaconsPreviewYs[i],
-            92, 68, 1, 180, UIMSG_InstallBeacon, i, 0, "", 0
-        );
+            92, 68, 1, 180, UIMSG_InstallBeacon, i, 0, "");
     }
 
     for (int i = 0; i < 5; ++i)

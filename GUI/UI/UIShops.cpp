@@ -1343,79 +1343,74 @@ void  ShowPopupShopItem() {
     }
 }
 
-//----- (004B1523) --------------------------------------------------------
-void sub_4B1523_showSpellbookInfo(int spellItemId)
-{
-    int spellId; // esi@1
-    int spellLevel; // edx@1
-    unsigned int v3; // eax@2
-    int v4; // eax@4
-    long v5; // ecx@4
-    int v6; // eax@10
-    char *v7; // ST44_4@12
-    unsigned __int16 v8; // ax@12
-    GUIWindow a1; // [sp+Ch] [bp-68h]@4
-    unsigned int spellSchool; // [sp+60h] [bp-14h]@1
-    int v13; // [sp+6Ch] [bp-8h]@4
-    int v14; // [sp+70h] [bp-4h]@4
+void sub_4B1523_showSpellbookInfo(int spellItemId) {
+  int v4; // eax@4
+  long v5; // ecx@4
+  int v6; // eax@10
+  char *v7; // ST44_4@12
+  unsigned __int16 v8; // ax@12
+  int v13; // [sp+6Ch] [bp-8h]@4
+  int v14; // [sp+70h] [bp-4h]@4
 
-    spellId = spellItemId - 399;
-    spellLevel = (spellItemId - 400) % 11 + 1;
-    spellSchool = 4 * (spellItemId - 400) / 11;
+  int spellId = spellItemId - 399;
+  int spellLevel = (spellItemId - 400) % 11 + 1;
+  unsigned int spellSchool = 4 * (spellItemId - 400) / 11;
 
-    // sprintf(tmp_str.data(), "%s%03d", spellbook_texture_filename_suffices[v11 / 4], v2); not used
+  // sprintf(tmp_str.data(), "%s%03d", spellbook_texture_filename_suffices[v11 / 4], v2); not used
 
-    Point a2 = pMouse->GetCursorPos();
-    if (a2.y <= 320)
-        v3 = a2.y + 30;
-    else
-        v3 = 30;
-    a1.sHint = nullptr;
-    a1.uFrameY = v3;
-    a1.uFrameWidth = 328;
-    a1.uFrameHeight = 68;
-    a1.uFrameX = 90;
-    a1.uFrameZ = 417;
-    a1.uFrameW = v3 + 67;
-    a2.y = pFontSmallnum->GetLineWidth(localization->GetString(431));
-    v14 = pFontSmallnum->GetLineWidth(localization->GetString(433));
-    v13 = pFontSmallnum->GetLineWidth(localization->GetString(432));
-    v4 = pFontSmallnum->GetLineWidth(localization->GetString(96));
-    v5 = a2.y;
-    if (v14 > a2.y)
-        v5 = v14;
-    if (v13 > v5)
-        v5 = v13;
-    if (v4 > v5)
-        v5 = v4;
+  Point a2 = pMouse->GetCursorPos();
+  unsigned int v3 = 30;
+  if (a2.y <= 320) {
+    v3 = a2.y + 30;
+  }
 
-    auto str = StringPrintf(
-        "%s\n\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s",
-        pSpellStats->pInfos[spellId].pDescription, localization->GetString(431),        // "Normal"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc, localization->GetString(433),        // "Expert"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc, localization->GetString(432),        // "Master"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc, localization->GetString(96),         // "Grand"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc);
-    v6 = pFontSmallnum->CalcTextHeight(str, a1.uFrameWidth, 0);
-    a1.uFrameHeight += v6;
-    if ((signed int)a1.uFrameHeight < 150)
-        a1.uFrameHeight = 150;
-    a1.uFrameWidth = game_viewport_width;
-    a1.DrawMessageBox(0);
-    a1.uFrameWidth -= 12;
-    a1.uFrameHeight -= 12;
-    v7 = pSpellStats->pInfos[spellId].pName;
-    a1.uFrameZ = a1.uFrameX + a1.uFrameWidth - 1;
-    a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
-    v8 = Color16(0xFFu, 0xFFu, 0x9Bu);
-    a1.DrawTitleText(pFontArrus, 0x78u, 0xCu, v8, v7, 3u);
-    a1.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);
-    a1.uFrameZ = a1.uFrameX + 107;
-    a1.uFrameWidth = 108;
-    a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0, localization->GetSkillName(spellSchool / 4 + 12), 3u);
+  GUIWindow a1;
+  a1.uFrameY = v3;
+  a1.uFrameWidth = 328;
+  a1.uFrameHeight = 68;
+  a1.uFrameX = 90;
+  a1.uFrameZ = 417;
+  a1.uFrameW = v3 + 67;
+  a2.y = pFontSmallnum->GetLineWidth(localization->GetString(431));
+  v14 = pFontSmallnum->GetLineWidth(localization->GetString(433));
+  v13 = pFontSmallnum->GetLineWidth(localization->GetString(432));
+  v4 = pFontSmallnum->GetLineWidth(localization->GetString(96));
+  v5 = a2.y;
+  if (v14 > a2.y)
+    v5 = v14;
+  if (v13 > v5)
+    v5 = v13;
+  if (v4 > v5)
+    v5 = v4;
 
-    str = StringPrintf("%s\n%d", localization->GetString(522), *(&pSpellDatas[0].uNormalLevelMana + 10 * spellId));
-    a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
+  auto str = StringPrintf(
+    "%s\n\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s",
+    pSpellStats->pInfos[spellId].pDescription, localization->GetString(431),        // "Normal"
+    v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc, localization->GetString(433),        // "Expert"
+    v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc, localization->GetString(432),        // "Master"
+    v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc, localization->GetString(96),         // "Grand"
+    v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc);
+  v6 = pFontSmallnum->CalcTextHeight(str, a1.uFrameWidth, 0);
+  a1.uFrameHeight += v6;
+  if (a1.uFrameHeight < 150) {
+    a1.uFrameHeight = 150;
+  }
+  a1.uFrameWidth = game_viewport_width;
+  a1.DrawMessageBox(0);
+  a1.uFrameWidth -= 12;
+  a1.uFrameHeight -= 12;
+  v7 = pSpellStats->pInfos[spellId].pName;
+  a1.uFrameZ = a1.uFrameX + a1.uFrameWidth - 1;
+  a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
+  v8 = Color16(0xFFu, 0xFFu, 0x9Bu);
+  a1.DrawTitleText(pFontArrus, 0x78u, 0xCu, v8, v7, 3u);
+  a1.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);
+  a1.uFrameZ = a1.uFrameX + 107;
+  a1.uFrameWidth = 108;
+  a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0, localization->GetSkillName(spellSchool / 4 + 12), 3u);
+
+  str = StringPrintf("%s\n%d", localization->GetString(522), *(&pSpellDatas[0].uNormalLevelMana + 10 * spellId));
+  a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
 }
 
 //----- (004B1D27) --------------------------------------------------------

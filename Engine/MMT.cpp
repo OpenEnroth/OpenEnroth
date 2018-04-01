@@ -46,7 +46,7 @@ void MMT_MainMenu_Loop()
 
   //Create new window
   //WINDOW_MainMenu included in GUIWindow.h
-  pWindow_MMT_MainMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, 0);
+  pWindow_MMT_MainMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
 
   //load buttons
   //Texture_MM7* MMT_MM6      = pIcons_LOD->LoadTexturePtr("title_new", TEXTURE_16BIT_PALETTE);
@@ -200,7 +200,7 @@ void MMT_MenuMessageProc()
           break;
         case UIMSG_ExitToWindows:
             extern GUIButton *pMainMenu_BtnExit;
-            new OnButtonClick2(495, 337, 0, 0, (int)pMainMenu_BtnExit, 0);
+            new OnButtonClick2(495, 337, 0, 0, (int)pMainMenu_BtnExit);
           SetCurrentMenuID(MENU_EXIT_GAME);
 
         default:

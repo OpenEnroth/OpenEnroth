@@ -48,11 +48,11 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
     ui_book_button2_off = assets->GetImage_16BitAlpha("tab-an-7a");
 
     pBtn_Book_1 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,
-        ui_book_button1_on->GetWidth(), ui_book_button1_on->GetHeight(), 1, 0,
-        UIMSG_ClickBooksBtn, 11, 0, localization->GetString(192), ui_book_button1_on, 0);
+      ui_book_button1_on->GetWidth(), ui_book_button1_on->GetHeight(), 1, 0,
+      UIMSG_ClickBooksBtn, 11, 0, localization->GetString(192), { {ui_book_button1_on} });
     pBtn_Book_2 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38,
-        ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(), 1, 0, UIMSG_ClickBooksBtn, 10, 0,
-        localization->GetString(193), ui_book_button2_on, 0);
+      ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(), 1, 0, UIMSG_ClickBooksBtn, 10, 0,
+      localization->GetString(193), { {ui_book_button2_on} });
 
     num_achieved_awards = 0;
     journal_window.uFrameX = 48;

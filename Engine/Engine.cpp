@@ -872,7 +872,7 @@ void Engine::OutlineSelection()
 void  sub_42FBDD()
 {
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
-    render->DrawTextureAlphaNew(pBtn_YES->uX/640.0f, pBtn_YES->uY/480.0f, pBtn_YES->pTextures[0]);
+    render->DrawTextureAlphaNew(pBtn_YES->uX/640.0f, pBtn_YES->uY/480.0f, pBtn_YES->vTextures[0]);
     render->Present();
 }
 
@@ -880,7 +880,7 @@ void  sub_42FBDD()
 void CloseWindowBackground()
 {
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -2, 0, -1, 0, 0, 0, 0);
-    render->DrawTextureAlphaNew(pBtn_ExitCancel->uX/640.0f, pBtn_ExitCancel->uY/480.0f, pBtn_ExitCancel->pTextures[0]);
+    render->DrawTextureAlphaNew(pBtn_ExitCancel->uX/640.0f, pBtn_ExitCancel->uY/480.0f, pBtn_ExitCancel->vTextures[0]);
     render->Present();
 }
 
@@ -3205,31 +3205,25 @@ void Transition_StopSound_Autosave(const char *pMapName, MapStartPoint start_poi
     uLevel_StartingPointType = start_point;
 }
 
-//----- (004451A8) --------------------------------------------------------
-void sub_4451A8_press_any_key(int a1, int a2, int a4)
-{
-    if (!pGUIWindow2)
-    {
-        if (pParty->uFlags & 2)
-            pEngine->Draw();
-        pAudioPlayer->StopChannels(-1, -1);
-        pMiscTimer->Pause();
-        pEventTimer->Pause();
-        dword_5C3418 = a1;
-        dword_5C341C = a2;
-        _591094_decoration = activeLevelDecoration;
-        pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), a4, 0);
-        pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
-        pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-        pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-        pGUIWindow2->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
+void sub_4451A8_press_any_key(int a1, int a2, int a4) {
+  if (!pGUIWindow2) {
+    if (pParty->uFlags & 2) {
+      pEngine->Draw();
     }
+    pAudioPlayer->StopChannels(-1, -1);
+    pMiscTimer->Pause();
+    pEventTimer->Pause();
+    dword_5C3418 = a1;
+    dword_5C341C = a2;
+    _591094_decoration = activeLevelDecoration;
+    pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), a4, 0);
+    pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
+    pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
+    pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
+    pGUIWindow2->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
+  }
 }
 
-
-
-
-//----- (00448B67) --------------------------------------------------------
 void OnTimer(int)
 {
     if (pEventTimer->bPaused)

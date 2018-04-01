@@ -64,7 +64,7 @@ bool GUICredits::ExecuteCredits() {
   free(pPixels);
 
   GUIWindow *pWindow_Credits = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, text);
-  pWindow_Credits->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "", 0);
+  pWindow_Credits->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "");
   current_screen_type = SCREEN_CREATORS;
   SetCurrentMenuID(MENU_CREDITSPROC);
 

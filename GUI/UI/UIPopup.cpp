@@ -217,7 +217,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
 
     auto inspect_item_image = assets->GetImage_16BitColorKey(inspect_item->GetIconName(), 0x7FF);
 
-    iteminfo_window.sHint = nullptr;
+    iteminfo_window.sHint.clear();
     iteminfo_window.uFrameWidth = 384;
     iteminfo_window.uFrameHeight = 180;
     iteminfo_window.uFrameY = 40;
@@ -1322,7 +1322,7 @@ void  DrawSpellDescriptionPopup(int spell_index)
     spell_info_window.uFrameX = 90;
     spell_info_window.uFrameZ = 417;
     spell_info_window.uFrameW = v3 + 67;
-    spell_info_window.sHint = nullptr;
+    spell_info_window.sHint.clear();
     v5 = pFontSmallnum->GetLineWidth(localization->GetString(431)); // Normal
     if (pFontSmallnum->GetLineWidth(localization->GetString(432)) > v5) // Master
         v5 = pFontSmallnum->GetLineWidth(localization->GetString(432)); // Master
@@ -1364,337 +1364,323 @@ void  DrawSpellDescriptionPopup(int spell_index)
 //----- (00416D62) --------------------------------------------------------
 void UI_OnMouseRightClick(Vec2_int_ *_this)
 {
-    int v5; // esi@62
-    GUIButton *pButton; // esi@84
-    const char *pStr; // edi@85
-    const char *pHint; // edx@113
-    GUIWindow popup_window; // [sp+4h] [bp-74h]@32
-    unsigned int pX; // [sp+70h] [bp-8h]@3
-    unsigned int pY; // [sp+74h] [bp-4h]@3
+  int v5; // esi@62
+  GUIButton *pButton; // esi@84
+  const char *pStr; // edi@85
+  const char *pHint; // edx@113
+  GUIWindow popup_window; // [sp+4h] [bp-74h]@32
+  unsigned int pX; // [sp+70h] [bp-8h]@3
+  unsigned int pY; // [sp+74h] [bp-4h]@3
 
-    if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
-        return;
-    if (_this)
+  if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
+    return;
+  if (_this)
+  {
+    pX = _this->x;
+    pY = _this->y;
+  }
+  else
+  {
+    pMouse->GetClickPos(&pX, &pY);
+  }
+  //if ( render->bWindowMode )
+  {
+    Point pt = pMouse->GetCursorPos();
+    if (pt.x < 1 || pt.y < 1 || pt.x > 638 || pt.y > 478)
     {
-        pX = _this->x;
-        pY = _this->y;
+      back_to_game();
+      return;
+    }
+  }
+  if (pParty->pPickedItem.uItemID)//нажатие на портрет перса правой кнопкой мыши с раствором
+  {
+    for (uint i = 0; i < 4; ++i)
+    {
+      if ((signed int)pX > RightClickPortraitXmin[i] && (signed int)pX < RightClickPortraitXmax[i]
+        && (signed int)pY > 375 && (signed int)pY < 466)
+      {
+        pPlayers[uActiveCharacter]->UseItem_DrinkPotion_etc(i + 1, 1);
+        return;
+      }
+    }
+  }
+
+  pEventTimer->Pause();
+  switch (current_screen_type)
+  {
+  case SCREEN_CASTING:
+  {
+    Inventory_ItemPopupAndAlchemy();
+    break;
+  }
+  case SCREEN_CHEST:
+  {
+    if (!pPlayers[uActiveCharacter]->CanAct())
+    {
+      static String hint_reference;
+      hint_reference = localization->FormatString(427, pPlayers[uActiveCharacter]->pName, localization->GetString(541));//%s не в состоянии %s Опознать предметы
+
+      popup_window.sHint = hint_reference;
+      popup_window.uFrameWidth = 384;
+      popup_window.uFrameHeight = 180;
+      popup_window.uFrameY = 40;
+      if ((signed int)pX <= 320)
+        popup_window.uFrameX = pX + 30;
+      else
+        popup_window.uFrameX = pX - 414;
+      popup_window.DrawMessageBox(0);
     }
     else
     {
-        pMouse->GetClickPos(&pX, &pY);
-    }
-    //if ( render->bWindowMode )
-    {
-        Point pt = pMouse->GetCursorPos();
-        if (pt.x < 1 || pt.y < 1 || pt.x > 638 || pt.y > 478)
-        {
-            back_to_game();
-            return;
-        }
-    }
-    if (pParty->pPickedItem.uItemID)//нажатие на портрет перса правой кнопкой мыши с раствором
-    {
-        for (uint i = 0; i < 4; ++i)
-        {
-            if ((signed int)pX > RightClickPortraitXmin[i] && (signed int)pX < RightClickPortraitXmax[i]
-                && (signed int)pY > 375 && (signed int)pY < 466)
-            {
-                pPlayers[uActiveCharacter]->UseItem_DrinkPotion_etc(i + 1, 1);
-                return;
-            }
-        }
-    }
 
-    pEventTimer->Pause();
-    switch (current_screen_type)
-    {
-    case SCREEN_CASTING:
-    {
-        Inventory_ItemPopupAndAlchemy();
-        break;
-    }
-    case SCREEN_CHEST:
-    {
-        if (!pPlayers[uActiveCharacter]->CanAct())
-        {
-            static String hint_reference;
-            hint_reference = localization->FormatString(427, pPlayers[uActiveCharacter]->pName, localization->GetString(541));//%s не в состоянии %s Опознать предметы
+      // this could be put into a chest function
 
-            popup_window.sHint = hint_reference.c_str();
-            popup_window.uFrameWidth = 384;
-            popup_window.uFrameHeight = 180;
-            popup_window.uFrameY = 40;
-            if ((signed int)pX <= 320)
-                popup_window.uFrameX = pX + 30;
-            else
-                popup_window.uFrameX = pX - 414;
-            popup_window.DrawMessageBox(0);
+      int chestheight = 9;//pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+      int chestwidth = 9;
+      int inventoryYCoord = (pY - 34) / 32;	//use pchestoffsets??
+      int inventoryXCoord = (pX - 42) / 32;
+      int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
+
+
+      if (inventoryYCoord >= 0 && inventoryYCoord < chestheight && inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
+
+        int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+        if (chestindex < 0) {
+          invMatrixIndex = (-(chestindex + 1));
+          chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+        }
+
+        if (chestindex) {
+
+          int itemindex = chestindex - 1;
+
+          GameUI_DrawItemInfo(&pChests[pChestWindow->par1C].igChestItems[itemindex]);
+
+        }
+
+      }
+
+
+
+
+
+
+    }
+    break;
+  }
+
+  case SCREEN_GAME://In the main menu displays a pop-up window(В главном меню показывает всплывающее окно)
+  {
+    if (GetCurrentMenuID() > 0)
+      break;
+    if ((signed int)pY > (signed int)pViewport->uViewportBR_Y) {
+      popup_window.ptr_1C = (void *)((signed int)pX / 118);
+      if ((signed int)pX / 118 < 4) {  // portaits zone
+        popup_window.sHint.clear();
+        popup_window.uFrameWidth = 400;
+        popup_window.uFrameHeight = 200;
+        popup_window.uFrameX = 38;
+        popup_window.uFrameY = 60;
+        pAudioPlayer->StopChannels(-1, -1);
+        GameUI_CharacterQuickRecord_Draw(&popup_window, pPlayers[(int)popup_window.ptr_1C + 1]);
+      }
+    } else if ((signed int)pX > (signed int)pViewport->uViewportBR_X) {
+      if ((signed int)pY >= 130) {
+        if ((signed int)pX >= 476 && (signed int)pX <= 636 && (signed int)pY >= 240 && (signed int)pY <= 300)//buff_tooltip zone
+        {
+          popup_window.sHint.clear();
+          popup_window.uFrameWidth = 400;
+          popup_window.uFrameHeight = 200;
+          popup_window.uFrameX = 38;
+          popup_window.uFrameY = 60;
+          pAudioPlayer->StopChannels(-1, -1);
+          popup_window._41D73D_draw_buff_tooltip();
+        }
+        else if ((signed int)pX < 485 || (signed int)pX > 548 || (signed int)pY < 156 || (signed int)pY > 229)//NPC zone
+        {
+          if (!((signed int)pX < 566 || (signed int)pX > 629 || (signed int)pY < 156 || (signed int)pY > 229))
+          {
+            pAudioPlayer->StopChannels(-1, -1);
+            GameUI_DrawNPCPopup((void *)1);//NPC 2
+          }
         }
         else
         {
-
-			// this could be put into a chest function
-
-			int chestheight = 9;//pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
-			int chestwidth = 9;
-			int inventoryYCoord = (pY - 34) / 32;	//use pchestoffsets??
-			int inventoryXCoord = (pX - 42) / 32;
-			int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
-
-
-			if (inventoryYCoord >= 0 && inventoryYCoord < chestheight && inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-
-					int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
-					if (chestindex < 0) {
-						invMatrixIndex = (-(chestindex + 1));
-						chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
-					}
-
-					if (chestindex) {
-
-						int itemindex = chestindex - 1;
-
-						GameUI_DrawItemInfo(&pChests[pChestWindow->par1C].igChestItems[itemindex]);
-
-					}
-				
-			}
-
-			
-
-           
-		
-		
-		}
-        break;
-    }
-
-    case SCREEN_GAME://In the main menu displays a pop-up window(В главном меню показывает всплывающее окно)
-    {
-        if (GetCurrentMenuID() > 0)
-            break;
-        if ((signed int)pY > (signed int)pViewport->uViewportBR_Y)
-        {
-            popup_window.ptr_1C = (void *)((signed int)pX / 118);
-            if ((signed int)pX / 118 < 4)//portaits zone
-            {
-                popup_window.sHint = nullptr;
-                popup_window.uFrameWidth = 400;
-                popup_window.uFrameHeight = 200;
-                popup_window.uFrameX = 38;
-                popup_window.uFrameY = 60;
-                pAudioPlayer->StopChannels(-1, -1);
-                GameUI_CharacterQuickRecord_Draw(&popup_window, pPlayers[(int)popup_window.ptr_1C + 1]);
-            }
+          pAudioPlayer->StopChannels(-1, -1);
+          GameUI_DrawNPCPopup(0);//NPC 1
         }
-        else if ((signed int)pX > (signed int)pViewport->uViewportBR_X)
-        {
-            if ((signed int)pY >= 130)
-            {
-                if ((signed int)pX >= 476 && (signed int)pX <= 636 && (signed int)pY >= 240 && (signed int)pY <= 300)//buff_tooltip zone
-                {
-                    popup_window.sHint = nullptr;
-                    popup_window.uFrameWidth = 400;
-                    popup_window.uFrameHeight = 200;
-                    popup_window.uFrameX = 38;
-                    popup_window.uFrameY = 60;
-                    pAudioPlayer->StopChannels(-1, -1);
-                    popup_window._41D73D_draw_buff_tooltip();
-                }
-                else if ((signed int)pX < 485 || (signed int)pX > 548 || (signed int)pY < 156 || (signed int)pY > 229)//NPC zone
-                {
-                    if (!((signed int)pX < 566 || (signed int)pX > 629 || (signed int)pY < 156 || (signed int)pY > 229))
-                    {
-                        pAudioPlayer->StopChannels(-1, -1);
-                        GameUI_DrawNPCPopup((void *)1);//NPC 2
-                    }
-                }
-                else
-                {
-                    pAudioPlayer->StopChannels(-1, -1);
-                    GameUI_DrawNPCPopup(0);//NPC 1
-                }
-            }
-            else//minimap zone
-            {
-                popup_window.sHint = (char *)GameUI_GetMinimapHintText();
-                popup_window.uFrameWidth = 256;
-                popup_window.uFrameX = 130;
-                popup_window.uFrameY = 140;
-                popup_window.uFrameHeight = 64;
-                pAudioPlayer->StopChannels(-1, -1);
-                popup_window.DrawMessageBox(0);
-            }
-        }
-        else//game zone
-        {
-            popup_window.sHint = nullptr;
-            popup_window.uFrameWidth = 320;
-            popup_window.uFrameHeight = 320;
-            popup_window.uFrameX = pX - 350;
-            if ((signed int)pX <= 320)
-                popup_window.uFrameX = pX + 30;
-            popup_window.uFrameY = 40;
-            //if ( render->pRenderD3D )
-            v5 = pEngine->pVisInstance->get_picked_object_zbuf_val();
-            /*else
-              v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
-            if (PID_TYPE((unsigned __int16)v5) == OBJECT_Actor)
-            {
-                /*if ( render->uNumSceneBegins )
-                {
-                  popup_window.DrawMessageBox(1);
-                  MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
-                }
-                else*/
-                {
-                    render->BeginScene();
-                    popup_window.DrawMessageBox(1);
-                    MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
-                    render->EndScene();
-                }
-            }
-            if (PID_TYPE((unsigned __int16)v5) == OBJECT_Item)
-            {
-                if (!(pObjectList->pObjects[pSpriteObjects[PID_ID((unsigned __int16)v5)].uObjectDescID].uFlags & 0x10))
-                {
-                    GameUI_DrawItemInfo(&pSpriteObjects[PID_ID((unsigned __int16)v5)].containing_item);
-                }
-            }
-        }
-        break;
-    }
-    case SCREEN_BOOKS:
-    {
-        if (!dword_506364
-            || (signed int)pX < (signed int)pViewport->uViewportTL_X || (signed int)pX >(signed int)pViewport->uViewportBR_X
-            || (signed int)pY < (signed int)pViewport->uViewportTL_Y || (signed int)pY >(signed int)pViewport->uViewportBR_Y
-            || ((popup_window.sHint = (char *)GetMapBookHintText()) == 0))
-            break;
-        popup_window.uFrameWidth = (pFontArrus->GetLineWidth(popup_window.sHint) + 32) + 0.5f;
-        popup_window.uFrameX = pX + 5;
-        popup_window.uFrameY = pY + 5;
+      } else {  // minimap zone
+        popup_window.sHint = GameUI_GetMinimapHintText();
+        popup_window.uFrameWidth = 256;
+        popup_window.uFrameX = 130;
+        popup_window.uFrameY = 140;
         popup_window.uFrameHeight = 64;
         pAudioPlayer->StopChannels(-1, -1);
         popup_window.DrawMessageBox(0);
-        break;
-    }
-    case SCREEN_CHARACTERS:
-    case SCREEN_E:
-    case SCREEN_CHEST_INVENTORY:
-    {
-        if ((signed int)pX > 467 && current_screen_type != SCREEN_E)
-            Inventory_ItemPopupAndAlchemy();
-        else if ((signed int)pY >= 345)
-            break;
-        else if (current_character_screen_window == WINDOW_CharacterWindow_Stats)//2DEvent - CharacerScreenStats
-            CharacterUI_StatsTab_ShowHint();
-        else if (current_character_screen_window == WINDOW_CharacterWindow_Skills)//2DEvent - CharacerScreenSkills
-            CharacterUI_SkillsTab_ShowHint();
-        else if (current_character_screen_window == WINDOW_CharacterWindow_Inventory)//2DEvent - CharacerScreenInventory
-            Inventory_ItemPopupAndAlchemy();
-        break;
-    }
-    case SCREEN_SPELL_BOOK:
-    {
-        if (dword_507B00_spell_info_to_draw_in_popup)
-            DrawSpellDescriptionPopup(dword_507B00_spell_info_to_draw_in_popup - 1);
-        break;
-    }
-    case SCREEN_HOUSE:
-    {
-        if ((signed int)pY < 345 && (signed int)pX < 469)
-            ShowPopupShopItem();
-        break;
-    }
-    case SCREEN_PARTY_CREATION:
-    {
-        popup_window.sHint = nullptr;
-        pStr = 0;
-        for (pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext)
+      }
+    } else {  // game zone
+      popup_window.sHint.clear();
+      popup_window.uFrameWidth = 320;
+      popup_window.uFrameHeight = 320;
+      popup_window.uFrameX = pX - 350;
+      if ((signed int)pX <= 320)
+        popup_window.uFrameX = pX + 30;
+      popup_window.uFrameY = 40;
+      //if ( render->pRenderD3D )
+      v5 = pEngine->pVisInstance->get_picked_object_zbuf_val();
+      /*else
+      v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
+      if (PID_TYPE((unsigned __int16)v5) == OBJECT_Actor)
+      {
+        /*if ( render->uNumSceneBegins )
         {
-            if (pButton->uButtonType == 1 && pButton->uButtonType != 3 && (signed int)pX >(signed int)pButton->uX && (signed int)pX < (signed int)pButton->uZ
-                && (signed int)pY >(signed int)pButton->uY && (signed int)pY < (signed int)pButton->uW)
-            {
-                switch (pButton->msg)
-                {
-                case UIMSG_0: //stats info
-                    popup_window.sHint = localization->GetAttributeDescription((int)pButton->msg_param % 7);
-                    pStr = localization->GetAttirubteName((int)pButton->msg_param % 7);
-                    break;
-                case UIMSG_PlayerCreationClickPlus: //Plus button info 
-                    pStr = localization->GetString(670);//Добавить
-                    popup_window.sHint = localization->GetString(671);//"Добавляет очко к выделенному навыку, забирая его из накопителя очков"
-                    break;
-                case UIMSG_PlayerCreationClickMinus: //Minus button info
-                    pStr = localization->GetString(668);//Вычесть
-                    popup_window.sHint = localization->GetString(669);//"Вычитает очко из выделенного навыка, возвращая его в накопитель очков"
-                    break;
-                case UIMSG_PlayerCreationSelectActiveSkill: //Available skill button info
-                    pStr = localization->GetSkillName(pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(pButton->msg_param + 4));
-                    popup_window.sHint = localization->GetSkillDescription(pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(pButton->msg_param + 4));
-                    break;
-                case UIMSG_PlayerCreationSelectClass: //Available Class Info
-                    popup_window.sHint = localization->GetClassDescription(pButton->msg_param);
-                    pStr = localization->GetClassName(pButton->msg_param);
-                    break;
-                case UIMSG_PlayerCreationClickOK: //OK Info
-                    popup_window.sHint = localization->GetString(664);//Щелкните здесь для утверждения состава отряда и продолжения игры.
-                    pStr = localization->GetString(665);//Кнопка ОК
-                    break;
-                case UIMSG_PlayerCreationClickReset: //Clear info
-                    popup_window.sHint = localization->GetString(666);//Сбрасывает все параметры и навыки отряда.
-                    pStr = localization->GetString(667);//Кнопка Очистить
-                    break;
-                case UIMSG_PlayerCreation_SelectAttribute: // Character info
-                    pStr = pParty->pPlayers[pButton->msg_param].pName;
-                    popup_window.sHint = localization->GetClassDescription(pParty->pPlayers[pButton->msg_param].classType);
-                    break;
-                }
-                if (pButton->msg > UIMSG_44 && pButton->msg <= UIMSG_PlayerCreationRemoveDownSkill) //Sellected skills info
-                {
-                    pY = 0;
-                    if ((signed int)pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) < 37)
-                    {
-                        static String hint_reference;
-                        hint_reference = CharacterUI_GetSkillDescText(pButton->msg_param, (PLAYER_SKILL_TYPE)pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48));
-
-                        popup_window.sHint = hint_reference.c_str();
-                        pStr = localization->GetSkillName(pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48));
-                    }
-                }
-            }
+        popup_window.DrawMessageBox(1);
+        MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
         }
-        if (popup_window.sHint)
+        else*/
         {
-            pHint = popup_window.sHint;
-            popup_window.sHint = nullptr;
-            popup_window.uFrameWidth = 384;
-            popup_window.uFrameHeight = 256;
-            popup_window.uFrameX = 128;
-            popup_window.uFrameY = 40;
-            popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(pHint, popup_window.uFrameWidth, 24) + 2 * pFontLucida->GetHeight() + 24;
-            popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-            popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
-            popup_window.DrawMessageBox(0);
-            popup_window.uFrameX += 12;
-            popup_window.uFrameWidth -= 24;
-            popup_window.uFrameY += 12;
-            popup_window.uFrameHeight -= 12;
-            popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-            popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
-
-            auto str = StringPrintf("\f%05d%s\f00000\n", Color16(0xFF, 0xFF, 0x9B), pStr);
-            popup_window.DrawTitleText(pFontCreate, 0, 0, 0, str.c_str(), 3);
-            popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetHeight(), 0, pHint, 0, 0, 0);
+          render->BeginScene();
+          popup_window.DrawMessageBox(1);
+          MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
+          render->EndScene();
         }
-        break;
+      }
+      if (PID_TYPE((unsigned __int16)v5) == OBJECT_Item)
+      {
+        if (!(pObjectList->pObjects[pSpriteObjects[PID_ID((unsigned __int16)v5)].uObjectDescID].uFlags & 0x10))
+        {
+          GameUI_DrawItemInfo(&pSpriteObjects[PID_ID((unsigned __int16)v5)].containing_item);
+        }
+      }
     }
-    default:
-        break;
+    break;
+  }
+  case SCREEN_BOOKS:
+  {
+    if (!dword_506364
+      || (signed int)pX < (signed int)pViewport->uViewportTL_X || (signed int)pX >(signed int)pViewport->uViewportBR_X
+      || (signed int)pY < (signed int)pViewport->uViewportTL_Y || (signed int)pY >(signed int)pViewport->uViewportBR_Y
+      || ((popup_window.sHint = GetMapBookHintText()).empty()))
+      break;
+    popup_window.uFrameWidth = (pFontArrus->GetLineWidth(popup_window.sHint) + 32) + 0.5f;
+    popup_window.uFrameX = pX + 5;
+    popup_window.uFrameY = pY + 5;
+    popup_window.uFrameHeight = 64;
+    pAudioPlayer->StopChannels(-1, -1);
+    popup_window.DrawMessageBox(0);
+    break;
+  }
+  case SCREEN_CHARACTERS:
+  case SCREEN_E:
+  case SCREEN_CHEST_INVENTORY:
+  {
+    if ((signed int)pX > 467 && current_screen_type != SCREEN_E)
+      Inventory_ItemPopupAndAlchemy();
+    else if ((signed int)pY >= 345)
+      break;
+    else if (current_character_screen_window == WINDOW_CharacterWindow_Stats)//2DEvent - CharacerScreenStats
+      CharacterUI_StatsTab_ShowHint();
+    else if (current_character_screen_window == WINDOW_CharacterWindow_Skills)//2DEvent - CharacerScreenSkills
+      CharacterUI_SkillsTab_ShowHint();
+    else if (current_character_screen_window == WINDOW_CharacterWindow_Inventory)//2DEvent - CharacerScreenInventory
+      Inventory_ItemPopupAndAlchemy();
+    break;
+  }
+  case SCREEN_SPELL_BOOK:
+  {
+    if (dword_507B00_spell_info_to_draw_in_popup)
+      DrawSpellDescriptionPopup(dword_507B00_spell_info_to_draw_in_popup - 1);
+    break;
+  }
+  case SCREEN_HOUSE: {
+    if ((signed int)pY < 345 && (signed int)pX < 469)
+      ShowPopupShopItem();
+    break;
+  }
+  case SCREEN_PARTY_CREATION: {
+    popup_window.sHint.clear();
+    pStr = 0;
+    for (pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext) {
+      if (pButton->uButtonType == 1 && pButton->uButtonType != 3 && (signed int)pX >(signed int)pButton->uX && (signed int)pX < (signed int)pButton->uZ
+        && (signed int)pY >(signed int)pButton->uY && (signed int)pY < (signed int)pButton->uW)
+      {
+        switch (pButton->msg) {
+        case UIMSG_0: //stats info
+          popup_window.sHint = localization->GetAttributeDescription((int)pButton->msg_param % 7);
+          pStr = localization->GetAttirubteName((int)pButton->msg_param % 7);
+          break;
+        case UIMSG_PlayerCreationClickPlus: //Plus button info 
+          pStr = localization->GetString(670);//Добавить
+          popup_window.sHint = localization->GetString(671);//"Добавляет очко к выделенному навыку, забирая его из накопителя очков"
+          break;
+        case UIMSG_PlayerCreationClickMinus: //Minus button info
+          pStr = localization->GetString(668);//Вычесть
+          popup_window.sHint = localization->GetString(669);//"Вычитает очко из выделенного навыка, возвращая его в накопитель очков"
+          break;
+        case UIMSG_PlayerCreationSelectActiveSkill: //Available skill button info
+          pStr = localization->GetSkillName(pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(pButton->msg_param + 4));
+          popup_window.sHint = localization->GetSkillDescription(pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(pButton->msg_param + 4));
+          break;
+        case UIMSG_PlayerCreationSelectClass: //Available Class Info
+          popup_window.sHint = localization->GetClassDescription(pButton->msg_param);
+          pStr = localization->GetClassName(pButton->msg_param);
+          break;
+        case UIMSG_PlayerCreationClickOK: //OK Info
+          popup_window.sHint = localization->GetString(664);//Щелкните здесь для утверждения состава отряда и продолжения игры.
+          pStr = localization->GetString(665);//Кнопка ОК
+          break;
+        case UIMSG_PlayerCreationClickReset: //Clear info
+          popup_window.sHint = localization->GetString(666);//Сбрасывает все параметры и навыки отряда.
+          pStr = localization->GetString(667);//Кнопка Очистить
+          break;
+        case UIMSG_PlayerCreation_SelectAttribute: // Character info
+          pStr = pParty->pPlayers[pButton->msg_param].pName;
+          popup_window.sHint = localization->GetClassDescription(pParty->pPlayers[pButton->msg_param].classType);
+          break;
+        }
+        if (pButton->msg > UIMSG_44 && pButton->msg <= UIMSG_PlayerCreationRemoveDownSkill) //Sellected skills info
+        {
+          pY = 0;
+          if ((int)pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) < 37)
+          {
+            static String hint_reference;
+            hint_reference = CharacterUI_GetSkillDescText(pButton->msg_param, (PLAYER_SKILL_TYPE)pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48));
+
+            popup_window.sHint = hint_reference;
+            pStr = localization->GetSkillName(pParty->pPlayers[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48));
+          }
+        }
+      }
     }
-    dword_507BF0_is_there_popup_onscreen = 1;
-    viewparams->bRedrawGameUI = 1;
+    if (!popup_window.sHint.empty()) {
+      String sHint = popup_window.sHint;
+      popup_window.sHint.clear();
+      popup_window.uFrameWidth = 384;
+      popup_window.uFrameHeight = 256;
+      popup_window.uFrameX = 128;
+      popup_window.uFrameY = 40;
+      popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(sHint, popup_window.uFrameWidth, 24) + 2 * pFontLucida->GetHeight() + 24;
+      popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
+      popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
+      popup_window.DrawMessageBox(0);
+      popup_window.uFrameX += 12;
+      popup_window.uFrameWidth -= 24;
+      popup_window.uFrameY += 12;
+      popup_window.uFrameHeight -= 12;
+      popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
+      popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
+
+      auto str = StringPrintf("\f%05d%s\f00000\n", Color16(0xFF, 0xFF, 0x9B), pStr);
+      popup_window.DrawTitleText(pFontCreate, 0, 0, 0, str.c_str(), 3);
+      popup_window.DrawText(pFontSmallnum, 1, pFontLucida->GetHeight(), 0, sHint, 0, 0, 0);
+    }
+    break;
+  }
+  default:
+    break;
+  }
+  dword_507BF0_is_there_popup_onscreen = 1;
+  viewparams->bRedrawGameUI = 1;
 }
 
 
@@ -1844,7 +1830,7 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
         static String hint_reference;
         hint_reference = localization->FormatString(427, pPlayers[uActiveCharacter]->pName, localization->GetString(541));//%s не в состоянии %s Опознать предметы
 
-        message_window.sHint = hint_reference.c_str();
+        message_window.sHint = hint_reference;
         message_window.uFrameWidth = 384;
         message_window.uFrameHeight = 180;
         if (pX <= 320)

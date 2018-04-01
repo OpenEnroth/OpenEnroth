@@ -45,42 +45,31 @@ std::array<Vec2_int_, 20> pMonsterArenaPlacements =
   }}
 ;
 
-//----- (004BBCDD) --------------------------------------------------------
-void  Arena_SelectionFightLevel()
-{
-  signed int v0; // ebp@3
+void  Arena_SelectionFightLevel() {
   GUIButton *v5; // eax@18
   GUIButton *v6; // esi@19
 
-  if ( pParty->field_7B5_in_arena_quest )
-  {
-    if ( pParty->field_7B5_in_arena_quest == -1 )
-    {
+  if (pParty->field_7B5_in_arena_quest) {
+    if (pParty->field_7B5_in_arena_quest == -1) {
       uDialogueType = DIALOGUE_ARENA_ALREADY_WON;
-    }
-    else
-    {
-      v0 = 0;
-      for (size_t i = 0; i < uNumActors; i++ )
-      {
-        if ( pActors[i].uAIState == Dead
+    } else {
+      int v0 = 0;
+      for (size_t i = 0; i < uNumActors; i++) {
+        if (pActors[i].uAIState == Dead
           || pActors[i].uAIState == Removed
           || pActors[i].uAIState == Disabled
           || pActors[i].uSummonerID != 0 && PID_TYPE(pActors[i].uSummonerID) == OBJECT_Player)
           ++v0;
       }
-      if ( v0 >= (signed int)uNumActors || (signed int)uNumActors <= 0)
-      {
+      if (v0 >= (signed int)uNumActors || (signed int)uNumActors <= 0) {
         uDialogueType = DIALOGUE_ARENA_REWARD;
         ++*((char *)&pParty->monster_for_hunting_killed[3] + (unsigned __int8)pParty->field_7B5_in_arena_quest + 1);//Ritor1:I dont know
-        for ( uint i= 0; i < 4; i++ )
+        for (uint i = 0; i < 4; i++)
           pParty->pPlayers[i].SetVariable(VAR_Award, (unsigned __int8)pParty->field_7B5_in_arena_quest + 3);
         pParty->PartyFindsGold(gold_transaction_amount, 0);
         pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0, 0, 0);
         pParty->field_7B5_in_arena_quest = -1;
-      }
-      else
-      {
+      } else {
         uDialogueType = DIALOGUE_ARENA_WELCOME;
         pParty->vPosition.x = 3849;
         pParty->vPosition.y = 5770;
@@ -92,35 +81,29 @@ void  Arena_SelectionFightLevel()
         pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0, 0, 0);
       }
     }
-  }
-  else
-  {
+  } else {
     uDialogueType = DIALOGUE_ARENA_WELCOME;
     v5 = pDialogueWindow->pControlsHead;
-    if ( v5 )
-    {
-      do
-      {
+    if (v5) {
+      do {
         v6 = v5->pNext;
         free(v5);
         v5 = v6;
-      }
-      while ( v6 );
+      } while (v6);
     }
     pDialogueWindow->pControlsHead = 0;
     pDialogueWindow->pControlsTail = 0;
     pDialogueWindow->uNumControls = 0;
     pBtn_ExitCancel = pDialogueWindow->CreateButton(471, 445, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0,
-                   localization->GetString(79), //Close, Закрыть
-                    ui_exit_cancel_button_background, 0);
-    pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 85, 0, "", 0);
-    pDialogueWindow->CreateButton(480, 190, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 86, 0, "", 0);
-    pDialogueWindow->CreateButton(480, 220, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 87, 0, "", 0);
-    pDialogueWindow->CreateButton(480, 250, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 88, 0, "", 0);
+      localization->GetString(79), //Close, Закрыть
+      { {ui_exit_cancel_button_background} });
+    pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 85, 0, "");
+    pDialogueWindow->CreateButton(480, 190, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 86, 0, "");
+    pDialogueWindow->CreateButton(480, 220, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 87, 0, "");
+    pDialogueWindow->CreateButton(480, 250, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 88, 0, "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
   }
 }
-
 
 //----- (004BC109) --------------------------------------------------------
 void ArenaFight()

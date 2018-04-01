@@ -52,19 +52,19 @@ void MainMenu_EventLoop()
             switch (pUIMessageType) // For buttons of window MainMenu
             {
             case UIMSG_MainMenu_ShowPartyCreationWnd:
-                new OnButtonClick2(495, 172, 0, 0, (int)pMainMenu_BtnNew, 0);
+                new OnButtonClick2(495, 172, 0, 0, (int)pMainMenu_BtnNew);
                 SetCurrentMenuID(MENU_NEWGAME);
                 break;
             case UIMSG_MainMenu_ShowLoadWindow:
-                new OnButtonClick2(495, 227, 0, 0, (int)pMainMenu_BtnLoad, 0);
+                new OnButtonClick2(495, 227, 0, 0, (int)pMainMenu_BtnLoad);
                 SetCurrentMenuID(MENU_SAVELOAD);
                 break;
             case UIMSG_ShowCredits:
-                new OnButtonClick2(495, 282, 0, 0, (int)pMainMenu_BtnCredits, 0);
+                new OnButtonClick2(495, 282, 0, 0, (int)pMainMenu_BtnCredits);
                 SetCurrentMenuID(MENU_CREDITS);
                 break;
             case UIMSG_ExitToWindows:
-                new OnButtonClick2(495, 337, 0, 0, (int)pMainMenu_BtnExit, 0);
+                new OnButtonClick2(495, 337, 0, 0, (int)pMainMenu_BtnExit);
                 SetCurrentMenuID(MENU_EXIT_GAME);
                 break;
             case UIMSG_ChangeGameState:
@@ -78,16 +78,16 @@ void MainMenu_EventLoop()
                 SetCurrentMenuID(MENU_DebugBLVLevel);
                 break;
             case UIMSG_Cancel:
-                new OnCancel3(pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, (int)pBtnCancel, 0);
+                new OnCancel3(pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, (int)pBtnCancel);
                 break;
             case UIMSG_AD:
                 __debugbreak();//some debugging tool
-                new OnButtonClick2(pMainMenu_BtnNew->uX, pMainMenu_BtnNew->uY, 0, 0, (int)pMainMenu_BtnNew, 0);
+                new OnButtonClick2(pMainMenu_BtnNew->uX, pMainMenu_BtnNew->uY, 0, 0, (int)pMainMenu_BtnNew);
                 SetCurrentMenuID(MENU_LoadingProcInMainMenu);
                 break;
             case UIMSG_DebugBlv2:
                 __debugbreak();//some debugging tool
-                new OnButtonClick2(pMainMenu_BtnExit->uX, pMainMenu_BtnExit->uY, 0, 0, (int)pMainMenu_BtnExit, 0);
+                new OnButtonClick2(pMainMenu_BtnExit->uX, pMainMenu_BtnExit->uY, 0, 0, (int)pMainMenu_BtnExit);
                 SetCurrentMenuID(MENU_DebugBLVLevel);
                 break;
             case UIMSG_Escape:

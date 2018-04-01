@@ -67,23 +67,19 @@ void GUIWindow_Book::Release()
 
 
 GUIWindow_Book::GUIWindow_Book() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
 }
 
-void GUIWindow_Book::BasicBookInitialization()
-{
-// ----- (00411BFC) --------------------------------------------------------
-// void GUIWindow::InitializeBookView() --- part
-// {
-    pAudioPlayer->StopChannels(-1, -1);
-    InitializeFonts();
-    CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(79), 0); // Close
-    current_screen_type = SCREEN_BOOKS;
-    full_num_items_in_book = 0;
-    books_primary_item_per_page = 0;
-    books_page_number = 0;
-    num_achieved_awards = 0;
+void GUIWindow_Book::BasicBookInitialization() {
+  pAudioPlayer->StopChannels(-1, -1);
+  InitializeFonts();
+  CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(79)); // Close
+  current_screen_type = SCREEN_BOOKS;
+  full_num_items_in_book = 0;
+  books_primary_item_per_page = 0;
+  books_page_number = 0;
+  num_achieved_awards = 0;
 }
 
 //----- (00411AAA) --------------------------------------------------------

@@ -32,7 +32,7 @@ Image *saveload_ui_ls_saved = nullptr;
 Image *saveload_ui_x_d = nullptr;
 
 GUIWindow_Save::GUIWindow_Save() :
-  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
   memset(&pSavegameUsedSlots, 0, sizeof(pSavegameUsedSlots));
   memset(&pSavegameThumbnails, 0, sizeof(pSavegameThumbnails));
@@ -95,18 +95,18 @@ GUIWindow_Save::GUIWindow_Save() :
 
   // -----------------------------
   // GUIWindow_Save c-tor --- part
-  CreateButton(21, 198, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 0, 0, "", 0);
-  CreateButton(21, 218, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 1, 0, "", 0);
-  CreateButton(21, 238, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 2, 0, "", 0);
-  CreateButton(21, 258, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 3, 0, "", 0);
-  CreateButton(21, 278, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 4, 0, "", 0);
-  CreateButton(21, 298, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 5, 0, "", 0);
-  CreateButton(21, 318, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 6, 0, "", 0);
+  CreateButton(21, 198, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 0, 0, "");
+  CreateButton(21, 218, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 1, 0, "");
+  CreateButton(21, 238, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 2, 0, "");
+  CreateButton(21, 258, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 3, 0, "");
+  CreateButton(21, 278, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 4, 0, "");
+  CreateButton(21, 298, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 5, 0, "");
+  CreateButton(21, 318, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 6, 0, "");
 
-  pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, 0, "", saveload_ui_ls_saved, 0);
-  pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, 0, "", saveload_ui_x_d, 0);
-  pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, 0, "", ui_ar_up_dn, 0);
-  pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, 34, 0, "", ui_ar_dn_dn, 0);
+  pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, 0, "", { {saveload_ui_ls_saved} });
+  pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, 0, "", { {saveload_ui_x_d} });
+  pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, 0, "", { {ui_ar_up_dn} });
+  pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, 34, 0, "", { {ui_ar_dn_dn} });
 }
 
 void GUIWindow_Save::Update() {
@@ -114,7 +114,7 @@ void GUIWindow_Save::Update() {
 }
 
 GUIWindow_Load::GUIWindow_Load(bool ingame) :
-  GUIWindow(0, 0, 0, 0, 0, nullptr)
+  GUIWindow(0, 0, 0, 0, 0)
 {
   current_screen_type = SCREEN_LOADGAME;
 
@@ -209,18 +209,18 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
   if (!ui_ar_dn_dn)
     ui_ar_dn_dn = assets->GetImage_16BitAlpha("AR_DN_DN");
 
-  CreateButton(21, 198, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 0, 0, "", 0);
-  CreateButton(21, 219, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 1, 0, "", 0);
-  CreateButton(21, 240, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 2, 0, "", 0);
-  CreateButton(21, 261, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 3, 0, "", 0);
-  CreateButton(21, 282, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 4, 0, "", 0);
-  CreateButton(21, 303, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 5, 0, "", 0);
-  CreateButton(21, 324, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 6, 0, "", 0);
+  CreateButton(21, 198, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 0, 0, "");
+  CreateButton(21, 219, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 1, 0, "");
+  CreateButton(21, 240, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 2, 0, "");
+  CreateButton(21, 261, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 3, 0, "");
+  CreateButton(21, 282, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 4, 0, "");
+  CreateButton(21, 303, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 5, 0, "");
+  CreateButton(21, 324, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 6, 0, "");
 
-  pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, 0, "", saveload_ui_ls_saved, 0);
-  pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, 0, "", saveload_ui_x_d, 0);
-  pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, 0, "", ui_ar_up_dn, 0);
-  pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, uNumSavegameFiles, 0, "", ui_ar_dn_dn, 0);
+  pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, 0, "", { {saveload_ui_ls_saved} });
+  pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, 0, "", { {saveload_ui_x_d} });
+  pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, 0, "", { {ui_ar_up_dn} });
+  pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, uNumSavegameFiles, 0, "", { {ui_ar_dn_dn} });
 }
 
 void GUIWindow_Load::Update() {
@@ -381,7 +381,7 @@ void MainMenuLoad_EventLoop()
         pSaveListPosition = param - 1;
       if (pSaveListPosition < 1)
         pSaveListPosition = 0;
-      new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323, 0, 0, (int)pBtnDownArrow, 0);
+      new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323, 0, 0, (int)pBtnDownArrow);
     }
     break;
 
@@ -391,12 +391,12 @@ void MainMenuLoad_EventLoop()
       --pSaveListPosition;
       if (pSaveListPosition < 0)
         pSaveListPosition = 0;
-      new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197, 0, 0, (int)pBtnArrowUp, 0);
+      new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197, 0, 0, (int)pBtnArrowUp);
     }
     break;
 
     case UIMSG_Cancel:
-      new OnCancel3(pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, (int)pBtnCancel, 0);
+      new OnCancel3(pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, (int)pBtnCancel);
       break;
 
 

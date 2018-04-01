@@ -43,13 +43,13 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() :
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,
         ui_book_button1_on->GetWidth(), ui_book_button1_on->GetWidth(),
         1, 0, UIMSG_ClickBooksBtn, 0xBu, 0, localization->GetString(192),// "Scroll Up"
-        ui_book_button1_on, 0
+      { {ui_book_button1_on} }
     );
     pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38,
         ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(),
         1, 0, UIMSG_ClickBooksBtn, 0xAu, 0, localization->GetString(193),// "Scroll Down"
-        ui_book_button2_on, 0
+      { {ui_book_button2_on} }
     );
     num_achieved_awards = 0;
     memset(achieved_awards.data(), 0, 4000);

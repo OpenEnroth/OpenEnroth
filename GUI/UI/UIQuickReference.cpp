@@ -16,7 +16,7 @@
 Image *ui_game_quickref_background = nullptr;
 
 GUIWindow_QuickReference::GUIWindow_QuickReference() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 5, 0)
+    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 5)
 {
 // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
@@ -31,9 +31,7 @@ GUIWindow_QuickReference::GUIWindow_QuickReference() :
     pBtn_ExitCancel = CreateButton(
         0x187u, 0x13Cu, 0x4Bu, 0x21u, 1, 0, UIMSG_Escape, 0, 0,
         localization->GetString(79),// "Exit"
-        ui_buttdesc2,
-        0
-    ); //, v179);
+      { {ui_buttdesc2} }); //, v179);
 }
 
 void GUIWindow_QuickReference::Update()

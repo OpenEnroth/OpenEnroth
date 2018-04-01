@@ -328,7 +328,7 @@ void Game_EventLoop()
                 __debugbreak();//pGUIWindow_CurrentMenu = GUIWindow::Create(0, 0, window->GetWidth(), window->GetHeight(), WINDOW_8, 0, 0);
                 continue;
             case UIMSG_Cancel:
-                new OnCancel(350, 302, 106, 42, (int)pBtnCancel, 0);
+                new OnCancel(350, 302, 106, 42, (int)pBtnCancel);
                 continue;
             case UIMSG_OpenQuestBook:
                 DoThatMessageThing();
@@ -396,18 +396,14 @@ void Game_EventLoop()
                     render->ClearZBuffer(0, 479);
                     viewparams->bRedrawGameUI = true;
                     viewparams->field_48 = 1;
-                    if (current_screen_type == SCREEN_GAME)
-                    {
-                        if (!pGUIWindow_CastTargetedSpell)//Draw Menu
-                        {
+                    if (current_screen_type == SCREEN_GAME) {
+                        if (!pGUIWindow_CastTargetedSpell) {  //Draw Menu
                             dword_6BE138 = -1;
-                            new OnButtonClick2(0x25Au, 0x1C2u, 0, 0, (int)pBtn_GameSettings, (char *)1);
+                            new OnButtonClick2(0x25Au, 0x1C2u, 0, 0, (int)pBtn_GameSettings, String(), false);
 
                             DoThatMessageThing();
                             GameMenu_Loop();
-                        }
-                        else
-                        {
+                        } else {
                             pGUIWindow_CastTargetedSpell->Release();
                             pGUIWindow_CastTargetedSpell = 0;
                             pMouse->SetCursorImage("MICON1");
@@ -704,7 +700,7 @@ void Game_EventLoop()
             case UIMSG_ScrollNPCPanel://Right and Left button for NPCPanel
                 if (uMessageParam)
                 {
-                    new OnButtonClick2(626, 179, 0, 0, (int)pBtn_NPCRight, 0);
+                    new OnButtonClick2(626, 179, 0, 0, (int)pBtn_NPCRight);
                     v37 = (pParty->pHirelings[0].pName != 0) + (pParty->pHirelings[1].pName != 0) + (unsigned __int8)pParty->field_70A - 2;
                     if (pParty->hirelingScrollPosition < v37)
                     {
@@ -715,7 +711,7 @@ void Game_EventLoop()
                 }
                 else
                 {
-                    new OnButtonClick2(469, 179, 0, 0, (int)pBtn_NPCLeft, 0);
+                    new OnButtonClick2(469, 179, 0, 0, (int)pBtn_NPCLeft);
                     /*if ( pParty->field_709 )
                     {
                     --pParty->field_709;
@@ -1237,10 +1233,10 @@ void Game_EventLoop()
                                 _5B65B8_npcdata_hiword_house_or_other = v66;
                                 Actor::InitializeActors();
                             }
-                            v67 = (char*)pGUIWindow_CurrentMenu->sHint;
-                            if (v67)
-                                *((int *)v67 + 17) = 1;
-                            else
+//                            v67 = (char*)pGUIWindow_CurrentMenu->sHint;
+//                            if (v67)
+//                                *((int *)v67 + 17) = 1;
+//                            else
                                 pParty->pPlayers[(unsigned __int8)town_portal_caster_id].CanCastSpell(0x14u);
 
                             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -1750,7 +1746,7 @@ void Game_EventLoop()
 
             case UIMSG_ClickInstallRemoveQuickSpellBtn:
             {
-                new OnButtonClick2(pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY, 0, 0, (int)pBtn_InstallRemoveSpell, 0);
+                new OnButtonClick2(pBtn_InstallRemoveSpell->uX, pBtn_InstallRemoveSpell->uY, 0, 0, (int)pBtn_InstallRemoveSpell);
                 if (!uActiveCharacter)
                     continue;
                 pPlayer10 = pPlayers[uActiveCharacter];
@@ -1872,7 +1868,7 @@ void Game_EventLoop()
                     {
                         if (current_screen_type == SCREEN_GAME)
                         {
-                            new OnButtonClick2(476, 450, 0, 0, (int)pBtn_CastSpell, 0);
+                            new OnButtonClick2(476, 450, 0, 0, (int)pBtn_CastSpell);
                             pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
                             continue;
                         }
@@ -1880,7 +1876,7 @@ void Game_EventLoop()
                             && (current_screen_type <= SCREEN_63 || current_screen_type > SCREEN_67))
                         {
                             pGUIWindow_CurrentMenu->Release();
-                            new OnButtonClick2(476, 450, 0, 0, (int)pBtn_CastSpell, 0);
+                            new OnButtonClick2(476, 450, 0, 0, (int)pBtn_CastSpell);
                             pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
                             continue;
                         }
@@ -1892,7 +1888,7 @@ void Game_EventLoop()
                 if (current_screen_type != SCREEN_GAME)
                     pGUIWindow_CurrentMenu->Release();
 
-                new OnButtonClick2(0x230u, 0x1C2u, 0, 0, (int)pBtn_QuickReference, 0);
+                new OnButtonClick2(0x230u, 0x1C2u, 0, 0, (int)pBtn_QuickReference);
                 viewparams->bRedrawGameUI = true;
 
                 pGUIWindow_CurrentMenu = new GUIWindow_QuickReference();
@@ -1914,7 +1910,7 @@ void Game_EventLoop()
                 render->SaveScreenshot("gamma.pcx", 155, 117);
                 gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
 
-                new OnButtonClick(0x25Au, 0x1C2u, 0, 0, (int)pBtn_GameSettings, 0);
+                new OnButtonClick(0x25Au, 0x1C2u, 0, 0, (int)pBtn_GameSettings);
                 //LABEL_453:
                 /*if ( (signed int)pMessageQueue_50CBD0->uNumMessages >= 40 )
                 continue;
@@ -1934,11 +1930,11 @@ void Game_EventLoop()
                 continue;
             }
             case UIMSG_ClickAwardsUpBtn:
-                new OnButtonClick3(pBtn_Up->uX, pBtn_Up->uY, 0, 0, (int)pBtn_Up, 0);
+                new OnButtonClick3(pBtn_Up->uX, pBtn_Up->uY, 0, 0, (int)pBtn_Up);
                 BtnUp_flag = 1;
                 continue;
             case UIMSG_ClickAwardsDownBtn:
-                new OnButtonClick3(pBtn_Down->uX, pBtn_Down->uY, 0, 0, (int)pBtn_Down, 0);
+                new OnButtonClick3(pBtn_Down->uX, pBtn_Down->uY, 0, 0, (int)pBtn_Down);
                 BtnDown_flag = 1;
                 continue;
             case UIMSG_ChangeDetaliz:
@@ -1983,7 +1979,7 @@ void Game_EventLoop()
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ShowAwardsTab();
                 continue;
             case UIMSG_ClickExitCharacterWindowBtn:
-                new OnCancel2(pCharacterScreen_ExitBtn->uX, pCharacterScreen_ExitBtn->uY, 0, 0, (int)pCharacterScreen_ExitBtn, 0);
+                new OnCancel2(pCharacterScreen_ExitBtn->uX, pCharacterScreen_ExitBtn->uY, 0, 0, (int)pCharacterScreen_ExitBtn);
                 continue;
             case UIMSG_ClickBooksBtn:
                 switch (uMessageParam)
@@ -2039,7 +2035,7 @@ void Game_EventLoop()
                 default:
                     continue;
                 }
-                new OnButtonClick(pButton->uX, pButton->uY, 0, 0, (int)pButton, (char *)1);
+                new OnButtonClick(pButton->uX, pButton->uY, 0, 0, (int)pButton, String(), false);
                 continue;
             case UIMSG_SelectCharacter:
                 DoThatMessageThing();
@@ -2202,7 +2198,7 @@ void Game_EventLoop()
                 if (current_screen_type)
                     continue;
                 pParty->uFlags |= 2u;
-                new OnButtonClick2(519, 136, 0, 0, (int)pBtn_ZoomOut, 0);
+                new OnButtonClick2(519, 136, 0, 0, (int)pBtn_ZoomOut);
                 uNumSeconds = 131072;
                 v118 = 2 * viewparams->uMinimapZoom;
                 ++viewparams->field_28;
@@ -2232,7 +2228,7 @@ void Game_EventLoop()
                 if (current_screen_type)
                     continue;
                 pParty->uFlags |= 2u;
-                new OnButtonClick2(574, 136, 0, 0, (int)pBtn_ZoomIn, 0);
+                new OnButtonClick2(574, 136, 0, 0, (int)pBtn_ZoomIn);
                 uNumSeconds = 32768;
                 v118 = (unsigned __int64)((signed __int64)(signed int)viewparams->uMinimapZoom << 15) >> 16;
                 --viewparams->field_28;

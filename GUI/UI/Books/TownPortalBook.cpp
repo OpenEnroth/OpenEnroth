@@ -44,7 +44,7 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(const char *a1) :
             pTownPortalBook_ys[i],
             pTownPortalBook_ws[i],
             pTownPortalBook_hs[i],
-            1, 182, UIMSG_ClickTownInTP, i, 0, "", nullptr
+            1, 182, UIMSG_ClickTownInTP, i, 0, ""
         );
 }
 

@@ -582,11 +582,11 @@ LABEL_47:
                   {
                     pAudioPlayer->StopChannels(-1, -1);
                     window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), 170, 0);
-                    window_SpeakInHouse->CreateButton( 61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1',  "", 0);
-                    window_SpeakInHouse->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2',  "", 0);
-                    window_SpeakInHouse->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3',  "", 0);
-                    window_SpeakInHouse->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4',  "", 0);
-                    window_SpeakInHouse->CreateButton(  0,   0,  0, 0, 1,  0, UIMSG_CycleCharacters, 0, '\t', "", 0);
+                    window_SpeakInHouse->CreateButton( 61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1',  "");
+                    window_SpeakInHouse->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2',  "");
+                    window_SpeakInHouse->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3',  "");
+                    window_SpeakInHouse->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4',  "");
+                    window_SpeakInHouse->CreateButton(  0,   0,  0, 0, 1,  0, UIMSG_CycleCharacters, 0, '\t', "");
                     current_npc_text = pNPCTopics[90].pText;
                   }
                 }
@@ -1178,12 +1178,12 @@ LABEL_47:
           v104 = 187;
           if ( uCurrentHouse_Animation != 167 )
             v104 = EVT_DWORD(_evt->v5);
-          window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), v104, 0);
-          window_SpeakInHouse->CreateButton( 61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1,  '1', "", 0);
-          window_SpeakInHouse->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2,  '2', "", 0);
-          window_SpeakInHouse->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3,  '3', "", 0);
-          window_SpeakInHouse->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4,  '4', "", 0);
-          window_SpeakInHouse->CreateButton(  0,   0,  0, 0, 1,  0, UIMSG_CycleCharacters, 0, '\t', "", 0);
+          window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), v104);
+          window_SpeakInHouse->CreateButton( 61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1,  '1', "");
+          window_SpeakInHouse->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2,  '2', "");
+          window_SpeakInHouse->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3,  '3', "");
+          window_SpeakInHouse->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4,  '4', "");
+          window_SpeakInHouse->CreateButton(  0,   0,  0, 0, 1,  0, UIMSG_CycleCharacters, 0, '\t', "");
           }
         ++curr_seq_num;
         break;

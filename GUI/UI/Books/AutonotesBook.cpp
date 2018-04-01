@@ -21,90 +21,78 @@ Image *ui_book_autonotes_background = nullptr;
 
 
 GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() :
-    GUIWindow_Book()
+  GUIWindow_Book()
 {
-    this->ptr_1C = (void *)WINDOW_AutonotesBook; // inherited from GUIWindow::GUIWindow
-    BasicBookInitialization();
+  this->ptr_1C = (void *)WINDOW_AutonotesBook; // inherited from GUIWindow::GUIWindow
+  BasicBookInitialization();
 
-// --------------------------------
-// 004304E7 Game_EventLoop --- part
-    pEventTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
-    pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(527, 353, 0, 0, (int)pBtn_Autonotes, 0);
-    bFlashAutonotesBook = 0;
+  // --------------------------------
+  // 004304E7 Game_EventLoop --- part
+  pEventTimer->Pause();
+  pAudioPlayer->StopChannels(-1, -1);
+  pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(527, 353, 0, 0, (int)pBtn_Autonotes, 0);
+  bFlashAutonotesBook = 0;
 
-// ----------------------------------------------
-// 00411BFC GUIWindow::InitializeBookView -- part
-    ui_book_autonotes_background = assets->GetImage_16BitColorKey("sbautnot", 0x7FF);
-    ui_book_quest_div_bar = assets->GetImage_16BitAlpha("divbar");
+  // ----------------------------------------------
+  // 00411BFC GUIWindow::InitializeBookView -- part
+  ui_book_autonotes_background = assets->GetImage_16BitColorKey("sbautnot", 0x7FF);
+  ui_book_quest_div_bar = assets->GetImage_16BitAlpha("divbar");
 
-    ui_book_button1_on = assets->GetImage_16BitAlpha("tab-an-6b");
-    ui_book_button2_on = assets->GetImage_16BitAlpha("tab-an-7b");
-    ui_book_button3_on = assets->GetImage_16BitAlpha("tab-an-1b");
-    ui_book_button4_on = assets->GetImage_16BitAlpha("tab-an-2b");
-    ui_book_button5_on = assets->GetImage_16BitAlpha("tab-an-3b");
-    ui_book_button6_on = assets->GetImage_16BitAlpha("tab-an-5b");
-    ui_book_button7_on = assets->GetImage_16BitAlpha("tab-an-4b");
-    ui_book_button8_on = assets->GetImage_16BitAlpha("tab-an-8b");
-    ui_book_button1_off = assets->GetImage_16BitAlpha("tab-an-6a");
-    ui_book_button2_off = assets->GetImage_16BitAlpha("tab-an-7a");
-    ui_book_button3_off = assets->GetImage_16BitAlpha("tab-an-1a");
-    ui_book_button4_off = assets->GetImage_16BitAlpha("tab-an-2a");
-    ui_book_button5_off = assets->GetImage_16BitAlpha("tab-an-3a");
-    ui_book_button6_off = assets->GetImage_16BitAlpha("tab-an-5a");
-    ui_book_button7_off = assets->GetImage_16BitAlpha("tab-an-4a");
-    ui_book_button8_off = assets->GetImage_16BitAlpha("tab-an-8a");
+  ui_book_button1_on = assets->GetImage_16BitAlpha("tab-an-6b");
+  ui_book_button2_on = assets->GetImage_16BitAlpha("tab-an-7b");
+  ui_book_button3_on = assets->GetImage_16BitAlpha("tab-an-1b");
+  ui_book_button4_on = assets->GetImage_16BitAlpha("tab-an-2b");
+  ui_book_button5_on = assets->GetImage_16BitAlpha("tab-an-3b");
+  ui_book_button6_on = assets->GetImage_16BitAlpha("tab-an-5b");
+  ui_book_button7_on = assets->GetImage_16BitAlpha("tab-an-4b");
+  ui_book_button8_on = assets->GetImage_16BitAlpha("tab-an-8b");
+  ui_book_button1_off = assets->GetImage_16BitAlpha("tab-an-6a");
+  ui_book_button2_off = assets->GetImage_16BitAlpha("tab-an-7a");
+  ui_book_button3_off = assets->GetImage_16BitAlpha("tab-an-1a");
+  ui_book_button4_off = assets->GetImage_16BitAlpha("tab-an-2a");
+  ui_book_button5_off = assets->GetImage_16BitAlpha("tab-an-3a");
+  ui_book_button6_off = assets->GetImage_16BitAlpha("tab-an-5a");
+  ui_book_button7_off = assets->GetImage_16BitAlpha("tab-an-4a");
+  ui_book_button8_off = assets->GetImage_16BitAlpha("tab-an-8a");
 
-    pBtn_Book_1 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 11, 0, localization->GetString(193), ui_book_button1_on, 0
-    );
-    pBtn_Book_2 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 10, 0, localization->GetString(192), ui_book_button2_on, 0
-    );
-    pBtn_Book_3 = CreateButton(
-        pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 113, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 2, 0, localization->GetString(85), ui_book_button3_on, 0
-    ); // "Potion Notes"
-    pBtn_Book_4 = CreateButton(
-        pViewport->uViewportTL_X + 399, pViewport->uViewportTL_Y + 150, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 3, 0, localization->GetString(137), ui_book_button4_on, 0
-    ); // "Fountain Notes"
-    pBtn_Book_5 = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 4, 0, localization->GetString(8), ui_book_button5_on, 0
-    ); // "Obelisk Notes"
-    pBtn_Book_6 = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 5, 0, localization->GetString(141), ui_book_button6_on, 0
-    ); // "Seer Notes"
-    pBtn_Autonotes_Misc = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 264, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 6, 0, localization->GetString(123), ui_book_button7_on, 0
-    ); // "Miscellaneous Notes"
-    pBtn_Autonotes_Instructors = CreateButton(
-        pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 302, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 7, 0, localization->GetString(662), ui_book_button8_on, 0
-    ); // "Instructors"
+  pBtn_Book_1 = CreateButton(
+    pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1, 0,
+    UIMSG_ClickBooksBtn, 11, 0, localization->GetString(193), { { ui_book_button1_on } });
+  pBtn_Book_2 = CreateButton(
+    pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34, 1, 0,
+    UIMSG_ClickBooksBtn, 10, 0, localization->GetString(192), { { ui_book_button2_on } });
+  pBtn_Book_3 = CreateButton(
+    pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 113, 50, 34, 1, 0,
+    UIMSG_ClickBooksBtn, 2, 0, localization->GetString(85), { { ui_book_button3_on } }); // "Potion Notes"
+  pBtn_Book_4 = CreateButton(
+    pViewport->uViewportTL_X + 399, pViewport->uViewportTL_Y + 150, 50, 34, 1, 0,
+    UIMSG_ClickBooksBtn, 3, 0, localization->GetString(137), { { ui_book_button4_on } }); // "Fountain Notes"
+  pBtn_Book_5 = CreateButton(
+    pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34, 1, 0,
+    UIMSG_ClickBooksBtn, 4, 0, localization->GetString(8), { { ui_book_button5_on } }); // "Obelisk Notes"
+  pBtn_Book_6 = CreateButton(
+    pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34, 1, 0,
+    UIMSG_ClickBooksBtn, 5, 0, localization->GetString(141), { { ui_book_button6_on } }); // "Seer Notes"
+  pBtn_Autonotes_Misc = CreateButton(
+    pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 264, 50, 34, 1, 0,
+    UIMSG_ClickBooksBtn, 6, 0, localization->GetString(123), { { ui_book_button7_on } }); // "Miscellaneous Notes"
+  pBtn_Autonotes_Instructors = CreateButton(
+    pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 302, 50, 34, 1, 0,
+    UIMSG_ClickBooksBtn, 7, 0, localization->GetString(662), { { ui_book_button8_on } }); // "Instructors"
 
-    int num_achieved_awards = 0;
-    for (uint i = books_primary_item_per_page; i < 196; ++i)
-    {
-        if (_506568_autonote_type == pAutonoteTxt[i].eType)//dword_72371C[2 * v10] )
-        {
-            if (i)
-            {
-                if (_449B57_test_bit(pParty->_autonote_bits, i) && pAutonoteTxt[i].pText)
-                {
-                    achieved_awards[num_achieved_awards] = (AwardType)i;
-                    ++num_achieved_awards;
-                }
-            }
+  int num_achieved_awards = 0;
+  for (uint i = books_primary_item_per_page; i < 196; ++i) {
+    if (_506568_autonote_type == pAutonoteTxt[i].eType) {  //dword_72371C[2 * v10] )
+      if (i) {
+        if (_449B57_test_bit(pParty->_autonote_bits, i) && pAutonoteTxt[i].pText) {
+          achieved_awards[num_achieved_awards] = (AwardType)i;
+          ++num_achieved_awards;
         }
+      }
     }
-    full_num_items_in_book = num_achieved_awards;
-    num_achieved_awards = 0;
+  }
+  full_num_items_in_book = num_achieved_awards;
+  num_achieved_awards = 0;
 }
 
 

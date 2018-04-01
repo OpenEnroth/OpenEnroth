@@ -1176,10 +1176,10 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
                     return;
             }
             pDialogueWindow->Release();
-            pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0, 0);
+            pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0);
             pBtn_ExitCancel = pDialogueWindow->CreateButton(526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(74),// "End Conversation"
-                ui_buttdesc2, 0);
-            pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "", nullptr);
+              { {ui_buttdesc2} });
+            pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "");
         }
         if (in_current_building_type != BuildingType_Training)
         {
@@ -1188,10 +1188,10 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
                 || in_current_building_type != BuildingType_Temple || uMessageParam != BuildingType_MindGuild)
             {
                 pDialogueWindow->Release();
-                pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0, 0);
+                pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0);
                 pBtn_ExitCancel = pDialogueWindow->CreateButton(526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(74),// "End Conversation"
-                    ui_buttdesc2, 0);
-                pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "", nullptr);
+                  { {ui_buttdesc2} });
+                pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "");
             }
             else if (uActiveCharacter)
             {
@@ -3034,23 +3034,20 @@ void SimpleHouseDialog() {
     {
     case 19://evt_A
       v15 = (char *)pNPCTopics[pNPC->evt_A].pTopic;
-      if (!v15)
-      {
+      if (!v15) {
         pButton->msg_param = 0;
         v15 = "";
       }
-      strcpy(pButton->pButtonName, v15);
+      pButton->sLabel = v15;
       continue;
     case 20://evt_B
       v15 = (char *)pNPCTopics[pNPC->evt_B].pTopic;
-      if (!v15)
-      {
+      if (!v15) {
         pButton->msg_param = 0;
         v15 = "";
       }
-      if (uDialogueType != 84)
-      {
-        strcpy(pButton->pButtonName, v15);
+      if (uDialogueType != 84) {
+        pButton->sLabel = v15;
         continue;
       }
       current_npc_text = StringPrintf(
@@ -3059,17 +3056,16 @@ void SimpleHouseDialog() {
           "\f%05d%s\f00000\n", Color16(0xE1u, 0xCDu, 0x23u), pItemsTable->pItems[contract_approved].pUnidentifiedName
         ).c_str()
       );
-      strcpy(pButton->pButtonName, v15);
+      pButton->sLabel = v15;
       continue;
 
     case 21://evt_C
       v15 = (char *)pNPCTopics[pNPC->evt_C].pTopic;
-      if (!v15)
-      {
+      if (!v15) {
         pButton->msg_param = 0;
         v15 = "";
       }
-      strcpy(pButton->pButtonName, v15);
+      pButton->sLabel = v15;
       continue;
     case 22://evt_D
       v15 = (char *)pNPCTopics[pNPC->evt_D].pTopic;
@@ -3078,7 +3074,7 @@ void SimpleHouseDialog() {
         pButton->msg_param = 0;
         v15 = "";
       }
-      strcpy(pButton->pButtonName, v15);
+      pButton->sLabel = v15;
       continue;
     case 23://evt_E
       v15 = (char *)pNPCTopics[pNPC->evt_E].pTopic;
@@ -3087,7 +3083,7 @@ void SimpleHouseDialog() {
         pButton->msg_param = 0;
         v15 = "";
       }
-      strcpy(pButton->pButtonName, v15);
+      pButton->sLabel = v15;
       continue;
     case 24://evt_F
       v15 = (char *)pNPCTopics[pNPC->evt_F].pTopic;
@@ -3096,19 +3092,19 @@ void SimpleHouseDialog() {
         pButton->msg_param = 0;
         v15 = "";
       }
-      strcpy(pButton->pButtonName, v15);
+      pButton->sLabel = v15;
       continue;
     case 76:
-      strcpy(pButton->pButtonName, localization->GetString(406)); // Hire / Нанять
+      pButton->sLabel = localization->GetString(406); // Hire / Нанять
       continue;
     case 77:
-      strcpy(pButton->pButtonName, localization->GetString(407)); // Details / Подробнее
+      pButton->sLabel = localization->GetString(407); // Details / Подробнее
       continue;
     case 79:
-      strcpy(pButton->pButtonName, _4B254D_SkillMasteryTeacher((int)right_panel_window.ptr_1C).c_str());
+      pButton->sLabel = _4B254D_SkillMasteryTeacher((int)right_panel_window.ptr_1C);
       continue;
     case 82:
-      strcpy(pButton->pButtonName, ContractSelectText((int)right_panel_window.ptr_1C));
+      pButton->sLabel = ContractSelectText((int)right_panel_window.ptr_1C);
       continue;
     case 83:
       v29 = pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName;
@@ -3122,19 +3118,19 @@ void SimpleHouseDialog() {
         100 * (unsigned __int8)v29[8]
       );
 
-      strcpy(pButton->pButtonName, "");
+      pButton->sLabel.clear();
       continue;
     }
     if (pButton->msg_param > 0 && pButton->msg_param < 13) {
-      strcpy(pButton->pButtonName, localization->GetString(122));  // Вступить
+      pButton->sLabel = localization->GetString(122);  // Вступить
       continue;
     }
     if (pButton->msg_param > 13 && pButton->msg_param < 19) {
-      strcpy(pButton->pButtonName, "");
+      pButton->sLabel.clear();
       continue;
     }
     if (pButton->msg_param != 93) {
-      strcpy(pButton->pButtonName, "");
+      pButton->sLabel.clear();
       continue;
     }
   }
@@ -3144,7 +3140,7 @@ void SimpleHouseDialog() {
     i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i)
   {
     pButton = pDialogueWindow->GetControl(i);
-    all_text_height += pFontArrus->CalcTextHeight(pButton->pButtonName, right_panel_window.uFrameWidth, 0);
+    all_text_height += pFontArrus->CalcTextHeight(pButton->sLabel, right_panel_window.uFrameWidth, 0);
     index++;
   }
   if (index) {
@@ -3156,14 +3152,14 @@ void SimpleHouseDialog() {
     {
       pButton = pDialogueWindow->GetControl(i);
       pButton->uY = v36 + v40;
-      pTextHeight = pFontArrus->CalcTextHeight(pButton->pButtonName, right_panel_window.uFrameWidth, 0);
+      pTextHeight = pFontArrus->CalcTextHeight(pButton->sLabel, right_panel_window.uFrameWidth, 0);
       pButton->uHeight = pTextHeight;
       v40 = pButton->uY + pTextHeight - 1;
       pButton->uW = v40;
       pTextColor = Color16(0xE1u, 0xCDu, 0x23u);
       if (pDialogueWindow->pCurrentPosActiveItem != i)
         pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
-      right_panel_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->pButtonName, 3);
+      right_panel_window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->sLabel, 3);
     }
   }
   if (current_npc_text.length() > 0) {
@@ -3481,7 +3477,7 @@ int HouseDialogPressCloseBtn()
         {
           HouseNPCPortraitsButtonsList[i] = window_SpeakInHouse->CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i],
                                             pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i],
-                                            63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, i, 0, byte_591180[i].data(), 0, 0, 0);
+                                            63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, i, 0, byte_591180[i].data());
         }
       }
 
@@ -3511,10 +3507,10 @@ void BackToHouseMenu()
     {
       pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0, 0, 0);
       window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), 165, 0);
-      window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 1, 0x31, "", 0);
-      window_SpeakInHouse->CreateButton(0xB1u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 2, 0x32, "", 0);
-      window_SpeakInHouse->CreateButton(0x124u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 3, 0x33, "", 0);
-      window_SpeakInHouse->CreateButton(0x197u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 4, 0x34, "", 0);
+      window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 1, 0x31, "");
+      window_SpeakInHouse->CreateButton(0xB1u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 2, 0x32, "");
+      window_SpeakInHouse->CreateButton(0x124u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 3, 0x33, "");
+      window_SpeakInHouse->CreateButton(0x197u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 4, 0x34, "");
     }
     bGameoverLoop = false;
   }

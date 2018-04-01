@@ -95,18 +95,18 @@ void GameMenu_EventLoop()
                 --pSaveListPosition;
                 if (pSaveListPosition < 0)
                     pSaveListPosition = 0;
-                new OnButtonClick2(215, 199, 17, 17, (int)pBtnArrowUp, 0);
+                new OnButtonClick2(215, 199, 17, 17, (int)pBtnArrowUp);
                 continue;
 
             case UIMSG_DownArrow:
                 ++pSaveListPosition;
                 if (pSaveListPosition >= param)
                     pSaveListPosition = param - 1;
-                new OnButtonClick2(215, 323, 17, 17, (int)pBtnDownArrow, 0);
+                new OnButtonClick2(215, 323, 17, 17, (int)pBtnDownArrow);
                 continue;
 
             case UIMSG_Cancel:
-                new OnCancel(350, 302, 106, 42, (int)pBtnCancel, 0);
+                new OnCancel(350, 302, 106, 42, (int)pBtnCancel);
                 continue;
 
             case UIMSG_SaveLoadBtn:
@@ -257,7 +257,7 @@ void GameMenu_EventLoop()
                     }
                     double v19 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                     //pEngine->pGammaController->Initialize(v19);
-                    new OnButtonClick2(21, 161, 0, 0, (int)pBtn_SliderLeft, (char *)1);
+                    new OnButtonClick2(21, 161, 0, 0, (int)pBtn_SliderLeft, String(), false);
                     pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0, 0, 0);
                     continue;
                 }
@@ -268,7 +268,7 @@ void GameMenu_EventLoop()
                     {
                         double v21 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                         //pEngine->pGammaController->Initialize(v21);
-                        new OnButtonClick2(213, 161, 0, 0, (int)pBtn_SliderRight, (char *)1);
+                        new OnButtonClick2(213, 161, 0, 0, (int)pBtn_SliderRight, String(), false);
                         pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0, 0, 0);
                         continue;
                     }
@@ -301,7 +301,7 @@ void GameMenu_EventLoop()
                     --uMusicVolimeMultiplier;
                     if ((char)uMusicVolimeMultiplier < 1)
                         uMusicVolimeMultiplier = 0;
-                    new OnButtonClick2(243, 216, 0, 0, (int)pBtn_SliderLeft, (char *)1);
+                    new OnButtonClick2(243, 216, 0, 0, (int)pBtn_SliderLeft, String(), false);
                     if (uMusicVolimeMultiplier)
                         pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0, pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f, 0);
 
@@ -317,7 +317,7 @@ void GameMenu_EventLoop()
                     ++uMusicVolimeMultiplier;
                     if ((char)uMusicVolimeMultiplier > 9)
                         uMusicVolimeMultiplier = 9;
-                    new OnButtonClick2(435, 216, 0, 0, (int)pBtn_SliderRight, (char *)1);
+                    new OnButtonClick2(435, 216, 0, 0, (int)pBtn_SliderRight, String(), false);
                     if (uMusicVolimeMultiplier)
                         pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0, pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f, 0);
                     if (use_music_folder)
@@ -347,7 +347,7 @@ void GameMenu_EventLoop()
                     if (uSoundVolumeMultiplier > 0)
                         --uSoundVolumeMultiplier;
 
-                    new OnButtonClick2(243, 162, 0, 0, (int)pBtn_SliderLeft, (char *)1);
+                    new OnButtonClick2(243, 162, 0, 0, (int)pBtn_SliderLeft, String(), false);
                     pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
                     pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0, 0, 0);
                     //int v = AIL_redbook_volume(pAudioPlayer->hAILRedbook);
@@ -363,7 +363,7 @@ void GameMenu_EventLoop()
                         uSoundVolumeMultiplier = 9;
                     //v168 = 1;
                     //v154 = (int)pBtn_SliderRight;
-                    new OnButtonClick2(435, 162, 0, 0, (int)pBtn_SliderRight, (char *)1);
+                    new OnButtonClick2(435, 162, 0, 0, (int)pBtn_SliderRight, String(), false);
                     pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
                     pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0, 0, 0);
                     continue;
@@ -396,7 +396,7 @@ void GameMenu_EventLoop()
                     --uVoicesVolumeMultiplier;
                     if ((char)uVoicesVolumeMultiplier < 1)
                         uVoicesVolumeMultiplier = 0;
-                    new OnButtonClick2(243, 270, 0, 0, (int)pBtn_SliderLeft, (char *)1);
+                    new OnButtonClick2(243, 270, 0, 0, (int)pBtn_SliderLeft, String(), false);
                     if (!uVoicesVolumeMultiplier)
                         continue;
                     pAudioPlayer->PlaySound(SOUND_hf445a, -1, 0, -1, 0, 0, pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f, 0);
@@ -407,7 +407,7 @@ void GameMenu_EventLoop()
                     ++uVoicesVolumeMultiplier;
                     if ((char)uVoicesVolumeMultiplier > 8)
                         uVoicesVolumeMultiplier = 9;
-                    new OnButtonClick2(435, 270, 0, 0, (int)pBtn_SliderRight, (char *)1);
+                    new OnButtonClick2(435, 270, 0, 0, (int)pBtn_SliderRight, String(), false);
                     if (!uVoicesVolumeMultiplier)
                         continue;
                     pAudioPlayer->PlaySound(SOUND_hf445a, -1, 0, -1, 0, 0, pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f, 0);
