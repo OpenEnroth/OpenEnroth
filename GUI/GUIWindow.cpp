@@ -73,9 +73,8 @@ std::array<RGBColor, 20> spell_tooltip_colors={{
     {0x96, 0xD4, 0xFF}}};
 
 enum WindowType current_character_screen_window;
-struct GUIWindow *pWindow_MMT_MainMenu;
 struct GUIWindow *pWindow_MainMenu;
-std::array<struct GUIWindow *, 50> pWindowList;
+std::list<struct GUIWindow*> lWindowList;
 
 struct GUIMessageQueue *pMessageQueue_50CBD0 = new GUIMessageQueue;
 struct GUIMessageQueue *pMessageQueue_50C9E8 = new GUIMessageQueue;
@@ -271,18 +270,18 @@ void GUI_ReplaceHotkey(uint8_t uOldHotkey, uint8_t uNewHotkey, char bFirstCall) 
   char old_hot_key = toupper(uOldHotkey);
   uint8_t v9 = toupper(uNewHotkey);
   if (bFirstCall) {
-    for (int i = uNumVisibleWindows; i >= 0; --i) {
-      for (GUIButton *j : pWindowList[pVisibleWindowsIdxs[i] - 1]->vButtons) {
+    for (GUIWindow *pWindow : lWindowList) {
+      for (GUIButton *j : pWindow->vButtons) {
         j->field_28 = 0;
       }
     }
   }
-  for (int k = uNumVisibleWindows; k >= 0; --k) {
-    for (GUIButton *l : pWindowList[pVisibleWindowsIdxs[k] - 1]->vButtons) {
-      if (l->uHotkey == old_hot_key) {
-        if (!l->field_28) {
-          l->field_28 = 1;
-          l->uHotkey = v9;
+  for (GUIWindow *pWindow : lWindowList) {
+    for (GUIButton *j : pWindow->vButtons) {
+      if (j->uHotkey == old_hot_key) {
+        if (!j->field_28) {
+          j->field_28 = 1;
+          j->uHotkey = v9;
         }
       }
     }
@@ -291,17 +290,16 @@ void GUI_ReplaceHotkey(uint8_t uOldHotkey, uint8_t uNewHotkey, char bFirstCall) 
 
 GUIButton *GUI_HandleHotkey(uint8_t uHotkey) {
   char Hot_key_num = toupper(uHotkey);
-  for (int i = uNumVisibleWindows; i >= 0 && pVisibleWindowsIdxs[i] > 0; i--) {
-    GUIWindow *current_window = pWindowList[pVisibleWindowsIdxs[i] - 1];
-    for (GUIButton *result : current_window->vButtons) {
+  for (GUIWindow *pWindow : lWindowList) {
+    for (GUIButton *result : pWindow->vButtons) {
       if (result->uHotkey == Hot_key_num) {
         pMessageQueue_50CBD0->AddGUIMessage(result->msg, result->msg_param, 0);
         return result;
       }
     }
-    if (!current_window->uFrameX && !current_window->uFrameY
-      && (current_window->uFrameWidth == window->GetWidth() && current_window->uFrameHeight == window->GetWidth()))
+    if (!pWindow->uFrameX && !pWindow->uFrameY && (pWindow->uFrameWidth == window->GetWidth() && pWindow->uFrameHeight == window->GetWidth())) {
       break;
+    }
   }
   return 0;
 }
@@ -428,20 +426,11 @@ void GUIWindow::Release() {
   if (!this || this->eWindowType == WINDOW_null) {  // added check to avoid releasing windows already released
     return;
   }
-
   DeleteButtons();
 
-  this->eWindowType = WINDOW_null;
-  while (this->numVisibleWindows < uNumVisibleWindows) {
-    int v12 = pVisibleWindowsIdxs[this->numVisibleWindows + 1];
-    pVisibleWindowsIdxs[this->numVisibleWindows] = v12;
-    --pWindowList[v12 - 1]->numVisibleWindows;
-    ++this->numVisibleWindows;
-  }
-  pVisibleWindowsIdxs[uNumVisibleWindows] = 0;
-  uNumVisibleWindows = uNumVisibleWindows - 1;
+  lWindowList.remove(this);
+
   logger->Info(L"Window Release");
-  //should pwindowlist[x] = nullptr;??
 }
 
 void GUIWindow::DeleteButtons() {
@@ -451,6 +440,10 @@ void GUIWindow::DeleteButtons() {
 }
 
 GUIButton *GUIWindow::GetControl(unsigned int uID) {
+  if (uID >= vButtons.size()) {
+    return nullptr;
+  }
+
   return vButtons[uID];
 }
 
@@ -846,17 +839,13 @@ GUIButton *GUIWindow::CreateButton(
   return pButton;
 }
 
+bool GUIWindow::Contains(unsigned int x, unsigned int y) {
+  return (x >= uFrameX && x <= uFrameZ && y >= uFrameY && y <= uFrameW);
+}
 
-void GUIWindow::InitializeGUI()
-{
-    SetUserInterface(PartyAlignment_Neutral, false);
-
-    for (uint i = 0; i < 20; ++i) //should this be 50??
-        pWindowList[i] = nullptr;
-    uNumVisibleWindows = -1;
-    memset(pVisibleWindowsIdxs.data(), 0, sizeof(pVisibleWindowsIdxs));
-
-    MainMenuUI_LoadFontsAndSomeStuff();
+void GUIWindow::InitializeGUI() {
+  SetUserInterface(PartyAlignment_Neutral, false);
+  MainMenuUI_LoadFontsAndSomeStuff();
 }
 
 //----- (00459C2B) --------------------------------------------------------
@@ -873,20 +862,8 @@ GUIWindow::GUIWindow() : eWindowType(WINDOW_null)
 GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const String &hint) :
   eWindowType(WINDOW_MainMenu)
 {
-  unsigned int uNextFreeWindowID; // ebp@1
-
-  for (uNextFreeWindowID = 0; uNextFreeWindowID < 20; ++uNextFreeWindowID) {  // should this limit be 50  as pwindowlist is size 50??
-    if (pWindowList[uNextFreeWindowID] == nullptr || (pWindowList[uNextFreeWindowID]->eWindowType == WINDOW_null)) // ??testy test
-      break;
-  }
-
   logger->Info(L"New window");
-
-  // pwindowlist not freeing/resetting properly?? above is work around
-  Assert(pWindowList[uNextFreeWindowID] == nullptr || (pWindowList[uNextFreeWindowID]->eWindowType == WINDOW_null), "Window out of range!");
-
-  // GUIWindow* pWindow = &pWindowList[uNextFreeWindowID];
-  pWindowList[uNextFreeWindowID] = this;//sometimes uNextFreeWindowID == 20. it's result crash
+  lWindowList.push_front(this);
   this->uFrameWidth = uWidth;
   this->uFrameHeight = uHeight;
 
@@ -899,9 +876,6 @@ GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsi
   this->sHint = hint;
 
   this->receives_keyboard_input = false;
-  ++uNumVisibleWindows;
-  this->numVisibleWindows = uNumVisibleWindows;
-  pVisibleWindowsIdxs[uNumVisibleWindows] = uNextFreeWindowID + 1;
 }
 
 
@@ -1119,8 +1093,8 @@ void GUI_UpdateWindows() {
     Mouse::UI_OnKeyDown(VK_NEXT);
   }
 
-  for (unsigned int i = 1; i <= uNumVisibleWindows; ++i) {
-    GUIWindow *pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1];  // enchanting window problems visiblewindows -1??
+  std::list<GUIWindow*> tmpWindowList(lWindowList);
+  for (GUIWindow *pWindow : tmpWindowList) {
     pWindow->Update();
   }
 
@@ -2722,8 +2696,17 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 	return result;
 }
 
-//----- (0044C28B) --------------------------------------------------------
-int const_2()
-{
-	return 2;
+int const_2() {
+  return 2;
+}
+
+WindowManager windowManager;
+
+void WindowManager::DeleteAllVisibleWindows() {
+  while (lWindowList.size() > 1) {
+    GUIWindow *pWindow = lWindowList.front();
+    pWindow->Release();
+    delete pWindow;
+    lWindowList.pop_front();
+  }
 }

@@ -124,6 +124,10 @@ void GUIButton::DrawLabel(const String &label_text, struct GUIFont *pFont, int a
     a5, label_text, 0, 0, uFontShadowColor);
 }
 
+bool GUIButton::Contains(unsigned int x, unsigned int y) {
+  return (x >= uX && x <= uZ && y >= uY && y <= uW);
+}
+
 void CreateButtonInColumn( int column_pos, unsigned int control_id ) {
   pDialogueWindow->CreateButton( 480, 30 * column_pos + 146, 140, 30,  1,  0, UIMSG_SelectShopDialogueOption,  control_id, 0, "");
 }

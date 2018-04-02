@@ -148,8 +148,6 @@ extern int uRestUI_FoodRequiredToRest;
 extern int _506F14_resting_stage;
 extern int _506F18_num_minutes_to_sleep;
 extern int dword_506F1C;
-extern std::array<int, 20> pVisibleWindowsIdxs;
-extern int uNumVisibleWindows;
 extern char bFlashHistoryBook;
 extern char bFlashAutonotesBook;
 extern char bFlashQuestBook;

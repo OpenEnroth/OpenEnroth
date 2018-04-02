@@ -720,8 +720,6 @@ int uRestUI_FoodRequiredToRest;
 int _506F14_resting_stage;
 int _506F18_num_minutes_to_sleep;
 int dword_506F1C;
-std::array<int, 20> pVisibleWindowsIdxs;
-int uNumVisibleWindows;
 char bFlashHistoryBook;
 char bFlashAutonotesBook;
 char bFlashQuestBook;

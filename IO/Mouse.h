@@ -318,7 +318,7 @@ class Mouse
         void ChangeActivation(int a1);
         void SetMouseClick(int x, int y);
 
-        static void UI_OnMouseLeftClick(int *pXY); // idb
+        static void UI_OnMouseLeftClick();
         static bool UI_OnKeyDown(unsigned int vkKey);
 
 

@@ -1522,73 +1522,47 @@ void GameUI_WritePointedObjectStatusString() {
 
   if (current_screen_type == SCREEN_GAME) {
     if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125) {
-      //if ( render->pRenderD3D )  // inlined mm8::4C1E01
-      {
-        pickedObjectPID = pEngine->pVisInstance->get_picked_object_zbuf_val();
-        if (pX < (unsigned int)pViewport->uScreen_TL_X || pX >(unsigned int)pViewport->uScreen_BR_X
-          || pY < (unsigned int)pViewport->uScreen_TL_Y || pY >(unsigned int)pViewport->uScreen_BR_Y)
-          pickedObjectPID = -1;
-        if (pickedObjectPID == -1)
-        {
-          if (uLastPointedObjectID != 0)
-          {
-            game_ui_status_bar_string[0] = 0;
-            bForceDrawFooter = 1;
-          }
-          uLastPointedObjectID = 0;
-          return;
+      if (!pViewport->Contains(pX, pY)) {
+        if (uLastPointedObjectID != 0) {
+          game_ui_status_bar_string[0] = 0;
+          bForceDrawFooter = 1;
         }
+        uLastPointedObjectID = 0;
+        return;
       }
-      /*else
-      {
-      v18 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
-      }*/
+      pickedObjectPID = pEngine->pVisInstance->get_picked_object_zbuf_val();
       pMouse->uPointingObjectID = (unsigned __int16)pickedObjectPID;
       pickedObjectID = (signed)PID_ID(pickedObjectPID);
-      if (PID_TYPE(pickedObjectPID) == OBJECT_Item)
-      {
-        if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & 0x10)
-        {
+      if (PID_TYPE(pickedObjectPID) == OBJECT_Item) {
+        if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & 0x10) {
           pMouse->uPointingObjectID = 0;
           game_ui_status_bar_string[0] = 0;
           bForceDrawFooter = 1;
           uLastPointedObjectID = 0;
           return;
         }
-        if (pickedObjectPID >= 0x2000000u || pParty->pPickedItem.uItemID)
-        {
+        if (pickedObjectPID >= 0x2000000u || pParty->pPickedItem.uItemID) {
           GameUI_StatusBar_Set(pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
-        }
-        else
-        {
+        } else {
           GameUI_StatusBar_Set(
             localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName().c_str()) // Get %s
           );
         } //intentional fallthrough
-      }
-      else if (PID_TYPE(pickedObjectPID) == OBJECT_Decoration)
-      {
-        if (!pLevelDecorations[pickedObjectID].uEventID)
-        {
+      } else if (PID_TYPE(pickedObjectPID) == OBJECT_Decoration) {
+        if (!pLevelDecorations[pickedObjectID].uEventID) {
           if (pLevelDecorations[pickedObjectID].IsInteractive())
             pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events[pLevelDecorations[pickedObjectID]._idx_in_stru123 - 75] + 380].pTopic;//неверно для костра
           else
             pText = pDecorationList->pDecorations[pLevelDecorations[pickedObjectID].uDecorationDescID].field_20;
           GameUI_StatusBar_Set(pText);
-        }
-        else
-        {
+        } else {
           char* hintString = GetEventHintString(pLevelDecorations[pickedObjectID].uEventID);
-          if (hintString != '\0')
-          {
+          if (hintString != '\0') {
             GameUI_StatusBar_Set(hintString);
           }
         } //intentional fallthrough
-      }
-      else if (PID_TYPE(pickedObjectPID) == OBJECT_BModel)
-      {
-        if (pickedObjectPID < 0x2000000u)
-        {
+      } else if (PID_TYPE(pickedObjectPID) == OBJECT_BModel) {
+        if (pickedObjectPID < 0x2000000u) {
           char* newString = nullptr;
           if (uCurrentlyLoadedLevelType != LEVEL_Indoor)
           {
@@ -1720,15 +1694,12 @@ void GameUI_WritePointedObjectStatusString() {
     //else if inventory
 
 
-    for (int i = uNumVisibleWindows; i > 0; --i) {
-      pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1];
-      if ((signed int)pX >= (signed int)pWindow->uFrameX && (signed int)pX <= (signed int)pWindow->uFrameZ
-        && (signed int)pY >= (signed int)pWindow->uFrameY && (signed int)pY <= (signed int)pWindow->uFrameW) {
-
+    for (GUIWindow *pWindow : lWindowList) {
+      if (pWindow->Contains(pX, pY)) {
         for (GUIButton *pButton : pWindow->vButtons) {
           switch (pButton->uButtonType) {
             case 1://for dialogue window
-              if (pX >= pButton->uX && pX <= pButton->uZ && pY >= pButton->uY && pY <= pButton->uW) {
+              if (pButton->Contains(pX, pY)) {
                 pMessageType1 = (UIMessageType)pButton->field_1C;
                 if (pMessageType1)
                   pMessageQueue_50CBD0->AddGUIMessage(pMessageType1, pButton->msg_param, 0);
@@ -1756,8 +1727,7 @@ void GameUI_WritePointedObjectStatusString() {
               }
               break;
             case 3:// click on skill
-              if (pX >= pButton->uX && pX <= pButton->uZ
-                && pY >= pButton->uY && pY <= pButton->uW) {
+              if (pButton->Contains(pX, pY)) {
                 requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
 
                 String str;
@@ -1783,20 +1753,11 @@ void GameUI_WritePointedObjectStatusString() {
       }
       uLastPointedObjectID = 0;
 
-      if (pWindow->uFrameHeight == 480)
-      {
+      if (pWindow->uFrameHeight == 480) {
         //DebugBreak(); //Why is this condition here (in the original too)? Might check fullscreen windows. Let Silvo know if you find out
-
         // this is to stop the no windows active code below runnning
-
-
         return;
       }
-
-
-
-
-
     }
     //The game never gets to this point even in the original. It's also bugged(neither branch displays anything). 
     //TODO fix these and move them up before the window check loop.
@@ -1834,57 +1795,59 @@ void GameUI_WritePointedObjectStatusString() {
   }
 
   // no windows active -outside of game screen area only
-  if ((signed int)pX >= (signed int)pWindowList[0]->uFrameX && (signed int)pX <= (signed int)pWindowList[0]->uFrameZ
-    && (signed int)pY >= (signed int)pWindowList[0]->uFrameY && (signed int)pY <= (signed int)pWindowList[0]->uFrameW)
-  {
-    for (GUIButton *pButton : pWindowList[0]->vButtons) {
-      switch (pButton->uButtonType) {
-      case 1:
-        if (pX >= pButton->uX && pX <= pButton->uZ && pY >= pButton->uY && pY <= pButton->uW) {
-          pMessageType3 = (UIMessageType)pButton->field_1C;
-          if (pMessageType3 == 0) {  // For books
-            GameUI_StatusBar_Set(pButton->sLabel);
-          } else {
-            pMessageQueue_50CBD0->AddGUIMessage(pMessageType3, pButton->msg_param, 0);
-          }
-          uLastPointedObjectID = 1;
-          return;
-        }
-        break;
-      case 2://hovering over portraits
-        if (pButton->uWidth != 0 && pButton->uHeight != 0) {
-          uint distW = pX - pButton->uX;
-          uint distY = pY - pButton->uY;
-
-          double ratioX = 1.0 * (distW*distW) / (pButton->uWidth*pButton->uWidth);
-          double ratioY = 1.0 * (distY*distY) / (pButton->uHeight*pButton->uHeight);
-
-          if (ratioX + ratioY < 1.0) {
-            pMessageType2 = (UIMessageType)pButton->field_1C;
-            if (pMessageType2 != 0)
-              pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
-            GameUI_StatusBar_Set(pButton->sLabel); // for character name
+  if (!lWindowList.empty()) {
+    GUIWindow *win = lWindowList.back();
+    if (win->Contains(pX, pY)) {
+      for (GUIButton *pButton : win->vButtons) {
+        switch (pButton->uButtonType) {
+        case 1:
+          if (pX >= pButton->uX && pX <= pButton->uZ && pY >= pButton->uY && pY <= pButton->uW) {
+            pMessageType3 = (UIMessageType)pButton->field_1C;
+            if (pMessageType3 == 0) {  // For books
+              GameUI_StatusBar_Set(pButton->sLabel);
+            }
+            else {
+              pMessageQueue_50CBD0->AddGUIMessage(pMessageType3, pButton->msg_param, 0);
+            }
             uLastPointedObjectID = 1;
             return;
           }
-        }
-        break;
-      case 3: // is this one needed?
-              /*                if (pX >= pButton->uX && pX <= pButton->uZ
-              && pY >= pButton->uY && pY <= pButton->uW)
-              {
-              requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
+          break;
+        case 2://hovering over portraits
+          if (pButton->uWidth != 0 && pButton->uHeight != 0) {
+            uint distW = pX - pButton->uX;
+            uint distY = pY - pButton->uY;
 
-              String str;
-              if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
-              str = localization->FormatString(469, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints);// "You need %d more Skill Points to advance here"
-              else
-              str = localization->FormatString(468, requiredSkillpoints);// "Clicking here will spend %d Skill Points"
-              GameUI_StatusBar_Set(str);
+            double ratioX = 1.0 * (distW*distW) / (pButton->uWidth*pButton->uWidth);
+            double ratioY = 1.0 * (distY*distY) / (pButton->uHeight*pButton->uHeight);
+
+            if (ratioX + ratioY < 1.0) {
+              pMessageType2 = (UIMessageType)pButton->field_1C;
+              if (pMessageType2 != 0)
+                pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
+              GameUI_StatusBar_Set(pButton->sLabel); // for character name
               uLastPointedObjectID = 1;
               return;
-              }*/
-        break;
+            }
+          }
+          break;
+        case 3: // is this one needed?
+                /*                if (pX >= pButton->uX && pX <= pButton->uZ
+                && pY >= pButton->uY && pY <= pButton->uW)
+                {
+                requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
+
+                String str;
+                if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
+                str = localization->FormatString(469, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints);// "You need %d more Skill Points to advance here"
+                else
+                str = localization->FormatString(468, requiredSkillpoints);// "Clicking here will spend %d Skill Points"
+                GameUI_StatusBar_Set(str);
+                uLastPointedObjectID = 1;
+                return;
+                }*/
+          break;
+        }
       }
     }
   }

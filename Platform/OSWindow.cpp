@@ -37,11 +37,11 @@ bool debug_terrain_polygin = false;
 extern HWND hInsertCDWindow; // idb
 
 void         *OSWindow::GetApiHandle() const { return api_handle; }
-int           OSWindow::GetX() const { RECT rc; GetWindowRect((HWND)this->GetApiHandle(), &rc); return rc.left; }
-int           OSWindow::GetY() const { RECT rc; GetWindowRect((HWND)this->GetApiHandle(), &rc); return rc.top; }
-unsigned int  OSWindow::GetWidth() const { RECT rc; GetClientRect((HWND)this->GetApiHandle(), &rc); return rc.right - rc.left; }
-unsigned int  OSWindow::GetHeight() const { RECT rc; GetClientRect((HWND)this->GetApiHandle(), &rc); return rc.bottom - rc.top; }
-bool          OSWindow::Focused() { return GetFocus() == (HWND)this->GetApiHandle(); }
+int           OSWindow::GetX() const { RECT rc; GetWindowRect((HWND)api_handle, &rc); return rc.left; }
+int           OSWindow::GetY() const { RECT rc; GetWindowRect((HWND)api_handle, &rc); return rc.top; }
+unsigned int  OSWindow::GetWidth() const { RECT rc; GetClientRect((HWND)api_handle, &rc); return rc.right - rc.left; }
+unsigned int  OSWindow::GetHeight() const { RECT rc; GetClientRect((HWND)api_handle, &rc); return rc.bottom - rc.top; }
+bool          OSWindow::Focused() { return GetFocus() == (HWND)api_handle; }
 
 Point OSWindow::TransformCursorPos(Point &pt) const
 {
@@ -65,7 +65,7 @@ bool OSWindow::OnMouseLeftClick(int x, int y) {
     pEngine->PickMouse(512.0, x, y, false, &vis_sprite_filter_3, &vis_door_filter);
   }
 
-  Mouse::UI_OnMouseLeftClick(0);
+  Mouse::UI_OnMouseLeftClick();
   return true;
 }
 
