@@ -1205,75 +1205,67 @@ void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSi
     
 }
 
-void MPlayer::HouseMovieLoop()
-{
-	if (pMovie_Track && !bNoVideo)
-	{
-		render->BeginScene();
-		pMouse->DrawCursorToTarget();
+void MPlayer::HouseMovieLoop() {
+  if (pMovie_Track && !bNoVideo) {
+    render->BeginScene();
+    pMouse->DrawCursorToTarget();
 
-        logger->Warning(L"smacker");
-        loop_current_file = true;
-        render->BeginScene();
-        if (!bPlaying_Movie)//reload
-        {
-          unsigned int width = game_viewport_width;
-          unsigned int height = game_viewport_height;
-	      MovieRelease();
+    logger->Warning(L"smacker");
+    loop_current_file = true;
+    render->BeginScene();
+    if (!bPlaying_Movie) {  // reload
+      unsigned int width = game_viewport_width;
+      unsigned int height = game_viewport_height;
+      MovieRelease();
 
-          fseek(hVidFile, uOffset, SEEK_SET);
-          pMovie_Track = nullptr;
-	      logger->Warning(L"reload pMovie_Track");
-          pMovie_Track = pMediaPlayer->LoadMovieFromLOD(hVidFile, &readFunction, &seekFunction, width, height);
-          bPlaying_Movie = true;
+      fseek(hVidFile, uOffset, SEEK_SET);
+      pMovie_Track = nullptr;
+      logger->Warning(L"reload pMovie_Track");
+      pMovie_Track = pMediaPlayer->LoadMovieFromLOD(hVidFile, &readFunction, &seekFunction, width, height);
+      bPlaying_Movie = true;
+    }
+    //else 
+    //{
+    double dt = (OS_GetTime() - time_video_begin) / 1000.0;
+    //dt = 1.0/15.0;
+    time_video_begin = OS_GetTime();
+
+    //log("dt=%.5f\n", dt);
+
+    auto image = new char[current_movie_width * current_movie_height * 4];
+
+    pMovie_Track->GetNextFrame(dt, image);
+
+    int image_array[460 * 344];//game_viewport_width * game_viewport_height
+    if (image) {
+      memcpy(image_array, image, sizeof(image_array));
+      for (unsigned int y = 8; y < 8 + game_viewport_height; ++y) {  // координаты местоположения видеоролика
+        for (unsigned int x = 8; x < 8 + game_viewport_width; ++x) {
+          auto p = (unsigned __int32 *)render->pTargetSurface + x + y * render->uTargetSurfacePitch;
+          *p = image_array[((x - 8) + ((y - 8)*game_viewport_width))];
         }
-        //else 
-        //{
-          double dt = (OS_GetTime() - time_video_begin) / 1000.0;
-          //dt = 1.0/15.0;
-          time_video_begin = OS_GetTime();
+      }
+      delete[] image;
+    }
+    //}
+    render->EndScene();
+    pMouse->ReadCursorWithItem();
+    render->EndScene();
 
-          //log("dt=%.5f\n", dt);
-
-          auto image = new char[current_movie_width * current_movie_height * 4];
-
-          pMovie_Track->GetNextFrame(dt, image);
-
-          int image_array[460 * 344];//game_viewport_width * game_viewport_height
-          if (image)
-          {
-            memcpy(image_array, image, sizeof (image_array));
-            for (unsigned int y = 8; y < 8 + game_viewport_height; ++y)//координаты местоположения видеоролика
-            {
-              for (unsigned int x = 8; x < 8 + game_viewport_width; ++x)
-              {
-                auto p = (unsigned __int32 *)render->pTargetSurface + x + y * render->uTargetSurfacePitch;
-                *p = image_array[((x - 8) + ((y - 8)*game_viewport_width))];
-              }
-            }
-            delete[] image;
-          }
-       //}
-        render->EndScene();
-		pMouse->ReadCursorWithItem();
-		render->EndScene();
-		
-	}
+  }
 }
- 
-//----- (004BF73A) --------------------------------------------------------
-void MPlayer::SelectMovieType()
-{
-    char Source[32]; // [sp+Ch] [bp-40h]@1
 
-    strcpy(Source, this->pCurrentMovieName);
-    pMediaPlayer->Unload();
-    if (this->uMovieType == 1)
-        OpenHouseMovie(Source, this->bLoopPlaying);
-    else if (this->uMovieType == 2)
-        OpenFullscreenMovie(Source, this->bLoopPlaying);
-    else
-        __debugbreak();
+void MPlayer::SelectMovieType() {
+  char Source[32];
+
+  strcpy(Source, this->pCurrentMovieName);
+  pMediaPlayer->Unload();
+  if (this->uMovieType == 1)
+    OpenHouseMovie(Source, this->bLoopPlaying);
+  else if (this->uMovieType == 2)
+    OpenFullscreenMovie(Source, this->bLoopPlaying);
+  else
+    __debugbreak();
 }
 
 void MPlayer::LoadMovie(const char *pFilename)

@@ -1,5 +1,5 @@
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
+#include "IO/Mouse.h"
+
 #include <stdlib.h>
 #include <crtdbg.h>
 
@@ -10,8 +10,6 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
-
-#include "IO/Mouse.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -154,46 +152,52 @@ void Mouse::Deactivate() {
 void Mouse::DrawCursor() {
   if (this->bInitialized) {
     if (!this->field_8 && this->bActive && !this->field_C) //Uninitialized memory access(this->field_8)
-      pMouse->_469AE4();//Ritor1: странная, непонятная функция
+      pMouse->_469AE4();  // Ritor1: странная, непонятная функция
     this->field_F4 = 1;
     if (this->field_C) {
       this->field_F4 = 0;
       return;
     }
 
-    //if ( render->bWindowMode )
-    {
-      if (this->uMouseClickX < 0 || this->uMouseClickY < 0 || this->uMouseClickX > window->GetWidth() - 1 || this->uMouseClickY > window->GetHeight() - 1)
-      {
+//    if ( render->bWindowMode ) {
+      if (this->uMouseClickX < 0 || this->uMouseClickY < 0 || this->uMouseClickX > window->GetWidth() - 1 || this->uMouseClickY > window->GetHeight() - 1) {
         this->field_F4 = 0;
         return;
       }
-    }
+//    }
 
-    this->pCursorBitmapRect.x = this->uMouseClickX;
-    this->pCursorBitmapRect.w = this->uMouseClickY + this->field_5C[0]; //Ritor1: Maybe this->field_5C[0] - cursor width
-    this->pCursorBitmapRect.y = this->uMouseClickY;
-    this->pCursorBitmapRect.z = this->uMouseClickX + this->uCursorBitmapPitch; //Ritor1: Maybe this->uCursorBitmapPitch - cursor height
+    this->pCursorBitmapRect_x = this->uMouseClickX;
+    this->pCursorBitmapRect_w = this->uMouseClickY + this->field_5C[0]; //Ritor1: Maybe this->field_5C[0] - cursor width
+    this->pCursorBitmapRect_y = this->uMouseClickY;
+    this->pCursorBitmapRect_z = this->uMouseClickX + this->uCursorBitmapPitch; //Ritor1: Maybe this->uCursorBitmapPitch - cursor height
     if (this->uMouseClickX < 0)
-      this->pCursorBitmapRect.x = 0;
+      this->pCursorBitmapRect_x = 0;
     if (this->uMouseClickY < 0)
-      this->pCursorBitmapRect.y = 0;
-    if (this->pCursorBitmapRect.z > window->GetWidth())
-      this->pCursorBitmapRect.z = window->GetWidth();
-    if (this->pCursorBitmapRect.w > window->GetHeight())
-      this->pCursorBitmapRect.w = window->GetHeight();
+      this->pCursorBitmapRect_y = 0;
+    if (this->pCursorBitmapRect_z > window->GetWidth())
+      this->pCursorBitmapRect_z = window->GetWidth();
+    if (this->pCursorBitmapRect_w > window->GetHeight())
+      this->pCursorBitmapRect_w = window->GetHeight();
     this->bActive = false;
-    this->uCursorBitmapWidth = this->pCursorBitmapRect.z - this->pCursorBitmapRect.x;
-    this->uCursorBitmapHeight = this->pCursorBitmapRect.w - this->pCursorBitmapRect.y;
+    this->uCursorBitmapWidth = this->pCursorBitmapRect_z - this->pCursorBitmapRect_x;
+    this->uCursorBitmapHeight = this->pCursorBitmapRect_w - this->pCursorBitmapRect_y;
     if (this->bRedraw) {
       unsigned int v9 = 0;
       if (pMouse->ptr_90) {
         v9 = 2 * pMouse->uCursorBitmapPitch;
       }
-      render->_4A6DF5(
-        this->pCursorBitmap_sysmem, v9, &this->pCursorBitmapPos, render->pTargetSurface, render->uTargetSurfacePitch,
-        &this->pCursorBitmapRect
-      );  // срабатывает когда берём курсором вещь в инвенторе
+
+      Vec2_int_ point;
+      point.x = pCursorBitmapPos.x;
+      point.y = pCursorBitmapPos.y;
+
+      Vec4_int_ rect;
+      rect.x = pCursorBitmapRect_x;
+      rect.y = pCursorBitmapRect_y;
+      rect.w = pCursorBitmapRect_w;
+      rect.z = pCursorBitmapRect_z;
+
+      render->_4A6DF5(pCursorBitmap_sysmem, v9, &point, render->pTargetSurface, render->uTargetSurfacePitch, &rect);  // срабатывает когда берём курсором вещь в инвенторе
       this->bRedraw = false;
     }
   }
@@ -203,27 +207,22 @@ void Mouse::Activate() {
   bActive = true;
 }
 
-void Mouse::_469E24() {
-  free(pCursorBitmap3_sysmembits_16bit);
-  pCursorBitmap3_sysmembits_16bit = nullptr;
+void Mouse::ClearPickedItem() {
+  pPickedItem = nullptr;
 }
 
-//----- (00469E3B) --------------------------------------------------------
-void Mouse::DrawCursorToTarget()//??? DrawCursorWithItem
-{
-  if (!pCursorBitmap3_sysmembits_16bit)
+void Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
+  if (pPickedItem == nullptr) {
     return;
+  }
   //пишем на экран курсор с вещью
-  ushort* pSrc = pCursorBitmap3_sysmembits_16bit;
-  for (int y = uCursorWithItemY; y < uCursorWithItemZ; ++y)
-    for (int x = uCursorWithItemX; x < uCursorWithItemW; ++x)
-      //render->pTargetSurface[y * render->uTargetSurfacePitch + x] = *pSrc++;
-        render->WritePixel16(x, y, *pSrc++);
+  render->DrawTextureAlphaNew(uCursorWithItemX / 640.0f, uCursorWithItemY / 480.0f, pPickedItem);
 }
 
 void Mouse::ReadCursorWithItem() {
   if (pParty->pPickedItem.uItemID) {
     Image *pTexture = assets->GetImage_16BitAlpha(pParty->pPickedItem.GetIconName());
+    pTexture->GetWidth();
 
     if ((int)pMouse->uMouseClickX <= window->GetWidth() - 1 && (int)pMouse->uMouseClickY <= window->GetHeight() - 1) {
       int pTextureHeight;
@@ -236,26 +235,10 @@ void Mouse::ReadCursorWithItem() {
         pTextureHeight = pTexture->GetHeight();
       else
         pTextureHeight = window->GetHeight() - pMouse->uMouseClickY;
-      if (!this->pCursorBitmap3_sysmembits_16bit
-        || pMouse->uMouseClickX != this->uCursorWithItemX
-        || pMouse->uMouseClickY != this->uCursorWithItemY
-        || pMouse->uMouseClickX + pTextureWidth != this->uCursorWithItemW
-        || pMouse->uMouseClickY + pTextureHeight != this->uCursorWithItemZ)
-      {
-        free(this->pCursorBitmap3_sysmembits_16bit);
-        this->pCursorBitmap3_sysmembits_16bit = (unsigned __int16 *)malloc(2 * pTexture->GetHeight() * pTexture->GetWidth());
-        this->uCursorWithItemX = pMouse->uMouseClickX;
-        this->uCursorWithItemW = pMouse->uMouseClickX + pTextureWidth;
-        this->uCursorWithItemY = pMouse->uMouseClickY;
-        this->uCursorWithItemZ = pMouse->uMouseClickY + pTextureHeight;
-      }
-      uint16_t *v22 = this->pCursorBitmap3_sysmembits_16bit;
 
-      for (int y = this->uCursorWithItemY; y < this->uCursorWithItemZ; ++y) {
-        for (int x = this->uCursorWithItemX; x < this->uCursorWithItemW; ++x) {
-          *v22++ = render->ReadPixel16(x, y);
-        }
-      }
+      pPickedItem = pTexture;
+      this->uCursorWithItemX = pMouse->uMouseClickX;
+      this->uCursorWithItemY = pMouse->uMouseClickY;
 
       if (pParty->pPickedItem.IsBroken())
         render->DrawTransparentRedShade(pMouse->uMouseClickX / 640.0f, pMouse->uMouseClickY / 480.0f, pTexture);
@@ -265,8 +248,7 @@ void Mouse::ReadCursorWithItem() {
         render->DrawTextureAlphaNew(pMouse->uMouseClickX / 640.0f, pMouse->uMouseClickY / 480.0f, pTexture);
     }
   } else {
-    free(this->pCursorBitmap3_sysmembits_16bit);
-    this->pCursorBitmap3_sysmembits_16bit = nullptr;
+    ClearPickedItem();
   }
 }
 

@@ -3488,7 +3488,7 @@ int HouseDialogPressCloseBtn() {
 //----- (004BF5B2) --------------------------------------------------------
 void BackToHouseMenu()
 {
-  pMouse->_469E24();
+  pMouse->ClearPickedItem();
   if ( window_SpeakInHouse && window_SpeakInHouse->ptr_1C == (void *)165 && !pMovie_Track)//!this->pSmackerMovie )
   {
     bGameoverLoop = true;
