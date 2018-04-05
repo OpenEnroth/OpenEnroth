@@ -43,7 +43,7 @@ void ShopDialogMain(GUIWindow dialogwin) {
 
 		int all_text_height = 0;
 		for (int i = 0; i < 4; ++i)
-			all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], &dialogwin, 0);
+			all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], dialogwin.uFrameWidth, 0);
 
 		int textspacings = (174 - all_text_height) / 4;
 		int textoffset = 138 - (textspacings / 2);
@@ -56,8 +56,8 @@ void ShopDialogMain(GUIWindow dialogwin) {
 			
 			pButton = pDialogueWindow->GetControl(i);
 			pButton->uY = textspacings + textoffset;
-			pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialogwin, 0);
-			textoffset = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialogwin, 0) - 1;
+			pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], dialogwin.uFrameWidth, 0);
+			textoffset = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], dialogwin.uFrameWidth, 0) - 1;
 			pButton->uW = textoffset;
 			
 			pColorText = Color16(0xE1u, 0xCDu, 0x23u);
@@ -90,7 +90,7 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin, BuildingType building = Buildin
 	
 	int all_text_height = 0;
 	for (int i = 0; i < options; ++i)
-		all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], &dialogwin, 0);
+		all_text_height += pFontArrus->CalcTextHeight(pShopOptions[i], dialogwin.uFrameWidth, 0);
 
 	int textspacings = (174 - all_text_height) / options;
 	int textoffset = 138 - (textspacings / 2);
@@ -103,8 +103,8 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin, BuildingType building = Buildin
 
 		pButton = pDialogueWindow->GetControl(i);
 		pButton->uY = textspacings + textoffset;
-		pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialogwin, 0);
-		textoffset = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], &dialogwin, 0) - 1;
+		pButton->uHeight = pFontArrus->CalcTextHeight(pShopOptions[pNumString], dialogwin.uFrameWidth, 0);
+		textoffset = pButton->uY + pFontArrus->CalcTextHeight(pShopOptions[pNumString], dialogwin.uFrameWidth, 0) - 1;
 		pButton->uW = textoffset;
 
 		pColorText = Color16(0xE1u, 0xCDu, 0x23u);
@@ -138,7 +138,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
 			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
 			int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, building, (int)window_SpeakInHouse->ptr_1C, 3);
 			auto str = BuildDialogueString(	pMerchantsSellPhrases[phrases_id], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 3 	);
-			dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+			dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 		}
 	}
 
@@ -174,7 +174,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 				str = BuildDialogueString("%24", uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 4 );
 			}
 
-			dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+			dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 
 		}
 	}
@@ -205,7 +205,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
 			ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
 			int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(item, building, (int)window_SpeakInHouse->ptr_1C, 5);
 			String str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 5);
-			dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+			dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 		}
 	}
 	
@@ -228,7 +228,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
 			if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][pDialogueWindow->GetControl(i)->msg_param - 36]
 				&& !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36]) {
 
-				all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(pDialogueWindow->GetControl(i)->msg_param - 36), &dialogwin, 0);
+				all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(pDialogueWindow->GetControl(i)->msg_param - 36), dialogwin.uFrameWidth, 0);
 				item_num++;
 			}
 		}
@@ -258,8 +258,8 @@ void ShopDialogLearn(GUIWindow dialogwin) {
 				}
 				else {
 					pButton->uY = textspacings + textoffset;
-					pButton->uHeight = pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialogwin, 0);
-					textoffset = pButton->uY + pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), &dialogwin, 0) - 1;
+					pButton->uHeight = pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), dialogwin.uFrameWidth, 0);
+					textoffset = pButton->uY + pFontArrus->CalcTextHeight(localization->GetSkillName(pButton->msg_param - 36), dialogwin.uFrameWidth, 0) - 1;
 					pButton->uW = textoffset;
 					pColorText = Color16(0xE1u, 0xCDu, 0x23u);
 					if (pDialogueWindow->pCurrentPosActiveItem != i)
@@ -273,7 +273,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
 
 		//seek knowledge elsewhere
 		auto str = localization->FormatString( 544, pPlayers[uActiveCharacter]->pName, localization->GetClassName(pPlayers[uActiveCharacter]->classType) ) + "\n \n" + localization->GetString(528);//Больше ничего не могу предложить.
-		dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0, 0)) / 2 + 138, Color16(0xE1u, 0xCDu, 0x23u), str, 3);
+		dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0, 0)) / 2 + 138, Color16(0xE1u, 0xCDu, 0x23u), str, 3);
 		
 	}
 	
@@ -351,7 +351,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
 									2
 								);
 							}
-							dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+							dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 						}
 					}
 				}
@@ -366,63 +366,50 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
 
 }
 
-//----- (004B910F) --------------------------------------------------------
 void WeaponShopDialog() {
+  GUIWindow dialog_window = *window_SpeakInHouse;
+  dialog_window.uFrameX = 483;
+  dialog_window.uFrameWidth = 148;
+  dialog_window.uFrameZ = 334;
 
-	GUIWindow dialog_window; // [sp+7Ch] [bp-7Ch]@1
-   
-    memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
-    dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
-    dialog_window.uFrameZ = 334;
-
-	switch (dialog_menu_id) {
-
-		case HOUSE_DIALOGUE_MAIN: {
-			ShopDialogMain(dialog_window);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
-			WeaponShopWares(dialog_window);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
-			WeaponShopWares(dialog_window, 1);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_SELL: {
-			ShopDialogSellEquip(dialog_window, BuildingType_WeaponShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
-			ShopDialogIdentify(dialog_window, BuildingType_WeaponShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_REPAIR: {
-			ShopDialogRepair(dialog_window, BuildingType_WeaponShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
-			ShopDialogDisplayEquip(dialog_window);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_LEARN_SKILLS: {
-			ShopDialogLearn(dialog_window);
-			break;
-		}
-
-		default: {
-			__debugbreak();
-			break;
-		}
-	}
+  switch (dialog_menu_id) {
+    case HOUSE_DIALOGUE_MAIN: {
+      ShopDialogMain(dialog_window);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+      WeaponShopWares(dialog_window);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+      WeaponShopWares(dialog_window, 1);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_SELL: {
+      ShopDialogSellEquip(dialog_window, BuildingType_WeaponShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+      ShopDialogIdentify(dialog_window, BuildingType_WeaponShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_REPAIR: {
+      ShopDialogRepair(dialog_window, BuildingType_WeaponShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+      ShopDialogDisplayEquip(dialog_window);
+      break;
+    }
+    case HOUSE_DIALOGUE_LEARN_SKILLS: {
+      ShopDialogLearn(dialog_window);
+      break;
+    }
+    default: {
+      __debugbreak();
+      break;
+    }
+  }
 }
 
 void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
@@ -501,7 +488,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
 							else {
 								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
 							}
-							dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+							dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 						}
 					}
 				}
@@ -514,63 +501,50 @@ void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
 	}
 }
 
-//----- (004BA928) --------------------------------------------------------
 void ArmorShopDialog() {
- 
-    GUIWindow dialog_window; // [sp+8Ch] [bp-78h]@1
+  GUIWindow dialog_window = *window_SpeakInHouse;
+  dialog_window.uFrameX = 483;
+  dialog_window.uFrameWidth = 148;
+  dialog_window.uFrameZ = 334;
 
-    memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
-    dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
-    dialog_window.uFrameZ = 334;
-
-    switch (dialog_menu_id) {
-
-        case HOUSE_DIALOGUE_MAIN: {
-			ShopDialogMain(dialog_window);
-            break;
-        }
-
-        case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
-			ArmorShopWares(dialog_window);
-			break;            
-        }
-
-		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
-			ArmorShopWares(dialog_window, 1);
-			break;
-		}
-      
-  		case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
-			ShopDialogDisplayEquip(dialog_window);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_SELL: {
-			ShopDialogSellEquip(dialog_window, BuildingType_ArmorShop);
-			break;
-		}
-    
-		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
-			ShopDialogIdentify(dialog_window, BuildingType_ArmorShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_REPAIR: {
-			ShopDialogRepair(dialog_window, BuildingType_ArmorShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_LEARN_SKILLS: {
-			ShopDialogLearn(dialog_window);
-			break;
-		}
-        
-		default: {
-			__debugbreak();
-			break;
-		}
+  switch (dialog_menu_id) {
+    case HOUSE_DIALOGUE_MAIN: {
+      ShopDialogMain(dialog_window);
+      break;
     }
+    case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+      ArmorShopWares(dialog_window);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+      ArmorShopWares(dialog_window, 1);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+      ShopDialogDisplayEquip(dialog_window);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_SELL: {
+      ShopDialogSellEquip(dialog_window, BuildingType_ArmorShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+      ShopDialogIdentify(dialog_window, BuildingType_ArmorShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_REPAIR: {
+      ShopDialogRepair(dialog_window, BuildingType_ArmorShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_LEARN_SKILLS: {
+      ShopDialogLearn(dialog_window);
+      break;
+    }
+    default: {
+      __debugbreak();
+      break;
+    }
+  }
 }
 
 void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building, bool special = 0) {
@@ -673,7 +647,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building, bool spec
 							else {
 								str = BuildDialogueString(localization->GetString(181), uActiveCharacter - 1, item, (char *)window_SpeakInHouse->ptr_1C, 2); //"Steal %24"
 							}
-							dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, &dialogwin, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+							dialogwin.DrawTitleText(pFontArrus, 0, (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138, Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
 						}
 					}
 				}
@@ -685,120 +659,93 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building, bool spec
 		}
 	}
 }
-	
-//----- (004B9CC6) --------------------------------------------------------
+
 void  AlchemistDialog() {
+  GUIWindow dialog_window = *window_SpeakInHouse;
+  dialog_window.uFrameX = 483;
+  dialog_window.uFrameWidth = 148;
+  dialog_window.uFrameZ = 334;
 
-    GUIWindow dialog_window; // [sp+5Ch] [bp-7Ch]@1
-
-	memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
-    dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
-    dialog_window.uFrameZ = 334;
-
-    switch (dialog_menu_id) {
-
-		case HOUSE_DIALOGUE_MAIN: {
-			ShopDialogMain(dialog_window);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
-			AlchemyMagicShopWares(dialog_window,BuildingType_AlchemistShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
-			AlchemyMagicShopWares(dialog_window, BuildingType_AlchemistShop, 1);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_SELL: {
-			ShopDialogSellEquip(dialog_window, BuildingType_AlchemistShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
-			ShopDialogIdentify(dialog_window, BuildingType_AlchemistShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
-			ShopDialogDisplayEquip(dialog_window, BuildingType_AlchemistShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_LEARN_SKILLS: {
-			ShopDialogLearn(dialog_window);
-			break;
-		}
-    
-		default: {
-			__debugbreak();
-			break;
-		}
-
-	}
+  switch (dialog_menu_id) {
+    case HOUSE_DIALOGUE_MAIN: {
+      ShopDialogMain(dialog_window);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+      AlchemyMagicShopWares(dialog_window, BuildingType_AlchemistShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+      AlchemyMagicShopWares(dialog_window, BuildingType_AlchemistShop, 1);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_SELL: {
+      ShopDialogSellEquip(dialog_window, BuildingType_AlchemistShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+      ShopDialogIdentify(dialog_window, BuildingType_AlchemistShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+      ShopDialogDisplayEquip(dialog_window, BuildingType_AlchemistShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_LEARN_SKILLS: {
+      ShopDialogLearn(dialog_window);
+      break;
+    }
+    default: {
+      __debugbreak();
+      break;
+    }
+  }
 }
 
-//----- (004B4FCF) --------------------------------------------------------
 void MagicShopDialog() {
- 
-    GUIWindow dialog_window; // [sp+7Ch] [bp-7Ch]@1
- 
-    memcpy(&dialog_window, window_SpeakInHouse, sizeof(dialog_window));
-    dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
-    dialog_window.uFrameZ = 334;
+  GUIWindow dialog_window = *window_SpeakInHouse;
+  dialog_window.uFrameX = 483;
+  dialog_window.uFrameWidth = 148;
+  dialog_window.uFrameZ = 334;
 
-	switch (dialog_menu_id) {
-
-		case HOUSE_DIALOGUE_MAIN: {
-			ShopDialogMain(dialog_window);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
-			AlchemyMagicShopWares(dialog_window, BuildingType_MagicShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
-			AlchemyMagicShopWares(dialog_window, BuildingType_MagicShop, 1);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
-			ShopDialogDisplayEquip(dialog_window);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_SELL: {
-			ShopDialogSellEquip(dialog_window, BuildingType_MagicShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
-			ShopDialogIdentify(dialog_window, BuildingType_MagicShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_SHOP_REPAIR: {
-			ShopDialogRepair(dialog_window, BuildingType_MagicShop);
-			break;
-		}
-
-		case HOUSE_DIALOGUE_LEARN_SKILLS: {
-			ShopDialogLearn(dialog_window);
-			break;
-		}
-
-		default: {
-			__debugbreak();
-			break;
-		}
-
-	}
+  switch (dialog_menu_id) {
+    case HOUSE_DIALOGUE_MAIN: {
+      ShopDialogMain(dialog_window);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+      AlchemyMagicShopWares(dialog_window, BuildingType_MagicShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+      AlchemyMagicShopWares(dialog_window, BuildingType_MagicShop, 1);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+      ShopDialogDisplayEquip(dialog_window);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_SELL: {
+      ShopDialogSellEquip(dialog_window, BuildingType_MagicShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+      ShopDialogIdentify(dialog_window, BuildingType_MagicShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_SHOP_REPAIR: {
+      ShopDialogRepair(dialog_window, BuildingType_MagicShop);
+      break;
+    }
+    case HOUSE_DIALOGUE_LEARN_SKILLS: {
+      ShopDialogLearn(dialog_window);
+      break;
+    }
+    default: {
+      __debugbreak();
+      break;
+    }
+  }
 }
 
 //----- (004BDB56) --------------------------------------------------------
@@ -1396,79 +1343,74 @@ void  ShowPopupShopItem() {
     }
 }
 
-//----- (004B1523) --------------------------------------------------------
-void sub_4B1523_showSpellbookInfo(int spellItemId)
-{
-    int spellId; // esi@1
-    int spellLevel; // edx@1
-    unsigned int v3; // eax@2
-    int v4; // eax@4
-    long v5; // ecx@4
-    int v6; // eax@10
-    char *v7; // ST44_4@12
-    unsigned __int16 v8; // ax@12
-    GUIWindow a1; // [sp+Ch] [bp-68h]@4
-    unsigned int spellSchool; // [sp+60h] [bp-14h]@1
-    int v13; // [sp+6Ch] [bp-8h]@4
-    int v14; // [sp+70h] [bp-4h]@4
+void sub_4B1523_showSpellbookInfo(int spellItemId) {
+  int v4; // eax@4
+  long v5; // ecx@4
+  int v6; // eax@10
+  char *v7; // ST44_4@12
+  unsigned __int16 v8; // ax@12
+  int v13; // [sp+6Ch] [bp-8h]@4
+  int v14; // [sp+70h] [bp-4h]@4
 
-    spellId = spellItemId - 399;
-    spellLevel = (spellItemId - 400) % 11 + 1;
-    spellSchool = 4 * (spellItemId - 400) / 11;
+  int spellId = spellItemId - 399;
+  int spellLevel = (spellItemId - 400) % 11 + 1;
+  unsigned int spellSchool = 4 * (spellItemId - 400) / 11;
 
-    // sprintf(tmp_str.data(), "%s%03d", spellbook_texture_filename_suffices[v11 / 4], v2); not used
+  // sprintf(tmp_str.data(), "%s%03d", spellbook_texture_filename_suffices[v11 / 4], v2); not used
 
-    Point a2 = pMouse->GetCursorPos();
-    if (a2.y <= 320)
-        v3 = a2.y + 30;
-    else
-        v3 = 30;
-    a1.Hint = nullptr;
-    a1.uFrameY = v3;
-    a1.uFrameWidth = 328;
-    a1.uFrameHeight = 68;
-    a1.uFrameX = 90;
-    a1.uFrameZ = 417;
-    a1.uFrameW = v3 + 67;
-    a2.y = pFontSmallnum->GetLineWidth(localization->GetString(431));
-    v14 = pFontSmallnum->GetLineWidth(localization->GetString(433));
-    v13 = pFontSmallnum->GetLineWidth(localization->GetString(432));
-    v4 = pFontSmallnum->GetLineWidth(localization->GetString(96));
-    v5 = a2.y;
-    if (v14 > a2.y)
-        v5 = v14;
-    if (v13 > v5)
-        v5 = v13;
-    if (v4 > v5)
-        v5 = v4;
+  Point a2 = pMouse->GetCursorPos();
+  unsigned int v3 = 30;
+  if (a2.y <= 320) {
+    v3 = a2.y + 30;
+  }
 
-    auto str = StringPrintf(
-        "%s\n\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s",
-        pSpellStats->pInfos[spellId].pDescription, localization->GetString(431),        // "Normal"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc, localization->GetString(433),        // "Expert"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc, localization->GetString(432),        // "Master"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc, localization->GetString(96),         // "Grand"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc);
-    v6 = pFontSmallnum->CalcTextHeight(str, &a1, 0);
-    a1.uFrameHeight += v6;
-    if ((signed int)a1.uFrameHeight < 150)
-        a1.uFrameHeight = 150;
-    a1.uFrameWidth = game_viewport_width;
-    a1.DrawMessageBox(0);
-    a1.uFrameWidth -= 12;
-    a1.uFrameHeight -= 12;
-    v7 = pSpellStats->pInfos[spellId].pName;
-    a1.uFrameZ = a1.uFrameX + a1.uFrameWidth - 1;
-    a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
-    v8 = Color16(0xFFu, 0xFFu, 0x9Bu);
-    a1.DrawTitleText(pFontArrus, 0x78u, 0xCu, v8, v7, 3u);
-    a1.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);
-    a1.uFrameZ = a1.uFrameX + 107;
-    a1.uFrameWidth = 108;
-    a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0, localization->GetSkillName(spellSchool / 4 + 12), 3u);
+  GUIWindow a1;
+  a1.uFrameY = v3;
+  a1.uFrameWidth = 328;
+  a1.uFrameHeight = 68;
+  a1.uFrameX = 90;
+  a1.uFrameZ = 417;
+  a1.uFrameW = v3 + 67;
+  a2.y = pFontSmallnum->GetLineWidth(localization->GetString(431));
+  v14 = pFontSmallnum->GetLineWidth(localization->GetString(433));
+  v13 = pFontSmallnum->GetLineWidth(localization->GetString(432));
+  v4 = pFontSmallnum->GetLineWidth(localization->GetString(96));
+  v5 = a2.y;
+  if (v14 > a2.y)
+    v5 = v14;
+  if (v13 > v5)
+    v5 = v13;
+  if (v4 > v5)
+    v5 = v4;
 
-    str = StringPrintf("%s\n%d", localization->GetString(522), *(&pSpellDatas[0].uNormalLevelMana + 10 * spellId));
-    a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
+  auto str = StringPrintf(
+    "%s\n\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s",
+    pSpellStats->pInfos[spellId].pDescription, localization->GetString(431),        // "Normal"
+    v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc, localization->GetString(433),        // "Expert"
+    v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc, localization->GetString(432),        // "Master"
+    v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc, localization->GetString(96),         // "Grand"
+    v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc);
+  v6 = pFontSmallnum->CalcTextHeight(str, a1.uFrameWidth, 0);
+  a1.uFrameHeight += v6;
+  if (a1.uFrameHeight < 150) {
+    a1.uFrameHeight = 150;
+  }
+  a1.uFrameWidth = game_viewport_width;
+  a1.DrawMessageBox(0);
+  a1.uFrameWidth -= 12;
+  a1.uFrameHeight -= 12;
+  v7 = pSpellStats->pInfos[spellId].pName;
+  a1.uFrameZ = a1.uFrameX + a1.uFrameWidth - 1;
+  a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
+  v8 = Color16(0xFFu, 0xFFu, 0x9Bu);
+  a1.DrawTitleText(pFontArrus, 0x78u, 0xCu, v8, v7, 3u);
+  a1.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);
+  a1.uFrameZ = a1.uFrameX + 107;
+  a1.uFrameWidth = 108;
+  a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0, localization->GetSkillName(spellSchool / 4 + 12), 3u);
+
+  str = StringPrintf("%s\n%d", localization->GetString(522), *(&pSpellDatas[0].uNormalLevelMana + 10 * spellId));
+  a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
 }
 
 //----- (004B1D27) --------------------------------------------------------

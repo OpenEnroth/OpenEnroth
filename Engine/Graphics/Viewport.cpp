@@ -69,31 +69,33 @@ void Viewport::SetFOV(float field_of_view)
   SetScreen(uScreen_TL_X, uScreen_TL_Y, uScreen_BR_X, uScreen_BR_Y);
 }
 
-//----- (004C0312) --------------------------------------------------------
-void Viewport::SetViewport( signed int sTL_X, signed int sTL_Y, signed int sBR_X, signed int sBR_Y )
-    {
-    signed int tl_x; // ebx@1
-    signed int tl_y; // edi@3
-    signed int br_x; // edx@5
-    signed int br_y; // eax@7
+bool Viewport::Contains(unsigned int x, unsigned int y) {
+  return ((int)x >= uViewportTL_X && (int)x <= uViewportBR_X && (int)y >= uViewportTL_Y && (int)y <= uViewportBR_Y);
+}
 
-    tl_x = sTL_X;
-    if ( sTL_X < this->uScreen_TL_X )
-        tl_x = this->uScreen_TL_X;
-    tl_y = sTL_Y;
-    if ( sTL_Y < this->uScreen_TL_Y )
-        tl_y = this->uScreen_TL_Y;
-    br_x = sBR_X;
-    if ( sBR_X > this->uScreen_BR_X )
-        br_x = this->uScreen_BR_X;
-    br_y = sBR_Y;
-    if ( sBR_Y > this->uScreen_BR_Y )
-        br_y = this->uScreen_BR_Y;
-    this->uViewportTL_Y = tl_y;
-    this->uViewportTL_X = tl_x;
-    this->uViewportBR_X = br_x;
-    this->uViewportBR_Y = br_y;
-    }
+void Viewport::SetViewport(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {
+  int tl_x;
+  int tl_y;
+  int br_x;
+  int br_y;
+
+  tl_x = sTL_X;
+  if (sTL_X < this->uScreen_TL_X)
+    tl_x = this->uScreen_TL_X;
+  tl_y = sTL_Y;
+  if (sTL_Y < this->uScreen_TL_Y)
+    tl_y = this->uScreen_TL_Y;
+  br_x = sBR_X;
+  if (sBR_X > this->uScreen_BR_X)
+    br_x = this->uScreen_BR_X;
+  br_y = sBR_Y;
+  if (sBR_Y > this->uScreen_BR_Y)
+    br_y = this->uScreen_BR_Y;
+  this->uViewportTL_Y = tl_y;
+  this->uViewportTL_X = tl_x;
+  this->uViewportBR_X = br_x;
+  this->uViewportBR_Y = br_y;
+}
 
 //----- (00443219) --------------------------------------------------------
  void ViewingParams::_443219()

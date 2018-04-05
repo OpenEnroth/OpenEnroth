@@ -582,11 +582,11 @@ LABEL_47:
                   {
                     pAudioPlayer->StopChannels(-1, -1);
                     window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), 170, 0);
-                    window_SpeakInHouse->CreateButton( 61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1',  "", 0);
-                    window_SpeakInHouse->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2',  "", 0);
-                    window_SpeakInHouse->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3',  "", 0);
-                    window_SpeakInHouse->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4',  "", 0);
-                    window_SpeakInHouse->CreateButton(  0,   0,  0, 0, 1,  0, UIMSG_CycleCharacters, 0, '\t', "", 0);
+                    window_SpeakInHouse->CreateButton( 61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1',  "");
+                    window_SpeakInHouse->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2',  "");
+                    window_SpeakInHouse->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3',  "");
+                    window_SpeakInHouse->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4',  "");
+                    window_SpeakInHouse->CreateButton(  0,   0,  0, 0, 1,  0, UIMSG_CycleCharacters, 0, '\t', "");
                     current_npc_text = pNPCTopics[90].pText;
                   }
                 }
@@ -633,46 +633,25 @@ LABEL_47:
         }
         ++curr_seq_num;
         break;
-      case EVENT_MoveNPC:
-        {
+      case EVENT_MoveNPC: {
         pNPCStats->pNewNPCData[EVT_DWORD(_evt->v5)].Location2D =EVT_DWORD(_evt->v9);
-        if ( window_SpeakInHouse )
-          {
-
-          if ( window_SpeakInHouse->par1C == 165 )
-            {
+        if ( window_SpeakInHouse ) {
+          if ( window_SpeakInHouse->par1C == 165 ) {
             HouseDialogPressCloseBtn();
             pMediaPlayer->Unload();
             window_SpeakInHouse->Release();
             pParty->uFlags &= ~2;
             activeLevelDecoration = (LevelDecoration*)1;
-            if ( EnterHouse(HOUSE_BODY_GUILD_ERATHIA) )
-              {
+            if ( EnterHouse(HOUSE_BODY_GUILD_ERATHIA) ) {
               pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0, 0, 0);
               window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), 165, 0);
-              v48 = window_SpeakInHouse->pControlsHead;
-              if ( window_SpeakInHouse->pControlsHead )
-                {
-                do
-                  {
-                  v49 = v48->pNext;
-                  free(v48);
-                  v48 = v49;
-                  }
-                  while ( v49 );
-                }
-              window_SpeakInHouse->pControlsHead = 0;
-              window_SpeakInHouse->pControlsTail = 0;
-              window_SpeakInHouse->uNumControls = 0;
-              }
+              window_SpeakInHouse->DeleteButtons();
             }
-          else
-            {
+          } else {
             if ( window_SpeakInHouse->par1C == 553 )
               pMediaPlayer->bLoopPlaying = 0;
             }
           }
-
         }
         ++curr_seq_num;
         break;
@@ -1121,15 +1100,12 @@ LABEL_47:
             pAudioPlayer->PlaySound((SoundID)v106, 0, 0, -1, 0, 0, 0, 0);
             }
           }
-        else
-          {
+        else {
           pGameLoadingUI_ProgressBar->uType = (GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1);
           Transition_StopSound_Autosave(v99, MapStartPoint_Party);
           v133 = 1;
-          if ( current_screen_type == SCREEN_HOUSE )
-            {
-            if ( uGameState == GAME_STATE_CHANGE_LOCATION )
-              {
+          if ( current_screen_type == SCREEN_HOUSE ) {
+            if ( uGameState == GAME_STATE_CHANGE_LOCATION ) {
               pAudioPlayer->StopChannels(-1, -1);
               dialog_menu_id = HOUSE_DIALOGUE_NULL;
               while ( HouseDialogPressCloseBtn() )
@@ -1137,8 +1113,7 @@ LABEL_47:
               pMediaPlayer->Unload();
               window_SpeakInHouse->Release();
               window_SpeakInHouse = 0;
-              if ( pMessageQueue_50CBD0->uNumMessages )
-                pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
+              pMessageQueue_50CBD0->Flush();
               current_screen_type = SCREEN_GAME;
               viewparams->bRedrawGameUI = 1;
               pDialogueNPCCount = 0;
@@ -1146,11 +1121,11 @@ LABEL_47:
               dialog_menu_id = HOUSE_DIALOGUE_NULL;
               pDialogueWindow = 0;
               pIcons_LOD->SyncLoadedFilesCount();
-              }
+            }
             OnMapLeave();
             return;
-            }
           }
+        }
         ++curr_seq_num;
         break;
       case EVENT_PlaySound:
@@ -1178,12 +1153,12 @@ LABEL_47:
           v104 = 187;
           if ( uCurrentHouse_Animation != 167 )
             v104 = EVT_DWORD(_evt->v5);
-          window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), v104, 0);
-          window_SpeakInHouse->CreateButton( 61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1,  '1', "", 0);
-          window_SpeakInHouse->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2,  '2', "", 0);
-          window_SpeakInHouse->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3,  '3', "", 0);
-          window_SpeakInHouse->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4,  '4', "", 0);
-          window_SpeakInHouse->CreateButton(  0,   0,  0, 0, 1,  0, UIMSG_CycleCharacters, 0, '\t', "", 0);
+          window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), v104);
+          window_SpeakInHouse->CreateButton( 61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1,  '1', "");
+          window_SpeakInHouse->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2,  '2', "");
+          window_SpeakInHouse->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3,  '3', "");
+          window_SpeakInHouse->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4,  '4', "");
+          window_SpeakInHouse->CreateButton(  0,   0,  0, 0, 1,  0, UIMSG_CycleCharacters, 0, '\t', "");
           }
         ++curr_seq_num;
         break;

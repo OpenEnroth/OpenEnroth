@@ -2014,16 +2014,6 @@ void RenderOpenGL::WritePixel16(int x, int y, unsigned __int16 color)
     this->render_target_rgb[idx + 3] = 0xFF;
 }
 
-unsigned __int16 RenderOpenGL::ReadPixel16(int x, int y)
-{
-    int idx = 4 * (y * window->GetWidth() + x);
-    return Color16(
-        this->render_target_rgb[idx + 0],
-        this->render_target_rgb[idx + 1],
-        this->render_target_rgb[idx + 2]
-    );
-}
-
 void RenderOpenGL::UnlockSurface(Texture *texture)
 {
     __debugbreak();

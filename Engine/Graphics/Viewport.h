@@ -13,6 +13,7 @@ struct Viewport
     void SetScreen(int uX, int uY, int uZ, int uW);
     void SetFOV(float fov);
     void SetViewport(int uX, int uY, int uZ, int uW);
+    bool Contains(unsigned int x, unsigned int y);
 
 
     int uScreen_TL_X;

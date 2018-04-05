@@ -150,8 +150,7 @@ class Render : public IRender
         virtual HWLTexture *LoadHwlSprite(const char *name);
 
     public:
-        virtual void WritePixel16(int x, int y, unsigned __int16 color);
-        virtual unsigned __int16 ReadPixel16(int x, int y);
+        virtual void WritePixel16(int x, int y, uint16_t color);
 
         virtual void ToggleTint() { bTinting = !bTinting; }
         virtual void ToggleColoredLights() { bUseColoredLights = !bUseColoredLights; }

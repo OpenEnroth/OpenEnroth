@@ -23,7 +23,7 @@ Image *ui_book_townportal_background = nullptr;
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(const char *a1) :
     GUIWindow_Book()
 {
-    this->Hint = a1; // inherited from GUIWindow::GUIWindow
+    this->sHint = a1; // inherited from GUIWindow::GUIWindow
     this->ptr_1C = (void *)WINDOW_TownPortal; // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
@@ -44,7 +44,7 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(const char *a1) :
             pTownPortalBook_ys[i],
             pTownPortalBook_ws[i],
             pTownPortalBook_hs[i],
-            1, 182, UIMSG_ClickTownInTP, i, 0, "", nullptr
+            1, 182, UIMSG_ClickTownInTP, i, 0, ""
         );
 }
 

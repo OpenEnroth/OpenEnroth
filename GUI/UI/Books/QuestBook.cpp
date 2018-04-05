@@ -43,13 +43,13 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() :
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,
         ui_book_button1_on->GetWidth(), ui_book_button1_on->GetWidth(),
         1, 0, UIMSG_ClickBooksBtn, 0xBu, 0, localization->GetString(192),// "Scroll Up"
-        ui_book_button1_on, 0
+      { {ui_book_button1_on} }
     );
     pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38,
         ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(),
         1, 0, UIMSG_ClickBooksBtn, 0xAu, 0, localization->GetString(193),// "Scroll Down"
-        ui_book_button2_on, 0
+      { {ui_book_button2_on} }
     );
     num_achieved_awards = 0;
     memset(achieved_awards.data(), 0, 4000);
@@ -138,7 +138,7 @@ void GUIWindow_QuestBook::Update()
     {
         ++num_achieved_awards;
         questbook_window.DrawText(pAutonoteFont, 1, 0, ui_book_quests_text_color, pQuestTable[achieved_awards[i]], 0, 0, 0);
-        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[achieved_awards[i]], &questbook_window, 1);
+        pTextHeight = pAutonoteFont->CalcTextHeight(pQuestTable[achieved_awards[i]], questbook_window.uFrameWidth, 1);
         if ((signed int)(questbook_window.uFrameY + pTextHeight) > (signed int)questbook_window.uFrameHeight)
             break;
 

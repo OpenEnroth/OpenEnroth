@@ -433,7 +433,6 @@ class IRender
     unsigned int uNumBillboardsToDraw;
 
     virtual void WritePixel16(int x, int y, unsigned __int16 color) = 0;
-    virtual unsigned __int16 ReadPixel16(int x, int y) = 0;
 
     virtual void ToggleTint() = 0;
     virtual void ToggleColoredLights() = 0;

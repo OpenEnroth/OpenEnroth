@@ -118,55 +118,47 @@ Image *game_ui_playerbuff_preservation = nullptr;
 Image *game_ui_playerbuff_bless = nullptr;
 
 GUIWindow_GameMenu::GUIWindow_GameMenu() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-// -----------------------
-// GameMenuUI_Load -- part
-    game_ui_menu_options = assets->GetImage_16BitAlpha("options");
-    game_ui_menu_new = assets->GetImage_16BitAlpha("new1");
-    game_ui_menu_load = assets->GetImage_16BitAlpha("load1");
-    game_ui_menu_save = assets->GetImage_16BitAlpha("save1");
-    game_ui_menu_controls = assets->GetImage_16BitAlpha("controls1");
-    game_ui_menu_resume = assets->GetImage_16BitAlpha("resume1");
-    game_ui_menu_quit = assets->GetImage_16BitAlpha("quit1");
+  game_ui_menu_options = assets->GetImage_16BitAlpha("options");
+  game_ui_menu_new = assets->GetImage_16BitAlpha("new1");
+  game_ui_menu_load = assets->GetImage_16BitAlpha("load1");
+  game_ui_menu_save = assets->GetImage_16BitAlpha("save1");
+  game_ui_menu_controls = assets->GetImage_16BitAlpha("controls1");
+  game_ui_menu_resume = assets->GetImage_16BitAlpha("resume1");
+  game_ui_menu_quit = assets->GetImage_16BitAlpha("quit1");
 
-    pBtn_NewGame = CreateButton(
-        0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0, UIMSG_StartNewGame, 0, 0x4Eu,
-        localization->GetString(614),// "New Game"
-        game_ui_menu_new,
-        0
-    );
-    pBtn_SaveGame = CreateButton(
-        0x13u, 0xD1u, 0xD6u, 0x28u, 1, 0, UIMSG_Game_OpenSaveGameDialog, 0, 0x53u,
-        localization->GetString(615),// "Save Game"
-        game_ui_menu_save,
-        0
-    );
-    pBtn_LoadGame = CreateButton(
-        19, 263, 0xD6u, 0x28u, 1, 0, UIMSG_Game_OpenLoadGameDialog, 0, 0x4Cu,
-        localization->GetString(616),// "Load Game"
-        game_ui_menu_load,
-        0
-    );
-    pBtn_GameControls = CreateButton(
-        241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0x43u,
-        localization->GetString(617),// ""Sound, Keyboard, Game Options:""
-        game_ui_menu_controls,
-        0
-    );
-    pBtn_QuitGame = CreateButton(
-        241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, 0x51u,
-        localization->GetString(618),// "Quit"
-        game_ui_menu_quit,
-        0
-    );
-    pBtn_Resume = CreateButton(
-        241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, 0x52u,
-        localization->GetString(619),// "Return to Game"
-        game_ui_menu_resume,
-        0
-    );
-    _41D08F_set_keyboard_control_group(6, 1, 0, 0);
+  pBtn_NewGame = CreateButton(
+    0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0, UIMSG_StartNewGame, 0, 0x4Eu,
+    localization->GetString(614),// "New Game"
+    { { game_ui_menu_new } }
+  );
+  pBtn_SaveGame = CreateButton(
+    0x13u, 0xD1u, 0xD6u, 0x28u, 1, 0, UIMSG_Game_OpenSaveGameDialog, 0, 0x53u,
+    localization->GetString(615),// "Save Game"
+    { {game_ui_menu_save} }
+  );
+  pBtn_LoadGame = CreateButton(
+    19, 263, 0xD6u, 0x28u, 1, 0, UIMSG_Game_OpenLoadGameDialog, 0, 0x4Cu,
+    localization->GetString(616),// "Load Game"
+    { {game_ui_menu_load} }
+  );
+  pBtn_GameControls = CreateButton(
+    241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0x43u,
+    localization->GetString(617),// ""Sound, Keyboard, Game Options:""
+    { {game_ui_menu_controls} }
+  );
+  pBtn_QuitGame = CreateButton(
+    241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, 0x51u,
+    localization->GetString(618),// "Quit"
+    { {game_ui_menu_quit} }
+  );
+  pBtn_Resume = CreateButton(
+    241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, 0x52u,
+    localization->GetString(619),// "Return to Game"
+    { {game_ui_menu_resume} }
+  );
+  _41D08F_set_keyboard_control_group(6, 1, 0, 0);
 }
 
 void GUIWindow_GameMenu::Update()
@@ -253,46 +245,42 @@ static unsigned int GameMenuUI_GetKeyBindingColor(int key_index)
     return ui_gamemenu_keys_key_default_color;
 }
 
-
-
-GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings():
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings() :
+  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-// ------------------------------------------
-// GameMenuUI_OptionsKeymapping_Load --- part
-    game_ui_options_controls[0] = assets->GetImage_16BitColorKey("optkb", 0x7FF);
-    game_ui_options_controls[1] = assets->GetImage_16BitColorKey("optkb_h", 0x7FF);
-    game_ui_options_controls[2] = assets->GetImage_16BitColorKey("resume1", 0x7FF);
-    game_ui_options_controls[3] = assets->GetImage_16BitColorKey("optkb_1", 0x7FF);
-    game_ui_options_controls[4] = assets->GetImage_16BitColorKey("optkb_2", 0x7FF);
+  game_ui_options_controls[0] = assets->GetImage_16BitColorKey("optkb", 0x7FF);
+  game_ui_options_controls[1] = assets->GetImage_16BitColorKey("optkb_h", 0x7FF);
+  game_ui_options_controls[2] = assets->GetImage_16BitColorKey("resume1", 0x7FF);
+  game_ui_options_controls[3] = assets->GetImage_16BitColorKey("optkb_1", 0x7FF);
+  game_ui_options_controls[4] = assets->GetImage_16BitColorKey("optkb_2", 0x7FF);
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, "", 0);
+  CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, "");
 
-    CreateButton(19, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage1, 0, 0, "", 0);
-    CreateButton(127, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage2, 0, 0, "", 0);
-    CreateButton(127, 324, 108, 20, 1, 0, UIMSG_ResetKeyMapping, 0, 0, "", 0);
-    CreateButton(19, 324, 108, 20, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0, "", 0);
+  CreateButton(19, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage1, 0, 0, "");
+  CreateButton(127, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage2, 0, 0, "");
+  CreateButton(127, 324, 108, 20, 1, 0, UIMSG_ResetKeyMapping, 0, 0, "");
+  CreateButton(19, 324, 108, 20, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0, "");
 
-    CreateButton(129, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 0, 0, "", 0);
-    CreateButton(129, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 1, 0, "", 0);
-    CreateButton(129, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 2, 0, "", 0);
-    CreateButton(129, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 3, 0, "", 0);
-    CreateButton(129, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 4, 0, "", 0);
-    CreateButton(129, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 5, 0, "", 0);
-    CreateButton(129, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 6, 0, "", 0);
+  CreateButton(129, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 0, 0, "");
+  CreateButton(129, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 1, 0, "");
+  CreateButton(129, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 2, 0, "");
+  CreateButton(129, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 3, 0, "");
+  CreateButton(129, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 4, 0, "");
+  CreateButton(129, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 5, 0, "");
+  CreateButton(129, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 6, 0, "");
 
-    CreateButton(350, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 7, 0, "", 0);
-    CreateButton(350, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 8, 0, "", 0);
-    CreateButton(350, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 9, 0, "", 0);
-    CreateButton(350, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 10, 0, "", 0);
-    CreateButton(350, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 11, 0, "", 0);
-    CreateButton(350, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 12, 0, "", 0);
-    CreateButton(350, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 13, 0, "", 0);
+  CreateButton(350, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 7, 0, "");
+  CreateButton(350, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 8, 0, "");
+  CreateButton(350, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 9, 0, "");
+  CreateButton(350, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 10, 0, "");
+  CreateButton(350, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 11, 0, "");
+  CreateButton(350, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 12, 0, "");
+  CreateButton(350, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 13, 0, "");
 
-    uGameMenuUI_CurentlySelectedKeyIdx = -1;
-    KeyboardPageNum = 1;
-    memset(GameMenuUI_InvaligKeyBindingsFlags.data(), 0, sizeof(GameMenuUI_InvaligKeyBindingsFlags));
-    memcpy(pPrevVirtualCidesMapping.data(), pKeyActionMap->pVirtualKeyCodesMapping, 0x78u);
+  uGameMenuUI_CurentlySelectedKeyIdx = -1;
+  KeyboardPageNum = 1;
+  memset(GameMenuUI_InvaligKeyBindingsFlags.data(), 0, sizeof(GameMenuUI_InvaligKeyBindingsFlags));
+  memcpy(pPrevVirtualCidesMapping.data(), pKeyActionMap->pVirtualKeyCodesMapping, 0x78u);
 }
 
 //----- (004142D3) --------------------------------------------------------
@@ -397,7 +385,7 @@ void GUIWindow_GameKeyBindings::Update()
 
 
 GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
 // -------------------------------------
 // GameMenuUI_OptionsVideo_Load --- part
@@ -420,12 +408,12 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions() :
     //not_available_us_colored_lights_texture_id = pIcons_LOD->LoadTexture("opvdG-cl", TEXTURE_16BIT_PALETTE);
     //not_available_tinting_texture_id = pIcons_LOD->LoadTexture("opvdG-tn", TEXTURE_16BIT_PALETTE);
 
-    CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0, 0, "", 0);
+    CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0, 0, "");
     //if ( render->pRenderD3D )
     {
-        CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats, 0, 0, "", 0);
-        CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleColoredLights, 0, 0, "", 0);
-        CreateButton(0x13u, 0x144u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleTint, 0, 0, "", 0);
+        CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats, 0, 0, "");
+        CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleColoredLights, 0, 0, "");
+        CreateButton(0x13u, 0x144u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleTint, 0, 0, "");
     }
 }
 
@@ -519,145 +507,124 @@ void OptionsMenuSkin::Relaease()
 #undef RELEASE
 }
 
-
 GUIWindow_GameOptions::GUIWindow_GameOptions() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-// GameMenuUI_Options_Load -- part
-    options_menu_skin.uTextureID_Background = assets->GetImage_16BitColorKey("ControlBG", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_16BitColorKey("con_16x", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_16BitColorKey("con_32x", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[0] = assets->GetImage_16BitColorKey("con_Smoo", 0x7FF);
-    options_menu_skin.uTextureID_ArrowLeft = assets->GetImage_16BitAlpha("con_ArrL");
-    options_menu_skin.uTextureID_ArrowRight = assets->GetImage_16BitAlpha("con_ArrR");
-    options_menu_skin.uTextureID_SoundLevels[0] = assets->GetImage_16BitColorKey("convol10", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[1] = assets->GetImage_16BitColorKey("convol20", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[2] = assets->GetImage_16BitColorKey("convol30", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[3] = assets->GetImage_16BitColorKey("convol40", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[4] = assets->GetImage_16BitColorKey("convol50", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[5] = assets->GetImage_16BitColorKey("convol60", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[6] = assets->GetImage_16BitColorKey("convol70", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[7] = assets->GetImage_16BitColorKey("convol80", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[8] = assets->GetImage_16BitColorKey("convol90", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[9] = assets->GetImage_16BitColorKey("convol00", 0x7FF);
-    options_menu_skin.uTextureID_FlipOnExit = assets->GetImage_16BitColorKey("option04", 0x7FF);
-    options_menu_skin.uTextureID_AlwaysRun = assets->GetImage_16BitColorKey("option03", 0x7FF);
-    options_menu_skin.uTextureID_ShowDamage = assets->GetImage_16BitColorKey("option02", 0x7FF);
-    options_menu_skin.uTextureID_WalkSound = assets->GetImage_16BitColorKey("option01", 0x7FF);
+  options_menu_skin.uTextureID_Background = assets->GetImage_16BitColorKey("ControlBG", 0x7FF);
+  options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_16BitColorKey("con_16x", 0x7FF);
+  options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_16BitColorKey("con_32x", 0x7FF);
+  options_menu_skin.uTextureID_TurnSpeed[0] = assets->GetImage_16BitColorKey("con_Smoo", 0x7FF);
+  options_menu_skin.uTextureID_ArrowLeft = assets->GetImage_16BitAlpha("con_ArrL");
+  options_menu_skin.uTextureID_ArrowRight = assets->GetImage_16BitAlpha("con_ArrR");
+  options_menu_skin.uTextureID_SoundLevels[0] = assets->GetImage_16BitColorKey("convol10", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[1] = assets->GetImage_16BitColorKey("convol20", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[2] = assets->GetImage_16BitColorKey("convol30", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[3] = assets->GetImage_16BitColorKey("convol40", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[4] = assets->GetImage_16BitColorKey("convol50", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[5] = assets->GetImage_16BitColorKey("convol60", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[6] = assets->GetImage_16BitColorKey("convol70", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[7] = assets->GetImage_16BitColorKey("convol80", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[8] = assets->GetImage_16BitColorKey("convol90", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[9] = assets->GetImage_16BitColorKey("convol00", 0x7FF);
+  options_menu_skin.uTextureID_FlipOnExit = assets->GetImage_16BitColorKey("option04", 0x7FF);
+  options_menu_skin.uTextureID_AlwaysRun = assets->GetImage_16BitColorKey("option03", 0x7FF);
+  options_menu_skin.uTextureID_ShowDamage = assets->GetImage_16BitColorKey("option02", 0x7FF);
+  options_menu_skin.uTextureID_WalkSound = assets->GetImage_16BitColorKey("option01", 0x7FF);
 
-    CreateButton(22, 270,
-        options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(),
-        options_menu_skin.uTextureID_TurnSpeed[2]->GetHeight(),
-        1, 0, UIMSG_SetTurnSpeed, 0x80, 0, "", 0);
-    CreateButton(93, 270,
-        options_menu_skin.uTextureID_TurnSpeed[1]->GetWidth(),
-        options_menu_skin.uTextureID_TurnSpeed[1]->GetHeight(),
-        1, 0, UIMSG_SetTurnSpeed, 0x40u, 0, "", 0);
-    CreateButton(164, 270,
-        options_menu_skin.uTextureID_TurnSpeed[0]->GetWidth(),
-        options_menu_skin.uTextureID_TurnSpeed[0]->GetHeight(),
-        1, 0, UIMSG_SetTurnSpeed, 0, 0, "", 0);
+  CreateButton(22, 270,
+    options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(),
+    options_menu_skin.uTextureID_TurnSpeed[2]->GetHeight(),
+    1, 0, UIMSG_SetTurnSpeed, 0x80, 0, "");
+  CreateButton(93, 270,
+    options_menu_skin.uTextureID_TurnSpeed[1]->GetWidth(),
+    options_menu_skin.uTextureID_TurnSpeed[1]->GetHeight(),
+    1, 0, UIMSG_SetTurnSpeed, 0x40u, 0, "");
+  CreateButton(164, 270,
+    options_menu_skin.uTextureID_TurnSpeed[0]->GetWidth(),
+    options_menu_skin.uTextureID_TurnSpeed[0]->GetHeight(),
+    1, 0, UIMSG_SetTurnSpeed, 0, 0, "");
 
-    CreateButton(20, 303,
-        options_menu_skin.uTextureID_WalkSound->GetWidth(),
-        options_menu_skin.uTextureID_WalkSound->GetHeight(),
-        1, 0, UIMSG_ToggleWalkSound, 0, 0, "", 0);
-    CreateButton(128, 303,
-        options_menu_skin.uTextureID_ShowDamage->GetWidth(),
-        options_menu_skin.uTextureID_ShowDamage->GetHeight(),
-        1, 0, UIMSG_ToggleShowDamage, 0, 0, "", 0);
-    CreateButton(20, 325,
-        options_menu_skin.uTextureID_AlwaysRun->GetWidth(),
-        options_menu_skin.uTextureID_AlwaysRun->GetHeight(),
-        1, 0, UIMSG_ToggleAlwaysRun, 0, 0, "", 0);
-    CreateButton(128, 325,
-        options_menu_skin.uTextureID_FlipOnExit->GetWidth(),
-        options_menu_skin.uTextureID_FlipOnExit->GetHeight(),
-        1, 0, UIMSG_ToggleFlipOnExit, 0, 0, "", 0);
+  CreateButton(20, 303,
+    options_menu_skin.uTextureID_WalkSound->GetWidth(),
+    options_menu_skin.uTextureID_WalkSound->GetHeight(),
+    1, 0, UIMSG_ToggleWalkSound, 0, 0, "");
+  CreateButton(128, 303,
+    options_menu_skin.uTextureID_ShowDamage->GetWidth(),
+    options_menu_skin.uTextureID_ShowDamage->GetHeight(),
+    1, 0, UIMSG_ToggleShowDamage, 0, 0, "");
+  CreateButton(20, 325,
+    options_menu_skin.uTextureID_AlwaysRun->GetWidth(),
+    options_menu_skin.uTextureID_AlwaysRun->GetHeight(),
+    1, 0, UIMSG_ToggleAlwaysRun, 0, 0, "");
+  CreateButton(128, 325,
+    options_menu_skin.uTextureID_FlipOnExit->GetWidth(),
+    options_menu_skin.uTextureID_FlipOnExit->GetHeight(),
+    1, 0, UIMSG_ToggleFlipOnExit, 0, 0, "");
 
-    pBtn_SliderLeft = CreateButton(243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, 0, "", options_menu_skin.uTextureID_ArrowLeft, 0);
-    pBtn_SliderRight = CreateButton(435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, 0, "", options_menu_skin.uTextureID_ArrowRight, 0);
-    CreateButton(263, 162, 172, 17, 1, 0, UIMSG_ChangeSoundVolume, 0, 0, "", 0);
+  pBtn_SliderLeft = CreateButton(243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, 0, "", { { options_menu_skin.uTextureID_ArrowLeft } });
+  pBtn_SliderRight = CreateButton(435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, 0, "", { { options_menu_skin.uTextureID_ArrowRight } });
+  CreateButton(263, 162, 172, 17, 1, 0, UIMSG_ChangeSoundVolume, 0, 0, "");
 
-    pBtn_SliderLeft = CreateButton(243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, 0, "", options_menu_skin.uTextureID_ArrowLeft, 0);
-    pBtn_SliderRight = CreateButton(435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, 0, "", options_menu_skin.uTextureID_ArrowRight, 0);
-    CreateButton(263, 216, 172, 17, 1, 0, UIMSG_ChangeMusicVolume, 0, 0, "", 0);
+  pBtn_SliderLeft = CreateButton(243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, 0, "", { { options_menu_skin.uTextureID_ArrowLeft } });
+  pBtn_SliderRight = CreateButton(435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, 0, "", { { options_menu_skin.uTextureID_ArrowRight } });
+  CreateButton(263, 216, 172, 17, 1, 0, UIMSG_ChangeMusicVolume, 0, 0, "");
 
-    pBtn_SliderLeft = CreateButton(243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, 0, "", options_menu_skin.uTextureID_ArrowLeft, 0);
-    pBtn_SliderRight = CreateButton(435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, 0, "", options_menu_skin.uTextureID_ArrowRight, 0);
-    CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0, 0, "", 0);
+  pBtn_SliderLeft = CreateButton(243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, 0, "", { { options_menu_skin.uTextureID_ArrowLeft } });
+  pBtn_SliderRight = CreateButton(435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, 0, "", { { options_menu_skin.uTextureID_ArrowRight } });
+  CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0, 0, "");
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(619), 0); // "Return to Game"
-    CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, 0x4Bu, "", 0);
-    CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, 86, "", 0);
+  CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(619));  // "Return to Game"
+  CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, 0x4Bu, "");
+  CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, 86, "");
 }
 
+void GUIWindow_GameOptions::Update() {
+  render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, game_ui_menu_options);
+  render->DrawTextureAlphaNew(8 / 640.0f, 132 / 480.0f, options_menu_skin.uTextureID_Background);
 
+  switch (uTurnSpeed) {
+    case 64:
+      render->DrawTextureAlphaNew(BtnTurnCoord[1] / 640.0f, 270 / 480.0f, options_menu_skin.uTextureID_TurnSpeed[1]); break;
+    case 128:
+      render->DrawTextureAlphaNew(BtnTurnCoord[2] / 640.0f, 270 / 480.0f, options_menu_skin.uTextureID_TurnSpeed[2]); break;
+    default:
+      render->DrawTextureAlphaNew(BtnTurnCoord[0] / 640.0f, 270 / 480.0f, options_menu_skin.uTextureID_TurnSpeed[0]); break;
+  }
 
+  if (bWalkSound)  render->DrawTextureAlphaNew(20 / 640.0f, 303 / 480.0f, options_menu_skin.uTextureID_WalkSound);
+  if (bShowDamage) render->DrawTextureAlphaNew(128 / 640.0f, 303 / 480.0f, options_menu_skin.uTextureID_ShowDamage);
+  if (bFlipOnExit) render->DrawTextureAlphaNew(128 / 640.0f, 325 / 480.0f, options_menu_skin.uTextureID_FlipOnExit);
+  if (bAlwaysRun)  render->DrawTextureAlphaNew(20 / 640.0f, 325 / 480.0f, options_menu_skin.uTextureID_AlwaysRun);
 
-//----- (00414F82) --------------------------------------------------------
-void GUIWindow_GameOptions::Update()
-{
-// -----------------------------------
-// 004156F0 GUI_UpdateWindows --- part
-    render->DrawTextureAlphaNew(8/640.0f, 8/480.0f, game_ui_menu_options);
-    render->DrawTextureAlphaNew(8/640.0f, 132/480.0f, options_menu_skin.uTextureID_Background);
-
-    switch (uTurnSpeed)
-    {
-        case 64:   render->DrawTextureAlphaNew(BtnTurnCoord[1]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[1]); break;
-        case 128:  render->DrawTextureAlphaNew(BtnTurnCoord[2]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[2]); break;
-        default:   render->DrawTextureAlphaNew(BtnTurnCoord[0]/640.0f, 270/480.0f, options_menu_skin.uTextureID_TurnSpeed[0]); break;
-    }
-
-    if (bWalkSound)  render->DrawTextureAlphaNew(20/640.0f, 303/480.0f, options_menu_skin.uTextureID_WalkSound);
-    if (bShowDamage) render->DrawTextureAlphaNew(128/640.0f, 303/480.0f, options_menu_skin.uTextureID_ShowDamage);
-    if (bFlipOnExit) render->DrawTextureAlphaNew(128/640.0f, 325/480.0f, options_menu_skin.uTextureID_FlipOnExit);
-    if (bAlwaysRun)  render->DrawTextureAlphaNew(20/640.0f, 325/480.0f, options_menu_skin.uTextureID_AlwaysRun);
-
-    render->DrawTextureAlphaNew((265 + 17 * uSoundVolumeMultiplier)/640.0f, 162/480.0f, options_menu_skin.uTextureID_SoundLevels[uSoundVolumeMultiplier]);
-    render->DrawTextureAlphaNew((265 + 17 * uMusicVolimeMultiplier)/640.0f, 216/480.0f, options_menu_skin.uTextureID_SoundLevels[uMusicVolimeMultiplier]);
-    render->DrawTextureAlphaNew((265 + 17 * uVoicesVolumeMultiplier)/640.0f, 270/480.0f, options_menu_skin.uTextureID_SoundLevels[uVoicesVolumeMultiplier]);
+  render->DrawTextureAlphaNew((265 + 17 * uSoundVolumeMultiplier) / 640.0f, 162 / 480.0f, options_menu_skin.uTextureID_SoundLevels[uSoundVolumeMultiplier]);
+  render->DrawTextureAlphaNew((265 + 17 * uMusicVolimeMultiplier) / 640.0f, 216 / 480.0f, options_menu_skin.uTextureID_SoundLevels[uMusicVolimeMultiplier]);
+  render->DrawTextureAlphaNew((265 + 17 * uVoicesVolumeMultiplier) / 640.0f, 270 / 480.0f, options_menu_skin.uTextureID_SoundLevels[uVoicesVolumeMultiplier]);
 }
 
-
-
-
-
-
-
-
-
-
-//----- (00421D00) --------------------------------------------------------
-void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID)
-{
+void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
   Player* player = &pParty->pPlayers[uPlayerID - 1];
-  if (pParty->pPickedItem.uItemID)
-  {
-    if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID))
-    {
-      memcpy(&player->pInventoryItemList[slot-1], &pParty->pPickedItem, 0x24u);
+  if (pParty->pPickedItem.uItemID) {
+    if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID)) {
+      memcpy(&player->pInventoryItemList[slot - 1], &pParty->pPickedItem, 0x24u);
       viewparams->bRedrawGameUI = true;
       pMouse->RemoveHoldingItem();
       return;
     }
 
-    if (!player->CanAct())
-    {
+    if (!player->CanAct()) {
       player = pPlayers[uActiveCharacter];
     }
-    if( player->CanAct() || !pPlayers[uActiveCharacter]->CanAct() )
+    if (player->CanAct() || !pPlayers[uActiveCharacter]->CanAct()) {
       player->PlaySound(SPEECH_NoRoom, 0);
+    }
   }
 
-  if (current_screen_type == SCREEN_GAME)
-  {
+  if (current_screen_type == SCREEN_GAME) {
     viewparams->bRedrawGameUI = true;
-    if ( uActiveCharacter != uPlayerID )
-    {
-      if ( pPlayers[uPlayerID]->uTimeToRecovery )
+    if (uActiveCharacter != uPlayerID) {
+      if (pPlayers[uPlayerID]->uTimeToRecovery) {
         return;
+      }
 
       uActiveCharacter = uPlayerID;
       return;
@@ -665,61 +632,57 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID)
     pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(uActiveCharacter, SCREEN_CHARACTERS);//CharacterUI_Initialize(SCREEN_CHARACTERS);
     return;
   }
-  if ( current_screen_type == SCREEN_SPELL_BOOK )
+  if (current_screen_type == SCREEN_SPELL_BOOK)
     return;
-  if ( current_screen_type == SCREEN_CHEST )
-  {
+  if (current_screen_type == SCREEN_CHEST) {
     viewparams->bRedrawGameUI = true;
-    if ( uActiveCharacter == uPlayerID )
-    {
-        current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+    if (uActiveCharacter == uPlayerID) {
+      current_character_screen_window = WINDOW_CharacterWindow_Inventory;
       current_screen_type = SCREEN_CHEST_INVENTORY;
       uActiveCharacter = uPlayerID;
       return;
     }
-    if ( pPlayers[uPlayerID]->uTimeToRecovery )
+    if (pPlayers[uPlayerID]->uTimeToRecovery) {
       return;
+    }
     uActiveCharacter = uPlayerID;
     return;
   }
-  if ( current_screen_type != SCREEN_HOUSE )
-  {
-    if ( current_screen_type == SCREEN_E )
-    {
+  if (current_screen_type != SCREEN_HOUSE) {
+    if (current_screen_type == SCREEN_E) {
       uActiveCharacter = uPlayerID;
       return;
     }
-    if ( current_screen_type != SCREEN_CHEST_INVENTORY )
-    {
+    if (current_screen_type != SCREEN_CHEST_INVENTORY) {
       viewparams->bRedrawGameUI = true;
       uActiveCharacter = uPlayerID;
-      if (current_character_screen_window == WINDOW_CharacterWindow_Awards)
+      if (current_character_screen_window == WINDOW_CharacterWindow_Awards) {
         FillAwardsData();
+      }
       return;
     }
     viewparams->bRedrawGameUI = true;
-    if ( uActiveCharacter == uPlayerID )
-    {
-        current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+    if (uActiveCharacter == uPlayerID) {
+      current_character_screen_window = WINDOW_CharacterWindow_Inventory;
       current_screen_type = SCREEN_CHEST_INVENTORY;
       uActiveCharacter = uPlayerID;
       return;
     }
-    if ( pPlayers[uPlayerID]->uTimeToRecovery )
+    if (pPlayers[uPlayerID]->uTimeToRecovery) {
       return;
+    }
     uActiveCharacter = uPlayerID;
     return;
   }
-  if ( window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
+  if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS) {
     return;
+  }
   viewparams->bRedrawGameUI = true;
-  if ( uActiveCharacter != uPlayerID )
-  {
+  if (uActiveCharacter != uPlayerID) {
     uActiveCharacter = uPlayerID;
     return;
   }
-  if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == HOUSE_DIALOGUE_SHOP_6)
-  {
+  if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD || dialog_menu_id == HOUSE_DIALOGUE_SHOP_6) {
     __debugbreak(); // fix indexing
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(uActiveCharacter, SCREEN_E);//CharacterUI_Initialize(SCREEN_E);
@@ -727,111 +690,108 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID)
   }
 }
 
-//----- (00416B01) --------------------------------------------------------
 void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
 {
-    int v1; // edi@2
-    NPCData *pNPC; // eax@16
-    const char *pText; // eax@18
-    GUIWindow popup_window; // [sp+Ch] [bp-60h]@23
-    int a2; // [sp+60h] [bp-Ch]@16
-    const char *lpsz; // [sp+68h] [bp-4h]@6
+  int v1; // edi@2
+  NPCData *pNPC; // eax@16
+  const char *pText; // eax@18
+  GUIWindow popup_window; // [sp+Ch] [bp-60h]@23
+  int a2; // [sp+60h] [bp-Ch]@16
+  const char *lpsz; // [sp+68h] [bp-4h]@6
 
-    char buf[4096];
-    if (bNoNPCHiring != 1)
+  char buf[4096];
+  if (bNoNPCHiring != 1)
+  {
+    v1 = 0;
+    /*do
     {
-        v1 = 0;
-        /*do
-        {
-          if ( v3->pName )
-            tmp_str[v1++] = v2;
-          ++v3;
-          ++v2;
-        }
-        while ( (signed int)v3 < (signed int)&pParty->pPickedItem );*/
-        for (int i = 0; i < 2; ++i)
-        {
-            if (pParty->pHirelings[i].pName)
-                buf[v1++] = i;
-        }
-        lpsz = 0;
-        if ((signed int)pNPCStats->uNumNewNPCs > 0)
-        {
-            /*v4 = pNPCStats->pNewNPCData;
-            do
-            {
-              if ( v4->uFlags & 0x80
-                && (!pParty->pHirelings[0].pName || strcmp(v4->pName, pParty->pHirelings[0].pName))
-                && (!pParty->pHirelings[1].pName || strcmp(v4->pName, pParty->pHirelings[1].pName)) )
-                tmp_str[v1++] = (char)lpsz + 2;
-              ++lpsz;
-              ++v4;
-            }
-            while ( (signed int)lpsz < (signed int)pNPCStats->uNumNewNPCs );*/
-            for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i)
-            {
-                if (pNPCStats->pNewNPCData[i].Hired())
-                {
-                    if (!pParty->pHirelings[0].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[0].pName))
-                    {
-                        if (!pParty->pHirelings[1].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[1].pName))
-                            buf[v1++] = i + 2;
-                    }
-                }
-            }
-        }
-        if ((signed int)((char *)_this + pParty->hirelingScrollPosition) < v1)
-        {
-            sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - (int)_this;
-            pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
-            if (pNPC)
-            {
-                if (a2 == 57)
-                    pText = pNPCTopics[512].pText; // Baby dragon
-                else
-                    pText = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pBenefits;
-                lpsz = pText;
-                if (!pText)
-                {
-                    lpsz = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pJoinText;
-                    if (!lpsz)
-                        lpsz = "";
-                }
-                popup_window.Hint = nullptr;
-                popup_window.uFrameX = 38;
-                popup_window.uFrameY = 60;
-                popup_window.uFrameWidth = 276;
-                popup_window.uFrameZ = 313;
-                popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, &popup_window, 0) + 2 * pFontArrus->GetHeight() + 24;
-                if ((signed int)popup_window.uFrameHeight < 130)
-                    popup_window.uFrameHeight = 130;
-                popup_window.uFrameWidth = 400;
-                popup_window.uFrameZ = popup_window.uFrameX + 399;
-                popup_window.DrawMessageBox(0);
-
-                auto tex_name = StringPrintf("NPC%03d", pNPC->uPortraitID);
-                render->DrawTextureAlphaNew(
-                    (popup_window.uFrameX + 22) / 640.0f,
-                    (popup_window.uFrameY + 36) / 480.0f,
-                    assets->GetImage_16BitColorKey(tex_name, 0x7FF)
-                    );
-
-                String title;
-                if (pNPC->uProfession)
-                {
-                    title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));
-                }
-                else
-                {
-                    title = pNPC->pName;
-                }
-                popup_window.DrawTitleText(pFontArrus, 0, 12, Color16(0xFFu, 0xFFu, 0x9Bu), title, 3);
-                popup_window.uFrameWidth -= 24;
-                popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(pFontArrus, 100, 36, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
-            }
-        }
+    if ( v3->pName )
+    tmp_str[v1++] = v2;
+    ++v3;
+    ++v2;
     }
+    while ( (signed int)v3 < (signed int)&pParty->pPickedItem );*/
+    for (int i = 0; i < 2; ++i)
+    {
+      if (pParty->pHirelings[i].pName)
+        buf[v1++] = i;
+    }
+    lpsz = 0;
+    if ((signed int)pNPCStats->uNumNewNPCs > 0)
+    {
+      /*v4 = pNPCStats->pNewNPCData;
+      do
+      {
+      if ( v4->uFlags & 0x80
+      && (!pParty->pHirelings[0].pName || strcmp(v4->pName, pParty->pHirelings[0].pName))
+      && (!pParty->pHirelings[1].pName || strcmp(v4->pName, pParty->pHirelings[1].pName)) )
+      tmp_str[v1++] = (char)lpsz + 2;
+      ++lpsz;
+      ++v4;
+      }
+      while ( (signed int)lpsz < (signed int)pNPCStats->uNumNewNPCs );*/
+      for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i)
+      {
+        if (pNPCStats->pNewNPCData[i].Hired())
+        {
+          if (!pParty->pHirelings[0].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[0].pName))
+          {
+            if (!pParty->pHirelings[1].pName || strcmp((char *)pNPCStats->pNewNPCData[i].pName, (char *)pParty->pHirelings[1].pName))
+              buf[v1++] = i + 2;
+          }
+        }
+      }
+    }
+    if ((signed int)((char *)_this + pParty->hirelingScrollPosition) < v1) {
+      sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - (int)_this;
+      pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
+      if (pNPC) {
+        if (a2 == 57)
+          pText = pNPCTopics[512].pText; // Baby dragon
+        else
+          pText = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pBenefits;
+        lpsz = pText;
+        if (!pText)
+        {
+          lpsz = (const char *)pNPCStats->pProfessions[pNPC->uProfession].pJoinText;
+          if (!lpsz)
+            lpsz = "";
+        }
+        popup_window.sHint.clear();
+        popup_window.uFrameX = 38;
+        popup_window.uFrameY = 60;
+        popup_window.uFrameWidth = 276;
+        popup_window.uFrameZ = 313;
+        popup_window.uFrameHeight = pFontArrus->CalcTextHeight(lpsz, popup_window.uFrameWidth, 0) + 2 * pFontArrus->GetHeight() + 24;
+        if ((signed int)popup_window.uFrameHeight < 130)
+          popup_window.uFrameHeight = 130;
+        popup_window.uFrameWidth = 400;
+        popup_window.uFrameZ = popup_window.uFrameX + 399;
+        popup_window.DrawMessageBox(0);
+
+        auto tex_name = StringPrintf("NPC%03d", pNPC->uPortraitID);
+        render->DrawTextureAlphaNew(
+          (popup_window.uFrameX + 22) / 640.0f,
+          (popup_window.uFrameY + 36) / 480.0f,
+          assets->GetImage_16BitColorKey(tex_name, 0x7FF)
+        );
+
+        String title;
+        if (pNPC->uProfession)
+        {
+          title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));
+        }
+        else
+        {
+          title = pNPC->pName;
+        }
+        popup_window.DrawTitleText(pFontArrus, 0, 12, Color16(0xFFu, 0xFFu, 0x9Bu), title, 3);
+        popup_window.uFrameWidth -= 24;
+        popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
+        popup_window.DrawText(pFontArrus, 100, 36, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
+      }
+    }
+  }
 }
 
 //----- (00445D4A) --------------------------------------------------------
@@ -921,15 +881,15 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
             pNPCInfo->uProfession == 52       //Fallen Wizard
         )
         {
-            pDialogueWindow->CreateButton(480, 250, 140, pFontArrus->GetHeight() - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "", 0);
+            pDialogueWindow->CreateButton(480, 250, 140, pFontArrus->GetHeight() - 3, 1, 0, UIMSG_SelectNPCDialogueOption, 9, 0, "");
             pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
         }
     }
 
-    pDialogueWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
-    pDialogueWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-    pDialogueWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-    pDialogueWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
+    pDialogueWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
+    pDialogueWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
+    pDialogueWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
+    pDialogueWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
 
     if (bPlayerSaysHello && uActiveCharacter && !pNPCInfo->Hired())
     {
@@ -943,289 +903,267 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
 //----- (00445350) --------------------------------------------------------
 void GameUI_DrawDialogue()
 {
-    NPCData *pNPC; // ebx@2
-    int pGreetType; // eax@2
-    int pTextHeight; // esi@39
-    GUIButton *pButton; // eax@43
-    int all_text_height; // ebx@93
-    signed int index; // esi@99
-    int v42; // edi@102
-    int v45;
-    unsigned __int16 pTextColor; // ax@104
-    GUIWindow window; // [sp+ACh] [bp-68h]@42
-  //  GUIFont *pOutString; // [sp+10Ch] [bp-8h]@39
+  NPCData *pNPC; // ebx@2
+  int pGreetType; // eax@2
+  int pTextHeight; // esi@39
+  GUIButton *pButton; // eax@43
+  int all_text_height; // ebx@93
+  signed int index; // esi@99
+  int v42; // edi@102
+  int v45;
+  unsigned __int16 pTextColor; // ax@104
 
-    if (!pDialogueWindow)
-        return;
+  if (!pDialogueWindow)
+    return;
 
-    // Window title(Заголовок окна)----
-    memcpy(&window, pDialogueWindow, sizeof(window));
-    pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
-    window.uFrameWidth -= 10;
-    window.uFrameZ -= 10;
-    render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
-    render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
-    render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[0]);
+  // Window title(Заголовок окна)----
+  GUIWindow window = *pDialogueWindow;
+  pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+  pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
+  window.uFrameWidth -= 10;
+  window.uFrameZ -= 10;
+  render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
+  render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
+  render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f, (pNPCPortraits_y[0][0] - 4) / 480.0f, game_ui_evtnpc);
+  render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, pDialogueNPCPortraits[0]);
 
-    String title;
-    if (pNPC->uProfession)
-    {
-        assert(pNPC->uProfession < 59); // sometimes buffer overflows; errors emerge both here and in dialogue text
-        title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));//^Pi[%s] %s
-    }
-    else if (pNPC->pName)
-        title = pNPC->pName;
+  String title;
+  if (pNPC->uProfession) {
+    assert(pNPC->uProfession < 59); // sometimes buffer overflows; errors emerge both here and in dialogue text
+    title = localization->FormatString(429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession));//^Pi[%s] %s
+  } else if (pNPC->pName) {
+    title = pNPC->pName;
+  }
 
-    window.DrawTitleText(pFontArrus, 483, 112, ui_game_dialogue_npc_name_color, title, 3);
+  window.DrawTitleText(pFontArrus, 483, 112, ui_game_dialogue_npc_name_color, title, 3);
 
-    pParty->GetPartyFame();
+  pParty->GetPartyFame();
 
-    String dialogue_string;
-    switch (uDialogueType)
-    {
-    case DIALOGUE_13:
-        dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
-        break;
-
-    case DIALOGUE_PROFESSION_DETAILS:
-    {
-        //auto prof = pNPCStats->pProfessions[pNPC->uProfession];
-
-        if (dialogue_show_profession_details)
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0);
-        else if (pNPC->Hired())
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pDismissText, uActiveCharacter - 1, 0, 0, 0);
-        else
-            dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
-    }
+  String dialogue_string;
+  switch (uDialogueType)
+  {
+  case DIALOGUE_13:
+    dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
     break;
 
-    case DIALOGUE_ARENA_WELCOME:
-        dialogue_string = localization->GetString(574); // "Welcome to the Arena of Life and Death.  Remember, you are only allowed one arena combat per visit.  To fight an arena battle, select the option that best describes your abilities and return to me- if you survive:"
-        break;
+  case DIALOGUE_PROFESSION_DETAILS:
+  {
+    //auto prof = pNPCStats->pProfessions[pNPC->uProfession];
 
-    case DIALOGUE_ARENA_FIGHT_NOT_OVER_YET:
-        dialogue_string = localization->GetString(577); //"Get back in there you wimps:"
-        break;
+    if (dialogue_show_profession_details)
+      dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0);
+    else if (pNPC->Hired())
+      dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pDismissText, uActiveCharacter - 1, 0, 0, 0);
+    else
+      dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
+  }
+  break;
 
-    case DIALOGUE_ARENA_REWARD:
-        dialogue_string = localization->FormatString(576, gold_transaction_amount);// "Congratulations on your win: here's your stuff: %u gold."
-        break;
+  case DIALOGUE_ARENA_WELCOME:
+    dialogue_string = localization->GetString(574); // "Welcome to the Arena of Life and Death.  Remember, you are only allowed one arena combat per visit.  To fight an arena battle, select the option that best describes your abilities and return to me- if you survive:"
+    break;
 
-    case DIALOGUE_ARENA_ALREADY_WON:
-        dialogue_string = localization->GetString(582); // "You already won this trip to the Arena:"
-        break;
+  case DIALOGUE_ARENA_FIGHT_NOT_OVER_YET:
+    dialogue_string = localization->GetString(577); //"Get back in there you wimps:"
+    break;
 
-    default:
-        if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E && !byte_5B0938[0])
-        {
-            dialogue_string = current_npc_text;
-        }
-        else if (pGreetType == 1)//QuestNPC_greet
-        {
-            if (pNPC->greet)
-            {
-                if ((pNPC->uFlags & 3) == 2)
-                    dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
-                else
-                    dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
-            }
-        }
-        else if (pGreetType == 2)//HiredNPC_greet
-        {
-            NPCProfession* prof = &pNPCStats->pProfessions[pNPC->uProfession];
+  case DIALOGUE_ARENA_REWARD:
+    dialogue_string = localization->FormatString(576, gold_transaction_amount);// "Congratulations on your win: here's your stuff: %u gold."
+    break;
 
-            if (pNPC->Hired())
-                dialogue_string = BuildDialogueString(prof->pDismissText, uActiveCharacter - 1, 0, 0, 0);
-            else
-                dialogue_string = BuildDialogueString(prof->pJoinText, uActiveCharacter - 1, 0, 0, 0);
-        }
-        break;
-    }
+  case DIALOGUE_ARENA_ALREADY_WON:
+    dialogue_string = localization->GetString(582); // "You already won this trip to the Arena:"
+    break;
 
-    // Message window(Окно сообщения)---- 
-    if (!dialogue_string.empty())
+  default:
+    if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E && !byte_5B0938[0])
     {
-        window.uFrameWidth = game_viewport_width;
-        window.uFrameZ = 452;
-        GUIFont* font = pFontArrus;
-        pTextHeight = pFontArrus->CalcTextHeight(dialogue_string, &window, 13) + 7;
-        if (352 - pTextHeight < 8)
-        {
-            font = pFontCreate;
-            pTextHeight = pFontCreate->CalcTextHeight(dialogue_string, &window, 13) + 7;
-        }
-
-        if (ui_leather_mm7)
-            render->DrawTextureCustomHeight(
-                8 / 640.0f,
-                (352 - pTextHeight) / 480.0f,
-                ui_leather_mm7,
-                pTextHeight);
-
-        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        pDialogueWindow->DrawText(font, 13, 354 - pTextHeight, 0, font->FitTextInAWindow(dialogue_string, &window, 13), 0, 0, 0);
+      dialogue_string = current_npc_text;
     }
-
-    // Right panel(Правая панель)------- 
-    memcpy(&window, pDialogueWindow, sizeof(window));
-    window.uFrameX = 483;
-    window.uFrameWidth = 148;
-    window.uFrameZ = 334;
-    for (int i = window.pStartingPosActiveItem; i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i)
+    else if (pGreetType == 1)//QuestNPC_greet
     {
-        pButton = window.GetControl(i);
-        if (!pButton)
-            break;
-
-        if (pButton->msg_param > 88)
-            pButton->pButtonName[0] = 0;
-        else if (pButton->msg_param == 88)
-            strcpy(pButton->pButtonName, localization->GetString(581)); // Lord
-        else if (pButton->msg_param == 87)
-            strcpy(pButton->pButtonName, localization->GetString(580)); // Knight
-        else if (pButton->msg_param == 86)
-            strcpy(pButton->pButtonName, localization->GetString(579)); // Squire
-        else if (pButton->msg_param == 85)
-            strcpy(pButton->pButtonName, localization->GetString(578)); // Page
-        else if (pButton->msg_param == 77)
-            strcpy(pButton->pButtonName, localization->GetString(407)); // Details
-        else if (pButton->msg_param == 76)
-        {
-            if (pNPC->Hired())
-                sprintf(pButton->pButtonName, localization->GetString(408), pNPC->pName); // Release %s
-            else
-                strcpy(pButton->pButtonName, localization->GetString(406)); // Hire
-        }
-        else if (pButton->msg_param == 24)
-        {
-            __debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_F)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else
-                strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_F].pTopic);
-        }
-        else if (pButton->msg_param == 9)
-            strcpy(pButton->pButtonName, GetProfessionActionText(pNPC->uProfession));
-        else if (pButton->msg_param == 19) // Scavenger Hunt
-        {
-            if (!pNPC->evt_A)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else
-                strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_A].pTopic);
-        }
-        else if (pButton->msg_param == 20) // Scavenger Hunt
-        {
-            if (!pNPC->evt_B)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_B].pTopic);
-        }
-        else if (pButton->msg_param == 21)
-        {
-            //__debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_C)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_C].pTopic);
-        }
-        else if (pButton->msg_param == 22)
-        {
-            //__debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_D)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_D].pTopic);
-        }
-        else if (pButton->msg_param == 23)
-        {
-            //__debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_E)
-            {
-                pButton->pButtonName[0] = 0;
-                pButton->msg_param = 0;
-            }
-            else strcpy(pButton->pButtonName, pNPCTopics[pNPC->evt_E].pTopic);
-        }
-        else if (pButton->msg_param == 13)
-        {
-            if (pNPC->Hired())
-                sprintf(pButton->pButtonName, localization->GetString(408), pNPC->pName); // Release %s
-            else
-                strcpy(pButton->pButtonName, localization->GetString(122)); // Join
-        }
+      if (pNPC->greet)
+      {
+        if ((pNPC->uFlags & 3) == 2)
+          dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
         else
-            pButton->pButtonName[0] = 0;
+          dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
+      }
+    }
+    else if (pGreetType == 2)//HiredNPC_greet
+    {
+      NPCProfession* prof = &pNPCStats->pProfessions[pNPC->uProfession];
 
-        if (pParty->field_7B5_in_arena_quest && pParty->field_7B5_in_arena_quest != -1)
-        {
-            int num_dead_actors = 0;
-            for (uint i = 0; i < uNumActors; ++i)
-            {
-                if (pActors[i].uAIState == Dead || pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled)
-                    ++num_dead_actors;
-                else
-                {
-                    int sumonner_type = PID_TYPE(pActors[i].uSummonerID);
-                    if (sumonner_type == OBJECT_Player)
-                        ++num_dead_actors;
-                }
-            }
-            if (num_dead_actors == uNumActors)
-                strcpy(pButton->pButtonName, localization->GetString(658)); // Collect Prize
-        }
+      if (pNPC->Hired())
+        dialogue_string = BuildDialogueString(prof->pDismissText, uActiveCharacter - 1, 0, 0, 0);
+      else
+        dialogue_string = BuildDialogueString(prof->pJoinText, uActiveCharacter - 1, 0, 0, 0);
+    }
+    break;
+  }
+
+  // Message window(Окно сообщения)---- 
+  if (!dialogue_string.empty())
+  {
+    window.uFrameWidth = game_viewport_width;
+    window.uFrameZ = 452;
+    GUIFont* font = pFontArrus;
+    pTextHeight = pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
+    if (352 - pTextHeight < 8)
+    {
+      font = pFontCreate;
+      pTextHeight = pFontCreate->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
     }
 
-    // Install Buttons(Установка кнопок)-------- 
-    index = 0;
-    all_text_height = 0;
-    for (int i = pDialogueWindow->pStartingPosActiveItem;
+    if (ui_leather_mm7)
+      render->DrawTextureCustomHeight(
+        8 / 640.0f,
+        (352 - pTextHeight) / 480.0f,
+        ui_leather_mm7,
+        pTextHeight);
+
+    render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+    pDialogueWindow->DrawText(font, 13, 354 - pTextHeight, 0, font->FitTextInAWindow(dialogue_string, window.uFrameWidth, 13), 0, 0, 0);
+  }
+
+  // Right panel(Правая панель)------- 
+  window = *pDialogueWindow;
+  window.uFrameX = 483;
+  window.uFrameWidth = 148;
+  window.uFrameZ = 334;
+  for (int i = window.pStartingPosActiveItem; i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
+    pButton = window.GetControl(i);
+    if (!pButton)
+      break;
+
+    if (pButton->msg_param > 88)
+      pButton->sLabel.clear();
+    else if (pButton->msg_param == 88)
+      pButton->sLabel = localization->GetString(581); // Lord
+    else if (pButton->msg_param == 87)
+      pButton->sLabel = localization->GetString(580); // Knight
+    else if (pButton->msg_param == 86)
+      pButton->sLabel = localization->GetString(579); // Squire
+    else if (pButton->msg_param == 85)
+      pButton->sLabel = localization->GetString(578); // Page
+    else if (pButton->msg_param == 77)
+      pButton->sLabel = localization->GetString(407); // Details
+    else if (pButton->msg_param == 76) {
+      if (pNPC->Hired()) {
+        pButton->sLabel = StringPrintf(localization->GetString(408), pNPC->pName);  // Release %s
+      } else {
+        pButton->sLabel = localization->GetString(406);  // Hire
+      }
+    } else if (pButton->msg_param == 24) {
+      __debugbreak(); // learn conditions of this event
+      if (!pNPC->evt_F) {
+        pButton->sLabel.clear();
+        pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_F].pTopic;
+      }
+    } else if (pButton->msg_param == 9) {
+      pButton->sLabel = GetProfessionActionText(pNPC->uProfession);
+    } else if (pButton->msg_param == 19) {  // Scavenger Hunt
+      if (!pNPC->evt_A) {
+        pButton->sLabel.clear();
+        pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_A].pTopic;
+      }
+    } else if (pButton->msg_param == 20) {  // Scavenger Hunt
+      if (!pNPC->evt_B) {
+        pButton->sLabel.clear();
+        pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_B].pTopic;
+      }
+    } else if (pButton->msg_param == 21) {
+      //__debugbreak(); // learn conditions of this event
+      if (!pNPC->evt_C) {
+        pButton->sLabel.clear();
+        pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_C].pTopic;
+      }
+    } else if (pButton->msg_param == 22) {
+      //__debugbreak(); // learn conditions of this event
+      if (!pNPC->evt_D) {
+        pButton->sLabel.clear();
+        pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_D].pTopic;
+      }
+    } else if (pButton->msg_param == 23) {
+      //__debugbreak(); // learn conditions of this event
+      if (!pNPC->evt_E) {
+        pButton->sLabel.clear();
+        pButton->msg_param = 0;
+      } else {
+        pButton->sLabel = pNPCTopics[pNPC->evt_E].pTopic;
+      }
+    } else if (pButton->msg_param == 13) {
+      if (pNPC->Hired()) {
+        pButton->sLabel = StringPrintf(localization->GetString(408), pNPC->pName);  // Release %s
+      } else {
+        pButton->sLabel = localization->GetString(122);  // Join
+      }
+    } else {
+      pButton->sLabel.clear();
+    }
+
+    if (pParty->field_7B5_in_arena_quest && pParty->field_7B5_in_arena_quest != -1) {
+      int num_dead_actors = 0;
+      for (uint i = 0; i < uNumActors; ++i) {
+        if (pActors[i].uAIState == Dead || pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled) {
+          ++num_dead_actors;
+        } else {
+          int sumonner_type = PID_TYPE(pActors[i].uSummonerID);
+          if (sumonner_type == OBJECT_Player)
+            ++num_dead_actors;
+        }
+      }
+      if (num_dead_actors == uNumActors) {
+        pButton->sLabel = localization->GetString(658);  // Collect Prize
+      }
+    }
+  }
+
+  // Install Buttons(Установка кнопок)-------- 
+  index = 0;
+  all_text_height = 0;
+  for (int i = pDialogueWindow->pStartingPosActiveItem;
     i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i)
+  {
+    pButton = pDialogueWindow->GetControl(i);
+    if (!pButton)
+      break;
+    all_text_height += pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
+    index++;
+  }
+  if (index) {
+    v45 = (174 - all_text_height) / index;
+    if (v45 > 32)
+      v45 = 32;
+    v42 = (174 - v45 * index - all_text_height) / 2 - v45 / 2 + 138;
+    for (int i = pDialogueWindow->pStartingPosActiveItem;
+      i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
     {
-        pButton = pDialogueWindow->GetControl(i);
-        if (!pButton)
-            break;
-        all_text_height += pFontArrus->CalcTextHeight(pButton->pButtonName, &window, 0);
-        index++;
+      pButton = pDialogueWindow->GetControl(i);
+      if (!pButton)
+        break;
+      pButton->uY = (unsigned int)(v45 + v42);
+      pTextHeight = pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
+      pButton->uHeight = pTextHeight;
+      v42 = pButton->uY + pTextHeight - 1;
+      pButton->uW = v42;
+      pTextColor = ui_game_dialogue_option_normal_color;
+      if (pDialogueWindow->pCurrentPosActiveItem == i)
+        pTextColor = ui_game_dialogue_option_highlight_color;
+      window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->sLabel, 3);
     }
-    if (index)
-    {
-        v45 = (174 - all_text_height) / index;
-        if (v45 > 32)
-            v45 = 32;
-        v42 = (174 - v45 * index - all_text_height) / 2 - v45 / 2 + 138;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-        i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
-        {
-            pButton = pDialogueWindow->GetControl(i);
-            if (!pButton)
-                break;
-            pButton->uY = (unsigned int)(v45 + v42);
-            pTextHeight = pFontArrus->CalcTextHeight(pButton->pButtonName, &window, 0);
-            pButton->uHeight = pTextHeight;
-            v42 = pButton->uY + pTextHeight - 1;
-            pButton->uW = v42;
-            pTextColor = ui_game_dialogue_option_normal_color;
-            if (pDialogueWindow->pCurrentPosActiveItem == i)
-                pTextColor = ui_game_dialogue_option_highlight_color;
-            window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->pButtonName, 3);
-        }
-    }
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+  }
+  render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 }
 
 //----- (00444FBE) --------------------------------------------------------
@@ -1240,11 +1178,11 @@ void GameUI_DrawBranchlessDialogue()
         strcpy(byte_5B0938.data(), current_npc_text.c_str());
     BranchlessDlg_window.uFrameWidth = game_viewport_width;
     BranchlessDlg_window.uFrameZ = 452;
-    pTextHeight = pFontArrus->CalcTextHeight(byte_5B0938.data(), &BranchlessDlg_window, 12) + 7;
+    pTextHeight = pFontArrus->CalcTextHeight(byte_5B0938.data(), BranchlessDlg_window.uFrameWidth, 12) + 7;
     if (352 - pTextHeight < 8)
     {
         pFont = pFontCreate;
-        pTextHeight = pFontCreate->CalcTextHeight(byte_5B0938.data(), &BranchlessDlg_window, 12) + 7;
+        pTextHeight = pFontCreate->CalcTextHeight(byte_5B0938.data(), BranchlessDlg_window.uFrameWidth, 12) + 7;
     }
 
     render->DrawTextureCustomHeight(
@@ -1253,7 +1191,7 @@ void GameUI_DrawBranchlessDialogue()
         ui_leather_mm7,
         pTextHeight);
     render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-    pGUIWindow2->DrawText(pFont, 12, 354 - pTextHeight, 0, pFont->FitTextInAWindow(byte_5B0938.data(), &BranchlessDlg_window, 12), 0, 0, 0);
+    pGUIWindow2->DrawText(pFont, 12, 354 - pTextHeight, 0, pFont->FitTextInAWindow(byte_5B0938.data(), BranchlessDlg_window.uFrameWidth, 12), 0, 0, 0);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     if (pGUIWindow2->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS)
     {
@@ -1557,424 +1495,370 @@ void GameUI_DrawRightPanelFrames()
   //render->Present();
 }
 
+void GameUI_WritePointedObjectStatusString() {
+  GUIWindow *pWindow; // edi@7
+  GUIButton *pButton; // ecx@11
+  int requiredSkillpoints; // ecx@19
+  enum UIMessageType pMessageType1; // esi@24
+  int invmatrixindex; // eax@41
+  ItemGen *pItemGen; // ecx@44
+  int v16; // ecx@46
+  signed int pickedObjectPID; // eax@55
+  signed int v18b;
+  signed int pickedObjectID = 0; // ecx@63
+  BLVFace *pFace; // eax@69
+  const char *pText; // ecx@79
+  enum UIMessageType pMessageType2; // esi@110
+  enum UIMessageType pMessageType3; // edx@117
+  unsigned int pX; // [sp+D4h] [bp-Ch]@1
+  unsigned int pY; // [sp+D8h] [bp-8h]@1
 
-//----- (00420EFF) --------------------------------------------------------
-void GameUI_WritePointedObjectStatusString()
-{
-    GUIWindow *pWindow; // edi@7
-    GUIButton *pButton; // ecx@11
-    int requiredSkillpoints; // ecx@19
-    enum UIMessageType pMessageType1; // esi@24
-    int invmatrixindex; // eax@41
-    ItemGen *pItemGen; // ecx@44
-    int v16; // ecx@46
-    signed int pickedObjectPID; // eax@55
-    signed int v18b;
-    signed int pickedObjectID=0; // ecx@63
-    BLVFace *pFace; // eax@69
-    const char *pText; // ecx@79
-    enum UIMessageType pMessageType2; // esi@110
-    enum UIMessageType pMessageType3; // edx@117
-    unsigned int pX; // [sp+D4h] [bp-Ch]@1
-    unsigned int pY; // [sp+D8h] [bp-8h]@1
+  int testing;
 
-	int testing;
+  pMouse->uPointingObjectID = 0;
+  pMouse->GetClickPos(&pX, &pY);
+  if (pX < 0 || pX > window->GetWidth() - 1 || pY < 0 || pY > window->GetHeight() - 1)
+    return;
 
-    pMouse->uPointingObjectID = 0;
-    pMouse->GetClickPos(&pX, &pY);
-    if (pX < 0 || pX > window->GetWidth() - 1 || pY < 0 || pY > window->GetHeight() - 1)
+  if (current_screen_type == SCREEN_GAME) {
+    if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125) {
+      if (!pViewport->Contains(pX, pY)) {
+        if (uLastPointedObjectID != 0) {
+          game_ui_status_bar_string[0] = 0;
+          bForceDrawFooter = 1;
+        }
+        uLastPointedObjectID = 0;
         return;
-
-    if (current_screen_type == SCREEN_GAME)
-    {
-        if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125)
-        {
-            //if ( render->pRenderD3D )  // inlined mm8::4C1E01
+      }
+      pickedObjectPID = pEngine->pVisInstance->get_picked_object_zbuf_val();
+      pMouse->uPointingObjectID = (unsigned __int16)pickedObjectPID;
+      pickedObjectID = (signed)PID_ID(pickedObjectPID);
+      if (PID_TYPE(pickedObjectPID) == OBJECT_Item) {
+        if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & 0x10) {
+          pMouse->uPointingObjectID = 0;
+          game_ui_status_bar_string[0] = 0;
+          bForceDrawFooter = 1;
+          uLastPointedObjectID = 0;
+          return;
+        }
+        if (pickedObjectPID >= 0x2000000u || pParty->pPickedItem.uItemID) {
+          GameUI_StatusBar_Set(pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
+        } else {
+          GameUI_StatusBar_Set(
+            localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName().c_str()) // Get %s
+          );
+        } //intentional fallthrough
+      } else if (PID_TYPE(pickedObjectPID) == OBJECT_Decoration) {
+        if (!pLevelDecorations[pickedObjectID].uEventID) {
+          if (pLevelDecorations[pickedObjectID].IsInteractive())
+            pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events[pLevelDecorations[pickedObjectID]._idx_in_stru123 - 75] + 380].pTopic;//неверно для костра
+          else
+            pText = pDecorationList->pDecorations[pLevelDecorations[pickedObjectID].uDecorationDescID].field_20;
+          GameUI_StatusBar_Set(pText);
+        } else {
+          char* hintString = GetEventHintString(pLevelDecorations[pickedObjectID].uEventID);
+          if (hintString != '\0') {
+            GameUI_StatusBar_Set(hintString);
+          }
+        } //intentional fallthrough
+      } else if (PID_TYPE(pickedObjectPID) == OBJECT_BModel) {
+        if (pickedObjectPID < 0x2000000u) {
+          char* newString = nullptr;
+          if (uCurrentlyLoadedLevelType != LEVEL_Indoor)
+          {
+            v18b = (signed int)(unsigned __int16)pickedObjectPID >> 9;
+            short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
+            if (triggeredId != 0)
             {
-                pickedObjectPID = pEngine->pVisInstance->get_picked_object_zbuf_val();
-                if (pX < (unsigned int)pViewport->uScreen_TL_X || pX >(unsigned int)pViewport->uScreen_BR_X
-                    || pY < (unsigned int)pViewport->uScreen_TL_Y || pY >(unsigned int)pViewport->uScreen_BR_Y)
-                    pickedObjectPID = -1;
-                if (pickedObjectPID == -1)
-                {
-                    if (uLastPointedObjectID != 0)
-                    {
-                        game_ui_status_bar_string[0] = 0;
-                        bForceDrawFooter = 1;
-                    }
-                    uLastPointedObjectID = 0;
-                    return;
-                }
+              newString = GetEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID);
             }
-            /*else
+          }
+          else
+          {
+            pFace = &pIndoor->pFaces[pickedObjectID];
+            if (pFace->uAttributes & FACE_INDICATE)
             {
-              v18 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
-            }*/
-            pMouse->uPointingObjectID = (unsigned __int16)pickedObjectPID;
-            pickedObjectID = (signed)PID_ID(pickedObjectPID);
-            if (PID_TYPE(pickedObjectPID) == OBJECT_Item)
-            {
-                if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & 0x10)
-                {
-                    pMouse->uPointingObjectID = 0;
-                    game_ui_status_bar_string[0] = 0;
-                    bForceDrawFooter = 1;
-                    uLastPointedObjectID = 0;
-                    return;
-                }
-                if (pickedObjectPID >= 0x2000000u || pParty->pPickedItem.uItemID)
-                {
-                    GameUI_StatusBar_Set(pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
-                }
-                else
-                {
-                    GameUI_StatusBar_Set(
-                        localization->FormatString(470, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName().c_str()) // Get %s
-                        );
-                } //intentional fallthrough
+              unsigned short eventId = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+              if (eventId != 0)
+              {
+                newString = GetEventHintString(pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID);
+              }
             }
-            else if (PID_TYPE(pickedObjectPID) == OBJECT_Decoration)
-            {
-                if (!pLevelDecorations[pickedObjectID].uEventID)
-                {
-                    if (pLevelDecorations[pickedObjectID].IsInteractive())
-                        pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events[pLevelDecorations[pickedObjectID]._idx_in_stru123 - 75] + 380].pTopic;//неверно для костра
-                    else
-                        pText = pDecorationList->pDecorations[pLevelDecorations[pickedObjectID].uDecorationDescID].field_20;
-                    GameUI_StatusBar_Set(pText);
-                }
-                else
-                {
-                    char* hintString = GetEventHintString(pLevelDecorations[pickedObjectID].uEventID);
-                    if (hintString != '\0')
-                    {
-                        GameUI_StatusBar_Set(hintString);
-                    }
-                } //intentional fallthrough
-            }
-            else if (PID_TYPE(pickedObjectPID) == OBJECT_BModel)
-            {
-                if (pickedObjectPID < 0x2000000u)
-                {
-                    char* newString = nullptr;
-                    if (uCurrentlyLoadedLevelType != LEVEL_Indoor)
-                    {
-                        v18b = (signed int)(unsigned __int16)pickedObjectPID >> 9;
-                        short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
-                        if (triggeredId != 0)
-                        {
-                            newString = GetEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID);
-                        }
-                    }
-                    else
-                    {
-                        pFace = &pIndoor->pFaces[pickedObjectID];
-                        if (pFace->uAttributes & FACE_INDICATE)
-                        {
-                            unsigned short eventId = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
-                            if (eventId != 0)
-                            {
-                                newString = GetEventHintString(pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID);
-                            }
-                        }
-                    }
-                    if (newString)
-                    {
-                        GameUI_StatusBar_Set(newString);
-                        if (pMouse->uPointingObjectID == 0 && uLastPointedObjectID != 0)
-                        {
-                            game_ui_status_bar_string[0] = 0;
-                            bForceDrawFooter = 1;
-                        }
-                        uLastPointedObjectID = pMouse->uPointingObjectID;
-                        return;
-                    }
-                }
-                pMouse->uPointingObjectID = 0;
-                game_ui_status_bar_string[0] = 0;
-                bForceDrawFooter = 1;
-                uLastPointedObjectID = 0;
-                return;
-            }
-            else if (PID_TYPE(pickedObjectPID) == OBJECT_Actor)
-            {
-                if (pickedObjectPID >= 0x2000000)
-                {
-                    pMouse->uPointingObjectID = 0;
-                    if (uLastPointedObjectID != 0)
-                    {
-                        game_ui_status_bar_string[0] = 0;
-                        bForceDrawFooter = 1;
-                    }
-                    uLastPointedObjectID = 0;
-                    return;
-                }
-                if (pActors[pickedObjectID].dword_000334_unique_name)
-                    pText = pMonsterStats->pPlaceStrings[pActors[pickedObjectID].dword_000334_unique_name];
-                else
-                    pText = pMonsterStats->pInfos[pActors[pickedObjectID].pMonsterInfo.uID].pName;
-                GameUI_StatusBar_Set(pText); //intentional fallthrough
-            }
+          }
+          if (newString)
+          {
+            GameUI_StatusBar_Set(newString);
             if (pMouse->uPointingObjectID == 0 && uLastPointedObjectID != 0)
             {
-                game_ui_status_bar_string[0] = 0;
-                bForceDrawFooter = 1;
+              game_ui_status_bar_string[0] = 0;
+              bForceDrawFooter = 1;
             }
             uLastPointedObjectID = pMouse->uPointingObjectID;
             return;
+          }
         }
-    }
-	else if (current_screen_type == SCREEN_CHEST) {
-		if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125) { // if in chest area
-			if (Chest::ChestUI_WritePointedObjectStatusString()) {
-				return;
-			}
-			else if (uLastPointedObjectID != 0) { // not found so reset
-				game_ui_status_bar_string[0] = 0;
-				bForceDrawFooter = 1;
-			}
-			uLastPointedObjectID = 0;
-			return;
-
-		}
-	}
-	//else if (current_screen_type == SCREEN_CHEST_INVENTORY) {
-		
-	//}
-    else {
-		//if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125) {
-		if (current_screen_type == SCREEN_CHARACTERS) {
-			if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
-
-				if (pY > 0 && pY < 350 && pX >= 13 && pX <= 462) {		// inventory poitned 
-
-					//inventoryYCoord = (pY - 17) / 32;
-					//inventoryXCoord = (pX - 14) / 32;
-					//invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
-					invmatrixindex = ((pX - 14) / 32) + 14 * ((pY - 17) / 32);
-					//if (mouse.x <= 13 || mouse.x >= 462)
-					//return;
-					//testing = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invmatrixindex);
-					pItemGen = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invmatrixindex);//(ItemGen *)&pPlayers[uActiveCharacter]->pInventoryItemList[testing - 1];
-					
-					if (!pItemGen==NULL)
-						pickedObjectID = pItemGen->uItemID;
-					//if (!pItemID)
-				//return;
-			//item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
-
-					//v14 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
-					if (pickedObjectID == 0 || pickedObjectID == -65536 || pickedObjectID >= 5000) {
-						//if (pMouse->uPointingObjectID == 0) {
-						if (uLastPointedObjectID != 0) {
-							game_ui_status_bar_string[0] = 0;
-							bForceDrawFooter = 1;
-						}
-						//}
-						uLastPointedObjectID = 0;
-						//return;
-					}
-					else {
-						
-						GameUI_StatusBar_Set(pItemGen->GetDisplayName());
-						uLastPointedObjectID = 1;
-						return;
-					}
-				}
-			}
-		}
-
-			//else if inventory
-
-
-			for (int i = uNumVisibleWindows; i > 0; --i) {
-				pWindow = pWindowList[pVisibleWindowsIdxs[i] - 1];
-				if ((signed int)pX >= (signed int)pWindow->uFrameX && (signed int)pX <= (signed int)pWindow->uFrameZ
-					&& (signed int)pY >= (signed int)pWindow->uFrameY && (signed int)pY <= (signed int)pWindow->uFrameW) {
-
-					for (pButton = pWindow->pControlsHead; pButton != nullptr; pButton = pButton->pNext) {
-						switch (pButton->uButtonType) {
-						case 1://for dialogue window
-							if ((signed int)pX >= (signed int)pButton->uX && (signed int)pX <= (signed int)pButton->uZ
-								&& (signed int)pY >= (signed int)pButton->uY && (signed int)pY <= (signed int)pButton->uW) {
-
-								pMessageType1 = (UIMessageType)pButton->field_1C;
-								if (pMessageType1)
-									pMessageQueue_50CBD0->AddGUIMessage(pMessageType1, pButton->msg_param, 0);
-								GameUI_StatusBar_Set(pButton->pButtonName);
-								uLastPointedObjectID = 1;
-								return;
-							}
-							break;
-						case 2://hovering over portraits
-							if (pButton->uWidth != 0 && pButton->uHeight != 0) {
-								uint distW = pX - pButton->uX;
-								uint distY = pY - pButton->uY;
-
-								double ratioX = 1.0 * (distW*distW) / (pButton->uWidth*pButton->uWidth);
-								double ratioY = 1.0 * (distY*distY) / (pButton->uHeight*pButton->uHeight);
-
-								if (ratioX + ratioY < 1.0) {
-									pMessageType2 = (UIMessageType)pButton->field_1C;
-									if (pMessageType2 != 0)
-										pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
-									GameUI_StatusBar_Set(pButton->pButtonName); // for character name
-									uLastPointedObjectID = 1;
-									return;
-								}
-							}
-							break;
-						case 3:// click on skill
-							if (pX >= pButton->uX && pX <= pButton->uZ
-								&& pY >= pButton->uY && pY <= pButton->uW) {
-								requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
-
-								String str;
-								if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
-									str = localization->FormatString(469, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints);// "You need %d more Skill Points to advance here"
-								else
-									str = localization->FormatString(468, requiredSkillpoints);// "Clicking here will spend %d Skill Points"
-
-								GameUI_StatusBar_Set(str);
-								uLastPointedObjectID = 1;
-								return;
-							}
-							break;
-						}
-					}
-				}
-
-
-				// ?? if we get here nothing is curos over??
-				if (uLastPointedObjectID != 0) { // not found so reset
-					game_ui_status_bar_string[0] = 0;
-					bForceDrawFooter = 1;
-				}
-				uLastPointedObjectID = 0;
-				
-				if (pWindow->uFrameHeight == 480)
-				{
-					//DebugBreak(); //Why is this condition here (in the original too)? Might check fullscreen windows. Let Silvo know if you find out
-
-					// this is to stop the no windows active code below runnning
-
-
-					return;
-				}
-
-
-
-
-
-			}
-			//The game never gets to this point even in the original. It's also bugged(neither branch displays anything). 
-			//TODO fix these and move them up before the window check loop.
-
-			// gets here when glitched
-
-
-
-		/*	if (current_screen_type == SCREEN_HOUSE)  // this is required when displaying inventory in a house/shop??
-			{
-				if (dialog_menu_id != HOUSE_DIALOGUE_SHOP_BUY_STANDARD
-					|| (v16 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]], v16 == 0)
-					|| v16 == -65536)
-				{
-					if (uLastPointedObjectID != 0)
-					{
-						game_ui_status_bar_string[0] = 0;
-						bForceDrawFooter = 1;
-					}
-					uLastPointedObjectID = 0;
-					return;
-				}
-				pItemGen = (ItemGen *)((char *)&pParty->pPickedItem + 36 * (v16 + 12 * (unsigned int)window_SpeakInHouse->ptr_1C) + 4);
-				GameUI_StatusBar_Set(pItemGen->GetDisplayName());
-				game_ui_status_bar_string[0] = 0;
-				bForceDrawFooter = 1;
-				uLastPointedObjectID = 0;
-				return;
-			}
-			*/
-
-
-
-		//}
-    }
- 
-	// no windows active -outside of game screen area only
-	if ((signed int)pX >= (signed int)pWindowList[0]->uFrameX && (signed int)pX <= (signed int)pWindowList[0]->uFrameZ
-        && (signed int)pY >= (signed int)pWindowList[0]->uFrameY && (signed int)pY <= (signed int)pWindowList[0]->uFrameW)
-    {
-        for (pButton = pWindowList[0]->pControlsHead; pButton != nullptr; pButton = pButton->pNext)
-        {
-            switch (pButton->uButtonType)
-            {
-            case 1:
-                if ((signed int)pX >= (signed int)pButton->uX && (signed int)pX <= (signed int)pButton->uZ
-                    && (signed int)pY >= (signed int)pButton->uY && (signed int)pY <= (signed int)pButton->uW)
-                {
-                    pMessageType3 = (UIMessageType)pButton->field_1C;
-                    if (pMessageType3 == 0) // For books
-                    {
-                        GameUI_StatusBar_Set(pButton->pButtonName);
-                    }
-                    else
-                    {
-                        pMessageQueue_50CBD0->AddGUIMessage(pMessageType3, pButton->msg_param, 0);
-                    }
-                    uLastPointedObjectID = 1;
-                    return;
-                }
-                break;
-            case 2://hovering over portraits
-                if (pButton->uWidth != 0 && pButton->uHeight != 0)
-                {
-                    uint distW = pX - pButton->uX;
-                    uint distY = pY - pButton->uY;
-
-                    double ratioX = 1.0 * (distW*distW) / (pButton->uWidth*pButton->uWidth);
-                    double ratioY = 1.0 * (distY*distY) / (pButton->uHeight*pButton->uHeight);
-
-                    if (ratioX + ratioY < 1.0)
-                    {
-                        pMessageType2 = (UIMessageType)pButton->field_1C;
-                        if (pMessageType2 != 0)
-                            pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
-                        GameUI_StatusBar_Set(pButton->pButtonName); // for character name
-                        uLastPointedObjectID = 1;
-                        return;
-                    }
-                }
-                break;
-            case 3: // is this one needed?
-/*                if (pX >= pButton->uX && pX <= pButton->uZ
-                    && pY >= pButton->uY && pY <= pButton->uW)
-                {
-                    requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
-
-                    String str;
-                    if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
-                        str = localization->FormatString(469, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints);// "You need %d more Skill Points to advance here"
-                    else
-                        str = localization->FormatString(468, requiredSkillpoints);// "Clicking here will spend %d Skill Points"
-                    GameUI_StatusBar_Set(str);
-                    uLastPointedObjectID = 1;
-                    return;
-                }*/
-                break;
-            }
-        }
-    }
-	
-    //pMouse->uPointingObjectID = sub_46A99B(); //for software
-    if (uLastPointedObjectID != 0)
-    {
+        pMouse->uPointingObjectID = 0;
         game_ui_status_bar_string[0] = 0;
         bForceDrawFooter = 1;
+        uLastPointedObjectID = 0;
+        return;
+      }
+      else if (PID_TYPE(pickedObjectPID) == OBJECT_Actor)
+      {
+        if (pickedObjectPID >= 0x2000000)
+        {
+          pMouse->uPointingObjectID = 0;
+          if (uLastPointedObjectID != 0)
+          {
+            game_ui_status_bar_string[0] = 0;
+            bForceDrawFooter = 1;
+          }
+          uLastPointedObjectID = 0;
+          return;
+        }
+        if (pActors[pickedObjectID].dword_000334_unique_name)
+          pText = pMonsterStats->pPlaceStrings[pActors[pickedObjectID].dword_000334_unique_name];
+        else
+          pText = pMonsterStats->pInfos[pActors[pickedObjectID].pMonsterInfo.uID].pName;
+        GameUI_StatusBar_Set(pText); //intentional fallthrough
+      }
+      if (pMouse->uPointingObjectID == 0 && uLastPointedObjectID != 0)
+      {
+        game_ui_status_bar_string[0] = 0;
+        bForceDrawFooter = 1;
+      }
+      uLastPointedObjectID = pMouse->uPointingObjectID;
+      return;
+    }
+  }
+  else if (current_screen_type == SCREEN_CHEST) {
+    if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125) { // if in chest area
+      if (Chest::ChestUI_WritePointedObjectStatusString()) {
+        return;
+      }
+      else if (uLastPointedObjectID != 0) { // not found so reset
+        game_ui_status_bar_string[0] = 0;
+        bForceDrawFooter = 1;
+      }
+      uLastPointedObjectID = 0;
+      return;
+
+    }
+  }
+  //else if (current_screen_type == SCREEN_CHEST_INVENTORY) {
+
+  //}
+  else {
+    //if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <= (window->GetHeight() - 1) * 0.73125) {
+    if (current_screen_type == SCREEN_CHARACTERS) {
+      if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
+
+        if (pY > 0 && pY < 350 && pX >= 13 && pX <= 462) {		// inventory poitned 
+
+                                                              //inventoryYCoord = (pY - 17) / 32;
+                                                              //inventoryXCoord = (pX - 14) / 32;
+                                                              //invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
+          invmatrixindex = ((pX - 14) / 32) + 14 * ((pY - 17) / 32);
+          //if (mouse.x <= 13 || mouse.x >= 462)
+          //return;
+          //testing = pPlayers[uActiveCharacter]->GetItemIDAtInventoryIndex(invmatrixindex);
+          pItemGen = pPlayers[uActiveCharacter]->GetItemAtInventoryIndex(invmatrixindex);//(ItemGen *)&pPlayers[uActiveCharacter]->pInventoryItemList[testing - 1];
+
+          if (!pItemGen == NULL)
+            pickedObjectID = pItemGen->uItemID;
+          //if (!pItemID)
+          //return;
+          //item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
+
+          //v14 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];
+          if (pickedObjectID == 0 || pickedObjectID == -65536 || pickedObjectID >= 5000) {
+            //if (pMouse->uPointingObjectID == 0) {
+            if (uLastPointedObjectID != 0) {
+              game_ui_status_bar_string[0] = 0;
+              bForceDrawFooter = 1;
+            }
+            //}
+            uLastPointedObjectID = 0;
+            //return;
+          }
+          else {
+
+            GameUI_StatusBar_Set(pItemGen->GetDisplayName());
+            uLastPointedObjectID = 1;
+            return;
+          }
+        }
+      }
+    }
+
+    //else if inventory
+
+
+    for (GUIWindow *pWindow : lWindowList) {
+      if (pWindow->Contains(pX, pY)) {
+        for (GUIButton *pButton : pWindow->vButtons) {
+          switch (pButton->uButtonType) {
+            case 1://for dialogue window
+              if (pButton->Contains(pX, pY)) {
+                pMessageType1 = (UIMessageType)pButton->field_1C;
+                if (pMessageType1)
+                  pMessageQueue_50CBD0->AddGUIMessage(pMessageType1, pButton->msg_param, 0);
+                GameUI_StatusBar_Set(pButton->sLabel);
+                uLastPointedObjectID = 1;
+                return;
+              }
+              break;
+            case 2://hovering over portraits
+              if (pButton->uWidth != 0 && pButton->uHeight != 0) {
+                uint distW = pX - pButton->uX;
+                uint distY = pY - pButton->uY;
+
+                double ratioX = 1.0 * (distW*distW) / (pButton->uWidth*pButton->uWidth);
+                double ratioY = 1.0 * (distY*distY) / (pButton->uHeight*pButton->uHeight);
+
+                if (ratioX + ratioY < 1.0) {
+                  pMessageType2 = (UIMessageType)pButton->field_1C;
+                  if (pMessageType2 != 0)
+                    pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
+                  GameUI_StatusBar_Set(pButton->sLabel); // for character name
+                  uLastPointedObjectID = 1;
+                  return;
+                }
+              }
+              break;
+            case 3:// click on skill
+              if (pButton->Contains(pX, pY)) {
+                requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
+
+                String str;
+                if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
+                  str = localization->FormatString(469, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints);// "You need %d more Skill Points to advance here"
+                else
+                  str = localization->FormatString(468, requiredSkillpoints);// "Clicking here will spend %d Skill Points"
+
+                GameUI_StatusBar_Set(str);
+                uLastPointedObjectID = 1;
+                return;
+              }
+              break;
+          }
+        }
+      }
+
+
+      // ?? if we get here nothing is curos over??
+      if (uLastPointedObjectID != 0) { // not found so reset
+        game_ui_status_bar_string[0] = 0;
+        bForceDrawFooter = 1;
+      }
+      uLastPointedObjectID = 0;
+
+      if (pWindow->uFrameHeight == 480) {
+        //DebugBreak(); //Why is this condition here (in the original too)? Might check fullscreen windows. Let Silvo know if you find out
+        // this is to stop the no windows active code below runnning
+        return;
+      }
+    }
+    //The game never gets to this point even in the original. It's also bugged(neither branch displays anything). 
+    //TODO fix these and move them up before the window check loop.
+
+    // gets here when glitched
+
+
+
+    /*	if (current_screen_type == SCREEN_HOUSE)  // this is required when displaying inventory in a house/shop??
+    {
+    if (dialog_menu_id != HOUSE_DIALOGUE_SHOP_BUY_STANDARD
+    || (v16 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]], v16 == 0)
+    || v16 == -65536)
+    {
+    if (uLastPointedObjectID != 0)
+    {
+    game_ui_status_bar_string[0] = 0;
+    bForceDrawFooter = 1;
     }
     uLastPointedObjectID = 0;
     return;
+    }
+    pItemGen = (ItemGen *)((char *)&pParty->pPickedItem + 36 * (v16 + 12 * (unsigned int)window_SpeakInHouse->ptr_1C) + 4);
+    GameUI_StatusBar_Set(pItemGen->GetDisplayName());
+    game_ui_status_bar_string[0] = 0;
+    bForceDrawFooter = 1;
+    uLastPointedObjectID = 0;
+    return;
+    }
+    */
+
+
+
+    //}
+  }
+
+  // no windows active -outside of game screen area only
+  if (!lWindowList.empty()) {
+    GUIWindow *win = lWindowList.back();
+    if (win->Contains(pX, pY)) {
+      for (GUIButton *pButton : win->vButtons) {
+        switch (pButton->uButtonType) {
+        case 1:
+          if (pX >= pButton->uX && pX <= pButton->uZ && pY >= pButton->uY && pY <= pButton->uW) {
+            pMessageType3 = (UIMessageType)pButton->field_1C;
+            if (pMessageType3 == 0) {  // For books
+              GameUI_StatusBar_Set(pButton->sLabel);
+            }
+            else {
+              pMessageQueue_50CBD0->AddGUIMessage(pMessageType3, pButton->msg_param, 0);
+            }
+            uLastPointedObjectID = 1;
+            return;
+          }
+          break;
+        case 2://hovering over portraits
+          if (pButton->uWidth != 0 && pButton->uHeight != 0) {
+            uint distW = pX - pButton->uX;
+            uint distY = pY - pButton->uY;
+
+            double ratioX = 1.0 * (distW*distW) / (pButton->uWidth*pButton->uWidth);
+            double ratioY = 1.0 * (distY*distY) / (pButton->uHeight*pButton->uHeight);
+
+            if (ratioX + ratioY < 1.0) {
+              pMessageType2 = (UIMessageType)pButton->field_1C;
+              if (pMessageType2 != 0)
+                pMessageQueue_50CBD0->AddGUIMessage(pMessageType2, pButton->msg_param, 0);
+              GameUI_StatusBar_Set(pButton->sLabel); // for character name
+              uLastPointedObjectID = 1;
+              return;
+            }
+          }
+          break;
+        case 3: // is this one needed?
+                /*                if (pX >= pButton->uX && pX <= pButton->uZ
+                && pY >= pButton->uY && pY <= pButton->uW)
+                {
+                requiredSkillpoints = (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param] & 0x3F) + 1;
+
+                String str;
+                if (pPlayers[uActiveCharacter]->uSkillPoints < requiredSkillpoints)
+                str = localization->FormatString(469, requiredSkillpoints - pPlayers[uActiveCharacter]->uSkillPoints);// "You need %d more Skill Points to advance here"
+                else
+                str = localization->FormatString(468, requiredSkillpoints);// "Clicking here will spend %d Skill Points"
+                GameUI_StatusBar_Set(str);
+                uLastPointedObjectID = 1;
+                return;
+                }*/
+          break;
+        }
+      }
+    }
+  }
+
+  //pMouse->uPointingObjectID = sub_46A99B(); //for software
+  if (uLastPointedObjectID != 0) {
+    game_ui_status_bar_string[0] = 0;
+    bForceDrawFooter = 1;
+  }
+  uLastPointedObjectID = 0;
+  return;
 }
 
 //----- (0044158F) --------------------------------------------------------

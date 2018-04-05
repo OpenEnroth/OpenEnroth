@@ -2,6 +2,9 @@
 
 #include <cstdint>
 #include <array>
+#include <vector>
+#include <queue>
+#include <list>
 
 #include "Engine/Strings.h"
 #include "Engine/Objects/Player.h"
@@ -259,13 +262,7 @@ enum DIALOGUE_TYPE
   DIALOGUE_ARENA_ALREADY_WON = 92,
 };
 
-
-
-
-
-/*  298 */
-enum WindowType: unsigned __int32
-{
+enum WindowType {
   WINDOW_null            = 0,
   WINDOW_MainMenu        = 1,
   WINDOW_GameMenu        = 3,
@@ -327,21 +324,15 @@ struct Texture_MM7;
 #define WINDOW_INPUT_CONFIRMED   2
 #define WINDOW_INPUT_CANCELLED   3
 
-/*  155 */
-#pragma pack(push, 1)
-struct GUIWindow
-{
-    GUIWindow();
-    GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const char* hint);
-    virtual ~GUIWindow() {}
+struct GUIWindow {
+  GUIWindow();
+  GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const String &hint = String());
+  virtual ~GUIWindow() {}
 
-    GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
-        UIMessageType msg, unsigned int msg_param, unsigned __int8 hotkey, const char *label, class Image *textures, ...);
-    GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
-        UIMessageType msg, unsigned int msg_param, unsigned __int8 hotkey, const String &label, class Image *textures, ...);
-    GUIButton *CreateButtonInternal(int x, int y, int width, int height, int a6, int a7,
-        UIMessageType msg, unsigned int msg_param, unsigned __int8 hotkey, const String &label, va_list textures);
+  GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
+    UIMessageType msg, unsigned int msg_param, uint8_t hotkey, const String &label, const std::vector<Image*> &textures = std::vector<Image*>());
 
+  bool Contains(unsigned int x, unsigned int y);
   void DrawFlashingInputCursor(signed int uX, int uY, struct GUIFont *a2);
 
   int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, const char *text, int rect_width, int reverse_text);
@@ -362,6 +353,7 @@ struct GUIWindow
 
   virtual void Update() {}
   virtual void Release();
+  void DeleteButtons();
 
   static void InitializeGUI();
 
@@ -372,169 +364,161 @@ struct GUIWindow
   unsigned int uFrameZ;
   unsigned int uFrameW;
   WindowType   eWindowType;
-  union{
-  void *ptr_1C;// sometimes BuildID_2Events
-  unsigned int par1C;
-	};
-  unsigned int uNumControls;
+  union {
+    void *ptr_1C;// sometimes BuildID_2Events
+    unsigned int par1C;
+  };
   int field_24;
-  int pNumPresenceButton; 
+  int pNumPresenceButton;
   int pCurrentPosActiveItem;
   int field_30;
   int field_34;
   int pStartingPosActiveItem;
-  int numVisibleWindows;
   int receives_keyboard_input_2; //  0  no input   1 currently typing   2 enter pressed   3 escape pressed
-  int receives_keyboard_input;
-  const char *Hint;
-  GUIButton *pControlsHead;
-  GUIButton *pControlsTail;
-};
-#pragma pack(pop)
-
-
-
-struct GUIWindow_Dialogue : public GUIWindow
-{
-    GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint);
-    virtual ~GUIWindow_Dialogue() {}
-
-    virtual void Update();
-    virtual void Release();
-};
-struct GUIWindow_GenericDialogue : public GUIWindow
-{
-    GUIWindow_GenericDialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint);
-    virtual ~GUIWindow_GenericDialogue() {}
-
-    virtual void Update();
-    virtual void Release();
-};
-struct GUIWindow_House : public GUIWindow
-{
-    GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint);
-    virtual ~GUIWindow_House() {}
-
-    virtual void Update();
-    virtual void Release();
-};
-struct GUIWindow_Scroll : public GUIWindow
-{
-    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {
-        CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
-        CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-        CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-        CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
-        CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "", 0);
-    }
-    virtual ~GUIWindow_Scroll() {}
-
-    virtual void Update();
-};
-struct GUIWindow_Inventory : public GUIWindow
-{
-    GUIWindow_Inventory(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~GUIWindow_Inventory() {}
-
-    virtual void Update();
-    virtual void Release();
-};
-struct GUIWindow_Inventory_CastSpell : public GUIWindow
-{
-    GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint);
-    virtual ~GUIWindow_Inventory_CastSpell() {}
-
-    virtual void Update();
-};
-struct OnButtonClick : public GUIWindow
-{
-    OnButtonClick(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~OnButtonClick() {}
-
-    virtual void Update();
-};
-struct OnButtonClick2 : public GUIWindow
-{
-    OnButtonClick2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~OnButtonClick2() {}
-
-    virtual void Update();
-};
-struct OnButtonClick3 : public GUIWindow
-{
-    OnButtonClick3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~OnButtonClick3() {}
-
-    virtual void Update();
-};
-struct OnButtonClick4 : public GUIWindow
-{
-    OnButtonClick4(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~OnButtonClick4() {}
-
-    virtual void Update();
-    virtual void Release();
-};
-struct OnSaveLoad : public GUIWindow
-{
-    OnSaveLoad(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~OnSaveLoad() {}
-
-    virtual void Update();
-};
-struct OnCancel : public GUIWindow
-{
-    OnCancel(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~OnCancel() {}
-
-    virtual void Update();
-};
-struct OnCancel2 : public GUIWindow
-{
-    OnCancel2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~OnCancel2() {}
-
-    virtual void Update();
-};
-struct OnCancel3 : public GUIWindow
-{
-    OnCancel3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~OnCancel3() {}
-
-    virtual void Update();
-};
-struct OnCastTargetedSpell : public GUIWindow
-{
-    OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint);
-    virtual ~OnCastTargetedSpell() {}
+  bool receives_keyboard_input;
+  String sHint;
+  std::vector<GUIButton*> vButtons;
 };
 
+struct GUIWindow_Dialogue : public GUIWindow {
+  GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
+  virtual ~GUIWindow_Dialogue() {}
 
+  virtual void Update();
+  virtual void Release();
+};
 
+struct GUIWindow_GenericDialogue : public GUIWindow {
+  GUIWindow_GenericDialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
+  virtual ~GUIWindow_GenericDialogue() {}
 
+  virtual void Update();
+  virtual void Release();
+};
 
-enum CURRENT_SCREEN
-{
+struct GUIWindow_House : public GUIWindow {
+  GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
+  virtual ~GUIWindow_House() {}
+
+  virtual void Update();
+  virtual void Release();
+};
+
+struct GUIWindow_Scroll : public GUIWindow {
+  GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+    GUIWindow(x, y, width, height, button, hint)
+  {
+    CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
+    CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
+    CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
+    CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
+    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "");
+  }
+  virtual ~GUIWindow_Scroll() {}
+
+  virtual void Update();
+};
+
+struct GUIWindow_Inventory : public GUIWindow {
+  GUIWindow_Inventory(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+    GUIWindow(x, y, width, height, button, hint)
+  {}
+  virtual ~GUIWindow_Inventory() {}
+
+  virtual void Update();
+};
+
+struct GUIWindow_Inventory_CastSpell : public GUIWindow {
+  GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
+  virtual ~GUIWindow_Inventory_CastSpell() {}
+
+  virtual void Update();
+};
+
+struct OnButtonClick : public GUIWindow {
+  OnButtonClick(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String(), bool play_sound = true) :
+    GUIWindow(x, y, width, height, button, hint),
+    bPlaySound(play_sound)
+  {}
+  virtual ~OnButtonClick() {}
+
+  virtual void Update();
+
+  bool bPlaySound;
+};
+
+struct OnButtonClick2 : public GUIWindow {
+  OnButtonClick2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String(), bool play_sound = true) :
+    GUIWindow(x, y, width, height, button, hint),
+    bPlaySound(play_sound)
+  {}
+  virtual ~OnButtonClick2() {}
+
+  virtual void Update();
+
+  bool bPlaySound;
+};
+
+struct OnButtonClick3 : public GUIWindow {
+  OnButtonClick3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+    GUIWindow(x, y, width, height, button, hint)
+  {}
+  virtual ~OnButtonClick3() {}
+
+  virtual void Update();
+};
+
+struct OnButtonClick4 : public GUIWindow {
+  OnButtonClick4(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+    GUIWindow(x, y, width, height, button, hint)
+  {}
+  virtual ~OnButtonClick4() {}
+
+  virtual void Update();
+};
+
+struct OnSaveLoad : public GUIWindow {
+  OnSaveLoad(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+    GUIWindow(x, y, width, height, button, hint)
+  {}
+  virtual ~OnSaveLoad() {}
+
+  virtual void Update();
+};
+
+struct OnCancel : public GUIWindow {
+  OnCancel(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+    GUIWindow(x, y, width, height, button, hint)
+  {}
+  virtual ~OnCancel() {}
+
+  virtual void Update();
+};
+
+struct OnCancel2 : public GUIWindow {
+  OnCancel2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+    GUIWindow(x, y, width, height, button, hint)
+  {}
+  virtual ~OnCancel2() {}
+
+  virtual void Update();
+};
+
+struct OnCancel3 : public GUIWindow {
+  OnCancel3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+    GUIWindow(x, y, width, height, button, hint)
+  {}
+  virtual ~OnCancel3() {}
+
+  virtual void Update();
+};
+
+struct OnCastTargetedSpell : public GUIWindow {
+  OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
+  virtual ~OnCastTargetedSpell() {}
+};
+
+enum CURRENT_SCREEN {
   SCREEN_GAME = 0,
   SCREEN_MENU = 1,
   SCREEN_OPTIONS = 2,
@@ -571,42 +555,27 @@ enum CURRENT_SCREEN
   SCREEN_QUICK_REFERENCE = 0x68,
 };
 
-
-
-
-/*  249 */
-#pragma pack(push, 1)
-struct GUIMessage
-{
+struct GUIMessage {
   enum UIMessageType eType;
   int param;
   int field_8;
+  String file;
+  unsigned int line;
 };
-#pragma pack(pop)
-
-
-
 
 #define AddGUIMessage(msg, param, a4) AddMessageImpl((msg), (param), (a4), __FILE__, __LINE__)
-/*  250 */
-#pragma pack(push, 1)
-struct GUIMessageQueue
-{
-  inline GUIMessageQueue():
-    uNumMessages(0)
-  {}
+
+struct GUIMessageQueue {
+  GUIMessageQueue() {}
 
   void Flush();
+  void Clear();
+  bool Empty() { return qMessages.empty(); }
   void PopMessage(UIMessageType *pMsg, int *pParam, int *a4);
   void AddMessageImpl(UIMessageType msg, int param, unsigned int a4, const char *file = nullptr, int line = 0);
 
-  unsigned int uNumMessages;
-  GUIMessage pMessages[40];
-
-  const char *files[40];
-  int          lines[40];
+  std::queue<GUIMessage> qMessages;
 };
-#pragma pack(pop)
 
 extern struct GUIMessageQueue *pMessageQueue_50CBD0; // idb
 
@@ -619,15 +588,18 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType);
 
 
 extern enum WindowType current_character_screen_window;
-extern struct GUIWindow *pWindow_MMT_MainMenu;
 extern struct GUIWindow *pWindow_MainMenu;
-extern std::array<struct GUIWindow *, 50> pWindowList;
+extern std::list<struct GUIWindow *> lWindowList;
 
+class WindowManager {
+ public:
+  WindowManager() {}
+  virtual ~WindowManager() {}
 
+  void DeleteAllVisibleWindows();
+};
 
-
-
-
+extern WindowManager windowManager;
 
 void draw_leather();
 
@@ -684,7 +656,6 @@ void UI_OnMouseRightClick(Vec2_int_ *_this);
 
 void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight); // idb
 void DrawMM7CopyrightWindow();
-//void LoadFonts_and_DrawCopyrightWindow();
 void GUI_UpdateWindows();
 int GetConditionDrawColor(unsigned int uConditionIdx); // idb
 void FillAwardsData();
@@ -693,8 +664,8 @@ void ReleaseAwardsScrollBar();
 void Inventory_ItemPopupAndAlchemy();
 unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int base_pos);
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
-struct GUIButton *GUI_HandleHotkey(unsigned __int8 uHotkey); // idb
-void GUI_ReplaceHotkey(unsigned __int8 uOldHotkey, unsigned __int8 uNewHotkey, char bFirstCall);
+struct GUIButton *GUI_HandleHotkey(uint8_t uHotkey); // idb
+void GUI_ReplaceHotkey(uint8_t uOldHotkey, uint8_t uNewHotkey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, GameTime remaining_time, struct GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item); // idb
 void MonsterPopup_Draw(unsigned int uActorID, struct GUIWindow *window);
@@ -717,61 +688,33 @@ String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, struct I
 String BuildDialogueString(String &str, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int shop_screen, GameTime *a6 = nullptr);
 int const_2();
 
+struct GUIButton {
+  GUIButton() {
+    pParent = nullptr;
+  }
 
+  void DrawLabel(const String &label_text, struct GUIFont *pFont, int a5, int uFontShadowColor);
+  bool Contains(unsigned int x, unsigned int y);
+  void Release();
 
-
-
-
-
-
-
-
-
-
-
-#pragma pack(push, 1)
-struct GUIButton
-{
-    GUIButton()
-    {
-        for (unsigned int i = 0; i < 5; ++i)
-            pTextures[i] = nullptr;
-    }
-
-    void DrawLabel(const char *label_text, struct GUIFont *pFont, int a5, int uFontShadowColor);
-
-    void Release();
-
-
-    unsigned int uX;
-    unsigned int uY;
-    unsigned int uWidth;
-    unsigned int uHeight;
-    unsigned int uZ;
-    unsigned int uW;
-    int uButtonType;
-    int field_1C;//may be pMessageType
-    UIMessageType msg;
-    unsigned int  msg_param;
-    int field_28;
-    int field_2C_is_pushed;
-    GUIButton *pPrev;
-    GUIButton *pNext;
-    struct GUIWindow *pParent;
-    class Image *pTextures[5];
-    unsigned int uNumTextures;
-    unsigned __int8 uHotkey;
-    char pButtonName[32];
-    char field_75[71];
-
-
-    // new fields
-    String button_name;
+  unsigned int uX;
+  unsigned int uY;
+  unsigned int uWidth;
+  unsigned int uHeight;
+  unsigned int uZ;
+  unsigned int uW;
+  int uButtonType;
+  int field_1C;//may be pMessageType
+  UIMessageType msg;
+  unsigned int  msg_param;
+  int field_28;
+  bool field_2C_is_pushed;
+  struct GUIWindow *pParent;
+  std::vector<Image*> vTextures;
+  uint8_t uHotkey;
+  String sLabel;
+  String field_75;
 };
-#pragma pack(pop)
-
-
-
 
 extern struct GUIButton *pBtn_CloseBook;
 extern struct GUIButton *pBtn_InstallRemoveSpell;

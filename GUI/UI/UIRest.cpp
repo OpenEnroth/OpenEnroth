@@ -67,7 +67,7 @@ void PrepareToLoadRestUI()
     }
     pEventTimer->Pause();
     if (_506F14_resting_stage != 2)
-        new OnButtonClick2(518, 450, 0, 0, (int)pBtn_Rest, 0);
+        new OnButtonClick2(518, 450, 0, 0, (int)pBtn_Rest);
     _506F18_num_minutes_to_sleep = 0;
     _506F14_resting_stage = 0;
     uRestUI_FoodRequiredToRest = 2;
@@ -98,7 +98,7 @@ void PrepareToLoadRestUI()
 
 //----- (0041F6C1) --------------------------------------------------------
 GUIWindow_Rest::GUIWindow_Rest() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, nullptr)
+    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
 
     PrepareToLoadRestUI();
@@ -115,11 +115,11 @@ GUIWindow_Rest::GUIWindow_Rest() :
     OutdoorLocation::LoadActualSkyFrame();
 
     //auto wnd = new GUIWindow_Rest(0, 0, window->GetWidth(), window->GetHeight());
-    pButton_RestUI_Exit = CreateButton(280, 297, 154, 37, 1, 0, UIMSG_ExitRest, 0, 0, "", rest_ui_btn_exit, 0);
-    pButton_RestUI_Main = CreateButton(24, 154, 225, 37, 1, 0, UIMSG_Rest8Hour, 0, 'R', "", rest_ui_btn_4, 0);
-    pButton_RestUI_WaitUntilDawn = CreateButton(61, 232, 154, 33, 1, 0, UIMSG_AlreadyResting, 0, 'D', "", rest_ui_btn_1, 0);
-    pButton_RestUI_Wait1Hour = CreateButton(61, 264, 154, 33, 1, 0, UIMSG_Wait1Hour, 0, 'H', "", rest_ui_btn_2, 0);
-    pButton_RestUI_Wait5Minutes = CreateButton(61, 296, 154, 33, 1, 0, UIMSG_Wait5Minutes, 0, 'M', "", rest_ui_btn_3, 0);
+    pButton_RestUI_Exit = CreateButton(280, 297, 154, 37, 1, 0, UIMSG_ExitRest, 0, 0, "", { {rest_ui_btn_exit} });
+    pButton_RestUI_Main = CreateButton(24, 154, 225, 37, 1, 0, UIMSG_Rest8Hour, 0, 'R', "", { {rest_ui_btn_4} });
+    pButton_RestUI_WaitUntilDawn = CreateButton(61, 232, 154, 33, 1, 0, UIMSG_AlreadyResting, 0, 'D', "", { {rest_ui_btn_1} });
+    pButton_RestUI_Wait1Hour = CreateButton(61, 264, 154, 33, 1, 0, UIMSG_Wait1Hour, 0, 'H', "", { {rest_ui_btn_2} });
+    pButton_RestUI_Wait5Minutes = CreateButton(61, 296, 154, 33, 1, 0, UIMSG_Wait5Minutes, 0, 'M', "", { {rest_ui_btn_3} });
 }
 
 

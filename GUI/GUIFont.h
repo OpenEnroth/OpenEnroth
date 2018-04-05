@@ -15,7 +15,7 @@ class GUIFont {
 
   unsigned int GetLineWidth(const String &str);
 
-  unsigned int CalcTextHeight(const String &str, struct GUIWindow *window, int x_offset, bool return_on_carriage = false);
+  unsigned int CalcTextHeight(const String &str, unsigned int width, int x_offset, bool return_on_carriage = false);
 
   String GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned int uX, int a5);
   void DrawTextLineToBuff(int uColor, unsigned short* uX_buff_pos, const char *text, int line_width);
@@ -23,9 +23,9 @@ class GUIFont {
   void DrawText(GUIWindow *pWindow, int uX, int uY, unsigned short uFontColor, const char *Str, bool present_time_transparency, int max_text_height, int uFontShadowColor);
   int DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, unsigned int uColor, String &str, int rect_width, int reverse_text);
 
-  String FitTextInAWindow(const String &inString, GUIWindow *pWindow, int uX, bool return_on_carriage = false);
+  String FitTextInAWindow(const String &inString, unsigned int width, int uX, bool return_on_carriage = false);
 
-  static void _44D2FD_prolly_draw_credits_entry(GUIFont *firstFont, GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h, uint16_t firstColor, uint16_t secondColor, const char *pString, uint16_t *pPixels, unsigned int uPixelsWidth);
+  static void DrawCreditsEntry(GUIFont *firstFont, GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h, uint16_t firstColor, uint16_t secondColor, const char *pString, uint16_t *pPixels, unsigned int uPixelsWidth);
   static char *FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6);
   static int GetStringHeight2(GUIFont *firstFont, GUIFont *secondFont, const char *text_str, GUIWindow* pWindow, int startX, int a6);
 

@@ -149,11 +149,6 @@ class RenderD3D11 : public IRender
             __debugbreak();
         }
 
-        virtual unsigned __int16 ReadPixel16(int x, int y)
-        {
-            __debugbreak(); return 0;
-        }
-
         virtual void ToggleTint() {}
         virtual void ToggleColoredLights() {}
 

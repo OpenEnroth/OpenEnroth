@@ -58,13 +58,13 @@ bool GUICredits::ExecuteCredits() {
   char *pString = (char*)malloc(2 * strlen(text));
   strncpy(pString, text, strlen(text));
   pString[strlen(text)] = 0;
-  GUIFont::_44D2FD_prolly_draw_credits_entry(pFontQuick, pFontCChar, 0, credit_window.uFrameHeight, width, height, Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu), pString, pPixels, width);
+  GUIFont::DrawCreditsEntry(pFontQuick, pFontCChar, 0, credit_window.uFrameHeight, width, height, Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu), pString, pPixels, width);
   free(pString);
   Image *cred_texture = Image::Create(250, height, IMAGE_FORMAT_R5G6B5, pPixels);
   free(pPixels);
 
   GUIWindow *pWindow_Credits = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, text);
-  pWindow_Credits->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "", 0);
+  pWindow_Credits->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "");
   current_screen_type = SCREEN_CREATORS;
   SetCurrentMenuID(MENU_CREDITSPROC);
 

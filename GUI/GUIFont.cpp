@@ -212,7 +212,7 @@ String GUIFont::GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned
 
   int text_height = 0;
 
-  String text_str = FitTextInAWindow(pInString, pWindow, uX);
+  String text_str = FitTextInAWindow(pInString, pWindow->uFrameWidth, uX);
   int text_length = text_str.length();
   for ( int i = 0; i < text_length; ++i ) {
     unsigned char c = text_str[i];
@@ -240,13 +240,14 @@ String GUIFont::GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned
   return text_str;
 }
 
-unsigned int GUIFont::CalcTextHeight(const String &pString, struct GUIWindow *pWindow, int uXOffset, bool return_on_carriage) {
+unsigned int GUIFont::CalcTextHeight(const String &pString, unsigned int width,
+                                     int uXOffset, bool return_on_carriage) {
   if (pString.empty()) {
     return 0;
   }
 
   unsigned int uAllHeght = pData->uFontHeight - 6;
-  String test_string = FitTextInAWindow(pString, pWindow, uXOffset);
+  String test_string = FitTextInAWindow(pString, width, uXOffset);
   size_t uStringLen = pString.length();
   for (int i = 0; i < uStringLen; ++i) {
     unsigned char c = test_string[i];
@@ -304,7 +305,7 @@ unsigned int GUIFont::AlignText_Center(unsigned int width, const String &pString
   return (position < 0) ? 0 : position;
 }
 
-String GUIFont::FitTextInAWindow(const String &inString, GUIWindow *pWindow, int uX, bool return_on_carriage) {
+String GUIFont::FitTextInAWindow(const String &inString, unsigned int width, int uX, bool return_on_carriage) {
   size_t uInStrLen = inString.length();
   strcpy(&temp_string[0], inString.c_str());
   if (uInStrLen == 0) {
@@ -348,7 +349,7 @@ String GUIFont::FitTextInAWindow(const String &inString, GUIWindow *pWindow, int
       }
       default:
         if ((string_pixel_Width + pData->pMetrics[c].uWidth + pData->pMetrics[c].uLeftSpacing +
-          pData->pMetrics[c].uRightSpacing) < pWindow->uFrameWidth) {  // наращивание длины строки или перенос
+          pData->pMetrics[c].uRightSpacing) < width) {  // наращивание длины строки или перенос
           if (i > possible_transition_point)
             string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
           string_pixel_Width += pData->pMetrics[c].uWidth;
@@ -396,7 +397,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, unsigned short uFontC
 
   String string_begin = Str;
   if (max_text_height == 0) {
-    string_begin = FitTextInAWindow(Str, pWindow, uX);
+    string_begin = FitTextInAWindow(Str, pWindow->uFrameWidth, uX);
   }
   auto string_end = string_begin;
   auto string_base = string_begin;
@@ -609,7 +610,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
   return v28;
 }
 
-void GUIFont::_44D2FD_prolly_draw_credits_entry(GUIFont *firstFont, GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h, uint16_t firstColor, uint16_t secondColor, const char *pString, uint16_t *pPixels, unsigned int uPixelsWidth) {
+void GUIFont::DrawCreditsEntry(GUIFont *firstFont, GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h, uint16_t firstColor, uint16_t secondColor, const char *pString, uint16_t *pPixels, unsigned int uPixelsWidth) {
   GUIWindow draw_window;
   draw_window.uFrameHeight = h;
   draw_window.uFrameW = uFrameY + h - 1;

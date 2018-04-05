@@ -109,77 +109,39 @@ std::array<GUIButton*, 4> pCreationUI_BtnPressLeft2;
 std::array<GUIButton*, 4> pCreationUI_BtnPressLeft;
 std::array<GUIButton*, 4> pCreationUI_BtnPressRight;
 
-
-
-
-
-
-//----- (0041D0D8) --------------------------------------------------------
-void GUIButton::Release()
-{
-  if ( this )
-  {
-    if ( this == this->pParent->pControlsHead )
-    {
-      if ( this->pNext )
-      {
-        this->pParent->pControlsHead = this->pNext;
-        this->pNext->pPrev = 0;
-      }
-      else
-      {
-        this->pParent->pControlsHead = 0;
-        this->pParent->pControlsTail = 0;
-      }
-    }
-    else
-    {
-      if ( this->pNext )
-      {
-        this->pPrev->pNext = this->pNext;
-        this->pNext->pPrev = this->pPrev;
-      }
-      else
-      {
-        this->pPrev->pNext = 0;
-        this->pParent->pControlsTail = this->pPrev;
-      }
-    }
-    --this->pParent->uNumControls;
+void GUIButton::Release() {
+  std::vector<GUIButton*>::iterator it = std::find(pParent->vButtons.begin(), pParent->vButtons.end(), this);
+  if (it != pParent->vButtons.end()) {
+    pParent->vButtons.erase(it);
   }
+  delete this;
 }
 
-//----- (00415180) --------------------------------------------------------
-void GUIButton::DrawLabel( const char *label_text, struct GUIFont *pFont, int a5, int uFontShadowColor )
-{
-  //strlen(edx0);
+void GUIButton::DrawLabel(const String &label_text, struct GUIFont *pFont, int a5, int uFontShadowColor) {
   return pParent->DrawText(pFont,
-           this->uX + (signed int)(this->uWidth - pFont->GetLineWidth(label_text)) / 2,
-           this->uY + (signed int)(this->uHeight - pFont->GetHeight()) / 2,
-           a5, label_text, 0, 0, uFontShadowColor);
+    this->uX + (int)(this->uWidth - pFont->GetLineWidth(label_text)) / 2,
+    this->uY + (int)(this->uHeight - pFont->GetHeight()) / 2,
+    a5, label_text, 0, 0, uFontShadowColor);
 }
-//----- (004B36CC) --------------------------------------------------------
-void CreateButtonInColumn( int column_pos, unsigned int control_id )
-{
-  pDialogueWindow->CreateButton( 480, 30 * column_pos + 146, 140, 30,  1,  0, UIMSG_SelectShopDialogueOption,  control_id,  0,   "",   0);
-}
-//----- (00419379) --------------------------------------------------------
-void ReleaseAwardsScrollBar()
-{
-  GUIButton *pButton; // esi@2
 
-  if ( awards_scroll_bar_created )
-  {
+bool GUIButton::Contains(unsigned int x, unsigned int y) {
+  return (x >= uX && x <= uZ && y >= uY && y <= uW);
+}
+
+void CreateButtonInColumn( int column_pos, unsigned int control_id ) {
+  pDialogueWindow->CreateButton( 480, 30 * column_pos + 146, 140, 30,  1,  0, UIMSG_SelectShopDialogueOption,  control_id, 0, "");
+}
+
+void ReleaseAwardsScrollBar() {
+  if (awards_scroll_bar_created) {
     awards_scroll_bar_created = false;
-	ptr_507BA4->Release();
+    ptr_507BA4->Release();
     pBtn_Up->Release();
     pBtn_Down->Release();
     pBtn_Down = 0;
     pBtn_Up = 0;
-    for ( pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext )
-    {
-      if ( pButton->msg == UIMSG_InventoryLeftClick )
-      {
+    for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
+      if (pButton->msg == UIMSG_InventoryLeftClick) {
         pButton->uX = dword_50698C_uX;
         pButton->uY = dword_506988_uY;
         pButton->uZ = dword_506984_uZ;
@@ -189,18 +151,12 @@ void ReleaseAwardsScrollBar()
     }
   }
 }
-//----- (00419220) --------------------------------------------------------
-void CreateAwardsScrollBar()
-{
-  GUIButton *pButton; // eax@2
 
-  if ( !awards_scroll_bar_created )
-  {
+void CreateAwardsScrollBar() {
+  if (!awards_scroll_bar_created) {
     awards_scroll_bar_created = 1;
-    for ( pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext )
-    {
-      if ( pButton->msg == UIMSG_InventoryLeftClick )
-      {
+    for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
+      if (pButton->msg == UIMSG_InventoryLeftClick) {
         dword_50698C_uX = pButton->uX;
         dword_506988_uY = pButton->uY;
         dword_506984_uZ = pButton->uZ;
@@ -212,27 +168,25 @@ void CreateAwardsScrollBar()
       }
     }
     pBtn_Up = pGUIWindow_CurrentMenu->CreateButton(438, 46,
-                   ui_ar_up_up->GetWidth(),
-                   ui_ar_up_up->GetHeight(),
-                   1, 0, UIMSG_ClickAwardsUpBtn, 0, 0, "",
-                   ui_ar_up_up,
-                   ui_ar_up_dn, 0);
+      ui_ar_up_up->GetWidth(),
+      ui_ar_up_up->GetHeight(),
+      1, 0, UIMSG_ClickAwardsUpBtn, 0, 0, "",
+      { {ui_ar_up_up, ui_ar_up_dn} });
     pBtn_Down = pGUIWindow_CurrentMenu->CreateButton(438, 292,
-                   ui_ar_dn_up->GetWidth(),
-                   ui_ar_dn_up->GetHeight(),
-                   1, 0, UIMSG_ClickAwardsDownBtn, 0, 0, "",
-                   ui_ar_dn_up,
-                   ui_ar_dn_dn, 0);
-    ptr_507BA4 = pGUIWindow_CurrentMenu->CreateButton(440, 62, 16, 232, 1, 0, UIMSG_ClickAwardScrollBar, 0, 0, "", 0);
+      ui_ar_dn_up->GetWidth(),
+      ui_ar_dn_up->GetHeight(),
+      1, 0, UIMSG_ClickAwardsDownBtn, 0, 0, "",
+      { {ui_ar_dn_up, ui_ar_dn_dn} });
+    ptr_507BA4 = pGUIWindow_CurrentMenu->CreateButton(440, 62, 16, 232, 1, 0, UIMSG_ClickAwardScrollBar, 0, 0, "");
   }
 }
-//----- (004BCA33) --------------------------------------------------------
+
 void UI_CreateEndConversationButton()
 {
   pDialogueWindow->Release();
-  pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0, 0);
+  pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0);
   pBtn_ExitCancel = pDialogueWindow->CreateButton( 471, 445,  169, 35, 1, 0, UIMSG_Escape,  0,  0,
                  localization->GetString(74),  //"End Conversation"
-      ui_exit_cancel_button_background, 0);
-  pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "", 0);
+    { {ui_exit_cancel_button_background} });
+  pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "");
 }

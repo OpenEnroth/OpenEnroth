@@ -130,7 +130,6 @@ class RenderOpenGL : public IRender
 
     public:
         virtual void WritePixel16(int x, int y, unsigned __int16 color);
-        virtual unsigned __int16 ReadPixel16(int x, int y);
 
         virtual void ToggleTint() { bTinting = !bTinting; }
         virtual void ToggleColoredLights() { bUseColoredLights = !bUseColoredLights; }

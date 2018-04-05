@@ -449,327 +449,269 @@ std::array<Image *, 16> paperdoll_dbrds;
 
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(unsigned int uActiveCharacter, enum CURRENT_SCREEN screen) :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter, nullptr)
+  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter)
 {
-    //----- (00421626) --------------------------------------------------------
-    // 00421626 CharacterUI_Initialize --- part
-    //GUIWindow *CharacterUI_Initialize(enum CURRENT_SCREEN screen)
+  pEventTimer->Pause();
+  pAudioPlayer->StopChannels(-1, -1);
+  bRingsShownInCharScreen = false;
+  CharacterUI_LoadPaperdollTextures();
+  current_screen_type = screen;
 
-    pEventTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
-    bRingsShownInCharScreen = false;
-    CharacterUI_LoadPaperdollTextures();
-    current_screen_type = screen;
+  //auto wnd = new GUIWindow_CharacterRecord(0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter, 0);
+  pCharacterScreen_StatsBtn = CreateButton(pViewport->uViewportTL_X + 12, pViewport->uViewportTL_Y + 308,
+    paperdoll_dbrds[9]->GetWidth(),
+    paperdoll_dbrds[9]->GetHeight(),
+    1, 0, UIMSG_ClickStatsBtn, 0, 'S', localization->GetString(216),// Stats
+    { { paperdoll_dbrds[10], paperdoll_dbrds[9] } }
+  );
+  pCharacterScreen_SkillsBtn = CreateButton(pViewport->uViewportTL_X + 102, pViewport->uViewportTL_Y + 308,
+    paperdoll_dbrds[7]->GetWidth(),
+    paperdoll_dbrds[7]->GetHeight(),
+    1, 0, UIMSG_ClickSkillsBtn, 0, 'K', localization->GetString(205),//Skills
+    { {paperdoll_dbrds[8], paperdoll_dbrds[7]} }
+  );
+  pCharacterScreen_InventoryBtn = CreateButton(pViewport->uViewportTL_X + 192, pViewport->uViewportTL_Y + 308,
+    paperdoll_dbrds[5]->GetWidth(),
+    paperdoll_dbrds[5]->GetHeight(),
+    1, 0, UIMSG_ClickInventoryBtn, 0, 'I', localization->GetString(120), //Inventory
+    { {paperdoll_dbrds[6], paperdoll_dbrds[5]} }
+  );
+  pCharacterScreen_AwardsBtn = CreateButton(pViewport->uViewportTL_X + 282, pViewport->uViewportTL_Y + 308,
+    paperdoll_dbrds[3]->GetWidth(),
+    paperdoll_dbrds[3]->GetHeight(),
+    1, 0, UIMSG_ClickAwardsBtn, 0, 'A', localization->GetString(22), //Awards
+    { {paperdoll_dbrds[4], paperdoll_dbrds[3]} }
+  );
+  pCharacterScreen_ExitBtn = CreateButton(pViewport->uViewportTL_X + 371, pViewport->uViewportTL_Y + 308,
+    paperdoll_dbrds[1]->GetWidth(),
+    paperdoll_dbrds[1]->GetHeight(),
+    1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0, localization->GetString(79),//Exit
+    { {paperdoll_dbrds[2], paperdoll_dbrds[1]} }
+  );
+  CreateButton(0, 0, 476, 345, 1, 122, UIMSG_InventoryLeftClick, 0, 0, "");
+  pCharacterScreen_DetalizBtn = CreateButton(600, 300, 30, 30, 1, 0, UIMSG_ChangeDetaliz, 0, 0, localization->GetString(64));
+  pCharacterScreen_DollBtn = CreateButton(476, 0, 164, 345, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "");
 
-    //auto wnd = new GUIWindow_CharacterRecord(0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter, 0);
-    pCharacterScreen_StatsBtn = CreateButton(pViewport->uViewportTL_X + 12, pViewport->uViewportTL_Y + 308,
-        paperdoll_dbrds[9]->GetWidth(),
-        paperdoll_dbrds[9]->GetHeight(),
-        1, 0, UIMSG_ClickStatsBtn, 0, 'S', localization->GetString(216),// Stats
-        paperdoll_dbrds[10],
-        paperdoll_dbrds[9], 0
-    );
-    pCharacterScreen_SkillsBtn = CreateButton(pViewport->uViewportTL_X + 102, pViewport->uViewportTL_Y + 308,
-        paperdoll_dbrds[7]->GetWidth(),
-        paperdoll_dbrds[7]->GetHeight(),
-        1, 0, UIMSG_ClickSkillsBtn, 0, 'K', localization->GetString(205),//Skills
-        paperdoll_dbrds[8],
-        paperdoll_dbrds[7], 0
-    );
-    pCharacterScreen_InventoryBtn = CreateButton(pViewport->uViewportTL_X + 192, pViewport->uViewportTL_Y + 308,
-        paperdoll_dbrds[5]->GetWidth(),
-        paperdoll_dbrds[5]->GetHeight(),
-        1, 0, UIMSG_ClickInventoryBtn, 0, 'I', localization->GetString(120), //Inventory
-        paperdoll_dbrds[6],
-        paperdoll_dbrds[5], 0
-    );
-    pCharacterScreen_AwardsBtn = CreateButton(pViewport->uViewportTL_X + 282, pViewport->uViewportTL_Y + 308,
-        paperdoll_dbrds[3]->GetWidth(),
-        paperdoll_dbrds[3]->GetHeight(),
-        1, 0, UIMSG_ClickAwardsBtn, 0, 'A', localization->GetString(22), //Awards
-        paperdoll_dbrds[4],
-        paperdoll_dbrds[3], 0
-    );
-    pCharacterScreen_ExitBtn = CreateButton(pViewport->uViewportTL_X + 371, pViewport->uViewportTL_Y + 308,
-        paperdoll_dbrds[1]->GetWidth(),
-        paperdoll_dbrds[1]->GetHeight(),
-        1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0, localization->GetString(79),//Exit
-        paperdoll_dbrds[2],
-        paperdoll_dbrds[1], 0
-    );
-    CreateButton(0, 0, 476, 345, 1, 122, UIMSG_InventoryLeftClick, 0, 0, "", 0);
-    pCharacterScreen_DetalizBtn = CreateButton(600, 300, 30, 30, 1, 0, UIMSG_ChangeDetaliz, 0, 0, localization->GetString(64), 0);
-    pCharacterScreen_DollBtn = CreateButton(476, 0, 164, 345, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "", 0);
+  CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
+  CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
+  CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
+  CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
 
-    CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
-    CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-    CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-    CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
+  CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "");
+  FillAwardsData();
 
-    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "", 0);
-    FillAwardsData();
-
-    ui_character_skills_background = assets->GetImage_16BitColorKey("fr_skill", 0x7FF);
-    ui_character_awards_background = assets->GetImage_16BitColorKey("fr_award", 0x7FF);
-    ui_character_stats_background = assets->GetImage_16BitColorKey("fr_stats", 0x7FF);
-    ui_character_inventory_background_strip = assets->GetImage_16BitColorKey("fr_strip", 0x7FF);
+  ui_character_skills_background = assets->GetImage_16BitColorKey("fr_skill", 0x7FF);
+  ui_character_awards_background = assets->GetImage_16BitColorKey("fr_award", 0x7FF);
+  ui_character_stats_background = assets->GetImage_16BitColorKey("fr_stats", 0x7FF);
+  ui_character_inventory_background_strip = assets->GetImage_16BitColorKey("fr_strip", 0x7FF);
 }
 
-//----- (0041ABFD) --------------------------------------------------------
-void GUIWindow_CharacterRecord::Update()
-{
-    // -----------------------------------
-    // 004156F0 GUI_UpdateWindows --- part
-    // {
-    //     0041ABFD CharacterUI_CharacterScreen_Draw(pPlayers[uActiveCharacter]);
-    // }
+void GUIWindow_CharacterRecord::Update() {
+  auto player = pPlayers[uActiveCharacter];
 
-    auto player = pPlayers[uActiveCharacter];
-
-    render->ClearZBuffer(0, 479);
-    switch (current_character_screen_window)
-    {
-        case WINDOW_CharacterWindow_Stats:
-        {
-            CharacterUI_ReleaseButtons();
-            ReleaseAwardsScrollBar();
-            CharacterUI_StatsTab_Draw(player);
-            render->DrawTextureAlphaNew(
-                pCharacterScreen_StatsBtn->uX/640.0f,
-                pCharacterScreen_StatsBtn->uY/480.0f,
-                assets->GetImage_16BitColorKey("ib-cd1-d", 0x7FF)
-            );
-        }
-        break;
-
-        case WINDOW_CharacterWindow_Skills:
-        {
-            if (dword_507CC0_activ_ch != uActiveCharacter)
-            {
-                CharacterUI_ReleaseButtons();
-                CharacterUI_SkillsTab_CreateButtons();
-            }
-            ReleaseAwardsScrollBar();
-            CharacterUI_SkillsTab_Draw(player);
-            render->DrawTextureAlphaNew(
-                pCharacterScreen_SkillsBtn->uX/640.0f,
-                pCharacterScreen_SkillsBtn->uY/480.0f,
-                assets->GetImage_16BitColorKey("ib-cd2-d", 0x7FF)
-            );
-        }
-        break;
-
-        case WINDOW_CharacterWindow_Awards:
-        {
-            CharacterUI_ReleaseButtons();
-            ReleaseAwardsScrollBar();
-            CreateAwardsScrollBar();
-            CharacterUI_AwardsTab_Draw(player);
-            render->DrawTextureAlphaNew(
-                pCharacterScreen_AwardsBtn->uX/640.0f,
-                pCharacterScreen_AwardsBtn->uY/480.0f,
-                assets->GetImage_16BitColorKey("ib-cd4-d", 0x7FF)
-            );
-        }
-        break;
-
-        case WINDOW_CharacterWindow_Inventory:
-        {
-            CharacterUI_ReleaseButtons();
-            ReleaseAwardsScrollBar();
-            CharacterUI_InventoryTab_Draw(player, false);
-            render->DrawTextureAlphaNew(
-                pCharacterScreen_InventoryBtn->uX/640.0f,
-                pCharacterScreen_InventoryBtn->uY/480.0f,
-                assets->GetImage_16BitColorKey("ib-cd3-d", 0x7FF)
-            );
-        }
-        break;
-
-        default: __debugbreak();  break;
+  render->ClearZBuffer(0, 479);
+  switch (current_character_screen_window) {
+    case WINDOW_CharacterWindow_Stats: {
+      CharacterUI_ReleaseButtons();
+      ReleaseAwardsScrollBar();
+      CharacterUI_StatsTab_Draw(player);
+      render->DrawTextureAlphaNew(
+        pCharacterScreen_StatsBtn->uX / 640.0f,
+        pCharacterScreen_StatsBtn->uY / 480.0f,
+        assets->GetImage_16BitColorKey("ib-cd1-d", 0x7FF)
+      );
+      break;
     }
-
-    if (bRingsShownInCharScreen)
-        CharacterUI_DrawPaperdollWithRingOverlay(player);
-    else
-        CharacterUI_DrawPaperdoll(player);
-}
-
-
-
-void GUIWindow_CharacterRecord::ShowStatsTab()
-{
-// 004304E7 Game_EventLoop --- part
-    current_character_screen_window = WINDOW_CharacterWindow_Stats;
-    CharacterUI_ReleaseButtons();
-    ReleaseAwardsScrollBar();
-    new OnButtonClick3(pCharacterScreen_StatsBtn->uX, pCharacterScreen_StatsBtn->uY, 0, 0, (int)pCharacterScreen_StatsBtn, 0);
-}
-
-void GUIWindow_CharacterRecord::ShowSkillsTab()
-{
-// 004304E7 Game_EventLoop --- part
-    current_character_screen_window = WINDOW_CharacterWindow_Skills;
-    CharacterUI_ReleaseButtons();
-    ReleaseAwardsScrollBar();
-    CharacterUI_SkillsTab_CreateButtons();
-    new OnButtonClick3(pCharacterScreen_SkillsBtn->uX, pCharacterScreen_SkillsBtn->uY, 0, 0, (int)pCharacterScreen_SkillsBtn, 0);
-}
-
-void GUIWindow_CharacterRecord::ShowInventoryTab()
-{
-// 004304E7 Game_EventLoop --- part
-    current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-    ReleaseAwardsScrollBar();
-    CharacterUI_ReleaseButtons();
-    new OnButtonClick3(pCharacterScreen_InventoryBtn->uX, pCharacterScreen_InventoryBtn->uY, 0, 0, (int)pCharacterScreen_InventoryBtn, 0);
-}
-
-void GUIWindow_CharacterRecord::ShowAwardsTab()
-{
-// 004304E7 Game_EventLoop --- part
-    ReleaseAwardsScrollBar();
-    CharacterUI_ReleaseButtons();
-    CreateAwardsScrollBar();
-    current_character_screen_window = WINDOW_CharacterWindow_Awards;
-    new OnButtonClick3(pCharacterScreen_AwardsBtn->uX, pCharacterScreen_AwardsBtn->uY, 0, 0, (int)pCharacterScreen_AwardsBtn, 0);
-    FillAwardsData();
-}
-
-void GUIWindow_CharacterRecord::ToggleRingsOverlay()
-{
-    int v128, v125, v123, v121;
-
-    bRingsShownInCharScreen ^= 1;
-    pCharacterScreen_DetalizBtn->Release();
-    pCharacterScreen_DollBtn->Release();
-    if (bRingsShownInCharScreen)
-    {
-        v128 = ui_character_inventory_paperdoll_rings_close->GetHeight();
-        v125 = ui_character_inventory_paperdoll_rings_close->GetWidth();
-        v123 = 445;
-        v121 = 470;
+    case WINDOW_CharacterWindow_Skills: {
+      if (dword_507CC0_activ_ch != uActiveCharacter) {
+        CharacterUI_ReleaseButtons();
+        CharacterUI_SkillsTab_CreateButtons();
+      }
+      ReleaseAwardsScrollBar();
+      CharacterUI_SkillsTab_Draw(player);
+      render->DrawTextureAlphaNew(
+        pCharacterScreen_SkillsBtn->uX / 640.0f,
+        pCharacterScreen_SkillsBtn->uY / 480.0f,
+        assets->GetImage_16BitColorKey("ib-cd2-d", 0x7FF)
+      );
+      break;
     }
-    else
-    {
-        v128 = 30;
-        v125 = 30;
-        v123 = 300;
-        v121 = 600;
+    case WINDOW_CharacterWindow_Awards: {
+      CharacterUI_ReleaseButtons();
+      ReleaseAwardsScrollBar();
+      CreateAwardsScrollBar();
+      CharacterUI_AwardsTab_Draw(player);
+      render->DrawTextureAlphaNew(
+        pCharacterScreen_AwardsBtn->uX / 640.0f,
+        pCharacterScreen_AwardsBtn->uY / 480.0f,
+        assets->GetImage_16BitColorKey("ib-cd4-d", 0x7FF)
+      );
+      break;
     }
-    pCharacterScreen_DetalizBtn = pGUIWindow_CurrentMenu->CreateButton(
-        v121, v123, v125, v128, 1, 0, UIMSG_ChangeDetaliz, 0, 0,
-        localization->GetString(64),// "Detail Toggle"
-        0
-        );
-    pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton(0x1DCu, 0, 0xA4u, 0x159u, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "", 0);
-    viewparams->bRedrawGameUI = true;
+    case WINDOW_CharacterWindow_Inventory: {
+      CharacterUI_ReleaseButtons();
+      ReleaseAwardsScrollBar();
+      CharacterUI_InventoryTab_Draw(player, false);
+      render->DrawTextureAlphaNew(
+        pCharacterScreen_InventoryBtn->uX / 640.0f,
+        pCharacterScreen_InventoryBtn->uY / 480.0f,
+        assets->GetImage_16BitColorKey("ib-cd3-d", 0x7FF)
+      );
+      break;
+    }
+    default:
+      __debugbreak();
+      break;
+  }
+
+  if (bRingsShownInCharScreen)
+    CharacterUI_DrawPaperdollWithRingOverlay(player);
+  else
+    CharacterUI_DrawPaperdoll(player);
 }
 
+void GUIWindow_CharacterRecord::ShowStatsTab() {
+  current_character_screen_window = WINDOW_CharacterWindow_Stats;
+  CharacterUI_ReleaseButtons();
+  ReleaseAwardsScrollBar();
+  new OnButtonClick3(pCharacterScreen_StatsBtn->uX, pCharacterScreen_StatsBtn->uY, 0, 0, (int)pCharacterScreen_StatsBtn);
+}
 
+void GUIWindow_CharacterRecord::ShowSkillsTab() {
+  current_character_screen_window = WINDOW_CharacterWindow_Skills;
+  CharacterUI_ReleaseButtons();
+  ReleaseAwardsScrollBar();
+  CharacterUI_SkillsTab_CreateButtons();
+  new OnButtonClick3(pCharacterScreen_SkillsBtn->uX, pCharacterScreen_SkillsBtn->uY, 0, 0, (int)pCharacterScreen_SkillsBtn);
+}
 
-//----- (004219BE) --------------------------------------------------------
-GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow()
-{
-    GUIWindow *CS_inventory_window; // ebx@1
+void GUIWindow_CharacterRecord::ShowInventoryTab() {
+  current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+  ReleaseAwardsScrollBar();
+  CharacterUI_ReleaseButtons();
+  new OnButtonClick3(pCharacterScreen_InventoryBtn->uX, pCharacterScreen_InventoryBtn->uY, 0, 0, (int)pCharacterScreen_InventoryBtn);
+}
 
-    pEventTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
-    bRingsShownInCharScreen = 0;
-    CharacterUI_LoadPaperdollTextures();
-    current_screen_type = SCREEN_CASTING;
-    CS_inventory_window = new GUIWindow_Inventory_CastSpell(0, 0, window->GetWidth(), window->GetHeight(), (int)this, 0);
-    pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0,
-        localization->GetString(79), // Close
-        paperdoll_dbrds[2],
-        paperdoll_dbrds[1], 0);
-    CS_inventory_window->CreateButton(0, 0, 0x1DCu, 0x159u, 1, 122, UIMSG_InventoryLeftClick, 0, 0, "", 0);
-    pCharacterScreen_DollBtn = CS_inventory_window->CreateButton(0x1DCu, 0, 0xA4u, 0x159u, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "", 0);
+void GUIWindow_CharacterRecord::ShowAwardsTab() {
+  ReleaseAwardsScrollBar();
+  CharacterUI_ReleaseButtons();
+  CreateAwardsScrollBar();
+  current_character_screen_window = WINDOW_CharacterWindow_Awards;
+  new OnButtonClick3(pCharacterScreen_AwardsBtn->uX, pCharacterScreen_AwardsBtn->uY, 0, 0, (int)pCharacterScreen_AwardsBtn);
+  FillAwardsData();
+}
 
-    CS_inventory_window->CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "", 0);
-    CS_inventory_window->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "", 0);
-    CS_inventory_window->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "", 0);
-    CS_inventory_window->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "", 0);
+void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
+  int v128, v125, v123, v121;
 
-    return CS_inventory_window;
+  bRingsShownInCharScreen ^= 1;
+  pCharacterScreen_DetalizBtn->Release();
+  pCharacterScreen_DollBtn->Release();
+  if (bRingsShownInCharScreen) {
+    v128 = ui_character_inventory_paperdoll_rings_close->GetHeight();
+    v125 = ui_character_inventory_paperdoll_rings_close->GetWidth();
+    v123 = 445;
+    v121 = 470;
+  } else {
+    v128 = 30;
+    v125 = 30;
+    v123 = 300;
+    v121 = 600;
+  }
+  pCharacterScreen_DetalizBtn = pGUIWindow_CurrentMenu->CreateButton(
+    v121, v123, v125, v128, 1, 0, UIMSG_ChangeDetaliz, 0, 0,
+    localization->GetString(64)  // "Detail Toggle"
+    );
+  pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton(0x1DCu, 0, 0xA4u, 0x159u, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "");
+  viewparams->bRedrawGameUI = true;
+}
+
+GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
+  pEventTimer->Pause();
+  pAudioPlayer->StopChannels(-1, -1);
+  bRingsShownInCharScreen = 0;
+  CharacterUI_LoadPaperdollTextures();
+  current_screen_type = SCREEN_CASTING;
+  GUIWindow *CS_inventory_window = new GUIWindow_Inventory_CastSpell(0, 0, window->GetWidth(), window->GetHeight(), (int)this, 0);
+  pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0,
+    localization->GetString(79), // Close
+    { {paperdoll_dbrds[2], paperdoll_dbrds[1]} });
+  CS_inventory_window->CreateButton(0, 0, 0x1DCu, 0x159u, 1, 122, UIMSG_InventoryLeftClick, 0, 0, "");
+  pCharacterScreen_DollBtn = CS_inventory_window->CreateButton(0x1DCu, 0, 0xA4u, 0x159u, 1, 0, UIMSG_ClickPaperdoll, 0, 0, "");
+
+  CS_inventory_window->CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
+  CS_inventory_window->CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
+  CS_inventory_window->CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
+  CS_inventory_window->CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
+
+  return CS_inventory_window;
 }
 
 static int CharacterUI_SkillsTab_Draw__DrawSkillTable(Player *player, int x, int y, const int *skill_list, int skill_list_size, int right_margin, const char *skill_group_name) {
+  int y_offset = y;
 
-	int y_offset = y;
+  auto str = StringPrintf("%s\r%03d%s", skill_group_name, right_margin, localization->GetString(131)); //"Magic"    "Level"
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, x, y, ui_character_header_text_color, str, 0, 0, 0);
 
-    auto str = StringPrintf("%s\r%03d%s", skill_group_name, right_margin, localization->GetString(131)); //"Magic"    "Level"
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, x, y, ui_character_header_text_color, str, 0, 0, 0);
+  int num_skills_drawn = 0;
+  for (int i = 0; i < skill_list_size; ++i) {
 
-    int num_skills_drawn = 0;
-    for (int i = 0; i < skill_list_size; ++i) {
+    PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)skill_list[i];
+    for (size_t j = 0; j < pGUIWindow_CurrentMenu->vButtons.size(); ++j) {
+      GUIButton* v8 = pGUIWindow_CurrentMenu->GetControl(j);
+      int v9 = v8->field_1C;
+      if ((short)(v8->field_1C) >= 0)
+        continue; // skips an of the stats skills innv awards buttons
 
-        PLAYER_SKILL_TYPE skill = (PLAYER_SKILL_TYPE)skill_list[i];
-        for (uint j = 0; j < pGUIWindow_CurrentMenu->uNumControls; ++j) {
+      if ((v9 & 0x7FFF) != skill)
+        continue; // skips buttons that dont match skill
 
-            GUIButton* v8 = pGUIWindow_CurrentMenu->pControlsHead;
+      ++num_skills_drawn;
+      y_offset = v8->uY;
 
-            for (int v7 = j; v7 > 0; --v7)
-                v8 = v8->pNext; // skip through buttons
+      // ushort skill_value = player->pActiveSkills[skill];
+      int skill_level = player->GetActualSkillLevel(skill);
 
-            int v9 = v8->field_1C;
-            if ((short)(v8->field_1C) >= 0)
-                continue; // skips an of the stats skills innv awards buttons
+      uint skill_color = 0;
+      uint skill_mastery_color = 0;
+      if (player->uSkillPoints > skill_level)
+        skill_color = ui_character_skill_upgradeable_color;
 
-            if ((v9 & 0x7FFF) != skill)
-                continue; // skips buttons that dont match skill
+      if (pGUIWindow_CurrentMenu->pCurrentPosActiveItem == j) {  // this needs to reset??
+        if (player->uSkillPoints > skill_level)
+          skill_mastery_color = ui_character_bonus_text_color;
+        else
+          skill_mastery_color = ui_character_skill_default_color;
+        skill_color = skill_mastery_color;
+      }
 
-            ++num_skills_drawn;
-            y_offset = v8->uY;
+      if (player->GetActualSkillMastery(skill) == 1) {
+        auto Strsk = StringPrintf("%s\r%03d%2d", localization->GetSkillName(skill), right_margin, skill_level);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0);
+      } else {
+        const char *skill_level_str = nullptr;
 
-           // ushort skill_value = player->pActiveSkills[skill];
-            int skill_level = player->GetActualSkillLevel(skill);
-
-            uint skill_color = 0;
-            uint skill_mastery_color = 0;
-            if (player->uSkillPoints > skill_level)
-                skill_color = ui_character_skill_upgradeable_color;
-
-            if (pGUIWindow_CurrentMenu->pCurrentPosActiveItem == j) // this needs to reset??
-            {
-                if (player->uSkillPoints > skill_level)
-                    skill_mastery_color = ui_character_bonus_text_color;
-                else
-                    skill_mastery_color = ui_character_skill_default_color;
-                skill_color = skill_mastery_color;
-            }
-
-            if (player->GetActualSkillMastery(skill) == 1)
-            {
-                auto Strsk = StringPrintf("%s\r%03d%2d", localization->GetSkillName(skill), right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0);
-            }
-            else
-            {
-                const char *skill_level_str = nullptr;
-
-                switch (player->GetActualSkillMastery(skill))
-                {
-                case 4: skill_level_str = localization->GetString(96);  break; // Grand
-                case 3: skill_level_str = localization->GetString(432); break; // Master
-                case 2: skill_level_str = localization->GetString(433); break; // Expert
-                }
-
-                if (!skill_mastery_color)
-                    skill_mastery_color = ui_character_header_text_color;
-
-                auto Strsk = StringPrintf("%s \f%05d%s\f%05d\r%03d%2d", localization->GetSkillName(skill), skill_mastery_color, skill_level_str, skill_color, right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0);
-            }
+        switch (player->GetActualSkillMastery(skill)) {
+          case 4: skill_level_str = localization->GetString(96);  break; // Grand
+          case 3: skill_level_str = localization->GetString(432); break; // Master
+          case 2: skill_level_str = localization->GetString(433); break; // Expert
         }
-    }
 
-    if (!num_skills_drawn) {
-        y_offset += pFontLucida->GetHeight() - 3;
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, y_offset, 0, localization->GetString(153), 0, 0, 0); // None
-    }
+        if (!skill_mastery_color)
+          skill_mastery_color = ui_character_header_text_color;
 
-    return y_offset;
+        auto Strsk = StringPrintf("%s \f%05d%s\f%05d\r%03d%2d", localization->GetSkillName(skill), skill_mastery_color, skill_level_str, skill_color, right_margin, skill_level);
+        pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0);
+      }
+    }
+  }
+
+  if (!num_skills_drawn) {
+    y_offset += pFontLucida->GetHeight() - 3;
+    pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, y_offset, 0, localization->GetString(153), 0, 0, 0); // None
+  }
+
+  return y_offset;
 }
 
 //----- (00419719) --------------------------------------------------------
@@ -879,7 +821,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player)
         str = String(v6);
 
     awards_window.DrawText(pFontArrus, 0, 0, ui_character_award_color[pAwards[achieved_awards[i]].uPriority % 6], str, 0, 0, 0);
-    awards_window.uFrameY = pFontArrus->CalcTextHeight(str, &awards_window, 0) + awards_window.uFrameY + 8;
+    awards_window.uFrameY = pFontArrus->CalcTextHeight(str, awards_window.uFrameWidth, 0) + awards_window.uFrameY + 8;
     if (awards_window.uFrameY > awards_window.uFrameHeight)
       break;
 
@@ -2087,26 +2029,15 @@ void CharacterUI_LoadPaperdollTextures()
     }
 }
 
-//----- (00419401) --------------------------------------------------------
-void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons()
-{
-  GUIButton *pButton; // eax@3
-  unsigned int current_Y; // esi@8
-  int buttons_count; // [sp+10h] [bp-14h]@1
-  int first_rows; // [sp+14h] [bp-10h]@19
+void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
   int skill_id; // [sp+18h] [bp-Ch]@8
-  Player *curr_player; // [sp+1Ch] [bp-8h]@8
-  int i;
-  int uCurrFontHeght;
 
-  buttons_count = 0;
-  if ( dword_507CC0_activ_ch )
+  int buttons_count = 0;
+  if (dword_507CC0_activ_ch)
     CharacterUI_ReleaseButtons();
   dword_507CC0_activ_ch = uActiveCharacter;
-  for ( pButton = pGUIWindow_CurrentMenu->pControlsHead; pButton; pButton = pButton->pNext )
-  {
-    if ( pButton->msg == UIMSG_InventoryLeftClick )
-    {
+  for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
+    if (pButton->msg == UIMSG_InventoryLeftClick) {
       dword_50698C_uX = pButton->uX;
       dword_506988_uY = pButton->uY;
       dword_506984_uZ = pButton->uZ;
@@ -2116,296 +2047,285 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons()
       pButton->uY = 0;
       pButton->uX = 0;
     }
+    buttons_count++;
   }
-  first_rows = 0;
-  int a5 = pGUIWindow_CurrentMenu->uNumControls;
-  curr_player = &pParty->pPlayers[uActiveCharacter-1];
+  int first_rows = 0;
+  Player *curr_player = &pParty->pPlayers[uActiveCharacter - 1];
 
-  uCurrFontHeght=pFontLucida->GetHeight();
-  current_Y = 2 *uCurrFontHeght  + 13;
-  for( i = 0; i < 9; ++i )
-  {
+  int uCurrFontHeght = pFontLucida->GetHeight();
+  unsigned int current_Y = 2 * uCurrFontHeght + 13;
+  for (int i = 0; i < 9; ++i) {
     skill_id = pWeaponSkills[i];
-    if ( curr_player->pActiveSkills[skill_id] & 0x3F )
-    {
+    if (curr_player->pActiveSkills[skill_id] & 0x3F) {
       current_Y += uCurrFontHeght - 3;
       ++buttons_count;
       ++first_rows;
-      pGUIWindow_CurrentMenu->CreateButton(24, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id, 0, "", 0, 0);
+      pGUIWindow_CurrentMenu->CreateButton(24, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id, 0, "");
     }
   }
-  if ( !first_rows )
+  if (!first_rows)
     current_Y += uCurrFontHeght - 3;
   current_Y += 2 * uCurrFontHeght - 6;
-  for ( i = 0; i < 9; ++i )
-  {
+  for (int i = 0; i < 9; ++i) {
     skill_id = pMagicSkills[i];
-    if ( curr_player->pActiveSkills[skill_id] & 0x3F && buttons_count < 15 )
-    {
+    if (curr_player->pActiveSkills[skill_id] & 0x3F && buttons_count < 15) {
       current_Y += uCurrFontHeght - 3;
       ++buttons_count;
-      pGUIWindow_CurrentMenu->CreateButton(24, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id, 0, "", 0, 0);
+      pGUIWindow_CurrentMenu->CreateButton(24, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id, 0, "");
     }
   }
   first_rows = 0;
   current_Y = 2 * uCurrFontHeght + 13;
-  for ( i = 0; i < 5; ++i )
-  {
+  for (int i = 0; i < 5; ++i) {
     skill_id = pArmorSkills[i];
-    if ( curr_player->pActiveSkills[skill_id] & 0x3F )
-    {
-      current_Y+= uCurrFontHeght - 3;
-      ++buttons_count;
-      ++first_rows;
-      pGUIWindow_CurrentMenu->CreateButton(246, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id, 0, "", 0, 0);
-    }
-  }
-  if ( !first_rows )
-    current_Y += uCurrFontHeght - 3;
-  current_Y += 2 * uCurrFontHeght - 6;
-  for ( i = 0; i < 12; ++i )
-  {
-    skill_id = pMiscSkills[i];
-    if ( curr_player->pActiveSkills[skill_id] & 0x3F )
-    {
+    if (curr_player->pActiveSkills[skill_id] & 0x3F) {
       current_Y += uCurrFontHeght - 3;
       ++buttons_count;
-      pGUIWindow_CurrentMenu->CreateButton(246, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id, 0, "", 0, 0);
+      ++first_rows;
+      pGUIWindow_CurrentMenu->CreateButton(246, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id, 0, "");
+    }
+  }
+  if (!first_rows)
+    current_Y += uCurrFontHeght - 3;
+  current_Y += 2 * uCurrFontHeght - 6;
+  for (int i = 0; i < 12; ++i) {
+    skill_id = pMiscSkills[i];
+    if (curr_player->pActiveSkills[skill_id] & 0x3F) {
+      current_Y += uCurrFontHeght - 3;
+      ++buttons_count;
+      pGUIWindow_CurrentMenu->CreateButton(246, current_Y, 204, uCurrFontHeght - 3, 3, skill_id | 0x8000, UIMSG_SkillUp, skill_id, 0, "");
     }
   }
 
-  if ( buttons_count )
-    pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(buttons_count, 1, 0, a5);
+  if (buttons_count) {
+    pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(buttons_count, 1, 0, buttons_count);
+  }
 }
 
-//----- (00418511) --------------------------------------------------------
-void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player)
-{
-    int pY; // ST34_4@4
-    const char *pText; // eax@9
-    const char *text_format; // [sp+14h] [bp-Ch]@4
+void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
+  int pY; // ST34_4@4
+  const char *pText; // eax@9
+  const char *text_format; // [sp+14h] [bp-Ch]@4
 
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, ui_character_stats_background);
+  render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, ui_character_stats_background);
 
-    auto str1 =
-        StringPrintf("\f%05d", ui_character_header_text_color)
-        + localization->FormatString(429, player->pName, localization->GetClassName(player->classType)) // "^Pi[%s] %s" / "%s the %s"
-        + StringPrintf("\f00000\r180%s: \f%05d%d\f00000\n\n\n",
-            localization->GetString(207), // "Skill points"
-            player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color,
-            player->uSkillPoints);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, 18, 0, str1);
+  auto str1 =
+    StringPrintf("\f%05d", ui_character_header_text_color)
+    + localization->FormatString(429, player->pName, localization->GetClassName(player->classType)) // "^Pi[%s] %s" / "%s the %s"
+    + StringPrintf("\f00000\r180%s: \f%05d%d\f00000\n\n\n",
+      localization->GetString(207), // "Skill points"
+      player->uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color,
+      player->uSkillPoints);
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, 18, 0, str1);
 
-    //First column(Первая колонка)
-    pY = 53;
-    auto str2 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(144),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualMight(), player->GetBaseStrength()),
-        player->GetActualMight(), player->GetBaseStrength()); // Might
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str2);
+  //First column(Первая колонка)
+  pY = 53;
+  auto str2 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(144),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualMight(), player->GetBaseStrength()),
+    player->GetActualMight(), player->GetBaseStrength()); // Might
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str2);
 
-    pY += pFontArrus->GetHeight() - 2;
-    auto str3 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(116),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualIntelligence(), player->GetBaseIntelligence()),
-        player->GetActualIntelligence(), player->GetBaseIntelligence()); // Intellect
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str3);
+  pY += pFontArrus->GetHeight() - 2;
+  auto str3 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(116),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualIntelligence(), player->GetBaseIntelligence()),
+    player->GetActualIntelligence(), player->GetBaseIntelligence()); // Intellect
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str3);
 
-    pY += pFontArrus->GetHeight() - 2;
-    auto str4 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(163),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualWillpower(), player->GetBaseWillpower()),
-        player->GetActualWillpower(), player->GetBaseWillpower()); // Willpower
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str4);
+  pY += pFontArrus->GetHeight() - 2;
+  auto str4 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(163),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualWillpower(), player->GetBaseWillpower()),
+    player->GetActualWillpower(), player->GetBaseWillpower()); // Willpower
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str4);
 
-    pY += pFontArrus->GetHeight() - 2;
-    auto str5 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(75),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualEndurance(), player->GetBaseEndurance()),
-        player->GetActualEndurance(), player->GetBaseEndurance());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str5);
+  pY += pFontArrus->GetHeight() - 2;
+  auto str5 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(75),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualEndurance(), player->GetBaseEndurance()),
+    player->GetActualEndurance(), player->GetBaseEndurance());
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str5);
 
-    pY += pFontArrus->GetHeight() - 2;
-    auto str6 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(1),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAccuracy(), player->GetBaseAccuracy()),
-        player->GetActualAccuracy(), player->GetBaseAccuracy());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str6);
+  pY += pFontArrus->GetHeight() - 2;
+  auto str6 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(1),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAccuracy(), player->GetBaseAccuracy()),
+    player->GetActualAccuracy(), player->GetBaseAccuracy());
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str6);
 
-    pY += pFontArrus->GetHeight() - 2;
-    auto str7 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(211),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualSpeed(), player->GetBaseSpeed()),
-        player->GetActualSpeed(), player->GetBaseSpeed());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str7);
+  pY += pFontArrus->GetHeight() - 2;
+  auto str7 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(211),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualSpeed(), player->GetBaseSpeed()),
+    player->GetActualSpeed(), player->GetBaseSpeed());
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str7);
 
-    pY += pFontArrus->GetHeight() - 2;
-    auto str8 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n", localization->GetString(136),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLuck(), player->GetBaseLuck()),
-        player->GetActualLuck(), player->GetBaseLuck());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str8);
+  pY += pFontArrus->GetHeight() - 2;
+  auto str8 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n", localization->GetString(136),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLuck(), player->GetBaseLuck()),
+    player->GetActualLuck(), player->GetBaseLuck());
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str8);
 
-    text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
-    if (player->GetMaxHealth() >= 1000)
-        text_format = "%s\f%05u\r388%d\f00000 / %d\n";
-    pY += 2 * pFontArrus->GetHeight() + 5;
-    auto str9 = StringPrintf(text_format, localization->GetString(108),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->sHealth, player->GetMaxHealth()),
-        player->sHealth, player->GetMaxHealth()
-    );
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str9);
+  text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
+  if (player->GetMaxHealth() >= 1000)
+    text_format = "%s\f%05u\r388%d\f00000 / %d\n";
+  pY += 2 * pFontArrus->GetHeight() + 5;
+  auto str9 = StringPrintf(text_format, localization->GetString(108),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->sHealth, player->GetMaxHealth()),
+    player->sHealth, player->GetMaxHealth()
+  );
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str9);
 
-    text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
-    if (player->GetMaxMana() >= 1000)
-        text_format = "%s\f%05u\r388%d\f00000 / %d\n";
-    pY += pFontArrus->GetHeight() - 2;
-    auto str10 = StringPrintf(text_format, localization->GetString(212),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
-        player->sMana, player->GetMaxMana()
-    );
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str10);
+  text_format = "%s\f%05u\r424%d\f00000 /\t185%d\n";
+  if (player->GetMaxMana() >= 1000)
+    text_format = "%s\f%05u\r388%d\f00000 / %d\n";
+  pY += pFontArrus->GetHeight() - 2;
+  auto str10 = StringPrintf(text_format, localization->GetString(212),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->sMana, player->GetMaxMana()),
+    player->sMana, player->GetMaxMana()
+  );
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str10);
 
-    pY += pFontArrus->GetHeight() - 2;
-    auto str11 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n", localization->GetString(12),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAC(), player->GetBaseAC()),
-        player->GetActualAC(), player->GetBaseAC()
-    );
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str11);
+  pY += pFontArrus->GetHeight() - 2;
+  auto str11 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n", localization->GetString(12),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAC(), player->GetBaseAC()),
+    player->GetActualAC(), player->GetBaseAC()
+  );
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, pY, 0, str11);
 
-    pY += 2 * pFontArrus->GetHeight() - 2;
-    auto str12 = StringPrintf(
-        "%s: \f%05d%s\n",
-        localization->GetString(47), // Condition   /   Состояние
-        GetConditionDrawColor(player->GetMajorConditionIdx()),
-        localization->GetCharacterConditionName(player->GetMajorConditionIdx())
-    );
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str12, 226, 0);
+  pY += 2 * pFontArrus->GetHeight() - 2;
+  auto str12 = StringPrintf(
+    "%s: \f%05d%s\n",
+    localization->GetString(47), // Condition   /   Состояние
+    GetConditionDrawColor(player->GetMajorConditionIdx()),
+    localization->GetCharacterConditionName(player->GetMajorConditionIdx())
+  );
+  pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str12, 226, 0);
 
-    pY += pFontArrus->GetHeight() + -1;
-    pText = localization->GetString(153); // Нет
-    if (player->uQuickSpell)
-        pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
-    auto str13 = StringPrintf("%s: %s", localization->GetString(172), pText); // Б. применение
-    pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str13, 226, 0);
+  pY += pFontArrus->GetHeight() + -1;
+  pText = localization->GetString(153); // Нет
+  if (player->uQuickSpell)
+    pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
+  auto str13 = StringPrintf("%s: %s", localization->GetString(172), pText); // Б. применение
+  pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str13, 226, 0);
 
-    //Second column (Вторая колонка)
-    pY = 50;
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualAge() > 99)
-        text_format = Stat_string_format_2_column_over_100;
-    auto str14 = StringPrintf(text_format, localization->GetString(5),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAge(), player->GetBaseAge()),
-        player->GetActualAge(), player->GetBaseAge()
-    );
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str14);
+  //Second column (Вторая колонка)
+  pY = 50;
+  text_format = Stat_string_format_2_column_less_100;
+  if (player->GetActualAge() > 99)
+    text_format = Stat_string_format_2_column_over_100;
+  auto str14 = StringPrintf(text_format, localization->GetString(5),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualAge(), player->GetBaseAge()),
+    player->GetActualAge(), player->GetBaseAge()
+  );
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str14);
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetBaseLevel() > 99)
-        text_format = Stat_string_format_2_column_over_100;
+  text_format = Stat_string_format_2_column_less_100;
+  if (player->GetBaseLevel() > 99)
+    text_format = Stat_string_format_2_column_over_100;
 
-    pY += pFontArrus->GetHeight() - 2;
-    auto str15 = StringPrintf(text_format, localization->GetString(131), // Уров.
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLevel(), player->GetBaseLevel()),
-        player->GetActualLevel(), player->GetBaseLevel()
-    );
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str15);
+  pY += pFontArrus->GetHeight() - 2;
+  auto str15 = StringPrintf(text_format, localization->GetString(131), // Уров.
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLevel(), player->GetBaseLevel()),
+    player->GetActualLevel(), player->GetBaseLevel()
+  );
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str15);
 
-    pY += pFontArrus->GetHeight() - 2;
-    pText = localization->GetString(17); // Exp.
-    if (player->uExperience <= 9999999)
-        pText = localization->GetString(83); // Experience
-    auto str16 = StringPrintf("%s\r180\f%05d%lu\f00000\n\n", pText, player->GetExperienceDisplayColor(), player->uExperience);
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str16);
+  pY += pFontArrus->GetHeight() - 2;
+  pText = localization->GetString(17); // Exp.
+  if (player->uExperience <= 9999999)
+    pText = localization->GetString(83); // Experience
+  auto str16 = StringPrintf("%s\r180\f%05d%lu\f00000\n\n", pText, player->GetExperienceDisplayColor(), player->uExperience);
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str16);
 
-    pY += 2 * pFontArrus->GetHeight();
-    auto str17 = StringPrintf("%s\t100%+d\n", localization->GetString(18), player->GetActualAttack(false));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str17);
+  pY += 2 * pFontArrus->GetHeight();
+  auto str17 = StringPrintf("%s\t100%+d\n", localization->GetString(18), player->GetActualAttack(false));
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str17);
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(
-        pFontArrus,
-        266,
-        pY,
-        0,
-        StringPrintf("%s\t100 %s\n", localization->GetString(53), player->GetMeleeDamageString().c_str())
-    );
+  pY += pFontArrus->GetHeight() - 2;
+  pGUIWindow_CurrentMenu->DrawText(
+    pFontArrus,
+    266,
+    pY,
+    0,
+    StringPrintf("%s\t100 %s\n", localization->GetString(53), player->GetMeleeDamageString().c_str())
+  );
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(
-        pFontArrus,
-        266,
-        pY,
-        0,
-        StringPrintf("%s\t100%+d\n", localization->GetString(203), player->GetRangedAttack())
-    );
+  pY += pFontArrus->GetHeight() - 2;
+  pGUIWindow_CurrentMenu->DrawText(
+    pFontArrus,
+    266,
+    pY,
+    0,
+    StringPrintf("%s\t100%+d\n", localization->GetString(203), player->GetRangedAttack())
+  );
 
-    pY += pFontArrus->GetHeight() - 2;
-    pGUIWindow_CurrentMenu->DrawText(
-        pFontArrus,
-        266,
-        pY,
-        0,
-        StringPrintf("%s\t100 %s\n\n", localization->GetString(53), player->GetRangedDamageString().c_str())
-    );
+  pY += pFontArrus->GetHeight() - 2;
+  pGUIWindow_CurrentMenu->DrawText(
+    pFontArrus,
+    266,
+    pY,
+    0,
+    StringPrintf("%s\t100 %s\n\n", localization->GetString(53), player->GetRangedDamageString().c_str())
+  );
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99)
-        text_format = Stat_string_format_2_column_over_100;
-    pY += 2 * pFontArrus->GetHeight() - 4;
-    auto str18 = StringPrintf(text_format, localization->GetSpellSchoolName(0),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str18);
+  text_format = Stat_string_format_2_column_less_100;
+  if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE) > 99)
+    text_format = Stat_string_format_2_column_over_100;
+  pY += 2 * pFontArrus->GetHeight() - 4;
+  auto str18 = StringPrintf(text_format, localization->GetSpellSchoolName(0),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)),
+    player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE));
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str18);
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99)
-        text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetHeight() - 2;
-    auto str19 = StringPrintf(text_format, localization->GetSpellSchoolName(1),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str19);
+  text_format = Stat_string_format_2_column_less_100;
+  if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR) > 99)
+    text_format = Stat_string_format_2_column_over_100;
+  pY += pFontArrus->GetHeight() - 2;
+  auto str19 = StringPrintf(text_format, localization->GetSpellSchoolName(1),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)),
+    player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR));
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str19);
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99)
-        text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetHeight() - 2;
-    auto str20 = StringPrintf(text_format, localization->GetSpellSchoolName(2),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str20);
+  text_format = Stat_string_format_2_column_less_100;
+  if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER) > 99)
+    text_format = Stat_string_format_2_column_over_100;
+  pY += pFontArrus->GetHeight() - 2;
+  auto str20 = StringPrintf(text_format, localization->GetSpellSchoolName(2),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)),
+    player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER));
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str20);
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH) > 99)
-        text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetHeight() - 2;
-    auto str21 = StringPrintf(text_format, localization->GetSpellSchoolName(3),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH));
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str21);
+  text_format = Stat_string_format_2_column_less_100;
+  if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH) > 99)
+    text_format = Stat_string_format_2_column_over_100;
+  pY += pFontArrus->GetHeight() - 2;
+  auto str21 = StringPrintf(text_format, localization->GetSpellSchoolName(3),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)),
+    player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH));
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str21);
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99)
-        text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetHeight() - 2;
-    auto str22 = StringPrintf(text_format, localization->GetSpellSchoolName(4),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND));
-    if (player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200)
-    {
-        str22 = StringPrintf(Stat_string_format_2_column_text, localization->GetString(142),
-            UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), 200), localization->GetString(625));
-    }
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str22);
+  text_format = Stat_string_format_2_column_less_100;
+  if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) > 99)
+    text_format = Stat_string_format_2_column_over_100;
+  pY += pFontArrus->GetHeight() - 2;
+  auto str22 = StringPrintf(text_format, localization->GetSpellSchoolName(4),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND)),
+    player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND));
+  if (player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200) {
+    str22 = StringPrintf(Stat_string_format_2_column_text, localization->GetString(142),
+      UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), 200), localization->GetString(625));
+  }
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str22);
 
-    text_format = Stat_string_format_2_column_less_100;
-    if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99)
-        text_format = Stat_string_format_2_column_over_100;
-    pY += pFontArrus->GetHeight() - 2;
-    int it = player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
-    auto str23 = StringPrintf(text_format, localization->GetSpellSchoolName(6),
-        UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY)),
-        player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY));
-    if (player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200)
-    {
-        str23 = StringPrintf(Stat_string_format_2_column_text, localization->GetString(29),
-            UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), 200), localization->GetString(625));
-    }
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str23);
+  text_format = Stat_string_format_2_column_less_100;
+  if (player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99 || player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) > 99)
+    text_format = Stat_string_format_2_column_over_100;
+  pY += pFontArrus->GetHeight() - 2;
+  int it = player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
+  auto str23 = StringPrintf(text_format, localization->GetSpellSchoolName(6),
+    UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY)),
+    player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY));
+  if (player->classType == PLAYER_CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200) {
+    str23 = StringPrintf(Stat_string_format_2_column_text, localization->GetString(29),
+      UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), 200), localization->GetString(625));
+  }
+  pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str23);
 }
 
 bool awardSort(int i, int j)
@@ -2968,11 +2888,6 @@ void  OnPaperdollLeftClick() {
   if (bRingsShownInCharScreen) {
 
 	  //assume slot width 32 as per inventory
-	  
-
-
-
-
 	  if ( mousex < 490 || mousex > 618)
 		  return;
 
@@ -3021,8 +2936,7 @@ void  OnPaperdollLeftClick() {
 
 		  ptr_50C9A4_ItemToEnchant = pitem;
 		  _50C9A0_IsEnchantingInProgress = 0;
-		  if (pMessageQueue_50CBD0->uNumMessages)
-			  pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
+      pMessageQueue_50CBD0->Flush();
 		  pMouse->SetCursorImage("MICON1");
 		  _50C9D4_AfterEnchClickEventSecondParam = 0;
 		  _50C9D0_AfterEnchClickEventId = 113;
@@ -3062,7 +2976,6 @@ void  OnPaperdollLeftClick() {
 
   }
   else { // z picking as before
-
 	  v34 = render->pActiveZBuffer[pMouse->uMouseClickX + pSRZBufferLineOffsets[pMouse->uMouseClickY]] & 0xFFFF;
 	  if (v34)
 	  {
@@ -3093,8 +3006,7 @@ void  OnPaperdollLeftClick() {
 
 			  ptr_50C9A4_ItemToEnchant = &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
 			  _50C9A0_IsEnchantingInProgress = 0;
-			  if (pMessageQueue_50CBD0->uNumMessages)
-				  pMessageQueue_50CBD0->uNumMessages = pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
+        pMessageQueue_50CBD0->Flush();
 			  pMouse->SetCursorImage("MICON1");
 			  _50C9D4_AfterEnchClickEventSecondParam = 0;
 			  _50C9D0_AfterEnchClickEventId = 113;
@@ -3121,38 +3033,26 @@ void  OnPaperdollLeftClick() {
 		  }
 	  }
   }
-
-
-
-
 }
 
-//----- (004196A0) --------------------------------------------------------
-void CharacterUI_ReleaseButtons()
-{
-  GUIButton *i; // esi@2
-  GUIButton *j; // esi@7
-
-  if ( dword_507CC0_activ_ch )
-  {
+void CharacterUI_ReleaseButtons() {
+  if (dword_507CC0_activ_ch) {
     dword_507CC0_activ_ch = 0;
-    for ( i = pGUIWindow_CurrentMenu->pControlsHead; i; i = j )
-    {
-      j = i->pNext;
-      if ( i->field_1C & 0x8000 )
-      {
-        i->Release();
-        free(i);
+    std::vector<GUIButton*> to_delete;
+    for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
+      if (pButton->field_1C & 0x8000) {
+        to_delete.push_back(pButton);
       }
     }
-    for ( j = pGUIWindow_CurrentMenu->pControlsHead; j; j = j->pNext )
-    {
-      if ( j->msg == UIMSG_InventoryLeftClick)
-      {
-        j->uX = dword_50698C_uX;
-        j->uY = dword_506988_uY;
-        j->uZ = dword_506984_uZ;
-        j->uW = dword_506980_uW;
+    for (GUIButton *pButton : to_delete) {
+      pButton->Release();
+    }
+    for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
+      if (pButton->msg == UIMSG_InventoryLeftClick) {
+        pButton->uX = dword_50698C_uX;
+        pButton->uY = dword_506988_uY;
+        pButton->uZ = dword_506984_uZ;
+        pButton->uW = dword_506980_uW;
         pGUIWindow_CurrentMenu->_41D08F_set_keyboard_control_group(1, 0, 0, 0);
       }
     }
@@ -3160,5 +3060,5 @@ void CharacterUI_ReleaseButtons()
 }
 
 bool ringscreenactive() {
-	return bRingsShownInCharScreen;
+  return bRingsShownInCharScreen;
 }

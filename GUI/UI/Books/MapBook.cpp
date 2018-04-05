@@ -63,17 +63,17 @@ GUIWindow_MapBook::GUIWindow_MapBook() :
     ui_book_button6_off = assets->GetImage_16BitAlpha("tabWoff");
 
     pBtn_Book_1 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 0, 0, localization->GetString(251), ui_book_button1_on, 0);// "Zoom In"
+      UIMSG_ClickBooksBtn, 0, 0, localization->GetString(251), { {ui_book_button1_on} });// "Zoom In"
     pBtn_Book_2 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 1, 0, localization->GetString(252), ui_book_button2_on, 0);// "Zoom Out"
+      UIMSG_ClickBooksBtn, 1, 0, localization->GetString(252), { {ui_book_button2_on} });// "Zoom Out"
     pBtn_Book_3 = this->CreateButton(pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 113, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 2, 0, localization->GetString(192), (Image *)"", 0);// Scroll Up
+        UIMSG_ClickBooksBtn, 2, 0, localization->GetString(192));// Scroll Up
     pBtn_Book_4 = this->CreateButton(pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 150, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 3, 0, localization->GetString(193), (Image *)"", 0);// Scroll Down
+        UIMSG_ClickBooksBtn, 3, 0, localization->GetString(193));// Scroll Down
     pBtn_Book_5 = this->CreateButton(pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 4, 0, localization->GetString(573), (Image *)"", 0);// "Scroll Right"
+        UIMSG_ClickBooksBtn, 4, 0, localization->GetString(573));// "Scroll Right"
     pBtn_Book_6 = this->CreateButton(pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34, 1, 0,
-        UIMSG_ClickBooksBtn, 5, 0, localization->GetString(572), (Image *)"", 0);// "Scroll Left"
+        UIMSG_ClickBooksBtn, 5, 0, localization->GetString(572));// "Scroll Left"
 }
 
 
