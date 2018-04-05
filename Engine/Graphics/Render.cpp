@@ -109,38 +109,17 @@ Texture *Render::CreateSprite(const String &name, unsigned int palette_id, /*ref
     );
 }
 
-
-void Render::WritePixel16(int x, int y, unsigned __int16 color)
-{
-    if (ddpfPrimarySuface.dwRGBBitCount == 32)
-    {
-        auto p = (unsigned __int32 *)pTargetSurface + x + y * uTargetSurfacePitch;
-        *p = Color32(color); // write access violation
-    }
-    else if (ddpfPrimarySuface.dwRGBBitCount == 16)
-    {
-        auto p = (unsigned __int16 *)pTargetSurface + x + y * uTargetSurfacePitch;
-        *p = color;
-    }
-    else __debugbreak();
+void Render::WritePixel16(int x, int y, uint16_t color) {
+  if (ddpfPrimarySuface.dwRGBBitCount == 32) {
+    uint32_t *p = (uint32_t*)pTargetSurface + x + y * uTargetSurfacePitch;
+    *p = Color32(color); // write access violation
+  } else if (ddpfPrimarySuface.dwRGBBitCount == 16) {
+    uint16_t *p = (uint16_t*)pTargetSurface + x + y * uTargetSurfacePitch;
+    *p = color;
+  }
+  else __debugbreak();
 }
 
-unsigned __int16 Render::ReadPixel16(int x, int y)
-{
-    if (ddpfPrimarySuface.dwRGBBitCount == 32)
-    {
-        auto p = (unsigned __int32 *)pTargetSurface + x + y * uTargetSurfacePitch;
-        return Color16((*p >> 16) & 255, (*p >> 8) & 255, *p & 255);
-    }
-    else if (ddpfPrimarySuface.dwRGBBitCount == 16)
-    {
-        auto p = (unsigned __int16 *)pTargetSurface + x + y * uTargetSurfacePitch;
-        return *p;
-    }
-    else __debugbreak();
-}
-
-//----- (0049E79F) --------------------------------------------------------
 bool Render::CheckTextureStages()
 {
   bool v0; // edi@1
@@ -2824,7 +2803,6 @@ void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blen
                 {
                     if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
                         && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) >> 1)) + (v21 & (*src_surf_pos >> 1)));
                         WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
                 }
                 ++src_surf_pos;
@@ -2953,7 +2931,6 @@ void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode)
                 {
                     if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
                         && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        //WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (v21 & (ReadPixel16(pTargetPoint->x + j, pTargetPoint->y + i) / 2)) + (v21 & (*src_surf_pos / 2)));
                         WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
                 }
                 ++src_surf_pos;
@@ -6549,92 +6526,73 @@ void Render::BlendTextures(int x, int y, Image *imgin, Image *imgblend, int time
 
 
 
-void Render::DrawTextureAlphaNew(float u, float v, Image *img)
-{
-   // int uHeight; // ebx@4
-    unsigned int startx; // edx@9
-    //unsigned int v12; // esi@12
-    unsigned int starty; // esi@15
-   // unsigned int v15; // esi@18
-    //unsigned __int8 *v19; // [sp+18h] [bp-8h]@4
-   // int uWidth; // [sp+1Ch] [bp-4h]@4
+void Render::DrawTextureAlphaNew(float u, float v, Image *img) {
+  if (!uNumSceneBegins || !img) {
+    return;
+  }
 
-    if (!uNumSceneBegins || !img)
-        return;
+  int uHeight = img->GetHeight();
+  int uWidth = img->GetWidth();
 
-    int uHeight = img->GetHeight();
-    ///v19 = pTexture->paletted_pixels;
-    int uWidth = img->GetWidth();
+  int uX = u * 640.0f;
+  int uY = v * 480.0f;
+  int clipped_out_x = uX;
+  int clipped_out_y = uY;
 
-    auto pixels = (const unsigned __int32 *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+  if (bClip) {
+    clipped_out_x = max(uClipX, uX);
+    clipped_out_y = max(uClipY, uY);
+    uWidth = min(uWidth, uClipZ - clipped_out_x);
+    uHeight = min(uHeight, uClipW - clipped_out_y);
+  }
 
-    int uX = u * 640.0f;
-    int uY = v * 480.0f;
-	int clipped_out_x = uX;
-    int clipped_out_y = uY;
-
-    if (this->bClip)
-    {
-        if (uX < this->uClipX) // x less than 0
-        {
-            pixels += this->uClipX - uX;
-            uWidth += uX - this->uClipX;
-            clipped_out_x = uClipX;
-        }
-
-       // uHeight = img->GetHeight();
-        if (uY < this->uClipY) // y less than 0
-        {
-            pixels += img->GetWidth() * (this->uClipY - uY);
-            uHeight = uY - this->uClipY + img->GetHeight();
-            clipped_out_y = uClipY;
-        }
-	
-
-        startx = this->uClipX;
-        if (this->uClipX < uX)
-            startx = uX;
-
-        if ((startx + uWidth) > this->uClipZ) // overruns 640
-        {
-           // v12 = this->uClipX;
-          //  if ((signed int)this->uClipX < (signed int)uX)
-               // v12 = uX;
-            uWidth = this->uClipZ - startx;
-        }
-
-
-        starty = this->uClipY;
-        if (this->uClipY < uY)
-            starty = uY;
-
-        if ((uHeight + starty) >this->uClipW) // overrun 480
-        {
-            //v15 = this->uClipY;
-           // if ((signed int)this->uClipY < (signed int)uY)
-           //     v15 = uY;
-            uHeight = this->uClipW - starty;
-        }
+  if (img->GetFormat() == IMAGE_FORMAT_A8R8G8B8) {
+    const uint32_t *pixels = (const uint32_t*)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    if (uX != clipped_out_x) {
+      pixels += clipped_out_x - uX;
+    }
+    if (uY != clipped_out_y) {
+      pixels += img->GetWidth() * (clipped_out_y - uY);
     }
 
-    for (int y = 0; y < uHeight; ++y)
-    {
-        for (int x = 0; x < uWidth; ++x)
-        {
-            if (*pixels & 0xFF000000)
-                WritePixel16(
-                    clipped_out_x + x,
-                    clipped_out_y + y,
-                    Color16(
-                        (*pixels >> 16) & 0xFF,
-                        (*pixels >> 8) & 0xFF,
-                        *pixels & 0xFF
-                    )
-                );
-            ++pixels;
-        }
-        pixels  += img->GetWidth() - uWidth;
+    for (int y = 0; y < uHeight; ++y) {
+      for (int x = 0; x < uWidth; ++x) {
+        if (*pixels & 0xFF000000)
+          WritePixel16(
+            clipped_out_x + x,
+            clipped_out_y + y,
+            Color16(
+            (*pixels >> 16) & 0xFF,
+              (*pixels >> 8) & 0xFF,
+              *pixels & 0xFF
+            )
+          );
+        ++pixels;
+      }
+      pixels += img->GetWidth() - uWidth;
     }
+  } else if (img->GetFormat() == IMAGE_FORMAT_A1R5G5B5){
+    const uint16_t *pixels = (const uint16_t*)img->GetPixels(IMAGE_FORMAT_A1R5G5B5);
+    if (uX != clipped_out_x) {
+      pixels += clipped_out_x - uX;
+    }
+    if (uY != clipped_out_y) {
+      pixels += img->GetWidth() * (clipped_out_y - uY);
+    }
+
+    for (int y = 0; y < uHeight; ++y) {
+      for (int x = 0; x < uWidth; ++x) {
+        if (*pixels & 0x8000)
+          WritePixel16(
+            clipped_out_x + x,
+            clipped_out_y + y,
+            *pixels
+          );
+        ++pixels;
+      }
+      pixels += img->GetWidth() - uWidth;
+    }
+  }
 }
 
 

@@ -14,6 +14,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Graphics/Texture.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -523,506 +524,392 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     }
 }
 
-//----- (0041E360) --------------------------------------------------------
-void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
-{
-    unsigned __int16 v9; // dx@4
-    SpriteFrame *v10; // edi@17
-    unsigned int v18; // ecx@19
-    unsigned int v19; // eax@21
-    int skill_points; // edi@61
-    unsigned int skill_level; // eax@61
-    int pTextHeight; // edi@90
-    PlayerSpeech speech; // [sp-8h] [bp-1F4h]@79
-    const char *string_name[10]; // [sp+FCh] [bp-F0h]@145
-    const char *content[11]; // [sp+124h] [bp-C8h]@127
-    unsigned char resistances[11]; // [sp+124h] [bp-C8h]@127
-    SoftwareBillboard v106; // [sp+150h] [bp-9Ch]@3
-    unsigned int v107; // [sp+1A0h] [bp-4Ch]@18
-    bool for_effects; // [sp+1C0h] [bp-2Ch]@3
-    bool normal_level; // [sp+1D0h] [bp-1Ch]@18
-    bool expert_level; // [sp+1C4h] [bp-28h]@18
-    bool master_level; // [sp+1C8h] [bp-24h]@18
-    bool grandmaster_level; // [sp+1B4h] [bp-38h]@3
-    const char *pText; // [sp+1D4h] [bp-18h]@18
-    int pTextColorID; // [sp+1E4h] [bp-8h]@18
-    int v115;
+void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
+  bool monster_full_informations = false;
+  static Actor pMonsterInfoUI_Doll;
+  if (!uActiveCharacter) {
+    uActiveCharacter = 1;
+  }
 
-    bool monster_full_informations = false;
-    static Actor pMonsterInfoUI_Doll;
-    if (!uActiveCharacter) //
-        uActiveCharacter = 1;
+  SoftwareBillboard v106;
+  v106.sParentBillboardID = -1;
+  int v115 = monster_popup_y_offsets[(pActors[uActorID].pMonsterInfo.uID - 1) / 3] - 40;
 
-    v106.sParentBillboardID = -1;
-    v115 = monster_popup_y_offsets[((signed __int16)pActors[uActorID].pMonsterInfo.uID - 1) / 3] - 40;
-    if (pActors[uActorID].pMonsterInfo.uID == pMonsterInfoUI_Doll.pMonsterInfo.uID)
-        v9 = pMonsterInfoUI_Doll.uCurrentActionLength;
+  uint16_t v9 = 0;
+  if (pActors[uActorID].pMonsterInfo.uID == pMonsterInfoUI_Doll.pMonsterInfo.uID) {
+    v9 = pMonsterInfoUI_Doll.uCurrentActionLength;
+  } else {
+    memcpy(&pMonsterInfoUI_Doll, &pActors[uActorID], sizeof(pMonsterInfoUI_Doll));
+    pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
+    pMonsterInfoUI_Doll.uCurrentActionTime = 0;
+    v9 = rand() % 256 + 128;
+    pMonsterInfoUI_Doll.uCurrentActionLength = v9;
+  }
+
+  if (pMonsterInfoUI_Doll.uCurrentActionTime > v9) {
+    pMonsterInfoUI_Doll.uCurrentActionTime = 0;
+    if (pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_Bored || pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_AtkMelee) {
+      pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Standing;
+      pMonsterInfoUI_Doll.uCurrentActionLength = rand() % 128 + 128;
+    } else {
+      //rand();
+      pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
+      if ((pMonsterInfoUI_Doll.pMonsterInfo.uID < 115 || pMonsterInfoUI_Doll.pMonsterInfo.uID > 186) &&
+        (pMonsterInfoUI_Doll.pMonsterInfo.uID < 232 || pMonsterInfoUI_Doll.pMonsterInfo.uID > 249) && rand() % 30 < 100)
+        pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_AtkMelee;
+      pMonsterInfoUI_Doll.uCurrentActionLength = 8 * pSpriteFrameTable->pSpriteSFrames[pActors[uActorID].pSpriteIDs[(signed __int16)pMonsterInfoUI_Doll.uCurrentActionAnimation]].uAnimLength;
+    }
+  }
+
+  SpriteFrame *v10 = pSpriteFrameTable->GetFrame(pActors[uActorID].pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation], pMonsterInfoUI_Doll.uCurrentActionTime);
+  v106.pTarget = render->pTargetSurface;
+  v106.pTargetZ = render->pActiveZBuffer;
+  v106.uTargetPitch = render->uTargetSurfacePitch;
+  v106.uViewportX = pWindow->uFrameX + 13;
+  v106.uViewportY = pWindow->uFrameY + 52;
+  v106.uViewportW = (pWindow->uFrameY + 52) + 128;
+  v106.uViewportZ = v106.uViewportX + 128;
+  v106.screen_space_x = (int)(v106.uViewportX + 128 + v106.uViewportX) / 2;
+  v106.screenspace_projection_factor_x = fixed::FromInt(1);
+  v106.screenspace_projection_factor_y = fixed::FromInt(1);
+  v106.screen_space_y = v115 + (pWindow->uFrameY + 52) + v10->hw_sprites[0]->sprite_header->uHeight;
+  v106.pPalette = PaletteManager::Get_Dark_or_Red_LUT(v10->uPaletteIndex, 0, 1);
+  v106.screen_space_z = 0;
+  v106.object_pid = 0;
+  v106.uFlags = 0;
+
+  // Draw portrait border
+  render->ResetUIClipRect();
+  render->RasterLine2D(v106.uViewportX - 1, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));  // горизонтальная верхняя линия
+  render->RasterLine2D(v106.uViewportX - 1, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));  // горизонтальная нижняя линия
+  render->RasterLine2D(v106.uViewportX + 129, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));  // левая вертикальная линия
+  render->RasterLine2D(v106.uViewportX + 129, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));  // правая вертикальная линия
+
+  // Draw portrait
+  render->SetUIClipRect(v106.uViewportX, v106.uViewportY, v106.uViewportX + 129, v106.uViewportY + 129);
+  render->FillRectFast(v106.uViewportX, v106.uViewportY, 130, 130, Color16(0, 0, 0));
+  render->DrawTextureAlphaNew(v106.uViewportX / 640., v106.uViewportY / 480., v10->hw_sprites[0]->texture);
+  render->ResetUIClipRect();
+
+  // Draw name and profession
+  String str;
+  if (pActors[uActorID].sNPC_ID) {
+    if (GetNPCData(pActors[uActorID].sNPC_ID)->uProfession)
+      str = localization->FormatString(429, GetNPCData(pActors[uActorID].sNPC_ID)->pName, localization->GetNpcProfessionName(GetNPCData(pActors[uActorID].sNPC_ID)->uProfession)); // "%s the %s"   /   ^Pi[%s] %s
     else
-    {
-        memcpy(&pMonsterInfoUI_Doll, &pActors[uActorID], sizeof(pMonsterInfoUI_Doll));
-        pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
-        pMonsterInfoUI_Doll.uCurrentActionTime = 0;
-        v9 = rand() % 256 + 128;
-        pMonsterInfoUI_Doll.uCurrentActionLength = v9;
-    }
-
-    if ((signed int)pMonsterInfoUI_Doll.uCurrentActionTime > (signed __int16)v9)
-    {
-        pMonsterInfoUI_Doll.uCurrentActionTime = 0;
-        if (pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_Bored || pMonsterInfoUI_Doll.uCurrentActionAnimation == ANIM_AtkMelee)
-        {
-            pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.uCurrentActionLength = rand() % 128 + 128;
-        }
-        else
-        {
-            //rand();
-            pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_Bored;
-            if ((pMonsterInfoUI_Doll.pMonsterInfo.uID < 115 || pMonsterInfoUI_Doll.pMonsterInfo.uID > 186) &&
-                (pMonsterInfoUI_Doll.pMonsterInfo.uID < 232 || pMonsterInfoUI_Doll.pMonsterInfo.uID > 249) && rand() % 30 < 100)
-                pMonsterInfoUI_Doll.uCurrentActionAnimation = ANIM_AtkMelee;
-            pMonsterInfoUI_Doll.uCurrentActionLength = 8 * pSpriteFrameTable->pSpriteSFrames[pActors[uActorID].pSpriteIDs[(signed __int16)pMonsterInfoUI_Doll.uCurrentActionAnimation]].uAnimLength;
-        }
-    }
-    v10 = pSpriteFrameTable->GetFrame(pActors[uActorID].pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation], pMonsterInfoUI_Doll.uCurrentActionTime);
-    v106.pTarget = render->pTargetSurface;
-    v106.pTargetZ = render->pActiveZBuffer;
-    v106.uTargetPitch = render->uTargetSurfacePitch;
-    v106.uViewportX = pWindow->uFrameX + 13;
-    v106.uViewportY = pWindow->uFrameY + 52;
-    v106.uViewportW = (pWindow->uFrameY + 52) + 128;
-    v106.uViewportZ = v106.uViewportX + 128;
-    v106.screen_space_x = (signed int)(v106.uViewportX + 128 + v106.uViewportX) / 2;
-    v106.screenspace_projection_factor_x = fixed::FromInt(1);
-    v106.screenspace_projection_factor_y = fixed::FromInt(1);
-    v106.screen_space_y = v115 + (pWindow->uFrameY + 52) + v10->hw_sprites[0]->sprite_header->uHeight;
-    v106.pPalette = PaletteManager::Get_Dark_or_Red_LUT(v10->uPaletteIndex, 0, 1);
-    v106.screen_space_z = 0;
-    v106.object_pid = 0;
-    v106.uFlags = 0;
-    render->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
-    render->RasterLine2D(v106.uViewportX - 1, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));//горизонтальная верхняя линия
-    render->RasterLine2D(v106.uViewportX - 1, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));//горизонтальная нижняя линия
-    render->RasterLine2D(v106.uViewportX + 129, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));//левая вертикальная линия
-    render->RasterLine2D(v106.uViewportX + 129, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));//правая вертикальная линия
-    //if ( render->pRenderD3D )
-    {
-        v106.screen_space_y = v115 + v106.uViewportY + v10->hw_sprites[0]->uBufferHeight;
-
-        v107 = 0;
-        uint i = 0;
-        int dst_x = v106.screen_space_x + v10->hw_sprites[0]->uAreaX - v10->hw_sprites[0]->uBufferWidth / 2;
-        int dst_y = v106.screen_space_y + v10->hw_sprites[0]->uAreaY - v10->hw_sprites[0]->uBufferHeight;
-        uint dst_z = v106.screen_space_x + v10->hw_sprites[0]->uAreaX + v10->hw_sprites[0]->uAreaWidth + v10->hw_sprites[0]->uBufferWidth / 2 - v10->hw_sprites[0]->uBufferWidth;
-        uint dst_w = v106.screen_space_y + v10->hw_sprites[0]->uAreaY + v10->hw_sprites[0]->uAreaHeight - v10->hw_sprites[0]->uBufferHeight;
-        if (dst_x < v106.uViewportX)
-        {
-            v18 = v106.uViewportX - dst_x;
-            dst_x = v106.uViewportX;
-            v107 = v18;
-        }
-        if (dst_y < v106.uViewportY)
-        {
-            v19 = v106.uViewportY - dst_y;
-            dst_y = v106.uViewportY;
-            i = v19;
-        }
-        if (dst_z > v106.uViewportZ)
-            dst_z = v106.uViewportZ;
-        if (dst_w > v106.uViewportW)
-            dst_w = v106.uViewportW;
-        render->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0x7FF);
-        render->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0x7FF);
-
-
-        Rect rc;
-        rc.x = v106.uViewportX;
-        rc.y = v106.uViewportY;
-        rc.z = v106.uViewportZ;
-        rc.w = v106.uViewportW;
-
-        void *surface;
-        int pitch;
-        int width;
-        int height;
-        if (render->LockSurface(v10->hw_sprites[0]->texture, &rc, &surface, &pitch, &width, &height))
-        {
-            ushort* src = (unsigned __int16 *)surface;
-            uint num_top_scanlines_above_frame_y = i - dst_y;
-            for (uint y = dst_y; y < dst_w; ++y)
-            {
-                //ushort* dst = &render->pTargetSurface[y * render->uTargetSurfacePitch + dst_x];
-
-                uint src_y = num_top_scanlines_above_frame_y + y;
-                for (uint x = dst_x; x < dst_z; ++x)
-                {
-                    uint src_x = v107 - dst_x + x; // num scanlines left to frame_x  + current x
-
-                    uint idx =
-                        height * src_y / v10->hw_sprites[0]->uAreaHeight * (pitch / sizeof(short)) +
-                        width  * src_x / v10->hw_sprites[0]->uAreaWidth;
-                    uint b = src[idx] & 0x1F;
-                    //*dst++ = b | 2 * (src[idx] & 0xFFE0);
-                    render->WritePixel16(x, y, b | 2 * (src[idx] & 0xFFE0));
-                }
-            }
-            render->UnlockSurface(v10->hw_sprites[0]->texture);
-        }
-    }
-    /*else
-    {
-      render->FillRectFast(v106.uViewportX, v106.uViewportY, v106.uViewportZ - v106.uViewportX, v106.uViewportW - v106.uViewportY, 0);
-      if ( v10->pHwSpriteIDs[0] >= 0 )
-        pSprites_LOD->pSpriteHeaders[v10->pHwSpriteIDs[0]].DrawSprite_sw(&v106, 0);
-    }*/
-    //name and profession
-
-    String str;
-    if (pActors[uActorID].sNPC_ID)
-    {
-        if (GetNPCData(pActors[uActorID].sNPC_ID)->uProfession)
-            str = localization->FormatString(429, GetNPCData(pActors[uActorID].sNPC_ID)->pName, localization->GetNpcProfessionName(GetNPCData(pActors[uActorID].sNPC_ID)->uProfession)); // "%s the %s"   /   ^Pi[%s] %s
-        else
-            str = GetNPCData(pActors[uActorID].sNPC_ID)->pName;
-    }
+      str = GetNPCData(pActors[uActorID].sNPC_ID)->pName;
+  } else {
+    if (pActors[uActorID].dword_000334_unique_name)
+      str = pMonsterStats->pPlaceStrings[pActors[uActorID].dword_000334_unique_name];
     else
-    {
-        if (pActors[uActorID].dword_000334_unique_name)
-            str = pMonsterStats->pPlaceStrings[pActors[uActorID].dword_000334_unique_name];
-        else
-            str = pMonsterStats->pInfos[pActors[uActorID].pMonsterInfo.uID].pName;
+      str = pMonsterStats->pInfos[pActors[uActorID].pMonsterInfo.uID].pName;
+  }
+  pWindow->DrawTitleText(pFontComic, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
+
+  //health bar
+  Actor::DrawHealthBar(&pActors[uActorID], pWindow);
+
+  bool normal_level = false;
+  bool expert_level = false;
+  bool master_level = false;
+  bool grandmaster_level = false;
+  bool for_effects = false;
+
+  int skill_points = 0;
+  unsigned int skill_level = 0;
+
+  pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
+  if (pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID)) {
+    skill_points = (unsigned __int8)pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
+    skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID) - 1;
+    if (skill_level == 0) {  //(normal)
+      if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel)
+        normal_level = 1;
+    } else if (skill_level == 1) {  //(expert)
+      if (2 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+        normal_level = 1;
+        expert_level = 1;
+      }
+    } else if (skill_level == 2) {  //(master)
+      if (3 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel) {
+        normal_level = 1;
+        expert_level = 1;
+        master_level = 1;
+      }
+    } else if (skill_level == 3) {  //grandmaster
+      normal_level = 1;
+      expert_level = 1;
+      master_level = 1;
+      grandmaster_level = 1;
     }
-    pWindow->DrawTitleText(pFontComic, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
+  }
 
-    //health bar
-    Actor::DrawHealthBar(&pActors[uActorID], pWindow);
+  PlayerSpeech speech;
+  if (pActors[uActorID].uAIState != Dead
+    && pActors[uActorID].uAIState != Dying
+    && !dword_507BF0_is_there_popup_onscreen && pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID))
+  {
+    if (normal_level | expert_level | master_level | grandmaster_level) {
+      if (pActors[uActorID].pMonsterInfo.uLevel >= pPlayers[uActiveCharacter]->uLevel - 5)
+        speech = SPEECH_IDENTIFY_MONSTER_STRONGER;
+      else
+        speech = SPEECH_IDENTIFY_MONSTER_WEAKER;
+    } else {
+      speech = SPEECH_IDENTIFY_MONSTER_106;
+    }
+    pPlayers[uActiveCharacter]->PlaySound(speech, 0);
+  }
 
-    normal_level = 0;
-    expert_level = 0;
-    master_level = 0;
-    grandmaster_level = 0;
-    for_effects = 0;
-    pMonsterInfoUI_Doll.uCurrentActionTime += pMiscTimer->uTimeElapsed;
-    if (pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID))
-    {
-        skill_points = (unsigned __int8)pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID);
-        skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID) - 1;
-        if (skill_level == 0)//(normal)
-        {
-            if (skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel)
-                normal_level = 1;
+  if ((signed int)(pParty->pPlayers[uActiveCharacter - 1].GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID)) >= 3)
+    for_effects = 1;
+
+  if (monster_full_informations == true) {
+    normal_level = 1;//
+    expert_level = 1;//
+    master_level = 1;//
+    grandmaster_level = 1;//
+    for_effects = 1;
+  }
+
+  int pTextHeight = 0;
+  const char *pText = nullptr;
+  int pTextColorID = 0;
+  pWindow->DrawText(pFontSmallnum, 12, 196, Color16(0xE1u, 255, 0x9Bu), localization->GetString(631), 0, 0, 0);//Effects
+  if (!for_effects && false) {
+    pWindow->DrawText(pFontSmallnum, 28, pFontSmallnum->GetHeight() + 193, Color16(0xE1u, 255, 0x9Bu), localization->GetString(630), 0, 0, 0);//?
+  } else {
+    pText = "";
+    pTextHeight = pFontSmallnum->GetHeight() + 193;
+    for (uint i = 1; i <= 21; ++i) {
+      if (pActors[uActorID].pActorBuffs[i].Active()) {
+        switch (i) {
+          case ACTOR_BUFF_CHARM:
+            pTextColorID = 60;
+            pText = localization->GetString(591);//Charmed
+            break;
+          case ACTOR_BUFF_SUMMONED:
+            pTextColorID = 82;
+            pText = localization->GetString(649);//Summoned
+            break;
+          case ACTOR_BUFF_SHRINK:
+            pTextColorID = 92;
+            pText = localization->GetString(592);//Shrunk
+            break;
+          case ACTOR_BUFF_AFRAID:
+            pTextColorID = 63;
+            pText = localization->GetString(4);//Afraid
+            break;
+          case ACTOR_BUFF_STONED:
+            pText = localization->GetString(220);//Stoned
+            pTextColorID = 81;
+            break;
+          case ACTOR_BUFF_PARALYZED:
+            pText = localization->GetString(162);//Paralyzed
+            pTextColorID = 81;
+            break;
+          case ACTOR_BUFF_SLOWED:
+            pText = localization->GetString(593);//Slowed
+            pTextColorID = 35;
+            break;
+          case ACTOR_BUFF_BERSERK:
+            pText = localization->GetString(608);//Berserk
+            pTextColorID = 62;
+            break;
+          case ACTOR_BUFF_SOMETHING_THAT_HALVES_AC:
+          case ACTOR_BUFF_MASS_DISTORTION:
+            pText = "";
+            pTextColorID = 0;
+            continue;
+          case ACTOR_BUFF_FATE:
+            pTextColorID = 47;
+            pText = localization->GetString(221); // Fate
+            break;
+          case ACTOR_BUFF_ENSLAVED:
+            pTextColorID = 66;
+            pText = localization->GetString(607); // Enslaved
+            break;
+          case ACTOR_BUFF_DAY_OF_PROTECTION:
+            pTextColorID = 85;
+            pText = localization->GetString(610); // Day of Protection
+            break;
+          case ACTOR_BUFF_HOUR_OF_POWER:
+            pTextColorID = 86;
+            pText = localization->GetString(609); // Hour of Power
+            break;
+          case ACTOR_BUFF_SHIELD:
+            pTextColorID = 17;
+            pText = localization->GetString(279); // Shield
+            break;
+          case ACTOR_BUFF_STONESKIN:
+            pTextColorID = 38;
+            pText = localization->GetString(442); // Stoneskin
+            break;
+          case ACTOR_BUFF_BLESS:
+            pTextColorID = 46;
+            pText = localization->GetString(443); // Bless
+            break;
+          case ACTOR_BUFF_HEROISM:
+            pTextColorID = 51;
+            pText = localization->GetString(440); // Heroism
+            break;
+          case ACTOR_BUFF_HASTE:
+            pTextColorID = 5;
+            pText = localization->GetString(441); // Haste
+            break;
+          case ACTOR_BUFF_PAIN_REFLECTION:
+            pTextColorID = 95;
+            pText = localization->GetString(229); // Pain Reflection
+            break;
+          case ACTOR_BUFF_PAIN_HAMMERHANDS:
+            pTextColorID = 73;
+            pText = localization->GetString(228); // Hammerhands
+            break;
+          default:
+            pText = "";
+            break;
         }
-        else if (skill_level == 1)//(expert)
-        {
-            if (2 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel)
-            {
-                normal_level = 1;
-                expert_level = 1;
-            }
+        if (_stricmp(pText, "")) {
+          pWindow->DrawText(pFontSmallnum, 28, pTextHeight, GetSpellColor(pTextColorID), pText, 0, 0, 0);
+          pTextHeight = pTextHeight + *(char *)((int)pFontSmallnum + 5) - 3;
         }
-        else if (skill_level == 2)//(master)
-        {
-            if (3 * skill_points + 10 >= pActors[uActorID].pMonsterInfo.uLevel)
-            {
-                normal_level = 1;
-                expert_level = 1;
-                master_level = 1;
-            }
-        }
-        else if (skill_level == 3)//grandmaster
-        {
-            normal_level = 1;
-            expert_level = 1;
-            master_level = 1;
-            grandmaster_level = 1;
-        }
+      }
     }
-    if (pActors[uActorID].uAIState != Dead
-        && pActors[uActorID].uAIState != Dying
-        && !dword_507BF0_is_there_popup_onscreen && pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_MONSTER_ID))
-    {
-        if (normal_level | expert_level | master_level | grandmaster_level)
-        {
-            if (pActors[uActorID].pMonsterInfo.uLevel >= pPlayers[uActiveCharacter]->uLevel - 5)
-                speech = SPEECH_IDENTIFY_MONSTER_STRONGER;
-            else
-                speech = SPEECH_IDENTIFY_MONSTER_WEAKER;
-        }
-        else
-            speech = SPEECH_IDENTIFY_MONSTER_106;
-        pPlayers[uActiveCharacter]->PlaySound(speech, 0);
-    }
+    if (!_stricmp(pText, ""))
+      pWindow->DrawText(pFontSmallnum, 28, pTextHeight, Color16(0xE1u, 255, 0x9Bu), localization->GetString(153), 0, 0, 0); // Нет
+  }
 
-    if ((signed int)(pParty->pPlayers[uActiveCharacter - 1].GetActualSkillMastery(PLAYER_SKILL_MONSTER_ID)) >= 3)
-        for_effects = 1;
+  String txt2;
+  if (normal_level) {
+    auto str = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(108), 0, pActors[uActorID].pMonsterInfo.uHP);
+    pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
+    pTextHeight = v106.uViewportY + pFontSmallnum->GetHeight() - 3;
+    txt2 = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(12), 0, pActors[uActorID].pMonsterInfo.uAC);//Armor Class
+  } else {
+    auto str = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(108), 0, localization->GetString(630));//?   - [630] actually displays a question mark
+    pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
+    pTextHeight = v106.uViewportY + pFontSmallnum->GetHeight() - 3;
+    txt2 = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(12), 0, localization->GetString(630));//?   - [630] actually displays a question mark
+  }
+  pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt2, 0, 0, 0);
+  pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
 
-    if (monster_full_informations == true)
-    {
-        normal_level = 1;//
-        expert_level = 1;//
-        master_level = 1;//
-        grandmaster_level = 1;//
-        for_effects = 1;
-    }
+  const char *content[11] = { 0 };
+  content[0] = localization->GetSpellSchoolName(0);
+  content[1] = localization->GetSpellSchoolName(1);
+  content[2] = localization->GetSpellSchoolName(2);
+  content[3] = localization->GetSpellSchoolName(3);
+  content[4] = localization->GetString(624);  // Physical
+  content[5] = localization->GetString(138);  // Magic
+  content[6] = localization->GetSpellSchoolName(5);
+  content[7] = localization->GetSpellSchoolName(4);
+  content[8] = localization->GetSpellSchoolName(6);
+  content[9] = localization->GetSpellSchoolName(7);
+  content[10] = localization->GetSpellSchoolName(8);
 
-    pWindow->DrawText(pFontSmallnum, 12, 196, Color16(0xE1u, 255, 0x9Bu), localization->GetString(631), 0, 0, 0);//Effects
-    if (!for_effects && false)
-        pWindow->DrawText(pFontSmallnum, 28, pFontSmallnum->GetHeight() + 193, Color16(0xE1u, 255, 0x9Bu), localization->GetString(630), 0, 0, 0);//?
-    else
-    {
-        pText = "";
-        pTextHeight = pFontSmallnum->GetHeight() + 193;
-        for (uint i = 1; i <= 21; ++i)
-        {
-            if (pActors[uActorID].pActorBuffs[i].Active())
-            {
-                switch (i)
-                {
-                case ACTOR_BUFF_CHARM:
-                    pTextColorID = 60;
-                    pText = localization->GetString(591);//Charmed
-                    break;
-                case ACTOR_BUFF_SUMMONED:
-                    pTextColorID = 82;
-                    pText = localization->GetString(649);//Summoned
-                    break;
-                case ACTOR_BUFF_SHRINK:
-                    pTextColorID = 92;
-                    pText = localization->GetString(592);//Shrunk
-                    break;
-                case ACTOR_BUFF_AFRAID:
-                    pTextColorID = 63;
-                    pText = localization->GetString(4);//Afraid
-                    break;
-                case ACTOR_BUFF_STONED:
-                    pText = localization->GetString(220);//Stoned
-                    pTextColorID = 81;
-                    break;
-                case ACTOR_BUFF_PARALYZED:
-                    pText = localization->GetString(162);//Paralyzed
-                    pTextColorID = 81;
-                    break;
-                case ACTOR_BUFF_SLOWED:
-                    pText = localization->GetString(593);//Slowed
-                    pTextColorID = 35;
-                    break;
-                case ACTOR_BUFF_BERSERK:
-                    pText = localization->GetString(608);//Berserk
-                    pTextColorID = 62;
-                    break;
-                case ACTOR_BUFF_SOMETHING_THAT_HALVES_AC:
-                case ACTOR_BUFF_MASS_DISTORTION:
-                    pText = "";
-                    pTextColorID = 0;
-                    continue;
-                case ACTOR_BUFF_FATE:
-                    pTextColorID = 47;
-                    pText = localization->GetString(221); // Fate
-                    break;
-                case ACTOR_BUFF_ENSLAVED:
-                    pTextColorID = 66;
-                    pText = localization->GetString(607); // Enslaved
-                    break;
-                case ACTOR_BUFF_DAY_OF_PROTECTION:
-                    pTextColorID = 85;
-                    pText = localization->GetString(610); // Day of Protection
-                    break;
-                case ACTOR_BUFF_HOUR_OF_POWER:
-                    pTextColorID = 86;
-                    pText = localization->GetString(609); // Hour of Power
-                    break;
-                case ACTOR_BUFF_SHIELD:
-                    pTextColorID = 17;
-                    pText = localization->GetString(279); // Shield
-                    break;
-                case ACTOR_BUFF_STONESKIN:
-                    pTextColorID = 38;
-                    pText = localization->GetString(442); // Stoneskin
-                    break;
-                case ACTOR_BUFF_BLESS:
-                    pTextColorID = 46;
-                    pText = localization->GetString(443); // Bless
-                    break;
-                case ACTOR_BUFF_HEROISM:
-                    pTextColorID = 51;
-                    pText = localization->GetString(440); // Heroism
-                    break;
-                case ACTOR_BUFF_HASTE:
-                    pTextColorID = 5;
-                    pText = localization->GetString(441); // Haste
-                    break;
-                case ACTOR_BUFF_PAIN_REFLECTION:
-                    pTextColorID = 95;
-                    pText = localization->GetString(229); // Pain Reflection
-                    break;
-                case ACTOR_BUFF_PAIN_HAMMERHANDS:
-                    pTextColorID = 73;
-                    pText = localization->GetString(228); // Hammerhands
-                    break;
-                default:
-                    pText = "";
-                    break;
-                }
-                if (_stricmp(pText, ""))
-                {
-                    pWindow->DrawText(pFontSmallnum, 28, pTextHeight, GetSpellColor(pTextColorID), pText, 0, 0, 0);
-                    pTextHeight = pTextHeight + *(char *)((int)pFontSmallnum + 5) - 3;
-                }
-            }
-        }
-        if (!_stricmp(pText, ""))
-            pWindow->DrawText(pFontSmallnum, 28, pTextHeight, Color16(0xE1u, 255, 0x9Bu), localization->GetString(153), 0, 0, 0); // Нет
-    }
-
-    String txt2;
-    if (normal_level)
-    {
-        auto str = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(108), 0, pActors[uActorID].pMonsterInfo.uHP);
-        pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
-        pTextHeight = v106.uViewportY + pFontSmallnum->GetHeight() - 3;
-        txt2 = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(12), 0, pActors[uActorID].pMonsterInfo.uAC);//Armor Class
-    }
-    else
-    {
-        auto str = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(108), 0, localization->GetString(630));//?   - [630] actually displays a question mark
-        pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
-        pTextHeight = v106.uViewportY + pFontSmallnum->GetHeight() - 3;
-        txt2 = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(12), 0, localization->GetString(630));//?   - [630] actually displays a question mark
-    }
-    pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt2, 0, 0, 0);
-    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
-
-    content[0] = localization->GetSpellSchoolName(0);
-    content[1] = localization->GetSpellSchoolName(1);
-    content[2] = localization->GetSpellSchoolName(2);
-    content[3] = localization->GetSpellSchoolName(3);
-    content[4] = localization->GetString(624);  // Physical
-    content[5] = localization->GetString(138);  // Magic
-    content[6] = localization->GetSpellSchoolName(5);
-    content[7] = localization->GetSpellSchoolName(4);
-    content[8] = localization->GetSpellSchoolName(6);
-    content[9] = localization->GetSpellSchoolName(7);
-    content[10] = localization->GetSpellSchoolName(8);
-
-    String txt4;
-    if (expert_level)
-    {
-        auto txt3 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(18), 0, content[pActors[uActorID].pMonsterInfo.uAttack1Type]); // Attack
-        pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
-
-        pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        if (pActors[uActorID].pMonsterInfo.uAttack1DamageBonus)
-            txt4 = StringPrintf("%s\f%05u\t080%dd%d+%d\n", localization->GetString(53),
-                0, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides, pActors[uActorID].pMonsterInfo.uAttack1DamageBonus);
-        else
-            txt4 = StringPrintf("%s\f%05u\t080%dd%d\n", localization->GetString(53),
-                0, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides);
-    }
-    else
-    {
-        auto txt3 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(18), 0, localization->GetString(630));
-        pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
-        pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        txt4 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(53), 0, localization->GetString(630));
-    }
-    pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt4, 0, 0, 0);
-
-    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
-    if (!master_level)
-    {
-        auto txt5 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(628), 0, localization->GetString(630)); // "Spell" "?"
-        pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt5, 0, 0, 0);
-        pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-    }
-    else
-    {
-        pText = localization->GetString(628);//Spell
-        if (pActors[uActorID].pMonsterInfo.uSpell1ID && pActors[uActorID].pMonsterInfo.uSpell2ID)
-            pText = localization->GetString(629);//Spells
-        if (pActors[uActorID].pMonsterInfo.uSpell1ID)
-        {
-            auto txt6 = StringPrintf("%s\f%05u\t070%s\n", pText, 0, pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell1ID].pShortName);//"%s\f%05u\t060%s\n"
-            pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        }
-        if (pActors[uActorID].pMonsterInfo.uSpell2ID)
-        {
-            auto txt6 = StringPrintf("\f%05u\t070%s\n", 0, pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell2ID].pShortName);//"%s\f%05u\t060%s\n"
-            pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        }
-        if (!pActors[uActorID].pMonsterInfo.uSpell1ID && !pActors[uActorID].pMonsterInfo.uSpell2ID)
-        {
-            auto txt6 = StringPrintf("%s\f%05u\t070%s\n", localization->GetString(628), 0, localization->GetString(153));//"%s\f%05u\t060%s\n"
-            pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        }
-    }
+  String txt4;
+  if (expert_level) {
+    auto txt3 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(18), 0, content[pActors[uActorID].pMonsterInfo.uAttack1Type]); // Attack
+    pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
 
     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-    pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), localization->GetString(626), 0, 0, 0);//Immune
-    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-
-    string_name[0] = localization->GetSpellSchoolName(0); //Fire
-    string_name[1] = localization->GetSpellSchoolName(1); //Air
-    string_name[2] = localization->GetSpellSchoolName(2);
-    string_name[3] = localization->GetSpellSchoolName(3);
-    string_name[4] = localization->GetSpellSchoolName(4);
-    string_name[5] = localization->GetSpellSchoolName(5);
-    string_name[6] = localization->GetSpellSchoolName(6);
-    string_name[7] = localization->GetSpellSchoolName(7);
-    string_name[8] = localization->GetSpellSchoolName(8);
-    string_name[9] = localization->GetString(624); // Physical
-
-    resistances[0] = pActors[uActorID].pMonsterInfo.uResFire;
-    resistances[1] = pActors[uActorID].pMonsterInfo.uResAir;
-    resistances[2] = pActors[uActorID].pMonsterInfo.uResWater;
-    resistances[3] = pActors[uActorID].pMonsterInfo.uResEarth;
-    resistances[4] = pActors[uActorID].pMonsterInfo.uResMind;
-    resistances[5] = pActors[uActorID].pMonsterInfo.uResSpirit;
-    resistances[6] = pActors[uActorID].pMonsterInfo.uResBody;
-    resistances[7] = pActors[uActorID].pMonsterInfo.uResLight;
-    resistances[8] = pActors[uActorID].pMonsterInfo.uResPhysical;
-    resistances[9] = pActors[uActorID].pMonsterInfo.uResDark;
-
-    if (grandmaster_level)
-    {
-        for (uint i = 0; i < 10; i++)
-        {
-            if (resistances[i] == 200)
-            {
-                pText = localization->GetString(625);//Immune
-            }
-            else
-            {
-                if (resistances[i])
-                    pText = localization->GetString(627);//Resistant
-                else
-                    pText = localization->GetString(153);//None
-            }
-
-            auto txt7 = StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, pText);
-            pWindow->DrawText(pFontSmallnum, 170, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt7, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        }
-    }
+    if (pActors[uActorID].pMonsterInfo.uAttack1DamageBonus)
+      txt4 = StringPrintf("%s\f%05u\t080%dd%d+%d\n", localization->GetString(53),
+        0, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides, pActors[uActorID].pMonsterInfo.uAttack1DamageBonus);
     else
-    {
-        for (uint i = 0; i < 10; ++i)
-        {
-            auto txt8 = StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, localization->GetString(630)); // "?"
-            pWindow->DrawText(pFontSmallnum, 170, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt8, 0, 0, 0);
-            pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        }
-    }
+      txt4 = StringPrintf("%s\f%05u\t080%dd%d\n", localization->GetString(53),
+        0, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls, pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides);
+  } else {
+    auto txt3 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(18), 0, localization->GetString(630));
+    pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
+    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+    txt4 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(53), 0, localization->GetString(630));
+  }
+  pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt4, 0, 0, 0);
 
-    //cast spell: Detect life
-    if (pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active())
-    {
-        auto txt9 = StringPrintf("%s: %d", localization->GetString(650), pActors[uActorID].sCurrentHP);//Current Hit Points
-        pFontSmallnum->GetLineWidth(txt9);
-        pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, txt9, 3);
+  pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 + pFontSmallnum->GetHeight();
+  if (!master_level) {
+    auto txt5 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(628), 0, localization->GetString(630)); // "Spell" "?"
+    pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt5, 0, 0, 0);
+    pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+  } else {
+    pText = localization->GetString(628);//Spell
+    if (pActors[uActorID].pMonsterInfo.uSpell1ID && pActors[uActorID].pMonsterInfo.uSpell2ID)
+      pText = localization->GetString(629);//Spells
+    if (pActors[uActorID].pMonsterInfo.uSpell1ID) {
+      auto txt6 = StringPrintf("%s\f%05u\t070%s\n", pText, 0, pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell1ID].pShortName);//"%s\f%05u\t060%s\n"
+      pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
+      pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
     }
+    if (pActors[uActorID].pMonsterInfo.uSpell2ID) {
+      auto txt6 = StringPrintf("\f%05u\t070%s\n", 0, pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell2ID].pShortName);//"%s\f%05u\t060%s\n"
+      pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
+      pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+    }
+    if (!pActors[uActorID].pMonsterInfo.uSpell1ID && !pActors[uActorID].pMonsterInfo.uSpell2ID) {
+      auto txt6 = StringPrintf("%s\f%05u\t070%s\n", localization->GetString(628), 0, localization->GetString(153));//"%s\f%05u\t060%s\n"
+      pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
+      pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+    }
+  }
+
+  pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+  pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), localization->GetString(626), 0, 0, 0);//Immune
+  pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+
+  const char *string_name[10] = { 0 };
+  string_name[0] = localization->GetSpellSchoolName(0); //Fire
+  string_name[1] = localization->GetSpellSchoolName(1); //Air
+  string_name[2] = localization->GetSpellSchoolName(2);
+  string_name[3] = localization->GetSpellSchoolName(3);
+  string_name[4] = localization->GetSpellSchoolName(4);
+  string_name[5] = localization->GetSpellSchoolName(5);
+  string_name[6] = localization->GetSpellSchoolName(6);
+  string_name[7] = localization->GetSpellSchoolName(7);
+  string_name[8] = localization->GetSpellSchoolName(8);
+  string_name[9] = localization->GetString(624); // Physical
+
+
+  unsigned char resistances[11] = { 0 };
+  resistances[0] = pActors[uActorID].pMonsterInfo.uResFire;
+  resistances[1] = pActors[uActorID].pMonsterInfo.uResAir;
+  resistances[2] = pActors[uActorID].pMonsterInfo.uResWater;
+  resistances[3] = pActors[uActorID].pMonsterInfo.uResEarth;
+  resistances[4] = pActors[uActorID].pMonsterInfo.uResMind;
+  resistances[5] = pActors[uActorID].pMonsterInfo.uResSpirit;
+  resistances[6] = pActors[uActorID].pMonsterInfo.uResBody;
+  resistances[7] = pActors[uActorID].pMonsterInfo.uResLight;
+  resistances[8] = pActors[uActorID].pMonsterInfo.uResPhysical;
+  resistances[9] = pActors[uActorID].pMonsterInfo.uResDark;
+
+  if (grandmaster_level) {
+    for (uint i = 0; i < 10; i++) {
+      if (resistances[i] == 200) {
+        pText = localization->GetString(625);//Immune
+      } else {
+        if (resistances[i])
+          pText = localization->GetString(627);//Resistant
+        else
+          pText = localization->GetString(153);//None
+      }
+
+      auto txt7 = StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, pText);
+      pWindow->DrawText(pFontSmallnum, 170, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt7, 0, 0, 0);
+      pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+    }
+  } else {
+    for (uint i = 0; i < 10; ++i) {
+      auto txt8 = StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0, localization->GetString(630)); // "?"
+      pWindow->DrawText(pFontSmallnum, 170, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt8, 0, 0, 0);
+      pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
+    }
+  }
+
+  //cast spell: Detect life
+  if (pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active()) {
+    auto txt9 = StringPrintf("%s: %d", localization->GetString(650), pActors[uActorID].sCurrentHP);//Current Hit Points
+    pFontSmallnum->GetLineWidth(txt9);
+    pWindow->DrawTitleText(pFontSmallnum, 0, pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, txt9, 3);
+  }
 }
 
 //----- (00417BB5) --------------------------------------------------------
