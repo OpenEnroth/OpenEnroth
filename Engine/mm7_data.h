@@ -313,7 +313,6 @@ extern float flt_6BE150_look_up_down_dangle;
 extern char pCurrentMapName[32]; // idb
 extern unsigned int uLevelMapStatsID;
 
-extern bool FORCE_16_BITS; // related to GAME_SETTINGS_INVALID_RESOLUTION
 #define GAME_SETTINGS_0001                            0x0001
 #define GAME_SETTINGS_INVALID_RESOLUTION              0x0002
 #define GAME_SETTINGS_NO_INTRO                        0x0004

@@ -1399,20 +1399,11 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
       v5 = pEngine->pVisInstance->get_picked_object_zbuf_val();
       /*else
       v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
-      if (PID_TYPE((unsigned __int16)v5) == OBJECT_Actor)
-      {
-        /*if ( render->uNumSceneBegins )
-        {
+      if (PID_TYPE((unsigned __int16)v5) == OBJECT_Actor) {
+        render->BeginScene();
         popup_window.DrawMessageBox(1);
         MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
-        }
-        else*/
-        {
-          render->BeginScene();
-          popup_window.DrawMessageBox(1);
-          MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
-          render->EndScene();
-        }
+        render->EndScene();
       }
       if (PID_TYPE((unsigned __int16)v5) == OBJECT_Item)
       {

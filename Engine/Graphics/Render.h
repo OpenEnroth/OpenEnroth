@@ -27,7 +27,7 @@ class Render : public IRender
 
         virtual bool Initialize(OSWindow *window);
 
-		virtual Texture *CreateTexture(const String &name) override;
+        virtual Texture *CreateTexture(const String &name) override;
         virtual Texture *CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id) override;
 
         virtual void ClearBlack();
@@ -184,15 +184,12 @@ class Render : public IRender
         unsigned int uTargetRMask;
         unsigned int uTargetGMask;
         unsigned int uTargetBMask;
-        unsigned int uNumSceneBegins;
-        unsigned __int32 *pTargetSurface_unaligned;
         unsigned int uClipY;
         unsigned int uClipX;
         unsigned int uClipW;
         unsigned int uClipZ;
         unsigned int bClip;
         unsigned int uNumD3DSceneBegins;
-        int using_software_screen_buffer;
         RenderHWLContainer pD3DBitmaps;
         RenderHWLContainer pD3DSprites;
         unsigned int bRequiredTextureStagesAvailable;
@@ -221,6 +218,6 @@ class Render : public IRender
         void CreateDirectDrawPrimarySurface();
         void CreateClipper(OSWindow *);
 
-        void SavePCXImage16(const String &filename, unsigned short* picture_data, int width, int height);
-        void SavePCXImage32(const String &filename, unsigned short* picture_data, int width, int height);
+        void SavePCXImage16(const String &filename, uint16_t *picture_data, int width, int height);
+        void SavePCXImage32(const String &filename, uint16_t *picture_data, int width, int height);
 };

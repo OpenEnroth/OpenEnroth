@@ -3426,44 +3426,27 @@ void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill) {
 
 
 
-void DrawSquare(Point *pTargetXY, unsigned __int16 uColor)
-{
-    render->BeginScene();
-    //if ( uNumSceneBegins )
-    {
-        if (pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
-            && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
-        {
-            render->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
-            render->WritePixel16(pTargetXY->x + 1, pTargetXY->y, uColor);
-            render->WritePixel16(pTargetXY->x, pTargetXY->y + 1, uColor);
-            render->WritePixel16(pTargetXY->x + 1, pTargetXY->y + 1, uColor);
-        }
-        render->EndScene();
-    }
+void DrawSquare(Point *pTargetXY, unsigned __int16 uColor) {
+  render->BeginScene();
+  if (pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
+    && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
+  {
+    render->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
+    render->WritePixel16(pTargetXY->x + 1, pTargetXY->y, uColor);
+    render->WritePixel16(pTargetXY->x, pTargetXY->y + 1, uColor);
+    render->WritePixel16(pTargetXY->x + 1, pTargetXY->y + 1, uColor);
+  }
+  render->EndScene();
 }
 
-
-
-//----- (0040DBD3) --------------------------------------------------------
-void DrawPixel(Point *pTargetXY, unsigned __int16 uColor)
-{
-    render->BeginScene();
-    //if ( render->uNumSceneBegins )
-    {
-        if (pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
-            && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
-        {
-            render->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
-            /*int xVal = pTargetXY->x;
-            int yVal = pTargetXY->y;
-            if ( xVal >= 0 && xVal <= 639 && yVal >= 0 && yVal <= 479)
-            {
-              render->pTargetSurface[xVal + render->uTargetSurfacePitch * yVal] = uColor;
-            }*/
-        }
-        render->EndScene();
-    }
+void DrawPixel(Point *pTargetXY, unsigned __int16 uColor) {
+  render->BeginScene();
+  if (pTargetXY->x >= 0 && pTargetXY->x <= window->GetWidth() - 1
+    && pTargetXY->y >= 0 && pTargetXY->y <= window->GetHeight() - 1)
+  {
+    render->WritePixel16(pTargetXY->x, pTargetXY->y, uColor);
+  }
+  render->EndScene();
 }
 
 
