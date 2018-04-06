@@ -1,25 +1,21 @@
 #pragma once
 
-/*  255 */
-#pragma pack(push, 1)
-struct Weather
-{
-    inline Weather() :
-        bNight(false), bRenderSnow(false)
-    {}
+#include "Engine/Point.h"
 
-    int DrawSnow();
-    int Initialize();
-    int Draw();
-    bool OnPlayerTurn(__int16 dangle);
+#include <array>
 
+class Weather {
+ public:
+  Weather() : bNight(false), bRenderSnow(false) {}
 
-    __int16 Screen_Coord[2000];
-    int bNight;
-    int bRenderSnow;
+  void DrawSnow();
+  void Initialize();
+  void Draw();
+  bool OnPlayerTurn(int dangle);
+
+  std::array<Point, 1000> Screen_Coord;
+  bool bNight;
+  bool bRenderSnow;
 };
-#pragma pack(pop)
 
-
-
-extern struct Weather *pWeather;
+extern Weather *pWeather;
