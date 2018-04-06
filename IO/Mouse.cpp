@@ -150,6 +150,7 @@ void Mouse::Deactivate() {
 }
 
 void Mouse::DrawCursor() {
+/*
   if (this->bInitialized) {
     if (!this->field_8 && this->bActive && !this->field_C) //Uninitialized memory access(this->field_8)
       pMouse->_469AE4();  // Ritor1: странная, непонятная функция
@@ -159,12 +160,10 @@ void Mouse::DrawCursor() {
       return;
     }
 
-//    if ( render->bWindowMode ) {
-      if (this->uMouseClickX < 0 || this->uMouseClickY < 0 || this->uMouseClickX > window->GetWidth() - 1 || this->uMouseClickY > window->GetHeight() - 1) {
-        this->field_F4 = 0;
-        return;
-      }
-//    }
+    if (this->uMouseClickX < 0 || this->uMouseClickY < 0 || this->uMouseClickX > window->GetWidth() - 1 || this->uMouseClickY > window->GetHeight() - 1) {
+      this->field_F4 = 0;
+      return;
+    }
 
     this->pCursorBitmapRect_x = this->uMouseClickX;
     this->pCursorBitmapRect_w = this->uMouseClickY + this->field_5C[0]; //Ritor1: Maybe this->field_5C[0] - cursor width
@@ -197,10 +196,11 @@ void Mouse::DrawCursor() {
       rect.w = pCursorBitmapRect_w;
       rect.z = pCursorBitmapRect_z;
 
-      render->_4A6DF5(pCursorBitmap_sysmem, v9, &point, render->pTargetSurface, render->uTargetSurfacePitch, &rect);  // срабатывает когда берём курсором вещь в инвенторе
+//      render->_4A6DF5(pCursorBitmap_sysmem, v9, &point, &rect);  // срабатывает когда берём курсором вещь в инвенторе
       this->bRedraw = false;
     }
   }
+*/
 }
 
 void Mouse::Activate() {

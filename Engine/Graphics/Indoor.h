@@ -791,7 +791,6 @@ struct BLVRenderParams
     float _unused_fSineNegX;   // the same
     int bsp_fov_rad;     // fixpoint FOV in radians for BSP calculation
     int bsp_fov_rad_inv;
-    void *pRenderTarget;
     unsigned int uTargetWidth;
     unsigned int uTargetHeight;
     unsigned int uViewportX;

@@ -73,7 +73,6 @@ void RenderD3D11::DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned
 void RenderD3D11::DrawMasked(float u, float v, Image *pTexture, unsigned int, unsigned __int16 mask) {__debugbreak();}
 void RenderD3D11::DrawTextureCustomHeight(float u, float v, Image *img, int height) {__debugbreak();}
 void RenderD3D11::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16) {__debugbreak();}
-void RenderD3D11::_4A6DF5(unsigned __int16 *pBitmap, unsigned int uBitmapPitch, struct Vec2_int_ *pBitmapXY, void *pTarget, unsigned int uTargetPitch, Vec4_int_ *a7) {__debugbreak();}
 void RenderD3D11::DrawTextureGrayShade(float a2, float a3, Image *a4) {__debugbreak();}
 void RenderD3D11::DrawBuildingsD3D() {__debugbreak();}
 void RenderD3D11::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {__debugbreak();}

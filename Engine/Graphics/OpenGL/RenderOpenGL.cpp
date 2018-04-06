@@ -85,7 +85,6 @@ void RenderOpenGL::DrawTransparentRedShade(float u, float v, Image *a4) { __debu
 void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) { __debugbreak(); }
 void RenderOpenGL::DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) { __debugbreak(); }
 void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int, unsigned __int16 mask) { __debugbreak(); }
-void RenderOpenGL::_4A6DF5(unsigned __int16 *pBitmap, unsigned int uBitmapPitch, struct Vec2_int_ *pBitmapXY, void *pTarget, unsigned int uTargetPitch, Vec4_int_ *a7) { __debugbreak(); }
 void RenderOpenGL::DrawTextureGrayShade(float a2, float a3, Image *a4) { __debugbreak(); }
 void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) { __debugbreak(); }
 void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) { __debugbreak(); }
@@ -836,14 +835,13 @@ void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1)
 
 
 
-void RenderOpenGL::TransformBillboardsAndSetPalettesODM()
-{
+void RenderOpenGL::TransformBillboardsAndSetPalettesODM() {
     SoftwareBillboard billboard; // [sp+4h] [bp-60h]@1
 
     billboard.sParentBillboardID = -1;
-    billboard.pTarget = render->pTargetSurface;
+//    billboard.pTarget = render->pTargetSurface;
     billboard.pTargetZ = render->pActiveZBuffer;
-    billboard.uTargetPitch = render->uTargetSurfacePitch;
+//    billboard.uTargetPitch = render->uTargetSurfacePitch;
     billboard.uViewportX = pViewport->uViewportTL_X;
     billboard.uViewportY = pViewport->uViewportTL_Y;
     billboard.uViewportZ = pViewport->uViewportBR_X - 1;

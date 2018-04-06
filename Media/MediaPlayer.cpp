@@ -1170,9 +1170,9 @@ void MPlayer::FullscreenMovieLoop(const char *pMovieName, int a2/*, int ScreenSi
 			{
 				for (unsigned int x = 0; x < 640; ++x)
 				{
-					auto p = (unsigned __int32 *)render->pTargetSurface + (x + y * render->uTargetSurfacePitch);
+//					auto p = (unsigned __int32 *)render->pTargetSurface + (x + y * render->uTargetSurfacePitch);
 					//*p = image_array[((x ) + ((y )*640))];
-					*p = image[x + (y * 640)];
+//					*p = image[x + (y * 640)];
 				}
 			}
 			//delete[] image;
@@ -1241,8 +1241,8 @@ void MPlayer::HouseMovieLoop() {
       memcpy(image_array, image, sizeof(image_array));
       for (unsigned int y = 8; y < 8 + game_viewport_height; ++y) {  // координаты местоположения видеоролика
         for (unsigned int x = 8; x < 8 + game_viewport_width; ++x) {
-          auto p = (unsigned __int32 *)render->pTargetSurface + x + y * render->uTargetSurfacePitch;
-          *p = image_array[((x - 8) + ((y - 8)*game_viewport_width))];
+//          auto p = (unsigned __int32 *)render->pTargetSurface + x + y * render->uTargetSurfacePitch;
+//          *p = image_array[((x - 8) + ((y - 8)*game_viewport_width))];
         }
       }
       delete[] image;
