@@ -531,8 +531,6 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     uActiveCharacter = 1;
   }
 
-  SoftwareBillboard v106;
-  v106.sParentBillboardID = -1;
   int v115 = monster_popup_y_offsets[(pActors[uActorID].pMonsterInfo.uID - 1) / 3] - 40;
 
   uint16_t v9 = 0;
@@ -561,35 +559,24 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
   }
 
-  SpriteFrame *v10 = pSpriteFrameTable->GetFrame(pActors[uActorID].pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation], pMonsterInfoUI_Doll.uCurrentActionTime);
-  v106.pTarget = render->pTargetSurface;
-  v106.pTargetZ = render->pActiveZBuffer;
-  v106.uTargetPitch = render->uTargetSurfacePitch;
-  v106.uViewportX = pWindow->uFrameX + 13;
-  v106.uViewportY = pWindow->uFrameY + 52;
-  v106.uViewportW = (pWindow->uFrameY + 52) + 128;
-  v106.uViewportZ = v106.uViewportX + 128;
-  v106.screen_space_x = (int)(v106.uViewportX + 128 + v106.uViewportX) / 2;
-  v106.screenspace_projection_factor_x = fixed::FromInt(1);
-  v106.screenspace_projection_factor_y = fixed::FromInt(1);
-  v106.screen_space_y = v115 + (pWindow->uFrameY + 52) + v10->hw_sprites[0]->sprite_header->uHeight;
-  v106.pPalette = PaletteManager::Get_Dark_or_Red_LUT(v10->uPaletteIndex, 0, 1);
-  v106.screen_space_z = 0;
-  v106.object_pid = 0;
-  v106.uFlags = 0;
+  Rect doll_rect = { pWindow->uFrameX + 13, pWindow->uFrameY + 52, (pWindow->uFrameX + 13) + 128, (pWindow->uFrameY + 52) + 128 };
+  {
+    SpriteFrame *v10 = pSpriteFrameTable->GetFrame(pActors[uActorID].pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation], pMonsterInfoUI_Doll.uCurrentActionTime);
 
-  // Draw portrait border
-  render->ResetUIClipRect();
-  render->RasterLine2D(v106.uViewportX - 1, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));  // горизонтальная верхняя линия
-  render->RasterLine2D(v106.uViewportX - 1, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportY - 1, Color16(0xE1u, 255, 0x9Bu));  // горизонтальная нижняя линия
-  render->RasterLine2D(v106.uViewportX + 129, v106.uViewportW + 1, v106.uViewportX - 1, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));  // левая вертикальная линия
-  render->RasterLine2D(v106.uViewportX + 129, v106.uViewportY - 1, v106.uViewportX + 129, v106.uViewportW + 1, Color16(0xE1u, 255, 0x9Bu));  // правая вертикальная линия
+    // Draw portrait border
+    render->ResetUIClipRect();
+    render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, Color16(0, 0, 0));
+    render->RasterLine2D(doll_rect.x - 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.y - 1, Color16(0xE1u, 255, 0x9Bu));  // горизонтальная верхняя линия
+    render->RasterLine2D(doll_rect.x - 1, doll_rect.w + 1, doll_rect.x - 1, doll_rect.y - 1, Color16(0xE1u, 255, 0x9Bu));  // горизонтальная нижняя линия
+    render->RasterLine2D(doll_rect.z + 1, doll_rect.w + 1, doll_rect.x - 1, doll_rect.w + 1, Color16(0xE1u, 255, 0x9Bu));  // левая вертикальная линия
+    render->RasterLine2D(doll_rect.z + 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.w + 1, Color16(0xE1u, 255, 0x9Bu));  // правая вертикальная линия
 
-  // Draw portrait
-  render->SetUIClipRect(v106.uViewportX, v106.uViewportY, v106.uViewportX + 129, v106.uViewportY + 129);
-  render->FillRectFast(v106.uViewportX, v106.uViewportY, 130, 130, Color16(0, 0, 0));
-  render->DrawTextureAlphaNew(v106.uViewportX / 640., v106.uViewportY / 480., v10->hw_sprites[0]->texture);
-  render->ResetUIClipRect();
+    // Draw portrait
+    Image *image = v10->hw_sprites[0]->texture;
+    render->SetUIClipRect(doll_rect.x, doll_rect.y, doll_rect.z, doll_rect.w);
+    render->DrawTextureAlphaNew((doll_rect.x + ((128 - image->GetWidth()) / 2)) / 640., doll_rect.y / 480., image);
+    render->ResetUIClipRect();
+  }
 
   // Draw name and profession
   String str;
@@ -781,13 +768,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
   String txt2;
   if (normal_level) {
     auto str = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(108), 0, pActors[uActorID].pMonsterInfo.uHP);
-    pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
-    pTextHeight = v106.uViewportY + pFontSmallnum->GetHeight() - 3;
+    pWindow->DrawText(pFontSmallnum, 150, (int)doll_rect.y, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
+    pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
     txt2 = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(12), 0, pActors[uActorID].pMonsterInfo.uAC);//Armor Class
   } else {
     auto str = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(108), 0, localization->GetString(630));//?   - [630] actually displays a question mark
-    pWindow->DrawText(pFontSmallnum, 150, (int)v106.uViewportY, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
-    pTextHeight = v106.uViewportY + pFontSmallnum->GetHeight() - 3;
+    pWindow->DrawText(pFontSmallnum, 150, (int)doll_rect.y, Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
+    pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
     txt2 = StringPrintf("%s\f%05u\t100%s\n", localization->GetString(12), 0, localization->GetString(630));//?   - [630] actually displays a question mark
   }
   pWindow->DrawText(pFontSmallnum, 150, pTextHeight, Color16(0xE1u, 255, 0x9Bu), txt2, 0, 0, 0);

@@ -2032,41 +2032,15 @@ Render::~Render()
 //----- (0049E992) --------------------------------------------------------
 Render::Render() : IRender()
 {
-    //Render *v1; // esi@1
-  //  int v2; // eax@1
-  //  char v3; // zf@1
-
-    //v1 = this;
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;
     this->pBackBuffer4 = nullptr;
-    //this->pColorKeySurface4 = 0;
-    //this->pDirectDraw2 = 0;
-    //this->pFrontBuffer2 = 0;
-    //this->pBackBuffer2 = 0;
-    //this->pSomeSurface2 = 0;
-    //RenderHWLContainer::RenderHWLContainer(&this->pD3DBitmaps);
-    //RenderHWLContainer::RenderHWLContainer(&v1->pD3DSprites);
     this->bWindowMode = 1;
-    //this->field_40054 = 0;
-    //this->field_10 = 640;
-    //this->field_14 = 480;
-    //this->field_40030 = 0;
-    //this->field_4002C = 0;
     this->pActiveZBuffer = nullptr;
     this->pDefaultZBuffer = nullptr;
-    this->raster_clip_y = 0;
-    this->raster_clip_x = 0;
-    this->raster_clip_z = 639;
-    this->raster_clip_w = 479;
-    //this->field_4003C = 0x004EED80;
-    //this->field_40040 = dword_4EED78;
     this->uClipZ = 640;
-    //this->field_40044 = 2;
-    //this->field_40048 = 6;
     this->pFrontBuffer4 = nullptr;
     this->pBackBuffer4 = nullptr;
-    //this->pColorKeySurface4 = 0;
     this->pDirectDraw4 = nullptr;
     this->pRenderD3D = 0;
     this->uNumSceneBegins = 0;
@@ -2078,7 +2052,6 @@ Render::Render() : IRender()
     this->uClipX = 0;
     this->uClipW = 480;
     this->bClip = 1;
-    //this->bColorKeySupported = 0;
     this->bRequiredTextureStagesAvailable = 0;
     this->bTinting = 1;
 
@@ -2217,13 +2190,8 @@ void Render::ClearTarget(unsigned int uColor)
 }
 
 
-//----- (0049FC37) --------------------------------------------------------
 void Render::Present()
 {
-  //struct tagRECT Rect; // [sp+8h] [bp-28h]@11
-  //RECT a4; // [sp+18h] [bp-18h]@11
-  //struct tagPOINT Point; // [sp+28h] [bp-8h]@11
-
   if ( !pRenderD3D || this->using_software_screen_buffer )
   {
     this->pBeforePresentFunction();
@@ -2234,31 +2202,6 @@ void Render::Present()
     }
     else
       __debugbreak(); // no sr
-    /*{
-      if ( this->bWindowMode )
-      {
-        RestoreFrontBuffer();
-        GetClientRect(this->hWnd, &Rect);
-        Point.y = 0;
-        Point.x = 0;
-        ClientToScreen(this->hWnd, &Point);
-        OffsetRect(&Rect, Point.x, Point.y);
-        a4.top = 0;
-        a4.bottom = 480;
-        a4.left = 0;
-        a4.right = 640;
-        PresentRect(&Rect, &a4);
-      }
-      else
-      {
-        RestoreFrontBuffer();
-        a4.top = 0;
-        a4.bottom = 480;
-        a4.left = 0;
-        a4.right = 640;
-        BltBackToFontFast(0, 0, &a4);
-      }
-    }*/
   }
 }
 
@@ -2281,41 +2224,16 @@ void Render::_49FD3A_fullscreen()
   }
 }
 
-//----- (0049FDBF) --------------------------------------------------------
-void Render::CreateZBuffer()
-{
-    if (!pDefaultZBuffer)
-    {
-        pDefaultZBuffer = pActiveZBuffer = (int *)malloc(0x12C000);
-        memset32(pActiveZBuffer, 0xFFFF0000, 0x4B000u); //    // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
-    }
+void Render::CreateZBuffer() {
+  if (!pDefaultZBuffer) {
+    pDefaultZBuffer = pActiveZBuffer = (int *)malloc(0x12C000);
+    memset32(pActiveZBuffer, 0xFFFF0000, 0x4B000u); //    // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
+  }
 }
 
-//----- (0049FE05) --------------------------------------------------------
-void Render::Release()
-{
-  //Render *v1; // esi@1
-  //RenderD3D *v2; // ecx@1
-  //char v3; // zf@4
-  //void *v4; // ebx@6
-//  IDirectDraw *v5; // eax@10
-//  IDirectDrawSurface2 *v6; // eax@11
-//  IDirectDrawSurface2 *v7; // eax@13
-//  IDirectDrawSurface2 *v8; // eax@15
-//  IDirectDraw2 *v9; // eax@17
-//  IDirectDraw4 *v10; // eax@19
-//  IDirectDrawSurface4 *v11; // eax@20
-//  IDirectDrawSurface4 *v12; // eax@22
-//  IDirectDrawSurface4 *v13; // eax@24
-//  IDirectDraw4 *v14; // eax@26
-//  unsigned __int16 **v15; // ebx@28
-//  void **v16; // esi@29
-
- // v1 = this;
-  if (pRenderD3D)
-  {
-    if ( this->using_software_screen_buffer )
-    {
+void Render::Release() {
+  if (pRenderD3D) {
+    if (this->using_software_screen_buffer) {
       pRenderD3D->ClearTarget(true, 0, false, 1.0);
       pRenderD3D->Present(0);
       pRenderD3D->ClearTarget(true, 0, false, 1.0);
@@ -2324,92 +2242,15 @@ void Render::Release()
     this->pBackBuffer4 = nullptr;
     this->pFrontBuffer4 = nullptr;
     this->pDirectDraw4 = nullptr;
-    delete [] this->pTargetSurface_unaligned;
+    delete[] this->pTargetSurface_unaligned;
     this->pTargetSurface = nullptr;
     this->pTargetSurface_unaligned = nullptr;
-    if (pRenderD3D)
-    {
+    if (pRenderD3D) {
       pRenderD3D->Release();
       delete pRenderD3D;
     }
     pRenderD3D = nullptr;
   }
-  else
-    ;//__debugbreak(); // no sr
-  /*{
-    if ( bWinNT4_0 == 1 )
-    {
-      v5 = (IDirectDraw *)this->pDirectDraw2;
-      if ( !v5 )
-        return;
-      v5->SetCooperativeLevel(this->hWnd, 8u);
-      this->pDirectDraw2->FlipToGDISurface();
-      v6 = this->pSomeSurface2;
-      if ( v6 )
-      {
-        v6->Release();
-        this->pSomeSurface2 = 0;
-      }
-      v7 = this->pBackBuffer2;
-      if ( v7 )
-      {
-        v7->Release();
-        this->pBackBuffer2 = 0;
-      }
-      v8 = this->pFrontBuffer2;
-      if ( v8 )
-      {
-        v8->Release();
-        this->pFrontBuffer2 = 0;
-      }
-      v9 = this->pDirectDraw2;
-      if ( v9 )
-      {
-        v9->Release();
-        this->pDirectDraw2 = 0;
-      }
-    }
-    else
-    {
-      v10 = this->pDirectDraw4;
-      if ( !v10 )
-        return;
-      v10->SetCooperativeLevel(this->hWnd, 1032u);
-      this->pDirectDraw4->FlipToGDISurface();
-      v11 = this->pColorKeySurface4;
-      if ( v11 )
-      {
-        v11->Release();
-        this->pColorKeySurface4 = 0;
-      }
-      v12 = this->pBackBuffer4;
-      if ( v12 )
-      {
-        v12->Release();
-        this->pBackBuffer4 = 0;
-      }
-      v13 = this->pFrontBuffer4;
-      if ( v13 )
-      {
-        v13->Release();
-        this->pFrontBuffer4 = 0;
-      }
-      v14 = this->pDirectDraw4;
-      if ( v14 )
-      {
-        v14->Release();
-        this->pDirectDraw4 = 0;
-      }
-    }
-    v15 = &this->pTargetSurface;
-    if ( this->pTargetSurface )
-    {
-      v16 = (void **)&this->ptr_400E8;
-      free(*v16);
-      *v15 = 0;
-      *v16 = 0;
-    }
-  }*/
 }
 
 void Present32(
@@ -3189,24 +3030,24 @@ void Render::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed in
   bool upper_border_w = false;
   bool bottom_border_w = false;
 
-  if ( uX < this->raster_clip_x )// x выходит за рамки левой границы
+  if ( uX < this->uClipX)// x выходит за рамки левой границы
     left_border_x = true;
-  if ( uX > this->raster_clip_z )// x выходит за рамки правой границы
+  if ( uX > this->uClipZ)// x выходит за рамки правой границы
     right_border_x = true;
 
-  if ( uZ < this->raster_clip_x )// z выходит за рамки левой границы
+  if ( uZ < this->uClipX)// z выходит за рамки левой границы
     left_border_z = true;
-  if ( uZ > this->raster_clip_z )// z выходит за рамки правой границы
+  if ( uZ > this->uClipZ)// z выходит за рамки правой границы
     right_border_z = true;
 
-  if ( uY < this->raster_clip_y )// y выходит за рамки верхней границы
+  if ( uY < this->uClipY)// y выходит за рамки верхней границы
     upper_border_y = true;
-  if ( uY > this->raster_clip_w )// y выходит за рамки нижней границы
+  if ( uY > this->uClipW)// y выходит за рамки нижней границы
     bottom_border_y = true;
 
-  if ( uW < this->raster_clip_y )// w выходит за рамки верхней границы
+  if ( uW < this->uClipY)// w выходит за рамки верхней границы
     upper_border_w = true;
-  if ( uW > this->raster_clip_w )// w выходит за рамки нижней границы
+  if ( uW > this->uClipW)// w выходит за рамки нижней границы
     bottom_border_w = true;
 
   if ( (left_border_x && left_border_z) || (right_border_x && right_border_z )
@@ -3220,13 +3061,13 @@ void Render::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed in
     {
       if ( left_border_x )//left_border = true; х меньше левой границы
       {
-        uY += (uW - uY) * ((this->raster_clip_x - uX) / (uZ - uX));//t = near_clip - v0.x / v1.x - v0.x  (формула получения точки пересечения отрезка с плоскостью)
-        uX = this->raster_clip_x;
+        uY += (uW - uY) * ((this->uClipX - uX) / (uZ - uX));//t = near_clip - v0.x / v1.x - v0.x  (формула получения точки пересечения отрезка с плоскостью)
+        uX = this->uClipX;
       }
       else if ( left_border_z )//z меньше левой границы
       {
-        uZ = this->raster_clip_x;
-        uW += (uY - uW) * ((this->raster_clip_x - uZ) / (uX - uZ));
+        uZ = this->uClipX;
+        uW += (uY - uW) * ((this->uClipX - uZ) / (uX - uZ));
       }
     }
 
@@ -3234,26 +3075,26 @@ void Render::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed in
     {
       if ( right_border_x ) //right_border = true; х больше правой границы
       {
-        uY += (uY - uW) * ((this->raster_clip_z - uX) / (uZ - uX));
-        uX = this->raster_clip_z;
+        uY += (uY - uW) * ((this->uClipZ - uX) / (uZ - uX));
+        uX = this->uClipZ;
       }
       else if ( right_border_z )//z больше правой границы
       {
-        uW += (uW - uY) * ((this->raster_clip_z - uZ) / (uX - uZ));
-        uZ = this->raster_clip_z;
+        uW += (uW - uY) * ((this->uClipZ - uZ) / (uX - uZ));
+        uZ = this->uClipZ;
       }
     }
 
     upper_bound = 0;
-    if ( uY < this->raster_clip_y )
+    if ( uY < this->uClipY)
       upper_bound = 2;
-    if ( uY > this->raster_clip_w )
+    if ( uY > this->uClipW)
       upper_bound |= 1;
 
     lower_bound = 0;
-    if ( uW < this->raster_clip_y )
+    if ( uW < this->uClipY)
       lower_bound = 2;
-    if ( uW > this->raster_clip_w )
+    if ( uW > this->uClipW)
       lower_bound |= 1;
 
     if ( !(lower_bound & upper_bound) )//for up and down(для верха и низа)
@@ -3263,26 +3104,26 @@ void Render::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed in
       {
         if ( upper_bound & 2 )
         {
-          uX += (uZ - uX) * ((this->raster_clip_y - uY) / (uW - uY));
-          uY = this->raster_clip_y;
+          uX += (uZ - uX) * ((this->uClipY - uY) / (uW - uY));
+          uY = this->uClipY;
         }
         else
         {
-          uZ += (uX - uZ) * ((this->raster_clip_y - uW) / (uY - uW));
-          uW = this->raster_clip_y;
+          uZ += (uX - uZ) * ((this->uClipY - uW) / (uY - uW));
+          uW = this->uClipY;
         }
       }
       if ( lower_bound & 1 )
       {
         if ( upper_bound & 1 )
         {
-          uX += (uZ - uX) * ((this->raster_clip_w - uY) / (uW - uY));
-          uY = this->raster_clip_w;
+          uX += (uZ - uX) * ((this->uClipW - uY) / (uW - uY));
+          uY = this->uClipW;
         }
         else
         {
-          uZ += (uX - uZ) * ((this->raster_clip_w - uW) / (uY - uW));
-          uW = this->raster_clip_w;
+          uZ += (uX - uZ) * ((this->uClipW - uW) / (uY - uW));
+          uW = this->uClipW;
         }
       }
     }
@@ -3382,24 +3223,11 @@ void Render::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed in
   return;
 }
 
-//----- (004A0E80) --------------------------------------------------------
-void Render::ClearZBuffer(int a2, int a3)
-{
+void Render::ClearZBuffer(int a2, int a3) {
   memset32(this->pActiveZBuffer, -65536, 0x4B000);
 }
 
-//----- (004A0E97) --------------------------------------------------------
-void Render::SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW)
-{
-  this->raster_clip_x = uX;
-  this->raster_clip_y = uY;
-  this->raster_clip_z = uZ;
-  this->raster_clip_w = uW;
-}
-
-//----- (004A0EB6) --------------------------------------------------------
-void Render::ParseTargetPixelFormat()
-{
+void Render::ParseTargetPixelFormat() {
   signed int v2; // ecx@1
   DWORD uRedMask; // edx@1
   unsigned int uGreenMask; // esi@5
@@ -5743,9 +5571,7 @@ void Render::ScreenFade(unsigned int color, float t)
   }*/
 }
 
-//----- (004A5B81) --------------------------------------------------------
-void Render::SetUIClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW)
-{
+void Render::SetUIClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW) {
   this->bClip = 1;
   this->uClipX = uX;
   this->uClipY = uY;
@@ -5760,12 +5586,11 @@ void Render::ResetUIClipRect()
   this->uClipX = 0;
   this->uClipY = 0;
   this->uClipZ = window->GetWidth();
-  this->uClipW = 480;
+  this->uClipW = window->GetHeight();
 }
 
-unsigned __int32 Color32(unsigned __int16 color16)
-{
-  unsigned __int32 c = color16;
+uint32_t Color32(uint16_t color16) {
+  uint32_t c = color16;
   unsigned int b = (c & 31) * 8;
   unsigned int g = ((c >> 5) & 63) * 4;
   unsigned int r = ((c >> 11) & 31) * 8;
@@ -5773,9 +5598,8 @@ unsigned __int32 Color32(unsigned __int16 color16)
   return (r << 16) | (g << 8) | b;
 }
 
-unsigned __int32 Color32_SwapRedBlue(unsigned __int16 color16)
-{
-  unsigned __int32 c = color16;
+uint32_t Color32_SwapRedBlue(uint16_t color16) {
+  uint32_t c = color16;
   unsigned int b = (c & 31) * 8;
   unsigned int g = ((c >> 5) & 63) * 4;
   unsigned int r = ((c >> 11) & 31) * 8;
@@ -5783,13 +5607,11 @@ unsigned __int32 Color32_SwapRedBlue(unsigned __int16 color16)
   return (b << 16) | (g << 8) | r;
 }
 
-//----- (0040DEF3) --------------------------------------------------------
-unsigned __int16 Color16(unsigned __int32 r, unsigned __int32 g, unsigned __int32 b)
-{
-    return
-        (b >> (8 - 5)) |
-        0x7E0 & (g << (6 + 5 - 8)) |
-        0xF800 & (r << (6 + 5 + 5 - 8));
+uint16_t Color16(uint32_t r, uint32_t g, uint32_t b) {
+  return
+    (b >> (8 - 5)) |
+    0x7E0 & (g << (6 + 5 - 8)) |
+    0xF800 & (r << (6 + 5 + 5 - 8));
 }
 
 
@@ -6523,9 +6345,6 @@ void Render::BlendTextures(int x, int y, Image *imgin, Image *imgblend, int time
 	}
 }
 
-
-
-
 void Render::DrawTextureAlphaNew(float u, float v, Image *img) {
   if (!uNumSceneBegins || !img) {
     return;
@@ -6582,12 +6401,13 @@ void Render::DrawTextureAlphaNew(float u, float v, Image *img) {
 
     for (int y = 0; y < uHeight; ++y) {
       for (int x = 0; x < uWidth; ++x) {
-        if (*pixels & 0x8000)
-          WritePixel16(
-            clipped_out_x + x,
-            clipped_out_y + y,
-            *pixels
-          );
+        if (*pixels & 0x8000) {
+          uint16_t color = *pixels;
+          WritePixel16(clipped_out_x + x, clipped_out_y + y,
+                       Color16(((color >> 10) & 0x1F) << 3,
+                               ((color >>  5) & 0x1F) << 3,
+                               ((color >>  0) & 0x1F) << 3));
+        }
         ++pixels;
       }
       pixels += img->GetWidth() - uWidth;

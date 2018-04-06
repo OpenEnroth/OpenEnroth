@@ -46,7 +46,6 @@ class Render : public IRender
         virtual bool SwitchToWindow();
         virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor);
         virtual void ClearZBuffer(int a2, int a3);
-        virtual void SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW);
         virtual bool LockSurface(Texture *texture, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height);
         virtual void UnlockSurface(Texture *texture);
         virtual void LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow);
@@ -175,10 +174,6 @@ class Render : public IRender
         IDirectDrawSurface4 *pBackBuffer4;
 
         unsigned int uDesiredDirect3DDevice;
-        int raster_clip_x;
-        int raster_clip_y;    // clipping rect for raster ops
-        int raster_clip_z;    //    like RasterLine2D for (mini)map
-        int raster_clip_w;
         int *pDefaultZBuffer;
         OSWindow *window;
         unsigned int bWindowMode;

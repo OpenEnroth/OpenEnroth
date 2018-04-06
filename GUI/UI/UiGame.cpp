@@ -2110,7 +2110,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsig
         uWizardEyeSkillLevel = 3;
     }
 
-    render->SetRasterClipRect(uX, uY, uZ - 1, uW - 1);
+    render->SetUIClipRect(uX, uY, uZ - 1, uW - 1);
     uHeight = uW - uY;
     uWidth = uZ - uX;
 

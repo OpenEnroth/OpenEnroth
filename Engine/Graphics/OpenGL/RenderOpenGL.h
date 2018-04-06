@@ -28,7 +28,6 @@ class RenderOpenGL : public IRender
         virtual bool SwitchToWindow();
         virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor);
         virtual void ClearZBuffer(int a2, int a3);
-        virtual void SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW);
         virtual bool LockSurface(Texture *texture, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height);
         virtual void UnlockSurface(Texture *tetxture);
         virtual void LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow);
@@ -159,9 +158,4 @@ class RenderOpenGL : public IRender
 
             RenderHWLContainer pD3DBitmaps;
             RenderHWLContainer pD3DSprites;
-
-            int raster_clip_x;
-            int raster_clip_y;
-            int raster_clip_z;
-            int raster_clip_w;
 };

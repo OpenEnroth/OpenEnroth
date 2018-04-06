@@ -228,7 +228,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 
     screenCenter_X = (signed int)(tl_x + br_x) / 2;
     screenCenterY = (signed int)(tl_y + br_y) / 2;
-    render->SetRasterClipRect(tl_x, tl_y, br_x, br_y);
+    render->SetUIClipRect(tl_x, tl_y, br_x, br_y);
     pCenterX = viewparams->sViewCenterX;
     pCenterY = viewparams->sViewCenterY;
     if (viewparams->uMapBookMapZoom != 384)

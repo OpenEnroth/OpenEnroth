@@ -166,8 +166,7 @@ void GUIProgressBar::Draw()
         if (loading_bg)
         {
             render->DrawTextureNew(0, 0, loading_bg);
-            //render->SetRasterClipRect(0, 0, 639, 479);
-            render->SetUIClipRect(172, 459, 15 * (signed int)(signed __int64)((double)(300 * uProgressCurrent) / (double)uProgressMax) / 15 + 172, 471);
+            render->SetUIClipRect(172, 459, 15 * (int)(__int64)((double)(300 * uProgressCurrent) / (double)uProgressMax) / 15 + 172, 471);
             render->DrawTextureAlphaNew(172 / 640.0f, 459 / 480.0f, progressbar_loading);
             render->ResetUIClipRect();
         }

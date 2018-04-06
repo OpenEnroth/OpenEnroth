@@ -1046,15 +1046,6 @@ unsigned int RenderOpenGL::Billboard_ProbablyAddToListAndSortByZOrder(float z)
 
 
 
-//----- (004A0E97) --------------------------------------------------------
-void RenderOpenGL::SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW)
-{
-    this->raster_clip_x = uX;
-    this->raster_clip_y = uY;
-    this->raster_clip_z = uZ;
-    this->raster_clip_w = uW;
-}
-
 void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size)
 {
     /*auto pixels = MakeScreenshot(150, 112);

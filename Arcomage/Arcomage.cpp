@@ -3409,26 +3409,19 @@ void am_DrawText(const String &str, Point *pXY)
     pPrimaryWindow->DrawText(pFontComic, pXY->x, pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3, 0, str, 0, 0, 0);
 }
 
-
-
-//----- (0040DB27) --------------------------------------------------------
-void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill)
-{
-    render->BeginScene();
-    render->SetRasterClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
-    if (bSolidFill)
-    {
-        for (int i = pXYZW->y; i <= pXYZW->w; ++i)
-            render->RasterLine2D(pXYZW->x, i, pXYZW->z, i, uColor);
-    }
-    else
-    {
-        render->RasterLine2D(pXYZW->x, pXYZW->y, pXYZW->z, pXYZW->y, uColor);
-        render->RasterLine2D(pXYZW->z, pXYZW->y, pXYZW->z, pXYZW->w, uColor);
-        render->RasterLine2D(pXYZW->z, pXYZW->w, pXYZW->x, pXYZW->w, uColor);
-        render->RasterLine2D(pXYZW->x, pXYZW->w, pXYZW->x, pXYZW->y, uColor);
-    }
-    render->EndScene();
+void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill) {
+  render->BeginScene();
+  render->SetUIClipRect(0, 0, window->GetWidth() - 1, window->GetHeight() - 1);
+  if (bSolidFill) {
+    for (int i = pXYZW->y; i <= pXYZW->w; ++i)
+      render->RasterLine2D(pXYZW->x, i, pXYZW->z, i, uColor);
+  } else {
+    render->RasterLine2D(pXYZW->x, pXYZW->y, pXYZW->z, pXYZW->y, uColor);
+    render->RasterLine2D(pXYZW->z, pXYZW->y, pXYZW->z, pXYZW->w, uColor);
+    render->RasterLine2D(pXYZW->z, pXYZW->w, pXYZW->x, pXYZW->w, uColor);
+    render->RasterLine2D(pXYZW->x, pXYZW->w, pXYZW->x, pXYZW->y, uColor);
+  }
+  render->EndScene();
 }
 
 

@@ -291,7 +291,6 @@ class IRender
     virtual bool SwitchToWindow() = 0;
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor) = 0;
     virtual void ClearZBuffer(int a2, int a3) = 0;
-    virtual void SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW) = 0;
     virtual bool LockSurface(Texture *surface, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height) = 0;
     virtual void UnlockSurface(Texture *surface) = 0;
     virtual void LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow) = 0;

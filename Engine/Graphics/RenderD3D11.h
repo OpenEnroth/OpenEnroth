@@ -47,7 +47,6 @@ class RenderD3D11 : public IRender
         virtual bool SwitchToWindow();
         virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor);
         virtual void ClearZBuffer(int a2, int a3);
-        virtual void SetRasterClipRect(unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW);
         virtual bool LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags);
         virtual void LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow);
         virtual void UnlockBackBuffer();
