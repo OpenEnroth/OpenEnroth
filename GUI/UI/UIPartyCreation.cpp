@@ -315,7 +315,7 @@ void GUIWindow_PartyCreation::Update()
     memset(pText, 0, 200);
     strcpy(pText, localization->GetString(205));// "Skills"
     for (int i = strlen(pText) - 1; i >= 0; i--)//???
-        pText[i] = toupper((unsigned __int8)pText[i]);
+        pText[i] = toupper((uint8_t)pText[i]);
 
     pIntervalX = 18;
     pIntervalY = pFontCreate->GetHeight() - 2;

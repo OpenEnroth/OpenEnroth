@@ -465,6 +465,9 @@
     <ClCompile Include="..\..\Engine\Graphics\Render.cpp">
       <Filter>Engine\Graphics\Direct3D</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\RenderD3D.cpp">
+      <Filter>Engine\Graphics\Direct3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\libavcodec\avcodec.h">
@@ -747,9 +750,6 @@
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\ParticleEngine.h">
-      <Filter>Engine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Engine\Graphics\RenderStruct.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Outdoor.h">
@@ -1089,6 +1089,9 @@
       <Filter>Engine\Graphics\Direct3D</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Render.h">
+      <Filter>Engine\Graphics\Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\RenderD3D.h">
       <Filter>Engine\Graphics\Direct3D</Filter>
     </ClInclude>
   </ItemGroup>

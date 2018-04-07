@@ -824,8 +824,8 @@ GUIButton *GUIWindow::CreateButton(
   pButton->uButtonType = a6;
   pButton->uX = uX + this->uFrameX;
   pButton->uY = uY + this->uFrameY;
-  pButton->uZ = pButton->uX + uWidth - 1;
-  pButton->uW = pButton->uY + uHeight - 1;
+  pButton->uZ = pButton->uX + uWidth;
+  pButton->uW = pButton->uY + uHeight;
   pButton->field_2C_is_pushed = false;
   pButton->field_1C = a7;
   pButton->msg = msg;

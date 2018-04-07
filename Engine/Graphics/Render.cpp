@@ -1,3 +1,5 @@
+#include "Engine/Graphics/Render.h"
+
 #include <ddraw.h>
 #include <d3d.h>
 
@@ -13,8 +15,7 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 
-#include "Engine/Graphics/Render.h"
-#include "Engine/Graphics/RenderStruct.h"
+#include "Engine/Graphics/RenderD3D.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Direct3D/TextureD3D.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -27,8 +28,6 @@
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/PCX.h"
-
-//#include "Media/MediaPlayer.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -76,11 +75,6 @@ void ErrHR(HRESULT hr, const char *pAPI, const char *pFunction, const char *pFil
 
   Error(msg);
 }
-
-HRESULT __stdcall D3DZBufferFormatEnumerator(DDPIXELFORMAT *Src, DDPIXELFORMAT *Dst);
-HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc, __int16 *a2);
-HRESULT __stdcall D3DDeviceEnumerator(const GUID *lpGUID, const char *lpDeviceDesc, const char *lpDeviceName, D3DDEVICEDESC *pHWDesc, D3DDEVICEDESC *pSWDesc, struct RenderD3D_aux *a6);
-int __stdcall RenderD3D__DeviceEnumerator(GUID *lpGUID, const char *lpDevDesc, const char *lpDriverName, RenderD3D__DevInfo *pOut); // idb
 
 unsigned int Render::GetRenderWidth() const { return window->GetWidth(); }
 unsigned int Render::GetRenderHeight() const { return window->GetHeight(); }
@@ -409,7 +403,6 @@ void Render::DrawBorderTiles(struct Polygon *poly) {
   pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
 }
 
-
 void Render::TransformBillboardsAndSetPalettesODM() {
   SoftwareBillboard billboard = { 0 };
   billboard.sParentBillboardID = -1;
@@ -550,184 +543,6 @@ void Render::DrawSpriteObjects_ODM() {
     }
   }
 }
-
-//----- (0049D9BC) --------------------------------------------------------
-int __stdcall RenderD3D__DeviceEnumerator(GUID *lpGUID, const char *lpDevDesc, const char *lpDriverName, RenderD3D__DevInfo *pOut)
-{
-  size_t v4; // eax@1
-  size_t v5; // eax@1
-  size_t v7; // eax@13
-  DDDEVICEIDENTIFIER ddDevId; // [sp+4h] [bp-4F8h]@11
-  DDSURFACEDESC2 v10;/*int v10; // [sp+42Ch] [bp-D0h]@16*/
-  DDSCAPS2 ddsCaps; // [sp+4A8h] [bp-54h]@14
-  unsigned int uFreeVideoMem; // [sp+4B8h] [bp-44h]@14
-  RenderD3D_aux aux; // [sp+4BCh] [bp-40h]@19
-  IDirect3D3 *pDirect3D3; // [sp+4C4h] [bp-38h]@18
-  int is_there_a_compatible_screen_mode; // [sp+4C8h] [bp-34h]@16
-  RenderD3D_D3DDevDesc v20; // [sp+4CCh] [bp-30h]@1
-  LPDIRECTDRAW pDirectDraw = nullptr; // [sp+4F4h] [bp-8h]@4
-  IDirectDraw4 *pDirectDraw4; // [sp+4F8h] [bp-4h]@7
-
-  v4 = strlen(lpDriverName);
-  v20.pDriverName = new char[v4 + 1];
-  v5 = strlen(lpDevDesc);
-  v20.pDeviceDesc = new char[v5 + 1];
-  strcpy(v20.pDriverName, lpDriverName);
-  strcpy(v20.pDeviceDesc, lpDevDesc);
-  if ( lpGUID )
-  {
-    v20.pGUID = new GUID;
-    memcpy(v20.pGUID, lpGUID, 0x10);
-  }
-  else
-    v20.pGUID = 0;
-
-  if (FAILED(DirectDrawCreate(v20.pGUID, &pDirectDraw, 0)))
-  {
-    delete [] v20.pDriverName;
-    delete [] v20.pDeviceDesc;
-    delete v20.pGUID;
-  }
-  else
-  {
-    if (FAILED(pDirectDraw->QueryInterface(IID_IDirectDraw4, (LPVOID *)&pDirectDraw4)))
-    {
-      delete [] v20.pDriverName;
-      delete [] v20.pDeviceDesc;
-      delete v20.pGUID;
-      pDirectDraw->Release();
-    }
-    else
-    {
-      pDirectDraw->Release();
-      if (FAILED( pDirectDraw4->GetDeviceIdentifier(&ddDevId, 1)))
-        v20.pDDraw4DevDesc = 0;
-      else
-      {
-        v7 = strlen(ddDevId.szDescription);
-        v20.pDDraw4DevDesc = new char[v7 + 1];
-        strcpy(v20.pDDraw4DevDesc, ddDevId.szDescription);
-      }
-      memset(&ddsCaps, 0, sizeof(ddsCaps));
-      if (FAILED(pDirectDraw4->GetAvailableVidMem(&ddsCaps, (LPDWORD)&v20.uVideoMem, (LPDWORD)&uFreeVideoMem)))
-        v20.uVideoMem = 0;
-      memset(&v10, 0, sizeof(v10));
-      v10.dwSize = 124;
-      v10.dwFlags = 6;
-      v10.dwHeight = window->GetWidth();
-      v10.dwWidth = window->GetHeight();
-      v10.ddpfPixelFormat.dwSize = 32;
-
-      is_there_a_compatible_screen_mode = false;
-      if ( FAILED(pDirectDraw4->EnumDisplayModes(0, 0, &is_there_a_compatible_screen_mode, (LPDDENUMMODESCALLBACK2)DDrawDisplayModesEnumerator))
-        || !is_there_a_compatible_screen_mode
-        || FAILED(pDirectDraw4->QueryInterface(IID_IDirect3D3, (LPVOID *)&pDirect3D3)))
-      {
-        delete [] v20.pDriverName;
-        delete [] v20.pDeviceDesc;
-        //free(v20.pDDraw4DevDesc);
-		delete [] v20.pDDraw4DevDesc;
-        delete v20.pGUID;
-        pDirectDraw4->Release();
-      }
-      else
-      {
-        aux.pInfo = pOut;
-        aux.ptr_4 = &v20;
-        pDirect3D3->EnumDevices((LPD3DENUMDEVICESCALLBACK)D3DDeviceEnumerator, &aux);
-        delete [] v20.pDriverName;
-        delete [] v20.pDeviceDesc;
-		delete [] v20.pDDraw4DevDesc;
-        delete v20.pGUID;
-        pDirectDraw4->Release();
-        pDirectDraw4 = 0;
-        pDirect3D3->Release();
-      }
-    }
-  }
-  return 1;
-}
-
-//----- (0049D784) --------------------------------------------------------
-HRESULT __stdcall D3DDeviceEnumerator(const GUID *lpGUID, const char *lpDeviceDesc, const char *lpDeviceName, D3DDEVICEDESC *pHWDesc, D3DDEVICEDESC *pSWDesc, RenderD3D_aux *a6)
-{
-  signed int v7; // edi@1
-
-  v7 = -1;
-  if ( pHWDesc->dwFlags )
-  {
-    if ( !a6->ptr_4->pGUID )
-      v7 = 0;
-    if ( pHWDesc->dwFlags && a6->ptr_4->pGUID )
-      v7 = 1;
-  }
-  if ( !strcmp(lpDeviceName, "RGB Emulation") && !a6->ptr_4->pGUID )
-    v7 = 2;
-  if ( !strcmp(lpDeviceName, "Reference Rasterizer") && !a6->ptr_4->pGUID )
-    v7 = 3;
-  if ( v7 != -1 )
-  {
-    a6->pInfo[v7].bIsDeviceCompatible = 1;
-    a6->pInfo[v7].uCaps = 0;
-    if ( !(pHWDesc->dpcTriCaps.dwSrcBlendCaps & 0x10) )
-      a6->pInfo[v7].uCaps |= 2;
-    if ( !(pHWDesc->dpcTriCaps.dwSrcBlendCaps & 2) )
-      a6->pInfo[v7].uCaps |= 4;
-    if ( !(pHWDesc->dpcTriCaps.dwSrcBlendCaps & 1) )
-      a6->pInfo[v7].uCaps |= 8;
-    if ( !(pHWDesc->dpcTriCaps.dwDestBlendCaps & 0x20) )
-      a6->pInfo[v7].uCaps |= 16;
-    if ( !(pHWDesc->dpcTriCaps.dwDestBlendCaps & 2) )
-      a6->pInfo[v7].uCaps |= 32;
-    if ( !(pHWDesc->dpcTriCaps.dwDestBlendCaps & 4) )
-      a6->pInfo[v7].uCaps |= 64;
-    if ( !(pHWDesc->dwDevCaps & 0x1000) )
-      a6->pInfo[v7].uCaps |= 0x100;
-    if ( pHWDesc->dpcTriCaps.dwTextureCaps & 0x20 )
-      a6->pInfo[v7].uCaps |= 0x80;
-
-    a6->pInfo[v7].pName = new char[strlen(lpDeviceName) + 1];
-    strcpy(a6->pInfo[v7].pName, lpDeviceName);
-
-    a6->pInfo[v7].pDescription = new char[strlen(lpDeviceDesc) + 1];
-    strcpy(a6->pInfo[v7].pDescription, lpDeviceDesc);
-
-    a6->pInfo[v7].pGUID = new GUID;
-    memcpy(a6->pInfo[v7].pGUID, lpGUID, 0x10);
-
-    a6->pInfo[v7].pDriverName = new char[strlen(a6->ptr_4->pDriverName) + 1];
-    strcpy(a6->pInfo[v7].pDriverName, a6->ptr_4->pDriverName);
-
-    a6->pInfo[v7].pDeviceDesc = new char[strlen(a6->ptr_4->pDeviceDesc) + 1];
-    strcpy(a6->pInfo[v7].pDeviceDesc, a6->ptr_4->pDeviceDesc);
-
-    a6->pInfo[v7].pDDraw4DevDesc = new char[strlen(a6->ptr_4->pDDraw4DevDesc) + 1];
-    strcpy(a6->pInfo[v7].pDDraw4DevDesc, a6->ptr_4->pDDraw4DevDesc);
-
-    if ( a6->ptr_4->pGUID )
-    {
-      a6->pInfo[v7].pDirectDrawGUID = new GUID;
-      memcpy(a6->pInfo[v7].pDirectDrawGUID, a6->ptr_4->pGUID, 0x10);
-    }
-    else
-      a6->pInfo[v7].pDirectDrawGUID = 0;
-    a6->pInfo[v7].uVideoMem = a6->ptr_4->uVideoMem;
-  }
-  return 1;
-}
-
-//----- (0049D75C) --------------------------------------------------------
-HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc, __int16 *found_compatible_mode)
-{
-    if (pSurfaceDesc->ddsCaps.dwCaps | DDSCAPS_3DDEVICE /*&& pSurfaceDesc->ddpfPixelFormat.dwRGBBitCount == 16*/)
-    {
-        *found_compatible_mode = 1;
-        return S_OK;
-    }
-    return 1;
-}
-
-
 
 SpriteFrame *LevelDecorationChangeSeason(DecorationDesc *desc, int t)
 {
@@ -939,768 +754,6 @@ void Render::PrepareDecorationsRenderList_ODM() {
       }
     }
   }
-}
-
-HRESULT __stdcall D3DZBufferFormatEnumerator(DDPIXELFORMAT *Src, DDPIXELFORMAT *Dst) {
-  if (Src->dwFlags & (0x400 | 0x2000)) {
-    if (Src->dwRGBBitCount == 16 && !Src->dwRBitMask) {
-      memcpy(Dst, Src, sizeof(DDPIXELFORMAT));
-      return 0;
-    }
-    if (!Dst->dwSize) {
-      memcpy(Dst, Src, sizeof(DDPIXELFORMAT));
-      return 1;
-    }
-  }
-  return 1;
-}
-
-void RenderD3D::GetAvailableDevices(RenderD3D__DevInfo **pOutDevices) {
-  RenderD3D__DevInfo *v2; // eax@1
-
-  v2 = new RenderD3D__DevInfo[4];// 4 items
-  *pOutDevices = v2;
-  memset(v2, 0, sizeof(v2));
-  DirectDrawEnumerateExA((LPDDENUMCALLBACKEXA)RenderD3D__DeviceEnumerator, *pOutDevices, DDENUM_ATTACHEDSECONDARYDEVICES);
-}
-
-RenderD3D::RenderD3D() {
-  this->pHost = nullptr;
-  this->pDirect3D = nullptr;
-  this->pUnk = nullptr;
-  this->pBackBuffer = nullptr;
-  this->pFrontBuffer = nullptr;
-  this->pZBuffer = nullptr;
-  this->pDevice = nullptr;
-  this->pViewport = nullptr;
-  this->field_40 = 1;
-  this->field_44 = 10;
-  GetAvailableDevices(&this->pAvailableDevices);
-}
-
-void RenderD3D::Release() {
-  if (!this->bWindowed) {
-    if (this->pHost) {
-      this->pHost->RestoreDisplayMode();
-      this->pHost->SetCooperativeLevel(this->hWindow, DDSCL_NORMAL);
-      this->pHost->FlipToGDISurface();
-    }
-  }
-
-  for (int i = 0; i < 4; i++)
-  {
-    if (this->pAvailableDevices[i].pDriverName)
-    {
-      delete[] this->pAvailableDevices[i].pDriverName;
-      this->pAvailableDevices[i].pDriverName = nullptr;
-    }
-
-    if (this->pAvailableDevices[i].pDeviceDesc)
-    {
-      delete[] this->pAvailableDevices[i].pDeviceDesc;
-      this->pAvailableDevices[i].pDeviceDesc = nullptr;
-    }
-
-    if (this->pAvailableDevices[i].pDDraw4DevDesc)
-    {
-      delete[] this->pAvailableDevices[i].pDDraw4DevDesc;
-      this->pAvailableDevices[i].pDDraw4DevDesc = nullptr;
-    }
-
-    if (this->pAvailableDevices[i].pDirectDrawGUID)
-    {
-      delete this->pAvailableDevices[i].pDirectDrawGUID;
-      this->pAvailableDevices[i].pDirectDrawGUID = nullptr;
-    }
-
-    if (this->pAvailableDevices[i].pName)
-    {
-      delete[] this->pAvailableDevices[i].pName;
-      this->pAvailableDevices[i].pName = nullptr;
-    }
-
-    if (this->pAvailableDevices[i].pDescription)
-    {
-      delete[] this->pAvailableDevices[i].pDescription;
-      this->pAvailableDevices[i].pDescription = nullptr;
-    }
-
-    if (this->pAvailableDevices[i].pGUID)
-    {
-      delete this->pAvailableDevices[i].pGUID;
-      this->pAvailableDevices[i].pGUID = nullptr;
-    }
-  }
-
-  delete[] this->pAvailableDevices;
-  this->pAvailableDevices = NULL;
-
-  if (this->pViewport)
-  {
-    this->pViewport->Release();
-    this->pViewport = NULL;
-  }
-
-  if (this->pUnk)
-  {
-    this->pUnk->Release();
-    this->pUnk = NULL;
-  }
-
-  if (this->pZBuffer)
-  {
-    this->pZBuffer->Release();
-    this->pZBuffer = NULL;
-  }
-
-  if (this->pDevice)
-  {
-    this->pDevice->Release();
-    this->pDevice = NULL;
-  }
-
-  if (this->pDirect3D)
-  {
-    this->pDirect3D->Release();
-    this->pDirect3D = NULL;
-  }
-
-  if (this->pBackBuffer)
-  {
-    this->pBackBuffer->Release();
-    this->pBackBuffer = NULL;
-  }
-
-  if (this->pFrontBuffer)
-  {
-    this->pFrontBuffer->Release();
-    this->pFrontBuffer = NULL;
-  }
-
-  if (this->pHost)
-  {
-    this->pHost->Release();
-    this->pHost = NULL;
-  }
-}
-
-bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *window) {
-  DWORD v26; // [sp-4h] [bp-DCh]@30
-  DDSCAPS2 v27; // [sp+Ch] [bp-CCh]@37
-  DDSURFACEDESC2 ddsd2; // [sp+1Ch] [bp-BCh]@11
-  D3DVIEWPORT2 d3dvp2; // [sp+98h] [bp-40h]@28
-  IDirectDrawClipper *lpddclipper; // [sp+C4h] [bp-14h]@18
-  LPDIRECTDRAW lpDD; // [sp+C8h] [bp-10h]@1
-
-  auto hWnd = (HWND)window->GetApiHandle();
-  int game_width = window->GetWidth();
-  int game_height = window->GetHeight();
-
-  this->bWindowed = bWindowed;
-  this->hWindow = hWnd;
-
-  //Создание объекта DirectDraw
-  if (FAILED(DirectDrawCreate(pAvailableDevices[uDeviceID].pDirectDrawGUID, &lpDD, NULL)))
-  {
-    sprintf(pErrorMessage, "Init - Failed to create DirectDraw interface.\n");
-    return 0;
-  }
-
-  //Запрос интерфейса IDirectDraw4
-  if (FAILED(lpDD->QueryInterface(IID_IDirectDraw4, (LPVOID *)&pHost)))
-  {
-    sprintf(pErrorMessage, "Init - Failed to create DirectDraw4 interface.\n");
-    if (lpDD)
-      lpDD->Release();
-    return 0;
-  }
-  lpDD->Release();
-  lpDD = NULL;
-
-  //Задаём уровень совместного доступа для приложения DirectDraw в оконном режиме
-  if (bWindowed && !pAvailableDevices[uDeviceID].pDirectDrawGUID)
-  {
-    if (FAILED(pHost->SetCooperativeLevel(hWnd, DDSCL_MULTITHREADED | DDSCL_NORMAL)))
-    {
-      sprintf(pErrorMessage, "Init - Failed to set cooperative level.\n");
-      if (pHost)
-      {
-        pHost->Release();
-        pHost = NULL;
-      }
-      return 0;
-    }
-
-    //
-    memset(&ddsd2, 0, sizeof(DDSURFACEDESC2));
-    ddsd2.dwSize = sizeof(DDSURFACEDESC2);
-    ddsd2.dwFlags = DDSD_CAPS;
-    ddsd2.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-    //Создаём первичную поверхность
-    if (FAILED(pHost->CreateSurface(&ddsd2, &pFrontBuffer, NULL)))
-    {
-      sprintf(pErrorMessage, "Init - Failed to create front buffer.\n");
-      if (pHost)
-      {
-        pHost->Release();
-        pHost = NULL;
-      }
-      return 0;
-    }
-    ddsd2.dwSize = sizeof(DDSURFACEDESC2);
-    pHost->GetDisplayMode(&ddsd2);
-
-    ddsd2.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
-    ddsd2.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
-    ddsd2.dwWidth = game_width;
-    ddsd2.dwHeight = game_height;
-    if (pHost->CreateSurface(&ddsd2, &pBackBuffer, NULL))
-    {
-      sprintf(pErrorMessage, "Init - Failed to create back buffer.\n");
-      if (pFrontBuffer)
-      {
-        pFrontBuffer->Release();
-        pFrontBuffer = NULL;
-      }
-      if (pHost)
-      {
-        pHost->Release();
-        pHost = NULL;
-      }
-      return 0;
-    }
-    //Создание отсекателя DirectDraw
-    if (pHost->CreateClipper(0, &lpddclipper, NULL))
-    {
-      sprintf(pErrorMessage, "Init - Failed to create clipper.\n");
-      if (pBackBuffer)
-      {
-        pBackBuffer->Release();
-        pBackBuffer = NULL;
-      }
-      if (pFrontBuffer)
-      {
-        pFrontBuffer->Release();
-        pFrontBuffer = NULL;
-      }
-      if (pHost)
-      {
-        pHost->Release();
-        pHost = NULL;
-      }
-      return 0;
-    }
-    lpddclipper->SetHWnd(0, hWnd);
-    pFrontBuffer->SetClipper(lpddclipper);
-
-    lpddclipper->Release();
-    lpddclipper = NULL;
-    //
-
-    pHost->QueryInterface(IID_IDirect3D3, (LPVOID *)&pDirect3D);
-
-    ddsd2.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
-    ddsd2.ddsCaps.dwCaps = DDSCAPS_ZBUFFER;
-    ddsd2.dwWidth = game_width;
-    ddsd2.dwHeight = game_height;
-
-    if (pDirect3D->EnumZBufferFormats(*pAvailableDevices[uDeviceID].pGUID,
-      (HRESULT(__stdcall *)(DDPIXELFORMAT *, void *))D3DZBufferFormatEnumerator,
-      &ddsd2.ddpfPixelFormat))
-    {
-      sprintf(pErrorMessage, "Init - Failed to enumerate Z buffer formats.\n");
-      if (pBackBuffer)
-      {
-        pBackBuffer->Release();
-        pBackBuffer = NULL;
-      }
-      if (pFrontBuffer)
-      {
-        pFrontBuffer->Release();
-        pFrontBuffer = NULL;
-      }
-      if (pHost)
-      {
-        pHost->Release();
-        pHost = NULL;
-      }
-      return 0;
-    }
-    if (uDeviceID == 2 || uDeviceID == 3)
-      ddsd2.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
-
-    if (!pHost->CreateSurface(&ddsd2, &pZBuffer, NULL))
-    {
-      if (!pBackBuffer->AddAttachedSurface(pZBuffer))
-      {
-        if (!pDirect3D->CreateDevice(*pAvailableDevices[uDeviceID].pGUID, pBackBuffer, &pDevice, 0))
-        {
-          memset(&d3dvp2, 0, sizeof(D3DVIEWPORT2));
-          d3dvp2.dvClipWidth = 2.0;
-          d3dvp2.dvClipY = 1.0;
-          d3dvp2.dvClipHeight = 2.0;
-          d3dvp2.dvMaxZ = 1.0;
-          d3dvp2.dvMinZ = 0.0;
-          goto LABEL_54;
-        }
-        sprintf(pErrorMessage, "Init - Failed to create D3D device.\n");
-        if (pDirect3D)
-        {
-          pDirect3D->Release();
-          pDirect3D = NULL;
-        }
-        if (pZBuffer)
-        {
-          pZBuffer->Release();
-          pZBuffer = NULL;
-        }
-        if (pBackBuffer)
-        {
-          pBackBuffer->Release();
-          pBackBuffer = NULL;
-        }
-        if (pFrontBuffer)
-        {
-          pFrontBuffer->Release();
-          pFrontBuffer = NULL;
-        }
-        if (pHost)
-        {
-          pHost->Release();
-          pHost = NULL;
-        }
-        return 0;
-      }
-      sprintf(pErrorMessage, "Init - Failed to attach z-buffer to back buffer.\n");
-      if (pZBuffer)
-      {
-        pZBuffer->Release();
-        pZBuffer = NULL;
-      }
-      if (pBackBuffer)
-      {
-        pBackBuffer->Release();
-        pBackBuffer = NULL;
-      }
-      if (pFrontBuffer)
-      {
-        pFrontBuffer->Release();
-        pFrontBuffer = NULL;
-      }
-      if (pHost)
-      {
-        pHost->Release();
-        pHost = NULL;
-      }
-      return 0;
-    }
-    sprintf(pErrorMessage, "Init - Failed to create z-buffer.\n");
-    if (pBackBuffer)
-    {
-      pBackBuffer->Release();
-      pBackBuffer = NULL;
-    }
-    if (pFrontBuffer)
-    {
-      pFrontBuffer->Release();
-      pFrontBuffer = NULL;
-    }
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = NULL;
-    }
-    return 0;
-  }
-  if (uDeviceID == 1)
-    v26 = 1045;
-  else
-    v26 = 1041;
-  if (pHost->SetCooperativeLevel(hWnd, v26))
-  {
-    sprintf(pErrorMessage, "Init - Failed to set cooperative level.\n");
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = NULL;
-    }
-    return 0;
-  }
-  if (pHost->SetDisplayMode(window->GetWidth(), window->GetHeight(), 16, 0, 0))
-  {
-    sprintf(pErrorMessage, "Init - Failed to set display mode.\n");
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = NULL;
-    }
-    return 0;
-  }
-
-  memset(&ddsd2, 0, sizeof(DDSURFACEDESC2));
-  ddsd2.dwSize = sizeof(DDSURFACEDESC2);
-  //Подключение полей с достоверными данными
-  ddsd2.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-  //Запрос сложной структуры с возможностью переключения
-  ddsd2.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
-  //Присвоение полю счётчика задних буферов значения 1
-  ddsd2.dwBackBufferCount = 1;
-  if (pHost->CreateSurface(&ddsd2, &pFrontBuffer, NULL))
-  {
-    sprintf(pErrorMessage, "Init - Failed to create front buffer.\n");
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = NULL;
-    }
-    return 0;
-  }
-  //a3a = &pBackBuffer;
-  //v14 = *v34;
-  memset(&v27, 0, sizeof(DDSCAPS2));
-
-  v27.dwCaps = DDSCAPS_BACKBUFFER;
-  //v33 = (IDirect3DDevice3 **)v14->GetAttachedSurface(&v27, &pBackBuffer);
-  //hWnda = &pDirect3D;
-  pHost->QueryInterface(IID_IDirect3D3, (LPVOID *)&pDirect3D);
-
-  if (FAILED(pFrontBuffer->GetAttachedSurface(&v27, &pBackBuffer)))
-  {
-    sprintf(pErrorMessage, "Init - Failed to get D3D interface.\n");
-    if (pBackBuffer)
-    {
-      pBackBuffer->Release();
-      pBackBuffer = NULL;
-    }
-    if (pFrontBuffer)
-    {
-      pFrontBuffer->Release();
-      pFrontBuffer = NULL;
-    }
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = NULL;
-    }
-    return 0;
-  }
-
-  ddsd2.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
-  ddsd2.ddsCaps.dwCaps = DDSCAPS_ZBUFFER;
-  ddsd2.dwWidth = 640;
-  ddsd2.dwHeight = 480;
-  if (pDirect3D->EnumZBufferFormats(*pAvailableDevices[uDeviceID].pGUID,
-    (HRESULT(__stdcall *)(DDPIXELFORMAT *, void *))D3DZBufferFormatEnumerator,
-    &ddsd2.ddpfPixelFormat))
-  {
-    sprintf(pErrorMessage, "Init - Failed to enumerate Z buffer formats.\n");
-    if (pBackBuffer)
-    {
-      pBackBuffer->Release();
-      pBackBuffer = 0;
-    }
-    if (pFrontBuffer)
-    {
-      pFrontBuffer->Release();
-      pFrontBuffer = 0;
-    }
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = 0;
-    }
-    return 0;
-  }
-  if (uDeviceID == 2 || uDeviceID == 3)
-    BYTE1(ddsd2.ddsCaps.dwCaps) |= 8;
-  //uDeviceIDa = &pZBuffer;
-  if (pHost->CreateSurface(&ddsd2, &pZBuffer, NULL))
-  {
-    sprintf(pErrorMessage, "Init - Failed to create z-buffer.\n");
-    if (pBackBuffer)
-    {
-      pBackBuffer->Release();
-      pBackBuffer = 0;
-    }
-    if (pFrontBuffer)
-    {
-      pFrontBuffer->Release();
-      pFrontBuffer = 0;
-    }
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = 0;
-    }
-    return 0;
-  }
-  if (pBackBuffer->AddAttachedSurface(pZBuffer))
-  {
-    sprintf(pErrorMessage, "Init - Failed to attach z-buffer to back buffer.\n");
-    if (pZBuffer)
-    {
-      pZBuffer->Release();
-      pZBuffer = 0;
-    }
-    if (pBackBuffer)
-    {
-      pBackBuffer->Release();
-      pBackBuffer = 0;
-    }
-    if (pFrontBuffer)
-    {
-      pFrontBuffer->Release();
-      pFrontBuffer = 0;
-    }
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = 0;
-    }
-    return 0;
-  }
-  //v33 = &pDevice;
-  if (pDirect3D->CreateDevice(*pAvailableDevices[uDeviceID].pGUID, pBackBuffer, &pDevice, 0))
-  {
-    sprintf(pErrorMessage, "Init - Failed to create D3D device.\n");
-    if (pDirect3D)
-    {
-      pDirect3D->Release();
-      pDirect3D = 0;
-    }
-    if (pZBuffer)
-    {
-      pZBuffer->Release();
-      pZBuffer = 0;
-    }
-    if (pBackBuffer)
-    {
-      pBackBuffer->Release();
-      pBackBuffer = 0;
-    }
-    if (pFrontBuffer)
-    {
-      pFrontBuffer->Release();
-      pFrontBuffer = 0;
-    }
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = 0;
-    }
-    return 0;
-  }
-  memset(&d3dvp2, 0, sizeof(D3DVIEWPORT2));
-  d3dvp2.dvClipWidth = 2.0;
-  d3dvp2.dvClipY = 1.0;
-  d3dvp2.dvClipHeight = 2.0;
-  d3dvp2.dvMaxZ = 1.0;
-
-LABEL_54:
-  d3dvp2.dwSize = sizeof(D3DVIEWPORT2);
-  //v17 = *hWnda;
-  d3dvp2.dwWidth = game_width;
-  d3dvp2.dwHeight = game_height;
-  d3dvp2.dvClipX = -1.0;
-  //v18 = v17->lpVtbl;
-  //v32 = &v4->pViewport;
-  if (pDirect3D->CreateViewport(&pViewport, 0))
-  {
-    sprintf(pErrorMessage, "Init - Failed to create viewport.\n");
-    if (pDevice)
-    {
-      pDevice->Release();
-      pDevice = 0;
-    }
-    if (pDirect3D)
-    {
-      pDirect3D->Release();
-      pDirect3D = 0;
-    }
-    if (pZBuffer)
-    {
-      pZBuffer->Release();
-      pZBuffer = 0;
-    }
-    if (pBackBuffer)
-    {
-      pBackBuffer->Release();
-      pBackBuffer = 0;
-    }
-    if (pFrontBuffer)
-    {
-      pFrontBuffer->Release();
-      pFrontBuffer = 0;
-    }
-    if (pHost)
-    {
-      pHost->Release();
-      pHost = 0;
-    }
-    return 0;
-  }
-
-  pDevice->AddViewport(pViewport);
-  pViewport->SetViewport2(&d3dvp2);
-  pDevice->SetCurrentViewport(pViewport);
-  return 1;
-}
-
-unsigned int RenderD3D::GetDeviceCaps() {
-  unsigned int v1; // ebx@1
-  unsigned int result; // eax@2
-  D3DDEVICEDESC refCaps; // [sp+Ch] [bp-1F8h]@1
-  D3DDEVICEDESC halCaps; // [sp+108h] [bp-FCh]@1
-
-  v1 = 0;
-
-  memset(&halCaps, 0, sizeof(halCaps));
-  halCaps.dwSize = sizeof(halCaps);
-
-  memset(&refCaps, 0, sizeof(refCaps));
-  refCaps.dwSize = sizeof(refCaps);
-
-  if ( this->pDevice->GetCaps(&halCaps, &refCaps) )
-    result = 1;
-  else
-  {
-    if ( !(halCaps.dpcTriCaps.dwSrcBlendCaps & D3DPBLENDCAPS_SRCALPHA) )
-      v1 = 2;
-    if ( !(halCaps.dpcTriCaps.dwSrcBlendCaps & D3DPBLENDCAPS_ONE) )
-      v1 |= 4;
-    if ( !(halCaps.dpcTriCaps.dwSrcBlendCaps & D3DPBLENDCAPS_ZERO) )
-      v1 |= 8;
-    if ( !(halCaps.dpcTriCaps.dwDestBlendCaps & D3DPBLENDCAPS_INVSRCALPHA) )
-      v1 |= 16;
-    if ( !(halCaps.dpcTriCaps.dwDestBlendCaps & D3DPBLENDCAPS_ONE) )
-      v1 |= 32;
-    if ( !(halCaps.dpcTriCaps.dwDestBlendCaps & D3DPBLENDCAPS_SRCCOLOR) )
-      v1 |= 64;
-    if ( halCaps.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY )
-      v1 |= 128;
-    result = v1;
-  }
-  return result;
-}
-
-void RenderD3D::ClearTarget(unsigned int bClearColor, unsigned int uClearColor, unsigned int bClearDepth, float z_clear) {
-  uint uClearFlags = 0;
-
-  if (bClearColor)
-    uClearFlags |= D3DCLEAR_TARGET;
-  if (bClearDepth)
-    uClearFlags |= D3DCLEAR_ZBUFFER;
-  
-  D3DRECT rects[] = {{0, 0, window->GetWidth(), window->GetHeight()}};
-  if (uClearFlags)
-    pViewport->Clear2(1, rects, uClearFlags, uClearColor, z_clear, 0);
-}
-
-void RenderD3D::Present(bool bForceBlit) {
-  RECT source_rect; // [sp+18h] [bp-18h]@1
-  struct tagPOINT Point; // [sp+28h] [bp-8h]@4
-
-  source_rect.left = 0;
-  source_rect.top = 0;
-  source_rect.bottom = 480;//window->GetHeight(); //Ritor1: проблема с кнопкой "развернуть"
-  source_rect.right = 640; //window->GetWidth();
-
-  if (bWindowed || bForceBlit) {
-    RECT dest_rect;
-    GetClientRect(hWindow, &dest_rect);
-    Point.y = 0;
-    Point.x = 0;
-    ClientToScreen(hWindow, &Point);
-    OffsetRect(&dest_rect, Point.x, Point.y);
-    pFrontBuffer->Blt(&dest_rect, pBackBuffer, &source_rect, DDBLT_WAIT, NULL);
-  }
-  else
-    pFrontBuffer->Flip(NULL, DDFLIP_WAIT);
-}
-
-bool RenderD3D::CreateTexture(unsigned int uTextureWidth, unsigned int uTextureHeight, IDirectDrawSurface4 **pOutSurface, IDirect3DTexture2 **pOutTexture, bool bAlphaChannel, bool bMipmaps, unsigned int uMinDeviceTexDim) {
-  unsigned int v9; // ebx@5
-  unsigned int v10; // eax@5
-  DWORD v11; // edx@5
-  DDSURFACEDESC2 ddsd2; // [sp+Ch] [bp-80h]@1
-
-  memset(&ddsd2, 0, sizeof(ddsd2));
-  ddsd2.dwSize = sizeof(ddsd2);
-  ddsd2.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
-  ddsd2.ddsCaps.dwCaps = DDSCAPS_TEXTURE;
-  ddsd2.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
-  ddsd2.dwHeight = uTextureHeight;
-  ddsd2.dwWidth = uTextureWidth;
-  if ( bMipmaps )
-  {
-    if ( (signed int)uTextureHeight <= (signed int)uTextureWidth )
-    {
-      ddsd2.dwMipMapCount = GetMaxMipLevels(uTextureHeight) - GetMaxMipLevels(uMinDeviceTexDim);
-      if ( ddsd2.dwMipMapCount )
-      {
-        ddsd2.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_MIPMAPCOUNT;
-        ddsd2.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
-      }
-      goto LABEL_12;
-    }
-    if ( (signed int)uTextureWidth < (signed int)uMinDeviceTexDim )
-    {
-      ddsd2.dwMipMapCount = GetMaxMipLevels(uMinDeviceTexDim);
-      if ( ddsd2.dwMipMapCount )
-      {
-        ddsd2.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_MIPMAPCOUNT;
-        ddsd2.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
-      }
-      goto LABEL_12;
-    }
-    v9 = GetMaxMipLevels(uTextureWidth);
-    v10 = GetMaxMipLevels(uMinDeviceTexDim);
-    ddsd2.dwMipMapCount = v9 - v10;
-    if ( v9 == v10 )
-    {
-      ddsd2.dwFlags = 0x1007;
-      __debugbreak(); // warning C4700: uninitialized local variable 'v11' used
-      ddsd2.ddsCaps.dwCaps = v11;
-      goto LABEL_12;
-    }
-  }
-  else
-    ddsd2.dwMipMapCount = 1;
-  ddsd2.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_MIPMAPCOUNT;
-  ddsd2.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
-LABEL_12:
-  ddsd2.ddpfPixelFormat.dwRGBBitCount = 16;
-  ddsd2.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-  if (bAlphaChannel)
-  {
-    ddsd2.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_ALPHAPIXELS;
-    ddsd2.ddpfPixelFormat.dwRBitMask = 0x7C00;
-    ddsd2.ddpfPixelFormat.dwGBitMask = 0x03E0;
-    ddsd2.ddpfPixelFormat.dwBBitMask = 0x001F;
-    ddsd2.ddpfPixelFormat.dwRGBAlphaBitMask = 0x8000;
-  }
-  else
-  {
-    ddsd2.ddpfPixelFormat.dwFlags = DDPF_RGB;
-    ddsd2.ddpfPixelFormat.dwRBitMask = 0xF800;
-    ddsd2.ddpfPixelFormat.dwGBitMask = 0x07E0;
-    ddsd2.ddpfPixelFormat.dwBBitMask = 0x001F;
-    ddsd2.ddpfPixelFormat.dwRGBAlphaBitMask = 0;
-  }
-  if (FAILED(pHost->CreateSurface(&ddsd2, pOutSurface, NULL)))
-    return false;
-  if (FAILED((*pOutSurface)->QueryInterface(IID_IDirect3DTexture2, (void **)pOutTexture)))
-  {
-    (*pOutSurface)->Release();
-    *pOutSurface = 0;
-    return false;
-  }
-  return true;
-}
-
-void RenderD3D::HandleLostResources() {
-  pBitmaps_LOD->ReleaseLostHardwareTextures();
-  pSprites_LOD->ReleaseLostHardwareSprites();
 }
 
 void Render::DrawPolygon(struct Polygon *a3) {
@@ -2119,7 +1172,7 @@ bool Render::InitializeFullscreen() {
   ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, 0));
   ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_COLOROP, 4));
 
-  ddpfPrimarySuface.dwSize = 32;
+  ddpfPrimarySuface.dwSize = sizeof(DDPIXELFORMAT);
   GetTargetPixelFormat(&ddpfPrimarySuface);
   ParseTargetPixelFormat();
 
@@ -2140,201 +1193,171 @@ bool Render::InitializeFullscreen() {
 }
 
 void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
-    unsigned __int16 *pSrc; // eax@2
-    int uSrcTotalWidth; // ecx@4
-    unsigned int v10; // esi@9
-    int v21; // [sp+Ch] [bp-18h]@8
-    unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
-    __int32 src_width; // [sp+14h] [bp-10h]@3
-    __int32 src_height; // [sp+18h] [bp-Ch]@3
-    int uSrcPitch; // [sp+1Ch] [bp-8h]@5
+  uint16_t *pSrc; // eax@2
+  int uSrcTotalWidth; // ecx@4
+  unsigned int v10; // esi@9
+  int v21; // [sp+Ch] [bp-18h]@8
+  uint16_t *src_surf_pos; // [sp+10h] [bp-14h]@9
+  int32_t src_width; // [sp+14h] [bp-10h]@3
+  int32_t src_height; // [sp+18h] [bp-Ch]@3
+  int uSrcPitch; // [sp+1Ch] [bp-8h]@5
 
-    if (!pArcomageGame->pBlit_Copy_pixels)
-        return;
+  if (!pArcomageGame->pBlit_Copy_pixels)
+    return;
 
-    //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
-    src_width = pSrcRect->z - pSrcRect->x;
-    src_height = pSrcRect->w - pSrcRect->y;
+  //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
+  src_width = pSrcRect->z - pSrcRect->x;
+  src_height = pSrcRect->w - pSrcRect->y;
 
-    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
-        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
-    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
-        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
+  if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
+    uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
+  else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
+    uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
 
-    pSrc = pArcomageGame->pBlit_Copy_pixels;
-    uSrcPitch = uSrcTotalWidth;
-    src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
-    v10 = 0x1F;//0xFF >> (8 - (unsigned __int8)uTargetBBits);
-    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
-    if (blend_mode == 2)
-    {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i)
-        {
-            for (int j = 0; j < src_width; ++j)
-            {
-                if (*src_surf_pos != v10)
-                {
-                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
+  pSrc = pArcomageGame->pBlit_Copy_pixels;
+  uSrcPitch = uSrcTotalWidth;
+  src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
+  v10 = 0x1F;
+  v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
+  if (blend_mode == 2) {
+    uSrcPitch = (uSrcPitch - src_width);
+    for (int i = 0; i < src_height; ++i) {
+      for (int j = 0; j < src_width; ++j) {
+        if (*src_surf_pos != v10) {
+          if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+            && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+            WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
         }
+        ++src_surf_pos;
+      }
+      src_surf_pos += uSrcPitch;
     }
-    else
-    {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i)
-        {
-            for (int j = 0; j < src_width; ++j)
-            {
-                if (*src_surf_pos != v10)
-                {
-                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
+  } else {
+    uSrcPitch = (uSrcPitch - src_width);
+    for (int i = 0; i < src_height; ++i) {
+      for (int j = 0; j < src_width; ++j) {
+        if (*src_surf_pos != v10) {
+          if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+            && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+            WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
         }
+        ++src_surf_pos;
+      }
+      src_surf_pos += uSrcPitch;
     }
+  }
 }
 
-bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult, float z_bias)
-{
-    //For outdoor terrain and indoor light (VII)(VII)
-    signed int dwFlags; // [sp-1Ch] [bp-670h]@13
-    RenderVertexD3D3 pVerticesD3D[64]; // [sp+0h] [bp-654h]@7
+bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult, float z_bias) {
+  //For outdoor terrain and indoor light (VII)(VII)
+  if (pLightmap->NumVertices < 3) {
+    logger->Warning(L"Lightmap uNumVertices < 3");
+    return false;
+  }
 
-    if (pLightmap->NumVertices < 3)
-    {
-        logger->Warning(L"Lightmap uNumVertices < 3");
-        return false;
+  unsigned int uLightmapColorMaskR = (pLightmap->uColorMask >> 16) & 0xFF;
+  unsigned int uLightmapColorMaskG = (pLightmap->uColorMask >> 8) & 0xFF;
+  unsigned int uLightmapColorMaskB = pLightmap->uColorMask & 0xFF;
+
+  unsigned int uLightmapColorR = floorf(uLightmapColorMaskR * pLightmap->fBrightness * pColorMult->x + 0.5f);
+  unsigned int uLightmapColorG = floorf(uLightmapColorMaskG * pLightmap->fBrightness * pColorMult->y + 0.5f);
+  unsigned int uLightmapColorB = floorf(uLightmapColorMaskB * pLightmap->fBrightness * pColorMult->z + 0.5f);
+
+  RenderVertexD3D3 pVerticesD3D[64];
+  for (uint i = 0; i < pLightmap->NumVertices; ++i) {
+    float v18;
+    if (fabs(z_bias) < 1e-5) {
+      v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0);
+    } else {
+      v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0) - z_bias;
+      if (v18 < 0.000099999997) {
+        v18 = 0.000099999997;
+      }
     }
 
-    uint uLightmapColorMaskR = (pLightmap->uColorMask >> 16) & 0xFF,
-        uLightmapColorMaskG = (pLightmap->uColorMask >> 8) & 0xFF,
-        uLightmapColorMaskB = pLightmap->uColorMask & 0xFF;
+    pVerticesD3D[i].pos.x = pLightmap->pVertices[i].vWorldViewProjX;
+    pVerticesD3D[i].pos.y = pLightmap->pVertices[i].vWorldViewProjY;
+    pVerticesD3D[i].pos.z = v18;
 
-    uint uLightmapColorR = floorf(uLightmapColorMaskR * pLightmap->fBrightness * pColorMult->x + 0.5f),
-        uLightmapColorG = floorf(uLightmapColorMaskG * pLightmap->fBrightness * pColorMult->y + 0.5f),
-        uLightmapColorB = floorf(uLightmapColorMaskB * pLightmap->fBrightness * pColorMult->z + 0.5f);
+    pVerticesD3D[i].rhw = 1.0 / pLightmap->pVertices[i].vWorldViewPosition.x;
+    pVerticesD3D[i].diffuse = (uLightmapColorMaskR << 16) | (uLightmapColorMaskG << 8) | uLightmapColorB;
+    pVerticesD3D[i].specular = 0;
 
-    for (uint i = 0; i < pLightmap->NumVertices; ++i)
-    {
-        float v18;
-        if (fabs(z_bias) < 1e-5)
-            v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0);
-        else
-        {
-            v18 = 1.0 - 1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0) - z_bias;
-            if (v18 < 0.000099999997)
-                v18 = 0.000099999997;
-        }
+    pVerticesD3D[i].texcoord.x = pLightmap->pVertices[i].u;
+    pVerticesD3D[i].texcoord.y = pLightmap->pVertices[i].v;
+  }
 
-        pVerticesD3D[i].pos.x = pLightmap->pVertices[i].vWorldViewProjX;
-        pVerticesD3D[i].pos.y = pLightmap->pVertices[i].vWorldViewProjY;
-        pVerticesD3D[i].pos.z = v18;
+  int dwFlags = D3DDP_DONOTLIGHT;
+  if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    dwFlags |= D3DDP_DONOTCLIP | D3DDP_DONOTUPDATEEXTENTS;
+  }
 
-        pVerticesD3D[i].rhw = 1.0 / pLightmap->pVertices[i].vWorldViewPosition.x;
-        pVerticesD3D[i].diffuse = (uLightmapColorMaskR << 16) | (uLightmapColorMaskG << 8) | uLightmapColorB;
-        pVerticesD3D[i].specular = 0;
+  ErrD3D(
+    pRenderD3D->pDevice->DrawPrimitive(
+      D3DPT_TRIANGLEFAN, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+      pVerticesD3D, pLightmap->NumVertices, dwFlags
+    )
+  );
 
-        pVerticesD3D[i].texcoord.x = pLightmap->pVertices[i].u;
-        pVerticesD3D[i].texcoord.y = pLightmap->pVertices[i].v;
-    }
-
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        dwFlags = D3DDP_DONOTLIGHT | D3DDP_DONOTCLIP | D3DDP_DONOTUPDATEEXTENTS;
-    else
-        dwFlags = D3DDP_DONOTLIGHT;
-
-    ErrD3D(
-        pRenderD3D->pDevice->DrawPrimitive(
-            D3DPT_TRIANGLEFAN, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-            pVerticesD3D, pLightmap->NumVertices, dwFlags
-            )
-        );
-
-    return true;
+  return true;
 }
 
-void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode)
-{
-    unsigned __int16 *pSrc; // eax@2
-    int uSrcTotalWidth; // ecx@4
-    int v21; // [sp+Ch] [bp-18h]@8
-    unsigned __int16 *src_surf_pos; // [sp+10h] [bp-14h]@9
-    __int32 src_width; // [sp+14h] [bp-10h]@3
-    __int32 src_height; // [sp+18h] [bp-Ch]@3
-    int uSrcPitch; // [sp+1Ch] [bp-8h]@5
+void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
+  uint16_t *pSrc; // eax@2
+  int uSrcTotalWidth; // ecx@4
+  int v21; // [sp+Ch] [bp-18h]@8
+  uint16_t *src_surf_pos; // [sp+10h] [bp-14h]@9
+  int32_t src_width; // [sp+14h] [bp-10h]@3
+  int32_t src_height; // [sp+18h] [bp-Ch]@3
+  int uSrcPitch; // [sp+1Ch] [bp-8h]@5
 
-    if (!pArcomageGame->pBlit_Copy_pixels)
-        return;
+  if (!pArcomageGame->pBlit_Copy_pixels) {
+    return;
+  }
 
-    //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
-    src_width = pSrcRect->z - pSrcRect->x;
-    src_height = pSrcRect->w - pSrcRect->y;
-    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
-        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
-    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
-        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
+  //dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y * render->uTargetSurfacePitch];
+  src_width = pSrcRect->z - pSrcRect->x;
+  src_height = pSrcRect->w - pSrcRect->y;
+  if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
+    uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
+  else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
+    uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
 
-    pSrc = pArcomageGame->pBlit_Copy_pixels;
-    uSrcPitch = uSrcTotalWidth;
-    src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
-    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
+  pSrc = pArcomageGame->pBlit_Copy_pixels;
+  uSrcPitch = uSrcTotalWidth;
+  src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
+  v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
 
-    if (blend_mode == 2)
-    {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i)
-        {
-            for (int j = 0; j < src_width; ++j)
-            {
-                if (*src_surf_pos != v21)
-                {
-                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
+  if (blend_mode == 2) {
+    uSrcPitch = (uSrcPitch - src_width);
+    for (int i = 0; i < src_height; ++i) {
+      for (int j = 0; j < src_width; ++j) {
+        if (*src_surf_pos != v21) {
+          if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+            && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+            WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, *src_surf_pos);
         }
+        ++src_surf_pos;
+      }
+      src_surf_pos += uSrcPitch;
     }
-    else
-    {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i)
-        {
-            for (int j = 0; j < src_width; ++j)
-            {
-                if (*src_surf_pos != v21)
-                {
-                    if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
-                        && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
+  } else {
+    uSrcPitch = (uSrcPitch - src_width);
+    for (int i = 0; i < src_height; ++i) {
+      for (int j = 0; j < src_width; ++j) {
+        if (*src_surf_pos != v21) {
+          if (pTargetPoint->x + j >= 0 && pTargetPoint->x + j <= window->GetWidth() - 1
+            && pTargetPoint->y + i >= 0 && pTargetPoint->y + i <= window->GetHeight() - 1)
+            WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i, (0x7BEF & (*src_surf_pos / 2)));
         }
+        ++src_surf_pos;
+      }
+      src_surf_pos += uSrcPitch;
     }
+  }
 }
 
 bool Render::SwitchToWindow() {
-  bool v7; // eax@7
-  int v12; // eax@24
-  int v13; // eax@26
-  D3DDEVICEDESC refCaps; // [sp+Ch] [bp-300h]@24
-  DDSURFACEDESC2 pDesc; // [sp+108h] [bp-204h]@37
-  D3DDEVICEDESC halCaps; // [sp+184h] [bp-188h]@24
-
   pParty->uFlags |= PARTY_FLAGS_1_0002;
   pViewport->SetFOV(_6BE3A0_fov);
   Release();
@@ -2345,6 +1368,7 @@ bool Render::SwitchToWindow() {
   CreateZBuffer();
   pRenderD3D = new RenderD3D;
 
+  bool v7 = false;
   if (pRenderD3D->pAvailableDevices[uDesiredDirect3DDevice].bIsDeviceCompatible && uDesiredDirect3DDevice != 1) {
     v7 = pRenderD3D->CreateDevice(uDesiredDirect3DDevice, true, window);
   } else {
@@ -2397,18 +1421,18 @@ bool Render::SwitchToWindow() {
 
   bRequiredTextureStagesAvailable = CheckTextureStages();
 
-  memset(&halCaps, 0, sizeof(halCaps));
+  D3DDEVICEDESC halCaps = { 0 };
   halCaps.dwSize = sizeof(halCaps);
 
-  memset(&refCaps, 0, sizeof(refCaps));
+  D3DDEVICEDESC refCaps = { 0 };
   refCaps.dwSize = sizeof(refCaps);
 
   ErrD3D(pRenderD3D->pDevice->GetCaps(&halCaps, &refCaps));
-  v12 = halCaps.dwMinTextureWidth;
+  int v12 = halCaps.dwMinTextureWidth;
   if ((unsigned int)halCaps.dwMinTextureWidth > halCaps.dwMinTextureHeight)
     v12 = halCaps.dwMinTextureHeight;
   uMinDeviceTextureDim = v12;
-  v13 = halCaps.dwMaxTextureWidth;
+  int v13 = halCaps.dwMaxTextureWidth;
   if ((unsigned int)halCaps.dwMaxTextureWidth < halCaps.dwMaxTextureHeight)
     v13 = halCaps.dwMaxTextureHeight;
   uMaxDeviceTextureDim = v13;
@@ -2428,7 +1452,7 @@ bool Render::SwitchToWindow() {
   ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, 0));
   ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_COLOROP, 4));
 
-  ddpfPrimarySuface.dwSize = 32;
+  ddpfPrimarySuface.dwSize = sizeof(DDPIXELFORMAT);
   GetTargetPixelFormat(&ddpfPrimarySuface);
   ParseTargetPixelFormat();
 
@@ -2456,304 +1480,95 @@ void Render::ClearZBuffer(int a2, int a3) {
 }
 
 void Render::ParseTargetPixelFormat() {
-  signed int v2; // ecx@1
-  DWORD uRedMask; // edx@1
-  unsigned int uGreenMask; // esi@5
-  signed int v5; // ecx@5
-  unsigned int uBlueMask; // edx@9
-  signed int v7; // ecx@9
-  //unsigned int v8; // ecx@13
-
-  v2 = 0;
-  uRedMask = ddpfPrimarySuface.dwRBitMask;
+  int v2 = 0;
+  unsigned int uRedMask = ddpfPrimarySuface.dwRBitMask;
   this->uTargetBBits = 0;
-  this->uTargetGBits = 0;
-  this->uTargetRBits = 0;
-  do
-  {
-    if ( (1 << v2) & uRedMask )
+  do {
+    if ((1 << v2) & uRedMask) {
       ++this->uTargetRBits;
+    }
     ++v2;
-  }
-  while ( v2 < 32 );
-  uGreenMask = ddpfPrimarySuface.dwGBitMask;
-  v5 = 0;
-  do
-  {
-    if ( (1 << v5) & uGreenMask )
+  } while (v2 < 32);
+
+  unsigned int uGreenMask = ddpfPrimarySuface.dwGBitMask;
+  int v5 = 0;
+  do {
+    if ((1 << v5) & uGreenMask)
       ++this->uTargetGBits;
     ++v5;
-  }
-  while ( v5 < 32 );
-  uBlueMask = ddpfPrimarySuface.dwBBitMask;
-  v7 = 0;
-  do
-  {
-    if ( (1 << v7) & uBlueMask )
+  } while (v5 < 32);
+
+  unsigned int uBlueMask = ddpfPrimarySuface.dwBBitMask;
+  int v7 = 0;
+  do {
+    if ((1 << v7) & uBlueMask)
       ++this->uTargetBBits;
     ++v7;
-  }
-  while ( v7 < 32 );
-  this->uTargetGMask = uGreenMask;
-  this->uTargetRMask = ddpfPrimarySuface.dwRBitMask;
-  this->uTargetBMask = uBlueMask;
+  } while (v7 < 32);
 }
 
-bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags)
-{
-    HRESULT result; // eax@1
-    HRESULT v6; // eax@4
-
-    result = pSurface->Lock(NULL, pDesc, uLockFlags, NULL);
-    /*
-    Когда объект DirectDrawSurface теряет поверхностную память, методы возвратят DDERR_SURFACELOST
-    и не выполнят никакую другую функцию. Метод IDirectDrawSurface::Restore перераспределит поверхностную память
-    и повторно присоединит ее к объекту DirectDrawSurface.
-    */
-    if (result == DDERR_SURFACELOST)
-    {
-        v6 = pSurface->Restore();//Восстанавливает потерянную поверхность. Это происходит, когда поверхностная память,
-                                 //связанная с объектом DirectDrawSurface была освобождена. 
-        if (v6)
-        {
-            if (v6 != DDERR_IMPLICITLYCREATED)//DDERR_IMPLICITLYCREATED - Поверхность не может быть восстановлена,   
-                                                //потому что она - неявно созданная поверхность.										
-            {
-                result = (bool)memset(pDesc, 0, 4);
-                return 0;
-            }
-            this->pFrontBuffer4->Restore();
-            pSurface->Restore();
-        }
-        result = pSurface->Lock(NULL, pDesc, DDLOCK_WAIT, NULL);
-        if (result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY)//DDERR_SURFACEBUSY - Доступ к этой поверхности отказан, 
-            //потому что поверхность блокирована другой нитью. DDERR_INVALIDRECT - Обеспечиваемый прямоугольник недопустим.
-        {
-            result = (bool)memset(pDesc, 0, 4);
-            return 0;
-        }
-        ErrD3D(result);
-        if (result)
-        {
-            //v8 = 0;
-            //v7 = 2161;
-      //LABEL_19:
-            //CheckHRESULT((CheckHRESULT_stru0 *)&pSurface, result, "E:\\WORK\\MSDEV\\MM7\\MM7\\Code\\Screen16.cpp", v7, v8);
-            result = (bool)memset(pDesc, 0, 4);
-            return result;
-        }
-        if (pRenderD3D)
-            pRenderD3D->HandleLostResources();
-        result = this->pDirectDraw4->RestoreAllSurfaces();
+bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags) {
+  HRESULT result = pSurface->Lock(NULL, pDesc, uLockFlags, NULL);
+  /*
+  Когда объект DirectDrawSurface теряет поверхностную память, методы возвратят DDERR_SURFACELOST
+  и не выполнят никакую другую функцию. Метод IDirectDrawSurface::Restore перераспределит поверхностную память
+  и повторно присоединит ее к объекту DirectDrawSurface.
+  */
+  if (result == DDERR_SURFACELOST) {
+    HRESULT v6 = pSurface->Restore();//Восстанавливает потерянную поверхность. Это происходит, когда поверхностная память,
+                             //связанная с объектом DirectDrawSurface была освобождена. 
+    if (v6) {
+      if (v6 != DDERR_IMPLICITLYCREATED)//DDERR_IMPLICITLYCREATED - Поверхность не может быть восстановлена,
+                                        //потому что она - неявно созданная поверхность.
+      {
+        result = (bool)memset(pDesc, 0, 4);
+        return 0;
+      }
+      this->pFrontBuffer4->Restore();
+      pSurface->Restore();
     }
-    else
+    result = pSurface->Lock(NULL, pDesc, DDLOCK_WAIT, NULL);
+    if (result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY)//DDERR_SURFACEBUSY - Доступ к этой поверхности отказан, 
+                                                                   //потому что поверхность блокирована другой нитью. DDERR_INVALIDRECT - Обеспечиваемый прямоугольник недопустим.
     {
-        if (result)
-        {
-            if (result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY)
-            {
-                result = (bool)memset(pDesc, 0, 4);
-                return result;
-            }
-            ErrD3D(result);
-            //v8 = 0;
-            //v7 = 2199;
-            //goto LABEL_19;
-        }
+      result = (bool)memset(pDesc, 0, 4);
+      return 0;
     }
-    return true;
-}
-
-void Render::CreateDirectDraw()
-{
-  //Render *v1; // edi@1
-//  HRESULT v2; // eax@1
-//  HRESULT v3; // eax@5
-//  int v6; // [sp-Ch] [bp-20h]@3
-//  unsigned int device_caps; // [sp+0h] [bp-14h]@0
-  IDirectDraw *lpDD; // [sp+10h] [bp-4h]@1
-
-  //v1 = this;
-  ErrD3D(DirectDrawCreate(0, &lpDD, 0));
-
-  pDirectDraw4 = nullptr;
-
-  ErrD3D(lpDD->QueryInterface(IID_IDirectDraw4, (void **)&pDirectDraw4));
-
-  lpDD->Release();
-  lpDD = nullptr;
-}
-
-void Render::SetDirectDrawCooperationMode(OSWindow *window, bool bFullscreen)
-{
-  DWORD flags; // eax@1
-
-  //Установка взаимодействия для полноэкранного и оконного режимов
-  flags = bFullscreen ? DDSCL_NORMAL | DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN : DDSCL_NORMAL;
-
-  ErrD3D(pDirectDraw4->SetCooperativeLevel((HWND)window->GetApiHandle(), flags | DDSCL_MULTITHREADED));
-}
-
-void Render::SetDirectDrawDisplayMode(unsigned int uWidth, unsigned int uHeight, unsigned int uBPP)
-{
-  ErrD3D(pDirectDraw4->SetDisplayMode(uWidth, uHeight, uBPP, 0, 0));
-}
-
-void Render::CreateFrontBuffer()
-{
-  //Render *v1; // esi@1
-  IDirectDraw *pDD; // eax@3
-  IDirectDrawSurface **pOutSurf; // esi@3
-  struct _DDSURFACEDESC *v4; // edx@3
-////  HRESULT v5; // eax@5
-  int v6; // [sp-8h] [bp-8Ch]@3
-  DDSURFACEDESC2 a2; // [sp+4h] [bp-80h]@3
-
-  //v1 = this;
-  //if (pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT ||
-      //pVersion->pVersionInfo.dwMajorVersion != 4 )
-  {
-    memset(&a2, 0, sizeof(a2));
-    a2.dwSize = sizeof(a2);
-
-    pDD = (IDirectDraw *)this->pDirectDraw4;
-    a2.dwFlags = 1;
-    a2.ddsCaps.dwCaps = 512;//DDSCAPS_PRIMARYSURFACE = 0x200
-
-    v6 = 2357;
-    pOutSurf = (IDirectDrawSurface **)&this->pFrontBuffer4;
-    v4 = (struct _DDSURFACEDESC *)&a2;
+    ErrD3D(result);
+    if (result) {
+      result = (bool)memset(pDesc, 0, 4);
+      return result;
+    }
+    if (pRenderD3D) {
+      pRenderD3D->HandleLostResources();
+    }
+    result = this->pDirectDraw4->RestoreAllSurfaces();
+  } else {
+    if (result) {
+      if (result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY) {
+        result = (bool)memset(pDesc, 0, 4);
+        return result;
+      }
+      ErrD3D(result);
+    }
   }
-  /*else
-  {
-    memset(&a2.lPitch, 0, 0x6Cu);               // DDSURFACEDESC here
-    pDD = (IDirectDraw *)v1->pDirectDraw2;
-    a2.lPitch = 108;
-    a2.dwBackBufferCount = 1;
-    a2.dwTextureStage = 512;
-    v6 = 2346;
-    pOutSurf = (IDirectDrawSurface **)&v1->pFrontBuffer2;
-    v4 = (struct _DDSURFACEDESC *)&a2.lPitch;
-  }*/
-  ErrD3D(pDD->CreateSurface(v4, pOutSurf, NULL));
+  return true;
 }
 
-void Render::CreateBackBuffer()
-{
-  //Render *v1; // esi@1
-  IDirectDraw *v2; // eax@3
-  IDirectDrawSurface **ppBackBuffer; // esi@3
-  struct _DDSURFACEDESC *v4; // edx@3
-//  HRESULT v5; // eax@5
-  int v6; // [sp-8h] [bp-8Ch]@3
-  unsigned int v7; // [sp-4h] [bp-88h]@3
-  DDSURFACEDESC2 a2; // [sp+4h] [bp-80h]@3
-
-  //v1 = this;
-  //if (pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT ||
-    //  pVersion->pVersionInfo.dwMajorVersion != 4 )
-  {
-    memset(&a2, 0, sizeof(a2));
-    a2.dwSize = sizeof(a2);
-
-    v2 = (IDirectDraw *)this->pDirectDraw4;
-    a2.dwFlags = 7;
-    a2.ddsCaps.dwCaps = 2112;//0x840 = DDSCAPS_SYSTEMMEMORY	= 0x800 | DDSCAPS_OFFSCREENPLAIN = 0x40
-    a2.dwWidth = window->GetWidth();
-    a2.dwHeight = window->GetHeight();
-
-    v7 = 0;
-    v6 = 2387;
-    ppBackBuffer = (IDirectDrawSurface **)&this->pBackBuffer4;
-    v4 = (struct _DDSURFACEDESC *)&a2;
-  }
-  /*else
-  {
-    memset(&a2.lPitch, 0, 0x6Cu);
-    v2 = (IDirectDraw *)v1->pDirectDraw2;
-    a2.lPitch = 108;
-    a2.dwBackBufferCount = 7;
-    v7 = 0;
-    a2.dwTextureStage = 2112;
-    a2.dwAlphaBitDepth = 640;
-    a2.dwMipMapCount = 480;
-    v6 = 2374;
-    ppBackBuffer = (IDirectDrawSurface **)&v1->pBackBuffer2;
-    v4 = (struct _DDSURFACEDESC *)&a2.lPitch;   // //DDSURFACEDESC here fo ddraw2
-  }*/
-  ErrD3D(v2->CreateSurface(v4, ppBackBuffer, NULL));
+void Render::CreateClipper(OSWindow *window) {
+  ErrD3D(pDirectDraw4->CreateClipper(0, &pDDrawClipper, NULL));
+  ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->GetApiHandle()));
+  ErrD3D(pFrontBuffer4->SetClipper(pDDrawClipper));
 }
 
-void Render::CreateDirectDrawPrimarySurface()
-{
-  IDirectDrawSurface *pFrontBuffer; // eax@3
-  DDSCAPS2 *v6; // edx@3
-//  IDirectDraw4 *v7; // eax@4
-  int v9; // ST14_4@5
-  IDirectDrawSurface *v10; // ST10_4@5
-  IDirectDrawSurface **ppBackBuffer; // [sp-4h] [bp-A4h]@3
-  DDSURFACEDESC2 ddsd2; // [sp+Ch] [bp-94h]@3
-  DDSCAPS2 v17; // [sp+88h] [bp-18h]@4
-
-  //v1 = this;
-  //if (pVersion->pVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT ||
-      //pVersion->pVersionInfo.dwMajorVersion != 4 )
-  {
-    //v2 = 0;
-    //this->field_4004C = 1;
-    memset(&ddsd2, 0, sizeof(ddsd2));
-    ddsd2.dwSize = sizeof(ddsd2);
-
-    ddsd2.dwBackBufferCount = 1;
-    ddsd2.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-    ddsd2.ddsCaps.dwCaps = DDSCAPS_COMPLEX | DDSCAPS_FLIP | DDSCAPS_3DDEVICE | DDSCAPS_PRIMARYSURFACE;
-    ErrD3D(this->pDirectDraw4->CreateSurface(&ddsd2, &pFrontBuffer4, NULL));
-    pFrontBuffer = (IDirectDrawSurface *)this->pFrontBuffer4;
-    ppBackBuffer = (IDirectDrawSurface **)&this->pBackBuffer4;
-  }
-  /*else
-  {
-    v2 = 0;
-    this->field_4004C = 1;
-
-    DDSURFACEDESC ddsd;
-    memset(&ddsd, 0, sizeof(DDSURFACEDESC));
-
-    ddsd.lpSurface = (LPVOID)1;
-    ddsd.lPitch = 108;
-    ddsd.dwBackBufferCount = 33;
-    ddsd.ddsCaps.dwCaps = 8728;
-    ErrD3D(pDirectDraw2->CreateSurface(&ddsd, (IDirectDrawSurface **)&pFrontBuffer2, NULL));
-
-    pFrontBuffer = (IDirectDrawSurface *)v1->pFrontBuffer2;
-    ppBackBuffer = (IDirectDrawSurface **)&v1->pBackBuffer2;
-  }*/
-  __debugbreak(); // warning C4700: uninitialized local variable 'v6' used
-  v9 = (int)v6;
-  v10 = pFrontBuffer;                           // BUG
-
-    v17.dwCaps = 4;
-  ErrD3D(pFrontBuffer->GetAttachedSurface((DDSCAPS *)&v17, ppBackBuffer));//  hr = this->pFrontBuffer->GetAttachedSurface(&ddsCaps2, ppBackBuffer);
-  //CheckHRESULT(&thisa, v11, (const char *)v10, device_caps, (unsigned int)ppBackBuffer);
-  //v1->field_40030 = v2;
-  //v1->field_18_locked_pitch = v2;
-}
-
-void Render::CreateClipper(OSWindow *window)
-{
-    ErrD3D(pDirectDraw4->CreateClipper(0, &pDDrawClipper, NULL));
-    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->GetApiHandle()));
-    ErrD3D(pFrontBuffer4->SetClipper(pDDrawClipper));
-}
-
-void Render::GetTargetPixelFormat(DDPIXELFORMAT *pOut)
-{
+void Render::GetTargetPixelFormat(DDPIXELFORMAT *pOut) {
   pFrontBuffer4->GetPixelFormat(pOut);
 }
 
 void Render::RestoreFrontBuffer() {
-  if (pFrontBuffer4->IsLost() == DDERR_SURFACELOST )
+  if (pFrontBuffer4->IsLost() == DDERR_SURFACELOST) {
     pFrontBuffer4->Restore();
+  }
 }
 
 void Render::RestoreBackBuffer() {
@@ -2771,16 +1586,16 @@ void Render::BltBackToFontFast(int a2, int a3, Rect *pSrcRect) {
 }
 
 unsigned int Render::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
-  unsigned int v7;
-
-  if (uNumBillboardsToDraw >= 999)
+  if (uNumBillboardsToDraw >= 999) {
     return 0;
+  }
 
   if (!uNumBillboardsToDraw) {
     uNumBillboardsToDraw = 1;
     return 0;
   }
 
+  unsigned int v7 = 0;
   for (int left = 0, right = uNumBillboardsToDraw; left < right; ) {  // binsearch
     v7 = left + (right - left) / 2;
     if (z <= render->pBillboardRenderListD3D[v7].z_order)
@@ -3015,33 +1830,29 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clamp
         pIndoorCameraD3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FFFFFF, 0.0);
 }
 
-void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon)
-{
-  int v7; // eax@7
+void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
+  if (uNumD3DSceneBegins == 0) {
+    return;
+  }
 
   unsigned int uNumVertices = pSkyPolygon->uNumVertices;
-  auto texture = (TextureD3D *)pSkyPolygon->texture;
+  TextureD3D *texture = (TextureD3D*)pSkyPolygon->texture;
 
-  if ( !this->uNumD3DSceneBegins )
-    return;
-  if ( uNumVertices >= 3 )
-  {
+  if (uNumVertices >= 3) {
     this->pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-    if ( this->bUsingSpecular )
-    {
+    if (this->bUsingSpecular) {
       this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
       this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
       this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
     }
-    for ( uint i = 0; i < uNumVertices; ++i )
-    {
+    for (unsigned int i = 0; i < uNumVertices; ++i) {
       pVertices[i].pos.x = VertexRenderList[i].vWorldViewProjX;
       pVertices[i].pos.y = VertexRenderList[i].vWorldViewProjY;
       pVertices[i].pos.z = 0.99989998;
       pVertices[i].rhw = VertexRenderList[i]._rhw;
 
       pVertices[i].diffuse = ::GetActorTintColor(31, 0, VertexRenderList[i].vWorldViewPosition.x, 1, 0);
-      v7 = 0;
+      int v7 = 0;
       if (this->bUsingSpecular)
         v7 = sub_47C3D7_get_fog_specular(0, 1, VertexRenderList[i].vWorldViewPosition.x);
       pVertices[i].specular = v7;
@@ -3050,39 +1861,36 @@ void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon)
     }
     pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture());
     pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-                                       pVertices, uNumVertices, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTLIGHT);
+      pVertices, uNumVertices, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTLIGHT);
   }
 }
 
-void Render::DrawIndoorSkyPolygon(int uNumVertices, struct Polygon *pSkyPolygon)
-{
-  int v5; // eax@3
+void Render::DrawIndoorSkyPolygon(int uNumVertices, struct Polygon *pSkyPolygon) {
+  TextureD3D *texture = (TextureD3D*)pSkyPolygon->texture;
 
-  auto texture = (TextureD3D *)pSkyPolygon->texture;
+  if (uNumD3DSceneBegins == 0) {
+    return;
+  }
 
-  if ( this->uNumD3DSceneBegins )
-  {
-    if ( uNumVertices >= 3 )
-    {
-      ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-      v5 = 31 - (pSkyPolygon->dimming_level & 0x1F);
-      if ( v5 < pOutdoor->max_terrain_dimming_level )
-        v5 = pOutdoor->max_terrain_dimming_level;
-      for (uint i = 0; i < (unsigned int)uNumVertices; ++i)
-      {
-        d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-        d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-        d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-        d3d_vertex_buffer[i].rhw = array_507D30[i]._rhw;
-        d3d_vertex_buffer[i].diffuse = 8 * v5 | ((8 * v5 | (v5 << 11)) << 8);
-        d3d_vertex_buffer[i].specular = 0;
-        d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u;
-        d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v;
-      }
-      ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
-      ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-        d3d_vertex_buffer, uNumVertices, 28));
+  if (uNumVertices >= 3) {
+    ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+    int v5 = 31 - (pSkyPolygon->dimming_level & 0x1F);
+    if (v5 < pOutdoor->max_terrain_dimming_level) {
+      v5 = pOutdoor->max_terrain_dimming_level;
     }
+    for (uint i = 0; i < (unsigned int)uNumVertices; ++i) {
+      d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
+      d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
+      d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+      d3d_vertex_buffer[i].rhw = array_507D30[i]._rhw;
+      d3d_vertex_buffer[i].diffuse = 8 * v5 | ((8 * v5 | (v5 << 11)) << 8);
+      d3d_vertex_buffer[i].specular = 0;
+      d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u;
+      d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v;
+    }
+    ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
+    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+      d3d_vertex_buffer, uNumVertices, 28));
   }
 }
 
@@ -3393,10 +2201,10 @@ LABEL_40:
   DrawIndoorSkyPolygon(pNumVertices, &pSkyPolygon);
 }
 
-void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uPackedID, unsigned int uColor, int a8)
-{
-  if (!uNumD3DSceneBegins || uNumVertices < 3)
+void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uPackedID, unsigned int uColor, int a8) {
+  if (!uNumD3DSceneBegins || uNumVertices < 3) {
     return;
+  }
 
   int sCorrectedColor = uColor;
 
@@ -3506,11 +2314,9 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
   }
 }
 
-void Render::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillboard *billboard)
-{
-  unsigned int v7; // eax@2
-  signed int v11; // eax@9
-  signed int v12; // eax@9
+void Render::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillboard *billboard) {
+  int v11; // eax@9
+  int v12; // eax@9
   double v15; // st5@12
   double v16; // st4@12
   double v17; // st3@12
@@ -3520,106 +2326,108 @@ void Render::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillb
   int v21; // ecx@16
   double v22; // st3@16
   float v27; // [sp+24h] [bp-Ch]@5
-  int v28; // [sp+28h] [bp-8h]@2
   float v29; // [sp+2Ch] [bp-4h]@5
   float v31; // [sp+3Ch] [bp+Ch]@5
   float a1; // [sp+40h] [bp+10h]@5
 
-  auto pSprite = billboard->hwsprite;
+  if (this->uNumD3DSceneBegins == 0) {
+    return;
+  }
+
+  Sprite *pSprite = billboard->hwsprite;
   int dimming_level = billboard->dimming_level;
 
-  if ( this->uNumD3DSceneBegins )
-  {
-    //v4 = pSoftBillboard;
-    //v5 = (double)pSoftBillboard->zbuffer_depth;
-    //pSoftBillboarda = pSoftBillboard->zbuffer_depth;
-    //v6 = pSoftBillboard->zbuffer_depth;
-    v7 = Billboard_ProbablyAddToListAndSortByZOrder(pSoftBillboard->screen_space_z);
-    //v8 = dimming_level;
-    //device_caps = v7;
-    v28 = dimming_level & 0xFF000000;
-    if ( dimming_level & 0xFF000000 )
-      pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Opaque_3;
-    else
-      pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Transparent;
-    //v10 = a3;
-    pBillboardRenderListD3D[v7].field_90 = pSoftBillboard->field_44;
-    pBillboardRenderListD3D[v7].screen_space_z = pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].object_pid = pSoftBillboard->object_pid;
-    pBillboardRenderListD3D[v7].sParentBillboardID = pSoftBillboard->sParentBillboardID;
-    //v25 = pSoftBillboard->uScreenSpaceX;
-    //v24 = pSoftBillboard->uScreenSpaceY;
-    a1 = pSoftBillboard->screenspace_projection_factor_x.GetFloat();
-    v29 = pSoftBillboard->screenspace_projection_factor_y.GetFloat();
-    v31 = (double)((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
-    v27 = (double)(pSprite->uBufferHeight - pSprite->uAreaY);
-    if ( pSoftBillboard->uFlags & 4 )
-      v31 = v31 * -1.0;
-    if ( pSoftBillboard->sTintColor && this->bTinting )
-    {
-      v11 = ::GetActorTintColor(dimming_level, 0, pSoftBillboard->screen_space_z, 0, 0);
-      v12 = BlendColors(pSoftBillboard->sTintColor, v11);
-      if ( v28 )
-        v12 = (unsigned int)((char *)&array_77EC08[1852].pEdgeList1[17] + 3) & ((unsigned int)v12 >> 1);
-    }
-    else
-    {
-      v12 = ::GetActorTintColor(dimming_level, 0, pSoftBillboard->screen_space_z, 0, 0);
-    }
-    //v13 = (double)v25;
-    pBillboardRenderListD3D[v7].pQuads[0].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[0].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[0].pos.x = pSoftBillboard->screen_space_x - v31 * a1;
-    //v14 = (double)v24;
-    //v32 = v14;
-    pBillboardRenderListD3D[v7].pQuads[0].pos.y = pSoftBillboard->screen_space_y - v27 * v29;
-    v15 = 1.0 - 1.0 / (pSoftBillboard->screen_space_z * 0.061758894);
-    pBillboardRenderListD3D[v7].pQuads[0].pos.z = v15;
-    v16 = 1.0 / pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].pQuads[0].rhw = 1.0 / pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].pQuads[0].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v7].pQuads[0].texcoord.y = 0.0;
-    v17 = (double)((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
-    v18 = (double)(pSprite->uBufferHeight - pSprite->uAreaY - pSprite->uAreaHeight);
-    if ( pSoftBillboard->uFlags & 4 )
-      v17 = v17 * -1.0;
-    pBillboardRenderListD3D[v7].pQuads[1].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[1].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[1].pos.x = pSoftBillboard->screen_space_x - v17 * a1;
-    pBillboardRenderListD3D[v7].pQuads[1].pos.y = pSoftBillboard->screen_space_y - v18 * v29;
-    pBillboardRenderListD3D[v7].pQuads[1].pos.z = v15;
-    pBillboardRenderListD3D[v7].pQuads[1].rhw = v16;
-    pBillboardRenderListD3D[v7].pQuads[1].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v7].pQuads[1].texcoord.y = 1.0;
-    v19 = pSprite->uBufferHeight - pSprite->uAreaY - pSprite->uAreaHeight;
-    v20 = (double)(pSprite->uAreaX + pSprite->uAreaWidth + (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
-    if ( pSoftBillboard->uFlags & 4 )
-      v20 = v20 * -1.0;
-    pBillboardRenderListD3D[v7].pQuads[2].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[2].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[2].pos.x = v20 * a1 + pSoftBillboard->screen_space_x;
-    pBillboardRenderListD3D[v7].pQuads[2].pos.y = pSoftBillboard->screen_space_y - (double)v19 * v29;
-    pBillboardRenderListD3D[v7].pQuads[2].pos.z = v15;
-    pBillboardRenderListD3D[v7].pQuads[2].rhw = v16;
-    pBillboardRenderListD3D[v7].pQuads[2].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v7].pQuads[2].texcoord.y = 1.0;
-    v21 = pSprite->uBufferHeight - pSprite->uAreaY;
-    v22 = (double)(pSprite->uAreaX + pSprite->uAreaWidth + (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
-    if ( pSoftBillboard->uFlags & 4 )
-      v22 = v22 * -1.0;
-    pBillboardRenderListD3D[v7].pQuads[3].specular = 0;
-    pBillboardRenderListD3D[v7].pQuads[3].diffuse = v12;
-    pBillboardRenderListD3D[v7].pQuads[3].pos.x = v22 * a1 + pSoftBillboard->screen_space_x;
-    pBillboardRenderListD3D[v7].pQuads[3].pos.y = pSoftBillboard->screen_space_y - (double)v21 * v29;
-    pBillboardRenderListD3D[v7].pQuads[3].pos.z = v15;
-    pBillboardRenderListD3D[v7].pQuads[3].rhw = v16;
-    pBillboardRenderListD3D[v7].pQuads[3].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v7].pQuads[3].texcoord.y = 0.0;
-    //v23 = pSprite->pTexture;
-    pBillboardRenderListD3D[v7].uNumVertices = 4;
-    pBillboardRenderListD3D[v7].z_order = pSoftBillboard->screen_space_z;
-    pBillboardRenderListD3D[v7].texture = pSprite->texture;
+  //v4 = pSoftBillboard;
+  //v5 = (double)pSoftBillboard->zbuffer_depth;
+  //pSoftBillboarda = pSoftBillboard->zbuffer_depth;
+  //v6 = pSoftBillboard->zbuffer_depth;
+  unsigned int v7 = Billboard_ProbablyAddToListAndSortByZOrder(pSoftBillboard->screen_space_z);
+  //v8 = dimming_level;
+  //device_caps = v7;
+  int v28 = dimming_level & 0xFF000000;
+  if (dimming_level & 0xFF000000) {
+    pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Opaque_3;
+  } else {
+    pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Transparent;
   }
+  //v10 = a3;
+  pBillboardRenderListD3D[v7].field_90 = pSoftBillboard->field_44;
+  pBillboardRenderListD3D[v7].screen_space_z = pSoftBillboard->screen_space_z;
+  pBillboardRenderListD3D[v7].object_pid = pSoftBillboard->object_pid;
+  pBillboardRenderListD3D[v7].sParentBillboardID = pSoftBillboard->sParentBillboardID;
+  //v25 = pSoftBillboard->uScreenSpaceX;
+  //v24 = pSoftBillboard->uScreenSpaceY;
+  a1 = pSoftBillboard->screenspace_projection_factor_x.GetFloat();
+  v29 = pSoftBillboard->screenspace_projection_factor_y.GetFloat();
+  v31 = (double)((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
+  v27 = (double)(pSprite->uBufferHeight - pSprite->uAreaY);
+  if (pSoftBillboard->uFlags & 4) {
+    v31 = v31 * -1.0;
+  }
+  if (pSoftBillboard->sTintColor && this->bTinting) {
+    v11 = ::GetActorTintColor(dimming_level, 0, pSoftBillboard->screen_space_z, 0, 0);
+    v12 = BlendColors(pSoftBillboard->sTintColor, v11);
+    if (v28)
+      v12 = (unsigned int)((char *)&array_77EC08[1852].pEdgeList1[17] + 3) & ((unsigned int)v12 >> 1);
+  } else {
+    v12 = ::GetActorTintColor(dimming_level, 0, pSoftBillboard->screen_space_z, 0, 0);
+  }
+  //v13 = (double)v25;
+  pBillboardRenderListD3D[v7].pQuads[0].specular = 0;
+  pBillboardRenderListD3D[v7].pQuads[0].diffuse = v12;
+  pBillboardRenderListD3D[v7].pQuads[0].pos.x = pSoftBillboard->screen_space_x - v31 * a1;
+  //v14 = (double)v24;
+  //v32 = v14;
+  pBillboardRenderListD3D[v7].pQuads[0].pos.y = pSoftBillboard->screen_space_y - v27 * v29;
+  v15 = 1.0 - 1.0 / (pSoftBillboard->screen_space_z * 0.061758894);
+  pBillboardRenderListD3D[v7].pQuads[0].pos.z = v15;
+  v16 = 1.0 / pSoftBillboard->screen_space_z;
+  pBillboardRenderListD3D[v7].pQuads[0].rhw = 1.0 / pSoftBillboard->screen_space_z;
+  pBillboardRenderListD3D[v7].pQuads[0].texcoord.x = 0.0;
+  pBillboardRenderListD3D[v7].pQuads[0].texcoord.y = 0.0;
+  v17 = (double)((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
+  v18 = (double)(pSprite->uBufferHeight - pSprite->uAreaY - pSprite->uAreaHeight);
+  if (pSoftBillboard->uFlags & 4) {
+    v17 = v17 * -1.0;
+  }
+  pBillboardRenderListD3D[v7].pQuads[1].specular = 0;
+  pBillboardRenderListD3D[v7].pQuads[1].diffuse = v12;
+  pBillboardRenderListD3D[v7].pQuads[1].pos.x = pSoftBillboard->screen_space_x - v17 * a1;
+  pBillboardRenderListD3D[v7].pQuads[1].pos.y = pSoftBillboard->screen_space_y - v18 * v29;
+  pBillboardRenderListD3D[v7].pQuads[1].pos.z = v15;
+  pBillboardRenderListD3D[v7].pQuads[1].rhw = v16;
+  pBillboardRenderListD3D[v7].pQuads[1].texcoord.x = 0.0;
+  pBillboardRenderListD3D[v7].pQuads[1].texcoord.y = 1.0;
+  v19 = pSprite->uBufferHeight - pSprite->uAreaY - pSprite->uAreaHeight;
+  v20 = (double)(pSprite->uAreaX + pSprite->uAreaWidth + (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
+  if (pSoftBillboard->uFlags & 4) {
+    v20 = v20 * -1.0;
+  }
+  pBillboardRenderListD3D[v7].pQuads[2].specular = 0;
+  pBillboardRenderListD3D[v7].pQuads[2].diffuse = v12;
+  pBillboardRenderListD3D[v7].pQuads[2].pos.x = v20 * a1 + pSoftBillboard->screen_space_x;
+  pBillboardRenderListD3D[v7].pQuads[2].pos.y = pSoftBillboard->screen_space_y - (double)v19 * v29;
+  pBillboardRenderListD3D[v7].pQuads[2].pos.z = v15;
+  pBillboardRenderListD3D[v7].pQuads[2].rhw = v16;
+  pBillboardRenderListD3D[v7].pQuads[2].texcoord.x = 1.0;
+  pBillboardRenderListD3D[v7].pQuads[2].texcoord.y = 1.0;
+  v21 = pSprite->uBufferHeight - pSprite->uAreaY;
+  v22 = (double)(pSprite->uAreaX + pSprite->uAreaWidth + (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
+  if (pSoftBillboard->uFlags & 4) {
+    v22 = v22 * -1.0;
+  }
+  pBillboardRenderListD3D[v7].pQuads[3].specular = 0;
+  pBillboardRenderListD3D[v7].pQuads[3].diffuse = v12;
+  pBillboardRenderListD3D[v7].pQuads[3].pos.x = v22 * a1 + pSoftBillboard->screen_space_x;
+  pBillboardRenderListD3D[v7].pQuads[3].pos.y = pSoftBillboard->screen_space_y - (double)v21 * v29;
+  pBillboardRenderListD3D[v7].pQuads[3].pos.z = v15;
+  pBillboardRenderListD3D[v7].pQuads[3].rhw = v16;
+  pBillboardRenderListD3D[v7].pQuads[3].texcoord.x = 1.0;
+  pBillboardRenderListD3D[v7].pQuads[3].texcoord.y = 0.0;
+  //v23 = pSprite->pTexture;
+  pBillboardRenderListD3D[v7].uNumVertices = 4;
+  pBillboardRenderListD3D[v7].z_order = pSoftBillboard->screen_space_z;
+  pBillboardRenderListD3D[v7].texture = pSprite->texture;
 }
 
 void Render::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle)
@@ -3955,41 +2763,36 @@ void Render::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *te
   }
 }
 
-void Render::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard)
-{
-  unsigned int v8; // esi@2
-  double v14; // st6@14
-  double v15; // st5@14
-  float v29; // [sp+28h] [bp-8h]@5
-  float v30; // [sp+2Ch] [bp-4h]@5
-
-  if (!uNumD3DSceneBegins)
+void Render::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard) {
+  if (!uNumD3DSceneBegins) {
     return;
+  }
 
   Sprite *pSprite = pBillboard->hwsprite;
   int dimming_level = pBillboard->dimming_level;
 
-  v8 = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
+  unsigned int v8 = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
 
-  v30 = a2->screenspace_projection_factor_x.GetFloat();
-  v29 = a2->screenspace_projection_factor_y.GetFloat();
+  float v30 = a2->screenspace_projection_factor_x.GetFloat();
+  float v29 = a2->screenspace_projection_factor_y.GetFloat();
 
   unsigned int diffuse = ::GetActorTintColor(dimming_level, 0, a2->screen_space_z, 0, pBillboard);
-  if (a2->sTintColor & 0x00FFFFFF && bTinting)
-  {
+  if (a2->sTintColor & 0x00FFFFFF && bTinting) {
     diffuse = BlendColors(a2->sTintColor, diffuse);
     if (a2->sTintColor & 0xFF000000)
       diffuse = 0x007F7F7F & ((unsigned int)diffuse >> 1);
   }
 
   unsigned int specular = 0;
-  if (bUsingSpecular)
+  if (bUsingSpecular) {
     specular = sub_47C3D7_get_fog_specular(0, 0, a2->screen_space_z);
+  }
 
-  v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-  v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
-  if (a2->uFlags & 4)
+  double v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
+  double v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
+  if (a2->uFlags & 4) {
     v14 *= -1.0;
+  }
   pBillboardRenderListD3D[v8].pQuads[0].diffuse = diffuse;
   pBillboardRenderListD3D[v8].pQuads[0].pos.x = (double)a2->screen_space_x - v14 * v30;
   pBillboardRenderListD3D[v8].pQuads[0].pos.y = (double)a2->screen_space_y - v15 * v29;
@@ -3999,44 +2802,44 @@ void Render::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboa
   pBillboardRenderListD3D[v8].pQuads[0].texcoord.x = 0.0;
   pBillboardRenderListD3D[v8].pQuads[0].texcoord.y = 0.0;
 
-    v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
-    if ( a2->uFlags & 4 )
-      v14 = v14 * -1.0;
-    pBillboardRenderListD3D[v8].pQuads[1].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[1].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.x = (double)a2->screen_space_x - v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[1].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[1].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v8].pQuads[1].texcoord.y = 1.0;
+  v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
+  v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
+  if (a2->uFlags & 4)
+    v14 = v14 * -1.0;
+  pBillboardRenderListD3D[v8].pQuads[1].specular = specular;
+  pBillboardRenderListD3D[v8].pQuads[1].diffuse = diffuse;
+  pBillboardRenderListD3D[v8].pQuads[1].pos.x = (double)a2->screen_space_x - v14 * v30;
+  pBillboardRenderListD3D[v8].pQuads[1].pos.y = (double)a2->screen_space_y - v15 * v29;
+  pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
+  pBillboardRenderListD3D[v8].pQuads[1].rhw = 1.0 / a2->screen_space_z;
+  pBillboardRenderListD3D[v8].pQuads[1].texcoord.x = 0.0;
+  pBillboardRenderListD3D[v8].pQuads[1].texcoord.y = 1.0;
 
-    v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
-    if ( a2->uFlags & 4 )
-      v14 *= -1.0;
-    pBillboardRenderListD3D[v8].pQuads[2].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[2].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.x = (double)a2->screen_space_x + v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[2].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[2].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v8].pQuads[2].texcoord.y = 1.0;
+  v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
+  v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
+  if (a2->uFlags & 4)
+    v14 *= -1.0;
+  pBillboardRenderListD3D[v8].pQuads[2].diffuse = diffuse;
+  pBillboardRenderListD3D[v8].pQuads[2].specular = specular;
+  pBillboardRenderListD3D[v8].pQuads[2].pos.x = (double)a2->screen_space_x + v14 * v30;
+  pBillboardRenderListD3D[v8].pQuads[2].pos.y = (double)a2->screen_space_y - v15 * v29;
+  pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
+  pBillboardRenderListD3D[v8].pQuads[2].rhw = 1.0 / a2->screen_space_z;
+  pBillboardRenderListD3D[v8].pQuads[2].texcoord.x = 1.0;
+  pBillboardRenderListD3D[v8].pQuads[2].texcoord.y = 1.0;
 
-    v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
-    if ( a2->uFlags & 4 )
-      v14 *= -1.0;
-    pBillboardRenderListD3D[v8].pQuads[3].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[3].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.x = (double)a2->screen_space_x + v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[3].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[3].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v8].pQuads[3].texcoord.y = 0.0;
+  v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
+  v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
+  if (a2->uFlags & 4)
+    v14 *= -1.0;
+  pBillboardRenderListD3D[v8].pQuads[3].diffuse = diffuse;
+  pBillboardRenderListD3D[v8].pQuads[3].specular = specular;
+  pBillboardRenderListD3D[v8].pQuads[3].pos.x = (double)a2->screen_space_x + v14 * v30;
+  pBillboardRenderListD3D[v8].pQuads[3].pos.y = (double)a2->screen_space_y - v15 * v29;
+  pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
+  pBillboardRenderListD3D[v8].pQuads[3].rhw = 1.0 / a2->screen_space_z;
+  pBillboardRenderListD3D[v8].pQuads[3].texcoord.x = 1.0;
+  pBillboardRenderListD3D[v8].pQuads[3].texcoord.y = 0.0;
 
   pBillboardRenderListD3D[v8].uNumVertices = 4;
   pBillboardRenderListD3D[v8].texture = pSprite->texture;
@@ -4052,15 +2855,7 @@ void Render::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboa
     pBillboardRenderListD3D[v8].opacity = RenderBillboardD3D::Transparent;
 }
 
-void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture)
-{
-  int absXDifference; // eax@1
-  int absYDifference; // eax@1
-  unsigned int smallerabsdiff; // ebx@1
-  unsigned int largerabsdiff;
-  double v16; // st7@7
-  double v17; // st7@7
-  double v18; // st6@7
+void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture) {
   double v20; // st4@8
   double v21; // st4@10
   double v22; // st4@10
@@ -4068,30 +2863,23 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float ds
   double v25; // st4@11
   double v26; // st4@13
   double v28; // st4@13
-  RenderVertexD3D3 v29[4]; // [sp+0h] [bp-94h]@7
-  int xDifference; // [sp+88h] [bp-Ch]@1
-  signed int v32; // [sp+8Ch] [bp-8h]@1
-  int yDifference; // [sp+90h] [bp-4h]@1
 
-  auto textured3d = (TextureD3D *)texture;
+  TextureD3D *textured3d = (TextureD3D*)texture;
 
-  xDifference = bankersRounding(dstX - srcX);
-  yDifference = bankersRounding(dstY - srcY);
-  absYDifference = abs(yDifference);
-  absXDifference = abs(xDifference);
-  smallerabsdiff = min(absXDifference, absYDifference);
-  largerabsdiff = max(absXDifference, absYDifference);
-  v32 = (11 * smallerabsdiff >> 5) + largerabsdiff;
-  v16 = 1.0 / (double)v32;
-  v17 = (double)yDifference * v16 * a4;
-  v18 = (double)xDifference * v16 * a4;
-  if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
-  {
+  int xDifference = bankersRounding(dstX - srcX);
+  int yDifference = bankersRounding(dstY - srcY);
+  int absYDifference = abs(yDifference);
+  int absXDifference = abs(xDifference);
+  unsigned int smallerabsdiff = min(absXDifference, absYDifference);
+  unsigned int largerabsdiff = max(absXDifference, absYDifference);
+  int v32 = (11 * smallerabsdiff >> 5) + largerabsdiff;
+  double v16 = 1.0 / (double)v32;
+  double v17 = (double)yDifference * v16 * a4;
+  double v18 = (double)xDifference * v16 * a4;
+  if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
     v20 = a3 * 1000.0 / pIndoorCameraD3D->GetFarClip();
     v25 = a7 * 1000.0 / pIndoorCameraD3D->GetFarClip();
-  }
-  else
-  {
+  } else {
     v20 = a3 * 0.061758894;
     v25 = a7 * 0.061758894;
   }
@@ -4100,6 +2888,8 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float ds
   v23 = (double)xDifference * v16 * a8;
   v26 = 1.0 - 1.0 / v25;
   v28 = 1.0 / a7;
+
+  RenderVertexD3D3 v29[4];
   v29[0].pos.x = srcX + v17;
   v29[0].pos.y = srcY - v18;
   v29[0].pos.z = 1.0 - 1.0 / v20;
@@ -4135,6 +2925,7 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float ds
   v29[3].specular = 0;
   v29[3].texcoord.x = 0.0;
   v29[3].texcoord.y = 0.0;
+
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
@@ -4152,24 +2943,19 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4, float ds
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW));
 }
 
-void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1, int diffuse)
-{
-  unsigned int v5; // eax@7
-  double v10; // st6@9
-  double v11; // st6@10
-  int v12; // ebx@13
-
-  if (a1->uNumVertices < 3)
+void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1, int diffuse) {
+  if (a1->uNumVertices < 3) {
     return;
-
-  float depth = 1000000.0;
-  for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i)
-  {
-    if (a1->field_104[i].z < depth)
-      depth = a1->field_104[i * 4].z;
   }
 
-  v5 = Billboard_ProbablyAddToListAndSortByZOrder(depth);
+  float depth = 1000000.0;
+  for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
+    if (a1->field_104[i].z < depth) {
+      depth = a1->field_104[i * 4].z;
+    }
+  }
+
+  unsigned int v5 = Billboard_ProbablyAddToListAndSortByZOrder(depth);
   pBillboardRenderListD3D[v5].field_90 = 0;
   pBillboardRenderListD3D[v5].sParentBillboardID = -1;
   pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
@@ -4177,23 +2963,25 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1, int d
   pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
   pBillboardRenderListD3D[v5].z_order = depth;
 
-  for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i)
-  {
+  for (unsigned int i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
     pBillboardRenderListD3D[v5].pQuads[i].pos.x = a1->field_104[i].x;
     pBillboardRenderListD3D[v5].pQuads[i].pos.y = a1->field_104[i].y;
 
-    v10 = a1->field_104[i].z;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-      v11 = v10 * 0.061758894;
-    else
-      v11 = v10 * 1000.0 / pIndoorCameraD3D->GetFarClip();
-    pBillboardRenderListD3D[v5].pQuads[i].pos.z = 1.0 - 1.0 / v11;
+    double v10 = a1->field_104[i].z;
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+      v10 *= 1000.f / 16192.f;
+    } else {
+      v10 *= 1000.f / pIndoorCameraD3D->GetFarClip();
+    }
+    pBillboardRenderListD3D[v5].pQuads[i].pos.z = 1.0 - 1.0 / v10;
     pBillboardRenderListD3D[v5].pQuads[i].rhw = 1.0 / a1->field_104[i].z;
 
-    if (diffuse & 0xFF000000)
+    int v12;
+    if (diffuse & 0xFF000000) {
       v12 = a1->field_104[i].diffuse;
-    else
+    } else {
       v12 = diffuse;
+    }
     pBillboardRenderListD3D[v5].pQuads[i].diffuse = v12;
     pBillboardRenderListD3D[v5].pQuads[i].specular = 0;
 
@@ -4213,7 +3001,7 @@ HWLTexture *Render::LoadHwlSprite(const char *name) {
 bool Render::MoveTextureToDevice(Texture *texture) {
   auto t = (TextureD3D *)texture;
   if (t) {
-    auto pixels = (unsigned __int16 *)t->GetPixels(IMAGE_FORMAT_A1R5G5B5);
+    auto pixels = (uint16_t*)t->GetPixels(IMAGE_FORMAT_A1R5G5B5);
 
     IDirectDrawSurface4 *dds;
     IDirect3DTexture2 *d3dt;
@@ -4257,14 +3045,8 @@ void Render::BeginScene() {
 void Render::EndScene() {
 }
 
-void Render::ScreenFade(unsigned int color, float t)
-{
-  unsigned int v3; // esi@1
-  unsigned int v7; // eax@6
-  RenderVertexD3D3 v36[4]; // [sp+Ch] [bp-94h]@6
-  int v40; // [sp+9Ch] [bp-4h]@6
-
-  v3 = 0;
+void Render::ScreenFade(unsigned int color, float t) {
+  unsigned int v3 = 0;
 
   //{
   if (t > 1.0f)
@@ -4272,10 +3054,11 @@ void Render::ScreenFade(unsigned int color, float t)
   else if (t < 0.0f)
     t = 0.0f;
 
-  v40 = (char)floorf(t * 255.0f + 0.5f);
+  int v40 = (char)floorf(t * 255.0f + 0.5f);
 
-  v7 = color | (v40 << 24);
+  unsigned int v7 = color | (v40 << 24);
 
+  RenderVertexD3D3 v36[4];
   v36[0].specular = 0;
   v36[0].pos.x = pViewport->uViewportTL_X;
   v36[0].pos.y = (double)pViewport->uViewportTL_Y;
@@ -4926,109 +3709,100 @@ bool RenderHWLContainer::Load(const char *pFilename) {
 }
 
 void Render::DoRenderBillboards_D3D() {
-    ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
+  ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
 
-    for (int i = uNumBillboardsToDraw - 1; i >= 0; --i)
-    {
-        if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend)
-            SetBillboardBlendOptions(pBillboardRenderListD3D[i].opacity);
-
-        pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)pBillboardRenderListD3D[i].texture)->GetDirect3DTexture());
-        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-            pBillboardRenderListD3D[i].pQuads, pBillboardRenderListD3D[i].uNumVertices,
-            D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS));
+  for (int i = uNumBillboardsToDraw - 1; i >= 0; --i) {
+    if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend) {
+      SetBillboardBlendOptions(pBillboardRenderListD3D[i].opacity);
     }
 
-    if (bFogEnabled)
-    {
+    pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)pBillboardRenderListD3D[i].texture)->GetDirect3DTexture());
+    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+      D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+      pBillboardRenderListD3D[i].pQuads, pBillboardRenderListD3D[i].uNumVertices,
+      D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS));
+  }
+
+  if (bFogEnabled) {
+    bFogEnabled = false;
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0));
+  }
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
+}
+
+void Render::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
+  switch (a1) {
+    case RenderBillboardD3D::Transparent: {
+      if (bFogEnabled) {
         bFogEnabled = false;
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF));
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0));
+      }
+
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
+
+      break;
     }
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
+
+    case RenderBillboardD3D::Opaque_1:
+    case RenderBillboardD3D::Opaque_2:
+    case RenderBillboardD3D::Opaque_3: {
+      if (bUsingSpecular) {
+        if (!bFogEnabled) {
+          bFogEnabled = true;
+          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
+        }
+      }
+
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
+
+      break;
+    }
+
+    default: {
+      logger->Warning(L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
+      assert(false);
+      break;
+    }
+  }
 }
 
-void Render::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
-    switch (a1)
-    {
-        case RenderBillboardD3D::Transparent:
-        {
-            if (bFogEnabled)
-            {
-                bFogEnabled = false;
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF));
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0));
-            }
-
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
-        }
-        break;
-
-        case RenderBillboardD3D::Opaque_1:
-        case RenderBillboardD3D::Opaque_2:
-        case RenderBillboardD3D::Opaque_3:
-        {
-            if (bUsingSpecular)
-            {
-                if (!bFogEnabled)
-                {
-                    bFogEnabled = true;
-                    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
-                }
-            }
-
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
-        }
-        break;
-
-        default:
-            logger->Warning(L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
-            assert(false);
-            break;
-    }
-}
-
-int ODM_NearClip(unsigned int num_vertices)
-{
+int ODM_NearClip(unsigned int num_vertices) {
   bool current_vertices_flag; // edi@1
   bool next_vertices_flag; // [sp+Ch] [bp-24h]@6
   double t; // st6@10
-  bool bFound;
-
-  bFound = false;
+  bool bFound = false;
 
   if (!num_vertices)
     return 0;
-  for (uint i = 0; i < num_vertices; ++i)// есть ли пограничные вершины
-  {
-    if ( VertexRenderList[i].vWorldViewPosition.x > 8.0 )
-    {
+  for (uint i = 0; i < num_vertices; ++i) {  // есть ли пограничные вершины
+    if (VertexRenderList[i].vWorldViewPosition.x > 8.0) {
       bFound = true;
       break;
     }
   }
-  if ( !bFound )
+  if (!bFound)
     return 0;
 
   memcpy(&VertexRenderList[num_vertices], &VertexRenderList[0], sizeof(VertexRenderList[0]));
   next_vertices_flag = false;
   current_vertices_flag = false;
-  if ( VertexRenderList[0].vWorldViewPosition.x <= 8.0 )
+  if (VertexRenderList[0].vWorldViewPosition.x <= 8.0)
     current_vertices_flag = true;
   //check for near clip plane(проверка по ближней границе)
   //   
@@ -5045,9 +3819,9 @@ int ODM_NearClip(unsigned int num_vertices)
   for (uint i = 0; i < num_vertices; ++i)
   {
     next_vertices_flag = VertexRenderList[i + 1].vWorldViewPosition.x <= 8.0;//
-    if ( current_vertices_flag ^ next_vertices_flag )
+    if (current_vertices_flag ^ next_vertices_flag)
     {
-      if ( next_vertices_flag )//следующая вершина за ближней границей
+      if (next_vertices_flag)//следующая вершина за ближней границей
       {
         //t = near_clip - v0.x / v1.x - v0.x    (формула получения точки пересечения отрезка с плоскостью)
         t = (8.0 - VertexRenderList[i].vWorldViewPosition.x) / (VertexRenderList[i + 1].vWorldViewPosition.x - VertexRenderList[i].vWorldViewPosition.x);
@@ -5071,7 +3845,7 @@ int ODM_NearClip(unsigned int num_vertices)
       //array_507D30[out_num_vertices]._rhw = 0x3E000000u;
       ++out_num_vertices;
     }
-    if ( !next_vertices_flag )
+    if (!next_vertices_flag)
     {
       memcpy(&array_507D30[out_num_vertices], &VertexRenderList[i + 1], sizeof(VertexRenderList[i + 1]));
       out_num_vertices++;
@@ -5163,180 +3937,163 @@ int ODM_FarClip(unsigned int uNumVertices) {
 }
 
 void Render::DrawBuildingsD3D() {
-    int v27; // eax@57
-  //  int vertex_id; // eax@58
-//    unsigned int v34; // eax@80
-    //int v40; // [sp-4h] [bp-5Ch]@2
-    int v49; // [sp+2Ch] [bp-2Ch]@10
-    int v50; // [sp+30h] [bp-28h]@34
-    int v51; // [sp+34h] [bp-24h]@35
-    int v52; // [sp+38h] [bp-20h]@36
-    int v53; // [sp+3Ch] [bp-1Ch]@8
+  int v27; // eax@57
+  int v49; // [sp+2Ch] [bp-2Ch]@10
+  int v50; // [sp+30h] [bp-28h]@34
+  int v51; // [sp+34h] [bp-24h]@35
+  int v52; // [sp+38h] [bp-20h]@36
+  int v53; // [sp+3Ch] [bp-1Ch]@8
 
-    for (uint model_id = 0; model_id < pOutdoor->uNumBModels; model_id++)
-    {
-        int reachable;
-        if (IsBModelVisible(model_id, &reachable))
-        {
-            pOutdoor->pBModels[model_id].field_40 |= 1;
-            if (pOutdoor->pBModels[model_id].uNumFaces > 0)
-            {
-                for (int face_id = 0; face_id < pOutdoor->pBModels[model_id].uNumFaces; face_id++)
-                {
-                    if (!pOutdoor->pBModels[model_id].pFaces[face_id].Invisible())
-                    {
-                        v53 = 0;
-                        auto poly = &array_77EC08[pODMRenderParams->uNumPolygons];
-
-                        poly->flags = 0;
-                        poly->field_32 = 0;
-                        poly->texture = pOutdoor->pBModels[model_id].pFaces[face_id].GetTexture();
-
-                        if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLUID)
-                            poly->flags |= 2;
-                        if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_INDOOR_SKY)
-                            poly->flags |= 0x400;
-
-                        if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_DIAGONAL)
-                            poly->flags |= 0x400;
-                        else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_VERTICAL)
-                            poly->flags |= 0x800;
-
-                        if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_HORIZONTAL)
-                            poly->flags |= 0x2000;
-                        else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_DONT_CACHE_TEXTURE)
-                            poly->flags |= 0x1000;
-
-                        poly->sTextureDeltaU = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaU;
-                        poly->sTextureDeltaV = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaV;
-
-                        unsigned int flow_anim_timer = GetTickCount() >> 4;
-                        unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
-                        unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
-
-                        if (pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z && abs(pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z) >= 59082)
-                        {
-                            if (poly->flags & 0x400)
-                                poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
-                            if (poly->flags & 0x800)
-                                poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
-                        }
-                        else
-                        {
-                            if (poly->flags & 0x400)
-                                poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
-                            if (poly->flags & 0x800)
-                                poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
-                        }
-
-                        if (poly->flags & 0x1000)
-                            poly->sTextureDeltaU -= flow_anim_timer & flow_u_mod;
-                        else if (poly->flags & 0x2000)
-                            poly->sTextureDeltaU += flow_anim_timer & flow_u_mod;
-
-                        v50 = 0;
-                        v49 = 0;
-
-                        for (uint vertex_id = 1; vertex_id <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; vertex_id++)
-                        {
-                            array_73D150[vertex_id - 1].vWorldPosition.x = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].x;
-                            array_73D150[vertex_id - 1].vWorldPosition.y = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].y;
-                            array_73D150[vertex_id - 1].vWorldPosition.z = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].z;
-                            array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureUIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetWidth());
-                            array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureVIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetHeight());
-                        }
-                        for (uint i = 1; i <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; i++)
-                        {
-                            if (pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[0]].z == array_73D150[i - 1].vWorldPosition.z)
-                                ++v53;
-                            pIndoorCameraD3D->ViewTransform(&array_73D150[i - 1], 1);
-                            if (array_73D150[i - 1].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() || array_73D150[i - 1].vWorldViewPosition.x > pIndoorCameraD3D->GetFarClip())
-                            {
-                                if (array_73D150[i - 1].vWorldViewPosition.x >= pIndoorCameraD3D->GetNearClip())
-                                    v49 = 1;
-                                else
-                                    v50 = 1;
-                            }
-                            else
-                                pIndoorCameraD3D->Project(&array_73D150[i - 1], 1, 0);
-                        }
-
-                        if (v53 == pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices)
-                            poly->field_32 |= 1;
-                        poly->pODMFace = &pOutdoor->pBModels[model_id].pFaces[face_id];
-                        poly->uNumVertices = pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices;
-                        poly->field_59 = 5;
-                        v51 = fixpoint_mul(-pOutdoor->vSunlight.x, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.x);
-                        v53 = fixpoint_mul(-pOutdoor->vSunlight.y, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.y);
-                        v52 = fixpoint_mul(-pOutdoor->vSunlight.z, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z);
-                        poly->dimming_level = 20 - fixpoint_mul(20, v51 + v53 + v52);
-                        if (poly->dimming_level < 0)
-                            poly->dimming_level = 0;
-                        if (poly->dimming_level > 31)
-                            poly->dimming_level = 31;
-                        if (pODMRenderParams->uNumPolygons >= 1999 + 5000)
-                            return;
-                        if (ODMFace::IsBackfaceNotCulled(array_73D150, poly))
-                        {
-                            pOutdoor->pBModels[model_id].pFaces[face_id].bVisible = 1;
-                            poly->uBModelFaceID = face_id;
-                            poly->uBModelID = model_id;
-                            v27 = 8 * (face_id | (model_id << 6));
-                            v27 |= 6;
-                            poly->field_50 = v27;
-                            for (int vertex_id = 0; vertex_id < pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; ++vertex_id)
-                            {
-                                memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
-                                VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
-                            }
-                            static stru154 static_RenderBuildingsD3D_stru_73C834;
-
-                            pEngine->pLightmapBuilder->ApplyLights_OutdoorFace(&pOutdoor->pBModels[model_id].pFaces[face_id]);
-                            pDecalBuilder->ApplyDecals_OutdoorFace(&pOutdoor->pBModels[model_id].pFaces[face_id]);
-                            pEngine->pLightmapBuilder->StationaryLightsCount = 0;
-                            int v31 = 0;
-                            if (Lights.uNumLightsApplied > 0 || pDecalBuilder->uNumDecals > 0)
-                            {
-                                v31 = v50 ? 3 : v49 != 0 ? 5 : 0;
-                                static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&pOutdoor->pBModels[model_id].pFaces[face_id], &pOutdoor->pBModels[model_id].pVertices);
-                                if (pDecalBuilder->uNumDecals > 0)
-                                {
-                                    pDecalBuilder->ApplyDecals(31 - poly->dimming_level, 2, &static_RenderBuildingsD3D_stru_73C834,
-                                        pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices, VertexRenderList, 0, (char)v31, -1);
-                                }
-                            }
-                            if (Lights.uNumLightsApplied > 0)
-                                pEngine->pLightmapBuilder->ApplyLights(&Lights, &static_RenderBuildingsD3D_stru_73C834, poly->uNumVertices, VertexRenderList, 0, (char)v31);
-
-                            if (v50)
-                            {
-                                poly->uNumVertices = ODM_NearClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
-                                ODM_Project(poly->uNumVertices);
-                            }
-                            if (v49)
-                            {
-                                poly->uNumVertices = ODM_FarClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
-                                ODM_Project(poly->uNumVertices);
-                            }
-
-                            if (poly->uNumVertices)
-                            {
-                                if (poly->IsWater())
-                                {
-                                    if (poly->IsWaterAnimDisabled())
-                                        poly->texture = render->hd_water_tile_anim[0];
-                                    else
-                                        poly->texture = render->hd_water_tile_anim[render->hd_water_current_frame];
-                                }
-
-                                render->DrawPolygon(poly);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+  for (unsigned int model_id = 0; model_id < pOutdoor->uNumBModels; model_id++) {
+    int reachable;
+    if (!IsBModelVisible(model_id, &reachable)) {
+      continue;
     }
+    pOutdoor->pBModels[model_id].field_40 |= 1;
+    if (pOutdoor->pBModels[model_id].uNumFaces <= 0) {
+      continue;
+    }
+
+    for (int face_id = 0; face_id < pOutdoor->pBModels[model_id].uNumFaces; face_id++) {
+      if (pOutdoor->pBModels[model_id].pFaces[face_id].Invisible()) {
+        continue;
+      }
+
+      v53 = 0;
+      auto poly = &array_77EC08[pODMRenderParams->uNumPolygons];
+
+      poly->flags = 0;
+      poly->field_32 = 0;
+      poly->texture = pOutdoor->pBModels[model_id].pFaces[face_id].GetTexture();
+
+      if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLUID)
+        poly->flags |= 2;
+      if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_INDOOR_SKY)
+        poly->flags |= 0x400;
+
+      if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_DIAGONAL)
+        poly->flags |= 0x400;
+      else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_VERTICAL)
+        poly->flags |= 0x800;
+
+      if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_HORIZONTAL)
+        poly->flags |= 0x2000;
+      else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_DONT_CACHE_TEXTURE)
+        poly->flags |= 0x1000;
+
+      poly->sTextureDeltaU = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaU;
+      poly->sTextureDeltaV = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaV;
+
+      unsigned int flow_anim_timer = GetTickCount() >> 4;
+      unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
+      unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
+
+      if (pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z && abs(pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z) >= 59082) {
+        if (poly->flags & 0x400)
+          poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
+        if (poly->flags & 0x800)
+          poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
+      } else {
+        if (poly->flags & 0x400)
+          poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
+        if (poly->flags & 0x800)
+          poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
+      }
+
+      if (poly->flags & 0x1000)
+        poly->sTextureDeltaU -= flow_anim_timer & flow_u_mod;
+      else if (poly->flags & 0x2000)
+        poly->sTextureDeltaU += flow_anim_timer & flow_u_mod;
+
+      v50 = 0;
+      v49 = 0;
+
+      for (uint vertex_id = 1; vertex_id <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; vertex_id++) {
+        array_73D150[vertex_id - 1].vWorldPosition.x = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].x;
+        array_73D150[vertex_id - 1].vWorldPosition.y = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].y;
+        array_73D150[vertex_id - 1].vWorldPosition.z = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].z;
+        array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureUIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetWidth());
+        array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureVIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetHeight());
+      }
+      for (uint i = 1; i <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; i++) {
+        if (pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[0]].z == array_73D150[i - 1].vWorldPosition.z)
+          ++v53;
+        pIndoorCameraD3D->ViewTransform(&array_73D150[i - 1], 1);
+        if (array_73D150[i - 1].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() || array_73D150[i - 1].vWorldViewPosition.x > pIndoorCameraD3D->GetFarClip()) {
+          if (array_73D150[i - 1].vWorldViewPosition.x >= pIndoorCameraD3D->GetNearClip())
+            v49 = 1;
+          else
+            v50 = 1;
+        }
+        else
+          pIndoorCameraD3D->Project(&array_73D150[i - 1], 1, 0);
+      }
+
+      if (v53 == pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices)
+        poly->field_32 |= 1;
+      poly->pODMFace = &pOutdoor->pBModels[model_id].pFaces[face_id];
+      poly->uNumVertices = pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices;
+      poly->field_59 = 5;
+      v51 = fixpoint_mul(-pOutdoor->vSunlight.x, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.x);
+      v53 = fixpoint_mul(-pOutdoor->vSunlight.y, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.y);
+      v52 = fixpoint_mul(-pOutdoor->vSunlight.z, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z);
+      poly->dimming_level = 20 - fixpoint_mul(20, v51 + v53 + v52);
+      if (poly->dimming_level < 0)
+        poly->dimming_level = 0;
+      if (poly->dimming_level > 31)
+        poly->dimming_level = 31;
+      if (pODMRenderParams->uNumPolygons >= 1999 + 5000)
+        return;
+      if (ODMFace::IsBackfaceNotCulled(array_73D150, poly)) {
+        pOutdoor->pBModels[model_id].pFaces[face_id].bVisible = 1;
+        poly->uBModelFaceID = face_id;
+        poly->uBModelID = model_id;
+        v27 = 8 * (face_id | (model_id << 6));
+        v27 |= 6;
+        poly->field_50 = v27;
+        for (int vertex_id = 0; vertex_id < pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; ++vertex_id) {
+          memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
+          VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
+        }
+        static stru154 static_RenderBuildingsD3D_stru_73C834;
+
+        pEngine->pLightmapBuilder->ApplyLights_OutdoorFace(&pOutdoor->pBModels[model_id].pFaces[face_id]);
+        pDecalBuilder->ApplyDecals_OutdoorFace(&pOutdoor->pBModels[model_id].pFaces[face_id]);
+        pEngine->pLightmapBuilder->StationaryLightsCount = 0;
+        int v31 = 0;
+        if (Lights.uNumLightsApplied > 0 || pDecalBuilder->uNumDecals > 0) {
+          v31 = v50 ? 3 : v49 != 0 ? 5 : 0;
+          static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&pOutdoor->pBModels[model_id].pFaces[face_id], &pOutdoor->pBModels[model_id].pVertices);
+          if (pDecalBuilder->uNumDecals > 0) {
+            pDecalBuilder->ApplyDecals(31 - poly->dimming_level, 2, &static_RenderBuildingsD3D_stru_73C834,
+              pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices, VertexRenderList, 0, (char)v31, -1);
+          }
+        }
+        if (Lights.uNumLightsApplied > 0)
+          pEngine->pLightmapBuilder->ApplyLights(&Lights, &static_RenderBuildingsD3D_stru_73C834, poly->uNumVertices, VertexRenderList, 0, (char)v31);
+
+        if (v50) {
+          poly->uNumVertices = ODM_NearClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
+          ODM_Project(poly->uNumVertices);
+        }
+        if (v49) {
+          poly->uNumVertices = ODM_FarClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
+          ODM_Project(poly->uNumVertices);
+        }
+
+        if (poly->uNumVertices) {
+          if (poly->IsWater()) {
+            if (poly->IsWaterAnimDisabled())
+              poly->texture = render->hd_water_tile_anim[0];
+            else
+              poly->texture = render->hd_water_tile_anim[render->hd_water_current_frame];
+          }
+
+          render->DrawPolygon(poly);
+        }
+      }
+    }
+  }
 }
 
 void Render::DrawOutdoorSkyD3D() {
@@ -5493,59 +4250,50 @@ bool PauseGameDrawing() {
 }
 
 unsigned short *Render::MakeScreenshot(signed int width, signed int height) {
-    unsigned __int16 *for_pixels; // ebx@1
-    DDSURFACEDESC2 Dst; // [sp+4h] [bp-A0h]@6
-    unsigned __int16 *pPixels; // [sp+80h] [bp-24h]@1
-    float interval_x; // [sp+84h] [bp-20h]@1
-    float interval_y; // [sp+8Ch] [bp-18h]@1
+  uint16_t *for_pixels; // ebx@1
+  DDSURFACEDESC2 Dst; // [sp+4h] [bp-A0h]@6
 
-    interval_x = game_viewport_width / (double)width;
-    interval_y = game_viewport_height / (double)height;
+  float interval_x = game_viewport_width / (double)width;
+  float interval_y = game_viewport_height / (double)height;
 
-    pPixels = (unsigned __int16 *)malloc(2 * height * width);
-    memset(pPixels, 0, 2 * height * width);
+  uint16_t *pPixels = (uint16_t*)malloc(2 * height * width);
+  memset(pPixels, 0, 2 * height * width);
 
-    for_pixels = pPixels;
+  for_pixels = pPixels;
 
-    BeginSceneD3D();
+  BeginSceneD3D();
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        pIndoor->Draw();
-    else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        pOutdoor->Draw();
-    DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
-    memset(&Dst, 0, sizeof(Dst));
-    Dst.dwSize = sizeof(Dst);
+  if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+    pIndoor->Draw();
+  } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+    pOutdoor->Draw();
+  }
+  DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
+  memset(&Dst, 0, sizeof(Dst));
+  Dst.dwSize = sizeof(Dst);
 
-    if (LockSurface_DDraw4(pBackBuffer4, &Dst, DDLOCK_WAIT))
-    {
-        if (uCurrentlyLoadedLevelType == LEVEL_null)
-            memset(&for_pixels, 0, sizeof(for_pixels));
-        else
-        {
-            for (uint y = 0; y < (unsigned int)height; ++y)
-            {
-                for (uint x = 0; x < (unsigned int)width; ++x)
-                {
-                    if (Dst.ddpfPixelFormat.dwRGBBitCount == 32)
-                    {
-                        unsigned __int32 *p = (unsigned __int32 *)Dst.lpSurface + (int)(x * interval_x + 8.0) + (int)(y * interval_y + 8.0) * (Dst.lPitch >> 2);
-                        *for_pixels = Color16((*p >> 16) & 255, (*p >> 8) & 255, *p & 255);
-                    }
-                    else if (Dst.ddpfPixelFormat.dwRGBBitCount == 16)
-                    {
-                        unsigned __int16 * p = (unsigned __int16 *)Dst.lpSurface + (int)(x * interval_x + 8.0) + y * Dst.lPitch;
-                        *for_pixels = *p;
-                    }
-                    else
-                        assert(false);
-                    ++for_pixels;
-                }
-            }
+  if (LockSurface_DDraw4(pBackBuffer4, &Dst, DDLOCK_WAIT)) {
+    if (uCurrentlyLoadedLevelType == LEVEL_null) {
+      memset(&for_pixels, 0, sizeof(for_pixels));
+    } else {
+      for (uint y = 0; y < (unsigned int)height; ++y) {
+        for (uint x = 0; x < (unsigned int)width; ++x) {
+          if (Dst.ddpfPixelFormat.dwRGBBitCount == 32) {
+            unsigned __int32 *p = (unsigned __int32 *)Dst.lpSurface + (int)(x * interval_x + 8.0) + (int)(y * interval_y + 8.0) * (Dst.lPitch >> 2);
+            *for_pixels = Color16((*p >> 16) & 255, (*p >> 8) & 255, *p & 255);
+          } else if (Dst.ddpfPixelFormat.dwRGBBitCount == 16) {
+            unsigned __int16 * p = (unsigned __int16 *)Dst.lpSurface + (int)(x * interval_x + 8.0) + y * Dst.lPitch;
+            *for_pixels = *p;
+          }
+          else
+            assert(false);
+          ++for_pixels;
         }
-        ErrD3D(pBackBuffer4->Unlock(NULL));
+      }
     }
-    return pPixels;
+    ErrD3D(pBackBuffer4->Unlock(NULL));
+  }
+  return pPixels;
 }
 
 void Render::SaveScreenshot(const String &filename, unsigned int width, unsigned int height) {
@@ -5665,8 +4413,7 @@ void Render::EndLightmaps2()
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
 }
 
-void Render::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff)
-{
+void Render::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed int sDiffuseBegin, const RenderVertexD3D3 *pLineEnd, signed int sDiffuseEnd, float z_stuff) {
   RenderVertexD3D3 vertices[2]; // [sp+8h] [bp-40h]@2
 
   memcpy(&vertices[0], pLineBegin, sizeof(vertices[0]));
@@ -5682,8 +4429,7 @@ void Render::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin, signed i
   ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_LINELIST, 452, vertices, 2, D3DDP_DONOTLIGHT));
 }
 
-void Render::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices)
-{
+void Render::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
   ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
   ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_LINELIST,
               D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
@@ -5692,8 +4438,7 @@ void Render::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertic
               D3DDP_DONOTLIGHT));
 }
 
-void Render::DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices)
-{
+void Render::DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
   //ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false));
   //ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
@@ -5714,8 +4459,7 @@ void Render::DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int 
   //ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
 }
 
-void Render::BeginDecals()
-{
+void Render::BeginDecals() {
     // code chunk from 0049C304
     if (bUsingSpecular)
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
@@ -5733,8 +4477,7 @@ void Render::BeginDecals()
     ErrD3D(pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)hwsplat04)->GetDirect3DTexture()));
 }
 
-void Render::EndDecals()
-{
+void Render::EndDecals() {
   // code chunk from 0049C304
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW));
   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
@@ -5746,13 +4489,11 @@ void Render::EndDecals()
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
 }
 
-void Render::DrawDecal(Decal *pDecal, float z_bias)
-{
-  signed int dwFlags; // [sp+Ch] [bp-864h]@15
+void Render::DrawDecal(Decal *pDecal, float z_bias) {
+  int dwFlags; // [sp+Ch] [bp-864h]@15
   RenderVertexD3D3 pVerticesD3D[64]; // [sp+20h] [bp-850h]@6
 
-  if (pDecal->uNumVertices < 3)
-  {
+  if (pDecal->uNumVertices < 3) {
     logger->Warning(L"Decal has < 3 vertices");
     return;
   }
@@ -5763,8 +4504,7 @@ void Render::DrawDecal(Decal *pDecal, float z_bias)
   else
     color_mult = pDecal->field_C18->_43B570_get_color_mult_by_time();
 
-  for (uint i = 0; i < (unsigned int)pDecal->uNumVertices; ++i)
-  {
+  for (uint i = 0; i < (unsigned int)pDecal->uNumVertices; ++i) {
     uint uTint = Render::GetActorTintColor(pDecal->pVertices[i].vWorldViewPosition.x, pDecal->field_C14, 0, 0, nullptr);
 
     uint uTintR = (uTint >> 16) & 0xFF,
@@ -5811,28 +4551,27 @@ void Render::DrawDecal(Decal *pDecal, float z_bias)
             pVerticesD3D, pDecal->uNumVertices, dwFlags));
 }
 
-void Render::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture)
-{
-    auto gapi_texture = ((TextureD3D *)texture)->GetDirect3DTexture();
-    ErrD3D(pRenderD3D->pDevice->SetTexture(0, (IDirect3DTexture2 *)gapi_texture));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS));
-    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
-        D3DPT_TRIANGLEFAN,
-        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-        (void *)vertices, 4, 28)
-    );
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESS));
+void Render::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) {
+  auto gapi_texture = ((TextureD3D *)texture)->GetDirect3DTexture();
+  ErrD3D(pRenderD3D->pDevice->SetTexture(0, (IDirect3DTexture2 *)gapi_texture));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS));
+  ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
+    D3DPT_TRIANGLEFAN,
+    D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+    (void *)vertices, 4, 28)
+  );
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
+  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESS));
 }
 
 unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3, int a4) {
@@ -6120,21 +4859,6 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
 	else
 		v6 = 31;
 	return v6;
-}
-
-unsigned int GetMaxMipLevels(unsigned int uDim)
-{
-	int v2; // ecx@1
-	unsigned int v3; // eax@1
-
-	v2 = 0;
-	v3 = uDim - 1;
-	while (v3 & 1)
-	{
-		v3 >>= 1;
-		++v2;
-	}
-	return v3 == 0 ? v2 : 0;
 }
 
 int  _46E44E_collide_against_faces_and_portals(unsigned int b1)
@@ -6442,237 +5166,227 @@ int _46E889_collide_against_bmodels(unsigned int ecx0)
 }
 
 int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID) {
-	uint uFaceID = -1;
-	int floor_level = BLV_GetFloorLevel(x, y, z, *pSectorID, &uFaceID);
+  uint uFaceID = -1;
+  int floor_level = BLV_GetFloorLevel(x, y, z, *pSectorID, &uFaceID);
 
-	if (floor_level != -30000 && floor_level <= z + 50)
-	{
-		*pFaceID = uFaceID;
-		return floor_level;
-	}
+  if (floor_level != -30000 && floor_level <= z + 50) {
+    *pFaceID = uFaceID;
+    return floor_level;
+  }
 
-	uint uSectorID = pIndoor->GetSector(x, y, z);
-	*pSectorID = uSectorID;
+  uint uSectorID = pIndoor->GetSector(x, y, z);
+  *pSectorID = uSectorID;
 
-	floor_level = BLV_GetFloorLevel(x, y, z, uSectorID, &uFaceID);
-	if (uSectorID && floor_level != -30000)
-		*pFaceID = uFaceID;
-	else return -30000;
-	return floor_level;
+  floor_level = BLV_GetFloorLevel(x, y, z, uSectorID, &uFaceID);
+  if (uSectorID && floor_level != -30000)
+    *pFaceID = uFaceID;
+  else return -30000;
+  return floor_level;
 }
 
-void _46ED8A_collide_against_sprite_objects(unsigned int _this)
-{
-	ObjectDesc *object; // edx@4
-	int v10; // ecx@12
-	int v11; // esi@13
+void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
+  ObjectDesc *object; // edx@4
+  int v10; // ecx@12
+  int v11; // esi@13
 
-	for (uint i = 0; i < uNumSpriteObjects; ++i)
-	{
-		if (pSpriteObjects[i].uObjectDescID)
-		{
-			object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
-			if (!(object->uFlags & OBJECT_DESC_NO_COLLISION))
-			{
-				if (stru_721530.sMaxX <= pSpriteObjects[i].vPosition.x + object->uRadius && stru_721530.sMinX >= pSpriteObjects[i].vPosition.x - object->uRadius
-					&& stru_721530.sMaxY <= pSpriteObjects[i].vPosition.y + object->uRadius && stru_721530.sMinY >= pSpriteObjects[i].vPosition.y - object->uRadius
-					&& stru_721530.sMaxZ <= pSpriteObjects[i].vPosition.z + object->uHeight && stru_721530.sMinZ >= pSpriteObjects[i].vPosition.z)
-				{
-					if (abs(((pSpriteObjects[i].vPosition.x - stru_721530.normal.x) * stru_721530.direction.y
-						- (pSpriteObjects[i].vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16)
-						<= object->uHeight + stru_721530.prolly_normal_d)
-					{
-						v10 = ((pSpriteObjects[i].vPosition.x - stru_721530.normal.x) * stru_721530.direction.x
-							+ (pSpriteObjects[i].vPosition.y - stru_721530.normal.y) * stru_721530.direction.y) >> 16;
-						if (v10 > 0)
-						{
-							v11 = stru_721530.normal.z + ((unsigned __int64)(stru_721530.direction.z * (signed __int64)v10) >> 16);
-							if (v11 >= pSpriteObjects[i].vPosition.z - stru_721530.prolly_normal_d)
-							{
-								if (v11 <= object->uHeight + stru_721530.prolly_normal_d + pSpriteObjects[i].vPosition.z)
-								{
-									if (v10 < stru_721530.field_7C)
-										sub_46DEF2(_this, i);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+  for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    if (pSpriteObjects[i].uObjectDescID) {
+      object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
+      if (!(object->uFlags & OBJECT_DESC_NO_COLLISION)) {
+        if (stru_721530.sMaxX <= pSpriteObjects[i].vPosition.x + object->uRadius && stru_721530.sMinX >= pSpriteObjects[i].vPosition.x - object->uRadius
+          && stru_721530.sMaxY <= pSpriteObjects[i].vPosition.y + object->uRadius && stru_721530.sMinY >= pSpriteObjects[i].vPosition.y - object->uRadius
+          && stru_721530.sMaxZ <= pSpriteObjects[i].vPosition.z + object->uHeight && stru_721530.sMinZ >= pSpriteObjects[i].vPosition.z)
+        {
+          if (abs(((pSpriteObjects[i].vPosition.x - stru_721530.normal.x) * stru_721530.direction.y
+            - (pSpriteObjects[i].vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16)
+            <= object->uHeight + stru_721530.prolly_normal_d)
+          {
+            v10 = ((pSpriteObjects[i].vPosition.x - stru_721530.normal.x) * stru_721530.direction.x
+              + (pSpriteObjects[i].vPosition.y - stru_721530.normal.y) * stru_721530.direction.y) >> 16;
+            if (v10 > 0) {
+              v11 = stru_721530.normal.z + ((unsigned __int64)(stru_721530.direction.z * (signed __int64)v10) >> 16);
+              if (v11 >= pSpriteObjects[i].vPosition.z - stru_721530.prolly_normal_d) {
+                if (v11 <= object->uHeight + stru_721530.prolly_normal_d + pSpriteObjects[i].vPosition.z) {
+                  if (v10 < stru_721530.field_7C) {
+                    sub_46DEF2(_this, i);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
-int _46EF01_collision_chech_player(int a1)
-{
-	int result; // eax@1
-	int v3; // ebx@7
-	int v4; // esi@7
-	int v5; // edi@8
-	int v6; // ecx@9
-	int v7; // edi@12
-	int v10; // [sp+14h] [bp-8h]@7
-	int v11; // [sp+18h] [bp-4h]@7
+int _46EF01_collision_chech_player(int a1) {
+  int result; // eax@1
+  int v3; // ebx@7
+  int v4; // esi@7
+  int v5; // edi@8
+  int v6; // ecx@9
+  int v7; // edi@12
+  int v10; // [sp+14h] [bp-8h]@7
+  int v11; // [sp+18h] [bp-4h]@7
 
-	result = pParty->vPosition.x;
-	//device_caps = pParty->uPartyHeight;
-	if (stru_721530.sMaxX <= pParty->vPosition.x + (2 * pParty->field_14_radius) && stru_721530.sMinX >= pParty->vPosition.x - (2 * pParty->field_14_radius)
-		&& stru_721530.sMaxY <= pParty->vPosition.y + (2 * pParty->field_14_radius) && stru_721530.sMinY >= pParty->vPosition.y - (2 * pParty->field_14_radius)
-		&& stru_721530.sMaxZ <= pParty->vPosition.z + pParty->uPartyHeight && stru_721530.sMinZ >= pParty->vPosition.z)
-	{
-		v3 = stru_721530.prolly_normal_d + (2 * pParty->field_14_radius);
-		v11 = pParty->vPosition.x - stru_721530.normal.x;
-		v4 = ((pParty->vPosition.x - stru_721530.normal.x) * stru_721530.direction.y
-			- (pParty->vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16;
-		v10 = pParty->vPosition.y - stru_721530.normal.y;
-		result = abs(((pParty->vPosition.x - stru_721530.normal.x) * stru_721530.direction.y
-			- (pParty->vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16);
-		if (result <= stru_721530.prolly_normal_d + (2 * pParty->field_14_radius))
-		{
-			result = v10 * stru_721530.direction.y;
-			v5 = (v10 * stru_721530.direction.y + v11 * stru_721530.direction.x) >> 16;
-			if (v5 > 0)
-			{
-				v6 = fixpoint_mul(stru_721530.direction.z, v5) + stru_721530.normal.z;
-				result = pParty->vPosition.z;
-				if (v6 >= pParty->vPosition.z)
-				{
-					result = pParty->uPartyHeight + pParty->vPosition.z;
-					if (v6 <= (signed int)(pParty->uPartyHeight + pParty->vPosition.z) || a1)
-					{
-						result = integer_sqrt(v3 * v3 - v4 * v4);
-						v7 = v5 - integer_sqrt(v3 * v3 - v4 * v4);
-						if (v7 < 0)
-							v7 = 0;
-						if (v7 < stru_721530.field_7C)
-						{
-							stru_721530.field_7C = v7;
-							stru_721530.uFaceID = 4;
-						}
-					}
-				}
-			}
-		}
-	}
-	return result;
+  result = pParty->vPosition.x;
+  //device_caps = pParty->uPartyHeight;
+  if (stru_721530.sMaxX <= pParty->vPosition.x + (2 * pParty->field_14_radius) && stru_721530.sMinX >= pParty->vPosition.x - (2 * pParty->field_14_radius)
+    && stru_721530.sMaxY <= pParty->vPosition.y + (2 * pParty->field_14_radius) && stru_721530.sMinY >= pParty->vPosition.y - (2 * pParty->field_14_radius)
+    && stru_721530.sMaxZ <= pParty->vPosition.z + pParty->uPartyHeight && stru_721530.sMinZ >= pParty->vPosition.z)
+  {
+    v3 = stru_721530.prolly_normal_d + (2 * pParty->field_14_radius);
+    v11 = pParty->vPosition.x - stru_721530.normal.x;
+    v4 = ((pParty->vPosition.x - stru_721530.normal.x) * stru_721530.direction.y
+      - (pParty->vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16;
+    v10 = pParty->vPosition.y - stru_721530.normal.y;
+    result = abs(((pParty->vPosition.x - stru_721530.normal.x) * stru_721530.direction.y
+      - (pParty->vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16);
+    if (result <= stru_721530.prolly_normal_d + (2 * pParty->field_14_radius))
+    {
+      result = v10 * stru_721530.direction.y;
+      v5 = (v10 * stru_721530.direction.y + v11 * stru_721530.direction.x) >> 16;
+      if (v5 > 0)
+      {
+        v6 = fixpoint_mul(stru_721530.direction.z, v5) + stru_721530.normal.z;
+        result = pParty->vPosition.z;
+        if (v6 >= pParty->vPosition.z)
+        {
+          result = pParty->uPartyHeight + pParty->vPosition.z;
+          if (v6 <= (signed int)(pParty->uPartyHeight + pParty->vPosition.z) || a1)
+          {
+            result = integer_sqrt(v3 * v3 - v4 * v4);
+            v7 = v5 - integer_sqrt(v3 * v3 - v4 * v4);
+            if (v7 < 0)
+              v7 = 0;
+            if (v7 < stru_721530.field_7C)
+            {
+              stru_721530.field_7C = v7;
+              stru_721530.uFaceID = 4;
+            }
+          }
+        }
+      }
+    }
+  }
+  return result;
 }
 
 void  _46E0B2_collide_against_decorations()
 {
-	BLVSector *sector; // ebp@1
-	LevelDecoration *decor; // edi@2
-	DecorationDesc *decor_desc; // esi@3
-	int v8; // ebx@10
-	int v9; // esi@11
-	int v11; // eax@12
-	int v12; // esi@14
-	unsigned int v13; // eax@17
-	signed int i; // [sp+4h] [bp-14h]@1
-	int v15; // [sp+8h] [bp-10h]@10
-	int v16; // [sp+Ch] [bp-Ch]@10
-	int v17; // [sp+10h] [bp-8h]@10
+  BLVSector *sector; // ebp@1
+  LevelDecoration *decor; // edi@2
+  DecorationDesc *decor_desc; // esi@3
+  int v8; // ebx@10
+  int v9; // esi@11
+  int v11; // eax@12
+  int v12; // esi@14
+  unsigned int v13; // eax@17
+  signed int i; // [sp+4h] [bp-14h]@1
+  int v15; // [sp+8h] [bp-10h]@10
+  int v16; // [sp+Ch] [bp-Ch]@10
+  int v17; // [sp+10h] [bp-8h]@10
 
-	sector = &pIndoor->pSectors[stru_721530.uSectorID];
-	for (i = 0; i < sector->uNumDecorations; ++i)
-	{
-		decor = &pLevelDecorations[sector->pDecorationIDs[i]];
-		if (!(decor->uFlags & LEVEL_DECORATION_INVISIBLE))
-		{
-			decor_desc = &pDecorationList->pDecorations[decor->uDecorationDescID];
-			if (!decor_desc->CanMoveThrough())
-			{
-				if (stru_721530.sMaxX <= decor->vPosition.x + decor_desc->uRadius && stru_721530.sMinX >= decor->vPosition.x - decor_desc->uRadius
-					&& stru_721530.sMaxY <= decor->vPosition.y + decor_desc->uRadius && stru_721530.sMinY >= decor->vPosition.y - decor_desc->uRadius
-					&& stru_721530.sMaxZ <= decor->vPosition.z + decor_desc->uDecorationHeight && stru_721530.sMinZ >= decor->vPosition.z)
-				{
-					v16 = decor->vPosition.x - stru_721530.normal.x;
-					v15 = decor->vPosition.y - stru_721530.normal.y;
-					v8 = stru_721530.prolly_normal_d + decor_desc->uRadius;
-					v17 = ((decor->vPosition.x - stru_721530.normal.x) * stru_721530.direction.y
-						- (decor->vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16;
-					if (abs(v17) <= stru_721530.prolly_normal_d + decor_desc->uRadius)
-					{
-						v9 = (v16 * stru_721530.direction.x + v15 * stru_721530.direction.y) >> 16;
-						if (v9 > 0)
-						{
-							v11 = stru_721530.normal.z + fixpoint_mul(stru_721530.direction.z, v9);
-							if (v11 >= decor->vPosition.z)
-							{
-								if (v11 <= decor_desc->uDecorationHeight + decor->vPosition.z)
-								{
-									v12 = v9 - integer_sqrt(v8 * v8 - v17 * v17);
-									if (v12 < 0)
-										v12 = 0;
-									if (v12 < stru_721530.field_7C)
-									{
-										stru_721530.field_7C = v12;
-										v13 = 8 * sector->pDecorationIDs[i];
-										v13 |= 5;
-										stru_721530.uFaceID = v13;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+  sector = &pIndoor->pSectors[stru_721530.uSectorID];
+  for (i = 0; i < sector->uNumDecorations; ++i)
+  {
+    decor = &pLevelDecorations[sector->pDecorationIDs[i]];
+    if (!(decor->uFlags & LEVEL_DECORATION_INVISIBLE))
+    {
+      decor_desc = &pDecorationList->pDecorations[decor->uDecorationDescID];
+      if (!decor_desc->CanMoveThrough())
+      {
+        if (stru_721530.sMaxX <= decor->vPosition.x + decor_desc->uRadius && stru_721530.sMinX >= decor->vPosition.x - decor_desc->uRadius
+          && stru_721530.sMaxY <= decor->vPosition.y + decor_desc->uRadius && stru_721530.sMinY >= decor->vPosition.y - decor_desc->uRadius
+          && stru_721530.sMaxZ <= decor->vPosition.z + decor_desc->uDecorationHeight && stru_721530.sMinZ >= decor->vPosition.z)
+        {
+          v16 = decor->vPosition.x - stru_721530.normal.x;
+          v15 = decor->vPosition.y - stru_721530.normal.y;
+          v8 = stru_721530.prolly_normal_d + decor_desc->uRadius;
+          v17 = ((decor->vPosition.x - stru_721530.normal.x) * stru_721530.direction.y
+            - (decor->vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16;
+          if (abs(v17) <= stru_721530.prolly_normal_d + decor_desc->uRadius)
+          {
+            v9 = (v16 * stru_721530.direction.x + v15 * stru_721530.direction.y) >> 16;
+            if (v9 > 0)
+            {
+              v11 = stru_721530.normal.z + fixpoint_mul(stru_721530.direction.z, v9);
+              if (v11 >= decor->vPosition.z)
+              {
+                if (v11 <= decor_desc->uDecorationHeight + decor->vPosition.z)
+                {
+                  v12 = v9 - integer_sqrt(v8 * v8 - v17 * v17);
+                  if (v12 < 0)
+                    v12 = 0;
+                  if (v12 < stru_721530.field_7C)
+                  {
+                    stru_721530.field_7C = v12;
+                    v13 = 8 * sector->pDecorationIDs[i];
+                    v13 |= 5;
+                    stru_721530.uFaceID = v13;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
-int _46F04E_collide_against_portals()
-{
-	unsigned int v1; // eax@1
-	BLVFace *face; // eax@3
-	int v4; // ecx@9
-	int v5; // edx@9
-	signed int result; // eax@21
-	unsigned int v10; // [sp+8h] [bp-Ch]@1
-	int a3; // [sp+Ch] [bp-8h]@13
-	int v12; // [sp+10h] [bp-4h]@15
+int _46F04E_collide_against_portals() {
+  unsigned int v1; // eax@1
+  BLVFace *face; // eax@3
+  int v4; // ecx@9
+  int v5; // edx@9
+  signed int result; // eax@21
+  unsigned int v10; // [sp+8h] [bp-Ch]@1
+  int a3; // [sp+Ch] [bp-8h]@13
+  int v12; // [sp+10h] [bp-4h]@15
 
-	v1 = 0xFFFFFF;
-	v10 = 0xFFFFFF;
-	for (uint i = 0; i < pIndoor->pSectors[stru_721530.uSectorID].uNumPortals; ++i)
-	{
-		if (pIndoor->pSectors[stru_721530.uSectorID].pPortals[i] != stru_721530.field_80)
-		{
-			face = &pIndoor->pFaces[pIndoor->pSectors[stru_721530.uSectorID].pPortals[i]];
-			if (stru_721530.sMaxX <= face->pBounding.x2 && stru_721530.sMinX >= face->pBounding.x1
-				&& stru_721530.sMaxY <= face->pBounding.y2 && stru_721530.sMinY >= face->pBounding.y1
-				&& stru_721530.sMaxZ <= face->pBounding.z2 && stru_721530.sMinZ >= face->pBounding.z1)
-			{
-				v4 = (stru_721530.normal.x * face->pFacePlane_old.vNormal.x + face->pFacePlane_old.dist
-					+ stru_721530.normal.y * face->pFacePlane_old.vNormal.y
-					+ stru_721530.normal.z * face->pFacePlane_old.vNormal.z) >> 16;
-				v5 = (stru_721530.normal2.z * face->pFacePlane_old.vNormal.z + face->pFacePlane_old.dist
-					+ stru_721530.normal2.x * face->pFacePlane_old.vNormal.x
-					+ stru_721530.normal2.y * face->pFacePlane_old.vNormal.y) >> 16;
-				if ((v4 < stru_721530.prolly_normal_d || v5 < stru_721530.prolly_normal_d)
-					&& (v4 > -stru_721530.prolly_normal_d || v5 > -stru_721530.prolly_normal_d)
-					&& (a3 = stru_721530.field_6C, sub_475D85(&stru_721530.normal, &stru_721530.direction, &a3, face))
-					&& a3 < (signed int)v10)
-				{
-					v10 = a3;
-					v12 = pIndoor->pSectors[stru_721530.uSectorID].pPortals[i];
-				}
-			}
-		}
-	}
-	v1 = v10;
-	if (stru_721530.field_7C >= (signed int)v1 && (signed int)v1 <= stru_721530.field_6C)
-	{
-		stru_721530.field_80 = v12;
-		if (pIndoor->pFaces[v12].uSectorID == stru_721530.uSectorID)
-			stru_721530.uSectorID = pIndoor->pFaces[v12].uBackSectorID;
-		else
-			stru_721530.uSectorID = pIndoor->pFaces[v12].uSectorID;
-		stru_721530.field_7C = 268435455;//0xFFFFFFF
-		result = 0;
-	}
-	else
-		result = 1;
-	return result;
+  v1 = 0xFFFFFF;
+  v10 = 0xFFFFFF;
+  for (uint i = 0; i < pIndoor->pSectors[stru_721530.uSectorID].uNumPortals; ++i)
+  {
+    if (pIndoor->pSectors[stru_721530.uSectorID].pPortals[i] != stru_721530.field_80)
+    {
+      face = &pIndoor->pFaces[pIndoor->pSectors[stru_721530.uSectorID].pPortals[i]];
+      if (stru_721530.sMaxX <= face->pBounding.x2 && stru_721530.sMinX >= face->pBounding.x1
+        && stru_721530.sMaxY <= face->pBounding.y2 && stru_721530.sMinY >= face->pBounding.y1
+        && stru_721530.sMaxZ <= face->pBounding.z2 && stru_721530.sMinZ >= face->pBounding.z1)
+      {
+        v4 = (stru_721530.normal.x * face->pFacePlane_old.vNormal.x + face->pFacePlane_old.dist
+          + stru_721530.normal.y * face->pFacePlane_old.vNormal.y
+          + stru_721530.normal.z * face->pFacePlane_old.vNormal.z) >> 16;
+        v5 = (stru_721530.normal2.z * face->pFacePlane_old.vNormal.z + face->pFacePlane_old.dist
+          + stru_721530.normal2.x * face->pFacePlane_old.vNormal.x
+          + stru_721530.normal2.y * face->pFacePlane_old.vNormal.y) >> 16;
+        if ((v4 < stru_721530.prolly_normal_d || v5 < stru_721530.prolly_normal_d)
+          && (v4 > -stru_721530.prolly_normal_d || v5 > -stru_721530.prolly_normal_d)
+          && (a3 = stru_721530.field_6C, sub_475D85(&stru_721530.normal, &stru_721530.direction, &a3, face))
+          && a3 < (signed int)v10)
+        {
+          v10 = a3;
+          v12 = pIndoor->pSectors[stru_721530.uSectorID].pPortals[i];
+        }
+      }
+    }
+  }
+  v1 = v10;
+  if (stru_721530.field_7C >= (signed int)v1 && (signed int)v1 <= stru_721530.field_6C) {
+    stru_721530.field_80 = v12;
+    if (pIndoor->pFaces[v12].uSectorID == stru_721530.uSectorID)
+      stru_721530.uSectorID = pIndoor->pFaces[v12].uBackSectorID;
+    else
+      stru_721530.uSectorID = pIndoor->pFaces[v12].uSectorID;
+    stru_721530.field_7C = 268435455;//0xFFFFFFF
+    result = 0;
+  }
+  else
+    result = 1;
+  return result;
 }
 
 unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
@@ -6752,514 +5466,458 @@ void UpdateObjects() {
   }
 }
 
-bool sub_47531C(int a1, int *a2, int pos_x, int pos_y, int pos_z, int dir_x, int dir_y, int dir_z, BLVFace *face, int a10)
-{
-	int v11; // ST1C_4@3
-	int v12; // edi@3
-	int v13; // esi@3
-	int v14; // edi@4
-	signed __int64 v15; // qtt@6
-	//__int16 v16; // si@7
-	int a7a; // [sp+30h] [bp+18h]@7
-	int a9b; // [sp+38h] [bp+20h]@3
-	int a9a; // [sp+38h] [bp+20h]@3
-	int a10b; // [sp+3Ch] [bp+24h]@3
-	signed int a10a; // [sp+3Ch] [bp+24h]@4
-	int a10c; // [sp+3Ch] [bp+24h]@5
+bool sub_47531C(int a1, int *a2, int pos_x, int pos_y, int pos_z, int dir_x, int dir_y, int dir_z, BLVFace *face, int a10) {
+  int v11; // ST1C_4@3
+  int v12; // edi@3
+  int v13; // esi@3
+  int v14; // edi@4
+  __int64 v15; // qtt@6
+                      //__int16 v16; // si@7
+  int a7a; // [sp+30h] [bp+18h]@7
+  int a9b; // [sp+38h] [bp+20h]@3
+  int a9a; // [sp+38h] [bp+20h]@3
+  int a10b; // [sp+3Ch] [bp+24h]@3
+  signed int a10a; // [sp+3Ch] [bp+24h]@4
+  int a10c; // [sp+3Ch] [bp+24h]@5
 
-	if (a10 && face->Ethereal())
-		return 0;
-	v11 = fixpoint_mul(dir_x, face->pFacePlane_old.vNormal.x);
-	a10b = fixpoint_mul(dir_y, face->pFacePlane_old.vNormal.y);
-	a9b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
-	v12 = v11 + a9b + a10b;
-	a9a = v11 + a9b + a10b;
-	v13 = (a1 << 16)
-		- pos_x * face->pFacePlane_old.vNormal.x
-		- pos_y * face->pFacePlane_old.vNormal.y
-		- pos_z * face->pFacePlane_old.vNormal.z
-		- face->pFacePlane_old.dist;
-	if (abs((a1 << 16)
-		- pos_x * face->pFacePlane_old.vNormal.x
-		- pos_y * face->pFacePlane_old.vNormal.y
-		- pos_z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist) >= a1 << 16)
-	{
-		a10c = abs(v13) >> 14;
-		if (a10c > abs(v12))
-			return 0;
-        HEXRAYS_LODWORD(v15) = v13 << 16;
-        HEXRAYS_HIDWORD(v15) = v13 >> 16;
-		v14 = a1;
-		a10a = v15 / a9a;
-	}
-	else
-	{
-		a10a = 0;
-		v14 = abs(v13) >> 16;
-	}
-	//v16 = pos_y + ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16);
-    HEXRAYS_LOWORD(a7a) = (short)pos_x + ((unsigned int)fixpoint_mul(a10a, dir_x) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.x);
-    HEXRAYS_HIWORD(a7a) = pos_y + ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.y);
-	if (!sub_475665(face, a7a, (short)pos_z + ((unsigned int)fixpoint_mul(a10a, dir_z) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.z)))
-		return 0;
-	*a2 = a10a >> 16;
-	if (a10a >> 16 < 0)
-		*a2 = 0;
-	return 1;
+  if (a10 && face->Ethereal())
+    return 0;
+  v11 = fixpoint_mul(dir_x, face->pFacePlane_old.vNormal.x);
+  a10b = fixpoint_mul(dir_y, face->pFacePlane_old.vNormal.y);
+  a9b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
+  v12 = v11 + a9b + a10b;
+  a9a = v11 + a9b + a10b;
+  v13 = (a1 << 16)
+    - pos_x * face->pFacePlane_old.vNormal.x
+    - pos_y * face->pFacePlane_old.vNormal.y
+    - pos_z * face->pFacePlane_old.vNormal.z
+    - face->pFacePlane_old.dist;
+  if (abs((a1 << 16)
+    - pos_x * face->pFacePlane_old.vNormal.x
+    - pos_y * face->pFacePlane_old.vNormal.y
+    - pos_z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist) >= a1 << 16)
+  {
+    a10c = abs(v13) >> 14;
+    if (a10c > abs(v12))
+      return 0;
+    HEXRAYS_LODWORD(v15) = v13 << 16;
+    HEXRAYS_HIDWORD(v15) = v13 >> 16;
+    v14 = a1;
+    a10a = v15 / a9a;
+  } else {
+    a10a = 0;
+    v14 = abs(v13) >> 16;
+  }
+  //v16 = pos_y + ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16);
+  HEXRAYS_LOWORD(a7a) = (short)pos_x + ((unsigned int)fixpoint_mul(a10a, dir_x) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.x);
+  HEXRAYS_HIWORD(a7a) = pos_y + ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.y);
+  if (!sub_475665(face, a7a, (short)pos_z + ((unsigned int)fixpoint_mul(a10a, dir_z) >> 16) - fixpoint_mul(v14, face->pFacePlane_old.vNormal.z)))
+    return 0;
+  *a2 = a10a >> 16;
+  if (a10a >> 16 < 0)
+    *a2 = 0;
+  return 1;
 }
 
-bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y, int dir_z, BLVFace *face, int a10, int a11)
-{
-	int v12; // ST1C_4@3
-	int v13; // edi@3
-	int v14; // esi@3
-	int v15; // edi@4
-	signed __int64 v16; // qtt@6
-	//__int16 v17; // si@7
-	int a7a; // [sp+30h] [bp+18h]@7
-	int a1b; // [sp+38h] [bp+20h]@3
-	int a1a; // [sp+38h] [bp+20h]@3
-	int a11b; // [sp+40h] [bp+28h]@3
-	signed int a11a; // [sp+40h] [bp+28h]@4
-	int a11c; // [sp+40h] [bp+28h]@5
+bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y, int dir_z, BLVFace *face, int a10, int a11) {
+  int v12; // ST1C_4@3
+  int v13; // edi@3
+  int v14; // esi@3
+  int v15; // edi@4
+  int64_t v16; // qtt@6
+                      //__int16 v17; // si@7
+  int a7a; // [sp+30h] [bp+18h]@7
+  int a1b; // [sp+38h] [bp+20h]@3
+  int a1a; // [sp+38h] [bp+20h]@3
+  int a11b; // [sp+40h] [bp+28h]@3
+  int a11a; // [sp+40h] [bp+28h]@4
+  int a11c; // [sp+40h] [bp+28h]@5
 
-	if (a11 && face->Ethereal())
-		return false;
-	v12 = fixpoint_mul(dir_x, face->pFacePlane_old.vNormal.x);
-	a11b = fixpoint_mul(dir_y, face->pFacePlane_old.vNormal.y);
-	a1b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
-	v13 = v12 + a1b + a11b;
-	a1a = v12 + a1b + a11b;
-	v14 = (a1 << 16)
-		- X * face->pFacePlane_old.vNormal.x
-		- Y * face->pFacePlane_old.vNormal.y
-		- Z * face->pFacePlane_old.vNormal.z
-		- face->pFacePlane_old.dist;
-	if (abs((a1 << 16)
-		- X * face->pFacePlane_old.vNormal.x
-		- Y * face->pFacePlane_old.vNormal.y
-		- Z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist) >= a1 << 16)
-	{
-		a11c = abs(v14) >> 14;
-		if (a11c > abs(v13))
-			return false;
-        HEXRAYS_LODWORD(v16) = v14 << 16;
-        HEXRAYS_HIDWORD(v16) = v14 >> 16;
-		v15 = a1;
-		a11a = v16 / a1a;
-	}
-	else
-	{
-		a11a = 0;
-		v15 = abs(v14) >> 16;
-	}
-	//v17 = Y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16);
-    HEXRAYS_LOWORD(a7a) = (short)X + ((unsigned int)fixpoint_mul(a11a, dir_x) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.x);
-    HEXRAYS_HIWORD(a7a) = Y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.y);
-	if (!sub_4759C9(face, a10, a7a, (short)Z + ((unsigned int)fixpoint_mul(a11a, dir_z) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.z)))
-		return false;
-	*a2 = a11a >> 16;
-	if (a11a >> 16 < 0)
-		*a2 = 0;
-	return true;
+  if (a11 && face->Ethereal())
+    return false;
+  v12 = fixpoint_mul(dir_x, face->pFacePlane_old.vNormal.x);
+  a11b = fixpoint_mul(dir_y, face->pFacePlane_old.vNormal.y);
+  a1b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
+  v13 = v12 + a1b + a11b;
+  a1a = v12 + a1b + a11b;
+  v14 = (a1 << 16)
+    - X * face->pFacePlane_old.vNormal.x
+    - Y * face->pFacePlane_old.vNormal.y
+    - Z * face->pFacePlane_old.vNormal.z
+    - face->pFacePlane_old.dist;
+  if (abs((a1 << 16)
+    - X * face->pFacePlane_old.vNormal.x
+    - Y * face->pFacePlane_old.vNormal.y
+    - Z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist) >= a1 << 16)
+  {
+    a11c = abs(v14) >> 14;
+    if (a11c > abs(v13))
+      return false;
+    HEXRAYS_LODWORD(v16) = v14 << 16;
+    HEXRAYS_HIDWORD(v16) = v14 >> 16;
+    v15 = a1;
+    a11a = v16 / a1a;
+  } else {
+    a11a = 0;
+    v15 = abs(v14) >> 16;
+  }
+  //v17 = Y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16);
+  HEXRAYS_LOWORD(a7a) = (short)X + ((unsigned int)fixpoint_mul(a11a, dir_x) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.x);
+  HEXRAYS_HIWORD(a7a) = Y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.y);
+  if (!sub_4759C9(face, a10, a7a, (short)Z + ((unsigned int)fixpoint_mul(a11a, dir_z) >> 16) - fixpoint_mul(v15, face->pFacePlane_old.vNormal.z)))
+    return false;
+  *a2 = a11a >> 16;
+  if (a11a >> 16 < 0)
+    *a2 = 0;
+  return true;
 }
 
-int sub_475665(BLVFace *face, int a2, __int16 a3)
-{
-	bool v16; // edi@14
-	signed int v20; // ebx@18
-	int v21; // edi@20
-	signed int v22; // ST14_4@22
-	signed __int64 v23; // qtt@22
-	signed int result; // eax@25
-	int v25; // [sp+14h] [bp-10h]@14
-	int v26; // [sp+1Ch] [bp-8h]@2
-	signed int v27; // [sp+20h] [bp-4h]@2
-	signed int v28; // [sp+30h] [bp+Ch]@2
-	signed int v29; // [sp+30h] [bp+Ch]@7
-	signed int v30; // [sp+30h] [bp+Ch]@11
-	signed int v31; // [sp+30h] [bp+Ch]@14
+int sub_475665(BLVFace *face, int a2, __int16 a3) {
+  bool v16; // edi@14
+  int v20; // ebx@18
+  int v21; // edi@20
+  int v22; // ST14_4@22
+  __int64 v23; // qtt@22
+  int result; // eax@25
+  int v25; // [sp+14h] [bp-10h]@14
+  int v26; // [sp+1Ch] [bp-8h]@2
+  int v27; // [sp+20h] [bp-4h]@2
+  int v28; // [sp+30h] [bp+Ch]@2
+  int v29; // [sp+30h] [bp+Ch]@7
+  int v30; // [sp+30h] [bp+Ch]@11
+  int v31; // [sp+30h] [bp+Ch]@14
 
-	if (face->uAttributes & FACE_XY_PLANE)
-	{
-		v26 = (signed __int16)a2;
-		v27 = HEXRAYS_SHIWORD(a2);
-		if (face->uNumVertices)
-		{
-			for (v28 = 0; v28 < face->uNumVertices; v28++)
-			{
-				word_720C10_intercepts_xs[2 * v28] = face->pXInterceptDisplacements[v28] + pIndoor->pVertices[face->pVertexIDs[v28]].x;
-				word_720B40_intercepts_zs[2 * v28] = face->pYInterceptDisplacements[v28] + pIndoor->pVertices[face->pVertexIDs[v28]].y;
-				word_720C10_intercepts_xs[2 * v28 + 1] = face->pXInterceptDisplacements[v28 + 1] + pIndoor->pVertices[face->pVertexIDs[v28 + 1]].x;
-				word_720B40_intercepts_zs[2 * v28 + 1] = face->pYInterceptDisplacements[v28 + 1] + pIndoor->pVertices[face->pVertexIDs[v28 + 1]].y;
-			}
-		}
-	}
-	else
-	{
-		if (face->uAttributes & FACE_XZ_PLANE)
-		{
-			v26 = (signed __int16)a2;
-			v27 = a3;
-			if (face->uNumVertices)
-			{
-				for (v29 = 0; v29 < face->uNumVertices; v29++)
-				{
-					word_720C10_intercepts_xs[2 * v29] = face->pXInterceptDisplacements[v29] + pIndoor->pVertices[face->pVertexIDs[v29]].x;
-					word_720B40_intercepts_zs[2 * v29] = face->pZInterceptDisplacements[v29] + pIndoor->pVertices[face->pVertexIDs[v29]].z;
-					word_720C10_intercepts_xs[2 * v29 + 1] = face->pXInterceptDisplacements[v29 + 1] + pIndoor->pVertices[face->pVertexIDs[v29 + 1]].x;
-					word_720B40_intercepts_zs[2 * v29 + 1] = face->pZInterceptDisplacements[v29 + 1] + pIndoor->pVertices[face->pVertexIDs[v29 + 1]].z;
-				}
-			}
-		}
-		else
-		{
-			v26 = HEXRAYS_SHIWORD(a2);
-			v27 = a3;
-			if (face->uNumVertices)
-			{
-				for (v30 = 0; v30 < face->uNumVertices; v30++)
-				{
-					word_720C10_intercepts_xs[2 * v30] = face->pYInterceptDisplacements[v30] + pIndoor->pVertices[face->pVertexIDs[v30]].y;
-					word_720B40_intercepts_zs[2 * v30] = face->pZInterceptDisplacements[v30] + pIndoor->pVertices[face->pVertexIDs[v30]].z;
-					word_720C10_intercepts_xs[2 * v30 + 1] = face->pYInterceptDisplacements[v30 + 1] + pIndoor->pVertices[face->pVertexIDs[v30 + 1]].y;
-					word_720B40_intercepts_zs[2 * v30 + 1] = face->pZInterceptDisplacements[v30 + 1] + pIndoor->pVertices[face->pVertexIDs[v30 + 1]].z;
-				}
-			}
-		}
-	}
-	v31 = 0;
-	word_720C10_intercepts_xs[2 * face->uNumVertices] = word_720C10_intercepts_xs[0];
-	word_720B40_intercepts_zs[2 * face->uNumVertices] = word_720B40_intercepts_zs[0];
-	v16 = word_720B40_intercepts_zs[0] >= v27;
-	if (2 * face->uNumVertices <= 0)
-		return 0;
-	for (v25 = 0; v25 < 2 * face->uNumVertices; ++v25)
-	{
-		if (v31 >= 2)
-			break;
-		if (v16 ^ (word_720B40_intercepts_zs[v25 + 1] >= v27))
-		{
-			if (word_720C10_intercepts_xs[v25 + 1] >= v26)
-				v20 = 0;
-			else
-				v20 = 2;
-			v21 = v20 | (word_720C10_intercepts_xs[v25] < v26);
-			if (v21 != 3)
-			{
-				v22 = word_720C10_intercepts_xs[v25 + 1] - word_720C10_intercepts_xs[v25];
-                HEXRAYS_LODWORD(v23) = v22 << 16;
-                HEXRAYS_HIDWORD(v23) = v22 >> 16;
-				if (!v21
-					|| (word_720C10_intercepts_xs[v25] + ((signed int)(((unsigned __int64)(v23
-					/ (word_720B40_intercepts_zs[v25 + 1] - word_720B40_intercepts_zs[v25])
-					* ((v27 - (signed int)word_720B40_intercepts_zs[v25]) << 16)) >> 16)
-					+ 32768) >> 16) >= v26))
-					++v31;
-			}
-		}
-		v16 = word_720B40_intercepts_zs[v25 + 1] >= v27;
-	}
-	result = 1;
-	if (v31 != 1)
-		result = 0;
-	return result;
+  if (face->uAttributes & FACE_XY_PLANE) {
+    v26 = (signed __int16)a2;
+    v27 = HEXRAYS_SHIWORD(a2);
+    if (face->uNumVertices) {
+      for (v28 = 0; v28 < face->uNumVertices; v28++) {
+        word_720C10_intercepts_xs[2 * v28] = face->pXInterceptDisplacements[v28] + pIndoor->pVertices[face->pVertexIDs[v28]].x;
+        word_720B40_intercepts_zs[2 * v28] = face->pYInterceptDisplacements[v28] + pIndoor->pVertices[face->pVertexIDs[v28]].y;
+        word_720C10_intercepts_xs[2 * v28 + 1] = face->pXInterceptDisplacements[v28 + 1] + pIndoor->pVertices[face->pVertexIDs[v28 + 1]].x;
+        word_720B40_intercepts_zs[2 * v28 + 1] = face->pYInterceptDisplacements[v28 + 1] + pIndoor->pVertices[face->pVertexIDs[v28 + 1]].y;
+      }
+    }
+  } else {
+    if (face->uAttributes & FACE_XZ_PLANE) {
+      v26 = (signed __int16)a2;
+      v27 = a3;
+      if (face->uNumVertices) {
+        for (v29 = 0; v29 < face->uNumVertices; v29++) {
+          word_720C10_intercepts_xs[2 * v29] = face->pXInterceptDisplacements[v29] + pIndoor->pVertices[face->pVertexIDs[v29]].x;
+          word_720B40_intercepts_zs[2 * v29] = face->pZInterceptDisplacements[v29] + pIndoor->pVertices[face->pVertexIDs[v29]].z;
+          word_720C10_intercepts_xs[2 * v29 + 1] = face->pXInterceptDisplacements[v29 + 1] + pIndoor->pVertices[face->pVertexIDs[v29 + 1]].x;
+          word_720B40_intercepts_zs[2 * v29 + 1] = face->pZInterceptDisplacements[v29 + 1] + pIndoor->pVertices[face->pVertexIDs[v29 + 1]].z;
+        }
+      }
+    } else {
+      v26 = HEXRAYS_SHIWORD(a2);
+      v27 = a3;
+      if (face->uNumVertices) {
+        for (v30 = 0; v30 < face->uNumVertices; v30++) {
+          word_720C10_intercepts_xs[2 * v30] = face->pYInterceptDisplacements[v30] + pIndoor->pVertices[face->pVertexIDs[v30]].y;
+          word_720B40_intercepts_zs[2 * v30] = face->pZInterceptDisplacements[v30] + pIndoor->pVertices[face->pVertexIDs[v30]].z;
+          word_720C10_intercepts_xs[2 * v30 + 1] = face->pYInterceptDisplacements[v30 + 1] + pIndoor->pVertices[face->pVertexIDs[v30 + 1]].y;
+          word_720B40_intercepts_zs[2 * v30 + 1] = face->pZInterceptDisplacements[v30 + 1] + pIndoor->pVertices[face->pVertexIDs[v30 + 1]].z;
+        }
+      }
+    }
+  }
+  v31 = 0;
+  word_720C10_intercepts_xs[2 * face->uNumVertices] = word_720C10_intercepts_xs[0];
+  word_720B40_intercepts_zs[2 * face->uNumVertices] = word_720B40_intercepts_zs[0];
+  v16 = word_720B40_intercepts_zs[0] >= v27;
+  if (2 * face->uNumVertices <= 0)
+    return 0;
+  for (v25 = 0; v25 < 2 * face->uNumVertices; ++v25) {
+    if (v31 >= 2)
+      break;
+    if (v16 ^ (word_720B40_intercepts_zs[v25 + 1] >= v27)) {
+      if (word_720C10_intercepts_xs[v25 + 1] >= v26)
+        v20 = 0;
+      else
+        v20 = 2;
+      v21 = v20 | (word_720C10_intercepts_xs[v25] < v26);
+      if (v21 != 3) {
+        v22 = word_720C10_intercepts_xs[v25 + 1] - word_720C10_intercepts_xs[v25];
+        HEXRAYS_LODWORD(v23) = v22 << 16;
+        HEXRAYS_HIDWORD(v23) = v22 >> 16;
+        if (!v21
+          || (word_720C10_intercepts_xs[v25] + ((signed int)(((unsigned __int64)(v23
+            / (word_720B40_intercepts_zs[v25 + 1] - word_720B40_intercepts_zs[v25])
+            * ((v27 - (signed int)word_720B40_intercepts_zs[v25]) << 16)) >> 16)
+            + 32768) >> 16) >= v26))
+          ++v31;
+      }
+    }
+    v16 = word_720B40_intercepts_zs[v25 + 1] >= v27;
+  }
+  result = 1;
+  if (v31 != 1)
+    result = 0;
+  return result;
 }
 
-bool sub_4759C9(BLVFace *face, int a2, int a3, __int16 a4)
-{
-	bool v12; // edi@14
-	signed int v16; // ebx@18
-	int v17; // edi@20
-	signed int v18; // ST14_4@22
-	signed __int64 v19; // qtt@22
-	bool result; // eax@25
-	int v21; // [sp+14h] [bp-10h]@14
-	signed int v22; // [sp+18h] [bp-Ch]@1
-	int v23; // [sp+1Ch] [bp-8h]@2
-	signed int v24; // [sp+20h] [bp-4h]@2
-	signed int a4d; // [sp+30h] [bp+Ch]@14
+bool sub_4759C9(BLVFace *face, int a2, int a3, __int16 a4) {
+  bool v12; // edi@14
+  signed int v16; // ebx@18
+  int v17; // edi@20
+  signed int v18; // ST14_4@22
+  signed __int64 v19; // qtt@22
+  bool result; // eax@25
+  int v21; // [sp+14h] [bp-10h]@14
+  signed int v22; // [sp+18h] [bp-Ch]@1
+  int v23; // [sp+1Ch] [bp-8h]@2
+  signed int v24; // [sp+20h] [bp-4h]@2
+  signed int a4d; // [sp+30h] [bp+Ch]@14
 
-	if (face->uAttributes & FACE_XY_PLANE)
-	{
-		v23 = (signed __int16)a3;
-		v24 = HEXRAYS_SHIWORD(a3);
-		if (face->uNumVertices)
-		{
-			for (v22 = 0; v22 < face->uNumVertices; ++v22)
-			{
-				word_720A70_intercepts_xs_plus_xs[2 * v22] = face->pXInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].x);
-				word_7209A0_intercepts_ys_plus_ys[2 * v22] = face->pYInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].y);
-				word_720A70_intercepts_xs_plus_xs[2 * v22 + 1] = face->pXInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].x);
-				word_7209A0_intercepts_ys_plus_ys[2 * v22 + 1] = face->pYInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].y);
-			}
-		}
-	}
-	else
-	{
-		if (face->uAttributes & FACE_XZ_PLANE)
-		{
-			v23 = (signed __int16)a3;
-			v24 = a4;
-			if (face->uNumVertices)
-			{
-				for (v22 = 0; v22 < face->uNumVertices; ++v22)
-				{
-					word_720A70_intercepts_xs_plus_xs[2 * v22] = face->pXInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].x);
-					word_7209A0_intercepts_ys_plus_ys[2 * v22] = face->pZInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].z);
-					word_720A70_intercepts_xs_plus_xs[2 * v22 + 1] = face->pXInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].x);
-					word_7209A0_intercepts_ys_plus_ys[2 * v22 + 1] = face->pZInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].z);
-				}
-			}
-		}
-		else
-		{
-			v23 = HEXRAYS_SHIWORD(a3);
-			v24 = a4;
-			if (face->uNumVertices)
-			{
-				for (v22 = 0; v22 < face->uNumVertices; ++v22)
-				{
-					word_720A70_intercepts_xs_plus_xs[2 * v22] = face->pYInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].y);
-					word_7209A0_intercepts_ys_plus_ys[2 * v22] = face->pZInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].z);
-					word_720A70_intercepts_xs_plus_xs[2 * v22 + 1] = face->pYInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].y);
-					word_7209A0_intercepts_ys_plus_ys[2 * v22 + 1] = face->pZInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].z);
-				}
-			}
-		}
-	}
-	a4d = 0;
-	word_720A70_intercepts_xs_plus_xs[2 * face->uNumVertices] = word_720A70_intercepts_xs_plus_xs[0];
-	word_7209A0_intercepts_ys_plus_ys[2 * face->uNumVertices] = word_7209A0_intercepts_ys_plus_ys[0];
-	v12 = word_7209A0_intercepts_ys_plus_ys[0] >= v24;
-	if (2 * face->uNumVertices <= 0)
-		return 0;
-	for (v21 = 0; v21 < 2 * face->uNumVertices; ++v21)
-	{
-		if (a4d >= 2)
-			break;
-		if (v12 ^ (word_7209A0_intercepts_ys_plus_ys[v21 + 1] >= v24))
-		{
-			if (word_720A70_intercepts_xs_plus_xs[v21 + 1] >= v23)
-				v16 = 0;
-			else
-				v16 = 2;
-			v17 = v16 | (word_720A70_intercepts_xs_plus_xs[v21] < v23);
-			if (v17 != 3)
-			{
-				v18 = word_720A70_intercepts_xs_plus_xs[v21 + 1] - word_720A70_intercepts_xs_plus_xs[v21];
-                HEXRAYS_LODWORD(v19) = v18 << 16;
-                HEXRAYS_HIDWORD(v19) = v18 >> 16;
-				if (!v17
-					|| (word_720A70_intercepts_xs_plus_xs[v21] + ((signed int)(((unsigned __int64)(v19
-					/ (word_7209A0_intercepts_ys_plus_ys[v21 + 1] - word_7209A0_intercepts_ys_plus_ys[v21])
-					* ((v24 - (signed int)word_7209A0_intercepts_ys_plus_ys[v21]) << 16)) >> 16)
-					+ 0x8000) >> 16) >= v23))
-					++a4d;
-			}
-		}
-		v12 = word_7209A0_intercepts_ys_plus_ys[v21 + 1] >= v24;
-	}
-	result = 1;
-	if (a4d != 1)
-		result = 0;
-	return result;
+  if (face->uAttributes & FACE_XY_PLANE)
+  {
+    v23 = (signed __int16)a3;
+    v24 = HEXRAYS_SHIWORD(a3);
+    if (face->uNumVertices)
+    {
+      for (v22 = 0; v22 < face->uNumVertices; ++v22)
+      {
+        word_720A70_intercepts_xs_plus_xs[2 * v22] = face->pXInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].x);
+        word_7209A0_intercepts_ys_plus_ys[2 * v22] = face->pYInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].y);
+        word_720A70_intercepts_xs_plus_xs[2 * v22 + 1] = face->pXInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].x);
+        word_7209A0_intercepts_ys_plus_ys[2 * v22 + 1] = face->pYInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].y);
+      }
+    }
+  }
+  else
+  {
+    if (face->uAttributes & FACE_XZ_PLANE)
+    {
+      v23 = (signed __int16)a3;
+      v24 = a4;
+      if (face->uNumVertices)
+      {
+        for (v22 = 0; v22 < face->uNumVertices; ++v22)
+        {
+          word_720A70_intercepts_xs_plus_xs[2 * v22] = face->pXInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].x);
+          word_7209A0_intercepts_ys_plus_ys[2 * v22] = face->pZInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].z);
+          word_720A70_intercepts_xs_plus_xs[2 * v22 + 1] = face->pXInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].x);
+          word_7209A0_intercepts_ys_plus_ys[2 * v22 + 1] = face->pZInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].z);
+        }
+      }
+    }
+    else
+    {
+      v23 = HEXRAYS_SHIWORD(a3);
+      v24 = a4;
+      if (face->uNumVertices)
+      {
+        for (v22 = 0; v22 < face->uNumVertices; ++v22)
+        {
+          word_720A70_intercepts_xs_plus_xs[2 * v22] = face->pYInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].y);
+          word_7209A0_intercepts_ys_plus_ys[2 * v22] = face->pZInterceptDisplacements[v22] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22]].z);
+          word_720A70_intercepts_xs_plus_xs[2 * v22 + 1] = face->pYInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].y);
+          word_7209A0_intercepts_ys_plus_ys[2 * v22 + 1] = face->pZInterceptDisplacements[v22 + 1] + LOWORD(pOutdoor->pBModels[a2].pVertices.pVertices[face->pVertexIDs[v22 + 1]].z);
+        }
+      }
+    }
+  }
+  a4d = 0;
+  word_720A70_intercepts_xs_plus_xs[2 * face->uNumVertices] = word_720A70_intercepts_xs_plus_xs[0];
+  word_7209A0_intercepts_ys_plus_ys[2 * face->uNumVertices] = word_7209A0_intercepts_ys_plus_ys[0];
+  v12 = word_7209A0_intercepts_ys_plus_ys[0] >= v24;
+  if (2 * face->uNumVertices <= 0)
+    return 0;
+  for (v21 = 0; v21 < 2 * face->uNumVertices; ++v21)
+  {
+    if (a4d >= 2)
+      break;
+    if (v12 ^ (word_7209A0_intercepts_ys_plus_ys[v21 + 1] >= v24))
+    {
+      if (word_720A70_intercepts_xs_plus_xs[v21 + 1] >= v23)
+        v16 = 0;
+      else
+        v16 = 2;
+      v17 = v16 | (word_720A70_intercepts_xs_plus_xs[v21] < v23);
+      if (v17 != 3)
+      {
+        v18 = word_720A70_intercepts_xs_plus_xs[v21 + 1] - word_720A70_intercepts_xs_plus_xs[v21];
+        HEXRAYS_LODWORD(v19) = v18 << 16;
+        HEXRAYS_HIDWORD(v19) = v18 >> 16;
+        if (!v17
+          || (word_720A70_intercepts_xs_plus_xs[v21] + ((signed int)(((unsigned __int64)(v19
+            / (word_7209A0_intercepts_ys_plus_ys[v21 + 1] - word_7209A0_intercepts_ys_plus_ys[v21])
+            * ((v24 - (signed int)word_7209A0_intercepts_ys_plus_ys[v21]) << 16)) >> 16)
+            + 0x8000) >> 16) >= v23))
+          ++a4d;
+      }
+    }
+    v12 = word_7209A0_intercepts_ys_plus_ys[v21 + 1] >= v24;
+  }
+  result = 1;
+  if (a4d != 1)
+    result = 0;
+  return result;
 }
 
-bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, BLVFace *a4)
-{
-	BLVFace *v4; // ebx@1
-	int v5; // ST24_4@2
-	int v6; // ST28_4@2
-	int v7; // edi@2
-	int v8; // eax@5
-	signed int v9; // esi@5
-	signed __int64 v10; // qtt@10
-	Vec3_int_ *v11; // esi@11
-	int v12; // ST14_4@11
-	Vec3_int_ *v14; // [sp+Ch] [bp-18h]@1
-	Vec3_int_ *v15; // [sp+14h] [bp-10h]@1
-	//  int v16; // [sp+18h] [bp-Ch]@2
-	int v17; // [sp+20h] [bp-4h]@10
-	int a4b; // [sp+30h] [bp+Ch]@2
-	int a4c; // [sp+30h] [bp+Ch]@9
-	signed int a4a; // [sp+30h] [bp+Ch]@10
+bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, BLVFace *a4) {
+  BLVFace *v4; // ebx@1
+  int v5; // ST24_4@2
+  int v6; // ST28_4@2
+  int v7; // edi@2
+  int v8; // eax@5
+  signed int v9; // esi@5
+  signed __int64 v10; // qtt@10
+  Vec3_int_ *v11; // esi@11
+  int v12; // ST14_4@11
+  Vec3_int_ *v14; // [sp+Ch] [bp-18h]@1
+  Vec3_int_ *v15; // [sp+14h] [bp-10h]@1
+  int v17; // [sp+20h] [bp-4h]@10
+  int a4b; // [sp+30h] [bp+Ch]@2
+  int a4c; // [sp+30h] [bp+Ch]@9
+  int a4a; // [sp+30h] [bp+Ch]@10
 
-	v4 = a4;
-	v15 = a2;
-	v14 = a1;
-	v5 = fixpoint_mul(a2->x, a4->pFacePlane_old.vNormal.x);
-	a4b = fixpoint_mul(a2->y, a4->pFacePlane_old.vNormal.y);
-	v6 = fixpoint_mul(a2->z, v4->pFacePlane_old.vNormal.z);
-	v7 = v5 + v6 + a4b;
-	//(v16 = v5 + v6 + a4b) == 0;
-	if (a4->uAttributes & FACE_ETHEREAL || !v7 || v7 > 0 && !v4->Portal())
-		return 0;
-	v8 = v4->pFacePlane_old.vNormal.z * a1->z;
-	v9 = -(v4->pFacePlane_old.dist + v8 + a1->y * v4->pFacePlane_old.vNormal.y + a1->x * v4->pFacePlane_old.vNormal.x);
-	if (v7 <= 0)
-	{
-		if (v4->pFacePlane_old.dist + v8 + a1->y * v4->pFacePlane_old.vNormal.y + a1->x * v4->pFacePlane_old.vNormal.x < 0)
-			return 0;
-	}
-	else
-	{
-		if (v9 < 0)
-			return 0;
-	}
-	a4c = abs(-(v4->pFacePlane_old.dist + v8 + a1->y * v4->pFacePlane_old.vNormal.y + a1->x * v4->pFacePlane_old.vNormal.x)) >> 14;
-	v11 = v14;
-    HEXRAYS_LODWORD(v10) = v9 << 16;
-    HEXRAYS_HIDWORD(v10) = v9 >> 16;
-	a4a = v10 / v7;
-	v17 = v10 / v7;
-    HEXRAYS_LOWORD(v12) = HEXRAYS_LOWORD(v14->x) + (((unsigned int)fixpoint_mul(v17, v15->x) + 0x8000) >> 16);
-    HEXRAYS_HIWORD(v12) = HEXRAYS_LOWORD(v11->y) + (((unsigned int)fixpoint_mul(v17, v15->y) + 0x8000) >> 16);
-	if (a4c > abs(v7) || (v17 > *a3 << 16) || !sub_475665(v4, v12, LOWORD(v11->z) + (((unsigned int)fixpoint_mul(v17, v15->z) + 0x8000) >> 16)))
-		return 0;
-	*a3 = a4a >> 16;
-	return 1;
+  v4 = a4;
+  v15 = a2;
+  v14 = a1;
+  v5 = fixpoint_mul(a2->x, a4->pFacePlane_old.vNormal.x);
+  a4b = fixpoint_mul(a2->y, a4->pFacePlane_old.vNormal.y);
+  v6 = fixpoint_mul(a2->z, v4->pFacePlane_old.vNormal.z);
+  v7 = v5 + v6 + a4b;
+  //(v16 = v5 + v6 + a4b) == 0;
+  if (a4->uAttributes & FACE_ETHEREAL || !v7 || v7 > 0 && !v4->Portal())
+    return 0;
+  v8 = v4->pFacePlane_old.vNormal.z * a1->z;
+  v9 = -(v4->pFacePlane_old.dist + v8 + a1->y * v4->pFacePlane_old.vNormal.y + a1->x * v4->pFacePlane_old.vNormal.x);
+  if (v7 <= 0) {
+    if (v4->pFacePlane_old.dist + v8 + a1->y * v4->pFacePlane_old.vNormal.y + a1->x * v4->pFacePlane_old.vNormal.x < 0)
+      return 0;
+  } else {
+    if (v9 < 0)
+      return 0;
+  }
+  a4c = abs(-(v4->pFacePlane_old.dist + v8 + a1->y * v4->pFacePlane_old.vNormal.y + a1->x * v4->pFacePlane_old.vNormal.x)) >> 14;
+  v11 = v14;
+  HEXRAYS_LODWORD(v10) = v9 << 16;
+  HEXRAYS_HIDWORD(v10) = v9 >> 16;
+  a4a = v10 / v7;
+  v17 = v10 / v7;
+  HEXRAYS_LOWORD(v12) = HEXRAYS_LOWORD(v14->x) + (((unsigned int)fixpoint_mul(v17, v15->x) + 0x8000) >> 16);
+  HEXRAYS_HIWORD(v12) = HEXRAYS_LOWORD(v11->y) + (((unsigned int)fixpoint_mul(v17, v15->y) + 0x8000) >> 16);
+  if (a4c > abs(v7) || (v17 > *a3 << 16) || !sub_475665(v4, v12, LOWORD(v11->z) + (((unsigned int)fixpoint_mul(v17, v15->z) + 0x8000) >> 16)))
+    return 0;
+  *a3 = a4a >> 16;
+  return 1;
 }
 
-bool sub_475F30(int *a1, BLVFace *a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9)
-{
-	int v10; // ST20_4@2
-	int v11; // ST28_4@2
-	int v12; // ST24_4@2
-	int v13; // zf@2
-	int v14; // edi@2
-	signed int v16; // esi@5
-	int v17; // ST20_4@9
-	signed __int64 v18; // qtt@10
-	int v19; // ST14_4@11
-	int v22; // [sp+1Ch] [bp-8h]@2
-	int v23; // [sp+1Ch] [bp-8h]@10
-	signed int v24; // [sp+20h] [bp-4h]@10
-
-	v10 = fixpoint_mul(a6, a2->pFacePlane_old.vNormal.x);
-	v11 = fixpoint_mul(a7, a2->pFacePlane_old.vNormal.y);
-	v12 = fixpoint_mul(a8, a2->pFacePlane_old.vNormal.z);
-	v13 = v10 + v12 + v11;
-	v14 = v10 + v12 + v11;
-	v22 = v10 + v12 + v11;
-	if (a2->Ethereal() || !v13 || v14 > 0 && !a2->Portal())
-		return 0;
-	v16 = -(a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y + a3 * a2->pFacePlane_old.vNormal.x + a5 * a2->pFacePlane_old.vNormal.z);
-	if (v14 <= 0)
-	{
-		if (a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y + a3 * a2->pFacePlane_old.vNormal.x + a5 * a2->pFacePlane_old.vNormal.z < 0)
-			return 0;
-	}
-	else
-	{
-		if (v16 < 0)
-			return 0;
-	}
-	v17 = abs(-(a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y + a3 * a2->pFacePlane_old.vNormal.x + a5 * a2->pFacePlane_old.vNormal.z)) >> 14;
-    HEXRAYS_LODWORD(v18) = v16 << 16;
-    HEXRAYS_HIDWORD(v18) = v16 >> 16;
-	v24 = v18 / v22;
-	v23 = v18 / v22;
-    HEXRAYS_LOWORD(v19) = a3 + (((unsigned int)fixpoint_mul(v23, a6) + 0x8000) >> 16);
-    HEXRAYS_HIWORD(v19) = a4 + (((unsigned int)fixpoint_mul(v23, a7) + 0x8000) >> 16);
-	if (v17 > abs(v14) || v23 > *a1 << 16 || !sub_4759C9(a2, a9, v19, a5 + (((unsigned int)fixpoint_mul(v23, a8) + 0x8000) >> 16)))
-		return 0;
-	*a1 = v24 >> 16;
-	return 1;
+bool sub_475F30(int *a1, BLVFace *a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9) {
+  int v10 = fixpoint_mul(a6, a2->pFacePlane_old.vNormal.x);
+  int v11 = fixpoint_mul(a7, a2->pFacePlane_old.vNormal.y);
+  int v12 = fixpoint_mul(a8, a2->pFacePlane_old.vNormal.z);
+  int v13 = v10 + v12 + v11;
+  int v14 = v10 + v12 + v11;
+  int v22 = v10 + v12 + v11;
+  if (a2->Ethereal() || !v13 || v14 > 0 && !a2->Portal()) {
+    return false;
+  }
+  int v16 = -(a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y + a3 * a2->pFacePlane_old.vNormal.x + a5 * a2->pFacePlane_old.vNormal.z);
+  if (v14 <= 0) {
+    if (a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y + a3 * a2->pFacePlane_old.vNormal.x + a5 * a2->pFacePlane_old.vNormal.z < 0)
+      return 0;
+  } else {
+    if (v16 < 0) {
+      return 0;
+    }
+  }
+  int v17 = abs(-(a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y + a3 * a2->pFacePlane_old.vNormal.x + a5 * a2->pFacePlane_old.vNormal.z)) >> 14;
+  int64_t v18;
+  HEXRAYS_LODWORD(v18) = v16 << 16;
+  HEXRAYS_HIDWORD(v18) = v16 >> 16;
+  int v24 = v18 / v22;
+  int v23 = v18 / v22;
+  int v19;
+  HEXRAYS_LOWORD(v19) = a3 + (((unsigned int)fixpoint_mul(v23, a6) + 0x8000) >> 16);
+  HEXRAYS_HIWORD(v19) = a4 + (((unsigned int)fixpoint_mul(v23, a7) + 0x8000) >> 16);
+  if (v17 > abs(v14) || v23 > *a1 << 16 || !sub_4759C9(a2, a9, v19, a5 + (((unsigned int)fixpoint_mul(v23, a8) + 0x8000) >> 16)))
+    return 0;
+  *a1 = v24 >> 16;
+  return 1;
 }
 
-bool IsBModelVisible(unsigned int uModelID, int *reachable)
-{
-	int v3; // edi@1
-	int v4; // ebx@1
-	int v9; // eax@3
-	signed int v11; // esi@6
-	int v12; // esi@8
-	bool result; // eax@9
-	int v17; // [sp+1Ch] [bp-10h]@1
-	int v19; // [sp+20h] [bp-Ch]@3
-	int angle; // [sp+24h] [bp-8h]@1
+bool IsBModelVisible(unsigned int uModelID, int *reachable) {
+  int v11; // esi@6
+  int v12; // esi@8
+  bool result; // eax@9
 
-	angle = (signed int)(pODMRenderParams->uCameraFovInDegrees << 11) / 360 / 2;
-	v3 = pOutdoor->pBModels[uModelID].vBoundingCenter.x - pIndoorCameraD3D->vPartyPos.x;
-	v4 = pOutdoor->pBModels[uModelID].vBoundingCenter.y - pIndoorCameraD3D->vPartyPos.y;
-	stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX);
-	v17 = v3 * stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY) + v4 * stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY);
-	if (pIndoorCameraD3D->sRotationX)
-		v17 = fixpoint_mul(v17, stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX));
-	v19 = v4 * stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY) - v3 * stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY);
-	v9 = int_get_vector_length(abs(v3), abs(v4), 0);
-	//v10 = v14 * 188;
-	//v22 = device_caps;
-	*reachable = false;
-	if (v9 < pOutdoor->pBModels[uModelID].sBoundingRadius + 256)
-		*reachable = true;
-	if (v19 >= 0)
-		v11 = fixpoint_mul(stru_5C6E00->Sin(angle), v17) - fixpoint_mul(stru_5C6E00->Cos(angle), v19);
-	else
-		v11 = fixpoint_mul(stru_5C6E00->Cos(angle), v19) + fixpoint_mul(stru_5C6E00->Sin(angle), v17);
-	v12 = v11 >> 16;
-	if (v9 <= pIndoorCameraD3D->GetFarClip() + 2048)
-	{
-		//if ( abs(v12) > *(int *)((char *)&pOutdoor->pBModels->sBoundingRadius + v10) + 512 )
-		if (abs(v12) > pOutdoor->pBModels[uModelID].sBoundingRadius + 512)
-		{
-			result = v12 < 0;
-            HEXRAYS_LOBYTE(result) = v12 >= 0;
-			return result;
-		}
-		else
-			return true;
-	}
-	return false;
+  int angle = (int)(pODMRenderParams->uCameraFovInDegrees << 11) / 360 / 2;
+  int v3 = pOutdoor->pBModels[uModelID].vBoundingCenter.x - pIndoorCameraD3D->vPartyPos.x;
+  int v4 = pOutdoor->pBModels[uModelID].vBoundingCenter.y - pIndoorCameraD3D->vPartyPos.y;
+  stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX);
+  int v17 = v3 * stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY) + v4 * stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY);
+  if (pIndoorCameraD3D->sRotationX) {
+    v17 = fixpoint_mul(v17, stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX));
+  }
+  int v19 = v4 * stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY) - v3 * stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY);
+  int v9 = int_get_vector_length(abs(v3), abs(v4), 0);
+  //v10 = v14 * 188;
+  //v22 = device_caps;
+  *reachable = false;
+  if (v9 < pOutdoor->pBModels[uModelID].sBoundingRadius + 256)
+    *reachable = true;
+  if (v19 >= 0)
+    v11 = fixpoint_mul(stru_5C6E00->Sin(angle), v17) - fixpoint_mul(stru_5C6E00->Cos(angle), v19);
+  else
+    v11 = fixpoint_mul(stru_5C6E00->Cos(angle), v19) + fixpoint_mul(stru_5C6E00->Sin(angle), v17);
+  v12 = v11 >> 16;
+  if (v9 <= pIndoorCameraD3D->GetFarClip() + 2048) {
+    //if ( abs(v12) > *(int *)((char *)&pOutdoor->pBModels->sBoundingRadius + v10) + 512 )
+    if (abs(v12) > pOutdoor->pBModels[uModelID].sBoundingRadius + 512) {
+      result = v12 < 0;
+      HEXRAYS_LOBYTE(result) = v12 >= 0;
+      return result;
+    } else {
+      return true;
+    }
+  }
+  return false;
 }
 
-int Polygon::_479295()
-{
-	int v3; // ecx@4
-	int v4; // eax@4
-	int v5; // edx@4
-	//  int v6; // ST14_4@5
-	Vec3_int_ thisa; // [sp+Ch] [bp-10h]@8
-	int v11; // [sp+18h] [bp-4h]@4
+int Polygon::_479295() {
+  int v3; // ecx@4
+  int v4; // eax@4
+  int v5; // edx@4
+  Vec3_int_ thisa; // [sp+Ch] [bp-10h]@8
+  int v11; // [sp+18h] [bp-4h]@4
 
-	if (!this->pODMFace->pFacePlane.vNormal.z)
-	{
-		v3 = this->pODMFace->pFacePlane.vNormal.x;
-		v4 = -this->pODMFace->pFacePlane.vNormal.y;
-		v5 = 0;
-		v11 = 65536;
-	}
-	else if ((this->pODMFace->pFacePlane.vNormal.x || this->pODMFace->pFacePlane.vNormal.y)
-		&& abs(this->pODMFace->pFacePlane.vNormal.z) < 59082)
-	{
-		thisa.x = -this->pODMFace->pFacePlane.vNormal.y;
-		thisa.y = this->pODMFace->pFacePlane.vNormal.x;
-		thisa.z = 0;
-		thisa.Normalize_float();
-		v4 = thisa.x;
-		v3 = thisa.y;
-		v5 = 0;
-		v11 = 65536;
-	}
-	else
-	{
-		v3 = 0;
-		v4 = 65536;
-		v11 = 0;
-		v5 = -65536;
-	}
-	sTextureDeltaU = this->pODMFace->sTextureDeltaU;
-	sTextureDeltaV = this->pODMFace->sTextureDeltaV;
-	ptr_38->_48616B_frustum_odm(v4, v3, 0, 0, v5, v11);
-	return 1;
+  if (!this->pODMFace->pFacePlane.vNormal.z) {
+    v3 = this->pODMFace->pFacePlane.vNormal.x;
+    v4 = -this->pODMFace->pFacePlane.vNormal.y;
+    v5 = 0;
+    v11 = 65536;
+  } else if ((this->pODMFace->pFacePlane.vNormal.x || this->pODMFace->pFacePlane.vNormal.y)
+    && abs(this->pODMFace->pFacePlane.vNormal.z) < 59082)
+  {
+    thisa.x = -this->pODMFace->pFacePlane.vNormal.y;
+    thisa.y = this->pODMFace->pFacePlane.vNormal.x;
+    thisa.z = 0;
+    thisa.Normalize_float();
+    v4 = thisa.x;
+    v3 = thisa.y;
+    v5 = 0;
+    v11 = 65536;
+  } else {
+    v3 = 0;
+    v4 = 65536;
+    v11 = 0;
+    v5 = -65536;
+  }
+  sTextureDeltaU = this->pODMFace->sTextureDeltaU;
+  sTextureDeltaV = this->pODMFace->sTextureDeltaV;
+  ptr_38->_48616B_frustum_odm(v4, v3, 0, 0, v5, v11);
+  return 1;
 }
 
-void  sr_485F53(Vec2_int_ *v)
-{
-	++v->y;
-	if (v->y > 1000)
-		v->y = 0;
+void  sr_485F53(Vec2_int_ *v) {
+  ++v->y;
+  if (v->y > 1000)
+    v->y = 0;
 }
 
 void Polygon::Create_48607B(stru149 *a2) {
@@ -7315,16 +5973,13 @@ void stru149::_48616B_frustum_odm(int a2, int a3, int a4, int a5, int a6, int a7
     this->viewing_angle_from_west_east = a4;
   }
 
-  if (pIndoorCameraD3D->sRotationX)
-  {
+  if (pIndoorCameraD3D->sRotationX) {
     v19 = fixpoint_mul(a5, v9) + fixpoint_mul(a6, v7);
 
     this->angle_from_east = fixpoint_mul(v19, v25) + fixpoint_mul(a7, v27);
     this->angle_from_south = fixpoint_mul(a6, v9) - fixpoint_mul(a5, v7);
     this->viewing_angle_from_north_south = fixpoint_mul(a7, v25) - fixpoint_mul(v19, v27);
-  }
-  else
-  {
+  } else {
     this->angle_from_east = fixpoint_mul(a5, v9) + fixpoint_mul(a6, v7);
     this->angle_from_south = fixpoint_mul(a6, v9) - fixpoint_mul(a5, v7);
     this->viewing_angle_from_north_south = a7;

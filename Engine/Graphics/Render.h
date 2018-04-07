@@ -8,6 +8,7 @@
 #include <d3d.h>
 #include <ddraw.h>
 #include <GdiPlus.h>
+#undef DrawText
 
 struct ODMFace;
 class RenderD3D;
@@ -85,7 +86,7 @@ class Render : public IRender {
   virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices);
 
   virtual void DrawTextAlpha(int x, int y, uint8_t *font_pixels, int a5, unsigned int uFontHeight, uint8_t *pPalette, bool present_time_transparency);
-  virtual void DrawText(int uOutX, int uOutY, uint8_t *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, uint8_t *pFontPalette, uint16_t uFaceColor, uint16 uShadowColor);
+  virtual void DrawText(int uOutX, int uOutY, uint8_t *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, uint8_t *pFontPalette, uint16_t uFaceColor, uint16_t uShadowColor);
 
   virtual void FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16);
 
@@ -154,9 +155,6 @@ class Render : public IRender {
   unsigned int uTargetRBits;
   unsigned int uTargetGBits;
   unsigned int uTargetBBits;
-  unsigned int uTargetRMask;
-  unsigned int uTargetGMask;
-  unsigned int uTargetBMask;
   unsigned int uNumD3DSceneBegins;
   RenderHWLContainer pD3DBitmaps;
   RenderHWLContainer pD3DSprites;
@@ -184,12 +182,6 @@ class Render : public IRender {
   bool CheckTextureStages();
   void ParseTargetPixelFormat();
 
-  void CreateDirectDraw();
-  void SetDirectDrawCooperationMode(OSWindow *, bool bFullscreen);
-  void SetDirectDrawDisplayMode(unsigned int uWidth, unsigned int uHeight, unsigned int uBPP);
-  void CreateFrontBuffer();
-  void CreateBackBuffer();
-  void CreateDirectDrawPrimarySurface();
   void CreateClipper(OSWindow *);
 
   void SavePCXImage16(const String &filename, uint16_t *picture_data, int width, int height);
@@ -199,5 +191,5 @@ class Render : public IRender {
 
   bool LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags);
   void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
-  void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon);
+  void DrawIndoorSkyPolygon(int uNumVertices, struct Polygon *pSkyPolygon);
 };

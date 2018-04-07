@@ -101,26 +101,21 @@ void GameMenu_EventLoop() {
       continue;
 
     case UIMSG_SaveLoadBtn:
-      new OnSaveLoad(241, 302, 106, 42, (int)pBtnLoadSlot, 0);
+      new OnSaveLoad(241, 302, 106, 42, (int)pBtnLoadSlot);
       continue;
-    case UIMSG_SelectLoadSlot:
-    {
+    case UIMSG_SelectLoadSlot: {
       if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
         pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_NONE);
 
       int v10 = pSaveListPosition + param;
-      if (current_screen_type != SCREEN_SAVEGAME || uLoadGameUI_SelectedSlot != v10)
-      {
-        if (dword_6BE138 == pSaveListPosition + param)
-        {
+      if (current_screen_type != SCREEN_SAVEGAME || uLoadGameUI_SelectedSlot != v10) {
+        if (dword_6BE138 == pSaveListPosition + param) {
           pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
           pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
         }
         uLoadGameUI_SelectedSlot = v10;
         dword_6BE138 = v10;
-      }
-      else
-      {
+      } else {
         pKeyActionMap->EnterText(0, 19, pGUIWindow_CurrentMenu);
         if (strcmp(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, localization->GetString(72)))// "Empty"
           strcpy(pKeyActionMap->pPressedKeysBuffer, pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
