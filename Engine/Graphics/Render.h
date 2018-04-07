@@ -1,17 +1,12 @@
 #pragma once
-/*
-#include <cstdint>
-#include <cstdio>
-#include <array>
-*/
-#include <d3d.h>
-#include <ddraw.h>
 
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
 
 #include "Engine/Graphics/IRender.h"
 
+#include <d3d.h>
+#include <ddraw.h>
 #include <GdiPlus.h>
 
 struct ODMFace;
@@ -26,7 +21,7 @@ class Render : public IRender {
   virtual bool Initialize(OSWindow *window);
 
   virtual Texture *CreateTexture(const String &name) override;
-  virtual Texture *CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id) override;
+  virtual Texture *CreateSprite(const String &name, unsigned int palette_id, unsigned int lod_sprite_id) override;
 
   virtual void ClearBlack();
   virtual void PresentBlackScreen();
@@ -35,21 +30,14 @@ class Render : public IRender {
   virtual void ClearTarget(unsigned int uColor);
   virtual void Present();
 
-  virtual void _49FD3A_fullscreen();
   virtual bool InitializeFullscreen();
 
   virtual void CreateZBuffer();
   virtual void Release();
 
   virtual bool SwitchToWindow();
-  virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor);
+  virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t uColor);
   virtual void ClearZBuffer(int a2, int a3);
-  virtual bool LockSurface(Texture *texture, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height);
-  virtual void UnlockSurface(Texture *texture);
-  virtual void LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow);
-  virtual void UnlockBackBuffer();
-  virtual void LockFrontBuffer(void **pOutSurface, unsigned int *pOutPixelsPerRow);
-  virtual void UnlockFrontBuffer();
   virtual void RestoreFrontBuffer();
   virtual void RestoreBackBuffer();
   virtual void BltBackToFontFast(int a2, int a3, Rect *pSrcRect);
@@ -90,26 +78,21 @@ class Render : public IRender {
   virtual void BlendTextures(int x, int y, Image *imgin, Image *imgblend, int time, int start_opacity, int end_opacity);
   virtual void _4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5, int a6, int a7, int a8);
 
-  virtual void DrawMasked(float u, float v, class Image *img, unsigned int color_dimming_level, unsigned __int16 mask);
+  virtual void DrawMasked(float u, float v, class Image *img, unsigned int color_dimming_level, uint16_t mask);
   virtual void DrawTextureGrayShade(float u, float v, class Image *a4);
   virtual void DrawTransparentRedShade(float u, float v, class Image *a4);
   virtual void DrawTransparentGreenShade(float u, float v, class Image *pTexture);
   virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices);
 
-  virtual void DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, uint16_t *pPalette, bool present_time_transparency);
-  virtual void DrawText(int uOutX, int uOutY, uint8_t *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, uint16_t *pFontPalette, uint16_t uFaceColor, uint16 uShadowColor);
+  virtual void DrawTextAlpha(int x, int y, uint8_t *font_pixels, int a5, unsigned int uFontHeight, uint8_t *pPalette, bool present_time_transparency);
+  virtual void DrawText(int uOutX, int uOutY, uint8_t *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, uint8_t *pFontPalette, uint16_t uFaceColor, uint16 uShadowColor);
 
   virtual void FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16);
 
   virtual void DrawBuildingsD3D();
-  //struct BSPModel *DrawBuildingsSW();
-  //int OnOutdoorRedrawSW();
 
   virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID);
   virtual void DrawOutdoorSkyD3D();
-  //int DrawSkySW(struct Span *a1, Polygon *a2, int a3);
-  virtual void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
-  virtual void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon);
 
   virtual void PrepareDecorationsRenderList_ODM();
   virtual void DrawSpriteObjects_ODM();
@@ -122,7 +105,7 @@ class Render : public IRender {
   virtual void PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size);
   virtual void SavePCXScreenshot();
 
-  virtual int _46ภ6ภั_GetActorsInViewport(int pDepth);
+  virtual int GetActorsInViewport(int pDepth);
 
   virtual void BeginLightmaps();
   virtual void EndLightmaps();
@@ -154,15 +137,9 @@ class Render : public IRender {
   virtual unsigned int GetRenderWidth() const;
   virtual unsigned int GetRenderHeight() const;
 
-  virtual void Sub01() {
-    if (pRenderD3D && !bWindowMode)
-      _49FD3A_fullscreen();
-  }
-
   friend void Present_NoColorKey();
 
   void GetTargetPixelFormat(DDPIXELFORMAT *pOut);
-  bool LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags);
 
  protected:
   IDirectDraw4 * pDirectDraw4;
@@ -219,4 +196,8 @@ class Render : public IRender {
   void SavePCXImage32(const String &filename, uint16_t *picture_data, int width, int height);
 
   Gdiplus::Bitmap *BitmapWithImage(Image *image);
+
+  bool LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags);
+  void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
+  void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon);
 };

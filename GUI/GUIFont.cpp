@@ -43,7 +43,7 @@ struct FontData {
   uint16_t uFontHeight;  //5-6
   uint8_t field_7;
   uint32_t palletes_count;
-  uint16_t *pFontPalettes[5];
+  uint8_t *pFontPalettes[5];
   GUICharMetric pMetrics[256];
   uint32_t font_pixels_offset[256];
   uint8_t pFontData[0]; //array of font pixels
@@ -62,11 +62,11 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette, ...)
   va_start(palettes_ptr, pFontFile);
 
   while (NULL != (pFontPalette = va_arg(palettes_ptr, const char *))) {
-    int pallete_index = pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_16BIT_PALETTE);
+    int pallete_index = pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_24BIT_PALETTE);
     if (pallete_index == -1)
       Error("Unable to open %s", pFontPalette);
 
-    pFont->pData->pFontPalettes[palletes_count] = pIcons_LOD->pTextures[pallete_index].pPalette16;
+    pFont->pData->pFontPalettes[palletes_count] = pIcons_LOD->pTextures[pallete_index].pPalette24;
     ++palletes_count;
   }
   va_end(palettes_ptr);
@@ -134,14 +134,21 @@ void GUIFont::DrawTextLine(const String &text, uint16_t uDefaultColor, int uX, i
 }
 
 void DrawCharToBuff(uint16_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
-                    uint16_t *pFontPalette, uint16_t draw_color, int line_width)
+                    uint8_t *pFontPalette, uint16_t draw_color, int line_width)
 {
   uint8_t *pPixels = pCharPixels;
   for (int y = 0; y < uCharHeight; ++y) {
     for (int x = 0; x < uCharWidth; ++x) {
       uint8_t char_pxl = *pPixels++;
       if (char_pxl) {
-        *draw_buff = (char_pxl == 1) ? pFontPalette[1] : draw_color;
+        if (char_pxl == 1) {
+          uint8_t r = pFontPalette[3];
+          uint8_t g = pFontPalette[4];
+          uint8_t b = pFontPalette[5];
+          *draw_buff = Color16(r, g, b);
+        } else {
+          *draw_buff = draw_color;
+        }
       }
       ++draw_buff;
     }

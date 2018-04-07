@@ -20,7 +20,6 @@ enum TEXTURE_TYPE
 {
     TEXTURE_DEFAULT = 0,
     TEXTURE_24BIT_PALETTE = 0x1,
-    TEXTURE_16BIT_PALETTE = 0x2,
 };
 
 namespace LOD
@@ -150,7 +149,6 @@ struct LODFile_IconsBitmaps : public LOD::File
     void ReleaseHardwareTextures();
     void ReleaseLostHardwareTextures();
     //void _410423_move_textures_to_device();
-    int PlacementLoadTexture(struct Texture_MM7 *pDst, const char *pContainer, unsigned int uTextureType);
     void SetupPalettes(unsigned int uTargetRBits, unsigned int uTargetGBits, unsigned int uTargetBBits);
     void ReleaseAll2();
     void RemoveTexturesPackFromTextureList();

@@ -1765,9 +1765,9 @@ bool OutdoorLocation::_47F0E2()
   for ( uint i = 0; i < (signed int)pBitmaps_LOD->uNumLoadedFiles; ++i )
   {
     //if ( i != -1 ? (int)&pBitmaps_LOD->pTextures[i] : 0 )
-      pBitmaps_LOD->pTextures[i].uDecompressedSize = this->pTerrain._47CB57(pBitmaps_LOD->pTextures[i].paletted_pixels,
-                                                    pBitmaps_LOD->pTextures[i].palette_id2,
-                                                    pBitmaps_LOD->pTextures[i].uTextureWidth * pBitmaps_LOD->pTextures[i].uTextureHeight);
+      pBitmaps_LOD->pTextures[i].header.uDecompressedSize = this->pTerrain._47CB57(pBitmaps_LOD->pTextures[i].paletted_pixels,
+                                                    pBitmaps_LOD->pTextures[i].header.palette_id2,
+                                                    pBitmaps_LOD->pTextures[i].header.uTextureWidth * pBitmaps_LOD->pTextures[i].header.uTextureHeight);
   }
   return 1;
 }

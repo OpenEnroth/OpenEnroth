@@ -1657,7 +1657,7 @@ void sub_4B3E1E() {
   int v1 = 0;
   pDialogueWindow->eWindowType = WINDOW_MainMenu;
   pDialogueWindow->Release();
-  pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 1, 0);
+  pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 1);
   if (pNPCStats->pProfessions[v0->uProfession].pBenefits) {  //*(&pNPCStats->field_13A5C + 5 * v0->uProfession) )
     pDialogueWindow->CreateButton(480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, 0, localization->GetString(407)); // Details / Подробнее
     v1 = 1;

@@ -22,87 +22,57 @@
 
 #include "PaletteManager.h"
 
-
-
-
-
-
-
-
-
 struct TextureFrameTable *pTextureFrameTable;
-
-
 
 stru355 stru_4E82A4 = {0x20, 0x41, 0, 0x20, 0xFF0000, 0xFF00, 0xFF, 0xFF000000};
 stru355 stru_4EFCBC = {0x20, 0x41, 0, 0x10, 0x7C00, 0x3E0, 0x1F, 0x8000};
 
 //Texture_MM7 pTex_F7CE30;
 
+const wchar_t *IMAGE_FORMAT_ToString(IMAGE_FORMAT format) {
+  switch (format) {
+    case IMAGE_FORMAT_R5G6B5:   return L"IMAGE_FORMAT_R5G6B5";
+    case IMAGE_FORMAT_A1R5G5B5: return L"IMAGE_FORMAT_A1R5G5B5";
+    case IMAGE_FORMAT_A8R8G8B8: return L"IMAGE_FORMAT_A8R8G8B8";
+    case IMAGE_FORMAT_R8G8B8:   return L"IMAGE_FORMAT_R8G8B8";
+    case IMAGE_FORMAT_R8G8B8A8: return L"IMAGE_FORMAT_R8G8B8A8";
 
-
-
-
-
-
-const wchar_t *IMAGE_FORMAT_ToString(IMAGE_FORMAT format)
-{
-    switch (format)
-    {
-        case IMAGE_FORMAT_R5G6B5:   return L"IMAGE_FORMAT_R5G6B5";
-        case IMAGE_FORMAT_A1R5G5B5: return L"IMAGE_FORMAT_A1R5G5B5";
-        case IMAGE_FORMAT_A8R8G8B8: return L"IMAGE_FORMAT_A8R8G8B8";
-        case IMAGE_FORMAT_R8G8B8:   return L"IMAGE_FORMAT_R8G8B8";
-        case IMAGE_FORMAT_R8G8B8A8: return L"IMAGE_FORMAT_R8G8B8A8";
-
-        default:
-            Error("Invalid format: %d", format);
-            return L"Invalid format";
-    }
+    default:
+      Error("Invalid format: %d", format);
+      return L"Invalid format";
+  }
 }
 
-unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format)
-{
-    switch (format)
-    {
-        case IMAGE_FORMAT_R5G6B5:   return 2;
-        case IMAGE_FORMAT_A1R5G5B5: return 2;
-        case IMAGE_FORMAT_A8R8G8B8: return 4;
-        case IMAGE_FORMAT_R8G8B8:   return 3;
-        case IMAGE_FORMAT_R8G8B8A8: return 4;
+unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format) {
+  switch (format) {
+    case IMAGE_FORMAT_R5G6B5:   return 2;
+    case IMAGE_FORMAT_A1R5G5B5: return 2;
+    case IMAGE_FORMAT_A8R8G8B8: return 4;
+    case IMAGE_FORMAT_R8G8B8:   return 3;
+    case IMAGE_FORMAT_R8G8B8A8: return 4;
 
-        default:
-            Error("Invalid format: %d", format);
-            return 0;
-    }
+    default:
+      Error("Invalid format: %d", format);
+      return 0;
+  }
 }
 
-
-Texture *TextureFrame::GetTexture()
-{
-    if (!this->tex)
-    {
-        this->tex = assets->GetBitmap(this->name);
-    }
-    return this->tex;
+Texture *TextureFrame::GetTexture() {
+  if (!this->tex) {
+    this->tex = assets->GetBitmap(this->name);
+  }
+  return this->tex;
 }
 
-
-//----- (0044E054) --------------------------------------------------------
-void TextureFrameTable::ToFile()
-{
-  TextureFrameTable *v1; // esi@1
-  FILE *v2; // eax@1
-  FILE *v3; // edi@1
-
-  v1 = this;
-  v2 = fopen("data\\dtft.bin", "wb");
-  v3 = v2;
-  if ( !v2 )
+void TextureFrameTable::ToFile() {
+  TextureFrameTable *v1 = this;
+  FILE *file = fopen("data\\dtft.bin", "wb");
+  if (file == nullptr) {
     Error("Unable to save dtft.bin!");
-  fwrite(v1, 4u, 1u, v2);
-  fwrite(v1->pTextures, 0x14u, v1->sNumTextures, v3);
-  fclose(v3);
+  }
+  fwrite(v1, 4u, 1u, file);
+  fwrite(v1->pTextures, 0x14u, v1->sNumTextures, file);
+  fclose(file);
 }
 
 //----- (0044E0A0) --------------------------------------------------------
@@ -138,170 +108,82 @@ void TextureFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8)
   this->pTextures = frames;
 }
 
-//----- (0044E0ED) --------------------------------------------------------
-void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID)
-{
-    if (uFrameID <= this->sNumTextures && uFrameID >= 0)
-    {
-        for (unsigned int i = uFrameID; ; ++i)
-        {
-            //this->pTextures[i].uTextureID = pBitmaps_LOD->LoadTexture(this->pTextures[i].pTextureName, TEXTURE_DEFAULT);
+void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID) {
+  if (uFrameID <= this->sNumTextures && uFrameID >= 0) {
+    for (unsigned int i = uFrameID; ; ++i) {
+      //this->pTextures[i].uTextureID = pBitmaps_LOD->LoadTexture(this->pTextures[i].pTextureName, TEXTURE_DEFAULT);
 
-            //if (this->pTextures[i].uTextureID != -1)
-            //    pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id1);
+      //if (this->pTextures[i].uTextureID != -1)
+      //    pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[this->pTextures[i].uTextureID].palette_id1);
 
-            if (this->pTextures[i].uFlags & 1)
-                break;
-        }
+      if (this->pTextures[i].uFlags & 1)
+        break;
     }
-    return;
+  }
+  return;
 }
 
+int TextureFrameTable::FindTextureByName(const char *Str2) {
+  String name = Str2;
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
-//----- (0044E163) --------------------------------------------------------
-int TextureFrameTable::FindTextureByName(const char *Str2)
-{
-    String name = Str2;
-    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-
-    for (unsigned int i = 0; i < this->sNumTextures; ++i)
-    {
-        if (this->pTextures[i].name == name)
-            return i;
-    }
-    return -1;
+  for (unsigned int i = 0; i < this->sNumTextures; ++i) {
+    if (this->pTextures[i].name == name)
+      return i;
+  }
+  return -1;
 }
 
-//----- (0044E19A) --------------------------------------------------------
-Texture *TextureFrameTable::GetFrameTexture(int uFrameID, signed int a3)
-{
-    int v3; // esi@1
-    TextureFrame *v4; // edi@1
-    TextureFrame *v5; // ecx@1
-    __int16 v6; // dx@2
-    int v7; // edx@3
-    char *i; // eax@3
-    int v9; // ecx@5
-
-    v3 = uFrameID;
-    v4 = this->pTextures;
-    v5 = &v4[uFrameID];
-    if (v5->uFlags & 1 && (v6 = v5->uAnimLength) != 0)
-    {
-        v7 = (a3 >> 3) % v6;
-        for (i = (char *)&v5->uAnimTime; ; i += 20)
-        {
-            v9 = *(short *)i;
-            if (v7 <= v9)
-                break;
-            v7 -= v9;
-            ++v3;
-        }
-        return v4[v3].GetTexture();
+Texture *TextureFrameTable::GetFrameTexture(int uFrameID, signed int a3) {
+  int v3 = uFrameID;
+  TextureFrame *v4 = this->pTextures;
+  TextureFrame *v5 = &v4[uFrameID];
+  int v6 = v5->uAnimLength;
+  if (v5->uFlags & 1 && (v6 != 0)) {
+    int v7 = (a3 >> 3) % v6;
+    for (char *i = (char*)&v5->uAnimTime; ; i += 20) {
+      int v9 = *(short*)i;
+      if (v7 <= v9)
+        break;
+      v7 -= v9;
+      ++v3;
     }
-    else
-    {
-        return v5->GetTexture();
-    }
-}
-
-
-
-
-
-
-//----- (0040F806) --------------------------------------------------------
-void *Texture_MM7::UnzipPalette()
-{
-    Texture_MM7 *v1; // esi@1
-
-    void *v2; // edi@1
-    Texture_MM7 *pSource; // [sp+0h] [bp-4h]@1
-
-    pSource = this;
-    v1 = this;
-    v2 = malloc(this->uDecompressedSize);
-    zlib::Uncompress(v2, (unsigned int *)&pSource, v1->paletted_pixels, v1->uTextureSize);
-    return v2;
-}
-
-//----- (0040F77C) --------------------------------------------------------
-void Texture_MM7::Release()
-{
-  if (this)
-  {
-    pName[0] = 0;
-
-    if (pBits & 0x0400)
-    {
-		__debugbreak();
-	}
-	
-	  free(paletted_pixels);
-      free(pPalette16);
-      free(pPalette24);
-    
-
-      paletted_pixels = nullptr;
-    pLevelOfDetail1 = nullptr;
-    //pLevelOfDetail2 = nullptr;
-    //pLevelOfDetail3 = nullptr;
-
-    if (d3d11_srv)
-    {
-      if (d3d11_desc)
-      {
-        delete d3d11_desc;
-        d3d11_desc = nullptr;
-      }
-
-      extern void d3d11_release(struct ID3D11ShaderResourceView *);
-      d3d11_release(d3d11_srv);
-      d3d11_srv = nullptr;
-    }
-
-    pPalette16 = nullptr;
-    pPalette24 = nullptr;
-
-    uSizeOfMaxLevelOfDetail = 0;
-    uTextureSize = 0;
-    uTextureHeight = 0;
-    uTextureWidth = 0;
-    uHeightLn2 = 0;
-    uWidthLn2 = 0;
-    palette_id1 = 0;
-    palette_id2 = 0;
-    pBits &= 0xFFFF0000;
+    return v4[v3].GetTexture();
+  } else {
+    return v5->GetTexture();
   }
 }
 
-//----- (0040F5BE) --------------------------------------------------------
-Texture_MM7::Texture_MM7()
-{
-  pName[0] = 0;
-  uSizeOfMaxLevelOfDetail = 0;
-  uTextureSize = 0;
-  uTextureHeight = 0;
-  uTextureWidth = 0;
-  uHeightLn2 = 0;
-  uWidthLn2 = 0;
-  palette_id1 = 0;
-  palette_id2 = 0;
-  paletted_pixels = nullptr;
-  //pLevelOfDetail3 = nullptr;
-  //pLevelOfDetail2 = nullptr;
-  pLevelOfDetail1 = nullptr;
-  pPalette16 = nullptr;
-  pPalette24 = nullptr;
+void Texture_MM7::Release() {
+  header.pName[0] = 0;
 
-  d3d11_srv = nullptr;
-  d3d11_desc = nullptr;
+  if (header.pBits & 0x0400) {
+    __debugbreak();
+  }
+
+  if (paletted_pixels != nullptr) {
+    free(paletted_pixels);
+    paletted_pixels = nullptr;
+  }
+
+  if (pPalette24 != nullptr) {
+    free(pPalette24);
+    pPalette24 = nullptr;
+  }
+
+  pLevelOfDetail1 = nullptr;
+
+  memset(&header, 0, sizeof(header));
 }
 
+Texture_MM7::Texture_MM7() {
+  memset(&header, 0, sizeof(header));
+  paletted_pixels = nullptr;
+  pLevelOfDetail1 = nullptr;
+  pPalette24 = nullptr;
+}
 
-//----- (0044E1EC) --------------------------------------------------------
-int TextureFrameTable::FromFileTxt(const char *Args)
-{
+int TextureFrameTable::FromFileTxt(const char *Args) {
     TextureFrameTable *v2; // ebx@1
     FILE *v3; // eax@1
     int v4; // esi@3
@@ -418,542 +300,152 @@ int TextureFrameTable::FromFileTxt(const char *Args)
     return 1;
 }
 
-//----- (00451007) --------------------------------------------------------
-int BicubicMipmapGenerator::sub_451007_scale_image_bicubic(unsigned short *pSrc, int srcWidth, int srcHeight, int srcPitch,          //changing this to some library function might be a good idea
-	unsigned short *pDst, int dstWidth, int dstHeight, int dstPitch,
-	int a10, int a11)
-{
-	int result; // eax@1
-	float v17; // ST3C_4@12
-	float v18; // ST38_4@12
-	unsigned int v19; // esi@12
-	int v21; // eax@18
-	unsigned int v22; // ecx@25
-	unsigned int v23; // eax@29
-	unsigned int heightRatioPlusOne; // [sp+Ch] [bp-7Ch]@12
-	unsigned int widthRatio; // [sp+Ch] [bp-7Ch]@218
-	unsigned int heightRatio; // [sp+14h] [bp-74h]@12
-	unsigned int widthRatioPlusOne; // [sp+14h] [bp-74h]@218
-	//  int v160; // [sp+3Ch] [bp-4Ch]@13
-	unsigned __int16 *v175; // [sp+4Ch] [bp-3Ch]@13
-	unsigned __int16 *v193; // [sp+5Ch] [bp-2Ch]@7
-	//signed int v231; // [sp+78h] [bp-10h]@7
-	__int64 v240; // [sp+7Ch] [bp-Ch]@12
-	unsigned int v251; // [sp+80h] [bp-8h]@218
-	unsigned int v252; // [sp+84h] [bp-4h]@218
-	float a6s; // [sp+A0h] [bp+18h]@218
-	float a6t; // [sp+A0h] [bp+18h]@218
-	unsigned int a6b; // [sp+A0h] [bp+18h]@218
-	int field_0_bits;
-	int field_20_bits;
+Image *Image::Create(ImageLoader *loader) {
+  Image *img = new Image();
+  if (img) {
+    img->loader = loader;
+  }
 
-	int field0value = this->field_0.field_C;
-	switch (field0value)
-	{
-	case 8: field_0_bits = 1;
-		break;
-	case 16: field_0_bits = 2;
-		break;
-	case 32: field_0_bits = 4;
-		break;
-	default:
-		return field0value;
-	}
-	int field20value = this->field_20.field_C;
-	switch (field20value)
-	{
-	case 8: field_20_bits = 1;
-		break;
-	case 16: field_20_bits = 2;
-		break;
-	case 32: field_20_bits = 4;
-		break;
-	default:
-		return field20value;
-	}
-
-	result = (int)pDst;
-	v193 = pDst;
-	if (dstHeight <= 0)
-		return result;
-
-	//do
-	for (int height = 0; height < dstHeight; height++)
-	{
-		for (int width = 0; width < dstWidth; width++)
-		{
-			a6s = (double)width / (double)dstWidth * (double)srcWidth;
-			widthRatio = bankersRounding(a6s);
-			a6t = (double)(width + 1) / (double)dstWidth * (double)srcWidth;
-			widthRatioPlusOne = bankersRounding(a6t);
-
-			v17 = (double)height / (double)dstHeight * (double)srcHeight;
-			heightRatio = bankersRounding(v17);
-			v18 = (double)(height + 1) / (double)dstHeight * (double)srcHeight;
-			heightRatioPlusOne = bankersRounding(v18);
-
-			v251 = 0;
-			v19 = (heightRatioPlusOne - heightRatio) * (widthRatioPlusOne - widthRatio);
-			v252 = 0;
-			a6b = 0;
-			v240 = 0i64;
-
-			v175 = (unsigned short*)((char *)pSrc + field_0_bits * (widthRatio + srcPitch * heightRatio));
-			for (int heightDiff = 0; heightDiff < heightRatioPlusOne - heightRatio; heightDiff++)
-			{
-				//int ratioDiff = widthRatioPlusOne - widthRatio;
-				for (int ratioDiff = 0; ratioDiff < widthRatioPlusOne - widthRatio; ratioDiff++)
-				{
-					if (field0value == 32)
-						v21 = _450FB1(((int*)v175)[ratioDiff]);
-					else if (field0value == 16)
-						v21 = _450FB1(((_WORD*)v175)[ratioDiff]);
-					else if (field0value == 8)
-						v21 = _450FB1(((unsigned __int8*)v175)[ratioDiff]);
-					v240 += ((unsigned int)v21 >> 24);
-					a6b += BYTE2(v21);
-					v252 += BYTE1(v21);
-					v251 += (unsigned __int8)v21;
-				}
-				if (field0value == 32)
-					v175 += 2 * srcPitch;
-				else if (field0value == 16)
-					v175 += srcPitch;
-				else if (field0value == 8)
-					v175 = (unsigned short*)((char *)v175 + 2 * srcPitch);
-			}
-
-			v22 = (unsigned int)v240 / ((heightRatioPlusOne - heightRatio) * (widthRatioPlusOne - widthRatio));
-			if (v19)
-			{
-				a6b /= v19;
-				v252 /= v19;
-				v251 /= v19;
-			}
-			if (v22 != 255)
-				v22 &= 0x7FFFFFFFu;
-			v23 = _450F55(v251 | ((v252 | ((a6b | (v22 << 8)) << 8)) << 8));
-			*(_DWORD *)v193 = v23; //Invalid memory access
-			v193 = (unsigned __int16 *)((char *)v193 + field_20_bits);
-		}
-		v193 = (unsigned __int16 *)((char *)v193 + field_20_bits * (dstPitch - dstWidth));
-		//++v231;
-		result = height;
-	}
-	//while(v231 < dstHeight);
-	return result;
+  return img;
 }
 
+bool Image::LoadImageData() {
+  if (!initialized) {
+    void *data = nullptr;
+    initialized = loader->Load(&width, &height, &data, &native_format);
+    if (initialized && native_format != IMAGE_INVALID_FORMAT) {
+      pixels[native_format] = data;
+    }
+  }
 
-//----- (00450DDE) --------------------------------------------------------
-BicubicMipmapGenerator *BicubicMipmapGenerator::_450DDE()
-{
-	_450DF1(&stru_4E82A4, &stru_4E82A4);
-	return this;
+  return initialized;
 }
 
-//----- (00450DF1) --------------------------------------------------------
-bool BicubicMipmapGenerator::_450DF1(const stru355 *p1, const stru355 *p2)
-{
-	unsigned int v5; // ecx@2
-	int v6; // edi@2
-	int v7; // edx@2
-	unsigned int v8; // ecx@8
-	int v9; // edi@8
-	int v10; // edx@8
-	int v11; // ecx@12
-	int v12; // edi@12
-	unsigned int v13; // ecx@12
-	int v14; // edx@12
-	int v15; // ecx@16
-	unsigned int v16; // edx@16
-	int v17; // ecx@16
-	int v18; // edi@16
-	char v19; // zf@20
-	unsigned int v20; // ecx@21
-	int v21; // edi@21
-	int v22; // edx@21
-	unsigned int v23; // ecx@27
-	int v24; // edi@27
-	int v25; // edx@27
-	int v26; // ecx@31
-	int v27; // edi@31
-	unsigned int v28; // ecx@31
-	int v29; // edx@31
-	int v30; // ebx@35
-	int v31; // ecx@35
-	int v32; // edi@35
-	int v33; // edx@35
-	unsigned int i; // ecx@35
-	int v35; // ecx@39
-	unsigned int v36; // edx@39
-	int v37; // ecx@39
-	int v38; // ebx@39
+unsigned int Image::GetWidth() {
+  if (!initialized) {
+    LoadImageData();
+  }
 
-	memcpy(&field_0, p1, sizeof(stru355));
-	memcpy(&field_20, p2, sizeof(stru355));
+  if (initialized) {
+    return width;
+  }
 
-	if (field_0.field_4 & 1)
-	{
-		v5 = field_0.field_1C;
-		v6 = 0;
-		v7 = 0;
-		while (!(v5 & 1))
-		{
-			++v6;
-			v5 >>= 1;
-		}
-		do
-		{
-			v5 >>= 1;
-			++v7;
-		} while (v5 & 1);
-		field_40 = 32 - v7 - v6;
-	}
-	else
-	{
-		field_40 = 0;
-	}
-	v8 = field_0.field_10;
-	v9 = 0;
-	v10 = 0;
-	while (!(v8 & 1))
-	{
-		++v9;
-		v8 >>= 1;
-	}
-	do
-	{
-		v8 >>= 1;
-		++v10;
-	} while (v8 & 1);
-	v11 = 24 - v10 - v9;
-	v12 = 0;
-	field_48 = v11;
-	v13 = field_0.field_14;
-	v14 = 0;
-	while (!(v13 & 1))
-	{
-		++v12;
-		v13 >>= 1;
-	}
-	do
-	{
-		v13 >>= 1;
-		++v14;
-	} while (v13 & 1);
-	v15 = 16 - v14;
-	v16 = field_0.field_18;
-	field_50 = v15 - v12;
-	v17 = 0;
-	v18 = 0;
-	while (!(v16 & 1))
-	{
-		++v17;
-		v16 >>= 1;
-	}
-	do
-	{
-		v16 >>= 1;
-		++v18;
-	} while (v16 & 1);
-	v19 = (field_20.field_4 & 1) == 0;
-	field_58 = v17 - v18 + 8;
-	if (v19)
-	{
-		field_44 = 0;
-	}
-	else
-	{
-		v20 = field_20.field_1C;
-		v21 = 0;
-		v22 = 0;
-		while (!(v20 & 1))
-		{
-			++v21;
-			v20 >>= 1;
-		}
-		do
-		{
-			v20 >>= 1;
-			++v22;
-		} while (v20 & 1);
-		field_44 = 32 - v22 - v21;
-	}
-	v23 = field_20.field_10;
-	v24 = 0;
-	v25 = 0;
-	while (!(v23 & 1))
-	{
-		++v24;
-		v23 >>= 1;
-	}
-	do
-	{
-		v23 >>= 1;
-		++v25;
-	} while (v23 & 1);
-	v26 = 24 - v25 - v24;
-	v27 = 0;
-	field_4C = v26;
-	v28 = field_20.field_14;
-	v29 = 0;
-	while (!(v28 & 1))
-	{
-		++v27;
-		v28 >>= 1;
-	}
-	do
-	{
-		v28 >>= 1;
-		++v29;
-	} while (v28 & 1);
-	v30 = 0;
-	v31 = 16 - v29 - v27;
-	v32 = field_20.field_18;
-	field_54 = v31;
-	v33 = 0;
-	for (i = v32; !(i & 1); i >>= 1)
-		++v30;
-	do
-	{
-		i >>= 1;
-		++v33;
-	} while (i & 1);
-	v35 = 32 - v33;
-	v36 = v32;
-	field_5C = v35 - v30;
-	v37 = 0;
-	v38 = 0;
-	while (!(v36 & 1))
-	{
-		++v37;
-		v36 >>= 1;
-	}
-	do
-	{
-		v36 >>= 1;
-		++v38;
-	} while (v36 & 1);
-	field_5C = v37 - v38 + 8;
-	return true;
+  return 0;
 }
 
-//----- (00450F55) --------------------------------------------------------
-unsigned int BicubicMipmapGenerator::_450F55(int a2)
-{
-	int v2 = a2 & stru_4E82A4.field_1C;
-	if (field_20.field_4 & 1)
-		v2 = (unsigned int)v2 >> this->field_44;
-	return v2 & field_20.field_1C |
-		field_20.field_10 & ((a2 & (unsigned int)stru_4E82A4.field_10) >> field_4C) |
-		field_20.field_14 & ((a2 & (unsigned int)stru_4E82A4.field_14) >> field_54) |
-		field_20.field_18 & ((a2 & (unsigned int)stru_4E82A4.field_18) >> field_5C);
+unsigned int Image::GetHeight() {
+  if (!initialized) {
+    LoadImageData();
+  }
+
+  if (initialized) {
+    return height;
+  }
+
+  return 0;
 }
 
-//----- (00450FB1) --------------------------------------------------------
-int BicubicMipmapGenerator::_450FB1(int a2)
-{
-	int v2 = 0;
-	int v4 = field_0.field_4 & 1;
-	if (v4)
-		v2 = a2 & field_0.field_1C;
-	if (v4)
-		v2 <<= field_40;
-	return v2 | ((a2 & field_0.field_10) << field_48) | ((a2 & field_0.field_14) << field_50) | ((a2 & field_0.field_18) << field_58);
+Image *Image::Create(unsigned int width, unsigned int height, IMAGE_FORMAT format, const void *pixels) {
+  Image *img = new Image(false);
+  if (img) {
+    img->initialized = true;
+    img->width = width;
+    img->height = height;
+    img->native_format = format;
+    if (pixels) {
+      unsigned int num_pixels = img->GetWidth() * img->GetHeight();
+      unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(format);
+      img->pixels[format] = new unsigned char[num_pixels_bytes];
+      memcpy(img->pixels[format], pixels, num_pixels_bytes);
+    }
+  }
+
+  return img;
 }
 
+const void *Image::GetPixels(IMAGE_FORMAT format) {
+  if (!initialized) {
+    LoadImageData();
+  }
 
-
-
-
-
-
-
-
-
-
-Image *Image::Create(ImageLoader *loader)
-{
-    	
-	auto img = new Image();
-    if (img)
-    {
-        img->loader = loader;
+  if (initialized) {
+    if (this->pixels[format]) {
+      return this->pixels[format];
     }
 
-    return img;
-}
-
-
-
-bool Image::LoadImageData()
-{
-    if (!this->initialized)
-    {
-        void *pixels;
-
-        this->initialized = this->loader->Load(&width, &height, &pixels, &native_format);
-        if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT)
-            this->pixels[native_format] = pixels;
-    }
-
-    return this->initialized;
-}
-
-
-unsigned int Image::GetWidth()
-{
-    if (!this->initialized)
-    {
-        this->LoadImageData();
-    }
-
-    if (this->initialized)
-    {
-        return this->width;
-    }
-
-    return 0;
-}
-
-unsigned int Image::GetHeight()
-{
-    if (!this->initialized)
-    {
-        this->LoadImageData();
-    }
-
-    if (this->initialized)
-    {
-        return this->height;
-    }
-    return 0;
-}
-
-Image *Image::Create(unsigned int width, unsigned int height, IMAGE_FORMAT format, const void *pixels)
-{
-    auto img = new Image(false);
-    if (img)
-    {
-        img->initialized = true;
-        img->width = width;
-        img->height = height;
-        img->native_format = format;
-        if (pixels)
+    auto native_pixels = this->pixels[this->native_format];
+    if (native_pixels) {
+      static ImageFormatConverter converters[IMAGE_NUM_FORMATS][IMAGE_NUM_FORMATS] = {
+        // IMAGE_FORMAT_R5G6B5 ->
         {
-            unsigned int num_pixels = img->GetWidth() * img->GetHeight();
-            unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(format);
-            img->pixels[format] = new unsigned char[num_pixels_bytes];
+          nullptr, // IMAGE_FORMAT_R5G6B5
+          nullptr, // IMAGE_FORMAT_A1R5G5B5
+          Image_R5G6B5_to_A8R8G8B8, // IMAGE_FORMAT_A8R8G8B8
+          Image_R5G6B5_to_R8G8B8,   // IMAGE_FORMAT_R8G8B8
+          nullptr, // IMAGE_FORMAT_R8G8B8A8
+        },
 
-            memcpy(img->pixels[format], pixels, num_pixels_bytes);
+        // IMAGE_FORMAT_A1R5G5B5 ->
+        {
+          nullptr, // IMAGE_FORMAT_R5G6B5
+          nullptr, // IMAGE_FORMAT_A1R5G5B5
+          nullptr, // IMAGE_FORMAT_A8R8G8B8
+          nullptr, // IMAGE_FORMAT_R8G8B8
+          Image_A1R5G5B5_to_R8G8B8A8, // IMAGE_FORMAT_R8G8B8A8
+        },
+
+        // IMAGE_FORMAT_A8R8G8B8 ->
+        {
+          Image_A8R8G8B8_to_R5G6B5, // IMAGE_FORMAT_R5G6B5
+          nullptr, // IMAGE_FORMAT_A1R5G5B5
+          nullptr, // IMAGE_FORMAT_A8R8G8B8
+          nullptr, // IMAGE_FORMAT_R8G8B8
+          nullptr, // IMAGE_FORMAT_R8G8B8A8
+        },
+      };
+
+      ImageFormatConverter cvt = converters[this->native_format][format];
+      if (cvt) {
+        unsigned int num_pixels = this->GetWidth() * this->GetHeight();
+
+        void *cvt_pixels = new unsigned char[num_pixels * IMAGE_FORMAT_BytesPerPixel(format)];
+        if (cvt(width * height, native_pixels, cvt_pixels)) {
+          return this->pixels[format] = cvt_pixels;
+        } else {
+          delete[] cvt_pixels;
+          cvt_pixels = nullptr;
         }
+      } else {
+        logger->Warning(L"No ImageConverter defined from %s to %s", IMAGE_FORMAT_ToString(this->native_format), IMAGE_FORMAT_ToString(format));
+      }
     }
-
-    return img;
+  }
+  return nullptr;
 }
 
-const void *Image::GetPixels(IMAGE_FORMAT format)
-{
-    if (!this->initialized)
-    {
-        this->LoadImageData();
-    }
+bool Image::Release() {
+  if (loader) {
+    assets->ReleaseImage(loader->GetResourceName()); // exception this nullptr
+  }
 
-    if (initialized)
-    {
-        if (this->pixels[format])
-        {
-            return this->pixels[format];
-        }
-
-        auto native_pixels = this->pixels[this->native_format];
-        if (native_pixels)
-        {
-            static ImageFormatConverter converters[IMAGE_NUM_FORMATS][IMAGE_NUM_FORMATS] =
-            {
-                // IMAGE_FORMAT_R5G6B5 ->
-                {
-                    nullptr, // IMAGE_FORMAT_R5G6B5
-                    nullptr, // IMAGE_FORMAT_A1R5G5B5
-                    Image_R5G6B5_to_A8R8G8B8, // IMAGE_FORMAT_A8R8G8B8
-                    Image_R5G6B5_to_R8G8B8,   // IMAGE_FORMAT_R8G8B8
-                    nullptr, // IMAGE_FORMAT_R8G8B8A8
-                },
-
-                // IMAGE_FORMAT_A1R5G5B5 ->
-                {
-                    nullptr, // IMAGE_FORMAT_R5G6B5
-                    nullptr, // IMAGE_FORMAT_A1R5G5B5
-                    nullptr, // IMAGE_FORMAT_A8R8G8B8
-                    nullptr, // IMAGE_FORMAT_R8G8B8
-                    Image_A1R5G5B5_to_R8G8B8A8, // IMAGE_FORMAT_R8G8B8A8
-                },
-
-                // IMAGE_FORMAT_A8R8G8B8 ->
-                {
-                    Image_A8R8G8B8_to_R5G6B5, // IMAGE_FORMAT_R5G6B5
-                    nullptr, // IMAGE_FORMAT_A1R5G5B5
-                    nullptr, // IMAGE_FORMAT_A8R8G8B8
-                    nullptr, // IMAGE_FORMAT_R8G8B8
-                    nullptr, // IMAGE_FORMAT_R8G8B8A8
-                },
-            };
-
-            ImageFormatConverter cvt = converters[this->native_format][format];
-            if (cvt)
-            {
-                unsigned int num_pixels = this->GetWidth() * this->GetHeight();
-
-                void *cvt_pixels = new unsigned char[num_pixels * IMAGE_FORMAT_BytesPerPixel(format)];
-                if (cvt(width * height, native_pixels, cvt_pixels))
-                {
-                    return this->pixels[format] = cvt_pixels;
-                }
-                else
-                {
-                    delete[] cvt_pixels;
-                    cvt_pixels = nullptr;
-                }
-            }
-            else
-            {
-                logger->Warning(L"No ImageConverter defined from %s to %s", IMAGE_FORMAT_ToString(this->native_format), IMAGE_FORMAT_ToString(format));
-            }
-        }
-    }
-    return nullptr;
-}
-
-
-bool Image::Release()
-{
+  if (initialized) {
     if (loader) {
-        assets->ReleaseImage(loader->GetResourceName()); // exception this nullptr
+      delete loader;
+      loader = nullptr;
     }
 
-    if (initialized)
-    {
-        if (loader)
-        {
-            delete loader;
-            loader = nullptr;
-        }
-
-        for (unsigned int i = 0; i < IMAGE_NUM_FORMATS; ++i)
-        {
-            if (pixels[i])
-            {
-                delete[] pixels[i];
-                pixels[i] = nullptr;
-            }
-        }
-
-        native_format = IMAGE_INVALID_FORMAT;
-        width = 0;
-        height = 0;
+    for (unsigned int i = 0; i < IMAGE_NUM_FORMATS; ++i) {
+      if (pixels[i]) {
+        delete[] pixels[i];
+        pixels[i] = nullptr;
+      }
     }
 
-    delete this;
-    return true;
+    native_format = IMAGE_INVALID_FORMAT;
+    width = 0;
+    height = 0;
+  }
+
+  delete this;
+  return true;
 }

@@ -19,7 +19,7 @@ struct GUIWindow_Book : public GUIWindow
 
 struct GUIWindow_BooksButtonOverlay : public GUIWindow
 {
-    GUIWindow_BooksButtonOverlay(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const char *hint) :
+    GUIWindow_BooksButtonOverlay(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
         GUIWindow(x, y, width, height, button, hint)
     {}
     virtual ~GUIWindow_BooksButtonOverlay() {}

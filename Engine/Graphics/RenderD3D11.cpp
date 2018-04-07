@@ -40,11 +40,6 @@ bool RenderD3D11::InitializeFullscreen() {__debugbreak(); return 0;}
 void RenderD3D11::CreateZBuffer() {__debugbreak();}
 void RenderD3D11::Release() {__debugbreak();}
 void RenderD3D11::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor) {__debugbreak();}
-bool RenderD3D11::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags) {__debugbreak(); return 0;}
-void RenderD3D11::LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow) {__debugbreak();}
-void RenderD3D11::UnlockBackBuffer() {__debugbreak();}
-void RenderD3D11::LockFrontBuffer(void **pOutSurface, unsigned int *pOutPixelsPerRow) {__debugbreak();}
-void RenderD3D11::UnlockFrontBuffer() {__debugbreak();}
 void RenderD3D11::RestoreFrontBuffer() {}
 void RenderD3D11::RestoreBackBuffer() {}
 void RenderD3D11::BltBackToFontFast(int a2, int a3, Rect *a4) {__debugbreak();}

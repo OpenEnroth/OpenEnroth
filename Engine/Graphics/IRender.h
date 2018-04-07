@@ -6,35 +6,32 @@
 #include "Engine/Graphics/Image.h"
 
 class OSWindow;
-
 class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;
-
 
 bool PauseGameDrawing();
 
 /*  161 */
 #pragma pack(push, 1)
-struct RenderBillboard
-{
+struct RenderBillboard {
   fixed screenspace_projection_factor_x;
   fixed screenspace_projection_factor_y;
   float fov_x;
   float fov_y;
   int field_14_actor_id;
   Sprite *hwsprite;//signed __int16 HwSpriteID;
-  __int16 uPalette;
-  __int16 uIndoorSectorID;
-  __int16 field_1E;
-  __int16 world_x;
-  __int16 world_y;
-  __int16 world_z;
-  __int16 screen_space_x;
-  __int16 screen_space_y;
-  __int16 screen_space_z;
-  unsigned __int16 object_pid;
-  unsigned __int16 dimming_level;
+  int16_t uPalette;
+  int16_t uIndoorSectorID;
+  int16_t field_1E;
+  int16_t world_x;
+  int16_t world_y;
+  int16_t world_z;
+  int16_t screen_space_x;
+  int16_t screen_space_y;
+  int16_t screen_space_z;
+  uint16_t object_pid;
+  uint16_t dimming_level;
   unsigned int sTintColor;
   SpriteFrame *pSpriteFrame;
 };
@@ -43,9 +40,10 @@ struct RenderBillboard
 
 
 
-unsigned __int16 Color16(unsigned __int32 r, unsigned __int32 g, unsigned __int32 b);
-unsigned __int32 Color32(unsigned __int16 color16);
-unsigned __int32 Color32_SwapRedBlue(unsigned __int16 color16);
+uint16_t Color16(uint32_t r, uint32_t g, uint32_t b);
+uint32_t Color32(uint16_t color16);
+uint32_t Color32(uint32_t r, uint32_t g, uint32_t b, uint32_t a = 0xFF);
+uint32_t Color32_SwapRedBlue(uint16_t color16);
 
 
 
@@ -53,11 +51,8 @@ unsigned __int32 Color32_SwapRedBlue(unsigned __int16 color16);
 
 /*   88 */
 #pragma pack(push, 1)
-struct ODMRenderParams
-{
-  //----- (00462684) --------------------------------------------------------
-  ODMRenderParams()
-  {
+struct ODMRenderParams {
+  ODMRenderParams() {
     uPickDepth = 0;
     this->shading_dist_shade = 0x800;
     shading_dist_shademist = 0x1000;
@@ -114,11 +109,8 @@ extern ODMRenderParams *pODMRenderParams;
 
 /*  119 */
 #pragma pack(push, 1)
-struct RenderVertexSoft
-{
-  inline RenderVertexSoft() :
-    flt_2C(0.0f)
-  {}
+struct RenderVertexSoft {
+  inline RenderVertexSoft() : flt_2C(0.0f) {}
 
   Vec3_float_ vWorldPosition;
   Vec3_float_ vWorldViewPosition;
@@ -133,11 +125,10 @@ struct RenderVertexSoft
 
 /*  112 */
 #pragma pack(push, 1)
-struct RenderVertexD3D3
-{
+struct RenderVertexD3D3 {
   Vec3_float_ pos;
   float rhw;
-  signed int diffuse;
+  int diffuse;
   unsigned int specular;
   Vec2_float_ texcoord;
 };
@@ -146,8 +137,7 @@ struct RenderVertexD3D3
 
 /*  242 */
 #pragma pack(push, 1)
-struct RenderBillboardD3D
-{
+struct RenderBillboardD3D {
   inline RenderBillboardD3D() :
     opacity(Transparent),
     field_90(-1),
@@ -155,8 +145,7 @@ struct RenderBillboardD3D
     uNumVertices(4)
   {}
 
-  enum OpacityType : unsigned __int32
-  {
+  enum OpacityType : unsigned __int32 {
     Transparent = 0,
     Opaque_1 = 1,
     Opaque_2 = 2,
@@ -173,7 +162,7 @@ struct RenderBillboardD3D
 
   unsigned short object_pid;
   short screen_space_z;
-  signed int sParentBillboardID;
+  int sParentBillboardID;
 };
 #pragma pack(pop)
 
@@ -182,8 +171,7 @@ struct RenderBillboardD3D
 
 /*  248 */
 #pragma pack(push, 1)
-struct SoftwareBillboard
-{
+struct SoftwareBillboard {
   void *pTarget;
   int *pTargetZ;
   int screen_space_x;
@@ -192,8 +180,8 @@ struct SoftwareBillboard
   fixed screenspace_projection_factor_x;
   fixed screenspace_projection_factor_y;
   char field_18[8];
-  unsigned __int16 *pPalette;
-  unsigned __int16 *pPalette2;
+  uint16_t *pPalette;
+  uint16_t *pPalette2;
   unsigned int uFlags;        // & 4   - mirror horizontally
   unsigned int uTargetPitch;
   unsigned int uViewportX;
@@ -232,15 +220,11 @@ struct HWLTexture
   unsigned int uHeight;
   int uAreaX;
   int uAreaY;
-  unsigned __int16 *pPixels;
+  uint16_t *pPixels;
 };
 #pragma pack(pop)
 
-
-/*  185 */
-#pragma pack(push, 1)
-struct RenderHWLContainer
-{
+struct RenderHWLContainer {
   RenderHWLContainer();
   bool Load(const char *pFilename);
   bool Release();
@@ -253,19 +237,11 @@ struct RenderHWLContainer
   unsigned int uNumItems;
   char *pSpriteNames[50000];
   int pSpriteOffsets[50000];
-  int bDumpDebug;
   int scale_hwls_to_half;
 };
-#pragma pack(pop)
 
-
-
-
-
-
-class IRender
-{
-public:
+class IRender {
+ public:
   virtual ~IRender() {}
 
   static IRender *Create();
@@ -282,7 +258,6 @@ public:
   virtual void ClearTarget(unsigned int uColor) = 0;
   virtual void Present() = 0;
 
-  virtual void _49FD3A_fullscreen() = 0;
   virtual bool InitializeFullscreen() = 0;
 
   virtual void CreateZBuffer() = 0;
@@ -291,12 +266,6 @@ public:
   virtual bool SwitchToWindow() = 0;
   virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor) = 0;
   virtual void ClearZBuffer(int a2, int a3) = 0;
-  virtual bool LockSurface(Texture *surface, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height) = 0;
-  virtual void UnlockSurface(Texture *surface) = 0;
-  virtual void LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow) = 0;
-  virtual void UnlockBackBuffer() = 0;
-  virtual void LockFrontBuffer(void **pOutSurface, unsigned int *pOutPixelsPerRow) = 0;
-  virtual void UnlockFrontBuffer() = 0;
   virtual void RestoreFrontBuffer() = 0;
   virtual void RestoreBackBuffer() = 0;
   virtual void BltBackToFontFast(int a2, int a3, Rect *a4) = 0;
@@ -343,8 +312,8 @@ public:
   virtual void DrawTransparentGreenShade(float u, float v, Image *pTexture) = 0;
   virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
-  virtual void DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, unsigned __int16 *pPalette, bool present_time_transparency) = 0;
-  virtual void DrawText(signed int uOutX, signed int uOutY, unsigned __int8 *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, unsigned __int16 *pFontPalette, unsigned __int16 uFaceColor, unsigned __int16 uShadowColor) = 0;
+  virtual void DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, uint8_t *pPalette, bool present_time_transparency) = 0;
+  virtual void DrawText(int uOutX, int uOutY, uint8_t *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, uint8_t *pFontPalette, uint16_t uFaceColor, uint16_t uShadowColor) = 0;
 
   virtual void FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16) = 0;
 
@@ -352,8 +321,6 @@ public:
 
   virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID = 0) = 0;
   virtual void DrawOutdoorSkyD3D() = 0;
-  virtual void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) = 0;
-  virtual void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) = 0;
 
   virtual void PrepareDecorationsRenderList_ODM() = 0;
   virtual void DrawSpriteObjects_ODM() = 0;
@@ -366,7 +333,7 @@ public:
   virtual void PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size) = 0;
   virtual void SavePCXScreenshot() = 0;
 
-  virtual int _46ภ6ภั_GetActorsInViewport(int pDepth) = 0;
+  virtual int GetActorsInViewport(int pDepth) = 0;
 
   virtual void BeginLightmaps() = 0;
   virtual void EndLightmaps() = 0;
@@ -409,8 +376,6 @@ public:
   }
 
   int *pActiveZBuffer;
-  //    void        *pTargetSurface;
-  //    unsigned int uTargetSurfacePitch;
   unsigned int bUseColoredLights;
   unsigned int bTinting;
   unsigned int bUsingSpecular;
@@ -424,7 +389,7 @@ public:
   RenderBillboardD3D pBillboardRenderListD3D[1000];
   unsigned int uNumBillboardsToDraw;
 
-  virtual void WritePixel16(int x, int y, unsigned __int16 color) = 0;
+  virtual void WritePixel16(int x, int y, uint16_t color) = 0;
 
   virtual void ToggleTint() = 0;
   virtual void ToggleColoredLights() = 0;
@@ -432,14 +397,11 @@ public:
   virtual unsigned int GetRenderWidth() const = 0;
   virtual unsigned int GetRenderHeight() const = 0;
 
-  virtual void Sub01() = 0;
-
   virtual HWLTexture *LoadHwlBitmap(const char *name) = 0;
   virtual HWLTexture *LoadHwlSprite(const char *name) = 0;
 };
 
 extern IRender *render;
-
 
 extern int uNumDecorationsDrawnThisFrame;
 extern RenderBillboard pBillboardRenderList[500];
@@ -452,16 +414,12 @@ extern RenderVertexSoft array_73D150[20];
 
 extern RenderVertexD3D3 d3d_vertex_buffer[50];
 
-
 int ODM_NearClip(unsigned int uVertexID);
 int ODM_FarClip(unsigned int uNumVertices);
 
-
-
 /*  142 */
 #pragma pack(push, 1)
-struct stru149
-{
+struct stru149 {
   void _48616B_frustum_odm(int a2, int a3, int a4, int a5, int a6, int a7);
   void _48653D_frustum_blv(int a2, int a3, int a4, int a5, int a6, int a7);
   void _48694B_frustum_sky();
@@ -480,9 +438,6 @@ struct stru149
 };
 #pragma pack(pop)
 extern stru149 stru_8019C8;
-
-
-
 
 unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3, int a4);
 

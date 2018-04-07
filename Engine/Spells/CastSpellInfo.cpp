@@ -1184,7 +1184,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           }
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->GetActorsInViewport(4096);
           v700.x = 0;
           v700.y = 0;
           v700.z = 0;
@@ -2136,7 +2136,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
               spellduration = 300 * spell_level + 180;
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->GetActorsInViewport(4096);
           pEngine->GetSpellFxRenderer()->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xFFFFFF, 192);
           //++pSpellSprite.uType;
           pSpellSprite.uType = SPRITE_SPELL_SPIRIT_TURN_UNDEAD_1;
@@ -2553,7 +2553,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
               amount = 180 * spell_level;
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->GetActorsInViewport(4096);
           pEngine->GetSpellFxRenderer()->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xA0A0A, 192);
           //++pSpellSprite.uType;
           pSpellSprite.uType = SPRITE_SPELL_MIND_MASS_FEAR_1;
@@ -2878,7 +2878,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
           pEngine->GetSpellFxRenderer()->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xAFF0A, 192);
-          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->GetActorsInViewport(4096);
           //++pSpellSprite.uType;
           pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
           v688.x = 0;
@@ -2984,7 +2984,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           }
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
-          int mon_num = render->_46ภ6ภั_GetActorsInViewport(4096);
+          int mon_num = render->GetActorsInViewport(4096);
           //++pSpellSprite.uType;
           pSpellSprite.uType = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
           v694.x = 0;
@@ -3422,7 +3422,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
 
-          int mon_num = render->_46ภ6ภั_GetActorsInViewport((signed __int64)pIndoorCameraD3D->GetPickDepth());
+          int mon_num = render->GetActorsInViewport((signed __int64)pIndoorCameraD3D->GetPickDepth());
           v707.x = 0;
           v707.y = 0;
           v707.z = 0;

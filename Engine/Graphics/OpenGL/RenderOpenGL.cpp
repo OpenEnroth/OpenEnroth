@@ -45,7 +45,6 @@ unsigned int RenderOpenGL::GetRenderHeight() const { return window->GetHeight();
 
 void RenderOpenGL::ClearBlack() { __debugbreak(); }
 void RenderOpenGL::SaveWinnersCertificate(const char *a1) { __debugbreak(); }
-void RenderOpenGL::_49FD3A_fullscreen() { __debugbreak(); }
 bool RenderOpenGL::InitializeFullscreen() { __debugbreak(); return 0; }
 void RenderOpenGL::CreateZBuffer()
 {
@@ -54,10 +53,6 @@ void RenderOpenGL::CreateZBuffer()
 }
 void RenderOpenGL::Release() { __debugbreak(); }
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor) { __debugbreak(); }
-void RenderOpenGL::LockRenderSurface(void **pOutSurfacePtr, unsigned int *pOutPixelsPerRow) { __debugbreak(); }
-void RenderOpenGL::UnlockBackBuffer() { __debugbreak(); }
-void RenderOpenGL::LockFrontBuffer(void **pOutSurface, unsigned int *pOutPixelsPerRow) { __debugbreak(); }
-void RenderOpenGL::UnlockFrontBuffer() { __debugbreak(); }
 void RenderOpenGL::RestoreFrontBuffer() {}
 void RenderOpenGL::RestoreBackBuffer() {}
 void RenderOpenGL::BltBackToFontFast(int a2, int a3, Rect *a4) { __debugbreak(); }
@@ -91,7 +86,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
 bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
 void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width, unsigned int height) { __debugbreak(); }
 void RenderOpenGL::SavePCXScreenshot() { __debugbreak(); }
-int RenderOpenGL::_46ภ6ภั_GetActorsInViewport(int pDepth) { __debugbreak(); return 0; }
+int RenderOpenGL::GetActorsInViewport(int pDepth) { __debugbreak(); return 0; }
 void RenderOpenGL::BeginLightmaps() { __debugbreak(); }
 void RenderOpenGL::EndLightmaps() { __debugbreak(); }
 void RenderOpenGL::BeginLightmaps2() { __debugbreak(); }
@@ -1241,89 +1236,89 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     }
 }
 
-void RenderOpenGL::DrawText(signed int uOutX, signed int uOutY, unsigned __int8 *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, unsigned __int16 *pFontPalette, unsigned __int16 uFaceColor, unsigned __int16 uShadowColor)
+void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels, unsigned int uCharWidth, unsigned int uCharHeight, uint8_t *pFontPalette, unsigned __int16 uFaceColor, unsigned __int16 uShadowColor)
 {
-    unsigned int v9; // edi@2
-    unsigned int v10; // esi@2
-    unsigned int v12; // ebx@3
-                      //signed int v13; // edx@5
-    int v14; // edx@6
-    signed int v15; // ebx@7
-                    //unsigned int v16; // edx@9
-    signed int v17; // edi@10
-    signed int v18; // ebx@13
-    unsigned int v19; // edx@15
-    signed int v20; // esi@16
-    unsigned __int16 v22; // dx@24
-    unsigned __int8 *v24; // [sp+Ch] [bp-4h]@2
+  unsigned int v9; // edi@2
+  unsigned int v10; // esi@2
+  unsigned int v12; // ebx@3
+                    //signed int v13; // edx@5
+  int v14; // edx@6
+  signed int v15; // ebx@7
+                  //unsigned int v16; // edx@9
+  signed int v17; // edi@10
+  signed int v18; // ebx@13
+  unsigned int v19; // edx@15
+  signed int v20; // esi@16
+  unsigned __int16 v22; // dx@24
+  unsigned __int8 *v24; // [sp+Ch] [bp-4h]@2
 
-    v9 = uCharWidth;
-    v10 = uCharHeight;
-    //v11 = &this->pTargetSurface[uOutX + uOutY * this->uTargetSurfacePitch];
-    v24 = pFontPixels;
+  v9 = uCharWidth;
+  v10 = uCharHeight;
+  //v11 = &this->pTargetSurface[uOutX + uOutY * this->uTargetSurfacePitch];
+  v24 = pFontPixels;
 
-    int clipped_out_x = uOutX, clipped_out_y = uOutY;
-    //if (this->bClip)
+  int clipped_out_x = uOutX, clipped_out_y = uOutY;
+  //if (this->bClip)
+  {
+    v12 = this->clip_x;
+    if (uOutX < (signed int)v12)
     {
-        v12 = this->clip_x;
-        if (uOutX < (signed int)v12)
-        {
-            v24 = &pFontPixels[v12 - uOutX];
-            //v11 += v12 - uOutX;
-            clipped_out_x = clip_x;
-            v9 = uCharWidth + uOutX - v12;
-        }
-        //v13 = this->uClipY;
-        if (uOutY < this->clip_y)
-        {
-            v14 = this->clip_y - uOutY;
-            v24 += uCharWidth * v14;
-            v10 = uCharHeight + uOutY - this->clip_y;
-            //v11 += this->uTargetSurfacePitch * v14;
-            clipped_out_y = clip_y;
-        }
-        v15 = this->clip_x;
-        if (this->clip_x < uOutX)
-            v15 = uOutX;
-        //v16 = this->uClipZ;
-        if ((signed int)(v9 + v15) >(signed int)this->clip_z)
-        {
-            v17 = this->clip_x;
-            if (this->clip_x < uOutX)
-                v17 = uOutX;
-            v9 = this->clip_z - v17;
-        }
-        v18 = this->clip_y;
-        if (this->clip_y < uOutY)
-            v18 = uOutY;
-        v19 = this->clip_w;
-        if ((signed int)(v10 + v18) >(signed int)v19)
-        {
-            v20 = this->clip_y;
-            if (this->clip_y < uOutY)
-                v20 = uOutY;
-            v10 = v19 - v20;
-        }
+      v24 = &pFontPixels[v12 - uOutX];
+      //v11 += v12 - uOutX;
+      clipped_out_x = clip_x;
+      v9 = uCharWidth + uOutX - v12;
     }
-
-    for (uint y = 0; y < v10; ++y)
+    //v13 = this->uClipY;
+    if (uOutY < this->clip_y)
     {
-        for (uint x = 0; x < v9; ++x)
-        {
-            if (*v24)
-            {
-                v22 = uShadowColor;
-                if (*v24 != 1)
-                    v22 = uFaceColor;
-                WritePixel16(clipped_out_x + x, clipped_out_y + y, v22);
-            }
-            ++v24;
-        }
-        v24 += uCharWidth - v9;
+      v14 = this->clip_y - uOutY;
+      v24 += uCharWidth * v14;
+      v10 = uCharHeight + uOutY - this->clip_y;
+      //v11 += this->uTargetSurfacePitch * v14;
+      clipped_out_y = clip_y;
     }
+    v15 = this->clip_x;
+    if (this->clip_x < uOutX)
+      v15 = uOutX;
+    //v16 = this->uClipZ;
+    if ((signed int)(v9 + v15) >(signed int)this->clip_z)
+    {
+      v17 = this->clip_x;
+      if (this->clip_x < uOutX)
+        v17 = uOutX;
+      v9 = this->clip_z - v17;
+    }
+    v18 = this->clip_y;
+    if (this->clip_y < uOutY)
+      v18 = uOutY;
+    v19 = this->clip_w;
+    if ((signed int)(v10 + v18) >(signed int)v19)
+    {
+      v20 = this->clip_y;
+      if (this->clip_y < uOutY)
+        v20 = uOutY;
+      v10 = v19 - v20;
+    }
+  }
+
+  for (uint y = 0; y < v10; ++y)
+  {
+    for (uint x = 0; x < v9; ++x)
+    {
+      if (*v24)
+      {
+        v22 = uShadowColor;
+        if (*v24 != 1)
+          v22 = uFaceColor;
+        WritePixel16(clipped_out_x + x, clipped_out_y + y, v22);
+      }
+      ++v24;
+    }
+    v24 += uCharWidth - v9;
+  }
 }
 
-void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, unsigned __int16 *pPalette, bool present_time_transparency)
+void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a5, unsigned int uFontHeight, uint8_t *pPalette, bool present_time_transparency)
 {
     int v8; // edi@2
     unsigned int v9; // esi@2
@@ -1994,35 +1989,19 @@ HWLTexture *RenderOpenGL::LoadHwlSprite(const char *name)
     return pD3DSprites.LoadTexture(name, 0);
 }
 
-void RenderOpenGL::WritePixel16(int x, int y, unsigned __int16 color)
-{
-    int idx = 4 * (y * window->GetWidth() + x);
-    this->render_target_rgb[idx + 0] = 8 * ((color >> 11) & 0x1F);
-    this->render_target_rgb[idx + 1] = 4 * ((color >> 5) & 0x3F);
-    this->render_target_rgb[idx + 2] = 8 * (color & 0x1F);
-    this->render_target_rgb[idx + 3] = 0xFF;
+void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) {
+  int idx = 4 * (y * window->GetWidth() + x);
+  this->render_target_rgb[idx + 0] = 8 * ((color >> 11) & 0x1F);
+  this->render_target_rgb[idx + 1] = 4 * ((color >> 5) & 0x3F);
+  this->render_target_rgb[idx + 2] = 8 * (color & 0x1F);
+  this->render_target_rgb[idx + 3] = 0xFF;
 }
 
-void RenderOpenGL::UnlockSurface(Texture *texture)
-{
-    __debugbreak();
-}
-
-bool RenderOpenGL::LockSurface(Texture *texture, Rect *, void **out_surface, int *out_pitch, int *out_width, int *out_height)
-{
-    __debugbreak();
-    return false;
-}
-
-
-//----- (004A6D87) --------------------------------------------------------
-void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, unsigned int uColor16)
-{
-    for (uint y = uY; y < uY + uHeight; ++y)
-    {
-        for (uint x = uX; x < uX + uWidth; ++x)
-        {
-            this->WritePixel16(x, y, uColor16);
-        }
+void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
+                                unsigned int uWidth, unsigned int uHeight, unsigned int uColor16) {
+  for (uint y = uY; y < uY + uHeight; ++y) {
+    for (uint x = uX; x < uX + uWidth; ++x) {
+      this->WritePixel16(x, y, uColor16);
     }
+  }
 }

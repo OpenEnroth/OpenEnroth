@@ -865,7 +865,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
     }
     if (sDialogue_SpeakingActorNPC_ID < 0)
         v9 = 4;
-    pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 3, 0);//pNumberContacts = 1, v9 = 0; pNumberContacts = 2, v9 = 3;
+    pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 3);//pNumberContacts = 1, v9 = 0; pNumberContacts = 2, v9 = 3;
     if (pNPCInfo->Hired() && !pNPCInfo->bHasUsedTheAbility)
     {
         if (pNPCInfo->uProfession == 10 ||    //Healer
@@ -900,26 +900,15 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
     }
 }
 
-//----- (00445350) --------------------------------------------------------
-void GameUI_DrawDialogue()
-{
-  NPCData *pNPC; // ebx@2
-  int pGreetType; // eax@2
-  int pTextHeight; // esi@39
-  GUIButton *pButton; // eax@43
-  int all_text_height; // ebx@93
-  signed int index; // esi@99
-  int v42; // edi@102
-  int v45;
-  unsigned __int16 pTextColor; // ax@104
-
-  if (!pDialogueWindow)
+void GameUI_DrawDialogue() {
+  if (!pDialogueWindow) {
     return;
+  }
 
   // Window title(Заголовок окна)----
   GUIWindow window = *pDialogueWindow;
-  pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-  pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
+  NPCData *pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+  int pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
   window.uFrameWidth -= 10;
   window.uFrameZ -= 10;
   render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
@@ -940,14 +929,12 @@ void GameUI_DrawDialogue()
   pParty->GetPartyFame();
 
   String dialogue_string;
-  switch (uDialogueType)
-  {
+  switch (uDialogueType) {
   case DIALOGUE_13:
     dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
     break;
 
-  case DIALOGUE_PROFESSION_DETAILS:
-  {
+  case DIALOGUE_PROFESSION_DETAILS: {
     //auto prof = pNPCStats->pProfessions[pNPC->uProfession];
 
     if (dialogue_show_profession_details)
@@ -956,8 +943,8 @@ void GameUI_DrawDialogue()
       dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pDismissText, uActiveCharacter - 1, 0, 0, 0);
     else
       dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
+    break;
   }
-  break;
 
   case DIALOGUE_ARENA_WELCOME:
     dialogue_string = localization->GetString(574); // "Welcome to the Arena of Life and Death.  Remember, you are only allowed one arena combat per visit.  To fight an arena battle, select the option that best describes your abilities and return to me- if you survive:"
@@ -976,22 +963,16 @@ void GameUI_DrawDialogue()
     break;
 
   default:
-    if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E && !byte_5B0938[0])
-    {
+    if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E && !byte_5B0938[0]) {
       dialogue_string = current_npc_text;
-    }
-    else if (pGreetType == 1)//QuestNPC_greet
-    {
-      if (pNPC->greet)
-      {
+    } else if (pGreetType == 1) {  // QuestNPC_greet
+      if (pNPC->greet) {
         if ((pNPC->uFlags & 3) == 2)
           dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
         else
           dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
       }
-    }
-    else if (pGreetType == 2)//HiredNPC_greet
-    {
+    } else if (pGreetType == 2) {  // HiredNPC_greet
       NPCProfession* prof = &pNPCStats->pProfessions[pNPC->uProfession];
 
       if (pNPC->Hired())
@@ -1002,15 +983,15 @@ void GameUI_DrawDialogue()
     break;
   }
 
+  int pTextHeight = 0;
+
   // Message window(Окно сообщения)---- 
-  if (!dialogue_string.empty())
-  {
+  if (!dialogue_string.empty()) {
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
     GUIFont* font = pFontArrus;
     pTextHeight = pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
-    if (352 - pTextHeight < 8)
-    {
+    if (352 - pTextHeight < 8) {
       font = pFontCreate;
       pTextHeight = pFontCreate->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
     }
@@ -1032,7 +1013,7 @@ void GameUI_DrawDialogue()
   window.uFrameWidth = 148;
   window.uFrameZ = 334;
   for (int i = window.pStartingPosActiveItem; i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
-    pButton = window.GetControl(i);
+    GUIButton *pButton = window.GetControl(i);
     if (!pButton)
       break;
 
@@ -1130,26 +1111,27 @@ void GameUI_DrawDialogue()
   }
 
   // Install Buttons(Установка кнопок)-------- 
-  index = 0;
-  all_text_height = 0;
+  int index = 0;
+  int all_text_height = 0;
   for (int i = pDialogueWindow->pStartingPosActiveItem;
     i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i)
   {
-    pButton = pDialogueWindow->GetControl(i);
+    GUIButton *pButton = pDialogueWindow->GetControl(i);
     if (!pButton)
       break;
     all_text_height += pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
     index++;
   }
+
   if (index) {
-    v45 = (174 - all_text_height) / index;
+    int v45 = (174 - all_text_height) / index;
     if (v45 > 32)
       v45 = 32;
-    v42 = (174 - v45 * index - all_text_height) / 2 - v45 / 2 + 138;
+    int v42 = (174 - v45 * index - all_text_height) / 2 - v45 / 2 + 138;
     for (int i = pDialogueWindow->pStartingPosActiveItem;
       i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
     {
-      pButton = pDialogueWindow->GetControl(i);
+      GUIButton *pButton = pDialogueWindow->GetControl(i);
       if (!pButton)
         break;
       pButton->uY = (unsigned int)(v45 + v42);
@@ -1157,7 +1139,7 @@ void GameUI_DrawDialogue()
       pButton->uHeight = pTextHeight;
       v42 = pButton->uY + pTextHeight - 1;
       pButton->uW = v42;
-      pTextColor = ui_game_dialogue_option_normal_color;
+      uint16_t pTextColor = ui_game_dialogue_option_normal_color;
       if (pDialogueWindow->pCurrentPosActiveItem == i)
         pTextColor = ui_game_dialogue_option_highlight_color;
       window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->sLabel, 3);

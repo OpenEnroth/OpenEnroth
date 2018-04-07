@@ -441,27 +441,25 @@ void ArcomageGame::OnMouseMove(int x, int y)
     pArcomageGame->mouse_y = y;
 }
 
-//----- (0040DF47) --------------------------------------------------------
-void ArcomageGame::DoBlt_Copy(unsigned __int16 *pPixels)
-{
-    Rect pSrcRect;
-    Point pTargetPoint; // [sp+1Ch] [bp-8h]@1
+void ArcomageGame::DoBlt_Copy(unsigned __int16 *pPixels) {
+  Rect pSrcRect;
+  Point pTargetPoint; // [sp+1Ch] [bp-8h]@1
 
-    render->Present();
+  render->Present();
 
-    pTargetPoint.x = 0;
-    pTargetPoint.y = 0;
+  pTargetPoint.x = 0;
+  pTargetPoint.y = 0;
 
-    pSrcRect.x = 0;
-    pSrcRect.y = 0;
-    pSrcRect.z = window->GetWidth();
-    pSrcRect.w = window->GetHeight();
+  pSrcRect.x = 0;
+  pSrcRect.y = 0;
+  pSrcRect.z = window->GetWidth();
+  pSrcRect.w = window->GetHeight();
 
-    render->BeginScene();
-    pArcomageGame->pBlit_Copy_pixels = pPixels;
-    render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
-    render->EndScene();
-    pArcomageGame->pBlit_Copy_pixels = nullptr;
+  render->BeginScene();
+  pArcomageGame->pBlit_Copy_pixels = pPixels;
+  render->am_Blt_Copy(&pSrcRect, &pTargetPoint, 2);
+  render->EndScene();
+  pArcomageGame->pBlit_Copy_pixels = nullptr;
 }
 
 //----- (0040DDC9) --------------------------------------------------------
