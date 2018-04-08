@@ -379,7 +379,8 @@ String GUIFont::FitTextInAWindow(const String &inString, unsigned int width, int
   return temp_string;
 }
 
-void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, const String &str, bool present_time_transparency, int max_text_height, int uFontShadowColor) {
+void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, const String &str,
+                       bool present_time_transparency, int max_text_height, int uFontShadowColor) {
   int left_margin = 0;
   if (str.empty()) {
     return;
@@ -488,122 +489,112 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
 }
 
 int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, uint16_t uColor, const String &str, int rect_width, int reverse_text) {
-  int pLineWidth; // ebx@1
-  int text_width; // esi@3
-  unsigned __int8 v12; // cl@7
-  signed int v13; // esi@19
-  signed int v14; // ebx@19
-  unsigned __int8 v15; // cl@21
-  unsigned int v20; // ecx@26
-  unsigned char* v21; // eax@28
-  int v23; // eax@34
-  int v24; // ebx@36
-  char Str[6]; // [sp+Ch] [bp-20h]@34
-  int v28; // [sp+20h] [bp-Ch]@17
-  size_t pNumLen; // [sp+28h] [bp-4h]@1
-  size_t Str1a; // [sp+40h] [bp+14h]@5
-  int i;
-
   char text[4096];
   Assert(str.length() < sizeof(text));
   strcpy(text, str.c_str());
 
-  pNumLen = strlen(text);
-  pLineWidth = this->GetLineWidth(text);
+  size_t pNumLen = strlen(text);
+  unsigned int pLineWidth = this->GetLineWidth(text);
   if (pLineWidth < rect_width) {
-    pWindow->DrawText(this, uX, uY, uColor, text, 0, 0, 0);
+    this->DrawText(pWindow, uX, uY, uColor, text, 0, 0, 0);
     return pLineWidth;
   }
 
-  text_width = 0;
-  if (reverse_text)
+  unsigned int text_width = 0;
+  if (reverse_text) {
     _strrev(text);
-  Str1a = 0;
-  for (i = 0; i < pNumLen; ++i)
-  {
-    if (text_width >= rect_width)
+  }
+
+  size_t Str1a = 0;
+  size_t i = 0;
+  for (i = 0; i < pNumLen; ++i) {
+    if (text_width >= rect_width) {
       break;
-    v12 = text[i];
-    if (this->IsCharValid(v12))
-    {
-      switch (v12)
-      {
-      case '\t':// Horizontal tab 09
-      case '\n': //Line Feed 0A 10
-      case '\r': //Form Feed, page eject  0C 12
-        break;
-      case '\f': //Carriage Return 0D 13
-        i += 5;
-        break;
-      default:
-        if (i > 0)
-          text_width += pData->pMetrics[v12].uLeftSpacing;
-        text_width += pData->pMetrics[v12].uWidth;
-        if (i < pNumLen)
-          text_width += pData->pMetrics[v12].uRightSpacing;
+    }
+    uint8_t v12 = text[i];
+    if (this->IsCharValid(v12)) {
+      switch (v12) {
+        case '\t':// Horizontal tab 09
+        case '\n': //Line Feed 0A 10
+        case '\r': //Form Feed, page eject  0C 12
+          break;
+        case '\f': //Carriage Return 0D 13
+          i += 5;
+          break;
+        default:
+          if (i > 0) {
+            text_width += pData->pMetrics[v12].uLeftSpacing;
+          }
+          text_width += pData->pMetrics[v12].uWidth;
+          if (i < pNumLen) {
+            text_width += pData->pMetrics[v12].uRightSpacing;
+          }
       }
     }
   }
   text[i - 1] = 0;
 
-
   pNumLen = strlen(text);
-  v28 = this->GetLineWidth(text);
-  if (reverse_text)
+  unsigned int v28 = this->GetLineWidth(text);
+  if (reverse_text) {
     _strrev(text);
+  }
 
-  v13 = uX + pWindow->uFrameX;
-  v14 = uY + pWindow->uFrameY;
+  int width = uX + pWindow->uFrameX;
+  int height = uY + pWindow->uFrameY;
   for (i = 0; i<pNumLen; ++i) {
-    v15 = text[i];
+    uint8_t v15 = text[i];
     if (this->IsCharValid(v15)) {
-      switch (v12) {
-      case '\t':// Horizontal tab 09
-      {
-        strncpy(Str, &text[i + 1], 3);
-        Str[3] = 0;
-        //   atoi(Str);
-        i += 3;
-        break;
-      }
-      case '\n': //Line Feed 0A 10
-      {
-        v24 = pData->uFontHeight;
-        v13 = uX;
-        uY = uY + pData->uFontHeight - 3;
-        v14 = uY + pData->uFontHeight - 3;
-        break;
-      }
-      case '\r': //Form Feed, page eject  0C 12
-      {
-        strncpy(Str, &text[i + 1], 5);
-        Str[5] = 0;
-        i += 5;
-        uColor = atoi(Str);
-        break;
-      }
-      case '\f': //Carriage Return 0D 13
-      {
-        strncpy(Str, &text[i + 1], 3);
-        Str[3] = 0;
-        i += 3;
-        v23 = this->GetLineWidth(&text[i]);
-        v13 = pWindow->uFrameZ - v23 - atoi(Str);
-        v14 = uY;
-        break;
-      }
-      default:
-        v20 = pData->pMetrics[v15].uWidth;
-        if (i > 0)
-          v13 += pData->pMetrics[v15].uLeftSpacing;
-        v21 = &pData->pFontData[pData->font_pixels_offset[v15]];
-        if (uColor)
-          render->DrawText(v13, v14, v21, v20, pData->uFontHeight, pData->pFontPalettes[0], uColor, 0);
-        else
-          render->DrawTextAlpha(v13, v14, v21, v20, pData->uFontHeight, pData->pFontPalettes[0], false);
-        v13 += v20;
-        if (i < (signed int)pNumLen)
-          v13 += pData->pMetrics[v15].uRightSpacing;
+      switch (v15) {
+        case '\t': {  // Horizontal tab 09
+          char Str[6];
+          strncpy(Str, &text[i + 1], 3);
+          Str[3] = 0;
+          //   atoi(Str);
+          i += 3;
+          break;
+        }
+        case '\n': {  // Line Feed 0A 10
+          unsigned int v24 = pData->uFontHeight;
+          width = uX;
+          uY = uY + pData->uFontHeight - 3;
+          height = uY + pData->uFontHeight - 3;
+          break;
+        }
+        case '\r':  { // Form Feed, page eject  0C 12
+          char Str[6];
+          strncpy(Str, &text[i + 1], 5);
+          Str[5] = 0;
+          i += 5;
+          uColor = atoi(Str);
+          break;
+        }
+        case '\f': {  // Carriage Return 0D 13
+          char Str[6];
+          strncpy(Str, &text[i + 1], 3);
+          Str[3] = 0;
+          i += 3;
+          unsigned int v23 = this->GetLineWidth(&text[i]);
+          width = pWindow->uFrameZ - v23 - atoi(Str);
+          height = uY;
+          break;
+        }
+        default: {
+          unsigned int v20 = pData->pMetrics[v15].uWidth;
+          if (i > 0) {
+            width += pData->pMetrics[v15].uLeftSpacing;
+          }
+          uint8_t *v21 = &pData->pFontData[pData->font_pixels_offset[v15]];
+          if (uColor) {
+            render->DrawText(width, height, v21, v20, pData->uFontHeight, pData->pFontPalettes[0], uColor, 0);
+          } else {
+            render->DrawTextAlpha(width, height, v21, v20, pData->uFontHeight, pData->pFontPalettes[0], false);
+          }
+          width += v20;
+          if (i < (int)pNumLen) {
+            width += pData->pMetrics[v15].uRightSpacing;
+          }
+        }
       }
     }
   }

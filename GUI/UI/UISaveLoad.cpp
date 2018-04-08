@@ -258,7 +258,7 @@ static void UI_DrawSaveLoad(bool save) {
     save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameHeader[uLoadGameUI_SelectedSlot].pLocationName)].pName, 3);
 
     // Draw date
-    auto savegame_time = pSavegameHeader[uLoadGameUI_SelectedSlot].playing_time;
+    GameTime savegame_time = pSavegameHeader[uLoadGameUI_SelectedSlot].playing_time;
     auto savegame_hour = savegame_time.GetHoursOfDay();
 
     save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
