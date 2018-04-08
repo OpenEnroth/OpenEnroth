@@ -1,7 +1,6 @@
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
+#include "Engine/SaveLoad.h"
+
 #include <stdlib.h>
-#include <crtdbg.h>
 #include <io.h>
 #include <direct.h>
 #include <windows.h>
@@ -12,7 +11,6 @@
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
 #include "Engine/ZlibWrapper.h"
-#include "Engine/SaveLoad.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
 #include "Engine/stru123.h"

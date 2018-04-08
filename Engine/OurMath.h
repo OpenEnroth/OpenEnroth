@@ -1,6 +1,8 @@
 #pragma once
+
 #include <cassert>
 #include <limits>
+#include <cmath>
 
 #define pi_double 3.14159265358979323846
 

@@ -1469,32 +1469,30 @@ bool for_refactoring = false;
 bool all_spells = false; // is this needed with all_magic as well??
 bool bNoMargareth = true;
 
-void ParseCommandLine(const wchar_t *cmd)
-{
-    //if (wcsstr(pCmdLine, L"-usedefs"))
-    //  bDebugResouces = 1;
-    if (wcsstr(cmd, L"-window"))
-        dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_RUN_IN_WIDOW;
+void ParseCommandLine(const char *cmd) {
+  //if (wcsstr(pCmdLine, L"-usedefs"))
+  //  bDebugResouces = 1;
+  if (strstr(cmd, "-window"))
+    dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_RUN_IN_WIDOW;
 
-    if (wcsstr(cmd, L"-nointro"))
-        bNoIntro = true;//dword_6BE364_game_settings_1 |= 4;
-    if (wcsstr(cmd, L"-nologo"))
-        bNoLogo = true;//dword_6BE364_game_settings_1 |= 8;
-    if (wcsstr(cmd, L"-nosound"))
-        bNoSound = true; //dword_6BE364_game_settings_1 |= 0x10;
+  if (strstr(cmd, "-nointro"))
+    bNoIntro = true;//dword_6BE364_game_settings_1 |= 4;
+  if (strstr(cmd, "-nologo"))
+    bNoLogo = true;//dword_6BE364_game_settings_1 |= 8;
+  if (strstr(cmd, "-nosound"))
+    bNoSound = true; //dword_6BE364_game_settings_1 |= 0x10;
 
-    bWalkSound = OS_GetAppInt("WalkSound", 1) != 0;
-    if (wcsstr(cmd, L"-nowalksound"))
-        bWalkSound = false;//dword_6BE364_game_settings_1 |= 0x20;
-    if (wcsstr(cmd, L"-novideo"))
-    {
-        dword_6BE364_game_settings_1 |= GAME_SETTINGS_NO_HOUSE_ANIM;
-        bNoVideo = true;
-    }
-    if (wcsstr(cmd, L"-nocd"))
-        bNoCD = true;
-    if (wcsstr(cmd, L"-nomarg"))
-        bNoMargareth = true;
+  bWalkSound = OS_GetAppInt("WalkSound", 1) != 0;
+  if (strstr(cmd, "-nowalksound"))
+    bWalkSound = false;//dword_6BE364_game_settings_1 |= 0x20;
+  if (strstr(cmd, "-novideo")) {
+    dword_6BE364_game_settings_1 |= GAME_SETTINGS_NO_HOUSE_ANIM;
+    bNoVideo = true;
+  }
+  if (strstr(cmd, "-nocd"))
+    bNoCD = true;
+  if (strstr(cmd, "-nomarg"))
+    bNoMargareth = true;
 }
 
 
@@ -1623,7 +1621,7 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
   bGameoverLoop = false;
 }
 
-bool MM_Main(const wchar_t *pCmdLine) {
+bool MM_Main(const char *pCmdLine) {
   IntegrityTest();
 
   logger = new Log();

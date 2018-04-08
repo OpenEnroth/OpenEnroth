@@ -1,34 +1,20 @@
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
+#include "Media/Audio/AudioPlayer.h"
+
 #include <stdlib.h>
-#include <crtdbg.h>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include "Engine/Engine.h"
+#include "Engine/MM7.h"
 #include "Engine/Party.h"
-#include "Engine/Time.h"
-#include "Engine/OurMath.h"
-#include "Engine/MapInfo.h"
 #include "Engine/ZlibWrapper.h"
 
-#include "Engine/Tables/FrameTableInc.h"
-
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 
-#include "GUI/GUIWindow.h"
-
-#include "Media/Audio/AudioPlayer.h"
-#include "Media/MediaPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
-
-#include "Platform/Api.h"
 
 int sLastTrackLengthMS;
 AudioPlayer *pAudioPlayer;
@@ -43,8 +29,8 @@ uint8_t uMusicVolimeMultiplier;
 int bWalkSound;
 
 std::array<float, 10> pSoundVolumeLevels = 
-{ 0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f,
-  0.5500000f, 0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f };
+{ { 0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f,
+    0.5500000f, 0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f } };
 
 enum SOUND_TYPE {
   SOUND_TYPE_LEVEL   = 0,
@@ -385,8 +371,13 @@ void PlayLevelMusic() {
 }
 
 struct SoundHeader *AudioPlayer::FindSound(const std::string &pName) {
+  std::string filename = pName;
+  std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
   for (unsigned int i = 0; i < uNumSoundHeaders; ++i) {
-    if (!_stricmp(pName.c_str(), pSoundHeaders[i].pSoundName)) {
+    std::string soundname = pSoundHeaders[i].pSoundName;
+    std::transform(soundname.begin(), soundname.end(), soundname.begin(), ::tolower);
+    if (soundname == filename) {
       return &pSoundHeaders[i];
     }
   }
@@ -396,7 +387,7 @@ struct SoundHeader *AudioPlayer::FindSound(const std::string &pName) {
 PMemBuffer AudioPlayer::LoadSound(const std::string &pSoundName) {
   SoundHeader *header = FindSound(pSoundName);
   if (header == nullptr) {
-    return false;
+    return nullptr;
   }
 
   PMemBuffer buffer = AllocMemBuffer(header->uDecompressedSize);
@@ -444,10 +435,10 @@ int PartySpells::AddPartySpellSound(int uSoundID, int a6) {
   int v3 = 0;
   int result = word_4EE088_sound_ids[uSoundID];
 
-  int a2a = word_4EE088_sound_ids[uSoundID];
+//  int a2a = word_4EE088_sound_ids[uSoundID];
   if (word_4EE088_sound_ids[uSoundID]) {
     for (int v9 = 0; v9 < 2; ++v9) {
-      unsigned int v7 = a2a++;
+//      unsigned int v7 = a2a++;
       int v8;
 //      result = pSoundList->LoadSound(v7, (char *)this + v3, 44744 - v3, &v8, a6);
       if (!result)

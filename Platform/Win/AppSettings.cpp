@@ -90,6 +90,8 @@ int OS_GetAppInt(const char *pKey, int uDefValue)
     hKey = 0;
     phkResult = 0;
     cbData = 4;
+    *(int *)Data = uDefValue;
+
     if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0, KEY_READ | KEY_WOW64_32KEY, &hKey))// for 64 bit
     {
         if (!RegCreateKeyExA(hKey, "New World Computing", 0, "", 0, KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition))
@@ -103,8 +105,6 @@ int OS_GetAppInt(const char *pKey, int uDefValue)
                     {
                         status;
                         GetLastError();
-
-                        *(int *)Data = uDefValue;
                         RegSetValueExA(v11, lpValueName, 0, 4, Data, 4);
                     }
                     RegCloseKey(v11);

@@ -277,8 +277,8 @@ class Image;
 class Mouse {
  public:
   inline Mouse() :
-    window(nullptr),
-    cursor_img(nullptr)
+    cursor_img(nullptr),
+    window(nullptr)
   {
     pCursorBitmap_sysmem = nullptr;
     field_34 = 0;

@@ -150,7 +150,7 @@ struct NPCGreeting
 struct NPCStats
 {
   inline NPCStats():
-    pNPCTextTXT_Raw(nullptr), pNPCTopicTXT_Raw(nullptr), pNPCDistTXT_Raw(nullptr)
+    pNPCTopicTXT_Raw(nullptr), pNPCTextTXT_Raw(nullptr), pNPCDistTXT_Raw(nullptr)
   {
     uNumNPCNames[0] = uNumNPCNames[1] = 0;
   }

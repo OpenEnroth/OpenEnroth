@@ -27,7 +27,7 @@ struct Vec3: public Vec2<T>
   T z;
 
   inline Vec3(T a = 0, T b = 0, T c = 0):
-    Vec2(a, b), z(c)
+    Vec2<T>(a, b), z(c)
   {}
 
   void Normalize_float();
@@ -55,7 +55,7 @@ struct Vec3_float_
   void Normalize();
   
   //----- (0049B32D) --------------------------------------------------------
-  static Vec3_float_ *Vec3_float_::Cross(Vec3_float_ *v1, Vec3_float_ *pOut, float x, float y, float z)
+  static Vec3_float_ *Cross(Vec3_float_ *v1, Vec3_float_ *pOut, float x, float y, float z)
   {
     pOut->x = z * v1->y - y * v1->z;
     pOut->y = x * v1->z - z * v1->x;
@@ -97,12 +97,12 @@ struct Plane_int_
 #pragma pack(push, 1)
 struct BBox_short_
 {
-  __int16 x1;
-  __int16 x2;
-  __int16 y1;
-  __int16 y2;
-  __int16 z1;
-  __int16 z2;
+  int16_t x1;
+  int16_t x2;
+  int16_t y1;
+  int16_t y2;
+  int16_t z1;
+  int16_t z2;
 };
 #pragma pack(pop)
 

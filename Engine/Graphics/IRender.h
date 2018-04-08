@@ -139,10 +139,14 @@ struct RenderVertexD3D3 {
 #pragma pack(push, 1)
 struct RenderBillboardD3D {
   inline RenderBillboardD3D() :
+    texture(nullptr),
+    uNumVertices(4),
+    z_order(0.f),
     opacity(Transparent),
     field_90(-1),
-    sParentBillboardID(-1),
-    uNumVertices(4)
+    object_pid(0),
+    screen_space_z(0),
+    sParentBillboardID(-1)
   {}
 
   enum OpacityType : unsigned __int32 {
@@ -371,7 +375,7 @@ class IRender {
     hd_water_current_frame = 0;
     hd_water_tile_id = 0;
     pBeforePresentFunction = 0;
-    bFogEnabled;
+    bFogEnabled = 0;
     memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
     uNumBillboardsToDraw = 0;
   }

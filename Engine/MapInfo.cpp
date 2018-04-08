@@ -1,10 +1,9 @@
-#define _CRTDBG_MAP_ALLOC
+#include "MapInfo.h"
+
 #include <stdlib.h>
-#include <crtdbg.h>
 
 #include "Engine/Engine.h"
 
-#include "MapInfo.h"
 #include "LOD.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"

@@ -1,11 +1,8 @@
-#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
-#include <crtdbg.h>
 
-#define _CRT_SECURE_NO_WARNINGS
-#pragma once
 #include "Conditions.h"
 #include "Party.h"
+
 std::array<ConditionProcessor, 18> conditionArray =
 {
   // hint: condname, protfrommagic, gmprot, enchantment, ...

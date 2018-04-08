@@ -27,7 +27,7 @@
 #include "GUI/UI/UITransition.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UiStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"

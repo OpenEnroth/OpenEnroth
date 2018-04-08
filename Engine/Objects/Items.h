@@ -259,15 +259,15 @@ enum ITEM_EQUIP_TYPE: unsigned __int8
 enum CHARACTER_ATTRIBUTE_TYPE; 
 struct Player; 
 
-typedef struct CEnchantment
-{
-  unsigned __int16 Player::* statPtr;
-  int statBonus;
+typedef struct CEnchantment {
   CEnchantment(int bonus, unsigned __int16 Player::* skillPtr = nullptr):
-  statBonus(bonus),
-  statPtr(skillPtr)
+    statPtr(skillPtr),
+    statBonus(bonus)
   {
   }
+
+  uint16_t Player::* statPtr;
+  int statBonus;
 } CEnchantment;
 
 /*   64 */

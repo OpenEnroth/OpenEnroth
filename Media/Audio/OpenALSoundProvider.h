@@ -1,12 +1,12 @@
 #pragma once
 
-#include "lib/OpenAL/al.h"
-#include "lib/OpenAL/alc.h"
-
 #include "Media/Media.h"
 
 #include <memory>
 #include <string>
+
+#include "lib/OpenAL/al.h"
+#include "lib/OpenAL/alc.h"
 
 void log(const char *format, ...);
 

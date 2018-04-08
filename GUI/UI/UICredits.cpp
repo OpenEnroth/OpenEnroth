@@ -11,7 +11,6 @@
 #include "GUI/GUIWindow.h"
 #include "Media/Audio/AudioPlayer.h"
 #include "Platform/OSWindow.h"
-#include "lib/OpenAL/al.h"
 #include "Game/MainMenu.h"
 #include "Platform/Api.h"
 

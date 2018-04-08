@@ -5,7 +5,7 @@
 class MemBuffer : public IMemBuffer {
  public:
   MemBuffer(size_t size) : size(size) { data = malloc(size); }
-  virtual ~MemBuffer() { delete data; }
+  virtual ~MemBuffer() { free(data); }
 
   virtual const void *get_data() const { return data; }
   virtual size_t get_size() const { return size; }
@@ -19,5 +19,5 @@ class MemBuffer : public IMemBuffer {
 
 PMemBuffer AllocMemBuffer(size_t size) {
   std::shared_ptr<MemBuffer> buffer = std::make_shared<MemBuffer>(size);
-  return std::reinterpret_pointer_cast<IMemBuffer, MemBuffer>(buffer);
+  return std::dynamic_pointer_cast<IMemBuffer, MemBuffer>(buffer);
 }

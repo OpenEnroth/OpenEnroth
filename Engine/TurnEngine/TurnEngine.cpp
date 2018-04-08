@@ -1,8 +1,4 @@
-#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
