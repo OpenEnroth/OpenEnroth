@@ -471,6 +471,9 @@
     <ClCompile Include="..\..\Media\MediaPlayer.cpp">
       <Filter>Media\Video</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\GUI\UI\UIDialogue.cpp">
+      <Filter>GUI\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\libavcodec\avcodec.h">
@@ -1084,6 +1087,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Media\MediaPlayer.h">
       <Filter>Media\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GUI\UI\UIDialogue.h">
+      <Filter>GUI\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

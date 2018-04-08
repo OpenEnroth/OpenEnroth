@@ -382,22 +382,6 @@ struct GUIWindow {
   std::vector<GUIButton*> vButtons;
 };
 
-struct GUIWindow_Dialogue : public GUIWindow {
-  GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
-  virtual ~GUIWindow_Dialogue() {}
-
-  virtual void Update();
-  virtual void Release();
-};
-
-struct GUIWindow_GenericDialogue : public GUIWindow {
-  GUIWindow_GenericDialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
-  virtual ~GUIWindow_GenericDialogue() {}
-
-  virtual void Update();
-  virtual void Release();
-};
-
 struct GUIWindow_House : public GUIWindow {
   GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
   virtual ~GUIWindow_House() {}
@@ -584,11 +568,6 @@ extern struct GUIMessageQueue *pMessageQueue_50CBD0; // idb
 extern struct GUIMessageQueue *pMessageQueue_50C9E8; // idb
 
 
-
-void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType);
-
-
-
 extern enum WindowType current_character_screen_window;
 extern struct GUIWindow *pWindow_MainMenu;
 extern std::list<struct GUIWindow *> lWindowList;
@@ -625,10 +604,6 @@ void GameUI_DrawTorchlightAndWizardEye();
 void GameUI_DrawCharacterSelectionFrame();
 void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player);
 void GameUI_DrawNPCPopup(void *_this);
-
-void GameUI_InitializeDialogue(struct Actor *actor, int bPlayerSaysHello);
-void GameUI_DrawBranchlessDialogue();
-void GameUI_DrawDialogue();
 
 
 
@@ -679,7 +654,6 @@ void OnPaperdollLeftClick();
 void DrawJoinGuildWindow(int pEventCode);
 void DialogueEnding();
 char sub_4637E0_is_there_popup_onscreen();
-void sub_4B3E1E();
 void ClickNPCTopic(signed int uMessageParam);
 void GameUI_StatusBar_DrawImmediate(const char *Str, int a5);
 void _4B3FE5_training_dialogue(int a4);

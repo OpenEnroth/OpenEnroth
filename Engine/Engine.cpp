@@ -60,6 +60,7 @@
 #include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISaveLoad.h"
+#include "GUI/UI/UIDialogue.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -3095,25 +3096,6 @@ void Transition_StopSound_Autosave(const char *pMapName, MapStartPoint start_poi
   uGameState = GAME_STATE_CHANGE_LOCATION;
   strcpy(pCurrentMapName, pMapName);
   uLevel_StartingPointType = start_point;
-}
-
-void sub_4451A8_press_any_key(int a1, int a2, int a4) {
-  if (!pGUIWindow2) {
-    if (pParty->uFlags & 2) {
-      pEngine->Draw();
-    }
-    pAudioPlayer->StopChannels(-1, -1);
-    pMiscTimer->Pause();
-    pEventTimer->Pause();
-    dword_5C3418 = a1;
-    dword_5C341C = a2;
-    _591094_decoration = activeLevelDecoration;
-    pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), a4);
-    pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
-    pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
-    pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
-    pGUIWindow2->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
-  }
 }
 
 void OnTimer(int) {
