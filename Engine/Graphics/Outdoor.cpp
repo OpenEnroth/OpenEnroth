@@ -1054,7 +1054,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
 
 
     String minimap_filename = filename.substr(0, filename.length() - 4);
-    viewparams->location_minimap = assets->GetImage_16Bit(minimap_filename);
+    viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
 
     auto odm_filename = filename;
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
@@ -2461,7 +2461,7 @@ void OutdoorLocation::LoadActualSkyFrame()
         rest_ui_hourglass_frame_current = nullptr;
     }
 
-    rest_ui_sky_frame_current = assets->GetImage_16BitColorKey(
+    rest_ui_sky_frame_current = assets->GetImage_ColorKey(
         StringPrintf("TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour),
         0x7FF
     );

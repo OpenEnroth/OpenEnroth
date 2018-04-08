@@ -324,6 +324,8 @@ struct Texture_MM7;
 #define WINDOW_INPUT_CONFIRMED   2
 #define WINDOW_INPUT_CANCELLED   3
 
+class GUIFont;
+
 struct GUIWindow {
   GUIWindow();
   GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const String &hint = String());
@@ -333,7 +335,7 @@ struct GUIWindow {
     UIMessageType msg, unsigned int msg_param, uint8_t hotkey, const String &label, const std::vector<Image*> &textures = std::vector<Image*>());
 
   bool Contains(unsigned int x, unsigned int y);
-  void DrawFlashingInputCursor(signed int uX, int uY, struct GUIFont *a2);
+  void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
 
   int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, const char *text, int rect_width, int reverse_text);
   int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, String &str, int rect_width, int reverse_text);
@@ -666,7 +668,7 @@ unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int b
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
 struct GUIButton *GUI_HandleHotkey(uint8_t uHotkey); // idb
 void GUI_ReplaceHotkey(uint8_t uOldHotkey, uint8_t uNewHotkey, char bFirstCall);
-void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, GameTime remaining_time, struct GUIFont *Font);
+void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, GameTime remaining_time, GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item); // idb
 void MonsterPopup_Draw(unsigned int uActorID, struct GUIWindow *window);
 void SetUserInterface(enum PartyAlignment alignment, bool bReplace);
@@ -693,7 +695,7 @@ struct GUIButton {
     pParent = nullptr;
   }
 
-  void DrawLabel(const String &label_text, struct GUIFont *pFont, int a5, int uFontShadowColor);
+  void DrawLabel(const String &label_text, GUIFont *pFont, int a5, int uFontShadowColor);
   bool Contains(unsigned int x, unsigned int y);
   void Release();
 

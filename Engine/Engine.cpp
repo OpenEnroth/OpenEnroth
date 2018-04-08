@@ -3152,50 +3152,43 @@ void OnMapLoad()
     }
 }
 
-//----- (00444360) --------------------------------------------------------
-void Level_LoadEvtAndStr(const char *pLevelName)
-{
-    char pContainerName[120]; // [sp+8h] [bp-98h]@1
+void Level_LoadEvtAndStr(const char *pLevelName) {
+  char pContainerName[120]; // [sp+8h] [bp-98h]@1
 
-    sprintf(pContainerName, "%s.evt", pLevelName);
-    uLevelEVT_Size = LoadEventsToBuffer(pContainerName, pLevelEVT.data(), 9216);
+  sprintf(pContainerName, "%s.evt", pLevelName);
+  uLevelEVT_Size = LoadEventsToBuffer(pContainerName, pLevelEVT.data(), 9216);
 
-    sprintf(pContainerName, "%s.str", pLevelName);
-    uLevelStrFileSize = LoadEventsToBuffer(pContainerName, pLevelStr.data(), 9216);
-    if (uLevelStrFileSize)
-        LoadLevel_InitializeLevelStr();
+  sprintf(pContainerName, "%s.str", pLevelName);
+  uLevelStrFileSize = LoadEventsToBuffer(pContainerName, pLevelStr.data(), 9216);
+  if (uLevelStrFileSize)
+    LoadLevel_InitializeLevelStr();
 }
 
-//----- (004452BB) --------------------------------------------------------
-void sub_4452BB()
-{
-    pGUIWindow2->Release();
-    pGUIWindow2 = 0;
-    activeLevelDecoration = _591094_decoration;
-    EventProcessor(dword_5C3418, 0, 1, dword_5C341C);
-    activeLevelDecoration = nullptr;
-    pEventTimer->Resume();
+void sub_4452BB() {
+  pGUIWindow2->Release();
+  pGUIWindow2 = 0;
+  activeLevelDecoration = _591094_decoration;
+  EventProcessor(dword_5C3418, 0, 1, dword_5C341C);
+  activeLevelDecoration = nullptr;
+  pEventTimer->Resume();
 }
 
-//----- (0044100D) --------------------------------------------------------
-bool _44100D_should_alter_right_panel()
-{
+bool _44100D_should_alter_right_panel() {
     return current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_CHARACTERS ||
         current_screen_type == SCREEN_HOUSE || current_screen_type == SCREEN_E ||
         current_screen_type == SCREEN_CHANGE_LOCATION || current_screen_type == SCREEN_INPUT_BLV || current_screen_type == SCREEN_CASTING;
 }
 
-//----- (0044987B) --------------------------------------------------------
-void Transition_StopSound_Autosave(const char *pMapName, MapStartPoint start_point)
-{
-    pAudioPlayer->StopChannels(-1, -1);
-    pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
-    if (_stricmp(pCurrentMapName, pMapName))
-        SaveGame(1, 0);
+void Transition_StopSound_Autosave(const char *pMapName, MapStartPoint start_point) {
+  pAudioPlayer->StopChannels(-1, -1);
+  pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
+  if (_stricmp(pCurrentMapName, pMapName)) {
+    SaveGame(1, 0);
+  }
 
-    uGameState = GAME_STATE_CHANGE_LOCATION;
-    strcpy(pCurrentMapName, pMapName);
-    uLevel_StartingPointType = start_point;
+  uGameState = GAME_STATE_CHANGE_LOCATION;
+  strcpy(pCurrentMapName, pMapName);
+  uLevel_StartingPointType = start_point;
 }
 
 void sub_4451A8_press_any_key(int a1, int a2, int a4) {
@@ -3209,7 +3202,7 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4) {
     dword_5C3418 = a1;
     dword_5C341C = a2;
     _591094_decoration = activeLevelDecoration;
-    pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), a4, 0);
+    pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), a4);
     pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
     pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
     pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
@@ -3217,54 +3210,44 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4) {
   }
 }
 
-void OnTimer(int)
-{
-    if (pEventTimer->bPaused)
-        return;
+void OnTimer(int) {
+  if (pEventTimer->bPaused) {
+    return;
+  }
 
-    __int64 v13 = (pParty->GetPlayingTime() - _5773B8_event_timer).value / 128;
-    if (!v13)
-        return;
+  __int64 v13 = (pParty->GetPlayingTime() - _5773B8_event_timer).value / 128;
+  if (!v13)
+    return;
 
-    _5773B8_event_timer = pParty->GetPlayingTime();
+  _5773B8_event_timer = pParty->GetPlayingTime();
 
-    for (uint i = 0; i < MapsLongTimers_count; ++i)
-    {
-        //v4 = (char *)&array_5B5928_timers[0].field_C;
-        MapsLongTimer* timer = &MapsLongTimersList[i];
-        //while ( 1 )
-        //{
-        //v5 = *(short *)v4;
-        if (timer->time_left_to_fire)
-        {
-            if (v13 < timer->time_left_to_fire)
-                timer->time_left_to_fire -= v13;
-            else
-            {
-                timer->time_left_to_fire = timer->IntervalHalfMins;
-                EventProcessor(timer->timer_evt_ID, 0, 1, timer->timer_evt_seq_num);
-            }
-        }
-        else
-        {
-            if (timer->NextStartTime < pParty->GetPlayingTime())
-            {
-                uint next_trigger_time = 1 * 60 * 60 * 24; // 1 day
-                if (timer->YearsInterval)
-                    next_trigger_time = 336 * 60 * 60 * 24; // 1 year
-                else if (timer->MonthsInterval)
-                    next_trigger_time = 28 * 60 * 60 * 24; // 1 month
-                else if (timer->WeeksInterval)
-                    next_trigger_time = 7 * 60 * 60 * 24; // 1 week
+  for (uint i = 0; i < MapsLongTimers_count; ++i) {
+    MapsLongTimer* timer = &MapsLongTimersList[i];
+    if (timer->time_left_to_fire) {
+      if (v13 < timer->time_left_to_fire) {
+        timer->time_left_to_fire -= v13;
+      } else {
+        timer->time_left_to_fire = timer->IntervalHalfMins;
+        EventProcessor(timer->timer_evt_ID, 0, 1, timer->timer_evt_seq_num);
+      }
+    } else {
+      if (timer->NextStartTime < pParty->GetPlayingTime()) {
+        uint next_trigger_time = 1 * 60 * 60 * 24; // 1 day
+        if (timer->YearsInterval)
+          next_trigger_time = 336 * 60 * 60 * 24; // 1 year
+        else if (timer->MonthsInterval)
+          next_trigger_time = 28 * 60 * 60 * 24; // 1 month
+        else if (timer->WeeksInterval)
+          next_trigger_time = 7 * 60 * 60 * 24; // 1 week
 
-                timer->NextStartTime.value += (next_trigger_time * 128) / 3.0f;
-                if (timer->NextStartTime < pParty->GetPlayingTime()) // make sure in wont fire several times in a row if big time interval has lapsed
-                    timer->NextStartTime = pParty->GetPlayingTime();
+        timer->NextStartTime.value += (next_trigger_time * 128) / 3.0f;
+        if (timer->NextStartTime < pParty->GetPlayingTime()) // make sure in wont fire several times in a row if big time interval has lapsed
+          timer->NextStartTime = pParty->GetPlayingTime();
 
-                EventProcessor(timer->timer_evt_ID, 0, 1, timer->timer_evt_seq_num);
-            }
-        }
+        EventProcessor(timer->timer_evt_ID, 0, 1, timer->timer_evt_seq_num);
+      }
     }
+  }
 }
 
 

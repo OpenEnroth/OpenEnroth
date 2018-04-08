@@ -5,11 +5,7 @@
 
 #include "Engine/Graphics/Image.h"
 
-
-/*  272 */
-#pragma pack(push, 1)
-struct ArcomageCard
-{
+struct ArcomageCard {
   char pCardName[32];
   int slot;
   char field_24;
@@ -82,13 +78,8 @@ struct ArcomageCard
   char field_6A;
   char field_6B;
 };
-#pragma pack(pop)
 
-
-/*  401 */
-#pragma pack(push, 1)
-struct AcromageCardOnTable
-{
+struct AcromageCardOnTable {
   int uCardId;
   int field_4;
   Point field_8;
@@ -96,12 +87,8 @@ struct AcromageCardOnTable
   int field_14_y_plus;
   Point field_18_point;
 };
-#pragma pack(pop)
 
-
-#pragma pack(push, 1)
-struct ArcomagePlayer
-{
+struct ArcomagePlayer {
   char pPlayerName[32];
   int IsHisTurn;
   int tower_height;
@@ -115,87 +102,70 @@ struct ArcomagePlayer
   int cards_at_hand[10];
   Point card_shift[10];
 };
-#pragma pack(pop)
 
-
-
-#pragma pack(push, 1)
-struct ArcomageGame_stru1
-{
+struct ArcomageGame_stru1 {
   int field_0;
   int field_4;
   int field_8;
 };
-#pragma pack(pop)
 
+class GUIFont;
 
+struct ArcomageGame {
+  ArcomageGame();
 
+  static bool LoadBackground();
+  static bool LoadSprites();
+  static bool MsgLoop(int a1, ArcomageGame_stru1 *a2);
+  static void PlaySound(unsigned int event_id);
+  static void OnMouseClick(char right_left, bool bDown);
+  static void OnMouseMove(int x, int y);
+  static void GetCardRect(unsigned int uCardID, Rect *pCardRect);
+  static void PrepareArcomage();
+  static void DoBlt_Copy(unsigned __int16 *pPixels); // idb
 
-#pragma pack(push, 1)
-struct ArcomageGame
-{
-    ArcomageGame();
+  static void Loop();
 
-    static bool LoadBackground();
-    static bool LoadSprites();
-    static bool MsgLoop(int a1, ArcomageGame_stru1 *a2);
-    static void PlaySound(unsigned int event_id);
-    static void OnMouseClick(char right_left, bool bDown);
-    static void OnMouseMove(int x, int y);
-    static void GetCardRect(unsigned int uCardID, Rect *pCardRect);
-    static void PrepareArcomage();
-    static void DoBlt_Copy(unsigned __int16 *pPixels); // idb
-
-    static void Loop();
-
-    char field_0;
-    char field_1;
-    char field_2;
-    char field_3;
-    int field_4;
-    ArcomageGame_stru1 stru1;
-    int mouse_x;
-    int mouse_y;
-    char mouse_left;
-    char field_39;
-    char mouse_right;
-    char field_3B;
-    unsigned __int16 *pBackgroundPixels;
-    unsigned __int16 *pSpritesPixels;
-    unsigned __int16 *pBlit_Copy_pixels;
-    struct GUIFont *pfntComic;//ptr_48;
-    struct GUIFont *pfntArrus;//ptr_4C;
-    int field_50;
-    int field_54;
-    Image *pGameBackground;
-    Image *pSprites;
-    int event_timer_time;
-    int uGameWinner;
-    int Victory_type;
-    char pPlayer1Name[32];
-    char pPlayer2Name[32];
-    char field_F4;
-    char GameOver;
-    char field_F6;
-    char prev_mouse_left;
-    char prev_mouse_right;
-    char field_F9;
-    char bGameInProgress;
+  char field_0;
+  char field_1;
+  char field_2;
+  char field_3;
+  int field_4;
+  ArcomageGame_stru1 stru1;
+  int mouse_x;
+  int mouse_y;
+  char mouse_left;
+  char field_39;
+  char mouse_right;
+  char field_3B;
+  unsigned __int16 *pBackgroundPixels;
+  unsigned __int16 *pSpritesPixels;
+  unsigned __int16 *pBlit_Copy_pixels;
+  GUIFont *pfntComic;//ptr_48;
+  GUIFont *pfntArrus;//ptr_4C;
+  int field_50;
+  int field_54;
+  Image *pGameBackground;
+  Image *pSprites;
+  int event_timer_time;
+  int uGameWinner;
+  int Victory_type;
+  char pPlayer1Name[32];
+  char pPlayer2Name[32];
+  char field_F4;
+  char GameOver;
+  char field_F6;
+  char prev_mouse_left;
+  char prev_mouse_right;
+  char field_F9;
+  char bGameInProgress;
 };
-#pragma pack(pop)
-
-
-
 
 extern ArcomageGame *pArcomageGame;
 extern ArcomageCard pCards[87];
 extern void set_stru1_field_8_InArcomage(int inValue);
 
-
-
-#pragma pack(push, 1)
-struct stru272_stru1
-{
+struct stru272_stru1 {
   int have_spark;
   Point spark_position;
   int field_C;
@@ -203,84 +173,69 @@ struct stru272_stru1
   int field_14;
   int field_18;
 };
-#pragma pack(pop)
 
-/*  404 */
-#pragma pack(push, 1)
-struct stru272_stru2
-{
-    Rect effect_area;
-    int field_10;
-    int field_14;
-    int field_18;
-    float field_1Cf;
-    int field_20;
-    float field_24f;
-    float field_28f;
-    float field_2Cf;
-    int field_30;
-    int field_34;
-    stru272_stru1* sparks_array;
+struct stru272_stru2 {
+  Rect effect_area;
+  int field_10;
+  int field_14;
+  int field_18;
+  float field_1Cf;
+  int field_20;
+  float field_24f;
+  float field_28f;
+  float field_2Cf;
+  int field_30;
+  int field_34;
+  stru272_stru1* sparks_array;
 };
-#pragma pack(pop)
 
+struct stru272_stru0 {        // ARCOMAGE stuff
+  static stru272_stru0 *New();
 
-/*  270 */
-#pragma pack(push, 1)
-struct stru272_stru0         // ARCOMAGE stuff
-{
-    static stru272_stru0 *New();
+  int Free();
+  int StartFill(stru272_stru2* a2);
+  int Clear(char a2, char a3);
+  int DrawEffect();
+  int _40E2A7();
 
-    int Free();
-    int StartFill(stru272_stru2* a2);
-    int Clear(char a2, char a3);
-    int DrawEffect();
-    int _40E2A7();
-
-    int signature;
-    int field_4;
-    int position_in_sparks_arr;
-    int field_C;
-    int field_10;
-    int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    int field_24;
-    float field_28;
-    float field_2C;
-    float field_30;
-    int field_34;
-    int field_38;
-    int field_3C;
-    int field_40;
-    int field_44;
-    int field_48;
-    int field_4C;
-    int field_50;
-    stru272_stru1 * field_54;
-    char field_58;
-    char field_59;
-    char field_5A;
-    char field_5B;
+  int signature;
+  int field_4;
+  int position_in_sparks_arr;
+  int field_C;
+  int field_10;
+  int field_14;
+  int field_18;
+  int field_1C;
+  int field_20;
+  int field_24;
+  float field_28;
+  float field_2C;
+  float field_30;
+  int field_34;
+  int field_38;
+  int field_3C;
+  int field_40;
+  int field_44;
+  int field_48;
+  int field_4C;
+  int field_50;
+  stru272_stru1 * field_54;
+  char field_58;
+  char field_59;
+  char field_5A;
+  char field_5B;
 };
-#pragma pack(pop)
 
 #define DECK_SIZE 108
 
-#pragma pack(push, 1)
-struct ArcomageDeck
-{
+struct ArcomageDeck {
   char name[32];
   char cardsInUse[DECK_SIZE];
   int cards_IDs[DECK_SIZE];
 };
 
-#pragma pack(pop)
 
-#pragma pack(push, 1)
-struct stru272
-{
+struct stru272 {
   char have_effect;
   char effect_sign;
   char _pad_2;
@@ -289,4 +244,3 @@ struct stru272
   stru272_stru0 *field_40;
   stru272_stru1 effect_sparks[150];
 };
-#pragma pack(pop)

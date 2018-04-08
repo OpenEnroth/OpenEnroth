@@ -17,7 +17,7 @@ Image *Icon::GetTexture()
 {
     if (!this->img)
     {
-        this->img = assets->GetImage_16BitColorKey(
+        this->img = assets->GetImage_ColorKey(
             this->pTextureName,
             0x7FF
         );

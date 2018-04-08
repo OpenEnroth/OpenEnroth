@@ -558,31 +558,31 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
   uPlayerCreationUI_SelectedCharacter = 0;
   unsigned int v0 = pFontCreate->GetHeight() - 2;
 
-  ui_partycreation_class_icons[0] = assets->GetImage_16BitColorKey("IC_KNIGHT", 0x7FF);
-  ui_partycreation_class_icons[1] = assets->GetImage_16BitColorKey("IC_THIEF", 0x7FF);
-  ui_partycreation_class_icons[2] = assets->GetImage_16BitColorKey("IC_MONK", 0x7FF);
-  ui_partycreation_class_icons[3] = assets->GetImage_16BitColorKey("IC_PALAD", 0x7FF);
-  ui_partycreation_class_icons[4] = assets->GetImage_16BitColorKey("IC_ARCH", 0x7FF);
-  ui_partycreation_class_icons[5] = assets->GetImage_16BitColorKey("IC_RANGER", 0x7FF);
-  ui_partycreation_class_icons[6] = assets->GetImage_16BitColorKey("IC_CLER", 0x7FF);
-  ui_partycreation_class_icons[7] = assets->GetImage_16BitColorKey("IC_DRUID", 0x7FF);
-  ui_partycreation_class_icons[8] = assets->GetImage_16BitColorKey("IC_SORC", 0x7FF);
+  ui_partycreation_class_icons[0] = assets->GetImage_ColorKey("IC_KNIGHT", 0x7FF);
+  ui_partycreation_class_icons[1] = assets->GetImage_ColorKey("IC_THIEF", 0x7FF);
+  ui_partycreation_class_icons[2] = assets->GetImage_ColorKey("IC_MONK", 0x7FF);
+  ui_partycreation_class_icons[3] = assets->GetImage_ColorKey("IC_PALAD", 0x7FF);
+  ui_partycreation_class_icons[4] = assets->GetImage_ColorKey("IC_ARCH", 0x7FF);
+  ui_partycreation_class_icons[5] = assets->GetImage_ColorKey("IC_RANGER", 0x7FF);
+  ui_partycreation_class_icons[6] = assets->GetImage_ColorKey("IC_CLER", 0x7FF);
+  ui_partycreation_class_icons[7] = assets->GetImage_ColorKey("IC_DRUID", 0x7FF);
+  ui_partycreation_class_icons[8] = assets->GetImage_ColorKey("IC_SORC", 0x7FF);
 
-  ui_partycreation_top = assets->GetImage_16BitColorKey("MAKETOP", 0x7FF);
-  ui_partycreation_sky_scroller = assets->GetImage_16Bit("MAKESKY");
+  ui_partycreation_top = assets->GetImage_Alpha("MAKETOP");  // , 0x7FF);
+  ui_partycreation_sky_scroller = assets->GetImage_Solid("MAKESKY");
 
   for (int uX = 0; uX < 22; ++uX) {
-    ui_partycreation_portraits[uX] = assets->GetImage_16BitColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]), 0x7FF);
+    ui_partycreation_portraits[uX] = assets->GetImage_ColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]), 0x7FF);
   }
 
-  ui_partycreation_minus = assets->GetImage_16BitColorKey("buttminu", 0x7FF);
-  ui_partycreation_plus = assets->GetImage_16BitColorKey("buttplus", 0x7FF);
-  ui_partycreation_right = assets->GetImage_16BitColorKey("presrigh", 0x7FF);
-  ui_partycreation_left = assets->GetImage_16BitColorKey("presleft", 0x7FF);
+  ui_partycreation_minus = assets->GetImage_ColorKey("buttminu", 0x7FF);
+  ui_partycreation_plus = assets->GetImage_ColorKey("buttplus", 0x7FF);
+  ui_partycreation_right = assets->GetImage_ColorKey("presrigh", 0x7FF);
+  ui_partycreation_left = assets->GetImage_ColorKey("presleft", 0x7FF);
 
   for (int i = 1; i < 20; ++i) {
-    ui_partycreation_arrow_l[i] = assets->GetImage_16BitAlpha(StringPrintf("arrowl%d", i));
-    ui_partycreation_arrow_r[i] = assets->GetImage_16BitAlpha(StringPrintf("arrowr%d", i));
+    ui_partycreation_arrow_l[i] = assets->GetImage_Alpha(StringPrintf("arrowl%d", i));
+    ui_partycreation_arrow_r[i] = assets->GetImage_Alpha(StringPrintf("arrowr%d", i));
   }
 
   //pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
@@ -669,8 +669,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     ++uControlParam;
   } while (uControlParam < 9);
 
-  ui_partycreation_buttmake = assets->GetImage_16BitAlpha("BUTTMAKE");
-  ui_partycreation_buttmake2 = assets->GetImage_16BitAlpha("BUTTMAKE2");
+  ui_partycreation_buttmake = assets->GetImage_Alpha("BUTTMAKE");
+  ui_partycreation_buttmake2 = assets->GetImage_Alpha("BUTTMAKE2");
 
   pPlayerCreationUI_BtnOK = CreateButton(580, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickOK, 0, '\r', "", { { ui_partycreation_buttmake } });
   pPlayerCreationUI_BtnReset = CreateButton(527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, 'C', "", { { ui_partycreation_buttmake2 } });

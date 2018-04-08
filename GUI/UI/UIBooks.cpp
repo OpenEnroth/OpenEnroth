@@ -88,7 +88,7 @@ void GUIWindow_Book::InitializeFonts()
     pAudioPlayer->StopChannels(-1, -1);
     pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
 
-    ui_book_map_frame = assets->GetImage_16BitAlpha("mapbordr");
+    ui_book_map_frame = assets->GetImage_Alpha("mapbordr");
 
     pBookFont = GUIFont::LoadFont("book.fnt", "FONTPAL", NULL);
     pBook2Font = GUIFont::LoadFont("book2.fnt", "FONTPAL", NULL);

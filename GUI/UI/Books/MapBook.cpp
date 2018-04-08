@@ -43,20 +43,20 @@ GUIWindow_MapBook::GUIWindow_MapBook() :
     pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(546, 353, 0, 0, (int)pBtn_Maps);
 
     dword_506364 = 1;
-    ui_book_map_background = assets->GetImage_16BitColorKey("sbmap", 0x7FF);
+    ui_book_map_background = assets->GetImage_ColorKey("sbmap", 0x7FF);
 
-    ui_book_button1_on = assets->GetImage_16BitAlpha("zoom-on");
-    ui_book_button2_on = assets->GetImage_16BitAlpha("zoot-on");
-    ui_book_button3_on = assets->GetImage_16BitAlpha("tabNon");
-    ui_book_button4_on = assets->GetImage_16BitAlpha("tabSon");
-    ui_book_button5_on = assets->GetImage_16BitAlpha("tabEon");
-    ui_book_button6_on = assets->GetImage_16BitAlpha("tabWon");
-    ui_book_button1_off = assets->GetImage_16BitAlpha("zoom-off");
-    ui_book_button2_off = assets->GetImage_16BitAlpha("zoot-off");
-    ui_book_button3_off = assets->GetImage_16BitAlpha("tabNoff");
-    ui_book_button4_off = assets->GetImage_16BitAlpha("tabSoff");
-    ui_book_button5_off = assets->GetImage_16BitAlpha("tabEoff");
-    ui_book_button6_off = assets->GetImage_16BitAlpha("tabWoff");
+    ui_book_button1_on = assets->GetImage_Alpha("zoom-on");
+    ui_book_button2_on = assets->GetImage_Alpha("zoot-on");
+    ui_book_button3_on = assets->GetImage_Alpha("tabNon");
+    ui_book_button4_on = assets->GetImage_Alpha("tabSon");
+    ui_book_button5_on = assets->GetImage_Alpha("tabEon");
+    ui_book_button6_on = assets->GetImage_Alpha("tabWon");
+    ui_book_button1_off = assets->GetImage_Alpha("zoom-off");
+    ui_book_button2_off = assets->GetImage_Alpha("zoot-off");
+    ui_book_button3_off = assets->GetImage_Alpha("tabNoff");
+    ui_book_button4_off = assets->GetImage_Alpha("tabSoff");
+    ui_book_button5_off = assets->GetImage_Alpha("tabEoff");
+    ui_book_button6_off = assets->GetImage_Alpha("tabWoff");
 
     pBtn_Book_1 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1, 0,
       UIMSG_ClickBooksBtn, 0, 0, localization->GetString(251), { {ui_book_button1_on} });// "Zoom In"

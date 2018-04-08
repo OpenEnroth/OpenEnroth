@@ -352,11 +352,13 @@ Image *Image::Create(unsigned int width, unsigned int height, IMAGE_FORMAT forma
     img->width = width;
     img->height = height;
     img->native_format = format;
+    unsigned int num_pixels = img->GetWidth() * img->GetHeight();
+    unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(format);
+    img->pixels[format] = new unsigned char[num_pixels_bytes];
     if (pixels) {
-      unsigned int num_pixels = img->GetWidth() * img->GetHeight();
-      unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(format);
-      img->pixels[format] = new unsigned char[num_pixels_bytes];
       memcpy(img->pixels[format], pixels, num_pixels_bytes);
+    } else {
+      memset(img->pixels[format], 0, num_pixels_bytes);
     }
   }
 

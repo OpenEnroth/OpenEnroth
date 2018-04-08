@@ -117,7 +117,7 @@ void GUIButton::Release() {
   delete this;
 }
 
-void GUIButton::DrawLabel(const String &label_text, struct GUIFont *pFont, int a5, int uFontShadowColor) {
+void GUIButton::DrawLabel(const String &label_text, GUIFont *pFont, int a5, int uFontShadowColor) {
   return pParent->DrawText(pFont,
     this->uX + (int)(this->uWidth - pFont->GetLineWidth(label_text)) / 2,
     this->uY + (int)(this->uHeight - pFont->GetHeight()) / 2,

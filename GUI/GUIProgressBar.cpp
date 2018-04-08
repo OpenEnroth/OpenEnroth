@@ -73,16 +73,16 @@ bool GUIProgressBar::Initialize(Type type)
         uHeight = 56;
         uProgressMax = 26;
 
-        progressbar_loading = assets->GetImage_16BitAlpha("loadprog");
+        progressbar_loading = assets->GetImage_Alpha("loadprog");
         Draw();
         return true;
     }
 
     switch (pParty->alignment)
     {
-        case PartyAlignment_Good:    progressbar_dungeon = assets->GetImage_16BitColorKey("bardata-b", 0x7FF); break;
-        case PartyAlignment_Neutral: progressbar_dungeon = assets->GetImage_16BitColorKey("bardata", 0x7FF); break;
-        case PartyAlignment_Evil:    progressbar_dungeon = assets->GetImage_16BitColorKey("bardata-c", 0x7FF); break;
+        case PartyAlignment_Good:    progressbar_dungeon = assets->GetImage_ColorKey("bardata-b", 0x7FF); break;
+        case PartyAlignment_Neutral: progressbar_dungeon = assets->GetImage_ColorKey("bardata", 0x7FF); break;
+        case PartyAlignment_Evil:    progressbar_dungeon = assets->GetImage_ColorKey("bardata-c", 0x7FF); break;
         default: Error("Invalid alignment type: %u", pParty->alignment);
     }
 

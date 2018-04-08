@@ -1,25 +1,26 @@
+#include "GUI/GUIFont.h"
+
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 
 #include "Engine/Graphics/IRender.h"
 
-#include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 
+#include <sstream>
 
 extern LODFile_IconsBitmaps *pIcons_LOD;
 
-
-struct GUIFont *pAutonoteFont;
-struct GUIFont *pSpellFont;
-struct GUIFont *pFontArrus;
-struct GUIFont *pFontLucida;
-struct GUIFont *pBook2Font;
-struct GUIFont *pBookFont;
-struct GUIFont *pFontCreate;
-struct GUIFont *pFontCChar;
-struct GUIFont *pFontComic;
-struct GUIFont *pFontSmallnum;
+GUIFont *pAutonoteFont = nullptr;
+GUIFont *pSpellFont = nullptr;
+GUIFont *pFontArrus = nullptr;
+GUIFont *pFontLucida = nullptr;
+GUIFont *pBook2Font = nullptr;
+GUIFont *pBookFont = nullptr;
+GUIFont *pFontCreate = nullptr;
+GUIFont *pFontCChar = nullptr;
+GUIFont *pFontComic = nullptr;
+GUIFont *pFontSmallnum = nullptr;
 
 char temp_string[2048];
 
@@ -133,7 +134,7 @@ void GUIFont::DrawTextLine(const String &text, uint16_t uDefaultColor, int uX, i
   }
 }
 
-void DrawCharToBuff(uint16_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
+void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
                     uint8_t *pFontPalette, uint16_t draw_color, int line_width)
 {
   uint8_t *pPixels = pCharPixels;
@@ -145,9 +146,9 @@ void DrawCharToBuff(uint16_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, i
           uint8_t r = pFontPalette[3];
           uint8_t g = pFontPalette[4];
           uint8_t b = pFontPalette[5];
-          *draw_buff = Color16(r, g, b);
+          *draw_buff = Color32(r, g, b);
         } else {
-          *draw_buff = draw_color;
+          *draw_buff = Color32(draw_color);
         }
       }
       ++draw_buff;
@@ -156,63 +157,57 @@ void DrawCharToBuff(uint16_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, i
   }
 }
 
-void GUIFont::DrawTextLineToBuff(int uColor, unsigned short* uX_buff_pos, const char *text, int line_width)
-{
-  unsigned short* uX_pos; // edi@3
-  unsigned char c; // cl@4
-  unsigned __int16 draw_color; // cx@12
-  unsigned __int8 *pCharPixels; // eax@12
-  char color_code[20]; // [sp+Ch] [bp-1Ch]@16
-  int text_length; // [sp+20h] [bp-8h]@2
-  int text_color; // [sp+24h] [bp-4h]@1
-  int uCharWidth; // [sp+30h] [bp+8h]@9
+void GUIFont::DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos, const String &text, int line_width) {
+  if (text.empty()) {
+    return;
+  }
 
-  if (!text)
-      return;
-  text_color = ui_current_text_color;
-  text_length = strlen(text);
-  uX_pos=uX_buff_pos;
-  for (int i=0; i<text_length; ++i ) {
-      c = text[i];
-      if ( IsCharValid(c) )
-          {
-          switch (c)
-              {
-          case '\n':  // Line Feed 0A 10:
-              return;
-              break;
-          case '\f':  // Form Feed, page eject  0C 12 
-              strncpy(color_code, &text[i + 1], 5);
-              color_code[5] = 0;
-              text_color = atoi(color_code);
-              ui_current_text_color = text_color;
-              i += 5;
-              break;
-          case '\t':  // Horizontal tab 09
-          case '_':
-              break;
-          default:
-              uCharWidth = pData->pMetrics[c].uWidth;
-              if ( uCharWidth )
-                  {
-                  if ( i > 0 )
-                      uX_pos += pData->pMetrics[c].uLeftSpacing;
-                  draw_color = text_color;
-                  pCharPixels = &pData->pFontData[pData->font_pixels_offset[c]];
-                  if ( !text_color )
-                      draw_color = -1;
-                  DrawCharToBuff(uX_pos, pCharPixels, uCharWidth, pData->uFontHeight, pData->pFontPalettes[0], draw_color, line_width);
-                  uX_pos += uCharWidth;
-                  if ( i < text_length )
-                      uX_pos += pData->pMetrics[c].uRightSpacing;
-                  }
-              }
+  char color_code[20];
+
+  uint16_t text_color = ui_current_text_color;
+  size_t text_length = text.length();
+  uint32_t *uX_pos = uX_buff_pos;
+  for (size_t i = 0; i<text_length; ++i) {
+    uint8_t c = text[i];
+    if (IsCharValid(c)) {
+      switch (c) {
+        case '\n':  // Line Feed 0A 10:
+          return;
+          break;
+        case '\f':  // Form Feed, page eject  0C 12 
+          strncpy(color_code, &text[i + 1], 5);
+          color_code[5] = 0;
+          text_color = atoi(color_code);
+          ui_current_text_color = text_color;
+          i += 5;
+          break;
+        case '\t':  // Horizontal tab 09
+        case '_':
+          break;
+        default: {
+          int uCharWidth = pData->pMetrics[c].uWidth;
+          if (uCharWidth) {
+            if (i > 0) {
+              uX_pos += pData->pMetrics[c].uLeftSpacing;
+            }
+            uint16_t draw_color = text_color;
+            uint8_t *pCharPixels = &pData->pFontData[pData->font_pixels_offset[c]];
+            if (!text_color) {
+              draw_color = -1;
+            }
+            DrawCharToBuff(uX_pos, pCharPixels, uCharWidth, pData->uFontHeight, pData->pFontPalettes[0], draw_color, line_width);
+            uX_pos += uCharWidth;
+            if (i < text_length) {
+              uX_pos += pData->pMetrics[c].uRightSpacing;
+            }
           }
+        }
       }
+    }
+  }
 }
 
-String GUIFont::GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned int uX, int a5)
-{
+String GUIFont::GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned int uX, int a5) {
   if (pInString.empty()) {
     return nullptr;
   }
@@ -221,7 +216,7 @@ String GUIFont::GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned
 
   String text_str = FitTextInAWindow(pInString, pWindow->uFrameWidth, uX);
   int text_length = text_str.length();
-  for ( int i = 0; i < text_length; ++i ) {
+  for (int i = 0; i < text_length; ++i) {
     unsigned char c = text_str[i];
     if (IsCharValid(c)) {
       switch (c) {
@@ -384,51 +379,47 @@ String GUIFont::FitTextInAWindow(const String &inString, unsigned int width, int
   return temp_string;
 }
 
-void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, unsigned short uFontColor, const char *Str, bool present_time_transparency, int max_text_height, int uFontShadowColor) {
-  int v14; // edx@9
-  char Dest[6]; // [sp+Ch] [bp-2Ch]@32
-  size_t v30; // [sp+2Ch] [bp-Ch]@4
-
+void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, const String &str, bool present_time_transparency, int max_text_height, int uFontShadowColor) {
   int left_margin = 0;
-  if (!Str)
-  {
+  if (str.empty()) {
     logger->Warning(L"Invalid string passed!");
     return;
   }
-  if (!strcmp(Str, "null"))
+  if (str == "null") {
     return;
+  }
 
-  v30 = strlen(Str);
-  if (!uX)
+  size_t v30 = str.length();
+  if (!uX) {
     uX = 12;
+  }
 
-  String string_begin = Str;
+  String string_begin = str;
   if (max_text_height == 0) {
-    string_begin = FitTextInAWindow(Str, pWindow->uFrameWidth, uX);
+    string_begin = FitTextInAWindow(str, pWindow->uFrameWidth, uX);
   }
   auto string_end = string_begin;
   auto string_base = string_begin;
 
   int out_x = uX + pWindow->uFrameX;
   int out_y = uY + pWindow->uFrameY;
-  v14 = 0;
 
-  if (max_text_height != 0 && out_y + pData->uFontHeight > max_text_height)
+  if (max_text_height != 0 && out_y + pData->uFontHeight > max_text_height) {
     return;
+  }
 
-  if ((signed int)v30 > 0)
-  {
-    do
-    {
-      unsigned char c = string_base[v14];
+  char Dest[6] = { 0 };
+  size_t v14 = 0;
+  if (v30 > 0) {
+    do {
+      uint8_t c = string_base[v14];
       if (c >= pData->cFirstChar && c <= pData->cLastChar
         || c == '\f'
         || c == '\r'
         || c == '\t'
         || c == '\n')
       {
-        switch (c)
-        {
+        switch (c) {
         case '\t':
           strncpy(Dest, &string_base[v14 + 1], 3);
           Dest[3] = 0;
@@ -440,10 +431,10 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, unsigned short uFontC
           uY = uY + pData->uFontHeight - 3;
           out_y = uY + pWindow->uFrameY;
           out_x = uX + pWindow->uFrameX + left_margin;
-          if (max_text_height != 0)
-          {
-            if (pData->uFontHeight + out_y - 3 > max_text_height)
+          if (max_text_height != 0) {
+            if (pData->uFontHeight + out_y - 3 > max_text_height) {
               return;
+            }
           }
           break;
         case '\f':
@@ -459,42 +450,45 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, unsigned short uFontC
           left_margin = atoi(Dest);
           out_x = pWindow->uFrameZ - this->GetLineWidth(&string_base[v14]) - left_margin;
           out_y = uY + pWindow->uFrameY;
-          if (max_text_height != 0)
-          {
-            if (pData->uFontHeight + out_y - 3 > max_text_height)
+          if (max_text_height != 0) {
+            if (pData->uFontHeight + out_y - 3 > max_text_height) {
               return;
+            }
             break;
           }
           break;
 
         default:
-          if (c == '\"' && string_base[v14 + 1] == '\"')
+          if (c == '\"' && string_base[v14 + 1] == '\"') {
             ++v14;
+          }
 
-          c = (unsigned __int8)string_base[v14];
-          if (v14 > 0)
+          c = (uint8_t)string_base[v14];
+          if (v14 > 0) {
             out_x += pData->pMetrics[c].uLeftSpacing;
+          }
 
           unsigned char *letter_pixels = &pData->pFontData[pData->font_pixels_offset[c]];
-          if (uFontColor)
+          if (uFontColor) {
             render->DrawText(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight,
               pData->pFontPalettes[0], uFontColor, uFontShadowColor);
-          else
+          } else {
             render->DrawTextAlpha(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight,
               pData->pFontPalettes[0], present_time_transparency);
+          }
 
           out_x += pData->pMetrics[c].uWidth;
-          if ((signed int)v14 < (signed int)v30)
+          if (v14 < v30) {
             out_x += pData->pMetrics[c].uRightSpacing;
+          }
           break;
         }
       }
-    } while ((signed int)++v14 < (signed int)v30);
+    } while (++v14 < v30);
   }
 }
 
-int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, unsigned int uColor, String &str, int rect_width, int reverse_text)
-{
+int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, uint16_t uColor, const String &str, int rect_width, int reverse_text) {
   int pLineWidth; // ebx@1
   int text_width; // esi@3
   unsigned __int8 v12; // cl@7
@@ -617,7 +611,9 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
   return v28;
 }
 
-void GUIFont::DrawCreditsEntry(GUIFont *firstFont, GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h, uint16_t firstColor, uint16_t secondColor, const char *pString, uint16_t *pPixels, unsigned int uPixelsWidth) {
+void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h,
+                               uint16_t firstColor, uint16_t secondColor, const String &pString,
+                               Image *image) {
   GUIWindow draw_window;
   draw_window.uFrameHeight = h;
   draw_window.uFrameW = uFrameY + h - 1;
@@ -627,17 +623,20 @@ void GUIFont::DrawCreditsEntry(GUIFont *firstFont, GUIFont *pSecondFont, int uFr
   draw_window.uFrameX = uFrameX;
   draw_window.uFrameY = uFrameY;
 
-  char *work_string = FitTwoFontStringINWindow(pString, firstFont, pSecondFont, &draw_window, 0, 1);
-  work_string = strtok(work_string, "\n");
-  uint16_t *curr_pixel_pos = &pPixels[uPixelsWidth * uFrameY];
-  if (work_string) {
+  String work_string = FitTwoFontStringINWindow(pString, pSecondFont, &draw_window, 0, 1);
+  std::istringstream stream(work_string);
+  std::getline(stream, work_string);
+
+  uint32_t *pPixels = (uint32_t*)image->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+  uint32_t *curr_pixel_pos = &pPixels[image->GetWidth() * uFrameY];
+  if (!work_string.empty()) {
     int half_frameX = uFrameX >> 1;
-    while (true) {
-      GUIFont *currentFont = firstFont;
+    while (!stream.eof()) {
+      GUIFont *currentFont = this;
       ui_current_text_color = firstColor;
       int start_str_pos = 0;
       int currentColor = firstColor;
-      if (*work_string == '_') {
+      if (work_string[0] == '_') {
         currentFont = pSecondFont;
         currentColor = secondColor;
         ui_current_text_color = secondColor;
@@ -647,24 +646,25 @@ void GUIFont::DrawCreditsEntry(GUIFont *firstFont, GUIFont *pSecondFont, int uFr
       if (line_w < 0) {
         line_w = 0;
       }
-      currentFont->DrawTextLineToBuff(currentColor, &curr_pixel_pos[line_w + half_frameX], work_string, uPixelsWidth);
-      curr_pixel_pos += uPixelsWidth * (currentFont->GetHeight() - 3);
-      work_string = strtok(0, "\n");
-      if (!work_string) {
+      currentFont->DrawTextLineToBuff(currentColor, &curr_pixel_pos[line_w + half_frameX],
+                                      work_string, image->GetWidth());
+      curr_pixel_pos += image->GetWidth() * (currentFont->GetHeight() - 3);
+      std::getline(stream, work_string);
+      if (work_string.empty()) {
         break;
       }
     }
   }
 }
 
-char *GUIFont::FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6) {
-  if (!pString) {
-    return 0;
+String GUIFont::FitTwoFontStringINWindow(const String &pString, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6) {
+  if (pString.empty()) {
+    return String();
   }
-  GUIFont *currentFont = pFontMain; // esi@3
-  int uInStrLen = strlen(pString);
+  GUIFont *currentFont = this;
+  size_t uInStrLen = pString.length();
   Assert(uInStrLen < sizeof(pTmpBuf3));
-  strcpy(pTmpBuf3.data(), pString);
+  strcpy(pTmpBuf3.data(), pString.c_str());
   if (uInStrLen == 0) {
     return pTmpBuf3.data();
   }
@@ -674,7 +674,7 @@ char *GUIFont::FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain,
   int possible_transition_point = 0;
   for (int i = 0; i < uInStrLen; ++i) {
     unsigned char c = pTmpBuf3[i];
-    if (pFontMain->IsCharValid(c)) {
+    if (IsCharValid(c)) {
       switch (c) {
       case '\t': {  // Horizontal tab 09
         char digits[4];
@@ -687,7 +687,7 @@ char *GUIFont::FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain,
       case  '\n': {  // Line Feed 0A 10
         string_pixel_Width = start_pixel_offset;
         possible_transition_point = i;
-        currentFont = pFontMain;
+        currentFont = this;
         break;
       }
       case  '\f': {  //Form Feed, page eject  0C 12
@@ -696,7 +696,7 @@ char *GUIFont::FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain,
       }
       case  '\r': {  //Carriage Return 0D 13
         if (!a6)
-          return (char*)pString;
+          return pString;
         break;
       }
       case ' ': {
@@ -719,8 +719,9 @@ char *GUIFont::FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain,
         else {
           pTmpBuf3[possible_transition_point] = '\n';
           if (currentFont == pFontSecond) {
-            for (int k = uInStrLen - 1; k >= possible_transition_point + 1; --k)
+            for (int k = uInStrLen - 1; k >= possible_transition_point + 1; --k) {
               pTmpBuf3[k] = pTmpBuf3[k - 1];
+            }
             ++uInStrLen;
             ++possible_transition_point;
             pTmpBuf3[possible_transition_point] = '_';
@@ -729,42 +730,47 @@ char *GUIFont::FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain,
 
           for (int j = possible_transition_point; j < i; ++j) {
             c = pTmpBuf3[j];
-            if (pFontMain->IsCharValid(c)) {
-              if (j>possible_transition_point)
-                string_pixel_Width += pFontMain->pData->pMetrics[c].uLeftSpacing;
-              string_pixel_Width += pFontMain->pData->pMetrics[c].uWidth;
-              if (j < i)
-                string_pixel_Width += pFontMain->pData->pMetrics[c].uRightSpacing;
+            if (IsCharValid(c)) {
+              if (j > possible_transition_point) {
+                string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
+              }
+              string_pixel_Width += pData->pMetrics[c].uWidth;
+              if (j < i) {
+                string_pixel_Width += pData->pMetrics[c].uRightSpacing;
+              }
             }
           }
         }
       }
     }
   }
-  return pTmpBuf3.data();
+
+  return String(pTmpBuf3.data());
 }
 
-int GUIFont::GetStringHeight2(GUIFont *firstFont, GUIFont *secondFont, const char *text_str, GUIWindow* pWindow, int startX, int a6) {
-  if (!text_str)
+int GUIFont::GetStringHeight2(GUIFont *secondFont, const String &text_str, GUIWindow* pWindow, int startX, int a6) {
+  if (text_str.empty()) {
     return 0;
-  int uAllHeght = firstFont->GetHeight() - 3;
-  char *test_string = FitTwoFontStringINWindow(text_str, firstFont, secondFont, pWindow, startX, 0);
-  int uStringLen = strlen(test_string);
-  for (int i = 0; i < uStringLen; ++i) {
+  }
+
+  int uAllHeght = GetHeight() - 3;
+  String test_string = FitTwoFontStringINWindow(text_str, secondFont, pWindow, startX, 0);
+  size_t uStringLen = test_string.length();
+  for (size_t i = 0; i < uStringLen; ++i) {
     unsigned char c = test_string[i];
-    if (firstFont->IsCharValid(c)) {
+    if (IsCharValid(c)) {
       switch (c) {
-      case '\n':  // Line Feed 0A 10:
-        uAllHeght += firstFont->GetHeight() - 3;
-        break;
-      case '\f':  // Form Feed, page eject  0C 12 
-        i += 5;
-        break;
-      case '\t':  // Horizontal tab 09
-      case '\r':  // Carriage Return 0D 13
-        if (a6 != 1)
-          i += 3;
-        break;
+        case '\n':  // Line Feed 0A 10:
+          uAllHeght += GetHeight() - 3;
+          break;
+        case '\f':  // Form Feed, page eject  0C 12 
+          i += 5;
+          break;
+        case '\t':  // Horizontal tab 09
+        case '\r':  // Carriage Return 0D 13
+          if (a6 != 1)
+            i += 3;
+          break;
       }
     }
   }

@@ -35,25 +35,25 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() :
 
   // ----------------------------------------------
   // 00411BFC GUIWindow::InitializeBookView -- part
-  ui_book_autonotes_background = assets->GetImage_16BitColorKey("sbautnot", 0x7FF);
-  ui_book_quest_div_bar = assets->GetImage_16BitAlpha("divbar");
+  ui_book_autonotes_background = assets->GetImage_ColorKey("sbautnot", 0x7FF);
+  ui_book_quest_div_bar = assets->GetImage_Alpha("divbar");
 
-  ui_book_button1_on = assets->GetImage_16BitAlpha("tab-an-6b");
-  ui_book_button2_on = assets->GetImage_16BitAlpha("tab-an-7b");
-  ui_book_button3_on = assets->GetImage_16BitAlpha("tab-an-1b");
-  ui_book_button4_on = assets->GetImage_16BitAlpha("tab-an-2b");
-  ui_book_button5_on = assets->GetImage_16BitAlpha("tab-an-3b");
-  ui_book_button6_on = assets->GetImage_16BitAlpha("tab-an-5b");
-  ui_book_button7_on = assets->GetImage_16BitAlpha("tab-an-4b");
-  ui_book_button8_on = assets->GetImage_16BitAlpha("tab-an-8b");
-  ui_book_button1_off = assets->GetImage_16BitAlpha("tab-an-6a");
-  ui_book_button2_off = assets->GetImage_16BitAlpha("tab-an-7a");
-  ui_book_button3_off = assets->GetImage_16BitAlpha("tab-an-1a");
-  ui_book_button4_off = assets->GetImage_16BitAlpha("tab-an-2a");
-  ui_book_button5_off = assets->GetImage_16BitAlpha("tab-an-3a");
-  ui_book_button6_off = assets->GetImage_16BitAlpha("tab-an-5a");
-  ui_book_button7_off = assets->GetImage_16BitAlpha("tab-an-4a");
-  ui_book_button8_off = assets->GetImage_16BitAlpha("tab-an-8a");
+  ui_book_button1_on = assets->GetImage_Alpha("tab-an-6b");
+  ui_book_button2_on = assets->GetImage_Alpha("tab-an-7b");
+  ui_book_button3_on = assets->GetImage_Alpha("tab-an-1b");
+  ui_book_button4_on = assets->GetImage_Alpha("tab-an-2b");
+  ui_book_button5_on = assets->GetImage_Alpha("tab-an-3b");
+  ui_book_button6_on = assets->GetImage_Alpha("tab-an-5b");
+  ui_book_button7_on = assets->GetImage_Alpha("tab-an-4b");
+  ui_book_button8_on = assets->GetImage_Alpha("tab-an-8b");
+  ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
+  ui_book_button2_off = assets->GetImage_Alpha("tab-an-7a");
+  ui_book_button3_off = assets->GetImage_Alpha("tab-an-1a");
+  ui_book_button4_off = assets->GetImage_Alpha("tab-an-2a");
+  ui_book_button5_off = assets->GetImage_Alpha("tab-an-3a");
+  ui_book_button6_off = assets->GetImage_Alpha("tab-an-5a");
+  ui_book_button7_off = assets->GetImage_Alpha("tab-an-4a");
+  ui_book_button8_off = assets->GetImage_Alpha("tab-an-8a");
 
   pBtn_Book_1 = CreateButton(
     pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1, 0,

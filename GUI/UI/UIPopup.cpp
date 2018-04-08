@@ -216,7 +216,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     if (!inspect_item->uItemID)
         return;
 
-    auto inspect_item_image = assets->GetImage_16BitColorKey(inspect_item->GetIconName(), 0x7FF);
+    auto inspect_item_image = assets->GetImage_ColorKey(inspect_item->GetIconName(), 0x7FF);
 
     iteminfo_window.sHint.clear();
     iteminfo_window.uFrameWidth = 384;
@@ -419,7 +419,7 @@ void GameUI_DrawItemInfo(struct ItemGen* inspect_item)
     v28 = pItemsTable->pItems[inspect_item->uItemID].pDescription;
     if (*v28)
         Str += pFontSmallnum->CalcTextHeight(pItemsTable->pItems[inspect_item->uItemID].pDescription, iteminfo_window.uFrameWidth, 100);
-    iteminfo_window.uFrameHeight = assets->GetImage_16BitColorKey(inspect_item->GetIconName(), 0x7FF)->GetHeight() + v81 + 54;
+    iteminfo_window.uFrameHeight = assets->GetImage_ColorKey(inspect_item->GetIconName(), 0x7FF)->GetHeight() + v81 + 54;
     if ((signed int)Str > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS && (inspect_item->special_enchantment || inspect_item->uEnchantmentType))

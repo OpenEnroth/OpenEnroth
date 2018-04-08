@@ -1037,7 +1037,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID)
         }
 
         pDialogueNPCCount = 0;
-        game_ui_dialogue_background = assets->GetImage_16Bit(pContainer);
+        game_ui_dialogue_background = assets->GetImage_Solid(pContainer);
 
         PrepareHouse(uHouseID);
         v18 = 1;
@@ -1127,12 +1127,12 @@ void PrepareHouse(HOUSE_ID house)
 
     for (int i = 0; i < uNumDialogueNPCPortraits; ++i)
     {
-        pDialogueNPCPortraits[i] = assets->GetImage_16BitColorKey(StringPrintf("npc%03u", npc_id_arr[i]), 0x7FF);
+        pDialogueNPCPortraits[i] = assets->GetImage_ColorKey(StringPrintf("npc%03u", npc_id_arr[i]), 0x7FF);
     }
 
     if (uHouse_ExitPic)
     {
-        pDialogueNPCPortraits[uNumDialogueNPCPortraits] = assets->GetImage_16BitColorKey(pHouse_ExitPictures[uHouse_ExitPic], 0x7FF);
+        pDialogueNPCPortraits[uNumDialogueNPCPortraits] = assets->GetImage_ColorKey(pHouse_ExitPictures[uHouse_ExitPic], 0x7FF);
         ++uNumDialogueNPCPortraits;
         uHouse_ExitPic = p2DEvents[house - 1].uExitMapID;
     }
@@ -1201,7 +1201,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
         dialog_menu_id = (HOUSE_DIALOGUE_MENU)uMessageParam;
         if (in_current_building_type < BuildingType_19)
         {
-            shop_ui_background = assets->GetImage_16BitColorKey(
+            shop_ui_background = assets->GetImage_ColorKey(
                 _4F03B8_shop_background_names[(int)in_current_building_type],
                 0x7FF
             );
@@ -1229,7 +1229,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
             for (uint i = 0; i < 12; ++i)
             {
                 if (pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].uItemID)
-                    shop_ui_items_in_store[i] = assets->GetImage_16BitColorKey(pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].GetIconName(), 0x7FF);
+                    shop_ui_items_in_store[i] = assets->GetImage_ColorKey(pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].GetIconName(), 0x7FF);
             }
         }
         else//generation new books
@@ -1471,7 +1471,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
                 for (uint i = 0; i < (unsigned __int8)uItemsAmountPerShopType[p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].uType]; ++i)
                 {
                     if (pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][i].uItemID)
-                        shop_ui_items_in_store[i] = assets->GetImage_16BitColorKey(pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][i].GetIconName(), 0x7FF);
+                        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][i].GetIconName(), 0x7FF);
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop)
@@ -1493,7 +1493,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam)
                 for (uint i = 0; i < (unsigned __int8)uItemsAmountPerShopType[p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].uType]; ++i)
                 {
                     if (pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].uItemID)
-                        shop_ui_items_in_store[i] = assets->GetImage_16BitColorKey(pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].GetIconName(), 0x7FF);
+                        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(pParty->SpecialItemsInShops[(unsigned int)window_SpeakInHouse->ptr_1C][i].GetIconName(), 0x7FF);
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop)

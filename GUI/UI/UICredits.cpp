@@ -14,12 +14,6 @@
 #include "lib/OpenAL/al.h"
 #include "Game/MainMenu.h"
 
-void fill_pixels_fast(uint16_t color, uint16_t *pPixels, unsigned int uNumPixels) {
-  for (unsigned int i = 0; i < uNumPixels / 2; i++) {
-    *pPixels++ = color;
-  }
-}
-
 extern bool use_music_folder;
 
 bool GUICredits::ExecuteCredits() {
@@ -49,21 +43,15 @@ bool GUICredits::ExecuteCredits() {
   credit_window.uFrameY = 19;
 
   int width = 250;
-  int height = GUIFont::GetStringHeight2(pFontQuick, pFontCChar, text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
-  unsigned int uNumPixels = width * height * 2;
-  uint16_t *pPixels = (uint16_t*)malloc(uNumPixels);
-  fill_pixels_fast(Color16(0x00, 0xFF, 0xFF), pPixels, uNumPixels);
+  int height = pFontQuick->GetStringHeight2(pFontCChar, text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
+  Image *cred_texture = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
 
   // дать шрифт и цвета тексту
-  char *pString = (char*)malloc(2 * strlen(text));
-  strncpy(pString, text, strlen(text));
-  pString[strlen(text)] = 0;
-  GUIFont::DrawCreditsEntry(pFontQuick, pFontCChar, 0, credit_window.uFrameHeight, width, height, Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu), pString, pPixels, width);
-  free(pString);
-  Image *cred_texture = Image::Create(250, height, IMAGE_FORMAT_R5G6B5, pPixels);
-  free(pPixels);
+  pFontQuick->DrawCreditsEntry(pFontCChar, 0, credit_window.uFrameHeight, width, height,
+                               Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu),
+                               text, cred_texture);
 
-  GUIWindow *pWindow_Credits = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0, text);
+  GUIWindow *pWindow_Credits = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
   pWindow_Credits->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "");
   current_screen_type = SCREEN_CREATORS;
   SetCurrentMenuID(MENU_CREDITSPROC);

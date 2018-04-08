@@ -3295,9 +3295,12 @@ void Render::DrawTextureCustomHeight(float u, float v, class Image *image, int c
     return;
   }
 
-  int uOutX = 640 * u;
-  int uOutY = 480 * v;
-  p2DGraphics->DrawImage(bitmap, uOutX, uOutY);
+  int x = 640 * u;
+  int y = 480 * v;
+
+  p2DGraphics->DrawImage(bitmap, x, y, 0, 0,
+                         image->GetWidth(), custom_height,
+                         Gdiplus::UnitPixel);
 
   delete bitmap;
 }

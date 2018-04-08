@@ -37,12 +37,12 @@ GUIWindow_Save::GUIWindow_Save() :
   memset(&pSavegameUsedSlots, 0, sizeof(pSavegameUsedSlots));
   memset(&pSavegameThumbnails, 0, sizeof(pSavegameThumbnails));
 
-  saveload_ui_loadsave = assets->GetImage_16BitColorKey("loadsave", 0x7FF);
-  saveload_ui_save_up = assets->GetImage_16BitColorKey("save_up", 0x7FF);
-  saveload_ui_load_up = assets->GetImage_16BitColorKey("load_up", 0x7FF);
-  saveload_ui_saveu = assets->GetImage_16BitColorKey("LS_saveU", 0x7FF);
-  saveload_ui_loadu = assets->GetImage_16BitColorKey("LS_loadU", 0x7FF);
-  saveload_ui_x_u = assets->GetImage_16BitColorKey("x_u", 0x7FF);
+  saveload_ui_loadsave = assets->GetImage_ColorKey("loadsave", 0x7FF);
+  saveload_ui_save_up = assets->GetImage_ColorKey("save_up", 0x7FF);
+  saveload_ui_load_up = assets->GetImage_ColorKey("load_up", 0x7FF);
+  saveload_ui_saveu = assets->GetImage_ColorKey("LS_saveU", 0x7FF);
+  saveload_ui_loadu = assets->GetImage_ColorKey("LS_loadU", 0x7FF);
+  saveload_ui_x_u = assets->GetImage_ColorKey("x_u", 0x7FF);
 
   render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
 
@@ -80,16 +80,16 @@ GUIWindow_Save::GUIWindow_Save() :
   pLODFile.FreeSubIndexAndIO();
 
   if (!saveload_ui_x_d) {
-    saveload_ui_x_d = assets->GetImage_16BitAlpha("x_d");
+    saveload_ui_x_d = assets->GetImage_Alpha("x_d");
   }
   if (!saveload_ui_ls_saved) {
-    saveload_ui_ls_saved = assets->GetImage_16BitAlpha("LS_saveD");
+    saveload_ui_ls_saved = assets->GetImage_Alpha("LS_saveD");
   }
   if (!ui_ar_up_dn) {
-    ui_ar_up_dn = assets->GetImage_16BitAlpha("ar_up_dn");
+    ui_ar_up_dn = assets->GetImage_Alpha("ar_up_dn");
   }
   if (!ui_ar_dn_dn) {
-    ui_ar_dn_dn = assets->GetImage_16BitAlpha("ar_dn_dn");
+    ui_ar_dn_dn = assets->GetImage_Alpha("ar_dn_dn");
   }
 
 
@@ -123,12 +123,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
 
   memset(pSavegameUsedSlots.data(), 0, sizeof(pSavegameUsedSlots));
   memset(pSavegameThumbnails.data(), 0, 45 * sizeof(Image *));
-  saveload_ui_loadsave = assets->GetImage_16BitColorKey("loadsave", 0x7FF);
-  saveload_ui_save_up = assets->GetImage_16BitColorKey("save_up", 0x7FF);
-  saveload_ui_load_up = assets->GetImage_16BitColorKey("load_up", 0x7FF);
-  saveload_ui_saveu = assets->GetImage_16BitColorKey("LS_saveU", 0x7FF);
-  saveload_ui_loadu = assets->GetImage_16BitColorKey("LS_loadU", 0x7FF);
-  saveload_ui_x_u = assets->GetImage_16BitColorKey("x_u", 0x7FF);
+  saveload_ui_loadsave = assets->GetImage_ColorKey("loadsave", 0x7FF);
+  saveload_ui_save_up = assets->GetImage_ColorKey("save_up", 0x7FF);
+  saveload_ui_load_up = assets->GetImage_ColorKey("load_up", 0x7FF);
+  saveload_ui_saveu = assets->GetImage_ColorKey("LS_saveU", 0x7FF);
+  saveload_ui_loadu = assets->GetImage_ColorKey("LS_loadU", 0x7FF);
+  saveload_ui_x_u = assets->GetImage_ColorKey("x_u", 0x7FF);
 
   if (ingame) {
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
@@ -193,21 +193,21 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
 
   pLODFile.FreeSubIndexAndIO();
 
-  saveload_ui_x_d = assets->GetImage_16BitAlpha("x_d");
+  saveload_ui_x_d = assets->GetImage_Alpha("x_d");
 
   if (saveload_ui_ls_saved) {
     saveload_ui_ls_saved->Release();
     saveload_ui_ls_saved = nullptr;
   }
   if (current_screen_type == SCREEN_SAVEGAME)
-    saveload_ui_ls_saved = assets->GetImage_16BitAlpha("LS_saveD");
+    saveload_ui_ls_saved = assets->GetImage_Alpha("LS_saveD");
   else
-    saveload_ui_ls_saved = assets->GetImage_16BitAlpha("LS_loadD");
+    saveload_ui_ls_saved = assets->GetImage_Alpha("LS_loadD");
 
   if (!ui_ar_up_dn)
-    ui_ar_up_dn = assets->GetImage_16BitAlpha("AR_UP_DN");
+    ui_ar_up_dn = assets->GetImage_Alpha("AR_UP_DN");
   if (!ui_ar_dn_dn)
-    ui_ar_dn_dn = assets->GetImage_16BitAlpha("AR_DN_DN");
+    ui_ar_dn_dn = assets->GetImage_Alpha("AR_DN_DN");
 
   CreateButton(21, 198, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 0, 0, "");
   CreateButton(21, 219, 191, 18, 1, 0, UIMSG_SelectLoadSlot, 1, 0, "");
@@ -359,7 +359,7 @@ void MainMenuLoad_EventLoop() {
         break;
       }
       case UIMSG_SaveLoadBtn: {
-        new OnSaveLoad(pGUIWindow_CurrentMenu->uFrameX + 241, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, (int)pBtnLoadSlot, 0);
+        new OnSaveLoad(pGUIWindow_CurrentMenu->uFrameX + 241, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, (int)pBtnLoadSlot);
         break;
       }
       case UIMSG_DownArrow: {

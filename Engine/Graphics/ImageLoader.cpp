@@ -130,7 +130,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height, v
     return false;
   }
 
-  if (tex->header.pBits & 512) {
+  if ((tex->header.pBits == 0) || (tex->header.pBits & 512)) {
     *out_pixels = MakeImageAlpha(tex->header.uTextureWidth, tex->header.uTextureHeight, tex->paletted_pixels, tex->pPalette24);
   } else {
     *out_pixels = MakeImageColorKey(tex->header.uTextureWidth, tex->header.uTextureHeight, tex->paletted_pixels, tex->pPalette24, 0x7FF);

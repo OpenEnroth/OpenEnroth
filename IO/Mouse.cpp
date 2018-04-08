@@ -58,7 +58,7 @@ void Mouse::SetCursorImage(const String &name) {
     this->field_C = 1;
     window->SetCursor(name.c_str());
   } else {  // cursor is item or another bitmap
-    this->cursor_img = assets->GetImage_16BitColorKey(name, 0x7FF);
+    this->cursor_img = assets->GetImage_ColorKey(name, 0x7FF);
     this->AllocCursorSystemMem();
     this->field_C = 0;
     this->bRedraw = true;
@@ -221,7 +221,7 @@ void Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
 
 void Mouse::ReadCursorWithItem() {
   if (pParty->pPickedItem.uItemID) {
-    Image *pTexture = assets->GetImage_16BitAlpha(pParty->pPickedItem.GetIconName());
+    Image *pTexture = assets->GetImage_Alpha(pParty->pPickedItem.GetIconName());
     pTexture->GetWidth();
 
     if ((int)pMouse->uMouseClickX <= window->GetWidth() - 1 && (int)pMouse->uMouseClickY <= window->GetHeight() - 1) {
