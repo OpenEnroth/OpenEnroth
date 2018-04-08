@@ -58,8 +58,7 @@ bool GUIProgressBar::Initialize(Type type)
         if (v5 == 5)
             memset(field_10, 0, 8);
         v7 = rand() % 5 + 1;
-        if (field_10[v7] == 1)
-        {
+        if (field_10[v7] == 1) {
             do
                 v7 = rand() % 5 + 1;
             while (field_10[v7] == 1);
@@ -74,17 +73,16 @@ bool GUIProgressBar::Initialize(Type type)
         uHeight = 56;
         uProgressMax = 26;
 
-        //pIcons_LOD->PlacementLoadTexture(&pLoadingProgress, "loadprog", 2u);
-        progressbar_loading = assets->GetImage_16BitAlpha("loadprog");
+        progressbar_loading = assets->GetImage_Alpha("loadprog");
         Draw();
         return true;
     }
 
     switch (pParty->alignment)
     {
-        case PartyAlignment_Good:    progressbar_dungeon = assets->GetImage_16BitColorKey("bardata-b", 0x7FF); break;
-        case PartyAlignment_Neutral: progressbar_dungeon = assets->GetImage_16BitColorKey("bardata", 0x7FF); break;
-        case PartyAlignment_Evil:    progressbar_dungeon = assets->GetImage_16BitColorKey("bardata-c", 0x7FF); break;
+        case PartyAlignment_Good:    progressbar_dungeon = assets->GetImage_ColorKey("bardata-b", 0x7FF); break;
+        case PartyAlignment_Neutral: progressbar_dungeon = assets->GetImage_ColorKey("bardata", 0x7FF); break;
+        case PartyAlignment_Evil:    progressbar_dungeon = assets->GetImage_ColorKey("bardata-c", 0x7FF); break;
         default: Error("Invalid alignment type: %u", pParty->alignment);
     }
 
@@ -145,34 +143,25 @@ void GUIProgressBar::Release()
     }
 }
 
-//----- (00443670) --------------------------------------------------------
-void GUIProgressBar::Draw()
-{
-    render->BeginScene();
-    if (uType != TYPE_Fullscreen)
-    {
-        render->Sub01();
-
-        render->DrawTextureAlphaNew(80 / 640.0f, 122 / 480.0f, progressbar_dungeon);
-        render->DrawTextureAlphaNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->GetFrame(uIconID_TurnHour, 0)->GetTexture());
-        render->FillRectFast(
-            174, 164,
-            floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) + 0.5f),
-            16, 0xF800
-		);
+void GUIProgressBar::Draw() {
+  render->BeginScene();
+  if (uType != TYPE_Fullscreen) {
+    render->DrawTextureAlphaNew(80 / 640.0f, 122 / 480.0f, progressbar_dungeon);
+    render->DrawTextureAlphaNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->GetFrame(uIconID_TurnHour, 0)->GetTexture());
+    render->FillRectFast(
+      174, 164,
+      floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) + 0.5f),
+      16, 0xF800
+    );
+  } else {
+    if (loading_bg) {
+      render->DrawTextureNew(0, 0, loading_bg);
+      render->SetUIClipRect(172, 459, 15 * (int)(__int64)((double)(300 * uProgressCurrent) / (double)uProgressMax) / 15 + 172, 471);
+      render->DrawTextureAlphaNew(172 / 640.0f, 459 / 480.0f, progressbar_loading);
+      render->ResetUIClipRect();
     }
-    else
-    {
-        if (loading_bg)
-        {
-            render->DrawTextureNew(0, 0, loading_bg);
-            //render->SetRasterClipRect(0, 0, 639, 479);
-            render->SetUIClipRect(172, 459, 15 * (signed int)(signed __int64)((double)(300 * uProgressCurrent) / (double)uProgressMax) / 15 + 172, 471);
-            render->DrawTextureAlphaNew(172 / 640.0f, 459 / 480.0f, progressbar_loading);
-            render->ResetUIClipRect();
-        }
-    }
+  }
 
-    render->EndScene();
-    render->Present();
+  render->EndScene();
+  render->Present();
 }

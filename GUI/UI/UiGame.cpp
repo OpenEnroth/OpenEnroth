@@ -120,13 +120,13 @@ Image *game_ui_playerbuff_bless = nullptr;
 GUIWindow_GameMenu::GUIWindow_GameMenu() :
   GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-  game_ui_menu_options = assets->GetImage_16BitAlpha("options");
-  game_ui_menu_new = assets->GetImage_16BitAlpha("new1");
-  game_ui_menu_load = assets->GetImage_16BitAlpha("load1");
-  game_ui_menu_save = assets->GetImage_16BitAlpha("save1");
-  game_ui_menu_controls = assets->GetImage_16BitAlpha("controls1");
-  game_ui_menu_resume = assets->GetImage_16BitAlpha("resume1");
-  game_ui_menu_quit = assets->GetImage_16BitAlpha("quit1");
+  game_ui_menu_options = assets->GetImage_ColorKey("options", 0x7FF);
+  game_ui_menu_new = assets->GetImage_ColorKey("new1", 0x7FF);
+  game_ui_menu_load = assets->GetImage_ColorKey("load1", 0x7FF);
+  game_ui_menu_save = assets->GetImage_ColorKey("save1", 0x7FF);
+  game_ui_menu_controls = assets->GetImage_ColorKey("controls1", 0x7FF);
+  game_ui_menu_resume = assets->GetImage_ColorKey("resume1", 0x7FF);
+  game_ui_menu_quit = assets->GetImage_ColorKey("quit1", 0x7FF);
 
   pBtn_NewGame = CreateButton(
     0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0, UIMSG_StartNewGame, 0, 0x4Eu,
@@ -185,7 +185,7 @@ void GameUI_LoadPlayerPortraintsAndVoices()
     {
         for (uint j = 0; j < 56; ++j)
         {
-            game_ui_player_faces[i][j] = assets->GetImage_16BitColorKey(
+            game_ui_player_faces[i][j] = assets->GetImage_ColorKey(
                 StringPrintf(
                     "%s%02d", pPlayerPortraitsNames[pParty->pPlayers[i].uCurrentFace], j + 1
                 ),
@@ -194,8 +194,8 @@ void GameUI_LoadPlayerPortraintsAndVoices()
         }
     }
 
-    game_ui_player_face_eradicated = assets->GetImage_16BitColorKey("ERADCATE", 0x7FF);
-    game_ui_player_face_dead = assets->GetImage_16BitColorKey("DEAD", 0x7FF);
+    game_ui_player_face_eradicated = assets->GetImage_ColorKey("ERADCATE", 0x7FF);
+    game_ui_player_face_dead = assets->GetImage_ColorKey("DEAD", 0x7FF);
 
     if (SoundSetAction[24][0])
     {
@@ -213,7 +213,7 @@ void GameUI_ReloadPlayerPortraits(int player_id, int face_id) //the transition f
     for (uint i = 0; i <= 55; ++i)
     {
         auto filename = StringPrintf("%s%02d", pPlayerPortraitsNames[face_id], i + 1);
-        game_ui_player_faces[player_id][i] = assets->GetImage_16BitColorKey(filename, 0x7FF);
+        game_ui_player_faces[player_id][i] = assets->GetImage_ColorKey(filename, 0x7FF);
     }
 }
 
@@ -248,11 +248,11 @@ static unsigned int GameMenuUI_GetKeyBindingColor(int key_index)
 GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings() :
   GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-  game_ui_options_controls[0] = assets->GetImage_16BitColorKey("optkb", 0x7FF);
-  game_ui_options_controls[1] = assets->GetImage_16BitColorKey("optkb_h", 0x7FF);
-  game_ui_options_controls[2] = assets->GetImage_16BitColorKey("resume1", 0x7FF);
-  game_ui_options_controls[3] = assets->GetImage_16BitColorKey("optkb_1", 0x7FF);
-  game_ui_options_controls[4] = assets->GetImage_16BitColorKey("optkb_2", 0x7FF);
+  game_ui_options_controls[0] = assets->GetImage_ColorKey("optkb", 0x7FF);
+  game_ui_options_controls[1] = assets->GetImage_ColorKey("optkb_h", 0x7FF);
+  game_ui_options_controls[2] = assets->GetImage_ColorKey("resume1", 0x7FF);
+  game_ui_options_controls[3] = assets->GetImage_ColorKey("optkb_1", 0x7FF);
+  game_ui_options_controls[4] = assets->GetImage_ColorKey("optkb_2", 0x7FF);
 
   CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, "");
 
@@ -389,21 +389,21 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions() :
 {
 // -------------------------------------
 // GameMenuUI_OptionsVideo_Load --- part
-    game_ui_menu_options_video_background = assets->GetImage_16BitColorKey("optvid", 0x7FF);
-    game_ui_menu_options_video_bloodsplats = assets->GetImage_16BitColorKey("opvdH-bs", 0x7FF);
-    game_ui_menu_options_video_coloredlights = assets->GetImage_16BitColorKey("opvdH-cl", 0x7FF);
-    game_ui_menu_options_video_tinting = assets->GetImage_16BitColorKey("opvdH-tn", 0x7FF);
+    game_ui_menu_options_video_background = assets->GetImage_ColorKey("optvid", 0x7FF);
+    game_ui_menu_options_video_bloodsplats = assets->GetImage_ColorKey("opvdH-bs", 0x7FF);
+    game_ui_menu_options_video_coloredlights = assets->GetImage_ColorKey("opvdH-cl", 0x7FF);
+    game_ui_menu_options_video_tinting = assets->GetImage_ColorKey("opvdH-tn", 0x7FF);
 
-    game_ui_menu_options_video_gamma_positions[0] = assets->GetImage_16BitColorKey("convol10", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[1] = assets->GetImage_16BitColorKey("convol20", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[2] = assets->GetImage_16BitColorKey("convol30", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[3] = assets->GetImage_16BitColorKey("convol40", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[4] = assets->GetImage_16BitColorKey("convol50", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[5] = assets->GetImage_16BitColorKey("convol60", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[6] = assets->GetImage_16BitColorKey("convol70", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[7] = assets->GetImage_16BitColorKey("convol80", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[8] = assets->GetImage_16BitColorKey("convol90", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[9] = assets->GetImage_16BitColorKey("convol00", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[0] = assets->GetImage_ColorKey("convol10", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[1] = assets->GetImage_ColorKey("convol20", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[2] = assets->GetImage_ColorKey("convol30", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[3] = assets->GetImage_ColorKey("convol40", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[4] = assets->GetImage_ColorKey("convol50", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[5] = assets->GetImage_ColorKey("convol60", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[6] = assets->GetImage_ColorKey("convol70", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[7] = assets->GetImage_ColorKey("convol80", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[8] = assets->GetImage_ColorKey("convol90", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[9] = assets->GetImage_ColorKey("convol00", 0x7FF);
     //not_available_bloodsplats_texture_id = pIcons_LOD->LoadTexture("opvdG-bs", TEXTURE_16BIT_PALETTE);
     //not_available_us_colored_lights_texture_id = pIcons_LOD->LoadTexture("opvdG-cl", TEXTURE_16BIT_PALETTE);
     //not_available_tinting_texture_id = pIcons_LOD->LoadTexture("opvdG-tn", TEXTURE_16BIT_PALETTE);
@@ -510,26 +510,26 @@ void OptionsMenuSkin::Relaease()
 GUIWindow_GameOptions::GUIWindow_GameOptions() :
   GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-  options_menu_skin.uTextureID_Background = assets->GetImage_16BitColorKey("ControlBG", 0x7FF);
-  options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_16BitColorKey("con_16x", 0x7FF);
-  options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_16BitColorKey("con_32x", 0x7FF);
-  options_menu_skin.uTextureID_TurnSpeed[0] = assets->GetImage_16BitColorKey("con_Smoo", 0x7FF);
-  options_menu_skin.uTextureID_ArrowLeft = assets->GetImage_16BitAlpha("con_ArrL");
-  options_menu_skin.uTextureID_ArrowRight = assets->GetImage_16BitAlpha("con_ArrR");
-  options_menu_skin.uTextureID_SoundLevels[0] = assets->GetImage_16BitColorKey("convol10", 0x7FF);
-  options_menu_skin.uTextureID_SoundLevels[1] = assets->GetImage_16BitColorKey("convol20", 0x7FF);
-  options_menu_skin.uTextureID_SoundLevels[2] = assets->GetImage_16BitColorKey("convol30", 0x7FF);
-  options_menu_skin.uTextureID_SoundLevels[3] = assets->GetImage_16BitColorKey("convol40", 0x7FF);
-  options_menu_skin.uTextureID_SoundLevels[4] = assets->GetImage_16BitColorKey("convol50", 0x7FF);
-  options_menu_skin.uTextureID_SoundLevels[5] = assets->GetImage_16BitColorKey("convol60", 0x7FF);
-  options_menu_skin.uTextureID_SoundLevels[6] = assets->GetImage_16BitColorKey("convol70", 0x7FF);
-  options_menu_skin.uTextureID_SoundLevels[7] = assets->GetImage_16BitColorKey("convol80", 0x7FF);
-  options_menu_skin.uTextureID_SoundLevels[8] = assets->GetImage_16BitColorKey("convol90", 0x7FF);
-  options_menu_skin.uTextureID_SoundLevels[9] = assets->GetImage_16BitColorKey("convol00", 0x7FF);
-  options_menu_skin.uTextureID_FlipOnExit = assets->GetImage_16BitColorKey("option04", 0x7FF);
-  options_menu_skin.uTextureID_AlwaysRun = assets->GetImage_16BitColorKey("option03", 0x7FF);
-  options_menu_skin.uTextureID_ShowDamage = assets->GetImage_16BitColorKey("option02", 0x7FF);
-  options_menu_skin.uTextureID_WalkSound = assets->GetImage_16BitColorKey("option01", 0x7FF);
+  options_menu_skin.uTextureID_Background = assets->GetImage_ColorKey("ControlBG", 0x7FF);
+  options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_ColorKey("con_16x", 0x7FF);
+  options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_ColorKey("con_32x", 0x7FF);
+  options_menu_skin.uTextureID_TurnSpeed[0] = assets->GetImage_ColorKey("con_Smoo", 0x7FF);
+  options_menu_skin.uTextureID_ArrowLeft = assets->GetImage_Alpha("con_ArrL");
+  options_menu_skin.uTextureID_ArrowRight = assets->GetImage_Alpha("con_ArrR");
+  options_menu_skin.uTextureID_SoundLevels[0] = assets->GetImage_ColorKey("convol10", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[1] = assets->GetImage_ColorKey("convol20", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[2] = assets->GetImage_ColorKey("convol30", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[3] = assets->GetImage_ColorKey("convol40", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[4] = assets->GetImage_ColorKey("convol50", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[5] = assets->GetImage_ColorKey("convol60", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[6] = assets->GetImage_ColorKey("convol70", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[7] = assets->GetImage_ColorKey("convol80", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[8] = assets->GetImage_ColorKey("convol90", 0x7FF);
+  options_menu_skin.uTextureID_SoundLevels[9] = assets->GetImage_ColorKey("convol00", 0x7FF);
+  options_menu_skin.uTextureID_FlipOnExit = assets->GetImage_ColorKey("option04", 0x7FF);
+  options_menu_skin.uTextureID_AlwaysRun = assets->GetImage_ColorKey("option03", 0x7FF);
+  options_menu_skin.uTextureID_ShowDamage = assets->GetImage_ColorKey("option02", 0x7FF);
+  options_menu_skin.uTextureID_WalkSound = assets->GetImage_ColorKey("option01", 0x7FF);
 
   CreateButton(22, 270,
     options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(),
@@ -773,7 +773,7 @@ void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
         render->DrawTextureAlphaNew(
           (popup_window.uFrameX + 22) / 640.0f,
           (popup_window.uFrameY + 36) / 480.0f,
-          assets->GetImage_16BitColorKey(tex_name, 0x7FF)
+          assets->GetImage_ColorKey(tex_name, 0x7FF)
         );
 
         String title;
@@ -820,13 +820,13 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
         case PartyAlignment_Neutral: filename = StringPrintf("evt%02d", const_2());   break;
         case PartyAlignment_Evil:    filename = StringPrintf("evt%02d-c", const_2()); break;
     }
-    game_ui_dialogue_background = assets->GetImage_16Bit(filename);
+    game_ui_dialogue_background = assets->GetImage_Solid(filename);
 
     pDialogueNPCCount = 0;
     uNumDialogueNPCPortraits = 1;
 
     filename = StringPrintf("npc%03u", pNPCInfo->uPortraitID);
-    pDialogueNPCPortraits[0] = assets->GetImage_16BitColorKey(filename, 0x7FF);
+    pDialogueNPCPortraits[0] = assets->GetImage_ColorKey(filename, 0x7FF);
 
     v9 = 0;
     if (!pNPCInfo->Hired() && pNPCInfo->Location2D >= 0)
@@ -865,7 +865,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
     }
     if (sDialogue_SpeakingActorNPC_ID < 0)
         v9 = 4;
-    pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 3, 0);//pNumberContacts = 1, v9 = 0; pNumberContacts = 2, v9 = 3;
+    pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 3);//pNumberContacts = 1, v9 = 0; pNumberContacts = 2, v9 = 3;
     if (pNPCInfo->Hired() && !pNPCInfo->bHasUsedTheAbility)
     {
         if (pNPCInfo->uProfession == 10 ||    //Healer
@@ -900,26 +900,15 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello)
     }
 }
 
-//----- (00445350) --------------------------------------------------------
-void GameUI_DrawDialogue()
-{
-  NPCData *pNPC; // ebx@2
-  int pGreetType; // eax@2
-  int pTextHeight; // esi@39
-  GUIButton *pButton; // eax@43
-  int all_text_height; // ebx@93
-  signed int index; // esi@99
-  int v42; // edi@102
-  int v45;
-  unsigned __int16 pTextColor; // ax@104
-
-  if (!pDialogueWindow)
+void GameUI_DrawDialogue() {
+  if (!pDialogueWindow) {
     return;
+  }
 
   // Window title(Заголовок окна)----
   GUIWindow window = *pDialogueWindow;
-  pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-  pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
+  NPCData *pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
+  int pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
   window.uFrameWidth -= 10;
   window.uFrameZ -= 10;
   render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
@@ -940,14 +929,12 @@ void GameUI_DrawDialogue()
   pParty->GetPartyFame();
 
   String dialogue_string;
-  switch (uDialogueType)
-  {
+  switch (uDialogueType) {
   case DIALOGUE_13:
     dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
     break;
 
-  case DIALOGUE_PROFESSION_DETAILS:
-  {
+  case DIALOGUE_PROFESSION_DETAILS: {
     //auto prof = pNPCStats->pProfessions[pNPC->uProfession];
 
     if (dialogue_show_profession_details)
@@ -956,8 +943,8 @@ void GameUI_DrawDialogue()
       dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pDismissText, uActiveCharacter - 1, 0, 0, 0);
     else
       dialogue_string = BuildDialogueString(pNPCStats->pProfessions[pNPC->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
+    break;
   }
-  break;
 
   case DIALOGUE_ARENA_WELCOME:
     dialogue_string = localization->GetString(574); // "Welcome to the Arena of Life and Death.  Remember, you are only allowed one arena combat per visit.  To fight an arena battle, select the option that best describes your abilities and return to me- if you survive:"
@@ -976,22 +963,16 @@ void GameUI_DrawDialogue()
     break;
 
   default:
-    if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E && !byte_5B0938[0])
-    {
+    if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E && !byte_5B0938[0]) {
       dialogue_string = current_npc_text;
-    }
-    else if (pGreetType == 1)//QuestNPC_greet
-    {
-      if (pNPC->greet)
-      {
+    } else if (pGreetType == 1) {  // QuestNPC_greet
+      if (pNPC->greet) {
         if ((pNPC->uFlags & 3) == 2)
           dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting2;
         else
           dialogue_string = pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
       }
-    }
-    else if (pGreetType == 2)//HiredNPC_greet
-    {
+    } else if (pGreetType == 2) {  // HiredNPC_greet
       NPCProfession* prof = &pNPCStats->pProfessions[pNPC->uProfession];
 
       if (pNPC->Hired())
@@ -1002,15 +983,15 @@ void GameUI_DrawDialogue()
     break;
   }
 
+  int pTextHeight = 0;
+
   // Message window(Окно сообщения)---- 
-  if (!dialogue_string.empty())
-  {
+  if (!dialogue_string.empty()) {
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
     GUIFont* font = pFontArrus;
     pTextHeight = pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
-    if (352 - pTextHeight < 8)
-    {
+    if (352 - pTextHeight < 8) {
       font = pFontCreate;
       pTextHeight = pFontCreate->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;
     }
@@ -1032,7 +1013,7 @@ void GameUI_DrawDialogue()
   window.uFrameWidth = 148;
   window.uFrameZ = 334;
   for (int i = window.pStartingPosActiveItem; i < window.pStartingPosActiveItem + window.pNumPresenceButton; ++i) {
-    pButton = window.GetControl(i);
+    GUIButton *pButton = window.GetControl(i);
     if (!pButton)
       break;
 
@@ -1130,26 +1111,27 @@ void GameUI_DrawDialogue()
   }
 
   // Install Buttons(Установка кнопок)-------- 
-  index = 0;
-  all_text_height = 0;
+  int index = 0;
+  int all_text_height = 0;
   for (int i = pDialogueWindow->pStartingPosActiveItem;
     i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i)
   {
-    pButton = pDialogueWindow->GetControl(i);
+    GUIButton *pButton = pDialogueWindow->GetControl(i);
     if (!pButton)
       break;
     all_text_height += pFontArrus->CalcTextHeight(pButton->sLabel, window.uFrameWidth, 0);
     index++;
   }
+
   if (index) {
-    v45 = (174 - all_text_height) / index;
+    int v45 = (174 - all_text_height) / index;
     if (v45 > 32)
       v45 = 32;
-    v42 = (174 - v45 * index - all_text_height) / 2 - v45 / 2 + 138;
+    int v42 = (174 - v45 * index - all_text_height) / 2 - v45 / 2 + 138;
     for (int i = pDialogueWindow->pStartingPosActiveItem;
       i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i)
     {
-      pButton = pDialogueWindow->GetControl(i);
+      GUIButton *pButton = pDialogueWindow->GetControl(i);
       if (!pButton)
         break;
       pButton->uY = (unsigned int)(v45 + v42);
@@ -1157,7 +1139,7 @@ void GameUI_DrawDialogue()
       pButton->uHeight = pTextHeight;
       v42 = pButton->uY + pTextHeight - 1;
       pButton->uW = v42;
-      pTextColor = ui_game_dialogue_option_normal_color;
+      uint16_t pTextColor = ui_game_dialogue_option_normal_color;
       if (pDialogueWindow->pCurrentPosActiveItem == i)
         pTextColor = ui_game_dialogue_option_highlight_color;
       window.DrawTitleText(pFontArrus, 0, pButton->uY, pTextColor, pButton->sLabel, 3);
@@ -2095,7 +2077,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsig
 
     uCenterX = (uX + uZ) / 2;
     uCenterY = (uY + uW) / 2;
-    lPitch = render->uTargetSurfacePitch;
+//    lPitch = render->uTargetSurfacePitch;
     bool bWizardEyeActive = pParty->WizardEyeActive();
     int uWizardEyeSkillLevel = pParty->WizardEyeSkillLevel();
     if (CheckHiredNPCSpeciality(Cartographer))
@@ -2110,7 +2092,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ, unsig
         uWizardEyeSkillLevel = 3;
     }
 
-    render->SetRasterClipRect(uX, uY, uZ - 1, uW - 1);
+    render->SetUIClipRect(uX, uY, uZ - 1, uW - 1);
     uHeight = uW - uY;
     uWidth = uZ - uX;
 
@@ -2444,7 +2426,7 @@ void GameUI_DrawHiredNPCs()
                 render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                    assets->GetImage_16BitColorKey(pContainer, 0x7FF)
+                    assets->GetImage_ColorKey(pContainer, 0x7FF)
                 );
             }
             else
@@ -2453,7 +2435,7 @@ void GameUI_DrawHiredNPCs()
                 render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                    assets->GetImage_16BitColorKey(pContainer, 0x7FF)
+                    assets->GetImage_ColorKey(pContainer, 0x7FF)
                 );
                 if (pParty->pHirelings[(unsigned __int8)buf[i]].evt_A == 1)
                 {
@@ -2553,81 +2535,73 @@ String GetReputationString(int reputation)
 		return localization->GetString(434); // Respected
 }
 
-//----- (00441A4E) --------------------------------------------------------
-__int16 _441A4E_overlay_on_portrait(int a1)//for blessing
-{
-	__int16 result; // ax@1
-	int v2; // ebx@1
-	//  char *v3; // esi@1
-	//  int v4; // edi@4
-	bool v5; // ecx@4
-	SpriteFrame *pFrame; // eax@6
-	//SpriteFrame *v7; // edi@6
-	int v8; // eax@6
-	//  unsigned __int16 v9; // ax@6
-	SoftwareBillboard v10; // [sp+Ch] [bp-5Ch]@1
-	int v11; // [sp+5Ch] [bp-Ch]@6
-	int v12; // [sp+60h] [bp-8h]@1
-	//int v13; // [sp+64h] [bp-4h]@6
+__int16 _441A4E_overlay_on_portrait(int a1) {  //for blessing
+  __int16 result; // ax@1
+  int v2; // ebx@1
+  bool v5; // ecx@4
+  SpriteFrame *pFrame; // eax@6
+  int v8; // eax@6
+  SoftwareBillboard v10; // [sp+Ch] [bp-5Ch]@1
+  int v11; // [sp+5Ch] [bp-Ch]@6
+  int v12; // [sp+60h] [bp-8h]@1
 
-	v10.sParentBillboardID = -1;
-	v10.pTarget = render->pTargetSurface;
-	v10.pTargetZ = render->pActiveZBuffer;
-	v10.uTargetPitch = render->GetRenderWidth();
-	result = 0;
-	v2 = a1;
-	v10.uViewportX = 0;
-	v10.uViewportY = 0;
-	v10.uViewportZ = window->GetWidth() - 1;
-	v10.uViewportW = window->GetHeight() - 1;
-	v12 = 0;
-	//v3 = (char *)&pOtherOverlayList->pOverlays[0].field_C;
-	//do
-	for (uint i = 0; i < 50; ++i)
-	{
-		if (pOtherOverlayList->pOverlays[i].field_6 > 0)
-		{
-			result = pOtherOverlayList->pOverlays[i].field_0;
-			if (pOtherOverlayList->pOverlays[i].field_0 >= 300)
-			{
-				//v4 = result;
-				v5 = pOtherOverlayList->pOverlays[i].field_0 == v2 + 320
-					|| pOtherOverlayList->pOverlays[i].field_0 == v2 + 330
-					|| pOtherOverlayList->pOverlays[i].field_0 == v2 + 340
-					|| pOtherOverlayList->pOverlays[i].field_0 == v2 + 350;
-				pOtherOverlayList->pOverlays[i].field_0 = v2 + 310;
-				if (pOtherOverlayList->pOverlays[i].field_0 == v2 + 310 || v5)
-				{
-					if (!pOtherOverlayList->pOverlays[i].field_0)
-					{
-						pFrame = pSpriteFrameTable->GetFrame(pOverlayList->pOverlays[pOtherOverlayList->pOverlays[i].field_2].uSpriteFramesetID,
-							pOtherOverlayList->pOverlays[i].sprite_frame_time);
-						//v7 = v6;
-						v11 = pOtherOverlayList->pOverlays[i].field_E;
-						//v13 = pFrame->scale;
-						//v13 = fixpoint_mul(v11, pFrame->scale);
-						v10.screen_space_x = pOtherOverlayList->pOverlays[i].screen_space_x;
-						v10.screen_space_y = pOtherOverlayList->pOverlays[i].screen_space_y;
-						v10.screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v11, pFrame->scale._internal));
-						v10.screenspace_projection_factor_y = fixed::Raw(fixpoint_mul(v11, pFrame->scale._internal));
-						v10.pPalette = PaletteManager::Get_Dark_or_Red_LUT(pFrame->uPaletteIndex, 0, 1);
-						v8 = pOtherOverlayList->pOverlays[i].field_2;
-                        v10.screen_space_z = 0;
-                        v10.object_pid = 0;
-						v10.uFlags = 0;
-						//v9 = pOverlayList->pOverlays[v8].uOverlayType;
-						if (!pOverlayList->pOverlays[v8].uOverlayType || pOverlayList->pOverlays[v8].uOverlayType == 2)
-							v10.screen_space_y += pFrame->hw_sprites[0]->sprite_header->uHeight / 2;
-						result = pFrame->hw_sprites[0]->sprite_header->_4AD2D1_overlays(&v10, 0);
-						++v12;
-						if (v12 == 5)
-							break;
-					}
-				}
-			}
-		}
-		//v3 += 20;
-	}
-	//while ( (signed int)v3 < (signed int)&pOverlayList->pOverlays );
-	return result;
+  v10.sParentBillboardID = -1;
+  v10.pTargetZ = render->pActiveZBuffer;
+  v10.uTargetPitch = render->GetRenderWidth();
+  result = 0;
+  v2 = a1;
+  v10.uViewportX = 0;
+  v10.uViewportY = 0;
+  v10.uViewportZ = window->GetWidth() - 1;
+  v10.uViewportW = window->GetHeight() - 1;
+  v12 = 0;
+  //v3 = (char *)&pOtherOverlayList->pOverlays[0].field_C;
+  //do
+  for (uint i = 0; i < 50; ++i)
+  {
+    if (pOtherOverlayList->pOverlays[i].field_6 > 0)
+    {
+      result = pOtherOverlayList->pOverlays[i].field_0;
+      if (pOtherOverlayList->pOverlays[i].field_0 >= 300)
+      {
+        //v4 = result;
+        v5 = pOtherOverlayList->pOverlays[i].field_0 == v2 + 320
+          || pOtherOverlayList->pOverlays[i].field_0 == v2 + 330
+          || pOtherOverlayList->pOverlays[i].field_0 == v2 + 340
+          || pOtherOverlayList->pOverlays[i].field_0 == v2 + 350;
+        pOtherOverlayList->pOverlays[i].field_0 = v2 + 310;
+        if (pOtherOverlayList->pOverlays[i].field_0 == v2 + 310 || v5)
+        {
+          if (!pOtherOverlayList->pOverlays[i].field_0)
+          {
+            pFrame = pSpriteFrameTable->GetFrame(pOverlayList->pOverlays[pOtherOverlayList->pOverlays[i].field_2].uSpriteFramesetID,
+              pOtherOverlayList->pOverlays[i].sprite_frame_time);
+            //v7 = v6;
+            v11 = pOtherOverlayList->pOverlays[i].field_E;
+            //v13 = pFrame->scale;
+            //v13 = fixpoint_mul(v11, pFrame->scale);
+            v10.screen_space_x = pOtherOverlayList->pOverlays[i].screen_space_x;
+            v10.screen_space_y = pOtherOverlayList->pOverlays[i].screen_space_y;
+            v10.screenspace_projection_factor_x = fixed::Raw(fixpoint_mul(v11, pFrame->scale._internal));
+            v10.screenspace_projection_factor_y = fixed::Raw(fixpoint_mul(v11, pFrame->scale._internal));
+            v10.pPalette = PaletteManager::Get_Dark_or_Red_LUT(pFrame->uPaletteIndex, 0, 1);
+            v8 = pOtherOverlayList->pOverlays[i].field_2;
+            v10.screen_space_z = 0;
+            v10.object_pid = 0;
+            v10.uFlags = 0;
+            //v9 = pOverlayList->pOverlays[v8].uOverlayType;
+            if (!pOverlayList->pOverlays[v8].uOverlayType || pOverlayList->pOverlays[v8].uOverlayType == 2)
+              v10.screen_space_y += pFrame->hw_sprites[0]->sprite_header->uHeight / 2;
+            result = pFrame->hw_sprites[0]->sprite_header->_4AD2D1_overlays(&v10, 0);
+            ++v12;
+            if (v12 == 5)
+              break;
+          }
+        }
+      }
+    }
+    //v3 += 20;
+  }
+  //while ( (signed int)v3 < (signed int)&pOverlayList->pOverlays );
+  return result;
 }

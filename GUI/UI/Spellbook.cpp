@@ -227,10 +227,10 @@ void LoadSpellbook(unsigned int spell_school) {
     if (pPlayers[uActiveCharacter]->spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] || all_magic) {
       char pContainer[20];
       sprintf(pContainer, "SB%sS%02d", spellbook_texture_filename_suffices[spell_school], pSpellbookSpellIndices[spell_school][i]);
-      SBPageSSpellsTextureList[i] = assets->GetImage_16BitAlpha(pContainer);
+      SBPageSSpellsTextureList[i] = assets->GetImage_Alpha(pContainer);
 
       sprintf(pContainer, "SB%sC%02d", spellbook_texture_filename_suffices[spell_school], pSpellbookSpellIndices[spell_school][i]);
-      SBPageCSpellsTextureList[i] = assets->GetImage_16BitAlpha(pContainer);
+      SBPageCSpellsTextureList[i] = assets->GetImage_Alpha(pContainer);
     }
   }
 }
@@ -250,10 +250,10 @@ void InitializeSpellBookTextures() {
   pAudioPlayer->StopChannels(-1, -1);
   pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
 
-  ui_spellbook_btn_close = assets->GetImage_16BitAlpha("ib-m5-u");
-  ui_spellbook_btn_close_click = assets->GetImage_16BitAlpha("ib-m5-d");
-  ui_spellbook_btn_quckspell = assets->GetImage_16BitAlpha("ib-m6-u");
-  ui_spellbook_btn_quckspell_click = assets->GetImage_16BitAlpha("ib-m6-d");
+  ui_spellbook_btn_close = assets->GetImage_Alpha("ib-m5-u");
+  ui_spellbook_btn_close_click = assets->GetImage_Alpha("ib-m5-d");
+  ui_spellbook_btn_quckspell = assets->GetImage_Alpha("ib-m6-u");
+  ui_spellbook_btn_quckspell_click = assets->GetImage_Alpha("ib-m6-d");
 
   static const char *texNames[9] = {
     "SBFB00", "SBAB00", "SBWB00", "SBEB00",
@@ -261,9 +261,9 @@ void InitializeSpellBookTextures() {
   };
 
   for (unsigned int i = 0; i < 9; ++i) {
-    ui_spellbook_school_backgrounds[i] = assets->GetImage_16BitColorKey(texNames[i], 0x7FF);
-    ui_spellbook_school_tabs[i][0] = assets->GetImage_16BitAlpha(StringPrintf("tab%da", i + 1));
-    ui_spellbook_school_tabs[i][1] = assets->GetImage_16BitAlpha(StringPrintf("tab%db", i + 1));
+    ui_spellbook_school_backgrounds[i] = assets->GetImage_ColorKey(texNames[i], 0x7FF);
+    ui_spellbook_school_tabs[i][0] = assets->GetImage_Alpha(StringPrintf("tab%da", i + 1));
+    ui_spellbook_school_tabs[i][1] = assets->GetImage_Alpha(StringPrintf("tab%db", i + 1));
   }
 }
 

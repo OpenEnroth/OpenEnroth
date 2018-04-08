@@ -105,12 +105,12 @@ GUIWindow_Rest::GUIWindow_Rest() :
     current_screen_type = SCREEN_REST;
 
     _507CD4_RestUI_hourglass_anim_controller = 0;
-    rest_ui_restmain = assets->GetImage_16BitAlpha("restmain");
-    rest_ui_btn_1 = assets->GetImage_16BitAlpha("restb1");
-    rest_ui_btn_2 = assets->GetImage_16BitAlpha("restb2");
-    rest_ui_btn_3 = assets->GetImage_16BitAlpha("restb3");
-    rest_ui_btn_4 = assets->GetImage_16BitAlpha("restb4");
-    rest_ui_btn_exit = assets->GetImage_16BitAlpha("restexit");
+    rest_ui_restmain = assets->GetImage_Alpha("restmain");
+    rest_ui_btn_1 = assets->GetImage_Alpha("restb1");
+    rest_ui_btn_2 = assets->GetImage_Alpha("restb2");
+    rest_ui_btn_3 = assets->GetImage_Alpha("restb3");
+    rest_ui_btn_4 = assets->GetImage_Alpha("restb4");
+    rest_ui_btn_exit = assets->GetImage_Alpha("restexit");
 
     OutdoorLocation::LoadActualSkyFrame();
 
@@ -167,7 +167,7 @@ void GUIWindow_Rest::Update()
             hourglass_icon_idx = 1;
 
         {
-            rest_ui_hourglass_frame_current = assets->GetImage_16BitColorKey(StringPrintf("hglas%03d", hourglass_icon_idx), 0x7FF);
+            rest_ui_hourglass_frame_current = assets->GetImage_ColorKey(StringPrintf("hglas%03d", hourglass_icon_idx), 0x7FF);
             render->DrawTextureAlphaNew(267 / 640.0f, 159 / 480.0f, rest_ui_hourglass_frame_current);
         }
 

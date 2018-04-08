@@ -2,6 +2,7 @@
 #include "Engine/Strings.h"
 
 class GUIWindow;
+class Image;
 struct FontData;
 
 class GUIFont {
@@ -18,27 +19,29 @@ class GUIFont {
   unsigned int CalcTextHeight(const String &str, unsigned int width, int x_offset, bool return_on_carriage = false);
 
   String GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned int uX, int a5);
-  void DrawTextLineToBuff(int uColor, unsigned short* uX_buff_pos, const char *text, int line_width);
   void DrawTextLine(const String &text, uint16_t uDefaultColor, int uX, int uY, int max_len_pix);
-  void DrawText(GUIWindow *pWindow, int uX, int uY, unsigned short uFontColor, const char *Str, bool present_time_transparency, int max_text_height, int uFontShadowColor);
-  int DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, unsigned int uColor, String &str, int rect_width, int reverse_text);
+  void DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, const String &str, bool present_time_transparency, int max_text_height, int uFontShadowColor);
+  int DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, uint16_t uColor, const String &str, int rect_width, int reverse_text);
 
   String FitTextInAWindow(const String &inString, unsigned int width, int uX, bool return_on_carriage = false);
 
-  static void DrawCreditsEntry(GUIFont *firstFont, GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h, uint16_t firstColor, uint16_t secondColor, const char *pString, uint16_t *pPixels, unsigned int uPixelsWidth);
-  static char *FitTwoFontStringINWindow(const char *pString, GUIFont *pFontMain, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6);
-  static int GetStringHeight2(GUIFont *firstFont, GUIFont *secondFont, const char *text_str, GUIWindow* pWindow, int startX, int a6);
+  void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h,
+                        uint16_t firstColor, uint16_t secondColor, const String &pString, Image *image);
+  int GetStringHeight2(GUIFont *secondFont, const String &text_str, GUIWindow* pWindow, int startX, int a6);
 
  protected:
   FontData *pData;
+
+  String FitTwoFontStringINWindow(const String &pString, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6);
+  void DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos, const String &text, int line_width);
 };
 
-extern struct GUIFont *pAutonoteFont;
-extern struct GUIFont *pSpellFont;
-extern struct GUIFont *pFontArrus;
-extern struct GUIFont *pFontLucida;
-extern struct GUIFont *pBook2Font;
-extern struct GUIFont *pBookFont;
-extern struct GUIFont *pFontCreate;
-extern struct GUIFont *pFontComic;
-extern struct GUIFont *pFontSmallnum;
+extern GUIFont *pAutonoteFont;
+extern GUIFont *pSpellFont;
+extern GUIFont *pFontArrus;
+extern GUIFont *pFontLucida;
+extern GUIFont *pBook2Font;
+extern GUIFont *pBookFont;
+extern GUIFont *pFontCreate;
+extern GUIFont *pFontComic;
+extern GUIFont *pFontSmallnum;

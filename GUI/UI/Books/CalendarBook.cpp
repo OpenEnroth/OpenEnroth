@@ -32,16 +32,16 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() :
 // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
-    pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(570, 354, 0, 0, (int)pBtn_Calendar, 0);
+    pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(570, 354, 0, 0, (int)pBtn_Calendar);
 
 // ----------------------------------------------
 // 00411BFC GUIWindow::InitializeBookView -- part
-    ui_book_calendar_background = assets->GetImage_16BitColorKey("sbdate-time", 0x7FF);
-    ui_book_calendar_moon_new = assets->GetImage_16BitColorKey("moon_new", 0x7FF);
-    ui_book_calendar_moon_4 = assets->GetImage_16BitColorKey("moon_4", 0x7FF);
-    ui_book_calendar_moon_2 = assets->GetImage_16BitColorKey("moon_2", 0x7FF);
-    ui_book_calendar_moon_2_2 = assets->GetImage_16BitColorKey("moon_2", 0x7FF);
-    ui_book_calendar_moon_full = assets->GetImage_16BitColorKey("moon_ful", 0x7FF);
+    ui_book_calendar_background = assets->GetImage_ColorKey("sbdate-time", 0x7FF);
+    ui_book_calendar_moon_new = assets->GetImage_ColorKey("moon_new", 0x7FF);
+    ui_book_calendar_moon_4 = assets->GetImage_ColorKey("moon_4", 0x7FF);
+    ui_book_calendar_moon_2 = assets->GetImage_ColorKey("moon_2", 0x7FF);
+    ui_book_calendar_moon_2_2 = assets->GetImage_ColorKey("moon_2", 0x7FF);
+    ui_book_calendar_moon_full = assets->GetImage_ColorKey("moon_ful", 0x7FF);
 }
 
 

@@ -26,7 +26,6 @@ public:
     int uAreaHeight; //24h
 
     struct LODSprite *sprite_header;
-    //struct ID3D11ShaderResourceView *d3d11_srv;
 };
 #pragma pack(pop)
 

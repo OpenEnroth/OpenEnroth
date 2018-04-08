@@ -36,20 +36,14 @@ LODWriteableFile *pGames_LOD = nullptr;
 int _6A0CA4_lod_binary_search;
 int _6A0CA8_lod_unused;
 
-
-inline int LODFile_IconsBitmaps::LoadDummyTexture()
-{
-    for (unsigned int i = 0; i < uNumLoadedFiles; ++i)
-        if (!strcmp(pTextures[i].pName, "pending"))
-            return i;
-    return LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending", TEXTURE_16BIT_PALETTE);
+inline int LODFile_IconsBitmaps::LoadDummyTexture() {
+  for (unsigned int i = 0; i < uNumLoadedFiles; ++i)
+    if (!strcmp(pTextures[i].header.pName, "pending"))
+      return i;
+  return LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending", TEXTURE_24BIT_PALETTE);
 }
 
-
-// inlined
-//----- (mm6c::00408860) --------------------------------------------------
-void LODFile_IconsBitmaps::_inlined_sub2()
-{
+void LODFile_IconsBitmaps::_inlined_sub2() {
   ++uTexturePacksCount;
   if (!uNumPrevLoadedFiles)
     uNumPrevLoadedFiles = uNumLoadedFiles;
@@ -483,32 +477,25 @@ void LODFile_IconsBitmaps::ReleaseAll()
   this->uNumLoadedFiles = 0;
 }
 
-//----- (0040F9F0) --------------------------------------------------------
-unsigned int LODFile_IconsBitmaps::FindTextureByName(const char *pName)
-{
-  for ( uint i = 0; i < this->uNumLoadedFiles; i++ )
-  {
-    if ( !_stricmp(this->pTextures[i].pName, pName) )
+unsigned int LODFile_IconsBitmaps::FindTextureByName(const char *pName) {
+  for (uint i = 0; i < this->uNumLoadedFiles; i++) {
+    if (!_stricmp(this->pTextures[i].header.pName, pName))
       return i;
   }
   return -1;
 }
 
-//----- (0040F9C5) --------------------------------------------------------
-void LODFile_IconsBitmaps::SyncLoadedFilesCount()
-    {
-  signed int loaded_files; // eax@1
+void LODFile_IconsBitmaps::SyncLoadedFilesCount() {
+  int loaded_files; // eax@1
   Texture_MM7 *pTex; // edx@1
 
   loaded_files = this->uNumLoadedFiles;
-  for ( pTex = &this->pTextures[loaded_files]; !pTex->pName[0]; --pTex )
+  for (pTex = &this->pTextures[loaded_files]; !pTex->header.pName[0]; --pTex)
     --loaded_files;
-  if ( loaded_files < (signed int)this->uNumLoadedFiles )
-  {
+  if (loaded_files < (signed int)this->uNumLoadedFiles) {
     ++loaded_files;
     this->uNumLoadedFiles = loaded_files;
   }
- 
 }
 
 //----- (0046249B) --------------------------------------------------------
@@ -1175,341 +1162,98 @@ FILE *LOD::File::FindContainer(const char *pContainer_Name, bool bLinearSearch, 
   }
 }
 
-//----- (0041097D) --------------------------------------------------------
-void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits, unsigned int uTargetGBits, unsigned int uTargetBBits)
-{
-  FILE *File; // [sp+50h] [bp-4h]@7
-
-  if ( this->uTextureRedBits != uTargetRBits
+void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits, unsigned int uTargetGBits, unsigned int uTargetBBits) {
+  if (this->uTextureRedBits != uTargetRBits
     || this->uTextureGreenBits != uTargetGBits
-    || this->uTextureBlueBits != uTargetBBits )	 //Uninitialized memory access
+    || this->uTextureBlueBits != uTargetBBits)  // Uninitialized memory access
   {
     this->uTextureRedBits = uTargetRBits;
     this->uTextureGreenBits = uTargetGBits;
     this->uTextureBlueBits = uTargetBBits;
-    for ( uint i = 0; i < this->uNumLoadedFiles; ++i )
-    {
-      Texture_MM7 DstBuf; // [sp+4h] [bp-50h]@6
-      //Texture_MM7::Texture_MM7(&DstBuf);
-      if ( this->pTextures[i].pPalette16 )
-      {
-        File = FindContainer((const char *)this->pTextures[i].pName, 0);
-        if ( File )
-        {
-          fread(&DstBuf, 1, 0x30u, File);
+    for (unsigned int i = 0; i < this->uNumLoadedFiles; ++i) {
+      if (this->pTextures[i].pPalette24) {
+        FILE *File = FindContainer(this->pTextures[i].header.pName, false);
+        if (File) {
+          TextureHeader DstBuf;
+          fread(&DstBuf, 1, sizeof(TextureHeader), File);
           fseek(File, DstBuf.uTextureSize, 1);
-          for ( uint j = 0; j < 256; ++j )
-          {
-            fread((char *)&uTargetRBits + 3, 1, 1, File);
-            fread((char *)&uTargetGBits + 3, 1, 1, File);
-            fread((char *)&uTargetBBits + 3, 1, 1, File);
-            this->pTextures[i].pPalette16[j] = (BYTE3(uTargetRBits) >> (8 - (unsigned char)(this->uTextureRedBits)))
-                                      << ((unsigned char)(this->uTextureGreenBits) + (unsigned char)(this->uTextureBlueBits));
-            this->pTextures[i].pPalette16[j] |= (BYTE3(uTargetGBits) >> (8 - (unsigned char)(this->uTextureGreenBits)))
-                                      << this->uTextureBlueBits;
-            this->pTextures[i].pPalette16[j] |= BYTE3(uTargetBBits) >> (8 - (unsigned char)(this->uTextureBlueBits));
-          }
+          fread(this->pTextures[i].pPalette24, 1, 0x300, File);
         }
       }
     }
   }
 }
 
-//----- (0041088B) --------------------------------------------------------
-void *LOD::File::LoadRaw(const char *pContainer, int a3)
-{
-  FILE *File; // eax@1
-  void *v7; // ebx@7
-  void *v8; // edi@7
-  Texture_MM7 DstBuf; // [sp+Ch] [bp-4Ch]@1
-
-  File = FindContainer(pContainer, 0);
-  if ( !File )
+void *LOD::File::LoadRaw(const char *pContainer, int a3) {
+  FILE *File = FindContainer(pContainer, 0);
+  if (!File) {
     Error("Unable to load %s", pContainer);
+    return nullptr;
+  }
 
-  fread(&DstBuf, 1, 0x30u, File);
-  if ( DstBuf.uDecompressedSize )
-  {
-    if ( a3 )
-      v7 = malloc(DstBuf.uDecompressedSize+1);
-    else
-      v7 = malloc(DstBuf.uDecompressedSize+1);
-    v8 = malloc(DstBuf.uTextureSize+1);
-    fread(v8, 1, DstBuf.uTextureSize, File);
-    zlib::Uncompress(v7, &DstBuf.uDecompressedSize, v8, DstBuf.uTextureSize);
+  TextureHeader DstBuf;
+  fread(&DstBuf, 1, sizeof(TextureHeader), File);
+
+  void *result = nullptr;
+  if (DstBuf.uDecompressedSize) {
+    result = malloc(DstBuf.uDecompressedSize);
+    void *tmp_buf = malloc(DstBuf.uTextureSize);
+    fread(tmp_buf, 1, DstBuf.uTextureSize, File);
+    zlib::Uncompress(result, &DstBuf.uDecompressedSize, tmp_buf, DstBuf.uTextureSize);
     DstBuf.uTextureSize = DstBuf.uDecompressedSize;
-    free(v8);
+    free(tmp_buf);
+  } else {
+    result = malloc(DstBuf.uTextureSize);
+    fread(result, 1, DstBuf.uTextureSize, File);
   }
-  else
-  {
-    if ( a3 )
-      v7 = malloc(DstBuf.uTextureSize+1);
-    else
-      v7 = malloc(DstBuf.uTextureSize+1);
-    fread(v7, 1, DstBuf.uTextureSize, File);
-  }
-  return v7;
+
+  return result;
 }
 
-//----- (00410522) --------------------------------------------------------
-int LODFile_IconsBitmaps::PlacementLoadTexture(Texture_MM7 *pDst, const char *pContainer, unsigned int uTextureType)
-{
-  void *v9; // ST2C_4@6
-  int v15; // ecx@12
-  int v16; // ecx@12
-  int v17; // eax@12
-  FILE *File; // [sp+68h] [bp-4h]@1
-  unsigned int uTargetRBits;
-  unsigned int uTargetGBits;
-  unsigned int uTargetBBits;
-
-  File = FindContainer(pContainer, 0);
-  if ( !File )
-  {
-    File = FindContainer("pending", 0);
-    if ( !File )
-      Error("Can't find %s!", pContainer);
-  }
-
-  fread(pDst, 1, 0x30u, File);
-  strcpy_s(pDst->pName, pContainer);
-  pDst->paletted_pixels = 0;
-  if ( pDst->uDecompressedSize )
-  {
-    pDst->paletted_pixels = (unsigned __int8 *)malloc(pDst->uDecompressedSize);
-    v9 = malloc(pDst->uTextureSize);
-    fread((void *)v9, 1, (size_t)pDst->uTextureSize, File);
-    zlib::Uncompress(pDst->paletted_pixels, &pDst->uDecompressedSize, v9, pDst->uTextureSize);
-    pDst->uTextureSize = pDst->uDecompressedSize;
-    free(v9);
-  }
-  else
-  {
-    pDst->paletted_pixels = (unsigned __int8 *)malloc(0);
-    fread(pDst->paletted_pixels, 1, (size_t)pDst->uTextureSize, File);
-  }
-  pDst->pPalette16 = 0;
-  pDst->pPalette24 = 0;
-  if ( uTextureType == 1 )
-  {
-    pDst->pPalette24 = (unsigned __int8 *)malloc(0x300u);
-    fread(pDst->pPalette24, 1, 0x300u, File);
-  }
-  else if ( uTextureType == 2 )
-  {
-    pDst->pPalette16 = (unsigned __int16 *)malloc(0x400u);
-    for ( uint i = 0; i < 256; ++i )
-    {
-      fread((char *)&uTargetRBits + 3, 1, 1, File);
-      fread((char *)&uTargetGBits + 3, 1, 1, File);
-      fread((char *)&uTargetBBits + 3, 1, 1, File);
-      pDst->pPalette16[i] = (unsigned __int8)(BYTE3(uTargetRBits) >> (8 - (unsigned char)(this->uTextureRedBits)))
-                          << ((unsigned char)(this->uTextureBlueBits) + (unsigned char)(this->uTextureGreenBits));
-      pDst->pPalette16[i] += (unsigned __int8)(BYTE3(uTargetGBits) >> (8 - (unsigned char)(this->uTextureGreenBits)))
-                          << this->uTextureBlueBits;
-      pDst->pPalette16[i] += (unsigned __int8)(BYTE3(uTargetBBits) >> (8 - (unsigned char)(this->uTextureBlueBits)));
-    }
-  }
-
-  if ( pDst->pBits & 2 )
-  {
-    v15 = (int)&pDst->paletted_pixels[pDst->uSizeOfMaxLevelOfDetail];
-    pDst->pLevelOfDetail1 = (unsigned __int8 *)v15;
-    v16 = (pDst->uSizeOfMaxLevelOfDetail >> 2) + v15;
-    //pDst->pLevelOfDetail2 = (unsigned __int8 *)v16;
-    v17 = v16 + (pDst->uSizeOfMaxLevelOfDetail >> 4);
-  }
-  else
-  {
-    v17 = 0;
-    //pDst->pLevelOfDetail2 = 0;
-    //pDst->pLevelOfDetail1 = 0;
-  }
-
-  pDst->uWidthLn2 = ImageHelper::GetPowerOf2(pDst->uTextureWidth);
-  if (pDst->uWidthLn2 >= 15)
-  {
-      pDst->uWidthLn2 = 1;
-  }
-
-  pDst->uHeightLn2 = ImageHelper::GetPowerOf2(pDst->uTextureHeight);
-  if (pDst->uHeightLn2 >= 15)
-  {
-      pDst->uHeightLn2 = 1;
-  }
-
-  switch ( pDst->uWidthLn2 )
-  {
-    case 2:
-      pDst->uWidthMinus1 = 3;
-      break;
-    case 3:
-      pDst->uWidthMinus1 = 7;
-      break;
-    case 4:
-      pDst->uWidthMinus1 = 15;
-      break;
-    case 5:
-      pDst->uWidthMinus1 = 31;
-      break;
-    case 6:
-      pDst->uWidthMinus1 = 63;
-      break;
-    case 7:
-      pDst->uWidthMinus1 = 127;
-      break;
-    case 8:
-      pDst->uWidthMinus1 = 255;
-      break;
-    case 9:
-      pDst->uWidthMinus1 = 511;
-      break;
-    case 10:
-      pDst->uWidthMinus1 = 1023;
-      break;
-    case 11:
-      pDst->uWidthMinus1 = 2047;
-      break;
-    case 12:
-      pDst->uWidthMinus1 = 4095;
-      break;
-    default:
-      break;
-  }
-  switch ( pDst->uHeightLn2 )
-  {
-    case 2:
-      pDst->uHeightMinus1 = 3;
-      break;
-    case 3:
-      pDst->uHeightMinus1 = 7;
-      break;
-    case 4:
-      pDst->uHeightMinus1 = 15;
-      break;
-    case 5:
-      pDst->uHeightMinus1 = 31;
-      break;
-    case 6:
-      pDst->uHeightMinus1 = 63;
-      break;
-    case 7:
-      pDst->uHeightMinus1 = 127;
-      break;
-    case 8:
-      pDst->uHeightMinus1 = 255;
-      break;
-    case 9:
-      pDst->uHeightMinus1 = 511;
-      break;
-    case 10:
-      pDst->uHeightMinus1 = 1023;
-      break;
-    case 11:
-      pDst->uHeightMinus1 = 2047;
-      break;
-    case 12:
-      pDst->uHeightMinus1 = 4095;
-      break;
-    default:
-      return 1;
-  }
-  return 1;
+void LODFile_IconsBitmaps::ReleaseHardwareTextures() {
 }
 
-//----- (00410423) --------------------------------------------------------
-/*void LODFile_IconsBitmaps::_410423_move_textures_to_device()
-{
-    size_t v4; // eax@9
-    char *v5; // ST1C_4@9
-
-    for (uint i = 0; i < this->uNumLoadedFiles; i++)
-    {
-        if (this->ptr_011BB4[i])
-        {
-            if (this->pTextures[i].pName[0] != 'w' || this->pTextures[i].pName[1] != 't'
-                || this->pTextures[i].pName[2] != 'r' || this->pTextures[i].pName[3] != 'd' || this->pTextures[i].pName[4] != 'r')
-                render->LoadTexture(&this->pTextures[i].pName[0], this->pTextures[i].uTextureSize, (void **)&this->pHardwareSurfaces[i],
-                    (void **)&this->pHardwareTextures[i]);
-            else
-            {
-                v4 = strlen(&this->pTextures[i].pName[0]);
-                v5 = (char *)malloc(v4 + 2);
-                *v5 = 'h';
-                strcpy(v5 + 1, &this->pTextures[i].pName[0]);
-                render->LoadTexture(v5, this->pTextures[i].uTextureSize, (void **)&this->pHardwareSurfaces[i], (void **)&this->pHardwareTextures[i]);
-                free(v5);
-            }
-        }
-    }
-    if (this->ptr_011BB4)
-    {
-        if (this->uNumLoadedFiles > 1)
-            memset(this->ptr_011BB4, 0, this->uNumLoadedFiles - 1);
-    }
-}*/
-
-//----- (004103BB) --------------------------------------------------------
-void LODFile_IconsBitmaps::ReleaseHardwareTextures()
-{
+void LODFile_IconsBitmaps::ReleaseLostHardwareTextures() {
 }
 
-//----- (0041033D) --------------------------------------------------------
-void LODFile_IconsBitmaps::ReleaseLostHardwareTextures()
-{
-}
-
-//----- (004101B1) --------------------------------------------------------
-int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst, const char *pContainer, int mode)
-{
-  Texture_MM7 *v6; // esi@2
+int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst, const char *pContainer, int mode) {
   unsigned int v7; // ebx@6
   unsigned int v8; // ecx@6
-  signed int result; // eax@7
-  FILE *File; // [sp+Ch] [bp-8h]@1
-  unsigned __int8 v15; // [sp+11h] [bp-3h]@13
-  unsigned __int8 v16; // [sp+12h] [bp-2h]@13
-  unsigned __int8 DstBuf; // [sp+13h] [bp-1h]@13
+  int result; // eax@7
+  uint8_t v15; // [sp+11h] [bp-3h]@13
+  uint8_t v16; // [sp+12h] [bp-2h]@13
+  uint8_t DstBuf; // [sp+13h] [bp-1h]@13
   void *DstBufa; // [sp+1Ch] [bp+8h]@10
   void *Sourcea; // [sp+20h] [bp+Ch]@10
 
-  File = FindContainer(pContainer, 0);
-  v6 = pDst;
-  if ( File && pDst->paletted_pixels
+  FILE *File = FindContainer(pContainer, false);
+  if (File == nullptr) {
+    return -1;
+  }
+
+  Texture_MM7 *v6 = pDst;
+  if (pDst->paletted_pixels
     && mode == 2
-    && pDst->pPalette16 && !pDst->pPalette24
-    && (v7 = pDst->uTextureSize,
+    && pDst->pPalette24
+    && (v7 = pDst->header.uTextureSize,
         fread(pDst, 1, 0x30u, File),
-        strcpy_s(pDst->pName, pContainer),
-        v8 = pDst->uTextureSize,
-        (signed int)v8 <= (signed int)v7) )
+        strcpy_s(pDst->header.pName, pContainer),
+        v8 = pDst->header.uTextureSize,
+        (int)v8 <= (int)v7) )
   {
-    if ( !pDst->uDecompressedSize || this->_011BA4_debug_paletted_pixels_uncompressed)
-    {
-      fread(pDst->paletted_pixels, 1, pDst->uTextureSize, File);
-    }
-    else
-    {
-      Sourcea = malloc(pDst->uDecompressedSize);
-      DstBufa = malloc(pDst->uTextureSize);
-      fread(DstBufa, 1, pDst->uTextureSize, File);
-      zlib::Uncompress(Sourcea, &v6->uDecompressedSize, DstBufa, v6->uTextureSize);
-      v6->uTextureSize = pDst->uDecompressedSize;
+    if ( !pDst->header.uDecompressedSize || this->_011BA4_debug_paletted_pixels_uncompressed) {
+      fread(pDst->paletted_pixels, 1, pDst->header.uTextureSize, File);
+    } else {
+      Sourcea = malloc(pDst->header.uDecompressedSize);
+      DstBufa = malloc(pDst->header.uTextureSize);
+      fread(DstBufa, 1, pDst->header.uTextureSize, File);
+      zlib::Uncompress(Sourcea, &v6->header.uDecompressedSize, DstBufa, v6->header.uTextureSize);
+      v6->header.uTextureSize = pDst->header.uDecompressedSize;
       free(DstBufa);
-      memcpy(v6->paletted_pixels, Sourcea, pDst->uDecompressedSize);
+      memcpy(v6->paletted_pixels, Sourcea, pDst->header.uDecompressedSize);
       free(Sourcea);
     }
-    for( uint i = 0; i < 256; ++i )
-    {
-      fread(&DstBuf, 1, 1, File);
-      fread(&v16, 1, 1, File);
-      fread(&v15, 1, 1, File);
-      v6->pPalette16[i] = (unsigned __int8)(DstBuf >> (8 - (unsigned char)(this->uTextureRedBits)))
-                        << ((unsigned char)(this->uTextureBlueBits) + (unsigned char)(this->uTextureGreenBits));
-      v6->pPalette16[i] += (unsigned __int8)(v16 >> (8 - (unsigned char)(this->uTextureGreenBits)))
-                        << this->uTextureBlueBits;
-      v6->pPalette16[i] += (unsigned __int8)(v15 >> (8 - (unsigned char)(this->uTextureBlueBits)));
-    }
+    fread(pDst->pPalette24, 1, 0x300, File);
     result = 1;
   }
   else
@@ -1517,238 +1261,111 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst, const char *pContaine
   return result;
 }
 
-//----- (0040FC08) --------------------------------------------------------
-int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *pContainer, enum TEXTURE_TYPE eTextureType)
-{
-    Texture_MM7 *v8; // esi@3
-//    enum TEXTURE_TYPE v12; // eax@14
-    signed int result; // esi@14
-    unsigned int v14; // eax@21
-    void *v19; // ST3C_4@27
-    size_t v22; // ST2C_4@29
-    const void *v23; // ecx@29
-//    void *v30; // eax@30
-    signed int v41; // ecx@43
-    signed int v42; // ecx@48
+int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex, const char *pContainer, enum TEXTURE_TYPE eTextureType) {
+  int result; // esi@14
+  unsigned int v14; // eax@21
+  size_t v22; // ST2C_4@29
+  const void *v23; // ecx@29
 
-    FILE* pFile = FindContainer(pContainer, false);
-    if (!pFile)
-        return -1;
-    v8 = pOutTex;
-    fread(pOutTex, 1, 0x30, pFile);
-    strcpy(pOutTex->pName, pContainer);
+  size_t data_size = 0;
+  FILE* pFile = FindContainer(pContainer, false, &data_size);
+  if (pFile == nullptr) {
+    return -1;
+  }
 
-    // BITMAPS
-    if (/*render->pRenderD3D &&*/ (pOutTex->pBits & 2) && strcmp(v8->pName, "sptext01"))
-    {
-        if (!pHardwareSurfaces || !pHardwareTextures)
-        {
-            pHardwareSurfaces = new IDirectDrawSurface *[1000];
-            memset(pHardwareSurfaces, 0, 1000 * sizeof(IDirectDrawSurface4 *));
+  TextureHeader *header = &pOutTex->header;
+  fread(header, 1, sizeof(TextureHeader), pFile);
+  strncpy(header->pName, pContainer, 16);
+  data_size -= sizeof(TextureHeader);
 
-            pHardwareTextures = new IDirect3DTexture2 *[1000];
-            memset(pHardwareTextures, 0, 1000 * sizeof(IDirect3DTexture2 *));
+  // BITMAPS
+  if ((header->pBits & 2) && strcmp(header->pName, "sptext01")) {
+    if (!pHardwareSurfaces || !pHardwareTextures) {
+      pHardwareSurfaces = new IDirectDrawSurface *[1000];
+      memset(pHardwareSurfaces, 0, 1000 * sizeof(IDirectDrawSurface4 *));
 
-            ptr_011BB4 = new char[1000];
-            memset(ptr_011BB4, 0, 1000);
-        }
-        if (_strnicmp(pContainer, "wtrdr", 5))
-        {
-            if (_strnicmp(pContainer, "WtrTyl", 6))
-                v14 = uNumLoadedFiles;
-            else
-            {
-                render->hd_water_tile_id = uNumLoadedFiles;
-                v14 = uNumLoadedFiles;
-            }
-            //result = render->LoadTexture(pContainer, pOutTex->palette_id1, (void **)&pHardwareSurfaces[v14], (void **)&pHardwareTextures[v14]);
-            result = 1;
-        }
-        else
-        {
-            char *temp_container;
-            temp_container = (char *)malloc(strlen(pContainer) + 2);
-            *temp_container = 104;//'h'
-            strcpy(temp_container + 1, pContainer);
-            //result = render->LoadTexture((const char *)temp_container, pOutTex->palette_id1,
-            //    (void **)&pHardwareSurfaces[uNumLoadedFiles], (void **)&pHardwareTextures[uNumLoadedFiles]);
-            result = 1;
-            free((void *)temp_container);
-        }
-        return result;
+      pHardwareTextures = new IDirect3DTexture2 *[1000];
+      memset(pHardwareTextures, 0, 1000 * sizeof(IDirect3DTexture2 *));
+
+      ptr_011BB4 = new char[1000];
+      memset(ptr_011BB4, 0, 1000);
     }
+    if (_strnicmp(pContainer, "wtrdr", 5)) {
+      if (_strnicmp(pContainer, "WtrTyl", 6)) {
+        v14 = uNumLoadedFiles;
+      } else {
+        render->hd_water_tile_id = uNumLoadedFiles;
+        v14 = uNumLoadedFiles;
+      }
+      //result = render->LoadTexture(pContainer, pOutTex->palette_id1, (void **)&pHardwareSurfaces[v14], (void **)&pHardwareTextures[v14]);
+      result = 1;
+    } else {
+      char *temp_container;
+      temp_container = (char *)malloc(strlen(pContainer) + 2);
+      *temp_container = 104;//'h'
+      strcpy(temp_container + 1, pContainer);
+      result = 1;
+      free((void *)temp_container);
+    }
+    return result;
+  }
 
 
-    // ICONS
-    if (!v8->uDecompressedSize || _011BA4_debug_paletted_pixels_uncompressed)
-    {
-        v8->paletted_pixels = (unsigned __int8 *)malloc(v8->uTextureSize);
-        fread(v8->paletted_pixels, 1, (size_t)v8->uTextureSize, pFile);
+  // ICONS
+  if (!header->uDecompressedSize || _011BA4_debug_paletted_pixels_uncompressed) {
+    if (header->uTextureSize > data_size) {
+      assert(false);
     }
-    else
-    {
-        pContainer = (const char *)malloc(v8->uDecompressedSize);
-        v19 = malloc(v8->uTextureSize);
-        fread(v19, 1, (size_t)v8->uTextureSize, pFile);
-        zlib::Uncompress((void *)pContainer, &v8->uDecompressedSize, v19, v8->uTextureSize);
-        v8->uTextureSize = v8->uDecompressedSize;
-        free(v19);
-        if ( /*bUseLoResSprites*/false && v8->pBits & 2)
-        {
-            pOutTex = (Texture_MM7 *)(((signed int)v8->uSizeOfMaxLevelOfDetail >> 2)
-                + ((signed int)v8->uSizeOfMaxLevelOfDetail >> 4)
-                + ((signed int)v8->uSizeOfMaxLevelOfDetail >> 6));
-            v22 = (size_t)pOutTex;
-            v23 = &pContainer[v8->uTextureWidth * v8->uTextureHeight];
-            v8->paletted_pixels = (unsigned __int8 *)malloc((unsigned int)pOutTex);
-            memcpy(v8->paletted_pixels, v23, v22);
-            v8->uTextureWidth = (signed __int16)v8->uTextureWidth / 2;
-            v8->uTextureHeight = (signed __int16)v8->uTextureHeight / 2;
-            --v8->uWidthLn2;
-            --v8->uHeightLn2;
-            v8->uWidthMinus1 = v8->uTextureWidth - 1;
-            v8->uHeightMinus1 = v8->uTextureHeight - 1;
-            v8->uSizeOfMaxLevelOfDetail = (signed __int16)v8->uTextureWidth * (signed __int16)v8->uTextureHeight;
-            v8->uTextureSize = (unsigned int)pOutTex;
-        }
-        else
-        {
-            v8->paletted_pixels = (unsigned __int8 *)malloc(v8->uDecompressedSize);
-            memcpy(v8->paletted_pixels, pContainer, v8->uDecompressedSize);
-        }
-        free((void *)pContainer);
+    pOutTex->paletted_pixels = (uint8_t*)malloc(header->uTextureSize);
+    fread(pOutTex->paletted_pixels, 1, header->uTextureSize, pFile);
+    data_size -= header->uTextureSize;
+  } else {
+    if (header->uTextureSize > data_size) {
+      assert(false);
     }
+    pOutTex->paletted_pixels = (uint8_t*)malloc(header->uDecompressedSize);
+    void *tmp_buf = malloc(header->uTextureSize);
+    fread(tmp_buf, 1, (size_t)header->uTextureSize, pFile);
+    data_size -= header->uTextureSize;
+    zlib::Uncompress(pOutTex->paletted_pixels, &header->uDecompressedSize, tmp_buf, header->uTextureSize);
+    header->uTextureSize = header->uDecompressedSize;
+    free(tmp_buf);
+  }
 
-    free(v8->pPalette16);
-    v8->pPalette16 = NULL;
+  pOutTex->pPalette24 = nullptr;
 
-    free(v8->pPalette24);
-    v8->pPalette24 = NULL;
+  if (0x300 > data_size) {
+    assert(false);
+  }
+  pOutTex->pPalette24 = (uint8_t*)malloc(0x300);
+  fread(pOutTex->pPalette24, 1, 0x300, pFile);
+  data_size -= 0x300;
 
-    if (eTextureType == TEXTURE_24BIT_PALETTE)
-    {
-        v8->pPalette24 = (unsigned __int8 *)malloc(0x300);
-        fread(v8->pPalette24, 1, 0x300, pFile);
-    }
-    else
-    {
-        if (eTextureType == TEXTURE_16BIT_PALETTE)
-        {
-            v8->pPalette16 = (unsigned __int16 *)malloc(0x200);
-            for (uint i = 0; i < 256; ++i)
-            {
-                fread((char *)&eTextureType + 3, 1, 1, pFile);
-                fread((char *)&pContainer + 3, 1, 1, pFile);
-                fread((char *)&pOutTex + 3, 1, 1, pFile);
-                v8->pPalette16[i] = (unsigned __int8)(BYTE3(eTextureType) >> (8 - (unsigned char)this->uTextureRedBits)) //Uninitialized memory access
-                    << ((unsigned char)this->uTextureBlueBits + (unsigned char)this->uTextureGreenBits);
-                v8->pPalette16[i] += (unsigned __int8)(BYTE3(pContainer) >> (8 - (unsigned char)this->uTextureGreenBits))
-                    << this->uTextureBlueBits;
-                v8->pPalette16[i] += (unsigned __int8)(BYTE3(pOutTex) >> (8 - (unsigned char)this->uTextureBlueBits));
-            }
-        }
-    }
+  assert(data_size == 0);
 
-    if (v8->pBits & 2)
-    {
-        v8->pLevelOfDetail1 = &v8->paletted_pixels[v8->uSizeOfMaxLevelOfDetail];
-        //v8->pLevelOfDetail2 = &v8->pLevelOfDetail1[v8->uSizeOfMaxLevelOfDetail >> 2];
-        //v8->pLevelOfDetail3 = &v8->pLevelOfDetail2[v8->uSizeOfMaxLevelOfDetail >> 4];
-    }
-    else
-    {
-        v8->pLevelOfDetail1 = 0;
-        //v8->pLevelOfDetail2 = 0;
-        //v8->pLevelOfDetail3 = 0;
-    }
-    for (v41 = 1; v41 < 15; ++v41)
-    {
-        if (1 << v41 == v8->uTextureWidth)
-            v8->uWidthLn2 = v41;
-    }
-    for (v42 = 1; v42 < 15; ++v42)
-    {
-        if (1 << v42 == v8->uTextureHeight)
-            v8->uHeightLn2 = v42;
-    }
+  if (header->pBits & 2) {
+    pOutTex->pLevelOfDetail1 = &pOutTex->paletted_pixels[header->uSizeOfMaxLevelOfDetail];
+    //v8->pLevelOfDetail2 = &v8->pLevelOfDetail1[v8->uSizeOfMaxLevelOfDetail >> 2];
+    //v8->pLevelOfDetail3 = &v8->pLevelOfDetail2[v8->uSizeOfMaxLevelOfDetail >> 4];
+  } else {
+    pOutTex->pLevelOfDetail1 = 0;
+    //v8->pLevelOfDetail2 = 0;
+    //v8->pLevelOfDetail3 = 0;
+  }
 
-    switch (v8->uWidthLn2)
-    {
-    case 2:
-        v8->uWidthMinus1 = 3;
-        break;
-    case 3:
-        v8->uWidthMinus1 = 7;
-        break;
-    case 4:
-        v8->uWidthMinus1 = 15;
-        break;
-    case 5:
-        v8->uWidthMinus1 = 31;
-        break;
-    case 6:
-        v8->uWidthMinus1 = 63;
-        break;
-    case 7:
-        v8->uWidthMinus1 = 127;
-        break;
-    case 8:
-        v8->uWidthMinus1 = 255;
-        break;
-    case 9:
-        v8->uWidthMinus1 = 511;
-        break;
-    case 10:
-        v8->uWidthMinus1 = 1023;
-        break;
-    case 11:
-        v8->uWidthMinus1 = 2047;
-        break;
-    case 12:
-        v8->uWidthMinus1 = 4095;
-        break;
-    default:
-        break;
-    }
-    switch (v8->uHeightLn2)
-    {
-    case 2:
-        v8->uHeightMinus1 = 3;
-        break;
-    case 3:
-        v8->uHeightMinus1 = 7;
-        break;
-    case 4:
-        v8->uHeightMinus1 = 15;
-        break;
-    case 5:
-        v8->uHeightMinus1 = 31;
-        break;
-    case 6:
-        v8->uHeightMinus1 = 63;
-        break;
-    case 7:
-        v8->uHeightMinus1 = 127;
-        break;
-    case 8:
-        v8->uHeightMinus1 = 255;
-        break;
-    case 9:
-        v8->uHeightMinus1 = 511;
-        break;
-    case 10:
-        v8->uHeightMinus1 = 1023;
-        break;
-    case 11:
-        v8->uHeightMinus1 = 2047;
-        break;
-    case 12:
-        v8->uHeightMinus1 = 4095;
-        break;
-    default:
-        return 1;
-    }
-    return 1;
+  for (int v41 = 1; v41 < 15; ++v41) {
+    if (1 << v41 == header->uTextureWidth)
+      header->uWidthLn2 = v41;
+  }
+  for (int v42 = 1; v42 < 15; ++v42) {
+    if (1 << v42 == header->uTextureHeight)
+      header->uHeightLn2 = v42;
+  }
+
+  header->uWidthMinus1 = (1 << header->uWidthLn2) - 1;
+  header->uHeightMinus1 = (1 << header->uHeightLn2) - 1;
+
+  return 1;
 }
 
 Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(const char *pContainer, enum TEXTURE_TYPE uTextureType)
@@ -1760,28 +1377,25 @@ Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(const char *pContainer, enum T
   return &pTextures[id];
 }
 
-//----- (0040FB20) --------------------------------------------------------
-unsigned int LODFile_IconsBitmaps::LoadTexture(const char *pContainer, enum TEXTURE_TYPE uTextureType)
-{
-    for (uint i = 0; i < uNumLoadedFiles; ++i)
-    {
-        if (!_stricmp(pContainer, pTextures[i].pName))
-            return i;
+unsigned int LODFile_IconsBitmaps::LoadTexture(const char *pContainer, enum TEXTURE_TYPE uTextureType) {
+  for (uint i = 0; i < uNumLoadedFiles; ++i) {
+    if (!_stricmp(pContainer, pTextures[i].header.pName)) {
+      return i;
     }
+  }
 
-    Assert(uNumLoadedFiles < 1000);
+  Assert(uNumLoadedFiles < 1000);
 
-    if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer, uTextureType) == -1)
-    {
-        for (uint i = 0; i < uNumLoadedFiles; ++i)
-        {
-            if (!_stricmp(pTextures[i].pName, "pending"))
-                return i;
-        }
-        LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending", uTextureType);
+  if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer, uTextureType) == -1) {
+    for (uint i = 0; i < uNumLoadedFiles; ++i) {
+      if (!_stricmp(pTextures[i].header.pName, "pending")) {
+        return i;
+      }
     }
+    LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending", uTextureType);
+  }
 
-    return uNumLoadedFiles++;
+  return uNumLoadedFiles++;
 }
 
 Texture_MM7 * LODFile_IconsBitmaps::GetTexture( int idx )

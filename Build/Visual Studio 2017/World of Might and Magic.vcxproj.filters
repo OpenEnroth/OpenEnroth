@@ -94,11 +94,11 @@
     <Filter Include="Platform\Win">
       <UniqueIdentifier>{b7a41e2d-1c0d-4ce5-87ea-cb25efafa153}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Graphics\Direct3D">
-      <UniqueIdentifier>{d9f99fec-7cd5-45d3-9062-00d54d102522}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Graphics\OpenGL">
       <UniqueIdentifier>{8017d785-0058-4d59-9203-d614405bb5fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\Direct3D">
+      <UniqueIdentifier>{c4e473d3-7f99-4068-8a76-7bd82dc8a39a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -447,9 +447,6 @@
     <ClCompile Include="..\..\Engine\Graphics\OpenGL\TextureOpenGL.cpp">
       <Filter>Engine\Graphics\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\Graphics\Direct3D\TextureD3D.cpp">
-      <Filter>Engine\Graphics\Direct3D</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\SpellFxRenderer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -459,14 +456,17 @@
     <ClCompile Include="..\..\Engine\Graphics\PCX.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\Graphics\RenderD3D11.cpp">
+    <ClCompile Include="..\..\GUI\UI\UICredits.cpp">
+      <Filter>GUI\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\Direct3D\TextureD3D.cpp">
       <Filter>Engine\Graphics\Direct3D</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\Render.cpp">
-      <Filter>Engine\Graphics</Filter>
+      <Filter>Engine\Graphics\Direct3D</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GUI\UI\UICredits.cpp">
-      <Filter>GUI\UI</Filter>
+    <ClCompile Include="..\..\Engine\Graphics\RenderD3D.cpp">
+      <Filter>Engine\Graphics\Direct3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -750,9 +750,6 @@
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\ParticleEngine.h">
-      <Filter>Engine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Engine\Graphics\RenderStruct.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Outdoor.h">
@@ -1076,9 +1073,6 @@
     <ClInclude Include="..\..\Engine\Graphics\OpenGL\TextureOpenGL.h">
       <Filter>Engine\Graphics\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\Graphics\Direct3D\TextureD3D.h">
-      <Filter>Engine\Graphics\Direct3D</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Engine\SpellFxRenderer.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -1088,14 +1082,17 @@
     <ClInclude Include="..\..\Engine\Graphics\PCX.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\Graphics\RenderD3D11.h">
+    <ClInclude Include="..\..\GUI\UI\UICredits.h">
+      <Filter>GUI\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Direct3D\TextureD3D.h">
       <Filter>Engine\Graphics\Direct3D</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Render.h">
-      <Filter>Engine\Graphics</Filter>
+      <Filter>Engine\Graphics\Direct3D</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GUI\UI\UICredits.h">
-      <Filter>GUI\UI</Filter>
+    <ClInclude Include="..\..\Engine\Graphics\RenderD3D.h">
+      <Filter>Engine\Graphics\Direct3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

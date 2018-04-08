@@ -20,8 +20,7 @@ class ImageLoader
 class ColorKey_LOD_Loader : public ImageLoader
 {
     public:
-        inline ColorKey_LOD_Loader(LODFile_IconsBitmaps *lod, const String &filename, unsigned __int16 colorkey)
-        {
+        inline ColorKey_LOD_Loader(LODFile_IconsBitmaps *lod, const String &filename, uint16_t colorkey) {
             this->resource_name = filename;
             this->colorkey = colorkey;
             this->lod = lod;
@@ -32,7 +31,7 @@ class ColorKey_LOD_Loader : public ImageLoader
 
 
     protected:
-        unsigned __int16      colorkey;
+        uint16_t             colorkey;
         LODFile_IconsBitmaps *lod;
 };
 

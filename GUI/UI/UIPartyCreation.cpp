@@ -315,7 +315,7 @@ void GUIWindow_PartyCreation::Update()
     memset(pText, 0, 200);
     strcpy(pText, localization->GetString(205));// "Skills"
     for (int i = strlen(pText) - 1; i >= 0; i--)//???
-        pText[i] = toupper((unsigned __int8)pText[i]);
+        pText[i] = toupper((uint8_t)pText[i]);
 
     pIntervalX = 18;
     pIntervalY = pFontCreate->GetHeight() - 2;
@@ -548,145 +548,136 @@ void GUIWindow_PartyCreation::Update()
 
 //----- (0049695A) --------------------------------------------------------
 GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
+  GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-    unsigned int v0; // ebx@5
-    signed int uControlParam; // [sp+10h] [bp-Ch]@7
-    signed int uX; // [sp+14h] [bp-8h]@5
+  pMessageQueue_50CBD0->Flush();
+  alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
 
-    pMessageQueue_50CBD0->Flush();
-    alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
+  current_screen_type = SCREEN_PARTY_CREATION;
+  uPlayerCreationUI_ArrowAnim = 0;
+  uPlayerCreationUI_SelectedCharacter = 0;
+  unsigned int v0 = pFontCreate->GetHeight() - 2;
 
-    current_screen_type = SCREEN_PARTY_CREATION;
-    uPlayerCreationUI_ArrowAnim = 0;
-    uPlayerCreationUI_SelectedCharacter = 0;
-    v0 = pFontCreate->GetHeight() - 2;
+  ui_partycreation_class_icons[0] = assets->GetImage_ColorKey("IC_KNIGHT", 0x7FF);
+  ui_partycreation_class_icons[1] = assets->GetImage_ColorKey("IC_THIEF", 0x7FF);
+  ui_partycreation_class_icons[2] = assets->GetImage_ColorKey("IC_MONK", 0x7FF);
+  ui_partycreation_class_icons[3] = assets->GetImage_ColorKey("IC_PALAD", 0x7FF);
+  ui_partycreation_class_icons[4] = assets->GetImage_ColorKey("IC_ARCH", 0x7FF);
+  ui_partycreation_class_icons[5] = assets->GetImage_ColorKey("IC_RANGER", 0x7FF);
+  ui_partycreation_class_icons[6] = assets->GetImage_ColorKey("IC_CLER", 0x7FF);
+  ui_partycreation_class_icons[7] = assets->GetImage_ColorKey("IC_DRUID", 0x7FF);
+  ui_partycreation_class_icons[8] = assets->GetImage_ColorKey("IC_SORC", 0x7FF);
 
-    ui_partycreation_class_icons[0] = assets->GetImage_16BitColorKey("IC_KNIGHT", 0x7FF);
-    ui_partycreation_class_icons[1] = assets->GetImage_16BitColorKey("IC_THIEF", 0x7FF);
-    ui_partycreation_class_icons[2] = assets->GetImage_16BitColorKey("IC_MONK", 0x7FF);
-    ui_partycreation_class_icons[3] = assets->GetImage_16BitColorKey("IC_PALAD", 0x7FF);
-    ui_partycreation_class_icons[4] = assets->GetImage_16BitColorKey("IC_ARCH", 0x7FF);
-    ui_partycreation_class_icons[5] = assets->GetImage_16BitColorKey("IC_RANGER", 0x7FF);
-    ui_partycreation_class_icons[6] = assets->GetImage_16BitColorKey("IC_CLER", 0x7FF);
-    ui_partycreation_class_icons[7] = assets->GetImage_16BitColorKey("IC_DRUID", 0x7FF);
-    ui_partycreation_class_icons[8] = assets->GetImage_16BitColorKey("IC_SORC", 0x7FF);
+  ui_partycreation_top = assets->GetImage_Alpha("MAKETOP");  // , 0x7FF);
+  ui_partycreation_sky_scroller = assets->GetImage_Solid("MAKESKY");
 
-    ui_partycreation_top = assets->GetImage_16BitColorKey("MAKETOP", 0x7FF);
-    ui_partycreation_sky_scroller = assets->GetImage_16BitColorKey("MAKESKY", 0x7FF);
+  for (int uX = 0; uX < 22; ++uX) {
+    ui_partycreation_portraits[uX] = assets->GetImage_ColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]), 0x7FF);
+  }
 
-    for (uX = 0; uX < 22; ++uX)
-    {
-        ui_partycreation_portraits[uX] = assets->GetImage_16BitColorKey(StringPrintf("%s01", pPlayerPortraitsNames[uX]), 0x7FF);
-    }
+  ui_partycreation_minus = assets->GetImage_ColorKey("buttminu", 0x7FF);
+  ui_partycreation_plus = assets->GetImage_ColorKey("buttplus", 0x7FF);
+  ui_partycreation_right = assets->GetImage_ColorKey("presrigh", 0x7FF);
+  ui_partycreation_left = assets->GetImage_ColorKey("presleft", 0x7FF);
 
-    ui_partycreation_minus = assets->GetImage_16BitColorKey("buttminu", 0x7FF);
-    ui_partycreation_plus = assets->GetImage_16BitColorKey("buttplus", 0x7FF);
-    ui_partycreation_right = assets->GetImage_16BitColorKey("presrigh", 0x7FF);
-    ui_partycreation_left = assets->GetImage_16BitColorKey("presleft", 0x7FF);
+  for (int i = 1; i < 20; ++i) {
+    ui_partycreation_arrow_l[i] = assets->GetImage_Alpha(StringPrintf("arrowl%d", i));
+    ui_partycreation_arrow_r[i] = assets->GetImage_Alpha(StringPrintf("arrowr%d", i));
+  }
 
-    for (int i = 1; i < 20; ++i)
-    {
-        ui_partycreation_arrow_l[i] = assets->GetImage_16BitAlpha(StringPrintf("arrowl%d", i));
-        ui_partycreation_arrow_r[i] = assets->GetImage_16BitAlpha(StringPrintf("arrowr%d", i));
-    }
+  //pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
+  int uControlParam = 0;
+  uControlParam = 0;
+  int uX = 8;
+  do {
+    CreateButton(uX, 120, 145, 25, 1, 0, UIMSG_PlayerCreationChangeName, uControlParam, 0, "");
+    uX += 158;
+    ++uControlParam;
+  } while ((signed int)uX < window->GetWidth());
 
-    //pGUIWindow_CurrentMenu = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
-    uControlParam = 0;
-    uX = 8;
-    do
-    {
-        CreateButton(uX, 120, 145, 25, 1, 0, UIMSG_PlayerCreationChangeName, uControlParam, 0, "");
-        uX += 158;
-        ++uControlParam;
-    } while ((signed int)uX < window->GetWidth());
+  pCreationUI_BtnPressLeft[0] = CreateButton(10, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, 0, "", { { ui_partycreation_left } });
+  pCreationUI_BtnPressLeft[1] = CreateButton(169, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 1, 0, "", { { ui_partycreation_left } });
+  pCreationUI_BtnPressLeft[2] = CreateButton(327, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 2, 0, "", { { ui_partycreation_left } });
+  pCreationUI_BtnPressLeft[3] = CreateButton(486, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 3, 0, "", { { ui_partycreation_left } });
 
-    pCreationUI_BtnPressLeft[0] = CreateButton(10, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, 0, "", { {ui_partycreation_left} });
-    pCreationUI_BtnPressLeft[1] = CreateButton(169, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 1, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft[2] = CreateButton(327, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 2, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft[3] = CreateButton(486, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 3, 0, "", { { ui_partycreation_left } });
+  pCreationUI_BtnPressRight[0] = CreateButton(74, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 0, 0, "", { { ui_partycreation_right } });
+  pCreationUI_BtnPressRight[1] = CreateButton(233, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 1, 0, "", { { ui_partycreation_right } });
+  pCreationUI_BtnPressRight[2] = CreateButton(391, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 2, 0, "", { { ui_partycreation_right } });
+  pCreationUI_BtnPressRight[3] = CreateButton(549, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 3, 0, "", { { ui_partycreation_right } });
 
-    pCreationUI_BtnPressRight[0] = CreateButton(74, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 0, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight[1] = CreateButton(233, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 1, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight[2] = CreateButton(391, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 2, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight[3] = CreateButton(549, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 3, 0, "", { { ui_partycreation_right } });
+  pCreationUI_BtnPressLeft2[0] = CreateButton(10, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 0, 0, "", { { ui_partycreation_left } });
+  pCreationUI_BtnPressLeft2[1] = CreateButton(169, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 1, 0, "", { { ui_partycreation_left } });
+  pCreationUI_BtnPressLeft2[2] = CreateButton(327, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 2, 0, "", { { ui_partycreation_left } });
+  pCreationUI_BtnPressLeft2[3] = CreateButton(486, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 3, 0, "", { { ui_partycreation_left } });
 
-    pCreationUI_BtnPressLeft2[0] = CreateButton(10, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 0, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft2[1] = CreateButton(169, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 1, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft2[2] = CreateButton(327, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 2, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft2[3] = CreateButton(486, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 3, 0, "", { { ui_partycreation_left } });
+  pCreationUI_BtnPressRight2[0] = CreateButton(74, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 0, 0, "", { { ui_partycreation_right } });
+  pCreationUI_BtnPressRight2[1] = CreateButton(233, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 1, 0, "", { { ui_partycreation_right } });
+  pCreationUI_BtnPressRight2[2] = CreateButton(391, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 2, 0, "", { { ui_partycreation_right } });
+  pCreationUI_BtnPressRight2[3] = CreateButton(549, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 3, 0, "", { { ui_partycreation_right } });
 
-    pCreationUI_BtnPressRight2[0] = CreateButton(74, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 0, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight2[1] = CreateButton(233, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 1, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight2[2] = CreateButton(391, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 2, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight2[3] = CreateButton(549, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 3, 0, "", { { ui_partycreation_right } });
+  uControlParam = 0;
+  uX = 8;
+  do {
+    CreateButton(uX, 308, 150, v0, 1, 0, UIMSG_48, uControlParam, 0, "");
+    CreateButton(uX, v0 + 308, 150, v0, 1, 0, UIMSG_49, uControlParam, 0, "");
+    CreateButton(uX, 2 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, uControlParam, 0, "");
+    CreateButton(uX, 3 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveDownSkill, uControlParam, 0, "");
 
-    uControlParam = 0;
-    uX = 8;
-    do
-    {
-        CreateButton(uX, 308, 150, v0, 1, 0, UIMSG_48, uControlParam, 0, "");
-        CreateButton(uX, v0 + 308, 150, v0, 1, 0, UIMSG_49, uControlParam, 0, "");
-        CreateButton(uX, 2 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, uControlParam, 0, "");
-        CreateButton(uX, 3 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveDownSkill, uControlParam, 0, "");
+    uX += 158;
+    ++uControlParam;
+  } while ((signed int)uX < window->GetWidth());
 
-        uX += 158;
-        ++uControlParam;
-    } while ((signed int)uX < window->GetWidth());
+  CreateButton(5, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 0, '1', "");
+  CreateButton(163, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 1, '2', "");
+  CreateButton(321, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 2, '3', "");
+  CreateButton(479, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 3, '4', "");
 
-    CreateButton(5, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 0, '1', "");
-    CreateButton(163, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 1, '2', "");
-    CreateButton(321, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 2, '3', "");
-    CreateButton(479, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 3, '4', "");
+  uX = 23;
+  uControlParam = 2;
+  do {
+    CreateButton(uX, 169, 120, 20, 1, 0, UIMSG_0, uControlParam - 2, 0, "");
+    CreateButton(uX, v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam - 1, 0, "");
+    CreateButton(uX, 2 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam, 0, "");
+    CreateButton(uX, 3 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 1, 0, "");
+    CreateButton(uX, 4 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 2, 0, "");
+    CreateButton(uX, 5 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 3, 0, "");
+    CreateButton(uX, 6 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 4, 0, "");
 
-    uX = 23;
-    uControlParam = 2;
-    do
-    {
-        CreateButton(uX, 169, 120, 20, 1, 0, UIMSG_0, uControlParam - 2, 0, "");
-        CreateButton(uX, v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam - 1, 0, "");
-        CreateButton(uX, 2 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam, 0, "");
-        CreateButton(uX, 3 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 1, 0, "");
-        CreateButton(uX, 4 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 2, 0, "");
-        CreateButton(uX, 5 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 3, 0, "");
-        CreateButton(uX, 6 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 4, 0, "");
+    uControlParam += 7;
+    uX += 158;
+  } while ((signed int)uControlParam < 30);
 
-        uControlParam += 7;
-        uX += 158;
-    } while ((signed int)uControlParam < 30);
+  _41D08F_set_keyboard_control_group(28, 0, 7, 40);
 
-    _41D08F_set_keyboard_control_group(28, 0, 7, 40);
+  CreateButton(323, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0, 0, "");
+  CreateButton(323, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0xC, 0, "");
+  CreateButton(323, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x14, 0, "");
+  CreateButton(388, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x18, 0, "");
+  CreateButton(388, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x1C, 0, "");
+  CreateButton(388, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x20, 0, "");
+  CreateButton(453, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x10, 0, "");
+  CreateButton(453, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 8, 0, "");
+  CreateButton(453, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 4, 0, "");
 
-    CreateButton(323, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0, 0, "");
-    CreateButton(323, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0xC, 0, "");
-    CreateButton(323, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x14, 0, "");
-    CreateButton(388, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x18, 0, "");
-    CreateButton(388, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x1C, 0, "");
-    CreateButton(388, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x20, 0, "");
-    CreateButton(453, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x10, 0, "");
-    CreateButton(453, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 8, 0, "");
-    CreateButton(453, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 4, 0, "");
+  uControlParam = 0;
+  do {
+    uX = -5;
+    if (uControlParam <= 3)
+      uX = 0;
+    CreateButton(100 * (uControlParam / 3) + uX + 17, v0 * (uControlParam % 3) + 417, 100, v0, 1, 0, UIMSG_PlayerCreationSelectActiveSkill,
+      uControlParam, 0, "");
+    ++uControlParam;
+  } while (uControlParam < 9);
 
-    uControlParam = 0;
-    do
-    {
-        uX = -5;
-        if (uControlParam <= 3)
-            uX = 0;
-        CreateButton(100 * (uControlParam / 3) + uX + 17, v0 * (uControlParam % 3) + 417, 100, v0, 1, 0, UIMSG_PlayerCreationSelectActiveSkill,
-            uControlParam, 0, "");
-        ++uControlParam;
-    } while (uControlParam < 9);
+  ui_partycreation_buttmake = assets->GetImage_Alpha("BUTTMAKE");
+  ui_partycreation_buttmake2 = assets->GetImage_Alpha("BUTTMAKE2");
 
-    ui_partycreation_buttmake = assets->GetImage_16BitAlpha("BUTTMAKE");
-    ui_partycreation_buttmake2 = assets->GetImage_16BitAlpha("BUTTMAKE2");
+  pPlayerCreationUI_BtnOK = CreateButton(580, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickOK, 0, '\r', "", { { ui_partycreation_buttmake } });
+  pPlayerCreationUI_BtnReset = CreateButton(527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, 'C', "", { { ui_partycreation_buttmake2 } });
+  pPlayerCreationUI_BtnMinus = CreateButton(523, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickMinus, 0, '-', "", { { ui_partycreation_minus } });
+  pPlayerCreationUI_BtnPlus = CreateButton(613, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickPlus, 1, '+', "", { { ui_partycreation_plus } });
 
-    pPlayerCreationUI_BtnOK = CreateButton(580, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickOK, 0, '\r', "", { {ui_partycreation_buttmake} });
-    pPlayerCreationUI_BtnReset = CreateButton(527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, 'C', "", { {ui_partycreation_buttmake2} });
-    pPlayerCreationUI_BtnMinus = CreateButton(523, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickMinus, 0, '-', "", { {ui_partycreation_minus} });
-    pPlayerCreationUI_BtnPlus = CreateButton(613, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickPlus, 1, '+', "", { {ui_partycreation_plus} });
-
-    ui_partycreation_font = GUIFont::LoadFont("cchar.fnt", "FONTPAL", NULL);
+  ui_partycreation_font = GUIFont::LoadFont("cchar.fnt", "FONTPAL", NULL);
 }
 
 

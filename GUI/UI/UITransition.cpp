@@ -98,9 +98,9 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id, int x
     case PartyAlignment_Evil:    sprintf(filename, "evt%02d-c", const_2()); break;
     default: Error("Invalid alignment: %u", pParty->alignment);
   }
-  game_ui_dialogue_background = assets->GetImage_16Bit(filename);
+  game_ui_dialogue_background = assets->GetImage_Solid(filename);
 
-  transition_ui_icon = assets->GetImage_16Bit(pHouse_ExitPictures[exit_pic_id]);
+  transition_ui_icon = assets->GetImage_Solid(pHouse_ExitPictures[exit_pic_id]);
   if (anim_id) {
     if (!IndoorLocation::GetLocationIndex(pLocationName))
       pMediaPlayer->OpenHouseMovie(pAnimatedRooms[p2DEvents[anim_id - 1].uAnimationID].video_name, 1);
@@ -167,9 +167,9 @@ GUIWindow_Travel::GUIWindow_Travel() :
     case PartyAlignment_Evil:    sprintf(pContainer, "evt%02d-c", const_2()); break;
     default: Error("Invalid alignment: %u", pParty->alignment);
   }
-  game_ui_dialogue_background = assets->GetImage_16Bit(pContainer);
+  game_ui_dialogue_background = assets->GetImage_Solid(pContainer);
 
-  transition_ui_icon = assets->GetImage_16Bit("outside");
+  transition_ui_icon = assets->GetImage_Solid("outside");
   if (pMapStats->GetMapInfo(pCurrentMapName))
       transition_button_label = localization->FormatString(410, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);// "Leave %s"
   else

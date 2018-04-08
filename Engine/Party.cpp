@@ -1104,7 +1104,7 @@ void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem()
   if ( !pParty->pPickedItem.uItemID )
     return;
 
-  auto texture = assets->GetImage_16BitColorKey(pParty->pPickedItem.GetIconName(), 0x7FF);
+  auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), 0x7FF);
 
   if ( uActiveCharacter
     && (v2 = ::pPlayers[uActiveCharacter]->AddItem(-1, pParty->pPickedItem.uItemID)) != 0 )
@@ -1183,7 +1183,7 @@ bool Party::AddItemToParty(ItemGen *pItem)
     v5 = pItemsTable->pItems[v2].pIconName;
     if (v5)
     {
-        auto texture = assets->GetImage_16BitColorKey(v5, 0x7FF);
+        auto texture = assets->GetImage_ColorKey(v5, 0x7FF);
         v8 = 0;
         uint current_player = uActiveCharacter;
         for (int i = 0; i < 4; i++)

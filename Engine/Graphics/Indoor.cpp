@@ -259,7 +259,6 @@ void BLVRenderParams::Reset()
   extern float _calc_fov(int viewport_width, int angle_degree);
   this->bsp_fov_rad = fixpoint_from_int(_calc_fov(uViewportWidth, 65), 0);
   this->bsp_fov_rad_inv = fixpoint_div(1 << 16, this->bsp_fov_rad);
-  this->pRenderTarget = render->pTargetSurface;
   this->uTargetWidth = window->GetWidth();
   this->uTargetHeight = window->GetHeight();
   this->pTargetZBuffer = render->pActiveZBuffer;
@@ -372,7 +371,6 @@ void IndoorLocation::Draw()
   //_this.vPosition.z = pParty->vPosition.z + pParty->sEyelevel;
   //_this.sRotationX = pParty->sRotationX;
   //_this.sRotationY = pParty->sRotationY;
-  _this.pRenderTarget = render->pTargetSurface;
   _this.uViewportX = pViewport->uScreen_TL_X;
   _this.uViewportY = pViewport->uScreen_TL_Y;
   _this.uViewportZ = pViewport->uScreen_BR_X;

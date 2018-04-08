@@ -83,53 +83,34 @@ class ImageHelper
         }
 };
 
-
-
 #pragma pack(push, 1)
-struct Texture_MM7
-{
-  Texture_MM7();
-  void Release();
-  void *UnzipPalette();
-
+struct TextureHeader {
   char pName[16];
-  unsigned int uSizeOfMaxLevelOfDetail;
-  unsigned int uTextureSize;
-  unsigned __int16 uTextureWidth;
-  unsigned __int16 uTextureHeight;
-  __int16 uWidthLn2;
-  __int16 uHeightLn2;
-  __int16 uWidthMinus1;
-  __int16 uHeightMinus1;
-  short palette_id1;
-  short palette_id2;
-  unsigned int uDecompressedSize;
-  int pBits; // 0x0002 - generate mipmaps
+  uint32_t uSizeOfMaxLevelOfDetail;
+  uint32_t uTextureSize;
+  uint16_t uTextureWidth;
+  uint16_t uTextureHeight;
+  int16_t uWidthLn2;
+  int16_t uHeightLn2;
+  int16_t uWidthMinus1;
+  int16_t uHeightMinus1;
+  int16_t palette_id1;
+  int16_t palette_id2;
+  uint32_t uDecompressedSize;
+  uint32_t pBits; // 0x0002 - generate mipmaps
              // 0x0200 - 0th palette entry is transparent, else colorkey (7FF)
-  unsigned __int8 *paletted_pixels;
-  unsigned __int8 *pLevelOfDetail1;
-  /*unsigned __int8 *pLevelOfDetail2;*/ struct ID3D11ShaderResourceView *d3d11_srv;   // replace ol SW stuff with new fields to keep data integrity
-  /*unsigned __int8 *pLevelOfDetail3;*/ struct D3D11_TEXTURE2D_DESC     *d3d11_desc;
-  unsigned __int16 *pPalette16;
-  unsigned __int8 *pPalette24;
 };
 #pragma pack(pop)
 
+struct Texture_MM7 {
+  Texture_MM7();
+  void Release();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  TextureHeader header;
+  uint8_t *paletted_pixels;
+  uint8_t *pLevelOfDetail1;
+  uint8_t *pPalette24;
+};
 
 /*  323 */
 enum TEXTURE_FRAME_TABLE_FLAGS
@@ -158,11 +139,8 @@ class TextureFrame
 
 /*   40 */
 #pragma pack(push, 1)
-struct TextureFrameTable
-{
-    //----- (0044D4C9) --------------------------------------------------------
-    inline TextureFrameTable()
-    {
+struct TextureFrameTable {
+    inline TextureFrameTable() {
         pTextures = 0;
         sNumTextures = 0;
     }
@@ -174,7 +152,7 @@ struct TextureFrameTable
     int FindTextureByName(const char *Str2);
 
 
-    int sNumTextures;
+    uint32_t sNumTextures;
     TextureFrame *pTextures;
 };
 #pragma pack(pop)
@@ -227,30 +205,3 @@ struct stru355
     int field_18;
     int field_1C;
 };
-
-/* BicubicMipmapGenerator 390 */
-#pragma pack(push, 1)
-struct BicubicMipmapGenerator
-{
-    BicubicMipmapGenerator *_450DDE();
-    bool _450DF1(const struct stru355 *p1, const struct stru355 *p2);
-    unsigned int _450F55(int a2);
-    int _450FB1(int a2);
-    int sub_451007_scale_image_bicubic(
-        unsigned short *pSrc, int srcWidth, int srcHeight, int srcPitch,
-        unsigned short *pDst, int dstWidth, int dstHeight, int dstPitch,
-        int a9, int a10
-    );
-
-    struct stru355 field_0;
-    struct stru355 field_20;
-    int field_40;
-    int field_44;
-    int field_48;
-    int field_4C;
-    int field_50;
-    int field_54;
-    int field_58;
-    int field_5C;
-};
-#pragma pack(pop)

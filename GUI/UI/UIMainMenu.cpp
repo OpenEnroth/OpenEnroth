@@ -35,10 +35,10 @@ Image *ui_mainmenu_exit = nullptr;
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
   GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
-  ui_mainmenu_new = assets->GetImage_16BitColorKey("title_new", 0x7FF);
-  ui_mainmenu_load = assets->GetImage_16BitColorKey("title_load", 0x7FF);
-  ui_mainmenu_credits = assets->GetImage_16BitColorKey("title_cred", 0x7FF);
-  ui_mainmenu_exit = assets->GetImage_16BitColorKey("title_exit", 0x7FF);
+  ui_mainmenu_new = assets->GetImage_ColorKey("title_new", 0x7FF);
+  ui_mainmenu_load = assets->GetImage_ColorKey("title_load", 0x7FF);
+  ui_mainmenu_credits = assets->GetImage_ColorKey("title_cred", 0x7FF);
+  ui_mainmenu_exit = assets->GetImage_ColorKey("title_exit", 0x7FF);
 
   pMainMenu_BtnNew = CreateButton(495, 172, ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight(), 1, 0, UIMSG_MainMenu_ShowPartyCreationWnd, 0, 'N', "", { {ui_mainmenu_new} });
   pMainMenu_BtnLoad = CreateButton(495, 227, ui_mainmenu_load->GetWidth(), ui_mainmenu_load->GetHeight(), 1, 0, UIMSG_MainMenu_ShowLoadWindow, 1, 'L', "", { {ui_mainmenu_load} });
@@ -64,19 +64,19 @@ void GUIWindow_MainMenu::Update() {
           int pY = 0;
           switch (pControlParam) {  // backlight for buttons
             case 0:
-              pTexture = assets->GetImage_16BitColorKey("title_new", 0x7FF);
+              pTexture = assets->GetImage_ColorKey("title_new", 0x7FF);
               pY = 172;
               break;
             case 1:
-              pTexture = assets->GetImage_16BitColorKey("title_load", 0x7FF);
+              pTexture = assets->GetImage_ColorKey("title_load", 0x7FF);
               pY = 227;
               break;
             case 2:
-              pTexture = assets->GetImage_16BitColorKey("title_cred", 0x7FF);
+              pTexture = assets->GetImage_ColorKey("title_cred", 0x7FF);
               pY = 282;
               break;
             case 3:
-              pTexture = assets->GetImage_16BitColorKey("title_exit", 0x7FF);
+              pTexture = assets->GetImage_ColorKey("title_exit", 0x7FF);
               pY = 337;
               break;
           }
@@ -112,7 +112,7 @@ static void LoadPartyBuffIcons()
 {
     for (uint i = 0; i < 14; ++i)
     {
-        party_buff_icons[i] = assets->GetImage_16BitColorKey(StringPrintf("isn-%02d", i + 1), 0x7FF);
+        party_buff_icons[i] = assets->GetImage_ColorKey(StringPrintf("isn-%02d", i + 1), 0x7FF);
     }
 
     uIconIdx_FlySpell = pIconsFrameTable->FindIcon("spell21");
@@ -129,31 +129,31 @@ void MainMenuUI_Create()
     pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchB"));
     pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchA"));
 
-    game_ui_minimap_dirs[0] = assets->GetImage_16BitAlpha("MAPDIR1");
-    game_ui_minimap_dirs[1] = assets->GetImage_16BitAlpha("MAPDIR2");
-    game_ui_minimap_dirs[2] = assets->GetImage_16BitAlpha("MAPDIR3");
-    game_ui_minimap_dirs[3] = assets->GetImage_16BitAlpha("MAPDIR4");
-    game_ui_minimap_dirs[4] = assets->GetImage_16BitAlpha("MAPDIR5");
-    game_ui_minimap_dirs[5] = assets->GetImage_16BitAlpha("MAPDIR6");
-    game_ui_minimap_dirs[6] = assets->GetImage_16BitAlpha("MAPDIR7");
-    game_ui_minimap_dirs[7] = assets->GetImage_16BitAlpha("MAPDIR8");
+    game_ui_minimap_dirs[0] = assets->GetImage_Alpha("MAPDIR1");
+    game_ui_minimap_dirs[1] = assets->GetImage_Alpha("MAPDIR2");
+    game_ui_minimap_dirs[2] = assets->GetImage_Alpha("MAPDIR3");
+    game_ui_minimap_dirs[3] = assets->GetImage_Alpha("MAPDIR4");
+    game_ui_minimap_dirs[4] = assets->GetImage_Alpha("MAPDIR5");
+    game_ui_minimap_dirs[5] = assets->GetImage_Alpha("MAPDIR6");
+    game_ui_minimap_dirs[6] = assets->GetImage_Alpha("MAPDIR7");
+    game_ui_minimap_dirs[7] = assets->GetImage_Alpha("MAPDIR8");
 
-    game_ui_bar_blue = assets->GetImage_16BitColorKey("ib-statB", 0x7FF);
-    game_ui_bar_green = assets->GetImage_16BitColorKey("ib-statG", 0x7FF);
-    game_ui_bar_yellow = assets->GetImage_16BitColorKey("ib-statY", 0x7FF);
-    game_ui_bar_red = assets->GetImage_16BitColorKey("ib-statR", 0x7FF);
-    game_ui_monster_hp_background = assets->GetImage_16BitColorKey("mhp_bg", 0x7FF);
-    game_ui_monster_hp_border_left = assets->GetImage_16BitColorKey("mhp_capl", 0x7FF);
-    game_ui_monster_hp_border_right = assets->GetImage_16BitColorKey("mhp_capr", 0x7FF);
-    game_ui_monster_hp_green = assets->GetImage_16BitColorKey("mhp_grn", 0x7FF);
-    game_ui_monster_hp_red = assets->GetImage_16BitColorKey("mhp_red", 0x7FF);
-    game_ui_monster_hp_yellow = assets->GetImage_16BitColorKey("mhp_yel", 0x7FF);
-    ui_leather_mm7 = assets->GetImage_16Bit("LEATHER");
-    ui_leather_mm6 = assets->GetImage_16Bit("ibground");
-    dialogue_ui_x_x_u = assets->GetImage_16BitColorKey("x_x_u", 0x7FF);
-    ui_buttdesc2 = assets->GetImage_16BitAlpha("BUTTESC2");
-    dialogue_ui_x_ok_u = assets->GetImage_16BitColorKey("x_ok_u", 0x7FF);
-    ui_buttyes2 = assets->GetImage_16BitAlpha("BUTTYES2");
+    game_ui_bar_blue = assets->GetImage_ColorKey("ib-statB", 0x7FF);
+    game_ui_bar_green = assets->GetImage_ColorKey("ib-statG", 0x7FF);
+    game_ui_bar_yellow = assets->GetImage_ColorKey("ib-statY", 0x7FF);
+    game_ui_bar_red = assets->GetImage_ColorKey("ib-statR", 0x7FF);
+    game_ui_monster_hp_background = assets->GetImage_ColorKey("mhp_bg", 0x7FF);
+    game_ui_monster_hp_border_left = assets->GetImage_ColorKey("mhp_capl", 0x7FF);
+    game_ui_monster_hp_border_right = assets->GetImage_ColorKey("mhp_capr", 0x7FF);
+    game_ui_monster_hp_green = assets->GetImage_ColorKey("mhp_grn", 0x7FF);
+    game_ui_monster_hp_red = assets->GetImage_ColorKey("mhp_red", 0x7FF);
+    game_ui_monster_hp_yellow = assets->GetImage_ColorKey("mhp_yel", 0x7FF);
+    ui_leather_mm7 = assets->GetImage_Solid("LEATHER");
+    ui_leather_mm6 = assets->GetImage_Solid("ibground");
+    dialogue_ui_x_x_u = assets->GetImage_ColorKey("x_x_u", 0x7FF);
+    ui_buttdesc2 = assets->GetImage_Alpha("BUTTESC2");
+    dialogue_ui_x_ok_u = assets->GetImage_ColorKey("x_ok_u", 0x7FF);
+    ui_buttyes2 = assets->GetImage_Alpha("BUTTYES2");
 
     pPrimaryWindow = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
     pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0, 0, "");
@@ -173,7 +173,7 @@ void MainMenuUI_Create()
     pPrimaryWindow->CreateButton(328, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "");
     pPrimaryWindow->CreateButton(443, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "");
 
-    game_ui_tome_quests = assets->GetImage_16BitColorKey("ib-td1-A", 0x7FF);
+    game_ui_tome_quests = assets->GetImage_ColorKey("ib-td1-A", 0x7FF);
     pBtn_Quests = pPrimaryWindow->CreateButton(
         491, 353,
         game_ui_tome_quests->GetWidth(),
@@ -181,7 +181,7 @@ void MainMenuUI_Create()
         1, 0, UIMSG_OpenQuestBook, 0, pKeyActionMap->GetActionVKey(INPUT_Quest),
       localization->GetString(174), { {game_ui_tome_quests} }); //Quests
 
-    game_ui_tome_autonotes = assets->GetImage_16BitColorKey("ib-td2-A", 0x7FF);
+    game_ui_tome_autonotes = assets->GetImage_ColorKey("ib-td2-A", 0x7FF);
     pBtn_Autonotes = pPrimaryWindow->CreateButton(
         527, 353,
         game_ui_tome_autonotes->GetWidth(),
@@ -189,7 +189,7 @@ void MainMenuUI_Create()
         1, 0, UIMSG_OpenAutonotes, 0, pKeyActionMap->GetActionVKey(INPUT_Autonotes),
       localization->GetString(154), { {game_ui_tome_autonotes} });//Autonotes
 
-    game_ui_tome_maps = assets->GetImage_16BitColorKey("ib-td3-A", 0x7FF);
+    game_ui_tome_maps = assets->GetImage_ColorKey("ib-td3-A", 0x7FF);
     pBtn_Maps = pPrimaryWindow->CreateButton(
         546, 353,
         game_ui_tome_maps->GetWidth(),
@@ -197,7 +197,7 @@ void MainMenuUI_Create()
         1, 0, UIMSG_OpenMapBook, 0, pKeyActionMap->GetActionVKey(INPUT_Mapbook),
       localization->GetString(139), { {game_ui_tome_maps} }); //Maps
 
-    game_ui_tome_calendar = assets->GetImage_16BitColorKey("ib-td4-A", 0x7FF);
+    game_ui_tome_calendar = assets->GetImage_ColorKey("ib-td4-A", 0x7FF);
     pBtn_Calendar = pPrimaryWindow->CreateButton(
         570, 353,
         game_ui_tome_calendar->GetWidth(),
@@ -205,7 +205,7 @@ void MainMenuUI_Create()
         1, 0, UIMSG_OpenCalendar, 0, pKeyActionMap->GetActionVKey(INPUT_TimeCal),
       localization->GetString(78), { {game_ui_tome_calendar} });//Calendar
 
-    game_ui_tome_storyline = assets->GetImage_16BitColorKey("ib-td5-A", 0x7FF);
+    game_ui_tome_storyline = assets->GetImage_ColorKey("ib-td5-A", 0x7FF);
     pBtn_History = pPrimaryWindow->CreateButton(
         600, 361,
         game_ui_tome_storyline->GetWidth(),

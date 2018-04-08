@@ -57,34 +57,26 @@ std::array<EventIndex, 4400> pLevelEVT_Index;
 
 _2devent p2DEvents[525];
 
-
-
-//----- (00443CE1) --------------------------------------------------------
-unsigned int LoadEventsToBuffer(const char *pContainerName, char *pBuffer, unsigned int uBufferSize)
-{
-  FILE *pLodFile; // eax@1
-  unsigned int uTextureSize; // esi@3
-  //char Args[60]; // [sp+8h] [bp-B4h]@6
-  void *ptr; // [sp+B8h] [bp-4h]@1
-  Texture_MM7 DstBuf; // [sp+6Ch] [bp-50h]@1
-
-  ptr = pEvents_LOD->LoadRaw(pContainerName, 0);
-  pLodFile = pEvents_LOD->FindContainer(pContainerName, 0);
-  if ( !pLodFile )
+unsigned int LoadEventsToBuffer(const char *pContainerName, char *pBuffer, unsigned int uBufferSize) {
+  void *ptr = pEvents_LOD->LoadRaw(pContainerName, 0);
+  FILE *pLodFile = pEvents_LOD->FindContainer(pContainerName, 0);
+  if (!pLodFile) {
     Error("Unable to load %s", pContainerName);
+  }
 
-  fread(&DstBuf, 1, 48, pLodFile);
-  uTextureSize = DstBuf.uDecompressedSize;
-  if ( !DstBuf.uDecompressedSize )
+  TextureHeader DstBuf;
+  fread(&DstBuf, 1, sizeof(TextureHeader), pLodFile);
+  unsigned int uTextureSize = DstBuf.uDecompressedSize;
+  if (!DstBuf.uDecompressedSize)
     uTextureSize = DstBuf.uTextureSize;
-  memset(&DstBuf, 0, 72);
-  if ( uTextureSize >= (signed int)uBufferSize )
+
+  if (uTextureSize >= (int)uBufferSize)
     Error("File %s Size %lu - Buffer size %lu", pContainerName, uTextureSize, uBufferSize);
 
   memcpy(pBuffer, ptr, uTextureSize);
   free(ptr);
   return uTextureSize;
-  }
+}
 
 //----- (00443DA1) --------------------------------------------------------
 void  Initialize_GlobalEVT()
@@ -1052,10 +1044,8 @@ LABEL_47:
         v96 = _evt->v25;
         v97 = v96 + ((_evt->v26 + ((_evt->v27 + ((uint)_evt->v28 << 8)) << 8)) << 8);
         v134 = v96 + ((_evt->v26 + ((_evt->v27 + ((uint)_evt->v28 << 8)) << 8)) << 8);
-        if ( _evt->v29 || _evt->v30 )
-          {
-            render->Sub01();
-            pDialogueWindow = new GUIWindow_Transition(_evt->v29, _evt->v30, v135, v132, v126, v129, v95, v134, (char *)&_evt->v31);
+        if ( _evt->v29 || _evt->v30 ) {
+          pDialogueWindow = new GUIWindow_Transition(_evt->v29, _evt->v30, v135, v132, v126, v129, v95, v134, (char *)&_evt->v31);
           dword_5C3418 = uEventID;
           dword_5C341C = curr_seq_num + 1;
           if ( v133 == 1 )
@@ -1145,9 +1135,7 @@ LABEL_47:
         ++curr_seq_num;
         break;
       case EVENT_SpeakInHouse:
-        if ( EnterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5)))
-          {
-            render->Sub01();
+        if ( EnterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5))) {
           pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0, 0, 0);
           pAudioPlayer->PlaySound(SOUND_enter, 814, 0, -1, 0, 0, 0, 0);
           v104 = 187;

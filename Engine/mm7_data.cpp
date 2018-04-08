@@ -883,7 +883,6 @@ float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
 float flt_6BE150_look_up_down_dangle = 1.0f;
 //HWND hWnd; // idb
-bool FORCE_16_BITS = false;
 class OSWindow *window = nullptr;
 char pCurrentMapName[32]; // idb
 unsigned int uLevelMapStatsID;

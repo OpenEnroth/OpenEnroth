@@ -30,12 +30,12 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() :
 // 00411BFC GUIWindow::InitializeBookView -- part
     _506360_installing_beacon = false;
     if (!ui_book_lloyds_border)
-        ui_book_lloyds_border = assets->GetImage_16BitColorKey("lb_bordr", 0x7FF);
+        ui_book_lloyds_border = assets->GetImage_ColorKey("lb_bordr", 0x7FF);
 
-    ui_book_lloyds_backgrounds[0] = assets->GetImage_16BitColorKey("sbmap", 0x7FF);
-    ui_book_lloyds_backgrounds[1] = assets->GetImage_16BitColorKey("sbmap", 0x7FF);
-    ui_book_button1_on = assets->GetImage_16BitAlpha("tab-an-6b");
-    ui_book_button1_off = assets->GetImage_16BitAlpha("tab-an-6a");
+    ui_book_lloyds_backgrounds[0] = assets->GetImage_ColorKey("sbmap", 0x7FF);
+    ui_book_lloyds_backgrounds[1] = assets->GetImage_ColorKey("sbmap", 0x7FF);
+    ui_book_button1_on = assets->GetImage_Alpha("tab-an-6b");
+    ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
 
     pBtn_Book_1 = CreateButton(415, 13, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0, 0, localization->GetString(375)); // Set Beacon
     pBtn_Book_2 = CreateButton(415, 48, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1, 0, localization->GetString(523)); // Recall Beacon

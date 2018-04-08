@@ -26,26 +26,21 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() :
     this->ptr_1C = (void *)WINDOW_JournalBook; // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
-// --------------------------------
-// 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
-    pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(0x258u, 0x169u, 0, 0, (int)pBtn_History, 0);
+    pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(0x258u, 0x169u, 0, 0, (int)pBtn_History);
     bFlashHistoryBook = 0;
 
-// ----------------------------------------------
-// 00411BFC GUIWindow::InitializeBookView -- part
-    //char *pString; // eax@12
     int pTextHeight; // eax@12
     unsigned int page_count; // esi@12
     GUIWindow journal_window; // [sp+18h] [bp-54h]@8
 
-    ui_book_journal_background = assets->GetImage_16BitColorKey("sbplayrnot", 0x7FF);
+    ui_book_journal_background = assets->GetImage_ColorKey("sbplayrnot", 0x7FF);
 
-    ui_book_button1_on = assets->GetImage_16BitAlpha("tab-an-6b");
-    ui_book_button2_on = assets->GetImage_16BitAlpha("tab-an-7b");
-    ui_book_button1_off = assets->GetImage_16BitAlpha("tab-an-6a");
-    ui_book_button2_off = assets->GetImage_16BitAlpha("tab-an-7a");
+    ui_book_button1_on = assets->GetImage_Alpha("tab-an-6b");
+    ui_book_button2_on = assets->GetImage_Alpha("tab-an-7b");
+    ui_book_button1_off = assets->GetImage_Alpha("tab-an-6a");
+    ui_book_button2_off = assets->GetImage_Alpha("tab-an-7a");
 
     pBtn_Book_1 = this->CreateButton(pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1,
       ui_book_button1_on->GetWidth(), ui_book_button1_on->GetHeight(), 1, 0,
