@@ -86,7 +86,6 @@ extern std::array< std::array<char, 37>, 36> byte_4ED970_skill_learn_ability_by_
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX;
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY;
 extern std::array<int, 2> Party_Spec_Motion_status_ids; //dword_4EE07C
-extern std::array<__int16, 101> word_4EE088_sound_ids;
 extern std::array<short, 28> word_4EE150;
 extern int ScreenshotFileNumber; // dword_4EFA80
 extern __int16 word_4F0576[];
@@ -349,7 +348,7 @@ extern float flt_6BE3AC_debug_recmod1_x_1_6;
 extern std::string s_SavedMapName;
 extern char bUnderwater;
 extern char bNoNPCHiring;
-extern unsigned int bNoVideo;
+extern bool bNoVideo;
 extern bool bNoIntro;
 extern bool bNoLogo;
 extern bool bNoCD;

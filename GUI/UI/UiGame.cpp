@@ -196,7 +196,7 @@ void GameUI_LoadPlayerPortraintsAndVoices()
 
     game_ui_player_face_eradicated = assets->GetImage_ColorKey("ERADCATE", 0x7FF);
     game_ui_player_face_dead = assets->GetImage_ColorKey("DEAD", 0x7FF);
-
+/*
     if (SoundSetAction[24][0])
     {
         for (uint i = 0; i < 4; ++i)
@@ -205,6 +205,7 @@ void GameUI_LoadPlayerPortraintsAndVoices()
             pSoundList->LoadSound(2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4999, 0);
         }
     }
+*/
 }
 
 //----- (00491DE7) --------------------------------------------------------

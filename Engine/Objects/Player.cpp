@@ -7832,73 +7832,49 @@ unsigned int SkillToMastery( unsigned int skill_value ) {
 
 //----- (004948B1) --------------------------------------------------------
 void Player::PlaySound(PlayerSpeech speech, int a3) { // ?? need to swith over to openal
+  int speechCount = 0; // esi@4
+  int expressionCount = 0; // esi@4
+  int pickedVariant; // esi@10
+  CHARACTER_EXPRESSION_ID expression; // ebx@17
+  int pSoundID; // ecx@19
+  int speechVariantArray[5]; // [sp+Ch] [bp-1Ch]@7
+  int expressionVariantArray[5];
+  unsigned int expressionDuration = 0;
 
+  unsigned int pickedSoundID = 0;
+  if (uVoicesVolumeMultiplier) {
+    for (int i = 0; i < 2; i++) {
+      if (SoundSetAction[speech][i]) {
+        speechVariantArray[speechCount] = SoundSetAction[speech][i];
+        speechCount++;
+      }
+    }
+    if (speechCount) {
+      pickedVariant = speechVariantArray[rand() % speechCount];
+      int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
+      if (numberOfSubvariants > 0) {
+        pickedSoundID = rand() % numberOfSubvariants + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
+        pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, uActiveCharacter + 39), 0, -1, 0, 0, (int)(pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f), 0);
+      }
+    }
+  }
 
-	signed int speechCount = 0; // esi@4
-	signed int expressionCount = 0; // esi@4
-	int pickedVariant; // esi@10
-	CHARACTER_EXPRESSION_ID expression; // ebx@17
-	signed int pSoundID; // ecx@19
-	int speechVariantArray[5]; // [sp+Ch] [bp-1Ch]@7
-	int expressionVariantArray[5];
-	unsigned int pickedSoundID; // [sp+30h] [bp+8h]@4
-	unsigned int expressionDuration = 0;
-
-	//pMediaPlayer->
-
-	//pMediaPlayer->
-
-
-	pickedSoundID = 0;
-	if (uVoicesVolumeMultiplier)
-	{
-		for (int i = 0; i < 2; i++)
-		{
-			if (SoundSetAction[speech][i])
-			{
-				speechVariantArray[speechCount] = SoundSetAction[speech][i];
-				speechCount++;
-			}
-		}
-		if (speechCount)
-		{
-			pickedVariant = speechVariantArray[rand() % speechCount];
-			int numberOfSubvariants = byte_4ECF08[pickedVariant - 1][uVoiceID];
-			if (numberOfSubvariants > 0)
-			{
-				pickedSoundID = rand() % numberOfSubvariants + 2 * (pickedVariant + 50 * uVoiceID) + 4998;
-				pAudioPlayer->PlaySound((SoundID)pickedSoundID, PID(OBJECT_Player, uActiveCharacter + 39), 0, -1, 0, 0, (int)(pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f), 0);
-			}
-		}
-	}
-
-	for (int i = 0; i < 5; i++)
-	{
-		if (SoundSetAction[speech][i + 3])
-		{
-			expressionVariantArray[expressionCount] = SoundSetAction[speech][i + 3];
-			expressionCount++;
-		}
-	}
-	if (expressionCount)
-	{
-		expression = (CHARACTER_EXPRESSION_ID)expressionVariantArray[rand() % expressionCount];
-		if (expression == CHARACTER_EXPRESSION_21 && pickedSoundID)
-		{
-			pSoundID = 0;
-			if (pSoundList->sNumSounds)
-			{
-				for (int i = 0; i < pSoundList->sNumSounds; i++)
-				{
-					if (pSoundList->pSL_Sounds[i].uSoundID == pickedSoundID)
-						pSoundID = i;
-				}
-			}
-			if (pSoundList->pSL_Sounds[pSoundID].pSoundData[0])
-				expressionDuration = (sLastTrackLengthMS << 7) / 1000;
-		}
-		PlayEmotion(expression, expressionDuration);
-	}
+  for (int i = 0; i < 5; i++) {
+    if (SoundSetAction[speech][i + 3]) {
+      expressionVariantArray[expressionCount] = SoundSetAction[speech][i + 3];
+      expressionCount++;
+    }
+  }
+  if (expressionCount) {
+    expression = (CHARACTER_EXPRESSION_ID)expressionVariantArray[rand() % expressionCount];
+    if (expression == CHARACTER_EXPRESSION_21 && pickedSoundID) {
+      pSoundID = pickedSoundID;
+      if (pSoundID >= 0) {
+        expressionDuration = (sLastTrackLengthMS << 7) / 1000;
+      }
+    }
+    PlayEmotion(expression, expressionDuration);
+  }
 }
 
 //----- (00494A25) --------------------------------------------------------

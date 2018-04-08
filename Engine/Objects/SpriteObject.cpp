@@ -54,79 +54,66 @@ SpriteObject::SpriteObject()
   field_54 = 0;
 }
 
-//----- (0042F5ED) --------------------------------------------------------
-int SpriteObject::Create(int yaw, int pitch, int a4, int a5)
-{
-  signed int v6; // ebx@2
-  int v13; // ST2C_4@20
-  Vec3_int_ v17; // [sp-20h] [bp-30h]@11
-  int angle; // [sp+Ch] [bp-4h]@1
-  int a5a; // [sp+20h] [bp+10h]@20
-
-  angle = yaw;
-  if (!uObjectDescID)
+int SpriteObject::Create(int yaw, int pitch, int a4, int a5) {
+  int angle = yaw;
+  if (!uObjectDescID) {
     return -1;
+  }
 
-  v6 = 1000;
-  for (uint i = 0; i < MAX_SPRITE_OBJECTS; ++i)
-    if (!pSpriteObjects[i].uObjectDescID)
-    {
+  int v6 = 1000;
+  for (unsigned int i = 0; i < MAX_SPRITE_OBJECTS; ++i) {
+    if (!pSpriteObjects[i].uObjectDescID) {
       v6 = i;
       break;
     }
+  }
 
-  if ( v6 >= 1000 )
+  if (v6 >= 1000) {
     return -1;
+  }
   field_64.x = vPosition.x;
   field_64.y = vPosition.y;
   field_64.z = vPosition.z;
 
   assert(sizeof(SpriteObject) == 0x70);
-  
-  switch (a5)
-  {
-  case 0:
-    break;  //do nothing
-  case 1:
-    Vec3_int_::Rotate(24, stru_5C6E00->uIntegerHalfPi + uFacing, 0, vPosition, &vPosition.x,
-      &vPosition.y, &vPosition.z);
-    break;
-  case 2:
-    Vec3_int_::Rotate(8, stru_5C6E00->uIntegerHalfPi + uFacing, 0, vPosition, &vPosition.x,
-      &vPosition.y, &vPosition.z);
-    break;
-  case 3:
-    Vec3_int_::Rotate(8, uFacing - stru_5C6E00->uIntegerHalfPi, 0, vPosition, &vPosition.x,
-      &vPosition.y, &vPosition.z);
-    break;
-  case 4:
-    Vec3_int_::Rotate(24, uFacing - stru_5C6E00->uIntegerHalfPi, 0, vPosition, &vPosition.x,
-      &vPosition.y, &vPosition.z);
-    break;
-  default:
-    assert(false);
-    return 0;
-    break;
+
+  switch (a5) {
+    case 0:
+      break;  //do nothing
+    case 1:
+      Vec3_int_::Rotate(24, stru_5C6E00->uIntegerHalfPi + uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+      break;
+    case 2:
+      Vec3_int_::Rotate(8, stru_5C6E00->uIntegerHalfPi + uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+      break;
+    case 3:
+      Vec3_int_::Rotate(8, uFacing - stru_5C6E00->uIntegerHalfPi, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+      break;
+    case 4:
+      Vec3_int_::Rotate(24, uFacing - stru_5C6E00->uIntegerHalfPi, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+      break;
+    default:
+      assert(false);
+      return 0;
+      break;
   }
 
-  if ( a4 )
-  {
-    v13 = fixpoint_mul(stru_5C6E00->Cos(angle), stru_5C6E00->Cos(pitch));
-    a5a = fixpoint_mul(stru_5C6E00->Sin(angle), stru_5C6E00->Cos(pitch));
+  if (a4) {
+    long long v13 = fixpoint_mul(stru_5C6E00->Cos(angle), stru_5C6E00->Cos(pitch));
+    long long a5a = fixpoint_mul(stru_5C6E00->Sin(angle), stru_5C6E00->Cos(pitch));
     vVelocity.x = fixpoint_mul(v13, a4);
     vVelocity.y = fixpoint_mul(a5a, a4);
     vVelocity.z = fixpoint_mul(stru_5C6E00->Sin(pitch), a4);
-  }
-  else
-  {
+  } else {
     vVelocity.y = 0;
     vVelocity.x = 0;
     vVelocity.z = 0;
   }
 
   memcpy(&pSpriteObjects[v6], this, sizeof(*this));
-  if ( v6 >= (signed int)uNumSpriteObjects )
+  if (v6 >= (int)uNumSpriteObjects) {
     uNumSpriteObjects = v6 + 1;
+  }
   return v6;
 }
 
@@ -810,84 +797,63 @@ void SpriteObject::ExplosionTraps()
     }
 }
 
-//----- (0042F933) --------------------------------------------------------
-void SpriteObject::OnInteraction(unsigned int uLayingItemID)
-{
-    pSpriteObjects[uLayingItemID].uObjectDescID = 0;
-    if (pParty->bTurnBasedModeOn == 1)
-    {
-        if (pSpriteObjects[uLayingItemID].uAttributes & 4)
-        {
-            pSpriteObjects[uLayingItemID].uAttributes &= 0xFFFB;//~0x00000004
-            --pTurnEngine->pending_actions;
-        }
+void SpriteObject::OnInteraction(unsigned int uLayingItemID) {
+  pSpriteObjects[uLayingItemID].uObjectDescID = 0;
+  if (pParty->bTurnBasedModeOn == 1) {
+    if (pSpriteObjects[uLayingItemID].uAttributes & 4) {
+      pSpriteObjects[uLayingItemID].uAttributes &= 0xFFFB;  // ~0x00000004
+      --pTurnEngine->pending_actions;
     }
+  }
 }
 
+void CompactLayingItemsList() {
+  int new_obj_pos = 0;
 
-//----- (0042FA22) --------------------------------------------------------
-void CompactLayingItemsList()
-{
-    int new_obj_pos = 0;
-
-    for (int i = 0; i < MAX_SPRITE_OBJECTS; ++i)
-    {
-        if (pSpriteObjects[i].uObjectDescID)
-        {
-            if (i != new_obj_pos)// 
-            {
-                memcpy(&pSpriteObjects[new_obj_pos], &pSpriteObjects[i], sizeof(SpriteObject));
-                pSpriteObjects[i].uObjectDescID = 0;
-            }
-            new_obj_pos++;
-        }
+  for (int i = 0; i < MAX_SPRITE_OBJECTS; ++i) {
+    if (pSpriteObjects[i].uObjectDescID) {
+      if (i != new_obj_pos) {
+        memcpy(&pSpriteObjects[new_obj_pos], &pSpriteObjects[i], sizeof(SpriteObject));
+        pSpriteObjects[i].uObjectDescID = 0;
+      }
+      new_obj_pos++;
     }
-    uNumSpriteObjects = new_obj_pos;
+  }
+  uNumSpriteObjects = new_obj_pos;
 }
 
-//----- (00408896) --------------------------------------------------------
-void SpriteObject::InitializeSpriteObjects()
-{
-    for (uint i = 0; i < uNumSpriteObjects; ++i)
-    {
-        SpriteObject* item = &pSpriteObjects[i];
-
-        if (item->uType && (item->uSoundID & 8 || pObjectList->pObjects[item->uType].uFlags & OBJECT_DESC_UNPICKABLE))
-            SpriteObject::OnInteraction(i);
+void SpriteObject::InitializeSpriteObjects() {
+  for (size_t i = 0; i < uNumSpriteObjects; ++i) {
+    SpriteObject* item = &pSpriteObjects[i];
+    if (item->uType && (item->uSoundID & 8 || pObjectList->pObjects[item->uType].uFlags & OBJECT_DESC_UNPICKABLE)) {
+      SpriteObject::OnInteraction(i);
     }
+  }
 }
 
-//----- (0046BEF1) --------------------------------------------------------
-void SpriteObject::_46BEF1_apply_spells_aoe()
-{
-    int v7, v9, v10, v11;
-    __debugbreak();//Ritor1
+void SpriteObject::_46BEF1_apply_spells_aoe() {
+  __debugbreak();//Ritor1
 
-    if (uNumActors > 0)
-    {
-        for (uint i = 0; i < uNumActors; ++i)
-        {
-            if (pActors[i].CanAct())
-            {
-                v7 = pActors[i].vPosition.x - this->vPosition.x;
-                v9 = pActors[i].vPosition.y - this->vPosition.y;
-                v10 = pActors[i].uActorHeight / 2 + pActors[i].vPosition.z - this->vVelocity.y;
+  if (uNumActors > 0) {
+    for (size_t i = 0; i < uNumActors; ++i) {
+      if (pActors[i].CanAct()) {
+        int v7 = pActors[i].vPosition.x - this->vPosition.x;
+        int v9 = pActors[i].vPosition.y - this->vPosition.y;
+        int v10 = pActors[i].uActorHeight / 2 + pActors[i].vPosition.z - this->vVelocity.y;
 
-                v11 = this->vVelocity.x * this->vVelocity.x;
+        int v11 = this->vVelocity.x * this->vVelocity.x;
 
-                if (v11 >= v7 * v7 + v9 * v9 + v10 * v10)
-                {
-                    if (pActors[i].DoesDmgTypeDoDamage(DMGT_DARK))
-                    {
-                        pActors[i].pActorBuffs[this->spell_id].Apply(
-                            pParty->GetPlayingTime() + GameTime::FromSeconds(this->spell_level),
-                            this->spell_skill, 4, 0, 0);
-                        pActors[i].uAttributes |= 0x80000;
-                    }
-                }
-            }
+        if (v11 >= v7 * v7 + v9 * v9 + v10 * v10) {
+          if (pActors[i].DoesDmgTypeDoDamage(DMGT_DARK)) {
+            pActors[i].pActorBuffs[this->spell_id].Apply(
+              pParty->GetPlayingTime() + GameTime::FromSeconds(this->spell_level),
+              this->spell_skill, 4, 0, 0);
+            pActors[i].uAttributes |= 0x80000;
+          }
         }
+      }
     }
+  }
 }
 
 
@@ -1029,7 +995,6 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
     signed int v56; // ebx@98
     unsigned __int16 v58; // ax@102
     unsigned __int16 v59; // ax@107
-    signed int v61; // ebx@107
     unsigned __int16 v63; // ax@111
     int v64; // ebx@114
     signed int v65; // eax@114
@@ -1061,7 +1026,6 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
     signed int v119; // ebx@251
     unsigned __int16 v121; // ax@255
     int v124; // eax@267
-    int v125; // [sp-20h] [bp-4Ch]@28
     char v132; // [sp-8h] [bp-34h]@131
     char v134; // [sp-4h] [bp-30h]@131
     signed int v135; // [sp-4h] [bp-30h]@217
@@ -1135,14 +1099,14 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-            if (!pSpriteObjects[uLayingItemID].uSoundID)
-                v97 = 0;
-            else
-                v97 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
-            v124 = 8 * uLayingItemID;
-            v124 |= 2;
-            v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-            pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+            if (!pSpriteObjects[uLayingItemID].uSoundID) {
+              v97 = 0;
+            } else {
+              v97 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
+            }
+//            v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//            pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+            pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id - 1, PID(OBJECT_Item, uLayingItemID));
             return 0;
         }
         pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
@@ -1211,14 +1175,16 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
             sub_43A97E(uLayingItemID, a2);
             SpriteObject::OnInteraction(uLayingItemID);
-            if (pSpriteObjects[uLayingItemID].uSoundID == 0)
-                v16 = 0;
-            else
-                v16 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
-            v124 = 8 * uLayingItemID;
-            v124 |= 2;
-            v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id] + 1;
-            pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
+            if (pSpriteObjects[uLayingItemID].uSoundID == 0) {
+              v16 = 0;
+            } else {
+              v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
+            }
+//            v124 = 8 * uLayingItemID;
+//            v124 |= 2;
+//            v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id] + 1;
+//            pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
+            pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, PID(OBJECT_Item, uLayingItemID));
             return 0;
         }
         v18 = 0;
@@ -1319,14 +1285,16 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         pSpriteObjects[uLayingItemID].vVelocity.y = 0;
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-        if (!v96)
-            v97 = 0;
-        else
-            v97 = (signed __int16)v96 + 4;
-        v124 = 8 * uLayingItemID;
-        v124 |= v124 | 2;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+        if (!v96) {
+          v97 = 0;
+        } else {
+          v97 = v96 + 4;
+        }
+//        v124 = 8 * uLayingItemID;
+//        v124 |= v124 | 2;
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, PID(OBJECT_Item, uLayingItemID));
         return 0;
     }
 
@@ -1353,46 +1321,46 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         return 0;
     }
 
-    case SPRITE_SPELL_WATER_ICE_BLAST:
-    {
-        //v9 = 0;
+    case SPRITE_SPELL_WATER_ICE_BLAST: {
         pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT;
         v63 = 0;
-        for (v61 = 0; v61 < (signed int)pObjectList->uNumObjects; ++v61)
-        {
-            if (v59 == pObjectList->pObjects[v61].uObjectID)
-                v63 = v61;
+        for (unsigned int i = 0; i < pObjectList->uNumObjects; ++i) {
+          if (v59 == pObjectList->pObjects[i].uObjectID) {
+            v63 = i;
+          }
         }
         pSpriteObjects[uLayingItemID].uObjectDescID = v63;
-        if (!v63)
-            SpriteObject::OnInteraction(uLayingItemID);
+        if (!v63) {
+          SpriteObject::OnInteraction(uLayingItemID);
+        }
         v64 = pSpriteObjects[uLayingItemID].uFacing - stru_5C6E00->uIntegerDoublePi;
         v44 = pSpriteObjects[uLayingItemID].spell_skill == 4;
         pSpriteObjects[uLayingItemID].vVelocity.z = 0;
         pSpriteObjects[uLayingItemID].vVelocity.y = 0;
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         v65 = 7;
-        if (v44)
-            v65 = 9;
-        if (v65 > 0)
-        {
-            v141 = v65;
-            do
-            {
-                v64 += (signed int)stru_5C6E00->uIntegerHalfPi / 2;
-                pSpriteObjects[uLayingItemID].Create(v64, 0, 1000, 0);
-                --v141;
-            } while (v141);
+        if (v44) {
+          v65 = 9;
+        }
+        if (v65 > 0) {
+          v141 = v65;
+          do {
+            v64 += (signed int)stru_5C6E00->uIntegerHalfPi / 2;
+            pSpriteObjects[uLayingItemID].Create(v64, 0, 1000, 0);
+            --v141;
+          } while (v141);
         }
         SpriteObject::OnInteraction(uLayingItemID);
-        if (!pSpriteObjects[uLayingItemID].uSoundID)
-            v16 = 0;
-        else
-            v16 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
-        v124 = 8 * uLayingItemID;
-        v124 |= v124 | 2;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
+        if (!pSpriteObjects[uLayingItemID].uSoundID) {
+          v16 = 0;
+        } else {
+          v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
+        }
+//        v124 = 8 * uLayingItemID;
+//        v124 |= v124 | 2;
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, PID(OBJECT_Item, uLayingItemID));
         return 0;
     }
 
@@ -1413,14 +1381,16 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
         sub_43A97E(uLayingItemID, a2);
-        if (!pSpriteObjects[uLayingItemID].uSoundID)
-            v16 = 0;
-        else
-            v16 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
-        v124 = 8 * uLayingItemID;
-        v124 |= v124 | 2;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
+        if (!pSpriteObjects[uLayingItemID].uSoundID) {
+          v16 = 0;
+        } else {
+          v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
+        }
+//        v124 = 8 * uLayingItemID;
+//        v124 |= v124 | 2;
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, PID(OBJECT_Item, uLayingItemID));
         return 0;
     }
 
@@ -1446,12 +1416,14 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
         AttackerInfo.Add(PID(OBJECT_Item, v72), 512, pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, pSpriteObjects[uLayingItemID].vPosition.z, v132, v134);
-        if (!pSpriteObjects[uLayingItemID].uSoundID)
-            v78 = 0;
-        else
-            v78 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78, 0, 0);
+        if (!pSpriteObjects[uLayingItemID].uSoundID) {
+          v78 = 0;
+        } else {
+          v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
+        }
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, -1);  // Wrong PID for this spell!
         return 0;
     }
 
@@ -1485,14 +1457,16 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             --v148;
         } while (v148);
         SpriteObject::OnInteraction(uLayingItemID);
-        if (!pSpriteObjects[uLayingItemID].uSoundID)
-            v16 = 0;
-        else
-            v16 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
-        v124 = 8 * uLayingItemID;
-        v124 |= 2;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
+        if (!pSpriteObjects[uLayingItemID].uSoundID) {
+          v16 = 0;
+        } else {
+          v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
+        }
+//        v124 = 8 * uLayingItemID;
+//        v124 |= 2;
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v16, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, PID(OBJECT_Item, uLayingItemID));
         return 0;
     }
 
@@ -1520,8 +1494,9 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             v78 = 0;
         else
             v78 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78, 0, 0);
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, pSpriteObjects[uLayingItemID].vPosition.x);  // Wrong pid???
         return 0;
     }
 
@@ -1550,11 +1525,12 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             v97 = 0;
         else
             v97 = (signed __int16)v96 + 4;
-        v92 = uLayingItemID;
-        v124 = 8 * v92;
-        v124 |= 2;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+//        v92 = uLayingItemID;
+//        v124 = 8 * v92;
+//        v124 |= 2;
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, PID(OBJECT_Item, uLayingItemID));
         return 0;
     }
 
@@ -1579,14 +1555,16 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         pSpriteObjects[uLayingItemID].vVelocity.y = 0;
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-        if (!v96)
-            v97 = 0;
-        else
-            v97 = (signed __int16)v96 + 4;
-        v124 = 8 * uLayingItemID;
-        v124 |= 2;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+        if (!v96) {
+          v97 = 0;
+        } else {
+          v97 = v96 + 4;
+        }
+//        v124 = 8 * uLayingItemID;
+//        v124 |= 2;
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, PID(OBJECT_Item, uLayingItemID));
         return 0;
     }
 
@@ -1595,17 +1573,16 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
     case SPRITE_SPELL_DARK_SHRINKING_RAY:
     {
         v143 = 17030;
-        switch (pSpriteObjects[uLayingItemID].uType)
-        {
-        case 0x1798u:
-            v143 = 15040;
-            break;
-        case 0xFAAu:
-            v143 = 13010;
-            break;
-        case 0x2346u:
-            v143 = 18030;
-            break;
+        switch (pSpriteObjects[uLayingItemID].uType) {
+          case 0x1798u:
+              v143 = 15040;
+              break;
+          case 0xFAAu:
+              v143 = 13010;
+              break;
+          case 0x2346u:
+              v143 = 18030;
+              break;
         }
         v138 = 1;
         if (PID_TYPE(a2) != OBJECT_Actor)
@@ -1633,14 +1610,16 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
                 pSpriteObjects[uLayingItemID].vVelocity.x = 0;
                 pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
                 v113 = pSpriteObjects[uLayingItemID].uSoundID;
-                if (v113)
-                    v114 = (signed __int16)v113 + 4;
-                else
-                    v114 = 0;
-                v115 = 8 * uLayingItemID;
-                v115 |= PID(OBJECT_Item, uLayingItemID);
-                v125 = v143 + 1;
-                pAudioPlayer->PlaySound((SoundID)v125, v115, 0, -1, 0, v114, 0, 0);
+                if (v113) {
+                  v114 = v113 + 4;
+                } else {
+                  v114 = 0;
+                }
+//                v115 = 8 * uLayingItemID;
+//                v115 |= PID(OBJECT_Item, uLayingItemID);
+//                v125 = v143 + 1;
+//                pAudioPlayer->PlaySound((SoundID)v125, v115, 0, -1, 0, v114, 0, 0);
+                pAudioPlayer->PlaySpellSound(v143 + 1, PID(OBJECT_Item, uLayingItemID));
             }
             else
                 SpriteObject::OnInteraction(uLayingItemID);
@@ -1731,14 +1710,16 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
             v113 = pSpriteObjects[uLayingItemID].uSoundID;
-            if (v113)
-                v114 = (signed __int16)v113 + 4;
-            else
-                v114 = 0;
-            v115 = 8 * uLayingItemID;
-            v115 |= PID(OBJECT_Item, uLayingItemID);
-            v125 = v143 + 1;
-            pAudioPlayer->PlaySound((SoundID)v125, v115, 0, -1, 0, v114, 0, 0);
+            if (v113) {
+              v114 = v113 + 4;
+            } else {
+              v114 = 0;
+            }
+//            v115 = 8 * uLayingItemID;
+//            v115 |= PID(OBJECT_Item, uLayingItemID);
+//            v125 = v143 + 1;
+//            pAudioPlayer->PlaySound((SoundID)v125, v115, 0, -1, 0, v114, 0, 0);
+            pAudioPlayer->PlaySpellSound(v143 + 1, PID(OBJECT_Item, uLayingItemID));
         }
         else
             SpriteObject::OnInteraction(uLayingItemID);
@@ -1763,14 +1744,16 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
         pSpriteObjects[uLayingItemID].vVelocity.y = 0;
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-        if (!v96)
-            v97 = 0;
-        else
-            v97 = (signed __int16)v96 + 4;
-        v124 = 8 * uLayingItemID;
-        v124 |= v124 | 2;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+        if (!v96) {
+          v97 = 0;
+        } else {
+          v97 = v96 + 4;
+        }
+//        v124 = 8 * uLayingItemID;
+//        v124 |= v124 | 2;
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, v124, 0, -1, 0, v97, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, PID(OBJECT_Item, uLayingItemID));
         return 0;
     }
 
@@ -1835,20 +1818,21 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2)
             SpriteObject::OnInteraction(uLayingItemID);
         v100 = pSpriteObjects[uLayingItemID].field_61;
         pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-        v102 = 8 * uLayingItemID;
-        v102 |= PID(OBJECT_Item, uLayingItemID);
+        v102 = PID(OBJECT_Item, uLayingItemID);
         pSpriteObjects[uLayingItemID].vVelocity.x = 0;
         pSpriteObjects[uLayingItemID].vVelocity.y = 0;
         pSpriteObjects[uLayingItemID].vVelocity.z = 0;
         AttackerInfo.Add(v102, 512, pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, pSpriteObjects[uLayingItemID].vPosition.z, v100, 0);
         if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE)
             trail_particle_generator.GenerateTrailParticles(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, pSpriteObjects[uLayingItemID].vPosition.z, object->uParticleTrailColor);
-        if (!pSpriteObjects[uLayingItemID].uSoundID)
-            v47 = 0;
-        else
-            v47 = (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4;
-        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
-        pAudioPlayer->PlaySound((SoundID)v125, v102, 0, -1, 0, v47, 0, 0);
+        if (!pSpriteObjects[uLayingItemID].uSoundID) {
+          v47 = 0;
+        } else {
+          v47 = pSpriteObjects[uLayingItemID].uSoundID + 4;
+        }
+//        v125 = word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] + 1;
+//        pAudioPlayer->PlaySound((SoundID)v125, v102, 0, -1, 0, v47, 0, 0);
+        pAudioPlayer->PlaySpellSound(pSpriteObjects[uLayingItemID].spell_id, v102);
         return 0;
     }
 

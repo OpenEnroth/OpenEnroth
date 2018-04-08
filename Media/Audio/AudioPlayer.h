@@ -1,85 +1,16 @@
 #pragma once
-#include "Media/MediaPlayer.h"
 
+#include "Media/Media.h"
 
-
-
-
-
-#pragma pack(push, 1)
-struct _PROVIDER {char unk_0;};
-struct _SAMPLE   {char unk_0;};
-//struct _STREAM   {char unk_0;};
-struct _REDBOOK  {char unk_0;};
-struct _DIG_DRIVER {char unk_0;};
-struct _SEQUENCE {char unk_0;};
-#pragma pack(pop)
-
-
-
-/*   22 */
-#pragma pack(push, 1)
-struct AudioPlayer_3DSample
-{
-  inline AudioPlayer_3DSample()
-  {
-    hSample = 0;
-    field_4 = 0;
-    field_8 = 0;
-    field_C = 0;
-  }
-
-  void *hSample;
-  int field_4;
-  int field_8;
-  int field_C;
-};
-#pragma pack(pop)
-
-
-
-
-/*   26 */
-/*#pragma pack(push, 1)
-struct SoundHeader
-{
-  char pSoundName[40];
-  unsigned int uFileOffset;
-  unsigned int uCompressedSize;
-  unsigned int uDecompressedSize;
-};
-#pragma pack(pop)*/
-
-/*   27 */
-#pragma pack(push, 1)
-struct MixerChannel
-{
-  inline MixerChannel():
-    hSample(nullptr), source_pid(0), uSourceTrackIdx(0), uSourceTrackID(0)
-  {}
-
-  _SAMPLE *hSample;
-  int source_pid;
-  unsigned int uSourceTrackIdx;
-  unsigned int uSourceTrackID;
-};
-#pragma pack(pop)
-
-
-
-
-
-/*  308 */
-enum SoundID
-{
+enum SoundID {
   SOUND_Invalid = 0,
   SOUND_enter = 6,
   SOUND_WoodDoorClosing = 7,
-  SOUND_fireBall = 0x8,
-  SOUND_ClickMinus = 0x14,//20
-  SOUND_ClickMovingSelector = 0x15,//21
-  SOUND_ClickPlus = 0x17,//23
-  SOUND_ClickSkill = 0x18,//24
+  SOUND_fireBall = 8,
+  SOUND_ClickMinus = 20,
+  SOUND_ClickMovingSelector = 21,
+  SOUND_ClickPlus = 23,
+  SOUND_ClickSkill = 24,
   SOUND_error = 27,
   SOUND_metal_vs_metal03h = 47,
   SOUND_48 = 0x30,
@@ -117,8 +48,8 @@ enum SoundID
   SOUND_WalkWater = 101,
   SOUND_WalkWaterIndoor = 102,
   SOUND_WalkWood = 103,
-  SOUND_bricks_down = 0x78,//120
-  SOUND_bricks_up = 0x79,
+  SOUND_bricks_down = 120,
+  SOUND_bricks_up = 121,
   SOUND_damage = 0x7A,
   SOUND_deal = 0x7B,
   SOUND_defeat = 0x7C,
@@ -130,10 +61,10 @@ enum SoundID
   SOUND_typing = 0x82,
   SOUND_victory = 0x83,
   SOUND_wall_up = 0x84,
-  SOUND_luteguitar = 133, // 85
-  SOUND_panflute = 134, // 86
-  SOUND_trumpet = 135, // 87
-  SOUND_gold01 = 0xC8,//200
+  SOUND_luteguitar = 133,
+  SOUND_panflute = 134,
+  SOUND_trumpet = 135,
+  SOUND_gold01 = 200,
   SOUND_heal = 202,
   SOUND_fizzle = 203,
   SOUND_TurnPageU = 204,
@@ -142,10 +73,10 @@ enum SoundID
   SOUND_openchest0101 = 208,
   SOUND_spellfail0201 = 0xD1,
   SOUND_drink = 0xD2,
-  SOUND_eat = 211, // D3
+  SOUND_eat = 211,
   SOUND_gong = 0xD7,
   SOUND_hurp = 0xD9,
-  SOUND_church = 0xDA, //218
+  SOUND_church = 218,
   SOUND_chimes = 0xDB,
   SOUND_splash = 220,
   SOUND_star1 = 0xDD,
@@ -168,227 +99,74 @@ enum SoundID
   SOUND_9armageddon01 = 17080,
   SOUND_Sacrifice2 = 18060,
   SOUND_quest = 20001,
-  
 };
 
-
-enum MusicID: unsigned __int32
-{
-    MUSIC_MainMenu = 14,
-    MUSIC_Credits = 15
+enum MusicID {
+  MUSIC_MainMenu = 14,
+  MUSIC_Credits = 15
 };
 
-/*   20 */
-#pragma pack(push, 1)
-struct AudioPlayer
-{
-  //----- (004A9669) --------------------------------------------------------
-  AudioPlayer():
-    bPlayerReady(false), b3DSoundInitialized(false),
-    hAILRedbook(nullptr), hStream(nullptr),
-    h3DSoundProvider(nullptr)
-  {
-	/*AudioPlayer_3DSample *v0; //ecx@1
-	signed int v1; //edi@1
-
-	v0 = p3DSamples;
-	v1 = 32;
-	do
-	{
-		v0->field_4 = 0;
-		v0->field_8 = 0;
-		v0->field_C = 0;
-		v0->hSample = 0;
-		++v0;
-		--v1;
-	}
-	while (v1);*/
-    uMixerChannels = 16;
-    field_2D0_time_left = 256;
-    uNumRedbookTracks = 0;
-    uCurrentMusicTrackLength = 0;
-    field_2D4 = 0;
-    s3DSoundVolume = 127;
+class AudioPlayer {
+ public:
+  AudioPlayer() : bPlayerReady(false), currentMusicTrack(0) {
   }
-  inline ~AudioPlayer(){ Release(); };
-  void SetMusicVolume(int vol);
+  virtual ~AudioPlayer() { Release(); };
+
   void SetMasterVolume(float fVolume);
+
+  void MusicPlayTrack(enum MusicID eTrack);
+  void MusicStart();
+  void MusicStop();
+  void MusicPause();
+  void MusicResume();
+  void MusicSetVolume(unsigned int vol);
+  float MusicGetVolume();
+
   void StopAll(int sample_id);
-  void PlaySound(SoundID eSoundID, signed int a3, unsigned int uNumRepeats, signed int a5, signed int a6, int a7, float uVolume, int sPlaybackRate);
+  void PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int x, int y, int a7, float uVolume, int sPlaybackRate);
   void UpdateSounds();
   void StopChannels(int uStartChannel, int uEndChannel);
-  void LoadAudioSnd();//
-  void Initialize();//
-  void CheckA3DSupport(bool query);
+  void LoadAudioSnd();
+  void Initialize();
   void Release();
-  void FreeChannel(MixerChannel *pChannel);
-  void _4ABF23(AudioPlayer_3DSample *a2);
-  void SetEAXPreferences();
-  void SetMapEAX();
-  int _4AC0A2();
-  void PlayMusicTrack(enum MusicID eTrack);
   void  MessWithChannels();
+  struct SoundHeader *FindSound(const std::string &pName);
+  PMemBuffer LoadSound(const std::string &pSoundName);
+  void PlaySpellSound(unsigned int spell, unsigned int pid);
 
-
-  unsigned int bEAXSupported;
-  unsigned int b3DSoundInitialized;
-  int s3DSoundVolume;
-  struct _PROVIDER *h3DSoundProvider;
-  int uNum3DSamples;
-  struct AudioPlayer_3DSample p3DSamples[32];
-  int field_214;
-  int sRedbookVolume;
-  char p3DSoundProvider[128];
-  unsigned int bPlayerReady;
-  //HWND hWindow;
-  class OSWindow *window;
-  struct _REDBOOK *hAILRedbook;
-  struct _DIG_DRIVER *hDigDriver;
-  int dword_0002AC;
-  struct _SEQUENCE *hSequence;
-  int dword_0002B4;
-  struct SoundHeader *pSoundHeaders;
-  FILE *hAudioSnd;
-  unsigned int uNumSoundHeaders;
+ protected:
+  bool bPlayerReady;
+  int currentMusicTrack;
   unsigned int uMasterVolume;
-  int dword_0002C8;
-  int dword_0002CC;
-  int field_2D0_time_left;
-  int field_2D4;
-  unsigned int uCurrentMusicTrackLength;
-  unsigned int uNumRedbookTracks;
-  unsigned int uCurrentMusicTrackStartMS;
-  unsigned int uCurrentMusicTrackEndMS;
-  struct MixerChannel pMixerChannels[16];
-  int uMixerChannels;
-  int field_3EC;
-  char pDeviceNames[16][128];
-  int pFrequency[16];
-  int array_000C30[16];
-  unsigned int uNumDevices;
-  struct _STREAM *hStream;
-  char field_C78[8];
-  int cGameCDDriveLetter;
-};
-#pragma pack(pop)
-
-
-
-
-
-
-
-
-/*  325 */
-enum SOUND_DESC_TYPE : __int32
-{
-  SOUND_DESC_LEVEL = 0x0,
-  SOUND_DESC_SYSTEM = 0x1,
-  SOUND_DESC_SWAP = 0x2,
-  SOUND_DESC_3 = 0x3,
-  SOUND_DESC_LOCK = 0x4,
+  PAudioTrack pCurrentMusicTrack;
 };
 
+struct SoundDesc;
 
-/*  326 */
-enum SOUND_DESC_FLAGS
-{
-  SOUND_DESC_LOCKED = 0x1,
-  SOUND_DESC_3D = 0x2,
-};
-
-
-#pragma pack(push, 1)
-struct SoundData
-{
-  unsigned int uDataSize;
-  char         pData[1];
-};
-
-struct SoundDesc_mm6
-{
-  inline bool Is3D()  {return (uFlags & SOUND_DESC_3D) != 0;}
-
-  char pSoundName[32];
-  unsigned int uSoundID;
-  SOUND_DESC_TYPE eType;
-  int uFlags;
-  SoundData *pSoundData[17];
-};
-
-struct SoundDesc: public SoundDesc_mm6
-{
-  void *p3DSound;
-  int bDecompressed;
-};
-#pragma pack(pop)
-
-
-
-#pragma pack(push, 1)
-struct SoundList
-{
-  inline SoundList():
-    sNumSounds(0), pSL_Sounds(nullptr), uTotalLoadedSoundSize(0)
+class SoundList {
+ public:
+  inline SoundList()
   {}
 
   void Initialize();
-  __int16 LoadSound(int a1, unsigned int a3);
-  int LoadSound(unsigned int a2, void *lpBuffer, int uBufferSizeLeft, int *pOutSoundSize, int a6);
-  SoundDesc *Release();
-  void _4A9D79(int a2);
-  void UnloadSound(unsigned int uSoundID, char a3);
-  void ToFile();
   void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
-  int FromFileTxt(const char *Args);
-
-  signed int sNumSounds;
-  SoundDesc *pSL_Sounds;
-  unsigned int uTotalLoadedSoundSize;
 };
-#pragma pack(pop)
 
+struct SoundData;
 
-
-
-
-/*  241 */
-#pragma pack(push, 1)
-struct Sound
-{
-  unsigned int uID;
-  char SoundName[120];
-  SoundData *pSoundData;
-};
-#pragma pack(pop)
-
-
-
-extern int uFindSound_BinSearch_ResultID;
-extern int uLastLoadedSoundID;
 extern int sLastTrackLengthMS;
-extern std::array<Sound, 3000> pSounds;
 extern AudioPlayer *pAudioPlayer;
 extern SoundList *pSoundList;
 
-extern unsigned __int8 uSoundVolumeMultiplier;
-extern unsigned __int8 uVoicesVolumeMultiplier;
-extern unsigned __int8 uMusicVolimeMultiplier;
-extern int bWalkSound; // idb
+extern uint8_t uSoundVolumeMultiplier;
+extern uint8_t uVoicesVolumeMultiplier;
+extern uint8_t uMusicVolimeMultiplier;
+extern int bWalkSound;
 
-extern std::array<float, 10> pSoundVolumeLevels; // idb
+extern std::array<float, 10> pSoundVolumeLevels;
 
-
-
-
-
-
-
-
-/*  379 */
 #pragma pack(push, 1)
-struct stru339_spell_sound
-{
+struct PartySpells {
   int AddPartySpellSound(int uSoundID, int a6);
 
   char pSounds[44744];
@@ -399,11 +177,8 @@ struct stru339_spell_sound
   int pSoundsOffsets[2];
 };
 #pragma pack(pop)
-extern std::array<stru339_spell_sound, 4> stru_A750F8;
-extern std::array<stru339_spell_sound, 4> AA1058_PartyQuickSpellSound;
 
-struct SoundHeader *FindSound_BinSearch(unsigned int uStart, unsigned int uEnd, const char *pName);
-struct SoundData *LoadSound(const char *pSoundName, struct SoundData *pOutBuff, unsigned int uID);
-int sub_4AB66C(int, int);
-int GetSoundStrengthByDistanceFromParty(int x, int y, int z);
+extern std::array<PartySpells, 4> stru_A750F8;
+extern std::array<PartySpells, 4> AA1058_PartyQuickSpellSound;
+
 void PlayLevelMusic();

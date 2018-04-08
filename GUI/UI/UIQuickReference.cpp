@@ -11,6 +11,7 @@
 #include "GUI/UI/UICharacter.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Platform/Api.h"
 
 
 Image *ui_game_quickref_background = nullptr;

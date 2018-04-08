@@ -306,11 +306,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
             a1.field_60_distance_related_prolly_lod = 3;
 
         a1.field_61 = 2;
-        v91 = a1.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
-        if (v91 != -1)
-        {
-            pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID], PID(OBJECT_Item, v91), 0, -1, 0, 0, 0, 0);
-            return;
+        v91 = a1.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
+        if (v91 != -1) {
+          pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, v91));
+          return;
         }
         return;
         break;
@@ -386,8 +385,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
                 a1.field_60_distance_related_prolly_lod = 3;
             a1.field_61 = 2;
             v36 = a1.Create(v32, pitch, pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
-            if (v36 != -1)
-                pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[9], PID(OBJECT_Item, v36), 0, -1, 0, 0, 0, 0);
+            if (v36 != -1) {
+              pAudioPlayer->PlaySpellSound(9, PID(OBJECT_Item, v36));
+            }
             spellnumb = rand() % 1024 - 512;
             v28 = rand() % 1024 - 512;
         }
@@ -437,10 +437,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
                 v19 += v118;
             } while (v19 <= a1a);
         }
-        if (v20 != -1)
-        {
-            pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[15], PID(OBJECT_Item, v20), 0, -1, 0, 0, 0, 0);
-            return;
+        if (v20 != -1) {
+          pAudioPlayer->PlaySpellSound(15, PID(OBJECT_Item, v20));
+          return;
         }
         return;
         break;
@@ -569,7 +568,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
                 pOtherOverlayList->_4418B1(11210, i + 99, 0, 65536);
             }
         }
-        pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[80], PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySpellSound(80, PID(OBJECT_Actor, uActorID));
         return;
 
     case SPELL_LIGHT_DAY_OF_PROTECTION:
@@ -658,10 +657,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir, int uSpellI
                 a1c += v116;
             } while (a1c <= spellnume / 2);
         }
-        if (v80 != -1)
-        {
-            pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[93], PID(OBJECT_Item, v80), 0, -1, 0, 0, 0, 0);
-            return;
+        if (v80 != -1) {
+          pAudioPlayer->PlaySpellSound(93, PID(OBJECT_Item, v80));
+          return;
         }
         return;
 
@@ -3828,15 +3826,15 @@ void Actor::Arena_summon_actor( int monster_id, __int16 x, int y, int z )
     pActors[uNumActors].uGroup = 1;
     pActors[uNumActors].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
     pActors[uNumActors].PrepareSprites(0);
-     for ( int i = 0; i < 4; i++)
-      pSoundList->LoadSound(pMonsterList->pMonsters[monster_id - 1].pSoundSampleIDs[i], 0);
-    v12 = 0;
-    do
-    {
-      v13 = pSoundList->LoadSound(v12 + word_4EE088_sound_ids[pMonsterStats->pInfos[monster_id].uSpell1ID], 1);
-      v12++;
-    }
-    while ( v13 );
+//    for ( int i = 0; i < 4; i++)
+//      pSoundList->LoadSound(pMonsterList->pMonsters[monster_id - 1].pSoundSampleIDs[i], 0);
+//    v12 = 0;
+//    do
+//    {
+//      v13 = pSoundList->LoadSound(v12 + word_4EE088_sound_ids[pMonsterStats->pInfos[monster_id].uSpell1ID], 1);
+//      v12++;
+//    }
+//    while ( v13 );
     ++uNumActors;
   }
 }

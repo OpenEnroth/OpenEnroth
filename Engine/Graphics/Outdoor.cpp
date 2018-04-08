@@ -20,6 +20,8 @@
 
 #include "Engine/Serialization/LegacyImages.h"
 
+#include "Platform/Api.h"
+
 #include "Weather.h"
 #include "Sprites.h"
 #include "LightmapBuilder.h"
@@ -1528,43 +1530,43 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
 
     pPaletteManager->RecalculateAll();
-    pSoundList->LoadSound(SOUND_RunDirt, 0);			//For Dirt tyle(для звука хождения по грязи)
-    pSoundList->LoadSound(SOUND_WalkDirt, 0);			//для бега
-    pSoundList->LoadSound(SOUND_RunRoad, 0);			//для звука хождения по дороге
-    pSoundList->LoadSound(SOUND_WalkRoad, 0);
-    pSoundList->LoadSound(SOUND_RunWood, 0);			//для звука хождения по дереву
-    pSoundList->LoadSound(SOUND_WalkWood, 0);
+//    pSoundList->LoadSound(SOUND_RunDirt, 0);			//For Dirt tyle(для звука хождения по грязи)
+//    pSoundList->LoadSound(SOUND_WalkDirt, 0);			//для бега
+//    pSoundList->LoadSound(SOUND_RunRoad, 0);			//для звука хождения по дороге
+//    pSoundList->LoadSound(SOUND_WalkRoad, 0);
+//    pSoundList->LoadSound(SOUND_RunWood, 0);			//для звука хождения по дереву
+//    pSoundList->LoadSound(SOUND_WalkWood, 0);
     for (int i = 0; i < 3; ++i)
     {
         switch (pTileTypes[i].tileset)
         {
         case Tileset_Grass:
-            pSoundList->LoadSound(SOUND_RunGrass, 0);	//для звука хождения по траве
-            pSoundList->LoadSound(SOUND_WalkGrass, 0);
+//            pSoundList->LoadSound(SOUND_RunGrass, 0);	//для звука хождения по траве
+//            pSoundList->LoadSound(SOUND_WalkGrass, 0);
             break;
         case Tileset_Snow:
-            pSoundList->LoadSound(SOUND_RunSnow, 0);	//по снегу
-            pSoundList->LoadSound(SOUND_WalkSnow, 0);
+//            pSoundList->LoadSound(SOUND_RunSnow, 0);	//по снегу
+//            pSoundList->LoadSound(SOUND_WalkSnow, 0);
             break;
         case Tilset_Desert:
-            pSoundList->LoadSound(SOUND_RunDesert, 0);	//по пустыне
-            pSoundList->LoadSound(SOUND_WalkDesert, 0);
+//            pSoundList->LoadSound(SOUND_RunDesert, 0);	//по пустыне
+//            pSoundList->LoadSound(SOUND_WalkDesert, 0);
             break;
         case Tileset_CooledLava:
-            pSoundList->LoadSound(SOUND_RunCooledLava, 0);//по лаве
-            pSoundList->LoadSound(SOUND_WalkCooledLava, 0);
+//            pSoundList->LoadSound(SOUND_RunCooledLava, 0);//по лаве
+//            pSoundList->LoadSound(SOUND_WalkCooledLava, 0);
             break;
         case Tileset_Water:
-            pSoundList->LoadSound(SOUND_RunWater, 0);		//по воде
-            pSoundList->LoadSound(SOUND_WalkWater, 0);
+//            pSoundList->LoadSound(SOUND_RunWater, 0);		//по воде
+//            pSoundList->LoadSound(SOUND_WalkWater, 0);
             break;
         case Tileset_Badlands:
-            pSoundList->LoadSound(SOUND_RunBadlands, 0);	//для звука ходьбы по бесплодным землям
-            pSoundList->LoadSound(SOUND_WalkBadlands, 0);
+//            pSoundList->LoadSound(SOUND_RunBadlands, 0);	//для звука ходьбы по бесплодным землям
+//            pSoundList->LoadSound(SOUND_WalkBadlands, 0);
             break;
         case Tileset_Swamp:
-            pSoundList->LoadSound(SOUND_RunSwamp, 0);		//по болоту
-            pSoundList->LoadSound(SOUND_WalkSwamp, 0);
+//            pSoundList->LoadSound(SOUND_RunSwamp, 0);		//по болоту
+//            pSoundList->LoadSound(SOUND_WalkSwamp, 0);
             break;
         }
     }
@@ -1790,7 +1792,7 @@ bool OutdoorLocation::PrepareDecorations()
       pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
       if ( pDecorationList->pDecorations[decor->uDecorationDescID].uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9 )
       {
-        pSoundList->LoadSound(pDecorationList->pDecorations[decor->uDecorationDescID].uSoundID, 0);
+//        pSoundList->LoadSound(pDecorationList->pDecorations[decor->uDecorationDescID].uSoundID, 0);
         _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;
       }
       if ( v8 && decor->uCog == 20 )

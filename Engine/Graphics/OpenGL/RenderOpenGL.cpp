@@ -72,6 +72,7 @@ void RenderOpenGL::DrawBillboardList_BLV() { __debugbreak(); }
 void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture) { __debugbreak(); }
 void RenderOpenGL::ScreenFade(unsigned int color, float t) { __debugbreak(); }
 void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y, Image *pTexture) { __debugbreak(); }
+void RenderOpenGL::DrawImage(Image *, const Rect &rect) { __debugbreak(); }
 void RenderOpenGL::ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture, int a5) { __debugbreak(); }
 void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) { __debugbreak(); }
 void RenderOpenGL::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity) { __debugbreak(); }

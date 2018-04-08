@@ -35,6 +35,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Platform/Api.h"
 
 
 #include "Sprites.h"
@@ -1378,14 +1379,6 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
     pData += 0x38;
 
     free(pRawDLV);
-    //v5 = 0;
-
-    pSoundList->LoadSound(64, 0);
-    pSoundList->LoadSound(103, 0);
-    pSoundList->LoadSound(63, 0);
-    pSoundList->LoadSound(102, 0);
-    pSoundList->LoadSound(50, 0);
-    pSoundList->LoadSound(89, 0);
 
     return 0;
 }
@@ -2317,9 +2310,6 @@ void PrepareToLoadBLV(unsigned int bLoading)
         RespawnGlobalDecorations();
     }
 
-    pSoundList->LoadSound(pDoorSoundIDsByLocationID[map_id], 0);
-    pSoundList->LoadSound(pDoorSoundIDsByLocationID[map_id] + 1, 0);
-
     for (uint i = 0; i < pIndoor->uNumDoors; ++i)
     {
         if (pIndoor->pDoors[i].uAttributes & 0x01)
@@ -2358,7 +2348,7 @@ void PrepareToLoadBLV(unsigned int bLoading)
 
         if (pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID].uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9)
         {
-            pSoundList->LoadSound(pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID].uSoundID, 0);
+//            pSoundList->LoadSound(pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID].uSoundID, 0);
             _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;
         }
 

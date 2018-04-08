@@ -128,30 +128,6 @@ void LoadGame(unsigned int uSlot)
         }
     }
 
-    if (SoundSetAction[24][0])
-    {
-        for (uint i = 0; i < 4; ++i)
-        {
-            for (uint j = 0; j < pSoundList->sNumSounds; ++j)
-            {
-                if (pSoundList->pSL_Sounds[j].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4998)
-                {
-                    pSoundList->UnloadSound(j, 1);
-                    break;
-                }
-            }
-
-            for (uint j = 0; j < pSoundList->sNumSounds; ++j)
-            {
-                if (pSoundList->pSL_Sounds[j].uSoundID == 2 * (SoundSetAction[24][0] + 50 * pParty->pPlayers[i].uVoiceID) + 4999)
-                {
-                    pSoundList->UnloadSound(j, 1);
-                    break;
-                }
-            }
-        }
-    }
-
     pNew_LOD->CloseWriteFile();
 
     String filename = "saves\\" + pSavegameList->pFileList[uSlot];
@@ -271,24 +247,21 @@ void LoadGame(unsigned int uSlot)
         }
     }
 
-    for (uint i = 0; i < 4; ++i)
-    {
-        if (pParty->pPlayers[i].uQuickSpell)
-            AA1058_PartyQuickSpellSound[i].AddPartySpellSound(pParty->pPlayers[i].uQuickSpell, i + 1);
+    for (uint i = 0; i < 4; ++i) {
+      if (pParty->pPlayers[i].uQuickSpell) {
+        AA1058_PartyQuickSpellSound[i].AddPartySpellSound(pParty->pPlayers[i].uQuickSpell, i + 1);
+      }
 
-        for (uint j = 0; j < 2; ++j)
-        {
-            uint uEquipIdx = pParty->pPlayers[i].pEquipment.pIndices[j];
-            if (uEquipIdx)
-            {
-                int pItemID = pParty->pPlayers[i].pInventoryItemList[uEquipIdx - 1].uItemID;
-                if (pItemsTable->pItems[pItemID].uEquipType == EQUIP_WAND && pItemID)//жезл
-                {
-                    __debugbreak();  // looks like offset in player's inventory and wand_lut much like case in 0042ECB5
-                    stru_A750F8[i].AddPartySpellSound(wand_spell_ids[pItemID - ITEM_WAND_FIRE], i + 9);
-                }
-            }
+      for (uint j = 0; j < 2; ++j) {
+        uint uEquipIdx = pParty->pPlayers[i].pEquipment.pIndices[j];
+        if (uEquipIdx) {
+          int pItemID = pParty->pPlayers[i].pInventoryItemList[uEquipIdx - 1].uItemID;
+          if (pItemsTable->pItems[pItemID].uEquipType == EQUIP_WAND && pItemID) {  // жезл
+            __debugbreak();  // looks like offset in player's inventory and wand_lut much like case in 0042ECB5
+            stru_A750F8[i].AddPartySpellSound(wand_spell_ids[pItemID - ITEM_WAND_FIRE], i + 9);
+          }
         }
+      }
     }
 
 
@@ -315,8 +288,8 @@ void LoadGame(unsigned int uSlot)
             pSavegameThumbnails[i] = nullptr;
         }
     }
- 
-    alSourcef(mSourceID, AL_GAIN, pSoundVolumeLevels[uMusicVolimeMultiplier]);
+
+    pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
     pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
     if (uTurnSpeed)
         pParty->sRotationY = uTurnSpeed * pParty->sRotationY / (signed int)uTurnSpeed;
@@ -713,43 +686,34 @@ void SavegameList::Reset() {
   }
 }
 
-//----- (0046086A) --------------------------------------------------------
-void SaveNewGame()
-{
+void SaveNewGame() {
   std::string file_path = MakeDataPath("data\\new.lod");
 
-  FILE *file; // eax@7
-  void *pSave; // [sp+170h] [bp-8h]@3
-
-  if ( pMovie_Track )
-    pMediaPlayer->Unload();
-  pSave = malloc(1000000);
+  void *pSave = malloc(1000000);
   if (pNew_LOD != nullptr) {
     pNew_LOD->CloseWriteFile();
   }
-  remove(file_path.c_str());//удалить new.lod
+  remove(file_path.c_str());  // удалить new.lod
 
-  LOD::FileHeader header; // [sp+Ch] [bp-16Ch]@3 заголовок
+  LOD::FileHeader header;  // заголовок
   strcpy(header.LodVersion, "MMVII");
   strcpy(header.LodDescription, "newmaps for MMVII");
   header.LODSize = 100;
   header.dword_0000A8 = 0;
 
-  LOD::Directory a3; // [sp+14Ch] [bp-2Ch]@3
+  LOD::Directory a3;
   a3.dword_000018 = 0;
   a3.word_00001E = 0;
   strcpy(a3.pFilename, "current");
   pNew_LOD->CreateNewLod(&header, &a3, file_path.c_str());  //создаётся new.lod в дирректории
-  if (pNew_LOD->LoadFile(file_path.c_str(), false))  //загрузить файл new.lod(isFileOpened = true)
-  {
+  if (pNew_LOD->LoadFile(file_path.c_str(), false))  { //загрузить файл new.lod(isFileOpened = true)
     pNew_LOD->CreateTempFile();//создаётся временный файл OutputFileHandle
     pNew_LOD->uNumSubDirs = 0;
 
     LOD::Directory pDir; // [sp+10Ch] [bp-6Ch]@4
-    for (int i = pGames_LOD->uNumSubDirs / 2; i < pGames_LOD->uNumSubDirs; ++i)//копирование файлов с 76 по 151
-    {
+    for (int i = pGames_LOD->uNumSubDirs / 2; i < pGames_LOD->uNumSubDirs; ++i) {  // копирование файлов с 76 по 151
       memcpy(&pDir, &pGames_LOD->pSubIndices[i], sizeof(pDir));//копирование текущего файла в pDir
-      file = pGames_LOD->FindContainer(pGames_LOD->pSubIndices[i].pFilename, 1);
+      FILE *file = pGames_LOD->FindContainer(pGames_LOD->pSubIndices[i].pFilename, 1);
       fread(pSave, pGames_LOD->pSubIndices[i].uDataSize, 1, file);
       pNew_LOD->AppendDirectory(&pDir, pSave);
     }

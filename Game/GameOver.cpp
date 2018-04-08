@@ -13,6 +13,7 @@
 #include "IO/Keyboard.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Media/MediaPlayer.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -42,7 +43,6 @@ void GameOver_Loop(int v15)
 
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
     bGameoverLoop = true;
-    pMediaPlayer->bStopBeforeSchedule = 0;
     pAudioPlayer->StopChannels(-1, -1);
     render->BeginScene();
     render->ClearBlack();

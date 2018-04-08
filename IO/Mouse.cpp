@@ -444,4 +444,6 @@ bool Mouse::UI_OnKeyDown(unsigned int vkKey) {
         break;
     }
   }
+
+  return 0;
 }

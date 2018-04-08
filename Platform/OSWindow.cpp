@@ -6,7 +6,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 
-#include "Arcomage\Arcomage.h"
+#include "Arcomage/Arcomage.h"
 
 #include "IO/Mouse.h"
 #include "IO/Keyboard.h"
@@ -14,7 +14,7 @@
 #include "GUI/GUIWindow.h"
 
 #include "Media/Audio/AudioPlayer.h"
-#include "Media/Audio/AIL.h"
+#include "Media/MediaPlayer.h"
 
 #include "Platform/Win/Win.h"
 #include "Platform/OSWindow.h"
@@ -52,8 +52,7 @@ Point OSWindow::TransformCursorPos(Point &pt) const
 }
 
 bool OSWindow::OnMouseLeftClick(int x, int y) {
-  //if (pMediaPlayer->bPlaying_Movie)
-  //pMediaPlayer->bPlaying_Movie = false;
+  pMediaPlayer->StopMovie();
 
   pMouse->SetMouseClick(x, y);
 
@@ -70,9 +69,7 @@ bool OSWindow::OnMouseLeftClick(int x, int y) {
 }
 
 bool OSWindow::OnMouseRightClick(int x, int y) {
-  if (pMediaPlayer->bPlaying_Movie) {
-    pMediaPlayer->bPlaying_Movie = false;
-  }
+  pMediaPlayer->StopMovie();
 
   pMouse->SetMouseClick(x, y);
 
@@ -236,12 +233,9 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
         pKeyActionMap->ProcessTextInput(wparam);
         return false;
       }
-      if (!pArcomageGame->bGameInProgress)
-      {
-        if (pMediaPlayer->bPlaying_Movie)
-          pMediaPlayer->bPlaying_Movie = false;
-        if (wparam == VK_RETURN)
-        {
+      if (!pArcomageGame->bGameInProgress) {
+        pMediaPlayer->StopMovie();
+        if (wparam == VK_RETURN) {
           if (!viewparams->field_4C)
             Mouse::UI_OnKeyDown(wparam);
           return 0;
@@ -324,14 +318,16 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
             }
           }
           if (!bGameoverLoop && !pMovie_Track) {  // continue an audio track
-            alSourcePlay(mSourceID);
+            pAudioPlayer->MusicResume();
           }
         }
       } else {
         if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)) {
           dword_4E98BC_bApplicationActive = 0;
-          if (pMovie_Track)
-            pMediaPlayer->bPlaying_Movie = true;
+//        Resume video playback
+//          pMediaPlayer->
+//          if (pMovie_Track)
+//            pMediaPlayer->bPlaying_Movie = true;
 
           ClipCursor(0);
           dword_6BE364_game_settings_1 |= GAME_SETTINGS_APP_INACTIVE;
@@ -346,7 +342,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
 
           if (pAudioPlayer != nullptr) {
             pAudioPlayer->StopChannels(-1, -1);//приостановка воспроизведения звуков при неактивном окне игры
-            alSourcePause(mSourceID);
+            pAudioPlayer->MusicPause();
           }
         }
       }
