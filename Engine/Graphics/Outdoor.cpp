@@ -944,16 +944,13 @@ void OutdoorLocation::CreateDebugLocation()
     this->location_filename = "i6.odm";
     this->location_file_description = "MM6 Outdoor v1.00";
 
-    this->uNumBModels = 0;
     this->pTileTypes[0].tileset = Tileset_Grass;
     this->pTileTypes[1].tileset = Tileset_Water;
     this->pTileTypes[2].tileset = Tileset_Badlands;
     this->pTileTypes[3].tileset = Tileset_RoadGrassCobble;
     this->LoadTileGroupIds();
     this->LoadRoadTileset();
-    free(this->pBModels);
     free(this->pSpawnPoints);
-    this->pBModels = 0;
     this->pSpawnPoints = 0;
     this->pTerrain.Initialize();
     this->pTerrain.ZeroLandscape();
@@ -989,14 +986,9 @@ void OutdoorLocation::Release()
     this->sky_texture_filename = "sky043";
     this->ground_tileset = "hm005";
 
-    if (pBModels)
-    {
-        for (uint i = 0; i < uNumBModels; ++i)
-            pBModels[i].Release();
-
-        free(pBModels);
-        pBModels = nullptr;
-        uNumBModels = 0;
+    while (!pBModels.empty()) {
+      pBModels.back().Release();
+      pBModels.pop_back();
     }
 
     free(pSpawnPoints);
@@ -1015,562 +1007,548 @@ void OutdoorLocation::Release()
     pTerrainNormals = nullptr;
 }
 
-//----- (0047D0A6) --------------------------------------------------------
-bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_interval_days, int *thisa)
-{
-    FILE *pFile; // eax@50
-//    unsigned __int16 v62; // ax@65
-    int v108; // [sp+0h] [bp-B80h]@10
-    char Src[968]; // [sp+10h] [bp-B70h]@110
-    char Dst[968]; // [sp+3D8h] [bp-7A8h]@50
-    ODMHeader header; // [sp+B58h] [bp-28h]@50
-    char *Str2; // [sp+B74h] [bp-Ch]@12
+bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_interval_days, int *thisa) {
+  FILE *pFile; // eax@50
+  int v108; // [sp+0h] [bp-B80h]@10
+  char Src[968]; // [sp+10h] [bp-B70h]@110
+  char Dst[968]; // [sp+3D8h] [bp-7A8h]@50
+  ODMHeader header; // [sp+B58h] [bp-28h]@50
+  char *Str2; // [sp+B74h] [bp-Ch]@12
 
-    if (bUnderwater)
+  if (bUnderwater) {
+    pPaletteManager->pPalette_tintColor[0] = 0x10;
+    pPaletteManager->pPalette_tintColor[1] = 0xC2;
+    pPaletteManager->pPalette_tintColor[2] = 0x99;
+    pPaletteManager->SetMistColor(37, 143, 92);
+  } else {
+    pPaletteManager->pPalette_tintColor[0] = 0;
+    pPaletteManager->pPalette_tintColor[1] = 0;
+    pPaletteManager->pPalette_tintColor[2] = 0;
+    if (pPaletteManager->pPalette_mistColor[0] != 0x80 ||
+      pPaletteManager->pPalette_mistColor[1] != 0x80 ||
+      pPaletteManager->pPalette_mistColor[2] != 0x80)
     {
-        pPaletteManager->pPalette_tintColor[0] = 0x10;
-        pPaletteManager->pPalette_tintColor[1] = 0xC2;
-        pPaletteManager->pPalette_tintColor[2] = 0x99;
-        pPaletteManager->SetMistColor(37, 143, 92);
+      pPaletteManager->SetMistColor(128, 128, 128);
+      pPaletteManager->RecalculateAll();
+    }
+  }
+
+  _6807E0_num_decorations_with_sounds_6807B8 = 0;
+
+  assert(sizeof(BSPModelData) == 188);
+
+  if (!pGames_LOD->DoesContainerExist(filename)) {
+    Error("Unable to find %s in Games.LOD", filename.c_str());
+  }
+
+  String minimap_filename = filename.substr(0, filename.length() - 4);
+  viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
+
+  auto odm_filename = filename;
+  odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
+  pFile = pGames_LOD->FindContainer(odm_filename, true);
+
+  static_assert(sizeof(ODMHeader) == 16, "Wrong type size");
+  fread(&header, sizeof(ODMHeader), 1, pFile);
+  if (header.uVersion != 91969 ||
+    header.pMagic[0] != 'm' ||
+    header.pMagic[1] != 'v' ||
+    header.pMagic[2] != 'i' ||
+    header.pMagic[3] != 'i')
+  {
+    logger->Warning(L"Can't load file!");
+  }
+
+  uint8_t *pSrcMem = (uint8_t*)malloc(header.uDecompressedSize);
+  uint8_t *pSrc = pSrcMem;
+
+  if (header.uCompressedSize < header.uDecompressedSize) {
+    char* pComressedSrc = (char *)malloc(header.uCompressedSize);
+    fread(pComressedSrc, header.uCompressedSize, 1, pFile);
+    uint actualDecompressedSize = header.uDecompressedSize;
+    zlib::Uncompress(pSrc, &actualDecompressedSize, pComressedSrc, header.uCompressedSize);
+    free(pComressedSrc);
+  } else {
+    fread(pSrc, header.uDecompressedSize, 1, pFile);
+  }
+
+#pragma pack(push, 1)
+  struct ODMInfo {
+    char level_filename[32];
+    char location_filename[32];
+    char location_file_description[32];
+    char sky_texture_filename[32];
+    char ground_tileset[32];
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(ODMInfo) == 160, "Wrong type size");
+  ODMInfo *odm_info = (ODMInfo*)pSrc;
+  this->level_filename = String(odm_info->level_filename, 32);
+  this->location_filename = String(odm_info->level_filename, 32);
+  this->location_file_description = String(odm_info->location_file_description, 32);
+  this->sky_texture_filename = String(odm_info->sky_texture_filename, 32);
+  this->ground_tileset = String(odm_info->ground_tileset, 32);
+  pSrc += sizeof(ODMInfo);
+
+  static_assert(sizeof(OutdoorLocationTileType) == 4, "Wrong type size");
+  memcpy(pTileTypes, pSrc, sizeof(pTileTypes));
+  pSrc += sizeof(pTileTypes);
+
+  LoadTileGroupIds();
+  LoadRoadTileset();
+  this->ground_tileset = "grastyl";
+
+  pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+
+  //*******************Terrain**************************//
+  pTerrain.Initialize();
+  memcpy(pTerrain.pHeightmap, pSrc, 0x4000);  // карта высот
+  pSrc += 0x4000;
+
+  memcpy(pTerrain.pTilemap, pSrc, 0x4000);  // карта тайлов
+  pSrc += 0x4000;
+
+  memcpy(pTerrain.pAttributemap, pSrc, 0x4000);  // карта аттрибутов
+  pSrc += 0x4000;
+
+  //v43 = (char *)v43 + 16384;
+  //v108 = (int)ptr_D4;
+  free(pCmap);
+  pCmap = malloc(0x8000);
+  pTerrain.FillDMap(0, 0, 128, 128);  //
+
+  pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+
+  memcpy(&uNumTerrainNormals, pSrc, 4);  // количество нормалей
+  pSrc += 4;
+  memcpy(pTerrainSomeOtherData.data(), pSrc, 0x20000);
+  pSrc += 0x20000;
+
+  memcpy(pTerrainNormalIndices.data(), pSrc, 0x10000);		//индексы нормалей
+  pSrc += 0x10000;
+
+  pTerrainNormals = (Vec3_float_ *)malloc(sizeof(Vec3_float_) * uNumTerrainNormals);//карта нормалей
+  memcpy(pTerrainNormals, pSrc, 12 * uNumTerrainNormals);
+  pSrc += 12 * uNumTerrainNormals;
+
+  pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+
+  //************BModels************************//
+  uint32_t uNumBModels;
+  memcpy(&uNumBModels, pSrc, 4);  // количество BModel'ей
+  pSrc += 4;
+  for (uint i = 0; i < uNumBModels; ++i) {
+    BSPModel model;
+    memcpy(&model, pSrc, sizeof(BSPModelData));  // BModel'и
+    pSrc += sizeof(BSPModelData);
+    model.pVertices.uNumVertices = model.ppVertices.uNumVertices;
+    model.pVertices.pVertices = nullptr;
+    model.pFaces = nullptr;
+    model.pFacesOrdering = nullptr;
+    model.pNodes = nullptr;
+    pBModels.push_back(model);
+  }
+
+  pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+
+  for (uint i = 0; i < uNumBModels; ++i) {
+    assert(sizeof(Vec3_int_) == 12);
+    uint verticesSize = pBModels[i].pVertices.uNumVertices * sizeof(Vec3_int_);
+    pBModels[i].pVertices.pVertices = (Vec3_int_ *)malloc(verticesSize);
+    memcpy(pBModels[i].pVertices.pVertices, pSrc, verticesSize);
+    pSrc += verticesSize;
+
+    //assert(sizeof(ODMFace) == 308);
+    uint facesSize = pBModels[i].uNumFaces * sizeof(ODMFace_MM7);
+    pBModels[i].pFaces = new ODMFace[pBModels[i].uNumFaces];
+    auto face_data = (ODMFace_MM7 *)pSrc;
+    for (unsigned int j = 0; j < pBModels[i].uNumFaces; ++j)
+    {
+      pBModels[i].pFaces[j].Deserialize(face_data);
+      face_data++;
+    }
+    //memcpy(pBModels[i].pFaces, pSrc, facesSize);
+    pSrc += facesSize;
+
+    uint facesOrderingSize = pBModels[i].uNumFaces * sizeof(short);
+    pBModels[i].pFacesOrdering = (unsigned __int16 *)malloc(facesOrderingSize);
+    memcpy(pBModels[i].pFacesOrdering, pSrc, facesOrderingSize);
+    pSrc += facesOrderingSize;
+
+    assert(sizeof(BSPNode) == 8);
+    uint nodesSize = pBModels[i].uNumNodes * sizeof(BSPNode);
+    pBModels[i].pNodes = (BSPNode *)malloc(nodesSize);
+    memcpy(pBModels[i].pNodes, pSrc, nodesSize);
+    pSrc += nodesSize;
+
+    const char* textureFilenames = (const char *)malloc(10 * pBModels[i].uNumFaces);
+    //pFilename = (char *)(10 * pBModels[v48].uNumFaces);
+    memcpy((char *)textureFilenames, pSrc, 10 * pBModels[i].uNumFaces);
+    pSrc += 10 * pBModels[i].uNumFaces;
+    //v144 = 0;
+    //uSourceLen = (char *)uSourceLen + (int)pFilename;
+    //v60 = pBModels;
+    for (uint j = 0; j < pBModels[i].uNumFaces; ++j) {
+      const char* texFilename = &textureFilenames[j * 10];
+
+      pBModels[i].pFaces[j].SetTexture(texFilename);
+
+      if (pBModels[i].pFaces[j].sCogTriggeredID) {
+        if (pBModels[i].pFaces[j].HasEventHint())
+          pBModels[i].pFaces[j].uAttributes |= FACE_HAS_EVENT;
+        else
+          pBModels[i].pFaces[j].uAttributes &= ~FACE_HAS_EVENT;
+      }
+    }
+
+    free((void *)textureFilenames);
+  }
+  pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+
+  //******************Decorations**********************//
+  memcpy(&uNumLevelDecorations, pSrc, 4);
+  //uSourceLen = (char *)uSourceLen + 4;
+  if (uNumLevelDecorations > 3000)
+    logger->Warning(L"Can't load file!");
+
+  assert(sizeof(LevelDecoration) == 32);
+  //pFilename = (char *)(32 * uNumLevelDecorations);
+  memcpy(pLevelDecorations.data(), pSrc + 4, uNumLevelDecorations * sizeof(LevelDecoration));
+  pSrc += 4 + sizeof(LevelDecoration) * uNumLevelDecorations;
+
+  pGameLoadingUI_ProgressBar->Progress();
+
+  //v151 = 0;
+  //uSourceLen = (char *)uSourceLen + (int)pFilename;
+  for (uint i = 0; i < uNumLevelDecorations; ++i) {
+    char name[256];
+    memcpy(name, pSrc, sizeof(LevelDecoration));
+    pSrc += sizeof(LevelDecoration);
+    pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
+  }
+
+  pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+
+  memcpy(&numFaceIDListElems, pSrc, 4);
+
+  //uSourceLen = (char *)uSourceLen + 4;
+  //v108 = (int)pFaceIDLIST;
+  free(pFaceIDLIST);
+  pFaceIDLIST = nullptr;
+
+  uint faceIDListSize = 2 * numFaceIDListElems;
+  pFaceIDLIST = (unsigned short *)malloc(faceIDListSize);
+
+  memcpy(pFaceIDLIST, pSrc + 4, faceIDListSize);
+  pSrc += 4 + faceIDListSize;
+
+  //uSourceLen = (char *)uSourceLen + (int)pFilename;
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+  free(pOMAP);
+  //v69 = malloc(0, 0x10000u, "OMAP");
+  pOMAP = (unsigned int *)malloc(0x10000);
+  //v108 = 65536;
+  //pOMAP = (unsigned int *)v69;
+  memcpy(pOMAP, pSrc, 65536);
+  pSrc += 65536;
+
+  //uSourceLen = (char *)uSourceLen + 65536;
+  pGameLoadingUI_ProgressBar->Progress();
+
+  memcpy(&uNumSpawnPoints, pSrc, 4);
+  //uSourceLen = (char *)uSourceLen + 4;
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+  assert(sizeof(SpawnPointMM7) == 24);
+  uint spawnPointsSize = uNumSpawnPoints * sizeof(SpawnPointMM7);
+  pSpawnPoints = (SpawnPointMM7 *)malloc(spawnPointsSize);
+  //v72 = uNumSpawnPoints;
+  //pSpawnPoints = v71;
+  memcpy(pSpawnPoints, pSrc + 4, spawnPointsSize);
+  pSrc += 4 + spawnPointsSize;
+
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+                                                  //****************.ddm file*********************//
+  free(pSrcMem);
+
+  auto ddm_filename = filename;
+  ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
+  pFile = pNew_LOD->FindContainer(ddm_filename, true);
+
+  fread(&header, 0x10, 1, pFile);
+  Str2 = 0;
+  if (header.uVersion != 91969 ||
+    header.pMagic[0] != 'm' ||
+    header.pMagic[1] != 'v' ||
+    header.pMagic[2] != 'i' ||
+    header.pMagic[3] != 'i')
+  {
+    logger->Warning(L"Can't load file!");
+    Str2 = (char *)1;
+  }
+
+  if (!Str2)
+  {
+    pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
+    pSrc = pSrcMem;
+    //v149 = v75;
+    if (header.uCompressedSize == header.uDecompressedSize)
+      fread(pSrc, header.uDecompressedSize, 1, pFile);
+    else if (header.uCompressedSize < header.uDecompressedSize)
+    {
+      void* compressedMem = malloc(header.uCompressedSize);
+      fread(compressedMem, header.uCompressedSize, 1, pFile);
+
+      uint actualDecompressedSize = header.uDecompressedSize;
+      zlib::Uncompress(pSrc, &actualDecompressedSize, compressedMem, header.uCompressedSize);
+      free(compressedMem);
     }
     else
+      logger->Warning(L"Can't load file!");
+
+    assert(sizeof(DDM_DLV_Header) == 0x28);
+    memcpy(&ddm, pSrc, sizeof(DDM_DLV_Header));
+    pSrc += sizeof(DDM_DLV_Header);
+    //v74 = (int)((char *)v75 + 40);
+  }
+  uint actualNumFacesInLevel = 0;
+  for (uint i = 0; i < uNumBModels; ++i)
+    actualNumFacesInLevel += pBModels[i].uNumFaces;
+
+  if (ddm.uNumFacesInBModels)
+  {
+    if (ddm.uNumBModels)
     {
-        pPaletteManager->pPalette_tintColor[0] = 0;
-        pPaletteManager->pPalette_tintColor[1] = 0;
-        pPaletteManager->pPalette_tintColor[2] = 0;
-        if (pPaletteManager->pPalette_mistColor[0] != 0x80 ||
-            pPaletteManager->pPalette_mistColor[1] != 0x80 ||
-            pPaletteManager->pPalette_mistColor[2] != 0x80)
-        {
-            pPaletteManager->SetMistColor(128, 128, 128);
-            pPaletteManager->RecalculateAll();
-        }
+      if (ddm.uNumDecorations)
+      {
+        if (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
+          ddm.uNumBModels != uNumBModels ||
+          ddm.uNumDecorations != uNumLevelDecorations)
+          Str2 = (char *)1;
+      }
     }
+  }
 
-    _6807E0_num_decorations_with_sounds_6807B8 = 0;
+  if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)
+    respawn_interval_days = 0x1BAF800;
 
-    assert(sizeof(BSPModel) == 188);
-
-    if (!pGames_LOD->DoesContainerExist(filename))
-        Error("Unable to find %s in Games.LOD", filename.c_str());
-
-
-    String minimap_filename = filename.substr(0, filename.length() - 4);
-    viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
-
-    auto odm_filename = filename;
-    odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
-    pFile = pGames_LOD->FindContainer(odm_filename, true);
-
-    header.uCompressedSize = 0;
-    header.uDecompressedSize = 0;
-    //ptr = v39;
-    header.uVersion = 91969;
-    header.pMagic[0] = 'm';
-    header.pMagic[1] = 'v';
-    header.pMagic[2] = 'i';
-    header.pMagic[3] = 'i';
-    fread(&header, 0x10, 1, pFile);
-    if (header.uVersion != 91969 ||
-        header.pMagic[0] != 'm' ||
-        header.pMagic[1] != 'v' ||
-        header.pMagic[2] != 'i' ||
-        header.pMagic[3] != 'i')
+  if (Str2 || days_played - ddm.uLastRepawnDay >= respawn_interval_days || !ddm.uLastRepawnDay)
+  {
+    if (Str2)
     {
-        logger->Warning(L"Can't load file!");
+      memset(Dst, 0, 0x3C8);
+      memset(Src, 0, 0x3C8);
     }
-
-    uchar* pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
-    uchar* pSrc = pSrcMem;
-
-    if (header.uCompressedSize < header.uDecompressedSize)
+    if (days_played - ddm.uLastRepawnDay >= respawn_interval_days || !ddm.uLastRepawnDay)
     {
-        char* pComressedSrc = (char *)malloc(header.uCompressedSize);
-        fread(pComressedSrc, header.uCompressedSize, 1, pFile);
-
-        uint actualDecompressedSize = header.uDecompressedSize;
-        zlib::Uncompress(pSrc, &actualDecompressedSize, pComressedSrc, header.uCompressedSize);
-        free(pComressedSrc);
+      memcpy(Dst, pSrc, 968);
+      memcpy(Src, pSrc + 968, 968);
     }
-    else
-    {
-        fread(pSrc, header.uDecompressedSize, 1, pFile);
-    }
-
-    this->level_filename = String((const char *)pSrc, 32);
-    this->location_filename = String((const char *)pSrc + 32, 32);
-    this->location_file_description = String((const char *)pSrc + 64, 32);
-    this->sky_texture_filename = String((const char *)pSrc + 64 + 32, 32);
-    this->ground_tileset = String((const char *)pSrc + 128, 32);
-    memcpy(pTileTypes, pSrc + 0xA0, 0x10);
-    pSrc += 0xB0;
-
-    //v43 = (char *)pSrc + 176;
-    LoadTileGroupIds();
-    LoadRoadTileset();
-    this->ground_tileset = "grastyl";
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    //*******************Terrain**************************//
-    pTerrain.Initialize();
-    memcpy(pTerrain.pHeightmap, pSrc, 0x4000);				//карта высот
-    pSrc += 0x4000;
-
-    memcpy(pTerrain.pTilemap, pSrc, 0x4000);					//карта тайлов
-    pSrc += 0x4000;
-
-    memcpy(pTerrain.pAttributemap, pSrc, 0x4000);				// карта аттрибутов
-    pSrc += 0x4000;
-
-    //v43 = (char *)v43 + 16384;
-    //v108 = (int)ptr_D4;
-    free(pCmap);
-    pCmap = malloc(0x8000);
-    pTerrain.FillDMap(0, 0, 128, 128);						//
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    memcpy(&uNumTerrainNormals, pSrc, 4);						// количество нормалей
-    memcpy(pTerrainSomeOtherData.data(), pSrc + 4, 0x20000);
-    pSrc += 4 + 0x20000;
-    //v43 = (char *)v43 + 131072;
-    memcpy(pTerrainNormalIndices.data(), pSrc, 0x10000);		//индексы нормалей
-    pSrc += 0x10000;
-    //v43 = (char *)v43 + 65536;
-
-    //pFilename = (char *)(12 * uNumTerrainNormals);
-    pTerrainNormals = (Vec3_float_ *)malloc(sizeof(Vec3_float_) * uNumTerrainNormals);//карта нормалей
-    memcpy(pTerrainNormals, pSrc, 12 * uNumTerrainNormals);
-    pSrc += 12 * uNumTerrainNormals;
-    //v44 = (char *)v43 + (int)pFilename;
-    //v44 = (char *)v44 + 4;
-    //v45 = uNumBModels;
-    //v108 = (int)"BDdata";
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    //************BModels************************//
-    //v107 = 188 * v45;
-    //v106 = (char *)pBModels;
-    //v46 = (BSPModel *)malloc(v106, 188 * v45, "BDdata");
-    //v47 = uNumBModels;
-    memcpy(&uNumBModels, pSrc, 4);							//количество BModel'ей
-    pBModels = (BSPModel *)malloc(188 * uNumBModels);
-    memcpy(pBModels, pSrc + 4, 188 * uNumBModels);			//BModel'и
-    pSrc += 4 + 188 * uNumBModels;
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    //uSourceLen = (char *)v44 + (int)pFilename;
-    //v151 = 0;
-    for (uint i = 0; i < uNumBModels; ++i)
-    {
-        pBModels[i].pVertices.pVertices = nullptr;
-        pBModels[i].pFaces = nullptr;
-        pBModels[i].pFacesOrdering = nullptr;
-        pBModels[i].pNodes = nullptr;
-
-        assert(sizeof(Vec3_int_) == 12);
-        uint verticesSize = pBModels[i].pVertices.uNumVertices * sizeof(Vec3_int_);
-        pBModels[i].pVertices.pVertices = (Vec3_int_ *)malloc(verticesSize);
-        memcpy(pBModels[i].pVertices.pVertices, pSrc, verticesSize);
-        pSrc += verticesSize;
-
-        //assert(sizeof(ODMFace) == 308);
-        uint facesSize = pBModels[i].uNumFaces * sizeof(ODMFace_MM7);
-        pBModels[i].pFaces = new ODMFace[pBModels[i].uNumFaces];
-        auto face_data = (ODMFace_MM7 *)pSrc;
-        for (unsigned int j = 0; j < pBModels[i].uNumFaces; ++j)
-        {
-            pBModels[i].pFaces[j].Deserialize(face_data);
-            face_data++;
-        }
-        //memcpy(pBModels[i].pFaces, pSrc, facesSize);
-        pSrc += facesSize;
-
-        uint facesOrderingSize = pBModels[i].uNumFaces * sizeof(short);
-        pBModels[i].pFacesOrdering = (unsigned __int16 *)malloc(facesOrderingSize);
-        memcpy(pBModels[i].pFacesOrdering, pSrc, facesOrderingSize);
-        pSrc += facesOrderingSize;
-
-        assert(sizeof(BSPNode) == 8);
-        uint nodesSize = pBModels[i].uNumNodes * sizeof(BSPNode);
-        pBModels[i].pNodes = (BSPNode *)malloc(nodesSize);
-        memcpy(pBModels[i].pNodes, pSrc, nodesSize);
-        pSrc += nodesSize;
-
-        const char* textureFilenames = (const char *)malloc(10 * pBModels[i].uNumFaces);
-        //pFilename = (char *)(10 * pBModels[v48].uNumFaces);
-        memcpy((char *)textureFilenames, pSrc, 10 * pBModels[i].uNumFaces);
-        pSrc += 10 * pBModels[i].uNumFaces;
-        //v144 = 0;
-        //uSourceLen = (char *)uSourceLen + (int)pFilename;
-        //v60 = pBModels;
-        for (uint j = 0; j < pBModels[i].uNumFaces; ++j)
-        {
-            const char* texFilename = &textureFilenames[j * 10];
-
-            pBModels[i].pFaces[j].SetTexture(texFilename);
-
-            if (pBModels[i].pFaces[j].sCogTriggeredID)
-            {
-                if (pBModels[i].pFaces[j].HasEventHint())
-                    pBModels[i].pFaces[j].uAttributes |= FACE_HAS_EVENT;
-                else
-                    pBModels[i].pFaces[j].uAttributes &= ~FACE_HAS_EVENT;
-            }
-        }
-
-        free((void *)textureFilenames);
-    }
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    //******************Decorations**********************//
-    memcpy(&uNumLevelDecorations, pSrc, 4);
-    //uSourceLen = (char *)uSourceLen + 4;
-    if (uNumLevelDecorations > 3000)
-        logger->Warning(L"Can't load file!");
-
-    assert(sizeof(LevelDecoration) == 32);
-    //pFilename = (char *)(32 * uNumLevelDecorations);
-    memcpy(pLevelDecorations.data(), pSrc + 4, uNumLevelDecorations * sizeof(LevelDecoration));
-    pSrc += 4 + sizeof(LevelDecoration) * uNumLevelDecorations;
-
-    pGameLoadingUI_ProgressBar->Progress();
-
-    //v151 = 0;
-    //uSourceLen = (char *)uSourceLen + (int)pFilename;
-    for (uint i = 0; i < uNumLevelDecorations; ++i)
-    {
-        char name[256];
-        memcpy(name, pSrc, sizeof(LevelDecoration));
-        pSrc += sizeof(LevelDecoration);
-
-        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
-    }
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    memcpy(&numFaceIDListElems, pSrc, 4);
-
-    //uSourceLen = (char *)uSourceLen + 4;
-    //v108 = (int)pFaceIDLIST;
-    free(pFaceIDLIST);
-    pFaceIDLIST = nullptr;
-
-    uint faceIDListSize = 2 * numFaceIDListElems;
-    pFaceIDLIST = (unsigned short *)malloc(faceIDListSize);
-
-    memcpy(pFaceIDLIST, pSrc + 4, faceIDListSize);
-    pSrc += 4 + faceIDListSize;
-
-    //uSourceLen = (char *)uSourceLen + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    free(pOMAP);
-    //v69 = malloc(0, 0x10000u, "OMAP");
-    pOMAP = (unsigned int *)malloc(0x10000);
-    //v108 = 65536;
-    //pOMAP = (unsigned int *)v69;
-    memcpy(pOMAP, pSrc, 65536);
-    pSrc += 65536;
-
-    //uSourceLen = (char *)uSourceLen + 65536;
-    pGameLoadingUI_ProgressBar->Progress();
-
-    memcpy(&uNumSpawnPoints, pSrc, 4);
-    //uSourceLen = (char *)uSourceLen + 4;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    assert(sizeof(SpawnPointMM7) == 24);
-    uint spawnPointsSize = uNumSpawnPoints * sizeof(SpawnPointMM7);
-    pSpawnPoints = (SpawnPointMM7 *)malloc(spawnPointsSize);
-    //v72 = uNumSpawnPoints;
-    //pSpawnPoints = v71;
-    memcpy(pSpawnPoints, pSrc + 4, spawnPointsSize);
-    pSrc += 4 + spawnPointsSize;
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    //****************.ddm file*********************//
     free(pSrcMem);
 
-    auto ddm_filename = filename;
-    ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    pFile = pNew_LOD->FindContainer(ddm_filename, true);
-
+    ddm.uLastRepawnDay = days_played;
+    if (Str2 == 0)
+      ++ddm.uNumRespawns;
+    v108 = 0;
+    *thisa = 1;
+    pFile = pGames_LOD->FindContainer(ddm_filename, false);
     fread(&header, 0x10, 1, pFile);
-    Str2 = 0;
-    if (header.uVersion != 91969 ||
-        header.pMagic[0] != 'm' ||
-        header.pMagic[1] != 'v' ||
-        header.pMagic[2] != 'i' ||
-        header.pMagic[3] != 'i')
+    //pFilename = (char *)header.uCompressedSize;
+    //pDestLen = header.uDecompressedSize;
+    //v82 = malloc(header.uDecompressedSize);
+    pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
+    //v149 = v82;
+    if (header.uCompressedSize == header.uDecompressedSize)
+      fread(pSrcMem, header.uDecompressedSize, 1, pFile);
+    else if (header.uCompressedSize < header.uDecompressedSize)
     {
-        logger->Warning(L"Can't load file!");
-        Str2 = (char *)1;
-    }
+      void* compressedMem = malloc(header.uCompressedSize);
+      fread(compressedMem, header.uCompressedSize, 1, pFile);
 
-    if (!Str2)
-    {
-        pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
-        pSrc = pSrcMem;
-        //v149 = v75;
-        if (header.uCompressedSize == header.uDecompressedSize)
-            fread(pSrc, header.uDecompressedSize, 1, pFile);
-        else if (header.uCompressedSize < header.uDecompressedSize)
-        {
-            void* compressedMem = malloc(header.uCompressedSize);
-            fread(compressedMem, header.uCompressedSize, 1, pFile);
-
-            uint actualDecompressedSize = header.uDecompressedSize;
-            zlib::Uncompress(pSrc, &actualDecompressedSize, compressedMem, header.uCompressedSize);
-            free(compressedMem);
-        }
-        else
-            logger->Warning(L"Can't load file!");
-
-        assert(sizeof(DDM_DLV_Header) == 0x28);
-        memcpy(&ddm, pSrc, sizeof(DDM_DLV_Header));
-        pSrc += sizeof(DDM_DLV_Header);
-        //v74 = (int)((char *)v75 + 40);
-    }
-    uint actualNumFacesInLevel = 0;
-    for (uint i = 0; i < uNumBModels; ++i)
-        actualNumFacesInLevel += pBModels[i].uNumFaces;
-
-    if (ddm.uNumFacesInBModels)
-    {
-        if (ddm.uNumBModels)
-        {
-            if (ddm.uNumDecorations)
-            {
-                if (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
-                    ddm.uNumBModels != uNumBModels ||
-                    ddm.uNumDecorations != uNumLevelDecorations)
-                    Str2 = (char *)1;
-            }
-        }
-    }
-
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)
-        respawn_interval_days = 0x1BAF800;
-
-    if (Str2 || days_played - ddm.uLastRepawnDay >= respawn_interval_days || !ddm.uLastRepawnDay)
-    {
-        if (Str2)
-        {
-            memset(Dst, 0, 0x3C8);
-            memset(Src, 0, 0x3C8);
-        }
-        if (days_played - ddm.uLastRepawnDay >= respawn_interval_days || !ddm.uLastRepawnDay)
-        {
-            memcpy(Dst, pSrc, 968);
-            memcpy(Src, pSrc + 968, 968);
-        }
-        free(pSrcMem);
-
-        ddm.uLastRepawnDay = days_played;
-        if (Str2 == 0)
-            ++ddm.uNumRespawns;
-        v108 = 0;
-        *thisa = 1;
-        pFile = pGames_LOD->FindContainer(ddm_filename, false);
-        fread(&header, 0x10, 1, pFile);
-        //pFilename = (char *)header.uCompressedSize;
-        //pDestLen = header.uDecompressedSize;
-        //v82 = malloc(header.uDecompressedSize);
-        pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
-        //v149 = v82;
-        if (header.uCompressedSize == header.uDecompressedSize)
-            fread(pSrcMem, header.uDecompressedSize, 1, pFile);
-        else if (header.uCompressedSize < header.uDecompressedSize)
-        {
-            void* compressedMem = malloc(header.uCompressedSize);
-            fread(compressedMem, header.uCompressedSize, 1, pFile);
-
-            uint actualDecompressedSize = header.uDecompressedSize;
-            zlib::Uncompress(pSrcMem, &actualDecompressedSize, compressedMem, header.uCompressedSize);
-            free(compressedMem);
-        }
-        else
-            logger->Warning(L"Can't load file!");
-
-        pSrc = pSrcMem + 40;
+      uint actualDecompressedSize = header.uDecompressedSize;
+      zlib::Uncompress(pSrcMem, &actualDecompressedSize, compressedMem, header.uCompressedSize);
+      free(compressedMem);
     }
     else
-        *thisa = 0;
-    memcpy(uFullyRevealedCellOnMap, pSrc, 968);
-    memcpy(uPartiallyRevealedCellOnMap, pSrc + 968, 968);
-    pSrc += 2 * 968;
+      logger->Warning(L"Can't load file!");
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+    pSrc = pSrcMem + 40;
+  }
+  else
+    *thisa = 0;
+  memcpy(uFullyRevealedCellOnMap, pSrc, 968);
+  memcpy(uPartiallyRevealedCellOnMap, pSrc + 968, 968);
+  pSrc += 2 * 968;
 
-    if (*thisa)
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+  if (*thisa)
+  {
+    memcpy(uFullyRevealedCellOnMap, Dst, 968);
+    memcpy(uPartiallyRevealedCellOnMap, Src, 968);
+  }
+
+  for (uint i = 0; i < uNumBModels; ++i)
+  {
+    BSPModel model = pBModels[i];
+    for (uint j = 0; j < model.uNumFaces; ++j)
     {
-        memcpy(uFullyRevealedCellOnMap, Dst, 968);
-        memcpy(uPartiallyRevealedCellOnMap, Src, 968);
+      ODMFace face = model.pFaces[j];
+      memcpy(&face.uAttributes, pSrc, 4);
+      pSrc += 4;
     }
 
-    for (uint i = 0; i < uNumBModels; ++i)
+    for (uint j = 0; j < model.uNumFaces; ++j)
     {
-        BSPModel model = pBModels[i];
-        for (uint j = 0; j < model.uNumFaces; ++j)
-        {
-            ODMFace face = model.pFaces[j];
-            memcpy(&face.uAttributes, pSrc, 4);
-            pSrc += 4;
-        }
-
-        for (uint j = 0; j < model.uNumFaces; ++j)
-        {
-            ODMFace face = model.pFaces[j];
-            if (face.sCogTriggeredID)
-            {
-                if (face.HasEventHint())
-                    face.uAttributes |= FACE_HAS_EVENT_HINT;
-                else
-                    face.uAttributes &= ~FACE_HAS_EVENT_HINT;//~0x00001000
-            }
-        }
+      ODMFace face = model.pFaces[j];
+      if (face.sCogTriggeredID)
+      {
+        if (face.HasEventHint())
+          face.uAttributes |= FACE_HAS_EVENT_HINT;
+        else
+          face.uAttributes &= ~FACE_HAS_EVENT_HINT;//~0x00001000
+      }
     }
+  }
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i)
+  for (uint i = 0; i < uNumLevelDecorations; ++i)
+  {
+    memcpy(&pLevelDecorations[i].uFlags, pSrc, 2);
+    pSrc += 2;
+  }
+
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+  memcpy(&uNumActors, pSrc, 4);
+  if (uNumActors > 500)
+    logger->Warning(L"Can't load file!");
+
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+  assert(sizeof(Actor) == 836);
+  //pFilename = (char *)(836 * uNumActors);
+  memcpy(pActors.data(), pSrc + 4, uNumActors * sizeof(Actor));
+  pSrc += 4 + uNumActors * sizeof(Actor);
+  //v92 = (char *)v91 + (int)pFilename;
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+  memcpy(&uNumSpriteObjects, pSrc, 4);
+  assert(uNumSpriteObjects <= 1000 && "Too many objects");
+  assert(sizeof(SpriteObject) == 112);
+
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+                                                  //pFilename = (char *)(112 * uNumSpriteObjects);
+  memcpy(pSpriteObjects.data(), pSrc + 4, uNumSpriteObjects * sizeof(SpriteObject));
+  pSrc += 4 + uNumSpriteObjects * sizeof(SpriteObject);
+
+  //v94 = (char *)v93 + (int)pFilename;
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+  memcpy(&uNumChests, pSrc, 4);
+  //v95 = (char *)v94 + 4;
+  if (uNumChests > 20)
+    logger->Warning(L"Can't load file!");
+
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+  assert(sizeof(Chest) == 5324);
+  //pFilename = (char *)(5324 * uNumChests);
+  memcpy(pChests.data(), pSrc + 4, uNumChests * sizeof(Chest));
+  pSrc += 4 + uNumChests * sizeof(Chest);
+  //v96 = (char *)v95 + (int)pFilename;
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+
+  memcpy(&stru_5E4C90_MapPersistVars, pSrc, 0xC8);
+  pSrc += 0xC8;
+
+  pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+  memcpy(&loc_time, pSrc, 0x38u);
+
+  free(pSrcMem);
+
+  pTileTable->InitializeTileset(Tileset_Dirt);
+  pTileTable->InitializeTileset(Tileset_Snow);
+  pTileTable->InitializeTileset(pTileTypes[0].tileset);
+  pTileTable->InitializeTileset(pTileTypes[1].tileset);
+  pTileTable->InitializeTileset(pTileTypes[2].tileset);
+  pTileTable->InitializeTileset(pTileTypes[3].tileset);
+  this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
+  TileDesc* v98 = pTileTable->GetTileById(pTileTypes[0].uTileID);
+
+  main_tile_texture = v98->GetTexture();
+  //sMainTile_BitmapID = pBitmaps_LOD->LoadTexture(v98->pTileName, TEXTURE_DEFAULT);
+  //if (sMainTile_BitmapID != -1)
+  //    pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id1);
+
+  _47F0E2();
+
+  //LABEL_150:
+  if (pWeather->bRenderSnow) //Ritor1: it's include for snow
+    strcpy(loc_time.sky_texture_name, "sky19");
+  else if (loc_time.last_visit)
+  {
+    if (loc_time.last_visit.GetDays() % 28 != pParty->uCurrentDayOfMonth)
     {
-        memcpy(&pLevelDecorations[i].uFlags, pSrc, 2);
-        pSrc += 2;
+      if (rand() % 100 >= 20)
+        v108 = dword_4EC268[rand() % dword_4EC2A8];
+      else
+        v108 = dword_4EC28C[rand() % dword_4EC2AC];
+      sprintf(loc_time.sky_texture_name, "plansky%d", v108);
     }
+  }
+  else
+    strcpy(loc_time.sky_texture_name, "plansky3");
 
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
+  this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
 
-    memcpy(&uNumActors, pSrc, 4);
-    if (uNumActors > 500)
-        logger->Warning(L"Can't load file!");
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    assert(sizeof(Actor) == 836);
-    //pFilename = (char *)(836 * uNumActors);
-    memcpy(pActors.data(), pSrc + 4, uNumActors * sizeof(Actor));
-    pSrc += 4 + uNumActors * sizeof(Actor);
-    //v92 = (char *)v91 + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    memcpy(&uNumSpriteObjects, pSrc, 4);
-    assert(uNumSpriteObjects <= 1000 && "Too many objects");
-    assert(sizeof(SpriteObject) == 112);
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    //pFilename = (char *)(112 * uNumSpriteObjects);
-    memcpy(pSpriteObjects.data(), pSrc + 4, uNumSpriteObjects * sizeof(SpriteObject));
-    pSrc += 4 + uNumSpriteObjects * sizeof(SpriteObject);
-
-    //v94 = (char *)v93 + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    memcpy(&uNumChests, pSrc, 4);
-    //v95 = (char *)v94 + 4;
-    if (uNumChests > 20)
-        logger->Warning(L"Can't load file!");
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    assert(sizeof(Chest) == 5324);
-    //pFilename = (char *)(5324 * uNumChests);
-    memcpy(pChests.data(), pSrc + 4, uNumChests * sizeof(Chest));
-    pSrc += 4 + uNumChests * sizeof(Chest);
-    //v96 = (char *)v95 + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-
-    memcpy(&stru_5E4C90_MapPersistVars, pSrc, 0xC8);
-    pSrc += 0xC8;
-
-    pGameLoadingUI_ProgressBar->Progress();					//прогресс загрузки
-    memcpy(&loc_time, pSrc, 0x38u);
-
-    free(pSrcMem);
-
-    pTileTable->InitializeTileset(Tileset_Dirt);
-    pTileTable->InitializeTileset(Tileset_Snow);
-    pTileTable->InitializeTileset(pTileTypes[0].tileset);
-    pTileTable->InitializeTileset(pTileTypes[1].tileset);
-    pTileTable->InitializeTileset(pTileTypes[2].tileset);
-    pTileTable->InitializeTileset(pTileTypes[3].tileset);
-    this->ground_tileset = byte_6BE124_cfg_textures_DefaultGroundTexture.data();
-    TileDesc* v98 = pTileTable->GetTileById(pTileTypes[0].uTileID);
-
-    main_tile_texture = v98->GetTexture();
-    //sMainTile_BitmapID = pBitmaps_LOD->LoadTexture(v98->pTileName, TEXTURE_DEFAULT);
-    //if (sMainTile_BitmapID != -1)
-    //    pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id2 = pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[sMainTile_BitmapID].palette_id1);
-
-    _47F0E2();
-
-    //LABEL_150:
-    if (pWeather->bRenderSnow) //Ritor1: it's include for snow
-        strcpy(loc_time.sky_texture_name, "sky19");
-    else if (loc_time.last_visit)
+  pPaletteManager->RecalculateAll();
+  //    pSoundList->LoadSound(SOUND_RunDirt, 0);			//For Dirt tyle(для звука хождения по грязи)
+  //    pSoundList->LoadSound(SOUND_WalkDirt, 0);			//для бега
+  //    pSoundList->LoadSound(SOUND_RunRoad, 0);			//для звука хождения по дороге
+  //    pSoundList->LoadSound(SOUND_WalkRoad, 0);
+  //    pSoundList->LoadSound(SOUND_RunWood, 0);			//для звука хождения по дереву
+  //    pSoundList->LoadSound(SOUND_WalkWood, 0);
+  for (int i = 0; i < 3; ++i)
+  {
+    switch (pTileTypes[i].tileset)
     {
-        if (loc_time.last_visit.GetDays() % 28 != pParty->uCurrentDayOfMonth)
-        {
-            if (rand() % 100 >= 20)
-                v108 = dword_4EC268[rand() % dword_4EC2A8];
-            else
-                v108 = dword_4EC28C[rand() % dword_4EC2AC];
-            sprintf(loc_time.sky_texture_name, "plansky%d", v108);
-        }
+    case Tileset_Grass:
+      //            pSoundList->LoadSound(SOUND_RunGrass, 0);	//для звука хождения по траве
+      //            pSoundList->LoadSound(SOUND_WalkGrass, 0);
+      break;
+    case Tileset_Snow:
+      //            pSoundList->LoadSound(SOUND_RunSnow, 0);	//по снегу
+      //            pSoundList->LoadSound(SOUND_WalkSnow, 0);
+      break;
+    case Tilset_Desert:
+      //            pSoundList->LoadSound(SOUND_RunDesert, 0);	//по пустыне
+      //            pSoundList->LoadSound(SOUND_WalkDesert, 0);
+      break;
+    case Tileset_CooledLava:
+      //            pSoundList->LoadSound(SOUND_RunCooledLava, 0);//по лаве
+      //            pSoundList->LoadSound(SOUND_WalkCooledLava, 0);
+      break;
+    case Tileset_Water:
+      //            pSoundList->LoadSound(SOUND_RunWater, 0);		//по воде
+      //            pSoundList->LoadSound(SOUND_WalkWater, 0);
+      break;
+    case Tileset_Badlands:
+      //            pSoundList->LoadSound(SOUND_RunBadlands, 0);	//для звука ходьбы по бесплодным землям
+      //            pSoundList->LoadSound(SOUND_WalkBadlands, 0);
+      break;
+    case Tileset_Swamp:
+      //            pSoundList->LoadSound(SOUND_RunSwamp, 0);		//по болоту
+      //            pSoundList->LoadSound(SOUND_WalkSwamp, 0);
+      break;
     }
-    else
-        strcpy(loc_time.sky_texture_name, "plansky3");
-
-    this->sky_texture = assets->GetBitmap(loc_time.sky_texture_name);
-
-    pPaletteManager->RecalculateAll();
-//    pSoundList->LoadSound(SOUND_RunDirt, 0);			//For Dirt tyle(для звука хождения по грязи)
-//    pSoundList->LoadSound(SOUND_WalkDirt, 0);			//для бега
-//    pSoundList->LoadSound(SOUND_RunRoad, 0);			//для звука хождения по дороге
-//    pSoundList->LoadSound(SOUND_WalkRoad, 0);
-//    pSoundList->LoadSound(SOUND_RunWood, 0);			//для звука хождения по дереву
-//    pSoundList->LoadSound(SOUND_WalkWood, 0);
-    for (int i = 0; i < 3; ++i)
-    {
-        switch (pTileTypes[i].tileset)
-        {
-        case Tileset_Grass:
-//            pSoundList->LoadSound(SOUND_RunGrass, 0);	//для звука хождения по траве
-//            pSoundList->LoadSound(SOUND_WalkGrass, 0);
-            break;
-        case Tileset_Snow:
-//            pSoundList->LoadSound(SOUND_RunSnow, 0);	//по снегу
-//            pSoundList->LoadSound(SOUND_WalkSnow, 0);
-            break;
-        case Tilset_Desert:
-//            pSoundList->LoadSound(SOUND_RunDesert, 0);	//по пустыне
-//            pSoundList->LoadSound(SOUND_WalkDesert, 0);
-            break;
-        case Tileset_CooledLava:
-//            pSoundList->LoadSound(SOUND_RunCooledLava, 0);//по лаве
-//            pSoundList->LoadSound(SOUND_WalkCooledLava, 0);
-            break;
-        case Tileset_Water:
-//            pSoundList->LoadSound(SOUND_RunWater, 0);		//по воде
-//            pSoundList->LoadSound(SOUND_WalkWater, 0);
-            break;
-        case Tileset_Badlands:
-//            pSoundList->LoadSound(SOUND_RunBadlands, 0);	//для звука ходьбы по бесплодным землям
-//            pSoundList->LoadSound(SOUND_WalkBadlands, 0);
-            break;
-        case Tileset_Swamp:
-//            pSoundList->LoadSound(SOUND_RunSwamp, 0);		//по болоту
-//            pSoundList->LoadSound(SOUND_WalkSwamp, 0);
-            break;
-        }
-    }
-    return true;
+  }
+  return true;
 }
 
 //----- (0047ECC1) --------------------------------------------------------
@@ -2212,7 +2190,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, int *pIsOnWater,
   current_Face_id[0] = -1;
   odm_floor_level[0] = GetTerrainHeightsAroundParty2(X, Y, pIsOnWater, bWaterWalk);
   
-  for ( pBModelNum = 0; pBModelNum < pOutdoor->uNumBModels; ++pBModelNum )
+  for ( pBModelNum = 0; pBModelNum < pOutdoor->pBModels.size(); ++pBModelNum )
   {
     pBModel = &pOutdoor->pBModels[pBModelNum];
     if ( X <= pBModel->sMaxX && X >= pBModel->sMinX &&
@@ -2470,28 +2448,20 @@ void OutdoorLocation::LoadActualSkyFrame()
 }
 
 
-//----- (004626BA) --------------------------------------------------------
-OutdoorLocation::OutdoorLocation()
-{
+OutdoorLocation::OutdoorLocation() {
   subconstuctor();
   uLastSunlightUpdateMinute = 0;
-
-  uNumBModels = 0;
-  pBModels = nullptr;
 }
 
-//----- (004626CD) --------------------------------------------------------
-void OutdoorLocation::subconstuctor()
-{
-    //OutdoorLocationTerrain::OutdoorLocationTerrain(&this->pTerrain);
-    field_F0 = 0;
-    field_F4 = 0x40000000u;
-    //DLVHeader::DLVHeader(&v1->ddm);
-    pSpawnPoints = 0;
-    pBModels = 0;
-    pCmap = 0;
-    pFaceIDLIST = 0;
-    pOMAP = 0;
+void OutdoorLocation::subconstuctor() {
+  //OutdoorLocationTerrain::OutdoorLocationTerrain(&this->pTerrain);
+  field_F0 = 0;
+  field_F4 = 0x40000000u;
+  //DLVHeader::DLVHeader(&v1->ddm);
+  pSpawnPoints = 0;
+  pCmap = 0;
+  pFaceIDLIST = 0;
+  pOMAP = 0;
 }
 
 //----- (00481E55) --------------------------------------------------------
@@ -2699,31 +2669,26 @@ void ODM_ProcessPartyActions()
 
     //*****************************************
     // установить на чём стоит группа
-    if (!hovering)//не в воздухе
-    {
-        if (pParty->floor_face_pid != PID(OBJECT_BModel, bmodel_standing_on_pid))
-        {
-            if (bmodel_standing_on_pid)
+    if (!hovering) {  // не в воздухе
+      if (pParty->floor_face_pid != PID(OBJECT_BModel, bmodel_standing_on_pid)) {
+        if (bmodel_standing_on_pid) {
+          int BModel_id = bmodel_standing_on_pid >> 6;
+          if (BModel_id < pOutdoor->pBModels.size()) {
+            face = pOutdoor->pBModels[BModel_id].pFaces;
+            int face_id = bmodel_standing_on_pid & 0x3F;
+            /*if ( *(char *)(v7->pFacePlane.vNormal.x + 308 * v6 + 31) & 4 )
             {
-                int BModel_id = bmodel_standing_on_pid >> 6;
-                if (BModel_id < pOutdoor->uNumBModels)
-                {
-                    face = pOutdoor->pBModels[BModel_id].pFaces;
-                    int face_id = bmodel_standing_on_pid & 0x3F;
-                    /*if ( *(char *)(v7->pFacePlane.vNormal.x + 308 * v6 + 31) & 4 )
-                    {
-                      pParty->field_6F4_packedid = PID(OBJECT_BModel,v108);
-                      v103 = *(short *)(v7->pFacePlane.vNormal.x + 308 * v6 + 292);
-                    }*/
-                    if (face[face_id].uAttributes & FACE_PRESSURE_PLATE)
-                    {
-                        pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);
-                        trigger_id = face[face_id].sCogTriggeredID; //EVT, панель имеет событие
-                    }
-                }
+            pParty->field_6F4_packedid = PID(OBJECT_BModel,v108);
+            v103 = *(short *)(v7->pFacePlane.vNormal.x + 308 * v6 + 292);
+            }*/
+            if (face[face_id].uAttributes & FACE_PRESSURE_PLATE) {
+              pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);
+              trigger_id = face[face_id].sCogTriggeredID; //EVT, панель имеет событие
             }
+          }
         }
-        pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);//6 - на земле
+      }
+      pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);//6 - на земле
     }
     //***********************************************
     _walk_speed = pParty->uWalkSpeed;
@@ -3547,86 +3512,79 @@ void ODM_ProcessPartyActions()
     }
 }
 
-//----- (0046D8E3) --------------------------------------------------------
-int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int pFaceID)
-{
-  signed int v13; // eax@25
+int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int pFaceID) {
+  int v13; // eax@25
   int v14; // edx@27
   int v16; // ST18_4@29
-  signed int v17; // edx@29
-  signed __int64 v18; // qtt@29
+  int v17; // edx@29
+  int64_t v18; // qtt@29
   int v19; // eax@35
-  signed int v20; // ecx@37
-  signed int v22; // ebx@42
-//  int v24; // edx@44
-//  int v25; // eax@44
+  int v20; // ecx@37
+  int v22; // ebx@42
   int v27; // [sp+10h] [bp-34h]@21
   bool v34; // [sp+30h] [bp-14h]@21
   bool v35; // [sp+34h] [bp-10h]@23
-  signed int v37; // [sp+38h] [bp-Ch]@21
-  signed int v38; // [sp+38h] [bp-Ch]@42
-  signed int v39; // [sp+3Ch] [bp-8h]@1
+  int v37; // [sp+38h] [bp-Ch]@21
+  int v38; // [sp+38h] [bp-Ch]@42
+  int v39; // [sp+3Ch] [bp-8h]@1
 
   dword_720ED0[0] = -1;
   dword_720E80[0] = -1;
   v39 = 1;
   ceiling_height_level[0] = 10000;//нет потолка
-  for ( uint i = 0; i < (signed int)pOutdoor->uNumBModels; ++i )
-  {
-    if ( Party_X <= pOutdoor->pBModels[i].sMaxX && Party_X >= pOutdoor->pBModels[i].sMinX
-      && Party_Y <= pOutdoor->pBModels[i].sMaxY && Party_Y >= pOutdoor->pBModels[i].sMinY )
-    {
-      for ( uint j = 0; j < pOutdoor->pBModels[i].uNumFaces; ++j )
-      {
-        if ( (pOutdoor->pBModels[i].pFaces[j].uPolygonType == POLYGON_Ceiling
-           || pOutdoor->pBModels[i].pFaces[j].uPolygonType == POLYGON_InBetweenCeilingAndWall)
-           && !pOutdoor->pBModels[i].pFaces[j].Ethereal()
-           && Party_X <= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.x2 && Party_X >= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.x1
-           && Party_Y <= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.y2 && Party_Y >= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.y1 )
+  int i = 0;
+  for (BSPModel &model : pOutdoor->pBModels) {
+    if (Party_X <= model.sMaxX && Party_X >= model.sMinX && Party_Y <= model.sMaxY && Party_Y >= model.sMinY) {
+      for (uint j = 0; j < model.uNumFaces; ++j) {
+        if ((model.pFaces[j].uPolygonType == POLYGON_Ceiling
+          || model.pFaces[j].uPolygonType == POLYGON_InBetweenCeilingAndWall)
+          && !model.pFaces[j].Ethereal()
+          && Party_X <= model.pFaces[j].pBoundingBox.x2 && Party_X >= model.pFaces[j].pBoundingBox.x1
+          && Party_Y <= model.pFaces[j].pBoundingBox.y2 && Party_Y >= model.pFaces[j].pBoundingBox.y1)
         {
-          for ( uint v = 0; v < pOutdoor->pBModels[i].pFaces[j].uNumVertices; v++ )
+          for (uint v = 0; v < model.pFaces[j].uNumVertices; v++)
           {
-            word_720DB0_xs[2 * v] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + (short)pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v]].x;
-            word_720CE0_ys[2 * v] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + (short)pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v]].y;
-            word_720DB0_xs[2 * v + 1] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + (short)pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v + 1]].x;
-            word_720CE0_ys[2 * v + 1] = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements[v] + (short)pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[v + 1]].y;
+            word_720DB0_xs[2 * v] = model.pFaces[j].pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[model.pFaces[j].pVertexIDs[v]].x;
+            word_720CE0_ys[2 * v] = model.pFaces[j].pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[model.pFaces[j].pVertexIDs[v]].y;
+            word_720DB0_xs[2 * v + 1] = model.pFaces[j].pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[model.pFaces[j].pVertexIDs[v + 1]].x;
+            word_720CE0_ys[2 * v + 1] = model.pFaces[j].pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[model.pFaces[j].pVertexIDs[v + 1]].y;
           }
-          v27 = 2 * pOutdoor->pBModels[i].pFaces[j].uNumVertices;
-          word_720DB0_xs[2 * pOutdoor->pBModels[i].pFaces[j].uNumVertices] = word_720DB0_xs[0];
-          word_720CE0_ys[2 * pOutdoor->pBModels[i].pFaces[j].uNumVertices] = word_720CE0_ys[0];
+          v27 = 2 * model.pFaces[j].uNumVertices;
+          word_720DB0_xs[2 * model.pFaces[j].uNumVertices] = word_720DB0_xs[0];
+          word_720CE0_ys[2 * model.pFaces[j].uNumVertices] = word_720CE0_ys[0];
           v34 = word_720CE0_ys[0] >= Party_Y;
           v37 = 0;
-          for ( uint v = 0; v < v27; ++v )
+          for (uint v = 0; v < v27; ++v)
           {
-            if ( v37 >= 2 )
+            if (v37 >= 2)
               break;
             v35 = word_720CE0_ys[v + 1] >= Party_Y;
-            if ( v34 != v35 )
+            if (v34 != v35)
             {
               v13 = word_720DB0_xs[v + 1] >= Party_X ? 0 : 2;
               v14 = v13 | (word_720DB0_xs[v] < Party_X);
-              if ( v14 != 3 )
+              if (v14 != 3)
               {
-                if ( !v14 || ( v16 = word_720CE0_ys[v + 1] - word_720CE0_ys[v],
+                if (!v14 || (v16 = word_720CE0_ys[v + 1] - word_720CE0_ys[v],
                   v17 = Party_Y - word_720CE0_ys[v],
-                    HEXRAYS_LODWORD(v18) = v17 << 16,
-                    HEXRAYS_HIDWORD(v18) = v17 >> 16,
+                  HEXRAYS_LODWORD(v18) = v17 << 16,
+                  HEXRAYS_HIDWORD(v18) = v17 >> 16,
                   (signed int)(((unsigned __int64)(((signed int)word_720DB0_xs[v + 1]
-                  - (signed int)word_720DB0_xs[v]) * v18 / v16) >> 16) + word_720DB0_xs[v]) >= Party_X) )
+                    - (signed int)word_720DB0_xs[v]) * v18 / v16) >> 16) + word_720DB0_xs[v]) >= Party_X))
                   ++v37;
               }
             }
             v34 = v35;
           }
-          if ( v37 == 1 )
+          if (v37 == 1)
           {
-            if ( v39 >= 20 )
+            if (v39 >= 20)
               break;
-            if ( pOutdoor->pBModels[i].pFaces[j].uPolygonType == POLYGON_Ceiling )
-              v19 = pOutdoor->pBModels[i].pVertices.pVertices[pOutdoor->pBModels[i].pFaces[j].pVertexIDs[0]].z;
+            if (model.pFaces[j].uPolygonType == POLYGON_Ceiling)
+              v19 = model.pVertices.pVertices[model.pFaces[j].pVertexIDs[0]].z;
             else
-              v19 = fixpoint_mul(pOutdoor->pBModels[i].pFaces[j].zCalc1, Party_X) + fixpoint_mul(pOutdoor->pBModels[i].pFaces[j].zCalc2, Party_Y)
-                  + HEXRAYS_HIWORD(pOutdoor->pBModels[i].pFaces[j].zCalc3);
+              v19 = fixpoint_mul(model.pFaces[j].zCalc1, Party_X) + fixpoint_mul(model.pFaces[j].zCalc2, Party_Y)
+              + HEXRAYS_HIWORD(model.pFaces[j].zCalc3);
             v20 = v39++;
             ceiling_height_level[v20] = v19;
             dword_720ED0[v20] = i;
@@ -3635,23 +3593,23 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int pFa
         }
       }
     }
+    i++;
   }
-  if ( !v39 )
-  {
+
+  if (!v39) {
     pFaceID = 0;
     return ceiling_height_level[0];
   }
   v22 = 0;
-  for ( v38 = 0; v38 < v39; ++v38 )
-  {
-    if ( ceiling_height_level[v38] == ceiling_height_level[0] )
+  for (v38 = 0; v38 < v39; ++v38) {
+    if (ceiling_height_level[v38] == ceiling_height_level[0])
       v22 = v38;
-    else if ( ceiling_height_level[v38] < ceiling_height_level[0] && ceiling_height_level[0] > Party_ZHeight + 15 )
+    else if (ceiling_height_level[v38] < ceiling_height_level[0] && ceiling_height_level[0] > Party_ZHeight + 15)
       v22 = v38;
-    else if ( ceiling_height_level[v38] > ceiling_height_level[0] && ceiling_height_level[v38] <= Party_ZHeight + 15 )
+    else if (ceiling_height_level[v38] > ceiling_height_level[0] && ceiling_height_level[v38] <= Party_ZHeight + 15)
       v22 = v38;
   }
-  if ( v22 )
+  if (v22)
   {
     *(int *)pFaceID = dword_720E80[v22] | (dword_720ED0[v22] << 6);
     return ceiling_height_level[v22];//если есть преграда

@@ -995,23 +995,21 @@ void IntegrityTest() {
     static_assert(sizeof(OtherOverlay) == 0x14, "Wrong type size");
     static_assert(sizeof(ItemGen) == 0x24, "Wrong type size");
     static_assert(sizeof(SpriteObject) == 0x70, "Wrong type size");
-    static_assert(sizeof(ItemDesc) == 0x30, "Wrong type size");
-    static_assert(sizeof(ItemsTable) == 0x117A0, "Wrong type size");
+//    static_assert(sizeof(ItemDesc) == 0x30, "Wrong type size");
+//    static_assert(sizeof(ItemsTable) == 0x117A0, "Wrong type size");
     static_assert(sizeof(Chest) == 0x14CC, "Wrong type size");
-    static_assert(sizeof(MapInfo) == 0x44, "Wrong type size");
-    static_assert(sizeof(SpellInfo) == 0x24, "Wrong type size");
+//    static_assert(sizeof(MapInfo) == 0x44, "Wrong type size");
+//    static_assert(sizeof(SpellInfo) == 0x24, "Wrong type size");
     static_assert(sizeof(SpellData) == 0x14, "Wrong type size");
     static_assert(sizeof(SpellBuff) == 0x10, "Wrong type size");
     static_assert(sizeof(AIDirection) == 0x1C, "Wrong type size");
     static_assert(sizeof(ActorJob) == 0xC, "Wrong type size");
-    static_assert(sizeof(Actor) == 0x344, "Wrong type size");
+//    static_assert(sizeof(Actor) == 0x344, "Wrong type size");
     static_assert(sizeof(LevelDecoration) == 0x20, "Wrong type size");
-    static_assert(sizeof(KeyboardActionMapping) == 0x20C, "Wrong type size");
+//    static_assert(sizeof(KeyboardActionMapping) == 0x20C, "Wrong type size");
     //static_assert(sizeof(UIAnimation) == 0xD, "Wrong type size");
     //static_assert(sizeof(SpawnPointMM7) == 0x18, "Wrong type size");
     //static_assert(sizeof(ODMFace) == 0x134, "Wrong type size");
-    static_assert(sizeof(BSPNode) == 0x8, "Wrong type size");
-    static_assert(sizeof(BSPModel) == 0xBC, "Wrong type size");
     //static_assert(sizeof(OutdoorLocation) == 0x1C28C, "Wrong type size");
     //static_assert(sizeof(BLVFace) == 0x60, "Wrong type size");
     static_assert(sizeof(BLVFaceExtra) == 0x24, "Wrong type size");
@@ -2145,20 +2143,15 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog, const String &filename
     }
 }
 
-void sub_44861E_set_texture_outdoor(unsigned int uFaceCog, const String &filename)
-{
-    for (uint j = 0; j < pOutdoor->uNumBModels; ++j)
-    {
-        auto bmodel = &pOutdoor->pBModels[j];
-        for (uint i = 0; i < bmodel->uNumFaces; ++i)
-        {
-            auto face = &bmodel->pFaces[i];
-            if (face->sCogNumber == uFaceCog)
-            {
-                face->SetTexture(filename);
-            }
-        }
+void sub_44861E_set_texture_outdoor(unsigned int uFaceCog, const String &filename) {
+  for (BSPModel &model : pOutdoor->pBModels) {
+    for (uint i = 0; i < model.uNumFaces; ++i) {
+      auto face = &model.pFaces[i];
+      if (face->sCogNumber == uFaceCog) {
+        face->SetTexture(filename);
+      }
     }
+  }
 }
 
 //----- (0044861E) --------------------------------------------------------
@@ -2186,42 +2179,33 @@ void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename)
 }
 
 //----- (0044892E) --------------------------------------------------------
-void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on)
-{
-    if (sCogNumber)
-    {
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        {
-            for (uint i = 1; i < (unsigned int)pIndoor->uNumFaceExtras; ++i)
-            {
-                if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber)
-                {
-                    if (on)
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes |= bit;
-                    else
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes &= ~bit;
-                }
-            }
-            pParty->uFlags |= 2;
+void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
+  if (sCogNumber) {
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+      for (uint i = 1; i < (unsigned int)pIndoor->uNumFaceExtras; ++i) {
+        if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber) {
+          if (on)
+            pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes |= bit;
+          else
+            pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes &= ~bit;
         }
-        else
-        {
-            for (uint j = 0; j < (unsigned int)pOutdoor->uNumBModels; ++j)
-            {
-                for (uint i = 0; i < (unsigned int)pOutdoor->pBModels[j].uNumFaces; ++i)
-                {
-                    if (pOutdoor->pBModels[j].pFaces[i].sCogNumber == sCogNumber)
-                    {
-                        if (on)
-                            pOutdoor->pBModels[j].pFaces[i].uAttributes |= bit;
-                        else
-                            pOutdoor->pBModels[j].pFaces[i].uAttributes &= ~bit;
-                    }
-                }
+      }
+      pParty->uFlags |= 2;
+    } else {
+      for (BSPModel &model : pOutdoor->pBModels) {
+        for (uint i = 0; i < (unsigned int)model.uNumFaces; ++i) {
+          if (model.pFaces[i].sCogNumber == sCogNumber) {
+            if (on) {
+              model.pFaces[i].uAttributes |= bit;
+            } else {
+              model.pFaces[i].uAttributes &= ~bit;
             }
+          }
         }
-        pParty->uFlags |= 2;
+      }
     }
+    pParty->uFlags |= 2;
+  }
 }
 
 //----- (0044882F) --------------------------------------------------------

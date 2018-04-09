@@ -796,9 +796,7 @@ void GameUI_DrawNPCPopup(void *_this)//PopupWindowForBenefitAndJoinText
   }
 }
 
-//----- (004443D5) --------------------------------------------------------
-const char *GameUI_GetMinimapHintText()
-{
+const char *GameUI_GetMinimapHintText() {
   double v3; // st7@1
   int v7; // eax@4
   const char *v14; // eax@8
@@ -814,46 +812,38 @@ const char *GameUI_GetMinimapHintText()
   v3 = 1.0 / (float)((signed int)viewparams->uMinimapZoom * 0.000015258789);
   global_coord_X = (signed __int64)((double)(pX - 557) * v3 + (double)pParty->vPosition.x);
   global_coord_Y = (signed __int64)((double)pParty->vPosition.y - (double)(pY - 74) * v3);
-  if ( uCurrentlyLoadedLevelType != LEVEL_Outdoor || pOutdoor->uNumBModels <= 0 )
-  {
+  if (uCurrentlyLoadedLevelType != LEVEL_Outdoor || pOutdoor->pBModels.empty()) {
     pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-    if ( pMapID == 0 )
+    if (pMapID == 0)
       result = "No Maze Info for this maze on file!";
     else
       result = pMapStats->pInfos[pMapID].pName;
-  }
-  else
-  {
-    for ( uint j = 0; j < (uint)pOutdoor->uNumBModels; ++j )
-    {
-      v7 = int_get_vector_length(abs((signed)pOutdoor->pBModels[j].vBoundingCenter.x - global_coord_X),
-                                 abs((signed)pOutdoor->pBModels[j].vBoundingCenter.y - global_coord_Y), 0);
-      if ( v7 < 2 * pOutdoor->pBModels[j].sBoundingRadius )
-      {
-        if ( pOutdoor->pBModels[j].uNumFaces )
-        {
-          for ( uint i = 0; i < (uint)pOutdoor->pBModels[j].uNumFaces; ++i )
-          {
-            if ( pOutdoor->pBModels[j].pFaces[i].sCogTriggeredID )
-            {
-              if ( !(pOutdoor->pBModels[j].pFaces[i].uAttributes & FACE_HAS_EVENT) )
-              {
-                v14 = GetEventHintString(pOutdoor->pBModels[j].pFaces[i].sCogTriggeredID);
-                if ( v14 )
-                {
-                  if ( _stricmp(v14, "") )
+  } else {
+    for (BSPModel &model : pOutdoor->pBModels) {
+      v7 = int_get_vector_length(abs((int)model.vBoundingCenter.x - global_coord_X),
+        abs((int)model.vBoundingCenter.y - global_coord_Y), 0);
+      if (v7 < 2 * model.sBoundingRadius) {
+        if (model.uNumFaces) {
+          for (uint i = 0; i < (uint)model.uNumFaces; ++i) {
+            if (model.pFaces[i].sCogTriggeredID) {
+              if (!(model.pFaces[i].uAttributes & FACE_HAS_EVENT)) {
+                v14 = GetEventHintString(model.pFaces[i].sCogTriggeredID);
+                if (v14) {
+                  if (_stricmp(v14, "")) {
                     result = (char *)v14;
+                  }
                 }
               }
             }
           }
         }
-        if ( result )
+        if (result) {
           return result;
+        }
       }
     }
     pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-    if ( pMapID == 0 )
+    if (pMapID == 0)
       result = "No Maze Info for this maze on file!";
     else
       result = pMapStats->pInfos[pMapID].pName;

@@ -3959,7 +3959,7 @@ void Render::DrawBuildingsD3D() {
   int v52; // [sp+38h] [bp-20h]@36
   int v53; // [sp+3Ch] [bp-1Ch]@8
 
-  for (unsigned int model_id = 0; model_id < pOutdoor->uNumBModels; model_id++) {
+  for (unsigned int model_id = 0; model_id < pOutdoor->pBModels.size(); model_id++) {
     int reachable;
     if (!IsBModelVisible(model_id, &reachable)) {
       continue;
@@ -5017,167 +5017,158 @@ int  _46E44E_collide_against_faces_and_portals(unsigned int b1)
 	return result;
 }
 
-int _46E889_collide_against_bmodels(unsigned int ecx0)
-{
-	int result; // eax@1
-	//int v3; // ebx@9
-	int v8; // eax@19
-	int v9; // ecx@20
-	int v10; // eax@24
-	unsigned int v14; // eax@28
-	int v15; // eax@30
-	int v16; // ecx@31
-	unsigned int v17; // eax@36
-	int v21; // eax@42
-	unsigned int v22; // eax@43
-	//int a11; // [sp+70h] [bp-18h]@1
-	//int a10; // [sp+80h] [bp-8h]@1
-	int a2; // [sp+84h] [bp-4h]@23
+int _46E889_collide_against_bmodels(unsigned int ecx0) {
+  int result; // eax@1
+  int v8; // eax@19
+  int v9; // ecx@20
+  int v10; // eax@24
+  unsigned int v14; // eax@28
+  int v15; // eax@30
+  int v16; // ecx@31
+  unsigned int v17; // eax@36
+  int v21; // eax@42
+  unsigned int v22; // eax@43
+  int a2; // [sp+84h] [bp-4h]@23
+  BLVFace face; // [sp+Ch] [bp-7Ch]@1
 
-	//a11 = ecx0;
+  result = 0;
+  for (BSPModel &model : pOutdoor->pBModels) {
+    if (stru_721530.sMaxX <= model.sMaxX && stru_721530.sMinX >= model.sMinX
+      && stru_721530.sMaxY <= model.sMaxY && stru_721530.sMinY >= model.sMinY
+      && stru_721530.sMaxZ <= model.sMaxZ && stru_721530.sMinZ >= model.sMinZ)
+    {
+      for (uint j = 0; j < model.uNumFaces; ++j) {
+        if (stru_721530.sMaxX <= model.pFaces[j].pBoundingBox.x2 && stru_721530.sMinX >= model.pFaces[j].pBoundingBox.x1
+          && stru_721530.sMaxY <= model.pFaces[j].pBoundingBox.y2 && stru_721530.sMinY >= model.pFaces[j].pBoundingBox.y1
+          && stru_721530.sMaxZ <= model.pFaces[j].pBoundingBox.z2 && stru_721530.sMinZ >= model.pFaces[j].pBoundingBox.z1)
+        {
+          face.pFacePlane_old.vNormal.x = model.pFaces[j].pFacePlane.vNormal.x;
+          face.pFacePlane_old.vNormal.y = model.pFaces[j].pFacePlane.vNormal.y;
+          face.pFacePlane_old.vNormal.z = model.pFaces[j].pFacePlane.vNormal.z;
 
-	BLVFace face; // [sp+Ch] [bp-7Ch]@1
+          face.pFacePlane_old.dist = model.pFaces[j].pFacePlane.dist; //incorrect
 
-	result = 0;
-	for (uint i = 0; i < (signed int)pOutdoor->uNumBModels; ++i)
-	{
-		if (stru_721530.sMaxX <= pOutdoor->pBModels[i].sMaxX && stru_721530.sMinX >= pOutdoor->pBModels[i].sMinX
-			&& stru_721530.sMaxY <= pOutdoor->pBModels[i].sMaxY && stru_721530.sMinY >= pOutdoor->pBModels[i].sMinY
-			&& stru_721530.sMaxZ <= pOutdoor->pBModels[i].sMaxZ && stru_721530.sMinZ >= pOutdoor->pBModels[i].sMinZ)
-		{
-			for (uint j = 0; j < pOutdoor->pBModels[i].uNumFaces; ++j)
-			{
-				if (stru_721530.sMaxX <= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.x2 && stru_721530.sMinX >= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.x1
-					&& stru_721530.sMaxY <= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.y2 && stru_721530.sMinY >= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.y1
-					&& stru_721530.sMaxZ <= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.z2 && stru_721530.sMinZ >= pOutdoor->pBModels[i].pFaces[j].pBoundingBox.z1)
-				{
-					face.pFacePlane_old.vNormal.x = pOutdoor->pBModels[i].pFaces[j].pFacePlane.vNormal.x;
-					face.pFacePlane_old.vNormal.y = pOutdoor->pBModels[i].pFaces[j].pFacePlane.vNormal.y;
-					face.pFacePlane_old.vNormal.z = pOutdoor->pBModels[i].pFaces[j].pFacePlane.vNormal.z;
+          face.uAttributes = model.pFaces[j].uAttributes;
 
-					face.pFacePlane_old.dist = pOutdoor->pBModels[i].pFaces[j].pFacePlane.dist; //incorrect
+          face.pBounding.x1 = model.pFaces[j].pBoundingBox.x1;
+          face.pBounding.y1 = model.pFaces[j].pBoundingBox.y1;
+          face.pBounding.z1 = model.pFaces[j].pBoundingBox.z1;
 
-					face.uAttributes = pOutdoor->pBModels[i].pFaces[j].uAttributes;
+          face.pBounding.x2 = model.pFaces[j].pBoundingBox.x2;
+          face.pBounding.y2 = model.pFaces[j].pBoundingBox.y2;
+          face.pBounding.z2 = model.pFaces[j].pBoundingBox.z2;
 
-					face.pBounding.x1 = pOutdoor->pBModels[i].pFaces[j].pBoundingBox.x1;
-					face.pBounding.y1 = pOutdoor->pBModels[i].pFaces[j].pBoundingBox.y1;
-					face.pBounding.z1 = pOutdoor->pBModels[i].pFaces[j].pBoundingBox.z1;
+          face.zCalc1 = model.pFaces[j].zCalc1;
+          face.zCalc2 = model.pFaces[j].zCalc2;
+          face.zCalc3 = model.pFaces[j].zCalc3;
 
-					face.pBounding.x2 = pOutdoor->pBModels[i].pFaces[j].pBoundingBox.x2;
-					face.pBounding.y2 = pOutdoor->pBModels[i].pFaces[j].pBoundingBox.y2;
-					face.pBounding.z2 = pOutdoor->pBModels[i].pFaces[j].pBoundingBox.z2;
+          face.pXInterceptDisplacements = model.pFaces[j].pXInterceptDisplacements;
+          face.pYInterceptDisplacements = model.pFaces[j].pYInterceptDisplacements;
+          face.pZInterceptDisplacements = model.pFaces[j].pZInterceptDisplacements;
 
-					face.zCalc1 = pOutdoor->pBModels[i].pFaces[j].zCalc1;
-					face.zCalc2 = pOutdoor->pBModels[i].pFaces[j].zCalc2;
-					face.zCalc3 = pOutdoor->pBModels[i].pFaces[j].zCalc3;
+          face.uPolygonType = (PolygonType)model.pFaces[j].uPolygonType;
 
-					face.pXInterceptDisplacements = pOutdoor->pBModels[i].pFaces[j].pXInterceptDisplacements;
-					face.pYInterceptDisplacements = pOutdoor->pBModels[i].pFaces[j].pYInterceptDisplacements;
-					face.pZInterceptDisplacements = pOutdoor->pBModels[i].pFaces[j].pZInterceptDisplacements;
+          face.uNumVertices = model.pFaces[j].uNumVertices;
 
-					face.uPolygonType = (PolygonType)pOutdoor->pBModels[i].pFaces[j].uPolygonType;
+          //face.uBitmapID = model.pFaces[j].uTextureID;
+          face.resource = model.pFaces[j].resource;
 
-					face.uNumVertices = pOutdoor->pBModels[i].pFaces[j].uNumVertices;
+          face.pVertexIDs = model.pFaces[j].pVertexIDs;
 
-					//face.uBitmapID = pOutdoor->pBModels[i].pFaces[j].uTextureID;
-                    face.resource = pOutdoor->pBModels[i].pFaces[j].resource;
-
-					face.pVertexIDs = pOutdoor->pBModels[i].pFaces[j].pVertexIDs;
-
-					if (!face.Ethereal() && !face.Portal())
-					{
-						v8 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.normal.x
-							+ face.pFacePlane_old.vNormal.y * stru_721530.normal.y
-							+ face.pFacePlane_old.vNormal.z * stru_721530.normal.z) >> 16;
-						if (v8 > 0)
-						{
-							v9 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.normal2.x
-								+ face.pFacePlane_old.vNormal.y * stru_721530.normal2.y
-								+ face.pFacePlane_old.vNormal.z * stru_721530.normal2.z) >> 16;
-							if (v8 <= stru_721530.prolly_normal_d || v9 <= stru_721530.prolly_normal_d)
-							{
-								if (v9 <= v8)
-								{
-									a2 = stru_721530.field_6C;
-									if (sub_4754BF(stru_721530.prolly_normal_d, &a2, stru_721530.normal.x, stru_721530.normal.y, stru_721530.normal.z,
-										stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, &face, i, ecx0))
-									{
-										v10 = a2;
-									}
-									else
-									{
-										a2 = stru_721530.prolly_normal_d + stru_721530.field_6C;
-										if (!sub_475F30(&a2, &face, stru_721530.normal.x, stru_721530.normal.y, stru_721530.normal.z,
-											stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, i))
-											goto LABEL_29;
-										v10 = a2 - stru_721530.prolly_normal_d;
-										a2 -= stru_721530.prolly_normal_d;
-									}
-									if (v10 < stru_721530.field_7C)
-									{
-										stru_721530.field_7C = v10;
-										v14 = 8 * (j | (i << 6));
-										v14 |= 6;
-										stru_721530.uFaceID = v14;
-									}
-								}
-							}
-						}
-					LABEL_29:
-						if (stru_721530.field_0 & 1)
-						{
-							v15 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.position.x
-								+ face.pFacePlane_old.vNormal.y * stru_721530.position.y
-								+ face.pFacePlane_old.vNormal.z * stru_721530.position.z) >> 16;
-							if (v15 > 0)
-							{
-								v16 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.field_4C
-									+ face.pFacePlane_old.vNormal.y * stru_721530.field_50
-									+ face.pFacePlane_old.vNormal.z * stru_721530.field_54) >> 16;
-								if (v15 <= stru_721530.prolly_normal_d || v16 <= stru_721530.prolly_normal_d)
-								{
-									if (v16 <= v15)
-									{
-										a2 = stru_721530.field_6C;
-										if (sub_4754BF(stru_721530.field_8_radius, &a2, stru_721530.position.x, stru_721530.position.y, stru_721530.position.z,
-											stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, &face, i, ecx0))
-										{
-											if (a2 < stru_721530.field_7C)
-											{
-												stru_721530.field_7C = a2;
-												v17 = 8 * (j | (i << 6));
-												v17 |= 6;
-												stru_721530.uFaceID = v17;
-											}
-										}
-										else
-										{
-											a2 = stru_721530.field_6C + stru_721530.field_8_radius;
-											if (sub_475F30(&a2, &face, stru_721530.position.x, stru_721530.position.y, stru_721530.position.z,
-												stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, i))
-											{
-												v21 = a2 - stru_721530.prolly_normal_d;
-												a2 -= stru_721530.prolly_normal_d;
-												if (a2 < stru_721530.field_7C)
-												{
-													stru_721530.field_7C = v21;
-													v22 = 8 * (j | (i << 6));
-													v22 |= 6;
-													stru_721530.uFaceID = v22;
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		result = i;
-	}
-	return result;
+          if (!face.Ethereal() && !face.Portal())
+          {
+            v8 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.normal.x
+              + face.pFacePlane_old.vNormal.y * stru_721530.normal.y
+              + face.pFacePlane_old.vNormal.z * stru_721530.normal.z) >> 16;
+            if (v8 > 0)
+            {
+              v9 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.normal2.x
+                + face.pFacePlane_old.vNormal.y * stru_721530.normal2.y
+                + face.pFacePlane_old.vNormal.z * stru_721530.normal2.z) >> 16;
+              if (v8 <= stru_721530.prolly_normal_d || v9 <= stru_721530.prolly_normal_d)
+              {
+                if (v9 <= v8)
+                {
+                  a2 = stru_721530.field_6C;
+                  if (sub_4754BF(stru_721530.prolly_normal_d, &a2, stru_721530.normal.x, stru_721530.normal.y, stru_721530.normal.z,
+                    stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, &face, result, ecx0))
+                  {
+                    v10 = a2;
+                  }
+                  else
+                  {
+                    a2 = stru_721530.prolly_normal_d + stru_721530.field_6C;
+                    if (!sub_475F30(&a2, &face, stru_721530.normal.x, stru_721530.normal.y, stru_721530.normal.z,
+                      stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, result))
+                      goto LABEL_29;
+                    v10 = a2 - stru_721530.prolly_normal_d;
+                    a2 -= stru_721530.prolly_normal_d;
+                  }
+                  if (v10 < stru_721530.field_7C)
+                  {
+                    stru_721530.field_7C = v10;
+                    v14 = 8 * (j | (result << 6));
+                    v14 |= 6;
+                    stru_721530.uFaceID = v14;
+                  }
+                }
+              }
+            }
+          LABEL_29:
+            if (stru_721530.field_0 & 1)
+            {
+              v15 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.position.x
+                + face.pFacePlane_old.vNormal.y * stru_721530.position.y
+                + face.pFacePlane_old.vNormal.z * stru_721530.position.z) >> 16;
+              if (v15 > 0)
+              {
+                v16 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.field_4C
+                  + face.pFacePlane_old.vNormal.y * stru_721530.field_50
+                  + face.pFacePlane_old.vNormal.z * stru_721530.field_54) >> 16;
+                if (v15 <= stru_721530.prolly_normal_d || v16 <= stru_721530.prolly_normal_d)
+                {
+                  if (v16 <= v15)
+                  {
+                    a2 = stru_721530.field_6C;
+                    if (sub_4754BF(stru_721530.field_8_radius, &a2, stru_721530.position.x, stru_721530.position.y, stru_721530.position.z,
+                      stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, &face, result, ecx0))
+                    {
+                      if (a2 < stru_721530.field_7C)
+                      {
+                        stru_721530.field_7C = a2;
+                        v17 = 8 * (j | (result << 6));
+                        v17 |= 6;
+                        stru_721530.uFaceID = v17;
+                      }
+                    }
+                    else
+                    {
+                      a2 = stru_721530.field_6C + stru_721530.field_8_radius;
+                      if (sub_475F30(&a2, &face, stru_721530.position.x, stru_721530.position.y, stru_721530.position.z,
+                        stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, result))
+                      {
+                        v21 = a2 - stru_721530.prolly_normal_d;
+                        a2 -= stru_721530.prolly_normal_d;
+                        if (a2 < stru_721530.field_7C)
+                        {
+                          stru_721530.field_7C = v21;
+                          v22 = 8 * (j | (result << 6));
+                          v22 |= 6;
+                          stru_721530.uFaceID = v22;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    result++;
+  }
+  return result;
 }
 
 int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID) {

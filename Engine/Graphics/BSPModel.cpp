@@ -1,17 +1,14 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdlib.h>
 
 #include "BSPModel.h"
 
+void BSPModel::Load(uint8_t *data) {
+  static_assert(sizeof(BSPModelData) == 188, "Wrong type size");
+  static_assert(sizeof(BSPNode) == 8, "Wrong type size");
 
+}
 
-//----- (00478389) --------------------------------------------------------
-void BSPModel::Release()
-{
+void BSPModel::Release() {
   free(this->pVertices.pVertices);
   this->pVertices.pVertices = 0;
   free(this->pFaces);

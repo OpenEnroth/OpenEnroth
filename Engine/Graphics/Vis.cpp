@@ -327,32 +327,28 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay, Vis_Select
   }
 }
 
-//----- (004C17CF) --------------------------------------------------------
-void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay, Vis_SelectionList *list, Vis_SelectionFilter *filter, bool only_reachable)
-{  
+void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay, Vis_SelectionList *list, Vis_SelectionFilter *filter, bool only_reachable) {
   if (!pOutdoor)
     return;
 
-  for (int i = 0; i < pOutdoor->uNumBModels; ++i)
-  {
+  for (int i = 0; i < pOutdoor->pBModels.size(); ++i) {
     int reachable;
-    if (!IsBModelVisible(i, &reachable))
+    if (!IsBModelVisible(i, &reachable)) {
       continue;
-    if (!reachable && only_reachable)
+    }
+    if (!reachable && only_reachable) {
       continue;
+    }
 
     BSPModel* bmodel = &pOutdoor->pBModels[i];
-    for (int j = 0; j < bmodel->uNumFaces; ++j)
-    {
+    for (int j = 0; j < bmodel->uNumFaces; ++j) {
       ODMFace* face = &bmodel->pFaces[j];
-      if (is_part_of_selection(face, filter))
-      {
+      if (is_part_of_selection(face, filter)) {
         BLVFace blv_face;
         blv_face.FromODM(face);
-        
+
         RenderVertexSoft intersection;
-        if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &intersection, &blv_face, i))
-        {
+        if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &intersection, &blv_face, i)) {
           pIndoorCameraD3D->ViewTransform(&intersection, 1);
           //int v13 = fixpoint_from_float(/*v12, */intersection.vWorldViewPosition.x);
           //v13 &= 0xFFFF0000;
@@ -1514,32 +1510,26 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vi
     }
 }
 
-//----- (004C0DEA) --------------------------------------------------------
-void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter)
-{
-    for (int i = 0; i < pOutdoor->uNumBModels; ++i)
-    {
-        int v17;
-        if (!IsBModelVisible(i, &v17))
-            continue;
-        if (!v17)
-            continue;
+void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter) {
+  for (int i = 0; i < pOutdoor->pBModels.size(); ++i) {
+    int v17;
+    if (!IsBModelVisible(i, &v17))
+      continue;
+    if (!v17)
+      continue;
 
-        BSPModel* bmodel = &pOutdoor->pBModels[i];
-        for (int j = 0; j < bmodel->uNumFaces; ++j)
-        {
-            ODMFace* face = &bmodel->pFaces[j];
-            if (is_part_of_selection(face, filter))
-            {
-                BLVFace blv_face;
-                blv_face.FromODM(face);
+    BSPModel* bmodel = &pOutdoor->pBModels[i];
+    for (int j = 0; j < bmodel->uNumFaces; ++j) {
+      ODMFace* face = &bmodel->pFaces[j];
+      if (is_part_of_selection(face, filter)) {
+        BLVFace blv_face;
+        blv_face.FromODM(face);
 
-                int pid = PID(OBJECT_BModel, j | (i << 6));
-                if (Vis_ObjectInfo* object_info = DetermineFacetIntersection(&blv_face, pid, pick_depth))
-                {
-                    list->AddObject(object_info->object, object_info->object_type, object_info->depth, object_info->object_pid);
-                }
-            }
+        int pid = PID(OBJECT_BModel, j | (i << 6));
+        if (Vis_ObjectInfo* object_info = DetermineFacetIntersection(&blv_face, pid, pick_depth)) {
+          list->AddObject(object_info->object, object_info->object_type, object_info->depth, object_info->object_pid);
         }
+      }
     }
+  }
 }

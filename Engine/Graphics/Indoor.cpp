@@ -3202,7 +3202,7 @@ void stru149::_48653D_frustum_blv(int a2, int a3, int a4, int a5, int a6, int a7
                                 this->angle_from_south, this->field_4_party_dir_y,
                                 this->viewing_angle_from_north_south, this->field_8_party_dir_z);
 }
-//----- (00407A1C) --------------------------------------------------------
+
 bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
 {
   unsigned int v4; // esi@1
@@ -3293,7 +3293,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int sZ; // [sp+70h] [bp-Ch]@2  
   int sX; // [sp+74h] [bp-8h]@2
   int sY; // [sp+78h] [bp-4h]@2
-  //8bytes unused
+          //8bytes unused
   int ya; // [sp+84h] [bp+8h]@60
   int yb; // [sp+84h] [bp+8h]@136
   int ve; // [sp+88h] [bp+Ch]@60
@@ -3307,7 +3307,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int v_4b; // [sp+8Ch] [bp+10h]@136
   int v_4c; // [sp+8Ch] [bp+10h]@141
 
-  //__debugbreak();срабатывает при стрельбе огненным шаром
+            //__debugbreak();срабатывает при стрельбе огненным шаром
 
   v4 = stru_5C6E00->Atan2(v.x - x, v.y - y);
 
@@ -3318,43 +3318,43 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   v97.x = x;
   v97.y = y;
 
-  if ( uCurrentlyLoadedLevelType == LEVEL_Indoor)
+  if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
   {
     Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + v4, 0, v97, &sX, &sY, &sZ);
     Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + v4, 0, v, &outx, &outy, &outz);
     dist_y = outy - sY;
     dist_z = outz - sZ;
-	dist_x = outx - sX;
-	v49 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
+    dist_x = outx - sX;
+    v49 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
     v50 = 65536;
-    if ( v49 )
+    if (v49)
       v50 = 65536 / v49;
     v51 = outx;
-	v143 = dist_x * v50;
-	v52 = dist_y * v50;
-	v53 = dist_z * v50;
+    v143 = dist_x * v50;
+    v52 = dist_y * v50;
+    v53 = dist_z * v50;
 
-	v123 = max(outx, sX);
-	v119 = min(outx, sX);
+    v123 = max(outx, sX);
+    v119 = min(outx, sX);
 
-	v131 = max(outy, sY);
-	v127 = min(outy, sY);
+    v131 = max(outy, sY);
+    v127 = min(outy, sY);
 
-	v139 = max(outz, sZ);
-	v135 = min(outz, sZ);
+    v139 = max(outz, sZ);
+    v135 = min(outz, sZ);
 
-    for ( a5b = 0; a5b < 2; a5b++ )
+    for (a5b = 0; a5b < 2; a5b++)
     {
-      if ( a5b )
-		v59 = pIndoor->GetSector(sX, sY, sZ);
+      if (a5b)
+        v59 = pIndoor->GetSector(sX, sY, sZ);
       else
-		v59 = pIndoor->GetSector(outx, outy, outz);
+        v59 = pIndoor->GetSector(outx, outy, outz);
       //v60 = pIndoor->pSectors;
       //v61 = 116 * v59;
       //i = 116 * v59;
       //for (sDepthb = 0; *(__int16 *)((char *)&pIndoor->pSectors->uNumWalls + v61)
-                    //+ 2 * *(__int16 *)((char *)&pIndoor->pSectors->uNumFloors + v61); ++sDepthb)
-      for ( sDepthb = 0; sDepthb < pIndoor->pSectors[v59].uNumFaces; ++sDepthb )
+      //+ 2 * *(__int16 *)((char *)&pIndoor->pSectors->uNumFloors + v61); ++sDepthb)
+      for (sDepthb = 0; sDepthb < pIndoor->pSectors[v59].uNumFaces; ++sDepthb)
       {
         face = &pIndoor->pFaces[pIndoor->pSectors[v59].pFaceIDs[sDepthb]];// face = &pIndoor->pFaces[*(__int16 *)((char *)&pIndoor->pSectors->pWalls + v61)[sDepthb]]
         v63 = fixpoint_mul(v143, face->pFacePlane_old.vNormal.x);
@@ -3363,45 +3363,45 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
         v20 = v63 + v64 + v65 == 0;
         v66 = v63 + v64 + v65;
         v107 = v63 + v64 + v65;
-        if ( face->Portal()
+        if (face->Portal()
           || v119 > face->pBounding.x2 || v123 < face->pBounding.x1
           || v127 > face->pBounding.y2 || v131 < face->pBounding.y1
           || v135 > face->pBounding.z2 || v139 < face->pBounding.z1
-          || v20 )
+          || v20)
           continue;
         v68 = -(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                          + sY * face->pFacePlane_old.vNormal.y
-                                          + sZ * face->pFacePlane_old.vNormal.z);
-        if ( v66 <= 0 )
+          + sY * face->pFacePlane_old.vNormal.y
+          + sZ * face->pFacePlane_old.vNormal.z);
+        if (v66 <= 0)
         {
-          if ( face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                         + sY * face->pFacePlane_old.vNormal.y
-                                         + sZ * face->pFacePlane_old.vNormal.z < 0 )
+          if (face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+            + sY * face->pFacePlane_old.vNormal.y
+            + sZ * face->pFacePlane_old.vNormal.z < 0)
             continue;
         }
         else
         {
-          if ( face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                         + sY * face->pFacePlane_old.vNormal.y
-                                         + sZ * face->pFacePlane_old.vNormal.z > 0 )
+          if (face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+            + sY * face->pFacePlane_old.vNormal.y
+            + sZ * face->pFacePlane_old.vNormal.z > 0)
             continue;
         }
         v69 = abs(-(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                              + sY * face->pFacePlane_old.vNormal.y
-                                              + sZ * face->pFacePlane_old.vNormal.z )) >> 14;
-        if ( v69 <= abs(v66) )
+          + sY * face->pFacePlane_old.vNormal.y
+          + sZ * face->pFacePlane_old.vNormal.z)) >> 14;
+        if (v69 <= abs(v66))
         {
           //LODWORD(v70) = v68 << 16;
           //HIDWORD(v70) = v68 >> 16;
           //v71 = v70 / v107;
           //v108 = v70 / v107;
           v108 = fixpoint_div(v68, v107);
-          if ( v108 >= 0 )
+          if (v108 >= 0)
           {
-            if ( sub_4075DB(sX + ((signed int)(fixpoint_mul(v108, v143) + 0x8000) >> 16),
-                            sY + ((signed int)(fixpoint_mul(v108, v52) + 0x8000) >> 16),
-                              sZ + ((signed int)(fixpoint_mul(v108, v53) + 0x8000) >> 16),
-                            face) )
+            if (sub_4075DB(sX + ((signed int)(fixpoint_mul(v108, v143) + 0x8000) >> 16),
+              sY + ((signed int)(fixpoint_mul(v108, v52) + 0x8000) >> 16),
+              sZ + ((signed int)(fixpoint_mul(v108, v53) + 0x8000) >> 16),
+              face))
             {
               v114 = 1;
               break;
@@ -3410,168 +3410,164 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
         }
       }
     }
-    
+
     Vec3_int_::Rotate(32, v4 - stru_5C6E00->uIntegerHalfPi, 0, v97, &sX, &sY, &sZ);
     Vec3_int_::Rotate(32, v4 - stru_5C6E00->uIntegerHalfPi, 0, v, &outx, &outy, &outz);
-	dist_y = outy - sY;
-	dist_z = outz - sZ;
-	dist_x = outx - sX;
-	v77 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
+    dist_y = outy - sY;
+    dist_z = outz - sZ;
+    dist_x = outx - sX;
+    v77 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
     v78 = 65536;
-    if ( v77 )
+    if (v77)
       v78 = 65536 / v77;
     v79 = outx;
-	v144 = dist_x * v78;
-	v80 = dist_y * v78;
-	v81 = dist_z * v78;
+    v144 = dist_x * v78;
+    v80 = dist_y * v78;
+    v81 = dist_z * v78;
 
-	v120 = max(outx, sX);
-	v124 = min(outx, sX);
+    v120 = max(outx, sX);
+    v124 = min(outx, sX);
 
-	v132 = max(outy, sY);
-	v128 = min(outy, sY);
+    v132 = max(outy, sY);
+    v128 = min(outy, sY);
 
-	v140 = max(outz, sZ);
-	v136 = min(outz, sZ);
+    v140 = max(outz, sZ);
+    v136 = min(outz, sZ);
 
-    for ( a5c = 0; a5c < 2; a5c++ )
+    for (a5c = 0; a5c < 2; a5c++)
     {
-      if ( v113 )
+      if (v113)
         return !v114 || !v113;
-      if ( a5c )
+      if (a5c)
       {
-		v87 = pIndoor->GetSector(sX, sY, sZ);
+        v87 = pIndoor->GetSector(sX, sY, sZ);
       }
       else
       {
-		v87 = pIndoor->GetSector(outx, outy, outz);
+        v87 = pIndoor->GetSector(outx, outy, outz);
       }
-    for ( v162 = 0; v162 < pIndoor->pSectors[v87].uNumFaces; v162++)
-    {
-      face = &pIndoor->pFaces[pIndoor->pSectors[v87].pFaceIDs[v162]];
-      yb = fixpoint_mul(v144, face->pFacePlane_old.vNormal.x);
-      v_4b = fixpoint_mul(v80, face->pFacePlane_old.vNormal.y);
-      vf = fixpoint_mul(v81, face->pFacePlane_old.vNormal.z);
-      v20 = yb + vf + v_4b == 0;
-      v91 = yb + vf + v_4b;
-      vc = yb + vf + v_4b;
-      if ( face->Portal()
-        || v120 > face->pBounding.x2 || v124 < face->pBounding.x1
-        || v128 > face->pBounding.y2 || v132 < face->pBounding.y1
-        || v136 > face->pBounding.z2 || v140 < face->pBounding.z1
-        || v20 )
-        continue;
-      v93 = -(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                        + sY * face->pFacePlane_old.vNormal.y
-                                        + sZ * face->pFacePlane_old.vNormal.z);
-      if ( v91 <= 0 )
+      for (v162 = 0; v162 < pIndoor->pSectors[v87].uNumFaces; v162++)
       {
-        if ( face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                       + sY * face->pFacePlane_old.vNormal.y
-                                       + sZ * face->pFacePlane_old.vNormal.z < 0 )
+        face = &pIndoor->pFaces[pIndoor->pSectors[v87].pFaceIDs[v162]];
+        yb = fixpoint_mul(v144, face->pFacePlane_old.vNormal.x);
+        v_4b = fixpoint_mul(v80, face->pFacePlane_old.vNormal.y);
+        vf = fixpoint_mul(v81, face->pFacePlane_old.vNormal.z);
+        v20 = yb + vf + v_4b == 0;
+        v91 = yb + vf + v_4b;
+        vc = yb + vf + v_4b;
+        if (face->Portal()
+          || v120 > face->pBounding.x2 || v124 < face->pBounding.x1
+          || v128 > face->pBounding.y2 || v132 < face->pBounding.y1
+          || v136 > face->pBounding.z2 || v140 < face->pBounding.z1
+          || v20)
           continue;
-      }
-      else
-      {
-        if ( face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                       + sY * face->pFacePlane_old.vNormal.y
-                                       + sZ * face->pFacePlane_old.vNormal.z > 0 )
-          continue;
-      }
-      v_4c = abs(-(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                             + sY * face->pFacePlane_old.vNormal.y
-                                             + sZ * face->pFacePlane_old.vNormal.z)) >> 14;
-      if ( v_4c <= abs(v91) )
-      {
-        vd = fixpoint_div(v93, vc);
-        if ( vd >= 0 )
+        v93 = -(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+          + sY * face->pFacePlane_old.vNormal.y
+          + sZ * face->pFacePlane_old.vNormal.z);
+        if (v91 <= 0)
         {
-          if ( sub_4075DB(sX + ((signed int)(fixpoint_mul(vd, v144) + 0x8000) >> 16),
-                          sY + ((signed int)(fixpoint_mul(vd, v80) + 0x8000) >> 16),
-                            sZ + ((signed int)(fixpoint_mul(vd, v81) + 0x8000) >> 16),
-                          face) )
+          if (face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+            + sY * face->pFacePlane_old.vNormal.y
+            + sZ * face->pFacePlane_old.vNormal.z < 0)
+            continue;
+        }
+        else
+        {
+          if (face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+            + sY * face->pFacePlane_old.vNormal.y
+            + sZ * face->pFacePlane_old.vNormal.z > 0)
+            continue;
+        }
+        v_4c = abs(-(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+          + sY * face->pFacePlane_old.vNormal.y
+          + sZ * face->pFacePlane_old.vNormal.z)) >> 14;
+        if (v_4c <= abs(v91))
+        {
+          vd = fixpoint_div(v93, vc);
+          if (vd >= 0)
           {
-            v113 = 1;
-            break;
+            if (sub_4075DB(sX + ((signed int)(fixpoint_mul(vd, v144) + 0x8000) >> 16),
+              sY + ((signed int)(fixpoint_mul(vd, v80) + 0x8000) >> 16),
+              sZ + ((signed int)(fixpoint_mul(vd, v81) + 0x8000) >> 16),
+              face))
+            {
+              v113 = 1;
+              break;
+            }
           }
         }
       }
-      }
     }
   }
-  else if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
+  else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
   {
     Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + v4, 0, v97, &sX, &sY, &sZ);
     Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + v4, 0, v, &outx, &outy, &outz);
     dist_y = outy - sY;
     dist_z = outz - sZ;
     dist_x = outx - sX;
-    v9 = integer_sqrt(dist_x* dist_x+ dist_y* dist_y+ dist_z* dist_z);
+    v9 = integer_sqrt(dist_x* dist_x + dist_y * dist_y + dist_z * dist_z);
     v10 = 65536;
-    if ( v9 )
+    if (v9)
       v10 = 65536 / v9;
-    v125 = dist_x* v10;
-    v12 = dist_z* v10;
-    v121 = dist_y* v10;
+    v125 = dist_x * v10;
+    v12 = dist_z * v10;
+    v121 = dist_y * v10;
 
-	v145 = max(outx, sX);
-	v149 = min(outx, sX);
+    v145 = max(outx, sX);
+    v149 = min(outx, sX);
 
-	v137 = max(outy, sY);
-	v141 = min(outy, sY);
+    v137 = max(outy, sY);
+    v141 = min(outy, sY);
 
-	v129 = max(outz, sZ);
-	v133 = min(outz, sZ);
+    v129 = max(outz, sZ);
+    v133 = min(outz, sZ);
 
-	for ( uint model_id = 0; model_id < pOutdoor->uNumBModels; model_id++)
-    {
-      if ( sub_4088E9(sX, sY, outx, outy, pOutdoor->pBModels[model_id].vPosition.x, pOutdoor->pBModels[model_id].vPosition.y)
-           <= pOutdoor->pBModels[model_id].sBoundingRadius + 128 )
-      {
-        for ( uint face_id = 0; face_id < pOutdoor->pBModels[model_id].uNumFaces; ++face_id )
-        {
-          odm_face = &pOutdoor->pBModels[model_id].pFaces[face_id];
+    for (BSPModel &model : pOutdoor->pBModels) {
+      if (sub_4088E9(sX, sY, outx, outy, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
+        for (uint face_id = 0; face_id < model.uNumFaces; ++face_id) {
+          odm_face = &model.pFaces[face_id];
           v17 = fixpoint_mul(v125, odm_face->pFacePlane.vNormal.x);
           v18 = fixpoint_mul(v121, odm_face->pFacePlane.vNormal.y);
           v19 = fixpoint_mul(v12, odm_face->pFacePlane.vNormal.z);
           v20 = v17 + v18 + v19 == 0;
           v21 = v17 + v18 + v19;
           v109 = v17 + v18 + v19;
-          if ( v149 > odm_face->pBoundingBox.x2 || v145 < odm_face->pBoundingBox.x1
+          if (v149 > odm_face->pBoundingBox.x2 || v145 < odm_face->pBoundingBox.x1
             || v141 > odm_face->pBoundingBox.y2 || v137 < odm_face->pBoundingBox.y1
             || v133 > odm_face->pBoundingBox.z2 || v129 < odm_face->pBoundingBox.z1
-            || v20 )
+            || v20)
             continue;
           v23 = -(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                            + sY * odm_face->pFacePlane.vNormal.y
-                                            + sZ * odm_face->pFacePlane.vNormal.z);
-          if ( v21 <= 0 )
+            + sY * odm_face->pFacePlane.vNormal.y
+            + sZ * odm_face->pFacePlane.vNormal.z);
+          if (v21 <= 0)
           {
-            if ( odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                           + sY * odm_face->pFacePlane.vNormal.y 
-                                           + sZ * odm_face->pFacePlane.vNormal.z < 0 )
+            if (odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
+              + sY * odm_face->pFacePlane.vNormal.y
+              + sZ * odm_face->pFacePlane.vNormal.z < 0)
               continue;
           }
           else
           {
-            if ( odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                           + sY * odm_face->pFacePlane.vNormal.y
-                                           + sZ * odm_face->pFacePlane.vNormal.z > 0 )
+            if (odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
+              + sY * odm_face->pFacePlane.vNormal.y
+              + sZ * odm_face->pFacePlane.vNormal.z > 0)
               continue;
           }
           v24 = abs(-(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                                + sY * odm_face->pFacePlane.vNormal.y 
-                                                + sZ * odm_face->pFacePlane.vNormal.z)) >> 14;
-          if ( v24 <= abs(v21) )
+            + sY * odm_face->pFacePlane.vNormal.y
+            + sZ * odm_face->pFacePlane.vNormal.z)) >> 14;
+          if (v24 <= abs(v21))
           {
             v110 = fixpoint_div(v23, v109);
-            if ( v110 >= 0 )
+            if (v110 >= 0)
             {
-              if ( sub_4077F1(sX + ((signed int)(fixpoint_mul(v110, v125) + 0x8000) >> 16),
-                              sY + ((signed int)(fixpoint_mul(v110, v121) + 0x8000) >> 16),
-                                sZ + ((signed int)(fixpoint_mul(v110, v12) + 0x8000) >> 16),
-                              odm_face,
-                              &pOutdoor->pBModels[model_id].pVertices) )
+              if (sub_4077F1(sX + ((signed int)(fixpoint_mul(v110, v125) + 0x8000) >> 16),
+                sY + ((signed int)(fixpoint_mul(v110, v121) + 0x8000) >> 16),
+                sZ + ((signed int)(fixpoint_mul(v110, v12) + 0x8000) >> 16),
+                odm_face,
+                &model.pVertices))
               {
                 v114 = 1;
                 break;
@@ -3581,85 +3577,79 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
         }
       }
     }
-    
+
     Vec3_int_::Rotate(32, v4 - stru_5C6E00->uIntegerHalfPi, 0, v97, &sX, &sY, &sZ);
     Vec3_int_::Rotate(32, v4 - stru_5C6E00->uIntegerHalfPi, 0, v, &outx, &outy, &outz);
-	dist_y = outy - sY;
-	dist_z = outz - sZ;
-	dist_x = outx - sX;
-	v32 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
+    dist_y = outy - sY;
+    dist_z = outz - sZ;
+    dist_x = outx - sX;
+    v32 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
     v33 = 65536;
-    if ( v32 )
+    if (v32)
       v33 = 65536 / v32;
-	v126 = dist_x * v33;
-	v35 = dist_z * v33;
+    v126 = dist_x * v33;
+    v35 = dist_z * v33;
     v122 = dist_y * v33;
-    
-	v146 = max(outx, sX);
-	v150 = min(outx, sX);
 
-	v138 = max(outy, sY);
-	v142 = min(outy, sY);
+    v146 = max(outx, sX);
+    v150 = min(outx, sX);
 
-	v130 = max(outz, sZ);
-	v134 = min(outz, sZ);
+    v138 = max(outy, sY);
+    v142 = min(outy, sY);
 
-    for ( uint model_id = 0; model_id < (signed int)pOutdoor->uNumBModels; ++model_id )
-    {
-      if ( sub_4088E9(sX, sY, outx, outy, pOutdoor->pBModels[model_id].vPosition.x, pOutdoor->pBModels[model_id].vPosition.y)
-           <= pOutdoor->pBModels[model_id].sBoundingRadius + 128 )
-      {
-        for ( uint face_id = 0; face_id < pOutdoor->pBModels[model_id].uNumFaces; ++face_id )
-        {
-          odm_face = &pOutdoor->pBModels[model_id].pFaces[face_id];
+    v130 = max(outz, sZ);
+    v134 = min(outz, sZ);
+
+    for (BSPModel &model : pOutdoor->pBModels) {
+      if (sub_4088E9(sX, sY, outx, outy, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
+        for (uint face_id = 0; face_id < model.uNumFaces; ++face_id) {
+          odm_face = &model.pFaces[face_id];
           ya = fixpoint_mul(v126, odm_face->pFacePlane.vNormal.x);
           ve = fixpoint_mul(v122, odm_face->pFacePlane.vNormal.y);
           v_4 = fixpoint_mul(v35, odm_face->pFacePlane.vNormal.z);
           v20 = ya + ve + v_4 == 0;
           v40 = ya + ve + v_4;
           va = ya + ve + v_4;
-          if ( v150 > odm_face->pBoundingBox.x2 || v146 < odm_face->pBoundingBox.x1
+          if (v150 > odm_face->pBoundingBox.x2 || v146 < odm_face->pBoundingBox.x1
             || v142 > odm_face->pBoundingBox.y2 || v138 < odm_face->pBoundingBox.y1
             || v134 > odm_face->pBoundingBox.z2 || v130 < odm_face->pBoundingBox.z1
-            || v20 )
+            || v20)
             continue;
           v42 = -(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                            + sY * odm_face->pFacePlane.vNormal.y
-                                            + sZ * odm_face->pFacePlane.vNormal.z);
-          if ( v40 <= 0 )
+            + sY * odm_face->pFacePlane.vNormal.y
+            + sZ * odm_face->pFacePlane.vNormal.z);
+          if (v40 <= 0)
           {
-            if ( odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                           + sY * odm_face->pFacePlane.vNormal.y 
-                                           + sZ * odm_face->pFacePlane.vNormal.z  < 0 )
+            if (odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
+              + sY * odm_face->pFacePlane.vNormal.y
+              + sZ * odm_face->pFacePlane.vNormal.z  < 0)
               continue;
           }
           else
           {
-            if ( odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                           + sY * odm_face->pFacePlane.vNormal.y 
-                                           + sZ * odm_face->pFacePlane.vNormal.z  > 0 )
+            if (odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
+              + sY * odm_face->pFacePlane.vNormal.y
+              + sZ * odm_face->pFacePlane.vNormal.z  > 0)
               continue;
           }
           v_4a = abs(-(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                                 + sY * odm_face->pFacePlane.vNormal.y 
-                                                 + sZ * odm_face->pFacePlane.vNormal.z )) >> 14;
-          if ( v_4a <= abs(v40) )
+            + sY * odm_face->pFacePlane.vNormal.y
+            + sZ * odm_face->pFacePlane.vNormal.z)) >> 14;
+          if (v_4a <= abs(v40))
           {
             //LODWORD(v43) = v42 << 16;
             //HIDWORD(v43) = v42 >> 16;
             //vb = v43 / va;
             vb = fixpoint_div(v42, va);
-            if ( vb >= 0 )
-            {
-              if ( sub_4077F1(sX + ((signed int)(fixpoint_mul(vb, v126) + 0x8000) >> 16),
-                              sY + ((signed int)(fixpoint_mul(vb, v122) + 0x8000) >> 16),
-                                sZ + ((signed int)(fixpoint_mul(vb, v35) + 0x8000) >> 16),
-                              odm_face,
-                              &pOutdoor->pBModels[model_id].pVertices) )
+            if (vb >= 0) {
+              if (sub_4077F1(sX + ((int)(fixpoint_mul(vb, v126) + 0x8000) >> 16),
+                sY + ((int)(fixpoint_mul(vb, v122) + 0x8000) >> 16),
+                sZ + ((int)(fixpoint_mul(vb, v35) + 0x8000) >> 16),
+                odm_face, &model.pVertices))
               {
                 v113 = 1;
                 break;
-               }
+              }
             }
           }
         }
@@ -3669,7 +3659,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   }
   return !v114 || !v113;
 }
-//----- (0043F333) --------------------------------------------------------
+
 void BspRenderer::MakeVisibleSectorList()
 {
 //  int v6; // ebx@3
@@ -3735,12 +3725,12 @@ char DoInteractionWithTopmostZObject(int a1, int a2)
       return 1;
 
     case OBJECT_BModel:
-      if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
-      {
-        int bmodel_id = a1 >> 9,
-            face_id = v17 & 0x3F;
-        if (bmodel_id >= pOutdoor->uNumBModels)
+      if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor ) {
+        int bmodel_id = a1 >> 9;
+        int face_id = v17 & 0x3F;
+        if (bmodel_id >= pOutdoor->pBModels.size()) {
           return 1;
+        }
         if (pOutdoor->pBModels[bmodel_id].pFaces[face_id].uAttributes & FACE_HAS_EVENT 
          || pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID == 0 )
           return 1;
@@ -5207,10 +5197,7 @@ int  GetAlertStatus()
   return result;
 }
 
-
-//----- (0045063B) --------------------------------------------------------
-int _45063B_spawn_some_monster(MapInfo *a1, int a2)
-{
+int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
   int result; // eax@8
   int v6; // edi@11
   int v7; // ebx@11
@@ -5234,19 +5221,16 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2)
   if (!uNumActors)
     return 0;
 
-  for ( uint mon_id = 0; mon_id < uNumActors; ++mon_id )
-  {
+  for (uint mon_id = 0; mon_id < uNumActors; ++mon_id) {
     if ((pActors[mon_id].pMonsterInfo.uID < 121 || pActors[mon_id].pMonsterInfo.uID > 123) && // Dwarf FemaleC A-C
       (pActors[mon_id].pMonsterInfo.uID < 124 || pActors[mon_id].pMonsterInfo.uID > 126) && // Dwarf MaleA A-C
       (pActors[mon_id].pMonsterInfo.uID < 133 || pActors[mon_id].pMonsterInfo.uID > 135) && // Peasant Elf FemaleA A-C
       pActors[mon_id].CanAct())
     {
-      if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
-      {
+      if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         v22 = 0;
         uint face_id = 0;
-        for ( face_id; face_id < 100; ++face_id )
-        {
+        for (face_id; face_id < 100; ++face_id) {
           v6 = rand() % 1024 + 512;
           v7 = rand() % (signed int)stru_5C6E00->uIntegerDoublePi;
           v19.vPosition.x = pParty->vPosition.x + fixpoint_mul(stru_5C6E00->Cos(v7), v6);
@@ -5257,29 +5241,23 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2)
           v26 = 0;
           v27 = 0;
           v19.vPosition.z = ODM_GetFloorLevel(v19.vPosition.x, v19.vPosition.y, pParty->vPosition.z, 0, &v26, &v27, 0);
-          for( int i = 0; i < pOutdoor->uNumBModels; i++ )
-          {
-            v9 = abs(v19.vPosition.y - pOutdoor->pBModels[i].vBoundingCenter.y);
-            v10 = abs(v19.vPosition.x - pOutdoor->pBModels[i].vBoundingCenter.x);
-            if ( int_get_vector_length(v10, v9, 0) < pOutdoor->pBModels[i].sBoundingRadius + 256 )
-            {
+          for (BSPModel &model : pOutdoor->pBModels) {
+            v9 = abs(v19.vPosition.y - model.vBoundingCenter.y);
+            v10 = abs(v19.vPosition.x - model.vBoundingCenter.x);
+            if (int_get_vector_length(v10, v9, 0) < model.sBoundingRadius + 256) {
               v22 = 1;
               break;
             }
           }
-          if ( v22 )
-          {
+          if (v22) {
             v11 = face_id == 100;
             break;
           }
         }
         v11 = face_id == 100;
-      }
-      else if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
-      {
+      } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         v22 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-        for ( uint i = 0; i < 100; ++i )
-        {
+        for (uint i = 0; i < 100; ++i) {
           v12 = rand() % 512 + 256;
           v13 = rand();
           v14 = v13 % (signed int)stru_5C6E00->uIntegerDoublePi;
@@ -5290,23 +5268,21 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2)
           v19.vPosition.z = pParty->vPosition.z;
           v19.uIndex = a2;
           v17 = pIndoor->GetSector(v19.vPosition.x, v19.vPosition.y, pParty->vPosition.z);
-          if ( v17 == v22 )
-          {
+          if (v17 == v22) {
             v18 = BLV_GetFloorLevel(v19.vPosition.x, v19.vPosition.y, v19.vPosition.z, v17, &uFaceID);
             v19.vPosition.z = v18;
-            if ( v18 != -30000 )
-            {
-              if ( abs(v18 - pParty->vPosition.z) <= 1024 )
+            if (v18 != -30000) {
+              if (abs(v18 - pParty->vPosition.z) <= 1024)
                 break;
             }
           }
         }
         v11 = v26 == 100;
       }
-      if ( v11 )
+
+      if (v11) {
         result = 0;
-      else
-      {
+      } else {
         SpawnEncounter(a1, &v19, 0, 0, 1);
         result = a2;
       }
