@@ -1135,75 +1135,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
   pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
   //************BModels************************//
-  uint32_t uNumBModels;
-  memcpy(&uNumBModels, pSrc, 4);  // количество BModel'ей
-  pSrc += 4;
-  for (uint i = 0; i < uNumBModels; ++i) {
-    BSPModel model;
-    memcpy(&model, pSrc, sizeof(BSPModelData));  // BModel'и
-    pSrc += sizeof(BSPModelData);
-    model.pVertices.uNumVertices = model.ppVertices.uNumVertices;
-    model.pVertices.pVertices = nullptr;
-    model.pFaces = nullptr;
-    model.pFacesOrdering = nullptr;
-    model.pNodes = nullptr;
-    pBModels.push_back(model);
-  }
-
-  pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-  for (uint i = 0; i < uNumBModels; ++i) {
-    assert(sizeof(Vec3_int_) == 12);
-    uint verticesSize = pBModels[i].pVertices.uNumVertices * sizeof(Vec3_int_);
-    pBModels[i].pVertices.pVertices = (Vec3_int_ *)malloc(verticesSize);
-    memcpy(pBModels[i].pVertices.pVertices, pSrc, verticesSize);
-    pSrc += verticesSize;
-
-    //assert(sizeof(ODMFace) == 308);
-    uint facesSize = pBModels[i].uNumFaces * sizeof(ODMFace_MM7);
-    pBModels[i].pFaces = new ODMFace[pBModels[i].uNumFaces];
-    auto face_data = (ODMFace_MM7 *)pSrc;
-    for (unsigned int j = 0; j < pBModels[i].uNumFaces; ++j)
-    {
-      pBModels[i].pFaces[j].Deserialize(face_data);
-      face_data++;
-    }
-    //memcpy(pBModels[i].pFaces, pSrc, facesSize);
-    pSrc += facesSize;
-
-    uint facesOrderingSize = pBModels[i].uNumFaces * sizeof(short);
-    pBModels[i].pFacesOrdering = (unsigned __int16 *)malloc(facesOrderingSize);
-    memcpy(pBModels[i].pFacesOrdering, pSrc, facesOrderingSize);
-    pSrc += facesOrderingSize;
-
-    assert(sizeof(BSPNode) == 8);
-    uint nodesSize = pBModels[i].uNumNodes * sizeof(BSPNode);
-    pBModels[i].pNodes = (BSPNode *)malloc(nodesSize);
-    memcpy(pBModels[i].pNodes, pSrc, nodesSize);
-    pSrc += nodesSize;
-
-    const char* textureFilenames = (const char *)malloc(10 * pBModels[i].uNumFaces);
-    //pFilename = (char *)(10 * pBModels[v48].uNumFaces);
-    memcpy((char *)textureFilenames, pSrc, 10 * pBModels[i].uNumFaces);
-    pSrc += 10 * pBModels[i].uNumFaces;
-    //v144 = 0;
-    //uSourceLen = (char *)uSourceLen + (int)pFilename;
-    //v60 = pBModels;
-    for (uint j = 0; j < pBModels[i].uNumFaces; ++j) {
-      const char* texFilename = &textureFilenames[j * 10];
-
-      pBModels[i].pFaces[j].SetTexture(texFilename);
-
-      if (pBModels[i].pFaces[j].sCogTriggeredID) {
-        if (pBModels[i].pFaces[j].HasEventHint())
-          pBModels[i].pFaces[j].uAttributes |= FACE_HAS_EVENT;
-        else
-          pBModels[i].pFaces[j].uAttributes &= ~FACE_HAS_EVENT;
-      }
-    }
-
-    free((void *)textureFilenames);
-  }
+  pSrc = pBModels.Load(pSrc);
   pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
   //******************Decorations**********************//
@@ -1315,17 +1247,15 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     //v74 = (int)((char *)v75 + 40);
   }
   uint actualNumFacesInLevel = 0;
-  for (uint i = 0; i < uNumBModels; ++i)
-    actualNumFacesInLevel += pBModels[i].uNumFaces;
+  for (BSPModel &model : pBModels) {
+    actualNumFacesInLevel += model.pFaces.size();
+  }
 
-  if (ddm.uNumFacesInBModels)
-  {
-    if (ddm.uNumBModels)
-    {
-      if (ddm.uNumDecorations)
-      {
+  if (ddm.uNumFacesInBModels) {
+    if (ddm.uNumBModels) {
+      if (ddm.uNumDecorations) {
         if (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
-          ddm.uNumBModels != uNumBModels ||
+          ddm.uNumBModels != pBModels.size() ||
           ddm.uNumDecorations != uNumLevelDecorations)
           Str2 = (char *)1;
       }
@@ -1391,25 +1321,19 @@ bool OutdoorLocation::Load(const String &filename, int days_played, int respawn_
     memcpy(uPartiallyRevealedCellOnMap, Src, 968);
   }
 
-  for (uint i = 0; i < uNumBModels; ++i)
-  {
-    BSPModel model = pBModels[i];
-    for (uint j = 0; j < model.uNumFaces; ++j)
-    {
-      ODMFace face = model.pFaces[j];
+  for (BSPModel &model : pBModels) {
+    for (ODMFace &face : model.pFaces) {
       memcpy(&face.uAttributes, pSrc, 4);
       pSrc += 4;
     }
 
-    for (uint j = 0; j < model.uNumFaces; ++j)
-    {
-      ODMFace face = model.pFaces[j];
-      if (face.sCogTriggeredID)
-      {
-        if (face.HasEventHint())
+    for (ODMFace &face : model.pFaces) {
+      if (face.sCogTriggeredID) {
+        if (face.HasEventHint()) {
           face.uAttributes |= FACE_HAS_EVENT_HINT;
-        else
+        } else {
           face.uAttributes &= ~FACE_HAS_EVENT_HINT;//~0x00001000
+        }
       }
     }
   }
@@ -2062,210 +1986,91 @@ void OutdoorLocation::PrepareActorsDrawList()
     }
 }
 
-
-Texture *ODMFace::GetTexture()
-{
-    if (this->IsTextureFrameTable())
-    {
-        return pTextureFrameTable->GetFrameTexture((int)this->resource, pEventTimer->uTotalGameTimeElapsed);
-    }
-    else
-    {
-        return (Texture *)this->resource;
-    }
-}
-
-
-void ODMFace::SetTexture(const String &filename)
-{
-    if (this->IsTextureFrameTable())
-    {
-        this->resource = (void *)pTextureFrameTable->FindTextureByName(filename.c_str());
-        if (this->resource != (void *)-1)
-        {
-            return;
-        }
-
-        this->ToggleIsTextureFrameTable();
-    }
-
-    this->resource = assets->GetBitmap(filename);
-}
-
-
-bool ODMFace::Deserialize(ODMFace_MM7 *mm7)
-{
-    memcpy(&this->pFacePlane, &mm7->pFacePlane, sizeof(this->pFacePlane));
-    this->zCalc1 = mm7->zCalc1;
-    this->zCalc2 = mm7->zCalc2;
-    this->zCalc3 = mm7->zCalc3;
-    this->uAttributes = mm7->uAttributes;
-    memcpy(this->pVertexIDs, mm7->pVertexIDs, sizeof(this->pVertexIDs));
-    memcpy(this->pTextureUIDs, mm7->pTextureUIDs, sizeof(this->pTextureUIDs));
-    memcpy(this->pTextureVIDs, mm7->pTextureVIDs, sizeof(this->pTextureVIDs));
-    memcpy(this->pXInterceptDisplacements, mm7->pXInterceptDisplacements, sizeof(this->pXInterceptDisplacements));
-    memcpy(this->pYInterceptDisplacements, mm7->pYInterceptDisplacements, sizeof(this->pYInterceptDisplacements));
-    memcpy(this->pZInterceptDisplacements, mm7->pZInterceptDisplacements, sizeof(this->pZInterceptDisplacements));
-    this->resource = nullptr;
-    this->sTextureDeltaU = mm7->sTextureDeltaU;
-    this->sTextureDeltaV = mm7->sTextureDeltaV;
-    memcpy(&this->pBoundingBox, &mm7->pBoundingBox, sizeof(this->pBoundingBox));
-    this->sCogNumber = mm7->sCogNumber;
-    this->sCogTriggeredID = mm7->sCogTriggeredID;
-    this->sCogTriggerType = mm7->sCogTriggerType;
-    this->field_128 = mm7->field_128;
-    this->field_129 = mm7->field_129;
-    this->uGradientVertex1 = mm7->uGradientVertex1;
-    this->uGradientVertex2 = mm7->uGradientVertex2;
-    this->uGradientVertex3 = mm7->uGradientVertex3;
-    this->uGradientVertex4 = mm7->uGradientVertex4;
-    this->uNumVertices = mm7->uNumVertices;
-    this->uPolygonType = mm7->uPolygonType;
-    this->uShadeType = mm7->uShadeType;
-    this->bVisible = mm7->bVisible;
-    this->field_132 = mm7->field_132;
-    this->field_133 = mm7->field_133;
-
-    return true;
-}
-
-//----- (0044C1E8) --------------------------------------------------------
-bool ODMFace::HasEventHint()
-{
-    signed int event_index; // eax@1
-    _evt_raw* start_evt;
-    _evt_raw* end_evt;
-
-    event_index = 0;
-    if ((uLevelEVT_NumEvents - 1) <= 0)
-        return false;
-    while (pLevelEVT_Index[event_index].uEventID != this->sCogTriggeredID)
-    {
-        ++event_index;
-        if (event_index >= (signed int)(uLevelEVT_NumEvents - 1))
-            return false;
-    }
-    end_evt = (_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index + 1].uEventOffsetInEVT];
-    start_evt = (_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
-    if ((end_evt->_e_type != EVENT_Exit) || (start_evt->_e_type != EVENT_MouseOver))
-        return false;
-    else
-        return true;
-}
-
-//----- (0046D49E) --------------------------------------------------------
-int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, int *pIsOnWater, int *bmodel_pid, int bWaterWalk)
-{
-  BSPModel *pBModel; // esi@4
-  ODMFace *pFace; // ecx@11
-//  int v14; // edx@20
-  signed int v18; // edx@26
+int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, int *pIsOnWater, int *bmodel_pid, int bWaterWalk) {
+  int v18; // edx@26
   int v19; // eax@28
-//  int v20; // edx@30
-//  int v21; // ST1C_4@30
-  signed int v22; // edx@30
-  signed __int64 v23; // qtt@30
+  int v22; // edx@30
+  __int64 v23; // qtt@30
   int v24; // eax@36
-  signed int v25; // ecx@38
-//  int result; // eax@42
-  signed int current_floor_level; // ecx@43
-//  int v28; // edi@44
-  signed int v29; // edx@44
-//  int v30; // esi@45
-//  int v31; // eax@45
-//  int v33; // ecx@59
-//  int v36; // [sp+14h] [bp-2Ch]@24
-//  int v38; // [sp+1Ch] [bp-24h]@2
+  int v25; // ecx@38
+  int current_floor_level; // ecx@43
+  int v29; // edx@44
   int v39; // [sp+20h] [bp-20h]@9
-  signed int pBModelNum; // [sp+28h] [bp-18h]@1
-  int pFaceNum; // [sp+2Ch] [bp-14h]@8
   bool current_vertices_Y; // [sp+30h] [bp-10h]@22
   bool next_vertices_Y; // [sp+34h] [bp-Ch]@24
-  signed int v46; // [sp+3Ch] [bp-4h]@1
-  signed int number_hits; // [sp+58h] [bp+18h]@22
-  signed int next_floor_level; // [sp+58h] [bp+18h]@43
+  int number_hits; // [sp+58h] [bp+18h]@22
+  int next_floor_level; // [sp+58h] [bp+18h]@43
 
-  v46 = 1;
+  int v46 = 1;
   current_BModel_id[0] = -1;
   current_Face_id[0] = -1;
   odm_floor_level[0] = GetTerrainHeightsAroundParty2(X, Y, pIsOnWater, bWaterWalk);
-  
-  for ( pBModelNum = 0; pBModelNum < pOutdoor->pBModels.size(); ++pBModelNum )
-  {
-    pBModel = &pOutdoor->pBModels[pBModelNum];
-    if ( X <= pBModel->sMaxX && X >= pBModel->sMinX &&
-         Y <= pBModel->sMaxY && Y >= pBModel->sMinY )
-    {
-      if ( pBModel->uNumFaces > 0 )
-      {
+
+  for (BSPModel &model : pOutdoor->pBModels) {
+    if (X <= model.sMaxX && X >= model.sMinX && Y <= model.sMaxY && Y >= model.sMinY) {
+      if (!model.pFaces.empty()) {
         v39 = 0;
-        for ( pFaceNum = 0; pFaceNum < pBModel->uNumFaces; ++pFaceNum )
-        {
-          pFace = &pBModel->pFaces[pFaceNum];
-          if ( pFace->Ethereal() )
+        for (ODMFace &face : model.pFaces) {
+          if (face.Ethereal()) {
             continue;
-          if ( (pFace->uPolygonType == POLYGON_Floor || pFace->uPolygonType == POLYGON_InBetweenFloorAndWall)
-            && X <= pFace->pBoundingBox.x2 && X >= pFace->pBoundingBox.x1
-            && Y <= pFace->pBoundingBox.y2 && Y >= pFace->pBoundingBox.y1 )
+          }
+          if ((face.uPolygonType == POLYGON_Floor || face.uPolygonType == POLYGON_InBetweenFloorAndWall)
+            && X <= face.pBoundingBox.x2 && X >= face.pBoundingBox.x1
+            && Y <= face.pBoundingBox.y2 && Y >= face.pBoundingBox.y1)
           {
-            for ( uint i = 0; i < pFace->uNumVertices; ++i)
-            {
-              odm_floor_face_vert_coord_X[2 * i] = pFace->pXInterceptDisplacements[i] + pBModel->pVertices.pVertices[pFace->pVertexIDs[i]].x;
-              odm_floor_face_vert_coord_Y[2 * i] = pFace->pYInterceptDisplacements[i] + pBModel->pVertices.pVertices[pFace->pVertexIDs[i]].y;
-              odm_floor_face_vert_coord_X[2 * i + 1] = pFace->pXInterceptDisplacements[i] + pBModel->pVertices.pVertices[pFace->pVertexIDs[i + 1]].x;
-              odm_floor_face_vert_coord_Y[2 * i + 1] = pFace->pYInterceptDisplacements[i] + pBModel->pVertices.pVertices[pFace->pVertexIDs[i + 1]].y;
+            for (uint i = 0; i < face.uNumVertices; ++i) {
+              odm_floor_face_vert_coord_X[2 * i] = face.pXInterceptDisplacements[i] + model.pVertices.pVertices[face.pVertexIDs[i]].x;
+              odm_floor_face_vert_coord_Y[2 * i] = face.pYInterceptDisplacements[i] + model.pVertices.pVertices[face.pVertexIDs[i]].y;
+              odm_floor_face_vert_coord_X[2 * i + 1] = face.pXInterceptDisplacements[i] + model.pVertices.pVertices[face.pVertexIDs[i + 1]].x;
+              odm_floor_face_vert_coord_Y[2 * i + 1] = face.pYInterceptDisplacements[i] + model.pVertices.pVertices[face.pVertexIDs[i + 1]].y;
             }
-            odm_floor_face_vert_coord_X[2 * pFace->uNumVertices] = odm_floor_face_vert_coord_X[0];
-            odm_floor_face_vert_coord_Y[2 * pFace->uNumVertices] = odm_floor_face_vert_coord_Y[0];
+            odm_floor_face_vert_coord_X[2 * face.uNumVertices] = odm_floor_face_vert_coord_X[0];
+            odm_floor_face_vert_coord_Y[2 * face.uNumVertices] = odm_floor_face_vert_coord_Y[0];
 
             current_vertices_Y = odm_floor_face_vert_coord_Y[0] >= Y;
             number_hits = 0;
-            if ( 2 * pFace->uNumVertices > 0 )
-            {
-              for ( int i = 0; i < 2 * pFace->uNumVertices; ++i )
-              {
-                if ( number_hits >= 2 )
+            if (2 * face.uNumVertices > 0) {
+              for (int i = 0; i < 2 * face.uNumVertices; ++i) {
+                if (number_hits >= 2)
                   break;
                 //v36 = odm_floor_face_vert_coord_Y[i + 1];
                 next_vertices_Y = odm_floor_face_vert_coord_Y[i + 1] >= Y;
-                if ( current_vertices_Y != next_vertices_Y )//проверка по Y
-                {
+                if (current_vertices_Y != next_vertices_Y) {  // проверка по Y
                   v18 = odm_floor_face_vert_coord_X[i + 1] >= X ? 0 : 2;
                   v19 = v18 | (odm_floor_face_vert_coord_X[i] < X);
-                  if ( v19 != 3 )
-                  {
-                    if ( !v19 )
+                  if (v19 != 3) {
+                    if (!v19)
                       ++number_hits;
                     else
                     {
-                        HEXRAYS_LODWORD(v23) = (Y - odm_floor_face_vert_coord_Y[i]) << 16;
-                        HEXRAYS_HIDWORD(v23) = (Y - odm_floor_face_vert_coord_Y[i]) >> 16;
+                      HEXRAYS_LODWORD(v23) = (Y - odm_floor_face_vert_coord_Y[i]) << 16;
+                      HEXRAYS_HIDWORD(v23) = (Y - odm_floor_face_vert_coord_Y[i]) >> 16;
                       v22 = ((((odm_floor_face_vert_coord_X[i + 1] - odm_floor_face_vert_coord_X[i]) * v23 / (odm_floor_face_vert_coord_Y[i + 1]
-                              - odm_floor_face_vert_coord_Y[i])) >> 16) + odm_floor_face_vert_coord_X[i]);
-                      if ( v22 >= X) 
+                        - odm_floor_face_vert_coord_Y[i])) >> 16) + odm_floor_face_vert_coord_X[i]);
+                      if (v22 >= X)
                         ++number_hits;
                     }
                   }
                 }
                 current_vertices_Y = next_vertices_Y;
               }
-              if ( number_hits == 1 )
+              if (number_hits == 1)
               {
-                if ( v46 >= 20 )
+                if (v46 >= 20)
                   break;
-                if ( pFace->uPolygonType == POLYGON_Floor )
-                  v24 = pBModel->pVertices.pVertices[pFace->pVertexIDs[0]].z;
+                if (face.uPolygonType == POLYGON_Floor)
+                  v24 = model.pVertices.pVertices[face.pVertexIDs[0]].z;
                 else
                 {
-                  int a = fixpoint_mul(pFace->zCalc1, X);
-                  int b = fixpoint_mul(pFace->zCalc2, Y);
-                  int c = ((signed __int64)pFace->zCalc3 >> 16);
+                  int a = fixpoint_mul(face.zCalc1, X);
+                  int b = fixpoint_mul(face.zCalc2, Y);
+                  int c = ((int64_t)face.zCalc3 >> 16);
                   v24 = a + b + c;
                 }
                 v25 = v46++;
                 odm_floor_level[v25] = v24;
-                current_BModel_id[v25] = pBModelNum;
-                current_Face_id[v25] = pFaceNum;
+                current_BModel_id[v25] = model.index;
+                current_Face_id[v25] = face.index;
               }
             }
           }
@@ -2274,47 +2079,47 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, int *pIsOnWater,
       }
     }
   }
-  if ( v46 == 1 )
+  if (v46 == 1)
   {
     *bmodel_pid = 0;
     return odm_floor_level[0];
   }
   current_floor_level = 0;
   v29 = 0;
-  if ( v46 <= 1 )
+  if (v46 <= 1)
     *bmodel_pid = 0;
   else
   {
     current_floor_level = odm_floor_level[0];
-    for ( uint i = 1; i < v46; ++i )
+    for (uint i = 1; i < v46; ++i)
     {
       next_floor_level = odm_floor_level[i];
-      if ( current_floor_level <= Z + 5 )
+      if (current_floor_level <= Z + 5)
       {
-        if ( next_floor_level > current_floor_level && next_floor_level <= Z + 5 )
+        if (next_floor_level > current_floor_level && next_floor_level <= Z + 5)
         {
           current_floor_level = next_floor_level;
           v29 = i;
         }
       }
-      else if ( next_floor_level < current_floor_level )
+      else if (next_floor_level < current_floor_level)
       {
         current_floor_level = next_floor_level;
         v29 = i;
       }
     }
-    if ( !v29 )
+    if (!v29)
       *bmodel_pid = 0;
     else
       *bmodel_pid = current_Face_id[v29] | (current_BModel_id[v29] << 6);
   }
-  if ( v29 )
+  if (v29)
   {
     *pIsOnWater = false;
-    if ( pOutdoor->pBModels[current_BModel_id[v29]].pFaces[current_Face_id[v29]].Fluid())
+    if (pOutdoor->pBModels[current_BModel_id[v29]].pFaces[current_Face_id[v29]].Fluid())
       *pIsOnWater = true;
   }
-  if ( odm_floor_level[v29] >= odm_floor_level[0] )
+  if (odm_floor_level[v29] >= odm_floor_level[0])
     odm_floor_level[0] = odm_floor_level[v29];
   return odm_floor_level[0];
 }
@@ -2508,7 +2313,6 @@ void ODM_ProcessPartyActions()
     int v1; // edi@1
     int v2; // ebx@1
     int floor_level; // eax@14
-    ODMFace *face; // ecx@45
     int v34; // esi@143
     int v35; // esi@147
     int v36; // eax@155
@@ -2674,16 +2478,10 @@ void ODM_ProcessPartyActions()
         if (bmodel_standing_on_pid) {
           int BModel_id = bmodel_standing_on_pid >> 6;
           if (BModel_id < pOutdoor->pBModels.size()) {
-            face = pOutdoor->pBModels[BModel_id].pFaces;
             int face_id = bmodel_standing_on_pid & 0x3F;
-            /*if ( *(char *)(v7->pFacePlane.vNormal.x + 308 * v6 + 31) & 4 )
-            {
-            pParty->field_6F4_packedid = PID(OBJECT_BModel,v108);
-            v103 = *(short *)(v7->pFacePlane.vNormal.x + 308 * v6 + 292);
-            }*/
-            if (face[face_id].uAttributes & FACE_PRESSURE_PLATE) {
+            if (pOutdoor->pBModels[BModel_id].pFaces[face_id].uAttributes & FACE_PRESSURE_PLATE) {
               pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);
-              trigger_id = face[face_id].sCogTriggeredID; //EVT, панель имеет событие
+              trigger_id = pOutdoor->pBModels[BModel_id].pFaces[face_id].sCogTriggeredID; //EVT, панель имеет событие
             }
           }
         }
@@ -3187,30 +2985,30 @@ void ODM_ProcessPartyActions()
         stru_721530.field_70 += stru_721530.field_7C;
         pX = _angle_x;
         pY = _angle_y;
-        v45 = stru_721530.uFaceID;
+        v45 = stru_721530.pid;
         party_new_Z = v40;
 
-        if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Actor)
+        if (PID_TYPE(stru_721530.pid) == OBJECT_Actor)
         {
             if (pParty->Invisible())
                 pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
             viewparams->bRedrawGameUI = true;
         }
 
-        if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Decoration)
+        if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration)
         {
-            v129 = stru_5C6E00->Atan2(_angle_x - pLevelDecorations[(signed int)stru_721530.uFaceID >> 3].vPosition.x,
-                _angle_y - pLevelDecorations[(signed int)stru_721530.uFaceID >> 3].vPosition.y);
+            v129 = stru_5C6E00->Atan2(_angle_x - pLevelDecorations[(signed int)stru_721530.pid >> 3].vPosition.x,
+                _angle_y - pLevelDecorations[(signed int)stru_721530.pid >> 3].vPosition.y);
             v2 = fixpoint_mul(stru_5C6E00->Cos(v129), integer_sqrt(v2 * v2 + v128 * v128));
             v122 = fixpoint_mul(stru_5C6E00->Sin(v129), integer_sqrt(v2 * v2 + v128 * v128));
             v128 = fixpoint_mul(stru_5C6E00->Sin(v129), integer_sqrt(v2 * v2 + v128 * v128));
         }
 
-        if (PID_TYPE(stru_721530.uFaceID) == OBJECT_BModel)
+        if (PID_TYPE(stru_721530.pid) == OBJECT_BModel)
         {
             pParty->bFlying = false;
-            pModel = &pOutdoor->pBModels[(signed int)stru_721530.uFaceID >> 9];
-            pODMFace = &pModel->pFaces[((signed int)stru_721530.uFaceID >> 3) & 0x3F];
+            pModel = &pOutdoor->pBModels[(signed int)stru_721530.pid >> 9];
+            pODMFace = &pModel->pFaces[((signed int)stru_721530.pid >> 3) & 0x3F];
             v48 = pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1;
             v129 = v48 <= 32;
             v119 = pODMFace->pFacePlane.vNormal.z < 46378;
@@ -3253,9 +3051,9 @@ void ODM_ProcessPartyActions()
                     if (!v119)
                         party_new_Z = v122 + fixpoint_mul(pODMFace->pFacePlane.vNormal.z, v55);
                 }
-                if (pParty->floor_face_pid != stru_721530.uFaceID && pODMFace->Pressure_Plate())
+                if (pParty->floor_face_pid != stru_721530.pid && pODMFace->Pressure_Plate())
                 {
-                    pParty->floor_face_pid = stru_721530.uFaceID;
+                    pParty->floor_face_pid = stru_721530.pid;
                     trigger_id = pODMFace->sCogTriggeredID; //
                 }
             }
@@ -3270,9 +3068,9 @@ void ODM_ProcessPartyActions()
                 fall_speed += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.z);
                 if (v2 * v2 + v128 * v128 >= 400)
                 {
-                    if (pParty->floor_face_pid != stru_721530.uFaceID && pODMFace->Pressure_Plate())
+                    if (pParty->floor_face_pid != stru_721530.pid && pODMFace->Pressure_Plate())
                     {
-                        pParty->floor_face_pid = stru_721530.uFaceID;
+                        pParty->floor_face_pid = stru_721530.pid;
                         trigger_id = pODMFace->sCogTriggeredID; //
                     }
                 }
@@ -3532,68 +3330,61 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int pFa
   dword_720E80[0] = -1;
   v39 = 1;
   ceiling_height_level[0] = 10000;//нет потолка
-  int i = 0;
   for (BSPModel &model : pOutdoor->pBModels) {
     if (Party_X <= model.sMaxX && Party_X >= model.sMinX && Party_Y <= model.sMaxY && Party_Y >= model.sMinY) {
-      for (uint j = 0; j < model.uNumFaces; ++j) {
-        if ((model.pFaces[j].uPolygonType == POLYGON_Ceiling
-          || model.pFaces[j].uPolygonType == POLYGON_InBetweenCeilingAndWall)
-          && !model.pFaces[j].Ethereal()
-          && Party_X <= model.pFaces[j].pBoundingBox.x2 && Party_X >= model.pFaces[j].pBoundingBox.x1
-          && Party_Y <= model.pFaces[j].pBoundingBox.y2 && Party_Y >= model.pFaces[j].pBoundingBox.y1)
+      for (ODMFace &face : model.pFaces) {
+        if ((face.uPolygonType == POLYGON_Ceiling
+          || face.uPolygonType == POLYGON_InBetweenCeilingAndWall)
+          && !face.Ethereal()
+          && Party_X <= face.pBoundingBox.x2 && Party_X >= face.pBoundingBox.x1
+          && Party_Y <= face.pBoundingBox.y2 && Party_Y >= face.pBoundingBox.y1)
         {
-          for (uint v = 0; v < model.pFaces[j].uNumVertices; v++)
-          {
-            word_720DB0_xs[2 * v] = model.pFaces[j].pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[model.pFaces[j].pVertexIDs[v]].x;
-            word_720CE0_ys[2 * v] = model.pFaces[j].pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[model.pFaces[j].pVertexIDs[v]].y;
-            word_720DB0_xs[2 * v + 1] = model.pFaces[j].pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[model.pFaces[j].pVertexIDs[v + 1]].x;
-            word_720CE0_ys[2 * v + 1] = model.pFaces[j].pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[model.pFaces[j].pVertexIDs[v + 1]].y;
+          for (uint v = 0; v < face.uNumVertices; v++) {
+            word_720DB0_xs[2 * v] = face.pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[face.pVertexIDs[v]].x;
+            word_720CE0_ys[2 * v] = face.pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[face.pVertexIDs[v]].y;
+            word_720DB0_xs[2 * v + 1] = face.pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[face.pVertexIDs[v + 1]].x;
+            word_720CE0_ys[2 * v + 1] = face.pXInterceptDisplacements[v] + (short)model.pVertices.pVertices[face.pVertexIDs[v + 1]].y;
           }
-          v27 = 2 * model.pFaces[j].uNumVertices;
-          word_720DB0_xs[2 * model.pFaces[j].uNumVertices] = word_720DB0_xs[0];
-          word_720CE0_ys[2 * model.pFaces[j].uNumVertices] = word_720CE0_ys[0];
+          v27 = 2 * face.uNumVertices;
+          word_720DB0_xs[2 * face.uNumVertices] = word_720DB0_xs[0];
+          word_720CE0_ys[2 * face.uNumVertices] = word_720CE0_ys[0];
           v34 = word_720CE0_ys[0] >= Party_Y;
           v37 = 0;
-          for (uint v = 0; v < v27; ++v)
-          {
+          for (uint v = 0; v < v27; ++v) {
             if (v37 >= 2)
               break;
             v35 = word_720CE0_ys[v + 1] >= Party_Y;
-            if (v34 != v35)
-            {
+            if (v34 != v35) {
               v13 = word_720DB0_xs[v + 1] >= Party_X ? 0 : 2;
               v14 = v13 | (word_720DB0_xs[v] < Party_X);
-              if (v14 != 3)
-              {
+              if (v14 != 3) {
                 if (!v14 || (v16 = word_720CE0_ys[v + 1] - word_720CE0_ys[v],
                   v17 = Party_Y - word_720CE0_ys[v],
                   HEXRAYS_LODWORD(v18) = v17 << 16,
                   HEXRAYS_HIDWORD(v18) = v17 >> 16,
-                  (signed int)(((unsigned __int64)(((signed int)word_720DB0_xs[v + 1]
-                    - (signed int)word_720DB0_xs[v]) * v18 / v16) >> 16) + word_720DB0_xs[v]) >= Party_X))
+                  (int)(((uint64_t)(((int)word_720DB0_xs[v + 1]
+                    - (int)word_720DB0_xs[v]) * v18 / v16) >> 16) + word_720DB0_xs[v]) >= Party_X))
                   ++v37;
               }
             }
             v34 = v35;
           }
-          if (v37 == 1)
-          {
+          if (v37 == 1) {
             if (v39 >= 20)
               break;
-            if (model.pFaces[j].uPolygonType == POLYGON_Ceiling)
-              v19 = model.pVertices.pVertices[model.pFaces[j].pVertexIDs[0]].z;
+            if (face.uPolygonType == POLYGON_Ceiling)
+              v19 = model.pVertices.pVertices[face.pVertexIDs[0]].z;
             else
-              v19 = fixpoint_mul(model.pFaces[j].zCalc1, Party_X) + fixpoint_mul(model.pFaces[j].zCalc2, Party_Y)
-              + HEXRAYS_HIWORD(model.pFaces[j].zCalc3);
+              v19 = fixpoint_mul(face.zCalc1, Party_X) + fixpoint_mul(face.zCalc2, Party_Y)
+              + HEXRAYS_HIWORD(face.zCalc3);
             v20 = v39++;
             ceiling_height_level[v20] = v19;
-            dword_720ED0[v20] = i;
-            dword_720E80[v20] = j;
+            dword_720ED0[v20] = model.index;
+            dword_720E80[v20] = face.index;
           }
         }
       }
     }
-    i++;
   }
 
   if (!v39) {
@@ -3867,8 +3658,8 @@ void UpdateActors_ODM()
 			//v72b = (unsigned __int64)(stru_721530.field_7C * (signed __int64)stru_721530.field_58.z) >> 16;
 			pActors[v75].vPosition.z += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
 			stru_721530.field_70 += stru_721530.field_7C;
-			v39 = PID_ID(stru_721530.uFaceID);
-			switch (PID_TYPE(stru_721530.uFaceID))
+			v39 = PID_ID(stru_721530.pid);
+			switch (PID_TYPE(stru_721530.pid))
 			{
 			case OBJECT_Actor:
 				if (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT || pParty->bTurnBasedModeOn != TE_WAIT)
@@ -3878,22 +3669,22 @@ void UpdateActors_ODM()
 					if (pActors[v75].pMonsterInfo.uHostilityType)
 					{
 						if (v71 == 0)
-							Actor::AI_Flee(v75, stru_721530.uFaceID, 0, (AIDirection *)0);
+							Actor::AI_Flee(v75, stru_721530.pid, 0, (AIDirection *)0);
 						else
 							Actor::AI_StandOrBored(v75, 4, 0, (AIDirection *)0);
 					}
 					else if (v71)
 						Actor::AI_StandOrBored(v75, 4, 0, (AIDirection *)0);
 					else if (pActors[v39].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly)
-						Actor::AI_Flee(v75, stru_721530.uFaceID, 0, (AIDirection *)0);
+						Actor::AI_Flee(v75, stru_721530.pid, 0, (AIDirection *)0);
 					else
-						Actor::AI_FaceObject(v75, stru_721530.uFaceID, 0, (AIDirection *)0);
+						Actor::AI_FaceObject(v75, stru_721530.pid, 0, (AIDirection *)0);
 				}
 				break;
 			case OBJECT_Player:
 				if (!pActors[v75].GetActorsRelation(0))
 				{
-					Actor::AI_FaceObject(v75, stru_721530.uFaceID, 0, (AIDirection *)0);
+					Actor::AI_FaceObject(v75, stru_721530.pid, 0, (AIDirection *)0);
 					break;
 				}
 				//v52 = HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime) == 0;
@@ -3916,13 +3707,13 @@ void UpdateActors_ODM()
 				pActors[v75].vVelocity.y = fixpoint_mul(stru_5C6E00->Sin(v48), v47);
 				break;
 			case OBJECT_BModel:
-				face = &pOutdoor->pBModels[stru_721530.uFaceID >> 9].pFaces[v39 & 0x3F];
+				face = &pOutdoor->pBModels[stru_721530.pid >> 9].pFaces[v39 & 0x3F];
 				if (!face->Ethereal())
 				{
 					if (face->uPolygonType == 3)
 					{
 						pActors[v75].vVelocity.z = 0;
-						pActors[v75].vPosition.z = (short)pOutdoor->pBModels[stru_721530.uFaceID >> 9].pVertices.pVertices[face->pVertexIDs[0]].z + 1;
+						pActors[v75].vPosition.z = (short)pOutdoor->pBModels[stru_721530.pid >> 9].pVertices.pVertices[face->pVertexIDs[0]].z + 1;
 						if (pActors[v75].vVelocity.x * pActors[v75].vVelocity.x
 							+ pActors[v75].vVelocity.y * pActors[v75].vVelocity.y < 400)
 						{

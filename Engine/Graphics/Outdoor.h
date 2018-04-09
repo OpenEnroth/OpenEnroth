@@ -71,64 +71,6 @@ struct OutdoorLocationTerrain
 };
 #pragma pack(pop)
 
-
-struct ODMFace
-{
-    bool HasEventHint();
-
-
-    static bool IsBackfaceNotCulled(struct RenderVertexSoft *a2, struct Polygon *polygon);
-
-    inline bool Invisible() const { return (uAttributes & FACE_INVISIBLE) != 0; }
-    inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return (uAttributes & FACE_PORTAL) != 0; }
-    inline bool Fluid() const { return (uAttributes & FACE_FLUID) != 0; }
-    inline bool Indoor_sky() const { return (uAttributes & FACE_INDOOR_SKY) != 0; }
-    inline bool Clickable() const { return (uAttributes & FACE_CLICKABLE) != 0; }
-    inline bool Pressure_Plate() const { return (uAttributes & FACE_PRESSURE_PLATE) != 0; }
-    inline bool Ethereal() const { return (uAttributes & FACE_ETHEREAL) != 0; }
-
-    inline bool IsTextureFrameTable() { return this->uAttributes & FACE_TEXTURE_FRAME; }
-    inline void ToggleIsTextureFrameTable() { this->uAttributes = this->uAttributes & FACE_TEXTURE_FRAME ? this->uAttributes & ~FACE_TEXTURE_FRAME : this->uAttributes | FACE_TEXTURE_FRAME; }
-
-    void SetTexture(const String &filename);
-    Texture *GetTexture();
-
-    bool Deserialize(struct ODMFace_MM7 *);
-
-    struct Plane_int_ pFacePlane;
-    int zCalc1;
-    int zCalc2;
-    int zCalc3;
-    unsigned int uAttributes;
-    unsigned __int16 pVertexIDs[20];
-    __int16 pTextureUIDs[20];
-    __int16 pTextureVIDs[20];
-    __int16 pXInterceptDisplacements[20];
-    __int16 pYInterceptDisplacements[20];
-    __int16 pZInterceptDisplacements[20];
-    void *resource;//__int16 uTextureID;
-    __int16 sTextureDeltaU;
-    __int16 sTextureDeltaV;
-    struct BBox_short_ pBoundingBox;
-    __int16 sCogNumber;
-    __int16 sCogTriggeredID;
-    __int16 sCogTriggerType;
-    char field_128;
-    char field_129;
-    unsigned __int8 uGradientVertex1;
-    unsigned __int8 uGradientVertex2;
-    unsigned __int8 uGradientVertex3;
-    unsigned __int8 uGradientVertex4;
-    unsigned __int8 uNumVertices;
-    unsigned __int8 uPolygonType;
-    unsigned __int8 uShadeType;
-    unsigned __int8 bVisible;
-    char field_132;
-    char field_133;
-};
-
-
 struct OutdoorLocation {
     OutdoorLocation();
     void subconstuctor();
@@ -178,7 +120,7 @@ struct OutdoorLocation {
     OutdoorLocationTileType pTileTypes[4];  // [3]  road tileset
     struct OutdoorLocationTerrain pTerrain;
     void *pCmap;
-    std::vector<BSPModel> pBModels;
+    BSPModelList pBModels;
     unsigned int numFaceIDListElems;
     unsigned __int16 *pFaceIDLIST;
     unsigned int *pOMAP;
@@ -257,12 +199,3 @@ int GridCellToWorldPosZ(int);
 void sub_481ED9_MessWithODMRenderParams();
 bool IsTerrainSlopeTooHigh(int pos_x, int pos_y);
 int GetTerrainHeightsAroundParty2(int a1, int a2, int *a3, int a4);
-
-
-
-
-
-
-
-
-

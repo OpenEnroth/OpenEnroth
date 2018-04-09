@@ -23,6 +23,8 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Outdoor.h"
 
+#include "Engine/Objects/Actor.h"
+
 #include "Platform/OsWindow.h"
 #include "Platform/Api.h"
 
@@ -1537,51 +1539,48 @@ void RenderOpenGL::DrawBuildingsD3D() {
   _set_3d_projection_matrix();
   _set_3d_modelview_matrix();
 
-  for (unsigned int model_id = 0; model_id < pOutdoor->pBModels.size(); model_id++) {
+  for (BSPModel &model : pOutdoor->pBModels) {
     int reachable;
-    if (IsBModelVisible(model_id, &reachable)) {
-      pOutdoor->pBModels[model_id].field_40 |= 1;
-      if (pOutdoor->pBModels[model_id].uNumFaces > 0) {
-        for (int face_id = 0; face_id < pOutdoor->pBModels[model_id].uNumFaces; face_id++) {
-          if (!pOutdoor->pBModels[model_id].pFaces[face_id].Invisible()) {
+    if (IsBModelVisible(&model, &reachable)) {
+      model.field_40 |= 1;
+      if (!model.pFaces.empty()) {
+        for (ODMFace &face : model.pFaces) {
+          if (!face.Invisible()) {
             v53 = 0;
             auto poly = &array_77EC08[pODMRenderParams->uNumPolygons];
 
             poly->flags = 0;
             poly->field_32 = 0;
-            poly->texture = pOutdoor->pBModels[model_id].pFaces[face_id].GetTexture();
+            poly->texture = face.GetTexture();
 
-            if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLUID)
+            if (face.uAttributes & FACE_FLUID)
               poly->flags |= 2;
-            if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_INDOOR_SKY)
+            if (face.uAttributes & FACE_INDOOR_SKY)
               poly->flags |= 0x400;
 
-            if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_DIAGONAL)
+            if (face.uAttributes & FACE_FLOW_DIAGONAL)
               poly->flags |= 0x400;
-            else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_VERTICAL)
+            else if (face.uAttributes & FACE_FLOW_VERTICAL)
               poly->flags |= 0x800;
 
-            if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_HORIZONTAL)
+            if (face.uAttributes & FACE_FLOW_HORIZONTAL)
               poly->flags |= 0x2000;
-            else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_DONT_CACHE_TEXTURE)
+            else if (face.uAttributes & FACE_DONT_CACHE_TEXTURE)
               poly->flags |= 0x1000;
 
-            poly->sTextureDeltaU = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaU;
-            poly->sTextureDeltaV = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaV;
+            poly->sTextureDeltaU = face.sTextureDeltaU;
+            poly->sTextureDeltaV = face.sTextureDeltaV;
 
             unsigned int flow_anim_timer = GetTickCount() >> 4;
             unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
             unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
 
-            if (pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z && abs(pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z) >= 59082)
-            {
+            if (face.pFacePlane.vNormal.z && abs(face.pFacePlane.vNormal.z) >= 59082) {
               if (poly->flags & 0x400)
                 poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
               if (poly->flags & 0x800)
                 poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
-            }
-            else
-            {
+            } else {
               if (poly->flags & 0x400)
                 poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
               if (poly->flags & 0x800)
@@ -1596,18 +1595,17 @@ void RenderOpenGL::DrawBuildingsD3D() {
             v50 = 0;
             v49 = 0;
 
-            for (uint vertex_id = 1; vertex_id <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; vertex_id++)
-            {
-              array_73D150[vertex_id - 1].vWorldPosition.x = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].x;
-              array_73D150[vertex_id - 1].vWorldPosition.y = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].y;
-              array_73D150[vertex_id - 1].vWorldPosition.z = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].z;
-              array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureUIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetWidth());
-              array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureVIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetHeight());
+            for (uint vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
+              array_73D150[vertex_id - 1].vWorldPosition.x = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
+              array_73D150[vertex_id - 1].vWorldPosition.y = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
+              array_73D150[vertex_id - 1].vWorldPosition.z = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
+              array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU + (__int16)face.pTextureUIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetWidth());
+              array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV + (__int16)face.pTextureVIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetHeight());
             }
             memcpy(ogl_draw_buildings_vertices, array_73D150, sizeof(array_73D150));
 
-            for (uint i = 1; i <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; i++) {
-              if (pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[0]].z == array_73D150[i - 1].vWorldPosition.z)
+            for (uint i = 1; i <= face.uNumVertices; i++) {
+              if (model.pVertices.pVertices[face.pVertexIDs[0]].z == array_73D150[i - 1].vWorldPosition.z)
                 ++v53;
               pIndoorCameraD3D->ViewTransform(&array_73D150[i - 1], 1);
               if (array_73D150[i - 1].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() || array_73D150[i - 1].vWorldViewPosition.x > pIndoorCameraD3D->GetFarClip()) {
@@ -1620,14 +1618,15 @@ void RenderOpenGL::DrawBuildingsD3D() {
                 pIndoorCameraD3D->Project(&array_73D150[i - 1], 1, 0);
             }
 
-            if (v53 == pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices)
+            if (v53 == face.uNumVertices) {
               poly->field_32 |= 1;
-            poly->pODMFace = &pOutdoor->pBModels[model_id].pFaces[face_id];
-            poly->uNumVertices = pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices;
+            }
+            poly->pODMFace = &face;
+            poly->uNumVertices = face.uNumVertices;
             poly->field_59 = 5;
-            v51 = fixpoint_mul(-pOutdoor->vSunlight.x, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.x);
-            v53 = fixpoint_mul(-pOutdoor->vSunlight.y, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.y);
-            v52 = fixpoint_mul(-pOutdoor->vSunlight.z, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z);
+            v51 = fixpoint_mul(-pOutdoor->vSunlight.x, face.pFacePlane.vNormal.x);
+            v53 = fixpoint_mul(-pOutdoor->vSunlight.y, face.pFacePlane.vNormal.y);
+            v52 = fixpoint_mul(-pOutdoor->vSunlight.z, face.pFacePlane.vNormal.z);
             poly->dimming_level = 20 - fixpoint_mul(20, v51 + v53 + v52);
             if (poly->dimming_level < 0)
               poly->dimming_level = 0;
@@ -1636,23 +1635,21 @@ void RenderOpenGL::DrawBuildingsD3D() {
             if (pODMRenderParams->uNumPolygons >= 1999 + 5000)
               return;
             if (ODMFace::IsBackfaceNotCulled(array_73D150, poly)) {
-              pOutdoor->pBModels[model_id].pFaces[face_id].bVisible = 1;
-              poly->uBModelFaceID = face_id;
-              poly->uBModelID = model_id;
-              v27 = 8 * (face_id | (model_id << 6));
-              v27 |= 6;
-              poly->field_50 = v27;
-              for (int vertex_id = 0; vertex_id < pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; ++vertex_id) {
+              face.bVisible = 1;
+              poly->uBModelFaceID = face.index;
+              poly->uBModelID = model.index;
+              poly->pid = PID(OBJECT_BModel, face.index | (model.index << 6));
+              for (int vertex_id = 0; vertex_id < face.uNumVertices; ++vertex_id) {
                 memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
                 VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
               }
 
               if (v50) {
-                poly->uNumVertices = ODM_NearClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
+                poly->uNumVertices = ODM_NearClip(face.uNumVertices);
                 ODM_Project(poly->uNumVertices);
               }
               if (v49) {
-                poly->uNumVertices = ODM_FarClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
+                poly->uNumVertices = ODM_FarClip(face.uNumVertices);
                 ODM_Project(poly->uNumVertices);
               }
 

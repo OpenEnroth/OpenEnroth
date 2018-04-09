@@ -533,7 +533,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         {
             pOutdoor->ddm.uNumFacesInBModels = 0;
             for (BSPModel &model : pOutdoor->pBModels) {
-              pOutdoor->ddm.uNumFacesInBModels += model.uNumFaces;
+              pOutdoor->ddm.uNumFacesInBModels += model.pFaces.size();
             }
             pOutdoor->ddm.uNumBModels = pOutdoor->pBModels.size();
             pOutdoor->ddm.uNumDecorations = uNumLevelDecorations;
@@ -544,8 +544,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
             memcpy(data_write_pos, pOutdoor->uPartiallyRevealedCellOnMap, 0x3C8);
             data_write_pos += 968;
             for (BSPModel &model : pOutdoor->pBModels) {
-              for (int j = 0; j < model.uNumFaces; ++j) {  //*(int *)&pOutdoor->pBModels->pModelName[v24]; ++j)
-                memcpy(data_write_pos, &(model.pFaces[j].uAttributes), 4);
+              for (ODMFace &face : model.pFaces) {
+                memcpy(data_write_pos, &(face.uAttributes), 4);
                 data_write_pos += 4;
               }
             }

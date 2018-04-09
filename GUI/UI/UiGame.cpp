@@ -810,8 +810,8 @@ const char *GameUI_GetMinimapHintText() {
   result = 0;
   pMouse->GetClickPos(&pX, &pY);
   v3 = 1.0 / (float)((signed int)viewparams->uMinimapZoom * 0.000015258789);
-  global_coord_X = (signed __int64)((double)(pX - 557) * v3 + (double)pParty->vPosition.x);
-  global_coord_Y = (signed __int64)((double)pParty->vPosition.y - (double)(pY - 74) * v3);
+  global_coord_X = (__int64)((double)(pX - 557) * v3 + (double)pParty->vPosition.x);
+  global_coord_Y = (__int64)((double)pParty->vPosition.y - (double)(pY - 74) * v3);
   if (uCurrentlyLoadedLevelType != LEVEL_Outdoor || pOutdoor->pBModels.empty()) {
     pMapID = pMapStats->GetMapInfo(pCurrentMapName);
     if (pMapID == 0)
@@ -820,18 +820,15 @@ const char *GameUI_GetMinimapHintText() {
       result = pMapStats->pInfos[pMapID].pName;
   } else {
     for (BSPModel &model : pOutdoor->pBModels) {
-      v7 = int_get_vector_length(abs((int)model.vBoundingCenter.x - global_coord_X),
-        abs((int)model.vBoundingCenter.y - global_coord_Y), 0);
+      v7 = int_get_vector_length(abs((int)model.vBoundingCenter.x - global_coord_X), abs((int)model.vBoundingCenter.y - global_coord_Y), 0);
       if (v7 < 2 * model.sBoundingRadius) {
-        if (model.uNumFaces) {
-          for (uint i = 0; i < (uint)model.uNumFaces; ++i) {
-            if (model.pFaces[i].sCogTriggeredID) {
-              if (!(model.pFaces[i].uAttributes & FACE_HAS_EVENT)) {
-                v14 = GetEventHintString(model.pFaces[i].sCogTriggeredID);
-                if (v14) {
-                  if (_stricmp(v14, "")) {
-                    result = (char *)v14;
-                  }
+        for (ODMFace &face : model.pFaces) {
+          if (face.sCogTriggeredID) {
+            if (!(face.uAttributes & FACE_HAS_EVENT)) {
+              v14 = GetEventHintString(face.sCogTriggeredID);
+              if (v14) {
+                if (_stricmp(v14, "")) {
+                  result = (char *)v14;
                 }
               }
             }

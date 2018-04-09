@@ -2806,7 +2806,7 @@ bool Actor::_46DF1A_collide_against_actor( int a1, int a2 )
   if ( v13 < stru_721530.field_7C )
   {
     stru_721530.field_7C = v13;
-    stru_721530.uFaceID = PID(OBJECT_Actor,a1);
+    stru_721530.pid = PID(OBJECT_Actor,a1);
   }
   return true;
 }

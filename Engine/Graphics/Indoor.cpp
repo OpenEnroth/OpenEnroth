@@ -2039,8 +2039,8 @@ void  UpdateActors_BLV()
 				  pActors[actor_id].vPosition.z += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
 				  pActors[actor_id].uSectorID = (short)stru_721530.uSectorID;
 				  stru_721530.field_70 += stru_721530.field_7C;
-				  v37 = PID_ID(stru_721530.uFaceID);
-				  if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Actor)
+				  v37 = PID_ID(stru_721530.pid);
+				  if (PID_TYPE(stru_721530.pid) == OBJECT_Actor)
 				  {
 					  if (pParty->bTurnBasedModeOn == 1 && (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT))
 					  {
@@ -2054,7 +2054,7 @@ void  UpdateActors_BLV()
 					  {
 						  if (!v56)
 						  {
-							  Actor::AI_Flee(actor_id, stru_721530.uFaceID, v22, (AIDirection *)v22);
+							  Actor::AI_Flee(actor_id, stru_721530.pid, v22, (AIDirection *)v22);
 							  pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
 							  pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
 							  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
@@ -2068,14 +2068,14 @@ void  UpdateActors_BLV()
 						  {
 							  if (!pActors[v37].pMonsterInfo.uHostilityType)
 							  {
-								  Actor::AI_FaceObject(actor_id, stru_721530.uFaceID, v22, (AIDirection *)v22);
+								  Actor::AI_FaceObject(actor_id, stru_721530.pid, v22, (AIDirection *)v22);
 								  pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
 								  pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
 								  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
 								  v22 = 0;
 								  continue;
 							  }
-							  Actor::AI_Flee(actor_id, stru_721530.uFaceID, v22, (AIDirection *)v22);
+							  Actor::AI_Flee(actor_id, stru_721530.pid, v22, (AIDirection *)v22);
 							  pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
 							  pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
 							  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
@@ -2090,7 +2090,7 @@ void  UpdateActors_BLV()
 					  v22 = 0;
 					  continue;
 				  }
-				  if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Player)
+				  if (PID_TYPE(stru_721530.pid) == OBJECT_Player)
 				  {
 					  if (pActors[actor_id].GetActorsRelation(0))
 					  {
@@ -2110,14 +2110,14 @@ void  UpdateActors_BLV()
 						  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
 						  continue;
 					  }
-					  Actor::AI_FaceObject(actor_id, stru_721530.uFaceID, v22, (AIDirection *)v22);
+					  Actor::AI_FaceObject(actor_id, stru_721530.pid, v22, (AIDirection *)v22);
 					  pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
 					  pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
 					  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
 					  v22 = 0;
 					  continue;
 				  }
-				  if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Decoration)
+				  if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration)
 				  {
 					  _this = integer_sqrt(pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x + pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y);
 					  v45 = stru_5C6E00->Atan2(pActors[actor_id].vPosition.x - pLevelDecorations[v37].vPosition.x,
@@ -2130,9 +2130,9 @@ void  UpdateActors_BLV()
 					  v22 = 0;
 					  continue;
 				  }
-				  if (PID_TYPE(stru_721530.uFaceID) == OBJECT_BModel)
+				  if (PID_TYPE(stru_721530.pid) == OBJECT_BModel)
 				  {
-					  stru_721530.field_84 = stru_721530.uFaceID >> 3;
+					  stru_721530.field_84 = stru_721530.pid >> 3;
 					  if (pIndoor->pFaces[v37].uPolygonType == 3)
 					  {
 						  pActors[actor_id].vVelocity.z = 0;
@@ -3209,23 +3209,22 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int dist_y; // edi@2
   int dist_z; // ebx@2
   int dist_x; // esi@2
-  signed int v9; // ecx@2
+  int v9; // ecx@2
   int v10; // eax@2
   int v12; // eax@4
   int v17; // ST34_4@25
   int v18; // ST38_4@25
   int v19; // eax@25
   char v20; // zf@25
-  signed int v21; // ebx@25
-  signed int v23; // edi@26
+  int v21; // ebx@25
+  int v23; // edi@26
   int v24; // ST34_4@30
-  signed int v32; // ecx@37
+  int v32; // ecx@37
   int v33; // eax@37
   int v35; // eax@39
-  ODMFace *odm_face; // esi@54
-  signed int v40; // ebx@60
-  signed int v42; // edi@61
-  signed int v49; // ecx@73
+  int v40; // ebx@60
+  int v42; // edi@61
+  int v49; // ecx@73
   int v50; // eax@73
   int v51; // edx@75
   int v52; // ecx@75
@@ -3235,24 +3234,24 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int v63; // ST34_4@98
   int v64; // ST30_4@98
   int v65; // eax@98
-  signed int v66; // ebx@98
-  signed int v68; // edi@99
+  int v66; // ebx@98
+  int v68; // edi@99
   int v69; // ST2C_4@103
-  signed int v77; // ecx@111
+  int v77; // ecx@111
   int v78; // eax@111
   int v79; // edx@113
   int v80; // ecx@113
   int v81; // eax@113
   int v87; // ecx@128
-  signed int v91; // ebx@136
-  signed int v93; // edi@137
+  int v91; // ebx@136
+  int v93; // edi@137
   Vec3_int_ v97; // [sp-18h] [bp-94h]@1
   int v107; // [sp+10h] [bp-6Ch]@98
   int v108; // [sp+10h] [bp-6Ch]@104
   int v109; // [sp+18h] [bp-64h]@25
   int v110; // [sp+18h] [bp-64h]@31
-  signed int v113; // [sp+20h] [bp-5Ch]@1
-  signed int v114; // [sp+24h] [bp-58h]@1
+  int v113; // [sp+20h] [bp-5Ch]@1
+  int v114; // [sp+24h] [bp-58h]@1
   int v119; // [sp+34h] [bp-48h]@75
   int v120; // [sp+34h] [bp-48h]@113
   int v121; // [sp+38h] [bp-44h]@4
@@ -3284,8 +3283,8 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int v149; // [sp+54h] [bp-28h]@4
   int v150; // [sp+54h] [bp-28h]@39
   int sDepthb; // [sp+58h] [bp-24h]@90
-  signed int a5b; // [sp+5Ch] [bp-20h]@83
-  signed int a5c; // [sp+5Ch] [bp-20h]@121
+  int a5b; // [sp+5Ch] [bp-20h]@83
+  int a5c; // [sp+5Ch] [bp-20h]@121
   int v162; // [sp+60h] [bp-1Ch]@128
   int outz; // [sp+64h] [bp-18h]@2
   int outx; // [sp+68h] [bp-14h]@2
@@ -3525,39 +3524,38 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
 
     for (BSPModel &model : pOutdoor->pBModels) {
       if (sub_4088E9(sX, sY, outx, outy, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
-        for (uint face_id = 0; face_id < model.uNumFaces; ++face_id) {
-          odm_face = &model.pFaces[face_id];
-          v17 = fixpoint_mul(v125, odm_face->pFacePlane.vNormal.x);
-          v18 = fixpoint_mul(v121, odm_face->pFacePlane.vNormal.y);
-          v19 = fixpoint_mul(v12, odm_face->pFacePlane.vNormal.z);
+        for (ODMFace &face : model.pFaces) {
+          v17 = fixpoint_mul(v125, face.pFacePlane.vNormal.x);
+          v18 = fixpoint_mul(v121, face.pFacePlane.vNormal.y);
+          v19 = fixpoint_mul(v12, face.pFacePlane.vNormal.z);
           v20 = v17 + v18 + v19 == 0;
           v21 = v17 + v18 + v19;
           v109 = v17 + v18 + v19;
-          if (v149 > odm_face->pBoundingBox.x2 || v145 < odm_face->pBoundingBox.x1
-            || v141 > odm_face->pBoundingBox.y2 || v137 < odm_face->pBoundingBox.y1
-            || v133 > odm_face->pBoundingBox.z2 || v129 < odm_face->pBoundingBox.z1
+          if (v149 > face.pBoundingBox.x2 || v145 < face.pBoundingBox.x1
+            || v141 > face.pBoundingBox.y2 || v137 < face.pBoundingBox.y1
+            || v133 > face.pBoundingBox.z2 || v129 < face.pBoundingBox.z1
             || v20)
             continue;
-          v23 = -(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-            + sY * odm_face->pFacePlane.vNormal.y
-            + sZ * odm_face->pFacePlane.vNormal.z);
+          v23 = -(face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+            + sY * face.pFacePlane.vNormal.y
+            + sZ * face.pFacePlane.vNormal.z);
           if (v21 <= 0)
           {
-            if (odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-              + sY * odm_face->pFacePlane.vNormal.y
-              + sZ * odm_face->pFacePlane.vNormal.z < 0)
+            if (face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+              + sY * face.pFacePlane.vNormal.y
+              + sZ * face.pFacePlane.vNormal.z < 0)
               continue;
           }
           else
           {
-            if (odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-              + sY * odm_face->pFacePlane.vNormal.y
-              + sZ * odm_face->pFacePlane.vNormal.z > 0)
+            if (face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+              + sY * face.pFacePlane.vNormal.y
+              + sZ * face.pFacePlane.vNormal.z > 0)
               continue;
           }
-          v24 = abs(-(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-            + sY * odm_face->pFacePlane.vNormal.y
-            + sZ * odm_face->pFacePlane.vNormal.z)) >> 14;
+          v24 = abs(-(face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+            + sY * face.pFacePlane.vNormal.y
+            + sZ * face.pFacePlane.vNormal.z)) >> 14;
           if (v24 <= abs(v21))
           {
             v110 = fixpoint_div(v23, v109);
@@ -3566,7 +3564,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
               if (sub_4077F1(sX + ((signed int)(fixpoint_mul(v110, v125) + 0x8000) >> 16),
                 sY + ((signed int)(fixpoint_mul(v110, v121) + 0x8000) >> 16),
                 sZ + ((signed int)(fixpoint_mul(v110, v12) + 0x8000) >> 16),
-                odm_face,
+                &face,
                 &model.pVertices))
               {
                 v114 = 1;
@@ -3602,39 +3600,38 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
 
     for (BSPModel &model : pOutdoor->pBModels) {
       if (sub_4088E9(sX, sY, outx, outy, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
-        for (uint face_id = 0; face_id < model.uNumFaces; ++face_id) {
-          odm_face = &model.pFaces[face_id];
-          ya = fixpoint_mul(v126, odm_face->pFacePlane.vNormal.x);
-          ve = fixpoint_mul(v122, odm_face->pFacePlane.vNormal.y);
-          v_4 = fixpoint_mul(v35, odm_face->pFacePlane.vNormal.z);
+        for (ODMFace &face : model.pFaces) {
+          ya = fixpoint_mul(v126, face.pFacePlane.vNormal.x);
+          ve = fixpoint_mul(v122, face.pFacePlane.vNormal.y);
+          v_4 = fixpoint_mul(v35, face.pFacePlane.vNormal.z);
           v20 = ya + ve + v_4 == 0;
           v40 = ya + ve + v_4;
           va = ya + ve + v_4;
-          if (v150 > odm_face->pBoundingBox.x2 || v146 < odm_face->pBoundingBox.x1
-            || v142 > odm_face->pBoundingBox.y2 || v138 < odm_face->pBoundingBox.y1
-            || v134 > odm_face->pBoundingBox.z2 || v130 < odm_face->pBoundingBox.z1
+          if (v150 > face.pBoundingBox.x2 || v146 < face.pBoundingBox.x1
+            || v142 > face.pBoundingBox.y2 || v138 < face.pBoundingBox.y1
+            || v134 > face.pBoundingBox.z2 || v130 < face.pBoundingBox.z1
             || v20)
             continue;
-          v42 = -(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-            + sY * odm_face->pFacePlane.vNormal.y
-            + sZ * odm_face->pFacePlane.vNormal.z);
+          v42 = -(face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+            + sY * face.pFacePlane.vNormal.y
+            + sZ * face.pFacePlane.vNormal.z);
           if (v40 <= 0)
           {
-            if (odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-              + sY * odm_face->pFacePlane.vNormal.y
-              + sZ * odm_face->pFacePlane.vNormal.z  < 0)
+            if (face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+              + sY * face.pFacePlane.vNormal.y
+              + sZ * face.pFacePlane.vNormal.z  < 0)
               continue;
           }
           else
           {
-            if (odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-              + sY * odm_face->pFacePlane.vNormal.y
-              + sZ * odm_face->pFacePlane.vNormal.z  > 0)
+            if (face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+              + sY * face.pFacePlane.vNormal.y
+              + sZ * face.pFacePlane.vNormal.z  > 0)
               continue;
           }
-          v_4a = abs(-(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-            + sY * odm_face->pFacePlane.vNormal.y
-            + sZ * odm_face->pFacePlane.vNormal.z)) >> 14;
+          v_4a = abs(-(face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+            + sY * face.pFacePlane.vNormal.y
+            + sZ * face.pFacePlane.vNormal.z)) >> 14;
           if (v_4a <= abs(v40))
           {
             //LODWORD(v43) = v42 << 16;
@@ -3645,7 +3642,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
               if (sub_4077F1(sX + ((int)(fixpoint_mul(vb, v126) + 0x8000) >> 16),
                 sY + ((int)(fixpoint_mul(vb, v122) + 0x8000) >> 16),
                 sZ + ((int)(fixpoint_mul(vb, v35) + 0x8000) >> 16),
-                odm_face, &model.pVertices))
+                &face, &model.pVertices))
               {
                 v113 = 1;
                 break;
@@ -4942,7 +4939,7 @@ void BLV_ProcessPartyActions()
         uSectorID = stru_721530.uSectorID;
         stru_721530.field_70 += stru_721530.field_7C;
         unsigned long long v87 = new_party_z + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
-        if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Actor) // invis break on actor collision    /    при столкновении с монстром
+        if (PID_TYPE(stru_721530.pid) == OBJECT_Actor) // invis break on actor collision    /    при столкновении с монстром
         {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
             {
@@ -4950,16 +4947,16 @@ void BLV_ProcessPartyActions()
             }
             viewparams->bRedrawGameUI = true;
         }
-        else if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Decoration) // decoration collision   /   при столкновении с декорацией
+        else if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration) // decoration collision   /   при столкновении с декорацией
         {
-            v54 = stru_5C6E00->Atan2(new_party_x - pLevelDecorations[stru_721530.uFaceID >> 3].vPosition.x,
-                new_party_y - pLevelDecorations[stru_721530.uFaceID >> 3].vPosition.y);
+            v54 = stru_5C6E00->Atan2(new_party_x - pLevelDecorations[stru_721530.pid >> 3].vPosition.x,
+                new_party_y - pLevelDecorations[stru_721530.pid >> 3].vPosition.y);
             v2 = fixpoint_mul(stru_5C6E00->Cos(v54), integer_sqrt(v2 * v2 + v1 * v1));
             v1 = fixpoint_mul(stru_5C6E00->Sin(v54), integer_sqrt(v2 * v2 + v1 * v1));
         }
-        else if (PID_TYPE(stru_721530.uFaceID) == OBJECT_BModel)//при столкновении с bmodel
+        else if (PID_TYPE(stru_721530.pid) == OBJECT_BModel)//при столкновении с bmodel
         {
-            pFace = &pIndoor->pFaces[(signed int)stru_721530.uFaceID >> 3];
+            pFace = &pIndoor->pFaces[(signed int)stru_721530.pid >> 3];
             if (pFace->uPolygonType == POLYGON_Floor)// если bmodel - пол
             {
                 if (pParty->uFallSpeed < 0)
@@ -4972,7 +4969,7 @@ void BLV_ProcessPartyActions()
                     v1 = 0;
                     v2 = 0;
                 }
-                if (pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate())
+                if (pParty->floor_face_pid != PID_ID(stru_721530.pid) && pFace->Pressure_Plate())
                     uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
             }
             else// если не пол
@@ -4997,7 +4994,7 @@ void BLV_ProcessPartyActions()
                         new_party_y += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.y);
                         v87 += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.z);
                     }
-                    if (pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate())
+                    if (pParty->floor_face_pid != PID_ID(stru_721530.pid) && pFace->Pressure_Plate())
                         uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                 }
                 if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall)
@@ -5010,7 +5007,7 @@ void BLV_ProcessPartyActions()
                     pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
                     if (v2 * v2 + v1 * v1 >= 400)
                     {
-                        if (pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate())
+                        if (pParty->floor_face_pid != PID_ID(stru_721530.pid) && pFace->Pressure_Plate())
                             uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                     }
                     else
@@ -5700,7 +5697,7 @@ int stru141_actor_collision_object::_47050A(int dt)
 			this->sMinZ = (this->position.z + fixpoint_mul(this->field_6C, this->direction.z)) + this->field_8_radius;
 		else
 			this->sMinZ = this->position.z + this->field_8_radius;
-		this->uFaceID = 0;
+		this->pid = 0;
 		this->field_80 = -1;
 		this->field_88 = -1;
 		//this->sMinZ = v27;

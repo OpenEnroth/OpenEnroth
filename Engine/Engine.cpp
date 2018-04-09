@@ -2145,10 +2145,9 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog, const String &filename
 
 void sub_44861E_set_texture_outdoor(unsigned int uFaceCog, const String &filename) {
   for (BSPModel &model : pOutdoor->pBModels) {
-    for (uint i = 0; i < model.uNumFaces; ++i) {
-      auto face = &model.pFaces[i];
-      if (face->sCogNumber == uFaceCog) {
-        face->SetTexture(filename);
+    for (ODMFace &face : model.pFaces) {
+      if (face.sCogNumber == uFaceCog) {
+        face.SetTexture(filename);
       }
     }
   }
@@ -2193,12 +2192,12 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
       pParty->uFlags |= 2;
     } else {
       for (BSPModel &model : pOutdoor->pBModels) {
-        for (uint i = 0; i < (unsigned int)model.uNumFaces; ++i) {
-          if (model.pFaces[i].sCogNumber == sCogNumber) {
+         for (ODMFace &face : model.pFaces) {
+          if (face.sCogNumber == sCogNumber) {
             if (on) {
-              model.pFaces[i].uAttributes |= bit;
+              face.uAttributes |= bit;
             } else {
-              model.pFaces[i].uAttributes &= ~bit;
+              face.uAttributes &= ~bit;
             }
           }
         }

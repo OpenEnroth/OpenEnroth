@@ -305,7 +305,7 @@ void Render::RenderTerrainD3D() {  // New function
 
       pTilePolygon->uBModelID = 0;
       pTilePolygon->uBModelFaceID = 0;
-      pTilePolygon->field_50 = (8 * (0 | (0 << 6))) | 6;
+      pTilePolygon->pid = (8 * (0 | (0 << 6))) | 6;
       for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k) {
         memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
         VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
@@ -3959,18 +3959,18 @@ void Render::DrawBuildingsD3D() {
   int v52; // [sp+38h] [bp-20h]@36
   int v53; // [sp+3Ch] [bp-1Ch]@8
 
-  for (unsigned int model_id = 0; model_id < pOutdoor->pBModels.size(); model_id++) {
+  for (BSPModel &model : pOutdoor->pBModels) {
     int reachable;
-    if (!IsBModelVisible(model_id, &reachable)) {
+    if (!IsBModelVisible(&model, &reachable)) {
       continue;
     }
-    pOutdoor->pBModels[model_id].field_40 |= 1;
-    if (pOutdoor->pBModels[model_id].uNumFaces <= 0) {
+    model.field_40 |= 1;
+    if (model.pFaces.empty()) {
       continue;
     }
 
-    for (int face_id = 0; face_id < pOutdoor->pBModels[model_id].uNumFaces; face_id++) {
-      if (pOutdoor->pBModels[model_id].pFaces[face_id].Invisible()) {
+    for (ODMFace &face : model.pFaces) {
+      if (face.Invisible()) {
         continue;
       }
 
@@ -3979,31 +3979,31 @@ void Render::DrawBuildingsD3D() {
 
       poly->flags = 0;
       poly->field_32 = 0;
-      poly->texture = pOutdoor->pBModels[model_id].pFaces[face_id].GetTexture();
+      poly->texture = face.GetTexture();
 
-      if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLUID)
+      if (face.uAttributes & FACE_FLUID)
         poly->flags |= 2;
-      if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_INDOOR_SKY)
+      if (face.uAttributes & FACE_INDOOR_SKY)
         poly->flags |= 0x400;
 
-      if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_DIAGONAL)
+      if (face.uAttributes & FACE_FLOW_DIAGONAL)
         poly->flags |= 0x400;
-      else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_VERTICAL)
+      else if (face.uAttributes & FACE_FLOW_VERTICAL)
         poly->flags |= 0x800;
 
-      if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_FLOW_HORIZONTAL)
+      if (face.uAttributes & FACE_FLOW_HORIZONTAL)
         poly->flags |= 0x2000;
-      else if (pOutdoor->pBModels[model_id].pFaces[face_id].uAttributes & FACE_DONT_CACHE_TEXTURE)
+      else if (face.uAttributes & FACE_DONT_CACHE_TEXTURE)
         poly->flags |= 0x1000;
 
-      poly->sTextureDeltaU = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaU;
-      poly->sTextureDeltaV = pOutdoor->pBModels[model_id].pFaces[face_id].sTextureDeltaV;
+      poly->sTextureDeltaU = face.sTextureDeltaU;
+      poly->sTextureDeltaV = face.sTextureDeltaV;
 
       unsigned int flow_anim_timer = GetTickCount() >> 4;
       unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
       unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
 
-      if (pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z && abs(pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z) >= 59082) {
+      if (face.pFacePlane.vNormal.z && abs(face.pFacePlane.vNormal.z) >= 59082) {
         if (poly->flags & 0x400)
           poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
         if (poly->flags & 0x800)
@@ -4023,15 +4023,15 @@ void Render::DrawBuildingsD3D() {
       v50 = 0;
       v49 = 0;
 
-      for (uint vertex_id = 1; vertex_id <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; vertex_id++) {
-        array_73D150[vertex_id - 1].vWorldPosition.x = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].x;
-        array_73D150[vertex_id - 1].vWorldPosition.y = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].y;
-        array_73D150[vertex_id - 1].vWorldPosition.z = pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[vertex_id - 1]].z;
-        array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureUIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetWidth());
-        array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV + (signed __int16)pOutdoor->pBModels[model_id].pFaces[face_id].pTextureVIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetHeight());
+      for (uint vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
+        array_73D150[vertex_id - 1].vWorldPosition.x = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
+        array_73D150[vertex_id - 1].vWorldPosition.y = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
+        array_73D150[vertex_id - 1].vWorldPosition.z = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
+        array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU + (__int16)face.pTextureUIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetWidth());
+        array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV + (__int16)face.pTextureVIDs[vertex_id - 1]) * (1.0 / (double)poly->texture->GetHeight());
       }
-      for (uint i = 1; i <= pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; i++) {
-        if (pOutdoor->pBModels[model_id].pVertices.pVertices[pOutdoor->pBModels[model_id].pFaces[face_id].pVertexIDs[0]].z == array_73D150[i - 1].vWorldPosition.z)
+      for (uint i = 1; i <= face.uNumVertices; i++) {
+        if (model.pVertices.pVertices[face.pVertexIDs[0]].z == array_73D150[i - 1].vWorldPosition.z)
           ++v53;
         pIndoorCameraD3D->ViewTransform(&array_73D150[i - 1], 1);
         if (array_73D150[i - 1].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() || array_73D150[i - 1].vWorldViewPosition.x > pIndoorCameraD3D->GetFarClip()) {
@@ -4044,14 +4044,14 @@ void Render::DrawBuildingsD3D() {
           pIndoorCameraD3D->Project(&array_73D150[i - 1], 1, 0);
       }
 
-      if (v53 == pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices)
+      if (v53 == face.uNumVertices)
         poly->field_32 |= 1;
-      poly->pODMFace = &pOutdoor->pBModels[model_id].pFaces[face_id];
-      poly->uNumVertices = pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices;
+      poly->pODMFace = &face;
+      poly->uNumVertices = face.uNumVertices;
       poly->field_59 = 5;
-      v51 = fixpoint_mul(-pOutdoor->vSunlight.x, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.x);
-      v53 = fixpoint_mul(-pOutdoor->vSunlight.y, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.y);
-      v52 = fixpoint_mul(-pOutdoor->vSunlight.z, pOutdoor->pBModels[model_id].pFaces[face_id].pFacePlane.vNormal.z);
+      v51 = fixpoint_mul(-pOutdoor->vSunlight.x, face.pFacePlane.vNormal.x);
+      v53 = fixpoint_mul(-pOutdoor->vSunlight.y, face.pFacePlane.vNormal.y);
+      v52 = fixpoint_mul(-pOutdoor->vSunlight.z, face.pFacePlane.vNormal.z);
       poly->dimming_level = 20 - fixpoint_mul(20, v51 + v53 + v52);
       if (poly->dimming_level < 0)
         poly->dimming_level = 0;
@@ -4060,39 +4060,37 @@ void Render::DrawBuildingsD3D() {
       if (pODMRenderParams->uNumPolygons >= 1999 + 5000)
         return;
       if (ODMFace::IsBackfaceNotCulled(array_73D150, poly)) {
-        pOutdoor->pBModels[model_id].pFaces[face_id].bVisible = 1;
-        poly->uBModelFaceID = face_id;
-        poly->uBModelID = model_id;
-        v27 = 8 * (face_id | (model_id << 6));
-        v27 |= 6;
-        poly->field_50 = v27;
-        for (int vertex_id = 0; vertex_id < pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices; ++vertex_id) {
+        face.bVisible = 1;
+        poly->uBModelFaceID = face.index;
+        poly->uBModelID = model.index;
+        poly->pid = PID(OBJECT_BModel, (face.index | (model.index << 6)));
+        for (int vertex_id = 0; vertex_id < face.uNumVertices; ++vertex_id) {
           memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
           VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
         }
         static stru154 static_RenderBuildingsD3D_stru_73C834;
 
-        pEngine->pLightmapBuilder->ApplyLights_OutdoorFace(&pOutdoor->pBModels[model_id].pFaces[face_id]);
-        pDecalBuilder->ApplyDecals_OutdoorFace(&pOutdoor->pBModels[model_id].pFaces[face_id]);
+        pEngine->pLightmapBuilder->ApplyLights_OutdoorFace(&face);
+        pDecalBuilder->ApplyDecals_OutdoorFace(&face);
         pEngine->pLightmapBuilder->StationaryLightsCount = 0;
         int v31 = 0;
         if (Lights.uNumLightsApplied > 0 || pDecalBuilder->uNumDecals > 0) {
           v31 = v50 ? 3 : v49 != 0 ? 5 : 0;
-          static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&pOutdoor->pBModels[model_id].pFaces[face_id], &pOutdoor->pBModels[model_id].pVertices);
+          static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
           if (pDecalBuilder->uNumDecals > 0) {
             pDecalBuilder->ApplyDecals(31 - poly->dimming_level, 2, &static_RenderBuildingsD3D_stru_73C834,
-              pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices, VertexRenderList, 0, (char)v31, -1);
+              face.uNumVertices, VertexRenderList, 0, (char)v31, -1);
           }
         }
         if (Lights.uNumLightsApplied > 0)
           pEngine->pLightmapBuilder->ApplyLights(&Lights, &static_RenderBuildingsD3D_stru_73C834, poly->uNumVertices, VertexRenderList, 0, (char)v31);
 
         if (v50) {
-          poly->uNumVertices = ODM_NearClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
+          poly->uNumVertices = ODM_NearClip(face.uNumVertices);
           ODM_Project(poly->uNumVertices);
         }
         if (v49) {
-          poly->uNumVertices = ODM_FarClip(pOutdoor->pBModels[model_id].pFaces[face_id].uNumVertices);
+          poly->uNumVertices = ODM_FarClip(face.uNumVertices);
           ODM_Project(poly->uNumVertices);
         }
 
@@ -4974,7 +4972,7 @@ int  _46E44E_collide_against_faces_and_portals(unsigned int b1)
 								stru_721530.field_7C = v17;
 								v18 = 8 * pSector->pFloors[v26];
 								v18 |= 6;
-								stru_721530.uFaceID = v18;
+								stru_721530.pid = v18;
 							}
 						}
 					}
@@ -5007,7 +5005,7 @@ int  _46E44E_collide_against_faces_and_portals(unsigned int b1)
 						stru_721530.field_7C = v23;
 						v24 = 8 * pSector->pFloors[v26];
 						v24 |= 6;
-						stru_721530.uFaceID = v24;
+						stru_721530.pid = v24;
 					}
 				}
 			}
@@ -5017,8 +5015,7 @@ int  _46E44E_collide_against_faces_and_portals(unsigned int b1)
 	return result;
 }
 
-int _46E889_collide_against_bmodels(unsigned int ecx0) {
-  int result; // eax@1
+void _46E889_collide_against_bmodels(unsigned int ecx0) {
   int v8; // eax@19
   int v9; // ecx@20
   int v10; // eax@24
@@ -5031,49 +5028,48 @@ int _46E889_collide_against_bmodels(unsigned int ecx0) {
   int a2; // [sp+84h] [bp-4h]@23
   BLVFace face; // [sp+Ch] [bp-7Ch]@1
 
-  result = 0;
   for (BSPModel &model : pOutdoor->pBModels) {
     if (stru_721530.sMaxX <= model.sMaxX && stru_721530.sMinX >= model.sMinX
       && stru_721530.sMaxY <= model.sMaxY && stru_721530.sMinY >= model.sMinY
       && stru_721530.sMaxZ <= model.sMaxZ && stru_721530.sMinZ >= model.sMinZ)
     {
-      for (uint j = 0; j < model.uNumFaces; ++j) {
-        if (stru_721530.sMaxX <= model.pFaces[j].pBoundingBox.x2 && stru_721530.sMinX >= model.pFaces[j].pBoundingBox.x1
-          && stru_721530.sMaxY <= model.pFaces[j].pBoundingBox.y2 && stru_721530.sMinY >= model.pFaces[j].pBoundingBox.y1
-          && stru_721530.sMaxZ <= model.pFaces[j].pBoundingBox.z2 && stru_721530.sMinZ >= model.pFaces[j].pBoundingBox.z1)
+      for (ODMFace &mface : model.pFaces) {
+        if (stru_721530.sMaxX <= mface.pBoundingBox.x2 && stru_721530.sMinX >= mface.pBoundingBox.x1
+          && stru_721530.sMaxY <= mface.pBoundingBox.y2 && stru_721530.sMinY >= mface.pBoundingBox.y1
+          && stru_721530.sMaxZ <= mface.pBoundingBox.z2 && stru_721530.sMinZ >= mface.pBoundingBox.z1)
         {
-          face.pFacePlane_old.vNormal.x = model.pFaces[j].pFacePlane.vNormal.x;
-          face.pFacePlane_old.vNormal.y = model.pFaces[j].pFacePlane.vNormal.y;
-          face.pFacePlane_old.vNormal.z = model.pFaces[j].pFacePlane.vNormal.z;
+          face.pFacePlane_old.vNormal.x = mface.pFacePlane.vNormal.x;
+          face.pFacePlane_old.vNormal.y = mface.pFacePlane.vNormal.y;
+          face.pFacePlane_old.vNormal.z = mface.pFacePlane.vNormal.z;
 
-          face.pFacePlane_old.dist = model.pFaces[j].pFacePlane.dist; //incorrect
+          face.pFacePlane_old.dist = mface.pFacePlane.dist; //incorrect
 
-          face.uAttributes = model.pFaces[j].uAttributes;
+          face.uAttributes = mface.uAttributes;
 
-          face.pBounding.x1 = model.pFaces[j].pBoundingBox.x1;
-          face.pBounding.y1 = model.pFaces[j].pBoundingBox.y1;
-          face.pBounding.z1 = model.pFaces[j].pBoundingBox.z1;
+          face.pBounding.x1 = mface.pBoundingBox.x1;
+          face.pBounding.y1 = mface.pBoundingBox.y1;
+          face.pBounding.z1 = mface.pBoundingBox.z1;
 
-          face.pBounding.x2 = model.pFaces[j].pBoundingBox.x2;
-          face.pBounding.y2 = model.pFaces[j].pBoundingBox.y2;
-          face.pBounding.z2 = model.pFaces[j].pBoundingBox.z2;
+          face.pBounding.x2 = mface.pBoundingBox.x2;
+          face.pBounding.y2 = mface.pBoundingBox.y2;
+          face.pBounding.z2 = mface.pBoundingBox.z2;
 
-          face.zCalc1 = model.pFaces[j].zCalc1;
-          face.zCalc2 = model.pFaces[j].zCalc2;
-          face.zCalc3 = model.pFaces[j].zCalc3;
+          face.zCalc1 = mface.zCalc1;
+          face.zCalc2 = mface.zCalc2;
+          face.zCalc3 = mface.zCalc3;
 
-          face.pXInterceptDisplacements = model.pFaces[j].pXInterceptDisplacements;
-          face.pYInterceptDisplacements = model.pFaces[j].pYInterceptDisplacements;
-          face.pZInterceptDisplacements = model.pFaces[j].pZInterceptDisplacements;
+          face.pXInterceptDisplacements = mface.pXInterceptDisplacements;
+          face.pYInterceptDisplacements = mface.pYInterceptDisplacements;
+          face.pZInterceptDisplacements = mface.pZInterceptDisplacements;
 
-          face.uPolygonType = (PolygonType)model.pFaces[j].uPolygonType;
+          face.uPolygonType = (PolygonType)mface.uPolygonType;
 
-          face.uNumVertices = model.pFaces[j].uNumVertices;
+          face.uNumVertices = mface.uNumVertices;
 
           //face.uBitmapID = model.pFaces[j].uTextureID;
-          face.resource = model.pFaces[j].resource;
+          face.resource = mface.resource;
 
-          face.pVertexIDs = model.pFaces[j].pVertexIDs;
+          face.pVertexIDs = mface.pVertexIDs;
 
           if (!face.Ethereal() && !face.Portal())
           {
@@ -5091,70 +5087,53 @@ int _46E889_collide_against_bmodels(unsigned int ecx0) {
                 {
                   a2 = stru_721530.field_6C;
                   if (sub_4754BF(stru_721530.prolly_normal_d, &a2, stru_721530.normal.x, stru_721530.normal.y, stru_721530.normal.z,
-                    stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, &face, result, ecx0))
+                    stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, &face, model.index, ecx0))
                   {
                     v10 = a2;
-                  }
-                  else
-                  {
+                  } else {
                     a2 = stru_721530.prolly_normal_d + stru_721530.field_6C;
                     if (!sub_475F30(&a2, &face, stru_721530.normal.x, stru_721530.normal.y, stru_721530.normal.z,
-                      stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, result))
+                      stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, model.index))
                       goto LABEL_29;
                     v10 = a2 - stru_721530.prolly_normal_d;
                     a2 -= stru_721530.prolly_normal_d;
                   }
-                  if (v10 < stru_721530.field_7C)
-                  {
+                  if (v10 < stru_721530.field_7C) {
                     stru_721530.field_7C = v10;
-                    v14 = 8 * (j | (result << 6));
-                    v14 |= 6;
-                    stru_721530.uFaceID = v14;
+                    stru_721530.pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
                   }
                 }
               }
             }
           LABEL_29:
-            if (stru_721530.field_0 & 1)
-            {
+            if (stru_721530.field_0 & 1) {
               v15 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.position.x
                 + face.pFacePlane_old.vNormal.y * stru_721530.position.y
                 + face.pFacePlane_old.vNormal.z * stru_721530.position.z) >> 16;
-              if (v15 > 0)
-              {
+              if (v15 > 0) {
                 v16 = (face.pFacePlane_old.dist + face.pFacePlane_old.vNormal.x * stru_721530.field_4C
                   + face.pFacePlane_old.vNormal.y * stru_721530.field_50
                   + face.pFacePlane_old.vNormal.z * stru_721530.field_54) >> 16;
-                if (v15 <= stru_721530.prolly_normal_d || v16 <= stru_721530.prolly_normal_d)
-                {
-                  if (v16 <= v15)
-                  {
+                if (v15 <= stru_721530.prolly_normal_d || v16 <= stru_721530.prolly_normal_d) {
+                  if (v16 <= v15) {
                     a2 = stru_721530.field_6C;
                     if (sub_4754BF(stru_721530.field_8_radius, &a2, stru_721530.position.x, stru_721530.position.y, stru_721530.position.z,
-                      stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, &face, result, ecx0))
+                      stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, &face, model.index, ecx0))
                     {
-                      if (a2 < stru_721530.field_7C)
-                      {
+                      if (a2 < stru_721530.field_7C) {
                         stru_721530.field_7C = a2;
-                        v17 = 8 * (j | (result << 6));
-                        v17 |= 6;
-                        stru_721530.uFaceID = v17;
+                        stru_721530.pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
                       }
-                    }
-                    else
-                    {
+                    } else {
                       a2 = stru_721530.field_6C + stru_721530.field_8_radius;
                       if (sub_475F30(&a2, &face, stru_721530.position.x, stru_721530.position.y, stru_721530.position.z,
-                        stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, result))
+                        stru_721530.direction.x, stru_721530.direction.y, stru_721530.direction.z, model.index))
                       {
                         v21 = a2 - stru_721530.prolly_normal_d;
                         a2 -= stru_721530.prolly_normal_d;
-                        if (a2 < stru_721530.field_7C)
-                        {
+                        if (a2 < stru_721530.field_7C) {
                           stru_721530.field_7C = v21;
-                          v22 = 8 * (j | (result << 6));
-                          v22 |= 6;
-                          stru_721530.uFaceID = v22;
+                          stru_721530.pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
                         }
                       }
                     }
@@ -5166,9 +5145,7 @@ int _46E889_collide_against_bmodels(unsigned int ecx0) {
         }
       }
     }
-    result++;
   }
-  return result;
 }
 
 int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID) {
@@ -5269,7 +5246,7 @@ int _46EF01_collision_chech_player(int a1) {
             if (v7 < stru_721530.field_7C)
             {
               stru_721530.field_7C = v7;
-              stru_721530.uFaceID = 4;
+              stru_721530.pid = 4;
             }
           }
         }
@@ -5330,7 +5307,7 @@ void  _46E0B2_collide_against_decorations()
                     stru_721530.field_7C = v12;
                     v13 = 8 * sector->pDecorationIDs[i];
                     v13 |= 5;
-                    stru_721530.uFaceID = v13;
+                    stru_721530.pid = v13;
                   }
                 }
               }
@@ -5847,14 +5824,14 @@ bool sub_475F30(int *a1, BLVFace *a2, int a3, int a4, int a5, int a6, int a7, in
   return 1;
 }
 
-bool IsBModelVisible(unsigned int uModelID, int *reachable) {
+bool IsBModelVisible(BSPModel *model, int *reachable) {
   int v11; // esi@6
   int v12; // esi@8
   bool result; // eax@9
 
   int angle = (int)(pODMRenderParams->uCameraFovInDegrees << 11) / 360 / 2;
-  int v3 = pOutdoor->pBModels[uModelID].vBoundingCenter.x - pIndoorCameraD3D->vPartyPos.x;
-  int v4 = pOutdoor->pBModels[uModelID].vBoundingCenter.y - pIndoorCameraD3D->vPartyPos.y;
+  int v3 = model->vBoundingCenter.x - pIndoorCameraD3D->vPartyPos.x;
+  int v4 = model->vBoundingCenter.y - pIndoorCameraD3D->vPartyPos.y;
   stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX);
   int v17 = v3 * stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY) + v4 * stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY);
   if (pIndoorCameraD3D->sRotationX) {
@@ -5865,7 +5842,7 @@ bool IsBModelVisible(unsigned int uModelID, int *reachable) {
   //v10 = v14 * 188;
   //v22 = device_caps;
   *reachable = false;
-  if (v9 < pOutdoor->pBModels[uModelID].sBoundingRadius + 256)
+  if (v9 < model->sBoundingRadius + 256)
     *reachable = true;
   if (v19 >= 0)
     v11 = fixpoint_mul(stru_5C6E00->Sin(angle), v17) - fixpoint_mul(stru_5C6E00->Cos(angle), v19);
@@ -5874,7 +5851,7 @@ bool IsBModelVisible(unsigned int uModelID, int *reachable) {
   v12 = v11 >> 16;
   if (v9 <= pIndoorCameraD3D->GetFarClip() + 2048) {
     //if ( abs(v12) > *(int *)((char *)&pOutdoor->pBModels->sBoundingRadius + v10) + 512 )
-    if (abs(v12) > pOutdoor->pBModels[uModelID].sBoundingRadius + 512) {
+    if (abs(v12) > model->sBoundingRadius + 512) {
       result = v12 < 0;
       HEXRAYS_LOBYTE(result) = v12 >= 0;
       return result;
