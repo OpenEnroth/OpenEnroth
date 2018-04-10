@@ -28,18 +28,9 @@
 #include "Platform/OsWindow.h"
 #include "Platform/Api.h"
 
-
-
-unsigned int BlendColors(unsigned int a1, unsigned int a2);
-
-
-
 //IRender *IRender::Create() { return new RenderOpenGL(); }
 
-
-
-
-RenderOpenGL::RenderOpenGL() : IRender() { bFogEnabled = false; }
+RenderOpenGL::RenderOpenGL() { bFogEnabled = false; }
 RenderOpenGL::~RenderOpenGL() {}
 
 unsigned int RenderOpenGL::GetRenderWidth() const { return window->GetWidth(); }
@@ -54,7 +45,7 @@ void RenderOpenGL::CreateZBuffer()
     memset32(pActiveZBuffer, 0xFFFF0000, 0x4B000u); //    // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
 }
 void RenderOpenGL::Release() { __debugbreak(); }
-void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor) { __debugbreak(); }
+void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, unsigned __int16 uColor) { }
 void RenderOpenGL::RestoreFrontBuffer() {}
 void RenderOpenGL::RestoreBackBuffer() {}
 void RenderOpenGL::BltBackToFontFast(int a2, int a3, Rect *a4) { __debugbreak(); }
@@ -65,16 +56,137 @@ void RenderOpenGL::BeginSceneD3D()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 unsigned int RenderOpenGL::GetActorTintColor(float a2, int tint, int a4, int a5, RenderBillboard *a6) { __debugbreak(); return 0; }
-void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8) { __debugbreak(); }
-void RenderOpenGL::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
-void RenderOpenGL::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *a3, unsigned int uDiffuse, int angle) { __debugbreak(); }
+
+void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uPackedID, unsigned int uColor, int a8) {
+  if (uNumVertices < 3) {
+    return;
+  }
+
+  int sCorrectedColor = uColor;
+
+  TextureOpenGL *texture = (TextureOpenGL*)pFace->GetTexture();
+
+  if (pEngine->pLightmapBuilder->StationaryLightsCount)
+    sCorrectedColor = -1;
+  pEngine->AlterGamma_BLV(pFace, &sCorrectedColor);
+
+  if (pFace->uAttributes & FACE_OUTLINED) {
+    if (GetTickCount() % 300 >= 150)
+      uColor = sCorrectedColor = 0xFF20FF20;
+    else
+      uColor = sCorrectedColor = 0xFF109010;
+  }
+
+  if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related) {
+/*
+    __debugbreak();
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false));
+    ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+    for (uint i = 0; i < uNumVertices; ++i)
+    {
+      d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
+      d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
+      d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+      d3d_vertex_buffer[i].rhw = 1.0 / array_507D30[i].vWorldViewPosition.x;
+      d3d_vertex_buffer[i].diffuse = sCorrectedColor;
+      d3d_vertex_buffer[i].specular = 0;
+      d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u / (double)pFace->GetTexture()->GetWidth();
+      d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v / (double)pFace->GetTexture()->GetHeight();
+    }
+
+    ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+    ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+      D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+      d3d_vertex_buffer, uNumVertices, 28));
+    pEngine->pLightmapBuilder->DrawLightmaps(-1);
+*/
+  } else {
+    if (!pEngine->pLightmapBuilder->StationaryLightsCount || byte_4D864C && pEngine->uFlags & GAME_FLAGS_2_SATURATE_LIGHTMAPS) {
+      glEnable(GL_TEXTURE_2D);
+      glDisable(GL_BLEND);
+      glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+      glBegin(GL_TRIANGLE_FAN);
+
+      for (uint i = 0; i < uNumVertices; ++i) {
+        d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
+        d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
+        d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+        d3d_vertex_buffer[i].rhw = 1.0 / array_507D30[i].vWorldViewPosition.x;
+        d3d_vertex_buffer[i].diffuse = sCorrectedColor;
+        d3d_vertex_buffer[i].specular = 0;
+        d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u / (double)pFace->GetTexture()->GetWidth();
+        d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v / (double)pFace->GetTexture()->GetHeight();
+
+        glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
+
+        glColor4f(
+          ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
+          ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
+          ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
+          bUsingSpecular ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f : 1.0f
+        );
+
+        glVertex3f(
+          d3d_vertex_buffer[i].pos.x,
+          d3d_vertex_buffer[i].pos.z,
+          d3d_vertex_buffer[i].pos.y
+        );
+      }
+
+      glEnd();
+    } else {
+/*
+      glEnable(GL_TEXTURE_2D);
+      glDisable(GL_BLEND);
+      glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+      glBegin(GL_TRIANGLE_FAN);
+
+      for (uint i = 0; i < uNumVertices; ++i) {
+        d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
+        d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
+        d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+        d3d_vertex_buffer[i].rhw = 1.0 / array_507D30[i].vWorldViewPosition.x;
+        d3d_vertex_buffer[i].diffuse = uColor;
+        d3d_vertex_buffer[i].specular = 0;
+        d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u / (double)pFace->GetTexture()->GetWidth();
+        d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v / (double)pFace->GetTexture()->GetHeight();
+      }
+      glBindTexture(GL_TEXTURE_2D, face_texture->GetOpenGlTexture());
+      ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+        d3d_vertex_buffer, uNumVertices, 28));
+
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
+      pEngine->pLightmapBuilder->DrawLightmaps(-1);
+
+      for (uint i = 0; i < uNumVertices; ++i)
+        d3d_vertex_buffer[i].diffuse = sCorrectedColor;
+
+      glBindTexture(GL_TEXTURE_2D, face_texture->GetOpenGlTexture());
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR));
+      ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+        d3d_vertex_buffer, uNumVertices, 28));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
+*/
+    }
+  }
+}
 void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillboard *) { __debugbreak(); }
 void RenderOpenGL::_4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse) { __debugbreak(); }
-void RenderOpenGL::DrawBillboardList_BLV() { __debugbreak(); }
+void RenderOpenGL::DrawBillboardList_BLV() { }
 void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture) { __debugbreak(); }
 void RenderOpenGL::ScreenFade(unsigned int color, float t) { __debugbreak(); }
 void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y, Image *pTexture) { __debugbreak(); }
-void RenderOpenGL::DrawImage(Image *, const Rect &rect) { __debugbreak(); }
+void RenderOpenGL::DrawImage(Image *, const Rect &rect) { }
 void RenderOpenGL::ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture, int a5) { __debugbreak(); }
 void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) { __debugbreak(); }
 void RenderOpenGL::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity) { __debugbreak(); }
@@ -110,12 +222,6 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM()
 {
     //__debugbreak();
 }
-void RenderOpenGL::DrawSpriteObjects_ODM()
-{
-    //__debugbreak();
-}
-
-
 
 /*#pragma pack(push, 1)
 typedef struct {
@@ -157,26 +263,15 @@ FILE *CreateTga(const char *filename, int image_width, int image_height)
 	return f;
 }*/
 
-
-
-
-Texture *RenderOpenGL::CreateTexture(const String &name)
-{
-    return TextureOpenGL::Create(
-        new Bitmaps_LOD_Loader(pBitmaps_LOD, name)
-    );
+Texture *RenderOpenGL::CreateTexture(const String &name) {
+  return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id)
-{
-    return TextureOpenGL::Create(
-        new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id)
-    );
+Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id, /*refactor*/unsigned int lod_sprite_id) {
+  return TextureOpenGL::Create(new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id));
 }
 
-
-bool RenderOpenGL::MoveTextureToDevice(Texture *texture)
-{
+bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     auto t = (TextureOpenGL *)texture;
 /*    return false;
 }
@@ -247,50 +342,46 @@ bool RenderOpenGL::LoadTextureOpenGL(const String &name, bool mipmaps, int *out_
     return false;
 }
 
-void _set_3d_projection_matrix()
-{
-    float near_clip = pIndoorCameraD3D->GetNearClip();
-    float far_clip = pIndoorCameraD3D->GetFarClip();
+void _set_3d_projection_matrix() {
+  float near_clip = pIndoorCameraD3D->GetNearClip();
+  float far_clip = pIndoorCameraD3D->GetFarClip();
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(65.0f, (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(), near_clip, far_clip);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(65.0f, (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(), near_clip, far_clip);
 
 }
-void _set_3d_modelview_matrix()
-{
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glScalef(1.0f, 1.0f, -1.0f);
 
-    int camera_x = pParty->vPosition.x;
-    int camera_y = pParty->vPosition.z + pParty->sEyelevel;
-    int camera_z = pParty->vPosition.y;
-    gluLookAt(
-        camera_x, camera_y, camera_z,
+void _set_3d_modelview_matrix() {
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glScalef(1.0f, 1.0f, -1.0f);
 
-        camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationY / 2048.0) - 3,
-        camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationX / 2048.0),
-        camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
+  int camera_x = pParty->vPosition.x;
+  int camera_y = pParty->vPosition.z + pParty->sEyelevel;
+  int camera_z = pParty->vPosition.y;
+  gluLookAt(
+    camera_x, camera_y, camera_z,
 
-        0, 1, 0
-    );
+    camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationY / 2048.0) - 3,
+    camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationX / 2048.0),
+    camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
+
+    0, 1, 0
+  );
 }
 
+void _set_ortho_projection() {
+  glViewport(0, 0, window->GetWidth(), window->GetHeight());
 
-void _set_ortho_projection()
-{
-    glViewport(0, 0, window->GetWidth(), window->GetHeight());
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
 }
 
-void _set_ortho_modelview()
-{
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+void _set_ortho_modelview() {
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
 }
 
 const int terrain_block_scale = 512;
@@ -383,78 +474,71 @@ void RenderOpenGL::RenderTerrainD3D()
     }
 }
 
+void RenderOpenGL::DrawTerrainPolygon(struct Polygon *a3, bool transparent, bool clampAtTextureBorders) {
+  auto texture = (TextureOpenGL *)a3->texture;
 
-void RenderOpenGL::DrawTerrainPolygon(struct Polygon *a3, bool transparent, bool clampAtTextureBorders)
-{
-    auto texture = (TextureOpenGL *)a3->texture;
+  glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+  // clamping doesnt really help here in opengl so had to alter texture coordinates a bit
+  float clamp_fix_u = 1.0f / texture->GetWidth();
+  float clamp_fix_v = 1.0f / texture->GetHeight();
+  if (clampAtTextureBorders) {
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  } else {
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  }
 
-    // clamping doesnt really help here in opengl so had to alter texture coordinates a bit
-    float clamp_fix_u = 1.0f / texture->GetWidth();
-    float clamp_fix_v = 1.0f / texture->GetHeight();
-    if (clampAtTextureBorders)
-    {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    }
-    else
-    {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    }
+  if (transparent) {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  }
 
-    if (transparent)
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
+  float dim = 1.0f;// a3->dimming_level / 20.0f;
+  int x1 = a3->uEdgeList1Size;
+  int z1 = a3->uEdgeList2Size;
+  int x2 = x1 + 1;
+  int z2 = z1 + 1;
 
-    float dim = 1.0f;// a3->dimming_level / 20.0f;
-    int x1 = a3->uEdgeList1Size;
-    int z1 = a3->uEdgeList2Size;
-    int x2 = x1 + 1;
-    int z2 = z1 + 1;
+  int y11 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x1];
+  int y21 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x2];
+  int y12 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x1];
+  int y22 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x2];
 
-    int y11 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x1];
-    int y21 = pOutdoor->pTerrain.pHeightmap[z1 * 128 + x2];
-    int y12 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x1];
-    int y22 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x2];
+  glBegin(GL_TRIANGLES);
+  {
+    glTexCoord2f(0.0f + clamp_fix_u, 0.0f + clamp_fix_v);
+    glColor3f(dim, dim, dim);
+    glVertex3f((x1 - 64) * terrain_block_scale, y11 * terrain_height_scale, (64 - z1) * terrain_block_scale);
 
-    glBegin(GL_TRIANGLES);
-    {
-        glTexCoord2f(0.0f + clamp_fix_u, 0.0f + clamp_fix_v);
-        glColor3f(dim, dim, dim);
-        glVertex3f((x1 - 64) * terrain_block_scale, y11 * terrain_height_scale, (64 - z1) * terrain_block_scale);
+    glTexCoord2f(0.0f + clamp_fix_u, 1.0f - clamp_fix_v);
+    glColor3f(dim, dim, dim);
+    glVertex3f((x1 - 64) * terrain_block_scale, y12 * terrain_height_scale, (64 - z2) * terrain_block_scale);
 
-        glTexCoord2f(0.0f + clamp_fix_u, 1.0f - clamp_fix_v);
-        glColor3f(dim, dim, dim);
-        glVertex3f((x1 - 64) * terrain_block_scale, y12 * terrain_height_scale, (64 - z2) * terrain_block_scale);
+    glTexCoord2f(1.0f - clamp_fix_u, 1.0f - clamp_fix_v);
+    glColor3f(dim, dim, dim);
+    glVertex3f((x2 - 64) * terrain_block_scale, y22 * terrain_height_scale, (64 - z2) * terrain_block_scale);
 
-        glTexCoord2f(1.0f - clamp_fix_u, 1.0f - clamp_fix_v);
-        glColor3f(dim, dim, dim);
-        glVertex3f((x2 - 64) * terrain_block_scale, y22 * terrain_height_scale, (64 - z2) * terrain_block_scale);
+    // ---
 
-        // ---
+    glTexCoord2f(0.0f + clamp_fix_u, 0.0f + clamp_fix_v);
+    glColor3f(dim, dim, dim);
+    glVertex3f((x1 - 64) * terrain_block_scale, y11 * terrain_height_scale, (64 - z1) * terrain_block_scale);
 
-        glTexCoord2f(0.0f + clamp_fix_u, 0.0f + clamp_fix_v);
-        glColor3f(dim, dim, dim);
-        glVertex3f((x1 - 64) * terrain_block_scale, y11 * terrain_height_scale, (64 - z1) * terrain_block_scale);
+    glTexCoord2f(1.0f - clamp_fix_u, 1.0f - clamp_fix_v);
+    glColor3f(dim, dim, dim);
+    glVertex3f((x2 - 64) * terrain_block_scale, y22 * terrain_height_scale, (64 - z2) * terrain_block_scale);
 
-        glTexCoord2f(1.0f - clamp_fix_u, 1.0f - clamp_fix_v);
-        glColor3f(dim, dim, dim);
-        glVertex3f((x2 - 64) * terrain_block_scale, y22 * terrain_height_scale, (64 - z2) * terrain_block_scale);
+    glTexCoord2f(1.0f - clamp_fix_u, 0.0f + clamp_fix_v);
+    glColor3f(dim, dim, dim);
+    glVertex3f((x2 - 64) * terrain_block_scale, y21 * terrain_height_scale, (64 - z1) * terrain_block_scale);
+  }
+  glEnd();
 
-        glTexCoord2f(1.0f - clamp_fix_u, 0.0f + clamp_fix_v);
-        glColor3f(dim, dim, dim);
-        glVertex3f((x2 - 64) * terrain_block_scale, y21 * terrain_height_scale, (64 - z1) * terrain_block_scale);
-    }
-    glEnd();
-
-    if (transparent)
-    {
-        glDisable(GL_BLEND);
-    }
+  if (transparent) {
+    glDisable(GL_BLEND);
+  }
 }
 
 
@@ -830,220 +914,7 @@ void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1)
     }
 }
 
-
-
-
-void RenderOpenGL::TransformBillboardsAndSetPalettesODM() {
-    SoftwareBillboard billboard; // [sp+4h] [bp-60h]@1
-
-    billboard.sParentBillboardID = -1;
-//    billboard.pTarget = render->pTargetSurface;
-    billboard.pTargetZ = render->pActiveZBuffer;
-//    billboard.uTargetPitch = render->uTargetSurfacePitch;
-    billboard.uViewportX = pViewport->uViewportTL_X;
-    billboard.uViewportY = pViewport->uViewportTL_Y;
-    billboard.uViewportZ = pViewport->uViewportBR_X - 1;
-    billboard.uViewportW = pViewport->uViewportBR_Y;
-    pODMRenderParams->uNumBillboards = ::uNumBillboardsToDraw;
-
-    for (unsigned int i = 0; i < ::uNumBillboardsToDraw; ++i)
-    {
-        auto p = &pBillboardRenderList[i];
-
-        if (p->hwsprite)
-        {
-            billboard.screen_space_x = p->screen_space_x;
-            billboard.screen_space_y = p->screen_space_y;
-            billboard.screen_space_z = p->screen_space_z;
-            billboard.sParentBillboardID = i;
-            billboard.screenspace_projection_factor_x = p->screenspace_projection_factor_x;
-            billboard.screenspace_projection_factor_y = p->screenspace_projection_factor_y;
-            billboard.sTintColor = p->sTintColor;
-            billboard.object_pid = p->object_pid;
-            billboard.uFlags = p->field_1E;
-
-            TransformBillboard(
-                &billboard,
-                p
-            );
-        }
-    }
-}
-
-
-
-//----- (004A4023) --------------------------------------------------------
-void RenderOpenGL::TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard)
-{
-    unsigned int v8; // esi@2
-    double v14; // st6@14
-    double v15; // st5@14
-    float v29; // [sp+28h] [bp-8h]@5
-    float v30; // [sp+2Ch] [bp-4h]@5
-
-
-    Sprite *pSprite = pBillboard->hwsprite;
-    int dimming_level = pBillboard->dimming_level;
-
-    v8 = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
-
-    v30 = a2->screenspace_projection_factor_x.GetFloat();
-    v29 = a2->screenspace_projection_factor_y.GetFloat();
-
-    unsigned int diffuse = ::GetActorTintColor(dimming_level, 0, a2->screen_space_z, 0, pBillboard);
-    if (a2->sTintColor & 0x00FFFFFF && bTinting)
-    {
-        diffuse = BlendColors(a2->sTintColor, diffuse);
-        if (a2->sTintColor & 0xFF000000)
-            diffuse = 0x007F7F7F & ((unsigned int)diffuse >> 1);
-    }
-
-    unsigned int specular = 0;
-    if (bUsingSpecular)
-        specular = sub_47C3D7_get_fog_specular(0, 0, a2->screen_space_z);
-
-    v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
-    if (a2->uFlags & 4)
-        v14 *= -1.0;
-    pBillboardRenderListD3D[v8].pQuads[0].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.x = (double)a2->screen_space_x - v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[0].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[0].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[0].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v8].pQuads[0].texcoord.y = 0.0;
-
-    v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
-    if (a2->uFlags & 4)
-        v14 = v14 * -1.0;
-    pBillboardRenderListD3D[v8].pQuads[1].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[1].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.x = (double)a2->screen_space_x - v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[1].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[1].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v8].pQuads[1].texcoord.y = 1.0;
-
-    v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
-    if (a2->uFlags & 4)
-        v14 *= -1.0;
-    pBillboardRenderListD3D[v8].pQuads[2].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[2].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.x = (double)a2->screen_space_x + v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[2].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[2].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v8].pQuads[2].texcoord.y = 1.0;
-
-    v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
-    if (a2->uFlags & 4)
-        v14 *= -1.0;
-    pBillboardRenderListD3D[v8].pQuads[3].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[3].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.x = (double)a2->screen_space_x + v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.y = (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[3].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[3].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v8].pQuads[3].texcoord.y = 0.0;
-
-    pBillboardRenderListD3D[v8].uNumVertices = 4;
-    pBillboardRenderListD3D[v8].texture = pSprite->texture;
-    pBillboardRenderListD3D[v8].z_order = a2->screen_space_z;
-    pBillboardRenderListD3D[v8].field_90 = a2->field_44;
-    pBillboardRenderListD3D[v8].object_pid = a2->object_pid;
-    pBillboardRenderListD3D[v8].screen_space_z = a2->screen_space_z;
-    pBillboardRenderListD3D[v8].sParentBillboardID = a2->sParentBillboardID;
-
-    if (a2->sTintColor & 0xFF000000)
-        pBillboardRenderListD3D[v8].opacity = RenderBillboardD3D::Opaque_3;
-    else
-        pBillboardRenderListD3D[v8].opacity = RenderBillboardD3D::Transparent;
-}
-
-
-
-//----- (004A1B22) --------------------------------------------------------
-unsigned int RenderOpenGL::Billboard_ProbablyAddToListAndSortByZOrder(float z)
-{
-    unsigned int v7; // edx@6
-
-    if (uNumBillboardsToDraw >= 999)
-        return 0;
-    if (!uNumBillboardsToDraw)
-    {
-        uNumBillboardsToDraw = 1;
-        return 0;
-    }
-
-    for (int left = 0, right = uNumBillboardsToDraw; left < right; ) // binsearch
-    {
-        v7 = left + (right - left) / 2;
-        if (z <= render->pBillboardRenderListD3D[v7].z_order)
-            right = v7;
-        else
-            left = v7 + 1;
-    }
-
-    if (z > render->pBillboardRenderListD3D[v7].z_order)
-    {
-        if (v7 == render->uNumBillboardsToDraw - 1)
-            v7 = render->uNumBillboardsToDraw;
-        else
-        {
-            if ((signed int)render->uNumBillboardsToDraw > (signed int)v7)
-            {
-                for (uint i = 0; i < render->uNumBillboardsToDraw - v7; i++)
-                {
-                    memcpy(&render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i],
-                        &render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)],
-                        sizeof(render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i]));
-                }
-            }
-            ++v7;
-        }
-        uNumBillboardsToDraw++;
-        return v7;
-    }
-    if (z <= render->pBillboardRenderListD3D[v7].z_order)
-    {
-        if ((signed int)render->uNumBillboardsToDraw > (signed int)v7)
-        {
-            for (uint i = 0; i < render->uNumBillboardsToDraw - v7; i++)
-            {
-                memcpy(&render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i],
-                    &render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - (i + 1)],
-                    sizeof(render->pBillboardRenderListD3D[render->uNumBillboardsToDraw - i]));
-            }
-        }
-        uNumBillboardsToDraw++;
-        return v7;
-    }
-    return v7;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size)
-{
+void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height, void *out_data, unsigned int data_size, unsigned int *screenshot_size) {
     /*auto pixels = MakeScreenshot(150, 112);
     PackPCXpicture(pixels, 150, 112, data, 1000000, out_screenshot_size);
     free(pixels);*/
@@ -1063,10 +934,7 @@ void RenderOpenGL::ResetUIClipRect()
     this->SetUIClipRect(0, 0, this->window->GetWidth(), this->window->GetHeight());
 }
 
-void RenderOpenGL::PresentBlackScreen()
-{
-    __debugbreak();
-}
+void RenderOpenGL::PresentBlackScreen() { }
 
 void RenderOpenGL::BeginScene() {}
 void RenderOpenGL::EndScene() {}
@@ -1419,113 +1287,100 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char* font_pixels, int a
     }
 }
 
+void RenderOpenGL::Present() {
+  glEnable(GL_TEXTURE_2D);
 
+  static GLuint screen_quad_id = 0;
+  if (!screen_quad_id) {
+    glGenTextures(1, &screen_quad_id);
+    glBindTexture(GL_TEXTURE_2D, screen_quad_id);
 
-void RenderOpenGL::Present()
-{
-    glEnable(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  }
 
-    static GLuint screen_quad_id = 0;
-    if (!screen_quad_id)
-    {
-        glGenTextures(1, &screen_quad_id);
-		glBindTexture(GL_TEXTURE_2D, screen_quad_id);
+  {
+    int width = window->GetWidth();
+    int pitch = 4 * width;
+    int alpha_blended_size = pitch * window->GetHeight();
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    auto alpha_blended = new unsigned char[alpha_blended_size];
+    memset(alpha_blended, 0, alpha_blended_size);
+
+    auto src = (unsigned __int32 *)this->render_target_rgb;
+    auto dst = (unsigned __int32 *)alpha_blended;
+    for (uint y = 0; y < 8; ++y) {
+      memcpy(
+        dst + y * width,
+        src + y * width,
+        width * sizeof(__int32)
+      );
     }
 
-    {
-        int width = window->GetWidth();
-        int pitch = 4 * width;
-        int alpha_blended_size = pitch * window->GetHeight();
-
-        auto alpha_blended = new unsigned char[alpha_blended_size];
-        memset(alpha_blended, 0, alpha_blended_size);
-
-        auto src = (unsigned __int32 *)this->render_target_rgb;
-        auto dst = (unsigned __int32 *)alpha_blended;
-        for (uint y = 0; y < 8; ++y)
-        {
-            memcpy(
-                dst + y * width,
-                src + y * width,
-                width * sizeof(__int32)
-            );
-        }
-
-        for (uint y = 8; y < 352; ++y)
-        {
-            int left_border_width_px = 8;
-            memcpy(
-                dst + y * width,
-                src + y * width,
-                left_border_width_px * sizeof(__int32)
-            );
-            memcpy(
-                dst + left_border_width_px + game_viewport_width + y * width,
-                src + left_border_width_px + game_viewport_width + y * width,
-                (width - left_border_width_px - game_viewport_width) * sizeof(__int32)
-            );
-        }
-
-        for (uint y = 352; y < 480; ++y)
-        {
-            memcpy(
-                dst + y * width,
-                src + y * width,
-                width * sizeof(__int32)
-            );
-        }
-
-        for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y + 1; ++y)
-        {
-            for (uint x = pViewport->uViewportTL_X; x < pViewport->uViewportBR_X; ++x)
-            {
-                if (src[x + y * width] != 0xFFF8FC00)  // F8FC00 =  Color32(Color16(g_mask | b_mask)) - alpha color key
-                {
-                    dst[x + y * width] = src[x + y * width];
-                }
-                //else
-                //    dst[x + y * width] = 0x00000000;
-            }
-        }
-
-		glBindTexture(GL_TEXTURE_2D, screen_quad_id);
-        glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGBA, window->GetWidth(), window->GetHeight(),
-            0, GL_RGBA, GL_UNSIGNED_BYTE, alpha_blended
-        );
-
-        delete[] alpha_blended;
+    for (uint y = 8; y < 352; ++y) {
+      int left_border_width_px = 8;
+      memcpy(
+        dst + y * width,
+        src + y * width,
+        left_border_width_px * sizeof(__int32)
+      );
+      memcpy(
+        dst + left_border_width_px + game_viewport_width + y * width,
+        src + left_border_width_px + game_viewport_width + y * width,
+        (width - left_border_width_px - game_viewport_width) * sizeof(__int32)
+      );
     }
 
-    _set_ortho_projection();
-    _set_ortho_modelview();
+    for (uint y = 352; y < 480; ++y) {
+      memcpy(
+        dst + y * width,
+        src + y * width,
+        width * sizeof(__int32)
+      );
+    }
+
+    for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y + 1; ++y) {
+      for (uint x = pViewport->uViewportTL_X; x < pViewport->uViewportBR_X; ++x) {
+        if (src[x + y * width] != 0xFFF8FC00) {  // F8FC00 =  Color32(Color16(g_mask | b_mask)) - alpha color key
+          dst[x + y * width] = src[x + y * width];
+        }
+        //else
+        //    dst[x + y * width] = 0x00000000;
+      }
+    }
 
     glBindTexture(GL_TEXTURE_2D, screen_quad_id);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glTexImage2D(
+      GL_TEXTURE_2D, 0, GL_RGBA, window->GetWidth(), window->GetHeight(),
+      0, GL_RGBA, GL_UNSIGNED_BYTE, alpha_blended
+    );
 
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    //glTranslatef(0.5f, 0.5f, 0.0f); // texels to pixels // somehow it works against expected - makes things more blurry
-    glBegin(GL_QUADS);
-    {
-        glTexCoord2f(0.0f, 0.0f);  glVertex2f(0.0f, 0.0f);
-        glTexCoord2f(0.0f, 1.0f);  glVertex2f(0.0f, window->GetHeight());
-        glTexCoord2f(1.0f, 1.0f);  glVertex2f(window->GetWidth(), window->GetHeight());
-        glTexCoord2f(1.0f, 0.0f);  glVertex2f(window->GetWidth(), 0.0f);
-    }
-    glEnd();
+    delete[] alpha_blended;
+  }
+
+  _set_ortho_projection();
+  _set_ortho_modelview();
+
+  glBindTexture(GL_TEXTURE_2D, screen_quad_id);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  //glTranslatef(0.5f, 0.5f, 0.0f); // texels to pixels // somehow it works against expected - makes things more blurry
+  glBegin(GL_QUADS);
+  {
+    glTexCoord2f(0.0f, 0.0f);  glVertex2f(0.0f, 0.0f);
+    glTexCoord2f(0.0f, 1.0f);  glVertex2f(0.0f, window->GetHeight());
+    glTexCoord2f(1.0f, 1.0f);  glVertex2f(window->GetWidth(), window->GetHeight());
+    glTexCoord2f(1.0f, 0.0f);  glVertex2f(window->GetWidth(), 0.0f);
+  }
+  glEnd();
 
 
-    SwapBuffers((HDC)this->hdc);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  SwapBuffers((HDC)this->hdc);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-
-
-
 
 RenderVertexSoft ogl_draw_buildings_vertices[20];
 void RenderOpenGL::DrawBuildingsD3D() {
@@ -1672,157 +1527,147 @@ void RenderOpenGL::DrawBuildingsD3D() {
 }
 
 
-void RenderOpenGL::DrawPolygon(struct Polygon *poly)
-{
-    auto texture = (TextureOpenGL *)poly->texture;
-    auto a4 = poly->pODMFace;
-    auto uNumVertices = poly->uNumVertices;
+void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
+  if (poly->uNumVertices < 3) {
+    return;
+  }
 
-    if (poly->uNumVertices >= 3)
-    {
-        //v54 = pEngine->pLightmapBuilder->StationaryLightsCount;
+  auto texture = (TextureOpenGL *)poly->texture;
+  auto a4 = poly->pODMFace;
+  auto uNumVertices = poly->uNumVertices;
 
-        int a2 = 0xFFFFFFFF;
-        pEngine->AlterGamma_ODM(a4, &a2);
+  int a2 = 0xFFFFFFFF;
+  pEngine->AlterGamma_ODM(a4, &a2);
 
-        if (!pEngine->pLightmapBuilder->StationaryLightsCount || byte_4D864C && pEngine->uFlags & 2)
-        {
-            glEnable(GL_TEXTURE_2D);
-            glDisable(GL_BLEND);
-            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+  if (!pEngine->pLightmapBuilder->StationaryLightsCount || byte_4D864C && pEngine->uFlags & 2) {
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
-            glBegin(GL_TRIANGLE_FAN);
+    glBegin(GL_TRIANGLE_FAN);
 
-            int outline_color;
-            if (GetTickCount() % 300 >= 150)
-                outline_color = 0xFFFF2020;
-            else outline_color = 0xFF901010;
+    int outline_color;
+    if (GetTickCount() % 300 >= 150)
+      outline_color = 0xFFFF2020;
+    else outline_color = 0xFF901010;
 
-            for (uint i = 0; i < uNumVertices; ++i)
-            {
-                d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
-                d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
-                d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
-                d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(poly->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
-                pEngine->AlterGamma_ODM(a4, &d3d_vertex_buffer[i].diffuse);
+    for (uint i = 0; i < uNumVertices; ++i) {
+      d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
+      d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
+      d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
+      d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
+      d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(poly->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
+      pEngine->AlterGamma_ODM(a4, &d3d_vertex_buffer[i].diffuse);
 
-                if (a4->uAttributes & FACE_OUTLINED)
-                {
-                    d3d_vertex_buffer[i].diffuse = outline_color;
-                }
+      if (a4->uAttributes & FACE_OUTLINED) {
+        d3d_vertex_buffer[i].diffuse = outline_color;
+      }
 
-                if (this->bUsingSpecular)
-                    d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
-                else
-                    d3d_vertex_buffer[i].specular = 0;
-                d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
-                d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
+      if (this->bUsingSpecular)
+        d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
+      else
+        d3d_vertex_buffer[i].specular = 0;
+      d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
+      d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
 
-                glTexCoord2f(ogl_draw_buildings_vertices[i].u, ogl_draw_buildings_vertices[i].v);
+      glTexCoord2f(ogl_draw_buildings_vertices[i].u, ogl_draw_buildings_vertices[i].v);
 
-                glColor4f(
-                    ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                    bUsingSpecular ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f : 1.0f
-                );
+      glColor4f(
+        ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
+        ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
+        ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
+        bUsingSpecular ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f : 1.0f
+      );
 
-                glVertex3f(
-                    //d3d_vertex_buffer[i].pos.x /*/ d3d_vertex_buffer[i].rhw*/,
-                    //d3d_vertex_buffer[i].pos.y /*/ d3d_vertex_buffer[i].rhw*/,
-                    //d3d_vertex_buffer[i].pos.z /*/ d3d_vertex_buffer[i].rhw*/
-
-                    ogl_draw_buildings_vertices[i].vWorldPosition.x,
-                    ogl_draw_buildings_vertices[i].vWorldPosition.z,
-                    ogl_draw_buildings_vertices[i].vWorldPosition.y
-                );
-
-            }
-
-            glEnd();
-        }
-        else
-        {
-            /*for (uint i = 0; i < uNumVertices; ++i)
-            {
-
-                d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
-                d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / (double)pODMRenderParams->shading_dist_mist);
-                d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
-                d3d_vertex_buffer[i].diffuse = GetActorTintColor(a3->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
-                if (this->bUsingSpecular)
-                    d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
-                else
-                    d3d_vertex_buffer[i].specular = 0;
-                d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
-                d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
-
-            }
-
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
-            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-            if (bUsingSpecular)
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
-
-            ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
-            ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-                D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
-                d3d_vertex_buffer,
-                uNumVertices,
-                D3DDP_DONOTLIGHT));
-            //v50 = (const char *)v5->pRenderD3D->pDevice;
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
-            //(*(void (**)(void))(*(int *)v50 + 88))();
-            pEngine->pLightmapBuilder->DrawLightmaps(-1);
-            for (uint i = 0; i < uNumVertices; ++i)
-            {
-                d3d_vertex_buffer[i].diffuse = a2;
-            }
-            ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
-            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-            if (!render->bUsingSpecular)
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
-
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR));
-            ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-                D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
-                d3d_vertex_buffer,
-                uNumVertices,
-                D3DDP_DONOTLIGHT));
-            if (bUsingSpecular)
-            {
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
-
-                for (uint i = 0; i < uNumVertices; ++i)
-                {
-                    d3d_vertex_buffer[i].diffuse = render->uFogColor | d3d_vertex_buffer[i].specular & 0xFF000000;
-                    d3d_vertex_buffer[i].specular = 0;
-                }
-
-                ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_INVSRCALPHA));
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCALPHA));
-                ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-                    D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
-                    d3d_vertex_buffer,
-                    uNumVertices,
-                    D3DDP_DONOTLIGHT));
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
-                //v40 = render->pRenderD3D->pDevice->lpVtbl;
-                v41 = GetLevelFogColor();
-                pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF);
-                v6 = 0;
-                pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0);
-            }
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, v6));*/
-        }
+      glVertex3f(
+        ogl_draw_buildings_vertices[i].vWorldPosition.x,
+        ogl_draw_buildings_vertices[i].vWorldPosition.z,
+        ogl_draw_buildings_vertices[i].vWorldPosition.y
+      );
     }
+
+    glEnd();
+  }
+  else
+  {
+    /*for (uint i = 0; i < uNumVertices; ++i)
+    {
+
+    d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
+    d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
+    d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / (double)pODMRenderParams->shading_dist_mist);
+    d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
+    d3d_vertex_buffer[i].diffuse = GetActorTintColor(a3->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
+    if (this->bUsingSpecular)
+    d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
+    else
+    d3d_vertex_buffer[i].specular = 0;
+    d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
+    d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
+
+    }
+
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
+    ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+    if (bUsingSpecular)
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
+
+    ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+    D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
+    d3d_vertex_buffer,
+    uNumVertices,
+    D3DDP_DONOTLIGHT));
+    //v50 = (const char *)v5->pRenderD3D->pDevice;
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
+    //(*(void (**)(void))(*(int *)v50 + 88))();
+    pEngine->pLightmapBuilder->DrawLightmaps(-1);
+    for (uint i = 0; i < uNumVertices; ++i)
+    {
+    d3d_vertex_buffer[i].diffuse = a2;
+    }
+    ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
+    ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+    if (!render->bUsingSpecular)
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR));
+    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+    D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
+    d3d_vertex_buffer,
+    uNumVertices,
+    D3DDP_DONOTLIGHT));
+    if (bUsingSpecular)
+    {
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+
+    for (uint i = 0; i < uNumVertices; ++i)
+    {
+    d3d_vertex_buffer[i].diffuse = render->uFogColor | d3d_vertex_buffer[i].specular & 0xFF000000;
+    d3d_vertex_buffer[i].specular = 0;
+    }
+
+    ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_INVSRCALPHA));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCALPHA));
+    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+    D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
+    d3d_vertex_buffer,
+    uNumVertices,
+    D3DDP_DONOTLIGHT));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
+    //v40 = render->pRenderD3D->pDevice->lpVtbl;
+    v41 = GetLevelFogColor();
+    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF);
+    v6 = 0;
+    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0);
+    }
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, v6));*/
+  }
 }
 
 

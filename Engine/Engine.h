@@ -186,7 +186,7 @@ public:
     Mouse *pMouseInstance;
     LightmapBuilder *pLightmapBuilder;
     Vis *pVisInstance;
-    SpellFxRenderer *spellfx;
+    struct SpellFxRenderer *spellfx;
     void *__depricated5;//IndoorCameraD3D *pIndoorCameraD3D;
     stru9 *pStru9Instance;
     stru10 *pStru10Instance;

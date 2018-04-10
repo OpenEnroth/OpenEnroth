@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/RenderBase.h"
 
-class RenderOpenGL : public IRender {
+class RenderOpenGL : public RenderBase {
  public:
   RenderOpenGL();
   virtual ~RenderOpenGL();
@@ -38,13 +38,9 @@ class RenderOpenGL : public IRender {
   virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clampAtTextureBorders);
   virtual void DrawIndoorPolygon(unsigned int uNumVertices, struct BLVFace *a3, int uPackedID, unsigned int uColor, int a8);
 
-  virtual void MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle);
-  virtual void MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2, Texture *texture, unsigned int uDiffuse, int angle);
-
   virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
   virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard, RenderBillboard *) override;
   virtual void _4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse);
-  virtual void TransformBillboardsAndSetPalettesODM();
   virtual void DrawBillboardList_BLV();
 
   virtual void DrawProjectile(float srcX, float srcY, float a3, float a4, float dstX, float dstY, float a7, float a8, Texture *texture);
@@ -85,7 +81,6 @@ class RenderOpenGL : public IRender {
   virtual void DrawOutdoorSkyD3D();
 
   virtual void PrepareDecorationsRenderList_ODM();
-  virtual void DrawSpriteObjects_ODM();
 
   virtual void RenderTerrainD3D();
 
@@ -130,8 +125,6 @@ class RenderOpenGL : public IRender {
  protected:
   void DoRenderBillboards_D3D();
   void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
-  void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
-  unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
 
   void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
   void DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon);
