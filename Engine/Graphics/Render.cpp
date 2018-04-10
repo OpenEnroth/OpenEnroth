@@ -609,139 +609,141 @@ void Render::PrepareDecorationsRenderList_ODM() {
   }
 }
 
-void Render::DrawPolygon(struct Polygon *a3) {
-  int v8; // eax@7
+void Render::DrawPolygon(struct Polygon *pPolygon) {
+  if ((uNumD3DSceneBegins == 0) || (pPolygon->uNumVertices < 3)) {
+    return;
+  }
+
   unsigned int v41; // eax@29
-  signed int a2; // [sp+64h] [bp-4h]@4
+  int sCorrectedColor; // [sp+64h] [bp-4h]@4
 
-  auto texture = (TextureD3D *)a3->texture;
-  auto a4 = a3->pODMFace;
-  auto uNumVertices = a3->uNumVertices;
+  auto texture = (TextureD3D *)pPolygon->texture;
+  ODMFace *pFace = pPolygon->pODMFace;
+  auto uNumVertices = pPolygon->uNumVertices;
 
-  //v6 = 0;
-  if (this->uNumD3DSceneBegins && (uNumVertices >= 3)) {
-    //v54 = pEngine->pLightmapBuilder->StationaryLightsCount;
-    if (pEngine->pLightmapBuilder->StationaryLightsCount)
-      a2 = 0xFFFFFFFF;
-    pEngine->AlterGamma_ODM(a4, &a2);
-    if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related) {
-      v8 = ::GetActorTintColor(a3->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 0, 0);
-      pEngine->pLightmapBuilder->DrawLightmaps(v8/*, 0*/);
-    } else {
-      if (!pEngine->pLightmapBuilder->StationaryLightsCount || byte_4D864C && pEngine->uFlags & 2) {
-        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW));
-        if (bUsingSpecular) {
-          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
-          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
-        }
+  if (pEngine->pLightmapBuilder->StationaryLightsCount) {
+    sCorrectedColor = -1;
+  }
+  pEngine->AlterGamma_ODM(pFace, &sCorrectedColor);
+  if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related) {
+    int v8 = ::GetActorTintColor(pPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 0, 0);
+    pEngine->pLightmapBuilder->DrawLightmaps(v8/*, 0*/);
+  }
+  else {
+    if (!pEngine->pLightmapBuilder->StationaryLightsCount || byte_4D864C && pEngine->uFlags & 2) {
+      ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW));
+      if (bUsingSpecular) {
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
+      }
+      for (uint i = 0; i < uNumVertices; ++i) {
+        d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
+        d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
+        d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
+        d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
+        d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(pPolygon->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
+        pEngine->AlterGamma_ODM(pFace, &d3d_vertex_buffer[i].diffuse);
+
+        if (this->bUsingSpecular)
+          d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
+        else
+          d3d_vertex_buffer[i].specular = 0;
+        d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
+        d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
+      }
+
+      if (pFace->uAttributes & FACE_OUTLINED) {
+        int color;
+        if (GetTickCount() % 300 >= 150)
+          color = 0xFFFF2020;
+        else color = 0xFF901010;
+
+        for (uint i = 0; i < uNumVertices; ++i)
+          d3d_vertex_buffer[i].diffuse = color;
+      }
+
+      ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
+      ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
+        D3DPT_TRIANGLEFAN,
+        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+        d3d_vertex_buffer,
+        uNumVertices,
+        D3DDP_DONOTLIGHT));
+    }
+    else {
+      for (uint i = 0; i < uNumVertices; ++i) {
+        d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
+        d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
+        d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
+        d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
+        d3d_vertex_buffer[i].diffuse = GetActorTintColor(pPolygon->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
+        if (this->bUsingSpecular)
+          d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
+        else
+          d3d_vertex_buffer[i].specular = 0;
+        d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
+        d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
+
+      }
+
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
+      ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+      if (bUsingSpecular)
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
+
+      ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+      ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+        d3d_vertex_buffer,
+        uNumVertices,
+        D3DDP_DONOTLIGHT));
+      //v50 = (const char *)v5->pRenderD3D->pDevice;
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
+      //(*(void (**)(void))(*(int *)v50 + 88))();
+      pEngine->pLightmapBuilder->DrawLightmaps(-1/*, 0*/);
+      for (uint i = 0; i < uNumVertices; ++i) {
+        d3d_vertex_buffer[i].diffuse = sCorrectedColor;
+      }
+      ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
+      ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+      if (!render->bUsingSpecular)
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR));
+      ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+        D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
+        d3d_vertex_buffer,
+        uNumVertices,
+        D3DDP_DONOTLIGHT));
+      if (bUsingSpecular) {
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+
         for (uint i = 0; i < uNumVertices; ++i) {
-          d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
-          d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-          d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
-          d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
-          d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(a3->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
-          pEngine->AlterGamma_ODM(a4, &d3d_vertex_buffer[i].diffuse);
-
-          if (this->bUsingSpecular)
-            d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
-          else
-            d3d_vertex_buffer[i].specular = 0;
-          d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
-          d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
-
+          d3d_vertex_buffer[i].diffuse = render->uFogColor | d3d_vertex_buffer[i].specular & 0xFF000000;
+          d3d_vertex_buffer[i].specular = 0;
         }
 
-        if (a4->uAttributes & FACE_OUTLINED) {
-          int color;
-          if (GetTickCount() % 300 >= 150)
-            color = 0xFFFF2020;
-          else color = 0xFF901010;
-
-          for (uint i = 0; i < uNumVertices; ++i)
-            d3d_vertex_buffer[i].diffuse = color;
-        }
-
-        pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture());
-        pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+        ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_INVSRCALPHA));
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCALPHA));
+        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
           D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
           d3d_vertex_buffer,
           uNumVertices,
-          D3DDP_DONOTLIGHT);
-      } else {
-        for (uint i = 0; i < uNumVertices; ++i) {
-          d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
-          d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-          d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) / pIndoorCameraD3D->GetFarClip());
-          d3d_vertex_buffer[i].rhw = 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
-          d3d_vertex_buffer[i].diffuse = GetActorTintColor(a3->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
-          if (this->bUsingSpecular)
-            d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(0, 0, VertexRenderList[i].vWorldViewPosition.x);
-          else
-            d3d_vertex_buffer[i].specular = 0;
-          d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
-          d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
-
-        }
-
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
-        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-        if (bUsingSpecular)
-          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
-
-        ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
-        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-          D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
-          d3d_vertex_buffer,
-          uNumVertices,
           D3DDP_DONOTLIGHT));
-        //v50 = (const char *)v5->pRenderD3D->pDevice;
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
-        //(*(void (**)(void))(*(int *)v50 + 88))();
-        pEngine->pLightmapBuilder->DrawLightmaps(-1/*, 0*/);
-        for (uint i = 0; i < uNumVertices; ++i) {
-          d3d_vertex_buffer[i].diffuse = a2;
-        }
-        ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
-        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-        if (!render->bUsingSpecular)
-          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
-
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO));
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR));
-        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-          D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
-          d3d_vertex_buffer,
-          uNumVertices,
-          D3DDP_DONOTLIGHT));
-        if (bUsingSpecular) {
-          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
-
-          for (uint i = 0; i < uNumVertices; ++i) {
-            d3d_vertex_buffer[i].diffuse = render->uFogColor | d3d_vertex_buffer[i].specular & 0xFF000000;
-            d3d_vertex_buffer[i].specular = 0;
-          }
-
-          ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
-          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_INVSRCALPHA));
-          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCALPHA));
-          ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-            D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
-            d3d_vertex_buffer,
-            uNumVertices,
-            D3DDP_DONOTLIGHT));
-          ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
-          //v40 = render->pRenderD3D->pDevice->lpVtbl;
-          v41 = GetLevelFogColor();
-          pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF);
-          pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0);
-        }
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0));
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
+        //v40 = render->pRenderD3D->pDevice->lpVtbl;
+        v41 = GetLevelFogColor();
+        pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF);
+        pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0);
       }
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
+      ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
     }
   }
 }
@@ -1997,10 +1999,11 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
 
   int sCorrectedColor = uColor;
 
-  auto face_texture = (TextureD3D *)pFace->GetTexture();
+  TextureD3D *texture = (TextureD3D*)pFace->GetTexture();
 
-  if (pEngine->pLightmapBuilder->StationaryLightsCount)
+  if (pEngine->pLightmapBuilder->StationaryLightsCount) {
     sCorrectedColor = -1;
+  }
   pEngine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
   if (pFace->uAttributes & FACE_OUTLINED) {
@@ -2014,8 +2017,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
     __debugbreak();
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false));
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-    for (uint i = 0; i < uNumVertices; ++i)
-    {
+    for (uint i = 0; i < uNumVertices; ++i) {
       d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
       d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
       d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
@@ -2030,9 +2032,12 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
     ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
     ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
       D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-      d3d_vertex_buffer, uNumVertices, 28));
+      d3d_vertex_buffer,
+      uNumVertices,
+      D3DDP_DONOTLIGHT));
     pEngine->pLightmapBuilder->DrawLightmaps(-1/*, 0*/);
-  } else {
+  }
+  else {
     if (!pEngine->pLightmapBuilder->StationaryLightsCount || byte_4D864C && pEngine->uFlags & GAME_FLAGS_2_SATURATE_LIGHTMAPS) {
       for (uint i = 0; i < uNumVertices; ++i) {
         d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
@@ -2046,15 +2051,15 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
       }
 
       ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-      ErrD3D(pRenderD3D->pDevice->SetTexture(0, face_texture->GetDirect3DTexture()));
-      ErrD3D(
-        pRenderD3D->pDevice->DrawPrimitive(
-          D3DPT_TRIANGLEFAN,
-          D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-          d3d_vertex_buffer, uNumVertices, 28
-        )
-      );
-    } else {
+      ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
+      ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
+        D3DPT_TRIANGLEFAN,
+        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+        d3d_vertex_buffer,
+        uNumVertices,
+        D3DDP_DONOTLIGHT));
+    }
+    else {
       for (uint i = 0; i < uNumVertices; ++i) {
         d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
         d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
@@ -2070,7 +2075,9 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
       ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
       ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-        d3d_vertex_buffer, uNumVertices, 28));
+        d3d_vertex_buffer,
+        uNumVertices,
+        D3DDP_DONOTLIGHT));
 
       ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
       pEngine->pLightmapBuilder->DrawLightmaps(-1/*, 0*/);
@@ -2078,7 +2085,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
       for (uint i = 0; i < uNumVertices; ++i)
         d3d_vertex_buffer[i].diffuse = sCorrectedColor;
 
-      ErrD3D(pRenderD3D->pDevice->SetTexture(0, face_texture->GetDirect3DTexture()));
+      ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
       ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
       ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
       ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
@@ -2086,7 +2093,9 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uP
       ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR));
       ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-        d3d_vertex_buffer, uNumVertices, 28));
+        d3d_vertex_buffer,
+        uNumVertices,
+        D3DDP_DONOTLIGHT));
       ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
       ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
       ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
@@ -4107,126 +4116,126 @@ int _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseLightLevel) 
 
 int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z)
 {
-	signed int v6; // edi@1
-	int v8; // eax@6
-	int v9; // ebx@6
-	unsigned int v10; // ecx@6
-	unsigned int v11; // edx@9
-	unsigned int v12; // edx@11
-	signed int v13; // ecx@12
-	BLVLightMM7 *v16; // esi@20
-	int v17; // ebx@21
-	signed int v24; // ecx@30
-	int v26; // ebx@35
-	int v37; // [sp+Ch] [bp-18h]@37
-	int v39; // [sp+10h] [bp-14h]@23
-	int v40; // [sp+10h] [bp-14h]@36
-	int v42; // [sp+14h] [bp-10h]@22
-	unsigned int v43; // [sp+18h] [bp-Ch]@12
-	unsigned int v44; // [sp+18h] [bp-Ch]@30
-	unsigned int v45; // [sp+18h] [bp-Ch]@44
+  signed int v6; // edi@1
+  int v8; // eax@6
+  int v9; // ebx@6
+  unsigned int v10; // ecx@6
+  unsigned int v11; // edx@9
+  unsigned int v12; // edx@11
+  signed int v13; // ecx@12
+  BLVLightMM7 *v16; // esi@20
+  int v17; // ebx@21
+  signed int v24; // ecx@30
+  int v26; // ebx@35
+  int v37; // [sp+Ch] [bp-18h]@37
+  int v39; // [sp+10h] [bp-14h]@23
+  int v40; // [sp+10h] [bp-14h]@36
+  int v42; // [sp+14h] [bp-10h]@22
+  unsigned int v43; // [sp+18h] [bp-Ch]@12
+  unsigned int v44; // [sp+18h] [bp-Ch]@30
+  unsigned int v45; // [sp+18h] [bp-Ch]@44
 
-	v6 = uBaseLightLevel;
-	for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i)
-	{
-		MobileLight* p = &pMobileLightsStack->pLights[i];
+  v6 = uBaseLightLevel;
+  for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i)
+  {
+    MobileLight* p = &pMobileLightsStack->pLights[i];
 
-		float distX = abs(p->vPosition.x - x);
-		if (distX <= p->uRadius)
-		{
-			float distY = abs(p->vPosition.y - y);
-			if (distY <= p->uRadius)
-			{
-				float distZ = abs(p->vPosition.z - z);
-				if (distZ <= p->uRadius)
-				{
-					v8 = distX;
-					v9 = distY;
-					v10 = distZ;
-					if (distX < distY)
-					{
-						v8 = distY;
-						v9 = distX;
-					}
-					if (v8 < distZ)
-					{
-						v11 = v8;
-						v8 = distZ;
-						v10 = v11;
-					}
-					if (v9 < (signed int)v10)
-					{
-						v12 = v10;
-						v10 = v9;
-						v9 = v12;
-					}
-					v43 = ((unsigned int)(11 * v9) / 32) + (v10 / 4) + v8;
-					v13 = p->uRadius;
-					if ((signed int)v43 < v13)
-						v6 += ((unsigned __int64)(30i64 * (signed int)(v43 << 16) / v13) >> 16) - 30;
-				}
-			}
-		}
-	}
+    float distX = abs(p->vPosition.x - x);
+    if (distX <= p->uRadius)
+    {
+      float distY = abs(p->vPosition.y - y);
+      if (distY <= p->uRadius)
+      {
+        float distZ = abs(p->vPosition.z - z);
+        if (distZ <= p->uRadius)
+        {
+          v8 = distX;
+          v9 = distY;
+          v10 = distZ;
+          if (distX < distY)
+          {
+            v8 = distY;
+            v9 = distX;
+          }
+          if (v8 < distZ)
+          {
+            v11 = v8;
+            v8 = distZ;
+            v10 = v11;
+          }
+          if (v9 < (signed int)v10)
+          {
+            v12 = v10;
+            v10 = v9;
+            v9 = v12;
+          }
+          v43 = ((unsigned int)(11 * v9) / 32) + (v10 / 4) + v8;
+          v13 = p->uRadius;
+          if ((signed int)v43 < v13)
+            v6 += ((unsigned __int64)(30i64 * (signed int)(v43 << 16) / v13) >> 16) - 30;
+        }
+      }
+    }
+  }
 
-	if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-	{
-		BLVSector* pSector = &pIndoor->pSectors[uSectorID];
+  if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+  {
+    BLVSector* pSector = &pIndoor->pSectors[uSectorID];
 
-		for (uint i = 0; i < pSector->uNumLights; ++i)
-		{
-			v16 = pIndoor->pLights + pSector->pLights[i];
-			if (~v16->uAtributes & 8)
-			{
-				v17 = abs(v16->vPosition.x - x);
-				if (v17 <= v16->uRadius)
-				{
-					v42 = abs(v16->vPosition.y - y);
-					if (v42 <= v16->uRadius)
-					{
-						v39 = abs(v16->vPosition.z - z);
-						if (v39 <= v16->uRadius)
-						{
-							v44 = int_get_vector_length(v17, v42, v39);
-							v24 = v16->uRadius;
-							if ((signed int)v44 < v24)
-								v6 += ((unsigned __int64)(30i64 * (signed int)(v44 << 16) / v24) >> 16) - 30;
-						}
-					}
-				}
-			}
-		}
-	}
+    for (uint i = 0; i < pSector->uNumLights; ++i)
+    {
+      v16 = pIndoor->pLights + pSector->pLights[i];
+      if (~v16->uAtributes & 8)
+      {
+        v17 = abs(v16->vPosition.x - x);
+        if (v17 <= v16->uRadius)
+        {
+          v42 = abs(v16->vPosition.y - y);
+          if (v42 <= v16->uRadius)
+          {
+            v39 = abs(v16->vPosition.z - z);
+            if (v39 <= v16->uRadius)
+            {
+              v44 = int_get_vector_length(v17, v42, v39);
+              v24 = v16->uRadius;
+              if ((signed int)v44 < v24)
+                v6 += ((unsigned __int64)(30i64 * (signed int)(v44 << 16) / v24) >> 16) - 30;
+            }
+          }
+        }
+      }
+    }
+  }
 
-	for (uint i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i)
-	{
-		//StationaryLight* p = &pStationaryLightsStack->pLights[i];
-		v26 = abs(pStationaryLightsStack->pLights[i].vPosition.x - x);
-		if (v26 <= pStationaryLightsStack->pLights[i].uRadius)
-		{
-			v40 = abs(pStationaryLightsStack->pLights[i].vPosition.y - y);
-			if (v40 <= pStationaryLightsStack->pLights[i].uRadius)
-			{
-				v37 = abs(pStationaryLightsStack->pLights[i].vPosition.z - z);
-				if (v37 <= pStationaryLightsStack->pLights[i].uRadius)
-				{
-					v45 = int_get_vector_length(v26, v40, v37);
-					//v33 = pStationaryLightsStack->pLights[i].uRadius;
-					if ((signed int)v45 < pStationaryLightsStack->pLights[i].uRadius)
-						v6 += ((unsigned __int64)(30i64 * (signed int)(v45 << 16) / pStationaryLightsStack->pLights[i].uRadius) >> 16) - 30;
-				}
-			}
-		}
-	}
+  for (uint i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i)
+  {
+    //StationaryLight* p = &pStationaryLightsStack->pLights[i];
+    v26 = abs(pStationaryLightsStack->pLights[i].vPosition.x - x);
+    if (v26 <= pStationaryLightsStack->pLights[i].uRadius)
+    {
+      v40 = abs(pStationaryLightsStack->pLights[i].vPosition.y - y);
+      if (v40 <= pStationaryLightsStack->pLights[i].uRadius)
+      {
+        v37 = abs(pStationaryLightsStack->pLights[i].vPosition.z - z);
+        if (v37 <= pStationaryLightsStack->pLights[i].uRadius)
+        {
+          v45 = int_get_vector_length(v26, v40, v37);
+          //v33 = pStationaryLightsStack->pLights[i].uRadius;
+          if ((signed int)v45 < pStationaryLightsStack->pLights[i].uRadius)
+            v6 += ((unsigned __int64)(30i64 * (signed int)(v45 << 16) / pStationaryLightsStack->pLights[i].uRadius) >> 16) - 30;
+        }
+      }
+    }
+  }
 
-	if (v6 <= 31)
-	{
-		if (v6 < 0)
-			v6 = 0;
-	}
-	else
-		v6 = 31;
-	return v6;
+  if (v6 <= 31)
+  {
+    if (v6 < 0)
+      v6 = 0;
+  }
+  else
+    v6 = 31;
+  return v6;
 }
 
 int  _46E44E_collide_against_faces_and_portals(unsigned int b1)

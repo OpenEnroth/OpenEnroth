@@ -480,7 +480,8 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID, IndoorCameraD3D_Vec4 *pV
                     | (((248 - (HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel) << 3))
                         | ((248 - (HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel) << 3)) << 8)) << 8);
                 sub_4B0E07(uFaceID);
-                pEngine->pLightmapBuilder->ApplyLights_IndoorFace(uFaceID);
+// ToDo: restore this
+//                pEngine->pLightmapBuilder->ApplyLights_IndoorFace(uFaceID);
                 pDecalBuilder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
                 pIndoorCameraD3D->ViewTransfrom_OffsetUV(static_vertices_F7B628, uNumVerticesa, array_507D30, &Lights);
                 pIndoorCameraD3D->Project(array_507D30, uNumVerticesa, 0);

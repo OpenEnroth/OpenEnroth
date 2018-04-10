@@ -529,17 +529,15 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor)
         return false;
 }
 
-//----- (0044EE30) --------------------------------------------------------
-bool Engine::AlterGamma_ODM(ODMFace *pFace, signed int *pColor)
-{
-    if (uFlags2 & GAME_FLAGS_2_SATURATE_LIGHTMAPS &&
-        pFace->uAttributes & FACE_CAN_SATURATE_COLOR)
-    {
-        *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
-        return true;
-    }
-    else
-        return false;
+bool Engine::AlterGamma_ODM(ODMFace *pFace, int *pColor) {
+  if (uFlags2 & GAME_FLAGS_2_SATURATE_LIGHTMAPS &&
+    pFace->uAttributes & FACE_CAN_SATURATE_COLOR)
+  {
+    *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
+    return true;
+  } else {
+    return false;
+  }
 }
 
 
