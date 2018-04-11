@@ -1,4 +1,4 @@
-# Might and Magic Trilogy [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/82qNZ) 
+# Might and Magic Trilogy [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq) 
 Might and Magic VI-VIII engine remake using original data & code
 
 # Getting Started
