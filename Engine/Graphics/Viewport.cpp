@@ -25,6 +25,7 @@
 #include "Level/Decoration.h"
 
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIDialogue.h"
 
 //----- (004C0262) --------------------------------------------------------
 void Viewport::SetScreen( signed int sTL_X, signed int sTL_Y, signed int sBR_X, signed int sBR_Y )

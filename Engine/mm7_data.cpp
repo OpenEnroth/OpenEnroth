@@ -925,7 +925,7 @@ std::array<const char *, 7> pMerchantsIdentifyPhrases;
 char *pTransitionsTXT_Raw;
 char *pAutonoteTXT_Raw;
 char *pQuestsTXT_Raw;
-unsigned int    uNumTerrainNormals;
+uint32_t    uNumTerrainNormals;
 struct Vec3_float_ *pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2>  pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2>    pTerrainSomeOtherData;

@@ -6,6 +6,7 @@
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/BSPModel.h"
 
 /*  358 */
 #pragma pack(push, 1)
@@ -185,7 +186,7 @@ struct stru141_actor_collision_object
 	int field_6C;
 	int field_70;
 	unsigned int uSectorID;
-	unsigned int uFaceID;
+	unsigned int pid;
 	int field_7C;
 	int field_80;
 	int field_84;
@@ -493,40 +494,6 @@ struct BLVMapOutline //0C
 };
 #pragma pack(pop)
 
-
-#define FACE_PORTAL             0x00000001 // portal/two-sided
-#define FACE_CAN_SATURATE_COLOR 0x00000002
-#define FACE_FLOW_DIAGONAL      0x00000004 // Diagonal flow of the lava or water
-#define FACE_UNKNOW5            0x00000006
-#define FACE_UNKNOW6            0x00000008
-#define FACE_FLUID              0x00000010 // wavy animated water or lava
-#define FACE_FLOW_VERTICAL      0x00000020 // Vertical flow of the lava or water
-#define FACE_DONT_CACHE_TEXTURE 0x00000040 // do not load face texture if it isn't loaded already
-#define FACE_UNKNOW7            0x00000080
-#define FACE_XY_PLANE           0x00000100
-#define FACE_XZ_PLANE           0x00000200
-#define FACE_YZ_PLANE           0x00000400
-#define FACE_FLOW_HORIZONTAL    0x00000800 // Horizontal flow of the lava or water
-#define FACE_HAS_EVENT_HINT     0x00001000
-#define FACE_INVISIBLE          0x00002000
-#define FACE_TEXTURE_FRAME      0x00004000 // Texture ID is a frameset from TextureFrameTable, otherwise BitmapID
-#define FACE_OUTLINED           0x00010000 // outline face edges
-#define FACE_INDOOR_DOOR        0x00020000
-#define FACE_TEXTURE_FLOW       0x00040000 // The texture moves slowly. For horizontal facets only.
-#define FACE_HAS_EVENT          0x00100000
-#define FACE_INDOOR_CARPET      0x00200000
-#define FACE_INDOOR_SKY         0x00400000
-#define FACE_UNKNOW3            0x00800000
-#define FACE_UNKNOW4            0x01000000
-#define FACE_CLICKABLE          0x02000000 // Event can be triggered by clicking on the facet.
-#define FACE_PRESSURE_PLATE     0x04000000 // Event can be triggered by stepping on the facet.
-#define FACE_INDICATE           0x06000000 // Event can be triggered by indicating on the facet.
-#define FACE_UNKNOW1            0x08000000
-#define FACE_UNKNOW2            0x10000000
-#define FACE_ETHEREAL           0x20000000 // Untouchable. You can pass through it.
-#define FACE_INDOOR_LAVA        0x40000000
-#define FACE_PICKED             0x80000000
-
 /*   93 */
 #pragma pack(push, 1)
 struct BLVFace  //60h
@@ -618,46 +585,46 @@ struct BLVFaceExtra  //24h
 #pragma pack(push, 1)
 struct BLVSector //0x74
 {
-    int field_0;
-    unsigned __int16 uNumFloors;
-    __int16 field_6;
-    unsigned __int16 *pFloors;
-    unsigned __int16 uNumWalls;
-    __int16 field_E;
-    unsigned __int16 *pWalls;
-    unsigned __int16 uNumCeilings;
-    __int16 field_16;
-    unsigned __int16 *pCeilings;
-    unsigned __int16 uNumFluids;
-    __int16 field_1E;
-    unsigned __int16 *pFluids;
-    __int16 uNumPortals;
-    __int16 field_26;
-    unsigned __int16 *pPortals;
-    unsigned __int16 uNumFaces;
-    unsigned __int16 uNumNonBSPFaces;
-    unsigned __int16 *pFaceIDs;
-    unsigned __int16 uNumCylinderFaces;
-    __int16 field_36;
-    int pCylinderFaces;
-    unsigned __int16 uNumCogs;
-    __int16 field_3E;
-    unsigned __int16 *pCogs;
-    unsigned __int16 uNumDecorations;
-    __int16 field_46;
-    unsigned __int16 *pDecorationIDs;
-    unsigned __int16 uNumMarkers;
-    __int16 field_4E;
-    unsigned __int16 *pMarkers;
-    unsigned __int16 uNumLights;
-    __int16 field_56;
-    unsigned __int16 *pLights;
-    __int16 uWaterLevel;
-    __int16 uMistLevel;
-    __int16 uLightDistanceMultiplier;
-    __int16 uMinAmbientLightLevel;
-    __int16 uFirstBSPNode;
-    __int16 exit_tag;
+    int32_t field_0;
+    uint16_t uNumFloors;
+    int16_t field_6;
+    uint16_t *pFloors;
+    uint16_t uNumWalls;
+    int16_t field_E;
+    uint16_t *pWalls;
+    uint16_t uNumCeilings;
+    int16_t field_16;
+    uint16_t *pCeilings;
+    uint16_t uNumFluids;
+    int16_t field_1E;
+    uint16_t *pFluids;
+    int16_t uNumPortals;
+    int16_t field_26;
+    uint16_t *pPortals;
+    uint16_t uNumFaces;
+    uint16_t uNumNonBSPFaces;
+    uint16_t *pFaceIDs;
+    uint16_t uNumCylinderFaces;
+    int16_t field_36;
+    int32_t pCylinderFaces;
+    uint16_t uNumCogs;
+    int16_t field_3E;
+    uint16_t *pCogs;
+    uint16_t uNumDecorations;
+    int16_t field_46;
+    uint16_t *pDecorationIDs;
+    uint16_t uNumMarkers;
+    int16_t field_4E;
+    uint16_t *pMarkers;
+    uint16_t uNumLights;
+    int16_t field_56;
+    uint16_t *pLights;
+    int16_t uWaterLevel;
+    int16_t uMistLevel;
+    int16_t uLightDistanceMultiplier;
+    int16_t uMinAmbientLightLevel;
+    int16_t uFirstBSPNode;
+    int16_t exit_tag;
     BBox_short_ pBounding;
 };
 #pragma pack(pop)

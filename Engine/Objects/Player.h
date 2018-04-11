@@ -560,7 +560,7 @@ struct Player
   PLAYER_SKILL_TYPE GetSkillIdxByOrder(signed int order);
   void DecreaseAttribute(int eAttribute);
   void IncreaseAttribute(int eAttribute);
-  void Player::Zero();
+  void Zero();
   unsigned int GetStatColor(int uStat);
   bool DiscardConditionIfLastsLongerThan(unsigned int uCondition, GameTime time);
   int SelectPhrasesTransaction(ItemGen *pItem, int building_type, int BuildID_2Events, int a5);

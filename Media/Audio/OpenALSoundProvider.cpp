@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstddef>
 #include <cstring>
+#include <cmath>
 
 #include <queue>
 #include <memory>
@@ -317,7 +318,6 @@ void OpenALSoundProvider::PlayTrack16(TrackBuffer *buffer, bool loop, bool wait)
   int status;
   alGetSourcei(buffer->source_id, AL_SOURCE_STATE, (int *)&status);
   if (status == AL_PLAYING) {
-    Error("Already playing");
     return;
   }
 
@@ -625,7 +625,7 @@ PAudioTrack CreateAudioTrack(const std::string &file_path) {
     track = nullptr;
   }
 
-  return std::reinterpret_pointer_cast<IAudioTrack, AudioTrackS16>(track);
+  return std::dynamic_pointer_cast<IAudioTrack, AudioTrackS16>(track);
 }
 
 class AudioSample16 {
@@ -806,5 +806,5 @@ PAudioSample CreateAudioSample(PMemBuffer buffer) {
     sample = nullptr;
   }
 
-  return std::reinterpret_pointer_cast<IAudioSample, AudioSample16>(sample);
+  return std::dynamic_pointer_cast<IAudioSample, AudioSample16>(sample);
 }

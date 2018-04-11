@@ -1,7 +1,6 @@
-#define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
+#include "Engine/SaveLoad.h"
+
 #include <stdlib.h>
-#include <crtdbg.h>
 #include <io.h>
 #include <direct.h>
 #include <windows.h>
@@ -12,7 +11,6 @@
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
 #include "Engine/ZlibWrapper.h"
-#include "Engine/SaveLoad.h"
 #include "Engine/Party.h"
 #include "Engine/LOD.h"
 #include "Engine/stru123.h"
@@ -534,9 +532,10 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
         else//for Outdoor
         {
             pOutdoor->ddm.uNumFacesInBModels = 0;
-            for (int i = 0; i < pOutdoor->uNumBModels; ++i)
-                pOutdoor->ddm.uNumFacesInBModels += pOutdoor->pBModels[i].uNumFaces;
-            pOutdoor->ddm.uNumBModels = pOutdoor->uNumBModels;
+            for (BSPModel &model : pOutdoor->pBModels) {
+              pOutdoor->ddm.uNumFacesInBModels += model.pFaces.size();
+            }
+            pOutdoor->ddm.uNumBModels = pOutdoor->pBModels.size();
             pOutdoor->ddm.uNumDecorations = uNumLevelDecorations;
             memcpy(data_write_pos, &pOutdoor->ddm, sizeof(DDM_DLV_Header));//0x28
             data_write_pos += sizeof(DDM_DLV_Header);
@@ -544,15 +543,14 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld)
             data_write_pos += 968;
             memcpy(data_write_pos, pOutdoor->uPartiallyRevealedCellOnMap, 0x3C8);
             data_write_pos += 968;
-            for (int i = 0; i < pOutdoor->uNumBModels; ++i)
-                for (int j = 0; j < pOutdoor->pBModels[i].uNumFaces; ++j)//*(int *)&pOutdoor->pBModels->pModelName[v24]; ++j)
-                {
-                    memcpy(data_write_pos, &(pOutdoor->pBModels[i].pFaces[j].uAttributes), 4);
-                    data_write_pos += 4;
-                }
+            for (BSPModel &model : pOutdoor->pBModels) {
+              for (ODMFace &face : model.pFaces) {
+                memcpy(data_write_pos, &(face.uAttributes), 4);
+                data_write_pos += 4;
+              }
+            }
 
-            for (int i = 0; i < (signed int)uNumLevelDecorations; ++i)
-            {
+            for (size_t i = 0; i < uNumLevelDecorations; ++i) {
                 memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
                 data_write_pos += 2;
             }

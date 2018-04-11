@@ -480,7 +480,8 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID, IndoorCameraD3D_Vec4 *pV
                     | (((248 - (HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel) << 3))
                         | ((248 - (HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel) << 3)) << 8)) << 8);
                 sub_4B0E07(uFaceID);
-                pEngine->pLightmapBuilder->ApplyLights_IndoorFace(uFaceID);
+// ToDo: restore this
+//                pEngine->pLightmapBuilder->ApplyLights_IndoorFace(uFaceID);
                 pDecalBuilder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
                 pIndoorCameraD3D->ViewTransfrom_OffsetUV(static_vertices_F7B628, uNumVerticesa, array_507D30, &Lights);
                 pIndoorCameraD3D->Project(array_507D30, uNumVerticesa, 0);
@@ -1383,12 +1384,8 @@ bool IndoorLocation::Load(const String &filename, int num_days_played, int respa
     return 0;
 }
 
-
-//----- (0049AC17) --------------------------------------------------------
-int IndoorLocation::GetSector(int sX, int sY, int sZ)
-{
-  int v4; // esi@1
-  signed int v25; // edx@21
+int IndoorLocation::GetSector(int sX, int sY, int sZ) {
+  int v25; // edx@21
   int v26; // ebx@23
   int v37; // edi@38
   int pSectorID; // ebx@40
@@ -1398,19 +1395,16 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ)
   int v51; // [sp+F0h] [bp-24h]@9
   int v53; // [sp+F8h] [bp-1Ch]@10
   int v54; // [sp+FCh] [bp-18h]@16
-  int v55; // [sp+100h] [bp-14h]@1
-  int v59; // [sp+110h] [bp-4h]@16
 
-  v4 = 0;
+  int v4 = 0;
   v43[0] = 0;
 
-  v55 = 0;
+  int v55 = 0;
 
   if (uNumSectors < 2)
     return 0;
 
-  for (uint i = 1; i < uNumSectors; ++i)
-  {
+  for (uint i = 1; i < uNumSectors; ++i) {
     BLVSector* pSector = &pSectors[i];
 
     if (pSector->pBounding.x1 > sX || pSector->pBounding.x2 < sX ||
@@ -1424,8 +1418,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ)
       continue;
 
 
-    for (uint j = 0; j < v51; ++j)
-    {
+    for (uint j = 0; j < v51; ++j) {
       uint uFaceID;
       if (j < pSector->uNumFloors)
         uFaceID = pSector->pFloors[j];
@@ -1440,9 +1433,8 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ)
       v54 = 0;
       v50 = pVertices[pFace->pVertexIDs[0]].y >= sY;
 
-      for (uint k = 1; k <= pFace->uNumVertices; k++)
-      {
-        v59 = v50;
+      for (uint k = 1; k <= pFace->uNumVertices; k++) {
+        bool v59 = v50;
 
         if (v54 >= 2)
           break;
@@ -1540,16 +1532,10 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ)
   }
   return pSectorID;
 }
-// 49AC17: using guessed type int var_108[50];
-
 
 //----- (00498A41) --------------------------------------------------------
-void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3)
-{
-  Vec3_float_ a1; // [sp+Ch] [bp-Ch]@8
-
-  if ( this->uPolygonType == POLYGON_VerticalWall )
-  {
+void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
+  if (this->uPolygonType == POLYGON_VerticalWall) {
     a2->x = -this->pFacePlane_old.vNormal.y;
     a2->y = this->pFacePlane_old.vNormal.x;
     a2->z = 0;
@@ -1558,9 +1544,7 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3)
     a3->y = 0;
     a3->z = 0xFFFF0000u;
 
-  }
-  else if ( this->uPolygonType == POLYGON_Floor || this->uPolygonType == POLYGON_Ceiling )
-  {
+  } else if (this->uPolygonType == POLYGON_Floor || this->uPolygonType == POLYGON_Ceiling) {
     a2->x = 0x10000u;
     a2->y = 0;
     a2->z = 0;
@@ -1569,11 +1553,9 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3)
     a3->y = 0xFFFF0000u;
     a3->z = 0;
 
-  }
-  else if ( this->uPolygonType == POLYGON_InBetweenFloorAndWall || this->uPolygonType == POLYGON_InBetweenCeilingAndWall )
-  {
-    if ( abs(this->pFacePlane_old.vNormal.z) < 46441 )
-    {
+  } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall || this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
+    if (abs(this->pFacePlane_old.vNormal.z) < 46441) {
+      Vec3_float_ a1;
       a1.x = (double)-this->pFacePlane_old.vNormal.y;
       a1.y = (double)this->pFacePlane_old.vNormal.x;
       a1.z = 0.0;
@@ -1587,28 +1569,23 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3)
       a3->z = 0xFFFF0000u;
       a3->x = 0;
 
+    } else {
+      a2->x = 0x10000u;
+      a2->y = 0;
+      a2->z = 0;
+
+      a3->x = 0;
+      a3->y = 0xFFFF0000u;
+      a3->z = 0;
     }
-	else
-	{
-		a2->x = 0x10000u;
-		a2->y = 0;
-		a2->z = 0;
-
-		a3->x = 0;
-		a3->y = 0xFFFF0000u;
-		a3->z = 0;
-	}
-
   }
-//LABEL_12:
-  if ( this->uAttributes & FACE_UNKNOW3 )
-  {
+  //LABEL_12:
+  if (this->uAttributes & FACE_UNKNOW3) {
     a2->x = -a2->x;
     a2->y = -a2->y;
     a2->z = -a2->z;
   }
-  if ( this->uAttributes & FACE_UNKNOW4 )
-  {
+  if (this->uAttributes & FACE_UNKNOW4) {
     a3->x = -a3->x;
     a3->y = -a3->y;
     a3->z = -a3->z;
@@ -1616,235 +1593,230 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3)
   return;
 }
 
-//----- (0044C23B) --------------------------------------------------------
-bool BLVFaceExtra::HasEventint()
-{
-   signed int event_index; // eax@1
-  _evt_raw* start_evt;
-  _evt_raw* end_evt;
-
-  event_index = 0;
-  if ( (uLevelEVT_NumEvents - 1) <= 0 )
+bool BLVFaceExtra::HasEventint() {
+  int event_index = 0;
+  if ((uLevelEVT_NumEvents - 1) <= 0) {
     return false;
-  while ( pLevelEVT_Index[event_index].uEventID != this->uEventID )
-  {
+  }
+  while (pLevelEVT_Index[event_index].uEventID != this->uEventID) {
     ++event_index;
-    if ( event_index >= (signed int)(uLevelEVT_NumEvents - 1) )
+    if (event_index >= (signed int)(uLevelEVT_NumEvents - 1))
       return false;
   }
-  end_evt=(_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index+1].uEventOffsetInEVT];
-  start_evt=(_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
-  if ( (end_evt->_e_type != EVENT_Exit) || (start_evt->_e_type!= EVENT_MouseOver) )
+  _evt_raw *end_evt = (_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index + 1].uEventOffsetInEVT];
+  _evt_raw *start_evt = (_evt_raw*)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
+  if ((end_evt->_e_type != EVENT_Exit) || (start_evt->_e_type != EVENT_MouseOver)) {
     return false;
-  else
+  } else {
     return true;
+  }
 }
 
 //----- (0046F228) --------------------------------------------------------
 void  BLV_UpdateDoors()
 {
-    BLVFace *face; // ebx@24
-    Vec3_short_ *v17; // esi@24
-    int v18; // eax@24
-    int v19; // edx@24
-    signed int v20; // eax@24
-    int v24; // esi@25
-    int v25; // eax@25
-    signed __int64 v27; // qtt@27
-    BLVFaceExtra *v28; // esi@32
-    int v32; // eax@34
-    Vec3_short_ *v34; // eax@35
-    int v35; // ecx@35
-    int v36; // edx@35
-    signed int v37; // eax@35
-    signed int v38; // edx@35
-    int v39; // eax@35
-    int v40; // edx@35
-    Vec3_short_ *v43; // edi@36
-    int v57; // eax@58
-    Vec3_int_ v67;
-    Vec3_int_ v70;
-    int v73; // [sp+20h] [bp-44h]@24
-    int v75; // [sp+28h] [bp-3Ch]@36
-    int v76; // [sp+2Ch] [bp-38h]@36
-    int v77; // [sp+30h] [bp-34h]@36
-    int v82; // [sp+44h] [bp-20h]@35
-    int v83; // [sp+48h] [bp-1Ch]@34
-    int v84; // [sp+4Ch] [bp-18h]@34
-    SoundID eDoorSoundID; // [sp+54h] [bp-10h]@1
-    int v88; // [sp+5Ch] [bp-8h]@18
-    int v89; // [sp+60h] [bp-4h]@6
+  BLVFace *face; // ebx@24
+  Vec3_short_ *v17; // esi@24
+  int v18; // eax@24
+  int v19; // edx@24
+  signed int v20; // eax@24
+  int v24; // esi@25
+  int v25; // eax@25
+  signed __int64 v27; // qtt@27
+  BLVFaceExtra *v28; // esi@32
+  int v32; // eax@34
+  Vec3_short_ *v34; // eax@35
+  int v35; // ecx@35
+  int v36; // edx@35
+  signed int v37; // eax@35
+  signed int v38; // edx@35
+  int v39; // eax@35
+  int v40; // edx@35
+  Vec3_short_ *v43; // edi@36
+  int v57; // eax@58
+  Vec3_int_ v67;
+  Vec3_int_ v70;
+  int v73; // [sp+20h] [bp-44h]@24
+  int v75; // [sp+28h] [bp-3Ch]@36
+  int v76; // [sp+2Ch] [bp-38h]@36
+  int v77; // [sp+30h] [bp-34h]@36
+  int v82; // [sp+44h] [bp-20h]@35
+  int v83; // [sp+48h] [bp-1Ch]@34
+  int v84; // [sp+4Ch] [bp-18h]@34
+  SoundID eDoorSoundID; // [sp+54h] [bp-10h]@1
+  int v88; // [sp+5Ch] [bp-8h]@18
+  int v89; // [sp+60h] [bp-4h]@6
 
-    eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
-    for (uint i = 0; i < pIndoor->uNumDoors; ++i)
+  eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
+  for (uint i = 0; i < pIndoor->uNumDoors; ++i)
+  {
+    BLVDoor* door = &pIndoor->pDoors[i];
+    if (door->uState == BLVDoor::Closed || door->uState == BLVDoor::Open)
     {
-        BLVDoor* door = &pIndoor->pDoors[i];
-        if (door->uState == BLVDoor::Closed || door->uState == BLVDoor::Open)
-        {
-            door->uAttributes &= 0xFFFFFFFDu;//~0x2
-            continue;
-        }
-        door->uTimeSinceTriggered += pEventTimer->uTimeElapsed;
-        if (door->uState == BLVDoor::Opening)
-        {
-            v89 = (signed int)(door->uTimeSinceTriggered * door->uCloseSpeed) / 128;
-            if (v89 >= door->uMoveLength)
-            {
-                v89 = door->uMoveLength;
-                door->uState = BLVDoor::Open;
-                if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0, 0, 0);
-                //goto LABEL_18;
-            }
-            else if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
-                pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0, 0, 0);
-        }
-        else
-        {
-            signed int v5 = (signed int)(door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
-            if (v5 >= door->uMoveLength)
-            {
-                v89 = 0;
-                door->uState = BLVDoor::Closed;
-                if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0, 0, 0);
-                //goto LABEL_18;
-            }
-            else
-            {
-                v89 = door->uMoveLength - v5;
-                if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
-                    pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0, 0, 0);
-            }
-        }
-
-        //LABEL_18:
-        for (uint j = 0; j < door->uNumVertices; ++j)
-        {
-            pIndoor->pVertices[door->pVertexIDs[j]].x = fixpoint_mul(door->vDirection.x, v89) + door->pXOffsets[j];
-            pIndoor->pVertices[door->pVertexIDs[j]].y = fixpoint_mul(door->vDirection.y, v89) + door->pYOffsets[j];
-            pIndoor->pVertices[door->pVertexIDs[j]].z = fixpoint_mul(door->vDirection.z, v89) + door->pZOffsets[j];
-        }
-        for (v88 = 0; v88 < door->uNumFaces; ++v88)
-        {
-            face = &pIndoor->pFaces[door->pFaceIDs[v88]];
-            v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
-            v18 = face->pFacePlane_old.vNormal.y;
-            v73 = *(int *)&v17->x;
-            v19 = face->pFacePlane_old.vNormal.z;
-            v20 = -(v19 * (int)v17->z + (signed __int16)v73 * face->pFacePlane_old.vNormal.x + HEXRAYS_SHIWORD(v73) * v18);
-            face->pFacePlane_old.dist = v20;
-            face->pFacePlane.dist = -((double)v17->z * face->pFacePlane.vNormal.z
-                + (double)v17->y * face->pFacePlane.vNormal.y
-                + (double)v17->x * face->pFacePlane.vNormal.x);
-            if (v19)
-            {
-                v24 = abs(v20 >> 15);
-                v25 = abs(face->pFacePlane_old.vNormal.z);
-                if (v24 > v25)
-                    Error("Door Error\ndoor id: %i\nfacet no: %i\n\nOverflow dividing facet->d [%i] by facet->nz [%i]",
-                        door->uDoorID, door->pFaceIDs[v88], face->pFacePlane_old.dist, face->pFacePlane_old.vNormal.z);
-                HEXRAYS_LODWORD(v27) = face->pFacePlane_old.dist << 16;
-                HEXRAYS_HIDWORD(v27) = face->pFacePlane_old.dist >> 16;
-                face->zCalc3 = -v27 / face->pFacePlane_old.vNormal.z;
-            }
-            //if ( face->uAttributes & FACE_TEXTURE_FLOW || render->pRenderD3D )
-            face->_get_normals(&v70, &v67);
-            v28 = &pIndoor->pFaceExtras[face->uFaceExtraID];
-            /*if ( !render->pRenderD3D )
-            {
-              if ( !(face->uAttributes & FACE_TEXTURE_FLOW) )
-                continue;
-              v83 = (unsigned __int64)(door->vDirection.x * (signed __int64)v70.x) >> 16;
-              v85 = (unsigned __int64)(door->vDirection.y * (signed __int64)v70.y) >> 16;
-              v84 = (unsigned __int64)(door->vDirection.z * (signed __int64)v70.z) >> 16;
-              v29 = v89;
-              v28->sTextureDeltaU = -((v83 + v85 + v84) * (signed __int64)v89) >> 16;
-              v85 = (unsigned __int64)(door->vDirection.x * (signed __int64)v67.x) >> 16;
-              v83 = (unsigned __int64)(door->vDirection.y * (signed __int64)v67.y) >> 16;
-              v84 = (unsigned __int64)(door->vDirection.z * (signed __int64)v67.z) >> 16;
-              v31 = (v85 + v83 + v84) * (signed __int64)v29;
-              v32 = v31 >> 16;
-              v57 = -v32;
-              v28->sTextureDeltaV = v57;
-              v28->sTextureDeltaU += door->pDeltaUs[v88];
-              v28->sTextureDeltaV = v57 + door->pDeltaVs[v88];
-              continue;
-            }*/
-            v28->sTextureDeltaU = 0;
-            v28->sTextureDeltaV = 0;
-            v34 = &pIndoor->pVertices[face->pVertexIDs[0]];
-            v35 = v34->z;
-            v36 = v34->y;
-            v82 = v34->x;
-            v37 = v70.x * v82 + v70.y * v36 + v70.z * v35;
-            v38 = v67.x * v82 + v67.y * v36 + v67.z * v35;
-            v39 = v37 >> 16;
-            *face->pVertexUIDs = v39;
-            v40 = v38 >> 16;
-            *face->pVertexVIDs = v40;
-            v84 = v39;
-            v82 = v40;
-            for (uint j = 1; j < face->uNumVertices; ++j)
-            {
-                v43 = &pIndoor->pVertices[face->pVertexIDs[j]];
-                v76 = ((__int64)v70.z * v43->z + (__int64)v70.x * v43->x + (__int64)v70.y * v43->y) >> 16;
-                v77 = ((__int64)v67.x * v43->x + (__int64)v67.y * v43->y + (__int64)v43->z * v67.z) >> 16;
-                if (v76 < v39)
-                    v39 = v76;
-                if (v77 < v40)
-                    v40 = v77;
-                if (v76 > v84)
-                    v84 = v76;
-                if (v77 > v82)
-                    v82 = v77;
-                face->pVertexUIDs[j] = v76;
-                face->pVertexVIDs[j] = v77;
-            }
-            if (face->uAttributes & 0x00001000)
-                v28->sTextureDeltaU -= v39;
-            else
-            {
-                if (face->uAttributes & 0x8000)
-                {
-                    if (face->resource)
-                    {
-                        //v28->sTextureDeltaU -= v84 + pBitmaps_LOD->pTextures[face->uBitmapID].uTextureWidth;
-                        v28->sTextureDeltaU -= v84 + ((Texture *)face->resource)->GetWidth();
-                    }
-                }
-            }
-            if (face->uAttributes & FACE_UNKNOW6)
-                v28->sTextureDeltaV -= v40;
-            else
-            {
-                if (face->uAttributes & FACE_INDOOR_DOOR)
-                {
-                    v28->sTextureDeltaV -= v84 + ((Texture *)face->resource)->GetHeight();
-                    //if (face->uBitmapID != -1)
-                    //    v28->sTextureDeltaV -= v82 + pBitmaps_LOD->GetTexture(face->uBitmapID)->uTextureHeight;
-                }
-            }
-            if (face->uAttributes & FACE_TEXTURE_FLOW)
-            {
-                v84 = fixpoint_mul(door->vDirection.x, v70.x);
-                v82 = fixpoint_mul(door->vDirection.y, v70.y);
-                v83 = fixpoint_mul(door->vDirection.z, v70.z);
-                v75 = v84 + v82 + v83;
-                v82 = fixpoint_mul(v75, v89);
-                v28->sTextureDeltaU = -v82;
-                v84 = fixpoint_mul(door->vDirection.x, v67.x);
-                v82 = fixpoint_mul(door->vDirection.y, v67.y);
-                v83 = fixpoint_mul(door->vDirection.z, v67.z);
-                v75 = v84 + v82 + v83;
-                v32 = fixpoint_mul(v75, v89);
-                v57 = -v32;
-                v28->sTextureDeltaV = v57;
-                v28->sTextureDeltaU += door->pDeltaUs[v88];
-                v28->sTextureDeltaV = v57 + door->pDeltaVs[v88];
-            }
-        }
+      door->uAttributes &= 0xFFFFFFFDu;//~0x2
+      continue;
     }
+    door->uTimeSinceTriggered += pEventTimer->uTimeElapsed;
+    if (door->uState == BLVDoor::Opening)
+    {
+      v89 = (signed int)(door->uTimeSinceTriggered * door->uCloseSpeed) / 128;
+      if (v89 >= door->uMoveLength)
+      {
+        v89 = door->uMoveLength;
+        door->uState = BLVDoor::Open;
+        if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices != 0)
+          pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0, 0, 0);
+        //goto LABEL_18;
+      }
+      else if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
+        pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0, 0, 0);
+    }
+    else
+    {
+      signed int v5 = (signed int)(door->uTimeSinceTriggered * door->uOpenSpeed) / 128;
+      if (v5 >= door->uMoveLength)
+      {
+        v89 = 0;
+        door->uState = BLVDoor::Closed;
+        if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices != 0)
+          pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0, 0, 0);
+        //goto LABEL_18;
+      }
+      else
+      {
+        v89 = door->uMoveLength - v5;
+        if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
+          pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0, 0, 0);
+      }
+    }
+
+    //LABEL_18:
+    for (uint j = 0; j < door->uNumVertices; ++j)
+    {
+      pIndoor->pVertices[door->pVertexIDs[j]].x = fixpoint_mul(door->vDirection.x, v89) + door->pXOffsets[j];
+      pIndoor->pVertices[door->pVertexIDs[j]].y = fixpoint_mul(door->vDirection.y, v89) + door->pYOffsets[j];
+      pIndoor->pVertices[door->pVertexIDs[j]].z = fixpoint_mul(door->vDirection.z, v89) + door->pZOffsets[j];
+    }
+    for (v88 = 0; v88 < door->uNumFaces; ++v88)
+    {
+      face = &pIndoor->pFaces[door->pFaceIDs[v88]];
+      v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
+      v18 = face->pFacePlane_old.vNormal.y;
+      v73 = *(int *)&v17->x;
+      v19 = face->pFacePlane_old.vNormal.z;
+      v20 = -(v19 * (int)v17->z + (signed __int16)v73 * face->pFacePlane_old.vNormal.x + HEXRAYS_SHIWORD(v73) * v18);
+      face->pFacePlane_old.dist = v20;
+      face->pFacePlane.dist = -((double)v17->z * face->pFacePlane.vNormal.z
+        + (double)v17->y * face->pFacePlane.vNormal.y
+        + (double)v17->x * face->pFacePlane.vNormal.x);
+      if (v19)
+      {
+        v24 = abs(v20 >> 15);
+        v25 = abs(face->pFacePlane_old.vNormal.z);
+        if (v24 > v25)
+          Error("Door Error\ndoor id: %i\nfacet no: %i\n\nOverflow dividing facet->d [%i] by facet->nz [%i]",
+            door->uDoorID, door->pFaceIDs[v88], face->pFacePlane_old.dist, face->pFacePlane_old.vNormal.z);
+        HEXRAYS_LODWORD(v27) = face->pFacePlane_old.dist << 16;
+        HEXRAYS_HIDWORD(v27) = face->pFacePlane_old.dist >> 16;
+        face->zCalc3 = -v27 / face->pFacePlane_old.vNormal.z;
+      }
+      //if ( face->uAttributes & FACE_TEXTURE_FLOW || render->pRenderD3D )
+      face->_get_normals(&v70, &v67);
+      v28 = &pIndoor->pFaceExtras[face->uFaceExtraID];
+      /*if ( !render->pRenderD3D )
+      {
+      if ( !(face->uAttributes & FACE_TEXTURE_FLOW) )
+      continue;
+      v83 = (unsigned __int64)(door->vDirection.x * (signed __int64)v70.x) >> 16;
+      v85 = (unsigned __int64)(door->vDirection.y * (signed __int64)v70.y) >> 16;
+      v84 = (unsigned __int64)(door->vDirection.z * (signed __int64)v70.z) >> 16;
+      v29 = v89;
+      v28->sTextureDeltaU = -((v83 + v85 + v84) * (signed __int64)v89) >> 16;
+      v85 = (unsigned __int64)(door->vDirection.x * (signed __int64)v67.x) >> 16;
+      v83 = (unsigned __int64)(door->vDirection.y * (signed __int64)v67.y) >> 16;
+      v84 = (unsigned __int64)(door->vDirection.z * (signed __int64)v67.z) >> 16;
+      v31 = (v85 + v83 + v84) * (signed __int64)v29;
+      v32 = v31 >> 16;
+      v57 = -v32;
+      v28->sTextureDeltaV = v57;
+      v28->sTextureDeltaU += door->pDeltaUs[v88];
+      v28->sTextureDeltaV = v57 + door->pDeltaVs[v88];
+      continue;
+      }*/
+      v28->sTextureDeltaU = 0;
+      v28->sTextureDeltaV = 0;
+      v34 = &pIndoor->pVertices[face->pVertexIDs[0]];
+      v35 = v34->z;
+      v36 = v34->y;
+      v82 = v34->x;
+      v37 = v70.x * v82 + v70.y * v36 + v70.z * v35;
+      v38 = v67.x * v82 + v67.y * v36 + v67.z * v35;
+      v39 = v37 >> 16;
+      *face->pVertexUIDs = v39;
+      v40 = v38 >> 16;
+      *face->pVertexVIDs = v40;
+      v84 = v39;
+      v82 = v40;
+      for (uint j = 1; j < face->uNumVertices; ++j)
+      {
+        v43 = &pIndoor->pVertices[face->pVertexIDs[j]];
+        v76 = ((__int64)v70.z * v43->z + (__int64)v70.x * v43->x + (__int64)v70.y * v43->y) >> 16;
+        v77 = ((__int64)v67.x * v43->x + (__int64)v67.y * v43->y + (__int64)v43->z * v67.z) >> 16;
+        if (v76 < v39)
+          v39 = v76;
+        if (v77 < v40)
+          v40 = v77;
+        if (v76 > v84)
+          v84 = v76;
+        if (v77 > v82)
+          v82 = v77;
+        face->pVertexUIDs[j] = v76;
+        face->pVertexVIDs[j] = v77;
+      }
+      if (face->uAttributes & 0x00001000)
+        v28->sTextureDeltaU -= v39;
+      else
+      {
+        if (face->uAttributes & 0x8000)
+        {
+          if (face->resource)
+          {
+            //v28->sTextureDeltaU -= v84 + pBitmaps_LOD->pTextures[face->uBitmapID].uTextureWidth;
+            v28->sTextureDeltaU -= v84 + ((Texture *)face->resource)->GetWidth();
+          }
+        }
+      }
+      if (face->uAttributes & FACE_UNKNOW6)
+        v28->sTextureDeltaV -= v40;
+      else
+      {
+        if (face->uAttributes & FACE_INDOOR_DOOR)
+        {
+          v28->sTextureDeltaV -= v84 + ((Texture *)face->resource)->GetHeight();
+          //if (face->uBitmapID != -1)
+          //    v28->sTextureDeltaV -= v82 + pBitmaps_LOD->GetTexture(face->uBitmapID)->uTextureHeight;
+        }
+      }
+      if (face->uAttributes & FACE_TEXTURE_FLOW)
+      {
+        v84 = fixpoint_mul(door->vDirection.x, v70.x);
+        v82 = fixpoint_mul(door->vDirection.y, v70.y);
+        v83 = fixpoint_mul(door->vDirection.z, v70.z);
+        v75 = v84 + v82 + v83;
+        v82 = fixpoint_mul(v75, v89);
+        v28->sTextureDeltaU = -v82;
+        v84 = fixpoint_mul(door->vDirection.x, v67.x);
+        v82 = fixpoint_mul(door->vDirection.y, v67.y);
+        v83 = fixpoint_mul(door->vDirection.z, v67.z);
+        v75 = v84 + v82 + v83;
+        v32 = fixpoint_mul(v75, v89);
+        v57 = -v32;
+        v28->sTextureDeltaV = v57;
+        v28->sTextureDeltaU += door->pDeltaUs[v88];
+        v28->sTextureDeltaV = v57 + door->pDeltaVs[v88];
+      }
+    }
+  }
 }
 
 //----- (0046F90C) --------------------------------------------------------
@@ -2039,8 +2011,8 @@ void  UpdateActors_BLV()
 				  pActors[actor_id].vPosition.z += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
 				  pActors[actor_id].uSectorID = (short)stru_721530.uSectorID;
 				  stru_721530.field_70 += stru_721530.field_7C;
-				  v37 = PID_ID(stru_721530.uFaceID);
-				  if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Actor)
+				  v37 = PID_ID(stru_721530.pid);
+				  if (PID_TYPE(stru_721530.pid) == OBJECT_Actor)
 				  {
 					  if (pParty->bTurnBasedModeOn == 1 && (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT))
 					  {
@@ -2054,7 +2026,7 @@ void  UpdateActors_BLV()
 					  {
 						  if (!v56)
 						  {
-							  Actor::AI_Flee(actor_id, stru_721530.uFaceID, v22, (AIDirection *)v22);
+							  Actor::AI_Flee(actor_id, stru_721530.pid, v22, (AIDirection *)v22);
 							  pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
 							  pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
 							  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
@@ -2068,14 +2040,14 @@ void  UpdateActors_BLV()
 						  {
 							  if (!pActors[v37].pMonsterInfo.uHostilityType)
 							  {
-								  Actor::AI_FaceObject(actor_id, stru_721530.uFaceID, v22, (AIDirection *)v22);
+								  Actor::AI_FaceObject(actor_id, stru_721530.pid, v22, (AIDirection *)v22);
 								  pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
 								  pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
 								  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
 								  v22 = 0;
 								  continue;
 							  }
-							  Actor::AI_Flee(actor_id, stru_721530.uFaceID, v22, (AIDirection *)v22);
+							  Actor::AI_Flee(actor_id, stru_721530.pid, v22, (AIDirection *)v22);
 							  pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
 							  pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
 							  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
@@ -2090,7 +2062,7 @@ void  UpdateActors_BLV()
 					  v22 = 0;
 					  continue;
 				  }
-				  if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Player)
+				  if (PID_TYPE(stru_721530.pid) == OBJECT_Player)
 				  {
 					  if (pActors[actor_id].GetActorsRelation(0))
 					  {
@@ -2110,14 +2082,14 @@ void  UpdateActors_BLV()
 						  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
 						  continue;
 					  }
-					  Actor::AI_FaceObject(actor_id, stru_721530.uFaceID, v22, (AIDirection *)v22);
+					  Actor::AI_FaceObject(actor_id, stru_721530.pid, v22, (AIDirection *)v22);
 					  pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
 					  pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
 					  pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
 					  v22 = 0;
 					  continue;
 				  }
-				  if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Decoration)
+				  if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration)
 				  {
 					  _this = integer_sqrt(pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x + pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y);
 					  v45 = stru_5C6E00->Atan2(pActors[actor_id].vPosition.x - pLevelDecorations[v37].vPosition.x,
@@ -2130,9 +2102,9 @@ void  UpdateActors_BLV()
 					  v22 = 0;
 					  continue;
 				  }
-				  if (PID_TYPE(stru_721530.uFaceID) == OBJECT_BModel)
+				  if (PID_TYPE(stru_721530.pid) == OBJECT_BModel)
 				  {
-					  stru_721530.field_84 = stru_721530.uFaceID >> 3;
+					  stru_721530.field_84 = stru_721530.pid >> 3;
 					  if (pIndoor->pFaces[v37].uPolygonType == 3)
 					  {
 						  pActors[actor_id].vVelocity.z = 0;
@@ -3202,30 +3174,29 @@ void stru149::_48653D_frustum_blv(int a2, int a3, int a4, int a5, int a6, int a7
                                 this->angle_from_south, this->field_4_party_dir_y,
                                 this->viewing_angle_from_north_south, this->field_8_party_dir_z);
 }
-//----- (00407A1C) --------------------------------------------------------
+
 bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
 {
   unsigned int v4; // esi@1
   int dist_y; // edi@2
   int dist_z; // ebx@2
   int dist_x; // esi@2
-  signed int v9; // ecx@2
+  int v9; // ecx@2
   int v10; // eax@2
   int v12; // eax@4
   int v17; // ST34_4@25
   int v18; // ST38_4@25
   int v19; // eax@25
   char v20; // zf@25
-  signed int v21; // ebx@25
-  signed int v23; // edi@26
+  int v21; // ebx@25
+  int v23; // edi@26
   int v24; // ST34_4@30
-  signed int v32; // ecx@37
+  int v32; // ecx@37
   int v33; // eax@37
   int v35; // eax@39
-  ODMFace *odm_face; // esi@54
-  signed int v40; // ebx@60
-  signed int v42; // edi@61
-  signed int v49; // ecx@73
+  int v40; // ebx@60
+  int v42; // edi@61
+  int v49; // ecx@73
   int v50; // eax@73
   int v51; // edx@75
   int v52; // ecx@75
@@ -3235,24 +3206,24 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int v63; // ST34_4@98
   int v64; // ST30_4@98
   int v65; // eax@98
-  signed int v66; // ebx@98
-  signed int v68; // edi@99
+  int v66; // ebx@98
+  int v68; // edi@99
   int v69; // ST2C_4@103
-  signed int v77; // ecx@111
+  int v77; // ecx@111
   int v78; // eax@111
   int v79; // edx@113
   int v80; // ecx@113
   int v81; // eax@113
   int v87; // ecx@128
-  signed int v91; // ebx@136
-  signed int v93; // edi@137
+  int v91; // ebx@136
+  int v93; // edi@137
   Vec3_int_ v97; // [sp-18h] [bp-94h]@1
   int v107; // [sp+10h] [bp-6Ch]@98
   int v108; // [sp+10h] [bp-6Ch]@104
   int v109; // [sp+18h] [bp-64h]@25
   int v110; // [sp+18h] [bp-64h]@31
-  signed int v113; // [sp+20h] [bp-5Ch]@1
-  signed int v114; // [sp+24h] [bp-58h]@1
+  int v113; // [sp+20h] [bp-5Ch]@1
+  int v114; // [sp+24h] [bp-58h]@1
   int v119; // [sp+34h] [bp-48h]@75
   int v120; // [sp+34h] [bp-48h]@113
   int v121; // [sp+38h] [bp-44h]@4
@@ -3284,8 +3255,8 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int v149; // [sp+54h] [bp-28h]@4
   int v150; // [sp+54h] [bp-28h]@39
   int sDepthb; // [sp+58h] [bp-24h]@90
-  signed int a5b; // [sp+5Ch] [bp-20h]@83
-  signed int a5c; // [sp+5Ch] [bp-20h]@121
+  int a5b; // [sp+5Ch] [bp-20h]@83
+  int a5c; // [sp+5Ch] [bp-20h]@121
   int v162; // [sp+60h] [bp-1Ch]@128
   int outz; // [sp+64h] [bp-18h]@2
   int outx; // [sp+68h] [bp-14h]@2
@@ -3293,7 +3264,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int sZ; // [sp+70h] [bp-Ch]@2  
   int sX; // [sp+74h] [bp-8h]@2
   int sY; // [sp+78h] [bp-4h]@2
-  //8bytes unused
+          //8bytes unused
   int ya; // [sp+84h] [bp+8h]@60
   int yb; // [sp+84h] [bp+8h]@136
   int ve; // [sp+88h] [bp+Ch]@60
@@ -3307,7 +3278,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int v_4b; // [sp+8Ch] [bp+10h]@136
   int v_4c; // [sp+8Ch] [bp+10h]@141
 
-  //__debugbreak();срабатывает при стрельбе огненным шаром
+            //__debugbreak();срабатывает при стрельбе огненным шаром
 
   v4 = stru_5C6E00->Atan2(v.x - x, v.y - y);
 
@@ -3318,43 +3289,43 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   v97.x = x;
   v97.y = y;
 
-  if ( uCurrentlyLoadedLevelType == LEVEL_Indoor)
+  if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
   {
     Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + v4, 0, v97, &sX, &sY, &sZ);
     Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + v4, 0, v, &outx, &outy, &outz);
     dist_y = outy - sY;
     dist_z = outz - sZ;
-	dist_x = outx - sX;
-	v49 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
+    dist_x = outx - sX;
+    v49 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
     v50 = 65536;
-    if ( v49 )
+    if (v49)
       v50 = 65536 / v49;
     v51 = outx;
-	v143 = dist_x * v50;
-	v52 = dist_y * v50;
-	v53 = dist_z * v50;
+    v143 = dist_x * v50;
+    v52 = dist_y * v50;
+    v53 = dist_z * v50;
 
-	v123 = max(outx, sX);
-	v119 = min(outx, sX);
+    v123 = max(outx, sX);
+    v119 = min(outx, sX);
 
-	v131 = max(outy, sY);
-	v127 = min(outy, sY);
+    v131 = max(outy, sY);
+    v127 = min(outy, sY);
 
-	v139 = max(outz, sZ);
-	v135 = min(outz, sZ);
+    v139 = max(outz, sZ);
+    v135 = min(outz, sZ);
 
-    for ( a5b = 0; a5b < 2; a5b++ )
+    for (a5b = 0; a5b < 2; a5b++)
     {
-      if ( a5b )
-		v59 = pIndoor->GetSector(sX, sY, sZ);
+      if (a5b)
+        v59 = pIndoor->GetSector(sX, sY, sZ);
       else
-		v59 = pIndoor->GetSector(outx, outy, outz);
+        v59 = pIndoor->GetSector(outx, outy, outz);
       //v60 = pIndoor->pSectors;
       //v61 = 116 * v59;
       //i = 116 * v59;
       //for (sDepthb = 0; *(__int16 *)((char *)&pIndoor->pSectors->uNumWalls + v61)
-                    //+ 2 * *(__int16 *)((char *)&pIndoor->pSectors->uNumFloors + v61); ++sDepthb)
-      for ( sDepthb = 0; sDepthb < pIndoor->pSectors[v59].uNumFaces; ++sDepthb )
+      //+ 2 * *(__int16 *)((char *)&pIndoor->pSectors->uNumFloors + v61); ++sDepthb)
+      for (sDepthb = 0; sDepthb < pIndoor->pSectors[v59].uNumFaces; ++sDepthb)
       {
         face = &pIndoor->pFaces[pIndoor->pSectors[v59].pFaceIDs[sDepthb]];// face = &pIndoor->pFaces[*(__int16 *)((char *)&pIndoor->pSectors->pWalls + v61)[sDepthb]]
         v63 = fixpoint_mul(v143, face->pFacePlane_old.vNormal.x);
@@ -3363,45 +3334,45 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
         v20 = v63 + v64 + v65 == 0;
         v66 = v63 + v64 + v65;
         v107 = v63 + v64 + v65;
-        if ( face->Portal()
+        if (face->Portal()
           || v119 > face->pBounding.x2 || v123 < face->pBounding.x1
           || v127 > face->pBounding.y2 || v131 < face->pBounding.y1
           || v135 > face->pBounding.z2 || v139 < face->pBounding.z1
-          || v20 )
+          || v20)
           continue;
         v68 = -(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                          + sY * face->pFacePlane_old.vNormal.y
-                                          + sZ * face->pFacePlane_old.vNormal.z);
-        if ( v66 <= 0 )
+          + sY * face->pFacePlane_old.vNormal.y
+          + sZ * face->pFacePlane_old.vNormal.z);
+        if (v66 <= 0)
         {
-          if ( face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                         + sY * face->pFacePlane_old.vNormal.y
-                                         + sZ * face->pFacePlane_old.vNormal.z < 0 )
+          if (face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+            + sY * face->pFacePlane_old.vNormal.y
+            + sZ * face->pFacePlane_old.vNormal.z < 0)
             continue;
         }
         else
         {
-          if ( face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                         + sY * face->pFacePlane_old.vNormal.y
-                                         + sZ * face->pFacePlane_old.vNormal.z > 0 )
+          if (face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+            + sY * face->pFacePlane_old.vNormal.y
+            + sZ * face->pFacePlane_old.vNormal.z > 0)
             continue;
         }
         v69 = abs(-(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                              + sY * face->pFacePlane_old.vNormal.y
-                                              + sZ * face->pFacePlane_old.vNormal.z )) >> 14;
-        if ( v69 <= abs(v66) )
+          + sY * face->pFacePlane_old.vNormal.y
+          + sZ * face->pFacePlane_old.vNormal.z)) >> 14;
+        if (v69 <= abs(v66))
         {
           //LODWORD(v70) = v68 << 16;
           //HIDWORD(v70) = v68 >> 16;
           //v71 = v70 / v107;
           //v108 = v70 / v107;
           v108 = fixpoint_div(v68, v107);
-          if ( v108 >= 0 )
+          if (v108 >= 0)
           {
-            if ( sub_4075DB(sX + ((signed int)(fixpoint_mul(v108, v143) + 0x8000) >> 16),
-                            sY + ((signed int)(fixpoint_mul(v108, v52) + 0x8000) >> 16),
-                              sZ + ((signed int)(fixpoint_mul(v108, v53) + 0x8000) >> 16),
-                            face) )
+            if (sub_4075DB(sX + ((signed int)(fixpoint_mul(v108, v143) + 0x8000) >> 16),
+              sY + ((signed int)(fixpoint_mul(v108, v52) + 0x8000) >> 16),
+              sZ + ((signed int)(fixpoint_mul(v108, v53) + 0x8000) >> 16),
+              face))
             {
               v114 = 1;
               break;
@@ -3410,168 +3381,163 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
         }
       }
     }
-    
+
     Vec3_int_::Rotate(32, v4 - stru_5C6E00->uIntegerHalfPi, 0, v97, &sX, &sY, &sZ);
     Vec3_int_::Rotate(32, v4 - stru_5C6E00->uIntegerHalfPi, 0, v, &outx, &outy, &outz);
-	dist_y = outy - sY;
-	dist_z = outz - sZ;
-	dist_x = outx - sX;
-	v77 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
+    dist_y = outy - sY;
+    dist_z = outz - sZ;
+    dist_x = outx - sX;
+    v77 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
     v78 = 65536;
-    if ( v77 )
+    if (v77)
       v78 = 65536 / v77;
     v79 = outx;
-	v144 = dist_x * v78;
-	v80 = dist_y * v78;
-	v81 = dist_z * v78;
+    v144 = dist_x * v78;
+    v80 = dist_y * v78;
+    v81 = dist_z * v78;
 
-	v120 = max(outx, sX);
-	v124 = min(outx, sX);
+    v120 = max(outx, sX);
+    v124 = min(outx, sX);
 
-	v132 = max(outy, sY);
-	v128 = min(outy, sY);
+    v132 = max(outy, sY);
+    v128 = min(outy, sY);
 
-	v140 = max(outz, sZ);
-	v136 = min(outz, sZ);
+    v140 = max(outz, sZ);
+    v136 = min(outz, sZ);
 
-    for ( a5c = 0; a5c < 2; a5c++ )
+    for (a5c = 0; a5c < 2; a5c++)
     {
-      if ( v113 )
+      if (v113)
         return !v114 || !v113;
-      if ( a5c )
+      if (a5c)
       {
-		v87 = pIndoor->GetSector(sX, sY, sZ);
+        v87 = pIndoor->GetSector(sX, sY, sZ);
       }
       else
       {
-		v87 = pIndoor->GetSector(outx, outy, outz);
+        v87 = pIndoor->GetSector(outx, outy, outz);
       }
-    for ( v162 = 0; v162 < pIndoor->pSectors[v87].uNumFaces; v162++)
-    {
-      face = &pIndoor->pFaces[pIndoor->pSectors[v87].pFaceIDs[v162]];
-      yb = fixpoint_mul(v144, face->pFacePlane_old.vNormal.x);
-      v_4b = fixpoint_mul(v80, face->pFacePlane_old.vNormal.y);
-      vf = fixpoint_mul(v81, face->pFacePlane_old.vNormal.z);
-      v20 = yb + vf + v_4b == 0;
-      v91 = yb + vf + v_4b;
-      vc = yb + vf + v_4b;
-      if ( face->Portal()
-        || v120 > face->pBounding.x2 || v124 < face->pBounding.x1
-        || v128 > face->pBounding.y2 || v132 < face->pBounding.y1
-        || v136 > face->pBounding.z2 || v140 < face->pBounding.z1
-        || v20 )
-        continue;
-      v93 = -(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                        + sY * face->pFacePlane_old.vNormal.y
-                                        + sZ * face->pFacePlane_old.vNormal.z);
-      if ( v91 <= 0 )
+      for (v162 = 0; v162 < pIndoor->pSectors[v87].uNumFaces; v162++)
       {
-        if ( face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                       + sY * face->pFacePlane_old.vNormal.y
-                                       + sZ * face->pFacePlane_old.vNormal.z < 0 )
+        face = &pIndoor->pFaces[pIndoor->pSectors[v87].pFaceIDs[v162]];
+        yb = fixpoint_mul(v144, face->pFacePlane_old.vNormal.x);
+        v_4b = fixpoint_mul(v80, face->pFacePlane_old.vNormal.y);
+        vf = fixpoint_mul(v81, face->pFacePlane_old.vNormal.z);
+        v20 = yb + vf + v_4b == 0;
+        v91 = yb + vf + v_4b;
+        vc = yb + vf + v_4b;
+        if (face->Portal()
+          || v120 > face->pBounding.x2 || v124 < face->pBounding.x1
+          || v128 > face->pBounding.y2 || v132 < face->pBounding.y1
+          || v136 > face->pBounding.z2 || v140 < face->pBounding.z1
+          || v20)
           continue;
-      }
-      else
-      {
-        if ( face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                       + sY * face->pFacePlane_old.vNormal.y
-                                       + sZ * face->pFacePlane_old.vNormal.z > 0 )
-          continue;
-      }
-      v_4c = abs(-(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
-                                             + sY * face->pFacePlane_old.vNormal.y
-                                             + sZ * face->pFacePlane_old.vNormal.z)) >> 14;
-      if ( v_4c <= abs(v91) )
-      {
-        vd = fixpoint_div(v93, vc);
-        if ( vd >= 0 )
+        v93 = -(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+          + sY * face->pFacePlane_old.vNormal.y
+          + sZ * face->pFacePlane_old.vNormal.z);
+        if (v91 <= 0)
         {
-          if ( sub_4075DB(sX + ((signed int)(fixpoint_mul(vd, v144) + 0x8000) >> 16),
-                          sY + ((signed int)(fixpoint_mul(vd, v80) + 0x8000) >> 16),
-                            sZ + ((signed int)(fixpoint_mul(vd, v81) + 0x8000) >> 16),
-                          face) )
+          if (face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+            + sY * face->pFacePlane_old.vNormal.y
+            + sZ * face->pFacePlane_old.vNormal.z < 0)
+            continue;
+        }
+        else
+        {
+          if (face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+            + sY * face->pFacePlane_old.vNormal.y
+            + sZ * face->pFacePlane_old.vNormal.z > 0)
+            continue;
+        }
+        v_4c = abs(-(face->pFacePlane_old.dist + sX * face->pFacePlane_old.vNormal.x
+          + sY * face->pFacePlane_old.vNormal.y
+          + sZ * face->pFacePlane_old.vNormal.z)) >> 14;
+        if (v_4c <= abs(v91))
+        {
+          vd = fixpoint_div(v93, vc);
+          if (vd >= 0)
           {
-            v113 = 1;
-            break;
+            if (sub_4075DB(sX + ((signed int)(fixpoint_mul(vd, v144) + 0x8000) >> 16),
+              sY + ((signed int)(fixpoint_mul(vd, v80) + 0x8000) >> 16),
+              sZ + ((signed int)(fixpoint_mul(vd, v81) + 0x8000) >> 16),
+              face))
+            {
+              v113 = 1;
+              break;
+            }
           }
         }
       }
-      }
     }
   }
-  else if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
+  else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
   {
     Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + v4, 0, v97, &sX, &sY, &sZ);
     Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + v4, 0, v, &outx, &outy, &outz);
     dist_y = outy - sY;
     dist_z = outz - sZ;
     dist_x = outx - sX;
-    v9 = integer_sqrt(dist_x* dist_x+ dist_y* dist_y+ dist_z* dist_z);
+    v9 = integer_sqrt(dist_x* dist_x + dist_y * dist_y + dist_z * dist_z);
     v10 = 65536;
-    if ( v9 )
+    if (v9)
       v10 = 65536 / v9;
-    v125 = dist_x* v10;
-    v12 = dist_z* v10;
-    v121 = dist_y* v10;
+    v125 = dist_x * v10;
+    v12 = dist_z * v10;
+    v121 = dist_y * v10;
 
-	v145 = max(outx, sX);
-	v149 = min(outx, sX);
+    v145 = max(outx, sX);
+    v149 = min(outx, sX);
 
-	v137 = max(outy, sY);
-	v141 = min(outy, sY);
+    v137 = max(outy, sY);
+    v141 = min(outy, sY);
 
-	v129 = max(outz, sZ);
-	v133 = min(outz, sZ);
+    v129 = max(outz, sZ);
+    v133 = min(outz, sZ);
 
-	for ( uint model_id = 0; model_id < pOutdoor->uNumBModels; model_id++)
-    {
-      if ( sub_4088E9(sX, sY, outx, outy, pOutdoor->pBModels[model_id].vPosition.x, pOutdoor->pBModels[model_id].vPosition.y)
-           <= pOutdoor->pBModels[model_id].sBoundingRadius + 128 )
-      {
-        for ( uint face_id = 0; face_id < pOutdoor->pBModels[model_id].uNumFaces; ++face_id )
-        {
-          odm_face = &pOutdoor->pBModels[model_id].pFaces[face_id];
-          v17 = fixpoint_mul(v125, odm_face->pFacePlane.vNormal.x);
-          v18 = fixpoint_mul(v121, odm_face->pFacePlane.vNormal.y);
-          v19 = fixpoint_mul(v12, odm_face->pFacePlane.vNormal.z);
+    for (BSPModel &model : pOutdoor->pBModels) {
+      if (sub_4088E9(sX, sY, outx, outy, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
+        for (ODMFace &face : model.pFaces) {
+          v17 = fixpoint_mul(v125, face.pFacePlane.vNormal.x);
+          v18 = fixpoint_mul(v121, face.pFacePlane.vNormal.y);
+          v19 = fixpoint_mul(v12, face.pFacePlane.vNormal.z);
           v20 = v17 + v18 + v19 == 0;
           v21 = v17 + v18 + v19;
           v109 = v17 + v18 + v19;
-          if ( v149 > odm_face->pBoundingBox.x2 || v145 < odm_face->pBoundingBox.x1
-            || v141 > odm_face->pBoundingBox.y2 || v137 < odm_face->pBoundingBox.y1
-            || v133 > odm_face->pBoundingBox.z2 || v129 < odm_face->pBoundingBox.z1
-            || v20 )
+          if (v149 > face.pBoundingBox.x2 || v145 < face.pBoundingBox.x1
+            || v141 > face.pBoundingBox.y2 || v137 < face.pBoundingBox.y1
+            || v133 > face.pBoundingBox.z2 || v129 < face.pBoundingBox.z1
+            || v20)
             continue;
-          v23 = -(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                            + sY * odm_face->pFacePlane.vNormal.y
-                                            + sZ * odm_face->pFacePlane.vNormal.z);
-          if ( v21 <= 0 )
+          v23 = -(face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+            + sY * face.pFacePlane.vNormal.y
+            + sZ * face.pFacePlane.vNormal.z);
+          if (v21 <= 0)
           {
-            if ( odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                           + sY * odm_face->pFacePlane.vNormal.y 
-                                           + sZ * odm_face->pFacePlane.vNormal.z < 0 )
+            if (face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+              + sY * face.pFacePlane.vNormal.y
+              + sZ * face.pFacePlane.vNormal.z < 0)
               continue;
           }
           else
           {
-            if ( odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                           + sY * odm_face->pFacePlane.vNormal.y
-                                           + sZ * odm_face->pFacePlane.vNormal.z > 0 )
+            if (face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+              + sY * face.pFacePlane.vNormal.y
+              + sZ * face.pFacePlane.vNormal.z > 0)
               continue;
           }
-          v24 = abs(-(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                                + sY * odm_face->pFacePlane.vNormal.y 
-                                                + sZ * odm_face->pFacePlane.vNormal.z)) >> 14;
-          if ( v24 <= abs(v21) )
+          v24 = abs(-(face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+            + sY * face.pFacePlane.vNormal.y
+            + sZ * face.pFacePlane.vNormal.z)) >> 14;
+          if (v24 <= abs(v21))
           {
             v110 = fixpoint_div(v23, v109);
-            if ( v110 >= 0 )
+            if (v110 >= 0)
             {
-              if ( sub_4077F1(sX + ((signed int)(fixpoint_mul(v110, v125) + 0x8000) >> 16),
-                              sY + ((signed int)(fixpoint_mul(v110, v121) + 0x8000) >> 16),
-                                sZ + ((signed int)(fixpoint_mul(v110, v12) + 0x8000) >> 16),
-                              odm_face,
-                              &pOutdoor->pBModels[model_id].pVertices) )
+              if (sub_4077F1(sX + ((signed int)(fixpoint_mul(v110, v125) + 0x8000) >> 16),
+                sY + ((signed int)(fixpoint_mul(v110, v121) + 0x8000) >> 16),
+                sZ + ((signed int)(fixpoint_mul(v110, v12) + 0x8000) >> 16),
+                &face,
+                &model.pVertices))
               {
                 v114 = 1;
                 break;
@@ -3581,85 +3547,78 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
         }
       }
     }
-    
+
     Vec3_int_::Rotate(32, v4 - stru_5C6E00->uIntegerHalfPi, 0, v97, &sX, &sY, &sZ);
     Vec3_int_::Rotate(32, v4 - stru_5C6E00->uIntegerHalfPi, 0, v, &outx, &outy, &outz);
-	dist_y = outy - sY;
-	dist_z = outz - sZ;
-	dist_x = outx - sX;
-	v32 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
+    dist_y = outy - sY;
+    dist_z = outz - sZ;
+    dist_x = outx - sX;
+    v32 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
     v33 = 65536;
-    if ( v32 )
+    if (v32)
       v33 = 65536 / v32;
-	v126 = dist_x * v33;
-	v35 = dist_z * v33;
+    v126 = dist_x * v33;
+    v35 = dist_z * v33;
     v122 = dist_y * v33;
-    
-	v146 = max(outx, sX);
-	v150 = min(outx, sX);
 
-	v138 = max(outy, sY);
-	v142 = min(outy, sY);
+    v146 = max(outx, sX);
+    v150 = min(outx, sX);
 
-	v130 = max(outz, sZ);
-	v134 = min(outz, sZ);
+    v138 = max(outy, sY);
+    v142 = min(outy, sY);
 
-    for ( uint model_id = 0; model_id < (signed int)pOutdoor->uNumBModels; ++model_id )
-    {
-      if ( sub_4088E9(sX, sY, outx, outy, pOutdoor->pBModels[model_id].vPosition.x, pOutdoor->pBModels[model_id].vPosition.y)
-           <= pOutdoor->pBModels[model_id].sBoundingRadius + 128 )
-      {
-        for ( uint face_id = 0; face_id < pOutdoor->pBModels[model_id].uNumFaces; ++face_id )
-        {
-          odm_face = &pOutdoor->pBModels[model_id].pFaces[face_id];
-          ya = fixpoint_mul(v126, odm_face->pFacePlane.vNormal.x);
-          ve = fixpoint_mul(v122, odm_face->pFacePlane.vNormal.y);
-          v_4 = fixpoint_mul(v35, odm_face->pFacePlane.vNormal.z);
+    v130 = max(outz, sZ);
+    v134 = min(outz, sZ);
+
+    for (BSPModel &model : pOutdoor->pBModels) {
+      if (sub_4088E9(sX, sY, outx, outy, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
+        for (ODMFace &face : model.pFaces) {
+          ya = fixpoint_mul(v126, face.pFacePlane.vNormal.x);
+          ve = fixpoint_mul(v122, face.pFacePlane.vNormal.y);
+          v_4 = fixpoint_mul(v35, face.pFacePlane.vNormal.z);
           v20 = ya + ve + v_4 == 0;
           v40 = ya + ve + v_4;
           va = ya + ve + v_4;
-          if ( v150 > odm_face->pBoundingBox.x2 || v146 < odm_face->pBoundingBox.x1
-            || v142 > odm_face->pBoundingBox.y2 || v138 < odm_face->pBoundingBox.y1
-            || v134 > odm_face->pBoundingBox.z2 || v130 < odm_face->pBoundingBox.z1
-            || v20 )
+          if (v150 > face.pBoundingBox.x2 || v146 < face.pBoundingBox.x1
+            || v142 > face.pBoundingBox.y2 || v138 < face.pBoundingBox.y1
+            || v134 > face.pBoundingBox.z2 || v130 < face.pBoundingBox.z1
+            || v20)
             continue;
-          v42 = -(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                            + sY * odm_face->pFacePlane.vNormal.y
-                                            + sZ * odm_face->pFacePlane.vNormal.z);
-          if ( v40 <= 0 )
+          v42 = -(face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+            + sY * face.pFacePlane.vNormal.y
+            + sZ * face.pFacePlane.vNormal.z);
+          if (v40 <= 0)
           {
-            if ( odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                           + sY * odm_face->pFacePlane.vNormal.y 
-                                           + sZ * odm_face->pFacePlane.vNormal.z  < 0 )
+            if (face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+              + sY * face.pFacePlane.vNormal.y
+              + sZ * face.pFacePlane.vNormal.z  < 0)
               continue;
           }
           else
           {
-            if ( odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                           + sY * odm_face->pFacePlane.vNormal.y 
-                                           + sZ * odm_face->pFacePlane.vNormal.z  > 0 )
+            if (face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+              + sY * face.pFacePlane.vNormal.y
+              + sZ * face.pFacePlane.vNormal.z  > 0)
               continue;
           }
-          v_4a = abs(-(odm_face->pFacePlane.dist + sX * odm_face->pFacePlane.vNormal.x
-                                                 + sY * odm_face->pFacePlane.vNormal.y 
-                                                 + sZ * odm_face->pFacePlane.vNormal.z )) >> 14;
-          if ( v_4a <= abs(v40) )
+          v_4a = abs(-(face.pFacePlane.dist + sX * face.pFacePlane.vNormal.x
+            + sY * face.pFacePlane.vNormal.y
+            + sZ * face.pFacePlane.vNormal.z)) >> 14;
+          if (v_4a <= abs(v40))
           {
             //LODWORD(v43) = v42 << 16;
             //HIDWORD(v43) = v42 >> 16;
             //vb = v43 / va;
             vb = fixpoint_div(v42, va);
-            if ( vb >= 0 )
-            {
-              if ( sub_4077F1(sX + ((signed int)(fixpoint_mul(vb, v126) + 0x8000) >> 16),
-                              sY + ((signed int)(fixpoint_mul(vb, v122) + 0x8000) >> 16),
-                                sZ + ((signed int)(fixpoint_mul(vb, v35) + 0x8000) >> 16),
-                              odm_face,
-                              &pOutdoor->pBModels[model_id].pVertices) )
+            if (vb >= 0) {
+              if (sub_4077F1(sX + ((int)(fixpoint_mul(vb, v126) + 0x8000) >> 16),
+                sY + ((int)(fixpoint_mul(vb, v122) + 0x8000) >> 16),
+                sZ + ((int)(fixpoint_mul(vb, v35) + 0x8000) >> 16),
+                &face, &model.pVertices))
               {
                 v113 = 1;
                 break;
-               }
+              }
             }
           }
         }
@@ -3669,7 +3628,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   }
   return !v114 || !v113;
 }
-//----- (0043F333) --------------------------------------------------------
+
 void BspRenderer::MakeVisibleSectorList()
 {
 //  int v6; // ebx@3
@@ -3735,12 +3694,12 @@ char DoInteractionWithTopmostZObject(int a1, int a2)
       return 1;
 
     case OBJECT_BModel:
-      if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
-      {
-        int bmodel_id = a1 >> 9,
-            face_id = v17 & 0x3F;
-        if (bmodel_id >= pOutdoor->uNumBModels)
+      if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor ) {
+        int bmodel_id = a1 >> 9;
+        int face_id = v17 & 0x3F;
+        if (bmodel_id >= pOutdoor->pBModels.size()) {
           return 1;
+        }
         if (pOutdoor->pBModels[bmodel_id].pFaces[face_id].uAttributes & FACE_HAS_EVENT 
          || pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID == 0 )
           return 1;
@@ -4952,7 +4911,7 @@ void BLV_ProcessPartyActions()
         uSectorID = stru_721530.uSectorID;
         stru_721530.field_70 += stru_721530.field_7C;
         unsigned long long v87 = new_party_z + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
-        if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Actor) // invis break on actor collision    /    при столкновении с монстром
+        if (PID_TYPE(stru_721530.pid) == OBJECT_Actor) // invis break on actor collision    /    при столкновении с монстром
         {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
             {
@@ -4960,16 +4919,16 @@ void BLV_ProcessPartyActions()
             }
             viewparams->bRedrawGameUI = true;
         }
-        else if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Decoration) // decoration collision   /   при столкновении с декорацией
+        else if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration) // decoration collision   /   при столкновении с декорацией
         {
-            v54 = stru_5C6E00->Atan2(new_party_x - pLevelDecorations[stru_721530.uFaceID >> 3].vPosition.x,
-                new_party_y - pLevelDecorations[stru_721530.uFaceID >> 3].vPosition.y);
+            v54 = stru_5C6E00->Atan2(new_party_x - pLevelDecorations[stru_721530.pid >> 3].vPosition.x,
+                new_party_y - pLevelDecorations[stru_721530.pid >> 3].vPosition.y);
             v2 = fixpoint_mul(stru_5C6E00->Cos(v54), integer_sqrt(v2 * v2 + v1 * v1));
             v1 = fixpoint_mul(stru_5C6E00->Sin(v54), integer_sqrt(v2 * v2 + v1 * v1));
         }
-        else if (PID_TYPE(stru_721530.uFaceID) == OBJECT_BModel)//при столкновении с bmodel
+        else if (PID_TYPE(stru_721530.pid) == OBJECT_BModel)//при столкновении с bmodel
         {
-            pFace = &pIndoor->pFaces[(signed int)stru_721530.uFaceID >> 3];
+            pFace = &pIndoor->pFaces[(signed int)stru_721530.pid >> 3];
             if (pFace->uPolygonType == POLYGON_Floor)// если bmodel - пол
             {
                 if (pParty->uFallSpeed < 0)
@@ -4982,7 +4941,7 @@ void BLV_ProcessPartyActions()
                     v1 = 0;
                     v2 = 0;
                 }
-                if (pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate())
+                if (pParty->floor_face_pid != PID_ID(stru_721530.pid) && pFace->Pressure_Plate())
                     uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
             }
             else// если не пол
@@ -5007,7 +4966,7 @@ void BLV_ProcessPartyActions()
                         new_party_y += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.y);
                         v87 += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.z);
                     }
-                    if (pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate())
+                    if (pParty->floor_face_pid != PID_ID(stru_721530.pid) && pFace->Pressure_Plate())
                         uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                 }
                 if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall)
@@ -5020,7 +4979,7 @@ void BLV_ProcessPartyActions()
                     pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
                     if (v2 * v2 + v1 * v1 >= 400)
                     {
-                        if (pParty->floor_face_pid != PID_ID(stru_721530.uFaceID) && pFace->Pressure_Plate())
+                        if (pParty->floor_face_pid != PID_ID(stru_721530.pid) && pFace->Pressure_Plate())
                             uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                     }
                     else
@@ -5207,10 +5166,7 @@ int  GetAlertStatus()
   return result;
 }
 
-
-//----- (0045063B) --------------------------------------------------------
-int _45063B_spawn_some_monster(MapInfo *a1, int a2)
-{
+int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
   int result; // eax@8
   int v6; // edi@11
   int v7; // ebx@11
@@ -5234,19 +5190,16 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2)
   if (!uNumActors)
     return 0;
 
-  for ( uint mon_id = 0; mon_id < uNumActors; ++mon_id )
-  {
+  for (uint mon_id = 0; mon_id < uNumActors; ++mon_id) {
     if ((pActors[mon_id].pMonsterInfo.uID < 121 || pActors[mon_id].pMonsterInfo.uID > 123) && // Dwarf FemaleC A-C
       (pActors[mon_id].pMonsterInfo.uID < 124 || pActors[mon_id].pMonsterInfo.uID > 126) && // Dwarf MaleA A-C
       (pActors[mon_id].pMonsterInfo.uID < 133 || pActors[mon_id].pMonsterInfo.uID > 135) && // Peasant Elf FemaleA A-C
       pActors[mon_id].CanAct())
     {
-      if ( uCurrentlyLoadedLevelType == LEVEL_Outdoor )
-      {
+      if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         v22 = 0;
         uint face_id = 0;
-        for ( face_id; face_id < 100; ++face_id )
-        {
+        for (face_id; face_id < 100; ++face_id) {
           v6 = rand() % 1024 + 512;
           v7 = rand() % (signed int)stru_5C6E00->uIntegerDoublePi;
           v19.vPosition.x = pParty->vPosition.x + fixpoint_mul(stru_5C6E00->Cos(v7), v6);
@@ -5257,29 +5210,23 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2)
           v26 = 0;
           v27 = 0;
           v19.vPosition.z = ODM_GetFloorLevel(v19.vPosition.x, v19.vPosition.y, pParty->vPosition.z, 0, &v26, &v27, 0);
-          for( int i = 0; i < pOutdoor->uNumBModels; i++ )
-          {
-            v9 = abs(v19.vPosition.y - pOutdoor->pBModels[i].vBoundingCenter.y);
-            v10 = abs(v19.vPosition.x - pOutdoor->pBModels[i].vBoundingCenter.x);
-            if ( int_get_vector_length(v10, v9, 0) < pOutdoor->pBModels[i].sBoundingRadius + 256 )
-            {
+          for (BSPModel &model : pOutdoor->pBModels) {
+            v9 = abs(v19.vPosition.y - model.vBoundingCenter.y);
+            v10 = abs(v19.vPosition.x - model.vBoundingCenter.x);
+            if (int_get_vector_length(v10, v9, 0) < model.sBoundingRadius + 256) {
               v22 = 1;
               break;
             }
           }
-          if ( v22 )
-          {
+          if (v22) {
             v11 = face_id == 100;
             break;
           }
         }
         v11 = face_id == 100;
-      }
-      else if ( uCurrentlyLoadedLevelType == LEVEL_Indoor )
-      {
+      } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         v22 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-        for ( uint i = 0; i < 100; ++i )
-        {
+        for (uint i = 0; i < 100; ++i) {
           v12 = rand() % 512 + 256;
           v13 = rand();
           v14 = v13 % (signed int)stru_5C6E00->uIntegerDoublePi;
@@ -5290,23 +5237,21 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2)
           v19.vPosition.z = pParty->vPosition.z;
           v19.uIndex = a2;
           v17 = pIndoor->GetSector(v19.vPosition.x, v19.vPosition.y, pParty->vPosition.z);
-          if ( v17 == v22 )
-          {
+          if (v17 == v22) {
             v18 = BLV_GetFloorLevel(v19.vPosition.x, v19.vPosition.y, v19.vPosition.z, v17, &uFaceID);
             v19.vPosition.z = v18;
-            if ( v18 != -30000 )
-            {
-              if ( abs(v18 - pParty->vPosition.z) <= 1024 )
+            if (v18 != -30000) {
+              if (abs(v18 - pParty->vPosition.z) <= 1024)
                 break;
             }
           }
         }
         v11 = v26 == 100;
       }
-      if ( v11 )
+
+      if (v11) {
         result = 0;
-      else
-      {
+      } else {
         SpawnEncounter(a1, &v19, 0, 0, 1);
         result = a2;
       }
@@ -5724,7 +5669,7 @@ int stru141_actor_collision_object::_47050A(int dt)
 			this->sMinZ = (this->position.z + fixpoint_mul(this->field_6C, this->direction.z)) + this->field_8_radius;
 		else
 			this->sMinZ = this->position.z + this->field_8_radius;
-		this->uFaceID = 0;
+		this->pid = 0;
 		this->field_80 = -1;
 		this->field_88 = -1;
 		//this->sMinZ = v27;

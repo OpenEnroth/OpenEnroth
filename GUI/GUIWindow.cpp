@@ -38,6 +38,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIDialogue.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -139,90 +140,6 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
     window_SpeakInHouse = this;
     _4B4224_UpdateNPCTopics(0);
   }
-}
-
-GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
-  GUIWindow(x, y, width, height, button, hint)
-{
-  prev_screen_type = current_screen_type;
-  current_screen_type = SCREEN_NPC_DIALOGUE;
-  pBtn_ExitCancel = CreateButton(0x1D7u, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(79), //"Exit"
-    { {ui_exit_cancel_button_background} });
-  if (par1C != 1) {
-    int num_menu_buttons = 0;
-    int v11 = pFontArrus->GetHeight() - 3;
-    NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    if (GetGreetType(sDialogue_SpeakingActorNPC_ID) == 1) {  // QuestsNPC_greet
-      if (speakingNPC->joins) {
-        CreateButton(480, 130, 140, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0xDu, 0, "");
-        num_menu_buttons = 1;
-      }
-      if (speakingNPC->evt_A) {
-        if (num_menu_buttons < 4) {
-          int v14 = NPC_EventProcessor(speakingNPC->evt_A);
-          if (v14 == 1 || v14 == 2)
-            CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x13u, 0, "");
-        }
-      }
-      if (speakingNPC->evt_B) {
-        if (num_menu_buttons < 4) {
-          int v16 = NPC_EventProcessor(speakingNPC->evt_B);
-          if (v16 == 1 || v16 == 2)
-            CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x14u, 0, "");
-        }
-      }
-      if (speakingNPC->evt_C) {
-        if (num_menu_buttons < 4) {
-          int v18 = NPC_EventProcessor(speakingNPC->evt_C);
-          if (v18 == 1 || v18 == 2)
-            CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x15u, 0, "");
-        }
-      }
-      if (speakingNPC->evt_D) {
-        if (num_menu_buttons < 4) {
-          int v20 = NPC_EventProcessor(speakingNPC->evt_D);
-          if (v20 == 1 || v20 == 2)
-            CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x16u, 0, "");
-        }
-      }
-      if (speakingNPC->evt_E) {
-        if (num_menu_buttons < 4) {
-          int v22 = NPC_EventProcessor(speakingNPC->evt_E);
-          if (v22 == 1 || v22 == 2)
-            CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x17u, 0, "");
-        }
-      }
-      if (speakingNPC->evt_F) {
-        if (num_menu_buttons < 4) {
-          int v24 = NPC_EventProcessor(speakingNPC->evt_F);
-          if (v24 == 1 || v24 == 2)
-            CreateButton(0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x18u, 0, "");
-        }
-      }
-    } else {
-      if (speakingNPC->joins) {
-        CreateButton(0x1E0u, 0x82u, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Du, 0, localization->GetString(407)); // Подробнее
-        if (speakingNPC->Hired()) {
-          CreateButton(
-            0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0,
-            localization->FormatString(408, speakingNPC->pName));  // Release %s    Отпустить %s
-        }
-        else
-          CreateButton(0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0, localization->GetString(406)); // Hire    Нанять
-        num_menu_buttons = 2;
-      }
-    }
-    _41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 1);
-  }
-}
-
-
-GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
-    GUIWindow(x, y, width, height, button, hint)
-{
-    prev_screen_type = current_screen_type;
-    pKeyActionMap->EnterText(0, 15, this);
-    current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;
 }
 
 OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
@@ -366,36 +283,6 @@ void GUIWindow::_41D08F_set_keyboard_control_group(int num_buttons, int a3, int 
     this->pStartingPosActiveItem = 0;
     this->receives_keyboard_input = false;
   }
-}
-
-
-
-
-void GUIWindow_Dialogue::Release()
-{
-// -----------------------------------------
-// 0041C26A void GUIWindow::Release --- part
-    uNumDialogueNPCPortraits = 0;
-
-    if (game_ui_dialogue_background)
-    {
-        game_ui_dialogue_background->Release();  
-       game_ui_dialogue_background = nullptr;
-    }
-
-    current_screen_type = prev_screen_type;
-
-    GUIWindow::Release();
-}
-
-void GUIWindow_GenericDialogue::Release()
-{
-// -----------------------------------------
-// 0041C26A void GUIWindow::Release --- part
-    current_screen_type = prev_screen_type;
-    pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-
-    GUIWindow::Release();
 }
 
 void GUIWindow_House::Release() {
@@ -906,14 +793,6 @@ void GUIWindow_BooksButtonOverlay::Update() {
   GUIButton *pButton = (GUIButton*)ptr_1C;
   render->DrawTextureAlphaNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
   viewparams->bRedrawGameUI = true;
-}
-
-void GUIWindow_Dialogue::Update() {
-  GameUI_DrawDialogue();
-}
-
-void GUIWindow_GenericDialogue::Update() {
-  GameUI_DrawBranchlessDialogue();
 }
 
 void GUIWindow_House::Update() {
@@ -1485,464 +1364,231 @@ unsigned int GetSkillColor(unsigned int uPlayerClass, PLAYER_SKILL_TYPE uPlayerS
     Error("Invalid player class: %u", uPlayerClass);
 }
 
+void ClickNPCTopic(int uMessageParam) {
+  int pEventNumber; // ecx@8
+  Player *v4; // esi@20
+  char *v12; // eax@53
+  char *v13; // eax@56
+  char *v14; // eax@57
+  char *v15; // eax@58
+  int pPrice; // ecx@70
+  char *v22; // [sp-Ch] [bp-18h]@73
+  char *v24; // [sp-8h] [bp-14h]@73
 
-//----- (004BC49B) --------------------------------------------------------
-void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType)
-{
-	NPCData *speakingNPC; // ebp@1
-	int npc_event_id; // ecx@10
-	char *v13; // [sp-8h] [bp-18h]@60
-
-	speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-	uDialogueType = newDialogueType;
-	if (!speakingNPC->uFlags)
-		speakingNPC->uFlags = 1;
-	if (newDialogueType == DIALOGUE_PROFESSION_DETAILS)
-		dialogue_show_profession_details = ~dialogue_show_profession_details;
-	else if (newDialogueType == DIALOGUE_76)
-	{
-		if (speakingNPC->Hired())
-		{
-			if ((signed int)pNPCStats->uNumNewNPCs > 0)
-			{
-				for (uint i = 0; i < (unsigned int)pNPCStats->uNumNewNPCs; ++i)
-				{
-					if (pNPCStats->pNewNPCData[i].uFlags & 0x80 && !strcmp(speakingNPC->pName, pNPCStats->pNewNPCData[i].pName))
-						pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
-				}
-			}
-			if (pParty->pHirelings[0].pName && !_stricmp(pParty->pHirelings[0].pName, speakingNPC->pName))
-				memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
-			else if (pParty->pHirelings[1].pName && !_stricmp(pParty->pHirelings[1].pName, speakingNPC->pName))
-				memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
-			pParty->hirelingScrollPosition = 0;
-			pParty->CountHirelings();
-			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-			dword_7241C8 = 0;
-			return;
-		}
-		if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName)
-			GameUI_StatusBar_OnEvent(localization->GetString(533));// "I cannot join you, you're party is full"
-		else
-		{
-			if (speakingNPC->uProfession != 51) //burglars have no hiring price
-			{
-				if (pParty->uNumGold < pNPCStats->pProfessions[speakingNPC->uProfession].uHirePrice)
-				{
-					GameUI_StatusBar_OnEvent(localization->GetString(155));// "You don't have enough gold"
-					dialogue_show_profession_details = false;
-					uDialogueType = 13;
-					if (uActiveCharacter)
-						pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
-					if (!dword_7241C8)
-						pEngine->Draw();
-					dword_7241C8 = 0;
-					return;
-				}
-				Party::TakeGold(pNPCStats->pProfessions[speakingNPC->uProfession].uHirePrice);
-			}
-			speakingNPC->uFlags |= 0x80u;
-			if (pParty->pHirelings[0].pName)
-			{
-				memcpy(&pParty->pHirelings[1], speakingNPC, sizeof(pParty->pHirelings[1]));
-				v13 = pParty->pHireling2Name;
-			}
-			else
-			{
-				memcpy(&pParty->pHirelings[0], speakingNPC, sizeof(pParty->pHirelings[0]));
-				v13 = pParty->pHireling1Name;
-			}
-			strcpy(v13, speakingNPC->pName);
-			pParty->hirelingScrollPosition = 0;
-			pParty->CountHirelings();
-			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-			if (sDialogue_SpeakingActorNPC_ID >= 0)
-				pDialogue_SpeakingActor->uAIState = Removed;
-			if (uActiveCharacter)
-				pPlayers[uActiveCharacter]->PlaySound(SPEECH_61, 0);
-		}
-	}
-	else if ((signed int)newDialogueType > DIALOGUE_84 && (signed int)newDialogueType <= DIALOGUE_ARENA_SELECT_CHAMPION) //выбор уровня сложности боя
-	{
-		ArenaFight();
-		return;
-	}
-	else if (newDialogueType == DIALOGUE_USE_NPC_ABILITY)
-	{
-		if (UseNPCSkill((NPCProf)speakingNPC->uProfession) == 0)
-		{
-			if (speakingNPC->uProfession != GateMaster)
-				speakingNPC->bHasUsedTheAbility = 1;
-			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-		}
-		else
-			GameUI_StatusBar_OnEvent(localization->GetString(140)); //"Your packs are already full!"
-	}
-	else if (newDialogueType == DIALOGUE_13)
-	{
-		if (!speakingNPC->Hired())
-		{
-			sub_4B3E1E();
-			dialogue_show_profession_details = false;
-		}
-		else
-		{
-			for (uint i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i)
-			{
-				if (pNPCStats->pNewNPCData[i].uFlags & 0x80 && !strcmp(speakingNPC->pName, pNPCStats->pNewNPCData[i].pName))
-					pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
-			}
-			if (pParty->pHirelings[0].pName && !_stricmp(pParty->pHirelings[0].pName, speakingNPC->pName))
-				memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
-			else if (pParty->pHirelings[1].pName && !_stricmp(pParty->pHirelings[1].pName, speakingNPC->pName))
-				memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
-			pParty->hirelingScrollPosition = 0;
-			pParty->CountHirelings();
-			pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-			dword_7241C8 = 0;
-			return;
-		}
-	}
-	else if (newDialogueType >= DIALOGUE_EVT_A && newDialogueType <= DIALOGUE_EVT_F)
-	{
-		switch (newDialogueType)
-		{
-		case DIALOGUE_EVT_A:  npc_event_id = speakingNPC->evt_A; break;
-		case DIALOGUE_EVT_B:  npc_event_id = speakingNPC->evt_B; break;
-		case DIALOGUE_EVT_C:  npc_event_id = speakingNPC->evt_C; break;
-		case DIALOGUE_EVT_D:  npc_event_id = speakingNPC->evt_D; break;
-		case DIALOGUE_EVT_E:  npc_event_id = speakingNPC->evt_E; break;
-		case DIALOGUE_EVT_F:  npc_event_id = speakingNPC->evt_F; break;
-		}
-		if ((npc_event_id >= 200) && (npc_event_id <= 310))
-			_4B3FE5_training_dialogue(npc_event_id); //200-310
-		else if ((npc_event_id >= 400) && (npc_event_id <= 410))
-		{ //400-410
-			dword_F8B1D8 = newDialogueType;
-			DrawJoinGuildWindow(npc_event_id - 400);
-		}
-		else
-		{
-			switch (npc_event_id)
-			{
-			case 139:
-				OracleDialogue();
-				break;
-			case 311:
-				CheckBountyRespawnAndAward();
-				break;
-			case 399:
-				Arena_SelectionFightLevel();
-				break;
-			default:
-				activeLevelDecoration = (LevelDecoration*)1;
-				current_npc_text.clear();
-				EventProcessor(npc_event_id, 0, 1);
-				activeLevelDecoration = nullptr;
-				break;
-			}
-		}
-	}
-	if (!dword_7241C8)
-		pEngine->Draw();
-	dword_7241C8 = 0;
-}
-
-//----- (004B3E1E) --------------------------------------------------------
-void sub_4B3E1E() {
-  __debugbreak();
-  NPCData *v0 = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-  int v1 = 0;
-  pDialogueWindow->eWindowType = WINDOW_MainMenu;
-  pDialogueWindow->Release();
-  pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 1);
-  if (pNPCStats->pProfessions[v0->uProfession].pBenefits) {  //*(&pNPCStats->field_13A5C + 5 * v0->uProfession) )
-    pDialogueWindow->CreateButton(480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, 0, localization->GetString(407)); // Details / Подробнее
-    v1 = 1;
+  uDialogueType = uMessageParam + 1;
+  NPCData *pCurrentNPCInfo = HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];//- 1
+  if (uMessageParam <= 24) {
+    switch (uMessageParam)
+    {
+    case 13:
+      current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
+      NPCHireableDialogPrepare();
+      dialogue_show_profession_details = false;
+      BackToHouseMenu();
+      return;
+    case 19:
+      pEventNumber = pCurrentNPCInfo->evt_A;
+      break;
+    case 20:
+      pEventNumber = pCurrentNPCInfo->evt_B;
+      break;
+    case 21:
+      pEventNumber = pCurrentNPCInfo->evt_C;
+      break;
+    case 22:
+      pEventNumber = pCurrentNPCInfo->evt_D;
+      break;
+    case 23:
+      pEventNumber = pCurrentNPCInfo->evt_E;
+      break;
+    case 24:
+      pEventNumber = pCurrentNPCInfo->evt_F;
+      break;
+    default:
+      BackToHouseMenu();
+      return;
+    }
+    /*switch ( pEventNumber )
+    {
+    case 139:
+    OracleDialogue();
+    goto _return;
+    case 311:
+    CheckBountyRespawnAndAward();
+    goto _return;
+    }*/
+    if (pEventNumber < 200 || pEventNumber > 310) {
+      if (pEventNumber < 400 || pEventNumber > 410) {
+        if (pEventNumber == 139) {
+          OracleDialogue();
+        } else {
+          if (pEventNumber == 311) {
+            CheckBountyRespawnAndAward();
+          } else {
+            current_npc_text.clear();
+            activeLevelDecoration = (LevelDecoration*)1;
+            EventProcessor(pEventNumber, 0, 1);
+            activeLevelDecoration = nullptr;
+          }
+        }
+      } else {
+        dword_F8B1D8 = uMessageParam;
+        DrawJoinGuildWindow(pEventNumber - 400);
+      }
+    } else {
+      _4B3FE5_training_dialogue(pEventNumber);
+    }
+    BackToHouseMenu();
+    return;
   }
-  pDialogueWindow->CreateButton(480, 30 * v1 + 160, 140, 30, 1, 0, UIMSG_SelectNPCDialogueOption, 76, 0, localization->GetString(406)); // Hire    Нанять
-  pDialogueWindow->_41D08F_set_keyboard_control_group(v1 + 1, 1, 0, 1);
-}
-
-//----- (004B2001) --------------------------------------------------------
-void ClickNPCTopic(signed int uMessageParam)
-{
-	NPCData *pCurrentNPCInfo; // ebp@1
-	int pEventNumber; // ecx@8
-	Player *v4; // esi@20
-	char *v12; // eax@53
-	char *v13; // eax@56
-	char *v14; // eax@57
-	char *v15; // eax@58
-//	char *v17; // ecx@63
-	signed int pPrice; // ecx@70
-	char *v22; // [sp-Ch] [bp-18h]@73
-	char *v24; // [sp-8h] [bp-14h]@73
-
-	uDialogueType = uMessageParam + 1;
-	pCurrentNPCInfo = HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];//- 1
-	if (uMessageParam <= 24)
-	{
-		switch (uMessageParam)
-		{
-		case 13:
-			current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
-			NPCHireableDialogPrepare();
-			dialogue_show_profession_details = false;
-			BackToHouseMenu();
-			return;		
-		case 19:
-			pEventNumber = pCurrentNPCInfo->evt_A;
-			break;
-		case 20:
-			pEventNumber = pCurrentNPCInfo->evt_B;
-			break;
-		case 21:
-			pEventNumber = pCurrentNPCInfo->evt_C;
-			break;
-		case 22:
-			pEventNumber = pCurrentNPCInfo->evt_D;
-			break;
-		case 23:
-			pEventNumber = pCurrentNPCInfo->evt_E;
-			break;
-		case 24:
-			pEventNumber = pCurrentNPCInfo->evt_F;
-			break;
-		default:
-			BackToHouseMenu();
-			return;
-		}
-		/*switch ( pEventNumber )
-		{
-		case 139:
-		OracleDialogue();
-		goto _return;
-		case 311:
-		CheckBountyRespawnAndAward();
-		goto _return;
-		}*/
-		if (pEventNumber < 200 || pEventNumber > 310)
-		{
-			if (pEventNumber < 400 || pEventNumber > 410)
-			{
-				if (pEventNumber == 139)
-				{
-					OracleDialogue();
-				}
-				else
-				{
-					if (pEventNumber == 311)
-					{
-						CheckBountyRespawnAndAward();
-					}
-					else
-					{
-						current_npc_text.clear();
-						activeLevelDecoration = (LevelDecoration*)1;
-						EventProcessor(pEventNumber, 0, 1);
-						activeLevelDecoration = nullptr;
-					}
-				}
-			}
-			else
-			{
-				dword_F8B1D8 = uMessageParam;
-				DrawJoinGuildWindow(pEventNumber - 400);
-			}
-		}
-		else
-		{
-			_4B3FE5_training_dialogue(pEventNumber);
-		}
-		BackToHouseMenu();
-		return;
-	}
-	if (uMessageParam != 76)
-	{
-		if (uMessageParam == 77)
-		{
-			//uBoxHeight = pCurrentNPCInfo->uProfession;
-			__debugbreak();  // probably hirelings found in buildings, not present in MM7, changed "pCurrentNPCInfo->uProfession - 1" to "pCurrentNPCInfo->uProfession", have to check in other versions whether it's ok
-			if (dialogue_show_profession_details)
-            {
-                current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0
-                );
+  if (uMessageParam != 76) {
+    if (uMessageParam == 77) {
+      //uBoxHeight = pCurrentNPCInfo->uProfession;
+      __debugbreak();  // probably hirelings found in buildings, not present in MM7, changed "pCurrentNPCInfo->uProfession - 1" to "pCurrentNPCInfo->uProfession", have to check in other versions whether it's ok
+      if (dialogue_show_profession_details) {
+        current_npc_text = BuildDialogueString(
+          pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0
+        );
+      } else {
+        current_npc_text = BuildDialogueString(
+          pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0
+        );
+      }
+      dialogue_show_profession_details = ~dialogue_show_profession_details;
+    } else {
+      if (uMessageParam == 79) {
+        if (contract_approved) {
+          Party::TakeGold(gold_transaction_amount);
+          if (uActiveCharacter) {
+            v12 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
+            *(short *)v12 &= 0x3Fu;
+            switch (dword_F8B1B0_MasteryBeingTaught) {
+              case 2:
+                v15 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
+                *v15 |= 0x40u;
+                break;
+              case 3:
+                v14 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
+                *v14 |= 0x80u;
+                break;
+              case 4:
+                v13 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
+                v13[1] |= 1u;
+                break;
             }
-			else
-            {
-                current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pBenefits, uActiveCharacter - 1, 0, 0, 0
-                );
-            }
-            dialogue_show_profession_details = ~dialogue_show_profession_details;
-		}
-		else
-		{
-			if (uMessageParam == 79)
-			{
-				if (contract_approved)
-				{
-					Party::TakeGold(gold_transaction_amount);
-					if (uActiveCharacter)
-					{
-						v12 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
-						*(short *)v12 &= 0x3Fu;
-						switch (dword_F8B1B0_MasteryBeingTaught)
-						{
-						case 2:
-							v15 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
-							*v15 |= 0x40u;
-							break;
-						case 3:
-							v14 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
-							*v14 |= 0x80u;
-							break;
-						case 4:
-							v13 = (char *)&pPlayers[uActiveCharacter]->pActiveSkills[dword_F8B1AC_award_bit_number];
-							v13[1] |= 1u;
-							break;
-						}
-						pPlayers[uActiveCharacter]->PlaySound(SPEECH_85, 0);
-					}
-					pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-					/*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
-					{
-					pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType = UIMSG_Escape;
-					pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 1;
-					*(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
-					++pMessageQueue_50CBD0->uNumMessages;
-					}*/
-				}
-			}
-			else
-			{
-				if (uMessageParam == 82 && contract_approved) //join guild
-				{
-					Party::TakeGold(gold_transaction_amount);
-					v4 = pParty->pPlayers.data();
-					do
-					{
-						v4->SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
-						++v4;
-					} while ((signed int)v4 < (signed int)pParty->pHirelings.data());
-					switch (dword_F8B1D8)
-					{
-					case 19:
-						pEventNumber = pCurrentNPCInfo->evt_A;
-						if (pEventNumber >= 400 && pEventNumber <= 416)
-							pCurrentNPCInfo->evt_A = 0;
-						break;
-					case 20:
-						pEventNumber = pCurrentNPCInfo->evt_B;
-						if (pEventNumber >= 400 && pEventNumber <= 416)
-							pCurrentNPCInfo->evt_B = 0;
-						break;
-					case 21:
-						pEventNumber = pCurrentNPCInfo->evt_C;
-						if (pEventNumber >= 400 && pEventNumber <= 416)
-							pCurrentNPCInfo->evt_C = 0;
-						break;
-					case 22:
-						pEventNumber = pCurrentNPCInfo->evt_D;
-						if (pEventNumber >= 400 && pEventNumber <= 416)
-							pCurrentNPCInfo->evt_D = 0;
-						break;
-					case 23:
-						pEventNumber = pCurrentNPCInfo->evt_E;
-						if (pEventNumber >= 400 && pEventNumber <= 416)
-							pCurrentNPCInfo->evt_E = 0;
-						break;
-					case 24:
-						pEventNumber = pCurrentNPCInfo->evt_F;
-						if (pEventNumber >= 400 && pEventNumber <= 416)
-							pCurrentNPCInfo->evt_F = 0;
-						break;
-					}
-					pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-					/*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
-					{
-					pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType = UIMSG_Escape;
-					pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 1;
-					*(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
-					++pMessageQueue_50CBD0->uNumMessages;
-					}*/
-					//v11 = uActiveCharacter;
-					if (uActiveCharacter)
-					{
-						pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_86, 0);
-						BackToHouseMenu();
-						return;
-					}
-				}
-			}
-		}
-		BackToHouseMenu();
-		return;
-	}
-	if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName)
-	{
-		GameUI_StatusBar_OnEvent(localization->GetString(533));// ""I cannot join you, you're party is full""
-		BackToHouseMenu();
-		return;
-	}
-	
-	
-	if (pCurrentNPCInfo->uProfession != 51) //burglars have no hiring price
-	{
-		__debugbreak();  // probably hirelings found in buildings, not present in MM7, changed "pCurrentNPCInfo->uProfession - 1" to "pCurrentNPCInfo->uProfession", have to check in other versions whether it's ok
-		pPrice = pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].uHirePrice;
-		if (pParty->uNumGold < (unsigned int)pPrice)
-		{
-			GameUI_StatusBar_OnEvent(localization->GetString(155));
-			dialogue_show_profession_details = false;
-			uDialogueType = 13;
-			current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
-			if (uActiveCharacter)
-				pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
-			GameUI_StatusBar_OnEvent(localization->GetString(155));
-			BackToHouseMenu();
-			return;
-		}
-		else
-			Party::TakeGold(pPrice);
-	}
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_85, 0);
+          }
+          pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+          /*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
+          {
+          pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType = UIMSG_Escape;
+          pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 1;
+          *(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
+          ++pMessageQueue_50CBD0->uNumMessages;
+          }*/
+        }
+      } else {
+        if (uMessageParam == 82 && contract_approved) {  // join guild
+          Party::TakeGold(gold_transaction_amount);
+          v4 = pParty->pPlayers.data();
+          do {
+            v4->SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
+            ++v4;
+          } while ((signed int)v4 < (signed int)pParty->pHirelings.data());
+          switch (dword_F8B1D8) {
+          case 19:
+            pEventNumber = pCurrentNPCInfo->evt_A;
+            if (pEventNumber >= 400 && pEventNumber <= 416)
+              pCurrentNPCInfo->evt_A = 0;
+            break;
+          case 20:
+            pEventNumber = pCurrentNPCInfo->evt_B;
+            if (pEventNumber >= 400 && pEventNumber <= 416)
+              pCurrentNPCInfo->evt_B = 0;
+            break;
+          case 21:
+            pEventNumber = pCurrentNPCInfo->evt_C;
+            if (pEventNumber >= 400 && pEventNumber <= 416)
+              pCurrentNPCInfo->evt_C = 0;
+            break;
+          case 22:
+            pEventNumber = pCurrentNPCInfo->evt_D;
+            if (pEventNumber >= 400 && pEventNumber <= 416)
+              pCurrentNPCInfo->evt_D = 0;
+            break;
+          case 23:
+            pEventNumber = pCurrentNPCInfo->evt_E;
+            if (pEventNumber >= 400 && pEventNumber <= 416)
+              pCurrentNPCInfo->evt_E = 0;
+            break;
+          case 24:
+            pEventNumber = pCurrentNPCInfo->evt_F;
+            if (pEventNumber >= 400 && pEventNumber <= 416)
+              pCurrentNPCInfo->evt_F = 0;
+            break;
+          }
+          pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+          if (uActiveCharacter) {
+            pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_86, 0);
+            BackToHouseMenu();
+            return;
+          }
+        }
+      }
+    }
+    BackToHouseMenu();
+    return;
+  }
 
-	pCurrentNPCInfo->uFlags |= 128;
-	pParty->hirelingScrollPosition = 0;
-	pParty->CountHirelings();
-	if (pParty->pHirelings[0].pName)
-	{
-		memcpy(&pParty->pHirelings[1], pCurrentNPCInfo, sizeof(pParty->pHirelings[1]));
-		v24 = pCurrentNPCInfo->pName;
-		v22 = pParty->pHireling2Name;
-	}
-	else
-	{
-		memcpy(pParty->pHirelings.data(), pCurrentNPCInfo, 0x4Cu);
-		v24 = pCurrentNPCInfo->pName;
-		v22 = pParty->pHireling1Name;
-	}
-	strcpy(v22, v24);
-	pParty->hirelingScrollPosition = 0;
-	pParty->CountHirelings();
-	PrepareHouse((HOUSE_ID)(int)window_SpeakInHouse->ptr_1C);
-	dialog_menu_id = HOUSE_DIALOGUE_MAIN;
+  if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
+    GameUI_StatusBar_OnEvent(localization->GetString(533));// ""I cannot join you, you're party is full""
+    BackToHouseMenu();
+    return;
+  }
 
-	pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-	/*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
-	{
-	pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType = UIMSG_Escape;
-	pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 1;
-	*(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
-	++pMessageQueue_50CBD0->uNumMessages;
-	}*/
-	if (uActiveCharacter)
-		pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)61, 0);
+
+  if (pCurrentNPCInfo->uProfession != 51) {  // burglars have no hiring price
+    __debugbreak();  // probably hirelings found in buildings, not present in MM7, changed "pCurrentNPCInfo->uProfession - 1" to "pCurrentNPCInfo->uProfession", have to check in other versions whether it's ok
+    pPrice = pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].uHirePrice;
+    if (pParty->uNumGold < (unsigned int)pPrice) {
+      GameUI_StatusBar_OnEvent(localization->GetString(155));
+      dialogue_show_profession_details = false;
+      uDialogueType = 13;
+      current_npc_text = BuildDialogueString(pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText, uActiveCharacter - 1, 0, 0, 0);
+      if (uActiveCharacter)
+        pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
+      GameUI_StatusBar_OnEvent(localization->GetString(155));
+      BackToHouseMenu();
+      return;
+    }
+    else
+      Party::TakeGold(pPrice);
+  }
+
+  pCurrentNPCInfo->uFlags |= 128;
+  pParty->hirelingScrollPosition = 0;
+  pParty->CountHirelings();
+  if (pParty->pHirelings[0].pName) {
+    memcpy(&pParty->pHirelings[1], pCurrentNPCInfo, sizeof(pParty->pHirelings[1]));
+    v24 = pCurrentNPCInfo->pName;
+    v22 = pParty->pHireling2Name;
+  } else {
+    memcpy(pParty->pHirelings.data(), pCurrentNPCInfo, 0x4Cu);
+    v24 = pCurrentNPCInfo->pName;
+    v22 = pParty->pHireling1Name;
+  }
+  strcpy(v22, v24);
+  pParty->hirelingScrollPosition = 0;
+  pParty->CountHirelings();
+  PrepareHouse((HOUSE_ID)(int)window_SpeakInHouse->ptr_1C);
+  dialog_menu_id = HOUSE_DIALOGUE_MAIN;
+
+  pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+  if (uActiveCharacter)
+    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)61, 0);
 
 _return:
-	BackToHouseMenu();
+  BackToHouseMenu();
 }
 
 //Originally called _4B254D_SkillMasteryTeacher to have contract_approved assigned, to be able to set some button name. 

@@ -1,14 +1,11 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+#include "Party.h"
 
-#define _CRT_SECURE_NO_WARNINGS
+#include <stdlib.h>
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
 
-#include "Party.h"
 #include "Media/Audio/AudioPlayer.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "IO/Mouse.h"

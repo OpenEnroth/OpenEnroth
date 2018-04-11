@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Strings.h"
-#include "Engine/Lod.h"
+#include "Engine/LOD.h"
 
 #include "Engine/Graphics/Image.h"
 

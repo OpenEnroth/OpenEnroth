@@ -47,7 +47,7 @@ struct Polygon
     int **ptr_48;
     unsigned __int16 uTileBitmapID;
     __int16 field_4E;
-    __int16 field_50;
+    __int16 pid;
     __int16 field_52;
     ODMFace *pODMFace;
     char dimming_level;

@@ -445,7 +445,7 @@ OSWindow *OSWindow::Create(const wchar_t *title, int window_width, int window_he
 
 
 
-void *CALLBACK OSWindow::WinApiMsgRouter(void *hwnd, int msg, int wparam, void *lparam)
+void *OSWindow::WinApiMsgRouter(void *hwnd, int msg, int wparam, void *lparam)
 {
     if (msg == WM_NCCREATE)
     {
@@ -476,7 +476,7 @@ void OSWindow::SetCursor(const char *cursor_name) {
 
   if (!strcmp(cursor_name, "MICON1"))
     //SetClassLongPtrW(api_handle, GCLP_HCURSOR, (LONG)LoadCursorW(GetModuleHandleW(nullptr), IDC_ARROW));
-    SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG)LoadCursorW(NULL, IDC_ARROW));
+    SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_ARROW));
   else if (!strcmp(cursor_name, "MICON2")) {
     //HCURSOR hCurs1;
 
@@ -486,11 +486,11 @@ void OSWindow::SetCursor(const char *cursor_name) {
       MessageBoxA(nullptr, "Ritor1: original cursor(Target) isn't loading", "", 0);
       __debugbreak();
     }
-    SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG)LoadCursorW(NULL, IDC_CROSS));
+    SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_CROSS));
 
   }
   else if (!strcmp(cursor_name, "MICON3"))
-    SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG)LoadCursorW(NULL, IDC_WAIT));
+    SetClassLongPtrW((HWND)this->GetApiHandle(), GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_WAIT));
 
   //ClientToScreen(api_handle, &cursor_pos); //???
   SetCursorPos(cursor_pos.x, cursor_pos.y);

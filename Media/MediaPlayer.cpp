@@ -15,17 +15,17 @@
 #include <cassert>
 #include <queue>
 #include <chrono>
-#include <io.h>
 
 extern "C"
 {
-#include "lib/libavcodec/avcodec.h"
-#include "lib/libavformat/avformat.h"
-#include "lib/libavutil/avutil.h"
-#include "lib/libavutil/imgutils.h"
-#include "lib/libswscale/swscale.h"
-#include "lib/libswresample/swresample.h"
-#include "lib/libavutil/opt.h"
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libavutil/avutil.h"
+#include "libavutil/imgutils.h"
+#include "libswscale/swscale.h"
+#include "libswresample/swresample.h"
+#include "libavutil/opt.h"
+#include "libavutil/mem.h"
 }
 
 #pragma comment(lib, "avcodec.lib")
@@ -66,22 +66,18 @@ class AVStreamWrapper {
     }
   }
 
-  bool open(AVFormatContext *format_ctx, AVMediaType type) {
-    int stream_idx = av_find_best_stream(format_ctx, type, -1, -1, nullptr, 0);
+  bool open(AVFormatContext *format_ctx, AVMediaType type_) {
+    stream_idx = av_find_best_stream(format_ctx, type_, -1, -1, nullptr, 0);
     if (stream_idx >= 0) {
-      auto stream = format_ctx->streams[stream_idx];
-      auto dec_ctx = stream->codec;
+      stream = format_ctx->streams[stream_idx];
+      dec_ctx = stream->codec;
 
       // Find the decoder for the video stream
-      auto dec = avcodec_find_decoder(dec_ctx->codec_id);
+      dec = avcodec_find_decoder(dec_ctx->codec_id);
       if (dec) {
         // Open codec
         if (avcodec_open2(dec_ctx, dec, nullptr) >= 0) {
-          this->type = type;
-          this->stream_idx = stream_idx;
-          this->stream = stream;
-          this->dec = dec;
-          this->dec_ctx = dec_ctx;
+          type = type_;
           return true;
         }
         fprintf(stderr, "ffmpeg: Could not open codec\n");
@@ -162,8 +158,7 @@ class AVVideoStream: public AVStreamWrapper {
 
   bool open(AVFormatContext *format_ctx) {
     if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_VIDEO)) {
-      Error("Video stream not found");
-      false;
+      return false;
     }
 
     width = dec_ctx->width;
@@ -186,7 +181,7 @@ class AVVideoStream: public AVStreamWrapper {
     int frameFinished = 0;
     do {
       if (avcodec_decode_video2(dec_ctx, frame, &frameFinished, avpacket) < 0) {
-        __debugbreak();
+        assert(false);
       }
     } while (!frameFinished);
 
@@ -317,7 +312,7 @@ class Movie : public IMovie {
     uFilePos = 0;
 
     if (!ioBuffer) {
-      ioBuffer = (unsigned char *)av_malloc(0x4000 + FF_INPUT_BUFFER_PADDING_SIZE); // can get av_free()ed by libav
+      ioBuffer = (unsigned char *)av_malloc(AV_INPUT_BUFFER_MIN_SIZE); // can get av_free()ed by libav
     }
 
     if (!avioContext) {
@@ -336,7 +331,7 @@ class Movie : public IMovie {
     }
 
     auto current_time = std::chrono::system_clock::now();
-    std::chrono::duration<double> diff = current_time - start_time;
+    std::chrono::duration<double, std::ratio<1> > diff = current_time - start_time;
     std::chrono::milliseconds diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
     playback_time += diff_ms.count();
     start_time = std::chrono::system_clock::now();
@@ -365,14 +360,12 @@ class Movie : public IMovie {
       }
     }
 
-    int frameFinished = false;
-
     // keep reading packets until we hit the end or find a video packet
     do {
       if (av_read_frame(format_ctx, avpacket) < 0) {
         // probably movie is finished
         playing = false;
-        av_free_packet(avpacket);
+        av_packet_free(&avpacket);
         return nullptr;
       }
 
@@ -390,7 +383,7 @@ class Movie : public IMovie {
       else if (avpacket->stream_index == video.stream_idx) {
         video.decode_frame(avpacket);
       } else {
-        __debugbreak(); // unknown stream
+        assert(false); // unknown stream
       }
     } while (avpacket->stream_index != video.stream_idx || avpacket->pts != desired_frame_number);
 
@@ -444,10 +437,9 @@ class Movie : public IMovie {
     if (whence == AVSEEK_SIZE) {
       return uFileSize;
     }
-    int res = _fseeki64(hFile, uFileOffset + offset, SEEK_SET);
+    int res = fseek(hFile, uFileOffset + offset, SEEK_SET);
     return res;
   }
-
 
  protected:
   unsigned int     width;
@@ -595,7 +587,7 @@ void MPlayer::OpenHouseMovie(const std::string &pMovieName, bool bLoop) {
 
   std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
   pMovie->LoadFromLOD(file, size, offset);
-  pMovie_Track = pMovie;
+  pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
   sInHouseMovie = pMovieName;
 }
 
@@ -630,7 +622,7 @@ void MPlayer::HouseMovieLoop() {
     if (file != nullptr) {
       std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
       pMovie->LoadFromLOD(file, size, offset);
-      pMovie_Track = pMovie;
+      pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
       pMovie_Track->Play();
     }
   }
@@ -655,7 +647,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
   if (!pMovie->LoadFromLOD(file, size, offset)) {
     return;
   }
-  pMovie_Track = pMovie;
+  pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
 
   pEventTimer->Pause();
   pAudioPlayer->MusicPause();
@@ -768,11 +760,9 @@ MPlayer::MPlayer() {
 
   if (!libavcodec_initialized) {
     av_log_set_callback(av_logger);
-    avcodec_register_all();
-
     // Register all available file formats and codecs
+    avcodec_register_all();
     av_register_all();
-
     libavcodec_initialized = true;
   }
 
@@ -801,7 +791,7 @@ MPlayer::~MPlayer() {
 
 // AudioBaseDataSource
 
-class AudioBaseDataSource : IAudioDataSource {
+class AudioBaseDataSource : public IAudioDataSource {
  public:
   AudioBaseDataSource();
   virtual ~AudioBaseDataSource() { Close(); }
@@ -819,7 +809,7 @@ class AudioBaseDataSource : IAudioDataSource {
   AVCodecContext *pCodecContext;
   SwrContext *pConverter;
   bool bOpened;
-  std::queue<PMemBuffer> queue;
+  std::queue<PMemBuffer, std::deque<PMemBuffer>> queue;
 };
 
 AudioBaseDataSource::AudioBaseDataSource() {
@@ -958,12 +948,12 @@ PMemBuffer AudioBaseDataSource::GetNextBuffer() {
 
 // AudioFileDataSource
 
-class AudioFileDataSource : AudioBaseDataSource {
+class AudioFileDataSource : public AudioBaseDataSource {
  public:
   AudioFileDataSource(const std::string &file_name);
   virtual ~AudioFileDataSource() {}
 
-  virtual bool AudioFileDataSource::Open();
+  virtual bool Open();
 
  protected:
   std::string sFileName;
@@ -992,7 +982,7 @@ bool AudioFileDataSource::Open() {
 
 // AudioBufferDataSource
 
-class AudioBufferDataSource : AudioBaseDataSource {
+class AudioBufferDataSource : public AudioBaseDataSource {
  public:
   AudioBufferDataSource(PMemBuffer buffer);
   virtual ~AudioBufferDataSource() {}
@@ -1076,10 +1066,10 @@ int AudioBufferDataSource::ReadPacket(uint8_t *buf, int buf_size) {
 
 PAudioDataSource CreateAudioFileDataSource(const std::string &file_name) {
   std::shared_ptr<AudioFileDataSource> source = std::make_shared<AudioFileDataSource>(file_name);
-  return std::reinterpret_pointer_cast<IAudioDataSource, AudioFileDataSource>(source);
+  return std::dynamic_pointer_cast<IAudioDataSource, AudioFileDataSource>(source);
 }
 
 PAudioDataSource CreateAudioBufferDataSource(PMemBuffer buffer) {
   std::shared_ptr<AudioBufferDataSource> source = std::make_shared<AudioBufferDataSource>(buffer);
-  return std::reinterpret_pointer_cast<IAudioDataSource, AudioBufferDataSource>(source);
+  return std::dynamic_pointer_cast<IAudioDataSource, AudioBufferDataSource>(source);
 }

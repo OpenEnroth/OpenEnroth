@@ -377,15 +377,15 @@ LABEL_13:
             {
                 if (v29 < v54)
                     pSpriteObjects[uLayingItemID].vPosition.z = v54 + 1;
-                if (!_46BFFA_update_spell_fx(uLayingItemID, stru_721530.uFaceID))
+                if (!_46BFFA_update_spell_fx(uLayingItemID, stru_721530.pid))
                     return;
             }
-            if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Decoration)
+            if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration)
                 break;
-            if (PID_TYPE(stru_721530.uFaceID) == OBJECT_BModel)
+            if (PID_TYPE(stru_721530.pid) == OBJECT_BModel)
             {
-                bmodel = &pOutdoor->pBModels[(signed int)stru_721530.uFaceID >> 9];
-                face = &bmodel->pFaces[PID_ID(stru_721530.uFaceID) & 0x3F];
+                bmodel = &pOutdoor->pBModels[(signed int)stru_721530.pid >> 9];
+                face = &bmodel->pFaces[PID_ID(stru_721530.pid) & 0x3F];
                 if (face->uPolygonType == POLYGON_Floor)
                 {
                     pSpriteObjects[uLayingItemID].vPosition.z = bmodel->pVertices.pVertices[face->pVertexIDs[0]].z + 1;
@@ -435,8 +435,8 @@ LABEL_13:
         }
         v57 = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x
             + pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y);
-        v38 = stru_5C6E00->Atan2(pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(stru_721530.uFaceID)].vPosition.x,
-            pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(stru_721530.uFaceID)].vPosition.y);
+        v38 = stru_5C6E00->Atan2(pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(stru_721530.pid)].vPosition.x,
+            pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(stru_721530.pid)].vPosition.y);
         pSpriteObjects[uLayingItemID].vVelocity.x = fixpoint_mul(stru_5C6E00->Cos(v38), v57);
         pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(stru_5C6E00->Sin(v38 - stru_5C6E00->uIntegerHalfPi), v57);
         goto LABEL_74;
@@ -586,10 +586,10 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
             pSpriteObject->vPosition.z += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
             pSpriteObject->uSectorID = stru_721530.uSectorID;
             stru_721530.field_70 += stru_721530.field_7C;
-            if (pObject->uFlags & OBJECT_DESC_INTERACTABLE && !_46BFFA_update_spell_fx(uLayingItemID, stru_721530.uFaceID))
+            if (pObject->uFlags & OBJECT_DESC_INTERACTABLE && !_46BFFA_update_spell_fx(uLayingItemID, stru_721530.pid))
                 return;
-            v15 = (signed int)stru_721530.uFaceID >> 3;
-            if (PID_TYPE(stru_721530.uFaceID) == OBJECT_Decoration)
+            v15 = (signed int)stru_721530.pid >> 3;
+            if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration)
             {
                 v40 = integer_sqrt(pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x + pSpriteObject->vVelocity.y * pSpriteObject->vVelocity.y);
                 v23 = stru_5C6E00->Atan2(pSpriteObject->vPosition.x - pLevelDecorations[v15].vPosition.x,
@@ -597,9 +597,9 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID)
                 pSpriteObject->vVelocity.x = fixpoint_mul(stru_5C6E00->Cos(v23), v40);
                 pSpriteObject->vVelocity.y = fixpoint_mul(stru_5C6E00->Sin(v23), v40);
             }
-            if (PID_TYPE(stru_721530.uFaceID) == OBJECT_BModel)
+            if (PID_TYPE(stru_721530.pid) == OBJECT_BModel)
             {
-                stru_721530.field_84 = (signed int)PID_ID(stru_721530.uFaceID);
+                stru_721530.field_84 = (signed int)PID_ID(stru_721530.pid);
                 if (pIndoor->pFaces[v15].uPolygonType != POLYGON_Floor)
                 {
                     v42 = abs(pIndoor->pFaces[v15].pFacePlane_old.vNormal.x * pSpriteObject->vVelocity.x

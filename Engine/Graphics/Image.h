@@ -25,9 +25,8 @@ class Image
     public:
         inline Image(bool lazy_initialization = true):
             lazy_initialization(lazy_initialization),
-            initialized(false),
-            width(0), height(0), native_format(IMAGE_INVALID_FORMAT),
-            loader(nullptr)
+            initialized(false), loader(nullptr),
+            width(0), height(0), native_format(IMAGE_INVALID_FORMAT)
         {
             for (unsigned int i = 0; i < IMAGE_NUM_FORMATS; ++i)
                 pixels[i] = nullptr;

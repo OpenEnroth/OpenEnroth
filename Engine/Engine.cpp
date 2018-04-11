@@ -60,6 +60,7 @@
 #include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISaveLoad.h"
+#include "GUI/UI/UIDialogue.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -528,17 +529,15 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor)
         return false;
 }
 
-//----- (0044EE30) --------------------------------------------------------
-bool Engine::AlterGamma_ODM(ODMFace *pFace, signed int *pColor)
-{
-    if (uFlags2 & GAME_FLAGS_2_SATURATE_LIGHTMAPS &&
-        pFace->uAttributes & FACE_CAN_SATURATE_COLOR)
-    {
-        *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
-        return true;
-    }
-    else
-        return false;
+bool Engine::AlterGamma_ODM(ODMFace *pFace, int *pColor) {
+  if (uFlags2 & GAME_FLAGS_2_SATURATE_LIGHTMAPS &&
+    pFace->uAttributes & FACE_CAN_SATURATE_COLOR)
+  {
+    *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
+    return true;
+  } else {
+    return false;
+  }
 }
 
 
@@ -994,23 +993,21 @@ void IntegrityTest() {
     static_assert(sizeof(OtherOverlay) == 0x14, "Wrong type size");
     static_assert(sizeof(ItemGen) == 0x24, "Wrong type size");
     static_assert(sizeof(SpriteObject) == 0x70, "Wrong type size");
-    static_assert(sizeof(ItemDesc) == 0x30, "Wrong type size");
-    static_assert(sizeof(ItemsTable) == 0x117A0, "Wrong type size");
+//    static_assert(sizeof(ItemDesc) == 0x30, "Wrong type size");
+//    static_assert(sizeof(ItemsTable) == 0x117A0, "Wrong type size");
     static_assert(sizeof(Chest) == 0x14CC, "Wrong type size");
-    static_assert(sizeof(MapInfo) == 0x44, "Wrong type size");
-    static_assert(sizeof(SpellInfo) == 0x24, "Wrong type size");
+//    static_assert(sizeof(MapInfo) == 0x44, "Wrong type size");
+//    static_assert(sizeof(SpellInfo) == 0x24, "Wrong type size");
     static_assert(sizeof(SpellData) == 0x14, "Wrong type size");
     static_assert(sizeof(SpellBuff) == 0x10, "Wrong type size");
     static_assert(sizeof(AIDirection) == 0x1C, "Wrong type size");
     static_assert(sizeof(ActorJob) == 0xC, "Wrong type size");
-    static_assert(sizeof(Actor) == 0x344, "Wrong type size");
+//    static_assert(sizeof(Actor) == 0x344, "Wrong type size");
     static_assert(sizeof(LevelDecoration) == 0x20, "Wrong type size");
-    static_assert(sizeof(KeyboardActionMapping) == 0x20C, "Wrong type size");
+//    static_assert(sizeof(KeyboardActionMapping) == 0x20C, "Wrong type size");
     //static_assert(sizeof(UIAnimation) == 0xD, "Wrong type size");
     //static_assert(sizeof(SpawnPointMM7) == 0x18, "Wrong type size");
     //static_assert(sizeof(ODMFace) == 0x134, "Wrong type size");
-    static_assert(sizeof(BSPNode) == 0x8, "Wrong type size");
-    static_assert(sizeof(BSPModel) == 0xBC, "Wrong type size");
     //static_assert(sizeof(OutdoorLocation) == 0x1C28C, "Wrong type size");
     //static_assert(sizeof(BLVFace) == 0x60, "Wrong type size");
     static_assert(sizeof(BLVFaceExtra) == 0x24, "Wrong type size");
@@ -1469,32 +1466,30 @@ bool for_refactoring = false;
 bool all_spells = false; // is this needed with all_magic as well??
 bool bNoMargareth = true;
 
-void ParseCommandLine(const wchar_t *cmd)
-{
-    //if (wcsstr(pCmdLine, L"-usedefs"))
-    //  bDebugResouces = 1;
-    if (wcsstr(cmd, L"-window"))
-        dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_RUN_IN_WIDOW;
+void ParseCommandLine(const char *cmd) {
+  //if (wcsstr(pCmdLine, L"-usedefs"))
+  //  bDebugResouces = 1;
+  if (strstr(cmd, "-window"))
+    dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_RUN_IN_WIDOW;
 
-    if (wcsstr(cmd, L"-nointro"))
-        bNoIntro = true;//dword_6BE364_game_settings_1 |= 4;
-    if (wcsstr(cmd, L"-nologo"))
-        bNoLogo = true;//dword_6BE364_game_settings_1 |= 8;
-    if (wcsstr(cmd, L"-nosound"))
-        bNoSound = true; //dword_6BE364_game_settings_1 |= 0x10;
+  if (strstr(cmd, "-nointro"))
+    bNoIntro = true;//dword_6BE364_game_settings_1 |= 4;
+  if (strstr(cmd, "-nologo"))
+    bNoLogo = true;//dword_6BE364_game_settings_1 |= 8;
+  if (strstr(cmd, "-nosound"))
+    bNoSound = true; //dword_6BE364_game_settings_1 |= 0x10;
 
-    bWalkSound = OS_GetAppInt("WalkSound", 1) != 0;
-    if (wcsstr(cmd, L"-nowalksound"))
-        bWalkSound = false;//dword_6BE364_game_settings_1 |= 0x20;
-    if (wcsstr(cmd, L"-novideo"))
-    {
-        dword_6BE364_game_settings_1 |= GAME_SETTINGS_NO_HOUSE_ANIM;
-        bNoVideo = true;
-    }
-    if (wcsstr(cmd, L"-nocd"))
-        bNoCD = true;
-    if (wcsstr(cmd, L"-nomarg"))
-        bNoMargareth = true;
+  bWalkSound = OS_GetAppInt("WalkSound", 1) != 0;
+  if (strstr(cmd, "-nowalksound"))
+    bWalkSound = false;//dword_6BE364_game_settings_1 |= 0x20;
+  if (strstr(cmd, "-novideo")) {
+    dword_6BE364_game_settings_1 |= GAME_SETTINGS_NO_HOUSE_ANIM;
+    bNoVideo = true;
+  }
+  if (strstr(cmd, "-nocd"))
+    bNoCD = true;
+  if (strstr(cmd, "-nomarg"))
+    bNoMargareth = true;
 }
 
 
@@ -1623,7 +1618,7 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
   bGameoverLoop = false;
 }
 
-bool MM_Main(const wchar_t *pCmdLine) {
+bool MM_Main(const char *pCmdLine) {
   IntegrityTest();
 
   logger = new Log();
@@ -2146,20 +2141,14 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog, const String &filename
     }
 }
 
-void sub_44861E_set_texture_outdoor(unsigned int uFaceCog, const String &filename)
-{
-    for (uint j = 0; j < pOutdoor->uNumBModels; ++j)
-    {
-        auto bmodel = &pOutdoor->pBModels[j];
-        for (uint i = 0; i < bmodel->uNumFaces; ++i)
-        {
-            auto face = &bmodel->pFaces[i];
-            if (face->sCogNumber == uFaceCog)
-            {
-                face->SetTexture(filename);
-            }
-        }
+void sub_44861E_set_texture_outdoor(unsigned int uFaceCog, const String &filename) {
+  for (BSPModel &model : pOutdoor->pBModels) {
+    for (ODMFace &face : model.pFaces) {
+      if (face.sCogNumber == uFaceCog) {
+        face.SetTexture(filename);
+      }
     }
+  }
 }
 
 //----- (0044861E) --------------------------------------------------------
@@ -2187,42 +2176,33 @@ void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename)
 }
 
 //----- (0044892E) --------------------------------------------------------
-void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on)
-{
-    if (sCogNumber)
-    {
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        {
-            for (uint i = 1; i < (unsigned int)pIndoor->uNumFaceExtras; ++i)
-            {
-                if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber)
-                {
-                    if (on)
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes |= bit;
-                    else
-                        pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes &= ~bit;
-                }
-            }
-            pParty->uFlags |= 2;
+void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
+  if (sCogNumber) {
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+      for (uint i = 1; i < (unsigned int)pIndoor->uNumFaceExtras; ++i) {
+        if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber) {
+          if (on)
+            pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes |= bit;
+          else
+            pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id].uAttributes &= ~bit;
         }
-        else
-        {
-            for (uint j = 0; j < (unsigned int)pOutdoor->uNumBModels; ++j)
-            {
-                for (uint i = 0; i < (unsigned int)pOutdoor->pBModels[j].uNumFaces; ++i)
-                {
-                    if (pOutdoor->pBModels[j].pFaces[i].sCogNumber == sCogNumber)
-                    {
-                        if (on)
-                            pOutdoor->pBModels[j].pFaces[i].uAttributes |= bit;
-                        else
-                            pOutdoor->pBModels[j].pFaces[i].uAttributes &= ~bit;
-                    }
-                }
+      }
+      pParty->uFlags |= 2;
+    } else {
+      for (BSPModel &model : pOutdoor->pBModels) {
+         for (ODMFace &face : model.pFaces) {
+          if (face.sCogNumber == sCogNumber) {
+            if (on) {
+              face.uAttributes |= bit;
+            } else {
+              face.uAttributes &= ~bit;
             }
+          }
         }
-        pParty->uFlags |= 2;
+      }
     }
+    pParty->uFlags |= 2;
+  }
 }
 
 //----- (0044882F) --------------------------------------------------------
@@ -3097,25 +3077,6 @@ void Transition_StopSound_Autosave(const char *pMapName, MapStartPoint start_poi
   uGameState = GAME_STATE_CHANGE_LOCATION;
   strcpy(pCurrentMapName, pMapName);
   uLevel_StartingPointType = start_point;
-}
-
-void sub_4451A8_press_any_key(int a1, int a2, int a4) {
-  if (!pGUIWindow2) {
-    if (pParty->uFlags & 2) {
-      pEngine->Draw();
-    }
-    pAudioPlayer->StopChannels(-1, -1);
-    pMiscTimer->Pause();
-    pEventTimer->Pause();
-    dword_5C3418 = a1;
-    dword_5C341C = a2;
-    _591094_decoration = activeLevelDecoration;
-    pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), a4);
-    pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
-    pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
-    pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
-    pGUIWindow2->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
-  }
 }
 
 void OnTimer(int) {

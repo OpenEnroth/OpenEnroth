@@ -194,6 +194,7 @@
     <ClCompile Include="..\..\Engine\Graphics\ParticleEngine.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\PCX.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Render.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\RenderBase.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\RenderD3D.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Sprites.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\stru10.cpp" />
@@ -257,6 +258,7 @@
     <ClCompile Include="..\..\GUI\UI\UIBooks.cpp" />
     <ClCompile Include="..\..\GUI\UI\UICharacter.cpp" />
     <ClCompile Include="..\..\GUI\UI\UICredits.cpp" />
+    <ClCompile Include="..\..\GUI\UI\UIDialogue.cpp" />
     <ClCompile Include="..\..\GUI\UI\UiGame.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIGuilds.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIHouses.cpp" />
@@ -325,6 +327,7 @@
     <ClInclude Include="..\..\Engine\Graphics\PCX.h" />
     <ClInclude Include="..\..\Engine\Graphics\Polygon.h" />
     <ClInclude Include="..\..\Engine\Graphics\Render.h" />
+    <ClInclude Include="..\..\Engine\Graphics\RenderBase.h" />
     <ClInclude Include="..\..\Engine\Graphics\RenderD3D.h" />
     <ClInclude Include="..\..\Engine\Graphics\Sprites.h" />
     <ClInclude Include="..\..\Engine\Graphics\stru10.h" />
@@ -398,6 +401,7 @@
     <ClInclude Include="..\..\GUI\UI\UIBooks.h" />
     <ClInclude Include="..\..\GUI\UI\UICharacter.h" />
     <ClInclude Include="..\..\GUI\UI\UICredits.h" />
+    <ClInclude Include="..\..\GUI\UI\UIDialogue.h" />
     <ClInclude Include="..\..\GUI\UI\UIGame.h" />
     <ClInclude Include="..\..\GUI\UI\UIGuilds.h" />
     <ClInclude Include="..\..\GUI\UI\UIHouses.h" />

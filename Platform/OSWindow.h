@@ -35,7 +35,7 @@ class OSWindow {
   void *api_handle;
 
  private:
-  static void *__stdcall WinApiMsgRouter(void *hwnd, int msg, int wparam, void *lparam);
+  static void *WinApiMsgRouter(void *hwnd, int msg, int wparam, void *lparam);
 
   void *CreateDebugMenuPanel();
 };

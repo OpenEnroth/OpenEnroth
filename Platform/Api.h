@@ -2,7 +2,7 @@
 #include "Engine/Strings.h"
 #include "Engine/Point.h"
 
-#include "Platform/OsWindow.h"
+#include "Platform/OSWindow.h"
 
 int OS_GetAppInt(const char *pKey, int uDefValue);
 void OS_SetAppInt(const char *pKey, int val);
@@ -24,7 +24,7 @@ bool OS_OpenConsole();
 Point OS_GetMouseCursorPos();
 
 unsigned int OS_GetTime();
-unsigned __int64 OS_GetPrecisionTime();
+uint64_t OS_GetPrecisionTime();
 
 bool OS_FindMM7CD(char *cd_path);
 

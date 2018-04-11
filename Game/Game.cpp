@@ -51,6 +51,7 @@
 #include "GUI/UI/UiStatusBar.h"
 #include "GUI/UI/Spellbook.h"
 #include "GUI/UI/UIBooks.h"
+#include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/Books/LloydsBook.h"
 #include "GUI/UI/Books/TownPortalBook.h"
 #include "GUI/UI/Books/QuestBook.h"

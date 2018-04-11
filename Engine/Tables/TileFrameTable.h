@@ -22,8 +22,7 @@ enum TILE_DESC_FLAGS
 
 #pragma warning( push )
 #pragma warning( disable: 4341 )
-enum Tileset : signed __int16
-{
+enum Tileset : int16_t {
     Tileset_Grass = 0,
     Tileset_Snow = 1,
     Tilset_Desert = 2,

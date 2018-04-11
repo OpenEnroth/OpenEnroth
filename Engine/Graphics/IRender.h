@@ -139,10 +139,14 @@ struct RenderVertexD3D3 {
 #pragma pack(push, 1)
 struct RenderBillboardD3D {
   inline RenderBillboardD3D() :
+    texture(nullptr),
+    uNumVertices(4),
+    z_order(0.f),
     opacity(Transparent),
     field_90(-1),
-    sParentBillboardID(-1),
-    uNumVertices(4)
+    object_pid(0),
+    screen_space_z(0),
+    sParentBillboardID(-1)
   {}
 
   enum OpacityType : unsigned __int32 {
@@ -371,7 +375,7 @@ class IRender {
     hd_water_current_frame = 0;
     hd_water_tile_id = 0;
     pBeforePresentFunction = 0;
-    bFogEnabled;
+    bFogEnabled = 0;
     memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
     uNumBillboardsToDraw = 0;
   }
@@ -447,7 +451,7 @@ int _43F55F_get_billboard_light_level(struct RenderBillboard *a1, int uBaseLight
 int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
 unsigned int GetMaxMipLevels(unsigned int uDim);
 int _46E44E_collide_against_faces_and_portals(unsigned int b1); // idb
-int _46E889_collide_against_bmodels(unsigned int ecx0);
+void _46E889_collide_against_bmodels(unsigned int ecx0);
 int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID); // idb
 void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 int _46EF01_collision_chech_player(int a1); // idb
@@ -462,4 +466,6 @@ bool sub_4759C9(struct BLVFace *face, int a2, int a3, __int16 a4);
 bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, struct BLVFace *a4);
 bool sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9);
 
-bool IsBModelVisible(unsigned int uModelID, int *unused);
+class BSPModel;
+
+bool IsBModelVisible(BSPModel *model, int *unused);

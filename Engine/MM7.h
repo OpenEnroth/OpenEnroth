@@ -3,33 +3,20 @@
 
 typedef unsigned int uint;
 
-#define PID(type, id) (unsigned int)((((8 * (id))) | (type)) & 0xFFFF)  // packed id
+#define PID(type, id) (uint32_t)((((8 * (id))) | (type)) & 0xFFFF)  // packed id
 #define PID_TYPE(pid) (ObjectType)((pid) & 7)                         // extract type
-#define PID_ID(pid)   (unsigned int)(((pid) & 0xFFFF) >> 3)             // extract value
+#define PID_ID(pid)   (uint32_t)(((pid) & 0xFFFF) >> 3)             // extract value
 #define PID_INVALID   (-1)
-
-
 
 //typedef char _UNKNOWN;
 typedef unsigned int uint;
 
-
-inline void memset32(void *ptr, unsigned __int32 value, int count)
-{
-    unsigned __int32* p = (unsigned __int32 *)ptr;
-    for (int i = 0; i < count; i++)
-        *p++ = value;
+inline void memset32(void *ptr, uint32_t value, int count) {
+  uint32_t *p = (uint32_t*)ptr;
+  for (int i = 0; i < count; i++) {
+    *p++ = value;
+  }
 }
-
-
-
-
-
-
-
-
-
-
 
 #if defined(__GNUC__)
 typedef          long long ll;

@@ -186,7 +186,7 @@ public:
     Mouse *pMouseInstance;
     LightmapBuilder *pLightmapBuilder;
     Vis *pVisInstance;
-    SpellFxRenderer *spellfx;
+    struct SpellFxRenderer *spellfx;
     void *__depricated5;//IndoorCameraD3D *pIndoorCameraD3D;
     stru9 *pStru9Instance;
     stru10 *pStru10Instance;
@@ -244,8 +244,6 @@ void Level_LoadEvtAndStr(const char *pLevelName);
 void sub_4452BB();
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(const char *pMapName, MapStartPoint point); // sub_44987B idb
-
-void sub_4451A8_press_any_key(int a1, int a2, int a4);
 
 void OnTimer(int);
 bool TeleportToNWCDungeon();

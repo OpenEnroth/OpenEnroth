@@ -5,27 +5,23 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/BSPModel.h"
 
+#include <vector>
+
 #define DAY_ATTRIB_FOG  1
 
-/*  256 */
 #pragma pack(push, 1)
-struct ODMHeader
-{
-    int uVersion;
-    char pMagic[4];
-    unsigned int uCompressedSize;
-    unsigned int uDecompressedSize;
+struct ODMHeader {
+  uint32_t uVersion;
+  char pMagic[4];
+  uint32_t uCompressedSize;
+  uint32_t uDecompressedSize;
 };
 #pragma pack(pop)
 
-
-
-/*   78 */
 #pragma pack(push, 1)
-struct OutdoorLocationTileType
-{
-    Tileset tileset;
-    unsigned __int16 uTileID;
+struct OutdoorLocationTileType {
+  Tileset tileset;
+  uint16_t uTileID;
 };
 #pragma pack(pop)
 
@@ -75,67 +71,7 @@ struct OutdoorLocationTerrain
 };
 #pragma pack(pop)
 
-
-struct ODMFace
-{
-    bool HasEventHint();
-
-
-    static bool IsBackfaceNotCulled(struct RenderVertexSoft *a2, struct Polygon *polygon);
-
-    inline bool Invisible() const { return (uAttributes & FACE_INVISIBLE) != 0; }
-    inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return (uAttributes & FACE_PORTAL) != 0; }
-    inline bool Fluid() const { return (uAttributes & FACE_FLUID) != 0; }
-    inline bool Indoor_sky() const { return (uAttributes & FACE_INDOOR_SKY) != 0; }
-    inline bool Clickable() const { return (uAttributes & FACE_CLICKABLE) != 0; }
-    inline bool Pressure_Plate() const { return (uAttributes & FACE_PRESSURE_PLATE) != 0; }
-    inline bool Ethereal() const { return (uAttributes & FACE_ETHEREAL) != 0; }
-
-    inline bool IsTextureFrameTable() { return this->uAttributes & FACE_TEXTURE_FRAME; }
-    inline void ToggleIsTextureFrameTable() { this->uAttributes = this->uAttributes & FACE_TEXTURE_FRAME ? this->uAttributes & ~FACE_TEXTURE_FRAME : this->uAttributes | FACE_TEXTURE_FRAME; }
-
-    void SetTexture(const String &filename);
-    Texture *GetTexture();
-
-    bool Deserialize(struct ODMFace_MM7 *);
-
-    struct Plane_int_ pFacePlane;
-    int zCalc1;
-    int zCalc2;
-    int zCalc3;
-    unsigned int uAttributes;
-    unsigned __int16 pVertexIDs[20];
-    __int16 pTextureUIDs[20];
-    __int16 pTextureVIDs[20];
-    __int16 pXInterceptDisplacements[20];
-    __int16 pYInterceptDisplacements[20];
-    __int16 pZInterceptDisplacements[20];
-    void *resource;//__int16 uTextureID;
-    __int16 sTextureDeltaU;
-    __int16 sTextureDeltaV;
-    struct BBox_short_ pBoundingBox;
-    __int16 sCogNumber;
-    __int16 sCogTriggeredID;
-    __int16 sCogTriggerType;
-    char field_128;
-    char field_129;
-    unsigned __int8 uGradientVertex1;
-    unsigned __int8 uGradientVertex2;
-    unsigned __int8 uGradientVertex3;
-    unsigned __int8 uGradientVertex4;
-    unsigned __int8 uNumVertices;
-    unsigned __int8 uPolygonType;
-    unsigned __int8 uShadeType;
-    unsigned __int8 bVisible;
-    char field_132;
-    char field_133;
-};
-
-
-#pragma pack(push, 1)
-struct OutdoorLocation
-{
+struct OutdoorLocation {
     OutdoorLocation();
     void subconstuctor();
     //int New_SKY_NIGHT_ID;
@@ -181,35 +117,23 @@ struct OutdoorLocation
     String location_file_description;
     String sky_texture_filename;
     String ground_tileset;
-    //char pLevelFilename[32];
-    //char pLocationFileName[32];
-    //char pLocationFileDescription[32];
-    //char pSkyTextureName[32];
-    //char pGroundTileset[32];
-    OutdoorLocationTileType pTileTypes[4];    // [3]  road tileset
-    int uNumBModels;
+    OutdoorLocationTileType pTileTypes[4];  // [3]  road tileset
     struct OutdoorLocationTerrain pTerrain;
     void *pCmap;
-    BSPModel *pBModels;
+    BSPModelList pBModels;
     unsigned int numFaceIDListElems;
     unsigned __int16 *pFaceIDLIST;
     unsigned int *pOMAP;
     Texture *sky_texture;//signed int sSky_TextureID;
     Texture *main_tile_texture; //signed int sMainTile_BitmapID;
-    __int16 field_F0;
-    __int16 field_F2;
+    int16_t field_F0;
+    int16_t field_F2;
     int field_F4;
     char field_F8[968];
     unsigned int uNumSpawnPoints;
     struct SpawnPointMM7 *pSpawnPoints;
     struct DDM_DLV_Header ddm;
     LocationTime_stru1 loc_time;
-    //unsigned __int64 uLastVisitDay;
-    //char sky_texture_name[12];
-    //int day_attrib;
-    //int day_fogrange_1;
-    //int day_fogrange_2;
-   // char field_510[24];
     unsigned char uFullyRevealedCellOnMap[88][11];//968         the inner array is 11 bytes long, because every bit is used for a separate cell, so in the end it's 11 * 8 bits = 88 values
     unsigned char uPartiallyRevealedCellOnMap[88][11];//[968]
     int field_CB8;
@@ -252,8 +176,6 @@ struct OutdoorLocation
     float fFogDensity;
     int uLastSunlightUpdateMinute;
 };
-#pragma pack(pop)
-
 
 extern OutdoorLocation *pOutdoor;
 
@@ -277,12 +199,3 @@ int GridCellToWorldPosZ(int);
 void sub_481ED9_MessWithODMRenderParams();
 bool IsTerrainSlopeTooHigh(int pos_x, int pos_y);
 int GetTerrainHeightsAroundParty2(int a1, int a2, int *a3, int a4);
-
-
-
-
-
-
-
-
-

@@ -5,11 +5,9 @@
 
 #pragma comment(lib, "winmm.lib")
 
-//----- (00462C94) --------------------------------------------------------
-int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hprevinstance, wchar_t *lpCmdLine, int nShowCmd)
-{
-	extern bool MM_Main(const wchar_t *pCmdLine);
-	return MM_Main(lpCmdLine) != false;
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hprevinstance, LPSTR lpCmdLine, int nShowCmd) {
+  extern bool MM_Main(const char *pCmdLine);
+  return MM_Main(lpCmdLine) != false;
 }
 
 

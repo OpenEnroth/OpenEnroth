@@ -823,7 +823,7 @@ void _46E26D_collide_against_sprites(signed int a1, signed int a2)
                                         if ( v17 < stru_721530.field_7C )
                                         {
                                           stru_721530.field_7C = v17;
-                                          stru_721530.uFaceID = (signed __int16)*v20;
+                                          stru_721530.pid = (signed __int16)*v20;
                                         }
                                       }
                                     }

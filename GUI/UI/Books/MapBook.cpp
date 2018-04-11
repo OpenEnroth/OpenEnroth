@@ -475,62 +475,44 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     }
 }
 
-//----- (00444564) --------------------------------------------------------
-const char * GetMapBookHintText()
-{
-    int v20;
-    int v21; // [sp+14h] [bp-Ch]@1
-    double v0; // st7@3
-    unsigned int pX; // [sp+1Ch] [bp-4h]@3
-    unsigned int pY; // [sp+8h] [bp-18h]@3
-    int global_coord_X; // ebx@3
-    int global_coord_Y;
-    int map_tile_X; // edi@3
-    int map_tile_Y; // eax@3
-    const char *result; // eax@15
+const char * GetMapBookHintText() {
+  int v20 = viewparams->sViewCenterX;
+  int v21 = viewparams->sViewCenterY;
+  if (viewparams->uMapBookMapZoom == 384) {
+    v20 = viewparams->indoor_center_x;
+    v21 = viewparams->indoor_center_y;
+  }
 
-    v20 = viewparams->sViewCenterX;
-    v21 = viewparams->sViewCenterY;
-    if (viewparams->uMapBookMapZoom == 384)
-    {
-        v20 = viewparams->indoor_center_x;
-        v21 = viewparams->indoor_center_y;
-    }
-    pMouse->GetClickPos(&pX, &pY);
-    v0 = 1.0 / (float)((signed int)viewparams->uMapBookMapZoom * 0.000015258789);
+  unsigned int pX = 0;
+  unsigned int pY = 0;
+  pMouse->GetClickPos(&pX, &pY);
+  double v0 = 1.0 / (float)((signed int)viewparams->uMapBookMapZoom * 0.000015258789);
 
-    global_coord_X = (signed __int64)((double)(pX - 229) * v0 + (double)v20);
-    global_coord_Y = (signed __int64)((double)v21 - (double)(pY - 181) * v0);
+  int global_coord_X = (__int64)((double)(pX - 229) * v0 + (double)v20);
+  int global_coord_Y = (__int64)((double)v21 - (double)(pY - 181) * v0);
 
-    result = 0;
-    map_tile_X = abs(global_coord_X + 22528) / 512;//In the mapbook only lady Margaret dispays for defoult zoom(В книге карты только Леди Маргарита всплывает при дефолтном зуме)
-    map_tile_Y = abs(global_coord_Y - 22528) / 512;
-    if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) && uCurrentlyLoadedLevelType == LEVEL_Outdoor && (signed int)pOutdoor->uNumBModels > 0)
-    {
-        for (int i = 0; i < pOutdoor->uNumBModels && !result; i++)
-        {
-            if (int_get_vector_length(abs((signed)pOutdoor->pBModels[i].vBoundingCenter.x - global_coord_X),
-                abs((signed)pOutdoor->pBModels[i].vBoundingCenter.y - global_coord_Y), 0) < pOutdoor->pBModels[i].sBoundingRadius)
-            {
-                if (pOutdoor->pBModels[i].uNumFaces > 0)
-                {
-                    for (int j = 0; j < pOutdoor->pBModels[i].uNumFaces; j++)
-                    {
-                        if (pOutdoor->pBModels[i].pFaces[j].sCogTriggeredID)
-                        {
-                            if (!(pOutdoor->pBModels[i].pFaces[j].uAttributes & FACE_HAS_EVENT))
-                            {
-                                if (GetEventHintString(pOutdoor->pBModels[i].pFaces[j].sCogTriggeredID))
-                                {
-                                    if (_stricmp(GetEventHintString(pOutdoor->pBModels[i].pFaces[j].sCogTriggeredID), ""))
-                                        result = GetEventHintString(pOutdoor->pBModels[i].pFaces[j].sCogTriggeredID);
-                                }
-                            }
-                        }
-                    }
+  const char *result = nullptr;
+  int map_tile_X = abs(global_coord_X + 22528) / 512;//In the mapbook only lady Margaret dispays for defoult zoom(В книге карты только Леди Маргарита всплывает при дефолтном зуме)
+  int map_tile_Y = abs(global_coord_Y - 22528) / 512;
+  if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) && uCurrentlyLoadedLevelType == LEVEL_Outdoor && !pOutdoor->pBModels.empty()) {
+    for (BSPModel &model : pOutdoor->pBModels) {
+      if (int_get_vector_length(abs((int)model.vBoundingCenter.x - global_coord_X),
+        abs((int)model.vBoundingCenter.y - global_coord_Y), 0) < model.sBoundingRadius)
+      {
+        for (ODMFace &face : model.pFaces) {
+          if (face.sCogTriggeredID) {
+            if (!(face.uAttributes & FACE_HAS_EVENT)) {
+              if (GetEventHintString(face.sCogTriggeredID)) {
+                if (_stricmp(GetEventHintString(face.sCogTriggeredID), "")) {
+                  result = GetEventHintString(face.sCogTriggeredID);
                 }
+              }
             }
+          }
         }
+      }
     }
-    return result;
+  }
+
+  return result;
 }
