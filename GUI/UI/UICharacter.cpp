@@ -22,6 +22,7 @@
 #include "GUI/GUIFont.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UICharacter.h"
+#include "GUI/UI/UIInventory.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

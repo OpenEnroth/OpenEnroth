@@ -376,15 +376,6 @@ class GUIWindow {
   std::vector<GUIButton*> vButtons;
 };
 
-class GUIWindow_House : public GUIWindow {
- public:
-  GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
-  virtual ~GUIWindow_House() {}
-
-  virtual void Update();
-  virtual void Release();
-};
-
 class GUIWindow_Scroll : public GUIWindow {
  public:
   GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
@@ -397,24 +388,6 @@ class GUIWindow_Scroll : public GUIWindow {
     CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "");
   }
   virtual ~GUIWindow_Scroll() {}
-
-  virtual void Update();
-};
-
-class GUIWindow_Inventory : public GUIWindow {
- public:
-  GUIWindow_Inventory(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-    GUIWindow(x, y, width, height, button, hint)
-  {}
-  virtual ~GUIWindow_Inventory() {}
-
-  virtual void Update();
-};
-
-class GUIWindow_Inventory_CastSpell : public GUIWindow {
- public:
-  GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
-  virtual ~GUIWindow_Inventory_CastSpell() {}
 
   virtual void Update();
 };

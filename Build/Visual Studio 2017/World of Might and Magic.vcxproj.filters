@@ -477,6 +477,9 @@
     <ClCompile Include="..\..\Engine\Graphics\RenderBase.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\GUI\UI\UIInventory.cpp">
+      <Filter>GUI\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\libavcodec\avcodec.h">
@@ -1096,6 +1099,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\RenderBase.h">
       <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GUI\UI\UIInventory.h">
+      <Filter>GUI\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,7 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-#include <sstream>
+#include "GUI/GUIWindow.h"
 
-#define _CRT_SECURE_NO_WARNINGS
+#include <stdlib.h>
+#include <sstream>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -29,7 +27,6 @@
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
 
-#include "GUI/GUIWindow.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIBooks.h"
@@ -128,49 +125,6 @@ void SetCurrentMenuID(MENU_STATE uMenu) {
 
 MENU_STATE GetCurrentMenuID() {
   return sCurrentMenuID;
-}
-
-GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
-  GUIWindow(x, y, width, height, button, hint)
-{
-  pMouse->SetCursorImage("MICON2");
-  pBtn_ExitCancel = CreateButton(392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(34), // Cancel    Отмена
-    { {ui_buttdesc2} });
-  GameUI_StatusBar_OnEvent(localization->GetString(39), 2); // Choose target / Выбрать цель
-  current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-  current_screen_type = SCREEN_CASTING;
-}
-
-GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
-  GUIWindow(x, y, width, height, button, hint)
-{
-  pEventTimer->Pause(); // pause timer so not attacked
-  pAudioPlayer->StopChannels(-1, -1);
-
-  current_screen_type = SCREEN_HOUSE;
-  pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(80), // Quit building / Выйти из здания
-    { {ui_exit_cancel_button_background} });
-  for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
-    const char *v29, *v30;
-    if (v26 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
-      v30 = pMapStats->pInfos[uHouse_ExitPic].pName;
-      v29 = localization->GetString(411); // Enter %s
-    } else {
-      if (v26 || !dword_591080)
-        v30 = HouseNPCData[v26 + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
-      else
-        v30 = p2DEvents[button - 1].pProprieterName;
-      v29 = localization->GetString(435);
-    }
-    sprintf(byte_591180[v26].data(), v29, v30);
-    HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],
-      pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26],
-      63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, 0, byte_591180[v26].data());
-  }
-  if (uNumDialogueNPCPortraits == 1) {
-    window_SpeakInHouse = this;
-    _4B4224_UpdateNPCTopics(0);
-  }
 }
 
 OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
@@ -314,30 +268,6 @@ void GUIWindow::_41D08F_set_keyboard_control_group(int num_buttons, int a3, int 
     this->pStartingPosActiveItem = 0;
     this->receives_keyboard_input = false;
   }
-}
-
-void GUIWindow_House::Release() {
-  for (int i = 0; i < uNumDialogueNPCPortraits; ++i) {
-    if (pDialogueNPCPortraits[i]) {
-      pDialogueNPCPortraits[i]->Release();
-      pDialogueNPCPortraits[i] = nullptr;
-    }
-  }
-  uNumDialogueNPCPortraits = 0;
-
-  if (game_ui_dialogue_background) {
-    game_ui_dialogue_background->Release();
-    game_ui_dialogue_background = nullptr;
-  }
-
-  dword_5C35D4 = 0;
-  if (bFlipOnExit) {
-    pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (stru_5C6E00->uIntegerPi + pParty->sRotationY);
-    pIndoorCameraD3D->sRotationY = pParty->sRotationY;
-  }
-  pParty->uFlags |= 2u;
-
-  GUIWindow::Release();
 }
 
 void GUIWindow::Release() {
@@ -826,49 +756,8 @@ void GUIWindow_BooksButtonOverlay::Update() {
   viewparams->bRedrawGameUI = true;
 }
 
-void GUIWindow_House::Update() {
-  HouseDialogManager();
-  if (!window_SpeakInHouse)
-    return;
-  if (window_SpeakInHouse->par1C >= 53)
-    return;
-  if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] <= pParty->GetPlayingTime()) {
-    if (window_SpeakInHouse->par1C < 53)
-      pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] = 0;
-    return;
-  }
-//dialog_menu_id = HOUSE_DIALOGUE_MAIN; 
-  pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0); // banned from shop so leaving
-}
-
 void GUIWindow_Scroll::Update() {
   CreateScrollWindow();
-}
-
-void GUIWindow_Inventory::Update() {
-  DrawMessageBox(0);
-  DrawText(pFontLucida, 10, 20, 0, "Making item number", 0, 0, 0);
-  DrawText(pFontLucida, 10, 40, 0, pKeyActionMap->pPressedKeysBuffer, 0, 0, 0);
-  if (!pKeyActionMap->field_204) {
-    ItemGen ItemGen2;
-    ItemGen2.Reset();
-    Release();
-    pEventTimer->Resume();
-    current_screen_type = SCREEN_GAME;
-    viewparams->bRedrawGameUI = 1;
-    int v39 = atoi(pKeyActionMap->pPressedKeysBuffer);
-    if (v39 > 0 && v39 < 800) {
-      SpawnActor(v39);
-    }
-  }
-}
-
-void GUIWindow_Inventory_CastSpell::Update() {
-  render->ClearZBuffer(0, 479);
-  draw_leather();
-  CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
-  CharacterUI_DrawPaperdoll(pPlayers[uActiveCharacter]);
-  render->DrawTextureAlphaNew(pBtn_ExitCancel->uX / 640.0f, pBtn_ExitCancel->uY / 480.0f, dialogue_ui_x_x_u);
 }
 
 void OnButtonClick::Update() {
