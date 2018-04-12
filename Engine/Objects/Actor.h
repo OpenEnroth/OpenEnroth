@@ -166,6 +166,7 @@ struct ActorJob
 };
 #pragma pack(pop)
 
+class GUIWindow;
 
 /*   66 */
 #pragma pack(push, 1)
@@ -247,7 +248,7 @@ struct Actor
   static void GiveItem(signed int uActorID, unsigned int uItemID, unsigned int bGive);
   static void ToggleFlag(signed int uActorID, unsigned int uFlag, int bToggle);
   static void ApplyFineForKillingPeasant(unsigned int uActorID);
-  static void DrawHealthBar(Actor *actor, struct GUIWindow *window);
+  static void DrawHealthBar(Actor *actor, GUIWindow *window);
   int _43B3E0_CalcDamage(signed int dmgSource);
   static void AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2, signed int a3);
 

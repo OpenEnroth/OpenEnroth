@@ -72,19 +72,19 @@ struct GUIButton *pBtn_Down;
 struct GUIButton *ptr_507BA4;
 
 
-struct GUIWindow *pPrimaryWindow;
-struct GUIWindow *pChestWindow;
-struct GUIWindow *pDialogueWindow;
-struct GUIWindow *window_SpeakInHouse;
-struct GUIWindow *pGUIWindow_ScrollWindow;
-struct GUIWindow *ptr_507BC8;
-struct GUIWindow *pGUIWindow_CurrentMenu;
-struct GUIWindow *ptr_507BD0;
-struct GUIWindow *pGUIWindow_CastTargetedSpell;
-struct GUIWindow *pModalWindow;
-struct GUIWindow *pGUIWindow_EscMessageWindow;
-struct GUIWindow *pBooksButtonOverlay;
-struct GUIWindow *pGUIWindow2;
+GUIWindow *pPrimaryWindow;
+GUIWindow *pChestWindow;
+GUIWindow *pDialogueWindow;
+GUIWindow *window_SpeakInHouse;
+GUIWindow *pGUIWindow_ScrollWindow;
+GUIWindow *ptr_507BC8;
+GUIWindow *pGUIWindow_CurrentMenu;
+GUIWindow *ptr_507BD0;
+GUIWindow *pGUIWindow_CastTargetedSpell;
+GUIWindow *pModalWindow;
+GUIWindow *pGUIWindow_EscMessageWindow;
+GUIWindow *pBooksButtonOverlay;
+GUIWindow *pGUIWindow2;
 
 
 struct GUIButton *pBtn_Resume;

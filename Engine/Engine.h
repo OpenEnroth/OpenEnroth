@@ -11,12 +11,8 @@
 #include "Engine/Graphics/Polygon.h"
 
 
-void SetCurrentMenuID(enum MENU_STATE);
-enum MENU_STATE GetCurrentMenuID();
-
 void Engine_DeinitializeAndTerminate(int exitCode);
 
-void ShowLogoVideo();
 bool FileExists(const char *fname);
 
 #pragma once

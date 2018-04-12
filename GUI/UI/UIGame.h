@@ -8,44 +8,38 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID); // idb
 
 __int16 _441A4E_overlay_on_portrait(int a1);
 
+class GUIWindow_GameMenu : public GUIWindow {
+ public:
+  GUIWindow_GameMenu();
+  virtual ~GUIWindow_GameMenu() {}
 
+  virtual void Update();
+};
 
-struct GUIWindow_GameMenu : public GUIWindow
-{
-             GUIWindow_GameMenu();
-    virtual ~GUIWindow_GameMenu() {}
+class GUIWindow_GameOptions : public GUIWindow {
+ public:
+  GUIWindow_GameOptions();
+  virtual ~GUIWindow_GameOptions() {}
 
-    virtual void Update();
+  virtual void Update();
+};
+
+class GUIWindow_GameKeyBindings : public GUIWindow {
+ public:
+  GUIWindow_GameKeyBindings();
+  virtual ~GUIWindow_GameKeyBindings() {}
+
+  virtual void Update();
 };
 
 
 
-struct GUIWindow_GameOptions : public GUIWindow
-{
-             GUIWindow_GameOptions();
-    virtual ~GUIWindow_GameOptions() {}
+class GUIWindow_GameVideoOptions : public GUIWindow {
+ public:
+  GUIWindow_GameVideoOptions();
+  virtual ~GUIWindow_GameVideoOptions() {}
 
-    virtual void Update();
-};
-
-
-
-struct GUIWindow_GameKeyBindings : public GUIWindow
-{
-             GUIWindow_GameKeyBindings();
-    virtual ~GUIWindow_GameKeyBindings() {}
-
-    virtual void Update();
-};
-
-
-
-struct GUIWindow_GameVideoOptions : public GUIWindow
-{
-             GUIWindow_GameVideoOptions();
-    virtual ~GUIWindow_GameVideoOptions() {}
-
-    virtual void Update();
+  virtual void Update();
 };
 
 

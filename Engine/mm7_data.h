@@ -289,7 +289,6 @@ extern char byte_69BD41_unused;
 extern int pSaveListPosition;
 extern unsigned int uLoadGameUI_SelectedSlot;
 extern char cMM7GameCDDriveLetter; // idb
-extern enum MENU_STATE sCurrentMenuID;
 extern unsigned int uGameState;
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;
