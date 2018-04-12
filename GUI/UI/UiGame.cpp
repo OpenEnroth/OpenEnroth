@@ -39,6 +39,7 @@
 #include "IO/Keyboard.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIGame.h"

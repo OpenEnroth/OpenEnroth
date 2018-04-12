@@ -16,6 +16,7 @@
 
 #include "Engine/Graphics/Outdoor.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UITransition.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIProgressBar.h"

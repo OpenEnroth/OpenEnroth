@@ -10,7 +10,7 @@
 #include "Engine/Graphics/Level/Decoration.h"
 
 #include "GUI/GUIFont.h"
-
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UiStatusBar.h"

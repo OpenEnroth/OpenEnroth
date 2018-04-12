@@ -37,6 +37,7 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIHouses.h"

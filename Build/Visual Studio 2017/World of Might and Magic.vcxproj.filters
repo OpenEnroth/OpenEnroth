@@ -357,9 +357,6 @@
     <ClCompile Include="..\..\Game\Game.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Game\MainMenu.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -973,9 +970,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\Engine.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Game\MainMenu.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Game\GameOver.h">
       <Filter>Game</Filter>

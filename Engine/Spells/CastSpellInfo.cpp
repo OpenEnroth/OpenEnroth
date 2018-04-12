@@ -18,6 +18,7 @@
 #include "Engine/Objects/ObjectList.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UiGame.h"
 #include "GUI/UI/UiStatusBar.h"
 

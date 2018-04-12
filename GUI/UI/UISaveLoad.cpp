@@ -12,10 +12,10 @@
 
 #include "IO/Keyboard.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UISaveLoad.h"
-
-#include "Game/MainMenu.h"
+#include "GUI/UI/UIMainMenu.h"
 
 #include "Platform/Api.h"
 

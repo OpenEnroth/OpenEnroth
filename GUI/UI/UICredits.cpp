@@ -11,8 +11,8 @@
 #include "GUI/GUIWindow.h"
 #include "Media/Audio/AudioPlayer.h"
 #include "Platform/OSWindow.h"
-#include "Game/MainMenu.h"
 #include "Platform/Api.h"
+#include "GUI/UI/UIMainMenu.h"
 
 bool GUICredits::ExecuteCredits() {
   GUIFont *pFontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL", NULL);
@@ -70,7 +70,7 @@ bool GUICredits::ExecuteCredits() {
       }
       render->Present();
       current_screen_type = SCREEN_GAME;//Ritor1: temporarily, must be corrected MainMenu_EventLoop()
-      MainMenu_EventLoop();
+      pWindow_MainMenu->EventLoop();
     }
   } while (GetCurrentMenuID() == MENU_CREDITSPROC);
 

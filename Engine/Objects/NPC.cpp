@@ -24,6 +24,7 @@
 #include "../Graphics/Overlays.h"
 
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/GUIButton.h"
 
 #include "Platform/Api.h"
 

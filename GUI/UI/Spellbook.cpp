@@ -11,6 +11,7 @@
 #include "IO/Mouse.h"
 
 #include "GUI/UI/Spellbook.h"
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 
 #include "Media/Audio/AudioPlayer.h"

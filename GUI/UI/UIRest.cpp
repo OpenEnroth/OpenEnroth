@@ -14,6 +14,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
 #include "GUI/GUIFont.h"
 
@@ -39,7 +40,6 @@ void GUIWindow_RestWindow::Update()
 {
     __debugbreak(); // doesnt seems to get here, check stack trace & conditions
     GUIButton GUIButton2; // [sp+28h] [bp-E0h]@133
-    memset(&GUIButton2, 0, sizeof(GUIButton2));
     GUIButton2.uZ = 197;
     GUIButton2.uW = 197;
     GUIButton2.uX = 27;
@@ -172,7 +172,6 @@ void GUIWindow_Rest::Update()
             render->DrawTextureAlphaNew(267 / 640.0f, 159 / 480.0f, rest_ui_hourglass_frame_current);
         }
 
-        memset(&tmp_button, 0, sizeof(GUIButton));
         tmp_button.uX = 24;
         tmp_button.uY = 154;
         tmp_button.uZ = 194;
@@ -190,7 +189,6 @@ void GUIWindow_Rest::Update()
         pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(239), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать 1 час
         pButton_RestUI_Wait5Minutes->DrawLabel(localization->GetString(238), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Ждать 5 минут
         pButton_RestUI_Exit->DrawLabel(localization->GetString(81), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//Закончить отдыхать
-        memset(&tmp_button, 0, sizeof(GUIButton));
         tmp_button.uX = 45;
         tmp_button.uY = 199;
 

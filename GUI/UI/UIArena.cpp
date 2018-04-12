@@ -18,6 +18,7 @@
 #include "../../Engine/Events.h"
 #include "../../Engine/Graphics/Viewport.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UIHouses.h"
 
 std::array<Vec2_int_, 20> pMonsterArenaPlacements = 

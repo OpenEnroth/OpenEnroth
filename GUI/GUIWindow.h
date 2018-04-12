@@ -309,7 +309,6 @@ enum WindowType {
   WINDOW_JournalBook       = 0xE0,
 };
 
-struct GUIButton;
 struct Texture_MM7;
 
 #define WINDOW_INPUT_NONE        0
@@ -318,6 +317,7 @@ struct Texture_MM7;
 #define WINDOW_INPUT_CANCELLED   3
 
 class GUIFont;
+class GUIButton;
 
 class GUIWindow {
  public:
@@ -326,7 +326,8 @@ class GUIWindow {
   virtual ~GUIWindow() {}
 
   GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
-    UIMessageType msg, unsigned int msg_param, uint8_t hotkey, const String &label, const std::vector<Image*> &textures = std::vector<Image*>());
+    UIMessageType msg, unsigned int msg_param, uint8_t hotkey, const String &label,
+    const std::vector<Image*> &textures = std::vector<Image*>());
 
   bool Contains(unsigned int x, unsigned int y);
   void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
@@ -549,7 +550,6 @@ extern struct GUIMessageQueue *pMessageQueue_50C9E8; // idb
 
 
 extern enum WindowType current_character_screen_window;
-extern GUIWindow *pWindow_MainMenu;
 extern std::list<GUIWindow*> lWindowList;
 
 class WindowManager {
@@ -567,7 +567,7 @@ void draw_leather();
 
 // main menu ui
 void MainMenuUI_LoadFontsAndSomeStuff();
-void MainMenuUI_Create();
+void UI_Create();
 
 // game ui
 void GameUI_DrawRightPanel();
@@ -621,7 +621,7 @@ void ReleaseAwardsScrollBar();
 void Inventory_ItemPopupAndAlchemy();
 unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int base_pos);
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
-struct GUIButton *GUI_HandleHotkey(uint8_t uHotkey); // idb
+class GUIButton *GUI_HandleHotkey(uint8_t uHotkey); // idb
 void GUI_ReplaceHotkey(uint8_t uOldHotkey, uint8_t uNewHotkey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time, GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item); // idb
@@ -644,95 +644,6 @@ String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, struct I
 String BuildDialogueString(String &str, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int shop_screen, GameTime *a6 = nullptr);
 int const_2();
 
-struct GUIButton {
-  GUIButton() {
-    pParent = nullptr;
-  }
-
-  void DrawLabel(const String &label_text, GUIFont *pFont, int a5, int uFontShadowColor);
-  bool Contains(unsigned int x, unsigned int y);
-  void Release();
-
-  unsigned int uX;
-  unsigned int uY;
-  unsigned int uWidth;
-  unsigned int uHeight;
-  unsigned int uZ;
-  unsigned int uW;
-  int uButtonType;
-  int field_1C;//may be pMessageType
-  UIMessageType msg;
-  unsigned int  msg_param;
-  int field_28;
-  bool field_2C_is_pushed;
-  GUIWindow *pParent;
-  std::vector<Image*> vTextures;
-  uint8_t uHotkey;
-  String sLabel;
-  String field_75;
-};
-
-extern struct GUIButton *pBtn_CloseBook;
-extern struct GUIButton *pBtn_InstallRemoveSpell;
-extern struct GUIButton *pBtn_Autonotes_Instructors;
-extern struct GUIButton *pBtn_Autonotes_Misc;
-extern struct GUIButton *pBtn_Book_6;
-extern struct GUIButton *pBtn_Book_5;
-extern struct GUIButton *pBtn_Book_4;
-extern struct GUIButton *pBtn_Book_3;
-extern struct GUIButton *pBtn_Book_2;
-extern struct GUIButton *pBtn_Book_1;
-
-
-extern struct GUIButton *pPlayerCreationUI_BtnReset;
-extern struct GUIButton *pPlayerCreationUI_BtnOK;
-extern struct GUIButton *pBtn_ExitCancel;
-extern struct GUIButton *pBtn_YES;
-extern struct GUIButton *pPlayerCreationUI_BtnPlus;
-extern struct GUIButton *pPlayerCreationUI_BtnMinus;
-
-
-extern struct GUIButton *pButton_RestUI_Main;
-extern struct GUIButton *pButton_RestUI_Exit;
-extern struct GUIButton *pButton_RestUI_Wait5Minutes;
-extern struct GUIButton *pButton_RestUI_WaitUntilDawn;
-extern struct GUIButton *pButton_RestUI_Wait1Hour;
-
-
-extern struct GUIButton *pCharacterScreen_ExitBtn;
-extern struct GUIButton *pCharacterScreen_AwardsBtn;
-extern struct GUIButton *pCharacterScreen_InventoryBtn;
-extern struct GUIButton *pCharacterScreen_SkillsBtn;
-extern struct GUIButton *pCharacterScreen_StatsBtn;
-extern struct GUIButton *pCharacterScreen_DollBtn;
-extern struct GUIButton *pCharacterScreen_DetalizBtn;
-
-
-extern struct GUIButton *pBtn_NPCRight;
-extern struct GUIButton *pBtn_NPCLeft;
-extern struct GUIButton *pBtn_GameSettings;
-extern struct GUIButton *pBtn_QuickReference;
-extern struct GUIButton *pBtn_CastSpell;
-extern struct GUIButton *pBtn_Rest;
-extern struct GUIButton *pBtn_History;
-extern struct GUIButton *pBtn_Calendar;
-extern struct GUIButton *pBtn_Maps;
-extern struct GUIButton *pBtn_Autonotes;
-extern struct GUIButton *pBtn_Quests;
-
-
-extern struct GUIButton *pMMT_MainMenu_BtnMM6;
-extern struct GUIButton *pMMT_MainMenu_BtnMM7;
-extern struct GUIButton *pMMT_MainMenu_BtnMM8;
-extern struct GUIButton *pMMT_MainMenu_BtnContinue;
-extern struct GUIButton *pMMT_MainMenu_BtnExit;
-
-
-extern struct GUIButton *pBtn_Up;
-extern struct GUIButton *pBtn_Down;
-extern struct GUIButton *ptr_507BA4;
-
-
 extern GUIWindow *pPrimaryWindow;
 extern GUIWindow *pChestWindow;
 extern GUIWindow *pDialogueWindow;
@@ -746,29 +657,6 @@ extern GUIWindow *pModalWindow;
 extern GUIWindow *pGUIWindow_EscMessageWindow;
 extern GUIWindow *pBooksButtonOverlay;
 extern GUIWindow *pGUIWindow2;
-
-
-extern struct GUIButton *pBtn_Resume;
-extern struct GUIButton *pBtn_QuitGame;
-extern struct GUIButton *pBtn_GameControls;
-extern struct GUIButton *pBtn_LoadGame;
-extern struct GUIButton *pBtn_SaveGame;
-extern struct GUIButton *pBtn_NewGame;
-
-extern struct GUIButton *pBtn_SliderRight;
-extern struct GUIButton *pBtn_SliderLeft;
-
-
-extern struct GUIButton *pBtnDownArrow;
-extern struct GUIButton *pBtnArrowUp;
-extern struct GUIButton *pBtnCancel;
-extern struct GUIButton *pBtnLoadSlot;
-
-
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight2;
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft2;
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft;
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight;
 
 extern unsigned int ui_mainmenu_copyright_color;
 extern unsigned int ui_character_tooltip_header_default_color;

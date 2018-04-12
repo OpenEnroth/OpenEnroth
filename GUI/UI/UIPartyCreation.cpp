@@ -19,14 +19,14 @@
 #include "IO/Keyboard.h"
 
 #include "GUI/GUIFont.h"
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIGame.h"
+#include "GUI/UI/UIMainMenu.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Game/Game.h"
-#include "Game/MainMenu.h"
-
 
 
 GUIFont *ui_partycreation_font;

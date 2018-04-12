@@ -51,6 +51,7 @@
 #include "IO/Keyboard.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
@@ -61,12 +62,12 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UIMainMenu.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
 #include "Game/Game.h"
-#include "Game/MainMenu.h"
 
 #include "Platform/Api.h"
 
@@ -1383,7 +1384,7 @@ void SecondaryInitialization()
             ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorR << 16);
     }
 
-    MainMenuUI_Create();
+    UI_Create();
     pEngine->GetSpellFxRenderer()->LoadAnimations();
 
     for (uint i = 0; i < 7; ++i)
@@ -1650,7 +1651,7 @@ bool MM_Main(const char *pCmdLine) {
 
   //logger->Warning(L"MM: entering main loop");
   while (true) {
-    MainMenu_Loop();
+    GUIWindow_MainMenu::Loop();
     uGameState = GAME_STATE_PLAYING;
 
     if (!GameLoop()) {

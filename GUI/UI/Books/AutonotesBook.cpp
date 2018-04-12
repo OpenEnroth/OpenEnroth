@@ -10,6 +10,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 

@@ -8,7 +8,7 @@
 #include "Engine/Objects/Actor.h"
 
 #include "GUI/GUIFont.h"
-
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UiStatusBar.h"
 
 #include "IO/Keyboard.h"

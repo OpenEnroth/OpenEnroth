@@ -19,6 +19,7 @@
 #include "Engine/Spells/CastSpellInfo.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UICharacter.h"

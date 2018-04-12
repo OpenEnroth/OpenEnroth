@@ -20,6 +20,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/PaletteManager.h"
 
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/IconFrameTable.h"
@@ -27,6 +28,7 @@
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIBooks.h"
@@ -39,6 +41,19 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+GUIWindow *pPrimaryWindow;
+GUIWindow *pChestWindow;
+GUIWindow *pDialogueWindow;
+GUIWindow *window_SpeakInHouse;
+GUIWindow *pGUIWindow_ScrollWindow;
+GUIWindow *ptr_507BC8;
+GUIWindow *pGUIWindow_CurrentMenu;
+GUIWindow *ptr_507BD0;
+GUIWindow *pGUIWindow_CastTargetedSpell;
+GUIWindow *pModalWindow;
+GUIWindow *pGUIWindow_EscMessageWindow;
+GUIWindow *pBooksButtonOverlay;
+GUIWindow *pGUIWindow2;
 
 typedef struct _RGBColor
     {
@@ -71,7 +86,6 @@ std::array<RGBColor, 20> spell_tooltip_colors={{
     {0x96, 0xD4, 0xFF}}};
 
 enum WindowType current_character_screen_window;
-GUIWindow *pWindow_MainMenu;
 std::list<GUIWindow*> lWindowList;
 
 MENU_STATE sCurrentMenuID;
@@ -2273,4 +2287,170 @@ void WindowManager::DeleteAllVisibleWindows() {
     delete pWindow;
     lWindowList.pop_front();
   }
+}
+
+void MainMenuUI_LoadFontsAndSomeStuff() {
+  //pIcons_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits, render->uTargetBBits);
+  pIcons_LOD->SetupPalettes(5, 6, 5);
+  //pPaletteManager->SetColorChannelInfo(render->uTargetRBits, render->uTargetGBits, render->uTargetBBits);
+  pPaletteManager->SetColorChannelInfo(5, 6, 5);
+  pPaletteManager->RecalculateAll();
+
+  for (uint i = 0; i < window->GetHeight(); ++i) {
+    pSRZBufferLineOffsets[i] = window->GetWidth() * i;
+  }
+
+  pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL", nullptr);
+  pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL", nullptr);
+  pFontCreate = GUIFont::LoadFont("create.fnt", "FONTPAL", nullptr);
+  pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL", nullptr);
+  pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL", nullptr);
+}
+
+static void LoadPartyBuffIcons() {
+  for (uint i = 0; i < 14; ++i) {
+    party_buff_icons[i] = assets->GetImage_ColorKey(StringPrintf("isn-%02d", i + 1), 0x7FF);
+  }
+
+  uIconIdx_FlySpell = pIconsFrameTable->FindIcon("spell21");
+  uIconIdx_WaterWalk = pIconsFrameTable->FindIcon("spell27");
+}
+
+void UI_Create() {
+  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeC"));
+  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeB"));
+  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeA"));
+  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchC"));
+  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchB"));
+  pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchA"));
+
+  game_ui_minimap_dirs[0] = assets->GetImage_Alpha("MAPDIR1");
+  game_ui_minimap_dirs[1] = assets->GetImage_Alpha("MAPDIR2");
+  game_ui_minimap_dirs[2] = assets->GetImage_Alpha("MAPDIR3");
+  game_ui_minimap_dirs[3] = assets->GetImage_Alpha("MAPDIR4");
+  game_ui_minimap_dirs[4] = assets->GetImage_Alpha("MAPDIR5");
+  game_ui_minimap_dirs[5] = assets->GetImage_Alpha("MAPDIR6");
+  game_ui_minimap_dirs[6] = assets->GetImage_Alpha("MAPDIR7");
+  game_ui_minimap_dirs[7] = assets->GetImage_Alpha("MAPDIR8");
+
+  game_ui_bar_blue = assets->GetImage_ColorKey("ib-statB", 0x7FF);
+  game_ui_bar_green = assets->GetImage_ColorKey("ib-statG", 0x7FF);
+  game_ui_bar_yellow = assets->GetImage_ColorKey("ib-statY", 0x7FF);
+  game_ui_bar_red = assets->GetImage_ColorKey("ib-statR", 0x7FF);
+  game_ui_monster_hp_background = assets->GetImage_ColorKey("mhp_bg", 0x7FF);
+  game_ui_monster_hp_border_left = assets->GetImage_ColorKey("mhp_capl", 0x7FF);
+  game_ui_monster_hp_border_right = assets->GetImage_ColorKey("mhp_capr", 0x7FF);
+  game_ui_monster_hp_green = assets->GetImage_ColorKey("mhp_grn", 0x7FF);
+  game_ui_monster_hp_red = assets->GetImage_ColorKey("mhp_red", 0x7FF);
+  game_ui_monster_hp_yellow = assets->GetImage_ColorKey("mhp_yel", 0x7FF);
+  ui_leather_mm7 = assets->GetImage_Solid("LEATHER");
+  ui_leather_mm6 = assets->GetImage_Solid("ibground");
+  dialogue_ui_x_x_u = assets->GetImage_ColorKey("x_x_u", 0x7FF);
+  ui_buttdesc2 = assets->GetImage_Alpha("BUTTESC2");
+  dialogue_ui_x_ok_u = assets->GetImage_ColorKey("x_ok_u", 0x7FF);
+  ui_buttyes2 = assets->GetImage_Alpha("BUTTYES2");
+
+  pPrimaryWindow = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
+  pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0, 0, "");
+
+  pPrimaryWindow->CreateButton(61, 424, 31, 80, 2, 94, UIMSG_SelectCharacter, 1, '1', "");//buttons for portraits
+  pPrimaryWindow->CreateButton(177, 424, 31, 80, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
+  pPrimaryWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
+  pPrimaryWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
+
+  pPrimaryWindow->CreateButton(24, 404, 5, 49, 1, 93, UIMSG_0, 1, 0, "");//buttons for HP
+  pPrimaryWindow->CreateButton(139, 404, 5, 49, 1, 93, UIMSG_0, 2, 0, "");
+  pPrimaryWindow->CreateButton(255, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "");
+  pPrimaryWindow->CreateButton(370, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "");
+
+  pPrimaryWindow->CreateButton(97, 404, 5, 49, 1, 93, UIMSG_0, 1, 0, "");//buttons for SP
+  pPrimaryWindow->CreateButton(212, 404, 5, 49, 1, 93, UIMSG_0, 2, 0, "");
+  pPrimaryWindow->CreateButton(328, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "");
+  pPrimaryWindow->CreateButton(443, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "");
+
+  game_ui_tome_quests = assets->GetImage_ColorKey("ib-td1-A", 0x7FF);
+  pBtn_Quests = pPrimaryWindow->CreateButton(
+    491, 353,
+    game_ui_tome_quests->GetWidth(),
+    game_ui_tome_quests->GetHeight(),
+    1, 0, UIMSG_OpenQuestBook, 0, pKeyActionMap->GetActionVKey(INPUT_Quest),
+    localization->GetString(174), { { game_ui_tome_quests } }); //Quests
+
+  game_ui_tome_autonotes = assets->GetImage_ColorKey("ib-td2-A", 0x7FF);
+  pBtn_Autonotes = pPrimaryWindow->CreateButton(
+    527, 353,
+    game_ui_tome_autonotes->GetWidth(),
+    game_ui_tome_autonotes->GetHeight(),
+    1, 0, UIMSG_OpenAutonotes, 0, pKeyActionMap->GetActionVKey(INPUT_Autonotes),
+    localization->GetString(154), { { game_ui_tome_autonotes } });//Autonotes
+
+  game_ui_tome_maps = assets->GetImage_ColorKey("ib-td3-A", 0x7FF);
+  pBtn_Maps = pPrimaryWindow->CreateButton(
+    546, 353,
+    game_ui_tome_maps->GetWidth(),
+    game_ui_tome_maps->GetHeight(),
+    1, 0, UIMSG_OpenMapBook, 0, pKeyActionMap->GetActionVKey(INPUT_Mapbook),
+    localization->GetString(139), { { game_ui_tome_maps } }); //Maps
+
+  game_ui_tome_calendar = assets->GetImage_ColorKey("ib-td4-A", 0x7FF);
+  pBtn_Calendar = pPrimaryWindow->CreateButton(
+    570, 353,
+    game_ui_tome_calendar->GetWidth(),
+    game_ui_tome_calendar->GetHeight(),
+    1, 0, UIMSG_OpenCalendar, 0, pKeyActionMap->GetActionVKey(INPUT_TimeCal),
+    localization->GetString(78), { { game_ui_tome_calendar } });//Calendar
+
+  game_ui_tome_storyline = assets->GetImage_ColorKey("ib-td5-A", 0x7FF);
+  pBtn_History = pPrimaryWindow->CreateButton(
+    600, 361,
+    game_ui_tome_storyline->GetWidth(),
+    game_ui_tome_storyline->GetHeight(),
+    1, 0, UIMSG_OpenHistoryBook, 0, 'H',
+    localization->GetString(602), { { game_ui_tome_storyline } });//History
+
+  bFlashAutonotesBook = 0;
+  bFlashQuestBook = 0;
+  bFlashHistoryBook = 0;
+
+  pBtn_ZoomIn = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomin->GetWidth(),
+    game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomIn),
+    localization->GetString(252), { { game_ui_btn_zoomin } }); // Zoom In
+
+  pBtn_ZoomOut = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomout->GetWidth(),
+    game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomOut),
+    localization->GetString(251), { { game_ui_btn_zoomout } }); // Zoom Out
+
+  pPrimaryWindow->CreateButton(481, 0, 153, 67, 1, 92, UIMSG_0, 0, 0, "");
+  pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, '5', "");
+  pPrimaryWindow->CreateButton(561, 149, 64, 74, 1, 0, UIMSG_StartHireling2Dialogue, 0, '6', "");
+  pPrimaryWindow->CreateButton(476, 322, 77, 17, 1, 100, UIMSG_0, 0, 0, "");
+  pPrimaryWindow->CreateButton(555, 322, 77, 17, 1, 101, UIMSG_0, 0, 0, "");
+
+  pBtn_CastSpell = pPrimaryWindow->CreateButton(476, 450,
+    game_ui_btn_cast->GetWidth(),
+    game_ui_btn_cast->GetHeight(),
+    1, 0, UIMSG_SpellBookWindow, 0, 67, localization->GetString(38), { { game_ui_btn_cast } });
+  pBtn_Rest = pPrimaryWindow->CreateButton(518, 450,
+    game_ui_btn_rest->GetWidth(),
+    game_ui_btn_rest->GetHeight(),
+    1, 0, UIMSG_RestWindow, 0, 82, localization->GetString(182), { { game_ui_btn_rest } });
+  pBtn_QuickReference = pPrimaryWindow->CreateButton(560, 450,
+    game_ui_btn_quickref->GetWidth(),
+    game_ui_btn_quickref->GetHeight(),
+    1, 0, UIMSG_QuickReference, 0, 90, localization->GetString(173), { { game_ui_btn_quickref } });
+  pBtn_GameSettings = pPrimaryWindow->CreateButton(602, 450,
+    game_ui_btn_settings->GetWidth(),
+    game_ui_btn_settings->GetHeight(),
+    1, 0, UIMSG_GameMenuButton, 0, 0, localization->GetString(93), { { game_ui_btn_settings } });
+
+  pBtn_NPCLeft = pPrimaryWindow->CreateButton(469, 178,
+    ui_btn_npc_left->GetWidth(),
+    ui_btn_npc_left->GetHeight(),
+    1, 0, UIMSG_ScrollNPCPanel, 0, 0, "", { { ui_btn_npc_left } });
+  pBtn_NPCRight = pPrimaryWindow->CreateButton(626, 178,
+    ui_btn_npc_right->GetWidth(),
+    ui_btn_npc_right->GetHeight(),
+    1, 0, UIMSG_ScrollNPCPanel, 1, 0, "", { { ui_btn_npc_right } });
+
+  LoadPartyBuffIcons();
 }
