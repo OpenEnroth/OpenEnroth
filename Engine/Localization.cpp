@@ -2,35 +2,27 @@
 #include <vector>
 
 #include "Engine/Engine.h"
-#include "Engine/Localization.h"
 #include "Engine/LOD.h"
-
+#include "Engine/Localization.h"
 
 #define MAX_LOC_STRINGS 677
-extern std::vector<char *> Tokenize(char* input, const char separator);
-
+extern std::vector<char *> Tokenize(char *input, const char separator);
 
 Localization *localization = nullptr;
 
-
-
-
-const char *Localization::GetString(unsigned int index) const
-{
+const char *Localization::GetString(unsigned int index) const {
     return this->localization_strings[index];
 }
 
-String Localization::FormatString(unsigned int index, ...) const
-{
+String Localization::FormatString(unsigned int index, ...) const {
     va_list args_ptr;
 
     const char *format = (this->GetString(index));
     char buf[2048];
 
-    va_start(args_ptr, index); // ?? sometimes args_ptr has junk at start ?? args must pass as type c_str() ??
-    {
-        vsprintf(buf, format, args_ptr);
-    }
+    va_start(args_ptr, index);  // ?? sometimes args_ptr has junk at start ??
+                                // args must pass as type c_str() ??
+    { vsprintf(buf, format, args_ptr); }
     va_end(args_ptr);
 
     extern int sprintfex_internal(char *str);
@@ -39,17 +31,15 @@ String Localization::FormatString(unsigned int index, ...) const
 }
 
 //----- (00452C49) --------------------------------------------------------
-bool Localization::Initialize()
-{
-    char *tmp_pos; // eax@3
-    int step; // ebp@4
-    unsigned char c; // dl@5
-    int temp_str_len; // ecx@5
-    bool string_end; // [sp+14h] [bp-4h]@4
+bool Localization::Initialize() {
+    char *tmp_pos;     // eax@3
+    int step;          // ebp@4
+    unsigned char c;   // dl@5
+    int temp_str_len;  // ecx@5
+    bool string_end;   // [sp+14h] [bp-4h]@4
 
     this->localization_raw = (char *)pEvents_LOD->LoadRaw("global.txt", 0);
-    if (!this->localization_raw)
-    {
+    if (!this->localization_raw) {
         return false;
     }
 
@@ -58,34 +48,27 @@ bool Localization::Initialize()
     strtok(this->localization_raw, "\r");
     strtok(NULL, "\r");
 
-    for (int i = 0; i < MAX_LOC_STRINGS; ++i)
-    {
+    for (int i = 0; i < MAX_LOC_STRINGS; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
         step = 0;
         string_end = false;
-        do
-        {
+        do {
             c = *(unsigned char *)test_string;
             temp_str_len = 0;
-            if (c != '\t')
-            {
-                do
-                {
-                    if (!c)
-                        break;
+            if (c != '\t') {
+                do {
+                    if (!c) break;
                     c = *(test_string + temp_str_len + 1);
                     temp_str_len++;
                 } while (c != '\t');
             }
             tmp_pos = test_string + temp_str_len;
-            if (*tmp_pos == 0)
-                string_end = true;
+            if (*tmp_pos == 0) string_end = true;
 
             *tmp_pos = 0;
-            if (temp_str_len == 0)
+            if (temp_str_len == 0) {
                 string_end = true;
-            else
-            {
+            } else {
                 if (step == 1)
                     this->localization_strings[i] = RemoveQuotes(test_string);
             }
@@ -93,8 +76,6 @@ bool Localization::Initialize()
             test_string = tmp_pos + 1;
         } while (step <= 2 && !string_end);
     }
-
-
 
     InitializeMm6ItemCategories();
 
@@ -115,9 +96,9 @@ bool Localization::Initialize()
     return true;
 }
 
-void Localization::InitializeSpellNames()
-{
-    this->spell_names[0] = this->localization_strings[202];  // Protection from Air
+void Localization::InitializeSpellNames() {
+    this->spell_names[0] =
+        this->localization_strings[202];  // Protection from Air
     this->spell_names[1] = this->localization_strings[204];
     this->spell_names[2] = this->localization_strings[219];
     this->spell_names[3] = this->localization_strings[215];
@@ -127,48 +108,52 @@ void Localization::InitializeSpellNames()
     this->spell_names[7] = this->localization_strings[455];
     this->spell_names[8] = this->localization_strings[441];
     this->spell_names[9] = this->localization_strings[440];
-    this->spell_names[10] = this->localization_strings[218]; // Ring of Fire
+    this->spell_names[10] = this->localization_strings[218];  // Ring of Fire
     this->spell_names[11] = this->localization_strings[217];
     this->spell_names[12] = this->localization_strings[213];
     this->spell_names[13] = this->localization_strings[462];
     this->spell_names[14] = this->localization_strings[279];
-    this->spell_names[15] = this->localization_strings[442]; // Stoneskin
+    this->spell_names[15] = this->localization_strings[442];  // Stoneskin
     this->spell_names[16] = this->localization_strings[452];
     this->spell_names[17] = this->localization_strings[194];
     this->spell_names[18] = this->localization_strings[456];
     this->spell_names[19] = this->localization_strings[453];
-    this->spell_names[20] = this->localization_strings[202]; // Protection from Air
+    this->spell_names[20] =
+        this->localization_strings[202];  // Protection from Air
     this->spell_names[21] = this->localization_strings[443];
     this->spell_names[22] = this->localization_strings[204];
     this->spell_names[23] = this->localization_strings[208];
     this->spell_names[24] = this->localization_strings[221];
-    this->spell_names[25] = this->localization_strings[24];  // Protection from Fire
+    this->spell_names[25] =
+        this->localization_strings[24];  // Protection from Fire
     this->spell_names[26] = this->localization_strings[228];
     this->spell_names[27] = this->localization_strings[441];
     this->spell_names[28] = this->localization_strings[440];
     this->spell_names[29] = this->localization_strings[213];
-    this->spell_names[30] = this->localization_strings[229]; // Pain Reflection
+    this->spell_names[30] = this->localization_strings[229];  // Pain Reflection
     this->spell_names[31] = this->localization_strings[233];
     this->spell_names[32] = this->localization_strings[234];
     this->spell_names[33] = this->localization_strings[279];
     this->spell_names[34] = this->localization_strings[442];
-    this->spell_names[35] = this->localization_strings[235]; // Temporary Accuracy
+    this->spell_names[35] =
+        this->localization_strings[235];  // Temporary Accuracy
     this->spell_names[36] = this->localization_strings[246];
     this->spell_names[37] = this->localization_strings[247];
     this->spell_names[38] = this->localization_strings[248];
     this->spell_names[39] = this->localization_strings[674];
-    this->spell_names[40] = this->localization_strings[249]; // Temporary Willpower
+    this->spell_names[40] =
+        this->localization_strings[249];  // Temporary Willpower
     this->spell_names[41] = this->localization_strings[258];
     this->spell_names[42] = this->localization_strings[194];
-    this->spell_names[43] = this->localization_strings[657]; // Water Breathing
+    this->spell_names[43] = this->localization_strings[657];  // Water Breathing
 }
 
-void Localization::InitializeNpcProfessionNames()
-{
-    this->npc_profession_names[0] = this->localization_strings[153]; // Nothing
-    this->npc_profession_names[1] = this->localization_strings[308]; // smith
-    this->npc_profession_names[2] = this->localization_strings[309]; // armsmaster
-    this->npc_profession_names[3] = this->localization_strings[7];   // alchemist
+void Localization::InitializeNpcProfessionNames() {
+    this->npc_profession_names[0] = this->localization_strings[153];  // Nothing
+    this->npc_profession_names[1] = this->localization_strings[308];  // smith
+    this->npc_profession_names[2] =
+        this->localization_strings[309];  // armsmaster
+    this->npc_profession_names[3] = this->localization_strings[7];  // alchemist
     this->npc_profession_names[4] = this->localization_strings[306];
     this->npc_profession_names[5] = this->localization_strings[310];
     this->npc_profession_names[6] = this->localization_strings[311];
@@ -226,76 +211,79 @@ void Localization::InitializeNpcProfessionNames()
     this->npc_profession_names[58] = this->localization_strings[370];
 }
 
-void Localization::InitializeCharacterConditionNames()
-{
-    this->character_conditions[0] = this->localization_strings[52];   // Cursed
-    this->character_conditions[1] = this->localization_strings[241]; 
+void Localization::InitializeCharacterConditionNames() {
+    this->character_conditions[0] = this->localization_strings[52];  // Cursed
+    this->character_conditions[1] = this->localization_strings[241];
     this->character_conditions[2] = this->localization_strings[14];   // Asleep
     this->character_conditions[3] = this->localization_strings[4];    // Fear
     this->character_conditions[4] = this->localization_strings[69];   // Drunk
     this->character_conditions[5] = this->localization_strings[117];  // Insane
-    this->character_conditions[6] = this->localization_strings[166];  // Poisoned
-    this->character_conditions[7] = this->localization_strings[65];   // Diseased
-    this->character_conditions[8] = this->localization_strings[166];  // Poisoned
-    this->character_conditions[9] = this->localization_strings[65];   // Diseased
-    this->character_conditions[10] = this->localization_strings[166]; // Poisoned
-    this->character_conditions[11] = this->localization_strings[65];  // Diseased
-    this->character_conditions[12] = this->localization_strings[162]; // Paralyzed
-    this->character_conditions[13] = this->localization_strings[231]; // Unconcious
+    this->character_conditions[6] =
+        this->localization_strings[166];                             // Poisoned
+    this->character_conditions[7] = this->localization_strings[65];  // Diseased
+    this->character_conditions[8] =
+        this->localization_strings[166];                             // Poisoned
+    this->character_conditions[9] = this->localization_strings[65];  // Diseased
+    this->character_conditions[10] =
+        this->localization_strings[166];  // Poisoned
+    this->character_conditions[11] =
+        this->localization_strings[65];  // Diseased
+    this->character_conditions[12] =
+        this->localization_strings[162];  // Paralyzed
+    this->character_conditions[13] =
+        this->localization_strings[231];  // Unconcious
     this->character_conditions[14] = this->localization_strings[58];  // Dead
-    this->character_conditions[15] = this->localization_strings[220]; // Pertified
-    this->character_conditions[16] = this->localization_strings[76];  // Eradicated
-    this->character_conditions[17] = this->localization_strings[601]; // Zombie
-    this->character_conditions[18] = this->localization_strings[98];  // Good
+    this->character_conditions[15] =
+        this->localization_strings[220];  // Pertified
+    this->character_conditions[16] =
+        this->localization_strings[76];  // Eradicated
+    this->character_conditions[17] = this->localization_strings[601];  // Zombie
+    this->character_conditions[18] = this->localization_strings[98];   // Good
 }
 
-void Localization::InitializeSkillNames()
-{
-    this->skill_names[0] = this->localization_strings[271]; // Staff
+void Localization::InitializeSkillNames() {
+    this->skill_names[0] = this->localization_strings[271];  // Staff
     this->skill_names[1] = this->localization_strings[272];
     this->skill_names[2] = this->localization_strings[273];
     this->skill_names[3] = this->localization_strings[274];
     this->skill_names[4] = this->localization_strings[275];
-    this->skill_names[5] = this->localization_strings[276]; // Bow
+    this->skill_names[5] = this->localization_strings[276];  // Bow
     this->skill_names[6] = this->localization_strings[277];
     this->skill_names[7] = this->localization_strings[278];
     this->skill_names[8] = this->localization_strings[279];
     this->skill_names[9] = this->localization_strings[280];
-    this->skill_names[10] = this->localization_strings[281]; // Chain
+    this->skill_names[10] = this->localization_strings[281];  // Chain
     this->skill_names[11] = this->localization_strings[282];
     this->skill_names[12] = this->localization_strings[283];
     this->skill_names[13] = this->localization_strings[284];
     this->skill_names[14] = this->localization_strings[285];
-    this->skill_names[15] = this->localization_strings[286]; // Earth
+    this->skill_names[15] = this->localization_strings[286];  // Earth
     this->skill_names[16] = this->localization_strings[289];
     this->skill_names[17] = this->localization_strings[290];
     this->skill_names[18] = this->localization_strings[291];
     this->skill_names[19] = this->localization_strings[287];
-    this->skill_names[20] = this->localization_strings[288]; // Dark
+    this->skill_names[20] = this->localization_strings[288];  // Dark
     this->skill_names[21] = this->localization_strings[292];
     this->skill_names[22] = this->localization_strings[293];
     this->skill_names[23] = this->localization_strings[294];
     this->skill_names[24] = this->localization_strings[295];
-    this->skill_names[25] = this->localization_strings[296]; // Meditation
+    this->skill_names[25] = this->localization_strings[296];  // Meditation
     this->skill_names[26] = this->localization_strings[297];
     this->skill_names[27] = this->localization_strings[298];
     this->skill_names[28] = this->localization_strings[299];
     this->skill_names[29] = this->localization_strings[300];
-    this->skill_names[30] = this->localization_strings[50]; // Dodge
+    this->skill_names[30] = this->localization_strings[50];  // Dodge
     this->skill_names[31] = this->localization_strings[77];
     this->skill_names[32] = this->localization_strings[88];
     this->skill_names[33] = this->localization_strings[89];
     this->skill_names[34] = this->localization_strings[90];
-    this->skill_names[35] = this->localization_strings[95]; // Alchemy
+    this->skill_names[35] = this->localization_strings[95];  // Alchemy
     this->skill_names[36] = this->localization_strings[301];
-    this->skill_names[37] = this->localization_strings[153]; // Nothing
-
-
+    this->skill_names[37] = this->localization_strings[153];  // Nothing
 
     skill_desc_raw = (char *)pEvents_LOD->LoadRaw("skilldes.txt", 0);
     strtok(skill_desc_raw, "\r");
-    for (int i = 0; i < 37; ++i)
-    {
+    for (int i = 0; i < 37; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
 
         auto tokens = Tokenize(test_string, '\t');
@@ -309,59 +297,55 @@ void Localization::InitializeSkillNames()
     }
 }
 
-void Localization::InitializeClassNames()
-{
-    this->class_names[0] = this->localization_strings[253]; // Knight
-    this->class_names[1] = this->localization_strings[254]; // Cavalier
-    this->class_names[2] = this->localization_strings[255]; // Champion
-    this->class_names[3] = this->localization_strings[2];   // Black Knight
+void Localization::InitializeClassNames() {
+    this->class_names[0] = this->localization_strings[253];  // Knight
+    this->class_names[1] = this->localization_strings[254];  // Cavalier
+    this->class_names[2] = this->localization_strings[255];  // Champion
+    this->class_names[3] = this->localization_strings[2];    // Black Knight
 
-    this->class_names[4] = this->localization_strings[307]; // Thief
-    this->class_names[5] = this->localization_strings[114]; // Rogue
-    this->class_names[6] = this->localization_strings[3];   // Spy
-    this->class_names[7] = this->localization_strings[13];  // Assassin
+    this->class_names[4] = this->localization_strings[307];  // Thief
+    this->class_names[5] = this->localization_strings[114];  // Rogue
+    this->class_names[6] = this->localization_strings[3];    // Spy
+    this->class_names[7] = this->localization_strings[13];   // Assassin
 
-    this->class_names[8] = this->localization_strings[21];   // Monk
-    this->class_names[9] = this->localization_strings[26];   // Initiate
-    this->class_names[10] = this->localization_strings[432]; // Master
-    this->class_names[11] = this->localization_strings[27];  // Ninja
+    this->class_names[8] = this->localization_strings[21];    // Monk
+    this->class_names[9] = this->localization_strings[26];    // Initiate
+    this->class_names[10] = this->localization_strings[432];  // Master
+    this->class_names[11] = this->localization_strings[27];   // Ninja
 
-    this->class_names[12] = this->localization_strings[262]; // Paladin
-    this->class_names[13] = this->localization_strings[263]; // Crusader
-    this->class_names[14] = this->localization_strings[264]; // Hero
-    this->class_names[15] = this->localization_strings[28];  // Villian
+    this->class_names[12] = this->localization_strings[262];  // Paladin
+    this->class_names[13] = this->localization_strings[263];  // Crusader
+    this->class_names[14] = this->localization_strings[264];  // Hero
+    this->class_names[15] = this->localization_strings[28];   // Villian
 
-    this->class_names[16] = this->localization_strings[265]; // Archer
-    this->class_names[17] = this->localization_strings[267]; // Battle Mage
+    this->class_names[16] = this->localization_strings[265];  // Archer
+    this->class_names[17] = this->localization_strings[267];  // Battle Mage
     this->class_names[18] = this->localization_strings[119];
-    this->class_names[19] = this->localization_strings[124]; // Sniper
+    this->class_names[19] = this->localization_strings[124];  // Sniper
 
-    this->class_names[20] = this->localization_strings[31];  // Ranger
-    this->class_names[21] = this->localization_strings[370]; // Hunter
-    this->class_names[22] = this->localization_strings[33];  // Ranger Lord
+    this->class_names[20] = this->localization_strings[31];   // Ranger
+    this->class_names[21] = this->localization_strings[370];  // Hunter
+    this->class_names[22] = this->localization_strings[33];   // Ranger Lord
     this->class_names[23] = this->localization_strings[40];
 
-    this->class_names[24] = this->localization_strings[256]; // Cleric
+    this->class_names[24] = this->localization_strings[256];  // Cleric
     this->class_names[25] = this->localization_strings[257];
     this->class_names[26] = this->localization_strings[44];
     this->class_names[27] = this->localization_strings[46];
 
-    this->class_names[28] = this->localization_strings[268]; // Druid
+    this->class_names[28] = this->localization_strings[268];  // Druid
     this->class_names[29] = this->localization_strings[269];
     this->class_names[30] = this->localization_strings[270];
     this->class_names[31] = this->localization_strings[48];  // Warlock
 
-    this->class_names[32] = this->localization_strings[259]; // Sorcerer
-    this->class_names[33] = this->localization_strings[260]; // Wizard
-    this->class_names[34] = this->localization_strings[261]; // Archmage
-    this->class_names[35] = this->localization_strings[49];  // Lich
-
-
+    this->class_names[32] = this->localization_strings[259];  // Sorcerer
+    this->class_names[33] = this->localization_strings[260];  // Wizard
+    this->class_names[34] = this->localization_strings[261];  // Archmage
+    this->class_names[35] = this->localization_strings[49];   // Lich
 
     this->class_desc_raw = (char *)pEvents_LOD->LoadRaw("class.txt", 0);
     strtok(this->class_desc_raw, "\r");
-    for (int i = 0; i < 36; ++i)
-    {
+    for (int i = 0; i < 36; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
         auto tokens = Tokenize(test_string, '\t');
         Assert(tokens.size() == 3, "Invalid number of tokens");
@@ -369,10 +353,8 @@ void Localization::InitializeClassNames()
     }
 }
 
-
 //----- (00452B95) --------------------------------------------------------
-void Localization::InitializeMm6ItemCategories()
-{
+void Localization::InitializeMm6ItemCategories() {
     this->mm6_item_categories[0] = this->localization_strings[568];  // Club
     this->mm6_item_categories[1] = this->localization_strings[271];  // Staff
     this->mm6_item_categories[2] = this->localization_strings[272];  // Sword
@@ -383,16 +365,18 @@ void Localization::InitializeMm6ItemCategories()
     this->mm6_item_categories[7] = this->localization_strings[277];  // Mace
     this->mm6_item_categories[8] = this->localization_strings[278];  // Blaster
     this->mm6_item_categories[9] = this->localization_strings[279];  // Shield
-    this->mm6_item_categories[10] = this->localization_strings[280]; // Leather armour
-    this->mm6_item_categories[11] = this->localization_strings[281]; // Chainmail
-    this->mm6_item_categories[12] = this->localization_strings[282]; // Plate armour
-    this->mm6_item_categories[13] = this->localization_strings[143]; // Other
+    this->mm6_item_categories[10] =
+        this->localization_strings[280];  // Leather armour
+    this->mm6_item_categories[11] =
+        this->localization_strings[281];  // Chainmail
+    this->mm6_item_categories[12] =
+        this->localization_strings[282];  // Plate armour
+    this->mm6_item_categories[13] = this->localization_strings[143];  // Other
 }
 
 //----- (00413FF1) --------------------------------------------------------
-void Localization::InitializeMonthNames()
-{
-    this->month_names[0] = this->localization_strings[415]; // january
+void Localization::InitializeMonthNames() {
+    this->month_names[0] = this->localization_strings[415];  // january
     this->month_names[1] = this->localization_strings[416];
     this->month_names[2] = this->localization_strings[417];
     this->month_names[3] = this->localization_strings[418];
@@ -403,55 +387,50 @@ void Localization::InitializeMonthNames()
     this->month_names[8] = this->localization_strings[423];
     this->month_names[9] = this->localization_strings[424];
     this->month_names[10] = this->localization_strings[425];
-    this->month_names[11] = this->localization_strings[426]; // december
+    this->month_names[11] = this->localization_strings[426];  // december
 }
 
 //----- (0041406F) --------------------------------------------------------
-void Localization::InitializeDayNames()
-{
-    this->day_names[0] = this->localization_strings[145]; // monday
+void Localization::InitializeDayNames() {
+    this->day_names[0] = this->localization_strings[145];  // monday
     this->day_names[1] = this->localization_strings[230];
     this->day_names[2] = this->localization_strings[243];
     this->day_names[3] = this->localization_strings[227];
     this->day_names[4] = this->localization_strings[91];
     this->day_names[5] = this->localization_strings[188];
-    this->day_names[6] = this->localization_strings[222]; // sunday
+    this->day_names[6] = this->localization_strings[222];  // sunday
 }
 
 //----- (004140BB) --------------------------------------------------------
-void Localization::InitializeSpellSchoolNames()
-{
-    this->spell_school_names[0] = this->localization_strings[87];  // Fire
-    this->spell_school_names[1] = this->localization_strings[6];   // Air
-    this->spell_school_names[2] = this->localization_strings[240]; // Water
-    this->spell_school_names[3] = this->localization_strings[70];  // Earth
-    this->spell_school_names[4] = this->localization_strings[142]; // Mind
-    this->spell_school_names[5] = this->localization_strings[214]; // Spirit
-    this->spell_school_names[6] = this->localization_strings[29];  // Body
-    this->spell_school_names[7] = this->localization_strings[133]; // Light
-    this->spell_school_names[8] = this->localization_strings[54];  // Dark
+void Localization::InitializeSpellSchoolNames() {
+    this->spell_school_names[0] = this->localization_strings[87];   // Fire
+    this->spell_school_names[1] = this->localization_strings[6];    // Air
+    this->spell_school_names[2] = this->localization_strings[240];  // Water
+    this->spell_school_names[3] = this->localization_strings[70];   // Earth
+    this->spell_school_names[4] = this->localization_strings[142];  // Mind
+    this->spell_school_names[5] = this->localization_strings[214];  // Spirit
+    this->spell_school_names[6] = this->localization_strings[29];   // Body
+    this->spell_school_names[7] = this->localization_strings[133];  // Light
+    this->spell_school_names[8] = this->localization_strings[54];   // Dark
 }
 
 //----- (0041411B) --------------------------------------------------------
-void Localization::InitializeAttributeNames()
-{
-    this->attribute_names[0] = this->localization_strings[144]; // Might
-    this->attribute_names[1] = this->localization_strings[116]; // Intelligence
-    this->attribute_names[2] = this->localization_strings[163]; // Willpower
-    this->attribute_names[3] = this->localization_strings[75];  // Endurance
-    this->attribute_names[4] = this->localization_strings[1];   // Accuracy
-    this->attribute_names[5] = this->localization_strings[211]; // Speed
-    this->attribute_names[6] = this->localization_strings[136]; // Luck
+void Localization::InitializeAttributeNames() {
+    this->attribute_names[0] = this->localization_strings[144];  // Might
+    this->attribute_names[1] = this->localization_strings[116];  // Intelligence
+    this->attribute_names[2] = this->localization_strings[163];  // Willpower
+    this->attribute_names[3] = this->localization_strings[75];   // Endurance
+    this->attribute_names[4] = this->localization_strings[1];    // Accuracy
+    this->attribute_names[5] = this->localization_strings[211];  // Speed
+    this->attribute_names[6] = this->localization_strings[136];  // Luck
 
     this->attribute_desc_raw = (char *)pEvents_LOD->LoadRaw("stats.txt", 0);
     strtok(this->attribute_desc_raw, "\r");
-    for (int i = 0; i < 26; ++i)
-    {
+    for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
         auto tokens = Tokenize(test_string, '\t');
         Assert(tokens.size() == 2, "Invalid number of tokens");
-        switch (i)
-        {
+        switch (i) {
             case 0:
             case 1:
             case 2:
@@ -523,8 +502,7 @@ void Localization::InitializeAttributeNames()
 }
 
 //----- (00410AF5) --------------------------------------------------------
-void Localization::InitializeMoonPhaseNames()
-{
+void Localization::InitializeMoonPhaseNames() {
     this->moon_phase_names[0] = this->localization_strings[150];
     this->moon_phase_names[1] = this->localization_strings[171];
     this->moon_phase_names[2] = this->localization_strings[102];
@@ -532,42 +510,31 @@ void Localization::InitializeMoonPhaseNames()
     this->moon_phase_names[4] = this->localization_strings[92];
 }
 
-
-
-
-
-
-
-
-
-
-
-
 /*
 enum GLOBAL_LOCALIZ_INDEX
 {
-    LOCSTR_AC = 0,		//"AC"	
-    LOCSTR_ACCURACY = 1,		//"Accuracy"	
+    LOCSTR_AC = 0,		//"AC"
+    LOCSTR_ACCURACY = 1,		//"Accuracy"
     LOCSTR_BLK_KNIGHT = 2,		//"Black Knight"
     LOCSTR_SPY = 3,		// "Spy"
 
-    LOCSTR_TOWN_PORTAL = 10, // "Town Portal"	
+    LOCSTR_TOWN_PORTAL = 10, // "Town Portal"
 
     LOCSTR_ASSASIN = 13,	// "Assassin"
 
     LOCSTR_AUTOSAVE = 16,	// "Autosave"
 
-    LOCSTR_ATTACK = 18, // "Attack"	
+    LOCSTR_ATTACK = 18, // "Attack"
     LOCSTR_AVAILABLE = 19, //"Available"
 
-    LOCSTR_MONK = 21, //"Monk"	
+    LOCSTR_MONK = 21, //"Monk"
 
     LOCSTR_AVARDS_FOR = 23, //"Awards for"
 
 
     LOCSTR_RANGER = 31, //"Ranger"
 
-    LOCSTR_CANCEL = 34, //"Cancel"	
+    LOCSTR_CANCEL = 34, //"Cancel"
 
 
     LOCSTR_SELECT_TGT = 39,	 ///"Select Target"
@@ -576,74 +543,76 @@ enum GLOBAL_LOCALIZ_INDEX
 
     LOCSTR_CONDITION = 47,	//"Condition"
 
-    LOCSTR_CREATE_PARTY = 51,   //"C R E A T E   P A R T Y"	
+    LOCSTR_CREATE_PARTY = 51,   //"C R E A T E   P A R T Y"
 
-    LOCSTR_DAWN = 55, //"Dawn"	
-    LOCSTR_DAY = 56,	//"Day"	
-    LOCSTR_DAYS = 57,	/// "Days"	
+    LOCSTR_DAWN = 55, //"Dawn"
+    LOCSTR_DAY = 56,	//"Day"
+    LOCSTR_DAYS = 57,	/// "Days"
 
-    LOCSTR_PRESS_ESCAPE = 61,	// "Press Escape"	
+    LOCSTR_PRESS_ESCAPE = 61,	// "Press Escape"
 
-    LOCSTR_TROUBLE_LOAD = 63,//"Might and Magic VII is having trouble loading files. 
-                             // Please re-install to fix this problem. Note: Re-installing will not destroy your save games."	
-    LOCSTR_DETAIL_TOGGLE = 64,	 //"Detail Toggle"	
+    LOCSTR_TROUBLE_LOAD = 63,//"Might and Magic VII is having trouble loading
+files.
+                             // Please re-install to fix this problem. Note:
+Re-installing will not destroy your save games." LOCSTR_DETAIL_TOGGLE = 64,
+//"Detail Toggle"
 
-    LOCSTR_DMG = 66,	 /// "Dmg"	
+    LOCSTR_DMG = 66,	 /// "Dmg"
 
-    LOCSTR_EMPTY = 72, // "Empty"	
+    LOCSTR_EMPTY = 72, // "Empty"
 
-    LOCSTR_EXIT = 79,	// "Exit"	
+    LOCSTR_EXIT = 79,	// "Exit"
     LOCSTR_EXIT_BLDNG = 80,   // "Exit Building"
 
-    LOCSTR_EXPIRIENCE = 83, //"Experience"	
+    LOCSTR_EXPIRIENCE = 83, //"Experience"
 
     LOCSTR_GRAND = 96,	// "Grand"
 
-    LOCSTR_HP = 107,	// "HP"	
-    LOCSTR_HIT_POINTS = 108,	// "Hit Points"	
-    LOCSTR_HOUR = 109,	//"Hour"	
-    LOCSTR_HOURS = 110, //"Hours"	
+    LOCSTR_HP = 107,	// "HP"
+    LOCSTR_HIT_POINTS = 108,	// "Hit Points"
+    LOCSTR_HOUR = 109,	//"Hour"
+    LOCSTR_HOURS = 110, //"Hours"
 
     LOCSTR_ROGUE = 114,	 //"Rogue"
 
-    LOCSTR_LEVEL = 131,   // "Level"	
+    LOCSTR_LEVEL = 131,   // "Level"
 
-    LOCSTR_LOADING = 135,  //"Loading"	
+    LOCSTR_LOADING = 135,  //"Loading"
 
     LOCSTR_MIGHT = 144,	 //"Might"
 
-    LOCSTR_NAME = 149,	// "Name"	
+    LOCSTR_NAME = 149,	// "Name"
 
-    LOCSTR_YOU_TO_TRAIN = 147, // "You are eligible to train to %u."	
+    LOCSTR_YOU_TO_TRAIN = 147, // "You are eligible to train to %u."
 
-    LOCSTR_STAY_IN_AREA = 156,  //"Stay in this Area"	
+    LOCSTR_STAY_IN_AREA = 156,  //"Stay in this Area"
     LOCSTR_3DO_COPYRHT = 157,	  // ""© 1999 The 3DO Company.
 
     LOCSTR_PLEASE_WAIT = 165,	// "Please Wait"
 
     LOCSTR_REPUTATION = 180,	 //"Reputation"
 
-    LOCSTR_REST_HEAL_8 = 183, //"Rest & Heal 8 Hours"	
+    LOCSTR_REST_HEAL_8 = 183, //"Rest & Heal 8 Hours"
 
-    LOCSTR_TIME_ERATHIA = 186, // "Time in Erathia"	
+    LOCSTR_TIME_ERATHIA = 186, // "Time in Erathia"
 
-    LOCSTR_SAVING = 190,  // "Saving"	
+    LOCSTR_SAVING = 190,  // "Saving"
 
-    LOCSTR_SKILL_POINTS = 207, /// "Skill Points"	
+    LOCSTR_SKILL_POINTS = 207, /// "Skill Points"
 
-    LOCSTR_KNIGHT = 253,  //"Knight"	
-    LOCSTR_CAVALIER = 254,  //"Cavalier"	
-    LOCSTR_CHAMPION = 255,  //"Champion"	
-    LOCSTR_CLERIC = 256,  //"Cleric"	
-    LOCSTR_PRIEST = 257,  //"Priest"	
+    LOCSTR_KNIGHT = 253,  //"Knight"
+    LOCSTR_CAVALIER = 254,  //"Cavalier"
+    LOCSTR_CHAMPION = 255,  //"Champion"
+    LOCSTR_CLERIC = 256,  //"Cleric"
+    LOCSTR_PRIEST = 257,  //"Priest"
 
-    LOCSTR_SORCERER = 259,  // "Sorcerer"	
+    LOCSTR_SORCERER = 259,  // "Sorcerer"
 
     LOCSTR_PALADIN = 262, // "Paladin"
 
     LOCSTR_ARCHER = 265,   /// "Archer"
 
-    LOCSTR_DRUID = 268, // "Druid"	
+    LOCSTR_DRUID = 268, // "Druid"
 
     LOCSTR_THIEF = 307, //"Thief"
 
@@ -651,49 +620,50 @@ enum GLOBAL_LOCALIZ_INDEX
 
     LOCSTR_HATED = 379,// "Hated"
 
-    LOCSTR_UNFRENDLY = 392,	 //"Unfriendly"	
+    LOCSTR_UNFRENDLY = 392,	 //"Unfriendly"
 
-    LOCSTR_NEITRAL = 399,  // "Neutral"	
+    LOCSTR_NEITRAL = 399,  // "Neutral"
 
-    LOCSTR_FRENDLY = 402, // "Friendly"	
+    LOCSTR_FRENDLY = 402, // "Friendly"
 
-    LOCSTR_D_DAYS_TO_S = 404,   //"%d days to %s"	
-    LOCSTR_TRAVEL_COST = 405,    //"Travel Cost %d gold"	
+    LOCSTR_D_DAYS_TO_S = 404,   //"%d days to %s"
+    LOCSTR_TRAVEL_COST = 405,    //"Travel Cost %d gold"
 
-    LOCSTR_ENTER_S = 411, // "Enter %s"	
+    LOCSTR_ENTER_S = 411, // "Enter %s"
 
-    LOCSTR_IS_IN_NO_COND = 427,	// "%s is in no condition to %s"	
+    LOCSTR_IS_IN_NO_COND = 427,	// "%s is in no condition to %s"
 
     LOCSTR_S_THE_S = 429,    //"%s the %s"
 
     LOCSTR_NORMAL = 431,	//"Normal"
-    LOCSTR_MASTER = 432,	//"Master"	
+    LOCSTR_MASTER = 432,	//"Master"
     LOCSTR_EXPERT = 433,	//"Expert"
-    LOCSTR_LIKED = 434, //"Liked"	
+    LOCSTR_LIKED = 434, //"Liked"
 
-    LOCSTR_ACTIVE_SPELL = 450,	// "Active Spells: %s"	
+    LOCSTR_ACTIVE_SPELL = 450,	// "Active Spells: %s"
 
-    LOCSTR_READING = 505, ///"Reading..."	
+    LOCSTR_READING = 505, ///"Reading..."
 
-    LOCSTR_NOTHING_HERE = 521, // "Nothing here"	
+    LOCSTR_NOTHING_HERE = 521, // "Nothing here"
 
     LOCSTR_SP_COST = 522, //"SP Cost"
-    LOCSTR_RECALL_BEACON = 523, // "Recall Beacon"	
+    LOCSTR_RECALL_BEACON = 523, // "Recall Beacon"
 
-    LOCSTR_TIME = 526,	//"Time"	
+    LOCSTR_TIME = 526,	//"Time"
 
-    LOCSTR_NEED_MORE_EXP = 538, //"You need %d more experience to train to level %d"	
+    LOCSTR_NEED_MORE_EXP = 538, //"You need %d more experience to train to level
+%d"
 
     LOCSTR_IDENT_ITEM = 541, // "Identify Items"
 
-    LOCSTR_DUSK = 566,   //"Dusk"	
-    LOCSTR_NIGHT = 567,  // "Night"	
+    LOCSTR_DUSK = 566,   //"Dusk"
+    LOCSTR_NIGHT = 567,  // "Night"
 
-    LOCSTR_NO_SAVING = 583,	//"No saving in the Arena"	
+    LOCSTR_NO_SAVING = 583,	//"No saving in the Arena"
 
     LOCSTR_AUTOSAVE_MM7 = 613, // "AutoSave.MM7"
 
-    LOCSTR_BONUS = 623, //"Bonus"	
+    LOCSTR_BONUS = 623, //"Bonus"
 
     LOCSTR_GAME_SAVED = 656,	// "Game Saved!"
 
@@ -714,7 +684,8 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[0xc]	0x04102e10 "Armor Class"	unsigned char *
 
 +		[0xe]	0x04102e2d "Asleep"	unsigned char *
-+		[0xf]	0x04102e38 "Assertion failed at %d in %s"	unsigned char *
++		[0xf]	0x04102e38 "Assertion failed at %d in %s"
+unsigned char *
 
 +		[17]	0x04102e66 "Exp."	unsigned char *
 
@@ -735,9 +706,9 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[33]	0x04102f2a "Ranger Lord"	unsigned char *
 +		[34]	0x04102f3a "Cancel"	unsigned char *
 +		[35]	0x04102f45 "Town Portal to %s"	unsigned char *
-+		[36]	0x04102f5b "%s can not be used that way"	unsigned char *
-+		[37]	0x04102f7b "Total Time:"	unsigned char *
-+		[38]	0x04102f8b "Cast Spell"	unsigned char *
++		[36]	0x04102f5b "%s can not be used that way"
+unsigned char * +		[37]	0x04102f7b "Total Time:"
+unsigned char * +		[38]	0x04102f8b "Cast Spell"	unsigned char *
 
 +		[0x28]	0x04102fac "Bounty Hunter"	unsigned char *
 
@@ -761,7 +732,9 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[59]	0x04103098 "Internal Error"	unsigned char *
 +		[60]	0x041030ab "Deposit"	unsigned char *
 
-+		[62]	0x041030c8 "Might and Magic VII requires your desktop to be in 16bit (32k or 65k) Color mode in order to operate in a window."	unsigned char *
++		[62]	0x041030c8 "Might and Magic VII requires your desktop to
+be in 16bit (32k or 65k) Color mode in order to operate in a window." unsigned
+char *
 
 
 +		[65]	0x041031e6 "Diseased"	unsigned char *
@@ -781,17 +754,17 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[0x4f]	0x041032a8 "Exit"	unsigned char *
 
 +		[81]	0x041032c3 "Exit Rest"	unsigned char *
-+		[82]	0x041032d1 "Are you sure?  Click again to quit"	unsigned char *
++		[82]	0x041032d1 "Are you sure?  Click again to quit" unsigned
+char *
 
 +		[84]	0x04103307 "Fame"	unsigned char *
 +		[85]	0x04103310 "Potion Notes"	unsigned char *
-+		[86]	0x04103321 "Fill Packs to %d days for %d gold"	unsigned char *
-+		[87]	0x04103347 "Fire"	unsigned char *
-+		[88]	0x04103350 "Identify Monster"	unsigned char *
-+		[89]	0x04103365 "Armsmaster"	unsigned char *
-+		[90]	0x04103374 "Stealing"	unsigned char *
-+		[91]	0x04103381 "Friday"	unsigned char *
-+		[92]	0x0410338c "Full"	unsigned char *
++		[86]	0x04103321 "Fill Packs to %d days for %d gold" unsigned
+char * +		[87]	0x04103347 "Fire"	unsigned char * +
+[88]	0x04103350 "Identify Monster"	unsigned char * +		[89]
+0x04103365 "Armsmaster"	unsigned char * +		[90]	0x04103374
+"Stealing"	unsigned char * +		[91]	0x04103381 "Friday"
+unsigned char * +		[92]	0x0410338c "Full"	unsigned char *
 +		[93]	0x04103395 "Game Options"	unsigned char *
 +		[94]	0x041033a6 "Your score: %lu"	unsigned char *
 +		[95]	0x041033ba "Alchemy"	unsigned char *
@@ -828,9 +801,9 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[125]	0x041035f3 "+2 Skill Points!"	unsigned char *
 +		[126]	0x04103609 "Do you wish to leave %s?"	unsigned char *
 +		[127]	0x04103627 "No Text!"	unsigned char *
-+		[128]	0x04103635 "It will take %d days to travel to %s."	unsigned char *
-+		[129]	0x04103660 "%s the Level %u %s"	unsigned char *
-+		[130]	0x04103678 "Player"	unsigned char *
++		[128]	0x04103635 "It will take %d days to travel to %s."
+unsigned char * +		[129]	0x04103660 "%s the Level %u %s" unsigned
+char * +		[130]	0x04103678 "Player"	unsigned char *
 
 +		[132]	0x0410368f "Years"	unsigned char *
 +		[133]	0x0410369a "Light"	unsigned char *
@@ -840,8 +813,8 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[137]	0x041036ce "Fountain Notes"	unsigned char *
 +		[138]	0x041036e2 "Magic"	unsigned char *
 +		[139]	0x041036ed "Maps"	unsigned char *
-+		[140]	0x041036f7 "Your packs are already full!"	unsigned char *
-+		[141]	0x04103719 "Seer Notes"	unsigned char *
++		[140]	0x041036f7 "Your packs are already full!"
+unsigned char * +		[141]	0x04103719 "Seer Notes"	unsigned char *
 +		[142]	0x04103729 "Mind"	unsigned char *
 +		[143]	0x04103733 "Misc"	unsigned char *
 
@@ -851,14 +824,18 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[148]	0x04103785 "Months"	unsigned char *
 
 +		[150]	0x0410379b "New"	unsigned char *
-+		[151]	0x041037a4 "Congratulations Adventurer."	unsigned char *
-+		[152]	0x041037c5 "Buy Special"	unsigned char *
-+		[153]	0x041037d6 "None"	unsigned char *
++		[151]	0x041037a4 "Congratulations Adventurer."
+unsigned char * +		[152]	0x041037c5 "Buy Special"
+unsigned char * +		[153]	0x041037d6 "None"	unsigned char *
 +		[154]	0x041037e0 "Auto Notes"	unsigned char *
 +		[155]	0x041037f0 "You don't have enough gold"	unsigned char *
 
-+		[157]	0x04103827 ""© 1999 The 3DO Company.  All Rights Reserved.  Might and Magic, Blood and Honor, New World Computing, 3DO, and their respective logos, are trademarks and/or service marks of The 3DO Company in the U.S. and other countries.  All other trademarks belong to their respective owners.  New World Computing is a division of The 3DO Company.""	unsigned char *
-+		[158]	0x0410397d "Bootleg Bay East"	unsigned char *
++		[157]	0x04103827 ""© 1999 The 3DO Company.  All Rights
+Reserved.  Might and Magic, Blood and Honor, New World Computing, 3DO, and their
+respective logos, are trademarks and/or service marks of The 3DO Company in the
+U.S. and other countries.  All other trademarks belong to their respective
+owners.  New World Computing is a division of The 3DO Company.""	unsigned
+char * +		[158]	0x0410397d "Bootleg Bay East"	unsigned char *
 +		[159]	0x04103993 "Display Inventory"	unsigned char *
 +		[160]	0x041039aa "Learn Skills"	unsigned char *
 +		[161]	0x041039bc "Steal"	unsigned char *
@@ -867,19 +844,22 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[164]	0x041039e7 "%s hits %s for %lu damage"	unsigned char *
 
 +		[166]	0x04103a17 "Poison"	unsigned char *
-+		[167]	0x04103a23 "- The Might and Magic VII Development Team."	unsigned char *
-+		[168]	0x04103a54 "Points"	unsigned char *
++		[167]	0x04103a23 "- The Might and Magic VII Development Team."
+unsigned char * +		[168]	0x04103a54 "Points"	unsigned char *
 +		[169]	0x04103a60 "Three Quarter"	unsigned char *
 +		[170]	0x04103a73 "QSpell"	unsigned char *
 +		[171]	0x04103a7f "Quarter"	unsigned char *
 +		[172]	0x04103a8c "Quick Spell"	unsigned char *
 +		[173]	0x04103a9d "Quick Reference"	unsigned char *
 +		[174]	0x04103ab2 "Current Quests"	unsigned char *
-+		[175]	0x04103ac6 "%s inflicts %lu points killing %s"	unsigned char *
-+		[176]	0x04103aed "Might and Magic VII has detected an internal error and will be forced to close.  Would you like us to autosave your game before closing?"	unsigned char *
-+		[177]	0x04103b7b "Standard"	unsigned char *
-+		[178]	0x04103b89 "Rent Room for %d gold"	unsigned char *
-+		[179]	0x04103ba4 "Repair"	unsigned char *
++		[175]	0x04103ac6 "%s inflicts %lu points killing %s" unsigned
+char *
++		[176]	0x04103aed "Might and Magic VII has detected an internal
+error and will be forced to close.  Would you like us to autosave your game
+before closing?"	unsigned char * +		[177]	0x04103b7b
+"Standard"	unsigned char * +		[178]	0x04103b89 "Rent Room
+for %d gold"	unsigned char * +		[179]	0x04103ba4 "Repair"
+unsigned char *
 
 +		[181]	0x04103bc0 "Steal %24"	unsigned char *
 +		[182]	0x04103bcf "Rest"	unsigned char *
@@ -889,19 +869,20 @@ enum GLOBAL_LOCALIZ_INDEX
 
 +		[187]	0x04103c30 "Stolen"	unsigned char *
 +		[188]	0x04103c3c "Saturday"	unsigned char *
-+		[189]	0x04103c4a "%s shoots %s for %lu points"	unsigned char *
++		[189]	0x04103c4a "%s shoots %s for %lu points"
+unsigned char *
 
-+		[191]	0x04103c77 "You've been banned from this shop!"	unsigned char *
-+		[192]	0x04103c9f "Scroll Up"	unsigned char *
-+		[193]	0x04103cae "Scroll Down"	unsigned char *
-+		[194]	0x04103cbf "Water Res"	unsigned char *
-+		[195]	0x04103cce "Select the Item to Buy"	unsigned char *
-+		[196]	0x04103cea "Select the Special Item to Buy"	unsigned char *
-+		[197]	0x04103d0e "Select the Item to Identify"	unsigned char *
-+		[198]	0x04103d2f "Select the Item to Repair"	unsigned char *
-+		[199]	0x04103d4e "Select the Item to Sell"	unsigned char *
-+		[200]	0x04103d6b "Sell"	unsigned char *
-+		[201]	0x04103d75 "Are you sure?  Click again to start a New Game"	unsigned char *
++		[191]	0x04103c77 "You've been banned from this shop!" unsigned
+char * +		[192]	0x04103c9f "Scroll Up"	unsigned char * +
+[193]	0x04103cae "Scroll Down"	unsigned char * +		[194]
+0x04103cbf "Water Res"	unsigned char * +		[195]	0x04103cce
+"Select the Item to Buy"	unsigned char * +		[196]
+0x04103cea "Select the Special Item to Buy"	unsigned char * +
+[197]	0x04103d0e "Select the Item to Identify"	unsigned char * +
+[198]	0x04103d2f "Select the Item to Repair"	unsigned char * +
+[199]	0x04103d4e "Select the Item to Sell"	unsigned char * +
+[200]	0x04103d6b "Sell"	unsigned char * +		[201]
+0x04103d75 "Are you sure?  Click again to start a New Game"	unsigned char *
 +		[202]	0x04103da9 "Air Res"	unsigned char *
 +		[203]	0x04103db6 "Shoot"	unsigned char *
 +		[204]	0x04103dc1 "Body Res"	unsigned char *
@@ -926,21 +907,21 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[223]	0x00000000 <Bad Ptr>	unsigned char *
 +		[224]	0x00000000 <Bad Ptr>	unsigned char *
 +		[225]	0x04103ed9 "Grandmaster"	unsigned char *
-+		[226]	0x04103eea ""Gamma controls the relative ""brightness"" of the game.  May vary depending on your monitor.""	unsigned char *
-+		[227]	0x04103f4e "Thursday"	unsigned char *
-+		[228]	0x04103f5c "Hammerhands"	unsigned char *
-+		[229]	0x04103f6d "Pain Reflection"	unsigned char *
-+		[230]	0x04103f82 "Tuesday"	unsigned char *
-+		[231]	0x04103f8f "Unconscious"	unsigned char *
-+		[232]	0x04103fa0 "Not Identified"	unsigned char *
-+		[233]	0x04103fb4 "Preservation"	unsigned char *
-+		[234]	0x04103fc6 "Regeneration"	unsigned char *
-+		[235]	0x04103fd8 "Temp Accuracy"	unsigned char *
-+		[236]	0x04103feb "Wait without healing"	unsigned char *
-+		[237]	0x04104005 "Wait until Dawn"	unsigned char *
-+		[238]	0x0410401a "Wait 5 Minutes"	unsigned char *
-+		[239]	0x0410402e "Wait 1 Hour"	unsigned char *
-+		[240]	0x0410403f "Water"	unsigned char *
++		[226]	0x04103eea ""Gamma controls the relative ""brightness""
+of the game.  May vary depending on your monitor.""	unsigned char * +
+[227]	0x04103f4e "Thursday"	unsigned char * +		[228]
+0x04103f5c "Hammerhands"	unsigned char * +		[229]
+0x04103f6d "Pain Reflection"	unsigned char * +		[230]
+0x04103f82 "Tuesday"	unsigned char * +		[231]	0x04103f8f
+"Unconscious"	unsigned char * +		[232]	0x04103fa0 "Not
+Identified"	unsigned char * +		[233]	0x04103fb4
+"Preservation"	unsigned char * +		[234]	0x04103fc6
+"Regeneration"	unsigned char * +		[235]	0x04103fd8 "Temp
+Accuracy"	unsigned char * +		[236]	0x04103feb "Wait without
+healing"	unsigned char * +		[237]	0x04104005 "Wait until
+Dawn"	unsigned char * +		[238]	0x0410401a "Wait 5 Minutes"
+unsigned char * +		[239]	0x0410402e "Wait 1 Hour"
+unsigned char * +		[240]	0x0410403f "Water"	unsigned char *
 +		[241]	0x0410404a "Weak"	unsigned char *
 +		[242]	0x04104054 "Weapons"	unsigned char *
 +		[243]	0x04104061 "Wednesday"	unsigned char *
@@ -1074,14 +1055,15 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[374]	0x041047a3 "Gambler"	unsigned char *
 
 +		[376]	0x041047c0 "%s was caught stealing!"	unsigned char *
-+		[377]	0x041047dd "%s failed to steal anything!"	unsigned char *
-+		[378]	0x041047ff ""%s %d, %d""	unsigned char *
++		[377]	0x041047dd "%s failed to steal anything!"
+unsigned char * +		[378]	0x041047ff ""%s %d, %d""
+unsigned char *
 
-+		[380]	0x0410481b "You already know the %s spell"	unsigned char *
-+		[381]	0x0410483e "You don't have the skill to learn %s"	unsigned char *
-+		[382]	0x04104868 "That player is %s"	unsigned char *
-+		[383]	0x0410487f "his"	unsigned char *
-+		[384]	0x04104888 "her"	unsigned char *
++		[380]	0x0410481b "You already know the %s spell"
+unsigned char * +		[381]	0x0410483e "You don't have the skill to
+learn %s"	unsigned char * +		[382]	0x04104868 "That player
+is %s"	unsigned char * +		[383]	0x0410487f "his"
+unsigned char * +		[384]	0x04104888 "her"	unsigned char *
 +		[385]	0x04104891 "sir"	unsigned char *
 +		[386]	0x0410489a "Sir"	unsigned char *
 +		[387]	0x041048a3 "lady"	unsigned char *
@@ -1100,7 +1082,8 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[400]	0x04104947 "Buy Spells"	unsigned char *
 +		[401]	0x04104957 "Skill Cost: %lu"	unsigned char *
 
-+		[403]	0x0410497a "You already know the %s skill"	unsigned char *
++		[403]	0x0410497a "You already know the %s skill"
+unsigned char *
 
 +		[406]	0x041049c9 "Hire"	unsigned char *
 +		[407]	0x041049d3 "More Information"	unsigned char *
@@ -1108,14 +1091,15 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[409]	0x041049f9 "Do you wish to leave %s?"	unsigned char *
 +		[410]	0x04104a17 "Leave %s"	unsigned char *
 
-+		[412]	0x04104a33 "Create Party cannot be completed unless you have assigned all characters 2 extra skills and have spent all of your bonus points."	unsigned char *
-+		[413]	0x04104ab9 "You can't spend more than 50 points."	unsigned char *
-+		[414]	0x04104ae3 "This place is open from %d%s to %d%s"	unsigned char *
-+		[415]	0x04104b0d "January"	unsigned char *
-+		[416]	0x04104b1a "February"	unsigned char *
-+		[417]	0x04104b28 "March"	unsigned char *
-+		[418]	0x04104b33 "April"	unsigned char *
-+		[419]	0x04104b3e "May"	unsigned char *
++		[412]	0x04104a33 "Create Party cannot be completed unless you
+have assigned all characters 2 extra skills and have spent all of your bonus
+points."	unsigned char * +		[413]	0x04104ab9 "You can't
+spend more than 50 points."	unsigned char * +		[414]
+0x04104ae3 "This place is open from %d%s to %d%s"	unsigned char * +
+[415]	0x04104b0d "January"	unsigned char * +		[416]
+0x04104b1a "February"	unsigned char * +		[417]	0x04104b28
+"March"	unsigned char * +		[418]	0x04104b33 "April"
+unsigned char * +		[419]	0x04104b3e "May"	unsigned char *
 +		[420]	0x04104b47 "June"	unsigned char *
 +		[421]	0x04104b51 "July"	unsigned char *
 +		[422]	0x04104b5b "August"	unsigned char *
@@ -1126,7 +1110,8 @@ enum GLOBAL_LOCALIZ_INDEX
 
 +		[428]	0x04104bc0 "Spell failed"	unsigned char *
 
-+		[430]	0x04104be1 "%s is now Level %lu and has earned %lu Skill Points!"	unsigned char *
++		[430]	0x04104be1 "%s is now Level %lu and has earned %lu Skill
+Points!"	unsigned char *
 
 
 +		[435]	0x04104c4a "Converse with %s"	unsigned char *
@@ -1160,41 +1145,42 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[463]	0x04104df9 "Type: %s"	unsigned char *
 +		[464]	0x04104e07 "Charges"	unsigned char *
 +		[465]	0x04104e14 "Value"	unsigned char *
-+		[466]	0x04104e1f "You found %lu gold (followers take %lu)!"	unsigned char *
-+		[467]	0x04104e4d "You found %lu gold!"	unsigned char *
-+		[468]	0x04104e66 "Clicking here will spend %d Skill Points"	unsigned char *
-+		[469]	0x04104e94 "You need %d more Skill Points to advance here"	unsigned char *
-+		[470]	0x04104ec7 "Get %s"	unsigned char *
-+		[471]	0x04104ed3 "You found an item (%s)!"	unsigned char *
-+		[472]	0x04104ef0 "am"	unsigned char *
-+		[473]	0x04104ef8 "pm"	unsigned char *
-+		[474]	0x04104f00 "Recall to %s"	unsigned char *
-+		[475]	0x04104f12 "Set %s over %s"	unsigned char *
-+		[476]	0x04104f26 "Set to %s"	unsigned char *
-+		[477]	0x04104f35 "You are already resting!"	unsigned char *
-+		[478]	0x04104f53 "You can't rest in turn-based mode!"	unsigned char *
-+		[479]	0x04104f7b "You can't rest here!"	unsigned char *
-+		[480]	0x04104f95 "There are hostile enemies near!"	unsigned char *
-+		[481]	0x04104fba "Encounter!"	unsigned char *
-+		[482]	0x04104fca "You don't have enough food to rest"	unsigned char *
-+		[483]	0x04104ff2 "Set %s as the Ready Spell"	unsigned char *
-+		[484]	0x04105011 "Select a spell then click here to set a QuickSpell"	unsigned char *
-+		[485]	0x04105049 "Cast %s"	unsigned char *
-+		[486]	0x04105056 "Select %s"	unsigned char *
-+		[487]	0x04105065 "You have already mastered this skill!"	unsigned char *
-+		[488]	0x04105090 "You don't have enough skill points!"	unsigned char *
-+		[489]	0x041050b9 ""You have %d total gold, %d in the Bank""	unsigned char *
-+		[490]	0x041050e7 "You found %d gold and an item (%s)!"	unsigned char *
-+		[491]	0x04105110 "Can't cast Meteor Shower indoors!"	unsigned char *
-+		[492]	0x04105137 "Can't cast Inferno outdoors!"	unsigned char *
-+		[493]	0x04105159 "Can't cast Jump while airborne! "	unsigned char *
-+		[494]	0x0410517f "Can not cast Fly indoors!"	unsigned char *
-+		[495]	0x0410519e "Can't cast Starburst indoors!"	unsigned char *
-+		[496]	0x041051c1 "No valid target exists! "	unsigned char *
-+		[497]	0x041051df "Can't cast Prismatic Light outdoors!"	unsigned char *
++		[466]	0x04104e1f "You found %lu gold (followers take %lu)!"
+unsigned char * +		[467]	0x04104e4d "You found %lu gold!"
+unsigned char * +		[468]	0x04104e66 "Clicking here will spend %d
+Skill Points"	unsigned char * +		[469]	0x04104e94 "You need %d
+more Skill Points to advance here"	unsigned char * +		[470]
+0x04104ec7 "Get %s"	unsigned char * +		[471]	0x04104ed3 "You
+found an item (%s)!"	unsigned char * +		[472]	0x04104ef0 "am"
+unsigned char * +		[473]	0x04104ef8 "pm"	unsigned char * +
+[474]	0x04104f00 "Recall to %s"	unsigned char * +		[475]
+0x04104f12 "Set %s over %s"	unsigned char * +		[476]
+0x04104f26 "Set to %s"	unsigned char * +		[477]	0x04104f35 "You
+are already resting!"	unsigned char * +		[478]	0x04104f53 "You
+can't rest in turn-based mode!"	unsigned char * +		[479]
+0x04104f7b "You can't rest here!"	unsigned char * +		[480]
+0x04104f95 "There are hostile enemies near!"	unsigned char * +
+[481]	0x04104fba "Encounter!"	unsigned char * +		[482]
+0x04104fca "You don't have enough food to rest"	unsigned char * +
+[483]	0x04104ff2 "Set %s as the Ready Spell"	unsigned char * +
+[484]	0x04105011 "Select a spell then click here to set a QuickSpell" unsigned
+char * +		[485]	0x04105049 "Cast %s"	unsigned char * +
+[486]	0x04105056 "Select %s"	unsigned char * +		[487]
+0x04105065 "You have already mastered this skill!"	unsigned char * +
+[488]	0x04105090 "You don't have enough skill points!"	unsigned char *
++		[489]	0x041050b9 ""You have %d total gold, %d in the Bank""
+unsigned char * +		[490]	0x041050e7 "You found %d gold and an
+item (%s)!"	unsigned char * +		[491]	0x04105110 "Can't cast
+Meteor Shower indoors!"	unsigned char * +		[492]	0x04105137
+"Can't cast Inferno outdoors!"	unsigned char * +		[493]
+0x04105159 "Can't cast Jump while airborne! "	unsigned char * +
+[494]	0x0410517f "Can not cast Fly indoors!"	unsigned char * +
+[495]	0x0410519e "Can't cast Starburst indoors!"	unsigned char * +
+[496]	0x041051c1 "No valid target exists! "	unsigned char * +
+[497]	0x041051df "Can't cast Prismatic Light outdoors!"	unsigned char *
 +		[498]	0x04105209 "Herbalist"	unsigned char *
-+		[499]	0x04105218 "Can't cast Armageddon indoors!"	unsigned char *
-+		[500]	0x0410523c "You have %lu gold"	unsigned char *
++		[499]	0x04105218 "Can't cast Armageddon indoors!" unsigned
+char * +		[500]	0x0410523c "You have %lu gold"	unsigned char *
 +		[501]	0x04105253 "You have %lu food"	unsigned char *
 +		[502]	0x0410526a "You find %lu food"	unsigned char *
 +		[503]	0x04105281 "You lose %lu gold"	unsigned char *
@@ -1219,28 +1205,30 @@ enum GLOBAL_LOCALIZ_INDEX
 
 
 
-+		[524]	0x041053b9 "Once again you've cheated death! …"	unsigned char *
-+		[525]	0x041053e1 "Apothecary"	unsigned char *
++		[524]	0x041053b9 "Once again you've cheated death! …" unsigned
+char * +		[525]	0x041053e1 "Apothecary"	unsigned char *
 
 +		[527]	0x041053fb "Thank You!"	unsigned char *
-+		[528]	0x0410540b "I can offer you nothing further."	unsigned char *
-+		[529]	0x04105431 ""Sorry, but we are unable to train you.""	unsigned char *
-+		[530]	0x0410545f "Moon"	unsigned char *
++		[528]	0x0410540b "I can offer you nothing further." unsigned
+char *
++		[529]	0x04105431 ""Sorry, but we are unable to train you.""
+unsigned char * +		[530]	0x0410545f "Moon"	unsigned char *
 +		[531]	0x04105469 "Location"	unsigned char *
 +		[532]	0x04105477 "Please try back in "	unsigned char *
-+		[533]	0x04105490 ""I cannot join you, you're party is full""	unsigned char *
-+		[534]	0x041054bf "Become %s in %s for %lu gold"	unsigned char *
-+		[535]	0x041054e1 "Learn"	unsigned char *
-+		[536]	0x041054ec ""With your skills, you should be working here as a teacher.""	unsigned char *
-+		[537]	0x0410552e "Train to level %d for %d gold"	unsigned char *
++		[533]	0x04105490 ""I cannot join you, you're party is full""
+unsigned char * +		[534]	0x041054bf "Become %s in %s for %lu
+gold"	unsigned char * +		[535]	0x041054e1 "Learn"
+unsigned char * +		[536]	0x041054ec ""With your skills, you
+should be working here as a teacher.""	unsigned char * +		[537]
+0x0410552e "Train to level %d for %d gold"	unsigned char *
 
 +		[539]	0x04105587 "Buy Items"	unsigned char *
 +		[540]	0x04105596 "Sell Items"	unsigned char *
 
 +		[542]	0x041055ba "Repair Items"	unsigned char *
 +		[543]	0x041055cc "Special Items"	unsigned char *
-+		[544]	0x041055df "Seek knowledge elsewhere %s the %s"	unsigned char *
-+		[545]	0x04105607 "Castle Ironfist"	unsigned char *
++		[544]	0x041055df "Seek knowledge elsewhere %s the %s" unsigned
+char * +		[545]	0x04105607 "Castle Ironfist"	unsigned char *
 +		[546]	0x0410561c "New Sorpigal"	unsigned char *
 +		[547]	0x0410562e "Free Haven"	unsigned char *
 +		[548]	0x0410563e "Arena"	unsigned char *
@@ -1256,8 +1244,8 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[558]	0x041056d7 "Child"	unsigned char *
 +		[559]	0x041056e2 "Island North"	unsigned char *
 +		[560]	0x041056f4 "Island South"	unsigned char *
-+		[561]	0x04105706 ""Sorry, come back another day""	unsigned char *
-+		[562]	0x0410572a "do anything"	unsigned char *
++		[561]	0x04105706 ""Sorry, come back another day"" unsigned
+char * +		[562]	0x0410572a "do anything"	unsigned char *
 +		[563]	0x0410573b "Pack is Full!"	unsigned char *
 +		[564]	0x0410574e "Hic..."	unsigned char *
 +		[565]	0x0410575a "Have a Drink first..."	unsigned char *
@@ -1268,24 +1256,27 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[571]	0x041057b1 "Ready Spell: %s"	unsigned char *
 +		[572]	0x041057c6 "Scroll Left"	unsigned char *
 +		[573]	0x041057d7 "Scroll Right"	unsigned char *
-+		[574]	0x041057e9 ""Welcome to the Arena of Life and Death.  Remember, you are only allowed one arena combat per visit.  To fight an arena battle, select the option that best describes your abilities and return to me- if you survive…""	unsigned char *
-+		[575]	0x041058c6 "Please wait while I summon the monsters.  Good luck."	unsigned char *
-+		[576]	0x04105900 "Congratulations on your win… here's your stuff… %u gold."	unsigned char *
-+		[577]	0x0410593e "Get back in there you wimps…"	unsigned char *
-+		[578]	0x04105960 "Page"	unsigned char *
-+		[579]	0x0410596a "Squire"	unsigned char *
++		[574]	0x041057e9 ""Welcome to the Arena of Life and Death.
+Remember, you are only allowed one arena combat per visit.  To fight an arena
+battle, select the option that best describes your abilities and return to me-
+if you survive…""	unsigned char * +		[575]	0x041058c6
+"Please wait while I summon the monsters.  Good luck."	unsigned char * +
+[576]	0x04105900 "Congratulations on your win… here's your stuff… %u gold."
+unsigned char * +		[577]	0x0410593e "Get back in there you
+wimps…"	unsigned char * +		[578]	0x04105960 "Page"
+unsigned char * +		[579]	0x0410596a "Squire"	unsigned char *
 +		[580]	0x04105976 "Knight"	unsigned char *
 +		[581]	0x04105982 "Lord"	unsigned char *
-+		[582]	0x0410598c "You already won this trip to the Arena…"	unsigned char *
++		[582]	0x0410598c "You already won this trip to the Arena…"
+unsigned char *
 
-+		[584]	0x041059d5 "Click here to remove your Quick Spell"	unsigned char *
-+		[585]	0x04105a00 "Item is not of high enough quality"	unsigned char *
-+		[586]	0x04105a28 "Not enough spell points"	unsigned char *
-+		[587]	0x04105a45 "Attack Bonus"	unsigned char *
-+		[588]	0x04105a57 "Attack Damage"	unsigned char *
-+		[589]	0x04105a6a "Shoot Bonus"	unsigned char *
-+		[590]	0x04105a7b "Shoot Damage"	unsigned char *
-+		[591]	0x04105a8d "Charmed"	unsigned char *
++		[584]	0x041059d5 "Click here to remove your Quick Spell"
+unsigned char * +		[585]	0x04105a00 "Item is not of high enough quality"	unsigned char * +		[586]	0x04105a28 "Not enough
+spell points"	unsigned char * +		[587]	0x04105a45 "Attack
+Bonus"	unsigned char * +		[588]	0x04105a57 "Attack Damage"
+unsigned char * +		[589]	0x04105a6a "Shoot Bonus"
+unsigned char * +		[590]	0x04105a7b "Shoot Damage"
+unsigned char * +		[591]	0x04105a8d "Charmed"	unsigned char *
 +		[592]	0x04105a9a "Shrunk"	unsigned char *
 +		[593]	0x04105aa6 "Slowed"	unsigned char *
 +		[594]	0x04105ab2 "Feebleminded"	unsigned char *
@@ -1306,17 +1297,18 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[609]	0x04105b82 "Hour of Power"	unsigned char *
 +		[610]	0x04105b95 "Day of Protection"	unsigned char *
 +		[611]	0x04105bac "Play ArcoMage"	unsigned char *
-+		[612]	0x04105bbf "Save game corrupted!  Code=%d"	unsigned char *
++		[612]	0x04105bbf "Save game corrupted!  Code=%d"
+unsigned char *
 
 +		[614]	0x04105bf4 "New Game"	unsigned char *
 +		[615]	0x04105c02 "Save Game"	unsigned char *
 +		[616]	0x04105c11 "Load Game"	unsigned char *
-+		[617]	0x04105c20 ""Sound, Keyboard, Game Options…""	unsigned char *
-+		[618]	0x04105c46 "Quit"	unsigned char *
-+		[619]	0x04105c50 "Return to Game"	unsigned char *
-+		[620]	0x04105c64 "Rules"	unsigned char *
-+		[621]	0x04105c6f "Play"	unsigned char *
-+		[622]	0x04105c79 "Victory Conditions"	unsigned char *
++		[617]	0x04105c20 ""Sound, Keyboard, Game Options…"" unsigned
+char * +		[618]	0x04105c46 "Quit"	unsigned char * +
+[619]	0x04105c50 "Return to Game"	unsigned char * +		[620]
+0x04105c64 "Rules"	unsigned char * +		[621]	0x04105c6f
+"Play"	unsigned char * +		[622]	0x04105c79 "Victory Conditions"
+unsigned char *
 
 +		[624]	0x04105c9c "Physical"	unsigned char *
 +		[625]	0x04105caa "Immune"	unsigned char *
@@ -1326,28 +1318,31 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[629]	0x04105ce1 "Spells"	unsigned char *
 +		[630]	0x04105ced "?"	unsigned char *
 +		[631]	0x04105cf4 "Effects"	unsigned char *
-+		[632]	0x04105d01 "This skill level can not be learned by the %s class."	unsigned char *
-+		[633]	0x04105d3b "You have to be promoted to %s to learn this skill level."	unsigned char *
-+		[634]	0x04105d79 "You have to be promoted to %s or %s to learn this skill level."	unsigned char *
-+		[635]	0x04105dbd "%s stuns %s"	unsigned char *
-+		[636]	0x04105dce "%s paralyzes %s"	unsigned char *
-+		[637]	0x04105de3 "%s evades damage"	unsigned char *
-+		[638]	0x04105df9 "There are hostile creatures nearby!"	unsigned char *
-+		[639]	0x04105e22 "A tie!"	unsigned char *
++		[632]	0x04105d01 "This skill level can not be learned by the
+%s class."	unsigned char * +		[633]	0x04105d3b "You have to
+be promoted to %s to learn this skill level."	unsigned char * +
+[634]	0x04105d79 "You have to be promoted to %s or %s to learn this skill
+level."	unsigned char * +		[635]	0x04105dbd "%s stuns %s"
+unsigned char * +		[636]	0x04105dce "%s paralyzes %s" unsigned
+char * +		[637]	0x04105de3 "%s evades damage"	unsigned char *
++		[638]	0x04105df9 "There are hostile creatures nearby!"
+unsigned char * +		[639]	0x04105e22 "A tie!"	unsigned char *
 +		[640]	0x04105e2e "You won!"	unsigned char *
 +		[641]	0x04105e3c "You lost!"	unsigned char *
 +		[642]	0x04105e4b "Error"	unsigned char *
-+		[643]	0x04105e56 "by a Tower Building Victory!"	unsigned char *
-+		[644]	0x04105e78 "by Wall Building due to a Tower Building Tie!"	unsigned char *
-+		[645]	0x04105eab "by a Tower Destruction Victory!"	unsigned char *
-+		[646]	0x04105ed0 "by a Resource Victory!"	unsigned char *
-+		[647]	0x04105eec "by a Resource Victory due to a Tower & Wall Building Tie!"	unsigned char *
-+		[648]	0x04105f2b "This character can't summon any more monsters!"	unsigned char *
-+		[649]	0x04105f5f "Summoned"	unsigned char *
-+		[650]	0x04105f6d "Current Hit Points"	unsigned char *
-+		[651]	0x04105f85 "Hardened"	unsigned char *
-+		[652]	0x04105f93 "You can not do that while you are underwater!"	unsigned char *
-+		[653]	0x04105fc6 "Food"	unsigned char *
++		[643]	0x04105e56 "by a Tower Building Victory!"
+unsigned char * +		[644]	0x04105e78 "by Wall Building due to a
+Tower Building Tie!"	unsigned char * +		[645]	0x04105eab "by a
+Tower Destruction Victory!"	unsigned char * +		[646]
+0x04105ed0 "by a Resource Victory!"	unsigned char * +		[647]
+0x04105eec "by a Resource Victory due to a Tower & Wall Building Tie!" unsigned
+char *
++		[648]	0x04105f2b "This character can't summon any more
+monsters!"	unsigned char * +		[649]	0x04105f5f "Summoned"
+unsigned char * +		[650]	0x04105f6d "Current Hit Points" unsigned
+char * +		[651]	0x04105f85 "Hardened"	unsigned char * +
+[652]	0x04105f93 "You can not do that while you are underwater!"
+unsigned char * +		[653]	0x04105fc6 "Food"	unsigned char *
 +		[654]	0x04105fd0 "%s's Jar"	unsigned char *
 +		[655]	0x04105fde "%s' Jar"	unsigned char *
 
@@ -1357,18 +1352,28 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[660]	0x04106036 "You are drowning!"	unsigned char *
 +		[661]	0x0410604d "You are burning!"	unsigned char *
 +		[662]	0x04106063 "Instructors"	unsigned char *
-+		[663]	0x04106074 "It will take %d day to cross to %s."	unsigned char *
-+		[664]	0x0410609d "Click here to accept this party and continue to the game."	unsigned char *
-+		[665]	0x041060dc "Ok Button"	unsigned char *
-+		[666]	0x041060eb "Clears all party stats and skills."	unsigned char *
-+		[667]	0x04106113 "Clear Button"	unsigned char *
-+		[668]	0x04106125 "Subtract"	unsigned char *
-+		[669]	0x04106133 ""Subtracts a point from the highlighted skill, returning it to the bonus pool""	unsigned char *
-+		[670]	0x04106187 "Add"	unsigned char *
-+		[671]	0x04106190 ""Adds a point from the highlighted skill, taking it from the bonus pool""	unsigned char *
-+		[672]	0x041061de ""For your numerous crimes and evil deeds, you have been sentenced to one year in prison.""	unsigned char *
-+		[673]	0x0410623d "You have an outstanding fine of %lu gold.  Pay your fine now or be sentenced to jail for 1 year?"	unsigned char *
-+		[674]	0x041062a3 "Temp Might"	unsigned char *
-+		[675]	0x041062b3 ""Splendid job!  With the activation of the Gate, a thousand worlds lie at your feet.  Perhaps on one of them you will find the Ancients themselves, and return with the fruits their great civilization has to offer your world and your kingdom.""	unsigned char *
-+		[676]	0x041063ab ""Brilliant!  The completion of the Heavenly Forge has provided enough Ancient weapons to crush all resistance to your plans.  Soon the world will bow to your every whim!  Still, you can't help but wonder what was beyond the Gate the other side was trying so hard to build.""	unsigned char *
++		[663]	0x04106074 "It will take %d day to cross to %s."
+unsigned char * +		[664]	0x0410609d "Click here to accept this
+party and continue to the game."	unsigned char * +		[665]
+0x041060dc "Ok Button"	unsigned char * +		[666]	0x041060eb
+"Clears all party stats and skills."	unsigned char * +		[667]
+0x04106113 "Clear Button"	unsigned char * +		[668]
+0x04106125 "Subtract"	unsigned char * +		[669]	0x04106133
+""Subtracts a point from the highlighted skill, returning it to the bonus pool""
+unsigned char * +		[670]	0x04106187 "Add"	unsigned char *
++		[671]	0x04106190 ""Adds a point from the highlighted skill,
+taking it from the bonus pool""	unsigned char * +		[672]
+0x041061de ""For your numerous crimes and evil deeds, you have been sentenced to
+one year in prison.""	unsigned char * +		[673]	0x0410623d "You
+have an outstanding fine of %lu gold.  Pay your fine now or be sentenced to jail
+for 1 year?"	unsigned char * +		[674]	0x041062a3 "Temp Might"
+unsigned char * +		[675]	0x041062b3 ""Splendid job!  With the
+activation of the Gate, a thousand worlds lie at your feet.  Perhaps on one of
+them you will find the Ancients themselves, and return with the fruits their
+great civilization has to offer your world and your kingdom.""	unsigned char *
++		[676]	0x041063ab ""Brilliant!  The completion of the Heavenly
+Forge has provided enough Ancient weapons to crush all resistance to your plans.
+Soon the world will bow to your every whim!  Still, you can't help but wonder
+what was beyond the Gate the other side was trying so hard to build."" unsigned
+char *
 */

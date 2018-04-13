@@ -1,7 +1,6 @@
 #pragma once
-#include "../../Engine/VectorTypes.h"
 #include <array>
-
+#include "../../Engine/VectorTypes.h"
 
 extern std::array<Vec2_int_, 20> pMonsterArenaPlacements;
 

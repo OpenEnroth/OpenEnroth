@@ -2,15 +2,15 @@
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_Spellbook : public GUIWindow {
-public:
-  GUIWindow_Spellbook();
-  virtual ~GUIWindow_Spellbook() {}
+ public:
+    GUIWindow_Spellbook();
+    virtual ~GUIWindow_Spellbook() {}
 
-  virtual void Update();
-  virtual void Release();
+    virtual void Update();
+    virtual void Release();
 
-  void OpenSpellbook();
-  void OpenSpellbookPage(int page);
+    void OpenSpellbook();
+    void OpenSpellbookPage(int page);
 };
 
 class Image;

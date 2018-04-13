@@ -1,121 +1,98 @@
+#include "Engine/Serialization/LegacyImages.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Overlays.h"
 #include "Engine/LOD.h"
-#include "Engine/Time.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Objects/NPC.h"
-#include "Engine/Graphics/Overlays.h"
-#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Time.h"
 
-
-SpriteFrame_MM6::SpriteFrame_MM6()
-{
+SpriteFrame_MM6::SpriteFrame_MM6() {
     Assert(sizeof(*this) == 56);
     memset(this, 0, sizeof(*this));
 }
 
-SpriteFrame_MM7::SpriteFrame_MM7()
-{
+SpriteFrame_MM7::SpriteFrame_MM7() {
     Assert(sizeof(*this) == 60);
     memset(this, 0, sizeof(*this));
 }
 
-NPCData_Image_MM7::NPCData_Image_MM7()
-{
+NPCData_Image_MM7::NPCData_Image_MM7() {
     Assert(sizeof(*this) == 0x4C);
     memset(this, 0, sizeof(*this));
 }
 
-ItemGen_Image_MM7::ItemGen_Image_MM7()
-{
+ItemGen_Image_MM7::ItemGen_Image_MM7() {
     Assert(sizeof(*this) == 0x24);
     memset(this, 0, sizeof(*this));
 }
 
-SpellBuff_Image_MM7::SpellBuff_Image_MM7()
-{
+SpellBuff_Image_MM7::SpellBuff_Image_MM7() {
     Assert(sizeof(*this) == 0x10);
     memset(this, 0, sizeof(*this));
 }
 
-PlayerSpellbookChapter_Image_MM7::PlayerSpellbookChapter_Image_MM7()
-{
+PlayerSpellbookChapter_Image_MM7::PlayerSpellbookChapter_Image_MM7() {
     Assert(sizeof(*this) == 0xB);
     memset(this, 0, sizeof(*this));
 }
 
-PlayerSpells_Image_MM7::PlayerSpells_Image_MM7()
-{
+PlayerSpells_Image_MM7::PlayerSpells_Image_MM7() {
     Assert(sizeof(*this) == 0x64);
     memset(this, 0, sizeof(*this));
 }
 
-PlayerEquipment_Image_MM7::PlayerEquipment_Image_MM7()
-{
+PlayerEquipment_Image_MM7::PlayerEquipment_Image_MM7() {
     Assert(sizeof(*this) == 0x40);
     memset(this, 0, sizeof(*this));
 }
 
-LloydBeacon_Image_MM7::LloydBeacon_Image_MM7()
-{
+LloydBeacon_Image_MM7::LloydBeacon_Image_MM7() {
     Assert(sizeof(*this) == 0x1C);
     memset(this, 0, sizeof(*this));
 }
 
-Player_Image_MM7::Player_Image_MM7()
-{
+Player_Image_MM7::Player_Image_MM7() {
     Assert(sizeof(*this) == 0x1B3C);
     memset(this, 0, sizeof(*this));
 }
 
-PartyTimeStruct_Image_MM7::PartyTimeStruct_Image_MM7()
-{
+PartyTimeStruct_Image_MM7::PartyTimeStruct_Image_MM7() {
     Assert(sizeof(*this) == 0x678);
     memset(this, 0, sizeof(*this));
 }
 
-Party_Image_MM7::Party_Image_MM7()
-{
+Party_Image_MM7::Party_Image_MM7() {
     Assert(sizeof(*this) == 0x16238);
     memset(this, 0, sizeof(*this));
 }
 
-Timer_Image_MM7::Timer_Image_MM7()
-{
+Timer_Image_MM7::Timer_Image_MM7() {
     Assert(sizeof(*this) == 0x28);
     memset(this, 0, sizeof(*this));
 }
 
-OtherOverlay_Image_MM7::OtherOverlay_Image_MM7()
-{
+OtherOverlay_Image_MM7::OtherOverlay_Image_MM7() {
     Assert(sizeof(*this) == 0x14);
     memset(this, 0, sizeof(*this));
 }
 
-OtherOverlayList_Image_MM7::OtherOverlayList_Image_MM7()
-{
+OtherOverlayList_Image_MM7::OtherOverlayList_Image_MM7() {
     Assert(sizeof(*this) == 0x3F0);
     memset(this, 0, sizeof(*this));
 }
 
-IconFrame_MM7::IconFrame_MM7()
-{
+IconFrame_MM7::IconFrame_MM7() {
     Assert(sizeof(*this) == 0x20);
     memset(this, 0, sizeof(*this));
 }
 
-UIAnimation_MM7::UIAnimation_MM7()
-{
+UIAnimation_MM7::UIAnimation_MM7() {
     Assert(sizeof(*this) == 0xD);
     memset(this, 0, sizeof(*this));
 }
 
-
-
-
-
-void Timer_Image_MM7::Serialize(Timer *timer)
-{
+void Timer_Image_MM7::Serialize(Timer *timer) {
     memset(this, 0, sizeof(*this));
 
     this->bReady = timer->bReady;
@@ -130,8 +107,7 @@ void Timer_Image_MM7::Serialize(Timer *timer)
     this->uTotalGameTimeElapsed = timer->uTotalGameTimeElapsed;
 }
 
-void Timer_Image_MM7::Deserialize(Timer *timer)
-{
+void Timer_Image_MM7::Deserialize(Timer *timer) {
     timer->bReady = this->bReady;
     timer->bPaused = this->bPaused;
     timer->bTackGameTime = this->bTackGameTime;
@@ -144,8 +120,7 @@ void Timer_Image_MM7::Deserialize(Timer *timer)
     timer->uTotalGameTimeElapsed = this->uTotalGameTimeElapsed;
 }
 
-void NPCData_Image_MM7::Serialize(NPCData *npc)
-{
+void NPCData_Image_MM7::Serialize(NPCData *npc) {
     memset(this, 0, sizeof(*this));
 
     this->pName = npc->pName;
@@ -169,8 +144,7 @@ void NPCData_Image_MM7::Serialize(NPCData *npc)
     this->news_topic = npc->news_topic;
 }
 
-void NPCData_Image_MM7::Deserialize(NPCData *npc)
-{
+void NPCData_Image_MM7::Deserialize(NPCData *npc) {
     npc->pName = this->pName;
     npc->uPortraitID = this->uPortraitID;
     npc->uFlags = this->uFlags;
@@ -192,21 +166,19 @@ void NPCData_Image_MM7::Deserialize(NPCData *npc)
     npc->news_topic = this->news_topic;
 }
 
-
-void OtherOverlayList_Image_MM7::Serialize(OtherOverlayList *list)
-{
+void OtherOverlayList_Image_MM7::Serialize(OtherOverlayList *list) {
     memset(this, 0, sizeof(*this));
 
     this->bRedraw = list->bRedraw;
     this->field_3E8 = list->field_3E8;
 
-    for (unsigned int i = 0; i < 50; ++i)
-    {
+    for (unsigned int i = 0; i < 50; ++i) {
         memset(&this->pOverlays[i], 0, sizeof(this->pOverlays[i]));
 
         this->pOverlays[i].field_0 = list->pOverlays[i].field_0;
         this->pOverlays[i].field_2 = list->pOverlays[i].field_2;
-        this->pOverlays[i].sprite_frame_time = list->pOverlays[i].sprite_frame_time;
+        this->pOverlays[i].sprite_frame_time =
+            list->pOverlays[i].sprite_frame_time;
         this->pOverlays[i].field_6 = list->pOverlays[i].field_6;
         this->pOverlays[i].screen_space_x = list->pOverlays[i].screen_space_x;
         this->pOverlays[i].screen_space_y = list->pOverlays[i].screen_space_y;
@@ -216,19 +188,17 @@ void OtherOverlayList_Image_MM7::Serialize(OtherOverlayList *list)
     }
 }
 
-
-void OtherOverlayList_Image_MM7::Deserialize(OtherOverlayList *list)
-{
+void OtherOverlayList_Image_MM7::Deserialize(OtherOverlayList *list) {
     list->bRedraw = this->bRedraw;
     list->field_3E8 = this->field_3E8;
 
-    for (unsigned int i = 0; i < 50; ++i)
-    {
+    for (unsigned int i = 0; i < 50; ++i) {
         memset(&list->pOverlays[i], 0, sizeof(list->pOverlays[i]));
 
         list->pOverlays[i].field_0 = this->pOverlays[i].field_0;
         list->pOverlays[i].field_2 = this->pOverlays[i].field_2;
-        list->pOverlays[i].sprite_frame_time = this->pOverlays[i].sprite_frame_time;
+        list->pOverlays[i].sprite_frame_time =
+            this->pOverlays[i].sprite_frame_time;
         list->pOverlays[i].field_6 = this->pOverlays[i].field_6;
         list->pOverlays[i].screen_space_x = this->pOverlays[i].screen_space_x;
         list->pOverlays[i].screen_space_y = this->pOverlays[i].screen_space_y;
@@ -238,10 +208,7 @@ void OtherOverlayList_Image_MM7::Deserialize(OtherOverlayList *list)
     }
 }
 
-
-
-void SpellBuff_Image_MM7::Serialize(SpellBuff *buff)
-{
+void SpellBuff_Image_MM7::Serialize(SpellBuff *buff) {
     memset(this, 0, sizeof(*this));
 
     this->uExpireTime = buff->expire_time.value;
@@ -252,8 +219,7 @@ void SpellBuff_Image_MM7::Serialize(SpellBuff *buff)
     this->uFlags = buff->uFlags;
 }
 
-void SpellBuff_Image_MM7::Deserialize(SpellBuff *buff)
-{
+void SpellBuff_Image_MM7::Deserialize(SpellBuff *buff) {
     buff->expire_time.value = this->uExpireTime;
     buff->uPower = this->uPower;
     buff->uSkill = this->uSkill;
@@ -262,10 +228,7 @@ void SpellBuff_Image_MM7::Deserialize(SpellBuff *buff)
     buff->uFlags = this->uFlags;
 }
 
-
-
-void ItemGen_Image_MM7::Serialize(ItemGen *item)
-{
+void ItemGen_Image_MM7::Serialize(ItemGen *item) {
     memset(this, 0, sizeof(*this));
 
     this->uItemID = item->uItemID;
@@ -281,8 +244,7 @@ void ItemGen_Image_MM7::Serialize(ItemGen *item)
     this->uExpireTime = item->expirte_time.value;
 }
 
-void ItemGen_Image_MM7::Deserialize(ItemGen *item)
-{
+void ItemGen_Image_MM7::Deserialize(ItemGen *item) {
     item->uItemID = this->uItemID;
     item->uEnchantmentType = this->uEnchantmentType;
     item->m_enchantmentStrength = this->m_enchantmentStrength;
@@ -296,9 +258,7 @@ void ItemGen_Image_MM7::Deserialize(ItemGen *item)
     item->expirte_time.value = this->uExpireTime;
 }
 
-
-void Party_Image_MM7::Serialize(Party *party)
-{
+void Party_Image_MM7::Serialize(Party *party) {
     memset(this, 0, sizeof(*this));
 
     this->field_0 = party->field_0;
@@ -316,15 +276,20 @@ void Party_Image_MM7::Serialize(Party *party)
     this->uLastRegenerationTime = party->last_regenerated.value;
 
     for (unsigned int i = 0; i < 10; ++i)
-        this->PartyTimes.bountyHunting_next_generation_time[i] = party->PartyTimes.bountyHunting_next_generation_time[i];
+        this->PartyTimes.bountyHunting_next_generation_time[i] =
+            party->PartyTimes.bountyHunting_next_generation_time[i];
     for (unsigned int i = 0; i < 85; ++i)
-        this->PartyTimes.Shops_next_generation_time[i] = party->PartyTimes.Shops_next_generation_time[i];
+        this->PartyTimes.Shops_next_generation_time[i] =
+            party->PartyTimes.Shops_next_generation_time[i];
     for (unsigned int i = 0; i < 53; ++i)
-        this->PartyTimes._shop_ban_times[i] = party->PartyTimes._shop_ban_times[i];
+        this->PartyTimes._shop_ban_times[i] =
+            party->PartyTimes._shop_ban_times[i];
     for (unsigned int i = 0; i < 10; ++i)
-        this->PartyTimes.CounterEventValues[i] = party->PartyTimes.CounterEventValues[i];
+        this->PartyTimes.CounterEventValues[i] =
+            party->PartyTimes.CounterEventValues[i];
     for (unsigned int i = 0; i < 29; ++i)
-        this->PartyTimes.HistoryEventTimes[i] = party->PartyTimes.HistoryEventTimes[i];
+        this->PartyTimes.HistoryEventTimes[i] =
+            party->PartyTimes.HistoryEventTimes[i];
     for (unsigned int i = 0; i < 20; ++i)
         this->PartyTimes._s_times[i] = party->PartyTimes._s_times[i];
 
@@ -374,7 +339,8 @@ void Party_Image_MM7::Serialize(Party *party)
     for (unsigned int i = 0; i < 5; ++i)
         this->monster_id_for_hunting[i] = party->monster_id_for_hunting[i];
     for (unsigned int i = 0; i < 5; ++i)
-        this->monster_for_hunting_killed[i] = party->monster_for_hunting_killed[i];
+        this->monster_for_hunting_killed[i] =
+            party->monster_for_hunting_killed[i];
 
     this->days_played_without_rest = party->days_played_without_rest;
 
@@ -420,15 +386,18 @@ void Party_Image_MM7::Serialize(Party *party)
 
     for (unsigned int i = 0; i < 53; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->StandartItemsInShops[i][j].Serialize(&party->StandartItemsInShops[i][j]);
+            this->StandartItemsInShops[i][j].Serialize(
+                &party->StandartItemsInShops[i][j]);
 
     for (unsigned int i = 0; i < 53; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->SpecialItemsInShops[i][j].Serialize(&party->SpecialItemsInShops[i][j]);
+            this->SpecialItemsInShops[i][j].Serialize(
+                &party->SpecialItemsInShops[i][j]);
 
     for (unsigned int i = 0; i < 32; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->SpellBooksInGuilds[i][j].Serialize(&party->SpellBooksInGuilds[i][j]);
+            this->SpellBooksInGuilds[i][j].Serialize(
+                &party->SpellBooksInGuilds[i][j]);
 
     for (unsigned int i = 0; i < 24; ++i)
         this->field_1605C[i] = party->field_1605C[i];
@@ -440,7 +409,8 @@ void Party_Image_MM7::Serialize(Party *party)
     this->armageddonDamage = party->armageddonDamage;
 
     for (unsigned int i = 0; i < 4; ++i)
-        this->pTurnBasedPlayerRecoveryTimes[i] = party->pTurnBasedPlayerRecoveryTimes[i];
+        this->pTurnBasedPlayerRecoveryTimes[i] =
+            party->pTurnBasedPlayerRecoveryTimes[i];
 
     for (unsigned int i = 0; i < 53; ++i)
         this->InTheShopFlags[i] = party->InTheShopFlags[i];
@@ -451,9 +421,7 @@ void Party_Image_MM7::Serialize(Party *party)
     this->flt_TorchlightColorB = party->flt_TorchlightColorB;
 }
 
-
-void Party_Image_MM7::Deserialize(Party *party)
-{
+void Party_Image_MM7::Deserialize(Party *party) {
     party->field_0 = this->field_0;
     party->uPartyHeight = this->uPartyHeight;
     party->uDefaultPartyHeight = this->uDefaultPartyHeight;
@@ -469,17 +437,22 @@ void Party_Image_MM7::Deserialize(Party *party)
     party->last_regenerated.value = this->uLastRegenerationTime;
 
     for (unsigned int i = 0; i < 10; ++i)
-        party->PartyTimes.bountyHunting_next_generation_time[i] = this->PartyTimes.bountyHunting_next_generation_time[i];
+        party->PartyTimes.bountyHunting_next_generation_time[i] =
+        GameTime(this->PartyTimes.bountyHunting_next_generation_time[i]);
     for (unsigned int i = 0; i < 85; ++i)
-        party->PartyTimes.Shops_next_generation_time[i] = this->PartyTimes.Shops_next_generation_time[i];
+        party->PartyTimes.Shops_next_generation_time[i] =
+        GameTime(this->PartyTimes.Shops_next_generation_time[i]);
     for (unsigned int i = 0; i < 53; ++i)
-        party->PartyTimes._shop_ban_times[i] = this->PartyTimes._shop_ban_times[i];
+        party->PartyTimes._shop_ban_times[i] =
+        GameTime(this->PartyTimes._shop_ban_times[i]);
     for (unsigned int i = 0; i < 10; ++i)
-        party->PartyTimes.CounterEventValues[i] = this->PartyTimes.CounterEventValues[i];
+        party->PartyTimes.CounterEventValues[i] =
+        GameTime(this->PartyTimes.CounterEventValues[i]);
     for (unsigned int i = 0; i < 29; ++i)
-        party->PartyTimes.HistoryEventTimes[i] = this->PartyTimes.HistoryEventTimes[i];
+        party->PartyTimes.HistoryEventTimes[i] =
+        GameTime(this->PartyTimes.HistoryEventTimes[i]);
     for (unsigned int i = 0; i < 20; ++i)
-        party->PartyTimes._s_times[i] = this->PartyTimes._s_times[i];
+        party->PartyTimes._s_times[i] = GameTime(this->PartyTimes._s_times[i]);
 
     party->vPosition.x = this->vPosition.x;
     party->vPosition.y = this->vPosition.y;
@@ -527,7 +500,8 @@ void Party_Image_MM7::Deserialize(Party *party)
     for (unsigned int i = 0; i < 5; ++i)
         party->monster_id_for_hunting[i] = this->monster_id_for_hunting[i];
     for (unsigned int i = 0; i < 5; ++i)
-        party->monster_for_hunting_killed[i] = this->monster_for_hunting_killed[i];
+        party->monster_for_hunting_killed[i] =
+            this->monster_for_hunting_killed[i];
 
     party->days_played_without_rest = this->days_played_without_rest;
 
@@ -559,11 +533,16 @@ void Party_Image_MM7::Deserialize(Party *party)
     party->field_880 = this->field_880;
     party->uFlags2 = this->uFlags2;
 
-    switch (this->alignment)
-    {
-        case 0: party->alignment = PartyAlignment_Good; break;
-        case 1: party->alignment = PartyAlignment_Neutral; break;
-        case 2: party->alignment = PartyAlignment_Evil; break;
+    switch (this->alignment) {
+        case 0:
+            party->alignment = PartyAlignment_Good;
+            break;
+        case 1:
+            party->alignment = PartyAlignment_Neutral;
+            break;
+        case 2:
+            party->alignment = PartyAlignment_Evil;
+            break;
         default:
             Assert(false);
     }
@@ -581,15 +560,18 @@ void Party_Image_MM7::Deserialize(Party *party)
 
     for (unsigned int i = 0; i < 53; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->StandartItemsInShops[i][j].Deserialize(&party->StandartItemsInShops[i][j]);
+            this->StandartItemsInShops[i][j].Deserialize(
+                &party->StandartItemsInShops[i][j]);
 
     for (unsigned int i = 0; i < 53; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->SpecialItemsInShops[i][j].Deserialize(&party->SpecialItemsInShops[i][j]);
+            this->SpecialItemsInShops[i][j].Deserialize(
+                &party->SpecialItemsInShops[i][j]);
 
     for (unsigned int i = 0; i < 32; ++i)
         for (unsigned int j = 0; j < 12; ++j)
-            this->SpellBooksInGuilds[i][j].Deserialize(&party->SpellBooksInGuilds[i][j]);
+            this->SpellBooksInGuilds[i][j].Deserialize(
+                &party->SpellBooksInGuilds[i][j]);
 
     for (unsigned int i = 0; i < 24; ++i)
         party->field_1605C[i] = this->field_1605C[i];
@@ -601,7 +583,8 @@ void Party_Image_MM7::Deserialize(Party *party)
     party->armageddonDamage = this->armageddonDamage;
 
     for (unsigned int i = 0; i < 4; ++i)
-        party->pTurnBasedPlayerRecoveryTimes[i] = this->pTurnBasedPlayerRecoveryTimes[i];
+        party->pTurnBasedPlayerRecoveryTimes[i] =
+            this->pTurnBasedPlayerRecoveryTimes[i];
 
     for (unsigned int i = 0; i < 53; ++i)
         party->InTheShopFlags[i] = this->InTheShopFlags[i];
@@ -612,9 +595,7 @@ void Party_Image_MM7::Deserialize(Party *party)
     party->flt_TorchlightColorB = this->flt_TorchlightColorB;
 }
 
-
-void Player_Image_MM7::Serialize(Player *player)
-{
+void Player_Image_MM7::Serialize(Player *player) {
     memset(this, 0, sizeof(*this));
 
     for (unsigned int i = 0; i < 20; ++i)
@@ -752,25 +733,31 @@ void Player_Image_MM7::Serialize(Player *player)
     this->_expression21_animtime = player->_expression21_animtime;
     this->_expression21_frameset = player->_expression21_frameset;
 
-    for (unsigned int i = 0; i < 5; ++i)
-    {
-        this->pInstalledBeacons[i].uBeaconTime = player->pInstalledBeacons[i].uBeaconTime;
-        this->pInstalledBeacons[i].PartyPos_X = player->pInstalledBeacons[i].PartyPos_X;
-        this->pInstalledBeacons[i].PartyPos_Y = player->pInstalledBeacons[i].PartyPos_Y;
-        this->pInstalledBeacons[i].PartyPos_Z = player->pInstalledBeacons[i].PartyPos_Z;
-        this->pInstalledBeacons[i].PartyRot_X = player->pInstalledBeacons[i].PartyRot_X;
-        this->pInstalledBeacons[i].PartyRot_Y = player->pInstalledBeacons[i].PartyRot_Y;
-        this->pInstalledBeacons[i].SaveFileID = player->pInstalledBeacons[i].SaveFileID;
+    for (unsigned int i = 0; i < 5; ++i) {
+        this->pInstalledBeacons[i].uBeaconTime =
+            player->pInstalledBeacons[i].uBeaconTime;
+        this->pInstalledBeacons[i].PartyPos_X =
+            player->pInstalledBeacons[i].PartyPos_X;
+        this->pInstalledBeacons[i].PartyPos_Y =
+            player->pInstalledBeacons[i].PartyPos_Y;
+        this->pInstalledBeacons[i].PartyPos_Z =
+            player->pInstalledBeacons[i].PartyPos_Z;
+        this->pInstalledBeacons[i].PartyRot_X =
+            player->pInstalledBeacons[i].PartyRot_X;
+        this->pInstalledBeacons[i].PartyRot_Y =
+            player->pInstalledBeacons[i].PartyRot_Y;
+        this->pInstalledBeacons[i].SaveFileID =
+            player->pInstalledBeacons[i].SaveFileID;
     }
 
-    this->uNumDivineInterventionCastsThisDay = player->uNumDivineInterventionCastsThisDay;
+    this->uNumDivineInterventionCastsThisDay =
+        player->uNumDivineInterventionCastsThisDay;
     this->uNumArmageddonCasts = player->uNumArmageddonCasts;
     this->uNumFireSpikeCasts = player->uNumFireSpikeCasts;
     this->field_1B3B = player->field_1B3B;
 }
 
-void Player_Image_MM7::Deserialize(Player *player)
-{
+void Player_Image_MM7::Deserialize(Player *player) {
     for (unsigned int i = 0; i < 20; ++i)
         player->conditions_times[i].value = this->pConditions[i];
 
@@ -778,52 +765,126 @@ void Player_Image_MM7::Deserialize(Player *player)
 
     strcpy(player->pName, this->pName);
 
-    switch (this->uSex)
-    {
-        case 0: player->uSex = SEX_MALE; break;
-        case 1: player->uSex = SEX_FEMALE; break;
+    switch (this->uSex) {
+        case 0:
+            player->uSex = SEX_MALE;
+            break;
+        case 1:
+            player->uSex = SEX_FEMALE;
+            break;
         default:
             Assert(false);
     }
 
-    switch (this->classType)
-    {
-        case  0: classType = PLAYER_CLASS_KNIGHT; break;
-        case  1: classType = PLAYER_CLASS_CHEVALIER; break;
-        case  2: classType = PLAYER_CLASS_CHAMPION; break;
-        case  3: classType = PLAYER_CLASS_BLACK_KNIGHT; break;
-        case  4: classType = PLAYER_CLASS_THEIF; break;
-        case  5: classType = PLAYER_CLASS_ROGUE; break;
-        case  6: classType = PLAYER_CLASS_SPY; break;
-        case  7: classType = PLAYER_CLASS_ASSASSIN; break;
-        case  8: classType = PLAYER_CLASS_MONK; break;
-        case  9: classType = PLAYER_CLASS_INITIATE; break;
-        case 10: classType = PLAYER_CLASS_MASTER; break;
-        case 11: classType = PLAYER_CLASS_NINJA; break;
-        case 12: classType = PLAYER_CLASS_PALADIN; break;
-        case 13: classType = PLAYER_CLASS_CRUSADER; break;
-        case 14: classType = PLAYER_CLASS_HERO; break;
-        case 15: classType = PLAYER_CLASS_VILLIAN; break;
-        case 16: classType = PLAYER_CLASS_ARCHER; break;
-        case 17: classType = PLAYER_CLASS_WARRIOR_MAGE; break;
-        case 18: classType = PLAYER_CLASS_MASTER_ARCHER; break;
-        case 19: classType = PLAYER_CLASS_SNIPER; break;
-        case 20: classType = PLAYER_CLASS_RANGER; break;
-        case 21: classType = PLAYER_CLASS_HUNTER; break;
-        case 22: classType = PLAYER_CLASS_RANGER_LORD; break;
-        case 23: classType = PLAYER_CLASS_BOUNTY_HUNTER; break;
-        case 24: classType = PLAYER_CLASS_CLERIC; break;
-        case 25: classType = PLAYER_CLASS_PRIEST; break;
-        case 26: classType = PLAYER_CLASS_PRIEST_OF_SUN; break;
-        case 27: classType = PLAYER_CLASS_PRIEST_OF_MOON; break;
-        case 28: classType = PLAYER_CLASS_DRUID; break;
-        case 29: classType = PLAYER_CLASS_GREAT_DRUID; break;
-        case 30: classType = PLAYER_CLASS_ARCH_DRUID; break;
-        case 31: classType = PLAYER_CLASS_WARLOCK; break;
-        case 32: classType = PLAYER_CLASS_SORCERER; break;
-        case 33: classType = PLAYER_CLASS_WIZARD; break;
-        case 34: classType = PLAYER_CLASS_ARCHMAGE; break;
-        case 35: classType = PLAYER_CLASS_LICH; break;
+    switch (this->classType) {
+        case 0:
+            classType = PLAYER_CLASS_KNIGHT;
+            break;
+        case 1:
+            classType = PLAYER_CLASS_CHEVALIER;
+            break;
+        case 2:
+            classType = PLAYER_CLASS_CHAMPION;
+            break;
+        case 3:
+            classType = PLAYER_CLASS_BLACK_KNIGHT;
+            break;
+        case 4:
+            classType = PLAYER_CLASS_THEIF;
+            break;
+        case 5:
+            classType = PLAYER_CLASS_ROGUE;
+            break;
+        case 6:
+            classType = PLAYER_CLASS_SPY;
+            break;
+        case 7:
+            classType = PLAYER_CLASS_ASSASSIN;
+            break;
+        case 8:
+            classType = PLAYER_CLASS_MONK;
+            break;
+        case 9:
+            classType = PLAYER_CLASS_INITIATE;
+            break;
+        case 10:
+            classType = PLAYER_CLASS_MASTER;
+            break;
+        case 11:
+            classType = PLAYER_CLASS_NINJA;
+            break;
+        case 12:
+            classType = PLAYER_CLASS_PALADIN;
+            break;
+        case 13:
+            classType = PLAYER_CLASS_CRUSADER;
+            break;
+        case 14:
+            classType = PLAYER_CLASS_HERO;
+            break;
+        case 15:
+            classType = PLAYER_CLASS_VILLIAN;
+            break;
+        case 16:
+            classType = PLAYER_CLASS_ARCHER;
+            break;
+        case 17:
+            classType = PLAYER_CLASS_WARRIOR_MAGE;
+            break;
+        case 18:
+            classType = PLAYER_CLASS_MASTER_ARCHER;
+            break;
+        case 19:
+            classType = PLAYER_CLASS_SNIPER;
+            break;
+        case 20:
+            classType = PLAYER_CLASS_RANGER;
+            break;
+        case 21:
+            classType = PLAYER_CLASS_HUNTER;
+            break;
+        case 22:
+            classType = PLAYER_CLASS_RANGER_LORD;
+            break;
+        case 23:
+            classType = PLAYER_CLASS_BOUNTY_HUNTER;
+            break;
+        case 24:
+            classType = PLAYER_CLASS_CLERIC;
+            break;
+        case 25:
+            classType = PLAYER_CLASS_PRIEST;
+            break;
+        case 26:
+            classType = PLAYER_CLASS_PRIEST_OF_SUN;
+            break;
+        case 27:
+            classType = PLAYER_CLASS_PRIEST_OF_MOON;
+            break;
+        case 28:
+            classType = PLAYER_CLASS_DRUID;
+            break;
+        case 29:
+            classType = PLAYER_CLASS_GREAT_DRUID;
+            break;
+        case 30:
+            classType = PLAYER_CLASS_ARCH_DRUID;
+            break;
+        case 31:
+            classType = PLAYER_CLASS_WARLOCK;
+            break;
+        case 32:
+            classType = PLAYER_CLASS_SORCERER;
+            break;
+        case 33:
+            classType = PLAYER_CLASS_WIZARD;
+            break;
+        case 34:
+            classType = PLAYER_CLASS_ARCHMAGE;
+            break;
+        case 35:
+            classType = PLAYER_CLASS_LICH;
+            break;
         default:
             Assert(false);
     }
@@ -954,27 +1015,31 @@ void Player_Image_MM7::Deserialize(Player *player)
     player->_expression21_animtime = this->_expression21_animtime;
     player->_expression21_frameset = this->_expression21_frameset;
 
-    for (unsigned int i = 0; i < 5; ++i)
-    {
-        player->pInstalledBeacons[i].uBeaconTime = this->pInstalledBeacons[i].uBeaconTime;
-        player->pInstalledBeacons[i].PartyPos_X = this->pInstalledBeacons[i].PartyPos_X;
-        player->pInstalledBeacons[i].PartyPos_Y = this->pInstalledBeacons[i].PartyPos_Y;
-        player->pInstalledBeacons[i].PartyPos_Z = this->pInstalledBeacons[i].PartyPos_Z;
-        player->pInstalledBeacons[i].PartyRot_X = this->pInstalledBeacons[i].PartyRot_X;
-        player->pInstalledBeacons[i].PartyRot_Y = this->pInstalledBeacons[i].PartyRot_Y;
-        player->pInstalledBeacons[i].SaveFileID = this->pInstalledBeacons[i].SaveFileID;
+    for (unsigned int i = 0; i < 5; ++i) {
+        player->pInstalledBeacons[i].uBeaconTime =
+            GameTime(this->pInstalledBeacons[i].uBeaconTime);
+        player->pInstalledBeacons[i].PartyPos_X =
+            this->pInstalledBeacons[i].PartyPos_X;
+        player->pInstalledBeacons[i].PartyPos_Y =
+            this->pInstalledBeacons[i].PartyPos_Y;
+        player->pInstalledBeacons[i].PartyPos_Z =
+            this->pInstalledBeacons[i].PartyPos_Z;
+        player->pInstalledBeacons[i].PartyRot_X =
+            this->pInstalledBeacons[i].PartyRot_X;
+        player->pInstalledBeacons[i].PartyRot_Y =
+            this->pInstalledBeacons[i].PartyRot_Y;
+        player->pInstalledBeacons[i].SaveFileID =
+            this->pInstalledBeacons[i].SaveFileID;
     }
 
-    player->uNumDivineInterventionCastsThisDay = this->uNumDivineInterventionCastsThisDay;
+    player->uNumDivineInterventionCastsThisDay =
+        this->uNumDivineInterventionCastsThisDay;
     player->uNumArmageddonCasts = this->uNumArmageddonCasts;
     player->uNumFireSpikeCasts = this->uNumFireSpikeCasts;
     player->field_1B3B = this->field_1B3B;
 }
 
-
-
-void IconFrame_MM7::Serialize(Icon *icon)
-{
+void IconFrame_MM7::Serialize(Icon *icon) {
     strcpy(pAnimationName, icon->GetAnimationName());
     uAnimLength = icon->GetAnimLength();
 
@@ -983,8 +1048,7 @@ void IconFrame_MM7::Serialize(Icon *icon)
     uFlags = icon->uFlags;
 }
 
-void IconFrame_MM7::Deserialize(Icon *icon)
-{
+void IconFrame_MM7::Deserialize(Icon *icon) {
     icon->SetAnimationName(this->pAnimationName);
     icon->SetAnimLength(8 * this->uAnimLength);
 
@@ -993,10 +1057,7 @@ void IconFrame_MM7::Deserialize(Icon *icon)
     icon->uFlags = uFlags;
 }
 
-
-
-void UIAnimation_MM7::Serialize(UIAnimation *anim)
-{
+void UIAnimation_MM7::Serialize(UIAnimation *anim) {
     /* 000 */ uIconID = anim->icon->id;
     /* 002 */ field_2 = anim->field_2;
     /* 004 */ uAnimTime = anim->uAnimTime;
@@ -1006,8 +1067,7 @@ void UIAnimation_MM7::Serialize(UIAnimation *anim)
     /* 00C */ field_C = anim->field_C;
 }
 
-void UIAnimation_MM7::Deserialize(UIAnimation *anim)
-{
+void UIAnimation_MM7::Deserialize(UIAnimation *anim) {
     anim->icon = pIconsFrameTable->GetIcon(uIconID);
     ///* 000 */ anim->uIconID = uIconID;
     /* 002 */ anim->field_2 = field_2;

@@ -46,7 +46,7 @@
  * denominators.
  *
  * Many of the functions that operate on AVRational's have the suffix `_q`, in
- * reference to the mathematical symbol "в„љ" (Q) which denotes the set of all
+ * reference to the mathematical symbol "ℚ" (Q) which denotes the set of all
  * rational numbers.
  *
  * @{

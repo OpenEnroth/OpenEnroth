@@ -1,40 +1,39 @@
 #pragma once
-#include "Engine/VectorTypes.h"
 #include "Engine/Objects/Items.h"
+#include "Engine/VectorTypes.h"
 
-
-
-
-enum SPRITE_OBJECT_TYPE : unsigned __int16
-{
+enum SPRITE_OBJECT_TYPE : unsigned __int16 {
     SPRITE_NULL = 0,
 
     SPRITE_SPELL_0 = 10,
 
-    SPRITE_PROJECTILE_500 = 500, // blue bolt projectile + smoke   e.g. blue dragon attack
+    SPRITE_PROJECTILE_500 =
+        500,  // blue bolt projectile + smoke   e.g. blue dragon attack
     SPRITE_PROJECTILE_500_IMPACT = 501,
-    SPRITE_PROJECTILE_505 = 505, // dark-brown bolt
+    SPRITE_PROJECTILE_505 = 505,  // dark-brown bolt
     SPRITE_PROJECTILE_505_IMPACT = 506,
-    SPRITE_PROJECTILE_510 = 510, // red bolt projectile + smoke   e.g. red dragon attack
+    SPRITE_PROJECTILE_510 =
+        510,  // red bolt projectile + smoke   e.g. red dragon attack
     SPRITE_PROJECTILE_510_IMPACT = 511,
-    SPRITE_PROJECTILE_515 = 515, // deep-blue bolt
+    SPRITE_PROJECTILE_515 = 515,  // deep-blue bolt
     SPRITE_PROJECTILE_515_IMPACT = 516,
-    SPRITE_PROJECTILE_520 = 520, // light-green bolt
+    SPRITE_PROJECTILE_520 = 520,  // light-green bolt
     SPRITE_PROJECTILE_520_IMPACT = 521,
-    SPRITE_PROJECTILE_525 = 525, // yellow bolt
+    SPRITE_PROJECTILE_525 = 525,  // yellow bolt
     SPRITE_PROJECTILE_525_IMPACT = 526,
-    SPRITE_PROJECTILE_530 = 530, // blue bolt projectile + smoke   e.g. blue dragon attack
+    SPRITE_PROJECTILE_530 =
+        530,  // blue bolt projectile + smoke   e.g. blue dragon attack
     SPRITE_PROJECTILE_530_IMPACT = 531,
-    SPRITE_PROJECTILE_535 = 535, // white bolt
+    SPRITE_PROJECTILE_535 = 535,  // white bolt
     SPRITE_PROJECTILE_535_IMPACT = 536,
-    SPRITE_PROJECTILE_540 = 540, // gray bolt
+    SPRITE_PROJECTILE_540 = 540,  // gray bolt
     SPRITE_PROJECTILE_540_IMPACT = 541,
     SPRITE_PROJECTILE_545 = 545,
     SPRITE_PROJECTILE_550 = 550,
     SPRITE_PROJECTILE_555 = 555,
 
-    SPRITE_556 = 556, // some red mobile light applied
-    SPRITE_600 = 600, // some reddish mobile light applied
+    SPRITE_556 = 556,  // some red mobile light applied
+    SPRITE_600 = 600,  // some reddish mobile light applied
     SPRITE_601 = 601,
 
     SPRITE_800 = 800,
@@ -188,58 +187,55 @@ enum SPRITE_OBJECT_TYPE : unsigned __int16
     SPRITE_SPELL_LASER_PROJECTILE = 555,
 };
 
-enum
-{
-    OBJECT_40 = 0x40
-  , OBJECT_ATTACHED_TO_ACTOR = 0x80
-};
+enum { OBJECT_40 = 0x40, OBJECT_ATTACHED_TO_ACTOR = 0x80 };
 
 #define MAX_SPRITE_OBJECTS 1000
 /*   72 */
 #pragma pack(push, 1)
-struct SpriteObject
-{
-  inline bool AttachedToActor() const {return (uAttributes & OBJECT_ATTACHED_TO_ACTOR) != 0;}
+struct SpriteObject {
+    inline bool AttachedToActor() const {
+        return (uAttributes & OBJECT_ATTACHED_TO_ACTOR) != 0;
+    }
 
-  SpriteObject();
-  int Create(int yaw, int pitch, int a4, int a5);
-  void _46BEF1_apply_spells_aoe();
-  void ExplosionTraps();
+    SpriteObject();
+    int Create(int yaw, int pitch, int a4, int a5);
+    void _46BEF1_apply_spells_aoe();
+    void ExplosionTraps();
 
-  static void UpdateObject_fn0_BLV(unsigned int uLayingItemID);
-  static void UpdateObject_fn0_ODM(unsigned int uLayingItemID);
-  static void OnInteraction(unsigned int uLayingItemID);
-  static bool sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x, int y, int z, int a4, int count, int a7, unsigned __int16 attributes, ItemGen *a9);
-  static void sub_42F960_create_object(int x, int y, int z);
-  static void InitializeSpriteObjects();
+    static void UpdateObject_fn0_BLV(unsigned int uLayingItemID);
+    static void UpdateObject_fn0_ODM(unsigned int uLayingItemID);
+    static void OnInteraction(unsigned int uLayingItemID);
+    static bool sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x, int y,
+                                      int z, int a4, int count, int a7,
+                                      unsigned __int16 attributes, ItemGen *a9);
+    static void sub_42F960_create_object(int x, int y, int z);
+    static void InitializeSpriteObjects();
 
-
-  SPRITE_OBJECT_TYPE uType;
-  //unsigned __int16 uType;
-  unsigned __int16 uObjectDescID;
-  struct Vec3_int_ vPosition;
-  struct Vec3_short_ vVelocity;
-  unsigned __int16 uFacing;
-  unsigned __int16 uSoundID;
-  unsigned __int16 uAttributes;
-  __int16 uSectorID;
-  unsigned __int16 uSpriteFrameID;
-  __int16 field_20;
-  __int16 field_22_glow_radius_multiplier;
-  struct ItemGen containing_item;
-  int spell_id;
-  int spell_level;
-  int spell_skill;
-  int field_54;
-  int spell_caster_pid;
-  int spell_target_pid;
-  char field_60_distance_related_prolly_lod;
-  char field_61;
-  char field_62[2];
-  Vec3_int_ field_64;
+    SPRITE_OBJECT_TYPE uType;
+    // unsigned __int16 uType;
+    unsigned __int16 uObjectDescID;
+    struct Vec3_int_ vPosition;
+    struct Vec3_short_ vVelocity;
+    unsigned __int16 uFacing;
+    unsigned __int16 uSoundID;
+    unsigned __int16 uAttributes;
+    __int16 uSectorID;
+    unsigned __int16 uSpriteFrameID;
+    __int16 field_20;
+    __int16 field_22_glow_radius_multiplier;
+    struct ItemGen containing_item;
+    int spell_id;
+    int spell_level;
+    int spell_skill;
+    int field_54;
+    int spell_caster_pid;
+    int spell_target_pid;
+    char field_60_distance_related_prolly_lod;
+    char field_61;
+    char field_62[2];
+    Vec3_int_ field_64;
 };
 #pragma pack(pop)
-
 
 void CompactLayingItemsList();
 
@@ -247,4 +243,4 @@ extern size_t uNumSpriteObjects;
 extern std::array<SpriteObject, MAX_SPRITE_OBJECTS> pSpriteObjects;
 
 bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2);
-void sub_43A97E(unsigned int uLayingItemID, signed int a2); // idb
+void sub_43A97E(unsigned int uLayingItemID, signed int a2);  // idb

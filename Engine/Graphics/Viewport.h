@@ -2,10 +2,8 @@
 
 /*  149 */
 #pragma pack(push, 1)
-struct Viewport
-{
-    inline Viewport()
-    {
+struct Viewport {
+    inline Viewport() {
         field_of_view = 65536 / 2;
         SetScreen(0, 0, 639, 479);
     }
@@ -14,7 +12,6 @@ struct Viewport
     void SetFOV(float fov);
     void SetViewport(int uX, int uY, int uZ, int uW);
     bool Contains(unsigned int x, unsigned int y);
-
 
     int uScreen_TL_X;
     int uScreen_TL_Y;
@@ -34,33 +31,26 @@ struct Viewport
 
 void OnGameViewportClick();
 
-
 extern struct Viewport *pViewport;
-
-
 
 /*  201 */
 #pragma pack(push, 1)
-struct ViewingParams
-{
-    inline ViewingParams()
-    {
+struct ViewingParams {
+    inline ViewingParams() {
         draw_sw_outlines = false;
         draw_d3d_outlines = false;
         field_4C = 0;
     }
 
     void CenterOnParty2();
-    void  InitGrayPalette();
+    void InitGrayPalette();
     void _443219();
-    void  _443225();
-    void  _443231();
+    void _443225();
+    void _443231();
     void _44323D();
     void CenterOnParty();
-    void  AdjustPosition();
+    void AdjustPosition();
     void _443365();
-
-
 
     int uSomeX;
     int uSomeY;
@@ -79,7 +69,7 @@ struct ViewingParams
     __int16 indoor_center_x;
     __int16 indoor_center_y;
     int field_3C;
-    class Image *location_minimap;//unsigned int uTextureID_LocationMap; ::40
+    class Image *location_minimap;  // unsigned int uTextureID_LocationMap; ::40
     int bRedrawGameUI;
     int field_48;
     int field_4C;
@@ -93,7 +83,5 @@ struct ViewingParams
     unsigned __int16 pPalette[256];
 };
 #pragma pack(pop)
-
-
 
 extern struct ViewingParams *viewparams;

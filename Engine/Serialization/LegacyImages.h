@@ -1,33 +1,32 @@
 #pragma once
+
+#include "Engine/VectorTypes.h"
+
 /*
- *  Party, timers, NPCs and other stuff is binary dumped into resources/savegame files, which limits ability to alter
- *      these structures without breaking compatibility.
- *  This module is used to serialzie and deserialize native game structures intro their current representations without
- *      breaking compatibility with original files.
-*/
-
-
-
+ *  Party, timers, NPCs and other stuff is binary dumped into resources/savegame
+ * files, which limits ability to alter these structures without breaking
+ * compatibility. This module is used to serialzie and deserialize native game
+ * structures intro their current representations without breaking compatibility
+ * with original files.
+ */
 
 /*   42 */
 #pragma pack(push, 1)
-struct SpriteFrame_MM6
-{
+struct SpriteFrame_MM6 {
     SpriteFrame_MM6();
 
     char pIconName[12];
-    char pTextureName[12]; //c
-    __int16 pHwSpriteIDs[8]; //18h
-    __int32 scale; //28h
-    int uFlags; //2c
-    __int16 uGlowRadius; //30
-    __int16 uPaletteID;  //32
+    char pTextureName[12];    // c
+    __int16 pHwSpriteIDs[8];  // 18h
+    __int32 scale;            // 28h
+    int uFlags;               // 2c
+    __int16 uGlowRadius;      // 30
+    __int16 uPaletteID;       // 32
     __int16 uPaletteIndex;
     __int16 uAnimTime;
 };
 
-struct SpriteFrame_MM7 : public SpriteFrame_MM6
-{
+struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
     SpriteFrame_MM7();
 
     __int16 uAnimLength;
@@ -37,8 +36,7 @@ struct SpriteFrame_MM7 : public SpriteFrame_MM6
 
 /*   93 */
 #pragma pack(push, 1)
-struct BLVFace_MM7  //60h
-{
+struct BLVFace_MM7 {  // 60h
     struct Plane_float_ pFacePlane;
     struct Plane_int_ pFacePlane_old;
     int zCalc1;
@@ -49,11 +47,11 @@ struct BLVFace_MM7  //60h
     signed __int16 *pXInterceptDisplacements;
     signed __int16 *pYInterceptDisplacements;
     signed __int16 *pZInterceptDisplacements;
-    signed __int16   *pVertexUIDs;
-    signed __int16   *pVertexVIDs;
-    unsigned __int16  uFaceExtraID;
-    unsigned __int16  uBitmapID;
-    unsigned __int16  uSectorID;
+    signed __int16 *pVertexUIDs;
+    signed __int16 *pVertexVIDs;
+    unsigned __int16 uFaceExtraID;
+    unsigned __int16 uBitmapID;
+    unsigned __int16 uSectorID;
     __int16 uBackSectorID;
     struct BBox_short_ pBounding;
     unsigned __int8 uPolygonType;
@@ -63,11 +61,9 @@ struct BLVFace_MM7  //60h
 };
 #pragma pack(pop)
 
-
 /*   48 */
 #pragma pack(push, 1)
-struct TileDesc_MM7  //26
-{
+struct TileDesc_MM7 {  // 26
     char pTileName[16];
     unsigned __int16 uTileID;
     unsigned __int16 uBitmapID;
@@ -77,10 +73,8 @@ struct TileDesc_MM7  //26
 };
 #pragma pack(pop)
 
-
 #pragma pack(push, 1)
-struct TextureFrame_MM7
-{
+struct TextureFrame_MM7 {
     char pTextureName[12];
     __int16 uTextureID;
     __int16 uAnimTime;
@@ -89,10 +83,8 @@ struct TextureFrame_MM7
 };
 #pragma pack(pop)
 
-
 #pragma pack(push, 1)
-struct NPCData_Image_MM7
-{
+struct NPCData_Image_MM7 {
     NPCData_Image_MM7();
 
     void Serialize(struct NPCData *item);
@@ -100,7 +92,8 @@ struct NPCData_Image_MM7
 
     /* 00 */ char *pName;
     /* 04 */ unsigned int uPortraitID;
-    /* 08 */ unsigned int uFlags;  // & 0x80    no greeting on dialogue start; looks like hired
+    /* 08 */ unsigned int
+        uFlags;  // & 0x80    no greeting on dialogue start; looks like hired
     /* 0C */ int fame;
     /* 10 */ int rep;
     /* 14 */ unsigned int Location2D;
@@ -120,8 +113,7 @@ struct NPCData_Image_MM7
     /* 4C */
 };
 
-struct ItemGen_Image_MM7
-{
+struct ItemGen_Image_MM7 {
     ItemGen_Image_MM7();
 
     void Serialize(struct ItemGen *item);
@@ -158,8 +150,7 @@ struct ItemGen_Image_MM7
     /* 1C */ unsigned __int64 uExpireTime;
 };
 
-struct SpellBuff_Image_MM7
-{
+struct SpellBuff_Image_MM7 {
     SpellBuff_Image_MM7();
 
     void Serialize(struct SpellBuff *item);
@@ -174,21 +165,17 @@ struct SpellBuff_Image_MM7
     /* 10 */
 };
 
-struct PlayerSpellbookChapter_Image_MM7
-{
+struct PlayerSpellbookChapter_Image_MM7 {
     PlayerSpellbookChapter_Image_MM7();
 
     /* 00 */ char bIsSpellAvailable[11];
     /* 0B */
 };
-struct PlayerSpells_Image_MM7
-{
+struct PlayerSpells_Image_MM7 {
     PlayerSpells_Image_MM7();
 
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             /* 00 */ PlayerSpellbookChapter_Image_MM7 pFireSpellbook;
             /* 0B */ PlayerSpellbookChapter_Image_MM7 pAirSpellbook;
             /* 16 */ PlayerSpellbookChapter_Image_MM7 pWaterSpellbook;
@@ -201,14 +188,12 @@ struct PlayerSpells_Image_MM7
             /* 63 */ char _pad;
             /* 64 */
         };
-        struct
-        {
+        struct {
             /* 00 */ PlayerSpellbookChapter_Image_MM7 pChapters[9];
             /* 63 */ char _pad;
             /* 64 */
         };
-        struct
-        {
+        struct {
             /* 00 */ char bHaveSpell[99];
             /* 63 */ char _pad;
             /* 64 */
@@ -216,14 +201,11 @@ struct PlayerSpells_Image_MM7
     };
 };
 
-union PlayerEquipment_Image_MM7
-{
+union PlayerEquipment_Image_MM7 {
     PlayerEquipment_Image_MM7();
 
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             /* 00 */ unsigned int uShield;
             /* 04 */ unsigned int uMainHand;
             /* 08 */ unsigned int uBow;
@@ -241,8 +223,7 @@ union PlayerEquipment_Image_MM7
     };
 };
 
-struct LloydBeacon_Image_MM7
-{
+struct LloydBeacon_Image_MM7 {
     LloydBeacon_Image_MM7();
 
     /* 00 */ unsigned __int64 uBeaconTime;
@@ -255,8 +236,7 @@ struct LloydBeacon_Image_MM7
     /* 1C */
 };
 
-struct Player_Image_MM7
-{
+struct Player_Image_MM7 {
     Player_Image_MM7();
 
     void Serialize(struct Player *);
@@ -297,10 +277,8 @@ struct Player_Image_MM7
     /* 00FC */ int field_FC;
     /* 0100 */ int field_100;
     /* 0104 */ int field_104;
-    /* 0108 */ union
-    {
-        struct
-        {
+    /* 0108 */ union {
+        struct {
             unsigned __int16 skillStaff;
             unsigned __int16 skillSword;
             unsigned __int16 skillDagger;
@@ -351,15 +329,12 @@ struct Player_Image_MM7
     /* 0208 */ int pure_willpower_used;
     /* 020C */ int pure_accuracy_used;
     /* 0210 */ int pure_might_used;
-    /* 0214 */ union
-    {
-        struct
-        {
+    /* 0214 */ union {
+        struct {
             ItemGen_Image_MM7 pInventoryItemList[126];
             ItemGen_Image_MM7 pEquippedItems[12];
         };
-        struct
-        {
+        struct {
             ItemGen_Image_MM7 pOwnItems[138];
         };
     };
@@ -432,22 +407,21 @@ struct Player_Image_MM7
     /* 1B3C */
 };
 
-
-struct PartyTimeStruct_Image_MM7
-{
+struct PartyTimeStruct_Image_MM7 {
     PartyTimeStruct_Image_MM7();
 
     /* 000 */ __int64 bountyHunting_next_generation_time[10];
-    /* 050 */ __int64 Shops_next_generation_time[85];//field_50
+    /* 050 */ __int64 Shops_next_generation_time[85];  // field_50
     /* 2F8 */ __int64 _shop_ban_times[53];
-    /* 4A0 */ unsigned __int64 CounterEventValues[10];  // (0xACD314h in Silvo's binary)
-    /* 4F0 */ __int64 HistoryEventTimes[29];   // (0xACD364h in Silvo's binary)
-    /* 5D8 */ unsigned __int64 _s_times[20]; //5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
+    /* 4A0 */ unsigned __int64
+        CounterEventValues[10];               // (0xACD314h in Silvo's binary)
+    /* 4F0 */ __int64 HistoryEventTimes[29];  // (0xACD364h in Silvo's binary)
+    /* 5D8 */ unsigned __int64
+        _s_times[20];  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
     /* 678 */
 };
 
-struct Party_Image_MM7
-{
+struct Party_Image_MM7 {
     Party_Image_MM7();
 
     void Serialize(struct Party *);
@@ -479,7 +453,7 @@ struct Party_Image_MM7
     /* 006E8 */ int uFallSpeed;
     /* 006EC */ int field_6EC;
     /* 006F0 */ int field_6F0;
-    /* 006F4 */ int floor_face_pid; // face we are standing at
+    /* 006F4 */ int floor_face_pid;  // face we are standing at
     /* 006F8 */ int walk_sound_timer;
     /* 006FC */ int _6FC_water_lava_timer;
     /* 00700 */ int uFallStartY;
@@ -515,7 +489,7 @@ struct Party_Image_MM7
     /* 007B7 */ char uNumArenaSquireWins;
     /* 007B8 */ char uNumArenaKnightWins;
     /* 007B9 */ char uNumArenaLordWins;
-    /* 007BA */ char pIsArtifactFound[29];  //7ba
+    /* 007BA */ char pIsArtifactFound[29];  // 7ba
     /* 007D7 */ char field_7d7[39];
     /* 007FE */ unsigned char _autonote_bits[26];
     /* 00818 */ char field_818[60];
@@ -548,10 +522,7 @@ struct Party_Image_MM7
     /* 16238 */
 };
 
-
-
-struct Timer_Image_MM7
-{
+struct Timer_Image_MM7 {
     Timer_Image_MM7();
 
     void Serialize(struct Timer *);
@@ -570,12 +541,8 @@ struct Timer_Image_MM7
     /* 28 */
 };
 
-
-
-
 /*  282 */
-struct OtherOverlay_Image_MM7
-{
+struct OtherOverlay_Image_MM7 {
     OtherOverlay_Image_MM7();
 
     /* 00 */ __int16 field_0;
@@ -591,8 +558,7 @@ struct OtherOverlay_Image_MM7
 };
 
 /*   63 */
-struct OtherOverlayList_Image_MM7
-{
+struct OtherOverlayList_Image_MM7 {
     OtherOverlayList_Image_MM7();
 
     void Serialize(struct OtherOverlayList *);
@@ -605,14 +571,9 @@ struct OtherOverlayList_Image_MM7
 };
 #pragma pack(pop)
 
-
-
-
-
 /*   44 */
 #pragma pack(push, 1)
-struct IconFrame_MM7
-{
+struct IconFrame_MM7 {
     IconFrame_MM7();
 
     void Serialize(class Icon *);
@@ -622,16 +583,14 @@ struct IconFrame_MM7
     /* 00C */ char pTextureName[12];
     /* 018 */ __int16 uAnimTime;
     /* 01A */ __int16 uAnimLength;
-    /* 01C */ __int16 uFlags; // 0x01 - more icons in this animation
+    /* 01C */ __int16 uFlags;  // 0x01 - more icons in this animation
     /* 01E */ unsigned __int16 uTextureID;
 };
 #pragma pack(pop)
 
-
 /*   76 */
 #pragma pack(push, 1)
-struct UIAnimation_MM7
-{
+struct UIAnimation_MM7 {
     UIAnimation_MM7();
 
     void Serialize(class UIAnimation *);

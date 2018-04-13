@@ -4,8 +4,8 @@
 
 class GUIWindow_Chest : public GUIWindow {
  public:
-  GUIWindow_Chest(unsigned int chest_id);
-  virtual ~GUIWindow_Chest() {}
+    explicit GUIWindow_Chest(unsigned int chest_id);
+    virtual ~GUIWindow_Chest() {}
 
-  virtual void Update();
+    virtual void Update();
 };

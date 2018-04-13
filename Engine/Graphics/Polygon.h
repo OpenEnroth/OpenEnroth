@@ -3,7 +3,6 @@
 
 #include "Engine/VectorTypes.h"
 
-
 class Texture;
 struct ODMFace;
 struct Span;
@@ -12,15 +11,11 @@ struct Edge;
 /*  141 */
 // stru148
 #pragma pack(push, 1)
-struct Polygon
-{
-    inline Polygon()
-    {
-        uNumVertices = 0;
-    }
+struct Polygon {
+    inline Polygon() { uNumVertices = 0; }
 
     int _479295();
-    //void _48276F_sr();
+    // void _48276F_sr();
     void _normalize_v_18();
     void Create_48607B(struct stru149 *a2);
 
@@ -37,11 +32,11 @@ struct Polygon
     int field_24;
     int sTextureDeltaU;
     int sTextureDeltaV;
-    __int16 flags; // &2 -> Water  &3C00 still water (no anim)
+    __int16 flags;  // &2 -> Water  &3C00 still water (no anim)
     __int16 field_32;
     int field_34;
     struct stru149 *ptr_38;
-    Texture *texture;//struct Texture_MM7 *pTexture;
+    Texture *texture;  // struct Texture_MM7 *pTexture;
     Span *_unused_prolly_head;
     Span *_unused_prolly_tail;
     int **ptr_48;

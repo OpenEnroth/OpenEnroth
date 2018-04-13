@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
 
-struct ApplicationConfig
-{
+struct ApplicationConfig {
     std::string mm7_install_type;
     std::string mm7_install_path;
 };

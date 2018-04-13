@@ -1,38 +1,35 @@
-#include <Windows.h>
+#include "Application.h"
+
 #include <Shlwapi.h>
+#include <Windows.h>
 #pragma comment(lib, "Shlwapi.lib")
 #include <Shlobj.h>
-#pragma comment(lib, "Shell32.lib") 
+#pragma comment(lib, "Shell32.lib")
 
-#include "Application.h"
+#include <string>
+
 #include "../resource.h"
 
-
-int __stdcall BrowseFolderCallback(HWND hwnd, UINT msg, LPARAM lparam, LPARAM data)
-{
-    if (msg == BFFM_INITIALIZED)
-    {
+int __stdcall BrowseFolderCallback(HWND hwnd, UINT msg, LPARAM lparam,
+                                   LPARAM data) {
+    if (msg == BFFM_INITIALIZED) {
         SendMessage(hwnd, BFFM_SETSELECTION, true, data);
     }
     return 0;
 }
 
-INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam,
+                             LPARAM lparam) {
     Application *app = (Application *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    switch (msg)
-    {
-        case WM_INITDIALOG:
-        {
+    switch (msg) {
+        case WM_INITDIALOG: {
             app = (Application *)lparam;
             SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)app);
             break;
         }
 
-        case WM_COMMAND:
-        {
-            if (LOWORD(wparam) == IDC_BUTTON_BROWSE_INSTALL)
-            {
+        case WM_COMMAND: {
+            if (LOWORD(wparam) == IDC_BUTTON_BROWSE_INSTALL) {
                 char choice[2000];
                 choice[0] = 0;
                 strcpy(choice, app->GetMm7InstallPath().c_str());
@@ -46,28 +43,22 @@ INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
                 SHGetPathFromIDListA(list, choice);
                 app->SetMm7InstallPath(std::string(choice));
-                SendDlgItemMessageA(hwnd, IDC_EDIT_MM7_INSTALL_DIR, WM_SETTEXT, 0, (LPARAM)choice);
+                SendDlgItemMessageA(hwnd, IDC_EDIT_MM7_INSTALL_DIR, WM_SETTEXT,
+                                    0, (LPARAM)choice);
 
                 return TRUE;
-            }
-            else if (LOWORD(wparam) == IDC_BUTTON_LAUNCH)
-            {
+            } else if (LOWORD(wparam) == IDC_BUTTON_LAUNCH) {
                 char mm7_install_dir[2000];
-                GetWindowTextA(
-                    GetDlgItem(hwnd, IDC_EDIT_MM7_INSTALL_DIR),
-                    mm7_install_dir,
-                    2000
-                );
+                GetWindowTextA(GetDlgItem(hwnd, IDC_EDIT_MM7_INSTALL_DIR),
+                               mm7_install_dir, 2000);
 
                 app->SetMm7InstallPath(std::string(mm7_install_dir));
 
                 std::string config_errors;
-                if (!app->ValidateConfig(config_errors))
-                {
-                    MessageBoxA(hwnd, config_errors.c_str(), "Configuration error", MB_OK);
-                }
-                else
-                {
+                if (!app->ValidateConfig(config_errors)) {
+                    MessageBoxA(hwnd, config_errors.c_str(),
+                                "Configuration error", MB_OK);
+                } else {
                     PostMessage(hwnd, WM_QUIT, 0, 0);
                 }
 
@@ -79,67 +70,61 @@ INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return FALSE;
 }
 
-Application *Application::Configure(ApplicationConfig &config)
-{
+Application *Application::Configure(ApplicationConfig &config) {
     this->config = config;
     return this;
 }
 
-void Application::SetMm7InstallPath(const std::string &path)
-{
+void Application::SetMm7InstallPath(const std::string &path) {
     this->config.mm7_install_path = path;
 }
-const std::string &Application::GetMm7InstallPath() const
-{
+const std::string &Application::GetMm7InstallPath() const {
     return this->config.mm7_install_path;
 }
 
-
-static std::string GetExeFilename()
-{
+static std::string GetExeFilename() {
     char buf[2000];
     GetModuleFileNameA(GetModuleHandle(0), buf, 2000);
     return std::string(buf);
 }
 
-static std::string GetExePath()
-{
+static std::string GetExePath() {
     auto filename = GetExeFilename();
     return filename.substr(0, filename.find_last_of("\\/"));
 }
 
-bool Application::ValidateConfig(std::string &out_errors)
-{
+bool Application::ValidateConfig(std::string &out_errors) {
     out_errors = "";
 
     std::string mm7_exe_path = config.mm7_install_path + "/MM7.exe";
-    if (!PathFileExistsA(mm7_exe_path.c_str()))
-    {
-        out_errors = "Might and Magic VII exe not found in: " + config.mm7_install_path;
+    if (!PathFileExistsA(mm7_exe_path.c_str())) {
+        out_errors =
+            "Might and Magic VII exe not found in: " + config.mm7_install_path;
         return false;
     }
 
     return true;
 }
 
-void Application::Run()
-{
-    CoInitializeEx(0, COINIT_APARTMENTTHREADED); // SHBrowseForFolder
+void Application::Run() {
+    CoInitializeEx(0, COINIT_APARTMENTTHREADED);  // SHBrowseForFolder
 
     auto module = GetModuleHandle(nullptr);
-    HWND dialog = CreateDialogParamA(module, MAKEINTRESOURCEA(IDD_FORMVIEW), nullptr, DialogProc, (LPARAM)this);
-    HICON icon = (HICON)LoadImage(module, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
+    HWND dialog = CreateDialogParamA(module, MAKEINTRESOURCEA(IDD_FORMVIEW),
+                                     nullptr, DialogProc, (LPARAM)this);
+    HICON icon =
+        (HICON)LoadImage(module, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 0, 0,
+                         LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
     SendMessage(dialog, WM_SETICON, ICON_BIG, (LPARAM)icon);
-    SendDlgItemMessageA(dialog, IDC_EDIT_MM7_INSTALL_DIR, WM_SETTEXT, 0, (LPARAM)config.mm7_install_path.c_str());
+    SendDlgItemMessageA(dialog, IDC_EDIT_MM7_INSTALL_DIR, WM_SETTEXT, 0,
+                        (LPARAM)config.mm7_install_path.c_str());
 
     MSG msg;
-    //while (PeekMessageA(&msg, dialog, 0, 0, PM_REMOVE))
-    while (GetMessageA(&msg, dialog, 0, 0))
-    {
+    // while (PeekMessageA(&msg, dialog, 0, 0, PM_REMOVE))
+    while (GetMessageA(&msg, dialog, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessageA(&msg);
     }
-
 
     STARTUPINFOA si;
     ZeroMemory(&si, sizeof(si));
@@ -148,17 +133,9 @@ void Application::Run()
     PROCESS_INFORMATION pi;
     ZeroMemory(&pi, sizeof(pi));
 
-    std::string womm_filename = GetExePath() + "/" + "World of Might and Magic.exe";
-    CreateProcessA(
-        womm_filename.c_str(),
-        "",
-        nullptr,
-        nullptr,
-        FALSE,
-        NORMAL_PRIORITY_CLASS,
-        nullptr,
-        config.mm7_install_path.c_str(),
-        &si,
-        &pi
-    );
+    std::string womm_filename =
+        GetExePath() + "/" + "World of Might and Magic.exe";
+    CreateProcessA(womm_filename.c_str(), "", nullptr, nullptr, FALSE,
+                   NORMAL_PRIORITY_CLASS, nullptr,
+                   config.mm7_install_path.c_str(), &si, &pi);
 }

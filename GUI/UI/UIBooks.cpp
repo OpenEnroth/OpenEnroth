@@ -1,12 +1,12 @@
 #define _CRTDBG_MAP_ALLOC
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
 #include <crtdbg.h>
+#include <stdlib.h>
 
-#include "Engine/Engine.h"
-#include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/Awards.h"
+#include "Engine/Engine.h"
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
 
 #include "Engine/Graphics/IRender.h"
 
@@ -16,7 +16,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
-
 
 Image *ui_book_button8_off = nullptr;
 Image *ui_book_button8_on = nullptr;
@@ -40,10 +39,9 @@ Image *ui_book_map_frame = nullptr;
 Image *ui_book_quest_div_bar = nullptr;
 
 //----- (00411597) --------------------------------------------------------
-void GUIWindow_Book::Release()
-{
-// -----------------------------------------
-// 0041C26A void GUIWindow::Release --- part
+void GUIWindow_Book::Release() {
+    // -----------------------------------------
+    // 0041C26A void GUIWindow::Release --- part
     free(pSpellFont);
     pSpellFont = nullptr;
     free(pBookFont);
@@ -53,8 +51,7 @@ void GUIWindow_Book::Release()
     free(pAutonoteFont);
     pAutonoteFont = nullptr;
 
-    if (ui_book_map_frame)
-    {
+    if (ui_book_map_frame) {
         ui_book_map_frame->Release();
         ui_book_map_frame = nullptr;
     }
@@ -65,26 +62,23 @@ void GUIWindow_Book::Release()
     GUIWindow::Release();
 }
 
-
-GUIWindow_Book::GUIWindow_Book() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
-{
-}
+GUIWindow_Book::GUIWindow_Book()
+    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {}
 
 void GUIWindow_Book::BasicBookInitialization() {
-  pAudioPlayer->StopChannels(-1, -1);
-  InitializeFonts();
-  CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(79)); // Close
-  current_screen_type = SCREEN_BOOKS;
-  full_num_items_in_book = 0;
-  books_primary_item_per_page = 0;
-  books_page_number = 0;
-  num_achieved_awards = 0;
+    pAudioPlayer->StopChannels(-1, -1);
+    InitializeFonts();
+    CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, 0,
+                 localization->GetString(79));  // Close
+    current_screen_type = SCREEN_BOOKS;
+    full_num_items_in_book = 0;
+    books_primary_item_per_page = 0;
+    books_page_number = 0;
+    num_achieved_awards = 0;
 }
 
 //----- (00411AAA) --------------------------------------------------------
-void GUIWindow_Book::InitializeFonts()
-{
+void GUIWindow_Book::InitializeFonts() {
     pAudioPlayer->StopChannels(-1, -1);
     pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
 

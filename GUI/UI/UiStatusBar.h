@@ -7,7 +7,8 @@ void GameUI_StatusBar_DrawForced();
 void GameUI_StatusBar_Set(const char *pStr);
 void GameUI_StatusBar_Set(String &str);
 
-void GameUI_StatusBar_OnEvent(const char *pString, unsigned int num_seconds = 2);
+void GameUI_StatusBar_OnEvent(const char *pString,
+                              unsigned int num_seconds = 2);
 void GameUI_StatusBar_OnEvent(String &str, unsigned int num_seconds = 2);
 void GameUI_StatusBar_OnEvent_128ms(const char *str);
 void GameUI_StatusBar_OnEvent_128ms(String &str);

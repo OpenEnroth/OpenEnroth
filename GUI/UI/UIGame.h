@@ -4,45 +4,43 @@
 void GameUI_LoadPlayerPortraintsAndVoices();
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id);
 void GameUI_WritePointedObjectStatusString();
-void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID); // idb
+void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID);  // idb
 
 __int16 _441A4E_overlay_on_portrait(int a1);
 
 class GUIWindow_GameMenu : public GUIWindow {
  public:
-  GUIWindow_GameMenu();
-  virtual ~GUIWindow_GameMenu() {}
+    GUIWindow_GameMenu();
+    virtual ~GUIWindow_GameMenu() {}
 
-  virtual void Update();
+    virtual void Update();
 };
 
 class GUIWindow_GameOptions : public GUIWindow {
  public:
-  GUIWindow_GameOptions();
-  virtual ~GUIWindow_GameOptions() {}
+    GUIWindow_GameOptions();
+    virtual ~GUIWindow_GameOptions() {}
 
-  virtual void Update();
+    virtual void Update();
 };
 
 class GUIWindow_GameKeyBindings : public GUIWindow {
  public:
-  GUIWindow_GameKeyBindings();
-  virtual ~GUIWindow_GameKeyBindings() {}
+    GUIWindow_GameKeyBindings();
+    virtual ~GUIWindow_GameKeyBindings() {}
 
-  virtual void Update();
+    virtual void Update();
 };
 
 
 
 class GUIWindow_GameVideoOptions : public GUIWindow {
  public:
-  GUIWindow_GameVideoOptions();
-  virtual ~GUIWindow_GameVideoOptions() {}
+    GUIWindow_GameVideoOptions();
+    virtual ~GUIWindow_GameVideoOptions() {}
 
-  virtual void Update();
+    virtual void Update();
 };
-
-
 
 class Image;
 extern Image *game_ui_statusbar;
@@ -58,8 +56,8 @@ extern Image *game_ui_monster_hp_background;
 extern Image *game_ui_monster_hp_border_left;
 extern Image *game_ui_monster_hp_border_right;
 
-extern Image *game_ui_minimap_frame;   // 5079D8
-extern Image *game_ui_minimap_compass; // 5079B4
+extern Image *game_ui_minimap_frame;    // 5079D8
+extern Image *game_ui_minimap_compass;  // 5079B4
 extern std::array<Image *, 8> game_ui_minimap_dirs;
 
 extern Image *game_ui_menu_quit;
@@ -87,17 +85,16 @@ extern Image *game_ui_dialogue_background;
 
 extern std::array<Image *, 5> game_ui_options_controls;
 
-extern Image *game_ui_evtnpc; // 50795C
+extern Image *game_ui_evtnpc;  // 50795C
 
-
-extern std::array< std::array<Image *, 56>, 4> game_ui_player_faces;
+extern std::array<std::array<Image *, 56>, 4> game_ui_player_faces;
 extern Image *game_ui_player_face_eradicated;
 extern Image *game_ui_player_face_dead;
 
-extern Image *game_ui_player_selection_frame; // 50C98C
-extern Image *game_ui_player_alert_yellow; // 5079C8
-extern Image *game_ui_player_alert_red;    // 5079CC
-extern Image *game_ui_player_alert_green;  // 5079D0
+extern Image *game_ui_player_selection_frame;  // 50C98C
+extern Image *game_ui_player_alert_yellow;     // 5079C8
+extern Image *game_ui_player_alert_red;        // 5079CC
+extern Image *game_ui_player_alert_green;      // 5079D0
 
 extern Image *game_ui_bar_red;
 extern Image *game_ui_bar_yellow;
