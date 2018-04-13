@@ -1,0 +1,6 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+shallow_clone: true
+build:
+  project: Build/Visual Studio 2017/World of Might and Magic.sln
+  verbosity: detailed
