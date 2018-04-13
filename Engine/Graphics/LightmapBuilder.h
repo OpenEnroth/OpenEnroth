@@ -7,7 +7,7 @@ struct LightsStack_MobileLight_;
 
 /*  115 */
 #pragma pack(push, 1)
-struct Lightmap						//карта света, текстура для наложения теней
+struct Lightmap						//РєР°СЂС‚Р° СЃРІРµС‚Р°, С‚РµРєСЃС‚СѓСЂР° РґР»СЏ РЅР°Р»РѕР¶РµРЅРёСЏ С‚РµРЅРµР№
 {
   Lightmap();
   virtual ~Lightmap() {}
@@ -15,13 +15,13 @@ struct Lightmap						//карта света, текстура для наложения теней
   //void ( ***vdestructor_ptr)(Lightmap *, bool);
   signed int NumVertices;
   RenderVertexSoft pVertices[64];
-  __int16 position_x;				//позиция источника света
+  __int16 position_x;				//РїРѕР·РёС†РёСЏ РёСЃС‚РѕС‡РЅРёРєР° СЃРІРµС‚Р°
   __int16 position_y;
   __int16 position_z;
-  __int16 field_C0E;				//нигде не используется
+  __int16 field_C0E;				//РЅРёРіРґРµ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ
   unsigned int uColorMask;
-  float fBrightness;				//яркость
-  int field_C18;					//нигде не используется
+  float fBrightness;				//СЏСЂРєРѕСЃС‚СЊ
+  int field_C18;					//РЅРёРіРґРµ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ
 };
 #pragma pack(pop)
 
@@ -35,9 +35,9 @@ public:
   virtual ~LightmapBuilder() //----- (0045BBAA)
   {}
 
-  void Draw_183808_Lightmaps();				//используется для мобильного света
+  void Draw_183808_Lightmaps();				//РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РјРѕР±РёР»СЊРЅРѕРіРѕ СЃРІРµС‚Р°
   //bool DrawLightmap(Lightmap *a1, Vec3_float_ *pColorMult, float z_bias);
-  bool DoDraw_183808_Lightmaps(float a2);	//используется для мобильного света
+  bool DoDraw_183808_Lightmaps(float a2);	//РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РјРѕР±РёР»СЊРЅРѕРіРѕ СЃРІРµС‚Р°
   bool DrawLightmaps(int indices);
   void DrawLightmapsType(int type);
   void DrawDebugOutlines(char bit_one_for_list1__bit_two_for_list2);

@@ -888,13 +888,13 @@ void CharacterUI_DrawPaperdoll(Player *player)
 
     render->ResetUIClipRect();
     render->DrawTextureAlphaNew(467 / 640.0f, 0, ui_character_inventory_paperdoll_background);
-    if (IsPlayerWearingWatersuit[uPlayerID])//акваланг
+    if (IsPlayerWearingWatersuit[uPlayerID])//Р°РєРІР°Р»Р°РЅРі
     {
         render->DrawTextureAlphaNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, papredoll_dbods[uPlayerID - 1]);
         if (!bRingsShownInCharScreen)
             render->ZDrawTextureAlpha(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, papredoll_dbods[uPlayerID - 1], player->pEquipment.uArmor);
 
-        //Рука не занята или ...
+        //Р СѓРєР° РЅРµ Р·Р°РЅСЏС‚Р° РёР»Рё ...
         if (!player->GetItem(&PlayerEquipment::uMainHand)
             || (player->GetMainHandItem()->GetItemEquipType() != EQUIP_TWO_HANDED)
             && (player->GetMainHandItem()->GetItemEquipType() != PLAYER_SKILL_SPEAR
@@ -903,7 +903,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                 (pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0]) / 640.0f,
                 (pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1]) / 480.0f,
                 papredoll_dlads[uPlayerID - 1]);
-        //-----------------------------------------------------(Hand/Рука)---------------------------------------------------------------
+        //-----------------------------------------------------(Hand/Р СѓРєР°)---------------------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uMainHand))
         {
             item = player->GetMainHandItem();
@@ -947,9 +947,9 @@ void CharacterUI_DrawPaperdoll(Player *player)
                 render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f, texture, player->pEquipment.uMainHand);
         }
     }
-    else// без акваланга
+    else// Р±РµР· Р°РєРІР°Р»Р°РЅРіР°
     {
-        //----------------(Bow/ Лук)-------------------------------------------------
+        //----------------(Bow/ Р›СѓРє)-------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uBow))
         {
             item = player->GetBowItem();
@@ -957,7 +957,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemsTable->pItems[item->uItemID].uEquipY;
 
             auto texture = assets->GetImage_Alpha(item->GetIconName());
-            if (item->ItemEnchanted())// применён закл
+            if (item->ItemEnchanted())// РїСЂРёРјРµРЅС‘РЅ Р·Р°РєР»
             {
                 if (item->AuraEffectRed())
                     container = "sptext01";
@@ -980,7 +980,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                 render->DrawTransparentRedShade(item_X / 640.0f, item_Y / 480.0f, texture);
             else if (!(item->uAttributes & ITEM_IDENTIFIED))
                 render->DrawTransparentGreenShade(item_X / 640.0f, item_Y / 480.0f, texture);
-            else // опознанный лук
+            else // РѕРїРѕР·РЅР°РЅРЅС‹Р№ Р»СѓРє
                 render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, texture);
 
             if (!bRingsShownInCharScreen)
@@ -989,7 +989,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                     texture,
                     player->pEquipment.uBow);
         }
-        //-----------------------------(Cloak/Плащ)---------------------------------------------------------
+        //-----------------------------(Cloak/РџР»Р°С‰)---------------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uCloak))
         {
             item = player->GetCloakItem();
@@ -1050,9 +1050,9 @@ void CharacterUI_DrawPaperdoll(Player *player)
                     render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f, paperdoll_cloak_texture[pBodyComplection][index], player->pEquipment.uCloak);
             }
         }
-        //-------------------------------(Paperdoll/Кукла)-------------------------------------------
+        //-------------------------------(Paperdoll/РљСѓРєР»Р°)-------------------------------------------
         render->DrawTextureAlphaNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, papredoll_dbods[uPlayerID - 1]);
-        //-------------------------------(Armor/Броня)-----------------------------------------------
+        //-------------------------------(Armor/Р‘СЂРѕРЅСЏ)-----------------------------------------------
         if (player->GetItem(&PlayerEquipment::uArmor))
         {
             item = player->GetArmorItem();
@@ -1112,7 +1112,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                     render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f, paperdoll_armor_texture[pBodyComplection][index][0], player->pEquipment.uArmor);
             }
         }
-        //----------------------------------(Boot/Обувь)--------------------------------------------------------
+        //----------------------------------(Boot/РћР±СѓРІСЊ)--------------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uBoot))
         {
             item = player->GetBootItem();
@@ -1170,7 +1170,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                     render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f, v59, player->pEquipment.uBoot);
             }
         }
-        //--------------------------------------------(Hand/Рука)------------------------------------------------------
+        //--------------------------------------------(Hand/Р СѓРєР°)------------------------------------------------------
         if (!player->GetItem(&PlayerEquipment::uMainHand)
             || (player->GetMainHandItem()->GetItemEquipType() != EQUIP_TWO_HANDED)
             && (player->GetMainHandItem()->GetPlayerSkillType() != PLAYER_SKILL_SPEAR
@@ -1179,7 +1179,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                 (pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0]) / 640.0f,
                 (pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1]) / 480.0f,
                 papredoll_dlads[uPlayerID - 1]);
-        //--------------------------------------------(Belt/Пояс)-------------------------------------------------------
+        //--------------------------------------------(Belt/РџРѕСЏСЃ)-------------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uBelt))
         {
             item = player->GetBeltItem();
@@ -1238,7 +1238,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                     render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f, v75, player->pEquipment.uBelt);
             }
         }
-        //--------------------------------(Shoulder/Плечи)---------------------------------------------
+        //--------------------------------(Shoulder/РџР»РµС‡Рё)---------------------------------------------
         if (player->GetItem(&PlayerEquipment::uArmor))
         {
             item = player->GetArmorItem();
@@ -1264,7 +1264,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
             {
                 if (player->GetItem(&PlayerEquipment::uMainHand) && (player->GetMainHandItem()->GetItemEquipType() == EQUIP_TWO_HANDED
                     || player->GetMainHandItem()->GetPlayerSkillType() == PLAYER_SKILL_SPEAR
-                    && !player->GetItem(&PlayerEquipment::uShield)))//без щита
+                    && !player->GetItem(&PlayerEquipment::uShield)))//Р±РµР· С‰РёС‚Р°
                 {
                     v94 = paperdoll_armor_texture[pBodyComplection][index][2];
                     if (paperdoll_armor_texture[pBodyComplection][index][2])
@@ -1315,7 +1315,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
 
                     }
                 }
-                else//без ничего или с щитом
+                else//Р±РµР· РЅРёС‡РµРіРѕ РёР»Рё СЃ С‰РёС‚РѕРј
                 {
                     //v94 = paperdoll_armor_texture[pBodyComplection][index][1];
                     if (paperdoll_armor_texture[pBodyComplection][index][1])
@@ -1356,7 +1356,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                 }
             }
         }
-        //----------------------------------------------(Cloak collar/воротник плаща)-------------------------------------
+        //----------------------------------------------(Cloak collar/РІРѕСЂРѕС‚РЅРёРє РїР»Р°С‰Р°)-------------------------------------
         if (player->GetItem(&PlayerEquipment::uCloak))
         {
             item = player->GetCloakItem();
@@ -1422,7 +1422,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                 }
             }
         }
-        //--------------------------------------------(Beards/Борода)-------------------------------------------------------
+        //--------------------------------------------(Beards/Р‘РѕСЂРѕРґР°)-------------------------------------------------------
         if (player->uCurrentFace == 12 || player->uCurrentFace == 13)
         {
             if (paperdoll_dbrds[player->uCurrentFace])
@@ -1431,7 +1431,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                     (pPaperdoll_BodyY + pPaperdoll_Beards[2 * player->uCurrentFace - 23]) / 480.0f,
                     paperdoll_dbrds[player->uCurrentFace]);
         }
-        //--------------------------------------------(Helm/Шлем)------------------------------------------------------------
+        //--------------------------------------------(Helm/РЁР»РµРј)------------------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uHelm))
         {
             item = player->GetHelmItem();
@@ -1498,7 +1498,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                     render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f, v127, player->pEquipment.uHelm);
             }
         }
-        //------------------------------------------------(Hand3/Рука3)-------------------------------------------
+        //------------------------------------------------(Hand3/Р СѓРєР°3)-------------------------------------------
         if (player->GetItem(&PlayerEquipment::uMainHand))
         {
             item = player->GetMainHandItem();
@@ -1544,7 +1544,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
             if (!bRingsShownInCharScreen)
                 render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f, texture, player->pEquipment.uMainHand);
         }
-        //--------------------------------------------------(Shield/Щит)---------------------------------------------
+        //--------------------------------------------------(Shield/Р©РёС‚)---------------------------------------------
         if (player->GetItem(&PlayerEquipment::uShield))
         {
             item = player->GetOffHandItem();
@@ -1610,7 +1610,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
             else
                 render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, v153);
 
-            if (two_handed_left_fist)//two-handed - left fist/двуручие - левая кисть
+            if (two_handed_left_fist)//two-handed - left fist/РґРІСѓСЂСѓС‡РёРµ - Р»РµРІР°СЏ РєРёСЃС‚СЊ
                 render->DrawTextureAlphaNew(
                     (pPaperdoll_BodyX + pPaperdollLeftEmptyHand[pBodyComplection][0]) / 640.0f,
                     (pPaperdoll_BodyY + pPaperdollLeftEmptyHand[pBodyComplection][1]) / 480.0f,
@@ -1619,12 +1619,12 @@ void CharacterUI_DrawPaperdoll(Player *player)
                 render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f, v153, player->pEquipment.uShield);
         }
     }
-    //--------------------------------------------------------(RightHand/Правая кисть)--------------------------------------------------
+    //--------------------------------------------------------(RightHand/РџСЂР°РІР°СЏ РєРёСЃС‚СЊ)--------------------------------------------------
     render->DrawTextureAlphaNew(
         (pPaperdoll_BodyX + pPaperdoll_RightHand[pBodyComplection][0]) / 640.0f,
         (pPaperdoll_BodyY + pPaperdoll_RightHand[pBodyComplection][1]) / 480.0f,
         papredoll_drhs[uPlayerID - 1]);
-    //---------------------------------------------(two-handed - hand/Двуручие - рука)--------------------------------------------------
+    //---------------------------------------------(two-handed - hand/Р”РІСѓСЂСѓС‡РёРµ - СЂСѓРєР°)--------------------------------------------------
     if (player->GetItem(&PlayerEquipment::uMainHand))
     {
         if (player->GetMainHandItem()->GetItemEquipType() == EQUIP_TWO_HANDED
@@ -1635,7 +1635,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                 (pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1]) / 480.0f,
                 papredoll_dlaus[uPlayerID - 1]);
     }
-    //--------------------------------------------------------(two-handed - fist/двуручие - кисть)----------------------------------------------------
+    //--------------------------------------------------------(two-handed - fist/РґРІСѓСЂСѓС‡РёРµ - РєРёСЃС‚СЊ)----------------------------------------------------
     if (player->GetItem(&PlayerEquipment::uMainHand))
     {
         item = player->GetMainHandItem();
@@ -1648,7 +1648,7 @@ void CharacterUI_DrawPaperdoll(Player *player)
                 papredoll_dlhus[uPlayerID - 1]);
     }
 
-    if (!bRingsShownInCharScreen)//рисование лупы
+    if (!bRingsShownInCharScreen)//СЂРёСЃРѕРІР°РЅРёРµ Р»СѓРїС‹
         render->DrawTextureAlphaNew(603 / 640.0f, 299 / 480.0f, ui_character_inventory_magnification_glass);
 
     render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
@@ -2120,7 +2120,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
       player->uSkillPoints);
   pGUIWindow_CurrentMenu->DrawText(pFontArrus, 26, 18, 0, str1);
 
-  //First column(Первая колонка)
+  //First column(РџРµСЂРІР°СЏ РєРѕР»РѕРЅРєР°)
   pY = 53;
   auto str2 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n", localization->GetString(144),
     UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualMight(), player->GetBaseStrength()),
@@ -2193,20 +2193,20 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
   pY += 2 * pFontArrus->GetHeight() - 2;
   auto str12 = StringPrintf(
     "%s: \f%05d%s\n",
-    localization->GetString(47), // Condition   /   Состояние
+    localization->GetString(47), // Condition   /   РЎРѕСЃС‚РѕСЏРЅРёРµ
     GetConditionDrawColor(player->GetMajorConditionIdx()),
     localization->GetCharacterConditionName(player->GetMajorConditionIdx())
   );
   pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str12, 226, 0);
 
   pY += pFontArrus->GetHeight() + -1;
-  pText = localization->GetString(153); // Нет
+  pText = localization->GetString(153); // РќРµС‚
   if (player->uQuickSpell)
     pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
-  auto str13 = StringPrintf("%s: %s", localization->GetString(172), pText); // Б. применение
+  auto str13 = StringPrintf("%s: %s", localization->GetString(172), pText); // Р‘. РїСЂРёРјРµРЅРµРЅРёРµ
   pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str13, 226, 0);
 
-  //Second column (Вторая колонка)
+  //Second column (Р’С‚РѕСЂР°СЏ РєРѕР»РѕРЅРєР°)
   pY = 50;
   text_format = Stat_string_format_2_column_less_100;
   if (player->GetActualAge() > 99)
@@ -2222,7 +2222,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     text_format = Stat_string_format_2_column_over_100;
 
   pY += pFontArrus->GetHeight() - 2;
-  auto str15 = StringPrintf(text_format, localization->GetString(131), // Уров.
+  auto str15 = StringPrintf(text_format, localization->GetString(131), // РЈСЂРѕРІ.
     UI_GetHealthManaAndOtherQualitiesStringColor(player->GetActualLevel(), player->GetBaseLevel()),
     player->GetActualLevel(), player->GetBaseLevel()
   );
@@ -2373,7 +2373,7 @@ void FillAwardsData()
   if (full_num_items_in_book>0)
   {
     for (int i = 0; i< full_num_items_in_book; ++i)
-      achieved_awards[full_num_items_in_book+i] = (AwardType)(rand()%16);//случайные значения от 0 до 15
+      achieved_awards[full_num_items_in_book+i] = (AwardType)(rand()%16);//СЃР»СѓС‡Р°Р№РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РѕС‚ 0 РґРѕ 15
     for (int i = 1; i< full_num_items_in_book; ++i)
     {
       for (int j = i; j< full_num_items_in_book; ++j)
@@ -2584,7 +2584,7 @@ void  OnPaperdollLeftClick() {
 				return;
 
 
-//------------------------dress rings(одевание колец)----------------------------------
+//------------------------dress rings(РѕРґРµРІР°РЅРёРµ РєРѕР»РµС†)----------------------------------
 			case EQUIP_RING:
 
 				if ( pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() ) { // cant put anything on wearing wetsuit
@@ -2594,7 +2594,7 @@ void  OnPaperdollLeftClick() {
 
 				if (!bRingsShownInCharScreen) { // rings not displayd
 
-					//слоты для колец
+					//СЃР»РѕС‚С‹ РґР»СЏ РєРѕР»РµС†
 					//equippos = 0;
 
 					for ( int equippos = 0; equippos < 6; ++equippos ) {
@@ -2671,19 +2671,19 @@ void  OnPaperdollLeftClick() {
 				}
 
 
-//------------------dress shield(одеть щит)------------------------------------------------------
-      case EQUIP_SHIELD://Щит
-        if ( pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() )//в акваланге
+//------------------dress shield(РѕРґРµС‚СЊ С‰РёС‚)------------------------------------------------------
+      case EQUIP_SHIELD://Р©РёС‚
+        if ( pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() )//РІ Р°РєРІР°Р»Р°РЅРіРµ
         {
           pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
           return;
         }
-        if ( !pPlayers[uActiveCharacter]->HasSkill(pSkillType) )//нет навыка
+        if ( !pPlayers[uActiveCharacter]->HasSkill(pSkillType) )//РЅРµС‚ РЅР°РІС‹РєР°
         {
           pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
           return;
         }
-        if (shieldequip)//смена щита щитом
+        if (shieldequip)//СЃРјРµРЅР° С‰РёС‚Р° С‰РёС‚РѕРј
         {
           --shieldequip;
           memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
@@ -2701,7 +2701,7 @@ void  OnPaperdollLeftClick() {
 			freeslot = pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
           if (freeslot < 0 )
             return;
-          if ( !twohandedequip)// обычная установка щита на пустую руку
+          if ( !twohandedequip)// РѕР±С‹С‡РЅР°СЏ СѓСЃС‚Р°РЅРѕРІРєР° С‰РёС‚Р° РЅР° РїСѓСЃС‚СѓСЋ СЂСѓРєСѓ
           {
             pParty->pPickedItem.uBodyAnchor = 1;
             v17 = freeslot + 1;
@@ -2710,7 +2710,7 @@ void  OnPaperdollLeftClick() {
             pMouse->RemoveHoldingItem();
             return;
           }
-		  mainhandequip--;//ставим щит когда держит двуручный меч
+		  mainhandequip--;//СЃС‚Р°РІРёРј С‰РёС‚ РєРѕРіРґР° РґРµСЂР¶РёС‚ РґРІСѓСЂСѓС‡РЅС‹Р№ РјРµС‡
           memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
           pPlayers[uActiveCharacter]->pInventoryItemList[mainhandequip].uBodyAnchor = 0;
           pParty->pPickedItem.Reset();
@@ -2721,7 +2721,7 @@ void  OnPaperdollLeftClick() {
         }
         pPlayers[uActiveCharacter]->pEquipment.uMainHand = 0;
         return;
-//-------------------------taken in hand(взять в руку)-------------------------------------------
+//-------------------------taken in hand(РІР·СЏС‚СЊ РІ СЂСѓРєСѓ)-------------------------------------------
       case EQUIP_SINGLE_HANDED:
       case EQUIP_WAND:
         if ( pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped()
@@ -2815,13 +2815,13 @@ void  OnPaperdollLeftClick() {
           v50 = _this.uItemID;
         if (twohandedequip)
           pPlayers[uActiveCharacter]->pEquipment.uShield = 0;
-        if ( v50 )//взять жезл
+        if ( v50 )//РІР·СЏС‚СЊ Р¶РµР·Р»
         {
                 __debugbreak();  // looks like offset in player's inventory and wand_lut much like case in 0042ECB5
           stru_A750F8[uActiveCharacter - 1].AddPartySpellSound(wand_spell_ids[v50 - ITEM_WAND_FIRE], uActiveCharacter - 1 + 9);
         }
         break;
-//---------------------------take two hands(взять двумя руками)---------------------------------
+//---------------------------take two hands(РІР·СЏС‚СЊ РґРІСѓРјСЏ СЂСѓРєР°РјРё)---------------------------------
       case EQUIP_TWO_HANDED:
         if ( pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() )
         {
@@ -2833,7 +2833,7 @@ void  OnPaperdollLeftClick() {
           pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
           return;
         }
-        if (mainhandequip)//взять двуручный меч когда нет щита(замещение оружия)
+        if (mainhandequip)//РІР·СЏС‚СЊ РґРІСѓСЂСѓС‡РЅС‹Р№ РјРµС‡ РєРѕРіРґР° РЅРµС‚ С‰РёС‚Р°(Р·Р°РјРµС‰РµРЅРёРµ РѕСЂСѓР¶РёСЏ)
         {
           if (shieldequip)
           {
@@ -2854,7 +2854,7 @@ void  OnPaperdollLeftClick() {
 			freeslot = pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
           if (freeslot >= 0 )
           {
-            if (shieldequip)//взять двуручный меч когда есть щит(замещение щитом)
+            if (shieldequip)//РІР·СЏС‚СЊ РґРІСѓСЂСѓС‡РЅС‹Р№ РјРµС‡ РєРѕРіРґР° РµСЃС‚СЊ С‰РёС‚(Р·Р°РјРµС‰РµРЅРёРµ С‰РёС‚РѕРј)
             {
 				shieldequip--;
               memcpy(&_this, &pParty->pPickedItem, sizeof(_this));
@@ -2878,7 +2878,7 @@ void  OnPaperdollLeftClick() {
         return;
 //-------------------------------------------------------------------------------
       default:
-        pPlayers[uActiveCharacter]->UseItem_DrinkPotion_etc(uActiveCharacter, 0);//выпить напиток и др.
+        pPlayers[uActiveCharacter]->UseItem_DrinkPotion_etc(uActiveCharacter, 0);//РІС‹РїРёС‚СЊ РЅР°РїРёС‚РѕРє Рё РґСЂ.
         return;
     }
     return;
@@ -2924,7 +2924,7 @@ void  OnPaperdollLeftClick() {
 	 // pPlayers[uActiveCharacter]->get
 
 	  //enchanting??
-	  if (_50C9A0_IsEnchantingInProgress)//наложить закл на экипировку
+	  if (_50C9A0_IsEnchantingInProgress)//РЅР°Р»РѕР¶РёС‚СЊ Р·Р°РєР» РЅР° СЌРєРёРїРёСЂРѕРІРєСѓ
 	  {
 		  /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &= 0x7Fu;//CastSpellInfo
 		  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) = uActiveCharacter - 1;
@@ -2947,7 +2947,7 @@ void  OnPaperdollLeftClick() {
 	  else
 	  {
 
-		  if (!ptr_50C9A4_ItemToEnchant)//снять вещь
+		  if (!ptr_50C9A4_ItemToEnchant)//СЃРЅСЏС‚СЊ РІРµС‰СЊ
 		  {
 			  pParty->SetHoldingItem(pitem);
 			  pPlayers[uActiveCharacter]->pEquipment.pIndices[pitem->uBodyAnchor - 1] = 0;
@@ -2994,7 +2994,7 @@ void  OnPaperdollLeftClick() {
 			  WetsuitOff(uActiveCharacter);
 		  }
 
-		  if (_50C9A0_IsEnchantingInProgress)//наложить закл на экипировку
+		  if (_50C9A0_IsEnchantingInProgress)//РЅР°Р»РѕР¶РёС‚СЊ Р·Р°РєР» РЅР° СЌРєРёРїРёСЂРѕРІРєСѓ
 		  {
 			  /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &= 0x7Fu;//CastSpellInfo
 			  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) = uActiveCharacter - 1;
@@ -3016,7 +3016,7 @@ void  OnPaperdollLeftClick() {
 		  }
 		  else
 		  {
-			  if (!ptr_50C9A4_ItemToEnchant)//снять вещь
+			  if (!ptr_50C9A4_ItemToEnchant)//СЃРЅСЏС‚СЊ РІРµС‰СЊ
 			  {
 				  pParty->SetHoldingItem(&pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1]);
 				  pPlayers[uActiveCharacter]->pEquipment.pIndices[pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uBodyAnchor - 1] = 0;
@@ -3024,7 +3024,7 @@ void  OnPaperdollLeftClick() {
 			  }
 		  }
 	  }
-	  else//снять лук
+	  else//СЃРЅСЏС‚СЊ Р»СѓРє
 	  {
 		  if (pPlayers[uActiveCharacter]->pEquipment.uBow)
 		  {

@@ -931,10 +931,10 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices, int uNumInV
   depth_num_vertices = 0;
   current_vertices_flag = false;
   if ( pInVertices[0].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip())
-    current_vertices_flag = true;//настоящая вершина больше границы видимости
+    current_vertices_flag = true;//РЅР°СЃС‚РѕСЏС‰Р°СЏ РІРµСЂС€РёРЅР° Р±РѕР»СЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё
   if ( (signed int)uNumInVertices <= 0 )
     return;
-  //check for far clip plane(проверка по дальней границе)
+  //check for far clip plane(РїСЂРѕРІРµСЂРєР° РїРѕ РґР°Р»СЊРЅРµР№ РіСЂР°РЅРёС†Рµ)
   //   
   // v3.__________________. v0
   //   |                  |
@@ -948,11 +948,11 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices, int uNumInV
   for ( uint i = 0; i < uNumInVertices; ++i )
   {
     next_vertices_flag = pInVertices[i + 1].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip();
-    if ( current_vertices_flag ^ next_vertices_flag )//одна из граней за границей видимости
+    if ( current_vertices_flag ^ next_vertices_flag )//РѕРґРЅР° РёР· РіСЂР°РЅРµР№ Р·Р° РіСЂР°РЅРёС†РµР№ РІРёРґРёРјРѕСЃС‚Рё
     {
-      if ( next_vertices_flag )//следующая вершина больше границы видимости(настоящая вершина меньше границы видимости) - v3
+      if ( next_vertices_flag )//СЃР»РµРґСѓСЋС‰Р°СЏ РІРµСЂС€РёРЅР° Р±РѕР»СЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё(РЅР°СЃС‚РѕСЏС‰Р°СЏ РІРµСЂС€РёРЅР° РјРµРЅСЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё) - v3
       {
-        //t = far_clip - v2.x / v3.x - v2.x (формула получения точки пересечения отрезка с плоскостью)
+        //t = far_clip - v2.x / v3.x - v2.x (С„РѕСЂРјСѓР»Р° РїРѕР»СѓС‡РµРЅРёСЏ С‚РѕС‡РєРё РїРµСЂРµСЃРµС‡РµРЅРёСЏ РѕС‚СЂРµР·РєР° СЃ РїР»РѕСЃРєРѕСЃС‚СЊСЋ)
         t = (pIndoorCameraD3D->GetFarClip() - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i].vWorldViewPosition.x - pInVertices[i + 1].vWorldViewPosition.x);
         pOutVertices[depth_num_vertices].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
         //New_y = v2.y + (v3.y - v2.y)*t
@@ -963,7 +963,7 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices, int uNumInV
         pOutVertices[depth_num_vertices].v = pInVertices[i].v + (pInVertices[i].v - pInVertices[i + 1].v) * t;
         pOutVertices[depth_num_vertices]._rhw = 1.0 / pIndoorCameraD3D->GetFarClip();
       }
-      else//настоящая вершина больше границы видимости(следующая вершина меньше границы видимости) - v0
+      else//РЅР°СЃС‚РѕСЏС‰Р°СЏ РІРµСЂС€РёРЅР° Р±РѕР»СЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё(СЃР»РµРґСѓСЋС‰Р°СЏ РІРµСЂС€РёРЅР° РјРµРЅСЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё) - v0
       {
         //t = far_clip - v1.x / v0.x - v1.x
         t = (pIndoorCameraD3D->GetFarClip() - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i + 1].vWorldViewPosition.x - pInVertices[i].vWorldViewPosition.x);
@@ -978,7 +978,7 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices, int uNumInV
       }
       ++depth_num_vertices;
     }
-    if ( !next_vertices_flag )//оба в границе видимости
+    if ( !next_vertices_flag )//РѕР±Р° РІ РіСЂР°РЅРёС†Рµ РІРёРґРёРјРѕСЃС‚Рё
     {
       memcpy(&pOutVertices[depth_num_vertices], &pInVertices[i + 1], sizeof(pOutVertices[depth_num_vertices]));
       depth_num_vertices++;
@@ -998,7 +998,7 @@ void IndoorCameraD3D::LightmapNeerClip(RenderVertexSoft *pInVertices, int uNumIn
   bool current_vertices_flag; // esi@2
   bool next_vertices_flag; // [sp+Ch] [bp+8h]@7
 
-  //check for near clip plane(проверка по ближней границе)
+  //check for near clip plane(РїСЂРѕРІРµСЂРєР° РїРѕ Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†Рµ)
   //   
   // v3.__________________. v0
   //   |                  |
@@ -1023,9 +1023,9 @@ void IndoorCameraD3D::LightmapNeerClip(RenderVertexSoft *pInVertices, int uNumIn
 		next_vertices_flag = pInVertices[i + 1].vWorldViewPosition.x <= 8.0;//
 		if ( current_vertices_flag ^ next_vertices_flag )
 		{
-		  if ( next_vertices_flag )//следующая вершина за ближней границей
+		  if ( next_vertices_flag )//СЃР»РµРґСѓСЋС‰Р°СЏ РІРµСЂС€РёРЅР° Р·Р° Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†РµР№
 		  {
-			//t = near_clip - v0.x / v1.x - v0.x    (формула получения точки пересечения отрезка с плоскостью)
+			//t = near_clip - v0.x / v1.x - v0.x    (С„РѕСЂРјСѓР»Р° РїРѕР»СѓС‡РµРЅРёСЏ С‚РѕС‡РєРё РїРµСЂРµСЃРµС‡РµРЅРёСЏ РѕС‚СЂРµР·РєР° СЃ РїР»РѕСЃРєРѕСЃС‚СЊСЋ)
 			t = (8.0 - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i + 1].vWorldViewPosition.x - pInVertices[i].vWorldViewPosition.x);
 			pOutVertices[out_num_vertices].vWorldViewPosition.x = 8.0;
 			pOutVertices[out_num_vertices].vWorldViewPosition.y = pInVertices[i].vWorldViewPosition.y + (pInVertices[i + 1].vWorldViewPosition.y - pInVertices[i].vWorldViewPosition.y) * t;
@@ -1035,7 +1035,7 @@ void IndoorCameraD3D::LightmapNeerClip(RenderVertexSoft *pInVertices, int uNumIn
 			pOutVertices[out_num_vertices]._rhw = 1.0 / 8.0;
 			//pOutVertices[*pOutNumVertices]._rhw = 0.125;
 		  }
-		  else// текущая вершина за ближней границей
+		  else// С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р·Р° Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†РµР№
 		  {
 			t = (8.0 - pInVertices[i].vWorldViewPosition.x) / (pInVertices[i].vWorldViewPosition.x - pInVertices[i + 1].vWorldViewPosition.x);
 			pOutVertices[out_num_vertices].vWorldViewPosition.x = 8.0;

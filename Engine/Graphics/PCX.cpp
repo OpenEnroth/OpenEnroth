@@ -67,8 +67,8 @@ bool PCX::Decode(const void *pcx_data, uint16_t *pOutPixels, unsigned int *width
 
   uint8_t *input = (uint8_t*)pcx_data;
 
-  // При сохранении изображения подряд идущие пиксели одинакового цвета объединяются и вместо указания цвета для каждого пикселя
-  // указывается цвет группы пикселей и их количество.
+  // РџСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РїРѕРґСЂСЏРґ РёРґСѓС‰РёРµ РїРёРєСЃРµР»Рё РѕРґРёРЅР°РєРѕРІРѕРіРѕ С†РІРµС‚Р° РѕР±СЉРµРґРёРЅСЏСЋС‚СЃСЏ Рё РІРјРµСЃС‚Рѕ СѓРєР°Р·Р°РЅРёСЏ С†РІРµС‚Р° РґР»СЏ РєР°Р¶РґРѕРіРѕ РїРёРєСЃРµР»СЏ
+  // СѓРєР°Р·С‹РІР°РµС‚СЃСЏ С†РІРµС‚ РіСЂСѓРїРїС‹ РїРёРєСЃРµР»РµР№ Рё РёС… РєРѕР»РёС‡РµСЃС‚РІРѕ.
   read_offset = sizeof(PCXHeader);
   current_line = 0;
   if (height > 0) {
@@ -81,12 +81,12 @@ bool PCX::Decode(const void *pcx_data, uint16_t *pOutPixels, unsigned int *width
         do {
           test_byte = input[read_offset];
           ++read_offset;
-          if ((test_byte & 0xC0) == 0xC0) {  // имеется ли объединение
+          if ((test_byte & 0xC0) == 0xC0) {  // РёРјРµРµС‚СЃСЏ Р»Рё РѕР±СЉРµРґРёРЅРµРЅРёРµ
             value = input[read_offset];
             ++read_offset;
 
             if ((test_byte & 0x3F) > 0) {
-              count = test_byte & 0x3F;  // количество одинаковых пикселей
+              count = test_byte & 0x3F;  // РєРѕР»РёС‡РµСЃС‚РІРѕ РѕРґРёРЅР°РєРѕРІС‹С… РїРёРєСЃРµР»РµР№
               do {
                 ++row_position;
                 *temp_dec_position |= r_mask & ((uint8_t)value << (num_g_bits + num_r_bits + num_b_bits - 8));

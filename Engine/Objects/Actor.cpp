@@ -1148,7 +1148,7 @@ void Actor::AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid, uns
 
   pActors[uActorID].uAIState = Standing;
   if (!uActionLength)
-    pActors[uActorID].uCurrentActionLength = rand() % 256 + 256;// от 256 до 256 + 256 
+    pActors[uActorID].uCurrentActionLength = rand() % 256 + 256;// РѕС‚ 256 РґРѕ 256 + 256 
   else
     pActors[uActorID].uCurrentActionLength = uActionLength;
   pActors[uActorID].uCurrentActionTime = 0;
@@ -4255,9 +4255,9 @@ void Actor::LootActor()
       v10 = pItemsTable->pItems[Dst.uItemID].pUnidentifiedName;
 
       if ( v14 )
-          GameUI_StatusBar_OnEvent(localization->FormatString(490, v14, v10)); // You found %d gold and an item (%s)!   Вы нашли ^I[%d] золот^L[ой;ых;ых] и предмет (%s)!
+          GameUI_StatusBar_OnEvent(localization->FormatString(490, v14, v10)); // You found %d gold and an item (%s)!   Р’С‹ РЅР°С€Р»Рё ^I[%d] Р·РѕР»РѕС‚^L[РѕР№;С‹С…;С‹С…] Рё РїСЂРµРґРјРµС‚ (%s)!
       else
-          GameUI_StatusBar_OnEvent(localization->FormatString(471, v10)); // You found %s!   Вы нашли ^Pv[%s]!
+          GameUI_StatusBar_OnEvent(localization->FormatString(471, v10)); // You found %s!   Р’С‹ РЅР°С€Р»Рё ^Pv[%s]!
 
       if ( !pParty->AddItemToParty(&Dst) )
         pParty->SetHoldingItem(&Dst);
@@ -5518,7 +5518,7 @@ void area_of_effect__damage_evaluate()
 			target_type = PID_TYPE(ai_near_actors_targets_pid[v3]) - 3;
 			if (target_type)
 			{
-				if (target_type == 1)//party damage from monsters(повреждения группе от монстров)
+				if (target_type == 1)//party damage from monsters(РїРѕРІСЂРµР¶РґРµРЅРёСЏ РіСЂСѓРїРїРµ РѕС‚ РјРѕРЅСЃС‚СЂРѕРІ)
 				{
 					v10 = pParty->vPosition.y - AttackerInfo.pYs[attacker_id];
 					a1 = pParty->vPosition.x - AttackerInfo.pXs[attacker_id];
@@ -5536,7 +5536,7 @@ void area_of_effect__damage_evaluate()
 					}
 				}
 			}
-			else//Actor damage from monsters(повреждение местного жителя)
+			else//Actor damage from monsters(РїРѕРІСЂРµР¶РґРµРЅРёРµ РјРµСЃС‚РЅРѕРіРѕ Р¶РёС‚РµР»СЏ)
 			{
 				if (pActors[target_id].pActorBuffs[ACTOR_BUFF_PARALYZED].Active()
 					|| pActors[target_id].CanAct())
@@ -5564,14 +5564,14 @@ void area_of_effect__damage_evaluate()
 				}
 			}
 		}
-		else //damage from spells(повреждения от заклов(метеоритный дождь))
+		else //damage from spells(РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ Р·Р°РєР»РѕРІ(РјРµС‚РµРѕСЂРёС‚РЅС‹Р№ РґРѕР¶РґСЊ))
 		{
 			v23 = pParty->vPosition.y - AttackerInfo.pYs[attacker_id];
 			v24 = ((signed int)pParty->uPartyHeight / 2) - AttackerInfo.pZs[attacker_id];
 			a1 = pParty->vPosition.x - AttackerInfo.pXs[attacker_id];
 			v48 = pParty->vPosition.y - AttackerInfo.pYs[attacker_id];
 			if (a1 * a1 + v23 * v23 + (pParty->vPosition.z + v24) * (pParty->vPosition.z + v24) < (unsigned int)((AttackerInfo.field_324[attacker_id] + 32) * (AttackerInfo.field_324[attacker_id] + 32)))
-			{//party damage (повреждения группе)
+			{//party damage (РїРѕРІСЂРµР¶РґРµРЅРёСЏ РіСЂСѓРїРїРµ)
 				attacker_coord.x = AttackerInfo.pXs[attacker_id];
 				attacker_coord.y = AttackerInfo.pYs[attacker_id];
 				attacker_coord.z = AttackerInfo.pZs[attacker_id];
@@ -5590,7 +5590,7 @@ void area_of_effect__damage_evaluate()
 			}
 
 			if (uNumActors > 0)
-			{//actors damage(повреждения другим участникам)
+			{//actors damage(РїРѕРІСЂРµР¶РґРµРЅРёСЏ РґСЂСѓРіРёРј СѓС‡Р°СЃС‚РЅРёРєР°Рј)
 				for (int actorID = 0; (signed int)actorID < (signed int)uNumActors; ++actorID)
 				{
 					if (pActors[actorID].CanAct())
@@ -5607,7 +5607,7 @@ void area_of_effect__damage_evaluate()
 							attacker_coord.x = AttackerInfo.pXs[attacker_id];
 							attacker_coord.y = AttackerInfo.pYs[attacker_id];
 							attacker_coord.z = AttackerInfo.pZs[attacker_id];
-							if (sub_407A1C(pActors[actorID].vPosition.x, pActors[actorID].vPosition.y, pActors[actorID].vPosition.z + 50, attacker_coord))//что делает ф-ция?
+							if (sub_407A1C(pActors[actorID].vPosition.x, pActors[actorID].vPosition.y, pActors[actorID].vPosition.z + 50, attacker_coord))//С‡С‚Рѕ РґРµР»Р°РµС‚ С„-С†РёСЏ?
 							{
 								Vec3_int_::Normalize(&a1, &v48, &v44);
 								AttackerInfo.vec_4B4[attacker_id].x = a1;

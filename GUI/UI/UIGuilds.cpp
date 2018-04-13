@@ -144,7 +144,7 @@ void GuildDialog() {
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
     int itemxind = 0;
 
-    for (pX = 32; pX < 452; pX += 70) {//расположение в верхнем ряду
+    for (pX = 32; pX < 452; pX += 70) {//СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ РІ РІРµСЂС…РЅРµРј СЂСЏРґСѓ
       if (pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][itemxind].uItemID) {
         render->DrawTextureAlphaNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[itemxind]); //top row
       }

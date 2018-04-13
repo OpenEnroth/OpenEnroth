@@ -658,7 +658,7 @@ void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
     }
 
     if ((players_before == 2) && (players_after == 1)) // if was 2 and now down to 1 - "its just you and me now"
-        pPlayers[remainig_player]->PlaySound(SPEECH_107, 0);//ñêîðåå âñåãî îáíàä¸æûâàþùèé âîçãëàñ ïîñëåäíåãî
+        pPlayers[remainig_player]->PlaySound(SPEECH_107, 0);//ÑÐºÐ¾Ñ€ÐµÐµ Ð²ÑÐµÐ³Ð¾ Ð¾Ð±Ð½Ð°Ð´Ñ‘Ð¶Ñ‹Ð²Ð°ÑŽÑ‰Ð¸Ð¹ Ð²Ð¾Ð·Ð³Ð»Ð°Ñ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½ÐµÐ³Ð¾
 
     return;
 }
@@ -6769,7 +6769,7 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType)
   tempPickedItem.Reset();
   itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
   itemInvLocation = pPlayers[uActiveCharacter]->pEquipment.pIndices[itemAnchor];
-  if ( itemInvLocation )//ïåðåîäåòüñÿ â äðóãóþ âåùü
+  if ( itemInvLocation )//Ð¿ÐµÑ€ÐµÐ¾Ð´ÐµÑ‚ÑŒÑÑ Ð² Ð´Ñ€ÑƒÐ³ÑƒÑŽ Ð²ÐµÑ‰ÑŒ
   {
     memcpy(&tempPickedItem, &pParty->pPickedItem, sizeof(tempPickedItem));
     pPlayers[uActiveCharacter]->pInventoryItemList[itemInvLocation - 1].uBodyAnchor = 0;
@@ -6779,7 +6779,7 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType)
     memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[itemInvLocation - 1], &tempPickedItem, sizeof(ItemGen));
     pPlayers[uActiveCharacter]->pEquipment.pIndices[itemAnchor] = itemInvLocation;
   }
-  else//îäåòü âåùü
+  else//Ð¾Ð´ÐµÑ‚ÑŒ Ð²ÐµÑ‰ÑŒ
   {
     freeSlot = pPlayers[uActiveCharacter]->FindFreeInventoryListSlot();
     if (freeSlot >= 0)

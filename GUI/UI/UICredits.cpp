@@ -34,7 +34,7 @@ GUICredits::GUICredits() :
   height = pFontQuick->GetStringHeight2(pFontCChar, text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
   cred_texture = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
 
-  // äàòü øðèôò è öâåòà òåêñòó
+  // Ð´Ð°Ñ‚ÑŒ ÑˆÑ€Ð¸Ñ„Ñ‚ Ð¸ Ñ†Ð²ÐµÑ‚Ð° Ñ‚ÐµÐºÑÑ‚Ñƒ
   pFontQuick->DrawCreditsEntry(pFontCChar, 0, credit_window.uFrameHeight, width, height,
     Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu),
     text, cred_texture);

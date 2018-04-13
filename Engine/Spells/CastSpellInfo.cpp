@@ -235,7 +235,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 			continue;
 		}
 
-		if (pPlayer->IsCursed() && pCastSpell->uSpellID < SPELL_BOW_ARROW && rand() % 100 < 50) { //неудачное кастование - player is cursed
+		if (pPlayer->IsCursed() && pCastSpell->uSpellID < SPELL_BOW_ARROW && rand() % 100 < 50) { //РЅРµСѓРґР°С‡РЅРѕРµ РєР°СЃС‚РѕРІР°РЅРёРµ - player is cursed
 			if (!pParty->bTurnBasedModeOn)
 				pPlayer->SetRecoveryTime((signed __int64)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
 			else {
@@ -263,7 +263,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
         assert(false && "Unknown spell effect #101 (prolly flaming bow arrow");
 
 
-      case SPELL_BOW_ARROW://стрельба из лука
+      case SPELL_BOW_ARROW://СЃС‚СЂРµР»СЊР±Р° РёР· Р»СѓРєР°
       {
         amount = 1;
         if ( skill_level >= 3 )
@@ -304,7 +304,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
         break;
       }
 
-      case SPELL_LASER_PROJECTILE://стрельба из бластера
+      case SPELL_LASER_PROJECTILE://СЃС‚СЂРµР»СЊР±Р° РёР· Р±Р»Р°СЃС‚РµСЂР°
       {
         sRecoveryTime = pPlayer->GetAttackRecoveryTime(0);
         pSpellSprite.containing_item.Reset();
@@ -338,7 +338,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_FIRE_TORCH_LIGHT://свет факела
+      case SPELL_FIRE_TORCH_LIGHT://СЃРІРµС‚ С„Р°РєРµР»Р°
       {
         switch (skill_level)
         {
@@ -362,7 +362,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_FIRE_FIRE_SPIKE://огненный шип
+      case SPELL_FIRE_FIRE_SPIKE://РѕРіРЅРµРЅРЅС‹Р№ С€РёРї
       {
         switch (skill_level)
         {
@@ -416,7 +416,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_AIR_IMPLOSION://Точный взрыв
+      case SPELL_AIR_IMPLOSION://РўРѕС‡РЅС‹Р№ РІР·СЂС‹РІ
       {
         monster_id = PID_ID(spell_targeted_at);
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
@@ -457,7 +457,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_EARTH_MASS_DISTORTION://Изменение веса
+      case SPELL_EARTH_MASS_DISTORTION://РР·РјРµРЅРµРЅРёРµ РІРµСЃР°
       {
         monster_id = PID_ID(spell_targeted_at);
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
@@ -492,7 +492,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_LIGHT_DESTROY_UNDEAD://Уничтожение нежити
+      case SPELL_LIGHT_DESTROY_UNDEAD://РЈРЅРёС‡С‚РѕР¶РµРЅРёРµ РЅРµР¶РёС‚Рё
       {
         if ( !pPlayer->CanCastSpell(uRequiredMana) || !spell_targeted_at || PID_TYPE(spell_targeted_at) != OBJECT_Actor)
           break;
@@ -533,19 +533,19 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_FIRE_FIRE_BOLT://Удар огня
-      case SPELL_FIRE_FIREBALL://Огненный шар
-      case SPELL_FIRE_INCINERATE://Испепеление
-      case SPELL_AIR_LIGHNING_BOLT://Удар молнии
-      case SPELL_WATER_ICE_BOLT://Льдяная молния
-      case SPELL_WATER_ICE_BLAST://Льдяной взрыв
-      case SPELL_EARTH_STUN://Оглушить
-      case SPELL_EARTH_DEADLY_SWARM://Рой смерти
-      case SPELL_MIND_MIND_BLAST://Удар мысли
-      case SPELL_MIND_PSYCHIC_SHOCK://Психический шок
-      case SPELL_BODY_HARM://Вред
-      case SPELL_LIGHT_LIGHT_BOLT://Луч света
-      case SPELL_DARK_DRAGON_BREATH://Дыхание дракона
+      case SPELL_FIRE_FIRE_BOLT://РЈРґР°СЂ РѕРіРЅСЏ
+      case SPELL_FIRE_FIREBALL://РћРіРЅРµРЅРЅС‹Р№ С€Р°СЂ
+      case SPELL_FIRE_INCINERATE://РСЃРїРµРїРµР»РµРЅРёРµ
+      case SPELL_AIR_LIGHNING_BOLT://РЈРґР°СЂ РјРѕР»РЅРёРё
+      case SPELL_WATER_ICE_BOLT://Р›СЊРґСЏРЅР°СЏ РјРѕР»РЅРёСЏ
+      case SPELL_WATER_ICE_BLAST://Р›СЊРґСЏРЅРѕР№ РІР·СЂС‹РІ
+      case SPELL_EARTH_STUN://РћРіР»СѓС€РёС‚СЊ
+      case SPELL_EARTH_DEADLY_SWARM://Р РѕР№ СЃРјРµСЂС‚Рё
+      case SPELL_MIND_MIND_BLAST://РЈРґР°СЂ РјС‹СЃР»Рё
+      case SPELL_MIND_PSYCHIC_SHOCK://РџСЃРёС…РёС‡РµСЃРєРёР№ С€РѕРє
+      case SPELL_BODY_HARM://Р’СЂРµРґ
+      case SPELL_LIGHT_LIGHT_BOLT://Р›СѓС‡ СЃРІРµС‚Р°
+      case SPELL_DARK_DRAGON_BREATH://Р”С‹С…Р°РЅРёРµ РґСЂР°РєРѕРЅР°
       {
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
           break;
@@ -580,10 +580,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
       }
 
 
-      case SPELL_WATER_ACID_BURST://Всплеск кислоты
-      case SPELL_EARTH_BLADES://Лезвия
-      case SPELL_BODY_FLYING_FIST://Летающий кулак
-      case SPELL_DARK_TOXIC_CLOUD://Облако-токсин
+      case SPELL_WATER_ACID_BURST://Р’СЃРїР»РµСЃРє РєРёСЃР»РѕС‚С‹
+      case SPELL_EARTH_BLADES://Р›РµР·РІРёСЏ
+      case SPELL_BODY_FLYING_FIST://Р›РµС‚Р°СЋС‰РёР№ РєСѓР»Р°Рє
+      case SPELL_DARK_TOXIC_CLOUD://РћР±Р»Р°РєРѕ-С‚РѕРєСЃРёРЅ
       {
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
           break;
@@ -613,10 +613,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
       }
 
 
-      case SPELL_LIGHT_SUNRAY://Луч Солнца
+      case SPELL_LIGHT_SUNRAY://Р›СѓС‡ РЎРѕР»РЅС†Р°
       {
         if ( uCurrentlyLoadedLevelType == LEVEL_Indoor
-          || uCurrentlyLoadedLevelType == LEVEL_Outdoor && (pParty->uCurrentHour < 5 || pParty->uCurrentHour >= 21) )//только в дневное время
+          || uCurrentlyLoadedLevelType == LEVEL_Outdoor && (pParty->uCurrentHour < 5 || pParty->uCurrentHour >= 21) )//С‚РѕР»СЊРєРѕ РІ РґРЅРµРІРЅРѕРµ РІСЂРµРјСЏ
         {
           GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
@@ -653,7 +653,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_LIGHT_PARALYZE://Паралич
+      case SPELL_LIGHT_PARALYZE://РџР°СЂР°Р»РёС‡
       {
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
           break;
@@ -674,11 +674,11 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
       }
 
 
-      case SPELL_EARTH_SLOW://Замедление
+      case SPELL_EARTH_SLOW://Р—Р°РјРµРґР»РµРЅРёРµ
       {
         switch (skill_level)
         {
-          case 1: spellduration = 180 * spell_level; amount = 2; break;//LODWORD(spellduration)???не применяется далее
+          case 1: spellduration = 180 * spell_level; amount = 2; break;//LODWORD(spellduration)???РЅРµ РїСЂРёРјРµРЅСЏРµС‚СЃСЏ РґР°Р»РµРµ
           case 2: spellduration = 300 * spell_level; amount = 2; break;
           case 3: spellduration = 300 * spell_level; amount = 4; break;
           case 4: spellduration = 300 * spell_level; amount = 8; break;
@@ -703,7 +703,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_MIND_CHARM:// Очарование
+      case SPELL_MIND_CHARM:// РћС‡Р°СЂРѕРІР°РЅРёРµ
       {
         monster_id = PID_ID(spell_targeted_at);
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
@@ -746,7 +746,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_DARK_SHRINKING_RAY://Сжимающий луч
+      case SPELL_DARK_SHRINKING_RAY://РЎР¶РёРјР°СЋС‰РёР№ Р»СѓС‡
       {
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
           break;
@@ -777,12 +777,12 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_FIRE_FIRE_AURA: //Аура огня
+      case SPELL_FIRE_FIRE_AURA: //РђСѓСЂР° РѕРіРЅСЏ
       {
           switch (skill_level)
           {
-          case 1: spellduration = 3600 * spell_level; amount = 10; break; //Огня
-          case 2: spellduration = 3600 * spell_level; amount = 11; break; //Огненного жара
+          case 1: spellduration = 3600 * spell_level; amount = 10; break; //РћРіРЅСЏ
+          case 2: spellduration = 3600 * spell_level; amount = 11; break; //РћРіРЅРµРЅРЅРѕРіРѕ Р¶Р°СЂР°
           case 3: spellduration = 3600 * spell_level; amount = 12; break;
           case 4: spellduration = 0; amount = 12; break;
           default:
@@ -822,7 +822,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_BODY_REGENERATION://Регенерация
+      case SPELL_BODY_REGENERATION://Р РµРіРµРЅРµСЂР°С†РёСЏ
       {
         switch (skill_level)
         {
@@ -844,12 +844,12 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
       }
 
 
-      case SPELL_FIRE_PROTECTION_FROM_FIRE://Защита от Огня
-      case SPELL_AIR_PROTECTION_FROM_AIR://Звщита от Воздуха
-      case SPELL_WATER_PROTECTION_FROM_WATER://Защита от Воды
-      case SPELL_EARTH_PROTECTION_FROM_EARTH://Защита от Земли
-      case SPELL_MIND_PROTECTION_FROM_MIND://Защита от Мысли
-      case SPELL_BODY_PROTECTION_FROM_BODY://Защита от Тела
+      case SPELL_FIRE_PROTECTION_FROM_FIRE://Р—Р°С‰РёС‚Р° РѕС‚ РћРіРЅСЏ
+      case SPELL_AIR_PROTECTION_FROM_AIR://Р—РІС‰РёС‚Р° РѕС‚ Р’РѕР·РґСѓС…Р°
+      case SPELL_WATER_PROTECTION_FROM_WATER://Р—Р°С‰РёС‚Р° РѕС‚ Р’РѕРґС‹
+      case SPELL_EARTH_PROTECTION_FROM_EARTH://Р—Р°С‰РёС‚Р° РѕС‚ Р—РµРјР»Рё
+      case SPELL_MIND_PROTECTION_FROM_MIND://Р—Р°С‰РёС‚Р° РѕС‚ РњС‹СЃР»Рё
+      case SPELL_BODY_PROTECTION_FROM_BODY://Р—Р°С‰РёС‚Р° РѕС‚ РўРµР»Р°
       {
         switch (skill_level)
         {
@@ -901,7 +901,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_FIRE_HASTE://Спешка
+      case SPELL_FIRE_HASTE://РЎРїРµС€РєР°
       {
         switch (skill_level)
         {
@@ -937,7 +937,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_BLESS://Благословение
+      case SPELL_SPIRIT_BLESS://Р‘Р»Р°РіРѕСЃР»РѕРІРµРЅРёРµ
       {
           switch (skill_level)
           {
@@ -978,7 +978,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_SPIRIT_LASH://Плеть Духа
+      case SPELL_SPIRIT_SPIRIT_LASH://РџР»РµС‚СЊ Р”СѓС…Р°
       {
         if ( pPlayer->CanCastSpell(uRequiredMana) && spell_targeted_at && PID_TYPE(spell_targeted_at) == OBJECT_Actor)
         {
@@ -1013,7 +1013,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           }
           else
           {
-            GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed     Не получилось!!!
+            GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed     РќРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ!!!
             pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
             pCastSpell->uSpellID = 0;
           }
@@ -1024,9 +1024,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_AIR_SHIELD://Щит
-      case SPELL_EARTH_STONESKIN://Каменная кожа
-      case SPELL_SPIRIT_HEROISM://Героизм
+      case SPELL_AIR_SHIELD://Р©РёС‚
+      case SPELL_EARTH_STONESKIN://РљР°РјРµРЅРЅР°СЏ РєРѕР¶Р°
+      case SPELL_SPIRIT_HEROISM://Р“РµСЂРѕРёР·Рј
       {
         switch (skill_level)
         {
@@ -1072,7 +1072,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_FIRE_IMMOLATION://Кольцо огня
+      case SPELL_FIRE_IMMOLATION://РљРѕР»СЊС†Рѕ РѕРіРЅСЏ
       {
         if ( skill_level == 4 )
           spellduration = 600 * spell_level;
@@ -1094,9 +1094,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_FIRE_METEOR_SHOWER://Поток метеоров
+      case SPELL_FIRE_METEOR_SHOWER://РџРѕС‚РѕРє РјРµС‚РµРѕСЂРѕРІ
       {
-        //if (skill_level < 3)//для мастера и магистра
+        //if (skill_level < 3)//РґР»СЏ РјР°СЃС‚РµСЂР° Рё РјР°РіРёСЃС‚СЂР°
           //break;
         int meteor_num;
         if ( skill_level == 4 )
@@ -1114,7 +1114,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
         obj_type = PID_TYPE(spell_targeted_at);
         monster_id = PID_ID(spell_targeted_at);
-        if (obj_type == OBJECT_Actor)//если закл поставить на быстрое закл., то можно указывать куда кидать метеоры
+        if (obj_type == OBJECT_Actor)//РµСЃР»Рё Р·Р°РєР» РїРѕСЃС‚Р°РІРёС‚СЊ РЅР° Р±С‹СЃС‚СЂРѕРµ Р·Р°РєР»., С‚Рѕ РјРѕР¶РЅРѕ СѓРєР°Р·С‹РІР°С‚СЊ РєСѓРґР° РєРёРґР°С‚СЊ РјРµС‚РµРѕСЂС‹
         {
           dist_X = pActors[monster_id].vPosition.x;
           dist_Y = pActors[monster_id].vPosition.y;
@@ -1174,7 +1174,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_FIRE_INFERNO://Адский огонь
+      case SPELL_FIRE_INFERNO://РђРґСЃРєРёР№ РѕРіРѕРЅСЊ
       {
           if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
           {
@@ -1215,7 +1215,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_AIR_WIZARD_EYE://Око чародея
+      case SPELL_AIR_WIZARD_EYE://РћРєРѕ С‡Р°СЂРѕРґРµСЏ
       {
           spellduration = 3600 * spell_level;
           if (!pPlayer->CanCastSpell(uRequiredMana))
@@ -1230,7 +1230,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_AIR_FEATHER_FALL://Падение пера(пёрышком)
+      case SPELL_AIR_FEATHER_FALL://РџР°РґРµРЅРёРµ РїРµСЂР°(РїС‘СЂС‹С€РєРѕРј)
       {
         switch (skill_level)
         {
@@ -1258,7 +1258,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
         break;
       }
 
-      case SPELL_AIR_SPARKS://Искры
+      case SPELL_AIR_SPARKS://РСЃРєСЂС‹
       {
         switch (skill_level)
         {
@@ -1307,7 +1307,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_AIR_JUMP://Прыжок
+      case SPELL_AIR_JUMP://РџСЂС‹Р¶РѕРє
       {
         if ( pParty->uFlags & PARTY_FLAGS_1_FALLING)
         {
@@ -1327,7 +1327,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_AIR_INVISIBILITY://Невидимость
+      case SPELL_AIR_INVISIBILITY://РќРµРІРёРґРёРјРѕСЃС‚СЊ
       {
         switch (skill_level)
         {
@@ -1361,7 +1361,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
       }
 
 
-      case SPELL_AIR_FLY://Полёт
+      case SPELL_AIR_FLY://РџРѕР»С‘С‚
       {
           if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
           {
@@ -1394,7 +1394,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_AIR_STARBURST://Звездопад
+      case SPELL_AIR_STARBURST://Р—РІРµР·РґРѕРїР°Рґ
       {
         if ( uCurrentlyLoadedLevelType == LEVEL_Indoor)
         {
@@ -1467,7 +1467,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_WATER_AWAKEN://Пробуждение
+      case SPELL_WATER_AWAKEN://РџСЂРѕР±СѓР¶РґРµРЅРёРµ
       {
           switch (skill_level)
           {
@@ -1505,7 +1505,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_WATER_POISON_SPRAY://Распыление яда
+      case SPELL_WATER_POISON_SPRAY://Р Р°СЃРїС‹Р»РµРЅРёРµ СЏРґР°
       {
         switch (skill_level)
         {
@@ -1585,7 +1585,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_WATER_WATER_WALK://Хождение по воде
+      case SPELL_WATER_WATER_WALK://РҐРѕР¶РґРµРЅРёРµ РїРѕ РІРѕРґРµ
       {
           if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana())
           {
@@ -1619,7 +1619,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_WATER_RECHARGE_ITEM://Перезарядка
+      case SPELL_WATER_RECHARGE_ITEM://РџРµСЂРµР·Р°СЂСЏРґРєР°
       {
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
           break;
@@ -1653,7 +1653,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           _50C9D0_AfterEnchClickEventId = 113;
           _50C9D4_AfterEnchClickEventSecondParam = 0;
           _50C9D8_AfterEnchClickEventTimeout = 1;
-          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed     Не получилось!!!
+          GameUI_StatusBar_OnEvent(localization->GetString(428)); // Spell failed     РќРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ!!!
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           pCastSpell->uSpellID = 0;
           spell_level = spell_level;
@@ -1668,7 +1668,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_WATER_ENCHANT_ITEM://Талисман
+      case SPELL_WATER_ENCHANT_ITEM://РўР°Р»РёСЃРјР°РЅ
       {
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
           break;
@@ -1682,24 +1682,24 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
         if ((skill_level == 1 || skill_level == 2 /*&& _v725->uEquipType > EQUIP_BOW*/ || skill_level == 3 || skill_level == 4) && 
             spell_item_to_enchant->uItemID <= 134 &&
             spell_item_to_enchant->special_enchantment == 0 && spell_item_to_enchant->uEnchantmentType == 0 &&
-            spell_item_to_enchant->m_enchantmentStrength== 0 && !spell_item_to_enchant->IsBroken() ) //требования к предмету
+            spell_item_to_enchant->m_enchantmentStrength== 0 && !spell_item_to_enchant->IsBroken() ) //С‚СЂРµР±РѕРІР°РЅРёСЏ Рє РїСЂРµРґРјРµС‚Сѓ
         {
           if ( (spell_item_to_enchant->GetValue() < 450 && ( skill_level == 1 || skill_level == 2 ))
           || (spell_item_to_enchant->GetValue() < 450 && (skill_level == 3|| skill_level == 4 ) && _v725->uEquipType >= EQUIP_SINGLE_HANDED && _v725->uEquipType <= EQUIP_BOW)
-          || (spell_item_to_enchant->GetValue() < 250 && (skill_level == 3 || skill_level == 4 )&& _v725->uEquipType > EQUIP_BOW) )//Условия поломки
+          || (spell_item_to_enchant->GetValue() < 250 && (skill_level == 3 || skill_level == 4 )&& _v725->uEquipType > EQUIP_BOW) )//РЈСЃР»РѕРІРёСЏ РїРѕР»РѕРјРєРё
           {
-            if ( !(spell_item_to_enchant->uAttributes & ITEM_HARDENED) )// предмет не сломан
+            if ( !(spell_item_to_enchant->uAttributes & ITEM_HARDENED) )// РїСЂРµРґРјРµС‚ РЅРµ СЃР»РѕРјР°РЅ
             {
-              spell_item_to_enchant->uAttributes |= ITEM_BROKEN;//теперь сломан
+              spell_item_to_enchant->uAttributes |= ITEM_BROKEN;//С‚РµРїРµСЂСЊ СЃР»РѕРјР°РЅ
             }
             item_not_broken = false;
           }
           else
           {
-            if ( rnd >= 10 * spell_level )//шанс на срабатывание
+            if ( rnd >= 10 * spell_level )//С€Р°РЅСЃ РЅР° СЃСЂР°Р±Р°С‚С‹РІР°РЅРёРµ
             {
-              if ( !(spell_item_to_enchant->uAttributes & 0x200) )// предмет не сломан
-                spell_item_to_enchant->uAttributes |= 2;//теперь сломан
+              if ( !(spell_item_to_enchant->uAttributes & 0x200) )// РїСЂРµРґРјРµС‚ РЅРµ СЃР»РѕРјР°РЅ
+                spell_item_to_enchant->uAttributes |= 2;//С‚РµРїРµСЂСЊ СЃР»РѕРјР°РЅ
             }
             else
             {
@@ -1730,7 +1730,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                   spell_sound_flag = true;
                   break;
                 }
-                else if ( skill_level == 3 || skill_level == 4)//for master & GM not refactored(для мастера и гранда не отрефакторено)
+                else if ( skill_level == 3 || skill_level == 4)//for master & GM not refactored(РґР»СЏ РјР°СЃС‚РµСЂР° Рё РіСЂР°РЅРґР° РЅРµ РѕС‚СЂРµС„Р°РєС‚РѕСЂРµРЅРѕ)
                 {
                   v258 = 0;
                   v725 = 0;
@@ -1817,9 +1817,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
         }
         if ( spell_sound_flag == 0 )
         {
-          v317 = localization->GetString(428); // Spell failed    Не получилось!!!
+          v317 = localization->GetString(428); // Spell failed    РќРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ!!!
           if ( item_not_broken == false )
-            v317 = localization->GetString(585); // Item too lame     Предмет недостаточно высокого качества
+            v317 = localization->GetString(585); // Item too lame     РџСЂРµРґРјРµС‚ РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РІС‹СЃРѕРєРѕРіРѕ РєР°С‡РµСЃС‚РІР°
           GameUI_StatusBar_OnEvent(v317, 2);
           pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
           //v318 =  &pParty->pPlayers[pCastSpell->uPlayerID_2];
@@ -1832,7 +1832,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_WATER_TOWN_PORTAL://Портал города
+      case SPELL_WATER_TOWN_PORTAL://РџРѕСЂС‚Р°Р» РіРѕСЂРѕРґР°
       {
         amount = 10 * spell_level;
         if ( pPlayer->sMana < (signed int)uRequiredMana )
@@ -1911,7 +1911,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_EARTH_ROCK_BLAST://Взрыв камня
+      case SPELL_EARTH_ROCK_BLAST://Р’Р·СЂС‹РІ РєР°РјРЅСЏ
       {
         if ( !pPlayer->CanCastSpell(uRequiredMana) )
           break;
@@ -1986,7 +1986,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_DETECT_LIFE: // Детектор жизни
+      case SPELL_SPIRIT_DETECT_LIFE: // Р”РµС‚РµРєС‚РѕСЂ Р¶РёР·РЅРё
       {
         switch (skill_level)
         {
@@ -2014,7 +2014,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_FATE:// Судьба
+      case SPELL_SPIRIT_FATE:// РЎСѓРґСЊР±Р°
       {
           switch (skill_level)
           {
@@ -2055,7 +2055,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_REMOVE_CURSE:// Снятие порчи
+      case SPELL_SPIRIT_REMOVE_CURSE:// РЎРЅСЏС‚РёРµ РїРѕСЂС‡Рё
       {
           switch (skill_level)
           {
@@ -2096,7 +2096,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_PRESERVATION://Сохранение
+      case SPELL_SPIRIT_PRESERVATION://РЎРѕС…СЂР°РЅРµРЅРёРµ
       {
           if (skill_level == 4)
               spellduration = 900 * (spell_level + 4);
@@ -2129,7 +2129,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_TURN_UNDEAD://Бег мертвецов
+      case SPELL_SPIRIT_TURN_UNDEAD://Р‘РµРі РјРµСЂС‚РІРµС†РѕРІ
       {
           if (skill_level == 1 || skill_level == 2)
               spellduration = 60 * (spell_level + 3);
@@ -2176,7 +2176,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_RAISE_DEAD://Оживление
+      case SPELL_SPIRIT_RAISE_DEAD://РћР¶РёРІР»РµРЅРёРµ
       {
           if (skill_level == 4)
               amount = 0;
@@ -2215,7 +2215,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_SHARED_LIFE://Общая жизнь
+      case SPELL_SPIRIT_SHARED_LIFE://РћР±С‰Р°СЏ Р¶РёР·РЅСЊ
       {
           if (skill_level == 4)
               amount = 4 * spell_level;
@@ -2256,7 +2256,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_SPIRIT_RESSURECTION://Воскресение
+      case SPELL_SPIRIT_RESSURECTION://Р’РѕСЃРєСЂРµСЃРµРЅРёРµ
       {
           switch (skill_level)
           {
@@ -2306,7 +2306,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_MIND_CURE_PARALYSIS://лечение паралича
+      case SPELL_MIND_CURE_PARALYSIS://Р»РµС‡РµРЅРёРµ РїР°СЂР°Р»РёС‡Р°
       {
           switch (skill_level)
           {
@@ -2344,7 +2344,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_MIND_REMOVE_FEAR://Снять страх
+      case SPELL_MIND_REMOVE_FEAR://РЎРЅСЏС‚СЊ СЃС‚СЂР°С…
       {
           switch (skill_level)
           {
@@ -2383,7 +2383,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_MIND_TELEPATHY://Телепатия
+      case SPELL_MIND_TELEPATHY://РўРµР»РµРїР°С‚РёСЏ
       {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
@@ -2453,7 +2453,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
 
 
-      case SPELL_MIND_BERSERK://Берсерк
+      case SPELL_MIND_BERSERK://Р‘РµСЂСЃРµСЂРє
       {
           switch (skill_level)
           {
@@ -2503,7 +2503,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_MIND_ENSLAVE://Порабощение
+      case SPELL_MIND_ENSLAVE://РџРѕСЂР°Р±РѕС‰РµРЅРёРµ
       {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
@@ -2546,7 +2546,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_MIND_MASS_FEAR://Массовый страх
+      case SPELL_MIND_MASS_FEAR://РњР°СЃСЃРѕРІС‹Р№ СЃС‚СЂР°С…
       {
           if (skill_level == 4)
               amount = 300 * spell_level;
@@ -2591,7 +2591,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_MIND_CURE_INSANITY://Лечение Безумия
+      case SPELL_MIND_CURE_INSANITY://Р›РµС‡РµРЅРёРµ Р‘РµР·СѓРјРёСЏ
       {
           if (skill_level == 4)
               amount = 0;
@@ -2617,7 +2617,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_EARTH_TELEKINESIS://Телекинез
+      case SPELL_EARTH_TELEKINESIS://РўРµР»РµРєРёРЅРµР·
       {
           switch (skill_level)
           {
@@ -2640,7 +2640,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
               }
               else
               {
-                  GameUI_StatusBar_OnEvent(localization->FormatString(471, pItemsTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName)); // You find %s!     Вы нашли ^Pv[%s]!
+                  GameUI_StatusBar_OnEvent(localization->FormatString(471, pItemsTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName)); // You find %s!     Р’С‹ РЅР°С€Р»Рё ^Pv[%s]!
                   if (!pParty->AddItemToParty(&pSpriteObjects[obj_id].containing_item))
                       pParty->SetHoldingItem(&pSpriteObjects[obj_id].containing_item);
               }
@@ -2673,12 +2673,12 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_BODY_CURE_WEAKNESS://Лечить Слабость
+      case SPELL_BODY_CURE_WEAKNESS://Р›РµС‡РёС‚СЊ РЎР»Р°Р±РѕСЃС‚СЊ
       {
           switch (skill_level)
           {
-          case 1: amount = 180 * spell_level; break;//3 минуты * количество очков навыка
-          case 2: amount = 3600 * spell_level; break;//1 час * количество очков навыка
+          case 1: amount = 180 * spell_level; break;//3 РјРёРЅСѓС‚С‹ * РєРѕР»РёС‡РµСЃС‚РІРѕ РѕС‡РєРѕРІ РЅР°РІС‹РєР°
+          case 2: amount = 3600 * spell_level; break;//1 С‡Р°СЃ * РєРѕР»РёС‡РµСЃС‚РІРѕ РѕС‡РєРѕРІ РЅР°РІС‹РєР°
           case 3: amount = 86400 * spell_level; break;
           case 4: amount = 0; break;
           default:
@@ -2704,7 +2704,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_BODY_FIRST_AID://Первая помощь
+      case SPELL_BODY_FIRST_AID://РџРµСЂРІР°СЏ РїРѕРјРѕС‰СЊ
       {
           switch (skill_level)
           {
@@ -2737,7 +2737,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_BODY_CURE_POISON://Лечение Отравления(Противоядие)
+      case SPELL_BODY_CURE_POISON://Р›РµС‡РµРЅРёРµ РћС‚СЂР°РІР»РµРЅРёСЏ(РџСЂРѕС‚РёРІРѕСЏРґРёРµ)
       {
           switch (skill_level)
           {
@@ -2776,7 +2776,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_BODY_PROTECTION_FROM_MAGIC://Защита от магии
+      case SPELL_BODY_PROTECTION_FROM_MAGIC://Р—Р°С‰РёС‚Р° РѕС‚ РјР°РіРёРё
       {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
@@ -2793,7 +2793,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_BODY_HAMMERHANDS://Руки-Молоты
+      case SPELL_BODY_HAMMERHANDS://Р СѓРєРё-РњРѕР»РѕС‚С‹
       {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
@@ -2822,7 +2822,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_BODY_CURE_DISEASE://Лечить Болезнь
+      case SPELL_BODY_CURE_DISEASE://Р›РµС‡РёС‚СЊ Р‘РѕР»РµР·РЅСЊ
       {
           if (skill_level == 4)
               amount = 0;
@@ -2860,7 +2860,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_BODY_POWER_CURE://Исцеление
+      case SPELL_BODY_POWER_CURE://РСЃС†РµР»РµРЅРёРµ
       {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
@@ -2873,7 +2873,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_LIGHT_DISPEL_MAGIC://Снятие чар
+      case SPELL_LIGHT_DISPEL_MAGIC://РЎРЅСЏС‚РёРµ С‡Р°СЂ
       {
           sRecoveryTime -= spell_level;
           if (!pPlayer->CanCastSpell(uRequiredMana))
@@ -2920,7 +2920,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_LIGHT_SUMMON_ELEMENTAL://Элементал
+      case SPELL_LIGHT_SUMMON_ELEMENTAL://Р­Р»РµРјРµРЅС‚Р°Р»
       {
           switch (skill_level)
           {
@@ -2952,7 +2952,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_LIGHT_DAY_OF_THE_GODS://День богов
+      case SPELL_LIGHT_DAY_OF_THE_GODS://Р”РµРЅСЊ Р±РѕРіРѕРІ
       {
           switch (skill_level)
           {
@@ -2974,7 +2974,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_LIGHT_PRISMATIC_LIGHT://Свет призмы
+      case SPELL_LIGHT_PRISMATIC_LIGHT://РЎРІРµС‚ РїСЂРёР·РјС‹
       {
           if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
           {
@@ -3017,7 +3017,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_LIGHT_DAY_OF_PROTECTION://День защиты
+      case SPELL_LIGHT_DAY_OF_PROTECTION://Р”РµРЅСЊ Р·Р°С‰РёС‚С‹
       {
           switch (skill_level)
           {
@@ -3046,7 +3046,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_LIGHT_HOUR_OF_POWER: //Час могущества
+      case SPELL_LIGHT_HOUR_OF_POWER: //Р§Р°СЃ РјРѕРіСѓС‰РµСЃС‚РІР°
       {
           switch (skill_level)
           {
@@ -3125,7 +3125,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_DARK_REANIMATE: //Реанимация
+      case SPELL_DARK_REANIMATE: //Р РµР°РЅРёРјР°С†РёСЏ
       {
           switch (skill_level)
           {
@@ -3205,7 +3205,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_DARK_VAMPIRIC_WEAPON:// Оружие-вампир
+      case SPELL_DARK_VAMPIRIC_WEAPON:// РћСЂСѓР¶РёРµ-РІР°РјРїРёСЂ
       {
           amount = 16;
           if (skill_level == 4)
@@ -3245,7 +3245,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_DARK_SHARPMETAL://Шрапнель
+      case SPELL_DARK_SHARPMETAL://РЁСЂР°РїРЅРµР»СЊ
       {
           switch (skill_level)
           {
@@ -3295,7 +3295,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_DARK_CONTROL_UNDEAD://Глава нежити
+      case SPELL_DARK_CONTROL_UNDEAD://Р“Р»Р°РІР° РЅРµР¶РёС‚Рё
       {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
@@ -3348,13 +3348,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_DARK_SACRIFICE://Жертва
+      case SPELL_DARK_SACRIFICE://Р–РµСЂС‚РІР°
       {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
           int hired_npc = 0;
           memset(&achieved_awards, 0, 4000);
-          for (uint npc_id = 0; npc_id < 2; npc_id++) //количество нанятых НПС
+          for (uint npc_id = 0; npc_id < 2; npc_id++) //РєРѕР»РёС‡РµСЃС‚РІРѕ РЅР°РЅСЏС‚С‹С… РќРџРЎ
           {
               if (pParty->pHirelings[npc_id].pName != 0)
                   achieved_awards[hired_npc++] = (AwardType)(npc_id + 1);
@@ -3385,7 +3385,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           spell_sound_flag = true;
           break;
       }
-      case SPELL_DARK_PAIN_REFLECTION://Отражение боли
+      case SPELL_DARK_PAIN_REFLECTION://РћС‚СЂР°Р¶РµРЅРёРµ Р±РѕР»Рё
       {
           switch (skill_level)
           {
@@ -3418,7 +3418,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           spell_sound_flag = true;
           break;
       }
-      case SPELL_DARK_SOULDRINKER://Испить душу
+      case SPELL_DARK_SOULDRINKER://РСЃРїРёС‚СЊ РґСѓС€Сѓ
       {
           if (!pPlayer->CanCastSpell(uRequiredMana))
               break;
@@ -3481,7 +3481,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
           break;
       }
 
-      case SPELL_DARK_ARMAGEDDON://Армагеддон
+      case SPELL_DARK_ARMAGEDDON://РђСЂРјР°РіРµРґРґРѕРЅ
       {
           if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
           {

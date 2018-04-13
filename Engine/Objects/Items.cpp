@@ -978,7 +978,7 @@ void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType, It
         }
     }
 
-    v46 = rand() % spc_sum + 1;//случайные значения от 1 до spc_sum
+    v46 = rand() % spc_sum + 1;//СЃР»СѓС‡Р°Р№РЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РѕС‚ 1 РґРѕ spc_sum
     j = 0;
     v45 = 0;
     while (v45 < v46)

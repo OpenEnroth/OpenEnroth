@@ -493,7 +493,7 @@ const char * GetMapBookHintText() {
   int global_coord_Y = (__int64)((double)v21 - (double)(pY - 181) * v0);
 
   const char *result = nullptr;
-  int map_tile_X = abs(global_coord_X + 22528) / 512;//In the mapbook only lady Margaret dispays for defoult zoom(Â êíèãå êàðòû òîëüêî Ëåäè Ìàðãàðèòà âñïëûâàåò ïðè äåôîëòíîì çóìå)
+  int map_tile_X = abs(global_coord_X + 22528) / 512;//In the mapbook only lady Margaret dispays for defoult zoom(Ð’ ÐºÐ½Ð¸Ð³Ðµ ÐºÐ°Ñ€Ñ‚Ñ‹ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð›ÐµÐ´Ð¸ ÐœÐ°Ñ€Ð³Ð°Ñ€Ð¸Ñ‚Ð° Ð²ÑÐ¿Ð»Ñ‹Ð²Ð°ÐµÑ‚ Ð¿Ñ€Ð¸ Ð´ÐµÑ„Ð¾Ð»Ñ‚Ð½Ð¾Ð¼ Ð·ÑƒÐ¼Ðµ)
   int map_tile_Y = abs(global_coord_Y - 22528) / 512;
   if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) && uCurrentlyLoadedLevelType == LEVEL_Outdoor && !pOutdoor->pBModels.empty()) {
     for (BSPModel &model : pOutdoor->pBModels) {

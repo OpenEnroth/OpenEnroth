@@ -86,7 +86,7 @@ void  Arena_SelectionFightLevel() {
     uDialogueType = DIALOGUE_ARENA_WELCOME;
     pDialogueWindow->DeleteButtons();
     pBtn_ExitCancel = pDialogueWindow->CreateButton(471, 445, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0,
-      localization->GetString(79), //Close, Çàêğûòü
+      localization->GetString(79), //Close, Ğ—Ğ°ĞºÑ€Ñ‹Ñ‚ÑŒ
       { {ui_exit_cancel_button_background} });
     pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 85, 0, "");
     pDialogueWindow->CreateButton(480, 190, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 86, 0, "");
@@ -121,7 +121,7 @@ void ArenaFight()
   GUIWindow window = *pDialogueWindow;
   window.uFrameWidth = game_viewport_width;
   window.uFrameZ = 452;
-  v0 = pFontArrus->CalcTextHeight(localization->GetString(575), window.uFrameWidth, 13) + 7;// Ïîæàëóéñòà, ïîäîæäèòå ïîêà ÿ âûçûâàş ñóùåñòâ. Óäà÷è.
+  v0 = pFontArrus->CalcTextHeight(localization->GetString(575), window.uFrameWidth, 13) + 7;// ĞŸĞ¾Ğ¶Ğ°Ğ»ÑƒĞ¹ÑÑ‚Ğ°, Ğ¿Ğ¾Ğ´Ğ¾Ğ¶Ğ´Ğ¸Ñ‚Ğµ Ğ¿Ğ¾ĞºĞ° Ñ Ğ²Ñ‹Ğ·Ñ‹Ğ²Ğ°Ñ ÑÑƒÑ‰ĞµÑÑ‚Ğ². Ğ£Ğ´Ğ°Ñ‡Ğ¸.
   render->BeginSceneD3D();
 
   if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
@@ -144,7 +144,7 @@ void ArenaFight()
     v0);
 
   render->DrawTextureAlphaNew(8 / 640.0f, (347 - v0) / 480.0f, _591428_endcap);
-  String v1 = pFontArrus->FitTextInAWindow(localization->GetString(575), window.uFrameWidth, 0xDu);  // Ïîæàëóéñòà, ïîäîæäèòå ïîêà ÿ âûçûâàş ñóùåñòâ. Óäà÷è.
+  String v1 = pFontArrus->FitTextInAWindow(localization->GetString(575), window.uFrameWidth, 0xDu);  // ĞŸĞ¾Ğ¶Ğ°Ğ»ÑƒĞ¹ÑÑ‚Ğ°, Ğ¿Ğ¾Ğ´Ğ¾Ğ¶Ğ´Ğ¸Ñ‚Ğµ Ğ¿Ğ¾ĞºĞ° Ñ Ğ²Ñ‹Ğ·Ñ‹Ğ²Ğ°Ñ ÑÑƒÑ‰ĞµÑÑ‚Ğ². Ğ£Ğ´Ğ°Ñ‡Ğ¸.
   pDialogueWindow->DrawText(pFontArrus, 13, 354 - v0, 0, v1, 0, 0, 0);
   render->EndScene();
   render->Present();

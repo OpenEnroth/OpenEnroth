@@ -154,7 +154,7 @@ void Mouse::DrawCursor() {
 /*
   if (this->bInitialized) {
     if (!this->field_8 && this->bActive && !this->field_C) //Uninitialized memory access(this->field_8)
-      pMouse->_469AE4();  // Ritor1: ñòðàííàÿ, íåïîíÿòíàÿ ôóíêöèÿ
+      pMouse->_469AE4();  // Ritor1: ÑÑ‚Ñ€Ð°Ð½Ð½Ð°Ñ, Ð½ÐµÐ¿Ð¾Ð½ÑÑ‚Ð½Ð°Ñ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ñ
     this->field_F4 = 1;
     if (this->field_C) {
       this->field_F4 = 0;
@@ -197,7 +197,7 @@ void Mouse::DrawCursor() {
       rect.w = pCursorBitmapRect_w;
       rect.z = pCursorBitmapRect_z;
 
-//      render->_4A6DF5(pCursorBitmap_sysmem, v9, &point, &rect);  // ñðàáàòûâàåò êîãäà áåð¸ì êóðñîðîì âåùü â èíâåíòîðå
+//      render->_4A6DF5(pCursorBitmap_sysmem, v9, &point, &rect);  // ÑÑ€Ð°Ð±Ð°Ñ‚Ñ‹Ð²Ð°ÐµÑ‚ ÐºÐ¾Ð³Ð´Ð° Ð±ÐµÑ€Ñ‘Ð¼ ÐºÑƒÑ€ÑÐ¾Ñ€Ð¾Ð¼ Ð²ÐµÑ‰ÑŒ Ð² Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð¾Ñ€Ðµ
       this->bRedraw = false;
     }
   }
@@ -216,7 +216,7 @@ void Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
   if (pPickedItem == nullptr) {
     return;
   }
-  //ïèøåì íà ýêðàí êóðñîð ñ âåùüþ
+  //Ð¿Ð¸ÑˆÐµÐ¼ Ð½Ð° ÑÐºÑ€Ð°Ð½ ÐºÑƒÑ€ÑÐ¾Ñ€ Ñ Ð²ÐµÑ‰ÑŒÑŽ
   render->DrawTextureAlphaNew(uCursorWithItemX / 640.0f, uCursorWithItemY / 480.0f, pPickedItem);
 }
 
@@ -289,7 +289,7 @@ void Mouse::UI_OnMouseLeftClick() {
             }
             continue;
           }
-          if (control->uButtonType == 2) {  // êîãäà íàæèìàåøü íà ïàðòðåòû ïåðñîâ
+          if (control->uButtonType == 2) {  // ÐºÐ¾Ð³Ð´Ð° Ð½Ð°Ð¶Ð¸Ð¼Ð°ÐµÑˆÑŒ Ð½Ð° Ð¿Ð°Ñ€Ñ‚Ñ€ÐµÑ‚Ñ‹ Ð¿ÐµÑ€ÑÐ¾Ð²
             if ((int)sqrt((double)((x - control->uX) * (x - control->uX) + (y - control->uY) * (y - control->uY))) < (int)control->uWidth) {
               control->field_2C_is_pushed = true;
               pMessageQueue_50CBD0->Flush();
@@ -298,7 +298,7 @@ void Mouse::UI_OnMouseLeftClick() {
             }
             continue;
           }
-          if (control->uButtonType == 3) {  // êîãäà íàæèìàåøü íà ñêèëëû
+          if (control->uButtonType == 3) {  // ÐºÐ¾Ð³Ð´Ð° Ð½Ð°Ð¶Ð¸Ð¼Ð°ÐµÑˆÑŒ Ð½Ð° ÑÐºÐ¸Ð»Ð»Ñ‹
             if (control-> Contains(x, y)) {
               control->field_2C_is_pushed = true;
               pMessageQueue_50CBD0->Flush();

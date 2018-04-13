@@ -19,16 +19,16 @@
 #include "Platform/Win/Win.h"
 #include "Platform/OSWindow.h"
 
-bool wizard_eye = true;          // wizard eye always on / включить на постоянно око чародея
-bool change_seasons = true;       // toggle seasons change / смена времён года
-bool all_magic = false;           // toggle full spellbook / включить всю магию
-bool debug_information = true;   // toggle debug info / информация fps, положение группы, уровень пола и т.п.
-bool show_picked_face = false;    // highlight picked face / выделить активный фейс
-bool draw_portals_loops = false;  // show portal frames / видны рамки порталов
+bool wizard_eye = true;          // wizard eye always on / РІРєР»СЋС‡РёС‚СЊ РЅР° РїРѕСЃС‚РѕСЏРЅРЅРѕ РѕРєРѕ С‡Р°СЂРѕРґРµСЏ
+bool change_seasons = true;       // toggle seasons change / СЃРјРµРЅР° РІСЂРµРјС‘РЅ РіРѕРґР°
+bool all_magic = false;           // toggle full spellbook / РІРєР»СЋС‡РёС‚СЊ РІСЃСЋ РјР°РіРёСЋ
+bool debug_information = true;   // toggle debug info / РёРЅС„РѕСЂРјР°С†РёСЏ fps, РїРѕР»РѕР¶РµРЅРёРµ РіСЂСѓРїРїС‹, СѓСЂРѕРІРµРЅСЊ РїРѕР»Р° Рё С‚.Рї.
+bool show_picked_face = false;    // highlight picked face / РІС‹РґРµР»РёС‚СЊ Р°РєС‚РёРІРЅС‹Р№ С„РµР№СЃ
+bool draw_portals_loops = false;  // show portal frames / РІРёРґРЅС‹ СЂР°РјРєРё РїРѕСЂС‚Р°Р»РѕРІ
 bool new_speed = true;            // debug turbo speed
 bool bSnow = false;
-bool draw_terrain_dist_mist = false;//новая дальность отрисовки тайлов
-bool no_actors = false;           // remove all monsters / убрать всех монстров
+bool draw_terrain_dist_mist = false;//РЅРѕРІР°СЏ РґР°Р»СЊРЅРѕСЃС‚СЊ РѕС‚СЂРёСЃРѕРІРєРё С‚Р°Р№Р»РѕРІ
+bool no_actors = false;           // remove all monsters / СѓР±СЂР°С‚СЊ РІСЃРµС… РјРѕРЅСЃС‚СЂРѕРІ
 bool lights_flag = true;
 bool debug_lights = false;
 bool debug_terrain_polygin = false;
@@ -341,7 +341,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam, void **resul
             pMiscTimer->Pause();
 
           if (pAudioPlayer != nullptr) {
-            pAudioPlayer->StopChannels(-1, -1);//приостановка воспроизведения звуков при неактивном окне игры
+            pAudioPlayer->StopChannels(-1, -1);//РїСЂРёРѕСЃС‚Р°РЅРѕРІРєР° РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ Р·РІСѓРєРѕРІ РїСЂРё РЅРµР°РєС‚РёРІРЅРѕРј РѕРєРЅРµ РёРіСЂС‹
             pAudioPlayer->MusicPause();
           }
         }
@@ -500,11 +500,11 @@ void OSWindow::SetFullscreenMode()
 {
     auto hwnd = (HWND)this->GetApiHandle();
 
-    //Ritor1: Error. Window size change in this function(Ошибка. При переходе на полноэкранный режим размеры окна изменяются в этой функции)
+    //Ritor1: Error. Window size change in this function(РћС€РёР±РєР°. РџСЂРё РїРµСЂРµС…РѕРґРµ РЅР° РїРѕР»РЅРѕСЌРєСЂР°РЅРЅС‹Р№ СЂРµР¶РёРј СЂР°Р·РјРµСЂС‹ РѕРєРЅР° РёР·РјРµРЅСЏСЋС‚СЃСЏ РІ СЌС‚РѕР№ С„СѓРЅРєС†РёРё)
     SetMenu(hwnd, nullptr);//640,480 - 640,500
     /*bool m = false;
     HMENU h_menu = GetMenu(api_handle);
-    m = DestroyMenu(h_menu);//как вариант - удалить меню*/
+    m = DestroyMenu(h_menu);//РєР°Рє РІР°СЂРёР°РЅС‚ - СѓРґР°Р»РёС‚СЊ РјРµРЅСЋ*/
 
     SetWindowLongW(hwnd, GWL_EXSTYLE, WS_EX_TOPMOST);
     SetWindowLongW(hwnd, GWL_STYLE, WS_VISIBLE | WS_POPUP);//648, 534

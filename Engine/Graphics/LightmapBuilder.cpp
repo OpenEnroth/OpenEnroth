@@ -141,7 +141,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight, Vec3_float
   float bounding_y2 = (float)pLight->uRadius + tY_1; //3 792 + 128 =  3920.0
   float bounding_z2 = (float)pLight->uRadius + maxz;// 260.0
 
-  //ïðîâåðÿåì âåðøèíû 
+  //Ð¿Ñ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ Ð²ÐµÑ€ÑˆÐ¸Ð½Ñ‹ 
   if ( (float)pLight->vPosition.x <= bounding_x1 || (float)pLight->vPosition.x >= bounding_x2
     || (float)pLight->vPosition.y <= bounding_y1 || (float)pLight->vPosition.y >= bounding_y2 
     || (float)pLight->vPosition.z <= bounding_z1 || (float)pLight->vPosition.z >= bounding_z2 )
@@ -660,7 +660,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
   lightmap->uColorMask = uColorMask;
   lightmap->NumVertices = 4;
 
-  //Brightness(ÿðêîñòü)/////////////////////////////////
+  //Brightness(ÑÑ€ÐºÐ¾ÑÑ‚ÑŒ)/////////////////////////////////
   if (~pEngine->uFlags2 & 4)
     lightmap->fBrightness = flt_3C8C2C_lightmaps_brightness;
   else
@@ -697,7 +697,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     else
         logger->Warning(L"Invalid light type!");
   }
- //Brightness(ÿðêîñòü)/////////////////////////////////////////////////////
+ //Brightness(ÑÑ€ÐºÐ¾ÑÑ‚ÑŒ)/////////////////////////////////////////////////////
 
   if (!pEngine->pStru9Instance->_4980B9(a9, uNumVertices,
                                       a7->Normal.x, a7->Normal.y, a7->Normal.z,

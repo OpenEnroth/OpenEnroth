@@ -48,7 +48,7 @@ uint8_t *BSPModelList::Load(uint8_t *data) {
   static_assert(sizeof(Vec3_int_) == 12, "Wrong type size");
 
   uint32_t uNumBModels;
-  memcpy(&uNumBModels, data, 4);  // количество BModel'ей
+  memcpy(&uNumBModels, data, 4);  // РєРѕР»РёС‡РµСЃС‚РІРѕ BModel'РµР№
   data += 4;
 
   std::vector<BSPModelData> models;

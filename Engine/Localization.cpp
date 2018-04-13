@@ -617,7 +617,7 @@ enum GLOBAL_LOCALIZ_INDEX
     LOCSTR_YOU_TO_TRAIN = 147, // "You are eligible to train to %u."	
 
     LOCSTR_STAY_IN_AREA = 156,  //"Stay in this Area"	
-    LOCSTR_3DO_COPYRHT = 157,	  // ""© 1999 The 3DO Company.
+    LOCSTR_3DO_COPYRHT = 157,	  // ""Â© 1999 The 3DO Company.
 
     LOCSTR_PLEASE_WAIT = 165,	// "Please Wait"
 
@@ -857,7 +857,7 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[154]	0x041037e0 "Auto Notes"	unsigned char *
 +		[155]	0x041037f0 "You don't have enough gold"	unsigned char *
 
-+		[157]	0x04103827 ""© 1999 The 3DO Company.  All Rights Reserved.  Might and Magic, Blood and Honor, New World Computing, 3DO, and their respective logos, are trademarks and/or service marks of The 3DO Company in the U.S. and other countries.  All other trademarks belong to their respective owners.  New World Computing is a division of The 3DO Company.""	unsigned char *
++		[157]	0x04103827 ""Â© 1999 The 3DO Company.  All Rights Reserved.  Might and Magic, Blood and Honor, New World Computing, 3DO, and their respective logos, are trademarks and/or service marks of The 3DO Company in the U.S. and other countries.  All other trademarks belong to their respective owners.  New World Computing is a division of The 3DO Company.""	unsigned char *
 +		[158]	0x0410397d "Bootleg Bay East"	unsigned char *
 +		[159]	0x04103993 "Display Inventory"	unsigned char *
 +		[160]	0x041039aa "Learn Skills"	unsigned char *
@@ -1219,7 +1219,7 @@ enum GLOBAL_LOCALIZ_INDEX
 
 
 
-+		[524]	0x041053b9 "Once again you've cheated death! …"	unsigned char *
++		[524]	0x041053b9 "Once again you've cheated death! â€¦"	unsigned char *
 +		[525]	0x041053e1 "Apothecary"	unsigned char *
 
 +		[527]	0x041053fb "Thank You!"	unsigned char *
@@ -1268,15 +1268,15 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[571]	0x041057b1 "Ready Spell: %s"	unsigned char *
 +		[572]	0x041057c6 "Scroll Left"	unsigned char *
 +		[573]	0x041057d7 "Scroll Right"	unsigned char *
-+		[574]	0x041057e9 ""Welcome to the Arena of Life and Death.  Remember, you are only allowed one arena combat per visit.  To fight an arena battle, select the option that best describes your abilities and return to me- if you survive…""	unsigned char *
++		[574]	0x041057e9 ""Welcome to the Arena of Life and Death.  Remember, you are only allowed one arena combat per visit.  To fight an arena battle, select the option that best describes your abilities and return to me- if you surviveâ€¦""	unsigned char *
 +		[575]	0x041058c6 "Please wait while I summon the monsters.  Good luck."	unsigned char *
-+		[576]	0x04105900 "Congratulations on your win… here's your stuff… %u gold."	unsigned char *
-+		[577]	0x0410593e "Get back in there you wimps…"	unsigned char *
++		[576]	0x04105900 "Congratulations on your winâ€¦ here's your stuffâ€¦ %u gold."	unsigned char *
++		[577]	0x0410593e "Get back in there you wimpsâ€¦"	unsigned char *
 +		[578]	0x04105960 "Page"	unsigned char *
 +		[579]	0x0410596a "Squire"	unsigned char *
 +		[580]	0x04105976 "Knight"	unsigned char *
 +		[581]	0x04105982 "Lord"	unsigned char *
-+		[582]	0x0410598c "You already won this trip to the Arena…"	unsigned char *
++		[582]	0x0410598c "You already won this trip to the Arenaâ€¦"	unsigned char *
 
 +		[584]	0x041059d5 "Click here to remove your Quick Spell"	unsigned char *
 +		[585]	0x04105a00 "Item is not of high enough quality"	unsigned char *
@@ -1311,7 +1311,7 @@ enum GLOBAL_LOCALIZ_INDEX
 +		[614]	0x04105bf4 "New Game"	unsigned char *
 +		[615]	0x04105c02 "Save Game"	unsigned char *
 +		[616]	0x04105c11 "Load Game"	unsigned char *
-+		[617]	0x04105c20 ""Sound, Keyboard, Game Options…""	unsigned char *
++		[617]	0x04105c20 ""Sound, Keyboard, Game Optionsâ€¦""	unsigned char *
 +		[618]	0x04105c46 "Quit"	unsigned char *
 +		[619]	0x04105c50 "Return to Game"	unsigned char *
 +		[620]	0x04105c64 "Rules"	unsigned char *

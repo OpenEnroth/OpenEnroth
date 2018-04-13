@@ -495,10 +495,10 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID, IndoorCameraD3D_Vec4 *pV
                     stru_F7B60C.face_plane.dist = pFace->pFacePlane.dist;
                 }
 
-                if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky()) //for torchlight(для света факелов)
+                if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky()) //for torchlight(РґР»СЏ СЃРІРµС‚Р° С„Р°РєРµР»РѕРІ)
                     pEngine->pLightmapBuilder->ApplyLights(&Lights, &stru_F7B60C, uNumVerticesa, array_507D30, pVertices, 0);
 
-                if (pDecalBuilder->uNumDecals > 0)//отрисовка пятен крови
+                if (pDecalBuilder->uNumDecals > 0)//РѕС‚СЂРёСЃРѕРІРєР° РїСЏС‚РµРЅ РєСЂРѕРІРё
                     pDecalBuilder->ApplyDecals(a4a, 1, &stru_F7B60C, uNumVerticesa, array_507D30, pVertices, 0, pFace->uSectorID);
 
                 Texture *face_texture = pFace->GetTexture();
@@ -1880,7 +1880,7 @@ void  UpdateActors_BLV()
       if ( !v5 || v56 == -30000 )
         continue;
     }
-    if ( pActors[actor_id].uCurrentActionAnimation == ANIM_Walking)//монстр двигается
+    if ( pActors[actor_id].uCurrentActionAnimation == ANIM_Walking)//РјРѕРЅСЃС‚СЂ РґРІРёРіР°РµС‚СЃСЏ
     {
       v6 = pActors[actor_id].uMovementSpeed;
       if ( pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].Active())
@@ -1902,7 +1902,7 @@ void  UpdateActors_BLV()
       if ( v62 )
         pActors[actor_id].vVelocity.z = fixpoint_mul(stru_5C6E00->Sin(pActors[actor_id].uPitchAngle), v6);
     }
-    else//actor is not moving(актор не двигается)
+    else//actor is not moving(Р°РєС‚РѕСЂ РЅРµ РґРІРёРіР°РµС‚СЃСЏ)
     {
       pActors[actor_id].vVelocity.x = fixpoint_mul(55000, pActors[actor_id].vVelocity.x);
       pActors[actor_id].vVelocity.y = fixpoint_mul(55000, pActors[actor_id].vVelocity.y);
@@ -2889,7 +2889,7 @@ void AddBspNodeToRenderList(unsigned int node_id)
     {
         for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
             //logger->Warning(L"Non-BSP face: %X", v3->pFaceIDs[v2]);
-            pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);//рекурсия\recursion
+            pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);//СЂРµРєСѓСЂСЃРёСЏ\recursion
     }
     /*else
     {
@@ -3278,7 +3278,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v)
   int v_4b; // [sp+8Ch] [bp+10h]@136
   int v_4c; // [sp+8Ch] [bp+10h]@141
 
-            //__debugbreak();срабатывает при стрельбе огненным шаром
+            //__debugbreak();СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РїСЂРё СЃС‚СЂРµР»СЊР±Рµ РѕРіРЅРµРЅРЅС‹Рј С€Р°СЂРѕРј
 
   v4 = stru_5C6E00->Atan2(v.x - x, v.y - y);
 
@@ -3769,7 +3769,7 @@ bool PortalFrustrum(int pNumVertices, BspRenderer_PortalViewportData *far_portal
   min_y = PortalFace._screen_space_y[0];
   min_y_ID = 0;
   max_y = PortalFace._screen_space_y[0];
-  //face direction(направление фейса)
+  //face direction(РЅР°РїСЂР°РІР»РµРЅРёРµ С„РµР№СЃР°)
   if ( !PortalFace.direction )
   {
     direction1 = 1;
@@ -3781,7 +3781,7 @@ bool PortalFrustrum(int pNumVertices, BspRenderer_PortalViewportData *far_portal
     direction2 = 1;
   }
 
-  //get min and max y for portal(дать минимальное и максимальное значение y для портала)
+  //get min and max y for portal(РґР°С‚СЊ РјРёРЅРёРјР°Р»СЊРЅРѕРµ Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ y РґР»СЏ РїРѕСЂС‚Р°Р»Р°)
   for ( uint i = 1; i < pNumVertices; ++i )
   {
     if (PortalFace._screen_space_y[i] < min_y)
@@ -3813,7 +3813,7 @@ bool PortalFrustrum(int pNumVertices, BspRenderer_PortalViewportData *far_portal
     }
     else
       current_ID -= pNumVertices;
-    if ( PortalFace._screen_space_y[current_ID] <= PortalFace._screen_space_y[min_y_ID] )//определение минимальной у
+    if ( PortalFace._screen_space_y[current_ID] <= PortalFace._screen_space_y[min_y_ID] )//РѕРїСЂРµРґРµР»РµРЅРёРµ РјРёРЅРёРјР°Р»СЊРЅРѕР№ Сѓ
     {
       min_y_ID2 = current_ID;
       min_y_ID = current_ID;
@@ -3935,7 +3935,7 @@ bool PortalFrustrum(int pNumVertices, BspRenderer_PortalViewportData *far_portal
     }
   }
   //*****************************************************************************************************************************
-  // check portals coordinates and determine max, min(проверка координат порталов и определение макс, мин-ой у)
+  // check portals coordinates and determine max, min(РїСЂРѕРІРµСЂРєР° РєРѕРѕСЂРґРёРЅР°С‚ РїРѕСЂС‚Р°Р»РѕРІ Рё РѕРїСЂРµРґРµР»РµРЅРёРµ РјР°РєСЃ, РјРёРЅ-РѕР№ Сѓ)
   if ( max_y < near_portal->_viewport_space_y )
     return false;
   if ( min_y > near_portal->_viewport_space_w )
@@ -4014,12 +4014,12 @@ int GetPortalScreenCoord(unsigned int uFaceID)
     signed int depth_num_vertices; // [sp+1Ch] [bp-Ch]@9
     bool next_vertices_flag; // [sp+20h] [bp-8h]@10
 
-    //Доп инфо "Программирование трёхмерных игр для windows" Ламот стр 910
+    //Р”РѕРї РёРЅС„Рѕ "РџСЂРѕРіСЂР°РјРјРёСЂРѕРІР°РЅРёРµ С‚СЂС‘С…РјРµСЂРЅС‹С… РёРіСЂ РґР»СЏ windows" Р›Р°РјРѕС‚ СЃС‚СЂ 910
 
     pFace = &pIndoor->pFaces[uFaceID];
     memset(&PortalFace, 0, sizeof(stru367));
 
-    //get direction the face(определение направленности фейса)*********************************************************************************
+    //get direction the face(РѕРїСЂРµРґРµР»РµРЅРёРµ РЅР°РїСЂР°РІР»РµРЅРЅРѕСЃС‚Рё С„РµР№СЃР°)*********************************************************************************
     if (pFace->pFacePlane_old.vNormal.x * (pIndoor->pVertices[pIndoor->pFaces[uFaceID].pVertexIDs[0]].x - pIndoorCameraD3D->vPartyPos.x)
         + pFace->pFacePlane_old.vNormal.y * (pIndoor->pVertices[pIndoor->pFaces[uFaceID].pVertexIDs[0]].y - pIndoorCameraD3D->vPartyPos.y)
         + pFace->pFacePlane_old.vNormal.z * (pIndoor->pVertices[pIndoor->pFaces[uFaceID].pVertexIDs[0]].z - pIndoorCameraD3D->vPartyPos.z) < 0)
@@ -4033,7 +4033,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
             return 0;
     }
     //*****************************************************************************************************************************************
-    //transform to camera coordinates (генерация/конвертирование в координаты пространства камеры)
+    //transform to camera coordinates (РіРµРЅРµСЂР°С†РёСЏ/РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅРёРµ РІ РєРѕРѕСЂРґРёРЅР°С‚С‹ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° РєР°РјРµСЂС‹)
 
     if ((signed int)pFace->uNumVertices > 0)
     {
@@ -4052,7 +4052,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
     }
 
     //*****************************************************************************************************************************************
-    //check vertices for the nearest plane(проверка вершин есть ли в области за ближайшей плоскостью)
+    //check vertices for the nearest plane(РїСЂРѕРІРµСЂРєР° РІРµСЂС€РёРЅ РµСЃС‚СЊ Р»Рё РІ РѕР±Р»Р°СЃС‚Рё Р·Р° Р±Р»РёР¶Р°Р№С€РµР№ РїР»РѕСЃРєРѕСЃС‚СЊСЋ)
     if (pFace->uNumVertices <= 0)
         return 0;
     bool bFound = false;
@@ -4067,7 +4067,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
     if (!bFound)
         return 0;
     //*****************************************************************************************************************************************
-    //check for near clip plane(проверка по ближней границе)
+    //check for near clip plane(РїСЂРѕРІРµСЂРєР° РїРѕ Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†Рµ)
     //   
     //     v0                 v1
     //      ._________________.
@@ -4091,9 +4091,9 @@ int GetPortalScreenCoord(unsigned int uFaceID)
         for (uint i = 1; i <= pFace->uNumVertices; ++i)
         {
             next_vertices_flag = PortalFace._view_transformed_z[i + 3] >= 0x80000; //524288;// 8.0
-            if (current_vertices_flag ^ next_vertices_flag) // current or next vertex is near-clipped / или текущая или следующая вершина за ближней границей - v5
+            if (current_vertices_flag ^ next_vertices_flag) // current or next vertex is near-clipped / РёР»Рё С‚РµРєСѓС‰Р°СЏ РёР»Рё СЃР»РµРґСѓСЋС‰Р°СЏ РІРµСЂС€РёРЅР° Р·Р° Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†РµР№ - v5
             {
-                if (next_vertices_flag) // next vertex is near-clipped / следующая вершина за ближней границей
+                if (next_vertices_flag) // next vertex is near-clipped / СЃР»РµРґСѓСЋС‰Р°СЏ РІРµСЂС€РёРЅР° Р·Р° Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†РµР№
                 {
                     //t = near_clip - v4.z / v5.z - v4.z
                     t = fixpoint_div(
@@ -4126,7 +4126,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
                     assert(_y._internal == PortalFace._view_transformed_y[depth_num_vertices]);
                     assert(_z._internal == PortalFace._view_transformed_z[depth_num_vertices]);
                 }
-                else // current vertex is near-clipped / текущая вершина за ближней границей
+                else // current vertex is near-clipped / С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р·Р° Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†РµР№
                 {
                     //t = near_clip - v1.z / v0.z - v1.z
                     t = fixpoint_div(
@@ -4162,7 +4162,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
                 }
                 depth_num_vertices++;
             }
-            if (next_vertices_flag)//если следующая вершина за ближней границей 
+            if (next_vertices_flag)//РµСЃР»Рё СЃР»РµРґСѓСЋС‰Р°СЏ РІРµСЂС€РёРЅР° Р·Р° Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†РµР№ 
             {
                 pNextVertices = depth_num_vertices++;
                 PortalFace._view_transformed_z[pNextVertices] = PortalFace._view_transformed_z[i + 3];
@@ -4173,9 +4173,9 @@ int GetPortalScreenCoord(unsigned int uFaceID)
         }
     }
 
-    //результат: нет моргания на границе портала(когда проходим сквозь портал)
+    //СЂРµР·СѓР»СЊС‚Р°С‚: РЅРµС‚ РјРѕСЂРіР°РЅРёСЏ РЅР° РіСЂР°РЅРёС†Рµ РїРѕСЂС‚Р°Р»Р°(РєРѕРіРґР° РїСЂРѕС…РѕРґРёРј СЃРєРІРѕР·СЊ РїРѕСЂС‚Р°Р»)
     //************************************************************************************************************************************
-    //convertion in screen coordinates(конвертирование в координаты экрана)
+    //convertion in screen coordinates(РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅРёРµ РІ РєРѕРѕСЂРґРёРЅР°С‚С‹ СЌРєСЂР°РЅР°)
     PortalFace._view_transformed_z[depth_num_vertices] = PortalFace._view_transformed_z[0];
     PortalFace._view_transformed_x[depth_num_vertices] = PortalFace._view_transformed_x[0];
     PortalFace._view_transformed_y[depth_num_vertices] = PortalFace._view_transformed_y[0];
@@ -4229,15 +4229,15 @@ int GetPortalScreenCoord(unsigned int uFaceID)
         //assert(PortalFace._screen_space_x[i + 12] == _x);
         //assert(PortalFace._screen_space_y[i + 12] == _y);
     }
-    // результат: при повороте камеры, когда граница портала сдвигается к краю экрана, портал остается прозрачным(видимым)
+    // СЂРµР·СѓР»СЊС‚Р°С‚: РїСЂРё РїРѕРІРѕСЂРѕС‚Рµ РєР°РјРµСЂС‹, РєРѕРіРґР° РіСЂР°РЅРёС†Р° РїРѕСЂС‚Р°Р»Р° СЃРґРІРёРіР°РµС‚СЃСЏ Рє РєСЂР°СЋ СЌРєСЂР°РЅР°, РїРѕСЂС‚Р°Р» РѕСЃС‚Р°РµС‚СЃСЏ РїСЂРѕР·СЂР°С‡РЅС‹Рј(РІРёРґРёРјС‹Рј)
 
     //******************************************************************************************************************************************
-    //координаты как в Ида-базе игры так и в данном проекте перевёрнутые,т.е. портал который в правой части экрана имеет экранные координаты 
-    //которые для левой части экрана. Например, x(оригинал) = 8, у нас х = 468(противоположный край экрана), точно также и с у.
+    //РєРѕРѕСЂРґРёРЅР°С‚С‹ РєР°Рє РІ РРґР°-Р±Р°Р·Рµ РёРіСЂС‹ С‚Р°Рє Рё РІ РґР°РЅРЅРѕРј РїСЂРѕРµРєС‚Рµ РїРµСЂРµРІС‘СЂРЅСѓС‚С‹Рµ,С‚.Рµ. РїРѕСЂС‚Р°Р» РєРѕС‚РѕСЂС‹Р№ РІ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё СЌРєСЂР°РЅР° РёРјРµРµС‚ СЌРєСЂР°РЅРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ 
+    //РєРѕС‚РѕСЂС‹Рµ РґР»СЏ Р»РµРІРѕР№ С‡Р°СЃС‚Рё СЌРєСЂР°РЅР°. РќР°РїСЂРёРјРµСЂ, x(РѕСЂРёРіРёРЅР°Р») = 8, Сѓ РЅР°СЃ С… = 468(РїСЂРѕС‚РёРІРѕРїРѕР»РѕР¶РЅС‹Р№ РєСЂР°Р№ СЌРєСЂР°РЅР°), С‚РѕС‡РЅРѕ С‚Р°РєР¶Рµ Рё СЃ Сѓ.
     // coordinates (original and here) are flipped horizontaly, e.g. portal on right side of the screen x(original) = 8 becomes x = 468 (opposite
     // side of the screen). the same holds true for y
     //
-    //check for left_clip plane(порверка по левой границе)
+    //check for left_clip plane(РїРѕСЂРІРµСЂРєР° РїРѕ Р»РµРІРѕР№ РіСЂР°РЅРёС†Рµ)
     left_num_vertices = 0;
     PortalFace._screen_space_x[depth_num_vertices + 12] = PortalFace._screen_space_x[12];
     PortalFace._screen_space_y[depth_num_vertices + 12] = PortalFace._screen_space_y[12];
@@ -4309,7 +4309,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
         current_vertices_flag = next_vertices_flag;
     }
     //*********************************************************************************************************************************
-    //for right_clip plane(проверка по правой плоскости)
+    //for right_clip plane(РїСЂРѕРІРµСЂРєР° РїРѕ РїСЂР°РІРѕР№ РїР»РѕСЃРєРѕСЃС‚Рё)
     right_num_vertices = 0;
     PortalFace._screen_space_x[left_num_vertices + 9] = PortalFace._screen_space_x[9];
     PortalFace._screen_space_y[left_num_vertices + 9] = PortalFace._screen_space_y[9];
@@ -4390,7 +4390,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
         }
     }
     //**********************************************************************************************************************************
-    //for bottom_clip plane(проверка по нижней плоскости)
+    //for bottom_clip plane(РїСЂРѕРІРµСЂРєР° РїРѕ РЅРёР¶РЅРµР№ РїР»РѕСЃРєРѕСЃС‚Рё)
     bottom_num_vertices = 0;
     PortalFace._screen_space_x[top_num_vertices + 3] = PortalFace._screen_space_x[3];
     PortalFace._screen_space_y[top_num_vertices + 3] = PortalFace._screen_space_y[3];
@@ -4432,7 +4432,7 @@ int GetPortalScreenCoord(unsigned int uFaceID)
         return 0;
     PortalFace._screen_space_x[bottom_num_vertices] = PortalFace._screen_space_x[0];
     PortalFace._screen_space_y[bottom_num_vertices] = PortalFace._screen_space_y[0];
-    //check for software(проверка для софтвар)
+    //check for software(РїСЂРѕРІРµСЂРєР° РґР»СЏ СЃРѕС„С‚РІР°СЂ)
       /*if ( !render->pRenderD3D && bottom_num_vertices > 3 )
       {
         PortalFace._screen_space_x[bottom_num_vertices + 1] = PortalFace._screen_space_x[1];
@@ -4572,9 +4572,9 @@ void BLV_ProcessPartyActions()
     hovering = false;
 
     uFaceID = -1;
-    int floor_level = collide_against_floor(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);//получить высоту пола
+    int floor_level = collide_against_floor(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);//РїРѕР»СѓС‡РёС‚СЊ РІС‹СЃРѕС‚Сѓ РїРѕР»Р°
 
-    if (pParty->bFlying)//отключить полёт
+    if (pParty->bFlying)//РѕС‚РєР»СЋС‡РёС‚СЊ РїРѕР»С‘С‚
     {
         pParty->bFlying = false;
         if (pParty->FlyActive())
@@ -4617,7 +4617,7 @@ void BLV_ProcessPartyActions()
 
     int fall_start;
     /*
-    if (!pParty->FeatherFallActive())// не активно падение пера
+    if (!pParty->FeatherFallActive())// РЅРµ Р°РєС‚РёРІРЅРѕ РїР°РґРµРЅРёРµ РїРµСЂР°
     {
       bFeatherFall = false;
       if (!pParty->pPlayers[0].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&  // grants feather fall
@@ -4634,7 +4634,7 @@ void BLV_ProcessPartyActions()
           pParty->uFallStartY = floor_level;
       }
     }
-    else// активно падение пера
+    else// Р°РєС‚РёРІРЅРѕ РїР°РґРµРЅРёРµ РїРµСЂР°
     {
       fall_start = floor_level;
       bFeatherFall = true;
@@ -4659,7 +4659,7 @@ void BLV_ProcessPartyActions()
         fall_start = pParty->uFallStartY;
     }
 
-    if (fall_start - party_z > 512 && !bFeatherFall && party_z <= floor_level + 1)//повреждение от падения с высоты
+    if (fall_start - party_z > 512 && !bFeatherFall && party_z <= floor_level + 1)//РїРѕРІСЂРµР¶РґРµРЅРёРµ РѕС‚ РїР°РґРµРЅРёСЏ СЃ РІС‹СЃРѕС‚С‹
     {
         assert(~pParty->uFlags & PARTY_FLAGS_1_LANDING); // why land in indoor?
         if (pParty->uFlags & PARTY_FLAGS_1_LANDING)
@@ -4686,19 +4686,19 @@ void BLV_ProcessPartyActions()
         not_high_fall = true;
     }
 
-    if (bWalkSound && pParty->walk_sound_timer)//таймеры для звуков передвижения
+    if (bWalkSound && pParty->walk_sound_timer)//С‚Р°Р№РјРµСЂС‹ РґР»СЏ Р·РІСѓРєРѕРІ РїРµСЂРµРґРІРёР¶РµРЅРёСЏ
     {
         if (pParty->walk_sound_timer > pEventTimer->uTimeElapsed)
             pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
         else pParty->walk_sound_timer = 0;
     }
 
-    if (party_z <= floor_level + 1)// группа ниже уровня пола
+    if (party_z <= floor_level + 1)// РіСЂСѓРїРїР° РЅРёР¶Рµ СѓСЂРѕРІРЅСЏ РїРѕР»Р°
     {
         party_z = floor_level + 1;
         pParty->uFallStartY = floor_level + 1;
 
-        if (!hovering && pParty->floor_face_pid != uFaceID)// не парящие и 
+        if (!hovering && pParty->floor_face_pid != uFaceID)// РЅРµ РїР°СЂСЏС‰РёРµ Рё 
         {
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_PRESSURE_PLATE)
                 uFaceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].uEventID;
@@ -4708,7 +4708,7 @@ void BLV_ProcessPartyActions()
         pParty->floor_face_pid = uFaceID;
 
     bool on_water = false;
-    if (pIndoor->pFaces[uFaceID].Fluid())// на воде
+    if (pIndoor->pFaces[uFaceID].Fluid())// РЅР° РІРѕРґРµ
         on_water = true;
 
     //v81 = pParty->uWalkSpeed;
@@ -4767,7 +4767,7 @@ void BLV_ProcessPartyActions()
             v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
             party_walking_flag = true;
             break;
-        case PARTY_RunForward://Бег вперёд
+        case PARTY_RunForward://Р‘РµРі РІРїРµСЂС‘Рґ
             v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
             v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
             party_running_flag = true;
@@ -4811,9 +4811,9 @@ void BLV_ProcessPartyActions()
     }
     pParty->sRotationY = angle;
     pParty->sRotationX = _view_angle;
-    if (hovering)//парящие
+    if (hovering)//РїР°СЂСЏС‰РёРµ
     {
-        pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();// расчёт скорости падения
+        pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();// СЂР°СЃС‡С‘С‚ СЃРєРѕСЂРѕСЃС‚Рё РїР°РґРµРЅРёСЏ
         if (hovering && pParty->uFallSpeed <= 0)
         {
             if (pParty->uFallSpeed < -500 && !pParty->bFlying)
@@ -4828,7 +4828,7 @@ void BLV_ProcessPartyActions()
         else
             pParty->uFallStartY = party_z;
     }
-    else// не парящие
+    else// РЅРµ РїР°СЂСЏС‰РёРµ
     {
         if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 0x8000)
         {
@@ -4878,10 +4878,10 @@ void BLV_ProcessPartyActions()
         for (uint j = 0; j < 100; ++j)
         {
             _46E44E_collide_against_faces_and_portals(1);
-            _46E0B2_collide_against_decorations();//столкновения с декором
+            _46E0B2_collide_against_decorations();//СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ СЃ РґРµРєРѕСЂРѕРј
             for (v80 = 0; v80 < (signed int)uNumActors; ++v80)
-                Actor::_46DF1A_collide_against_actor(v80, 0);//столкновения с монстрами
-            if (_46F04E_collide_against_portals())//столкновения с порталами
+                Actor::_46DF1A_collide_against_actor(v80, 0);//СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ СЃ РјРѕРЅСЃС‚СЂР°РјРё
+            if (_46F04E_collide_against_portals())//СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ СЃ РїРѕСЂС‚Р°Р»Р°РјРё
                 break;
         }
         if (stru_721530.field_7C >= stru_721530.field_6C)
@@ -4911,7 +4911,7 @@ void BLV_ProcessPartyActions()
         uSectorID = stru_721530.uSectorID;
         stru_721530.field_70 += stru_721530.field_7C;
         unsigned long long v87 = new_party_z + fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
-        if (PID_TYPE(stru_721530.pid) == OBJECT_Actor) // invis break on actor collision    /    при столкновении с монстром
+        if (PID_TYPE(stru_721530.pid) == OBJECT_Actor) // invis break on actor collision    /    РїСЂРё СЃС‚РѕР»РєРЅРѕРІРµРЅРёРё СЃ РјРѕРЅСЃС‚СЂРѕРј
         {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
             {
@@ -4919,17 +4919,17 @@ void BLV_ProcessPartyActions()
             }
             viewparams->bRedrawGameUI = true;
         }
-        else if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration) // decoration collision   /   при столкновении с декорацией
+        else if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration) // decoration collision   /   РїСЂРё СЃС‚РѕР»РєРЅРѕРІРµРЅРёРё СЃ РґРµРєРѕСЂР°С†РёРµР№
         {
             v54 = stru_5C6E00->Atan2(new_party_x - pLevelDecorations[stru_721530.pid >> 3].vPosition.x,
                 new_party_y - pLevelDecorations[stru_721530.pid >> 3].vPosition.y);
             v2 = fixpoint_mul(stru_5C6E00->Cos(v54), integer_sqrt(v2 * v2 + v1 * v1));
             v1 = fixpoint_mul(stru_5C6E00->Sin(v54), integer_sqrt(v2 * v2 + v1 * v1));
         }
-        else if (PID_TYPE(stru_721530.pid) == OBJECT_BModel)//при столкновении с bmodel
+        else if (PID_TYPE(stru_721530.pid) == OBJECT_BModel)//РїСЂРё СЃС‚РѕР»РєРЅРѕРІРµРЅРёРё СЃ bmodel
         {
             pFace = &pIndoor->pFaces[(signed int)stru_721530.pid >> 3];
-            if (pFace->uPolygonType == POLYGON_Floor)// если bmodel - пол
+            if (pFace->uPolygonType == POLYGON_Floor)// РµСЃР»Рё bmodel - РїРѕР»
             {
                 if (pParty->uFallSpeed < 0)
                     pParty->uFallSpeed = 0;
@@ -4944,10 +4944,10 @@ void BLV_ProcessPartyActions()
                 if (pParty->floor_face_pid != PID_ID(stru_721530.pid) && pFace->Pressure_Plate())
                     uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
             }
-            else// если не пол
+            else// РµСЃР»Рё РЅРµ РїРѕР»
             {
                 v46 = pParty->uFallSpeed * pFace->pFacePlane_old.vNormal.z;
-                if (pFace->uPolygonType != POLYGON_InBetweenFloorAndWall)//полез на холм
+                if (pFace->uPolygonType != POLYGON_InBetweenFloorAndWall)//РїРѕР»РµР· РЅР° С…РѕР»Рј
                 {
                     v80 = abs(v1 * pFace->pFacePlane_old.vNormal.y + v46 + v2 * pFace->pFacePlane_old.vNormal.x) >> 16;
                     if ((stru_721530.speed >> 3) > v80)
@@ -4996,33 +4996,33 @@ void BLV_ProcessPartyActions()
         pParty->uFallSpeed = fixpoint_mul(58500, pParty->uFallSpeed);
     }
 
-    //  //Воспроизведение звуков ходьбы/бега-------------------------
+    //  //Р’РѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёРµ Р·РІСѓРєРѕРІ С…РѕРґСЊР±С‹/Р±РµРіР°-------------------------
     uint pX_ = abs(pParty->vPosition.x - new_party_x);
     uint pY_ = abs(pParty->vPosition.y - new_party_y);
     uint pZ_ = abs(pParty->vPosition.z - new_party_z);
     if (bWalkSound && pParty->walk_sound_timer <= 0)
     {
         pAudioPlayer->StopAll(804);//stop sound
-        if (party_running_flag && (!hovering || not_high_fall)) //Бег и (не прыжок или не высокое падение )
+        if (party_running_flag && (!hovering || not_high_fall)) //Р‘РµРі Рё (РЅРµ РїСЂС‹Р¶РѕРє РёР»Рё РЅРµ РІС‹СЃРѕРєРѕРµ РїР°РґРµРЅРёРµ )
         {
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16)
             {
                 if (on_water)
                     pAudioPlayer->PlaySound(SOUND_RunWaterIndoor, 804, 1, -1, 0, 0, 0, 0);
-                else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)//по ковру
+                else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)//РїРѕ РєРѕРІСЂСѓ
                     pAudioPlayer->PlaySound(SOUND_RunCarpet, 804, 1, -1, 0, 0, 0, 0);
                 else
                     pAudioPlayer->PlaySound(SOUND_RunWood, 804, 1, -1, 0, 0, 0, 0);
                 pParty->walk_sound_timer = 96;//64
             }
         }
-        else if (party_walking_flag && (!hovering || not_high_fall))//Ходьба и (не прыжок или не высокое падение)
+        else if (party_walking_flag && (!hovering || not_high_fall))//РҐРѕРґСЊР±Р° Рё (РЅРµ РїСЂС‹Р¶РѕРє РёР»Рё РЅРµ РІС‹СЃРѕРєРѕРµ РїР°РґРµРЅРёРµ)
         {
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8)
             {
                 if (on_water)
                     pAudioPlayer->PlaySound(SOUND_WalkWaterIndoor, 804, 1, -1, 0, 0, 0, 0);
-                else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)//по ковру
+                else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)//РїРѕ РєРѕРІСЂСѓ
                     pAudioPlayer->PlaySound(SOUND_WalkCarpet, 804, 1, -1, 0, 0, 0, 0);
                 else
                     pAudioPlayer->PlaySound(SOUND_WalkWood, 804, 1, -1, 0, 0, 0, 0);
@@ -5030,7 +5030,7 @@ void BLV_ProcessPartyActions()
             }
         }
     }
-    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)//отключить  звук ходьбы при остановке
+    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)//РѕС‚РєР»СЋС‡РёС‚СЊ  Р·РІСѓРє С…РѕРґСЊР±С‹ РїСЂРё РѕСЃС‚Р°РЅРѕРІРєРµ
         pAudioPlayer->StopAll(804);
     //-------------------------------------------------------------
     if (!hovering || !not_high_fall)
@@ -5066,10 +5066,10 @@ void Door_switch_animation(unsigned int uDoorID, int a2)
     Error("Unable to find Door ID: %i!", uDoorID);
   }
   old_state = pIndoor->pDoors[door_id].uState;
-  //old_state: 0 - в нижнем положении/закрыто
-  //           2 - в верхнем положении/открыто,
-  //a2: 1 - открыть
-  //    2 - опустить/поднять
+  //old_state: 0 - РІ РЅРёР¶РЅРµРј РїРѕР»РѕР¶РµРЅРёРё/Р·Р°РєСЂС‹С‚Рѕ
+  //           2 - РІ РІРµСЂС…РЅРµРј РїРѕР»РѕР¶РµРЅРёРё/РѕС‚РєСЂС‹С‚Рѕ,
+  //a2: 1 - РѕС‚РєСЂС‹С‚СЊ
+  //    2 - РѕРїСѓСЃС‚РёС‚СЊ/РїРѕРґРЅСЏС‚СЊ
   if ( a2 == 2 )
   {
     if ( pIndoor->pDoors[door_id].uState == BLVDoor::Closing || pIndoor->pDoors[door_id].uState == BLVDoor::Opening )
@@ -5395,7 +5395,7 @@ bool sub_4077F1(int a1, int a2, int a3, ODMFace *face, BSPVertexBuffer *a5)
 	std::array<int, 52> dword_4F5B24_ys; // idb
 	std::array<int, 52> dword_4F5BF4_xs; // idb
 
-	//__debugbreak();	//срабатывает при нападении стрекозавров с огнём
+	//__debugbreak();	//СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РїСЂРё РЅР°РїР°РґРµРЅРёРё СЃС‚СЂРµРєРѕР·Р°РІСЂРѕРІ СЃ РѕРіРЅС‘Рј
 
 	if (face->uAttributes & FACE_XY_PLANE)
 	{

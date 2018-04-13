@@ -170,14 +170,14 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned 
       }
     } else {
       if (speakingNPC->joins) {
-        CreateButton(0x1E0u, 0x82u, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Du, 0, localization->GetString(407)); // Подробнее
+        CreateButton(0x1E0u, 0x82u, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Du, 0, localization->GetString(407)); // РџРѕРґСЂРѕР±РЅРµРµ
         if (speakingNPC->Hired()) {
           CreateButton(
             0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0,
-            localization->FormatString(408, speakingNPC->pName));  // Release %s    Отпустить %s
+            localization->FormatString(408, speakingNPC->pName));  // Release %s    РћС‚РїСѓСЃС‚РёС‚СЊ %s
         }
         else
-          CreateButton(0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0, localization->GetString(406)); // Hire    Нанять
+          CreateButton(0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0, UIMSG_SelectNPCDialogueOption, 0x4Cu, 0, localization->GetString(406)); // Hire    РќР°РЅСЏС‚СЊ
         num_menu_buttons = 2;
       }
     }
@@ -203,7 +203,7 @@ void GUIWindow_Dialogue::Update() {
     return;
   }
 
-  // Window title(Заголовок окна)----
+  // Window title(Р—Р°РіРѕР»РѕРІРѕРє РѕРєРЅР°)----
   GUIWindow window = *pDialogueWindow;
   NPCData *pNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
   int pGreetType = GetGreetType(sDialogue_SpeakingActorNPC_ID);
@@ -286,7 +286,7 @@ void GUIWindow_Dialogue::Update() {
 
   int pTextHeight = 0;
 
-  // Message window(Окно сообщения)---- 
+  // Message window(РћРєРЅРѕ СЃРѕРѕР±С‰РµРЅРёСЏ)---- 
   if (!dialogue_string.empty()) {
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
@@ -308,7 +308,7 @@ void GUIWindow_Dialogue::Update() {
     pDialogueWindow->DrawText(font, 13, 354 - pTextHeight, 0, font->FitTextInAWindow(dialogue_string, window.uFrameWidth, 13), 0, 0, 0);
   }
 
-  // Right panel(Правая панель)------- 
+  // Right panel(РџСЂР°РІР°СЏ РїР°РЅРµР»СЊ)------- 
   window = *pDialogueWindow;
   window.uFrameX = 483;
   window.uFrameWidth = 148;
@@ -429,7 +429,7 @@ void GUIWindow_Dialogue::Update() {
     }
   }
 
-  // Install Buttons(Установка кнопок)-------- 
+  // Install Buttons(РЈСЃС‚Р°РЅРѕРІРєР° РєРЅРѕРїРѕРє)-------- 
   int index = 0;
   int all_text_height = 0;
   for (int i = pDialogueWindow->pStartingPosActiveItem;
@@ -568,10 +568,10 @@ void sub_4B3E1E() {
   pDialogueWindow->Release();
   pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 1);
   if (pNPCStats->pProfessions[v0->uProfession].pBenefits) {  //*(&pNPCStats->field_13A5C + 5 * v0->uProfession) )
-    pDialogueWindow->CreateButton(480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, 0, localization->GetString(407)); // Details / Подробнее
+    pDialogueWindow->CreateButton(480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, 0, localization->GetString(407)); // Details / РџРѕРґСЂРѕР±РЅРµРµ
     v1 = 1;
   }
-  pDialogueWindow->CreateButton(480, 30 * v1 + 160, 140, 30, 1, 0, UIMSG_SelectNPCDialogueOption, 76, 0, localization->GetString(406)); // Hire    Нанять
+  pDialogueWindow->CreateButton(480, 30 * v1 + 160, 140, 30, 1, 0, UIMSG_SelectNPCDialogueOption, 76, 0, localization->GetString(406)); // Hire    РќР°РЅСЏС‚СЊ
   pDialogueWindow->_41D08F_set_keyboard_control_group(v1 + 1, 1, 0, 1);
 }
 
@@ -648,7 +648,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
         pPlayers[uActiveCharacter]->PlaySound(SPEECH_61, 0);
     }
   }
-  else if ((int)newDialogueType > DIALOGUE_84 && (int)newDialogueType <= DIALOGUE_ARENA_SELECT_CHAMPION) //выбор уровня сложности боя
+  else if ((int)newDialogueType > DIALOGUE_84 && (int)newDialogueType <= DIALOGUE_ARENA_SELECT_CHAMPION) //РІС‹Р±РѕСЂ СѓСЂРѕРІРЅСЏ СЃР»РѕР¶РЅРѕСЃС‚Рё Р±РѕСЏ
   {
     ArenaFight();
     return;

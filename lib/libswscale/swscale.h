@@ -175,7 +175,7 @@ void sws_freeContext(struct SwsContext *swsContext);
  * @param flags specify which algorithm and options to use for rescaling
  * @param param extra parameters to tune the used scaler
  *              For SWS_BICUBIC param[0] and [1] tune the shape of the basis
- *              function, param[0] tunes f(1) and param[1] f´(1)
+ *              function, param[0] tunes f(1) and param[1] fВґ(1)
  *              For SWS_GAUSS param[0] tunes the exponent and thus cutoff
  *              frequency
  *              For SWS_LANCZOS param[0] tunes the width of the window function

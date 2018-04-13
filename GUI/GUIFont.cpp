@@ -329,7 +329,7 @@ String GUIFont::FitTextInAWindow(const String &inString, unsigned int width, int
         i += 3;
         break;
       }
-      case  '\n': {  // Line Feed 0A 10 (конец строки)
+      case  '\n': {  // Line Feed 0A 10 (РєРѕРЅРµС† СЃС‚СЂРѕРєРё)
         string_pixel_Width = start_pixel_offset;
         possible_transition_point = i;
         break;
@@ -351,13 +351,13 @@ String GUIFont::FitTextInAWindow(const String &inString, unsigned int width, int
       }
       default:
         if ((string_pixel_Width + pData->pMetrics[c].uWidth + pData->pMetrics[c].uLeftSpacing +
-          pData->pMetrics[c].uRightSpacing) < width) {  // наращивание длины строки или перенос
+          pData->pMetrics[c].uRightSpacing) < width) {  // РЅР°СЂР°С‰РёРІР°РЅРёРµ РґР»РёРЅС‹ СЃС‚СЂРѕРєРё РёР»Рё РїРµСЂРµРЅРѕСЃ
           if (i > possible_transition_point)
             string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
           string_pixel_Width += pData->pMetrics[c].uWidth;
           if (i < uInStrLen)
             string_pixel_Width += pData->pMetrics[c].uRightSpacing;
-        } else {  // перенос строки и слова
+        } else {  // РїРµСЂРµРЅРѕСЃ СЃС‚СЂРѕРєРё Рё СЃР»РѕРІР°
           temp_string[possible_transition_point] = '\n';
           string_pixel_Width = start_pixel_offset;
           if (i > possible_transition_point) {

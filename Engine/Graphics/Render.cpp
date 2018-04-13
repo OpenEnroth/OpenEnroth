@@ -178,8 +178,8 @@ void Render::RenderTerrainD3D() {  // New function
 
   static RenderVertexSoft pTerrainVertices[128 * 128];//vertexCountX and vertexCountZ
 
-  //Генерация местоположения вершин-------------------------------------------------------------------------
-  //решётка вершин делится на две части от -64 до 0 и от 0 до 64
+  //Р“РµРЅРµСЂР°С†РёСЏ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёСЏ РІРµСЂС€РёРЅ-------------------------------------------------------------------------
+  //СЂРµС€С‘С‚РєР° РІРµСЂС€РёРЅ РґРµР»РёС‚СЃСЏ РЅР° РґРІРµ С‡Р°СЃС‚Рё РѕС‚ -64 РґРѕ 0 Рё РѕС‚ 0 РґРѕ 64
   //
   // -64  X  0     64
   //  --------------- 64
@@ -204,30 +204,30 @@ void Render::RenderTerrainD3D() {  // New function
       pIndoorCameraD3D->Project(&pTerrainVertices[z * 128 + x], 1, 0);
     }
   }
-  //-------(Отсечение невидимой части карты)------------------------------------------------------------------------------------------
-  float direction = (float)(pIndoorCameraD3D->sRotationY / 256);//direction of the camera(напрвление камеры)
+  //-------(РћС‚СЃРµС‡РµРЅРёРµ РЅРµРІРёРґРёРјРѕР№ С‡Р°СЃС‚Рё РєР°СЂС‚С‹)------------------------------------------------------------------------------------------
+  float direction = (float)(pIndoorCameraD3D->sRotationY / 256);//direction of the camera(РЅР°РїСЂРІР»РµРЅРёРµ РєР°РјРµСЂС‹)
                                                                 //0-East(B)
                                                                 //1-NorthEast(CB)
                                                                 //2-North(C)
-                                                                //3-WestNorth(CЗ)
-                                                                //4-West(З)
-                                                                //5-SouthWest(ЮЗ)
-                                                                //6-South(Ю)
-                                                                //7-SouthEast(ЮВ)
+                                                                //3-WestNorth(CР—)
+                                                                //4-West(Р—)
+                                                                //5-SouthWest(Р®Р—)
+                                                                //6-South(Р®)
+                                                                //7-SouthEast(Р®Р’)
   unsigned int Start_X, End_X, Start_Z, End_Z;
   if (direction >= 0 && direction < 1.0) {  //East(B) - NorthEast(CB)
     Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 128;
     Start_Z = 0, End_Z = 128;
-  } else if (direction >= 1.0 && direction < 3.0) {  //NorthEast(CB) - WestNorth(CЗ)
+  } else if (direction >= 1.0 && direction < 3.0) {  //NorthEast(CB) - WestNorth(CР—)
     Start_X = 0, End_X = 128;
     Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellZ + 1;
-  } else if (direction >= 3.0 && direction < 5.0) {  //WestNorth(CЗ) - SouthWest(ЮЗ)
+  } else if (direction >= 3.0 && direction < 5.0) {  //WestNorth(CР—) - SouthWest(Р®Р—)
     Start_X = 0, End_X = pODMRenderParams->uMapGridCellX + 2;
     Start_Z = 0, End_Z = 128;
-  } else if (direction >= 5.0 && direction < 7.0) {  //SouthWest(ЮЗ) - //SouthEast(ЮВ)
+  } else if (direction >= 5.0 && direction < 7.0) {  //SouthWest(Р®Р—) - //SouthEast(Р®Р’)
     Start_X = 0, End_X = 128;
     Start_Z = pODMRenderParams->uMapGridCellZ - 2, End_Z = 128;
-  } else {  //SouthEast(ЮВ) - East(B)
+  } else {  //SouthEast(Р®Р’) - East(B)
     Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 128;
     Start_Z = 0, End_Z = 128;
   }
@@ -305,7 +305,7 @@ void Render::RenderTerrainD3D() {  // New function
         VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
       }
 
-      //shading (затенение)----------------------------------------------------------------------------
+      //shading (Р·Р°С‚РµРЅРµРЅРёРµ)----------------------------------------------------------------------------
       //uint norm_idx = pTerrainNormalIndices[2 * (z * 128 + x) + 1];
       uint norm_idx = pTerrainNormalIndices[2 * (x * 128 + z) + 1];
       assert(norm_idx < uNumTerrainNormals);
@@ -325,7 +325,7 @@ void Render::RenderTerrainD3D() {  // New function
       }
       unsigned int a5 = 4;
 
-      //---------Draw distance(Дальность отрисовки)-------------------------------
+      //---------Draw distance(Р”Р°Р»СЊРЅРѕСЃС‚СЊ РѕС‚СЂРёСЃРѕРІРєРё)-------------------------------
       int temp = pIndoorCameraD3D->GetFarClip();
       if (draw_terrain_dist_mist)
         temp = 0x5000;
@@ -354,7 +354,7 @@ void Render::RenderTerrainD3D() {  // New function
       }
 
       if (!byte_4D864C || ~pEngine->uFlags & 0x80) {
-        //if ( neer_clip ) //Ritor1: Даёт искажения на подъёме, возможно требуется ф-ция Безье
+        //if ( neer_clip ) //Ritor1: Р”Р°С‘С‚ РёСЃРєР°Р¶РµРЅРёСЏ РЅР° РїРѕРґСЉС‘РјРµ, РІРѕР·РјРѕР¶РЅРѕ С‚СЂРµР±СѓРµС‚СЃСЏ С„-С†РёСЏ Р‘РµР·СЊРµ
         //{
         // pTilePolygon->uNumVertices = ODM_NearClip(pTilePolygon->uNumVertices);
         // ODM_Project(pTilePolygon->uNumVertices);
@@ -366,11 +366,11 @@ void Render::RenderTerrainD3D() {  // New function
       }
       //pODMRenderParams->shading_dist_mist = temp;
 
-      // check the transparency and texture (tiles) mapping (проверка прозрачности и наложение текстур (тайлов))----------------------
+      // check the transparency and texture (tiles) mapping (РїСЂРѕРІРµСЂРєР° РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё Рё РЅР°Р»РѕР¶РµРЅРёРµ С‚РµРєСЃС‚СѓСЂ (С‚Р°Р№Р»РѕРІ))----------------------
       bool transparent = false;
 
       auto tile_texture = tile->GetTexture();
-      if (!(pTilePolygon->flags & 1)) {  // не поддерживается TextureFrameTable
+      if (!(pTilePolygon->flags & 1)) {  // РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ TextureFrameTable
         if ( /*pTile->flags & 2 && */tile->IsWaterTile()) {
           tile_texture = this->hd_water_tile_anim[this->hd_water_current_frame];
         } else if (tile->IsWaterBorderTile()) {
@@ -1365,16 +1365,16 @@ void Render::ParseTargetPixelFormat() {
 bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *pDesc, unsigned int uLockFlags) {
   HRESULT result = pSurface->Lock(NULL, pDesc, uLockFlags, NULL);
   /*
-  Когда объект DirectDrawSurface теряет поверхностную память, методы возвратят DDERR_SURFACELOST
-  и не выполнят никакую другую функцию. Метод IDirectDrawSurface::Restore перераспределит поверхностную память
-  и повторно присоединит ее к объекту DirectDrawSurface.
+  РљРѕРіРґР° РѕР±СЉРµРєС‚ DirectDrawSurface С‚РµСЂСЏРµС‚ РїРѕРІРµСЂС…РЅРѕСЃС‚РЅСѓСЋ РїР°РјСЏС‚СЊ, РјРµС‚РѕРґС‹ РІРѕР·РІСЂР°С‚СЏС‚ DDERR_SURFACELOST
+  Рё РЅРµ РІС‹РїРѕР»РЅСЏС‚ РЅРёРєР°РєСѓСЋ РґСЂСѓРіСѓСЋ С„СѓРЅРєС†РёСЋ. РњРµС‚РѕРґ IDirectDrawSurface::Restore РїРµСЂРµСЂР°СЃРїСЂРµРґРµР»РёС‚ РїРѕРІРµСЂС…РЅРѕСЃС‚РЅСѓСЋ РїР°РјСЏС‚СЊ
+  Рё РїРѕРІС‚РѕСЂРЅРѕ РїСЂРёСЃРѕРµРґРёРЅРёС‚ РµРµ Рє РѕР±СЉРµРєС‚Сѓ DirectDrawSurface.
   */
   if (result == DDERR_SURFACELOST) {
-    HRESULT v6 = pSurface->Restore();//Восстанавливает потерянную поверхность. Это происходит, когда поверхностная память,
-                             //связанная с объектом DirectDrawSurface была освобождена. 
+    HRESULT v6 = pSurface->Restore();//Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РїРѕС‚РµСЂСЏРЅРЅСѓСЋ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ. Р­С‚Рѕ РїСЂРѕРёСЃС…РѕРґРёС‚, РєРѕРіРґР° РїРѕРІРµСЂС…РЅРѕСЃС‚РЅР°СЏ РїР°РјСЏС‚СЊ,
+                             //СЃРІСЏР·Р°РЅРЅР°СЏ СЃ РѕР±СЉРµРєС‚РѕРј DirectDrawSurface Р±С‹Р»Р° РѕСЃРІРѕР±РѕР¶РґРµРЅР°. 
     if (v6) {
-      if (v6 != DDERR_IMPLICITLYCREATED)//DDERR_IMPLICITLYCREATED - Поверхность не может быть восстановлена,
-                                        //потому что она - неявно созданная поверхность.
+      if (v6 != DDERR_IMPLICITLYCREATED)//DDERR_IMPLICITLYCREATED - РџРѕРІРµСЂС…РЅРѕСЃС‚СЊ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅР°,
+                                        //РїРѕС‚РѕРјСѓ С‡С‚Рѕ РѕРЅР° - РЅРµСЏРІРЅРѕ СЃРѕР·РґР°РЅРЅР°СЏ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ.
       {
         result = (bool)memset(pDesc, 0, 4);
         return 0;
@@ -1383,8 +1383,8 @@ bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface, DDSURFACEDESC2 *p
       pSurface->Restore();
     }
     result = pSurface->Lock(NULL, pDesc, DDLOCK_WAIT, NULL);
-    if (result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY)//DDERR_SURFACEBUSY - Доступ к этой поверхности отказан, 
-                                                                   //потому что поверхность блокирована другой нитью. DDERR_INVALIDRECT - Обеспечиваемый прямоугольник недопустим.
+    if (result == DDERR_INVALIDRECT || result == DDERR_SURFACEBUSY)//DDERR_SURFACEBUSY - Р”РѕСЃС‚СѓРї Рє СЌС‚РѕР№ РїРѕРІРµСЂС…РЅРѕСЃС‚Рё РѕС‚РєР°Р·Р°РЅ, 
+                                                                   //РїРѕС‚РѕРјСѓ С‡С‚Рѕ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ Р±Р»РѕРєРёСЂРѕРІР°РЅР° РґСЂСѓРіРѕР№ РЅРёС‚СЊСЋ. DDERR_INVALIDRECT - РћР±РµСЃРїРµС‡РёРІР°РµРјС‹Р№ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє РЅРµРґРѕРїСѓСЃС‚РёРј.
     {
       result = (bool)memset(pDesc, 0, 4);
       return 0;
@@ -1565,7 +1565,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clamp
       ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
 
     ErrD3D(pRenderD3D->pDevice->SetTexture(0, 0));
-    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,//рисуется текстурка с светом
+    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,//СЂРёСЃСѓРµС‚СЃСЏ С‚РµРєСЃС‚СѓСЂРєР° СЃ СЃРІРµС‚РѕРј
       D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
       d3d_vertex_buffer,
       uNumVertices,
@@ -1575,7 +1575,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent, bool clamp
     for (uint i = 0; i < uNumVertices; ++i) {
       d3d_vertex_buffer[i].diffuse = -1;
     }
-    ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));//текстурка 
+    ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));//С‚РµРєСЃС‚СѓСЂРєР° 
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
     if (!render->bUsingSpecular) {
       ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
@@ -2956,7 +2956,7 @@ HWLTexture *RenderHWLContainer::LoadTexture(const char *pName, int bMipMaps) {
     return nullptr;
 
   ///////////////////////////////
-  //quick search(быстрый поиск)//
+  //quick search(Р±С‹СЃС‚СЂС‹Р№ РїРѕРёСЃРє)//
   ///////////////////////////////
   uint idx1 = 0,
     idx2 = uNumItems;
@@ -3169,7 +3169,7 @@ int ODM_NearClip(unsigned int num_vertices) {
 
   if (!num_vertices)
     return 0;
-  for (uint i = 0; i < num_vertices; ++i) {  // есть ли пограничные вершины
+  for (uint i = 0; i < num_vertices; ++i) {  // РµСЃС‚СЊ Р»Рё РїРѕРіСЂР°РЅРёС‡РЅС‹Рµ РІРµСЂС€РёРЅС‹
     if (VertexRenderList[i].vWorldViewPosition.x > 8.0) {
       bFound = true;
       break;
@@ -3183,7 +3183,7 @@ int ODM_NearClip(unsigned int num_vertices) {
   current_vertices_flag = false;
   if (VertexRenderList[0].vWorldViewPosition.x <= 8.0)
     current_vertices_flag = true;
-  //check for near clip plane(проверка по ближней границе)
+  //check for near clip plane(РїСЂРѕРІРµСЂРєР° РїРѕ Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†Рµ)
   //   
   // v3.__________________. v0
   //   |                  |
@@ -3200,9 +3200,9 @@ int ODM_NearClip(unsigned int num_vertices) {
     next_vertices_flag = VertexRenderList[i + 1].vWorldViewPosition.x <= 8.0;//
     if (current_vertices_flag ^ next_vertices_flag)
     {
-      if (next_vertices_flag)//следующая вершина за ближней границей
+      if (next_vertices_flag)//СЃР»РµРґСѓСЋС‰Р°СЏ РІРµСЂС€РёРЅР° Р·Р° Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†РµР№
       {
-        //t = near_clip - v0.x / v1.x - v0.x    (формула получения точки пересечения отрезка с плоскостью)
+        //t = near_clip - v0.x / v1.x - v0.x    (С„РѕСЂРјСѓР»Р° РїРѕР»СѓС‡РµРЅРёСЏ С‚РѕС‡РєРё РїРµСЂРµСЃРµС‡РµРЅРёСЏ РѕС‚СЂРµР·РєР° СЃ РїР»РѕСЃРєРѕСЃС‚СЊСЋ)
         t = (8.0 - VertexRenderList[i].vWorldViewPosition.x) / (VertexRenderList[i + 1].vWorldViewPosition.x - VertexRenderList[i].vWorldViewPosition.x);
         array_507D30[out_num_vertices].vWorldViewPosition.x = 8.0;
         array_507D30[out_num_vertices].vWorldViewPosition.y = VertexRenderList[i].vWorldViewPosition.y + (VertexRenderList[i + 1].vWorldViewPosition.y - VertexRenderList[i].vWorldViewPosition.y) * t;
@@ -3211,7 +3211,7 @@ int ODM_NearClip(unsigned int num_vertices) {
         array_507D30[out_num_vertices].v = VertexRenderList[i].v + (VertexRenderList[i + 1].v - VertexRenderList[i].v) * t;
         array_507D30[out_num_vertices]._rhw = 1.0 / 8.0;
       }
-      else// текущая вершина за ближней границей
+      else// С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р·Р° Р±Р»РёР¶РЅРµР№ РіСЂР°РЅРёС†РµР№
       {
         t = (8.0 - VertexRenderList[i].vWorldViewPosition.x) / (VertexRenderList[i].vWorldViewPosition.x - VertexRenderList[i + 1].vWorldViewPosition.x);
         array_507D30[out_num_vertices].vWorldViewPosition.x = 8.0;
@@ -3240,7 +3240,7 @@ int ODM_FarClip(unsigned int uNumVertices) {
   double t; // st6@10
   signed int depth_num_vertices; // [sp+18h] [bp-1Ch]@1
   bool bFound;
-  //Доп инфо "Программирование трёхмерных игр для windows" Ламот стр 910
+  //Р”РѕРї РёРЅС„Рѕ "РџСЂРѕРіСЂР°РјРјРёСЂРѕРІР°РЅРёРµ С‚СЂС‘С…РјРµСЂРЅС‹С… РёРіСЂ РґР»СЏ windows" Р›Р°РјРѕС‚ СЃС‚СЂ 910
 
   bFound = false;
 
@@ -3248,10 +3248,10 @@ int ODM_FarClip(unsigned int uNumVertices) {
   depth_num_vertices = 0;
   current_vertices_flag = false;
   if ( VertexRenderList[0].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip())
-    current_vertices_flag = true;//настоящая вершина больше границы видимости
+    current_vertices_flag = true;//РЅР°СЃС‚РѕСЏС‰Р°СЏ РІРµСЂС€РёРЅР° Р±РѕР»СЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё
   if ( (signed int)uNumVertices <= 0 )
     return 0;
-  for (uint i = 0; i < uNumVertices; ++i)// есть ли пограничные вершины
+  for (uint i = 0; i < uNumVertices; ++i)// РµСЃС‚СЊ Р»Рё РїРѕРіСЂР°РЅРёС‡РЅС‹Рµ РІРµСЂС€РёРЅС‹
   {
     if ( VertexRenderList[i].vWorldViewPosition.x < pIndoorCameraD3D->GetFarClip())
     {
@@ -3261,7 +3261,7 @@ int ODM_FarClip(unsigned int uNumVertices) {
   }
   if ( !bFound )
     return 0;
-  //check for far clip plane(проверка по дальней границе)
+  //check for far clip plane(РїСЂРѕРІРµСЂРєР° РїРѕ РґР°Р»СЊРЅРµР№ РіСЂР°РЅРёС†Рµ)
   //   
   // v3.__________________. v0
   //   |                  |
@@ -3275,11 +3275,11 @@ int ODM_FarClip(unsigned int uNumVertices) {
   for ( uint i = 0; i < uNumVertices; ++i )
   {
     next_vertices_flag = VertexRenderList[i + 1].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip();
-    if ( current_vertices_flag ^ next_vertices_flag )//одна из граней за границей видимости
+    if ( current_vertices_flag ^ next_vertices_flag )//РѕРґРЅР° РёР· РіСЂР°РЅРµР№ Р·Р° РіСЂР°РЅРёС†РµР№ РІРёРґРёРјРѕСЃС‚Рё
     {
-      if ( next_vertices_flag )//следующая вершина больше границы видимости(настоящая вершина меньше границы видимости) - v3
+      if ( next_vertices_flag )//СЃР»РµРґСѓСЋС‰Р°СЏ РІРµСЂС€РёРЅР° Р±РѕР»СЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё(РЅР°СЃС‚РѕСЏС‰Р°СЏ РІРµСЂС€РёРЅР° РјРµРЅСЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё) - v3
       {
-        //t = far_clip - v2.x / v3.x - v2.x (формула получения точки пересечения отрезка с плоскостью)
+        //t = far_clip - v2.x / v3.x - v2.x (С„РѕСЂРјСѓР»Р° РїРѕР»СѓС‡РµРЅРёСЏ С‚РѕС‡РєРё РїРµСЂРµСЃРµС‡РµРЅРёСЏ РѕС‚СЂРµР·РєР° СЃ РїР»РѕСЃРєРѕСЃС‚СЊСЋ)
         t = (pIndoorCameraD3D->GetFarClip() - VertexRenderList[i].vWorldViewPosition.x) / (VertexRenderList[i].vWorldViewPosition.x - VertexRenderList[i + 1].vWorldViewPosition.x);
         array_507D30[depth_num_vertices].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
         //New_y = v2.y + (v3.y - v2.y)*t
@@ -3290,7 +3290,7 @@ int ODM_FarClip(unsigned int uNumVertices) {
         array_507D30[depth_num_vertices].v = VertexRenderList[i].v + (VertexRenderList[i].v - VertexRenderList[i + 1].v) * t;
         array_507D30[depth_num_vertices]._rhw = 1.0 / pIndoorCameraD3D->GetFarClip();
       }
-      else//настоящая вершина больше границы видимости(следующая вершина меньше границы видимости) - v0
+      else//РЅР°СЃС‚РѕСЏС‰Р°СЏ РІРµСЂС€РёРЅР° Р±РѕР»СЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё(СЃР»РµРґСѓСЋС‰Р°СЏ РІРµСЂС€РёРЅР° РјРµРЅСЊС€Рµ РіСЂР°РЅРёС†С‹ РІРёРґРёРјРѕСЃС‚Рё) - v0
       {
         //t = far_clip - v1.x / v0.x - v1.x
         t = (pIndoorCameraD3D->GetFarClip() - VertexRenderList[i].vWorldViewPosition.x) / (VertexRenderList[i + 1].vWorldViewPosition.x - VertexRenderList[i].vWorldViewPosition.x);
@@ -3305,7 +3305,7 @@ int ODM_FarClip(unsigned int uNumVertices) {
       }
       ++depth_num_vertices;
     }
-    if ( !next_vertices_flag )//оба в границе видимости
+    if ( !next_vertices_flag )//РѕР±Р° РІ РіСЂР°РЅРёС†Рµ РІРёРґРёРјРѕСЃС‚Рё
     {
       memcpy(&array_507D30[depth_num_vertices], &VertexRenderList[i + 1], sizeof(array_507D30[depth_num_vertices]));
       depth_num_vertices++;
@@ -3503,7 +3503,7 @@ void Render::DrawOutdoorSkyD3D() {
         * (sin((double)pIndoorCameraD3D->sRotationX * 0.0030664064)
             * -pIndoorCameraD3D->GetFarClip()
             - (double)pIndoorCameraD3D->vPartyPos.z));
-    pSkyPolygon.Create_48607B(&stru_8019C8);//заполняется ptr_38
+    pSkyPolygon.Create_48607B(&stru_8019C8);//Р·Р°РїРѕР»РЅСЏРµС‚СЃСЏ ptr_38
     pSkyPolygon.ptr_38->_48694B_frustum_sky();
 
     //if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
@@ -3516,12 +3516,12 @@ void Render::DrawOutdoorSkyD3D() {
     {
         pSkyPolygon.dimming_level = 0;
         pSkyPolygon.uNumVertices = 4;
-        //centering(центруем)-----------------------------------------------------------------
+        //centering(С†РµРЅС‚СЂСѓРµРј)-----------------------------------------------------------------
         pSkyPolygon.v_18.x = -stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX + 16);
         pSkyPolygon.v_18.y = 0;
         pSkyPolygon.v_18.z = -stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX + 16);
 
-        //sky wiew position(положение неба на экране)------------------------------------------
+        //sky wiew position(РїРѕР»РѕР¶РµРЅРёРµ РЅРµР±Р° РЅР° СЌРєСЂР°РЅРµ)------------------------------------------
         //                X
         // 0._____________________________.3
         //  |8,8                    468,8 |
@@ -3551,11 +3551,11 @@ void Render::DrawOutdoorSkyD3D() {
         v33 = 65536 / (signed int)(signed __int64)(((double)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2) / tan(0.6457717418670654) + 0.5);
         for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i)
         {
-            //rotate skydome(вращение купола неба)--------------------------------------
-            // В игре принята своя система измерения углов. Полный угол (180). Значению угла 0 соответствует 
-            // направление на север и/или юг (либо на восток и/или запад), значению 65536 еденицам(0х10000) соответствует угол 90.
-            // две переменные хранят данные по углу обзора. field_14 по западу и востоку. field_20 по югу и северу
-            // от -25080 до 25080
+            //rotate skydome(РІСЂР°С‰РµРЅРёРµ РєСѓРїРѕР»Р° РЅРµР±Р°)--------------------------------------
+            // Р’ РёРіСЂРµ РїСЂРёРЅСЏС‚Р° СЃРІРѕСЏ СЃРёСЃС‚РµРјР° РёР·РјРµСЂРµРЅРёСЏ СѓРіР»РѕРІ. РџРѕР»РЅС‹Р№ СѓРіРѕР» (180). Р—РЅР°С‡РµРЅРёСЋ СѓРіР»Р° 0 СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ 
+            // РЅР°РїСЂР°РІР»РµРЅРёРµ РЅР° СЃРµРІРµСЂ Рё/РёР»Рё СЋРі (Р»РёР±Рѕ РЅР° РІРѕСЃС‚РѕРє Рё/РёР»Рё Р·Р°РїР°Рґ), Р·РЅР°С‡РµРЅРёСЋ 65536 РµРґРµРЅРёС†Р°Рј(0С…10000) СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ СѓРіРѕР» 90.
+            // РґРІРµ РїРµСЂРµРјРµРЅРЅС‹Рµ С…СЂР°РЅСЏС‚ РґР°РЅРЅС‹Рµ РїРѕ СѓРіР»Сѓ РѕР±Р·РѕСЂР°. field_14 РїРѕ Р·Р°РїР°РґСѓ Рё РІРѕСЃС‚РѕРєСѓ. field_20 РїРѕ СЋРіСѓ Рё СЃРµРІРµСЂСѓ
+            // РѕС‚ -25080 РґРѕ 25080
             v39 = fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_west_east, v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
             v35 = v39 + pSkyPolygon.ptr_38->angle_from_north;
 
@@ -3686,7 +3686,7 @@ void Render::PackScreenshot(unsigned int width, unsigned int height, void *data,
 }
 
 int Render::GetActorsInViewport(int pDepth) {
-  unsigned int v3; // eax@2 применяется в закле Жар печи для подсчёта кол-ва монстров видимых группе и заполнения массива id видимых монстров
+  unsigned int v3; // eax@2 РїСЂРёРјРµРЅСЏРµС‚СЃСЏ РІ Р·Р°РєР»Рµ Р–Р°СЂ РїРµС‡Рё РґР»СЏ РїРѕРґСЃС‡С‘С‚Р° РєРѕР»-РІР° РјРѕРЅСЃС‚СЂРѕРІ РІРёРґРёРјС‹С… РіСЂСѓРїРїРµ Рё Р·Р°РїРѕР»РЅРµРЅРёСЏ РјР°СЃСЃРёРІР° id РІРёРґРёРјС‹С… РјРѕРЅСЃС‚СЂРѕРІ
   unsigned int v5; // eax@2
   unsigned int v6; // eax@4
   unsigned int v12; // [sp+10h] [bp-14h]@1

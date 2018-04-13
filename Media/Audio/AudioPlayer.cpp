@@ -357,7 +357,7 @@ void AudioPlayer::Initialize() {
   bPlayerReady = true;
 }
 
-void AudioPlayer::Release() {  // Îñâîáîäèòü
+void AudioPlayer::Release() {  // ÐžÑÐ²Ð¾Ð±Ð¾Ð´Ð¸Ñ‚ÑŒ
   if (this->bPlayerReady) {
     free(pSoundHeaders);
   }

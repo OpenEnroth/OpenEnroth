@@ -133,9 +133,9 @@ void GUIWindow_AutonotesBook::Update()
 
     if (Book_PageBtn3_flag)//Potions_page_flag
     {
-        if (_506568_autonote_type == AUTONOTE_POTION_RECEPIE)//press again(повторное нажатие)
+        if (_506568_autonote_type == AUTONOTE_POTION_RECEPIE)//press again(РїРѕРІС‚РѕСЂРЅРѕРµ РЅР°Р¶Р°С‚РёРµ)
             render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 113)/480.0f, ui_book_button3_on);
-        else//press(нажатие)
+        else//press(РЅР°Р¶Р°С‚РёРµ)
         {
             change_flag = true;
             pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
@@ -145,9 +145,9 @@ void GUIWindow_AutonotesBook::Update()
     }
     else
     {
-        if (_506568_autonote_type == AUTONOTE_POTION_RECEPIE)// default(по умолчанию при запуске окна)
+        if (_506568_autonote_type == AUTONOTE_POTION_RECEPIE)// default(РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РїСЂРё Р·Р°РїСѓСЃРєРµ РѕРєРЅР°)
             render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 398)/640.0f, (pViewport->uViewportTL_Y + 113)/480.0f, ui_book_button3_on);
-        else//Potions_page not active(вкладка снадобья не активна)
+        else//Potions_page not active(РІРєР»Р°РґРєР° СЃРЅР°РґРѕР±СЊСЏ РЅРµ Р°РєС‚РёРІРЅР°)
             render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408)/640.0f, (pViewport->uViewportTL_Y + 113)/480.0f, ui_book_button3_off);
     }
 
@@ -267,7 +267,7 @@ void GUIWindow_AutonotesBook::Update()
     autonotes_window.uFrameHeight = 264;
     autonotes_window.uFrameZ = 407;
     autonotes_window.uFrameW = 333;
-    if (change_flag)//change bookmark(смена закладки)
+    if (change_flag)//change bookmark(СЃРјРµРЅР° Р·Р°РєР»Р°РґРєРё)
     {
         full_num_items_in_book = 0;
         books_primary_item_per_page = 0;
@@ -283,9 +283,9 @@ void GUIWindow_AutonotesBook::Update()
         }
         full_num_items_in_book = num_achieved_awards;
     }
-    else//not change bookmark(не меняется закладка)
+    else//not change bookmark(РЅРµ РјРµРЅСЏРµС‚СЃСЏ Р·Р°РєР»Р°РґРєР°)
     {
-        if (BtnDown_flag)// press Down bookmark(нажатие закладки пролистать дальше)
+        if (BtnDown_flag)// press Down bookmark(РЅР°Р¶Р°С‚РёРµ Р·Р°РєР»Р°РґРєРё РїСЂРѕР»РёСЃС‚Р°С‚СЊ РґР°Р»СЊС€Рµ)
         {
             if (num_achieved_awards + books_primary_item_per_page < full_num_items_in_book)
             {
@@ -294,13 +294,13 @@ void GUIWindow_AutonotesBook::Update()
                 pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
             }
         }
-        if (BtnUp_flag && books_page_number)// press Up bookmark(нажатие закладки пролистать назад)
+        if (BtnUp_flag && books_page_number)// press Up bookmark(РЅР°Р¶Р°С‚РёРµ Р·Р°РєР»Р°РґРєРё РїСЂРѕР»РёСЃС‚Р°С‚СЊ РЅР°Р·Р°Рґ)
         {
             --books_page_number;
             books_primary_item_per_page -= (unsigned __int8)books_num_items_per_page[books_page_number];
             pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
         }
-        if (!num_achieved_awards || !books_primary_item_per_page)//количество записей 0 или номер первой страницы 0
+        if (!num_achieved_awards || !books_primary_item_per_page)//РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїРёСЃРµР№ 0 РёР»Рё РЅРѕРјРµСЂ РїРµСЂРІРѕР№ СЃС‚СЂР°РЅРёС†С‹ 0
         {
             books_primary_item_per_page = 0;
             books_page_number = 0;

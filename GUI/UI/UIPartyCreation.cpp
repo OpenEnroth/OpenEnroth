@@ -171,7 +171,7 @@ void CreateParty_EventLoop() {
       case UIMSG_PlayerCreationRemoveUpSkill: {
         int v4; v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
         pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
-        if (pPlayer[param].GetSkillIdxByOrder(2) != 37) {  //37 - None(Íåò)
+        if (pPlayer[param].GetSkillIdxByOrder(2) != 37) {  //37 - None(ÐÐµÑ‚)
           pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)] = 0;
         }
         break;
@@ -179,7 +179,7 @@ void CreateParty_EventLoop() {
       case UIMSG_PlayerCreationRemoveDownSkill: {
         int v4; v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
         pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
-        if (pPlayer[param].GetSkillIdxByOrder(3) != 37)//37 - None(Íåò)
+        if (pPlayer[param].GetSkillIdxByOrder(3) != 37)//37 - None(ÐÐµÑ‚)
           pParty->pPlayers[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(3)] = 0;
       }
       break;
@@ -284,7 +284,7 @@ void GUIWindow_PartyCreation::Update()
     }
 
     pTextCenter = ui_partycreation_font->AlignText_Center(window->GetWidth(), localization->GetString(51));
-    pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font, pTextCenter + 1, 0, 0, localization->GetString(51), 0, 0, 0);// CREATE PARTY / Ñ Î Ç Ä À Ò Ü  Î Ò Ð ß Ä
+    pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font, pTextCenter + 1, 0, 0, localization->GetString(51), 0, 0, 0);// CREATE PARTY / Ð¡ Ðž Ð— Ð” Ð Ð¢ Ð¬  Ðž Ð¢ Ð  Ð¯ Ð”
     render->DrawTextureAlphaNew(17 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[0].uCurrentFace]);
     render->DrawTextureAlphaNew(176 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[1].uCurrentFace]);
     render->DrawTextureAlphaNew(335 / 640.0f, 35 / 480.0f, ui_partycreation_portraits[pParty->pPlayers[2].uCurrentFace]);

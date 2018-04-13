@@ -319,14 +319,14 @@ bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *wi
   this->bWindowed = bWindowed;
   this->hWindow = hWnd;
 
-  //Ñîçäàíèå îáúåêòà DirectDraw
+  //Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¾Ð±ÑŠÐµÐºÑ‚Ð° DirectDraw
   if (FAILED(DirectDrawCreate(pAvailableDevices[uDeviceID].pDirectDrawGUID, &lpDD, NULL)))
   {
     sprintf(pErrorMessage, "Init - Failed to create DirectDraw interface.\n");
     return 0;
   }
 
-  //Çàïðîñ èíòåðôåéñà IDirectDraw4
+  //Ð—Ð°Ð¿Ñ€Ð¾Ñ Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹ÑÐ° IDirectDraw4
   if (FAILED(lpDD->QueryInterface(IID_IDirectDraw4, (LPVOID *)&pHost)))
   {
     sprintf(pErrorMessage, "Init - Failed to create DirectDraw4 interface.\n");
@@ -337,7 +337,7 @@ bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *wi
   lpDD->Release();
   lpDD = NULL;
 
-  //Çàäà¸ì óðîâåíü ñîâìåñòíîãî äîñòóïà äëÿ ïðèëîæåíèÿ DirectDraw â îêîííîì ðåæèìå
+  //Ð—Ð°Ð´Ð°Ñ‘Ð¼ ÑƒÑ€Ð¾Ð²ÐµÐ½ÑŒ ÑÐ¾Ð²Ð¼ÐµÑÑ‚Ð½Ð¾Ð³Ð¾ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð° Ð´Ð»Ñ Ð¿Ñ€Ð¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ DirectDraw Ð² Ð¾ÐºÐ¾Ð½Ð½Ð¾Ð¼ Ñ€ÐµÐ¶Ð¸Ð¼Ðµ
   if (bWindowed && !pAvailableDevices[uDeviceID].pDirectDrawGUID)
   {
     if (FAILED(pHost->SetCooperativeLevel(hWnd, DDSCL_MULTITHREADED | DDSCL_NORMAL)))
@@ -356,7 +356,7 @@ bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *wi
     ddsd2.dwSize = sizeof(DDSURFACEDESC2);
     ddsd2.dwFlags = DDSD_CAPS;
     ddsd2.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-    //Ñîçäà¸ì ïåðâè÷íóþ ïîâåðõíîñòü
+    //Ð¡Ð¾Ð·Ð´Ð°Ñ‘Ð¼ Ð¿ÐµÑ€Ð²Ð¸Ñ‡Ð½ÑƒÑŽ Ð¿Ð¾Ð²ÐµÑ€Ñ…Ð½Ð¾ÑÑ‚ÑŒ
     if (FAILED(pHost->CreateSurface(&ddsd2, &pFrontBuffer, NULL)))
     {
       sprintf(pErrorMessage, "Init - Failed to create front buffer.\n");
@@ -389,7 +389,7 @@ bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *wi
       }
       return 0;
     }
-    //Ñîçäàíèå îòñåêàòåëÿ DirectDraw
+    //Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¾Ñ‚ÑÐµÐºÐ°Ñ‚ÐµÐ»Ñ DirectDraw
     if (pHost->CreateClipper(0, &lpddclipper, NULL))
     {
       sprintf(pErrorMessage, "Init - Failed to create clipper.\n");
@@ -559,11 +559,11 @@ bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *wi
 
   memset(&ddsd2, 0, sizeof(DDSURFACEDESC2));
   ddsd2.dwSize = sizeof(DDSURFACEDESC2);
-  //Ïîäêëþ÷åíèå ïîëåé ñ äîñòîâåðíûìè äàííûìè
+  //ÐŸÐ¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð¿Ð¾Ð»ÐµÐ¹ Ñ Ð´Ð¾ÑÑ‚Ð¾Ð²ÐµÑ€Ð½Ñ‹Ð¼Ð¸ Ð´Ð°Ð½Ð½Ñ‹Ð¼Ð¸
   ddsd2.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-  //Çàïðîñ ñëîæíîé ñòðóêòóðû ñ âîçìîæíîñòüþ ïåðåêëþ÷åíèÿ
+  //Ð—Ð°Ð¿Ñ€Ð¾Ñ ÑÐ»Ð¾Ð¶Ð½Ð¾Ð¹ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñ‹ Ñ Ð²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ÑÑ‚ÑŒÑŽ Ð¿ÐµÑ€ÐµÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ
   ddsd2.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
-  //Ïðèñâîåíèå ïîëþ ñ÷¸ò÷èêà çàäíèõ áóôåðîâ çíà÷åíèÿ 1
+  //ÐŸÑ€Ð¸ÑÐ²Ð¾ÐµÐ½Ð¸Ðµ Ð¿Ð¾Ð»ÑŽ ÑÑ‡Ñ‘Ñ‚Ñ‡Ð¸ÐºÐ° Ð·Ð°Ð´Ð½Ð¸Ñ… Ð±ÑƒÑ„ÐµÑ€Ð¾Ð² Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ 1
   ddsd2.dwBackBufferCount = 1;
   if (pHost->CreateSurface(&ddsd2, &pFrontBuffer, NULL))
   {
@@ -813,7 +813,7 @@ void RenderD3D::Present(bool bForceBlit) {
 
   source_rect.left = 0;
   source_rect.top = 0;
-  source_rect.bottom = 480;//window->GetHeight(); //Ritor1: ïðîáëåìà ñ êíîïêîé "ðàçâåðíóòü"
+  source_rect.bottom = 480;//window->GetHeight(); //Ritor1: Ð¿Ñ€Ð¾Ð±Ð»ÐµÐ¼Ð° Ñ ÐºÐ½Ð¾Ð¿ÐºÐ¾Ð¹ "Ñ€Ð°Ð·Ð²ÐµÑ€Ð½ÑƒÑ‚ÑŒ"
   source_rect.right = 640; //window->GetWidth();
 
   if (bWindowed || bForceBlit) {

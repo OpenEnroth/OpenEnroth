@@ -310,11 +310,11 @@ static void UI_DrawSaveLoad(bool save) {
   }
   if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
     pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, localization->GetString(135)) + 25,
-      220, 0, localization->GetString(135), 0, 0, 0); // «‡„ÛÁÍ‡
+      220, 0, localization->GetString(135), 0, 0, 0); // –ó–∞–≥—Ä—É–∑–∫–∞
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, pFontSmallnum->AlignText_Center(186,
       pSavegameHeader[uLoadGameUI_SelectedSlot].pName) + 25, 0x106, 0, pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
     pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, localization->GetString(165)) + 25,
-      304, 0, localization->GetString(165), 0, 0, 0); // œÓÊ‡ÎÛÈÒÚ‡, ÔÓÊÓÊ‰ËÚÂ
+      304, 0, localization->GetString(165), 0, 0, 0); // –ü–æ–∂–∞–ª—É–π—Å—Ç–∞, –ø–æ–∂–æ–∂–¥–∏—Ç–µ
   } else {
     if (save) {
       pSaveFiles = 40;

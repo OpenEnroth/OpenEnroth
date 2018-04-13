@@ -1446,7 +1446,7 @@ int stru6_stru1_indoor_sw_billboard::_4775ED(float a2)
 	float v39; // [sp+D0h] [bp-8h]@6
 	int *v40; // [sp+D4h] [bp-4h]@2
 
-	//  __debugbreak();//íóæíî ïî÷èñòèòü, ñðàáàòûâàåò ïðè ïðèìåíåíèè çàêëà Òî÷å÷íûé âçðûâ è ïðè ñòðåëüáå èç æåçëà
+	//  __debugbreak();//Ð½ÑƒÐ¶Ð½Ð¾ Ð¿Ð¾Ñ‡Ð¸ÑÑ‚Ð¸Ñ‚ÑŒ, ÑÑ€Ð°Ð±Ð°Ñ‚Ñ‹Ð²Ð°ÐµÑ‚ Ð¿Ñ€Ð¸ Ð¿Ñ€Ð¸Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¸ Ð·Ð°ÐºÐ»Ð° Ð¢Ð¾Ñ‡ÐµÑ‡Ð½Ñ‹Ð¹ Ð²Ð·Ñ€Ñ‹Ð² Ð¸ Ð¿Ñ€Ð¸ ÑÑ‚Ñ€ÐµÐ»ÑŒÐ±Ðµ Ð¸Ð· Ð¶ÐµÐ·Ð»Ð°
 	v2 = (char *)&this->field_64[4 * this->uNumVertices];
 	v38 = 0;
 	*(int *)v2 = this->field_64[0];
@@ -1595,7 +1595,7 @@ int stru6_stru1_indoor_sw_billboard::_477927(float a2)
 	float v39; // [sp+D0h] [bp-8h]@6
 	int *v40; // [sp+D4h] [bp-4h]@2
 
-	__debugbreak();//íóæíî ïî÷èñòèòü
+	__debugbreak();//Ð½ÑƒÐ¶Ð½Ð¾ Ð¿Ð¾Ñ‡Ð¸ÑÑ‚Ð¸Ñ‚ÑŒ
 	v2 = (char *)&this->field_64[4 * this->uNumVertices];
 	v38 = 0;
 	*(int *)v2 = this->field_64[0];
@@ -1745,7 +1745,7 @@ int stru6_stru1_indoor_sw_billboard::sub_477C61()
 	float v41; // [sp+2Ch] [bp-4h]@6
 	float v42; // [sp+2Ch] [bp-4h]@9
 
-	//__debugbreak();//íóæíî ïî÷èñòèòü, ñðàáàòûâàåò ïðè ïðèìåíåíèè  çàêëà Òî÷å÷íûé âçðûâ
+	//__debugbreak();//Ð½ÑƒÐ¶Ð½Ð¾ Ð¿Ð¾Ñ‡Ð¸ÑÑ‚Ð¸Ñ‚ÑŒ, ÑÑ€Ð°Ð±Ð°Ñ‚Ñ‹Ð²Ð°ÐµÑ‚ Ð¿Ñ€Ð¸ Ð¿Ñ€Ð¸Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¸  Ð·Ð°ÐºÐ»Ð° Ð¢Ð¾Ñ‡ÐµÑ‡Ð½Ñ‹Ð¹ Ð²Ð·Ñ€Ñ‹Ð²
 	if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
 	{
 
@@ -1865,7 +1865,7 @@ bool stru6_stru1_indoor_sw_billboard::sub_477F63()
 	signed int v9; // [sp+Ch] [bp-8h]@1
 	float v10; // [sp+10h] [bp-4h]@2
 
-	//__debugbreak();// ïî÷èñòèòü
+	//__debugbreak();// Ð¿Ð¾Ñ‡Ð¸ÑÑ‚Ð¸Ñ‚ÑŒ
 	v1 = 0;
 	v9 = 0;
 	/*if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
@@ -1921,7 +1921,7 @@ int stru6_stru1_indoor_sw_billboard::sub_47802A()
 	int a6; // [sp+3Ch] [bp-8h]@5
 	int a5; // [sp+40h] [bp-4h]@5
 
-	//  __debugbreak(); //íåîáõîäèìî ïðîâåðèòü this->field_B4[i*4+16]
+	//  __debugbreak(); //Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ Ð¿Ñ€Ð¾Ð²ÐµÑ€Ð¸Ñ‚ÑŒ this->field_B4[i*4+16]
 	v16 = 0;
 	if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
 	{

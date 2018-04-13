@@ -50,7 +50,7 @@ void GUIWindow_RestWindow::Update()
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
     render->DrawTextureAlphaNew(uFrameX/640.0f, uFrameY/480.0f, *((Image **)ptr_1C + 15));
     viewparams->bRedrawGameUI = 1;
-    GUIButton2.DrawLabel(localization->GetString(183), pFontCreate, 0, 0); // Rest & Heal 8 hrs / ŒÚ‰˚ı Ë ÎÂ˜ÂÌËÂ 8 ˜‡ÒÓ‚
+    GUIButton2.DrawLabel(localization->GetString(183), pFontCreate, 0, 0); // Rest & Heal 8 hrs / –û—Ç–¥—ã—Ö –∏ –ª–µ—á–µ–Ω–∏–µ 8 —á–∞—Å–æ–≤
     GUIButton2.pParent = 0;
     Release();
 }
@@ -90,7 +90,7 @@ void PrepareToLoadRestUI()
         --uRestUI_FoodRequiredToRest;
     if (uRestUI_FoodRequiredToRest < 1)
         uRestUI_FoodRequiredToRest = 1;
-    if (!_stricmp(pCurrentMapName, "d29.blv") && _449B57_test_bit(pParty->_quest_bits, PARTY_QUEST_HARMONDALE_REBUILT)) // d29 = Harmondale / «‡ÏÓÍ ’‡ÏÓÌ‰ÂÈÎ
+    if (!_stricmp(pCurrentMapName, "d29.blv") && _449B57_test_bit(pParty->_quest_bits, PARTY_QUEST_HARMONDALE_REBUILT)) // d29 = Harmondale / –ó–∞–º–æ–∫ –•–∞—Ä–º–æ–Ω–¥–µ–π–ª
         uRestUI_FoodRequiredToRest = 0;
 }
 
@@ -179,16 +179,16 @@ void GUIWindow_Rest::Update()
         tmp_button.uWidth = 171;
         tmp_button.uHeight = 37;
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(localization->GetString(183), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//ŒÚ‰˚ı Ë ÎÂ˜ÂÌËÂ 8 ˜‡ÒÓ‚
+        tmp_button.DrawLabel(localization->GetString(183), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//–û—Ç–¥—ã—Ö –∏ –ª–µ—á–µ–Ω–∏–µ 8 —á–∞—Å–æ–≤
         tmp_button.pParent = 0;
 
         auto str1 = StringPrintf("\r408%d", uRestUI_FoodRequiredToRest);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 0, 164, Color16(10, 0, 0), str1, 0, 0, Color16(230, 214, 193));
 
-        pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(237), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//∆‰‡Ú¸ ‰Ó ‡ÒÒ‚ÂÚ‡
-        pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(239), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//∆‰‡Ú¸ 1 ˜‡Ò
-        pButton_RestUI_Wait5Minutes->DrawLabel(localization->GetString(238), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//∆‰‡Ú¸ 5 ÏËÌÛÚ
-        pButton_RestUI_Exit->DrawLabel(localization->GetString(81), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//«‡ÍÓÌ˜ËÚ¸ ÓÚ‰˚ı‡Ú¸
+        pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(237), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//–ñ–¥–∞—Ç—å –¥–æ —Ä–∞—Å—Å–≤–µ—Ç–∞
+        pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(239), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//–ñ–¥–∞—Ç—å 1 —á–∞—Å
+        pButton_RestUI_Wait5Minutes->DrawLabel(localization->GetString(238), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//–ñ–¥–∞—Ç—å 5 –º–∏–Ω—É—Ç
+        pButton_RestUI_Exit->DrawLabel(localization->GetString(81), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//–ó–∞–∫–æ–Ω—á–∏—Ç—å –æ—Ç–¥—ã—Ö–∞—Ç—å
         tmp_button.uX = 45;
         tmp_button.uY = 199;
 
@@ -199,15 +199,15 @@ void GUIWindow_Rest::Update()
         tmp_button.uHeight = 30;
 
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(localization->GetString(236), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//∆‰‡Ú¸ ·ÂÁ ÎÂ˜ÂÌËˇ
+        tmp_button.DrawLabel(localization->GetString(236), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));//–ñ–¥–∞—Ç—å –±–µ–∑ –ª–µ—á–µ–Ω–∏—è
         tmp_button.pParent = 0;
         auto str2 = StringPrintf("%d:%02d %s", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 368, 168, Color16(10, 0, 0), str2, 0, 0, Color16(230, 214, 193));
-        auto str3 = StringPrintf("%s\r190%d", localization->GetString(56), pParty->uCurrentDayOfMonth + 1);//ƒÂÌ¸
+        auto str3 = StringPrintf("%s\r190%d", localization->GetString(56), pParty->uCurrentDayOfMonth + 1);//–î–µ–Ω—å
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190, Color16(10, 0, 0), str3, 0, 0, Color16(230, 214, 193));
-        auto str4 = StringPrintf("%s\r190%d", localization->GetString(146), pParty->uCurrentMonth + 1);//ÃÂÒˇˆ
+        auto str4 = StringPrintf("%s\r190%d", localization->GetString(146), pParty->uCurrentMonth + 1);//–ú–µ—Å—è—Ü
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 222, Color16(10, 0, 0), str4, 0, 0, Color16(230, 214, 193));
-        auto str5 = StringPrintf("%s\r190%d", localization->GetString(245), pParty->uCurrentYear);//√Ó‰
+        auto str5 = StringPrintf("%s\r190%d", localization->GetString(245), pParty->uCurrentYear);//–ì–æ–¥
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 254, Color16(10, 0, 0), str5, 0, 0, Color16(230, 214, 193));
         if (_506F14_resting_stage)
             Party::Sleep8Hours();

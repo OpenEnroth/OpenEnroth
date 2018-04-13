@@ -567,10 +567,10 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     // Draw portrait border
     render->ResetUIClipRect();
     render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, Color16(0, 0, 0));
-    render->RasterLine2D(doll_rect.x - 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.y - 1, Color16(0xE1u, 255, 0x9Bu));  // горизонтальная верхняя линия
-    render->RasterLine2D(doll_rect.x - 1, doll_rect.w + 1, doll_rect.x - 1, doll_rect.y - 1, Color16(0xE1u, 255, 0x9Bu));  // горизонтальная нижняя линия
-    render->RasterLine2D(doll_rect.z + 1, doll_rect.w + 1, doll_rect.x - 1, doll_rect.w + 1, Color16(0xE1u, 255, 0x9Bu));  // левая вертикальная линия
-    render->RasterLine2D(doll_rect.z + 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.w + 1, Color16(0xE1u, 255, 0x9Bu));  // правая вертикальная линия
+    render->RasterLine2D(doll_rect.x - 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.y - 1, Color16(0xE1u, 255, 0x9Bu));  // РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅР°СЏ РІРµСЂС…РЅСЏСЏ Р»РёРЅРёСЏ
+    render->RasterLine2D(doll_rect.x - 1, doll_rect.w + 1, doll_rect.x - 1, doll_rect.y - 1, Color16(0xE1u, 255, 0x9Bu));  // РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅР°СЏ РЅРёР¶РЅСЏСЏ Р»РёРЅРёСЏ
+    render->RasterLine2D(doll_rect.z + 1, doll_rect.w + 1, doll_rect.x - 1, doll_rect.w + 1, Color16(0xE1u, 255, 0x9Bu));  // Р»РµРІР°СЏ РІРµСЂС‚РёРєР°Р»СЊРЅР°СЏ Р»РёРЅРёСЏ
+    render->RasterLine2D(doll_rect.z + 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.w + 1, Color16(0xE1u, 255, 0x9Bu));  // РїСЂР°РІР°СЏ РІРµСЂС‚РёРєР°Р»СЊРЅР°СЏ Р»РёРЅРёСЏ
 
     // Draw portrait
     Image *image = v10->hw_sprites[0]->texture;
@@ -763,7 +763,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
       }
     }
     if (!_stricmp(pText, ""))
-      pWindow->DrawText(pFontSmallnum, 28, pTextHeight, Color16(0xE1u, 255, 0x9Bu), localization->GetString(153), 0, 0, 0); // Нет
+      pWindow->DrawText(pFontSmallnum, 28, pTextHeight, Color16(0xE1u, 255, 0x9Bu), localization->GetString(153), 0, 0, 0); // РќРµС‚
   }
 
   String txt2;
@@ -984,7 +984,7 @@ void CharacterUI_SkillsTab_ShowHint() {
     }
   }
   else
-    CharacterUI_DrawTooltip(localization->GetString(207), pSkillPointsAttributeDescription); // Skill points   /   Очки навыков
+    CharacterUI_DrawTooltip(localization->GetString(207), pSkillPointsAttributeDescription); // Skill points   /   РћС‡РєРё РЅР°РІС‹РєРѕРІ
 }
 
 //----- (00418083) --------------------------------------------------------
@@ -1262,7 +1262,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
       return;
     }
   }
-  if (pParty->pPickedItem.uItemID)//нажатие на портрет перса правой кнопкой мыши с раствором
+  if (pParty->pPickedItem.uItemID)//РЅР°Р¶Р°С‚РёРµ РЅР° РїРѕСЂС‚СЂРµС‚ РїРµСЂСЃР° РїСЂР°РІРѕР№ РєРЅРѕРїРєРѕР№ РјС‹С€Рё СЃ СЂР°СЃС‚РІРѕСЂРѕРј
   {
     for (uint i = 0; i < 4; ++i)
     {
@@ -1288,7 +1288,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
     if (!pPlayers[uActiveCharacter]->CanAct())
     {
       static String hint_reference;
-      hint_reference = localization->FormatString(427, pPlayers[uActiveCharacter]->pName, localization->GetString(541));//%s не в состоянии %s Опознать предметы
+      hint_reference = localization->FormatString(427, pPlayers[uActiveCharacter]->pName, localization->GetString(541));//%s РЅРµ РІ СЃРѕСЃС‚РѕСЏРЅРёРё %s РћРїРѕР·РЅР°С‚СЊ РїСЂРµРґРјРµС‚С‹
 
       popup_window.sHint = hint_reference;
       popup_window.uFrameWidth = 384;
@@ -1339,7 +1339,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
     break;
   }
 
-  case SCREEN_GAME://In the main menu displays a pop-up window(В главном меню показывает всплывающее окно)
+  case SCREEN_GAME://In the main menu displays a pop-up window(Р’ РіР»Р°РІРЅРѕРј РјРµРЅСЋ РїРѕРєР°Р·С‹РІР°РµС‚ РІСЃРїР»С‹РІР°СЋС‰РµРµ РѕРєРЅРѕ)
   {
     if (GetCurrentMenuID() > 0)
       break;
@@ -1471,12 +1471,12 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
           pStr = localization->GetAttirubteName((int)pButton->msg_param % 7);
           break;
         case UIMSG_PlayerCreationClickPlus: //Plus button info 
-          pStr = localization->GetString(670);//Добавить
-          popup_window.sHint = localization->GetString(671);//"Добавляет очко к выделенному навыку, забирая его из накопителя очков"
+          pStr = localization->GetString(670);//Р”РѕР±Р°РІРёС‚СЊ
+          popup_window.sHint = localization->GetString(671);//"Р”РѕР±Р°РІР»СЏРµС‚ РѕС‡РєРѕ Рє РІС‹РґРµР»РµРЅРЅРѕРјСѓ РЅР°РІС‹РєСѓ, Р·Р°Р±РёСЂР°СЏ РµРіРѕ РёР· РЅР°РєРѕРїРёС‚РµР»СЏ РѕС‡РєРѕРІ"
           break;
         case UIMSG_PlayerCreationClickMinus: //Minus button info
-          pStr = localization->GetString(668);//Вычесть
-          popup_window.sHint = localization->GetString(669);//"Вычитает очко из выделенного навыка, возвращая его в накопитель очков"
+          pStr = localization->GetString(668);//Р’С‹С‡РµСЃС‚СЊ
+          popup_window.sHint = localization->GetString(669);//"Р’С‹С‡РёС‚Р°РµС‚ РѕС‡РєРѕ РёР· РІС‹РґРµР»РµРЅРЅРѕРіРѕ РЅР°РІС‹РєР°, РІРѕР·РІСЂР°С‰Р°СЏ РµРіРѕ РІ РЅР°РєРѕРїРёС‚РµР»СЊ РѕС‡РєРѕРІ"
           break;
         case UIMSG_PlayerCreationSelectActiveSkill: //Available skill button info
           pStr = localization->GetSkillName(pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(pButton->msg_param + 4));
@@ -1487,12 +1487,12 @@ void UI_OnMouseRightClick(Vec2_int_ *_this)
           pStr = localization->GetClassName(pButton->msg_param);
           break;
         case UIMSG_PlayerCreationClickOK: //OK Info
-          popup_window.sHint = localization->GetString(664);//Щелкните здесь для утверждения состава отряда и продолжения игры.
-          pStr = localization->GetString(665);//Кнопка ОК
+          popup_window.sHint = localization->GetString(664);//Р©РµР»РєРЅРёС‚Рµ Р·РґРµСЃСЊ РґР»СЏ СѓС‚РІРµСЂР¶РґРµРЅРёСЏ СЃРѕСЃС‚Р°РІР° РѕС‚СЂСЏРґР° Рё РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ РёРіСЂС‹.
+          pStr = localization->GetString(665);//РљРЅРѕРїРєР° РћРљ
           break;
         case UIMSG_PlayerCreationClickReset: //Clear info
-          popup_window.sHint = localization->GetString(666);//Сбрасывает все параметры и навыки отряда.
-          pStr = localization->GetString(667);//Кнопка Очистить
+          popup_window.sHint = localization->GetString(666);//РЎР±СЂР°СЃС‹РІР°РµС‚ РІСЃРµ РїР°СЂР°РјРµС‚СЂС‹ Рё РЅР°РІС‹РєРё РѕС‚СЂСЏРґР°.
+          pStr = localization->GetString(667);//РљРЅРѕРїРєР° РћС‡РёСЃС‚РёС‚СЊ
           break;
         case UIMSG_PlayerCreation_SelectAttribute: // Character info
           pStr = pParty->pPlayers[pButton->msg_param].pName;
@@ -1596,7 +1596,7 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
 	int invMatrixIndex = inventoryXCoord + ( 14 * inventoryYCoord); //INVETORYSLOTSWIDTH
 
 
-	if (pX <= 13 || pX >= 462)//items out of inventory(вещи вне инвентаря)  this is for player ragdoll items??
+	if (pX <= 13 || pX >= 462)//items out of inventory(РІРµС‰Рё РІРЅРµ РёРЅРІРµРЅС‚Р°СЂСЏ)  this is for player ragdoll items??
 	{
 
 
@@ -1685,11 +1685,11 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
  
 
 
-    //check character condition(проверка состояния персонажа)
+    //check character condition(РїСЂРѕРІРµСЂРєР° СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРµСЂСЃРѕРЅР°Р¶Р°)
     if (!pPlayers[uActiveCharacter]->CanAct())
     {
         static String hint_reference;
-        hint_reference = localization->FormatString(427, pPlayers[uActiveCharacter]->pName, localization->GetString(541));//%s не в состоянии %s Опознать предметы
+        hint_reference = localization->FormatString(427, pPlayers[uActiveCharacter]->pName, localization->GetString(541));//%s РЅРµ РІ СЃРѕСЃС‚РѕСЏРЅРёРё %s РћРїРѕР·РЅР°С‚СЊ РїСЂРµРґРјРµС‚С‹
 
         message_window.sHint = hint_reference;
         message_window.uFrameWidth = 384;
@@ -1706,14 +1706,14 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
     int alchemy_skill_points = pPlayers[uActiveCharacter]->GetActualSkillLevel(PLAYER_SKILL_ALCHEMY);
     int alchemy_skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
 
-    // for potion bottle(простая бутылка)
+    // for potion bottle(РїСЂРѕСЃС‚Р°СЏ Р±СѓС‚С‹Р»РєР°)
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE)
     {
         GameUI_DrawItemInfo(item);
         return;
     }
 
-    //for recharge potion(зелье перезарядка)
+    //for recharge potion(Р·РµР»СЊРµ РїРµСЂРµР·Р°СЂСЏРґРєР°)
     if (pParty->pPickedItem.uItemID == ITEM_POTION_RECHARGE_ITEM)
     {
         if (item->uItemID < ITEM_POTION_BOTTLE || item->uItemID > ITEM_POTION_REJUVENATION)// all potions
@@ -1737,7 +1737,7 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
         GameUI_DrawItemInfo(item);
         return;
     }
-    // for harden potion(зелье закалка)
+    // for harden potion(Р·РµР»СЊРµ Р·Р°РєР°Р»РєР°)
     else if (pParty->pPickedItem.uItemID == ITEM_POTION_HARDEN_ITEM)
     {
         if (item->uItemID < ITEM_POTION_BOTTLE || item->uItemID > ITEM_POTION_REJUVENATION) // bottle and all potions
@@ -1763,7 +1763,7 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
         return;
     }
 
-    // several potions(несколько зелий)
+    // several potions(РЅРµСЃРєРѕР»СЊРєРѕ Р·РµР»РёР№)
     else if (pParty->pPickedItem.uItemID >= ITEM_POTION_FLAMING_POTION && pParty->pPickedItem.uItemID <= ITEM_POTION_SWIFT_POTION ||
         pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING_POTION)
     {
@@ -1816,7 +1816,7 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
         return;
     }
 
-    // use reagents(применение реагентов)
+    // use reagents(РїСЂРёРјРµРЅРµРЅРёРµ СЂРµР°РіРµРЅС‚РѕРІ)
     if (pParty->pPickedItem.uItemID >= ITEM_REAGENT_WIDOWSWEEP_BERRIES && pParty->pPickedItem.uItemID <= ITEM_REAGENT_PHILOSOPHERS_STONE &&
         item->uItemID == ITEM_POTION_BOTTLE)
     {
@@ -1867,7 +1867,7 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
         return;
     }
 
-    //potions mixing(смешивание двух зелий)
+    //potions mixing(СЃРјРµС€РёРІР°РЅРёРµ РґРІСѓС… Р·РµР»РёР№)
     if (pParty->pPickedItem.uItemID >= ITEM_POTION_CATALYST && pParty->pPickedItem.uItemID <= ITEM_POTION_REJUVENATION &&
         item->uItemID >= ITEM_POTION_CATALYST &&
         item->uItemID <= ITEM_POTION_REJUVENATION)
@@ -1893,7 +1893,7 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
                     damage_level = 4;
             }
         }
-        else//no skill(нет навыка)
+        else//no skill(РЅРµС‚ РЅР°РІС‹РєР°)
         {
             if (potionID >= ITEM_POTION_CURE_DISEASE && potionID <= ITEM_POTION_AWAKEN)//225 <= v16 <= 227
                 damage_level = 1;
@@ -1958,7 +1958,7 @@ void Inventory_ItemPopupAndAlchemy() // needs cleaning
             {
                 if (pPlayers[uActiveCharacter]->CanAct())
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_17, 0);
-                GameUI_StatusBar_OnEvent(localization->GetString(444)); // Ouch!   Ой!
+                GameUI_StatusBar_OnEvent(localization->GetString(444)); // Ouch!   РћР№!
                 dword_4E455C = 0;
             }
             pMouse->RemoveHoldingItem();

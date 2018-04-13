@@ -147,7 +147,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y, unsigne
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     pMouse->SetCursorImage("MICON2");
-    GameUI_StatusBar_OnEvent(localization->GetString(39)); // Choose target / Âûáåðèòå öåëü
+    GameUI_StatusBar_OnEvent(localization->GetString(39)); // Choose target / Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ñ†ÐµÐ»ÑŒ
 }
 
 void GUIMessageQueue::Flush() {
@@ -481,7 +481,7 @@ void GUIWindow::HouseDialogManager() {
     }
     return;
   }
-  if (v4 || !dword_591080) {  // emerald isle ship before quest's done   /   íà èçóìðóäíîì îñòðîâå çàõîäèò íà êîðàáëå ïîêà íå âûïîëíåíû êâåñòû
+  if (v4 || !dword_591080) {  // emerald isle ship before quest's done   /   Ð½Ð° Ð¸Ð·ÑƒÐ¼Ñ€ÑƒÐ´Ð½Ð¾Ð¼ Ð¾ÑÑ‚Ñ€Ð¾Ð²Ðµ Ð·Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ Ð½Ð° ÐºÐ¾Ñ€Ð°Ð±Ð»Ðµ Ð¿Ð¾ÐºÐ° Ð½Ðµ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ñ‹ ÐºÐ²ÐµÑÑ‚Ñ‹
     SimpleHouseDialog();
   } else {
     pWindow.DrawTitleText(
@@ -1694,25 +1694,25 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo)
 
         if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 1][skillBeingTaught] >= masteryLevelBeingTaught)
         {
-            return localization->FormatString(633, localization->GetClassName(classBaseId + 1)); // You have to be promoted to %s to learn this skill level.   /   Âû äîëæíû äîñòè÷ü çâàíèÿ %s äëÿ îáó÷åíèÿ ýòîìó óðîâíþ íàâûêà.
+            return localization->FormatString(633, localization->GetClassName(classBaseId + 1)); // You have to be promoted to %s to learn this skill level.   /   Ð’Ñ‹ Ð´Ð¾Ð»Ð¶Ð½Ñ‹ Ð´Ð¾ÑÑ‚Ð¸Ñ‡ÑŒ Ð·Ð²Ð°Ð½Ð¸Ñ %s Ð´Ð»Ñ Ð¾Ð±ÑƒÑ‡ÐµÐ½Ð¸Ñ ÑÑ‚Ð¾Ð¼Ñƒ ÑƒÑ€Ð¾Ð²Ð½ÑŽ Ð½Ð°Ð²Ñ‹ÐºÐ°.
         }
         else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught
             && byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught
             )
         {
-            return localization->FormatString(634, localization->GetClassName(classBaseId + 2), localization->GetClassName(classBaseId + 3)); // You have to be promoted to %s or %s to learn this skill level.   /   Âû äîëæíû äîñòè÷ü çâàíèÿ %s èëè %s äëÿ îáó÷åíèÿ ýòîìó óðîâíþ íàâûêà.
+            return localization->FormatString(634, localization->GetClassName(classBaseId + 2), localization->GetClassName(classBaseId + 3)); // You have to be promoted to %s or %s to learn this skill level.   /   Ð’Ñ‹ Ð´Ð¾Ð»Ð¶Ð½Ñ‹ Ð´Ð¾ÑÑ‚Ð¸Ñ‡ÑŒ Ð·Ð²Ð°Ð½Ð¸Ñ %s Ð¸Ð»Ð¸ %s Ð´Ð»Ñ Ð¾Ð±ÑƒÑ‡ÐµÐ½Ð¸Ñ ÑÑ‚Ð¾Ð¼Ñƒ ÑƒÑ€Ð¾Ð²Ð½ÑŽ Ð½Ð°Ð²Ñ‹ÐºÐ°.
         }
         else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught)
         {
-            return localization->FormatString(633, localization->GetClassName(classBaseId + 2)); // You have to be promoted to %s to learn this skill level.   /   Âû äîëæíû äîñòè÷ü çâàíèÿ %s äëÿ îáó÷åíèÿ ýòîìó óðîâíþ íàâûêà.
+            return localization->FormatString(633, localization->GetClassName(classBaseId + 2)); // You have to be promoted to %s to learn this skill level.   /   Ð’Ñ‹ Ð´Ð¾Ð»Ð¶Ð½Ñ‹ Ð´Ð¾ÑÑ‚Ð¸Ñ‡ÑŒ Ð·Ð²Ð°Ð½Ð¸Ñ %s Ð´Ð»Ñ Ð¾Ð±ÑƒÑ‡ÐµÐ½Ð¸Ñ ÑÑ‚Ð¾Ð¼Ñƒ ÑƒÑ€Ð¾Ð²Ð½ÑŽ Ð½Ð°Ð²Ñ‹ÐºÐ°.
         }
         else if (byte_4ED970_skill_learn_ability_by_class_table[classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught)
         {
-            return localization->FormatString(633, localization->GetClassName(classBaseId + 3)); // You have to be promoted to %s to learn this skill level.   /   Âû äîëæíû äîñòè÷ü çâàíèÿ %s äëÿ îáó÷åíèÿ ýòîìó óðîâíþ íàâûêà.
+            return localization->FormatString(633, localization->GetClassName(classBaseId + 3)); // You have to be promoted to %s to learn this skill level.   /   Ð’Ñ‹ Ð´Ð¾Ð»Ð¶Ð½Ñ‹ Ð´Ð¾ÑÑ‚Ð¸Ñ‡ÑŒ Ð·Ð²Ð°Ð½Ð¸Ñ %s Ð´Ð»Ñ Ð¾Ð±ÑƒÑ‡ÐµÐ½Ð¸Ñ ÑÑ‚Ð¾Ð¼Ñƒ ÑƒÑ€Ð¾Ð²Ð½ÑŽ Ð½Ð°Ð²Ñ‹ÐºÐ°.
         }
         else
         {
-            return localization->FormatString(632, localization->GetClassName(pClassType)); // This skill level can not be learned by the %s class.   /   Ýòîò óðîâåíü íàâûêà íå ìîæåò áûòü ïîñòèãíóò êëàññîì %s.
+            return localization->FormatString(632, localization->GetClassName(pClassType)); // This skill level can not be learned by the %s class.   /   Ð­Ñ‚Ð¾Ñ‚ ÑƒÑ€Ð¾Ð²ÐµÐ½ÑŒ Ð½Ð°Ð²Ñ‹ÐºÐ° Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ Ð¿Ð¾ÑÑ‚Ð¸Ð³Ð½ÑƒÑ‚ ÐºÐ»Ð°ÑÑÐ¾Ð¼ %s.
         }
 	}
 
@@ -1966,7 +1966,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo)
 	if (masteryLevelBeingTaught == 2)
 	{
         return localization->FormatString(
-            534, // Ïîëó÷èòü ñòåïåíü ^Pr[%s] â íàâûêå ^Pr[%s] çà ^I[%lu] çîëîò^L[îé;ûõ;ûõ]
+            534, // ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ ÑÑ‚ÐµÐ¿ÐµÐ½ÑŒ ^Pr[%s] Ð² Ð½Ð°Ð²Ñ‹ÐºÐµ ^Pr[%s] Ð·Ð° ^I[%lu] Ð·Ð¾Ð»Ð¾Ñ‚^L[Ð¾Ð¹;Ñ‹Ñ…;Ñ‹Ñ…]
 			localization->GetString(433), // Expert
             localization->GetSkillName(dword_F8B1AC_award_bit_number),
             gold_transaction_amount
@@ -2136,7 +2136,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3, 
 				else
                     result += localization->GetString(390);// "brother"
 				break;
-			case 17: // hired npc text   òåêñò íà¸ìíîãî ÍÏÑ
+			case 17: // hired npc text   Ñ‚ÐµÐºÑÑ‚ Ð½Ð°Ñ‘Ð¼Ð½Ð¾Ð³Ð¾ ÐÐŸÐ¡
 			{
 						uint pay_percentage = pNPCStats->pProfessions[npc->uProfession].uHirePrice / 100;
 						if (!pay_percentage)
