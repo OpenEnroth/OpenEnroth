@@ -12,6 +12,7 @@
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIModal.h"

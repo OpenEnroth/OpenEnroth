@@ -44,6 +44,8 @@ enum KeyToggleType : __int32
   TOGGLE_OneTimePress = 0x1,
 };
 
+class GUIWindow;
+
 #pragma pack(push, 1)
 struct KeyboardActionMapping
 {
@@ -57,7 +59,7 @@ struct KeyboardActionMapping
   void StoreMappings();
   bool ProcessTextInput(unsigned int a2);
   void SetWindowInputStatus(int a2);
-  void EnterText(int a2, int max_string_len, struct GUIWindow *pWindow);
+  void EnterText(int a2, int max_string_len, GUIWindow *pWindow);
   void ResetKeys();
   void SetDefaultMapping();
 
@@ -72,7 +74,7 @@ struct KeyboardActionMapping
   char field_202;
   char field_203;
   int field_204;
-  struct GUIWindow *pWindow;
+  GUIWindow *pWindow;
 };
 #pragma pack(pop)
 

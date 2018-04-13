@@ -1,8 +1,4 @@
-#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRT_SECURE_NO_WARNINGS
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -3778,4 +3774,76 @@ void GenerateStandartShopItems()
         }
     }
     pParty->InTheShopFlags[shop_index] = 0;
+}
+
+GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
+  GUIWindow(x, y, width, height, button, hint)
+{
+  pEventTimer->Pause(); // pause timer so not attacked
+  pAudioPlayer->StopChannels(-1, -1);
+
+  current_screen_type = SCREEN_HOUSE;
+  pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(80), // Quit building / Выйти из здания
+    { { ui_exit_cancel_button_background } });
+  for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
+    const char *v29, *v30;
+    if (v26 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
+      v30 = pMapStats->pInfos[uHouse_ExitPic].pName;
+      v29 = localization->GetString(411); // Enter %s
+    }
+    else {
+      if (v26 || !dword_591080)
+        v30 = HouseNPCData[v26 + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
+      else
+        v30 = p2DEvents[button - 1].pProprieterName;
+      v29 = localization->GetString(435);
+    }
+    sprintf(byte_591180[v26].data(), v29, v30);
+    HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],
+      pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26],
+      63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, 0, byte_591180[v26].data());
+  }
+  if (uNumDialogueNPCPortraits == 1) {
+    window_SpeakInHouse = this;
+    _4B4224_UpdateNPCTopics(0);
+  }
+}
+
+void GUIWindow_House::Update() {
+  HouseDialogManager();
+  if (!window_SpeakInHouse)
+    return;
+  if (window_SpeakInHouse->par1C >= 53)
+    return;
+  if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] <= pParty->GetPlayingTime()) {
+    if (window_SpeakInHouse->par1C < 53)
+      pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] = 0;
+    return;
+  }
+  //dialog_menu_id = HOUSE_DIALOGUE_MAIN; 
+  pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0); // banned from shop so leaving
+}
+
+void GUIWindow_House::Release() {
+  for (int i = 0; i < uNumDialogueNPCPortraits; ++i) {
+    if (pDialogueNPCPortraits[i]) {
+      pDialogueNPCPortraits[i]->Release();
+      pDialogueNPCPortraits[i] = nullptr;
+    }
+  }
+  uNumDialogueNPCPortraits = 0;
+
+  if (game_ui_dialogue_background) {
+    game_ui_dialogue_background->Release();
+    game_ui_dialogue_background = nullptr;
+  }
+
+  dword_5C35D4 = 0;
+  if (bFlipOnExit) {
+    pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (stru_5C6E00->uIntegerPi + pParty->sRotationY);
+    pIndoorCameraD3D->sRotationY = pParty->sRotationY;
+  }
+  pParty->uFlags |= 2u;
+
+  GUIWindow::Release();
 }

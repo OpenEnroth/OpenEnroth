@@ -357,9 +357,6 @@
     <ClCompile Include="..\..\Game\Game.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Game\MainMenu.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -476,6 +473,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\RenderBase.cpp">
       <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GUI\UI\UIInventory.cpp">
+      <Filter>GUI\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -971,9 +971,6 @@
     <ClInclude Include="..\..\Engine\Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Game\MainMenu.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Game\GameOver.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -1096,6 +1093,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\RenderBase.h">
       <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GUI\UI\UIInventory.h">
+      <Filter>GUI\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,19 +1,29 @@
 #pragma once
+
 #include "GUI/GUIWindow.h"
 
+class GUIWindow_MainMenu : public GUIWindow {
+ public:
+  GUIWindow_MainMenu();
+  virtual ~GUIWindow_MainMenu();
 
+  virtual void Update();
 
-extern struct GUIButton *pMainMenu_BtnExit;
-extern struct GUIButton *pMainMenu_BtnCredits;
-extern struct GUIButton *pMainMenu_BtnLoad;
-extern struct GUIButton *pMainMenu_BtnNew;
+  static void Loop();
+  void EventLoop();
 
+ protected:
+  GUIButton *pBtnExit;
+  GUIButton *pBtnCredits;
+  GUIButton *pBtnLoad;
+  GUIButton *pBtnNew;
 
+  Image *main_menu_background;
 
-struct GUIWindow_MainMenu: public GUIWindow
-{
-             GUIWindow_MainMenu();
-    virtual ~GUIWindow_MainMenu() {}
-
-    virtual void Update();
+  Image *ui_mainmenu_new;
+  Image *ui_mainmenu_load;
+  Image *ui_mainmenu_credits;
+  Image *ui_mainmenu_exit;
 };
+
+extern GUIWindow_MainMenu *pWindow_MainMenu;

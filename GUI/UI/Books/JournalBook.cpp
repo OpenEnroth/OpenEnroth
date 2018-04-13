@@ -11,6 +11,7 @@
 
 #include "Engine/Tables/StorylineTextTable.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/JournalBook.h"
 

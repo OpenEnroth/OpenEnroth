@@ -1,9 +1,9 @@
 #pragma once
 
+#include "GUI/GUIWindow.h"
 #include "Engine/Events2D.h"
 
-enum HOUSE_DIALOGUE_MENU: __int32
-{
+enum HOUSE_DIALOGUE_MENU : int32_t {
   HOUSE_DIALOGUE_NULL = 0,
   HOUSE_DIALOGUE_MAIN = 1,
   HOUSE_DIALOGUE_SHOP_BUY_STANDARD = 2,
@@ -153,5 +153,13 @@ extern HOUSE_DIALOGUE_MENU dialog_menu_id; // 00F8B19C
 
 int HouseDialogPressCloseBtn();
 
-
 extern class Image *_591428_endcap;
+
+class GUIWindow_House : public GUIWindow {
+ public:
+  GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
+  virtual ~GUIWindow_House() {}
+
+  virtual void Update();
+  virtual void Release();
+};

@@ -1,107 +1,89 @@
+#include "GUI/GUIButton.h"
+
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 
 #include "GUI/GUIWindow.h"
-#include "GUI/GUIButton.h"
-#include "GUI/GUIWindow.h"
 #include "GUI/GUIFont.h"
 
 #include "Platform/OSWindow.h"
 
+GUIButton *pBtn_CloseBook;
+GUIButton *pBtn_InstallRemoveSpell;
+GUIButton *pBtn_Autonotes_Instructors;
+GUIButton *pBtn_Autonotes_Misc;
+GUIButton *pBtn_Book_6;
+GUIButton *pBtn_Book_5;
+GUIButton *pBtn_Book_4;
+GUIButton *pBtn_Book_3;
+GUIButton *pBtn_Book_2;
+GUIButton *pBtn_Book_1;
 
 
-struct GUIButton *pBtn_CloseBook;
-struct GUIButton *pBtn_InstallRemoveSpell;
-struct GUIButton *pBtn_Autonotes_Instructors;
-struct GUIButton *pBtn_Autonotes_Misc;
-struct GUIButton *pBtn_Book_6;
-struct GUIButton *pBtn_Book_5;
-struct GUIButton *pBtn_Book_4;
-struct GUIButton *pBtn_Book_3;
-struct GUIButton *pBtn_Book_2;
-struct GUIButton *pBtn_Book_1;
+GUIButton *pPlayerCreationUI_BtnReset;
+GUIButton *pPlayerCreationUI_BtnOK;
+GUIButton *pBtn_ExitCancel;
+GUIButton *pBtn_YES;
+GUIButton *pPlayerCreationUI_BtnPlus;
+GUIButton *pPlayerCreationUI_BtnMinus;
 
 
-struct GUIButton *pPlayerCreationUI_BtnReset;
-struct GUIButton *pPlayerCreationUI_BtnOK;
-struct GUIButton *pBtn_ExitCancel;
-struct GUIButton *pBtn_YES;
-struct GUIButton *pPlayerCreationUI_BtnPlus;
-struct GUIButton *pPlayerCreationUI_BtnMinus;
+GUIButton *pButton_RestUI_Main;
+GUIButton *pButton_RestUI_Exit;
+GUIButton *pButton_RestUI_Wait5Minutes;
+GUIButton *pButton_RestUI_WaitUntilDawn;
+GUIButton *pButton_RestUI_Wait1Hour;
 
 
-struct GUIButton *pButton_RestUI_Main;
-struct GUIButton *pButton_RestUI_Exit;
-struct GUIButton *pButton_RestUI_Wait5Minutes;
-struct GUIButton *pButton_RestUI_WaitUntilDawn;
-struct GUIButton *pButton_RestUI_Wait1Hour;
+GUIButton *pCharacterScreen_ExitBtn;
+GUIButton *pCharacterScreen_AwardsBtn;
+GUIButton *pCharacterScreen_InventoryBtn;
+GUIButton *pCharacterScreen_SkillsBtn;
+GUIButton *pCharacterScreen_StatsBtn;
+GUIButton *pCharacterScreen_DollBtn;
+GUIButton *pCharacterScreen_DetalizBtn;
 
 
-struct GUIButton *pCharacterScreen_ExitBtn;
-struct GUIButton *pCharacterScreen_AwardsBtn;
-struct GUIButton *pCharacterScreen_InventoryBtn;
-struct GUIButton *pCharacterScreen_SkillsBtn;
-struct GUIButton *pCharacterScreen_StatsBtn;
-struct GUIButton *pCharacterScreen_DollBtn;
-struct GUIButton *pCharacterScreen_DetalizBtn;
+GUIButton *pBtn_NPCRight;
+GUIButton *pBtn_NPCLeft;
+GUIButton *pBtn_GameSettings;
+GUIButton *pBtn_QuickReference;
+GUIButton *pBtn_CastSpell;
+GUIButton *pBtn_Rest;
+GUIButton *pBtn_History;
+GUIButton *pBtn_Calendar;
+GUIButton *pBtn_Maps;
+GUIButton *pBtn_Autonotes;
+GUIButton *pBtn_Quests;
 
 
-struct GUIButton *pBtn_NPCRight;
-struct GUIButton *pBtn_NPCLeft;
-struct GUIButton *pBtn_GameSettings;
-struct GUIButton *pBtn_QuickReference;
-struct GUIButton *pBtn_CastSpell;
-struct GUIButton *pBtn_Rest;
-struct GUIButton *pBtn_History;
-struct GUIButton *pBtn_Calendar;
-struct GUIButton *pBtn_Maps;
-struct GUIButton *pBtn_Autonotes;
-struct GUIButton *pBtn_Quests;
+GUIButton *pMMT_MainMenu_BtnMM6;
+GUIButton *pMMT_MainMenu_BtnMM7;
+GUIButton *pMMT_MainMenu_BtnMM8;
+GUIButton *pMMT_MainMenu_BtnContinue;
+GUIButton *pMMT_MainMenu_BtnExit;
 
 
-struct GUIButton *pMMT_MainMenu_BtnMM6;
-struct GUIButton *pMMT_MainMenu_BtnMM7;
-struct GUIButton *pMMT_MainMenu_BtnMM8;
-struct GUIButton *pMMT_MainMenu_BtnContinue;
-struct GUIButton *pMMT_MainMenu_BtnExit;
+GUIButton *pBtn_Up;
+GUIButton *pBtn_Down;
+GUIButton *ptr_507BA4;
+
+GUIButton *pBtn_Resume;
+GUIButton *pBtn_QuitGame;
+GUIButton *pBtn_GameControls;
+GUIButton *pBtn_LoadGame;
+GUIButton *pBtn_SaveGame;
+GUIButton *pBtn_NewGame;
+
+GUIButton *pBtn_SliderRight;
+GUIButton *pBtn_SliderLeft;
 
 
-struct GUIButton *pBtn_Up;
-struct GUIButton *pBtn_Down;
-struct GUIButton *ptr_507BA4;
-
-
-struct GUIWindow *pPrimaryWindow;
-struct GUIWindow *pChestWindow;
-struct GUIWindow *pDialogueWindow;
-struct GUIWindow *window_SpeakInHouse;
-struct GUIWindow *pGUIWindow_ScrollWindow;
-struct GUIWindow *ptr_507BC8;
-struct GUIWindow *pGUIWindow_CurrentMenu;
-struct GUIWindow *ptr_507BD0;
-struct GUIWindow *pGUIWindow_CastTargetedSpell;
-struct GUIWindow *pModalWindow;
-struct GUIWindow *pGUIWindow_EscMessageWindow;
-struct GUIWindow *pBooksButtonOverlay;
-struct GUIWindow *pGUIWindow2;
-
-
-struct GUIButton *pBtn_Resume;
-struct GUIButton *pBtn_QuitGame;
-struct GUIButton *pBtn_GameControls;
-struct GUIButton *pBtn_LoadGame;
-struct GUIButton *pBtn_SaveGame;
-struct GUIButton *pBtn_NewGame;
-
-struct GUIButton *pBtn_SliderRight;
-struct GUIButton *pBtn_SliderLeft;
-
-
-struct GUIButton *pBtnDownArrow;
-struct GUIButton *pBtnArrowUp;
-struct GUIButton *pBtnCancel;
-struct GUIButton *pBtnLoadSlot;
+GUIButton *pBtnDownArrow;
+GUIButton *pBtnArrowUp;
+GUIButton *pBtnCancel;
+GUIButton *pBtnLoadSlot;
 
 
 std::array<GUIButton*, 4> pCreationUI_BtnPressRight2;

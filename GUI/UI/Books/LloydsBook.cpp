@@ -5,6 +5,7 @@
 #include "Engine/Party.h"
 #include "Engine/Graphics/IRender.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/LloydsBook.h"
 

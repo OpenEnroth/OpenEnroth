@@ -12,6 +12,7 @@
 #include "Engine/Objects/Actor.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

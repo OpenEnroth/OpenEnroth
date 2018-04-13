@@ -6,6 +6,7 @@
 #include <array>
 #include "NZIArray.h"
 
+class GUIButton;
 
 //-------------------------------------------------------------------------
 // Data declarations
@@ -150,8 +151,8 @@ extern int dword_506F1C;
 extern char bFlashHistoryBook;
 extern char bFlashAutonotesBook;
 extern char bFlashQuestBook;
-extern struct GUIButton *pBtn_ZoomOut; // idb
-extern struct GUIButton *pBtn_ZoomIn; // idb
+extern GUIButton *pBtn_ZoomOut; // idb
+extern GUIButton *pBtn_ZoomIn; // idb
 extern unsigned int uGameUIFontShadow;
 extern unsigned int uGameUIFontMain;
 extern int dword_507B00_spell_info_to_draw_in_popup;
@@ -289,7 +290,6 @@ extern char byte_69BD41_unused;
 extern int pSaveListPosition;
 extern unsigned int uLoadGameUI_SelectedSlot;
 extern char cMM7GameCDDriveLetter; // idb
-extern enum MENU_STATE sCurrentMenuID;
 extern unsigned int uGameState;
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;

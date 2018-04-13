@@ -1,12 +1,27 @@
 #pragma once
 
-#include <cstdint>
 #include "GUI/GUIWindow.h"
 
 class GUIFont;
-class GUIWindow;
 
 class GUICredits : public GUIWindow {
  public:
-  static bool ExecuteCredits();
+  GUICredits();
+  virtual ~GUICredits();
+
+  virtual void Update();
+
+  static void ExecuteCredits();
+  void EventLoop();
+
+ protected:
+  GUIFont *pFontQuick;
+  GUIFont *pFontCChar;
+
+  Image *mm6title;
+
+  int width;
+  int height;
+  Image *cred_texture;
+  int move_Y;
 };

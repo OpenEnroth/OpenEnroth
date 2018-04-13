@@ -51,6 +51,7 @@
 #include "IO/Keyboard.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
@@ -61,12 +62,12 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIDialogue.h"
+#include "GUI/UI/UIMainMenu.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
 #include "Game/Game.h"
-#include "Game/MainMenu.h"
 
 #include "Platform/Api.h"
 
@@ -130,49 +131,7 @@ bool FileExists(const char *fname)
     return access(fname, 0) != -1;
 }
 
-
-
-//----- (00466C40) --------------------------------------------------------
-const wchar_t *MENU_STATE_to_string(MENU_STATE m)
-{
-    switch (m)
-    {
-		case -1:							return L"-1";
-		case MENU_MAIN:						return L"MENU_MAIN";
-		case MENU_NEWGAME:					return L"MENU_NEWGAME";
-		case MENU_CREDITS:					return L"MENU_CREDITS";
-		case MENU_SAVELOAD:					return L"MENU_SAVELOAD";
-		case MENU_EXIT_GAME:				return L"MENU_EXIT_GAME";
-		case MENU_5:						return L"MENU_5";
-		case MENU_CREATEPARTY:				return L"MENU_CREATEPARTY";
-		case MENU_NAMEPANELESC:				return L"MENU_NAMEPANELESC";
-		case MENU_CREDITSPROC:				return L"MENU_CREDITSPROC";
-		case MENU_LoadingProcInMainMenu:	return L"MENU_LoadingProcInMainMenu";
-		case MENU_DebugBLVLevel:		    return L"MENU_DebugBLVLevel";
-		case MENU_CREDITSCLOSE:				return L"MENU_CREDITSCLOSE";
-		case MENU_MMT_MAIN_MENU:			return L"MENU_MMT_MAIN_MENU";
-		default:							return L"invalid";
-    };
-};
-
-
-void SetCurrentMenuID(MENU_STATE uMenu)
-{
-    sCurrentMenuID = uMenu;
-    logger->Warning(L"CurrentMenu = %s \n", MENU_STATE_to_string(uMenu));
-}
-
-//----- (00466CA0) --------------------------------------------------------
-MENU_STATE GetCurrentMenuID()
-{
-    return sCurrentMenuID;
-}
-
-
-
-//----- (00464761) --------------------------------------------------------
-void Engine_DeinitializeAndTerminate(int exitCode)
-{
+void Engine_DeinitializeAndTerminate(int exitCode) {
     ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     pEngine->Deinitialize();
     render->Release();
@@ -1425,7 +1384,7 @@ void SecondaryInitialization()
             ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorR << 16);
     }
 
-    MainMenuUI_Create();
+    UI_Create();
     pEngine->GetSpellFxRenderer()->LoadAnimations();
 
     for (uint i = 0; i < 7; ++i)
@@ -1692,7 +1651,7 @@ bool MM_Main(const char *pCmdLine) {
 
   //logger->Warning(L"MM: entering main loop");
   while (true) {
-    MainMenu_Loop();
+    GUIWindow_MainMenu::Loop();
     uGameState = GAME_STATE_PLAYING;
 
     if (!GameLoop()) {

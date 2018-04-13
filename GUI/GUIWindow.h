@@ -9,8 +9,7 @@
 #include "Engine/Strings.h"
 #include "Engine/Objects/Player.h"
 
-enum UIMessageType: unsigned __int32
-{
+enum UIMessageType : uint32_t {
   UIMSG_0 = 0,
 
   UIMSG_ChangeGameState = 5,
@@ -217,10 +216,7 @@ enum UIMessageType: unsigned __int32
 
 };
 
-
-/*  251 */
-enum MENU_STATE : __int32
-{
+typedef enum MENU_STATE : uint32_t {
   MENU_MAIN = 0,
   MENU_NEWGAME = 1,
   MENU_CREDITS = 2,
@@ -234,11 +230,9 @@ enum MENU_STATE : __int32
   MENU_DebugBLVLevel = 10,
   MENU_CREDITSCLOSE = 11,
   MENU_MMT_MAIN_MENU = 12,
-};
+} MENU_STATE;
 
-
-enum DIALOGUE_TYPE
-{
+enum DIALOGUE_TYPE {
   DIALOGUE_USE_NPC_ABILITY = 9,
   DIALOGUE_13 = 0xD,
   DIALOGUE_18 = 18,
@@ -315,9 +309,7 @@ enum WindowType {
   WINDOW_JournalBook       = 0xE0,
 };
 
-struct GUIButton;
 struct Texture_MM7;
-
 
 #define WINDOW_INPUT_NONE        0
 #define WINDOW_INPUT_IN_PROGRESS 1
@@ -325,14 +317,17 @@ struct Texture_MM7;
 #define WINDOW_INPUT_CANCELLED   3
 
 class GUIFont;
+class GUIButton;
 
-struct GUIWindow {
+class GUIWindow {
+ public:
   GUIWindow();
   GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const String &hint = String());
   virtual ~GUIWindow() {}
 
   GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
-    UIMessageType msg, unsigned int msg_param, uint8_t hotkey, const String &label, const std::vector<Image*> &textures = std::vector<Image*>());
+    UIMessageType msg, unsigned int msg_param, uint8_t hotkey, const String &label,
+    const std::vector<Image*> &textures = std::vector<Image*>());
 
   bool Contains(unsigned int x, unsigned int y);
   void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
@@ -382,15 +377,8 @@ struct GUIWindow {
   std::vector<GUIButton*> vButtons;
 };
 
-struct GUIWindow_House : public GUIWindow {
-  GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
-  virtual ~GUIWindow_House() {}
-
-  virtual void Update();
-  virtual void Release();
-};
-
-struct GUIWindow_Scroll : public GUIWindow {
+class GUIWindow_Scroll : public GUIWindow {
+ public:
   GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
     GUIWindow(x, y, width, height, button, hint)
   {
@@ -405,23 +393,8 @@ struct GUIWindow_Scroll : public GUIWindow {
   virtual void Update();
 };
 
-struct GUIWindow_Inventory : public GUIWindow {
-  GUIWindow_Inventory(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-    GUIWindow(x, y, width, height, button, hint)
-  {}
-  virtual ~GUIWindow_Inventory() {}
-
-  virtual void Update();
-};
-
-struct GUIWindow_Inventory_CastSpell : public GUIWindow {
-  GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
-  virtual ~GUIWindow_Inventory_CastSpell() {}
-
-  virtual void Update();
-};
-
-struct OnButtonClick : public GUIWindow {
+class OnButtonClick : public GUIWindow {
+ public:
   OnButtonClick(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String(), bool play_sound = true) :
     GUIWindow(x, y, width, height, button, hint),
     bPlaySound(play_sound)
@@ -433,7 +406,8 @@ struct OnButtonClick : public GUIWindow {
   bool bPlaySound;
 };
 
-struct OnButtonClick2 : public GUIWindow {
+class OnButtonClick2 : public GUIWindow {
+ public:
   OnButtonClick2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String(), bool play_sound = true) :
     GUIWindow(x, y, width, height, button, hint),
     bPlaySound(play_sound)
@@ -445,7 +419,8 @@ struct OnButtonClick2 : public GUIWindow {
   bool bPlaySound;
 };
 
-struct OnButtonClick3 : public GUIWindow {
+class OnButtonClick3 : public GUIWindow {
+ public:
   OnButtonClick3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
     GUIWindow(x, y, width, height, button, hint)
   {}
@@ -454,7 +429,8 @@ struct OnButtonClick3 : public GUIWindow {
   virtual void Update();
 };
 
-struct OnButtonClick4 : public GUIWindow {
+class OnButtonClick4 : public GUIWindow {
+ public:
   OnButtonClick4(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
     GUIWindow(x, y, width, height, button, hint)
   {}
@@ -463,7 +439,8 @@ struct OnButtonClick4 : public GUIWindow {
   virtual void Update();
 };
 
-struct OnSaveLoad : public GUIWindow {
+class OnSaveLoad : public GUIWindow {
+ public:
   OnSaveLoad(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
     GUIWindow(x, y, width, height, button, hint)
   {}
@@ -472,7 +449,8 @@ struct OnSaveLoad : public GUIWindow {
   virtual void Update();
 };
 
-struct OnCancel : public GUIWindow {
+class OnCancel : public GUIWindow {
+ public:
   OnCancel(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
     GUIWindow(x, y, width, height, button, hint)
   {}
@@ -481,7 +459,8 @@ struct OnCancel : public GUIWindow {
   virtual void Update();
 };
 
-struct OnCancel2 : public GUIWindow {
+class OnCancel2 : public GUIWindow {
+ public:
   OnCancel2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
     GUIWindow(x, y, width, height, button, hint)
   {}
@@ -490,7 +469,8 @@ struct OnCancel2 : public GUIWindow {
   virtual void Update();
 };
 
-struct OnCancel3 : public GUIWindow {
+class OnCancel3 : public GUIWindow {
+ public:
   OnCancel3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
     GUIWindow(x, y, width, height, button, hint)
   {}
@@ -499,7 +479,8 @@ struct OnCancel3 : public GUIWindow {
   virtual void Update();
 };
 
-struct OnCastTargetedSpell : public GUIWindow {
+class OnCastTargetedSpell : public GUIWindow {
+ public:
   OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
   virtual ~OnCastTargetedSpell() {}
 };
@@ -569,8 +550,7 @@ extern struct GUIMessageQueue *pMessageQueue_50C9E8; // idb
 
 
 extern enum WindowType current_character_screen_window;
-extern struct GUIWindow *pWindow_MainMenu;
-extern std::list<struct GUIWindow *> lWindowList;
+extern std::list<GUIWindow*> lWindowList;
 
 class WindowManager {
  public:
@@ -587,7 +567,7 @@ void draw_leather();
 
 // main menu ui
 void MainMenuUI_LoadFontsAndSomeStuff();
-void MainMenuUI_Create();
+void UI_Create();
 
 // game ui
 void GameUI_DrawRightPanel();
@@ -641,11 +621,11 @@ void ReleaseAwardsScrollBar();
 void Inventory_ItemPopupAndAlchemy();
 unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos, int base_pos);
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
-struct GUIButton *GUI_HandleHotkey(uint8_t uHotkey); // idb
+class GUIButton *GUI_HandleHotkey(uint8_t uHotkey); // idb
 void GUI_ReplaceHotkey(uint8_t uOldHotkey, uint8_t uNewHotkey, char bFirstCall);
-void DrawBuff_remaining_time_string(int uY, struct GUIWindow *window, GameTime remaining_time, GUIFont *Font);
+void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remaining_time, GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item); // idb
-void MonsterPopup_Draw(unsigned int uActorID, struct GUIWindow *window);
+void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *window);
 void SetUserInterface(enum PartyAlignment alignment, bool bReplace);
 void CreateMsgScrollWindow(signed int mscroll_id);
 void free_book_subwindow();
@@ -664,131 +644,19 @@ String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, struct I
 String BuildDialogueString(String &str, unsigned __int8 uPlayerID, struct ItemGen *a3, char *a4, int shop_screen, GameTime *a6 = nullptr);
 int const_2();
 
-struct GUIButton {
-  GUIButton() {
-    pParent = nullptr;
-  }
-
-  void DrawLabel(const String &label_text, GUIFont *pFont, int a5, int uFontShadowColor);
-  bool Contains(unsigned int x, unsigned int y);
-  void Release();
-
-  unsigned int uX;
-  unsigned int uY;
-  unsigned int uWidth;
-  unsigned int uHeight;
-  unsigned int uZ;
-  unsigned int uW;
-  int uButtonType;
-  int field_1C;//may be pMessageType
-  UIMessageType msg;
-  unsigned int  msg_param;
-  int field_28;
-  bool field_2C_is_pushed;
-  struct GUIWindow *pParent;
-  std::vector<Image*> vTextures;
-  uint8_t uHotkey;
-  String sLabel;
-  String field_75;
-};
-
-extern struct GUIButton *pBtn_CloseBook;
-extern struct GUIButton *pBtn_InstallRemoveSpell;
-extern struct GUIButton *pBtn_Autonotes_Instructors;
-extern struct GUIButton *pBtn_Autonotes_Misc;
-extern struct GUIButton *pBtn_Book_6;
-extern struct GUIButton *pBtn_Book_5;
-extern struct GUIButton *pBtn_Book_4;
-extern struct GUIButton *pBtn_Book_3;
-extern struct GUIButton *pBtn_Book_2;
-extern struct GUIButton *pBtn_Book_1;
-
-
-extern struct GUIButton *pPlayerCreationUI_BtnReset;
-extern struct GUIButton *pPlayerCreationUI_BtnOK;
-extern struct GUIButton *pBtn_ExitCancel;
-extern struct GUIButton *pBtn_YES;
-extern struct GUIButton *pPlayerCreationUI_BtnPlus;
-extern struct GUIButton *pPlayerCreationUI_BtnMinus;
-
-
-extern struct GUIButton *pButton_RestUI_Main;
-extern struct GUIButton *pButton_RestUI_Exit;
-extern struct GUIButton *pButton_RestUI_Wait5Minutes;
-extern struct GUIButton *pButton_RestUI_WaitUntilDawn;
-extern struct GUIButton *pButton_RestUI_Wait1Hour;
-
-
-extern struct GUIButton *pCharacterScreen_ExitBtn;
-extern struct GUIButton *pCharacterScreen_AwardsBtn;
-extern struct GUIButton *pCharacterScreen_InventoryBtn;
-extern struct GUIButton *pCharacterScreen_SkillsBtn;
-extern struct GUIButton *pCharacterScreen_StatsBtn;
-extern struct GUIButton *pCharacterScreen_DollBtn;
-extern struct GUIButton *pCharacterScreen_DetalizBtn;
-
-
-extern struct GUIButton *pBtn_NPCRight;
-extern struct GUIButton *pBtn_NPCLeft;
-extern struct GUIButton *pBtn_GameSettings;
-extern struct GUIButton *pBtn_QuickReference;
-extern struct GUIButton *pBtn_CastSpell;
-extern struct GUIButton *pBtn_Rest;
-extern struct GUIButton *pBtn_History;
-extern struct GUIButton *pBtn_Calendar;
-extern struct GUIButton *pBtn_Maps;
-extern struct GUIButton *pBtn_Autonotes;
-extern struct GUIButton *pBtn_Quests;
-
-
-extern struct GUIButton *pMMT_MainMenu_BtnMM6;
-extern struct GUIButton *pMMT_MainMenu_BtnMM7;
-extern struct GUIButton *pMMT_MainMenu_BtnMM8;
-extern struct GUIButton *pMMT_MainMenu_BtnContinue;
-extern struct GUIButton *pMMT_MainMenu_BtnExit;
-
-
-extern struct GUIButton *pBtn_Up;
-extern struct GUIButton *pBtn_Down;
-extern struct GUIButton *ptr_507BA4;
-
-
-extern struct GUIWindow *pPrimaryWindow;
-extern struct GUIWindow *pChestWindow;
-extern struct GUIWindow *pDialogueWindow;
-extern struct GUIWindow *window_SpeakInHouse;
-extern struct GUIWindow *pGUIWindow_ScrollWindow;
-extern struct GUIWindow *ptr_507BC8;
-extern struct GUIWindow *pGUIWindow_CurrentMenu;
-extern struct GUIWindow *ptr_507BD0;
-extern struct GUIWindow *pGUIWindow_CastTargetedSpell;
-extern struct GUIWindow *pModalWindow;
-extern struct GUIWindow *pGUIWindow_EscMessageWindow;
-extern struct GUIWindow *pBooksButtonOverlay;
-extern struct GUIWindow *pGUIWindow2;
-
-
-extern struct GUIButton *pBtn_Resume;
-extern struct GUIButton *pBtn_QuitGame;
-extern struct GUIButton *pBtn_GameControls;
-extern struct GUIButton *pBtn_LoadGame;
-extern struct GUIButton *pBtn_SaveGame;
-extern struct GUIButton *pBtn_NewGame;
-
-extern struct GUIButton *pBtn_SliderRight;
-extern struct GUIButton *pBtn_SliderLeft;
-
-
-extern struct GUIButton *pBtnDownArrow;
-extern struct GUIButton *pBtnArrowUp;
-extern struct GUIButton *pBtnCancel;
-extern struct GUIButton *pBtnLoadSlot;
-
-
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight2;
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft2;
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft;
-extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight;
+extern GUIWindow *pPrimaryWindow;
+extern GUIWindow *pChestWindow;
+extern GUIWindow *pDialogueWindow;
+extern GUIWindow *window_SpeakInHouse;
+extern GUIWindow *pGUIWindow_ScrollWindow;
+extern GUIWindow *ptr_507BC8;
+extern GUIWindow *pGUIWindow_CurrentMenu;
+extern GUIWindow *ptr_507BD0;
+extern GUIWindow *pGUIWindow_CastTargetedSpell;
+extern GUIWindow *pModalWindow;
+extern GUIWindow *pGUIWindow_EscMessageWindow;
+extern GUIWindow *pBooksButtonOverlay;
+extern GUIWindow *pGUIWindow2;
 
 extern unsigned int ui_mainmenu_copyright_color;
 extern unsigned int ui_character_tooltip_header_default_color;
@@ -864,3 +732,7 @@ extern Image *ui_ar_up_up;
 
 extern Image *ui_leather_mm6;
 extern Image *ui_leather_mm7;
+
+extern MENU_STATE sCurrentMenuID;
+void SetCurrentMenuID(MENU_STATE);
+MENU_STATE GetCurrentMenuID();

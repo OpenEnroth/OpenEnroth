@@ -7,6 +7,7 @@
 
 #include "Engine/Objects/Chest.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/UI/UIChest.h"
 
 #include "Platform/Api.h"

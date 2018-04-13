@@ -2,7 +2,8 @@
 
 #include "GUI/GUIWindow.h"
 
-struct GUIWindow_Dialogue : public GUIWindow {
+class GUIWindow_Dialogue : public GUIWindow {
+ public:
   GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
   virtual ~GUIWindow_Dialogue() {}
 
@@ -12,7 +13,8 @@ struct GUIWindow_Dialogue : public GUIWindow {
 
 void GameUI_InitializeDialogue(struct Actor *actor, int bPlayerSaysHello);
 
-struct GUIWindow_GenericDialogue : public GUIWindow {
+class GUIWindow_GenericDialogue : public GUIWindow {
+ public:
   GUIWindow_GenericDialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String());
   virtual ~GUIWindow_GenericDialogue() {}
 

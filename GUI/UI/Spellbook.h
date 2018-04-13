@@ -1,18 +1,17 @@
 #pragma once
 #include "GUI/GUIWindow.h"
 
-struct GUIWindow_Spellbook : public GUIWindow
-{
-             GUIWindow_Spellbook();
-    virtual ~GUIWindow_Spellbook() {}
+class GUIWindow_Spellbook : public GUIWindow {
+public:
+  GUIWindow_Spellbook();
+  virtual ~GUIWindow_Spellbook() {}
 
-    virtual void Update();
-    virtual void Release();
+  virtual void Update();
+  virtual void Release();
 
-    void OpenSpellbook();
-    void OpenSpellbookPage(int page);
+  void OpenSpellbook();
+  void OpenSpellbookPage(int page);
 };
-
 
 class Image;
 extern Image *ui_spellbook_btn_quckspell;

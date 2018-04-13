@@ -709,8 +709,8 @@ int dword_506F1C;
 char bFlashHistoryBook;
 char bFlashAutonotesBook;
 char bFlashQuestBook;
-struct GUIButton *pBtn_ZoomOut; // idb
-struct GUIButton *pBtn_ZoomIn; // idb
+GUIButton *pBtn_ZoomOut; // idb
+GUIButton *pBtn_ZoomIn; // idb
 unsigned int uGameUIFontShadow;
 unsigned int uGameUIFontMain;
 int dword_507B00_spell_info_to_draw_in_popup;
@@ -852,7 +852,6 @@ char byte_69BD41_unused;
 int pSaveListPosition;
 unsigned int uLoadGameUI_SelectedSlot;
 char cMM7GameCDDriveLetter; // idb
-MENU_STATE sCurrentMenuID;
 unsigned int uGameState;
 int uDefaultTravelTime_ByFoot;
 int day_attrib;

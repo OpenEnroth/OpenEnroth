@@ -1,20 +1,26 @@
 #pragma once
+
 #include "GUI/GUIWindow.h"
 
-struct GUIWindow_Save : public GUIWindow
-{
-             GUIWindow_Save();
-    virtual ~GUIWindow_Save() {}
+class Image;
 
-    virtual void Update();
+class GUIWindow_Save : public GUIWindow {
+ public:
+  GUIWindow_Save();
+  virtual ~GUIWindow_Save() {}
+
+  virtual void Update();
 };
 
-struct GUIWindow_Load : public GUIWindow
-{
-             GUIWindow_Load(bool ingame);
-    virtual ~GUIWindow_Load() {}
+class GUIWindow_Load : public GUIWindow {
+ public:
+  GUIWindow_Load(bool ingame);
+  virtual ~GUIWindow_Load();
 
-    virtual void Update();
+  virtual void Update();
+
+ protected:
+  Image *main_menu_background;
 };
 
 void MainMenuLoad_Loop();

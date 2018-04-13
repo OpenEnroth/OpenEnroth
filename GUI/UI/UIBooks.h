@@ -2,29 +2,29 @@
 #include "GUI/GUIWindow.h"
 
 
-struct GUIWindow_Book : public GUIWindow
-{
-             GUIWindow_Book();
-    virtual ~GUIWindow_Book() {}
+class GUIWindow_Book : public GUIWindow {
+ public:
+  GUIWindow_Book();
+  virtual ~GUIWindow_Book() {}
 
-    virtual void Release();
+  virtual void Release();
 
-    protected:
-        void BasicBookInitialization();
+ protected:
+  void BasicBookInitialization();
 
-    private:
-        void InitializeFonts();
+ private:
+  void InitializeFonts();
 };
 
 
-struct GUIWindow_BooksButtonOverlay : public GUIWindow
-{
-    GUIWindow_BooksButtonOverlay(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
-    virtual ~GUIWindow_BooksButtonOverlay() {}
+class GUIWindow_BooksButtonOverlay : public GUIWindow {
+ public:
+  GUIWindow_BooksButtonOverlay(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+    GUIWindow(x, y, width, height, button, hint)
+  {}
+  virtual ~GUIWindow_BooksButtonOverlay() {}
 
-    virtual void Update();
+  virtual void Update();
 };
 
 

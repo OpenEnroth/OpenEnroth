@@ -1,261 +1,190 @@
-#include "Engine/Engine.h"
-#include "Engine/AssetsManager.h"
+#include "GUI/UI/UIMainMenu.h"
+
+#include "Engine/Point.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Graphics/Image.h"
 
 #include "IO/Mouse.h"
-#include "IO/Keyboard.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
-#include "GUI/UI/UIMainMenu.h"
-#include "GUI/UI/UIGame.h"
-#include "GUI/UI/UIPartyCreation.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Media/MediaPlayer.h"
 
-#include "Game/Game.h"
-#include "Game/MainMenu.h"
+#include "Platform/OSWindow.h"
 
-
-
-GUIButton *pMainMenu_BtnExit = nullptr;
-GUIButton *pMainMenu_BtnCredits = nullptr;
-GUIButton *pMainMenu_BtnLoad = nullptr;
-GUIButton *pMainMenu_BtnNew = nullptr;
-
-Image *ui_mainmenu_new = nullptr;
-Image *ui_mainmenu_load = nullptr;
-Image *ui_mainmenu_credits = nullptr;
-Image *ui_mainmenu_exit = nullptr;
+GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
   GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
+  main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
+
   ui_mainmenu_new = assets->GetImage_ColorKey("title_new", 0x7FF);
   ui_mainmenu_load = assets->GetImage_ColorKey("title_load", 0x7FF);
   ui_mainmenu_credits = assets->GetImage_ColorKey("title_cred", 0x7FF);
   ui_mainmenu_exit = assets->GetImage_ColorKey("title_exit", 0x7FF);
 
-  pMainMenu_BtnNew = CreateButton(495, 172, ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight(), 1, 0, UIMSG_MainMenu_ShowPartyCreationWnd, 0, 'N', "", { {ui_mainmenu_new} });
-  pMainMenu_BtnLoad = CreateButton(495, 227, ui_mainmenu_load->GetWidth(), ui_mainmenu_load->GetHeight(), 1, 0, UIMSG_MainMenu_ShowLoadWindow, 1, 'L', "", { {ui_mainmenu_load} });
-  pMainMenu_BtnCredits = CreateButton(495, 282, ui_mainmenu_credits->GetWidth(), ui_mainmenu_credits->GetHeight(), 1, 0, UIMSG_ShowCredits, 2, 'C', "", { {ui_mainmenu_credits} });
-  pMainMenu_BtnExit = CreateButton(495, 337, ui_mainmenu_exit->GetWidth(), ui_mainmenu_exit->GetHeight(), 1, 0, UIMSG_ExitToWindows, 3, 0, "", { {ui_mainmenu_exit} });
+  pBtnNew = CreateButton(495, 172, ui_mainmenu_new->GetWidth(), ui_mainmenu_new->GetHeight(),
+                         1, 0, UIMSG_MainMenu_ShowPartyCreationWnd, 0, 'N', "", { {ui_mainmenu_new} });
+  pBtnLoad = CreateButton(495, 227, ui_mainmenu_load->GetWidth(), ui_mainmenu_load->GetHeight(),
+                          1, 0, UIMSG_MainMenu_ShowLoadWindow, 1, 'L', "", { {ui_mainmenu_load} });
+  pBtnCredits = CreateButton(495, 282, ui_mainmenu_credits->GetWidth(), ui_mainmenu_credits->GetHeight(),
+                             1, 0, UIMSG_ShowCredits, 2, 'C', "", { {ui_mainmenu_credits} });
+  pBtnExit = CreateButton(495, 337, ui_mainmenu_exit->GetWidth(), ui_mainmenu_exit->GetHeight(),
+                          1, 0, UIMSG_ExitToWindows, 3, 0, "", { {ui_mainmenu_exit} });
+}
+
+GUIWindow_MainMenu::~GUIWindow_MainMenu() {
+  ui_mainmenu_new->Release();
+  ui_mainmenu_load->Release();
+  ui_mainmenu_credits->Release();
+  ui_mainmenu_exit->Release();
+
+  main_menu_background->Release();
 }
 
 void GUIWindow_MainMenu::Update() {
-  Point pt = pMouse->GetCursorPos();
-  GUIWindow *pWindow = this;//pWindow_MainMenu;
-                            //if (GetCurrentMenuID() == MENU_SAVELOAD)
-                            //    pWindow = pGUIWindow_CurrentMenu;
+  render->DrawTextureNew(0, 0, main_menu_background);
 
-  if (GetCurrentMenuID() == MENU_MAIN) {
-    Image *pTexture = nullptr;
-    if (!pModalWindow) {  // ???
-      for (GUIButton *pButton : pWindow->vButtons) {
-        if (pt.x >= (int)pButton->uX && pt.x <= (int)pButton->uZ
-          && pt.y >= (int)pButton->uY && pt.y <= (int)pButton->uW
-          && pWindow == pWindow_MainMenu)
-        {
-          auto pControlParam = pButton->msg_param;
-          int pY = 0;
-          switch (pControlParam) {  // backlight for buttons
-            case 0:
-              pTexture = assets->GetImage_ColorKey("title_new", 0x7FF);
-              pY = 172;
-              break;
-            case 1:
-              pTexture = assets->GetImage_ColorKey("title_load", 0x7FF);
-              pY = 227;
-              break;
-            case 2:
-              pTexture = assets->GetImage_ColorKey("title_cred", 0x7FF);
-              pY = 282;
-              break;
-            case 3:
-              pTexture = assets->GetImage_ColorKey("title_exit", 0x7FF);
-              pY = 337;
-              break;
-          }
-          render->DrawTextureAlphaNew(495 / 640.0f, pY / 480.0f, pTexture);
+  Point pt = pMouse->GetCursorPos();
+  GUIWindow *pWindow = this;
+
+  Image *pTexture = nullptr;
+  if (!pModalWindow) {  // ???
+    for (GUIButton *pButton : pWindow->vButtons) {
+      if (pButton->Contains(pt.x, pt.y) && pWindow == pWindow_MainMenu) {
+        auto pControlParam = pButton->msg_param;
+        int pY = 0;
+        switch (pControlParam) {  // backlight for buttons
+          case 0:
+            pTexture = assets->GetImage_ColorKey("title_new", 0x7FF);
+            pY = 172;
+            break;
+          case 1:
+            pTexture = assets->GetImage_ColorKey("title_load", 0x7FF);
+            pY = 227;
+            break;
+          case 2:
+            pTexture = assets->GetImage_ColorKey("title_cred", 0x7FF);
+            pY = 282;
+            break;
+          case 3:
+            pTexture = assets->GetImage_ColorKey("title_exit", 0x7FF);
+            pY = 337;
+            break;
         }
+        render->DrawTextureAlphaNew(495 / 640.0f, pY / 480.0f, pTexture);
       }
     }
   }
 }
 
+void GUIWindow_MainMenu::EventLoop() {
+  while (!pMessageQueue_50CBD0->Empty()) {
+    UIMessageType pUIMessageType;
+    int pParam;
+    int param2;
+    pMessageQueue_50CBD0->PopMessage(&pUIMessageType, &pParam, &param2);
 
-//----- (0041B578) --------------------------------------------------------
-void MainMenuUI_LoadFontsAndSomeStuff()
-{
-  //pIcons_LOD->SetupPalettes(render->uTargetRBits, render->uTargetGBits, render->uTargetBBits);
-  pIcons_LOD->SetupPalettes(5, 6, 5);
-  //pPaletteManager->SetColorChannelInfo(render->uTargetRBits, render->uTargetGBits, render->uTargetBBits);
-  pPaletteManager->SetColorChannelInfo(5, 6, 5);
-  pPaletteManager->RecalculateAll();
-
-  for (uint i = 0; i < window->GetHeight(); ++i)
-    pSRZBufferLineOffsets[i] = window->GetWidth() * i;
-
-  pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL", nullptr);
-  pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL", nullptr);
-  pFontCreate = GUIFont::LoadFont("create.fnt", "FONTPAL", nullptr);
-  pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL", nullptr);
-  pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL", nullptr);
+    switch (pUIMessageType) {  // For buttons of window MainMenu
+      case UIMSG_MainMenu_ShowPartyCreationWnd:
+        new OnButtonClick2(495, 172, 0, 0, (int)pBtnNew);
+        SetCurrentMenuID(MENU_NEWGAME);
+        break;
+      case UIMSG_MainMenu_ShowLoadWindow:
+        new OnButtonClick2(495, 227, 0, 0, (int)pBtnLoad);
+        SetCurrentMenuID(MENU_SAVELOAD);
+        break;
+      case UIMSG_ShowCredits:
+        new OnButtonClick2(495, 282, 0, 0, (int)pBtnCredits);
+        SetCurrentMenuID(MENU_CREDITS);
+        break;
+      case UIMSG_ExitToWindows:
+        new OnButtonClick2(495, 337, 0, 0, (int)pBtnExit);
+        SetCurrentMenuID(MENU_EXIT_GAME);
+        break;
+      case UIMSG_ChangeGameState:
+        uGameState = GAME_FINISHED;
+        break;
+      default:
+        break;
+    }
+  }
 }
 
-//----- (004415C5) --------------------------------------------------------
-static void LoadPartyBuffIcons()
-{
-    for (uint i = 0; i < 14; ++i)
+static bool first_initialization = true;
+
+void GUIWindow_MainMenu::Loop() {
+  pAudioPlayer->StopChannels(-1, -1);
+  pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
+
+  if (first_initialization) {
+    first_initialization = false;
+
+    render->ResetUIClipRect();
+    render->BeginScene();
     {
-        party_buff_icons[i] = assets->GetImage_ColorKey(StringPrintf("isn-%02d", i + 1), 0x7FF);
+      DrawMM7CopyrightWindow();
+    }
+    render->EndScene();
+    render->Present();
+
+    SecondaryInitialization();
+    FinalInitialization();
+  }
+
+  current_screen_type = SCREEN_GAME;
+
+  pGUIWindow2 = nullptr;
+
+  pWindow_MainMenu = new GUIWindow_MainMenu();
+
+  SetCurrentMenuID(MENU_MAIN);
+  window->Activate();
+
+  while (GetCurrentMenuID() == MENU_MAIN) {
+    OS_PeekMessageLoop();
+    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
+      OS_WaitMessage();
+      continue;
     }
 
-    uIconIdx_FlySpell = pIconsFrameTable->FindIcon("spell21");
-    uIconIdx_WaterWalk = pIconsFrameTable->FindIcon("spell27");
+    render->BeginScene();
+    {
+      pWindow_MainMenu->EventLoop();
+      GUI_UpdateWindows();
+    }
+    render->EndScene();
+    render->Present();
+  }
+
+  pWindow_MainMenu->Release();
+  delete pWindow_MainMenu;
+  pWindow_MainMenu = nullptr;
 }
 
-//----- (0041B690) --------------------------------------------------------
-void MainMenuUI_Create()
-{
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeC"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeB"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("wizeyeA"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchC"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchB"));
-    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("torchA"));
+void DrawMM7CopyrightWindow() {
+  GUIWindow Dst;
+  Dst.uFrameWidth = 624;
+  Dst.uFrameHeight = 256;
+  Dst.uFrameX = 8;
+  Dst.uFrameY = 30;                             // c 1999 The 3DO Company.
+  Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(localization->GetString(157), Dst.uFrameWidth, 24, 0)
+    + 2 * (unsigned char)pFontSmallnum->GetHeight()
+    + 24;
+  Dst.uFrameY = 470 - Dst.uFrameHeight;
+  Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
+  Dst.uFrameW = 469;
+  Dst.DrawMessageBox(0);
 
-    game_ui_minimap_dirs[0] = assets->GetImage_Alpha("MAPDIR1");
-    game_ui_minimap_dirs[1] = assets->GetImage_Alpha("MAPDIR2");
-    game_ui_minimap_dirs[2] = assets->GetImage_Alpha("MAPDIR3");
-    game_ui_minimap_dirs[3] = assets->GetImage_Alpha("MAPDIR4");
-    game_ui_minimap_dirs[4] = assets->GetImage_Alpha("MAPDIR5");
-    game_ui_minimap_dirs[5] = assets->GetImage_Alpha("MAPDIR6");
-    game_ui_minimap_dirs[6] = assets->GetImage_Alpha("MAPDIR7");
-    game_ui_minimap_dirs[7] = assets->GetImage_Alpha("MAPDIR8");
-
-    game_ui_bar_blue = assets->GetImage_ColorKey("ib-statB", 0x7FF);
-    game_ui_bar_green = assets->GetImage_ColorKey("ib-statG", 0x7FF);
-    game_ui_bar_yellow = assets->GetImage_ColorKey("ib-statY", 0x7FF);
-    game_ui_bar_red = assets->GetImage_ColorKey("ib-statR", 0x7FF);
-    game_ui_monster_hp_background = assets->GetImage_ColorKey("mhp_bg", 0x7FF);
-    game_ui_monster_hp_border_left = assets->GetImage_ColorKey("mhp_capl", 0x7FF);
-    game_ui_monster_hp_border_right = assets->GetImage_ColorKey("mhp_capr", 0x7FF);
-    game_ui_monster_hp_green = assets->GetImage_ColorKey("mhp_grn", 0x7FF);
-    game_ui_monster_hp_red = assets->GetImage_ColorKey("mhp_red", 0x7FF);
-    game_ui_monster_hp_yellow = assets->GetImage_ColorKey("mhp_yel", 0x7FF);
-    ui_leather_mm7 = assets->GetImage_Solid("LEATHER");
-    ui_leather_mm6 = assets->GetImage_Solid("ibground");
-    dialogue_ui_x_x_u = assets->GetImage_ColorKey("x_x_u", 0x7FF);
-    ui_buttdesc2 = assets->GetImage_Alpha("BUTTESC2");
-    dialogue_ui_x_ok_u = assets->GetImage_ColorKey("x_ok_u", 0x7FF);
-    ui_buttyes2 = assets->GetImage_Alpha("BUTTYES2");
-
-    pPrimaryWindow = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
-    pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0, 0, "");
-
-    pPrimaryWindow->CreateButton(61, 424, 31, 80, 2, 94, UIMSG_SelectCharacter, 1, '1', "");//buttons for portraits
-    pPrimaryWindow->CreateButton(177, 424, 31, 80, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
-    pPrimaryWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
-    pPrimaryWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
-
-    pPrimaryWindow->CreateButton(24, 404, 5, 49, 1, 93, UIMSG_0, 1, 0, "");//buttons for HP
-    pPrimaryWindow->CreateButton(139, 404, 5, 49, 1, 93, UIMSG_0, 2, 0, "");
-    pPrimaryWindow->CreateButton(255, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "");
-    pPrimaryWindow->CreateButton(370, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "");
-
-    pPrimaryWindow->CreateButton(97, 404, 5, 49, 1, 93, UIMSG_0, 1, 0, "");//buttons for SP
-    pPrimaryWindow->CreateButton(212, 404, 5, 49, 1, 93, UIMSG_0, 2, 0, "");
-    pPrimaryWindow->CreateButton(328, 404, 5, 49, 1, 93, UIMSG_0, 3, 0, "");
-    pPrimaryWindow->CreateButton(443, 404, 5, 49, 1, 93, UIMSG_0, 4, 0, "");
-
-    game_ui_tome_quests = assets->GetImage_ColorKey("ib-td1-A", 0x7FF);
-    pBtn_Quests = pPrimaryWindow->CreateButton(
-        491, 353,
-        game_ui_tome_quests->GetWidth(),
-        game_ui_tome_quests->GetHeight(),
-        1, 0, UIMSG_OpenQuestBook, 0, pKeyActionMap->GetActionVKey(INPUT_Quest),
-      localization->GetString(174), { {game_ui_tome_quests} }); //Quests
-
-    game_ui_tome_autonotes = assets->GetImage_ColorKey("ib-td2-A", 0x7FF);
-    pBtn_Autonotes = pPrimaryWindow->CreateButton(
-        527, 353,
-        game_ui_tome_autonotes->GetWidth(),
-        game_ui_tome_autonotes->GetHeight(),
-        1, 0, UIMSG_OpenAutonotes, 0, pKeyActionMap->GetActionVKey(INPUT_Autonotes),
-      localization->GetString(154), { {game_ui_tome_autonotes} });//Autonotes
-
-    game_ui_tome_maps = assets->GetImage_ColorKey("ib-td3-A", 0x7FF);
-    pBtn_Maps = pPrimaryWindow->CreateButton(
-        546, 353,
-        game_ui_tome_maps->GetWidth(),
-        game_ui_tome_maps->GetHeight(),
-        1, 0, UIMSG_OpenMapBook, 0, pKeyActionMap->GetActionVKey(INPUT_Mapbook),
-      localization->GetString(139), { {game_ui_tome_maps} }); //Maps
-
-    game_ui_tome_calendar = assets->GetImage_ColorKey("ib-td4-A", 0x7FF);
-    pBtn_Calendar = pPrimaryWindow->CreateButton(
-        570, 353,
-        game_ui_tome_calendar->GetWidth(),
-        game_ui_tome_calendar->GetHeight(),
-        1, 0, UIMSG_OpenCalendar, 0, pKeyActionMap->GetActionVKey(INPUT_TimeCal),
-      localization->GetString(78), { {game_ui_tome_calendar} });//Calendar
-
-    game_ui_tome_storyline = assets->GetImage_ColorKey("ib-td5-A", 0x7FF);
-    pBtn_History = pPrimaryWindow->CreateButton(
-        600, 361,
-        game_ui_tome_storyline->GetWidth(),
-        game_ui_tome_storyline->GetHeight(),
-        1, 0, UIMSG_OpenHistoryBook, 0, 'H',
-      localization->GetString(602), { {game_ui_tome_storyline} });//History
-
-    bFlashAutonotesBook = 0;
-    bFlashQuestBook = 0;
-    bFlashHistoryBook = 0;
-
-    pBtn_ZoomIn = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomin->GetWidth(),
-        game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomIn),
-      localization->GetString(252), { {game_ui_btn_zoomin} }); // Zoom In
-
-    pBtn_ZoomOut = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomout->GetWidth(),
-        game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0, pKeyActionMap->GetActionVKey(INPUT_ZoomOut),
-      localization->GetString(251), { {game_ui_btn_zoomout} }); // Zoom Out
-
-    pPrimaryWindow->CreateButton(481, 0, 153, 67, 1, 92, UIMSG_0, 0, 0, "");
-    pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, '5', "");
-    pPrimaryWindow->CreateButton(561, 149, 64, 74, 1, 0, UIMSG_StartHireling2Dialogue, 0, '6', "");
-    pPrimaryWindow->CreateButton(476, 322, 77, 17, 1, 100, UIMSG_0, 0, 0, "");
-    pPrimaryWindow->CreateButton(555, 322, 77, 17, 1, 101, UIMSG_0, 0, 0, "");
-
-    pBtn_CastSpell = pPrimaryWindow->CreateButton(476, 450,
-        game_ui_btn_cast->GetWidth(),
-        game_ui_btn_cast->GetHeight(),
-      1, 0, UIMSG_SpellBookWindow, 0, 67, localization->GetString(38), { {game_ui_btn_cast} });
-    pBtn_Rest = pPrimaryWindow->CreateButton(518, 450,
-        game_ui_btn_rest->GetWidth(),
-        game_ui_btn_rest->GetHeight(),
-      1, 0, UIMSG_RestWindow, 0, 82, localization->GetString(182), { {game_ui_btn_rest} });
-    pBtn_QuickReference = pPrimaryWindow->CreateButton(560, 450,
-        game_ui_btn_quickref->GetWidth(),
-        game_ui_btn_quickref->GetHeight(),
-      1, 0, UIMSG_QuickReference, 0, 90, localization->GetString(173), { {game_ui_btn_quickref} });
-    pBtn_GameSettings = pPrimaryWindow->CreateButton(602, 450,
-        game_ui_btn_settings->GetWidth(),
-        game_ui_btn_settings->GetHeight(),
-      1, 0, UIMSG_GameMenuButton, 0, 0, localization->GetString(93), { {game_ui_btn_settings} });
-
-    pBtn_NPCLeft = pPrimaryWindow->CreateButton(469, 178,
-        ui_btn_npc_left->GetWidth(),
-        ui_btn_npc_left->GetHeight(),
-      1, 0, UIMSG_ScrollNPCPanel, 0, 0, "", { {ui_btn_npc_left} });
-    pBtn_NPCRight = pPrimaryWindow->CreateButton(626, 178,
-        ui_btn_npc_right->GetWidth(),
-        ui_btn_npc_right->GetHeight(),
-      1, 0, UIMSG_ScrollNPCPanel, 1, 0, "", { {ui_btn_npc_right} });
-
-    LoadPartyBuffIcons();
+  Dst.uFrameWidth -= 24;
+  Dst.uFrameX += 12;
+  Dst.uFrameY += 12;
+  Dst.uFrameHeight -= 12;
+  Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
+  Dst.uFrameW = Dst.uFrameY + Dst.uFrameHeight - 1;
+  Dst.DrawTitleText(pFontSmallnum, 0, 12, ui_mainmenu_copyright_color, localization->GetString(157), 3);
 }

@@ -11,17 +11,16 @@ namespace CastSpellInfoHelpers
   void _427E01_cast_spell();
 };
 
+class GUIWindow;
+
 /*  271 */
 #pragma pack(push, 1)
-struct CastSpellInfo
-{
-  //----- (00426987) --------------------------------------------------------
-  inline CastSpellInfo()
-  {
+struct CastSpellInfo {
+  inline CastSpellInfo() {
     memset(this, 0, sizeof(*this));
   }
 
-  struct GUIWindow *GetCastSpellInInventoryWindow();
+  GUIWindow *GetCastSpellInInventoryWindow();
 
   uint16_t uSpellID;
   uint16_t uPlayerID;

@@ -240,7 +240,6 @@
     <ClCompile Include="..\..\Game\Game.cpp" />
     <ClCompile Include="..\..\Game\GameMenu.cpp" />
     <ClCompile Include="..\..\Game\GameOver.cpp" />
-    <ClCompile Include="..\..\Game\MainMenu.cpp" />
     <ClCompile Include="..\..\GUI\GUIButton.cpp" />
     <ClCompile Include="..\..\GUI\GUIFont.cpp" />
     <ClCompile Include="..\..\GUI\GUIProgressBar.cpp" />
@@ -262,6 +261,7 @@
     <ClCompile Include="..\..\GUI\UI\UiGame.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIGuilds.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIHouses.cpp" />
+    <ClCompile Include="..\..\GUI\UI\UIInventory.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIMainMenu.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIModal.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIPartyCreation.cpp" />
@@ -383,7 +383,6 @@
     <ClInclude Include="..\..\Game\Game.h" />
     <ClInclude Include="..\..\Game\GameMenu.h" />
     <ClInclude Include="..\..\Game\GameOver.h" />
-    <ClInclude Include="..\..\Game\MainMenu.h" />
     <ClInclude Include="..\..\GUI\GUIButton.h" />
     <ClInclude Include="..\..\GUI\GUIFont.h" />
     <ClInclude Include="..\..\GUI\GUIProgressBar.h" />
@@ -405,6 +404,7 @@
     <ClInclude Include="..\..\GUI\UI\UIGame.h" />
     <ClInclude Include="..\..\GUI\UI\UIGuilds.h" />
     <ClInclude Include="..\..\GUI\UI\UIHouses.h" />
+    <ClInclude Include="..\..\GUI\UI\UIInventory.h" />
     <ClInclude Include="..\..\GUI\UI\UIMainMenu.h" />
     <ClInclude Include="..\..\GUI\UI\UIModal.h" />
     <ClInclude Include="..\..\GUI\UI\UIPartyCreation.h" />
