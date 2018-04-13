@@ -2,6 +2,8 @@
 
 #include "GUI/GUIWindow.h"
 
+class Image;
+
 class GUIWindow_Save : public GUIWindow {
  public:
   GUIWindow_Save();
@@ -13,9 +15,12 @@ class GUIWindow_Save : public GUIWindow {
 class GUIWindow_Load : public GUIWindow {
  public:
   GUIWindow_Load(bool ingame);
-  virtual ~GUIWindow_Load() {}
+  virtual ~GUIWindow_Load();
 
   virtual void Update();
+
+ protected:
+  Image *main_menu_background;
 };
 
 void MainMenuLoad_Loop();

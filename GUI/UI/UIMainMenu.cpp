@@ -1,32 +1,27 @@
 #include "GUI/UI/UIMainMenu.h"
 
-#include "Engine/Engine.h"
-#include "Engine/AssetsManager.h"
+#include "Engine/Point.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
-#include "Engine/Party.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Graphics/Image.h"
 
 #include "IO/Mouse.h"
-#include "IO/Keyboard.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
-#include "GUI/UI/UIGame.h"
-#include "GUI/UI/UIPartyCreation.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Game/Game.h"
+#include "Platform/OSWindow.h"
 
 GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
   GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0)
 {
+  main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
+
   ui_mainmenu_new = assets->GetImage_ColorKey("title_new", 0x7FF);
   ui_mainmenu_load = assets->GetImage_ColorKey("title_load", 0x7FF);
   ui_mainmenu_credits = assets->GetImage_ColorKey("title_cred", 0x7FF);
@@ -43,28 +38,24 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
-  delete ui_mainmenu_new;
-  delete ui_mainmenu_load;
-  delete ui_mainmenu_credits;
-  delete ui_mainmenu_exit;
+  ui_mainmenu_new->Release();
+  ui_mainmenu_load->Release();
+  ui_mainmenu_credits->Release();
+  ui_mainmenu_exit->Release();
 
-  delete pBtnNew;
-  delete pBtnLoad;
-  delete pBtnCredits;
-  delete pBtnExit;
+  main_menu_background->Release();
 }
 
 void GUIWindow_MainMenu::Update() {
+  render->DrawTextureNew(0, 0, main_menu_background);
+
   Point pt = pMouse->GetCursorPos();
   GUIWindow *pWindow = this;
-/*
+
   Image *pTexture = nullptr;
   if (!pModalWindow) {  // ???
     for (GUIButton *pButton : pWindow->vButtons) {
-      if (pt.x >= (int)pButton->uX && pt.x <= (int)pButton->uZ
-        && pt.y >= (int)pButton->uY && pt.y <= (int)pButton->uW
-        && pWindow == pWindow_MainMenu)
-      {
+      if (pButton->Contains(pt.x, pt.y) && pWindow == pWindow_MainMenu) {
         auto pControlParam = pButton->msg_param;
         int pY = 0;
         switch (pControlParam) {  // backlight for buttons
@@ -89,27 +80,16 @@ void GUIWindow_MainMenu::Update() {
       }
     }
   }
-*/
 }
 
-Image *main_menu_bg = nullptr;
-Image *main_menu_background = nullptr;
-
 void GUIWindow_MainMenu::EventLoop() {
-  int v4; // eax@29
-  int v15; // edi@70
-  char v20; // dl@116
-  unsigned int v25; // eax@120
-  int pParam; // [sp+4h] [bp-Ch]@3
+  while (!pMessageQueue_50CBD0->Empty()) {
+    UIMessageType pUIMessageType;
+    int pParam;
+    int param2;
+    pMessageQueue_50CBD0->PopMessage(&pUIMessageType, &pParam, &param2);
 
-  if (!pMessageQueue_50CBD0->Empty()) {
-    do {
-      int param2;
-      UIMessageType pUIMessageType;
-      pMessageQueue_50CBD0->PopMessage(&pUIMessageType, &pParam, &param2);
-      //auto player = &pParty->pPlayers[pParam];
-
-      switch (pUIMessageType) {  // For buttons of window MainMenu
+    switch (pUIMessageType) {  // For buttons of window MainMenu
       case UIMSG_MainMenu_ShowPartyCreationWnd:
         new OnButtonClick2(495, 172, 0, 0, (int)pBtnNew);
         SetCurrentMenuID(MENU_NEWGAME);
@@ -131,29 +111,18 @@ void GUIWindow_MainMenu::EventLoop() {
         break;
       default:
         break;
-      }
-    } while (!pMessageQueue_50CBD0->Empty());
+    }
   }
 }
 
 static bool first_initialization = true;
 
 void GUIWindow_MainMenu::Loop() {
-  GUIButton *pButton; // eax@27
-  unsigned int pControlParam; // ecx@35
-  unsigned int pY; // [sp-18h] [bp-54h]@39
-  Texture_MM7 *pTexture; // [sp-14h] [bp-50h]@39
-  GUIWindow *pWindow; // [sp+4h] [bp-38h]@11
-
   pAudioPlayer->StopChannels(-1, -1);
   pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
 
   if (first_initialization) {
     first_initialization = false;
-
-    if (!main_menu_bg) {
-      main_menu_bg = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
-    }
 
     render->ResetUIClipRect();
     render->BeginScene();
@@ -163,18 +132,13 @@ void GUIWindow_MainMenu::Loop() {
     render->EndScene();
     render->Present();
 
-#ifdef NDEBUG
-    Sleep(1500);   // let the copyright window stay for a while
-#endif
-
     SecondaryInitialization();
     FinalInitialization();
   }
 
-
   current_screen_type = SCREEN_GAME;
 
-  pGUIWindow2 = 0;
+  pGUIWindow2 = nullptr;
 
   pWindow_MainMenu = new GUIWindow_MainMenu();
 
@@ -182,23 +146,14 @@ void GUIWindow_MainMenu::Loop() {
   window->Activate();
 
   while (GetCurrentMenuID() == MENU_MAIN) {
-    Point pt = pMouse->GetCursorPos();
-    pWindow = pWindow_MainMenu;
-
     OS_PeekMessageLoop();
     if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
       OS_WaitMessage();
       continue;
     }
 
-    if (!main_menu_background) {
-      main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
-    }
-
     render->BeginScene();
     {
-      render->DrawTextureNew(0, 0, main_menu_background);
-
       pWindow_MainMenu->EventLoop();
       GUI_UpdateWindows();
     }
@@ -206,18 +161,8 @@ void GUIWindow_MainMenu::Loop() {
     render->Present();
   }
 
-  render->BeginScene();
-  {
-    pWindow_MainMenu->EventLoop();
-    GUI_UpdateWindows();
-  }
-  render->EndScene();
-  render->Present();
-
-  main_menu_background->Release();
-  main_menu_background = nullptr;
-
   pWindow_MainMenu->Release();
+  delete pWindow_MainMenu;
   pWindow_MainMenu = nullptr;
 }
 

@@ -129,7 +129,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
   saveload_ui_saveu = assets->GetImage_ColorKey("LS_saveU", 0x7FF);
   saveload_ui_loadu = assets->GetImage_ColorKey("LS_loadU", 0x7FF);
   saveload_ui_x_u = assets->GetImage_ColorKey("x_u", 0x7FF);
-
+/*
   if (ingame) {
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
     if (current_screen_type == SCREEN_SAVEGAME) {
@@ -142,6 +142,11 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     render->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
   } else {
     render->DrawTextureNew(0, 0, main_menu_background);
+  }
+*/
+  main_menu_background = nullptr;
+  if (!ingame) {
+    main_menu_background = assets->GetImage_PCXFromIconsLOD("lsave640.pcx");
   }
 
   // GUIWindow::GUIWindow
@@ -223,15 +228,25 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
   pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, uNumSavegameFiles, 0, "", { {ui_ar_dn_dn} });
 }
 
+GUIWindow_Load::~GUIWindow_Load() {
+  if (main_menu_background != nullptr) {
+    main_menu_background->Release();
+  }
+}
+
 void GUIWindow_Load::Update() {
+  render->BeginScene();
+  if (main_menu_background != nullptr) {
+    render->DrawTextureNew(0, 0, main_menu_background);
+  }
   UI_DrawSaveLoad(false);
+  render->EndScene();
 }
 
 static void UI_DrawSaveLoad(bool save) {
   GUIWindow save_load_window;
   unsigned int pSaveFiles;
 
-  render->BeginScene();
   if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
     if (save) {
@@ -321,7 +336,6 @@ static void UI_DrawSaveLoad(bool save) {
       slot_Y += 21;
     }
   }
-  render->EndScene();
 }
 
 void MainMenuLoad_EventLoop() {
@@ -388,12 +402,6 @@ void MainMenuLoad_EventLoop() {
         {
           //crt_deconstruct_ptr_6A0118();
 
-          if (main_menu_background) {
-            main_menu_background->Release();
-            main_menu_background = nullptr;
-          }
-          main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
-
           SetCurrentMenuID(MENU_MAIN);
           current_screen_type = SCREEN_GAME;
           pEventTimer->Resume();
@@ -409,12 +417,6 @@ void MainMenuLoad_EventLoop() {
 void MainMenuLoad_Loop() {
   current_screen_type = SCREEN_LOADGAME;
 
-  if (main_menu_background) {
-    main_menu_background->Release();
-    main_menu_background = nullptr;
-  }
-  main_menu_background = assets->GetImage_PCXFromIconsLOD("lsave640.pcx");
-
   pGUIWindow_CurrentMenu = new GUIWindow_Load(false);
 
   while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == SCREEN_LOADGAME) {
@@ -425,7 +427,6 @@ void MainMenuLoad_Loop() {
     }
 
     render->BeginScene();
-    render->DrawTextureNew(0, 0, main_menu_background);
 
     MainMenuLoad_EventLoop();
     GUI_UpdateWindows();

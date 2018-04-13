@@ -538,6 +538,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 {
   pMessageQueue_50CBD0->Flush();
 
+  main_menu_background = assets->GetImage_PCXFromIconsLOD("makeme.pcx");
+
   current_screen_type = SCREEN_PARTY_CREATION;
   uPlayerCreationUI_ArrowAnim = 0;
   uPlayerCreationUI_SelectedCharacter = 0;
@@ -665,10 +667,11 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
   ui_partycreation_font = GUIFont::LoadFont("cchar.fnt", "FONTPAL", NULL);
 }
 
+GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {
+  main_menu_background->Release();
+}
 
-//----- (0049750E) --------------------------------------------------------
-void PartyCreationUI_DeleteFont()
-{
+void PartyCreationUI_DeleteFont() {
   free(ui_partycreation_font);
   ui_partycreation_font = 0;
 }
@@ -686,13 +689,6 @@ bool PartyCreationUI_LoopInternal()
     bool party_not_creation_flag; // [sp+74h] [bp-Ch]@1
 
     party_not_creation_flag = false;
-
-    if (main_menu_background)
-    {
-        main_menu_background->Release();
-        main_menu_background = nullptr;
-    }
-    main_menu_background = assets->GetImage_PCXFromIconsLOD("makeme.pcx");
 
     pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
     SetCurrentMenuID(MENU_CREATEPARTY);
@@ -845,12 +841,6 @@ bool PartyCreationUI_LoopInternal()
                     pParty->pPlayers[i].pOwnItems[k].SetIdentified();
             }
         }
-    }
-
-    if (main_menu_background)
-    {
-        main_menu_background->Release();
-        main_menu_background = nullptr;
     }
 
     pAudioPlayer->StopChannels(-1, -1);
