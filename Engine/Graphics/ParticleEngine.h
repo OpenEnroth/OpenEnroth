@@ -1,11 +1,8 @@
 #pragma once
-#include "Engine/OurMath.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/OurMath.h"
 
-
-
-enum ParticleType : unsigned __int32
-{
+enum ParticleType : unsigned __int32 {
     ParticleType_Invalid = 0,
     ParticleType_1 = 0x0001,
     ParticleType_Rotating = 0x0004,
@@ -18,8 +15,7 @@ enum ParticleType : unsigned __int32
 
 /*  305 */
 #pragma pack(push, 1)
-struct Particle_sw
-{
+struct Particle_sw {
     unsigned int type;
     float x;
     float y;
@@ -29,8 +25,9 @@ struct Particle_sw
     float b;
     unsigned int uDiffuse;
     int timeToLive;
-    Texture *texture;//unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
-    float particle_size; // flt_28
+    Texture *texture;  // unsigned int resource_id;// bitmap IDirect3DTexture
+                       // idx or sprite idx depending on type
+    float particle_size;  // flt_28
     int field_2C;
     int field_30;
     int field_34;
@@ -38,12 +35,9 @@ struct Particle_sw
 };
 #pragma pack(pop)
 
-
-
 /*  109 */
 #pragma pack(push, 1)
-struct Particle
-{
+struct Particle {
     unsigned int type;
     float x;
     float y;
@@ -51,17 +45,16 @@ struct Particle
     float flt_10;
     float flt_14;
     float flt_18;
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             unsigned char r, g, b, a;
         };
         unsigned int uParticleColor;
     };
     int timeToLive;
-    Texture *texture;//unsigned int resource_id;// bitmap IDirect3DTexture idx or sprite idx depending on type
-    float particle_size; // field_28
+    Texture *texture;  // unsigned int resource_id;// bitmap IDirect3DTexture
+                       // idx or sprite idx depending on type
+    float particle_size;  // field_28
     float _x;
     float _y;
     float _z;
@@ -71,44 +64,34 @@ struct Particle
     int uScreenSpaceY;
     int uScreenSpaceZ;  // line end x
     int uScreenSpaceW;  // line end y
-    union
-    {
-        //int sZValue;
-        struct
-        {
+    union {
+        // int sZValue;
+        struct {
             unsigned short object_pid;
             short zbuffer_depth;
         };
     };
-    int sZValue2;  // line end z
-    fixed screenspace_scale;//int _screenspace_scale;
+    int sZValue2;             // line end z
+    fixed screenspace_scale;  // int _screenspace_scale;
     float fov_x;
     float fov_y;
     int uLightColor_bgr;
 };
 #pragma pack(pop)
 
-
-
 /*  111 */
 #pragma pack(push, 1)
-struct stru2_LineList
-{
+struct stru2_LineList {
     unsigned int uNumLines;
     RenderVertexD3D3 pLineVertices[48];
     char field_604[60];
 };
 #pragma pack(pop)
 
-
-
-
-
 /*  110 */
 #pragma pack(push, 1)
-class ParticleEngine
-{
-public:
+class ParticleEngine {
+ public:
     ParticleEngine();
 
     void ResetParticles();
@@ -130,22 +113,10 @@ public:
 };
 #pragma pack(pop)
 
-
-
-
-
-
-
-
-
-
-
 /*  160 */
 #pragma pack(push, 1)
-struct TrailParticle // stru167
-{
-    inline TrailParticle()
-    {
+struct TrailParticle {  // stru167
+    inline TrailParticle() {
         x = 0;
         y = 0;
         z = 0;
@@ -175,26 +146,21 @@ struct TrailParticle // stru167
 };
 #pragma pack(pop)
 
-
 /*  363 */
 #pragma pack(push, 1)
-struct TrailParticleGenerator // stru167_wrap
-{
-public:
-    inline TrailParticleGenerator()
-    {
-        num_particles = 0;
-    }
+struct TrailParticleGenerator {  // stru167_wrap
+ public:
+    inline TrailParticleGenerator() { num_particles = 0; }
 
     void GenerateTrailParticles(int x, int y, int z, int bgr16);
     void UpdateParticles();
 
-protected:
+ protected:
     void AddParticle(int x, int y, int z, int bgr16);
 
     TrailParticle particles[100];
-    int           num_particles;
-    int           field_964;
+    int num_particles;
+    int field_964;
 };
 #pragma pack(pop)
-extern TrailParticleGenerator trail_particle_generator; // 005118E8
+extern TrailParticleGenerator trail_particle_generator;  // 005118E8

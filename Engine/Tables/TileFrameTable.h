@@ -1,27 +1,27 @@
 #pragma once
 
-
+#include "Engine/Strings.h"
+#include "Engine/AssetsManager.h"
 
 /*  327 */
-enum TILE_DESC_FLAGS
-{
-  TILE_DESC_BURNS = 0x1,
-  TILE_DESC_WATER = 0x2,
-  TILE_DESC_BLOCK = 0x4,
-  TILE_DESC_REPULSE = 0x8,
-  TILE_DESC_FLAT = 0x10,
-  TILE_DESC_WAVY = 0x20,
-  TILE_DESC_DONT_DRAW = 0x40,
-  TILE_DESC_WATER_2 = 0x100,
-  TILE_DESC_TRANSITION = 0x200,
-  TILE_DESC_SCROLL_DOWN = 0x400,
-  TILE_DESC_SCROLL_UP = 0x800,
-  TILE_DESC_SCROLL_LEFT = 0x1000,
-  TILE_DESC_SCROLL_RIGHT = 0x2000,
+enum TILE_DESC_FLAGS {
+    TILE_DESC_BURNS = 0x1,
+    TILE_DESC_WATER = 0x2,
+    TILE_DESC_BLOCK = 0x4,
+    TILE_DESC_REPULSE = 0x8,
+    TILE_DESC_FLAT = 0x10,
+    TILE_DESC_WAVY = 0x20,
+    TILE_DESC_DONT_DRAW = 0x40,
+    TILE_DESC_WATER_2 = 0x100,
+    TILE_DESC_TRANSITION = 0x200,
+    TILE_DESC_SCROLL_DOWN = 0x400,
+    TILE_DESC_SCROLL_UP = 0x800,
+    TILE_DESC_SCROLL_LEFT = 0x1000,
+    TILE_DESC_SCROLL_RIGHT = 0x2000,
 };
 
-#pragma warning( push )
-#pragma warning( disable: 4341 )
+#pragma warning(push)
+#pragma warning(disable : 4341)
 enum Tileset : int16_t {
     Tileset_Grass = 0,
     Tileset_Snow = 1,
@@ -36,44 +36,44 @@ enum Tileset : int16_t {
     Tileset_RoadGrassCobble = 10,
     Tileset_NULL = -1
 };
-#pragma warning( pop )
+#pragma warning(pop)
 
+class Texture;
 
-class TileDesc
-{
-    public:
-        inline TileDesc() : texture(nullptr) {}
+class TileDesc {
+ public:
+    inline TileDesc() : texture(nullptr) {}
 
-        String           name;
-        unsigned __int16 uTileID;
-        Tileset          tileset;
-        unsigned __int16 uSection;
-        unsigned __int16 uAttributes;
+    String name;
+    unsigned __int16 uTileID;
+    Tileset tileset;
+    unsigned __int16 uSection;
+    unsigned __int16 uAttributes;
 
-        inline Texture *GetTexture()
-        {
-            if (!this->texture)
-            {
-                this->texture = assets->GetBitmap(this->name);
-            }
-            return this->texture;
+    inline Texture *GetTexture() {
+        if (!this->texture) {
+            this->texture = assets->GetBitmap(this->name);
         }
+        return this->texture;
+    }
 
-        //inline bool IsWaterTile() const         { return this->name == "wtrtyl"; }
-        inline bool IsWaterTile() const         { return this->uAttributes & 2; }
-        inline bool IsWaterBorderTile() const   { return this->name.find("wtrdr", 0) == 0 || this->name.find("hwtrdr") == 0; }
+    // inline bool IsWaterTile() const         { return this->name == "wtrtyl";
+    // }
+    inline bool IsWaterTile() const { return this->uAttributes & 2; }
+    inline bool IsWaterBorderTile() const {
+        return this->name.find("wtrdr", 0) == 0 ||
+               this->name.find("hwtrdr") == 0;
+    }
 
-    protected:
-        Texture *texture;
+ protected:
+    Texture *texture;
 };
 
 /*   49 */
 #pragma pack(push, 1)
-struct TileTable
-{
+struct TileTable {
     //----- (00487E13) --------------------------------------------------------
-    TileTable()
-    {
+    TileTable() {
         this->pTiles = nullptr;
         this->sNumTiles = 0;
     }

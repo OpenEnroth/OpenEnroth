@@ -6,21 +6,21 @@ class Image;
 
 class GUIWindow_Save : public GUIWindow {
  public:
-  GUIWindow_Save();
-  virtual ~GUIWindow_Save() {}
+    GUIWindow_Save();
+    virtual ~GUIWindow_Save() {}
 
-  virtual void Update();
+    virtual void Update();
 };
 
 class GUIWindow_Load : public GUIWindow {
  public:
-  GUIWindow_Load(bool ingame);
-  virtual ~GUIWindow_Load();
+    explicit GUIWindow_Load(bool ingame);
+    virtual ~GUIWindow_Load();
 
-  virtual void Update();
+    virtual void Update();
 
  protected:
-  Image *main_menu_background;
+    Image *main_menu_background;
 };
 
 void MainMenuLoad_Loop();

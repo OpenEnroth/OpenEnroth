@@ -1,21 +1,21 @@
 #pragma once
 
-#include "Engine/Point.h"
-
 #include <array>
+
+#include "Engine/Point.h"
 
 class Weather {
  public:
-  Weather() : bNight(false), bRenderSnow(false) {}
+    Weather() : bNight(false), bRenderSnow(false) {}
 
-  void DrawSnow();
-  void Initialize();
-  void Draw();
-  bool OnPlayerTurn(int dangle);
+    void DrawSnow();
+    void Initialize();
+    void Draw();
+    bool OnPlayerTurn(int dangle);
 
-  std::array<Point, 1000> Screen_Coord;
-  bool bNight;
-  bool bRenderSnow;
+    std::array<Point, 1000> Screen_Coord;
+    bool bNight;
+    bool bRenderSnow;
 };
 
 extern Weather *pWeather;

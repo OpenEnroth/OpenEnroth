@@ -1,32 +1,30 @@
 #pragma once
 #include "GUI/GUIWindow.h"
 
-
 class GUIWindow_Book : public GUIWindow {
  public:
-  GUIWindow_Book();
-  virtual ~GUIWindow_Book() {}
+    GUIWindow_Book();
+    virtual ~GUIWindow_Book() {}
 
-  virtual void Release();
+    virtual void Release();
 
  protected:
-  void BasicBookInitialization();
+    void BasicBookInitialization();
 
  private:
-  void InitializeFonts();
+    void InitializeFonts();
 };
 
 
 class GUIWindow_BooksButtonOverlay : public GUIWindow {
  public:
-  GUIWindow_BooksButtonOverlay(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-    GUIWindow(x, y, width, height, button, hint)
-  {}
-  virtual ~GUIWindow_BooksButtonOverlay() {}
+    GUIWindow_BooksButtonOverlay(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
+        GUIWindow(x, y, width, height, button, hint)
+    {}
+    virtual ~GUIWindow_BooksButtonOverlay() {}
 
-  virtual void Update();
+    virtual void Update();
 };
-
 
 class Image;
 extern Image *ui_book_button8_off;

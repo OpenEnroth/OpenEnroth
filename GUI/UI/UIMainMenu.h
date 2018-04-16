@@ -4,26 +4,26 @@
 
 class GUIWindow_MainMenu : public GUIWindow {
  public:
-  GUIWindow_MainMenu();
-  virtual ~GUIWindow_MainMenu();
+    GUIWindow_MainMenu();
+    virtual ~GUIWindow_MainMenu();
 
-  virtual void Update();
+    virtual void Update();
 
-  static void Loop();
-  void EventLoop();
+    static void Loop();
+    void EventLoop();
 
  protected:
-  GUIButton *pBtnExit;
-  GUIButton *pBtnCredits;
-  GUIButton *pBtnLoad;
-  GUIButton *pBtnNew;
+    GUIButton *pBtnExit;
+    GUIButton *pBtnCredits;
+    GUIButton *pBtnLoad;
+    GUIButton *pBtnNew;
 
-  Image *main_menu_background;
+    Image *main_menu_background;
 
-  Image *ui_mainmenu_new;
-  Image *ui_mainmenu_load;
-  Image *ui_mainmenu_credits;
-  Image *ui_mainmenu_exit;
+    Image *ui_mainmenu_new;
+    Image *ui_mainmenu_load;
+    Image *ui_mainmenu_credits;
+    Image *ui_mainmenu_exit;
 };
 
 extern GUIWindow_MainMenu *pWindow_MainMenu;

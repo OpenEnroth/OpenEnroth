@@ -3,23 +3,23 @@
 
 class GUIWindow_CharacterRecord : public GUIWindow {
  public:
-  GUIWindow_CharacterRecord(unsigned int uActiveCharacter, enum CURRENT_SCREEN screen);
-  virtual ~GUIWindow_CharacterRecord() {}
+    GUIWindow_CharacterRecord(unsigned int uActiveCharacter, enum CURRENT_SCREEN screen);
+    virtual ~GUIWindow_CharacterRecord() {}
 
-  virtual void Update();
+    virtual void Update();
 
-  void ShowStatsTab();
-  void ShowSkillsTab();
-  void ShowInventoryTab();
-  void ShowAwardsTab();
-  void ToggleRingsOverlay();
+    void ShowStatsTab();
+    void ShowSkillsTab();
+    void ShowInventoryTab();
+    void ShowAwardsTab();
+    void ToggleRingsOverlay();
 
  protected:
-  void CharacterUI_StatsTab_Draw(struct Player *);
-  void CharacterUI_SkillsTab_Draw(struct Player *);
-  void CharacterUI_AwardsTab_Draw(struct Player *);
+    void CharacterUI_StatsTab_Draw(struct Player *);
+    void CharacterUI_SkillsTab_Draw(struct Player *);
+    void CharacterUI_AwardsTab_Draw(struct Player *);
 
-  void CharacterUI_SkillsTab_CreateButtons();
+    void CharacterUI_SkillsTab_CreateButtons();
 };
 
 bool ringscreenactive();

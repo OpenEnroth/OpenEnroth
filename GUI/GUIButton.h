@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <vector>
 
 #include "Engine/Strings.h"
 #include "GUI/GUIWindow.h"
@@ -9,31 +10,31 @@ class Image;
 
 class GUIButton {
  public:
-  GUIButton() {
-    pParent = nullptr;
-  }
+    GUIButton() {
+        pParent = nullptr;
+    }
 
-  void DrawLabel(const String &label_text, GUIFont *pFont, int a5, int uFontShadowColor);
-  bool Contains(unsigned int x, unsigned int y);
-  void Release();
+    void DrawLabel(const String &label_text, GUIFont *pFont, int a5, int uFontShadowColor);
+    bool Contains(unsigned int x, unsigned int y);
+    void Release();
 
-  unsigned int uX;
-  unsigned int uY;
-  unsigned int uWidth;
-  unsigned int uHeight;
-  unsigned int uZ;
-  unsigned int uW;
-  int uButtonType;
-  int field_1C;//may be pMessageType
-  UIMessageType msg;
-  unsigned int  msg_param;
-  int field_28;
-  bool field_2C_is_pushed;
-  GUIWindow *pParent;
-  std::vector<Image*> vTextures;
-  uint8_t uHotkey;
-  String sLabel;
-  String field_75;
+    unsigned int uX;
+    unsigned int uY;
+    unsigned int uWidth;
+    unsigned int uHeight;
+    unsigned int uZ;
+    unsigned int uW;
+    int uButtonType;
+    int field_1C;  // may be pMessageType
+    UIMessageType msg;
+    unsigned int  msg_param;
+    int field_28;
+    bool field_2C_is_pushed;
+    GUIWindow *pParent;
+    std::vector<Image*> vTextures;
+    uint8_t uHotkey;
+    String sLabel;
+    String field_75;
 };
 
 extern GUIButton *pBtn_CloseBook;
