@@ -8,5 +8,8 @@ Might and Magic VI-VIII engine remake using original data & code
 4. Compile & run.
 5. Launcher will try to guess your game installation directory (GoG or older releases). You can override folder with game resources using GUI.
 
+# Coding style
+For the C++ code we are following the [Google C++ Style Guide](http://google.github.io/styleguide/cppguide.html).
+
 # Current build status
 Master: [![Build Status](https://ci.appveyor.com/api/projects/status/nlno5vo74jf6rnt3/branch/master?svg=true)](https://ci.appveyor.com/project/gp-alex/world-of-might-and-magic)
