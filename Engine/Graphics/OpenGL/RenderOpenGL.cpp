@@ -30,9 +30,11 @@
 #include "Platform/Api.h"
 #include "Platform/OsWindow.h"
 
-// IRender *IRender::Create() { return new RenderOpenGL(); }
-
-RenderOpenGL::RenderOpenGL() { bFogEnabled = false; }
+RenderOpenGL::RenderOpenGL(Graphics::Configuration *config)
+    : RenderBase(config)
+{
+    bFogEnabled = false;
+}
 RenderOpenGL::~RenderOpenGL() {}
 
 unsigned int RenderOpenGL::GetRenderWidth() const { return window->GetWidth(); }
@@ -92,7 +94,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             uColor = sCorrectedColor = 0xFF109010;
     }
 
-    if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related) {
+    if (_4D864C_force_sw_render_rules && engine_config->Flag1_1()) {
         /*
             __debugbreak();
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
@@ -123,7 +125,8 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         */
     } else {
         if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
-            byte_4D864C && pEngine->uFlags & GAME_FLAGS_2_SATURATE_LIGHTMAPS) {
+            _4D864C_force_sw_render_rules && engine_config->Flag1_2())
+        {
             glEnable(GL_TEXTURE_2D);
             glDisable(GL_BLEND);
             glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
@@ -1627,7 +1630,8 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
     pEngine->AlterGamma_ODM(a4, &a2);
 
     if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
-        byte_4D864C && pEngine->uFlags & 2) {
+        _4D864C_force_sw_render_rules && engine_config->Flag1_2())
+    {
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_BLEND);
         glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
@@ -1782,7 +1786,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
 }
 
 bool RenderOpenGL::SwitchToWindow() {
-    pParty->uFlags |= PARTY_FLAGS_1_0002;
+    //pParty->uFlags |= PARTY_FLAGS_1_0002;
     pViewport->SetFOV(_6BE3A0_fov);
     CreateZBuffer();
 

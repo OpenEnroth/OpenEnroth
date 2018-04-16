@@ -155,7 +155,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 113) / 480.0f, ui_book_button3_on);
         } else {  // press(нажатие)
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0,
+            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_POTION_RECEPIE;
             render->DrawTextureAlphaNew(
@@ -181,7 +181,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 150) / 480.0f, ui_book_button4_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0,
+            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_STAT_HINT;
             render->DrawTextureAlphaNew(
@@ -206,7 +206,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 188) / 480.0f, ui_book_button5_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0,
+            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_OBELISK;
             render->DrawTextureAlphaNew(
@@ -231,7 +231,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 226) / 480.0f, ui_book_button6_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0,
+            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_SEER;
             render->DrawTextureAlphaNew(
@@ -256,7 +256,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 264) / 480.0f, ui_book_button7_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0,
+            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_MISC;
             render->DrawTextureAlphaNew(
@@ -281,7 +281,7 @@ void GUIWindow_AutonotesBook::Update() {
                 (pViewport->uViewportTL_Y + 302) / 480.0f, ui_book_button8_on);
         } else {
             change_flag = true;
-            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0,
+            pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0,
                                     0);
             _506568_autonote_type = AUTONOTE_TEACHER;
             render->DrawTextureAlphaNew(
@@ -340,7 +340,7 @@ void GUIWindow_AutonotesBook::Update() {
                     num_achieved_awards;
                 books_primary_item_per_page =
                     num_achieved_awards + books_primary_item_per_page;
-                pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
             }
         }
         if (BtnUp_flag && books_page_number) {  // press Up bookmark(нажатие
@@ -348,7 +348,7 @@ void GUIWindow_AutonotesBook::Update() {
             --books_page_number;
             books_primary_item_per_page -=
                 (unsigned __int8)books_num_items_per_page[books_page_number];
-            pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
         }
         if (!num_achieved_awards ||
             !books_primary_item_per_page) {  // количество записей 0 или номер

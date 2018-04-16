@@ -1,5 +1,7 @@
 #include "Engine/Graphics/IRender.h"
 
+#include "Engine/Configuration.h"
+
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Weather.h"
 
@@ -46,14 +48,13 @@ void Weather::Initialize() {
 }
 
 void Weather::Draw() {
-    extern bool bSnow;
-    if (bRenderSnow || bSnow) {
+    if (bRenderSnow && engine_config->allow_snow) {
         DrawSnow();
     }
 }
 
 bool Weather::OnPlayerTurn(int dangle) {
-    if (bRenderSnow != true) {
+    if (!bRenderSnow) {
         return false;
     }
 

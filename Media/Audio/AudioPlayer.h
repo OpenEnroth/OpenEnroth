@@ -110,19 +110,18 @@ class AudioPlayer {
     AudioPlayer() : bPlayerReady(false), currentMusicTrack(0) {}
     virtual ~AudioPlayer() { Release(); }
 
-    void SetMasterVolume(float fVolume);
+    void SetMasterVolume(int level);
 
     void MusicPlayTrack(enum MusicID eTrack);
     void MusicStart();
     void MusicStop();
     void MusicPause();
     void MusicResume();
-    void MusicSetVolume(unsigned int vol);
+    void SetMusicVolume(int music_level);
     float MusicGetVolume();
 
     void StopAll(int sample_id);
-    void PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int x,
-                   int y, int a7, float uVolume, int sPlaybackRate);
+    void PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int x, int y, int a7);
     void UpdateSounds();
     void StopChannels(int uStartChannel, int uEndChannel);
     void LoadAudioSnd();
@@ -155,11 +154,6 @@ struct SoundData;
 extern int sLastTrackLengthMS;
 extern AudioPlayer *pAudioPlayer;
 extern SoundList *pSoundList;
-
-extern uint8_t uSoundVolumeMultiplier;
-extern uint8_t uVoicesVolumeMultiplier;
-extern uint8_t uMusicVolimeMultiplier;
-extern int bWalkSound;
 
 extern std::array<float, 10> pSoundVolumeLevels;
 

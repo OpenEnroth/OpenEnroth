@@ -823,7 +823,7 @@ void GUIWindow_Scroll::Update() {
 
 void OnButtonClick::Update() {
     if (bPlaySound) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
@@ -837,7 +837,7 @@ void OnButtonClick::Update() {
 
 void OnButtonClick2::Update() {
     if (bPlaySound) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pButton = (GUIButton *)ptr_1C;
     if (pButton->uX >= 0 && pButton->uX <= window->GetWidth()) {
@@ -861,7 +861,7 @@ void OnButtonClick2::Update() {
 
 void OnButtonClick3::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
@@ -875,7 +875,7 @@ void OnButtonClick3::Update() {
 
 void OnButtonClick4::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
@@ -887,7 +887,7 @@ void OnButtonClick4::Update() {
 
 void OnSaveLoad::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
@@ -907,7 +907,7 @@ void OnSaveLoad::Update() {
 
 void OnCancel::Update() {
     if (sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pGUIButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
@@ -923,7 +923,7 @@ void OnCancel::Update() {
 
 void OnCancel2::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
@@ -939,7 +939,7 @@ void OnCancel2::Update() {
 
 void OnCancel3::Update() {
     if (!sHint.empty()) {
-        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
 
     auto pButton = (GUIButton *)ptr_1C;

@@ -26,7 +26,7 @@ extern int game_viewport_w;
 extern int pWindowList_at_506F50_minus1_indexing[1];
 extern int dword_4C9890[10];
 extern int dword_4C9920[16];
-extern char byte_4D864C;
+extern char _4D864C_force_sw_render_rules;
 extern float flt_4D86CC;
 extern int dword_4D86D8;
 
@@ -341,30 +341,12 @@ extern unsigned int uLevelMapStatsID;
 #define GAME_SETTINGS_4000 0x4000
 extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
 
-#define DEBUG_SETTINGS_RUN_IN_WIDOW 0x0001
-#define DEBUG_SETTINGS_0002_SHOW_FR 0x0002
-#define DEBUG_SETTINGS_NO_ACTORS 0x0004
-#define DEBUG_SETTINGS_NO_DECORATIONS 0x0008
-#define DEBUG_SETTINGS_NO_DAMAGE 0x0010
-extern int dword_6BE368_debug_settings_2;  // DEBUG_SETTINGS_*
-
-extern unsigned __int8 bCanLoadFromCD;
-extern int bShowDamage;  // idb
-extern unsigned int bAlwaysRun;
-extern unsigned int bFlipOnExit;
-extern unsigned int uTurnSpeed;
 extern float _6BE3A0_fov;
 extern float flt_6BE3A4_debug_recmod1;
 extern float flt_6BE3A8_debug_recmod2;
 extern float flt_6BE3AC_debug_recmod1_x_1_6;
 extern std::string s_SavedMapName;
-extern char bUnderwater;
 extern char bNoNPCHiring;
-extern bool bNoVideo;
-extern bool bNoIntro;
-extern bool bNoLogo;
-extern bool bNoCD;
-extern bool bNoSound;
 extern std::array<int, 100> dword_720020_zvalues;
 extern std::array<int, 299> dword_7201B0_zvalues;
 extern std::array<__int16, 104> word_7209A0_intercepts_ys_plus_ys;
@@ -431,19 +413,5 @@ extern std::array<char, 777> byte_F8B1EF;
 extern std::array<char, 4> byte_F8B1F0;
 
 extern int bGameoverLoop;
-extern std::array<__int16, 104>
-    intersect_face_vertex_coords_list_a;  // word_F8BC48
-extern std::array<__int16, 104>
-    intersect_face_vertex_coords_list_b;  // word_F8BD18
-extern bool wizard_eye;
-extern bool change_seasons;
-extern bool all_magic;
-extern bool debug_information;
-extern bool show_picked_face;
-extern bool draw_portals_loops;
-extern bool new_speed;
-extern bool draw_terrain_dist_mist;
-extern bool no_actors;
-extern bool lights_flag;
-extern bool debug_lights;
-extern bool debug_terrain_polygin;
+extern std::array<__int16, 104> intersect_face_vertex_coords_list_a;  // word_F8BC48
+extern std::array<__int16, 104> intersect_face_vertex_coords_list_b;  // word_F8BD18

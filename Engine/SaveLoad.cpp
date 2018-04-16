@@ -96,7 +96,7 @@ void LoadGame(unsigned int uSlot) {
 
     MapsLongTimers_count = 0;
     if (!pSavegameUsedSlots[uSlot]) {
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         logger->Warning(L"LoadGame: slot %u is empty", uSlot);
         return;
     }
@@ -246,12 +246,10 @@ void LoadGame(unsigned int uSlot) {
         }
     }
 
-    pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
-    pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] *
-                                  128.0f);
-    if (uTurnSpeed)
-        pParty->sRotationY =
-            uTurnSpeed * pParty->sRotationY / (signed int)uTurnSpeed;
+    pAudioPlayer->SetMusicVolume(engine_config->music_level);
+    pAudioPlayer->SetMasterVolume(engine_config->sound_level);
+    if (engine_config->turn_speed > 0)
+        pParty->sRotationY = engine_config->turn_speed * pParty->sRotationY / engine_config->turn_speed;
     MM7Initialization();
     bFlashQuestBook = false;
     viewparams->bRedrawGameUI = true;

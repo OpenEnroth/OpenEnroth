@@ -79,8 +79,7 @@ void CreateParty_EventLoop() {
                 7 +
                 pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
             uPlayerCreationUI_SelectedCharacter = param;
-            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1,
-                0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             break;
         }
         case UIMSG_PlayerCreation_VoicePrev:
@@ -96,8 +95,7 @@ void CreateParty_EventLoop() {
 
             new OnButtonClick(pButton->uX, pButton->uY, 0, 0, (int)pButton,
                 String(), false);
-            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1,
-                0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
             break;
         }
@@ -111,8 +109,7 @@ void CreateParty_EventLoop() {
             auto pButton = pCreationUI_BtnPressRight2[param];
             new OnButtonClick(pButton->uX, pButton->uY, 0, 0, (int)pButton,
                 String(), false);
-            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1,
-                0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
             break;
         }
@@ -137,8 +134,7 @@ void CreateParty_EventLoop() {
                 pCreationUI_BtnPressLeft[param]->uY, 0, 0,
                 (int)pCreationUI_BtnPressLeft[param],
                 String(), false);
-            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1,
-                0, 0, 0.0, 0);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
             break;
         case UIMSG_PlayerCreation_FaceNext:
@@ -161,8 +157,7 @@ void CreateParty_EventLoop() {
                 pCreationUI_BtnPressRight[param]->uY, 0, 0,
                 (int)pCreationUI_BtnPressRight[param],
                 String(), false);
-            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1,
-                0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
             break;
         case UIMSG_PlayerCreationClickPlus:
@@ -173,7 +168,7 @@ void CreateParty_EventLoop() {
                 (pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
                     pGUIWindow_CurrentMenu->pStartingPosActiveItem) %
                 7);
-            pAudioPlayer->PlaySound(SOUND_ClickMinus, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_ClickMinus, 0, 0, -1, 0, 0);
             break;
         case UIMSG_PlayerCreationClickMinus:
             new OnButtonClick2(523, 393, 0, 0,
@@ -183,7 +178,7 @@ void CreateParty_EventLoop() {
                 (pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
                     pGUIWindow_CurrentMenu->pStartingPosActiveItem) %
                 7);
-            pAudioPlayer->PlaySound(SOUND_ClickPlus, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_ClickPlus, 0, 0, -1, 0, 0);
             break;
         case UIMSG_PlayerCreationSelectActiveSkill:
             if (pPlayer[uPlayerCreationUI_SelectedCharacter]
@@ -192,13 +187,12 @@ void CreateParty_EventLoop() {
                 .pActiveSkills
                 [pPlayer[uPlayerCreationUI_SelectedCharacter]
                 .GetSkillIdxByOrder(param + 4)] = 1;
-            pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0);
             break;
         case UIMSG_PlayerCreationSelectClass:
             pPlayer[uPlayerCreationUI_SelectedCharacter].Reset(
                 (PLAYER_CLASS_TYPE)param);
-            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1,
-                0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             break;
         case UIMSG_PlayerCreationClickOK:
             new OnButtonClick2(580, 431, 0, 0,
@@ -246,7 +240,7 @@ void CreateParty_EventLoop() {
                 0;
         } break;
         case UIMSG_PlayerCreationChangeName:
-            pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0);
             uPlayerCreationUI_SelectedCharacter = param;
             pKeyActionMap->EnterText(0, 15, pGUIWindow_CurrentMenu);
             pGUIWindow_CurrentMenu->ptr_1C = (void *)param;

@@ -1,9 +1,14 @@
 #pragma once
 
+#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/IRender.h"
 
 class RenderBase : public IRender {
- public:
+    public:
+        RenderBase(Graphics::Configuration *config)
+            : IRender(config)
+        {}
+
     virtual void TransformBillboardsAndSetPalettesODM();
     virtual void DrawSpriteObjects_ODM();
     virtual void MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,

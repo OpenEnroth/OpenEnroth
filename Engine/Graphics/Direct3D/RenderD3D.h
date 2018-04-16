@@ -3,7 +3,7 @@
 #include <d3d.h>
 #include <ddraw.h>
 
-#include "../VectorTypes.h"
+#include "Engine/VectorTypes.h"
 
 #define ErrD3D(hr)                                                           \
     do {                                                                     \

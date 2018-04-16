@@ -308,7 +308,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0xFF3C1Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Haste,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
             return;
 
@@ -462,8 +462,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0x5C310Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Stoneskin,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
-                                    0);
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
             return;
 
         case SPELL_SPIRIT_BLESS:
@@ -484,7 +483,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_Bless,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
             return;
 
@@ -505,7 +504,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
             return;
 
@@ -525,7 +524,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
             return;
 
@@ -541,7 +540,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0xA81376u);
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
             return;
 
@@ -553,7 +552,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0xA81376u);
             pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
             return;
 
@@ -599,7 +598,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0xFFFFFFu);
             pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
             return;
 
@@ -619,7 +618,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0xFFFFFFu);
             pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
             return;
 
@@ -691,7 +690,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
                                                                 0x7E7E7Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2,
-                                    PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                                    PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
             return;
     }
@@ -2015,30 +2014,22 @@ void Actor::PlaySound(unsigned int uActorID, unsigned int uSoundID) {
     if (sound_sample_id) {
         if (!pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
             pAudioPlayer->PlaySound(sound_sample_id,
-                PID(OBJECT_Actor, uActorID), 0, -1, 0, 0, 0,
+                PID(OBJECT_Actor, uActorID), 0, -1, 0,
                 0);
         } else {
             switch (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SHRINK].uPower) {
                 case 1:
-                    pAudioPlayer->PlaySound(sound_sample_id,
-                                            PID(OBJECT_Actor, uActorID), 0, 0,
-                                            0, 0, 0, 33075);
+                    pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0);
                     break;
                 case 2:
-                    pAudioPlayer->PlaySound(sound_sample_id,
-                                            PID(OBJECT_Actor, uActorID), 0, 0,
-                                            0, 0, 0, 33075);
+                    pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0);
                     break;
                 case 3:
                 case 4:
-                    pAudioPlayer->PlaySound(sound_sample_id,
-                                            PID(OBJECT_Actor, uActorID), 0, 0,
-                                            0, 0, 0, 33075);
+                    pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, 0, 0, 0);
                     break;
                 default:
-                    pAudioPlayer->PlaySound(sound_sample_id,
-                                            PID(OBJECT_Actor, uActorID), 0, -1,
-                                            0, 0, 0, 0);
+                    pAudioPlayer->PlaySound(sound_sample_id, PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
                     break;
             }
         }
@@ -3650,7 +3641,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (pMonster->sCurrentHP > 0) {
         Actor::AI_Stun(uActorID_Monster, a1, 0);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
-        if (bShowDamage) {
+        if (!engine_config->NoShowDamage()) {
             String str;
             if (projectileSprite)
                 str = localization->FormatString(
@@ -3663,11 +3654,9 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             GameUI_StatusBar_OnEvent(str);
         }
     } else {
-        if (pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].bQuestMonster &
-            1) {
-            if (/*render->pRenderD3D &&*/ pEngine->uFlags2 &
-                GAME_FLAGS_2_DRAW_BLOODSPLATS) {
-                v33 = byte_4D864C && pEngine->uFlags & 0x80000
+        if (pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].bQuestMonster & 1) {
+            if (!engine_config->NoBloodsplats()) {
+                v33 = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
                           ? 10 * pMonster->uActorRadius
                           : pMonster->uActorRadius;
                 pDecalBuilder->AddBloodsplat((float)pMonster->vPosition.x,
@@ -3686,7 +3675,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (rand() % 100 < 20)
             v40 = ((signed int)pMonster->pMonsterInfo.uHP >= 100) + 1;
         player->PlaySound((PlayerSpeech)v40, 0);
-        if (bShowDamage) {
+        if (!engine_config->NoShowDamage()) {
             pMonsterName = (char *)uDamageAmount;
             pPlayerName = player->pName;
 
@@ -3709,7 +3698,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             extraRecoveryTime =
                 (int)(flt_6BE3A8_debug_recmod2 * 42.66666666666666);
         pMonster->pMonsterInfo.uRecoveryTime += extraRecoveryTime;
-        if (bShowDamage) {
+        if (!engine_config->NoShowDamage()) {
             pMonsterName = player->pName;
 
             auto str = localization->FormatString(635, player->pName,
@@ -3723,7 +3712,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         v45 = SkillToMastery(v43);
         GameTime v46 = GameTime(pParty->GetPlayingTime() + GameTime(0, v43 & 63));  // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply(v46, v45, 0, 0, 0);
-        if (bShowDamage) {
+        if (!engine_config->NoShowDamage()) {
             pMonsterName = player->pName;
 
             auto str = localization->FormatString(

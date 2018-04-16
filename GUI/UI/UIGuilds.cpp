@@ -279,7 +279,7 @@ void GuildDialog() {
                 403,
                 localization->GetSkillName(
                     dialog_menu_id - 36)));  // You already know the %s skill
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
             if (pParty->uNumGold < pPrice) {
                 GameUI_StatusBar_OnEvent(localization->GetString(

@@ -274,7 +274,7 @@ bool Player::CanCastSpell(unsigned int uRequiredMana) {
     }
 
     // not enough mana
-    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
     return false;
 }
 
@@ -803,12 +803,12 @@ int Player::AddItem(int index, unsigned int uItemID) {
             }
         }
 
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         return 0;  // no space cant add item
     }
 
     if (!CanFitItem(index, uItemID)) {
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         return 0;  // cant fit item
     }
 
@@ -2010,7 +2010,7 @@ int Player::ReceiveSpecialAttackEffect(
         switch (attTypeCast) {
             case SPECIAL_ATTACK_CURSE:
                 SetCondition(Condition_Cursed, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
                 return 1;
@@ -2018,7 +2018,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_WEAK:
                 SetCondition(Condition_Weak, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2026,7 +2026,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_SLEEP:
                 SetCondition(Condition_Sleep, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2034,7 +2034,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_DRUNK:
                 SetCondition(Condition_Drunk, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2042,7 +2042,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_INSANE:
                 SetCondition(Condition_Insane, 1);
-                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2050,7 +2050,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_POISON_WEAK:
                 SetCondition(Condition_Poison_Weak, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2058,7 +2058,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_POISON_MEDIUM:
                 SetCondition(Condition_Poison_Medium, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2066,7 +2066,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_POISON_SEVERE:
                 SetCondition(Condition_Poison_Severe, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2074,7 +2074,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_DISEASE_WEAK:
                 SetCondition(Condition_Disease_Weak, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2082,7 +2082,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_DISEASE_MEDIUM:
                 SetCondition(Condition_Disease_Medium, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2090,7 +2090,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_DISEASE_SEVERE:
                 SetCondition(Condition_Disease_Severe, 1);
-                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
                                                                  whichplayer);
                 return 1;
@@ -2098,7 +2098,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_PARALYZED:
                 SetCondition(Condition_Paralyzed, 1);
-                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
                 return 1;
@@ -2106,7 +2106,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_UNCONSCIOUS:
                 SetCondition(Condition_Unconcious, 1);
-                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
                 return 1;
@@ -2114,7 +2114,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_DEAD:
                 SetCondition(Condition_Dead, 1);
-                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
                 return 1;
@@ -2122,7 +2122,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_PETRIFIED:
                 SetCondition(Condition_Pertified, 1);
-                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
                 return 1;
@@ -2130,7 +2130,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_ERADICATED:
                 SetCondition(Condition_Eradicated, 1);
-                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
                 return 1;
@@ -2142,11 +2142,9 @@ int Player::ReceiveSpecialAttackEffect(
                 if (!(itemtobreak->uAttributes & ITEM_HARDENED)) {
                     PlaySound(SPEECH_40, 0);
                     itemtobreak->SetBroken();
-                    pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1,
-                                            0, 0, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0);
                 }
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
@@ -2168,7 +2166,7 @@ int Player::ReceiveSpecialAttackEffect(
                             [this->pInventoryMatrix[itemtostealinvindex] - 1],
                        0x24u);
                 RemoveItemAtInventoryIndex(itemtostealinvindex);
-                pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0,
+                pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1,
                                         0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
@@ -2178,7 +2176,7 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_AGING:
                 PlaySound(SPEECH_42, 0);
                 ++this->sAgeModifier;
-                pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
                 return 1;
@@ -2187,7 +2185,7 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_MANA_DRAIN:
                 PlaySound(SPEECH_41, 0);
                 this->sMana = 0;
-                pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
                 return 1;
@@ -2195,7 +2193,7 @@ int Player::ReceiveSpecialAttackEffect(
 
             case SPECIAL_ATTACK_FEAR:
                 SetCondition(Condition_Fear, 1);
-                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
                 pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
                                                                  whichplayer);
                 return 1;
@@ -3633,59 +3631,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
         /*   switch (i)
            {
              case PLAYER_SKILL_FIRE:
-               spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;//its
-           temporary, for test spells
-
-               extern bool all_magic;
-               if ( all_magic == true )
-               {
-                 pActiveSkills[PLAYER_SKILL_AIR] = 1;
-                 pActiveSkills[PLAYER_SKILL_WATER] = 1;
-                 pActiveSkills[PLAYER_SKILL_EARTH] = 1;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[1] = true;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[2] = true;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[3] = true;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[4] = true;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[5] = true;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[6] = true;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[7] = true;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[8] = true;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[9] = true;
-                 spellbook.pFireSpellbook.bIsSpellAvailable[10] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[0] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[1] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[2] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[3] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[4] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[5] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[6] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[7] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[8] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[9] = true;
-                 spellbook.pAirSpellbook.bIsSpellAvailable[10] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[0] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[1] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[2] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[3] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[4] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[5] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[6] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[7] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[8] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[9] = true;
-                 spellbook.pWaterSpellbook.bIsSpellAvailable[10] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[0] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[1] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[2] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[3] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[4] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[5] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[6] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[7] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[8] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[9] = true;
-                 spellbook.pEarthSpellbook.bIsSpellAvailable[10] = true;
-               }
+               spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;//its temporary, for test spells
                break;
              case PLAYER_SKILL_AIR:
                spellbook.pAirSpellbook.bIsSpellAvailable[0] = true;
@@ -3704,44 +3650,6 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
                break;
              case PLAYER_SKILL_BODY:
                spellbook.pBodySpellbook.bIsSpellAvailable[0] = true;
-
-               if ( all_magic == true )
-               {
-                 pActiveSkills[PLAYER_SKILL_MIND] = 1;
-                 pActiveSkills[PLAYER_SKILL_SPIRIT] = 1;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[1] = true;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[2] = true;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[3] = true;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[4] = true;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[5] = true;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[6] = true;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[7] = true;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[8] = true;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[9] = true;
-                 spellbook.pBodySpellbook.bIsSpellAvailable[10] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[0] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[1] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[2] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[3] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[4] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[5] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[6] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[7] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[8] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[9] = true;
-                 spellbook.pMindSpellbook.bIsSpellAvailable[10] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[0] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[1] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[2] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[3] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[4] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[5] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[6] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[7] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[8] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[9] = true;
-                 spellbook.pSpiritSpellbook.bIsSpellAvailable[10] = true;
-               }
                break;
              case PLAYER_SKILL_LIGHT:
                spellbook.pLightSpellbook.bIsSpellAvailable[0] = true;
@@ -3750,8 +3658,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
                spellbook.pDarkSpellbook.bIsSpellAvailable[0] = true;
                break;
            }
-
-               */
+*/
     }
 
     memset(&pEquipment, 0, sizeof(PlayerEquipment));
@@ -4028,10 +3935,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 36, pParty->pPickedItem
                         .GetDisplayName()));  // %s can not be used that way
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
-        pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
 
         if (pGUIWindow_CurrentMenu &&
             pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
@@ -4442,10 +4349,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     36, pParty->pPickedItem
                             .GetDisplayName()));  // %s can not be used that way
 
-                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                 return;
         }
-        pAudioPlayer->PlaySound(SOUND_drink, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_drink, 0, 0, -1, 0, 0);
         if (pGUIWindow_CurrentMenu &&
             pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
             //         if ( !v73 ) v73 is always 1 at this point
@@ -4477,13 +4384,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                          playerAffected->GetMajorConditionIdx()));
             GameUI_StatusBar_OnEvent(str);
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
-        if (bUnderwater == 1) {
-            GameUI_StatusBar_OnEvent(localization->GetString(
-                652));  // You can not do that while you are underwater!
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+        if (pEngine->IsUnderwater()) {
+            GameUI_StatusBar_OnEvent(localization->GetString(652));  // You can not do that while you are underwater!
+            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
 
@@ -4521,7 +4427,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                          .c_str());  // You already know the %s spell
             GameUI_StatusBar_OnEvent(str);
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
         if (!playerAffected->CanAct()) {
@@ -4531,7 +4437,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->GetMajorConditionIdx()));
             GameUI_StatusBar_OnEvent(str);
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
         v16 = v15 % 11 + 1;
@@ -4608,7 +4514,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 playerAffected->GetMajorConditionIdx()));
         GameUI_StatusBar_OnEvent(str);
 
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         return;
     } else {
         if (pParty->pPickedItem.uItemID == ITEM_GENIE_LAMP) {
@@ -4727,38 +4633,38 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
                 SPELL_QUEST_COMPLETED, player_num - 1);
             playerAffected->PlaySound(SPEECH_93, 0);
-            pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
             if (pParty->uCurrentDayOfMonth == 6 ||
                 pParty->uCurrentDayOfMonth == 20) {
                 playerAffected->SetCondition(Condition_Eradicated, 0);
-                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
             } else if (pParty->uCurrentDayOfMonth == 12 ||
                        pParty->uCurrentDayOfMonth == 26) {
                 playerAffected->SetCondition(Condition_Dead, 0);
-                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
             } else if (pParty->uCurrentDayOfMonth == 4 ||
                        pParty->uCurrentDayOfMonth == 25) {
                 playerAffected->SetCondition(Condition_Pertified, 0);
-                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
             }
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_RED_APPLE) {
             Party::GiveFood(1);
-            pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
         } else if (pParty->pPickedItem.uItemID == ITEM_LUTE) {
-            pAudioPlayer->PlaySound(SOUND_luteguitar, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_luteguitar, 0, 0, -1, 0, 0);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_FAERIE_PIPES) {
-            pAudioPlayer->PlaySound(SOUND_panflute, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_panflute, 0, 0, -1, 0, 0);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_GRYPHONHEARTS_TRUMPET) {
-            pAudioPlayer->PlaySound(SOUND_trumpet, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_trumpet, 0, 0, -1, 0, 0);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
             pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
                 SPELL_QUEST_COMPLETED, player_num - 1);
             v5 = PID(OBJECT_Player, player_num + 49);
-            pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0);
             playerAffected->AddVariable(VAR_NumSkillPoints, 2);
         } else if (pParty->pPickedItem.uItemID == ITEM_TEMPLE_IN_A_BOTTLE) {
             TeleportToNWCDungeon();
@@ -4769,7 +4675,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                         .GetDisplayName());  // %s can not be used that way
             GameUI_StatusBar_OnEvent(str);
 
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
 
@@ -5773,7 +5679,7 @@ void Player::PlayAwardSound() {
     int playerIndex = GetPlayerIndex();
     int v25 = 8 * playerIndex + 400;
     HEXRAYS_LOBYTE(v25) = PID(OBJECT_Player, playerIndex - 112);
-    pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0);
 }
 
 //----- (new function) --------------------------------------------------------
@@ -7136,13 +7042,12 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     Error("Unexpected sound value");
             }
         }
-        pAudioPlayer->PlaySound(soundToPlay, PID(OBJECT_Player, a4 + 80), 0, -1,
-                                0, 0, 0, 0);
+        pAudioPlayer->PlaySound(soundToPlay, PID(OBJECT_Player, a4 + 80), 0, -1, 0, 0);
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
         if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
-            __int16 spellPower =
-                actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
-            if (spellPower > 0) dmgToReceive /= spellPower;
+            __int16 spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
+            if (spellPower > 0)
+                dmgToReceive /= spellPower;
         }
 
         int damageType;
@@ -7170,7 +7075,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                 damageType = 4;  // yes, the original just assigned the value 4
                 break;
         }
-        if (!(dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_NO_DAMAGE)) {
+        if (!engine_config->NoDamage()) {
             dmgToReceive =
                 playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
             if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
@@ -7188,14 +7093,10 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                                      // nonstatic actor functions
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
-                            if (pMonsterStats
-                                        ->pInfos[actorPtr->pMonsterInfo.uID]
-                                        .bQuestMonster &
-                                    1 &&
-                                pEngine->uFlags2 &
-                                    GAME_FLAGS_2_DRAW_BLOODSPLATS) {
-                                int splatRadius =
-                                    byte_4D864C && BYTE2(pEngine->uFlags) & 8
+                            if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
+                                !engine_config->NoBloodsplats())
+                            {
+                                int splatRadius = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
                                         ? 10 * actorPtr->uActorRadius
                                         : actorPtr->uActorRadius;
                                 pDecalBuilder->AddBloodsplat(
@@ -7221,7 +7122,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     }
                 }
             }
-            if (!(dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_NO_DAMAGE) &&
+            if (!engine_config->NoDamage() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
                 rand() % 100 < actorPtr->pMonsterInfo.uLevel *
                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
@@ -7368,7 +7269,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     damageType = 4;
                     break;
             }
-            if (!(dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_NO_DAMAGE)) {
+            if (!engine_config->NoDamage())
+            {
                 int reflectedDmg = playerPtr->ReceiveDamage(
                     dmgToReceive, (DAMAGE_TYPE)damageType);
                 if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
@@ -7384,15 +7286,9 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                                                0);
                                 Actor::AggroSurroundingPeasants(uActorID, 1);
                             } else {
-                                if (pMonsterStats
-                                            ->pInfos[actorPtr->pMonsterInfo.uID]
-                                            .bQuestMonster &
-                                        1 &&
-                                    pEngine->uFlags2 &
-                                        GAME_FLAGS_2_DRAW_BLOODSPLATS) {
-                                    int splatRadius =
-                                        byte_4D864C &&
-                                                BYTE2(pEngine->uFlags) & 8
+                                if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
+                                    !engine_config->NoBloodsplats()) {
+                                    int splatRadius = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
                                             ? 10 * actorPtr->uActorRadius
                                             : actorPtr->uActorRadius;
                                     pDecalBuilder->AddBloodsplat(
@@ -7422,7 +7318,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                 }
             }
             if (!dmgSource &&
-                !(dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_NO_DAMAGE) &&
+                !engine_config->NoDamage() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
                 rand() % 100 < actorPtr->pMonsterInfo.uLevel *
                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
@@ -7943,35 +7839,28 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
     switch (v34) {
         case 0:
-            pAudioPlayer->PlaySound(SOUND_swing_with_blunt_weapon01, 0, 0, -1,
-                                    0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_swing_with_blunt_weapon01, 0, 0, -1, 0, 0);
             break;
         case 1:
-            pAudioPlayer->PlaySound(SOUND_swing_with_sword01, 0, 0, -1, 0, 0, 0,
-                                    0);
+            pAudioPlayer->PlaySound(SOUND_swing_with_sword01, 0, 0, -1, 0, 0);
             break;
         case 2:
-            pAudioPlayer->PlaySound(SOUND_swing_with_sword02, 0, 0, -1, 0, 0, 0,
-                                    0);
+            pAudioPlayer->PlaySound(SOUND_swing_with_sword02, 0, 0, -1, 0, 0);
             break;
         case 3:
-            pAudioPlayer->PlaySound(SOUND_swing_with_axe01, 0, 0, -1, 0, 0, 0,
-                                    0);
+            pAudioPlayer->PlaySound(SOUND_swing_with_axe01, 0, 0, -1, 0, 0);
             break;
         case 4:
-            pAudioPlayer->PlaySound(SOUND_swing_with_axe03, 0, 0, -1, 0, 0, 0,
-                                    0);
+            pAudioPlayer->PlaySound(SOUND_swing_with_axe03, 0, 0, -1, 0, 0);
             break;
         case 5:
-            pAudioPlayer->PlaySound(SOUND_shoot_bow01, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_shoot_bow01, 0, 0, -1, 0, 0);
             break;
         case 6:
-            pAudioPlayer->PlaySound(SOUND_swing_with_blunt_weapon03, 0, 0, -1,
-                                    0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_swing_with_blunt_weapon03, 0, 0, -1, 0, 0);
             break;
         case 7:
-            pAudioPlayer->PlaySound(SOUND_shoot_blaster01, 0, 0, -1, 0, 0, 0,
-                                    0);
+            pAudioPlayer->PlaySound(SOUND_shoot_blaster01, 0, 0, -1, 0, 0);
             break;
     }
 }
@@ -8050,7 +7939,7 @@ void Player::PlaySound(PlayerSpeech speech,
     unsigned int expressionDuration = 0;
 
     unsigned int pickedSoundID = 0;
-    if (uVoicesVolumeMultiplier) {
+    if (engine_config->voice_level > 0) {
         for (int i = 0; i < 2; i++) {
             if (SoundSetAction[speech][i]) {
                 speechVariantArray[speechCount] = SoundSetAction[speech][i];
@@ -8065,9 +7954,8 @@ void Player::PlaySound(PlayerSpeech speech,
                                 2 * (pickedVariant + 50 * uVoiceID) + 4998;
                 pAudioPlayer->PlaySound(
                     (SoundID)pickedSoundID,
-                    PID(OBJECT_Player, uActiveCharacter + 39), 0, -1, 0, 0,
-                    (int)(pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f),
-                    0);
+                    PID(OBJECT_Player, uActiveCharacter + 39), 0, -1, 0, 0
+                );
             }
         }
     }

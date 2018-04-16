@@ -65,9 +65,10 @@ bool OS_GetAppString(const char *path, char *out_string, int out_string_size) {
 void GetDefaultConfig(ApplicationConfig &config) {
     char mm7_path[2048];
 
-    bool gog_found =
-        OS_GetAppString("HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-                        mm7_path, sizeof(mm7_path));
+    bool gog_found = OS_GetAppString(
+        "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
+        mm7_path, sizeof(mm7_path)
+    );
     if (gog_found) {
         config.mm7_install_type = "GoG MM7 installation";
         config.mm7_install_path = mm7_path;
@@ -75,8 +76,7 @@ void GetDefaultConfig(ApplicationConfig &config) {
     }
 
     bool std_found = OS_GetAppString(
-        "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic "
-        "VII/1.0/AppPath",
+        "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
         mm7_path, sizeof(mm7_path));
     if (std_found) {
         config.mm7_install_type = "Standard MM7 1.0 installation";

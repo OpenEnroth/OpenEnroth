@@ -43,8 +43,7 @@ struct fixed {  // fixed-point decimal
     //----- (004453C0) mm6-----------------------------------------------------
     //----- (004A1760) mm6_chinese---------------------------------------------
     inline fixed operator*(const fixed &rhs) {
-        return fixed::Raw(((__int64)this->_internal * (__int64)rhs._internal) >>
-                          16);
+        return fixed::Raw(((__int64)this->_internal * (__int64)rhs._internal) >> 16);
     }
 
     inline fixed operator/(const fixed &rhs) {

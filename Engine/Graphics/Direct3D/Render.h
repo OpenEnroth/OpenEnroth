@@ -8,6 +8,7 @@
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
 
+#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/RenderBase.h"
 
 struct ODMFace;
@@ -15,9 +16,9 @@ class RenderD3D;
 class Image;
 
 class Render : public RenderBase {
- public:
-    Render();
-    virtual ~Render();
+    public:
+        Render(Graphics::Configuration *config);
+        virtual ~Render();
 
     virtual bool Initialize(OSWindow *window);
 

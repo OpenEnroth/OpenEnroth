@@ -600,8 +600,7 @@ LABEL_47:
                             pParty->uFlags &= ~2;
                             activeLevelDecoration = (LevelDecoration *)1;
                             if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
-                                pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1,
-                                                        0, 0, 0, 0);
+                                pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
                                 window_SpeakInHouse = new GUIWindow_House(
                                     0, 0, window->GetWidth(),
                                     window->GetHeight(), 165, 0);
@@ -1134,8 +1133,7 @@ LABEL_47:
                             _5B65AC_npcdata_fame_or_other = 0;
                             _5B65A8_npcdata_uflags_or_other = 0;
                             v106 = 232;
-                            pAudioPlayer->PlaySound((SoundID)v106, 0, 0, -1, 0,
-                                                    0, 0, 0);
+                            pAudioPlayer->PlaySound((SoundID)v106, 0, 0, -1, 0, 0);
                         }
                     } else {
                         pGameLoadingUI_ProgressBar->uType =
@@ -1179,8 +1177,7 @@ LABEL_47:
                         _evt->v5 +
                         ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
                          << 8);
-                    pAudioPlayer->PlaySound((SoundID)v106, 0, 0, v109, v110, 0,
-                                            0, 0);
+                    pAudioPlayer->PlaySound((SoundID)v106, 0, 0, v109, v110, 0);
                     ++curr_seq_num;
                     break;
                 case EVENT_GiveItem:
@@ -1196,10 +1193,8 @@ LABEL_47:
                     break;
                 case EVENT_SpeakInHouse:
                     if (EnterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5))) {
-                        pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0,
-                                                0, 0);
-                        pAudioPlayer->PlaySound(SOUND_enter, 814, 0, -1, 0, 0,
-                                                0, 0);
+                        pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
+                        pAudioPlayer->PlaySound(SOUND_enter, 814, 0, -1, 0, 0);
                         v104 = 187;
                         if (uCurrentHouse_Animation != 167)
                             v104 = EVT_DWORD(_evt->v5);

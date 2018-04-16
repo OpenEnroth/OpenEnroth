@@ -954,7 +954,7 @@ void UIShop_Buy_Identify_Repair() {
     }
 
     if (!HouseUI_CheckIfPlayerCanInteract()) {
-        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         return;
     }
 
@@ -1069,7 +1069,7 @@ void UIShop_Buy_Identify_Repair() {
             }
 
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_79, 0);
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             break;
         }
 
@@ -1104,7 +1104,7 @@ void UIShop_Buy_Identify_Repair() {
                     return;
                 }
 
-                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                 pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)79, 0);
                 return;
             }
@@ -1146,7 +1146,7 @@ void UIShop_Buy_Identify_Repair() {
                     return;
                 }
 
-                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                 pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)79, 0);
                 return;
             }

@@ -2874,9 +2874,8 @@ void OnPaperdollLeftClick() {
                 }
 
                 if (pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() &&
-                    (pEquipType != EQUIP_ARMOUR ||
-                     bUnderwater)) {  // cant put anything on wearing wetsuit
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                    (pEquipType != EQUIP_ARMOUR || pEngine->IsUnderwater())) {  // cant put anything on wearing wetsuit
+                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
 
@@ -2896,7 +2895,7 @@ void OnPaperdollLeftClick() {
                 if (pPlayers[uActiveCharacter]
                         ->HasUnderwaterSuitEquipped()) {  // cant put anything
                                                           // on wearing wetsuit
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
 
@@ -3016,7 +3015,7 @@ void OnPaperdollLeftClick() {
             case EQUIP_SHIELD:  //Щит
                 if (pPlayers[uActiveCharacter]
                         ->HasUnderwaterSuitEquipped()) {  // в акваланге
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
                 if (!pPlayers[uActiveCharacter]->HasSkill(
@@ -3085,7 +3084,7 @@ void OnPaperdollLeftClick() {
                 if (pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() &&
                     pParty->pPickedItem.uItemID != 64 &&
                     pParty->pPickedItem.uItemID != 65) {
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
                 if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {
@@ -3228,7 +3227,7 @@ void OnPaperdollLeftClick() {
                 // руками)---------------------------------
             case EQUIP_TWO_HANDED:
                 if (pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped()) {
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
                 if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {
@@ -3238,8 +3237,7 @@ void OnPaperdollLeftClick() {
                 if (mainhandequip) {  // взять двуручный меч когда нет
                                       // щита(замещение оружия)
                     if (shieldequip) {
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
-                                                0);
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         return;
                     }
                     --mainhandequip;
@@ -3413,11 +3411,9 @@ void OnPaperdollLeftClick() {
             pEquipType = pPlayers[uActiveCharacter]
                              ->pInventoryItemList[v34 - 1]
                              .GetItemEquipType();
-            if (pPlayers[uActiveCharacter]
-                    ->pInventoryItemList[v34 - 1]
-                    .uItemID == ITEM_WETSUIT) {
-                if (bUnderwater) {
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+            if (pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_WETSUIT) {
+                if (pEngine->IsUnderwater()) {
+                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
                 WetsuitOff(uActiveCharacter);

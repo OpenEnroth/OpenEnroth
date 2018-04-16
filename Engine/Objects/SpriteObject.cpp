@@ -1034,7 +1034,7 @@ void SpriteObject::sub_42F960_create_object(int x, int y, int z) {
     if (v8 != -1) {
         v9 = 8 * v8;
         v9 |= 2;
-        pAudioPlayer->PlaySound((SoundID)SOUND_splash, v9, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound((SoundID)SOUND_splash, v9, 0, -1, 0, 0);
     }
 }
 
@@ -1201,7 +1201,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2) {
             pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
             v13 = 8 * uLayingItemID;
             v13 |= PID(OBJECT_Item, uLayingItemID);
-            pAudioPlayer->PlaySound(SOUND_fireBall, v13, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_fireBall, v13, 0, -1, 0, 0);
             return 0;
         }
 
@@ -1232,7 +1232,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2) {
             if (pSpriteObjects[uLayingItemID].uType == 555) {
                 v13 = 8 * uLayingItemID;
                 v13 |= PID(OBJECT_Item, uLayingItemID);
-                pAudioPlayer->PlaySound(SOUND_fireBall, v13, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_fireBall, v13, 0, -1, 0, 0);
             }
             return 0;
         }
@@ -1294,7 +1294,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2) {
             if (!v44) {
                 v13 = 8 * uLayingItemID;
                 v13 |= PID(OBJECT_Item, uLayingItemID);
-                pAudioPlayer->PlaySound(SOUND_fireBall, v13, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_fireBall, v13, 0, -1, 0, 0);
                 return 0;
             }
             return 0;
@@ -1327,7 +1327,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2) {
                     pSpriteObjects[uLayingItemID].vPosition.y,
                     pSpriteObjects[uLayingItemID].vPosition.z,
                     object->uParticleTrailColor);
-            pAudioPlayer->PlaySound(SOUND_fireBall, v147, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_fireBall, v147, 0, -1, 0, 0);
             return 0;
         }
 

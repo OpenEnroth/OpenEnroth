@@ -24,6 +24,8 @@ struct Lightmap {  // карта света, текстура для налож�
 };
 #pragma pack(pop)
 
+#define LIGHTMAP_FLAGS_USE_SPECULAR 0x01
+
 /*  114 */
 #pragma pack(push, 1)
 class LightmapBuilder {
@@ -35,7 +37,7 @@ class LightmapBuilder {
     void Draw_183808_Lightmaps();  //используется для мобильного света
     // bool DrawLightmap(Lightmap *a1, Vec3_float_ *pColorMult, float z_bias);
     bool DoDraw_183808_Lightmaps(float a2);  //используется для мобильного света
-    bool DrawLightmaps(int indices);
+    void DrawLightmaps(int indices);
     void DrawLightmapsType(int type);
     void DrawDebugOutlines(char bit_one_for_list1__bit_two_for_list2);
     double _45D643_sw(struct Edge *a1, float a2);
@@ -90,7 +92,7 @@ class LightmapBuilder {
     float flt_3C8C2C_lightmaps_brightness;
     float light_radius;
     RenderVertexSoft field_3C8C34[256];
-    int uFlags;
+    int uFlags; // LIGHTMAP_FLAGS_*
 };
 #pragma pack(pop)
 

@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "Engine/Engine.h"
+#include "Engine/Configuration.h"
 #include "Engine/Events.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
@@ -14,9 +15,11 @@
 #include "Engine/Time.h"
 #include "Engine/stru123.h"
 
+#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/Lights.h"
@@ -133,23 +136,13 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
     exit(exitCode);
 }
 
-//----- (00435694) --------------------------------------------------------
-void Engine::ToggleFlags2(unsigned int uFlag) {
-    unsigned int v2;  // eax@1
-
-    v2 = this->uFlags2;
-    if (v2 & uFlag)
-        this->uFlags2 = v2 & ~uFlag;
-    else
-        this->uFlags2 = uFlag | v2;
-}
-
 //----- (0044103C) --------------------------------------------------------
 void Engine::Draw() {
     int v4;  // edi@26
 
-    uFlags2 &= ~0x02;
-    if (pParty->_497FC5_check_party_perception_against_level()) uFlags2 |= 2;
+    config->SetSaturateFaces(
+        pParty->_497FC5_check_party_perception_against_level()
+    );
 
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;
     pIndoorCameraD3D->sRotationY = pParty->sRotationY;
@@ -300,7 +293,7 @@ void Engine::Draw() {
 
     ++frames_this_second;
 
-    if (debug_information) {
+    if (engine_config->show_fps) {
         if (render_framerate) {
             pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(0, 0, 0),
                                      StringPrintf("FPS: % .4f", framerate), 0,
@@ -386,25 +379,6 @@ void Engine::PushStationaryLights(int a2) {
             pLight->vRGBColor.z, _4E94D0_light_type);
     }
 }
-// 4E94D0: using guessed type char _4E94D0_light_type;
-
-//----- (0044F0FD) --------------------------------------------------------
-void Engine::_44F0FD() {
-    ToggleFlags(0x40u);
-
-    if (!(uFlags & 0x40)) {
-        uNumBloodsplats = 0;
-        field_E0C = 0;
-    }
-}
-
-//----- (0044F0D8) --------------------------------------------------------
-void Engine::ToggleFlags(uint uMask) {
-    if (uFlags & uMask)
-        uFlags &= ~uMask;
-    else
-        uFlags |= uMask;
-}
 
 //----- (0044EEA7) --------------------------------------------------------
 bool Engine::_44EEA7() {
@@ -424,7 +398,7 @@ bool Engine::_44EEA7() {
         v10 = &vis_sprite_filter_2;
         depth = pIndoorCameraD3D->GetPickDepth();
     } else {
-        if (uFlags2 & GAME_FLAGS_2_TARGETING_MODE) {
+        if (config->IsTargetingMode()) {
             v11 = &vis_face_filter;
             v10 = &vis_sprite_filter_1;
         } else {
@@ -440,13 +414,15 @@ bool Engine::_44EEA7() {
     pLightmapBuilder->MobileLightsCount = 0;
     pDecalBuilder->DecalsCount = 0;
     pDecalBuilder->curent_decal_id = 0;
-    if (!_44F07B()) return false;
+    if (!_44F07B())
+        return false;
 
-    if (uFlags & GAME_FLAGS_1_DRAW_BLV_DEBUGS)
+    if (engine_config->DrawBlvDebugs())
         pStru10Instance->bDoNotDrawPortalFrustum = false;
     if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         render->uFogColor = GetLevelFogColor() & 0xFFFFFF;
-    if (uFlags & 0x0400) uFlags2 |= 0x01;
+    //if (uFlags & GAME_FLAGS_1_400)
+    //    engine_config->SetForceRedraw(true);
     /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
     pMobileLightsStack->uNumLightsActive )
     {
@@ -454,20 +430,20 @@ bool Engine::_44EEA7() {
     field_E10 = qword_5C6DF0;
     }*/
     v6 = qword_5C6DF0 - field_E10;
-    if (qword_5C6DF0 - field_E10 == 1) uFlags2 |= v6;
-    if (uNumStationaryLights_in_pStationaryLightsStack !=
-        pStationaryLightsStack->uNumLightsActive) {
-        uFlags2 |= 1;
-        uNumStationaryLights_in_pStationaryLightsStack =
-            pStationaryLightsStack->uNumLightsActive;
+    if (qword_5C6DF0 - field_E10 == 1)
+        engine_config->SetForceRedraw(true);
+    if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive)
+    {
+        engine_config->SetForceRedraw(true);
+        uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
     }
     return true;
 }
 
 //----- (0044EDE4) --------------------------------------------------------
 bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
-    if (uFlags2 & GAME_FLAGS_2_SATURATE_LIGHTMAPS &&
-        pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (engine_config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR)
+    {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -476,8 +452,8 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
 }
 
 bool Engine::AlterGamma_ODM(ODMFace *pFace, int *pColor) {
-    if (uFlags2 & GAME_FLAGS_2_SATURATE_LIGHTMAPS &&
-        pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (engine_config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR)
+    {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -493,14 +469,18 @@ void Engine::Deinitialize() {
         OS_SetAppInt("window X", window->GetX());
         OS_SetAppInt("window Y", window->GetY());
     }
-    OS_SetAppInt("valAlwaysRun", bAlwaysRun);
+    OS_SetAppInt("valAlwaysRun", config->always_run ? 1 : 0);
     pItemsTable->Release();
     pNPCStats->Release();
 
-    if (pMouse) pMouse->Deactivate();
+    if (pMouse)
+        pMouse->Deactivate();
 
     delete render;
-    pAudioPlayer->Release();  // error
+    render = nullptr;
+
+    if (pAudioPlayer)
+        pAudioPlayer->Release();
     pNew_LOD->FreeSubIndexAndIO();
     pGames_LOD->FreeSubIndexAndIO();
 
@@ -510,7 +490,7 @@ void Engine::Deinitialize() {
 
 //----- (0044EE7C) --------------------------------------------------------
 bool Engine::draw_debug_outlines() {
-    if (/*uFlags & 0x04*/ debug_lights) {
+    if (/*uFlags & 0x04*/ engine_config->debug_lightmaps_decals) {
         pLightmapBuilder->DrawDebugOutlines(-1);
         pDecalBuilder->DrawDecalDebugOutlines();
     }
@@ -518,7 +498,7 @@ bool Engine::draw_debug_outlines() {
 }
 
 //----- (0044EC23) --------------------------------------------------------
-int Engine::_44EC23(Polygon *a2, int *a3, signed int a4) {
+int Engine::_44EC23_saturate_face_odm(Polygon *a2, int *a3, signed int a4) {
     double v4;  // st7@4
     // double v5; // ST00_8@4
     signed int v6;  // eax@5
@@ -532,8 +512,8 @@ int Engine::_44EC23(Polygon *a2, int *a3, signed int a4) {
     float a4a;  // [sp+1Ch] [bp+10h]@9
     float a4b;  // [sp+1Ch] [bp+10h]@11
 
-    if (this->uFlags2 & 2 && a2->field_59 == 5 &&
-        a2->pODMFace->uAttributes & 2) {
+    if (engine_config->CanSaturateFaces() && a2->field_59 == 5 &&
+        a2->pODMFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         v4 = (double)a4;
         a2a = v4;
         *a3 |= 2u;
@@ -570,7 +550,10 @@ int Engine::_44EC23(Polygon *a2, int *a3, signed int a4) {
 }
 
 //----- (00465C8B) --------------------------------------------------------
-Engine *Engine::Create() { return new Engine; }
+Engine *Engine::Create(Engine_::Configuration *config)
+{
+    return new Engine(config);
+}
 
 //----- (00465CF3) --------------------------------------------------------
 void Engine::Destroy() {
@@ -579,7 +562,7 @@ void Engine::Destroy() {
 }
 
 //----- (0044ED0A) --------------------------------------------------------
-int Engine::_44ED0A(BLVFace *a2, int *a3, signed int a4) {
+int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     double v4;  // st7@3
     // double v5; // ST00_8@3
     int v6;  // eax@4
@@ -593,7 +576,8 @@ int Engine::_44ED0A(BLVFace *a2, int *a3, signed int a4) {
     float v14;  // [sp+1Ch] [bp+10h]@8
     float v15;  // [sp+1Ch] [bp+10h]@10
 
-    if (this->uFlags2 & 2 && a2->uAttributes & 2) {
+    if (engine_config->CanSaturateFaces() && a2->uAttributes & FACE_CAN_SATURATE_COLOR)
+    {
         v4 = (double)a4;
         v11 = v4;
         *a3 |= 2u;
@@ -628,14 +612,14 @@ int Engine::_44ED0A(BLVFace *a2, int *a3, signed int a4) {
 }
 
 //----- (0044E4B7) --------------------------------------------------------
-Engine::Engine() {
+Engine::Engine(Engine_::Configuration *config) {
+    this->config = config;
+
     uNumStationaryLights = 0;
     uNumBloodsplats = 0;
     field_E0C = 0;
     field_E10 = 0;
     uNumStationaryLights_in_pStationaryLightsStack = 0;
-    uFlags = 0;
-    uFlags2 = 0;
 
     pThreadWardInstance = nullptr;
     pParticleEngine = new ParticleEngine;
@@ -654,11 +638,6 @@ Engine::Engine() {
     pCShow = nullptr;
     pKeyboardInstance = new Keyboard;
     // pGammaController = new GammaController;
-
-    uFlags |= 0x0800;
-    uFlags2 |= 0x24;
-
-    _44F0FD();
 }
 
 //----- (0044E7F3) --------------------------------------------------------
@@ -780,7 +759,7 @@ void Engine::OutlineSelection() {
 
 //----- (0042FBDD) --------------------------------------------------------
 void sub_42FBDD() {
-    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     render->DrawTextureAlphaNew(pBtn_YES->uX / 640.0f, pBtn_YES->uY / 480.0f,
                                 pBtn_YES->vTextures[0]);
     render->Present();
@@ -788,7 +767,7 @@ void sub_42FBDD() {
 
 //----- (0042FC15) --------------------------------------------------------
 void CloseWindowBackground() {
-    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -2, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -2, 0, -1, 0, 0);
     render->DrawTextureAlphaNew(pBtn_ExitCancel->uX / 640.0f,
                                 pBtn_ExitCancel->uY / 480.0f,
                                 pBtn_ExitCancel->vTextures[0]);
@@ -851,13 +830,13 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     for (uint i = 0; i < 1000; ++i) pSpriteObjects[i].uObjectDescID = 0;
 
     v5 = pMapStats->GetMapInfo(pCurrentMapName);
-    bUnderwater = false;
+
     uLevelMapStatsID = v5;
-    pEngine->uFlags2 &= 0xFFFFFFF7u;
-    if (!_stricmp(pCurrentMapName, "out15.odm")) {
-        bUnderwater = true;
-        pEngine->uFlags2 |= GAME_FLAGS_2_ALTER_GRAVITY;
-    }
+
+    pEngine->SetUnderwater(
+        Is_out15odm_underwater()
+    );
+
     pParty->floor_face_pid = 0;
     if (_stricmp(Str1, "blv"))
         PrepareToLoadODM(bLoading, 0);
@@ -937,21 +916,16 @@ void IntegrityTest() {
     static_assert(sizeof(ProjectileAnim) == 0x1C, "Wrong type size");
     static_assert(sizeof(SpellFxRenderer) == 0x5F8, "Wrong type size");
     static_assert(sizeof(IndoorCameraD3D_Vec3) == 0x10, "Wrong type size");
-    static_assert(
-        sizeof(IndoorCameraD3D_Vec4) == 0x18,
-        "Wrong type size");  // should be 14 (10 vec3 + 4 vdtor)  but 18 coz of
+    static_assert(sizeof(IndoorCameraD3D_Vec4) == 0x18, "Wrong type size");  // should be 14 (10 vec3 + 4 vdtor)  but 18 coz of
                              // his +4 from own vdtor, but it is odd since vdtor
                              // already present from vec3
     // static_assert(sizeof(IndoorCameraD3D) == 0x1A1384, "Wrong type size");
     static_assert(sizeof(StationaryLight) == 0xC, "Wrong type size");
-    static_assert(sizeof(LightsStack_StationaryLight_) == 0x12C8,
-                  "Wrong type size");
+    static_assert(sizeof(LightsStack_StationaryLight_) == 0x12C8, "Wrong type size");
     static_assert(sizeof(MobileLight) == 0x12, "Wrong type size");
-    static_assert(sizeof(LightsStack_MobileLight_) == 0x1C28,
-                  "Wrong type size");
-    static_assert(sizeof(Engine) == 0xE78, "Wrong type size");
-    static_assert(sizeof(stru141_actor_collision_object) == 0xA8,
-                  "Wrong type size");
+    static_assert(sizeof(LightsStack_MobileLight_) == 0x1C28, "Wrong type size");
+    //static_assert(sizeof(Engine) == 0xE78, "Wrong type size");
+    static_assert(sizeof(stru141_actor_collision_object) == 0xA8, "Wrong type size");
     static_assert(sizeof(ActionQueue) == 0x7C, "Wrong type size");
     static_assert(sizeof(NPCData) == 0x4C, "Wrong type size");
     static_assert(sizeof(NPCStats) == 0x17FFC, "Wrong type size");
@@ -1057,12 +1031,12 @@ bool MM7_LoadLods(const char *mm7_path) {
 }
 
 //----- (004651F4) --------------------------------------------------------
-bool MM7_Initialize(int game_width, int game_height, const char *mm7_path) {
-    bCanLoadFromCD = 1;
-    if (bNoCD) bCanLoadFromCD = false;
-    if (bCanLoadFromCD) {
+bool MM7_Initialize(Graphics::Configuration *render_config, const char *mm7_path) {
+    if (!engine_config->NoCd())
+    {
         logger->Info(L"Checking for CD...");
-        if (!OS_FindMM7CD(&cMM7GameCDDriveLetter)) return false;
+        if (!OS_FindMM7CD(&cMM7GameCDDriveLetter))
+            return false;
         logger->Info(L"...done.");
     }
 
@@ -1070,10 +1044,13 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path) {
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
-    window =
-        OSWindow::Create(L"Might and Magic® Trilogy", game_width, game_height);
+    window = OSWindow::Create(
+        L"Might and Magic® Trilogy",
+        render_config->render_width,
+        render_config->render_height
+    );
 
-    render = IRender::Create();
+    render = Graphics::IRenderFactory::Create(render_config);
     if (!render) {
         logger->Warning(L"Render creation failed");
         return false;
@@ -1081,11 +1058,21 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path) {
         // bool bWindowMode = OS_GetAppInt("startinwindow", false);
         // uint uDefaultDevice = OS_GetAppInt("D3D Device", 1);
 
-        if (!render->Initialize(
-                window /*, bColoredLights, uLevelOfDetail, bTinting*/)) {
+        if (!render->Initialize(window /*, bColoredLights, uLevelOfDetail, bTinting*/)) {
             logger->Warning(L"Render failed to initialize");
             return false;
         }
+    }
+
+    if (!render_config->IsFullscreen()) {
+        // window->SetWindowedMode(game_width, game_height);
+        render->SwitchToWindow();
+    }
+    else
+    {
+        __debugbreak();  // check required
+        window->SetFullscreenMode();
+        render->InitializeFullscreen();
     }
 
     game_starting_year = 1168;
@@ -1104,7 +1091,6 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path) {
 
     OnTimer(1);
     GameUI_StatusBar_Update(true);
-    pEngine = Engine::Create();
     pMouse = pEngine->pMouseInstance;
 
     MM7_LoadLods(mm7_path);
@@ -1231,54 +1217,13 @@ bool MM7_Initialize(int game_width, int game_height, const char *mm7_path) {
         free(sounds_mm8);
     }
 
-    if (dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_RUN_IN_WIDOW) {
-        // window->SetWindowedMode(game_width, game_height);
-        render->SwitchToWindow();
-    } else {
-        __debugbreak();  // Nomad
-        window->SetFullscreenMode();
-        render->InitializeFullscreen();
-    }
-
-    uSoundVolumeMultiplier = min(9, OS_GetAppInt("soundflag", 9));
-    uMusicVolimeMultiplier = min(9, OS_GetAppInt("musicflag", 9));
-    uVoicesVolumeMultiplier = min(9, OS_GetAppInt("CharVoices", 9));
-    bShowDamage = OS_GetAppInt("ShowDamage", 1) != 0;
-
-    uGammaPos = min(4, OS_GetAppInt("GammaPos", 4));
-    // pEngine->pGammaController->Initialize(uGammaPos * 0.1 + 0.6);
-
-    if (OS_GetAppInt("Bloodsplats", 1))
-        pEngine->uFlags2 |= GAME_FLAGS_2_DRAW_BLOODSPLATS;
-    else
-        pEngine->uFlags2 &= ~GAME_FLAGS_2_DRAW_BLOODSPLATS;
-
-    uTurnSpeed = OS_GetAppInt("TurnDelta", 3);
-
-    if (!bNoSound) pAudioPlayer->Initialize();
+    if (!engine_config->NoSound())
+        pAudioPlayer->Initialize();
 
     pMediaPlayer = new MPlayer();
     pMediaPlayer->Initialize();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-
-    switch (uTurnSpeed) {
-        case 1:  // 16x
-            logger->Warning(
-                L"x16 Turn Speed");  // really shouldn't use this mode
-            uTurnSpeed = 128;
-            break;
-
-        case 2:  // 32x
-            logger->Warning(
-                L"x32 Turn Speed");  // really shouldn't use this mode
-            uTurnSpeed = 64;
-            break;
-
-        case 3:  // smooth
-            uTurnSpeed = 0;
-            break;
-    }
 
     return true;
 }
@@ -1307,7 +1252,8 @@ void SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    if (!bNoSound) pSoundList->Initialize();
+    if (!engine_config->NoSound())
+        pSoundList->Initialize();
 
     for (uint i = 0; i < 4; ++i) {
         static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA",
@@ -1367,35 +1313,6 @@ void SecondaryInitialization() {
     dword_576E28 = 9;
 }
 
-int max_flight_height = 4000;  // maximum altitude
-bool use_MMT = false;
-bool for_refactoring = false;
-bool all_spells = false;  // is this needed with all_magic as well??
-bool bNoMargareth = true;
-
-void ParseCommandLine(const char *cmd) {
-    // if (wcsstr(pCmdLine, L"-usedefs"))
-    //  bDebugResouces = 1;
-    if (strstr(cmd, "-window"))
-        dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_RUN_IN_WIDOW;
-
-    if (strstr(cmd, "-nointro"))
-        bNoIntro = true;  // dword_6BE364_game_settings_1 |= 4;
-    if (strstr(cmd, "-nologo"))
-        bNoLogo = true;  // dword_6BE364_game_settings_1 |= 8;
-    if (strstr(cmd, "-nosound"))
-        bNoSound = true;  // dword_6BE364_game_settings_1 |= 0x10;
-
-    bWalkSound = OS_GetAppInt("WalkSound", 1) != 0;
-    if (strstr(cmd, "-nowalksound"))
-        bWalkSound = false;  // dword_6BE364_game_settings_1 |= 0x20;
-    if (strstr(cmd, "-novideo")) {
-        dword_6BE364_game_settings_1 |= GAME_SETTINGS_NO_HOUSE_ANIM;
-        bNoVideo = true;
-    }
-    if (strstr(cmd, "-nocd")) bNoCD = true;
-    if (strstr(cmd, "-nomarg")) bNoMargareth = true;
-}
 
 bool GameLoop() {
     while (1) {
@@ -1422,7 +1339,7 @@ bool GameLoop() {
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
-            if (bNoMargareth)
+            if (engine_config->NoMargareth())
                 _449B7E_toggle_bit(pParty->_quest_bits,
                                    PARTY_QUEST_EMERALD_MARGARETH_OFF, 1);
             Game_Loop();
@@ -1485,7 +1402,7 @@ bool GameLoop() {
 
 void ShowMM7IntroVideo_and_LoadingScreen() {
     bGameoverLoop = true;
-    if (!bNoVideo) {
+    if (!engine_config->NoVideo()) {
         render->PresentBlackScreen();
         pMediaPlayer->PlayFullscreenMovie("3dologo");
         pMediaPlayer->PlayFullscreenMovie("new world logo");
@@ -1508,22 +1425,67 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
     bGameoverLoop = false;
 }
 
-bool MM_Main(const char *pCmdLine) {
-    IntegrityTest();
 
-    logger = new Log();
-    logger->Initialize();
-    logger->Info(L"World of Might and Magic build %S %S", __DATE__, __TIME__);
+Engine_::Configuration *ConfigureEngine(const char *cmd)
+{
+    auto cfg = new Engine_::Configuration();
 
+    if (!cfg->no_walk_sound)
+    {
+        cfg->no_walk_sound = OS_GetAppInt("WalkSound", 1) == 0;
+    }
+    cfg->always_run = OS_GetAppInt("valAlwaysRun", 0) != 0;
+    cfg->flip_on_exit = OS_GetAppInt("FlipOnExit", 0) != 0;
+
+    cfg->show_damage = OS_GetAppInt("ShowDamage", 1) != 0;
+    int turn_type = OS_GetAppInt("TurnDelta", 3);
+
+    switch (turn_type)
+    {
+        case 1:             // 16x
+            logger->Warning(L"x16 Turn Speed"); // really shouldn't use this mode
+            cfg->turn_speed = 128;
+            break;
+
+        case 2:             // 32x
+            logger->Warning(L"x32 Turn Speed"); // really shouldn't use this mode
+            cfg->turn_speed = 64;
+            break;
+
+        case 3:             // smooth
+        default:
+            cfg->turn_speed = 0;
+        break;
+    }
+
+    cfg->sound_level = min(9, OS_GetAppInt("soundflag", 9));
+    cfg->music_level = min(9, OS_GetAppInt("musicflag", 9));
+    cfg->voice_level = min(9, OS_GetAppInt("CharVoices", 9));
+
+    cfg->gamma = min(4, OS_GetAppInt("GammaPos", 4));
+
+    if (OS_GetAppInt("Bloodsplats", 1))
+        cfg->flags2 |= GAME_FLAGS_2_DRAW_BLOODSPLATS;
+    else
+        cfg->flags2 &= ~GAME_FLAGS_2_DRAW_BLOODSPLATS;
+    cfg->no_bloodsplats = !(cfg->flags2 & GAME_FLAGS_2_DRAW_BLOODSPLATS);
+
+
+    cfg->MergeCommandLine(std::string(cmd));
+
+    return cfg;
+}
+
+const char *FindMm7Directory(char *mm7_path)
+{
     bool mm7_installation_found = false;
-    char mm7_path[2048];
 
     // standard 1.0 installation
     if (!mm7_installation_found) {
         mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic "
-            "VII/1.0/AppPath",
-            mm7_path, sizeof(mm7_path));
+            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
+            mm7_path, 2048
+        );
 
         if (mm7_installation_found) {
             logger->Info(L"Standard MM7 installation found");
@@ -1532,9 +1494,10 @@ bool MM_Main(const char *pCmdLine) {
 
     // GoG version
     if (!mm7_installation_found) {
-        mm7_installation_found =
-            OS_GetAppString("HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-                            mm7_path, sizeof(mm7_path));
+        mm7_installation_found = OS_GetAppString(
+            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
+            mm7_path, 2048
+        );
 
         if (mm7_installation_found) {
             logger->Info(L"GoG MM7 installation found");
@@ -1557,23 +1520,47 @@ bool MM_Main(const char *pCmdLine) {
         logger->Info(L"Hack Path MM7 installation found");
     }
 
+    return mm7_path;
+}
+
+
+void Engine::Initialize()
+{
+    char mm7_path[2048];
+    FindMm7Directory(mm7_path);
     SetDataPath(mm7_path);
 
-    if (pCmdLine && *pCmdLine) {
-        ParseCommandLine(pCmdLine);
-    }
+    auto render_config = new Graphics::Configuration(
+        config->renderer_name
+    );
+    render_config->is_fullscreen = !config->RunInWindow();
 
-    if (!MM7_Initialize(640, 480, mm7_path)) {
+    if (!MM7_Initialize(render_config, mm7_path))
+    {
         logger->Warning(L"MM7_Initialize: failed");
         if (pEngine != nullptr) {
             pEngine->Deinitialize();
         }
-        return false;
+        exit(-1);
     }
 
     pEventTimer->Pause();
 
     GUIWindow::InitializeGUI();
+}
+
+bool MM_Main(const char *pCmdLine) {
+    IntegrityTest();
+
+    logger = new Log();
+    logger->Initialize();
+    logger->Info(L"World of Might and Magic build %S %S", __DATE__, __TIME__);
+
+    auto config = ConfigureEngine(pCmdLine);
+    engine_config = config;
+
+    pEngine = Engine::Create(config);
+    pEngine->Initialize();
 
     ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -1598,13 +1585,10 @@ bool MM_Main(const char *pCmdLine) {
 
 //----- (00466082) --------------------------------------------------------
 void MM6_Initialize() {
-    //    size_t v2; // eax@31
     size_t v3;                       // ebx@32
     size_t v4;                       // edi@36
     char pDefaultGroundTexture[16];  // [sp+FCh] [bp-8Ch]@32
 
-    // _getcwd(v5, 120);
-    // sprintfex(pIniFilename, "%s\\mm6.ini", v5);
     viewparams = new ViewingParams;
     game_viewport_x = viewparams->uScreen_topL_X = 8;
     game_viewport_y = viewparams->uScreen_topL_Y = 8;
@@ -1615,23 +1599,6 @@ void MM6_Initialize() {
 
     pAudioPlayer = new AudioPlayer;
 
-    /*
-    if (GetPrivateProfileIntW(L"debug", L"nomonster", 0, pIniFilename))
-        dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_NO_ACTORS;
-    if (OS_GetAppInt("startinwindow", 0))
-        dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_RUN_IN_WIDOW;
-    if (GetPrivateProfileIntW(L"debug", L"showFR", 0, pIniFilename))
-        dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_0002_SHOW_FR;
-    if (GetPrivateProfileIntW(L"debug", L"nodamage", 0, pIniFilename))
-        dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_NO_DAMAGE;
-    if (GetPrivateProfileIntW(L"debug", L"nodecoration", 0, pIniFilename))
-        dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_NO_DECORATIONS;
-
-    wchar_t pStartingMapNameW[1024];
-    GetPrivateProfileStringW(L"file", L"startmap", L"out01.odm",
-    pStartingMapNameW, 0x20u, pIniFilename); sprintf(pStartingMapName, "%S",
-    pStartingMapNameW);
-    */
     sprintf(pStartingMapName, "%s", "out01.odm");
 
     pODMRenderParams = new ODMRenderParams;
@@ -1655,9 +1622,7 @@ void MM6_Initialize() {
 
     flt_6BE3A4_debug_recmod1 = 1.0;
     flt_6BE3A8_debug_recmod2 = 1.0;
-
-    flt_6BE3AC_debug_recmod1_x_1_6 =
-        flt_6BE3A4_debug_recmod1 * 1.666666666666667;
+    flt_6BE3AC_debug_recmod1_x_1_6 = flt_6BE3A4_debug_recmod1 * 1.666666666666667;
 
     v3 = 0;
     if (strlen(pDefaultSkyTexture.data())) {
@@ -1849,7 +1814,8 @@ void _461103_load_level_sub() {
     int v20;  // [sp+18h] [bp-44h]@14
     int v21[16];     // [sp+1Ch] [bp-40h]@17
 
-    if (no_actors) uNumActors = 0;
+    if (engine_config->no_actors)
+        uNumActors = 0;
 
     GenerateItemsInChest();
     pGameLoadingUI_ProgressBar->Progress();
@@ -1927,9 +1893,9 @@ void _461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    if (dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_NO_ACTORS)
+    if (engine_config->NoActors())
         uNumActors = 0;
-    if (dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_NO_DECORATIONS)
+    if (engine_config->NoDecorations())
         uNumLevelDecorations = 0;
     init_event_triggers();
 
@@ -1971,7 +1937,7 @@ void InitializeTurnBasedAnimations(void *_this) {
 
 //----- (0046BDA8) --------------------------------------------------------
 unsigned int GetGravityStrength() {
-    int v0 = ~(unsigned char)pEngine->uFlags2 & 8;
+    int v0 = ~(unsigned char)pEngine->config->flags2 & GAME_FLAGS_2_ALTER_GRAVITY;
     v0 |= 2;
     return (unsigned int)v0 >> 1;
 }

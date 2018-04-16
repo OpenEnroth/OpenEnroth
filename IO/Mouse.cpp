@@ -41,13 +41,10 @@ void Mouse::SetCursorImage(const String &name) {
         return;
     }
 
-    if (this->cursor_name != name) this->cursor_name = name;
+    if (this->cursor_name != name)
+        this->cursor_name = name;
 
-    if (name == "MICON2") {
-        pEngine->uFlags2 |= GAME_FLAGS_2_TARGETING_MODE;
-    } else {
-        pEngine->uFlags2 &= ~GAME_FLAGS_2_TARGETING_MODE;
-    }
+    engine_config->SetTargetingMode(name == "MICON2");
 
     ClearCursor();
     if (name == "MICON1") {  // arrow
@@ -350,7 +347,7 @@ bool Mouse::UI_OnKeyDown(unsigned int vkKey) {
                     win->pCurrentPosActiveItem -= v12;
                     if (current_screen_type == SCREEN_PARTY_CREATION) {
                         pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0,
-                                                0, -1, 0, 0, 0, 0);
+                                                0, -1, 0, 0);
                         // v2 = pMessageQueue_50CBD0->uNumMessages;
                     }
                 }
@@ -370,7 +367,7 @@ bool Mouse::UI_OnKeyDown(unsigned int vkKey) {
                     win->pCurrentPosActiveItem = v7;
                     if (current_screen_type == SCREEN_PARTY_CREATION) {
                         pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0,
-                                                0, -1, 0, 0, 0, 0);
+                                                0, -1, 0, 0);
                         // v2 = pMessageQueue_50CBD0->uNumMessages;
                     }
                 }

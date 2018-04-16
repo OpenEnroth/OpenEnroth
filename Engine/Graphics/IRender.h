@@ -3,6 +3,7 @@
 #include "Engine/Rect.h"
 #include "Engine/VectorTypes.h"
 
+#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/Image.h"
 
 class OSWindow;
@@ -234,10 +235,11 @@ struct RenderHWLContainer {
 };
 
 class IRender {
- public:
-    virtual ~IRender() {}
-
-    static IRender *Create();
+    public:
+        inline IRender(Graphics::Configuration *config) {
+            this->config = config;
+        }
+        virtual ~IRender() {}
 
     virtual bool Initialize(OSWindow *window) = 0;
 
@@ -411,6 +413,8 @@ class IRender {
         uNumBillboardsToDraw = 0;
     }
 
+
+    Graphics::Configuration *config = nullptr;
     int *pActiveZBuffer;
     unsigned int bUseColoredLights;
     unsigned int bTinting;

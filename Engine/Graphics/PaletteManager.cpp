@@ -823,31 +823,31 @@ unsigned __int16 *PaletteManager::Get(int a1) {
 unsigned __int16 *PaletteManager::Get_Mist_or_Red_LUT(int a1, int a2, char a3) {
     int v3;  // eax@4
 
-    if (a3 & 2 || byte_4D864C && BYTE2(pEngine->uFlags) & 4)
+    if (a3 & 2 || _4D864C_force_sw_render_rules && engine_config->AlterPalettes())
         v3 = 32 * a1 + a2 + 3275;
     else
         v3 = 32 * a1 + a2 + 1675;
     return (unsigned __int16 *)((char *)&pPaletteManager + 512 * v3);
 }
-// 4D864C: using guessed type char byte_4D864C;
+// 4D864C: using guessed type char _4D864C_force_sw_render_rules;
 
 //----- (0041F50D) --------------------------------------------------------
 unsigned __int16 *PaletteManager::Get_Dark_or_Red_LUT(int a1, int a2, char a3) {
     int v3;  // eax@4
 
-    if (a3 & 2 || byte_4D864C && BYTE2(pEngine->uFlags) & 4)
+    if (a3 & 2 || _4D864C_force_sw_render_rules && engine_config->AlterPalettes())
         v3 = 32 * a1 + a2 + 3275;
     else
         v3 = 32 * a1 + a2 + 75;
     return (unsigned __int16 *)((char *)&pPaletteManager + 512 * v3);
 }
-// 4D864C: using guessed type char byte_4D864C;
+// 4D864C: using guessed type char _4D864C_force_sw_render_rules;
 
 //----- (0047C30E) --------------------------------------------------------
 unsigned __int16 *PaletteManager::_47C30E_get_palette(int a1, char a2) {
     char *result;  // eax@4
 
-    if (a2 & 2 || byte_4D864C && BYTE2(pEngine->uFlags) & 4)
+    if (a2 & 2 || _4D864C_force_sw_render_rules && engine_config->AlterPalettes())
         result = (char *)pPaletteManager->field_199600_palettes[a1];
     else
         result = (char *)pPaletteManager->field_D1600[a1];
@@ -858,17 +858,16 @@ unsigned __int16 *PaletteManager::_47C30E_get_palette(int a1, char a2) {
 unsigned __int16 *PaletteManager::_47C33F_get_palette(int a1, char a2) {
     unsigned __int16 *result;  // eax@4
 
-    if (a2 & 2 || byte_4D864C && BYTE2(pEngine->uFlags) & 4)
+    if (a2 & 2 || _4D864C_force_sw_render_rules && engine_config->AlterPalettes())
         result = (unsigned __int16 *)pPaletteManager->field_199600_palettes[a1];
     else
         result = (unsigned __int16 *)pPaletteManager->pPalette1[a1];
     return result;
 }
-// 4D864C: using guessed type char byte_4D864C;
 
 //----- (0048A959) --------------------------------------------------------
-signed int ReplaceHSV(unsigned int uColor, float h_replace, float s_replace,
-                      float v_replace) {
+int ReplaceHSV(unsigned int uColor, float h_replace, float s_replace, float v_replace)
+{
     float r = ((uColor & 0x00FF0000) >> 16) / 255.0f,
           g = ((uColor & 0x0000FF00) >> 8) / 255.0f,
           b = (uColor & 0x000000FF) / 255.0f;

@@ -97,6 +97,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)\%(Directory)\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)\%(Directory)\</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -174,15 +176,20 @@
     <ClCompile Include="..\..\Arcomage\ArcomageCards.cpp" />
     <ClCompile Include="..\..\Engine\AssetsManager.cpp" />
     <ClCompile Include="..\..\Engine\Conditions.cpp" />
+    <ClCompile Include="..\..\Engine\Configuration.cpp" />
     <ClCompile Include="..\..\Engine\Engine.cpp" />
     <ClCompile Include="..\..\Engine\Events.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\BSPModel.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\Configuration.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\DecalBuilder.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\DecorationList.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\Direct3D\Render.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\Direct3D\RenderD3D.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Direct3D\TextureD3D.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\ImageLoader.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Indoor.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\IndoorCameraD3D.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\IRenderFactory.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Level\Decoration.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\LightmapBuilder.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\LightsStack.cpp" />
@@ -193,9 +200,7 @@
     <ClCompile Include="..\..\Engine\Graphics\PaletteManager.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\ParticleEngine.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\PCX.cpp" />
-    <ClCompile Include="..\..\Engine\Graphics\Render.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\RenderBase.cpp" />
-    <ClCompile Include="..\..\Engine\Graphics\RenderD3D.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Sprites.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\stru10.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\stru9.cpp" />
@@ -302,19 +307,24 @@
     <ClInclude Include="..\..\Engine\Autonotes.h" />
     <ClInclude Include="..\..\Engine\Awards.h" />
     <ClInclude Include="..\..\Engine\Conditions.h" />
+    <ClInclude Include="..\..\Engine\Configuration.h" />
     <ClInclude Include="..\..\Engine\Engine.h" />
     <ClInclude Include="..\..\Engine\ErrorHandling.h" />
     <ClInclude Include="..\..\Engine\Events.h" />
     <ClInclude Include="..\..\Engine\Events2D.h" />
     <ClInclude Include="..\..\Engine\Graphics\BSPModel.h" />
+    <ClInclude Include="..\..\Engine\Graphics\Configuration.h" />
     <ClInclude Include="..\..\Engine\Graphics\DecalBuilder.h" />
     <ClInclude Include="..\..\Engine\Graphics\DecorationList.h" />
+    <ClInclude Include="..\..\Engine\Graphics\Direct3D\Render.h" />
+    <ClInclude Include="..\..\Engine\Graphics\Direct3D\RenderD3D.h" />
     <ClInclude Include="..\..\Engine\Graphics\Direct3D\TextureD3D.h" />
     <ClInclude Include="..\..\Engine\Graphics\ImageFormatConverter.h" />
     <ClInclude Include="..\..\Engine\Graphics\ImageLoader.h" />
     <ClInclude Include="..\..\Engine\Graphics\Indoor.h" />
     <ClInclude Include="..\..\Engine\Graphics\IndoorCameraD3D.h" />
     <ClInclude Include="..\..\Engine\Graphics\IRender.h" />
+    <ClInclude Include="..\..\Engine\Graphics\IRenderFactory.h" />
     <ClInclude Include="..\..\Engine\Graphics\Level\Decoration.h" />
     <ClInclude Include="..\..\Engine\Graphics\LightmapBuilder.h" />
     <ClInclude Include="..\..\Engine\Graphics\Lights.h" />
@@ -326,9 +336,7 @@
     <ClInclude Include="..\..\Engine\Graphics\ParticleEngine.h" />
     <ClInclude Include="..\..\Engine\Graphics\PCX.h" />
     <ClInclude Include="..\..\Engine\Graphics\Polygon.h" />
-    <ClInclude Include="..\..\Engine\Graphics\Render.h" />
     <ClInclude Include="..\..\Engine\Graphics\RenderBase.h" />
-    <ClInclude Include="..\..\Engine\Graphics\RenderD3D.h" />
     <ClInclude Include="..\..\Engine\Graphics\Sprites.h" />
     <ClInclude Include="..\..\Engine\Graphics\stru10.h" />
     <ClInclude Include="..\..\Engine\Graphics\stru9.h" />

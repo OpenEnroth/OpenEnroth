@@ -680,7 +680,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
     lightmap->NumVertices = 4;
 
     // Brightness(яркость)/////////////////////////////////
-    if (~pEngine->uFlags2 & 4) {
+    if (!engine_config->AllowDynamicBrigtness()) {
         lightmap->fBrightness = flt_3C8C2C_lightmaps_brightness;
     } else {
         Vec3_float_ a1;  // [sp+2Ch] [bp-20h]@8
@@ -719,7 +719,8 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
             lightmap->pVertices, &lightmap->NumVertices))
         return false;
 
-    if (!lightmap->NumVertices) return true;
+    if (!lightmap->NumVertices)
+        return true;
 
     v45 = _45C6D6(uNumVertices, a9, lightmap);
     if (v45 != uNumVertices && v45 > 0) _45C4B9(uNumVertices, a9, lightmap);
@@ -833,36 +834,35 @@ void LightmapBuilder::DrawLightmapsType(int type) {
 }
 
 //----- (0045D74F) --------------------------------------------------------
-bool LightmapBuilder::DrawLightmaps(int indices) {
+void LightmapBuilder::DrawLightmaps(int indices) {
     // For outdoor terrain and indoor light (VI)(VI)
-    //  Lightmap *v28; // [sp+50h] [bp-38h]@2
-    Vec3_float_ arg4;
 
-    if (StationaryLightsCount == 0) return true;
+    if (StationaryLightsCount > 0)
+    {
+        if (_4D864C_force_sw_render_rules && engine_config->Flag1_1())
+            return;
 
-    if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related)
-        return true;
+        render->BeginLightmaps();
 
-    render->BeginLightmaps();
+        Vec3_float_ arg4;
+        arg4.x = 1.0f;
+        arg4.y = 1.0f;
+        arg4.z = 1.0f;
 
-    arg4.x = 1.0f;
-    arg4.y = 1.0f;
-    arg4.z = 1.0f;
-
-    if (indices != -1) {
-        for (unsigned int i = 0; i < MobileLightsCount; ++i) {
-            if (!render->DrawLightmap(&MobileLights[i], &arg4, 0.0))
-                Error("Invalid lightmap detected! (%u)", i);
+        if (indices != -1) {
+            for (unsigned int i = 0; i < MobileLightsCount; ++i) {
+                if (!render->DrawLightmap(&MobileLights[i], &arg4, 0.0))
+                    Error("Invalid lightmap detected! (%u)", i);
+            }
         }
-    } else {
-        for (unsigned int i = 0; i < StationaryLightsCount; ++i)
-            if (!render->DrawLightmap(&StationaryLights[i], &arg4, 0.0))
-                Error("Invalid lightmap detected! (%u)", i);
+        else {
+            for (unsigned int i = 0; i < StationaryLightsCount; ++i)
+                if (!render->DrawLightmap(&StationaryLights[i], &arg4, 0.0))
+                    Error("Invalid lightmap detected! (%u)", i);
+        }
+
+        render->EndLightmaps();
     }
-
-    render->EndLightmaps();
-
-    return true;
 }
 
 //----- (0045DCA9) --------------------------------------------------------

@@ -480,7 +480,7 @@ void ArcomageGame::PlaySound(unsigned int event_id) {
         default:
             return;
     }
-    pAudioPlayer->PlaySound(play_sound_id, 0, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(play_sound_id, 0, 0, -1, 0, 0);
 }
 
 bool ArcomageGame::MsgLoop(int a1, ArcomageGame_stru1 *a2) {

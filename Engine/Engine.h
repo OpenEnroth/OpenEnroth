@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Engine/AssetsManager.h"
+#include "Engine/Configuration.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Log.h"
 #include "Engine/MM7.h"
@@ -17,15 +18,6 @@ void Engine_DeinitializeAndTerminate(int exitCode);
 
 bool FileExists(const char *fname);
 
-#pragma once
-
-#define GAME_FLAGS_1_01_lightmap_related 0x01
-#define GAME_FLAGS_1_DRAW_BLV_DEBUGS 0x08
-
-#define GAME_FLAGS_2_SATURATE_LIGHTMAPS 0x02
-#define GAME_FLAGS_2_ALTER_GRAVITY 0x08
-#define GAME_FLAGS_2_TARGETING_MODE 0x10
-#define GAME_FLAGS_2_DRAW_BLOODSPLATS 0x20
 
 /*  320 */
 enum GAME_STATE {
@@ -89,39 +81,40 @@ struct stru10;
 /*  104 */
 #pragma pack(push, 1)
 struct Engine {
-    static Engine *Create();
+    static Engine *Create(Engine_::Configuration *config);
     static void Destroy();
 
  protected:
-    Engine();
+    Engine(Engine_::Configuration *config);
 
  protected:
     virtual ~Engine();
 
- public:
+    public:
     // void _44E904_gamma_saturation_adjust();
     // bool InitializeGammaController();
+        void Initialize();
     bool PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
                    bool bOutline, struct Vis_SelectionFilter *sprite_filter,
                    struct Vis_SelectionFilter *face_filter);
     bool PickKeyboard(bool bOutline, struct Vis_SelectionFilter *sprite_filter,
                       struct Vis_SelectionFilter *face_filter);
     void OutlineSelection();
-    signed int _44EC23(struct Polygon *a2, int *a3, signed int a4);
-    signed int _44ED0A(struct BLVFace *a2, int *a3, signed int a4);
+    int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4);
+    int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
     bool AlterGamma_BLV(struct BLVFace *pFace, signed int *pColor);
     bool AlterGamma_ODM(struct ODMFace *pFace, signed int *pColor);
     bool draw_debug_outlines();
     bool _44EEA7();
     bool _44F07B();
-    void ToggleFlags(unsigned int uMask);
-    void ToggleFlags2(unsigned int uFlag);
-    void _44F0FD();
     void PushStationaryLights(int a2);
     void PrepareBloodsplats();
     void Deinitialize();
     void DrawParticles();
     void Draw();
+
+    inline bool IsUnderwater() const { return config->IsUnderwater(); }
+    inline void SetUnderwater(bool is_underwater) { config->SetUnderwater(is_underwater); }
 
     //----- (0042EB6A) --------------------------------------------------------
     struct SpellFxRenderer *GetSpellFxRenderer() {
@@ -131,6 +124,7 @@ struct Engine {
     // struct IndoorCameraD3D *GetIndoorCamera() { return
     // this->pIndoorCameraD3D; }
 
+    Engine_::Configuration *config = nullptr;
     // void ( ***vdestructor_ptr)(Game *, bool);
     Game__StationaryLight pStationaryLights[25];
     char field_2C0[1092];
@@ -160,18 +154,6 @@ struct Engine {
     __int64 field_E10;
     int uNumStationaryLights_in_pStationaryLightsStack;
     unsigned int __depricated1;  // unsigned int bGammaControlInitialized;
-
-    unsigned int uFlags;  // 0x0001    do not render terrain / bmodels(odm),
-                          // render bmodels in white(blv) 0x0002    only 0th
-                          // lod, no lightning & 0x0004  draw lightmaps / decals
-                          // debug outlines 0x0008    draw portal debug outlines
-                          // 0x0080    camera / culling / projection mode : BLV
-                          // 0x1000    do Torchlight lightning
-
-    unsigned int uFlags2;  // 0x02 : alter lightmaps saturation
-                           // 0x08 : alter gravity strength (for out15.odm)
-                           // 0x10 : current cursor is "MICON2" (crosshair)
-                           // 0x20 : bloodsplats
     float fSaturation;
     unsigned __int64 __depricated2;  // unsigned __int64 uSomeGammaStartTime;
     unsigned __int64 __depricated3;  // __int64 uSomeGammaDeltaTime;

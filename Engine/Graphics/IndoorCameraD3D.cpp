@@ -225,7 +225,7 @@ void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x,
 //----- (00436523) --------------------------------------------------------
 void IndoorCameraD3D::ViewTransform(RenderVertexSoft *a1a,
     unsigned int uNumVertices) {
-    if (byte_4D864C && pEngine->uFlags & 0x80 ||
+    if (_4D864C_force_sw_render_rules && engine_config->ForceLegacyProjection() ||
         uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         float sin_x = fRotationXSine, cos_x = fRotationXCosine;
         float sin_y = fRotationYSine, cos_y = fRotationYCosine;
@@ -572,7 +572,7 @@ void IndoorCameraD3D::PrepareAndDrawDebugOutline(BLVFace *pFace,
             static_sub_437906_array_50CDD0[i].v = (double)pFace->pVertexVIDs[i];
         }
     }
-    if (draw_portals_loops)
+    if (engine_config->debug_portal_outlines)
         debug_outline_sw(static_sub_437906_array_50CDD0, pFace->uNumVertices,
                          uDiffuse, 0.0);
 }
@@ -1163,7 +1163,7 @@ void IndoorCameraD3D::Project(RenderVertexSoft *pVertices,
     double v13;  // st5@19
 
     for (uint i = 0; i < uNumVertices; ++i) {
-        if (byte_4D864C && pEngine->uFlags & 0x80 ||
+        if (_4D864C_force_sw_render_rules && engine_config->ForceLegacyProjection() ||
             uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             v7 = 1.0 / pVertices[i].vWorldViewPosition.x;
 
@@ -1276,7 +1276,7 @@ void IndoorCameraD3D::CalculateRotations(int camera_rot_x, int camera_rot_y) {
     fRotationYSine = sin((pi_double + pi_double) * (double)sRotationY / 2048.0);
     fRotationYCosine =
         cos((pi_double + pi_double) * (double)sRotationY / 2048.0);
-    if (byte_4D864C && pEngine->uFlags & 0x80 ||
+    if (_4D864C_force_sw_render_rules && engine_config->ForceLegacyProjection() ||
         uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         fRotationXSine =
             sin((pi_double + pi_double) * (double)-sRotationX / 2048.0);

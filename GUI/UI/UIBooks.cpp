@@ -56,7 +56,7 @@ void GUIWindow_Book::Release() {
         ui_book_map_frame = nullptr;
     }
 
-    pAudioPlayer->PlaySound(SOUND_closebook, 0, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_closebook, 0, 0, -1, 0, 0);
     dword_506364 = 0;
 
     GUIWindow::Release();
@@ -80,7 +80,7 @@ void GUIWindow_Book::BasicBookInitialization() {
 //----- (00411AAA) --------------------------------------------------------
 void GUIWindow_Book::InitializeFonts() {
     pAudioPlayer->StopChannels(-1, -1);
-    pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
 
     ui_book_map_frame = assets->GetImage_Alpha("mapbordr");
 

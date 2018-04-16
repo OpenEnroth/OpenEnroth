@@ -1,4 +1,4 @@
-#include "Engine/Graphics/Render.h"
+#include "Engine/Graphics/Direct3D/Render.h"
 
 #include <d3d.h>
 #include <ddraw.h>
@@ -25,10 +25,14 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/RenderD3D.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
+#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Graphics/Sprites.h"
+
+#include "Engine/Graphics/Direct3D/RenderD3D.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -38,13 +42,7 @@
 
 #include "Platform/Api.h"
 
-#include "DecorationList.h"
-#include "PaletteManager.h"
-#include "Sprites.h"
-
 #pragma comment(lib, "GdiPlus.lib")
-
-IRender *IRender::Create() { return new Render(); }
 
 struct IDirectDrawClipper *pDDrawClipper;
 IRender *render = nullptr;
@@ -348,7 +346,8 @@ void Render::RenderTerrainD3D() {  // New function
                 norm = 0;
             else
                 norm = &pTerrainNormals[norm_idx];
-            if (lights_flag) {
+            if (engine_config->allow_lightmaps)
+            {
                 pEngine->pLightmapBuilder->StackLights_TerrainFace(
                     norm, &Light_tile_dist, VertexRenderList, 4,
                     1);  // Ritor1: slows
@@ -359,17 +358,18 @@ void Render::RenderTerrainD3D() {  // New function
 
             // ---------Draw distance(Дальность
             // отрисовки)-------------------------------
-            int temp = pIndoorCameraD3D->GetFarClip();
-            if (draw_terrain_dist_mist) temp = 0x5000;
+            int far_clip_distance = pIndoorCameraD3D->GetFarClip();
+            if (engine_config->extended_draw_distance)
+                far_clip_distance = 0x5000;
             bool neer_clip = array_73D150[0].vWorldViewPosition.x < 8.0 ||
                              array_73D150[1].vWorldViewPosition.x < 8.0 ||
                              array_73D150[2].vWorldViewPosition.x < 8.0 ||
                              array_73D150[3].vWorldViewPosition.x < 8.0;
             bool far_clip =
-                (float)temp < array_73D150[0].vWorldViewPosition.x ||
-                (float)temp < array_73D150[1].vWorldViewPosition.x ||
-                (float)temp < array_73D150[2].vWorldViewPosition.x ||
-                (float)temp < array_73D150[3].vWorldViewPosition.x;
+                (float)far_clip_distance < array_73D150[0].vWorldViewPosition.x ||
+                (float)far_clip_distance < array_73D150[1].vWorldViewPosition.x ||
+                (float)far_clip_distance < array_73D150[2].vWorldViewPosition.x ||
+                (float)far_clip_distance < array_73D150[3].vWorldViewPosition.x;
 
             int uClipFlag = 0;
             static stru154 static_sub_0048034E_stru_154;
@@ -392,7 +392,8 @@ void Render::RenderTerrainD3D() {  // New function
                         VertexRenderList, 0, uClipFlag);
             }
 
-            if (!byte_4D864C || ~pEngine->uFlags & 0x80) {
+            if (!_4D864C_force_sw_render_rules || !engine_config->ForceLegacyProjection()) {
+                // uphill distortions, probably bezier curves required
                 // if ( neer_clip ) //Ritor1: Даёт искажения на подъёме,
                 // возможно требуется ф-ция Безье
                 //{
@@ -413,8 +414,8 @@ void Render::RenderTerrainD3D() {  // New function
             bool transparent = false;
 
             auto tile_texture = tile->GetTexture();
-            if (!(pTilePolygon->flags &
-                  1)) {  // не поддерживается TextureFrameTable
+            if (!(pTilePolygon->flags & 1))
+            {  // не поддерживается TextureFrameTable
                 if (/*pTile->flags & 2 && */ tile->IsWaterTile()) {
                     tile_texture =
                         this->hd_water_tile_anim[this->hd_water_current_frame];
@@ -550,10 +551,8 @@ void Render::PrepareDecorationsRenderList_ODM() {
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                                                         v6 + v7);
 
-                    extern bool change_seasons;
-                    if (change_seasons) {
-                        frame =
-                            LevelDecorationChangeSeason(decor_desc, v6 + v7);
+                    if (engine_config->seasons_change) {
+                        frame = LevelDecorationChangeSeason(decor_desc, v6 + v7);
                     }
 
                     if (!frame) {
@@ -718,14 +717,15 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
         sCorrectedColor = -1;
     }
     pEngine->AlterGamma_ODM(pFace, &sCorrectedColor);
-    if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related) {
-        int v8 =
-            ::GetActorTintColor(pPolygon->dimming_level, 0,
-                                VertexRenderList[0].vWorldViewPosition.x, 0, 0);
+    if (_4D864C_force_sw_render_rules && engine_config->Flag1_1()) {
+        int v8 = ::GetActorTintColor(
+            pPolygon->dimming_level, 0,
+            VertexRenderList[0].vWorldViewPosition.x, 0, 0
+        );
         pEngine->pLightmapBuilder->DrawLightmaps(v8 /*, 0*/);
     } else {
         if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
-            byte_4D864C && pEngine->uFlags & 2) {
+            _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
             ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
                                                              D3DTADDRESS_WRAP));
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
@@ -885,7 +885,9 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
     }
 }
 
-Render::Render() {
+Render::Render(Graphics::Configuration *config)
+    : RenderBase(config)
+{
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;
     this->pBackBuffer4 = nullptr;
@@ -1398,7 +1400,7 @@ void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
 }
 
 bool Render::SwitchToWindow() {
-    pParty->uFlags |= PARTY_FLAGS_1_0002;
+    //pParty->uFlags |= PARTY_FLAGS_1_0002;
     pViewport->SetFOV(_6BE3A0_fov);
     Release();
 
@@ -1702,15 +1704,14 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
     if (!this->uNumD3DSceneBegins) return;
     if (uNumVertices < 3) return;
 
-    if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related) {
+    if (_4D864C_force_sw_render_rules && engine_config->Flag1_1()) {
         v11 =
             ::GetActorTintColor(a4->dimming_level, 0,
                                 VertexRenderList[0].vWorldViewPosition.x, 0, 0);
         pEngine->pLightmapBuilder->DrawLightmaps(v11 /*, 0*/);
-    } else if (transparent ||
-               !pEngine->pLightmapBuilder->StationaryLightsCount ||
-               byte_4D864C &&
-                   pEngine->uFlags & GAME_FLAGS_2_SATURATE_LIGHTMAPS) {
+    } else if (transparent || !pEngine->pLightmapBuilder->StationaryLightsCount ||
+        _4D864C_force_sw_render_rules && engine_config->Flag1_2())
+    {
         if (clampAtTextureBorders)
             this->pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
                                                             D3DTADDRESS_CLAMP);
@@ -1867,7 +1868,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
     // if (pIndoorCamera->flags & INDOOR_CAMERA_DRAW_TERRAIN_OUTLINES ||
     // pBLVRenderParams->uFlags & INDOOR_CAMERA_DRAW_TERRAIN_OUTLINES) if
     // (pIndoorCameraD3D->debug_flags & ODM_RENDER_DRAW_TERRAIN_OUTLINES)
-    if (debug_terrain_polygin)
+    if (engine_config->debug_terrain)
         pIndoorCameraD3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices,
                                             0x00FFFFFF, 0.0);
 }
@@ -2341,12 +2342,10 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             uColor = sCorrectedColor = 0xFF109010;
     }
 
-    if (byte_4D864C && pEngine->uFlags & GAME_FLAGS_1_01_lightmap_related) {
+    if (_4D864C_force_sw_render_rules && engine_config->Flag1_1()) {
         __debugbreak();
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
-                                                   false));
-        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                         D3DTADDRESS_WRAP));
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false));
+        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
         for (uint i = 0; i < uNumVertices; ++i) {
             d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
             d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
@@ -2373,7 +2372,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         pEngine->pLightmapBuilder->DrawLightmaps(-1 /*, 0*/);
     } else {
         if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
-            byte_4D864C && pEngine->uFlags & GAME_FLAGS_2_SATURATE_LIGHTMAPS) {
+            _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
             for (uint i = 0; i < uNumVertices; ++i) {
                 d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
                 d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
@@ -3505,7 +3504,8 @@ HWLTexture *RenderHWLContainer::LoadTexture(const char *pName, int bMipMaps) {
 }
 
 bool RenderHWLContainer::Release() {
-    fclose(this->pFile);
+    if (pFile)
+        fclose(this->pFile);
     for (uint i = 0; i < this->uNumItems; i++) {
         delete[] this->pSpriteNames[i];
     }
@@ -4698,7 +4698,8 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4,
     if (pParty->armageddon_timer) return 0xFFFF0000;
 
     v8 = pWeather->bNight;
-    if (bUnderwater) v8 = 0;
+    if (pEngine->IsUnderwater())
+        v8 = 0;
     if (v8) {
         v20 = 1;
         if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
@@ -4756,7 +4757,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4,
     if (v6 < v11) v6 = v11;
     if (v6 > 8 * pOutdoor->max_terrain_dimming_level)
         v6 = 8 * pOutdoor->max_terrain_dimming_level;
-    if (!bUnderwater) {
+    if (!pEngine->IsUnderwater()) {
         return (255 - v6) | ((255 - v6) << 16) | ((255 - v6) << 8);
     } else {
         v15 = (double)(255 - v6) * 0.0039215689;

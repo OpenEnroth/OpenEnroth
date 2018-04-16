@@ -250,7 +250,7 @@ void Party::SetGold(unsigned int uNumGold) {
     pParty->uNumGold = uNumGold;
     pUIAnim_Gold->uAnimTime = 0;
     pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
-    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
 }
 
 //----- (00492BB6) --------------------------------------------------------
@@ -261,7 +261,7 @@ void Party::TakeGold(unsigned int uNumGold) {
         pParty->uNumGold = 0;
     pUIAnim_Gold->uAnimTime = 0;
     pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
-    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
 }
 
 //----- (0049135E) --------------------------------------------------------
@@ -1013,7 +1013,7 @@ void Party::PartyFindsGold(
     pUIAnim_Gold->uAnimTime = 0;
     pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
     if (status.length() > 0) GameUI_StatusBar_OnEvent(status.c_str(), 2u);
-    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
 }
 //----- (00421B2C) --------------------------------------------------------
 void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem() {
@@ -1111,7 +1111,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
             if (v10) {
                 memcpy(&v9->pInventoryItemList[v10 - 1], pItem, 0x24u);
                 pItem->Reset();
-                pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
                 v9->PlaySound(SPEECH_60, 0);
 
                 if (texture) {

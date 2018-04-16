@@ -411,8 +411,7 @@ void Game_EventLoop() {
 */
                         break;
                     } else if (
-                        current_screen_type ==
-                        SCREEN_OPTIONS) {
+                        current_screen_type == SCREEN_OPTIONS) {
 /*
                         options_menu_skin.Relaease();
                         OS_SetAppInt("soundflag",
@@ -441,8 +440,7 @@ void Game_EventLoop() {
 */
                         break;
                     } else if (
-                        current_screen_type ==
-                        SCREEN_VIDEO_OPTIONS) {
+                        current_screen_type == SCREEN_VIDEO_OPTIONS) {
 /*
                             // if ( render->pRenderD3D ) {
                             OS_SetAppInt("Colored Lights",
@@ -495,7 +493,7 @@ void Game_EventLoop() {
                         stru_506E40.Release();
                         }
                         else
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 
                         0);
 
                         Game_OnEscape();*/
@@ -610,8 +608,7 @@ void Game_EventLoop() {
                                         }
                                         GetHouseGoodbyeSpeech();
                                         pAudioPlayer->PlaySound(
-                                            SOUND_WoodDoorClosing, 814, 0, -1,
-                                            0, 0, 0, 0);
+                                            SOUND_WoodDoorClosing, 814, 0, -1, 0, 0);
                                         pMediaPlayer->Unload();
                                         pGUIWindow_CurrentMenu =
                                             window_SpeakInHouse;
@@ -823,7 +820,7 @@ void Game_EventLoop() {
                     sub_42FBDD();
                     // pNPCData4 = (NPCData *)GetTravelTime();
                     pOutdoor->level_filename = pCurrentMapName;
-                    if (bUnderwater != 1 && pParty->bFlying ||
+                    if (!pEngine->IsUnderwater() && pParty->bFlying ||
                         pOutdoor->GetTravelDestination(pParty->vPosition.x,
                                                        pParty->vPosition.y,
                                                        pOut, 20) != 1) {
@@ -883,14 +880,14 @@ void Game_EventLoop() {
                         LoadLevel_InitializeLevelEvt();
                         uLevelMapStatsID =
                             pMapStats->GetMapInfo(pCurrentMapName);
-                        bUnderwater = 0;
+
                         bNoNPCHiring = 0;
-                        pEngine->uFlags2 &= 0xFFFFFFF7u;
-                        if (Is_out15odm_underwater()) {
-                            bUnderwater = 1;
-                            pEngine->uFlags2 |= 8u;
-                        }
-                        if (!_stricmp(pCurrentMapName, "out15.odm") ||
+\
+                        pEngine->SetUnderwater(
+                            Is_out15odm_underwater()
+                        );
+
+                        if (Is_out15odm_underwater() ||
                             !_stricmp(pCurrentMapName, "d47.blv"))
                             bNoNPCHiring = 1;
                         PrepareToLoadODM(1u, (ODMRenderParams *)1);
@@ -1105,8 +1102,7 @@ void Game_EventLoop() {
                 case UIMSG_LloydsBeacon_FlippingBtn:
                     bRecallingBeacon = uMessageParam;
                     v127 = uMessageParam + 204;
-                    pAudioPlayer->PlaySound((SoundID)v127, 0, 0, -1, 0, 0, 0,
-                                            0);
+                    pAudioPlayer->PlaySound((SoundID)v127, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_HintBeaconSlot:
                     if (!pGUIWindow_CurrentMenu) continue;
@@ -1564,20 +1560,16 @@ void Game_EventLoop() {
                                 }
                             }
                         }
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
-                                                0);
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         v73 = "Can't jump to that location!";
                     }
                     GameUI_StatusBar_OnEvent(v73, 6);
                     continue;
 
                 case UIMSG_CastQuickSpell: {
-                    if (bUnderwater == 1) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(
-                            652));  // "You can not do that while you are
-                                    // underwater!"
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
-                                                0);
+                    if (pEngine->IsUnderwater()) {
+                        GameUI_StatusBar_OnEvent(localization->GetString(652));  // "You can not do that while you are // underwater!"
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
                     if (!uActiveCharacter ||
@@ -1670,8 +1662,7 @@ void Game_EventLoop() {
                     if (_506F14_resting_stage == 2) {
                         GameUI_StatusBar_OnEvent(localization->GetString(
                             477));  // "You are already resting!"
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
-                                                0);
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
                     new OnButtonClick2(
@@ -1686,8 +1677,7 @@ void Game_EventLoop() {
                     if (_506F14_resting_stage == 2) {
                         GameUI_StatusBar_OnEvent(localization->GetString(
                             477));  // "You are already resting!"
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
-                                                0);
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
                     new OnButtonClick2(
@@ -1766,13 +1756,11 @@ void Game_EventLoop() {
                     if (_506F14_resting_stage != 0) {
                         GameUI_StatusBar_OnEvent(localization->GetString(
                             477));  // "You are already resting!"
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
-                                                0);
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
                     if (pParty->uNumFoodRations < uRestUI_FoodRequiredToRest) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(
-                            482));  // "You don't have enough food to rest"
+                        GameUI_StatusBar_OnEvent(localization->GetString(482));  // "You don't have enough food to rest"
                         if (uActiveCharacter &&
                             pPlayers[uActiveCharacter]->CanAct())
                             pPlayers[uActiveCharacter]->PlaySound(SPEECH_108,
@@ -1820,7 +1808,7 @@ void Game_EventLoop() {
                                     localization->GetString(
                                         481));  // "Encounter!"
                                 pAudioPlayer->PlaySound(SOUND_encounter, 0, 0,
-                                                        -1, 0, 0, 0, 0);
+                                                        -1, 0, 0);
                                 continue;
                             }
                         }
@@ -1839,8 +1827,7 @@ void Game_EventLoop() {
                     if (_506F14_resting_stage == 2) {
                         GameUI_StatusBar_OnEvent(localization->GetString(
                             477));  // "You are already resting!"
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
-                                                0);
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
                     new OnButtonClick2(
@@ -1915,7 +1902,7 @@ void Game_EventLoop() {
                     if (!byte_506550 || !quick_spell_at_page) {
                         pPlayer10->uQuickSpell = 0;
                         quick_spell_at_page = 0;
-                        pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0, 0,
+                        pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 
                                                 0);
                         continue;
                     }
@@ -1939,19 +1926,18 @@ void Game_EventLoop() {
                     int skill_count = 0;
                     uAction = 0;
                     for (uint i = 0; i < 9; i++) {
-                        if (pPlayers[uActiveCharacter]
-                                ->pActiveSkills[PLAYER_SKILL_FIRE + i] ||
-                            all_magic) {
-                            if (pPlayers[uActiveCharacter]
-                                    ->lastOpenedSpellbookPage == i)
+                        if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i] ||
+                            engine_config->debug_all_magic)
+                        {
+                            if (pPlayers[uActiveCharacter]->lastOpenedSpellbookPage == i)
                                 uAction = skill_count;
                             v217[skill_count++] = i;
                         }
                     }
                     if (!skill_count) {  //нет скиллов
                         pAudioPlayer->PlaySound(
-                            (SoundID)(rand() % 2 + SOUND_TurnPageU), 0, 0, -1,
-                            0, 0, 0, 0);
+                            (SoundID)(rand() % 2 + SOUND_TurnPageU), 0, 0, -1, 0, 0
+                        );
                     } else {
                         if (OS_IfShiftPressed()) {
                             --uAction;
@@ -1980,18 +1966,15 @@ void Game_EventLoop() {
 
                     //  uNumSeconds = (unsigned int)pPlayers[uActiveCharacter];
                     Player *player = pPlayers[uActiveCharacter];
-                    if (player->spellbook
-                            .pChapters[player->lastOpenedSpellbookPage]
-                            .bIsSpellAvailable[uMessageParam] ||
-                        all_magic) {
+                    if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
+                        || engine_config->debug_all_magic)
+                    {
                         if (quick_spell_at_page - 1 == uMessageParam) {
-                            pGUIWindow_CurrentMenu
-                                ->Release();  // spellbook close
+                            pGUIWindow_CurrentMenu->Release();  // spellbook close
                             pEventTimer->Resume();
                             viewparams->bRedrawGameUI = 1;
                             current_screen_type = SCREEN_GAME;
-                            v103 = quick_spell_at_page +
-                                   11 * player->lastOpenedSpellbookPage;
+                            v103 = quick_spell_at_page + 11 * player->lastOpenedSpellbookPage;
                             /*if ( dword_50C9E8 < 40 )
                             {
                             dword_50C9EC[3 * dword_50C9E8] =
@@ -2027,12 +2010,9 @@ void Game_EventLoop() {
                     continue;
                 case UIMSG_SpellBookWindow:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
-                    if (bUnderwater == true) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(
-                            652));  // "You can not do that while you are
-                                    // underwater!"
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
-                                                0);
+                    if (pEngine->IsUnderwater()) {
+                        GameUI_StatusBar_OnEvent(localization->GetString(652));  // "You can not do that while you are underwater!"
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     } else {
                         pMessageQueue_50CBD0->Flush();
                         if (uActiveCharacter &&
@@ -2138,7 +2118,7 @@ void Game_EventLoop() {
                                 pPlayer4->pActiveSkills[uMessageParam] & 0x3F;
                             pPlayer4->PlaySound(SPEECH_14, 0);
                             pAudioPlayer->PlaySound((SoundID)SOUND_quest, 0, 0,
-                                                    -1, 0, 0, 0, 0);
+                                                    -1, 0, 0);
                             continue;
                         }
                         v87 = localization->GetString(
@@ -2437,16 +2417,7 @@ void Game_Loop() {
     extern bool use_music_folder;
     GameUI_LoadPlayerPortraintsAndVoices();
     pIcons_LOD->_inlined_sub1();
-    pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
-
-    /*   extern bool all_spells;
-    if (all_spells)
-    {
-    for (int i = 0; i < 4; ++i)
-    for (int j = 0; j < 99; ++j)
-    pParty->pPlayers[i].spellbook.bHaveSpell[j] = true;
-    }
-    */
+    pAudioPlayer->SetMusicVolume(engine_config->music_level);
 
     while (2) {
         v16 = 1;

@@ -161,7 +161,7 @@ bool Chest::Open(signed int uChestID) {
             pSpellObject.spell_target_pid = 0;
             pSpellObject.uFacing = 0;
             pSpellObject.Create(0, 0, 0, 0);
-            pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_fireBall, 0, 0, -1, 0, 0);
             pSpellObject.ExplosionTraps();
             chest->uFlags &= 0xFEu;
             if (uActiveCharacter && !_A750D8_player_speech_timer &&
@@ -177,7 +177,7 @@ bool Chest::Open(signed int uChestID) {
         flag_shout = true;
     }
     pAudioPlayer->StopChannels(-1, -1);
-    pAudioPlayer->PlaySound(SOUND_openchest0101, 0, 0, -1, 0, 0, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_openchest0101, 0, 0, -1, 0, 0);
     if (flag_shout == true) {
         if (!OpenedTelekinesis)
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_4, 0);

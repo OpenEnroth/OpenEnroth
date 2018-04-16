@@ -25,11 +25,6 @@ SoundList *pSoundList;
 std::array<PartySpells, 4> stru_A750F8;
 std::array<PartySpells, 4> AA1058_PartyQuickSpellSound;
 
-uint8_t uSoundVolumeMultiplier;
-uint8_t uVoicesVolumeMultiplier;
-uint8_t uMusicVolimeMultiplier;
-int bWalkSound;
-
 std::array<float, 10> pSoundVolumeLevels = {
     {0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f, 0.5500000f,
      0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f}};
@@ -121,7 +116,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         return;
     }
 
-    if (!bNoSound && bPlayerReady && uMusicVolimeMultiplier) {
+    if (!engine_config->NoSound() && bPlayerReady && engine_config->music_level > 0) {
         if (pCurrentMusicTrack) {
             pCurrentMusicTrack->Stop();
         }
@@ -139,7 +134,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         if (pCurrentMusicTrack) {
             currentMusicTrack = eTrack;
             pCurrentMusicTrack->SetVolume(
-                pSoundVolumeLevels[uMusicVolimeMultiplier]);
+                pSoundVolumeLevels[engine_config->music_level]);
             pCurrentMusicTrack->Play();
         }
     }
@@ -172,11 +167,12 @@ void AudioPlayer::MusicResume() {
     pCurrentMusicTrack->Resume();
 }
 
-void AudioPlayer::MusicSetVolume(unsigned int vol) {
+void AudioPlayer::SetMusicVolume(int vol) {
     if (!pCurrentMusicTrack) {
         return;
     }
 
+    vol = max(0, vol);
     vol = min(9, vol);
     pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[vol] * 64.f);
 }
@@ -189,8 +185,10 @@ float AudioPlayer::MusicGetVolume() {
     return pCurrentMusicTrack->GetVolume();
 }
 
-void AudioPlayer::SetMasterVolume(float fVolume) {
-    uMasterVolume = (unsigned int)fVolume;
+void AudioPlayer::SetMasterVolume(int level) {
+    level = max(0, level);
+    level = min(9, level);
+    uMasterVolume = (unsigned int)(128.0f * pSoundVolumeLevels[level]);
 }
 
 void AudioPlayer::StopAll(int sample_id) {
@@ -200,9 +198,8 @@ void AudioPlayer::StopAll(int sample_id) {
 }
 
 void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
-                            int source_x, int source_y, int sound_data_id,
-                            float uVolume, int sPlaybackRate) {
-    if (!bPlayerReady || (uSoundVolumeMultiplier == 0) ||
+                            int source_x, int source_y, int sound_data_id) {
+    if (!bPlayerReady || engine_config->sound_level < 1 ||
         (eSoundID == SOUND_Invalid)) {
         return;
     }
@@ -355,10 +352,9 @@ void AudioPlayer::Initialize() {
     currentMusicTrack = 0;
     uMasterVolume = 127;
 
-    pAudioPlayer->SetMasterVolume(pSoundVolumeLevels[uSoundVolumeMultiplier] *
-                                  128.0f);
+    pAudioPlayer->SetMasterVolume(engine_config->sound_level);
     if (bPlayerReady) {
-        MusicSetVolume(uMusicVolimeMultiplier);
+        SetMusicVolume(engine_config->music_level);
     }
     LoadAudioSnd();
 
@@ -439,7 +435,7 @@ std::array<__int16, 101> word_4EE088_sound_ids = {
      1}};
 
 void AudioPlayer::PlaySpellSound(unsigned int spell, unsigned int pid) {
-    PlaySound((SoundID)word_4EE088_sound_ids[spell], pid, 0, -1, 0, 0, 0, 0);
+    PlaySound((SoundID)word_4EE088_sound_ids[spell], pid, 0, -1, 0, 0);
 }
 
 int PartySpells::AddPartySpellSound(int uSoundID, int a6) {

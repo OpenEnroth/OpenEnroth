@@ -8,7 +8,7 @@
 #include "OurMath.h"
 #include "MapInfo.h"
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/stru123.h"
+#include "Engine/stru123.h" 
 #include "Engine/stru298.h"
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
@@ -208,7 +208,7 @@ std::array<unsigned int, 2> saveload_dlg_ws = {344, 480};
 int pWindowList_at_506F50_minus1_indexing[1];
 int dword_4C9890[10];
 int dword_4C9920[16];
-char byte_4D864C;
+char _4D864C_force_sw_render_rules;
 float flt_4D86CC = 1.0f;
 int dword_4D86D8 = 0x40000000;
 
@@ -789,24 +789,12 @@ class OSWindow *window = nullptr;
 char pCurrentMapName[32];  // idb
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
-int dword_6BE368_debug_settings_2 = DEBUG_SETTINGS_RUN_IN_WIDOW;
-unsigned __int8 bCanLoadFromCD = false;
-int bShowDamage;  // idb
-unsigned int bAlwaysRun;
-unsigned int bFlipOnExit;
-unsigned int uTurnSpeed;
 float _6BE3A0_fov = 0.55000001f;
 float flt_6BE3A4_debug_recmod1;
 float flt_6BE3A8_debug_recmod2;
 float flt_6BE3AC_debug_recmod1_x_1_6;
 std::string s_SavedMapName;  // idb
-char bUnderwater = false;
 char bNoNPCHiring = false;
-bool bNoVideo = false;
-bool bNoIntro = false;
-bool bNoLogo = false;
-bool bNoCD = true;
-bool bNoSound = false;
 std::array<int, 100> dword_720020_zvalues;
 std::array<int, 299> dword_7201B0_zvalues;
 std::array<__int16, 104> word_7209A0_intercepts_ys_plus_ys;

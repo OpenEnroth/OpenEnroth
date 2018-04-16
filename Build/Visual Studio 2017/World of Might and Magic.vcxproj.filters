@@ -453,12 +453,6 @@
     <ClCompile Include="..\..\Engine\Graphics\Direct3D\TextureD3D.cpp">
       <Filter>Engine\Graphics\Direct3D</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\Graphics\Render.cpp">
-      <Filter>Engine\Graphics\Direct3D</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Engine\Graphics\RenderD3D.cpp">
-      <Filter>Engine\Graphics\Direct3D</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Media\Audio\OpenALSoundProvider.cpp">
       <Filter>Media\Audio</Filter>
     </ClCompile>
@@ -476,6 +470,21 @@
     </ClCompile>
     <ClCompile Include="..\..\GUI\UI\UIInventory.cpp">
       <Filter>GUI\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Configuration.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\Configuration.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\IRenderFactory.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\Direct3D\Render.cpp">
+      <Filter>Engine\Graphics\Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\Direct3D\RenderD3D.cpp">
+      <Filter>Engine\Graphics\Direct3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1076,12 +1085,6 @@
     <ClInclude Include="..\..\Engine\Graphics\Direct3D\TextureD3D.h">
       <Filter>Engine\Graphics\Direct3D</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\Graphics\Render.h">
-      <Filter>Engine\Graphics\Direct3D</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Engine\Graphics\RenderD3D.h">
-      <Filter>Engine\Graphics\Direct3D</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Media\Media.h">
       <Filter>Media</Filter>
     </ClInclude>
@@ -1096,6 +1099,21 @@
     </ClInclude>
     <ClInclude Include="..\..\GUI\UI\UIInventory.h">
       <Filter>GUI\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Configuration.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Configuration.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\IRenderFactory.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Direct3D\Render.h">
+      <Filter>Engine\Graphics\Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Direct3D\RenderD3D.h">
+      <Filter>Engine\Graphics\Direct3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

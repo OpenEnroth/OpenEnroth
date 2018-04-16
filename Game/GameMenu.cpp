@@ -34,7 +34,7 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
     } else {
         GameUI_StatusBar_OnEvent(localization->GetString(
             201));  // "Are you sure?  Click again to start a New Game"
-        pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0);
         dword_6BE138 = 124;
     }
 }
@@ -45,12 +45,12 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
         // pGUIWindow_CurrentMenu->Release();
         current_screen_type = SCREEN_GAME;
         viewparams->bRedrawGameUI = 1;
-        pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 0, 0, -1, 0, 0);
         uGameState = GAME_STATE_GAME_QUITTING_TO_MAIN_MENU;
     } else {
         GameUI_StatusBar_OnEvent(localization->GetString(
             82));  // "Are you sure?  Click again to quit"
-        pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0);
         dword_6BE138 = 132;
     }
 }
@@ -182,7 +182,7 @@ void GameMenu_EventLoop() {
 
             case UIMSG_ChangeKeyButton: {
                 if (uGameMenuUI_CurentlySelectedKeyIdx != -1) {
-                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                 } else {
                     uGameMenuUI_CurentlySelectedKeyIdx = param;
                     if (KeyboardPageNum != 1)
@@ -217,7 +217,7 @@ void GameMenu_EventLoop() {
                         pKeyActionMap->GetActionVKey((enum InputAction)i);
                     GameMenuUI_InvaligKeyBindingsFlags[i] = false;
                 }
-                pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
                 continue;
             }
 
@@ -246,16 +246,14 @@ void GameMenu_EventLoop() {
                     // --uGammaPos;
                     if ((uGammaPos-- - 1) < 0) {
                         uGammaPos = 0;
-                        pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0,
-                                                -1, 0, 0, 0, 0);
+                        pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                         continue;
                     }
                     double v19 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                     // pEngine->pGammaController->Initialize(v19);
                     new OnButtonClick2(21, 161, 0, 0, (int)pBtn_SliderLeft,
                                        String(), false);
-                    pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1,
-                                            0, 0, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                     continue;
                 }
                 if (param == 5) {
@@ -266,8 +264,7 @@ void GameMenu_EventLoop() {
                         new OnButtonClick2(213, 161, 0, 0,
                                            (int)pBtn_SliderRight, String(),
                                            false);
-                        pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0,
-                                                -1, 0, 0, 0, 0);
+                        pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                         continue;
                     }
                     uGammaPos = 9;
@@ -277,11 +274,10 @@ void GameMenu_EventLoop() {
                     double v22 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                     // pEngine->pGammaController->Initialize(v22);
                 }
-                pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0,
-                                        0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                 continue;
             case UIMSG_ToggleBloodsplats:
-                pEngine->ToggleFlags2(0x20u);
+                engine_config->ToggleBloodsplats();
                 continue;
             case UIMSG_ToggleColoredLights:
                 render->ToggleColoredLights();
@@ -291,144 +287,100 @@ void GameMenu_EventLoop() {
                 continue;
 
             case UIMSG_ChangeMusicVolume: {
-                extern bool use_music_folder;
-                if (param == 4) {  // -
-                    --uMusicVolimeMultiplier;
-                    if ((char)uMusicVolimeMultiplier < 1)
-                        uMusicVolimeMultiplier = 0;
-                    new OnButtonClick2(243, 216, 0, 0, (int)pBtn_SliderLeft,
-                                       String(), false);
-                    if (uMusicVolimeMultiplier)
-                        pAudioPlayer->PlaySound(
-                            SOUND_hurp, -1, 0, -1, 0, 0,
-                            pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f,
-                            0);
-
-                    pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
-
-                    continue;
+                if (param == 4)
+                {
+                    engine_config->music_level -= 1;
+                    new OnButtonClick2(243, 216, 0, 0, (int)pBtn_SliderLeft, String(), false);
                 }
-                if (param == 5) {  // +
-                    ++uMusicVolimeMultiplier;
-                    if ((char)uMusicVolimeMultiplier > 9)
-                        uMusicVolimeMultiplier = 9;
-                    new OnButtonClick2(435, 216, 0, 0, (int)pBtn_SliderRight,
-                                       String(), false);
-                    if (uMusicVolimeMultiplier)
-                        pAudioPlayer->PlaySound(
-                            SOUND_hurp, -1, 0, -1, 0, 0,
-                            pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f,
-                            0);
-                    pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
-                    continue;
+                else if (param == 5)
+                {
+                    engine_config->music_level += 1;
+                    new OnButtonClick2(435, 216, 0, 0, (int)pBtn_SliderRight, String(), false);
+                }
+                else
+                {
+                    Point pt = pMouse->GetCursorPos();
+                    engine_config->music_level = (pt.x - 263) / 17;  // for mouse
                 }
 
-                Point pt = pMouse->GetCursorPos();
-                uMusicVolimeMultiplier = (pt.x - 263) / 17;  // for mouse
-                if ((char)uMusicVolimeMultiplier > 9)
-                    uMusicVolimeMultiplier = 9;
-                if (uMusicVolimeMultiplier)
-                    pAudioPlayer->PlaySound(
-                        SOUND_hurp, -1, 0, -1, 0, 0,
-                        pSoundVolumeLevels[uMusicVolimeMultiplier] * 64.0f, 0);
-                pAudioPlayer->MusicSetVolume(uMusicVolimeMultiplier);
+                if (engine_config->music_level < 0)
+                    engine_config->music_level = 0;
+                if (engine_config->music_level > 9)
+                    engine_config->music_level = 9;
+
+                if (engine_config->music_level > 0)
+                    pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0);
+                pAudioPlayer->SetMusicVolume(engine_config->music_level);
                 continue;
             }
 
             case UIMSG_ChangeSoundVolume: {
-                if (param == 4) {  // reduce sound level button left
-                    if (uSoundVolumeMultiplier > 0) --uSoundVolumeMultiplier;
-
-                    new OnButtonClick2(243, 162, 0, 0, (int)pBtn_SliderLeft,
-                                       String(), false);
-                    pAudioPlayer->SetMasterVolume(
-                        pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
-                    pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0, 0,
-                                            0);
-                    // int v = AIL_redbook_volume(pAudioPlayer->hAILRedbook);
-                    // v = v+1;
-                    // if (v)
-                    //    __debugbreak();
-                    continue;
+                if (param == 4)
+                {
+                    engine_config->sound_level -= 1;
+                    new OnButtonClick2(243, 162, 0, 0, (int)pBtn_SliderLeft, String(), false);
                 }
-                if (param == 5) {  // Increase sound level button right
-                    ++uSoundVolumeMultiplier;
-                    if ((char)uSoundVolumeMultiplier > 8)
-                        uSoundVolumeMultiplier = 9;
-                    // v168 = 1;
-                    // v154 = (int)pBtn_SliderRight;
-                    new OnButtonClick2(435, 162, 0, 0, (int)pBtn_SliderRight,
-                                       String(), false);
-                    pAudioPlayer->SetMasterVolume(
-                        pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
-                    pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0, 0,
-                                            0);
-                    continue;
+                else if (param == 5)
+                {
+                    engine_config->sound_level += 1;
+                    new OnButtonClick2(435, 162, 0, 0, (int)pBtn_SliderRight, String(), false);
+                }
+                else
+                {
+                    Point pt = pMouse->GetCursorPos();
+                    engine_config->sound_level = (pt.x - 263) / 17;
                 }
 
-                Point pt = pMouse->GetCursorPos();
-                uSoundVolumeMultiplier = (pt.x - 263) / 17;
-                if ((char)uSoundVolumeMultiplier > 8)
-                    uSoundVolumeMultiplier = 9;
-                pAudioPlayer->SetMasterVolume(
-                    pSoundVolumeLevels[uSoundVolumeMultiplier] * 128.0f);
-                pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0, 0, 0);
+                if (engine_config->sound_level < 0)
+                    engine_config->sound_level = 0;
+                if (engine_config->sound_level > 9)
+                    engine_config->sound_level = 9;
+
+                pAudioPlayer->SetMasterVolume(engine_config->sound_level);
+                pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0);
                 continue;
             }
             case UIMSG_ToggleFlipOnExit:
-                bFlipOnExit = bFlipOnExit == 0;
+                engine_config->ToggleFlipOnExit();
                 continue;
             case UIMSG_ToggleAlwaysRun:
-                bAlwaysRun = bAlwaysRun == 0;
+                engine_config->ToggleAlwaysRun();
                 continue;
             case UIMSG_ToggleWalkSound:
-                bWalkSound = bWalkSound == 0;
+                engine_config->ToggleWalkSound();
                 continue;
             case UIMSG_ToggleShowDamage:
-                bShowDamage = bShowDamage == 0;
+                engine_config->ToggleShowDamage();
                 continue;
             case UIMSG_ChangeVoiceVolume: {
-                if (param == 4) {
-                    --uVoicesVolumeMultiplier;
-                    if ((char)uVoicesVolumeMultiplier < 1)
-                        uVoicesVolumeMultiplier = 0;
-                    new OnButtonClick2(243, 270, 0, 0, (int)pBtn_SliderLeft,
-                                       String(), false);
-                    if (!uVoicesVolumeMultiplier) continue;
-                    pAudioPlayer->PlaySound(
-                        SOUND_hf445a, -1, 0, -1, 0, 0,
-                        pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f,
-                        0);
-                    continue;
+                if (param == 4)
+                {
+                    engine_config->voice_level -= 1;
+                    new OnButtonClick2(243, 270, 0, 0, (int)pBtn_SliderLeft, String(), false);
                 }
-                if (param == 5) {
-                    ++uVoicesVolumeMultiplier;
-                    if ((char)uVoicesVolumeMultiplier > 8)
-                        uVoicesVolumeMultiplier = 9;
-                    new OnButtonClick2(435, 270, 0, 0, (int)pBtn_SliderRight,
-                                       String(), false);
-                    if (!uVoicesVolumeMultiplier) continue;
-                    pAudioPlayer->PlaySound(
-                        SOUND_hf445a, -1, 0, -1, 0, 0,
-                        pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f,
-                        0);
-                    continue;
+                else if (param == 5)
+                {
+                    engine_config->voice_level += 1;
+                    new OnButtonClick2(435, 270, 0, 0, (int)pBtn_SliderRight, String(), false);
                 }
+                else
+                {
+                    Point pt = pMouse->GetCursorPos();
+                    engine_config->voice_level = (pt.x - 263) / 17;
+                }
+                if (engine_config->voice_level < 0)
+                    engine_config->voice_level = 0;
+                if (engine_config->voice_level > 9)
+                    engine_config->voice_level = 9;
 
-                Point pt = pMouse->GetCursorPos();
-                uVoicesVolumeMultiplier = (pt.x - 263) / 17;
-                if ((char)uVoicesVolumeMultiplier > 8)
-                    uVoicesVolumeMultiplier = 9;
-                if (!uVoicesVolumeMultiplier) continue;
-                pAudioPlayer->PlaySound(
-                    SOUND_hf445a, -1, 0, -1, 0, 0,
-                    pSoundVolumeLevels[uVoicesVolumeMultiplier] * 128.0f, 0);
+                if (engine_config->voice_level > 0)
+                    pAudioPlayer->PlaySound(SOUND_hf445a, -1, 0, -1, 0, 0);
                 continue;
             }
             case UIMSG_SetTurnSpeed:
                 if (param)
                     pParty->sRotationY = param * pParty->sRotationY / param;
-                uTurnSpeed = param;
+                engine_config->turn_speed = param;
                 continue;
 
             case UIMSG_SetGraphicsMode:
@@ -486,20 +438,21 @@ void GameMenu_EventLoop() {
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 } else if (current_screen_type == SCREEN_OPTIONS) {
                     options_menu_skin.Relaease();
-                    OS_SetAppInt("soundflag", (char)uSoundVolumeMultiplier);
-                    OS_SetAppInt("musicflag", (char)uMusicVolimeMultiplier);
-                    OS_SetAppInt("CharVoices", (char)uVoicesVolumeMultiplier);
-                    OS_SetAppInt("WalkSound", bWalkSound);
-                    OS_SetAppInt("ShowDamage", bShowDamage);
+                    OS_SetAppInt("soundflag", engine_config->sound_level);
+                    OS_SetAppInt("musicflag", engine_config->music_level);
+                    OS_SetAppInt("CharVoices", engine_config->voice_level);
+                    OS_SetAppInt("WalkSound", engine_config->NoWalkSound() ? 0 : 1);
+                    OS_SetAppInt("ShowDamage", engine_config->NoShowDamage() ? 0 : 1);
                     // OS_SetAppInt("graphicsmode", (unsigned
                     // __int8)byte_6BE388_graphicsmode);
-                    OS_SetAppInt("valAlwaysRun", bAlwaysRun);
-                    OS_SetAppInt("FlipOnExit", bFlipOnExit);
-                    if (!uTurnSpeed)
+                    OS_SetAppInt("valAlwaysRun", engine_config->always_run ? 1 : 0);
+                    OS_SetAppInt("FlipOnExit", engine_config->flip_on_exit ? 1 : 0);
+
+                    if (engine_config->turn_speed == 0)
                         OS_SetAppInt("TurnDelta", 3);
-                    else if (uTurnSpeed == 64)
+                    else if (engine_config->turn_speed == 64)
                         OS_SetAppInt("TurnDelta", 2);
-                    else if (uTurnSpeed == 128)
+                    else if (engine_config->turn_speed == 128)
                         OS_SetAppInt("TurnDelta", 1);
 
                     pGUIWindow_CurrentMenu->Release();
@@ -511,8 +464,7 @@ void GameMenu_EventLoop() {
                         OS_SetAppInt("Colored Lights",
                                      render->bUseColoredLights);
                         OS_SetAppInt("Tinting", render->bTinting);
-                        OS_SetAppInt("Bloodsplats",
-                                     ((pEngine->uFlags2 & 0xFF) >> 5) & 1);
+                        OS_SetAppInt("Bloodsplats", engine_config->NoBloodsplats() ? 0 : 1);
                     }
 
                     pGUIWindow_CurrentMenu->Release();
@@ -565,8 +517,7 @@ void GameMenu_EventLoop() {
                         }
                         pKeyActionMap->StoreMappings();
                     } else {
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0,
-                            0);
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     }
 
                     pGUIWindow_CurrentMenu->Release();

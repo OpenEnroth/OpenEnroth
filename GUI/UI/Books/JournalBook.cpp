@@ -159,12 +159,12 @@ void GUIWindow_JournalBook::Update() {
     journal_window.uFrameW = journal_window.uFrameHeight + 69;
     if (BtnDown_flag && books_primary_item_per_page + num_achieved_awards <
                             full_num_items_in_book) {  // Press bookmark next page
-        pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
         books_primary_item_per_page += num_achieved_awards;
         books_num_items_per_page[books_page_number++] = num_achieved_awards;
     }
     if (BtnUp_flag && books_page_number) {  // Press bookmark previous page
-        pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
         --books_page_number;
         books_primary_item_per_page -=
             (unsigned __int8)books_num_items_per_page[books_page_number];

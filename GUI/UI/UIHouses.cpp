@@ -1040,7 +1040,7 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
             100 * (pAnimatedRooms[p2DEvents[uHouseID].uAnimationID]
                 .uRoomSoundId +
                 300)),
-            806, 0, -1, 0, 0, 0, 0);
+            806, 0, -1, 0, 0);
 }
 
 //----- (004BCACC) --------------------------------------------------------
@@ -1897,7 +1897,7 @@ void TravelByTransport() {
                 return;
             } else {
                 dialog_menu_id = HOUSE_DIALOGUE_MAIN;
-                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+                pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             }
         }
     }
@@ -2745,7 +2745,7 @@ void TempleDialog() {
                     uActiveCharacter - 1,
                     pPlayers[uActiveCharacter]->uPrevFace);
             }
-            pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_82, 0);
             pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2767,8 +2767,7 @@ void TempleDialog() {
                 !pPlayers[uActiveCharacter]
                 ->conditions_times[Condition_Dead]
                 .Valid()) {
-                pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0, 0,
-                    0);
+                pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_82, 0);
                 pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2794,7 +2793,7 @@ void TempleDialog() {
         // (int)v39;
         pPlayers[uActiveCharacter]->conditions_times[Condition_Zombie] =
             pParty->GetPlayingTime();
-        pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0, 0, 0);
+        pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
         pPlayers[uActiveCharacter]->PlaySound(SPEECH_82, 0);
         pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -3452,7 +3451,7 @@ void sub_4B6478() {
             || (v6 = (int)(&pPlayers[uActiveCharacter]->uIntelligence +
                 dialog_menu_id),
                 *(short *)v6)) {
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
             if (pParty->uNumGold < pPrice) {
                 GameUI_StatusBar_OnEvent(
@@ -4047,7 +4046,7 @@ void BackToHouseMenu() {
         window_SpeakInHouse->Release();
         pParty->uFlags &= 0xFFFFFFFD;
         if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
-            pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0, 0, 0);
+            pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
             window_SpeakInHouse = new GUIWindow_House(
                 0, 0, window->GetWidth(), window->GetHeight(), 165, 0);
             window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94,
@@ -4456,7 +4455,7 @@ void GUIWindow_House::Release() {
     }
 
     dword_5C35D4 = 0;
-    if (bFlipOnExit) {
+    if (engine_config->flip_on_exit) {
         pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (stru_5C6E00->uIntegerPi + pParty->sRotationY);
         pIndoorCameraD3D->sRotationY = pParty->sRotationY;
     }

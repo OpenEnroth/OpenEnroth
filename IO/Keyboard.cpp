@@ -253,9 +253,6 @@ void KeyboardActionMapping::ReadMappings() {
             pVirtualKeyCodesMapping[commandId] = commandDefaultKeyCode;
         pToggleTypes[commandId] = toggType;
     }
-
-    bAlwaysRun = OS_GetAppInt("valAlwaysRun", 0) != 0;
-    bFlipOnExit = OS_GetAppInt("FlipOnExit", 0) != 0;
 }
 
 //----- (0045A960) --------------------------------------------------------
@@ -344,7 +341,7 @@ void Keyboard::ProcessInputActions() {
 
     pEngine->pKeyboardInstance->EnterCriticalSection();
     Keyboard *pKeyboard = pEngine->pKeyboardInstance;
-    if (!bAlwaysRun) {
+    if (!engine_config->always_run) {
         if (pKeyboard->IsShiftHeld())
             pParty->uFlags2 |= PARTY_FLAGS_2_RUNNING;
         else
@@ -613,10 +610,9 @@ void Keyboard::ProcessInputActions() {
                                 pPlayers[uActiveCharacter]->sMana;
                         }
                         if (!pPlayers[uActiveCharacter]->uQuickSpell ||
-                            bUnderwater || !enoughMana) {
+                            pEngine->IsUnderwater() || !enoughMana) {
                             pPartyActionQueue = pPartyActionQueue;
-                            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0,
-                                                                0);
+                            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
                             break;
                         } else {
                             pMessageQueue_50C9E8->AddGUIMessage(
@@ -690,7 +686,7 @@ void Keyboard::ProcessInputActions() {
                             UIMSG_ClickZoomInBtn, 0, 0);
                         break;
                     case INPUT_AlwaysRun:
-                        bAlwaysRun = bAlwaysRun == 0;
+                        engine_config->always_run = !engine_config->always_run;
                         break;
                     default:
                         break;

@@ -583,7 +583,7 @@ void GUIWindow_GameVideoOptions::Update() {
                  // vary depending on your monitor."
     }
 
-    if (pEngine->uFlags2 & GAME_FLAGS_2_DRAW_BLOODSPLATS)
+    if (!engine_config->NoBloodsplats())
         render->DrawTextureAlphaNew(20 / 640.0f, 281 / 480.0f,
                                     game_ui_menu_options_video_bloodsplats);
     if (render->bUseColoredLights)
@@ -734,46 +734,65 @@ void GUIWindow_GameOptions::Update() {
     render->DrawTextureAlphaNew(8 / 640.0f, 132 / 480.0f,
                                 options_menu_skin.uTextureID_Background);
 
-    switch (uTurnSpeed) {
+    switch (engine_config->turn_speed) {
         case 64:
             render->DrawTextureAlphaNew(
                 BtnTurnCoord[1] / 640.0f, 270 / 480.0f,
-                options_menu_skin.uTextureID_TurnSpeed[1]);
+                options_menu_skin.uTextureID_TurnSpeed[1]
+            );
             break;
         case 128:
             render->DrawTextureAlphaNew(
                 BtnTurnCoord[2] / 640.0f, 270 / 480.0f,
-                options_menu_skin.uTextureID_TurnSpeed[2]);
+                options_menu_skin.uTextureID_TurnSpeed[2]
+            );
             break;
         default:
             render->DrawTextureAlphaNew(
                 BtnTurnCoord[0] / 640.0f, 270 / 480.0f,
-                options_menu_skin.uTextureID_TurnSpeed[0]);
+                options_menu_skin.uTextureID_TurnSpeed[0]
+            );
             break;
     }
 
-    if (bWalkSound)
-        render->DrawTextureAlphaNew(20 / 640.0f, 303 / 480.0f,
-                                    options_menu_skin.uTextureID_WalkSound);
-    if (bShowDamage)
-        render->DrawTextureAlphaNew(128 / 640.0f, 303 / 480.0f,
-                                    options_menu_skin.uTextureID_ShowDamage);
-    if (bFlipOnExit)
-        render->DrawTextureAlphaNew(128 / 640.0f, 325 / 480.0f,
-                                    options_menu_skin.uTextureID_FlipOnExit);
-    if (bAlwaysRun)
-        render->DrawTextureAlphaNew(20 / 640.0f, 325 / 480.0f,
-                                    options_menu_skin.uTextureID_AlwaysRun);
+    if (!engine_config->no_walk_sound)
+    {
+        render->DrawTextureAlphaNew(
+            20 / 640.0f, 303 / 480.0f,
+            options_menu_skin.uTextureID_WalkSound
+        );
+    }
+    if (engine_config->show_damage)
+    {
+        render->DrawTextureAlphaNew(
+            128 / 640.0f, 303 / 480.0f,
+            options_menu_skin.uTextureID_ShowDamage
+        );
+    }
+    if (engine_config->flip_on_exit)
+    {
+        render->DrawTextureAlphaNew(
+            128 / 640.0f, 325 / 480.0f,
+            options_menu_skin.uTextureID_FlipOnExit
+        );
+    }
+    if (engine_config->always_run)
+    {
+        render->DrawTextureAlphaNew(
+            20 / 640.0f, 325 / 480.0f,
+            options_menu_skin.uTextureID_AlwaysRun
+        );
+    }
 
     render->DrawTextureAlphaNew(
-        (265 + 17 * uSoundVolumeMultiplier) / 640.0f, 162 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[uSoundVolumeMultiplier]);
+        (265 + 17 * engine_config->sound_level) / 640.0f, 162 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine_config->sound_level]);
     render->DrawTextureAlphaNew(
-        (265 + 17 * uMusicVolimeMultiplier) / 640.0f, 216 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[uMusicVolimeMultiplier]);
+        (265 + 17 * engine_config->music_level) / 640.0f, 216 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine_config->music_level]);
     render->DrawTextureAlphaNew(
-        (265 + 17 * uVoicesVolumeMultiplier) / 640.0f, 270 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[uVoicesVolumeMultiplier]);
+        (265 + 17 * engine_config->voice_level) / 640.0f, 270 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine_config->voice_level]);
 }
 
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
@@ -1946,7 +1965,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         uWizardEyeSkillLevel = 2;
     }
 
-    if (wizard_eye) {
+    if (engine_config->debug_wizard_eye) {
         bWizardEyeActive = true;
         uWizardEyeSkillLevel = 3;
     }

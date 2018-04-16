@@ -7,11 +7,12 @@
 #pragma comment(lib, "Shell32.lib")
 
 #include <string>
+#include <vector>
 
 #include "../resource.h"
 
-int __stdcall BrowseFolderCallback(HWND hwnd, UINT msg, LPARAM lparam,
-                                   LPARAM data) {
+int __stdcall BrowseFolderCallback(HWND hwnd, UINT msg, LPARAM lparam, LPARAM data)
+{
     if (msg == BFFM_INITIALIZED) {
         SendMessage(hwnd, BFFM_SETSELECTION, true, data);
     }
@@ -25,6 +26,13 @@ INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam,
         case WM_INITDIALOG: {
             app = (Application *)lparam;
             SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)app);
+
+            CheckRadioButton(
+                hwnd,
+                IDC_RADIO_RENDERER_DIRECTDRAW,
+                IDC_RADIO_RENDERER_OPENGL,
+                IDC_RADIO_RENDERER_DIRECTDRAW
+            );
             break;
         }
 
@@ -53,6 +61,15 @@ INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam,
                                mm7_install_dir, 2000);
 
                 app->SetMm7InstallPath(std::string(mm7_install_dir));
+
+                if (IsDlgButtonChecked(hwnd, IDC_RADIO_RENDERER_DIRECTDRAW) == BST_CHECKED)
+                {
+                    app->SetRenderer(std::string("DirectDraw"));
+                }
+                else if (IsDlgButtonChecked(hwnd, IDC_RADIO_RENDERER_OPENGL) == BST_CHECKED)
+                {
+                    app->SetRenderer(std::string("OpenGL"));
+                }
 
                 std::string config_errors;
                 if (!app->ValidateConfig(config_errors)) {
@@ -133,9 +150,14 @@ void Application::Run() {
     PROCESS_INFORMATION pi;
     ZeroMemory(&pi, sizeof(pi));
 
-    std::string womm_filename =
-        GetExePath() + "/" + "World of Might and Magic.exe";
-    CreateProcessA(womm_filename.c_str(), "", nullptr, nullptr, FALSE,
-                   NORMAL_PRIORITY_CLASS, nullptr,
-                   config.mm7_install_path.c_str(), &si, &pi);
+    std::string womm_filename = GetExePath() + "/" + "World of Might and Magic.exe";
+    std::string command_line = womm_filename + " -window -nointro -nologo -novideo -nomarg -render=" + GetRenderer();
+
+    std::vector<char> cmd(command_line.begin(), command_line.end());
+    cmd.push_back(0);
+    CreateProcessA(
+        womm_filename.c_str(), cmd.data(), nullptr, nullptr, FALSE,
+        NORMAL_PRIORITY_CLASS, nullptr,
+        config.mm7_install_path.c_str(), &si, &pi
+    );
 }

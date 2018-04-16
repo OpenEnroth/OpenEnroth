@@ -19,23 +19,6 @@
 #include "Platform/OSWindow.h"
 #include "Platform/Win/Win.h"
 
-bool wizard_eye =
-    true;  // wizard eye always on / включить на постоянно око чародея
-bool change_seasons = true;  // toggle seasons change / смена времён года
-bool all_magic = false;  // toggle full spellbook / включить всю магию
-bool debug_information = true;  // toggle debug info / информация fps, положение
-                                // группы, уровень пола и т.п.
-bool show_picked_face =
-    false;  // highlight picked face / выделить активный фейс
-bool draw_portals_loops = false;  // show portal frames / видны рамки порталов
-bool new_speed = true;  // debug turbo speed
-bool bSnow = false;
-bool draw_terrain_dist_mist = false;  //новая дальность отрисовки тайлов
-bool no_actors = false;  // remove all monsters / убрать всех монстров
-bool lights_flag = true;
-bool debug_lights = false;
-bool debug_terrain_polygin = false;
-
 extern HWND hInsertCDWindow;  // idb
 
 void *OSWindow::GetApiHandle() const { return api_handle; }
@@ -1311,10 +1294,10 @@ bool OSWindow::OnOSMenu(int item_id) {
 
         // SubMenu "Other"
         case 40101:
-            wizard_eye = true;
+            engine_config->debug_wizard_eye = true;
             break;
         case 40102:
-            wizard_eye = false;
+            engine_config->debug_wizard_eye = false;
             break;
         case 40103:
             pODMRenderParams->far_clip = 0x6000;
@@ -1323,73 +1306,73 @@ bool OSWindow::OnOSMenu(int item_id) {
             pODMRenderParams->far_clip = 0x2000;
             break;
         case 40105:
-            change_seasons = true;
+            engine_config->seasons_change = true;
             break;
         case 40106:
-            change_seasons = false;
+            engine_config->seasons_change = false;
             break;
         case 40107:
-            all_magic = true;
+            engine_config->debug_all_magic = true;
             break;  // may need to close and reopen spellbook when changed??
         case 40108:
-            all_magic = false;
+            engine_config->debug_all_magic = false;
             break;  // may need to close and reopen spellbook when changed??
         case 40109:
-            debug_information = true;
+            engine_config->show_fps = true;
             break;
         case 40110:
-            debug_information = false;
+            engine_config->show_fps = false;
             break;
         case 40111:
-            show_picked_face = true;
+            engine_config->show_picked_face = true;
             break;
         case 40112:
-            show_picked_face = false;
+            engine_config->show_picked_face = false;
             break;
         case 40113:
-            draw_portals_loops = true;
+            engine_config->debug_portal_outlines = true;
             break;
         case 40114:
-            draw_portals_loops = false;
+            engine_config->debug_portal_outlines = false;
             break;
         case 40115:
-            new_speed = true;
+            engine_config->debug_turbo_speed = true;
             break;
         case 40116:
-            new_speed = false;
+            engine_config->debug_turbo_speed = false;
             break;
         case 40117:
-            bSnow = true;
+            engine_config->allow_snow = true;
             break;
         case 40118:
-            bSnow = false;
+            engine_config->allow_snow = false;
             break;
         case 40119:
-            draw_terrain_dist_mist = true;
+            engine_config->extended_draw_distance = true;
             break;
         case 40120:
-            draw_terrain_dist_mist = false;
+            engine_config->extended_draw_distance = false;
             break;
         case 40122:
-            no_actors = true;
+            engine_config->no_actors = true;
             break;
         case 40123:
-            lights_flag = true;
+            engine_config->allow_lightmaps = true;
             break;
         case 40124:
-            lights_flag = false;
+            engine_config->allow_lightmaps = false;
             break;
         case 40125:
-            debug_lights = true;
+            engine_config->debug_lightmaps_decals = true;
             break;
         case 40126:
-            debug_lights = false;
+            engine_config->debug_lightmaps_decals = false;
             break;
         case 40127:
-            debug_terrain_polygin = true;
+            engine_config->debug_terrain = true;
             break;
         case 40128:
-            debug_terrain_polygin = false;
+            engine_config->debug_terrain = false;
             break;
     }
 

@@ -111,7 +111,7 @@ void PrepareDrawLists_BLV() {
     uNumSpritesDrawnThisFrame = 0;
     uNumBillboardsToDraw = 0;
 
-    if (!byte_4D864C || !(pEngine->uFlags & 0x1000)) {  // lightspot around party
+    if (!_4D864C_force_sw_render_rules || !engine_config->TorchlightEffect()) {  // lightspot around party
         v5 = 800;
         if (pParty->TorchlightActive())
             v5 *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
@@ -1662,14 +1662,12 @@ void BLV_UpdateDoors() {
                 door->uState = BLVDoor::Open;
                 if (!(door->uAttributes & FACE_UNKNOW5) &&
                     door->uNumVertices != 0)
-                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1),
-                                            PID(OBJECT_BLVDoor, i), 0, -1, 0, 0,
-                                            0, 0);
+                    pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0);
                 // goto LABEL_18;
             } else if (!(door->uAttributes & FACE_UNKNOW5) &&
                 door->uNumVertices) {
                 pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1,
-                    -1, 0, 0, 0, 0);
+                    -1, 0, 0);
             }
         } else {
             signed int v5 =
@@ -1681,15 +1679,13 @@ void BLV_UpdateDoors() {
                 if (!(door->uAttributes & FACE_UNKNOW5) &&
                     door->uNumVertices != 0)
                     pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1),
-                                            PID(OBJECT_BLVDoor, i), 0, -1, 0, 0,
-                                            0, 0);
+                                            PID(OBJECT_BLVDoor, i), 0, -1, 0, 0);
                 // goto LABEL_18;
             } else {
                 v89 = door->uMoveLength - v5;
                 if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
                     pAudioPlayer->PlaySound(eDoorSoundID,
-                                            PID(OBJECT_BLVDoor, i), 1, -1, 0, 0,
-                                            0, 0);
+                                            PID(OBJECT_BLVDoor, i), 1, -1, 0, 0);
             }
         }
 
@@ -1859,7 +1855,8 @@ void UpdateActors_BLV() {
     int v62;                 // [sp+58h] [bp-8h]@6
     unsigned int actor_id;   // [sp+5Ch] [bp-4h]@1
 
-    if (no_actors) uNumActors = 0;
+    if (engine_config->no_actors)
+        uNumActors = 0;
 
     for (actor_id = 0; actor_id < uNumActors; actor_id++) {
         if (pActors[actor_id].uAIState == Removed ||
@@ -2440,15 +2437,14 @@ void PrepareToLoadBLV(unsigned int bLoading) {
 
     respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
-    bUnderwater = false;
     bNoNPCHiring = false;
     pDest = 1;
     uCurrentlyLoadedLevelType = LEVEL_Indoor;
-    pEngine->uFlags2 &= ~GAME_FLAGS_2_ALTER_GRAVITY;
-    if (Is_out15odm_underwater()) {
-        bUnderwater = true;
-        pEngine->uFlags2 |= GAME_FLAGS_2_ALTER_GRAVITY;
-    }
+
+    pEngine->SetUnderwater(
+        Is_out15odm_underwater()
+    );
+
     if (!_stricmp(pCurrentMapName, "out15.odm") ||
         !_stricmp(pCurrentMapName, "d23.blv"))
         bNoNPCHiring = true;
@@ -5164,8 +5160,7 @@ void BLV_ProcessPartyActions() {
         not_high_fall = true;
     }
 
-    if (bWalkSound &&
-        pParty->walk_sound_timer) {  //таймеры для звуков передвижения
+    if (!engine_config->NoWalkSound() && pParty->walk_sound_timer) {  //таймеры для звуков передвижения
         if (pParty->walk_sound_timer > pEventTimer->uTimeElapsed)
             pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
         else
@@ -5203,112 +5198,75 @@ void BLV_ProcessPartyActions() {
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
-                if (uTurnSpeed)
-                    angle = stru_5C6E00->uDoublePiMask & (angle + uTurnSpeed);
+                if (engine_config->turn_speed > 0)
+                    angle = stru_5C6E00->uDoublePiMask & (angle + engine_config->turn_speed);
                 else
-                    angle = stru_5C6E00->uDoublePiMask &
-                            (angle + (int)(v82 * fTurnSpeedMultiplier));
+                    angle = stru_5C6E00->uDoublePiMask & (angle + (int)(v82 * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
-                if (uTurnSpeed)
-                    angle = stru_5C6E00->uDoublePiMask & (angle - uTurnSpeed);
+                if (engine_config->turn_speed > 0)
+                    angle = stru_5C6E00->uDoublePiMask & (angle - engine_config->turn_speed);
                 else
-                    angle = stru_5C6E00->uDoublePiMask &
-                            (angle - (int)(v82 * fTurnSpeedMultiplier));
+                    angle = stru_5C6E00->uDoublePiMask & (angle - (int)(v82 * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
-                if (uTurnSpeed)
-                    angle = stru_5C6E00->uDoublePiMask & (angle + uTurnSpeed);
+                if (engine_config->turn_speed > 0)
+                    angle = stru_5C6E00->uDoublePiMask & (angle + engine_config->turn_speed);
                 else
-                    angle = stru_5C6E00->uDoublePiMask &
-                            (angle +
-                             (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
+                    angle = stru_5C6E00->uDoublePiMask & (angle + (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
                 break;
 
             case PARTY_FastTurnRight:
-                if (uTurnSpeed)
-                    angle = stru_5C6E00->uDoublePiMask & (angle - uTurnSpeed);
+                if (engine_config->turn_speed > 0)
+                    angle = stru_5C6E00->uDoublePiMask & (angle - engine_config->turn_speed);
                 else
-                    angle = stru_5C6E00->uDoublePiMask &
-                            (angle -
-                             (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
+                    angle = stru_5C6E00->uDoublePiMask & (angle - (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
                 break;
 
             case PARTY_StrafeLeft:
-                v2 -=
-                    fixpoint_mul(stru_5C6E00->Sin(angle),
-                                 pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-                v1 +=
-                    fixpoint_mul(stru_5C6E00->Cos(angle),
-                                 pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                v2 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                v1 += fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
                 party_walking_flag = true;
                 break;
             case PARTY_StrafeRight:
-                v2 +=
-                    fixpoint_mul(stru_5C6E00->Sin(angle),
-                                 pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-                v1 -=
-                    fixpoint_mul(stru_5C6E00->Cos(angle),
-                                 pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                v2 += fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                v1 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
                 party_walking_flag = true;
                 break;
             case PARTY_WalkForward:
-                v2 +=
-                    fixpoint_mul(stru_5C6E00->Cos(angle),
-                                 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                v1 +=
-                    fixpoint_mul(stru_5C6E00->Sin(angle),
-                                 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 party_walking_flag = true;
                 break;
             case PARTY_WalkBackward:
-                v2 -= fixpoint_mul(
-                    stru_5C6E00->Cos(angle),
-                    pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-                v1 -= fixpoint_mul(
-                    stru_5C6E00->Sin(angle),
-                    pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                v2 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
                 party_walking_flag = true;
                 break;
             case PARTY_RunForward:  //Бег вперёд
-                v2 +=
-                    fixpoint_mul(stru_5C6E00->Cos(angle),
-                                 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                v1 +=
-                    fixpoint_mul(stru_5C6E00->Sin(angle),
-                                 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 party_running_flag = true;
                 break;
             case PARTY_RunBackward:
-                // v32 = stru_5C6E00->SinCos(angle);
-                // v33 = (double)v81;
-                // v88 = (double)v81;
-                v2 -= fixpoint_mul(
-                    stru_5C6E00->Cos(angle),
-                    pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-                // v34 = stru_5C6E00->SinCos(angle -
-                // stru_5C6E00->uIntegerHalfPi);
-                v1 -= fixpoint_mul(
-                    stru_5C6E00->Sin(angle),
-                    pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                v2 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
                 party_running_flag = true;
                 break;
             case PARTY_LookUp:
-                _view_angle +=
-                    (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
-                if (_view_angle > 128) _view_angle = 128;
+                _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
+                if (_view_angle > 128)
+                    _view_angle = 128;
                 if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound(
-                        (PlayerSpeech)SPEECH_63, 0);
+                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_63, 0);
                 break;
             case PARTY_LookDown:
-                _view_angle +=
-                    (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
-                if (_view_angle < -128) _view_angle = -128;
+                _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
+                if (_view_angle < -128)
+                    _view_angle = -128;
                 if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound(
-                        (PlayerSpeech)SPEECH_64, 0);
+                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_64, 0);
                 break;
             case PARTY_CenterView:
                 _view_angle = 0;
@@ -5527,22 +5485,17 @@ void BLV_ProcessPartyActions() {
     uint pX_ = abs(pParty->vPosition.x - new_party_x);
     uint pY_ = abs(pParty->vPosition.y - new_party_y);
     uint pZ_ = abs(pParty->vPosition.z - new_party_z);
-    if (bWalkSound && pParty->walk_sound_timer <= 0) {
+    if (!engine_config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
         if (party_running_flag &&
-            (!hovering ||
-             not_high_fall)) {  // Бег и (не прыжок или не высокое падение )
+            (!hovering || not_high_fall)) {  // Бег и (не прыжок или не высокое падение )
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16) {
                 if (on_water)
-                    pAudioPlayer->PlaySound(SOUND_RunWaterIndoor, 804, 1, -1, 0,
-                                            0, 0, 0);
-                else if (pIndoor->pFaces[uFaceID].uAttributes &
-                         FACE_INDOOR_CARPET)  //по ковру
-                    pAudioPlayer->PlaySound(SOUND_RunCarpet, 804, 1, -1, 0, 0,
-                                            0, 0);
+                    pAudioPlayer->PlaySound(SOUND_RunWaterIndoor, 804, 1, -1, 0, 0);
+                else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)  //по ковру
+                    pAudioPlayer->PlaySound(SOUND_RunCarpet, 804, 1, -1, 0, 0);
                 else
-                    pAudioPlayer->PlaySound(SOUND_RunWood, 804, 1, -1, 0, 0, 0,
-                                            0);
+                    pAudioPlayer->PlaySound(SOUND_RunWood, 804, 1, -1, 0, 0);
                 pParty->walk_sound_timer = 96;  // 64
             }
         } else if (party_walking_flag &&
@@ -5550,15 +5503,11 @@ void BLV_ProcessPartyActions() {
                                                     // высокое падение)
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8) {
                 if (on_water)
-                    pAudioPlayer->PlaySound(SOUND_WalkWaterIndoor, 804, 1, -1,
-                                            0, 0, 0, 0);
-                else if (pIndoor->pFaces[uFaceID].uAttributes &
-                         FACE_INDOOR_CARPET)  //по ковру
-                    pAudioPlayer->PlaySound(SOUND_WalkCarpet, 804, 1, -1, 0, 0,
-                                            0, 0);
+                    pAudioPlayer->PlaySound(SOUND_WalkWaterIndoor, 804, 1, -1, 0, 0);
+                else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)  //по ковру
+                    pAudioPlayer->PlaySound(SOUND_WalkCarpet, 804, 1, -1, 0, 0);
                 else
-                    pAudioPlayer->PlaySound(SOUND_WalkWood, 804, 1, -1, 0, 0, 0,
-                                            0);
+                    pAudioPlayer->PlaySound(SOUND_WalkWood, 804, 1, -1, 0, 0);
                 pParty->walk_sound_timer = 144;  // 64
             }
         }
