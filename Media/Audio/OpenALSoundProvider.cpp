@@ -795,6 +795,8 @@ bool AudioSample16::SetPosition(float x, float y, float z, float max_dist) {
     if (CheckError()) {
         return false;
     }
+
+    return true;
 }
 
 bool AudioSample16::IsValid() { return (alIsSource(al_source) != 0); }
