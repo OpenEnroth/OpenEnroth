@@ -13,7 +13,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIArena.h"
 
 #include "Media/Audio/AudioPlayer.h"
