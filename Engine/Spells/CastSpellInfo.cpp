@@ -16,8 +16,8 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
-#include "GUI/UI/UiGame.h"
-#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIGame.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "IO/Mouse.h"
 

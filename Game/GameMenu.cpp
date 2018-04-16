@@ -18,7 +18,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIModal.h"
 #include "GUI/UI/UISaveLoad.h"
-#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

@@ -21,7 +21,7 @@
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIPartyCreation.h"
-#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIStatusBar.h"
 
 //----- (004BF91E) --------------------------------------------------------
 void GameOver_Loop(int v15) {

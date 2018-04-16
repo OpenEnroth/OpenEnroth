@@ -23,7 +23,7 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIShops.h"
-#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "IO/Mouse.h"
 

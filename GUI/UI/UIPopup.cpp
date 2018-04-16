@@ -28,7 +28,7 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIShops.h"
-#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "GUI/UI/UICharacter.h"
 

@@ -1,10 +1,10 @@
 #include "Media/Audio/OpenALSoundProvider.h"
 
+#include <atomic>
 #include <memory>
 #include <queue>
-#include <thread>
 #include <string>
-#include <atomic>
+#include <thread>
 
 #include <cassert>
 #include <cmath>
@@ -656,7 +656,7 @@ PAudioTrack CreateAudioTrack(const std::string &file_path) {
     return std::dynamic_pointer_cast<IAudioTrack, AudioTrackS16>(track);
 }
 
-class AudioSample16 {
+class AudioSample16 : public IAudioSample {
  public:
     AudioSample16();
     virtual ~AudioSample16();
