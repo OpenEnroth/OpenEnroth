@@ -1,4 +1,4 @@
-#include "GUI/UI/UiGame.h"
+#include "GUI/UI/UIGame.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -41,7 +41,7 @@
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

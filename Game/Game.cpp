@@ -59,7 +59,7 @@
 #include "GUI/UI/UIRest.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIShops.h"
-#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Game/Game.h"
 #include "Game/GameMenu.h"

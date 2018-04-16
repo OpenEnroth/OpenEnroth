@@ -62,7 +62,7 @@
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIMainMenu.h"
-#include "GUI/UI/UiStatusBar.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
