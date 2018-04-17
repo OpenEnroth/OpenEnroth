@@ -1,4 +1,4 @@
-#include "GUI/UI/UiGame.h"
+#include "GUI/UI/UIGame.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
