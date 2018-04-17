@@ -2,6 +2,7 @@
 
 #include <d3d.h>
 #include <ddraw.h>
+
 #include <GdiPlus.h>
 #undef DrawText
 
@@ -16,9 +17,9 @@ class RenderD3D;
 class Image;
 
 class Render : public RenderBase {
-    public:
-        Render(Graphics::Configuration *config);
-        virtual ~Render();
+ public:
+    explicit Render(Graphics::Configuration *config);
+    virtual ~Render();
 
     virtual bool Initialize(OSWindow *window);
 

@@ -4,8 +4,8 @@
 #include "Engine/Graphics/IRender.h"
 
 class RenderBase : public IRender {
-    public:
-        RenderBase(Graphics::Configuration *config)
+ public:
+        explicit RenderBase(Graphics::Configuration *config)
             : IRender(config)
         {}
 

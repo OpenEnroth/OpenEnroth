@@ -31,8 +31,7 @@
 #include "Platform/OsWindow.h"
 
 RenderOpenGL::RenderOpenGL(Graphics::Configuration *config)
-    : RenderBase(config)
-{
+    : RenderBase(config) {
     bFogEnabled = false;
 }
 RenderOpenGL::~RenderOpenGL() {}
@@ -125,8 +124,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         */
     } else {
         if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
-            _4D864C_force_sw_render_rules && engine_config->Flag1_2())
-        {
+            _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
             glEnable(GL_TEXTURE_2D);
             glDisable(GL_BLEND);
             glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
@@ -1630,8 +1628,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
     pEngine->AlterGamma_ODM(a4, &a2);
 
     if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
-        _4D864C_force_sw_render_rules && engine_config->Flag1_2())
-    {
+        _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_BLEND);
         glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
@@ -1786,7 +1783,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
 }
 
 bool RenderOpenGL::SwitchToWindow() {
-    //pParty->uFlags |= PARTY_FLAGS_1_0002;
+    // pParty->uFlags |= PARTY_FLAGS_1_0002;
     pViewport->SetFOV(_6BE3A0_fov);
     CreateZBuffer();
 

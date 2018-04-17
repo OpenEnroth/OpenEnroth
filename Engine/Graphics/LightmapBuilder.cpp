@@ -837,8 +837,7 @@ void LightmapBuilder::DrawLightmapsType(int type) {
 void LightmapBuilder::DrawLightmaps(int indices) {
     // For outdoor terrain and indoor light (VI)(VI)
 
-    if (StationaryLightsCount > 0)
-    {
+    if (StationaryLightsCount > 0) {
         if (_4D864C_force_sw_render_rules && engine_config->Flag1_1())
             return;
 
@@ -854,8 +853,7 @@ void LightmapBuilder::DrawLightmaps(int indices) {
                 if (!render->DrawLightmap(&MobileLights[i], &arg4, 0.0))
                     Error("Invalid lightmap detected! (%u)", i);
             }
-        }
-        else {
+        } else {
             for (unsigned int i = 0; i < StationaryLightsCount; ++i)
                 if (!render->DrawLightmap(&StationaryLights[i], &arg4, 0.0))
                     Error("Invalid lightmap detected! (%u)", i);

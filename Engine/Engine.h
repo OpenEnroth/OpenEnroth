@@ -85,12 +85,12 @@ struct Engine {
     static void Destroy();
 
  protected:
-    Engine(Engine_::Configuration *config);
+    explicit Engine(Engine_::Configuration *config);
 
  protected:
     virtual ~Engine();
 
-    public:
+ public:
     // void _44E904_gamma_saturation_adjust();
     // bool InitializeGammaController();
         void Initialize();

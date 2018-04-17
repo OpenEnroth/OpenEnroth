@@ -2441,9 +2441,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     pDest = 1;
     uCurrentlyLoadedLevelType = LEVEL_Indoor;
 
-    pEngine->SetUnderwater(
-        Is_out15odm_underwater()
-    );
+    pEngine->SetUnderwater(Is_out15odm_underwater());
 
     if (!_stricmp(pCurrentMapName, "out15.odm") ||
         !_stricmp(pCurrentMapName, "d23.blv"))

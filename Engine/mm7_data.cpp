@@ -5,16 +5,16 @@
 #include "GUI/GUIWindow.h"
 #include "Party.h"
 
-#include "OurMath.h"
-#include "MapInfo.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/stru123.h" 
-#include "Engine/stru298.h"
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/stru123.h"
 #include "Engine/stru160.h"
+#include "Engine/stru298.h"
 #include "Engine/stru314.h"
 #include "Engine/stru367.h"
+#include "MapInfo.h"
+#include "OurMath.h"
 
 struct stru193_math *stru_5C6E00 = new stru193_math;
 struct MapStats *pMapStats;

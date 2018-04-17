@@ -2,6 +2,7 @@
 
 #include <d3d.h>
 #include <ddraw.h>
+
 #include <algorithm>
 
 #include "Engine/Engine.h"
@@ -17,6 +18,7 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Direct3D/TextureD3D.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -24,13 +26,12 @@
 #include "Engine/Graphics/Lights.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/PCX.h"
+#include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Graphics/Sprites.h"
 
 #include "Engine/Graphics/Direct3D/RenderD3D.h"
 
@@ -346,8 +347,7 @@ void Render::RenderTerrainD3D() {  // New function
                 norm = 0;
             else
                 norm = &pTerrainNormals[norm_idx];
-            if (engine_config->allow_lightmaps)
-            {
+            if (engine_config->allow_lightmaps) {
                 pEngine->pLightmapBuilder->StackLights_TerrainFace(
                     norm, &Light_tile_dist, VertexRenderList, 4,
                     1);  // Ritor1: slows
@@ -414,8 +414,7 @@ void Render::RenderTerrainD3D() {  // New function
             bool transparent = false;
 
             auto tile_texture = tile->GetTexture();
-            if (!(pTilePolygon->flags & 1))
-            {  // не поддерживается TextureFrameTable
+            if (!(pTilePolygon->flags & 1)) {  // не поддерживается TextureFrameTable
                 if (/*pTile->flags & 2 && */ tile->IsWaterTile()) {
                     tile_texture =
                         this->hd_water_tile_anim[this->hd_water_current_frame];
@@ -720,8 +719,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
     if (_4D864C_force_sw_render_rules && engine_config->Flag1_1()) {
         int v8 = ::GetActorTintColor(
             pPolygon->dimming_level, 0,
-            VertexRenderList[0].vWorldViewPosition.x, 0, 0
-        );
+            VertexRenderList[0].vWorldViewPosition.x, 0, 0);
         pEngine->pLightmapBuilder->DrawLightmaps(v8 /*, 0*/);
     } else {
         if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
@@ -886,8 +884,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
 }
 
 Render::Render(Graphics::Configuration *config)
-    : RenderBase(config)
-{
+    : RenderBase(config) {
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;
     this->pBackBuffer4 = nullptr;
@@ -1400,7 +1397,7 @@ void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
 }
 
 bool Render::SwitchToWindow() {
-    //pParty->uFlags |= PARTY_FLAGS_1_0002;
+    // pParty->uFlags |= PARTY_FLAGS_1_0002;
     pViewport->SetFOV(_6BE3A0_fov);
     Release();
 
@@ -1710,8 +1707,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                                 VertexRenderList[0].vWorldViewPosition.x, 0, 0);
         pEngine->pLightmapBuilder->DrawLightmaps(v11 /*, 0*/);
     } else if (transparent || !pEngine->pLightmapBuilder->StationaryLightsCount ||
-        _4D864C_force_sw_render_rules && engine_config->Flag1_2())
-    {
+        _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
         if (clampAtTextureBorders)
             this->pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
                                                             D3DTADDRESS_CLAMP);

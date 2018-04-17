@@ -235,11 +235,11 @@ struct RenderHWLContainer {
 };
 
 class IRender {
-    public:
-        inline IRender(Graphics::Configuration *config) {
-            this->config = config;
-        }
-        virtual ~IRender() {}
+ public:
+    explicit IRender(Graphics::Configuration *config) {
+        this->config = config;
+    }
+    virtual ~IRender() {}
 
     virtual bool Initialize(OSWindow *window) = 0;
 
