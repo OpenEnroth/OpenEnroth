@@ -118,7 +118,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
                                        WorldPosToGridCellZ(pParty->vPosition.y),
                                        1);
     engine_config->SetForceRedraw(false);
-    if (/*render->pRenderD3D*/ true && render->bUsingSpecular)
+    if (render->config->is_using_specular)
         pEngine->pLightmapBuilder->uFlags |= LIGHTMAP_FLAGS_USE_SPECULAR;
     else
         pEngine->pLightmapBuilder->uFlags &= ~LIGHTMAP_FLAGS_USE_SPECULAR;
@@ -2578,8 +2578,8 @@ void ODM_ProcessPartyActions() {
                     pParty->bFlying = false;
                     if (pEngine->IsUnderwater() ||
                         pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
-                        pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0)
-                    {  // *(int *)&pParty->pArtifactsFound[6972 *
+                        pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0) {
+                            // *(int *)&pParty->pArtifactsFound[6972 *
                                   // pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster +
                                   // 10] > 0 )
                         party_new_Z -= 30;
@@ -3121,14 +3121,12 @@ void ODM_ProcessPartyActions() {
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16) {
                 if (!is_not_on_bmodel &&
                     pOutdoor->pBModels[pParty->floor_face_pid >> 9]
-                    .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible())
-                {
+                    .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
                     pAudioPlayer->PlaySound(SOUND_RunWood, 804, 1, -1, 0, 0);  //бег на 3D Modelи
                 } else {
                     v87 = pOutdoor->GetSoundIdByPosition(
                         WorldPosToGridCellX(pParty->vPosition.x),
-                        WorldPosToGridCellZ(pParty->vPosition.y) - 1, 1
-                    );
+                        WorldPosToGridCellZ(pParty->vPosition.y) - 1, 1);
                     pAudioPlayer->PlaySound((SoundID)v87, 804, 1, -1, 0, 0);  //бег по земле 56
                 }
                 pParty->walk_sound_timer = 96;  //таймер для бега
@@ -3137,8 +3135,7 @@ void ODM_ProcessPartyActions() {
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8) {
                 if (!is_not_on_bmodel &&
                     pOutdoor->pBModels[pParty->floor_face_pid >> 9]
-                    .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible())
-                {
+                    .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
                     pAudioPlayer->PlaySound(SOUND_WalkWood, 804, 1, -1, 0, 0);  // хождение на 3D Modelи
                 } else {
                     v87 = pOutdoor->GetSoundIdByPosition(
@@ -3150,8 +3147,7 @@ void ODM_ProcessPartyActions() {
             }
         }
     }
-    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) <
-        8)  //отключить  звук ходьбы при остановке
+    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)  //отключить  звук ходьбы при остановке
         pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------
     if (!hovering || !not_high_fall)  //  или не высокое падение

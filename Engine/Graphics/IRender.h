@@ -235,11 +235,11 @@ struct RenderHWLContainer {
 };
 
 class IRender {
-    public:
-        inline IRender(Graphics::Configuration *config) {
-            this->config = config;
-        }
-        virtual ~IRender() {}
+ public:
+    explicit inline IRender(Graphics::Configuration *config) {
+        this->config = config;
+    }
+    virtual ~IRender() {}
 
     virtual bool Initialize(OSWindow *window) = 0;
 
@@ -400,39 +400,32 @@ class IRender {
 
     inline IRender() {
         pActiveZBuffer = 0;
-        bUseColoredLights = 0;
-        bTinting = 0;
-        bUsingSpecular = 0;
         uFogColor = 0;
         memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
         hd_water_current_frame = 0;
         hd_water_tile_id = 0;
         pBeforePresentFunction = 0;
-        bFogEnabled = 0;
         memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
         uNumBillboardsToDraw = 0;
     }
 
 
+    inline void ToggleTint() { config->is_tinting = !config->is_tinting; }
+    inline void ToggleColoredLights() { config->is_using_colored_lights = !config->is_using_colored_lights; }
+
+
     Graphics::Configuration *config = nullptr;
     int *pActiveZBuffer;
-    unsigned int bUseColoredLights;
-    unsigned int bTinting;
-    unsigned int bUsingSpecular;
     uint32_t uFogColor;
     unsigned int pHDWaterBitmapIDs[7];
     int hd_water_current_frame;
     int hd_water_tile_id;
     Texture *hd_water_tile_anim[7];
     void (*pBeforePresentFunction)();
-    uint32_t bFogEnabled;
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw;
 
     virtual void WritePixel16(int x, int y, uint16_t color) = 0;
-
-    virtual void ToggleTint() = 0;
-    virtual void ToggleColoredLights() = 0;
 
     virtual unsigned int GetRenderWidth() const = 0;
     virtual unsigned int GetRenderHeight() const = 0;

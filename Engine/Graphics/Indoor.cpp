@@ -2442,8 +2442,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     uCurrentlyLoadedLevelType = LEVEL_Indoor;
 
     pEngine->SetUnderwater(
-        Is_out15odm_underwater()
-    );
+        Is_out15odm_underwater());
 
     if (!_stricmp(pCurrentMapName, "out15.odm") ||
         !_stricmp(pCurrentMapName, "d23.blv"))
@@ -2540,7 +2539,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
                 if (decoration->uLightRadius) {
                     unsigned char r = 255, g = 255, b = 255;
                     if (/*render->pRenderD3D*/ true &&
-                        render->bUseColoredLights) {
+                        render->config->is_using_colored_lights) {
                         r = decoration->uColoredLightRed;
                         g = decoration->uColoredLightGreen;
                         b = decoration->uColoredLightBlue;

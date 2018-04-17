@@ -141,8 +141,7 @@ void Engine::Draw() {
     int v4;  // edi@26
 
     config->SetSaturateFaces(
-        pParty->_497FC5_check_party_perception_against_level()
-    );
+        pParty->_497FC5_check_party_perception_against_level());
 
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;
     pIndoorCameraD3D->sRotationY = pParty->sRotationY;
@@ -421,7 +420,7 @@ bool Engine::_44EEA7() {
         pStru10Instance->bDoNotDrawPortalFrustum = false;
     if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         render->uFogColor = GetLevelFogColor() & 0xFFFFFF;
-    //if (uFlags & GAME_FLAGS_1_400)
+    // if (uFlags & GAME_FLAGS_1_400)
     //    engine_config->SetForceRedraw(true);
     /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
     pMobileLightsStack->uNumLightsActive )
@@ -432,8 +431,7 @@ bool Engine::_44EEA7() {
     v6 = qword_5C6DF0 - field_E10;
     if (qword_5C6DF0 - field_E10 == 1)
         engine_config->SetForceRedraw(true);
-    if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive)
-    {
+    if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
         engine_config->SetForceRedraw(true);
         uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
     }
@@ -442,8 +440,7 @@ bool Engine::_44EEA7() {
 
 //----- (0044EDE4) --------------------------------------------------------
 bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
-    if (engine_config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR)
-    {
+    if (engine_config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -452,8 +449,7 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
 }
 
 bool Engine::AlterGamma_ODM(ODMFace *pFace, int *pColor) {
-    if (engine_config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR)
-    {
+    if (engine_config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -550,8 +546,7 @@ int Engine::_44EC23_saturate_face_odm(Polygon *a2, int *a3, signed int a4) {
 }
 
 //----- (00465C8B) --------------------------------------------------------
-Engine *Engine::Create(Engine_::Configuration *config)
-{
+Engine *Engine::Create(Engine_::Configuration *config) {
     return new Engine(config);
 }
 
@@ -576,8 +571,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     float v14;  // [sp+1Ch] [bp+10h]@8
     float v15;  // [sp+1Ch] [bp+10h]@10
 
-    if (engine_config->CanSaturateFaces() && a2->uAttributes & FACE_CAN_SATURATE_COLOR)
-    {
+    if (engine_config->CanSaturateFaces() && a2->uAttributes & FACE_CAN_SATURATE_COLOR) {
         v4 = (double)a4;
         v11 = v4;
         *a3 |= 2u;
@@ -833,9 +827,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
 
     uLevelMapStatsID = v5;
 
-    pEngine->SetUnderwater(
-        Is_out15odm_underwater()
-    );
+    pEngine->SetUnderwater(Is_out15odm_underwater());
 
     pParty->floor_face_pid = 0;
     if (_stricmp(Str1, "blv"))
@@ -924,7 +916,7 @@ void IntegrityTest() {
     static_assert(sizeof(LightsStack_StationaryLight_) == 0x12C8, "Wrong type size");
     static_assert(sizeof(MobileLight) == 0x12, "Wrong type size");
     static_assert(sizeof(LightsStack_MobileLight_) == 0x1C28, "Wrong type size");
-    //static_assert(sizeof(Engine) == 0xE78, "Wrong type size");
+    // static_assert(sizeof(Engine) == 0xE78, "Wrong type size");
     static_assert(sizeof(stru141_actor_collision_object) == 0xA8, "Wrong type size");
     static_assert(sizeof(ActionQueue) == 0x7C, "Wrong type size");
     static_assert(sizeof(NPCData) == 0x4C, "Wrong type size");
@@ -932,7 +924,7 @@ void IntegrityTest() {
     static_assert(sizeof(BspRenderer) == 0x53740, "Wrong type size");
     static_assert(sizeof(PaletteManager) == 0x267AF0, "Wrong type size");
     static_assert(sizeof(ViewingParams) == 0x26C, "Wrong type size");
-    // static_assert(sizeof(IndoorCamera) == 0x50, "Wrong type size");
+    //  static_assert(sizeof(IndoorCamera) == 0x50, "Wrong type size");
     static_assert(sizeof(Bloodsplat) == 0x28, "Wrong type size");
     static_assert(sizeof(BloodsplatContainer) == 0xA0C, "Wrong type size");
     static_assert(sizeof(TrailParticle) == 0x18, "Wrong type size");
@@ -1031,9 +1023,8 @@ bool MM7_LoadLods(const char *mm7_path) {
 }
 
 //----- (004651F4) --------------------------------------------------------
-bool MM7_Initialize(Graphics::Configuration *render_config, const char *mm7_path) {
-    if (!engine_config->NoCd())
-    {
+bool MM7_Initialize(const char *mm7_path) {
+    if (!engine_config->NoCd()) {
         logger->Info(L"Checking for CD...");
         if (!OS_FindMM7CD(&cMM7GameCDDriveLetter))
             return false;
@@ -1042,23 +1033,21 @@ bool MM7_Initialize(Graphics::Configuration *render_config, const char *mm7_path
 
     srand(OS_GetTime());
 
+    auto render_config = pEngine->ConfigureRender();
+
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
     window = OSWindow::Create(
         L"Might and Magic® Trilogy",
         render_config->render_width,
-        render_config->render_height
-    );
+        render_config->render_height);
 
     render = Graphics::IRenderFactory::Create(render_config);
     if (!render) {
         logger->Warning(L"Render creation failed");
         return false;
     } else {
-        // bool bWindowMode = OS_GetAppInt("startinwindow", false);
-        // uint uDefaultDevice = OS_GetAppInt("D3D Device", 1);
-
-        if (!render->Initialize(window /*, bColoredLights, uLevelOfDetail, bTinting*/)) {
+        if (!render->Initialize(window)) {
             logger->Warning(L"Render failed to initialize");
             return false;
         }
@@ -1067,9 +1056,7 @@ bool MM7_Initialize(Graphics::Configuration *render_config, const char *mm7_path
     if (!render_config->IsFullscreen()) {
         // window->SetWindowedMode(game_width, game_height);
         render->SwitchToWindow();
-    }
-    else
-    {
+    } else {
         __debugbreak();  // check required
         window->SetFullscreenMode();
         render->InitializeFullscreen();
@@ -1426,12 +1413,10 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
 }
 
 
-Engine_::Configuration *ConfigureEngine(const char *cmd)
-{
+Engine_::Configuration *ConfigureEngine(const char *cmd) {
     auto cfg = new Engine_::Configuration();
 
-    if (!cfg->no_walk_sound)
-    {
+    if (!cfg->no_walk_sound) {
         cfg->no_walk_sound = OS_GetAppInt("WalkSound", 1) == 0;
     }
     cfg->always_run = OS_GetAppInt("valAlwaysRun", 0) != 0;
@@ -1440,15 +1425,14 @@ Engine_::Configuration *ConfigureEngine(const char *cmd)
     cfg->show_damage = OS_GetAppInt("ShowDamage", 1) != 0;
     int turn_type = OS_GetAppInt("TurnDelta", 3);
 
-    switch (turn_type)
-    {
+    switch (turn_type) {
         case 1:             // 16x
-            logger->Warning(L"x16 Turn Speed"); // really shouldn't use this mode
+            logger->Warning(L"x16 Turn Speed");  // really shouldn't use this mode
             cfg->turn_speed = 128;
             break;
 
         case 2:             // 32x
-            logger->Warning(L"x32 Turn Speed"); // really shouldn't use this mode
+            logger->Warning(L"x32 Turn Speed");  // really shouldn't use this mode
             cfg->turn_speed = 64;
             break;
 
@@ -1476,16 +1460,14 @@ Engine_::Configuration *ConfigureEngine(const char *cmd)
     return cfg;
 }
 
-const char *FindMm7Directory(char *mm7_path)
-{
+const char *FindMm7Directory(char *mm7_path) {
     bool mm7_installation_found = false;
 
     // standard 1.0 installation
     if (!mm7_installation_found) {
         mm7_installation_found = OS_GetAppString(
             "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
-            mm7_path, 2048
-        );
+            mm7_path, 2048);
 
         if (mm7_installation_found) {
             logger->Info(L"Standard MM7 installation found");
@@ -1496,8 +1478,7 @@ const char *FindMm7Directory(char *mm7_path)
     if (!mm7_installation_found) {
         mm7_installation_found = OS_GetAppString(
             "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-            mm7_path, 2048
-        );
+            mm7_path, 2048);
 
         if (mm7_installation_found) {
             logger->Info(L"GoG MM7 installation found");
@@ -1524,19 +1505,22 @@ const char *FindMm7Directory(char *mm7_path)
 }
 
 
-void Engine::Initialize()
-{
+Graphics::Configuration *Engine::ConfigureRender() {
+    auto render_config = new Graphics::Configuration(
+        config->renderer_name);
+    render_config->is_fullscreen = !config->RunInWindow();
+    render_config->is_tinting = OS_GetAppInt("Tinting", 1) != 0;
+    render_config->is_using_colored_lights = OS_GetAppInt("Colored Lights", 0) != 0;
+
+    return render_config;
+}
+
+void Engine::Initialize() {
     char mm7_path[2048];
     FindMm7Directory(mm7_path);
     SetDataPath(mm7_path);
 
-    auto render_config = new Graphics::Configuration(
-        config->renderer_name
-    );
-    render_config->is_fullscreen = !config->RunInWindow();
-
-    if (!MM7_Initialize(render_config, mm7_path))
-    {
+    if (!MM7_Initialize(mm7_path)) {
         logger->Warning(L"MM7_Initialize: failed");
         if (pEngine != nullptr) {
             pEngine->Deinitialize();

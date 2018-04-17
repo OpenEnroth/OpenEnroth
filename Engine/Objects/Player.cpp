@@ -7094,8 +7094,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
                             if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
-                                !engine_config->NoBloodsplats())
-                            {
+                                !engine_config->NoBloodsplats()) {
                                 int splatRadius = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
                                         ? 10 * actorPtr->uActorRadius
                                         : actorPtr->uActorRadius;
@@ -7269,8 +7268,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     damageType = 4;
                     break;
             }
-            if (!engine_config->NoDamage())
-            {
+            if (!engine_config->NoDamage()) {
                 int reflectedDmg = playerPtr->ReceiveDamage(
                     dmgToReceive, (DAMAGE_TYPE)damageType);
                 if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
@@ -7954,8 +7952,7 @@ void Player::PlaySound(PlayerSpeech speech,
                                 2 * (pickedVariant + 50 * uVoiceID) + 4998;
                 pAudioPlayer->PlaySound(
                     (SoundID)pickedSoundID,
-                    PID(OBJECT_Player, uActiveCharacter + 39), 0, -1, 0, 0
-                );
+                    PID(OBJECT_Player, uActiveCharacter + 39), 0, -1, 0, 0);
             }
         }
     }

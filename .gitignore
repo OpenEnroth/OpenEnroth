@@ -8,3 +8,7 @@ Release
 Build/Visual Studio 2015/Debug
 Build/Visual Studio 2017/Debug
 *.pcx
+
+# Visual Studio Code
+.vscode/*
+*.code-workspace

@@ -12,6 +12,7 @@
 #include "Engine/VectorTypes.h"
 #include "Engine/mm7_data.h"
 
+#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/Polygon.h"
 
 void Engine_DeinitializeAndTerminate(int exitCode);
@@ -85,12 +86,10 @@ struct Engine {
     static void Destroy();
 
  protected:
-    Engine(Engine_::Configuration *config);
-
- protected:
+    explicit Engine(Engine_::Configuration *config);
     virtual ~Engine();
 
-    public:
+ public:
     // void _44E904_gamma_saturation_adjust();
     // bool InitializeGammaController();
         void Initialize();
@@ -112,6 +111,8 @@ struct Engine {
     void Deinitialize();
     void DrawParticles();
     void Draw();
+
+    Graphics::Configuration *ConfigureRender();
 
     inline bool IsUnderwater() const { return config->IsUnderwater(); }
     inline void SetUnderwater(bool is_underwater) { config->SetUnderwater(is_underwater); }

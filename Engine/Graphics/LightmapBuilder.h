@@ -92,7 +92,7 @@ class LightmapBuilder {
     float flt_3C8C2C_lightmaps_brightness;
     float light_radius;
     RenderVertexSoft field_3C8C34[256];
-    int uFlags; // LIGHTMAP_FLAGS_*
+    int uFlags;  // LIGHTMAP_FLAGS_*
 };
 #pragma pack(pop)
 

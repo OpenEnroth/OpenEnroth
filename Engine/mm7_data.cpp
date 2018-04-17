@@ -8,7 +8,7 @@
 #include "OurMath.h"
 #include "MapInfo.h"
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/stru123.h" 
+#include "Engine/stru123.h"
 #include "Engine/stru298.h"
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"

@@ -4,9 +4,9 @@
 #include "Engine/Graphics/Configuration.h"
 
 class RenderOpenGL : public RenderBase {
-    public:
-        RenderOpenGL(Graphics::Configuration *config);
-        virtual ~RenderOpenGL();
+ public:
+    explicit RenderOpenGL(Graphics::Configuration *config);
+    virtual ~RenderOpenGL();
 
     virtual bool Initialize(OSWindow *window);
 
@@ -154,11 +154,6 @@ class RenderOpenGL : public RenderBase {
 
  public:
     virtual void WritePixel16(int x, int y, uint16_t color);
-
-    virtual void ToggleTint() { bTinting = !bTinting; }
-    virtual void ToggleColoredLights() {
-        bUseColoredLights = !bUseColoredLights;
-    }
 
     virtual unsigned int GetRenderWidth() const;
     virtual unsigned int GetRenderHeight() const;

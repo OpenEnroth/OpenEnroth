@@ -31,9 +31,7 @@
 #include "Platform/OsWindow.h"
 
 RenderOpenGL::RenderOpenGL(Graphics::Configuration *config)
-    : RenderBase(config)
-{
-    bFogEnabled = false;
+    : RenderBase(config) {
 }
 RenderOpenGL::~RenderOpenGL() {}
 
@@ -125,8 +123,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         */
     } else {
         if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
-            _4D864C_force_sw_render_rules && engine_config->Flag1_2())
-        {
+            _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
             glEnable(GL_TEXTURE_2D);
             glDisable(GL_BLEND);
             glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
@@ -156,7 +153,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                     ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
                     ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
                     ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                    bUsingSpecular
+                    config->is_using_specular
                         ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f
                         : 1.0f);
 
@@ -960,8 +957,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     }
     uNumBillboardsToDraw = 0;
 
-    if (bFogEnabled) {
-        bFogEnabled = false;
+    if (config->is_using_fog) {
+        config->is_using_fog = false;
         glEnable(GL_FOG);
         glFogi(GL_FOG_MODE, GL_EXP);
 
@@ -981,8 +978,8 @@ void RenderOpenGL::SetBillboardBlendOptions(
     RenderBillboardD3D::OpacityType a1) {
     switch (a1) {
         case RenderBillboardD3D::Transparent: {
-            if (bFogEnabled) {
-                bFogEnabled = false;
+            if (config->is_using_fog) {
+                config->is_using_fog = false;
                 glEnable(GL_FOG);
                 glFogi(GL_FOG_MODE, GL_EXP);
 
@@ -999,9 +996,9 @@ void RenderOpenGL::SetBillboardBlendOptions(
         case RenderBillboardD3D::Opaque_1:
         case RenderBillboardD3D::Opaque_2:
         case RenderBillboardD3D::Opaque_3: {
-            if (bUsingSpecular) {
-                if (!bFogEnabled) {
-                    bFogEnabled = true;
+            if (config->is_using_specular) {
+                if (!config->is_using_fog) {
+                    config->is_using_fog = true;
                     glDisable(GL_FOG);
                 }
             }
@@ -1630,8 +1627,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
     pEngine->AlterGamma_ODM(a4, &a2);
 
     if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
-        _4D864C_force_sw_render_rules && engine_config->Flag1_2())
-    {
+        _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_BLEND);
         glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
@@ -1661,7 +1657,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
                 d3d_vertex_buffer[i].diffuse = outline_color;
             }
 
-            if (this->bUsingSpecular)
+            if (config->is_using_specular)
                 d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(
                     0, 0, VertexRenderList[i].vWorldViewPosition.x);
             else
@@ -1676,7 +1672,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
                 ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
                 ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
                 ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                bUsingSpecular
+                config->is_using_specular
                     ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f
                     : 1.0f);
 
@@ -1786,7 +1782,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
 }
 
 bool RenderOpenGL::SwitchToWindow() {
-    //pParty->uFlags |= PARTY_FLAGS_1_0002;
+    // pParty->uFlags |= PARTY_FLAGS_1_0002;
     pViewport->SetFOV(_6BE3A0_fov);
     CreateZBuffer();
 

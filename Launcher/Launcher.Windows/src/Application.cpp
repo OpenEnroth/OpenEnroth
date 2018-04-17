@@ -1,4 +1,4 @@
-#include "Application.h"
+#include "src/Application.h"
 
 #include <Shlwapi.h>
 #include <Windows.h>
@@ -9,18 +9,16 @@
 #include <string>
 #include <vector>
 
-#include "../resource.h"
+#include "resource.h"
 
-int __stdcall BrowseFolderCallback(HWND hwnd, UINT msg, LPARAM lparam, LPARAM data)
-{
+int __stdcall BrowseFolderCallback(HWND hwnd, UINT msg, LPARAM lparam, LPARAM data) {
     if (msg == BFFM_INITIALIZED) {
-        SendMessage(hwnd, BFFM_SETSELECTION, true, data);
+        SendMessageA(hwnd, BFFM_SETSELECTION, true, data);
     }
     return 0;
 }
 
-INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam,
-                             LPARAM lparam) {
+INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     Application *app = (Application *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
     switch (msg) {
         case WM_INITDIALOG: {
@@ -31,8 +29,7 @@ INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam,
                 hwnd,
                 IDC_RADIO_RENDERER_DIRECTDRAW,
                 IDC_RADIO_RENDERER_OPENGL,
-                IDC_RADIO_RENDERER_DIRECTDRAW
-            );
+                IDC_RADIO_RENDERER_DIRECTDRAW);
             break;
         }
 
@@ -62,12 +59,9 @@ INT_PTR __stdcall DialogProc(HWND hwnd, UINT msg, WPARAM wparam,
 
                 app->SetMm7InstallPath(std::string(mm7_install_dir));
 
-                if (IsDlgButtonChecked(hwnd, IDC_RADIO_RENDERER_DIRECTDRAW) == BST_CHECKED)
-                {
+                if (IsDlgButtonChecked(hwnd, IDC_RADIO_RENDERER_DIRECTDRAW) == BST_CHECKED) {
                     app->SetRenderer(std::string("DirectDraw"));
-                }
-                else if (IsDlgButtonChecked(hwnd, IDC_RADIO_RENDERER_OPENGL) == BST_CHECKED)
-                {
+                } else if (IsDlgButtonChecked(hwnd, IDC_RADIO_RENDERER_OPENGL) == BST_CHECKED) {
                     app->SetRenderer(std::string("OpenGL"));
                 }
 
@@ -126,18 +120,17 @@ bool Application::ValidateConfig(std::string &out_errors) {
 void Application::Run() {
     CoInitializeEx(0, COINIT_APARTMENTTHREADED);  // SHBrowseForFolder
 
-    auto module = GetModuleHandle(nullptr);
+    auto module = GetModuleHandleA(nullptr);
     HWND dialog = CreateDialogParamA(module, MAKEINTRESOURCEA(IDD_FORMVIEW),
                                      nullptr, DialogProc, (LPARAM)this);
     HICON icon =
-        (HICON)LoadImage(module, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 0, 0,
+        (HICON)LoadImageA(module, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 0, 0,
                          LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
-    SendMessage(dialog, WM_SETICON, ICON_BIG, (LPARAM)icon);
+    SendMessageA(dialog, WM_SETICON, ICON_BIG, (LPARAM)icon);
     SendDlgItemMessageA(dialog, IDC_EDIT_MM7_INSTALL_DIR, WM_SETTEXT, 0,
                         (LPARAM)config.mm7_install_path.c_str());
 
     MSG msg;
-    // while (PeekMessageA(&msg, dialog, 0, 0, PM_REMOVE))
     while (GetMessageA(&msg, dialog, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessageA(&msg);
@@ -158,6 +151,5 @@ void Application::Run() {
     CreateProcessA(
         womm_filename.c_str(), cmd.data(), nullptr, nullptr, FALSE,
         NORMAL_PRIORITY_CLASS, nullptr,
-        config.mm7_install_path.c_str(), &si, &pi
-    );
+        config.mm7_install_path.c_str(), &si, &pi);
 }

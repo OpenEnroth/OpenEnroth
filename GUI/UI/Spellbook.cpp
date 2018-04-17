@@ -188,8 +188,8 @@ void GUIWindow_Spellbook::Update() {
 
             for (unsigned int i = 1; i <= 11; ++i) {
                 if (player->_achieved_awards_bits[(11 * player->lastOpenedSpellbookPage) + i + 63] ||
-                    engine_config->debug_all_magic)
-                {  // this should check if oplayer knows spell
+                    engine_config->debug_all_magic) {
+                        // this should check if oplayer knows spell
                     if (SBPageSSpellsTextureList[i]) {
                         if (quick_spell_at_page == i)
                             pTexture = SBPageCSpellsTextureList[i];
@@ -286,8 +286,7 @@ void LoadSpellbook(unsigned int spell_school) {
 
     for (unsigned int i = 1; i <= 11; ++i) {
         if (pPlayers[uActiveCharacter]->spellbook.pChapters[spell_school].bIsSpellAvailable[i - 1] ||
-            engine_config->debug_all_magic)
-        {
+            engine_config->debug_all_magic) {
             char pContainer[20];
             sprintf(pContainer, "SB%sS%02d",
                     spellbook_texture_filename_suffices[spell_school],

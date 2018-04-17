@@ -67,8 +67,7 @@ void GetDefaultConfig(ApplicationConfig &config) {
 
     bool gog_found = OS_GetAppString(
         "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-        mm7_path, sizeof(mm7_path)
-    );
+        mm7_path, sizeof(mm7_path));
     if (gog_found) {
         config.mm7_install_type = "GoG MM7 installation";
         config.mm7_install_path = mm7_path;

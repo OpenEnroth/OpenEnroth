@@ -287,18 +287,13 @@ void GameMenu_EventLoop() {
                 continue;
 
             case UIMSG_ChangeMusicVolume: {
-                if (param == 4)
-                {
+                if (param == 4) {
                     engine_config->music_level -= 1;
                     new OnButtonClick2(243, 216, 0, 0, (int)pBtn_SliderLeft, String(), false);
-                }
-                else if (param == 5)
-                {
+                } else if (param == 5) {
                     engine_config->music_level += 1;
                     new OnButtonClick2(435, 216, 0, 0, (int)pBtn_SliderRight, String(), false);
-                }
-                else
-                {
+                } else {
                     Point pt = pMouse->GetCursorPos();
                     engine_config->music_level = (pt.x - 263) / 17;  // for mouse
                 }
@@ -315,18 +310,13 @@ void GameMenu_EventLoop() {
             }
 
             case UIMSG_ChangeSoundVolume: {
-                if (param == 4)
-                {
+                if (param == 4) {
                     engine_config->sound_level -= 1;
                     new OnButtonClick2(243, 162, 0, 0, (int)pBtn_SliderLeft, String(), false);
-                }
-                else if (param == 5)
-                {
+                } else if (param == 5) {
                     engine_config->sound_level += 1;
                     new OnButtonClick2(435, 162, 0, 0, (int)pBtn_SliderRight, String(), false);
-                }
-                else
-                {
+                } else {
                     Point pt = pMouse->GetCursorPos();
                     engine_config->sound_level = (pt.x - 263) / 17;
                 }
@@ -353,21 +343,17 @@ void GameMenu_EventLoop() {
                 engine_config->ToggleShowDamage();
                 continue;
             case UIMSG_ChangeVoiceVolume: {
-                if (param == 4)
-                {
+                if (param == 4) {
                     engine_config->voice_level -= 1;
                     new OnButtonClick2(243, 270, 0, 0, (int)pBtn_SliderLeft, String(), false);
-                }
-                else if (param == 5)
-                {
+                } else if (param == 5) {
                     engine_config->voice_level += 1;
                     new OnButtonClick2(435, 270, 0, 0, (int)pBtn_SliderRight, String(), false);
-                }
-                else
-                {
+                } else {
                     Point pt = pMouse->GetCursorPos();
                     engine_config->voice_level = (pt.x - 263) / 17;
                 }
+
                 if (engine_config->voice_level < 0)
                     engine_config->voice_level = 0;
                 if (engine_config->voice_level > 9)
@@ -461,9 +447,8 @@ void GameMenu_EventLoop() {
                 } else if (current_screen_type == SCREEN_VIDEO_OPTIONS) {
                     // if ( render->pRenderD3D )
                     {
-                        OS_SetAppInt("Colored Lights",
-                                     render->bUseColoredLights);
-                        OS_SetAppInt("Tinting", render->bTinting);
+                        OS_SetAppInt("Colored Lights", render->config->is_using_colored_lights);
+                        OS_SetAppInt("Tinting", render->config->is_tinting);
                         OS_SetAppInt("Bloodsplats", engine_config->NoBloodsplats() ? 0 : 1);
                     }
 

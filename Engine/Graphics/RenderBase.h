@@ -4,10 +4,10 @@
 #include "Engine/Graphics/IRender.h"
 
 class RenderBase : public IRender {
-    public:
-        RenderBase(Graphics::Configuration *config)
-            : IRender(config)
-        {}
+ public:
+    explicit RenderBase(Graphics::Configuration *config)
+        : IRender(config) {
+    }
 
     virtual void TransformBillboardsAndSetPalettesODM();
     virtual void DrawSpriteObjects_ODM();

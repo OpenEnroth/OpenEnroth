@@ -6,10 +6,8 @@
 using Graphics::IRenderFactory;
 using Graphics::Configuration;
 
-IRender *IRenderFactory::Create(Configuration *config)
-{
-    switch (config->renderer_type)
-    {
+IRender *IRenderFactory::Create(Configuration *config) {
+    switch (config->renderer_type) {
         case RendererType::DirectDraw:
             return new Render(config);
 

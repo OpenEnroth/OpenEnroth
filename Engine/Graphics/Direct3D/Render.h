@@ -16,9 +16,9 @@ class RenderD3D;
 class Image;
 
 class Render : public RenderBase {
-    public:
-        Render(Graphics::Configuration *config);
-        virtual ~Render();
+ public:
+    explicit Render(Graphics::Configuration *config);
+    virtual ~Render();
 
     virtual bool Initialize(OSWindow *window);
 
@@ -164,11 +164,6 @@ class Render : public RenderBase {
  public:
     virtual void WritePixel16(int x, int y, uint16_t color);
 
-    virtual void ToggleTint() { bTinting = !bTinting; }
-    virtual void ToggleColoredLights() {
-        bUseColoredLights = !bUseColoredLights;
-    }
-
     virtual unsigned int GetRenderWidth() const;
     virtual unsigned int GetRenderHeight() const;
 
@@ -193,7 +188,6 @@ class Render : public RenderBase {
     RenderHWLContainer pD3DBitmaps;
     RenderHWLContainer pD3DSprites;
     unsigned int bRequiredTextureStagesAvailable;
-    unsigned int uLevelOfDetail;
     unsigned int uMaxDeviceTextureDim;
     unsigned int uMinDeviceTextureDim;
 
