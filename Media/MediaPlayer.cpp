@@ -1,13 +1,13 @@
 #include "Media/MediaPlayer.h"
 
+#include <algorithm>
 #include <cassert>
 #include <chrono>
-#include <queue>
-#include <memory>
-#include <algorithm>
-#include <map>
-#include <vector>
 #include <deque>
+#include <map>
+#include <memory>
+#include <queue>
+#include <vector>
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
@@ -69,27 +69,31 @@ class AVStreamWrapper {
     }
 
     bool open(AVFormatContext *format_ctx, AVMediaType type_) {
-        stream_idx = av_find_best_stream(format_ctx, type_, -1, -1, nullptr, 0);
-        if (stream_idx >= 0) {
-            stream = format_ctx->streams[stream_idx];
-            dec_ctx = stream->codec;
-
-            // Find the decoder for the video stream
-            dec = avcodec_find_decoder(dec_ctx->codec_id);
-            if (dec) {
-                // Open codec
-                if (avcodec_open2(dec_ctx, dec, nullptr) >= 0) {
-                    type = type_;
-                    return true;
-                }
-                fprintf(stderr, "ffmpeg: Could not open codec\n");
-                return false;
-            }
-            fprintf(stderr, "ffmpeg: Unable to open codec\n");
+        stream_idx = av_find_best_stream(format_ctx, type_, -1,
+                                         -1, &dec, 0);
+        if (stream_idx < 0) {
+            Close();
+            fprintf(stderr, "ffmpeg: Unable to find audio stream\n");
             return false;
         }
-        fprintf(stderr, "ffmpeg: Didn't find a stream\n");
-        return false;
+
+        stream = format_ctx->streams[stream_idx];
+        dec_ctx = avcodec_alloc_context3(dec);
+        if (dec_ctx == nullptr) {
+            Close();
+            return false;
+        }
+
+        if (avcodec_parameters_to_context(dec_ctx, stream->codecpar) < 0) {
+            Close();
+            return false;
+        }
+        if (avcodec_open2(dec_ctx, dec, nullptr) < 0) {
+            Close();
+            return false;
+        }
+
+        return true;
     }
 
     AVMediaType type;
@@ -97,6 +101,7 @@ class AVStreamWrapper {
     AVStream *stream;
     AVCodec *dec;
     AVCodecContext *dec_ctx;
+    std::queue<PMemBuffer, std::deque<PMemBuffer>> queue;
 };
 
 class AVAudioStream : public AVStreamWrapper {
@@ -126,18 +131,35 @@ class AVAudioStream : public AVStreamWrapper {
         PMemBuffer result;
         AVFrame *frame = av_frame_alloc();
 
-        int decoded = 0;
-        if (avcodec_decode_audio4(dec_ctx, frame, (int *)&decoded, avpacket) >=
-            0) {
-            if (decoded > 0) {
-                result = AllocMemBuffer(frame->nb_samples * 4);
-                uint8_t *dst_channels[8] = {0};
-                dst_channels[0] = (uint8_t *)result->get_data();
+        if (!queue.empty()) {
+            result = queue.front();
+            queue.pop();
+        }
+
+        if (avcodec_send_packet(dec_ctx, avpacket) >= 0) {
+            int res = 0;
+            while (res >= 0) {
+                res = avcodec_receive_frame(dec_ctx, frame);
+                if (res == AVERROR(EAGAIN) || res == AVERROR_EOF) {
+                    break;
+                }
+                if (res < 0) {
+                    av_frame_free(&frame);
+                    return result;
+                }
+                PMemBuffer tmp_buf = AllocMemBuffer(
+                    frame->nb_samples * 2 * 2);
+                uint8_t *dst_channels[8] = { 0 };
+                dst_channels[0] = (uint8_t *)tmp_buf->get_data();
                 int got_samples = swr_convert(
                     converter, dst_channels, frame->nb_samples,
-                    (const uint8_t **)frame->data, frame->nb_samples);
-                if (got_samples <= 0) {
-                    result = nullptr;
+                    (const uint8_t**)frame->data, frame->nb_samples);
+                if (got_samples > 0) {
+                    if (!result) {
+                        result = tmp_buf;
+                    } else {
+                        queue.push(tmp_buf);
+                    }
                 }
             }
         }
@@ -167,8 +189,8 @@ class AVVideoStream : public AVStreamWrapper {
         width = dec_ctx->width;
         height = dec_ctx->height;
 
-        frame_len = av_q2d(dec_ctx->time_base) * 1000.;
-        frames_per_second = 1. / av_q2d(dec_ctx->time_base);
+        frame_len = av_q2d(stream->time_base) * 1000.;
+        frames_per_second = 1. / av_q2d(stream->time_base);
 
         converter = sws_getContext(
             dec_ctx->width, dec_ctx->height, dec_ctx->pix_fmt, width, height,
@@ -181,25 +203,41 @@ class AVVideoStream : public AVStreamWrapper {
         PMemBuffer result;
         AVFrame *frame = av_frame_alloc();
 
-        int frameFinished = 0;
-        do {
-            if (avcodec_decode_video2(dec_ctx, frame, &frameFinished,
-                                      avpacket) < 0) {
-                assert(false);
-            }
-        } while (!frameFinished);
-
-        int linesizes[4] = {0, 0, 0, 0};
-        if (av_image_fill_linesizes(linesizes, AV_PIX_FMT_RGB32, width) < 0) {
-            assert(false);
+        if (!queue.empty()) {
+            result = queue.front();
+            queue.pop();
         }
-        uint8_t *data[4] = {nullptr, nullptr, nullptr, nullptr};
-        result = AllocMemBuffer(frame->height * linesizes[0] * 2);
-        data[0] = (uint8_t *)result->get_data();
 
-        if (sws_scale(converter, frame->data, frame->linesize, 0, frame->height,
-                      data, linesizes) < 0) {
-            assert(false);
+        if (avcodec_send_packet(dec_ctx, avpacket) >= 0) {
+            int res = 0;
+            while (res >= 0) {
+                res = avcodec_receive_frame(dec_ctx, frame);
+                if (res == AVERROR(EAGAIN) || res == AVERROR_EOF) {
+                    break;
+                }
+                if (res < 0) {
+                    av_frame_free(&frame);
+                    return result;
+                }
+                int linesizes[4] = { 0, 0, 0, 0 };
+                if (av_image_fill_linesizes(linesizes, AV_PIX_FMT_RGB32, width) < 0) {
+                    assert(false);
+                }
+                uint8_t *data[4] = { nullptr, nullptr, nullptr, nullptr };
+                PMemBuffer tmp_buf = AllocMemBuffer(frame->height * linesizes[0] * 2);
+                data[0] = (uint8_t *)tmp_buf->get_data();
+
+                if (sws_scale(converter, frame->data, frame->linesize, 0, frame->height,
+                    data, linesizes) < 0) {
+                    assert(false);
+                }
+
+                if (!result) {
+                    result = tmp_buf;
+                } else {
+                    queue.push(tmp_buf);
+                }
+            }
         }
 
         av_frame_free(&frame);
@@ -304,8 +342,6 @@ class Movie : public IMovie {
                 2, audio.dec_ctx->sample_rate, 2);
         }
 
-        avpacket = av_packet_alloc();
-
         return true;
     }
 
@@ -370,6 +406,8 @@ class Movie : public IMovie {
             }
         }
 
+        AVPacket *avpacket = av_packet_alloc();
+
         // keep reading packets until we hit the end or find a video packet
         do {
             if (av_read_frame(format_ctx, avpacket) < 0) {
@@ -397,6 +435,8 @@ class Movie : public IMovie {
             }
         } while (avpacket->stream_index != video.stream_idx ||
                  avpacket->pts != desired_frame_number);
+
+        av_packet_free(&avpacket);
 
         return video.last_frame;
     }
@@ -451,8 +491,6 @@ class Movie : public IMovie {
     unsigned int height;
     AVFormatContext *format_ctx;
     double playback_time;
-
-    AVPacket *avpacket;
 
     AVAudioStream audio;
     unsigned char *ioBuffer;

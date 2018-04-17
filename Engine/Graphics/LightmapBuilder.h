@@ -1,5 +1,7 @@
 #pragma once
+
 #include <vector>
+
 #include "Engine/Graphics/IRender.h"
 
 struct LightsStack_StationaryLight_;

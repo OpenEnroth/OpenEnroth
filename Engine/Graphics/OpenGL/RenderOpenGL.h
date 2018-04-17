@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Engine/Graphics/RenderBase.h"
 #include "Engine/Graphics/Configuration.h"
+#include "Engine/Graphics/RenderBase.h"
 
 class RenderOpenGL : public RenderBase {
  public:

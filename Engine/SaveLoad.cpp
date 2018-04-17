@@ -8,6 +8,7 @@
 #undef DrawText
 
 #include "Engine/Engine.h"
+#include "Engine/Configuration.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"

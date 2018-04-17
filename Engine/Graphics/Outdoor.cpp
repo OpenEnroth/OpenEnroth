@@ -12,11 +12,11 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/ZlibWrapper.h"
 #include "Engine/stru123.h"
-#include "Engine/Tables/TileFrameTable.h"
 
 #include "Engine/Serialization/LegacyImages.h"
 
@@ -2580,8 +2580,7 @@ void ODM_ProcessPartyActions() {
                         pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
                         pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0) {
                             // *(int *)&pParty->pArtifactsFound[6972 *
-                                  // pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster +
-                                  // 10] > 0 )
+                            // pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster + 10] > 0 )
                         party_new_Z -= 30;
                         v113 -= 30;
                         pParty->uFallSpeed = 0;
@@ -3129,7 +3128,7 @@ void ODM_ProcessPartyActions() {
                         WorldPosToGridCellZ(pParty->vPosition.y) - 1, 1);
                     pAudioPlayer->PlaySound((SoundID)v87, 804, 1, -1, 0, 0);  //бег по земле 56
                 }
-                pParty->walk_sound_timer = 96;  //таймер для бега
+                pParty->walk_sound_timer = 96;  // таймер для бега
             }
         } else if (party_walking_flag && (!hovering || not_high_fall)) {
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8) {
@@ -3143,10 +3142,11 @@ void ODM_ProcessPartyActions() {
                         WorldPosToGridCellZ(pParty->vPosition.y) - 1, 0);
                     pAudioPlayer->PlaySound((SoundID)v87, 804, 1, -1, 0, 0);  // хождение по земле
                 }
-                pParty->walk_sound_timer = 144;  //таймер для ходьбы
+                pParty->walk_sound_timer = 144;  // таймер для ходьбы
             }
         }
     }
+
     if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)  //отключить  звук ходьбы при остановке
         pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------

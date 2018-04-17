@@ -2,6 +2,7 @@
 
 #include <d3d.h>
 #include <ddraw.h>
+
 #include <algorithm>
 
 #include "Engine/Engine.h"
@@ -17,6 +18,7 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Direct3D/TextureD3D.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -24,13 +26,12 @@
 #include "Engine/Graphics/Lights.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/PCX.h"
+#include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Graphics/Sprites.h"
 
 #include "Engine/Graphics/Direct3D/RenderD3D.h"
 

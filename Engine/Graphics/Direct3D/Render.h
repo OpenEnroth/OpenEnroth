@@ -2,6 +2,7 @@
 
 #include <d3d.h>
 #include <ddraw.h>
+
 #include <GdiPlus.h>
 #undef DrawText
 

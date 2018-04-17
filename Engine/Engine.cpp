@@ -1,9 +1,10 @@
 #include <direct.h>
 #include <io.h>
+
 #include <algorithm>
 
-#include "Engine/Engine.h"
 #include "Engine/Configuration.h"
+#include "Engine/Engine.h"
 #include "Engine/Events.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
@@ -54,17 +55,17 @@
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
 
-#include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
-#include "GUI/GUIProgressBar.h"
 #include "GUI/GUIFont.h"
+#include "GUI/GUIProgressBar.h"
+#include "GUI/GUIWindow.h"
 #include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIMainMenu.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UISaveLoad.h"
-#include "GUI/UI/UIMainMenu.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -1514,6 +1515,7 @@ Graphics::Configuration *Engine::ConfigureRender() {
 
     return render_config;
 }
+
 
 void Engine::Initialize() {
     char mm7_path[2048];

@@ -38,8 +38,8 @@
 #include "Media/MediaPlayer.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIWindow.h"
 #include "GUI/GUIProgressBar.h"
+#include "GUI/GUIWindow.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 #include "GUI/UI/Books/CalendarBook.h"
 #include "GUI/UI/Books/JournalBook.h"
@@ -882,7 +882,7 @@ void Game_EventLoop() {
                             pMapStats->GetMapInfo(pCurrentMapName);
 
                         bNoNPCHiring = 0;
-\
+
                         pEngine->SetUnderwater(
                             Is_out15odm_underwater());
 

@@ -5,7 +5,6 @@
 #include "Engine/Graphics/IRenderFactory.h"
 
 
-
 #define GAME_FLAGS_1_01                         0x01     // do not render terrain / bmodels(odm), lightmaps render bmodels in white(blv)
 #define GAME_FLAGS_1_02                         0x02     // only 0th lod, no lightning
 #define GAME_FLAGS_1_04                         0x04     // draw lightmaps / decals debug outlines
@@ -31,9 +30,7 @@
 #define DEBUG_SETTINGS_NO_DECORATIONS   0x0008
 #define DEBUG_SETTINGS_NO_DAMAGE        0x0010
 
-
 namespace Engine_ {
-
 class Configuration {
  public:
     void MergeCommandLine(const std::string &cmd);
@@ -73,7 +70,6 @@ class Configuration {
            void SetForceRedraw(bool redraw);
     inline bool AllowDynamicBrigtness() const { return flags2 & GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS; }
     inline bool RunInWindow() const { return dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_RUN_IN_WIDOW; }
-
 
     // DEBUG_SETTINGS_*
     int dword_6BE368_debug_settings_2 = DEBUG_SETTINGS_RUN_IN_WIDOW;
