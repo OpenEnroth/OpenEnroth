@@ -38,8 +38,8 @@
 #include "Media/MediaPlayer.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIWindow.h"
 #include "GUI/GUIProgressBar.h"
+#include "GUI/GUIWindow.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 #include "GUI/UI/Books/CalendarBook.h"
 #include "GUI/UI/Books/JournalBook.h"
@@ -882,10 +882,8 @@ void Game_EventLoop() {
                             pMapStats->GetMapInfo(pCurrentMapName);
 
                         bNoNPCHiring = 0;
-\
-                        pEngine->SetUnderwater(
-                            Is_out15odm_underwater()
-                        );
+
+                        pEngine->SetUnderwater(Is_out15odm_underwater());
 
                         if (Is_out15odm_underwater() ||
                             !_stricmp(pCurrentMapName, "d47.blv"))
@@ -1902,8 +1900,7 @@ void Game_EventLoop() {
                     if (!byte_506550 || !quick_spell_at_page) {
                         pPlayer10->uQuickSpell = 0;
                         quick_spell_at_page = 0;
-                        pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 
-                                                0);
+                        pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0);
                         continue;
                     }
                     pPlayers[uActiveCharacter]->uQuickSpell =
@@ -1927,8 +1924,7 @@ void Game_EventLoop() {
                     uAction = 0;
                     for (uint i = 0; i < 9; i++) {
                         if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i] ||
-                            engine_config->debug_all_magic)
-                        {
+                            engine_config->debug_all_magic) {
                             if (pPlayers[uActiveCharacter]->lastOpenedSpellbookPage == i)
                                 uAction = skill_count;
                             v217[skill_count++] = i;
@@ -1936,8 +1932,7 @@ void Game_EventLoop() {
                     }
                     if (!skill_count) {  //нет скиллов
                         pAudioPlayer->PlaySound(
-                            (SoundID)(rand() % 2 + SOUND_TurnPageU), 0, 0, -1, 0, 0
-                        );
+                            (SoundID)(rand() % 2 + SOUND_TurnPageU), 0, 0, -1, 0, 0);
                     } else {
                         if (OS_IfShiftPressed()) {
                             --uAction;
@@ -1967,8 +1962,7 @@ void Game_EventLoop() {
                     //  uNumSeconds = (unsigned int)pPlayers[uActiveCharacter];
                     Player *player = pPlayers[uActiveCharacter];
                     if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
-                        || engine_config->debug_all_magic)
-                    {
+                        || engine_config->debug_all_magic) {
                         if (quick_spell_at_page - 1 == uMessageParam) {
                             pGUIWindow_CurrentMenu->Release();  // spellbook close
                             pEventTimer->Resume();

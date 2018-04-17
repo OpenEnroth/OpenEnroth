@@ -35,9 +35,9 @@
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
 
-#include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+#include "GUI/GUIWindow.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIHouses.h"
@@ -738,50 +738,39 @@ void GUIWindow_GameOptions::Update() {
         case 64:
             render->DrawTextureAlphaNew(
                 BtnTurnCoord[1] / 640.0f, 270 / 480.0f,
-                options_menu_skin.uTextureID_TurnSpeed[1]
-            );
+                options_menu_skin.uTextureID_TurnSpeed[1]);
             break;
         case 128:
             render->DrawTextureAlphaNew(
                 BtnTurnCoord[2] / 640.0f, 270 / 480.0f,
-                options_menu_skin.uTextureID_TurnSpeed[2]
-            );
+                options_menu_skin.uTextureID_TurnSpeed[2]);
             break;
         default:
             render->DrawTextureAlphaNew(
                 BtnTurnCoord[0] / 640.0f, 270 / 480.0f,
-                options_menu_skin.uTextureID_TurnSpeed[0]
-            );
+                options_menu_skin.uTextureID_TurnSpeed[0]);
             break;
     }
 
-    if (!engine_config->no_walk_sound)
-    {
+    if (!engine_config->no_walk_sound) {
         render->DrawTextureAlphaNew(
             20 / 640.0f, 303 / 480.0f,
-            options_menu_skin.uTextureID_WalkSound
-        );
+            options_menu_skin.uTextureID_WalkSound);
     }
-    if (engine_config->show_damage)
-    {
+    if (engine_config->show_damage) {
         render->DrawTextureAlphaNew(
             128 / 640.0f, 303 / 480.0f,
-            options_menu_skin.uTextureID_ShowDamage
-        );
+            options_menu_skin.uTextureID_ShowDamage);
     }
-    if (engine_config->flip_on_exit)
-    {
+    if (engine_config->flip_on_exit) {
         render->DrawTextureAlphaNew(
             128 / 640.0f, 325 / 480.0f,
-            options_menu_skin.uTextureID_FlipOnExit
-        );
+            options_menu_skin.uTextureID_FlipOnExit);
     }
-    if (engine_config->always_run)
-    {
+    if (engine_config->always_run) {
         render->DrawTextureAlphaNew(
             20 / 640.0f, 325 / 480.0f,
-            options_menu_skin.uTextureID_AlwaysRun
-        );
+            options_menu_skin.uTextureID_AlwaysRun);
     }
 
     render->DrawTextureAlphaNew(

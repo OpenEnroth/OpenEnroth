@@ -1,7 +1,10 @@
 #pragma once
+
 #include <array>
+
 #include "Engine/Objects/Items.h"
-enum Condition : unsigned __int32 {
+
+enum Condition : uint32_t {
     Condition_Cursed = 0,
     Condition_Weak = 1,
     Condition_Sleep = 2,

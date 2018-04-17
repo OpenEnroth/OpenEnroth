@@ -866,8 +866,7 @@ unsigned __int16 *PaletteManager::_47C33F_get_palette(int a1, char a2) {
 }
 
 //----- (0048A959) --------------------------------------------------------
-int ReplaceHSV(unsigned int uColor, float h_replace, float s_replace, float v_replace)
-{
+int ReplaceHSV(unsigned int uColor, float h_replace, float s_replace, float v_replace) {
     float r = ((uColor & 0x00FF0000) >> 16) / 255.0f,
           g = ((uColor & 0x0000FF00) >> 8) / 255.0f,
           b = (uColor & 0x000000FF) / 255.0f;
