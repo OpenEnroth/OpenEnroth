@@ -10,6 +10,8 @@ Might and Magic VI-VIII engine remake using original data & code
 
 # Coding style
 For the C++ code we are following the [Google C++ Style Guide](http://google.github.io/styleguide/cppguide.html).
+Source code is automatically checked against it, and Pull Request will fail if you don't follow it.
+For style check on Windows platform, you can use [Visual Studio Code cpplint plugin](https://marketplace.visualstudio.com/items?itemName=mine.cpplint).
 
 # Current build status
 Master: [![Build Status](https://ci.appveyor.com/api/projects/status/nlno5vo74jf6rnt3/branch/master?svg=true)](https://ci.appveyor.com/project/gp-alex/world-of-might-and-magic)
