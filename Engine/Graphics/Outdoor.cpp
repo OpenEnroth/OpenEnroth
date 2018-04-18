@@ -1525,7 +1525,7 @@ int OutdoorLocation::_47ED83(signed int a2, signed int a3) {
 //----- (0047EDB3) --------------------------------------------------------
 int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
                                                   signed int sY) {
-    assert(sX < 128 && sY < 128);
+//    assert(sX < 128 && sY < 128);  // patry can scuba dive
     int v3;  // esi@5
 
     v3 = this->pTerrain.pTilemap[sY * 128 + sX];
@@ -1537,7 +1537,7 @@ int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
 
 //----- (0047EE16) --------------------------------------------------------
 int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
-    assert(sX < 128 && sZ < 128);
+//    assert(sX < 128 && sZ < 128);  // patry can scuba dive
 
     return 32 * pTerrain.pHeightmap[sZ * 128 + sX];
 }

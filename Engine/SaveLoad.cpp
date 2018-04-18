@@ -7,8 +7,8 @@
 #undef PlaySound
 #undef DrawText
 
-#include "Engine/Engine.h"
 #include "Engine/Configuration.h"
+#include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -199,7 +199,7 @@ void LoadGame(unsigned int uSlot) {
             break;
         }
     }
-
+/*
     for (uint i = 0; i < 4; ++i) {
         if (pParty->pPlayers[i].uQuickSpell) {
             AA1058_PartyQuickSpellSound[i].AddPartySpellSound(
@@ -222,7 +222,7 @@ void LoadGame(unsigned int uSlot) {
             }
         }
     }
-
+*/
     current_screen_type = SCREEN_GAME;
 
     viewparams->bRedrawGameUI = true;

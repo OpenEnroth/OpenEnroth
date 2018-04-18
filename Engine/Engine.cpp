@@ -2073,7 +2073,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     pParty->uCurrentHour = pParty->GetPlayingTime().GetHoursOfDay();
     pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetDays() / 7 & 3;
     pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDays() % 28;
-    pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonths();
+    pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
     pParty->uCurrentYear =
         pParty->GetPlayingTime().GetMonths() / 12 + game_starting_year;
     if (pParty->uCurrentHour >= 3 &&
