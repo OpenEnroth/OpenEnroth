@@ -1459,7 +1459,8 @@ TileDesc *OutdoorLocation::DoGetTile(int sX, int sY) {
     int v3;  // esi@5
              //  unsigned int result; // eax@9
 
-    assert(sX < 128 && sY < 128);
+    if (sX < 0 || sX > 127 || sY < 0 || sY > 127)
+        return 0;
 
     v3 = this->pTerrain.pTilemap[sY * 128 + sX];
     if (v3 < 198) {  // < Tileset_3
@@ -1517,7 +1518,8 @@ TileDesc *OutdoorLocation::DoGetTile(int sX, int sY) {
 
 //----- (0047ED83) --------------------------------------------------------
 int OutdoorLocation::_47ED83(signed int a2, signed int a3) {
-    assert(a2 < 128 && a3 < 128);
+    if (a2 < 0 || a2 > 127 || a3 < 0 || a3 > 127)
+        return 0;
 
     return *(&this->pTerrain.pTilemap[128 * a3] + a2);
 }
@@ -1525,8 +1527,10 @@ int OutdoorLocation::_47ED83(signed int a2, signed int a3) {
 //----- (0047EDB3) --------------------------------------------------------
 int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
                                                   signed int sY) {
-//    assert(sX < 128 && sY < 128);  // patry can scuba dive
     int v3;  // esi@5
+
+    if (sX < 0 || sX > 127 || sY < 0 || sY > 127)
+        return 0;
 
     v3 = this->pTerrain.pTilemap[sY * 128 + sX];
     if (v3 >= 90)
@@ -1537,7 +1541,8 @@ int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
 
 //----- (0047EE16) --------------------------------------------------------
 int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
-//    assert(sX < 128 && sZ < 128);  // patry can scuba dive
+    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127)
+        return 0;
 
     return 32 * pTerrain.pHeightmap[sZ * 128 + sX];
 }
