@@ -269,17 +269,17 @@ void LODFile_Sprites::DeleteSomeOtherSprites() {
 }
 
 void LOD::File::Close() {
-    if (isFileOpened) {
-        this->pContainerName[0] = 0;
-        this->uCurrentIndexDir = 0;
-        free(pSubIndices);
-        free(pRoot);
-        pSubIndices = nullptr;
-        pRoot = nullptr;
-        fclose(pFile);
-        isFileOpened = false;
-        _6A0CA8_lod_unused = 0;
+    if (!isFileOpened) {
+        return;
     }
+
+    pContainerName.clear();
+    pRoot.clear();
+    free(pSubIndices);
+    pSubIndices = nullptr;
+    fclose(pFile);
+    isFileOpened = false;
+    _6A0CA8_lod_unused = 0;
 }
 
 int LODWriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
@@ -304,15 +304,15 @@ int LODWriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
 }
 
 void LOD::File::ResetSubIndices() {
-    if (isFileOpened) {
-        pContainerName[0] = 0;
-        uCurrentIndexDir = 0;
-        uOffsetToSubIndex = 0;
-        uNumSubDirs = 0;
-        uLODDataSize = 0;
-        free(pSubIndices);
-        pSubIndices = nullptr;
+    if (!isFileOpened) {
+        return;
     }
+
+    pContainerName.clear();
+    uOffsetToSubIndex = 0;
+    uLODDataSize = 0;
+    free(pSubIndices);
+    pSubIndices = nullptr;
 }
 
 void LODFile_Sprites::DeleteSomeSprites() {
@@ -534,7 +534,6 @@ int LODWriteableFile::CreateTempFile() {
     if (!isFileOpened) return 1;
 
     if (pIOBuffer && uIOBufferSize) {
-        uCurrentIndexDir = 0;
         uNumSubDirs = 0;
         pOutputFileHandle = fopen("lodapp.tmp", "wb+");
         return pOutputFileHandle ? 1 : 7;
@@ -546,7 +545,6 @@ int LODWriteableFile::CreateTempFile() {
 void LODWriteableFile::CloseWriteFile() {
     if (isFileOpened) {
         pContainerName[0] = 0;
-        uCurrentIndexDir = 0;
         _6A0CA8_lod_unused = 0;
 
         isFileOpened = false;
@@ -560,27 +558,21 @@ void LODWriteableFile::CloseWriteFile() {
 
 unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
                                      const void *pDirData, int a4) {
-    FILE *tmp_file;
-    int comp_res;
-    bool bRewrite_data;
-    int offset_to_data;
-    int total_data_size;
-    int size_correction;
-    int to_copy_size;
-    int read_size;
-    int curr_position;
-    int insert_index;
-
     // insert new data in sorted index lod file
-    bRewrite_data = false;
-    insert_index = -1;
-    if (!isFileOpened)  // sometimes gives crash
+    bool bRewrite_data = false;
+    int insert_index = -1;
+    if (!isFileOpened) {  // sometimes gives crash
         return 1;
-    if (!pSubIndices) return 2;
-    if (!pIOBuffer || !uIOBufferSize) return 3;
+    }
+    if (!pSubIndices) {
+        return 2;
+    }
+    if (!pIOBuffer || !uIOBufferSize) {
+        return 3;
+    }
 
-    for (int i = 0; i < uNumSubDirs; i++) {
-        comp_res = _stricmp(pSubIndices[i].pFilename, pDir->pFilename);
+    for (size_t i = 0; i < uNumSubDirs; i++) {
+        int comp_res = _stricmp(pSubIndices[i].pFilename, pDir->pFilename);
         if (comp_res == 0) {
             insert_index = i;
             if (a4 == 0) {
@@ -605,8 +597,9 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
         }
     }
 
+    int size_correction = 0;
     String Filename = "lod.tmp";
-    tmp_file = fopen(Filename.c_str(), "wb+");
+    FILE *tmp_file = fopen(Filename.c_str(), "wb+");
     if (!tmp_file) return 5;
     if (!bRewrite_data)
         size_correction = 0;
@@ -619,9 +612,8 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
     Lindx.dword_000018 = 0;
     Lindx.priority = 0;
     Lindx.uNumSubIndices = uNumSubDirs;
-    Lindx.uOfsetFromSubindicesStart =
-        sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
-    total_data_size = uLODDataSize + pDir->uDataSize - size_correction;
+    Lindx.uOfsetFromSubindicesStart = sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
+    int total_data_size = uLODDataSize + pDir->uDataSize - size_correction;
     if (!bRewrite_data) {
         total_data_size += sizeof(LOD::Directory);
         Lindx.uNumSubIndices++;
@@ -642,7 +634,7 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
            sizeof(LOD::Directory));  //записать текущий файл
     // correct offsets to data
     if (uNumSubDirs > 0) {
-        offset_to_data = sizeof(LOD::Directory) * uNumSubDirs;
+        size_t offset_to_data = sizeof(LOD::Directory) * uNumSubDirs;
         for (int i = 0; i < uNumSubDirs; i++) {
             pSubIndices[i].uOfsetFromSubindicesStart = offset_to_data;
             offset_to_data += pSubIndices[i].uDataSize;
@@ -655,15 +647,15 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
     fseek(pFile, Lindx.uOfsetFromSubindicesStart, SEEK_SET);
     fwrite(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, tmp_file);
 
-    offset_to_data = sizeof(LOD::Directory) * uNumSubDirs;
+    size_t offset_to_data = sizeof(LOD::Directory) * uNumSubDirs;
     if (!bRewrite_data) offset_to_data -= sizeof(LOD::Directory);
 
     fseek(pFile, offset_to_data, SEEK_CUR);
     // copy from open lod to temp lod first half
-    to_copy_size = pSubIndices[insert_index].uOfsetFromSubindicesStart -
-                   pSubIndices[0].uOfsetFromSubindicesStart;
+    int to_copy_size = pSubIndices[insert_index].uOfsetFromSubindicesStart -
+                       pSubIndices[0].uOfsetFromSubindicesStart;
     while (to_copy_size > 0) {
-        read_size = uIOBufferSize;
+        int read_size = uIOBufferSize;
         if (to_copy_size <= uIOBufferSize) read_size = to_copy_size;
         fread(pIOBuffer, 1, read_size, pFile);
         fwrite(pIOBuffer, 1, read_size, tmp_file);
@@ -675,12 +667,12 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
     if (bRewrite_data) fseek(pFile, size_correction, SEEK_CUR);
 
     // add remainng data  last half
-    curr_position = ftell(pFile);
+    int curr_position = ftell(pFile);
     fseek(pFile, 0, SEEK_END);
     to_copy_size = ftell(pFile) - curr_position;
     fseek(pFile, curr_position, SEEK_SET);
     while (to_copy_size > 0) {
-        read_size = uIOBufferSize;
+        int read_size = uIOBufferSize;
         if (to_copy_size <= uIOBufferSize) read_size = to_copy_size;
         fread(pIOBuffer, 1, read_size, pFile);
         fwrite(pIOBuffer, 1, read_size, tmp_file);
@@ -714,8 +706,7 @@ bool LODWriteableFile::LoadFile(const String &pFilename, bool bWriting) {
 
     fseek(pFile, 0, SEEK_SET);
     isFileOpened = true;
-    strcpy_s(pContainerName, "chapter");
-    uCurrentIndexDir = 0;
+    pContainerName = "chapter";
     uLODDataSize = lod_indx.uDataSize;
     uNumSubDirs = lod_indx.uNumSubIndices;
     Assert(uNumSubDirs <= 300);
@@ -729,9 +720,9 @@ bool LODWriteableFile::LoadFile(const String &pFilename, bool bWriting) {
 
 void LOD::File::FreeSubIndexAndIO() {
     free(pSubIndices);
-    free(pIOBuffer);  // delete [] pIOBuffer;
-    pIOBuffer = nullptr;
     pSubIndices = nullptr;
+    free(pIOBuffer);
+    pIOBuffer = nullptr;
 }
 
 void LOD::File::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
@@ -756,15 +747,12 @@ void LOD::File::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
 
 int LOD::File::LoadSubIndices(const String &pContainer) {
     ResetSubIndices();
-    unsigned int uDir = 0;
 
-    for (uDir = 0; uDir < header.uNumIndices; ++uDir) {
-        if (!_stricmp(pContainer.c_str(), pRoot[uDir].pFilename)) {
-            strcpy_s(pContainerName, pContainer.c_str());
-            uCurrentIndexDir = uDir;
-            LOD::Directory *curr_index = (LOD::Directory *)&pRoot[uDir];
-            uOffsetToSubIndex = curr_index->uOfsetFromSubindicesStart;
-            uNumSubDirs = curr_index->uNumSubIndices;  // *(_WORD *)(v8 + 28);
+    for (LOD::Directory &dir : pRoot) {
+        if (!_stricmp(pContainer.c_str(), dir.pFilename)) {
+            pContainerName = pContainer;
+            uOffsetToSubIndex = dir.uOfsetFromSubindicesStart;
+            uNumSubDirs = dir.uNumSubIndices;
             fseek(pFile, uOffsetToSubIndex, SEEK_SET);
             pSubIndices = (LOD::Directory *)malloc(sizeof(LOD::Directory) *
                                                    (uNumSubDirs + 5));
@@ -787,40 +775,34 @@ bool LOD::File::LoadHeader(const String &pFilename, bool bWriting) {
 
     pLODName = pFilename;
     fread(&header, sizeof(LOD::FileHeader), 1, pFile);
-    pRoot = (LOD::Directory *)malloc(160);
-    if (pRoot == nullptr) {
-        fclose(pFile);
-        return false;
+    for (unsigned int i = 0; i < header.uNumIndices; i++) {
+        LOD::Directory dir;
+        fread(&dir, sizeof(LOD::Directory), 1, pFile);
+        pRoot.push_back(dir);
     }
 
-    fread(pRoot, sizeof(LOD::Directory), header.uNumIndices, pFile);
     fseek(pFile, 0, SEEK_SET);
     isFileOpened = true;
 
     return true;
 }
 
-//----- (00461790) --------------------------------------------------------
 LOD::File::~File() {
-    if (this->isFileOpened) {
-        fclose(this->pFile);
-        free(this->pSubIndices);
+    if (isFileOpened) {
+        fclose(pFile);
     }
 }
 
-LOD::File::File() : pRoot(nullptr), isFileOpened(false) {
-    memset(pContainerName, 0, 16);
-    this->pFile = nullptr;
-    this->pSubIndices = nullptr;
-    this->pIOBuffer = nullptr;
-    this->isFileOpened = false;
-    this->uIOBufferSize = 0;
+LOD::File::File() : isFileOpened(false) {
+    pFile = nullptr;
+    pSubIndices = nullptr;
+    pIOBuffer = nullptr;
+    uIOBufferSize = 0;
     Close();
 }
 
 LOD::Directory::Directory() {
     memset(pFilename, 0, 16);
-    this->pFilename[0] = 0;
     this->uOfsetFromSubindicesStart = 0;
     this->uDataSize = 0;
     this->uNumSubIndices = 0;
@@ -856,10 +838,7 @@ FILE *LOD::File::FindContainer(const String &pContainer_Name, size_t *data_size)
 
     for (uint i = 0; i < uNumSubDirs; ++i) {
         if (!_stricmp(pContainer_Name.c_str(), pSubIndices[i].pFilename)) {
-            fseek(pFile,
-                uOffsetToSubIndex +
-                pSubIndices[i].uOfsetFromSubindicesStart,
-                SEEK_SET);
+            fseek(pFile, uOffsetToSubIndex + pSubIndices[i].uOfsetFromSubindicesStart, SEEK_SET);
             if (data_size != nullptr) {
                 *data_size = pSubIndices[i].uDataSize;
             }

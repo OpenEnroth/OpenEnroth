@@ -3,6 +3,7 @@
 #include <memory.h>
 #include <stdio.h>
 #include <cstdint>
+#include <vector>
 
 #include "Engine/Strings.h"
 
@@ -82,9 +83,8 @@ struct File {
     uint8_t *pIOBuffer;
     unsigned int uIOBufferSize;
     struct FileHeader header;
-    struct Directory *pRoot;
-    char pContainerName[16];
-    unsigned int uCurrentIndexDir;
+    std::vector<Directory> pRoot;
+    String pContainerName;
     unsigned int uLODDataSize;
     unsigned int uNumSubDirs;
     struct Directory *pSubIndices;
@@ -235,6 +235,3 @@ extern LODFile_Sprites *pSprites_LOD_mm8;
 
 extern LODWriteableFile *pNew_LOD;
 extern LODWriteableFile *pGames_LOD;
-
-extern int _6A0CA4_lod_binary_search;
-extern int _6A0CA8_lod_unused;
