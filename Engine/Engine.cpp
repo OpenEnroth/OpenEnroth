@@ -991,7 +991,7 @@ void FinalInitialization() {
 
 bool MM7_LoadLods(const char *mm7_path) {
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(StringPrintf("%s\\data\\icons.lod", mm7_path).c_str(),
+    if (!pIcons_LOD->Load(StringPrintf("%s\\data\\icons.lod", mm7_path),
                           "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
@@ -1014,8 +1014,7 @@ bool MM7_LoadLods(const char *mm7_path) {
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->LoadSprites(
-            StringPrintf("%s\\data\\sprites.lod", mm7_path).c_str())) {
+    if (!pSprites_LOD->LoadSprites(StringPrintf("%s\\data\\sprites.lod", mm7_path))) {
         Error(localization->GetString(63), localization->GetString(184));
         return false;
     }
@@ -1087,20 +1086,20 @@ bool MM7_Initialize(const char *mm7_path) {
     localization->Initialize();
 
     {
-        void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dsft.bin", 1)
+        void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dsft.bin")
                                        : nullptr,
              *sft_mm8 = nullptr;
-        void *sft_mm7 = pEvents_LOD->LoadRaw("dsft.bin", 1);
+        void *sft_mm7 = pEvents_LOD->LoadRaw("dsft.bin");
         pSpriteFrameTable = new SpriteFrameTable;
         pSpriteFrameTable->FromFile(sft_mm6, sft_mm7, sft_mm8);
         free(sft_mm6);
         free(sft_mm7);
         free(sft_mm8);
 
-        void *tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dtft.bin", 1)
+        void *tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dtft.bin")
                                        : nullptr,
              *tft_mm8 = nullptr;
-        void *tft_mm7 = pEvents_LOD->LoadRaw("dtft.bin", 1);
+        void *tft_mm7 = pEvents_LOD->LoadRaw("dtft.bin");
         pTextureFrameTable = new TextureFrameTable;
         pTextureFrameTable->FromFile(tft_mm6, tft_mm7, tft_mm8);
         free(tft_mm6);
@@ -1108,30 +1107,30 @@ bool MM7_Initialize(const char *mm7_path) {
         free(tft_mm8);
 
         void *tiles_mm6 = pIcons_LOD_mm6
-                              ? pIcons_LOD_mm6->LoadRaw("dtile.bin", 1)
+                              ? pIcons_LOD_mm6->LoadRaw("dtile.bin")
                               : nullptr,
              *tiles_mm8 = nullptr;
-        void *tiles_mm7 = pEvents_LOD->LoadRaw("dtile.bin", 1);
+        void *tiles_mm7 = pEvents_LOD->LoadRaw("dtile.bin");
         pTileTable = new TileTable;
         pTileTable->FromFile(tiles_mm6, tiles_mm7, tiles_mm8);
         free(tiles_mm6);
         free(tiles_mm7);
         free(tiles_mm8);
 
-        void *pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dpft.bin", 1)
+        void *pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dpft.bin")
                                        : nullptr,
              *pft_mm8 = nullptr;
-        void *pft_mm7 = pEvents_LOD->LoadRaw("dpft.bin", 1);
+        void *pft_mm7 = pEvents_LOD->LoadRaw("dpft.bin");
         pPlayerFrameTable = new PlayerFrameTable;
         pPlayerFrameTable->FromFile(pft_mm6, pft_mm7, pft_mm8);
         free(pft_mm6);
         free(pft_mm7);
         free(pft_mm8);
 
-        void *ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dift.bin", 1)
+        void *ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dift.bin")
                                        : nullptr,
              *ift_mm8 = nullptr;
-        void *ift_mm7 = pEvents_LOD->LoadRaw("dift.bin", 1);
+        void *ift_mm7 = pEvents_LOD->LoadRaw("dift.bin");
         pIconsFrameTable = new IconFrameTable;
         pIconsFrameTable->FromFile(ift_mm6, ift_mm7, ift_mm8);
         free(ift_mm6);
@@ -1139,10 +1138,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(ift_mm8);
 
         void *decs_mm6 = pIcons_LOD_mm6
-                             ? pIcons_LOD_mm6->LoadRaw("ddeclist.bin", 1)
+                             ? pIcons_LOD_mm6->LoadRaw("ddeclist.bin")
                              : nullptr,
              *decs_mm8 = nullptr;
-        void *decs_mm7 = pEvents_LOD->LoadRaw("ddeclist.bin", 1);
+        void *decs_mm7 = pEvents_LOD->LoadRaw("ddeclist.bin");
         pDecorationList = new DecorationList;
         pDecorationList->FromFile(decs_mm6, decs_mm7, decs_mm8);
         free(decs_mm6);
@@ -1150,10 +1149,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(decs_mm8);
 
         void *objs_mm6 = pIcons_LOD_mm6
-                             ? pIcons_LOD_mm6->LoadRaw("dobjlist.bin", 1)
+                             ? pIcons_LOD_mm6->LoadRaw("dobjlist.bin")
                              : nullptr,
              *objs_mm8 = nullptr;
-        void *objs_mm7 = pEvents_LOD->LoadRaw("dobjlist.bin", 1);
+        void *objs_mm7 = pEvents_LOD->LoadRaw("dobjlist.bin");
         pObjectList = new ObjectList;
         pObjectList->FromFile(objs_mm6, objs_mm7, objs_mm8);
         free(objs_mm6);
@@ -1161,10 +1160,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(objs_mm8);
 
         void *mons_mm6 = pIcons_LOD_mm6
-                             ? pIcons_LOD_mm6->LoadRaw("dmonlist.bin", 1)
+                             ? pIcons_LOD_mm6->LoadRaw("dmonlist.bin")
                              : nullptr,
              *mons_mm8 = nullptr;
-        void *mons_mm7 = pEvents_LOD->LoadRaw("dmonlist.bin", 1);
+        void *mons_mm7 = pEvents_LOD->LoadRaw("dmonlist.bin");
         pMonsterList = new MonsterList;
         pMonsterList->FromFile(mons_mm6, mons_mm7, mons_mm8);
         free(mons_mm6);
@@ -1172,10 +1171,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(mons_mm8);
 
         void *chests_mm6 = pIcons_LOD_mm6
-                               ? pIcons_LOD_mm6->LoadRaw("dchest.bin", 1)
+                               ? pIcons_LOD_mm6->LoadRaw("dchest.bin")
                                : nullptr,
              *chests_mm8 = nullptr;
-        void *chests_mm7 = pEvents_LOD->LoadRaw("dchest.bin", 1);
+        void *chests_mm7 = pEvents_LOD->LoadRaw("dchest.bin");
         pChestList = new ChestList;
         pChestList->FromFile(chests_mm6, chests_mm7, chests_mm8);
         free(chests_mm6);
@@ -1183,10 +1182,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(chests_mm8);
 
         void *overlays_mm6 = pIcons_LOD_mm6
-                                 ? pIcons_LOD_mm6->LoadRaw("doverlay.bin", 1)
+                                 ? pIcons_LOD_mm6->LoadRaw("doverlay.bin")
                                  : nullptr,
              *overlays_mm8 = nullptr;
-        void *overlays_mm7 = pEvents_LOD->LoadRaw("doverlay.bin", 1);
+        void *overlays_mm7 = pEvents_LOD->LoadRaw("doverlay.bin");
         pOverlayList = new OverlayList;
         pOverlayList->FromFile(overlays_mm6, overlays_mm7, overlays_mm8);
         free(overlays_mm6);
@@ -1194,10 +1193,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(overlays_mm8);
 
         void *sounds_mm6 = pIcons_LOD_mm6
-                               ? pIcons_LOD_mm6->LoadRaw("dsounds.bin", 1)
+                               ? pIcons_LOD_mm6->LoadRaw("dsounds.bin")
                                : nullptr,
              *sounds_mm8 = nullptr;
-        void *sounds_mm7 = pEvents_LOD->LoadRaw("dsounds.bin", 1);
+        void *sounds_mm7 = pEvents_LOD->LoadRaw("dsounds.bin");
         pSoundList = new SoundList;
         pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
         free(sounds_mm6);

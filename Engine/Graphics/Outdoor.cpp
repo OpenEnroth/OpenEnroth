@@ -1010,7 +1010,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     auto odm_filename = filename;
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
-    pFile = pGames_LOD->FindContainer(odm_filename, true);
+    pFile = pGames_LOD->FindContainer(odm_filename);
 
     static_assert(sizeof(ODMHeader) == 16, "Wrong type size");
     fread(&header, sizeof(ODMHeader), 1, pFile);
@@ -1173,7 +1173,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     auto ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    pFile = pNew_LOD->FindContainer(ddm_filename, true);
+    pFile = pNew_LOD->FindContainer(ddm_filename);
 
     fread(&header, 0x10, 1, pFile);
     Str2 = 0;

@@ -885,7 +885,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     if (!pGames_LOD->DoesContainerExist(blv_filename))
         Error("Unable to find %s in Games.LOD", blv_filename.c_str());
 
-    File = pGames_LOD->FindContainer(blv_filename, 1);
+    File = pGames_LOD->FindContainer(blv_filename);
     // File = v82;
 
     Release();
@@ -1150,7 +1150,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
 
     auto dlv_filename = filename;
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
-    File = pNew_LOD->FindContainer(dlv_filename, 1);  // error on D28.dlv
+    File = pNew_LOD->FindContainer(dlv_filename);  // error on D28.dlv
     fread(&header, 0x10, 1, File);                    // (FILE *)v245);
     bool _v244 = false;
     if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||

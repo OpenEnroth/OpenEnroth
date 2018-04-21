@@ -58,7 +58,7 @@ _2devent p2DEvents[525];
 
 unsigned int LoadEventsToBuffer(const char *pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
-    void *ptr = pEvents_LOD->LoadRaw(pContainerName, 0);
+    void *ptr = pEvents_LOD->LoadRaw(pContainerName);
     FILE *pLodFile = pEvents_LOD->FindContainer(pContainerName, 0);
     if (!pLodFile) {
         Error("Unable to load %s", pContainerName);

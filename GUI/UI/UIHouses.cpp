@@ -3771,7 +3771,7 @@ void InitializeBuildingResidents() {
     int decode_step;
 
     free(p2DEventsTXT_Raw);
-    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadRaw("2dEvents.txt", 0);
+    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadRaw("2dEvents.txt");
     strtok(p2DEventsTXT_Raw, "\r");
     strtok(NULL, "\r");
 

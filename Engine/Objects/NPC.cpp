@@ -165,7 +165,7 @@ void NPCStats::InitializeNPCText() {
     int decode_step;
 
     free(pNPCTextTXT_Raw);
-    pNPCTextTXT_Raw = (char *)pEvents_LOD->LoadRaw("npctext.txt", 0);
+    pNPCTextTXT_Raw = (char *)pEvents_LOD->LoadRaw("npctext.txt");
     strtok(pNPCTextTXT_Raw, "\r");
 
     for (i = 0; i < 789; ++i) {
@@ -193,7 +193,7 @@ void NPCStats::InitializeNPCText() {
         } while ((decode_step < 2) && !break_loop);
     }
     free(pNPCTopicTXT_Raw);
-    pNPCTopicTXT_Raw = (char *)pEvents_LOD->LoadRaw("npctopic.txt", 0);
+    pNPCTopicTXT_Raw = (char *)pEvents_LOD->LoadRaw("npctopic.txt");
     strtok(pNPCTopicTXT_Raw, "\r");
 
     for (i = 1; i <= 579; ++i) {  // NPC topics count limit
@@ -222,7 +222,7 @@ void NPCStats::InitializeNPCText() {
     }
 
     free(pNPCDistTXT_Raw);
-    pNPCDistTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcdist.txt", 0);
+    pNPCDistTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcdist.txt");
     strtok(pNPCDistTXT_Raw, "\r");
     strtok(NULL, "\r");
 
@@ -290,7 +290,7 @@ void NPCStats::InitializeNPCData() {
     char *tmp_pos;
     int decode_step;
 
-    pNPCDataTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcdata.txt", 0);
+    pNPCDataTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcdata.txt");
     strtok(pNPCDataTXT_Raw, "\r");
     strtok(NULL, "\r");
 
@@ -354,7 +354,7 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 16) && !break_loop);
     }
     uNumNewNPCs = 501;
-    pNPCGreetTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcgreet.txt", 0);
+    pNPCGreetTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcgreet.txt");
     strtok(pNPCGreetTXT_Raw, "\r");
     for (i = 1; i <= 205; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -387,7 +387,7 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 3) && !break_loop);
     }
 
-    pNCPGroupTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcgroup.txt", 0);
+    pNCPGroupTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcgroup.txt");
     strtok(pNCPGroupTXT_Raw, "\r");
 
     for (i = 0; i < 51; ++i) {
@@ -414,7 +414,7 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 2) && !break_loop);
     }
 
-    pNPCNewsTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcnews.txt", 0);
+    pNPCNewsTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcnews.txt");
     strtok(pNPCNewsTXT_Raw, "\r");
 
     for (i = 0; i < 51; ++i) {
@@ -460,7 +460,7 @@ void NPCStats::Initialize() {
     InitializeMerchants();
     InitializeScrolls();
 
-    pNPCNamesTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcnames.txt", 0);
+    pNPCNamesTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcnames.txt");
     strtok(pNPCNamesTXT_Raw, "\r");
 
     uNewlNPCBufPos = 0;
@@ -500,7 +500,7 @@ void NPCStats::Initialize() {
     }
     uNumNPCNames[0] = i;
 
-    pNPCProfTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcprof.txt", 0);
+    pNPCProfTXT_Raw = (char *)pEvents_LOD->LoadRaw("npcprof.txt");
     strtok(pNPCProfTXT_Raw, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -778,7 +778,7 @@ void InitializeAwards() {
     int decode_step;
 
     free(pAwardsTXT_Raw);
-    pAwardsTXT_Raw = (char *)pEvents_LOD->LoadRaw("awards.txt", 0);
+    pAwardsTXT_Raw = (char *)pEvents_LOD->LoadRaw("awards.txt");
     strtok(pAwardsTXT_Raw, "\r");
 
     for (i = 1; i < 105; ++i) {
@@ -821,7 +821,7 @@ void InitializeScrolls() {
     int decode_step;
 
     free(pScrollsTXT_Raw);
-    pScrollsTXT_Raw = (char *)pEvents_LOD->LoadRaw("scroll.txt", 0);
+    pScrollsTXT_Raw = (char *)pEvents_LOD->LoadRaw("scroll.txt");
     strtok(pScrollsTXT_Raw, "\r");
     for (i = 0; i < 82; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -859,7 +859,7 @@ void InitializeMerchants() {
     int decode_step;
 
     free(pMerchantsTXT_Raw);
-    pMerchantsTXT_Raw = (char *)pEvents_LOD->LoadRaw("merchant.txt", 0);
+    pMerchantsTXT_Raw = (char *)pEvents_LOD->LoadRaw("merchant.txt");
     strtok(pMerchantsTXT_Raw, "\r");
 
     for (i = 0; i < 7; ++i) {
@@ -912,7 +912,7 @@ void InitializeTransitions() {
     int decode_step;
 
     free(pTransitionsTXT_Raw);
-    pTransitionsTXT_Raw = (char *)pEvents_LOD->LoadRaw("trans.txt", 0);
+    pTransitionsTXT_Raw = (char *)pEvents_LOD->LoadRaw("trans.txt");
     strtok(pTransitionsTXT_Raw, "\r");
 
     for (i = 0; i < 464; ++i) {
@@ -952,7 +952,7 @@ void InitializeAutonotes() {
     int decode_step;
 
     free(pAutonoteTXT_Raw);
-    pAutonoteTXT_Raw = (char *)pEvents_LOD->LoadRaw("autonote.txt", 0);
+    pAutonoteTXT_Raw = (char *)pEvents_LOD->LoadRaw("autonote.txt");
     strtok(pAutonoteTXT_Raw, "\r");
 
     for (i = 0; i < 195; ++i) {
@@ -1019,7 +1019,7 @@ void InitializeQuests() {
     int decode_step;
 
     free(pQuestsTXT_Raw);
-    pQuestsTXT_Raw = (char *)pEvents_LOD->LoadRaw("quests.txt", 0);
+    pQuestsTXT_Raw = (char *)pEvents_LOD->LoadRaw("quests.txt");
     strtok(pQuestsTXT_Raw, "\r");
     memset(pQuestTable.data(), 0, sizeof(pQuestTable));
     for (i = 0; i < 512; ++i) {

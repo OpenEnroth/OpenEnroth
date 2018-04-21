@@ -120,8 +120,8 @@ void LoadGame(unsigned int uSlot) {
         Error("Failed to copy: %s", filename.c_str());
     }
 
-    pNew_LOD->LoadFile(to_file_path.c_str(), 0);
-    FILE *file = pNew_LOD->FindContainer("header.bin", 1);
+    pNew_LOD->LoadFile(to_file_path, 0);
+    FILE *file = pNew_LOD->FindContainer("header.bin");
     if (!file) {
         logger->Warning(L"%S", localization->FormatString(612, 100)
                                    .c_str());  // Savegame damaged! Code=%d
@@ -129,7 +129,7 @@ void LoadGame(unsigned int uSlot) {
     Assert(sizeof(SavegameHeader) == 100);
     fread(&header, sizeof(SavegameHeader), 1, file);
     {
-        file = pNew_LOD->FindContainer("party.bin", 1);
+        file = pNew_LOD->FindContainer("party.bin");
         if (!file) {
             logger->Warning(L"%S", localization->FormatString(612, 101)
                                        .c_str());  // Savegame damaged! Code=%d
@@ -142,7 +142,7 @@ void LoadGame(unsigned int uSlot) {
     }
 
     {
-        file = pNew_LOD->FindContainer("clock.bin", 1);
+        file = pNew_LOD->FindContainer("clock.bin");
         if (!file) {
             logger->Warning(L"%S", localization->FormatString(612, 102)
                                        .c_str());  // Savegame damaged! Code=%d
@@ -155,7 +155,7 @@ void LoadGame(unsigned int uSlot) {
     }
 
     {
-        file = pNew_LOD->FindContainer("overlay.bin", 1);
+        file = pNew_LOD->FindContainer("overlay.bin");
         if (!file) {
             logger->Warning(L"%S", localization->FormatString(612, 103)
                                        .c_str());  // Savegame damaged! Code=%d
@@ -478,7 +478,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             memcpy(data_write_pos, pChests.data(),
                    sizeof(Chest) * uNumChests);  // 5324 *
             data_write_pos += sizeof(Chest) * uNumChests;
-            memcpy(data_write_pos, pIndoor->pDoors, 0x3E80);
+            memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
             data_write_pos += 16000;
             memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata,
                    pIndoor->blv.uDoors_ddata_Size);
@@ -657,7 +657,7 @@ void SaveNewGame() {
 
     LOD::Directory a3;
     a3.dword_000018 = 0;
-    a3.word_00001E = 0;
+    a3.priority = 0;
     strcpy(a3.pFilename, "current");
     pNew_LOD->CreateNewLod(
         &header, &a3, file_path.c_str());  //создаётся new.lod в дирректории
@@ -672,8 +672,7 @@ void SaveNewGame() {
              ++i) {  // копирование файлов с 76 по 151
             memcpy(&pDir, &pGames_LOD->pSubIndices[i],
                    sizeof(pDir));  //копирование текущего файла в pDir
-            FILE *file = pGames_LOD->FindContainer(
-                pGames_LOD->pSubIndices[i].pFilename, 1);
+            FILE *file = pGames_LOD->FindContainer(pGames_LOD->pSubIndices[i].pFilename);
             fread(pSave, pGames_LOD->pSubIndices[i].uDataSize, 1, file);
             pNew_LOD->AppendDirectory(&pDir, pSave);
         }

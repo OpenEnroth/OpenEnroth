@@ -29,7 +29,7 @@ void MapStats::Initialize() {
     //  int item_counter;
 
     free(pMapStatsTXT_Raw);
-    pMapStatsTXT_Raw = (char *)pEvents_LOD->LoadRaw("MapStats.txt", 0);
+    pMapStatsTXT_Raw = (char *)pEvents_LOD->LoadRaw("MapStats.txt");
     strtok(pMapStatsTXT_Raw, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
