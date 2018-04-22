@@ -117,12 +117,13 @@ void LoadGame(unsigned int uSlot) {
             for (size_t i = 0; i < 4; i++) {
                 Player *player = &pParty->pPlayers[i];
                 for (size_t j = 0; j < 5; j++) {
-                    LloydBeacon *beacon = &player->pInstalledBeacons[j];
-                    if (beacon->uBeaconTime != 0) {
-                        String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
-                        beacon->image = Image::Create(new PCX_LOD_File_Loader(pNew_LOD, str));
-                        beacon->image->GetWidth();
+                    if (j >= player->vBeacons.size()) {
+                        continue;
                     }
+                    LloydBeacon &beacon = player->vBeacons[j];
+                    String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
+                    beacon.image = Image::Create(new PCX_LOD_File_Loader(pNew_LOD, str));
+                    beacon.image->GetWidth();
                 }
             }
         }
@@ -399,7 +400,10 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
         Player *player = &pParty->pPlayers[i];
         for (size_t j = 0; j < 5; ++j) {  // 5 - images
-            LloydBeacon *beacon = &player->pInstalledBeacons[j];
+            if (j >= player->vBeacons.size()) {
+                continue;
+            }
+            LloydBeacon *beacon = &player->vBeacons[j];
             Image *image = beacon->image;
             if ((beacon->uBeaconTime != 0) && (image != nullptr)) {
                 const void *pixels = image->GetPixels(IMAGE_FORMAT_R5G6B5);

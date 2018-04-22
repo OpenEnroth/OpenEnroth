@@ -1,10 +1,13 @@
 #pragma once
 
+#include <vector>
+
 #include "Engine/Engine.h"
 
 #include "Engine/Conditions.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Objects/Items.h"
+#include "Engine/Graphics/Image.h"
 
 enum PLAYER_BUFFS {
     PLAYER_BUFF_RESIST_AIR = 0,
@@ -302,6 +305,22 @@ enum PLAYER_CLASS_TYPE : unsigned __int8 {
 };
 
 struct LloydBeacon {
+    LloydBeacon() {
+        uBeaconTime = GameTime(0);
+        PartyPos_X = 0;
+        PartyPos_Y = 0;
+        PartyPos_Z = 0;
+        PartyRot_X = 0;
+        PartyRot_Y = 0;
+        unknown = 0;
+        SaveFileID = 0;
+        image = nullptr;
+    }
+    ~LloydBeacon() {
+        if (image != nullptr) {
+            image->Release();
+        }
+    }
     GameTime uBeaconTime;
     int32_t PartyPos_X;
     int32_t PartyPos_Y;
@@ -824,7 +843,7 @@ struct Player {
     __int16 field_1AA2;
     int _expression21_animtime;
     int _expression21_frameset;
-    std::array<LloydBeacon, 5> pInstalledBeacons;
+    std::vector<LloydBeacon> vBeacons;
     char uNumDivineInterventionCastsThisDay;
     char uNumArmageddonCasts;
     char uNumFireSpikeCasts;

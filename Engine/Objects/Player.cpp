@@ -1,6 +1,7 @@
 #include "Engine/Objects/Player.h"
 
 #include <algorithm>
+#include <functional>
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
@@ -8190,7 +8191,6 @@ Player::Player() {
     _mana_related = 0;
 
     uQuickSpell = 0;
-    memset(pInstalledBeacons.data(), 0, 5 * sizeof(LloydBeacon));
 
     _some_attack_bonus = 0;
     field_1A91 = 0;
@@ -8230,9 +8230,10 @@ Player::Player() {
 }
 
 void Player::CleanupBeacons() {
-    for (size_t i = 0; i < pInstalledBeacons.size(); ++i) {
-        if (pInstalledBeacons[i].uBeaconTime < pParty->GetPlayingTime()) {
-            memset(&pInstalledBeacons[i], 0, sizeof(LloydBeacon));
+    struct delete_beacon : public std::unary_function<const LloydBeacon&, bool> {
+        bool operator()(const LloydBeacon &beacon) const {
+            return (beacon.uBeaconTime < pParty->GetPlayingTime());
         }
-    }
+    };
+    vBeacons.erase(std::remove_if(vBeacons.begin(), vBeacons.end(), delete_beacon()), vBeacons.end());
 }

@@ -135,9 +135,13 @@ void Game_OnEscape() {
                                            // shops with characters who couldnt
                                            // act sctive
 
-    pGUIWindow_CurrentMenu->Release();  // check this
-    if (pGUIWindow_CurrentMenu == window_SpeakInHouse) window_SpeakInHouse = 0;
-    pGUIWindow_CurrentMenu = 0;
+    if (pGUIWindow_CurrentMenu == window_SpeakInHouse) {
+        window_SpeakInHouse = nullptr;
+    }
+    if (pGUIWindow_CurrentMenu != nullptr) {
+        pGUIWindow_CurrentMenu->Release();  // check this
+        pGUIWindow_CurrentMenu = nullptr;
+    }
     pEventTimer->Resume();
     current_screen_type = SCREEN_GAME;
     viewparams->bRedrawGameUI = true;
@@ -1102,7 +1106,10 @@ void Game_EventLoop() {
                 case UIMSG_HintBeaconSlot: {
                     if (!pGUIWindow_CurrentMenu) continue;
                     pPlayer = pPlayers[_506348_current_lloyd_playerid + 1];
-                    LloydBeacon *beacon = &pPlayer->pInstalledBeacons[uMessageParam];
+                    if (uMessageParam >= pPlayer->vBeacons.size()) {
+                        continue;
+                    }
+                    LloydBeacon *beacon = &pPlayer->vBeacons[uMessageParam];
                     if (bRecallingBeacon) {
                         if (beacon->uBeaconTime) {
                             String v173 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon->SaveFileID)].pName;
@@ -1132,7 +1139,7 @@ void Game_EventLoop() {
                     continue;
                 case UIMSG_InstallBeacon:
                     pPlayer9 = pPlayers[_506348_current_lloyd_playerid + 1];
-                    if (!pPlayer9->pInstalledBeacons[uMessageParam].uBeaconTime && bRecallingBeacon) {
+                    if (!pPlayer9->vBeacons[uMessageParam].uBeaconTime && bRecallingBeacon) {
                         continue;
                     }
 
@@ -1155,69 +1162,71 @@ void Game_EventLoop() {
                     if (bRecallingBeacon) {
                         if (pCurrentMapName !=
                                 (const char *)&pGames_LOD->pSubIndices
-                                    [pPlayer9->pInstalledBeacons[uMessageParam]
+                                    [pPlayer9->vBeacons[uMessageParam]
                                          .SaveFileID]) {
                             SaveGame(1, 0);
                             OnMapLeave();
                             pCurrentMapName =
                                 (const char *)&pGames_LOD->pSubIndices
-                                    [pPlayer9->pInstalledBeacons[uMessageParam]
+                                    [pPlayer9->vBeacons[uMessageParam]
                                          .SaveFileID];
                             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                             uGameState = GAME_STATE_CHANGE_LOCATION;
                             _5B65A8_npcdata_uflags_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_X;
                             _5B65AC_npcdata_fame_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_Y;
                             _5B65B0_npcdata_rep_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_Z;
                             _5B65B4_npcdata_loword_house_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyRot_X;
                             _5B65B8_npcdata_hiword_house_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyRot_Y;
                             dword_5B65C0 = 1;
                         } else {
                             pParty->vPosition.x =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_X;
                             pParty->vPosition.y =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_Y;
                             pParty->vPosition.z =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_Z;
                             pParty->uFallStartY = pParty->vPosition.z;
                             pParty->sRotationY =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyRot_X;
                             pParty->sRotationX =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyRot_Y;
                         }
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-                        pBooksButtonOverlay->Release();
+                        if (pBooksButtonOverlay != nullptr) {
+                            pBooksButtonOverlay->Release();
+                            pBooksButtonOverlay = nullptr;
+                        }
                         pGUIWindow_CurrentMenu->Release();
-                        pBooksButtonOverlay = 0;
                         pGUIWindow_CurrentMenu = 0;
                     } else {
-                        pPlayer9->pInstalledBeacons[uMessageParam].image = render->TakeScreenshot(92, 68);
-                        pPlayer9->pInstalledBeacons[uMessageParam].uBeaconTime =
+                        pPlayer9->vBeacons[uMessageParam].image = render->TakeScreenshot(92, 68);
+                        pPlayer9->vBeacons[uMessageParam].uBeaconTime =
                             GameTime(pParty->GetPlayingTime() +
                             GameTime::FromSeconds(lloyds_beacon_spell_level));
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_X =
+                        pPlayer9->vBeacons[uMessageParam].PartyPos_X =
                             pParty->vPosition.x;
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_Y =
+                        pPlayer9->vBeacons[uMessageParam].PartyPos_Y =
                             pParty->vPosition.y;
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_Z =
+                        pPlayer9->vBeacons[uMessageParam].PartyPos_Z =
                             pParty->vPosition.z;
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyRot_X =
+                        pPlayer9->vBeacons[uMessageParam].PartyRot_X =
                             (short)pParty->sRotationY;
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyRot_Y =
+                        pPlayer9->vBeacons[uMessageParam].PartyRot_Y =
                             (short)pParty->sRotationX;
                         if ((signed int)pGames_LOD->uNumSubDirs / 2 <= 0)
                             continue;
@@ -1225,7 +1234,7 @@ void Game_EventLoop() {
                              thisg < (signed int)pGames_LOD->uNumSubDirs / 2;
                              ++thisg) {
                             if (pCurrentMapName == pGames_LOD->pSubIndices[thisg].pFilename) {
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .SaveFileID = thisg;
                             }
                         }
