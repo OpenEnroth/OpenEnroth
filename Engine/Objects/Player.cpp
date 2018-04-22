@@ -8228,3 +8228,11 @@ Player::Player() {
 
     lastOpenedSpellbookPage = 0;
 }
+
+void Player::CleanupBeacons() {
+    for (size_t i = 0; i < pInstalledBeacons.size(); ++i) {
+        if (pInstalledBeacons[i].uBeaconTime < pParty->GetPlayingTime()) {
+            memset(&pInstalledBeacons[i], 0, sizeof(LloydBeacon));
+        }
+    }
+}

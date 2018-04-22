@@ -529,9 +529,11 @@ void Game_EventLoop() {
                                         Game_OnEscape();
                                         continue;
                                     case SCREEN_BOOKS:
-                                        pBooksButtonOverlay->Release();
-                                        // crt_deconstruct_ptr_6A0118();
-                                        pBooksButtonOverlay = 0;
+                                        if (pBooksButtonOverlay != nullptr) {
+                                            pBooksButtonOverlay->Release();
+                                            // crt_deconstruct_ptr_6A0118();
+                                            pBooksButtonOverlay = 0;
+                                        }
                                         pEventTimer->Resume();
                                         Game_OnEscape();
                                         continue;
@@ -1097,45 +1099,30 @@ void Game_EventLoop() {
                     v127 = uMessageParam + 204;
                     pAudioPlayer->PlaySound((SoundID)v127, 0, 0, -1, 0, 0);
                     continue;
-                case UIMSG_HintBeaconSlot:
-                {
+                case UIMSG_HintBeaconSlot: {
                     if (!pGUIWindow_CurrentMenu) continue;
                     pPlayer = pPlayers[_506348_current_lloyd_playerid + 1];
-                    uNumSeconds = (unsigned int)&pPlayer->pInstalledBeacons[uMessageParam];
+                    LloydBeacon *beacon = &pPlayer->pInstalledBeacons[uMessageParam];
                     if (bRecallingBeacon) {
-                        __debugbreak();
-                        /*indexing error*/  // if (*((int
-                                            // *)&pSavegameThumbnails[10 *
-                                            // uMessageParam].pPixels))
-                        {
-                            String v173 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(
-                                pPlayer->pInstalledBeacons[uMessageParam]
-                                .SaveFileID)]
-                                .pName.c_str();
-                            GameUI_StatusBar_Set(localization->FormatString(
-                                474, v173.c_str()));  // Recall to %s
+                        if (beacon->uBeaconTime) {
+                            String v173 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon->SaveFileID)].pName;
+                            GameUI_StatusBar_Set(localization->FormatString(474, v173.c_str()));  // Recall to %s
                         }
                         continue;
                     }
                     pMapNum = pMapStats->GetMapInfo(pCurrentMapName);
                     String pMapName = "Not in Map Stats";
                     if (pMapNum) {
-                        pMapName = pMapStats->pInfos[pMapNum].pName.c_str();
+                        pMapName = pMapStats->pInfos[pMapNum].pName;
                     }
 
-                    __debugbreak();
-                    /*indexing error*/  // if (!*((int
-                                        // *)&pSavegameThumbnails[10 *
-                                        // uMessageParam].pPixels) ||
-                                        // !pMapNum)
-                    if (!pMapNum) {
+                    if (beacon->uBeaconTime) {
                         GameUI_StatusBar_Set(localization->FormatString(
-                            476, pMapName.c_str()));  // Set to %s
-                    } else {
-                        GameUI_StatusBar_Set(localization->FormatString(
-                            475, pMapName,
+                            475, pMapName.c_str(),
                             pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(
-                                *(short *)(uNumSeconds + 26))].pName));  // Set %s over %s
+                                beacon->SaveFileID)].pName.c_str()));  // Set %s over %s
+                    } else {
+                        GameUI_StatusBar_Set(localization->FormatString(476, pMapName.c_str()));  // Set to %s
                     }
                     continue;
                 }
@@ -1145,10 +1132,9 @@ void Game_EventLoop() {
                     continue;
                 case UIMSG_InstallBeacon:
                     pPlayer9 = pPlayers[_506348_current_lloyd_playerid + 1];
-                    if (!pPlayer9->pInstalledBeacons[uMessageParam]
-                             .uBeaconTime &&
-                        bRecallingBeacon)
+                    if (!pPlayer9->pInstalledBeacons[uMessageParam].uBeaconTime && bRecallingBeacon) {
                         continue;
+                    }
 
                     extern bool _506360_installing_beacon;
                     _506360_installing_beacon = true;
@@ -1156,13 +1142,12 @@ void Game_EventLoop() {
                     pPlayer9->CanCastSpell(uRequiredMana);
                     if (pParty->bTurnBasedModeOn) {
                         v60 = sRecoveryTime;
-                        pParty->pTurnBasedPlayerRecoveryTimes
-                            [_506348_current_lloyd_playerid] = sRecoveryTime;
+                        pParty->pTurnBasedPlayerRecoveryTimes[_506348_current_lloyd_playerid] = sRecoveryTime;
                         pPlayer9->SetRecoveryTime(v60);
                         pTurnEngine->ApplyPlayerAction();
                     } else {
                         pPlayer9->SetRecoveryTime(
-                            (signed __int64)(flt_6BE3A4_debug_recmod1 *
+                            (__int64)(flt_6BE3A4_debug_recmod1 *
                                              (double)sRecoveryTime *
                                              2.133333333333333));
                     }
@@ -1220,13 +1205,7 @@ void Game_EventLoop() {
                         pBooksButtonOverlay = 0;
                         pGUIWindow_CurrentMenu = 0;
                     } else {
-                        render->SaveScreenshot(
-                            StringPrintf("data\\lloyd%d%d.pcx",
-                                         _506348_current_lloyd_playerid + 1,
-                                         uMessageParam + 1),
-                            92, 68);
-                        LoadThumbnailLloydTexture(
-                            uMessageParam, _506348_current_lloyd_playerid + 1);
+                        pPlayer9->pInstalledBeacons[uMessageParam].image = render->TakeScreenshot(92, 68);
                         pPlayer9->pInstalledBeacons[uMessageParam].uBeaconTime =
                             GameTime(pParty->GetPlayingTime() +
                             GameTime::FromSeconds(lloyds_beacon_spell_level));
@@ -2385,12 +2364,6 @@ void Game_Loop() {
         pParty->Reset();
         uGameState = GAME_STATE_PLAYING;
         LoadGame(uLoadGameUI_SelectedSlot);
-    }
-
-    for (unsigned int i = 1; i < 5; ++i) {
-        for (unsigned int j = 1; j < 6; ++j) {
-            remove(StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str());
-        }
     }
 
     extern bool use_music_folder;

@@ -282,6 +282,8 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices,
                                         struct Polygon *pSkyPolygon) {
     __debugbreak();
 }
+
+Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) { return nullptr; }
 bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
 void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width,
                                   unsigned int height) {

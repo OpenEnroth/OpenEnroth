@@ -941,9 +941,9 @@ void IntegrityTest() {
     static_assert(sizeof(MonsterStats) == 0x5BA0, "Wrong type size");
     // static_assert(sizeof(RenderD3D) == 0x148, "Wrong type size");
     //  static_assert(sizeof(Render) == 0x129844, "Wrong type size");
-    static_assert(sizeof(Player) == 0x1B3C, "Wrong type size");
+//    static_assert(sizeof(Player) == 0x1B3C, "Wrong type size");
     static_assert(sizeof(PartyTimeStruct) == 0x678, "Wrong type size");
-    static_assert(sizeof(Party) == 0x16238, "Wrong type size");
+//    static_assert(sizeof(Party) == 0x16238, "Wrong type size");
     // static_assert(sizeof(GUIButton) == 0xBC, "Wrong type size");
     // static_assert(sizeof(GUIWindow) == 0x54, "Wrong type size");
     // static_assert(sizeof(GUIProgressBar) == 0x1B8, "Wrong type size");
@@ -1284,16 +1284,6 @@ void SecondaryInitialization() {
     pBitmaps_LOD->_inlined_sub0();
     pSprites_LOD->_inlined_sub0();
     pPaletteManager->LockAll();
-
-    std::string savesDir = MakeDataPath("Saves");
-    _mkdir(savesDir.c_str());
-    for (uint i = 0; i < 5; ++i) {
-        for (uint j = 0; j < 6; ++j) {
-            String file_path = StringPrintf("data\\lloyd%d%d.pcx", i, j);
-            file_path = MakeDataPath(file_path.c_str());
-            remove(file_path.c_str());
-        }
-    }
 
     Initialize_GamesLOD_NewLOD();
     _576E2C_current_minimap_zoom = 512;

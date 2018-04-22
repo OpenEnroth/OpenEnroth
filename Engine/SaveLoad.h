@@ -23,7 +23,6 @@ struct SavegameHeader {
 };
 #pragma pack(pop)
 
-void LoadThumbnailLloydTexture(unsigned int uSlot, unsigned int uPlayer);
 void LoadGame(unsigned int uSlot);
 void SaveGame(bool IsAutoSAve, bool NotSaveWorld);
 void DoSavegame(unsigned int uSlot);

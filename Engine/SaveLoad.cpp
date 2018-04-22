@@ -20,6 +20,8 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/ImageLoader.h"
+#include "Engine/Graphics/PCX.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
@@ -70,25 +72,6 @@ bool CopyFile(const String &from, const String &to) {
     return file_size != -1 && bytes_read == bytes_wrote;
 }
 
-//----- (00411B59) --------------------------------------------------------
-void LoadThumbnailLloydTexture(unsigned int uSlot, unsigned int uPlayer) {
-    if (pSavegameThumbnails[uSlot]) {
-        pSavegameThumbnails[uSlot]->Release();
-        pSavegameThumbnails[uSlot] = nullptr;
-    }
-
-    String str = StringPrintf("data\\lloyd%d%d.pcx", uPlayer, uSlot + 1);
-    str = MakeDataPath(str.c_str());
-    pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromFile(str);
-
-    if (!pSavegameThumbnails[uSlot]) {
-        String str = StringPrintf("lloyd%d%d.pcx", uPlayer, uSlot + 1);
-        str = MakeDataPath(str.c_str());
-        pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromNewLOD(str);
-    }
-}
-
-//----- (0045EE8A) --------------------------------------------------------
 void LoadGame(unsigned int uSlot) {
     bool v25;               // esi@62
     bool v26;               // eax@62
@@ -100,14 +83,6 @@ void LoadGame(unsigned int uSlot) {
         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         logger->Warning(L"LoadGame: slot %u is empty", uSlot);
         return;
-    }
-
-    for (uint i = 1; i < 5; ++i) {
-        for (uint j = 1; j < 6; ++j) {
-            String file_path = StringPrintf("data\\lloyd%d%d.pcx", i, j);
-            file_path = MakeDataPath(file_path.c_str());
-            remove(file_path.c_str());
-        }
     }
 
     pNew_LOD->CloseWriteFile();
@@ -138,6 +113,18 @@ void LoadGame(unsigned int uSlot) {
             fread(&serialization, sizeof(serialization), 1, file);
 
             serialization.Deserialize(pParty);
+
+            for (size_t i = 0; i < 4; i++) {
+                Player *player = &pParty->pPlayers[i];
+                for (size_t j = 0; j < 5; j++) {
+                    LloydBeacon *beacon = &player->pInstalledBeacons[j];
+                    if (beacon->uBeaconTime != 0) {
+                        String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
+                        beacon->image = Image::Create(new PCX_LOD_File_Loader(pNew_LOD, str));
+                        beacon->image->GetWidth();
+                    }
+                }
+            }
         }
     }
 
@@ -409,27 +396,25 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         logger->Warning(L"%S", error_message.c_str());
     }
 
-    for (int i = 1; i <= 4; ++i) {  // 4 - players
-        for (int j = 1; j <= 5; ++j) {  // 5 - images
-            char work_string[120];
-            sprintf(work_string, "data\\lloyd%d%d.pcx", i, j);
-            String file_path = MakeDataPath(work_string);
-            pLLoidFile = fopen(file_path.c_str(), "rb");
-            if (pLLoidFile) {
-                __debugbreak();
-                sprintf(work_string, "lloyd%d%d.pcx", i, j);
-                fseek(pLLoidFile, 0, SEEK_END);
-                pLodDirectory.uDataSize = ftell(pLLoidFile);
-                rewind(pLLoidFile);
-                fread(uncompressed_buff, pLodDirectory.uDataSize, 1,
-                      pLLoidFile);
-                strcpy(pLodDirectory.pFilename, work_string);
-                fclose(pLLoidFile);
-                remove(work_string);
-                if (pNew_LOD->Write(&pLodDirectory, uncompressed_buff, 0)) {
+    for (size_t i = 0; i < 4; ++i) {  // 4 - players
+        Player *player = &pParty->pPlayers[i];
+        for (size_t j = 0; j < 5; ++j) {  // 5 - images
+            LloydBeacon *beacon = &player->pInstalledBeacons[j];
+            Image *image = beacon->image;
+            if ((beacon->uBeaconTime != 0) && (image != nullptr)) {
+                const void *pixels = image->GetPixels(IMAGE_FORMAT_R5G6B5);
+                size_t pcx_data_size = 30000;
+                void *pcx_data = malloc(pcx_data_size);
+                PCX::Encode16(pixels, image->GetWidth(), image->GetHeight(),
+                              pcx_data, pcx_data_size, &pcx_data_size);
+                String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
+                pLodDirectory.uDataSize = pcx_data_size;
+                strcpy(pLodDirectory.pFilename, str.c_str());
+                if (pNew_LOD->Write(&pLodDirectory, pcx_data, 0)) {
                     auto error_message = localization->FormatString(612, 207);
                     logger->Warning(L"%S", error_message.c_str());
                 }
+                free(pcx_data);
             }
         }
     }

@@ -4180,7 +4180,7 @@ bool PauseGameDrawing() {
     return false;
 }
 
-unsigned short *Render::MakeScreenshot(signed int width, signed int height) {
+unsigned short *Render::MakeScreenshot(int width, int height) {
     uint16_t *for_pixels;  // ebx@1
     DDSURFACEDESC2 Dst;    // [sp+4h] [bp-A0h]@6
 
@@ -4231,6 +4231,12 @@ unsigned short *Render::MakeScreenshot(signed int width, signed int height) {
         ErrD3D(pBackBuffer4->Unlock(NULL));
     }
     return pPixels;
+}
+
+Image *Render::TakeScreenshot(unsigned int width, unsigned int height) {
+    auto pixels = MakeScreenshot(width, height);
+    Image *image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
+    return image;
 }
 
 void Render::SaveScreenshot(const String &filename, unsigned int width,

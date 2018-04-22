@@ -117,7 +117,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
         if (pMapStats->GetMapInfo(v15)) {
             transition_button_label = localization->FormatString(
                 411, pMapStats->pInfos[pMapStats->GetMapInfo(v15)]
-                         .pName);  // Enter %s   Войти в ^Pv[%s]
+                         .pName.c_str());  // Enter %s   Войти в ^Pv[%s]
 
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
                 pParty->uFlags & 0x30)
@@ -144,7 +144,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
             transition_button_label = localization->FormatString(
                 410,
                 pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
-                    .pName);  // "Leave %s"
+                    .pName.c_str());  // "Leave %s"
                               // if (
                               // pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId
                               // ) PlayHouseSound(anim_id, HouseSound_Greeting);
@@ -208,7 +208,7 @@ GUIWindow_Travel::GUIWindow_Travel()
     if (pMapStats->GetMapInfo(pCurrentMapName))
         transition_button_label = localization->FormatString(
             410, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
-                     .pName);  // "Leave %s"
+                     .pName.c_str());  // "Leave %s"
     else
         transition_button_label = localization->GetString(79);  // Exit
 
@@ -256,17 +256,17 @@ void GUIWindow_Travel::Update() {
             str = localization->FormatString(
                 663, 1,
                 pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)]
-                    .pName);  // It will take %d day to cross to %s.
+                    .pName.c_str());  // It will take %d day to cross to %s.
         } else {
             str = localization->FormatString(
                 128, GetTravelTime(),
                 pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)]
-                    .pName);  // It will take %d days to travel to %s.
+                    .pName.c_str());  // It will take %d days to travel to %s.
         }
         str += "\n \n";
         str += localization->FormatString(
             126,
-            pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName);
+            pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
 
         travel_window.DrawTitleText(
             pFontCreate, 0,
