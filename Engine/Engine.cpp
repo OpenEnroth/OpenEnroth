@@ -804,7 +804,6 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     char *v3;         // eax@1
     unsigned int v5;  // eax@3
-    char Str1[20];    // [sp+Ch] [bp-18h]@1
 
     // v9 = bLoading;
     ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
@@ -812,12 +811,13 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1
                                                ? GUIProgressBar::TYPE_Fullscreen
                                                : GUIProgressBar::TYPE_Box);
-    strcpy(Str1, pCurrentMapName);
+    char Str1[20];    // [sp+Ch] [bp-18h]@1
+    strcpy(Str1, pCurrentMapName.c_str());
     v3 = strtok(Str1, ".");
     strcpy(Str1, v3);
     Level_LoadEvtAndStr(Str1);
     LoadLevel_InitializeLevelEvt();
-    strcpy(Str1, pCurrentMapName);
+    strcpy(Str1, pCurrentMapName.c_str());
     _strrev(Str1);
     strtok(Str1, ".");
     _strrev(Str1);
@@ -836,8 +836,8 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     else
         PrepareToLoadBLV(bLoading);
     _461103_load_level_sub();
-    if (!_stricmp(pCurrentMapName, "d11.blv") ||
-        !_stricmp(pCurrentMapName, "d10.blv")) {
+    if ((pCurrentMapName == "d11.blv") ||
+        (pCurrentMapName == "d10.blv")) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
         for (uint i = 0; i < uNumActors; ++i) {
@@ -1322,7 +1322,7 @@ bool GameLoop() {
 
             pParty->pPickedItem.uItemID = 0;
 
-            strcpy(pCurrentMapName, pStartingMapName);
+            pCurrentMapName = pStartingMapName;
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
@@ -1663,7 +1663,7 @@ void MM7Initialization() {
 void PrepareToLoadODM(unsigned int bLoading, ODMRenderParams *a2) {
     pGameLoadingUI_ProgressBar->Reset(27);
     uCurrentlyLoadedLevelType = LEVEL_Outdoor;
-    ODM_LoadAndInitialize(pCurrentMapName, a2);
+    ODM_LoadAndInitialize(pCurrentMapName.c_str(), a2);
     if (!bLoading) TeleportToStartingPoint(uLevel_StartingPointType);
     viewparams->_443365();
     PlayLevelMusic();
@@ -2895,12 +2895,12 @@ void Transition_StopSound_Autosave(const char *pMapName,
                                    MapStartPoint start_point) {
     pAudioPlayer->StopChannels(-1, -1);
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
-    if (_stricmp(pCurrentMapName, pMapName)) {
+    if (pCurrentMapName != pMapName) {
         SaveGame(1, 0);
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
-    strcpy(pCurrentMapName, pMapName);
+    pCurrentMapName = pMapName;
     uLevel_StartingPointType = start_point;
 }
 
@@ -2950,7 +2950,9 @@ void OnTimer(int) {
 
 //----- (0044C28F) --------------------------------------------------------
 bool TeleportToNWCDungeon() {
-    if (!_stricmp("nwc.blv", pCurrentMapName)) return false;
+    if ("nwc.blv" == pCurrentMapName) {
+        return false;
+    }
 
     _5B65A8_npcdata_uflags_or_other = 0;
     _5B65AC_npcdata_fame_or_other = 0;

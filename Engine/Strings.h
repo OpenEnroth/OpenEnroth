@@ -7,6 +7,7 @@ typedef std::string String;
 
 String StringPrintf(const char *fmt, ...);
 String StringFromInt(int value);
+String MakeLower(const String &text);
 
 //----- (00452C30) --------------------------------------------------------
 inline char *RemoveQuotes(char *str) {

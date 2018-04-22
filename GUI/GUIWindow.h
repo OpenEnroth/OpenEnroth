@@ -579,7 +579,7 @@ void GameUI_DrawPortraits(unsigned int _this);
 void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         unsigned int uW, unsigned int uZoom,
                         unsigned int bRedrawOdmMinimap);
-auto GameUI_GetMinimapHintText() -> const char *;
+String GameUI_GetMinimapHintText();
 void GameUI_DrawPartySpells();
 void GameUI_DrawTorchlightAndWizardEye();
 void GameUI_DrawCharacterSelectionFrame();

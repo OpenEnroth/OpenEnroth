@@ -93,7 +93,6 @@ void GUIWindow_LloydsBook::Update() {
     unsigned int pDays;          // eax@14
     const char *pSelectionText;  // eax@19
     GUIWindow pWindow;           // [sp+Ch] [bp-7Ch]@1
-    char *Str;                   // [sp+74h] [bp-14h]@14
     int BeaconID;                // [sp+78h] [bp-10h]@11
     int uNumMaxBeacons;          // [sp+84h] [bp-4h]@6
 
@@ -152,12 +151,9 @@ void GUIWindow_LloydsBook::Update() {
                     pLloydsBeaconsPreviewXs[BeaconID] / 640.0f,
                     pLloydsBeaconsPreviewYs[BeaconID] / 480.0f,
                     pSavegameThumbnails[BeaconID]);
-                Str = pMapStats
-                          ->pInfos[pMapStats->sub_410D99_get_map_index(
-                              pPlayer->pInstalledBeacons[BeaconID].SaveFileID)]
-                          .pName;
-                pTextHeight =
-                    pSpellFont->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
+                String Str = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(
+                              pPlayer->pInstalledBeacons[BeaconID].SaveFileID)].pName;
+                pTextHeight = pSpellFont->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
                 pWindow.uFrameY += -6 - pTextHeight;
                 pWindow.DrawTitleText(pSpellFont, 0, 0, 1, Str, 3);
                 RemainingTime =

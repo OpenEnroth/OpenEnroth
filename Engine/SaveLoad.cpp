@@ -237,7 +237,7 @@ void LoadGame(unsigned int uSlot) {
                   4) != -1;
     if (!v25 && !v26) Error("Unable to find: %s!", header.pLocationName);
 
-    strcpy(pCurrentMapName, header.pLocationName);
+    pCurrentMapName = header.pLocationName;
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_2000 | GAME_SETTINGS_0001;
 
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
@@ -282,8 +282,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     // v66 = a2;
     s_SavedMapName = pCurrentMapName;
-    if (!_stricmp(pCurrentMapName, "d05.blv"))  // arena
+    if (pCurrentMapName == "d05.blv") {  // arena
         return;
+    }
 
     uncompressed_buff = (char *)malloc(1000000);
 
@@ -343,7 +344,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     memset(save_header.pName, 0, 20);
     memset(save_header.pLocationName, 0, 20);
     memset(save_header.field_30, 0, 52);
-    strcpy(save_header.pLocationName, pCurrentMapName);
+    strcpy(save_header.pLocationName, pCurrentMapName.c_str());
     save_header.playing_time = pParty->GetPlayingTime();
     strcpy(pLodDirectory.pFilename, "header.bin");
     pLodDirectory.uDataSize = sizeof(SavegameHeader);
@@ -532,7 +533,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             memcpy(data_write_pos, &pOutdoor->loc_time, 0x38);
             data_write_pos += 56;
         }
-        strcpy(Source, pCurrentMapName);
+        strcpy(Source, pCurrentMapName.c_str());
         _splitpath(Source, Drive, Dir, Filename, Ext);
         Ext[1] = 'd';
 
@@ -574,10 +575,10 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
 //----- (00460078) --------------------------------------------------------
 void DoSavegame(unsigned int uSlot) {
-    if (_stricmp(pCurrentMapName, "d05.blv")) {  // Not Arena(не Арена)
+    if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
         LOD::Directory pDir;  // [sp+Ch] [bp-28h]@2
         SaveGame(0, 0);
-        strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName);
+        strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName.c_str());
         pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
         strcpy(pDir.pFilename, "header.bin");
         pDir.uDataSize = 100;
@@ -599,11 +600,10 @@ void DoSavegame(unsigned int uSlot) {
         }
     }
 
-    if (_stricmp(pCurrentMapName, "d05.blv"))
+    if (pCurrentMapName != "d05.blv")
         pNew_LOD->_4621A7();
     else
-        GameUI_StatusBar_OnEvent(localization->GetString(583),
-                                 2);  // "No saving in the Arena"
+        GameUI_StatusBar_OnEvent(localization->GetString(583), 2);  // "No saving in the Arena"
 
     pEventTimer->Resume();
     GameUI_StatusBar_OnEvent(localization->GetString(656), 2);  // "Game Saved!"

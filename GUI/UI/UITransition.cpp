@@ -110,8 +110,10 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                 pAnimatedRooms[p2DEvents[anim_id - 1].uAnimationID].video_name,
                 1);
 
-        const char *v15 = pLocationName;
-        if (*pLocationName == 48) v15 = pCurrentMapName;
+        String v15 = pLocationName;
+        if (*pLocationName == 48) {
+            v15 = pCurrentMapName;
+        }
         if (pMapStats->GetMapInfo(v15)) {
             transition_button_label = localization->FormatString(
                 411, pMapStats->pInfos[pMapStats->GetMapInfo(v15)]

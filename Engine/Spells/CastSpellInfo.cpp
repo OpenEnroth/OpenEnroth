@@ -2195,9 +2195,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             }
 
             case SPELL_WATER_LLOYDS_BEACON: {
-                if (!_stricmp(pCurrentMapName, "d05.blv")) {  // Arena
-                    GameUI_StatusBar_OnEvent(
-                        localization->GetString(428));  // Spell failed
+                if (pCurrentMapName == "d05.blv") {  // Arena
+                    GameUI_StatusBar_OnEvent(localization->GetString(428));  // Spell failed
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
