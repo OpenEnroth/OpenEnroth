@@ -344,7 +344,7 @@ void AudioPlayer::LoadAudioSnd() {
 
     fread(&uNumSoundHeaders, 1, 4, hAudioSnd);
     pSoundHeaders = nullptr;
-    pSoundHeaders = (SoundHeader *)malloc(52 * uNumSoundHeaders + 2);
+    pSoundHeaders = (SoundHeader *)malloc(sizeof(SoundHeader) * uNumSoundHeaders + 2);
     fread(pSoundHeaders, 1, sizeof(SoundHeader) * uNumSoundHeaders, hAudioSnd);
 }
 

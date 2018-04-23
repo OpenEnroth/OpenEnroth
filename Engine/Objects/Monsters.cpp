@@ -323,7 +323,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
         v4 = Argsa;
     }
     v2->uNumMonsters = v4;
-    v5 = malloc(152 * v4);
+    v5 = malloc(sizeof(MonsterDesc) * v4);
     v2->pMonsters = (MonsterDesc *)v5;
     if (!v5) Error("MonsterRaceListStruct::load - Out of Memory!");
 

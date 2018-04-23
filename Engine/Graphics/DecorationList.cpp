@@ -91,7 +91,7 @@ bool DecorationList::FromFileTxt(const char *Args) {
         v4 = Argsa;
     }
     v2->uNumDecorations = v4;
-    v5 = malloc(84 * v4);
+    v5 = malloc(sizeof(DecorationDesc) * v4);
     v2->pDecorations = (DecorationDesc *)v5;
     if (!v5) Error("DecorationDescriptionList::load - Out of Memory!");
 

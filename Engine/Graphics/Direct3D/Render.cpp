@@ -4187,8 +4187,8 @@ unsigned short *Render::MakeScreenshot(int width, int height) {
     float interval_x = game_viewport_width / (double)width;
     float interval_y = game_viewport_height / (double)height;
 
-    uint16_t *pPixels = (uint16_t *)malloc(2 * height * width);
-    memset(pPixels, 0, 2 * height * width);
+    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * height * width);
+    memset(pPixels, 0, sizeof(uint16_t) * height * width);
 
     for_pixels = pPixels;
 

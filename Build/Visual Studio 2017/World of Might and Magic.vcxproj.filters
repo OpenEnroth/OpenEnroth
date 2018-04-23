@@ -100,6 +100,36 @@
     <Filter Include="Media\Video">
       <UniqueIdentifier>{90fa739c-7e1c-42dc-8222-f43c519a80c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib64">
+      <UniqueIdentifier>{e4e69a1f-471e-4b15-aec4-63aa787e7284}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib64\libavcodec">
+      <UniqueIdentifier>{56dfe28f-5cc4-4797-b084-60b5e66384ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib64\libavformat">
+      <UniqueIdentifier>{0415b0e9-4856-4c30-900d-3c6c90a4d4aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib64\libavutil">
+      <UniqueIdentifier>{a82068b9-b980-4602-a558-9dd3a394f440}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib64\libswresample">
+      <UniqueIdentifier>{13a278bd-0926-4154-a63d-6819a2642835}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib64\libswscale">
+      <UniqueIdentifier>{46c7bb0c-689a-4cfd-850f-60a178ae7ed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib64\OpenAL">
+      <UniqueIdentifier>{fbbfa68b-a33f-47ec-ab65-b8e44da91ac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib64\OpenAL\lib">
+      <UniqueIdentifier>{a37246b5-c063-4f57-876a-add6c92d34bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib64\OpenAL\lib\OpenAL">
+      <UniqueIdentifier>{e4513547-9b41-4b91-a8ae-ca3779bda13c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib64\OpenAL\lib\x64">
+      <UniqueIdentifier>{9c1bf620-c668-4edf-85f8-72389fa56258}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lib\zlib\adler32.c">
@@ -1115,6 +1145,342 @@
     <ClInclude Include="..\..\Engine\Graphics\Direct3D\RenderD3D.h">
       <Filter>Engine\Graphics\Direct3D</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\ac3_parser.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\adts_parser.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\avcodec.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\avdct.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\avfft.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\d3d11va.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\dirac.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\dv_profile.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\dxva2.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\jni.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\mediacodec.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\qsv.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\vaapi.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\vdpau.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\version.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\videotoolbox.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\vorbis_parser.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavcodec\xvmc.h">
+      <Filter>lib64\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavformat\avformat.h">
+      <Filter>lib64\libavformat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavformat\avio.h">
+      <Filter>lib64\libavformat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavformat\version.h">
+      <Filter>lib64\libavformat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\adler32.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\aes.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\aes_ctr.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\attributes.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\audio_fifo.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\avassert.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\avconfig.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\avstring.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\avutil.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\base64.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\blowfish.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\bprint.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\bswap.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\buffer.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\camellia.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\cast5.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\channel_layout.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\common.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\cpu.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\crc.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\des.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\dict.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\display.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\downmix_info.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\encryption_info.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\error.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\eval.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\ffversion.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\fifo.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\file.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\frame.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hash.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hmac.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext_cuda.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext_d3d11va.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext_drm.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext_dxva2.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext_mediacodec.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext_qsv.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext_vaapi.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext_vdpau.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\hwcontext_videotoolbox.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\imgutils.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\intfloat.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\intreadwrite.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\lfg.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\log.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\lzo.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\macros.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\mastering_display_metadata.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\mathematics.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\md5.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\mem.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\motion_vector.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\murmur3.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\opt.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\parseutils.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\pixdesc.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\pixelutils.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\pixfmt.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\random_seed.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\rational.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\rc4.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\replaygain.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\ripemd.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\samplefmt.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\sha.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\sha512.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\spherical.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\stereo3d.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\tea.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\threadmessage.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\time.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\timecode.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\timestamp.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\tree.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\twofish.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\version.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libavutil\xtea.h">
+      <Filter>lib64\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libswresample\swresample.h">
+      <Filter>lib64\libswresample</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libswresample\version.h">
+      <Filter>lib64\libswresample</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libswscale\swscale.h">
+      <Filter>lib64\libswscale</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\libswscale\version.h">
+      <Filter>lib64\libswscale</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\OpenAL\al.h">
+      <Filter>lib64\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\OpenAL\alc.h">
+      <Filter>lib64\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\OpenAL\efx.h">
+      <Filter>lib64\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\OpenAL\efx-creative.h">
+      <Filter>lib64\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\OpenAL\EFX-Util.h">
+      <Filter>lib64\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib64\OpenAL\xram.h">
+      <Filter>lib64\OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\Configuration.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\lib\OpenAL\lib\x86\avcodec-55.def">
@@ -1148,6 +1514,30 @@
     <None Include="..\..\.gitignore" />
     <None Include="..\..\README.md" />
     <None Include="..\..\TODO.md" />
+    <None Include="..\..\lib64\OpenAL\lib\x64\avcodec-58.def">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </None>
+    <None Include="..\..\lib64\OpenAL\lib\x64\avdevice-58.def">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </None>
+    <None Include="..\..\lib64\OpenAL\lib\x64\avfilter-7.def">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </None>
+    <None Include="..\..\lib64\OpenAL\lib\x64\avformat-58.def">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </None>
+    <None Include="..\..\lib64\OpenAL\lib\x64\avutil-56.def">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </None>
+    <None Include="..\..\lib64\OpenAL\lib\x64\postproc-55.def">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </None>
+    <None Include="..\..\lib64\OpenAL\lib\x64\swresample-3.def">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </None>
+    <None Include="..\..\lib64\OpenAL\lib\x64\swscale-5.def">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\lib\OpenAL\lib\OpenAL\OpenAL32.lib">
@@ -1176,6 +1566,33 @@
     </Library>
     <Library Include="..\..\lib\OpenAL\lib\x86\swscale.lib">
       <Filter>lib\OpenAL\lib\x86</Filter>
+    </Library>
+    <Library Include="..\..\lib64\OpenAL\lib\x64\avcodec.lib">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </Library>
+    <Library Include="..\..\lib64\OpenAL\lib\x64\avdevice.lib">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </Library>
+    <Library Include="..\..\lib64\OpenAL\lib\x64\avfilter.lib">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </Library>
+    <Library Include="..\..\lib64\OpenAL\lib\x64\avformat.lib">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </Library>
+    <Library Include="..\..\lib64\OpenAL\lib\x64\avutil.lib">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </Library>
+    <Library Include="..\..\lib64\OpenAL\lib\x64\postproc.lib">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </Library>
+    <Library Include="..\..\lib64\OpenAL\lib\x64\swresample.lib">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </Library>
+    <Library Include="..\..\lib64\OpenAL\lib\x64\swscale.lib">
+      <Filter>lib64\OpenAL\lib\x64</Filter>
+    </Library>
+    <Library Include="..\..\lib64\OpenAL\lib\OpenAL\OpenAL32.lib">
+      <Filter>lib64\OpenAL\lib\OpenAL</Filter>
     </Library>
   </ItemGroup>
 </Project>

@@ -575,11 +575,11 @@ int ChestList::FromFileTxt(const char *Args) {
     }
     v6 = this->pChests;
     this->uNumChests = v5;
-    v7 = malloc(36 * v5);
+    v7 = malloc(sizeof(ChestDesc) * v5);
     this->pChests = (ChestDesc *)v7;
     if (v7 == (void *)v3) Error("ChestDescriptionList::load - Out of Memory!");
 
-    memset(v7, v3, 36 * this->uNumChests);
+    memset(v7, v3, sizeof(ChestDesc) * this->uNumChests);
     v8 = File;
     this->uNumChests = v3;
     fseek(v8, v3, v3);

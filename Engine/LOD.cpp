@@ -99,8 +99,8 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSpriteHeader,
         strcpy(pSpriteHeader->pName, pContainer.c_str());
         Sizea = pSpriteHeader->uSpriteSize;
         pSpriteHeader->pSpriteLines =
-            (LODSprite_stru0 *)malloc(8 * pSpriteHeader->uHeight);
-        fread(pSpriteHeader->pSpriteLines, 1, 8 * pSpriteHeader->uHeight, File);
+            (LODSprite_stru0 *)malloc(sizeof(LODSprite_stru0) * pSpriteHeader->uHeight);
+        fread(pSpriteHeader->pSpriteLines, 1, sizeof(LODSprite_stru0) * pSpriteHeader->uHeight, File);
 
         if (pSpriteHeader->uDecompressedSize) {
             pSpriteHeader->pDecompressedBytes =
@@ -732,7 +732,7 @@ void LOD::File::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
         free(pSubIndices);
         pSubIndices = nullptr;
     }
-    pSubIndices = (LOD::Directory *)malloc(32 * uNumSubIndices);
+    pSubIndices = (LOD::Directory *)malloc(sizeof(LOD::Directory) * uNumSubIndices);
     if (pIOBuffer) {
         logger->Warning(L"Attempt to reset a LOD IObuffer!");
         free(pIOBuffer);
