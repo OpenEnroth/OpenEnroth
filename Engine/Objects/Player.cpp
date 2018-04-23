@@ -2274,7 +2274,8 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(
                 armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
         } else {
-            Error("Unknown armour type");  // what kind of armour is that?
+            // PLAYER_SKILL_MISC
+            // any others?
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(
                 armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
@@ -8024,16 +8025,16 @@ bool Player::ProfessionOrGuildFlagsCorrect(unsigned int uClass, int a3) {
             return false;
         }
         switch (uClass) {
-            case 0x1Au:
+            case PLAYER_CLASS_PRIEST_OF_SUN:
                 return (_449B57_test_bit(
                     (unsigned __int8*)this->_achieved_awards_bits, 65));
-            case 0x1Bu:
+            case PLAYER_CLASS_PRIEST_OF_MOON:
                 return (_449B57_test_bit(
                     (unsigned __int8*)this->_achieved_awards_bits, 67));
-            case 0x22u:
+            case PLAYER_CLASS_ARCHMAGE:
                 return (_449B57_test_bit(
                     (unsigned __int8*)this->_achieved_awards_bits, 77));
-            case 0x23u:
+            case PLAYER_CLASS_LICH:
                 return (_449B57_test_bit(
                     (unsigned __int8*)this->_achieved_awards_bits, 79));
                 break;

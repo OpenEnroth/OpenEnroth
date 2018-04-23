@@ -3307,7 +3307,6 @@ void TrainingDialog(const char *s) {
 }
 
 void sub_4B6478() {
-    unsigned int v2;              // eax@1
     signed int v3;                // esi@1
     int pPrice;                   // ebx@1
     unsigned int v5;              // esi@5
@@ -3324,7 +3323,7 @@ void sub_4B6478() {
     dialog_window.uFrameX = 483;
     dialog_window.uFrameWidth = 148;
     dialog_window.uFrameZ = 334;
-    v2 = 52 * (unsigned int)window_SpeakInHouse->ptr_1C;
+
     v32 =
         (unsigned __int8)(((p2DEvents
             [(unsigned int)window_SpeakInHouse->ptr_1C - 1]

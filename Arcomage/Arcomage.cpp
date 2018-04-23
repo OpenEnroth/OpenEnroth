@@ -2925,7 +2925,7 @@ void GameResultsApply() {
                                1);  // 238 - Won all Arcomage games
 
         for (int i = 0; i < 4; ++i) {  //внесение записи в Заслуги
-            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, 1))
+            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__FINED))
                 _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits,
                                    PLAYER_GUILD_BITS__ARCOMAGE_WIN, 1);
         }
@@ -2934,7 +2934,7 @@ void GameResultsApply() {
             pParty->uNumArcomageWins = 1000000;
     } else {  //проигрыш
         for (int i = 0; i < 4; ++i) {  //внесение записи в Заслуги
-            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, 1))
+            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__FINED))
                 _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits,
                                    PLAYER_GUILD_BITS__ARCOMAGE_LOSE, 1);
         }

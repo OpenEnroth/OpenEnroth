@@ -2677,7 +2677,7 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1,
     float depth = 1000000.0;
     for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
         if (a1->field_104[i].z < depth) {
-            depth = a1->field_104[i * 4].z;
+            depth = a1->field_104[i].z;
         }
     }
 
