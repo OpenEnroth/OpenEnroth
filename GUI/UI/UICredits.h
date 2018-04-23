@@ -24,4 +24,5 @@ class GUICredits : public GUIWindow {
     int height;
     Image *cred_texture;
     int move_Y;
+    int tick;
 };

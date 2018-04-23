@@ -355,50 +355,43 @@ void Keyboard::ProcessInputActions() {
 
     // pParty->uFlags2 |= PARTY_FLAGS_2_RUNNING;
 
-    //  WUT? double event trigger
-    /*for ( uint i = 0; i < 30; ++i )
-    {
-      if ( pKeyActionMap->pToggleTypes[i] )
-        v14 =
-    pEngine->pKeyboardInstance->WasKeyPressed(pKeyActionMap->pVirtualKeyCodesMapping[i]);
-      else
-        v14 =
-    pEngine->pKeyboardInstance->IsKeyBeingHeld(pKeyActionMap->pVirtualKeyCodesMapping[i]);
-      if ( v14 )
-      {
-        if (current_screen_type == SCREEN_GAME)
-        {
-          pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Game_Action, 0, 0);
-          continue;
-        }
-        if ( current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type
-    == SCREEN_BRANCHLESS_NPC_DIALOG )
-        {
-          v15 = pMessageQueue_50CBD0->uNumMessages;
-          if ( pMessageQueue_50CBD0->uNumMessages )
-          {
-            v15 = 0;
-            if (
-    pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].field_8
-    )
-            {
-              v15 = 1;
-              pMessageQueue_50CBD0->uNumMessages = 0;
-              pMessageQueue_50CBD0->pMessages[v15].eType = UIMSG_Escape;
-              pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param
-    = 0;
-              *(&pMessageQueue_50CBD0->uNumMessages + 3 *
-    pMessageQueue_50CBD0->uNumMessages + 3) = 0;
-              ++pMessageQueue_50CBD0->uNumMessages;
-              continue;
+    if (pEventTimer->bPaused) {  // game paused
+        for (uint i = 0; i < 30; ++i) {
+            inputAction = (InputAction)i;
+            if (pKeyActionMap->pToggleTypes[inputAction])
+                v4 = pKeyboard->WasKeyPressed(
+                    pKeyActionMap->pVirtualKeyCodesMapping[inputAction]);
+            else
+                v4 = pKeyboard->IsKeyBeingHeld(
+                    pKeyActionMap->pVirtualKeyCodesMapping[inputAction]);
+
+            if (v4) {
+                if (current_screen_type == SCREEN_GAME || SCREEN_CHEST) {
+                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Game_Action, 0, 0);
+                    continue;
+                }
+                if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
+                    /*v15 = pMessageQueue_50CBD0->uNumMessages;
+                    if (pMessageQueue_50CBD0->uNumMessages) {
+                        v15 = 0;
+                        if (pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].field_8) {
+                            v15 = 1;
+                            pMessageQueue_50CBD0->uNumMessages = 0;
+                            pMessageQueue_50CBD0->pMessages[v15].eType = UIMSG_Escape;
+                            pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 0;
+                            *(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
+                            ++pMessageQueue_50CBD0->uNumMessages;
+                            continue;
+                        }
+                        pMessageQueue_50CBD0->uNumMessages = 0;
+
+                    }*/
+                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                }
             }
-            pMessageQueue_50CBD0->uNumMessages = 0;
-          }
-          //pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
         }
-      }
-    }*/
-    if (!pEventTimer->bPaused) {
+    }
+    if (!pEventTimer->bPaused) {  // game running
         for (uint i = 0; i < 30; ++i) {
             inputAction = (InputAction)i;
             if (pKeyActionMap->pToggleTypes[inputAction])

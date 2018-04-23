@@ -3171,9 +3171,14 @@ int Player::GetActualSkillLevel(
         } break;
     }
 
+    if (uSkillType == PLAYER_SKILL_CLUB) {
+        // some items loaded in as clubs
+        uSkillType = PLAYER_SKILL_MACE;
+    }
+
     // cap skill and bonus at 60
     skill_value =
-        pActiveSkills[uSkillType] & 0x3F;  // player_skill_club out of bounds
+        pActiveSkills[uSkillType] & 0x3F;
     result = bonus_value + skill_value;
 
     if (result > 60) result = 60;

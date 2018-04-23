@@ -3482,7 +3482,7 @@ void sub_487DA9() {
 
 //----- (004706C6) --------------------------------------------------------
 void UpdateActors_ODM() {
-    int v3;  // ebx@6
+    int Water_Walk;  // ebx@6
     int v5;  // eax@10
     // int v6; // ecx@10
     signed int v8;  // ebx@17
@@ -3507,166 +3507,166 @@ void UpdateActors_ODM() {
     //  int v55; // eax@107
     //  unsigned int v56; // edi@107
     //  int v57; // ST10_4@107
-    unsigned int v58;  // edi@107
-    unsigned int v59;  // ebx@107
+    unsigned int Tile_1_Land;  // edi@107
+    unsigned int Tile_2_Land;  // ebx@107
     //  signed int v60; // eax@107
     int v61;            // eax@124
     Vec3_int_ v62;      // [sp+Ch] [bp-44h]@42
     int v63;            // [sp+18h] [bp-38h]@64
     int v64;            // [sp+1Ch] [bp-34h]@64
-    bool v67;           // [sp+28h] [bp-28h]@10
+    bool Actor_On_Terrain;           // [sp+28h] [bp-28h]@10
     unsigned int v69;   // [sp+30h] [bp-20h]@6
     unsigned int v70;   // [sp+34h] [bp-1Ch]@10
     int v71;            // [sp+38h] [bp-18h]@62
     int uIsAboveFloor;  // [sp+3Ch] [bp-14h]@10
     int v72b;
     int uIsFlying;     // [sp+44h] [bp-Ch]@8
-    unsigned int v75;  // [sp+48h] [bp-8h]@1
+    unsigned int Actor_ITR;  // [sp+48h] [bp-8h]@1
     int uIsOnWater;    // [sp+4Ch] [bp-4h]@10
 
     if (engine_config->no_actors)
         uNumActors = 0;
 
-    for (v75 = 0; v75 < uNumActors; ++v75) {
-        if (pActors[v75].uAIState == Removed ||
-            pActors[v75].uAIState == Disabled ||
-            pActors[v75].uAIState == Summoned || !pActors[v75].uMovementSpeed)
+    for (Actor_ITR = 0; Actor_ITR < uNumActors; ++Actor_ITR) {
+        if (pActors[Actor_ITR].uAIState == Removed ||
+            pActors[Actor_ITR].uAIState == Disabled ||
+            pActors[Actor_ITR].uAIState == Summoned || !pActors[Actor_ITR].uMovementSpeed)
             continue;
-        v3 = 0;
+        Water_Walk = 0;
         v69 = 0;
-        if (MonsterStats::BelongsToSupertype(pActors[v75].pMonsterInfo.uID,
+        if (MonsterStats::BelongsToSupertype(pActors[Actor_ITR].pMonsterInfo.uID,
                                              MONSTER_SUPERTYPE_WATER_ELEMENTAL))
-            v3 = 1;
-        pActors[v75].uSectorID = 0;
-        uIsFlying = pActors[v75].pMonsterInfo.uFlying;
-        if (!pActors[v75].CanAct()) uIsFlying = 0;
-        v70 = IsTerrainSlopeTooHigh(pActors[v75].vPosition.x,
-                                    pActors[v75].vPosition.y);
+            Water_Walk = 1;
+        pActors[Actor_ITR].uSectorID = 0;
+        uIsFlying = pActors[Actor_ITR].pMonsterInfo.uFlying;
+        if (!pActors[Actor_ITR].CanAct()) uIsFlying = 0;
+        v70 = IsTerrainSlopeTooHigh(pActors[Actor_ITR].vPosition.x,
+                                    pActors[Actor_ITR].vPosition.y);
         v5 = ODM_GetFloorLevel(
-            pActors[v75].vPosition.x, pActors[v75].vPosition.y,
-            pActors[v75].vPosition.z, pActors[v75].uActorHeight, &uIsOnWater,
-            (int *)&v69, v3);
-        // v6 = pActors[v75].vPosition.z;
+            pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y,
+            pActors[Actor_ITR].vPosition.z, pActors[Actor_ITR].uActorHeight, &uIsOnWater,
+            (int *)&v69, Water_Walk);
+        // v6 = pActors[Actor_ITR].vPosition.z;
         uIsAboveFloor = 0;
-        v67 = v69 == 0;
-        if (pActors[v75].vPosition.z > v5 + 1) uIsAboveFloor = 1;
-        if (pActors[v75].uAIState == Dead && uIsOnWater && !uIsAboveFloor) {
-            pActors[v75].uAIState = Removed;
+        Actor_On_Terrain = v69 == 0;
+        if (pActors[Actor_ITR].vPosition.z > v5 + 1) uIsAboveFloor = 1;
+        if (pActors[Actor_ITR].uAIState == Dead && uIsOnWater && !uIsAboveFloor) {
+            pActors[Actor_ITR].uAIState = Removed;
             continue;
         }
-        if (pActors[v75].uCurrentActionAnimation == ANIM_Walking) {
-            v8 = pActors[v75].uMovementSpeed;
-            if (pActors[v75].pActorBuffs[ACTOR_BUFF_SLOWED].Active())
+        if (pActors[Actor_ITR].uCurrentActionAnimation == ANIM_Walking) {
+            v8 = pActors[Actor_ITR].uMovementSpeed;
+            if (pActors[Actor_ITR].pActorBuffs[ACTOR_BUFF_SLOWED].Active())
                 v8 = (signed __int64)((double)v8 * 0.5);
-            if (pActors[v75].uAIState == Fleeing ||
-                pActors[v75].uAIState == Pursuing)
+            if (pActors[Actor_ITR].uAIState == Fleeing ||
+                pActors[Actor_ITR].uAIState == Pursuing)
                 v8 *= 2;
             if (pParty->bTurnBasedModeOn == true &&
                 pTurnEngine->turn_stage == TE_WAIT)
                 v8 *= flt_6BE3AC_debug_recmod1_x_1_6;
             if (v8 > 1000) v8 = 1000;
 
-            pActors[v75].vVelocity.x =
-                fixpoint_mul(stru_5C6E00->Cos(pActors[v75].uYawAngle), v8);
-            pActors[v75].vVelocity.y =
-                fixpoint_mul(stru_5C6E00->Sin(pActors[v75].uYawAngle), v8);
+            pActors[Actor_ITR].vVelocity.x =
+                fixpoint_mul(stru_5C6E00->Cos(pActors[Actor_ITR].uYawAngle), v8);
+            pActors[Actor_ITR].vVelocity.y =
+                fixpoint_mul(stru_5C6E00->Sin(pActors[Actor_ITR].uYawAngle), v8);
             if (uIsFlying) {
-                pActors[v75].vVelocity.z = fixpoint_mul(
-                    stru_5C6E00->Sin(pActors[v75].uPitchAngle), v8);
+                pActors[Actor_ITR].vVelocity.z = fixpoint_mul(
+                    stru_5C6E00->Sin(pActors[Actor_ITR].uPitchAngle), v8);
             }
             // v7 = v68;
         } else {
-            pActors[v75].vVelocity.x =
-                fixpoint_mul(55000, pActors[v75].vVelocity.x);
-            pActors[v75].vVelocity.y =
-                fixpoint_mul(55000, pActors[v75].vVelocity.y);
+            pActors[Actor_ITR].vVelocity.x =
+                fixpoint_mul(55000, pActors[Actor_ITR].vVelocity.x);
+            pActors[Actor_ITR].vVelocity.y =
+                fixpoint_mul(55000, pActors[Actor_ITR].vVelocity.y);
             if (uIsFlying)
-                pActors[v75].vVelocity.z =
-                    fixpoint_mul(55000, pActors[v75].vVelocity.z);
+                pActors[Actor_ITR].vVelocity.z =
+                    fixpoint_mul(55000, pActors[Actor_ITR].vVelocity.z);
         }
-        if (pActors[v75].vPosition.z < v5) {
-            pActors[v75].vPosition.z = v5;
-            pActors[v75].vVelocity.z = uIsFlying != 0 ? 0x14 : 0;
+        if (pActors[Actor_ITR].vPosition.z < v5) {
+            pActors[Actor_ITR].vPosition.z = v5;
+            pActors[Actor_ITR].vVelocity.z = uIsFlying != 0 ? 0x14 : 0;
         }
         // v17 = 0;
         if (!uIsAboveFloor || uIsFlying) {
-            if (v70 && !uIsAboveFloor && v67) {
-                pActors[v75].vPosition.z = v5;
-                ODM_GetTerrainNormalAt(pActors[v75].vPosition.x,
-                                       pActors[v75].vPosition.y, &v62);
+            if (v70 && !uIsAboveFloor && Actor_On_Terrain) {
+                pActors[Actor_ITR].vPosition.z = v5;
+                ODM_GetTerrainNormalAt(pActors[Actor_ITR].vPosition.x,
+                                       pActors[Actor_ITR].vPosition.y, &v62);
                 v20 = GetGravityStrength();
                 // v21 = v62.y;
                 // v22 = v62.z;
                 // v23 = v62.y * v0->vVelocity.y;
-                pActors[v75].vVelocity.z +=
+                pActors[Actor_ITR].vVelocity.z +=
                     -8 * (short)pEventTimer->uTimeElapsed * v20;
-                int v73 = abs(v62.x * pActors[v75].vVelocity.x +
-                              v62.z * pActors[v75].vVelocity.z +
-                              v62.y * pActors[v75].vVelocity.y) >>
+                int v73 = abs(v62.x * pActors[Actor_ITR].vVelocity.x +
+                              v62.z * pActors[Actor_ITR].vVelocity.z +
+                              v62.y * pActors[Actor_ITR].vVelocity.y) >>
                           16;
                 // v72b = v21;
-                pActors[v75].vVelocity.x += fixpoint_mul(v73, v62.x);
-                pActors[v75].vVelocity.y += fixpoint_mul(v73, v62.y);
-                pActors[v75].vVelocity.z += fixpoint_mul(v73, v62.z);
+                pActors[Actor_ITR].vVelocity.x += fixpoint_mul(v73, v62.x);
+                pActors[Actor_ITR].vVelocity.y += fixpoint_mul(v73, v62.y);
+                pActors[Actor_ITR].vVelocity.z += fixpoint_mul(v73, v62.z);
                 // v17 = 0;
             }
         } else {
-            pActors[v75].vVelocity.z -=
+            pActors[Actor_ITR].vVelocity.z -=
                 (short)pEventTimer->uTimeElapsed * GetGravityStrength();
         }
-        if (pParty->armageddon_timer != 0 && pActors[v75].CanAct()) {
-            pActors[v75].vVelocity.x += rand() % 100 - 50;
-            pActors[v75].vVelocity.y += rand() % 100 - 50;
-            pActors[v75].vVelocity.z += rand() % 100 - 20;
+        if (pParty->armageddon_timer != 0 && pActors[Actor_ITR].CanAct()) {
+            pActors[Actor_ITR].vVelocity.x += rand() % 100 - 50;
+            pActors[Actor_ITR].vVelocity.y += rand() % 100 - 50;
+            pActors[Actor_ITR].vVelocity.z += rand() % 100 - 20;
             v25 = rand();
-            pActors[v75].uAIState = Stunned;
-            pActors[v75].uYawAngle += v25 % 32 - 16;
-            pActors[v75].UpdateAnimation();
+            pActors[Actor_ITR].uAIState = Stunned;
+            pActors[Actor_ITR].uYawAngle += v25 % 32 - 16;
+            pActors[Actor_ITR].UpdateAnimation();
         }
-        if (pActors[v75].vVelocity.x * pActors[v75].vVelocity.x +
-                    pActors[v75].vVelocity.y * pActors[v75].vVelocity.y <
+        if (pActors[Actor_ITR].vVelocity.x * pActors[Actor_ITR].vVelocity.x +
+                    pActors[Actor_ITR].vVelocity.y * pActors[Actor_ITR].vVelocity.y <
                 400 &&
             v70 == 0) {
-            pActors[v75].vVelocity.y = 0;
-            pActors[v75].vVelocity.x = 0;
+            pActors[Actor_ITR].vVelocity.y = 0;
+            pActors[Actor_ITR].vVelocity.x = 0;
         }
         stru_721530.field_0 = 1;
         if (!uIsFlying)
             v26 = 40;
         else
-            v26 = pActors[v75].uActorRadius;
+            v26 = pActors[Actor_ITR].uActorRadius;
 
         stru_721530.field_84 = -1;
         stru_721530.field_8_radius = v26;
         stru_721530.prolly_normal_d = v26;
-        stru_721530.height = pActors[v75].uActorHeight;
+        stru_721530.height = pActors[Actor_ITR].uActorHeight;
         stru_721530.field_70 = 0;
 
         for (v69 = 0; v69 < 100; ++v69) {
-            stru_721530.position.x = pActors[v75].vPosition.x;
+            stru_721530.position.x = pActors[Actor_ITR].vPosition.x;
             stru_721530.normal.x = stru_721530.position.x;
-            stru_721530.position.y = pActors[v75].vPosition.y;
+            stru_721530.position.y = pActors[Actor_ITR].vPosition.y;
             stru_721530.normal.y = stru_721530.position.y;
-            v28 = pActors[v75].vPosition.z;
+            v28 = pActors[Actor_ITR].vPosition.z;
             stru_721530.normal.z = v28 + v26 + 1;
             stru_721530.position.z = v28 - v26 + stru_721530.height - 1;
             if (stru_721530.position.z < stru_721530.normal.z)
                 stru_721530.position.z = v28 + v26 + 1;
-            stru_721530.velocity.x = pActors[v75].vVelocity.x;
+            stru_721530.velocity.x = pActors[Actor_ITR].vVelocity.x;
             stru_721530.uSectorID = 0;
-            stru_721530.velocity.y = pActors[v75].vVelocity.y;
-            stru_721530.velocity.z = pActors[v75].vVelocity.z;
+            stru_721530.velocity.y = pActors[Actor_ITR].vVelocity.y;
+            stru_721530.velocity.z = pActors[Actor_ITR].vVelocity.z;
             if (stru_721530._47050A(0)) break;
             _46E889_collide_against_bmodels(1);
-            v29 = WorldPosToGridCellZ(pActors[v75].vPosition.y);
-            v30 = WorldPosToGridCellX(pActors[v75].vPosition.x);
+            v29 = WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y);
+            v30 = WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x);
             _46E26D_collide_against_sprites(v30, v29);
             _46EF01_collision_chech_player(0);
-            _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, v75));
+            _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, Actor_ITR));
             v31 = 0;
             for (i = 0; v31 < ai_arrays_size; ++v31) {
                 v33 = ai_near_actors_ids[v31];
-                if (v33 != v75 && Actor::_46DF1A_collide_against_actor(v33, 40))
+                if (v33 != Actor_ITR && Actor::_46DF1A_collide_against_actor(v33, 40))
                     ++i;
             }
             v71 = i > 1;
@@ -3678,44 +3678,44 @@ void UpdateActors_ODM() {
             v36 = ODM_GetFloorLevel(
                 stru_721530.normal2.x, stru_721530.normal2.y,
                 stru_721530.normal2.z - stru_721530.prolly_normal_d - 1,
-                pActors[v75].uActorHeight, (int *)&v63, &v64, 0);
+                pActors[Actor_ITR].uActorHeight, (int *)&v63, &v64, 0);
             if (uIsOnWater) {
                 if (v35 < v36 + 60) {
-                    if (pActors[v75].uAIState == Dead ||
-                        pActors[v75].uAIState == Dying ||
-                        pActors[v75].uAIState == Removed ||
-                        pActors[v75].uAIState == Disabled) {
+                    if (pActors[Actor_ITR].uAIState == Dead ||
+                        pActors[Actor_ITR].uAIState == Dying ||
+                        pActors[Actor_ITR].uAIState == Removed ||
+                        pActors[Actor_ITR].uAIState == Disabled) {
                         if (v64)
                             v61 = v36 + 30;
                         else
                             v61 = v5 + 60;
                         SpriteObject::sub_42F960_create_object(
-                            pActors[v75].vPosition.x, pActors[v75].vPosition.y,
+                            pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y,
                             v61);
-                        pActors[v75].uAIState = Removed;
+                        pActors[Actor_ITR].uAIState = Removed;
                         return;
                     }
                 }
             }
             if (stru_721530.field_7C >= stru_721530.field_6C) {
-                pActors[v75].vPosition.x = (short)stru_721530.normal2.x;
-                pActors[v75].vPosition.y = (short)stru_721530.normal2.y;
-                pActors[v75].vPosition.z = (short)stru_721530.normal2.z -
+                pActors[Actor_ITR].vPosition.x = (short)stru_721530.normal2.x;
+                pActors[Actor_ITR].vPosition.y = (short)stru_721530.normal2.y;
+                pActors[Actor_ITR].vPosition.z = (short)stru_721530.normal2.z -
                                            (short)stru_721530.prolly_normal_d -
                                            1;
                 break;
             }
             // v72b = fixpoint_mul(stru_721530.field_7C,
             // stru_721530.field_58.x);
-            pActors[v75].vPosition.x +=
+            pActors[Actor_ITR].vPosition.x +=
                 fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
             // v72b = (unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.field_58.y) >> 16;
-            pActors[v75].vPosition.y +=
+            pActors[Actor_ITR].vPosition.y +=
                 fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
             // v72b = (unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.field_58.z) >> 16;
-            pActors[v75].vPosition.z +=
+            pActors[Actor_ITR].vPosition.z +=
                 fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
             stru_721530.field_70 += stru_721530.field_7C;
             v39 = PID_ID(stru_721530.pid);
@@ -3726,28 +3726,28 @@ void UpdateActors_ODM() {
                         pParty->bTurnBasedModeOn != TE_WAIT) {
                         // if(pParty->bTurnBasedModeOn == 1)
                         // v34 = 0;
-                        if (pActors[v75].pMonsterInfo.uHostilityType) {
+                        if (pActors[Actor_ITR].pMonsterInfo.uHostilityType) {
                             if (v71 == 0)
-                                Actor::AI_Flee(v75, stru_721530.pid, 0,
+                                Actor::AI_Flee(Actor_ITR, stru_721530.pid, 0,
                                                (AIDirection *)0);
                             else
-                                Actor::AI_StandOrBored(v75, 4, 0,
+                                Actor::AI_StandOrBored(Actor_ITR, 4, 0,
                                                        (AIDirection *)0);
                         } else if (v71) {
-                            Actor::AI_StandOrBored(v75, 4, 0, (AIDirection *)0);
+                            Actor::AI_StandOrBored(Actor_ITR, 4, 0, (AIDirection *)0);
                         } else if (pActors[v39].pMonsterInfo.uHostilityType ==
                             MonsterInfo::Hostility_Friendly) {
-                            Actor::AI_Flee(v75, stru_721530.pid, 0,
+                            Actor::AI_Flee(Actor_ITR, stru_721530.pid, 0,
                                 (AIDirection *)0);
                         } else {
-                            Actor::AI_FaceObject(v75, stru_721530.pid, 0,
+                            Actor::AI_FaceObject(Actor_ITR, stru_721530.pid, 0,
                                 (AIDirection *)0);
                         }
                     }
                     break;
                 case OBJECT_Player:
-                    if (!pActors[v75].GetActorsRelation(0)) {
-                        Actor::AI_FaceObject(v75, stru_721530.pid, 0,
+                    if (!pActors[Actor_ITR].GetActorsRelation(0)) {
+                        Actor::AI_FaceObject(Actor_ITR, stru_721530.pid, 0,
                                              (AIDirection *)0);
                         break;
                     }
@@ -3756,8 +3756,8 @@ void UpdateActors_ODM() {
                     // == 0; v53 =
                     // SHIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
                     // < 0;
-                    pActors[v75].vVelocity.y = 0;
-                    pActors[v75].vVelocity.x = 0;
+                    pActors[Actor_ITR].vVelocity.y = 0;
+                    pActors[Actor_ITR].vVelocity.x = 0;
                     // if ( !v53 && (!(v53 | v52) ||
                     // LODWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
                     // > 0) )
@@ -3768,17 +3768,17 @@ void UpdateActors_ODM() {
                     break;
                 case OBJECT_Decoration:
                     v47 = integer_sqrt(
-                        pActors[v75].vVelocity.x * pActors[v75].vVelocity.x +
-                        pActors[v75].vVelocity.y * pActors[v75].vVelocity.y);
+                        pActors[Actor_ITR].vVelocity.x * pActors[Actor_ITR].vVelocity.x +
+                        pActors[Actor_ITR].vVelocity.y * pActors[Actor_ITR].vVelocity.y);
                     v48 = stru_5C6E00->Atan2(
-                        pActors[v75].vPosition.x -
+                        pActors[Actor_ITR].vPosition.x -
                             pLevelDecorations[v39].vPosition.x,
-                        pActors[v75].vPosition.y -
+                        pActors[Actor_ITR].vPosition.y -
                             pLevelDecorations[v39].vPosition.y);
                     // v49 = v48;
-                    pActors[v75].vVelocity.x =
+                    pActors[Actor_ITR].vVelocity.x =
                         fixpoint_mul(stru_5C6E00->Cos(v48), v47);
-                    pActors[v75].vVelocity.y =
+                    pActors[Actor_ITR].vVelocity.y =
                         fixpoint_mul(stru_5C6E00->Sin(v48), v47);
                     break;
                 case OBJECT_BModel:
@@ -3786,105 +3786,134 @@ void UpdateActors_ODM() {
                                 .pFaces[v39 & 0x3F];
                     if (!face->Ethereal()) {
                         if (face->uPolygonType == 3) {
-                            pActors[v75].vVelocity.z = 0;
-                            pActors[v75].vPosition.z =
+                            pActors[Actor_ITR].vVelocity.z = 0;
+                            pActors[Actor_ITR].vPosition.z =
                                 (short)pOutdoor->pBModels[stru_721530.pid >> 9]
                                     .pVertices.pVertices[face->pVertexIDs[0]]
                                     .z +
                                 1;
-                            if (pActors[v75].vVelocity.x *
-                                        pActors[v75].vVelocity.x +
-                                    pActors[v75].vVelocity.y *
-                                        pActors[v75].vVelocity.y <
+                            if (pActors[Actor_ITR].vVelocity.x *
+                                        pActors[Actor_ITR].vVelocity.x +
+                                    pActors[Actor_ITR].vVelocity.y *
+                                        pActors[Actor_ITR].vVelocity.y <
                                 400) {
-                                pActors[v75].vVelocity.y = 0;
-                                pActors[v75].vVelocity.x = 0;
+                                pActors[Actor_ITR].vVelocity.y = 0;
+                                pActors[Actor_ITR].vVelocity.x = 0;
                             }
                         } else {
                             v72b = abs(face->pFacePlane.vNormal.y *
-                                           pActors[v75].vVelocity.y +
+                                           pActors[Actor_ITR].vVelocity.y +
                                        face->pFacePlane.vNormal.z *
-                                           pActors[v75].vVelocity.z +
+                                           pActors[Actor_ITR].vVelocity.z +
                                        face->pFacePlane.vNormal.x *
-                                           pActors[v75].vVelocity.x) >>
+                                           pActors[Actor_ITR].vVelocity.x) >>
                                    16;
                             if ((stru_721530.speed >> 3) > v72b)
                                 v72b = stru_721530.speed >> 3;
 
-                            pActors[v75].vVelocity.x +=
+                            pActors[Actor_ITR].vVelocity.x +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.x);
-                            pActors[v75].vVelocity.y +=
+                            pActors[Actor_ITR].vVelocity.y +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.y);
-                            pActors[v75].vVelocity.z +=
+                            pActors[Actor_ITR].vVelocity.z +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.z);
                             if (face->uPolygonType != 4) {
                                 v46 = stru_721530.prolly_normal_d -
                                       ((face->pFacePlane.dist +
                                         face->pFacePlane.vNormal.x *
-                                            pActors[v75].vPosition.x +
+                                            pActors[Actor_ITR].vPosition.x +
                                         face->pFacePlane.vNormal.y *
-                                            pActors[v75].vPosition.y +
+                                            pActors[Actor_ITR].vPosition.y +
                                         face->pFacePlane.vNormal.z *
-                                            pActors[v75].vPosition.z) >>
+                                            pActors[Actor_ITR].vPosition.z) >>
                                        16);
                                 if (v46 > 0) {
-                                    pActors[v75].vPosition.x += fixpoint_mul(
+                                    pActors[Actor_ITR].vPosition.x += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.x);
-                                    pActors[v75].vPosition.y += fixpoint_mul(
+                                    pActors[Actor_ITR].vPosition.y += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.y);
-                                    pActors[v75].vPosition.z += fixpoint_mul(
+                                    pActors[Actor_ITR].vPosition.z += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.z);
                                 }
-                                pActors[v75].uYawAngle = stru_5C6E00->Atan2(
-                                    pActors[v75].vVelocity.x,
-                                    pActors[v75].vVelocity.y);
+                                pActors[Actor_ITR].uYawAngle = stru_5C6E00->Atan2(
+                                    pActors[Actor_ITR].vVelocity.x,
+                                    pActors[Actor_ITR].vVelocity.y);
                             }
                         }
                     }
                     break;
             }
 
-            pActors[v75].vVelocity.x =
-                fixpoint_mul(58500, pActors[v75].vVelocity.x);
-            pActors[v75].vVelocity.y =
-                fixpoint_mul(58500, pActors[v75].vVelocity.y);
-            pActors[v75].vVelocity.z =
-                fixpoint_mul(58500, pActors[v75].vVelocity.z);
+            pActors[Actor_ITR].vVelocity.x =
+                fixpoint_mul(58500, pActors[Actor_ITR].vVelocity.x);
+            pActors[Actor_ITR].vVelocity.y =
+                fixpoint_mul(58500, pActors[Actor_ITR].vVelocity.y);
+            pActors[Actor_ITR].vVelocity.z =
+                fixpoint_mul(58500, pActors[Actor_ITR].vVelocity.z);
 
             v26 = stru_721530.prolly_normal_d;
         }
 
-        v58 = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
-                   WorldPosToGridCellX(pActors[v75].vPosition.x),
-                   WorldPosToGridCellZ(pActors[v75].vPosition.y) - 1) >>
-               1) &
-              1;
-        v59 = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
-                   WorldPosToGridCellX(pActors[v75].vPosition.x),
-                   WorldPosToGridCellZ(pActors[v75].vPosition.y) - 1) >>
-               1) &
-              1;
-        if (WorldPosToGridCellX(pActors[v75].vPosition.x) ==
-                    WorldPosToGridCellX(pActors[v75].vPosition.x) &&
-                WorldPosToGridCellZ(pActors[v75].vPosition.y) ==
-                    WorldPosToGridCellZ(pActors[v75].vPosition.y) &&
-                v58 ||
-            v67 != 0) {
-            if (MonsterStats::BelongsToSupertype(
-                    pActors[v75].pMonsterInfo.uID,
-                    MONSTER_SUPERTYPE_WATER_ELEMENTAL)) {
-                v58 = v58 == 0;
-                v59 = v59 == 0;
+        // water tile checking - tile on (1) tile heading (2)
+        Tile_1_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
+                   WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x),
+                   WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y) - 1) >>
+               1) & 1;
+        Tile_2_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
+                   WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x +
+                       pActors[Actor_ITR].vVelocity.x),
+                   WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y +
+                       pActors[Actor_ITR].vVelocity.y) - 1) >>
+               1) & 1;
+
+        if (Water_Walk == 1) {  // switch for water monster
+            Tile_1_Land = Tile_1_Land == 0;
+            Tile_2_Land = Tile_2_Land == 0;
+        }
+        if (!uIsFlying && Tile_1_Land && !Tile_2_Land) {
+            // approaching water - turn away
+            if (pActors[Actor_ITR].CanAct()) {
+                pActors[Actor_ITR].uYawAngle -= 32;
+                pActors[Actor_ITR].uCurrentActionTime = 0;
+                pActors[Actor_ITR].uCurrentActionLength = 128;
+                pActors[Actor_ITR].uAIState = Fleeing;
             }
-            if (!uIsFlying && v58 && !v59) {
-                pActors[v75].vPosition.x = pActors[v75].vPosition.x;
-                pActors[v75].vPosition.y = pActors[v75].vPosition.y;
-                if (pActors[v75].CanAct()) {
-                    pActors[v75].uYawAngle -= 32;
-                    pActors[v75].uCurrentActionTime = 0;
-                    pActors[v75].uCurrentActionLength = 128;
-                    pActors[v75].uAIState = Fleeing;
+        }
+        if (!uIsFlying && Tile_1_Land == 0 && !uIsAboveFloor && Actor_On_Terrain) {
+            // on water and shouldnt be
+            unsigned int Tile_Test_Land = 0;  // reset land found
+            int Grid_X = WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x);
+            int Grid_Z = WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y);
+            for (int i = Grid_X - 1; i <= Grid_X + 1; i++) {
+                // scan surrounding cells for land
+                for (int j = Grid_Z - 1; j <= Grid_Z + 1; j++) {
+                    Tile_Test_Land = ((unsigned int)~pOutdoor->
+                        ActuallyGetSomeOtherTileInfo(i, j - 1) >> 1) & 1;
+                    if (Water_Walk == 1) {  // flip if water walk
+                        Tile_Test_Land = Tile_Test_Land == 0;
+                    }
+                    if (Tile_Test_Land) {  // found land
+                        int target_x = GridCellToWorldPosX(i);
+                        int target_y = GridCellToWorldPosZ(j - 1);
+                        if (pActors[Actor_ITR].CanAct()) {  // head to land
+                            pActors[Actor_ITR].uYawAngle = stru_5C6E00->Atan2(target_x -
+                                pActors[Actor_ITR].vPosition.x, target_y -
+                                pActors[Actor_ITR].vPosition.y);
+                            pActors[Actor_ITR].uCurrentActionTime = 0;
+                            pActors[Actor_ITR].uCurrentActionLength = 128;
+                            pActors[Actor_ITR].uAIState = Fleeing;
+                            break;
+                        }
+                    }
                 }
+                if (Tile_Test_Land) {  // break out nested loop
+                    break;
+                }
+            }
+            if (!Tile_Test_Land) {
+                // no land found so drowning damage
+                pActors[Actor_ITR].sCurrentHP -= 1;
+                logger->Warning(L"DROWNING");
             }
         }
     }

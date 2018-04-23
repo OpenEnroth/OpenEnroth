@@ -69,22 +69,15 @@ void GUIWindow_Chest::Update() {
                         .igChestItems[chest_item_index - 1]
                         .GetIconName(),
                     0x7FF);
+
                 int itemPixelWidth = item_texture->GetWidth();
                 int itemPixelHeght = item_texture->GetHeight();
-
                 if (itemPixelWidth < 14) itemPixelWidth = 14;
-                int v12 = itemPixelWidth - 14;
-                v12 = v12 & 0xFFFFFFE0;
-                int v13 = v12 + 32;
                 if (itemPixelHeght < 14) itemPixelHeght = 14;
-                int itemPixelPosX = chest_offs_x +
-                                    32 * (item_counter % chestWidthCells) +
-                                    ((int)(v13 - itemPixelWidth) / 2);
-                int itemPixelPosY =
-                    chest_offs_y + 32 * (item_counter / chestHeghtCells) +
-                    ((int)(((itemPixelHeght - 14) & 0xFFFFFFE0) + 32 -
-                           item_texture->GetHeight()) /
-                     2);
+                signed int X_offset = ((signed int((itemPixelWidth - 14) & 0xFFFFFFE0) + 32) - itemPixelWidth) / 2;
+                signed int Y_offset = ((signed int((itemPixelHeght - 14) & 0xFFFFFFE0) + 32) - itemPixelHeght) / 2;
+                int itemPixelPosX = chest_offs_x + 32 * (item_counter % chestWidthCells) + X_offset;
+                int itemPixelPosY = chest_offs_y + 32 * (item_counter / chestHeghtCells) + Y_offset;
                 render->DrawTextureAlphaNew(itemPixelPosX / 640.0f,
                                             itemPixelPosY / 480.0f,
                                             item_texture);

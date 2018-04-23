@@ -1,4 +1,12 @@
 #pragma once
+
+#include "..\..\Engine/Events2D.h"
+
+void WeaponShopWares(GUIWindow dialogwin, bool special = 0);
+void ArmorShopWares(GUIWindow dialogwin, bool special = 0);
+void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building, bool special = 0);
+
+
 void UIShop_Buy_Identify_Repair();
 void sub_4B1523_showSpellbookInfo(int spellItemId);
 void ShowPopupShopItem();

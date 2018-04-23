@@ -39,6 +39,7 @@ GUICredits::GUICredits() :
     free(text);
 
     move_Y = 0;
+    tick = 0;
 
     CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "");
 }
@@ -62,7 +63,11 @@ void GUICredits::Update() {
     credit_window.uFrameY + credit_window.uFrameHeight);
     render->DrawTextureOffset(credit_window.uFrameX, credit_window.uFrameY, 0, move_Y, cred_texture);
     render->ResetUIClipRect();
-    ++move_Y;
+    tick++;
+    if (tick == 4) {
+        tick = 0;
+        ++move_Y;
+    }
     if (move_Y >= cred_texture->GetHeight()) {
         SetCurrentMenuID(MENU_MAIN);
     }

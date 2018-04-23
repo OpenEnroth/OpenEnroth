@@ -2274,7 +2274,12 @@ void Game_EventLoop() {
                     continue;
                 case UIMSG_Game_Action:
                     pMessageQueue_50CBD0->Flush();
-                    OnPressSpace();
+                    // if currently in a chest
+                    if (current_screen_type == SCREEN_CHEST) {
+                        Chest::GrabItem(OS_IfCtrlPressed());
+                    } else {
+                        OnPressSpace();
+                    }
                     continue;
                 case UIMSG_ClickZoomOutBtn:
                     if (current_screen_type) continue;

@@ -654,7 +654,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = SCREEN_CASTING;
     GUIWindow *CS_inventory_window = new GUIWindow_Inventory_CastSpell(
-        0, 0, window->GetWidth(), window->GetHeight(), (int)this, 0);
+        0, 0, window->GetWidth(), window->GetHeight(), (int)this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(
         394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0,
         localization->GetString(79),  // Close
@@ -1814,23 +1814,18 @@ void CharacterUI_DrawPaperdoll(Player *player) {
 }
 
 //----- (0041A2D1) --------------------------------------------------------
-void CharacterUI_InventoryTab_Draw(Player *player, bool a2) {
-    Image *pTexture;      // esi@6
-    unsigned int v17;     // edi@15
-    unsigned int uCellX;  // [sp+30h] [bp-8h]@5
-    unsigned int uCellY;  // [sp+34h] [bp-4h]@5
-
+void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
-                                ui_character_inventory_background);
-    if (a2) {
-        if (ui_character_inventory_background_strip ==
-            nullptr) {  // strip doesnt load if you havent already look at
+        ui_character_inventory_background);
+    if (Cover_Strip) {
+        if (ui_character_inventory_background_strip == nullptr) {
+            // strip doesnt load if you havent already look at
                         // inventorys
             ui_character_inventory_background_strip =
                 assets->GetImage_ColorKey("fr_strip", 0x7FF);
         }
         render->DrawTextureAlphaNew(8 / 640.0f, 305 / 480.0f,
-                                    ui_character_inventory_background_strip);
+            ui_character_inventory_background_strip);
     }
 
     for (uint i = 0; i < 126; ++i) {
@@ -1838,83 +1833,22 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool a2) {
         if (!player->pInventoryItemList[player->pInventoryMatrix[i] - 1]
                  .uItemID)
             continue;
-        uCellY = 32 * (i / 14) + 17;
-        uCellX = 32 * (i % 14) + 14;
+        unsigned int uCellY = 32 * (i / 14) + 17;
+        unsigned int uCellX = 32 * (i % 14) + 14;
 
-        pTexture = assets->GetImage_Alpha(
+        Image *pTexture = assets->GetImage_Alpha(
             player->pInventoryItemList[player->pInventoryMatrix[i] - 1]
                 .GetIconName());
 
         int width = pTexture->GetWidth();
-        if (width < 14) width = 14;
-
-        if ((width - 14) / 32 == 0 && width < 32) uCellX += (32 - width) / 2;
-
         int height = pTexture->GetHeight();
+        if (width < 14) width = 14;
         if (height < 14) height = 14;
-        v17 = uCellX + (((int)((width - 14) & 0xE0) + 32 - width) / 2) +
-              pSRZBufferLineOffsets
-                  [uCellY +
-                   (((int)((height - 14) & 0xFFFFFFE0) - height + 32) /
-                    2)];  // added typecast. without it the value in the
-                          // brackets got cat to unsigned which messed stuff up
 
-        if (_50C9A8_item_enchantment_timer > 0) v17 = 0;
-
-        if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1]
-                .uAttributes &
-            ITEM_ENCHANT_ANIMATION) {
-            const char *container = nullptr;
-            switch (player->pInventoryItemList[player->pInventoryMatrix[i] - 1]
-                        .uAttributes &
-                    ITEM_ENCHANT_ANIMATION) {
-                case ITEM_AURA_EFFECT_RED:
-                    container = "sptext01";
-                    break;
-                case ITEM_AURA_EFFECT_BLUE:
-                    container = "sp28a";
-                    break;
-                case ITEM_AURA_EFFECT_GREEN:
-                    container = "sp30a";
-                    break;
-                case ITEM_AURA_EFFECT_PURPLE:
-                    container = "sp91a";
-                    break;
-            }
-            _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-            if (_50C9A8_item_enchantment_timer <= 0) {
-                _50C9A8_item_enchantment_timer = 0;
-                player->pInventoryItemList[player->pInventoryMatrix[i] - 1]
-                    .uAttributes &= 0xFFFFFF0F;
-                ptr_50C9A4_ItemToEnchant = nullptr;
-            }
-
-            render->BlendTextures(uCellX, uCellY, pTexture,
-                                  assets->GetImage_ColorKey(container, 0x7FF),
-                                  OS_GetTime() / 10, 0, 255);
-            // render->DrawTextureAlphaNew(uCellX / 640.0f, uCellY / 480.0f,
-            // pTexture);
-            // ZBuffer_Fill(&render->pActiveZBuffer[v17], item_texture_id,
-            // player->pInventoryMatrix[i]);
-        } else {
-            if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1]
-                    .IsIdentified() ||
-                current_screen_type != SCREEN_HOUSE) {
-                if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1]
-                        .IsBroken())
-                    render->DrawTransparentRedShade(uCellX / 640.0f,
-                                                    uCellY / 480.0f, pTexture);
-                else
-                    render->DrawTextureAlphaNew(uCellX / 640.0f,
-                                                uCellY / 480.0f, pTexture);
-            } else {
-                render->DrawTransparentGreenShade(uCellX / 640.0f,
-                    uCellY / 480.0f, pTexture);
-            }
-            // ZBuffer_Fill(&render->pActiveZBuffer[v17], item_texture_id,
-            // player->pInventoryMatrix[i]);
-            continue;
-        }
+        signed int X_offset = ((signed int((width - 14) & 0xFFFFFFE0) + 32) - width) / 2;
+        signed int Y_offset = ((signed int((height - 14) & 0xFFFFFFE0) + 32) - height) / 2;
+        CharacterUI_DrawItem(uCellX + X_offset, uCellY + Y_offset,
+            &(player->pInventoryItemList[player->pInventoryMatrix[i] - 1]), 0);
     }
 }
 

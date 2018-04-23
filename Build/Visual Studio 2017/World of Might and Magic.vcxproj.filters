@@ -360,7 +360,7 @@
     <ClCompile Include="..\..\GUI\UI\UICharacter.cpp">
       <Filter>GUI\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GUI\UI\UiGame.cpp">
+    <ClCompile Include="..\..\GUI\UI\UIGame.cpp">
       <Filter>GUI\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\GUI\GUIProgressBar.cpp">

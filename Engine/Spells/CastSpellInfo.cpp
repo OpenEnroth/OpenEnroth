@@ -123,7 +123,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
         if (pParty->Invisible())
             pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY]
-                .Reset();  // no longer invisible
+            .Reset();  // no longer invisible
 
         if (pCastSpell->uFlags & ON_CAST_CastingInProgress) {
             if (!pParty->pPlayers[pCastSpell->uPlayerID].CanAct())
@@ -152,7 +152,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             if (pMouse->uPointingObjectID &&
                 PID_TYPE(spell_pointed_target) == OBJECT_Actor &&
                 pActors[PID_ID(spell_pointed_target)]
-                    .CanAct())  // check can act
+                .CanAct())  // check can act
                 spell_targeted_at = pMouse->uPointingObjectID;
         }
 
@@ -173,8 +173,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
         }
 
         if (pCastSpell
-                ->forced_spell_skill_level) {  // for spell scrolls - decode
-                                               // spell power and mastery
+            ->forced_spell_skill_level) {  // for spell scrolls - decode
+                                           // spell power and mastery
             spell_level =
                 (pCastSpell->forced_spell_skill_level) & 0x3F;  // 6 bytes
             skill_level =
@@ -201,7 +201,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             else if (pCastSpell->uSpellID == SPELL_BOW_ARROW)
                 which_skill = PLAYER_SKILL_BOW;
             else if (pCastSpell->uSpellID == SPELL_101 ||
-                     pCastSpell->uSpellID == SPELL_LASER_PROJECTILE)
+                pCastSpell->uSpellID == SPELL_LASER_PROJECTILE)
                 which_skill = PLAYER_SKILL_BLASTER;
             else
                 assert(false && "Unknown spell");
@@ -220,19 +220,20 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 uRequiredMana = 0;
             else
                 uRequiredMana = pSpellDatas[pCastSpell->uSpellID]
-                                    .mana_per_skill[skill_level - 1];
+                .mana_per_skill[skill_level - 1];
 
             sRecoveryTime = pSpellDatas[pCastSpell->uSpellID]
-                                .recovery_per_skill[skill_level - 1];
+                .recovery_per_skill[skill_level - 1];
         }
 
-        if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 &&
+        if (!pCastSpell->forced_spell_skill_level) {
+            if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 &&
                 pParty->uCurrentMinute == 0 ||
-            which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 &&
+                which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 &&
                 pParty->uCurrentMinute ==
-                    0)  // free spells at midnight or midday
-            uRequiredMana = 0;
-
+                0)  // free spells at midnight or midday
+                uRequiredMana = 0;
+        }
         if (pCastSpell->uSpellID < SPELL_BOW_ARROW &&
             pPlayer->sMana < uRequiredMana) {
             GameUI_StatusBar_OnEvent(
