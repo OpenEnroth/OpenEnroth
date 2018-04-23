@@ -786,7 +786,7 @@ float fTurnSpeedMultiplier = 1.0f;
 float flt_6BE150_look_up_down_dangle = 1.0f;
 // HWND hWnd; // idb
 class OSWindow *window = nullptr;
-char pCurrentMapName[32];  // idb
+String pCurrentMapName;
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 float _6BE3A0_fov = 0.55000001f;

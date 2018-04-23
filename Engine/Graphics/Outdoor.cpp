@@ -1010,7 +1010,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     auto odm_filename = filename;
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
-    pFile = pGames_LOD->FindContainer(odm_filename, true);
+    pFile = pGames_LOD->FindContainer(odm_filename);
 
     static_assert(sizeof(ODMHeader) == 16, "Wrong type size");
     fread(&header, sizeof(ODMHeader), 1, pFile);
@@ -1173,7 +1173,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     auto ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    pFile = pNew_LOD->FindContainer(ddm_filename, true);
+    pFile = pNew_LOD->FindContainer(ddm_filename);
 
     fread(&header, 0x10, 1, pFile);
     Str2 = 0;
@@ -1650,12 +1650,11 @@ bool OutdoorLocation::_47F0E2() {
 
 //----- (0047F138) --------------------------------------------------------
 bool OutdoorLocation::PrepareDecorations() {
-    signed int v1;  // ebx@1
-    signed int v8;  // [sp+Ch] [bp-4h]@1
-
-    v1 = 0;
-    v8 = 0;
-    if (!_stricmp(pCurrentMapName, "out09.odm")) v8 = 1;
+    int v1 = 0;
+    int v8 = 0;
+    if (pCurrentMapName == "out09.odm") {
+        v8 = 1;
+    }
 
     for (uint i = 0; i < uNumLevelDecorations; ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
@@ -3467,7 +3466,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
 
 //----- (00464839) --------------------------------------------------------
 char Is_out15odm_underwater() {
-    return _stricmp(pCurrentMapName, "out15.odm") == 0;
+    return (pCurrentMapName == "out15.odm");
 }
 
 //----- (00464851) --------------------------------------------------------
@@ -3893,13 +3892,10 @@ void UpdateActors_ODM() {
 
 //----- (0047A384) --------------------------------------------------------
 void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa) {
-    int v2;                 // ebx@3
     MapInfo *v4;            // edi@4
     size_t v7;              // eax@19
-    const char *pFilename;  // [sp+84h] [bp-Ch]@1
-    int v;
 
-    pFilename = pLevelFilename;
+    String pFilename = pLevelFilename;
     // thisa->AllocSoftwareDrawBuffers();
     pODMRenderParams->Initialize();
     pWeather->bRenderSnow = false;
@@ -3907,7 +3903,7 @@ void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus();
     if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0;
-    v2 = pMapStats->GetMapInfo(pCurrentMapName);
+    int v2 = pMapStats->GetMapInfo(pCurrentMapName);
     unsigned int respawn_interval = 0;
     if (v2) {
         v4 = &pMapStats->pInfos[v2];
@@ -3917,8 +3913,8 @@ void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa) {
     }
     day_attrib &= ~DAY_ATTRIB_FOG;
     dword_6BE13C_uCurrentlyLoadedLocationID = v2;
-    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1,
-                         respawn_interval, &v);
+    int v;
+    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1, respawn_interval, &v);
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
@@ -3942,8 +3938,7 @@ void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa) {
     pOutdoor->ArrangeSpriteObjects();
     pOutdoor->InitalizeActors(v2);
     pOutdoor->MessWithLUN();
-    v7 = strlen("levels\\");
-    pOutdoor->level_filename = &pFilename[v7];
+    pOutdoor->level_filename = pFilename;
     pWeather->Initialize();
     pIndoorCameraD3D->sRotationY = pParty->sRotationY;
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;

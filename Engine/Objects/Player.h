@@ -1,10 +1,13 @@
 #pragma once
 
+#include <vector>
+
 #include "Engine/Engine.h"
 
-#include "../Conditions.h"
-#include "../Spells/Spells.h"
-#include "Items.h"
+#include "Engine/Conditions.h"
+#include "Engine/Spells/Spells.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Graphics/Image.h"
 
 enum PLAYER_BUFFS {
     PLAYER_BUFF_RESIST_AIR = 0,
@@ -301,17 +304,33 @@ enum PLAYER_CLASS_TYPE : unsigned __int8 {
     PLAYER_CLASS_LICH = 35
 };
 
-#pragma pack(push, 1)
 struct LloydBeacon {
+    LloydBeacon() {
+        uBeaconTime = GameTime(0);
+        PartyPos_X = 0;
+        PartyPos_Y = 0;
+        PartyPos_Z = 0;
+        PartyRot_X = 0;
+        PartyRot_Y = 0;
+        unknown = 0;
+        SaveFileID = 0;
+        image = nullptr;
+    }
+    ~LloydBeacon() {
+        if (image != nullptr) {
+            image->Release();
+        }
+    }
     GameTime uBeaconTime;
-    int PartyPos_X;
-    int PartyPos_Y;
-    int PartyPos_Z;
-    __int16 PartyRot_X;
-    __int16 PartyRot_Y;
-    int SaveFileID;
+    int32_t PartyPos_X;
+    int32_t PartyPos_Y;
+    int32_t PartyPos_Z;
+    int16_t PartyRot_X;
+    int16_t PartyRot_Y;
+    uint16_t unknown;
+    uint16_t SaveFileID;
+    Image *image;
 };
-#pragma pack(pop)
 
 #pragma pack(push, 1)
 struct PlayerSpellbookChapter {
@@ -432,7 +451,6 @@ enum CHARACTER_EXPRESSION_ID : unsigned __int16 {
 
 enum PLAYER_SEX : unsigned __int8 { SEX_MALE = 0, SEX_FEMALE = 1 };
 
-#pragma pack(push, 1)
 struct Player {
     static const unsigned int INVETORYSLOTSWIDTH = 14;
     static const unsigned int INVETORYSLOTSHEIGHT = 9;
@@ -664,6 +682,7 @@ struct Player {
     static void _42FA66_do_explosive_impact(int xpos, int ypos, int zpos,
                                             int a4, __int16 a5,
                                             signed int actchar);
+    void CleanupBeacons();
 
     std::array<GameTime, 20> conditions_times;
     unsigned __int64 uExperience;
@@ -824,13 +843,12 @@ struct Player {
     __int16 field_1AA2;
     int _expression21_animtime;
     int _expression21_frameset;
-    std::array<LloydBeacon, 5> pInstalledBeacons;
+    std::vector<LloydBeacon> vBeacons;
     char uNumDivineInterventionCastsThisDay;
     char uNumArmageddonCasts;
     char uNumFireSpikeCasts;
     char field_1B3B;
 };
-#pragma pack(pop)
 
 void DamagePlayerFromMonster(unsigned int uObjID, int a2,
                              struct Vec3_int_* pPos, signed int a4);

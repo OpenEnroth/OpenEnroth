@@ -135,9 +135,13 @@ void Game_OnEscape() {
                                            // shops with characters who couldnt
                                            // act sctive
 
-    pGUIWindow_CurrentMenu->Release();  // check this
-    if (pGUIWindow_CurrentMenu == window_SpeakInHouse) window_SpeakInHouse = 0;
-    pGUIWindow_CurrentMenu = 0;
+    if (pGUIWindow_CurrentMenu == window_SpeakInHouse) {
+        window_SpeakInHouse = nullptr;
+    }
+    if (pGUIWindow_CurrentMenu != nullptr) {
+        pGUIWindow_CurrentMenu->Release();  // check this
+        pGUIWindow_CurrentMenu = nullptr;
+    }
     pEventTimer->Resume();
     current_screen_type = SCREEN_GAME;
     viewparams->bRedrawGameUI = true;
@@ -172,7 +176,6 @@ void Game_EventLoop() {
     int v66;                    // eax@488
     char *v67;                  // eax@489
     __int16 v68;                // dx@498
-    char *v69;                  // eax@512
     int v70;                    // eax@525
     int v71;                    // edi@527
     NPCData *pNPCData3;         // esi@527
@@ -212,11 +215,8 @@ void Game_EventLoop() {
     GUIButton
         *pButton2;  // [sp-4h] [bp-600h]@59
                     //    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
-    char *v173;     // [sp+0h] [bp-5FCh]@444
-                    //    signed int thisb; // [sp+14h] [bp-5E8h]@272
     Player *pPlayer7;             // [sp+14h] [bp-5E8h]@373
     Player *pPlayer8;             // [sp+14h] [bp-5E8h]@377
-    char *pMapName;               // [sp+14h] [bp-5E8h]@445
     Player *pPlayer9;             // [sp+14h] [bp-5E8h]@455
     int thisg;                    // [sp+14h] [bp-5E8h]@467
     int thish;                    // [sp+14h] [bp-5E8h]@528
@@ -232,7 +232,6 @@ void Game_EventLoop() {
     unsigned int v199;            // [sp+30h] [bp-5CCh]@7
     char *v200;                   // [sp+34h] [bp-5C8h]@518
     int v213;                     // [sp+98h] [bp-564h]@385
-    char pLevelName[32];          // [sp+9Ch] [bp-560h]@380
     char pOut[32];                // [sp+BCh] [bp-540h]@370
     FrameTableTxtLine v216;       // [sp+DCh] [bp-520h]@524
     int v217[9];                  // [sp+158h] [bp-4A4h]@652
@@ -534,9 +533,11 @@ void Game_EventLoop() {
                                         Game_OnEscape();
                                         continue;
                                     case SCREEN_BOOKS:
-                                        pBooksButtonOverlay->Release();
-                                        // crt_deconstruct_ptr_6A0118();
-                                        pBooksButtonOverlay = 0;
+                                        if (pBooksButtonOverlay != nullptr) {
+                                            pBooksButtonOverlay->Release();
+                                            // crt_deconstruct_ptr_6A0118();
+                                            pBooksButtonOverlay = 0;
+                                        }
                                         pEventTimer->Resume();
                                         Game_OnEscape();
                                         continue;
@@ -871,8 +872,9 @@ void Game_EventLoop() {
                         }
                         pPaletteManager->ResetNonLocked();
                         pSpriteFrameTable->ResetSomeSpriteFlags();
-                        strcpy(pCurrentMapName, pOut);
-                        strcpy(pLevelName, pCurrentMapName);
+                        pCurrentMapName = pOut;
+                        char pLevelName[32];
+                        strcpy(pLevelName, pCurrentMapName.c_str());
                         v41 = strtok(pLevelName, ".");
                         strcpy(pLevelName, v41);
                         Level_LoadEvtAndStr(pLevelName);
@@ -886,8 +888,7 @@ void Game_EventLoop() {
                         pEngine->SetUnderwater(
                             Is_out15odm_underwater());
 
-                        if (Is_out15odm_underwater() ||
-                            !_stricmp(pCurrentMapName, "d47.blv"))
+                        if (Is_out15odm_underwater() || (pCurrentMapName == "d47.blv"))
                             bNoNPCHiring = 1;
                         PrepareToLoadODM(1u, (ODMRenderParams *)1);
                         bDialogueUI_InitializeActor_NPC_ID = 0;
@@ -1060,8 +1061,7 @@ void Game_EventLoop() {
                     dword_50CDC8 = 1;
                     sub_42FBDD();
                     SaveGame(1, 0);
-                    strcpy(pCurrentMapName,
-                           pMapStats->pInfos[uHouse_ExitPic].pFilename);
+                    pCurrentMapName = pMapStats->pInfos[uHouse_ExitPic].pFilename;
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     // v53 = p2DEvents_minus1_::30[26 * (unsigned
@@ -1103,62 +1103,45 @@ void Game_EventLoop() {
                     v127 = uMessageParam + 204;
                     pAudioPlayer->PlaySound((SoundID)v127, 0, 0, -1, 0, 0);
                     continue;
-                case UIMSG_HintBeaconSlot:
+                case UIMSG_HintBeaconSlot: {
                     if (!pGUIWindow_CurrentMenu) continue;
                     pPlayer = pPlayers[_506348_current_lloyd_playerid + 1];
-                    uNumSeconds = (unsigned int)&pPlayer
-                                      ->pInstalledBeacons[uMessageParam];
+                    if (uMessageParam >= pPlayer->vBeacons.size()) {
+                        continue;
+                    }
+                    LloydBeacon *beacon = &pPlayer->vBeacons[uMessageParam];
                     if (bRecallingBeacon) {
-                        __debugbreak();
-                            /*indexing error*/  // if (*((int
-                                                // *)&pSavegameThumbnails[10 *
-                                                // uMessageParam].pPixels))
-                        {
-                            v173 = pMapStats
-                                       ->pInfos[pMapStats
-                                                    ->sub_410D99_get_map_index(
-                                                        pPlayer
-                                                            ->pInstalledBeacons
-                                                                [uMessageParam]
-                                                            .SaveFileID)]
-                                       .pName;
-                            GameUI_StatusBar_Set(localization->FormatString(
-                                474, v173));  // Recall to %s
+                        if (beacon->uBeaconTime) {
+                            String v173 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon->SaveFileID)].pName;
+                            GameUI_StatusBar_Set(localization->FormatString(474, v173.c_str()));  // Recall to %s
                         }
                         continue;
                     }
                     pMapNum = pMapStats->GetMapInfo(pCurrentMapName);
-                    pMapName = "Not in Map Stats";
-                    if (pMapNum) pMapName = pMapStats->pInfos[pMapNum].pName;
+                    String pMapName = "Not in Map Stats";
+                    if (pMapNum) {
+                        pMapName = pMapStats->pInfos[pMapNum].pName;
+                    }
 
-                    __debugbreak();
-                        /*indexing error*/  // if (!*((int
-                                            // *)&pSavegameThumbnails[10 *
-                                            // uMessageParam].pPixels) ||
-                                            // !pMapNum)
-                    if (!pMapNum) {
+                    if (beacon->uBeaconTime) {
                         GameUI_StatusBar_Set(localization->FormatString(
-                            476, pMapName));  // Set to %s
+                            475, pMapName.c_str(),
+                            pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(
+                                beacon->SaveFileID)].pName.c_str()));  // Set %s over %s
                     } else {
-                        GameUI_StatusBar_Set(localization->FormatString(
-                            475, pMapName,
-                            pMapStats
-                                ->pInfos[pMapStats->sub_410D99_get_map_index(
-                                    *(short *)(uNumSeconds + 26))]
-                                .pName));  // Set %s over %s
+                        GameUI_StatusBar_Set(localization->FormatString(476, pMapName.c_str()));  // Set to %s
                     }
                     continue;
-
+                }
                 case UIMSG_CloseAfterInstallBeacon:
                     dword_50CDC8 = 1;
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                     continue;
                 case UIMSG_InstallBeacon:
                     pPlayer9 = pPlayers[_506348_current_lloyd_playerid + 1];
-                    if (!pPlayer9->pInstalledBeacons[uMessageParam]
-                             .uBeaconTime &&
-                        bRecallingBeacon)
+                    if (!pPlayer9->vBeacons[uMessageParam].uBeaconTime && bRecallingBeacon) {
                         continue;
+                    }
 
                     extern bool _506360_installing_beacon;
                     _506360_installing_beacon = true;
@@ -1166,102 +1149,94 @@ void Game_EventLoop() {
                     pPlayer9->CanCastSpell(uRequiredMana);
                     if (pParty->bTurnBasedModeOn) {
                         v60 = sRecoveryTime;
-                        pParty->pTurnBasedPlayerRecoveryTimes
-                            [_506348_current_lloyd_playerid] = sRecoveryTime;
+                        pParty->pTurnBasedPlayerRecoveryTimes[_506348_current_lloyd_playerid] = sRecoveryTime;
                         pPlayer9->SetRecoveryTime(v60);
                         pTurnEngine->ApplyPlayerAction();
                     } else {
                         pPlayer9->SetRecoveryTime(
-                            (signed __int64)(flt_6BE3A4_debug_recmod1 *
+                            (__int64)(flt_6BE3A4_debug_recmod1 *
                                              (double)sRecoveryTime *
                                              2.133333333333333));
                     }
                     pAudioPlayer->PlaySpellSound(lloyds_beacon_spell_id, 0);
                     if (bRecallingBeacon) {
-                        if (_stricmp(
-                                pCurrentMapName,
+                        if (pCurrentMapName !=
                                 (const char *)&pGames_LOD->pSubIndices
-                                    [pPlayer9->pInstalledBeacons[uMessageParam]
-                                         .SaveFileID])) {
+                                    [pPlayer9->vBeacons[uMessageParam]
+                                         .SaveFileID]) {
                             SaveGame(1, 0);
                             OnMapLeave();
-                            strcpy(
-                                pCurrentMapName,
+                            pCurrentMapName =
                                 (const char *)&pGames_LOD->pSubIndices
-                                    [pPlayer9->pInstalledBeacons[uMessageParam]
-                                         .SaveFileID]);
+                                    [pPlayer9->vBeacons[uMessageParam]
+                                         .SaveFileID];
                             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                             uGameState = GAME_STATE_CHANGE_LOCATION;
                             _5B65A8_npcdata_uflags_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_X;
                             _5B65AC_npcdata_fame_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_Y;
                             _5B65B0_npcdata_rep_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_Z;
                             _5B65B4_npcdata_loword_house_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyRot_X;
                             _5B65B8_npcdata_hiword_house_or_other =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyRot_Y;
                             dword_5B65C0 = 1;
                         } else {
                             pParty->vPosition.x =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_X;
                             pParty->vPosition.y =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_Y;
                             pParty->vPosition.z =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyPos_Z;
                             pParty->uFallStartY = pParty->vPosition.z;
                             pParty->sRotationY =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyRot_X;
                             pParty->sRotationX =
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                                pPlayer9->vBeacons[uMessageParam]
                                     .PartyRot_Y;
                         }
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-                        pBooksButtonOverlay->Release();
+                        if (pBooksButtonOverlay != nullptr) {
+                            pBooksButtonOverlay->Release();
+                            pBooksButtonOverlay = nullptr;
+                        }
                         pGUIWindow_CurrentMenu->Release();
-                        pBooksButtonOverlay = 0;
                         pGUIWindow_CurrentMenu = 0;
                     } else {
-                        render->SaveScreenshot(
-                            StringPrintf("data\\lloyd%d%d.pcx",
-                                         _506348_current_lloyd_playerid + 1,
-                                         uMessageParam + 1),
-                            92, 68);
-                        LoadThumbnailLloydTexture(
-                            uMessageParam, _506348_current_lloyd_playerid + 1);
-                        pPlayer9->pInstalledBeacons[uMessageParam].uBeaconTime =
+                        pPlayer9->vBeacons[uMessageParam].image = render->TakeScreenshot(92, 68);
+                        pPlayer9->vBeacons[uMessageParam].uBeaconTime =
                             GameTime(pParty->GetPlayingTime() +
                             GameTime::FromSeconds(lloyds_beacon_spell_level));
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_X =
+                        pPlayer9->vBeacons[uMessageParam].PartyPos_X =
                             pParty->vPosition.x;
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_Y =
+                        pPlayer9->vBeacons[uMessageParam].PartyPos_Y =
                             pParty->vPosition.y;
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyPos_Z =
+                        pPlayer9->vBeacons[uMessageParam].PartyPos_Z =
                             pParty->vPosition.z;
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyRot_X =
+                        pPlayer9->vBeacons[uMessageParam].PartyRot_X =
                             (short)pParty->sRotationY;
-                        pPlayer9->pInstalledBeacons[uMessageParam].PartyRot_Y =
+                        pPlayer9->vBeacons[uMessageParam].PartyRot_Y =
                             (short)pParty->sRotationX;
                         if ((signed int)pGames_LOD->uNumSubDirs / 2 <= 0)
                             continue;
                         for (thisg = 0;
                              thisg < (signed int)pGames_LOD->uNumSubDirs / 2;
                              ++thisg) {
-                            if (!_stricmp(
-                                    pGames_LOD->pSubIndices[thisg].pFilename,
-                                    pCurrentMapName))
-                                pPlayer9->pInstalledBeacons[uMessageParam]
+                            if (pCurrentMapName == pGames_LOD->pSubIndices[thisg].pFilename) {
+                                pPlayer9->vBeacons[uMessageParam]
                                     .SaveFileID = thisg;
+                            }
                         }
                     }
                     continue;
@@ -1307,12 +1282,9 @@ void Game_EventLoop() {
                                         dword_6BE364_game_settings_1 |=
                                             GAME_SETTINGS_0001;
                                         uGameState = GAME_STATE_CHANGE_LOCATION;
-                                        strcpy(pCurrentMapName,
-                                               pMapStats
-                                                   ->pInfos[TownPortalList
-                                                                [uMessageParam]
-                                                                    .uMapInfoID]
-                                                   .pFilename);
+                                        pCurrentMapName =
+                                               pMapStats->pInfos[TownPortalList[uMessageParam].uMapInfoID]
+                                                   .pFilename;
                                         dword_5B65C0 = 1;
                                         _5B65A8_npcdata_uflags_or_other =
                                             TownPortalList[uMessageParam].pos.x;
@@ -1354,108 +1326,108 @@ void Game_EventLoop() {
                                                             v63))
                         return;
                     goto LABEL_486;
-                case UIMSG_HintTownPortal:
+                case UIMSG_HintTownPortal: {
+                    String v69;
                     if (uMessageParam) {
                         switch (uMessageParam) {
-                            case 1:
-                                v68 = 208;
-                                break;
-                            case 2:
-                                v68 = 207;
-                                break;
-                            case 3:
-                                v68 = 211;
-                                break;
-                            case 4:
-                                v68 = 209;
-                                break;
-                            default:
-                                if (uMessageParam != 5) {
-                                    if (uMessageParam) {
-                                        switch (uMessageParam) {
-                                            case 1:
-                                                v69 =
-                                                    pMapStats->pInfos[4].pName;
-                                                break;
-                                            case 2:
-                                                v69 =
-                                                    pMapStats->pInfos[3].pName;
-                                                break;
-                                            case 3:
-                                                v69 =
-                                                    pMapStats->pInfos[10].pName;
-                                                break;
-                                            case 4:
-                                                v69 =
-                                                    pMapStats->pInfos[7].pName;
-                                                break;
-                                            default:
-                                                if (uMessageParam != 5) {
-                                                    __debugbreak();  // warning
-                                                                     // C4700:
-                                                                     // uninitialized
-                                                                     // local
-                                                                     // variable
-                                                                     // 'v200'
-                                                                     // used
-                                                    GameUI_StatusBar_Set(
-                                                        localization
-                                                            ->FormatString(
-                                                                35, v200));
-                                                    continue;
-                                                }
-                                                v69 =
-                                                    pMapStats->pInfos[8].pName;
-                                                break;
+                        case 1:
+                            v68 = 208;
+                            break;
+                        case 2:
+                            v68 = 207;
+                            break;
+                        case 3:
+                            v68 = 211;
+                            break;
+                        case 4:
+                            v68 = 209;
+                            break;
+                        default:
+                            if (uMessageParam != 5) {
+                                if (uMessageParam) {
+                                    switch (uMessageParam) {
+                                    case 1:
+                                        v69 =
+                                            pMapStats->pInfos[4].pName;
+                                        break;
+                                    case 2:
+                                        v69 =
+                                            pMapStats->pInfos[3].pName;
+                                        break;
+                                    case 3:
+                                        v69 =
+                                            pMapStats->pInfos[10].pName;
+                                        break;
+                                    case 4:
+                                        v69 =
+                                            pMapStats->pInfos[7].pName;
+                                        break;
+                                    default:
+                                        if (uMessageParam != 5) {
+                                            __debugbreak();  // warning
+                                                             // C4700:
+                                                             // uninitialized
+                                                             // local
+                                                             // variable
+                                                             // 'v200'
+                                                             // used
+                                            GameUI_StatusBar_Set(
+                                                localization
+                                                ->FormatString(
+                                                    35, v200));
+                                            continue;
                                         }
-                                    } else {
-                                        v69 = pMapStats->pInfos[21].pName;
+                                        v69 =
+                                            pMapStats->pInfos[8].pName;
+                                        break;
                                     }
-                                    GameUI_StatusBar_Set(
-                                        localization->FormatString(35, v69));
-                                    continue;
+                                } else {
+                                    v69 = pMapStats->pInfos[21].pName;
                                 }
-                                v68 = 210;
-                                break;
+                                GameUI_StatusBar_Set(
+                                    localization->FormatString(35, v69));
+                                continue;
+                            }
+                            v68 = 210;
+                            break;
                         }
                     } else {
                         v68 = 206;
                     }
-                    if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits,
-                                                            v68)) {
-                        render->DrawTextureNew(0, 352 / 480.0f,
-                                               game_ui_statusbar);
+                    if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits, v68)) {
+                        render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
                     // LABEL_506:
                     if (uMessageParam) {
                         switch (uMessageParam) {
-                            case 1:
-                                v69 = pMapStats->pInfos[4].pName;
-                                break;
-                            case 2:
-                                v69 = pMapStats->pInfos[3].pName;
-                                break;
-                            case 3:
-                                v69 = pMapStats->pInfos[10].pName;
-                                break;
-                            case 4:
-                                v69 = pMapStats->pInfos[7].pName;
-                                break;
-                            default:
-                                if (uMessageParam != 5) {
-                                    GameUI_StatusBar_Set(
-                                        localization->FormatString(35, v200));
-                                    continue;
-                                }
-                                v69 = pMapStats->pInfos[8].pName;
-                                break;
+                        case 1:
+                            v69 = pMapStats->pInfos[4].pName;
+                            break;
+                        case 2:
+                            v69 = pMapStats->pInfos[3].pName;
+                            break;
+                        case 3:
+                            v69 = pMapStats->pInfos[10].pName;
+                            break;
+                        case 4:
+                            v69 = pMapStats->pInfos[7].pName;
+                            break;
+                        default:
+                            if (uMessageParam != 5) {
+                                GameUI_StatusBar_Set(
+                                    localization->FormatString(35, v200));
+                                continue;
+                            }
+                            v69 = pMapStats->pInfos[8].pName;
+                            break;
                         }
                     } else {
                         v69 = pMapStats->pInfos[21].pName;
                     }
                     GameUI_StatusBar_Set(localization->FormatString(35, v69));
                     continue;
+                }
                 case UIMSG_ShowFinalWindow: {
                     static String
                         final_message;  // static due to GUIWindow_Modal not
@@ -1500,7 +1472,7 @@ void Game_EventLoop() {
                         v70 = atoi(v216.pProperties[0]);
                         if (v70 <= 0 || v70 >= 77) continue;
                         v71 = v70;
-                        strcpy(Str2, pMapStats->pInfos[v70].pFilename);
+                        strcpy(Str2, pMapStats->pInfos[v70].pFilename.c_str());
                         pNPCData3 = 0;
                         if ((signed int)pNPCData4 > 0) {
                             thish = 0;
@@ -1514,9 +1486,8 @@ void Game_EventLoop() {
                             } while ((signed int)pNPCData3 <
                                      (signed int)pNPCData4);
                             if ((signed int)pNPCData3 < (signed int)pNPCData4) {
-                                strcpy(pCurrentMapName,
-                                       pGames_LOD->pSubIndices[(int)pNPCData3]
-                                           .pFilename);
+                                pCurrentMapName =
+                                       pGames_LOD->pSubIndices[(int)pNPCData3].pFilename;
                                 dword_6BE364_game_settings_1 |=
                                     GAME_SETTINGS_0001;
                                 uGameState = GAME_STATE_CHANGE_LOCATION;
@@ -1524,8 +1495,7 @@ void Game_EventLoop() {
                                 continue;
                             }
                         }
-                        sprintf(Str2, "No map found for %s",
-                                pMapStats->pInfos[v71].pName);
+                        sprintf(Str2, "No map found for %s", pMapStats->pInfos[v71].pName.c_str());
                         v73 = Str2;
                     } else {
                         if (v216.uPropCount != 3) continue;
@@ -2405,12 +2375,6 @@ void Game_Loop() {
         LoadGame(uLoadGameUI_SelectedSlot);
     }
 
-    for (unsigned int i = 1; i < 5; ++i) {
-        for (unsigned int j = 1; j < 6; ++j) {
-            remove(StringPrintf("data\\lloyd%d%d.pcx", i, j).c_str());
-        }
-    }
-
     extern bool use_music_folder;
     GameUI_LoadPlayerPortraintsAndVoices();
     pIcons_LOD->_inlined_sub1();
@@ -2573,8 +2537,8 @@ void Game_Loop() {
                 pParty->uFallSpeed = 0;
                 pParty->field_6E4 = 0;
                 pParty->field_6E0 = 0;
-                if (_stricmp(Source, pCurrentMapName)) {
-                    strcpy(pCurrentMapName, Source);
+                if (pCurrentMapName != Source) {
+                    pCurrentMapName = Source;
                     _5B65A8_npcdata_uflags_or_other = pParty->vPosition.x;
                     _5B65AC_npcdata_fame_or_other = pParty->vPosition.y;
                     _5B65B0_npcdata_rep_or_other = pParty->vPosition.z;

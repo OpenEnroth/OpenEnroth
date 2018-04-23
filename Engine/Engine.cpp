@@ -804,7 +804,6 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     char *v3;         // eax@1
     unsigned int v5;  // eax@3
-    char Str1[20];    // [sp+Ch] [bp-18h]@1
 
     // v9 = bLoading;
     ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
@@ -812,12 +811,13 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1
                                                ? GUIProgressBar::TYPE_Fullscreen
                                                : GUIProgressBar::TYPE_Box);
-    strcpy(Str1, pCurrentMapName);
+    char Str1[20];    // [sp+Ch] [bp-18h]@1
+    strcpy(Str1, pCurrentMapName.c_str());
     v3 = strtok(Str1, ".");
     strcpy(Str1, v3);
     Level_LoadEvtAndStr(Str1);
     LoadLevel_InitializeLevelEvt();
-    strcpy(Str1, pCurrentMapName);
+    strcpy(Str1, pCurrentMapName.c_str());
     _strrev(Str1);
     strtok(Str1, ".");
     _strrev(Str1);
@@ -836,8 +836,8 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     else
         PrepareToLoadBLV(bLoading);
     _461103_load_level_sub();
-    if (!_stricmp(pCurrentMapName, "d11.blv") ||
-        !_stricmp(pCurrentMapName, "d10.blv")) {
+    if ((pCurrentMapName == "d11.blv") ||
+        (pCurrentMapName == "d10.blv")) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
         for (uint i = 0; i < uNumActors; ++i) {
@@ -941,9 +941,9 @@ void IntegrityTest() {
     static_assert(sizeof(MonsterStats) == 0x5BA0, "Wrong type size");
     // static_assert(sizeof(RenderD3D) == 0x148, "Wrong type size");
     //  static_assert(sizeof(Render) == 0x129844, "Wrong type size");
-    static_assert(sizeof(Player) == 0x1B3C, "Wrong type size");
+//    static_assert(sizeof(Player) == 0x1B3C, "Wrong type size");
     static_assert(sizeof(PartyTimeStruct) == 0x678, "Wrong type size");
-    static_assert(sizeof(Party) == 0x16238, "Wrong type size");
+//    static_assert(sizeof(Party) == 0x16238, "Wrong type size");
     // static_assert(sizeof(GUIButton) == 0xBC, "Wrong type size");
     // static_assert(sizeof(GUIWindow) == 0x54, "Wrong type size");
     // static_assert(sizeof(GUIProgressBar) == 0x1B8, "Wrong type size");
@@ -991,7 +991,7 @@ void FinalInitialization() {
 
 bool MM7_LoadLods(const char *mm7_path) {
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(StringPrintf("%s\\data\\icons.lod", mm7_path).c_str(),
+    if (!pIcons_LOD->Load(StringPrintf("%s\\data\\icons.lod", mm7_path),
                           "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
@@ -1014,8 +1014,7 @@ bool MM7_LoadLods(const char *mm7_path) {
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->LoadSprites(
-            StringPrintf("%s\\data\\sprites.lod", mm7_path).c_str())) {
+    if (!pSprites_LOD->LoadSprites(StringPrintf("%s\\data\\sprites.lod", mm7_path))) {
         Error(localization->GetString(63), localization->GetString(184));
         return false;
     }
@@ -1087,20 +1086,20 @@ bool MM7_Initialize(const char *mm7_path) {
     localization->Initialize();
 
     {
-        void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dsft.bin", 1)
+        void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dsft.bin")
                                        : nullptr,
              *sft_mm8 = nullptr;
-        void *sft_mm7 = pEvents_LOD->LoadRaw("dsft.bin", 1);
+        void *sft_mm7 = pEvents_LOD->LoadRaw("dsft.bin");
         pSpriteFrameTable = new SpriteFrameTable;
         pSpriteFrameTable->FromFile(sft_mm6, sft_mm7, sft_mm8);
         free(sft_mm6);
         free(sft_mm7);
         free(sft_mm8);
 
-        void *tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dtft.bin", 1)
+        void *tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dtft.bin")
                                        : nullptr,
              *tft_mm8 = nullptr;
-        void *tft_mm7 = pEvents_LOD->LoadRaw("dtft.bin", 1);
+        void *tft_mm7 = pEvents_LOD->LoadRaw("dtft.bin");
         pTextureFrameTable = new TextureFrameTable;
         pTextureFrameTable->FromFile(tft_mm6, tft_mm7, tft_mm8);
         free(tft_mm6);
@@ -1108,30 +1107,30 @@ bool MM7_Initialize(const char *mm7_path) {
         free(tft_mm8);
 
         void *tiles_mm6 = pIcons_LOD_mm6
-                              ? pIcons_LOD_mm6->LoadRaw("dtile.bin", 1)
+                              ? pIcons_LOD_mm6->LoadRaw("dtile.bin")
                               : nullptr,
              *tiles_mm8 = nullptr;
-        void *tiles_mm7 = pEvents_LOD->LoadRaw("dtile.bin", 1);
+        void *tiles_mm7 = pEvents_LOD->LoadRaw("dtile.bin");
         pTileTable = new TileTable;
         pTileTable->FromFile(tiles_mm6, tiles_mm7, tiles_mm8);
         free(tiles_mm6);
         free(tiles_mm7);
         free(tiles_mm8);
 
-        void *pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dpft.bin", 1)
+        void *pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dpft.bin")
                                        : nullptr,
              *pft_mm8 = nullptr;
-        void *pft_mm7 = pEvents_LOD->LoadRaw("dpft.bin", 1);
+        void *pft_mm7 = pEvents_LOD->LoadRaw("dpft.bin");
         pPlayerFrameTable = new PlayerFrameTable;
         pPlayerFrameTable->FromFile(pft_mm6, pft_mm7, pft_mm8);
         free(pft_mm6);
         free(pft_mm7);
         free(pft_mm8);
 
-        void *ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dift.bin", 1)
+        void *ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadRaw("dift.bin")
                                        : nullptr,
              *ift_mm8 = nullptr;
-        void *ift_mm7 = pEvents_LOD->LoadRaw("dift.bin", 1);
+        void *ift_mm7 = pEvents_LOD->LoadRaw("dift.bin");
         pIconsFrameTable = new IconFrameTable;
         pIconsFrameTable->FromFile(ift_mm6, ift_mm7, ift_mm8);
         free(ift_mm6);
@@ -1139,10 +1138,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(ift_mm8);
 
         void *decs_mm6 = pIcons_LOD_mm6
-                             ? pIcons_LOD_mm6->LoadRaw("ddeclist.bin", 1)
+                             ? pIcons_LOD_mm6->LoadRaw("ddeclist.bin")
                              : nullptr,
              *decs_mm8 = nullptr;
-        void *decs_mm7 = pEvents_LOD->LoadRaw("ddeclist.bin", 1);
+        void *decs_mm7 = pEvents_LOD->LoadRaw("ddeclist.bin");
         pDecorationList = new DecorationList;
         pDecorationList->FromFile(decs_mm6, decs_mm7, decs_mm8);
         free(decs_mm6);
@@ -1150,10 +1149,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(decs_mm8);
 
         void *objs_mm6 = pIcons_LOD_mm6
-                             ? pIcons_LOD_mm6->LoadRaw("dobjlist.bin", 1)
+                             ? pIcons_LOD_mm6->LoadRaw("dobjlist.bin")
                              : nullptr,
              *objs_mm8 = nullptr;
-        void *objs_mm7 = pEvents_LOD->LoadRaw("dobjlist.bin", 1);
+        void *objs_mm7 = pEvents_LOD->LoadRaw("dobjlist.bin");
         pObjectList = new ObjectList;
         pObjectList->FromFile(objs_mm6, objs_mm7, objs_mm8);
         free(objs_mm6);
@@ -1161,10 +1160,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(objs_mm8);
 
         void *mons_mm6 = pIcons_LOD_mm6
-                             ? pIcons_LOD_mm6->LoadRaw("dmonlist.bin", 1)
+                             ? pIcons_LOD_mm6->LoadRaw("dmonlist.bin")
                              : nullptr,
              *mons_mm8 = nullptr;
-        void *mons_mm7 = pEvents_LOD->LoadRaw("dmonlist.bin", 1);
+        void *mons_mm7 = pEvents_LOD->LoadRaw("dmonlist.bin");
         pMonsterList = new MonsterList;
         pMonsterList->FromFile(mons_mm6, mons_mm7, mons_mm8);
         free(mons_mm6);
@@ -1172,10 +1171,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(mons_mm8);
 
         void *chests_mm6 = pIcons_LOD_mm6
-                               ? pIcons_LOD_mm6->LoadRaw("dchest.bin", 1)
+                               ? pIcons_LOD_mm6->LoadRaw("dchest.bin")
                                : nullptr,
              *chests_mm8 = nullptr;
-        void *chests_mm7 = pEvents_LOD->LoadRaw("dchest.bin", 1);
+        void *chests_mm7 = pEvents_LOD->LoadRaw("dchest.bin");
         pChestList = new ChestList;
         pChestList->FromFile(chests_mm6, chests_mm7, chests_mm8);
         free(chests_mm6);
@@ -1183,10 +1182,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(chests_mm8);
 
         void *overlays_mm6 = pIcons_LOD_mm6
-                                 ? pIcons_LOD_mm6->LoadRaw("doverlay.bin", 1)
+                                 ? pIcons_LOD_mm6->LoadRaw("doverlay.bin")
                                  : nullptr,
              *overlays_mm8 = nullptr;
-        void *overlays_mm7 = pEvents_LOD->LoadRaw("doverlay.bin", 1);
+        void *overlays_mm7 = pEvents_LOD->LoadRaw("doverlay.bin");
         pOverlayList = new OverlayList;
         pOverlayList->FromFile(overlays_mm6, overlays_mm7, overlays_mm8);
         free(overlays_mm6);
@@ -1194,10 +1193,10 @@ bool MM7_Initialize(const char *mm7_path) {
         free(overlays_mm8);
 
         void *sounds_mm6 = pIcons_LOD_mm6
-                               ? pIcons_LOD_mm6->LoadRaw("dsounds.bin", 1)
+                               ? pIcons_LOD_mm6->LoadRaw("dsounds.bin")
                                : nullptr,
              *sounds_mm8 = nullptr;
-        void *sounds_mm7 = pEvents_LOD->LoadRaw("dsounds.bin", 1);
+        void *sounds_mm7 = pEvents_LOD->LoadRaw("dsounds.bin");
         pSoundList = new SoundList;
         pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
         free(sounds_mm6);
@@ -1286,16 +1285,6 @@ void SecondaryInitialization() {
     pSprites_LOD->_inlined_sub0();
     pPaletteManager->LockAll();
 
-    std::string savesDir = MakeDataPath("Saves");
-    _mkdir(savesDir.c_str());
-    for (uint i = 0; i < 5; ++i) {
-        for (uint j = 0; j < 6; ++j) {
-            String file_path = StringPrintf("data\\lloyd%d%d.pcx", i, j);
-            file_path = MakeDataPath(file_path.c_str());
-            remove(file_path.c_str());
-        }
-    }
-
     Initialize_GamesLOD_NewLOD();
     _576E2C_current_minimap_zoom = 512;
     dword_576E28 = 9;
@@ -1323,7 +1312,7 @@ bool GameLoop() {
 
             pParty->pPickedItem.uItemID = 0;
 
-            strcpy(pCurrentMapName, pStartingMapName);
+            pCurrentMapName = pStartingMapName;
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
@@ -1664,7 +1653,7 @@ void MM7Initialization() {
 void PrepareToLoadODM(unsigned int bLoading, ODMRenderParams *a2) {
     pGameLoadingUI_ProgressBar->Reset(27);
     uCurrentlyLoadedLevelType = LEVEL_Outdoor;
-    ODM_LoadAndInitialize(pCurrentMapName, a2);
+    ODM_LoadAndInitialize(pCurrentMapName.c_str(), a2);
     if (!bLoading) TeleportToStartingPoint(uLevel_StartingPointType);
     viewparams->_443365();
     PlayLevelMusic();
@@ -2896,12 +2885,12 @@ void Transition_StopSound_Autosave(const char *pMapName,
                                    MapStartPoint start_point) {
     pAudioPlayer->StopChannels(-1, -1);
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
-    if (_stricmp(pCurrentMapName, pMapName)) {
+    if (pCurrentMapName != pMapName) {
         SaveGame(1, 0);
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
-    strcpy(pCurrentMapName, pMapName);
+    pCurrentMapName = pMapName;
     uLevel_StartingPointType = start_point;
 }
 
@@ -2951,7 +2940,9 @@ void OnTimer(int) {
 
 //----- (0044C28F) --------------------------------------------------------
 bool TeleportToNWCDungeon() {
-    if (!_stricmp("nwc.blv", pCurrentMapName)) return false;
+    if ("nwc.blv" == pCurrentMapName) {
+        return false;
+    }
 
     _5B65A8_npcdata_uflags_or_other = 0;
     _5B65AC_npcdata_fame_or_other = 0;

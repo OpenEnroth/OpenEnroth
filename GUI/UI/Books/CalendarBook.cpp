@@ -61,7 +61,6 @@ void GUIWindow_CalendarBook::Update() {
     render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
     int am;  // ecx@5
-    char *pMapName;  // eax@6
     GUIWindow calendar_window;  // [sp+Ch] [bp-60h]@5
     unsigned int pMapID;  // [sp+60h] [bp-Ch]@1
     unsigned int pHour;
@@ -126,11 +125,12 @@ void GUIWindow_CalendarBook::Update() {
     calendar_window.DrawText(pBookFont, 70, 8 * (unsigned char)pBookFont->GetHeight() + 31, ui_book_calendar_moon_color, str, 0, 0, 0);
 
     pMapID = pMapStats->GetMapInfo(pCurrentMapName);
+    String pMapName;
     if (pMapID)
         pMapName = pMapStats->pInfos[pMapID].pName;
     else
         pMapName = "Unknown";
 
-    str = StringPrintf("%s\t100:\t110%s", localization->GetString(531), pMapName);  // "Location"
+    str = StringPrintf("%s\t100:\t110%s", localization->GetString(531), pMapName.c_str());  // "Location"
     calendar_window.DrawText(pBookFont, 70, 10 * (unsigned char)pBookFont->GetHeight() + 25, ui_book_calendar_location_color, str, 0, 0, 0);
 }

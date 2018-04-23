@@ -465,29 +465,22 @@ void GUIWindow::HouseDialogManager() {
                 pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] / 480.0f,
                 pDialogueNPCPortraits[v8]);
             if (uNumDialogueNPCPortraits < 4) {
-                char *pTitleText = nullptr;
+                String pTitleText;
                 int v9 = 0;
                 if (v8 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
                     pTitleText = pMapStats->pInfos[uHouse_ExitPic].pName;
                     v9 = 94 * v8 + 113;
                 } else {
                     if (!v8 && dword_591080) {
-                        pTitleText =
-                            (char *)p2DEvents
-                            [(unsigned int)window_SpeakInHouse->ptr_1C - 1]
-                        .pProprieterTitle;
-                        pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, pColor2,
-                            pTitleText, 3);
+                        pTitleText = (char*)p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterTitle;
+                        pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, pColor2, pTitleText, 3);
                         continue;
                     }
-                    pTitleText =
-                        HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
-                    v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] +
-                        pDialogueNPCPortraits[v8]->GetHeight() + 2;
+                    pTitleText = HouseNPCData[v8 + 1 - (dword_591080 != 0)]->pName;
+                    v9 = pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] + pDialogueNPCPortraits[v8]->GetHeight() + 2;
                 }
                 v10 = v9;
-                pWindow.DrawTitleText(pFontCreate, 483, v10, pColor2,
-                    pTitleText, 3);
+                pWindow.DrawTitleText(pFontCreate, 483, v10, pColor2, pTitleText, 3);
             }
         }
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {

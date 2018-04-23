@@ -226,13 +226,14 @@ union PlayerEquipment_Image_MM7 {
 struct LloydBeacon_Image_MM7 {
     LloydBeacon_Image_MM7();
 
-    /* 00 */ unsigned __int64 uBeaconTime;
-    /* 08 */ int PartyPos_X;
-    /* 0C */ int PartyPos_Y;
-    /* 10 */ int PartyPos_Z;
-    /* 14 */ __int16 PartyRot_X;
-    /* 16 */ __int16 PartyRot_Y;
-    /* 18 */ int SaveFileID;
+    /* 00 */ uint64_t uBeaconTime;
+    /* 08 */ int32_t PartyPos_X;
+    /* 0C */ int32_t PartyPos_Y;
+    /* 10 */ int32_t PartyPos_Z;
+    /* 14 */ int16_t PartyRot_X;
+    /* 16 */ int16_t PartyRot_Y;
+    /* 18 */ uint16_t unknown;
+    /* 1A */ uint16_t SaveFileID;
     /* 1C */
 };
 
@@ -528,16 +529,16 @@ struct Timer_Image_MM7 {
     void Serialize(struct Timer *);
     void Deserialize(struct Timer *);
 
-    /* 00 */ unsigned int bReady;
-    /* 04 */ unsigned int bPaused;
-    /* 08 */ int bTackGameTime;
-    /* 0C */ unsigned int uStartTime;
-    /* 10 */ unsigned int uStopTime;
-    /* 14 */ int uGameTimeStart;
-    /* 18 */ int field_18;
-    /* 1C */ unsigned int uTimeElapsed;
-    /* 20 */ int dt_in_some_format;
-    /* 24 */ unsigned int uTotalGameTimeElapsed;
+    /* 00 */ uint32_t bReady;
+    /* 04 */ uint32_t bPaused;
+    /* 08 */ int32_t bTackGameTime;
+    /* 0C */ uint32_t uStartTime;
+    /* 10 */ uint32_t uStopTime;
+    /* 14 */ int32_t uGameTimeStart;
+    /* 18 */ int32_t field_18;
+    /* 1C */ uint32_t uTimeElapsed;
+    /* 20 */ int32_t dt_in_some_format;
+    /* 24 */ uint32_t uTotalGameTimeElapsed;
     /* 28 */
 };
 

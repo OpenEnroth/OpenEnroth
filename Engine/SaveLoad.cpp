@@ -20,6 +20,8 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/ImageLoader.h"
+#include "Engine/Graphics/PCX.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
@@ -70,25 +72,6 @@ bool CopyFile(const String &from, const String &to) {
     return file_size != -1 && bytes_read == bytes_wrote;
 }
 
-//----- (00411B59) --------------------------------------------------------
-void LoadThumbnailLloydTexture(unsigned int uSlot, unsigned int uPlayer) {
-    if (pSavegameThumbnails[uSlot]) {
-        pSavegameThumbnails[uSlot]->Release();
-        pSavegameThumbnails[uSlot] = nullptr;
-    }
-
-    String str = StringPrintf("data\\lloyd%d%d.pcx", uPlayer, uSlot + 1);
-    str = MakeDataPath(str.c_str());
-    pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromFile(str);
-
-    if (!pSavegameThumbnails[uSlot]) {
-        String str = StringPrintf("lloyd%d%d.pcx", uPlayer, uSlot + 1);
-        str = MakeDataPath(str.c_str());
-        pSavegameThumbnails[uSlot] = assets->GetImage_PCXFromNewLOD(str);
-    }
-}
-
-//----- (0045EE8A) --------------------------------------------------------
 void LoadGame(unsigned int uSlot) {
     bool v25;               // esi@62
     bool v26;               // eax@62
@@ -102,14 +85,6 @@ void LoadGame(unsigned int uSlot) {
         return;
     }
 
-    for (uint i = 1; i < 5; ++i) {
-        for (uint j = 1; j < 6; ++j) {
-            String file_path = StringPrintf("data\\lloyd%d%d.pcx", i, j);
-            file_path = MakeDataPath(file_path.c_str());
-            remove(file_path.c_str());
-        }
-    }
-
     pNew_LOD->CloseWriteFile();
 
     String filename = "saves\\" + pSavegameList->pFileList[uSlot];
@@ -120,8 +95,8 @@ void LoadGame(unsigned int uSlot) {
         Error("Failed to copy: %s", filename.c_str());
     }
 
-    pNew_LOD->LoadFile(to_file_path.c_str(), 0);
-    FILE *file = pNew_LOD->FindContainer("header.bin", 1);
+    pNew_LOD->LoadFile(to_file_path, 0);
+    FILE *file = pNew_LOD->FindContainer("header.bin");
     if (!file) {
         logger->Warning(L"%S", localization->FormatString(612, 100)
                                    .c_str());  // Savegame damaged! Code=%d
@@ -129,7 +104,7 @@ void LoadGame(unsigned int uSlot) {
     Assert(sizeof(SavegameHeader) == 100);
     fread(&header, sizeof(SavegameHeader), 1, file);
     {
-        file = pNew_LOD->FindContainer("party.bin", 1);
+        file = pNew_LOD->FindContainer("party.bin");
         if (!file) {
             logger->Warning(L"%S", localization->FormatString(612, 101)
                                        .c_str());  // Savegame damaged! Code=%d
@@ -138,11 +113,24 @@ void LoadGame(unsigned int uSlot) {
             fread(&serialization, sizeof(serialization), 1, file);
 
             serialization.Deserialize(pParty);
+
+            for (size_t i = 0; i < 4; i++) {
+                Player *player = &pParty->pPlayers[i];
+                for (size_t j = 0; j < 5; j++) {
+                    if (j >= player->vBeacons.size()) {
+                        continue;
+                    }
+                    LloydBeacon &beacon = player->vBeacons[j];
+                    String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
+                    beacon.image = Image::Create(new PCX_LOD_File_Loader(pNew_LOD, str));
+                    beacon.image->GetWidth();
+                }
+            }
         }
     }
 
     {
-        file = pNew_LOD->FindContainer("clock.bin", 1);
+        file = pNew_LOD->FindContainer("clock.bin");
         if (!file) {
             logger->Warning(L"%S", localization->FormatString(612, 102)
                                        .c_str());  // Savegame damaged! Code=%d
@@ -155,7 +143,7 @@ void LoadGame(unsigned int uSlot) {
     }
 
     {
-        file = pNew_LOD->FindContainer("overlay.bin", 1);
+        file = pNew_LOD->FindContainer("overlay.bin");
         if (!file) {
             logger->Warning(L"%S", localization->FormatString(612, 103)
                                        .c_str());  // Savegame damaged! Code=%d
@@ -237,7 +225,7 @@ void LoadGame(unsigned int uSlot) {
                   4) != -1;
     if (!v25 && !v26) Error("Unable to find: %s!", header.pLocationName);
 
-    strcpy(pCurrentMapName, header.pLocationName);
+    pCurrentMapName = header.pLocationName;
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_2000 | GAME_SETTINGS_0001;
 
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
@@ -282,8 +270,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     // v66 = a2;
     s_SavedMapName = pCurrentMapName;
-    if (!_stricmp(pCurrentMapName, "d05.blv"))  // arena
+    if (pCurrentMapName == "d05.blv") {  // arena
         return;
+    }
 
     uncompressed_buff = (char *)malloc(1000000);
 
@@ -343,7 +332,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     memset(save_header.pName, 0, 20);
     memset(save_header.pLocationName, 0, 20);
     memset(save_header.field_30, 0, 52);
-    strcpy(save_header.pLocationName, pCurrentMapName);
+    strcpy(save_header.pLocationName, pCurrentMapName.c_str());
     save_header.playing_time = pParty->GetPlayingTime();
     strcpy(pLodDirectory.pFilename, "header.bin");
     pLodDirectory.uDataSize = sizeof(SavegameHeader);
@@ -408,27 +397,28 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         logger->Warning(L"%S", error_message.c_str());
     }
 
-    for (int i = 1; i <= 4; ++i) {  // 4 - players
-        for (int j = 1; j <= 5; ++j) {  // 5 - images
-            char work_string[120];
-            sprintf(work_string, "data\\lloyd%d%d.pcx", i, j);
-            String file_path = MakeDataPath(work_string);
-            pLLoidFile = fopen(file_path.c_str(), "rb");
-            if (pLLoidFile) {
-                __debugbreak();
-                sprintf(work_string, "lloyd%d%d.pcx", i, j);
-                fseek(pLLoidFile, 0, SEEK_END);
-                pLodDirectory.uDataSize = ftell(pLLoidFile);
-                rewind(pLLoidFile);
-                fread(uncompressed_buff, pLodDirectory.uDataSize, 1,
-                      pLLoidFile);
-                strcpy(pLodDirectory.pFilename, work_string);
-                fclose(pLLoidFile);
-                remove(work_string);
-                if (pNew_LOD->Write(&pLodDirectory, uncompressed_buff, 0)) {
+    for (size_t i = 0; i < 4; ++i) {  // 4 - players
+        Player *player = &pParty->pPlayers[i];
+        for (size_t j = 0; j < 5; ++j) {  // 5 - images
+            if (j >= player->vBeacons.size()) {
+                continue;
+            }
+            LloydBeacon *beacon = &player->vBeacons[j];
+            Image *image = beacon->image;
+            if ((beacon->uBeaconTime != 0) && (image != nullptr)) {
+                const void *pixels = image->GetPixels(IMAGE_FORMAT_R5G6B5);
+                size_t pcx_data_size = 30000;
+                void *pcx_data = malloc(pcx_data_size);
+                PCX::Encode16(pixels, image->GetWidth(), image->GetHeight(),
+                              pcx_data, pcx_data_size, &pcx_data_size);
+                String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
+                pLodDirectory.uDataSize = pcx_data_size;
+                strcpy(pLodDirectory.pFilename, str.c_str());
+                if (pNew_LOD->Write(&pLodDirectory, pcx_data, 0)) {
                     auto error_message = localization->FormatString(612, 207);
                     logger->Warning(L"%S", error_message.c_str());
                 }
+                free(pcx_data);
             }
         }
     }
@@ -478,7 +468,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             memcpy(data_write_pos, pChests.data(),
                    sizeof(Chest) * uNumChests);  // 5324 *
             data_write_pos += sizeof(Chest) * uNumChests;
-            memcpy(data_write_pos, pIndoor->pDoors, 0x3E80);
+            memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
             data_write_pos += 16000;
             memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata,
                    pIndoor->blv.uDoors_ddata_Size);
@@ -532,7 +522,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             memcpy(data_write_pos, &pOutdoor->loc_time, 0x38);
             data_write_pos += 56;
         }
-        strcpy(Source, pCurrentMapName);
+        strcpy(Source, pCurrentMapName.c_str());
         _splitpath(Source, Drive, Dir, Filename, Ext);
         Ext[1] = 'd';
 
@@ -574,10 +564,10 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
 //----- (00460078) --------------------------------------------------------
 void DoSavegame(unsigned int uSlot) {
-    if (_stricmp(pCurrentMapName, "d05.blv")) {  // Not Arena(не Арена)
+    if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
         LOD::Directory pDir;  // [sp+Ch] [bp-28h]@2
         SaveGame(0, 0);
-        strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName);
+        strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName.c_str());
         pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
         strcpy(pDir.pFilename, "header.bin");
         pDir.uDataSize = 100;
@@ -599,11 +589,10 @@ void DoSavegame(unsigned int uSlot) {
         }
     }
 
-    if (_stricmp(pCurrentMapName, "d05.blv"))
+    if (pCurrentMapName != "d05.blv")
         pNew_LOD->_4621A7();
     else
-        GameUI_StatusBar_OnEvent(localization->GetString(583),
-                                 2);  // "No saving in the Arena"
+        GameUI_StatusBar_OnEvent(localization->GetString(583), 2);  // "No saving in the Arena"
 
     pEventTimer->Resume();
     GameUI_StatusBar_OnEvent(localization->GetString(656), 2);  // "Game Saved!"
@@ -657,7 +646,7 @@ void SaveNewGame() {
 
     LOD::Directory a3;
     a3.dword_000018 = 0;
-    a3.word_00001E = 0;
+    a3.priority = 0;
     strcpy(a3.pFilename, "current");
     pNew_LOD->CreateNewLod(
         &header, &a3, file_path.c_str());  //создаётся new.lod в дирректории
@@ -672,8 +661,7 @@ void SaveNewGame() {
              ++i) {  // копирование файлов с 76 по 151
             memcpy(&pDir, &pGames_LOD->pSubIndices[i],
                    sizeof(pDir));  //копирование текущего файла в pDir
-            FILE *file = pGames_LOD->FindContainer(
-                pGames_LOD->pSubIndices[i].pFilename, 1);
+            FILE *file = pGames_LOD->FindContainer(pGames_LOD->pSubIndices[i].pFilename);
             fread(pSave, pGames_LOD->pSubIndices[i].uDataSize, 1, file);
             pNew_LOD->AppendDirectory(&pDir, pSave);
         }

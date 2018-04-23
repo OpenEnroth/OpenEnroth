@@ -59,7 +59,7 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette, ...)
     va_list palettes_ptr;
 
     GUIFont *pFont = new GUIFont;
-    pFont->pData = (FontData*)pIcons_LOD->LoadRaw(pFontFile, 0);
+    pFont->pData = (FontData*)pIcons_LOD->LoadRaw(pFontFile);
     va_start(palettes_ptr, pFontFile);
 
     while (NULL != (pFontPalette = va_arg(palettes_ptr, const char *))) {

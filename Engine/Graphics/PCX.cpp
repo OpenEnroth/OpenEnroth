@@ -259,7 +259,7 @@ struct Format {
     ColorFormat b;
 };
 
-void Encode(Format f, void *picture_data, unsigned int width,
+void Encode(Format f, const void *picture_data, unsigned int width,
             unsigned int height, void *pcx_data, int max_buff_size,
             unsigned int *packed_size) {
     uint8_t *output = (uint8_t *)WritePCXHeader(pcx_data, width, height);
@@ -298,7 +298,7 @@ void Encode(Format f, void *picture_data, unsigned int width,
     }
 }
 
-void PCX::Encode16(void *picture_data, unsigned int width, unsigned int height,
+void PCX::Encode16(const void *picture_data, unsigned int width, unsigned int height,
                    void *pcx_data, int max_buff_size,
                    unsigned int *packed_size) {
     Format f(16, 0xF800, 0x07E0, 0x001F);
@@ -306,7 +306,7 @@ void PCX::Encode16(void *picture_data, unsigned int width, unsigned int height,
            packed_size);
 }
 
-void PCX::Encode32(void *picture_data, unsigned int width, unsigned int height,
+void PCX::Encode32(const void *picture_data, unsigned int width, unsigned int height,
                    void *pcx_data, int max_buff_size,
                    unsigned int *packed_size) {
     Format f(32, 0x00FF0000, 0x0000FF00, 0x000000FF);

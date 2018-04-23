@@ -885,7 +885,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     if (!pGames_LOD->DoesContainerExist(blv_filename))
         Error("Unable to find %s in Games.LOD", blv_filename.c_str());
 
-    File = pGames_LOD->FindContainer(blv_filename, 1);
+    File = pGames_LOD->FindContainer(blv_filename);
     // File = v82;
 
     Release();
@@ -1150,7 +1150,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
 
     auto dlv_filename = filename;
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
-    File = pNew_LOD->FindContainer(dlv_filename, 1);  // error on D28.dlv
+    File = pNew_LOD->FindContainer(dlv_filename);  // error on D28.dlv
     fread(&header, 0x10, 1, File);                    // (FILE *)v245);
     bool _v244 = false;
     if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
@@ -1202,8 +1202,9 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
 
     bool _a = false;
     if (num_days_played - dlv.uLastRepawnDay >= respawn_interval_days &&
-        _stricmp(pCurrentMapName, "d29.dlv"))
+        (pCurrentMapName != "d29.dlv")) {
         _a = true;
+    }
 
     // v154 = 875;
     if (_v244 || (_a || !dlv.uLastRepawnDay)) {
@@ -2444,9 +2445,9 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     pEngine->SetUnderwater(
         Is_out15odm_underwater());
 
-    if (!_stricmp(pCurrentMapName, "out15.odm") ||
-        !_stricmp(pCurrentMapName, "d23.blv"))
+    if ((pCurrentMapName == "out15.odm") || (pCurrentMapName == "d23.blv")) {
         bNoNPCHiring = true;
+    }
     pPaletteManager->pPalette_tintColor[0] = 0;
     pPaletteManager->pPalette_tintColor[1] = 0;
     pPaletteManager->pPalette_tintColor[2] = 0;

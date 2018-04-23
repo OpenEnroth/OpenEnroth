@@ -1841,12 +1841,9 @@ void TravelByTransport() {
                 [dialog_menu_id -
                 HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_1]];
             if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-                if (_stricmp(
-                    pCurrentMapName,
-                    pMapStats->pInfos[pTravel->uMapInfoID].pFilename)) {
+                if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].pFilename) {
                     SaveGame(1, 0);
-                    strcpy(pCurrentMapName,
-                        pMapStats->pInfos[pTravel->uMapInfoID].pFilename);
+                    pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].pFilename;
 
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                     _5B65B8_npcdata_hiword_house_or_other = 0;
@@ -3771,7 +3768,7 @@ void InitializeBuildingResidents() {
     int decode_step;
 
     free(p2DEventsTXT_Raw);
-    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadRaw("2dEvents.txt", 0);
+    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadRaw("2dEvents.txt");
     strtok(p2DEventsTXT_Raw, "\r");
     strtok(NULL, "\r");
 
@@ -4403,7 +4400,8 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
     pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(80),  // Quit building
         { { ui_exit_cancel_button_background } });
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
-        const char *v29, *v30;
+        const char *v29;
+        String v30;
         if (v26 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             v30 = pMapStats->pInfos[uHouse_ExitPic].pName;
             v29 = localization->GetString(411);  // Enter %s
@@ -4414,7 +4412,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
                 v30 = p2DEvents[button - 1].pProprieterName;
             v29 = localization->GetString(435);
         }
-        sprintf(byte_591180[v26].data(), v29, v30);
+        sprintf(byte_591180[v26].data(), v29, v30.c_str());
         HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],
             pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26],
             63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, 0, byte_591180[v26].data());

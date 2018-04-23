@@ -321,7 +321,7 @@ extern float flt_6BE150_look_up_down_dangle;
 // extern HINSTANCE hInstance; // idb
 // extern char *pCmdLine;
 // extern HWND hWnd; // idb
-extern char pCurrentMapName[32];  // idb
+extern String pCurrentMapName;
 extern unsigned int uLevelMapStatsID;
 
 #define GAME_SETTINGS_0001 0x0001

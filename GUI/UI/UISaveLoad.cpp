@@ -68,8 +68,8 @@ GUIWindow_Save::GUIWindow_Save() :
             strcpy(pSavegameHeader[i].pName, localization->GetString(72));  // Empty
         } else {
             pLODFile.LoadFile(str.c_str(), 1);
-            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", 1));  // problesm new maps mm7
-            if (pLODFile.FindContainer("image.pcx", 1)) {
+            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin"));  // problesm new maps mm7
+            if (pLODFile.FindContainer("image.pcx")) {
                 // pSavegameThumbnails[i].LoadFromFILE(pLODFile.FindContainer("image.pcx", 1), 0, 1);
                 pLODFile.CloseWriteFile();
                 pSavegameUsedSlots[i] = 1;
@@ -177,12 +177,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             continue;
         }
         pLODFile.LoadFile(str.c_str(), 1);
-        if (pLODFile.FindContainer("header.bin", true))
-            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", true));
+        if (pLODFile.FindContainer("header.bin"))
+            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin"));
         if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(613))) {  // "AutoSave.MM7"
             strcpy(pSavegameHeader[i].pName, localization->GetString(16));  // "Autosave"
         }
-        if (!pLODFile.FindContainer("image.pcx", true)) {
+        if (!pLODFile.FindContainer("image.pcx")) {
             pSavegameUsedSlots[i] = 0;
             pSavegameList->pFileList[i].clear();
         } else {

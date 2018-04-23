@@ -3369,19 +3369,16 @@ unsigned int Actor::SearchAliveActors(unsigned int *pTotalActors) {
 }
 //----- (00408768) --------------------------------------------------------
 void Actor::InitializeActors() {
-    bool evil;       // [sp+Ch] [bp-10h]@1
-    bool bPit;       // [sp+10h] [bp-Ch]@1
-    bool good;       // [sp+14h] [bp-8h]@1
-    bool bCelestia;  // [sp+18h] [bp-4h]@1
-
-    bCelestia = false;
-    bPit = false;
-    good = false;
-    evil = false;
-    if (!_stricmp(pCurrentMapName, "d25.blv"))  // the Celestia
+    bool bCelestia = false;
+    bool bPit = false;
+    bool good = false;
+    bool evil = false;
+    if (pCurrentMapName == "d25.blv") {  // the Celestia
         bCelestia = true;
-    if (!_stricmp(pCurrentMapName, "d26.blv"))  // the Pit
+    }
+    if (pCurrentMapName == "d26.blv") {  // the Pit
         bPit = true;
+    }
     if (pParty->IsPartyGood()) good = true;
     if (pParty->IsPartyEvil()) evil = true;
 
@@ -5153,22 +5150,22 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
             // v13 = pMapInfo->Dif_M1;
             v57 = pMapInfo->Dif_M1;
             v56 = pMapInfo->uEncounterMonster1AtLeast + v12;
-            strcpy(Source, pMapInfo->pEncounterMonster1Texture);
+            strcpy(Source, pMapInfo->pEncounterMonster1Texture.c_str());
             break;
         case 3:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s A";
-            sprintf(Source, "%s A", pMapInfo->pEncounterMonster1Texture);
+            sprintf(Source, "%s A", pMapInfo->pEncounterMonster1Texture.c_str());
             break;
         case 4:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s A";
-            sprintf(Source, "%s A", pMapInfo->pEncounterMonster2Texture);
+            sprintf(Source, "%s A", pMapInfo->pEncounterMonster2Texture.c_str());
             break;
         case 5:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s A";
-            sprintf(Source, "%s A", pMapInfo->pEncounterMonster3Texture);
+            sprintf(Source, "%s A", pMapInfo->pEncounterMonster3Texture.c_str());
             break;
         case 1:
             // v9 = pMapInfo->uEncounterMonster2AtLeast;
@@ -5180,22 +5177,22 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
             // v13 = pMapInfo->Dif_M2;
             v57 = pMapInfo->Dif_M2;
             v56 = pMapInfo->uEncounterMonster2AtLeast + v12;
-            strcpy(Source, pMapInfo->pEncounterMonster2Texture);
+            strcpy(Source, pMapInfo->pEncounterMonster2Texture.c_str());
             break;
         case 6:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s B";
-            sprintf(Source, "%s B", pMapInfo->pEncounterMonster1Texture);
+            sprintf(Source, "%s B", pMapInfo->pEncounterMonster1Texture.c_str());
             break;
         case 7:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s B";
-            sprintf(Source, "%s B", pMapInfo->pEncounterMonster2Texture);
+            sprintf(Source, "%s B", pMapInfo->pEncounterMonster2Texture.c_str());
             break;
         case 8:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s B";
-            sprintf(Source, "%s B", pMapInfo->pEncounterMonster3Texture);
+            sprintf(Source, "%s B", pMapInfo->pEncounterMonster3Texture.c_str());
             break;
         case 2:
             // v9 = pMapInfo->uEncounterMonster3AtLeast;
@@ -5207,22 +5204,22 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
             // v13 = pMapInfo->Dif_M3;
             v57 = pMapInfo->Dif_M3;
             v56 = pMapInfo->uEncounterMonster3AtLeast + v12;
-            strcpy(Source, pMapInfo->pEncounterMonster3Texture);
+            strcpy(Source, pMapInfo->pEncounterMonster3Texture.c_str());
             break;
         case 9:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s C";
-            sprintf(Source, "%s C", pMapInfo->pEncounterMonster1Texture);
+            sprintf(Source, "%s C", pMapInfo->pEncounterMonster1Texture.c_str());
             break;
         case 10:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s C";
-            sprintf(Source, "%s C", pMapInfo->pEncounterMonster2Texture);
+            sprintf(Source, "%s C", pMapInfo->pEncounterMonster2Texture.c_str());
             break;
         case 11:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s C";
-            sprintf(Source, "%s C", pMapInfo->pEncounterMonster3Texture);
+            sprintf(Source, "%s C", pMapInfo->pEncounterMonster3Texture.c_str());
             break;
         default:
             return;

@@ -238,7 +238,7 @@ bool PCX_LOD_File_Loader::Load(unsigned int *width, unsigned int *height,
     *format = IMAGE_INVALID_FORMAT;
 
     size_t size;
-    FILE *file = lod->FindContainer(this->resource_name.c_str(), 0, &size);
+    FILE *file = lod->FindContainer(this->resource_name, &size);
     if (!file) {
         logger->Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;
