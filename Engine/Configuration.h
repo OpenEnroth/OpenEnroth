@@ -40,7 +40,6 @@ class Configuration {
     inline bool IsUnderwater() const { return is_underwater; }
     inline void SetUnderwater(bool is_underwater) { this->is_underwater = is_underwater; }
 
-    inline bool NoCd() const { return no_cd; }
     inline bool NoVideo() const { return no_video; }
     inline bool NoSound() const { return no_sound; }
     inline bool NoMargareth() const { return no_margareth; }
@@ -96,7 +95,6 @@ class Configuration {
     bool no_video = false;
     bool no_walk_sound = false;
     bool no_margareth = true;
-    bool no_cd = true;
     bool no_bloodsplats = false;
     bool no_actors = false;
     bool no_decorations = false;

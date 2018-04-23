@@ -27,7 +27,5 @@ Point OS_GetMouseCursorPos();
 unsigned int OS_GetTime();
 uint64_t OS_GetPrecisionTime();
 
-bool OS_FindMM7CD(char *cd_path);
-
 bool OS_IfShiftPressed();
 bool OS_IfCtrlPressed();

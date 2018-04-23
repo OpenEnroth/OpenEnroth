@@ -1024,13 +1024,6 @@ bool MM7_LoadLods(const char *mm7_path) {
 
 //----- (004651F4) --------------------------------------------------------
 bool MM7_Initialize(const char *mm7_path) {
-    if (!engine_config->NoCd()) {
-        logger->Info(L"Checking for CD...");
-        if (!OS_FindMM7CD(&cMM7GameCDDriveLetter))
-            return false;
-        logger->Info(L"...done.");
-    }
-
     srand(OS_GetTime());
 
     auto render_config = pEngine->ConfigureRender();
