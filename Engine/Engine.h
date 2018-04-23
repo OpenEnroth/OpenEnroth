@@ -150,8 +150,8 @@ struct Engine {
     int field_978;
     Game_stru0 stru_97C;
     char field_98C[1148];
-    int uNumBloodsplats;
-    int field_E0C;
+    int uNumBloodsplats;  // not used anymore??
+    int field_E0C;  // to do with bloodsplats - not used anymore??
     __int64 field_E10;
     int uNumStationaryLights_in_pStationaryLightsStack;
     unsigned int __depricated1;  // unsigned int bGammaControlInitialized;

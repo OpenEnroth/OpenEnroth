@@ -778,7 +778,7 @@ struct TileTable *pTileTable;                                        // idb
 std::array<char, 777> pDefaultSkyTexture;                            // idb
 std::array<char, 16> byte_6BE124_cfg_textures_DefaultGroundTexture;  // idb
 int _6BE134_odm_main_tile_group;
-int dword_6BE138;
+int dword_6BE138;  // are you sure check game menu
 int dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;

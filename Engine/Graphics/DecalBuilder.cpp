@@ -18,12 +18,9 @@ struct BloodsplatContainer *pBloodsplatContainer = new BloodsplatContainer;
 
 //----- (0043B570) --------------------------------------------------------
 double DecalBuilder_stru0::_43B570_get_color_mult_by_time() {
-    double result;  // st7@3
-
+    double result = (field_20_time - pEventTimer->Time() + 384) / 384.0;
     if (field_1C_flags & 1) {
-        if ((field_20_time - pEventTimer->Time() + 384) / 384.0 >= 0.0)
-            result = (field_20_time - pEventTimer->Time() + 384) / 384.0;
-        else
+        if (result < 0)
             result = 0.0;
     } else {
         result = 1.0;
@@ -35,6 +32,8 @@ double DecalBuilder_stru0::_43B570_get_color_mult_by_time() {
 void BloodsplatContainer::AddBloodsplat(float x, float y, float z, float radius,
                                         unsigned char r, unsigned char g,
                                         unsigned char b) {
+    if (this->uNumBloodsplats == 64)
+        this->uNumBloodsplats = 0;
     int i = this->uNumBloodsplats;
     if (this->uNumBloodsplats == 64) i = 0;
     this->std__vector_pBloodsplats[i].x = x;
@@ -46,6 +45,7 @@ void BloodsplatContainer::AddBloodsplat(float x, float y, float z, float radius,
     this->std__vector_pBloodsplats[i].b = b;
     this->std__vector_pBloodsplats_size =
         min(this->std__vector_pBloodsplats_size + 1, 64);
+    this->uNumBloodsplats++;
 }
 
 //----- (0049B490) --------------------------------------------------------

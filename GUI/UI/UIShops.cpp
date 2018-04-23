@@ -64,7 +64,7 @@ void ShopDialogMain(GUIWindow dialogwin) {
                          pFontArrus->CalcTextHeight(pShopOptions[pNumString],
                                                     dialogwin.uFrameWidth, 0) -
                          1;
-            pButton->uW = textoffset;
+            pButton->uW = textoffset + 6;
 
             pColorText = Color16(0xE1u, 0xCDu, 0x23u);
             if (pDialogueWindow->pCurrentPosActiveItem != i)
@@ -117,7 +117,7 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin,
                      pFontArrus->CalcTextHeight(pShopOptions[pNumString],
                                                 dialogwin.uFrameWidth, 0) -
                      1;
-        pButton->uW = textoffset;
+        pButton->uW = textoffset + 6;
 
         pColorText = Color16(0xE1u, 0xCDu, 0x23u);
         if (pDialogueWindow->pCurrentPosActiveItem != i)
@@ -312,7 +312,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
                             localization->GetSkillName(pButton->msg_param - 36),
                             dialogwin.uFrameWidth, 0) -
                         1;
-                    pButton->uW = textoffset;
+                    pButton->uW = textoffset + 6;
                     pColorText = Color16(0xE1u, 0xCDu, 0x23u);
                     if (pDialogueWindow->pCurrentPosActiveItem != i)
                         pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
@@ -341,7 +341,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
     }
 }
 
-void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
+void WeaponShopWares(GUIWindow dialogwin, bool special) {
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
     int item_X = 0;
 
@@ -466,7 +466,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
 void WeaponShopDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
+    dialog_window.uFrameWidth = 145;
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
@@ -509,7 +509,7 @@ void WeaponShopDialog() {
     }
 }
 
-void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
+void ArmorShopWares(GUIWindow dialogwin, bool special) {
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
     int item_x = 0;
 
@@ -647,7 +647,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
 void ArmorShopDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
+    dialog_window.uFrameWidth = 145;
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
@@ -691,7 +691,7 @@ void ArmorShopDialog() {
 }
 
 void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
-                           bool special = 0) {
+                           bool special) {
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
 
     int itemx;
@@ -842,7 +842,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
 void AlchemistDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
+    dialog_window.uFrameWidth = 145;
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
@@ -884,7 +884,7 @@ void AlchemistDialog() {
 void MagicShopDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
+    dialog_window.uFrameWidth = 145;
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {

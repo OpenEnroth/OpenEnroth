@@ -58,7 +58,7 @@ struct Chest {  // 0x14cc
                            unsigned int bToggle);
     static bool ChestUI_WritePointedObjectStatusString();
     static void OnChestLeftClick();
-
+    static void GrabItem(bool all = false);
     unsigned __int16 uChestBitmapID;        // 0
     unsigned __int16 uFlags;                // 2
     struct ItemGen igChestItems[140];       // 4

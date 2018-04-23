@@ -1502,7 +1502,12 @@ ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() {
 }
 
 unsigned char ItemGen::GetPlayerSkillType() {
-    return pItemsTable->pItems[this->uItemID].uSkillType;
+    unsigned char skl = pItemsTable->pItems[this->uItemID].uSkillType;
+    if (skl == PLAYER_SKILL_CLUB) {
+        // club skill not used but some items load it
+        skl = PLAYER_SKILL_MACE;
+    }
+    return skl;
 }
 
 char* ItemGen::GetIconName() {

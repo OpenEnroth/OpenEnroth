@@ -31,7 +31,7 @@ unsigned int OS_GetTime() { return GetTickCount(); }
 
 unsigned __int64 OS_GetPrecisionTime() { return timeGetTime(); }
 
-bool OS_IfShiftPressed() { return GetAsyncKeyState(VK_SHIFT) >= 0; }
+bool OS_IfShiftPressed() { return GetAsyncKeyState(VK_SHIFT); }
 
 bool OS_IfCtrlPressed() { return GetAsyncKeyState(VK_CONTROL); }
 

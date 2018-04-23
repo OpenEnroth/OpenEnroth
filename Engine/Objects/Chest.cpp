@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "Engine/Engine.h"
+#include "Engine/Localization.h"
 #include "Engine/Time.h"
 
 #include "IO/Mouse.h"
@@ -33,6 +34,8 @@ std::array<Chest, 20> pChests;
 
 extern int pChestWidthsByType[8];
 extern int pChestHeightsByType[8];
+extern int pChestPixelOffsetX[8];
+extern int pChestPixelOffsetY[8];
 
 //----- (0042041E) --------------------------------------------------------
 bool Chest::Open(signed int uChestID) {
@@ -200,8 +203,8 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
         pChestWidthsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C]
                                .uChestBitmapID];
 
-    int inventoryYCoord = (pY - 34) / 32;  // use pchestoffsets??
-    int inventoryXCoord = (pX - 42) / 32;
+    int inventoryYCoord = (pY - (pChestPixelOffsetY[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID])) / 32;
+    int inventoryXCoord = (pX - (pChestPixelOffsetX[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID])) / 32;
     int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
 
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
@@ -641,8 +644,8 @@ void Chest::OnChestLeftClick() {
                                .uChestBitmapID];
 
     pMouse->GetClickPos(&pX, &pY);
-    int inventoryYCoord = (pY - 34) / 32;  // use pchestoffsets??
-    int inventoryXCoord = (pX - 42) / 32;
+    int inventoryYCoord = (pY - (pChestPixelOffsetY[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID])) / 32;
+    int inventoryXCoord = (pX - (pChestPixelOffsetX[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID])) / 32;
     int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
 
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
@@ -682,5 +685,54 @@ void Chest::OnChestLeftClick() {
                 RemoveItemAtChestIndex(invMatrixIndex);
             }
         }
+    }
+}
+
+void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using spacebar
+    if (pParty->pPickedItem.uItemID || !uActiveCharacter) {
+        return;
+    }
+
+    int InventSlot;
+    int grabcount = 0;
+    int goldcount = 0;
+    int goldamount = 0;
+
+    // loop through chest pInvetoryIndices
+    for (int loop = 0; loop < 140; loop++) {
+        int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[loop];
+        if (chestindex <= 0) continue;  // no item here
+
+        int itemindex = chestindex - 1;
+        ItemGen chestitem = pChests[(int)pGUIWindow_CurrentMenu->par1C].igChestItems[itemindex];
+        if (chestitem.GetItemEquipType() == EQUIP_GOLD) {
+            pParty->PartyFindsGold(chestitem.special_enchantment, 0);
+            viewparams->bRedrawGameUI = 1;
+            goldamount += chestitem.special_enchantment;
+            goldcount++;
+        } else {  // this should add item to invetory of active char - if that fails set as holding item and break
+            if (uActiveCharacter && (InventSlot = pPlayers[uActiveCharacter]->AddItem(-1, chestitem.uItemID)) != 0) {  // can place
+                memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
+                grabcount++;
+                GameUI_StatusBar_OnEvent(localization->FormatString(471, pItemsTable->pItems[chestitem.uItemID].pUnidentifiedName));  // You found an item (%s)!
+            } else {  // no room so set as holding item
+                pParty->SetHoldingItem(&chestitem);
+                RemoveItemAtChestIndex(loop);
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
+                break;
+            }
+        }
+        RemoveItemAtChestIndex(loop);
+        if (all == false)  // only grab 1 item
+            break;
+    }
+
+    if (grabcount > 1 || goldcount > 1) {  // found items
+        char out[200];
+        sprintf(out, "You found %d item(s) and %d Gold!", grabcount, goldamount);
+        GameUI_StatusBar_OnEvent(out);
+    }
+    if (grabcount == 0 && goldcount == 0) {  // nothing here
+        GameUI_StatusBar_OnEvent(localization->GetString(521));
     }
 }

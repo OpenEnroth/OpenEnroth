@@ -1383,6 +1383,7 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
         render->PresentBlackScreen();
         pMediaPlayer->PlayFullscreenMovie("3dologo");
         pMediaPlayer->PlayFullscreenMovie("new world logo");
+        pMediaPlayer->PlayFullscreenMovie("jvc");
         pMediaPlayer->PlayFullscreenMovie("Intro");
     }
 
