@@ -220,10 +220,10 @@ int TileTable::FromFileTxt(const char *pFilename) {
         if (v84.uPropCount && *v84.pProperties[0] != 47) ++v4;
     }
     v2->sNumTiles = v4;
-    v5 = malloc(26 * v4);
+    v5 = malloc(sizeof(TileDesc) * v4);
     v2->pTiles = (TileDesc *)v5;
     if (!v5) Error("TileTable::Load - Out of Memory!");
-    memset(v5, 0, 26 * v2->sNumTiles);
+    memset(v5, 0, sizeof(TileDesc) * v2->sNumTiles);
     v2->sNumTiles = 0;
     fseek(File, 0, 0);
     if (fgets(&Buf, 490, File)) {

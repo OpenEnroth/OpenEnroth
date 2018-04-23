@@ -1809,9 +1809,8 @@ void sub_4B1447_party_fine(int shopId, int stealingResult,
         }
         if (pParty->uFine) {
             for (uint i = 1; i <= 4; ++i) {
-                if (!_449B57_test_bit(pPlayers[i]->_achieved_awards_bits, 1))
-                    _449B7E_toggle_bit(pPlayers[i]->_achieved_awards_bits, 1,
-                                       1);
+                if (!_449B57_test_bit(pPlayers[i]->_achieved_awards_bits, PLAYER_GUILD_BITS__FINED))
+                    _449B7E_toggle_bit(pPlayers[i]->_achieved_awards_bits, PLAYER_GUILD_BITS__FINED, 1);
             }
         }
         if (stealingResult == 1)

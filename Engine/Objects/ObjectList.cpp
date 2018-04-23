@@ -157,11 +157,11 @@ bool ObjectList::FromFileTxt(const char *Args) {
         v3 = 0;
     }
     v2->uNumObjects = v5;
-    v6 = malloc(56 * v5);
+    v6 = malloc(sizeof(ObjectDesc) * v5);
     v2->pObjects = (ObjectDesc *)v6;
     if (v6 == (void *)v3) Error("ObjectDescriptionList::load - Out of Memory!");
 
-    memset(v6, v3, 56 * v2->uNumObjects);
+    memset(v6, v3, sizeof(ObjectDesc) * v2->uNumObjects);
     v7 = File;
     v2->uNumObjects = v3;
     fseek(v7, v3, v3);
