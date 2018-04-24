@@ -27,8 +27,8 @@
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UITransition.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -58,24 +58,15 @@ _2devent p2DEvents[525];
 
 unsigned int LoadEventsToBuffer(const char *pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
-    void *ptr = pEvents_LOD->LoadRaw(pContainerName);
-    FILE *pLodFile = pEvents_LOD->FindContainer(pContainerName, 0);
-    if (!pLodFile) {
-        Error("Unable to load %s", pContainerName);
+    size_t size = 0;
+    void *ptr = pEvents_LOD->LoadCompressedTexture(pContainerName, &size);
+    if ((ptr == nullptr) || (size > uBufferSize)) {
+        Error("File %s Size %lu - Buffer size %lu", pContainerName, size, uBufferSize);
     }
 
-    TextureHeader DstBuf;
-    fread(&DstBuf, 1, sizeof(TextureHeader), pLodFile);
-    unsigned int uTextureSize = DstBuf.uDecompressedSize;
-    if (!DstBuf.uDecompressedSize) uTextureSize = DstBuf.uTextureSize;
-
-    if (uTextureSize >= (int)uBufferSize)
-        Error("File %s Size %lu - Buffer size %lu", pContainerName,
-              uTextureSize, uBufferSize);
-
-    memcpy(pBuffer, ptr, uTextureSize);
+    memcpy(pBuffer, ptr, size);
     free(ptr);
-    return uTextureSize;
+    return size;
 }
 
 //----- (00443DA1) --------------------------------------------------------

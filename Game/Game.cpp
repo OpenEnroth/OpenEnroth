@@ -233,9 +233,7 @@ void Game_EventLoop() {
     char *v200;                   // [sp+34h] [bp-5C8h]@518
     int v213;                     // [sp+98h] [bp-564h]@385
     char pOut[32];                // [sp+BCh] [bp-540h]@370
-    FrameTableTxtLine v216;       // [sp+DCh] [bp-520h]@524
     int v217[9];                  // [sp+158h] [bp-4A4h]@652
-    FrameTableTxtLine v218;       // [sp+17Ch] [bp-480h]@524
     char Str2[128];               // [sp+238h] [bp-3C4h]@527
     Actor actor;                  // [sp+2B8h] [bp-344h]@4
     int currHour;
@@ -1160,51 +1158,25 @@ void Game_EventLoop() {
                     }
                     pAudioPlayer->PlaySpellSound(lloyds_beacon_spell_id, 0);
                     if (bRecallingBeacon) {
-                        if (pCurrentMapName !=
-                                (const char *)&pGames_LOD->pSubIndices
-                                    [pPlayer9->vBeacons[uMessageParam]
-                                         .SaveFileID]) {
+                        if (pCurrentMapName != pGames_LOD->GetSubNodeName(pPlayer9->vBeacons[uMessageParam].SaveFileID)) {
                             SaveGame(1, 0);
                             OnMapLeave();
-                            pCurrentMapName =
-                                (const char *)&pGames_LOD->pSubIndices
-                                    [pPlayer9->vBeacons[uMessageParam]
-                                         .SaveFileID];
+                            pCurrentMapName = pGames_LOD->GetSubNodeName(pPlayer9->vBeacons[uMessageParam].SaveFileID);
                             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                             uGameState = GAME_STATE_CHANGE_LOCATION;
-                            _5B65A8_npcdata_uflags_or_other =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyPos_X;
-                            _5B65AC_npcdata_fame_or_other =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyPos_Y;
-                            _5B65B0_npcdata_rep_or_other =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyPos_Z;
-                            _5B65B4_npcdata_loword_house_or_other =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyRot_X;
-                            _5B65B8_npcdata_hiword_house_or_other =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyRot_Y;
+                            _5B65A8_npcdata_uflags_or_other = pPlayer9->vBeacons[uMessageParam].PartyPos_X;
+                            _5B65AC_npcdata_fame_or_other = pPlayer9->vBeacons[uMessageParam].PartyPos_Y;
+                            _5B65B0_npcdata_rep_or_other = pPlayer9->vBeacons[uMessageParam].PartyPos_Z;
+                            _5B65B4_npcdata_loword_house_or_other = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
+                            _5B65B8_npcdata_hiword_house_or_other = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
                             dword_5B65C0 = 1;
                         } else {
-                            pParty->vPosition.x =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyPos_X;
-                            pParty->vPosition.y =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyPos_Y;
-                            pParty->vPosition.z =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyPos_Z;
+                            pParty->vPosition.x = pPlayer9->vBeacons[uMessageParam].PartyPos_X;
+                            pParty->vPosition.y = pPlayer9->vBeacons[uMessageParam].PartyPos_Y;
+                            pParty->vPosition.z = pPlayer9->vBeacons[uMessageParam].PartyPos_Z;
                             pParty->uFallStartY = pParty->vPosition.z;
-                            pParty->sRotationY =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyRot_X;
-                            pParty->sRotationX =
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .PartyRot_Y;
+                            pParty->sRotationY = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
+                            pParty->sRotationX = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
                         }
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                         if (pBooksButtonOverlay != nullptr) {
@@ -1214,30 +1186,7 @@ void Game_EventLoop() {
                         pGUIWindow_CurrentMenu->Release();
                         pGUIWindow_CurrentMenu = 0;
                     } else {
-                        pPlayer9->vBeacons[uMessageParam].image = render->TakeScreenshot(92, 68);
-                        pPlayer9->vBeacons[uMessageParam].uBeaconTime =
-                            GameTime(pParty->GetPlayingTime() +
-                            GameTime::FromSeconds(lloyds_beacon_spell_level));
-                        pPlayer9->vBeacons[uMessageParam].PartyPos_X =
-                            pParty->vPosition.x;
-                        pPlayer9->vBeacons[uMessageParam].PartyPos_Y =
-                            pParty->vPosition.y;
-                        pPlayer9->vBeacons[uMessageParam].PartyPos_Z =
-                            pParty->vPosition.z;
-                        pPlayer9->vBeacons[uMessageParam].PartyRot_X =
-                            (short)pParty->sRotationY;
-                        pPlayer9->vBeacons[uMessageParam].PartyRot_Y =
-                            (short)pParty->sRotationX;
-                        if ((signed int)pGames_LOD->uNumSubDirs / 2 <= 0)
-                            continue;
-                        for (thisg = 0;
-                             thisg < (signed int)pGames_LOD->uNumSubDirs / 2;
-                             ++thisg) {
-                            if (pCurrentMapName == pGames_LOD->pSubIndices[thisg].pFilename) {
-                                pPlayer9->vBeacons[uMessageParam]
-                                    .SaveFileID = thisg;
-                            }
-                        }
+                        pPlayer9->SetBeacon(uMessageParam, lloyds_beacon_spell_level);
                     }
                     continue;
                 case UIMSG_ClickTownInTP:
@@ -1434,21 +1383,15 @@ void Game_EventLoop() {
                                         // holding a reference and text ptr will
                                         // be destroyed upon exiting scope
 
-                    final_message = StringPrintf(
-                        "%s\n \n%s\n \n%s",
-                        localization->GetString(
-                            151),  // Congratulations Adventurer.
-                        localization->GetString(
-                            118),  // We hope that you've enjoyed playing Might
-                                   // and Magic VII as much as we did making it.
-                                   // We have saved this screen as MM7_WIN.PCX
-                                   // in your MM7 directory. You can print it
-                                   // out as proof of your accomplishment.
-                        localization->GetString(
-                            167));  // - The Might and Magic VII Development Team.
+                    final_message = StringPrintf("%s\n \n%s\n \n%s", localization->GetString(151),  // Congratulations Adventurer.
+                        localization->GetString(118),  // We hope that you've enjoyed playing Might
+                                                       // and Magic VII as much as we did making it.
+                                                       // We have saved this screen as MM7_WIN.PCX
+                                                       // in your MM7 directory. You can print it
+                                                       // out as proof of your accomplishment.
+                        localization->GetString(167));  // - The Might and Magic VII Development Team.
 
-                    pModalWindow = new GUIWindow_Modal(
-                        final_message.c_str(), UIMSG_OnFinalWindowClose);
+                    pModalWindow = new GUIWindow_Modal(final_message.c_str(), UIMSG_OnFinalWindowClose);
                     uGameState = GAME_STATE_FINAL_WINDOW;
                     continue;
                 }
@@ -1457,84 +1400,53 @@ void Game_EventLoop() {
                     uGameState = GAME_STATE_PLAYING;
                     strcpy((char *)pKeyActionMap->pPressedKeysBuffer, "2");
                     __debugbreak();  // missed break/continue?
-                case UIMSG_DD:
+                case UIMSG_DD: {
                     __debugbreak();
                     // sprintf(tmp_str.data(), "%s",
                     // pKeyActionMap->pPressedKeysBuffer);
-                    memcpy(&v216,
-                           txt_file_frametable_parser(
-                               pKeyActionMap->pPressedKeysBuffer, &v218),
-                           sizeof(v216));
-                    if (v216.uPropCount == 1) {
-                        pNPCData4 =
-                            (NPCData *)((signed int)pGames_LOD->uNumSubDirs /
-                                        2);
-                        v70 = atoi(v216.pProperties[0]);
-                        if (v70 <= 0 || v70 >= 77) continue;
-                        v71 = v70;
-                        strcpy(Str2, pMapStats->pInfos[v70].pFilename.c_str());
-                        pNPCData3 = 0;
-                        if ((signed int)pNPCData4 > 0) {
-                            thish = 0;
-                            do {
-                                if (!_stricmp(pGames_LOD->pSubIndices[thish]
-                                                  .pFilename,
-                                              Str2))
-                                    break;
-                                ++thish;
-                                pNPCData3 = (NPCData *)((char *)pNPCData3 + 1);
-                            } while ((signed int)pNPCData3 <
-                                     (signed int)pNPCData4);
-                            if ((signed int)pNPCData3 < (signed int)pNPCData4) {
-                                pCurrentMapName =
-                                       pGames_LOD->pSubIndices[(int)pNPCData3].pFilename;
-                                dword_6BE364_game_settings_1 |=
-                                    GAME_SETTINGS_0001;
-                                uGameState = GAME_STATE_CHANGE_LOCATION;
-                                OnMapLeave();
-                                continue;
-                            }
+                    FrameTableTxtLine frameTableTxtLine;
+                    txt_file_frametable_parser(pKeyActionMap->pPressedKeysBuffer, &frameTableTxtLine);
+                    String status_string;
+                    if (frameTableTxtLine.uPropCount == 1) {
+                        size_t map_index = atoi(frameTableTxtLine.pProperties[0]);
+                        if (map_index <= 0 || map_index >= 77) continue;
+                        String map_name = pMapStats->pInfos[map_index].pFilename;
+                        if (pGames_LOD->GetSubNodeIndex(map_name) < (pGames_LOD->GetSubNodesCount() / 2)) {
+                            pCurrentMapName = map_name;
+                            dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+                            uGameState = GAME_STATE_CHANGE_LOCATION;
+                            OnMapLeave();
+                            continue;
                         }
-                        sprintf(Str2, "No map found for %s", pMapStats->pInfos[v71].pName.c_str());
-                        v73 = Str2;
+                        status_string = StringPrintf("No map found for %s", pMapStats->pInfos[map_index].pName.c_str());
                     } else {
-                        if (v216.uPropCount != 3) continue;
-                        v74 = atoi(v216.pProperties[0]);
-                        thisi = atoi(v216.pProperties[1]);
-                        v75 = atoi(v216.pProperties[2]);
-                        v76 = v75;
+                        if (frameTableTxtLine.uPropCount != 3) continue;
+                        int x = atoi(frameTableTxtLine.pProperties[0]);
+                        int y = atoi(frameTableTxtLine.pProperties[1]);
+                        int z = atoi(frameTableTxtLine.pProperties[2]);
                         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                            if (pIndoor->GetSector(v74, thisi, v75)) {
-                                v77 = thisi;
-                                pParty->vPosition.x = v74;
-                                pParty->vPosition.y = v77;
-                                pParty->vPosition.z = v76;
-                                pParty->uFallStartY = v76;
+                            if (pIndoor->GetSector(x, y, z)) {
+                                pParty->vPosition.x = x;
+                                pParty->vPosition.y = y;
+                                pParty->vPosition.z = z;
+                                pParty->uFallStartY = z;
                                 continue;
                             }
                         } else {
-                            if (v74 > -32768) {
-                                if (v74 < 32768) {
-                                    v77 = thisi;
-                                    if (thisi > -32768) {
-                                        if (thisi < 32768 && v76 >= 0 &&
-                                            v76 < 10000) {
-                                            pParty->vPosition.x = v74;
-                                            pParty->vPosition.y = v77;
-                                            pParty->vPosition.z = v76;
-                                            pParty->uFallStartY = v76;
-                                            continue;
-                                        }
-                                    }
-                                }
+                            if ((x > -32768) && (x < 32768) && (y > -32768) && (y < 32768) && (z >= 0) && (z < 10000)) {
+                                pParty->vPosition.x = x;
+                                pParty->vPosition.y = y;
+                                pParty->vPosition.z = z;
+                                pParty->uFallStartY = z;
+                                continue;
                             }
                         }
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
-                        v73 = "Can't jump to that location!";
+                        status_string = "Can't jump to that location!";
                     }
-                    GameUI_StatusBar_OnEvent(v73, 6);
+                    GameUI_StatusBar_OnEvent(status_string, 6);
                     continue;
-
+                }
                 case UIMSG_CastQuickSpell: {
                     if (pEngine->IsUnderwater()) {
                         GameUI_StatusBar_OnEvent(localization->GetString(652));  // "You can not do that while you are // underwater!"
@@ -1914,8 +1826,7 @@ void Game_EventLoop() {
                             if (uAction >= skill_count)
                                 uAction = 0;
                         }
-                        ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)
-                            ->OpenSpellbookPage(v217[uAction]);
+                        ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->OpenSpellbookPage(v217[uAction]);
                     }
                     continue;
                 }
@@ -1925,8 +1836,7 @@ void Game_EventLoop() {
                         uMessageParam ==
                             pPlayers[uActiveCharacter]->lastOpenedSpellbookPage)
                         continue;
-                    ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)
-                        ->OpenSpellbookPage(uMessageParam);
+                    ((GUIWindow_Spellbook *)pGUIWindow_CurrentMenu)->OpenSpellbookPage(uMessageParam);
                     continue;
                 case UIMSG_SelectSpell: {
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
@@ -1985,10 +1895,8 @@ void Game_EventLoop() {
                         if (uActiveCharacter &&
                             !pPlayers[uActiveCharacter]->uTimeToRecovery) {
                             if (current_screen_type == SCREEN_GAME) {
-                                new OnButtonClick2(476, 450, 0, 0,
-                                                   (int)pBtn_CastSpell);
-                                pGUIWindow_CurrentMenu =
-                                    new GUIWindow_Spellbook();
+                                new OnButtonClick2(476, 450, 0, 0, (int)pBtn_CastSpell);
+                                pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
                                 continue;
                             }
                             if (current_screen_type != SCREEN_REST &&

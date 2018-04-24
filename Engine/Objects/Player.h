@@ -5,9 +5,9 @@
 #include "Engine/Engine.h"
 
 #include "Engine/Conditions.h"
-#include "Engine/Spells/Spells.h"
-#include "Engine/Objects/Items.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Spells/Spells.h"
 
 enum PLAYER_BUFFS {
     PLAYER_BUFF_RESIST_AIR = 0,
@@ -684,6 +684,7 @@ struct Player {
                                             int a4, __int16 a5,
                                             signed int actchar);
     void CleanupBeacons();
+    bool SetBeacon(size_t index, size_t power);
 
     std::array<GameTime, 20> conditions_times;
     unsigned __int64 uExperience;
