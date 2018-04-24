@@ -323,9 +323,7 @@ class IRender {
                                    int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
                                int start_opacity, int end_opacity) = 0;
-    virtual void _4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5,
-                         int a6, int a7, int a8) = 0;
-
+    
     virtual void DrawMasked(float u, float v, Image *img,
                             unsigned int color_dimming_level,
                             unsigned __int16 mask) = 0;

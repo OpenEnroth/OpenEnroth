@@ -3215,22 +3215,6 @@ void Render::DrawMasked(float u, float v, Image *pTexture,
     }
 }
 
-void Render::_4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5,
-                     int a6, int a7, int a8) {  // haster
-    if (a4 && a5) {
-        uint16_t *v24 = (uint16_t *)a4->GetPixels(IMAGE_FORMAT_R5G6B5);
-
-        for (unsigned int dy = 0; dy < a4->GetHeight(); ++dy) {
-            for (unsigned int dx = 0; dx < a4->GetWidth(); ++dx) {
-                if (*v24 != 0) {  // black pixel check
-                    WritePixel16(x + dx, y + dy, *v24);
-                }
-                ++v24;
-            }
-        }
-    }
-}
-
 void Render::BlendTextures(
     int x, int y, Image *imgin, Image *imgblend, int time, int start_opacity,
     int end_opacity) {  // thrown together as a crude estimate of the enchaintg
