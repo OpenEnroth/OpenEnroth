@@ -252,6 +252,9 @@ void RenderOpenGL::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
                                  int start_opacity, int end_opacity) {
     __debugbreak();
 }
+void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
+    __debugbreak();
+}
 void RenderOpenGL::DrawTransparentRedShade(float u, float v, Image *a4) {
     __debugbreak();
 }

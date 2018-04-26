@@ -4545,7 +4545,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             if (pGUIWindow_CastTargetedSpell) return;
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result], 0);
+                (int)&pCastSpellInfo[result], "");
             pGUIWindow_CastTargetedSpell->CreateButton(
                 52, 422, 35, 0, 2, 0, UIMSG_CastSpell_Character_Big_Improvement,
                 0, 49, "");
