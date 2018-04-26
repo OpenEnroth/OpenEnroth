@@ -344,7 +344,6 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
 
     HWLTexture *hwl = render->LoadHwlSprite(this->resource_name.c_str());
     if (hwl) {
-        auto lod_sprite = &lod->pSpriteHeaders[this->lod_sprite_id];
         auto lod_hd_sprite = &lod->pHardwareSprites[this->lod_sprite_id];
 
         int dst_width = hwl->uWidth;
@@ -353,7 +352,7 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         int num_pixels = dst_width * dst_height;
         int num_pixels_bytes =
             num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A1R5G5B5);
-        auto pixels = new unsigned __int16[num_pixels];
+        auto pixels = new uint16_t[num_pixels];
         if (pixels) {
             // linear scaling
             for (int s = 0; s < dst_height; ++s) {

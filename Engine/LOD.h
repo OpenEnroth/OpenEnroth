@@ -73,9 +73,10 @@ class File {
     int GetSubNodeIndex(const String &name) const;
 
  protected:
-    FILE * FindContainer(const String &filename, size_t *data_size = nullptr);
-    bool LoadHeader(const String &pFilename);
-    bool LoadSubIndices(const String &pContainer);
+    FILE *FindContainer(const String &filename, size_t *data_size = nullptr);
+    virtual bool OpenFile(const String &sFilename);
+    bool LoadHeader();
+    bool LoadSubIndices(const String &sFolder);
     virtual void ResetSubIndices();
 
  protected:
@@ -92,11 +93,10 @@ class File {
     unsigned int uNumSubDirs;
     struct Directory *pSubIndices;
 };
-};  // namespace LOD
 
-class LODWriteableFile : public LOD::File {
+class WriteableFile : public File {
  public:
-    LODWriteableFile();
+    WriteableFile();
     bool LoadFile(const String &pFilename, bool bWriting);
     unsigned int Write(const String &file_name, const void *pDirData, size_t size, int a4);
     void CloseWriteFile();
@@ -115,11 +115,12 @@ class LODWriteableFile : public LOD::File {
     virtual void ResetSubIndices();
 
  protected:
-    uint8_t *pIOBuffer;
+    uint8_t * pIOBuffer;
     unsigned int uIOBufferSize;
     FILE *pOutputFileHandle;
     unsigned int uLODDataSize;
 };
+};  // namespace LOD
 
 class LODFile_IconsBitmaps : public LOD::File {
  public:
@@ -173,18 +174,12 @@ class LODFile_IconsBitmaps : public LOD::File {
 };
 
 #pragma pack(push, 1)
-struct LODSprite {
-    inline LODSprite() {
+struct LODSpriteHeader {
+    inline LODSpriteHeader() {
         uHeight = 0;
         uPaletteId = 0;
         word_1A = 0;
-        pSpriteLines = nullptr;
-        pDecompressedBytes = nullptr;
     }
-    ~LODSprite();
-
-    void Release();
-    int _4AD2D1_overlays(struct SoftwareBillboard *a2, int a3);
 
     char pName[12];         // 0
     uint32_t uSpriteSize;        // C
@@ -195,8 +190,20 @@ struct LODSprite {
     uint16_t uTexturePitch;  // 18
     uint16_t word_1A;        // 1a
     uint32_t uDecompressedSize;  // 1c
-    struct LODSprite_stru0 *pSpriteLines;  // 20
-    void *pDecompressedBytes;              // 24
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct LODSprite : public LODSpriteHeader {
+    inline LODSprite() {
+        bitmap = nullptr;
+    }
+    ~LODSprite();
+
+    void Release();
+    int _4AD2D1_overlays(struct SoftwareBillboard *a2, int a3);
+
+    uint8_t *bitmap;
 };
 #pragma pack(pop)
 
@@ -218,7 +225,6 @@ class LODFile_Sprites : public LOD::File {
     void _inlined_sub0();
     void _inlined_sub1();
 
-    struct LODSprite pSpriteHeaders[MAX_LOD_SPRITES];
     unsigned int uNumLoadedSprites;
     int field_ECA0;
     int field_ECA4;
@@ -227,15 +233,6 @@ class LODFile_Sprites : public LOD::File {
     Sprite *pHardwareSprites;
     int field_ECB4;
 };
-
-/*   17 */
-#pragma pack(push, 1)
-struct LODSprite_stru0 {
-    int16_t a1;
-    int16_t a2;
-    char *pos;
-};
-#pragma pack(pop)
 
 extern LODFile_IconsBitmaps *pEvents_LOD;
 
@@ -251,5 +248,5 @@ extern LODFile_Sprites *pSprites_LOD;
 extern LODFile_Sprites *pSprites_LOD_mm6;
 extern LODFile_Sprites *pSprites_LOD_mm8;
 
-extern LODWriteableFile *pNew_LOD;
+extern LOD::WriteableFile *pNew_LOD;
 extern LOD::File *pGames_LOD;

@@ -967,7 +967,6 @@ void IntegrityTest() {
     static_assert(sizeof(Chest) == 5324, "Wrong type size");
     static_assert(sizeof(stru123) == 0xC8, "Wrong type size");
     static_assert(sizeof(BLVMapOutline) == 12, "Wrong type size");
-    static_assert(sizeof(LODSprite) == 0x28, "Wrong type size");
 }
 
 //----- (004647AB) --------------------------------------------------------

@@ -1,7 +1,10 @@
-#include <stdio.h>
+#include "Platform/Win/Win.h"
+
+#include <cstdio>
+#include <string>
+#include <vector>
 
 #include "Platform/Api.h"
-#include "Platform/Win/Win.h"
 
 #pragma comment(lib, "winmm.lib")
 

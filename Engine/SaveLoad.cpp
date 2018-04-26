@@ -3,6 +3,7 @@
 #include <direct.h>
 #include <io.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "Platform/Api.h"
 
