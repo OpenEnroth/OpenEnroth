@@ -153,7 +153,7 @@ struct Engine {
     int field_968;
     int field_96C;
     int field_970;
-    //Mouse *pMouse;
+    // Mouse *pMouse;
     int field_978;
     Game_stru0 stru_97C;
     char field_98C[1148];

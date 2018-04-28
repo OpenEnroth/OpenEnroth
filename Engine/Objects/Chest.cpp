@@ -30,7 +30,8 @@
 
 using EngineIoc = Engine_::IocContainer;
 
-static Mouse *mouse = EngineIoc::ResolveMouse(); /// should be injected in Chest but struct size cant be altered
+// should be injected in Chest but struct size cant be altered
+static Mouse *mouse = EngineIoc::ResolveMouse();
 
 size_t uNumChests;  // idb
 struct ChestList *pChestList;

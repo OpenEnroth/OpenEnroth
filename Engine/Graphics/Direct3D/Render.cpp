@@ -347,7 +347,7 @@ void Render::RenderTerrainD3D() {  // New function
             else
                 norm = &pTerrainNormals[norm_idx];
             if (false) {
-            //if (engine_config->allow_lightmaps) {
+            // if (engine_config->allow_lightmaps) {
                 // Ritor1: significant fps slowdown
                 lightmap_builder->StackLights_TerrainFace(
                     norm, &Light_tile_dist, VertexRenderList, 4,

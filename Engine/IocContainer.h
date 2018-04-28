@@ -10,8 +10,7 @@ class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
 
-namespace Engine_
-{
+namespace Engine_ {
 
 class IocContainer {
  public:

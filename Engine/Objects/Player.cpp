@@ -38,7 +38,8 @@
 
 using EngineIoc = Engine_::IocContainer;
 
-static Mouse *mouse = EngineIoc::ResolveMouse(); /// should be injected in Player but Party struct size cant be altered
+// should be injected in Player but Party struct size cant be altered
+static Mouse *mouse = EngineIoc::ResolveMouse();
 static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
