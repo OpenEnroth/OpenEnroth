@@ -1711,10 +1711,9 @@ void GameUI_DrawPartySpells() {
     v0 = OS_GetTime() / 20;
     for (uint i = 0; i < 14; ++i) {
         if (pParty->pPartyBuffs[byte_4E5DD8[i]].Active()) {
-            render->_4A65CC(pPartySpellbuffsUI_XYs[i][0],
-                            pPartySpellbuffsUI_XYs[i][1], party_buff_icons[i],
-                            party_buff_icons[i],
-                            v0 + 20 * pPartySpellbuffsUI_smthns[i], 0, 63);
+            render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640.,
+                pPartySpellbuffsUI_XYs[i][1] / 480., party_buff_icons[i],
+                v0 + 20 * pPartySpellbuffsUI_smthns[i]);
         }
     }
 
