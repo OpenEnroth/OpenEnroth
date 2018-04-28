@@ -8243,3 +8243,29 @@ void Player::CleanupBeacons() {
     };
     vBeacons.erase(std::remove_if(vBeacons.begin(), vBeacons.end(), delete_beacon()), vBeacons.end());
 }
+
+bool Player::SetBeacon(size_t index, size_t power) {
+    int file_index = pGames_LOD->GetSubNodeIndex(pCurrentMapName);
+    if (file_index < 0) {
+        return false;
+    }
+
+    LloydBeacon beacon;
+
+    beacon.image = render->TakeScreenshot(92, 68);
+    beacon.uBeaconTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power));
+    beacon.PartyPos_X = pParty->vPosition.x;
+    beacon.PartyPos_Y = pParty->vPosition.y;
+    beacon.PartyPos_Z = pParty->vPosition.z;
+    beacon.PartyRot_X = pParty->sRotationY;
+    beacon.PartyRot_Y = pParty->sRotationX;
+    beacon.SaveFileID = file_index;
+
+    if (index < vBeacons.size()) {
+        vBeacons[index] = beacon;
+    } else {
+        vBeacons.push_back(beacon);
+    }
+
+    return true;
+}

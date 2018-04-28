@@ -1,7 +1,7 @@
 #include "Engine/Spells/Spells.h"
 
-#include <vector>
 #include <map>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
@@ -392,7 +392,7 @@ void SpellStats::Initialize() {
     char *test_string;
 
     free(pSpellsTXT_Raw);
-    pSpellsTXT_Raw = (char *)pEvents_LOD->LoadRaw("spells.txt");
+    pSpellsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("spells.txt");
 
     strtok(pSpellsTXT_Raw, "\r");
     for (int i = 1; i < 100; ++i) {

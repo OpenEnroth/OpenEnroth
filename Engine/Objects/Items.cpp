@@ -1,8 +1,8 @@
 #include "Engine/Objects/Items.h"
 
-#include <vector>
-#include <string>
 #include <map>
+#include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
@@ -244,7 +244,7 @@ void ItemsTable::Initialize() {
     pStorylineText = new StorylineText;
     pStorylineText->Initialize();
 
-    pStdItemsTXT_Raw = (char*)pEvents_LOD->LoadRaw("stditems.txt");
+    pStdItemsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("stditems.txt");
     strtok(pStdItemsTXT_Raw, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -280,7 +280,7 @@ void ItemsTable::Initialize() {
         bonus_ranges[i].maxR = atoi(tokens[3]);
     }
 
-    pSpcItemsTXT_Raw = (char*)pEvents_LOD->LoadRaw("spcitems.txt");
+    pSpcItemsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("spcitems.txt");
     strtok(pSpcItemsTXT_Raw, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -316,7 +316,7 @@ void ItemsTable::Initialize() {
 
     InitializeBuildingResidents();
 
-    pItemsTXT_Raw = (char*)pEvents_LOD->LoadRaw("items.txt");
+    pItemsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("items.txt");
     strtok(pItemsTXT_Raw, "\r");
     strtok(NULL, "\r");
     uAllItemsCount = 0;
@@ -395,7 +395,7 @@ void ItemsTable::Initialize() {
     }
 
     uAllItemsCount = item_counter;
-    pRndItemsTXT_Raw = (char*)pEvents_LOD->LoadRaw("rnditems.txt");
+    pRndItemsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("rnditems.txt");
     strtok(pRndItemsTXT_Raw, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -496,7 +496,7 @@ void ItemsTable::LoadPotions() {
 
     free(pPotionNotesTXT_Raw);
     auto tokens = Tokenize("", '\t');
-    char* pPotionsTXT_Raw = (char*)pEvents_LOD->LoadRaw("potion.txt");
+    char* pPotionsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("potion.txt");
     test_string = strtok(pPotionsTXT_Raw, "\r") + 1;
     while (test_string) {
         tokens = Tokenize(test_string, '\t');
@@ -543,7 +543,7 @@ void ItemsTable::LoadPotionNotes() {
 
     free(pPotionNotesTXT_Raw);
     auto tokens = Tokenize("", '\t');
-    char* pPotionNotesTXT_Raw = (char*)pEvents_LOD->LoadRaw("potnotes.txt");
+    char* pPotionNotesTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("potnotes.txt");
     test_string = strtok(pPotionNotesTXT_Raw, "\r") + 1;
     while (test_string) {
         tokens = Tokenize(test_string, '\t');

@@ -2606,8 +2606,7 @@ __int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing
                             v10.screen_space_y +=
                                 pFrame->hw_sprites[0]->sprite_header->uHeight /
                                 2;
-                        result = pFrame->hw_sprites[0]
-                                     ->sprite_header->_4AD2D1_overlays(&v10, 0);
+                        result = pFrame->hw_sprites[0]->sprite_header->_4AD2D1_overlays(&v10, 0);
                         ++v12;
                         if (v12 == 5) break;
                     }

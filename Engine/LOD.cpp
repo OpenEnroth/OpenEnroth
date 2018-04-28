@@ -22,8 +22,8 @@ LODFile_Sprites *pSprites_LOD = nullptr;
 LODFile_Sprites *pSprites_LOD_mm6 = nullptr;
 LODFile_Sprites *pSprites_LOD_mm8 = nullptr;
 
-LODWriteableFile *pNew_LOD = nullptr;
-LODWriteableFile *pGames_LOD = nullptr;
+LOD::WriteableFile *pNew_LOD = nullptr;
+LOD::File *pGames_LOD = nullptr;
 
 int _6A0CA4_lod_binary_search;
 int _6A0CA8_lod_unused;
@@ -88,97 +88,96 @@ void LODFile_IconsBitmaps::RemoveTexturesPackFromTextureList() {
     }
 }
 
-int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSpriteHeader,
-                                        const String &pContainer) {
-    void *DstBufa;  // [sp+10h] [bp+8h]@4
-    int Sizea;      // [sp+14h] [bp+Ch]@3
+#pragma pack(push, 1)
+struct LODSpriteLine {
+    int16_t begin;
+    int16_t end;
+    uint32_t offset;
+};
+#pragma pack(pop)
 
+int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const String &pContainer) {
     FILE *File = FindContainer(pContainer, 0);
-    if (File) {
-        fread(pSpriteHeader, 1, 0x20u, File);
-        strcpy(pSpriteHeader->pName, pContainer.c_str());
-        Sizea = pSpriteHeader->uSpriteSize;
-        pSpriteHeader->pSpriteLines =
-            (LODSprite_stru0 *)malloc(sizeof(LODSprite_stru0) * pSpriteHeader->uHeight);
-        fread(pSpriteHeader->pSpriteLines, 1, sizeof(LODSprite_stru0) * pSpriteHeader->uHeight, File);
-
-        if (pSpriteHeader->uDecompressedSize) {
-            pSpriteHeader->pDecompressedBytes =
-                malloc(pSpriteHeader->uDecompressedSize);
-            DstBufa = malloc(Sizea);
-            fread(DstBufa, 1, Sizea, File);
-            zlib::Uncompress(pSpriteHeader->pDecompressedBytes,
-                             (unsigned int *)&pSpriteHeader->uDecompressedSize,
-                             DstBufa, pSpriteHeader->uSpriteSize);
-            pSpriteHeader->uSpriteSize = pSpriteHeader->uDecompressedSize;
-            free(DstBufa);
-        } else {
-            pSpriteHeader->pDecompressedBytes = malloc(Sizea);
-            fread(pSpriteHeader->pDecompressedBytes, 1, Sizea, File);
-        }
-        for (uint i = 0; i < pSpriteHeader->uHeight; i++)
-            pSpriteHeader->pSpriteLines[i].pos +=
-                (unsigned int)pSpriteHeader->pDecompressedBytes;
-        return 1;
-    } else {
+    if (File == nullptr) {
         return -1;
     }
+
+    fread(pSprite, sizeof(LODSpriteHeader), 1, File);
+    strcpy(pSprite->pName, pContainer.c_str());
+    LODSpriteLine *pSpriteLines = new LODSpriteLine[pSprite->uHeight];
+    fread(pSpriteLines, sizeof(LODSpriteLine), pSprite->uHeight, File);
+
+    uint8_t *pDecompressedBytes = nullptr;
+
+    int Sizea = pSprite->uSpriteSize;
+    if (pSprite->uDecompressedSize) {
+        pDecompressedBytes = (uint8_t*)malloc(pSprite->uDecompressedSize);
+        void *DstBufa = malloc(Sizea);
+        fread(DstBufa, 1, Sizea, File);
+        zlib::Uncompress(pDecompressedBytes,
+                            (unsigned int *)&pSprite->uDecompressedSize,
+                            DstBufa, Sizea);
+        pSprite->uSpriteSize = pSprite->uDecompressedSize;
+        free(DstBufa);
+    } else {
+        pDecompressedBytes = (uint8_t*)malloc(Sizea);
+        fread(pDecompressedBytes, 1, Sizea, File);
+    }
+
+    pSprite->bitmap = new uint8_t[pSprite->uWidth * pSprite->uHeight];
+    memset(pSprite->bitmap, 0, pSprite->uWidth * pSprite->uHeight);
+    for (uint i = 0; i < pSprite->uHeight; i++) {
+        if (pSpriteLines[i].begin >= 0) {
+            memcpy(pSprite->bitmap + (i * pSprite->uWidth) + pSpriteLines[i].begin,
+                pDecompressedBytes + pSpriteLines[i].offset,
+                pSpriteLines[i].end - pSpriteLines[i].begin);
+        }
+    }
+
+    delete[] pSpriteLines;
+
+    return 1;
 }
 
 bool LODFile_Sprites::LoadSprites(const String &pFilename) {
-    if (LoadHeader(pFilename, 1)) {
-        return LoadSubIndices("sprites08") == 0;
+    if (!Open(pFilename)) {
+        return false;
     }
-    return false;
+
+    return LoadSubIndices("sprites08");
 }
 
-int LODFile_Sprites::LoadSprite(const char *pContainerName,
-                                unsigned int uPaletteID) {
-    FILE *sprite_file;          // eax@12
-    LODSprite temp_sprite_hdr;  // [sp+Ch] [bp-3Ch]@12
-    int i;                      //, sprite_indx;
-
-    for (i = 0; i < uNumLoadedSprites; ++i) {
-        if (!(_stricmp(pHardwareSprites[i].pName, pContainerName))) return i;
+int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPaletteID) {
+    for (int i = 0; i < uNumLoadedSprites; ++i) {
+        if (pHardwareSprites[i].pName == pContainerName) {
+            return i;
+        }
     }
 
-    if (uNumLoadedSprites >= 1500) return -1;
+    if (uNumLoadedSprites >= MAX_LOD_SPRITES) return -1;
     // if not loaded - load from file
 
     if (!pHardwareSprites) {
-        pHardwareSprites = (Sprite *)malloc(1500 * sizeof(Sprite));  // 0xEA60u
-        for (i = 0; i < 1500; ++i) {
-            pHardwareSprites[i].pName = nullptr;
-            // pHardwareSprites[i].pTextureSurface = nullptr;
-            // pHardwareSprites[i].pTexture = nullptr;
-        }
+        pHardwareSprites = new Sprite[MAX_LOD_SPRITES];
     }
-    temp_sprite_hdr.uHeight = 0;
-    temp_sprite_hdr.uPaletteId = 0;
-    temp_sprite_hdr.word_1A = 0;
-    temp_sprite_hdr.pSpriteLines = nullptr;
-    temp_sprite_hdr.pDecompressedBytes = nullptr;
-    sprite_file = FindContainer(pContainerName, 0);
-    if (!sprite_file) return -1;
 
-    fread(&temp_sprite_hdr, 1, 0x20, sprite_file);
-    pSpriteHeaders[uNumLoadedSprites].uWidth = temp_sprite_hdr.uWidth;
-    pSpriteHeaders[uNumLoadedSprites].uHeight = temp_sprite_hdr.uHeight;
-    LoadSpriteFromFile(
-        &pSpriteHeaders[uNumLoadedSprites],
-        pContainerName);  // this line is not present here in the original.
-                          // necessary for Grayface's mouse picking fix
+    FILE *sprite_file = FindContainer(pContainerName, 0);
+    if (!sprite_file) {
+        return -1;
+    }
 
-    pHardwareSprites[uNumLoadedSprites].uBufferWidth = temp_sprite_hdr.uWidth;
-    pHardwareSprites[uNumLoadedSprites].uBufferHeight = temp_sprite_hdr.uHeight;
-    pHardwareSprites[uNumLoadedSprites].pName = (const char *)malloc(20);
-    strcpy((char *)pHardwareSprites[uNumLoadedSprites].pName, pContainerName);
+    static_assert(sizeof(LODSpriteHeader) == 32, "Wrong type size");
+
+    LODSprite *header = new LODSprite();
+    LoadSpriteFromFile(header, pContainerName);  // this line is not present here in the original.
+                                                 // necessary for Grayface's mouse picking fix
+
+    pHardwareSprites[uNumLoadedSprites].pName = pContainerName;
+    pHardwareSprites[uNumLoadedSprites].uBufferWidth = header->uWidth;
+    pHardwareSprites[uNumLoadedSprites].uBufferHeight = header->uHeight;
     pHardwareSprites[uNumLoadedSprites].uPaletteID = uPaletteID;
-    // render->MoveSpriteToDevice(&pHardwareSprites[uNumLoadedSprites]);
-    pHardwareSprites[uNumLoadedSprites].texture =
-        assets->GetSprite(pContainerName, uPaletteID, uNumLoadedSprites);
-    pHardwareSprites[uNumLoadedSprites].sprite_header =
-        &pSpriteHeaders[uNumLoadedSprites];
+    pHardwareSprites[uNumLoadedSprites].texture = assets->GetSprite(pContainerName, uPaletteID, uNumLoadedSprites);
+    pHardwareSprites[uNumLoadedSprites].sprite_header = header;
 
     HWLTexture *hwl = render->LoadHwlSprite(pContainerName);
     if (hwl) {
@@ -204,50 +203,18 @@ void LODFile_Sprites::ReleaseAll() {}
 void LODFile_Sprites::MoveSpritesToVideoMemory() {}
 
 int LODSprite::_4AD2D1_overlays(struct SoftwareBillboard *a2, int a3) {
-    int result;             // eax@1
-    unsigned int v4;        // esi@1
-    int v5;                 // edi@1
-    LODSprite_stru0 *v6;    // edx@2
-    __int16 v7;             // bx@2
-    int v8;                 // ecx@3
-    unsigned __int16 *v9;   // esi@3
-    int v10;                // ebx@3
-    void *v11;              // edx@3
-    unsigned __int16 *v12;  // ecx@3
-    int v13;                // ebx@4
-    // LODSprite *v14; // [sp+8h] [bp-10h]@1
-    unsigned __int16 *v15;  // [sp+10h] [bp-8h]@1
-    unsigned __int16 *v16;  // [sp+14h] [bp-4h]@1
-    int i;                  // [sp+20h] [bp+8h]@1
+    int result = (int)a2;
+    unsigned int v4 = a2->uTargetPitch;
 
-    result = (int)a2;
-    v4 = a2->uTargetPitch;
-
-    __debugbreak();  // sub expects 16bit target surface, we may have 32bit
-    v16 = (unsigned short *)a2->pTarget;
-    v15 = a2->pPalette;
-    v5 = this->uHeight - 1;
-    for (i = v4 * a2->screen_space_y - (this->uWidth >> 1) +
-             a2->screen_space_x + 1;
-         v5 >= 0; --v5) {
-        v6 = &this->pSpriteLines[v5];
-        v7 = this->pSpriteLines[v5].a1;
-        if (this->pSpriteLines[v5].a1 != -1) {
-            v8 = v7;
-            v9 = &v16[v7 + i];
-            v10 = v6->a2;
-            v11 = v6->pos;
-            v12 = &v9[v10 - v8];
-            while (v9 <= v12) {
-                v13 = *(char *)v11;
-                v11 = (char *)v11 + 1;
-                if (v13) *v9 = v15[v13];
-                ++v9;
+    uint16_t *pTarget = (uint16_t*)a2->pTarget;
+    uint16_t *pPalette = a2->pPalette;
+    for (int y = 0; y < uHeight; y++) {
+        for (int x = 0; x < uWidth; x++) {
+            uint8_t color = bitmap[y * uWidth + x];
+            if (color != 0) {
+                pTarget[((a2->screen_space_y + y) * a2->uTargetPitch) + a2->screen_space_x + x] = pPalette[color];
             }
-            v4 = *(int *)(result + 48);
-            // this = v14;
         }
-        i -= v4;
     }
     return result;
 }
@@ -282,22 +249,27 @@ void LOD::File::Close() {
     _6A0CA8_lod_unused = 0;
 }
 
-int LODWriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
-                                   LOD::Directory *pDir, const String &lod_name) {
+int LOD::WriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
+                                     const String &root_name, const String &lod_name) {
     if (isFileOpened) return 1;
-    if (!pDir->pFilename[0]) return 2;
+    if (root_name.empty()) {
+        return 2;
+    }
     strcpy_s(pHeader->pSignature, "LOD");
     pHeader->LODSize = 100;
     pHeader->uNumIndices = 1;
-    pDir->field_F = 0;
-    pDir->uDataSize = 0;
-    pDir->uOfsetFromSubindicesStart = 288;
+
+    LOD::Directory dir;
+    strcpy(dir.pFilename, root_name.c_str());
+    dir.field_F = 0;
+    dir.uDataSize = 0;
+    dir.uOfsetFromSubindicesStart = sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
     pLODName = lod_name;
 
     pFile = fopen(pLODName.c_str(), "wb+");
     if (!pFile) return 3;
     fwrite(pHeader, sizeof(LOD::FileHeader), 1, pFile);
-    fwrite(pDir, sizeof(LOD::Directory), 1, pFile);
+    fwrite(&dir, sizeof(LOD::Directory), 1, pFile);
     fclose(pFile);
     pFile = nullptr;
     return 0;
@@ -310,9 +282,13 @@ void LOD::File::ResetSubIndices() {
 
     pContainerName.clear();
     uOffsetToSubIndex = 0;
-    uLODDataSize = 0;
     free(pSubIndices);
     pSubIndices = nullptr;
+}
+
+void LOD::WriteableFile::ResetSubIndices() {
+    LOD::File::ResetSubIndices();
+    uLODDataSize = 0;
 }
 
 void LODFile_Sprites::DeleteSomeSprites() {
@@ -326,27 +302,19 @@ void LODFile_Sprites::DeleteSpritesRange(int uStartIndex, int uStopIndex) {
     if (this->pHardwareSprites) {
         if (uStartIndex < uStopIndex) {
             for (int i = uStartIndex; i < uStopIndex; i++) {
-                this->pSpriteHeaders[i].Release();
                 pHardwareSprites[i].Release();
             }
-        }
-    } else {
-        if (uStartIndex < uStopIndex) {
-            for (int i = uStartIndex; i < uStopIndex; i++)
-                this->pSpriteHeaders[i].Release();
         }
     }
 }
 
 void LODSprite::Release() {
     if (!(this->word_1A & 0x400)) {
-        free(this->pDecompressedBytes);
-        free(this->pSpriteLines);
+        delete[] bitmap;
     }
 
     this->word_1A = 0;
-    this->pDecompressedBytes = nullptr;
-    this->pSpriteLines = nullptr;
+    this->bitmap = nullptr;
     this->pName[0] = 0;
     this->word_16 = 0;
     this->uPaletteId = 0;
@@ -358,13 +326,12 @@ void LODSprite::Release() {
 
 void Sprite::Release() {}
 
-bool LODFile_IconsBitmaps::Load(const String &pLODFilename,
-                                const String &pFolderName) {
-    ReleaseAll();
+bool LODFile_IconsBitmaps::Load(const String &pLODFilename, const String &pFolderName) {
+    if (!Open(pLODFilename)) {
+        return false;
+    }
 
-    if (!LoadHeader(pLODFilename, 1)) return false;
-
-    return LoadSubIndices(pFolderName) == 0;
+    return LoadSubIndices(pFolderName);
 }
 
 void LODFile_IconsBitmaps::ReleaseAll() {
@@ -400,22 +367,16 @@ void LODFile_IconsBitmaps::SyncLoadedFilesCount() {
 LODFile_Sprites::~LODFile_Sprites() {
     if (this->pHardwareSprites) {
         for (int i = 0; i < this->uNumLoadedSprites; ++i) {
-            this->pSpriteHeaders[i].Release();
             this->pHardwareSprites[i].Release();
         }
-    } else {
-        for (int i = 0; i < this->uNumLoadedSprites; ++i)
-            this->pSpriteHeaders[i].Release();
     }
 }
 
 LODSprite::~LODSprite() {
     if (!(this->word_1A & 0x400)) {
-        free(pDecompressedBytes);
-        free(pSpriteLines);
+        delete[] bitmap;
     }
-    pDecompressedBytes = nullptr;
-    pSpriteLines = nullptr;
+    bitmap = nullptr;
 }
 
 LODFile_Sprites::LODFile_Sprites() : LOD::File() {
@@ -462,13 +423,13 @@ LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {
     this->uTextureBlueBits = 0;
 }
 
-bool LODWriteableFile::_4621A7() {  // закрыть и загрузить записываемый ф-л(при
+bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить записываемый ф-л(при
                                     // сохранении)
     CloseWriteFile();
     return LoadFile(pLODName, 0);
 }
 
-int LODWriteableFile::FixDirectoryOffsets() {
+int LOD::WriteableFile::FixDirectoryOffsets() {
     unsigned int total_size = 0;
     for (int i = 0; i < uNumSubDirs; i++) {
         total_size += pSubIndices[i].uDataSize;
@@ -522,15 +483,19 @@ int LODWriteableFile::FixDirectoryOffsets() {
     return 0;
 }
 
-bool LOD::File::AppendDirectory(LOD::Directory *pDir, const void *pData) {
+bool LOD::WriteableFile::AppendDirectory(const String &file_name, const void *pData, size_t data_size) {
     Assert(uNumSubDirs < 299);
 
-    memcpy(&pSubIndices[uNumSubDirs++], pDir, sizeof(LOD::Directory));
-    fwrite(pData, 1, pDir->uDataSize, pOutputFileHandle);
+    LOD::Directory dir;
+    strcpy(dir.pFilename, file_name.c_str());
+    dir.uDataSize = data_size;
+
+    memcpy(&pSubIndices[uNumSubDirs++], &dir, sizeof(LOD::Directory));
+    fwrite(pData, 1, dir.uDataSize, pOutputFileHandle);
     return true;
 }
 
-int LODWriteableFile::CreateTempFile() {
+int LOD::WriteableFile::CreateTempFile() {
     if (!isFileOpened) return 1;
 
     if (pIOBuffer && uIOBufferSize) {
@@ -542,7 +507,7 @@ int LODWriteableFile::CreateTempFile() {
     }
 }
 
-void LODWriteableFile::CloseWriteFile() {
+void LOD::WriteableFile::CloseWriteFile() {
     if (isFileOpened) {
         pContainerName[0] = 0;
         _6A0CA8_lod_unused = 0;
@@ -556,8 +521,11 @@ void LODWriteableFile::CloseWriteFile() {
     // __debugbreak();
 }
 
-unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
-                                     const void *pDirData, int a4) {
+unsigned int LOD::WriteableFile::Write(const String &file_name, const void *pDirData, size_t size, int a4) {
+    LOD::Directory dir;
+    strcpy(dir.pFilename, file_name.c_str());
+    dir.uDataSize = size;
+
     // insert new data in sorted index lod file
     bool bRewrite_data = false;
     int insert_index = -1;
@@ -572,7 +540,7 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
     }
 
     for (size_t i = 0; i < uNumSubDirs; i++) {
-        int comp_res = _stricmp(pSubIndices[i].pFilename, pDir->pFilename);
+        int comp_res = _stricmp(pSubIndices[i].pFilename, dir.pFilename);
         if (comp_res == 0) {
             insert_index = i;
             if (a4 == 0) {
@@ -580,8 +548,8 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
                 break;
             }
             if (a4 == 1) {
-                if (pSubIndices[i].uNumSubIndices < pDir->uNumSubIndices) {
-                    if (pSubIndices[i].priority < pDir->priority)
+                if (pSubIndices[i].uNumSubIndices < dir.uNumSubIndices) {
+                    if (pSubIndices[i].priority < dir.priority)
                         return 4;
                 } else {
                     bRewrite_data = true;
@@ -613,7 +581,7 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
     Lindx.priority = 0;
     Lindx.uNumSubIndices = uNumSubDirs;
     Lindx.uOfsetFromSubindicesStart = sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
-    int total_data_size = uLODDataSize + pDir->uDataSize - size_correction;
+    int total_data_size = uLODDataSize + dir.uDataSize - size_correction;
     if (!bRewrite_data) {
         total_data_size += sizeof(LOD::Directory);
         Lindx.uNumSubIndices++;
@@ -630,8 +598,7 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
                    sizeof(LOD::Directory));  // Uninitialized memory access
     }
     // insert
-    memcpy(&pSubIndices[insert_index], pDir,
-           sizeof(LOD::Directory));  //записать текущий файл
+    memcpy(&pSubIndices[insert_index], &dir, sizeof(LOD::Directory));  // записать текущий файл
     // correct offsets to data
     if (uNumSubDirs > 0) {
         size_t offset_to_data = sizeof(LOD::Directory) * uNumSubDirs;
@@ -662,8 +629,7 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
         to_copy_size -= read_size;
     }
     // add container data
-    fwrite(pDirData, 1, pDir->uDataSize,
-           tmp_file);  // Uninitialized memory access(tmp_file)
+    fwrite(pDirData, 1, dir.uDataSize, tmp_file);  // Uninitialized memory access(tmp_file)
     if (bRewrite_data) fseek(pFile, size_correction, SEEK_CUR);
 
     // add remainng data  last half
@@ -692,7 +658,12 @@ unsigned int LODWriteableFile::Write(const LOD::Directory *pDir,
     return 0;
 }
 
-bool LODWriteableFile::LoadFile(const String &pFilename, bool bWriting) {
+LOD::WriteableFile::WriteableFile() {
+    pIOBuffer = nullptr;
+    uIOBufferSize = 0;
+}
+
+bool LOD::WriteableFile::LoadFile(const String &pFilename, bool bWriting) {
     pFile = fopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
     if (pFile == nullptr) {
         return false;  // возможно файл не закрыт, поэтому не открывается
@@ -718,14 +689,7 @@ bool LODWriteableFile::LoadFile(const String &pFilename, bool bWriting) {
     return true;
 }
 
-void LOD::File::FreeSubIndexAndIO() {
-    free(pSubIndices);
-    pSubIndices = nullptr;
-    free(pIOBuffer);
-    pIOBuffer = nullptr;
-}
-
-void LOD::File::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
+void LOD::WriteableFile::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
                                      unsigned int uBufferSize) {
     if (pSubIndices) {
         logger->Warning(L"Attempt to reset a LOD subindex!");
@@ -745,46 +709,17 @@ void LOD::File::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
     }
 }
 
-int LOD::File::LoadSubIndices(const String &pContainer) {
-    ResetSubIndices();
-
-    for (LOD::Directory &dir : pRoot) {
-        if (!_stricmp(pContainer.c_str(), dir.pFilename)) {
-            pContainerName = pContainer;
-            uOffsetToSubIndex = dir.uOfsetFromSubindicesStart;
-            uNumSubDirs = dir.uNumSubIndices;
-            fseek(pFile, uOffsetToSubIndex, SEEK_SET);
-            pSubIndices = (LOD::Directory *)malloc(sizeof(LOD::Directory) *
-                                                   (uNumSubDirs + 5));
-
-            if (pSubIndices)
-                fread(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, pFile);
-            return 0;
-        }
-    }
-    return 3;
+void LOD::WriteableFile::FreeSubIndexAndIO() {
+    free(pSubIndices);
+    pSubIndices = nullptr;
+    free(pIOBuffer);
+    pIOBuffer = nullptr;
 }
 
-bool LOD::File::LoadHeader(const String &pFilename, bool bWriting) {
-    if (this->isFileOpened) Close();
-
-    pFile = fopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
-    if (pFile == nullptr) {
-        return false;
-    }
-
-    pLODName = pFilename;
-    fread(&header, sizeof(LOD::FileHeader), 1, pFile);
-    for (unsigned int i = 0; i < header.uNumIndices; i++) {
-        LOD::Directory dir;
-        fread(&dir, sizeof(LOD::Directory), 1, pFile);
-        pRoot.push_back(dir);
-    }
-
-    fseek(pFile, 0, SEEK_SET);
-    isFileOpened = true;
-
-    return true;
+LOD::File::File() : isFileOpened(false) {
+    pFile = nullptr;
+    pSubIndices = nullptr;
+    Close();
 }
 
 LOD::File::~File() {
@@ -793,12 +728,77 @@ LOD::File::~File() {
     }
 }
 
-LOD::File::File() : isFileOpened(false) {
-    pFile = nullptr;
-    pSubIndices = nullptr;
-    pIOBuffer = nullptr;
-    uIOBufferSize = 0;
-    Close();
+bool LOD::File::Open(const String &sFilename) {
+    if (!OpenFile(sFilename)) {
+        return false;
+    }
+
+    if (!LoadHeader()) {
+        return false;
+    }
+
+    return LoadSubIndices(pRoot.front().pFilename);
+}
+
+bool LOD::File::OpenFile(const String &sFilename) {
+    if (isFileOpened) {
+        Close();
+    }
+
+    pFile = fopen(sFilename.c_str(), "rb");
+    if (pFile == nullptr) {
+        return false;
+    }
+
+    pLODName = sFilename;
+
+    return true;
+}
+
+bool LOD::File::LoadHeader() {
+    if (pFile == nullptr) {
+        return false;
+    }
+
+    fseek(pFile, 0, SEEK_SET);
+
+    if (fread(&header, sizeof(LOD::FileHeader), 1, pFile) != 1) {
+        return false;
+    }
+    for (unsigned int i = 0; i < header.uNumIndices; i++) {
+        LOD::Directory dir;
+        if (fread(&dir, sizeof(LOD::Directory), 1, pFile) != 1) {
+            pRoot.clear();
+            return false;
+        }
+        pRoot.push_back(dir);
+    }
+
+    fseek(pFile, 0, SEEK_SET);
+
+    isFileOpened = true;
+
+    return true;
+}
+
+bool LOD::File::LoadSubIndices(const String &pContainer) {
+    ResetSubIndices();
+
+    for (LOD::Directory &dir : pRoot) {
+        if (!_stricmp(pContainer.c_str(), dir.pFilename)) {
+            pContainerName = pContainer;
+            uOffsetToSubIndex = dir.uOfsetFromSubindicesStart;
+            uNumSubDirs = dir.uNumSubIndices;
+            fseek(pFile, uOffsetToSubIndex, SEEK_SET);
+            pSubIndices = (LOD::Directory *)malloc(sizeof(LOD::Directory) * uNumSubDirs);
+
+            if (pSubIndices) {
+                fread(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, pFile);
+            }
+            return true;
+        }
+    }
+    return false;
 }
 
 LOD::Directory::Directory() {
@@ -873,7 +873,38 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
     }
 }
 
-void *LOD::File::LoadRaw(const String &pContainer) {
+void *LOD::File::LoadRaw(const String &pContainer, size_t *data_size) {
+    if (data_size != nullptr) {
+        *data_size = 0;
+    }
+
+    size_t size = 0;
+    FILE *File = FindContainer(pContainer, &size);
+    if (!File) {
+        Error("Unable to load %s", pContainer);
+        return nullptr;
+    }
+
+    void *result = malloc(size);
+    if (fread(result, size, 1, File) != 1) {
+        free(result);
+        result = 0;
+        size = 0;
+    }
+
+    if (data_size != nullptr) {
+        *data_size = size;
+    }
+
+    return result;
+}
+
+void *LOD::File::LoadCompressedTexture(const String &pContainer, size_t *data_size) {
+    void *result = nullptr;
+    if (data_size != nullptr) {
+        *data_size = 0;
+    }
+
     FILE *File = FindContainer(pContainer, 0);
     if (!File) {
         Error("Unable to load %s", pContainer);
@@ -883,7 +914,6 @@ void *LOD::File::LoadRaw(const String &pContainer) {
     TextureHeader DstBuf;
     fread(&DstBuf, 1, sizeof(TextureHeader), File);
 
-    void *result = nullptr;
     if (DstBuf.uDecompressedSize) {
         result = malloc(DstBuf.uDecompressedSize);
         void *tmp_buf = malloc(DstBuf.uTextureSize);
@@ -897,7 +927,70 @@ void *LOD::File::LoadRaw(const String &pContainer) {
         fread(result, 1, DstBuf.uTextureSize, File);
     }
 
+    if (data_size != nullptr) {
+        *data_size = DstBuf.uTextureSize;
+    }
+
     return result;
+}
+
+#pragma pack(push, 1)
+struct CompressedHeader {
+    uint32_t uVersion;
+    char pMagic[4];
+    uint32_t uCompressedSize;
+    uint32_t uDecompressedSize;
+};
+#pragma pack(pop)
+
+void *LOD::File::LoadCompressed(const String &pContainer, size_t *data_size) {
+    static_assert(sizeof(CompressedHeader) == 16, "Wrong type size");
+
+    void *result = nullptr;
+    if (data_size != nullptr) {
+        *data_size = 0;
+    }
+
+    FILE *File = FindContainer(pContainer, 0);
+    if (!File) {
+        Error("Unable to load %s", pContainer);
+        return nullptr;
+    }
+
+    CompressedHeader header;
+    fread(&header, 1, sizeof(CompressedHeader), File);
+    if (header.uVersion != 91969 || (memcmp(&header.pMagic, "mvii", 4) != 0)) {
+        Error("Unable to load %s", pContainer);
+        return nullptr;
+    }
+
+    if (header.uDecompressedSize) {
+        result = malloc(header.uDecompressedSize);
+        void *tmp_buf = malloc(header.uCompressedSize);
+        fread(tmp_buf, 1, header.uCompressedSize, File);
+        zlib::Uncompress(result, &header.uDecompressedSize, tmp_buf, header.uCompressedSize);
+        header.uCompressedSize = header.uDecompressedSize;
+        free(tmp_buf);
+    } else {
+        result = malloc(header.uCompressedSize);
+        fread(result, 1, header.uCompressedSize, File);
+    }
+
+    if (data_size != nullptr) {
+        *data_size = header.uCompressedSize;
+    }
+
+    return result;
+}
+
+int LOD::File::GetSubNodeIndex(const String &name) const {
+    for (size_t index = 0; index < uNumSubDirs; index++) {
+        if (name == pSubIndices[index].pFilename) {
+            return index;
+        }
+    }
+
+    return -1;
 }
 
 void LODFile_IconsBitmaps::ReleaseHardwareTextures() {}
@@ -971,7 +1064,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
     if ((header->pBits & 2) && strcmp(header->pName, "sptext01")) {
         if (!pHardwareSurfaces || !pHardwareTextures) {
             pHardwareSurfaces = new IDirectDrawSurface *[1000];
-            memset(pHardwareSurfaces, 0, 1000 * sizeof(IDirectDrawSurface4 *));
+            memset(pHardwareSurfaces, 0, 1000 * sizeof(IDirectDrawSurface *));
 
             pHardwareTextures = new IDirect3DTexture2 *[1000];
             memset(pHardwareTextures, 0, 1000 * sizeof(IDirect3DTexture2 *));
@@ -1104,10 +1197,9 @@ Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
 }
 
 bool Initialize_GamesLOD_NewLOD() {
-    pGames_LOD = new LODWriteableFile;
-    pGames_LOD->AllocSubIndicesAndIO(300, 0);
-    if (pGames_LOD->LoadFile(MakeDataPath("data\\games.lod"), 1)) {
-        pNew_LOD = new LODWriteableFile;
+    pGames_LOD = new LOD::File();
+    if (pGames_LOD->Open(MakeDataPath("data\\games.lod"))) {
+        pNew_LOD = new LOD::WriteableFile;
         pNew_LOD->AllocSubIndicesAndIO(300, 100000);
         return true;
     }

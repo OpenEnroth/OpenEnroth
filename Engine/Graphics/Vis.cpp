@@ -254,17 +254,13 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
     only the visible
     parts of billboards into account - I don't really have too much of an idea
     how it actually works*/
-    float drX;  // st7@2
-    float drY;  // ecx@2
-    float drH;  // [sp+4h] [bp-8h]@2
-    float drW;  // [sp+14h] [bp+8h]@2
 
     if (a1->sParentBillboardID == -1) return false;
 
-    drX = a1->pQuads[0].pos.x;
-    drW = a1->pQuads[3].pos.x - drX;
-    drY = a1->pQuads[0].pos.y;
-    drH = a1->pQuads[1].pos.y - drY;
+    float drX = a1->pQuads[0].pos.x;
+    float drW = a1->pQuads[3].pos.x - drX;
+    float drY = a1->pQuads[0].pos.y;
+    float drH = a1->pQuads[1].pos.y - drY;
 
     Sprite *ownerSprite = nullptr;
     for (int i = 0; i < pSprites_LOD->uNumLoadedSprites; ++i) {
@@ -276,30 +272,16 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
 
     if (ownerSprite == nullptr) return false;
 
-    int i =
+    int sx =
         ownerSprite->uAreaX + int(ownerSprite->uAreaWidth * (x - drX) / drW);
-    int j =
+    int sy =
         ownerSprite->uAreaY + int(ownerSprite->uAreaHeight * (y - drY) / drH);
 
-    LODSprite *spriteHeader = nullptr;
+    LODSprite *spriteHeader = ownerSprite->sprite_header;
 
-    for (int i = 0; i < MAX_LOD_SPRITES; ++i) {
-        if (strcmp(pSprites_LOD->pSpriteHeaders[i].pName, ownerSprite->pName) ==
-            0) {
-            spriteHeader = &pSprites_LOD->pSpriteHeaders[i];
-            break;
-        }
-    }
+    if (sy < 0 || sy >= spriteHeader->uHeight) return false;
 
-    if (j < 0 || j >= spriteHeader->uHeight) return false;
-
-    if (spriteHeader->pSpriteLines[j].a1 < 0 ||
-        i > spriteHeader->pSpriteLines[j].a2 ||
-        i < spriteHeader->pSpriteLines[j].a1) {
-        return false;
-    }
-    return *(spriteHeader->pSpriteLines[j].pos + i -
-             spriteHeader->pSpriteLines[j].a1) != 0;
+    return spriteHeader->bitmap[sy * spriteHeader->uWidth + sx] != 0;
 }
 
 //----- (004C16B4) --------------------------------------------------------
