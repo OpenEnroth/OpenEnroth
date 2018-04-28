@@ -27,6 +27,10 @@
 #include "ObjectList.h"
 #include "SpriteObject.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+static Mouse *mouse = EngineIoc::ResolveMouse(); /// should be injected in Chest but struct size cant be altered
+
 size_t uNumChests;  // idb
 struct ChestList *pChestList;
 std::array<Chest, 20> pChests;
@@ -189,7 +193,7 @@ bool Chest::Open(signed int uChestID) {
 
 //----- (0042038D) --------------------------------------------------------
 bool Chest::ChestUI_WritePointedObjectStatusString() {
-    Point pt = pMouse->GetCursorPos();
+    Point pt = mouse->GetCursorPos();
     unsigned int pX = pt.x;
     unsigned int pY = pt.y;
 
@@ -633,14 +637,10 @@ void Chest::OnChestLeftClick() {
     unsigned int pX;
     unsigned int pY;
 
-    int chestheight =
-        pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C]
-                                .uChestBitmapID];
-    int chestwidth =
-        pChestWidthsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C]
-                               .uChestBitmapID];
+    int chestheight = pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
+    int chestwidth = pChestWidthsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
 
-    pMouse->GetClickPos(&pX, &pY);
+    mouse->GetClickPos(&pX, &pY);
     int inventoryYCoord = (pY - 34) / 32;  // use pchestoffsets??
     int inventoryXCoord = (pX - 42) / 32;
     int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
@@ -648,17 +648,14 @@ void Chest::OnChestLeftClick() {
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
         inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
         if (pParty->pPickedItem.uItemID) {  // item held
-            if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem,
-                                      pGUIWindow_CurrentMenu->par1C))
-                pMouse->RemoveHoldingItem();
+            if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, pGUIWindow_CurrentMenu->par1C))
+                mouse->RemoveHoldingItem();
 
         } else {
-            int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C]
-                                 .pInventoryIndices[invMatrixIndex];
+            int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
             if (chestindex < 0) {
                 invMatrixIndex = (-(chestindex + 1));
-                chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C]
-                                 .pInventoryIndices[invMatrixIndex];
+                chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
             }
 
             if (chestindex) {

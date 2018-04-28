@@ -24,6 +24,8 @@
 
 #include "Game/Game.h"
 
+using Game::Menu;
+
 void Game_StartNewGameWhilePlaying(bool force_start) {
     if (dword_6BE138 == 124 || force_start) {
         pMessageQueue_50CBD0->Flush();
@@ -65,7 +67,7 @@ void Game_OpenLoadGameDialog() {
     pGUIWindow_CurrentMenu = new GUIWindow_Load(true);
 }
 
-void GameMenu_EventLoop() {
+void Menu::EventLoop() {
     while (!pMessageQueue_50CBD0->Empty()) {
         UIMessageType msg;
         int param, param2;
@@ -232,8 +234,7 @@ void GameMenu_EventLoop() {
                 pMessageQueue_50CBD0->Flush();
 
                 pGUIWindow_CurrentMenu->Release();
-                pGUIWindow_CurrentMenu =
-                    new GUIWindow_GameVideoOptions();  // GameMenuUI_OptionsVideo_Load();
+                pGUIWindow_CurrentMenu = new GUIWindow_GameVideoOptions();  // GameMenuUI_OptionsVideo_Load();
                 viewparams->field_48 = 1;
                 current_screen_type = SCREEN_VIDEO_OPTIONS;
 
@@ -269,7 +270,7 @@ void GameMenu_EventLoop() {
                     }
                     uGammaPos = 9;
                 } else {
-                    Point pt = pMouse->GetCursorPos();
+                    Point pt = mouse->GetCursorPos();
                     uGammaPos = (pt.x - 42) / 17;
                     double v22 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                     // pEngine->pGammaController->Initialize(v22);
@@ -294,7 +295,7 @@ void GameMenu_EventLoop() {
                     engine_config->music_level += 1;
                     new OnButtonClick2(435, 216, 0, 0, (int)pBtn_SliderRight, String(), false);
                 } else {
-                    Point pt = pMouse->GetCursorPos();
+                    Point pt = mouse->GetCursorPos();
                     engine_config->music_level = (pt.x - 263) / 17;  // for mouse
                 }
 
@@ -317,7 +318,7 @@ void GameMenu_EventLoop() {
                     engine_config->sound_level += 1;
                     new OnButtonClick2(435, 162, 0, 0, (int)pBtn_SliderRight, String(), false);
                 } else {
-                    Point pt = pMouse->GetCursorPos();
+                    Point pt = mouse->GetCursorPos();
                     engine_config->sound_level = (pt.x - 263) / 17;
                 }
 
@@ -350,7 +351,7 @@ void GameMenu_EventLoop() {
                     engine_config->voice_level += 1;
                     new OnButtonClick2(435, 270, 0, 0, (int)pBtn_SliderRight, String(), false);
                 } else {
-                    Point pt = pMouse->GetCursorPos();
+                    Point pt = mouse->GetCursorPos();
                     engine_config->voice_level = (pt.x - 263) / 17;
                 }
 
@@ -514,7 +515,7 @@ void GameMenu_EventLoop() {
     }
 }
 
-void GameMenu_Loop() {
+void Menu::MenuLoop() {
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     current_screen_type = SCREEN_MENU;
@@ -546,7 +547,7 @@ void GameMenu_Loop() {
 
         render->BeginScene();
         {
-            GameMenu_EventLoop();
+            EventLoop();
             GUI_UpdateWindows();
         }
         render->EndScene();

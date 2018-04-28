@@ -13,6 +13,7 @@
 #include "Engine/Localization.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/IocContainer.h"
 #include "Engine/Time.h"
 
 #include "Engine/Objects/Actor.h"
@@ -41,6 +42,8 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+using EngineIoc = Engine_::IocContainer;
 
 GUIWindow *pPrimaryWindow;
 GUIWindow *pChestWindow;
@@ -135,7 +138,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
     : GUIWindow(x, y, width, height, button, hint) {
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
-    pMouse->SetCursorImage("MICON2");
+    mouse->SetCursorImage("MICON2");
     GameUI_StatusBar_OnEvent(
         localization->GetString(39));  // Choose target / Выберите цель
 }
@@ -283,7 +286,7 @@ void GUIWindow::Release() {
 
     lWindowList.remove(this);
 
-    logger->Info(L"Window Release");
+    log->Info(L"Window Release");
 }
 
 void GUIWindow::DeleteButtons() {
@@ -314,7 +317,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         w = window->GetHeight();
     }
 
-    Point cursor = pMouse->GetCursorPos();
+    Point cursor = mouse->GetCursorPos();
     if ((int)this->uFrameX >= x) {
         if ((int)(this->uFrameWidth + this->uFrameX) > z) {
             this->uFrameX = z - this->uFrameWidth;
@@ -760,12 +763,18 @@ void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
     }
 }
 
-GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {}
+GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
+    this->mouse = EngineIoc::ResolveMouse();
+    this->log = EngineIoc::ResolveLogger();
+}
 
 GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
     unsigned int uHeight, int pButton, const String &hint)
     : eWindowType(WINDOW_MainMenu) {
-    logger->Info(L"New window");
+    this->mouse = EngineIoc::ResolveMouse();
+    this->log = EngineIoc::ResolveLogger();
+
+    log->Info(L"New window");
     lWindowList.push_front(this);
     this->uFrameWidth = uWidth;
     this->uFrameHeight = uHeight;
@@ -956,19 +965,21 @@ void OnCancel3::Update() {
 
 void GUI_UpdateWindows() {
     if (GetCurrentMenuID() != MENU_CREATEPARTY) {
-        Mouse::UI_OnKeyDown(VK_NEXT);
+        extern bool UI_OnVkKeyDown(unsigned int vkKey);
+        UI_OnVkKeyDown(VK_NEXT);
     }
 
     std::list<GUIWindow *> tmpWindowList(lWindowList);
     for (GUIWindow *pWindow : tmpWindowList) {
         pWindow->Update();
     }
-
+        
     if (GetCurrentMenuID() == -1) {
         GameUI_DrawFoodAndGold();
     }
     if (sub_4637E0_is_there_popup_onscreen()) {
-        UI_OnMouseRightClick(0);
+        Mouse *mouse = EngineIoc::ResolveMouse();
+        UI_OnMouseRightClick(mouse->GetCursorPos().x, mouse->GetCursorPos().y);
     }
 }
 

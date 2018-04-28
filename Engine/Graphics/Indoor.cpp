@@ -124,17 +124,15 @@ void PrepareDrawLists_BLV() {
             floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
     }
     PrepareBspRenderList_BLV();
-    PrepareItemsRenderList_BLV();
-    PrepareActorRenderList_BLV();
+    pIndoor->PrepareItemsRenderList_BLV();
+    pIndoor->PrepareActorRenderList_BLV();
 
     for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
         v7 = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
-        v8 =
-            &pIndoor->pSectors
-                 [pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
+        v8 = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
 
         for (uint j = 0; j < v8->uNumDecorations; ++j)
-            PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], v7);
+            pIndoor->PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], v7);
     }
     FindBillboardsLightLevels_BLV();
     pEngine->PrepareBloodsplats();
@@ -378,7 +376,7 @@ void IndoorLocation::Draw() {
     //{
     PrepareDrawLists_BLV();
     if (pBLVRenderParams->uPartySectorID)
-        IndoorLocation::ExecDraw(true /*render->pRenderD3D != 0*/);
+        ExecDraw(true /*render->pRenderD3D != 0*/);
     render->DrawBillboardList_BLV();
     //}
 
@@ -434,7 +432,8 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
     unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
     int a4a;                     // [sp+34h] [bp+Ch]@25
 
-    if (uFaceID >= pIndoor->uNumFaces) return;
+    if (uFaceID >= pIndoor->uNumFaces)
+        return;
 
     static RenderVertexSoft static_vertices_F7C228[64];
     static RenderVertexSoft static_vertices_F7B628[64];
@@ -485,15 +484,14 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                      << 8);
                 sub_4B0E07(uFaceID);
                 // ToDo: restore this
-                //                pEngine->pLightmapBuilder->ApplyLights_IndoorFace(uFaceID);
-                pDecalBuilder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
+                lightmap_builder->ApplyLights_IndoorFace(uFaceID);
+                decal_builder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
                 pIndoorCameraD3D->ViewTransfrom_OffsetUV(static_vertices_F7B628,
                                                          uNumVerticesa,
                                                          array_507D30, &Lights);
                 pIndoorCameraD3D->Project(array_507D30, uNumVerticesa, 0);
-                pEngine->pLightmapBuilder->StationaryLightsCount = 0;
-                if (Lights.uNumLightsApplied > 0 ||
-                    pDecalBuilder->uNumDecals > 0) {
+                lightmap_builder->StationaryLightsCount = 0;
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
                     stru_F7B60C.face_plane.vNormal.x =
                         pFace->pFacePlane.vNormal.x;
                     stru_F7B60C.polygonType = pFace->uPolygonType;
@@ -506,12 +504,12 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
 
                 if (Lights.uNumLightsApplied > 0 &&
                     !pFace->Indoor_sky())  // for torchlight(для света факелов)
-                    pEngine->pLightmapBuilder->ApplyLights(
+                    lightmap_builder->ApplyLights(
                         &Lights, &stru_F7B60C, uNumVerticesa, array_507D30,
                         pVertices, 0);
 
-                if (pDecalBuilder->uNumDecals > 0)  //отрисовка пятен крови
-                    pDecalBuilder->ApplyDecals(a4a, 1, &stru_F7B60C,
+                if (decal_builder->uNumDecals > 0)  // blood draw
+                    decal_builder->ApplyDecals(a4a, 1, &stru_F7B60C,
                                                uNumVerticesa, array_507D30,
                                                pVertices, 0, pFace->uSectorID);
 
@@ -871,10 +869,12 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     ODMHeader header;  // [sp+638h] [bp-30h]@61
     FILE *File;        // [sp+658h] [bp-10h]@56
 
+    decal_builder->Reset(0);
+
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
     if (bLoaded) {
-        logger->Warning(L"BLV is already loaded");
+        log->Warning(L"BLV is already loaded");
         return true;
     }
 
@@ -889,7 +889,8 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     // File = v82;
 
     Release();
-    if (!Alloc()) return false;
+    if (!Alloc())
+        return false;
 
     header.uVersion = 91969;
     header.pMagic[0] = 'm';
@@ -902,7 +903,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
         header.pMagic[1] != 'v' || header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i') {
-        logger->Warning(L"Can't load file!");
+        log->Warning(L"Can't load file!");
     }
     // v83 = header.uCompressedSize;
     // pSource = header.uDecompressedSize;
@@ -924,12 +925,12 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
                              header.uCompressedSize);
 
             if (uDecompressedSize != header.uDecompressedSize)
-                logger->Warning(
+                log->Warning(
                     L"uDecompressedSize != header.uDecompressedSize in BLV");
         }
         free(pTmpMem);
     } else {
-        logger->Warning(L"Can't load file!");
+        log->Warning(L"Can't load file!");
         return 0;
     }
 
@@ -1156,7 +1157,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
         header.pMagic[1] != 'v' || header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i') {
-        logger->Warning(L"Can't load file!");
+        log->Warning(L"Can't load file!");
         _v244 = true;
     } else {
         pRawDLV = malloc(header.uDecompressedSize);
@@ -1172,13 +1173,13 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
                                  header.uCompressedSize);
 
                 if (uDecompressedSize != header.uDecompressedSize)
-                    logger->Warning(
+                    log->Warning(
                         L"uDecompressedSize != header.uDecompressedSize in "
                         L"DLV");
             }
             free(pTmpMem);
         } else {
-            logger->Warning(L"Can't load file!");
+            log->Warning(L"Can't load file!");
         }
 
         pData = (char *)pRawDLV;
@@ -1234,7 +1235,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
                 free(_uSourceLen);
             }
         } else {
-            logger->Warning(L"Can't load file!");
+            log->Warning(L"Can't load file!");
         }
         pData = ((char *)Src + 40);
         // v154 = 875;
@@ -2859,7 +2860,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID,
 }
 
 //----- (0043FDED) --------------------------------------------------------
-void PrepareActorRenderList_BLV() {
+void IndoorLocation::PrepareActorRenderList_BLV() {
     unsigned int v4;  // eax@5
     int v6;           // esi@5
     int v8;           // eax@10
@@ -2939,79 +2940,49 @@ void PrepareActorRenderList_BLV() {
                             .hwsprite = v9->hw_sprites[v6];
                         pBillboardRenderList[uNumBillboardsToDraw - 1]
                             .uPalette = v9->uPaletteIndex;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .uIndoorSectorID = pActors[i].uSectorID;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1] .uIndoorSectorID = pActors[i].uSectorID;
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x =
-                            pIndoorCameraD3D->fov_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y =
-                            pIndoorCameraD3D->fov_y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
 
                         auto _v18_over_x =
                             fixed::FromInt(
                                 floorf(pIndoorCameraD3D->fov_x + 0.5f)) /
                             fixed::FromInt(view_x);
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .screenspace_projection_factor_x =
-                            v9->scale * _v18_over_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .screenspace_projection_factor_y =
-                            v9->scale * _v18_over_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v9->scale * _v18_over_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v9->scale * _v18_over_x;
 
-                        if (pActors[i]
-                                .pActorBuffs[ACTOR_BUFF_MASS_DISTORTION]
-                                .Active()) {
+                        if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1]
                                 .screenspace_projection_factor_y =
                                 fixed::FromFloat(
-                                    pEngine->GetSpellFxRenderer()
-                                        ->_4A806F_get_mass_distortion_value(
-                                            &pActors[i])) *
+                                    spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i])) *
                                 pBillboardRenderList[uNumBillboardsToDraw - 1]
                                     .screenspace_projection_factor_y;
-                        } else if (pActors[i]
-                                       .pActorBuffs[ACTOR_BUFF_SHRINK]
-                                       .Active() &&
-                                   pActors[i]
-                                           .pActorBuffs[ACTOR_BUFF_SHRINK]
-                                           .uPower > 0) {
+                        } else if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() &&
+                                   pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1]
                                 .screenspace_projection_factor_y =
                                 fixed::FromFloat(
                                     1.0f / pActors[i]
                                                .pActorBuffs[ACTOR_BUFF_SHRINK]
                                                .uPower) *
-                                pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                    .screenspace_projection_factor_y;
+                                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
                         }
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_x =
-                            pActors[i].vPosition.x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_y =
-                            pActors[i].vPosition.y;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_z =
-                            pActors[i].vPosition.z;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .screen_space_x = projected_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .screen_space_y = projected_y;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .screen_space_z = view_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .object_pid = PID(OBJECT_Actor, i);
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .field_1E = v41 & 0xFF;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .pSpriteFrame = v9;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .sTintColor =
-                            pMonsterList
-                                ->pMonsters[pActors[i].pMonsterInfo.uID - 1]
-                                .sTintColor;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pActors[i].vPosition.x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pActors[i].vPosition.y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pActors[i].vPosition.z;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v41 & 0xFF;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v9;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = pMonsterList
+                                ->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;
 
-                        if (pActors[i]
-                                .pActorBuffs[ACTOR_BUFF_STONED]
-                                .Active()) {
+                        if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1]
                                 .field_1E |= 0x100;
                         }
@@ -3023,7 +2994,7 @@ void PrepareActorRenderList_BLV() {
 }
 
 //----- (0044028F) --------------------------------------------------------
-void PrepareItemsRenderList_BLV() {
+void IndoorLocation::PrepareItemsRenderList_BLV() {
     SpriteFrame *v4;     // eax@12
     unsigned int v6;     // eax@12
     int v7;              // ecx@12
@@ -3042,11 +3013,9 @@ void PrepareItemsRenderList_BLV() {
                          pSpriteObjects[i].uType >= 600) &&
                         (pSpriteObjects[i].uType < 811 ||
                          pSpriteObjects[i].uType >= 815) ||
-                    pEngine->GetSpellFxRenderer()->RenderAsSprite(
-                        &pSpriteObjects[i])) {
+                    spell_fx_renderer->RenderAsSprite(&pSpriteObjects[i])) {
                     v4 = pSpriteFrameTable->GetFrame(
-                        pObjectList->pObjects[pSpriteObjects[i].uObjectDescID]
-                            .uSpriteID,
+                        pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uSpriteID,
                         pSpriteObjects[i].uSpriteFrameID);
                     a6 = v4->uGlowRadius *
                          pSpriteObjects[i].field_22_glow_radius_multiplier;
@@ -3242,7 +3211,7 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode) {
 }
 
 //----- (0043FA33) --------------------------------------------------------
-void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID,
+void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID,
                                       unsigned int uSectorID) {
     unsigned int v8;       // edi@5
     int v9;                // edi@5
@@ -3271,14 +3240,12 @@ void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID,
         particle.b = 0.0;
         particle.particle_size = 1.0;
         particle.timeToLive = (rand() & 0x80) + 128;
-        particle.texture = pEngine->GetSpellFxRenderer()->effpar01;
-        pEngine->pParticleEngine->AddParticle(&particle);
+        particle.texture = spell_fx_renderer->effpar01;
+        particle_engine->AddParticle(&particle);
         return;
     }
 
-    if (pDecorationList
-            ->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID]
-            .uFlags &
+    if (pDecorationList->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID].uFlags &
         DECORATION_DESC_DONT_DRAW)
         return;
 
@@ -4050,13 +4017,10 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
                 }
                 if (pOutdoor->pBModels[bmodel_id].pFaces[face_id].uAttributes &
                         FACE_HAS_EVENT ||
-                    pOutdoor->pBModels[bmodel_id]
-                            .pFaces[face_id]
-                            .sCogTriggeredID == 0)
+                    pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID == 0)
                     return 1;
                 EventProcessor((signed __int16)pOutdoor->pBModels[bmodel_id]
-                                   .pFaces[face_id]
-                                   .sCogTriggeredID,
+                                   .pFaces[face_id].sCogTriggeredID,
                                a1, 1);
             } else {
                 if (!(pIndoor->pFaces[v17].uAttributes & FACE_CLICKABLE)) {

@@ -1,16 +1,27 @@
 #pragma once
+
+#include "Engine/IocContainer.h"
+
 #include "../Spells/Spells.h"
 #include "Items.h"
 #include "Monsters.h"
 
+using EngineIoc = Engine_::IocContainer;
+
 /*  357 */
 #pragma pack(push, 1)
 struct stru319 {
+    inline stru319() {
+        this->vis = EngineIoc::ResolveVis();
+    }
+
     int which_player_to_attack(struct Actor *pActor);
     int _427546(int a2);
     int FindClosestActor(int a2, int a3, int a4);
 
     char field_0;
+
+    Vis *vis = nullptr;
 };
 #pragma pack(pop)
 

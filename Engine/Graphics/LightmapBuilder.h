@@ -95,6 +95,8 @@ class LightmapBuilder {
     float light_radius;
     RenderVertexSoft field_3C8C34[256];
     int uFlags;  // LIGHTMAP_FLAGS_*
+
+    Log *log = nullptr;
 };
 #pragma pack(pop)
 

@@ -192,7 +192,7 @@ class Render : public RenderBase {
     unsigned int uMaxDeviceTextureDim;
     unsigned int uMinDeviceTextureDim;
 
-    // 2D drawind
+    // 2D drawing
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR gdiplusToken;
     Gdiplus::Bitmap *p2DSurface;

@@ -47,6 +47,10 @@
 
 #include "Game/Game.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+static Mouse *pMouse = EngineIoc::ResolveMouse();
+
 Image *game_ui_statusbar = nullptr;
 Image *game_ui_rightframe = nullptr;
 Image *game_ui_topframe = nullptr;
@@ -1294,8 +1298,9 @@ void GameUI_WritePointedObjectStatusString() {
                 uLastPointedObjectID = 0;
                 return;
             }
-            pickedObjectPID =
-                pEngine->pVisInstance->get_picked_object_zbuf_val();
+
+            auto vis = EngineIoc::ResolveVis();
+            pickedObjectPID = vis->get_picked_object_zbuf_val();
             pMouse->uPointingObjectID = (unsigned __int16)pickedObjectPID;
             pickedObjectID = (signed)PID_ID(pickedObjectPID);
             if (PID_TYPE(pickedObjectPID) == OBJECT_Item) {

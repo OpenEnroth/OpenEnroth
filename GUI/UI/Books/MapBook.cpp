@@ -639,7 +639,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
     }
 }
 
-const char *GetMapBookHintText() {
+const char *GetMapBookHintText(int mouse_x, int mouse_y) {
     int v20 = viewparams->sViewCenterX;
     int v21 = viewparams->sViewCenterY;
     if (viewparams->uMapBookMapZoom == 384) {
@@ -647,20 +647,19 @@ const char *GetMapBookHintText() {
         v21 = viewparams->indoor_center_y;
     }
 
-    unsigned int pX = 0;
-    unsigned int pY = 0;
-    pMouse->GetClickPos(&pX, &pY);
-    double v0 =
-        1.0 / (float)((signed int)viewparams->uMapBookMapZoom * 0.000015258789);
+    unsigned int pX = mouse_x;
+    unsigned int pY = mouse_y;
+
+    double v0 = 1.0 / (float)((signed int)viewparams->uMapBookMapZoom * 0.000015258789);
 
     int global_coord_X = (__int64)((double)(pX - 229) * v0 + (double)v20);
     int global_coord_Y = (__int64)((double)v21 - (double)(pY - 181) * v0);
 
     const char *result = nullptr;
-    int map_tile_X =
-        abs(global_coord_X + 22528) /
-        512;  // In the mapbook only lady Margaret dispays for defoult zoom(В
-              // книге карты только Леди Маргарита всплывает при дефолтном зуме)
+
+    // In the mapbook only lady Margaret dispays for defoult zoom(В
+    // книге карты только Леди Маргарита всплывает при дефолтном зуме)
+    int map_tile_X = abs(global_coord_X + 22528) / 512; 
     int map_tile_Y = abs(global_coord_Y - 22528) / 512;
     if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) &&
         uCurrentlyLoadedLevelType == LEVEL_Outdoor &&

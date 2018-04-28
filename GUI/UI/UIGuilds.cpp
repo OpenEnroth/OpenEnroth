@@ -22,6 +22,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+using EngineIoc = Engine_::IocContainer;
+
 void GuildDialog() {
     int textoffset;               // ecx@47
     GUIButton *pButton;           // eax@49
@@ -221,34 +223,32 @@ void GuildDialog() {
                 return;
             }
 
-            Point mouse = pMouse->GetCursorPos();
-            int testx = (mouse.x - 32) / 70;
+            Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
+            int testx = (pt.x - 32) / 70;
             if (testx >= 0 && testx < 6) {
-                if (mouse.y >= 250) {
+                if (pt.y >= 250) {
                     testx += 6;
                 }
 
-                ItemGen *item =
-                    &pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C -
-                                                139][testx];
+                ItemGen *item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][testx];
 
                 if (item->uItemID) {
                     int testpos;
-                    if (mouse.y >= 250) {
+                    if (pt.y >= 250) {
                         testpos = 32 + 70 * testx - 420;
                     } else {
                         testpos = 32 + 70 * testx;
                     }
 
-                    if (mouse.x >= testpos &&
-                        mouse.x <=
+                    if (pt.x >= testpos &&
+                        pt.x <=
                             testpos +
                                 shop_ui_items_in_store[testx]->GetWidth()) {
-                        if ((mouse.y >= 90 &&
-                             mouse.y <= (90 + shop_ui_items_in_store[testx]
+                        if ((pt.y >= 90 &&
+                            pt.y <= (90 + shop_ui_items_in_store[testx]
                                                   ->GetHeight())) ||
-                            (mouse.y >= 250 &&
-                             mouse.y <= (250 + shop_ui_items_in_store[testx]
+                            (pt.y >= 250 &&
+                             pt.y <= (250 + shop_ui_items_in_store[testx]
                                                    ->GetHeight()))) {
                             auto str = BuildDialogueString(
                                 pMerchantsBuyPhrases

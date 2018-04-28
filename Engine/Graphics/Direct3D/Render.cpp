@@ -45,6 +45,8 @@
 
 #pragma comment(lib, "GdiPlus.lib")
 
+using EngineIoc = Engine_::IocContainer;
+
 struct IDirectDrawClipper *pDDrawClipper;
 IRender *render = nullptr;
 struct RenderVertexD3D3 pVertices[50];
@@ -325,11 +327,8 @@ void Render::RenderTerrainD3D() {  // New function
             pTilePolygon->uBModelFaceID = 0;
             pTilePolygon->pid = (8 * (0 | (0 << 6))) | 6;
             for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k) {
-                memcpy(&VertexRenderList[k], &array_73D150[k],
-                       sizeof(struct RenderVertexSoft));
-                VertexRenderList[k]._rhw =
-                    1.0 / (array_73D150[k].vWorldViewPosition.x +
-                           0.0000001000000011686097);
+                memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
+                VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
             }
 
             // shading
@@ -347,17 +346,18 @@ void Render::RenderTerrainD3D() {  // New function
                 norm = 0;
             else
                 norm = &pTerrainNormals[norm_idx];
-            if (engine_config->allow_lightmaps) {
-                pEngine->pLightmapBuilder->StackLights_TerrainFace(
+            if (false) {
+            //if (engine_config->allow_lightmaps) {
+                // Ritor1: significant fps slowdown
+                lightmap_builder->StackLights_TerrainFace(
                     norm, &Light_tile_dist, VertexRenderList, 4,
-                    1);  // Ritor1: slows
-                         // pDecalBuilder->_49BE8A(pTilePolygon, norm,
-                         // &Light_tile_dist, VertexRenderList, 4, 1);
+                    1);
+                decal_builder->_49BE8A(pTilePolygon, norm,
+                    &Light_tile_dist, VertexRenderList, 4, 1);
             }
             unsigned int a5 = 4;
 
-            // ---------Draw distance(Дальность
-            // отрисовки)-------------------------------
+            // ---------Draw distance(Дальность отрисовки)-------------------------------
             int far_clip_distance = pIndoorCameraD3D->GetFarClip();
             if (engine_config->extended_draw_distance)
                 far_clip_distance = 0x5000;
@@ -373,21 +373,20 @@ void Render::RenderTerrainD3D() {  // New function
 
             int uClipFlag = 0;
             static stru154 static_sub_0048034E_stru_154;
-            pEngine->pLightmapBuilder->StationaryLightsCount = 0;
-            if (Lights.uNumLightsApplied > 0 || pDecalBuilder->uNumDecals > 0) {
+            lightmap_builder->StationaryLightsCount = 0;
+            if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
                 if (neer_clip)
                     uClipFlag = 3;
                 else
                     uClipFlag = far_clip != 0 ? 5 : 0;
-                static_sub_0048034E_stru_154.ClassifyPolygon(norm,
-                                                             Light_tile_dist);
-                if (pDecalBuilder->uNumDecals > 0)
-                    pDecalBuilder->ApplyDecals(31 - pTilePolygon->dimming_level,
+                static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
+                if (decal_builder->uNumDecals > 0)
+                    decal_builder->ApplyDecals(31 - pTilePolygon->dimming_level,
                                                4, &static_sub_0048034E_stru_154,
                                                a5, VertexRenderList, 0,
                                                *(float *)&uClipFlag, -1);
                 if (Lights.uNumLightsApplied > 0)
-                    pEngine->pLightmapBuilder->ApplyLights(
+                    lightmap_builder->ApplyLights(
                         &Lights, &static_sub_0048034E_stru_154, a5,
                         VertexRenderList, 0, uClipFlag);
             }
@@ -694,8 +693,8 @@ void Render::PrepareDecorationsRenderList_ODM() {
                 local_0.b = 0.0;
                 local_0.particle_size = 1.0;
                 local_0.timeToLive = (rand() & 0x80) + 128;
-                local_0.texture = pEngine->GetSpellFxRenderer()->effpar01;
-                pEngine->pParticleEngine->AddParticle(&local_0);
+                local_0.texture = spell_fx_renderer->effpar01;
+                particle_engine->AddParticle(&local_0);
             }
         }
     }
@@ -713,7 +712,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
     ODMFace *pFace = pPolygon->pODMFace;
     auto uNumVertices = pPolygon->uNumVertices;
 
-    if (pEngine->pLightmapBuilder->StationaryLightsCount) {
+    if (lightmap_builder->StationaryLightsCount) {
         sCorrectedColor = -1;
     }
     pEngine->AlterGamma_ODM(pFace, &sCorrectedColor);
@@ -721,9 +720,9 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
         int v8 = ::GetActorTintColor(
             pPolygon->dimming_level, 0,
             VertexRenderList[0].vWorldViewPosition.x, 0, 0);
-        pEngine->pLightmapBuilder->DrawLightmaps(v8 /*, 0*/);
+        lightmap_builder->DrawLightmaps(v8 /*, 0*/);
     } else {
-        if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
+        if (!lightmap_builder->StationaryLightsCount ||
             _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
             ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
                                                              D3DTADDRESS_WRAP));
@@ -817,7 +816,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
                                                        D3DCULL_NONE));
             // (*(void (**)(void))(*(int *)v50 + 88))();
-            pEngine->pLightmapBuilder->DrawLightmaps(-1);
+            lightmap_builder->DrawLightmaps(-1);
             for (uint i = 0; i < uNumVertices; ++i) {
                 d3d_vertex_buffer[i].diffuse = sCorrectedColor;
             }
@@ -1263,7 +1262,7 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
                           float z_bias) {
     // For outdoor terrain and indoor light (VII)(VII)
     if (pLightmap->NumVertices < 3) {
-        logger->Warning(L"Lightmap uNumVertices < 3");
+        log->Warning(L"Lightmap uNumVertices < 3");
         return false;
     }
 
@@ -1668,7 +1667,7 @@ void Render::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
     if (uNumD3DSceneBegins == 0) {
         pEngine->draw_debug_outlines();
         DoRenderBillboards_D3D();
-        pEngine->GetSpellFxRenderer()->RenderSpecialEffects();
+        spell_fx_renderer->RenderSpecialEffects();
         pRenderD3D->pDevice->EndScene();
     }
 }
@@ -1694,8 +1693,8 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
         v11 =
             ::GetActorTintColor(a4->dimming_level, 0,
                                 VertexRenderList[0].vWorldViewPosition.x, 0, 0);
-        pEngine->pLightmapBuilder->DrawLightmaps(v11 /*, 0*/);
-    } else if (transparent || !pEngine->pLightmapBuilder->StationaryLightsCount ||
+        lightmap_builder->DrawLightmaps(v11 /*, 0*/);
+    } else if (transparent || !lightmap_builder->StationaryLightsCount ||
         _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
         if (clampAtTextureBorders)
             this->pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
@@ -1757,7 +1756,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
                                                        D3DBLEND_ZERO));
         }
-    } else if (pEngine->pLightmapBuilder->StationaryLightsCount) {
+    } else if (lightmap_builder->StationaryLightsCount) {
         for (uint i = 0; i < uNumVertices; ++i) {
             d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
             d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
@@ -1790,7 +1789,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
         // ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
         // D3DCULL_NONE));
-        pEngine->pLightmapBuilder->DrawLightmaps(-1 /*, 0*/);
+        lightmap_builder->DrawLightmaps(-1 /*, 0*/);
         for (uint i = 0; i < uNumVertices; ++i) {
             d3d_vertex_buffer[i].diffuse = -1;
         }
@@ -2300,7 +2299,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
 
     TextureD3D *texture = (TextureD3D *)pFace->GetTexture();
 
-    if (pEngine->pLightmapBuilder->StationaryLightsCount) {
+    if (lightmap_builder->StationaryLightsCount) {
         sCorrectedColor = -1;
     }
     pEngine->AlterGamma_BLV(pFace, &sCorrectedColor);
@@ -2339,9 +2338,9 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             D3DPT_TRIANGLEFAN,
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
-        pEngine->pLightmapBuilder->DrawLightmaps(-1 /*, 0*/);
+        lightmap_builder->DrawLightmaps(-1 /*, 0*/);
     } else {
-        if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
+        if (!lightmap_builder->StationaryLightsCount ||
             _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
             for (uint i = 0; i < uNumVertices; ++i) {
                 d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
@@ -2397,7 +2396,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
 
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
                                                        D3DCULL_NONE));
-            pEngine->pLightmapBuilder->DrawLightmaps(-1 /*, 0*/);
+            lightmap_builder->DrawLightmaps(-1 /*, 0*/);
 
             for (uint i = 0; i < uNumVertices; ++i)
                 d3d_vertex_buffer[i].diffuse = sCorrectedColor;
@@ -3484,6 +3483,8 @@ bool RenderHWLContainer::Release() {
 }
 
 RenderHWLContainer::RenderHWLContainer() {
+    this->log = EngineIoc::ResolveLogger();
+
     this->pFile = 0;
     uSignature = 0;
     this->uDataOffset = 0;
@@ -3495,13 +3496,13 @@ RenderHWLContainer::RenderHWLContainer() {
 bool RenderHWLContainer::Load(const char *pFilename) {
     pFile = fopen(pFilename, "rb");
     if (!pFile) {
-        logger->Warning(L"Failed to open file: %s", pFilename);
+        log->Warning(L"Failed to open file: %s", pFilename);
         return false;
     }
 
     fread(&uSignature, 1, 4, pFile);
     if (uSignature != 'TD3D') {
-        logger->Warning(L"Invalid format: %s", pFilename);
+        log->Warning(L"Invalid format: %s", pFilename);
         return false;
     }
 
@@ -3589,7 +3590,7 @@ void Render::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
         }
 
         default: {
-            logger->Warning(
+            log->Warning(
                 L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
             assert(false);
             break;
@@ -3948,17 +3949,15 @@ void Render::DrawBuildingsD3D() {
                 }
                 static stru154 static_RenderBuildingsD3D_stru_73C834;
 
-                pEngine->pLightmapBuilder->ApplyLights_OutdoorFace(&face);
-                pDecalBuilder->ApplyDecals_OutdoorFace(&face);
-                pEngine->pLightmapBuilder->StationaryLightsCount = 0;
+                lightmap_builder->ApplyLights_OutdoorFace(&face);
+                decal_builder->ApplyDecals_OutdoorFace(&face);
+                lightmap_builder->StationaryLightsCount = 0;
                 int v31 = 0;
-                if (Lights.uNumLightsApplied > 0 ||
-                    pDecalBuilder->uNumDecals > 0) {
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
                     v31 = v50 ? 3 : v49 != 0 ? 5 : 0;
-                    static_RenderBuildingsD3D_stru_73C834
-                        .GetFacePlaneAndClassify(&face, &model.pVertices);
-                    if (pDecalBuilder->uNumDecals > 0) {
-                        pDecalBuilder->ApplyDecals(
+                    static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
+                    if (decal_builder->uNumDecals > 0) {
+                        decal_builder->ApplyDecals(
                             31 - poly->dimming_level, 2,
                             &static_RenderBuildingsD3D_stru_73C834,
                             face.uNumVertices, VertexRenderList, 0, (char)v31,
@@ -3966,7 +3965,7 @@ void Render::DrawBuildingsD3D() {
                     }
                 }
                 if (Lights.uNumLightsApplied > 0)
-                    pEngine->pLightmapBuilder->ApplyLights(
+                    lightmap_builder->ApplyLights(
                         &Lights, &static_RenderBuildingsD3D_stru_73C834,
                         poly->uNumVertices, VertexRenderList, 0, (char)v31);
 
@@ -4272,7 +4271,7 @@ int Render::GetActorsInViewport(int pDepth) {
                         pActors[v6].uAIState != Removed &&
                         pActors[v6].uAIState != Disabled &&
                         pActors[v6].uAIState != Summoned) {
-                        if (pEngine->pVisInstance->DoesRayIntersectBillboard(
+                        if (vis->DoesRayIntersectBillboard(
                                 (double)pDepth, a1a)) {
                             if (mon_num < 100) {
                                 _50BF30_actors_in_viewport_ids[mon_num] = v6;
@@ -4449,7 +4448,7 @@ void Render::DrawDecal(Decal *pDecal, float z_bias) {
     RenderVertexD3D3 pVerticesD3D[64];  // [sp+20h] [bp-850h]@6
 
     if (pDecal->uNumVertices < 3) {
-        logger->Warning(L"Decal has < 3 vertices");
+        log->Warning(L"Decal has < 3 vertices");
         return;
     }
 

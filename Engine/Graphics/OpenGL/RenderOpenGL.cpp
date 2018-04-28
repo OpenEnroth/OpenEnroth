@@ -82,7 +82,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
 
     TextureOpenGL *texture = (TextureOpenGL *)pFace->GetTexture();
 
-    if (pEngine->pLightmapBuilder->StationaryLightsCount) sCorrectedColor = -1;
+    if (lightmap_builder->StationaryLightsCount) sCorrectedColor = -1;
     pEngine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
     if (pFace->uAttributes & FACE_OUTLINED) {
@@ -119,10 +119,10 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
               D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
               d3d_vertex_buffer, uNumVertices, 28));
-            pEngine->pLightmapBuilder->DrawLightmaps(-1);
+            lightmap_builder->DrawLightmaps(-1);
         */
     } else {
-        if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
+        if (!lightmap_builder->StationaryLightsCount ||
             _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
             glEnable(GL_TEXTURE_2D);
             glDisable(GL_BLEND);
@@ -192,7 +192,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                D3DFVF_TEX1, d3d_vertex_buffer, uNumVertices, 28));
 
                   ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
-               D3DCULL_NONE)); pEngine->pLightmapBuilder->DrawLightmaps(-1);
+               D3DCULL_NONE)); lightmap_builder->DrawLightmaps(-1);
 
                   for (uint i = 0; i < uNumVertices; ++i)
                     d3d_vertex_buffer[i].diffuse = sCorrectedColor;
@@ -899,7 +899,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
 void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
     pEngine->draw_debug_outlines();
     this->DoRenderBillboards_D3D();
-    pEngine->GetSpellFxRenderer()->RenderSpecialEffects();
+    spell_fx_renderer->RenderSpecialEffects();
 }
 
 //----- (004A1C1E) --------------------------------------------------------
@@ -1007,7 +1007,7 @@ void RenderOpenGL::SetBillboardBlendOptions(
         } break;
 
         default:
-            logger->Warning(
+            log->Warning(
                 L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
             assert(false);
             break;
@@ -1626,7 +1626,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
     int a2 = 0xFFFFFFFF;
     pEngine->AlterGamma_ODM(a4, &a2);
 
-    if (!pEngine->pLightmapBuilder->StationaryLightsCount ||
+    if (!lightmap_builder->StationaryLightsCount ||
         _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_BLEND);
@@ -1719,7 +1719,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
         D3DCULL_NONE));
         //(*(void (**)(void))(*(int *)v50 + 88))();
-        pEngine->pLightmapBuilder->DrawLightmaps(-1);
+        lightmap_builder->DrawLightmaps(-1);
         for (uint i = 0; i < uNumVertices; ++i)
         {
         d3d_vertex_buffer[i].diffuse = a2;

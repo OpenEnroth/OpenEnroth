@@ -188,7 +188,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
 
     FILE *file = fopen(this->resource_name.c_str(), "rb");
     if (!file) {
-        logger->Warning(L"Unable to load %s", this->resource_name.c_str());
+        log->Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
@@ -240,7 +240,7 @@ bool PCX_LOD_File_Loader::Load(unsigned int *width, unsigned int *height,
     size_t size;
     FILE *file = lod->FindContainer(this->resource_name.c_str(), 0, &size);
     if (!file) {
-        logger->Warning(L"Unable to load %s", this->resource_name.c_str());
+        log->Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
@@ -256,7 +256,7 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height,
 
     FILE *file = lod->FindContainer(this->resource_name.c_str(), 0);
     if (!file) {
-        logger->Warning(L"Unable to load %s", this->resource_name.c_str());
+        log->Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;
     }
 

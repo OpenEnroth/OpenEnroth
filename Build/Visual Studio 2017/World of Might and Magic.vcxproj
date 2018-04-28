@@ -99,6 +99,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)\%(Directory)\</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)\%(Directory)\</ObjectFileName>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -227,6 +229,7 @@
     <ClCompile Include="..\..\Engine\Random.cpp" />
     <ClCompile Include="..\..\Engine\SaveLoad.cpp" />
     <ClCompile Include="..\..\Engine\Serialization\LegacyImages.cpp" />
+    <ClCompile Include="..\..\Engine\IocContainer.cpp" />
     <ClCompile Include="..\..\Engine\SpellFxRenderer.cpp" />
     <ClCompile Include="..\..\Engine\Spells\CastSpellInfo.cpp" />
     <ClCompile Include="..\..\Engine\Spells\Spells.cpp" />
@@ -243,8 +246,10 @@
     <ClCompile Include="..\..\Engine\VectorTypes.cpp" />
     <ClCompile Include="..\..\Engine\ZlibWrapper.cpp" />
     <ClCompile Include="..\..\Game\Game.cpp" />
+    <ClCompile Include="..\..\Game\Configuration.cpp" />
     <ClCompile Include="..\..\Game\GameMenu.cpp" />
     <ClCompile Include="..\..\Game\GameOver.cpp" />
+    <ClCompile Include="..\..\Game\IocContainer.cpp" />
     <ClCompile Include="..\..\GUI\GUIButton.cpp" />
     <ClCompile Include="..\..\GUI\GUIFont.cpp" />
     <ClCompile Include="..\..\GUI\GUIProgressBar.cpp" />
@@ -263,7 +268,7 @@
     <ClCompile Include="..\..\GUI\UI\UICharacter.cpp" />
     <ClCompile Include="..\..\GUI\UI\UICredits.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIDialogue.cpp" />
-    <ClCompile Include="..\..\GUI\UI\UiGame.cpp" />
+    <ClCompile Include="..\..\GUI\UI\UIGame.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIGuilds.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIHouses.cpp" />
     <ClCompile Include="..\..\GUI\UI\UIInventory.cpp" />
@@ -368,6 +373,7 @@
     <ClInclude Include="..\..\Engine\Rect.h" />
     <ClInclude Include="..\..\Engine\SaveLoad.h" />
     <ClInclude Include="..\..\Engine\Serialization\LegacyImages.h" />
+    <ClInclude Include="..\..\Engine\IocContainer.h" />
     <ClInclude Include="..\..\Engine\SpellFxRenderer.h" />
     <ClInclude Include="..\..\Engine\Spells\CastSpellInfo.h" />
     <ClInclude Include="..\..\Engine\Spells\Spells.h" />
@@ -389,8 +395,10 @@
     <ClInclude Include="..\..\Engine\VectorTypes.h" />
     <ClInclude Include="..\..\Engine\ZlibWrapper.h" />
     <ClInclude Include="..\..\Game\Game.h" />
+    <ClInclude Include="..\..\Game\Configuration.h" />
     <ClInclude Include="..\..\Game\GameMenu.h" />
     <ClInclude Include="..\..\Game\GameOver.h" />
+    <ClInclude Include="..\..\Game\IocContainer.h" />
     <ClInclude Include="..\..\GUI\GUIButton.h" />
     <ClInclude Include="..\..\GUI\GUIFont.h" />
     <ClInclude Include="..\..\GUI\GUIProgressBar.h" />

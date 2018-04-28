@@ -40,6 +40,8 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+using EngineIoc = Engine_::IocContainer;
+
 int uHouse_ExitPic;
 int _F8B1DC_currentShopOption;  // F8B1DC
 int dword_591080;               // 591080
@@ -4038,6 +4040,7 @@ int HouseDialogPressCloseBtn() {
 }
 
 void BackToHouseMenu() {
+    auto pMouse = EngineIoc::ResolveMouse();
     pMouse->ClearPickedItem();
     if (window_SpeakInHouse && window_SpeakInHouse->ptr_1C == (void *)165 &&
         !pMovie_Track) {

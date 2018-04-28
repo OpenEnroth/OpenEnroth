@@ -98,7 +98,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
         // v2 = object->uType;
         if ((object->uType < 1000 || object->uType >= 10000) &&
                 (object->uType < 500 || object->uType >= 600) ||
-            pEngine->GetSpellFxRenderer()->RenderAsSprite(object)) {
+            spell_fx_renderer->RenderAsSprite(object)) {
             // a5 = *(short *)v0;
             int x = object->vPosition.x;
             int y = object->vPosition.y;

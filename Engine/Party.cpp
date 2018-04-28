@@ -21,6 +21,10 @@
 
 #include "GUI/UI/UIStatusBar.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+static Mouse *mouse = EngineIoc::ResolveMouse(); // should be injected in Party, but struct size cant be changed
+
 Party *pParty = nullptr;
 
 struct ActionQueue *pPartyActionQueue = new ActionQueue;
@@ -144,7 +148,7 @@ bool Party::_497FC5_check_party_perception_against_level() {
 void Party::SetHoldingItem(ItemGen *pItem) {
     sub_421B2C_PlaceInInventory_or_DropPickedItem();
     memcpy(&pPickedItem, pItem, sizeof(pPickedItem));
-    pMouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
+    mouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
 }
 
 int Party::GetFirstCanAct() {  // added to fix some nzi problems entering shops
@@ -1028,23 +1032,23 @@ void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem() {
     // int v11; // [sp+74h] [bp-8h]@2
     int v12;  // [sp+78h] [bp-4h]@5
 
-    if (!pParty->pPickedItem.uItemID) return;
+    if (!pParty->pPickedItem.uItemID)
+        return;
 
-    auto texture =
-        assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), 0x7FF);
+    auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), 0x7FF);
 
     if (uActiveCharacter && (v2 = ::pPlayers[uActiveCharacter]->AddItem(
                                  -1, pParty->pPickedItem.uItemID)) != 0) {
         memcpy(&::pPlayers[uActiveCharacter]->pInventoryItemList[v2 - 1],
                &pParty->pPickedItem, 0x24u);
-        pMouse->RemoveHoldingItem();
+        mouse->RemoveHoldingItem();
     } else {
         for (v12 = 0; v12 < 4; v12++) {
             v4 = pParty->pPlayers[v12].AddItem(-1, pParty->pPickedItem.uItemID);
             if (v4) {
                 memcpy(&pParty->pPlayers[v12].pInventoryItemList[v4 - 1],
                        &pParty->pPickedItem, sizeof(ItemGen));
-                pMouse->RemoveHoldingItem();
+                mouse->RemoveHoldingItem();
                 break;
             }
         }
@@ -1075,7 +1079,7 @@ void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem() {
             memcpy(&a1.containing_item, &pParty->pPickedItem,
                    sizeof(a1.containing_item));
             a1.Create(pParty->sRotationY, 184, 200, 0);
-            pMouse->RemoveHoldingItem();
+            mouse->RemoveHoldingItem();
         }
     }
 

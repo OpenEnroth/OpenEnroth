@@ -8,7 +8,7 @@ bool LightsStack_MobileLight_::AddLight(__int16 x, __int16 y, __int16 z,
                                         unsigned __int8 r, unsigned __int8 g,
                                         unsigned __int8 b, char uLightType) {
     if (uNumLightsActive >= 400) {
-        logger->Warning(L"Too many mobile lights!");
+        log->Warning(L"Too many mobile lights!");
         return false;
     }
 
@@ -31,12 +31,8 @@ bool LightsStack_StationaryLight_::AddLight(__int16 x, __int16 y, __int16 z,
                                             __int16 a5, unsigned char r,
                                             unsigned char g, unsigned char b,
                                             char uLightType) {
-    // unsigned int v9; // eax@1
-    // std::string v11; // [sp-18h] [bp-18h]@3
-
-    // v9 = this->uNumLightsActive;
-    if ((signed int)this->uNumLightsActive >= 400) {
-        logger->Warning(L"Too many stationary lights!");
+    if (uNumLightsActive >= 400) {
+        log->Warning(L"Too many stationary lights!");
         return false;
     }
 
@@ -45,7 +41,7 @@ bool LightsStack_StationaryLight_::AddLight(__int16 x, __int16 y, __int16 z,
     pLight->vPosition.y = y;
     pLight->vPosition.z = z;
     pLight->uRadius = a5;
-    pLight->uLightColorR = (unsigned __int8)r;
+    pLight->uLightColorR = r;
     pLight->uLightColorG = g;
     pLight->uLightColorB = b;
     pLight->uLightType = uLightType;

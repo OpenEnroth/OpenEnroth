@@ -6,8 +6,9 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/stru9.h"
 
-LightsStack_StationaryLight_ *pStationaryLightsStack =
-    new LightsStack_StationaryLight_;
+using EngineIoc = Engine_::IocContainer;
+
+LightsStack_StationaryLight_ *pStationaryLightsStack = new LightsStack_StationaryLight_;
 // StationaryLight pStationaryLights[400];
 // int uNumStationaryLightsApplied;
 LightsStack_MobileLight_ *pMobileLightsStack = new LightsStack_MobileLight_;
@@ -26,6 +27,8 @@ Lightmap::Lightmap() {
 
 //----- (0045BB06) --------------------------------------------------------
 LightmapBuilder::LightmapBuilder() {
+    this->log = EngineIoc::ResolveLogger();
+
     // For initialization step(II)
 
     for (int i = 0; i < 512; ++i)  // for light type 1
@@ -36,11 +39,11 @@ LightmapBuilder::LightmapBuilder() {
         this->MobileLights[i] = Lightmap();
     this->MobileLightsCount = 0;
 
-    for (int i = 0; i < 256; i++) this->field_3C8C34[i].flt_2C = 0.0f;
+    for (int i = 0; i < 256; i++)
+        this->field_3C8C34[i].flt_2C = 0.0f;
 }
 
-// ////////////////////////OUTDOOR
-// /LIGHT////////////////////////////////////////////
+// ////////////////////////OUTDOOR/LIGHT////////////////////////////////////////////
 // ----- (0045CDB7) --------------------------------------------------------
 bool LightmapBuilder::ApplyLights_OutdoorFace(ODMFace *pFace) {
     // For outdoor light (I)
@@ -117,7 +120,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
             tY_1 = TerrainVertices[0].vWorldPosition.y;
         }
     } else {
-        logger->Warning(L"Uknown strip type detected!");
+        log->Warning(L"Uknown strip type detected!");
     }
 
     minz = pIndoorCameraD3D->GetPolygonMinZ(TerrainVertices, uStripType);
@@ -565,7 +568,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3,
     if (!pIndoorCameraD3D->GetFacetOrientation(
             a3->polygonType, &static_69B110.Normal, &static_69B110.field_10,
             &static_69B110.field_1C)) {
-        logger->Warning(L"Error: Failed to get the facet orientation");
+        log->Warning(L"Error: Failed to get the facet orientation");
         Engine_DeinitializeAndTerminate(0);
     }
 
@@ -588,7 +591,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3,
                 pLights->_blv_lights_light_dot_faces[i],
                 pLights->_blv_lights_types[i], &static_69B110, uNumVertices, a9,
                 uClipFlag)) {
-            logger->Warning(L"Error: Failed to build light polygon");
+            log->Warning(L"Error: Failed to build light polygon");
         }
     }
     return true;
@@ -709,7 +712,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
             v40 = 1.0 * 1.0;
             lightmap->fBrightness = v40 - ((1 / radius) * v38);
         } else {
-          logger->Warning(L"Invalid light type!");
+            log->Warning(L"Invalid light type!");
         }
     }
     // Brightness(яркость)/////////////////////////////////////////////////////
@@ -743,10 +746,10 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
             pIndoorCameraD3D->_437143(_a4, lightmap->pVertices, field_3C8C34,
                                       &lightmap->NumVertices);
         } else {
-          logger->Warning(L"Undefined clip flag specified");
+            log->Warning(L"Undefined clip flag specified");
         }
     } else {
-      logger->Warning(
+        log->Warning(
         L"Lightpoly builder native indoor clipping not implemented");
     }
 
@@ -1094,7 +1097,7 @@ double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3,
             if (uLightType & 8) {
                 v20 = 1.3 * a2;
             } else {
-                logger->Warning(L"Invalid light type detected!");
+                log->Warning(L"Invalid light type detected!");
                 v20 = *(float *)&uLightType;
             }
         }

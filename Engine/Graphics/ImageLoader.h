@@ -1,11 +1,17 @@
 #pragma once
 #include "Engine/LOD.h"
+#include "Engine/IocContainer.h"
 #include "Engine/Strings.h"
 
 #include "Engine/Graphics/Image.h"
 
+using EngineIoc = Engine_::IocContainer;
+
 class ImageLoader {
  public:
+     inline ImageLoader() {
+         this->log = EngineIoc::ResolveLogger();
+    }
     virtual String GetResourceName() const { return this->resource_name; }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
@@ -13,6 +19,7 @@ class ImageLoader {
 
  protected:
     String resource_name;
+    Log *log;
 };
 
 class ColorKey_LOD_Loader : public ImageLoader {

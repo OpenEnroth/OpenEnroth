@@ -1,12 +1,15 @@
 #pragma once
 #include <array>
 
-#include "Engine/Strings.h"
 #include "Engine/mm7_data.h"
+#include "Engine/IocContainer.h"
+#include "Engine/Strings.h"
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IndoorCameraD3D.h"
+
+using EngineIoc = Engine_::IocContainer;
 
 /*  358 */
 #pragma pack(push, 1)
@@ -573,6 +576,12 @@ struct BLVMapOutlines {
 struct IndoorLocation {
     //----- (00462592) --------------------------------------------------------
     inline IndoorLocation() {
+        this->log = EngineIoc::ResolveLogger();
+        this->decal_builder = EngineIoc::ResolveDecalBuilder();
+        this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+        this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
+        this->particle_engine = EngineIoc::ResolveParticleEngine();
+
         bLoaded = 0;
         ptr_0002B8_sector_lrdata = 0;
         ptr_0002B4_doors_ddata = 0;
@@ -600,12 +609,15 @@ struct IndoorLocation {
     void ToggleLight(signed int uLightID, unsigned int bToggle);
 
     static unsigned int GetLocationIndex(const char *Str1);
-    static void ExecDraw(bool bD3D);
+    void ExecDraw(bool bD3D);
     // static void ExecDraw_sw(unsigned int uFaceID);
-    static void ExecDraw_d3d(unsigned int uFaceID,
+    void ExecDraw_d3d(unsigned int uFaceID,
                              struct IndoorCameraD3D_Vec4 *pVertices,
                              unsigned int uNumVertices,
                              struct RenderVertexSoft *pPortalBounding);
+    void PrepareActorRenderList_BLV();
+    void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID);
+    void PrepareItemsRenderList_BLV();
 
     String filename;
     char field_20[48];
@@ -637,6 +649,12 @@ struct IndoorLocation {
     LocationTime_stru1 stru1;
     char _visible_outlines[875];
     char padding;
+
+    Log *log = nullptr;
+    DecalBuilder *decal_builder = nullptr;
+    SpellFxRenderer *spell_fx_renderer = nullptr;
+    LightmapBuilder *lightmap_builder = nullptr;
+    ParticleEngine *particle_engine = nullptr;
 };
 #pragma pack(pop)
 
@@ -701,10 +719,6 @@ bool PortalFrustrum(int pNumVertices, struct BspRenderer_PortalViewportData *a2,
                     struct BspRenderer_PortalViewportData *near_portal,
                     int uFaceID);
 void PrepareBspRenderList_BLV();
-void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID,
-                                      unsigned int uSectorID);
-void PrepareActorRenderList_BLV();
-void PrepareItemsRenderList_BLV();
 void AddBspNodeToRenderList(unsigned int node_id);
 void sub_4406BC(unsigned int node_id, unsigned int uFirstNode);  // idb
 char DoInteractionWithTopmostZObject(int a1, int a2);

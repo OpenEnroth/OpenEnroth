@@ -11,5 +11,3 @@ class Log {
  protected:
     bool initialized;
 };
-
-extern Log *logger;

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Engine/IocContainer.h"
+
+using EngineIoc = Engine_::IocContainer;
+
 class Texture;
 
 /*  120 */
@@ -87,7 +91,9 @@ struct stru6_stru2 {
 #pragma pack(push, 1)
 struct SpellFxRenderer {
     //----- (004A7155) --------------------------------------------------------
-    SpellFxRenderer() {
+    inline SpellFxRenderer() {
+        this->particle_engine = EngineIoc::ResolveParticleEngine();
+
         this->field_204 = 0;
         this->uFadeTime = 0;
         this->uNumProjectiles = 0;
@@ -158,5 +164,7 @@ struct SpellFxRenderer {
     Texture *effpar03;  // unsigned int effpar03; // trail particle
     unsigned int _unused_uSpriteID_sp57c;
     int field_5F4;
+
+    ParticleEngine *particle_engine = nullptr;
 };
 #pragma pack(pop)

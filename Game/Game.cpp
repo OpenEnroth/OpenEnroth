@@ -1,3 +1,5 @@
+#include "Game/Game.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
@@ -50,9 +52,11 @@
 #include "GUI/UI/Spellbook.h"
 #include "GUI/UI/UIBooks.h"
 #include "GUI/UI/UICharacter.h"
+#include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIMainMenu.h"
 #include "GUI/UI/UIModal.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIQuickReference.h"
@@ -61,8 +65,236 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "Game/Game.h"
 #include "Game/GameMenu.h"
+
+void ShowMM7IntroVideo_and_LoadingScreen();
+void IntegrityTest();
+
+using Game::Configuration;
+
+Configuration *ConfigureGame(const char *cmd_line) {
+    auto config = new Configuration();
+    config->command_line = std::string(cmd_line);
+
+    return config;
+}
+
+int MM_Main(const char *pCmdLine) {
+    //ConfigureServices();
+
+    auto config = ConfigureGame(pCmdLine);
+
+    auto game = new Game::Game();
+    game->Configure(config);
+    game->Run();
+
+    return 0;
+}
+
+void Game::Game::Configure(Configuration *config) {
+    this->config = config;
+}
+
+
+
+Engine_::Configuration *ConfigureEngine(const std::string &command_line) {
+    auto cfg = new Engine_::Configuration();
+
+    if (!cfg->no_walk_sound) {
+        cfg->no_walk_sound = OS_GetAppInt("WalkSound", 1) == 0;
+    }
+    cfg->always_run = OS_GetAppInt("valAlwaysRun", 0) != 0;
+    cfg->flip_on_exit = OS_GetAppInt("FlipOnExit", 0) != 0;
+
+    cfg->show_damage = OS_GetAppInt("ShowDamage", 1) != 0;
+    int turn_type = OS_GetAppInt("TurnDelta", 3);
+
+    switch (turn_type) {
+    case 1:             // 16x
+        logger->Warning(L"x16 Turn Speed");  // really shouldn't use this mode
+        cfg->turn_speed = 128;
+        break;
+
+    case 2:             // 32x
+        logger->Warning(L"x32 Turn Speed");  // really shouldn't use this mode
+        cfg->turn_speed = 64;
+        break;
+
+    case 3:             // smooth
+    default:
+        cfg->turn_speed = 0;
+        break;
+    }
+
+    cfg->sound_level = min(9, OS_GetAppInt("soundflag", 9));
+    cfg->music_level = min(9, OS_GetAppInt("musicflag", 9));
+    cfg->voice_level = min(9, OS_GetAppInt("CharVoices", 9));
+
+    cfg->gamma = min(4, OS_GetAppInt("GammaPos", 4));
+
+    if (OS_GetAppInt("Bloodsplats", 1))
+        cfg->flags2 |= GAME_FLAGS_2_DRAW_BLOODSPLATS;
+    else
+        cfg->flags2 &= ~GAME_FLAGS_2_DRAW_BLOODSPLATS;
+    cfg->no_bloodsplats = !(cfg->flags2 & GAME_FLAGS_2_DRAW_BLOODSPLATS);
+
+
+    cfg->MergeCommandLine(command_line);
+
+    return cfg;
+}
+
+void Game::Game::Run() {
+    IntegrityTest();
+
+    auto engine_config = ConfigureEngine(config->command_line);
+    ::engine_config = engine_config;
+
+    pEngine = Engine::Create(engine_config);
+    pEngine->Initialize();
+
+    ShowMM7IntroVideo_and_LoadingScreen();
+
+    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
+
+    // logger->Warning(L"MM: entering main loop");
+    while (true) {
+        GUIWindow_MainMenu::Loop();
+        uGameState = GAME_STATE_PLAYING;
+
+        if (!Loop()) {
+            break;
+        }
+    }
+
+    if (pEngine != nullptr) {
+        pEngine->Deinitialize();
+    }
+}
+
+
+
+bool Game::Game::Loop() {
+    while (1) {
+        if (uGameState == GAME_FINISHED ||
+            GetCurrentMenuID() == MENU_EXIT_GAME) {
+            pEngine->Deinitialize();
+            return false;
+        }
+        else if (GetCurrentMenuID() == MENU_SAVELOAD) {
+            MainMenuLoad_Loop();
+            if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
+                uGameState = GAME_STATE_PLAYING;
+                GameLoop();
+            }
+            break;
+        }
+        else if (GetCurrentMenuID() == MENU_NEWGAME) {
+            pOtherOverlayList->Reset();
+            if (!PartyCreationUI_Loop()) {
+                break;
+            }
+
+            pParty->pPickedItem.uItemID = 0;
+
+            strcpy(pCurrentMapName, pStartingMapName);
+            bFlashQuestBook = true;
+            pMediaPlayer->PlayFullscreenMovie("Intro Post");
+            SaveNewGame();
+            if (engine_config->NoMargareth())
+                _449B7E_toggle_bit(pParty->_quest_bits,
+                    PARTY_QUEST_EMERALD_MARGARETH_OFF, 1);
+            GameLoop();
+            if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU) {
+                SetCurrentMenuID(MENU_NEWGAME);
+                uGameState = GAME_STATE_PLAYING;
+                continue;
+            }
+            else if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {
+                break;
+            }
+            assert(false && "Invalid game state");
+        }
+        else if (GetCurrentMenuID() == MENU_CREDITS) {
+            pAudioPlayer->MusicStop();
+            GUICredits::ExecuteCredits();
+            break;
+        }
+        else if (GetCurrentMenuID() == MENU_5 ||
+            GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
+            uGameState = GAME_STATE_PLAYING;
+            GameLoop();
+        }
+        else if (GetCurrentMenuID() == MENU_DebugBLVLevel) {
+            mouse->ChangeActivation(0);
+            pParty->Reset();
+            pParty->CreateDefaultParty(true);
+
+            __debugbreak();
+            /*extern void CreateDefaultBLVLevel();
+            CreateDefaultBLVLevel();
+
+            OPENFILENAMEA ofn;
+            if ( !GetOpenFileNameA((LPOPENFILENAMEA)&ofn) )
+            {
+            pMouse->ChangeActivation(1);
+            break;
+            }
+            _chdir("..\\");
+            strcpy(pCurrentMapName, ofn.lpstrFileTitle);*/
+            mouse->ChangeActivation(1);
+            GameLoop();
+        }
+        if (uGameState == GAME_STATE_LOADING_GAME) {
+            SetCurrentMenuID(MENU_5);
+            uGameState = GAME_STATE_PLAYING;
+            continue;
+        }
+        if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU) {
+            SetCurrentMenuID(MENU_NEWGAME);
+            uGameState = GAME_STATE_PLAYING;
+            continue;
+        }
+        if (uGameState ==
+            GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {  // from the loaded game
+            pAudioPlayer->StopChannels(-1, -1);
+            uGameState = GAME_STATE_PLAYING;
+            break;
+        }
+    }
+
+    return true;
+}
+
+
+
+void ShowMM7IntroVideo_and_LoadingScreen() {
+    bGameoverLoop = true;
+    if (!engine_config->NoVideo()) {
+        render->PresentBlackScreen();
+        pMediaPlayer->PlayFullscreenMovie("3dologo");
+        pMediaPlayer->PlayFullscreenMovie("new world logo");
+        pMediaPlayer->PlayFullscreenMovie("Intro");
+    }
+
+    Image *tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
+
+    render->BeginScene();
+    render->DrawTextureNew(0, 0, tex);
+
+    DrawMM7CopyrightWindow();
+
+    render->EndScene();
+    render->Present();
+
+    tex->Release();
+    tex = nullptr;
+
+    bGameoverLoop = false;
+}
+
+
+
 
 Image *gamma_preview_image = nullptr;  // 506E40
 
@@ -108,16 +340,14 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
     }
 }
 
-void Game_CloseTargetedSpellWindow() {
+void Game::Game::CloseTargetedSpellWindow() {
     if (pGUIWindow_CastTargetedSpell) {
         if (current_screen_type == SCREEN_CHARACTERS) {
-            pMouse->SetCursorImage("MICON2");
+            mouse->SetCursorImage("MICON2");
         } else {
-            pGUIWindow_CastTargetedSpell
-                ->Release();  // test to fix enchanting issue
-            pGUIWindow_CastTargetedSpell =
-                nullptr;  // test to fix enchanting issue
-            pMouse->SetCursorImage("MICON1");
+            pGUIWindow_CastTargetedSpell->Release();  // test to fix enchanting issue
+            pGUIWindow_CastTargetedSpell = nullptr;  // test to fix enchanting issue
+            mouse->SetCursorImage("MICON1");
             game_ui_status_bar_event_string_time_left = 0;
             _50C9A0_IsEnchantingInProgress = 0;
             back_to_game();
@@ -125,8 +355,8 @@ void Game_CloseTargetedSpellWindow() {
     }
 }
 
-void Game_OnEscape() {
-    Game_CloseTargetedSpellWindow();
+void Game::Game::OnEscape() {
+    CloseTargetedSpellWindow();
 
     // if ((signed int)uActiveCharacter < 1 || (signed int)uActiveCharacter > 4)
 
@@ -143,7 +373,7 @@ void Game_OnEscape() {
     viewparams->bRedrawGameUI = true;
 }
 
-void Game_EventLoop() {
+void Game::Game::EventLoop() {
     unsigned int v2;            // edx@7
     GUIWindow *pWindow2;        // ecx@248
     int v37;                    // eax@341
@@ -383,11 +613,11 @@ void Game_EventLoop() {
                                                false);
 
                             pMessageQueue_50CBD0->Flush();
-                            GameMenu_Loop();
+                            menu->MenuLoop();
                         } else {
                             pGUIWindow_CastTargetedSpell->Release();
                             pGUIWindow_CastTargetedSpell = 0;
-                            pMouse->SetCursorImage("MICON1");
+                            mouse->SetCursorImage("MICON1");
                             game_ui_status_bar_event_string_time_left = 0;
                             _50C9A0_IsEnchantingInProgress = 0;
                             back_to_game();
@@ -402,8 +632,7 @@ void Game_EventLoop() {
                         break;
                     } else if (
                         current_screen_type == SCREEN_SAVEGAME ||
-                        current_screen_type ==
-                            SCREEN_LOADGAME) {
+                        current_screen_type == SCREEN_LOADGAME) {
 /*
                         // crt_deconstruct_ptr_6A0118();
                         stru_506E40.Release();
@@ -501,7 +730,7 @@ void Game_EventLoop() {
                     } else {
                         if (current_screen_type > SCREEN_67) {
                             if (current_screen_type == SCREEN_QUICK_REFERENCE) {
-                                Game_OnEscape();
+                                OnEscape();
                                 continue;
                             }
                         } else {
@@ -531,14 +760,14 @@ void Game_EventLoop() {
                                             _50C9A8_item_enchantment_timer = 0;
                                             ptr_50C9A4_ItemToEnchant = nullptr;
                                         }
-                                        Game_OnEscape();
+                                        OnEscape();
                                         continue;
                                     case SCREEN_BOOKS:
                                         pBooksButtonOverlay->Release();
                                         // crt_deconstruct_ptr_6A0118();
                                         pBooksButtonOverlay = 0;
                                         pEventTimer->Resume();
-                                        Game_OnEscape();
+                                        OnEscape();
                                         continue;
                                     case SCREEN_CHEST_INVENTORY:
                                         current_screen_type = SCREEN_CHEST;
@@ -590,7 +819,7 @@ void Game_EventLoop() {
                                         }
                                         _506F18_num_minutes_to_sleep = 0;
                                         _506F14_resting_stage = 0;
-                                        Game_OnEscape();
+                                        OnEscape();
                                         continue;
                                     case SCREEN_E:
                                         __debugbreak();
@@ -613,7 +842,7 @@ void Game_EventLoop() {
                                         pGUIWindow_CurrentMenu =
                                             window_SpeakInHouse;
 
-                                        Game_OnEscape();
+                                        OnEscape();
                                         continue;
                                     case SCREEN_INPUT_BLV:  // click escape
                                         if (uCurrentHouse_Animation == 153)
@@ -679,20 +908,20 @@ void Game_EventLoop() {
                                     case SCREEN_CHARACTERS:
                                         CharacterUI_ReleaseButtons();
                                         ReleaseAwardsScrollBar();
-                                        Game_OnEscape();
+                                        OnEscape();
                                         continue;
                                     case SCREEN_SPELL_BOOK:
-                                        Game_OnEscape();
+                                        OnEscape();
                                         continue;
 
                                     default:
                                         __debugbreak();  // which GAME_MENU is
                                                          // this?
-                                        Game_OnEscape();
+                                        OnEscape();
                                         continue;
                                 }
                                 __debugbreak();  // which GAME_MENU is this?
-                                Game_OnEscape();
+                                OnEscape();
                                 continue;
                             }
                             __debugbreak();  // which GAME_MENU is this?
@@ -700,7 +929,7 @@ void Game_EventLoop() {
                             ReleaseAwardsScrollBar();
                         }
                         __debugbreak();  // which GAME_MENU is this?
-                        Game_OnEscape();
+                        OnEscape();
                         continue;
                     }
                     continue;
@@ -876,10 +1105,9 @@ void Game_EventLoop() {
                         v41 = strtok(pLevelName, ".");
                         strcpy(pLevelName, v41);
                         Level_LoadEvtAndStr(pLevelName);
-                        pDecalBuilder->Reset(0);
+                        decal_builder->Reset(0);
                         LoadLevel_InitializeLevelEvt();
-                        uLevelMapStatsID =
-                            pMapStats->GetMapInfo(pCurrentMapName);
+                        uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);
 
                         bNoNPCHiring = 0;
 
@@ -897,7 +1125,7 @@ void Game_EventLoop() {
                         pParty->vPosition.z = GetTerrainHeightsAroundParty2(
                             pParty->vPosition.x, pParty->vPosition.y, &v213, 0);
                         pParty->uFallStartY = pParty->vPosition.z;
-                        _461103_load_level_sub();
+                        pEngine->_461103_load_level_sub();
                         pEventTimer->Resume();
                         viewparams->bRedrawGameUI = 1;
                         current_screen_type = SCREEN_GAME;
@@ -920,9 +1148,7 @@ void Game_EventLoop() {
                     viewparams->bRedrawGameUI = true;
                     continue;
                 case UIMSG_CastSpell_Telekinesis:
-                    HEXRAYS_LOWORD(v42) =
-                        pEngine->pVisInstance->get_picked_object_zbuf_val();
-
+                    HEXRAYS_LOWORD(v42) = vis->get_picked_object_zbuf_val();
                     v44 = (unsigned __int16)v42;
                     v45 = PID_TYPE(v44);
                     uNumSeconds = v44;
@@ -930,8 +1156,7 @@ void Game_EventLoop() {
                     if (v45 == 3) {
                         v47 = pActors[v46].uAIState == Dead;
                         if (!v47) continue;
-                        pSpellInfo = (CastSpellInfo *)
-                                         pGUIWindow_CastTargetedSpell->ptr_1C;
+                        pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
                         pSpellInfo->uFlags &= ~0x40u;
                         pSpellInfo->uPlayerID_2 = uMessageParam;
                         pSpellInfo->spell_target_pid = v44;
@@ -939,7 +1164,7 @@ void Game_EventLoop() {
                             300);
                         pGUIWindow_CastTargetedSpell->Release();
                         pGUIWindow_CastTargetedSpell = 0;
-                        pMouse->SetCursorImage("MICON1");
+                        mouse->SetCursorImage("MICON1");
                         game_ui_status_bar_event_string_time_left = 0;
                         _50C9A0_IsEnchantingInProgress = 0;
                         back_to_game();
@@ -960,7 +1185,7 @@ void Game_EventLoop() {
                             300);
                         pGUIWindow_CastTargetedSpell->Release();
                         pGUIWindow_CastTargetedSpell = 0;
-                        pMouse->SetCursorImage("MICON1");
+                        mouse->SetCursorImage("MICON1");
                         game_ui_status_bar_event_string_time_left = 0;
                         _50C9A0_IsEnchantingInProgress = 0;
                         back_to_game();
@@ -971,30 +1196,28 @@ void Game_EventLoop() {
                     } else {
                         if (v45 != 6) continue;
                         if (uCurrentlyLoadedLevelType != 1) {
-                            pODMFace = &pOutdoor->pBModels[v44 >> 9]
-                                            .pFaces[v46 & 0x3F];
+                            pODMFace = &pOutdoor->pBModels[v44 >> 9].pFaces[v46 & 0x3F];
                             if (!pODMFace->Clickable() ||
                                 !pODMFace->sCogTriggeredID)
                                 continue;
                             v44 = uNumSeconds;
                             pSpellInfo =
-                                (CastSpellInfo *)
-                                    pGUIWindow_CastTargetedSpell->ptr_1C;
+                                (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
                             pSpellInfo->uFlags &= ~0x40u;
                             pSpellInfo->uPlayerID_2 = uMessageParam;
                             pSpellInfo->spell_target_pid = v44;
-                            pParty->pPlayers[pSpellInfo->uPlayerID]
-                                .SetRecoveryTime(300);
+                            pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
                             pGUIWindow_CastTargetedSpell->Release();
                             pGUIWindow_CastTargetedSpell = 0;
-                            pMouse->SetCursorImage("MICON1");
+                            mouse->SetCursorImage("MICON1");
                             game_ui_status_bar_event_string_time_left = 0;
                             _50C9A0_IsEnchantingInProgress = 0;
                             back_to_game();
                             continue;
                         }
                         pBLVFace = &pIndoor->pFaces[v46];
-                        if (!pBLVFace->Clickable()) continue;
+                        if (!pBLVFace->Clickable())
+                            continue;
                         v48 = pIndoor->pFaceExtras[pBLVFace->uFaceExtraID]
                                   .uEventID == 0;
                     }
@@ -1008,7 +1231,7 @@ void Game_EventLoop() {
                         300);
                     pGUIWindow_CastTargetedSpell->Release();
                     pGUIWindow_CastTargetedSpell = 0;
-                    pMouse->SetCursorImage("MICON1");
+                    mouse->SetCursorImage("MICON1");
                     game_ui_status_bar_event_string_time_left = 0;
                     _50C9A0_IsEnchantingInProgress = 0;
                     back_to_game();
@@ -1048,7 +1271,7 @@ void Game_EventLoop() {
                             pGUIWindow_CastTargetedSpell->Release();
                             pGUIWindow_CastTargetedSpell = 0;
                             pEventTimer->Resume();
-                            pMouse->SetCursorImage("MICON1");
+                            mouse->SetCursorImage("MICON1");
                             game_ui_status_bar_event_string_time_left = 0;
                             _50C9A0_IsEnchantingInProgress = 0;
                         }
@@ -1584,12 +1807,11 @@ void Game_EventLoop() {
                 case UIMSG_CastSpell_Monster_Improvement:
                 case UIMSG_CastSpell_Shoot_Monster:  // FireBlow, Lightning, Ice
                                                      // Lightning, Swarm,
-                    v83 = pEngine->pVisInstance->get_picked_object_zbuf_val();
+                    v83 = vis->get_picked_object_zbuf_val();
                     v44 = (unsigned __int16)v83;
                     v84 = v83 >> 16;
                     if (PID_TYPE(v44) != 3 || v84 >= 5120) continue;
-                    pSpellInfo =
-                        (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+                    pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
                     if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
                         pSpellInfo->uFlags &= ~0x08;
                     } else {
@@ -1600,11 +1822,10 @@ void Game_EventLoop() {
                     }
                     pSpellInfo->uPlayerID_2 = uMessageParam;
                     pSpellInfo->spell_target_pid = v44;
-                    pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
-                        300);
+                    pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
                     pGUIWindow_CastTargetedSpell->Release();
                     pGUIWindow_CastTargetedSpell = 0;
-                    pMouse->SetCursorImage("MICON1");
+                    mouse->SetCursorImage("MICON1");
                     game_ui_status_bar_event_string_time_left = 0;
                     _50C9A0_IsEnchantingInProgress = 0;
                     back_to_game();
@@ -2079,7 +2300,7 @@ void Game_EventLoop() {
                     continue;
                 case UIMSG_ClickAwardScrollBar: {
                     books_page_number = 1;
-                    Point pt = pMouse->GetCursorPos();
+                    Point pt = mouse->GetCursorPos();
                     if (pt.y > 178) books_page_number = -1;
                     continue;
                 }
@@ -2249,7 +2470,7 @@ void Game_EventLoop() {
                         pPlayer5->GetMajorConditionIdx());
                     GameUI_StatusBar_Set(status);
 
-                    pMouse->uPointingObjectID =
+                    mouse->uPointingObjectID =
                         PID(OBJECT_Player,
                             (unsigned char)(8 * uMessageParam - 8) | 4);
                     continue;
@@ -2286,21 +2507,17 @@ void Game_EventLoop() {
                                                     // правую кнопку мыши после
                                                     // UIMSG_MouseLeftClickInGame
                     pMessageQueue_50CBD0->Flush();
-                    OnGameViewportClick();
+                    pEngine->OnGameViewportClick();
                     continue;
-                case UIMSG_F:
+                case UIMSG_F: // what event?
                     __debugbreak();
-                    pButton2 =
-                        (GUIButton *)(unsigned __int16)
-                            pEngine->pVisInstance->get_picked_object_zbuf_val();
-                    __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F,
-                                     // (int)pButton2, 0);
+                    pButton2 = (GUIButton *)(unsigned __int16)vis->get_picked_object_zbuf_val();
+                    __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
                     continue;
-                case UIMSG_54:
+                case UIMSG_54: // what event?
                     __debugbreak();
                     pButton2 = (GUIButton *)uMessageParam;
-                    __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_22,
-                                     // (int)pButton2, 0);
+                    __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_22, (int)pButton2, 0);
                     continue;
                 case UIMSG_Game_Action:
                     pMessageQueue_50CBD0->Flush();
@@ -2391,7 +2608,15 @@ void Game_EventLoop() {
     CastSpellInfoHelpers::_427E01_cast_spell();
 }
 
-void Game_Loop() {
+//----- (0046A14B) --------------------------------------------------------
+void Game::Game::OnPressSpace() {
+    pEngine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
+    int pid = vis->get_picked_object_zbuf_val();
+    if (pid != -1)
+        DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
+}
+
+void Game::Game::GameLoop() {
     const char *pLocationName;  // [sp-4h] [bp-68h]@74
     bool bLoading;              // [sp+10h] [bp-54h]@1
     signed int v16;             // [sp+14h] [bp-50h]@8
@@ -2434,7 +2659,7 @@ void Game_Loop() {
         current_screen_type = SCREEN_GAME;
 
         // if ( render->pRenderD3D )
-        pEngine->pVisInstance->_4C1A02();
+        vis->_4C1A02();
 
         bool game_finished = false;
         do {
@@ -2446,8 +2671,8 @@ void Game_Loop() {
 
             pEngine->_44EEA7();
             GameUI_WritePointedObjectStatusString();
-            Keyboard::ProcessInputActions();
-            Game_EventLoop();
+            keyboard->ProcessInputActions();
+            EventLoop();
             if (pArcomageGame->bGameInProgress) {
                 ArcomageGame::Loop();
                 render->Present();
@@ -2608,7 +2833,7 @@ void Game_Loop() {
         } while (!game_finished);
 
         pEventTimer->Pause();
-        ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+        pEngine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
         if (uGameState == GAME_STATE_LOADING_GAME) {
             sub_491E3A();
             GameUI_LoadPlayerPortraintsAndVoices();

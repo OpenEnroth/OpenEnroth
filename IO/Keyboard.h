@@ -78,7 +78,7 @@ class Keyboard {
     inline Keyboard() : bUsingAsynKeyboard(false) {}
     bool WasKeyPressed(int vKey);
     static bool IsKeyBeingHeld(int vKey);
-    static void ProcessInputActions();
+    void ProcessInputActions();
     bool IsShiftHeld();
     void EnterCriticalSection();
 

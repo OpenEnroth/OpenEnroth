@@ -36,7 +36,7 @@ void GUIWindow_Inventory::Update() {
 
 GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
     GUIWindow(x, y, width, height, button, hint) {
-    pMouse->SetCursorImage("MICON2");
+    mouse->SetCursorImage("MICON2");
     pBtn_ExitCancel = CreateButton(392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(34),  // Cancel
         { { ui_buttdesc2 } });
     GameUI_StatusBar_OnEvent(localization->GetString(39), 2);  // Choose target

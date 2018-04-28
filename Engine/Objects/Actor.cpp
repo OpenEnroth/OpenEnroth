@@ -29,6 +29,11 @@
 #include "ObjectList.h"
 #include "SpriteObject.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder(); // should be injected into Actor but struct size cant be changed
+static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+
 std::array<Actor, 500> pActors;
 size_t uNumActors;
 
@@ -304,9 +309,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v39 / 60)),
                 masteryLevel, 0, 0, 0);
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0xFF3C1Eu);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFF3C1Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Haste,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -458,9 +461,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v44 / 60)),
                 masteryLevel, realPoints + 5, 0, 0);
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0x5C310Eu);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x5C310Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Stoneskin,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0, 0);
             return;
@@ -479,9 +480,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v42 / 60)),
                 masteryLevel, realPoints + 5, 0, 0);
 
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0xC8C805u);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_Bless,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -500,9 +499,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_FATE].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(5)),
                 masteryLevel, v48, 0, 0);
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0xC8C805u);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -520,9 +517,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_HEROISM].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v54 / 60)),
                 masteryLevel, realPoints + 5, 0, 0);
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0xC8C805u);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -536,9 +531,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v51 / 60)),
                 masteryLevel, realPoints, 0, 0);
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0xA81376u);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -548,9 +541,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->sCurrentHP += 5 * realPoints + 10;
             if (actorPtr->sCurrentHP >= (signed int)actorPtr->pMonsterInfo.uHP)
                 actorPtr->sCurrentHP = (short)actorPtr->pMonsterInfo.uHP;
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0xA81376u);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
             pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -594,9 +585,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v96 / 60)),
                 masteryLevel, realPoints, 0, 0);
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0xFFFFFFu);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
             pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -614,9 +603,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v94 / 60)),
                 masteryLevel, realPoints + 5, 0, 0);
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0xFFFFFFu);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
             pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -686,9 +673,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v68 / 60)),
                 masteryLevel, 0, 0, 0);
-            pEngine->GetSpellFxRenderer()
-                ->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr,
-                                                                0x7E7E7Eu);
+            spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x7E7E7Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2,
                                     PID(OBJECT_Actor, uActorID), 0, -1, 0,
                                     0);
@@ -3659,7 +3644,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 v33 = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
                           ? 10 * pMonster->uActorRadius
                           : pMonster->uActorRadius;
-                pDecalBuilder->AddBloodsplat((float)pMonster->vPosition.x,
+                decal_builder->AddBloodsplat((float)pMonster->vPosition.x,
                                              (float)pMonster->vPosition.y,
                                              (float)pMonster->vPosition.z, 1.0,
                                              0.0, 0.0, (float)v33, 0, 0);
@@ -3951,8 +3936,7 @@ int stru319::FindClosestActor(int pick_depth, int a3, int a4) {
     {
         v6 = a3 != 0;
         if (a4) v6 |= 8;
-        v7 = pEngine->pVisInstance->PickClosestActor(OBJECT_Actor, pick_depth,
-                                                     v6, 657456, -1);
+        v7 = vis->PickClosestActor(OBJECT_Actor, pick_depth, v6, 657456, -1);
         if (v7 != -1)
             return (unsigned __int16)v7;
         else

@@ -1,7 +1,12 @@
 #pragma once
 
+#include "Engine/IocContainer.h"
+
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/BSPModel.h"
+
+using EngineIoc = Engine_::IocContainer;
+
 
 /*  158 */
 #pragma pack(push, 1)
@@ -63,8 +68,6 @@ struct BloodsplatContainer {
 };
 #pragma pack(pop)
 
-extern struct BloodsplatContainer *pBloodsplatContainer;  // idb
-
 #pragma pack(push, 1)
 struct DecalBuilder_stru0 {
     double _43B570_get_color_mult_by_time();
@@ -110,6 +113,9 @@ struct Decal {
 #pragma pack(push, 1)
 struct DecalBuilder {
     DecalBuilder() {
+        this->log = EngineIoc::ResolveLogger();
+        this->bloodsplat_container = EngineIoc::ResolveBloodsplatContainer();
+
         this->DecalsCount = 0;
         this->curent_decal_id = 0;
         for (unsigned int i = 0; i < 256; ++i) {
@@ -121,7 +127,7 @@ struct DecalBuilder {
 
     void AddBloodsplat(float x, float y, float z, float r, float g, float b,
                        float radius, int a8, int a9);
-    void Reset(unsigned int bPreserveBloodsplats);
+    void Reset(bool bPreserveBloodsplats);
     char ApplyDecals(int light_level, char a3, struct stru154 *a4, int a5,
                      struct RenderVertexSoft *a6,
                      struct IndoorCameraD3D_Vec4 *a7, char a8,
@@ -157,7 +163,8 @@ struct DecalBuilder {
     float field_30C02C;
     float flt_30C030;
     float field_30C034;
+
+    Log *log;
+    BloodsplatContainer *bloodsplat_container;
 };
 #pragma pack(pop)
-
-extern struct DecalBuilder *pDecalBuilder;

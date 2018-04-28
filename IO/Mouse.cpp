@@ -16,7 +16,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-Mouse *pMouse = nullptr;
+using EngineIoc = Engine_::IocContainer;
 
 void Mouse::GetClickPos(unsigned int *pX, unsigned int *pY) {
     *pX = uMouseClickX;
@@ -31,7 +31,7 @@ void Mouse::RemoveHoldingItem() {
 }
 
 void Mouse::SetCursorBitmapFromItemID(unsigned int uItemID) {
-    pMouse->SetCursorImage(pItemsTable->pItems[uItemID].pIconName);
+    SetCursorImage(pItemsTable->pItems[uItemID].pIconName);
 }
 
 void Mouse::SetCurrentCursorBitmap() { SetCursorImage(this->cursor_name); }
@@ -210,36 +210,36 @@ void Mouse::ReadCursorWithItem() {
             assets->GetImage_Alpha(pParty->pPickedItem.GetIconName());
         pTexture->GetWidth();
 
-        if ((int)pMouse->uMouseClickX <= window->GetWidth() - 1 &&
-            (int)pMouse->uMouseClickY <= window->GetHeight() - 1) {
+        if ((int)uMouseClickX <= window->GetWidth() - 1 &&
+            (int)uMouseClickY <= window->GetHeight() - 1) {
             int pTextureHeight;
             int pTextureWidth;
-            if ((int)(pTexture->GetWidth() + pMouse->uMouseClickX) <=
+            if ((int)(pTexture->GetWidth() + uMouseClickX) <=
                 window->GetWidth())
                 pTextureWidth = pTexture->GetWidth();
             else
-                pTextureWidth = window->GetWidth() - pMouse->uMouseClickX;
-            if ((int)(pTexture->GetHeight() + pMouse->uMouseClickY) <=
+                pTextureWidth = window->GetWidth() - uMouseClickX;
+            if ((int)(pTexture->GetHeight() + uMouseClickY) <=
                 window->GetHeight())
                 pTextureHeight = pTexture->GetHeight();
             else
-                pTextureHeight = window->GetHeight() - pMouse->uMouseClickY;
+                pTextureHeight = window->GetHeight() - uMouseClickY;
 
             pPickedItem = pTexture;
-            this->uCursorWithItemX = pMouse->uMouseClickX;
-            this->uCursorWithItemY = pMouse->uMouseClickY;
+            this->uCursorWithItemX = uMouseClickX;
+            this->uCursorWithItemY = uMouseClickY;
 
             if (pParty->pPickedItem.IsBroken())
-                render->DrawTransparentRedShade(pMouse->uMouseClickX / 640.0f,
-                                                pMouse->uMouseClickY / 480.0f,
+                render->DrawTransparentRedShade(uMouseClickX / 640.0f,
+                                                uMouseClickY / 480.0f,
                                                 pTexture);
             else if (!pParty->pPickedItem.IsIdentified())
-                render->DrawTransparentGreenShade(pMouse->uMouseClickX / 640.0f,
-                                                  pMouse->uMouseClickY / 480.0f,
+                render->DrawTransparentGreenShade(uMouseClickX / 640.0f,
+                                                  uMouseClickY / 480.0f,
                                                   pTexture);
             else
-                render->DrawTextureAlphaNew(pMouse->uMouseClickX / 640.0f,
-                                            pMouse->uMouseClickY / 480.0f,
+                render->DrawTextureAlphaNew(uMouseClickX / 640.0f,
+                                            uMouseClickY / 480.0f,
                                             pTexture);
         }
     } else {
@@ -266,7 +266,7 @@ void Mouse::UI_OnMouseLeftClick() {
 
     unsigned int x = 0;
     unsigned int y = 0;
-    pMouse->GetClickPos(&x, &y);
+    GetClickPos(&x, &y);
 
     extern bool _507B98_ctrl_pressed;
     if (GetCurrentMenuID() != -1 || current_screen_type != SCREEN_GAME ||
@@ -316,7 +316,7 @@ void Mouse::UI_OnMouseLeftClick() {
         return;
     }
 
-    int picked_object = pEngine->pVisInstance->get_picked_object_zbuf_val();
+    int picked_object = EngineIoc::ResolveVis()->get_picked_object_zbuf_val();
 
     ObjectType type = PID_TYPE(picked_object);
     if (type == OBJECT_Actor && uActiveCharacter && picked_object < 0x2000000 &&
@@ -332,7 +332,7 @@ void Mouse::UI_OnMouseLeftClick() {
     }
 }
 
-bool Mouse::UI_OnKeyDown(unsigned int vkKey) {
+bool UI_OnVkKeyDown(unsigned int vkKey) {
     for (GUIWindow *win : lWindowList) {
         if (!win->receives_keyboard_input) {
             continue;
@@ -341,23 +341,18 @@ bool Mouse::UI_OnKeyDown(unsigned int vkKey) {
         switch (vkKey) {
             case VK_LEFT: {
                 int v12 = win->field_34;
-                if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem -
-                        v12 >=
-                    0) {
+                if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
                     win->pCurrentPosActiveItem -= v12;
                     if (current_screen_type == SCREEN_PARTY_CREATION) {
-                        pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0,
-                                                0, -1, 0, 0);
+                        pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
                         // v2 = pMessageQueue_50CBD0->uNumMessages;
                     }
                 }
                 if (win->field_30 != 0) {
                     break;
                 }
-                GUIButton *pButton =
-                    win->GetControl(win->pCurrentPosActiveItem);
-                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg,
-                                                    pButton->msg_param, 0);
+                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
                 break;
             }
             case VK_RIGHT: {
@@ -397,7 +392,7 @@ bool Mouse::UI_OnKeyDown(unsigned int vkKey) {
             case VK_SELECT: {
                 unsigned int uClickX;
                 unsigned int uClickY;
-                pMouse->GetClickPos(&uClickX, &uClickY);
+                EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
                 int v4 = win->pStartingPosActiveItem;
                 int v28 = v4 + win->pNumPresenceButton;
                 if (v4 < v4 + win->pNumPresenceButton) {
@@ -443,7 +438,7 @@ bool Mouse::UI_OnKeyDown(unsigned int vkKey) {
                 if (win->field_30 != 0) {  // crashed at skill draw
                     unsigned int uClickX;
                     unsigned int uClickY;
-                    pMouse->GetClickPos(&uClickX, &uClickY);
+                    EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
                     int v29 = win->pStartingPosActiveItem +
                               win->pNumPresenceButton;  // num buttons more than
                                                         // buttons

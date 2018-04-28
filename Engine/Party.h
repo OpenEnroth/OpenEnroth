@@ -152,7 +152,9 @@ struct PartyTimeStruct {
 /*  207 */
 #pragma pack(push, 1)
 struct Party {
-    Party() : playing_time(), last_regenerated() { Zero(); }
+    Party() : playing_time(), last_regenerated() {
+        Zero();
+    }
 
     void Zero();
     void UpdatePlayersAndHirelingsEmotions();
@@ -298,8 +300,7 @@ struct Party {
     std::array<char, 32> field_854;
     int uNumArcomageWins;
     int uNumArcomageLoses;
-    int bTurnBasedModeOn;  // this should be bool?? - will need to alter size
-                           // check in engine to change
+    int bTurnBasedModeOn;
     int field_880;
     int uFlags2;
     PartyAlignment alignment;

@@ -22,6 +22,12 @@
 #include "Actor.h"
 #include "ObjectList.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+// should be injected in SpriteObject but struct size cant be changed
+static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+static ParticleEngine *particle_engine = EngineIoc::ResolveParticleEngine();
+
 size_t uNumSpriteObjects;
 std::array<SpriteObject, MAX_SPRITE_OBJECTS> pSpriteObjects;
 
@@ -246,23 +252,23 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
                            ParticleType_8;
                 Dst.uDiffuse = 0xFF3C1E;
                 Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                Dst.texture = pEngine->GetSpellFxRenderer()->effpar01;
+                Dst.texture = spell_fx_renderer->effpar01;
                 Dst.particle_size = 1.0f;
-                pEngine->pParticleEngine->AddParticle(&Dst);
+                particle_engine->AddParticle(&Dst);
             } else if (object->uFlags & OBJECT_DESC_TRIAL_LINE) {
                 Dst.type = ParticleType_Line;
                 Dst.uDiffuse = rand();
                 Dst.timeToLive = 64;
                 Dst.texture = nullptr;
                 Dst.particle_size = 1.0f;
-                pEngine->pParticleEngine->AddParticle(&Dst);
+                particle_engine->AddParticle(&Dst);
             } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
                 Dst.uDiffuse = rand();
                 Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                Dst.texture = pEngine->GetSpellFxRenderer()->effpar03;
+                Dst.texture = spell_fx_renderer->effpar03;
                 Dst.particle_size = 1.0f;
-                pEngine->pParticleEngine->AddParticle(&Dst);
+                particle_engine->AddParticle(&Dst);
             }
             return;
         }
@@ -359,9 +365,9 @@ LABEL_13:
                                ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
                     Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                    Dst.texture = pEngine->GetSpellFxRenderer()->effpar01;
+                    Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
-                    pEngine->pParticleEngine->AddParticle(&Dst);
+                    particle_engine->AddParticle(&Dst);
                     return;
                 } else if (object->uFlags & OBJECT_DESC_TRIAL_LINE) {
                     Dst.type = ParticleType_Line;
@@ -369,31 +375,28 @@ LABEL_13:
                     Dst.uDiffuse = rand();
                     Dst.timeToLive = 64;
                     Dst.particle_size = 1.0f;
-                    pEngine->pParticleEngine->AddParticle(&Dst);
+                    particle_engine->AddParticle(&Dst);
                     return;
                 } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
                     Dst.uDiffuse = rand();
                     Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                    Dst.texture = pEngine->GetSpellFxRenderer()->effpar03;
+                    Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
-                    pEngine->pParticleEngine->AddParticle(&Dst);
+                    particle_engine->AddParticle(&Dst);
                 }
                 return;
             }
             // v60 = ((unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.direction.x) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.x +=
-                fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
+            pSpriteObjects[uLayingItemID].vPosition.x += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
             // v60 = ((unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.direction.y) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.y +=
-                fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
+            pSpriteObjects[uLayingItemID].vPosition.y += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
             // v60 = ((unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.direction.z) >> 16);
             v28 = (short)stru_721530.uSectorID;
-            pSpriteObjects[uLayingItemID].vPosition.z +=
-                fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
+            pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
             v29 = pSpriteObjects[uLayingItemID].vPosition.z;
             pSpriteObjects[uLayingItemID].uSectorID = v28;
             stru_721530.field_70 += stru_721530.field_7C;
@@ -410,11 +413,8 @@ LABEL_13:
                 if (face->uPolygonType == POLYGON_Floor) {
                     pSpriteObjects[uLayingItemID].vPosition.z =
                         bmodel->pVertices.pVertices[face->pVertexIDs[0]].z + 1;
-                    if (pSpriteObjects[uLayingItemID].vVelocity.x *
-                                pSpriteObjects[uLayingItemID].vVelocity.x +
-                            pSpriteObjects[uLayingItemID].vVelocity.y *
-                                pSpriteObjects[uLayingItemID].vVelocity.y >=
-                        400) {
+                    if (pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
+                            pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y >= 400) {
                         if (face->uAttributes & FACE_UNKNOW2)
                             EventProcessor(face->sCogTriggeredID, 0, 1);
                     } else {
@@ -423,28 +423,22 @@ LABEL_13:
                         pSpriteObjects[uLayingItemID].vVelocity.y = 0;
                     }
                 } else {
-                    v56 = abs(face->pFacePlane.vNormal.x *
-                                  pSpriteObjects[uLayingItemID].vVelocity.x +
-                              face->pFacePlane.vNormal.y *
-                                  pSpriteObjects[uLayingItemID].vVelocity.y +
-                              face->pFacePlane.vNormal.z *
-                                  pSpriteObjects[uLayingItemID].vVelocity.z) >>
+                    v56 = abs(face->pFacePlane.vNormal.x * pSpriteObjects[uLayingItemID].vVelocity.x +
+                              face->pFacePlane.vNormal.y * pSpriteObjects[uLayingItemID].vVelocity.y +
+                              face->pFacePlane.vNormal.z * pSpriteObjects[uLayingItemID].vVelocity.z) >>
                           16;
                     if ((stru_721530.speed >> 3) > v56)
                         v56 = stru_721530.speed >> 3;
                     // v57 = fixpoint_mul(v56, face->pFacePlane.vNormal.x);
                     // v58 = fixpoint_mul(v56, face->pFacePlane.vNormal.y);
                     v60 = fixpoint_mul(v56, face->pFacePlane.vNormal.z);
-                    pSpriteObjects[uLayingItemID].vVelocity.x +=
-                        2 * fixpoint_mul(v56, face->pFacePlane.vNormal.x);
-                    pSpriteObjects[uLayingItemID].vVelocity.y +=
-                        2 * fixpoint_mul(v56, face->pFacePlane.vNormal.y);
+                    pSpriteObjects[uLayingItemID].vVelocity.x += 2 * fixpoint_mul(v56, face->pFacePlane.vNormal.x);
+                    pSpriteObjects[uLayingItemID].vVelocity.y += 2 * fixpoint_mul(v56, face->pFacePlane.vNormal.y);
                     if (face->pFacePlane.vNormal.z <= 32000) {
                         v37 = 2 * (short)v60;
                     } else {
                         v36 = v60;
-                        pSpriteObjects[uLayingItemID].vVelocity.z +=
-                            (signed __int16)v60;
+                        pSpriteObjects[uLayingItemID].vVelocity.z += (signed __int16)v60;
                         v58 = fixpoint_mul(0x7D00, v36);
                         v37 = fixpoint_mul(32000, v36);
                     }
@@ -454,22 +448,15 @@ LABEL_13:
                 }
             }
         LABEL_74:
-            pSpriteObjects[uLayingItemID].vVelocity.x =
-                fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
-            pSpriteObjects[uLayingItemID].vVelocity.y =
-                fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
-            pSpriteObjects[uLayingItemID].vVelocity.z =
-                fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
+            pSpriteObjects[uLayingItemID].vVelocity.x = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
+            pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
+            pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
         }
-        v57 = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.x *
-                               pSpriteObjects[uLayingItemID].vVelocity.x +
-                           pSpriteObjects[uLayingItemID].vVelocity.y *
-                               pSpriteObjects[uLayingItemID].vVelocity.y);
+        v57 = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
+                           pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y);
         v38 = stru_5C6E00->Atan2(
-            pSpriteObjects[uLayingItemID].vPosition.x -
-                pLevelDecorations[PID_ID(stru_721530.pid)].vPosition.x,
-            pSpriteObjects[uLayingItemID].vPosition.y -
-                pLevelDecorations[PID_ID(stru_721530.pid)].vPosition.y);
+            pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(stru_721530.pid)].vPosition.x,
+            pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(stru_721530.pid)].vPosition.y);
         pSpriteObjects[uLayingItemID].vVelocity.x =
             fixpoint_mul(stru_5C6E00->Cos(v38), v57);
         pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(
@@ -567,10 +554,7 @@ LABEL_25:
                         Actor::_46DF1A_collide_against_actor(
                             v42,
                             pMonsterList
-                                ->pMonsters[pActors[v42]
-                                                .word_000086_some_monster_id -
-                                            1]
-                                .uToHitRadius);
+                                ->pMonsters[pActors[v42].word_000086_some_monster_id - 1].uToHitRadius);
                 }
                 if (_46F04E_collide_against_portals()) break;
             }
@@ -593,9 +577,9 @@ LABEL_25:
                                ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
                     Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                    Dst.texture = pEngine->GetSpellFxRenderer()->effpar01;
+                    Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
-                    pEngine->pParticleEngine->AddParticle(&Dst);
+                    particle_engine->AddParticle(&Dst);
                     return;
                 } else if (pObject->uFlags & OBJECT_DESC_TRIAL_LINE) {
                     Dst.type = ParticleType_Line;
@@ -603,15 +587,15 @@ LABEL_25:
                     Dst.timeToLive = 64;
                     Dst.texture = 0;
                     Dst.particle_size = 1.0f;
-                    pEngine->pParticleEngine->AddParticle(&Dst);
+                    particle_engine->AddParticle(&Dst);
                     return;
                 } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
                     Dst.uDiffuse = rand();
                     Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                    Dst.texture = pEngine->GetSpellFxRenderer()->effpar03;
+                    Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
-                    pEngine->pParticleEngine->AddParticle(&Dst);
+                    particle_engine->AddParticle(&Dst);
                 }
                 return;
             }
@@ -734,12 +718,9 @@ LABEL_25:
                 pSpriteObject->vPosition.z =
                     pIndoor->pVertices[*pIndoor->pFaces[v15].pVertexIDs].z + 1;
             }
-            pSpriteObject->vVelocity.x =
-                fixpoint_mul(58500, pSpriteObject->vVelocity.x);
-            pSpriteObject->vVelocity.y =
-                fixpoint_mul(58500, pSpriteObject->vVelocity.y);
-            pSpriteObject->vVelocity.z =
-                fixpoint_mul(58500, pSpriteObject->vVelocity.z);
+            pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+            pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+            pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
         }
     }
     //для падающих объектов(для примера выброс вещи из инвентаря)
@@ -758,12 +739,9 @@ LABEL_25:
                 pSpriteObject->vVelocity.z -=
                     (short)pEventTimer->uTimeElapsed * GetGravityStrength();
         }
-        pSpriteObject->vVelocity.x =
-            fixpoint_mul(58500, pSpriteObject->vVelocity.x);
-        pSpriteObject->vVelocity.y =
-            fixpoint_mul(58500, pSpriteObject->vVelocity.y);
-        pSpriteObject->vVelocity.z =
-            fixpoint_mul(58500, pSpriteObject->vVelocity.z);
+        pSpriteObject->vVelocity.x = fixpoint_mul(58500, pSpriteObject->vVelocity.x);
+        pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
+        pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
         if (pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x +
                 pSpriteObject->vVelocity.y * pSpriteObject->vVelocity.y <
             400) {
@@ -784,8 +762,8 @@ LABEL_25:
                 Dst.uDiffuse = 0xFF3C1E;
                 Dst.particle_size = 1.0f;
                 Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                Dst.texture = pEngine->GetSpellFxRenderer()->effpar01;
-                pEngine->pParticleEngine->AddParticle(&Dst);
+                Dst.texture = spell_fx_renderer->effpar01;
+                particle_engine->AddParticle(&Dst);
                 return;
             } else if (pObject->uFlags & OBJECT_DESC_TRIAL_LINE) {
                 Dst.type = ParticleType_Line;
@@ -793,15 +771,15 @@ LABEL_25:
                 Dst.timeToLive = 64;
                 Dst.texture = nullptr;
                 Dst.particle_size = 1.0f;
-                pEngine->pParticleEngine->AddParticle(&Dst);
+                particle_engine->AddParticle(&Dst);
                 return;
             } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
                 Dst.uDiffuse = rand();
                 Dst.particle_size = 1.0f;
                 Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
-                Dst.texture = pEngine->GetSpellFxRenderer()->effpar03;
-                pEngine->pParticleEngine->AddParticle(&Dst);
+                Dst.texture = spell_fx_renderer->effpar03;
+                particle_engine->AddParticle(&Dst);
             }
             return;
         }

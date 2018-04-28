@@ -32,6 +32,11 @@
 #include "../TurnEngine/TurnEngine.h"
 #include "../stru123.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+static Mouse *mouse = EngineIoc::ResolveMouse();
+static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+
 const size_t CastSpellInfoCount = 10;
 std::array<CastSpellInfo, CastSpellInfoCount> pCastSpellInfo;
 
@@ -147,17 +152,15 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
             spell_targeted_at = stru_50C198.FindClosestActor(
                 5120, 1, target_undead);  // find closest target
-            spell_pointed_target = pMouse->uPointingObjectID;
+            spell_pointed_target = mouse->uPointingObjectID;
 
-            if (pMouse->uPointingObjectID &&
+            if (mouse->uPointingObjectID &&
                 PID_TYPE(spell_pointed_target) == OBJECT_Actor &&
-                pActors[PID_ID(spell_pointed_target)]
-                    .CanAct())  // check can act
-                spell_targeted_at = pMouse->uPointingObjectID;
+                pActors[PID_ID(spell_pointed_target)].CanAct())  // check can act
+                spell_targeted_at = mouse->uPointingObjectID;
         }
 
-        pSpellSprite.uType =
-            spell_sprite_mapping[pCastSpell->uSpellID].uSpriteType;
+        pSpellSprite.uType = spell_sprite_mapping[pCastSpell->uSpellID].uSpriteType;
 
         if (pSpellSprite.uType != SPRITE_NULL) {
             if (PID_TYPE(spell_targeted_at) == OBJECT_Actor) {
@@ -166,19 +169,15 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     spell_targeted_at, &target_direction,
                     0);  // target direciton
             } else {
-                target_direction.uYawAngle =
-                    pParty->sRotationY;  // spray infront of party
+                target_direction.uYawAngle = pParty->sRotationY;  // spray infront of party
                 target_direction.uPitchAngle = pParty->sRotationX;
             }
         }
 
-        if (pCastSpell
-                ->forced_spell_skill_level) {  // for spell scrolls - decode
+        if (pCastSpell->forced_spell_skill_level) {  // for spell scrolls - decode
                                                // spell power and mastery
-            spell_level =
-                (pCastSpell->forced_spell_skill_level) & 0x3F;  // 6 bytes
-            skill_level =
-                ((pCastSpell->forced_spell_skill_level) & 0x1C0) / 64 + 1;
+            spell_level = (pCastSpell->forced_spell_skill_level) & 0x3F;  // 6 bytes
+            skill_level = ((pCastSpell->forced_spell_skill_level) & 0x1C0) / 64 + 1;
         } else {
             if (pCastSpell->uSpellID < SPELL_AIR_WIZARD_EYE)
                 which_skill = PLAYER_SKILL_FIRE;
@@ -219,18 +218,15 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             if (pCastSpell->forced_spell_skill_level || engine_config->debug_all_magic)
                 uRequiredMana = 0;
             else
-                uRequiredMana = pSpellDatas[pCastSpell->uSpellID]
-                                    .mana_per_skill[skill_level - 1];
+                uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[skill_level - 1];
 
-            sRecoveryTime = pSpellDatas[pCastSpell->uSpellID]
-                                .recovery_per_skill[skill_level - 1];
+            sRecoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[skill_level - 1];
         }
 
         if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 &&
                 pParty->uCurrentMinute == 0 ||
             which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 &&
-                pParty->uCurrentMinute ==
-                    0)  // free spells at midnight or midday
+                pParty->uCurrentMinute == 0)  // free spells at midnight or midday
             uRequiredMana = 0;
 
         if (pCastSpell->uSpellID < SPELL_BOW_ARROW &&
@@ -245,11 +241,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             rand() % 100 < 50) {  //неудачное кастование - player is cursed
             if (!pParty->bTurnBasedModeOn) {
                 pPlayer->SetRecoveryTime(
-                    (int64_t)(flt_6BE3A4_debug_recmod1 *
-                        213.3333333333333));
+                    (int64_t)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
             } else {
-                pParty->pTurnBasedPlayerRecoveryTimes[pCastSpellInfo[n]
-                                                          .uPlayerID] = 100;
+                pParty->pTurnBasedPlayerRecoveryTimes[pCastSpellInfo[n].uPlayerID] = 100;
                 pPlayer->SetRecoveryTime(sRecoveryTime);
                 pTurnEngine->ApplyPlayerAction();
             }
@@ -279,22 +273,17 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_skill = skill_level;
-                pSpellSprite.uObjectDescID =
-                    pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 if (pPlayer->WearsItem(ITEM_ARTEFACT_ULLYSES, EQUIP_BOW))
-                    pSpellSprite.uObjectDescID =
-                        pObjectList->ObjectIDByItemID(0xBD6u);
+                    pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(0xBD6u);
                 pSpellSprite.vPosition.x = pParty->vPosition.x;
                 pSpellSprite.vPosition.y = pParty->vPosition.y;
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.vPosition.z =
-                    pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                pSpellSprite.spell_caster_pid =
-                    PID(OBJECT_Player, pCastSpell->uPlayerID);
+                pSpellSprite.vPosition.z = pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
+                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
-                pSpellSprite.field_60_distance_related_prolly_lod =
-                    target_direction.uDistance;
+                pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
@@ -306,17 +295,17 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (pParty->bTurnBasedModeOn == 1)
                     pSpellSprite.uAttributes = 260;
                 for (int i = 0; i < amount; ++i) {
-                    if (i) pSpellSprite.vPosition.z += 32;
+                    if (i)
+                        pSpellSprite.vPosition.z += 32;
                     pSpellSprite.uSectorID = pIndoor->GetSector(
                         pSpellSprite.vPosition.x, pSpellSprite.vPosition.y,
                         pSpellSprite.vPosition.z);
                     if (pSpellSprite.Create(
                             target_direction.uYawAngle,
                             target_direction.uPitchAngle,
-                            pObjectList->pObjects[pSpellSprite.uObjectDescID]
-                                .uSpeed,
+                            pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed,
                             pCastSpell->uPlayerID + 1) != -1 &&
-                        pParty->bTurnBasedModeOn == 1)
+                            pParty->bTurnBasedModeOn == 1)
                         ++pTurnEngine->pending_actions;
                 }
                 break;
@@ -329,19 +318,15 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = skill_level;
-                pSpellSprite.uObjectDescID =
-                    pObjectList->ObjectIDByItemID(pSpellSprite.uType);
+                pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.vPosition.x = pParty->vPosition.x;
                 pSpellSprite.vPosition.y = pParty->vPosition.y;
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSpriteFrameID = 0;
-                pSpellSprite.vPosition.z =
-                    pParty->vPosition.z + (signed int)pParty->uPartyHeight / 2;
-                pSpellSprite.spell_caster_pid =
-                    PID(OBJECT_Player, pCastSpell->uPlayerID);
+                pSpellSprite.vPosition.z = pParty->vPosition.z + (signed int)pParty->uPartyHeight / 2;
+                pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
-                pSpellSprite.field_60_distance_related_prolly_lod =
-                    target_direction.uDistance;
+                pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
@@ -758,9 +743,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
                     pActors[monster_id].vVelocity.x = 0;
                     pActors[monster_id].vVelocity.y = 0;
-                    pEngine->GetSpellFxRenderer()
-                        ->_4A7E89_sparkles_on_actor_after_it_casts_buff(
-                            &pActors[monster_id], 0);
+                    spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(&pActors[monster_id], 0);
                 }
                 spell_sound_flag = true;
                 break;
@@ -798,9 +781,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             GameTime::FromSeconds(spellduration)),
                         skill_level, amount, 0, 0);
                     pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
-                    pEngine->GetSpellFxRenderer()
-                        ->_4A7E89_sparkles_on_actor_after_it_casts_buff(
-                            &pActors[monster_id], 0);
+                    spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(&pActors[monster_id], 0);
                 }
                 spell_sound_flag = true;
                 break;
@@ -968,9 +949,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     default:
                         assert(false);
                 }
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
+                if (!pPlayer->CanCastSpell(uRequiredMana))
+                    break;
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 pParty->pPlayers[pCastSpell->uPlayerID_2]
                     .pPlayerBuffs[PLAYER_BUFF_REGENERATION]
                     .Apply(GameTime(pParty->GetPlayingTime() +
@@ -1021,13 +1002,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         continue;
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 1);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 2);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
 
                 pParty->pPartyBuffs[buff_resist].Apply(
@@ -1069,13 +1050,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             GameTime(pParty->GetPlayingTime() +
                                 GameTime::FromSeconds(spellduration)),
                             skill_level, 0, 0, 0);
-                        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                        spell_fx_renderer->SetPlayerBuffAnim(
                             pCastSpell->uSpellID, 0);
-                        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                        spell_fx_renderer->SetPlayerBuffAnim(
                             pCastSpell->uSpellID, 1);
-                        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                        spell_fx_renderer->SetPlayerBuffAnim(
                             pCastSpell->uSpellID, 2);
-                        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                        spell_fx_renderer->SetPlayerBuffAnim(
                             pCastSpell->uSpellID, 3);
                     }
                 }
@@ -1103,7 +1084,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 amount = spell_level + 5;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 if (skill_level == 1) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     spell_overlay_id = pOtherOverlayList->_4418B1(
                         10000, pCastSpell->uPlayerID_2 + 310, 0, 65536);
@@ -1116,7 +1097,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     break;
                 }
                 for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pl_id);
                     spell_overlay_id = pOtherOverlayList->_4418B1(
                         10000, pl_id + 310, 0, 65536);
@@ -1221,13 +1202,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         continue;
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 1);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 2);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[buff_resist].Apply(
                     GameTime(pParty->GetPlayingTime() +
@@ -1244,13 +1225,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 else
                     spellduration = 60 * spell_level;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 1);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 2);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Apply(
                     GameTime(pParty->GetPlayingTime() +
@@ -1395,9 +1376,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     Actor::DamageMonsterFromParty(
                         PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
                         _50BF30_actors_in_viewport_ids[i], &v700);
-                    pEngine->GetSpellFxRenderer()->RenderAsSprite(
+                    spell_fx_renderer->RenderAsSprite(
                         &pSpellSprite);
-                    pEngine->GetSpellFxRenderer()
+                    spell_fx_renderer
                         ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(
                             0xFF3C1E, 0x40);
                 }
@@ -1441,13 +1422,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 for (uint pl_id = 0; pl_id < 4; pl_id++)
                     pOtherOverlayList->_4418B1(2010, pl_id + 100, 0, 65536);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 1);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 2);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
 
                 pParty->pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Apply(
@@ -1571,13 +1552,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     continue;
                 }
                 if (pPlayer->CanCastSpell(uRequiredMana)) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 0);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 1);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 2);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 3);
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Apply(
                         GameTime(pParty->GetPlayingTime() +
@@ -1868,13 +1849,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 spell_overlay_id =
                     pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 1);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 2);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].Apply(
                     GameTime(pParty->GetPlayingTime() +
@@ -2350,13 +2331,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 1);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 2);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Apply(
                     GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(amount)),
@@ -2386,7 +2367,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 // LODWORD(spellduration) = 300;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 if (pCastSpell->spell_target_pid == 0) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .pPlayerBuffs[PLAYER_BUFF_FATE]
@@ -2402,7 +2383,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(5)),
                         skill_level, amount, 0, 0);
                     pActors[monster_id].uAttributes |= ACTOR_AGGRESSOR;
-                    pEngine->GetSpellFxRenderer()
+                    spell_fx_renderer
                         ->_4A7E89_sparkles_on_actor_after_it_casts_buff(
                             &pActors[monster_id], 0);
                 }
@@ -2452,7 +2433,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         break;
                     }
                 }
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 spell_sound_flag = true;
                 break;
@@ -2466,7 +2447,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     spellduration = 300 * (spell_level + 12);
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 if (skill_level == 1 || skill_level == 2) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
@@ -2477,7 +2458,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     break;
                 }
                 for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pl_id);
                     pParty->pPlayers[pl_id]
                         .pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
@@ -2497,7 +2478,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     spellduration = 300 * spell_level + 180;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 int mon_num = render->GetActorsInViewport(4096);
-                pEngine->GetSpellFxRenderer()
+                spell_fx_renderer
                     ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xFFFFFF,
                                                                      192);
                 // ++pSpellSprite.uType;
@@ -2630,7 +2611,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             pPlayers[pl_array[i]]->GetMaxHealth();
                     if (pPlayers[pl_array[i]]->sHealth > 0)
                         pPlayers[pl_array[i]]->SetUnconcious(GameTime(0));
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pl_array[i] - 1);
                 }
                 spell_sound_flag = true;
@@ -2697,7 +2678,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(
                         Condition_Weak, 1);
                     pParty->pPlayers[pCastSpell->uPlayerID_2].sHealth = 1;
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 }
                 spell_sound_flag = true;
@@ -2723,7 +2704,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 if (!pParty->pPlayers[pCastSpell->uPlayerID_2]
                          .conditions_times[Condition_Paralyzed]
@@ -2767,7 +2748,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 if (!pParty->pPlayers[pCastSpell->uPlayerID_2]
                          .conditions_times[Condition_Fear]
@@ -3002,7 +2983,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     amount = 180 * spell_level;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 int mon_num = render->GetActorsInViewport(4096);
-                pEngine->GetSpellFxRenderer()
+                spell_fx_renderer
                     ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xA0A0A,
                                                                      192);
                 // ++pSpellSprite.uType;
@@ -3072,7 +3053,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 else
                     amount = 86400 * spell_level;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .conditions_times[Condition_Insane]
@@ -3199,7 +3180,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .conditions_times[Condition_Weak]
@@ -3241,7 +3222,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 if (!pCastSpell->spell_target_pid) {
                     pParty->pPlayers[pCastSpell->uPlayerID_2].Heal(amount);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 }
                 if (PID_TYPE(pCastSpell->spell_target_pid) == OBJECT_Actor) {
@@ -3282,7 +3263,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
 
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 if (pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .conditions_times[Condition_Poison_Weak]
@@ -3331,13 +3312,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
 
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 1);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 2);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].Apply(
                     GameTime(pParty->GetPlayingTime() +
@@ -3351,13 +3332,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 if (skill_level == 4) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 0);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 1);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 2);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 3);
                     for (uint pl_id = 0; pl_id < 4; pl_id++) {
                         pParty->pPlayers[pl_id]
@@ -3370,7 +3351,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     spell_sound_flag = true;
                     break;
                 }
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                 pParty->pPlayers[pCastSpell->uPlayerID_2]
                     .pPlayerBuffs[PLAYER_BUFF_HAMMERHANDS]
@@ -3385,7 +3366,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 for (uint pl_id = 0; pl_id < 4; ++pl_id) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pl_id);
                     pParty->pPlayers[pl_id].Heal(5 * spell_level + 10);
                 }
@@ -3396,7 +3377,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             case SPELL_LIGHT_DISPEL_MAGIC: {  // Снятие чар
                 sRecoveryTime -= spell_level;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()
+                spell_fx_renderer
                     ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0xAFF0A,
                                                                      192);
                 int mon_num = render->GetActorsInViewport(4096);
@@ -3549,13 +3530,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 1);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 2);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_DAY_OF_GODS].Apply(
                     GameTime(pParty->GetPlayingTime() +
@@ -3615,8 +3596,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         PID(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)),
                         _50BF30_actors_in_viewport_ids[monster_id], &v694);
                 }
-                // v537 = pEngine->GetSpellFxRenderer();
-                pEngine->GetSpellFxRenderer()->_4A8BFC();
+                // v537 = spell_fx_renderer;
+                spell_fx_renderer->_4A8BFC();
                 spell_sound_flag = true;
                 break;
             }
@@ -3644,13 +3625,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 1);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 2);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_RESIST_BODY].Apply(
                     GameTime(pParty->GetPlayingTime() +
@@ -3713,13 +3694,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 bool player_weak = false;
                 for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 0);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 1);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 2);
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, 3);
                     pParty->pPlayers[pl_id]
                         .pPlayerBuffs[PLAYER_BUFF_BLESS]
@@ -3775,7 +3756,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         pParty->pPlayers[pl_id].GetMaxHealth();
                     pParty->pPlayers[pl_id].sMana =
                         pParty->pPlayers[pl_id].GetMaxMana();
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pl_id);
                 }
                 if (pPlayer->sAgeModifier + 10 >= 120)
@@ -3808,7 +3789,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 if (!pCastSpell->spell_target_pid) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     if (pParty->pPlayers[pCastSpell->uPlayerID_2]
                             .conditions_times[Condition_Dead]
@@ -4138,7 +4119,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 amount = spell_level + 5;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 if (skill_level != 3 && skill_level != 4) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
@@ -4149,7 +4130,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     break;
                 }
                 for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pl_id);
                     pParty->pPlayers[pl_id]
                         .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
@@ -4241,10 +4222,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         pPlayers[pl_array[j]]->GetMaxHealth())
                         pPlayers[pl_array[j]]->sHealth =
                             pPlayers[pl_array[j]]->GetMaxHealth();
-                    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
+                    spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pl_array[j]);
                 }
-                pEngine->GetSpellFxRenderer()
+                spell_fx_renderer
                     ->FadeScreen__like_Turn_Undead_and_mb_Armageddon(0, 64);
                 spell_sound_flag = true;
                 break;
@@ -4364,7 +4345,7 @@ void CastSpellInfoHelpers::_427D48() {  // reset failed/cancelled spell
                 pGUIWindow_CastTargetedSpell->Release();
                 pGUIWindow_CastTargetedSpell = nullptr;
             }
-            pMouse->SetCursorImage("MICON1");
+            mouse->SetCursorImage("MICON1");
             GameUI_StatusBar_Update(true);
             _50C9A0_IsEnchantingInProgress = 0;
             back_to_game();

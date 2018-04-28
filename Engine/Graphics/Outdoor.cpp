@@ -18,6 +18,8 @@
 #include "Engine/ZlibWrapper.h"
 #include "Engine/stru123.h"
 
+#include "Engine/Graphics/DecalBuilder.h"
+
 #include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
@@ -38,6 +40,8 @@
 #include "GUI/UI/UITransition.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+using EngineIoc = Engine_::IocContainer;
 
 MapStartPoint uLevel_StartingPointType;
 
@@ -114,14 +118,14 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     pEngine->PushStationaryLights(-1);
     pEngine->PrepareBloodsplats();
     if (bRedraw)
-        pOutdoor->UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
-                                       WorldPosToGridCellZ(pParty->vPosition.y),
-                                       1);
+        UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
+                             WorldPosToGridCellZ(pParty->vPosition.y),
+                             1);
     engine_config->SetForceRedraw(false);
     if (render->config->is_using_specular)
-        pEngine->pLightmapBuilder->uFlags |= LIGHTMAP_FLAGS_USE_SPECULAR;
+        lightmap_builder->uFlags |= LIGHTMAP_FLAGS_USE_SPECULAR;
     else
-        pEngine->pLightmapBuilder->uFlags &= ~LIGHTMAP_FLAGS_USE_SPECULAR;
+        lightmap_builder->uFlags &= ~LIGHTMAP_FLAGS_USE_SPECULAR;
 
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
@@ -224,6 +228,9 @@ int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ) {
 //----- (00488F5C) --------------------------------------------------------
 bool OutdoorLocation::Initialize(const String &filename, int days_played,
                                  int respawn_interval_days, int *thisa) {
+
+    decal_builder->Reset(0);
+
     if (!filename.empty()) {
         Release();
         assets->ReleaseAllImages();
@@ -1017,7 +1024,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
         header.pMagic[1] != 'v' || header.pMagic[2] != 'i' ||
         header.pMagic[3] != 'i') {
-        logger->Warning(L"Can't load file!");
+        log->Warning(L"Can't load file!");
     }
 
     uint8_t *pSrcMem = (uint8_t *)malloc(header.uDecompressedSize);
@@ -1835,8 +1842,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 z += floorf(pActors[i].uActorHeight * 0.5f + 0.5f);
             } else {
                 v49 = 1;
-                pEngine->GetSpellFxRenderer()->_4A7F74(
-                    pActors[i].vPosition.x, pActors[i].vPosition.y, z);
+                spell_fx_renderer->_4A7F74(pActors[i].vPosition.x, pActors[i].vPosition.y, z);
                 v4 = (1.0 - (double)pActors[i].uCurrentActionTime /
                                 (double)pActors[i].uCurrentActionLength) *
                      (double)(2 * pActors[i].uActorHeight);
@@ -1904,19 +1910,14 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 ++uNumSpritesDrawnThisFrame;
 
                 pActors[i].uAttributes |= ACTOR_UNKNOW2;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite =
-                    v15->hw_sprites[v41];
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID =
-                    0;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette =
-                    v15->uPaletteIndex;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[v41];
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
 
                 auto _v26 = fixed::FromInt(pODMRenderParams->int_fov_rad) /
                             fixed::FromInt(view_x);
-                pBillboardRenderList[uNumBillboardsToDraw - 1]
-                    .screenspace_projection_factor_x = v15->scale * _v26;
-                pBillboardRenderList[uNumBillboardsToDraw - 1]
-                    .screenspace_projection_factor_y = v15->scale * _v26;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v15->scale * _v26;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v15->scale * _v26;
 
                 if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() &&
                     pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0) {
@@ -1927,42 +1928,27 @@ void OutdoorLocation::PrepareActorsDrawList() {
                             pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower) *
                         pBillboardRenderList[uNumBillboardsToDraw - 1]
                             .screenspace_projection_factor_y;
-                } else if (pActors[i]
-                               .pActorBuffs[ACTOR_BUFF_MASS_DISTORTION]
-                               .Active()) {
-                    pBillboardRenderList[uNumBillboardsToDraw - 1]
-                        .screenspace_projection_factor_y =
+                } else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active()) {
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
                         fixed::FromFloat(
-                            pEngine->GetSpellFxRenderer()
-                                ->_4A806F_get_mass_distortion_value(
-                                    &pActors[i])) *
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .screenspace_projection_factor_y;
+                            spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i])) *
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
                 }
 
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x =
-                    projected_x;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y =
-                    projected_y;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z =
-                    view_x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = x;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = y;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = z;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level =
-                    0;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid =
-                    PID(OBJECT_Actor, i);
-                pBillboardRenderList[uNumBillboardsToDraw - 1]
-                    .field_14_actor_id = i;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].dimming_level = 0;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
 
-                pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
-                    v62 | 0x200;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame =
-                    v15;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v62 | 0x200;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v15;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
-                    pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1]
-                        .sTintColor;  // *((int *)&v35[v36] - 36);
+                    pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;  // *((int *)&v35[v36] - 36);
                 if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active()) {
                     pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
                         v62 | 0x200;
@@ -2249,12 +2235,16 @@ void OutdoorLocation::LoadActualSkyFrame() {
     }
 
     rest_ui_sky_frame_current = assets->GetImage_ColorKey(
-        StringPrintf("TERRA%03d",
-                     pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour),
+        StringPrintf("TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour),
         0x7FF);
 }
 
 OutdoorLocation::OutdoorLocation() {
+    this->log = EngineIoc::ResolveLogger();
+    this->decal_builder = EngineIoc::ResolveDecalBuilder();
+    this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+    this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
+
     subconstuctor();
     uLastSunlightUpdateMinute = 0;
 }

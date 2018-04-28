@@ -175,6 +175,11 @@ struct OutdoorLocation {
     char field_D68[111900];
     float fFogDensity;
     int uLastSunlightUpdateMinute;
+
+    Log *log = nullptr;
+    DecalBuilder *decal_builder = nullptr;
+    SpellFxRenderer *spell_fx_renderer = nullptr;
+    LightmapBuilder *lightmap_builder = nullptr;
 };
 
 extern OutdoorLocation *pOutdoor;

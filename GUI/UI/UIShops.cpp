@@ -29,6 +29,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+using EngineIoc = Engine_::IocContainer;
+
 Image *shop_ui_background = nullptr;
 
 std::array<Image *, 12> shop_ui_items_in_store;
@@ -135,14 +137,13 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
     if (HouseUI_CheckIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(199), 0);
 
-        Point mouse = pMouse->GetCursorPos();
+        Point pt = dialogwin.mouse->GetCursorPos();
 
-        int invindex = ((mouse.x - 14) / 32) + 14 * ((mouse.y - 17) / 32);
-        if (mouse.x <= 13 || mouse.x >= 462) return;
+        int invindex = ((pt.x - 14) / 32) + 14 * ((pt.y - 17) / 32);
+        if (pt.x <= 13 || pt.x >= 462)
+            return;
 
-        int pItemID =
-            pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
-
+        int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
         if (pItemID) {
             ItemGen *item =
                 &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
@@ -169,38 +170,31 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
     if (HouseUI_CheckIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(197), 0);
 
-        Point mouse = pMouse->GetCursorPos();
+        Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
-        int invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-        if (mouse.x <= 13 || mouse.x >= 462) return;
+        int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
+        if (pt.x <= 13 || pt.x >= 462) return;
 
-        int pItemID =
-            pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
+        int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
 
         if (pItemID) {
-            ItemGen *item =
-                &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
+            ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
 
             String str;
             if (!item->IsIdentified()) {
-                int phrases_id =
-                    pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
-                        item, building, (int)window_SpeakInHouse->ptr_1C, 4);
+                int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
+                    item, building, (int)window_SpeakInHouse->ptr_1C, 4);
                 str = BuildDialogueString(
                     pMerchantsIdentifyPhrases[phrases_id], uActiveCharacter - 1,
                     item, (char *)window_SpeakInHouse->ptr_1C, 4);
             } else {
-                str =
-                    BuildDialogueString("%24", uActiveCharacter - 1, item,
-                                        (char *)window_SpeakInHouse->ptr_1C, 4);
+                str = BuildDialogueString("%24", uActiveCharacter - 1, item,
+                    (char *)window_SpeakInHouse->ptr_1C, 4);
             }
 
             dialogwin.DrawTitleText(pFontArrus, 0,
-                                    (174 - pFontArrus->CalcTextHeight(
-                                               str, dialogwin.uFrameWidth, 0)) /
-                                            2 +
-                                        138,
-                                    Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+                (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138,
+                Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
         }
     }
 }
@@ -212,32 +206,27 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
     if (HouseUI_CheckIfPlayerCanInteract()) {
         GameUI_StatusBar_DrawImmediate(localization->GetString(198), 0);
 
-        Point mouse = pMouse->GetCursorPos();
+        Point pt = dialogwin.mouse->GetCursorPos();
 
-        int invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-        if (mouse.x <= 13 || mouse.x >= 462) return;
+        int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
+        if (pt.x <= 13 || pt.x >= 462)
+            return;
 
-        int pItemID =
-            pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
-
-        if (pItemID == 0) return;
+        int pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex);
+        if (pItemID == 0)
+            return;
 
         if ((pPlayers[uActiveCharacter]->pOwnItems[pItemID - 1].uAttributes &
              ITEM_BROKEN)) {
-            ItemGen *item =
-                &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
-            int phrases_id =
-                pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
-                    item, building, (int)window_SpeakInHouse->ptr_1C, 5);
+            ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
+            int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
+                item, building, (int)window_SpeakInHouse->ptr_1C, 5);
             String str = BuildDialogueString(
                 pMerchantsRepairPhrases[phrases_id], uActiveCharacter - 1, item,
                 (char *)window_SpeakInHouse->ptr_1C, 5);
             dialogwin.DrawTitleText(pFontArrus, 0,
-                                    (174 - pFontArrus->CalcTextHeight(
-                                               str, dialogwin.uFrameWidth, 0)) /
-                                            2 +
-                                        138,
-                                    Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+                (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138,
+                Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
         }
     }
 }
@@ -247,14 +236,10 @@ void ShopDialogLearn(GUIWindow dialogwin) {
         uint item_num = 0;
         int all_text_height = 0;
 
-        int baseprice =
-            (signed __int64)(p2DEvents[(signed int)window_SpeakInHouse->ptr_1C -
-                                       1]
-                                 .flt_24 *
-                             500.0);
-        int pPrice =
-            baseprice * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
-        if (pPrice < baseprice / 3) pPrice = baseprice / 3;
+        int baseprice = (signed __int64)(p2DEvents[(signed int)window_SpeakInHouse->ptr_1C - 1] .flt_24 * 500.0);
+        int pPrice = baseprice * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+        if (pPrice < baseprice / 3)
+            pPrice = baseprice / 3;
 
         for (int i = pDialogueWindow->pStartingPosActiveItem;
              i < pDialogueWindow->pNumPresenceButton +
@@ -263,9 +248,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
             if (byte_4ED970_skill_learn_ability_by_class_table
                     [pPlayers[uActiveCharacter]->classType]
                     [pDialogueWindow->GetControl(i)->msg_param - 36] &&
-                !pPlayers[uActiveCharacter]
-                     ->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param -
-                                     36]) {
+                !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36]) {
                 all_text_height += pFontArrus->CalcTextHeight(
                     localization->GetSkillName(
                         pDialogueWindow->GetControl(i)->msg_param - 36),
@@ -280,7 +263,8 @@ void ShopDialogLearn(GUIWindow dialogwin) {
             dialogwin.DrawTitleText(pFontArrus, 0, 0x92u, 0, str, 3);
 
             int textspacings = (149 - all_text_height) / item_num;
-            if (textspacings > 32) textspacings = 32;
+            if (textspacings > 32)
+                textspacings = 32;
 
             int textoffset = 162 - textspacings / 2;
 
@@ -394,19 +378,15 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
                 0);  // Buy item  /  Выберите предмет для покупки
 
         if (item_num) {  // this shoudl go into func??
-            Point mouse = pMouse->GetCursorPos();
+            Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
             ItemGen *item;
 
-            int testx = (mouse.x - 30) / 70;
-
+            int testx = (pt.x - 30) / 70;
             if (testx >= 0 && testx < 6) {  // testx limits check
                 if (special == 0) {
-                    item =
-                        &pParty->StandartItemsInShops[(int)window_SpeakInHouse
-                                                          ->ptr_1C][testx];
+                    item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
                 } else {
-                    item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse
-                                                            ->ptr_1C][testx];
+                    item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
                 }
 
                 if (item->uItemID) {  // item picking
@@ -416,25 +396,17 @@ void WeaponShopWares(GUIWindow dialogwin, bool special = 0) {
                                 2)) +
                          testx * 70);
 
-                    if (mouse.x >= testpos &&
-                        mouse.x <
-                            (testpos + (signed int)shop_ui_items_in_store[testx]
-                                           ->GetWidth())) {
-                        if (mouse.y >= weapons_Ypos[testx] + 30 &&
-                            mouse.y <
-                                (weapons_Ypos[testx] + 30 +
-                                 shop_ui_items_in_store[testx]->GetHeight())) {
+                    if (pt.x >= testpos &&
+                        pt.x < (testpos + (signed int)shop_ui_items_in_store[testx]->GetWidth())) {
+                        if (pt.y >= weapons_Ypos[testx] + 30 &&
+                            pt.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
                             String str;
                             if (!OS_IfCtrlPressed() ||
                                 !pPlayers[uActiveCharacter]->CanSteal()) {
                                 str = BuildDialogueString(
-                                    pMerchantsBuyPhrases
-                                        [pPlayers[uActiveCharacter]
-                                             ->SelectPhrasesTransaction(
+                                    pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
                                                  item, BuildingType_WeaponShop,
-                                                 (int)window_SpeakInHouse
-                                                     ->ptr_1C,
-                                                 2)],
+                                                 (int)window_SpeakInHouse->ptr_1C, 2)],
                                     uActiveCharacter - 1, item,
                                     (char *)window_SpeakInHouse->ptr_1C, 2);
                             } else {
@@ -559,49 +531,40 @@ void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
                                            0);  // Steal item
 
         if (pItemCount) {  // this should go into func??
-            Point mouse = pMouse->GetCursorPos();
+            Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
-            int testx = (mouse.x - 40) / 105;
+            int testx = (pt.x - 40) / 105;
             // testx limits check
             if (testx >= 0 && testx < 4) {
-                if (mouse.y >= 126) {
+                if (pt.y >= 126) {
                     testx += 4;
                 }
 
                 ItemGen *item;
                 if (special == 0) {
-                    item =
-                        &pParty->StandartItemsInShops[(int)window_SpeakInHouse
-                                                          ->ptr_1C][testx];
+                    item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
                 } else {
-                    item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse
-                                                            ->ptr_1C][testx];
+                    item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
                 }
 
                 if (item->uItemID) {
                     int testpos;
                     if (testx >= 4) {
                         testpos =
-                            ((90 -
-                              (shop_ui_items_in_store[testx]->GetWidth() / 2)) +
+                            ((90 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) +
                              (testx * 105) - 420);  // low row
                     } else {
                         testpos =
-                            ((86 -
-                              (shop_ui_items_in_store[testx]->GetWidth() / 2)) +
+                            ((86 - (shop_ui_items_in_store[testx]->GetWidth() / 2)) +
                              testx * 105);
                     }
 
-                    if (mouse.x >= testpos &&
-                        mouse.x <=
-                            testpos +
-                                shop_ui_items_in_store[testx]->GetWidth()) {
-                        if ((mouse.y >= 126 &&
-                             mouse.y < (126 + shop_ui_items_in_store[testx]
-                                                  ->GetHeight())) ||
-                            (mouse.y <= 98 &&
-                             mouse.y >= (98 - shop_ui_items_in_store[testx]
-                                                  ->GetHeight()))) {
+                    if (pt.x >= testpos &&
+                        pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+                        if ((pt.y >= 126 &&
+                            pt.y < (126 + shop_ui_items_in_store[testx]->GetHeight())) ||
+                            (pt.y <= 98 &&
+                                pt.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
                             // y is 126 to 126 + height low or 98-height to 98
 
                             String str;
@@ -609,11 +572,8 @@ void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
                                 !pPlayers[uActiveCharacter]->CanSteal()) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases
-                                        [pPlayers[uActiveCharacter]
-                                             ->SelectPhrasesTransaction(
-                                                 item, BuildingType_ArmorShop,
-                                                 window_SpeakInHouse->par1C,
-                                                 2)],
+                                        [pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
+                                                 item, BuildingType_ArmorShop, window_SpeakInHouse->par1C, 2)],
                                     uActiveCharacter - 1, item,
                                     (char *)window_SpeakInHouse->ptr_1C, 2);
                             } else {
@@ -625,10 +585,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
                             }
                             dialogwin.DrawTitleText(
                                 pFontArrus, 0,
-                                (174 - pFontArrus->CalcTextHeight(
-                                           str, dialogwin.uFrameWidth, 0)) /
-                                        2 +
-                                    138,
+                                (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138,
                                 Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
                         }
                     }
@@ -637,8 +594,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special = 0) {
         } else {
             // empty shop
             dialogwin.DrawShops_next_generation_time_string(
-                pParty->PartyTimes
-                    .Shops_next_generation_time[window_SpeakInHouse->par1C] -
+                pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->par1C] -
                 pParty->GetPlayingTime());
         }
     }
@@ -755,48 +711,36 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
             GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);
 
         if (item_num) {
-            Point mouse = pMouse->GetCursorPos();
+            Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
-            int testx = (mouse.x) / 75;
+            int testx = (pt.x) / 75;
             // testx limits check
             if (testx >= 0 && testx < 6) {
-                if (mouse.y > 152) {
+                if (pt.y > 152) {
                     testx += 6;
                 }
 
                 ItemGen *item;
                 if (special == 0) {
-                    item =
-                        &pParty->StandartItemsInShops[(int)window_SpeakInHouse
-                                                          ->ptr_1C][testx];
+                    item = &pParty->StandartItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
                 } else {
-                    item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse
-                                                            ->ptr_1C][testx];
+                    item = &pParty->SpecialItemsInShops[(int)window_SpeakInHouse->ptr_1C][testx];
                 }
 
                 if (item->uItemID) {  // item picking
                     int testpos;
-                    if (mouse.y > 152) {
-                        testpos =
-                            75 * testx -
-                            shop_ui_items_in_store[testx]->GetWidth() / 2 + 40 -
-                            450;
+                    if (pt.y > 152) {
+                        testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40 - 450;
                     } else {
-                        testpos =
-                            75 * testx -
-                            shop_ui_items_in_store[testx]->GetWidth() / 2 + 40;
+                        testpos = 75 * testx - shop_ui_items_in_store[testx]->GetWidth() / 2 + 40;
                     }
 
-                    if (mouse.x >= testpos &&
-                        mouse.x <=
-                            testpos +
-                                shop_ui_items_in_store[testx]->GetWidth()) {
-                        if ((mouse.y <= 308 &&
-                             mouse.y >= (308 - shop_ui_items_in_store[testx]
-                                                   ->GetHeight())) ||
-                            (mouse.y <= 152 &&
-                             mouse.y >= (152 - shop_ui_items_in_store[testx]
-                                                   ->GetHeight()))) {
+                    if (pt.x >= testpos &&
+                        pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+                        if ((pt.y <= 308 &&
+                            pt.y >= (308 - shop_ui_items_in_store[testx]->GetHeight())) ||
+                            (pt.y <= 152 &&
+                            pt.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
                             // y is 152-h to 152 or 308-height to 308
 
                             String str;
@@ -958,7 +902,7 @@ void UIShop_Buy_Identify_Repair() {
         return;
     }
 
-    Point mouse = pMouse->GetCursorPos();
+    Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
     switch (dialog_menu_id) {
         case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
@@ -968,41 +912,30 @@ void UIShop_Buy_Identify_Repair() {
         }
 
         case HOUSE_DIALOGUE_GUILD_BUY_BOOKS: {
-            int testx = (mouse.x - 32) / 70;
+            int testx = (pt.x - 32) / 70;
             if (testx >= 0 && testx < 6) {
-                if (mouse.y >= 250) {
+                if (pt.y >= 250) {
                     testx += 6;
                 }
 
-                bought_item =
-                    &pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C -
-                                                139][testx];
-
+                bought_item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][testx];
                 if (bought_item->uItemID) {
                     int testpos;
-                    if (mouse.y >= 250) {
+                    if (pt.y >= 250) {
                         testpos = 32 + 70 * testx - 420;
                     } else {
                         testpos = 32 + 70 * testx;
                     }
 
-                    if (mouse.x >= testpos &&
-                        mouse.x <=
-                            testpos +
-                                shop_ui_items_in_store[testx]->GetWidth()) {
-                        if ((mouse.y >= 90 &&
-                             mouse.y <= (90 + shop_ui_items_in_store[testx]
-                                                  ->GetHeight())) ||
-                            (mouse.y >= 250 &&
-                             mouse.y <= (250 + shop_ui_items_in_store[testx]
-                                                   ->GetHeight()))) {
+                    if (pt.x >= testpos &&
+                        pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+                        if ((pt.y >= 90 &&
+                            pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
+                            (pt.y >= 250 &&
+                                pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
                             pPriceMultiplier =
-                                p2DEvents[(signed int)
-                                              window_SpeakInHouse->ptr_1C -
-                                          1]
-                                    .fPriceMultiplier;
-                            uPriceItemService =
-                                pPlayers[uActiveCharacter]->GetBuyingPrice(
+                                p2DEvents[(signed int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
+                            uPriceItemService = pPlayers[uActiveCharacter]->GetBuyingPrice(
                                     bought_item->GetValue(), pPriceMultiplier);
 
                             if (pParty->uNumGold <
@@ -1020,8 +953,7 @@ void UIShop_Buy_Identify_Repair() {
                             if (taken_item) {
                                 bought_item->SetIdentified();
                                 memcpy(
-                                    &pPlayers[uActiveCharacter]
-                                         ->pInventoryItemList[taken_item - 1],
+                                    &pPlayers[uActiveCharacter]->pInventoryItemList[taken_item - 1],
                                     bought_item, 0x24u);
                                 dword_F8B1E4 = 1;
                                 Party::TakeGold(uPriceItemService);
@@ -1033,10 +965,8 @@ void UIShop_Buy_Identify_Repair() {
                                 return;
                             }
 
-                            pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom,
-                                                                  0);
-                            GameUI_StatusBar_OnEvent(localization->GetString(
-                                563));  // "Pack is Full!"
+                            pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
+                            GameUI_StatusBar_OnEvent(localization->GetString(563));  // "Pack is Full!"
                             break;
                         }
                     }
@@ -1048,11 +978,9 @@ void UIShop_Buy_Identify_Repair() {
         }
 
         case HOUSE_DIALOGUE_SHOP_SELL: {
-            invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-            if (mouse.x <= 13 || mouse.x >= 462 ||
-                (pItemID =
-                     pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(
-                         invindex),
+            invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
+            if (pt.x <= 13 || pt.x >= 462 ||
+                (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex),
                  !pItemID))
                 return;
 
@@ -1074,18 +1002,15 @@ void UIShop_Buy_Identify_Repair() {
         }
 
         case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
-            invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-            if (mouse.x <= 13 || mouse.x >= 462 ||
-                (pItemID =
-                     pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(
-                         invindex),
+            invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
+            if (pt.x <= 13 || pt.x >= 462 ||
+                (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex),
                  !pItemID))
                 return;
 
             uPriceItemService =
                 pPlayers[uActiveCharacter]->GetPriceIdentification(
-                    p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
-                        .fPriceMultiplier);
+                    p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier);
             item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
 
             if (!(item->uAttributes & ITEM_IDENTIFIED)) {
@@ -1114,10 +1039,9 @@ void UIShop_Buy_Identify_Repair() {
         }
 
         case HOUSE_DIALOGUE_SHOP_REPAIR: {
-            invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-            if (mouse.x <= 13 || mouse.x >= 462 ||
-                (pItemID =
-                     pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(
+            invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
+            if (pt.x <= 13 || pt.x >= 462 ||
+                (pItemID =pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(
                          invindex),
                  !pItemID))
                 return;
@@ -1163,7 +1087,7 @@ void UIShop_Buy_Identify_Repair() {
             switch (in_current_building_type) {
                 case BuildingType_WeaponShop:
 
-                    testx = (mouse.x - 30) / 70;
+                    testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
                         if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
                             bought_item =
@@ -1181,13 +1105,13 @@ void UIShop_Buy_Identify_Repair() {
                                        ->GetWidth() /
                                    2)) +
                                  testx * 70);
-                            if (mouse.x >= testpos &&
-                                mouse.x <
+                            if (pt.x >= testpos &&
+                                pt.x <
                                     (testpos +
                                      (signed int)shop_ui_items_in_store[testx]
                                          ->GetWidth())) {
-                                if (mouse.y >= weapons_Ypos[testx] + 30 &&
-                                    mouse.y < (weapons_Ypos[testx] + 30 +
+                                if (pt.y >= weapons_Ypos[testx] + 30 &&
+                                    pt.y < (weapons_Ypos[testx] + 30 +
                                                shop_ui_items_in_store[testx]
                                                    ->GetHeight())) {
                                     break;  // good
@@ -1204,9 +1128,9 @@ void UIShop_Buy_Identify_Repair() {
 
                 case BuildingType_ArmorShop:
 
-                    testx = (mouse.x - 40) / 105;
+                    testx = (pt.x - 40) / 105;
                     if (testx >= 0 && testx < 4) {
-                        if (mouse.y >= 126) {
+                        if (pt.y >= 126) {
                             testx += 4;
                         }
 
@@ -1232,16 +1156,16 @@ void UIShop_Buy_Identify_Repair() {
                                            testx * 105);
                             }
 
-                            if (mouse.x >= testpos &&
-                                mouse.x <=
+                            if (pt.x >= testpos &&
+                                pt.x <=
                                     testpos + shop_ui_items_in_store[testx]
                                                   ->GetWidth()) {
-                                if ((mouse.y >= 126 &&
-                                     mouse.y <
+                                if ((pt.y >= 126 &&
+                                    pt.y <
                                          (126 + shop_ui_items_in_store[testx]
                                                     ->GetHeight())) ||
-                                    (mouse.y <= 98 &&
-                                     mouse.y >=
+                                    (pt.y <= 98 &&
+                                        pt.y >=
                                          (98 - shop_ui_items_in_store[testx]
                                                    ->GetHeight()))) {
                                     break;  // good
@@ -1259,9 +1183,9 @@ void UIShop_Buy_Identify_Repair() {
                 case BuildingType_AlchemistShop:
                 case BuildingType_MagicShop:
 
-                    testx = (mouse.x) / 75;
+                    testx = (pt.x) / 75;
                     if (testx >= 0 && testx < 6) {
-                        if (mouse.y > 152) {
+                        if (pt.y > 152) {
                             testx += 6;
                         }
 
@@ -1275,7 +1199,7 @@ void UIShop_Buy_Identify_Repair() {
                                      [(int)window_SpeakInHouse->ptr_1C][testx];
 
                         if (bought_item->uItemID) {
-                            if (mouse.y > 152) {
+                            if (pt.y > 152) {
                                 testpos =
                                     75 * testx -
                                     shop_ui_items_in_store[testx]->GetWidth() /
@@ -1289,16 +1213,16 @@ void UIShop_Buy_Identify_Repair() {
                                     40;
                             }
 
-                            if (mouse.x >= testpos &&
-                                mouse.x <=
+                            if (pt.x >= testpos &&
+                                pt.x <=
                                     testpos + shop_ui_items_in_store[testx]
                                                   ->GetWidth()) {
-                                if ((mouse.y <= 308 &&
-                                     mouse.y >=
+                                if ((pt.y <= 308 &&
+                                    pt.y >=
                                          (308 - shop_ui_items_in_store[testx]
                                                     ->GetHeight())) ||
-                                    (mouse.y <= 152 &&
-                                     mouse.y >=
+                                    (pt.y <= 152 &&
+                                        pt.y >=
                                          (152 - shop_ui_items_in_store[testx]
                                                     ->GetHeight()))) {
                                     // y is 152-h to 152 or 308-height to 308
@@ -1432,7 +1356,7 @@ void ShowPopupShopItem() {
     if (in_current_building_type <= 0) return;
     if (dialog_menu_id < HOUSE_DIALOGUE_SHOP_BUY_STANDARD) return;
 
-    Point mouse = pMouse->GetCursorPos();
+    Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
     int testx;
 
     if (in_current_building_type <= BuildingType_AlchemistShop) {
@@ -1440,7 +1364,7 @@ void ShowPopupShopItem() {
             dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL) {
             switch (in_current_building_type) {
                 case BuildingType_WeaponShop: {
-                    testx = (mouse.x - 30) / 70;
+                    testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
                         if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
                             item =
@@ -1457,12 +1381,12 @@ void ShowPopupShopItem() {
                                   (shop_ui_items_in_store[testx]->GetWidth() /
                                    2)) +
                                  testx * 70);
-                            if (mouse.x >= testpos &&
-                                mouse.x <
+                            if (pt.x >= testpos &&
+                                pt.x <
                                     (testpos + shop_ui_items_in_store[testx]
                                                    ->GetWidth())) {
-                                if (mouse.y >= weapons_Ypos[testx] + 30 &&
-                                    mouse.y < (weapons_Ypos[testx] + 30 +
+                                if (pt.y >= weapons_Ypos[testx] + 30 &&
+                                    pt.y < (weapons_Ypos[testx] + 30 +
                                                shop_ui_items_in_store[testx]
                                                    ->GetHeight())) {
                                     GameUI_DrawItemInfo(item);
@@ -1479,10 +1403,9 @@ void ShowPopupShopItem() {
                 }
 
                 case BuildingType_ArmorShop:
-
-                    testx = (mouse.x - 40) / 105;
+                    testx = (pt.x - 40) / 105;
                     if (testx >= 0 && testx < 4) {
-                        if (mouse.y >= 126) {
+                        if (pt.y >= 126) {
                             testx += 4;
                         }
 
@@ -1508,16 +1431,16 @@ void ShowPopupShopItem() {
                                            testx * 105);
                             }
 
-                            if (mouse.x >= testpos &&
-                                mouse.x <=
+                            if (pt.x >= testpos &&
+                                pt.x <=
                                     testpos + shop_ui_items_in_store[testx]
                                                   ->GetWidth()) {
-                                if ((mouse.y >= 126 &&
-                                     mouse.y <
+                                if ((pt.y >= 126 &&
+                                    pt.y <
                                          (126 + shop_ui_items_in_store[testx]
                                                     ->GetHeight())) ||
-                                    (mouse.y <= 98 &&
-                                     mouse.y >=
+                                    (pt.y <= 98 &&
+                                        pt.y >=
                                          (98 - shop_ui_items_in_store[testx]
                                                    ->GetHeight()))) {
                                     GameUI_DrawItemInfo(item);
@@ -1533,11 +1456,10 @@ void ShowPopupShopItem() {
 
                 case BuildingType_AlchemistShop:
                 case BuildingType_MagicShop:
-
-                    testx = (mouse.x) / 75;
+                    testx = (pt.x) / 75;
                     // testx limits check
                     if (testx >= 0 && testx < 6) {
-                        if (mouse.y >= 152) {
+                        if (pt.y >= 152) {
                             testx += 6;
                         }
 
@@ -1551,7 +1473,7 @@ void ShowPopupShopItem() {
                                      [(int)window_SpeakInHouse->ptr_1C][testx];
 
                         if (item->uItemID) {
-                            if (mouse.y > 152) {
+                            if (pt.y > 152) {
                                 testpos =
                                     75 * testx -
                                     shop_ui_items_in_store[testx]->GetWidth() /
@@ -1565,16 +1487,16 @@ void ShowPopupShopItem() {
                                     40;
                             }
 
-                            if (mouse.x >= testpos &&
-                                mouse.x <=
+                            if (pt.x >= testpos &&
+                                pt.x <=
                                     testpos + shop_ui_items_in_store[testx]
                                                   ->GetWidth()) {
-                                if ((mouse.y <= 308 &&
-                                     mouse.y >=
+                                if ((pt.y <= 308 &&
+                                    pt.y >=
                                          (308 - shop_ui_items_in_store[testx]
                                                     ->GetHeight())) ||
-                                    (mouse.y <= 152 &&
-                                     mouse.y >=
+                                    (pt.y <= 152 &&
+                                        pt.y >=
                                          (152 - shop_ui_items_in_store[testx]
                                                     ->GetHeight()))) {
                                     GameUI_DrawItemInfo(item);
@@ -1606,8 +1528,8 @@ void ShowPopupShopItem() {
         if (dialog_menu_id >= HOUSE_DIALOGUE_SHOP_SELL &&
                 dialog_menu_id <= HOUSE_DIALOGUE_SHOP_REPAIR ||
             dialog_menu_id == HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
-            invindex = ((mouse.x - 14) >> 5) + 14 * ((mouse.y - 17) >> 5);
-            if (mouse.x <= 13 || mouse.x >= 462 ||
+            invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
+            if (pt.x <= 13 || pt.x >= 462 ||
                 !pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(
                     invindex))
                 return;
@@ -1620,9 +1542,9 @@ void ShowPopupShopItem() {
 
     if (in_current_building_type <= BuildingType_16 &&
         dialog_menu_id == HOUSE_DIALOGUE_GUILD_BUY_BOOKS) {
-        int testx = (mouse.x - 32) / 70;
+        int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
-            if (mouse.y >= 250) {
+            if (pt.y >= 250) {
                 testx += 6;
             }
 
@@ -1631,21 +1553,21 @@ void ShowPopupShopItem() {
 
             if (item->uItemID) {
                 int testpos;
-                if (mouse.y >= 250) {
+                if (pt.y >= 250) {
                     testpos = 32 + 70 * testx - 420;
                 } else {
                     testpos = 32 + 70 * testx;
                 }
 
-                if (mouse.x >= testpos &&
-                    mouse.x <=
+                if (pt.x >= testpos &&
+                    pt.x <=
                         testpos + shop_ui_items_in_store[testx]->GetWidth()) {
-                    if ((mouse.y >= 90 &&
-                         mouse.y <=
+                    if ((pt.y >= 90 &&
+                        pt.y <=
                              (90 +
                               shop_ui_items_in_store[testx]->GetHeight())) ||
-                        (mouse.y >= 250 &&
-                         mouse.y <=
+                        (pt.y >= 250 &&
+                            pt.y <=
                              (250 +
                               shop_ui_items_in_store[testx]->GetHeight()))) {
                         unsigned int guildId =
@@ -1675,7 +1597,7 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
     // sprintf(tmp_str.data(), "%s%03d", spellbook_texture_filename_suffices[v11
     // / 4], v2); not used
 
-    Point a2 = pMouse->GetCursorPos();
+    Point a2 = EngineIoc::ResolveMouse()->GetCursorPos();
     unsigned int v3 = 30;
     if (a2.y <= 320) {
         v3 = a2.y + 30;

@@ -250,15 +250,15 @@ void SpellFxRenderer::
         local_0.timeToLive = (rand() & 0x40) + 96;
         local_0.texture = texture;
         local_0.particle_size = 1.0f;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
         local_0.x = x - 4.0f;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
         local_0.x = (float)v5->vPosition.x + 4.0f;
         local_0.y = (float)v5->vPosition.y;
         local_0.z = (float)v5->vPosition.z;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
         local_0.x = (float)v5->vPosition.x - 4.0f;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
         v4->array_4[v5->field_54 & 0x1F].flt_0_x = (float)v5->vPosition.x;
         v4->array_4[v5->field_54 & 0x1F].flt_4_y = (float)v5->vPosition.y;
         v4->array_4[v5->field_54 & 0x1F].flt_8_z = (float)v5->vPosition.z;
@@ -280,9 +280,9 @@ void SpellFxRenderer::
         local_0.particle_size = 1.0f;
         local_0.timeToLive = (rand() & 0x7F) + 128;
         local_0.texture = texture;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
         local_0.x = (float)a2->vPosition.x - 4.0f;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
     }
 }
 
@@ -308,7 +308,7 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
         local_0.r = (float)(rand() & 0x1FF) - 255.0f;
         local_0.g = (float)(rand() & 0x1FF) - 255.0f;
         local_0.b = (float)(rand() & 0x1FF) - 255.0f;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
         --v5;
     } while (v5);
 }
@@ -342,7 +342,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
         local_0.r = (rand() & 0x1FF) - 255;
         local_0.g = (rand() & 0x1FF) - 255;
         local_0.b = (rand() & 0x1FF) - 255;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
     }
 
     pStru1->_47829F_sphere_particle(
@@ -400,7 +400,7 @@ void SpellFxRenderer::_4A78AE_sparks_spell(SpriteObject *a1) {
     local_0.texture =
         pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->hw_sprites[0]->texture;
     local_0.particle_size = 2.0f;
-    pEngine->pParticleEngine->AddParticle(&local_0);
+    particle_engine->AddParticle(&local_0);
 }
 
 //----- (004A7948) --------------------------------------------------------
@@ -431,7 +431,7 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
         Dst.r = (float)(rand() & 0x1FF) - 255.0f;
         Dst.g = (float)(rand() & 0x1FF) - 255.0f;
         Dst.b = (float)(rand() & 0x1FF) - 255.0f;
-        pEngine->pParticleEngine->AddParticle(&Dst);
+        particle_engine->AddParticle(&Dst);
         --v6;
     } while (v6);
 }
@@ -477,41 +477,41 @@ void SpellFxRenderer::
     local_0.r = v7;
     local_0.g = a4;
     local_0.b = a4;
-    pEngine->pParticleEngine->AddParticle(&local_0);
+    particle_engine->AddParticle(&local_0);
     v8 = 0.70710677 * a4;
     uDiffusea = v8;
     local_0.r = v8;
     local_0.g = v8;
     local_0.b = a4;
-    pEngine->pParticleEngine->AddParticle(&local_0);
+    particle_engine->AddParticle(&local_0);
     local_0.g = a1a;
     local_0.r = a4;
     local_0.b = a4;
-    pEngine->pParticleEngine->AddParticle(&local_0);
+    particle_engine->AddParticle(&local_0);
     local_0.r = uDiffusea;
     local_0.b = a4;
     v9 = -uDiffusea;
     uTextureIDa = v9;
     local_0.g = v9;
-    pEngine->pParticleEngine->AddParticle(&local_0);
+    particle_engine->AddParticle(&local_0);
     v10 = -1.0 * a4;
     local_0.r = a1a;
     v12 = v10;
     local_0.g = v10;
     local_0.b = a4;
-    pEngine->pParticleEngine->AddParticle(&local_0);
+    particle_engine->AddParticle(&local_0);
     local_0.b = a4;
     local_0.r = uTextureIDa;
     local_0.g = uTextureIDa;
-    pEngine->pParticleEngine->AddParticle(&local_0);
+    particle_engine->AddParticle(&local_0);
     local_0.r = v12;
     local_0.g = a1a;
     local_0.b = a4;
-    pEngine->pParticleEngine->AddParticle(&local_0);
+    particle_engine->AddParticle(&local_0);
     local_0.r = uTextureIDa;
     local_0.g = uDiffusea;
     local_0.b = a4;
-    pEngine->pParticleEngine->AddParticle(&local_0);
+    particle_engine->AddParticle(&local_0);
 }
 
 //----- (004A7C07) --------------------------------------------------------
@@ -558,14 +558,14 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
             pSpriteFrameTable->GetFrame(v5->uSpriteID, v3->uSpriteFrameID)
                 ->hw_sprites[0]
                 ->texture;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
         v11 = (float)v3->vPosition.x;
         HEXRAYS_LODWORD(local_0.particle_size) = 0x40800000u;
         local_0.x = v11;
         local_0.y = (float)v3->vPosition.y;
         local_0.z = (float)v3->vPosition.z;
         local_0.timeToLive = (rand() & 0x3F) + 64;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
         v2->array_4[v3->field_54 & 0x1F].flt_0_x = (float)v3->vPosition.x;
         v2->array_4[v3->field_54 & 0x1F].flt_4_y = (float)v3->vPosition.y;
         v2->array_4[v3->field_54 & 0x1F].flt_8_z = (float)v3->vPosition.z;
@@ -590,7 +590,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
             pSpriteFrameTable->GetFrame(v5->uSpriteID, a2->uSpriteFrameID)
                 ->hw_sprites[0]
                 ->texture;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
     }
 }
 
@@ -640,7 +640,7 @@ void SpellFxRenderer::_4A7E89_sparkles_on_actor_after_it_casts_buff(
             v4 = rand() << 16;
             Dst.uDiffuse = rand() | v4;
         }
-        pEngine->pParticleEngine->AddParticle(&Dst);
+        particle_engine->AddParticle(&Dst);
         --pActora;
     } while (pActora);
 }
@@ -677,7 +677,7 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
         local_0.r = pRnd->GetRandom() * 400.0f - 200.0f;
         local_0.g = pRnd->GetRandom() * 400.0f - 200.0f;
         local_0.b = pRnd->GetRandom() * 150.0f + 50.0f;
-        pEngine->pParticleEngine->AddParticle(&local_0);
+        particle_engine->AddParticle(&local_0);
         --v6;
     } while (v6);
 }

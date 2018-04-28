@@ -293,7 +293,7 @@ void DecorationInteraction(unsigned int id, unsigned int pid) {
     }
 }
 
-void DropHeldItem() {
+void Engine::DropHeldItem() {
     if (!pParty->pPickedItem.uItemID) return;
 
     SpriteObject a1;  // [sp+Ch] [bp-80h]@1
@@ -335,11 +335,11 @@ void DropHeldItem() {
     a1.Create(pParty->sRotationY, 184, 200,
               0);  //+ UnprojectX(v1->x), 184, 200, 0);
 
-    pMouse->RemoveHoldingItem();
+    mouse->RemoveHoldingItem();
 }
 
 //----- (0042213C) --------------------------------------------------------
-void OnGameViewportClick() {
+void Engine::OnGameViewportClick() {
     signed int v0;    // ebx@2
                       //    signed int v6; // eax@14
                       //    char *v7; // esi@15
@@ -354,15 +354,13 @@ void OnGameViewportClick() {
 
     int clickable_distance = 512;
 
-    Point pt = pMouse->GetCursorPos();
-    // if ( render->pRenderD3D )
-
-    if (current_screen_type ==
-        SCREEN_NPC_DIALOGUE)  // bug fix - stops you entering shops while dialog
-                              // still open.
+    // bug fix - stops you entering shops while dialog still open.
+    if (current_screen_type == SCREEN_NPC_DIALOGUE)
         return;
 
-    v0 = pEngine->pVisInstance->get_picked_object_zbuf_val();
+    Point pt = mouse->GetCursorPos();
+
+    v0 = vis->get_picked_object_zbuf_val();
     int distance = HEXRAYS_HIWORD(v0);
     bool in_range = distance < clickable_distance;
     // else
@@ -371,12 +369,11 @@ void OnGameViewportClick() {
     if (PID_TYPE(v0) == OBJECT_Item) {
         int item_id = PID_ID(v0);
         // v21 = (signed int)(unsigned __int16)v0 >> 3;
-        if (pObjectList->pObjects[pSpriteObjects[item_id].uObjectDescID]
-                    .uFlags &
-                0x10 ||
+        if (pObjectList->pObjects[pSpriteObjects[item_id].uObjectDescID].uFlags & 0x10 ||
             item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID ||
             !in_range) {
-            if (pParty->pPickedItem.uItemID) DropHeldItem();
+            if (pParty->pPickedItem.uItemID)
+                DropHeldItem();
         } else {
             ItemInteraction(item_id);
         }
@@ -408,12 +405,10 @@ void OnGameViewportClick() {
         }
     } else if (PID_TYPE(v0) == OBJECT_Decoration) {
         int id = PID_ID(v0);
-        if (distance -
-                pDecorationList
-                    ->pDecorations[pLevelDecorations[id].uDecorationDescID]
-                    .uRadius >=
+        if (distance - pDecorationList->pDecorations[pLevelDecorations[id].uDecorationDescID].uRadius >=
             clickable_distance) {
-            if (pParty->pPickedItem.uItemID) DropHeldItem();
+            if (pParty->pPickedItem.uItemID)
+                DropHeldItem();
         } else {
             DecorationInteraction(id, v0);
         }
@@ -422,24 +417,21 @@ void OnGameViewportClick() {
             if (!pIndoor->pFaces[PID_ID(v0)].Clickable()) {
                 if (!pParty->pPickedItem.uItemID) {
                     GameUI_StatusBar_NothingHere();
-                    if (!pParty->pPickedItem.uItemID) return;
+                    if (!pParty->pPickedItem.uItemID)
+                        return;
                 } else {
                     DropHeldItem();
                 }
             } else {
-                pEventID =
-                    pIndoor
-                        ->pFaceExtras[pIndoor->pFaces[PID_ID(v0)].uFaceExtraID]
-                        .uEventID;
+                pEventID = pIndoor->pFaceExtras[pIndoor->pFaces[PID_ID(v0)].uFaceExtraID].uEventID;
                 EventProcessor(pEventID, (unsigned __int16)v0, 1);
             }
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-            if (!pOutdoor->pBModels[(signed int)(v0 & 0xFFFF) >> 9]
-                     .pFaces[PID_ID(v0) & 0x3F]
-                     .Clickable()) {
+            if (!pOutdoor->pBModels[(signed int)(v0 & 0xFFFF) >> 9].pFaces[PID_ID(v0) & 0x3F].Clickable()) {
                 if (!pParty->pPickedItem.uItemID) {
                     GameUI_StatusBar_NothingHere();
-                    if (!pParty->pPickedItem.uItemID) return;
+                    if (!pParty->pPickedItem.uItemID)
+                        return;
                 } else {
                     DropHeldItem();
                 }

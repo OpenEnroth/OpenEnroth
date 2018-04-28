@@ -330,9 +330,6 @@
     <ClCompile Include="..\..\GUI\UI\UICharacter.cpp">
       <Filter>GUI\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GUI\UI\UiGame.cpp">
-      <Filter>GUI\UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\GUI\GUIProgressBar.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
@@ -485,6 +482,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\Direct3D\RenderD3D.cpp">
       <Filter>Engine\Graphics\Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GUI\UI\UIGame.cpp">
+      <Filter>GUI\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\Configuration.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Game\IocContainer.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\IocContainer.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1114,6 +1123,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Direct3D\RenderD3D.h">
       <Filter>Engine\Graphics\Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\Configuration.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Game\IocContainer.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\IocContainer.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

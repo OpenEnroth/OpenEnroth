@@ -8,6 +8,7 @@
 #include "Engine/Log.h"
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
+#include "Engine/IocContainer.h"
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
 #include "Engine/mm7_data.h"
@@ -98,6 +99,7 @@ struct Engine {
                    struct Vis_SelectionFilter *face_filter);
     bool PickKeyboard(bool bOutline, struct Vis_SelectionFilter *sprite_filter,
                       struct Vis_SelectionFilter *face_filter);
+    void OnGameViewportClick();
     void OutlineSelection();
     int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4);
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
@@ -111,6 +113,10 @@ struct Engine {
     void Deinitialize();
     void DrawParticles();
     void Draw();
+    void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+    void SecondaryInitialization();
+    void _461103_load_level_sub();
+    void DropHeldItem();
 
     Graphics::Configuration *ConfigureRender();
 
@@ -118,12 +124,13 @@ struct Engine {
     inline void SetUnderwater(bool is_underwater) { config->SetUnderwater(is_underwater); }
 
     //----- (0042EB6A) --------------------------------------------------------
-    struct SpellFxRenderer *GetSpellFxRenderer() {
-        return this->spellfx;
-    }
+    // struct SpellFxRenderer *GetSpellFxRenderer() {
+    //    return this->spellfx;
+    // }
     //----- (0042EB71) --------------------------------------------------------
-    // struct IndoorCameraD3D *GetIndoorCamera() { return
-    // this->pIndoorCameraD3D; }
+    // struct IndoorCameraD3D *GetIndoorCamera() {
+    //    return this->pIndoorCameraD3D;
+    // }
 
     Engine_::Configuration *config = nullptr;
     // void ( ***vdestructor_ptr)(Game *, bool);
@@ -146,7 +153,7 @@ struct Engine {
     int field_968;
     int field_96C;
     int field_970;
-    Mouse *pMouse;
+    //Mouse *pMouse;
     int field_978;
     Game_stru0 stru_97C;
     char field_98C[1148];
@@ -159,20 +166,30 @@ struct Engine {
     unsigned __int64 __depricated2;  // unsigned __int64 uSomeGammaStartTime;
     unsigned __int64 __depricated3;  // __int64 uSomeGammaDeltaTime;
     void /*ThreadWard*/ *pThreadWardInstance;
-    ParticleEngine *pParticleEngine;
-    Mouse *pMouseInstance;
-    LightmapBuilder *pLightmapBuilder;
-    Vis *pVisInstance;
-    struct SpellFxRenderer *spellfx;
+    //ParticleEngine *pParticleEngine;
+    //Mouse *pMouseInstance;
+    //LightmapBuilder *pLightmapBuilder;
+    //Vis *pVisInstance;
+    //struct SpellFxRenderer *spellfx;
     void *__depricated5;  // IndoorCameraD3D *pIndoorCameraD3D;
     stru9 *pStru9Instance;
     stru10 *pStru10Instance;
     void /*stru11*/ *pStru11Instance;
     void /*stru12*/ *pStru12Instance;
     void /*CShow*/ *pCShow;
-    Keyboard *pKeyboardInstance;
+    //Keyboard *pKeyboardInstance;
     void *__depricated_4;  // GammaController *pGammaController;
     int field_E74;
+
+    Log *log = nullptr;
+    BloodsplatContainer *bloodsplat_container = nullptr;
+    DecalBuilder *decal_builder = nullptr;
+    SpellFxRenderer *spell_fx_renedrer = nullptr;
+    LightmapBuilder *lightmap_builder = nullptr;
+    Mouse *mouse = nullptr;
+    Keyboard *keyboard = nullptr;
+    ParticleEngine *particle_engine = nullptr;
+    Vis *vis = nullptr;
 };
 #pragma pack(pop)
 
@@ -188,14 +205,12 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box);
 
 void FinalInitialization();
 bool CheckMM7CD(char c);
-void SecondaryInitialization();
 
 void MM6_Initialize();
 void MM7Initialization();
 
 void PrepareToLoadODM(unsigned int bLoading, struct ODMRenderParams *a2);
 void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
-void _461103_load_level_sub();
 void InitializeTurnBasedAnimations(void *);
 unsigned int GetGravityStrength();
 void GameUI_StatusBar_Update(bool force_hide = false);

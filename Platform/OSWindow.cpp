@@ -19,9 +19,18 @@
 #include "Platform/OSWindow.h"
 #include "Platform/Win/Win.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+OSWindow::OSWindow() {
+    this->mouse = EngineIoc::ResolveMouse();
+}
+
 extern HWND hInsertCDWindow;  // idb
 
-void *OSWindow::GetApiHandle() const { return api_handle; }
+void *OSWindow::GetApiHandle() const {
+    return api_handle;
+}
+
 int OSWindow::GetX() const {
     RECT rc;
     GetWindowRect((HWND)api_handle, &rc);
@@ -54,10 +63,10 @@ Point OSWindow::TransformCursorPos(Point &pt) const {
 bool OSWindow::OnMouseLeftClick(int x, int y) {
     pMediaPlayer->StopMovie();
 
-    pMouse->SetMouseClick(x, y);
+    mouse->SetMouseClick(x, y);
 
     if (GetCurrentMenuID() == MENU_CREATEPARTY) {
-        Mouse::UI_OnKeyDown(VK_SELECT);
+        UI_OnVkKeyDown(VK_SELECT);
     }
 
     if (pEngine) {
@@ -65,21 +74,21 @@ bool OSWindow::OnMouseLeftClick(int x, int y) {
                            &vis_door_filter);
     }
 
-    Mouse::UI_OnMouseLeftClick();
+    mouse->UI_OnMouseLeftClick();
     return true;
 }
 
 bool OSWindow::OnMouseRightClick(int x, int y) {
     pMediaPlayer->StopMovie();
 
-    pMouse->SetMouseClick(x, y);
+    mouse->SetMouseClick(x, y);
 
     if (pEngine) {
         pEngine->PickMouse(pIndoorCameraD3D->GetPickDepth(), x, y, 0,
                            &vis_sprite_filter_2, &vis_door_filter);
     }
 
-    UI_OnMouseRightClick(0);
+    UI_OnMouseRightClick(x, y);
     return true;
 }
 
@@ -209,8 +218,8 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam,
                 ArcomageGame::OnMouseMove(LOWORD(lparam), HIWORD(lparam));
                 ArcomageGame::OnMouseClick(0, wparam == MK_LBUTTON);
                 ArcomageGame::OnMouseClick(1, wparam == MK_RBUTTON);
-            } else if (pMouse) {
-                pMouse->SetMouseClick(LOWORD(lparam), HIWORD(lparam));
+            } else if (mouse) {
+                mouse->SetMouseClick(LOWORD(lparam), HIWORD(lparam));
             }
             return false;
 
@@ -227,7 +236,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam,
             if (!pArcomageGame->bGameInProgress) {
                 pMediaPlayer->StopMovie();
                 if (wparam == VK_RETURN) {
-                    if (!viewparams->field_4C) Mouse::UI_OnKeyDown(wparam);
+                    if (!viewparams->field_4C) UI_OnVkKeyDown(wparam);
                     return 0;
                 }
                 if (wparam == VK_CONTROL) {
@@ -251,7 +260,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam,
                 if (wparam >= VK_LEFT && wparam <= VK_DOWN) {
                     if (current_screen_type != SCREEN_GAME &&
                         current_screen_type != SCREEN_MODAL_WINDOW) {
-                        if (!viewparams->field_4C) Mouse::UI_OnKeyDown(wparam);
+                        if (!viewparams->field_4C) UI_OnVkKeyDown(wparam);
                         return 0;
                     }
                 }

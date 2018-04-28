@@ -27,6 +27,10 @@
 
 #include "IO/Mouse.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+static Mouse *pMouse = EngineIoc::ResolveMouse();
+
 void CharacterUI_LoadPaperdollTextures();
 void WetsuitOn(unsigned int uPlayerID);
 void WetsuitOff(unsigned int uPlayerID);

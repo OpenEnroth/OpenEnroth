@@ -29,8 +29,6 @@ struct Viewport {
 };
 #pragma pack(pop)
 
-void OnGameViewportClick();
-
 extern struct Viewport *pViewport;
 
 /*  201 */

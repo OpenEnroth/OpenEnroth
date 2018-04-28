@@ -35,6 +35,12 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+static Mouse *mouse = EngineIoc::ResolveMouse(); /// should be injected in Player but Party struct size cant be altered
+static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
+static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+
 NZIArray<struct Player*, 5> pPlayers;
 
 // Race Stat Points Bonus/ Penalty
@@ -1767,13 +1773,12 @@ int Player::StealFromActor(
                         this->pName,
                         pItemsTable->pItems[carriedItemId].pUnidentifiedName));
 
-                    pParty
-                        ->sub_421B2C_PlaceInInventory_or_DropPickedItem();  // drop or place picked item
+                    pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();  // drop or place picked item
 
                     memcpy(
                         &pParty->pPickedItem, &tempItem,
                         sizeof(ItemGen));  // copy item in to mouse picked item
-                    pMouse->SetCursorBitmapFromItemID(carriedItemId);
+                    mouse->SetCursorBitmapFromItemID(carriedItemId);
                     return 2;  // stole item
                 }
             }
@@ -2011,128 +2016,112 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_CURSE:
                 SetCondition(Condition_Cursed, 1);
                 pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_WEAK:
                 SetCondition(Condition_Weak, 1);
                 pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_SLEEP:
                 SetCondition(Condition_Sleep, 1);
                 pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DRUNK:
                 SetCondition(Condition_Drunk, 1);
                 pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_INSANE:
                 SetCondition(Condition_Insane, 1);
                 pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_WEAK:
                 SetCondition(Condition_Poison_Weak, 1);
                 pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_MEDIUM:
                 SetCondition(Condition_Poison_Medium, 1);
                 pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_POISON_SEVERE:
                 SetCondition(Condition_Poison_Severe, 1);
                 pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_WEAK:
                 SetCondition(Condition_Disease_Weak, 1);
                 pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_MEDIUM:
                 SetCondition(Condition_Disease_Medium, 1);
                 pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DISEASE_SEVERE:
                 SetCondition(Condition_Disease_Severe, 1);
                 pAudioPlayer->PlaySound(SOUND_star2, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_PARALYZED:
                 SetCondition(Condition_Paralyzed, 1);
                 pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_UNCONSCIOUS:
                 SetCondition(Condition_Unconcious, 1);
                 pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_DEAD:
                 SetCondition(Condition_Dead, 1);
                 pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_PETRIFIED:
                 SetCondition(Condition_Pertified, 1);
                 pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_ERADICATED:
                 SetCondition(Condition_Eradicated, 1);
                 pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
@@ -2144,7 +2133,7 @@ int Player::ReceiveSpecialAttackEffect(
                     itemtobreak->SetBroken();
                     pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0);
                 }
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u, whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
@@ -2155,21 +2144,18 @@ int Player::ReceiveSpecialAttackEffect(
                 if (pActor->ActorHasItems[0].uItemID) {
                     actoritems = &pActor->ActorHasItems[1];
                     if (pActor->ActorHasItems[1].uItemID) {
-                        pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
-                            0x99u, whichplayer);
+                        spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                         return 1;
                     }
                 }
 
                 memcpy(actoritems,
-                       &this->pInventoryItemList
-                            [this->pInventoryMatrix[itemtostealinvindex] - 1],
+                       &this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex] - 1],
                        0x24u);
                 RemoveItemAtInventoryIndex(itemtostealinvindex);
                 pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1,
                                         0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
@@ -2177,8 +2163,7 @@ int Player::ReceiveSpecialAttackEffect(
                 PlaySound(SPEECH_42, 0);
                 ++this->sAgeModifier;
                 pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
@@ -2186,16 +2171,14 @@ int Player::ReceiveSpecialAttackEffect(
                 PlaySound(SPEECH_41, 0);
                 this->sMana = 0;
                 pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
             case SPECIAL_ATTACK_FEAR:
                 SetCondition(Condition_Fear, 1);
                 pAudioPlayer->PlaySound(SOUND_star1, 0, 0, -1, 0, 0);
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x99u,
-                                                                 whichplayer);
+                spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
 
@@ -2223,8 +2206,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
                 base_recovery_times_per_weapon_type[weapon
                                                         ->GetPlayerSkillType()];
         }
-    } else if (IsUnarmed() == 1 &&
-               GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
+    } else if (IsUnarmed() == 1 && GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
         weapon_recovery = base_recovery_times_per_weapon_type[1];
     } else if (HasItemEquipped(EQUIP_TWO_HANDED)) {
         weapon = GetMainHandItem();
@@ -2233,13 +2215,9 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
                              // wand_lut much like case in 0042ECB5
             __debugbreak();  // looks like wands were two-handed weapons once,
                              // or supposed to be. should not get here now
-            weapon_recovery =
-                pSpellDatas[wand_spell_ids[weapon->uItemID - ITEM_WAND_FIRE]]
-                    .uExpertLevelRecovery;
+            weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID - ITEM_WAND_FIRE]].uExpertLevelRecovery;
         } else {
-            weapon_recovery =
-                base_recovery_times_per_weapon_type[weapon
-                ->GetPlayerSkillType()];
+            weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
     }
     if (HasItemEquipped(EQUIP_SINGLE_HANDED) &&
@@ -3950,11 +3928,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
-                this->SetRecoveryTime(
-                    (int)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
+                this->SetRecoveryTime((int)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
             }
         }
-        pMouse->RemoveHoldingItem();
+        mouse->RemoveHoldingItem();
         return;
     }
 
@@ -4368,11 +4345,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
-                this->SetRecoveryTime(
-                    (int)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
+                this->SetRecoveryTime((int)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
             }
         }
-        pMouse->RemoveHoldingItem();
+        mouse->RemoveHoldingItem();
         return;
     }
 
@@ -4397,16 +4373,14 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         if (scroll_id == 30 || scroll_id == 4 || scroll_id == 91 ||
             scroll_id == 28) {  // Enchant Item scroll, Vampiric Weapon scroll
                                 // ,Recharge Item ,Fire Aura
-            pMouse->RemoveHoldingItem();
+            mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
             current_screen_type = SCREEN_GAME;
             viewparams->bRedrawGameUI = 1;
-            _42777D_CastSpell_UseWand_ShootArrow((SPELL_TYPE)scroll_id,
-                                                 player_num - 1, 0x85u, 1, 0);
+            _42777D_CastSpell_UseWand_ShootArrow((SPELL_TYPE)scroll_id, player_num - 1, 0x85u, 1, 0);
         } else {
-            pMouse->RemoveHoldingItem();
-            pMessageQueue_50C9E8->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id,
-                                                player_num - 1);
+            mouse->RemoveHoldingItem();
+            pMessageQueue_50C9E8->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id, player_num - 1);
             if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu &&
                 (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
@@ -4417,14 +4391,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
     if (pParty->pPickedItem.GetItemEquipType() == EQUIP_BOOK) {
         v15 = pParty->pPickedItem.uItemID - 400;
-        v72 = playerAffected->spellbook
-                  .bHaveSpell[pParty->pPickedItem.uItemID -
-                              400];  // (char *)&v3->pConditions[0] +
-                                     // pParty->pPickedItem.uItemID + 2;
+        v72 = playerAffected->spellbook.bHaveSpell[pParty->pPickedItem.uItemID - 400];
+        // (char *)&v3->pConditions[0] +
+        // pParty->pPickedItem.uItemID + 2;
         if (v72) {
             auto str = localization->FormatString(
-                380, pParty->pPickedItem.GetDisplayName()
-                         .c_str());  // You already know the %s spell
+                380, pParty->pPickedItem.GetDisplayName().c_str());  // You already know the %s spell
             GameUI_StatusBar_OnEvent(str);
 
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
@@ -4477,7 +4449,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         if (pGUIWindow_CurrentMenu &&
             pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
             if (!v73) {
-                pMouse->RemoveHoldingItem();
+                mouse->RemoveHoldingItem();
                 return;
             }
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
@@ -4493,11 +4465,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         //         }
         //         else
         //         {
-        //           thisb->SetRecoveryTime(flt_6BE3A4_debug_recmod1 *
-        //           213.3333333333333);
+        //           thisb->SetRecoveryTime(flt_6BE3A4_debug_recmod1 * 213.3333333333333);
         //         }
         //       }
-        pMouse->RemoveHoldingItem();
+        mouse->RemoveHoldingItem();
         return;
     }
 
@@ -4629,9 +4600,8 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             }
             GameUI_StatusBar_OnEvent(status);
 
-            pMouse->RemoveHoldingItem();
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
-                SPELL_QUEST_COMPLETED, player_num - 1);
+            mouse->RemoveHoldingItem();
+            spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
             playerAffected->PlaySound(SPEECH_93, 0);
             pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
             if (pParty->uCurrentDayOfMonth == 6 ||
@@ -4661,8 +4631,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             pAudioPlayer->PlaySound(SOUND_trumpet, 0, 0, -1, 0, 0);
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_HORSESHOE) {
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
-                SPELL_QUEST_COMPLETED, player_num - 1);
+            spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
             v5 = PID(OBJECT_Player, player_num + 49);
             pAudioPlayer->PlaySound(SOUND_quest, v5, 0, -1, 0, 0);
             playerAffected->AddVariable(VAR_NumSkillPoints, 2);
@@ -4679,7 +4648,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             return;
         }
 
-        pMouse->RemoveHoldingItem();
+        mouse->RemoveHoldingItem();
         return;
     }
 }
@@ -5234,8 +5203,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
             if (!_449B57_test_bit(pParty->_quest_bits, var_value) &&
                 pQuestTable[var_value - 1]) {
                 bFlashQuestBook = 1;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
-                    0x96u, GetPlayerIndex());
+                spell_fx_renderer->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
                 PlayAwardSound();
                 this->PlaySound(SPEECH_93, 0);
             }
@@ -5493,12 +5461,10 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
         case VAR_AutoNotes:
             if (!_449B57_test_bit(pParty->_autonote_bits, var_value) &&
                 pAutonoteTxt[var_value - 1].pText) {
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
-                    0x96u, GetPlayerIndex());
+                spell_fx_renderer->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
                 this->PlaySound(SPEECH_96, 0);
                 bFlashAutonotesBook = 1;
-                _506568_autonote_type =
-                    pAutonoteTxt[var_value - 1].eType;  // dword_72371C[2 * a3];
+                _506568_autonote_type = pAutonoteTxt[var_value - 1].eType;  // dword_72371C[2 * a3];
             }
             _449B7E_toggle_bit(pParty->_autonote_bits, var_value, 1u);
             PlayAwardSound();
@@ -5685,7 +5651,7 @@ void Player::PlayAwardSound() {
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound_Anim() {
     int playerIndex = GetPlayerIndex();
-    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x96u, playerIndex);
+    spell_fx_renderer->SetPlayerBuffAnim(0x96u, playerIndex);
     PlayAwardSound();
 }
 
@@ -5706,7 +5672,7 @@ void Player::SetSkillByEvent(unsigned __int16 Player::*skillToSet,
         this->*skillToSet = skillValue | currSkillValue & 0xC0;
     }
     int playerIndex = GetPlayerIndex();
-    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x96u, playerIndex);
+    spell_fx_renderer->SetPlayerBuffAnim(0x96u, playerIndex);
     PlayAwardSound();
 }
 
@@ -6092,8 +6058,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
                 this->PlaySound(SPEECH_96, 0);
                 bFlashAutonotesBook = 1;
                 _506568_autonote_type = pAutonoteTxt[val].eType;
-                pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(
-                    0x97u, GetPlayerIndex());
+                spell_fx_renderer->SetPlayerBuffAnim(0x97u, GetPlayerIndex());
             }
             _449B7E_toggle_bit(pParty->_autonote_bits, val, 1);
             PlayAwardSound();
@@ -6259,7 +6224,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound_Anim97() {
     int playerIndex = GetPlayerIndex();
-    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x97u, playerIndex);
+    spell_fx_renderer->SetPlayerBuffAnim(0x97u, playerIndex);
     PlayAwardSound();
 }
 
@@ -6362,7 +6327,7 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
                 }
             }
             if (pParty->pPickedItem.uItemID == pValue) {
-                pMouse->RemoveHoldingItem();
+                mouse->RemoveHoldingItem();
                 return;
             }
             return;
@@ -6826,13 +6791,11 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             return;
     }
 }
-// 5B65C4: using guessed type int dword_5B65C4;
-// 5B65CC: using guessed type int dword_5B65CC;
 
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound_Anim98() {
     int playerIndex = GetPlayerIndex();
-    pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(0x98u, playerIndex);
+    spell_fx_renderer->SetPlayerBuffAnim(0x98u, playerIndex);
     PlayAwardSound();
 }
 
@@ -6875,7 +6838,7 @@ void Player::EquipBody(ITEM_EQUIP_TYPE uEquipType) {
                    &pParty->pPickedItem, sizeof(ItemGen));
             pPlayers[uActiveCharacter]->pEquipment.pIndices[itemAnchor] =
                 freeSlot + 1;
-            pMouse->RemoveHoldingItem();
+            mouse->RemoveHoldingItem();
         }
     }
 }
@@ -7098,7 +7061,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                                 int splatRadius = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
                                         ? 10 * actorPtr->uActorRadius
                                         : actorPtr->uActorRadius;
-                                pDecalBuilder->AddBloodsplat(
+                                decal_builder->AddBloodsplat(
                                     actorPtr->vPosition.x,
                                     actorPtr->vPosition.y,
                                     actorPtr->vPosition.z, 1.0, 0.0, 0.0,
@@ -7289,7 +7252,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                                     int splatRadius = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
                                             ? 10 * actorPtr->uActorRadius
                                             : actorPtr->uActorRadius;
-                                    pDecalBuilder->AddBloodsplat(
+                                    decal_builder->AddBloodsplat(
                                         actorPtr->vPosition.x,
                                         actorPtr->vPosition.y,
                                         actorPtr->vPosition.z, 1.0, 0.0, 0.0,
@@ -7348,12 +7311,11 @@ void Player::OnInventoryLeftClick() {
     if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
         unsigned int pY;
         unsigned int pX;
-        pMouse->GetClickPos(&pX, &pY);
+        mouse->GetClickPos(&pX, &pY);
 
         int inventoryYCoord = (pY - 17) / 32;
         int inventoryXCoord = (pX - 14) / 32;
-        int invMatrixIndex =
-            inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
+        int invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH * inventoryYCoord);
 
         if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT &&
             inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
@@ -7382,7 +7344,7 @@ void Player::OnInventoryLeftClick() {
 
                     pMessageQueue_50CBD0->Flush();
 
-                    pMouse->SetCursorImage("MICON1");
+                    mouse->SetCursorImage("MICON1");
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 256;
@@ -7405,7 +7367,7 @@ void Player::OnInventoryLeftClick() {
                            sizeof(pParty->pPickedItem));
                     this->RemoveItemAtInventoryIndex(invMatrixIndex);
                     pickedItemId = pParty->pPickedItem.uItemID;
-                    pMouse->SetCursorImage(
+                    mouse->SetCursorImage(
                         pItemsTable->pItems[pickedItemId].pIconName);
                     return;
                 }
@@ -7430,7 +7392,7 @@ void Player::OnInventoryLeftClick() {
                     }
 
                     memcpy(&pParty->pPickedItem, &tmpItem, sizeof(ItemGen));
-                    pMouse->SetCursorImage(pParty->pPickedItem.GetIconName());
+                    mouse->SetCursorImage(pParty->pPickedItem.GetIconName());
                     return;
                 } else {
                     itemPos = this->AddItem(invMatrixIndex, pickedItemId);
@@ -7438,7 +7400,7 @@ void Player::OnInventoryLeftClick() {
                     if (itemPos) {
                         memcpy(&this->pInventoryItemList[itemPos - 1],
                                &pParty->pPickedItem, sizeof(ItemGen));
-                        pMouse->RemoveHoldingItem();
+                        mouse->RemoveHoldingItem();
                         return;
                     }
 
@@ -7739,7 +7701,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
     // v28 = 0;
     // v7 = pMouse->uPointingObjectID;
 
-    int target_pid = pMouse->uPointingObjectID;
+    int target_pid = mouse->uPointingObjectID;
     int target_type = PID_TYPE(target_pid), target_id = PID_ID(target_pid);
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);

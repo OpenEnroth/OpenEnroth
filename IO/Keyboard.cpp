@@ -28,11 +28,11 @@ struct KeyboardActionMapping *pKeyActionMap;
 
 //----- (0044F07B) --------------------------------------------------------
 bool Engine::_44F07B() {
-    if (!pKeyboardInstance->IsKeyBeingHeld(VK_SHIFT) &&
-            !pKeyboardInstance->IsKeyBeingHeld(VK_LSHIFT) &&
-            !pKeyboardInstance->IsKeyBeingHeld(VK_LSHIFT) ||
-        (pKeyboardInstance->WasKeyPressed(VK_F11) == 0 &&
-         pKeyboardInstance->WasKeyPressed(VK_F11)))
+    if (!keyboard->IsKeyBeingHeld(VK_SHIFT) &&
+            !keyboard->IsKeyBeingHeld(VK_LSHIFT) &&
+            !keyboard->IsKeyBeingHeld(VK_LSHIFT) ||
+        (keyboard->WasKeyPressed(VK_F11) == 0 &&
+            keyboard->WasKeyPressed(VK_F11)))
         return true;
     return false;
 }
@@ -305,9 +305,6 @@ const char *KeyboardActionMapping::GetVKeyDisplayName(unsigned char a1) {
     return static_sub_45AE2C_string_69ADE0_keyName;
 }
 
-//----- (0045B019) --------------------------------------------------------
-void Keyboard::EnterCriticalSection() {}
-
 //----- (0045B06E) --------------------------------------------------------
 bool Keyboard::IsShiftHeld() {
     return (GetAsyncKeyState(VK_SHIFT) & 0x8001) != 0;
@@ -323,14 +320,6 @@ bool Keyboard::WasKeyPressed(int vKey) {
     return (GetAsyncKeyState(vKey) & 1) != 0;
 }
 
-//----- (0046A14B) --------------------------------------------------------
-void OnPressSpace() {
-    pEngine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL),
-                          &vis_sprite_filter_3, &vis_door_filter);
-    int pid = pEngine->pVisInstance->get_picked_object_zbuf_val();
-    if (pid != -1) DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
-}
-
 //----- (0042FC4E) --------------------------------------------------------
 void Keyboard::ProcessInputActions() {
     char v4;                  // al@9
@@ -339,15 +328,13 @@ void Keyboard::ProcessInputActions() {
     PartyAction partyAction;  // [sp-14h] [bp-1Ch]@20
     InputAction inputAction;  // [sp+0h] [bp-8h]@7
 
-    pEngine->pKeyboardInstance->EnterCriticalSection();
-    Keyboard *pKeyboard = pEngine->pKeyboardInstance;
     if (!engine_config->always_run) {
-        if (pKeyboard->IsShiftHeld())
+        if (this->IsShiftHeld())
             pParty->uFlags2 |= PARTY_FLAGS_2_RUNNING;
         else
             pParty->uFlags2 &= ~PARTY_FLAGS_2_RUNNING;
     } else {
-        if (pKeyboard->IsShiftHeld())
+        if (this->IsShiftHeld())
             pParty->uFlags2 &= ~PARTY_FLAGS_2_RUNNING;
         else
             pParty->uFlags2 |= PARTY_FLAGS_2_RUNNING;
@@ -402,11 +389,9 @@ void Keyboard::ProcessInputActions() {
         for (uint i = 0; i < 30; ++i) {
             inputAction = (InputAction)i;
             if (pKeyActionMap->pToggleTypes[inputAction])
-                v4 = pKeyboard->WasKeyPressed(
-                    pKeyActionMap->pVirtualKeyCodesMapping[inputAction]);
+                v4 = this->WasKeyPressed(pKeyActionMap->pVirtualKeyCodesMapping[inputAction]);
             else
-                v4 = pKeyboard->IsKeyBeingHeld(
-                    pKeyActionMap->pVirtualKeyCodesMapping[inputAction]);
+                v4 = this->IsKeyBeingHeld(pKeyActionMap->pVirtualKeyCodesMapping[inputAction]);
             if (v4) {
                 switch (inputAction) {
                     case INPUT_MoveForward:
@@ -551,12 +536,9 @@ void Keyboard::ProcessInputActions() {
                         if (uActiveCharacter) {
                             if (!pPlayers[uActiveCharacter]->uTimeToRecovery) {
                                 if (!pParty->bTurnBasedModeOn)
-                                    pPlayers[uActiveCharacter]->SetRecoveryTime((
-                                        signed __int64)(flt_6BE3A4_debug_recmod1 *
-                                                        (double)pPlayers
-                                                            [uActiveCharacter]
-                                                                ->GetAttackRecoveryTime(
-                                                                    false) *
+                                    pPlayers[uActiveCharacter]->SetRecoveryTime(
+                                        (signed __int64)(flt_6BE3A4_debug_recmod1 *
+                                            (double)pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false) *
                                                         2.133333333333333));
                                 CastSpellInfoHelpers::_427D48();
                                 pTurnEngine->ApplyPlayerAction();

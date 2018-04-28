@@ -17,6 +17,10 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+
 std::array<TownPortalData, 6> TownPortalList =  // 4ECBB8
     {{{Vec3_int_(-5121, 2107, 1), 1536, 0, 21, 0},
       {Vec3_int_(-15148, -10240, 1473), 0, 0, 4, 0},
@@ -413,14 +417,10 @@ void SpellStats::Initialize() {
         pInfos[i].pExpertSkillDesc = RemoveQuotes(tokens[7]);
         pInfos[i].pMasterSkillDesc = RemoveQuotes(tokens[8]);
         pInfos[i].pGrandmasterSkillDesc = RemoveQuotes(tokens[9]);
-        pSpellDatas[i].stats |=
-            strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? 1 : 0;
-        pSpellDatas[i].stats |=
-            strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? 2 : 0;
-        pSpellDatas[i].stats |=
-            strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? 4 : 0;
-        pSpellDatas[i].stats |=
-            strchr(tokens[10], 'x') || strchr(tokens[10], 'X') ? 8 : 0;
+        pSpellDatas[i].stats |= strchr(tokens[10], 'm') || strchr(tokens[10], 'M') ? 1 : 0;
+        pSpellDatas[i].stats |= strchr(tokens[10], 'e') || strchr(tokens[10], 'E') ? 2 : 0;
+        pSpellDatas[i].stats |= strchr(tokens[10], 'c') || strchr(tokens[10], 'C') ? 4 : 0;
+        pSpellDatas[i].stats |= strchr(tokens[10], 'x') || strchr(tokens[10], 'X') ? 8 : 0;
     }
 }
 
@@ -491,8 +491,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_sprites.vPosition.z = fromz;
             spell_sprites.uAttributes = 16;
             spell_sprites.uSectorID = pIndoor->GetSector(fromx, fromy, fromz);
-            spell_sprites.field_60_distance_related_prolly_lod =
-                distance_to_target;
+            spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;
             spell_sprites.uSpriteFrameID = 0;
             spell_sprites.spell_caster_pid = 8000 | OBJECT_Item;
             spell_sprites.uSoundID = 0;
@@ -602,10 +601,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length)),
                 skillMasteryPlusOne, 0, 0, 0);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 1);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 2);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 3);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);  // звук алтаря
             pAudioPlayer->PlaySpellSound(uSpellID, 0);
@@ -639,10 +638,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
                     uSkill = 9;
                     break;
             }
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 1);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 2);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 3);
             spell_expire_time =
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length));
             pParty->pPartyBuffs[uSkill].Apply(spell_expire_time,
@@ -657,10 +656,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
                 spell_length = 600 * uSkill;
             else
                 spell_length = 60 * uSkill;
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 1);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 2);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 3);
 
             spell_expire_time =
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length));
@@ -699,10 +698,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
                     uSkill = PARTY_BUFF_RESIST_BODY;
                     break;
             }
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 1);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 2);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 3);
             pParty->pPartyBuffs[uSkill].Apply(
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length)),
                 skillMasteryPlusOne, spell_num_objects, 0, 0);
@@ -725,10 +724,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
                     spell_power = 4 * uSkill + 10;
                     break;
             }
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 0);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 1);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 2);
-            pEngine->GetSpellFxRenderer()->SetPlayerBuffAnim(uSpellID, 3);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 0);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 1);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 2);
+            spell_fx_renderer->SetPlayerBuffAnim(uSpellID, 3);
 
             spell_expire_time =
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spell_length));

@@ -271,7 +271,10 @@
  */
 #endif
 
+bool UI_OnVkKeyDown(unsigned int vkKey);
+
 class Image;
+class OSWindow;
 
 class Mouse {
  public:
@@ -307,8 +310,7 @@ class Mouse {
     void ChangeActivation(int a1);
     void SetMouseClick(int x, int y);
 
-    static void UI_OnMouseLeftClick();
-    static bool UI_OnKeyDown(unsigned int vkKey);
+    void UI_OnMouseLeftClick();
 
     unsigned int uPointingObjectID;
     unsigned int bActive;
@@ -363,5 +365,3 @@ class Mouse {
     unsigned int uMouseClickY;
     void /*ThreadWard*/ *pWard;
 };
-
-extern Mouse *pMouse;

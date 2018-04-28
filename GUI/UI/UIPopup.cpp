@@ -34,6 +34,10 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+using EngineIoc = Engine_::IocContainer;
+
+Mouse *pMouse = EngineIoc::ResolveMouse();
+
 Image *parchment = nullptr;
 Image *messagebox_corner_x = nullptr;       // 5076AC
 Image *messagebox_corner_y = nullptr;       // 5076B4
@@ -1451,26 +1455,23 @@ void DrawSpellDescriptionPopup(int spell_index) {
 }
 
 //----- (00416D62) --------------------------------------------------------
-void UI_OnMouseRightClick(Vec2_int_ *_this) {
+void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
     int v5;                  // esi@62
     GUIButton *pButton;      // esi@84
     const char *pStr;        // edi@85
     const char *pHint;       // edx@113
     GUIWindow popup_window;  // [sp+4h] [bp-74h]@32
-    unsigned int pX;         // [sp+70h] [bp-8h]@3
-    unsigned int pY;         // [sp+74h] [bp-4h]@3
 
     if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
         return;
-    if (_this) {
-        pX = _this->x;
-        pY = _this->y;
-    } else {
-        pMouse->GetClickPos(&pX, &pY);
-    }
+
+
+    unsigned int pX = mouse_x;
+    unsigned int pY = mouse_y;
+
     // if ( render->bWindowMode )
     {
-        Point pt = pMouse->GetCursorPos();
+        Point pt = Point(pX, pY);
         if (pt.x < 1 || pt.y < 1 || pt.x > 638 || pt.y > 478) {
             back_to_game();
             return;
@@ -1528,15 +1529,13 @@ void UI_OnMouseRightClick(Vec2_int_ *_this) {
                                          .pInventoryIndices[invMatrixIndex];
                     if (chestindex < 0) {
                         invMatrixIndex = (-(chestindex + 1));
-                        chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C]
-                                         .pInventoryIndices[invMatrixIndex];
+                        chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
                     }
 
                     if (chestindex) {
                         int itemindex = chestindex - 1;
 
-                        GameUI_DrawItemInfo(&pChests[pChestWindow->par1C]
-                                                 .igChestItems[itemindex]);
+                        GameUI_DrawItemInfo(&pChests[pChestWindow->par1C].igChestItems[itemindex]);
                     }
                 }
             }
@@ -1598,26 +1597,22 @@ void UI_OnMouseRightClick(Vec2_int_ *_this) {
                 if ((signed int)pX <= 320) popup_window.uFrameX = pX + 30;
                 popup_window.uFrameY = 40;
                 // if ( render->pRenderD3D )
-                v5 = pEngine->pVisInstance->get_picked_object_zbuf_val();
+
+                auto vis = EngineIoc::ResolveVis();
+                v5 = vis->get_picked_object_zbuf_val();
                 /*else
                 v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
                 if (PID_TYPE((unsigned __int16)v5) == OBJECT_Actor) {
                     render->BeginScene();
                     popup_window.DrawMessageBox(1);
-                    MonsterPopup_Draw(PID_ID((unsigned __int16)v5),
-                                      &popup_window);
+                    MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
                     render->EndScene();
                 }
                 if (PID_TYPE((unsigned __int16)v5) == OBJECT_Item) {
                     if (!(pObjectList
-                              ->pObjects
-                                  [pSpriteObjects[PID_ID((unsigned __int16)v5)]
-                                       .uObjectDescID]
-                              .uFlags &
-                          0x10)) {
+                              ->pObjects[pSpriteObjects[PID_ID((unsigned __int16)v5)].uObjectDescID].uFlags & 0x10)) {
                         GameUI_DrawItemInfo(
-                            &pSpriteObjects[PID_ID((unsigned __int16)v5)]
-                                 .containing_item);
+                            &pSpriteObjects[PID_ID((unsigned __int16)v5)].containing_item);
                     }
                 }
             }
@@ -1629,7 +1624,7 @@ void UI_OnMouseRightClick(Vec2_int_ *_this) {
                 (signed int)pX > (signed int)pViewport->uViewportBR_X ||
                 (signed int)pY < (signed int)pViewport->uViewportTL_Y ||
                 (signed int)pY > (signed int)pViewport->uViewportBR_Y ||
-                ((popup_window.sHint = GetMapBookHintText()).empty()))
+                ((popup_window.sHint = GetMapBookHintText(mouse_x, mouse_y)).empty()))
                 break;
             popup_window.uFrameWidth =
                 (pFontArrus->GetLineWidth(popup_window.sHint) + 32) + 0.5f;

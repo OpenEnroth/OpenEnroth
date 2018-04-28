@@ -375,6 +375,9 @@ class GUIWindow {
     bool receives_keyboard_input;
     String sHint;
     std::vector<GUIButton*> vButtons;
+
+    Mouse *mouse = nullptr;
+    Log *log = nullptr;
 };
 
 class GUIWindow_Scroll : public GUIWindow {
@@ -602,7 +605,7 @@ unsigned int GetSkillColor(unsigned int uPlayerClass,
 
 void DrawSpellDescriptionPopup(int spell_index);
 
-void UI_OnMouseRightClick(Vec2_int_ *_this);
+void UI_OnMouseRightClick(int mouse_x, int mouse_y);
 
 void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
                      unsigned int uHeight);  // idb

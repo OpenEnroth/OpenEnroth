@@ -48,7 +48,7 @@ GUIWindow_MainMenu::~GUIWindow_MainMenu() {
 void GUIWindow_MainMenu::Update() {
     render->DrawTextureNew(0, 0, main_menu_background);
 
-    Point pt = pMouse->GetCursorPos();
+    Point pt = mouse->GetCursorPos();
     GUIWindow *pWindow = this;
 
     Image *pTexture = nullptr;
@@ -131,7 +131,7 @@ void GUIWindow_MainMenu::Loop() {
         render->EndScene();
         render->Present();
 
-        SecondaryInitialization();
+        pEngine->SecondaryInitialization();
         FinalInitialization();
     }
 

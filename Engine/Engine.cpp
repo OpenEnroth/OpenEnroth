@@ -75,6 +75,8 @@
 
 #include "Platform/Api.h"
 
+using EngineIoc = Engine_::IocContainer;
+
 /*
 
 static bool b = false;
@@ -130,7 +132,7 @@ bool FileExists(const char *fname) {
 }
 
 void Engine_DeinitializeAndTerminate(int exitCode) {
-    ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+    pEngine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     pEngine->Deinitialize();
     render->Release();
     delete window;
@@ -146,20 +148,12 @@ void Engine::Draw() {
 
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;
     pIndoorCameraD3D->sRotationY = pParty->sRotationY;
-    pIndoorCameraD3D->vPartyPos.x =
-        pParty->vPosition.x -
-        pParty->y_rotation_granularity *
-            cosf(2 * pi_double * pParty->sRotationY / 2048.0);
-    pIndoorCameraD3D->vPartyPos.y =
-        pParty->vPosition.y -
-        pParty->y_rotation_granularity *
-            sinf(2 * pi_double * pParty->sRotationY / 2048.0);
-    pIndoorCameraD3D->vPartyPos.z =
-        pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
+    pIndoorCameraD3D->vPartyPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationY / 2048.0);
+    pIndoorCameraD3D->vPartyPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationY / 2048.0);
+    pIndoorCameraD3D->vPartyPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
 
     // pIndoorCamera->Initialize2();
-    pIndoorCameraD3D->CalculateRotations(pParty->sRotationX,
-                                         pParty->sRotationY);
+    pIndoorCameraD3D->CalculateRotations(pParty->sRotationX, pParty->sRotationY);
     pIndoorCameraD3D->CreateWorldMatrixAndSomeStuff();
     pIndoorCameraD3D->_4374E8_ProllyBuildFrustrum();
 
@@ -194,10 +188,7 @@ void Engine::Draw() {
             // if ( render->pRenderD3D )
             {
                 float v2 =
-                    (double)(((signed int)pMiscTimer->uTotalGameTimeElapsed >>
-                              2) &
-                             0x1F) *
-                    0.032258064 * 6.0;
+                    (double)(((signed int)pMiscTimer->uTotalGameTimeElapsed >> 2) & 0x1F) * 0.032258064 * 6.0;
                 // v3 = v2 + 6.7553994e15;
                 // render->field_1036A8_bitmapid = LODWORD(v3);
                 render->hd_water_current_frame = floorf(v2 + 0.5f);
@@ -212,20 +203,20 @@ void Engine::Draw() {
 
             // if (render->pRenderD3D)
             {
-                pDecalBuilder->DrawBloodsplats();
-                pEngine->pLightmapBuilder->DrawLightmapsType(2);
+                decal_builder->DrawBloodsplats();
+                lightmap_builder->DrawLightmapsType(2);
             }
         }
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     }
-
     // DEBUG: force redraw gui
     viewparams->bRedrawGameUI = true;
 
     render->BeginScene();
     // if (render->pRenderD3D)
-    pMouse->DrawCursorToTarget();
-    if (pOtherOverlayList->bRedraw) viewparams->bRedrawGameUI = true;
+    mouse->DrawCursorToTarget();
+    if (pOtherOverlayList->bRedraw)
+        viewparams->bRedrawGameUI = true;
     v4 = viewparams->bRedrawGameUI;
     GameUI_StatusBar_DrawForced();
     if (!viewparams->bRedrawGameUI) {
@@ -236,8 +227,7 @@ void Engine::Draw() {
         viewparams->bRedrawGameUI = false;
     }
     if (!pMovie_Track) {  //! pVideoPlayer->pSmackerMovie)
-        GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom,
-                           true);  // redraw = pParty->uFlags & 2);
+        GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
         if (v4) {
             if (!PauseGameDrawing() /*&& render->pRenderD3D*/)  // clear game
                                                                 // viewport with
@@ -263,7 +253,7 @@ void Engine::Draw() {
     GameUI_DrawCharacterSelectionFrame();
     if (_44100D_should_alter_right_panel()) GameUI_DrawRightPanel();
     if (!pMovie_Track) {
-        GetSpellFxRenderer()->DrawPlayerBuffAnims();
+        spell_fx_renedrer->DrawPlayerBuffAnims();
         pOtherOverlayList->DrawTurnBasedIcon(v4);
         GameUI_DrawTorchlightAndWizardEye();
     }
@@ -281,7 +271,6 @@ void Engine::Draw() {
     // while(GetTickCount() - last_frame_time < 33 );//FPS control
     uint frame_dt = OS_GetTime() - last_frame_time;
     last_frame_time = OS_GetTime();
-
     framerate_time_elapsed += frame_dt;
     if (framerate_time_elapsed >= 1000) {
         framerate = frames_this_second * (1000.0f / framerate_time_elapsed);
@@ -345,22 +334,25 @@ void Engine::Draw() {
     pParty->UpdatePlayersAndHirelingsEmotions();
 
     _unused_5B5924_is_travel_ui_drawn = false;
-    if (v4) pMouse->bRedraw = true;
-    pMouse->ReadCursorWithItem();
-    pMouse->DrawCursor();
-    pMouse->Activate();
+    if (v4)
+        mouse->bRedraw = true;
+    mouse->ReadCursorWithItem();
+    mouse->DrawCursor();
+    mouse->Activate();
     render->EndScene();
     render->Present();
     pParty->uFlags &= ~2;
 }
 
 //----- (0047A815) --------------------------------------------------------
-void Engine::DrawParticles() { pParticleEngine->Draw(); }
+void Engine::DrawParticles() {
+    particle_engine->Draw();
+}
 
 //----- (0044F192) --------------------------------------------------------
 void Engine::PrepareBloodsplats() {
     for (uint i = 0; i < uNumBloodsplats; ++i) {
-        pBloodsplatContainer->AddBloodsplat(
+        bloodsplat_container->AddBloodsplat(
             pBloodsplats[i].x, pBloodsplats[i].y, pBloodsplats[i].z,
             pBloodsplats[i].radius, pBloodsplats[i].r, pBloodsplats[i].g,
             pBloodsplats[i].b);
@@ -388,8 +380,8 @@ bool Engine::_44EEA7() {
     Vis_SelectionFilter *v11;  // [sp+14h] [bp-14h]@2
 
     ++qword_5C6DF0;
-    pParticleEngine->UpdateParticles();
-    Point pt = pMouseInstance->GetCursorPos();
+    particle_engine->UpdateParticles();
+    Point pt = mouse->GetCursorPos();
 
     // x = cursor.y;
     // y = cursor.x;
@@ -410,10 +402,10 @@ bool Engine::_44EEA7() {
     // depth = v2;
 
     PickMouse(depth, pt.x, pt.y, false, v10, v11);
-    pLightmapBuilder->StationaryLightsCount = 0;
-    pLightmapBuilder->MobileLightsCount = 0;
-    pDecalBuilder->DecalsCount = 0;
-    pDecalBuilder->curent_decal_id = 0;
+    lightmap_builder->StationaryLightsCount = 0;
+    lightmap_builder->MobileLightsCount = 0;
+    decal_builder->DecalsCount = 0;
+    decal_builder->curent_decal_id = 0;
     if (!_44F07B())
         return false;
 
@@ -470,8 +462,8 @@ void Engine::Deinitialize() {
     pItemsTable->Release();
     pNPCStats->Release();
 
-    if (pMouse)
-        pMouse->Deactivate();
+    if (mouse)
+        mouse->Deactivate();
 
     delete render;
     render = nullptr;
@@ -488,8 +480,8 @@ void Engine::Deinitialize() {
 //----- (0044EE7C) --------------------------------------------------------
 bool Engine::draw_debug_outlines() {
     if (/*uFlags & 0x04*/ engine_config->debug_lightmaps_decals) {
-        pLightmapBuilder->DrawDebugOutlines(-1);
-        pDecalBuilder->DrawDecalDebugOutlines();
+        lightmap_builder->DrawDebugOutlines(-1);
+        decal_builder->DrawDecalDebugOutlines();
     }
     return true;
 }
@@ -609,6 +601,15 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
 //----- (0044E4B7) --------------------------------------------------------
 Engine::Engine(Engine_::Configuration *config) {
     this->config = config;
+    this->log = EngineIoc::ResolveLogger();
+    this->bloodsplat_container = EngineIoc::ResolveBloodsplatContainer();
+    this->decal_builder = EngineIoc::ResolveDecalBuilder();
+    this->spell_fx_renedrer = EngineIoc::ResolveSpellFxRenderer();
+    this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
+    this->mouse = EngineIoc::ResolveMouse();
+    this->keyboard = EngineIoc::ResolveKeyboard();
+    this->particle_engine = EngineIoc::ResolveParticleEngine();
+    this->vis = EngineIoc::ResolveVis();
 
     uNumStationaryLights = 0;
     uNumBloodsplats = 0;
@@ -616,12 +617,12 @@ Engine::Engine(Engine_::Configuration *config) {
     field_E10 = 0;
     uNumStationaryLights_in_pStationaryLightsStack = 0;
 
-    pThreadWardInstance = nullptr;
-    pParticleEngine = new ParticleEngine;
-    pMouse = pMouseInstance = new Mouse;
-    pLightmapBuilder = new LightmapBuilder;
-    pVisInstance = new Vis;
-    spellfx = new SpellFxRenderer;
+    // pThreadWardInstance = nullptr;
+    // pParticleEngine = new ParticleEngine;
+    // pMouse = pMouseInstance = new Mouse;
+    // pLightmapBuilder = new LightmapBuilder;
+    // pVisInstance = new Vis;
+    // spellfx = new SpellFxRenderer;
     pIndoorCameraD3D = new IndoorCameraD3D;
     pStru9Instance = new stru9;
     pStru10Instance = new stru10;
@@ -630,26 +631,26 @@ Engine::Engine(Engine_::Configuration *config) {
     // pStru12Instance = new stru12(pStru11Instance);
     pStru12Instance = nullptr;
     // pCShow = new CShow;
-    pCShow = nullptr;
-    pKeyboardInstance = new Keyboard;
+    // pCShow = nullptr;
+    // pKeyboardInstance = new Keyboard;
     // pGammaController = new GammaController;
 }
 
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
     // delete pGammaController;
-    delete pKeyboardInstance;
+    // delete pKeyboardInstance;
     /*delete pCShow;
     delete pStru12Instance;
     delete pStru11Instance;*/
     delete pStru10Instance;
     delete pStru9Instance;
     delete pIndoorCameraD3D;
-    delete spellfx;
-    delete pVisInstance;
-    delete pLightmapBuilder;
-    delete pMouseInstance;
-    delete pParticleEngine;
+    // delete spellfx;
+    // delete pVisInstance;
+    // delete pLightmapBuilder;
+    // delete pMouseInstance;
+    // delete pParticleEngine;
     // delete pThreadWardInstance;
 }
 
@@ -661,21 +662,21 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
     /*if (current_screen_type != SCREEN_GAME|| !render->pRenderD3D)
     return false;*/
 
-    if (!pVisInstance) {
-        logger->Warning(
-            L"The 'Vis' object pointer has not been instatiated, but "
-            L"CGame::Pick() is trying to call through it.");
-        return false;
-    }
+    // if (!vis) {
+    //     log->Warning(
+    //         L"The 'Vis' object pointer has not been instatiated, but "
+    //         L"CGame::Pick() is trying to call through it.");
+    //     return false;
+    // }
 
     if (uMouseX >= (signed int)pViewport->uScreen_TL_X &&
         uMouseX <= (signed int)pViewport->uScreen_BR_X &&
         uMouseY >= (signed int)pViewport->uScreen_TL_Y &&
         uMouseY <= (signed int)pViewport->uScreen_BR_Y) {
-        pVisInstance->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter,
-                                face_filter);
+        vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
 
-        if (bOutline) OutlineSelection();
+        if (bOutline)
+            OutlineSelection();
     }
 
     return true;
@@ -685,12 +686,11 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
 //----- (0044EB12) --------------------------------------------------------
 bool Engine::PickKeyboard(bool bOutline, Vis_SelectionFilter *sprite_filter,
                           Vis_SelectionFilter *face_filter) {
-    if (current_screen_type == SCREEN_GAME &&
-        pVisInstance /*&& render->pRenderD3D*/) {
-        bool r = pVisInstance->PickKeyboard(&pVisInstance->default_list,
-                                            sprite_filter, face_filter);
+    if (current_screen_type == SCREEN_GAME) {
+        bool r = vis->PickKeyboard(&vis->default_list, sprite_filter, face_filter);
 
-        if (bOutline) OutlineSelection();
+        if (bOutline)
+            OutlineSelection();
         return r;
     }
     return false;
@@ -712,15 +712,14 @@ return Result::Success;
 
 //----- (0044EB5A) --------------------------------------------------------
 void Engine::OutlineSelection() {
-    if (!pVisInstance) return;
+    if (!vis->default_list.uNumPointers)
+        return;
 
-    if (!pVisInstance->default_list.uNumPointers) return;
-
-    Vis_ObjectInfo *object_info = pVisInstance->default_list.object_pointers[0];
+    Vis_ObjectInfo *object_info = vis->default_list.object_pointers[0];
     if (object_info) {
         switch (object_info->object_type) {
             case VisObjectType_Sprite: {
-                logger->Warning(L"Sprite outline currently unsupported");
+                log->Warning(L"Sprite outline currently unsupported");
                 return;
             }
 
@@ -771,10 +770,8 @@ void CloseWindowBackground() {
 
 //----- (0046BDC0) --------------------------------------------------------
 void UpdateUserInput_and_MapSpecificStuff() {
-    if (dword_6BE364_game_settings_1 &
-        GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME) {
-        dword_6BE364_game_settings_1 &=
-            ~GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
+    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME) {
+        dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
         return;
     }
 
@@ -788,13 +785,14 @@ void UpdateUserInput_and_MapSpecificStuff() {
 
 //----- (004646F0) --------------------------------------------------------
 void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
-    // if ( render->pRenderD3D )
-    pEngine->pVisInstance->_4C1A02();
+    Vis *vis = EngineIoc::ResolveVis();
+    vis->_4C1A02();
+
     pEventTimer->Pause();
     pMiscTimer->Pause();
     pParty->uFlags = 2;
     CastSpellInfoHelpers::_427D48();
-    ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+    pEngine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(0, (_0_box_loading_1_fullscreen == 0) + 1);
     pMiscTimer->Resume();
     pEventTimer->Resume();
@@ -807,8 +805,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     char Str1[20];    // [sp+Ch] [bp-18h]@1
 
     // v9 = bLoading;
-    ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
-    pDecalBuilder->Reset(0);
+    pEngine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1
                                                ? GUIProgressBar::TYPE_Fullscreen
                                                : GUIProgressBar::TYPE_Box);
@@ -822,7 +819,8 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     strtok(Str1, ".");
     _strrev(Str1);
 
-    for (uint i = 0; i < 1000; ++i) pSpriteObjects[i].uObjectDescID = 0;
+    for (uint i = 0; i < 1000; ++i)
+        pSpriteObjects[i].uObjectDescID = 0;
 
     v5 = pMapStats->GetMapInfo(pCurrentMapName);
 
@@ -835,7 +833,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
         PrepareToLoadODM(bLoading, 0);
     else
         PrepareToLoadBLV(bLoading);
-    _461103_load_level_sub();
+    pEngine->_461103_load_level_sub();
     if (!_stricmp(pCurrentMapName, "d11.blv") ||
         !_stricmp(pCurrentMapName, "d10.blv")) {
         // spawning grounds & walls of mist - no loot & exp from monsters
@@ -855,121 +853,6 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     _flushall();
 }
 
-void IntegrityTest() {
-    static_assert(sizeof(OverlayDesc) == 8, "Wrong type size");
-    static_assert(sizeof(ChestDesc) == 36, "Wrong type size");
-    static_assert(sizeof(ObjectDesc_mm6) == 52, "Wrong type size");
-    static_assert(sizeof(ObjectDesc) == 56, "Wrong type size");
-    static_assert(sizeof(DecorationDesc) == 84, "Wrong type size");
-    static_assert(sizeof(PlayerFrame) == 10, "Wrong type size");
-    static_assert(sizeof(RenderVertexSoft) == 0x30, "Wrong type size");
-    static_assert(sizeof(DecorationDesc) == 0x54, "Wrong type size");
-    static_assert(sizeof(ObjectDesc) == 0x38, "Wrong type size");
-    static_assert(sizeof(OverlayDesc) == 0x8, "Wrong type size");
-    static_assert(sizeof(ChestDesc) == 0x24, "Wrong type size");
-    static_assert(sizeof(MonsterDesc_mm6) == 148, "Wrong type size");
-    static_assert(sizeof(MonsterDesc) == 152, "Wrong type size");
-    static_assert(sizeof(Timer) == 0x28, "Wrong type size");
-    static_assert(sizeof(OtherOverlay) == 0x14, "Wrong type size");
-    static_assert(sizeof(ItemGen) == 0x24, "Wrong type size");
-    static_assert(sizeof(SpriteObject) == 0x70, "Wrong type size");
-    //    static_assert(sizeof(ItemDesc) == 0x30, "Wrong type size");
-    //    static_assert(sizeof(ItemsTable) == 0x117A0, "Wrong type size");
-    static_assert(sizeof(Chest) == 0x14CC, "Wrong type size");
-    //    static_assert(sizeof(MapInfo) == 0x44, "Wrong type size");
-    //    static_assert(sizeof(SpellInfo) == 0x24, "Wrong type size");
-    static_assert(sizeof(SpellData) == 0x14, "Wrong type size");
-    static_assert(sizeof(SpellBuff) == 0x10, "Wrong type size");
-    static_assert(sizeof(AIDirection) == 0x1C, "Wrong type size");
-    static_assert(sizeof(ActorJob) == 0xC, "Wrong type size");
-    //    static_assert(sizeof(Actor) == 0x344, "Wrong type size");
-    static_assert(sizeof(LevelDecoration) == 0x20, "Wrong type size");
-    //    static_assert(sizeof(KeyboardActionMapping) == 0x20C, "Wrong type
-    //    size");
-    // static_assert(sizeof(UIAnimation) == 0xD, "Wrong type size");
-    // static_assert(sizeof(SpawnPointMM7) == 0x18, "Wrong type size");
-    // static_assert(sizeof(ODMFace) == 0x134, "Wrong type size");
-    // static_assert(sizeof(OutdoorLocation) == 0x1C28C, "Wrong type size");
-    // static_assert(sizeof(BLVFace) == 0x60, "Wrong type size");
-    static_assert(sizeof(BLVFaceExtra) == 0x24, "Wrong type size");
-    static_assert(sizeof(BLVSector) == 0x74, "Wrong type size");
-    static_assert(sizeof(BLVLightMM7) == 0x10, "Wrong type size");
-    static_assert(sizeof(BLVDoor) == 0x50, "Wrong type size");
-    // static_assert(sizeof(IndoorLocation) == 0x690, "Wrong type size");
-    // static_assert(sizeof(ODMRenderParams) == 0x74, "Wrong type size");
-    // static_assert(sizeof(Mouse) == 0x114, "Wrong type size");
-    static_assert(sizeof(Particle_sw) == 0x68, "Wrong type size");
-    static_assert(sizeof(Particle) == 0x68, "Wrong type size");
-    static_assert(sizeof(ParticleEngine) == 0xE430, "Wrong type size");
-    static_assert(sizeof(Lightmap) == 0xC1C, "Wrong type size");
-    static_assert(sizeof(LightmapBuilder) == 0x3CBC38, "Wrong type size");
-    static_assert(sizeof(Vis_SelectionList) == 0x2008, "Wrong type size");
-    static_assert(sizeof(Vis) == 0x20D0, "Wrong type size");
-    static_assert(sizeof(PlayerBuffAnim) == 0x10, "Wrong type size");
-    static_assert(sizeof(ProjectileAnim) == 0x1C, "Wrong type size");
-    static_assert(sizeof(SpellFxRenderer) == 0x5F8, "Wrong type size");
-    static_assert(sizeof(IndoorCameraD3D_Vec3) == 0x10, "Wrong type size");
-    static_assert(sizeof(IndoorCameraD3D_Vec4) == 0x18, "Wrong type size");  // should be 14 (10 vec3 + 4 vdtor)  but 18 coz of
-                             // his +4 from own vdtor, but it is odd since vdtor
-                             // already present from vec3
-    // static_assert(sizeof(IndoorCameraD3D) == 0x1A1384, "Wrong type size");
-    static_assert(sizeof(StationaryLight) == 0xC, "Wrong type size");
-    static_assert(sizeof(LightsStack_StationaryLight_) == 0x12C8, "Wrong type size");
-    static_assert(sizeof(MobileLight) == 0x12, "Wrong type size");
-    static_assert(sizeof(LightsStack_MobileLight_) == 0x1C28, "Wrong type size");
-    // static_assert(sizeof(Engine) == 0xE78, "Wrong type size");
-    static_assert(sizeof(stru141_actor_collision_object) == 0xA8, "Wrong type size");
-    static_assert(sizeof(ActionQueue) == 0x7C, "Wrong type size");
-    static_assert(sizeof(NPCData) == 0x4C, "Wrong type size");
-    static_assert(sizeof(NPCStats) == 0x17FFC, "Wrong type size");
-    static_assert(sizeof(BspRenderer) == 0x53740, "Wrong type size");
-    static_assert(sizeof(PaletteManager) == 0x267AF0, "Wrong type size");
-    static_assert(sizeof(ViewingParams) == 0x26C, "Wrong type size");
-    //  static_assert(sizeof(IndoorCamera) == 0x50, "Wrong type size");
-    static_assert(sizeof(Bloodsplat) == 0x28, "Wrong type size");
-    static_assert(sizeof(BloodsplatContainer) == 0xA0C, "Wrong type size");
-    static_assert(sizeof(TrailParticle) == 0x18, "Wrong type size");
-    static_assert(sizeof(EventIndex) == 0xC, "Wrong type size");
-    static_assert(sizeof(_2devent) == 0x34, "Wrong type size");
-    static_assert(sizeof(MapsLongTimer) == 0x20, "Wrong type size");
-    static_assert(sizeof(SavegameHeader) == 0x64, "Wrong type size");
-    static_assert(sizeof(StorylineText) == 0x160, "Wrong type size");
-    static_assert(sizeof(FactionTable) == 0x1EF1, "Wrong type size");
-    static_assert(sizeof(Decal) == 0xC20, "Wrong type size");
-    static_assert(sizeof(DecalBuilder) == 0x30C038, "Wrong type size");
-    static_assert(sizeof(MonsterInfo) == 0x58, "Wrong type size");
-    static_assert(sizeof(MonsterStats) == 0x5BA0, "Wrong type size");
-    // static_assert(sizeof(RenderD3D) == 0x148, "Wrong type size");
-    //  static_assert(sizeof(Render) == 0x129844, "Wrong type size");
-    static_assert(sizeof(Player) == 0x1B3C, "Wrong type size");
-    static_assert(sizeof(PartyTimeStruct) == 0x678, "Wrong type size");
-    static_assert(sizeof(Party) == 0x16238, "Wrong type size");
-    // static_assert(sizeof(GUIButton) == 0xBC, "Wrong type size");
-    // static_assert(sizeof(GUIWindow) == 0x54, "Wrong type size");
-    // static_assert(sizeof(GUIProgressBar) == 0x1B8, "Wrong type size");
-    // static_assert(sizeof(stru262_TurnBased) == 0x40, "Wrong type size");
-    // static_assert(sizeof(ArcomageGame) == 0xFB, "Wrong type size");
-    static_assert(sizeof(CastSpellInfo) == 0x14, "Wrong type size");
-    static_assert(sizeof(ArcomageCard) == 0x6C, "Wrong type size");
-    static_assert(sizeof(LightsData) == 0x3FC, "Wrong type size");
-    static_assert(sizeof(TravelInfo) == 0x20, "Wrong type size");
-    static_assert(sizeof(stru336) == 0x798, "Wrong type size");
-    static_assert(sizeof(Vec3_short_) == 6, "Wrong type size");
-    // static_assert(sizeof(BLVFace) == 96, "Wrong type size");
-    static_assert(sizeof(BLVFaceExtra) == 36, "Wrong type size");
-    static_assert(sizeof(BLVSector) == 116, "Wrong type size");
-    static_assert(sizeof(LevelDecoration) == 32, "Wrong type size");
-    static_assert(sizeof(BLVLightMM7) == 16, "Wrong type size");
-    static_assert(sizeof(BSPNode) == 8, "Wrong type size");
-    // static_assert(sizeof(SpawnPointMM7) == 24, "Wrong type size");
-    static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
-    static_assert(sizeof(Actor) == 836, "Wrong type size");
-    static_assert(sizeof(SpriteObject) == 112, "Wrong type size");
-    static_assert(sizeof(Chest) == 5324, "Wrong type size");
-    static_assert(sizeof(stru123) == 0xC8, "Wrong type size");
-    static_assert(sizeof(BLVMapOutline) == 12, "Wrong type size");
-    static_assert(sizeof(LODSprite) == 0x28, "Wrong type size");
-}
 
 //----- (004647AB) --------------------------------------------------------
 void FinalInitialization() {
@@ -1079,7 +962,7 @@ bool MM7_Initialize(const char *mm7_path) {
 
     OnTimer(1);
     GameUI_StatusBar_Update(true);
-    pMouse = pEngine->pMouseInstance;
+    //pMouse = pEngine->pMouseInstance;
 
     MM7_LoadLods(mm7_path);
 
@@ -1217,8 +1100,8 @@ bool MM7_Initialize(const char *mm7_path) {
 }
 
 //----- (00465D0B) --------------------------------------------------------
-void SecondaryInitialization() {
-    pMouse->Initialize(window);
+void Engine::SecondaryInitialization() {
+    mouse->Initialize(window);
 
     pItemsTable = new ItemsTable;
     pItemsTable->Initialize();
@@ -1267,7 +1150,8 @@ void SecondaryInitialization() {
     }
 
     UI_Create();
-    pEngine->GetSpellFxRenderer()->LoadAnimations();
+
+    spell_fx_renedrer->LoadAnimations();
 
     for (uint i = 0; i < 7; ++i) {
         char container_name[64];
@@ -1302,164 +1186,6 @@ void SecondaryInitialization() {
 }
 
 
-bool GameLoop() {
-    while (1) {
-        if (uGameState == GAME_FINISHED ||
-            GetCurrentMenuID() == MENU_EXIT_GAME) {
-            pEngine->Deinitialize();
-            return false;
-        } else if (GetCurrentMenuID() == MENU_SAVELOAD) {
-            MainMenuLoad_Loop();
-            if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
-                uGameState = GAME_STATE_PLAYING;
-                Game_Loop();
-            }
-            break;
-        } else if (GetCurrentMenuID() == MENU_NEWGAME) {
-            pOtherOverlayList->Reset();
-            if (!PartyCreationUI_Loop()) {
-                break;
-            }
-
-            pParty->pPickedItem.uItemID = 0;
-
-            strcpy(pCurrentMapName, pStartingMapName);
-            bFlashQuestBook = true;
-            pMediaPlayer->PlayFullscreenMovie("Intro Post");
-            SaveNewGame();
-            if (engine_config->NoMargareth())
-                _449B7E_toggle_bit(pParty->_quest_bits,
-                                   PARTY_QUEST_EMERALD_MARGARETH_OFF, 1);
-            Game_Loop();
-            if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU) {
-                SetCurrentMenuID(MENU_NEWGAME);
-                uGameState = GAME_STATE_PLAYING;
-                continue;
-            } else if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {
-                break;
-            }
-            assert(false && "Invalid game state");
-        } else if (GetCurrentMenuID() == MENU_CREDITS) {
-            pAudioPlayer->MusicStop();
-            GUICredits::ExecuteCredits();
-            break;
-        } else if (GetCurrentMenuID() == MENU_5 ||
-                   GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
-            uGameState = GAME_STATE_PLAYING;
-            Game_Loop();
-        } else if (GetCurrentMenuID() == MENU_DebugBLVLevel) {
-            pMouse->ChangeActivation(0);
-            pParty->Reset();
-            pParty->CreateDefaultParty(true);
-
-            __debugbreak();
-            /*extern void CreateDefaultBLVLevel();
-            CreateDefaultBLVLevel();
-
-            OPENFILENAMEA ofn;
-            if ( !GetOpenFileNameA((LPOPENFILENAMEA)&ofn) )
-            {
-            pMouse->ChangeActivation(1);
-            break;
-            }
-            _chdir("..\\");
-            strcpy(pCurrentMapName, ofn.lpstrFileTitle);*/
-            pMouse->ChangeActivation(1);
-            Game_Loop();
-        }
-        if (uGameState == GAME_STATE_LOADING_GAME) {
-            SetCurrentMenuID(MENU_5);
-            uGameState = GAME_STATE_PLAYING;
-            continue;
-        }
-        if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU) {
-            SetCurrentMenuID(MENU_NEWGAME);
-            uGameState = GAME_STATE_PLAYING;
-            continue;
-        }
-        if (uGameState ==
-            GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {  // from the loaded game
-            pAudioPlayer->StopChannels(-1, -1);
-            uGameState = GAME_STATE_PLAYING;
-            break;
-        }
-    }
-
-    return true;
-}
-
-void ShowMM7IntroVideo_and_LoadingScreen() {
-    bGameoverLoop = true;
-    if (!engine_config->NoVideo()) {
-        render->PresentBlackScreen();
-        pMediaPlayer->PlayFullscreenMovie("3dologo");
-        pMediaPlayer->PlayFullscreenMovie("new world logo");
-        pMediaPlayer->PlayFullscreenMovie("Intro");
-    }
-
-    Image *tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
-
-    render->BeginScene();
-    render->DrawTextureNew(0, 0, tex);
-
-    DrawMM7CopyrightWindow();
-
-    render->EndScene();
-    render->Present();
-
-    tex->Release();
-    tex = nullptr;
-
-    bGameoverLoop = false;
-}
-
-
-Engine_::Configuration *ConfigureEngine(const char *cmd) {
-    auto cfg = new Engine_::Configuration();
-
-    if (!cfg->no_walk_sound) {
-        cfg->no_walk_sound = OS_GetAppInt("WalkSound", 1) == 0;
-    }
-    cfg->always_run = OS_GetAppInt("valAlwaysRun", 0) != 0;
-    cfg->flip_on_exit = OS_GetAppInt("FlipOnExit", 0) != 0;
-
-    cfg->show_damage = OS_GetAppInt("ShowDamage", 1) != 0;
-    int turn_type = OS_GetAppInt("TurnDelta", 3);
-
-    switch (turn_type) {
-        case 1:             // 16x
-            logger->Warning(L"x16 Turn Speed");  // really shouldn't use this mode
-            cfg->turn_speed = 128;
-            break;
-
-        case 2:             // 32x
-            logger->Warning(L"x32 Turn Speed");  // really shouldn't use this mode
-            cfg->turn_speed = 64;
-            break;
-
-        case 3:             // smooth
-        default:
-            cfg->turn_speed = 0;
-        break;
-    }
-
-    cfg->sound_level = min(9, OS_GetAppInt("soundflag", 9));
-    cfg->music_level = min(9, OS_GetAppInt("musicflag", 9));
-    cfg->voice_level = min(9, OS_GetAppInt("CharVoices", 9));
-
-    cfg->gamma = min(4, OS_GetAppInt("GammaPos", 4));
-
-    if (OS_GetAppInt("Bloodsplats", 1))
-        cfg->flags2 |= GAME_FLAGS_2_DRAW_BLOODSPLATS;
-    else
-        cfg->flags2 &= ~GAME_FLAGS_2_DRAW_BLOODSPLATS;
-    cfg->no_bloodsplats = !(cfg->flags2 & GAME_FLAGS_2_DRAW_BLOODSPLATS);
-
-
-    cfg->MergeCommandLine(std::string(cmd));
-
-    return cfg;
-}
 
 const char *FindMm7Directory(char *mm7_path) {
     bool mm7_installation_found = false;
@@ -1533,40 +1259,6 @@ void Engine::Initialize() {
     pEventTimer->Pause();
 
     GUIWindow::InitializeGUI();
-}
-
-bool MM_Main(const char *pCmdLine) {
-    IntegrityTest();
-
-    logger = new Log();
-    logger->Initialize();
-    logger->Info(L"World of Might and Magic build %S %S", __DATE__, __TIME__);
-
-    auto config = ConfigureEngine(pCmdLine);
-    engine_config = config;
-
-    pEngine = Engine::Create(config);
-    pEngine->Initialize();
-
-    ShowMM7IntroVideo_and_LoadingScreen();
-
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-
-    // logger->Warning(L"MM: entering main loop");
-    while (true) {
-        GUIWindow_MainMenu::Loop();
-        uGameState = GAME_STATE_PLAYING;
-
-        if (!GameLoop()) {
-            break;
-        }
-    }
-
-    if (pEngine != nullptr) {
-        pEngine->Deinitialize();
-    }
-
-    return true;
 }
 
 //----- (00466082) --------------------------------------------------------
@@ -1665,14 +1357,16 @@ void PrepareToLoadODM(unsigned int bLoading, ODMRenderParams *a2) {
     pGameLoadingUI_ProgressBar->Reset(27);
     uCurrentlyLoadedLevelType = LEVEL_Outdoor;
     ODM_LoadAndInitialize(pCurrentMapName, a2);
-    if (!bLoading) TeleportToStartingPoint(uLevel_StartingPointType);
+    if (!bLoading)
+        TeleportToStartingPoint(uLevel_StartingPointType);
     viewparams->_443365();
     PlayLevelMusic();
 }
 
 //----- (00464479) --------------------------------------------------------
-void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
-    if (pMouse) pMouse->SetCursorImage("MICON1");
+void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
+    if (mouse)
+        mouse->SetCursorImage("MICON1");
 
     pPaletteManager->ResetNonLocked();
     pBitmaps_LOD->ReleaseAll2();
@@ -1787,7 +1481,7 @@ void GenerateItemsInChest() {
 }
 
 //----- (00461103) --------------------------------------------------------
-void _461103_load_level_sub() {
+void Engine::_461103_load_level_sub() {
     int v4;          // edx@8
     int v6;   // esi@14
     int v8;   // ecx@16
@@ -1897,7 +1591,7 @@ void _461103_load_level_sub() {
     pSprites_LOD->_461397();
     pPaletteManager->LockTestAll();
     if (pParty->pPickedItem.uItemID != 0)
-        pMouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
+        mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
 }
 
 //----- (0042F3D6) --------------------------------------------------------

@@ -1,10 +1,14 @@
 #pragma once
+
 #include "Engine/OurMath.h"
 #include "Engine/Rect.h"
+#include "Engine/IocContainer.h"
 #include "Engine/VectorTypes.h"
 
 #include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/Image.h"
+
+using EngineIoc = Engine_::IocContainer;
 
 class OSWindow;
 class Sprite;
@@ -232,12 +236,19 @@ struct RenderHWLContainer {
     char *pSpriteNames[50000];
     int pSpriteOffsets[50000];
     int scale_hwls_to_half;
+    Log *log;
 };
 
 class IRender {
  public:
     explicit inline IRender(Graphics::Configuration *config) {
         this->config = config;
+        this->log = EngineIoc::ResolveLogger();
+        this->decal_builder = EngineIoc::ResolveDecalBuilder();
+        this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
+        this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
+        this->particle_engine = EngineIoc::ResolveParticleEngine();
+        this->vis = EngineIoc::ResolveVis();
     }
     virtual ~IRender() {}
 
@@ -424,6 +435,13 @@ class IRender {
     void (*pBeforePresentFunction)();
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw;
+
+    Log *log = nullptr;
+    DecalBuilder *decal_builder = nullptr;
+    SpellFxRenderer *spell_fx_renderer = nullptr;
+    LightmapBuilder *lightmap_builder = nullptr;
+    ParticleEngine *particle_engine = nullptr;
+    Vis *vis = nullptr;
 
     virtual void WritePixel16(int x, int y, uint16_t color) = 0;
 

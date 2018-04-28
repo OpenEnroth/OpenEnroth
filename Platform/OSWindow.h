@@ -3,8 +3,10 @@
 
 extern class OSWindow *window;
 
+class Mouse;
 class OSWindow {
  public:
+    OSWindow();
     static OSWindow *Create(const wchar_t *title, int window_width,
                             int window_height);
 
@@ -38,4 +40,6 @@ class OSWindow {
     static void *WinApiMsgRouter(void *hwnd, int msg, int wparam, void *lparam);
 
     void *CreateDebugMenuPanel();
+
+    Mouse *mouse = nullptr;
 };

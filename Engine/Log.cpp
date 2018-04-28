@@ -6,8 +6,6 @@
 
 #include "Platform/Api.h"
 
-Log *logger = nullptr;
-
 bool Log::Initialize() { return this->initialized = OS_OpenConsole(); }
 
 void Log::Info(const wchar_t *pFormat, ...) {
