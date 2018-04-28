@@ -56,7 +56,7 @@ uint32_t *MakeImageColorKey(unsigned int width, unsigned int height,
             auto r = palette[(index * 3) + 0];
             auto g = palette[(index * 3) + 1];
             auto b = palette[(index * 3) + 2];
-            if (Color16(r, g, r) == color_key) {
+            if (Color16(r, g, b) == color_key) {
                 res[y * width + x] = 0x00000000;
             } else {
                 res[y * width + x] = Color32(r, g, b);

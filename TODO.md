@@ -4,20 +4,16 @@
 
 * Quicksave / Quickload
 
-* Sound refactor - transfer to OpenAL - remove MSS (AIL)
-* music tracks not realeased when stopped - memory leak
-* full screen movie sound is choppy - suspect reading incorrect amounts of bits - AV_SAMPLE_FMT_FLT -leaving gaps in suadio stream??
+* full screen movie sound is choppy
 
 * use of memset is unsafe sometimes if structs are rearranged
 * issues with stickling control _507B98_ctrl_pressed - stealing (only used a couple of times remove?? OS_IfCtrlPressed instead??)
 
 * add how to help section on readme
-* add short term / long term project goals
+* add short term / long term project goals - expand milestones
 
 
-* shop texts sometimes out of bounds
 * resizing game windows - need to change use of co-ords to x/640 y/480 - normalised
-* update file paths using "MakeDataPath"
 
 
 
@@ -27,6 +23,7 @@
 
 * npc walking over water - cleanup
 
+* test and fix magic
 
 * clicking on asleep char cycles
 

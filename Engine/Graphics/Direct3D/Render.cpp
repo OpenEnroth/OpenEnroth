@@ -3215,17 +3215,90 @@ void Render::DrawMasked(float u, float v, Image *pTexture,
     }
 }
 
-void Render::_4A65CC(unsigned int x, unsigned int y, Image *a4, Image *a5,
-                     int a6, int a7, int a8) {  // haster
-    if (a4 && a5) {
-        uint16_t *v24 = (uint16_t *)a4->GetPixels(IMAGE_FORMAT_R5G6B5);
+void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
+    const uint16_t *pixelpoint;
+    int uX = u * 640.0f;
+    int uY = v * 480.0f;
+    if (img) {
+        pixelpoint = (const uint16_t *)img->GetPixels(IMAGE_FORMAT_R5G6B5);
+        int width = img->GetWidth();
+        int height = img->GetHeight();
 
-        for (unsigned int dy = 0; dy < a4->GetHeight(); ++dy) {
-            for (unsigned int dx = 0; dx < a4->GetWidth(); ++dx) {
-                if (*v24 != 0) {  // black pixel check
-                    WritePixel16(x + dx, y + dy, *v24);
+        int brightloc = -1;
+        int brightval = 0;
+        int darkloc = -1;
+        int darkval = 765;
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int nudge = x + y * width;
+                // Test the brightness against the threshold
+                int bright = (*(pixelpoint + nudge) & 31) * 8 + ((*(pixelpoint + nudge) >> 5) & 63) * 4 + ((*(pixelpoint + nudge) >> 11) & 31) * 8;
+                if (bright == 0) continue;
+
+                if (bright > brightval) {
+                    brightval = bright;
+                    brightloc = nudge;
                 }
-                ++v24;
+                if (bright < darkval) {
+                    darkval = bright;
+                    darkloc = nudge;
+                }
+            }
+        }
+
+       // find brightest
+        unsigned int bmax = (*(pixelpoint + brightloc) & 31) * 8;
+        unsigned int gmax = ((*(pixelpoint + brightloc) >> 5) & 63) * 4;
+        unsigned int rmax = ((*(pixelpoint + brightloc) >> 11) & 31) * 8;
+
+        // find darkest not black
+        unsigned int bmin = (*(pixelpoint + darkloc) & 31) * 8;
+        unsigned int gmin = ((*(pixelpoint + darkloc) >> 5) & 63) * 4;
+        unsigned int rmin = ((*(pixelpoint + darkloc) >> 11) & 31) * 8;
+
+        // steps pixels
+        float bstep = (bmax - bmin) / 128.;
+        float gstep = (gmax - gmin) / 128.;
+        float rstep = (rmax - rmin) / 128.;
+
+        int timestep = time % 256;
+
+        // loop through
+        for (int ydraw = 0; ydraw < height; ++ydraw) {
+            for (int xdraw = 0; xdraw < width; ++xdraw) {
+                if (*pixelpoint) {  // check orig item not got blakc pixel
+                    unsigned int bcur = (*pixelpoint & 31) * 8;
+                    unsigned int gcur = ((*pixelpoint >> 5) & 63) * 4;
+                    unsigned int rcur = ((*pixelpoint >> 11) & 31) * 8;
+                    int pixstepb = (bcur - bmin) / bstep + timestep;
+                    if (pixstepb > 255) pixstepb = pixstepb - 256;
+                    if (pixstepb >= 0 && pixstepb < 128)  // 0-127
+                        bcur = bmin + pixstepb * bstep;
+                    if (pixstepb >= 128 && pixstepb < 256) {  // 128-255
+                        pixstepb = pixstepb - 128;
+                        bcur = bmax - pixstepb * bstep;
+                    }
+                    int pixstepr = (rcur - rmin) / rstep + timestep;
+                    if (pixstepr > 255) pixstepr = pixstepr - 256;
+                    if (pixstepr >= 0 && pixstepr < 128)  // 0-127
+                        rcur = rmin + pixstepr * rstep;
+                    if (pixstepr >= 128 && pixstepr < 256) {  // 128-255
+                        pixstepr = pixstepr - 128;
+                        rcur = rmax - pixstepr * rstep;
+                    }
+                    int pixstepg = (gcur - gmin) / gstep + timestep;
+                    if (pixstepg > 255) pixstepg = pixstepg - 256;
+                    if (pixstepg >= 0 && pixstepg < 128)  // 0-127
+                        gcur = gmin + pixstepg * gstep;
+                    if (pixstepg >= 128 && pixstepg < 256) {  // 128-255
+                        pixstepg = pixstepg - 128;
+                        gcur = gmax - pixstepg * gstep;
+                    }
+                    // out pixel
+                    WritePixel16(uX + xdraw, uY + ydraw, Color16(rcur, gcur, bcur));
+                }
+                pixelpoint++;
             }
         }
     }
