@@ -953,7 +953,6 @@ bool MM7_Initialize(const char *mm7_path) {
 
     OnTimer(1);
     GameUI_StatusBar_Update(true);
-    //pMouse = pEngine->pMouseInstance;
 
     MM7_LoadLods(mm7_path);
 

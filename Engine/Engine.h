@@ -166,11 +166,11 @@ struct Engine {
     unsigned __int64 __depricated2;  // unsigned __int64 uSomeGammaStartTime;
     unsigned __int64 __depricated3;  // __int64 uSomeGammaDeltaTime;
     void /*ThreadWard*/ *pThreadWardInstance;
-    //ParticleEngine *pParticleEngine;
-    //Mouse *pMouseInstance;
-    //LightmapBuilder *pLightmapBuilder;
-    //Vis *pVisInstance;
-    //struct SpellFxRenderer *spellfx;
+    // ParticleEngine *pParticleEngine;
+    // Mouse *pMouseInstance;
+    // LightmapBuilder *pLightmapBuilder;
+    // Vis *pVisInstance;
+    // struct SpellFxRenderer *spellfx;
     void *__depricated5;  // IndoorCameraD3D *pIndoorCameraD3D;
     stru9 *pStru9Instance;
     stru10 *pStru10Instance;

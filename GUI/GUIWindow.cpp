@@ -966,7 +966,7 @@ void GUI_UpdateWindows() {
     for (GUIWindow *pWindow : tmpWindowList) {
         pWindow->Update();
     }
-        
+
     if (GetCurrentMenuID() == -1) {
         GameUI_DrawFoodAndGold();
     }

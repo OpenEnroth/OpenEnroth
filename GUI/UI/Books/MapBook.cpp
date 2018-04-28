@@ -659,7 +659,7 @@ const char *GetMapBookHintText(int mouse_x, int mouse_y) {
 
     // In the mapbook only lady Margaret dispays for defoult zoom(В
     // книге карты только Леди Маргарита всплывает при дефолтном зуме)
-    int map_tile_X = abs(global_coord_X + 22528) / 512; 
+    int map_tile_X = abs(global_coord_X + 22528) / 512;
     int map_tile_Y = abs(global_coord_Y - 22528) / 512;
     if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) &&
         uCurrentlyLoadedLevelType == LEVEL_Outdoor &&

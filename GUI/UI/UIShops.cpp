@@ -1041,7 +1041,7 @@ void UIShop_Buy_Identify_Repair() {
         case HOUSE_DIALOGUE_SHOP_REPAIR: {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462 ||
-                (pItemID =pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(
+                (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(
                          invindex),
                  !pItemID))
                 return;

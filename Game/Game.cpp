@@ -1,5 +1,8 @@
 #include "Game/Game.h"
 
+#include <string>
+#include <algorithm>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
@@ -80,7 +83,7 @@ Configuration *ConfigureGame(const char *cmd_line) {
 }
 
 int MM_Main(const char *pCmdLine) {
-    //ConfigureServices();
+    // ConfigureServices();
 
     auto config = ConfigureGame(pCmdLine);
 
@@ -180,16 +183,14 @@ bool Game::Game::Loop() {
             GetCurrentMenuID() == MENU_EXIT_GAME) {
             pEngine->Deinitialize();
             return false;
-        }
-        else if (GetCurrentMenuID() == MENU_SAVELOAD) {
+        } else if (GetCurrentMenuID() == MENU_SAVELOAD) {
             MainMenuLoad_Loop();
             if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
                 uGameState = GAME_STATE_PLAYING;
                 GameLoop();
             }
             break;
-        }
-        else if (GetCurrentMenuID() == MENU_NEWGAME) {
+        } else if (GetCurrentMenuID() == MENU_NEWGAME) {
             pOtherOverlayList->Reset();
             if (!PartyCreationUI_Loop()) {
                 break;
@@ -208,23 +209,19 @@ bool Game::Game::Loop() {
                 SetCurrentMenuID(MENU_NEWGAME);
                 uGameState = GAME_STATE_PLAYING;
                 continue;
-            }
-            else if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {
+            } else if (uGameState == GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {
                 break;
             }
             assert(false && "Invalid game state");
-        }
-        else if (GetCurrentMenuID() == MENU_CREDITS) {
+        } else if (GetCurrentMenuID() == MENU_CREDITS) {
             pAudioPlayer->MusicStop();
             GUICredits::ExecuteCredits();
             break;
-        }
-        else if (GetCurrentMenuID() == MENU_5 ||
+        } else if (GetCurrentMenuID() == MENU_5 ||
             GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
             uGameState = GAME_STATE_PLAYING;
             GameLoop();
-        }
-        else if (GetCurrentMenuID() == MENU_DebugBLVLevel) {
+        } else if (GetCurrentMenuID() == MENU_DebugBLVLevel) {
             mouse->ChangeActivation(0);
             pParty->Reset();
             pParty->CreateDefaultParty(true);
@@ -2386,12 +2383,12 @@ void Game::Game::EventLoop() {
                     pMessageQueue_50CBD0->Flush();
                     pEngine->OnGameViewportClick();
                     continue;
-                case UIMSG_F: // what event?
+                case UIMSG_F:  // what event?
                     __debugbreak();
                     pButton2 = (GUIButton *)(unsigned __int16)vis->get_picked_object_zbuf_val();
                     __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
                     continue;
-                case UIMSG_54: // what event?
+                case UIMSG_54:  // what event?
                     __debugbreak();
                     pButton2 = (GUIButton *)uMessageParam;
                     __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_22, (int)pButton2, 0);

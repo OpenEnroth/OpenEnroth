@@ -228,7 +228,6 @@ int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ) {
 //----- (00488F5C) --------------------------------------------------------
 bool OutdoorLocation::Initialize(const String &filename, int days_played,
                                  int respawn_interval_days, int *thisa) {
-
     decal_builder->Reset(0);
 
     if (!filename.empty()) {

@@ -2,7 +2,8 @@
 
 #include "Game/GameMenu.h"
 
-using namespace Game;
+using Game::IocContainer;
+using Game::Menu;
 
 Menu *IocContainer::menu = nullptr;
 Menu *IocContainer::ResolveGameMenu() {

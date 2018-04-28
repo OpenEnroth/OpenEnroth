@@ -23,7 +23,8 @@
 
 using EngineIoc = Engine_::IocContainer;
 
-static Mouse *mouse = EngineIoc::ResolveMouse(); // should be injected in Party, but struct size cant be changed
+// should be injected in Party, but struct size cant be changed
+static Mouse *mouse = EngineIoc::ResolveMouse();
 
 Party *pParty = nullptr;
 

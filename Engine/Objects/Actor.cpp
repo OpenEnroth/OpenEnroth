@@ -31,7 +31,8 @@
 
 using EngineIoc = Engine_::IocContainer;
 
-static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder(); // should be injected into Actor but struct size cant be changed
+// should be injected into Actor but struct size cant be changed
+static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
 std::array<Actor, 500> pActors;

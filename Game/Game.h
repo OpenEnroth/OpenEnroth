@@ -12,8 +12,7 @@ using GameIoc = Game::IocContainer;
 
 namespace Game {
 
-class Game
-{
+class Game {
  public:
      inline Game() {
          this->log = EngineIoc::ResolveLogger();

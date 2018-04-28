@@ -6,7 +6,6 @@ class Menu;
 
 class IocContainer {
  public:
-
      static Menu *ResolveGameMenu();
 
  private:
