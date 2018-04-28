@@ -635,7 +635,7 @@ int PaletteManager::ResetNonLocked() {
         v5 = &v1->pPaletteIDs[result];
         v6 = 50 - result;
         result = 0;
-        memset(v5, 0, 4 * v6);
+        memset(v5, 0, sizeof(int) * v6);
     }
     return result;
 }
@@ -666,7 +666,7 @@ int PaletteManager::ResetNonTestLocked() {
         v5 = &v1->pPaletteIDs[result];
         v6 = 50 - result;
         result = 0;
-        memset(v5, 0, 4 * v6);
+        memset(v5, 0, sizeof(int) * v6);
     }
     return result;
 }

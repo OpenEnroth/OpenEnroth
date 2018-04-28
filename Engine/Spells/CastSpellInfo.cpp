@@ -128,7 +128,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
         if (pParty->Invisible())
             pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY]
-                .Reset();  // no longer invisible
+            .Reset();  // no longer invisible
 
         if (pCastSpell->uFlags & ON_CAST_CastingInProgress) {
             if (!pParty->pPlayers[pCastSpell->uPlayerID].CanAct())
@@ -175,7 +175,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
         }
 
         if (pCastSpell->forced_spell_skill_level) {  // for spell scrolls - decode
-                                               // spell power and mastery
+                                           // spell power and mastery
             spell_level = (pCastSpell->forced_spell_skill_level) & 0x3F;  // 6 bytes
             skill_level = ((pCastSpell->forced_spell_skill_level) & 0x1C0) / 64 + 1;
         } else {
@@ -200,7 +200,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             else if (pCastSpell->uSpellID == SPELL_BOW_ARROW)
                 which_skill = PLAYER_SKILL_BOW;
             else if (pCastSpell->uSpellID == SPELL_101 ||
-                     pCastSpell->uSpellID == SPELL_LASER_PROJECTILE)
+                pCastSpell->uSpellID == SPELL_LASER_PROJECTILE)
                 which_skill = PLAYER_SKILL_BLASTER;
             else
                 assert(false && "Unknown spell");
@@ -223,11 +223,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             sRecoveryTime = pSpellDatas[pCastSpell->uSpellID].recovery_per_skill[skill_level - 1];
         }
 
-        if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 &&
+        if (!pCastSpell->forced_spell_skill_level) {
+            if (which_skill == PLAYER_SKILL_DARK && pParty->uCurrentHour == 0 &&
                 pParty->uCurrentMinute == 0 ||
-            which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 &&
+                which_skill == PLAYER_SKILL_LIGHT && pParty->uCurrentHour == 12 &&
                 pParty->uCurrentMinute == 0)  // free spells at midnight or midday
-            uRequiredMana = 0;
+                uRequiredMana = 0;
+        }
 
         if (pCastSpell->uSpellID < SPELL_BOW_ARROW &&
             pPlayer->sMana < uRequiredMana) {
@@ -2176,9 +2178,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             }
 
             case SPELL_WATER_LLOYDS_BEACON: {
-                if (!_stricmp(pCurrentMapName, "d05.blv")) {  // Arena
-                    GameUI_StatusBar_OnEvent(
-                        localization->GetString(428));  // Spell failed
+                if (pCurrentMapName == "d05.blv") {  // Arena
+                    GameUI_StatusBar_OnEvent(localization->GetString(428));  // Spell failed
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -4526,7 +4527,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             if (pGUIWindow_CastTargetedSpell) return;
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result], 0);
+                (int)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 52, 422, 35, 0, 2, 0, UIMSG_CastSpell_Character_Big_Improvement,
                 0, 49, "");

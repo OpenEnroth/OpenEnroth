@@ -411,7 +411,7 @@ void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
     memcpy(pSpriteEFrames, (char *)data_mm7 + 8 + mm7_frames_size,
            2 * num_mm7_eframes);
 
-    pSpritePFrames = (SpriteFrame **)malloc(4 * uNumSpriteFrames);
+    pSpritePFrames = (SpriteFrame **)malloc(sizeof(void *) * uNumSpriteFrames);
 
     /*uint mm6_frames_size = num_mm6_frames * sizeof(SpriteFrame_mm6);
     for (uint i = 0; i < num_mm6_frames; ++i)
@@ -503,9 +503,9 @@ bool SpriteFrameTable::FromFileTxt(const char *Args) {
         v4 = Argsa;
     }
     v2->uNumSpriteFrames = v4;
-    v2->pSpriteSFrames = (SpriteFrame *)malloc(60 * v4);
-    v2->pSpriteEFrames = (__int16 *)malloc(2 * v2->uNumSpriteFrames);
-    v2->pSpritePFrames = (SpriteFrame **)malloc(4 * v2->uNumSpriteFrames);
+    v2->pSpriteSFrames = (SpriteFrame *)malloc(sizeof(SpriteFrame) * v4);
+    v2->pSpriteEFrames = (__int16 *)malloc(sizeof(__int16) * v2->uNumSpriteFrames);
+    v2->pSpritePFrames = (SpriteFrame **)malloc(sizeof(void*) * v2->uNumSpriteFrames);
     if (v2->pSpriteSFrames) {
         v6 = File;
         v2->uNumSpriteFrames = 0;

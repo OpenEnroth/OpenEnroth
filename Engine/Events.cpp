@@ -27,8 +27,8 @@
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UITransition.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -58,24 +58,15 @@ _2devent p2DEvents[525];
 
 unsigned int LoadEventsToBuffer(const char *pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
-    void *ptr = pEvents_LOD->LoadRaw(pContainerName, 0);
-    FILE *pLodFile = pEvents_LOD->FindContainer(pContainerName, 0);
-    if (!pLodFile) {
-        Error("Unable to load %s", pContainerName);
+    size_t size = 0;
+    void *ptr = pEvents_LOD->LoadCompressedTexture(pContainerName, &size);
+    if ((ptr == nullptr) || (size > uBufferSize)) {
+        Error("File %s Size %lu - Buffer size %lu", pContainerName, size, uBufferSize);
     }
 
-    TextureHeader DstBuf;
-    fread(&DstBuf, 1, sizeof(TextureHeader), pLodFile);
-    unsigned int uTextureSize = DstBuf.uDecompressedSize;
-    if (!DstBuf.uDecompressedSize) uTextureSize = DstBuf.uTextureSize;
-
-    if (uTextureSize >= (int)uBufferSize)
-        Error("File %s Size %lu - Buffer size %lu", pContainerName,
-              uTextureSize, uBufferSize);
-
-    memcpy(pBuffer, ptr, uTextureSize);
+    memcpy(pBuffer, ptr, size);
     free(ptr);
-    return uTextureSize;
+    return size;
 }
 
 //----- (00443DA1) --------------------------------------------------------
@@ -739,86 +730,6 @@ LABEL_47:
                     break;
                 case EVENT_Substract:
                     pValue = EVT_DWORD(_evt->v7);
-                    /*if ( EVT_WORD(_evt->v5) == VAR_PlayerItemInHands )
-                    {
-                      if ( pParty->pPickedItem.uItemID == pValue )//In hand
-                      {
-                        pMouse->RemoveHoldingItem();
-                        ++curr_seq_num;
-                        v4 = v124;
-                        break;
-                      }
-                      //v67 =
-                    (int)pPlayers[uActiveCharacter]->pInventoryMatrix.data();
-                      for ( v65 = 0; v65 < 126; ++v65 )
-                      {
-                        v67 =
-                    &pPlayers[uActiveCharacter]->pInventoryMatrix[v65]; if ( v67
-                    > 0 )
-                        {
-                          if (
-                    pPlayers[uActiveCharacter]->pInventoryItemList[v67 -
-                    1].uItemID == pValue )
-                          {
-                            pPlayers[uActiveCharacter]->RemoveItemAtInventoryIndex(v65);
-                            //++curr_seq_num;
-                            //v4 = v124;
-                            goto substract;
-                          }
-                        }
-                        //v67 += 4;
-                      }
-                      //while ( (signed int)v65 < 126 );
-                      //v69 =
-                    (int)&pPlayers[uActiveCharacter]->pEquipment.pIndices; for (
-                    v68 = 0; v68 < 16; ++v68 )
-                      {
-                        if (
-                    pPlayers[uActiveCharacter]->pInventoryItemList[pPlayers[uActiveCharacter]->pEquipment.pIndices[v68]].uItemID
-                    == pValue )
-                        {
-                          pPlayers[uActiveCharacter]->pEquipment.pIndices[v68] =
-                    0;
-                          //++curr_seq_num;
-                          //v4 = v124;
-                          goto substract;
-                        }
-                        //v69 += 4;
-                      }
-                      for (int i = 1; i < 5; i++)
-                      {
-                        //v72 = (int)pPlayers[i]->pInventoryMatrix.data();
-                        for ( int v71 = 0; v71 < 126; ++v71 )
-                        {
-                          v72 = &pPlayers[i]->pInventoryMatrix[v71];
-                          if ( v72 > 0 )
-                          {
-                            if ( pPlayers[i]->pInventoryItemList[v72 -
-                    1].uItemID == pValue )
-                            {
-                              pPlayers[i]->RemoveItemAtInventoryIndex(v71);
-                              goto substract;
-                            }
-                          }
-                          //v72 += 4;
-                        }
-                        for ( v73 = 0; v73 < 16; ++v73 )
-                        {
-                          //v74 = (int)&pPlayers[i]->pEquipment;
-                          if (pPlayers[i]->pEquipment.pIndices[v73])
-                          {
-                            if
-                    (pPlayers[i]->pInventoryItemList[pPlayers[i]->pEquipment.pIndices[v73]
-                    - 1].uItemID == pValue )
-                            {
-                              pPlayers[i]->pEquipment.pIndices[v73] = 0;
-                              //v74 += 4;
-                              goto substract;
-                            }
-                          }
-                        }
-                      }
-                    }*/
                     if (player_choose <= 3) {
                         pParty->pPlayers[player_choose].SubtractVariable(
                             (enum VariableType)EVT_WORD(_evt->v5), pValue);
@@ -827,9 +738,19 @@ LABEL_47:
                             pPlayers[uActiveCharacter]->SubtractVariable(
                                 (enum VariableType)EVT_WORD(_evt->v5), pValue);
                     } else if (player_choose == 5) {  // all
-                        for (int i = 1; i < 5; ++i)
-                            pPlayers[i]->SubtractVariable(
+                        if (EVT_WORD(_evt->v5) == VAR_PlayerItemInHands) {
+                            for (int i = 1; i < 5; ++i) {
+                                if (pPlayers[i]->HasItem(pValue, 1)) {
+                                    pPlayers[i]->SubtractVariable(
+                                        (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                                    break;  // only take one item
+                                }
+                            }
+                        } else {
+                            for (int i = 1; i < 5; ++i)
+                                pPlayers[i]->SubtractVariable(
                                 (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        }
                     } else if (player_choose == 6) {  // random
                         pParty->pPlayers[rand() % 4].SubtractVariable(
                             (enum VariableType)EVT_WORD(_evt->v5), pValue);

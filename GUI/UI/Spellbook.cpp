@@ -187,7 +187,7 @@ void GUIWindow_Spellbook::Update() {
                                         pPageTexture);
 
             for (unsigned int i = 1; i <= 11; ++i) {
-                if (player->_achieved_awards_bits[(11 * player->lastOpenedSpellbookPage) + i + 63] ||
+                if (*(int *)(&player->spellbook + (11 * player->lastOpenedSpellbookPage) + i - 1) ||
                     engine_config->debug_all_magic) {
                         // this should check if oplayer knows spell
                     if (SBPageSSpellsTextureList[i]) {

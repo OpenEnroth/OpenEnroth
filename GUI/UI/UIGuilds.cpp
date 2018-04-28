@@ -138,7 +138,7 @@ void GuildDialog() {
                                                working_window.uFrameWidth, 0);
                 pButton->uHeight = pTextHeight;
                 textoffset = pButton->uY + pTextHeight - 1;
-                pButton->uW = textoffset;
+                pButton->uW = textoffset + 6;
                 pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
                 if (pDialogueWindow->pCurrentPosActiveItem != i) {
                     pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
@@ -158,7 +158,7 @@ void GuildDialog() {
                         working_window.uFrameWidth, 0);
                     pButton->uHeight = pTextHeight;
                     textoffset = pButton->uY + pTextHeight - 1;
-                    pButton->uW = textoffset;
+                    pButton->uW = textoffset + 6;
                     pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
                     if (pDialogueWindow->pCurrentPosActiveItem != i) {
                         pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);

@@ -52,14 +52,14 @@ struct FontData {
 #pragma pack(pop)
 
 GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette, ...) {
-    static_assert(sizeof(GUICharMetric) == 12, "Wrong GUICharMetric type size");
-    static_assert(sizeof(FontData) == 4128, "Wrong FontData type size");
+    // static_assert(sizeof(GUICharMetric) == 12, "Wrong GUICharMetric type size");
+    // static_assert(sizeof(FontData) == 4128, "Wrong FontData type size");
 
     unsigned int palletes_count = 0;
     va_list palettes_ptr;
 
     GUIFont *pFont = new GUIFont;
-    pFont->pData = (FontData*)pIcons_LOD->LoadRaw(pFontFile, 0);
+    pFont->pData = (FontData*)pIcons_LOD->LoadCompressedTexture(pFontFile);
     va_start(palettes_ptr, pFontFile);
 
     while (NULL != (pFontPalette = va_arg(palettes_ptr, const char *))) {

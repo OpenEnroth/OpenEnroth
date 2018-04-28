@@ -2676,7 +2676,7 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1,
     float depth = 1000000.0;
     for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
         if (a1->field_104[i].z < depth) {
-            depth = a1->field_104[i * 4].z;
+            depth = a1->field_104[i].z;
         }
     }
 
@@ -4179,15 +4179,15 @@ bool PauseGameDrawing() {
     return false;
 }
 
-unsigned short *Render::MakeScreenshot(signed int width, signed int height) {
+unsigned short *Render::MakeScreenshot(int width, int height) {
     uint16_t *for_pixels;  // ebx@1
     DDSURFACEDESC2 Dst;    // [sp+4h] [bp-A0h]@6
 
     float interval_x = game_viewport_width / (double)width;
     float interval_y = game_viewport_height / (double)height;
 
-    uint16_t *pPixels = (uint16_t *)malloc(2 * height * width);
-    memset(pPixels, 0, 2 * height * width);
+    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * height * width);
+    memset(pPixels, 0, sizeof(uint16_t) * height * width);
 
     for_pixels = pPixels;
 
@@ -4230,6 +4230,12 @@ unsigned short *Render::MakeScreenshot(signed int width, signed int height) {
         ErrD3D(pBackBuffer4->Unlock(NULL));
     }
     return pPixels;
+}
+
+Image *Render::TakeScreenshot(unsigned int width, unsigned int height) {
+    auto pixels = MakeScreenshot(width, height);
+    Image *image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
+    return image;
 }
 
 void Render::SaveScreenshot(const String &filename, unsigned int width,

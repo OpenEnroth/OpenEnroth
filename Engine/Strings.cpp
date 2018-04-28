@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <vector>
+#include <algorithm>
 
 #include "Engine/Strings.h"
 
@@ -37,4 +38,10 @@ std::vector<char *> Tokenize(char *input, const char separator) {
         ++input;
     }
     return retVect;
+}
+
+String MakeLower(const String &text) {
+    std::string tmp = text;
+    std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+    return tmp;
 }

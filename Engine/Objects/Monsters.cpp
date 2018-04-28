@@ -323,7 +323,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
         v4 = Argsa;
     }
     v2->uNumMonsters = v4;
-    v5 = malloc(152 * v4);
+    v5 = malloc(sizeof(MonsterDesc) * v4);
     v2->pMonsters = (MonsterDesc *)v5;
     if (!v5) Error("MonsterRaceListStruct::load - Out of Memory!");
 
@@ -458,7 +458,7 @@ void MonsterStats::InitializePlacements() {
     int decode_step;
     //  int item_counter;
 
-    pMonsterPlacementTXT_Raw = (char *)pEvents_LOD->LoadRaw("placemon.txt", 0);
+    pMonsterPlacementTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("placemon.txt");
     strtok(pMonsterPlacementTXT_Raw, "\r");
     for (i = 1; i < 31; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -504,7 +504,7 @@ void MonsterStats::Initialize() {
     String str;
 
     free(pMonstersTXT_Raw);
-    pMonstersTXT_Raw = (char *)pEvents_LOD->LoadRaw("monsters.txt", 0);
+    pMonstersTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("monsters.txt");
     strtok(pMonstersTXT_Raw, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");

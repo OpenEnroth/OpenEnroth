@@ -47,7 +47,7 @@ bool RenderOpenGL::InitializeFullscreen() {
     return 0;
 }
 void RenderOpenGL::CreateZBuffer() {
-    pActiveZBuffer = (int *)malloc(0x12C000);  // 640 * 480 * 4
+    pActiveZBuffer = (int *)malloc(640 * 480 * sizeof(int));  // 640 * 480 * 4
     memset32(
         pActiveZBuffer, 0xFFFF0000,
         0x4B000u);  //    // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
@@ -282,6 +282,8 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices,
                                         struct Polygon *pSkyPolygon) {
     __debugbreak();
 }
+
+Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) { return nullptr; }
 bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
 void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width,
                                   unsigned int height) {

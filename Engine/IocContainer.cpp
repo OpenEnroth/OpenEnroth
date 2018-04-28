@@ -210,9 +210,9 @@ void IntegrityTest() {
     static_assert(sizeof(MonsterStats) == 0x5BA0, "Wrong type size");
     // static_assert(sizeof(RenderD3D) == 0x148, "Wrong type size");
     //  static_assert(sizeof(Render) == 0x129844, "Wrong type size");
-    static_assert(sizeof(Player) == 0x1B3C, "Wrong type size");
+    //static_assert(sizeof(Player) == 0x1B3C, "Wrong type size");
     static_assert(sizeof(PartyTimeStruct) == 0x678, "Wrong type size");
-    static_assert(sizeof(Party) == 0x16238, "Wrong type size");
+    //static_assert(sizeof(Party) == 0x16238, "Wrong type size");
     // static_assert(sizeof(GUIButton) == 0xBC, "Wrong type size");
     // static_assert(sizeof(GUIWindow) == 0x54, "Wrong type size");
     // static_assert(sizeof(GUIProgressBar) == 0x1B8, "Wrong type size");
@@ -237,5 +237,5 @@ void IntegrityTest() {
     static_assert(sizeof(Chest) == 5324, "Wrong type size");
     static_assert(sizeof(stru123) == 0xC8, "Wrong type size");
     static_assert(sizeof(BLVMapOutline) == 12, "Wrong type size");
-    static_assert(sizeof(LODSprite) == 0x28, "Wrong type size");
+    //static_assert(sizeof(LODSprite) == 0x28, "Wrong type size");
 }

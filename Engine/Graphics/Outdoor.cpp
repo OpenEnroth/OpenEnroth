@@ -980,13 +980,6 @@ void OutdoorLocation::Release() {
 
 bool OutdoorLocation::Load(const String &filename, int days_played,
                            int respawn_interval_days, int *thisa) {
-    FILE *pFile;       // eax@50
-    int v108;          // [sp+0h] [bp-B80h]@10
-    char Src[968];     // [sp+10h] [bp-B70h]@110
-    char Dst[968];     // [sp+3D8h] [bp-7A8h]@50
-    ODMHeader header;  // [sp+B58h] [bp-28h]@50
-    char *Str2;        // [sp+B74h] [bp-Ch]@12
-
     if (pEngine->IsUnderwater()) {
         pPaletteManager->pPalette_tintColor[0] = 0x10;
         pPaletteManager->pPalette_tintColor[1] = 0xC2;
@@ -1015,31 +1008,11 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     String minimap_filename = filename.substr(0, filename.length() - 4);
     viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
 
-    auto odm_filename = filename;
+    auto odm_filename = String(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
-    pFile = pGames_LOD->FindContainer(odm_filename, true);
 
-    static_assert(sizeof(ODMHeader) == 16, "Wrong type size");
-    fread(&header, sizeof(ODMHeader), 1, pFile);
-    if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
-        header.pMagic[1] != 'v' || header.pMagic[2] != 'i' ||
-        header.pMagic[3] != 'i') {
-        log->Warning(L"Can't load file!");
-    }
-
-    uint8_t *pSrcMem = (uint8_t *)malloc(header.uDecompressedSize);
-    uint8_t *pSrc = pSrcMem;
-
-    if (header.uCompressedSize < header.uDecompressedSize) {
-        char *pComressedSrc = (char *)malloc(header.uCompressedSize);
-        fread(pComressedSrc, header.uCompressedSize, 1, pFile);
-        uint actualDecompressedSize = header.uDecompressedSize;
-        zlib::Uncompress(pSrc, &actualDecompressedSize, pComressedSrc,
-                         header.uCompressedSize);
-        free(pComressedSrc);
-    } else {
-        fread(pSrc, header.uDecompressedSize, 1, pFile);
-    }
+    void *pSrcMem = pGames_LOD->LoadCompressed(odm_filename);
+    uint8_t *pSrc = (uint8_t*)pSrcMem;
 
 #pragma pack(push, 1)
     struct ODMInfo {
@@ -1052,11 +1025,10 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 #pragma pack(pop)
 
     static_assert(sizeof(ODMInfo) == 160, "Wrong type size");
-    ODMInfo *odm_info = (ODMInfo *)pSrc;
+    ODMInfo *odm_info = (ODMInfo*)pSrc;
     this->level_filename = String(odm_info->level_filename, 32);
     this->location_filename = String(odm_info->level_filename, 32);
-    this->location_file_description =
-        String(odm_info->location_file_description, 32);
+    this->location_file_description = String(odm_info->location_file_description, 32);
     this->sky_texture_filename = String(odm_info->sky_texture_filename, 32);
     this->ground_tileset = String(odm_info->ground_tileset, 32);
     pSrc += sizeof(ODMInfo);
@@ -1180,64 +1152,45 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     auto ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    pFile = pNew_LOD->FindContainer(ddm_filename, true);
+    pSrcMem = pNew_LOD->LoadCompressed(ddm_filename);
 
-    fread(&header, 0x10, 1, pFile);
-    Str2 = 0;
-    if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
-        header.pMagic[1] != 'v' || header.pMagic[2] != 'i' ||
-        header.pMagic[3] != 'i') {
-        logger->Warning(L"Can't load file!");
-        Str2 = (char *)1;
-    }
+    if (pSrcMem != nullptr) {
+        pSrc = (uint8_t*)pSrcMem;
 
-    if (!Str2) {
-        pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
-        pSrc = pSrcMem;
-        // v149 = v75;
-        if (header.uCompressedSize == header.uDecompressedSize) {
-            fread(pSrc, header.uDecompressedSize, 1, pFile);
-        } else if (header.uCompressedSize < header.uDecompressedSize) {
-            void *compressedMem = malloc(header.uCompressedSize);
-            fread(compressedMem, header.uCompressedSize, 1, pFile);
-
-            uint actualDecompressedSize = header.uDecompressedSize;
-            zlib::Uncompress(pSrc, &actualDecompressedSize, compressedMem,
-                             header.uCompressedSize);
-            free(compressedMem);
-        } else {
-            logger->Warning(L"Can't load file!");
-        }
-
-        assert(sizeof(DDM_DLV_Header) == 0x28);
+        static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
         memcpy(&ddm, pSrc, sizeof(DDM_DLV_Header));
         pSrc += sizeof(DDM_DLV_Header);
-        // v74 = (int)((char *)v75 + 40);
     }
     uint actualNumFacesInLevel = 0;
     for (BSPModel &model : pBModels) {
         actualNumFacesInLevel += model.pFaces.size();
     }
 
+    bool Str2 = false;
     if (ddm.uNumFacesInBModels) {
         if (ddm.uNumBModels) {
             if (ddm.uNumDecorations) {
                 if (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
                     ddm.uNumBModels != pBModels.size() ||
                     ddm.uNumDecorations != uNumLevelDecorations)
-                    Str2 = (char *)1;
+                    Str2 = true;
             }
         }
     }
 
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)
+    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000) {
         respawn_interval_days = 0x1BAF800;
+    }
+
+    char Src[968];
+    char Dst[968];
+    int v108;
 
     if (Str2 || days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
         !ddm.uLastRepawnDay) {
         if (Str2) {
-            memset(Dst, 0, 0x3C8);
-            memset(Src, 0, 0x3C8);
+            memset(Dst, 0, 968);
+            memset(Src, 0, 968);
         }
         if (days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
             !ddm.uLastRepawnDay) {
@@ -1250,28 +1203,9 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
         if (Str2 == 0) ++ddm.uNumRespawns;
         v108 = 0;
         *thisa = 1;
-        pFile = pGames_LOD->FindContainer(ddm_filename, false);
-        fread(&header, 0x10, 1, pFile);
-        // pFilename = (char *)header.uCompressedSize;
-        // pDestLen = header.uDecompressedSize;
-        // v82 = malloc(header.uDecompressedSize);
-        pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
-        // v149 = v82;
-        if (header.uCompressedSize == header.uDecompressedSize) {
-            fread(pSrcMem, header.uDecompressedSize, 1, pFile);
-        } else if (header.uCompressedSize < header.uDecompressedSize) {
-            void *compressedMem = malloc(header.uCompressedSize);
-            fread(compressedMem, header.uCompressedSize, 1, pFile);
-
-            uint actualDecompressedSize = header.uDecompressedSize;
-            zlib::Uncompress(pSrcMem, &actualDecompressedSize, compressedMem,
-                             header.uCompressedSize);
-            free(compressedMem);
-        } else {
-            logger->Warning(L"Can't load file!");
-        }
-
-        pSrc = pSrcMem + 40;
+        pSrcMem = pGames_LOD->LoadCompressed(ddm_filename);
+        pSrc = (uint8_t*)pSrcMem;
+        pSrc += sizeof(DDM_DLV_Header);
     } else {
         *thisa = 0;
     }
@@ -1279,7 +1213,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     memcpy(uPartiallyRevealedCellOnMap, pSrc + 968, 968);
     pSrc += 2 * 968;
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     if (*thisa) {
         memcpy(uFullyRevealedCellOnMap, Dst, 968);
@@ -1657,12 +1591,11 @@ bool OutdoorLocation::_47F0E2() {
 
 //----- (0047F138) --------------------------------------------------------
 bool OutdoorLocation::PrepareDecorations() {
-    signed int v1;  // ebx@1
-    signed int v8;  // [sp+Ch] [bp-4h]@1
-
-    v1 = 0;
-    v8 = 0;
-    if (!_stricmp(pCurrentMapName, "out09.odm")) v8 = 1;
+    int v1 = 0;
+    int v8 = 0;
+    if (pCurrentMapName == "out09.odm") {
+        v8 = 1;
+    }
 
     for (uint i = 0; i < uNumLevelDecorations; ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
@@ -3457,7 +3390,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
 
 //----- (00464839) --------------------------------------------------------
 char Is_out15odm_underwater() {
-    return _stricmp(pCurrentMapName, "out15.odm") == 0;
+    return (pCurrentMapName == "out15.odm");
 }
 
 //----- (00464851) --------------------------------------------------------
@@ -3473,7 +3406,7 @@ void sub_487DA9() {
 
 //----- (004706C6) --------------------------------------------------------
 void UpdateActors_ODM() {
-    int v3;  // ebx@6
+    int Water_Walk;  // ebx@6
     int v5;  // eax@10
     // int v6; // ecx@10
     signed int v8;  // ebx@17
@@ -3498,166 +3431,166 @@ void UpdateActors_ODM() {
     //  int v55; // eax@107
     //  unsigned int v56; // edi@107
     //  int v57; // ST10_4@107
-    unsigned int v58;  // edi@107
-    unsigned int v59;  // ebx@107
+    unsigned int Tile_1_Land;  // edi@107
+    unsigned int Tile_2_Land;  // ebx@107
     //  signed int v60; // eax@107
     int v61;            // eax@124
     Vec3_int_ v62;      // [sp+Ch] [bp-44h]@42
     int v63;            // [sp+18h] [bp-38h]@64
     int v64;            // [sp+1Ch] [bp-34h]@64
-    bool v67;           // [sp+28h] [bp-28h]@10
+    bool Actor_On_Terrain;           // [sp+28h] [bp-28h]@10
     unsigned int v69;   // [sp+30h] [bp-20h]@6
     unsigned int v70;   // [sp+34h] [bp-1Ch]@10
     int v71;            // [sp+38h] [bp-18h]@62
     int uIsAboveFloor;  // [sp+3Ch] [bp-14h]@10
     int v72b;
     int uIsFlying;     // [sp+44h] [bp-Ch]@8
-    unsigned int v75;  // [sp+48h] [bp-8h]@1
+    unsigned int Actor_ITR;  // [sp+48h] [bp-8h]@1
     int uIsOnWater;    // [sp+4Ch] [bp-4h]@10
 
     if (engine_config->no_actors)
         uNumActors = 0;
 
-    for (v75 = 0; v75 < uNumActors; ++v75) {
-        if (pActors[v75].uAIState == Removed ||
-            pActors[v75].uAIState == Disabled ||
-            pActors[v75].uAIState == Summoned || !pActors[v75].uMovementSpeed)
+    for (Actor_ITR = 0; Actor_ITR < uNumActors; ++Actor_ITR) {
+        if (pActors[Actor_ITR].uAIState == Removed ||
+            pActors[Actor_ITR].uAIState == Disabled ||
+            pActors[Actor_ITR].uAIState == Summoned || !pActors[Actor_ITR].uMovementSpeed)
             continue;
-        v3 = 0;
+        Water_Walk = 0;
         v69 = 0;
-        if (MonsterStats::BelongsToSupertype(pActors[v75].pMonsterInfo.uID,
+        if (MonsterStats::BelongsToSupertype(pActors[Actor_ITR].pMonsterInfo.uID,
                                              MONSTER_SUPERTYPE_WATER_ELEMENTAL))
-            v3 = 1;
-        pActors[v75].uSectorID = 0;
-        uIsFlying = pActors[v75].pMonsterInfo.uFlying;
-        if (!pActors[v75].CanAct()) uIsFlying = 0;
-        v70 = IsTerrainSlopeTooHigh(pActors[v75].vPosition.x,
-                                    pActors[v75].vPosition.y);
+            Water_Walk = 1;
+        pActors[Actor_ITR].uSectorID = 0;
+        uIsFlying = pActors[Actor_ITR].pMonsterInfo.uFlying;
+        if (!pActors[Actor_ITR].CanAct()) uIsFlying = 0;
+        v70 = IsTerrainSlopeTooHigh(pActors[Actor_ITR].vPosition.x,
+                                    pActors[Actor_ITR].vPosition.y);
         v5 = ODM_GetFloorLevel(
-            pActors[v75].vPosition.x, pActors[v75].vPosition.y,
-            pActors[v75].vPosition.z, pActors[v75].uActorHeight, &uIsOnWater,
-            (int *)&v69, v3);
-        // v6 = pActors[v75].vPosition.z;
+            pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y,
+            pActors[Actor_ITR].vPosition.z, pActors[Actor_ITR].uActorHeight, &uIsOnWater,
+            (int *)&v69, Water_Walk);
+        // v6 = pActors[Actor_ITR].vPosition.z;
         uIsAboveFloor = 0;
-        v67 = v69 == 0;
-        if (pActors[v75].vPosition.z > v5 + 1) uIsAboveFloor = 1;
-        if (pActors[v75].uAIState == Dead && uIsOnWater && !uIsAboveFloor) {
-            pActors[v75].uAIState = Removed;
+        Actor_On_Terrain = v69 == 0;
+        if (pActors[Actor_ITR].vPosition.z > v5 + 1) uIsAboveFloor = 1;
+        if (pActors[Actor_ITR].uAIState == Dead && uIsOnWater && !uIsAboveFloor) {
+            pActors[Actor_ITR].uAIState = Removed;
             continue;
         }
-        if (pActors[v75].uCurrentActionAnimation == ANIM_Walking) {
-            v8 = pActors[v75].uMovementSpeed;
-            if (pActors[v75].pActorBuffs[ACTOR_BUFF_SLOWED].Active())
+        if (pActors[Actor_ITR].uCurrentActionAnimation == ANIM_Walking) {
+            v8 = pActors[Actor_ITR].uMovementSpeed;
+            if (pActors[Actor_ITR].pActorBuffs[ACTOR_BUFF_SLOWED].Active())
                 v8 = (signed __int64)((double)v8 * 0.5);
-            if (pActors[v75].uAIState == Fleeing ||
-                pActors[v75].uAIState == Pursuing)
+            if (pActors[Actor_ITR].uAIState == Fleeing ||
+                pActors[Actor_ITR].uAIState == Pursuing)
                 v8 *= 2;
             if (pParty->bTurnBasedModeOn == true &&
                 pTurnEngine->turn_stage == TE_WAIT)
                 v8 *= flt_6BE3AC_debug_recmod1_x_1_6;
             if (v8 > 1000) v8 = 1000;
 
-            pActors[v75].vVelocity.x =
-                fixpoint_mul(stru_5C6E00->Cos(pActors[v75].uYawAngle), v8);
-            pActors[v75].vVelocity.y =
-                fixpoint_mul(stru_5C6E00->Sin(pActors[v75].uYawAngle), v8);
+            pActors[Actor_ITR].vVelocity.x =
+                fixpoint_mul(stru_5C6E00->Cos(pActors[Actor_ITR].uYawAngle), v8);
+            pActors[Actor_ITR].vVelocity.y =
+                fixpoint_mul(stru_5C6E00->Sin(pActors[Actor_ITR].uYawAngle), v8);
             if (uIsFlying) {
-                pActors[v75].vVelocity.z = fixpoint_mul(
-                    stru_5C6E00->Sin(pActors[v75].uPitchAngle), v8);
+                pActors[Actor_ITR].vVelocity.z = fixpoint_mul(
+                    stru_5C6E00->Sin(pActors[Actor_ITR].uPitchAngle), v8);
             }
             // v7 = v68;
         } else {
-            pActors[v75].vVelocity.x =
-                fixpoint_mul(55000, pActors[v75].vVelocity.x);
-            pActors[v75].vVelocity.y =
-                fixpoint_mul(55000, pActors[v75].vVelocity.y);
+            pActors[Actor_ITR].vVelocity.x =
+                fixpoint_mul(55000, pActors[Actor_ITR].vVelocity.x);
+            pActors[Actor_ITR].vVelocity.y =
+                fixpoint_mul(55000, pActors[Actor_ITR].vVelocity.y);
             if (uIsFlying)
-                pActors[v75].vVelocity.z =
-                    fixpoint_mul(55000, pActors[v75].vVelocity.z);
+                pActors[Actor_ITR].vVelocity.z =
+                    fixpoint_mul(55000, pActors[Actor_ITR].vVelocity.z);
         }
-        if (pActors[v75].vPosition.z < v5) {
-            pActors[v75].vPosition.z = v5;
-            pActors[v75].vVelocity.z = uIsFlying != 0 ? 0x14 : 0;
+        if (pActors[Actor_ITR].vPosition.z < v5) {
+            pActors[Actor_ITR].vPosition.z = v5;
+            pActors[Actor_ITR].vVelocity.z = uIsFlying != 0 ? 0x14 : 0;
         }
         // v17 = 0;
         if (!uIsAboveFloor || uIsFlying) {
-            if (v70 && !uIsAboveFloor && v67) {
-                pActors[v75].vPosition.z = v5;
-                ODM_GetTerrainNormalAt(pActors[v75].vPosition.x,
-                                       pActors[v75].vPosition.y, &v62);
+            if (v70 && !uIsAboveFloor && Actor_On_Terrain) {
+                pActors[Actor_ITR].vPosition.z = v5;
+                ODM_GetTerrainNormalAt(pActors[Actor_ITR].vPosition.x,
+                                       pActors[Actor_ITR].vPosition.y, &v62);
                 v20 = GetGravityStrength();
                 // v21 = v62.y;
                 // v22 = v62.z;
                 // v23 = v62.y * v0->vVelocity.y;
-                pActors[v75].vVelocity.z +=
+                pActors[Actor_ITR].vVelocity.z +=
                     -8 * (short)pEventTimer->uTimeElapsed * v20;
-                int v73 = abs(v62.x * pActors[v75].vVelocity.x +
-                              v62.z * pActors[v75].vVelocity.z +
-                              v62.y * pActors[v75].vVelocity.y) >>
+                int v73 = abs(v62.x * pActors[Actor_ITR].vVelocity.x +
+                              v62.z * pActors[Actor_ITR].vVelocity.z +
+                              v62.y * pActors[Actor_ITR].vVelocity.y) >>
                           16;
                 // v72b = v21;
-                pActors[v75].vVelocity.x += fixpoint_mul(v73, v62.x);
-                pActors[v75].vVelocity.y += fixpoint_mul(v73, v62.y);
-                pActors[v75].vVelocity.z += fixpoint_mul(v73, v62.z);
+                pActors[Actor_ITR].vVelocity.x += fixpoint_mul(v73, v62.x);
+                pActors[Actor_ITR].vVelocity.y += fixpoint_mul(v73, v62.y);
+                pActors[Actor_ITR].vVelocity.z += fixpoint_mul(v73, v62.z);
                 // v17 = 0;
             }
         } else {
-            pActors[v75].vVelocity.z -=
+            pActors[Actor_ITR].vVelocity.z -=
                 (short)pEventTimer->uTimeElapsed * GetGravityStrength();
         }
-        if (pParty->armageddon_timer != 0 && pActors[v75].CanAct()) {
-            pActors[v75].vVelocity.x += rand() % 100 - 50;
-            pActors[v75].vVelocity.y += rand() % 100 - 50;
-            pActors[v75].vVelocity.z += rand() % 100 - 20;
+        if (pParty->armageddon_timer != 0 && pActors[Actor_ITR].CanAct()) {
+            pActors[Actor_ITR].vVelocity.x += rand() % 100 - 50;
+            pActors[Actor_ITR].vVelocity.y += rand() % 100 - 50;
+            pActors[Actor_ITR].vVelocity.z += rand() % 100 - 20;
             v25 = rand();
-            pActors[v75].uAIState = Stunned;
-            pActors[v75].uYawAngle += v25 % 32 - 16;
-            pActors[v75].UpdateAnimation();
+            pActors[Actor_ITR].uAIState = Stunned;
+            pActors[Actor_ITR].uYawAngle += v25 % 32 - 16;
+            pActors[Actor_ITR].UpdateAnimation();
         }
-        if (pActors[v75].vVelocity.x * pActors[v75].vVelocity.x +
-                    pActors[v75].vVelocity.y * pActors[v75].vVelocity.y <
+        if (pActors[Actor_ITR].vVelocity.x * pActors[Actor_ITR].vVelocity.x +
+                    pActors[Actor_ITR].vVelocity.y * pActors[Actor_ITR].vVelocity.y <
                 400 &&
             v70 == 0) {
-            pActors[v75].vVelocity.y = 0;
-            pActors[v75].vVelocity.x = 0;
+            pActors[Actor_ITR].vVelocity.y = 0;
+            pActors[Actor_ITR].vVelocity.x = 0;
         }
         stru_721530.field_0 = 1;
         if (!uIsFlying)
             v26 = 40;
         else
-            v26 = pActors[v75].uActorRadius;
+            v26 = pActors[Actor_ITR].uActorRadius;
 
         stru_721530.field_84 = -1;
         stru_721530.field_8_radius = v26;
         stru_721530.prolly_normal_d = v26;
-        stru_721530.height = pActors[v75].uActorHeight;
+        stru_721530.height = pActors[Actor_ITR].uActorHeight;
         stru_721530.field_70 = 0;
 
         for (v69 = 0; v69 < 100; ++v69) {
-            stru_721530.position.x = pActors[v75].vPosition.x;
+            stru_721530.position.x = pActors[Actor_ITR].vPosition.x;
             stru_721530.normal.x = stru_721530.position.x;
-            stru_721530.position.y = pActors[v75].vPosition.y;
+            stru_721530.position.y = pActors[Actor_ITR].vPosition.y;
             stru_721530.normal.y = stru_721530.position.y;
-            v28 = pActors[v75].vPosition.z;
+            v28 = pActors[Actor_ITR].vPosition.z;
             stru_721530.normal.z = v28 + v26 + 1;
             stru_721530.position.z = v28 - v26 + stru_721530.height - 1;
             if (stru_721530.position.z < stru_721530.normal.z)
                 stru_721530.position.z = v28 + v26 + 1;
-            stru_721530.velocity.x = pActors[v75].vVelocity.x;
+            stru_721530.velocity.x = pActors[Actor_ITR].vVelocity.x;
             stru_721530.uSectorID = 0;
-            stru_721530.velocity.y = pActors[v75].vVelocity.y;
-            stru_721530.velocity.z = pActors[v75].vVelocity.z;
+            stru_721530.velocity.y = pActors[Actor_ITR].vVelocity.y;
+            stru_721530.velocity.z = pActors[Actor_ITR].vVelocity.z;
             if (stru_721530._47050A(0)) break;
             _46E889_collide_against_bmodels(1);
-            v29 = WorldPosToGridCellZ(pActors[v75].vPosition.y);
-            v30 = WorldPosToGridCellX(pActors[v75].vPosition.x);
+            v29 = WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y);
+            v30 = WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x);
             _46E26D_collide_against_sprites(v30, v29);
             _46EF01_collision_chech_player(0);
-            _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, v75));
+            _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, Actor_ITR));
             v31 = 0;
             for (i = 0; v31 < ai_arrays_size; ++v31) {
                 v33 = ai_near_actors_ids[v31];
-                if (v33 != v75 && Actor::_46DF1A_collide_against_actor(v33, 40))
+                if (v33 != Actor_ITR && Actor::_46DF1A_collide_against_actor(v33, 40))
                     ++i;
             }
             v71 = i > 1;
@@ -3669,44 +3602,44 @@ void UpdateActors_ODM() {
             v36 = ODM_GetFloorLevel(
                 stru_721530.normal2.x, stru_721530.normal2.y,
                 stru_721530.normal2.z - stru_721530.prolly_normal_d - 1,
-                pActors[v75].uActorHeight, (int *)&v63, &v64, 0);
+                pActors[Actor_ITR].uActorHeight, (int *)&v63, &v64, 0);
             if (uIsOnWater) {
                 if (v35 < v36 + 60) {
-                    if (pActors[v75].uAIState == Dead ||
-                        pActors[v75].uAIState == Dying ||
-                        pActors[v75].uAIState == Removed ||
-                        pActors[v75].uAIState == Disabled) {
+                    if (pActors[Actor_ITR].uAIState == Dead ||
+                        pActors[Actor_ITR].uAIState == Dying ||
+                        pActors[Actor_ITR].uAIState == Removed ||
+                        pActors[Actor_ITR].uAIState == Disabled) {
                         if (v64)
                             v61 = v36 + 30;
                         else
                             v61 = v5 + 60;
                         SpriteObject::sub_42F960_create_object(
-                            pActors[v75].vPosition.x, pActors[v75].vPosition.y,
+                            pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y,
                             v61);
-                        pActors[v75].uAIState = Removed;
+                        pActors[Actor_ITR].uAIState = Removed;
                         return;
                     }
                 }
             }
             if (stru_721530.field_7C >= stru_721530.field_6C) {
-                pActors[v75].vPosition.x = (short)stru_721530.normal2.x;
-                pActors[v75].vPosition.y = (short)stru_721530.normal2.y;
-                pActors[v75].vPosition.z = (short)stru_721530.normal2.z -
+                pActors[Actor_ITR].vPosition.x = (short)stru_721530.normal2.x;
+                pActors[Actor_ITR].vPosition.y = (short)stru_721530.normal2.y;
+                pActors[Actor_ITR].vPosition.z = (short)stru_721530.normal2.z -
                                            (short)stru_721530.prolly_normal_d -
                                            1;
                 break;
             }
             // v72b = fixpoint_mul(stru_721530.field_7C,
             // stru_721530.field_58.x);
-            pActors[v75].vPosition.x +=
+            pActors[Actor_ITR].vPosition.x +=
                 fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
             // v72b = (unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.field_58.y) >> 16;
-            pActors[v75].vPosition.y +=
+            pActors[Actor_ITR].vPosition.y +=
                 fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
             // v72b = (unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.field_58.z) >> 16;
-            pActors[v75].vPosition.z +=
+            pActors[Actor_ITR].vPosition.z +=
                 fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
             stru_721530.field_70 += stru_721530.field_7C;
             v39 = PID_ID(stru_721530.pid);
@@ -3717,28 +3650,28 @@ void UpdateActors_ODM() {
                         pParty->bTurnBasedModeOn != TE_WAIT) {
                         // if(pParty->bTurnBasedModeOn == 1)
                         // v34 = 0;
-                        if (pActors[v75].pMonsterInfo.uHostilityType) {
+                        if (pActors[Actor_ITR].pMonsterInfo.uHostilityType) {
                             if (v71 == 0)
-                                Actor::AI_Flee(v75, stru_721530.pid, 0,
+                                Actor::AI_Flee(Actor_ITR, stru_721530.pid, 0,
                                                (AIDirection *)0);
                             else
-                                Actor::AI_StandOrBored(v75, 4, 0,
+                                Actor::AI_StandOrBored(Actor_ITR, 4, 0,
                                                        (AIDirection *)0);
                         } else if (v71) {
-                            Actor::AI_StandOrBored(v75, 4, 0, (AIDirection *)0);
+                            Actor::AI_StandOrBored(Actor_ITR, 4, 0, (AIDirection *)0);
                         } else if (pActors[v39].pMonsterInfo.uHostilityType ==
                             MonsterInfo::Hostility_Friendly) {
-                            Actor::AI_Flee(v75, stru_721530.pid, 0,
+                            Actor::AI_Flee(Actor_ITR, stru_721530.pid, 0,
                                 (AIDirection *)0);
                         } else {
-                            Actor::AI_FaceObject(v75, stru_721530.pid, 0,
+                            Actor::AI_FaceObject(Actor_ITR, stru_721530.pid, 0,
                                 (AIDirection *)0);
                         }
                     }
                     break;
                 case OBJECT_Player:
-                    if (!pActors[v75].GetActorsRelation(0)) {
-                        Actor::AI_FaceObject(v75, stru_721530.pid, 0,
+                    if (!pActors[Actor_ITR].GetActorsRelation(0)) {
+                        Actor::AI_FaceObject(Actor_ITR, stru_721530.pid, 0,
                                              (AIDirection *)0);
                         break;
                     }
@@ -3747,8 +3680,8 @@ void UpdateActors_ODM() {
                     // == 0; v53 =
                     // SHIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
                     // < 0;
-                    pActors[v75].vVelocity.y = 0;
-                    pActors[v75].vVelocity.x = 0;
+                    pActors[Actor_ITR].vVelocity.y = 0;
+                    pActors[Actor_ITR].vVelocity.x = 0;
                     // if ( !v53 && (!(v53 | v52) ||
                     // LODWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
                     // > 0) )
@@ -3759,17 +3692,17 @@ void UpdateActors_ODM() {
                     break;
                 case OBJECT_Decoration:
                     v47 = integer_sqrt(
-                        pActors[v75].vVelocity.x * pActors[v75].vVelocity.x +
-                        pActors[v75].vVelocity.y * pActors[v75].vVelocity.y);
+                        pActors[Actor_ITR].vVelocity.x * pActors[Actor_ITR].vVelocity.x +
+                        pActors[Actor_ITR].vVelocity.y * pActors[Actor_ITR].vVelocity.y);
                     v48 = stru_5C6E00->Atan2(
-                        pActors[v75].vPosition.x -
+                        pActors[Actor_ITR].vPosition.x -
                             pLevelDecorations[v39].vPosition.x,
-                        pActors[v75].vPosition.y -
+                        pActors[Actor_ITR].vPosition.y -
                             pLevelDecorations[v39].vPosition.y);
                     // v49 = v48;
-                    pActors[v75].vVelocity.x =
+                    pActors[Actor_ITR].vVelocity.x =
                         fixpoint_mul(stru_5C6E00->Cos(v48), v47);
-                    pActors[v75].vVelocity.y =
+                    pActors[Actor_ITR].vVelocity.y =
                         fixpoint_mul(stru_5C6E00->Sin(v48), v47);
                     break;
                 case OBJECT_BModel:
@@ -3777,119 +3710,144 @@ void UpdateActors_ODM() {
                                 .pFaces[v39 & 0x3F];
                     if (!face->Ethereal()) {
                         if (face->uPolygonType == 3) {
-                            pActors[v75].vVelocity.z = 0;
-                            pActors[v75].vPosition.z =
+                            pActors[Actor_ITR].vVelocity.z = 0;
+                            pActors[Actor_ITR].vPosition.z =
                                 (short)pOutdoor->pBModels[stru_721530.pid >> 9]
                                     .pVertices.pVertices[face->pVertexIDs[0]]
                                     .z +
                                 1;
-                            if (pActors[v75].vVelocity.x *
-                                        pActors[v75].vVelocity.x +
-                                    pActors[v75].vVelocity.y *
-                                        pActors[v75].vVelocity.y <
+                            if (pActors[Actor_ITR].vVelocity.x *
+                                        pActors[Actor_ITR].vVelocity.x +
+                                    pActors[Actor_ITR].vVelocity.y *
+                                        pActors[Actor_ITR].vVelocity.y <
                                 400) {
-                                pActors[v75].vVelocity.y = 0;
-                                pActors[v75].vVelocity.x = 0;
+                                pActors[Actor_ITR].vVelocity.y = 0;
+                                pActors[Actor_ITR].vVelocity.x = 0;
                             }
                         } else {
                             v72b = abs(face->pFacePlane.vNormal.y *
-                                           pActors[v75].vVelocity.y +
+                                           pActors[Actor_ITR].vVelocity.y +
                                        face->pFacePlane.vNormal.z *
-                                           pActors[v75].vVelocity.z +
+                                           pActors[Actor_ITR].vVelocity.z +
                                        face->pFacePlane.vNormal.x *
-                                           pActors[v75].vVelocity.x) >>
+                                           pActors[Actor_ITR].vVelocity.x) >>
                                    16;
                             if ((stru_721530.speed >> 3) > v72b)
                                 v72b = stru_721530.speed >> 3;
 
-                            pActors[v75].vVelocity.x +=
+                            pActors[Actor_ITR].vVelocity.x +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.x);
-                            pActors[v75].vVelocity.y +=
+                            pActors[Actor_ITR].vVelocity.y +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.y);
-                            pActors[v75].vVelocity.z +=
+                            pActors[Actor_ITR].vVelocity.z +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.z);
                             if (face->uPolygonType != 4) {
                                 v46 = stru_721530.prolly_normal_d -
                                       ((face->pFacePlane.dist +
                                         face->pFacePlane.vNormal.x *
-                                            pActors[v75].vPosition.x +
+                                            pActors[Actor_ITR].vPosition.x +
                                         face->pFacePlane.vNormal.y *
-                                            pActors[v75].vPosition.y +
+                                            pActors[Actor_ITR].vPosition.y +
                                         face->pFacePlane.vNormal.z *
-                                            pActors[v75].vPosition.z) >>
+                                            pActors[Actor_ITR].vPosition.z) >>
                                        16);
                                 if (v46 > 0) {
-                                    pActors[v75].vPosition.x += fixpoint_mul(
+                                    pActors[Actor_ITR].vPosition.x += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.x);
-                                    pActors[v75].vPosition.y += fixpoint_mul(
+                                    pActors[Actor_ITR].vPosition.y += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.y);
-                                    pActors[v75].vPosition.z += fixpoint_mul(
+                                    pActors[Actor_ITR].vPosition.z += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.z);
                                 }
-                                pActors[v75].uYawAngle = stru_5C6E00->Atan2(
-                                    pActors[v75].vVelocity.x,
-                                    pActors[v75].vVelocity.y);
+                                pActors[Actor_ITR].uYawAngle = stru_5C6E00->Atan2(
+                                    pActors[Actor_ITR].vVelocity.x,
+                                    pActors[Actor_ITR].vVelocity.y);
                             }
                         }
                     }
                     break;
             }
 
-            pActors[v75].vVelocity.x =
-                fixpoint_mul(58500, pActors[v75].vVelocity.x);
-            pActors[v75].vVelocity.y =
-                fixpoint_mul(58500, pActors[v75].vVelocity.y);
-            pActors[v75].vVelocity.z =
-                fixpoint_mul(58500, pActors[v75].vVelocity.z);
+            pActors[Actor_ITR].vVelocity.x =
+                fixpoint_mul(58500, pActors[Actor_ITR].vVelocity.x);
+            pActors[Actor_ITR].vVelocity.y =
+                fixpoint_mul(58500, pActors[Actor_ITR].vVelocity.y);
+            pActors[Actor_ITR].vVelocity.z =
+                fixpoint_mul(58500, pActors[Actor_ITR].vVelocity.z);
 
             v26 = stru_721530.prolly_normal_d;
         }
 
-        v58 = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
-                   WorldPosToGridCellX(pActors[v75].vPosition.x),
-                   WorldPosToGridCellZ(pActors[v75].vPosition.y) - 1) >>
-               1) &
-              1;
-        v59 = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
-                   WorldPosToGridCellX(pActors[v75].vPosition.x),
-                   WorldPosToGridCellZ(pActors[v75].vPosition.y) - 1) >>
-               1) &
-              1;
-        if (WorldPosToGridCellX(pActors[v75].vPosition.x) ==
-                    WorldPosToGridCellX(pActors[v75].vPosition.x) &&
-                WorldPosToGridCellZ(pActors[v75].vPosition.y) ==
-                    WorldPosToGridCellZ(pActors[v75].vPosition.y) &&
-                v58 ||
-            v67 != 0) {
-            if (MonsterStats::BelongsToSupertype(
-                    pActors[v75].pMonsterInfo.uID,
-                    MONSTER_SUPERTYPE_WATER_ELEMENTAL)) {
-                v58 = v58 == 0;
-                v59 = v59 == 0;
+        // water tile checking - tile on (1) tile heading (2)
+        Tile_1_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
+                   WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x),
+                   WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y) - 1) >>
+               1) & 1;
+        Tile_2_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
+                   WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x +
+                       pActors[Actor_ITR].vVelocity.x),
+                   WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y +
+                       pActors[Actor_ITR].vVelocity.y) - 1) >>
+               1) & 1;
+
+        if (Water_Walk == 1) {  // switch for water monster
+            Tile_1_Land = Tile_1_Land == 0;
+            Tile_2_Land = Tile_2_Land == 0;
+        }
+        if (!uIsFlying && Tile_1_Land && !Tile_2_Land) {
+            // approaching water - turn away
+            if (pActors[Actor_ITR].CanAct()) {
+                pActors[Actor_ITR].uYawAngle -= 32;
+                pActors[Actor_ITR].uCurrentActionTime = 0;
+                pActors[Actor_ITR].uCurrentActionLength = 128;
+                pActors[Actor_ITR].uAIState = Fleeing;
             }
-            if (!uIsFlying && v58 && !v59) {
-                pActors[v75].vPosition.x = pActors[v75].vPosition.x;
-                pActors[v75].vPosition.y = pActors[v75].vPosition.y;
-                if (pActors[v75].CanAct()) {
-                    pActors[v75].uYawAngle -= 32;
-                    pActors[v75].uCurrentActionTime = 0;
-                    pActors[v75].uCurrentActionLength = 128;
-                    pActors[v75].uAIState = Fleeing;
+        }
+        if (!uIsFlying && Tile_1_Land == 0 && !uIsAboveFloor && Actor_On_Terrain) {
+            // on water and shouldnt be
+            unsigned int Tile_Test_Land = 0;  // reset land found
+            int Grid_X = WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x);
+            int Grid_Z = WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y);
+            for (int i = Grid_X - 1; i <= Grid_X + 1; i++) {
+                // scan surrounding cells for land
+                for (int j = Grid_Z - 1; j <= Grid_Z + 1; j++) {
+                    Tile_Test_Land = ((unsigned int)~pOutdoor->
+                        ActuallyGetSomeOtherTileInfo(i, j - 1) >> 1) & 1;
+                    if (Water_Walk == 1) {  // flip if water walk
+                        Tile_Test_Land = Tile_Test_Land == 0;
+                    }
+                    if (Tile_Test_Land) {  // found land
+                        int target_x = GridCellToWorldPosX(i);
+                        int target_y = GridCellToWorldPosZ(j - 1);
+                        if (pActors[Actor_ITR].CanAct()) {  // head to land
+                            pActors[Actor_ITR].uYawAngle = stru_5C6E00->Atan2(target_x -
+                                pActors[Actor_ITR].vPosition.x, target_y -
+                                pActors[Actor_ITR].vPosition.y);
+                            pActors[Actor_ITR].uCurrentActionTime = 0;
+                            pActors[Actor_ITR].uCurrentActionLength = 128;
+                            pActors[Actor_ITR].uAIState = Fleeing;
+                            break;
+                        }
+                    }
                 }
+                if (Tile_Test_Land) {  // break out nested loop
+                    break;
+                }
+            }
+            if (!Tile_Test_Land) {
+                // no land found so drowning damage
+                pActors[Actor_ITR].sCurrentHP -= 1;
+                logger->Warning(L"DROWNING");
             }
         }
     }
 }
 
 //----- (0047A384) --------------------------------------------------------
-void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa) {
-    int v2;                 // ebx@3
+void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
     MapInfo *v4;            // edi@4
     size_t v7;              // eax@19
-    const char *pFilename;  // [sp+84h] [bp-Ch]@1
-    int v;
 
-    pFilename = pLevelFilename;
     // thisa->AllocSoftwareDrawBuffers();
     pODMRenderParams->Initialize();
     pWeather->bRenderSnow = false;
@@ -3897,7 +3855,7 @@ void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus();
     if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0;
-    v2 = pMapStats->GetMapInfo(pCurrentMapName);
+    int v2 = pMapStats->GetMapInfo(pCurrentMapName);
     unsigned int respawn_interval = 0;
     if (v2) {
         v4 = &pMapStats->pInfos[v2];
@@ -3907,8 +3865,8 @@ void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa) {
     }
     day_attrib &= ~DAY_ATTRIB_FOG;
     dword_6BE13C_uCurrentlyLoadedLocationID = v2;
-    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1,
-                         respawn_interval, &v);
+    int v;
+    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1, respawn_interval, &v);
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
@@ -3932,8 +3890,7 @@ void ODM_LoadAndInitialize(const char *pLevelFilename, ODMRenderParams *thisa) {
     pOutdoor->ArrangeSpriteObjects();
     pOutdoor->InitalizeActors(v2);
     pOutdoor->MessWithLUN();
-    v7 = strlen("levels\\");
-    pOutdoor->level_filename = &pFilename[v7];
+    pOutdoor->level_filename = pFilename;
     pWeather->Initialize();
     pIndoorCameraD3D->sRotationY = pParty->sRotationY;
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;

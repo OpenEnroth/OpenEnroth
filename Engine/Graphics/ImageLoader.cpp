@@ -174,7 +174,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
     return true;
 }
 
-bool PCX_Loader::DecodePCX(const unsigned char *pcx_data, uint16_t *pOutPixels,
+bool PCX_Loader::DecodePCX(const void *pcx_data, uint16_t *pOutPixels,
                            unsigned int *width, unsigned int *height) {
     return PCX::Decode(pcx_data, pOutPixels, width, height);
 }
@@ -203,22 +203,19 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     return res;
 }
 
-bool PCX_File_Loader::InternalLoad(FILE *file, size_t filesize,
+bool PCX_File_Loader::InternalLoad(void *file, size_t filesize,
                                    unsigned int *width, unsigned int *height,
                                    void **pixels, IMAGE_FORMAT *format) {
-    unsigned char *file_image = new unsigned char[filesize];
-    fread(file_image, 1, filesize, file);
-
-    if (!PCX::IsValid(file_image)) {
+    if (!PCX::IsValid(file)) {
         return false;
     }
 
-    PCX::GetSize(file_image, width, height);
+    PCX::GetSize(file, width, height);
     unsigned int num_pixels = *width * *height;
     *pixels = new unsigned short[num_pixels + 2];
 
     if (pixels) {
-        if (!this->DecodePCX(file_image, (unsigned __int16 *)*pixels, width,
+        if (!this->DecodePCX(file, (uint16_t*)*pixels, width,
                              height)) {
             delete[] * pixels;
             *pixels = nullptr;
@@ -238,13 +235,17 @@ bool PCX_LOD_File_Loader::Load(unsigned int *width, unsigned int *height,
     *format = IMAGE_INVALID_FORMAT;
 
     size_t size;
-    FILE *file = lod->FindContainer(this->resource_name.c_str(), 0, &size);
-    if (!file) {
+    void *data = lod->LoadRaw(resource_name, &size);
+    if (data == nullptr) {
         log->Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
-    return InternalLoad(file, size, width, height, pixels, format);
+    bool res = InternalLoad(data, size, width, height, pixels, format);
+
+    free(data);
+
+    return res;
 }
 
 bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height,
@@ -254,27 +255,11 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     *pixels = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    FILE *file = lod->FindContainer(this->resource_name.c_str(), 0);
-    if (!file) {
-        log->Warning(L"Unable to load %s", this->resource_name.c_str());
+    size_t data_size = 0;
+    void *pcx_data = lod->LoadCompressedTexture(resource_name, &data_size);
+    if (pcx_data == nullptr) {
+        log->Warning(L"Unable to load %s", resource_name.c_str());
         return false;
-    }
-
-    TextureHeader DstBuf;
-    fread(&DstBuf, 1, sizeof(TextureHeader), file);
-    size_t Count = DstBuf.uTextureSize;
-    unsigned char *pcx_data;
-    if (DstBuf.uDecompressedSize) {
-        pcx_data = (unsigned char *)malloc(DstBuf.uDecompressedSize);
-        void *v6 = malloc(DstBuf.uTextureSize);
-        fread(v6, 1, Count, file);
-        zlib::Uncompress(pcx_data, &DstBuf.uDecompressedSize, v6,
-                         DstBuf.uTextureSize);
-        DstBuf.uTextureSize = DstBuf.uDecompressedSize;
-        free(v6);
-    } else {
-        pcx_data = (unsigned char *)malloc(DstBuf.uTextureSize);
-        fread(pcx_data, 1, Count, file);
     }
 
     if (!PCX::IsValid(pcx_data)) {
@@ -287,7 +272,7 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     *pixels = new unsigned short[num_pixels + 2];
 
     if (pixels) {
-        if (!this->DecodePCX(pcx_data, (unsigned __int16 *)*pixels, width,
+        if (!this->DecodePCX(pcx_data, (uint16_t*)*pixels, width,
                              height)) {
             delete[] * pixels;
             *pixels = nullptr;
@@ -320,19 +305,14 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         *format = IMAGE_FORMAT_A1R5G5B5;
 
         if (tex->header.pBits & 2) {  // hardware bitmap
-            HWLTexture *hwl =
-                render->LoadHwlBitmap(this->resource_name.c_str());
+            HWLTexture *hwl = render->LoadHwlBitmap(this->resource_name.c_str());
             if (hwl) {
                 // linear scaling
                 for (int s = 0; s < tex->header.uTextureHeight; ++s) {
                     for (int t = 0; t < tex->header.uTextureWidth; ++t) {
-                        unsigned int resampled_x = t * hwl->uWidth /
-                                                   tex->header.uTextureWidth,
-                                     resampled_y = s * hwl->uHeight /
-                                                   tex->header.uTextureHeight;
-                        unsigned short sample =
-                            hwl->pPixels[resampled_y * hwl->uWidth +
-                                         resampled_x];
+                        unsigned int resampled_x = t * hwl->uWidth / tex->header.uTextureWidth,
+                                     resampled_y = s * hwl->uHeight / tex->header.uTextureHeight;
+                        unsigned short sample = hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
 
                         pixels[s * tex->header.uTextureWidth + t] = sample;
                     }
@@ -359,7 +339,6 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
 
     HWLTexture *hwl = render->LoadHwlSprite(this->resource_name.c_str());
     if (hwl) {
-        auto lod_sprite = &lod->pSpriteHeaders[this->lod_sprite_id];
         auto lod_hd_sprite = &lod->pHardwareSprites[this->lod_sprite_id];
 
         int dst_width = hwl->uWidth;
@@ -368,7 +347,7 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         int num_pixels = dst_width * dst_height;
         int num_pixels_bytes =
             num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A1R5G5B5);
-        auto pixels = new unsigned __int16[num_pixels];
+        auto pixels = new uint16_t[num_pixels];
         if (pixels) {
             // linear scaling
             for (int s = 0; s < dst_height; ++s) {

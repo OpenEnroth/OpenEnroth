@@ -778,7 +778,7 @@ struct TileTable *pTileTable;                                        // idb
 std::array<char, 777> pDefaultSkyTexture;                            // idb
 std::array<char, 16> byte_6BE124_cfg_textures_DefaultGroundTexture;  // idb
 int _6BE134_odm_main_tile_group;
-int dword_6BE138;
+int dword_6BE138;  // are you sure check game menu
 int dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
@@ -786,7 +786,7 @@ float fTurnSpeedMultiplier = 1.0f;
 float flt_6BE150_look_up_down_dangle = 1.0f;
 // HWND hWnd; // idb
 class OSWindow *window = nullptr;
-char pCurrentMapName[32];  // idb
+String pCurrentMapName;
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 float _6BE3A0_fov = 0.55000001f;

@@ -372,6 +372,7 @@ class IRender {
 
     virtual bool AreRenderSurfacesOk() = 0;
 
+    virtual Image *TakeScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SaveScreenshot(const String &filename, unsigned int width,
                                 unsigned int height) = 0;
     virtual void PackScreenshot(unsigned int width, unsigned int height,

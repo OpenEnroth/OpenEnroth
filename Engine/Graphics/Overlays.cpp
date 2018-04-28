@@ -168,12 +168,12 @@ bool OverlayList::FromFileTxt(const char *Args) {
         v3 = 0;
     }
     this->uNumOverlays = v5;
-    v7 = malloc(8 * v5);
+    v7 = malloc(sizeof(OverlayDesc) * v5);
     this->pOverlays = (OverlayDesc *)v7;
-    if (v7 == (void *)v3)
+    if (v7 == NULL)
         Error("OverlayDescriptionList::load - Out of Memory!");
 
-    memset(v7, v3, 8 * this->uNumOverlays);
+    memset(v7, v3, sizeof(OverlayDesc) * this->uNumOverlays);
     // v8 = File;
     this->uNumOverlays = v3;
     fseek(File, v3, v3);

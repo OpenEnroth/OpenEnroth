@@ -1,15 +1,12 @@
 #pragma once
-#include <memory.h>
-#include <stdio.h>
-#include <cstdint>
+
+#include <vector>
 
 #include "Engine/Strings.h"
 
 #include "Engine/Graphics/Image.h"
 
 class Sprite;
-
-struct IDirectDrawSurface4;
 
 #define MAX_LOD_TEXTURES 1000
 #define MAX_LOD_SPRITES 1500
@@ -23,17 +20,12 @@ enum TEXTURE_TYPE {
 namespace LOD {
 #pragma pack(push, 1)
 struct FileHeader {
-    //----- (004617B6) --------------------------------------------------------
     inline FileHeader() {
         memset(pSignature, 0, 4);
         memset(LodVersion, 0, 80);
         memset(LodDescription, 0, 80);
-        memset(array_0000B0, 0, 28);
-        memset(array_0000CC, 0, 52);
+        memset(array_0000B0, 0, 80);
 
-        pSignature[0] = 0;
-        LodVersion[0] = 0;
-        LodDescription[0] = 0;
         LODSize = 0;
         dword_0000A8 = 0;
         uNumIndices = 0;
@@ -41,14 +33,11 @@ struct FileHeader {
 
     char pSignature[4];
     char LodVersion[80];
-    // char field_C[32];
-    // char field_2C[40];
     char LodDescription[80];
-    int LODSize;
-    int dword_0000A8;
-    unsigned int uNumIndices;
-    char array_0000B0[28];
-    char array_0000CC[52];
+    uint32_t LODSize;
+    uint32_t dword_0000A8;
+    uint32_t uNumIndices;
+    char array_0000B0[80];
 };
 #pragma pack(pop)
 
@@ -58,75 +47,88 @@ struct Directory {
 
     char pFilename[15];
     char field_F;
-    unsigned int uOfsetFromSubindicesStart;
-    unsigned int uDataSize;
-    int dword_000018;
-    unsigned __int16 uNumSubIndices;
-    __int16 word_00001E;
+    uint32_t uOfsetFromSubindicesStart;
+    uint32_t uDataSize;
+    uint32_t dword_000018;
+    uint16_t uNumSubIndices;
+    uint16_t priority;
 };
 #pragma pack(pop)
 
-#pragma pack(push, 1)
-struct File {
+class File {
+ public:
     File();
     virtual ~File();
-    void *LoadRaw(const char *pContainer, int a3);
-    FILE *FindContainer(const char *pContainerName, bool bLinearSearch,
-                        size_t *data_size = nullptr);
-    FILE *FindContainer(const String &filename, bool bLinearSearch,
-                        size_t *data_size = nullptr);
-    bool DoesContainerExist(const char *pContainer);
-    bool DoesContainerExist(const String &filename);
-    int CalcIndexFast(int startIndex, int maxIndex, const char *pContainerName);
-    bool LoadHeader(const char *pFilename, bool bWriting);
-    int LoadSubIndices(const char *pContainer);
-    void AllocSubIndicesAndIO(unsigned int uNumSubIndices,
-                              unsigned int uBufferSize);
-    void FreeSubIndexAndIO();
-    bool AppendDirectory(LOD::Directory *pDir, const void *pData);
-    void ResetSubIndices();
+
+    bool Open(const String &pFilename);
     void Close();
 
+    void *LoadRaw(const String &pContainer, size_t *data_size = nullptr);
+    void *LoadCompressedTexture(const String &pContainer, size_t *data_size = nullptr);
+    void *LoadCompressed(const String &pContainer, size_t *data_size = nullptr);
+    bool DoesContainerExist(const String &filename);
+
+    String GetSubNodeName(size_t index) const { return pSubIndices[index].pFilename; }
+    size_t GetSubNodesCount() const { return uNumSubDirs; }
+    int GetSubNodeIndex(const String &name) const;
+
+ protected:
+    FILE *FindContainer(const String &filename, size_t *data_size = nullptr);
+    virtual bool OpenFile(const String &sFilename);
+    bool LoadHeader();
+    bool LoadSubIndices(const String &sFolder);
+    virtual void ResetSubIndices();
+
+ protected:
     FILE *pFile;
-    char pLODName[256];
+    String pLODName;
     bool isFileOpened;
-    unsigned __int8 *pIOBuffer;
-    unsigned int uIOBufferSize;
+
     struct FileHeader header;
-    struct Directory *pRoot;
-    char pContainerName[16];
-    unsigned int uCurrentIndexDir;
-    unsigned int uLODDataSize;
+
+    std::vector<Directory> pRoot;
+    String pContainerName;
+    unsigned int uOffsetToSubIndex;
+
     unsigned int uNumSubDirs;
     struct Directory *pSubIndices;
-    unsigned int uOffsetToSubIndex;
-    FILE *pOutputFileHandle;
 };
-#pragma pack(pop)
-};  // namespace LOD
 
-/*    6 */
-#pragma pack(push, 1)
-struct LODWriteableFile : public LOD::File {
-    bool LoadFile(const char *pFilename, bool bWriting);
-    unsigned int Write(const LOD::Directory *pDir, const void *pDirData,
-                       int a4);
+class WriteableFile : public File {
+ public:
+    WriteableFile();
+    bool LoadFile(const String &pFilename, bool bWriting);
+    unsigned int Write(const String &file_name, const void *pDirData, size_t size, int a4);
     void CloseWriteFile();
     int CreateTempFile();
     int FixDirectoryOffsets();
     bool _4621A7();
-    int CreateNewLod(LOD::FileHeader *pHeader, LOD::Directory *pDir,
-                     const char *Source);
-};
-#pragma pack(pop)
+    int CreateNewLod(LOD::FileHeader *pHeader, const String &root_name, const String &Source);
 
-#pragma pack(push, 1)
-struct LODFile_IconsBitmaps : public LOD::File {
+    void AllocSubIndicesAndIO(unsigned int uNumSubIndices, unsigned int uBufferSize);
+    void FreeSubIndexAndIO();
+    bool AppendDirectory(const String &file_name, const void *pData, size_t data_size);
+
+    void ClearSubNodes() { uNumSubDirs = 0; }
+
+ protected:
+    virtual void ResetSubIndices();
+
+ protected:
+    uint8_t * pIOBuffer;
+    unsigned int uIOBufferSize;
+    FILE *pOutputFileHandle;
+    unsigned int uLODDataSize;
+};
+};  // namespace LOD
+
+class LODFile_IconsBitmaps : public LOD::File {
+ public:
     LODFile_IconsBitmaps();
     virtual ~LODFile_IconsBitmaps();
     void SyncLoadedFilesCount();
     unsigned int FindTextureByName(const char *pName);
-    bool Load(const char *pFilename, const char *pFolderName);
+    bool Load(const String &pFilename, const String &pFolderName);
     void ReleaseAll();
     unsigned int LoadTexture(const char *pContainer,
                              enum TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
@@ -170,40 +172,43 @@ struct LODFile_IconsBitmaps : public LOD::File {
     struct IDirect3DTexture2 **pHardwareTextures;
     char *ptr_011BB4;
 };
-#pragma pack(pop)
 
 #pragma pack(push, 1)
-struct LODSprite {
-    //----- (0046244C) --------------------------------------------------------
-    inline LODSprite() {
+struct LODSpriteHeader {
+    inline LODSpriteHeader() {
         uHeight = 0;
         uPaletteId = 0;
         word_1A = 0;
-        pSpriteLines = nullptr;
-        pDecompressedBytes = nullptr;
+    }
+
+    char pName[12];         // 0
+    uint32_t uSpriteSize;        // C
+    uint16_t uWidth;         // 10  SW width (as opposed to Sprite::BufferWidth)
+    uint16_t uHeight;        // 12  SW height
+    uint16_t uPaletteId;     // 14
+    uint16_t word_16;        // 16
+    uint16_t uTexturePitch;  // 18
+    uint16_t word_1A;        // 1a
+    uint32_t uDecompressedSize;  // 1c
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct LODSprite : public LODSpriteHeader {
+    inline LODSprite() {
+        bitmap = nullptr;
     }
     ~LODSprite();
 
     void Release();
     int _4AD2D1_overlays(struct SoftwareBillboard *a2, int a3);
 
-    char pName[12];         // 0
-    int uSpriteSize;        // C
-    __int16 uWidth;         // 10  SW width (as opposed to Sprite::BufferWidth)
-    __int16 uHeight;        // 12  SW height
-    __int16 uPaletteId;     // 14
-    __int16 word_16;        // 16
-    __int16 uTexturePitch;  // 18
-    __int16 word_1A;        // 1a
-    int uDecompressedSize;  // 1c
-    struct LODSprite_stru0 *pSpriteLines;  // 20
-    void *pDecompressedBytes;              // 24
+    uint8_t *bitmap;
 };
 #pragma pack(pop)
 
-/*   15 */
-#pragma pack(push, 1)
-struct LODFile_Sprites : public LOD::File {
+class LODFile_Sprites : public LOD::File {
+ public:
     LODFile_Sprites();
     virtual ~LODFile_Sprites();
 
@@ -211,8 +216,8 @@ struct LODFile_Sprites : public LOD::File {
     void DeleteSpritesRange(int uStartIndex, int uStopIndex);
     int _461397();
     void DeleteSomeOtherSprites();
-    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const char *pContainer);
-    bool LoadSprites(const char *pFilename);
+    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const String &pContainer);
+    bool LoadSprites(const String &pFilename);
     int LoadSprite(const char *pContainerName, unsigned int uPaletteID);
     void ReleaseLostHardwareSprites();
     void ReleaseAll();
@@ -220,22 +225,7 @@ struct LODFile_Sprites : public LOD::File {
     void _inlined_sub0();
     void _inlined_sub1();
 
-    /*FILE *pFile;
-    unsigned __int8 pLODName[256];
-    unsigned int isFileOpened;
-    unsigned __int8 *pIOBuffer;
-    unsigned int uIOBufferSize;
-    struct LOD::FileHeader header;
-    struct LOD::Directory *pRoot;
-    unsigned __int8 pContainerName[16];
-    unsigned int uCurrentIndexDir;
-    unsigned int uLODDataSize;
-    unsigned int uNumSubIndices;
-    struct LOD::Directory *pSubIndices;
-    unsigned int uOffsetToSubIndex;
-    FILE *pOutputFileHandle;*/
-    struct LODSprite pSpriteHeaders[MAX_LOD_SPRITES];
-    signed int uNumLoadedSprites;
+    unsigned int uNumLoadedSprites;
     int field_ECA0;
     int field_ECA4;
     int field_ECA8;
@@ -243,16 +233,6 @@ struct LODFile_Sprites : public LOD::File {
     Sprite *pHardwareSprites;
     int field_ECB4;
 };
-#pragma pack(pop)
-
-/*   17 */
-#pragma pack(push, 1)
-struct LODSprite_stru0 {
-    int16_t a1;
-    int16_t a2;
-    char *pos;
-};
-#pragma pack(pop)
 
 extern LODFile_IconsBitmaps *pEvents_LOD;
 
@@ -268,8 +248,5 @@ extern LODFile_Sprites *pSprites_LOD;
 extern LODFile_Sprites *pSprites_LOD_mm6;
 extern LODFile_Sprites *pSprites_LOD_mm8;
 
-extern LODWriteableFile *pNew_LOD;
-extern LODWriteableFile *pGames_LOD;
-
-extern int _6A0CA4_lod_binary_search;
-extern int _6A0CA8_lod_unused;
+extern LOD::WriteableFile *pNew_LOD;
+extern LOD::File *pGames_LOD;

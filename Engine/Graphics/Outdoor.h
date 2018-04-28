@@ -196,7 +196,7 @@ char Is_out15odm_underwater();
 void SetUnderwaterFog();
 void ODM_Project(unsigned int uNumVertices);
 void sub_487DA9();
-void ODM_LoadAndInitialize(const char *pLevelFilename,
+void ODM_LoadAndInitialize(const String &pLevelFilename,
                            struct ODMRenderParams *thisa);
 unsigned int GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int a1, int a2, float a3);

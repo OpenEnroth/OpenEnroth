@@ -734,20 +734,23 @@ void Player_Image_MM7::Serialize(Player *player) {
     this->_expression21_frameset = player->_expression21_frameset;
 
     for (unsigned int i = 0; i < 5; ++i) {
+        if (i >= player->vBeacons.size()) {
+            continue;
+        }
         this->pInstalledBeacons[i].uBeaconTime =
-            player->pInstalledBeacons[i].uBeaconTime;
+            player->vBeacons[i].uBeaconTime;
         this->pInstalledBeacons[i].PartyPos_X =
-            player->pInstalledBeacons[i].PartyPos_X;
+            player->vBeacons[i].PartyPos_X;
         this->pInstalledBeacons[i].PartyPos_Y =
-            player->pInstalledBeacons[i].PartyPos_Y;
+            player->vBeacons[i].PartyPos_Y;
         this->pInstalledBeacons[i].PartyPos_Z =
-            player->pInstalledBeacons[i].PartyPos_Z;
+            player->vBeacons[i].PartyPos_Z;
         this->pInstalledBeacons[i].PartyRot_X =
-            player->pInstalledBeacons[i].PartyRot_X;
+            player->vBeacons[i].PartyRot_X;
         this->pInstalledBeacons[i].PartyRot_Y =
-            player->pInstalledBeacons[i].PartyRot_Y;
+            player->vBeacons[i].PartyRot_Y;
         this->pInstalledBeacons[i].SaveFileID =
-            player->pInstalledBeacons[i].SaveFileID;
+            player->vBeacons[i].SaveFileID;
     }
 
     this->uNumDivineInterventionCastsThisDay =
@@ -1016,20 +1019,17 @@ void Player_Image_MM7::Deserialize(Player *player) {
     player->_expression21_frameset = this->_expression21_frameset;
 
     for (unsigned int i = 0; i < 5; ++i) {
-        player->pInstalledBeacons[i].uBeaconTime =
-            GameTime(this->pInstalledBeacons[i].uBeaconTime);
-        player->pInstalledBeacons[i].PartyPos_X =
-            this->pInstalledBeacons[i].PartyPos_X;
-        player->pInstalledBeacons[i].PartyPos_Y =
-            this->pInstalledBeacons[i].PartyPos_Y;
-        player->pInstalledBeacons[i].PartyPos_Z =
-            this->pInstalledBeacons[i].PartyPos_Z;
-        player->pInstalledBeacons[i].PartyRot_X =
-            this->pInstalledBeacons[i].PartyRot_X;
-        player->pInstalledBeacons[i].PartyRot_Y =
-            this->pInstalledBeacons[i].PartyRot_Y;
-        player->pInstalledBeacons[i].SaveFileID =
-            this->pInstalledBeacons[i].SaveFileID;
+        if (this->pInstalledBeacons[i].uBeaconTime != 0) {
+            LloydBeacon beacon;
+            beacon.uBeaconTime = GameTime(this->pInstalledBeacons[i].uBeaconTime);
+            beacon.PartyPos_X = this->pInstalledBeacons[i].PartyPos_X;
+            beacon.PartyPos_Y = this->pInstalledBeacons[i].PartyPos_Y;
+            beacon.PartyPos_Z = this->pInstalledBeacons[i].PartyPos_Z;
+            beacon.PartyRot_X = this->pInstalledBeacons[i].PartyRot_X;
+            beacon.PartyRot_Y = this->pInstalledBeacons[i].PartyRot_Y;
+            beacon.SaveFileID = this->pInstalledBeacons[i].SaveFileID;
+            player->vBeacons.push_back(beacon);
+        }
     }
 
     player->uNumDivineInterventionCastsThisDay =

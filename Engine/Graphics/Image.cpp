@@ -248,7 +248,7 @@ int TextureFrameTable::FromFileTxt(const char *Args) {
     }
     v5 = v2->pTextures;
     v2->sNumTextures = v4;
-    v6 = malloc(20 * v4);
+    v6 = malloc(sizeof(TextureFrame) * v4);
     v2->pTextures = (TextureFrame *)v6;
     if (!v6) Error("CTextureFrameTable::load - Out of Memory!");
     v7 = File;

@@ -1,6 +1,8 @@
 #pragma once
 
-enum MAP_TYPE : unsigned __int32 {
+#include "Engine/Strings.h"
+
+enum MAP_TYPE : uint32_t {
     MAP_INVALID = 0,
     MAP_EMERALD_ISLE = 1,
     MAP_HARMONDALE = 2,
@@ -22,7 +24,7 @@ enum MAP_TYPE : unsigned __int32 {
     //...
 };
 
-enum MapStartPoint : unsigned __int32 {
+enum MapStartPoint : uint32_t {
     MapStartPoint_Party = 0,
     MapStartPoint_North = 1,
     MapStartPoint_South = 2,
@@ -30,16 +32,14 @@ enum MapStartPoint : unsigned __int32 {
     MapStartPoint_West = 4
 };
 
-/*  192 */
-#pragma pack(push, 1)
 struct MapInfo {
     int SpawnRandomTreasure(struct SpawnPointMM7 *a2);
 
-    char *pName;
-    char *pFilename;
-    char *pEncounterMonster1Texture;
-    char *pEncounterMonster2Texture;
-    char *pEncounterMonster3Texture;
+    String pName;
+    String pFilename;
+    String pEncounterMonster1Texture;
+    String pEncounterMonster2Texture;
+    String pEncounterMonster3Texture;
     unsigned int uNumResets;
     unsigned int uFirstVisitedAt;
     unsigned int uRespawnIntervalDays;
@@ -55,34 +55,30 @@ struct MapInfo {
     char EncM2percent;
     char EncM3percent;
     char Dif_M1;
-    unsigned __int8 uEncounterMonster1AtLeast;
-    unsigned __int8 uEncounterMonster1AtMost;
+    uint8_t uEncounterMonster1AtLeast;
+    uint8_t uEncounterMonster1AtMost;
     char Dif_M2;
-    unsigned __int8 uEncounterMonster2AtLeast;
-    unsigned __int8 uEncounterMonster2AtMost;
+    uint8_t uEncounterMonster2AtLeast;
+    uint8_t uEncounterMonster2AtMost;
     char Dif_M3;
-    unsigned __int8 uEncounterMonster3AtLeast;
-    unsigned __int8 uEncounterMonster3AtMost;
+    uint8_t uEncounterMonster3AtLeast;
+    uint8_t uEncounterMonster3AtMost;
     char field_3D;
     char field_3E;
     char field_3F;
-    unsigned __int8 uRedbookTrackID;
-    unsigned __int8 uEAXEnv;
+    uint8_t uRedbookTrackID;
+    uint8_t uEAXEnv;
     char field_42;
     char field_43;
 };
-#pragma pack(pop)
 
-/*  193 */
-#pragma pack(push, 1)
 struct MapStats {
     void Initialize();
-    MAP_TYPE GetMapInfo(const char *Str2);
+    MAP_TYPE GetMapInfo(const String &Str2);
     int sub_410D99_get_map_index(int a1);
     MapInfo pInfos[77];
     unsigned int uNumMaps;
 };
-#pragma pack(pop)
 
 extern struct MapStats *pMapStats;
 

@@ -53,32 +53,43 @@ GUIWindow_Save::GUIWindow_Save() :
 
     render->Present();
     pSavegameList->Initialize();
-    LODWriteableFile pLODFile;
-    pLODFile.AllocSubIndicesAndIO(300, 0);
+    LOD::File pLODFile;
     for (uint i = 0; i < 40; ++i) {
         String file_name = pSavegameList->pFileList[i];
         if (file_name.empty()) {
             file_name = "1.mm7";
         }
 
-        std::string str = "saves\\" + file_name;
+        String str = "saves\\" + file_name;
         str = MakeDataPath(str.c_str());
         if (_access(str.c_str(), 0) || _access(str.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(72));  // Empty
         } else {
-            pLODFile.LoadFile(str.c_str(), 1);
-            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", 1));  // problesm new maps mm7
-            if (pLODFile.FindContainer("image.pcx", 1)) {
-                // pSavegameThumbnails[i].LoadFromFILE(pLODFile.FindContainer("image.pcx", 1), 0, 1);
-                pLODFile.CloseWriteFile();
+            pLODFile.Open(str);
+            void *data = pLODFile.LoadRaw("header.bin");
+            memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
+
+            if (pSavegameHeader[i].pName[0] == '\0') {
+                // blank so add something - suspect quicksaves
+                String newname = pSavegameList->pFileList[i];
+                String test = newname.substr(0, newname.size() - 4);
+                strcpy(pSavegameHeader[i].pName, test.c_str());
+            }
+
+            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_File_Loader(&pLODFile, "image.pcx"));
+            if (pSavegameThumbnails[i]->GetWidth() == 0) {
+                pSavegameThumbnails[i]->Release();
+                pSavegameThumbnails[i] = nullptr;
+            }
+
+            if (pSavegameThumbnails[i] != nullptr) {
                 pSavegameUsedSlots[i] = 1;
             } else {
                 pSavegameUsedSlots[i] = 0;
             }
         }
     }
-    pLODFile.FreeSubIndexAndIO();
 
     if (!saveload_ui_x_d) {
         saveload_ui_x_d = assets->GetImage_Alpha("x_d");
@@ -165,8 +176,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         pSaveListPosition = 0;
         uLoadGameUI_SelectedSlot = 0;
     }
-    LODWriteableFile pLODFile;
-    pLODFile.AllocSubIndicesAndIO(300, 0);
+    LOD::File pLODFile;
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
         String str = "saves\\" + pSavegameList->pFileList[i];
@@ -176,27 +186,33 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             strcpy(pSavegameHeader[i].pName, localization->GetString(72));  // "Empty"
             continue;
         }
-        pLODFile.LoadFile(str.c_str(), 1);
-        if (pLODFile.FindContainer("header.bin", true))
-            fread(&pSavegameHeader[i], 100, 1, pLODFile.FindContainer("header.bin", true));
+        pLODFile.Open(str);
+        void *data = pLODFile.LoadRaw("header.bin");
+        memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
         if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(613))) {  // "AutoSave.MM7"
             strcpy(pSavegameHeader[i].pName, localization->GetString(16));  // "Autosave"
         }
-        if (!pLODFile.FindContainer("image.pcx", true)) {
+
+        if (pSavegameHeader[i].pName[0] == '\0') {
+            // blank so add something - suspect quicksaves
+            String newname = pSavegameList->pFileList[i];
+            String test = newname.substr(0, newname.size() - 4);
+            strcpy(pSavegameHeader[i].pName, test.c_str());
+        }
+
+        pSavegameThumbnails[i] = Image::Create(new PCX_LOD_File_Loader(&pLODFile, "image.pcx"));
+        if (pSavegameThumbnails[i]->GetWidth() == 0) {
+            pSavegameThumbnails[i]->Release();
+            pSavegameThumbnails[i] = nullptr;
+        }
+
+        if (pSavegameThumbnails[i] != nullptr) {
+            pSavegameUsedSlots[i] = 1;
+        } else {
             pSavegameUsedSlots[i] = 0;
             pSavegameList->pFileList[i].clear();
-        } else {
-            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_File_Loader(&pLODFile, "image.pcx"));
-            if (pSavegameThumbnails[i]->GetWidth() == 0) {
-                pSavegameThumbnails[i]->Release();
-                pSavegameThumbnails[i] = nullptr;
-            }
-            pLODFile.CloseWriteFile();
-            pSavegameUsedSlots[i] = 1;
         }
     }
-
-    pLODFile.FreeSubIndexAndIO();
 
     saveload_ui_x_d = assets->GetImage_Alpha("x_d");
 

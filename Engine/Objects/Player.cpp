@@ -1,6 +1,7 @@
 #include "Engine/Objects/Player.h"
 
 #include <algorithm>
+#include <functional>
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
@@ -2251,7 +2252,8 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(
                 armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
         } else {
-            Error("Unknown armour type");  // what kind of armour is that?
+            // PLAYER_SKILL_MISC
+            // any others?
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(
                 armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
@@ -3147,9 +3149,14 @@ int Player::GetActualSkillLevel(
         } break;
     }
 
+    if (uSkillType == PLAYER_SKILL_CLUB) {
+        // some items loaded in as clubs
+        uSkillType = PLAYER_SKILL_MACE;
+    }
+
     // cap skill and bonus at 60
     skill_value =
-        pActiveSkills[uSkillType] & 0x3F;  // player_skill_club out of bounds
+        pActiveSkills[uSkillType] & 0x3F;
     result = bonus_value + skill_value;
 
     if (result > 60) result = 60;
@@ -7985,16 +7992,16 @@ bool Player::ProfessionOrGuildFlagsCorrect(unsigned int uClass, int a3) {
             return false;
         }
         switch (uClass) {
-            case 0x1Au:
+            case PLAYER_CLASS_PRIEST_OF_SUN:
                 return (_449B57_test_bit(
                     (unsigned __int8*)this->_achieved_awards_bits, 65));
-            case 0x1Bu:
+            case PLAYER_CLASS_PRIEST_OF_MOON:
                 return (_449B57_test_bit(
                     (unsigned __int8*)this->_achieved_awards_bits, 67));
-            case 0x22u:
+            case PLAYER_CLASS_ARCHMAGE:
                 return (_449B57_test_bit(
                     (unsigned __int8*)this->_achieved_awards_bits, 77));
-            case 0x23u:
+            case PLAYER_CLASS_LICH:
                 return (_449B57_test_bit(
                     (unsigned __int8*)this->_achieved_awards_bits, 79));
                 break;
@@ -8152,7 +8159,6 @@ Player::Player() {
     _mana_related = 0;
 
     uQuickSpell = 0;
-    memset(pInstalledBeacons.data(), 0, 5 * sizeof(LloydBeacon));
 
     _some_attack_bonus = 0;
     field_1A91 = 0;
@@ -8189,4 +8195,39 @@ Player::Player() {
     _expression21_frameset = 0;
 
     lastOpenedSpellbookPage = 0;
+}
+
+void Player::CleanupBeacons() {
+    struct delete_beacon : public std::unary_function<const LloydBeacon&, bool> {
+        bool operator()(const LloydBeacon &beacon) const {
+            return (beacon.uBeaconTime < pParty->GetPlayingTime());
+        }
+    };
+    vBeacons.erase(std::remove_if(vBeacons.begin(), vBeacons.end(), delete_beacon()), vBeacons.end());
+}
+
+bool Player::SetBeacon(size_t index, size_t power) {
+    int file_index = pGames_LOD->GetSubNodeIndex(pCurrentMapName);
+    if (file_index < 0) {
+        return false;
+    }
+
+    LloydBeacon beacon;
+
+    beacon.image = render->TakeScreenshot(92, 68);
+    beacon.uBeaconTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power));
+    beacon.PartyPos_X = pParty->vPosition.x;
+    beacon.PartyPos_Y = pParty->vPosition.y;
+    beacon.PartyPos_Z = pParty->vPosition.z;
+    beacon.PartyRot_X = pParty->sRotationY;
+    beacon.PartyRot_Y = pParty->sRotationX;
+    beacon.SaveFileID = file_index;
+
+    if (index < vBeacons.size()) {
+        vBeacons[index] = beacon;
+    } else {
+        vBeacons.push_back(beacon);
+    }
+
+    return true;
 }

@@ -79,7 +79,7 @@ void PrepareToLoadRestUI() {
     if (CheckHiredNPCSpeciality(QuarterMaster)) uRestUI_FoodRequiredToRest -= 2;
     if (CheckHiredNPCSpeciality(Gypsy)) --uRestUI_FoodRequiredToRest;
     if (uRestUI_FoodRequiredToRest < 1) uRestUI_FoodRequiredToRest = 1;
-    if (!_stricmp(pCurrentMapName, "d29.blv") &&
+    if ((pCurrentMapName == "d29.blv") &&
         _449B57_test_bit(pParty->_quest_bits,
                          PARTY_QUEST_HARMONDALE_REBUILT))  // d29 = Harmondale /
                                                            // Замок Хармондейл

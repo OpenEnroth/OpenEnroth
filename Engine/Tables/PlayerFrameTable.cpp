@@ -147,7 +147,7 @@ int PlayerFrameTable::FromFileTxt(const char *Args) {
         v4 = v25;
     }
     this->uNumFrames = v4;
-    v5 = malloc(10 * v4);
+    v5 = malloc(sizeof(PlayerFrame) * v4);
     this->pFrames = (PlayerFrame *)v5;
     if (!v5) Error("PlayerFrameTable::load - Out of Memory!");
     v6 = File;

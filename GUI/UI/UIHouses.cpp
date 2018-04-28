@@ -806,7 +806,7 @@ bool HouseUI_CheckIfPlayerCanInteract() {
         pDialogueWindow->pNumPresenceButton = 0;
         GUIWindow window = *pPrimaryWindow;
         window.uFrameX = 483;
-        window.uFrameWidth = 148;
+        window.uFrameWidth = 145;
         window.uFrameZ = 334;
 
         String str = localization->FormatString(
@@ -1696,7 +1696,7 @@ void TravelByTransport() {
 
     GUIWindow travel_window = *window_SpeakInHouse;
     travel_window.uFrameX = 483;
-    travel_window.uFrameWidth = 148;
+    travel_window.uFrameWidth = 145;
     travel_window.uFrameZ = 334;
 
     v4 = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].uType ==
@@ -1785,7 +1785,7 @@ void TravelByTransport() {
                         pTextHeight = pFontArrus->CalcTextHeight(
                             str, travel_window.uFrameWidth, 0);
                         pButton->uHeight = pTextHeight;
-                        pButton->uW = pButton->uY + pTextHeight - 1;
+                        pButton->uW = pButton->uY + pTextHeight - 1 + 6;
                         pRealTextHeight +=
                             (pFontArrus->GetHeight() - 3) + pTextHeight;
                     }
@@ -1843,12 +1843,9 @@ void TravelByTransport() {
                 [dialog_menu_id -
                 HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_1]];
             if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-                if (_stricmp(
-                    pCurrentMapName,
-                    pMapStats->pInfos[pTravel->uMapInfoID].pFilename)) {
+                if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].pFilename) {
                     SaveGame(1, 0);
-                    strcpy(pCurrentMapName,
-                        pMapStats->pInfos[pTravel->uMapInfoID].pFilename);
+                    pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].pFilename;
 
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                     _5B65B8_npcdata_hiword_house_or_other = 0;
@@ -1935,7 +1932,7 @@ void TownHallDialog() {
 
     GUIWindow townHall_window = *window_SpeakInHouse;
     townHall_window.uFrameX = 483;
-    townHall_window.uFrameWidth = 148;
+    townHall_window.uFrameWidth = 145;
     townHall_window.uFrameZ = 334;
 
     auto fine_str =
@@ -1975,7 +1972,7 @@ void TownHallDialog() {
                     pShopOptions[j], townHall_window.uFrameWidth, 0);
                 pButton->uHeight = pTextHeight;
                 v17 = pButton->uY + pTextHeight - 1;
-                pButton->uW = v17;
+                pButton->uW = v17 + 6;
                 pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
                 if (pDialogueWindow->pCurrentPosActiveItem != v31)
                     pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
@@ -2082,7 +2079,7 @@ void TownHallDialog() {
 void BankDialog() {
     GUIWindow bank_window = *window_SpeakInHouse;
     bank_window.uFrameX = 483;
-    bank_window.uFrameWidth = 148;
+    bank_window.uFrameWidth = 145;
     bank_window.uFrameZ = 334;
     bank_window.DrawTitleText(
         pFontArrus, 0, 220, Color16(0xFFu, 0xFFu, 0x9Bu),
@@ -2243,7 +2240,7 @@ void TavernDialog() {
 
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
+    dialog_window.uFrameWidth = 145;
     dialog_window.uFrameZ = 334;
     v2 = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
         .fPriceMultiplier;
@@ -2323,32 +2320,32 @@ void TavernDialog() {
                 if (pButton->msg_param == 15) {
                     pButton->uHeight = pTopic1Height;
                     pButton->uY = 146;
-                    pButton->uW = pTopic1Height + 145;
+                    pButton->uW = pTopic1Height + 145 + 6;
                 } else if (pButton->msg_param == 16) {
                     pButton->uHeight = pTopic2Height;
                     pButton->uY =
-                        pTopic1Height + (pFontArrus->GetHeight() - 3) + 146;
+                        pTopic1Height + (pFontArrus->GetHeight() ) + 146;
                     pButton->uW = (pTopic1Height +
-                        (pFontArrus->GetHeight() - 3) + 146) +
-                        pTopic2Height - 1;
+                        (pFontArrus->GetHeight() ) + 146) +
+                        pTopic2Height - 1 + 6;
                 } else if (pButton->msg_param == 96) {
                     pButton->uY = pTopic1Height + pTopic2Height +
-                        2 * (pFontArrus->GetHeight() - 3) + 146;
+                        2 * (pFontArrus->GetHeight() ) + 146;
                     pButton->uHeight = pTopic3Height;
                     pButton->uW =
                         pTopic3Height +
                         (pTopic1Height + pTopic2Height +
-                            2 * (pFontArrus->GetHeight() - 3) + 146) -
-                        1;
+                            2 * (pFontArrus->GetHeight() ) + 146) -
+                        1 + 6;
                 } else if (pButton->msg_param == 101) {
                     pButton->uHeight = pTopic4Height;
                     pButton->uY = pTopic1Height +
-                        3 * (pFontArrus->GetHeight() - 3) +
+                        3 * (pFontArrus->GetHeight() ) +
                         pTopic4Height + pTopic2Height + 146;
                     pButton->uW =
-                        (pTopic1Height + 3 * (pFontArrus->GetHeight() - 3) +
+                        (pTopic1Height + 3 * (pFontArrus->GetHeight() ) +
                             pTopic4Height + pTopic2Height + 146) +
-                        pTopic4Height - 1;
+                        pTopic4Height - 1 + 6;
                 }
             }
             dialog_window.DrawTitleText(
@@ -2519,7 +2516,7 @@ void TavernDialog() {
                         dialog_window.uFrameWidth, 0);
                     pButton->uHeight = pTextHeight;
                     v54 = pTextHeight + pButton->uY - 1;
-                    pButton->uW = v54;
+                    pButton->uW = v54 + 6;
                     pColorText = Color16(0xFFu, 0xFFu, 0x9Bu);
                     if (pDialogueWindow->pCurrentPosActiveItem != i)
                         pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
@@ -2614,7 +2611,7 @@ void TavernDialog() {
                     pShopOptions[pNumString], dialog_window.uFrameWidth, 0);
                 pButton->uHeight = pTextHeight;
                 v54 = pButton->uY + pTextHeight - 1;
-                pButton->uW = v54;
+                pButton->uW = v54 + 6;
                 pColorText = Color16(0xFFu, 0xFFu, 0x9Bu);
                 if (pDialogueWindow->pCurrentPosActiveItem != pItemNum)
                     pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
@@ -2644,7 +2641,7 @@ void TempleDialog() {
 
     GUIWindow tample_window = *window_SpeakInHouse;
     tample_window.uFrameX = 483;
-    tample_window.uFrameWidth = 148;
+    tample_window.uFrameWidth = 145;
     tample_window.uFrameZ = 334;
 
     if (uActiveCharacter == 0) {  // avoid nzi
@@ -2700,7 +2697,7 @@ void TempleDialog() {
                 pTextHeight = pFontArrus->CalcTextHeight(
                     pShopOptions[1 * i], tample_window.uFrameWidth, 0);
                 pButton->uHeight = pTextHeight;
-                pButton->uW = pButton->uY + pTextHeight - 1;
+                pButton->uW = pButton->uY + pTextHeight - 1 + 6;
                 all_text_height = pButton->uW;
                 pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
                 if (pDialogueWindow->pCurrentPosActiveItem != index + 2)
@@ -2931,7 +2928,7 @@ void TempleDialog() {
                                     36),
                                 tample_window.uFrameWidth, 0);
                             pButton->uHeight = pTextHeight;
-                            pButton->uW = pButton->uY + pTextHeight - 1;
+                            pButton->uW = pButton->uY + pTextHeight - 1 + 6;
                             all_text_height = pButton->uW;
                             pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
                             if (pDialogueWindow->pCurrentPosActiveItem !=
@@ -2990,7 +2987,7 @@ void TrainingDialog(const char *s) {
 
     GUIWindow training_dialog_window = *window_SpeakInHouse;
     training_dialog_window.uFrameX = 483;
-    training_dialog_window.uFrameWidth = 148;
+    training_dialog_window.uFrameWidth = 145;
     training_dialog_window.uFrameZ = 334;
 
     if (uActiveCharacter == 0)  // avoid nzi
@@ -3098,7 +3095,7 @@ void TrainingDialog(const char *s) {
                             pShopOptions[index],
                             training_dialog_window.uFrameWidth, 0);
                         pButton->uHeight = pTextHeight;
-                        pButton->uW = pTextHeight + pButton->uY - 1;
+                        pButton->uW = pTextHeight + pButton->uY - 1 + 6;
                         v49 = pButton->uW;
                         pTextColor = Color16(0xE1u, 0xCDu, 0x23u);
                         if (pDialogueWindow->pCurrentPosActiveItem != i)
@@ -3279,7 +3276,7 @@ void TrainingDialog(const char *s) {
                             localization->GetSkillName(pButton->msg_param - 36),
                             training_dialog_window.uFrameWidth, 0);
                         pButton->uHeight = pTextHeight;
-                        pButton->uW = pButton->uY + pTextHeight - 1;
+                        pButton->uW = pButton->uY + pTextHeight - 1 + 6;
                         v19 = pButton->uY + pTextHeight - 1;
                         pTextColor = Color16(0xE1u, 0xCDu, 0x23u);
                         if (pDialogueWindow->pCurrentPosActiveItem != i)
@@ -3312,7 +3309,6 @@ void TrainingDialog(const char *s) {
 }
 
 void sub_4B6478() {
-    unsigned int v2;              // eax@1
     signed int v3;                // esi@1
     int pPrice;                   // ebx@1
     unsigned int v5;              // esi@5
@@ -3327,9 +3323,9 @@ void sub_4B6478() {
 
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 148;
+    dialog_window.uFrameWidth = 145;
     dialog_window.uFrameZ = 334;
-    v2 = 52 * (unsigned int)window_SpeakInHouse->ptr_1C;
+
     v32 =
         (unsigned __int8)(((p2DEvents
             [(unsigned int)window_SpeakInHouse->ptr_1C - 1]
@@ -3418,7 +3414,7 @@ void sub_4B6478() {
                             localization->GetSkillName(pButton->msg_param - 36),
                             dialog_window.uFrameWidth, 0);
                         pButton->uHeight = pTextHeight;
-                        pButton->uW = pButton->uY + pTextHeight - 1;
+                        pButton->uW = pButton->uY + pTextHeight - 1 + 6;
                         index = pButton->uY + pTextHeight - 1;
                         pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
                         if (pDialogueWindow->pCurrentPosActiveItem != i)
@@ -3498,7 +3494,7 @@ void SimpleHouseDialog() {
         house_window.DrawTitleText(pFontCreate, 0, 2, 0,
             pMapStats->pInfos[uHouse_ExitPic].pName, 3);
         house_window.uFrameX = 483;
-        house_window.uFrameWidth = 148;
+        house_window.uFrameWidth = 145;
         house_window.uFrameZ = 334;
         if (!pTransitionStrings[uHouse_ExitPic]) {
             auto str = localization->FormatString(
@@ -3576,7 +3572,7 @@ void SimpleHouseDialog() {
     // for right panel
     GUIWindow right_panel_window = *pDialogueWindow;
     right_panel_window.uFrameX = 483;
-    right_panel_window.uFrameWidth = 148;
+    right_panel_window.uFrameWidth = 145;
     right_panel_window.uFrameZ = 334;
     for (int i = right_panel_window.pStartingPosActiveItem;
         i < right_panel_window.pStartingPosActiveItem +
@@ -3714,7 +3710,7 @@ void SimpleHouseDialog() {
                 pButton->sLabel, right_panel_window.uFrameWidth, 0);
             pButton->uHeight = pTextHeight;
             v40 = pButton->uY + pTextHeight - 1;
-            pButton->uW = v40;
+            pButton->uW = v40 + 6;
             pTextColor = Color16(0xE1u, 0xCDu, 0x23u);
             if (pDialogueWindow->pCurrentPosActiveItem != i)
                 pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
@@ -3749,7 +3745,7 @@ void SimpleHouseDialog() {
 void JailDialog() {
     GUIWindow jail_dialogue_window = *window_SpeakInHouse;
     jail_dialogue_window.uFrameX = 483;
-    jail_dialogue_window.uFrameWidth = 148;
+    jail_dialogue_window.uFrameWidth = 145;
     jail_dialogue_window.uFrameZ = 334;
     jail_dialogue_window.DrawTitleText(
         pFontArrus, 0,
@@ -3773,7 +3769,7 @@ void InitializeBuildingResidents() {
     int decode_step;
 
     free(p2DEventsTXT_Raw);
-    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadRaw("2dEvents.txt", 0);
+    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("2dEvents.txt");
     strtok(p2DEventsTXT_Raw, "\r");
     strtok(NULL, "\r");
 
@@ -4406,7 +4402,8 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
     pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(80),  // Quit building
         { { ui_exit_cancel_button_background } });
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
-        const char *v29, *v30;
+        const char *v29;
+        String v30;
         if (v26 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             v30 = pMapStats->pInfos[uHouse_ExitPic].pName;
             v29 = localization->GetString(411);  // Enter %s
@@ -4417,7 +4414,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
                 v30 = p2DEvents[button - 1].pProprieterName;
             v29 = localization->GetString(435);
         }
-        sprintf(byte_591180[v26].data(), v29, v30);
+        sprintf(byte_591180[v26].data(), v29, v30.c_str());
         HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],
             pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26],
             63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, 0, byte_591180[v26].data());

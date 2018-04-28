@@ -993,18 +993,17 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
     }
 }
 
-const char *GameUI_GetMinimapHintText() {
+String GameUI_GetMinimapHintText() {
     double v3;            // st7@1
     int v7;               // eax@4
     const char *v14;      // eax@8
-    char *result;         // eax@12
     unsigned int pMapID;  // eax@14
     int global_coord_X;   // [sp+10h] [bp-1Ch]@1
     int global_coord_Y;   // [sp+14h] [bp-18h]@1
     unsigned int pY;      // [sp+1Ch] [bp-10h]@1
     unsigned int pX;      // [sp+28h] [bp-4h]@1
 
-    result = 0;
+    String result;
     pMouse->GetClickPos(&pX, &pY);
     v3 = 1.0 / (float)((signed int)viewparams->uMinimapZoom * 0.000015258789);
     global_coord_X =
@@ -1030,15 +1029,13 @@ const char *GameUI_GetMinimapHintText() {
                             v14 = GetEventHintString(face.sCogTriggeredID);
                             if (v14) {
                                 if (_stricmp(v14, "")) {
-                                    result = (char *)v14;
+                                    result = v14;
                                 }
                             }
                         }
                     }
                 }
-                if (result) {
-                    return result;
-                }
+                return result;
             }
         }
         pMapID = pMapStats->GetMapInfo(pCurrentMapName);
@@ -2614,8 +2611,7 @@ __int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing
                             v10.screen_space_y +=
                                 pFrame->hw_sprites[0]->sprite_header->uHeight /
                                 2;
-                        result = pFrame->hw_sprites[0]
-                                     ->sprite_header->_4AD2D1_overlays(&v10, 0);
+                        result = pFrame->hw_sprites[0]->sprite_header->_4AD2D1_overlays(&v10, 0);
                         ++v12;
                         if (v12 == 5) break;
                     }

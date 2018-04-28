@@ -3,14 +3,14 @@
 #include <cstdint>
 #include <sstream>
 
+#include "Engine/Graphics/IRender.h"
+#include "Engine/LOD.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
-#include "Media/Audio/AudioPlayer.h"
-#include "Platform/OSWindow.h"
-#include "Platform/Api.h"
 #include "GUI/UI/UIMainMenu.h"
-#include "Engine/LOD.h"
-#include "Engine/Graphics/IRender.h"
+#include "Media/Audio/AudioPlayer.h"
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 
 GUICredits::GUICredits() :
     GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
@@ -19,7 +19,7 @@ GUICredits::GUICredits() :
 
     mm6title = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
 
-    char *text = (char *)pEvents_LOD->LoadRaw("credits.txt", true);
+    char *text = (char *)pEvents_LOD->LoadCompressedTexture("credits.txt");
 
     GUIWindow credit_window;
     credit_window.uFrameWidth = 250;
@@ -39,6 +39,7 @@ GUICredits::GUICredits() :
     free(text);
 
     move_Y = 0;
+    tick = 0;
 
     CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "");
 }
@@ -62,7 +63,11 @@ void GUICredits::Update() {
     credit_window.uFrameY + credit_window.uFrameHeight);
     render->DrawTextureOffset(credit_window.uFrameX, credit_window.uFrameY, 0, move_Y, cred_texture);
     render->ResetUIClipRect();
-    ++move_Y;
+    tick++;
+    if (tick == 4) {
+        tick = 0;
+        ++move_Y;
+    }
     if (move_Y >= cred_texture->GetHeight()) {
         SetCurrentMenuID(MENU_MAIN);
     }
