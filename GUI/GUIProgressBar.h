@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Engine/Graphics/Image.h"
+#include <cstdint>
+
+class Image;
 
 class GUIProgressBar {
  public:
@@ -10,27 +12,29 @@ class GUIProgressBar {
         TYPE_Box = 2
     };
 
+ public:
+    GUIProgressBar();
+
     bool Initialize(Type type);
     void Reset(uint8_t uMaxProgress);
     void Progress();
     void Release();
     void Draw();
 
-    int16_t uX;
-    int16_t uY;
-    int16_t uWidth;
-    int16_t uHeight;
-    char uProgressMax;
-    char uProgressCurrent;
+ protected:
+    int uX;
+    int uY;
+    int uWidth;
+    int uHeight;
+
+    uint8_t uProgressMax;
+    uint8_t uProgressCurrent;
     Type uType;
-    char field_10[8];
-    struct Texture_MM7 field_E0;
-    class Image *progressbar_dungeon;  // struct Texture_MM7 pBardata;
-    class Image *progressbar_loading;  // struct Texture_MM7 pLoadingProgress;
 
-    inline GUIProgressBar() : loading_bg(nullptr) {}
+    Image *progressbar_dungeon;  // struct Texture_MM7 pBardata;
+    Image *progressbar_loading;  // struct Texture_MM7 pLoadingProgress;
 
-    class Image *loading_bg;
+    Image *loading_bg;
 };
 
 extern GUIProgressBar *pGameLoadingUI_ProgressBar;

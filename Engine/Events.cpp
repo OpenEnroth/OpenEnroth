@@ -1057,9 +1057,7 @@ LABEL_47:
                             pAudioPlayer->PlaySound((SoundID)v106, 0, 0, -1, 0, 0);
                         }
                     } else {
-                        pGameLoadingUI_ProgressBar->uType =
-                            (GUIProgressBar::Type)(
-                                (activeLevelDecoration == NULL) + 1);
+                        pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
                         Transition_StopSound_Autosave(v99, MapStartPoint_Party);
                         v133 = 1;
                         if (current_screen_type == SCREEN_HOUSE) {

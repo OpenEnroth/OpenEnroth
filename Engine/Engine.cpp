@@ -2593,7 +2593,7 @@ bool TeleportToNWCDungeon() {
     dword_5B65BC = 0;
     dword_5B65C0 = 0;
 
-    pGameLoadingUI_ProgressBar->uType = GUIProgressBar::TYPE_Fullscreen;
+    pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
     Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
     current_screen_type = SCREEN_GAME;
     return true;
