@@ -1,7 +1,10 @@
-#include <stdio.h>
+#include "Platform/Win/Win.h"
+
+#include <cstdio>
+#include <string>
+#include <vector>
 
 #include "Platform/Api.h"
-#include "Platform/Win/Win.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -71,4 +74,26 @@ bool OS_OpenConsole() {
     }
 
     return false;
+}
+
+std::vector<std::string> OS_FindFiles(const std::string &folder, const std::string &mask) {
+    std::vector<std::string> result;
+
+    std::string path = folder + "\\" + mask;
+
+    WIN32_FIND_DATAA ffd = { 0 };
+    HANDLE hFind = FindFirstFileA(path.c_str(), &ffd);
+    if (INVALID_HANDLE_VALUE == hFind) {
+        return result;
+    }
+
+    do {
+        if ((ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+            result.push_back(ffd.cFileName);
+        }
+    } while (FindNextFileA(hFind, &ffd) != 0);
+
+    FindClose(hFind);
+
+    return result;
 }

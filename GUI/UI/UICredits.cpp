@@ -3,14 +3,14 @@
 #include <cstdint>
 #include <sstream>
 
+#include "Engine/Graphics/IRender.h"
+#include "Engine/LOD.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
-#include "Media/Audio/AudioPlayer.h"
-#include "Platform/OSWindow.h"
-#include "Platform/Api.h"
 #include "GUI/UI/UIMainMenu.h"
-#include "Engine/LOD.h"
-#include "Engine/Graphics/IRender.h"
+#include "Media/Audio/AudioPlayer.h"
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 
 GUICredits::GUICredits() :
     GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
@@ -19,7 +19,7 @@ GUICredits::GUICredits() :
 
     mm6title = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
 
-    char *text = (char *)pEvents_LOD->LoadRaw("credits.txt");
+    char *text = (char *)pEvents_LOD->LoadCompressedTexture("credits.txt");
 
     GUIWindow credit_window;
     credit_window.uFrameWidth = 250;

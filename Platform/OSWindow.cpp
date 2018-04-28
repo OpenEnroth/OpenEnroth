@@ -19,8 +19,6 @@
 #include "Platform/OSWindow.h"
 #include "Platform/Win/Win.h"
 
-extern HWND hInsertCDWindow;  // idb
-
 void *OSWindow::GetApiHandle() const { return api_handle; }
 int OSWindow::GetX() const {
     RECT rc;
@@ -123,14 +121,6 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam,
             //  SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
             //  PostQuitMessage(0);
             //  return 0;
-
-            // case WM_DEVICECHANGE:
-            //{
-            //  if (wParam == 0x8000)          // CD or some device has been
-            //  inserted - notify InsertCD dialog
-            //    PostMessageW(hInsertCDWindow, WM_USER + 1, 0, 0);
-            //  return 0;
-            //}
 
         case WM_COMMAND:
             if (OnOSMenu(wparam)) return *result = 0, true;
@@ -280,9 +270,7 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam,
             return *result = 0, true;
 
         case WM_ACTIVATEAPP:
-            if (wparam &&
-                (GetForegroundWindow() == (HWND)this->GetApiHandle() ||
-                 GetForegroundWindow() == hInsertCDWindow)) {
+            if (wparam && (GetForegroundWindow() == (HWND)this->GetApiHandle())) {
                 if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
                     dword_4E98BC_bApplicationActive = 1;
 

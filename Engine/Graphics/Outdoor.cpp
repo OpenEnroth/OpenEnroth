@@ -973,13 +973,6 @@ void OutdoorLocation::Release() {
 
 bool OutdoorLocation::Load(const String &filename, int days_played,
                            int respawn_interval_days, int *thisa) {
-    FILE *pFile;       // eax@50
-    int v108;          // [sp+0h] [bp-B80h]@10
-    char Src[968];     // [sp+10h] [bp-B70h]@110
-    char Dst[968];     // [sp+3D8h] [bp-7A8h]@50
-    ODMHeader header;  // [sp+B58h] [bp-28h]@50
-    char *Str2;        // [sp+B74h] [bp-Ch]@12
-
     if (pEngine->IsUnderwater()) {
         pPaletteManager->pPalette_tintColor[0] = 0x10;
         pPaletteManager->pPalette_tintColor[1] = 0xC2;
@@ -1010,29 +1003,9 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     auto odm_filename = filename;
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
-    pFile = pGames_LOD->FindContainer(odm_filename);
 
-    static_assert(sizeof(ODMHeader) == 16, "Wrong type size");
-    fread(&header, sizeof(ODMHeader), 1, pFile);
-    if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
-        header.pMagic[1] != 'v' || header.pMagic[2] != 'i' ||
-        header.pMagic[3] != 'i') {
-        logger->Warning(L"Can't load file!");
-    }
-
-    uint8_t *pSrcMem = (uint8_t *)malloc(header.uDecompressedSize);
-    uint8_t *pSrc = pSrcMem;
-
-    if (header.uCompressedSize < header.uDecompressedSize) {
-        char *pComressedSrc = (char *)malloc(header.uCompressedSize);
-        fread(pComressedSrc, header.uCompressedSize, 1, pFile);
-        uint actualDecompressedSize = header.uDecompressedSize;
-        zlib::Uncompress(pSrc, &actualDecompressedSize, pComressedSrc,
-                         header.uCompressedSize);
-        free(pComressedSrc);
-    } else {
-        fread(pSrc, header.uDecompressedSize, 1, pFile);
-    }
+    void *pSrcMem = pGames_LOD->LoadCompressed(odm_filename);
+    uint8_t *pSrc = (uint8_t*)pSrcMem;
 
 #pragma pack(push, 1)
     struct ODMInfo {
@@ -1045,11 +1018,10 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 #pragma pack(pop)
 
     static_assert(sizeof(ODMInfo) == 160, "Wrong type size");
-    ODMInfo *odm_info = (ODMInfo *)pSrc;
+    ODMInfo *odm_info = (ODMInfo*)pSrc;
     this->level_filename = String(odm_info->level_filename, 32);
     this->location_filename = String(odm_info->level_filename, 32);
-    this->location_file_description =
-        String(odm_info->location_file_description, 32);
+    this->location_file_description = String(odm_info->location_file_description, 32);
     this->sky_texture_filename = String(odm_info->sky_texture_filename, 32);
     this->ground_tileset = String(odm_info->ground_tileset, 32);
     pSrc += sizeof(ODMInfo);
@@ -1173,64 +1145,45 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     auto ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    pFile = pNew_LOD->FindContainer(ddm_filename);
+    pSrcMem = pNew_LOD->LoadCompressed(ddm_filename);
 
-    fread(&header, 0x10, 1, pFile);
-    Str2 = 0;
-    if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
-        header.pMagic[1] != 'v' || header.pMagic[2] != 'i' ||
-        header.pMagic[3] != 'i') {
-        logger->Warning(L"Can't load file!");
-        Str2 = (char *)1;
-    }
+    if (pSrcMem != nullptr) {
+        pSrc = (uint8_t*)pSrcMem;
 
-    if (!Str2) {
-        pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
-        pSrc = pSrcMem;
-        // v149 = v75;
-        if (header.uCompressedSize == header.uDecompressedSize) {
-            fread(pSrc, header.uDecompressedSize, 1, pFile);
-        } else if (header.uCompressedSize < header.uDecompressedSize) {
-            void *compressedMem = malloc(header.uCompressedSize);
-            fread(compressedMem, header.uCompressedSize, 1, pFile);
-
-            uint actualDecompressedSize = header.uDecompressedSize;
-            zlib::Uncompress(pSrc, &actualDecompressedSize, compressedMem,
-                             header.uCompressedSize);
-            free(compressedMem);
-        } else {
-            logger->Warning(L"Can't load file!");
-        }
-
-        assert(sizeof(DDM_DLV_Header) == 0x28);
+        static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
         memcpy(&ddm, pSrc, sizeof(DDM_DLV_Header));
         pSrc += sizeof(DDM_DLV_Header);
-        // v74 = (int)((char *)v75 + 40);
     }
     uint actualNumFacesInLevel = 0;
     for (BSPModel &model : pBModels) {
         actualNumFacesInLevel += model.pFaces.size();
     }
 
+    bool Str2 = false;
     if (ddm.uNumFacesInBModels) {
         if (ddm.uNumBModels) {
             if (ddm.uNumDecorations) {
                 if (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
                     ddm.uNumBModels != pBModels.size() ||
                     ddm.uNumDecorations != uNumLevelDecorations)
-                    Str2 = (char *)1;
+                    Str2 = true;
             }
         }
     }
 
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)
+    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000) {
         respawn_interval_days = 0x1BAF800;
+    }
+
+    char Src[968];
+    char Dst[968];
+    int v108;
 
     if (Str2 || days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
         !ddm.uLastRepawnDay) {
         if (Str2) {
-            memset(Dst, 0, 0x3C8);
-            memset(Src, 0, 0x3C8);
+            memset(Dst, 0, 968);
+            memset(Src, 0, 968);
         }
         if (days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
             !ddm.uLastRepawnDay) {
@@ -1243,28 +1196,9 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
         if (Str2 == 0) ++ddm.uNumRespawns;
         v108 = 0;
         *thisa = 1;
-        pFile = pGames_LOD->FindContainer(ddm_filename, false);
-        fread(&header, 0x10, 1, pFile);
-        // pFilename = (char *)header.uCompressedSize;
-        // pDestLen = header.uDecompressedSize;
-        // v82 = malloc(header.uDecompressedSize);
-        pSrcMem = (unsigned char *)malloc(header.uDecompressedSize);
-        // v149 = v82;
-        if (header.uCompressedSize == header.uDecompressedSize) {
-            fread(pSrcMem, header.uDecompressedSize, 1, pFile);
-        } else if (header.uCompressedSize < header.uDecompressedSize) {
-            void *compressedMem = malloc(header.uCompressedSize);
-            fread(compressedMem, header.uCompressedSize, 1, pFile);
-
-            uint actualDecompressedSize = header.uDecompressedSize;
-            zlib::Uncompress(pSrcMem, &actualDecompressedSize, compressedMem,
-                             header.uCompressedSize);
-            free(compressedMem);
-        } else {
-            logger->Warning(L"Can't load file!");
-        }
-
-        pSrc = pSrcMem + 40;
+        pSrcMem = pGames_LOD->LoadCompressed(ddm_filename);
+        pSrc = (uint8_t*)pSrcMem;
+        pSrc += sizeof(DDM_DLV_Header);
     } else {
         *thisa = 0;
     }
@@ -1272,7 +1206,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     memcpy(uPartiallyRevealedCellOnMap, pSrc + 968, 968);
     pSrc += 2 * 968;
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     if (*thisa) {
         memcpy(uFullyRevealedCellOnMap, Dst, 968);

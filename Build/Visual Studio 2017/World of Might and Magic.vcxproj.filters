@@ -459,9 +459,6 @@
     <ClCompile Include="..\..\Platform\Win\Win.cpp">
       <Filter>Platform\Win</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Platform\Win\CdCheck.cpp">
-      <Filter>Platform\Win</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\OpenGL\RenderOpenGL.cpp">
       <Filter>Engine\Graphics\OpenGL</Filter>
     </ClCompile>

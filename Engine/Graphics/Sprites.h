@@ -1,19 +1,25 @@
 #pragma once
+
 #include "Engine/OurMath.h"
 
-/*   18 */
-#pragma pack(push, 1)
 class Sprite {  // 28h
  public:
-    inline Sprite() {}
-    ~Sprite();
+    inline Sprite() {
+        uPaletteID = 0;
+        texture = nullptr;
+        uAreaX = 0;
+        uAreaY = 0;
+        uBufferWidth = 0;
+        uBufferHeight = 0;
+        uAreaWidth = 0;
+        uAreaHeight = 0;
+        sprite_header = nullptr;
+    }
 
     void Release();
 
-    const char *pName;  // 0
+    String pName;  // 0
     int uPaletteID;     // 4
-    // struct IDirectDrawSurface4 *pTextureSurface;  //8
-    // struct IDirect3DTexture2 *pTexture;   //ch
     Texture *texture;
     int uAreaX;         // 10h
     int uAreaY;         // 14h
@@ -24,7 +30,6 @@ class Sprite {  // 28h
 
     struct LODSprite *sprite_header;
 };
-#pragma pack(pop)
 
 class SpriteFrame {
  public:

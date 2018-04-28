@@ -867,10 +867,6 @@ void IndoorLocation::ToggleLight(signed int sLightID, unsigned int bToggle) {
 //----- (00498E0A) --------------------------------------------------------
 bool IndoorLocation::Load(const String &filename, int num_days_played,
                           int respawn_interval_days, char *pDest) {
-    char v203[875];    // [sp+Ch] [bp-65Ch]@130
-    ODMHeader header;  // [sp+638h] [bp-30h]@61
-    FILE *File;        // [sp+658h] [bp-10h]@56
-
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
     if (bLoaded) {
@@ -882,66 +878,26 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     blv_filename.replace(blv_filename.length() - 4, 4, ".blv");
 
     this->filename = filename;
-    if (!pGames_LOD->DoesContainerExist(blv_filename))
+    if (!pGames_LOD->DoesContainerExist(blv_filename)) {
         Error("Unable to find %s in Games.LOD", blv_filename.c_str());
-
-    File = pGames_LOD->FindContainer(blv_filename);
-    // File = v82;
+    }
 
     Release();
     if (!Alloc()) return false;
 
-    header.uVersion = 91969;
-    header.pMagic[0] = 'm';
-    header.pMagic[1] = 'v';
-    header.pMagic[2] = 'i';
-    header.pMagic[3] = 'i';
-    header.uCompressedSize = 0;
-    header.uDecompressedSize = 0;
-    fread(&header, sizeof(ODMHeader), 1, File);
-    if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
-        header.pMagic[1] != 'v' || header.pMagic[2] != 'i' ||
-        header.pMagic[3] != 'i') {
-        logger->Warning(L"Can't load file!");
-    }
-    // v83 = header.uCompressedSize;
-    // pSource = header.uDecompressedSize;
-    // v84 = malloc(header.uDecompressedSize);
-    // v85 = v84;
-    // ptr = v84;
-    void *pRawBLV = malloc(header.uDecompressedSize);
-    memset(pRawBLV, 0, header.uDecompressedSize);
-
-    if (header.uCompressedSize == header.uDecompressedSize) {
-        fread(pRawBLV, header.uDecompressedSize, 1, File);
-    } else if (header.uCompressedSize < header.uDecompressedSize) {
-        void *pTmpMem = malloc(header.uCompressedSize);
-        {
-            fread(pTmpMem, header.uCompressedSize, 1, File);
-
-            uint uDecompressedSize = header.uDecompressedSize;
-            zlib::Uncompress(pRawBLV, &uDecompressedSize, pTmpMem,
-                             header.uCompressedSize);
-
-            if (uDecompressedSize != header.uDecompressedSize)
-                logger->Warning(
-                    L"uDecompressedSize != header.uDecompressedSize in BLV");
-        }
-        free(pTmpMem);
-    } else {
-        logger->Warning(L"Can't load file!");
-        return 0;
-    }
+    size_t blv_size = 0;
+    void *rawData = pGames_LOD->LoadCompressed(blv_filename, &blv_size);
+    char *pData = (char*)rawData;
 
     bLoaded = true;
 
-    char *pData = (char *)pRawBLV;
-
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&blv, pData, 136);
-    memcpy(&uNumVertices, pData += 136, 4);
-    memcpy(pVertices, pData += 4, uNumVertices * sizeof(Vec3_short_));
+    memcpy(&blv, pData, sizeof(BLVHeader));
+    pData += sizeof(BLVHeader);
+    memcpy(&uNumVertices, pData, 4);
+    pData += 4;
+    memcpy(pVertices, pData, uNumVertices * sizeof(Vec3_short_));
 
     pGameLoadingUI_ProgressBar->Progress();
 
@@ -1127,69 +1083,33 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
 
     memcpy(&uNumSpawnPoints, pData, 4);
-    pSpawnPoints =
-        (SpawnPointMM7 *)malloc(uNumSpawnPoints * sizeof(SpawnPointMM7));
+    pSpawnPoints = (SpawnPointMM7 *)malloc(uNumSpawnPoints * sizeof(SpawnPointMM7));
     memcpy(pSpawnPoints, pData + 4, uNumSpawnPoints * sizeof(SpawnPointMM7));
     pData += 4 + uNumSpawnPoints * sizeof(SpawnPointMM7);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    // v201 = (const char *)v148;
-    // v200 = (size_t)pMapOutlines;
     memcpy(&pMapOutlines->uNumOutlines, pData, 4);
-    memcpy(pMapOutlines->pOutlines, pData + 4,
-           pMapOutlines->uNumOutlines * sizeof(BLVMapOutline));
-    // v149 = pMapOutlines;
-    // v199 = 12 * *v149;
-    // memcpy(v149 + 1, (const void *)(v148 + 4), v199);
-    free(pRawBLV);
-    pRawBLV = nullptr;
+    memcpy(pMapOutlines->pOutlines, pData + 4, pMapOutlines->uNumOutlines * sizeof(BLVMapOutline));
+    free(rawData);
 
-    void *pRawDLV = nullptr;
-
-    auto dlv_filename = filename;
+    String dlv_filename = filename;
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
-    File = pNew_LOD->FindContainer(dlv_filename);  // error on D28.dlv
-    fread(&header, 0x10, 1, File);                    // (FILE *)v245);
+
     bool _v244 = false;
-    if (header.uVersion != 91969 || header.pMagic[0] != 'm' ||
-        header.pMagic[1] != 'v' || header.pMagic[2] != 'i' ||
-        header.pMagic[3] != 'i') {
-        logger->Warning(L"Can't load file!");
-        _v244 = true;
+
+    size_t dlv_size = 0;
+    rawData = pGames_LOD->LoadCompressed(dlv_filename, &dlv_size);
+    if (rawData != nullptr) {
+        pData = (char*)rawData;
+        memcpy(&dlv, pData, sizeof(DDM_DLV_Header));
+        pData += sizeof(DDM_DLV_Header);
     } else {
-        pRawDLV = malloc(header.uDecompressedSize);
-        if (header.uCompressedSize == header.uDecompressedSize) {
-            fread(pRawDLV, 1, header.uCompressedSize, File);
-        } else if (header.uCompressedSize < header.uDecompressedSize) {
-            void *pTmpMem = malloc(header.uCompressedSize);
-            {
-                fread(pTmpMem, header.uCompressedSize, 1, File);
-
-                uint uDecompressedSize = header.uDecompressedSize;
-                zlib::Uncompress(pRawDLV, &uDecompressedSize, pTmpMem,
-                                 header.uCompressedSize);
-
-                if (uDecompressedSize != header.uDecompressedSize)
-                    logger->Warning(
-                        L"uDecompressedSize != header.uDecompressedSize in "
-                        L"DLV");
-            }
-            free(pTmpMem);
-        } else {
-            logger->Warning(L"Can't load file!");
-        }
-
-        pData = (char *)pRawDLV;
+        _v244 = true;
     }
 
-    memcpy(&dlv, pData, 40);
-    pData += 40;
-
-    // v152 = dlv.uNumFacesInBModels;
     if (dlv.uNumFacesInBModels) {
-        // v153 = dlv.uNumDecorations;
         if (dlv.uNumDecorations) {
             if (dlv.uNumFacesInBModels != uNumFaces ||
                 dlv.uNumDecorations != uNumLevelDecorations)
@@ -1197,8 +1117,9 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         }
     }
 
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)
+    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000) {
         respawn_interval_days = 0x1BAF800;
+    }
 
     bool _a = false;
     if (num_days_played - dlv.uLastRepawnDay >= respawn_interval_days &&
@@ -1206,41 +1127,21 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         _a = true;
     }
 
-    // v154 = 875;
+    char v203[875];
     if (_v244 || (_a || !dlv.uLastRepawnDay)) {
         if (_v244) {
-            memset(v203, 0, 0x36B);
+            memset(v203, 0, 875);
         } else if (_a || !dlv.uLastRepawnDay) {
-            memcpy(v203, pData, 0x36B);
+            memcpy(v203, pData, 875);
         }
 
-        free(pRawDLV);
         dlv.uLastRepawnDay = num_days_played;
         if (_v244) ++dlv.uNumRespawns;
-        // v201 = pFilename;
         *(int *)pDest = 1;
-        File = pGames_LOD->FindContainer(dlv_filename, false);
-        fread(&header, 0x10u, 1, File);
-        uint v155 = header.uCompressedSize;
-        uint Count = header.uDecompressedSize;
-        BLVFace *Src = (BLVFace *)malloc(header.uDecompressedSize);
-        pRawDLV = Src;
-        if (v155 <= Count) {
-            if (v155 == Count) {
-                fread(Src, 1, Count, File);
-            } else {
-                void *_uSourceLen = malloc(v155);
-                fread(_uSourceLen, v155, 1, File);
-                zlib::Uncompress(Src, &Count, _uSourceLen, v155);
-                free(_uSourceLen);
-            }
-        } else {
-            logger->Warning(L"Can't load file!");
-        }
-        pData = ((char *)Src + 40);
-        // v154 = 875;
+        pData = (char*)pGames_LOD->LoadCompressed(dlv_filename);
+        pData += sizeof(DDM_DLV_Header);
     } else {
-        *(int *)pDest = 0;
+        *(int*)pDest = 0;
     }
 
     memcpy(_visible_outlines, pData, 875);
@@ -1326,8 +1227,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     // v200 = (size_t)ptr_0002B4_doors_ddata;
     // v170 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
     // v171 = blv.uDoors_ddata_Size;
-    ptr_0002B4_doors_ddata =
-        (unsigned __int16 *)malloc(blv.uDoors_ddata_Size);  //, "L.DData");
+    ptr_0002B4_doors_ddata = (uint16_t*)malloc(blv.uDoors_ddata_Size);  //, "L.DData");
     memcpy(ptr_0002B4_doors_ddata, pData, blv.uDoors_ddata_Size);
     pData += blv.uDoors_ddata_Size;
 
@@ -1385,8 +1285,6 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
 
     memcpy(&stru1, pData, 0x38u);
     pData += 0x38;
-
-    free(pRawDLV);
 
     return 0;
 }

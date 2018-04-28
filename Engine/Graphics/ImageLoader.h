@@ -63,7 +63,7 @@ class Alpha_LOD_Loader : public ImageLoader {
 
 class PCX_Loader : public ImageLoader {
  protected:
-    bool DecodePCX(const unsigned char *pcx_data, unsigned __int16 *pOutPixels,
+    bool DecodePCX(const void *pcx_data, uint16_t *pOutPixels,
                    unsigned int *width, unsigned int *height);
 };
 
@@ -78,7 +78,7 @@ class PCX_File_Loader : public PCX_Loader {
                       IMAGE_FORMAT *format);
 
  protected:
-    bool InternalLoad(FILE *file, size_t size, unsigned int *width,
+    bool InternalLoad(void *file, size_t size, unsigned int *width,
                       unsigned int *height, void **pixels,
                       IMAGE_FORMAT *format);
     LODFile_IconsBitmaps *lod;

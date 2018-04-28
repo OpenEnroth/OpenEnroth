@@ -1,4 +1,8 @@
 #pragma once
+
+#include <string>
+#include <vector>
+
 #include "Engine/Point.h"
 #include "Engine/Strings.h"
 
@@ -27,7 +31,7 @@ Point OS_GetMouseCursorPos();
 unsigned int OS_GetTime();
 uint64_t OS_GetPrecisionTime();
 
-bool OS_FindMM7CD(char *cd_path);
-
 bool OS_IfShiftPressed();
 bool OS_IfCtrlPressed();
+
+std::vector<std::string> OS_FindFiles(const std::string &folder, const std::string &mask);
