@@ -626,9 +626,9 @@ Engine::Engine(Engine_::Configuration *config) {
     pStru9Instance = new stru9;
     pStru10Instance = new stru10;
     // pStru11Instance = new stru11;
-    pStru11Instance = nullptr;
+    // pStru11Instance = nullptr;
     // pStru12Instance = new stru12(pStru11Instance);
-    pStru12Instance = nullptr;
+    // pStru12Instance = nullptr;
     // pCShow = new CShow;
     // pCShow = nullptr;
     // pKeyboardInstance = new Keyboard;
