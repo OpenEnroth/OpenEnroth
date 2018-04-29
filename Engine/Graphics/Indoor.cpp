@@ -702,20 +702,15 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id,
                 pFace, nodes[num_nodes].std__vector_0007AC,
                 nodes[num_nodes].pPortalBounding);
         } else {  // for next portals
-            static RenderVertexSoft
-                static_subAddFaceToRenderList_d3d_stru_F7AA08[64];
-            static RenderVertexSoft
-                static_subAddFaceToRenderList_d3d_stru_F79E08[64];
+            static RenderVertexSoft static_subAddFaceToRenderList_d3d_stru_F7AA08[64];
+            static RenderVertexSoft static_subAddFaceToRenderList_d3d_stru_F79E08[64];
 
             for (uint k = 0; k < pFace->uNumVertices; ++k) {
-                static_subAddFaceToRenderList_d3d_stru_F7AA08[k]
-                    .vWorldPosition.x =
+                static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.x =
                     pIndoor->pVertices[pFace->pVertexIDs[k]].x;
-                static_subAddFaceToRenderList_d3d_stru_F7AA08[k]
-                    .vWorldPosition.y =
+                static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.y =
                     pIndoor->pVertices[pFace->pVertexIDs[k]].y;
-                static_subAddFaceToRenderList_d3d_stru_F7AA08[k]
-                    .vWorldPosition.z =
+                static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.z =
                     pIndoor->pVertices[pFace->pVertexIDs[k]].z;
             }
 

@@ -161,24 +161,24 @@ struct Engine {
     int field_E0C;  // to do with bloodsplats - not used anymore??
     __int64 field_E10;
     int uNumStationaryLights_in_pStationaryLightsStack;
-    unsigned int __depricated1;  // unsigned int bGammaControlInitialized;
+    // unsigned int __depricated1;  // unsigned int bGammaControlInitialized;
     float fSaturation;
-    unsigned __int64 __depricated2;  // unsigned __int64 uSomeGammaStartTime;
-    unsigned __int64 __depricated3;  // __int64 uSomeGammaDeltaTime;
-    void /*ThreadWard*/ *pThreadWardInstance;
+    // unsigned __int64 __depricated2;  // unsigned __int64 uSomeGammaStartTime;
+    // unsigned __int64 __depricated3;  // __int64 uSomeGammaDeltaTime;
+    // void ThreadWard *pThreadWardInstance;
     // ParticleEngine *pParticleEngine;
     // Mouse *pMouseInstance;
     // LightmapBuilder *pLightmapBuilder;
     // Vis *pVisInstance;
     // struct SpellFxRenderer *spellfx;
-    void *__depricated5;  // IndoorCameraD3D *pIndoorCameraD3D;
+    // void *__depricated5;  // IndoorCameraD3D *pIndoorCameraD3D;
     stru9 *pStru9Instance;
     stru10 *pStru10Instance;
-    void /*stru11*/ *pStru11Instance;
-    void /*stru12*/ *pStru12Instance;
-    void /*CShow*/ *pCShow;
-    //Keyboard *pKeyboardInstance;
-    void *__depricated_4;  // GammaController *pGammaController;
+    // void stru11 *pStru11Instance;
+    // void stru12 *pStru12Instance;
+    // void CShow *pCShow;
+    // Keyboard *pKeyboardInstance;
+    // void *__depricated_4;  // GammaController *pGammaController;
     int field_E74;
 
     Log *log = nullptr;
