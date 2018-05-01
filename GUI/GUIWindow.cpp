@@ -80,6 +80,9 @@ std::list<GUIWindow*> lWindowList;
 
 MENU_STATE sCurrentMenuID;
 
+enum CURRENT_SCREEN current_screen_type = SCREEN_VIDEO;
+enum CURRENT_SCREEN prev_screen_type;
+
 struct GUIMessageQueue *pMessageQueue_50CBD0 = new GUIMessageQueue;
 struct GUIMessageQueue *pMessageQueue_50C9E8 = new GUIMessageQueue;
 
@@ -393,16 +396,13 @@ void GUIWindow::HouseDialogManager() {
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
     if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic) {
-        const char *pHouseName =
-            p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName;
+        const char *pHouseName = p2DEvents[window_SpeakInHouse->par1C - 1].pName;
         if (pHouseName) {
             int v3 = 2 * pFontCreate->GetHeight() - 6 -
                 pFontCreate->CalcTextHeight(pHouseName, 130, 0);
             if (v3 < 0) v3 = 0;
-            pWindow.DrawTitleText(
-                pFontCreate, 0x1EAu, v3 / 2 + 4, pWhiteColor,
-                p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pName,
-                3);
+            pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, pWhiteColor,
+                                  p2DEvents[window_SpeakInHouse->par1C - 1].pName, 3);
         }
     }
     pWindow.uFrameWidth += 8;
@@ -475,7 +475,7 @@ void GUIWindow::HouseDialogManager() {
                     v9 = 94 * v8 + 113;
                 } else {
                     if (!v8 && dword_591080) {
-                        pTitleText = (char*)p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].pProprieterTitle;
+                        pTitleText = (char*)p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterTitle;
                         pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, pColor2, pTitleText, 3);
                         continue;
                     }
@@ -504,7 +504,7 @@ void GUIWindow::HouseDialogManager() {
         game_ui_evtnpc);
     render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f,
         pNPCPortraits_y[0][0] / 480.0f,
-        pDialogueNPCPortraits[(signed int)v4]);
+        pDialogueNPCPortraits[(int)v4]);
     if (current_screen_type == SCREEN_E) {
         CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
@@ -526,12 +526,8 @@ void GUIWindow::HouseDialogManager() {
         pWindow.DrawTitleText(
             pFontCreate, 0x1E3u, 0x71u, pColor2,
             localization->FormatString(
-                429,
-                p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
-                .pProprieterName,
-                p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
-                .pProprieterTitle),
-            3);
+                429, p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterName,
+                p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterTitle), 3);
         switch (in_current_building_type) {
         case BuildingType_WeaponShop:
             WeaponShopDialog();
@@ -696,8 +692,7 @@ void GUIWindow::DrawText(GUIFont *font, int uX, int uY,
 int GUIWindow::DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y,
     unsigned int color, const char *text,
     int rect_width, int reverse_text) {
-    return DrawTextInRect(font, x, y, color, String(text), rect_width,
-        reverse_text);
+    return DrawTextInRect(font, x, y, color, String(text), rect_width, reverse_text);
 }
 
 //----- (0044CB4F) --------------------------------------------------------

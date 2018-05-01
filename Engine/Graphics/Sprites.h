@@ -1,8 +1,11 @@
 #pragma once
 
 #include "Engine/OurMath.h"
+#include "Engine/Strings.h"
 
-class Sprite {  // 28h
+class Texture;
+
+class Sprite {
  public:
     inline Sprite() {
         uPaletteID = 0;
@@ -18,22 +21,21 @@ class Sprite {  // 28h
 
     void Release();
 
-    String pName;  // 0
-    int uPaletteID;     // 4
+    String pName;
+    int uPaletteID;
     Texture *texture;
-    int uAreaX;         // 10h
-    int uAreaY;         // 14h
-    int uBufferWidth;   // 18h  hardware width  (as opposed to LODSprite::Width)
-    int uBufferHeight;  // 1ch  hardware sprite height
-    int uAreaWidth;     // 20h
-    int uAreaHeight;    // 24h
+    int uAreaX;
+    int uAreaY;
+    int uBufferWidth;   // hardware width  (as opposed to LODSprite::Width)
+    int uBufferHeight;  // hardware sprite height
+    int uAreaWidth;
+    int uAreaHeight;
 
     struct LODSprite *sprite_header;
 };
 
 class SpriteFrame {
  public:
-    bool Deserialize(const struct SpriteFrame_MM6 *);
     bool Deserialize(const struct SpriteFrame_MM7 *);
 
     String icon_name;
@@ -49,10 +51,8 @@ class SpriteFrame {
     int uAnimLength;
 };
 
-/*   43 */
 #pragma pack(push, 1)
 struct SpriteFrameTable {
-    //----- (0044D4BA) --------------------------------------------------------
     inline SpriteFrameTable() {
         uNumSpriteFrames = 0;
         pSpriteSFrames = nullptr;
@@ -65,20 +65,20 @@ struct SpriteFrameTable {
     void ReleaseSFrames();
     void ResetSomeSpriteFlags();
     void InitializeSprite(signed int uSpriteID);
-    signed int FastFindSprite(char *pSpriteName);
+    int FastFindSprite(const char *pSpriteName);
     int BinarySearch(const char *pSpriteName);
     SpriteFrame *GetFrame(unsigned int uSpriteID, unsigned int uTime);
     SpriteFrame *GetFrameBy_x(unsigned int uSpriteID, signed int a3);
 
-    signed int uNumSpriteFrames;
+    int uNumSpriteFrames;
     unsigned int uNumEFrames;      // field_4;
     int unused_field;              // field_8
     SpriteFrame *pSpriteSFrames;   // 0c
     SpriteFrame **pSpritePFrames;  // 10h
-    __int16 *pSpriteEFrames;       // 14h
+    int16_t *pSpriteEFrames;       // 14h
 };
 #pragma pack(pop)
 
-void _46E26D_collide_against_sprites(signed int a1, signed int a2);
+void _46E26D_collide_against_sprites(int a1, int a2);
 
 extern struct SpriteFrameTable *pSpriteFrameTable;

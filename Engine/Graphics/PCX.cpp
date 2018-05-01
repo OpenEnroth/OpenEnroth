@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#pragma pack(1)
+#pragma pack(push, 1)
 struct PCXHeader {
     int8_t manufacturer;
     int8_t version;
@@ -32,8 +32,7 @@ bool PCX::IsValid(const void *pcx_data) {
     return (header->bpp == 8) && (header->planes == 3);
 }
 
-void PCX::GetSize(const void *pcx_data, unsigned int *width,
-                  unsigned int *height) {
+void PCX::GetSize(const void *pcx_data, unsigned int *width, unsigned int *height) {
     PCXHeader *header = (PCXHeader *)pcx_data;
     *width = header->right - header->left + 1;
     *height = header->bottom - header->up + 1;
@@ -59,22 +58,20 @@ bool PCX::Decode(const void *pcx_data, uint16_t *pOutPixels,
     unsigned int num_b_bits = 5;
 
     unsigned char test_byte;      // edx@3
-    unsigned int read_offset;     // ebx@37
     unsigned int row_position;    // edi@40
     unsigned char value;          // cl@63
     char count;                   // [sp+50h] [bp-Ch]@43
-    unsigned short current_line;  // [sp+54h] [bp-8h]@38
     unsigned short *dec_position;
     unsigned short *temp_dec_position;
 
-    uint8_t *input = (uint8_t *)pcx_data;
+    uint8_t *input = (uint8_t*)pcx_data;
 
     // При сохранении изображения подряд идущие пиксели одинакового цвета
     // объединяются и вместо указания цвета для каждого пикселя указывается цвет
     // группы пикселей и их количество.
-    read_offset = sizeof(PCXHeader);
-    current_line = 0;
-    if (height > 0) {
+    unsigned int read_offset = sizeof(PCXHeader);
+    unsigned short current_line = 0;
+    if (*height > 0) {
         dec_position = pOutPixels;
         do {
             temp_dec_position = dec_position;
@@ -231,7 +228,6 @@ struct ColorFormat {
 
 ColorFormat::ColorFormat(uint32_t m) {
     shift = 0;
-    int i = 0;
     for (int i = 0; i < 16; i++) {
         if (m & 1) {
             break;
@@ -294,7 +290,7 @@ void Encode(Format f, const void *picture_data, unsigned int width,
     delete[] lineRGB;
 
     if (packed_size != nullptr) {
-        *packed_size = output - pcx_data;
+        *packed_size = output - (uint8_t*)pcx_data;
     }
 }
 

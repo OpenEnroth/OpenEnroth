@@ -2346,7 +2346,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     pPaletteManager->pPalette_tintColor[1] = 0;
     pPaletteManager->pPalette_tintColor[2] = 0;
     pPaletteManager->RecalculateAll();
-    if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0i64;
+    if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0;
     map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
         map_info = &pMapStats->pInfos[map_id];
@@ -2361,9 +2361,9 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1,
                        respawn_interval, (char *)&pDest) -
          1;
-    if (!v4) Error("Unable to open %s", pCurrentMapName);
+    if (!v4) Error("Unable to open %s", pCurrentMapName.c_str());
 
-    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName);
+    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str());
 
     if (v4 == 2) Error("Attempt to open new level before clearing old");
     if (v4 == 3) Error("Out of memory loading indoor level");
@@ -2536,7 +2536,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
         }
         if (v30) {
             if (pDest) {
-                _A750D8_player_speech_timer = 256i64;
+                _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_46;
                 uSpeakingCharacter = v34[rand() % v30];
             }

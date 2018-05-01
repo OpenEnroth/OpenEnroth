@@ -27,8 +27,8 @@ struct OutdoorLocationTileType {
 
 #pragma pack(push, 1)
 struct DMap {
-    unsigned __int8 field0;
-    unsigned __int8 field1;
+    uint8_t field0;
+    uint8_t field1;
 };
 #pragma pack(pop)
 
@@ -52,14 +52,14 @@ struct OutdoorLocationTerrain {
     bool ZeroLandscape();
     bool Initialize();
 
-    unsigned __int8 *pHeightmap;
-    unsigned __int8 *pTilemap;
-    unsigned __int8 *pAttributemap;
+    uint8_t *pHeightmap;
+    uint8_t *pTilemap;
+    uint8_t *pAttributemap;
     struct DMap *pDmap;
-    __int16 field_10;
-    __int16 field_12;
-    __int16 field_14;
-    __int16 field_16;
+    int16_t field_10;
+    int16_t field_12;
+    int16_t field_14;
+    int16_t field_16;
     int field_18;
     int field_1C;
 };
@@ -118,7 +118,7 @@ struct OutdoorLocation {
     void *pCmap;
     BSPModelList pBModels;
     unsigned int numFaceIDListElems;
-    unsigned __int16 *pFaceIDLIST;
+    uint16_t *pFaceIDLIST;
     unsigned int *pOMAP;
     Texture *sky_texture;        // signed int sSky_TextureID;
     Texture *main_tile_texture;  // signed int sMainTile_BitmapID;
@@ -148,8 +148,8 @@ struct OutdoorLocation {
     int field_CF8;
     unsigned int uSpriteID_LUN1_4_cp;
     int field_D00;
-    unsigned __int16 uSpriteID_LUN_SUN;
-    __int16 field_D06;
+    uint16_t uSpriteID_LUN_SUN;
+    int16_t field_D06;
     int field_D08;
     int field_D0C;
     int field_D10;

@@ -24,16 +24,40 @@ struct Vec3 : public Vec2<T> {
 
     explicit Vec3(T a = 0, T b = 0, T c = 0) : Vec2<T>(a, b), z(c) {}
 
-    void Normalize_float();
     template <class U>
     inline uint32_t GetDistanceTo(Vec3<U> &o) {
         return int_get_vector_length(abs(this->x - o.x), abs(this->y - o.y),
                                      abs(this->z - o.z));
     }
 
-    static void Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy,
-                       T *outz);
-    static void Normalize(T *x, T *y, T *z);
+    static void Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz) {
+        float cosf_x = cosf(3.14159265f * sRotX / 1024.0f);
+        float sinf_x = sinf(3.14159265f * sRotX / 1024.0f);
+        float cosf_y = cosf(3.14159265f * sRotY / 1024.0f);
+        float sinf_y = sinf(3.14159265f * sRotY / 1024.0f);
+
+        *outx = v.x + ((uint64_t)(sinf_y * (int64_t)((uint64_t)(cosf_x * (int64_t)sDepth) >> 16)));
+        *outy = v.y + ((uint64_t)(cosf_y * (int64_t)((uint64_t)(cosf_x * (int64_t)sDepth) >> 16)));
+        *outz = v.z + ((uint64_t)(sinf_x * (int64_t)sDepth) >> 16);
+    }
+
+    static void Normalize(T *x, T *y, T *z) {
+        extern int integer_sqrt(int val);
+        *x *= 65536 / (integer_sqrt(*y * *y + *z * *z + *x * *x) | 1);
+        *y *= 65536 / (integer_sqrt(*y * *y + *z * *z + *x * *x) | 1);
+        *z *= 65536 / (integer_sqrt(*y * *y + *z * *z + *x * *x) | 1);
+    }
+
+    void Normalize_float() {
+        double x = this->x;
+        double y = this->y;
+        double z = this->z;
+        double s = sqrt(x * x + y * y + z * z);
+
+        this->x = bankersRounding(x / s);
+        this->y = bankersRounding(y / s);
+        this->z = bankersRounding(z / s);
+    }
 };
 #pragma pack(pop)
 

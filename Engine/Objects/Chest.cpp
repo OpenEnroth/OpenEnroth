@@ -174,7 +174,7 @@ bool Chest::Open(signed int uChestID) {
             chest->uFlags &= 0xFEu;
             if (uActiveCharacter && !_A750D8_player_speech_timer &&
                 !OpenedTelekinesis) {
-                _A750D8_player_speech_timer = 256i64;
+                _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_5;
                 uSpeakingCharacter = uActiveCharacter;
             }
@@ -613,15 +613,14 @@ int ChestList::FromFileTxt(const char *Args) {
 void RemoveItemAtChestIndex(int index) {
     int chestindex =
         pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[index];
-    ItemGen *item_in_slot =
-        &pChests[(int)pChestWindow->ptr_1C].igChestItems[chestindex - 1];
+    ItemGen *item_in_slot = &pChests[pChestWindow->par1C].igChestItems[chestindex - 1];
 
     auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName(), 0x7FF);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
     int chestwidth =
-        pChestWidthsByType[pChests[(int)pChestWindow->ptr_1C].uChestBitmapID];
+        pChestWidthsByType[pChests[pChestWindow->par1C].uChestBitmapID];
 
     item_in_slot->Reset();
 

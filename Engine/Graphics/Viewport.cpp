@@ -340,16 +340,7 @@ void Engine::DropHeldItem() {
 
 //----- (0042213C) --------------------------------------------------------
 void Engine::OnGameViewportClick() {
-    signed int v0;    // ebx@2
-                      //    signed int v6; // eax@14
-                      //    char *v7; // esi@15
-                      //    int v9; // eax@19
-                      //    unsigned int pTextureID; // eax@19
     int pEventID;     // ecx@21
-                      //    int v15; // ecx@29
-                      //  signed int v16; // edx@30
-                      //  int v18; // ebx@47
-                      //  signed int v21; // eax@58
     SpriteObject a1;  // [sp+Ch] [bp-80h]@1
 
     int clickable_distance = 512;
@@ -358,9 +349,7 @@ void Engine::OnGameViewportClick() {
     if (current_screen_type == SCREEN_NPC_DIALOGUE)
         return;
 
-    Point pt = mouse->GetCursorPos();
-
-    v0 = vis->get_picked_object_zbuf_val();
+    int v0 = vis->get_picked_object_zbuf_val();
     int distance = HEXRAYS_HIWORD(v0);
     bool in_range = distance < clickable_distance;
     // else

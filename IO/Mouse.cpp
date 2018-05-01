@@ -1,7 +1,6 @@
 #include "IO/Mouse.h"
 
-#include <crtdbg.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Viewport.h"

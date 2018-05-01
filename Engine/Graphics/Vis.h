@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Graphics/IRender.h"
 
-enum VisObjectType : unsigned __int32 {
+enum VisObjectType : uint32_t {
     VisObjectType_Any = 0,
     VisObjectType_Sprite = 1,
     VisObjectType_Face = 2
@@ -30,8 +30,8 @@ struct Vis_ObjectInfo {
     union {
         // int sZValue;
         struct {
-            unsigned __int16 object_pid;
-            __int16 depth;
+            uint16_t object_pid;
+            int16_t depth;
         };
     };
     VisObjectType object_type;
@@ -126,12 +126,12 @@ class Vis {
     bool CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint,
                               signed int sModelID);
     void BLV_CreateIntersectFacesVertexCoordList(
-        int *a, int *b, __int16 *intersect_face_vertex_coords_list_a,
-        __int16 *intersect_face_vertex_coords_list_b,
+        int *a, int *b, int16_t *intersect_face_vertex_coords_list_a,
+        int16_t *intersect_face_vertex_coords_list_b,
         Vec3_short_ *IntersectPoint, BLVFace *pFace);
     void ODM_CreateIntersectFacesVertexCoordList(
-        int *a, int *b, __int16 *intersect_face_vertex_coords_list_a,
-        __int16 *intersect_face_vertex_coords_list_b,
+        int *a, int *b, int16_t *intersect_face_vertex_coords_list_a,
+        int16_t *intersect_face_vertex_coords_list_b,
         Vec3_short_ *IntersectPoint, BLVFace *pFace, unsigned int uModelID);
     void CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY,
                      float fPickDepth);

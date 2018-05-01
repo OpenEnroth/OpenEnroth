@@ -1087,8 +1087,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
             v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID,
                                                   pMiscTimer->Time());
         player->field_1AA2 = v15->uTextureID - 1;
-        v13 = game_ui_player_faces[(unsigned int)window->ptr_1C]
-                                  [v15->uTextureID - 1];
+        v13 = game_ui_player_faces[window->par1C][v15->uTextureID - 1];
     }
 
     render->DrawTextureAlphaNew((window->uFrameX + 24) / 640.0f,
@@ -1780,7 +1779,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
         if (_A750D8_player_speech_timer <= 0) {
             if (pPlayers[uSpeakingCharacter]->CanAct())
                 pPlayers[uSpeakingCharacter]->PlaySound(PlayerSpeechID, 0);
-            _A750D8_player_speech_timer = 0i64;
+            _A750D8_player_speech_timer = 0;
         }
     }
 
@@ -1924,24 +1923,23 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         unsigned int uW, unsigned int uZoom,
                         unsigned int bRedrawOdmMinimap) {
     int uHeight;     // ebx@6
-    signed int pW;   // ebx@23
+    int pW;   // ebx@23
     int v15;         // eax@23
     double v20;      // st7@30
-    signed int v27;  // eax@37
+    int v27;  // eax@37
     // unsigned __int16 *v28; // ecx@37
-    signed int v29;       // edi@40
+    int v29;       // edi@40
     int pPoint_X;         // edi@72
     int pPoint_Y;         // ebx@72
-    unsigned int lPitch;  // [sp+20h] [bp-34h]@1
-    signed int pY;        // [sp+20h] [bp-34h]@23
-    signed int pX;        // [sp+24h] [bp-30h]@23
-    signed int v70;       // [sp+24h] [bp-30h]@37
-    signed int uBluea;    // [sp+28h] [bp-2Ch]@37
+    int pY;        // [sp+20h] [bp-34h]@23
+    int pX;        // [sp+24h] [bp-30h]@23
+    int v70;       // [sp+24h] [bp-30h]@37
+    int uBluea;    // [sp+28h] [bp-2Ch]@37
     int v73;              // [sp+2Ch] [bp-28h]@30
-    signed int uCenterY;  // [sp+48h] [bp-Ch]@1
-    signed int uCenterX;  // [sp+4Ch] [bp-8h]@1
-    signed int uWidth;    // [sp+5Ch] [bp+8h]@30
-    signed int pZ;        // [sp+60h] [bp+Ch]@23
+    int uCenterY;  // [sp+48h] [bp-Ch]@1
+    int uCenterX;  // [sp+4Ch] [bp-8h]@1
+    int uWidth;    // [sp+5Ch] [bp+8h]@30
+    int pZ;        // [sp+60h] [bp+Ch]@23
     float uWb;            // [sp+60h] [bp+Ch]@30
     unsigned int pColor;
 

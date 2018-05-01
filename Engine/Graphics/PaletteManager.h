@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 /*  148 */
 #pragma pack(push, 1)
 struct PaletteManager {
@@ -16,23 +18,21 @@ struct PaletteManager {
     int LockTestAll();
     void SetColorChannelInfo(int uNumRBits, int uNumGBits, int uNumBBits);
 
-    static unsigned __int16 *Get(int a1);
-    static unsigned __int16 *Get_Mist_or_Red_LUT(int paletteIdx, int a2,
-                                                 char a3);
-    static unsigned __int16 *Get_Dark_or_Red_LUT(int paletteIdx, int a2,
-                                                 char a3);
-    static unsigned __int16 *_47C30E_get_palette(int a1, char a2);
-    static unsigned __int16 *_47C33F_get_palette(int a1, char a2);
+    static uint16_t *Get(int a1);
+    static uint16_t *Get_Mist_or_Red_LUT(int paletteIdx, int a2, char a3);
+    static uint16_t *Get_Dark_or_Red_LUT(int paletteIdx, int a2, char a3);
+    static uint16_t *_47C30E_get_palette(int a1, char a2);
+    static uint16_t *_47C33F_get_palette(int a1, char a2);
 
-    unsigned __int8 pBaseColors[50][256][3];
-    unsigned __int16 pPalette1[50][32][256];
-    unsigned __int16 field_D1600[50][32][256];
-    unsigned __int16 field_199600_palettes[50][32][256];
-    unsigned __int16 field_261600[50][256];
+    uint8_t pBaseColors[50][256][3];
+    uint16_t pPalette1[50][32][256];
+    uint16_t field_D1600[50][32][256];
+    uint16_t field_199600_palettes[50][32][256];
+    uint16_t field_261600[50][256];
     int pPaletteIDs[50];
     int _num_locked;
     int _pal_lock_test;
-    unsigned __int8 pPalette_mistColor[3];
+    uint8_t pPalette_mistColor[3];
     unsigned char pPalette_tintColor[3];
     char field_267AD6;
     char field_267AD7;

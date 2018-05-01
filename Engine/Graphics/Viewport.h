@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 /*  149 */
 #pragma pack(push, 1)
 struct Viewport {
@@ -64,8 +66,8 @@ struct ViewingParams {
     unsigned int uMapBookMapZoom;
     int sViewCenterX;
     int sViewCenterY;
-    __int16 indoor_center_x;
-    __int16 indoor_center_y;
+    int16_t indoor_center_x;
+    int16_t indoor_center_y;
     int field_3C;
     class Image *location_minimap;  // unsigned int uTextureID_LocationMap; ::40
     int bRedrawGameUI;
@@ -78,7 +80,7 @@ struct ViewingParams {
     int field_60;
     int field_64;
     int field_68;
-    unsigned __int16 pPalette[256];
+    uint16_t pPalette[256];
 };
 #pragma pack(pop)
 

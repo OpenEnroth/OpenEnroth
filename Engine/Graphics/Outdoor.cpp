@@ -55,7 +55,7 @@ struct FogProbabilityTableEntry {
     unsigned char small_fog_chance;
     unsigned char average_fog_chance;
     unsigned char dense_fog_chance;
-    unsigned char __unused;
+    unsigned char __unused__;
 } fog_probability_table[15] = {
     {20, 10, 5, 0},   // MAP_EMERALD_ISLE
     {20, 10, 5, 0},   // MAP_HARMONDALE

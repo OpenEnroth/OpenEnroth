@@ -1,4 +1,6 @@
 #pragma once
+
+#include <cstdint>
 #include <array>
 
 /*  353 */
@@ -10,7 +12,7 @@ struct Award {
 #pragma pack(pop)
 extern std::array<Award, 105> pAwards;
 
-enum AwardType : unsigned __int32 {
+enum AwardType : uint32_t {
     Award_Invalid = 0,
     Award_Fine = 1,
     Award_EmeraldIsle_CompletedMainQuest = 2,

@@ -145,7 +145,7 @@ struct RenderBillboardD3D {
           screen_space_z(0),
           sParentBillboardID(-1) {}
 
-    enum OpacityType : unsigned __int32 {
+    enum OpacityType : uint32_t {
         Transparent = 0,
         Opaque_1 = 1,
         Opaque_2 = 2,
@@ -271,8 +271,7 @@ class IRender {
     virtual void Release() = 0;
 
     virtual bool SwitchToWindow() = 0;
-    virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                              signed int uW, unsigned __int16 uColor) = 0;
+    virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t uColor) = 0;
     virtual void ClearZBuffer(int a2, int a3) = 0;
     virtual void RestoreFrontBuffer() = 0;
     virtual void RestoreBackBuffer() = 0;
@@ -338,7 +337,7 @@ class IRender {
 
     virtual void DrawMasked(float u, float v, Image *img,
                             unsigned int color_dimming_level,
-                            unsigned __int16 mask) = 0;
+                            uint16_t mask) = 0;
     virtual void DrawTextureGrayShade(float u, float v, Image *a4) = 0;
     virtual void DrawTransparentRedShade(float u, float v, Image *a4) = 0;
     virtual void DrawTransparentGreenShade(float u, float v,
@@ -490,8 +489,7 @@ struct stru149 {
 #pragma pack(pop)
 extern stru149 stru_8019C8;
 
-unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3,
-                               int a4);
+unsigned int _452442_color_cvt(uint16_t a1, uint16_t a2, int a3, int a4);
 
 int GetActorTintColor(int max_dim, int min_dim, float distance, int a4,
                       struct RenderBillboard *a5);
@@ -514,8 +512,8 @@ bool sub_47531C(int a1, int *a2, int pos_x, int pos_y, int pos_z, int dir_x,
                 int dir_y, int dir_z, struct BLVFace *face, int a10);
 bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y,
                 int dir_z, struct BLVFace *face, int a10, int a11);
-int sub_475665(struct BLVFace *face, int a2, __int16 a3);
-bool sub_4759C9(struct BLVFace *face, int a2, int a3, __int16 a4);
+int sub_475665(struct BLVFace *face, int a2, int16_t a3);
+bool sub_4759C9(struct BLVFace *face, int a2, int a3, int16_t a4);
 bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, struct BLVFace *a4);
 bool sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6,
                 int a7, int a8, int a9);

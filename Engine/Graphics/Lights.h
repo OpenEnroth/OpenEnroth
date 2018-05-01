@@ -9,10 +9,10 @@ using EngineIoc = Engine_::IocContainer;
 #pragma pack(push, 1)
 struct StationaryLight {
     Vec3_short_ vPosition;
-    __int16 uRadius;
-    unsigned __int8 uLightColorR;
-    unsigned __int8 uLightColorG;
-    unsigned __int8 uLightColorB;
+    int16_t uRadius;
+    uint8_t uLightColorR;
+    uint8_t uLightColorG;
+    uint8_t uLightColorB;
     char uLightType;
 };
 #pragma pack(pop)
@@ -20,14 +20,14 @@ struct StationaryLight {
 #pragma pack(push, 1)
 struct MobileLight {
     Vec3_short_ vPosition;
-    __int16 uRadius;
-    unsigned __int8 uLightColorR;
-    unsigned __int8 uLightColorG;
-    unsigned __int8 uLightColorB;
+    int16_t uRadius;
+    uint8_t uLightColorR;
+    uint8_t uLightColorG;
+    uint8_t uLightColorB;
     char uLightType;
-    __int16 field_C;
-    __int16 uSectorID;
-    __int16 field_10;
+    int16_t field_C;
+    int16_t uSectorID;
+    int16_t field_10;
 };
 #pragma pack(pop)
 
@@ -57,7 +57,7 @@ struct LightsStack_StationaryLight_ {
     inline unsigned int GetNumLights() { return uNumLightsActive; }
 
     //----- (004AD3C8) --------------------------------------------------------
-    bool AddLight(__int16 x, __int16 y, __int16 z, __int16 a5, unsigned char r,
+    bool AddLight(int16_t x, int16_t y, int16_t z, int16_t a5, unsigned char r,
                   unsigned char g, unsigned char b, char uLightType);
 
     // void ( ***vdestructor_ptr)(LightsStack_StationaryLight_ *, bool);
@@ -79,9 +79,9 @@ struct LightsStack_MobileLight_ {
     //----- (00467D55) --------------------------------------------------------
     virtual ~LightsStack_MobileLight_() { this->uNumLightsActive = 0; }
 
-    bool AddLight(__int16 x, __int16 y, __int16 z, __int16 uSectorID,
-                  int uRadius, unsigned __int8 r, unsigned __int8 g,
-                  unsigned __int8 b, char a10);
+    bool AddLight(int16_t x, int16_t y, int16_t z, int16_t uSectorID,
+                  int uRadius, uint8_t r, uint8_t g,
+                  uint8_t b, char a10);
 
     // void ( ***vdestructor_ptr)(LightsStack_MobileLight_ *, bool);
     MobileLight pLights[400];

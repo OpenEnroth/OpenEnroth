@@ -360,7 +360,7 @@ struct PlayerSpells {
         };
         struct {
             std::array<char, 99> bHaveSpell;
-            char _pad_1;
+            char _pad_2;
         };
     };
 };
@@ -450,7 +450,7 @@ enum CHARACTER_EXPRESSION_ID : unsigned __int16 {
     CHARACTER_EXPRESSION_ERADICATED = 99,
 };
 
-enum PLAYER_SEX : unsigned __int8 { SEX_MALE = 0, SEX_FEMALE = 1 };
+enum PLAYER_SEX : uint8_t { SEX_MALE = 0, SEX_FEMALE = 1 };
 
 struct Player {
     static const unsigned int INVETORYSLOTSWIDTH = 14;

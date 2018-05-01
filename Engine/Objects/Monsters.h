@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 /*  334 */
 enum MONSTER_TYPE {
     MONSTER_DEVIL_1 = 0x16,
@@ -75,7 +77,7 @@ enum MONSTER_SUPERTYPE {
     MONSTER_SUPERTYPE_8 = 0x8,
 };
 
-enum SPECIAL_ATTACK_TYPE : unsigned __int8 {
+enum SPECIAL_ATTACK_TYPE : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
     SPECIAL_ATTACK_CURSE = 1,
     SPECIAL_ATTACK_WEAK = 2,
@@ -105,7 +107,7 @@ enum SPECIAL_ATTACK_TYPE : unsigned __int8 {
 /*  187 */
 #pragma pack(push, 1)
 struct MonsterInfo {
-    enum HostilityRadius : unsigned __int8 {
+    enum HostilityRadius : uint8_t {
         Hostility_Friendly = 0,
         Hostility_Close = 1,
         Hostility_Short = 2,
@@ -117,59 +119,59 @@ struct MonsterInfo {
 
     char *pName;
     char *pPictureName;
-    unsigned __int8 uLevel;
-    unsigned __int8 uTreasureDropChance;
-    unsigned __int8 uTreasureDiceRolls;
-    unsigned __int8 uTreasureDiceSides;
-    unsigned __int8 uTreasureLevel;
-    unsigned __int8 uTreasureType;
-    unsigned __int8 uFlying;
-    unsigned __int8 uMovementType;
-    unsigned __int8 uAIType;
+    uint8_t uLevel;
+    uint8_t uTreasureDropChance;
+    uint8_t uTreasureDiceRolls;
+    uint8_t uTreasureDiceSides;
+    uint8_t uTreasureLevel;
+    uint8_t uTreasureType;
+    uint8_t uFlying;
+    uint8_t uMovementType;
+    uint8_t uAIType;
     HostilityRadius uHostilityType;
     char field_12;
     SPECIAL_ATTACK_TYPE uSpecialAttackType;
-    unsigned __int8 uSpecialAttackLevel;
-    unsigned __int8 uAttack1Type;
-    unsigned __int8 uAttack1DamageDiceRolls;
-    unsigned __int8 uAttack1DamageDiceSides;
-    unsigned __int8 uAttack1DamageBonus;
-    unsigned __int8 uMissleAttack1Type;
-    unsigned __int8 uAttack2Chance;
-    unsigned __int8 uAttack2Type;
-    unsigned __int8 uAttack2DamageDiceRolls;
-    unsigned __int8 uAttack2DamageDiceSides;
-    unsigned __int8 uAttack2DamageBonus;
-    unsigned __int8 uMissleAttack2Type;
-    unsigned __int8 uSpell1UseChance;
-    unsigned __int8 uSpell1ID;
-    unsigned __int8 uSpell2UseChance;
-    unsigned __int8 uSpell2ID;
-    unsigned __int8 uResFire;
-    unsigned __int8 uResAir;
-    unsigned __int8 uResWater;
-    unsigned __int8 uResEarth;
-    unsigned __int8 uResMind;
-    unsigned __int8 uResSpirit;
-    unsigned __int8 uResBody;
-    unsigned __int8 uResLight;
-    unsigned __int8 uResDark;
-    unsigned __int8 uResPhysical;
-    unsigned __int8 uSpecialAbilityType;  // 0   SPECIAL_ABILITY_TYPE_NONE
-                                          // 1   SPECIAL_ABILITY_TYPE_SHOT
-                                          // 2   SPECIAL_ABILITY_TYPE_SUMMON
-                                          // 3   SPECIAL_ABILITY_TYPE_EXPLODE
-    unsigned __int8 uSpecialAbilityDamageDiceRolls;
-    unsigned __int8 uSpecialAbilityDamageDiceSides;
-    unsigned __int8 uSpecialAbilityDamageDiceBonus;
-    unsigned __int8 uNumCharactersAttackedPerSpecialAbility;
+    uint8_t uSpecialAttackLevel;
+    uint8_t uAttack1Type;
+    uint8_t uAttack1DamageDiceRolls;
+    uint8_t uAttack1DamageDiceSides;
+    uint8_t uAttack1DamageBonus;
+    uint8_t uMissleAttack1Type;
+    uint8_t uAttack2Chance;
+    uint8_t uAttack2Type;
+    uint8_t uAttack2DamageDiceRolls;
+    uint8_t uAttack2DamageDiceSides;
+    uint8_t uAttack2DamageBonus;
+    uint8_t uMissleAttack2Type;
+    uint8_t uSpell1UseChance;
+    uint8_t uSpell1ID;
+    uint8_t uSpell2UseChance;
+    uint8_t uSpell2ID;
+    uint8_t uResFire;
+    uint8_t uResAir;
+    uint8_t uResWater;
+    uint8_t uResEarth;
+    uint8_t uResMind;
+    uint8_t uResSpirit;
+    uint8_t uResBody;
+    uint8_t uResLight;
+    uint8_t uResDark;
+    uint8_t uResPhysical;
+    uint8_t uSpecialAbilityType;  // 0 SPECIAL_ABILITY_TYPE_NONE
+                                  // 1 SPECIAL_ABILITY_TYPE_SHOT
+                                  // 2 SPECIAL_ABILITY_TYPE_SUMMON
+                                  // 3 SPECIAL_ABILITY_TYPE_EXPLODE
+    uint8_t uSpecialAbilityDamageDiceRolls;
+    uint8_t uSpecialAbilityDamageDiceSides;
+    uint8_t uSpecialAbilityDamageDiceBonus;
+    uint8_t uNumCharactersAttackedPerSpecialAbility;
     char field_33;
-    unsigned __int16 uID;
-    unsigned __int16 bQuestMonster;
-    unsigned __int16 uSpellSkillAndMastery1;
-    unsigned __int16 uSpellSkillAndMastery2;
-    __int16 field_3C_some_special_attack;
-    __int16 field_3E;
+    uint16_t uID;
+    uint16_t bQuestMonster;
+    uint16_t uSpellSkillAndMastery1;
+    uint16_t uSpellSkillAndMastery2;
+    int16_t field_3C_some_special_attack;
+    int16_t field_3E;
     unsigned int uHP;
     unsigned int uAC;
     unsigned int uExp;
@@ -199,22 +201,22 @@ struct MonsterStats {
 
 #pragma pack(push, 1)
 struct MonsterDesc_mm6 {
-    unsigned __int16 uMonsterHeight;
-    unsigned __int16 uMonsterRadius;
-    unsigned __int16 uMovementSpeed;
-    __int16 uToHitRadius;
-    unsigned __int16 pSoundSampleIDs[4];
+    uint16_t uMonsterHeight;
+    uint16_t uMonsterRadius;
+    uint16_t uMovementSpeed;
+    int16_t uToHitRadius;
+    uint16_t pSoundSampleIDs[4];
     char pMonsterName[32];
     char pSpriteNames[10][10];
 };
 
 struct MonsterDesc {
-    unsigned __int16 uMonsterHeight;
-    unsigned __int16 uMonsterRadius;
-    unsigned __int16 uMovementSpeed;
-    __int16 uToHitRadius;
+    uint16_t uMonsterHeight;
+    uint16_t uMonsterRadius;
+    uint16_t uMovementSpeed;
+    int16_t uToHitRadius;
     unsigned int sTintColor;
-    unsigned __int16 pSoundSampleIDs[4];
+    uint16_t pSoundSampleIDs[4];
     char pMonsterName[32];
     char pSpriteNames[10][10];
 };
@@ -226,7 +228,7 @@ struct MonsterList {
         :  //----- (00458429)
           uNumMonsters(0),
           pMonsters(nullptr) {}
-    signed __int16 GetMonsterIDByName(const char *pMonsterName);
+    int16_t GetMonsterIDByName(const char *pMonsterName);
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
     bool FromFileTxt(const char *Args);
