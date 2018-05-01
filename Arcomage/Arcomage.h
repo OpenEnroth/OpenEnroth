@@ -122,7 +122,7 @@ struct ArcomageGame {
     static void OnMouseMove(int x, int y);
     static void GetCardRect(unsigned int uCardID, Rect *pCardRect);
     static void PrepareArcomage();
-    static void DoBlt_Copy(unsigned __int16 *pPixels);  // idb
+    static void DoBlt_Copy(uint16_t *pPixels);  // idb
 
     static void Loop();
 
@@ -138,9 +138,9 @@ struct ArcomageGame {
     char field_39;
     char mouse_right;
     char field_3B;
-    unsigned __int16 *pBackgroundPixels;
-    unsigned __int16 *pSpritesPixels;
-    unsigned __int16 *pBlit_Copy_pixels;
+    uint16_t *pBackgroundPixels;
+    uint16_t *pSpritesPixels;
+    uint16_t *pBlit_Copy_pixels;
     GUIFont *pfntComic;  // ptr_48;
     GUIFont *pfntArrus;  // ptr_4C;
     int field_50;

@@ -4,7 +4,7 @@
 
 #include "Party.h"
 
-std::array<ConditionProcessor, 18> conditionArray = {
+std::array<ConditionProcessor, 18> conditionArray = {{
     // hint: condname, protfrommagic, gmprot, enchantment, ...
     ConditionProcessor(Condition_Cursed, false, false, 0),
     ConditionProcessor(Condition_Weak, true, false, 0),
@@ -44,7 +44,8 @@ std::array<ConditionProcessor, 18> conditionArray = {
                        ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
                        ITEM_RELIC_KELEBRIM, EQIUP_ANY),
     ConditionProcessor(Condition_Eradicated, true, true, 0),
-    ConditionProcessor(Condition_Zombie, false, false, 0)};
+    ConditionProcessor(Condition_Zombie, false, false, 0)
+}};
 
 bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, int condToCheck,
                                           int blockable) {

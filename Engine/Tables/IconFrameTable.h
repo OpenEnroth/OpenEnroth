@@ -9,7 +9,7 @@ class Icon {
     inline Icon() : img(nullptr) {}
 
     inline void SetAnimationName(const char *name) {
-        strcpy_s(this->anim_name, name);
+        strcpy(this->anim_name, name);
     }
     inline const char *GetAnimationName() const { return anim_name; }
 
@@ -27,10 +27,10 @@ class Icon {
 
     ///* 000 */ char pAnimationName[12];
     /* 00C */ char pTextureName[12];
-    ///* 018 */ __int16 uAnimTime;
-    ///* 01A */ __int16 uAnimLength;
-    /* 01C */ __int16 uFlags;
-    ///* 01E */ unsigned __int16 uTextureID;
+    ///* 018 */ int16_t uAnimTime;
+    ///* 01A */ int16_t uAnimLength;
+    /* 01C */ int16_t uFlags;
+    ///* 01E */ uint16_t uTextureID;
     int id;
 
  protected:
@@ -69,11 +69,11 @@ class UIAnimation {
  public:
     class Icon *icon;
 
-    /* 002 */ __int16 field_2;
-    /* 004 */ __int16 uAnimTime;
-    /* 006 */ __int16 uAnimLength;
-    /* 008 */ __int16 x;
-    /* 00A */ __int16 y;
+    /* 002 */ int16_t field_2;
+    /* 004 */ int16_t uAnimTime;
+    /* 006 */ int16_t uAnimLength;
+    /* 008 */ int16_t x;
+    /* 00A */ int16_t y;
     /* 00C */ char field_C;
 };
 

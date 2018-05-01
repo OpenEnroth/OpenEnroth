@@ -291,7 +291,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->hirelingScrollPosition = 0;
     memset(&pHirelings, 0, sizeof(pHirelings));
 
-    strcpy_s(this->pPlayers[0].pName, localization->GetString(509));  // Zoltan
+    strcpy(this->pPlayers[0].pName, localization->GetString(509));  // Zoltan
     this->pPlayers[0].uPrevFace = 17;
     this->pPlayers[0].uCurrentFace = 17;
     this->pPlayers[0].uPrevVoiceID = 17;
@@ -308,7 +308,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[0].pActiveSkills[PLAYER_SKILL_BOW] = 1;
     this->pPlayers[0].pActiveSkills[PLAYER_SKILL_SWORD] = 1;
 
-    strcpy_s(this->pPlayers[1].pName, localization->GetString(506));  // Roderic
+    strcpy(this->pPlayers[1].pName, localization->GetString(506));  // Roderic
     this->pPlayers[1].uPrevFace = 3;
     this->pPlayers[1].uCurrentFace = 3;
     this->pPlayers[1].uPrevVoiceID = 3;
@@ -325,7 +325,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[1].pActiveSkills[PLAYER_SKILL_DAGGER] = 1;
     this->pPlayers[1].pActiveSkills[PLAYER_SKILL_TRAP_DISARM] = 1;
 
-    strcpy_s(this->pPlayers[2].pName, localization->GetString(508));  // Serena
+    strcpy(this->pPlayers[2].pName, localization->GetString(508));  // Serena
     this->pPlayers[2].uPrevFace = 14;
     this->pPlayers[2].uCurrentFace = 14;
     this->pPlayers[2].uPrevVoiceID = 14;
@@ -342,7 +342,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[2].pActiveSkills[PLAYER_SKILL_BODY] = 1;
     this->pPlayers[2].pActiveSkills[PLAYER_SKILL_MACE] = 1;
 
-    strcpy_s(this->pPlayers[3].pName, localization->GetString(507));  // Alexis
+    strcpy(this->pPlayers[3].pName, localization->GetString(507));  // Alexis
     this->pPlayers[3].uPrevFace = 10;
     this->pPlayers[3].uCurrentFace = 10;
     this->pPlayers[3].uEndurance = 13;
@@ -505,7 +505,7 @@ void Party::Reset() {
 
     pPlayers[0].uSex = pPlayers[0].GetSexByVoice();
     pPlayers[0].RandomizeName();
-    strcpy_s(pPlayers[0].pName, localization->GetString(509));
+    strcpy(pPlayers[0].pName, localization->GetString(509));
 
     pPlayers[1].Reset(PLAYER_CLASS_THEIF);
     pPlayers[1].uCurrentFace = 3;
@@ -514,7 +514,7 @@ void Party::Reset() {
     pPlayers[1].SetInitialStats();
     pPlayers[1].uSex = pPlayers[1].GetSexByVoice();
     pPlayers[1].RandomizeName();
-    strcpy_s(pPlayers[1].pName, localization->GetString(506));
+    strcpy(pPlayers[1].pName, localization->GetString(506));
 
     pPlayers[2].Reset(PLAYER_CLASS_CLERIC);
     pPlayers[2].uCurrentFace = 14;
@@ -523,7 +523,7 @@ void Party::Reset() {
     pPlayers[2].SetInitialStats();
     pPlayers[2].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[2].RandomizeName();
-    strcpy_s(pPlayers[2].pName, localization->GetString(508));
+    strcpy(pPlayers[2].pName, localization->GetString(508));
 
     pPlayers[3].Reset(PLAYER_CLASS_SORCERER);
     pPlayers[3].uCurrentFace = 10;
@@ -532,7 +532,7 @@ void Party::Reset() {
     pPlayers[3].SetInitialStats();
     pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[3].RandomizeName();
-    strcpy_s(pPlayers[3].pName, localization->GetString(507));
+    strcpy(pPlayers[3].pName, localization->GetString(507));
 
     for (uint i = 0; i < 4; ++i) {
         pPlayers[i].uTimeToRecovery = 0;
@@ -682,12 +682,9 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
                 }
             }
         } else if (player->expression != CHARACTER_EXPRESSION_DMGRECVD_MINOR &&
-                       player->expression !=
-                           CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
-                       player->expression !=
-                           CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||
-                   player->uExpressionTimePassed >=
-                       player->uExpressionTimeLength) {
+                   player->expression != CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
+                   player->expression != CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||
+                   player->uExpressionTimePassed >= player->uExpressionTimeLength) {
             player->uExpressionTimeLength = 0;
             player->uExpressionTimePassed = 0;
 
@@ -935,7 +932,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
                     pLearningPercent = pParty->pPlayers[i].GetLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
                     pParty->pPlayers[i].uExperience += playermodexp;
-                    if (pParty->pPlayers[i].uExperience > 4000000000i64) {
+                    if (pParty->pPlayers[i].uExperience > 4000000000) {
                         pParty->pPlayers[i].uExperience = 0;
                     }
                 }

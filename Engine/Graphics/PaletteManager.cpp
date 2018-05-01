@@ -8,9 +8,7 @@ PaletteManager *pPaletteManager = new PaletteManager;
 
 //----- (00452AE2) --------------------------------------------------------
 int MakeColorMaskFromBitDepth(int a1) {
-    signed __int64 v1;  // qax@1
-
-    v1 = 4294967296i64;
+    int64_t v1 = 4294967296;
     if (a1 > 0) {
         do {
             HEXRAYS_LODWORD(v1) = HEXRAYS_HIDWORD(v1) + v1;

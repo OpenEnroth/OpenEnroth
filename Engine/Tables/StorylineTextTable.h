@@ -1,10 +1,12 @@
 #pragma once
 
+#include <cstdint>
+
 #pragma pack(push, 1)
 struct StorylineRecord {
     char* pText;            // 0
     char* pPageTitle;       // 4
-    unsigned __int8 uTime;  // 8
+    uint8_t uTime;  // 8
     char f_9;
     char f_A;
     char f_B;

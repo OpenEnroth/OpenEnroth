@@ -6,29 +6,31 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
+#include "Engine/LOD.h"
+#include "Engine/MapInfo.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
 
-#include "..\..\GUI\UI\UIHouses.h"
 #include "GUI/GUIButton.h"
-
-#include "../LOD.h"
-#include "../MapInfo.h"
-#include "../OurMath.h"
-#include "../Party.h"
-#include "../Tables/FactionTable.h"
-#include "../Tables/StorylineTextTable.h"
-#include "Chest.h"
 #include "GUI/GUIWindow.h"
-#include "Monsters.h"
 
-std::array<std::array<char, 14>, 7> byte_4E8168 = {
-    {// byte_4E8178
-     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-     {1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-     {1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-     {2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4},
-     {2, 2, 2, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5},
-     {2, 2, 2, 2, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6},
-     {2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}}};
+#include "GUI/UI/UIHouses.h"
+
+#include "Engine/Tables/FactionTable.h"
+#include "Engine/Tables/StorylineTextTable.h"
+
+#include "Engine/Objects/Chest.h"
+#include "Engine/Objects/Monsters.h"
+
+std::array<std::array<char, 14>, 7> byte_4E8168 = {{  // byte_4E8178
+    {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}},
+    {{1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}},
+    {{1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3}},
+    {{2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4}},
+    {{2, 2, 2, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5}},
+    {{2, 2, 2, 2, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6}},
+    {{2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}}
+}};
 
 ItemGen* ptr_50C9A4_ItemToEnchant;
 
@@ -652,10 +654,8 @@ String ItemGen::GetIdentifiedName() {
                 || special_enchantment == 59  // Increased Weapon speed.
                 || special_enchantment == 63  // Double Damage vs. Elves.
                 || special_enchantment == 64  // Double Damage vs. Undead.
-                || special_enchantment ==
-                       67  // Adds 5 points of Body damage and +2 Disarm skill.
-                || special_enchantment ==
-                       68  // Adds 6-8 points of Cold damage and +5 Armor Class.
+                || special_enchantment == 67  // Adds 5 points of Body damage and +2 Disarm skill.
+                || special_enchantment == 68  // Adds 6-8 points of Cold damage and +5 Armor Class.
             ) {            // enchantment and name positions inverted!
                 return StringPrintf(
                     "%s %s",

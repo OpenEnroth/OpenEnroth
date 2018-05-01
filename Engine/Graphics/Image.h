@@ -115,9 +115,9 @@ class TextureFrame {
     inline TextureFrame() : tex(nullptr) {}
 
     String name;
-    __int16 uAnimTime;
-    __int16 uAnimLength;
-    __int16 uFlags;
+    int16_t uAnimTime;
+    int16_t uAnimLength;
+    int16_t uFlags;
 
     Texture *GetTexture();
 

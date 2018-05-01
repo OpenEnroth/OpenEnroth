@@ -633,8 +633,7 @@ void OnPaperdollLeftClick();
 void DrawJoinGuildWindow(int pEventCode);
 void DialogueEnding();
 char sub_4637E0_is_there_popup_onscreen();
-void ClickNPCTopic(signed int uMessageParam);
-void GameUI_StatusBar_DrawImmediate(const char *Str, int a5);
+void ClickNPCTopic(int uMessageParam);
 void _4B3FE5_training_dialogue(int a4);
 void OracleDialogue();
 void CheckBountyRespawnAndAward();
@@ -738,3 +737,6 @@ extern Image *ui_leather_mm7;
 extern MENU_STATE sCurrentMenuID;
 void SetCurrentMenuID(MENU_STATE);
 MENU_STATE GetCurrentMenuID();
+
+extern enum CURRENT_SCREEN current_screen_type;
+extern enum CURRENT_SCREEN prev_screen_type;

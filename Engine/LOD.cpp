@@ -255,7 +255,7 @@ int LOD::WriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
     if (root_name.empty()) {
         return 2;
     }
-    strcpy_s(pHeader->pSignature, "LOD");
+    strcpy(pHeader->pSignature, "LOD");
     pHeader->LODSize = 100;
     pHeader->uNumIndices = 1;
 
@@ -451,7 +451,7 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
     fwrite((const void *)&header, sizeof(LOD::FileHeader), 1, tmp_file);
 
     LOD::Directory Lindx;
-    strcpy_s(Lindx.pFilename, "chapter");
+    strcpy(Lindx.pFilename, "chapter");
     Lindx.uOfsetFromSubindicesStart = uOffsetToSubIndex;  // 10h 16
     Lindx.uDataSize =
         sizeof(LOD::Directory) * uNumSubDirs + total_size;  // 14h 20
@@ -860,8 +860,7 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
         this->uTextureBlueBits = uTargetBBits;
         for (unsigned int i = 0; i < this->uNumLoadedFiles; ++i) {
             if (this->pTextures[i].pPalette24) {
-                FILE *File =
-                    FindContainer(this->pTextures[i].header.pName, false);
+                FILE *File = FindContainer(this->pTextures[i].header.pName);
                 if (File) {
                     TextureHeader DstBuf;
                     fread(&DstBuf, 1, sizeof(TextureHeader), File);
@@ -881,7 +880,7 @@ void *LOD::File::LoadRaw(const String &pContainer, size_t *data_size) {
     size_t size = 0;
     FILE *File = FindContainer(pContainer, &size);
     if (!File) {
-        Error("Unable to load %s", pContainer);
+        Error("Unable to load %s", pContainer.c_str());
         return nullptr;
     }
 
@@ -907,7 +906,7 @@ void *LOD::File::LoadCompressedTexture(const String &pContainer, size_t *data_si
 
     FILE *File = FindContainer(pContainer, 0);
     if (!File) {
-        Error("Unable to load %s", pContainer);
+        Error("Unable to load %s", pContainer.c_str());
         return nullptr;
     }
 
@@ -953,14 +952,14 @@ void *LOD::File::LoadCompressed(const String &pContainer, size_t *data_size) {
 
     FILE *File = FindContainer(pContainer, 0);
     if (!File) {
-        Error("Unable to load %s", pContainer);
+        Error("Unable to load %s", pContainer.c_str());
         return nullptr;
     }
 
     CompressedHeader header;
     fread(&header, 1, sizeof(CompressedHeader), File);
     if (header.uVersion != 91969 || (memcmp(&header.pMagic, "mvii", 4) != 0)) {
-        Error("Unable to load %s", pContainer);
+        Error("Unable to load %s", pContainer.c_str());
         return nullptr;
     }
 
@@ -1008,7 +1007,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
     void *DstBufa;    // [sp+1Ch] [bp+8h]@10
     void *Sourcea;    // [sp+20h] [bp+Ch]@10
 
-    FILE *File = FindContainer(pContainer, false);
+    FILE *File = FindContainer(pContainer);
     if (File == nullptr) {
         return -1;
     }
@@ -1016,7 +1015,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
     Texture_MM7 *v6 = pDst;
     if (pDst->paletted_pixels && mode == 2 && pDst->pPalette24 &&
         (v7 = pDst->header.uTextureSize, fread(pDst, 1, 0x30u, File),
-         strcpy_s(pDst->header.pName, pContainer),
+         strcpy(pDst->header.pName, pContainer),
          v8 = pDst->header.uTextureSize, (int)v8 <= (int)v7)) {
         if (!pDst->header.uDecompressedSize ||
             this->_011BA4_debug_paletted_pixels_uncompressed) {

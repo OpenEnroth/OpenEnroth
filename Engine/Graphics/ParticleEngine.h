@@ -2,7 +2,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/OurMath.h"
 
-enum ParticleType : unsigned __int32 {
+enum ParticleType : uint32_t {
     ParticleType_Invalid = 0,
     ParticleType_1 = 0x0001,
     ParticleType_Rotating = 0x0004,
@@ -131,16 +131,16 @@ struct TrailParticle {  // stru167
     char field_3;
     char field_4;
     char field_5;
-    __int16 x;
-    __int16 y;
-    __int16 z;
-    __int16 time_left;
-    __int16 time_to_live;
+    int16_t x;
+    int16_t y;
+    int16_t z;
+    int16_t time_left;
+    int16_t time_to_live;
     char field_10;
     char field_11;
     char field_12;
     char field_13;
-    __int16 bgr16;
+    int16_t bgr16;
     char field_16;
     char field_17;
 };

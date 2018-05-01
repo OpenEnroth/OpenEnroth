@@ -45,10 +45,10 @@ class TileDesc {
     inline TileDesc() : texture(nullptr) {}
 
     String name;
-    unsigned __int16 uTileID;
+    uint16_t uTileID;
     Tileset tileset;
-    unsigned __int16 uSection;
-    unsigned __int16 uAttributes;
+    uint16_t uSection;
+    uint16_t uAttributes;
 
     inline Texture *GetTexture() {
         if (!this->texture) {

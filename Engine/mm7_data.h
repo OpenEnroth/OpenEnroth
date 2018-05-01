@@ -32,11 +32,10 @@ extern int dword_4D86D8;
 
 extern float flt_4D84E8;
 
-extern enum CURRENT_SCREEN current_screen_type;  // 004E28F8
 extern unsigned int uGammaPos;
 extern std::array<int, 8> BtnTurnCoord;
-extern std::array<__int16, 4> RightClickPortraitXmin;
-extern std::array<__int16, 4> RightClickPortraitXmax;
+extern std::array<int16_t, 4> RightClickPortraitXmin;
+extern std::array<int16_t, 4> RightClickPortraitXmax;
 // extern int pArmorSkills[5];
 // extern int pWeaponSkills[9];
 // extern int pMiscSkills[12];
@@ -64,12 +63,12 @@ extern std::array<float, 10> flt_4E4A80;
 
 extern std::array<std::array<int, 2>, 14> pPartySpellbuffsUI_XYs;
 extern std::array<unsigned char, 14> byte_4E5DD8;
-extern std::array<unsigned __int8, 14> pPartySpellbuffsUI_smthns;
+extern std::array<uint8_t, 14> pPartySpellbuffsUI_smthns;
 extern std::array<std::array<int, 6>, 6> pNPCPortraits_x;  // 004E5E50
 extern std::array<std::array<int, 6>, 6> pNPCPortraits_y;  // 004E5EE0
 extern std::array<const char *, 11> pHouse_ExitPictures;
 extern std::array<const char *, 11> _4E6BDC_loc_names;
-extern std::array<__int16, 11> word_4E8152;
+extern std::array<int16_t, 11> word_4E8152;
 extern std::array<std::array<char, 14>, 7> byte_4E8168;
 extern char _4E94D0_light_type;
 extern char _4E94D2_light_type;
@@ -86,7 +85,7 @@ extern std::array<const char *, 25> pPlayerPortraitsNames;
 
 extern std::array<std::array<unsigned char, 25>, 48> byte_4ECF08;
 extern std::array<std::array<unsigned char, 8>, 110> SoundSetAction;
-extern std::array<__int16, 4>
+extern std::array<int16_t, 4>
     pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing;
 extern std::array<std::array<char, 37>, 36>
     byte_4ED970_skill_learn_ability_by_class_table;
@@ -95,14 +94,14 @@ extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY;
 extern std::array<int, 2> Party_Spec_Motion_status_ids;  // dword_4EE07C
 extern std::array<short, 28> word_4EE150;
 extern int ScreenshotFileNumber;  // dword_4EFA80
-extern __int16 word_4F0576[];
+extern int16_t word_4F0576[];
 
 extern std::array<int, 32> guild_mambership_flags;
-extern std::array<__int16, 49> word_4F0754;
-extern std::array<__int16, 54> _4F0882_evt_VAR_PlayerItemInHands_vals;
+extern std::array<int16_t, 49> word_4F0754;
+extern std::array<int16_t, 54> _4F0882_evt_VAR_PlayerItemInHands_vals;
 extern std::array<unsigned short, 6> pMaxLevelPerTrainingHallType;
 extern std::array<int, 11> price_for_membership;
-extern std::array<__int16, 32> word_4F0F30;
+extern std::array<int16_t, 32> word_4F0F30;
 extern std::array<int, 500> ai_array_4F5E68;
 extern std::array<int, 500> ai_array_4F6638_actor_ids;
 extern std::array<int, 500> ai_near_actors_targets_pid;
@@ -123,7 +122,7 @@ extern int lloyds_beacon_sound_id;  // dword_50633C
 extern signed int sRecoveryTime;    // idb
 extern unsigned int uRequiredMana;  // idb
 extern int _506348_current_lloyd_playerid;
-extern __int64 lloyds_beacon_spell_level;  // qword_506350
+extern int64_t lloyds_beacon_spell_level;  // qword_506350
 extern int dword_506364;
 // extern Texture_MM7 *dword_50640C[];
 extern int
@@ -144,7 +143,6 @@ extern char byte_506550;
 extern int _506568_autonote_type;  // 506568
 extern bool bRecallingBeacon;
 extern int uLastPointedObjectID;
-extern enum CURRENT_SCREEN prev_screen_type;
 extern int dword_506980_uW;
 extern int dword_506984_uZ;
 extern int dword_506988_uY;
@@ -200,12 +198,12 @@ extern struct NPCData *ptr_50C9E0;
 extern int dword_50CDC8;
 extern Vec3_int_ layingitem_vel_50FDFC;
 extern char pStartingMapName[32];  // idb
-extern std::array<unsigned __int8, 5> IsPlayerWearingWatersuit;
+extern std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 extern std::array<char, 54> party_has_equipment;
 extern std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
 extern unsigned int uNumBlueFacesInBLVMinimap;
-extern std::array<unsigned __int16, 50> pBlueFacesInBLVMinimapIDs;
+extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 extern std::array<class Image *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
@@ -260,7 +258,7 @@ extern char byte_5C45AF[];
 extern std::array<char, 10000> pTmpBuf3;
 extern std::array<char, 100> Journal_limitation_factor;
 extern int ui_current_text_color;
-extern __int64 qword_5C6DF0;
+extern int64_t qword_5C6DF0;
 extern int dword_5C6DF8;
 extern char *pHealthPointsAttributeDescription;
 extern char *pSpellPointsAttributeDescription;
@@ -349,17 +347,17 @@ extern std::string s_SavedMapName;
 extern char bNoNPCHiring;
 extern std::array<int, 100> dword_720020_zvalues;
 extern std::array<int, 299> dword_7201B0_zvalues;
-extern std::array<__int16, 104> word_7209A0_intercepts_ys_plus_ys;
-extern std::array<__int16, 104> word_720A70_intercepts_xs_plus_xs;
-extern std::array<__int16, 104> word_720B40_intercepts_zs;
-extern std::array<__int16, 102> word_720C10_intercepts_xs;
-extern std::array<__int16, 777> word_720CE0_ys;  // idb
-extern std::array<__int16, 777> word_720DB0_xs;  // idb
+extern std::array<int16_t, 104> word_7209A0_intercepts_ys_plus_ys;
+extern std::array<int16_t, 104> word_720A70_intercepts_xs_plus_xs;
+extern std::array<int16_t, 104> word_720B40_intercepts_zs;
+extern std::array<int16_t, 102> word_720C10_intercepts_xs;
+extern std::array<int16_t, 777> word_720CE0_ys;  // idb
+extern std::array<int16_t, 777> word_720DB0_xs;  // idb
 extern std::array<int, 20> dword_720E80;
 extern std::array<int, 20> dword_720ED0;
 extern std::array<int, 20> ceiling_height_level;
-extern std::array<__int16, 104> odm_floor_face_vert_coord_Y;  // word_720F70
-extern std::array<__int16, 104> odm_floor_face_vert_coord_X;  // word_721040
+extern std::array<int16_t, 104> odm_floor_face_vert_coord_Y;  // word_720F70
+extern std::array<int16_t, 104> odm_floor_face_vert_coord_X;  // word_721040
 extern std::array<int, 20> current_Face_id;                   // dword_721110
 extern std::array<int, 20> current_BModel_id;                 // dword_721160
 extern std::array<int, 20> odm_floor_level;  // idb dword_7211B0
@@ -390,14 +388,14 @@ extern int dword_A74C88;
 extern int uPlayerCreationUI_ArrowAnim;
 extern unsigned int uPlayerCreationUI_SelectedCharacter;
 extern int dword_A74CDC;
-extern __int64 _A750D8_player_speech_timer;  // qword_A750D8
+extern int64_t _A750D8_player_speech_timer;  // qword_A750D8
 extern enum PlayerSpeech PlayerSpeechID;
 extern int uSpeakingCharacter;
 extern char byte_AE5B91;
 extern std::array<int, 32> dword_F1B430;
 extern std::array<int, 4> player_levels;
-extern std::array<__int16, 6> weapons_Ypos;  // word_F8B158
-extern __int16 bountyHunting_monster_id_for_hunting;
+extern std::array<int16_t, 6> weapons_Ypos;  // word_F8B158
+extern int16_t bountyHunting_monster_id_for_hunting;
 extern const char *bountyHunting_text;  // idb
 extern int contract_approved;
 extern int dword_F8B1AC_award_bit_number;  // idb
@@ -413,5 +411,5 @@ extern std::array<char, 777> byte_F8B1EF;
 extern std::array<char, 4> byte_F8B1F0;
 
 extern int bGameoverLoop;
-extern std::array<__int16, 104> intersect_face_vertex_coords_list_a;  // word_F8BC48
-extern std::array<__int16, 104> intersect_face_vertex_coords_list_b;  // word_F8BD18
+extern std::array<int16_t, 104> intersect_face_vertex_coords_list_a;  // word_F8BC48
+extern std::array<int16_t, 104> intersect_face_vertex_coords_list_b;  // word_F8BD18

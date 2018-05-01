@@ -35,8 +35,6 @@ bool TextureD3D::LoadImageData() {
             this->loader->Load(&width, &height, &pixels, &native_format);
         if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT) {
             this->pixels[native_format] = pixels;
-
-            bool resample = false;
             this->initialized = render->MoveTextureToDevice(this);
         }
     }

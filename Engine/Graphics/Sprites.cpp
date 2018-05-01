@@ -1,9 +1,7 @@
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#include <stdlib.h>
+#include "Engine/Graphics/Sprites.h"
 
-#define _CRT_SECURE_NO_WARNINGS
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include <algorithm>
 
 #include "Engine/Engine.h"
@@ -20,7 +18,6 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Graphics/Sprites.h"
 
 struct SpriteFrameTable *pSpriteFrameTable;
 
@@ -138,11 +135,11 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                                 .texture_name.c_str());
                                     break;
                                 case 4:
-                                    sprintf(sprite_name, "%s4", &Str);
+                                    sprintf(sprite_name, "%s4", Str);
                                     break;
                                 case 3:
                                 case 5:
-                                    sprintf(sprite_name, "%s3", &Str);
+                                    sprintf(sprite_name, "%s3", Str);
                                     break;
                                 case 2:
                                 case 6:
@@ -226,7 +223,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 }
 
 //----- (0044D813) --------------------------------------------------------
-int SpriteFrameTable::FastFindSprite(char *pSpriteName) {
+int SpriteFrameTable::FastFindSprite(const char *pSpriteName) {
     signed int result;  // eax@2
 
     int searchResult = BinarySearch(pSpriteName);
@@ -244,9 +241,7 @@ int SpriteFrameTable::BinarySearch(const char *pSpriteName) {
     while (1) {
         int searchRange = endPos - startPos;
         int middleFrameIndex = startPos + (endPos - startPos) / 2;
-        int comparisonResult =
-            _stricmp(pSpriteName,
-                     this->pSpritePFrames[middleFrameIndex]->icon_name.c_str());
+        int comparisonResult = _stricmp(pSpriteName, this->pSpritePFrames[middleFrameIndex]->icon_name.c_str());
         if (!comparisonResult) {
             return middleFrameIndex;
         }
@@ -322,21 +317,16 @@ SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
     return result;
 }
 
-//----- (0044D96D) --------------------------------------------------------
 void SpriteFrameTable::ToFile() {
-    SpriteFrameTable *v1;  // esi@1
-    FILE *v2;              // eax@1
-    FILE *v3;              // edi@1
-
-    v1 = this;
-    v2 = fopen("data\\dsft.bin", "wb");
-    v3 = v2;
-    if (!v2) Error("Unable to save dsft.bin!");
-    fwrite(v1, 4u, 1u, v2);
-    fwrite(&v1->uNumEFrames, 4u, 1u, v3);
-    fwrite(v1->pSpriteSFrames, 0x3Cu, v1->uNumSpriteFrames, v3);
-    fwrite(v1->pSpriteEFrames, 2u, v1->uNumEFrames, v3);
-    fclose(v3);
+    FILE *file = fopen("data\\dsft.bin", "wb");
+    if (file == nullptr) {
+        Error("Unable to save dsft.bin!");
+    }
+    fwrite(&uNumSpriteFrames, 4, 1, file);
+    fwrite(&uNumEFrames, 4, 1, file);
+    fwrite(pSpriteSFrames, 0x3C, uNumSpriteFrames, file);
+    fwrite(pSpriteEFrames, 2, uNumEFrames, file);
+    fclose(file);
 }
 
 bool SpriteFrame::Deserialize(const struct SpriteFrame_MM7 *data) {
@@ -439,7 +429,6 @@ void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
 
 //----- (0044DA92) --------------------------------------------------------
 bool SpriteFrameTable::FromFileTxt(const char *Args) {
-    SpriteFrameTable *v2;   // ebx@1
     FILE *v3;               // eax@1
     unsigned int v4;        // esi@3
     signed int result;      // eax@10
@@ -486,7 +475,7 @@ bool SpriteFrameTable::FromFileTxt(const char *Args) {
     int Argsb;              // [sp+304h] [bp+8h]@59
     FILE *Argsc;            // [sp+304h] [bp+8h]@67
 
-    v2 = this;
+    SpriteFrameTable *v2 = this;
     ReleaseSFrames();
     v3 = fopen(Args, "r");
     File = v3;
@@ -696,8 +685,8 @@ bool SpriteFrameTable::FromFileTxt(const char *Args) {
     }
     return result;
 }
-//----- (0046E26D) --------------------------------------------------------
-void _46E26D_collide_against_sprites(signed int a1, signed int a2) {
+
+void _46E26D_collide_against_sprites(int a1, int a2) {
     int v2;                 // edx@5
     unsigned __int16 *v3;   // eax@5
     unsigned __int16 v4;    // ax@6

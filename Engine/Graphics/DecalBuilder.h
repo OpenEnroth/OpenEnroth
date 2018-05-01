@@ -80,7 +80,7 @@ struct DecalBuilder_stru0 {
     int field_14;
     int field_18;
     int field_1C_flags;
-    __int64 field_20_time;
+    int64_t field_20_time;
 };
 #pragma pack(pop)
 
@@ -98,10 +98,10 @@ struct Decal {
     // void ( ***vdestructor_ptr)(Decal *, bool);
     int uNumVertices;
     RenderVertexSoft pVertices[64];
-    __int16 field_C08;
-    __int16 field_C0A;
-    __int16 field_C0C;
-    __int16 field_C0E;
+    int16_t field_C08;
+    int16_t field_C0A;
+    int16_t field_C0C;
+    int16_t field_C0E;
     uint32_t uColorMultiplier;
     int field_C14;
     DecalBuilder_stru0 *field_C18;

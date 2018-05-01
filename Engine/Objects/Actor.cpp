@@ -2683,7 +2683,7 @@ void Actor::SummonMinion(int summonerId) {
     actor = &pActors[uNumActors];
     v9 = &pMonsterStats->pInfos[v7 + 1];
     pActors[uNumActors].Reset();
-    strcpy_s(actor->pActorName, v9->pName);
+    strcpy(actor->pActorName, v9->pName);
     actor->sCurrentHP = (short)v9->uHP;
     memcpy(&actor->pMonsterInfo, v9, sizeof(actor->pMonsterInfo));
     actor->word_000086_some_monster_id = summonMonsterBaseType;

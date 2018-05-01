@@ -2,10 +2,10 @@
 
 #include <cstdlib>
 
-#include "../Tables/FrameTableInc.h"
-#include "../stru123.h"
+#include "Engine/Tables/FrameTableInc.h"
+#include "Engine/stru123.h"
 #include "Engine/Engine.h"
-#include "Level\Decoration.h"
+#include "Level/Decoration.h"
 #include "Sprites.h"
 
 struct DecorationList *pDecorationList;

@@ -1,5 +1,7 @@
 #pragma once
+
 #include <array>
+#include <cstdint>
 
 #include "Engine/Time.h"
 
@@ -50,7 +52,7 @@ enum PARTY_QUEST_BITS : uint16_t {
 };
 
 /*  355 */
-enum PARTY_FLAGS_1 : __int32 {
+enum PARTY_FLAGS_1 : int32_t {
     PARTY_FLAGS_1_0002 = 0x0002,
     PARTY_FLAGS_1_WATER_DAMAGE = 0x0004,
     PARTY_FLAGS_1_FALLING = 0x0008,
@@ -60,7 +62,7 @@ enum PARTY_FLAGS_1 : __int32 {
     PARTY_FLAGS_1_LANDING = 0x0100,
     PARTY_FLAGS_1_BURNING = 0x200
 };
-enum PARTY_FLAGS_2 : __int32 {
+enum PARTY_FLAGS_2 : int32_t {
     PARTY_FLAGS_2_RUNNING = 0x2,
 };
 
@@ -89,7 +91,7 @@ enum PARTY_BUFF_INDEX {
 };
 
 /*  300 */
-enum PartyAction : unsigned __int32 {
+enum PartyAction : uint32_t {
     PARTY_INVALID = 0,
     PARTY_TurnLeft = 0x1,
     PARTY_TurnRight = 0x2,
@@ -128,11 +130,11 @@ struct ActionQueue {
 };
 #pragma pack(pop)
 
-enum PartyAlignment : unsigned __int32 {
+typedef enum PartyAlignment : uint32_t {
     PartyAlignment_Good = 0,
     PartyAlignment_Neutral = 1,
     PartyAlignment_Evil = 2
-};
+} PartyAlignment;
 
 /*  208 */
 #pragma pack(push, 1)
@@ -140,12 +142,9 @@ struct PartyTimeStruct {
     std::array<GameTime, 10> bountyHunting_next_generation_time;
     std::array<GameTime, 85> Shops_next_generation_time;  // field_50
     std::array<GameTime, 53> _shop_ban_times;
-    std::array<GameTime, 10>
-        CounterEventValues;  // (0xACD314h in Silvo's binary)
-    std::array<GameTime, 29>
-        HistoryEventTimes;  // (0xACD364h in Silvo's binary)
-    std::array<GameTime, 20>
-        _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
+    std::array<GameTime, 10> CounterEventValues;  // (0xACD314h in Silvo's binary)
+    std::array<GameTime, 29> HistoryEventTimes;  // (0xACD364h in Silvo's binary)
+    std::array<GameTime, 20> _s_times;  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
 };
 #pragma pack(pop)
 
@@ -335,6 +334,5 @@ void Rest(unsigned int uHoursToSleep);
 void RestAndHeal(int uNumMinutes);  // idb
 int GetTravelTime();
 
-bool _449B57_test_bit(unsigned __int8 *a1, __int16 a2);
-void _449B7E_toggle_bit(unsigned char *pArray, __int16 a2,
-                        unsigned __int16 bToggle);  // idb
+bool _449B57_test_bit(uint8_t *a1, int16_t a2);
+void _449B7E_toggle_bit(unsigned char *pArray, int16_t a2, uint16_t bToggle);  // idb

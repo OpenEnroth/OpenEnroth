@@ -158,8 +158,8 @@ struct NPCStats {
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
                                   int uLocation2D, int uMapId);
     void _476C60_on_load_game();
-    char *sub_495366_MispronounceName(unsigned __int8 firstLetter,
-                                      unsigned __int8 genderId);
+    char *sub_495366_MispronounceName(uint8_t firstLetter,
+                                      uint8_t genderId);
 
     NPCData pNPCData[501];     // 0 - 94BCh count from 1
     NPCData pNewNPCData[501];  // 94BCh- 12978h count from 1
@@ -173,8 +173,8 @@ struct NPCStats {
     int field_17884;
     int field_17888;
     NPCGreeting pNPCGreetings[205];
-    unsigned __int16 pGroups[51];
-    unsigned __int16 pGroups_copy[51];
+    uint16_t pGroups[51];
+    uint16_t pGroups_copy[51];
     unsigned int uNewlNPCBufPos;
     unsigned int uNumNewNPCs;
     int field_17FC8;

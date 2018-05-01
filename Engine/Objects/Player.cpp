@@ -476,9 +476,9 @@ bool Player::IsPlayerHealableByTemple() {
         return false;  // fully healthy
     } else {
         if (GetMajorConditionIdx() == Condition_Zombie) {
-            if (((int)window_SpeakInHouse->ptr_1C == 78 ||
-                 (int)window_SpeakInHouse->ptr_1C == 81 ||
-                 (int)window_SpeakInHouse->ptr_1C == 82))
+            if ((window_SpeakInHouse->par1C == 78 ||
+                 window_SpeakInHouse->par1C == 81 ||
+                 window_SpeakInHouse->par1C == 82))
                 return false;  // zombie cant be healed at these tmeples
             else
                 return true;
@@ -777,8 +777,7 @@ int Player::HasSkill(unsigned int uSkillType) {
     if (uSkillType >= 37 || this->pActiveSkills[uSkillType]) {
         return 1;
     } else {
-        GameUI_StatusBar_OnEvent(localization->FormatString(
-            67, this->pName));  // *** does not have the skill
+        GameUI_StatusBar_OnEvent(localization->FormatString(67, this->pName));  // *** does not have the skill
         return 0;
     }
 }
@@ -1489,10 +1488,9 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
     if (classType == PLAYER_CLASS_LICH &&
         (dmg_type == CHARACTER_ATTRIBUTE_RESIST_MIND ||
          dmg_type == CHARACTER_ATTRIBUTE_RESIST_BODY ||
-         dmg_type ==
-             CHARACTER_ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
-                                                  // resistance should be handled
-                                                  // by body res. modifier
+         dmg_type == CHARACTER_ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
+                                                          // resistance should be handled
+                                                          // by body res. modifier
         return 0;  // liches are not affected by self magics
 
     int resist_value = 0;
@@ -3917,9 +3915,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             playerAffected->Heal(2);
             playerAffected->PlaySound(SPEECH_36, 0);
         } else {
-            GameUI_StatusBar_OnEvent(localization->FormatString(
-                36, pParty->pPickedItem
-                        .GetDisplayName()));  // %s can not be used that way
+            GameUI_StatusBar_OnEvent(localization->FormatString(36, pParty->pPickedItem.GetDisplayName().c_str()));  // %s can not be used that way
 
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
@@ -4331,8 +4327,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
             default:
                 GameUI_StatusBar_OnEvent(localization->FormatString(
-                    36, pParty->pPickedItem
-                            .GetDisplayName()));  // %s can not be used that way
+                    36, pParty->pPickedItem.GetDisplayName().c_str()));  // %s can not be used that way
 
                 pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                 return;
@@ -4648,8 +4643,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             return;
         } else {
             auto str = localization->FormatString(
-                36, pParty->pPickedItem
-                        .GetDisplayName());  // %s can not be used that way
+                36, pParty->pPickedItem.GetDisplayName().c_str());  // %s can not be used that way
             GameUI_StatusBar_OnEvent(str);
 
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
@@ -5673,8 +5667,7 @@ void Player::PlayAwardSound_Anim_Face(PlayerSpeech speech) {
 void Player::SetSkillByEvent(unsigned __int16 Player::*skillToSet,
                              unsigned __int16 skillValue) {
     unsigned __int16 currSkillValue = this->*skillToSet;
-    if (skillValue >
-        63) {  // the original had the condition reversed which was probably wrong
+    if (skillValue > 63) {  // the original had the condition reversed which was probably wrong
         this->*skillToSet = skillValue | currSkillValue & 63;
     } else {
         this->*skillToSet = skillValue | currSkillValue & 0xC0;
@@ -5812,7 +5805,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             _449B7E_toggle_bit(this->_achieved_awards_bits, val, 1);
             return;
         case VAR_Experience:
-            this->uExperience = min(this->uExperience + val, 4000000000i64);
+            this->uExperience = min(this->uExperience + val, 4000000000);
             PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
@@ -7153,7 +7146,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
             }
             playerPtr->ReceiveDamage(v68, (DAMAGE_TYPE)v69);
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
-                _A750D8_player_speech_timer = 256i64;
+                _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_44;
                 uSpeakingCharacter = uActorID + 1;
             }

@@ -17,20 +17,20 @@ struct SpriteFrame_MM6 {
 
     char pIconName[12];
     char pTextureName[12];    // c
-    __int16 pHwSpriteIDs[8];  // 18h
-    __int32 scale;            // 28h
+    int16_t pHwSpriteIDs[8];  // 18h
+    int32_t scale;            // 28h
     int uFlags;               // 2c
-    __int16 uGlowRadius;      // 30
-    __int16 uPaletteID;       // 32
-    __int16 uPaletteIndex;
-    __int16 uAnimTime;
+    int16_t uGlowRadius;      // 30
+    int16_t uPaletteID;       // 32
+    int16_t uPaletteIndex;
+    int16_t uAnimTime;
 };
 
 struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
     SpriteFrame_MM7();
 
-    __int16 uAnimLength;
-    __int16 _pad;
+    int16_t uAnimLength;
+    int16_t _pad;
 };
 #pragma pack(pop)
 
@@ -43,19 +43,19 @@ struct BLVFace_MM7 {  // 60h
     int zCalc2;
     int zCalc3;
     unsigned int uAttributes;
-    unsigned __int16 *pVertexIDs;
-    signed __int16 *pXInterceptDisplacements;
-    signed __int16 *pYInterceptDisplacements;
-    signed __int16 *pZInterceptDisplacements;
-    signed __int16 *pVertexUIDs;
-    signed __int16 *pVertexVIDs;
-    unsigned __int16 uFaceExtraID;
-    unsigned __int16 uBitmapID;
-    unsigned __int16 uSectorID;
-    __int16 uBackSectorID;
+    uint16_t *pVertexIDs;
+    int16_t *pXInterceptDisplacements;
+    int16_t *pYInterceptDisplacements;
+    int16_t *pZInterceptDisplacements;
+    int16_t *pVertexUIDs;
+    int16_t *pVertexVIDs;
+    uint16_t uFaceExtraID;
+    uint16_t uBitmapID;
+    uint16_t uSectorID;
+    int16_t uBackSectorID;
     struct BBox_short_ pBounding;
-    unsigned __int8 uPolygonType;
-    unsigned __int8 uNumVertices;
+    uint8_t uPolygonType;
+    uint8_t uNumVertices;
     char field_5E;
     char field_5F;
 };
@@ -65,21 +65,21 @@ struct BLVFace_MM7 {  // 60h
 #pragma pack(push, 1)
 struct TileDesc_MM7 {  // 26
     char pTileName[16];
-    unsigned __int16 uTileID;
-    unsigned __int16 uBitmapID;
-    unsigned __int16 tileset;
-    unsigned __int16 uSection;
-    unsigned __int16 uAttributes;
+    uint16_t uTileID;
+    uint16_t uBitmapID;
+    uint16_t tileset;
+    uint16_t uSection;
+    uint16_t uAttributes;
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 struct TextureFrame_MM7 {
     char pTextureName[12];
-    __int16 uTextureID;
-    __int16 uAnimTime;
-    __int16 uAnimLength;
-    __int16 uFlags;
+    int16_t uTextureID;
+    int16_t uAnimTime;
+    int16_t uAnimLength;
+    int16_t uFlags;
 };
 #pragma pack(pop)
 
@@ -143,11 +143,11 @@ struct ItemGen_Image_MM7 {
     // 72  Prevents falling damage.
     /* 10 */ int uNumCharges;
     /* 14 */ unsigned int uAttributes;
-    /* 18 */ unsigned __int8 uBodyAnchor;
+    /* 18 */ uint8_t uBodyAnchor;
     /* 19 */ char uMaxCharges;
     /* 1A */ char uHolderPlayer;
     /* 1B */ char field_1B;
-    /* 1C */ unsigned __int64 uExpireTime;
+    /* 1C */ uint64_t uExpireTime;
 };
 
 struct SpellBuff_Image_MM7 {
@@ -156,12 +156,12 @@ struct SpellBuff_Image_MM7 {
     void Serialize(struct SpellBuff *item);
     void Deserialize(struct SpellBuff *item);
 
-    /* 00 */ signed __int64 uExpireTime;
-    /* 08 */ unsigned __int16 uPower;
-    /* 0A */ unsigned __int16 uSkill;
-    /* 0C */ unsigned __int16 uOverlayID;
-    /* 0E */ unsigned __int8 uCaster;
-    /* 0F */ unsigned __int8 uFlags;
+    /* 00 */ int64_t uExpireTime;
+    /* 08 */ uint16_t uPower;
+    /* 0A */ uint16_t uSkill;
+    /* 0C */ uint16_t uOverlayID;
+    /* 0E */ uint8_t uCaster;
+    /* 0F */ uint8_t uFlags;
     /* 10 */
 };
 
@@ -190,12 +190,12 @@ struct PlayerSpells_Image_MM7 {
         };
         struct {
             /* 00 */ PlayerSpellbookChapter_Image_MM7 pChapters[9];
-            /* 63 */ char _pad;
+            /* 63 */ char _pad1;
             /* 64 */
         };
         struct {
             /* 00 */ char bHaveSpell[99];
-            /* 63 */ char _pad;
+            /* 63 */ char _pad2;
             /* 64 */
         };
     };
@@ -243,31 +243,31 @@ struct Player_Image_MM7 {
     void Serialize(struct Player *);
     void Deserialize(struct Player *);
 
-    /* 0000 */ __int64 pConditions[20];
-    /* 00A0 */ unsigned __int64 uExperience;
+    /* 0000 */ int64_t pConditions[20];
+    /* 00A0 */ uint64_t uExperience;
     /* 00A8 */ char pName[16];
     /* 00B8 */ unsigned char uSex;
     /* 00B9 */ unsigned char classType;
-    /* 00BA */ unsigned __int8 uCurrentFace;
+    /* 00BA */ uint8_t uCurrentFace;
     /* 00BB */ char field_BB;
-    /* 00BC */ unsigned __int16 uMight;
-    /* 00BE */ unsigned __int16 uMightBonus;
-    /* 00C0 */ unsigned __int16 uIntelligence;
-    /* 00C2 */ unsigned __int16 uIntelligenceBonus;
-    /* 00C4 */ unsigned __int16 uWillpower;
-    /* 00C6 */ unsigned __int16 uWillpowerBonus;
-    /* 00C8 */ unsigned __int16 uEndurance;
-    /* 00CA */ unsigned __int16 uEnduranceBonus;
-    /* 00CC */ unsigned __int16 uSpeed;
-    /* 00CE */ unsigned __int16 uSpeedBonus;
-    /* 00D0 */ unsigned __int16 uAccuracy;
-    /* 00D2 */ unsigned __int16 uAccuracyBonus;
-    /* 00D4 */ unsigned __int16 uLuck;
-    /* 00D6 */ unsigned __int16 uLuckBonus;
-    /* 00D8 */ __int16 sACModifier;
-    /* 00DA */ unsigned __int16 uLevel;
-    /* 00DC */ __int16 sLevelModifier;
-    /* 00DE */ __int16 sAgeModifier;
+    /* 00BC */ uint16_t uMight;
+    /* 00BE */ uint16_t uMightBonus;
+    /* 00C0 */ uint16_t uIntelligence;
+    /* 00C2 */ uint16_t uIntelligenceBonus;
+    /* 00C4 */ uint16_t uWillpower;
+    /* 00C6 */ uint16_t uWillpowerBonus;
+    /* 00C8 */ uint16_t uEndurance;
+    /* 00CA */ uint16_t uEnduranceBonus;
+    /* 00CC */ uint16_t uSpeed;
+    /* 00CE */ uint16_t uSpeedBonus;
+    /* 00D0 */ uint16_t uAccuracy;
+    /* 00D2 */ uint16_t uAccuracyBonus;
+    /* 00D4 */ uint16_t uLuck;
+    /* 00D6 */ uint16_t uLuckBonus;
+    /* 00D8 */ int16_t sACModifier;
+    /* 00DA */ uint16_t uLevel;
+    /* 00DC */ int16_t sLevelModifier;
+    /* 00DE */ int16_t sAgeModifier;
     /* 00E0 */ int field_E0;
     /* 00E4 */ int field_E4;
     /* 00E8 */ int field_E8;
@@ -280,45 +280,45 @@ struct Player_Image_MM7 {
     /* 0104 */ int field_104;
     /* 0108 */ union {
         struct {
-            unsigned __int16 skillStaff;
-            unsigned __int16 skillSword;
-            unsigned __int16 skillDagger;
-            unsigned __int16 skillAxe;
-            unsigned __int16 skillSpear;
-            unsigned __int16 skillBow;
-            unsigned __int16 skillMace;
-            unsigned __int16 skillBlaster;
-            unsigned __int16 skillShield;
-            unsigned __int16 skillLeather;
-            unsigned __int16 skillChain;
-            unsigned __int16 skillPlate;
-            unsigned __int16 skillFire;
-            unsigned __int16 skillAir;
-            unsigned __int16 skillWater;
-            unsigned __int16 skillEarth;
-            unsigned __int16 skillSpirit;
-            unsigned __int16 skillMind;
-            unsigned __int16 skillBody;
-            unsigned __int16 skillLight;
-            unsigned __int16 skillDark;
-            unsigned __int16 skillItemId;
-            unsigned __int16 skillMerchant;
-            unsigned __int16 skillRepair;
-            unsigned __int16 skillBodybuilding;
-            unsigned __int16 skillMeditation;
-            unsigned __int16 skillPerception;
-            unsigned __int16 skillDiplomacy;
-            unsigned __int16 skillThievery;
-            unsigned __int16 skillDisarmTrap;
-            unsigned __int16 skillDodge;
-            unsigned __int16 skillUnarmed;
-            unsigned __int16 skillMonsterId;
-            unsigned __int16 skillArmsmaster;
-            unsigned __int16 skillStealing;
-            unsigned __int16 skillAlchemy;
-            unsigned __int16 skillLearning;
+            uint16_t skillStaff;
+            uint16_t skillSword;
+            uint16_t skillDagger;
+            uint16_t skillAxe;
+            uint16_t skillSpear;
+            uint16_t skillBow;
+            uint16_t skillMace;
+            uint16_t skillBlaster;
+            uint16_t skillShield;
+            uint16_t skillLeather;
+            uint16_t skillChain;
+            uint16_t skillPlate;
+            uint16_t skillFire;
+            uint16_t skillAir;
+            uint16_t skillWater;
+            uint16_t skillEarth;
+            uint16_t skillSpirit;
+            uint16_t skillMind;
+            uint16_t skillBody;
+            uint16_t skillLight;
+            uint16_t skillDark;
+            uint16_t skillItemId;
+            uint16_t skillMerchant;
+            uint16_t skillRepair;
+            uint16_t skillBodybuilding;
+            uint16_t skillMeditation;
+            uint16_t skillPerception;
+            uint16_t skillDiplomacy;
+            uint16_t skillThievery;
+            uint16_t skillDisarmTrap;
+            uint16_t skillDodge;
+            uint16_t skillUnarmed;
+            uint16_t skillMonsterId;
+            uint16_t skillArmsmaster;
+            uint16_t skillStealing;
+            uint16_t skillAlchemy;
+            uint16_t skillLearning;
         };
-        unsigned __int16 pActiveSkills[37];
+        uint16_t pActiveSkills[37];
     };
     /* 0152 */ unsigned char _achieved_awards_bits[64];
     /* 0192 */ PlayerSpells_Image_MM7 spellbook;
@@ -340,35 +340,35 @@ struct Player_Image_MM7 {
         };
     };
     /* 157C */ int pInventoryMatrix[126];
-    /* 1774 */ __int16 sResFireBase;
-    /* 1776 */ __int16 sResAirBase;
-    /* 1778 */ __int16 sResWaterBase;
-    /* 177A */ __int16 sResEarthBase;
-    /* 177C */ __int16 field_177C;
-    /* 177E */ __int16 sResMagicBase;
-    /* 1780 */ __int16 sResSpiritBase;
-    /* 1782 */ __int16 sResMindBase;
-    /* 1784 */ __int16 sResBodyBase;
-    /* 1786 */ __int16 sResLightBase;
-    /* 1788 */ __int16 sResDarkBase;
-    /* 178A */ __int16 sResFireBonus;
-    /* 178C */ __int16 sResAirBonus;
-    /* 178E */ __int16 sResWaterBonus;
-    /* 1790 */ __int16 sResEarthBonus;
-    /* 1792 */ __int16 field_1792;
-    /* 1794 */ __int16 sResMagicBonus;
-    /* 1796 */ __int16 sResSpiritBonus;
-    /* 1798 */ __int16 sResMindBonus;
-    /* 179A */ __int16 sResBodyBonus;
-    /* 179C */ __int16 sResLightBonus;
-    /* 179E */ __int16 sResDarkBonus;
+    /* 1774 */ int16_t sResFireBase;
+    /* 1776 */ int16_t sResAirBase;
+    /* 1778 */ int16_t sResWaterBase;
+    /* 177A */ int16_t sResEarthBase;
+    /* 177C */ int16_t field_177C;
+    /* 177E */ int16_t sResMagicBase;
+    /* 1780 */ int16_t sResSpiritBase;
+    /* 1782 */ int16_t sResMindBase;
+    /* 1784 */ int16_t sResBodyBase;
+    /* 1786 */ int16_t sResLightBase;
+    /* 1788 */ int16_t sResDarkBase;
+    /* 178A */ int16_t sResFireBonus;
+    /* 178C */ int16_t sResAirBonus;
+    /* 178E */ int16_t sResWaterBonus;
+    /* 1790 */ int16_t sResEarthBonus;
+    /* 1792 */ int16_t field_1792;
+    /* 1794 */ int16_t sResMagicBonus;
+    /* 1796 */ int16_t sResSpiritBonus;
+    /* 1798 */ int16_t sResMindBonus;
+    /* 179A */ int16_t sResBodyBonus;
+    /* 179C */ int16_t sResLightBonus;
+    /* 179E */ int16_t sResDarkBonus;
     /* 17A0 */ SpellBuff_Image_MM7 pPlayerBuffs[24];
     /* 1920 */ unsigned int uVoiceID;
     /* 1924 */ int uPrevVoiceID;
     /* 1928 */ int uPrevFace;
     /* 192C */ int field_192C;
     /* 1930 */ int field_1930;
-    /* 1934 */ unsigned __int16 uTimeToRecovery;
+    /* 1934 */ uint16_t uTimeToRecovery;
     /* 1936 */ char field_1936;
     /* 1937 */ char field_1937;
     /* 1938 */ unsigned int uSkillPoints;
@@ -380,7 +380,7 @@ struct Player_Image_MM7 {
     /* 1A4C */ char field_1A4C;
     /* 1A4D */ char field_1A4D;
     /* 1A4E */ char lastOpenedSpellbookPage;
-    /* 1A4F */ unsigned __int8 uQuickSpell;
+    /* 1A4F */ uint8_t uQuickSpell;
     /* 1A50 */ char playerEventBits[64];
     /* 1A90 */ char _some_attack_bonus;
     /* 1A91 */ char field_1A91;
@@ -394,10 +394,10 @@ struct Player_Image_MM7 {
     /* 1A99 */ char _health_related;
     /* 1A9A */ char uFullManaBonus;
     /* 1A9B */ char _mana_related;
-    /* 1A9C */ unsigned __int16 expression;
-    /* 1A9E */ unsigned __int16 uExpressionTimePassed;
-    /* 1AA0 */ unsigned __int16 uExpressionTimeLength;
-    /* 1AA2 */ __int16 field_1AA2;
+    /* 1A9C */ uint16_t expression;
+    /* 1A9E */ uint16_t uExpressionTimePassed;
+    /* 1AA0 */ uint16_t uExpressionTimeLength;
+    /* 1AA2 */ int16_t field_1AA2;
     /* 1AA4 */ int _expression21_animtime;
     /* 1AA8 */ int _expression21_frameset;
     /* 1AAC */ LloydBeacon_Image_MM7 pInstalledBeacons[5];
@@ -411,14 +411,12 @@ struct Player_Image_MM7 {
 struct PartyTimeStruct_Image_MM7 {
     PartyTimeStruct_Image_MM7();
 
-    /* 000 */ __int64 bountyHunting_next_generation_time[10];
-    /* 050 */ __int64 Shops_next_generation_time[85];  // field_50
-    /* 2F8 */ __int64 _shop_ban_times[53];
-    /* 4A0 */ unsigned __int64
-        CounterEventValues[10];               // (0xACD314h in Silvo's binary)
-    /* 4F0 */ __int64 HistoryEventTimes[29];  // (0xACD364h in Silvo's binary)
-    /* 5D8 */ unsigned __int64
-        _s_times[20];  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
+    /* 000 */ int64_t bountyHunting_next_generation_time[10];
+    /* 050 */ int64_t Shops_next_generation_time[85];  // field_50
+    /* 2F8 */ int64_t _shop_ban_times[53];
+    /* 4A0 */ uint64_t CounterEventValues[10];               // (0xACD314h in Silvo's binary)
+    /* 4F0 */ int64_t HistoryEventTimes[29];  // (0xACD364h in Silvo's binary)
+    /* 5D8 */ uint64_t _s_times[20];  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
     /* 678 */
 };
 
@@ -439,8 +437,8 @@ struct Party_Image_MM7 {
     /* 00020 */ int y_rotation_speed;  // deg/s
     /* 00024 */ int field_24;
     /* 00028 */ int field_28;
-    /* 0002C */ unsigned __int64 uTimePlayed;
-    /* 00034 */ __int64 uLastRegenerationTime;
+    /* 0002C */ uint64_t uTimePlayed;
+    /* 00034 */ int64_t uLastRegenerationTime;
     /* 0003C */ PartyTimeStruct_Image_MM7 PartyTimes;
     /* 006B4 */ Vec3_int_ vPosition;
     /* 006C0 */ int sRotationY;
@@ -460,7 +458,7 @@ struct Party_Image_MM7 {
     /* 00700 */ int uFallStartY;
     /* 00704 */ unsigned int bFlying;
     /* 00708 */ char field_708;
-    /* 00709 */ unsigned __int8 hirelingScrollPosition;
+    /* 00709 */ uint8_t hirelingScrollPosition;
     /* 0070A */ char field_70A;
     /* 0070B */ char field_70B;
     /* 0070C */ unsigned int uCurrentYear;
@@ -480,11 +478,11 @@ struct Party_Image_MM7 {
     /* 00744 */ int uNumPrisonTerms;
     /* 00748 */ unsigned int uNumBountiesCollected;
     /* 0074C */ int field_74C;
-    /* 00750 */ __int16 monster_id_for_hunting[5];
-    /* 0075A */ __int16 monster_for_hunting_killed[5];
+    /* 00750 */ int16_t monster_id_for_hunting[5];
+    /* 0075A */ int16_t monster_for_hunting_killed[5];
     /* 00764 */ unsigned char days_played_without_rest;
-    /* 00765 */ unsigned __int8 _quest_bits[64];
-    /* 007A5 */ unsigned __int8 pArcomageWins[16];
+    /* 00765 */ uint8_t _quest_bits[64];
+    /* 007A5 */ uint8_t pArcomageWins[16];
     /* 007B5 */ char field_7B5_in_arena_quest;
     /* 007B6 */ char uNumArenaPageWins;
     /* 007B7 */ char uNumArenaSquireWins;
@@ -546,14 +544,14 @@ struct Timer_Image_MM7 {
 struct OtherOverlay_Image_MM7 {
     OtherOverlay_Image_MM7();
 
-    /* 00 */ __int16 field_0;
-    /* 02 */ __int16 field_2;
-    /* 04 */ __int16 sprite_frame_time;
-    /* 06 */ __int16 field_6;
-    /* 08 */ __int16 screen_space_x;
-    /* 0A */ __int16 screen_space_y;
-    /* 0C */ __int16 field_C;
-    /* 0E */ __int16 field_E;
+    /* 00 */ int16_t field_0;
+    /* 02 */ int16_t field_2;
+    /* 04 */ int16_t sprite_frame_time;
+    /* 06 */ int16_t field_6;
+    /* 08 */ int16_t screen_space_x;
+    /* 0A */ int16_t screen_space_y;
+    /* 0C */ int16_t field_C;
+    /* 0E */ int16_t field_E;
     /* 10 */ int field_10;
     /* 14 */
 };
@@ -582,10 +580,10 @@ struct IconFrame_MM7 {
 
     /* 000 */ char pAnimationName[12];
     /* 00C */ char pTextureName[12];
-    /* 018 */ __int16 uAnimTime;
-    /* 01A */ __int16 uAnimLength;
-    /* 01C */ __int16 uFlags;  // 0x01 - more icons in this animation
-    /* 01E */ unsigned __int16 uTextureID;
+    /* 018 */ int16_t uAnimTime;
+    /* 01A */ int16_t uAnimLength;
+    /* 01C */ int16_t uFlags;  // 0x01 - more icons in this animation
+    /* 01E */ uint16_t uTextureID;
 };
 #pragma pack(pop)
 
@@ -597,12 +595,12 @@ struct UIAnimation_MM7 {
     void Serialize(class UIAnimation *);
     void Deserialize(class UIAnimation *);
 
-    /* 000 */ unsigned __int16 uIconID;
-    /* 002 */ __int16 field_2;
-    /* 004 */ __int16 uAnimTime;
-    /* 006 */ __int16 uAnimLength;
-    /* 008 */ __int16 x;
-    /* 00A */ __int16 y;
+    /* 000 */ uint16_t uIconID;
+    /* 002 */ int16_t field_2;
+    /* 004 */ int16_t uAnimTime;
+    /* 006 */ int16_t uAnimLength;
+    /* 008 */ int16_t x;
+    /* 00A */ int16_t y;
     /* 00C */ char field_C;
 };
 #pragma pack(pop)

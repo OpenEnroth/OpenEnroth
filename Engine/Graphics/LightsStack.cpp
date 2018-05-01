@@ -3,10 +3,10 @@
 #include "Engine/Graphics/Lights.h"
 
 //----- (00467D88) --------------------------------------------------------
-bool LightsStack_MobileLight_::AddLight(__int16 x, __int16 y, __int16 z,
-                                        __int16 uSectorID, int uRadius,
-                                        unsigned __int8 r, unsigned __int8 g,
-                                        unsigned __int8 b, char uLightType) {
+bool LightsStack_MobileLight_::AddLight(int16_t x, int16_t y, int16_t z,
+                                        int16_t uSectorID, int uRadius,
+                                        uint8_t r, uint8_t g,
+                                        uint8_t b, char uLightType) {
     if (uNumLightsActive >= 400) {
         log->Warning(L"Too many mobile lights!");
         return false;
@@ -27,8 +27,8 @@ bool LightsStack_MobileLight_::AddLight(__int16 x, __int16 y, __int16 z,
     return true;
 }
 
-bool LightsStack_StationaryLight_::AddLight(__int16 x, __int16 y, __int16 z,
-                                            __int16 a5, unsigned char r,
+bool LightsStack_StationaryLight_::AddLight(int16_t x, int16_t y, int16_t z,
+                                            int16_t a5, unsigned char r,
                                             unsigned char g, unsigned char b,
                                             char uLightType) {
     if (uNumLightsActive >= 400) {

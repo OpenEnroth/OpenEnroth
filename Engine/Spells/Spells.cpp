@@ -445,7 +445,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
 
     int yaw = 0;
     int pitch = 0;
-    double distance_to_target = sqrt(long double(
+    double distance_to_target = sqrt((long double)(
         x_coord_delta * x_coord_delta + y_coord_delta * y_coord_delta +
         z_coord_delta * z_coord_delta));
     if (distance_to_target <= 1.0) {
@@ -453,7 +453,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
     } else {
         int64_t ySquared = y_coord_delta * y_coord_delta;
         int64_t xSquared = x_coord_delta * x_coord_delta;
-        int xy_distance = (int)sqrt(long double(xSquared + ySquared));
+        int xy_distance = (int)sqrt((long double)(xSquared + ySquared));
         yaw = stru_5C6E00->Atan2((int)x_coord_delta, (int)y_coord_delta);
         pitch = stru_5C6E00->Atan2(xy_distance, (int)z_coord_delta);
     }

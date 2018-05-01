@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 /*  321 */
 enum DECORATION_DESC_FLAGS {
     DECORATION_DESC_MOVE_THROUGH = 0x0001,
@@ -31,24 +33,24 @@ struct DecorationDesc_mm6 {
 
     char pName[32];
     char field_20[32];
-    __int16 uType;
-    unsigned __int16 uDecorationHeight;
-    __int16 uRadius;
-    __int16 uLightRadius;
-    unsigned __int16 uSpriteID;
-    __int16 uFlags;
-    __int16 uSoundID;
-    __int16 _pad;
-    // unsigned __int8 uColoredLightRed;
-    // unsigned __int8 uColoredLightGreen;
-    // unsigned __int8 uColoredLightBlue;
+    int16_t uType;
+    uint16_t uDecorationHeight;
+    int16_t uRadius;
+    int16_t uLightRadius;
+    uint16_t uSpriteID;
+    int16_t uFlags;
+    int16_t uSoundID;
+    int16_t _pad;
+    // uint8_t uColoredLightRed;
+    // uint8_t uColoredLightGreen;
+    // uint8_t uColoredLightBlue;
     // char __padding;
 };
 
 struct DecorationDesc : public DecorationDesc_mm6 {
-    unsigned __int8 uColoredLightRed;
-    unsigned __int8 uColoredLightGreen;
-    unsigned __int8 uColoredLightBlue;
+    uint8_t uColoredLightRed;
+    uint8_t uColoredLightGreen;
+    uint8_t uColoredLightBlue;
     char __padding;
 };
 #pragma pack(pop)
@@ -57,15 +59,14 @@ struct DecorationDesc : public DecorationDesc_mm6 {
 #pragma pack(push, 1)
 struct DecorationList {
     inline DecorationList()
-        :  //----- (00458380)
-          pDecorations(nullptr),
-          uNumDecorations(0) {}
+        : uNumDecorations(0),
+          pDecorations(nullptr) {}
 
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
     bool FromFileTxt(const char *Args);
     void InitializeDecorationSprite(unsigned int uDecID);
-    unsigned __int16 GetDecorIdByName(const char *pName);
+    uint16_t GetDecorIdByName(const char *pName);
 
     unsigned int uNumDecorations;
     struct DecorationDesc *pDecorations;

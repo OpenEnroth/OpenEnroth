@@ -1,19 +1,21 @@
 #pragma once
 
+#include <cstdint>
+
 /*  282 */
 #pragma pack(push, 1)
 struct OtherOverlay {
     OtherOverlay();
     void Reset();
 
-    __int16 field_0;
-    __int16 field_2;
-    __int16 sprite_frame_time;  // __int16 field_4;
-    __int16 field_6;
-    __int16 screen_space_x;  // __int16 field_8;
-    __int16 screen_space_y;  // __int16 field_A;
-    __int16 field_C;
-    __int16 field_E;
+    int16_t field_0;
+    int16_t field_2;
+    int16_t sprite_frame_time;  // __int16 field_4;
+    int16_t field_6;
+    int16_t screen_space_x;  // __int16 field_8;
+    int16_t screen_space_y;  // __int16 field_A;
+    int16_t field_C;
+    int16_t field_E;
     int field_10;
 };
 #pragma pack(pop)
@@ -28,7 +30,7 @@ struct OtherOverlayList {
 
     void Reset();
     int _4418B1(int a2, int a3, int a4, int a5);
-    int _4418B6(int uOverlayID, __int16 a3, int a4, int a5, __int16 a6);
+    int _4418B6(int uOverlayID, int16_t a3, int a4, int a5, int16_t a6);
     void DrawTurnBasedIcon(int a2);
 
     OtherOverlay pOverlays[50];
@@ -40,10 +42,10 @@ struct OtherOverlayList {
 /*   52 */
 #pragma pack(push, 1)
 struct OverlayDesc {
-    unsigned __int16 uOverlayID;
-    unsigned __int16 uOverlayType;
-    unsigned __int16 uSpriteFramesetID;
-    __int16 field_6;
+    uint16_t uOverlayID;
+    uint16_t uOverlayType;
+    uint16_t uSpriteFramesetID;
+    int16_t field_6;
 };
 #pragma pack(pop)
 

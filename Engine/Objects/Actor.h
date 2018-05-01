@@ -241,10 +241,8 @@ struct Actor {
                                 int type, char a4);
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
                                int uSpellID, int a4, unsigned int uSkillLevel);
-    static void ActorDamageFromMonster(signed int attacker_id,
-                                       unsigned int actor_id,
-                                       struct Vec3_int_ *pVelocity,
-                                       signed int a4);
+    static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
+                                       struct Vec3_int_ *pVelocity, int a4);
 
     static unsigned short GetObjDescId(int spellId);
 
@@ -256,15 +254,14 @@ struct Actor {
     static void ToggleFlag(signed int uActorID, unsigned int uFlag,
                            int bToggle);
     static void ApplyFineForKillingPeasant(unsigned int uActorID);
-    static void DrawHealthBar(Actor *actor, struct GUIWindow *window);
+    static void DrawHealthBar(Actor *actor, GUIWindow *window);
     int _43B3E0_CalcDamage(signed int dmgSource);
     static void AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
-                                             signed int a3);
+                                             int a3);
 
     static bool _46DF1A_collide_against_actor(int a1, int a2);
-    static void Arena_summon_actor(int monster_id, __int16 x, int y, int z);
-    static void DamageMonsterFromParty(signed int a1,
-                                       unsigned int uActorID_Monster,
+    static void Arena_summon_actor(int monster_id, int16_t x, int y, int z);
+    static void DamageMonsterFromParty(int a1, unsigned int uActorID_Monster,
                                        struct Vec3_int_ *pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
@@ -283,38 +280,38 @@ struct Actor {
     ABILITY_INDEX special_ability_use_check(int a2);
     bool _4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4);
     bool ActorHitOrMiss(Player *pPlayer);
-    int CalcMagicalDamageToActor(DAMAGE_TYPE dmgType, signed int incomingDmg);
+    int CalcMagicalDamageToActor(DAMAGE_TYPE dmgType, int incomingDmg);
     bool DoesDmgTypeDoDamage(DAMAGE_TYPE uType);
 
     char pActorName[32];
-    signed __int16 sNPC_ID;
-    __int16 field_22;
+    int16_t sNPC_ID;
+    int16_t field_22;
     unsigned int uAttributes;
-    __int16 sCurrentHP;
+    int16_t sCurrentHP;
     char field_2A[2];
     struct MonsterInfo pMonsterInfo;
-    __int16 word_000084_range_attack;
-    __int16 word_000086_some_monster_id;
-    unsigned __int16 uActorRadius;
-    unsigned __int16 uActorHeight;
-    unsigned __int16 uMovementSpeed;
+    int16_t word_000084_range_attack;
+    int16_t word_000086_some_monster_id;
+    uint16_t uActorRadius;
+    uint16_t uActorHeight;
+    uint16_t uMovementSpeed;
     struct Vec3_short_ vPosition;
     struct Vec3_short_ vVelocity;
-    unsigned __int16 uYawAngle;
-    unsigned __int16 uPitchAngle;
-    __int16 uSectorID;
-    unsigned __int16 uCurrentActionLength;
+    uint16_t uYawAngle;
+    uint16_t uPitchAngle;
+    int16_t uSectorID;
+    uint16_t uCurrentActionLength;
     struct Vec3_short_ vInitialPosition;
     struct Vec3_short_ vGuardingPosition;
-    unsigned __int16 uTetherDistance;
+    uint16_t uTetherDistance;
     AIState uAIState;
-    unsigned __int16 uCurrentActionAnimation;
-    unsigned __int16 uCarriedItemID;
+    uint16_t uCurrentActionAnimation;
+    uint16_t uCarriedItemID;
     char field_B6;
     char field_B7;
     unsigned int uCurrentActionTime;
-    unsigned __int16 pSpriteIDs[8];
-    unsigned __int16 pSoundSampleIDs[4];  // 1 die     3 bored
+    uint16_t pSpriteIDs[8];
+    uint16_t pSoundSampleIDs[4];  // 1 die     3 bored
     struct SpellBuff pActorBuffs[22];
     struct ItemGen ActorHasItems[4];
     unsigned int uGroup;

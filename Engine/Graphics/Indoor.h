@@ -120,10 +120,10 @@ struct stru315 {
     int field_28;
     int field_2C;
     int field_30;
-    unsigned __int16 *field_34_palette;
-    unsigned __int16 *pTextureLOD;
+    uint16_t *field_34_palette;
+    uint16_t *pTextureLOD;
     unsigned int *pDepthBuffer;
-    unsigned __int16 *pColorBuffer;
+    uint16_t *pColorBuffer;
 };
 #pragma pack(pop)
 
@@ -139,7 +139,7 @@ struct stru316 {
     int field_18;
     int field_1C;
     int field_20;
-    unsigned __int16 *field_24_palette;
+    uint16_t *field_24_palette;
 };
 #pragma pack(pop)
 
@@ -213,7 +213,7 @@ struct stru337 {
 extern stru337 stru_F81018;
 
 /*  291 */
-enum PolygonType : __int8 {
+enum PolygonType : uint8_t {
     POLYGON_Invalid = 0x0,
     POLYGON_VerticalWall = 0x1,
     POLYGON_unk = 0x2,
@@ -292,10 +292,10 @@ extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 #pragma pack(push, 1)
 struct SpawnPointMM6 {
     Vec3_int_ vPosition;
-    unsigned __int16 uRadius;
-    unsigned __int16 uKind;
-    unsigned __int16 uIndex;
-    unsigned __int16 uAttributes;
+    uint16_t uRadius;
+    uint16_t uKind;
+    uint16_t uIndex;
+    uint16_t uAttributes;
 };
 #pragma pack(pop)
 
@@ -312,10 +312,10 @@ struct SpawnPointMM7 {
     }
 
     Vec3_int_ vPosition;
-    unsigned __int16 uRadius;
-    unsigned __int16 uKind;
-    unsigned __int16 uIndex;
-    unsigned __int16 uAttributes;
+    uint16_t uRadius;
+    uint16_t uKind;
+    uint16_t uIndex;
+    uint16_t uAttributes;
     unsigned int uGroup;
 
     inline bool IsMonsterSpawn() const { return uKind == 3; }
@@ -346,9 +346,9 @@ struct BLVSectorMM8 {
 #pragma pack(push, 1)
 struct BLVLightMM6 {
     Vec3_short_ vPosition;
-    __int16 uRadius;
-    __int16 uAttributes;
-    unsigned __int16 uBrightness;
+    int16_t uRadius;
+    int16_t uAttributes;
+    uint16_t uBrightness;
 };
 #pragma pack(pop)
 
@@ -356,13 +356,13 @@ struct BLVLightMM6 {
 #pragma pack(push, 1)
 struct BLVLightMM7 {  // 10h
     struct Vec3_short_ vPosition;
-    __int16 uRadius;
+    int16_t uRadius;
     char uRed;
     char uGreen;
     char uBlue;
     char uType;
-    __int16 uAtributes;  // & 0x08    doesn't light faces
-    __int16 uBrightness;
+    int16_t uAtributes;  // & 0x08    doesn't light faces
+    int16_t uBrightness;
 };
 #pragma pack(pop)
 
@@ -376,7 +376,7 @@ struct BLVLightMM8 {
 /*  100 */
 #pragma pack(push, 1)
 struct BLVDoor {  // 50h
-    enum State : unsigned __int16 {
+    enum State : uint16_t {
         Closed = 0,
         Opening = 1,
         Open = 2,
@@ -390,32 +390,32 @@ struct BLVDoor {  // 50h
     int uMoveLength;
     int uOpenSpeed;
     int uCloseSpeed;
-    unsigned __int16 *pVertexIDs;
-    unsigned __int16 *pFaceIDs;
-    unsigned __int16 *pSectorIDs;
-    __int16 *pDeltaUs;
-    __int16 *pDeltaVs;
-    unsigned __int16 *pXOffsets;
-    unsigned __int16 *pYOffsets;
-    unsigned __int16 *pZOffsets;
-    unsigned __int16 uNumVertices;
-    unsigned __int16 uNumFaces;
-    __int16 field_48;
-    unsigned __int16 uNumOffsets;
+    uint16_t *pVertexIDs;
+    uint16_t *pFaceIDs;
+    uint16_t *pSectorIDs;
+    int16_t *pDeltaUs;
+    int16_t *pDeltaVs;
+    uint16_t *pXOffsets;
+    uint16_t *pYOffsets;
+    uint16_t *pZOffsets;
+    uint16_t uNumVertices;
+    uint16_t uNumFaces;
+    int16_t field_48;
+    uint16_t uNumOffsets;
     State uState;
-    __int16 field_4E;
+    int16_t field_4E;
 };
 #pragma pack(pop)
 
 /*  101 */
 #pragma pack(push, 1)
 struct BLVMapOutline {  // 0C
-    unsigned __int16 uVertex1ID;
-    unsigned __int16 uVertex2ID;
-    unsigned __int16 uFace1ID;
-    unsigned __int16 uFace2ID;
-    __int16 sZ;
-    unsigned __int16 uFlags;
+    uint16_t uVertex1ID;
+    uint16_t uVertex2ID;
+    uint16_t uFace1ID;
+    uint16_t uFace2ID;
+    int16_t sZ;
+    uint16_t uFlags;
 };
 #pragma pack(pop)
 
@@ -473,19 +473,19 @@ struct BLVFace {  // 60h
     int zCalc2;
     int zCalc3;
     unsigned int uAttributes;
-    unsigned __int16 *pVertexIDs;
-    signed __int16 *pXInterceptDisplacements;
-    signed __int16 *pYInterceptDisplacements;
-    signed __int16 *pZInterceptDisplacements;
-    signed __int16 *pVertexUIDs;
-    signed __int16 *pVertexVIDs;
-    unsigned __int16 uFaceExtraID;
+    uint16_t *pVertexIDs;
+    int16_t *pXInterceptDisplacements;
+    int16_t *pYInterceptDisplacements;
+    int16_t *pZInterceptDisplacements;
+    int16_t *pVertexUIDs;
+    int16_t *pVertexVIDs;
+    uint16_t uFaceExtraID;
     void *resource;  // unsigned __int16  uBitmapID;
-    unsigned __int16 uSectorID;
-    __int16 uBackSectorID;
+    uint16_t uSectorID;
+    int16_t uBackSectorID;
     struct BBox_short_ pBounding;
     PolygonType uPolygonType;
-    unsigned __int8 uNumVertices;
+    uint8_t uNumVertices;
     char field_5E;
     char field_5F;
 };
@@ -496,24 +496,24 @@ struct BLVFace {  // 60h
 struct BLVFaceExtra {  // 24h
     bool HasEventint();
 
-    __int16 field_0;
-    __int16 field_2;
-    __int16 field_4;
-    __int16 field_6;
-    __int16 field_8;
-    __int16 field_A;
-    __int16 face_id;
-    unsigned __int16 uAdditionalBitmapID;
-    __int16 field_10;
-    __int16 field_12;
-    __int16 sTextureDeltaU;
-    __int16 sTextureDeltaV;
-    __int16 sCogNumber;
-    unsigned __int16 uEventID;
-    __int16 field_1C;
-    __int16 field_1E;
-    __int16 field_20;
-    __int16 field_22;
+    int16_t field_0;
+    int16_t field_2;
+    int16_t field_4;
+    int16_t field_6;
+    int16_t field_8;
+    int16_t field_A;
+    int16_t face_id;
+    uint16_t uAdditionalBitmapID;
+    int16_t field_10;
+    int16_t field_12;
+    int16_t sTextureDeltaU;
+    int16_t sTextureDeltaV;
+    int16_t sCogNumber;
+    uint16_t uEventID;
+    int16_t field_1C;
+    int16_t field_1E;
+    int16_t field_20;
+    int16_t field_22;
 };
 #pragma pack(pop)
 
@@ -639,10 +639,10 @@ struct IndoorLocation {
     unsigned int uNumNodes;
     struct BSPNode *pNodes;
     BLVMapOutlines *pMapOutlines;
-    unsigned __int16 *pLFaces;
-    unsigned __int16 *ptr_0002B0_sector_rdata;
-    unsigned __int16 *ptr_0002B4_doors_ddata;
-    unsigned __int16 *ptr_0002B8_sector_lrdata;
+    uint16_t *pLFaces;
+    uint16_t *ptr_0002B0_sector_rdata;
+    uint16_t *ptr_0002B4_doors_ddata;
+    uint16_t *ptr_0002B8_sector_lrdata;
     unsigned int uNumSpawnPoints;
     struct SpawnPointMM7 *pSpawnPoints;
     struct DDM_DLV_Header dlv;
@@ -737,7 +737,7 @@ void PrepareToLoadBLV(unsigned int bLoading);
 int GetAlertStatus();
 int _45063B_spawn_some_monster(struct MapInfo *a1, int a2);
 int sub_450521_ProllyDropItemAt(int ecx0, signed int a2, int a3, int a4, int a5,
-                                unsigned __int16 a6);
+                                uint16_t a6);
 
 bool sub_4075DB(int a1, int a2, int a3, struct BLVFace *face);
 bool sub_4077F1(int a1, int a2, int a3, struct ODMFace *face,
@@ -748,7 +748,7 @@ bool sub_4077F1(int a1, int a2, int a3, struct ODMFace *face,
 /*  165 */
 #pragma pack(push, 1)
 struct BspRenderer_PortalViewportData {
-    void GetViewportData(__int16 x, int y, __int16 z, int w);
+    void GetViewportData(int16_t x, int y, int16_t z, int w);
 
     int _viewport_space_y;
     int _viewport_space_w;
@@ -756,8 +756,8 @@ struct BspRenderer_PortalViewportData {
     int _viewport_space_z;
     int _viewport_x_minID;
     int _viewport_z_maxID;
-    __int16 viewport_left_side[480];
-    __int16 viewport_right_side[480];
+    int16_t viewport_left_side[480];
+    int16_t viewport_right_side[480];
 };
 #pragma pack(pop)
 extern BspRenderer_PortalViewportData stru_F8A590;
@@ -780,17 +780,16 @@ struct BspRenderer_stru0 {
         // IndoorCameraD3D_Vec4::dtor);
     }
 
-    unsigned __int16 uSectorID;
-    unsigned __int16 uViewportX;
-    unsigned __int16 uViewportY;
-    unsigned __int16 uViewportZ;
-    unsigned __int16 uViewportW;
-    __int16 field_A;
+    uint16_t uSectorID;
+    uint16_t uViewportX;
+    uint16_t uViewportY;
+    uint16_t uViewportZ;
+    uint16_t uViewportW;
+    int16_t field_A;
     BspRenderer_PortalViewportData PortalScreenData;
-    unsigned __int16 uFaceID;
-    __int16 field_7A6;
-    unsigned int
-        viewing_portal_id;  // portal through which we're seeing this node
+    uint16_t uFaceID;
+    int16_t field_7A6;
+    unsigned int viewing_portal_id;  // portal through which we're seeing this node
     IndoorCameraD3D_Vec4 std__vector_0007AC[4];
     RenderVertexSoft pPortalBounding[4];
 };
@@ -798,8 +797,8 @@ struct BspRenderer_stru0 {
 
 #pragma pack(push, 1)
 struct BspFace {
-    unsigned __int16 uFaceID;
-    unsigned __int16 uNodeID;
+    uint16_t uFaceID;
+    uint16_t uNodeID;
 };
 #pragma pack(pop)
 
@@ -828,7 +827,7 @@ struct BspRenderer {  // stru170
     unsigned int num_nodes;
     BspRenderer_stru0 nodes[150];
     unsigned int uNumVisibleNotEmptySectors;
-    unsigned __int16 pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6];
+    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6];
 };
 #pragma pack(pop)
 

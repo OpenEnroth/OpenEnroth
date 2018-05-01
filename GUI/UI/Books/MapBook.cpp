@@ -629,7 +629,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
                     }
                 }
                 v97 = (char *)v97 + black;
-                v64 = (signed int)v97 >> 16;
+                v64 = (int)v97 >> 16;
             }
 
             v62 += black;

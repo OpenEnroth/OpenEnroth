@@ -1,15 +1,13 @@
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#include <stdlib.h>
+#include "Engine/Graphics/IndoorCameraD3D.h"
 
-#define _CRT_SECURE_NO_WARNINGS
+#include <cstdlib>
+
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Log.h"
 #include "Engine/OurMath.h"
 
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/IndoorCameraD3D.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "Engine/Graphics/stru9.h"
@@ -891,7 +889,7 @@ bool IndoorCameraD3D::_4371C3(RenderVertexSoft *pVertices,
     v12 = 0;
     v6 = pVertices;
     v7 = pOutNumVertices;
-    if ((signed int)*pOutNumVertices > 0) {
+    if ((int)*pOutNumVertices > 0) {
         pOutNumVerticesa =
             (char *)static_4371C3_array_50E5E0 - (char *)pVertices;
         pVerticesa = (char *)&static_4371C3_array_50E5E0[0].vWorldViewProjY -
@@ -925,7 +923,7 @@ void IndoorCameraD3D::_437143(unsigned int uNumInVertices,
 
     uint i = 0;
 
-    for (i; i < uNumInVertices; ++i) {
+    for (; i < uNumInVertices; ++i) {
         pInVertices[i]._rhw =
             1.0 / (pInVertices[i].vWorldViewPosition.x + 0.0000001);
         memcpy(&pOutVertices[i], &pInVertices[i], sizeof(pOutVertices[i]));
@@ -1242,12 +1240,11 @@ void IndoorCameraD3D::Project(int x, int y, int z, int *screenspace_x,
 //----- (00436A6D) --------------------------------------------------------
 double IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices,
                                        unsigned int uStripType) {
-    double result;  // st7@1
-
-    result = FLT_MAX;
+    double result = FLT_MAX;
     for (uint i = 0; i < uStripType; i++) {
-        if (pVertices[i].vWorldPosition.z < FLT_MAX)
+        if (pVertices[i].vWorldPosition.z < FLT_MAX) {
             result = pVertices[i].vWorldPosition.z;
+        }
     }
     return result;
 }

@@ -3,13 +3,14 @@
 #include <cassert>
 #include <cmath>
 #include <limits>
+#include <cstdint>
 
 #define pi_double 3.14159265358979323846
 
-__int64 fixpoint_mul(int, int);
-__int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
-__int64 fixpoint_div(int, int);
-__int64 fixpoint_sub_unknown(int, int);
+int64_t fixpoint_mul(int, int);
+int64_t fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
+int64_t fixpoint_div(int, int);
+int64_t fixpoint_sub_unknown(int, int);
 int fixpoint_from_float(float value);
 int fixpoint_from_int(int lhv, int rhv);
 int integer_sqrt(int val);
@@ -43,11 +44,11 @@ struct fixed {  // fixed-point decimal
     //----- (004453C0) mm6-----------------------------------------------------
     //----- (004A1760) mm6_chinese---------------------------------------------
     inline fixed operator*(const fixed &rhs) {
-        return fixed::Raw(((__int64)this->_internal * (__int64)rhs._internal) >> 16);
+        return fixed::Raw(((int64_t)this->_internal * (int64_t)rhs._internal) >> 16);
     }
 
     inline fixed operator/(const fixed &rhs) {
-        return fixed::Raw(((__int64)this->_internal << 16) / rhs._internal);
+        return fixed::Raw(((int64_t)this->_internal << 16) / rhs._internal);
     }
 
     inline fixed operator+(const fixed &rhs) {
@@ -69,7 +70,7 @@ struct fixed {  // fixed-point decimal
         return this->_internal < rhs._internal;
     }
 
-    __int32 _internal;
+    int32_t _internal;
 };
 #pragma pack(pop)
 

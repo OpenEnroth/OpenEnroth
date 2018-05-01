@@ -881,13 +881,13 @@ void SetStartGameData() {
     SetStartConditions();
     for (i = 0; i < 2; ++i) {
         if (i) {
-            strcpy_s(am_Players[1].pPlayerName, pArcomageGame->pPlayer2Name);
+            strcpy(am_Players[1].pPlayerName, pArcomageGame->pPlayer2Name);
             if (byte_4E185C)
                 am_Players[1].IsHisTurn = 0;
             else
                 am_Players[1].IsHisTurn = 1;
         } else {
-            strcpy_s(am_Players[0].pPlayerName, pArcomageGame->pPlayer1Name);
+            strcpy(am_Players[0].pPlayerName, pArcomageGame->pPlayer1Name);
             am_Players[0].IsHisTurn = 1;
         }
         am_Players[i].tower_height = start_tower_height;
@@ -910,7 +910,7 @@ void SetStartGameData() {
             }
         }
     }
-    strcpy_s(deckMaster.name, "Master Deck");
+    strcpy(deckMaster.name, "Master Deck");
     for (i = 0, card_dispenser_counter = -2, card_id_counter = 0; i < DECK_SIZE;
          ++i, ++card_dispenser_counter) {
         deckMaster.cardsInUse[i] = 0;
@@ -1058,7 +1058,7 @@ void TurnChange() {
             // nullsub_1();
             //   v11.x = 0;
             //   v11.y = 0;
-            strcpy_s(player_name, "The Next Player is: ");  //"След"
+            strcpy(player_name, "The Next Player is: ");  //"След"
                                                             // v0 = 0;
             v11.y = 200;
             v11.x = 320;  // - 12 * v0 / 2;
@@ -1066,7 +1066,7 @@ void TurnChange() {
             am_byte_4FAA75 = 1;
             ++current_player_num;
             if (current_player_num >= 2) current_player_num = 0;
-            strcpy_s(player_name, am_Players[current_player_num].pPlayerName);
+            strcpy(player_name, am_Players[current_player_num].pPlayerName);
             // v4 = 0;
             v11.y = 260;
             v11.x = 320;  // - 12 * v4 / 2;
@@ -1377,21 +1377,21 @@ void DrawPlayersText() {
     Point text_position;  // [sp+2Ch] [bp-8h]@2
 
     if (need_to_discard_card) {
-        strcpy_s(text_buff, localization->GetString(266));  // DISCARD A CARD
+        strcpy(text_buff, localization->GetString(266));  // DISCARD A CARD
         text_position.x =
             320 - pArcomageGame->pfntArrus->GetLineWidth(text_buff) / 2;
         text_position.y = 306;
         am_DrawText(text_buff, &text_position);
     }
-    strcpy_s(text_buff, am_Players[0].pPlayerName);
-    if (!current_player_num) strcat_s(text_buff, "***");
+    strcpy(text_buff, am_Players[0].pPlayerName);
+    if (!current_player_num) strcat(text_buff, "***");
     text_position.x =
         47 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 21;
     am_DrawText(text_buff, &text_position);
 
-    strcpy_s(text_buff, am_Players[1].pPlayerName);
-    if (current_player_num == 1) strcat_s(text_buff, "***");
+    strcpy(text_buff, am_Players[1].pPlayerName);
+    if (current_player_num == 1) strcat(text_buff, "***");
     text_position.x =
         595 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 21;
