@@ -3133,6 +3133,10 @@ void Render::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
                       unsigned int uCharWidth, unsigned int uCharHeight,
                       uint8_t *pFontPalette, uint16_t uFaceColor,
                       uint16_t uShadowColor) {
+
+    Image *fonttemp = Image::Create(uCharWidth, uCharHeight, IMAGE_FORMAT_A8R8G8B8);
+    auto fontpix = (unsigned __int32 *)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
     for (uint y = 0; y < uCharHeight; ++y) {
         for (uint x = 0; x < uCharWidth; ++x) {
             if (*pFontPixels) {
@@ -3140,16 +3144,22 @@ void Render::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
                 if (*pFontPixels != 1) {
                     color = uFaceColor;
                 }
-                WritePixel16(uOutX + x, uOutY + y, color);
+                //WritePixel16(uOutX + x, uOutY + y, color);
+                fontpix[x + y * uCharWidth] = Color32(color);
             }
             ++pFontPixels;
         }
     }
+    render->DrawTextureAlphaNew(uOutX / 640., uOutY / 480., fonttemp);
 }
 
 void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
                            unsigned int uFontHeight, uint8_t *pPalette,
                            bool present_time_transparency) {
+
+    Image *fonttemp = Image::Create(uCharWidth, uFontHeight, IMAGE_FORMAT_A8R8G8B8);
+    auto fontpix = (unsigned __int32 *)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
     if (present_time_transparency) {
         for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
             for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
@@ -3158,7 +3168,8 @@ void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
                                      : 0x7FF;  // transparent color 16bit
                                                // render->uTargetGMask |
                                                // render->uTargetBMask;
-                WritePixel16(x + dx, y + dy, color);
+                //WritePixel16(x + dx, y + dy, color);
+                fontpix[dx + dy * uCharWidth] = Color32(color);
                 ++font_pixels;
             }
         }
@@ -3170,12 +3181,14 @@ void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
                     uint8_t r = pPalette[index * 3 + 0];
                     uint8_t g = pPalette[index * 3 + 1];
                     uint8_t b = pPalette[index * 3 + 2];
-                    WritePixel16(x + dx, y + dy, Color16(r, g, b));
+                    //WritePixel16(x + dx, y + dy, Color16(r, g, b));
+                    fontpix[dx + dy * uCharWidth] = Color32(r,g,b);
                 }
                 ++font_pixels;
             }
         }
     }
+    render->DrawTextureAlphaNew(x / 640., y / 480., fonttemp);
 }
 
 void Render::DrawTransparentGreenShade(float u, float v, Image *pTexture) {
