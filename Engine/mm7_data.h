@@ -389,7 +389,6 @@ extern int uPlayerCreationUI_ArrowAnim;
 extern unsigned int uPlayerCreationUI_SelectedCharacter;
 extern int dword_A74CDC;
 extern int64_t _A750D8_player_speech_timer;  // qword_A750D8
-extern enum PlayerSpeech PlayerSpeechID;
 extern int uSpeakingCharacter;
 extern char byte_AE5B91;
 extern std::array<int, 32> dword_F1B430;

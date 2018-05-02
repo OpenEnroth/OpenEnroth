@@ -538,9 +538,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
              pLevelDecorations[i].IsObeliskChestActive()) &&
             !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            DecorationDesc *decor_desc =
-                &pDecorationList
-                     ->pDecorations[pLevelDecorations[i].uDecorationDescID];
+            DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
             if (!(decor_desc->uFlags & 0x80)) {
                 if (!(decor_desc->uFlags & 0x22)) {
                     v6 = pMiscTimer->uTotalGameTimeElapsed;
@@ -5406,64 +5404,34 @@ int _46EF01_collision_chech_player(int a1) {
 }
 
 void _46E0B2_collide_against_decorations() {
-    BLVSector *sector;           // ebp@1
-    LevelDecoration *decor;      // edi@2
-    DecorationDesc *decor_desc;  // esi@3
-    int v8;                      // ebx@10
-    int v9;                      // esi@11
-    int v11;                     // eax@12
-    int v12;                     // esi@14
-    unsigned int v13;            // eax@17
-    signed int i;                // [sp+4h] [bp-14h]@1
-    int v15;                     // [sp+8h] [bp-10h]@10
-    int v16;                     // [sp+Ch] [bp-Ch]@10
-    int v17;                     // [sp+10h] [bp-8h]@10
-
-    sector = &pIndoor->pSectors[stru_721530.uSectorID];
-    for (i = 0; i < sector->uNumDecorations; ++i) {
-        decor = &pLevelDecorations[sector->pDecorationIDs[i]];
+    BLVSector *sector = &pIndoor->pSectors[stru_721530.uSectorID];
+    for (unsigned int i = 0; i < sector->uNumDecorations; ++i) {
+        LevelDecoration *decor = &pLevelDecorations[sector->pDecorationIDs[i]];
         if (!(decor->uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            decor_desc =
-                &pDecorationList->pDecorations[decor->uDecorationDescID];
+            DecorationDesc *decor_desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
             if (!decor_desc->CanMoveThrough()) {
-                if (stru_721530.sMaxX <=
-                        decor->vPosition.x + decor_desc->uRadius &&
-                    stru_721530.sMinX >=
-                        decor->vPosition.x - decor_desc->uRadius &&
-                    stru_721530.sMaxY <=
-                        decor->vPosition.y + decor_desc->uRadius &&
-                    stru_721530.sMinY >=
-                        decor->vPosition.y - decor_desc->uRadius &&
-                    stru_721530.sMaxZ <=
-                        decor->vPosition.z + decor_desc->uDecorationHeight &&
+                if (stru_721530.sMaxX <= decor->vPosition.x + decor_desc->uRadius &&
+                    stru_721530.sMinX >= decor->vPosition.x - decor_desc->uRadius &&
+                    stru_721530.sMaxY <= decor->vPosition.y + decor_desc->uRadius &&
+                    stru_721530.sMinY >= decor->vPosition.y - decor_desc->uRadius &&
+                    stru_721530.sMaxZ <= decor->vPosition.z + decor_desc->uDecorationHeight &&
                     stru_721530.sMinZ >= decor->vPosition.z) {
-                    v16 = decor->vPosition.x - stru_721530.normal.x;
-                    v15 = decor->vPosition.y - stru_721530.normal.y;
-                    v8 = stru_721530.prolly_normal_d + decor_desc->uRadius;
-                    v17 = ((decor->vPosition.x - stru_721530.normal.x) *
-                               stru_721530.direction.y -
-                           (decor->vPosition.y - stru_721530.normal.y) *
-                               stru_721530.direction.x) >>
-                          16;
-                    if (abs(v17) <=
-                        stru_721530.prolly_normal_d + decor_desc->uRadius) {
-                        v9 = (v16 * stru_721530.direction.x +
-                              v15 * stru_721530.direction.y) >>
-                             16;
+                    int v16 = decor->vPosition.x - stru_721530.normal.x;
+                    int v15 = decor->vPosition.y - stru_721530.normal.y;
+                    int v8 = stru_721530.prolly_normal_d + decor_desc->uRadius;
+                    int v17 = ((decor->vPosition.x - stru_721530.normal.x) * stru_721530.direction.y -
+                               (decor->vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16;
+                    if (abs(v17) <= stru_721530.prolly_normal_d + decor_desc->uRadius) {
+                        int v9 = (v16 * stru_721530.direction.x + v15 * stru_721530.direction.y) >> 16;
                         if (v9 > 0) {
-                            v11 = stru_721530.normal.z +
-                                  fixpoint_mul(stru_721530.direction.z, v9);
+                            int v11 = stru_721530.normal.z + fixpoint_mul(stru_721530.direction.z, v9);
                             if (v11 >= decor->vPosition.z) {
-                                if (v11 <= decor_desc->uDecorationHeight +
-                                               decor->vPosition.z) {
-                                    v12 =
-                                        v9 - integer_sqrt(v8 * v8 - v17 * v17);
+                                if (v11 <= decor_desc->uDecorationHeight + decor->vPosition.z) {
+                                    int v12 = v9 - integer_sqrt(v8 * v8 - v17 * v17);
                                     if (v12 < 0) v12 = 0;
                                     if (v12 < stru_721530.field_7C) {
                                         stru_721530.field_7C = v12;
-                                        v13 = 8 * sector->pDecorationIDs[i];
-                                        v13 |= 5;
-                                        stru_721530.pid = v13;
+                                        stru_721530.pid = PID(OBJECT_Decoration, sector->pDecorationIDs[i]);
                                     }
                                 }
                             }
@@ -5476,74 +5444,60 @@ void _46E0B2_collide_against_decorations() {
 }
 
 int _46F04E_collide_against_portals() {
-    unsigned int v1;    // eax@1
-    BLVFace *face;      // eax@3
-    int v4;             // ecx@9
-    int v5;             // edx@9
-    signed int result;  // eax@21
-    unsigned int v10;   // [sp+8h] [bp-Ch]@1
     int a3;             // [sp+Ch] [bp-8h]@13
     int v12;            // [sp+10h] [bp-4h]@15
 
-    v1 = 0xFFFFFF;
-    v10 = 0xFFFFFF;
-    for (uint i = 0; i < pIndoor->pSectors[stru_721530.uSectorID].uNumPortals;
-         ++i) {
+    unsigned int v1 = 0xFFFFFF;
+    unsigned int v10 = 0xFFFFFF;
+    for (unsigned int i = 0; i < pIndoor->pSectors[stru_721530.uSectorID].uNumPortals; ++i) {
         if (pIndoor->pSectors[stru_721530.uSectorID].pPortals[i] !=
             stru_721530.field_80) {
-            face = &pIndoor->pFaces[pIndoor->pSectors[stru_721530.uSectorID]
-                                        .pPortals[i]];
+            BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[stru_721530.uSectorID].pPortals[i]];
             if (stru_721530.sMaxX <= face->pBounding.x2 &&
                 stru_721530.sMinX >= face->pBounding.x1 &&
                 stru_721530.sMaxY <= face->pBounding.y2 &&
                 stru_721530.sMinY >= face->pBounding.y1 &&
                 stru_721530.sMaxZ <= face->pBounding.z2 &&
                 stru_721530.sMinZ >= face->pBounding.z1) {
-                v4 = (stru_721530.normal.x * face->pFacePlane_old.vNormal.x +
-                      face->pFacePlane_old.dist +
-                      stru_721530.normal.y * face->pFacePlane_old.vNormal.y +
-                      stru_721530.normal.z * face->pFacePlane_old.vNormal.z) >>
-                     16;
-                v5 = (stru_721530.normal2.z * face->pFacePlane_old.vNormal.z +
-                      face->pFacePlane_old.dist +
-                      stru_721530.normal2.x * face->pFacePlane_old.vNormal.x +
-                      stru_721530.normal2.y * face->pFacePlane_old.vNormal.y) >>
-                     16;
-                if ((v4 < stru_721530.prolly_normal_d ||
-                     v5 < stru_721530.prolly_normal_d) &&
-                    (v4 > -stru_721530.prolly_normal_d ||
-                     v5 > -stru_721530.prolly_normal_d) &&
-                    (a3 = stru_721530.field_6C,
-                     sub_475D85(&stru_721530.normal, &stru_721530.direction,
-                                &a3, face)) &&
-                    a3 < (signed int)v10) {
+                int v4 = (stru_721530.normal.x * face->pFacePlane_old.vNormal.x +
+                          face->pFacePlane_old.dist +
+                          stru_721530.normal.y * face->pFacePlane_old.vNormal.y +
+                          stru_721530.normal.z * face->pFacePlane_old.vNormal.z) >> 16;
+                int v5 = (stru_721530.normal2.z * face->pFacePlane_old.vNormal.z +
+                          face->pFacePlane_old.dist +
+                          stru_721530.normal2.x * face->pFacePlane_old.vNormal.x +
+                          stru_721530.normal2.y * face->pFacePlane_old.vNormal.y) >> 16;
+                if ((v4 < stru_721530.prolly_normal_d || v5 < stru_721530.prolly_normal_d) &&
+                    (v4 > -stru_721530.prolly_normal_d || v5 > -stru_721530.prolly_normal_d) &&
+                    (a3 = stru_721530.field_6C, sub_475D85(&stru_721530.normal, &stru_721530.direction, &a3, face)) && a3 < (int)v10) {
                     v10 = a3;
                     v12 = pIndoor->pSectors[stru_721530.uSectorID].pPortals[i];
                 }
             }
         }
     }
+
     v1 = v10;
-    if (stru_721530.field_7C >= (signed int)v1 &&
-        (signed int)v1 <= stru_721530.field_6C) {
+
+    int result = 1;
+
+    if (stru_721530.field_7C >= (int)v1 && (int)v1 <= stru_721530.field_6C) {
         stru_721530.field_80 = v12;
-        if (pIndoor->pFaces[v12].uSectorID == stru_721530.uSectorID)
+        if (pIndoor->pFaces[v12].uSectorID == stru_721530.uSectorID) {
             stru_721530.uSectorID = pIndoor->pFaces[v12].uBackSectorID;
-        else
+        } else {
             stru_721530.uSectorID = pIndoor->pFaces[v12].uSectorID;
+        }
         stru_721530.field_7C = 268435455;  // 0xFFFFFFF
         result = 0;
-    } else {
-        result = 1;
     }
+
     return result;
 }
 
 unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
     unsigned int result = uLayingItemID;
-    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID]
-            .uFlags &
-        0x10) {
+    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & 0x10) {
         result = _46BFFA_update_spell_fx(uLayingItemID, a2);
     }
     return result;

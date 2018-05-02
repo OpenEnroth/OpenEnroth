@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <cmath>
+
+#include "OurMath.h"
 
 uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 
@@ -17,6 +20,8 @@ struct Vec2 {
 #define Vec2_int_ Vec2<int32_t>
 #define Vec2_float_ Vec2<float>
 
+const float pi = std::acos(-1);
+
 #pragma pack(push, 1)
 template <class T>
 struct Vec3 : public Vec2<T> {
@@ -31,10 +36,10 @@ struct Vec3 : public Vec2<T> {
     }
 
     static void Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz) {
-        float cosf_x = cosf(3.14159265f * sRotX / 1024.0f);
-        float sinf_x = sinf(3.14159265f * sRotX / 1024.0f);
-        float cosf_y = cosf(3.14159265f * sRotY / 1024.0f);
-        float sinf_y = sinf(3.14159265f * sRotY / 1024.0f);
+        float cosf_x = cos(pi * sRotX / 1024.0f);
+        float sinf_x = sin(pi * sRotX / 1024.0f);
+        float cosf_y = cos(pi * sRotY / 1024.0f);
+        float sinf_y = sin(pi * sRotY / 1024.0f);
 
         *outx = v.x + ((uint64_t)(sinf_y * (int64_t)((uint64_t)(cosf_x * (int64_t)sDepth) >> 16)));
         *outy = v.y + ((uint64_t)(cosf_y * (int64_t)((uint64_t)(cosf_x * (int64_t)sDepth) >> 16)));
@@ -68,7 +73,6 @@ struct Vec3 : public Vec2<T> {
 struct Vec3_float_ {
     void Normalize();
 
-    //----- (0049B32D) --------------------------------------------------------
     static Vec3_float_ *Cross(Vec3_float_ *v1, Vec3_float_ *pOut, float x,
                               float y, float z) {
         pOut->x = z * v1->y - y * v1->z;
@@ -77,7 +81,6 @@ struct Vec3_float_ {
         return pOut;
     }
 
-    //----- (0049B02E) --------------------------------------------------------
     inline static float NegDot(Vec3_float_ *a1, Vec3_float_ *a2, float *a3) {
         return *a3 = -(a1->z * a2->z + a1->y * a2->y + a1->x * a2->x);
     }

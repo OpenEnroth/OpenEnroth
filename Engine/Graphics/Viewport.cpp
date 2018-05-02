@@ -394,10 +394,10 @@ void Engine::OnGameViewportClick() {
         }
     } else if (PID_TYPE(v0) == OBJECT_Decoration) {
         int id = PID_ID(v0);
-        if (distance - pDecorationList->pDecorations[pLevelDecorations[id].uDecorationDescID].uRadius >=
-            clickable_distance) {
-            if (pParty->pPickedItem.uItemID)
+        if (distance - pDecorationList->GetDecoration(pLevelDecorations[id].uDecorationDescID)->uRadius >= clickable_distance) {
+            if (pParty->pPickedItem.uItemID) {
                 DropHeldItem();
+            }
         } else {
             DecorationInteraction(id, v0);
         }

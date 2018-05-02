@@ -212,12 +212,12 @@ bool PCX_File_Loader::InternalLoad(void *file, size_t filesize,
 
     PCX::GetSize(file, width, height);
     unsigned int num_pixels = *width * *height;
-    *pixels = new unsigned short[num_pixels + 2];
+    *pixels = new uint16_t[num_pixels + 2];
 
     if (pixels) {
         if (!this->DecodePCX(file, (uint16_t*)*pixels, width,
                              height)) {
-            delete[] * pixels;
+            delete[] *(uint16_t**)pixels;
             *pixels = nullptr;
         } else {
             *format = IMAGE_FORMAT_R5G6B5;
@@ -269,12 +269,12 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height,
 
     PCX::GetSize(pcx_data, width, height);
     unsigned int num_pixels = *width * *height;
-    *pixels = new unsigned short[num_pixels + 2];
+    *pixels = new uint16_t[num_pixels + 2];
 
     if (pixels) {
         if (!this->DecodePCX(pcx_data, (uint16_t*)*pixels, width,
                              height)) {
-            delete[] * pixels;
+            delete[] *(uint16_t**)pixels;
             *pixels = nullptr;
         } else {
             *format = IMAGE_FORMAT_R5G6B5;

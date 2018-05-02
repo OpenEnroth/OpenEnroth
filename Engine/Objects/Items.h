@@ -1,11 +1,11 @@
 #pragma once
+
 #include <array>
 #include <map>
 
 #include "Engine/Engine.h"
 #include "Engine/Time.h"
-
-#include "../NZIArray.h"
+#include "Engine/NZIArray.h"
 
 enum DAMAGE_TYPE : unsigned int {
     DMGT_FIRE = 0,
@@ -38,26 +38,25 @@ enum ITEM_FLAGS : unsigned int {
 enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,
 
-    ITEM_ENCHANTMENT_OF_COLD = 4,       // Adds 3-4 points of cold damage
-    ITEM_ENCHANTMENT_OF_FROST = 5,      // Adds 6-8 points of cold damage
-    ITEM_ENCHANTMENT_OF_ICE = 6,        // Adds 9-12 points of cold damage
-    ITEM_ENCHANTMENT_OF_SPARKS = 7,     // Adds 2-5 points of electrical damage
-    ITEM_ENCHANTMENT_OF_LIGHTNING = 8,  // Adds 4-10 points of electrical damage
-    ITEM_ENCHANTMENT_OF_THUNDERBOLTS =
-        9,                              // Adds 6-15 points of electrical damage
-    ITEM_ENCHANTMENT_OF_FIRE = 10,      // Adds 1-6 points of fire damage
-    ITEM_ENCHANTMENT_OF_FLAME = 11,     // Adds 2-12 points of fire damage
-    ITEM_ENCHANTMENT_OF_INFERNOS = 12,  // Adds 3-18 points of fire damage
-    ITEM_ENCHANTMENT_OF_POISON = 13,    // Adds 5 points of body damage
-    ITEM_ENCHANTMENT_OF_VENOM = 14,     // Adds 8 points of body damage
-    ITEM_ENCHANTMENT_OF_ACID = 15,      // Adds 12 points of body damage
-    ITEM_ENCHANTMENT_VAMPIRIC = 16,     // 20% of damage dealt given to wielder
-    ITEM_ENCHANTMENT_OF_RECOVERY = 17,  // Increases rate of Recovery
+    ITEM_ENCHANTMENT_OF_COLD = 4,          // Adds 3-4 points of cold damage
+    ITEM_ENCHANTMENT_OF_FROST = 5,         // Adds 6-8 points of cold damage
+    ITEM_ENCHANTMENT_OF_ICE = 6,           // Adds 9-12 points of cold damage
+    ITEM_ENCHANTMENT_OF_SPARKS = 7,        // Adds 2-5 points of electrical damage
+    ITEM_ENCHANTMENT_OF_LIGHTNING = 8,     // Adds 4-10 points of electrical damage
+    ITEM_ENCHANTMENT_OF_THUNDERBOLTS = 9,  // Adds 6-15 points of electrical damage
+    ITEM_ENCHANTMENT_OF_FIRE = 10,         // Adds 1-6 points of fire damage
+    ITEM_ENCHANTMENT_OF_FLAME = 11,        // Adds 2-12 points of fire damage
+    ITEM_ENCHANTMENT_OF_INFERNOS = 12,     // Adds 3-18 points of fire damage
+    ITEM_ENCHANTMENT_OF_POISON = 13,       // Adds 5 points of body damage
+    ITEM_ENCHANTMENT_OF_VENOM = 14,        // Adds 8 points of body damage
+    ITEM_ENCHANTMENT_OF_ACID = 15,         // Adds 12 points of body damage
+    ITEM_ENCHANTMENT_VAMPIRIC = 16,        // 20% of damage dealt given to wielder
+    ITEM_ENCHANTMENT_OF_RECOVERY = 17,     // Increases rate of Recovery
 
-    ITEM_ENCHANTMENT_OF_FORCE = 24,  // Increases Knockback
+    ITEM_ENCHANTMENT_OF_FORCE = 24,        // Increases Knockback
 
     ITEM_ENCHANTMENT_40 = 40,
-    ITEM_ENCHANTMENT_OF_DARKNESS = 41,  // Vampiric and Swift
+    ITEM_ENCHANTMENT_OF_DARKNESS = 41,     // Vampiric and Swift
 
     ITEM_ENCHANTMENT_OF_DRAGON =
         46,  // Adds 10-20 points of fire damage and +25 Might
@@ -224,7 +223,7 @@ enum ITEM_TYPE {
 };
 
 /*  331 */
-enum ITEM_EQUIP_TYPE : unsigned __int8 {
+enum ITEM_EQUIP_TYPE : uint8_t {
     EQUIP_SINGLE_HANDED = 0,
     EQUIP_TWO_HANDED = 1,
     EQUIP_BOW = 2,
@@ -249,7 +248,6 @@ enum ITEM_EQUIP_TYPE : unsigned __int8 {
     EQUIP_NONE = 20
 };
 
-enum CHARACTER_ATTRIBUTE_TYPE;
 struct Player;
 
 typedef struct CEnchantment {
@@ -263,23 +261,14 @@ typedef struct CEnchantment {
 /*   64 */
 #pragma pack(push, 1)
 struct ItemGen {  // 0x24
-    //----- (0042EB25) --------------------------------------------------------
-    // inline ItemGen()
-    // {
-    //   Reset();
-    // }
     static void AddToMap(
-        std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment *> *>
-            &maptoadd,
+        std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment *> *> &maptoadd,
         int enchId, CHARACTER_ATTRIBUTE_TYPE attrId, int bonusValue = 0,
-        unsigned __int16 Player::*skillPtr = nullptr);
+        uint16_t Player::*skillPtr = nullptr);
 
-    static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment *> *>
-        regularBonusMap;
-    static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment *> *>
-        specialBonusMap;
-    static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment *> *>
-        artifactBonusMap;
+    static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment *> *> regularBonusMap;
+    static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment *> *> specialBonusMap;
+    static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment *> *> artifactBonusMap;
 
     static void PopulateSpecialBonusMap();
     static void PopulateRegularBonusMap();

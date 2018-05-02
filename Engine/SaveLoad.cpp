@@ -357,7 +357,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             Image *image = beacon->image;
             if ((beacon->uBeaconTime != 0) && (image != nullptr)) {
                 const void *pixels = image->GetPixels(IMAGE_FORMAT_R5G6B5);
-                size_t pcx_data_size = 30000;
+                unsigned int pcx_data_size = 30000;
                 void *pcx_data = malloc(pcx_data_size);
                 PCX::Encode16(pixels, image->GetWidth(), image->GetHeight(),
                               pcx_data, pcx_data_size, &pcx_data_size);

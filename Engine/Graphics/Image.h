@@ -28,6 +28,7 @@ class Image {
         for (unsigned int i = 0; i < IMAGE_NUM_FORMATS; ++i)
             pixels[i] = nullptr;
     }
+    virtual ~Image() {}
 
     static Image *Create(unsigned int width, unsigned int height,
                          IMAGE_FORMAT format, const void *pixels = nullptr);

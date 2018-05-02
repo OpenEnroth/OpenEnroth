@@ -45,6 +45,8 @@ static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
 NZIArray<struct Player*, 5> pPlayers;
 
+enum PlayerSpeech PlayerSpeechID;
+
 // Race Stat Points Bonus/ Penalty
 struct PlayerCreation_AttributeProps {
     unsigned char uBaseValue;

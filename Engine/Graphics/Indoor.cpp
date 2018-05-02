@@ -2322,7 +2322,6 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     unsigned int map_id;            // eax@8
     MapInfo *map_info;              // edi@9
     int v4;                         // eax@11
-    DecorationDesc *decoration;     // eax@54
     char v28;                       // zf@81
     signed int v30;                 // edi@94
     int v34[4];                     // [sp+3E8h] [bp-2Ch]@96
@@ -2413,23 +2412,16 @@ void PrepareToLoadBLV(unsigned int bLoading) {
 
     v35 = 0;
     for (uint i = 0; i < uNumLevelDecorations; ++i) {
-        pDecorationList->InitializeDecorationSprite(
-            pLevelDecorations[i].uDecorationDescID);
+        pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
 
-        if (pDecorationList
-                ->pDecorations[pLevelDecorations[i].uDecorationDescID]
-                .uSoundID &&
-            _6807E0_num_decorations_with_sounds_6807B8 < 9) {
-            //            pSoundList->LoadSound(pDecorationList->pDecorations[pLevelDecorations[i].uDecorationDescID].uSoundID,
-            //            0);
-            _6807B8_level_decorations_ids
-                [_6807E0_num_decorations_with_sounds_6807B8++] = i;
+        DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+
+        if (decoration->uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9) {
+            // pSoundList->LoadSound(decoration->uSoundID, 0);
+            _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;
         }
 
         if (!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            decoration =
-                &pDecorationList
-                     ->pDecorations[pLevelDecorations[i].uDecorationDescID];
             if (!decoration->DontDraw()) {
                 if (decoration->uLightRadius) {
                     unsigned char r = 255, g = 255, b = 255;
@@ -3104,9 +3096,7 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode) {
     }
 }
 
-//----- (0043FA33) --------------------------------------------------------
-void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID,
-                                      unsigned int uSectorID) {
+void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID) {
     unsigned int v8;       // edi@5
     int v9;                // edi@5
     int v10;               // eax@7
@@ -3117,12 +3107,10 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
 
-    if (pDecorationList
-            ->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID]
-            .uFlags &
-        DECORATION_DESC_EMITS_FIRE) {
-        memset(&particle, 0,
-               sizeof(particle));  // fire,  like at the Pit's tavern
+    DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[uDecorationID].uDecorationDescID);
+
+    if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
+        memset(&particle, 0, sizeof(particle));  // fire,  like at the Pit's tavern
         particle.type =
             ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
         particle.uDiffuse = 0xFF3C1E;
@@ -3139,9 +3127,9 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         return;
     }
 
-    if (pDecorationList->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID].uFlags &
-        DECORATION_DESC_DONT_DRAW)
+    if (decoration->uFlags & DECORATION_DESC_DONT_DRAW) {
         return;
+    }
 
     v8 = pLevelDecorations[uDecorationID].field_10_y_rot +
          ((signed int)stru_5C6E00->uIntegerPi >> 3) -
@@ -3154,11 +3142,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalGameTimeElapsed;
     v10 = abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
-    v11 = pSpriteFrameTable->GetFrame(
-        pDecorationList
-            ->pDecorations[pLevelDecorations[uDecorationID].uDecorationDescID]
-            .uSpriteID,
-        v37 + v10);
+    v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + v10);
     v30 = 0;
     if (v11->uFlags & 2) v30 = 2;
     if (v11->uFlags & 0x40000) v30 |= 0x40;

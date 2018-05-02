@@ -428,10 +428,8 @@ void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
 }
 
 //----- (0044DA92) --------------------------------------------------------
-bool SpriteFrameTable::FromFileTxt(const char *Args) {
-    FILE *v3;               // eax@1
-    unsigned int v4;        // esi@3
-    signed int result;      // eax@10
+bool SpriteFrameTable::FromFileTxt(const char *file_name) {
+    int result;      // eax@10
     FILE *v6;               // ST18_4@11
     char *i;                // eax@11
     const char *v8;         // ST20_4@14
@@ -471,19 +469,19 @@ bool SpriteFrameTable::FromFileTxt(const char *Args) {
     FrameTableTxtLine v42;  // [sp+200h] [bp-FCh]@4
     FrameTableTxtLine v43;  // [sp+27Ch] [bp-80h]@4
     FILE *File;             // [sp+2F8h] [bp-4h]@1
-    unsigned int Argsa;     // [sp+304h] [bp+8h]@3
     int Argsb;              // [sp+304h] [bp+8h]@59
     FILE *Argsc;            // [sp+304h] [bp+8h]@67
 
     SpriteFrameTable *v2 = this;
     ReleaseSFrames();
-    v3 = fopen(Args, "r");
-    File = v3;
-    if (!v3) Error("CSpriteFrameTable::load - Unable to open file: %s.", Args);
+    FILE *file = fopen(file_name, "r");
+    if (!file) {
+        Error("CSpriteFrameTable::load - Unable to open file: %s.", file_name);
+    }
 
-    v4 = 0;
-    Argsa = 0;
-    if (fgets(Buf, 490, v3)) {
+    unsigned int v4 = 0;
+    unsigned int Argsa = 0;
+    if (fgets(Buf, 490, file)) {
         do {
             *strchr(Buf, '\n') = 0;
             memcpy(&v43, frame_table_txt_parser(Buf, &v42), sizeof(v43));
@@ -493,7 +491,7 @@ bool SpriteFrameTable::FromFileTxt(const char *Args) {
     }
     v2->uNumSpriteFrames = v4;
     v2->pSpriteSFrames = (SpriteFrame *)malloc(sizeof(SpriteFrame) * v4);
-    v2->pSpriteEFrames = (__int16 *)malloc(sizeof(__int16) * v2->uNumSpriteFrames);
+    v2->pSpriteEFrames = (int16_t*)malloc(sizeof(__int16) * v2->uNumSpriteFrames);
     v2->pSpritePFrames = (SpriteFrame **)malloc(sizeof(void*) * v2->uNumSpriteFrames);
     if (v2->pSpriteSFrames) {
         v6 = File;
@@ -724,8 +722,7 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                     &pLevelDecorations[(signed __int16)v4 >> 3];
                                 if (!(v5->uFlags &
                                       LEVEL_DECORATION_INVISIBLE)) {
-                                    v6 = &pDecorationList->pDecorations
-                                              [v5->uDecorationDescID];
+                                    v6 = pDecorationList->GetDecoration(v5->uDecorationDescID);
                                     if (!v6->CanMoveThrough()) {
                                         v7 = v6->uRadius;
                                         v8 = v5->vPosition.x;

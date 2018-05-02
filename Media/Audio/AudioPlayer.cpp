@@ -245,12 +245,9 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 assert(uCurrentlyLoadedLevelType == LEVEL_Indoor);
                 assert(object_id < pIndoor->uNumDoors);
 
-                float x = pIndoor->pDoors[object_id].pXOffsets[0] -
-                          pParty->vPosition.x;
-                float y = pIndoor->pDoors[object_id].pYOffsets[0] -
-                          pParty->vPosition.y;
-                float z = pIndoor->pDoors[object_id].pZOffsets[0] -
-                          pParty->vPosition.z;
+                float x = pIndoor->pDoors[object_id].pXOffsets[0] - pParty->vPosition.x;
+                float y = pIndoor->pDoors[object_id].pYOffsets[0] - pParty->vPosition.y;
+                float z = pIndoor->pDoors[object_id].pZOffsets[0] - pParty->vPosition.z;
 
                 si.sample->SetPosition(x / 50.f, y / 50.f, z / 50.f, 500.f);
                 si.sample->Play();
@@ -275,12 +272,9 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Decoration: {
                 assert(object_id < uNumLevelDecorations);
 
-                float x = pLevelDecorations[object_id].vPosition.x -
-                          pParty->vPosition.x;
-                float y = pLevelDecorations[object_id].vPosition.y -
-                          pParty->vPosition.y;
-                float z = pLevelDecorations[object_id].vPosition.z -
-                          pParty->vPosition.z;
+                float x = pLevelDecorations[object_id].vPosition.x - pParty->vPosition.x;
+                float y = pLevelDecorations[object_id].vPosition.y - pParty->vPosition.y;
+                float z = pLevelDecorations[object_id].vPosition.z - pParty->vPosition.z;
 
                 si.sample->SetPosition(x / 50.f, y / 50.f, z / 50.f, 500.f);
                 si.sample->Play();
@@ -289,12 +283,9 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Item: {
                 assert(object_id < uNumSpriteObjects);
 
-                float x =
-                    pSpriteObjects[object_id].vPosition.x - pParty->vPosition.x;
-                float y =
-                    pSpriteObjects[object_id].vPosition.y - pParty->vPosition.y;
-                float z =
-                    pSpriteObjects[object_id].vPosition.z - pParty->vPosition.z;
+                float x = pSpriteObjects[object_id].vPosition.x - pParty->vPosition.x;
+                float y = pSpriteObjects[object_id].vPosition.y - pParty->vPosition.y;
+                float z = pSpriteObjects[object_id].vPosition.z - pParty->vPosition.z;
 
                 si.sample->SetPosition(x / 50.f, y / 50.f, z / 50.f, 500.f);
                 si.sample->Play();

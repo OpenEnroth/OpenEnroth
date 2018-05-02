@@ -1,3 +1,5 @@
+#include "GUI/GUIProgressBar.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
@@ -7,16 +9,11 @@
 
 #include "Engine/Tables/IconFrameTable.h"
 
-#include "GUI/GUIProgressBar.h"
+GUIProgressBar *pGameLoadingUI_ProgressBar = new GUIProgressBar;
 
-struct GUIProgressBar *pGameLoadingUI_ProgressBar = new GUIProgressBar;
-
-//----- (00Initialize) --------------------------------------------------------
 bool GUIProgressBar::Initialize(Type type) {
-    // GUIProgressBar *v2; // esi@1
-    signed int v4;  // eax@7
+    int v4;  // eax@7
     int v5;         // ecx@8
-    // int v6; // edi@8
     int v7;  // edx@14
 
     switch (type) {
@@ -31,7 +28,6 @@ bool GUIProgressBar::Initialize(Type type) {
             Error("Invalid GUIProgressBar type: %u", type);
     }
 
-    // v2 = this;
     if (loading_bg) return false;
 
     uType = type;
@@ -87,13 +83,11 @@ bool GUIProgressBar::Initialize(Type type) {
     return true;
 }
 
-//----- (004435BB) --------------------------------------------------------
-void GUIProgressBar::Reset(unsigned __int8 uMaxProgress) {
+void GUIProgressBar::Reset(uint8_t uMaxProgress) {
     uProgressCurrent = 0;
     uProgressMax = uMaxProgress;
 }
 
-//----- (004435CD) --------------------------------------------------------
 void GUIProgressBar::Progress() {
     ++this->uProgressCurrent;
     if (this->uProgressCurrent > this->uProgressMax)
@@ -101,10 +95,7 @@ void GUIProgressBar::Progress() {
     this->Draw();
 }
 
-//----- (004435E2) --------------------------------------------------------
 void GUIProgressBar::Release() {
-    //    int v3; // edi@7
-
     if (loading_bg) {
         loading_bg->Release();
         loading_bg = nullptr;
@@ -133,13 +124,10 @@ void GUIProgressBar::Draw() {
     if (uType != TYPE_Fullscreen) {
         render->DrawTextureAlphaNew(80 / 640.0f, 122 / 480.0f,
                                     progressbar_dungeon);
-        render->DrawTextureAlphaNew(
-            100 / 640.0f, 146 / 480.0f,
+        render->DrawTextureAlphaNew(100 / 640.0f, 146 / 480.0f,
             pIconsFrameTable->GetFrame(uIconID_TurnHour, 0)->GetTexture());
-        render->FillRectFast(
-            174, 164,
-            floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) +
-                   0.5f),
+        render->FillRectFast(174, 164,
+            floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) + 0.5f),
             16, 0xF800);
     } else {
         if (loading_bg) {
@@ -147,13 +135,11 @@ void GUIProgressBar::Draw() {
             render->SetUIClipRect(
                 172, 459,
                 15 *
-                        (int)(__int64)((double)(300 * uProgressCurrent) /
-                                       (double)uProgressMax) /
+                        (int)((double)(300 * uProgressCurrent) / (double)uProgressMax) /
                         15 +
                     172,
                 471);
-            render->DrawTextureAlphaNew(172 / 640.0f, 459 / 480.0f,
-                                        progressbar_loading);
+            render->DrawTextureAlphaNew(172 / 640.0f, 459 / 480.0f, progressbar_loading);
             render->ResetUIClipRect();
         }
     }

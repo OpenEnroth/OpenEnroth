@@ -1,8 +1,14 @@
+#include "Engine/Spells/CastSpellInfo.h"
+
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/SpellFxRenderer.h"
-#include "Engine/Spells/CastSpellInfo.h"
-
+#include "Engine/Awards.h"
+#include "Engine/Events.h"
+#include "Engine/LOD.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/stru123.h"
 #include "Engine/Time.h"
 
 #include "Engine/Graphics/Level/Decoration.h"
@@ -14,23 +20,19 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 
+#include "Engine/Tables/IconFrameTable.h"
+
+#include "Engine/TurnEngine/TurnEngine.h"
+
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
+
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "IO/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
-
-#include "../Awards.h"
-#include "../Events.h"
-#include "../LOD.h"
-#include "../OurMath.h"
-#include "../Party.h"
-#include "../Tables/IconFrameTable.h"
-#include "../TurnEngine/TurnEngine.h"
-#include "../stru123.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -1441,7 +1443,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 break;
             }
 
-            case SPELL_AIR_SPARKS:  //Искры
+            case SPELL_AIR_SPARKS:  // Искры
             {
                 switch (skill_level) {
                     case 1:
@@ -1460,8 +1462,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                int _v726 =
-                    (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+                int _v726 = (int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;

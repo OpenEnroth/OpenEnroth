@@ -1600,12 +1600,10 @@ bool OutdoorLocation::PrepareDecorations() {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
-        if (pDecorationList->pDecorations[decor->uDecorationDescID].uSoundID &&
-            _6807E0_num_decorations_with_sounds_6807B8 < 9) {
-            //        pSoundList->LoadSound(pDecorationList->pDecorations[decor->uDecorationDescID].uSoundID,
-            //        0);
-            _6807B8_level_decorations_ids
-                [_6807E0_num_decorations_with_sounds_6807B8++] = i;
+        DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
+        if (decoration->uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9) {
+            // pSoundList->LoadSound(decoration.uSoundID, 0);
+            _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;
         }
         if (v8 && decor->uCog == 20)
             decor->uFlags |= LEVEL_DECORATION_OBELISK_CHEST;

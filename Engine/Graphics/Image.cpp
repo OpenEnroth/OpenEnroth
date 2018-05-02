@@ -73,23 +73,21 @@ void TextureFrameTable::ToFile() {
     TextureFrameTable *v1 = this;
     FILE *file = fopen("data\\dtft.bin", "wb");
     if (file == nullptr) {
-        Error("Unable to save dtft.bin!");
+        Error("Unable to save dtft.bin!", 0);
     }
     fwrite(v1, 4u, 1u, file);
     fwrite(v1->pTextures, 0x14u, v1->sNumTextures, file);
     fclose(file);
 }
 
-//----- (0044E0A0) --------------------------------------------------------
-void TextureFrameTable::FromFile(void *data_mm6, void *data_mm7,
-                                 void *data_mm8) {
+void TextureFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
     uint num_mm6_frames = data_mm6 ? *(int *)data_mm6 : 0,
          num_mm7_frames = data_mm7 ? *(int *)data_mm7 : 0,
          num_mm8_frames = data_mm8 ? *(int *)data_mm8 : 0;
 
     this->sNumTextures =
         /*num_mm6_frames + */ num_mm7_frames /*+ num_mm8_frames*/;
-    Assert(sNumTextures);
+    Assert(sNumTextures, 0);
     // Assert(!num_mm8_frames);
 
     TextureFrame_MM7 *frame_data =
@@ -250,7 +248,7 @@ int TextureFrameTable::FromFileTxt(const char *Args) {
     v2->sNumTextures = v4;
     v6 = malloc(sizeof(TextureFrame) * v4);
     v2->pTextures = (TextureFrame *)v6;
-    if (!v6) Error("CTextureFrameTable::load - Out of Memory!");
+    if (!v6) Error("CTextureFrameTable::load - Out of Memory!", 0);
     v7 = File;
     v2->sNumTextures = 0;
     fseek(v7, 0, 0);

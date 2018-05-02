@@ -1690,10 +1690,8 @@ void SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName) {
     for (size_t i = 0; i < uNumLevelDecorations; i++) {
         if (pLevelDecorations[i].uCog == uCog) {
             if (pFileName && strcmp(pFileName, "0")) {
-                pLevelDecorations[i].uDecorationDescID =
-                    pDecorationList->GetDecorIdByName(pFileName);
-                pDecorationList->InitializeDecorationSprite(
-                    pLevelDecorations[i].uDecorationDescID);
+                pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(pFileName);
+                pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
             }
 
             if (bHide)

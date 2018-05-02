@@ -1323,23 +1323,14 @@ void GameUI_WritePointedObjectStatusString() {
             } else if (PID_TYPE(pickedObjectPID) == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
-                        pText =
-                            pNPCTopics[stru_5E4C90_MapPersistVars._decor_events
-                                           [pLevelDecorations[pickedObjectID]
-                                                ._idx_in_stru123 -
-                                            75] +
-                                       380]
-                                .pTopic;  //неверно для костра
+                        pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events
+                                           [pLevelDecorations[pickedObjectID]._idx_in_stru123 -
+                                            75] + 380].pTopic;  // неверно для костра
                     else
-                        pText =
-                            pDecorationList
-                                ->pDecorations[pLevelDecorations[pickedObjectID]
-                                                   .uDecorationDescID]
-                                .field_20;
+                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
                     GameUI_StatusBar_Set(pText);
                 } else {
-                    char *hintString = GetEventHintString(
-                        pLevelDecorations[pickedObjectID].uEventID);
+                    char *hintString = GetEventHintString(pLevelDecorations[pickedObjectID].uEventID);
                     if (hintString != '\0') {
                         GameUI_StatusBar_Set(hintString);
                     }
@@ -1348,11 +1339,8 @@ void GameUI_WritePointedObjectStatusString() {
                 if (pickedObjectPID < 0x2000000u) {
                     char *newString = nullptr;
                     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {
-                        v18b =
-                            (signed int)(unsigned __int16)pickedObjectPID >> 9;
-                        short triggeredId = pOutdoor->pBModels[v18b]
-                                                .pFaces[pickedObjectID & 0x3F]
-                                                .sCogTriggeredID;
+                        v18b = PID_ID(pickedObjectPID) >> 6;
+                        short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
                         if (triggeredId != 0) {
                             newString = GetEventHintString(
                                 pOutdoor->pBModels[v18b]

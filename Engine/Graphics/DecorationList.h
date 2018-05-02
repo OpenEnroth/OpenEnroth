@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
+
+#include "Engine/Strings.h"
 
 /*  321 */
 enum DECORATION_DESC_FLAGS {
@@ -41,10 +44,6 @@ struct DecorationDesc_mm6 {
     int16_t uFlags;
     int16_t uSoundID;
     int16_t _pad;
-    // uint8_t uColoredLightRed;
-    // uint8_t uColoredLightGreen;
-    // uint8_t uColoredLightBlue;
-    // char __padding;
 };
 
 struct DecorationDesc : public DecorationDesc_mm6 {
@@ -55,23 +54,21 @@ struct DecorationDesc : public DecorationDesc_mm6 {
 };
 #pragma pack(pop)
 
-/*   55 */
-#pragma pack(push, 1)
-struct DecorationList {
-    inline DecorationList()
-        : uNumDecorations(0),
-          pDecorations(nullptr) {}
+class DecorationList {
+ public:
+    inline DecorationList() {}
 
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
-    bool FromFileTxt(const char *Args);
     void InitializeDecorationSprite(unsigned int uDecID);
     uint16_t GetDecorIdByName(const char *pName);
+    DecorationDesc *GetDecoration(unsigned int index) {
+        return &pDecorations[index];
+    }
 
-    unsigned int uNumDecorations;
-    struct DecorationDesc *pDecorations;
+ protected:
+    std::vector<DecorationDesc> pDecorations;
 };
-#pragma pack(pop)
 
 extern struct DecorationList *pDecorationList;
 

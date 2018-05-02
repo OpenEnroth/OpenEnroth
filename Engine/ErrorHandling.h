@@ -10,9 +10,9 @@
         assert(false);                                                      \
         exit(0);                                                            \
     } while (0)
+
 #define Assert(condition, ...)                                            \
-    Assert_impl_(__FILE__, __FUNCTION__, __LINE__, condition, #condition, \
-                 __VA_ARGS__)
+    Assert_impl_(__FILE__, __FUNCTION__, __LINE__, condition, #condition, __VA_ARGS__)
 
 inline void Error_impl_(const char *filename, const char *functionname,
                         int line, const char *format, ...) {
