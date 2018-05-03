@@ -1,7 +1,9 @@
-#include "Game/Game.h"
+#include "Application/Game.h"
 
 #include <string>
 #include <algorithm>
+
+#include "Application/GameMenu.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -68,12 +70,10 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "Game/GameMenu.h"
-
 void ShowMM7IntroVideo_and_LoadingScreen();
 void IntegrityTest();
 
-using Game::Configuration;
+using Application::Configuration;
 
 Configuration *ConfigureGame(const char *cmd_line) {
     auto config = new Configuration();

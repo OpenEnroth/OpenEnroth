@@ -1,4 +1,4 @@
-#include "Game/GameOver.h"
+#include "Application/GameOver.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -24,7 +24,7 @@
 #include "GUI/UI/UIStatusBar.h"
 
 //----- (004BF91E) --------------------------------------------------------
-void GameOver_Loop(int v15) {
+void Application::GameOver_Loop(int v15) {
     const char *v1;       // eax@2
     unsigned int result;  // eax@3
     const char *v7;       // edx@10

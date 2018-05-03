@@ -1,4 +1,6 @@
-#include "Game/GameMenu.h"
+#include "Application/GameMenu.h"
+
+#include "Application/Game.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -22,9 +24,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Game/Game.h"
-
-using Game::Menu;
+using Application::Menu;
 
 void Game_StartNewGameWhilePlaying(bool force_start) {
     if (dword_6BE138 == 124 || force_start) {

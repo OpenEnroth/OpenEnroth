@@ -4,7 +4,7 @@
 
 using EngineIoc = Engine_::IocContainer;
 
-namespace Game {
+namespace Application {
 
 class Menu {
  public:
@@ -20,4 +20,4 @@ class Menu {
      void EventLoop();
 };
 
-}  // namespace Game
+}  // namespace Application

@@ -1,9 +1,9 @@
-#include "Game/IocContainer.h"
+#include "Application/IocContainer.h"
 
-#include "Game/GameMenu.h"
+#include "Application/GameMenu.h"
 
-using Game::IocContainer;
-using Game::Menu;
+using Application::IocContainer;
+using Application::Menu;
 
 Menu *IocContainer::menu = nullptr;
 Menu *IocContainer::ResolveGameMenu() {

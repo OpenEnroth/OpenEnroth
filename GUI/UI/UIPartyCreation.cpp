@@ -3,6 +3,8 @@
 #include <crtdbg.h>
 #include <stdlib.h>
 
+#include "Application/Game.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
@@ -25,7 +27,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Game/Game.h"
 
 GUIFont *ui_partycreation_font;
 

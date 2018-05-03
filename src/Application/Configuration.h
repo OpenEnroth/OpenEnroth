@@ -2,11 +2,11 @@
 
 #include <string>
 
-namespace Game {
+namespace Application {
 
 class Configuration {
  public:
      std::string command_line;
 };
 
-}  // namespace Game
+}  // namespace Application

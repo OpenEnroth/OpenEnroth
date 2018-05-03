@@ -1,16 +1,17 @@
 #pragma once
 
+#include "Application/Configuration.h"
+#include "Application/GameMenu.h"
+#include "Application/IocContainer.h"
+
 #include "Engine/IocContainer.h"
 
-#include "Game/Configuration.h"
-#include "Game/GameMenu.h"
-#include "Game/IocContainer.h"
 
 using EngineIoc = Engine_::IocContainer;
-using GameIoc = Game::IocContainer;
+using GameIoc = Application::IocContainer;
 
 
-namespace Game {
+namespace Application {
 
 class Game {
  public:

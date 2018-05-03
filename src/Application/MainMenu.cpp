@@ -1,3 +1,5 @@
+#include "Application/MainMenu.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
@@ -20,8 +22,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
-
-#include "Game/MainMenu.h"
 
 Image *main_menu_bg = nullptr;
 Image *main_menu_background = nullptr;
@@ -52,8 +52,7 @@ void MainMenu_EventLoop() {
                     SetCurrentMenuID(MENU_SAVELOAD);
                     break;
                 case UIMSG_ShowCredits:
-                    new OnButtonClick2(495, 282, 0, 0,
-                                       (int)pMainMenu_BtnCredits);
+                    new OnButtonClick2(495, 282, 0, 0, (int)pMainMenu_BtnCredits);
                     SetCurrentMenuID(MENU_CREDITS);
                     break;
                 case UIMSG_ExitToWindows:

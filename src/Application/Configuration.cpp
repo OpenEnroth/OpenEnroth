@@ -1,1 +1,1 @@
-#include "Game/Configuration.h"
+#include "Application/Configuration.h"

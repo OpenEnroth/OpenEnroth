@@ -1,5 +1,9 @@
 #include <stdlib.h>
 
+#include "Application/GameOver.h"
+
+#include "Arcomage/Arcomage.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
@@ -19,10 +23,6 @@
 #include "Engine/Objects/Monsters.h"
 
 #include "Engine/Spells/CastSpellInfo.h"
-
-#include "Arcomage/Arcomage.h"
-
-#include "Game/GameOver.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -849,7 +849,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
     pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
     pKeyActionMap->ResetKeys();
     if (uHouseID == HOUSE_600 || uHouseID == HOUSE_601) {
-        GameOver_Loop(0);
+        Application::GameOver_Loop(0);
         return 0;
     }
     uOpenTime = p2DEvents[uHouseID - 1].uOpenTime;

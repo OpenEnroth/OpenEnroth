@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Game {
+namespace Application {
 
 class Menu;
 
@@ -12,4 +12,4 @@ class IocContainer {
      static Menu *menu;
 };
 
-}  // namespace Game
+}  // namespace Application

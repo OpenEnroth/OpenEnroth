@@ -1,5 +1,7 @@
 #include "GUI/UI/UIGame.h"
 
+#include "Application/Game.h"
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
@@ -45,7 +47,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Game/Game.h"
 
 using EngineIoc = Engine_::IocContainer;
 
