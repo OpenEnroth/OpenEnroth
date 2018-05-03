@@ -19,6 +19,22 @@
 
 #include "Platform/OSWindow.h"
 
+bool RenderBase::Initialize(OSWindow *window_) {
+    if (!pD3DBitmaps.Open(MakeDataPath("data\\d3dbitmap.hwl"))) {
+        return false;
+    }
+    if (!pD3DSprites.Open(MakeDataPath("data\\d3dsprite.hwl"))) {
+        return false;
+    }
+
+    window = window_;
+    if (window == nullptr) {
+        return false;
+    }
+
+    return true;
+}
+
 void RenderBase::PostInitialization() {
     if (!config->IsFullscreen()) {
         // window->SetWindowedMode(game_width, game_height);
@@ -567,4 +583,12 @@ void RenderBase::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
         billboard->pQuads[3].texcoord.x = 1.0;
         billboard->pQuads[3].texcoord.y = 0.0;
     }
+}
+
+HWLTexture *RenderBase::LoadHwlBitmap(const String &name) {
+    return pD3DBitmaps.LoadTexture(name);
+}
+
+HWLTexture *RenderBase::LoadHwlSprite(const String &name) {
+    return pD3DSprites.LoadTexture(name);
 }

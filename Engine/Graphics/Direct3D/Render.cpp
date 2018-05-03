@@ -11,7 +11,6 @@
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"
-#include "Engine/ZlibWrapper.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
@@ -896,19 +895,16 @@ Render::Render()
 
 Render::~Render() {
     free(pDefaultZBuffer);
-    pD3DBitmaps.Release();
-    pD3DSprites.Release();
     Release();
     Gdiplus::GdiplusShutdown(gdiplusToken);
 }
 
 bool Render::Initialize(OSWindow *window) {
-    this->window = window;
+    if (!RenderBase::Initialize(window)) {
+        return false;
+    }
 
     uDesiredDirect3DDevice = OS_GetAppInt("D3D Device", 0);
-
-    pD3DBitmaps.Load(MakeDataPath("data\\d3dbitmap.hwl").c_str());
-    pD3DSprites.Load(MakeDataPath("data\\d3dsprite.hwl").c_str());
 
     PostInitialization();
 
@@ -2716,11 +2712,11 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1,
 }
 
 HWLTexture *Render::LoadHwlBitmap(const char *name) {
-    return pD3DBitmaps.LoadTexture(name, 0);
+    return pD3DBitmaps.LoadTexture(name);
 }
 
 HWLTexture *Render::LoadHwlSprite(const char *name) {
-    return pD3DSprites.LoadTexture(name, 0);
+    return pD3DSprites.LoadTexture(name);
 }
 
 bool Render::MoveTextureToDevice(Texture *texture) {
@@ -3441,157 +3437,6 @@ void Render::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
 
 void Render::ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture,
                             int a5) {}
-
-HWLTexture *RenderHWLContainer::LoadTexture(const char *pName, int bMipMaps) {
-    void *v13;              // eax@13
-    int v16;                // esi@14
-    int v17;                // ecx@16
-    int v18;                // esi@16
-    unsigned __int16 *v19;  // eax@16
-    int v20;                // edx@16
-    int v21;                // ecx@16
-    int v22;                // eax@16
-    int v23;                // esi@16
-    unsigned __int16 *v26;  // [sp+24h] [bp-10h]@13
-    int v27;                // [sp+28h] [bp-Ch]@14
-    int v28;                // [sp+2Ch] [bp-8h]@13
-    int pDestb;             // [sp+3Ch] [bp+8h]@15
-
-    if (!uNumItems) return nullptr;
-
-    ///////////////////////////////
-    // quick search(быстрый поиск)//
-    ///////////////////////////////
-    uint idx1 = 0, idx2 = uNumItems;
-    while (true) {
-        uint i = idx1 + (idx2 - idx1) / 2;
-
-        int res = _stricmp(pName, pSpriteNames[i]);
-        if (!res) {
-            fseek(pFile, pSpriteOffsets[i], SEEK_SET);
-            break;
-        } else if (res < 0) {
-            idx2 = idx1 + (idx2 - idx1) / 2;
-        } else {
-            idx1 = i + 1;
-        }
-
-        if (idx1 >= idx2) return false;
-    }
-
-    uint uCompressedSize = 0;
-    fread(&uCompressedSize, 4, 1, pFile);
-
-    HWLTexture *pTex = new HWLTexture;
-    fread(&pTex->uBufferWidth, 4, 1, pFile);
-    fread(&pTex->uBufferHeight, 4, 1, pFile);
-    fread(&pTex->uAreaWidth, 4, 1, pFile);
-    fread(&pTex->uAreaHeigth, 4, 1, pFile);
-    fread(&pTex->uWidth, 4, 1, pFile);
-    fread(&pTex->uHeight, 4, 1, pFile);
-    fread(&pTex->uAreaX, 4, 1, pFile);
-    fread(&pTex->uAreaY, 4, 1, pFile);
-
-    pTex->pPixels = new unsigned __int16[pTex->uWidth * pTex->uHeight];
-    if (uCompressedSize) {
-        char *pCompressedData = new char[uCompressedSize];
-        fread(pCompressedData, 1, uCompressedSize, pFile);
-        uint uDecompressedSize = pTex->uWidth * pTex->uHeight * sizeof(short);
-        zlib::Uncompress(pTex->pPixels, &uDecompressedSize, pCompressedData,
-                         uCompressedSize);
-        delete[] pCompressedData;
-    } else {
-        fread(pTex->pPixels, 2, pTex->uWidth * pTex->uHeight, pFile);
-    }
-
-    if (scale_hwls_to_half) {
-        __debugbreak();  // Ritor1
-        pTex->uHeight /= 2;
-        pTex->uWidth /= 2;
-        v13 = new uint16_t[pTex->uWidth * pTex->uHeight];
-        v28 = 0;
-        v26 = (uint16_t*)v13;
-        if (pTex->uHeight > 0) {
-            v16 = pTex->uWidth;
-            v27 = 1;
-            do {
-                pDestb = 0;
-                if (v16 > 0) {
-                    do {
-                        v17 = v16 * v27;
-                        v18 = v28 * v16;
-                        v19 = pTex->pPixels;
-                        v20 = pDestb + 2 * v18;
-                        v21 = (int)&v19[2 * (pDestb + v17)];
-                        v22 = (int)&v19[2 * v20];
-                        HEXRAYS_LOWORD(v20) = *(uint16_t*)(v21 + 2);
-                        HEXRAYS_LOWORD(v21) = *(uint16_t*)v21;
-                        v23 = pDestb + v18;
-                        pDestb++;
-
-                        v26[v23] = _452442_color_cvt(
-                            *(uint16_t*)v22,
-                            *(uint16_t*)(v22 + 2), v21, v20);
-                        v16 = pTex->uWidth;
-                    } while (pDestb < pTex->uWidth);
-                }
-                ++v28;
-                v27 += 2;
-            } while (v28 < (signed int)pTex->uHeight);
-        }
-        delete[] pTex->pPixels;
-        pTex->pPixels = v26;
-    }
-    return pTex;
-}
-
-bool RenderHWLContainer::Release() {
-    if (pFile)
-        fclose(this->pFile);
-    for (uint i = 0; i < this->uNumItems; i++) {
-        delete[] this->pSpriteNames[i];
-    }
-
-    return true;
-}
-
-RenderHWLContainer::RenderHWLContainer() {
-    this->log = EngineIoc::ResolveLogger();
-
-    this->pFile = 0;
-    uSignature = 0;
-    this->uDataOffset = 0;
-    memset(&this->uNumItems, 0, 0x61A84u);
-    this->uNumItems = 0;
-    this->scale_hwls_to_half = false;
-}
-
-bool RenderHWLContainer::Load(const char *pFilename) {
-    pFile = fopen(pFilename, "rb");
-    if (!pFile) {
-        log->Warning(L"Failed to open file: %s", pFilename);
-        return false;
-    }
-
-    fread(&uSignature, 1, 4, pFile);
-    if (uSignature != 'TD3D') {
-        log->Warning(L"Invalid format: %s", pFilename);
-        return false;
-    }
-
-    fread(&uDataOffset, 4, 1, pFile);
-    fseek(pFile, uDataOffset, SEEK_SET);
-    fread(&uNumItems, 4, 1, pFile);
-
-    memset(pSpriteNames, 0, 50000 * sizeof(char *));
-    for (uint i = 0; i < uNumItems; ++i) {
-        pSpriteNames[i] = new char[20];
-        fread(pSpriteNames[i], 1, 20, pFile);
-    }
-    fread(pSpriteOffsets, 4, uNumItems, pFile);
-
-    return true;
-}
 
 void Render::DoRenderBillboards_D3D() {
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));

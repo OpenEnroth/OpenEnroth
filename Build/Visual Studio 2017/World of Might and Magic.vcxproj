@@ -193,6 +193,7 @@
     <ClCompile Include="..\..\Engine\Graphics\Direct3D\Render.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Direct3D\RenderD3D.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Direct3D\TextureD3D.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\HWLContainer.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\ImageLoader.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Indoor.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\IndoorCameraD3D.cpp" />
@@ -383,6 +384,7 @@
     <ClCompile Include="..\..\src\Application\GameMenu.cpp" />
     <ClCompile Include="..\..\src\Application\GameOver.cpp" />
     <ClCompile Include="..\..\src\Application\IocContainer.cpp" />
+    <ClCompile Include="..\..\src\tools\MemBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Arcomage\Arcomage.h" />
@@ -404,6 +406,7 @@
     <ClInclude Include="..\..\Engine\Graphics\Direct3D\Render.h" />
     <ClInclude Include="..\..\Engine\Graphics\Direct3D\RenderD3D.h" />
     <ClInclude Include="..\..\Engine\Graphics\Direct3D\TextureD3D.h" />
+    <ClInclude Include="..\..\Engine\Graphics\HWLContainer.h" />
     <ClInclude Include="..\..\Engine\Graphics\ImageFormatConverter.h" />
     <ClInclude Include="..\..\Engine\Graphics\ImageLoader.h" />
     <ClInclude Include="..\..\Engine\Graphics\Indoor.h" />
@@ -767,6 +770,7 @@
     <ClInclude Include="..\..\src\Application\GameMenu.h" />
     <ClInclude Include="..\..\src\Application\GameOver.h" />
     <ClInclude Include="..\..\src\Application\IocContainer.h" />
+    <ClInclude Include="..\..\src\tools\MemBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\.gitattributes" />

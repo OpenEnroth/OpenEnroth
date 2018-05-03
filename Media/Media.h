@@ -3,16 +3,7 @@
 #include <memory>
 #include <string>
 
-class IMemBuffer {
- public:
-    IMemBuffer() {}
-    virtual ~IMemBuffer() {}
-
-    virtual const void *get_data() const = 0;
-    virtual size_t get_size() const = 0;
-};
-typedef std::shared_ptr<IMemBuffer> PMemBuffer;
-PMemBuffer AllocMemBuffer(size_t size);
+#include "Tools/MemBuffer.h"
 
 class IAudioDataSource {
  public:

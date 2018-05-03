@@ -2,9 +2,9 @@
 
 #include <memory>
 
+#include "Engine/IocContainer.h"
 #include "Engine/OurMath.h"
 #include "Engine/Rect.h"
-#include "Engine/IocContainer.h"
 #include "Engine/VectorTypes.h"
 
 #include "Engine/Graphics/IRenderConfig.h"
@@ -198,51 +198,7 @@ struct SoftwareBillboard {
 };
 #pragma pack(pop)
 
-/*  280 */
-#pragma pack(push, 1)
-struct HWLTexture {
-    inline HWLTexture()
-        : field_0(0),
-          field_4(0),
-          field_8(0),
-          field_C(0),
-          field_10(0),
-          field_14(0) {}
-
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-    int field_14;
-    int uBufferWidth;
-    int uBufferHeight;
-    int uAreaWidth;
-    int uAreaHeigth;
-    unsigned int uWidth;
-    unsigned int uHeight;
-    int uAreaX;
-    int uAreaY;
-    uint16_t *pPixels;
-};
-#pragma pack(pop)
-
-struct RenderHWLContainer {
-    RenderHWLContainer();
-    bool Load(const char *pFilename);
-    bool Release();
-
-    HWLTexture *LoadTexture(const char *pName, int bMipMaps);
-
-    FILE *pFile;
-    uint32_t uSignature;
-    unsigned int uDataOffset;
-    unsigned int uNumItems;
-    char *pSpriteNames[50000];
-    int pSpriteOffsets[50000];
-    int scale_hwls_to_half;
-    Log *log;
-};
+class HWLTexture;
 
 class IRender {
  public:
@@ -482,8 +438,8 @@ class IRender {
     virtual unsigned int GetRenderWidth() const = 0;
     virtual unsigned int GetRenderHeight() const = 0;
 
-    virtual HWLTexture *LoadHwlBitmap(const char *name) = 0;
-    virtual HWLTexture *LoadHwlSprite(const char *name) = 0;
+    virtual HWLTexture *LoadHwlBitmap(const String &name) = 0;
+    virtual HWLTexture *LoadHwlSprite(const String &name) = 0;
 };
 
 extern std::shared_ptr<IRender> render;

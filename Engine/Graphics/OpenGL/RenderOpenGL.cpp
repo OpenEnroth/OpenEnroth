@@ -1790,11 +1790,12 @@ bool RenderOpenGL::SwitchToWindow() {
     return true;
 }
 
-bool RenderOpenGL::Initialize(OSWindow *window) {
-    pD3DBitmaps.Load(MakeDataPath("data\\d3dbitmap.hwl").c_str());
-    pD3DSprites.Load(MakeDataPath("data\\d3dsprite.hwl").c_str());
+bool RenderOpenGL::Initialize(OSWindow *window_) {
+    if (!RenderBase::Initialize(window_)) {
+        return false;
+    }
 
-    if (this->window = window) {
+    if (window != nullptr) {
         static PIXELFORMATDESCRIPTOR
             pfd = {  // pfd Tells Windows How We Want Things To Be
                 sizeof(PIXELFORMATDESCRIPTOR),  // Size Of This Pixel Format
@@ -1935,15 +1936,8 @@ bool RenderOpenGL::Initialize(OSWindow *window) {
             }
         }
     }
+
     return false;
-}
-
-HWLTexture *RenderOpenGL::LoadHwlBitmap(const char *name) {
-    return pD3DBitmaps.LoadTexture(name, 0);
-}
-
-HWLTexture *RenderOpenGL::LoadHwlSprite(const char *name) {
-    return pD3DSprites.LoadTexture(name, 0);
 }
 
 void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) {

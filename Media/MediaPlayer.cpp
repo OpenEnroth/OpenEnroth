@@ -159,7 +159,7 @@ class AVAudioStream : public AVStreamWrapper {
                 PMemBuffer tmp_buf = AllocMemBuffer(
                     frame->nb_samples * 2 * 2);
                 uint8_t *dst_channels[8] = { 0 };
-                dst_channels[0] = (uint8_t *)tmp_buf->get_data();
+                dst_channels[0] = (uint8_t*)tmp_buf->GetData();
                 int got_samples = swr_convert(
                     converter, dst_channels, frame->nb_samples,
                     (const uint8_t**)frame->data, frame->nb_samples);
@@ -234,7 +234,7 @@ class AVVideoStream : public AVStreamWrapper {
                 }
                 uint8_t *data[4] = { nullptr, nullptr, nullptr, nullptr };
                 PMemBuffer tmp_buf = AllocMemBuffer(frame->height * linesizes[0] * 2);
-                data[0] = (uint8_t *)tmp_buf->get_data();
+                data[0] = (uint8_t*)tmp_buf->GetData();
 
                 if (sws_scale(converter, frame->data, frame->linesize, 0, frame->height,
                     data, linesizes) < 0) {
@@ -423,8 +423,8 @@ class Movie : public IMovie {
                 PMemBuffer buffer = audio.decode_frame(avpacket);
                 if (buffer) {
                     provider->Stream16(audio_data_in_device,
-                                       buffer->get_size() / 2,
-                                       buffer->get_data());
+                                       buffer->GetSize() / 2,
+                                       buffer->GetData());
                 }
             } else if (avpacket->stream_index == video.stream_idx) {
               // Decode video frame
@@ -671,7 +671,7 @@ void MPlayer::HouseMovieLoop() {
 
         Image *image =
             Image::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(),
-                          IMAGE_FORMAT_A8R8G8B8, buffer->get_data());
+                          IMAGE_FORMAT_A8R8G8B8, buffer->GetData());
         render->DrawImage(image, rect);
         image->Release();
     } else {
@@ -735,7 +735,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
         Image *image =
             Image::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(),
-                          IMAGE_FORMAT_A8R8G8B8, buffer->get_data());
+                          IMAGE_FORMAT_A8R8G8B8, buffer->GetData());
         render->DrawImage(image, rect);
         image->Release();
 
@@ -996,7 +996,7 @@ PMemBuffer AudioBaseDataSource::GetNextBuffer() {
                 PMemBuffer tmp_buf = AllocMemBuffer(
                     frame->nb_samples * pCodecContext->channels * 2);
                 uint8_t *dst_channels[8] = {0};
-                dst_channels[0] = (uint8_t *)tmp_buf->get_data();
+                dst_channels[0] = (uint8_t *)tmp_buf->GetData();
                 int got_samples = swr_convert(
                     pConverter, dst_channels, frame->nb_samples,
                     (const uint8_t **)frame->data, frame->nb_samples);
@@ -1107,8 +1107,8 @@ bool AudioBufferDataSource::Open() {
 
     pFormatContext->pb = avio_ctx;
 
-    buf_pos = (uint8_t *)buffer->get_data();
-    buf_end = buf_pos + buffer->get_size();
+    buf_pos = (uint8_t*)buffer->GetData();
+    buf_end = buf_pos + buffer->GetSize();
 
     // Open audio file
     if (avformat_open_input(&pFormatContext, nullptr, nullptr, nullptr) < 0) {
