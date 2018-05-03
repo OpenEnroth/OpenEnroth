@@ -88,9 +88,7 @@ bool Chest::Open(signed int uChestID) {
                 pObjectY = pLevelDecorations[v6].vPosition.y;
                 pObjectZ =
                     pLevelDecorations[v6].vPosition.z +
-                    (pDecorationList
-                         ->pDecorations[pLevelDecorations[v6].uDecorationDescID]
-                         .uDecorationHeight /
+                    (pDecorationList->GetDecoration(pLevelDecorations[v6].uDecorationDescID)->uDecorationHeight /
                      2);
             }
             if (PID_TYPE(EvtTargetObj) == OBJECT_BModel) {
@@ -118,23 +116,20 @@ bool Chest::Open(signed int uChestID) {
             }
             dir_x = (double)pParty->vPosition.x - (double)pObjectX;
             dir_y = (double)pParty->vPosition.y - (double)pObjectY;
-            dir_z = ((double)pParty->sEyelevel + (double)pParty->vPosition.z) -
-                    (double)pObjectZ;
-            length_vector =
-                sqrt((dir_x * dir_x) + (dir_y * dir_y) + (dir_z * dir_z));
+            dir_z = ((double)pParty->sEyelevel + (double)pParty->vPosition.z) - (double)pObjectZ;
+            length_vector = sqrt((dir_x * dir_x) + (dir_y * dir_y) + (dir_z * dir_z));
             if (length_vector <= 1.0) {
-                *(float *)&sRotX = 0.0;
-                *(float *)&sRotY = 0.0;
+                *(float*)&sRotX = 0.0;
+                *(float*)&sRotY = 0.0;
             } else {
-                sRotY = (signed __int64)sqrt(dir_x * dir_x + dir_y * dir_y);
-                sRotX = stru_5C6E00->Atan2((signed __int64)dir_x,
-                                           (signed __int64)dir_y);
+                sRotY = (int64_t)sqrt(dir_x * dir_x + dir_y * dir_y);
+                sRotX = stru_5C6E00->Atan2((int64_t)dir_x, (int64_t)dir_y);
                 sRotY =
-                    stru_5C6E00->Atan2(dir_y * dir_y, (signed __int64)dir_z);
+                    stru_5C6E00->Atan2(dir_y * dir_y, (int64_t)dir_z);
             }
             pDepth = 256;
             if (length_vector < 256.0)
-                pDepth = (signed __int64)length_vector / 4;
+                pDepth = (int64_t)length_vector / 4;
             v.x = pObjectX;
             v.y = pObjectY;
             v.z = pObjectZ;

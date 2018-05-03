@@ -765,7 +765,6 @@ int uPlayerCreationUI_ArrowAnim;
 unsigned int uPlayerCreationUI_SelectedCharacter;
 int dword_A74CDC;
 int64_t _A750D8_player_speech_timer;  // qword_A750D8
-enum PlayerSpeech PlayerSpeechID;
 int uSpeakingCharacter;
 char byte_AE5B91;
 std::array<int, 32> dword_F1B430;

@@ -312,7 +312,7 @@ bool LevelDecoration::IsObeliskChestActive() {
     // bool v1; // ebx@1
     // LevelDecoration *v2; // edi@1
 
-    static const std::array<const PARTY_QUEST_BITS, 14> aObeliskQuests = {
+    static const std::array<const PARTY_QUEST_BITS, 14> aObeliskQuests = {{
         PARTY_QUEST_OBELISK_HARMONDALE,
         PARTY_QUEST_OBELISK_ERATHIA,
         PARTY_QUEST_OBELISK_TULAREAN_FOREST,
@@ -326,7 +326,8 @@ bool LevelDecoration::IsObeliskChestActive() {
         PARTY_QUEST_OBELISK_LAND_OF_THE_GIANTS,
         PARTY_QUEST_OBELISK_TATALIA,
         PARTY_QUEST_OBELISK_AVLEE,
-        PARTY_QUEST_OBELISK_STONE_CITY};
+        PARTY_QUEST_OBELISK_STONE_CITY
+    }};
 
     if (pParty->uCurrentHour == 0 &&
         !TestPartyQuestBit(PARTY_QUEST_OBELISK_TREASURE_FOUND) &&
