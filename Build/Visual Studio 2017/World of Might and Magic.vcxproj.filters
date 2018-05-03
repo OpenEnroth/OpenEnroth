@@ -79,9 +79,6 @@
     <Filter Include="Engine\Graphics\Shaders">
       <UniqueIdentifier>{740b8731-e3ff-44cb-b6c8-85a64c7cbfc0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game">
-      <UniqueIdentifier>{23305bbc-fe74-4523-88b2-155ca91d86f3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Serialization">
       <UniqueIdentifier>{74f93afa-5a55-4c13-976b-a34e4c9aad04}</UniqueIdentifier>
     </Filter>
@@ -132,6 +129,12 @@
     </Filter>
     <Filter Include="lib64\OpenAL\lib\x64">
       <UniqueIdentifier>{2bba202f-2139-4ba6-aee9-c93f7413d2de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{894f5442-9fc6-4cc9-9bde-3d6d592a544a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Application">
+      <UniqueIdentifier>{907614ac-543f-4e30-bfc7-c9fd60cc4800}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -384,14 +387,8 @@
     <ClCompile Include="..\..\Media\Audio\AudioPlayer.cpp">
       <Filter>Media\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Game\Game.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\Engine.cpp">
       <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Game\GameOver.cpp">
-      <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="..\..\GUI\UI\UIQuickReference.cpp">
       <Filter>GUI\UI</Filter>
@@ -422,9 +419,6 @@
     </ClCompile>
     <ClCompile Include="..\..\GUI\UI\Spellbook.cpp">
       <Filter>GUI\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Game\GameMenu.cpp">
-      <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Engine\Serialization\LegacyImages.cpp">
       <Filter>Engine\Serialization</Filter>
@@ -516,12 +510,6 @@
     <ClCompile Include="..\..\GUI\UI\UIGame.cpp">
       <Filter>GUI\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Game\Configuration.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Game\IocContainer.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\IocContainer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -563,6 +551,27 @@
     </ClCompile>
     <ClCompile Include="..\..\lib64\zlib\zutil.c">
       <Filter>lib64\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Application\Configuration.cpp">
+      <Filter>src\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Application\Game.cpp">
+      <Filter>src\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Application\GameMenu.cpp">
+      <Filter>src\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Application\GameOver.cpp">
+      <Filter>src\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Application\IocContainer.cpp">
+      <Filter>src\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Application\MainMenu.cpp">
+      <Filter>src\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Application\GameFactory.cpp">
+      <Filter>src\Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1052,14 +1061,8 @@
     <ClInclude Include="..\..\Media\Audio\OpenALSoundProvider.h">
       <Filter>Media\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Game\Game.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Engine\Engine.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Game\GameOver.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="..\..\GUI\UI\UIQuickReference.h">
       <Filter>GUI\UI</Filter>
@@ -1090,9 +1093,6 @@
     </ClInclude>
     <ClInclude Include="..\..\GUI\UI\Spellbook.h">
       <Filter>GUI\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Game\GameMenu.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Serialization\LegacyImages.h">
       <Filter>Engine\Serialization</Filter>
@@ -1192,12 +1192,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Direct3D\RenderD3D.h">
       <Filter>Engine\Graphics\Direct3D</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Game\Configuration.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Game\IocContainer.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\IocContainer.h">
       <Filter>Engine</Filter>
@@ -1567,6 +1561,27 @@
     </ClInclude>
     <ClInclude Include="..\..\lib64\libswscale\version.h">
       <Filter>lib64\libswscale</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Application\Configuration.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Application\Game.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Application\GameMenu.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Application\GameOver.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Application\IocContainer.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Application\MainMenu.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Application\GameFactory.h">
+      <Filter>src\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

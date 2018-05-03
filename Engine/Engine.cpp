@@ -1,10 +1,13 @@
+#include "Engine/Engine.h"
+
 #include <direct.h>
 #include <io.h>
 
 #include <algorithm>
 
+#include "Application/Game.h"
+
 #include "Engine/Configuration.h"
-#include "Engine/Engine.h"
 #include "Engine/Events.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
@@ -70,8 +73,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
-
-#include "Game/Game.h"
 
 #include "Platform/Api.h"
 

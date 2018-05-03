@@ -86,7 +86,7 @@ int MM_Main(const char *pCmdLine) {
     // ConfigureServices();
 
     auto config = ConfigureGame(pCmdLine);
-
+    GameFactory()
     auto game = new Game::Game();
     game->Configure(config);
     game->Run();

@@ -74,13 +74,13 @@
     <GenerateManifest>false</GenerateManifest>
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <IncludePath>$(SolutionDirectory)../../;$(SolutionDirectory)../../lib;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDirectory)../../;$(SolutionDirectory)../../src;$(SolutionDirectory)../../lib;$(IncludePath)</IncludePath>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <GenerateManifest>false</GenerateManifest>
     <CustomBuildBeforeTargets />
-    <IncludePath>$(SolutionDirectory)../../;$(SolutionDirectory)../../lib64;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDirectory)../../src;$(SolutionDirectory)../../;$(SolutionDirectory)../../lib64;$(IncludePath)</IncludePath>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
@@ -248,11 +248,6 @@
     <ClCompile Include="..\..\Engine\TurnEngine\TurnEngine.cpp" />
     <ClCompile Include="..\..\Engine\VectorTypes.cpp" />
     <ClCompile Include="..\..\Engine\ZlibWrapper.cpp" />
-    <ClCompile Include="..\..\Game\Game.cpp" />
-    <ClCompile Include="..\..\Game\Configuration.cpp" />
-    <ClCompile Include="..\..\Game\GameMenu.cpp" />
-    <ClCompile Include="..\..\Game\GameOver.cpp" />
-    <ClCompile Include="..\..\Game\IocContainer.cpp" />
     <ClCompile Include="..\..\GUI\GUIButton.cpp" />
     <ClCompile Include="..\..\GUI\GUIFont.cpp" />
     <ClCompile Include="..\..\GUI\GUIProgressBar.cpp" />
@@ -379,6 +374,13 @@
       </AssemblerListingLocation>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)\%(Directory)\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\src\Application\Configuration.cpp" />
+    <ClCompile Include="..\..\src\Application\Game.cpp" />
+    <ClCompile Include="..\..\src\Application\GameFactory.cpp" />
+    <ClCompile Include="..\..\src\Application\GameMenu.cpp" />
+    <ClCompile Include="..\..\src\Application\GameOver.cpp" />
+    <ClCompile Include="..\..\src\Application\IocContainer.cpp" />
+    <ClCompile Include="..\..\src\Application\MainMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Arcomage\Arcomage.h" />
@@ -468,11 +470,6 @@
     <ClInclude Include="..\..\Engine\TurnEngine\TurnEngine.h" />
     <ClInclude Include="..\..\Engine\VectorTypes.h" />
     <ClInclude Include="..\..\Engine\ZlibWrapper.h" />
-    <ClInclude Include="..\..\Game\Game.h" />
-    <ClInclude Include="..\..\Game\Configuration.h" />
-    <ClInclude Include="..\..\Game\GameMenu.h" />
-    <ClInclude Include="..\..\Game\GameOver.h" />
-    <ClInclude Include="..\..\Game\IocContainer.h" />
     <ClInclude Include="..\..\GUI\GUIButton.h" />
     <ClInclude Include="..\..\GUI\GUIFont.h" />
     <ClInclude Include="..\..\GUI\GUIProgressBar.h" />
@@ -759,6 +756,13 @@
     <ClInclude Include="..\..\Platform\OSWindow.h" />
     <ClInclude Include="..\..\Platform\Api.h" />
     <ClInclude Include="..\..\Platform\Win\Win.h" />
+    <ClInclude Include="..\..\src\Application\Configuration.h" />
+    <ClInclude Include="..\..\src\Application\Game.h" />
+    <ClInclude Include="..\..\src\Application\GameFactory.h" />
+    <ClInclude Include="..\..\src\Application\GameMenu.h" />
+    <ClInclude Include="..\..\src\Application\GameOver.h" />
+    <ClInclude Include="..\..\src\Application\IocContainer.h" />
+    <ClInclude Include="..\..\src\Application\MainMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\.gitattributes" />
