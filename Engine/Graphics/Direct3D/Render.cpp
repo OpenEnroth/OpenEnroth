@@ -3135,7 +3135,7 @@ void Render::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
                       uint16_t uShadowColor) {
 
     Image *fonttemp = Image::Create(uCharWidth, uCharHeight, IMAGE_FORMAT_A8R8G8B8);
-    auto fontpix = (unsigned __int32 *)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    uint32_t *fontpix = (uint32_t*)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
     for (uint y = 0; y < uCharHeight; ++y) {
         for (uint x = 0; x < uCharWidth; ++x) {
@@ -3144,7 +3144,6 @@ void Render::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
                 if (*pFontPixels != 1) {
                     color = uFaceColor;
                 }
-                //WritePixel16(uOutX + x, uOutY + y, color);
                 fontpix[x + y * uCharWidth] = Color32(color);
             }
             ++pFontPixels;
@@ -3158,7 +3157,7 @@ void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
                            bool present_time_transparency) {
 
     Image *fonttemp = Image::Create(uCharWidth, uFontHeight, IMAGE_FORMAT_A8R8G8B8);
-    auto fontpix = (unsigned __int32 *)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    uint32_t *fontpix = (uint32_t *)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
     if (present_time_transparency) {
         for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
@@ -3168,7 +3167,6 @@ void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
                                      : 0x7FF;  // transparent color 16bit
                                                // render->uTargetGMask |
                                                // render->uTargetBMask;
-                //WritePixel16(x + dx, y + dy, color);
                 fontpix[dx + dy * uCharWidth] = Color32(color);
                 ++font_pixels;
             }
@@ -3181,7 +3179,6 @@ void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
                     uint8_t r = pPalette[index * 3 + 0];
                     uint8_t g = pPalette[index * 3 + 1];
                     uint8_t b = pPalette[index * 3 + 2];
-                    //WritePixel16(x + dx, y + dy, Color16(r, g, b));
                     fontpix[dx + dy * uCharWidth] = Color32(r,g,b);
                 }
                 ++font_pixels;
@@ -3204,33 +3201,28 @@ void Render::DrawMasked(float u, float v, Image *pTexture,
     if (!pTexture) {
         return;
     }
-
-    auto pixels = (uint32_t *)pTexture->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-
-    int x = u * window->GetWidth();
-    int y = v * window->GetHeight();
+    uint32_t width = pTexture->GetWidth();
+    uint32_t *pixels = (uint32_t *)pTexture->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    Image *temp = Image::Create(width, pTexture->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
+    uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
     for (unsigned int dy = 0; dy < pTexture->GetHeight(); ++dy) {
-        for (unsigned int dx = 0; dx < pTexture->GetWidth(); ++dx) {
+        for (unsigned int dx = 0; dx < width; ++dx) {
             if (*pixels & 0xFF000000)
-                WritePixel16(x + dx, y + dy,
-                             (Color16((*pixels >> 16) & 0xFF,
-                                      (*pixels >> 8) & 0xFF, *pixels & 0xFF) >>
-                              color_dimming_level) &
-                                 mask);
+                temppix[dx + dy * width] = Color32((Color16((*pixels >> 16) & 0xFF, (*pixels >> 8) & 0xFF, *pixels & 0xFF) >> color_dimming_level) &  mask);
             ++pixels;
         }
     }
+    render->DrawTextureAlphaNew(u,v, temp);
 }
 
 void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
-    const uint16_t *pixelpoint;
-    int uX = u * 640.0f;
-    int uY = v * 480.0f;
-    if (img) {
-        pixelpoint = (const uint16_t *)img->GetPixels(IMAGE_FORMAT_R5G6B5);
+   if (img) {
+        auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         int width = img->GetWidth();
         int height = img->GetHeight();
+        Image *temp = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
+        uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
         int brightloc = -1;
         int brightval = 0;
@@ -3241,7 +3233,7 @@ void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
             for (int y = 0; y < height; y++) {
                 int nudge = x + y * width;
                 // Test the brightness against the threshold
-                int bright = (*(pixelpoint + nudge) & 31) * 8 + ((*(pixelpoint + nudge) >> 5) & 63) * 4 + ((*(pixelpoint + nudge) >> 11) & 31) * 8;
+                int bright = (*(pixelpoint + nudge) & 0xFF) + ((*(pixelpoint + nudge) >> 8) & 0xFF) + ((*(pixelpoint + nudge) >> 16) & 0xFF);
                 if (bright == 0) continue;
 
                 if (bright > brightval) {
@@ -3256,14 +3248,14 @@ void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
         }
 
        // find brightest
-        unsigned int bmax = (*(pixelpoint + brightloc) & 31) * 8;
-        unsigned int gmax = ((*(pixelpoint + brightloc) >> 5) & 63) * 4;
-        unsigned int rmax = ((*(pixelpoint + brightloc) >> 11) & 31) * 8;
+        unsigned int bmax = (*(pixelpoint + brightloc) & 0xFF);
+        unsigned int gmax = ((*(pixelpoint + brightloc) >> 8) & 0xFF);
+        unsigned int rmax = ((*(pixelpoint + brightloc) >> 16) & 0xFF);
 
         // find darkest not black
-        unsigned int bmin = (*(pixelpoint + darkloc) & 31) * 8;
-        unsigned int gmin = ((*(pixelpoint + darkloc) >> 5) & 63) * 4;
-        unsigned int rmin = ((*(pixelpoint + darkloc) >> 11) & 31) * 8;
+        unsigned int bmin = (*(pixelpoint + darkloc) & 0xFF);
+        unsigned int gmin = ((*(pixelpoint + darkloc) >> 8) & 0xFF);
+        unsigned int rmin = ((*(pixelpoint + darkloc) >> 16) & 0xFF);
 
         // steps pixels
         float bstep = (bmax - bmin) / 128.;
@@ -3276,9 +3268,9 @@ void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
         for (int ydraw = 0; ydraw < height; ++ydraw) {
             for (int xdraw = 0; xdraw < width; ++xdraw) {
                 if (*pixelpoint) {  // check orig item not got blakc pixel
-                    unsigned int bcur = (*pixelpoint & 31) * 8;
-                    unsigned int gcur = ((*pixelpoint >> 5) & 63) * 4;
-                    unsigned int rcur = ((*pixelpoint >> 11) & 31) * 8;
+                    unsigned int bcur = (*(pixelpoint) & 0xFF);
+                    unsigned int gcur = ((*(pixelpoint) >> 8) & 0xFF);
+                    unsigned int rcur = ((*(pixelpoint) >> 16) & 0xFF);
                     int pixstepb = (bcur - bmin) / bstep + timestep;
                     if (pixstepb > 255) pixstepb = pixstepb - 256;
                     if (pixstepb >= 0 && pixstepb < 128)  // 0-127
@@ -3304,11 +3296,13 @@ void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
                         gcur = gmax - pixstepg * gstep;
                     }
                     // out pixel
-                    WritePixel16(uX + xdraw, uY + ydraw, Color16(rcur, gcur, bcur));
+                    temppix[xdraw + ydraw * width] = Color32(rcur, gcur, bcur);
                 }
                 pixelpoint++;
             }
         }
+        //draw image
+        render->DrawTextureAlphaNew(u, v, temp);
     }
 }
 
@@ -3317,27 +3311,26 @@ void Render::BlendTextures(
     int end_opacity) {  // thrown together as a crude estimate of the enchaintg
                         // effects
 
-    // change to IMAGE_FORMAT_A8R8G8B8 ???
     // leaves gap where it shouldnt on dark pixels currently
     // doesnt use opacity params
 
-    const uint16_t *pixelpoint;
-    const uint16_t *pixelpointblend;
+    const uint32_t *pixelpoint;
+    const uint32_t *pixelpointblend;
 
     if (imgin && imgblend) {  // 2 images to blend
-        pixelpoint = (const uint16_t *)imgin->GetPixels(IMAGE_FORMAT_R5G6B5);
+        pixelpoint = (const uint32_t *)imgin->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         pixelpointblend =
-            (const uint16_t *)imgblend->GetPixels(IMAGE_FORMAT_R5G6B5);
+            (const uint32_t *)imgblend->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
         int Width = imgin->GetWidth();
         int Height = imgin->GetHeight();
-        int clipped_out_x = x;
-        int clipped_out_y = y;
+        Image *temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
+        uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
-        uint16_t c = *(pixelpointblend + 2700);  // guess at brightest pixel
-        unsigned int bmax = (c & 31) * 8;
-        unsigned int gmax = ((c >> 5) & 63) * 4;
-        unsigned int rmax = ((c >> 11) & 31) * 8;
+        uint32_t c = *(pixelpointblend + 2700);  // guess at brightest pixel
+        unsigned int bmax = (c & 0xFF);
+        unsigned int gmax = ((c >> 8) & 0xFF);
+        unsigned int rmax = ((c >> 16) & 0xFF);
 
         unsigned int bmin = bmax / 10;
         unsigned int gmin = gmax / 10;
@@ -3353,14 +3346,14 @@ void Render::BlendTextures(
                 // patchy -> solid -> patchy
 
                 if (*pixelpoint) {  // check orig item not got blakc pixel
-                    __int16 nudge =
+                    uint32_t nudge =
                         (xdraw % imgblend->GetWidth()) +
                         (ydraw % imgblend->GetHeight()) * imgblend->GetWidth();
-                    __int16 pixcol = *(pixelpointblend + nudge);
+                    uint32_t pixcol = *(pixelpointblend + nudge);
 
-                    unsigned int bcur = (pixcol & 31) * 8;
-                    unsigned int gcur = ((pixcol >> 5) & 63) * 4;
-                    unsigned int rcur = ((pixcol >> 11) & 31) * 8;
+                    unsigned int bcur = (pixcol & 0xFF);
+                    unsigned int gcur = ((pixcol >> 8) & 0xFF);
+                    unsigned int rcur = ((pixcol >> 16) & 0xFF );
 
                     int steps = (time) % 128;
 
@@ -3381,8 +3374,7 @@ void Render::BlendTextures(
                     if (gcur < gmin) gcur = gmin;
                     if (rcur < rmin) rcur = rmin;
 
-                    WritePixel16(clipped_out_x + xdraw, clipped_out_y + ydraw,
-                                 Color16(rcur, gcur, bcur));
+                    temppix[xdraw + ydraw * Width] = Color32(rcur, gcur, bcur);
                 }
 
                 pixelpoint++;
@@ -3390,6 +3382,8 @@ void Render::BlendTextures(
 
             pixelpoint += imgin->GetWidth() - Width;
         }
+        //draw image
+        render->DrawTextureAlphaNew(x/640., y/480., temp);
     }
 }
 

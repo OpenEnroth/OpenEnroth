@@ -354,7 +354,7 @@ void Engine::OnGameViewportClick() {
                 pActors[mon_id].LootActor();
             else if (pParty->pPickedItem.uItemID)
                 DropHeldItem();
-        } else if (OS_IfShiftPressed()) {
+        } else if (!OS_IfShiftPressed()) {
             if (!in_range) {
                 if (pParty->pPickedItem.uItemID) DropHeldItem();
             } else if (!ActorInteraction(mon_id)) {
