@@ -3,10 +3,12 @@
 #include <string>
 #include <algorithm>
 
+#include "Application/GameFactory.h"
 #include "Application/GameMenu.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineFactory.h"
 #include "Engine/Localization.h"
 #include "Engine/Time.h"
 
@@ -73,87 +75,35 @@
 void ShowMM7IntroVideo_and_LoadingScreen();
 void IntegrityTest();
 
+using Application::GameFactory;
+using Application::Game;
 using Application::Configuration;
-
-Configuration *ConfigureGame(const char *cmd_line) {
-    auto config = new Configuration();
-    config->command_line = std::string(cmd_line);
-
-    return config;
-}
+using Engine_::EngineFactory;
 
 int MM_Main(const char *pCmdLine) {
-    // ConfigureServices();
+    GameFactory gameFactory;
 
-    auto config = ConfigureGame(pCmdLine);
-    GameFactory()
-    auto game = new Game::Game();
-    game->Configure(config);
+    auto game = gameFactory.CreateGame(std::string(pCmdLine));
     game->Run();
 
     return 0;
 }
 
-void Game::Game::Configure(Configuration *config) {
+void Game::Configure(std::shared_ptr<const Configuration> config) {
     this->config = config;
 }
 
 
 
-Engine_::Configuration *ConfigureEngine(const std::string &command_line) {
-    auto cfg = new Engine_::Configuration();
-
-    if (!cfg->no_walk_sound) {
-        cfg->no_walk_sound = OS_GetAppInt("WalkSound", 1) == 0;
-    }
-    cfg->always_run = OS_GetAppInt("valAlwaysRun", 0) != 0;
-    cfg->flip_on_exit = OS_GetAppInt("FlipOnExit", 0) != 0;
-
-    cfg->show_damage = OS_GetAppInt("ShowDamage", 1) != 0;
-    int turn_type = OS_GetAppInt("TurnDelta", 3);
-
-    switch (turn_type) {
-    case 1:             // 16x
-        logger->Warning(L"x16 Turn Speed");  // really shouldn't use this mode
-        cfg->turn_speed = 128;
-        break;
-
-    case 2:             // 32x
-        logger->Warning(L"x32 Turn Speed");  // really shouldn't use this mode
-        cfg->turn_speed = 64;
-        break;
-
-    case 3:             // smooth
-    default:
-        cfg->turn_speed = 0;
-        break;
-    }
-
-    cfg->sound_level = min(9, OS_GetAppInt("soundflag", 9));
-    cfg->music_level = min(9, OS_GetAppInt("musicflag", 9));
-    cfg->voice_level = min(9, OS_GetAppInt("CharVoices", 9));
-
-    cfg->gamma = min(4, OS_GetAppInt("GammaPos", 4));
-
-    if (OS_GetAppInt("Bloodsplats", 1))
-        cfg->flags2 |= GAME_FLAGS_2_DRAW_BLOODSPLATS;
-    else
-        cfg->flags2 &= ~GAME_FLAGS_2_DRAW_BLOODSPLATS;
-    cfg->no_bloodsplats = !(cfg->flags2 & GAME_FLAGS_2_DRAW_BLOODSPLATS);
-
-
-    cfg->MergeCommandLine(command_line);
-
-    return cfg;
-}
-
-void Game::Game::Run() {
+void Game::Run() {
     IntegrityTest();
 
-    auto engine_config = ConfigureEngine(config->command_line);
-    ::engine_config = engine_config;
+    EngineFactory engineFactory;
+    auto engine = engineFactory.CreateEngine(config->command_line);
 
-    pEngine = Engine::Create(engine_config);
+    ::engine_config = const_cast<Engine_::Configuration *>(engine->config.get());
+    ::pEngine = engine.get();
+
     pEngine->Initialize();
 
     ShowMM7IntroVideo_and_LoadingScreen();
@@ -177,7 +127,7 @@ void Game::Game::Run() {
 
 
 
-bool Game::Game::Loop() {
+bool Game::Loop() {
     while (1) {
         if (uGameState == GAME_FINISHED ||
             GetCurrentMenuID() == MENU_EXIT_GAME) {
@@ -266,11 +216,16 @@ bool Game::Game::Loop() {
 
 void ShowMM7IntroVideo_and_LoadingScreen() {
     bGameoverLoop = true;
+
+    render->PresentBlackScreen();
     if (!engine_config->NoVideo()) {
-        render->PresentBlackScreen();
-        pMediaPlayer->PlayFullscreenMovie("3dologo");
-        pMediaPlayer->PlayFullscreenMovie("new world logo");
-        pMediaPlayer->PlayFullscreenMovie("Intro");
+        if (!engine_config->no_logo) {
+            pMediaPlayer->PlayFullscreenMovie("3dologo");
+            pMediaPlayer->PlayFullscreenMovie("new world logo");
+        }
+        if (!engine_config->no_intro) {
+            pMediaPlayer->PlayFullscreenMovie("Intro");
+        }
     }
 
     Image *tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
@@ -336,7 +291,7 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
     }
 }
 
-void Game::Game::CloseTargetedSpellWindow() {
+void Game::CloseTargetedSpellWindow() {
     if (pGUIWindow_CastTargetedSpell) {
         if (current_screen_type == SCREEN_CHARACTERS) {
             mouse->SetCursorImage("MICON2");
@@ -351,7 +306,7 @@ void Game::Game::CloseTargetedSpellWindow() {
     }
 }
 
-void Game::Game::OnEscape() {
+void Game::OnEscape() {
     CloseTargetedSpellWindow();
 
     // if ((signed int)uActiveCharacter < 1 || (signed int)uActiveCharacter > 4)
@@ -373,7 +328,7 @@ void Game::Game::OnEscape() {
     viewparams->bRedrawGameUI = true;
 }
 
-void Game::Game::EventLoop() {
+void Game::EventLoop() {
     unsigned int v2;            // edx@7
     GUIWindow *pWindow2;        // ecx@248
     int v37;                    // eax@341
@@ -2488,14 +2443,14 @@ void Game::Game::EventLoop() {
 }
 
 //----- (0046A14B) --------------------------------------------------------
-void Game::Game::OnPressSpace() {
+void Game::OnPressSpace() {
     pEngine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
     int pid = vis->get_picked_object_zbuf_val();
     if (pid != -1)
         DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
 }
 
-void Game::Game::GameLoop() {
+void Game::GameLoop() {
     const char *pLocationName;  // [sp-4h] [bp-68h]@74
     bool bLoading;              // [sp+10h] [bp-54h]@1
     signed int v16;             // [sp+14h] [bp-50h]@8

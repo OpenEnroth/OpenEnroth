@@ -567,11 +567,11 @@
     <ClCompile Include="..\..\src\Application\IocContainer.cpp">
       <Filter>src\Application</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Application\MainMenu.cpp">
-      <Filter>src\Application</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Application\GameFactory.cpp">
       <Filter>src\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\EngineFactory.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1577,11 +1577,11 @@
     <ClInclude Include="..\..\src\Application\IocContainer.h">
       <Filter>src\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Application\MainMenu.h">
-      <Filter>src\Application</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Application\GameFactory.h">
       <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\EngineFactory.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

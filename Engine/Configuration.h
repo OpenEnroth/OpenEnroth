@@ -33,8 +33,6 @@
 namespace Engine_ {
 class Configuration {
  public:
-    void MergeCommandLine(const std::string &cmd);
-
     inline bool IsTargetingMode() const { return is_targeting; }
     inline void SetTargetingMode(bool is_targeting) { this->is_targeting = is_targeting; }
     inline bool IsUnderwater() const { return is_underwater; }

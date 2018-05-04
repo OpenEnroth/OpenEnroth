@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -83,17 +84,17 @@ struct stru10;
 /*  104 */
 #pragma pack(push, 1)
 struct Engine {
-    static Engine *Create(Engine_::Configuration *config);
-    static void Destroy();
-
- protected:
-    explicit Engine(Engine_::Configuration *config);
+ public:
+    Engine();
     virtual ~Engine();
 
- public:
     // void _44E904_gamma_saturation_adjust();
     // bool InitializeGammaController();
-        void Initialize();
+    inline void Configure(std::shared_ptr<const Engine_::Configuration> config) {
+        this->config = config;
+    }
+
+    void Initialize();
     bool PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
                    bool bOutline, struct Vis_SelectionFilter *sprite_filter,
                    struct Vis_SelectionFilter *face_filter);
@@ -118,8 +119,6 @@ struct Engine {
     void _461103_load_level_sub();
     void DropHeldItem();
 
-    Graphics::Configuration *ConfigureRender();
-
     inline bool IsUnderwater() const { return config->IsUnderwater(); }
     inline void SetUnderwater(bool is_underwater) { config->SetUnderwater(is_underwater); }
 
@@ -132,7 +131,7 @@ struct Engine {
     //    return this->pIndoorCameraD3D;
     // }
 
-    Engine_::Configuration *config = nullptr;
+    std::shared_ptr<const Engine_::Configuration> config;
     // void ( ***vdestructor_ptr)(Game *, bool);
     Game__StationaryLight pStationaryLights[25];
     char field_2C0[1092];

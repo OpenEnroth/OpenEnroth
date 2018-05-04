@@ -538,17 +538,6 @@ int Engine::_44EC23_saturate_face_odm(Polygon *a2, int *a3, signed int a4) {
     return result;
 }
 
-//----- (00465C8B) --------------------------------------------------------
-Engine *Engine::Create(Engine_::Configuration *config) {
-    return new Engine(config);
-}
-
-//----- (00465CF3) --------------------------------------------------------
-void Engine::Destroy() {
-    delete pEngine;
-    pEngine = nullptr;
-}
-
 //----- (0044ED0A) --------------------------------------------------------
 int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     double v4;  // st7@3
@@ -599,8 +588,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
 }
 
 //----- (0044E4B7) --------------------------------------------------------
-Engine::Engine(Engine_::Configuration *config) {
-    this->config = config;
+Engine::Engine() {
     this->log = EngineIoc::ResolveLogger();
     this->bloodsplat_container = EngineIoc::ResolveBloodsplatContainer();
     this->decal_builder = EngineIoc::ResolveDecalBuilder();
@@ -1208,17 +1196,6 @@ const char *FindMm7Directory(char *mm7_path) {
     }
 
     return mm7_path;
-}
-
-
-Graphics::Configuration *Engine::ConfigureRender() {
-    auto render_config = new Graphics::Configuration(
-        config->renderer_name);
-    render_config->is_fullscreen = !config->RunInWindow();
-    render_config->is_tinting = OS_GetAppInt("Tinting", 1) != 0;
-    render_config->is_using_colored_lights = OS_GetAppInt("Colored Lights", 0) != 0;
-
-    return render_config;
 }
 
 

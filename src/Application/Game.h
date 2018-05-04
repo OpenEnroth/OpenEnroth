@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Application/Configuration.h"
 #include "Application/GameMenu.h"
 #include "Application/IocContainer.h"
@@ -24,7 +26,7 @@ class Game {
          this->menu = GameIoc::ResolveGameMenu();
      }
 
-     void Configure(Configuration *);
+     void Configure(std::shared_ptr<const Configuration> config);
      void Run();
 
  private:
@@ -36,7 +38,7 @@ class Game {
      void OnPressSpace();
 
 
-     Configuration *config = nullptr;
+     std::shared_ptr<const Configuration> config;
      Log *log = nullptr;
      Mouse *mouse = nullptr;
      Keyboard *keyboard = nullptr;
