@@ -2822,9 +2822,9 @@ void ODM_ProcessPartyActions() {
 
         stru_721530.uSectorID = 0;
         v36 = 0;
-        if (pParty->bTurnBasedModeOn == true &&
-            pTurnEngine->turn_stage == TE_MOVEMENT)
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             v36 = 13312;
+        }
         if (stru_721530._47050A(v36)) break;
         _46E889_collide_against_bmodels(1);
         // v37 = WorldPosToGridCellZ(pParty->vPosition.y);
@@ -3458,13 +3458,13 @@ void UpdateActors_ODM() {
         if (pActors[Actor_ITR].uCurrentActionAnimation == ANIM_Walking) {
             v8 = pActors[Actor_ITR].uMovementSpeed;
             if (pActors[Actor_ITR].pActorBuffs[ACTOR_BUFF_SLOWED].Active())
-                v8 = (signed __int64)((double)v8 * 0.5);
+                v8 = (int64_t)((double)v8 * 0.5);
             if (pActors[Actor_ITR].uAIState == Fleeing ||
                 pActors[Actor_ITR].uAIState == Pursuing)
                 v8 *= 2;
-            if (pParty->bTurnBasedModeOn == true &&
-                pTurnEngine->turn_stage == TE_WAIT)
+            if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT) {
                 v8 *= flt_6BE3AC_debug_recmod1_x_1_6;
+            }
             if (v8 > 1000) v8 = 1000;
 
             pActors[Actor_ITR].vVelocity.x =
@@ -3622,10 +3622,9 @@ void UpdateActors_ODM() {
             v39 = PID_ID(stru_721530.pid);
             switch (PID_TYPE(stru_721530.pid)) {
                 case OBJECT_Actor:
-                    if (pTurnEngine->turn_stage != TE_ATTACK &&
-                            pTurnEngine->turn_stage != TE_MOVEMENT ||
-                        pParty->bTurnBasedModeOn != TE_WAIT) {
-                        // if(pParty->bTurnBasedModeOn == 1)
+                    if (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT ||
+                        !pParty->bTurnBasedModeOn) {
+                        // if(pParty->bTurnBasedModeOn)
                         // v34 = 0;
                         if (pActors[Actor_ITR].pMonsterInfo.uHostilityType) {
                             if (v71 == 0)

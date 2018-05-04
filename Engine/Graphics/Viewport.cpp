@@ -378,14 +378,13 @@ void Engine::OnGameViewportClick() {
             if (!in_range) {
                 if (pParty->pPickedItem.uItemID) DropHeldItem();
             } else if (!ActorInteraction(mon_id)) {
-                if (pParty->bTurnBasedModeOn == true &&
-                    pTurnEngine->turn_stage == TE_MOVEMENT)
+                if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
                     pTurnEngine->field_18 |= TE_FLAG_8;
-                else
+                } else {
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
+                }
             }
-        } else if (pParty->bTurnBasedModeOn == true &&
-            pTurnEngine->turn_stage == TE_MOVEMENT) {
+        } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->uFlags |= PARTY_FLAGS_1_FALLING;
         } else if (uActiveCharacter &&
             sub_427769_isSpellQuickCastableOnShiftClick(

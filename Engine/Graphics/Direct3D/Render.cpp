@@ -5399,9 +5399,9 @@ void UpdateObjects() {
                         SpriteObject::UpdateObject_fn0_BLV(i);
                     else
                         SpriteObject::UpdateObject_fn0_ODM(i);
-                    if (pParty->bTurnBasedModeOn != 1 ||
-                        !(pSpriteObjects[i].uSectorID & 4))
+                    if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) {
                         continue;
+                    }
                     v12 = abs(pParty->vPosition.x -
                               pSpriteObjects[i].vPosition.x);
                     v18 = abs(pParty->vPosition.y -

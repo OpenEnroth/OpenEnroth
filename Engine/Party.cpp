@@ -173,10 +173,10 @@ int Party::GetNextActiveCharacter() {
         return uActiveCharacter;
 
     v12 = 0;
-    if (pParty->bTurnBasedModeOn == 1) {
-        if (pTurnEngine->turn_stage != TE_ATTACK ||
-            PID_TYPE(pTurnEngine->pQueue[0].uPackedID) != OBJECT_Player)
+    if (pParty->bTurnBasedModeOn) {
+        if (pTurnEngine->turn_stage != TE_ATTACK || PID_TYPE(pTurnEngine->pQueue[0].uPackedID) != OBJECT_Player) {
             return 0;
+        }
         v2 = PID_ID(pTurnEngine->pQueue[0].uPackedID);
         return v2 + 1;
     }
@@ -576,7 +576,7 @@ void Party::Yell() {
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
     }
 
-    if (pParty->bTurnBasedModeOn != 1) {
+    if (!pParty->bTurnBasedModeOn) {
         for (unsigned int i = 0; i < uNumActors; i++) {
             v0 = &pActors[i];
             if (v0->Actor::CanAct() &&

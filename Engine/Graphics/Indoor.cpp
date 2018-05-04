@@ -1798,8 +1798,7 @@ void UpdateActors_BLV() {
             if (pActors[actor_id].uAIState == Pursuing ||
                 pActors[actor_id].uAIState == Fleeing)
                 v6 *= 2;
-            if (pParty->bTurnBasedModeOn == true &&
-                pTurnEngine->turn_stage == TE_WAIT)
+            if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT)
                 v6 = (signed __int64)((double)v6 *
                                       flt_6BE3AC_debug_recmod1_x_1_6);
             if (v6 > 1000) v6 = 1000;
@@ -1942,18 +1941,13 @@ void UpdateActors_BLV() {
                                 stru_721530.field_70 += stru_721530.field_7C;
                                 v37 = PID_ID(stru_721530.pid);
                                 if (PID_TYPE(stru_721530.pid) == OBJECT_Actor) {
-                                    if (pParty->bTurnBasedModeOn == 1 &&
+                                    if (pParty->bTurnBasedModeOn &&
                                         (pTurnEngine->turn_stage == TE_ATTACK ||
-                                         pTurnEngine->turn_stage ==
-                                             TE_MOVEMENT)) {
+                                         pTurnEngine->turn_stage == TE_MOVEMENT)) {
                                         pActors[actor_id].vVelocity.x =
-                                            fixpoint_mul(
-                                                58500,
-                                                pActors[actor_id].vVelocity.x);
+                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                         pActors[actor_id].vVelocity.y =
-                                            fixpoint_mul(
-                                                58500,
-                                                pActors[actor_id].vVelocity.y);
+                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                         pActors[actor_id].vVelocity.z =
                                             fixpoint_mul(
                                                 58500,
@@ -2291,7 +2285,7 @@ void UpdateActors_BLV() {
                             pActors[actor_id].uYawAngle -= 100;
                         }
                     } else {
-                        if (pParty->bTurnBasedModeOn == 1 &&
+                        if (pParty->bTurnBasedModeOn &&
                             (pTurnEngine->turn_stage == TE_ATTACK ||
                              pTurnEngine->turn_stage == TE_MOVEMENT))
                             continue;
@@ -5182,9 +5176,9 @@ void BLV_ProcessPartyActions() {
 
         stru_721530.uSectorID = uSectorID;
         v38 = 0;
-        if (pParty->bTurnBasedModeOn == true &&
-            pTurnEngine->turn_stage == TE_MOVEMENT)
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             v38 = 13312;
+        }
         if (stru_721530._47050A(v38)) break;
         for (uint j = 0; j < 100; ++j) {
             _46E44E_collide_against_faces_and_portals(1);

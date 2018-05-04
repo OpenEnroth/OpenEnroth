@@ -3900,7 +3900,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     // thisb = this;
     playerAffected = &pParty->pPlayers[player_num - 1];
     v73 = 1;
-    if (pParty->bTurnBasedModeOn == true &&
+    if (pParty->bTurnBasedModeOn &&
         (pTurnEngine->turn_stage == TE_WAIT ||
          pTurnEngine->turn_stage == TE_MOVEMENT))
         return;

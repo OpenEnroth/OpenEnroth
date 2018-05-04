@@ -148,8 +148,6 @@ struct PartyTimeStruct {
 };
 #pragma pack(pop)
 
-/*  207 */
-#pragma pack(push, 1)
 struct Party {
     Party() : playing_time(), last_regenerated() {
         Zero();
@@ -299,7 +297,7 @@ struct Party {
     std::array<char, 32> field_854;
     int uNumArcomageWins;
     int uNumArcomageLoses;
-    int bTurnBasedModeOn;
+    bool bTurnBasedModeOn;
     int field_880;
     int uFlags2;
     PartyAlignment alignment;
@@ -323,7 +321,6 @@ struct Party {
     float flt_TorchlightColorG;
     float flt_TorchlightColorB;
 };
-#pragma pack(pop)
 
 extern Party *pParty;  // idb
 

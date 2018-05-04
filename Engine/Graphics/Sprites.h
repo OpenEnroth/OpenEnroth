@@ -61,7 +61,6 @@ struct SpriteFrameTable {
     }
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
-    bool FromFileTxt(const char *Args);
     void ReleaseSFrames();
     void ResetSomeSpriteFlags();
     void InitializeSprite(signed int uSpriteID);

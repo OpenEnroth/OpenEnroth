@@ -545,7 +545,7 @@ void Keyboard::ProcessInputActions() {
                                     PID_TYPE(
                                         pTurnEngine->pQueue[0].uPackedID) ==
                                         OBJECT_Player) {
-                                    pParty->bTurnBasedModeOn = 0;
+                                    pParty->bTurnBasedModeOn = false;
                                     pTurnEngine->End(true);
                                 }
                             } else {
@@ -556,8 +556,7 @@ void Keyboard::ProcessInputActions() {
                         break;
                     case INPUT_CastReady: {
                         if (current_screen_type != SCREEN_GAME) break;
-                        if (pParty->bTurnBasedModeOn &&
-                            pTurnEngine->turn_stage == TE_MOVEMENT) {
+                        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
                             pTurnEngine->field_18 |= TE_FLAG_8;
                             break;
                         }
@@ -595,8 +594,7 @@ void Keyboard::ProcessInputActions() {
                     } break;
                     case INPUT_Attack:
                         if (current_screen_type != SCREEN_GAME) break;
-                        if (pParty->bTurnBasedModeOn == true &&
-                            pTurnEngine->turn_stage == TE_MOVEMENT) {
+                        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
                             pTurnEngine->field_18 |= TE_FLAG_8;
                             break;
                         }

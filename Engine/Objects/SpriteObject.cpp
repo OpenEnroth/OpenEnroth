@@ -853,7 +853,7 @@ void SpriteObject::ExplosionTraps() {
 
 void SpriteObject::OnInteraction(unsigned int uLayingItemID) {
     pSpriteObjects[uLayingItemID].uObjectDescID = 0;
-    if (pParty->bTurnBasedModeOn == 1) {
+    if (pParty->bTurnBasedModeOn) {
         if (pSpriteObjects[uLayingItemID].uAttributes & 4) {
             pSpriteObjects[uLayingItemID].uAttributes &= 0xFFFB;  // ~0x00000004
             --pTurnEngine->pending_actions;
@@ -1104,7 +1104,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2) {
                 OBJECT_Player)
             return 1;
     }
-    if (pParty->bTurnBasedModeOn == 1) {
+    if (pParty->bTurnBasedModeOn) {
         if (pSpriteObjects[uLayingItemID].uAttributes & 4) {
             --pTurnEngine->pending_actions;
             pSpriteObjects[uLayingItemID].uAttributes &= 0xFFFB;  // ~0x00000004

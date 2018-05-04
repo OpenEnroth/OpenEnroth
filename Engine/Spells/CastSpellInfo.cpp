@@ -1,15 +1,15 @@
 #include "Engine/Spells/CastSpellInfo.h"
 
-#include "Engine/Engine.h"
-#include "Engine/Localization.h"
-#include "Engine/SpellFxRenderer.h"
 #include "Engine/Awards.h"
+#include "Engine/Engine.h"
 #include "Engine/Events.h"
 #include "Engine/LOD.h"
+#include "Engine/Localization.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/stru123.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/Time.h"
+#include "Engine/stru123.h"
 
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -24,8 +24,8 @@
 
 #include "Engine/TurnEngine/TurnEngine.h"
 
-#include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
+#include "GUI/GUIWindow.h"
 
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -296,21 +296,22 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     &pPlayer->pInventoryItemList[pPlayer->pEquipment.uBow - 1],
                     sizeof(pSpellSprite.containing_item));
                 pSpellSprite.uAttributes = 256;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes = 260;
+                }
                 for (int i = 0; i < amount; ++i) {
                     if (i)
                         pSpellSprite.vPosition.z += 32;
                     pSpellSprite.uSectorID = pIndoor->GetSector(
                         pSpellSprite.vPosition.x, pSpellSprite.vPosition.y,
                         pSpellSprite.vPosition.z);
-                    if (pSpellSprite.Create(
-                            target_direction.uYawAngle,
-                            target_direction.uPitchAngle,
-                            pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed,
-                            pCastSpell->uPlayerID + 1) != -1 &&
-                            pParty->bTurnBasedModeOn == 1)
+                    if (pSpellSprite.Create(target_direction.uYawAngle,
+                        target_direction.uPitchAngle,
+                        pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed,
+                        pCastSpell->uPlayerID + 1) != -1 &&
+                        pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
+                    }
                 }
                 break;
             }
@@ -347,16 +348,18 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
                                        pSpellSprite.vPosition.z);
                 pSpellSprite.uAttributes |= 0x100;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
+                }
                 if (pSpellSprite.Create(
-                        target_direction.uYawAngle,
-                        target_direction.uPitchAngle,
-                        pObjectList->pObjects[pSpellSprite.uObjectDescID]
-                            .uSpeed,
-                        pCastSpell->uPlayerID + 1) != -1 &&
-                    pParty->bTurnBasedModeOn == 1)
+                    target_direction.uYawAngle,
+                    target_direction.uPitchAngle,
+                    pObjectList->pObjects[pSpellSprite.uObjectDescID]
+                    .uSpeed,
+                    pCastSpell->uPlayerID + 1) != -1 &&
+                    pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
+                }
                 break;
             }
 
@@ -443,14 +446,16 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     target_direction.uDistance;
                 pSpellSprite.uFacing = (short)target_direction.uYawAngle;
                 pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
+                }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(pParty->sRotationY,
-                                        pParty->sRotationX + 10, v659,
-                                        pCastSpell->uPlayerID + 1) != -1 &&
-                    pParty->bTurnBasedModeOn == 1)
+                    pParty->sRotationX + 10, v659,
+                    pCastSpell->uPlayerID + 1) != -1 &&
+                    pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
+                }
                 spell_sound_flag = true;
                 break;
             }
@@ -630,16 +635,18 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
+                }
                 if (pCastSpell->uSpellID == SPELL_AIR_LIGHNING_BOLT)
                     pSpellSprite.uAttributes |= 0x40;
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(target_direction.uYawAngle,
-                                        target_direction.uPitchAngle, v659,
-                                        pCastSpell->uPlayerID + 1) != -1 &&
-                    pParty->bTurnBasedModeOn == 1)
+                    target_direction.uPitchAngle, v659,
+                    pCastSpell->uPlayerID + 1) != -1 &&
+                    pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
+                }
                 spell_sound_flag = true;
                 break;
             }
@@ -672,14 +679,16 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
+                }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(target_direction.uYawAngle,
-                                        target_direction.uPitchAngle, v659,
-                                        pCastSpell->uPlayerID + 1) != -1 &&
-                    pParty->bTurnBasedModeOn == 1)
+                    target_direction.uPitchAngle, v659,
+                    pCastSpell->uPlayerID + 1) != -1 &&
+                    pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
+                }
                 spell_sound_flag = true;
                 break;
             }
@@ -719,15 +728,17 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
-                    if (pParty->bTurnBasedModeOn == 1)
+                    if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= 4;
+                    }
                     v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID]
                                .uSpeed;
                     if (pSpellSprite.Create(target_direction.uYawAngle,
                                             target_direction.uPitchAngle, v659,
                                             pCastSpell->uPlayerID + 1) != -1 &&
-                        pParty->bTurnBasedModeOn == 1)
+                        pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
+                    }
                     spell_sound_flag = true;
                 }
                 break;
@@ -865,14 +876,16 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.spell_id = SPELL_FIRE_PROTECTION_FROM_FIRE;
                 pSpellSprite.spell_level = 300 * spell_level;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
+                }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(target_direction.uYawAngle,
-                                        target_direction.uPitchAngle, v659,
-                                        pCastSpell->uPlayerID + 1) != -1 &&
-                    pParty->bTurnBasedModeOn == 1)
+                    target_direction.uPitchAngle, v659,
+                    pCastSpell->uPlayerID + 1) != -1 &&
+                    pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
+                }
                 spell_sound_flag = true;
                 break;
             }
@@ -1316,16 +1329,14 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             stru_50C198._427546(spell_targeted_at + 2500);
                         pSpellSprite.uFacing = v687;
                         pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
-                        if (pParty->bTurnBasedModeOn == 1)
+                        if (pParty->bTurnBasedModeOn) {
                             pSpellSprite.uAttributes = 4;
-                        if (pSpellSprite.Create(
-                                v687, HEXRAYS_SHIDWORD(v687),
-                                pObjectList
-                                    ->pObjects[pSpellSprite.uObjectDescID]
-                                    .uSpeed,
-                                0) != -1 &&
-                            pParty->bTurnBasedModeOn == 1)
+                        }
+                        if (pSpellSprite.Create(v687, HEXRAYS_SHIDWORD(v687),
+                                                pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed, 0) != -1 &&
+                                                pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
+                        }
                         j = rand() % 1024 - 512;
                         k = rand() % 1024 - 512;
                     }
@@ -1484,22 +1495,21 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.field_60_distance_related_prolly_lod =
                     target_direction.uDistance;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
-                spell_spray_angle_start = (signed int)_v726 / -2;
-                spell_spray_angle_end = (signed int)_v726 / 2;
+                }
+                spell_spray_angle_start = (int)_v726 / -2;
+                spell_spray_angle_end = (int)_v726 / 2;
                 while (spell_spray_angle_start <= spell_spray_angle_end) {
-                    pSpellSprite.uFacing = spell_spray_angle_start +
-                                           (short)target_direction.uYawAngle;
+                    pSpellSprite.uFacing = spell_spray_angle_start + (short)target_direction.uYawAngle;
                     if (pSpellSprite.Create(
-                            (signed __int16)(spell_spray_angle_start +
-                                             (short)target_direction.uYawAngle),
-                            target_direction.uPitchAngle,
-                            pObjectList->pObjects[pSpellSprite.uObjectDescID]
-                                .uSpeed,
-                            pCastSpell->uPlayerID + 1) != -1 &&
-                        pParty->bTurnBasedModeOn == 1)
+                        (int16_t)(spell_spray_angle_start + (short)target_direction.uYawAngle),
+                        target_direction.uPitchAngle,
+                        pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed,
+                        pCastSpell->uPlayerID + 1) != -1 &&
+                        pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
+                    }
                     spell_spray_angle_start += _v726 / (amount - 1);
                 }
                 spell_sound_flag = true;
@@ -1668,15 +1678,14 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         stru_50C198._427546(spell_targeted_at + 2500);
                     pSpellSprite.uFacing = v685;
                     pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
-                    if (pParty->bTurnBasedModeOn == 1)
+                    if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes = 4;
-                    if (pSpellSprite.Create(
-                            v685, HEXRAYS_SHIDWORD(v685),
-                            pObjectList->pObjects[pSpellSprite.uObjectDescID]
-                                .uSpeed,
-                            0) != -1 &&
-                        pParty->bTurnBasedModeOn == 1)
+                    }
+                    if (pSpellSprite.Create(v685, HEXRAYS_SHIDWORD(v685),
+                                            pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed, 0) != -1 &&
+                        pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
+                    }
                     j = rand() % 1024 - 512;
                     k = rand() % 1024 - 512;
                 }
@@ -1725,7 +1734,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 break;
             }
 
-            case SPELL_WATER_POISON_SPRAY:  //Распыление яда
+            case SPELL_WATER_POISON_SPRAY:  // Распыление яда
             {
                 switch (skill_level) {
                     case 1:
@@ -1744,8 +1753,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                signed int _v733 =
-                    (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+                int _v733 = (int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
                 if (amount == 1) {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -1756,29 +1764,26 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pSpellSprite.uAttributes = 0;
                     pSpellSprite.vPosition.x = pParty->vPosition.x;
                     pSpellSprite.vPosition.y = pParty->vPosition.y;
-                    pSpellSprite.vPosition.z =
-                        pParty->vPosition.z +
-                        (signed int)pParty->uPartyHeight / 3;
+                    pSpellSprite.vPosition.z = pParty->vPosition.z + (int)pParty->uPartyHeight / 3;
                     pSpellSprite.uSectorID = pIndoor->GetSector(
                         pParty->vPosition.x, pParty->vPosition.y,
                         pSpellSprite.vPosition.z);
                     pSpellSprite.uSpriteFrameID = 0;
-                    pSpellSprite.spell_caster_pid =
-                        PID(OBJECT_Player, pCastSpell->uPlayerID);
+                    pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
-                    pSpellSprite.field_60_distance_related_prolly_lod =
-                        target_direction.uDistance;
+                    pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
-                    if (pParty->bTurnBasedModeOn == 1)
+                    if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= 4;
-                    v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID]
-                               .uSpeed;
+                    }
+                    v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(target_direction.uYawAngle,
-                                            target_direction.uPitchAngle, v659,
-                                            pCastSpell->uPlayerID + 1) != -1 &&
-                        pParty->bTurnBasedModeOn == 1)
+                        target_direction.uPitchAngle, v659,
+                        pCastSpell->uPlayerID + 1) != -1 &&
+                        pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
+                    }
                 } else {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -1803,8 +1808,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         target_direction.uDistance;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
-                    if (pParty->bTurnBasedModeOn == 1)
+                    if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= 4;
+                    }
                     spell_spray_angle_start = _v733 / -2;
                     spell_spray_angle_end = _v733 / 2;
                     if (spell_spray_angle_start <= spell_spray_angle_end) {
@@ -1812,14 +1818,15 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             pSpellSprite.uFacing = spell_spray_angle_start +
                                                    target_direction.uYawAngle;
                             if (pSpellSprite.Create(
-                                    pSpellSprite.uFacing,
-                                    target_direction.uPitchAngle,
-                                    pObjectList
-                                        ->pObjects[pSpellSprite.uObjectDescID]
-                                        .uSpeed,
-                                    pCastSpell->uPlayerID + 1) != -1 &&
-                                pParty->bTurnBasedModeOn == 1)
+                                pSpellSprite.uFacing,
+                                target_direction.uPitchAngle,
+                                pObjectList
+                                ->pObjects[pSpellSprite.uObjectDescID]
+                                .uSpeed,
+                                pCastSpell->uPlayerID + 1) != -1 &&
+                                pParty->bTurnBasedModeOn) {
                                 ++pTurnEngine->pending_actions;
+                            }
                             spell_spray_angle_start += _v733 / (amount - 1);
                         } while (spell_spray_angle_start <=
                                  spell_spray_angle_end);
@@ -1852,14 +1859,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 spell_overlay_id =
                     pOtherOverlayList->_4418B1(10005, 201, 0, 65536);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 0);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 1);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 2);
-                spell_fx_renderer->SetPlayerBuffAnim(
-                    pCastSpell->uSpellID, 3);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 0);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 1);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 2);
+                spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, 3);
                 pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].Apply(
                     GameTime(pParty->GetPlayingTime() +
                         GameTime::FromSeconds(spellduration)),
@@ -2263,14 +2266,16 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     target_direction.uDistance;
                 pSpellSprite.uFacing = pParty->sRotationY;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
+                }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(pParty->sRotationY, pParty->sRotationX,
-                                        v659,
-                                        pCastSpell->uPlayerID + 1) != -1 &&
-                    pParty->bTurnBasedModeOn == 1)
+                    v659,
+                    pCastSpell->uPlayerID + 1) != -1 &&
+                    pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
+                }
                 spell_sound_flag = true;
                 break;
             }
@@ -2305,13 +2310,14 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.uFacing = (short)pParty->sRotationY;
                 pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
-                if (pParty->bTurnBasedModeOn == 1) pSpellSprite.uAttributes = 4;
+                if (pParty->bTurnBasedModeOn) {
+                    pSpellSprite.uAttributes = 4;
+                }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationY,
-                                        stru_5C6E00->uIntegerHalfPi / 2, v659,
-                                        0) != -1 &&
-                    pParty->bTurnBasedModeOn == 1)
+                if (pSpellSprite.Create(pParty->sRotationY, stru_5C6E00->uIntegerHalfPi / 2, v659, 0) != -1 &&
+                    pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
+                }
                 spell_sound_flag = true;
                 break;
             }
@@ -3958,8 +3964,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.field_60_distance_related_prolly_lod =
                     target_direction.uDistance;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
+                }
                 spell_spray_angle_start = (signed int)_v726 / -2;
                 spell_spray_angle_end = (signed int)_v726 / 2;
                 if (spell_spray_angle_start <= spell_spray_angle_end) {
@@ -3967,14 +3974,15 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         pSpellSprite.uFacing = spell_spray_angle_start +
                                                target_direction.uYawAngle;
                         if (pSpellSprite.Create(
-                                pSpellSprite.uFacing,
-                                target_direction.uPitchAngle,
-                                pObjectList
-                                    ->pObjects[pSpellSprite.uObjectDescID]
-                                    .uSpeed,
-                                pCastSpell->uPlayerID + 1) != -1 &&
-                            pParty->bTurnBasedModeOn == 1)
+                            pSpellSprite.uFacing,
+                            target_direction.uPitchAngle,
+                            pObjectList
+                            ->pObjects[pSpellSprite.uObjectDescID]
+                            .uSpeed,
+                            pCastSpell->uPlayerID + 1) != -1 &&
+                            pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
+                        }
                         spell_spray_angle_start += _v726 / (amount - 1);
                     } while (spell_spray_angle_start <= spell_spray_angle_end);
                 }
@@ -4260,8 +4268,9 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pParty->armageddon_timer = 256;
                 pParty->armageddonDamage = spell_level;
                 ++pPlayer->uNumArmageddonCasts;
-                if (pParty->bTurnBasedModeOn == 1)
+                if (pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
+                }
                 for (uint i = 0; i < 50; i++) {
                     v642 = rand() % 4096 - 2048;
                     v643 = rand();
@@ -4367,7 +4376,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
     unsigned __int16 v13;  // cx@21
     unsigned int v14;      // eax@23
 
-    // if ( pParty->bTurnBasedModeOn != 1
+    // if (!pParty->bTurnBasedModeOn
     //  || (result = pTurnEngine->field_4, pTurnEngine->field_4 != 1) &&
     //  pTurnEngine->field_4 != 3 )
     if (pParty->bTurnBasedModeOn) {

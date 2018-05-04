@@ -99,7 +99,7 @@ void stru262_TurnBased::SortTurnQueue() {
 }
 //----- (0040471C) --------------------------------------------------------
 void stru262_TurnBased::ApplyPlayerAction() {
-    if (pParty->bTurnBasedModeOn == 1) {
+    if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage == TE_ATTACK) _406457(0);
     }
 }

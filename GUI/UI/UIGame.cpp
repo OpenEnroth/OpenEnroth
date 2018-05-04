@@ -1861,7 +1861,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
             continue;
         }
     }
-    if (pParty->bTurnBasedModeOn == 1) {
+    if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_WAIT) {
             if (PID_TYPE(pTurnEngine->pQueue[0].uPackedID) == OBJECT_Player) {
                 if (pTurnEngine->uActorQueueSize > 0) {

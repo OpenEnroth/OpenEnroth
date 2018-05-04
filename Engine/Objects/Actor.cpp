@@ -1224,11 +1224,11 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
         v25 = pMonsterStats->pInfos[pActors[uActorID].pMonsterInfo.uID]
                   .uRecoveryTime;
         if (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SLOWED].Active()) v25 *= 2;
-        if (pParty->bTurnBasedModeOn != 1)
-            pActors[uActorID].pMonsterInfo.uRecoveryTime =
-                (int)(flt_6BE3A8_debug_recmod2 * v25 * 2.133333333333333);
-        else
+        if (!pParty->bTurnBasedModeOn) {
+            pActors[uActorID].pMonsterInfo.uRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * v25 * 2.133333333333333);
+        } else {
             pActors[uActorID].pMonsterInfo.uRecoveryTime = v25;
+        }
         pActors[uActorID].vVelocity.z = 0;
         pActors[uActorID].vVelocity.y = 0;
         pActors[uActorID].vVelocity.x = 0;
@@ -1479,12 +1479,11 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
         Actor::PlaySound(uActorID, 0);
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
-        if (pParty->bTurnBasedModeOn == 1)
+        if (pParty->bTurnBasedModeOn) {
             v3->pMonsterInfo.uRecoveryTime = pDira;
-        else
-            v3->pMonsterInfo.uRecoveryTime =
-                v3->uCurrentActionLength +
-                (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+        } else {
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+        }
         v3->vVelocity.z = 0;
         v3->vVelocity.y = 0;
         v3->vVelocity.x = 0;
@@ -1554,12 +1553,11 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
         Actor::PlaySound(uActorID, 0);
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
-        if (pParty->bTurnBasedModeOn == 1)
+        if (pParty->bTurnBasedModeOn) {
             v3->pMonsterInfo.uRecoveryTime = pDira;
-        else
-            v3->pMonsterInfo.uRecoveryTime =
-                v3->uCurrentActionLength +
-                (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+        } else {
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+        }
         v16 = v3->pMonsterInfo.uSpell1ID;
         v3->vVelocity.z = 0;
         v3->vVelocity.y = 0;
@@ -1629,11 +1627,11 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
         Actor::PlaySound(uActorID, 0);
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
-        if (pParty->bTurnBasedModeOn != 1)
-            v3->pMonsterInfo.uRecoveryTime =
-                (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
-        else
+        if (!pParty->bTurnBasedModeOn) {
+            v3->pMonsterInfo.uRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+        } else {
             v3->pMonsterInfo.uRecoveryTime = pDira;
+        }
         v3->vVelocity.z = 0;
         v3->vVelocity.y = 0;
         v3->vVelocity.x = 0;
@@ -1700,12 +1698,11 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
         Actor::PlaySound(uActorID, 0);
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
-        if (pParty->bTurnBasedModeOn == 1)
+        if (pParty->bTurnBasedModeOn) {
             v3->pMonsterInfo.uRecoveryTime = pDira;
-        else
-            v3->pMonsterInfo.uRecoveryTime =
-                v3->uCurrentActionLength -
-                (int)(flt_6BE3A8_debug_recmod2 * pDira * -2.133333333333333);
+        } else {
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength - (int)(flt_6BE3A8_debug_recmod2 * pDira * -2.133333333333333);
+        }
         v3->vVelocity.z = 0;
         v3->vVelocity.y = 0;
         v3->vVelocity.x = 0;
