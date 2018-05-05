@@ -183,10 +183,11 @@
     <ClCompile Include="..\..\Engine\Conditions.cpp" />
     <ClCompile Include="..\..\Engine\EngineConfig.cpp" />
     <ClCompile Include="..\..\Engine\Engine.cpp" />
+    <ClCompile Include="..\..\Engine\EngineConfigFactory.cpp" />
     <ClCompile Include="..\..\Engine\EngineFactory.cpp" />
     <ClCompile Include="..\..\Engine\Events.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\BSPModel.cpp" />
-    <ClCompile Include="..\..\Engine\Graphics\Configuration.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\IRenderConfig.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\DecalBuilder.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\DecorationList.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Direct3D\Render.cpp" />
@@ -388,6 +389,7 @@
     <ClInclude Include="..\..\Engine\Autonotes.h" />
     <ClInclude Include="..\..\Engine\Awards.h" />
     <ClInclude Include="..\..\Engine\Conditions.h" />
+    <ClInclude Include="..\..\Engine\EngineConfigFactory.h" />
     <ClInclude Include="..\..\Engine\EngineConfig.h" />
     <ClInclude Include="..\..\Engine\Engine.h" />
     <ClInclude Include="..\..\Engine\EngineFactory.h" />
@@ -395,7 +397,7 @@
     <ClInclude Include="..\..\Engine\Events.h" />
     <ClInclude Include="..\..\Engine\Events2D.h" />
     <ClInclude Include="..\..\Engine\Graphics\BSPModel.h" />
-    <ClInclude Include="..\..\Engine\Graphics\Configuration.h" />
+    <ClInclude Include="..\..\Engine\Graphics\IRenderConfig.h" />
     <ClInclude Include="..\..\Engine\Graphics\DecalBuilder.h" />
     <ClInclude Include="..\..\Engine\Graphics\DecorationList.h" />
     <ClInclude Include="..\..\Engine\Graphics\Direct3D\Render.h" />
