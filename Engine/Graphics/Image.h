@@ -133,7 +133,6 @@ struct TextureFrameTable {
         pTextures = 0;
         sNumTextures = 0;
     }
-    int FromFileTxt(const char *Args);
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
     void LoadAnimationSequenceAndPalettes(int uIconID);

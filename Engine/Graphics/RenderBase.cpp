@@ -116,24 +116,20 @@ void RenderBase::DrawSpriteObjects_ODM() {
         if (!object->uObjectDescID)  // item probably pciked up
             continue;
 
-        assert(object->uObjectDescID < pObjectList->uNumObjects);
-        ObjectDesc *object_desc = &pObjectList->pObjects[object->uObjectDescID];
-        if (object_desc->NoSprite()) continue;
+        if (!object->HasSprite()) continue;
 
         // v1 = &pObjectList->pObjects[*((short *)v0 - 13)];
         // if ( !(v1->uFlags & 1) )
         //{
         // v2 = *((short *)v0 - 14)
         // v2 = object->uType;
-        if ((object->uType < 1000 || object->uType >= 10000) &&
-                (object->uType < 500 || object->uType >= 600) ||
+        if ((object->uType < 1000 || object->uType >= 10000) && (object->uType < 500 || object->uType >= 600) ||
             spell_fx_renderer->RenderAsSprite(object)) {
             // a5 = *(short *)v0;
             int x = object->vPosition.x;
             int y = object->vPosition.y;
             int z = object->vPosition.z;
-            SpriteFrame *frame = pSpriteFrameTable->GetFrame(
-                object_desc->uSpriteID, object->uSpriteFrameID);
+            SpriteFrame *frame = object->GetSpriteFrame();
             int a6 =
                 frame->uGlowRadius * object->field_22_glow_radius_multiplier;
             unsigned int v6 = stru_5C6E00->Atan2(

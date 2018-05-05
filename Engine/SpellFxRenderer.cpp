@@ -313,21 +313,15 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
     } while (v5);
 }
 
-//----- (004A7688) --------------------------------------------------------
 void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
-    double v3;            // st7@1
-    double v4;            // st7@2
-    Particle_sw local_0;  // [sp+1Ch] [bp-7Ch]@1
-
-    memset(&local_0, 0, 0x68u);
-
-    v3 = (double)a2->uSpriteFrameID /
-         (double)pObjectList->pObjects[a2->uObjectDescID].uLifetime;
+    double v3 = (double)a2->uSpriteFrameID / (double)a2->GetLifetime();
+    double v4;
     if (v3 >= 0.75)
         v4 = (1.0 - v3) * 4.0;
     else
         v4 = v3 * 1.333333333333333;
 
+    Particle_sw local_0 = { 0 };
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
     local_0.uDiffuse = 0xFF3C1E;
     local_0.x = (float)a2->vPosition.x;
@@ -345,95 +339,62 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
         particle_engine->AddParticle(&local_0);
     }
 
-    pStru1->_47829F_sphere_particle(
-        (float)a2->vPosition.x, (float)a2->vPosition.y, (float)a2->vPosition.z,
-        floorf(0.5f + (512.0 * v3)), ModulateColor(0xFF3C1E, v4));
+    pStru1->_47829F_sphere_particle((float)a2->vPosition.x,
+                                    (float)a2->vPosition.y,
+                                    (float)a2->vPosition.z,
+                                    floorf(0.5f + (512.0 * v3)),
+                                    ModulateColor(0xFF3C1E, v4));
 }
 
-//----- (004A77FD) --------------------------------------------------------
 void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1) {
-    double v4;  // st7@1
-    double v5;  // st7@2
-    int v7;     // eax@4
-    float v8;   // ST0C_4@4
-    float v9;   // ST08_4@4
-    float v10;  // ST04_4@4
-    float v11;  // ST00_4@4
-    float v12;  // [sp+28h] [bp-4h]@1
-
-    v4 = (double)a1->uSpriteFrameID /
-         (double)pObjectList->pObjects[a1->uObjectDescID].uLifetime;
-    v12 = 512.0 - v4 * 512.0;
-    if (v4 >= 0.75)
+    double v4 = (double)a1->uSpriteFrameID / (double)a1->GetLifetime();
+    double v5;
+    if (v4 >= 0.75) {
         v5 = v4 * 4.0;
-    else
+    } else {
         v5 = v4 * 1.333333333333333;
+    }
 
-    v7 = ModulateColor(0x7E7E7E, v5);
-    v8 = (float)floorf(0.5f + v12);
-    v9 = (float)a1->vPosition.z;
-    v10 = (float)a1->vPosition.y;
-    v11 = (float)a1->vPosition.x;
-    pStru1->_47829F_sphere_particle(v11, v10, v9, v8, v7);
+    pStru1->_47829F_sphere_particle(a1->vPosition.x,
+                                    a1->vPosition.y,
+                                    a1->vPosition.z,
+                                    floorf(0.5f + (512.f - v4 * 512.f)),
+                                    ModulateColor(0x7E7E7E, v5));
 }
 
-//----- (004A78AE) --------------------------------------------------------
 void SpellFxRenderer::_4A78AE_sparks_spell(SpriteObject *a1) {
-    ObjectDesc *v2;       // esi@1
-    unsigned int v3;      // eax@1
-    double v4;            // st7@1
-    Particle_sw local_0;  // [sp+8h] [bp-68h]@1
-
-    v2 = &pObjectList->pObjects[a1->uObjectDescID];
-    memset(&local_0, 0, 0x68u);
-    v3 = a1->uSpriteFrameID;
-    local_0.x = (double)a1->vPosition.x;
-    v4 = (double)a1->vPosition.y;
+    Particle_sw local_0 = { 0 };
+    local_0.x = (float)a1->vPosition.x;
+    local_0.y = (float)a1->vPosition.y;
+    local_0.z = (float)a1->vPosition.z;
     local_0.type = ParticleType_Sprite;
     local_0.uDiffuse = 0x7F7F7F;
     local_0.timeToLive = 1;
-    local_0.y = v4;
-    local_0.z = (float)a1->vPosition.z;
     local_0.r = 0.0f;
     local_0.g = 0.0f;
     local_0.b = 0.0f;
-    local_0.texture =
-        pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->hw_sprites[0]->texture;
+    local_0.texture = a1->GetSpriteFrame()->hw_sprites[0]->texture;
     local_0.particle_size = 2.0f;
     particle_engine->AddParticle(&local_0);
 }
 
 //----- (004A7948) --------------------------------------------------------
 void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
-    ObjectDesc *v2;   // esi@1
-    unsigned int v3;  // eax@1
-    double v4;        // st7@1
-    char v5;          // al@1
-    signed int v6;    // edi@1
-    Particle_sw Dst;  // [sp+8h] [bp-68h]@1
-
-    v2 = &pObjectList->pObjects[a1->uObjectDescID];
-    memset(&Dst, 0, 0x68u);
-    v3 = a1->uSpriteFrameID;
-    Dst.x = (float)a1->vPosition.x;
-    v4 = (float)a1->vPosition.y;
+    Particle_sw Dst = { 0 };
     Dst.type = ParticleType_Sprite | ParticleType_Rotating | ParticleType_1;
     Dst.uDiffuse = 0x7F7F7F;
-    Dst.y = v4;
+    Dst.x = (float)a1->vPosition.x;
+    Dst.y = (float)a1->vPosition.y;
     Dst.z = (float)a1->vPosition.z;
-    Dst.texture =
-        pSpriteFrameTable->GetFrame(v2->uSpriteID, v3)->hw_sprites[0]->texture;
-    v5 = rand();
-    v6 = 10;
+    Dst.texture = a1->GetSpriteFrame()->hw_sprites[0]->texture;
     Dst.particle_size = 1.0;
-    Dst.timeToLive = (v5 & 0x7F) + 128;
-    do {
+    Dst.timeToLive = (rand() & 0x7F) + 128;
+    for (int i = 0; i < 10; i++) {
         Dst.r = (float)(rand() & 0x1FF) - 255.0f;
         Dst.g = (float)(rand() & 0x1FF) - 255.0f;
         Dst.b = (float)(rand() & 0x1FF) - 255.0f;
         particle_engine->AddParticle(&Dst);
-        --v6;
-    } while (v6);
+    }
 }
 
 //----- (004A7A27) --------------------------------------------------------
@@ -514,82 +475,51 @@ void SpellFxRenderer::
     particle_engine->AddParticle(&local_0);
 }
 
-//----- (004A7C07) --------------------------------------------------------
 void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
-    SpellFxRenderer *v2;  // edi@1
-    SpriteObject *v3;     // esi@1
-    int v4;               // eax@1
-    ObjectDesc *v5;       // ebx@1
-    stru6_stru2 *v6;      // eax@2
-    double v7;            // st6@2
-    double v8;            // st5@2
-    double v9;            // st4@2
-    char v10;             // al@2
-    double v11;           // st7@2
-    double v12;           // st7@3
-    Particle_sw local_0;  // [sp+Ch] [bp-68h]@1
-    float a2a;            // [sp+7Ch] [bp+8h]@2
+    Particle_sw local_0 = { 0 };
 
-    v2 = this;
-    memset(&local_0, 0, sizeof(local_0));
-    v3 = a2;
-    v4 = a2->field_54;
-    v5 = &pObjectList->pObjects[a2->uObjectDescID];
-    if (v4) {
-        v6 = &v2->array_4[v4 & 0x1F];
-        v7 = ((float)a2->vPosition.x - v6->flt_0_x) * 0.5f + v6->flt_0_x;
-        v8 = ((float)a2->vPosition.y - v6->flt_4_y) * 0.5f + v6->flt_4_y;
-        v9 = ((float)a2->vPosition.z - v6->flt_8_z) * 0.5f + v6->flt_8_z;
+    if (a2->field_54 != 0) {
+        stru6_stru2 *v6 = &array_4[a2->field_54 & 0x1F];
         local_0.type = ParticleType_Sprite;
         local_0.uDiffuse = 0xFFFFFF;
-        a2a = v9;
-        local_0.x = v7;
-        local_0.z = a2a;
-        local_0.y = v8;
+        local_0.x = ((float)a2->vPosition.x - v6->flt_0_x) * 0.5f + v6->flt_0_x;
+        local_0.y = ((float)a2->vPosition.y - v6->flt_4_y) * 0.5f + v6->flt_4_y;
+        local_0.z = ((float)a2->vPosition.z - v6->flt_8_z) * 0.5f + v6->flt_8_z;
         local_0.r = 0.0f;
         local_0.g = 0.0f;
         local_0.b = 0.0f;
-        v10 = rand();
 
         __debugbreak();  // fix float values
         HEXRAYS_LODWORD(local_0.particle_size) = 0x40400000u;
-        local_0.timeToLive = (v10 & 0x3F) + 64;
-        local_0.texture =
-            pSpriteFrameTable->GetFrame(v5->uSpriteID, v3->uSpriteFrameID)
-                ->hw_sprites[0]
-                ->texture;
+        local_0.timeToLive = (rand() & 0x3F) + 64;
+        local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
         particle_engine->AddParticle(&local_0);
-        v11 = (float)v3->vPosition.x;
         HEXRAYS_LODWORD(local_0.particle_size) = 0x40800000u;
-        local_0.x = v11;
-        local_0.y = (float)v3->vPosition.y;
-        local_0.z = (float)v3->vPosition.z;
+        local_0.x = (float)a2->vPosition.x;
+        local_0.y = (float)a2->vPosition.y;
+        local_0.z = (float)a2->vPosition.z;
         local_0.timeToLive = (rand() & 0x3F) + 64;
         particle_engine->AddParticle(&local_0);
-        v2->array_4[v3->field_54 & 0x1F].flt_0_x = (float)v3->vPosition.x;
-        v2->array_4[v3->field_54 & 0x1F].flt_4_y = (float)v3->vPosition.y;
-        v2->array_4[v3->field_54 & 0x1F].flt_8_z = (float)v3->vPosition.z;
+        v6->flt_0_x = (float)a2->vPosition.x;
+        v6->flt_4_y = (float)a2->vPosition.y;
+        v6->flt_8_z = (float)a2->vPosition.z;
     } else {
-        a2->field_54 = v2->field_0++;
-        v2->array_4[a2->field_54 & 0x1F].flt_0_x = (float)a2->vPosition.x;
-        v2->array_4[a2->field_54 & 0x1F].flt_4_y = (float)a2->vPosition.y;
-        v2->array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
-        v12 = (float)a2->vPosition.x;
+        a2->field_54 = field_0++;
+        array_4[a2->field_54 & 0x1F].flt_0_x = (float)a2->vPosition.x;
+        array_4[a2->field_54 & 0x1F].flt_4_y = (float)a2->vPosition.y;
+        array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
         local_0.type = ParticleType_Sprite;
         local_0.uDiffuse = 0xFFFFFF;
         __debugbreak();  // fix float values
         HEXRAYS_LODWORD(local_0.particle_size) = 0x40000000u;
-        local_0.x = v12;
+        local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
         local_0.r = 0.0f;
         local_0.g = 0.0f;
         local_0.b = 0.0f;
         local_0.timeToLive = (rand() & 0x3F) + 64;
-        local_0.texture =
-            pSpriteFrameTable->GetFrame(v5->uSpriteID, a2->uSpriteFrameID)
-                ->hw_sprites[0]
-                ->texture;
+        local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
         particle_engine->AddParticle(&local_0);
     }
 }
@@ -966,10 +896,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
 
         case SPRITE_SPELL_AIR_IMPLOSION:
         case SPRITE_SPELL_AIR_IMPLOSION_IMPACT:
-            // if ( render->pRenderD3D )
             _4A77FD_implosion_particle_d3d(a2);
-            /*else
-            _4A80DC_implosion_particle_sw(a2);*/
             return false;
 
         case SPRITE_SPELL_AIR_STARBURST:

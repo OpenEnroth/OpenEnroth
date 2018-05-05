@@ -682,27 +682,15 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     }
 }
 
-//----- (new func) --------------------------------------------------------
 unsigned short Actor::GetObjDescId(int spellId) {
-    for (unsigned int i = 0; i < pObjectList->uNumObjects; i++) {
-        if (spell_sprite_mapping[spellId].uSpriteType ==
-            pObjectList->pObjects[i].uObjectID) {
-            return i;
-            break;
-        }
-    }
-    return 0;
+    return pObjectList->ObjectIDByItemID(spell_sprite_mapping[spellId].uSpriteType);
 }
 
-//----- (0043ABB0) --------------------------------------------------------
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
-    unsigned int v2;  // esi@1
-    unsigned int v3;  // edi@1
-
-    v2 = a1->uAlly;
+    unsigned int v2 = a1->uAlly;
     if (!a1->uAlly) v2 = (a1->pMonsterInfo.uID - 1) / 3 + 1;
 
-    v3 = a2->uAlly;
+    unsigned int v3 = a2->uAlly;
     if (!a2->uAlly) v3 = (a2->pMonsterInfo.uID - 1) / 3 + 1;
 
     if (v2 >= 39 && v2 <= 44 && v3 >= 39 && v3 <= 44 ||
@@ -793,14 +781,8 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
             return;
     }
     bool found = false;
-    for (uint i = 0; i < pObjectList->uNumObjects; i++) {
-        if (pObjectList->pObjects[i].uObjectID == a1.uType) {
-            a1.uObjectDescID = i;
-            found = true;
-            break;
-        }
-    }
-    if (!found) {
+    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
+    if (a1.uObjectDescID == 0) {
         Error("Item not found");
         return;
     }

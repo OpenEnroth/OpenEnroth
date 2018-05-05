@@ -1190,20 +1190,9 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
 
     for (uint i = 0; i < uNumSpriteObjects; ++i) {
-        if (pSpriteObjects[i].containing_item.uItemID &&
-            !(pSpriteObjects[i].uAttributes & 0x0100)) {
-            pSpriteObjects[i].uType =
-                (SPRITE_OBJECT_TYPE)pItemsTable
-                    ->pItems[pSpriteObjects[i].containing_item.uItemID]
-                    .uSpriteID;
-
-            // uint uObjectID = 0;
-            for (uint j = 0; j < pObjectList->uNumObjects; ++j)
-                if (pSpriteObjects[i].uType ==
-                    pObjectList->pObjects[j].uObjectID) {
-                    pSpriteObjects[i].uObjectDescID = j;
-                    break;
-                }
+        if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & 0x0100)) {
+            pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
+            pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
         }
     }
 
@@ -2873,20 +2862,12 @@ void IndoorLocation::PrepareActorRenderList_BLV() {
     }
 }
 
-//----- (0044028F) --------------------------------------------------------
 void IndoorLocation::PrepareItemsRenderList_BLV() {
-    SpriteFrame *v4;     // eax@12
     unsigned int v6;     // eax@12
-    int v7;              // ecx@12
-    int v9;              // ecx@12
-    int a6;              // [sp+2Ch] [bp-30h]@12
-    signed __int16 v34;  // [sp+44h] [bp-18h]@14
 
     for (uint i = 0; i < uNumSpriteObjects; ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
-            if (!(pObjectList->pObjects[pSpriteObjects[i].uObjectDescID]
-                      .uFlags &
-                  1)) {
+            if (pSpriteObjects[i].HasSprite()) {
                 if ((pSpriteObjects[i].uType < 1000 ||
                      pSpriteObjects[i].uType >= 10000) &&
                         (pSpriteObjects[i].uType < 500 ||
@@ -2894,32 +2875,17 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                         (pSpriteObjects[i].uType < 811 ||
                          pSpriteObjects[i].uType >= 815) ||
                     spell_fx_renderer->RenderAsSprite(&pSpriteObjects[i])) {
-                    v4 = pSpriteFrameTable->GetFrame(
-                        pObjectList->pObjects[pSpriteObjects[i].uObjectDescID].uSpriteID,
-                        pSpriteObjects[i].uSpriteFrameID);
-                    a6 = v4->uGlowRadius *
-                         pSpriteObjects[i].field_22_glow_radius_multiplier;
-                    v6 = stru_5C6E00->Atan2(pSpriteObjects[i].vPosition.x -
-                                                pIndoorCameraD3D->vPartyPos.x,
-                                            pSpriteObjects[i].vPosition.y -
-                                                pIndoorCameraD3D->vPartyPos.y);
-                    HEXRAYS_LOWORD(v7) = pSpriteObjects[i].uFacing;
-                    v9 = ((signed int)(stru_5C6E00->uIntegerPi +
-                                       ((signed int)stru_5C6E00->uIntegerPi >>
-                                        3) +
-                                       v7 - v6) >>
-                          8) &
-                         7;
-                    pBillboardRenderList[uNumBillboardsToDraw].hwsprite =
-                        v4->hw_sprites[v9];
+                    SpriteFrame *v4 = pSpriteObjects[i].GetSpriteFrame();
+                    int a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
+                    v6 = stru_5C6E00->Atan2(pSpriteObjects[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
+                                            pSpriteObjects[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                    int v7 = pSpriteObjects[i].uFacing;
+                    int v9 = ((int)(stru_5C6E00->uIntegerPi + ((int)stru_5C6E00->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
+                    pBillboardRenderList[uNumBillboardsToDraw].hwsprite = v4->hw_sprites[v9];
                     if (v4->uFlags & 0x20)
-                        pSpriteObjects[i].vPosition.z -=
-                            (signed int)(fixpoint_mul(v4->scale._internal,
-                                                      v4->hw_sprites[v9]
-                                                          ->uBufferHeight) /
-                                         2);
+                        pSpriteObjects[i].vPosition.z -= (int)(fixpoint_mul(v4->scale._internal, v4->hw_sprites[v9]->uBufferHeight) / 2);
 
-                    v34 = 0;
+                    int16_t v34 = 0;
                     if (v4->uFlags & 2) v34 = 2;
                     if (v4->uFlags & 0x40000) v34 |= 0x40;
                     if (v4->uFlags & 0x20000) v34 |= 0x80;
@@ -2931,15 +2897,9 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                             pSpriteObjects[i].vPosition.y,
                             pSpriteObjects[i].vPosition.z,
                             pSpriteObjects[i].uSectorID, a6,
-                            pObjectList
-                                ->pObjects[pSpriteObjects[i].uObjectDescID]
-                                .uParticleTrailColorR,
-                            pObjectList
-                                ->pObjects[pSpriteObjects[i].uObjectDescID]
-                                .uParticleTrailColorG,
-                            pObjectList
-                                ->pObjects[pSpriteObjects[i].uObjectDescID]
-                                .uParticleTrailColorB,
+                            pSpriteObjects[i].GetParticleTrailColorR(),
+                            pSpriteObjects[i].GetParticleTrailColorG(),
+                            pSpriteObjects[i].GetParticleTrailColorB(),
                             _4E94D3_light_type);
                     }
 
@@ -2947,66 +2907,46 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     int view_y = 0;
                     int view_z = 0;
 
-                    bool visible = pIndoorCameraD3D->ViewClip(
-                        pSpriteObjects[i].vPosition.x,
-                        pSpriteObjects[i].vPosition.y,
-                        pSpriteObjects[i].vPosition.z, &view_x, &view_y,
-                        &view_z);
+                    bool visible = pIndoorCameraD3D->ViewClip(pSpriteObjects[i].vPosition.x,
+                                                              pSpriteObjects[i].vPosition.y,
+                                                              pSpriteObjects[i].vPosition.z,
+                                                              &view_x, &view_y, &view_z);
                     if (visible) {
                         int projected_x = 0;
                         int projected_y = 0;
-                        pIndoorCameraD3D->Project(view_x, view_y, view_z,
-                                                  &projected_x, &projected_y);
+                        pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
                         assert(uNumBillboardsToDraw < 500);
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 
                         pSpriteObjects[i].uAttributes |= 1;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .uPalette = v4->uPaletteIndex;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .uIndoorSectorID = pSpriteObjects[i].uSectorID;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
                         // if ( render->pRenderD3D )
                         {
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .fov_x = pIndoorCameraD3D->fov_x;
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .fov_y = pIndoorCameraD3D->fov_y;
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .screenspace_projection_factor_x =
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =
                                 v4->scale *
-                                fixed::FromInt((int)floorf(
-                                    pIndoorCameraD3D->fov_x + 0.5f)) /
+                                fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_x + 0.5f)) /
                                 fixed::FromInt(view_x);
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .screenspace_projection_factor_y =
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
                                 v4->scale *
-                                fixed::FromInt((int)floorf(
-                                    pIndoorCameraD3D->fov_x + 0.5f)) /
+                                fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_x + 0.5f)) /
                                 fixed::FromInt(view_x);
                         }
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .field_1E = v34;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_x =
-                            pSpriteObjects[i].vPosition.x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_y =
-                            pSpriteObjects[i].vPosition.y;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_z =
-                            pSpriteObjects[i].vPosition.z;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .screen_space_x = projected_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .screen_space_y = projected_y;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .sTintColor = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .pSpriteFrame = v4;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .screen_space_z = view_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1]
-                            .object_pid = PID(OBJECT_Item, i);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pSpriteObjects[i].vPosition.y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pSpriteObjects[i].vPosition.z;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v4;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item, i);
                     }
                 }
             }
@@ -3014,11 +2954,8 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
     }
 }
 
-//----- (00440639) --------------------------------------------------------
 void AddBspNodeToRenderList(unsigned int node_id) {
-    BLVSector *pSector;  // esi@1
-
-    pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
+    BLVSector *pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
     // if ( render->pRenderD3D )
     {
         for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
@@ -3839,19 +3776,14 @@ void BspRenderer::MakeVisibleSectorList() {
             [uNumVisibleNotEmptySectors++] = nodes[i].uSectorID;
     }
 }
-//----- (0046A334) --------------------------------------------------------
-char DoInteractionWithTopmostZObject(int a1, int a2) {
-    int v17;  // edi@36
 
-    v17 = PID_ID(a1);
+char DoInteractionWithTopmostZObject(int a1, int a2) {
+    uint32_t v17 = PID_ID(a1);
     switch (PID_TYPE(a1)) {
-        case OBJECT_Item:  // take the item
-        {
-            if (pObjectList->pObjects[pSpriteObjects[v17].uObjectDescID]
-                        .uFlags &
-                    0x10 ||
-                v17 >= 1000 || !pSpriteObjects[v17].uObjectDescID)
+        case OBJECT_Item: {  // take the item
+            if (pSpriteObjects[v17].IsUnpickable() || v17 >= 1000 || !pSpriteObjects[v17].uObjectDescID) {
                 return 1;
+            }
 
             extern void ItemInteraction(unsigned int item_id);
             ItemInteraction(v17);
@@ -3859,8 +3791,7 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
         }
 
         case OBJECT_Actor:
-            if (pActors[v17].uAIState == Dying ||
-                pActors[v17].uAIState == Summoned)
+            if (pActors[v17].uAIState == Dying || pActors[v17].uAIState == Summoned)
                 return 1;
             if (pActors[v17].uAIState == Dead) {
                 pActors[v17].LootActor();
@@ -3871,8 +3802,7 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
             break;
 
         case OBJECT_Decoration:
-            extern void DecorationInteraction(unsigned int id,
-                                              unsigned int pid);
+            extern void DecorationInteraction(unsigned int id, unsigned int pid);
             DecorationInteraction(v17, a1);
             break;
 
@@ -3887,12 +3817,10 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
                 if (bmodel_id >= pOutdoor->pBModels.size()) {
                     return 1;
                 }
-                if (pOutdoor->pBModels[bmodel_id].pFaces[face_id].uAttributes &
-                        FACE_HAS_EVENT ||
+                if (pOutdoor->pBModels[bmodel_id].pFaces[face_id].uAttributes & FACE_HAS_EVENT ||
                     pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID == 0)
                     return 1;
-                EventProcessor((signed __int16)pOutdoor->pBModels[bmodel_id]
-                                   .pFaces[face_id].sCogTriggeredID,
+                EventProcessor((int16_t)pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID,
                                a1, 1);
             } else {
                 if (!(pIndoor->pFaces[v17].uAttributes & FACE_CLICKABLE)) {
@@ -3900,15 +3828,11 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
                     return 1;
                 }
                 if (pIndoor->pFaces[v17].uAttributes & FACE_HAS_EVENT ||
-                    !pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID]
-                         .uEventID)
+                    !pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID].uEventID)
                     return 1;
                 if (current_screen_type != SCREEN_BRANCHLESS_NPC_DIALOG)
-                    EventProcessor(
-                        (signed __int16)pIndoor
-                            ->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID]
-                            .uEventID,
-                        a1, 1);
+                    EventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID].uEventID,
+                                   a1, 1);
             }
             return 0;
             break;
@@ -5470,16 +5394,14 @@ int sub_4088E9(int x1, int y1, int x2, int y2, int x3, int y3) {
     return result;
 }
 
-//----- (00450DA3) --------------------------------------------------------
 int GetAlertStatus() {
-    int result;  // eax@2
+    int result;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         result = pOutdoor->ddm.field_C_alert;
     else
-        result = uCurrentlyLoadedLevelType == LEVEL_Outdoor
-                     ? pIndoor->dlv.field_C_alert
-                     : 0;
+        result = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? pIndoor->dlv.field_C_alert : 0;
+
     return result;
 }
 
@@ -5487,7 +5409,6 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
     int result;            // eax@8
     int v6;                // edi@11
     int v7;                // ebx@11
-    int v8;                // edi@11
     int v9;                // ebx@12
     int v10;               // eax@12
     char v11;              // zf@16
@@ -5512,8 +5433,7 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
             (pActors[mon_id].pMonsterInfo.uID < 124 ||
              pActors[mon_id].pMonsterInfo.uID > 126) &&  // Dwarf MaleA A-C
             (pActors[mon_id].pMonsterInfo.uID < 133 ||
-             pActors[mon_id].pMonsterInfo.uID >
-                 135) &&  // Peasant Elf FemaleA A-C
+             pActors[mon_id].pMonsterInfo.uID > 135) &&  // Peasant Elf FemaleA A-C
             pActors[mon_id].CanAct()) {
             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
                 v22 = 0;
@@ -5521,18 +5441,15 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
                 for (face_id; face_id < 100; ++face_id) {
                     v6 = rand() % 1024 + 512;
                     v7 = rand() % (signed int)stru_5C6E00->uIntegerDoublePi;
-                    v19.vPosition.x = pParty->vPosition.x +
-                                      fixpoint_mul(stru_5C6E00->Cos(v7), v6);
-                    v8 = 0;
+                    v19.vPosition.x = pParty->vPosition.x + fixpoint_mul(stru_5C6E00->Cos(v7), v6);
                     v19.uIndex = a2;
-                    v19.vPosition.y = fixpoint_mul(stru_5C6E00->Sin(v7), v6) +
-                                      pParty->vPosition.y;
+                    v19.vPosition.y = fixpoint_mul(stru_5C6E00->Sin(v7), v6) + pParty->vPosition.y;
                     v19.vPosition.z = pParty->vPosition.z;
-                    v26 = 0;
+                    bool bInWater = false;
                     v27 = 0;
                     v19.vPosition.z = ODM_GetFloorLevel(
                         v19.vPosition.x, v19.vPosition.y, pParty->vPosition.z,
-                        0, &v26, &v27, 0);
+                        0, &bInWater, &v27, 0);
                     for (BSPModel &model : pOutdoor->pBModels) {
                         v9 = abs(v19.vPosition.y - model.vBoundingCenter.y);
                         v10 = abs(v19.vPosition.x - model.vBoundingCenter.x);
@@ -5555,23 +5472,17 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
                 for (uint i = 0; i < 100; ++i) {
                     v12 = rand() % 512 + 256;
                     v13 = rand();
-                    v14 = v13 % (signed int)stru_5C6E00->uIntegerDoublePi;
-                    v15 = stru_5C6E00->Cos(
-                        v13 % (signed int)stru_5C6E00->uIntegerDoublePi);
-                    v19.vPosition.x =
-                        pParty->vPosition.x + fixpoint_mul(v15, v12);
-                    v16 = stru_5C6E00->Sin(
-                        v13 % (signed int)stru_5C6E00->uIntegerDoublePi);
-                    v19.vPosition.y =
-                        fixpoint_mul(v16, v12) + pParty->vPosition.y;
+                    v14 = v13 % (int)stru_5C6E00->uIntegerDoublePi;
+                    v15 = stru_5C6E00->Cos(v13 % (int)stru_5C6E00->uIntegerDoublePi);
+                    v19.vPosition.x = pParty->vPosition.x + fixpoint_mul(v15, v12);
+                    v16 = stru_5C6E00->Sin(v13 % (int)stru_5C6E00->uIntegerDoublePi);
+                    v19.vPosition.y = fixpoint_mul(v16, v12) + pParty->vPosition.y;
                     v19.vPosition.z = pParty->vPosition.z;
                     v19.uIndex = a2;
-                    v17 = pIndoor->GetSector(v19.vPosition.x, v19.vPosition.y,
-                                             pParty->vPosition.z);
+                    v17 = pIndoor->GetSector(v19.vPosition.x, v19.vPosition.y, pParty->vPosition.z);
                     if (v17 == v22) {
-                        v18 =
-                            BLV_GetFloorLevel(v19.vPosition.x, v19.vPosition.y,
-                                              v19.vPosition.z, v17, &uFaceID);
+                        v18 = BLV_GetFloorLevel(v19.vPosition.x, v19.vPosition.y,
+                                                v19.vPosition.z, v17, &uFaceID);
                         v19.vPosition.z = v18;
                         if (v18 != -30000) {
                             if (abs(v18 - pParty->vPosition.z) <= 1024) break;
@@ -5605,35 +5516,13 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
     return result;
 }
 
-//----- (00450521) --------------------------------------------------------
-int sub_450521_ProllyDropItemAt(int ecx0, signed int a2, int a3, int a4, int a5,
-                                unsigned __int16 a6) {
-    int v6;               // edi@1
-    int v7;               // esi@1
-    signed int v8;        // edi@1
-    unsigned __int16 v9;  // cx@1
-    //  char *v10; // edx@2
-    unsigned __int16 v11;  // ax@5
-    SpriteObject a1;       // [sp+8h] [bp-70h]@1
-
-    v6 = ecx0;
-    v7 = a2;
-    pItemsTable->GenerateItem(v6, v7, &a1.containing_item);
-    v8 = 0;
-    v9 = pItemsTable->pItems[a1.containing_item.uItemID].uSpriteID;
-    a1.uType =
-        (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1.containing_item.uItemID]
-            .uSpriteID;
-    v11 = 0;
-    for (int i = 0; i < pObjectList->uNumObjects; i++) {
-        if (v9 == pObjectList->pObjects[i].uObjectID) {
-            v11 = i;
-            break;
-        }
-    }
-    a1.uObjectDescID = v11;
-    a1.vPosition.y = a4;
+int sub_450521_ProllyDropItemAt(int ecx0, int a2, int a3, int a4, int a5, uint16_t a6) {
+    SpriteObject a1;
+    pItemsTable->GenerateItem(ecx0, a2, &a1.containing_item);
+    a1.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1.containing_item.uItemID].uSpriteID;
+    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition.x = a3;
+    a1.vPosition.y = a4;
     a1.vPosition.z = a5;
     a1.uFacing = a6;
     a1.uAttributes = 0;
@@ -5642,18 +5531,15 @@ int sub_450521_ProllyDropItemAt(int ecx0, signed int a2, int a3, int a4, int a5,
     return a1.Create(0, 0, 0, 0);
 }
 
-//----- (004075DB) --------------------------------------------------------
 bool sub_4075DB(int x, int y, int z, BLVFace *face) {
     int v8;          // edi@2
-    signed int v25;  // eax@22
+    int v25;  // eax@22
     bool result;     // eax@25
-    signed int a3a;  // [sp+24h] [bp+8h]@14
+    int a3a;  // [sp+24h] [bp+8h]@14
     int a4a;         // [sp+28h] [bp+Ch]@2
 
     std::array<int, 52> dword_4F5CC8_ys;  // idb
     std::array<int, 52> dword_4F5D98_xs;  // idb
-
-    // __debugbreak();
 
     if (face->uAttributes & FACE_XY_PLANE) {
         a4a = x;
@@ -5694,15 +5580,9 @@ bool sub_4075DB(int x, int y, int z, BLVFace *face) {
                     // 1])* ((v8 - dword_4F5CC4_ys[i + 1]) << 16)) >> 16)
                     //                + 32768) >> 16) >= a4a) )
                 } else {
-                    v25 = fixpoint_div(
-                        dword_4F5D98_xs[i + 1] - dword_4F5D98_xs[i],
-                        dword_4F5CC8_ys[i + 1] - dword_4F5CC8_ys[i]);
-                    if (dword_4F5D98_xs[i] +
-                            (fixpoint_mul(v25, (v8 - dword_4F5CC8_ys[i])
-                                                   << 16) +
-                                 0x8000 >>
-                             16) >=
-                        a4a)
+                    v25 = fixpoint_div(dword_4F5D98_xs[i + 1] - dword_4F5D98_xs[i],
+                                       dword_4F5CC8_ys[i + 1] - dword_4F5CC8_ys[i]);
+                    if (dword_4F5D98_xs[i] + (fixpoint_mul(v25, (v8 - dword_4F5CC8_ys[i]) << 16) + 0x8000 >> 16) >= a4a)
                         ++a3a;
                 }
             }
@@ -5713,10 +5593,9 @@ bool sub_4075DB(int x, int y, int z, BLVFace *face) {
     return result;
 }
 
-//----- (004077F1) --------------------------------------------------------
 bool sub_4077F1(int a1, int a2, int a3, ODMFace *face, BSPVertexBuffer *a5) {
     int a4a;         // [sp+28h] [bp+Ch]@2
-    signed int a5a;  // [sp+2Ch] [bp+10h]@14
+    int a5a;  // [sp+2Ch] [bp+10h]@14
 
     std::array<int, 52> dword_4F5B24_ys;  // idb
     std::array<int, 52> dword_4F5BF4_xs;  // idb

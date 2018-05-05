@@ -1074,8 +1074,9 @@ void Game::EventLoop() {
                         OnMapLoad();
                         pOutdoor->SetFog();
                         TeleportToStartingPoint(uLevel_StartingPointType);
+                        bool bOnWater = false;
                         pParty->vPosition.z = GetTerrainHeightsAroundParty2(
-                            pParty->vPosition.x, pParty->vPosition.y, &v213, 0);
+                            pParty->vPosition.x, pParty->vPosition.y, &bOnWater, 0);
                         pParty->uFallStartY = pParty->vPosition.z;
                         engine->_461103_load_level_sub();
                         pEventTimer->Resume();

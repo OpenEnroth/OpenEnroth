@@ -4274,9 +4274,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 for (uint i = 0; i < 50; i++) {
                     v642 = rand() % 4096 - 2048;
                     v643 = rand();
+                    bool bOnWater = false;
                     v732 = GetTerrainHeightsAroundParty2(
                         v642 + pParty->vPosition.x,
-                        pParty->vPosition.y + (v643 % 4096 - 2048), &v710, 0);
+                        pParty->vPosition.y + (v643 % 4096 - 2048), &bOnWater, 0);
                     SpriteObject::sub_42F7EB_DropItemAt(
                         SPRITE_SPELL_EARTH_ROCK_BLAST,
                         v642 + pParty->vPosition.x,
@@ -4558,7 +4559,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
 
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result], 0);
+                (int)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 game_viewport_x, game_viewport_y, game_viewport_width,
                 game_viewport_height, 1, 0, UIMSG_CastSpell_Shoot_Monster, 0, 0,

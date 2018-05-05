@@ -1017,66 +1017,44 @@ void Party::PartyFindsGold(
     if (status.length() > 0) GameUI_StatusBar_OnEvent(status.c_str(), 2u);
     pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
 }
-//----- (00421B2C) --------------------------------------------------------
-void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem() {
-    // unsigned int v0; // eax@2
-    // Texture_MM7 *v1; // ebx@2
-    int v2;               // eax@3
-    int v4;               // eax@6
-    unsigned __int16 v5;  // dx@11
-    signed int v6;        // eax@11
-    __int16 v8;           // ax@16
-    SpriteObject a1;      // [sp+4h] [bp-78h]@11
-    // int v11; // [sp+74h] [bp-8h]@2
-    int v12;  // [sp+78h] [bp-4h]@5
 
-    if (!pParty->pPickedItem.uItemID)
+void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem() {
+    if (!pParty->pPickedItem.uItemID) {
         return;
+    }
 
     auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), 0x7FF);
 
-    if (uActiveCharacter && (v2 = ::pPlayers[uActiveCharacter]->AddItem(
-                                 -1, pParty->pPickedItem.uItemID)) != 0) {
-        memcpy(&::pPlayers[uActiveCharacter]->pInventoryItemList[v2 - 1],
-               &pParty->pPickedItem, 0x24u);
+    int v2 = ::pPlayers[uActiveCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
+    if (uActiveCharacter && v2 != 0) {
+        memcpy(&::pPlayers[uActiveCharacter]->pInventoryItemList[v2 - 1], &pParty->pPickedItem, 0x24u);
         mouse->RemoveHoldingItem();
     } else {
+        int v12 = 0;
         for (v12 = 0; v12 < 4; v12++) {
-            v4 = pParty->pPlayers[v12].AddItem(-1, pParty->pPickedItem.uItemID);
+            int v4 = pParty->pPlayers[v12].AddItem(-1, pParty->pPickedItem.uItemID);
             if (v4) {
-                memcpy(&pParty->pPlayers[v12].pInventoryItemList[v4 - 1],
-                       &pParty->pPickedItem, sizeof(ItemGen));
+                memcpy(&pParty->pPlayers[v12].pInventoryItemList[v4 - 1], &pParty->pPickedItem, sizeof(ItemGen));
                 mouse->RemoveHoldingItem();
                 break;
             }
         }
         if (v12 == 4) {
-            v5 = pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
-            v6 = 0;
-            a1.uType = (SPRITE_OBJECT_TYPE)pItemsTable
-                           ->pItems[pParty->pPickedItem.uItemID]
-                           .uSpriteID;
-            for (uint i = 0; i < pObjectList->uNumObjects; i++) {
-                if (v5 == pObjectList->pObjects[i].uObjectID) {
-                    v6 = i;
-                    break;
-                }
-            }
-            a1.spell_caster_pid = OBJECT_Player;
-            a1.uObjectDescID = v6;
-            a1.vPosition.y = pParty->vPosition.y;
-            a1.vPosition.x = pParty->vPosition.x;
-            a1.vPosition.z = pParty->sEyelevel + pParty->vPosition.z;
-            a1.uSoundID = 0;
-            a1.uFacing = 0;
-            a1.uAttributes = 8;
-            v8 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
-                                    pParty->sEyelevel + pParty->vPosition.z);
-            a1.uSpriteFrameID = 0;
-            a1.uSectorID = v8;
-            memcpy(&a1.containing_item, &pParty->pPickedItem,
-                   sizeof(a1.containing_item));
-            a1.Create(pParty->sRotationY, 184, 200, 0);
+            SpriteObject object;
+            object.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
+            object.spell_caster_pid = OBJECT_Player;
+            object.uObjectDescID = pObjectList->ObjectIDByItemID(object.uType);
+            object.vPosition.y = pParty->vPosition.y;
+            object.vPosition.x = pParty->vPosition.x;
+            object.vPosition.z = pParty->sEyelevel + pParty->vPosition.z;
+            object.uSoundID = 0;
+            object.uFacing = 0;
+            object.uAttributes = 8;
+            object.uSpriteFrameID = 0;
+            object.uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
+                                                  pParty->sEyelevel + pParty->vPosition.z);
+            memcpy(&object.containing_item, &pParty->pPickedItem, sizeof(object.containing_item));
+            object.Create(pParty->sRotationY, 184, 200, 0);
             mouse->RemoveHoldingItem();
         }
     }

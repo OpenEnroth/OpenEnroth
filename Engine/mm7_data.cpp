@@ -164,9 +164,6 @@ std::array<__int32, 128 * 3> array_4EBBD0_x = {
 #include "MapsLongTimer.h"
 MapsLongTimer MapsLongTimersList[100];
 
-#include "Engine/Objects/ObjectList.h"
-struct ObjectList *pObjectList;
-
 #include "Engine/Tables/IconFrameTable.h"
 struct IconFrameTable *pIconsFrameTable;
 

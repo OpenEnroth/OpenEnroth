@@ -437,33 +437,26 @@ void OutdoorLocation::UpdateFog() {
     fFogDensity = GetFogDensityByTime();
 }
 
-//----- (004893CF) --------------------------------------------------------
-int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, signed int y, int z) {
-    int v7;                      // eax@4
-    int is_on_water;             // [sp+8h] [bp-8h]@2
-    int bmodel_standing_on_pid;  // [sp+Ch] [bp-4h]@2
-
-    is_on_water = 0;
-    bmodel_standing_on_pid = 0;
-    ODM_GetFloorLevel(x, y, z, pParty->uDefaultPartyHeight, &is_on_water,
-                      &bmodel_standing_on_pid, 0);
-    if (pParty->uFlags & 8 || bmodel_standing_on_pid ||
-        is_on_water)  //на bmodel,и или на воде
+int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, int y, int z) {
+    bool is_on_water = false;
+    int bmodel_standing_on_pid = 0;
+    ODM_GetFloorLevel(x, y, z, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
+    if (pParty->uFlags & 8 || bmodel_standing_on_pid || is_on_water)  // на bmodel, и или на воде
         return 2;
-    v7 = _47ED83(WorldPosToGridCellX(pParty->vPosition.x),
-                 WorldPosToGridCellZ(pParty->vPosition.y) - 1);
+    int v7 = _47ED83(WorldPosToGridCellX(pParty->vPosition.x),
+                     WorldPosToGridCellZ(pParty->vPosition.y) - 1);
     switch (pTileTable->pTiles[GetTileIdByTileMapId(v7)].tileset) {
-        case Tileset_Grass:  //на траве
+        case Tileset_Grass:  // на траве
             return 1;
-        case Tileset_Snow:  //на снегу
+        case Tileset_Snow:  // на снегу
             return 3;
-        case Tilset_Desert:  //на песке
+        case Tilset_Desert:  // на песке
             return 5;
         case Tileset_CooledLava:
         case Tileset_Dirt:  // на грязи
             return 4;
-        case Tileset_Water:  // on water(на воде)
-            return 3;        //еденицы еды
+        case Tileset_Water:  // on water (на воде)
+            return 3;        // еденицы еды
         default:
             return 2;
     }
@@ -1602,33 +1595,23 @@ bool OutdoorLocation::PrepareDecorations() {
     return true;
 }
 
-//----- (0047F223) --------------------------------------------------------
 void OutdoorLocation::ArrangeSpriteObjects() {
-    OutdoorLocation *v5;  // [sp+0h] [bp-4h]@1
-
-    v5 = this;
-    if ((signed int)uNumSpriteObjects > 0) {
+    if ((int)uNumSpriteObjects > 0) {
         for (int i = 0; i < (signed int)uNumSpriteObjects; ++i) {
             if (pSpriteObjects[i].uObjectDescID) {
-                if (!(pSpriteObjects[i].uAttributes & 8) &&
-                    !(pObjectList->pObjects[pSpriteObjects[i].uObjectDescID]
-                          .uFlags &
-                      0x10))
+                if (!(pSpriteObjects[i].uAttributes & 8) && !pSpriteObjects[i].IsUnpickable()) {
+                    bool bOnWater = false;
                     pSpriteObjects[i].vPosition.z =
                         GetTerrainHeightsAroundParty2(
                             pSpriteObjects[i].vPosition.x,
-                            pSpriteObjects[i].vPosition.y, (int *)&v5, 0);
+                            pSpriteObjects[i].vPosition.y, &bOnWater, 0);
+                }
                 if (pSpriteObjects[i].containing_item.uItemID) {
                     if (pSpriteObjects[i].containing_item.uItemID != 220 &&
-                        pItemsTable
-                                ->pItems[pSpriteObjects[i]
-                                             .containing_item.uItemID]
-                                .uEquipType == EQUIP_POTION &&
+                        pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == EQUIP_POTION &&
                         !pSpriteObjects[i].containing_item.uEnchantmentType)
-                        pSpriteObjects[i].containing_item.uEnchantmentType =
-                            rand() % 15 + 5;
-                    pItemsTable->SetSpecialBonus(
-                        &pSpriteObjects[i].containing_item);
+                        pSpriteObjects[i].containing_item.uEnchantmentType = rand() % 15 + 5;
+                    pItemsTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
                 }
             }
         }
@@ -1868,7 +1851,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
     }
 }
 
-int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, int *pIsOnWater,
+int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater,
                       int *bmodel_pid, int bWaterWalk) {
     int v18;                  // edx@26
     int v19;                  // eax@28
@@ -2316,7 +2299,7 @@ void ODM_ProcessPartyActions() {
     //*************************************
     //определение уровня пола
     int bmodel_standing_on_pid;  //данные 3D model'и
-    int is_on_water = false;     //на воду
+    bool is_on_water = false;     //на воду
     floor_level =
         ODM_GetFloorLevel(pX, pY, party_new_Z, pParty->uPartyHeight,
                           &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
@@ -3193,11 +3176,11 @@ void ODM_ProcessPartyActions() {
     pParty->uFallSpeed = fall_speed;
     pParty->field_6F0 = v113;
     if (party_drowning_flag) {  // группа тонет
-        pTerrainHeight = GetTerrainHeightsAroundParty2(
-            pParty->vPosition.x, pParty->vPosition.y, &v110, 1);
-        if (pParty->vPosition.z <=
-            pTerrainHeight + 1)  //положение группы всегда +1
+        bool onWater = false;
+        pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->vPosition.x, pParty->vPosition.y, &onWater, 1);
+        if (pParty->vPosition.z <= pTerrainHeight + 1) {  //положение группы всегда +1
             pParty->uFlags |= PARTY_FLAGS_1_WATER_DAMAGE;
+        }
     }
 
     if (!trigger_id  //падение на воду
@@ -3413,7 +3396,6 @@ void UpdateActors_ODM() {
     //  signed int v60; // eax@107
     int v61;            // eax@124
     Vec3_int_ v62;      // [sp+Ch] [bp-44h]@42
-    int v63;            // [sp+18h] [bp-38h]@64
     int v64;            // [sp+1Ch] [bp-34h]@64
     bool Actor_On_Terrain;           // [sp+28h] [bp-28h]@10
     unsigned int v69;   // [sp+30h] [bp-20h]@6
@@ -3423,7 +3405,6 @@ void UpdateActors_ODM() {
     int v72b;
     int uIsFlying;     // [sp+44h] [bp-Ch]@8
     unsigned int Actor_ITR;  // [sp+48h] [bp-8h]@1
-    int uIsOnWater;    // [sp+4Ch] [bp-4h]@10
 
     if (engine->config->no_actors)
         uNumActors = 0;
@@ -3434,7 +3415,6 @@ void UpdateActors_ODM() {
             pActors[Actor_ITR].uAIState == Summoned || !pActors[Actor_ITR].uMovementSpeed)
             continue;
         Water_Walk = 0;
-        v69 = 0;
         if (MonsterStats::BelongsToSupertype(pActors[Actor_ITR].pMonsterInfo.uID,
                                              MONSTER_SUPERTYPE_WATER_ELEMENTAL))
             Water_Walk = 1;
@@ -3443,6 +3423,8 @@ void UpdateActors_ODM() {
         if (!pActors[Actor_ITR].CanAct()) uIsFlying = 0;
         v70 = IsTerrainSlopeTooHigh(pActors[Actor_ITR].vPosition.x,
                                     pActors[Actor_ITR].vPosition.y);
+        v69 = 0;
+        bool uIsOnWater = false;
         v5 = ODM_GetFloorLevel(
             pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y,
             pActors[Actor_ITR].vPosition.z, pActors[Actor_ITR].uActorHeight, &uIsOnWater,
@@ -3576,10 +3558,11 @@ void UpdateActors_ODM() {
                     fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
             // v34 = 0;
             v35 = stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
+            bool bOnWater = false;
             v36 = ODM_GetFloorLevel(
                 stru_721530.normal2.x, stru_721530.normal2.y,
                 stru_721530.normal2.z - stru_721530.prolly_normal_d - 1,
-                pActors[Actor_ITR].uActorHeight, (int *)&v63, &v64, 0);
+                pActors[Actor_ITR].uActorHeight, &bOnWater, &v64, 0);
             if (uIsOnWater) {
                 if (v35 < v36 + 60) {
                     if (pActors[Actor_ITR].uAIState == Dead ||
@@ -4086,8 +4069,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_z) {
 }
 
 //----- (0048257A) --------------------------------------------------------
-int GetTerrainHeightsAroundParty2(int a1, int a2, int *pIsOnWater,
-                                  int bFloatAboveWater) {
+int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAboveWater) {
     //  int result; // eax@9
     int v8;          // ebx@11
     int v9;          // eax@11
