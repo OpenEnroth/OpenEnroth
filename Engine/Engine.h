@@ -253,9 +253,85 @@ struct Engine {
             }
         );
     }
+    inline void ToggleFlipOnExit() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->ToggleFlipOnExit();
+            }
+        );
+    }
+    inline void ToggleWalkSound() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->ToggleWalkSound();
+            }
+        );
+    }
+    inline void ToggleShowDamage() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->ToggleShowDamage();
+            }
+        );
+    }
+    inline void ToggleBloodsplats() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->ToggleBloodsplats();
+            }
+        );
+    }
+    inline void SetMusicLevel(int level) {
+        MutateConfig(
+            [level](std::shared_ptr<EngineConfig> &cfg) {
+                int lvl = level;
+                if (lvl < 0)
+                    lvl = 0;
+                if (lvl > 9)
+                    lvl = 9;
+
+                cfg->music_level = lvl;
+            }
+        );
+    }
+    inline void SetSoundLevel(int level) {
+        MutateConfig(
+            [level](std::shared_ptr<EngineConfig> &cfg) {
+                int lvl = level;
+                if (lvl < 0)
+                    lvl = 0;
+                if (lvl > 9)
+                    lvl = 9;
+
+                cfg->sound_level = lvl;
+            }
+        );
+    }
+    inline void SetVoiceLevel(int level) {
+        MutateConfig(
+            [level](std::shared_ptr<EngineConfig> &cfg) {
+                int lvl = level;
+                if (lvl < 0)
+                    lvl = 0;
+                if (lvl > 9)
+                    lvl = 9;
+
+                cfg->voice_level = lvl;
+            }
+        );
+    }
+    inline void SetTurnSpeed(int turn_speed) {
+        MutateConfig(
+            [turn_speed](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->turn_speed = turn_speed;
+            }
+        );
+    }
     inline void MutateConfig(std::function<void(std::shared_ptr<EngineConfig> &)> mutator) {
         EngineConfigFactory engineConfigFactory;
-        this->config = engineConfigFactory.Mutate(config, mutator);
+        this->Configure(
+            engineConfigFactory.Mutate(config, mutator)
+        );
     }
 
 

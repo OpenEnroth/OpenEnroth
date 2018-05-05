@@ -278,7 +278,7 @@ void Menu::EventLoop() {
                 pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                 continue;
             case UIMSG_ToggleBloodsplats:
-                engine->config->ToggleBloodsplats();
+                engine->ToggleBloodsplats();
                 continue;
             case UIMSG_ToggleColoredLights:
                 render->ToggleColoredLights();
@@ -288,22 +288,19 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_ChangeMusicVolume: {
+                int new_level = engine->config->music_level;
                 if (param == 4) {
-                    engine->config->music_level -= 1;
+                    new_level -= 1;
                     new OnButtonClick2(243, 216, 0, 0, (int)pBtn_SliderLeft, String(), false);
                 } else if (param == 5) {
-                    engine->config->music_level += 1;
+                    new_level += 1;
                     new OnButtonClick2(435, 216, 0, 0, (int)pBtn_SliderRight, String(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
-                    engine->config->music_level = (pt.x - 263) / 17;  // for mouse
+                    new_level = (pt.x - 263) / 17;  // for mouse
                 }
 
-                if (engine->config->music_level < 0)
-                    engine->config->music_level = 0;
-                if (engine->config->music_level > 9)
-                    engine->config->music_level = 9;
-
+                engine->SetMusicLevel(new_level);
                 if (engine->config->music_level > 0)
                     pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0);
                 pAudioPlayer->SetMusicVolume(engine->config->music_level);
@@ -311,55 +308,50 @@ void Menu::EventLoop() {
             }
 
             case UIMSG_ChangeSoundVolume: {
+                int new_level = engine->config->sound_level;
                 if (param == 4) {
-                    engine->config->sound_level -= 1;
+                    new_level -= 1;
                     new OnButtonClick2(243, 162, 0, 0, (int)pBtn_SliderLeft, String(), false);
                 } else if (param == 5) {
-                    engine->config->sound_level += 1;
+                    new_level += 1;
                     new OnButtonClick2(435, 162, 0, 0, (int)pBtn_SliderRight, String(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
-                    engine->config->sound_level = (pt.x - 263) / 17;
+                    new_level = (pt.x - 263) / 17;
                 }
 
-                if (engine->config->sound_level < 0)
-                    engine->config->sound_level = 0;
-                if (engine->config->sound_level > 9)
-                    engine->config->sound_level = 9;
+                engine->SetSoundLevel(new_level);
 
                 pAudioPlayer->SetMasterVolume(engine->config->sound_level);
                 pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0);
                 continue;
             }
             case UIMSG_ToggleFlipOnExit:
-                engine->config->ToggleFlipOnExit();
+                engine->ToggleFlipOnExit();
                 continue;
             case UIMSG_ToggleAlwaysRun:
-                engine->config->ToggleAlwaysRun();
+                engine->ToggleAlwaysRun();
                 continue;
             case UIMSG_ToggleWalkSound:
-                engine->config->ToggleWalkSound();
+                engine->ToggleWalkSound();
                 continue;
             case UIMSG_ToggleShowDamage:
-                engine->config->ToggleShowDamage();
+                engine->ToggleShowDamage();
                 continue;
             case UIMSG_ChangeVoiceVolume: {
+                int new_level = engine->config->voice_level;
                 if (param == 4) {
-                    engine->config->voice_level -= 1;
+                    new_level -= 1;
                     new OnButtonClick2(243, 270, 0, 0, (int)pBtn_SliderLeft, String(), false);
                 } else if (param == 5) {
-                    engine->config->voice_level += 1;
+                    new_level += 1;
                     new OnButtonClick2(435, 270, 0, 0, (int)pBtn_SliderRight, String(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
-                    engine->config->voice_level = (pt.x - 263) / 17;
+                    new_level = (pt.x - 263) / 17;
                 }
 
-                if (engine->config->voice_level < 0)
-                    engine->config->voice_level = 0;
-                if (engine->config->voice_level > 9)
-                    engine->config->voice_level = 9;
-
+                engine->SetVoiceLevel(new_level);
                 if (engine->config->voice_level > 0)
                     pAudioPlayer->PlaySound(SOUND_hf445a, -1, 0, -1, 0, 0);
                 continue;
@@ -367,7 +359,7 @@ void Menu::EventLoop() {
             case UIMSG_SetTurnSpeed:
                 if (param)
                     pParty->sRotationY = param * pParty->sRotationY / param;
-                engine->config->turn_speed = param;
+                engine->SetTurnSpeed(param);
                 continue;
 
             case UIMSG_SetGraphicsMode:

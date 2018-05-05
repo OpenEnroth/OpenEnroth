@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "Engine/Engine.h"
+#include "Engine/IocContainer.h"
 #include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 
@@ -13,6 +14,8 @@
 #include "Engine/Graphics/Viewport.h"
 
 #include "Engine/Objects/Actor.h"
+
+using EngineIoc = Engine_::IocContainer;
 
 static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
@@ -483,7 +486,7 @@ int Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
         }
 
         default:
-            logger->Warning(
+            log->Warning(
                 L"Undefined type requested for: CVis::get_object_zbuf_val()");
             return -1;
     }
@@ -1172,6 +1175,9 @@ void Vis::SortByScreenSpaceY(RenderVertexSoft *pArray, int start, int end) {
 
 //----- (004C04AF) --------------------------------------------------------
 Vis::Vis() {
+    this->log = EngineIoc::ResolveLogger();
+
+
     RenderVertexSoft v3;  // [sp+Ch] [bp-60h]@1
     RenderVertexSoft v4;  // [sp+3Ch] [bp-30h]@1
 
@@ -1249,7 +1255,7 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
         PickOutdoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter,
             false);
     } else {
-        logger->Warning(
+        log->Warning(
             L"Picking mouse in undefined level");  // picking in main menu is
                                                    // default (buggy) game
                                                    // behaviour. should've
@@ -1316,7 +1322,7 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
                 // v8 = filter->object_id;
                 if (object_type != filter->object_id) return true;
                 if (filter->object_id != OBJECT_Decoration) {
-                    logger->Warning(
+                    log->Warning(
                         L"Unsupported \"exclusion if no event\" type in "
                         L"CVis::is_part_of_selection");
                     return true;
@@ -1328,7 +1334,7 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
             }
             if (object_type == filter->object_id) {
                 if (object_type != OBJECT_Actor) {
-                    logger->Warning(L"Default case reached in VIS");
+                    log->Warning(L"Default case reached in VIS");
                     return true;
                 }
 
@@ -1354,15 +1360,12 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
             uint face_attrib = 0;
             bool no_event = true;
             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                ODMFace *face =
-                    (ODMFace *)uD3DBillboardIdx_or_pBLVFace_or_pODMFace;
+                ODMFace *face = (ODMFace *)uD3DBillboardIdx_or_pBLVFace_or_pODMFace;
                 no_event = face->sCogTriggeredID == 0;
                 face_attrib = face->uAttributes;
             } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                BLVFace *face =
-                    (BLVFace *)uD3DBillboardIdx_or_pBLVFace_or_pODMFace;
-                no_event =
-                    pIndoor->pFaceExtras[face->uFaceExtraID].uEventID == 0;
+                BLVFace *face = (BLVFace *)uD3DBillboardIdx_or_pBLVFace_or_pODMFace;
+                no_event = pIndoor->pFaceExtras[face->uFaceExtraID].uEventID == 0;
                 face_attrib = face->uAttributes;
             } else {
                 assert(false);
@@ -1371,14 +1374,14 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
             if (filter->object_id != OBJECT_BLVDoor) return true;
             if (no_event ||
                 face_attrib &
-                    filter
-                        ->no_at_ai_state)  // face_attrib = 0x2009408 incorrect
+                    filter->no_at_ai_state)  // face_attrib = 0x2009408 incorrect
                 return false;
             return (face_attrib & filter->at_ai_state) != 0;
         }
 
         default:
             assert(false);
+            return false;
     }
 }
 
