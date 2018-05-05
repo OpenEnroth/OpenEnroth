@@ -1652,6 +1652,8 @@
     <None Include="..\..\lib64\OpenAL\lib\x64\swscale-5.def">
       <Filter>lib64\OpenAL\lib\x64</Filter>
     </None>
+    <None Include="..\..\appveyor.yml" />
+    <None Include="..\..\CPPLINT.cfg" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\lib\OpenAL\lib\OpenAL\OpenAL32.lib">

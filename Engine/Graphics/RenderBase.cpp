@@ -23,8 +23,7 @@ void RenderBase::PostInitialization() {
     if (!config->IsFullscreen()) {
         // window->SetWindowedMode(game_width, game_height);
         SwitchToWindow();
-    }
-    else {
+    } else {
         __debugbreak();  // check required
         window->SetFullscreenMode();
         InitializeFullscreen();

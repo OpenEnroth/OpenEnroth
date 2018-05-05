@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <memory>
+#include <string>
 
 #include "Engine/EngineConfig.h"
 #include "Engine/IocContainer.h"
@@ -22,8 +23,7 @@ class EngineConfigFactory {
     std::shared_ptr<EngineConfig> Clone(std::shared_ptr<const EngineConfig> other);
     std::shared_ptr<EngineConfig> Mutate(
         std::shared_ptr<const EngineConfig> config,
-        std::function<void(std::shared_ptr<EngineConfig> &)> mutator
-    );
+        std::function<void(std::shared_ptr<EngineConfig> &)> mutator);
 
  private:
     std::shared_ptr<EngineConfig> CreateDefaultConfiguration();

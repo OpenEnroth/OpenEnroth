@@ -147,8 +147,7 @@ void Engine::Draw() {
     int v4;  // edi@26
 
     SetSaturateFaces(
-        pParty->_497FC5_check_party_perception_against_level()
-    );
+        pParty->_497FC5_check_party_perception_against_level());
 
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;
     pIndoorCameraD3D->sRotationY = pParty->sRotationY;

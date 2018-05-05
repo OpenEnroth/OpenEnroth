@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <d3d.h>
 #include <ddraw.h>
 
@@ -17,7 +19,7 @@ class Image;
 
 class Render : public RenderBase {
  public:
-    explicit Render();
+    Render();
     virtual ~Render();
 
     virtual bool Initialize(OSWindow *window);

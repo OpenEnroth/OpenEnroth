@@ -246,7 +246,7 @@ struct RenderHWLContainer {
 
 class IRender {
  public:
-    explicit inline IRender() {
+    inline IRender() {
         this->log = EngineIoc::ResolveLogger();
         this->decal_builder = EngineIoc::ResolveDecalBuilder();
         this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();

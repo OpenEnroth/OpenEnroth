@@ -4,7 +4,7 @@
 
 class RenderOpenGL : public RenderBase {
  public:
-    explicit RenderOpenGL();
+    RenderOpenGL();
     virtual ~RenderOpenGL();
 
     virtual bool Initialize(OSWindow *window);

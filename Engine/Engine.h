@@ -152,134 +152,115 @@ struct Engine {
         MutateConfig(
             [is_targeting](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->SetTargetingMode(is_targeting);
-            }
-        );
+            });
     }
     inline void SetDebugWizardEye(bool wizard_eye) {
         MutateConfig(
             [wizard_eye](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->debug_wizard_eye = wizard_eye;
-            }
-        );
+            });
     }
     inline void SetDebugAllMagic(bool all_magic) {
         MutateConfig(
             [all_magic](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->debug_all_magic = all_magic;
-            }
-        );
+            });
     }
     inline void SetDebugShowFps(bool show_fps) {
         MutateConfig(
             [show_fps](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->show_fps = show_fps;
-            }
-        );
+            });
     }
     inline void SetDebugShowPickedFace(bool show_picked_face) {
         MutateConfig(
             [show_picked_face](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->show_picked_face = show_picked_face;
-            }
-        );
+            });
     }
     inline void SetDebugPortalOutlines(bool portal_outlines) {
         MutateConfig(
             [portal_outlines](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->debug_portal_outlines = portal_outlines;
-            }
-        );
+            });
     }
     inline void SetDebugTurboSpeed(bool turbo_speed) {
         MutateConfig(
             [turbo_speed](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->debug_turbo_speed = turbo_speed;
-            }
-        );
+            });
     }
     inline void SetSeasonsChange(bool seasons_change) {
         MutateConfig(
             [seasons_change](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->seasons_change = seasons_change;
-            }
-        );
+            });
     }
     inline void SetAllowSnow(bool allow_snow) {
         MutateConfig(
             [allow_snow](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->allow_snow = allow_snow;
-            }
-        );
+            });
     }
     inline void SetExtendedDrawDistance(bool extended_draw_distance) {
         MutateConfig(
             [extended_draw_distance](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->extended_draw_distance = extended_draw_distance;
-            }
-        );
+            });
     }
     inline void SetNoActors(bool no_actors) {
         MutateConfig(
             [no_actors](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->no_actors = no_actors;
-            }
-        );
+            });
     }
     inline void SetAllowLightmaps(bool allow_lightmaps) {
         MutateConfig(
             [allow_lightmaps](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->allow_lightmaps = allow_lightmaps;
-            }
-        );
+            });
     }
     inline void SetDebugLightmapsDecals(bool debug_lightmaps_decals) {
         MutateConfig(
             [debug_lightmaps_decals](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->debug_lightmaps_decals = debug_lightmaps_decals;
-            }
-        );
+            });
     }
     inline void SetDebugTerrain(bool debug_terrain) {
         MutateConfig(
             [debug_terrain](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->debug_terrain = debug_terrain;
-            }
-        );
+            });
     }
     inline void ToggleAlwaysRun() {
         MutateConfig(
             [](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->ToggleAlwaysRun();
-            }
-        );
+            });
     }
     inline void ToggleFlipOnExit() {
         MutateConfig(
             [](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->ToggleFlipOnExit();
-            }
-        );
+            });
     }
     inline void ToggleWalkSound() {
         MutateConfig(
             [](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->ToggleWalkSound();
-            }
-        );
+            });
     }
     inline void ToggleShowDamage() {
         MutateConfig(
             [](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->ToggleShowDamage();
-            }
-        );
+            });
     }
     inline void ToggleBloodsplats() {
         MutateConfig(
             [](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->ToggleBloodsplats();
-            }
-        );
+            });
     }
     inline void SetMusicLevel(int level) {
         MutateConfig(
@@ -291,8 +272,7 @@ struct Engine {
                     lvl = 9;
 
                 cfg->music_level = lvl;
-            }
-        );
+            });
     }
     inline void SetSoundLevel(int level) {
         MutateConfig(
@@ -304,8 +284,7 @@ struct Engine {
                     lvl = 9;
 
                 cfg->sound_level = lvl;
-            }
-        );
+            });
     }
     inline void SetVoiceLevel(int level) {
         MutateConfig(
@@ -317,15 +296,13 @@ struct Engine {
                     lvl = 9;
 
                 cfg->voice_level = lvl;
-            }
-        );
+            });
     }
     inline void SetTurnSpeed(int turn_speed) {
         MutateConfig(
             [turn_speed](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->turn_speed = turn_speed;
-            }
-        );
+            });
     }
     inline void MutateConfig(std::function<void(std::shared_ptr<EngineConfig> &)> mutator) {
         EngineConfigFactory engineConfigFactory;

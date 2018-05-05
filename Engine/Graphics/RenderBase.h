@@ -4,7 +4,7 @@
 
 class RenderBase : public IRender {
  public:
-    explicit RenderBase()
+    inline RenderBase()
         : IRender() {
     }
 

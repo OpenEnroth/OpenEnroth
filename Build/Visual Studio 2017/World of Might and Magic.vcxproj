@@ -771,6 +771,8 @@
   <ItemGroup>
     <None Include="..\..\.gitattributes" />
     <None Include="..\..\.gitignore" />
+    <None Include="..\..\appveyor.yml" />
+    <None Include="..\..\CPPLINT.cfg" />
     <None Include="..\..\Engine\Graphics\Shaders\UI.hlsl" />
     <None Include="..\..\lib64\OpenAL\lib\x64\avcodec-58.def" />
     <None Include="..\..\lib64\OpenAL\lib\x64\avdevice-58.def" />

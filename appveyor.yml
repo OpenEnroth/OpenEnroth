@@ -24,8 +24,10 @@ build_script:
   - ps: |
       Get-ChildItem "./Arcomage" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
       Get-ChildItem "./Arcomage" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Game" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Game" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
+      Get-ChildItem "./src" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
+      Get-ChildItem "./src" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
+      Get-ChildItem "./src/Application" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
+      Get-ChildItem "./src/Application" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
       Get-ChildItem "./IO" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
       Get-ChildItem "./IO" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
       Get-ChildItem "./Media" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
