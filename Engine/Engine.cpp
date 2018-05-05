@@ -903,8 +903,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
     IRenderFactory renderFactory;
     render = renderFactory.Create(
         config->renderer_name,
-        !config->RunInWindow()
-    );
+        !config->RunInWindow());
 
     if (!render) {
         log->Warning(L"Render creation failed");

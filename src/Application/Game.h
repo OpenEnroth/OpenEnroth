@@ -50,6 +50,6 @@ class Game {
      Menu *menu = nullptr;
 };
 
-}  // namespace Game
+}  // namespace Application
 
 extern class Image *gamma_preview_image;  // 506E40

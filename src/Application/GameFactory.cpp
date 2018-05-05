@@ -8,10 +8,10 @@ using Application::Configuration;
 using Application::Game;
 
 std::shared_ptr<const Configuration> GameFactory::CreateConfiguration(const std::string &command_line) {
-   auto config = std::make_shared<Configuration>();
-   config->command_line = command_line;
+    auto config = std::make_shared<Configuration>();
+    config->command_line = command_line;
 
-   return config;
+    return config;
 }
 
 std::shared_ptr<Game> GameFactory::CreateGame(const std::string &command_line) {

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <memory>
-
 #include <d3d.h>
 #include <ddraw.h>
 
 #include <GdiPlus.h>
 #undef DrawText
+
+#include <memory>
 
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"

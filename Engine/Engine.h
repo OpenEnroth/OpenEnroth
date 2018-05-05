@@ -307,8 +307,7 @@ struct Engine {
     inline void MutateConfig(std::function<void(std::shared_ptr<EngineConfig> &)> mutator) {
         EngineConfigFactory engineConfigFactory;
         this->Configure(
-            engineConfigFactory.Mutate(config, mutator)
-        );
+            engineConfigFactory.Mutate(config, mutator));
     }
 
 
