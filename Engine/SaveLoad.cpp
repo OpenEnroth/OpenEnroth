@@ -7,8 +7,8 @@
 
 #include "Platform/Api.h"
 
-#include "Engine/Configuration.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineConfig.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -222,10 +222,10 @@ void LoadGame(unsigned int uSlot) {
         }
     }
 
-    pAudioPlayer->SetMusicVolume(engine_config->music_level);
-    pAudioPlayer->SetMasterVolume(engine_config->sound_level);
-    if (engine_config->turn_speed > 0) {
-        pParty->sRotationY = engine_config->turn_speed * pParty->sRotationY / engine_config->turn_speed;
+    pAudioPlayer->SetMusicVolume(engine->config->music_level);
+    pAudioPlayer->SetMasterVolume(engine->config->sound_level);
+    if (engine->config->turn_speed > 0) {
+        pParty->sRotationY = engine->config->turn_speed * pParty->sRotationY / engine->config->turn_speed;
     }
     MM7Initialization();
     bFlashQuestBook = false;

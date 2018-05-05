@@ -540,7 +540,7 @@ class VideoList {
     void Initialize(const std::string &file_path) {
         static_assert(sizeof(MovieHeader) == 44, "Wrong type size");
 
-        if (engine_config->NoVideo()) {
+        if (engine->config->NoVideo()) {
             return;
         }
 
@@ -636,7 +636,7 @@ void MPlayer::OpenHouseMovie(const std::string &pMovieName, bool bLoop) {
 }
 
 void MPlayer::HouseMovieLoop() {
-    if (!pMovie_Track || engine_config->NoVideo()) {
+    if (!pMovie_Track || engine->config->NoVideo()) {
         return;
     }
 
@@ -676,7 +676,7 @@ void MPlayer::HouseMovieLoop() {
 }
 
 void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
-    if (engine_config->NoVideo()) {
+    if (engine->config->NoVideo()) {
         return;
     }
 

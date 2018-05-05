@@ -4455,7 +4455,7 @@ void GUIWindow_House::Release() {
     }
 
     dword_5C35D4 = 0;
-    if (engine_config->flip_on_exit) {
+    if (engine->config->flip_on_exit) {
         pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (stru_5C6E00->uIntegerPi + pParty->sRotationY);
         pIndoorCameraD3D->sRotationY = pParty->sRotationY;
     }

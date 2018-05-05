@@ -115,13 +115,13 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     pMobileLightsStack->uNumLightsActive = 0;
     pStationaryLightsStack->uNumLightsActive = 0;
 
-    pEngine->PushStationaryLights(-1);
-    pEngine->PrepareBloodsplats();
+    engine->PushStationaryLights(-1);
+    engine->PrepareBloodsplats();
     if (bRedraw)
         UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
                              WorldPosToGridCellZ(pParty->vPosition.y),
                              1);
-    engine_config->SetForceRedraw(false);
+    engine->config->SetForceRedraw(false);
     if (render->config->is_using_specular)
         lightmap_builder->uFlags |= LIGHTMAP_FLAGS_USE_SPECULAR;
     else
@@ -142,11 +142,11 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 //----- (00441CFF) --------------------------------------------------------
 void OutdoorLocation::Draw() {
     bool redrawWorld = true;
-    if (!(pParty->uFlags & 2) && !engine_config->ForceRedraw())
+    if (!(pParty->uFlags & 2) && !engine->config->ForceRedraw())
         redrawWorld = false;
     pOutdoor->ExecDraw(redrawWorld);
 
-    pEngine->DrawParticles();
+    engine->DrawParticles();
     // pWeather->Draw();//если раскомментировать скорость снега быстрее
     trail_particle_generator.UpdateParticles();
 }
@@ -979,7 +979,7 @@ void OutdoorLocation::Release() {
 
 bool OutdoorLocation::Load(const String &filename, int days_played,
                            int respawn_interval_days, int *thisa) {
-    if (pEngine->IsUnderwater()) {
+    if (engine->IsUnderwater()) {
         pPaletteManager->pPalette_tintColor[0] = 0x10;
         pPaletteManager->pPalette_tintColor[1] = 0xC2;
         pPaletteManager->pPalette_tintColor[2] = 0x99;
@@ -1411,7 +1411,7 @@ TileDesc *OutdoorLocation::DoGetTile(int sX, int sY) {
       v3 = v3 + this->pTileTypes[3].uTileID - 198;
     }
 
-    if (engine_config->seasons_change) {
+    if (engine->config->seasons_change) {
         switch (pParty->uCurrentMonth) {
             case 11:
             case 0:
@@ -2137,7 +2137,7 @@ void ODM_UpdateUserInputAndOther() {
         pOutdoor->level_filename = pCurrentMapName;
         v0 = pOutdoor->GetTravelDestination(pParty->vPosition.x,
                                             pParty->vPosition.y, pOut, 32);
-        if (!pEngine->IsUnderwater() && (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER |
+        if (!engine->IsUnderwater() && (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER |
                                                PARTY_FLAGS_1_FALLING | 0x04) ||
                              pParty->uFlags & 0x0200 || pParty->bFlying) ||
             !v0) {
@@ -2397,7 +2397,7 @@ void ODM_ProcessPartyActions() {
     not_high_fall = party_new_Z - v111 <= 32;
     //****************************************
     // timer update(обновить таймер звука ходьбы)
-    if (!engine_config->NoWalkSound() && pParty->walk_sound_timer) {
+    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer) {
         if (pParty->walk_sound_timer >= pEventTimer->uTimeElapsed)
             pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
         else
@@ -2406,7 +2406,7 @@ void ODM_ProcessPartyActions() {
 
     //****************************************
     // check if we should be flying
-    if (!pEngine->IsUnderwater() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].Active())
+    if (!engine->IsUnderwater() && !pParty->pPartyBuffs[PARTY_BUFF_FLY].Active())
         pParty->bFlying = false;
 
     //*****************************************
@@ -2457,21 +2457,21 @@ void ODM_ProcessPartyActions() {
         switch (pPartyActionQueue->Next()) {
             case PARTY_FlyUp:  //полёт вверх
             {
-                if (!pParty->FlyActive() && !pEngine->IsUnderwater()) break;
+                if (!pParty->FlyActive() && !engine->IsUnderwater()) break;
 
                 pParty->bFlying = false;
-                if (pEngine->IsUnderwater() ||
+                if (engine->IsUnderwater() ||
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
                     pParty->pPlayers
                             [pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1]
                                 .sMana > 0) {
-                    if (pParty->vPosition.z < engine_config->max_flight_height || hovering) {
+                    if (pParty->vPosition.z < engine->config->max_flight_height || hovering) {
                         party_new_Z += 30;
                         v113 += 30;
                         pParty->bFlying = true;
-                        if (party_new_Z > engine_config->max_flight_height) {
-                            party_new_Z = engine_config->max_flight_height;
-                            v113 = engine_config->max_flight_height;
+                        if (party_new_Z > engine->config->max_flight_height) {
+                            party_new_Z = engine->config->max_flight_height;
+                            v113 = engine->config->max_flight_height;
                         }
                         v1 = 0;
                         v2 = 0;
@@ -2499,9 +2499,9 @@ void ODM_ProcessPartyActions() {
             } break;
 
             case PARTY_FlyDown:  //полёт вниз
-                if (pParty->FlyActive() || pEngine->IsUnderwater()) {
+                if (pParty->FlyActive() || engine->IsUnderwater()) {
                     pParty->bFlying = false;
-                    if (pEngine->IsUnderwater() ||
+                    if (engine->IsUnderwater() ||
                         pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
                         pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0) {
                             // *(int *)&pParty->pArtifactsFound[6972 *
@@ -2521,8 +2521,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_TurnLeft:  //поворот влево
-                if (engine_config->turn_speed > 0)
-                    _angle_y += engine_config->turn_speed;  // descrete turn
+                if (engine->config->turn_speed > 0)
+                    _angle_y += engine->config->turn_speed;  // descrete turn
                 else
                     _angle_y += dturn * fTurnSpeedMultiplier;  // time-based smooth turn
 
@@ -2530,8 +2530,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_TurnRight:  //поворот вправо
-                if (engine_config->turn_speed > 0)
-                    _angle_y -= engine_config->turn_speed;
+                if (engine->config->turn_speed > 0)
+                    _angle_y -= engine->config->turn_speed;
                 else
                     _angle_y -= dturn * fTurnSpeedMultiplier;
 
@@ -2539,8 +2539,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_FastTurnLeft:  //быстрый поворот влево
-                if (engine_config->turn_speed > 0)
-                    _angle_y += engine_config->turn_speed;
+                if (engine->config->turn_speed > 0)
+                    _angle_y += engine->config->turn_speed;
                 else
                     _angle_y += 2.0f * fTurnSpeedMultiplier * (double)dturn;
 
@@ -2548,8 +2548,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_FastTurnRight:  //быстрый поворот вправо
-                if (engine_config->turn_speed > 0)
-                    _angle_y -= engine_config->turn_speed;
+                if (engine->config->turn_speed > 0)
+                    _angle_y -= engine->config->turn_speed;
                 else
                     _angle_y -= 2.0f * fTurnSpeedMultiplier * (double)dturn;
 
@@ -2598,7 +2598,7 @@ void ODM_ProcessPartyActions() {
                 int dx = cos_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
                 int dy = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
 
-                if (engine_config->debug_turbo_speed) {
+                if (engine->config->debug_turbo_speed) {
                     v2 += dx * 12;
                     v1 += dy * 12;
                 } else {
@@ -2798,7 +2798,7 @@ void ODM_ProcessPartyActions() {
     }
 
     if (hovering) {  // блок для крика падения
-        if (!pEngine->IsUnderwater() && v34 <= 0) {
+        if (!engine->IsUnderwater() && v34 <= 0) {
             if (v34 < -500 && !pParty->bFlying &&
                 pParty->vPosition.z - v111 > 1000 &&
                 !pParty->FeatherFallActive()) {  // falling scream
@@ -2883,7 +2883,7 @@ void ODM_ProcessPartyActions() {
         if (!v97 && !v110 && !bmodel_standing_on_pid) is_not_on_bmodel = true;
         v43 = 1;
         v44 = 1;
-        if (pEngine->IsUnderwater() || !is_not_on_bmodel) {
+        if (engine->IsUnderwater() || !is_not_on_bmodel) {
             pX = _angle_x;
             if (v43) pY = _angle_y;
         } else {
@@ -2949,7 +2949,7 @@ void ODM_ProcessPartyActions() {
             v48 = pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1;
             v129 = v48 <= 32;
             v119 = pODMFace->pFacePlane.vNormal.z < 46378;
-            if (pEngine->IsUnderwater())
+            if (engine->IsUnderwater())
                 v119 = 0;
             if (pODMFace->uPolygonType == POLYGON_Floor) {
                 if (fall_speed < 0) fall_speed = 0;
@@ -3039,7 +3039,7 @@ void ODM_ProcessPartyActions() {
     uint pX_ = abs(pParty->vPosition.x - pX);
     uint pY_ = abs(pParty->vPosition.y - pY);
     uint pZ_ = abs(pParty->vPosition.z - party_new_Z);
-    if (!engine_config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
+    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
         if (party_running_flag && (!hovering || not_high_fall)) {
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16) {
@@ -3114,7 +3114,7 @@ void ODM_ProcessPartyActions() {
                 pParty->vPosition.z = on_ground;
                 if (pParty->uFallStartY - party_new_Z > 512 && !bFeatherFall &&
                     party_new_Z <= on_ground &&
-                    !pEngine->IsUnderwater()) {  // Fall to the ground(падение на землю с
+                    !engine->IsUnderwater()) {  // Fall to the ground(падение на землю с
                                      // высоты)
                     if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
                         pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
@@ -3196,7 +3196,7 @@ void ODM_ProcessPartyActions() {
                 }
             }
         }
-    } else if (!engine_config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
+    } else if (!engine->config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);
         pParty->walk_sound_timer = 64;
     }
@@ -3230,7 +3230,7 @@ void ODM_ProcessPartyActions() {
             pParty->vPosition.z = on_ground;
             if (pParty->uFallStartY - party_new_Z > 512 && !bFeatherFall &&
                 party_new_Z <= on_ground &&
-                !pEngine->IsUnderwater()) {  // Fall to the water(падение на воду с высоты)
+                !engine->IsUnderwater()) {  // Fall to the water(падение на воду с высоты)
                 if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
                     pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
                 } else {
@@ -3445,7 +3445,7 @@ void UpdateActors_ODM() {
     unsigned int Actor_ITR;  // [sp+48h] [bp-8h]@1
     int uIsOnWater;    // [sp+4Ch] [bp-4h]@10
 
-    if (engine_config->no_actors)
+    if (engine->config->no_actors)
         uNumActors = 0;
 
     for (Actor_ITR = 0; Actor_ITR < uNumActors; ++Actor_ITR) {
@@ -3925,7 +3925,7 @@ void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
 }
 
 unsigned int GetLevelFogColor() {
-    if (pEngine->IsUnderwater()) {
+    if (engine->IsUnderwater()) {
         return 0xFF258F5C;
     }
 
@@ -3955,10 +3955,10 @@ int sub_47C3D7_get_fog_specular(int a1, int a2, float a3) {
     int v7;
 
     int v3 = pWeather->bNight;
-    if (pEngine->IsUnderwater())
+    if (engine->IsUnderwater())
         v3 = 0;
     if (pParty->armageddon_timer ||
-        !(day_attrib & DAY_ATTRIB_FOG) && !pEngine->IsUnderwater())
+        !(day_attrib & DAY_ATTRIB_FOG) && !engine->IsUnderwater())
         return 0xFF000000;
     if (v3) {
         if (a3 < (double)day_fogrange_1) {

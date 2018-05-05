@@ -245,7 +245,7 @@ char DecalBuilder::_49B790_build_decal_geometry(
     decal->uColorMultiplier = uColorMultiplier;
     decal->uNumVertices = 4;
     decal->field_C14 = a2;
-    result = pEngine->pStru9Instance->_4980B9(
+    result = engine->pStru9Instance->_4980B9(
         a11, a10, a9->Normal.x, a9->Normal.y, a9->Normal.z, decal->pVertices,
         (signed int *)&decal->uNumVertices);
     if (result) {

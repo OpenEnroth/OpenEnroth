@@ -18,6 +18,7 @@ class EngineConfigFactory {
 
     std::shared_ptr<EngineConfig> Create();
     std::shared_ptr<EngineConfig> CreateFromCommandLine(const std::string &cmd);
+    std::shared_ptr<EngineConfig> Clone(std::shared_ptr<const EngineConfig> other);
 
  private:
     std::shared_ptr<EngineConfig> CreateDefaultConfiguration();

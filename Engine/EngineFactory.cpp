@@ -14,7 +14,9 @@ std::shared_ptr<Engine> EngineFactory::CreateEngine(const std::string &command_l
 
     auto engine = std::make_shared<Engine>();
     if (engine) {
-        engine->Configure(config);
+        if (engine->Configure(config)) {
+            return engine;
+        }
     }
-    return engine;
+    return nullptr;
 }

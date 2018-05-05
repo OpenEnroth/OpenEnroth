@@ -9,7 +9,6 @@
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
 
-#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/RenderBase.h"
 
 struct ODMFace;
@@ -18,7 +17,7 @@ class Image;
 
 class Render : public RenderBase {
  public:
-    explicit Render(Graphics::Configuration *config);
+    explicit Render();
     virtual ~Render();
 
     virtual bool Initialize(OSWindow *window);
@@ -179,7 +178,6 @@ class Render : public RenderBase {
 
     unsigned int uDesiredDirect3DDevice;
     int *pDefaultZBuffer;
-    OSWindow *window;
     unsigned int bWindowMode;
     RenderD3D *pRenderD3D;
     unsigned int uTargetRBits;

@@ -30,8 +30,8 @@
 #include "Platform/Api.h"
 #include "Platform/OsWindow.h"
 
-RenderOpenGL::RenderOpenGL(Graphics::Configuration *config)
-    : RenderBase(config) {
+RenderOpenGL::RenderOpenGL()
+    : RenderBase() {
 }
 RenderOpenGL::~RenderOpenGL() {}
 
@@ -83,7 +83,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     TextureOpenGL *texture = (TextureOpenGL *)pFace->GetTexture();
 
     if (lightmap_builder->StationaryLightsCount) sCorrectedColor = -1;
-    pEngine->AlterGamma_BLV(pFace, &sCorrectedColor);
+    engine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
     if (pFace->uAttributes & FACE_OUTLINED) {
         if (GetTickCount() % 300 >= 150)
@@ -92,7 +92,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             uColor = sCorrectedColor = 0xFF109010;
     }
 
-    if (_4D864C_force_sw_render_rules && engine_config->Flag1_1()) {
+    if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
         /*
             __debugbreak();
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
@@ -123,7 +123,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         */
     } else {
         if (!lightmap_builder->StationaryLightsCount ||
-            _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
+            _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
             glEnable(GL_TEXTURE_2D);
             glDisable(GL_BLEND);
             glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
@@ -898,7 +898,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
 }
 
 void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
-    pEngine->draw_debug_outlines();
+    engine->draw_debug_outlines();
     this->DoRenderBillboards_D3D();
     spell_fx_renderer->RenderSpecialEffects();
 }
@@ -959,7 +959,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     uNumBillboardsToDraw = 0;
 
     if (config->is_using_fog) {
-        config->is_using_fog = false;
+        SetUsingFog(false);
         glEnable(GL_FOG);
         glFogi(GL_FOG_MODE, GL_EXP);
 
@@ -980,7 +980,7 @@ void RenderOpenGL::SetBillboardBlendOptions(
     switch (a1) {
         case RenderBillboardD3D::Transparent: {
             if (config->is_using_fog) {
-                config->is_using_fog = false;
+                SetUsingFog(false);
                 glEnable(GL_FOG);
                 glFogi(GL_FOG_MODE, GL_EXP);
 
@@ -999,7 +999,7 @@ void RenderOpenGL::SetBillboardBlendOptions(
         case RenderBillboardD3D::Opaque_3: {
             if (config->is_using_specular) {
                 if (!config->is_using_fog) {
-                    config->is_using_fog = true;
+                    SetUsingFog(true);
                     glDisable(GL_FOG);
                 }
             }
@@ -1625,10 +1625,10 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
     auto uNumVertices = poly->uNumVertices;
 
     int a2 = 0xFFFFFFFF;
-    pEngine->AlterGamma_ODM(a4, &a2);
+    engine->AlterGamma_ODM(a4, &a2);
 
     if (!lightmap_builder->StationaryLightsCount ||
-        _4D864C_force_sw_render_rules && engine_config->Flag1_2()) {
+        _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_BLEND);
         glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
@@ -1652,7 +1652,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
             d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(
                 poly->dimming_level, 0,
                 VertexRenderList[i].vWorldViewPosition.x, 0, 0);
-            pEngine->AlterGamma_ODM(a4, &d3d_vertex_buffer[i].diffuse);
+            engine->AlterGamma_ODM(a4, &d3d_vertex_buffer[i].diffuse);
 
             if (a4->uAttributes & FACE_OUTLINED) {
                 d3d_vertex_buffer[i].diffuse = outline_color;
@@ -1925,6 +1925,9 @@ bool RenderOpenGL::Initialize(OSWindow *window) {
 
                                     SwapBuffers(hDC);
                             }*/
+
+                            PostInitialization();
+
                             return true;
                         }
                     }

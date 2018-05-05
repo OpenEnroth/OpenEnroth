@@ -328,7 +328,7 @@ void Keyboard::ProcessInputActions() {
     PartyAction partyAction;  // [sp-14h] [bp-1Ch]@20
     InputAction inputAction;  // [sp+0h] [bp-8h]@7
 
-    if (!engine_config->always_run) {
+    if (!engine->config->always_run) {
         if (this->IsShiftHeld())
             pParty->uFlags2 |= PARTY_FLAGS_2_RUNNING;
         else
@@ -585,7 +585,7 @@ void Keyboard::ProcessInputActions() {
                                 pPlayers[uActiveCharacter]->sMana;
                         }
                         if (!pPlayers[uActiveCharacter]->uQuickSpell ||
-                            pEngine->IsUnderwater() || !enoughMana) {
+                            engine->IsUnderwater() || !enoughMana) {
                             pPartyActionQueue = pPartyActionQueue;
                             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
                             break;
@@ -661,7 +661,7 @@ void Keyboard::ProcessInputActions() {
                             UIMSG_ClickZoomInBtn, 0, 0);
                         break;
                     case INPUT_AlwaysRun:
-                        engine_config->always_run = !engine_config->always_run;
+                        engine->config->always_run = !engine->config->always_run;
                         break;
                     default:
                         break;

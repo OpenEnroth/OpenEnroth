@@ -663,10 +663,10 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         memcpy(&pOutBounding[3], &v25, sizeof(RenderVertexSoft));
     }
 
-    // if ( _4D864C_force_sw_render_rules && engine_config->DrawBlvDebugs())
+    // if ( _4D864C_force_sw_render_rules && engine->config->DrawBlvDebugs())
     //{
     RenderVertexSoft v26;  // [sp+40h] [bp-60h]@20
-    if (engine_config->debug_portal_outlines) {
+    if (engine->config->debug_portal_outlines) {
         if (!bDoNotDrawPortalFrustum) {
             v26.vWorldPosition.x = pParty->vPosition.x;
             v26.vWorldPosition.y = pParty->vPosition.y;
@@ -686,7 +686,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     // pIndoorCameraD3D->debug_outline_sw(pFaceLimits,  4, 0xFFF14040,
     // 0.000099999997);     // limits
 
-    /*if ( _4D864C_force_sw_render_rules && engine_config->DrawBlvDebugs())
+    /*if ( _4D864C_force_sw_render_rules && engine->config->DrawBlvDebugs())
     {
       RenderVertexSoft v26; // [sp+40h] [bp-60h]@20
       v26.vWorldPosition.x = face_center_x; // corner to center
@@ -699,7 +699,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
 
     /*if ( _4D864C_force_sw_render_rules )
 {
-  if (engine_config->DrawBlvDebugs())*/
+  if (engine->config->DrawBlvDebugs())*/
     {
         RenderVertexSoft v25;  // [sp+10h] [bp-90h]@20
         RenderVertexSoft v26;  // [sp+40h] [bp-60h]@20
@@ -712,7 +712,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         v26.vWorldPosition.y = face_center_y + a1.y * 400.0f;
         v26.vWorldPosition.z = face_center_z + a1.z * 400.0f;
 
-        if (engine_config->debug_portal_outlines)
+        if (engine->config->debug_portal_outlines)
             pIndoorCameraD3D->do_draw_debug_line_sw(&v25, -1, &v26, 0xFFFF00u, 0, 0);
     }
     //}
@@ -734,7 +734,7 @@ char stru10::_49C5DA(BLVFace *pFace, RenderVertexSoft *pVertices,
 
     _49CE9E(pFace, pVertices, *pNumVertices, pLimits);
 
-    // if ( _4D864C_force_sw_render_rules && engine_config->DrawBlvDebugs())
+    // if ( _4D864C_force_sw_render_rules && engine->config->DrawBlvDebugs())
     //  pIndoorCameraD3D->debug_outline_sw(a4a, 4u, 0xFF1E1Eu, 0.000099999997);
     if (CalcFaceBounding(pFace, pLimits, 4, pOutBounding))
         return _49C720(pOutBounding, a5);
@@ -749,7 +749,7 @@ bool stru10::CalcPortalShape(BLVFace *pFace,
     RenderVertexSoft pLimits[4];  // [sp+Ch] [bp-C0h]@1
 
     CalcPolygonLimits(pFace, pLimits);  //определение границ портала
-    // if ( _4D864C_force_sw_render_rules && engine_config->DrawBlvDebugs())
+    // if ( _4D864C_force_sw_render_rules && engine->config->DrawBlvDebugs())
     //   pIndoorCameraD3D->debug_outline_sw(pLimits, 4, 0xFF1E1E,
     //   0.000099999997);
     if (CalcFaceBounding(pFace, pLimits, 4, pOutBounding))

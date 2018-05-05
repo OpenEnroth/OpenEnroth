@@ -116,7 +116,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         return;
     }
 
-    if (!engine_config->NoSound() && bPlayerReady && engine_config->music_level > 0) {
+    if (!engine->config->NoSound() && bPlayerReady && engine->config->music_level > 0) {
         if (pCurrentMusicTrack) {
             pCurrentMusicTrack->Stop();
         }
@@ -134,7 +134,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         if (pCurrentMusicTrack) {
             currentMusicTrack = eTrack;
             pCurrentMusicTrack->SetVolume(
-                pSoundVolumeLevels[engine_config->music_level]);
+                pSoundVolumeLevels[engine->config->music_level]);
             pCurrentMusicTrack->Play();
         }
     }
@@ -199,7 +199,7 @@ void AudioPlayer::StopAll(int sample_id) {
 
 void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                             int source_x, int source_y, int sound_data_id) {
-    if (!bPlayerReady || engine_config->sound_level < 1 ||
+    if (!bPlayerReady || engine->config->sound_level < 1 ||
         (eSoundID == SOUND_Invalid)) {
         return;
     }
@@ -343,9 +343,9 @@ void AudioPlayer::Initialize() {
     currentMusicTrack = 0;
     uMasterVolume = 127;
 
-    pAudioPlayer->SetMasterVolume(engine_config->sound_level);
+    pAudioPlayer->SetMasterVolume(engine->config->sound_level);
     if (bPlayerReady) {
-        SetMusicVolume(engine_config->music_level);
+        SetMusicVolume(engine->config->music_level);
     }
     LoadAudioSnd();
 

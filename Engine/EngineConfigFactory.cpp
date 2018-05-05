@@ -63,6 +63,11 @@ static bool FindCaseInsensitive(const std::string &haystack, const std::string &
     return i != haystack.end();
 }
 
+
+std::shared_ptr<EngineConfig> EngineConfigFactory::Clone(std::shared_ptr<const EngineConfig> other) {
+    return std::make_shared<EngineConfig>(*other.get());
+}
+
 std::shared_ptr<EngineConfig> EngineConfigFactory::Create() {
     return CreateDefaultConfiguration();
 }

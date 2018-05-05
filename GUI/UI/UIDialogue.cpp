@@ -611,7 +611,7 @@ void GUIWindow_GenericDialogue::Update() {
 void sub_4451A8_press_any_key(int a1, int a2, int a4) {
     if (!pGUIWindow2) {
         if (pParty->uFlags & 2) {
-            pEngine->Draw();
+            engine->Draw();
         }
         pAudioPlayer->StopChannels(-1, -1);
         pMiscTimer->Pause();
@@ -701,7 +701,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
                     if (uActiveCharacter)
                         pPlayers[uActiveCharacter]->PlaySound(
                             SPEECH_NotEnoughGold, 0);
-                    if (!dword_7241C8) pEngine->Draw();
+                    if (!dword_7241C8) engine->Draw();
                     dword_7241C8 = 0;
                     return;
                 }
@@ -813,6 +813,6 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             }
         }
     }
-    if (!dword_7241C8) pEngine->Draw();
+    if (!dword_7241C8) engine->Draw();
     dword_7241C8 = 0;
 }

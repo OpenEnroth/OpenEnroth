@@ -89,8 +89,10 @@ int MM_Main(const char *pCmdLine) {
     return 0;
 }
 
-void Game::Configure(std::shared_ptr<const Configuration> config) {
+bool Game::Configure(std::shared_ptr<const Configuration> config) {
     this->config = config;
+
+    return true;
 }
 
 
@@ -99,12 +101,10 @@ void Game::Run() {
     IntegrityTest();
 
     EngineFactory engineFactory;
-    auto engine = engineFactory.CreateEngine(config->command_line);
+    engine = engineFactory.CreateEngine(config->command_line);
+    ::engine = engine;
 
-    ::engine_config = const_cast<Engine_::Configuration *>(engine->config.get());
-    ::pEngine = engine.get();
-
-    pEngine->Initialize();
+    engine->Initialize();
 
     ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -120,8 +120,10 @@ void Game::Run() {
         }
     }
 
-    if (pEngine != nullptr) {
-        pEngine->Deinitialize();
+    if (engine) {
+        engine->Deinitialize();
+        engine = nullptr;
+        ::engine = nullptr;
     }
 }
 
@@ -131,7 +133,7 @@ bool Game::Loop() {
     while (1) {
         if (uGameState == GAME_FINISHED ||
             GetCurrentMenuID() == MENU_EXIT_GAME) {
-            pEngine->Deinitialize();
+            engine->Deinitialize();
             return false;
         } else if (GetCurrentMenuID() == MENU_SAVELOAD) {
             MainMenuLoad_Loop();
@@ -152,7 +154,7 @@ bool Game::Loop() {
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
-            if (engine_config->NoMargareth())
+            if (engine->config->NoMargareth())
                 _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_MARGARETH_OFF, 1);
             GameLoop();
             if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU) {
@@ -218,12 +220,12 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
     bGameoverLoop = true;
 
     render->PresentBlackScreen();
-    if (!engine_config->NoVideo()) {
-        if (!engine_config->no_logo) {
+    if (!engine->config->NoVideo()) {
+        if (!engine->config->no_logo) {
             pMediaPlayer->PlayFullscreenMovie("3dologo");
             pMediaPlayer->PlayFullscreenMovie("new world logo");
         }
-        if (!engine_config->no_intro) {
+        if (!engine->config->no_intro) {
             pMediaPlayer->PlayFullscreenMovie("Intro");
         }
     }
@@ -625,7 +627,7 @@ void Game::EventLoop() {
                             OS_SetAppInt("Tinting",
                             render->bTinting);
                             OS_SetAppInt("Bloodsplats",
-                            (LOBYTE(pEngine->uFlags2) >> 5)
+                            (LOBYTE(engine->uFlags2) >> 5)
                             & 1);
                             }
 
@@ -999,7 +1001,7 @@ void Game::EventLoop() {
                     sub_42FBDD();
                     // pNPCData4 = (NPCData *)GetTravelTime();
                     pOutdoor->level_filename = pCurrentMapName;
-                    if (!pEngine->IsUnderwater() && pParty->bFlying ||
+                    if (!engine->IsUnderwater() && pParty->bFlying ||
                         pOutdoor->GetTravelDestination(pParty->vPosition.x,
                                                        pParty->vPosition.y,
                                                        pOut, 20) != 1) {
@@ -1062,7 +1064,7 @@ void Game::EventLoop() {
 
                         bNoNPCHiring = 0;
 
-                        pEngine->SetUnderwater(
+                        engine->SetUnderwater(
                             Is_out15odm_underwater());
 
                         if (Is_out15odm_underwater() || (pCurrentMapName == "d47.blv"))
@@ -1075,7 +1077,7 @@ void Game::EventLoop() {
                         pParty->vPosition.z = GetTerrainHeightsAroundParty2(
                             pParty->vPosition.x, pParty->vPosition.y, &v213, 0);
                         pParty->uFallStartY = pParty->vPosition.z;
-                        pEngine->_461103_load_level_sub();
+                        engine->_461103_load_level_sub();
                         pEventTimer->Resume();
                         viewparams->bRedrawGameUI = 1;
                         current_screen_type = SCREEN_GAME;
@@ -1622,7 +1624,7 @@ void Game::EventLoop() {
                     continue;
                 }
                 case UIMSG_CastQuickSpell: {
-                    if (pEngine->IsUnderwater()) {
+                    if (engine->IsUnderwater()) {
                         GameUI_StatusBar_OnEvent(localization->GetString(652));  // "You can not do that while you are // underwater!"
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
@@ -1979,7 +1981,7 @@ void Game::EventLoop() {
                     uAction = 0;
                     for (uint i = 0; i < 9; i++) {
                         if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i] ||
-                            engine_config->debug_all_magic) {
+                            engine->config->debug_all_magic) {
                             if (pPlayers[uActiveCharacter]->lastOpenedSpellbookPage == i)
                                 uAction = skill_count;
                             v217[skill_count++] = i;
@@ -2017,7 +2019,7 @@ void Game::EventLoop() {
                     //  uNumSeconds = (unsigned int)pPlayers[uActiveCharacter];
                     Player *player = pPlayers[uActiveCharacter];
                     if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
-                        || engine_config->debug_all_magic) {
+                        || engine->config->debug_all_magic) {
                         if (quick_spell_at_page - 1 == uMessageParam) {
                             pGUIWindow_CurrentMenu->Release();  // spellbook close
                             pEventTimer->Resume();
@@ -2059,7 +2061,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_SpellBookWindow:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
-                    if (pEngine->IsUnderwater()) {
+                    if (engine->IsUnderwater()) {
                         GameUI_StatusBar_OnEvent(localization->GetString(652));  // "You can not do that while you are underwater!"
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     } else {
@@ -2336,7 +2338,7 @@ void Game::EventLoop() {
                                                     // правую кнопку мыши после
                                                     // UIMSG_MouseLeftClickInGame
                     pMessageQueue_50CBD0->Flush();
-                    pEngine->OnGameViewportClick();
+                    engine->OnGameViewportClick();
                     continue;
                 case UIMSG_F:  // what event?
                     __debugbreak();
@@ -2444,7 +2446,7 @@ void Game::EventLoop() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
-    pEngine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
+    engine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
     int pid = vis->get_picked_object_zbuf_val();
     if (pid != -1)
         DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
@@ -2467,7 +2469,7 @@ void Game::GameLoop() {
     extern bool use_music_folder;
     GameUI_LoadPlayerPortraintsAndVoices();
     pIcons_LOD->_inlined_sub1();
-    pAudioPlayer->SetMusicVolume(engine_config->music_level);
+    pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
     while (2) {
         v16 = 1;
@@ -2497,7 +2499,7 @@ void Game::GameLoop() {
                 // continue;
             }
 
-            pEngine->_44EEA7();
+            engine->_44EEA7();
             GameUI_WritePointedObjectStatusString();
             keyboard->ProcessInputActions();
             EventLoop();
@@ -2535,7 +2537,7 @@ void Game::GameLoop() {
             }
             pAudioPlayer->UpdateSounds();
             if (uGameState == GAME_STATE_PLAYING) {
-                pEngine->Draw();
+                engine->Draw();
                 continue;
             }
             if (uGameState == GAME_FINISHED) {
@@ -2566,7 +2568,7 @@ void Game::GameLoop() {
                 continue;
             }
             if (uGameState != GAME_STATE_PARTY_DIED) {
-                pEngine->Draw();
+                engine->Draw();
                 continue;
             }
             if (uGameState == GAME_STATE_PARTY_DIED) {
@@ -2661,7 +2663,7 @@ void Game::GameLoop() {
         } while (!game_finished);
 
         pEventTimer->Pause();
-        pEngine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+        engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
         if (uGameState == GAME_STATE_LOADING_GAME) {
             sub_491E3A();
             GameUI_LoadPlayerPortraintsAndVoices();

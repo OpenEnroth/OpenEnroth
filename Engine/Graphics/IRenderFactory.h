@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Engine/Graphics/Configuration.h"
+#include <memory>
+#include <string>
 
 class IRender;
 namespace Graphics {
 
 class IRenderFactory {
  public:
-    static IRender *Create(Configuration *config);
+    std::shared_ptr<IRender> Create(const std::string &renderer_name, bool is_fullscreen);
 };
 
 }  // namespace Graphics

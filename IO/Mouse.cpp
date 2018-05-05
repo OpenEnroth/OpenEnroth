@@ -43,7 +43,7 @@ void Mouse::SetCursorImage(const String &name) {
     if (this->cursor_name != name)
         this->cursor_name = name;
 
-    engine_config->SetTargetingMode(name == "MICON2");
+    engine->config->SetTargetingMode(name == "MICON2");
 
     ClearCursor();
     if (name == "MICON1") {  // arrow

@@ -17,6 +17,20 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 
+#include "Platform/OSWindow.h"
+
+void RenderBase::PostInitialization() {
+    if (!config->IsFullscreen()) {
+        // window->SetWindowedMode(game_width, game_height);
+        SwitchToWindow();
+    }
+    else {
+        __debugbreak();  // check required
+        window->SetFullscreenMode();
+        InitializeFullscreen();
+    }
+}
+
 unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
     if (uNumBillboardsToDraw >= 999) {
         return 0;

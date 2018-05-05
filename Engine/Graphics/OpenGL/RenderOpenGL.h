@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/RenderBase.h"
 
 class RenderOpenGL : public RenderBase {
  public:
-    explicit RenderOpenGL(Graphics::Configuration *config);
+    explicit RenderOpenGL();
     virtual ~RenderOpenGL();
 
     virtual bool Initialize(OSWindow *window);

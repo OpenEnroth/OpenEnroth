@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/IRender.h"
 
 class RenderBase : public IRender {
  public:
-    explicit RenderBase(Graphics::Configuration *config)
-        : IRender(config) {
+    explicit RenderBase()
+        : IRender() {
     }
 
     virtual void TransformBillboardsAndSetPalettesODM();
@@ -21,6 +20,10 @@ class RenderBase : public IRender {
                                                   int angle);
 
  protected:
+    OSWindow *window;
+
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);
     void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
+
+    void PostInitialization();
 };

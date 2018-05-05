@@ -196,6 +196,7 @@
     <ClCompile Include="..\..\Engine\Graphics\ImageLoader.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Indoor.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\IndoorCameraD3D.cpp" />
+    <ClCompile Include="..\..\Engine\Graphics\IRenderConfigFactory.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\IRenderFactory.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\Level\Decoration.cpp" />
     <ClCompile Include="..\..\Engine\Graphics\LightmapBuilder.cpp" />
@@ -408,6 +409,7 @@
     <ClInclude Include="..\..\Engine\Graphics\Indoor.h" />
     <ClInclude Include="..\..\Engine\Graphics\IndoorCameraD3D.h" />
     <ClInclude Include="..\..\Engine\Graphics\IRender.h" />
+    <ClInclude Include="..\..\Engine\Graphics\IRenderConfigFactory.h" />
     <ClInclude Include="..\..\Engine\Graphics\IRenderFactory.h" />
     <ClInclude Include="..\..\Engine\Graphics\Level\Decoration.h" />
     <ClInclude Include="..\..\Engine\Graphics\LightmapBuilder.h" />

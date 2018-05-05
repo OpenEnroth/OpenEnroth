@@ -9,10 +9,8 @@ enum class RendererType {
     OpenGl
 };
 
-class Configuration {
+class IRenderConfig {
  public:
-    explicit Configuration(const std::string &renderer_name);
-
     inline bool IsFullscreen() const { return is_fullscreen; }
 
 

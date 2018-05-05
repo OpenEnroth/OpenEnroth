@@ -1,28 +1,33 @@
 #include "Engine/Graphics/IRenderFactory.h"
 
+#include "Engine/Graphics/IRenderConfig.h"
+#include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/Direct3D/Render.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 
 using Graphics::IRenderFactory;
-using Graphics::Configuration;
+using Graphics::IRenderConfig;
+using Graphics::IRenderConfigFactory;
 
-IRender *IRenderFactory::Create(Configuration *config) {
+std::shared_ptr<IRender> IRenderFactory::Create(const std::string &renderer_name, bool is_fullscreen) {
+    IRenderConfigFactory renderConfigFactory;
+    auto config = renderConfigFactory.Create(renderer_name, is_fullscreen);
+
+    std::shared_ptr<IRender> renderer;
     switch (config->renderer_type) {
         case RendererType::DirectDraw:
-            return new Render(config);
+            renderer = std::make_shared<Render>();
+            break;
 
         case RendererType::OpenGl:
-            return new RenderOpenGL(config);
+            renderer = std::make_shared<RenderOpenGL>();
+            break;
     }
+    if (renderer) {
+        if (renderer->Configure(config)) {
+            return renderer;
+        }
+    }
+
     return nullptr;
-}
-
-Configuration *IRenderFactory::ConfigureRender() {
-    auto render_config = new Graphics::Configuration(
-        config->renderer_name);
-    render_config->is_fullscreen = !engine_config->RunInWindow();
-    render_config->is_tinting = OS_GetAppInt("Tinting", 1) != 0;
-    render_config->is_using_colored_lights = OS_GetAppInt("Colored Lights", 0) != 0;
-
-    return render_config;
 }

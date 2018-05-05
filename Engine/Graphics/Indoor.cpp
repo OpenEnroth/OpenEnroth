@@ -111,7 +111,7 @@ void PrepareDrawLists_BLV() {
     uNumSpritesDrawnThisFrame = 0;
     uNumBillboardsToDraw = 0;
 
-    if (!_4D864C_force_sw_render_rules || !engine_config->TorchlightEffect()) {  // lightspot around party
+    if (!_4D864C_force_sw_render_rules || !engine->config->TorchlightEffect()) {  // lightspot around party
         v5 = 800;
         if (pParty->TorchlightActive())
             v5 *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
@@ -135,7 +135,7 @@ void PrepareDrawLists_BLV() {
             pIndoor->PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], v7);
     }
     FindBillboardsLightLevels_BLV();
-    pEngine->PrepareBloodsplats();
+    engine->PrepareBloodsplats();
 }
 
 //----- (004407D9) --------------------------------------------------------
@@ -381,7 +381,7 @@ void IndoorLocation::Draw() {
     //}
 
     pParty->uFlags &= ~2;
-    pEngine->DrawParticles();
+    engine->DrawParticles();
     trail_particle_generator.UpdateParticles();
 }
 
@@ -462,7 +462,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             static_vertices_F7C228[i].v = (signed short)pFace->pVertexVIDs[i];
         }
 
-        if (!pVertices || (pEngine->pStru9Instance->_498377(
+        if (!pVertices || (engine->pStru9Instance->_498377(
                                pPortalBounding, 4, pVertices,
                                static_vertices_F7C228, &uNumVerticesa),
                            uNumVerticesa)) {
@@ -698,7 +698,7 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id,
         nodes[num_nodes].uViewportW = pBLVRenderParams->uViewportW;
         v29 = false;
         if (nodes[node_id].viewing_portal_id == -1) {  // for first portal
-            v29 = pEngine->pStru10Instance->CalcPortalShape(
+            v29 = engine->pStru10Instance->CalcPortalShape(
                 pFace, nodes[num_nodes].std__vector_0007AC,
                 nodes[num_nodes].pPortalBounding);
         } else {  // for next portals
@@ -720,7 +720,7 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id,
                 static_subAddFaceToRenderList_d3d_stru_F79E08,
                 nodes[node_id].std__vector_0007AC, 4, 0, 0);
 
-            v29 = pEngine->pStru10Instance->_49C5DA(
+            v29 = engine->pStru10Instance->_49C5DA(
                 pFace, static_subAddFaceToRenderList_d3d_stru_F79E08,
                 &pNewNumVertices, nodes[num_nodes].std__vector_0007AC,
                 nodes[num_nodes].pPortalBounding);
@@ -1750,7 +1750,7 @@ void UpdateActors_BLV() {
     int v62;                 // [sp+58h] [bp-8h]@6
     unsigned int actor_id;   // [sp+5Ch] [bp-4h]@1
 
-    if (engine_config->no_actors)
+    if (engine->config->no_actors)
         uNumActors = 0;
 
     for (actor_id = 0; actor_id < uNumActors; actor_id++) {
@@ -2335,7 +2335,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     pDest = 1;
     uCurrentlyLoadedLevelType = LEVEL_Indoor;
 
-    pEngine->SetUnderwater(
+    engine->SetUnderwater(
         Is_out15odm_underwater());
 
     if ((pCurrentMapName == "out15.odm") || (pCurrentMapName == "d23.blv")) {
@@ -5001,7 +5001,7 @@ void BLV_ProcessPartyActions() {
         not_high_fall = true;
     }
 
-    if (!engine_config->NoWalkSound() && pParty->walk_sound_timer) {  //таймеры для звуков передвижения
+    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer) {  //таймеры для звуков передвижения
         if (pParty->walk_sound_timer > pEventTimer->uTimeElapsed)
             pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
         else
@@ -5039,28 +5039,28 @@ void BLV_ProcessPartyActions() {
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
-                if (engine_config->turn_speed > 0)
-                    angle = stru_5C6E00->uDoublePiMask & (angle + engine_config->turn_speed);
+                if (engine->config->turn_speed > 0)
+                    angle = stru_5C6E00->uDoublePiMask & (angle + engine->config->turn_speed);
                 else
                     angle = stru_5C6E00->uDoublePiMask & (angle + (int)(v82 * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
-                if (engine_config->turn_speed > 0)
-                    angle = stru_5C6E00->uDoublePiMask & (angle - engine_config->turn_speed);
+                if (engine->config->turn_speed > 0)
+                    angle = stru_5C6E00->uDoublePiMask & (angle - engine->config->turn_speed);
                 else
                     angle = stru_5C6E00->uDoublePiMask & (angle - (int)(v82 * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
-                if (engine_config->turn_speed > 0)
-                    angle = stru_5C6E00->uDoublePiMask & (angle + engine_config->turn_speed);
+                if (engine->config->turn_speed > 0)
+                    angle = stru_5C6E00->uDoublePiMask & (angle + engine->config->turn_speed);
                 else
                     angle = stru_5C6E00->uDoublePiMask & (angle + (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
                 break;
 
             case PARTY_FastTurnRight:
-                if (engine_config->turn_speed > 0)
-                    angle = stru_5C6E00->uDoublePiMask & (angle - engine_config->turn_speed);
+                if (engine->config->turn_speed > 0)
+                    angle = stru_5C6E00->uDoublePiMask & (angle - engine->config->turn_speed);
                 else
                     angle = stru_5C6E00->uDoublePiMask & (angle - (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
                 break;
@@ -5326,7 +5326,7 @@ void BLV_ProcessPartyActions() {
     uint pX_ = abs(pParty->vPosition.x - new_party_x);
     uint pY_ = abs(pParty->vPosition.y - new_party_y);
     uint pZ_ = abs(pParty->vPosition.z - new_party_z);
-    if (!engine_config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
+    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
         if (party_running_flag &&
             (!hovering || not_high_fall)) {  // Бег и (не прыжок или не высокое падение )

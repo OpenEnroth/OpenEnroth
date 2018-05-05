@@ -576,6 +576,9 @@
     <ClCompile Include="..\..\Engine\Graphics\IRenderConfig.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\IRenderConfigFactory.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\libavcodec\avcodec.h">
@@ -1587,6 +1590,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\IRenderConfig.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\IRenderConfigFactory.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

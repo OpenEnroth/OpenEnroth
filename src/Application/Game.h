@@ -6,6 +6,7 @@
 #include "Application/GameMenu.h"
 #include "Application/IocContainer.h"
 
+#include "Engine/Engine.h"
 #include "Engine/IocContainer.h"
 
 
@@ -26,7 +27,7 @@ class Game {
          this->menu = GameIoc::ResolveGameMenu();
      }
 
-     void Configure(std::shared_ptr<const Configuration> config);
+     bool Configure(std::shared_ptr<const Configuration> config);
      void Run();
 
  private:
@@ -39,6 +40,7 @@ class Game {
 
 
      std::shared_ptr<const Configuration> config;
+     std::shared_ptr<Engine> engine;
      Log *log = nullptr;
      Mouse *mouse = nullptr;
      Keyboard *keyboard = nullptr;

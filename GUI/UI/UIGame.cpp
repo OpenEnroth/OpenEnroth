@@ -588,7 +588,7 @@ void GUIWindow_GameVideoOptions::Update() {
                  // vary depending on your monitor."
     }
 
-    if (!engine_config->NoBloodsplats())
+    if (!engine->config->NoBloodsplats())
         render->DrawTextureAlphaNew(20 / 640.0f, 281 / 480.0f,
                                     game_ui_menu_options_video_bloodsplats);
     if (render->config->is_using_colored_lights)
@@ -739,7 +739,7 @@ void GUIWindow_GameOptions::Update() {
     render->DrawTextureAlphaNew(8 / 640.0f, 132 / 480.0f,
                                 options_menu_skin.uTextureID_Background);
 
-    switch (engine_config->turn_speed) {
+    switch (engine->config->turn_speed) {
         case 64:
             render->DrawTextureAlphaNew(
                 BtnTurnCoord[1] / 640.0f, 270 / 480.0f,
@@ -757,36 +757,36 @@ void GUIWindow_GameOptions::Update() {
             break;
     }
 
-    if (!engine_config->no_walk_sound) {
+    if (!engine->config->no_walk_sound) {
         render->DrawTextureAlphaNew(
             20 / 640.0f, 303 / 480.0f,
             options_menu_skin.uTextureID_WalkSound);
     }
-    if (engine_config->show_damage) {
+    if (engine->config->show_damage) {
         render->DrawTextureAlphaNew(
             128 / 640.0f, 303 / 480.0f,
             options_menu_skin.uTextureID_ShowDamage);
     }
-    if (engine_config->flip_on_exit) {
+    if (engine->config->flip_on_exit) {
         render->DrawTextureAlphaNew(
             128 / 640.0f, 325 / 480.0f,
             options_menu_skin.uTextureID_FlipOnExit);
     }
-    if (engine_config->always_run) {
+    if (engine->config->always_run) {
         render->DrawTextureAlphaNew(
             20 / 640.0f, 325 / 480.0f,
             options_menu_skin.uTextureID_AlwaysRun);
     }
 
     render->DrawTextureAlphaNew(
-        (265 + 17 * engine_config->sound_level) / 640.0f, 162 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[engine_config->sound_level]);
+        (265 + 17 * engine->config->sound_level) / 640.0f, 162 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine->config->sound_level]);
     render->DrawTextureAlphaNew(
-        (265 + 17 * engine_config->music_level) / 640.0f, 216 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[engine_config->music_level]);
+        (265 + 17 * engine->config->music_level) / 640.0f, 216 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine->config->music_level]);
     render->DrawTextureAlphaNew(
-        (265 + 17 * engine_config->voice_level) / 640.0f, 270 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[engine_config->voice_level]);
+        (265 + 17 * engine->config->voice_level) / 640.0f, 270 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine->config->voice_level]);
 }
 
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
@@ -1942,7 +1942,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         uWizardEyeSkillLevel = 2;
     }
 
-    if (engine_config->debug_wizard_eye) {
+    if (engine->config->debug_wizard_eye) {
         bWizardEyeActive = true;
         uWizardEyeSkillLevel = 3;
     }

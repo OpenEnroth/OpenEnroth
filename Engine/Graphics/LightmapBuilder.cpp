@@ -683,7 +683,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
     lightmap->NumVertices = 4;
 
     // Brightness(яркость)/////////////////////////////////
-    if (!engine_config->AllowDynamicBrigtness()) {
+    if (!engine->config->AllowDynamicBrigtness()) {
         lightmap->fBrightness = flt_3C8C2C_lightmaps_brightness;
     } else {
         Vec3_float_ a1;  // [sp+2Ch] [bp-20h]@8
@@ -717,7 +717,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
     }
     // Brightness(яркость)/////////////////////////////////////////////////////
 
-    if (!pEngine->pStru9Instance->_4980B9(
+    if (!engine->pStru9Instance->_4980B9(
             a9, uNumVertices, a7->Normal.x, a7->Normal.y, a7->Normal.z,
             lightmap->pVertices, &lightmap->NumVertices))
         return false;
@@ -841,7 +841,7 @@ void LightmapBuilder::DrawLightmaps(int indices) {
     // For outdoor terrain and indoor light (VI)(VI)
 
     if (StationaryLightsCount > 0) {
-        if (_4D864C_force_sw_render_rules && engine_config->Flag1_1())
+        if (_4D864C_force_sw_render_rules && engine->config->Flag1_1())
             return;
 
         render->BeginLightmaps();

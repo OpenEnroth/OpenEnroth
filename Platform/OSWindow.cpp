@@ -67,8 +67,8 @@ bool OSWindow::OnMouseLeftClick(int x, int y) {
         UI_OnVkKeyDown(VK_SELECT);
     }
 
-    if (pEngine) {
-        pEngine->PickMouse(512.0, x, y, false, &vis_sprite_filter_3,
+    if (engine) {
+        engine->PickMouse(512.0, x, y, false, &vis_sprite_filter_3,
                            &vis_door_filter);
     }
 
@@ -81,8 +81,8 @@ bool OSWindow::OnMouseRightClick(int x, int y) {
 
     mouse->SetMouseClick(x, y);
 
-    if (pEngine) {
-        pEngine->PickMouse(pIndoorCameraD3D->GetPickDepth(), x, y, 0,
+    if (engine) {
+        engine->PickMouse(pIndoorCameraD3D->GetPickDepth(), x, y, 0,
                            &vis_sprite_filter_2, &vis_door_filter);
     }
 
@@ -196,9 +196,9 @@ bool OSWindow::WinApiMessageProc(int msg, int wparam, void *lparam,
             return false;
 
             /*case WM_MBUTTONDOWN:
-            if (render->pRenderD3D && pEngine)
+            if (render->pRenderD3D && engine)
             {
-            pEngine->PickMouse(pIndoorCameraD3D->GetPickDepth(), LOWORD(lParam),
+            engine->PickMouse(pIndoorCameraD3D->GetPickDepth(), LOWORD(lParam),
             HIWORD(lParam), 1, &vis_sprite_filter_3, &vis_face_filter);
             }
             return false;*/
@@ -935,7 +935,7 @@ bool OSWindow::OnOSMenu(int item_id) {
         // case 103:  render->SavePCXScreenshot(); break;
         case 101:    // Quit game
         case 40001:  // Menu "File"-> "Exit"
-            pEngine->Deinitialize();
+            engine->Deinitialize();
             SendMessageW((HWND)this->GetApiHandle(), WM_DESTROY, 0, 0);
             break;
 
@@ -1291,10 +1291,10 @@ bool OSWindow::OnOSMenu(int item_id) {
 
         // SubMenu "Other"
         case 40101:
-            engine_config->debug_wizard_eye = true;
+            engine->config->debug_wizard_eye = true;
             break;
         case 40102:
-            engine_config->debug_wizard_eye = false;
+            engine->config->debug_wizard_eye = false;
             break;
         case 40103:
             pODMRenderParams->far_clip = 0x6000;
@@ -1303,73 +1303,73 @@ bool OSWindow::OnOSMenu(int item_id) {
             pODMRenderParams->far_clip = 0x2000;
             break;
         case 40105:
-            engine_config->seasons_change = true;
+            engine->config->seasons_change = true;
             break;
         case 40106:
-            engine_config->seasons_change = false;
+            engine->config->seasons_change = false;
             break;
         case 40107:
-            engine_config->debug_all_magic = true;
+            engine->config->debug_all_magic = true;
             break;  // may need to close and reopen spellbook when changed??
         case 40108:
-            engine_config->debug_all_magic = false;
+            engine->config->debug_all_magic = false;
             break;  // may need to close and reopen spellbook when changed??
         case 40109:
-            engine_config->show_fps = true;
+            engine->config->show_fps = true;
             break;
         case 40110:
-            engine_config->show_fps = false;
+            engine->config->show_fps = false;
             break;
         case 40111:
-            engine_config->show_picked_face = true;
+            engine->config->show_picked_face = true;
             break;
         case 40112:
-            engine_config->show_picked_face = false;
+            engine->config->show_picked_face = false;
             break;
         case 40113:
-            engine_config->debug_portal_outlines = true;
+            engine->config->debug_portal_outlines = true;
             break;
         case 40114:
-            engine_config->debug_portal_outlines = false;
+            engine->config->debug_portal_outlines = false;
             break;
         case 40115:
-            engine_config->debug_turbo_speed = true;
+            engine->config->debug_turbo_speed = true;
             break;
         case 40116:
-            engine_config->debug_turbo_speed = false;
+            engine->config->debug_turbo_speed = false;
             break;
         case 40117:
-            engine_config->allow_snow = true;
+            engine->config->allow_snow = true;
             break;
         case 40118:
-            engine_config->allow_snow = false;
+            engine->config->allow_snow = false;
             break;
         case 40119:
-            engine_config->extended_draw_distance = true;
+            engine->config->extended_draw_distance = true;
             break;
         case 40120:
-            engine_config->extended_draw_distance = false;
+            engine->config->extended_draw_distance = false;
             break;
         case 40122:
-            engine_config->no_actors = true;
+            engine->config->no_actors = true;
             break;
         case 40123:
-            engine_config->allow_lightmaps = true;
+            engine->config->allow_lightmaps = true;
             break;
         case 40124:
-            engine_config->allow_lightmaps = false;
+            engine->config->allow_lightmaps = false;
             break;
         case 40125:
-            engine_config->debug_lightmaps_decals = true;
+            engine->config->debug_lightmaps_decals = true;
             break;
         case 40126:
-            engine_config->debug_lightmaps_decals = false;
+            engine->config->debug_lightmaps_decals = false;
             break;
         case 40127:
-            engine_config->debug_terrain = true;
+            engine->config->debug_terrain = true;
             break;
         case 40128:
-            engine_config->debug_terrain = false;
+            engine->config->debug_terrain = false;
             break;
     }
 

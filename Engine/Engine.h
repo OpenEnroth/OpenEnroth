@@ -4,7 +4,8 @@
 #include <string>
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Configuration.h"
+#include "Engine/EngineConfig.h"
+#include "Engine/EngineConfigFactory.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Log.h"
 #include "Engine/MM7.h"
@@ -14,7 +15,6 @@
 #include "Engine/VectorTypes.h"
 #include "Engine/mm7_data.h"
 
-#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/Polygon.h"
 
 void Engine_DeinitializeAndTerminate(int exitCode);
@@ -81,6 +81,9 @@ class GammaController;
 struct stru9;
 struct stru10;
 
+using Engine_::EngineConfig;
+using Engine_::EngineConfigFactory;
+
 /*  104 */
 #pragma pack(push, 1)
 struct Engine {
@@ -90,8 +93,9 @@ struct Engine {
 
     // void _44E904_gamma_saturation_adjust();
     // bool InitializeGammaController();
-    inline void Configure(std::shared_ptr<const Engine_::Configuration> config) {
+    inline bool Configure(std::shared_ptr<const EngineConfig> config) {
         this->config = config;
+        return true;
     }
 
     void Initialize();
@@ -118,9 +122,25 @@ struct Engine {
     void SecondaryInitialization();
     void _461103_load_level_sub();
     void DropHeldItem();
+    bool MM7_Initialize(const std::string &mm7_path);
 
     inline bool IsUnderwater() const { return config->IsUnderwater(); }
-    inline void SetUnderwater(bool is_underwater) { config->SetUnderwater(is_underwater); }
+    inline void SetUnderwater(bool is_underwater) {
+        EngineConfigFactory engineConfigFactory;
+        auto new_config = engineConfigFactory.Clone(config);
+        new_config->SetUnderwater(is_underwater);
+
+        this->config = new_config;
+    }
+
+    inline void SetSaturateFaces(bool saturate) {
+        EngineConfigFactory engineConfigFactory;
+        auto new_config = engineConfigFactory.Clone(config);
+        new_config->SetSaturateFaces(saturate);
+
+        this->config = new_config;
+
+    }
 
     //----- (0042EB6A) --------------------------------------------------------
     // struct SpellFxRenderer *GetSpellFxRenderer() {
@@ -131,7 +151,7 @@ struct Engine {
     //    return this->pIndoorCameraD3D;
     // }
 
-    std::shared_ptr<const Engine_::Configuration> config;
+    std::shared_ptr<const EngineConfig> config;
     // void ( ***vdestructor_ptr)(Game *, bool);
     Game__StationaryLight pStationaryLights[25];
     char field_2C0[1092];
@@ -192,7 +212,7 @@ struct Engine {
 };
 #pragma pack(pop)
 
-extern Engine *pEngine;
+extern std::shared_ptr<Engine> engine;
 
 void sub_42FBDD();
 void CloseWindowBackground();

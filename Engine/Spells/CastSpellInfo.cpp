@@ -210,14 +210,14 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             spell_level = pPlayer->GetActualSkillLevel(which_skill);
             skill_level = pPlayer->GetActualSkillMastery(which_skill);
 
-            if (engine_config->debug_all_magic) {
+            if (engine->config->debug_all_magic) {
                 spell_level = 10;
                 skill_level = 4;
             }
         }
 
         if (pCastSpell->uSpellID < SPELL_BOW_ARROW) {
-            if (pCastSpell->forced_spell_skill_level || engine_config->debug_all_magic)
+            if (pCastSpell->forced_spell_skill_level || engine->config->debug_all_magic)
                 uRequiredMana = 0;
             else
                 uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[skill_level - 1];

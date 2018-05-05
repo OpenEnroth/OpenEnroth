@@ -1,14 +1,19 @@
 #pragma once
 
+#include <memory>
+
 #include "Engine/OurMath.h"
 #include "Engine/Rect.h"
 #include "Engine/IocContainer.h"
 #include "Engine/VectorTypes.h"
 
-#include "Engine/Graphics/Configuration.h"
+#include "Engine/Graphics/IRenderConfig.h"
+#include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/Image.h"
 
 using EngineIoc = Engine_::IocContainer;
+using Graphics::IRenderConfig;
+using Graphics::IRenderConfigFactory;
 
 class OSWindow;
 class Sprite;
@@ -241,16 +246,30 @@ struct RenderHWLContainer {
 
 class IRender {
  public:
-    explicit inline IRender(Graphics::Configuration *config) {
-        this->config = config;
+    explicit inline IRender() {
         this->log = EngineIoc::ResolveLogger();
         this->decal_builder = EngineIoc::ResolveDecalBuilder();
         this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
         this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
         this->particle_engine = EngineIoc::ResolveParticleEngine();
         this->vis = EngineIoc::ResolveVis();
+
+
+        pActiveZBuffer = 0;
+        uFogColor = 0;
+        memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
+        hd_water_current_frame = 0;
+        hd_water_tile_id = 0;
+        pBeforePresentFunction = 0;
+        memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
+        uNumBillboardsToDraw = 0;
     }
     virtual ~IRender() {}
+
+    virtual bool Configure(std::shared_ptr<const IRenderConfig> config) {
+        this->config = config;
+        return true;
+    }
 
     virtual bool Initialize(OSWindow *window) = 0;
 
@@ -408,23 +427,37 @@ class IRender {
                                struct Point *pTargetPoint, int a3,
                                int blend_mode) = 0;
 
-    inline IRender() {
-        pActiveZBuffer = 0;
-        uFogColor = 0;
-        memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
-        hd_water_current_frame = 0;
-        hd_water_tile_id = 0;
-        pBeforePresentFunction = 0;
-        memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
-        uNumBillboardsToDraw = 0;
+    inline void ToggleTint() {
+        IRenderConfigFactory renderConfigFactory;
+        auto new_config = renderConfigFactory.Clone(config);
+        new_config->is_tinting = !new_config->is_tinting;
+
+        this->config = new_config;
+    }
+    inline void ToggleColoredLights() {
+        IRenderConfigFactory renderConfigFactory;
+        auto new_config = renderConfigFactory.Clone(config);
+        new_config->is_using_colored_lights = !new_config->is_using_colored_lights;
+
+        this->config = new_config;
+    }
+    inline void SetUsingSpecular(bool is_using_specular) {
+        IRenderConfigFactory renderConfigFactory;
+        auto new_config = renderConfigFactory.Clone(config);
+        new_config->is_using_specular = is_using_specular;
+
+        this->config = new_config;
+    }
+    inline void SetUsingFog(bool is_using_fog) {
+        IRenderConfigFactory renderConfigFactory;
+        auto new_config = renderConfigFactory.Clone(config);
+        new_config->is_using_fog = is_using_fog;
+
+        this->config = new_config;
     }
 
 
-    inline void ToggleTint() { config->is_tinting = !config->is_tinting; }
-    inline void ToggleColoredLights() { config->is_using_colored_lights = !config->is_using_colored_lights; }
-
-
-    Graphics::Configuration *config = nullptr;
+    std::shared_ptr<const IRenderConfig> config;
     int *pActiveZBuffer;
     uint32_t uFogColor;
     unsigned int pHDWaterBitmapIDs[7];
@@ -451,7 +484,7 @@ class IRender {
     virtual HWLTexture *LoadHwlSprite(const char *name) = 0;
 };
 
-extern IRender *render;
+extern std::shared_ptr<IRender> render;
 
 extern int uNumDecorationsDrawnThisFrame;
 extern RenderBillboard pBillboardRenderList[500];

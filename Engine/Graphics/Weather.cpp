@@ -1,6 +1,6 @@
 #include "Engine/Graphics/IRender.h"
 
-#include "Engine/Configuration.h"
+#include "Engine/EngineConfig.h"
 
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Weather.h"
@@ -48,7 +48,7 @@ void Weather::Initialize() {
 }
 
 void Weather::Draw() {
-    if (bRenderSnow && engine_config->allow_snow) {
+    if (bRenderSnow && engine->config->allow_snow) {
         DrawSnow();
     }
 }

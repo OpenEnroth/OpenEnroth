@@ -4368,7 +4368,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
-        if (pEngine->IsUnderwater()) {
+        if (engine->IsUnderwater()) {
             GameUI_StatusBar_OnEvent(localization->GetString(652));  // You can not do that while you are underwater!
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
@@ -7041,7 +7041,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                 damageType = 4;  // yes, the original just assigned the value 4
                 break;
         }
-        if (!engine_config->NoDamage()) {
+        if (!engine->config->NoDamage()) {
             dmgToReceive =
                 playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
             if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
@@ -7060,8 +7060,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                             Actor::AggroSurroundingPeasants(uActorID, 1);
                         } else {
                             if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
-                                !engine_config->NoBloodsplats()) {
-                                int splatRadius = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
+                                !engine->config->NoBloodsplats()) {
+                                int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
                                         ? 10 * actorPtr->uActorRadius
                                         : actorPtr->uActorRadius;
                                 decal_builder->AddBloodsplat(
@@ -7087,7 +7087,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     }
                 }
             }
-            if (!engine_config->NoDamage() &&
+            if (!engine->config->NoDamage() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
                 rand() % 100 < actorPtr->pMonsterInfo.uLevel *
                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
@@ -7234,7 +7234,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     damageType = 4;
                     break;
             }
-            if (!engine_config->NoDamage()) {
+            if (!engine->config->NoDamage()) {
                 int reflectedDmg = playerPtr->ReceiveDamage(
                     dmgToReceive, (DAMAGE_TYPE)damageType);
                 if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
@@ -7251,8 +7251,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                                 Actor::AggroSurroundingPeasants(uActorID, 1);
                             } else {
                                 if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
-                                    !engine_config->NoBloodsplats()) {
-                                    int splatRadius = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
+                                    !engine->config->NoBloodsplats()) {
+                                    int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
                                             ? 10 * actorPtr->uActorRadius
                                             : actorPtr->uActorRadius;
                                     decal_builder->AddBloodsplat(
@@ -7282,7 +7282,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                 }
             }
             if (!dmgSource &&
-                !engine_config->NoDamage() &&
+                !engine->config->NoDamage() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
                 rand() % 100 < actorPtr->pMonsterInfo.uLevel *
                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
@@ -7902,7 +7902,7 @@ void Player::PlaySound(PlayerSpeech speech,
     unsigned int expressionDuration = 0;
 
     unsigned int pickedSoundID = 0;
-    if (engine_config->voice_level > 0) {
+    if (engine->config->voice_level > 0) {
         for (int i = 0; i < 2; i++) {
             if (SoundSetAction[speech][i]) {
                 speechVariantArray[speechCount] = SoundSetAction[speech][i];

@@ -131,7 +131,7 @@ void GUIWindow_MainMenu::Loop() {
         render->EndScene();
         render->Present();
 
-        pEngine->SecondaryInitialization();
+        engine->SecondaryInitialization();
         FinalInitialization();
     }
 

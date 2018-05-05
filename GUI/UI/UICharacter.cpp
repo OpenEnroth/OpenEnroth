@@ -2812,7 +2812,7 @@ void OnPaperdollLeftClick() {
                 }
 
                 if (pPlayers[uActiveCharacter]->HasUnderwaterSuitEquipped() &&
-                    (pEquipType != EQUIP_ARMOUR || pEngine->IsUnderwater())) {  // cant put anything on wearing wetsuit
+                    (pEquipType != EQUIP_ARMOUR || engine->IsUnderwater())) {  // cant put anything on wearing wetsuit
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }
@@ -3350,7 +3350,7 @@ void OnPaperdollLeftClick() {
                              ->pInventoryItemList[v34 - 1]
                              .GetItemEquipType();
             if (pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1].uItemID == ITEM_WETSUIT) {
-                if (pEngine->IsUnderwater()) {
+                if (engine->IsUnderwater()) {
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     return;
                 }

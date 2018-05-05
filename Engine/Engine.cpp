@@ -7,7 +7,7 @@
 
 #include "Application/Game.h"
 
-#include "Engine/Configuration.h"
+#include "Engine/EngineConfig.h"
 #include "Engine/Events.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
@@ -19,10 +19,10 @@
 #include "Engine/Time.h"
 #include "Engine/stru123.h"
 
-#include "Engine/Graphics/Configuration.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/IRenderConfig.h"
 #include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
@@ -78,6 +78,8 @@
 
 using EngineIoc = Engine_::IocContainer;
 
+using Graphics::IRenderFactory;
+
 /*
 
 static bool b = false;
@@ -122,7 +124,7 @@ std::string MakeDataPath(const char *file_rel_path) {
     return s_data_path + "\\" + file_rel_path;
 }
 
-Engine *pEngine = nullptr;
+std::shared_ptr<Engine> engine;
 
 
 
@@ -133,8 +135,8 @@ bool FileExists(const char *fname) {
 }
 
 void Engine_DeinitializeAndTerminate(int exitCode) {
-    pEngine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
-    pEngine->Deinitialize();
+    engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+    engine->Deinitialize();
     render->Release();
     delete window;
     exit(exitCode);
@@ -144,8 +146,9 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 void Engine::Draw() {
     int v4;  // edi@26
 
-    config->SetSaturateFaces(
-        pParty->_497FC5_check_party_perception_against_level());
+    SetSaturateFaces(
+        pParty->_497FC5_check_party_perception_against_level()
+    );
 
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;
     pIndoorCameraD3D->sRotationY = pParty->sRotationY;
@@ -283,7 +286,7 @@ void Engine::Draw() {
 
     ++frames_this_second;
 
-    if (engine_config->show_fps) {
+    if (engine->config->show_fps) {
         if (render_framerate) {
             pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(0, 0, 0),
                                      StringPrintf("FPS: % .4f", framerate), 0,
@@ -410,12 +413,12 @@ bool Engine::_44EEA7() {
     if (!_44F07B())
         return false;
 
-    if (engine_config->DrawBlvDebugs())
+    if (engine->config->DrawBlvDebugs())
         pStru10Instance->bDoNotDrawPortalFrustum = false;
     if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         render->uFogColor = GetLevelFogColor() & 0xFFFFFF;
     // if (uFlags & GAME_FLAGS_1_400)
-    //    engine_config->SetForceRedraw(true);
+    //    engine->config->SetForceRedraw(true);
     /*if ( !render->pRenderD3D && uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
     pMobileLightsStack->uNumLightsActive )
     {
@@ -424,9 +427,9 @@ bool Engine::_44EEA7() {
     }*/
     v6 = qword_5C6DF0 - field_E10;
     if (qword_5C6DF0 - field_E10 == 1)
-        engine_config->SetForceRedraw(true);
+        engine->config->SetForceRedraw(true);
     if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-        engine_config->SetForceRedraw(true);
+        engine->config->SetForceRedraw(true);
         uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
     }
     return true;
@@ -434,7 +437,7 @@ bool Engine::_44EEA7() {
 
 //----- (0044EDE4) --------------------------------------------------------
 bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
-    if (engine_config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (engine->config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -443,7 +446,7 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
 }
 
 bool Engine::AlterGamma_ODM(ODMFace *pFace, int *pColor) {
-    if (engine_config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (engine->config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -466,20 +469,18 @@ void Engine::Deinitialize() {
     if (mouse)
         mouse->Deactivate();
 
-    delete render;
     render = nullptr;
 
     if (pAudioPlayer)
         pAudioPlayer->Release();
     pNew_LOD->FreeSubIndexAndIO();
 
-    Engine::Destroy();
     delete pEventTimer;
 }
 
 //----- (0044EE7C) --------------------------------------------------------
 bool Engine::draw_debug_outlines() {
-    if (/*uFlags & 0x04*/ engine_config->debug_lightmaps_decals) {
+    if (/*uFlags & 0x04*/ engine->config->debug_lightmaps_decals) {
         lightmap_builder->DrawDebugOutlines(-1);
         decal_builder->DrawDecalDebugOutlines();
     }
@@ -501,7 +502,7 @@ int Engine::_44EC23_saturate_face_odm(Polygon *a2, int *a3, signed int a4) {
     float a4a;  // [sp+1Ch] [bp+10h]@9
     float a4b;  // [sp+1Ch] [bp+10h]@11
 
-    if (engine_config->CanSaturateFaces() && a2->field_59 == 5 &&
+    if (engine->config->CanSaturateFaces() && a2->field_59 == 5 &&
         a2->pODMFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         v4 = (double)a4;
         a2a = v4;
@@ -553,7 +554,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     float v14;  // [sp+1Ch] [bp+10h]@8
     float v15;  // [sp+1Ch] [bp+10h]@10
 
-    if (engine_config->CanSaturateFaces() && a2->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (engine->config->CanSaturateFaces() && a2->uAttributes & FACE_CAN_SATURATE_COLOR) {
         v4 = (double)a4;
         v11 = v4;
         *a3 |= 2u;
@@ -780,7 +781,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     pMiscTimer->Pause();
     pParty->uFlags = 2;
     CastSpellInfoHelpers::_427D48();
-    pEngine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+    engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(0, (_0_box_loading_1_fullscreen == 0) + 1);
     pMiscTimer->Resume();
     pEventTimer->Resume();
@@ -792,7 +793,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     unsigned int v5;  // eax@3
 
     // v9 = bLoading;
-    pEngine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
+    engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1
                                                ? GUIProgressBar::TYPE_Fullscreen
                                                : GUIProgressBar::TYPE_Box);
@@ -814,7 +815,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
 
     uLevelMapStatsID = v5;
 
-    pEngine->SetUnderwater(Is_out15odm_underwater());
+    engine->SetUnderwater(Is_out15odm_underwater());
 
     pParty->floor_face_pid = 0;
     if (_stricmp(Str1, "blv"))
@@ -822,7 +823,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     else
         PrepareToLoadBLV(bLoading);
 
-    pEngine->_461103_load_level_sub();
+    engine->_461103_load_level_sub();
     if ((pCurrentMapName == "d11.blv") ||
         (pCurrentMapName == "d10.blv")) {
         // spawning grounds & walls of mist - no loot & exp from monsters
@@ -894,36 +895,31 @@ bool MM7_LoadLods(const char *mm7_path) {
 }
 
 //----- (004651F4) --------------------------------------------------------
-bool MM7_Initialize(const char *mm7_path) {
+bool Engine::MM7_Initialize(const std::string &mm7_path) {
     srand(OS_GetTime());
-
-    auto render_config = pEngine->ConfigureRender();
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
-    window = OSWindow::Create(
-        L"Might and Magic® Trilogy",
-        render_config->render_width,
-        render_config->render_height);
 
-    render = Graphics::IRenderFactory::Create(render_config);
+    IRenderFactory renderFactory;
+    render = renderFactory.Create(
+        config->renderer_name,
+        !config->RunInWindow()
+    );
+
     if (!render) {
-        logger->Warning(L"Render creation failed");
+        log->Warning(L"Render creation failed");
         return false;
     } else {
+        window = OSWindow::Create(
+            L"Might and Magic® Trilogy",
+            render->config->render_width,
+            render->config->render_height);
+
         if (!render->Initialize(window)) {
-            logger->Warning(L"Render failed to initialize");
+            log->Warning(L"Render failed to initialize");
             return false;
         }
-    }
-
-    if (!render_config->IsFullscreen()) {
-        // window->SetWindowedMode(game_width, game_height);
-        render->SwitchToWindow();
-    } else {
-        __debugbreak();  // check required
-        window->SetFullscreenMode();
-        render->InitializeFullscreen();
     }
 
     game_starting_year = 1168;
@@ -943,7 +939,7 @@ bool MM7_Initialize(const char *mm7_path) {
     OnTimer(1);
     GameUI_StatusBar_Update(true);
 
-    MM7_LoadLods(mm7_path);
+    MM7_LoadLods(mm7_path.c_str());
 
     localization = new Localization();
     localization->Initialize();
@@ -1067,7 +1063,7 @@ bool MM7_Initialize(const char *mm7_path) {
         free(sounds_mm8);
     }
 
-    if (!engine_config->NoSound())
+    if (!config->NoSound())
         pAudioPlayer->Initialize();
 
     pMediaPlayer = new MPlayer();
@@ -1102,7 +1098,7 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    if (!engine_config->NoSound())
+    if (!engine->config->NoSound())
         pSoundList->Initialize();
 
     for (uint i = 0; i < 4; ++i) {
@@ -1204,10 +1200,10 @@ void Engine::Initialize() {
     FindMm7Directory(mm7_path);
     SetDataPath(mm7_path);
 
-    if (!MM7_Initialize(mm7_path)) {
-        logger->Warning(L"MM7_Initialize: failed");
-        if (pEngine != nullptr) {
-            pEngine->Deinitialize();
+    if (!MM7_Initialize(std::string(mm7_path))) {
+        log->Warning(L"MM7_Initialize: failed");
+        if (engine != nullptr) {
+            engine->Deinitialize();
         }
         exit(-1);
     }
@@ -1452,7 +1448,7 @@ void Engine::_461103_load_level_sub() {
     int v20;  // [sp+18h] [bp-44h]@14
     int v21[16];     // [sp+1Ch] [bp-40h]@17
 
-    if (engine_config->no_actors)
+    if (engine->config->no_actors)
         uNumActors = 0;
 
     GenerateItemsInChest();
@@ -1531,9 +1527,9 @@ void Engine::_461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    if (engine_config->NoActors())
+    if (engine->config->NoActors())
         uNumActors = 0;
-    if (engine_config->NoDecorations())
+    if (engine->config->NoDecorations())
         uNumLevelDecorations = 0;
     init_event_triggers();
 
@@ -1575,7 +1571,7 @@ void InitializeTurnBasedAnimations(void *_this) {
 
 //----- (0046BDA8) --------------------------------------------------------
 unsigned int GetGravityStrength() {
-    int v0 = ~(unsigned char)pEngine->config->flags2 & GAME_FLAGS_2_ALTER_GRAVITY;
+    int v0 = ~(unsigned char)engine->config->flags2 & GAME_FLAGS_2_ALTER_GRAVITY;
     v0 |= 2;
     return (unsigned int)v0 >> 1;
 }

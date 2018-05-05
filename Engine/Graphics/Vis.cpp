@@ -626,7 +626,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint,
 
     if (v16 != 1) return false;
 
-    if (engine_config->show_picked_face)
+    if (engine->config->show_picked_face)
         pFace->uAttributes |= FACE_PICKED;
     return true;
     /*

@@ -3624,7 +3624,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (pMonster->sCurrentHP > 0) {
         Actor::AI_Stun(uActorID_Monster, a1, 0);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
-        if (!engine_config->NoShowDamage()) {
+        if (!engine->config->NoShowDamage()) {
             String str;
             if (projectileSprite)
                 str = localization->FormatString(
@@ -3638,8 +3638,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         }
     } else {
         if (pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].bQuestMonster & 1) {
-            if (!engine_config->NoBloodsplats()) {
-                v33 = _4D864C_force_sw_render_rules && !engine_config->NoHugeBloodsplats()
+            if (!engine->config->NoBloodsplats()) {
+                v33 = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
                           ? 10 * pMonster->uActorRadius
                           : pMonster->uActorRadius;
                 decal_builder->AddBloodsplat((float)pMonster->vPosition.x,
@@ -3658,7 +3658,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (rand() % 100 < 20)
             v40 = ((signed int)pMonster->pMonsterInfo.uHP >= 100) + 1;
         player->PlaySound((PlayerSpeech)v40, 0);
-        if (!engine_config->NoShowDamage()) {
+        if (!engine->config->NoShowDamage()) {
             pMonsterName = (char *)uDamageAmount;
             pPlayerName = player->pName;
 
@@ -3681,7 +3681,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             extraRecoveryTime =
                 (int)(flt_6BE3A8_debug_recmod2 * 42.66666666666666);
         pMonster->pMonsterInfo.uRecoveryTime += extraRecoveryTime;
-        if (!engine_config->NoShowDamage()) {
+        if (!engine->config->NoShowDamage()) {
             pMonsterName = player->pName;
 
             auto str = localization->FormatString(635, player->pName,
@@ -3695,7 +3695,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         v45 = SkillToMastery(v43);
         GameTime v46 = GameTime(pParty->GetPlayingTime() + GameTime(0, v43 & 63));  // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply(v46, v45, 0, 0, 0);
-        if (!engine_config->NoShowDamage()) {
+        if (!engine->config->NoShowDamage()) {
             pMonsterName = player->pName;
 
             auto str = localization->FormatString(

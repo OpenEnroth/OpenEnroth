@@ -19,7 +19,9 @@ std::shared_ptr<Game> GameFactory::CreateGame(const std::string &command_line) {
 
     auto game = std::make_shared<Game>();
     if (game) {
-        game->Configure(config);
+        if (game->Configure(config)) {
+            return game;
+        }
     }
-    return game;
+    return nullptr;
 }
