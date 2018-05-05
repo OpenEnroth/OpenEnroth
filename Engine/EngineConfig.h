@@ -31,7 +31,8 @@
 #define DEBUG_SETTINGS_NO_DAMAGE        0x0010
 
 namespace Engine_ {
-class Configuration {
+
+class EngineConfig {
  public:
     inline bool IsTargetingMode() const { return is_targeting; }
     inline void SetTargetingMode(bool is_targeting) { this->is_targeting = is_targeting; }
@@ -122,4 +123,4 @@ class Configuration {
 
 }  // namespace Engine_
 
-extern Engine_::Configuration *engine_config;
+extern Engine_::EngineConfig *engine_config;

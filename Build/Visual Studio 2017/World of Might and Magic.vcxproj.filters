@@ -492,9 +492,6 @@
     <ClCompile Include="..\..\GUI\UI\UIInventory.cpp">
       <Filter>GUI\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Engine\Configuration.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\Configuration.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
@@ -571,6 +568,9 @@
       <Filter>src\Application</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Engine\EngineFactory.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\EngineConfig.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1178,9 +1178,6 @@
     <ClInclude Include="..\..\GUI\UI\UIInventory.h">
       <Filter>GUI\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Engine\Configuration.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\Configuration.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
@@ -1581,6 +1578,9 @@
       <Filter>src\Application</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Engine\EngineFactory.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\EngineConfig.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

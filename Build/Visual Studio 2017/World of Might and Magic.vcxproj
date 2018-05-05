@@ -181,7 +181,7 @@
     <ClCompile Include="..\..\Arcomage\ArcomageCards.cpp" />
     <ClCompile Include="..\..\Engine\AssetsManager.cpp" />
     <ClCompile Include="..\..\Engine\Conditions.cpp" />
-    <ClCompile Include="..\..\Engine\Configuration.cpp" />
+    <ClCompile Include="..\..\Engine\EngineConfig.cpp" />
     <ClCompile Include="..\..\Engine\Engine.cpp" />
     <ClCompile Include="..\..\Engine\EngineFactory.cpp" />
     <ClCompile Include="..\..\Engine\Events.cpp" />
@@ -388,7 +388,7 @@
     <ClInclude Include="..\..\Engine\Autonotes.h" />
     <ClInclude Include="..\..\Engine\Awards.h" />
     <ClInclude Include="..\..\Engine\Conditions.h" />
-    <ClInclude Include="..\..\Engine\Configuration.h" />
+    <ClInclude Include="..\..\Engine\EngineConfig.h" />
     <ClInclude Include="..\..\Engine\Engine.h" />
     <ClInclude Include="..\..\Engine\EngineFactory.h" />
     <ClInclude Include="..\..\Engine\ErrorHandling.h" />
