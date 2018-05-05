@@ -2,8 +2,6 @@
 
 using Engine_::EngineConfig;
 
-EngineConfig *engine->config = nullptr;
-
 
 void EngineConfig::SetSaturateFaces(bool saturate) {
     if (saturate)

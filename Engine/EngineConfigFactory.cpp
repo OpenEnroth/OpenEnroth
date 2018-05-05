@@ -68,6 +68,16 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::Clone(std::shared_ptr<const E
     return std::make_shared<EngineConfig>(*other.get());
 }
 
+std::shared_ptr<EngineConfig> EngineConfigFactory::Mutate(
+    std::shared_ptr<const EngineConfig> config,
+    std::function<void(std::shared_ptr<EngineConfig> &)> mutator
+) {
+    auto new_config = std::make_shared<EngineConfig>(*config.get());
+    mutator(new_config);
+
+    return new_config;
+}
+
 std::shared_ptr<EngineConfig> EngineConfigFactory::Create() {
     return CreateDefaultConfiguration();
 }

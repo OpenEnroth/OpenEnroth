@@ -590,8 +590,7 @@ void Keyboard::ProcessInputActions() {
                             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
                             break;
                         } else {
-                            pMessageQueue_50C9E8->AddGUIMessage(
-                                UIMSG_CastQuickSpell, 0, 0);
+                            pMessageQueue_50C9E8->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
                         }
                     } break;
                     case INPUT_Attack:
@@ -605,21 +604,18 @@ void Keyboard::ProcessInputActions() {
                         break;
                     case INPUT_EventTrigger:
                         if (current_screen_type == SCREEN_GAME) {
-                            pMessageQueue_50CBD0->AddGUIMessage(
-                                UIMSG_Game_Action, 0, 0);
+                            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Game_Action, 0, 0);
                             break;
                         }
                         if (current_screen_type == SCREEN_NPC_DIALOGUE) {
                             pMessageQueue_50CBD0->Clear();
-                            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0,
-                                                                0);
+                            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                         }
                         break;
                     case INPUT_CharCycle:
                         if (current_screen_type == SCREEN_SPELL_BOOK) break;
 
-                        pMessageQueue_50C9E8->AddGUIMessage(
-                            UIMSG_CycleCharacters, 0, 0);
+                        pMessageQueue_50C9E8->AddGUIMessage(UIMSG_CycleCharacters, 0, 0);
                         break;
                     case INPUT_LookUp:
                         if (pEventTimer->bPaused) break;
@@ -653,15 +649,13 @@ void Keyboard::ProcessInputActions() {
                         }
                         break;
                     case INPUT_ZoomIn:
-                        pMessageQueue_50C9E8->AddGUIMessage(
-                            UIMSG_ClickZoomOutBtn, 0, 0);
+                        pMessageQueue_50C9E8->AddGUIMessage(UIMSG_ClickZoomOutBtn, 0, 0);
                         break;
                     case INPUT_ZoomOut:
-                        pMessageQueue_50C9E8->AddGUIMessage(
-                            UIMSG_ClickZoomInBtn, 0, 0);
+                        pMessageQueue_50C9E8->AddGUIMessage(UIMSG_ClickZoomInBtn, 0, 0);
                         break;
                     case INPUT_AlwaysRun:
-                        engine->config->always_run = !engine->config->always_run;
+                        engine->ToggleAlwaysRun();
                         break;
                     default:
                         break;

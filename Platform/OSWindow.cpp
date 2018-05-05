@@ -1291,10 +1291,10 @@ bool OSWindow::OnOSMenu(int item_id) {
 
         // SubMenu "Other"
         case 40101:
-            engine->config->debug_wizard_eye = true;
+            engine->SetDebugWizardEye(true);
             break;
         case 40102:
-            engine->config->debug_wizard_eye = false;
+            engine->SetDebugWizardEye(false);
             break;
         case 40103:
             pODMRenderParams->far_clip = 0x6000;
@@ -1303,73 +1303,73 @@ bool OSWindow::OnOSMenu(int item_id) {
             pODMRenderParams->far_clip = 0x2000;
             break;
         case 40105:
-            engine->config->seasons_change = true;
+            engine->SetSeasonsChange(true);
             break;
         case 40106:
-            engine->config->seasons_change = false;
+            engine->SetSeasonsChange(false);
             break;
         case 40107:
-            engine->config->debug_all_magic = true;
+            engine->SetDebugAllMagic(true);
             break;  // may need to close and reopen spellbook when changed??
         case 40108:
-            engine->config->debug_all_magic = false;
+            engine->SetDebugAllMagic(false);
             break;  // may need to close and reopen spellbook when changed??
         case 40109:
-            engine->config->show_fps = true;
+            engine->SetDebugShowFps(true);
             break;
         case 40110:
-            engine->config->show_fps = false;
+            engine->SetDebugShowFps(false);
             break;
         case 40111:
-            engine->config->show_picked_face = true;
+            engine->SetDebugShowPickedFace(true);
             break;
         case 40112:
-            engine->config->show_picked_face = false;
+            engine->SetDebugShowPickedFace(false);
             break;
         case 40113:
-            engine->config->debug_portal_outlines = true;
+            engine->SetDebugPortalOutlines(true);
             break;
         case 40114:
-            engine->config->debug_portal_outlines = false;
+            engine->SetDebugPortalOutlines(false);
             break;
         case 40115:
-            engine->config->debug_turbo_speed = true;
+            engine->SetDebugTurboSpeed(true);
             break;
         case 40116:
-            engine->config->debug_turbo_speed = false;
+            engine->SetDebugTurboSpeed(false);
             break;
         case 40117:
-            engine->config->allow_snow = true;
+            engine->SetAllowSnow(true);
             break;
         case 40118:
-            engine->config->allow_snow = false;
+            engine->SetAllowSnow(false);
             break;
         case 40119:
-            engine->config->extended_draw_distance = true;
+            engine->SetExtendedDrawDistance(true);
             break;
         case 40120:
-            engine->config->extended_draw_distance = false;
+            engine->SetExtendedDrawDistance(false);
             break;
         case 40122:
-            engine->config->no_actors = true;
+            engine->SetNoActors(true);
             break;
         case 40123:
-            engine->config->allow_lightmaps = true;
+            engine->SetAllowLightmaps(true);
             break;
         case 40124:
-            engine->config->allow_lightmaps = false;
+            engine->SetAllowLightmaps(false);
             break;
         case 40125:
-            engine->config->debug_lightmaps_decals = true;
+            engine->SetDebugLightmapsDecals(true);
             break;
         case 40126:
-            engine->config->debug_lightmaps_decals = false;
+            engine->SetDebugLightmapsDecals(false);
             break;
         case 40127:
-            engine->config->debug_terrain = true;
+            engine->SetDebugTerrain(true);
             break;
         case 40128:
-            engine->config->debug_terrain = false;
+            engine->SetDebugTerrain(false);
             break;
     }
 

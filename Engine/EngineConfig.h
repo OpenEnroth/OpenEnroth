@@ -122,5 +122,3 @@ class EngineConfig {
 };
 
 }  // namespace Engine_
-
-extern Engine_::EngineConfig *engine->config;

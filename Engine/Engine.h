@@ -125,6 +125,8 @@ struct Engine {
     bool MM7_Initialize(const std::string &mm7_path);
 
     inline bool IsUnderwater() const { return config->IsUnderwater(); }
+    inline bool CanSaturateFaces() const { return config->CanSaturateFaces(); }
+    inline bool AllowSnow() const { return config->allow_snow; }
     inline void SetUnderwater(bool is_underwater) {
         EngineConfigFactory engineConfigFactory;
         auto new_config = engineConfigFactory.Clone(config);
@@ -132,27 +134,132 @@ struct Engine {
 
         this->config = new_config;
     }
-
     inline void SetSaturateFaces(bool saturate) {
         EngineConfigFactory engineConfigFactory;
         auto new_config = engineConfigFactory.Clone(config);
         new_config->SetSaturateFaces(saturate);
 
         this->config = new_config;
+    }
+    inline void SetForceRedraw(bool redraw) {
+        EngineConfigFactory engineConfigFactory;
+        auto new_config = engineConfigFactory.Clone(config);
+        new_config->SetForceRedraw(redraw);
 
+        this->config = new_config;
+    }
+    inline void SetTargetingMode(bool is_targeting) {
+        MutateConfig(
+            [is_targeting](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->SetTargetingMode(is_targeting);
+            }
+        );
+    }
+    inline void SetDebugWizardEye(bool wizard_eye) {
+        MutateConfig(
+            [wizard_eye](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->debug_wizard_eye = wizard_eye;
+            }
+        );
+    }
+    inline void SetDebugAllMagic(bool all_magic) {
+        MutateConfig(
+            [all_magic](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->debug_all_magic = all_magic;
+            }
+        );
+    }
+    inline void SetDebugShowFps(bool show_fps) {
+        MutateConfig(
+            [show_fps](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->show_fps = show_fps;
+            }
+        );
+    }
+    inline void SetDebugShowPickedFace(bool show_picked_face) {
+        MutateConfig(
+            [show_picked_face](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->show_picked_face = show_picked_face;
+            }
+        );
+    }
+    inline void SetDebugPortalOutlines(bool portal_outlines) {
+        MutateConfig(
+            [portal_outlines](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->debug_portal_outlines = portal_outlines;
+            }
+        );
+    }
+    inline void SetDebugTurboSpeed(bool turbo_speed) {
+        MutateConfig(
+            [turbo_speed](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->debug_turbo_speed = turbo_speed;
+            }
+        );
+    }
+    inline void SetSeasonsChange(bool seasons_change) {
+        MutateConfig(
+            [seasons_change](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->seasons_change = seasons_change;
+            }
+        );
+    }
+    inline void SetAllowSnow(bool allow_snow) {
+        MutateConfig(
+            [allow_snow](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->allow_snow = allow_snow;
+            }
+        );
+    }
+    inline void SetExtendedDrawDistance(bool extended_draw_distance) {
+        MutateConfig(
+            [extended_draw_distance](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->extended_draw_distance = extended_draw_distance;
+            }
+        );
+    }
+    inline void SetNoActors(bool no_actors) {
+        MutateConfig(
+            [no_actors](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->no_actors = no_actors;
+            }
+        );
+    }
+    inline void SetAllowLightmaps(bool allow_lightmaps) {
+        MutateConfig(
+            [allow_lightmaps](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->allow_lightmaps = allow_lightmaps;
+            }
+        );
+    }
+    inline void SetDebugLightmapsDecals(bool debug_lightmaps_decals) {
+        MutateConfig(
+            [debug_lightmaps_decals](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->debug_lightmaps_decals = debug_lightmaps_decals;
+            }
+        );
+    }
+    inline void SetDebugTerrain(bool debug_terrain) {
+        MutateConfig(
+            [debug_terrain](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->debug_terrain = debug_terrain;
+            }
+        );
+    }
+    inline void ToggleAlwaysRun() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->ToggleAlwaysRun();
+            }
+        );
+    }
+    inline void MutateConfig(std::function<void(std::shared_ptr<EngineConfig> &)> mutator) {
+        EngineConfigFactory engineConfigFactory;
+        this->config = engineConfigFactory.Mutate(config, mutator);
     }
 
-    //----- (0042EB6A) --------------------------------------------------------
-    // struct SpellFxRenderer *GetSpellFxRenderer() {
-    //    return this->spellfx;
-    // }
-    //----- (0042EB71) --------------------------------------------------------
-    // struct IndoorCameraD3D *GetIndoorCamera() {
-    //    return this->pIndoorCameraD3D;
-    // }
 
     std::shared_ptr<const EngineConfig> config;
-    // void ( ***vdestructor_ptr)(Game *, bool);
     Game__StationaryLight pStationaryLights[25];
     char field_2C0[1092];
     unsigned int uNumStationaryLights;

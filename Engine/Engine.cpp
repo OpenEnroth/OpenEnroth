@@ -427,9 +427,9 @@ bool Engine::_44EEA7() {
     }*/
     v6 = qword_5C6DF0 - field_E10;
     if (qword_5C6DF0 - field_E10 == 1)
-        engine->config->SetForceRedraw(true);
+        engine->SetForceRedraw(true);
     if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-        engine->config->SetForceRedraw(true);
+        engine->SetForceRedraw(true);
         uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
     }
     return true;
@@ -437,7 +437,7 @@ bool Engine::_44EEA7() {
 
 //----- (0044EDE4) --------------------------------------------------------
 bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
-    if (engine->config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -446,7 +446,7 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
 }
 
 bool Engine::AlterGamma_ODM(ODMFace *pFace, int *pColor) {
-    if (engine->config->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (engine->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -502,7 +502,7 @@ int Engine::_44EC23_saturate_face_odm(Polygon *a2, int *a3, signed int a4) {
     float a4a;  // [sp+1Ch] [bp+10h]@9
     float a4b;  // [sp+1Ch] [bp+10h]@11
 
-    if (engine->config->CanSaturateFaces() && a2->field_59 == 5 &&
+    if (CanSaturateFaces() && a2->field_59 == 5 &&
         a2->pODMFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         v4 = (double)a4;
         a2a = v4;
@@ -554,7 +554,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     float v14;  // [sp+1Ch] [bp+10h]@8
     float v15;  // [sp+1Ch] [bp+10h]@10
 
-    if (engine->config->CanSaturateFaces() && a2->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (engine->CanSaturateFaces() && a2->uAttributes & FACE_CAN_SATURATE_COLOR) {
         v4 = (double)a4;
         v11 = v4;
         *a3 |= 2u;

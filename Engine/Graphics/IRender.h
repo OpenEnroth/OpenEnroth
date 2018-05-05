@@ -456,6 +456,8 @@ class IRender {
         this->config = new_config;
     }
 
+    inline bool IsUsingSpecular() const { return config->is_using_specular; }
+
 
     std::shared_ptr<const IRenderConfig> config;
     int *pActiveZBuffer;

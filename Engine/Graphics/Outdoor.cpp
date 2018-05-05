@@ -121,8 +121,8 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
         UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
                              WorldPosToGridCellZ(pParty->vPosition.y),
                              1);
-    engine->config->SetForceRedraw(false);
-    if (render->config->is_using_specular)
+    engine->SetForceRedraw(false);
+    if (render->IsUsingSpecular())
         lightmap_builder->uFlags |= LIGHTMAP_FLAGS_USE_SPECULAR;
     else
         lightmap_builder->uFlags &= ~LIGHTMAP_FLAGS_USE_SPECULAR;
@@ -256,20 +256,16 @@ bool OutdoorLocation::Initialize(const String &filename, int days_played,
 char foot_travel_destinations[15][4] = {
     // north           south               east              west from
     {MAP_INVALID, MAP_INVALID, MAP_INVALID, MAP_INVALID},  // MAP_EMERALD_ISLE
-    {MAP_PIERPONT, MAP_BARROW_DOWNS, MAP_PIERPONT,
-     MAP_STEADWICK},  // MAP_HARMONDALE
-    {MAP_DEYJA, MAP_BRAKADA_DESERT, MAP_HARMONDALE,
-     MAP_TATALIA},                                        // MAP_STEADWICK
+    {MAP_PIERPONT, MAP_BARROW_DOWNS, MAP_PIERPONT, MAP_STEADWICK},  // MAP_HARMONDALE
+    {MAP_DEYJA, MAP_BRAKADA_DESERT, MAP_HARMONDALE, MAP_TATALIA},  // MAP_STEADWICK
     {MAP_AVLEE, MAP_HARMONDALE, MAP_INVALID, MAP_DEYJA},  // MAP_PIERPONT
     {MAP_PIERPONT, MAP_STEADWICK, MAP_PIERPONT, MAP_STEADWICK},  // MAP_DEYJA
-    {MAP_STEADWICK, MAP_INVALID, MAP_BARROW_DOWNS,
-     MAP_INVALID},                                         // MAP_BRAKADA_DESERT
+    {MAP_STEADWICK, MAP_INVALID, MAP_BARROW_DOWNS, MAP_INVALID},  // MAP_BRAKADA_DESERT
     {MAP_INVALID, MAP_INVALID, MAP_INVALID, MAP_INVALID},  // MAP_CELESTIA
     {MAP_INVALID, MAP_INVALID, MAP_INVALID, MAP_INVALID},  // MAP_THE_PIT
     {MAP_INVALID, MAP_INVALID, MAP_INVALID, MAP_INVALID},  // MAP_EVENMORN_ISLE
     {MAP_INVALID, MAP_INVALID, MAP_INVALID, MAP_INVALID},  // MAP_MOUNT_NIGHON
-    {MAP_HARMONDALE, MAP_BRAKADA_DESERT, MAP_HARMONDALE,
-     MAP_BRAKADA_DESERT},                                  // MAP_BARROW_DOWNS
+    {MAP_HARMONDALE, MAP_BRAKADA_DESERT, MAP_HARMONDALE, MAP_BRAKADA_DESERT},  // MAP_BARROW_DOWNS
     {MAP_INVALID, MAP_INVALID, MAP_INVALID, MAP_INVALID},  // MAP_LAND_OF_GIANTS
     {MAP_INVALID, MAP_INVALID, MAP_STEADWICK, MAP_INVALID},  // MAP_TATALIA
     {MAP_INVALID, MAP_PIERPONT, MAP_PIERPONT, MAP_INVALID},  // MAP_AVLEE
@@ -296,36 +292,21 @@ unsigned char foot_travel_times[15][4] = {
 
 MapStartPoint foot_travel_arrival_points[15][4] = {
     // north                south                east                 west from
-    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party,
-     MapStartPoint_Party},  // MAP_EMERALD_ISLE
-    {MapStartPoint_South, MapStartPoint_North, MapStartPoint_South,
-     MapStartPoint_East},  // MAP_HARMONDALE
-    {MapStartPoint_South, MapStartPoint_North, MapStartPoint_West,
-     MapStartPoint_East},  // MAP_STEADWICK
-    {MapStartPoint_East, MapStartPoint_North, MapStartPoint_Party,
-     MapStartPoint_East},  // MAP_PIERPONT
-    {MapStartPoint_West, MapStartPoint_North, MapStartPoint_West,
-     MapStartPoint_North},  // MAP_DEYJA
-    {MapStartPoint_South, MapStartPoint_Party, MapStartPoint_West,
-     MapStartPoint_Party},  // MAP_BRAKADA_DESERT
-    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party,
-     MapStartPoint_Party},  // MAP_CELESTIA
-    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party,
-     MapStartPoint_Party},  // MAP_THE_PIT
-    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party,
-     MapStartPoint_Party},  // MAP_EVENMORN_ISLE
-    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party,
-     MapStartPoint_Party},  // MAP_MOUNT_NIGHON
-    {MapStartPoint_South, MapStartPoint_East, MapStartPoint_South,
-     MapStartPoint_East},  // MAP_BARROW_DOWNS
-    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party,
-     MapStartPoint_Party},  // MAP_LAND_OF_GIANTS
-    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_West,
-     MapStartPoint_Party},  // MAP_TATALIA
-    {MapStartPoint_Party, MapStartPoint_North, MapStartPoint_North,
-     MapStartPoint_Party},  // MAP_AVLEE
-    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party,
-     MapStartPoint_Party},  // MAP_SHOALS
+    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party},  // MAP_EMERALD_ISLE
+    {MapStartPoint_South, MapStartPoint_North, MapStartPoint_South, MapStartPoint_East},  // MAP_HARMONDALE
+    {MapStartPoint_South, MapStartPoint_North, MapStartPoint_West, MapStartPoint_East},  // MAP_STEADWICK
+    {MapStartPoint_East, MapStartPoint_North, MapStartPoint_Party, MapStartPoint_East},  // MAP_PIERPONT
+    {MapStartPoint_West, MapStartPoint_North, MapStartPoint_West, MapStartPoint_North},  // MAP_DEYJA
+    {MapStartPoint_South, MapStartPoint_Party, MapStartPoint_West, MapStartPoint_Party},  // MAP_BRAKADA_DESERT
+    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party},  // MAP_CELESTIA
+    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party},  // MAP_THE_PIT
+    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party},  // MAP_EVENMORN_ISLE
+    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party},  // MAP_MOUNT_NIGHON
+    {MapStartPoint_South, MapStartPoint_East, MapStartPoint_South, MapStartPoint_East},  // MAP_BARROW_DOWNS
+    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party},  // MAP_LAND_OF_GIANTS
+    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_West, MapStartPoint_Party},  // MAP_TATALIA
+    {MapStartPoint_Party, MapStartPoint_North, MapStartPoint_North, MapStartPoint_Party},  // MAP_AVLEE
+    {MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party, MapStartPoint_Party},  // MAP_SHOALS
 };
 
 //----- (0048902E) --------------------------------------------------------
@@ -375,16 +356,14 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
         HEXRAYS_LOWORD(pParty->uFlags) &= 0xFD7Bu;
         return true;
     }
-    destinationMap =
-        foot_travel_destinations[mapNumberAsInt - 1][direction - 1];
-    if (destinationMap == MAP_INVALID) return false;
+    destinationMap = foot_travel_destinations[mapNumberAsInt - 1][direction - 1];
+    if (destinationMap == MAP_INVALID)
+        return false;
 
     assert(destinationMap <= MAP_SHOALS);
 
-    uDefaultTravelTime_ByFoot =
-        foot_travel_times[mapNumberAsInt - 1][direction - 1];
-    uLevel_StartingPointType =
-        foot_travel_arrival_points[mapNumberAsInt - 1][direction - 1];
+    uDefaultTravelTime_ByFoot = foot_travel_times[mapNumberAsInt - 1][direction - 1];
+    uLevel_StartingPointType = foot_travel_arrival_points[mapNumberAsInt - 1][direction - 1];
     sprintf(pOut, "out%02d.odm", destinationMap);  //локация направления
     return true;
 }
@@ -454,11 +433,12 @@ void OutdoorLocation::UpdateSunlightVectors() {
 }
 
 //----- (004893C1) --------------------------------------------------------
-void OutdoorLocation::UpdateFog() { fFogDensity = GetFogDensityByTime(); }
+void OutdoorLocation::UpdateFog() {
+    fFogDensity = GetFogDensityByTime();
+}
 
 //----- (004893CF) --------------------------------------------------------
-int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, signed int y,
-                                                          int z) {
+int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, signed int y, int z) {
     int v7;                      // eax@4
     int is_on_water;             // [sp+8h] [bp-8h]@2
     int bmodel_standing_on_pid;  // [sp+Ch] [bp-4h]@2
