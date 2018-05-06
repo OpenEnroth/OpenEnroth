@@ -156,8 +156,6 @@ void IntegrityTest() {
     // ToDo(_): move to usage place
     static_assert(sizeof(OverlayDesc) == 8, "Wrong type size");
     static_assert(sizeof(ChestDesc) == 36, "Wrong type size");
-    static_assert(sizeof(ObjectDesc_mm6) == 52, "Wrong type size");
-    static_assert(sizeof(ObjectDesc) == 56, "Wrong type size");
     static_assert(sizeof(DecorationDesc) == 84, "Wrong type size");
     static_assert(sizeof(PlayerFrame) == 10, "Wrong type size");
     static_assert(sizeof(RenderVertexSoft) == 0x30, "Wrong type size");

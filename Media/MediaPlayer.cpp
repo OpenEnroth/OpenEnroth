@@ -53,9 +53,17 @@ class AVStreamWrapper {
         dec_ctx = nullptr;
     }
 
-    virtual ~AVStreamWrapper() { Close(); }
+    virtual ~AVStreamWrapper() {
+        close();
+    }
 
-    void Close() {
+    virtual void reset() {
+        if (dec_ctx != nullptr) {
+            avcodec_flush_buffers(dec_ctx);
+        }
+    }
+
+    virtual void close() {
         type = AVMEDIA_TYPE_UNKNOWN;
         stream_idx = -1;
         stream = nullptr;
@@ -68,11 +76,12 @@ class AVStreamWrapper {
         }
     }
 
-    bool open(AVFormatContext *format_ctx, AVMediaType type_) {
-        stream_idx = av_find_best_stream(format_ctx, type_, -1,
-                                         -1, &dec, 0);
+    virtual bool open(AVFormatContext *format_ctx) = 0;
+
+    virtual bool open(AVFormatContext *format_ctx, AVMediaType type_) {
+        stream_idx = av_find_best_stream(format_ctx, type_, -1, -1, &dec, 0);
         if (stream_idx < 0) {
-            Close();
+            close();
             fprintf(stderr, "ffmpeg: Unable to find audio stream\n");
             return false;
         }
@@ -80,16 +89,16 @@ class AVStreamWrapper {
         stream = format_ctx->streams[stream_idx];
         dec_ctx = avcodec_alloc_context3(dec);
         if (dec_ctx == nullptr) {
-            Close();
+            close();
             return false;
         }
 
         if (avcodec_parameters_to_context(dec_ctx, stream->codecpar) < 0) {
-            Close();
+            close();
             return false;
         }
         if (avcodec_open2(dec_ctx, dec, nullptr) < 0) {
-            Close();
+            close();
             return false;
         }
 
@@ -108,7 +117,7 @@ class AVAudioStream : public AVStreamWrapper {
  public:
     AVAudioStream() : AVStreamWrapper() { converter = nullptr; }
 
-    bool open(AVFormatContext *format_ctx) {
+    virtual bool open(AVFormatContext *format_ctx) {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_AUDIO)) {
             return false;
         }
@@ -150,7 +159,7 @@ class AVAudioStream : public AVStreamWrapper {
                 PMemBuffer tmp_buf = AllocMemBuffer(
                     frame->nb_samples * 2 * 2);
                 uint8_t *dst_channels[8] = { 0 };
-                dst_channels[0] = (uint8_t *)tmp_buf->get_data();
+                dst_channels[0] = (uint8_t*)tmp_buf->GetData();
                 int got_samples = swr_convert(
                     converter, dst_channels, frame->nb_samples,
                     (const uint8_t**)frame->data, frame->nb_samples);
@@ -181,7 +190,7 @@ class AVVideoStream : public AVStreamWrapper {
         converter = nullptr;
     }
 
-    bool open(AVFormatContext *format_ctx) {
+    virtual bool open(AVFormatContext *format_ctx) {
         if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_VIDEO)) {
             return false;
         }
@@ -225,7 +234,7 @@ class AVVideoStream : public AVStreamWrapper {
                 }
                 uint8_t *data[4] = { nullptr, nullptr, nullptr, nullptr };
                 PMemBuffer tmp_buf = AllocMemBuffer(frame->height * linesizes[0] * 2);
-                data[0] = (uint8_t *)tmp_buf->get_data();
+                data[0] = (uint8_t*)tmp_buf->GetData();
 
                 if (sws_scale(converter, frame->data, frame->linesize, 0, frame->height,
                     data, linesizes) < 0) {
@@ -285,8 +294,8 @@ class Movie : public IMovie {
     }
 
     inline void ReleaseAVCodec() {
-        audio.Close();
-        video.Close();
+        audio.close();
+        video.close();
 
         if (format_ctx) {
             // Close the video file
@@ -322,11 +331,7 @@ class Movie : public IMovie {
         // Dump information about file onto standard error
         av_dump_format(format_ctx, 0, filename, 0);
 
-        if (!audio.open(format_ctx)) {
-            Error("Cannot open audio stream: %s", filename);
-            Close();
-            return false;
-        }
+        audio.open(format_ctx);
 
         if (!video.open(format_ctx)) {
             Error("Cannot open video stream: %s", filename);
@@ -338,8 +343,7 @@ class Movie : public IMovie {
         height = video.height;
 
         if (audio.stream_idx >= 0) {
-            audio_data_in_device = provider->CreateStreamingTrack16(
-                2, audio.dec_ctx->sample_rate, 2);
+            audio_data_in_device = provider->CreateStreamingTrack16(2, audio.dec_ctx->sample_rate, 2);
         }
 
         return true;
@@ -352,13 +356,11 @@ class Movie : public IMovie {
         uFilePos = 0;
 
         if (!ioBuffer) {
-            ioBuffer = (unsigned char *)av_malloc(
-                AV_INPUT_BUFFER_MIN_SIZE);  // can get av_free()ed by libav
+            ioBuffer = (unsigned char *)av_malloc(AV_INPUT_BUFFER_MIN_SIZE);  // can get av_free()ed by libav
         }
 
         if (!avioContext) {
-            avioContext = avio_alloc_context(ioBuffer, 0x4000, 0, this, s_read,
-                                             NULL, s_seek);
+            avioContext = avio_alloc_context(ioBuffer, 0x4000, 0, this, s_read, NULL, s_seek);
         }
         if (!format_ctx) {
             format_ctx = avformat_alloc_context();
@@ -373,25 +375,22 @@ class Movie : public IMovie {
         }
 
         auto current_time = std::chrono::system_clock::now();
-        std::chrono::duration<double, std::ratio<1>> diff =
-            current_time - start_time;
-        std::chrono::milliseconds diff_ms =
-            std::chrono::duration_cast<std::chrono::milliseconds>(diff);
+        std::chrono::duration<double, std::ratio<1>> diff = current_time - start_time;
+        std::chrono::milliseconds diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
         playback_time += diff_ms.count();
         start_time = std::chrono::system_clock::now();
 
-        int desired_frame_number =
-            (int)((playback_time / video.frame_len) + 0.5);
+        int desired_frame_number = (int)((playback_time / video.frame_len) + 0.5);
         if (last_resampled_frame_num == desired_frame_number) {
             return video.last_frame;
         }
         last_resampled_frame_num++;
         if (last_resampled_frame_num == video.stream->duration) {
             if (looping) {
-                avcodec_flush_buffers(video.dec_ctx);
-                avcodec_flush_buffers(audio.dec_ctx);
-                int err = av_seek_frame(format_ctx, video.stream_idx, 0,
-                                        AVSEEK_FLAG_FRAME);
+                video.reset();
+                audio.reset();
+                int err = av_seek_frame(format_ctx, -1, 0,
+                                        AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
                 char err_buf[2048];
                 av_strerror(err, err_buf, 2048);
                 if (err < 0) {
@@ -400,6 +399,7 @@ class Movie : public IMovie {
                 }
                 last_resampled_frame_num = 0;
                 playback_time = 0;
+                desired_frame_number = 0;
             } else {
                 playing = false;
                 return nullptr;
@@ -423,8 +423,8 @@ class Movie : public IMovie {
                 PMemBuffer buffer = audio.decode_frame(avpacket);
                 if (buffer) {
                     provider->Stream16(audio_data_in_device,
-                                       buffer->get_size() / 2,
-                                       buffer->get_data());
+                                       buffer->GetSize() / 2,
+                                       buffer->GetData());
                 }
             } else if (avpacket->stream_index == video.stream_idx) {
               // Decode video frame
@@ -447,7 +447,7 @@ class Movie : public IMovie {
 
     virtual bool Play(bool loop = false) {
         start_time = std::chrono::system_clock::now();
-        looping = true;  // loop;
+        looping = loop;
         playing = true;
         return false;
     }
@@ -482,8 +482,23 @@ class Movie : public IMovie {
         if (whence == AVSEEK_SIZE) {
             return uFileSize;
         }
-        int res = fseek(hFile, uFileOffset + offset, SEEK_SET);
-        return res;
+
+        switch (whence) {
+            case SEEK_SET:
+                uFilePos = offset;
+                break;
+            case SEEK_CUR:
+                uFilePos += offset;
+                break;
+            case SEEK_END:
+                uFilePos = uFileSize - offset;
+                break;
+            default:
+                assert(false);
+                break;
+        }
+        fseek(hFile, uFileOffset + uFilePos, SEEK_SET);
+        return uFilePos;
     }
 
  protected:
@@ -656,7 +671,7 @@ void MPlayer::HouseMovieLoop() {
 
         Image *image =
             Image::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(),
-                          IMAGE_FORMAT_A8R8G8B8, buffer->get_data());
+                          IMAGE_FORMAT_A8R8G8B8, buffer->GetData());
         render->DrawImage(image, rect);
         image->Release();
     } else {
@@ -720,7 +735,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
         Image *image =
             Image::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(),
-                          IMAGE_FORMAT_A8R8G8B8, buffer->get_data());
+                          IMAGE_FORMAT_A8R8G8B8, buffer->GetData());
         render->DrawImage(image, rect);
         image->Release();
 
@@ -981,7 +996,7 @@ PMemBuffer AudioBaseDataSource::GetNextBuffer() {
                 PMemBuffer tmp_buf = AllocMemBuffer(
                     frame->nb_samples * pCodecContext->channels * 2);
                 uint8_t *dst_channels[8] = {0};
-                dst_channels[0] = (uint8_t *)tmp_buf->get_data();
+                dst_channels[0] = (uint8_t *)tmp_buf->GetData();
                 int got_samples = swr_convert(
                     pConverter, dst_channels, frame->nb_samples,
                     (const uint8_t **)frame->data, frame->nb_samples);
@@ -1092,8 +1107,8 @@ bool AudioBufferDataSource::Open() {
 
     pFormatContext->pb = avio_ctx;
 
-    buf_pos = (uint8_t *)buffer->get_data();
-    buf_end = buf_pos + buffer->get_size();
+    buf_pos = (uint8_t*)buffer->GetData();
+    buf_end = buf_pos + buffer->GetSize();
 
     // Open audio file
     if (avformat_open_input(&pFormatContext, nullptr, nullptr, nullptr) < 0) {

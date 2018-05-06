@@ -479,15 +479,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_sprites.spell_id = uSpellID;
             spell_sprites.spell_level = uSkill;
             spell_sprites.spell_skill = skillMasteryPlusOne;
-            unsigned int v16 = 0;
-            while (v16 < pObjectList->uNumObjects) {
-                if (spell_sprites.uType ==
-                    pObjectList->pObjects[v16].uObjectID) {
-                    break;
-                }
-                v16++;
-            }
-            spell_sprites.uObjectDescID = v16;
+            spell_sprites.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprites.uType);
             spell_sprites.vPosition.x = fromx;
             spell_sprites.vPosition.y = fromy;
             spell_sprites.vPosition.z = fromz;

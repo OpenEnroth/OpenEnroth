@@ -238,17 +238,7 @@ MAP_TYPE MapStats::GetMapInfo(const String &Str2) {
 }
 
 int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
-    int v15;        // ebx@20
-    uint16_t v16;  // dx@20
-    uint16_t v18;  // ax@24
-    int v19;               // ST0C_4@27
-    int v20;               // ST08_4@27
-    int v21;               // ST04_4@27
-    int v22;               // eax@27
-    int v23;        // ebx@29
-    uint16_t v24;  // dx@29
-    uint16_t v26;  // ax@33
-    SpriteObject a1a;  // [sp+Ch] [bp-7Ch]@1
+    SpriteObject a1a;
 
     int v34 = 0;
     int v5 = rand() % 100;
@@ -262,12 +252,10 @@ int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
     if (v13 < 7) {
         if (v5 < 20) return result;
         if (v5 >= 60) {
-            v19 = a2->vPosition.z;
-            v20 = a2->vPosition.y;
-            v21 = a2->vPosition.x;
-            v22 = rand();
-            return sub_450521_ProllyDropItemAt(v13, v22 % 27 + 20, v21, v20,
-                                               v19, 0);
+            return sub_450521_ProllyDropItemAt(v13, rand() % 27 + 20,
+                                               a2->vPosition.x,
+                                               a2->vPosition.y,
+                                               a2->vPosition.z, 0);
         }
         if (a2->uIndex == 1) {
             a1a.containing_item.uItemID = ITEM_GOLD_SMALL;
@@ -288,37 +276,15 @@ int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
             a1a.containing_item.uItemID = ITEM_GOLD_LARGE;
             v34 = rand() % 3001 + 2000;
         }
-        v15 = 0;
-        v16 = pItemsTable->pItems[a1a.containing_item.uItemID].uSpriteID;
-        a1a.uType =
-            (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1a.containing_item.uItemID]
-                .uSpriteID;
-        v18 = 0;
-        for (int i = 0; i < pObjectList->uNumObjects; i++) {
-            if (pObjectList->pObjects[i].uObjectID == v16) {
-                v18 = i;
-                break;
-            }
-        }
+        a1a.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.containing_item.SetIdentified();
-        a1a.uObjectDescID = v18;
+        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.special_enchantment = (ITEM_ENCHANTMENT)v34;
     } else {
         result = a1a.containing_item.GenerateArtifact();
         if (!result) return result;
-        v23 = 0;
-        v24 = pItemsTable->pItems[a1a.containing_item.uItemID].uSpriteID;
-        a1a.uType =
-            (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1a.containing_item.uItemID]
-                .uSpriteID;
-        v26 = 0;
-        for (int i = 0; i < pObjectList->uNumObjects; i++) {
-            if (v24 == pObjectList->pObjects[i].uObjectID) {
-                v26 = i;
-                break;
-            }
-        }
-        a1a.uObjectDescID = v26;
+        a1a.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1a.containing_item.uItemID].uSpriteID;
+        a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.Reset();
     }
     a1a.vPosition.y = a2->vPosition.y;

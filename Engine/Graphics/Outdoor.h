@@ -185,7 +185,7 @@ struct OutdoorLocation {
 extern OutdoorLocation *pOutdoor;
 
 void ODM_UpdateUserInputAndOther();
-int ODM_GetFloorLevel(int X, signed int Y, int Z, int, int *pOnWater,
+int ODM_GetFloorLevel(int X, signed int Y, int Z, int, bool *pOnWater,
                       int *bmodel_pid, int bWaterWalk);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int pFaceID);
@@ -206,4 +206,4 @@ int GridCellToWorldPosX(int);
 int GridCellToWorldPosZ(int);
 void sub_481ED9_MessWithODMRenderParams();
 bool IsTerrainSlopeTooHigh(int pos_x, int pos_y);
-int GetTerrainHeightsAroundParty2(int a1, int a2, int *a3, int a4);
+int GetTerrainHeightsAroundParty2(int a1, int a2, bool *a3, int a4);

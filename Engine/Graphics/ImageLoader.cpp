@@ -1,6 +1,8 @@
 #include "Engine/Log.h"
+
 #include "Engine/ZlibWrapper.h"
 
+#include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageFormatConverter.h"
 #include "Engine/Graphics/ImageLoader.h"

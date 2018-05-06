@@ -136,6 +136,9 @@
     <Filter Include="src\Application">
       <UniqueIdentifier>{907614ac-543f-4e30-bfc7-c9fd60cc4800}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\tools">
+      <UniqueIdentifier>{371b29ba-bb1e-494a-a387-7c9dea43a7fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lib\zlib\adler32.c">
@@ -578,6 +581,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Engine\Graphics\IRenderConfigFactory.cpp">
       <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\Graphics\HWLContainer.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tools\MemBuffer.cpp">
+      <Filter>src\tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1594,6 +1603,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Engine\Graphics\IRenderConfigFactory.h">
       <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\Graphics\HWLContainer.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tools\MemBuffer.h">
+      <Filter>src\tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

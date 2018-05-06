@@ -628,8 +628,7 @@ void AudioTrackS16::Update() {
             return;
         }
 
-        alBufferData(al_buffer, al_format, buffer->get_data(),
-                     buffer->get_size(), al_sample_rate);
+        alBufferData(al_buffer, al_format, buffer->GetData(), buffer->GetSize(), al_sample_rate);
         if (CheckError()) {
             Close();
             return;
@@ -641,7 +640,7 @@ void AudioTrackS16::Update() {
             return;
         }
 
-        uiReservedData += buffer->get_size();
+        uiReservedData += buffer->GetSize();
     }
 }
 
@@ -768,8 +767,7 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
             break;
         }
 
-        alBufferData(al_buffer, al_format, buffer->get_data(),
-                     buffer->get_size(), al_sample_rate);
+        alBufferData(al_buffer, al_format, buffer->GetData(), buffer->GetSize(), al_sample_rate);
         if (CheckError()) {
             Close();
             break;

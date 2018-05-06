@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/RenderBase.h"
 
 class RenderOpenGL : public RenderBase {
@@ -148,9 +149,6 @@ class RenderOpenGL : public RenderBase {
     virtual void am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
                                int blend_mode);
 
-    virtual HWLTexture *LoadHwlBitmap(const char *name);
-    virtual HWLTexture *LoadHwlSprite(const char *name);
-
  public:
     virtual void WritePixel16(int x, int y, uint16_t color);
 
@@ -165,13 +163,8 @@ class RenderOpenGL : public RenderBase {
     void DrawIndoorSkyPolygon(signed int uNumVertices,
                               struct Polygon *pSkyPolygon);
 
-    OSWindow *window;
-
     void *hdc;
     int clip_x, clip_y;
     int clip_z, clip_w;
     unsigned char *render_target_rgb;
-
-    RenderHWLContainer pD3DBitmaps;
-    RenderHWLContainer pD3DSprites;
 };

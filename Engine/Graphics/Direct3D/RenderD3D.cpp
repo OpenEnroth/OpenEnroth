@@ -739,7 +739,7 @@ void RenderD3D::ClearTarget(unsigned int bClearColor, unsigned int uClearColor,
     if (bClearColor) uClearFlags |= D3DCLEAR_TARGET;
     if (bClearDepth) uClearFlags |= D3DCLEAR_ZBUFFER;
 
-    D3DRECT rects[] = {{0, 0, window->GetWidth(), window->GetHeight()}};
+    D3DRECT rects[] = {{0, 0, (LONG)window->GetWidth(), (LONG)window->GetHeight()}};
     if (uClearFlags)
         pViewport->Clear2(1, rects, uClearFlags, uClearColor, z_clear, 0);
 }
@@ -784,12 +784,7 @@ bool RenderD3D::CreateTexture(unsigned int uTextureWidth,
                               IDirect3DTexture2 **pOutTexture,
                               bool bAlphaChannel, bool bMipmaps,
                               unsigned int uMinDeviceTexDim) {
-    unsigned int v9;       // ebx@5
-    unsigned int v10;      // eax@5
-    DWORD v11;             // edx@5
-    DDSURFACEDESC2 ddsd2;  // [sp+Ch] [bp-80h]@1
-
-    memset(&ddsd2, 0, sizeof(ddsd2));
+    DDSURFACEDESC2 ddsd2 = { 0 };
     ddsd2.dwSize = sizeof(ddsd2);
     ddsd2.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
     ddsd2.ddsCaps.dwCaps = DDSCAPS_TEXTURE;
@@ -797,35 +792,31 @@ bool RenderD3D::CreateTexture(unsigned int uTextureWidth,
     ddsd2.dwHeight = uTextureHeight;
     ddsd2.dwWidth = uTextureWidth;
     if (bMipmaps) {
-        if ((signed int)uTextureHeight <= (signed int)uTextureWidth) {
+        if (uTextureHeight <= uTextureWidth) {
             ddsd2.dwMipMapCount = GetMaxMipLevels(uTextureHeight) -
                                   GetMaxMipLevels(uMinDeviceTexDim);
             if (ddsd2.dwMipMapCount) {
                 ddsd2.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH |
                                 DDSD_PIXELFORMAT | DDSD_MIPMAPCOUNT;
-                ddsd2.ddsCaps.dwCaps =
-                    DDSCAPS_TEXTURE | DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
+                ddsd2.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
             }
             goto LABEL_12;
         }
-        if ((signed int)uTextureWidth < (signed int)uMinDeviceTexDim) {
+        if (uTextureWidth < uMinDeviceTexDim) {
             ddsd2.dwMipMapCount = GetMaxMipLevels(uMinDeviceTexDim);
             if (ddsd2.dwMipMapCount) {
                 ddsd2.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH |
                                 DDSD_PIXELFORMAT | DDSD_MIPMAPCOUNT;
-                ddsd2.ddsCaps.dwCaps =
-                    DDSCAPS_TEXTURE | DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
+                ddsd2.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
             }
             goto LABEL_12;
         }
-        v9 = GetMaxMipLevels(uTextureWidth);
-        v10 = GetMaxMipLevels(uMinDeviceTexDim);
+        unsigned int v9 = GetMaxMipLevels(uTextureWidth);
+        unsigned int v10 = GetMaxMipLevels(uMinDeviceTexDim);
         ddsd2.dwMipMapCount = v9 - v10;
-        if (v9 == v10) {
-            ddsd2.dwFlags = 0x1007;
-            __debugbreak();  // warning C4700: uninitialized local variable
-                             // 'v11' used
-            ddsd2.ddsCaps.dwCaps = v11;
+        if (ddsd2.dwMipMapCount == 0) {
+            ddsd2.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
+            ddsd2.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_COMPLEX;
             goto LABEL_12;
         }
     } else {
@@ -850,11 +841,11 @@ LABEL_12:
         ddsd2.ddpfPixelFormat.dwBBitMask = 0x001F;
         ddsd2.ddpfPixelFormat.dwRGBAlphaBitMask = 0;
     }
-    if (FAILED(pHost->CreateSurface(&ddsd2, pOutSurface, NULL))) return false;
+    if (FAILED(pHost->CreateSurface(&ddsd2, pOutSurface, NULL))) {
+        return false;
+    }
 
-    if (FAILED((*pOutSurface)
-                   ->QueryInterface(IID_IDirect3DTexture2,
-                                    (void **)pOutTexture))) {
+    if (FAILED((*pOutSurface)->QueryInterface(IID_IDirect3DTexture2, (void**)pOutTexture))) {
         (*pOutSurface)->Release();
         *pOutSurface = 0;
         return false;

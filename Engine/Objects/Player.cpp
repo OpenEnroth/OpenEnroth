@@ -3900,7 +3900,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     // thisb = this;
     playerAffected = &pParty->pPlayers[player_num - 1];
     v73 = 1;
-    if (pParty->bTurnBasedModeOn == true &&
+    if (pParty->bTurnBasedModeOn &&
         (pTurnEngine->turn_stage == TE_WAIT ||
          pTurnEngine->turn_stage == TE_MOVEMENT))
         return;
@@ -7833,20 +7833,13 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
                                          __int16 a5, signed int actchar) {
     // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
 
-    unsigned __int16 v9 = 0;  // ax@5
-    SpriteObject a1a;         // [sp+Ch] [bp-74h]@1
-    // SpriteObject::SpriteObject(&a1a);
+    SpriteObject a1a;
     a1a.uType = SPRITE_600;
     a1a.containing_item.Reset();
     a1a.spell_id = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;
     a1a.spell_skill = 3;
-
-    for (uint i = 0; i < pObjectList->uNumObjects; ++i) {
-        if (a1a.uType == pObjectList->pObjects[i].uObjectID) v9 = i;
-    }
-
-    a1a.uObjectDescID = v9;
+    a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
     a1a.vPosition.x = xpos;
     a1a.vPosition.y = ypos;
     a1a.vPosition.z = zpos;

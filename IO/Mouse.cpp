@@ -10,8 +10,8 @@
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
-#include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
+#include "GUI/GUIWindow.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -324,9 +324,10 @@ void Mouse::UI_OnMouseLeftClick() {
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_STEALFROMACTOR,
                                             PID_ID(picked_object), 0);
 
-        if (pParty->bTurnBasedModeOn == 1) {
-            if (pTurnEngine->turn_stage == TE_MOVEMENT)
+        if (pParty->bTurnBasedModeOn) {
+            if (pTurnEngine->turn_stage == TE_MOVEMENT) {
                 pTurnEngine->field_18 |= TE_FLAG_8;
+            }
         }
     }
 }

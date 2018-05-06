@@ -186,8 +186,6 @@ class Render : public RenderBase {
     unsigned int uTargetGBits;
     unsigned int uTargetBBits;
     unsigned int uNumD3DSceneBegins;
-    RenderHWLContainer pD3DBitmaps;
-    RenderHWLContainer pD3DSprites;
     unsigned int bRequiredTextureStagesAvailable;
     unsigned int uMaxDeviceTextureDim;
     unsigned int uMinDeviceTextureDim;

@@ -320,7 +320,8 @@ void Engine::Draw() {
             floor_level_str = StringPrintf(
                 "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-            int on_water, _a6;
+            bool on_water = false;
+            int _a6;
             int floor_level = ODM_GetFloorLevel(
                 pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z,
                 0, &on_water, &_a6, false);
@@ -1115,12 +1116,7 @@ void Engine::SecondaryInitialization() {
         pUIAnims[i]->y = _4E98D0[i][2];
     }
 
-    for (unsigned int i = 0; i < pObjectList->uNumObjects; ++i) {
-        pObjectList->pObjects[i].uParticleTrailColor =
-            pObjectList->pObjects[i].uParticleTrailColorB |
-            ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorG << 8) |
-            ((unsigned int)pObjectList->pObjects[i].uParticleTrailColorR << 16);
-    }
+    pObjectList->InitializeColors();
 
     UI_Create();
 
@@ -2079,27 +2075,17 @@ void _493938_regenerate() {
             a1.containing_item.Reset();
             a1.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uPower;
             a1.spell_skill = pParty->ImmolationSkillLevel();
-            v10 = 0;
             a1.uType = SPRITE_SPELL_FIRE_IMMOLATION;
             a1.spell_id = SPELL_FIRE_IMMOLATION;
-            v10 = 0;
-            for (uint i = 0; i > pObjectList->uNumObjects; i++) {
-                if (pObjectList->pObjects[i].uObjectID ==
-                    spell_sprite_mapping[8].uSpriteType)
-                    v10 = i;
-            }
-            a1.uObjectDescID = v10;
+            a1.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprite_mapping[8].uSpriteType);
             a1.field_60_distance_related_prolly_lod = 0;
             a1.uAttributes = 0;
             a1.uSectorID = 0;
             a1.uSpriteFrameID = 0;
-            a1.spell_caster_pid =
-                PID(OBJECT_Player,
-                    pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uCaster);
+            a1.spell_caster_pid = PID(OBJECT_Player, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uCaster);
             a1.uFacing = 0;
             a1.uSoundID = 0;
-            numberOfActorsAffected = pParty->_46A89E_immolation_effect(
-                actorsAffectedByImmolation, 100, 307);
+            numberOfActorsAffected = pParty->_46A89E_immolation_effect(actorsAffectedByImmolation, 100, 307);
             for (v9 = 0; v9 < numberOfActorsAffected; ++v9) {
                 v14 = actorsAffectedByImmolation[v9];
                 a1.vPosition.x = pActors[v14].vPosition.x;

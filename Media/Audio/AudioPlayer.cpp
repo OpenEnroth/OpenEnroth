@@ -1,11 +1,10 @@
 #include "Media/Audio/AudioPlayer.h"
 
-#include <stdlib.h>
+#include <algorithm>
+#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <map>
-#include <algorithm>
 
 #include "Engine/MM7.h"
 #include "Engine/Party.h"
@@ -395,17 +394,17 @@ PMemBuffer AudioPlayer::LoadSound(const std::string &pSoundName) {
     if (header->uCompressedSize >= header->uDecompressedSize) {
         header->uCompressedSize = header->uDecompressedSize;
         if (header->uDecompressedSize) {
-            NumberOfBytesRead = fread((void *)buffer->get_data(), 1,
+            NumberOfBytesRead = fread((void *)buffer->GetData(), 1,
                                       header->uDecompressedSize, hAudioSnd);
         } else {
             logger->Warning(L"Can't load sound file!");
         }
     } else {
         PMemBuffer compressed = AllocMemBuffer(header->uCompressedSize);
-        NumberOfBytesRead = fread((void *)compressed->get_data(), 1,
+        NumberOfBytesRead = fread((void *)compressed->GetData(), 1,
                                   header->uCompressedSize, hAudioSnd);
-        zlib::Uncompress((void *)buffer->get_data(), &header->uDecompressedSize,
-                         (void *)compressed->get_data(),
+        zlib::Uncompress((void *)buffer->GetData(), &header->uDecompressedSize,
+                         (void *)compressed->GetData(),
                          header->uCompressedSize);
     }
 

@@ -1,7 +1,7 @@
 #include "Application/Game.h"
 
-#include <string>
 #include <algorithm>
+#include <string>
 
 #include "Application/GameFactory.h"
 #include "Application/GameMenu.h"
@@ -1074,8 +1074,9 @@ void Game::EventLoop() {
                         OnMapLoad();
                         pOutdoor->SetFog();
                         TeleportToStartingPoint(uLevel_StartingPointType);
+                        bool bOnWater = false;
                         pParty->vPosition.z = GetTerrainHeightsAroundParty2(
-                            pParty->vPosition.x, pParty->vPosition.y, &v213, 0);
+                            pParty->vPosition.x, pParty->vPosition.y, &bOnWater, 0);
                         pParty->uFallStartY = pParty->vPosition.z;
                         engine->_461103_load_level_sub();
                         pEventTimer->Resume();
@@ -1677,7 +1678,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_STEALFROMACTOR:
                     if (!uActiveCharacter) continue;
-                    if (pParty->bTurnBasedModeOn != 1) {
+                    if (!pParty->bTurnBasedModeOn) {
                         if (pActors[uMessageParam].uAIState == 5)
                             pActors[uMessageParam].LootActor();
                         else
@@ -1697,7 +1698,7 @@ void Game::EventLoop() {
 
                 case UIMSG_Attack:
                     if (!uActiveCharacter) continue;
-                    if (pParty->bTurnBasedModeOn != 1) {
+                    if (!pParty->bTurnBasedModeOn) {
                         Player::_42ECB5_PlayerAttacksActor();
                         continue;
                     }
@@ -1767,9 +1768,8 @@ void Game::EventLoop() {
                     pMessageQueue_50CBD0->Flush();
                     if (current_screen_type != SCREEN_GAME) continue;
                     if (CheckActors_proximity()) {
-                        if (pParty->bTurnBasedModeOn == 1) {
-                            GameUI_StatusBar_OnEvent(localization->GetString(
-                                478));  // "You can't rest in turn-based mode!"
+                        if (pParty->bTurnBasedModeOn) {
+                            GameUI_StatusBar_OnEvent(localization->GetString(478));  // "You can't rest in turn-based mode!"
                             continue;
                         }
                         v88 = localization->GetString(
@@ -1783,18 +1783,16 @@ void Game::EventLoop() {
                                                               0);
                         continue;
                     }
-                    if (pParty->bTurnBasedModeOn == 1) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(
-                            478));  // "You can't rest in turn-based mode!"
+                    if (pParty->bTurnBasedModeOn) {
+                        GameUI_StatusBar_OnEvent(localization->GetString(478));  // "You can't rest in turn-based mode!"
                         continue;
                     }
                     if (!(pParty->uFlags & 0x88)) {
                         pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                         continue;
                     }
-                    if (pParty->bTurnBasedModeOn == 1) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(
-                            478));  // "You can't rest in turn-based mode!"
+                    if (pParty->bTurnBasedModeOn) {
+                        GameUI_StatusBar_OnEvent(localization->GetString(478));  // "You can't rest in turn-based mode!"
                         continue;
                     }
                     v88 = localization->GetString(
@@ -2593,9 +2591,9 @@ void Game::GameLoop() {
                 pOtherOverlayList->Reset();
                 memset(pParty->pPartyBuffs.data(), 0, 0x140u);
 
-                if (pParty->bTurnBasedModeOn == 1) {
+                if (pParty->bTurnBasedModeOn) {
                     pTurnEngine->End(true);
-                    pParty->bTurnBasedModeOn = 0;
+                    pParty->bTurnBasedModeOn = false;
                 }
                 for (int i = 1; i < 5; ++i) {
                     pPlayers[i]->conditions_times.fill(GameTime(0));

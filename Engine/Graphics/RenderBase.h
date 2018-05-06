@@ -1,12 +1,15 @@
 #pragma once
 
+#include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
 
 class RenderBase : public IRender {
  public:
     inline RenderBase()
-        : IRender() {
+        : IRender(), window(nullptr) {
     }
+
+    virtual bool Initialize(OSWindow *window);
 
     virtual void TransformBillboardsAndSetPalettesODM();
     virtual void DrawSpriteObjects_ODM();
@@ -19,6 +22,9 @@ class RenderBase : public IRender {
                                                   unsigned int uDiffuse,
                                                   int angle);
 
+    virtual HWLTexture *LoadHwlBitmap(const String &name);
+    virtual HWLTexture *LoadHwlSprite(const String &name);
+
  protected:
     OSWindow *window;
 
@@ -26,4 +32,7 @@ class RenderBase : public IRender {
     void TransformBillboard(SoftwareBillboard *a2, RenderBillboard *pBillboard);
 
     void PostInitialization();
+
+    HWLContainer pD3DBitmaps;
+    HWLContainer pD3DSprites;
 };

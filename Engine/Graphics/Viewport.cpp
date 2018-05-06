@@ -296,28 +296,9 @@ void DecorationInteraction(unsigned int id, unsigned int pid) {
 void Engine::DropHeldItem() {
     if (!pParty->pPickedItem.uItemID) return;
 
-    SpriteObject a1;  // [sp+Ch] [bp-80h]@1
-                      //    Point *v1; // esi@3
-    __debugbreak();   // no checker
-    int v6 = 0;
-    a1.uType =
-        (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pParty->pPickedItem.uItemID]
-            .uSpriteID;
-    if ((signed int)pObjectList->uNumObjects <= 0) {
-        HEXRAYS_LOWORD(v6) = 0;
-    } else {
-        auto v7 = (char *)&pObjectList->pObjects->uObjectID;
-        while (pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID !=
-               *(short *)v7) {
-            ++v6;
-            v7 += 56;
-            if (v6 >= (signed int)pObjectList->uNumObjects) {
-                HEXRAYS_LOWORD(v6) = 0;
-                break;
-            }
-        }
-    }
-    a1.uObjectDescID = v6;
+    SpriteObject a1;
+    a1.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
+    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition.y = pParty->vPosition.y;
     a1.spell_caster_pid = OBJECT_Player;
     a1.vPosition.x = pParty->vPosition.x;
@@ -332,8 +313,7 @@ void Engine::DropHeldItem() {
 
     // extern int UnprojectX(int);
     // v9 = UnprojectX(v1->x);
-    a1.Create(pParty->sRotationY, 184, 200,
-              0);  //+ UnprojectX(v1->x), 184, 200, 0);
+    a1.Create(pParty->sRotationY, 184, 200, 0);  //+ UnprojectX(v1->x), 184, 200, 0);
 
     mouse->RemoveHoldingItem();
 }
@@ -358,11 +338,11 @@ void Engine::OnGameViewportClick() {
     if (PID_TYPE(v0) == OBJECT_Item) {
         int item_id = PID_ID(v0);
         // v21 = (signed int)(unsigned __int16)v0 >> 3;
-        if (pObjectList->pObjects[pSpriteObjects[item_id].uObjectDescID].uFlags & 0x10 ||
-            item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID ||
-            !in_range) {
-            if (pParty->pPickedItem.uItemID)
+        if (pSpriteObjects[item_id].IsUnpickable() ||
+            item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
+            if (pParty->pPickedItem.uItemID) {
                 DropHeldItem();
+            }
         } else {
             ItemInteraction(item_id);
         }
@@ -378,14 +358,13 @@ void Engine::OnGameViewportClick() {
             if (!in_range) {
                 if (pParty->pPickedItem.uItemID) DropHeldItem();
             } else if (!ActorInteraction(mon_id)) {
-                if (pParty->bTurnBasedModeOn == true &&
-                    pTurnEngine->turn_stage == TE_MOVEMENT)
+                if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
                     pTurnEngine->field_18 |= TE_FLAG_8;
-                else
+                } else {
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
+                }
             }
-        } else if (pParty->bTurnBasedModeOn == true &&
-            pTurnEngine->turn_stage == TE_MOVEMENT) {
+        } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->uFlags |= PARTY_FLAGS_1_FALLING;
         } else if (uActiveCharacter &&
             sub_427769_isSpellQuickCastableOnShiftClick(

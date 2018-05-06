@@ -144,15 +144,7 @@ bool Chest::Open(signed int uChestID) {
             pSpellObject.spell_id = 0;
             pSpellObject.field_54 = 0;
             pSpellObject.uType = pSpriteID[pRandom];
-            pSpellObject.uObjectDescID = 0;
-            if (pObjectList->uNumObjects) {
-                for (uint i = 0; i < (signed int)pObjectList->uNumObjects;
-                     ++i) {
-                    if (pSpriteID[pRandom] ==
-                        pObjectList->pObjects[i].uObjectID)
-                        pSpellObject.uObjectDescID = i;
-                }
-            }
+            pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellObject.uType);
             pSpellObject.vPosition.y = pOut.z;
             pSpellObject.vPosition.x = pOut.x;
             pSpellObject.vPosition.z = pOut.y;
