@@ -2000,6 +2000,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             }
             //draw image
             render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
+            minimaptemp->Release();
         }
 
         uNumBlueFacesInBLVMinimap = 0;

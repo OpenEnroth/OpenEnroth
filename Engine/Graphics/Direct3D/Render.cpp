@@ -3150,6 +3150,7 @@ void Render::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
         }
     }
     render->DrawTextureAlphaNew(uOutX / 640., uOutY / 480., fonttemp);
+    fonttemp->Release();
 }
 
 void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
@@ -3186,6 +3187,7 @@ void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
         }
     }
     render->DrawTextureAlphaNew(x / 640., y / 480., fonttemp);
+    fonttemp->Release();
 }
 
 void Render::DrawTransparentGreenShade(float u, float v, Image *pTexture) {
@@ -3214,6 +3216,7 @@ void Render::DrawMasked(float u, float v, Image *pTexture,
         }
     }
     render->DrawTextureAlphaNew(u,v, temp);
+    temp->Release();
 }
 
 void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
@@ -3303,6 +3306,7 @@ void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
         }
         //draw image
         render->DrawTextureAlphaNew(u, v, temp);
+        temp->Release();
     }
 }
 
@@ -3384,6 +3388,7 @@ void Render::BlendTextures(
         }
         //draw image
         render->DrawTextureAlphaNew(x/640., y/480., temp);
+        temp->Release();
     }
 }
 

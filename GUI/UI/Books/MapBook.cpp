@@ -262,13 +262,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
         screenWidth = br_x - tl_x + 1;
         screenHeight = br_y - tl_y + 1;
 
+        int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);
         scale_increment =
-            (1 << (ImageHelper::GetWidthLn2(viewparams->location_minimap) +
-                   16)) /
-            viewparams->uMapBookMapZoom;
+            (1 << (loc_power + 16)) / viewparams->uMapBookMapZoom;
 
-        v30 = (double)(1 << (16 - ImageHelper::GetWidthLn2(
-                                      viewparams->location_minimap)));
+        v30 = (double)(1 << (16 - loc_power));
 
         teal =
             (unsigned int)(signed __int64)((double)(viewparams->sViewCenterX -
@@ -289,47 +287,47 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
                                            32768) /
                                   v30)
             << 16;
-        black =
-            (signed __int16)(signed __int64)((double)(viewparams->sViewCenterX -
-                                                      22528 /
-                                                          (viewparams
-                                                               ->uMapBookMapZoom /
-                                                           384) +
-                                                      32768) /
-                                             v30);
 
         scaled_posY = stepY_r >> 16;
 
         auto minimap_pixels =
-            (unsigned __int16 *)viewparams->location_minimap->GetPixels(
-                IMAGE_FORMAT_R5G6B5);
+            (unsigned __int32 *)viewparams->location_minimap->GetPixels(
+                IMAGE_FORMAT_A8R8G8B8);
+        Image *minimaptemp = Image::Create(screenWidth, screenHeight, IMAGE_FORMAT_A8R8G8B8);
+        auto minitempix = (unsigned __int32 *)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
         // nearest neiborhood scaling
         // if (texture8_data)
         {
             for (uint i = 0; i < screenHeight; ++i) {
-                unsigned __int16 *curr_line =
-                    &minimap_pixels[scaled_posY * textr_width];
+                map_tile_Y = (scaled_posY - 80) / 4;
                 stepX_r = teal;
                 for (uint j = 0; j < screenWidth; ++j) {
                     scaled_posX = stepX_r >> 16;
-                    // map_texture_16[i*screenWidth+j]=pPalette_16[*(curr_line+scaled_posX)];
-                    render->WritePixel16(tl_x + j, tl_y + i,
-                                         *(curr_line + scaled_posX));
+                    map_tile_X = (scaled_posX - 80) / 4;
+                    
+                    if (!pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y)) {
+                        if (pOutdoor->IsMapCellPartiallyRevealed(map_tile_X,
+                            map_tile_Y)) {
+                            if (!((i + screenCenter_X + j) % 2))
+                                minitempix[j + i * screenWidth] = Color32(12, 12, 12);
+                            else
+                                minitempix[j + i * screenWidth] = minimap_pixels[scaled_posX + scaled_posY * textr_width];
+                        } else {
+                            minitempix[j + i * screenWidth] = Color32(0, 0, 0);
+                        }
+                    } else {
+                        minitempix[j + i * screenWidth] = minimap_pixels[scaled_posX + scaled_posY * textr_width];
+                    }
                     stepX_r += scale_increment;
                 }
                 stepY_r += scale_increment;
                 scaled_posY = stepY_r >> 16;
             }
         }
-
-        /*//move visible square to render
-        for( uint i = 0; i < screenHeight; ++i )
-        {
-        if ( screenWidth > 0 )
-        memcpy((void*)&render16_data[render->uTargetSurfacePitch *
-        i],(void*)&map_texture_16[i*screenWidth], screenWidth*2);
-        }*/
+        //draw image
+        render->DrawTextureAlphaNew(tl_x / 640., tl_y / 480., minimaptemp);
+        minimaptemp->Release();
     } else {
         black = Color16(0, 0, 0);
         teal = Color16(0, 0xFF, 0xFF);
@@ -564,77 +562,6 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
                     }
                 }
             }
-        }
-    }
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        screenCenterY = br_x - tl_x + 1;
-        v95 = br_y - tl_y + 1;
-        // v77 = &render->pTargetSurface[tl_x + tl_y *
-        // render->uTargetSurfacePitch];
-        black = (1 << (ImageHelper::GetWidthLn2(viewparams->location_minimap) +
-                       16)) /
-                viewparams->uMapBookMapZoom;
-        v57 = (double)(1 << (16 - ImageHelper::GetWidthLn2(
-                                      viewparams->location_minimap)));
-        v60 =
-            (int)((
-                signed __int64)((double)(viewparams->sViewCenterX -
-                                         (22528 /
-                                          (viewparams->uMapBookMapZoom / 384)) +
-                                         32768) /
-                                v57))
-            << 16;
-        teal = v60 >> 16;
-        v97 =
-            (const void
-                 *)((int)((
-                        signed __int64)((double)(viewparams->sViewCenterX -
-                                                 (22528 /
-                                                  (viewparams->uMapBookMapZoom /
-                                                   384)) +
-                                                 32768) /
-                                        v57))
-                    << 16);
-        v62 =
-            (int)((
-                signed __int64)((double)(32768 -
-                                         (22528 /
-                                          (viewparams->uMapBookMapZoom / 384)) -
-                                         pCenterY) /
-                                v57))
-            << 16;
-        v63 = (signed __int16)((
-            signed __int64)((double)(32768 -
-                                     (22528 /
-                                      (viewparams->uMapBookMapZoom / 384)) -
-                                     pCenterY) /
-                            v57));
-
-        for (int y = 0; y < (signed int)v95; ++y) {
-            map_tile_Y = (v63 - 80) / 4;
-            v64 = teal;
-            for (int x = 0; x < screenCenterY; ++x) {
-                map_tile_X = (v64 - 80) / 4;
-                if (!pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y)) {
-                    if (pOutdoor->IsMapCellPartiallyRevealed(map_tile_X,
-                                                             map_tile_Y)) {
-                        if (!((x + screenCenter_X) % 2))
-                            // *a4a = Color16(12, 12, 12);
-                            render->WritePixel16(tl_x + x, tl_y + y,
-                                                 Color16(12, 12, 12));
-                    } else {
-                        // *a4a = 0;
-                        render->WritePixel16(tl_x + x, tl_y + y,
-                            Color16(0, 0, 0));
-                    }
-                }
-                v97 = (char *)v97 + black;
-                v64 = (int)v97 >> 16;
-            }
-
-            v62 += black;
-            v97 = (const void *)v60;
-            v63 = v62 >> 16;
         }
     }
 }
