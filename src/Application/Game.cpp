@@ -224,6 +224,7 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
         if (!engine->config->no_logo) {
             pMediaPlayer->PlayFullscreenMovie("3dologo");
             pMediaPlayer->PlayFullscreenMovie("new world logo");
+            pMediaPlayer->PlayFullscreenMovie("jvc");
         }
         if (!engine->config->no_intro) {
             pMediaPlayer->PlayFullscreenMovie("Intro");
@@ -2488,6 +2489,7 @@ void Game::GameLoop() {
 
         // if ( render->pRenderD3D )
         vis->_4C1A02();
+        engine->Draw();
 
         bool game_finished = false;
         do {

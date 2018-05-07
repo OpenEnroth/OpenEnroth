@@ -811,7 +811,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     if (current_screen_type == SCREEN_GAME) {
         viewparams->bRedrawGameUI = true;
         if (uActiveCharacter != uPlayerID) {
-            if (pPlayers[uPlayerID]->uTimeToRecovery) {
+            if (pPlayers[uPlayerID]->uTimeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
                 return;
             }
 
@@ -1911,30 +1911,30 @@ void GameUI_DrawPortraits(unsigned int _this) {
 void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         unsigned int uW, unsigned int uZoom,
                         unsigned int bRedrawOdmMinimap) {
-    int uHeight;     // ebx@6
-    int pW;   // ebx@23
+    signed int pW;   // ebx@23
     int v15;         // eax@23
-    double v20;      // st7@30
-    int v27;  // eax@37
+    double startx;      // st7@30
+    signed int ypix;  // eax@37
     // unsigned __int16 *v28; // ecx@37
-    int v29;       // edi@40
+    signed int xpix;       // edi@40
     int pPoint_X;         // edi@72
     int pPoint_Y;         // ebx@72
-    int pY;        // [sp+20h] [bp-34h]@23
-    int pX;        // [sp+24h] [bp-30h]@23
-    int v70;       // [sp+24h] [bp-30h]@37
-    int uBluea;    // [sp+28h] [bp-2Ch]@37
-    int v73;              // [sp+2Ch] [bp-28h]@30
-    int uCenterY;  // [sp+48h] [bp-Ch]@1
-    int uCenterX;  // [sp+4Ch] [bp-8h]@1
-    int uWidth;    // [sp+5Ch] [bp+8h]@30
-    int pZ;        // [sp+60h] [bp+Ch]@23
-    float uWb;            // [sp+60h] [bp+Ch]@30
+    unsigned int lPitch;  // [sp+20h] [bp-34h]@1
+    signed int pY;        // [sp+20h] [bp-34h]@23
+    signed int pX;        // [sp+24h] [bp-30h]@23
+    signed int xpixoffset16;       // [sp+24h] [bp-30h]@37
+    signed int ypixoffset16;    // [sp+28h] [bp-2Ch]@37
+    int map_scale;              // [sp+2Ch] [bp-28h]@30
+    signed int pZ;        // [sp+60h] [bp+Ch]@23
+    double starty;            // [sp+60h] [bp+Ch]@30
     unsigned int pColor;
 
-    uCenterX = (uX + uZ) / 2;
-    uCenterY = (uY + uW) / 2;
-    //    lPitch = render->uTargetSurfacePitch;
+    signed int uCenterX = (uX + uZ) / 2;
+    signed int uCenterY = (uY + uW) / 2;
+    render->SetUIClipRect(uX, uY, uZ, uW);
+    int uHeight = uW - uY;
+    signed int uWidth = uZ - uX;
+
     bool bWizardEyeActive = pParty->WizardEyeActive();
     int uWizardEyeSkillLevel = pParty->WizardEyeSkillLevel();
     if (CheckHiredNPCSpeciality(Cartographer)) {
@@ -1947,32 +1947,25 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         uWizardEyeSkillLevel = 3;
     }
 
-    render->SetUIClipRect(uX, uY, uZ - 1, uW - 1);
-    uHeight = uW - uY;
-    uWidth = uZ - uX;
-
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        v73 = (1 << (ImageHelper::GetWidthLn2(viewparams->location_minimap) +
-                     16)) /
-              (signed int)uZoom;
-        v20 = (double)(pParty->vPosition.x + 32768) /
-              (double)(1 << (16 - ImageHelper::GetWidthLn2(
-                                      viewparams->location_minimap)));
-        uWb = (double)(32768 - pParty->vPosition.y) /
-              (double)(1 << (16 - ImageHelper::GetWidthLn2(
-                                      viewparams->location_minimap)));
+        int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);
+        map_scale = (1 << (loc_power + 16)) / (signed int)uZoom;
+        startx = (double)(pParty->vPosition.x + 32768) /
+              (double)(1 << (16 - loc_power));
+        starty = (double)(32768 - pParty->vPosition.y) /
+              (double)(1 << (16 - loc_power));
         switch (uZoom) {
             case 512: {
-                v20 = v20 - (double)(uWidth / 2);
-                uWb = uWb - (double)(uHeight / 2);
+                startx = startx - (double)(uWidth / 2);
+                starty = starty - (double)(uHeight / 2);
             } break;
             case 1024: {
-                v20 = v20 - (double)(uWidth / 4);
-                uWb = uWb - (double)(uHeight / 4);
+                startx = startx - (double)(uWidth / 4);
+                starty = starty - (double)(uHeight / 4);
             } break;
             case 2048: {
-                v20 = v20 - (double)(uWidth / 8);
-                uWb = uWb - (double)(uHeight / 8);
+                startx = startx - (double)(uWidth / 8);
+                starty = starty - (double)(uHeight / 8);
             } break;
             default:
                 assert(false);
@@ -1981,31 +1974,33 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         static unsigned __int16 pOdmMinimap[117][137];
         assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
 
-        v70 = floorf(v20 * 65536.0 + 0.5f);     // LODWORD(v24);
-        uBluea = floorf(uWb * 65536.0 + 0.5f);  // LODWORD(v25);
-        v27 = uBluea >> 16;
+        xpixoffset16 = floorf(startx * 65536.0 + 0.5f);     // LODWORD(v24);
+        ypixoffset16 = floorf(starty * 65536.0 + 0.5f);  // LODWORD(v25);
+        ypix = ypixoffset16 >> 16;
+        xpix = xpixoffset16 >> 16;
         // v28 = &render->pTargetSurface[uX + uY * lPitch];
 
         if (/*pMapLod0 && */ bRedrawOdmMinimap) {
             assert(uWidth == 137 && uHeight == 117);
 
-            ushort mapWidth = viewparams->location_minimap->GetWidth();
+            ushort MapImgWidth = viewparams->location_minimap->GetWidth();
+            auto pMapLod0Line =
+                (unsigned __int32 *)viewparams->location_minimap->GetPixels(
+                    IMAGE_FORMAT_A8R8G8B8);
+           Image *minimaptemp = Image::Create(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
+           auto minitempix = (unsigned __int32 *)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
-            v29 = v70 >> 16;
             for (int y = 0; y < uHeight; ++y) {
-                // uchar* pMapLod0Line = &pMapLod0[v27 * mapWidth];
-                auto pMapLod0Line =
-                    (unsigned __int16 *)viewparams->location_minimap->GetPixels(
-                        IMAGE_FORMAT_R5G6B5) +
-                    v27 * mapWidth;
                 for (int x = 0; x < uWidth; ++x) {
-                    // *pMinimap++ = pPal[pMapLod0Line[v29]];
-                    render->WritePixel16(uX + x, uY + y, pMapLod0Line[v29]);
-                    v29 = (v70 + x * v73) >> 16;
+                   minitempix[x + y*uWidth] = pMapLod0Line[xpix + ypix * MapImgWidth];
+                   xpix = (xpixoffset16 + x * map_scale) >> 16;
                 }
-                uBluea += v73;
-                v27 = uBluea >> 16;
+                ypixoffset16 += map_scale;
+                ypix = ypixoffset16 >> 16;
             }
+            // draw image
+            render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
+            minimaptemp->Release();
         }
 
         uNumBlueFacesInBLVMinimap = 0;

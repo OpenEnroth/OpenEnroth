@@ -353,27 +353,29 @@ void Keyboard::ProcessInputActions() {
                     pKeyActionMap->pVirtualKeyCodesMapping[inputAction]);
 
             if (v4) {
-                if (current_screen_type == SCREEN_GAME || SCREEN_CHEST) {
-                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Game_Action, 0, 0);
-                    continue;
-                }
-                if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
-                    /*v15 = pMessageQueue_50CBD0->uNumMessages;
-                    if (pMessageQueue_50CBD0->uNumMessages) {
-                        v15 = 0;
-                        if (pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].field_8) {
-                            v15 = 1;
+                if (inputAction == INPUT_EventTrigger) {
+                    if (current_screen_type == SCREEN_GAME || SCREEN_CHEST) {
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Game_Action, 0, 0);
+                        continue;
+                    }
+                    if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
+                        /*v15 = pMessageQueue_50CBD0->uNumMessages;
+                        if (pMessageQueue_50CBD0->uNumMessages) {
+                            v15 = 0;
+                            if (pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].field_8) {
+                                v15 = 1;
+                                pMessageQueue_50CBD0->uNumMessages = 0;
+                                pMessageQueue_50CBD0->pMessages[v15].eType = UIMSG_Escape;
+                                pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 0;
+                                *(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
+                                ++pMessageQueue_50CBD0->uNumMessages;
+                                continue;
+                            }
                             pMessageQueue_50CBD0->uNumMessages = 0;
-                            pMessageQueue_50CBD0->pMessages[v15].eType = UIMSG_Escape;
-                            pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param = 0;
-                            *(&pMessageQueue_50CBD0->uNumMessages + 3 * pMessageQueue_50CBD0->uNumMessages + 3) = 0;
-                            ++pMessageQueue_50CBD0->uNumMessages;
-                            continue;
-                        }
-                        pMessageQueue_50CBD0->uNumMessages = 0;
 
-                    }*/
-                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        }*/
+                        // pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                    }
                 }
             }
         }

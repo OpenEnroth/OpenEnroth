@@ -2018,11 +2018,11 @@ void CharacterUI_LoadPaperdollTextures() {
     ui_ar_dn_up = assets->GetImage_Alpha("ar_dn_up");
     ui_ar_dn_dn = assets->GetImage_Alpha("ar_dn_dn");
 
-    paperdoll_dbrds[9] = assets->GetImage_Alpha("ib-cd1-d");
-    paperdoll_dbrds[7] = assets->GetImage_Alpha("ib-cd2-d");
-    paperdoll_dbrds[5] = assets->GetImage_Alpha("ib-cd3-d");
-    paperdoll_dbrds[3] = assets->GetImage_Alpha("ib-cd4-d");
-    paperdoll_dbrds[1] = assets->GetImage_Alpha("ib-cd5-d");
+    paperdoll_dbrds[9] = assets->GetImage_Solid("ib-cd1-d");
+    paperdoll_dbrds[7] = assets->GetImage_Solid("ib-cd2-d");
+    paperdoll_dbrds[5] = assets->GetImage_Solid("ib-cd3-d");
+    paperdoll_dbrds[3] = assets->GetImage_Solid("ib-cd4-d");
+    paperdoll_dbrds[1] = assets->GetImage_Solid("ib-cd5-d");
 
     for (uint i = 0; i < 54; ++i) {  // test equipment
         party_has_equipment[i] = 0;
