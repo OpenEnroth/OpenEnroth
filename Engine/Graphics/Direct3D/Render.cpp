@@ -3133,7 +3133,6 @@ void Render::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
                       unsigned int uCharWidth, unsigned int uCharHeight,
                       uint8_t *pFontPalette, uint16_t uFaceColor,
                       uint16_t uShadowColor) {
-
     Image *fonttemp = Image::Create(uCharWidth, uCharHeight, IMAGE_FORMAT_A8R8G8B8);
     uint32_t *fontpix = (uint32_t*)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
@@ -3156,7 +3155,6 @@ void Render::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
 void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
                            unsigned int uFontHeight, uint8_t *pPalette,
                            bool present_time_transparency) {
-
     Image *fonttemp = Image::Create(uCharWidth, uFontHeight, IMAGE_FORMAT_A8R8G8B8);
     uint32_t *fontpix = (uint32_t *)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
@@ -3180,7 +3178,7 @@ void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
                     uint8_t r = pPalette[index * 3 + 0];
                     uint8_t g = pPalette[index * 3 + 1];
                     uint8_t b = pPalette[index * 3 + 2];
-                    fontpix[dx + dy * uCharWidth] = Color32(r,g,b);
+                    fontpix[dx + dy * uCharWidth] = Color32(r, g, b);
                 }
                 ++font_pixels;
             }
@@ -3211,16 +3209,18 @@ void Render::DrawMasked(float u, float v, Image *pTexture,
     for (unsigned int dy = 0; dy < pTexture->GetHeight(); ++dy) {
         for (unsigned int dx = 0; dx < width; ++dx) {
             if (*pixels & 0xFF000000)
-                temppix[dx + dy * width] = Color32((Color16((*pixels >> 16) & 0xFF, (*pixels >> 8) & 0xFF, *pixels & 0xFF) >> color_dimming_level) &  mask);
+                temppix[dx + dy * width] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
+                    (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
+                    &  Color32(mask);
             ++pixels;
         }
     }
-    render->DrawTextureAlphaNew(u,v, temp);
+    render->DrawTextureAlphaNew(u, v, temp);
     temp->Release();
 }
 
 void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
-   if (img) {
+    if (img) {
         auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         int width = img->GetWidth();
         int height = img->GetHeight();
@@ -3304,7 +3304,7 @@ void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
                 pixelpoint++;
             }
         }
-        //draw image
+        // draw image
         render->DrawTextureAlphaNew(u, v, temp);
         temp->Release();
     }
@@ -3357,7 +3357,7 @@ void Render::BlendTextures(
 
                     unsigned int bcur = (pixcol & 0xFF);
                     unsigned int gcur = ((pixcol >> 8) & 0xFF);
-                    unsigned int rcur = ((pixcol >> 16) & 0xFF );
+                    unsigned int rcur = ((pixcol >> 16) & 0xFF);
 
                     int steps = (time) % 128;
 
@@ -3386,7 +3386,7 @@ void Render::BlendTextures(
 
             pixelpoint += imgin->GetWidth() - Width;
         }
-        //draw image
+        // draw image
         render->DrawTextureAlphaNew(x/640., y/480., temp);
         temp->Release();
     }

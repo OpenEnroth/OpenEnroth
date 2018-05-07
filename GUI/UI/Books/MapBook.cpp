@@ -305,7 +305,6 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
                 for (uint j = 0; j < screenWidth; ++j) {
                     scaled_posX = stepX_r >> 16;
                     map_tile_X = (scaled_posX - 80) / 4;
-                    
                     if (!pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y)) {
                         if (pOutdoor->IsMapCellPartiallyRevealed(map_tile_X,
                             map_tile_Y)) {
@@ -325,7 +324,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
                 scaled_posY = stepY_r >> 16;
             }
         }
-        //draw image
+        // draw image
         render->DrawTextureAlphaNew(tl_x / 640., tl_y / 480., minimaptemp);
         minimaptemp->Release();
     } else {

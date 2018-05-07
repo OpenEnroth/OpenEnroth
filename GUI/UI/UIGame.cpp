@@ -811,7 +811,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
     if (current_screen_type == SCREEN_GAME) {
         viewparams->bRedrawGameUI = true;
         if (uActiveCharacter != uPlayerID) {
-            if (pPlayers[uPlayerID]->uTimeToRecovery) {
+            if (pPlayers[uPlayerID]->uTimeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
                 return;
             }
 
@@ -1998,7 +1998,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 ypixoffset16 += map_scale;
                 ypix = ypixoffset16 >> 16;
             }
-            //draw image
+            // draw image
             render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
             minimaptemp->Release();
         }

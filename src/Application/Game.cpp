@@ -2489,6 +2489,7 @@ void Game::GameLoop() {
 
         // if ( render->pRenderD3D )
         vis->_4C1A02();
+        engine->Draw();
 
         bool game_finished = false;
         do {

@@ -374,7 +374,7 @@ void Keyboard::ProcessInputActions() {
                             pMessageQueue_50CBD0->uNumMessages = 0;
 
                         }*/
-                        //pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        // pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                     }
                 }
             }
