@@ -15,7 +15,9 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::CreateDefaultConfiguration() 
     if (!cfg->no_walk_sound) {
         cfg->no_walk_sound = OS_GetAppInt("WalkSound", 1) == 0;
     }
-    cfg->always_run = OS_GetAppInt("valAlwaysRun", 0) != 0;
+    if (!cfg->always_run) {
+        cfg->always_run = OS_GetAppInt("valAlwaysRun", 0) != 0;
+    }
     cfg->flip_on_exit = OS_GetAppInt("FlipOnExit", 0) != 0;
 
     cfg->show_damage = OS_GetAppInt("ShowDamage", 1) != 0;

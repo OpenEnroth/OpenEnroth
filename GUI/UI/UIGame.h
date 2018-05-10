@@ -5,6 +5,7 @@ void GameUI_LoadPlayerPortraintsAndVoices();
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id);
 void GameUI_WritePointedObjectStatusString();
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID);  // idb
+void buttonbox(int x, int y, char* text, int col);
 
 __int16 _441A4E_overlay_on_portrait(int a1);
 
@@ -40,6 +41,14 @@ class GUIWindow_GameVideoOptions : public GUIWindow {
     virtual ~GUIWindow_GameVideoOptions() {}
 
     virtual void Update();
+};
+
+class GUIWindow_DebugMenu : public GUIWindow {
+ public:
+     GUIWindow_DebugMenu();
+     virtual ~GUIWindow_DebugMenu() {}
+
+     virtual void Update();
 };
 
 class Image;

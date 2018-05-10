@@ -567,7 +567,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         uActiveCharacter = 1;
     }
 
-    int v115 =
+    int Popup_Y_Offset =
         monster_popup_y_offsets[(pActors[uActorID].pMonsterInfo.uID - 1) / 3] -
         40;
 
@@ -613,7 +613,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                       (pWindow->uFrameX + 13) + 128,
                       (pWindow->uFrameY + 52) + 128};
     {
-        SpriteFrame *v10 = pSpriteFrameTable->GetFrame(
+        SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
             pActors[uActorID]
                 .pSpriteIDs[pMonsterInfoUI_Doll.uCurrentActionAnimation],
             pMonsterInfoUI_Doll.uCurrentActionTime);
@@ -636,13 +636,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             Color16(0xE1u, 255, 0x9Bu));  // правая вертикальная линия
 
         // Draw portrait
-        Image *image = v10->hw_sprites[0]->texture;
-        render->SetUIClipRect(doll_rect.x, doll_rect.y, doll_rect.z,
-                              doll_rect.w);
-        render->DrawTextureAlphaNew(
-            (doll_rect.x + ((128 - image->GetWidth()) / 2)) / 640.,
-            doll_rect.y / 480., image);
-        render->ResetUIClipRect();
+        render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
     }
 
     // Draw name and profession

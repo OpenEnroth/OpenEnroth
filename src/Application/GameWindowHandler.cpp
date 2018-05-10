@@ -37,9 +37,9 @@ void GameWindowHandler::OnScreenshot() {
     }
 }
 
-void GameWindowHandler::OnChar(int c) {
+bool GameWindowHandler::OnChar(int c) {
     if (!pKeyActionMap->ProcessTextInput(c) && !viewparams->field_4C) {
-        GUI_HandleHotkey(c);
+        return GUI_HandleHotkey(c);
     }
 }
 
@@ -155,6 +155,8 @@ void GameWindowHandler::OnVkDown(int vk, int vk_to_char) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
         } else if (vk == VK_F4 && !pMovie_Track) {
             OnToggleFullscreen();
+        } else if (vk == VK_NUMPAD0) {
+            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
         } else if (vk >= VK_LEFT && vk <= VK_DOWN) {
             if (current_screen_type != SCREEN_GAME &&
                 current_screen_type != SCREEN_MODAL_WINDOW) {

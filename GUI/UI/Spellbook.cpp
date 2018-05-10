@@ -186,29 +186,30 @@ void GUIWindow_Spellbook::Update() {
             render->DrawTextureAlphaNew(pX_coord / 640.0f, pY_coord / 480.0f,
                                         pPageTexture);
 
-            for (unsigned int i = 1; i <= 11; ++i) {
-                if (*(int *)(&player->spellbook + (11 * player->lastOpenedSpellbookPage) + i - 1) ||
-                    engine->config->debug_all_magic) {
+            PlayerSpellbookChapter *chapter =
+                &player->spellbook.pChapters[player->lastOpenedSpellbookPage];
+            for (unsigned int i = 0; i < 11; ++i) {
+                if (chapter->bIsSpellAvailable[i] || engine->config->debug_all_magic) {
                         // this should check if oplayer knows spell
-                    if (SBPageSSpellsTextureList[i]) {
-                        if (quick_spell_at_page == i)
-                            pTexture = SBPageCSpellsTextureList[i];
+                    if (SBPageSSpellsTextureList[i+1]) {
+                        if (quick_spell_at_page == i+1)
+                            pTexture = SBPageCSpellsTextureList[i+1];
                         else
-                            pTexture = SBPageSSpellsTextureList[i];
+                            pTexture = SBPageSSpellsTextureList[i+1];
                         if (pTexture) {
                             pX_coord =
                                 pViewport->uViewportTL_X +
                                 pIconPos[player->lastOpenedSpellbookPage]
                                         [pSpellbookSpellIndices
                                              [player->lastOpenedSpellbookPage]
-                                             [i]]
+                                             [i+1]]
                                             .Xpos;
                             pY_coord =
                                 pViewport->uViewportTL_Y +
                                 pIconPos[player->lastOpenedSpellbookPage]
                                         [pSpellbookSpellIndices
                                              [player->lastOpenedSpellbookPage]
-                                             [i]]
+                                             [i+1]]
                                             .Ypos;
 
                             render->DrawTextureAlphaNew(
@@ -220,16 +221,16 @@ void GUIWindow_Spellbook::Update() {
                                 pIconPos[player->lastOpenedSpellbookPage]
                                         [pSpellbookSpellIndices
                                              [player->lastOpenedSpellbookPage]
-                                             [i]]
+                                             [i+1]]
                                             .Xpos /
                                     640.0f,
                                 pIconPos[player->lastOpenedSpellbookPage]
                                         [pSpellbookSpellIndices
                                              [player->lastOpenedSpellbookPage]
-                                             [i]]
+                                             [i+1]]
                                             .Ypos /
                                     480.0f,
-                                pTexture, i);
+                                pTexture, i+1);
                         }
                     }
                 }
@@ -319,10 +320,10 @@ void InitializeSpellBookTextures() {
     pAudioPlayer->StopChannels(-1, -1);
     pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
 
-    ui_spellbook_btn_close = assets->GetImage_Alpha("ib-m5-u");
-    ui_spellbook_btn_close_click = assets->GetImage_Alpha("ib-m5-d");
-    ui_spellbook_btn_quckspell = assets->GetImage_Alpha("ib-m6-u");
-    ui_spellbook_btn_quckspell_click = assets->GetImage_Alpha("ib-m6-d");
+    ui_spellbook_btn_close = assets->GetImage_Solid("ib-m5-u");
+    ui_spellbook_btn_close_click = assets->GetImage_Solid("ib-m5-d");
+    ui_spellbook_btn_quckspell = assets->GetImage_Solid("ib-m6-u");
+    ui_spellbook_btn_quckspell_click = assets->GetImage_Solid("ib-m6-d");
 
     static const char *texNames[9] = {"SBFB00", "SBAB00", "SBWB00",
                                       "SBEB00", "SBSB00", "SBMB00",

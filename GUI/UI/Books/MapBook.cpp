@@ -578,10 +578,10 @@ const char *GetMapBookHintText(int mouse_x, int mouse_y) {
 
     double v0 = 1.0 / (float)((signed int)viewparams->uMapBookMapZoom * 0.000015258789);
 
-    int global_coord_X = (__int64)((double)(pX - 229) * v0 + (double)v20);
-    int global_coord_Y = (__int64)((double)v21 - (double)(pY - 181) * v0);
+    int global_coord_X = (__int64)((double)(pX - 229.) * v0 + (double)v20);
+    int global_coord_Y = (__int64)((double)v21 - (double)(pY - 181.) * v0);
 
-    const char *result = nullptr;
+    const char *result = "";
 
     // In the mapbook only lady Margaret dispays for defoult zoom(В
     // книге карты только Леди Маргарита всплывает при дефолтном зуме)

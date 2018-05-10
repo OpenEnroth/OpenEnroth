@@ -319,7 +319,7 @@ void GUIWindow_Transition::Update() {
             3);
     } else if (map_id) {
         String str = localization->FormatString(
-            409, pMapStats->pInfos[map_id].pName);  // Do you wish to leave %s?
+            409, pMapStats->pInfos[map_id].pName.c_str());  // Do you wish to leave %s?
         unsigned int v4 = (212 - pFontCreate->CalcTextHeight(
                                      str, transition_window.uFrameWidth, 0)) /
                               2 +

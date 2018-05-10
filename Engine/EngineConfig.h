@@ -69,6 +69,21 @@ class EngineConfig {
     inline bool AllowDynamicBrigtness() const { return flags2 & GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS; }
     inline bool RunInWindow() const { return dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_RUN_IN_WIDOW; }
 
+    inline void ToggleDebugTownPortal() { debug_town_portal = !debug_town_portal; }
+    inline void ToggleDebugWizardEye() { debug_wizard_eye = !debug_wizard_eye; }
+    inline void ToggleDebugAllMagic() { debug_all_magic = !debug_all_magic; }
+    inline void ToggleDebugTerrain() { debug_terrain = !debug_terrain; }
+    inline void ToggleDebugLightmap() { debug_lightmaps_decals = !debug_lightmaps_decals; }
+    inline void ToggleDebugTurboSpeed() { debug_turbo_speed = !debug_turbo_speed; }
+    inline void ToggleDebugNoActors() { no_actors = !no_actors; }
+    inline void ToggleDebugDrawDist() { extended_draw_distance = !extended_draw_distance; }
+    inline void ToggleDebugSnow() { allow_snow = !allow_snow; }
+    inline void ToggleDebugNoDamage() { no_damage = !no_damage; }
+    inline void ToggleDebugPortalLines() { debug_portal_outlines = !debug_portal_outlines; }
+    inline void ToggleDebugPickedFace() { show_picked_face = !show_picked_face; }
+    inline void ToggleDebugShowFPS() { show_fps = !show_fps; }
+    inline void ToggleDebugSeasonsChange() { seasons_change = !seasons_change; }
+
     // DEBUG_SETTINGS_*
     int dword_6BE368_debug_settings_2 = DEBUG_SETTINGS_RUN_IN_WIDOW;
 
@@ -88,7 +103,7 @@ class EngineConfig {
     int gamma = 4;
     int max_flight_height = 4000;
 
-    bool no_intro = false;
+    bool no_intro = true;
     bool no_logo = false;
     bool no_sound = false;
     bool no_video = false;
@@ -107,12 +122,13 @@ class EngineConfig {
     bool debug_all_magic = true;            // toggle all spellbook
     bool debug_wizard_eye = true;           // wizard eye always on
     bool debug_portal_outlines = false;     // draw portal frames
-    bool debug_turbo_speed = true;          // party movement 12x
+    bool debug_turbo_speed = false;          // party movement 12x
     bool debug_lightmaps_decals = false;    // debug lightmap and decals outlines
     bool debug_terrain = false;
+    bool debug_town_portal = true;
 
-    bool always_run = false;
-    bool show_damage = false;
+    bool always_run = true;
+    bool show_damage = true;
     bool flip_on_exit = false;
 
     bool is_underwater = false;

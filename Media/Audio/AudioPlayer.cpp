@@ -173,7 +173,7 @@ void AudioPlayer::SetMusicVolume(int vol) {
 
     vol = max(0, vol);
     vol = min(9, vol);
-    pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[vol] * 64.f);
+    pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[vol] * 2.f);
 }
 
 float AudioPlayer::MusicGetVolume() {
@@ -187,7 +187,7 @@ float AudioPlayer::MusicGetVolume() {
 void AudioPlayer::SetMasterVolume(int level) {
     level = max(0, level);
     level = min(9, level);
-    uMasterVolume = (unsigned int)(128.0f * pSoundVolumeLevels[level]);
+    uMasterVolume = (unsigned int)(2.f * pSoundVolumeLevels[level]);
 }
 
 void AudioPlayer::StopAll(int sample_id) {
@@ -333,7 +333,7 @@ struct SoundHeader_mm7 {
 void AudioPlayer::LoadAudioSnd() {
     static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");
 
-    fAudioSnd.open(MakeDataPath("Sounds\\Audio.snd"));
+    fAudioSnd.open(MakeDataPath("Sounds\\Audio.snd"), std::ios_base::binary);
     if (!fAudioSnd.good()) {
         logger->Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
         return;
@@ -405,7 +405,7 @@ PMemBuffer AudioPlayer::LoadSound(const std::string &pSoundName) {
         }
     } else {
         PMemBuffer compressed = AllocMemBuffer(header.uCompressedSize);
-        fAudioSnd.read((char*)buffer->GetData(), header.uCompressedSize);
+        fAudioSnd.read((char*)compressed->GetData(), header.uCompressedSize);
         zlib::Uncompress((void *)buffer->GetData(), &header.uDecompressedSize,
                          (void *)compressed->GetData(), header.uCompressedSize);
     }

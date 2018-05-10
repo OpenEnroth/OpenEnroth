@@ -278,6 +278,7 @@ int PlayerCreation_GetUnspentAttributePointCount() {
 
 //----- (00427730) --------------------------------------------------------
 bool Player::CanCastSpell(unsigned int uRequiredMana) {
+    if (engine->config->debug_all_magic) return true;
     if (sMana >= uRequiredMana) {  // enough mana
         sMana -= uRequiredMana;    // removes mana
         return true;

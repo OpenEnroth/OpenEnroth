@@ -31,10 +31,14 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
             auto mods = e.key.keysym.mod;
 
             auto ch = SdlkToChar(key, (mods & KMOD_CAPS) != (mods & KMOD_SHIFT));
+            auto vkkey = SdlkToVk(key);
             if (ch != -1) {
                 gameCallback->OnChar(ch);
+            } else if ( vkkey == VK_RETURN || vkkey == VK_ESCAPE || vkkey == VK_TAB || vkkey == VK_BACK ) {
+                if (!gameCallback->OnChar(vkkey))
+                    gameCallback->OnVkDown(vkkey, 0);
             } else {
-                gameCallback->OnVkDown(SdlkToVk(key), 0);
+                gameCallback->OnVkDown(vkkey, 0);
             }
         }
 

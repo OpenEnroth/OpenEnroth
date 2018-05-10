@@ -91,10 +91,11 @@ class Render : public RenderBase {
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal);
     virtual void BlendTextures(int x, int y, Image *imgin, Image *imgblend,
                                int time, int start_opacity, int end_opacity);
+    virtual void DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset);
 
     virtual void DrawMasked(float u, float v, class Image *img,
                             unsigned int color_dimming_level, uint16_t mask);
-    void TexturePixelRotateDraw(float u, float v, Image * img, int time);
+    virtual void TexturePixelRotateDraw(float u, float v, Image * img, int time);
     virtual void DrawTextureGrayShade(float u, float v, class Image *a4);
     virtual void DrawTransparentRedShade(float u, float v, class Image *a4);
     virtual void DrawTransparentGreenShade(float u, float v,
