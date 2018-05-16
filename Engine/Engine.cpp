@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-#include "Application/Game.h"
+#include "src/Application/Game.h"
 
 #include "Engine/EngineConfig.h"
 #include "Engine/Events.h"

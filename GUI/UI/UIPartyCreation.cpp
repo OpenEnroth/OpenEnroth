@@ -3,7 +3,7 @@
 #include <crtdbg.h>
 #include <stdlib.h>
 
-#include "Application/Game.h"
+#include "src/Application/Game.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -20,8 +20,8 @@
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
 
-#include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
+#include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIPartyCreation.h"
 

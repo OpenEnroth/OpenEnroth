@@ -1,7 +1,13 @@
-
 version: 1.0.{build}
+
 image: Visual Studio 2017
-shallow_clone: true
+
+platform:
+  - x86
+
+configuration:
+  - Debug
+  - Release
 
 cache:
   - C:\3rd_party
@@ -9,60 +15,51 @@ cache:
 install:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
 
-  # cpplint
+  # Prepare for NMake
+  - if "%platform%" == "x86" call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat"
+  - if "%platform%" == "x64" call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" x86_amd64
+
+  # ffmpeg
   - ps: |
-      $CPPLINT2DIR = "C:\3rd_party\styleguide-gh-pages"
-      if (!(Test-Path -Path $CPPLINT2DIR)) {
-        Start-FileDownload https://github.com/google/styleguide/archive/gh-pages.zip
-        7z x gh-pages.zip -aoa -oC:\3rd_party\
+      $FFMPEG_VERSION = "4.0"
+      $FFMPEGDIR = "C:\3rd_party\ffmpeg-$FFMPEG_VERSION"
+      if (!(Test-Path -Path $FFMPEGDIR)) {
+        Start-FileDownload https://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-$FFMPEG_VERSION-win32-dev.zip
+        7z x ffmpeg-$FFMPEG_VERSION-win32-dev.zip -aoa -oC:\3rd_party
+        Rename-Item -Path C:\3rd_party\ffmpeg-$FFMPEG_VERSION-win32-dev -NewName $FFMPEGDIR
       }
-      $CPPLINT2DIR = "C:\3rd_party\styleguide-gh-pages\cpplint"
-      $env:CPPLINT2DIR = $CPPLINT2DIR
+      $env:FFMPEGDIR = $FFMPEGDIR
+
+  # openal
+  - ps: |
+      $OPENAL_VERSION = "1.18.2"
+      $OPENALDIR = "C:\3rd_party\openal-$OPENAL_VERSION"
+      if (!(Test-Path -Path $OPENALDIR)) {
+        Start-FileDownload http://kcat.strangesoft.net/openal-binaries/openal-soft-$OPENAL_VERSION-bin.zip
+        7z x openal-soft-$OPENAL_VERSION-bin.zip -aoa -oC:\3rd_party
+        Rename-Item -Path C:\3rd_party\openal-soft-$OPENAL_VERSION-bin -NewName $OPENALDIR
+      }
+      $env:OPENALDIR = $OPENALDIR
+
+  # zlib
+  - ps: |
+      $ZLIB_VERSION = "1.2.11"
+      $ZLIBDIR = "C:\3rd_party\zlib-$ZLIB_VERSION"
+      if (!(Test-Path -Path $ZLIBDIR)) {
+        $LINK_VER = $ZLIB_VERSION -Replace '[.]',''
+        Start-FileDownload http://www.zlib.net/zlib$LINK_VER.zip
+        7z x zlib$LINK_VER.zip -aoa -oC:\3rd_party
+        cd $ZLIBDIR
+        nmake /f win32\Makefile.msc
+      }
+      $env:ZLIBDIR = $ZLIBDIR
+
+  # build debug
+  - ps: |
+      Get-ChildItem C:\3rd_party -rec
 
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
-  - ps: |
-      Get-ChildItem "./Arcomage" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Arcomage" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./src" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./src" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./src/Application" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./src/Application" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./IO" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./IO" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Media" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Media" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Media/Audio" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Media/Audio" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Platform" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Platform" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Platform/Win" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Platform/Win" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./GUI" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./GUI" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./GUI/UI" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./GUI/UI" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./GUI/UI/Books" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./GUI/UI/Books" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Graphics" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Graphics" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Graphics/Direct3D" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Graphics/Direct3D" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Graphics/Level" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Graphics/Level" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Graphics/OpenGL" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Graphics/OpenGL" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Objects" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Objects" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Serialization" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Serialization" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Spells" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Spells" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Tables" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/Tables" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/TurnEngine" -Filter *.cpp | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-      Get-ChildItem "./Engine/TurnEngine" -Filter *.h | Foreach-Object { python $CPPLINT2DIR\cpplint.py $_.FullName ; if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode ) } }
-
-  - cmd: msbuild "Build/Visual Studio 2017/World of Might and Magic.sln" /p:configuration=debug
+  - cmd: cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration% -DZLIB_ROOT=%ZLIBDIR%
+  - cmd: nmake check_style
+  - cmd: nmake

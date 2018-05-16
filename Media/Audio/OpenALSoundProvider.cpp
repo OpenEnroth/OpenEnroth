@@ -1,5 +1,8 @@
 #include "Media/Audio/OpenALSoundProvider.h"
 
+#include <al.h>
+#include <alc.h>
+
 #include <atomic>
 #include <memory>
 #include <queue>
@@ -13,14 +16,9 @@
 #include <cstdio>
 #include <cstring>
 
-#include "lib/OpenAL/al.h"
-#include "lib/OpenAL/alc.h"
-
 #include "Engine/ErrorHandling.h"
 #include "Engine/Log.h"
 #include "Media/MediaPlayer.h"
-
-#pragma comment(lib, "OpenAL32.lib")
 
 void log(const char *format, ...) {
     va_list va;

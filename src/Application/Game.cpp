@@ -1,10 +1,10 @@
-#include "Application/Game.h"
+#include "src/Application/Game.h"
 
 #include <algorithm>
 #include <string>
 
-#include "Application/GameFactory.h"
-#include "Application/GameMenu.h"
+#include "src/Application/GameFactory.h"
+#include "src/Application/GameMenu.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"

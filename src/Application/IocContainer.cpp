@@ -1,6 +1,6 @@
-#include "Application/IocContainer.h"
+#include "src/Application/IocContainer.h"
 
-#include "Application/GameMenu.h"
+#include "src/Application/GameMenu.h"
 
 using Application::IocContainer;
 using Application::Menu;
