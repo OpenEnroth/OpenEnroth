@@ -1,12 +1,11 @@
 #pragma once
 
+#include <al.h>
+#include <alc.h>
 #include <memory>
 #include <string>
 
 #include "Media/Media.h"
-
-#include "al.h"
-#include "alc.h"
 
 void log(const char *format, ...);
 

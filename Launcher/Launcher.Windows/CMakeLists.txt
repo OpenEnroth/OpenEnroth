@@ -20,4 +20,3 @@ else()
 endif()
 
 add_library(Launcher STATIC ${LAUNCHER_SOURCES} ${LAUNCHER_HEADERS})
-target_check_style(Launcher)
