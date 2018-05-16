@@ -915,7 +915,7 @@ void Render::ClearBlack() { pRenderD3D->ClearTarget(true, 0, false, 0.0); }
 
 void Render::PresentBlackScreen() {
     RECT dest_rect = {0};
-    GetWindowRect((HWND)window->GetApiHandle(), &dest_rect);
+    GetWindowRect((HWND)window->GetWinApiHandle(), &dest_rect);
 
     DDBLTFX lpDDBltFx = {0};
     lpDDBltFx.dwSize = sizeof(DDBLTFX);
@@ -1598,7 +1598,7 @@ bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface,
 
 void Render::CreateClipper(OSWindow *window) {
     ErrD3D(pDirectDraw4->CreateClipper(0, &pDDrawClipper, NULL));
-    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->GetApiHandle()));
+    ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->GetWinApiHandle()));
     ErrD3D(pFrontBuffer4->SetClipper(pDDrawClipper));
 }
 

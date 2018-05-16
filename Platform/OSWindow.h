@@ -1,45 +1,35 @@
 #pragma once
 #include "Engine/Point.h"
 
-extern class OSWindow *window;
 
 class Mouse;
 class OSWindow {
  public:
     OSWindow();
-    static OSWindow *Create(const wchar_t *title, int window_width,
-                            int window_height);
 
-    void SetFullscreenMode();
-    void SetWindowedMode(int new_window_width, int new_window_height);
-    void SetCursor(const char *cursor_name);
+    virtual void SetFullscreenMode() = 0;
+    virtual void SetWindowedMode(int new_window_width, int new_window_height) = 0;
+    virtual void SetCursor(const char *cursor_name) = 0;
 
-    void *GetApiHandle() const;
-    int GetX() const;
-    int GetY() const;
-    unsigned int GetWidth() const;
-    unsigned int GetHeight() const;
+    virtual int GetX() const = 0;
+    virtual int GetY() const = 0;
+    virtual unsigned int GetWidth() const = 0;
+    virtual unsigned int GetHeight() const = 0;
 
-    Point TransformCursorPos(Point &pt) const;  // screen to client
+    virtual Point TransformCursorPos(Point &pt) const = 0;  // screen to client
 
-    bool OnOSMenu(int item_id);
+    virtual bool OnOSMenu(int item_id) = 0;
 
-    virtual void Show();
-    virtual bool Focused();
-    virtual bool OnMouseLeftClick(int x, int y);
-    virtual bool OnMouseRightClick(int x, int y);
-    virtual bool Activate();
+    virtual void Show() = 0;
+    virtual bool Focused() = 0;
+    virtual bool OnMouseLeftClick(int x, int y) = 0;
+    virtual bool OnMouseRightClick(int x, int y) = 0;
+    virtual bool Activate() = 0;
+
+    virtual void *GetWinApiHandle() = 0;
 
  protected:
-    bool Initialize(const wchar_t *title, int window_width, int window_height);
-    bool WinApiMessageProc(int msg, int wparam, void *lparam, void **result);
-
-    void *api_handle;
-
- private:
-    static void *WinApiMsgRouter(void *hwnd, int msg, int wparam, void *lparam);
-
-    void *CreateDebugMenuPanel();
-
     Mouse *mouse = nullptr;
 };
+
+extern OSWindow *window;
