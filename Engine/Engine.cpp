@@ -75,6 +75,7 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindowFactory.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -910,7 +911,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         log->Warning(L"Render creation failed");
         return false;
     } else {
-        window = OSWindow::Create(
+        window = OSWindowFactory().Create(
             L"Might and Magic® Trilogy",
             render->config->render_width,
             render->config->render_height);

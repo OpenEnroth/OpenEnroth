@@ -106,11 +106,12 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ddraw.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ddraw.lib;dxguid.lib;../../lib/SDL2/lib/x86/SDL2.lib;../../lib/SDL2/lib/x86/SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)..\..\required dlls\*.dll" $(configuration)</Command>
+      <Command>copy "$(ProjectDir)..\..\required dlls\*.dll" $(configuration)
+copy "$(ProjectDir)..\..\lib\SDL2\lib\x86\SDL2.dll" $(configuration)</Command>
       <Message>-------------------------------------------------------Post-Build Event</Message>
     </PostBuildEvent>
     <CustomBuildStep>
@@ -369,6 +370,10 @@
     <ClCompile Include="..\..\Media\Media.cpp" />
     <ClCompile Include="..\..\Media\MediaPlayer.cpp" />
     <ClCompile Include="..\..\Platform\OSWindow.cpp" />
+    <ClCompile Include="..\..\Platform\OSWindowFactory.cpp" />
+    <ClCompile Include="..\..\Platform\Sdl2Window.cpp" />
+    <ClCompile Include="..\..\Platform\SDLmain.cpp" />
+    <ClCompile Include="..\..\Platform\WinApiWindow.cpp" />
     <ClCompile Include="..\..\Platform\Win\AppSettings.cpp" />
     <ClCompile Include="..\..\Platform\Win\Win.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)..\..\lib64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -724,6 +729,88 @@
     <ClInclude Include="..\..\lib\OpenAL\EFX-Util.h" />
     <ClInclude Include="..\..\lib\OpenAL\efx.h" />
     <ClInclude Include="..\..\lib\OpenAL\xram.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\begin_code.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\close_code.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_assert.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_atomic.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_audio.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_bits.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_blendmode.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_clipboard.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config_android.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config_iphoneos.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config_macosx.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config_minimal.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config_pandora.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config_psp.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config_windows.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config_winrt.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_config_wiz.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_copying.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_cpuinfo.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_egl.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_endian.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_error.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_events.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_filesystem.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_gamecontroller.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_gesture.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_haptic.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_hints.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_joystick.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_keyboard.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_keycode.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_loadso.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_log.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_main.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_messagebox.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_mouse.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_mutex.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_name.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_opengl.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_opengles.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_opengles2.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_opengles2_gl2.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_opengles2_gl2ext.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_opengles2_gl2platform.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_opengles2_khrplatform.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_opengl_glext.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_pixels.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_platform.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_power.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_quit.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_rect.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_render.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_revision.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_rwops.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_scancode.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_shape.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_stdinc.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_surface.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_system.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_syswm.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_assert.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_common.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_compare.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_crc32.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_font.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_fuzzer.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_harness.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_images.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_log.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_md5.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_memory.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_test_random.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_thread.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_timer.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_touch.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_types.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_version.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_video.h" />
+    <ClInclude Include="..\..\lib\SDL2\include\SDL_vulkan.h" />
     <ClInclude Include="..\..\lib\zlib\deflate.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -763,6 +850,9 @@
     <ClInclude Include="..\..\Media\MediaPlayer.h" />
     <ClInclude Include="..\..\Platform\OSWindow.h" />
     <ClInclude Include="..\..\Platform\Api.h" />
+    <ClInclude Include="..\..\Platform\OSWindowFactory.h" />
+    <ClInclude Include="..\..\Platform\Sdl2Window.h" />
+    <ClInclude Include="..\..\Platform\WinApiWindow.h" />
     <ClInclude Include="..\..\Platform\Win\Win.h" />
     <ClInclude Include="..\..\src\Application\Configuration.h" />
     <ClInclude Include="..\..\src\Application\Game.h" />
@@ -794,6 +884,16 @@
     <None Include="..\..\lib\OpenAL\lib\x86\postproc-52.def" />
     <None Include="..\..\lib\OpenAL\lib\x86\swresample-0.def" />
     <None Include="..\..\lib\OpenAL\lib\x86\swscale-2.def" />
+    <None Include="..\..\lib\SDL2\include\SDL_config.h.cmake" />
+    <None Include="..\..\lib\SDL2\include\SDL_config.h.in" />
+    <None Include="..\..\lib\SDL2\include\SDL_config_macosx.h.orig" />
+    <None Include="..\..\lib\SDL2\lib\x64\SDL2.dll">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\lib\SDL2\lib\x86\SDL2.dll">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="..\..\README.md" />
     <None Include="..\..\TODO.md" />
   </ItemGroup>
@@ -816,6 +916,27 @@
     <Library Include="..\..\lib\OpenAL\lib\x86\postproc.lib" />
     <Library Include="..\..\lib\OpenAL\lib\x86\swresample.lib" />
     <Library Include="..\..\lib\OpenAL\lib\x86\swscale.lib" />
+    <Library Include="..\..\lib\SDL2\lib\x64\SDL2.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\lib\SDL2\lib\x64\SDL2main.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\lib\SDL2\lib\x64\SDL2test.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\lib\SDL2\lib\x86\SDL2.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\lib\SDL2\lib\x86\SDL2main.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
+    <Library Include="..\..\lib\SDL2\lib\x86\SDL2test.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Library>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
