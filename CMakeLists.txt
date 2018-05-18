@@ -51,6 +51,7 @@ add_definitions(-DPACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-might-a
 
 find_package(FFmpeg REQUIRED COMPONENTS AVFORMAT AVUTIL AVCODEC SWSCALE SWRESAMPLE)
 find_package(OpenAL REQUIRED)
+set(ZLIB_ROOT "$ENV{ZLIBDIR}")
 find_package(ZLIB REQUIRED)
 
 include_directories(${INCLUDE_DIRECTORIES} ${FFMPEG_INCLUDE_DIRS})
@@ -79,3 +80,28 @@ target_link_libraries(World_of_Might_and_Magic ${FFMPEG_LIBRARIES})
 target_link_libraries(World_of_Might_and_Magic ${OPENAL_LIBRARY})
 target_link_libraries(World_of_Might_and_Magic ${ZLIB_LIBRARY_RELEASE})
 target_link_libraries(World_of_Might_and_Magic ddraw.lib dxguid.lib)
+
+if(WIN32)
+  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(VC_LIB_PATH_SUFFIX Win64)
+  else()
+    set(VC_LIB_PATH_SUFFIX Win32)
+  endif()
+
+  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{ZLIBDIR}/zlib1.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
+
+  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{OPENALDIR}/bin/${VC_LIB_PATH_SUFFIX}/soft_oal.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
+
+  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/avcodec-58.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
+  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/avformat-58.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
+  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/avutil-56.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
+  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/swresample-3.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
+  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/swscale-5.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
+endif()
