@@ -24,8 +24,8 @@
 #include "IO/Mouse.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/UI/Books/MapBook.h"
 #include "GUI/GUIFont.h"
+#include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -1525,17 +1525,16 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
                 if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
                     inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-                    int chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C]
-                                         .pInventoryIndices[invMatrixIndex];
+                    int chestindex = vChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
                     if (chestindex < 0) {
                         invMatrixIndex = (-(chestindex + 1));
-                        chestindex = pChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+                        chestindex = vChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
                     }
 
                     if (chestindex) {
                         int itemindex = chestindex - 1;
 
-                        GameUI_DrawItemInfo(&pChests[pChestWindow->par1C].igChestItems[itemindex]);
+                        GameUI_DrawItemInfo(&vChests[pChestWindow->par1C].igChestItems[itemindex]);
                     }
                 }
             }
@@ -1602,13 +1601,13 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 v5 = vis->get_picked_object_zbuf_val();
                 /*else
                 v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
-                if (PID_TYPE((unsigned __int16)v5) == OBJECT_Actor) {
+                if (PID_TYPE(v5) == OBJECT_Actor) {
                     render->BeginScene();
                     popup_window.DrawMessageBox(1);
-                    MonsterPopup_Draw(PID_ID((unsigned __int16)v5), &popup_window);
+                    MonsterPopup_Draw(PID_ID(v5), &popup_window);
                     render->EndScene();
                 }
-                if (PID_TYPE((unsigned __int16)v5) == OBJECT_Item) {
+                if (PID_TYPE(v5) == OBJECT_Item) {
                     if (!(pObjectList
                               ->pObjects[pSpriteObjects[PID_ID((unsigned __int16)v5)].uObjectDescID].uFlags & 0x10)) {
                         GameUI_DrawItemInfo(

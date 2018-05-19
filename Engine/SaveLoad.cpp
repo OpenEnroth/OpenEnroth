@@ -410,11 +410,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             memcpy(data_write_pos, pSpriteObjects.data(),
                    112 * uNumSpriteObjects);
             data_write_pos += 112 * uNumSpriteObjects;
-            memcpy(data_write_pos, &uNumChests, 4);
-            data_write_pos += 4;
-            memcpy(data_write_pos, pChests.data(),
-                   sizeof(Chest) * uNumChests);  // 5324 *
-            data_write_pos += sizeof(Chest) * uNumChests;
+
+            data_write_pos = ChestsSerialize(data_write_pos);
+
             memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
             data_write_pos += 16000;
             memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata,
@@ -460,10 +458,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             memcpy(data_write_pos, &pSpriteObjects,
                    uNumSpriteObjects * sizeof(SpriteObject));
             data_write_pos += uNumSpriteObjects * sizeof(SpriteObject);
-            memcpy(data_write_pos, &uNumChests, 4);
-            data_write_pos += 4;
-            memcpy(data_write_pos, pChests.data(), sizeof(Chest) * uNumChests);
-            data_write_pos += sizeof(Chest) * uNumChests;
+
+            data_write_pos = ChestsSerialize(data_write_pos);
+
             memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
             data_write_pos += 200;
             memcpy(data_write_pos, &pOutdoor->loc_time, 0x38);

@@ -966,8 +966,7 @@ void Game::EventLoop() {
                             v38 = dword_5B65BC;
                         }
                         if (*dword_591164_teleport_map_name != 48) {
-                            pGameLoadingUI_ProgressBar->uType =
-                                (GUIProgressBar::Type)2;
+                            pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                             dword_5B65C0 =
                                 _5B65A8_npcdata_uflags_or_other |
                                 _5B65AC_npcdata_fame_or_other |
@@ -1024,9 +1023,8 @@ void Game::EventLoop() {
                         CastSpellInfoHelpers::_427D48();
                         DialogueEnding();
                         pEventTimer->Pause();
-                        pGameLoadingUI_ProgressBar->Initialize(
-                            GUIProgressBar::TYPE_Box);
-                        ++pGameLoadingUI_ProgressBar->uProgressMax;
+                        pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
+                        pGameLoadingUI_ProgressBar->Progress();
                         SaveGame(1, 0);
                         pGameLoadingUI_ProgressBar->Progress();
                         RestAndHeal(24 * 60 * GetTravelTime());

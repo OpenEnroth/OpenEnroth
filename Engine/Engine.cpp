@@ -1334,100 +1334,6 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     windowManager.DeleteAllVisibleWindows();
 }
 
-//----- (00450218) --------------------------------------------------------
-void GenerateItemsInChest() {
-    unsigned int mapType;           // eax@1
-    MapInfo *currMapInfo;           // esi@1
-    ItemGen *currItem;              // ebx@2
-    int additionaItemCount;         // ebp@4
-    int treasureLevelBot;           // edi@4
-    int treasureLevelTop;           // esi@4
-    signed int treasureLevelRange;  // esi@4
-    int resultTreasureLevel;        // edx@4
-    int goldAmount;                 // esi@8
-    int v11;                        // ebp@25
-    int v12;                        // esi@25
-    signed int whatToGenerateProb;  // [sp+10h] [bp-18h]@1
-
-    mapType = pMapStats->GetMapInfo(pCurrentMapName);
-    currMapInfo = &pMapStats->pInfos[mapType];
-    for (int i = 1; i < 20; ++i) {
-        for (int j = 0; j < 140; ++j) {
-            currItem = &pChests[i].igChestItems[j];
-            if (currItem->uItemID < 0) {
-                additionaItemCount = rand() % 5;  // additional items in chect
-                treasureLevelBot = byte_4E8168[abs(currItem->uItemID) - 1]
-                                              [2 * currMapInfo->Treasure_prob];
-                treasureLevelTop =
-                    byte_4E8168[abs(currItem->uItemID) - 1]
-                               [2 * currMapInfo->Treasure_prob + 1];
-                treasureLevelRange = treasureLevelTop - treasureLevelBot + 1;
-                resultTreasureLevel =
-                    treasureLevelBot +
-                    rand() % treasureLevelRange;  // treasure level
-                if (resultTreasureLevel < 7) {
-                    v11 = 0;
-                    do {
-                        whatToGenerateProb = rand() % 100;
-                        if (whatToGenerateProb < 20) {
-                            currItem->Reset();
-                        } else if (whatToGenerateProb < 60) {  // generate gold
-                            goldAmount = 0;
-                            currItem->Reset();
-                            switch (resultTreasureLevel) {
-                                case 1:
-                                    goldAmount = rand() % 51 + 50;
-                                    currItem->uItemID = ITEM_GOLD_SMALL;
-                                    break;
-                                case 2:
-                                    goldAmount = rand() % 101 + 100;
-                                    currItem->uItemID = ITEM_GOLD_SMALL;
-                                    break;
-                                case 3:
-                                    goldAmount = rand() % 301 + 200;
-                                    currItem->uItemID = ITEM_GOLD_MEDIUM;
-                                    break;
-                                case 4:
-                                    goldAmount = rand() % 501 + 500;
-                                    currItem->uItemID = ITEM_GOLD_MEDIUM;
-                                    break;
-                                case 5:
-                                    goldAmount = rand() % 1001 + 1000;
-                                    currItem->uItemID = ITEM_GOLD_LARGE;
-                                    break;
-                                case 6:
-                                    goldAmount = rand() % 3001 + 2000;
-                                    currItem->uItemID = ITEM_GOLD_LARGE;
-                                    break;
-                            }
-                            currItem->SetIdentified();
-                            currItem->special_enchantment =
-                                (ITEM_ENCHANTMENT)goldAmount;
-                        } else {
-                            pItemsTable->GenerateItem(resultTreasureLevel, 0,
-                                                      currItem);
-                        }
-                        v12 = 0;
-                        while (!(pChests[i].igChestItems[v12].uItemID ==
-                                 ITEM_NULL) &&
-                               (v12 < 140)) {
-                            ++v12;
-                        }
-                        if (v12 >= 140) break;
-                        currItem = &pChests[i].igChestItems[v12];
-                        v11++;
-                    } while (v11 < additionaItemCount +
-                                       1);  // + 1 because it's the item at
-                                            // pChests[i].igChestItems[j] and
-                                            // the additional ones
-                } else {
-                    currItem->GenerateArtifact();
-                }
-            }
-        }
-    }
-}
-
 //----- (00461103) --------------------------------------------------------
 void Engine::_461103_load_level_sub() {
     int v4;          // edx@8
@@ -2593,7 +2499,7 @@ bool TeleportToNWCDungeon() {
     dword_5B65BC = 0;
     dword_5B65C0 = 0;
 
-    pGameLoadingUI_ProgressBar->uType = GUIProgressBar::TYPE_Fullscreen;
+    pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
     Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
     current_screen_type = SCREEN_GAME;
     return true;

@@ -1198,9 +1198,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumChests, pData, 4);
-    memcpy(pChests.data(), pData + 4, uNumChests * sizeof(Chest));
-    pData += 4 + uNumChests * sizeof(Chest);
+    pData = ChestsDeserialize(pData);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
