@@ -1,5 +1,7 @@
 #include "GUI/GUIProgressBar.h"
 
+#include <algorithm>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"

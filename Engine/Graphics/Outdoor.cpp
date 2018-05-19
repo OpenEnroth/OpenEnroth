@@ -1244,17 +1244,8 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     // v94 = (char *)v93 + (int)pFilename;
     pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
 
-    memcpy(&uNumChests, pSrc, 4);
-    // v95 = (char *)v94 + 4;
-    if (uNumChests > 20) logger->Warning(L"Can't load file!");
+    pSrc = (uint8_t*)ChestsDeserialize((char*)pSrc);
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
-
-    assert(sizeof(Chest) == 5324);
-    // pFilename = (char *)(5324 * uNumChests);
-    memcpy(pChests.data(), pSrc + 4, uNumChests * sizeof(Chest));
-    pSrc += 4 + uNumChests * sizeof(Chest);
-    // v96 = (char *)v95 + (int)pFilename;
     pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
 
     memcpy(&stru_5E4C90_MapPersistVars, pSrc, 0xC8);

@@ -47,27 +47,22 @@ void GUIWindow_Chest::Update() {
 
         int *v16 = render->pActiveZBuffer;
         render->ClearZBuffer(0, 479);
-        int chestBitmapId = pChests[uChestID].uChestBitmapID;
+        int chestBitmapId = vChests[uChestID].uChestBitmapID;
         int chest_offs_x = pChestPixelOffsetX[chestBitmapId];
         int chest_offs_y = pChestPixelOffsetY[chestBitmapId];
         int chestWidthCells = pChestWidthsByType[chestBitmapId];
         int chestHeghtCells = pChestHeightsByType[chestBitmapId];
 
         Image *chest_background = assets->GetImage_ColorKey(
-            StringPrintf("chest%02d",
-                         pChestList->pChests[chestBitmapId].uTextureID),
-            0x7FF);
+            StringPrintf("chest%02d", pChestList->vChests[chestBitmapId].uTextureID), 0x7FF);
         render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, chest_background);
 
         for (int item_counter = 0;
              item_counter < chestWidthCells * chestHeghtCells; ++item_counter) {
-            int chest_item_index =
-                pChests[uChestID].pInventoryIndices[item_counter];
+            int chest_item_index = vChests[uChestID].pInventoryIndices[item_counter];
             if (chest_item_index > 0) {
                 auto item_texture = assets->GetImage_ColorKey(
-                    pChests[uChestID]
-                        .igChestItems[chest_item_index - 1]
-                        .GetIconName(),
+                    vChests[uChestID].igChestItems[chest_item_index - 1].GetIconName(),
                     0x7FF);
 
                 int itemPixelWidth = item_texture->GetWidth();
