@@ -615,6 +615,9 @@
     <ClCompile Include="..\..\Platform\Sdl2Window.cpp">
       <Filter>Platform</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Application\GameWindowHandler.cpp">
+      <Filter>src\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\libavcodec\avcodec.h">
@@ -1891,6 +1894,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Platform\Sdl2Window.h">
       <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Application\GameWindowHandler.h">
+      <Filter>src\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

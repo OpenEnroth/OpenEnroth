@@ -435,7 +435,7 @@ void MainMenuLoad_Loop() {
     pGUIWindow_CurrentMenu = new GUIWindow_Load(false);
 
     while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == SCREEN_LOADGAME) {
-        OS_PeekMessageLoop();
+        window->PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
             OS_WaitMessage();
             continue;

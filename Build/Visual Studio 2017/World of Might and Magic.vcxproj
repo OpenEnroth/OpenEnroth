@@ -388,6 +388,7 @@ copy "$(ProjectDir)..\..\lib\SDL2\lib\x86\SDL2.dll" $(configuration)</Command>
     <ClCompile Include="..\..\src\Application\GameFactory.cpp" />
     <ClCompile Include="..\..\src\Application\GameMenu.cpp" />
     <ClCompile Include="..\..\src\Application\GameOver.cpp" />
+    <ClCompile Include="..\..\src\Application\GameWindowHandler.cpp" />
     <ClCompile Include="..\..\src\Application\IocContainer.cpp" />
     <ClCompile Include="..\..\src\tools\MemBuffer.cpp" />
   </ItemGroup>
@@ -859,6 +860,7 @@ copy "$(ProjectDir)..\..\lib\SDL2\lib\x86\SDL2.dll" $(configuration)</Command>
     <ClInclude Include="..\..\src\Application\GameFactory.h" />
     <ClInclude Include="..\..\src\Application\GameMenu.h" />
     <ClInclude Include="..\..\src\Application\GameOver.h" />
+    <ClInclude Include="..\..\src\Application\GameWindowHandler.h" />
     <ClInclude Include="..\..\src\Application\IocContainer.h" />
     <ClInclude Include="..\..\src\tools\MemBuffer.h" />
   </ItemGroup>

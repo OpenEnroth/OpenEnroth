@@ -1,6 +1,11 @@
 #pragma once
 #include "Engine/Point.h"
 
+#include "src/Application/GameWindowHandler.h"
+
+
+using Application::GameWindowHandler;
+
 
 class Mouse;
 class OSWindow {
@@ -22,14 +27,15 @@ class OSWindow {
 
     virtual void Show() = 0;
     virtual bool Focused() = 0;
-    virtual bool OnMouseLeftClick(int x, int y) = 0;
-    virtual bool OnMouseRightClick(int x, int y) = 0;
-    virtual bool Activate() = 0;
+    virtual void Activate() = 0;
+
+    virtual void PeekSingleMessage() = 0;
+    virtual void PeekMessageLoop() = 0;
 
     virtual void *GetWinApiHandle() = 0;
 
  protected:
-    Mouse *mouse = nullptr;
+    GameWindowHandler *gameCallback = nullptr;
 };
 
 extern OSWindow *window;

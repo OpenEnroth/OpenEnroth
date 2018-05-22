@@ -77,7 +77,6 @@ extern std::array<unsigned int, 2> saveload_dlg_xs;
 extern std::array<unsigned int, 2> saveload_dlg_ys;
 extern std::array<unsigned int, 2> saveload_dlg_zs;
 extern std::array<unsigned int, 2> saveload_dlg_ws;
-extern int dword_4E98BC_bApplicationActive;
 extern std::array<char *, 465> pTransitionStrings;  // 4EB080
 extern std::array<int, 9> dword_4EC268;
 extern std::array<int, 7> dword_4EC28C;
