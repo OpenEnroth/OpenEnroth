@@ -28,14 +28,14 @@ class WinApiWindow : public OSWindow {
 
     void Show() override;
     bool Focused() override;
-    bool OnMouseLeftClick(int x, int y) override;
-    bool OnMouseRightClick(int x, int y) override;
-    bool Activate() override;
+    void Activate() override;
+
+    void PeekSingleMessage() override;
+    void PeekMessageLoop() override;
 
     void *GetWinApiHandle() override;
 
  private:
-     void ProcessMessageQueue();
      bool WinApiMessageProc(int msg, int wparam, void *lparam, void **result);
      void *CreateDebugMenuPanel();
 

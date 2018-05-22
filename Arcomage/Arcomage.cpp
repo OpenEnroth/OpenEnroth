@@ -488,8 +488,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_stru1 *a2) {
     pArcomageGame->field_0 = 0;
     pArcomageGame->stru1.field_0 = 0;
 
-    extern void OS_PeekMessage();
-    OS_PeekMessage();
+    window->PeekSingleMessage();
 
     memcpy(v2, &pArcomageGame->stru1, 0xCu);
     return pArcomageGame->stru1.field_0 != 0;

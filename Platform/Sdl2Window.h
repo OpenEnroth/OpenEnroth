@@ -27,13 +27,18 @@ class Sdl2Window : public OSWindow {
 
     void Show() override;
     bool Focused() override;
-    bool OnMouseLeftClick(int x, int y) override;
-    bool OnMouseRightClick(int x, int y) override;
-    bool Activate() override;
+    void Activate() override;
+
+    void PeekSingleMessage() override;
+    void PeekMessageLoop() override;
 
     void *GetWinApiHandle() override;
 
  private:
     SDL_Window *sdlWindow;
     SDL_Surface *sdlWindowSurface;
+
+
+    void MessageProc(const SDL_Event &e);
+    bool SdlkIsChar(SDL_Keycode key) const;
 };

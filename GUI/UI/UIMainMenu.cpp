@@ -145,7 +145,7 @@ void GUIWindow_MainMenu::Loop() {
     window->Activate();
 
     while (GetCurrentMenuID() == MENU_MAIN) {
-        OS_PeekMessageLoop();
+        window->PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
             OS_WaitMessage();
             continue;

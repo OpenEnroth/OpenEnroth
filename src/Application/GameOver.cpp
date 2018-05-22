@@ -151,13 +151,13 @@ void Application::GameOver_Loop(int v15) {
         HEXRAYS_LODWORD(v23) = OS_GetTime() + 5000;
         while ((unsigned int)v23 > OS_GetTime());
 
-        OS_PeekMessageLoop();
+        window->PeekMessageLoop();
 
         pMessageQueue_50CBD0->Flush();
         pKeyActionMap->ResetKeys();
         pKeyActionMap->uLastKeyPressed = 0;
         do {
-            OS_PeekMessageLoop();
+            window->PeekMessageLoop();
         } while (!pKeyActionMap->uLastKeyPressed);
         pMessageQueue_50CBD0->Flush();
     }
