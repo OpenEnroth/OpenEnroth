@@ -1,6 +1,6 @@
 #pragma once
 
-#include "src/Tools/MemBuffer.h"
+#include "src/tools/MemBuffer.h"
 
 namespace zlib {
 int Compress(void *dest, unsigned int *destLen, void *source, unsigned int sourceLen);
