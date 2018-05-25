@@ -6,6 +6,7 @@ set(GAME_SOURCES Application/Configuration.cpp
                  Application/GameMenu.cpp
                  Application/GameOver.cpp
                  Application/IocContainer.cpp
+                 Application/GameWindowHandler.cpp
                  tools/MemBuffer.cpp)
 
 set(GAME_HEADERS Application/Configuration.h
@@ -14,6 +15,7 @@ set(GAME_HEADERS Application/Configuration.h
                  Application/GameMenu.h
                  Application/GameOver.h
                  Application/IocContainer.h
+                 Application/GameWindowHandler.h
                  tools/MemBuffer.h)
 
 if(WIN32)

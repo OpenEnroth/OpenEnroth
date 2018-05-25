@@ -110,3 +110,11 @@ if (!(Test-Path -Path $ZLIBDIR)) {
     popd
 }
 [Environment]::SetEnvironmentVariable("ZLIBDIR", "$ZLIBDIR", "User")
+
+$SDL_VERSION = "2.0.8"
+$SDL2DIR = "$targetdir\SDL2-$SDL_VERSION"
+if (!(Test-Path -Path $SDL2DIR)) {
+    $arch = Download-File "https://libsdl.org/release/SDL2-devel-$SDL_VERSION-VC.zip" $temp_path
+    Unzip $arch $targetdir
+}
+[Environment]::SetEnvironmentVariable("SDL2DIR", "$SDL2DIR", "User")

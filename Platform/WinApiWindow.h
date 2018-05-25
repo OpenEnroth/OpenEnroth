@@ -8,7 +8,7 @@ void *WinApiMsgRouter(HWND hwnd, int msg, int wparam, void *lparam);
 
 class WinApiWindow : public OSWindow {
  public:
-    inline WinApiWindow(HWND hwnd)
+    explicit WinApiWindow(HWND hwnd)
         : OSWindow() {
         this->hwnd = hwnd;
     }

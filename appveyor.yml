@@ -28,6 +28,7 @@ install:
       $env:FFMPEGDIR ="c:\3rd_party\ffmpeg-4.0"
       $env:OPENALDIR ="c:\3rd_party\openal-1.18.2"
       $env:ZLIBDIR ="c:\3rd_party\zlib-1.2.11"
+      $env:SDL2DIR ="c:\3rd_party\sdl2-2.0.8"
 
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
