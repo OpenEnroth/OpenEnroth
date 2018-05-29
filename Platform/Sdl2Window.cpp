@@ -47,7 +47,7 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
             int y = e.button.y;
             int clicks = e.button.clicks;
 
-            //if (e.button.state == SDL_PRESSED) {
+            // if (e.button.state == SDL_PRESSED) {
                 if (e.button.button == SDL_BUTTON_LEFT) {
                     if (clicks == 1) {
                         gameCallback->OnMouseLeftClick(x, y);
@@ -61,18 +61,17 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
                         gameCallback->OnMouseRightDoubleClick(x, y);
                     }
                 }
-            //}
+            // }
         } break;
 
         case SDL_MOUSEBUTTONUP: {
-            //if (e.button.state == SDL_RELEASED) {
+            // if (e.button.state == SDL_RELEASED) {
                 if (e.button.button == SDL_BUTTON_LEFT) {
                     gameCallback->OnMouseLeftUp();
-                }
-                else if (e.button.button == SDL_BUTTON_RIGHT) {
+                } else if (e.button.button == SDL_BUTTON_RIGHT) {
                     gameCallback->OnMouseRightUp();
                 }
-            //}
+            // }
         } break;
 
         case SDL_WINDOWEVENT: {

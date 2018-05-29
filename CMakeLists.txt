@@ -53,6 +53,7 @@ find_package(FFmpeg REQUIRED COMPONENTS AVFORMAT AVUTIL AVCODEC SWSCALE SWRESAMP
 find_package(OpenAL REQUIRED)
 set(ZLIB_ROOT "$ENV{ZLIBDIR}")
 find_package(ZLIB REQUIRED)
+find_package(SDL2 REQUIRED)
 
 include_directories(${INCLUDE_DIRECTORIES} ${FFMPEG_INCLUDE_DIRS})
 include_directories(${INCLUDE_DIRECTORIES} ${OPENAL_INCLUDE_DIR})
@@ -79,13 +80,17 @@ target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media
 target_link_libraries(World_of_Might_and_Magic ${FFMPEG_LIBRARIES})
 target_link_libraries(World_of_Might_and_Magic ${OPENAL_LIBRARY})
 target_link_libraries(World_of_Might_and_Magic ${ZLIB_LIBRARY_RELEASE})
+target_link_libraries(World_of_Might_and_Magic ${SDL2_LIBRARY})
+target_link_libraries(World_of_Might_and_Magic ${SDL2_MAIN_LIBRARY})
 target_link_libraries(World_of_Might_and_Magic ddraw.lib dxguid.lib)
 
 if(WIN32)
   if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(VC_LIB_PATH_SUFFIX Win64)
+    set(VC_LIB_PATH_SUFFIX2 x64)
   else()
     set(VC_LIB_PATH_SUFFIX Win32)
+    set(VC_LIB_PATH_SUFFIX2 x86)
   endif()
 
   add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
@@ -104,4 +109,6 @@ if(WIN32)
     COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/swresample-3.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
   add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/swscale-5.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
+  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{SDL2DIR}/lib/${VC_LIB_PATH_SUFFIX2}/sdl2.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
 endif()

@@ -30,4 +30,4 @@ class GameWindowHandler {
     Mouse *mouse = nullptr;
 };
 
-}  // Application
+}  // namespace Application

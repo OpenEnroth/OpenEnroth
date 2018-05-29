@@ -219,8 +219,7 @@ void WinApiWindow::SetCursor(const char *cursor_name) {
         // SetClassLongPtrW(api_handle, GCLP_HCURSOR,
         // (LONG)LoadCursorW(GetModuleHandleW(nullptr), IDC_ARROW));
         SetClassLongPtrW(hwnd, GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_ARROW));
-    }
-    else if (!strcmp(cursor_name, "MICON2")) {
+    } else if (!strcmp(cursor_name, "MICON2")) {
         // HCURSOR hCurs1;
 
         // Create target
@@ -231,9 +230,7 @@ void WinApiWindow::SetCursor(const char *cursor_name) {
             __debugbreak();
         }
         SetClassLongPtrW(hwnd, GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_CROSS));
-
-    }
-    else if (!strcmp(cursor_name, "MICON3")) {
+    } else if (!strcmp(cursor_name, "MICON3")) {
         SetClassLongPtrW(hwnd, GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_WAIT));
     }
 
@@ -242,8 +239,8 @@ void WinApiWindow::SetCursor(const char *cursor_name) {
 }
 
 void WinApiWindow::SetFullscreenMode() {
-    // Ritor1: Error. Window size change in this function(Ошибка. При переходе
-    // на полноэкранный режим размеры окна изменяются в этой функции)
+    // Ritor1: Error. Window size changed in this
+    // function when switching to fullscrean mode
     SetMenu(hwnd, nullptr);  // 640,480 - 640,500
                              /*bool m = false;
                              HMENU h_menu = GetMenu(api_handle);
@@ -570,8 +567,8 @@ bool WinApiWindow::OnOSMenu(int item_id) {
     default:
         return false;
 
-    case 103:  __debugbreak(); //render->SavePCXScreenshot(); break;
-    case 104:  __debugbreak(); //render->ToggleFullscreen(); break;
+    case 103:  __debugbreak();  // render->SavePCXScreenshot(); break;
+    case 104:  __debugbreak();  // render->ToggleFullscreen(); break;
     case 101:    // Quit game
     case 40001:  // Menu "File"-> "Exit"
         engine->Deinitialize();

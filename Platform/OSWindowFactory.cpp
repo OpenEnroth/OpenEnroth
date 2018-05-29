@@ -72,3 +72,8 @@ OSWindow *OSWindowFactory::CreateWinApi(const wchar_t *title, int window_width, 
 
     return window;
 }
+
+int main(int argc, char *argv[]) {
+    extern int MM_Main(const char *);
+    return MM_Main(argv[0]);
+}
