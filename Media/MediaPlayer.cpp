@@ -724,7 +724,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     while (true) {
         render->BeginScene();
 
-        OS_PeekMessageLoop();
+        window->PeekMessageLoop();
 
         OS_Sleep(2);
 

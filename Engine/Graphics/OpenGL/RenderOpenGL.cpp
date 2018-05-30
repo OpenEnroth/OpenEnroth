@@ -1797,13 +1797,10 @@ bool RenderOpenGL::Initialize(OSWindow *window_) {
 
     if (window != nullptr) {
         static PIXELFORMATDESCRIPTOR
-            pfd = {  // pfd Tells Windows How We Want Things To Be
-                sizeof(PIXELFORMATDESCRIPTOR),  // Size Of This Pixel Format
-                                                // Descriptor
+            pfd = {
+                sizeof(PIXELFORMATDESCRIPTOR),
                 1,                              // Version Number
-                PFD_DRAW_TO_WINDOW |            // Format Must Support Window
-                    PFD_SUPPORT_OPENGL |        // Format Must Support OpenGL
-                    PFD_DOUBLEBUFFER,           // Must Support Double Buffering
+                PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
                 PFD_TYPE_RGBA,                  // Request An RGBA Format
                 32,                             // Select Our Color Depth
                 0,
@@ -1827,105 +1824,49 @@ bool RenderOpenGL::Initialize(OSWindow *window_) {
                 0,
                 0,
                 0  // Layer Masks Ignored
-            };
+        };
 
         HGLRC hRC;
-        if (this->hdc = GetDC(
-                (HWND)window->GetApiHandle())) {  // Did We Get A Device Context?
+        if (this->hdc = GetDC((HWND)window->GetWinApiHandle())) {
             HDC hDC = (HDC)this->hdc;
             int pixel_format_id = 0;
-            if (pixel_format_id = ChoosePixelFormat(
-                    hDC, &pfd)) {  // Did Windows Find A Matching Pixel Format?
-                if (SetPixelFormat(
-                        hDC, pixel_format_id,
-                        &pfd)) {  // Are We Able To Set The Pixel Format?
-                    if (hRC = wglCreateContext(
-                            hDC)) {  // Are We Able To Get A Rendering Context?
-                        if (wglMakeCurrent(
-                                hDC,
-                                hRC)) {  // Try To Activate The Rendering Context
-                            glShadeModel(GL_SMOOTH);  // Enable Smooth Shading
-                            glClearColor(0.0f, 0.0f, 0.0f,
-                                         1.0f);       // Black Background
-                            glClearDepth(1.0f);       // Depth Buffer Setup
-                            glEnable(GL_DEPTH_TEST);  // Enables Depth Testing
-                            glDepthFunc(
-                                GL_LEQUAL);  // The Type Of Depth Testing To Do
-                            glHint(GL_PERSPECTIVE_CORRECTION_HINT,
-                                   GL_NICEST);  // Really Nice Perspective
-                                                // Calculations
+            if (pixel_format_id = ChoosePixelFormat(hDC, &pfd)) {
+                if (SetPixelFormat(hDC, pixel_format_id, &pfd)) {
+                    if (hRC = wglCreateContext(hDC)) {
+                        if (wglMakeCurrent(hDC, hRC)) {
+                            glShadeModel(GL_SMOOTH);
+                            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
+                            glClearDepth(1.0f);
+                            glEnable(GL_DEPTH_TEST);
+                            glDepthFunc(GL_LEQUAL);
+                            glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
                             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                             glViewport(
                                 0, 0, window->GetWidth(),
-                                window->GetHeight());  // Reset The Current
-                                                       // Viewport
+                                window->GetHeight());
 
-                            glMatrixMode(
-                                GL_PROJECTION);  // Select The Projection Matrix
-                            glLoadIdentity();    // Reset The Projection Matrix
+                            glMatrixMode(GL_PROJECTION);
+                            glLoadIdentity();
 
                             // Calculate The Aspect Ratio Of The Window
                             gluPerspective(45.0f,
-                                           (GLfloat)window->GetWidth() /
-                                               (GLfloat)window->GetHeight(),
-                                           0.1f, 100.0f);
+                                (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(),
+                                0.1f, 100.0f);
 
-                            glMatrixMode(
-                                GL_MODELVIEW);  // Select The Modelview Matrix
-                            glLoadIdentity();   // Reset The Modelview Matrix
+                            glMatrixMode(GL_MODELVIEW);
+                            glLoadIdentity();
 
-                            SwapBuffers(
-                                hDC);  // Swap Buffers (Double Buffering)
+                            // Swap Buffers (Double Buffering)
+                            SwapBuffers(hDC);
 
                             this->clip_x = this->clip_y = 0;
                             this->clip_z = window->GetWidth();
                             this->clip_w = window->GetHeight();
                             this->render_target_rgb =
                                 new unsigned char[4 * window->GetWidth() *
-                                                  window->GetHeight()];
-
-                            /*while (1)
-                            {
-                                    MSG msg;
-                                    while (PeekMessage(&msg, 0, 0, 0,
-                            PM_REMOVE))
-                                    {
-                                            TranslateMessage(&msg);
-                                            DispatchMessage(&msg);
-                                    }
-
-                                    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-                                    glClearDepth(1.0f);
-                                    glClear(GL_COLOR_BUFFER_BIT |
-                            GL_DEPTH_BUFFER_BIT);
-
-                                    glMatrixMode(GL_PROJECTION);
-                                    glLoadIdentity();
-                                    gluPerspective(45.0f,
-                            (GLfloat)window->GetWidth() /
-                            (GLfloat)window->GetHeight(), 0.1f, 100.0f);
-                                    glMatrixMode(GL_MODELVIEW);
-                                    glLoadIdentity();
-                                    gluLookAt(0, 0.7, 3, 0, 0, -1, 0, 1, 0);
-                                    //glTranslatef(0.0f, 0.0f, -3.0f);
-
-                                    glBegin(GL_TRIANGLES);
-                                    {
-                                            glColor3f(0.0f, 0.0f, 1.0f);
-                                            glVertex3f(0.0f, 1.0f, 0.0f);
-
-                                            glColor3f(0.0f, 1.0f, 0.0f);
-                                            glVertex3f(-1.0f, -1.0f, 0.0f);
-
-                                            glColor3f(1.0f, 0.0f, 0.0f);
-                                            glVertex3f(1.0f, -1.0f, 0.0f);
-                                    }
-                                    glEnd();
-
-                                    SwapBuffers(hDC);
-                            }*/
+                                window->GetHeight()];
 
                             PostInitialization();
 

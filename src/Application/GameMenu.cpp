@@ -531,7 +531,7 @@ void Menu::MenuLoop() {
             current_screen_type == SCREEN_OPTIONS ||
             current_screen_type == SCREEN_VIDEO_OPTIONS ||
             current_screen_type == SCREEN_KEYBOARD_OPTIONS)) {
-        OS_PeekMessageLoop();
+        window->PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
             OS_WaitMessage();
             continue;

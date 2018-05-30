@@ -868,7 +868,7 @@ bool PartyCreationUI_LoopInternal() {
     pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
     SetCurrentMenuID(MENU_CREATEPARTY);
     while (GetCurrentMenuID() == MENU_CREATEPARTY) {
-        OS_PeekMessageLoop();
+        window->PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
             OS_WaitMessage();
         } else {

@@ -253,6 +253,8 @@ void Mouse::SetMouseClick(int x, int y) {
     uMouseClickY = y;
 }
 
+bool _507B98_ctrl_pressed = false;
+
 void Mouse::UI_OnMouseLeftClick() {
     if (current_screen_type == SCREEN_VIDEO ||
         sub_4637E0_is_there_popup_onscreen())
@@ -267,7 +269,6 @@ void Mouse::UI_OnMouseLeftClick() {
     unsigned int y = 0;
     GetClickPos(&x, &y);
 
-    extern bool _507B98_ctrl_pressed;
     if (GetCurrentMenuID() != -1 || current_screen_type != SCREEN_GAME ||
         !OS_IfCtrlPressed() || !pViewport->Contains(x, y)) {
         for (GUIWindow *win : lWindowList) {
