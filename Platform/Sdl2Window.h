@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/SDL2/include/SDL.h"
+#include "SDL.h"
 
 #include "Platform/OSWindow.h"
 
