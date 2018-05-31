@@ -146,9 +146,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
                 frame->hw_sprites[v9];
             if (frame->uFlags & 0x20) {
                 // v8 = v36;
-                z -= fixpoint_mul(frame->scale._internal,
-                                  frame->hw_sprites[v9]->uBufferHeight) /
-                     2;
+                z -= fixpoint_mul(frame->scale._internal, frame->hw_sprites[v9]->uBufferHeight) / 2;
             }
             int16_t v46 = 0;
             if (frame->uFlags & 2) v46 = 2;
@@ -157,59 +155,39 @@ void RenderBase::DrawSpriteObjects_ODM() {
             if (frame->uFlags & 0x40000) v46 |= 0x40;
             if (frame->uFlags & 0x20000) v46 |= 0x80;
             if (a6) {
-                pMobileLightsStack->AddLight(x, y, z, object->uSectorID, a6,
-                                             0xFF, 0xFF, 0xFF,
-                                             _4E94D3_light_type);
+                pMobileLightsStack->AddLight(x, y, z, object->uSectorID, a6, 0xFF, 0xFF, 0xFF, _4E94D3_light_type);
             }
 
             int view_x = 0;
             int view_y = 0;
             int view_z = 0;
 
-            bool visible =
-                pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+            bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
             if (visible) {
                 if (abs(view_x) >= abs(view_y)) {
                     int projected_x = 0;
                     int projected_y = 0;
-                    pIndoorCameraD3D->Project(view_x, view_y, view_z,
-                                              &projected_x, &projected_y);
+                    pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
                     object->uAttributes |= 1;
-                    pBillboardRenderList[::uNumBillboardsToDraw].uPalette =
-                        frame->uPaletteIndex;
-                    pBillboardRenderList[::uNumBillboardsToDraw]
-                        .uIndoorSectorID = object->uSectorID;
-                    pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame =
-                        frame;
+                    pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
+                    pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
+                    pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw]
-                        .screenspace_projection_factor_x =
-                        frame->scale *
-                        fixed::FromInt(pODMRenderParams->int_fov_rad) /
-                        fixed::FromInt(view_x);
-                    pBillboardRenderList[::uNumBillboardsToDraw]
-                        .screenspace_projection_factor_y =
-                        frame->scale *
-                        fixed::FromInt(pODMRenderParams->int_fov_rad) /
-                        fixed::FromInt(view_x);
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = frame->scale.GetFloat() * pODMRenderParams->int_fov_rad / view_x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = frame->scale.GetFloat() * pODMRenderParams->int_fov_rad / view_x;
 
                     pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v46;
                     pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
                     pBillboardRenderList[::uNumBillboardsToDraw].world_y = y;
                     pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw]
-                        .screen_space_x = projected_x;
-                    pBillboardRenderList[::uNumBillboardsToDraw]
-                        .screen_space_y = projected_y;
-                    pBillboardRenderList[::uNumBillboardsToDraw]
-                        .screen_space_z = view_x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = projected_x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = view_x;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].object_pid =
-                        PID(OBJECT_Item, i);
-                    pBillboardRenderList[::uNumBillboardsToDraw].dimming_level =
-                        0;
+                    pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
+                    pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
                     pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
                     //          if (!(object->uAttributes & 0x20)) {
                     //            if (!pRenderD3D) {
@@ -279,11 +257,10 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
     Sprite *pSprite = pBillboard->hwsprite;
     int dimming_level = pBillboard->dimming_level;
 
-    unsigned int v8 =
-        Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
+    unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
 
-    float v30 = a2->screenspace_projection_factor_x.GetFloat();
-    float v29 = a2->screenspace_projection_factor_y.GetFloat();
+    float v30 = a2->screenspace_projection_factor_x;
+    float v29 = a2->screenspace_projection_factor_y;
 
     unsigned int diffuse = ::GetActorTintColor(
         dimming_level, 0, a2->screen_space_z, 0, pBillboard);
@@ -298,88 +275,68 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
         specular = sub_47C3D7_get_fog_specular(0, 0, a2->screen_space_z);
     }
 
-    double v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-    double v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
-    if (a2->uFlags & 4) {
-        v14 *= -1.0;
-    }
-    pBillboardRenderListD3D[v8].pQuads[0].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.x =
-        (double)a2->screen_space_x - v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.y =
-        (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[0].pos.z =
-        1.0 -
-        1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[0].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[0].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[0].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v8].pQuads[0].texcoord.y = 0.0;
+    RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
-    v14 = (double)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight -
-                   pSprite->uAreaY);
-    if (a2->uFlags & 4) v14 = v14 * -1.0;
-    pBillboardRenderListD3D[v8].pQuads[1].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[1].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.x =
-        (double)a2->screen_space_x - v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.y =
-        (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[1].pos.z =
-        1.0 -
-        1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[1].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[1].texcoord.x = 0.0;
-    pBillboardRenderListD3D[v8].pQuads[1].texcoord.y = 1.0;
+    float v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
+    float v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);
+    if (a2->uFlags & 4) v14 *= -1.f;
+    billboard->pQuads[0].diffuse = diffuse;
+    billboard->pQuads[0].pos.x = (float)a2->screen_space_x - v14 * v30;
+    billboard->pQuads[0].pos.y = (float)a2->screen_space_y - v15 * v29;
+    billboard->pQuads[0].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
+    billboard->pQuads[0].rhw = 1.f / a2->screen_space_z;
+    billboard->pQuads[0].specular = specular;
+    billboard->pQuads[0].texcoord.x = 0.f;
+    billboard->pQuads[0].texcoord.y = 0.f;
 
-    v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX +
-                   pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaHeight -
-                   pSprite->uAreaY);
-    if (a2->uFlags & 4) v14 *= -1.0;
-    pBillboardRenderListD3D[v8].pQuads[2].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[2].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.x =
-        (double)a2->screen_space_x + v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.y =
-        (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[2].pos.z =
-        1.0 -
-        1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[2].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[2].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v8].pQuads[2].texcoord.y = 1.0;
+    v14 = (float)((int)pSprite->uBufferWidth / 2 - pSprite->uAreaX);
+    v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
+    if (a2->uFlags & 4) v14 = v14 * -1.f;
+    billboard->pQuads[1].specular = specular;
+    billboard->pQuads[1].diffuse = diffuse;
+    billboard->pQuads[1].pos.x = (float)a2->screen_space_x - v14 * v30;
+    billboard->pQuads[1].pos.y = (float)a2->screen_space_y - v15 * v29;
+    billboard->pQuads[1].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
+    billboard->pQuads[1].rhw = 1.f / a2->screen_space_z;
+    billboard->pQuads[1].texcoord.x = 0.f;
+    billboard->pQuads[1].texcoord.y = 1.f;
 
-    v14 = (double)((int)pSprite->uAreaWidth + pSprite->uAreaX +
-                   pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
-    v15 = (double)((int)pSprite->uBufferHeight - pSprite->uAreaY);
-    if (a2->uFlags & 4) v14 *= -1.0;
-    pBillboardRenderListD3D[v8].pQuads[3].diffuse = diffuse;
-    pBillboardRenderListD3D[v8].pQuads[3].specular = specular;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.x =
-        (double)a2->screen_space_x + v14 * v30;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.y =
-        (double)a2->screen_space_y - v15 * v29;
-    pBillboardRenderListD3D[v8].pQuads[3].pos.z =
-        1.0 -
-        1.0 / (a2->screen_space_z * 1000.0 / pIndoorCameraD3D->GetFarClip());
-    pBillboardRenderListD3D[v8].pQuads[3].rhw = 1.0 / a2->screen_space_z;
-    pBillboardRenderListD3D[v8].pQuads[3].texcoord.x = 1.0;
-    pBillboardRenderListD3D[v8].pQuads[3].texcoord.y = 0.0;
+    v14 = (float)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
+    v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaHeight - pSprite->uAreaY);
+    if (a2->uFlags & 4) v14 *= -1.f;
+    billboard->pQuads[2].diffuse = diffuse;
+    billboard->pQuads[2].specular = specular;
+    billboard->pQuads[2].pos.x = (float)a2->screen_space_x + v14 * v30;
+    billboard->pQuads[2].pos.y = (float)a2->screen_space_y - v15 * v29;
+    billboard->pQuads[2].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
+    billboard->pQuads[2].rhw = 1.f / a2->screen_space_z;
+    billboard->pQuads[2].texcoord.x = 1.f;
+    billboard->pQuads[2].texcoord.y = 1.f;
 
-    pBillboardRenderListD3D[v8].uNumVertices = 4;
-    pBillboardRenderListD3D[v8].texture = pSprite->texture;
-    pBillboardRenderListD3D[v8].z_order = a2->screen_space_z;
-    pBillboardRenderListD3D[v8].field_90 = a2->field_44;
-    pBillboardRenderListD3D[v8].screen_space_z = a2->screen_space_z;
-    pBillboardRenderListD3D[v8].object_pid = a2->object_pid;
-    pBillboardRenderListD3D[v8].sParentBillboardID = a2->sParentBillboardID;
+    v14 = (float)((int)pSprite->uAreaWidth + pSprite->uAreaX + pSprite->uBufferWidth / 2 - pSprite->uBufferWidth);
+    v15 = (float)((int)pSprite->uBufferHeight - pSprite->uAreaY);
+    if (a2->uFlags & 4) v14 *= -1.f;
+    billboard->pQuads[3].diffuse = diffuse;
+    billboard->pQuads[3].specular = specular;
+    billboard->pQuads[3].pos.x = (float)a2->screen_space_x + v14 * v30;
+    billboard->pQuads[3].pos.y = (float)a2->screen_space_y - v15 * v29;
+    billboard->pQuads[3].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
+    billboard->pQuads[3].rhw = 1.f / a2->screen_space_z;
+    billboard->pQuads[3].texcoord.x = 1.f;
+    billboard->pQuads[3].texcoord.y = 0.f;
+
+    billboard->uNumVertices = 4;
+    billboard->texture = pSprite->texture;
+    billboard->z_order = a2->screen_space_z;
+    billboard->field_90 = a2->field_44;
+    billboard->screen_space_z = a2->screen_space_z;
+    billboard->object_pid = a2->object_pid;
+    billboard->sParentBillboardID = a2->sParentBillboardID;
 
     if (a2->sTintColor & 0xFF000000)
-        pBillboardRenderListD3D[v8].opacity = RenderBillboardD3D::Opaque_3;
+        billboard->opacity = RenderBillboardD3D::Opaque_3;
     else
-        pBillboardRenderListD3D[v8].opacity = RenderBillboardD3D::Transparent;
+        billboard->opacity = RenderBillboardD3D::Transparent;
 }
 
 double fix2double(int fix) {
@@ -394,8 +351,7 @@ void RenderBase::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,
         return;
     }
 
-    unsigned int billboard_index =
-        Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
+    unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
     billboard->opacity = RenderBillboardD3D::Opaque_1;
@@ -407,41 +363,32 @@ void RenderBase::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,
     billboard->z_order = a2->screen_space_z;
     billboard->uNumVertices = 4;
 
-    float screenspace_projection_factor =
-        a2->screenspace_projection_factor_x.GetFloat();
+    float screenspace_projection_factor = a2->screenspace_projection_factor_x;
 
-    float rhw = 1.0 / a2->screen_space_z;
-    float z = 1.0 - 1.0 / (a2->screen_space_y * 0.061758894);
+    float rhw = 1.f / a2->screen_space_z;
+    float z = 1.f - 1.f / (a2->screen_space_y * 0.061758894f);
 
-    double acos = cos(angle);
-    double asin = sin(angle);
+    float acos = (float)cos(angle);
+    float asin = (float)sin(angle);
 
     {
-        double v16 = -12.f;
-        double v17 = -12.f;
-        billboard->pQuads[0].pos.x =
-            (acos * v16 - asin * v17) * screenspace_projection_factor +
-            (double)a2->screen_space_x;
-        billboard->pQuads[0].pos.y =
-            (acos * v17 + asin * v16 - 12.) * screenspace_projection_factor +
-            (double)a2->screen_space_y;
+        float v16 = -12.f;
+        float v17 = -12.f;
+        billboard->pQuads[0].pos.x = (acos * v16 - asin * v17) * screenspace_projection_factor + (float)a2->screen_space_x;
+        billboard->pQuads[0].pos.y = (acos * v17 + asin * v16 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[0].pos.z = z;
         billboard->pQuads[0].specular = 0;
         billboard->pQuads[0].diffuse = uDiffuse;
         billboard->pQuads[0].rhw = rhw;
-        billboard->pQuads[0].texcoord.x = 0.0;
-        billboard->pQuads[0].texcoord.y = 0.0;
+        billboard->pQuads[0].texcoord.x = 0.f;
+        billboard->pQuads[0].texcoord.y = 0.f;
     }
 
     {
-        double v31 = -12;
-        double v32 = 12;
-        billboard->pQuads[1].pos.x =
-            (acos * v31 - asin * v32) * screenspace_projection_factor +
-            (double)a2->screen_space_x;
-        billboard->pQuads[1].pos.y =
-            (acos * v32 + asin * v31 - 12.0) * screenspace_projection_factor +
-            (double)a2->screen_space_y;
+        float v31 = -12;
+        float v32 = 12;
+        billboard->pQuads[1].pos.x = (acos * v31 - asin * v32) * screenspace_projection_factor + (float)a2->screen_space_x;
+        billboard->pQuads[1].pos.y = (acos * v32 + asin * v31 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[1].pos.z = z;
         billboard->pQuads[1].specular = 0;
         billboard->pQuads[1].diffuse = uDiffuse;
@@ -451,14 +398,10 @@ void RenderBase::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,
     }
 
     {
-        double v23 = 12;
-        double v24 = 12;
-        billboard->pQuads[2].pos.x =
-            (acos * v23 - asin * v24) * screenspace_projection_factor +
-            (double)a2->screen_space_x;
-        billboard->pQuads[2].pos.y =
-            (acos * v24 + asin * v23 - 12.0) * screenspace_projection_factor +
-            (double)a2->screen_space_y;
+        float v23 = 12;
+        float v24 = 12;
+        billboard->pQuads[2].pos.x = (acos * v23 - asin * v24) * screenspace_projection_factor + (float)a2->screen_space_x;
+        billboard->pQuads[2].pos.y = (acos * v24 + asin * v23 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[2].pos.z = z;
         billboard->pQuads[2].specular = 0;
         billboard->pQuads[2].diffuse = uDiffuse;
@@ -468,14 +411,10 @@ void RenderBase::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,
     }
 
     {
-        double v39 = 12;
-        double v40 = -12;
-        billboard->pQuads[3].pos.x =
-            (acos * v39 - asin * v40) * screenspace_projection_factor +
-            (double)a2->screen_space_x;
-        billboard->pQuads[3].pos.y =
-            (acos * v40 + asin * v39 - 12.0) * screenspace_projection_factor +
-            (double)a2->screen_space_y;
+        float v39 = 12;
+        float v40 = -12;
+        billboard->pQuads[3].pos.x = (acos * v39 - asin * v40) * screenspace_projection_factor + (float)a2->screen_space_x;
+        billboard->pQuads[3].pos.y = (acos * v40 + asin * v39 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[3].pos.z = z;
         billboard->pQuads[3].specular = 0;
         billboard->pQuads[3].diffuse = uDiffuse;
@@ -489,8 +428,7 @@ void RenderBase::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
                                                   Texture *texture,
                                                   unsigned int uDiffuse,
                                                   int angle) {
-    unsigned int billboard_index =
-        Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
+    unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
     billboard->opacity = RenderBillboardD3D::Opaque_1;
@@ -502,25 +440,19 @@ void RenderBase::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
     billboard->z_order = a2->screen_space_z;
     billboard->uNumVertices = 4;
 
-    float screenspace_projection_factor =
-        a2->screenspace_projection_factor_x.GetFloat();
+    float screenspace_projection_factor = a2->screenspace_projection_factor_x;
 
-    float rhw = 1.0 / a2->screen_space_z;
-    float z = 1.0 - 1.0 / (a2->screen_space_z * 1000.0 /
-                           pIndoorCameraD3D->GetFarClip());
+    float rhw = 1.f / a2->screen_space_z;
+    float z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
 
-    float acos = cos(angle);
-    float asin = sin(angle);
+    float acos = (float)cos(angle);
+    float asin = (float)sin(angle);
 
     {
         float v16 = -12.f;
         float v17 = -12.f;
-        billboard->pQuads[0].pos.x =
-            (acos * v16 - asin * v17) * screenspace_projection_factor +
-            (float)a2->screen_space_x;
-        billboard->pQuads[0].pos.y =
-            (acos * v17 + asin * v16 - 12.0) * screenspace_projection_factor +
-            (float)a2->screen_space_y;
+        billboard->pQuads[0].pos.x = (acos * v16 - asin * v17) * screenspace_projection_factor + (float)a2->screen_space_x;
+        billboard->pQuads[0].pos.y = (acos * v17 + asin * v16 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[0].pos.z = z;
         billboard->pQuads[0].specular = 0;
         billboard->pQuads[0].diffuse = uDiffuse;
@@ -532,12 +464,8 @@ void RenderBase::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
     {
         float v26 = -12.f;
         float v27 = 12.f;
-        billboard->pQuads[1].pos.x =
-            (acos * v26 - asin * v27) * screenspace_projection_factor +
-            (float)a2->screen_space_x;
-        billboard->pQuads[1].pos.y =
-            (acos * v27 + asin * v26 - 12.0) * screenspace_projection_factor +
-            (float)a2->screen_space_y;
+        billboard->pQuads[1].pos.x = (acos * v26 - asin * v27) * screenspace_projection_factor + (float)a2->screen_space_x;
+        billboard->pQuads[1].pos.y = (acos * v27 + asin * v26 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[1].pos.z = z;
         billboard->pQuads[1].specular = 0;
         billboard->pQuads[1].diffuse = uDiffuse;
@@ -549,12 +477,8 @@ void RenderBase::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
     {
         float v33 = 12.f;
         float v34 = 12.f;
-        billboard->pQuads[2].pos.x =
-            (acos * v33 - asin * v34) * screenspace_projection_factor +
-            (float)a2->screen_space_x;
-        billboard->pQuads[2].pos.y =
-            (acos * v34 + asin * v33 - 12.0) * screenspace_projection_factor +
-            (float)a2->screen_space_y;
+        billboard->pQuads[2].pos.x = (acos * v33 - asin * v34) * screenspace_projection_factor + (float)a2->screen_space_x;
+        billboard->pQuads[2].pos.y = (acos * v34 + asin * v33 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[2].pos.z = z;
         billboard->pQuads[2].diffuse = uDiffuse;
         billboard->pQuads[2].specular = 0;
@@ -566,12 +490,8 @@ void RenderBase::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
     {
         float v40 = 12.f;
         float v41 = -12.f;
-        billboard->pQuads[3].pos.x =
-            (acos * v40 - asin * v41) * screenspace_projection_factor +
-            (float)a2->screen_space_x;
-        billboard->pQuads[3].pos.y =
-            (acos * v41 + asin * v40 - 12.0) * screenspace_projection_factor +
-            (float)a2->screen_space_y;
+        billboard->pQuads[3].pos.x = (acos * v40 - asin * v41) * screenspace_projection_factor + (float)a2->screen_space_x;
+        billboard->pQuads[3].pos.y = (acos * v41 + asin * v40 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[3].pos.z = z;
         billboard->pQuads[3].specular = 0;
         billboard->pQuads[3].diffuse = uDiffuse;

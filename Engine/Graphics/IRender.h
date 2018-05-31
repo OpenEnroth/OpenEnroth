@@ -22,11 +22,9 @@ struct SoftwareBillboard;
 
 bool PauseGameDrawing();
 
-/*  161 */
-#pragma pack(push, 1)
 struct RenderBillboard {
-    fixed screenspace_projection_factor_x;
-    fixed screenspace_projection_factor_y;
+    float screenspace_projection_factor_x;
+    float screenspace_projection_factor_y;
     float fov_x;
     float fov_y;
     int field_14_actor_id;
@@ -45,7 +43,6 @@ struct RenderBillboard {
     unsigned int sTintColor;
     SpriteFrame *pSpriteFrame;
 };
-#pragma pack(pop)
 
 uint16_t Color16(uint32_t r, uint32_t g, uint32_t b);
 uint32_t Color32(uint16_t color16);
@@ -137,8 +134,6 @@ struct RenderVertexD3D3 {
 };
 #pragma pack(pop)
 
-/*  242 */
-#pragma pack(push, 1)
 struct RenderBillboardD3D {
     inline RenderBillboardD3D()
         : texture(nullptr),
@@ -170,18 +165,15 @@ struct RenderBillboardD3D {
     short screen_space_z;
     int sParentBillboardID;
 };
-#pragma pack(pop)
 
-/*  248 */
-#pragma pack(push, 1)
 struct SoftwareBillboard {
     void *pTarget;
     int *pTargetZ;
     int screen_space_x;
     int screen_space_y;
     short screen_space_z;
-    fixed screenspace_projection_factor_x;
-    fixed screenspace_projection_factor_y;
+    float screenspace_projection_factor_x;
+    float screenspace_projection_factor_y;
     char field_18[8];
     uint16_t *pPalette;
     uint16_t *pPalette2;
@@ -196,7 +188,6 @@ struct SoftwareBillboard {
     int sTintColor;
     unsigned short object_pid;
 };
-#pragma pack(pop)
 
 class HWLTexture;
 

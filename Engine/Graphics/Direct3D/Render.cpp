@@ -656,9 +656,9 @@ void Render::PrepareDecorationsRenderList_ODM() {
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .screen_space_z = view_x;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screenspace_projection_factor_x = _v41;
+                                    .screenspace_projection_factor_x = _v41.GetFloat();
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screenspace_projection_factor_y = _v41;
+                                    .screenspace_projection_factor_y = _v41.GetFloat();
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .uPalette = frame->uPaletteIndex;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
@@ -2469,8 +2469,8 @@ void Render::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
         pSoftBillboard->sParentBillboardID;
     // v25 = pSoftBillboard->uScreenSpaceX;
     // v24 = pSoftBillboard->uScreenSpaceY;
-    a1 = pSoftBillboard->screenspace_projection_factor_x.GetFloat();
-    v29 = pSoftBillboard->screenspace_projection_factor_y.GetFloat();
+    a1 = pSoftBillboard->screenspace_projection_factor_x;
+    v29 = pSoftBillboard->screenspace_projection_factor_y;
     v31 = (double)((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
     v27 = (double)(pSprite->uBufferHeight - pSprite->uAreaY);
     if (pSoftBillboard->uFlags & 4) {
