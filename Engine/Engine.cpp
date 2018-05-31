@@ -912,7 +912,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         return false;
     } else {
         window = OSWindowFactory().Create(
-            L"Might and Magic® Trilogy",
+            "Might and Magic® Trilogy",
             render->config->render_width,
             render->config->render_height);
 
