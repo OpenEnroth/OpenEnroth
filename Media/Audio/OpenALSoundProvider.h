@@ -39,6 +39,7 @@ class OpenALSoundProvider {
     TrackBuffer *CreateTrack16(int num_channels, int sample_rate,
                                const void *data, size_t size);
     void PlayTrack16(TrackBuffer *buffer, bool loop = false, bool wait = false);
+    void SetListenerPosition(float x, float y, float z);
     void SetOrientation(float yaw, float pitch);
 
  protected:

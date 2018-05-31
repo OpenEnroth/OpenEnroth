@@ -472,8 +472,6 @@ void Engine::Deinitialize() {
 
     render = nullptr;
 
-    if (pAudioPlayer)
-        pAudioPlayer->Release();
     pNew_LOD->FreeSubIndexAndIO();
 
     delete pEventTimer;

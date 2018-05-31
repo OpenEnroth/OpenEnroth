@@ -1,7 +1,10 @@
 #pragma once
 
+#include <fstream>
+#include <map>
 #include <string>
 
+#include "Engine/Strings.h"
 #include "Media/Media.h"
 
 enum SoundID {
@@ -106,9 +109,18 @@ enum SoundID {
 enum MusicID { MUSIC_MainMenu = 14, MUSIC_Credits = 15 };
 
 class AudioPlayer {
+ protected:
+    typedef struct SoundHeader {
+        size_t uFileOffset;
+        size_t uCompressedSize;
+        size_t uDecompressedSize;
+    } SoundHeader;
+
  public:
     AudioPlayer() : bPlayerReady(false), currentMusicTrack(0) {}
-    virtual ~AudioPlayer() { Release(); }
+    virtual ~AudioPlayer() {}
+
+    void Initialize();
 
     void SetMasterVolume(int level);
 
@@ -125,10 +137,8 @@ class AudioPlayer {
     void UpdateSounds();
     void StopChannels(int uStartChannel, int uEndChannel);
     void LoadAudioSnd();
-    void Initialize();
-    void Release();
     void MessWithChannels();
-    struct SoundHeader *FindSound(const std::string &pName);
+    bool FindSound(const std::string &pName, struct SoundHeader *header);
     PMemBuffer LoadSound(const std::string &pSoundName);
     void PlaySpellSound(unsigned int spell, unsigned int pid);
 
@@ -137,6 +147,8 @@ class AudioPlayer {
     int currentMusicTrack;
     unsigned int uMasterVolume;
     PAudioTrack pCurrentMusicTrack;
+    std::ifstream fAudioSnd;
+    std::map<String, SoundHeader> mSoundHeaders;
 };
 
 struct SoundDesc;

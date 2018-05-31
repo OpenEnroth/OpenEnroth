@@ -472,7 +472,7 @@ class Movie : public IMovie {
 
     int read(void *opaque, uint8_t *buf, int buf_size) {
         fseek(hFile, uFileOffset + uFilePos, SEEK_SET);
-        buf_size = min(buf_size, uFileSize - uFilePos);
+        buf_size = min(buf_size, (int)uFileSize - (int)uFilePos);
         buf_size = fread(buf, 1, buf_size, hFile);
         uFilePos += buf_size;
         return buf_size;
@@ -485,13 +485,13 @@ class Movie : public IMovie {
 
         switch (whence) {
             case SEEK_SET:
-                uFilePos = offset;
+                uFilePos = (size_t)offset;
                 break;
             case SEEK_CUR:
-                uFilePos += offset;
+                uFilePos += (size_t)offset;
                 break;
             case SEEK_END:
-                uFilePos = uFileSize - offset;
+                uFilePos = uFileSize - (size_t)offset;
                 break;
             default:
                 assert(false);
@@ -1129,8 +1129,8 @@ int AudioBufferDataSource::read_packet(void *opaque, uint8_t *buf,
 }
 
 int AudioBufferDataSource::ReadPacket(uint8_t *buf, int buf_size) {
-    size_t size = buf_end - buf_pos;
-    if (size == 0) {
+    int size = buf_end - buf_pos;
+    if (size <= 0) {
         return 0;
     }
     size = min(buf_size, size);

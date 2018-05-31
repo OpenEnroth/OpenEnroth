@@ -87,12 +87,16 @@ bool OpenALSoundProvider::Initialize() {
     return true;
 }
 
+void OpenALSoundProvider::SetListenerPosition(float x, float y, float z) {
+    alListener3f(AL_POSITION, x, y, z);
+}
+
 void OpenALSoundProvider::SetOrientation(float yaw, float pitch) {
     float x = cos(pitch) * cos(yaw);
     float y = sin(yaw) * cos(pitch);
     float z = -sin(pitch);
 
-    ALfloat listenerOri[] = {x, y, z, 0.f, 0.f, 1.f};
+    ALfloat listenerOri[] = {-x, y, z, 0.f, 0.f, 1.f};
     alListenerfv(AL_ORIENTATION, listenerOri);
 }
 
@@ -471,6 +475,7 @@ bool AudioTrackS16::Open(PAudioDataSource data_source) {
     alSourcei(al_source, AL_LOOPING, AL_FALSE);
     alSourcef(al_source, AL_PITCH, 1.f);
     alSourcef(al_source, AL_GAIN, 1.f);
+    alSourcei(al_source, AL_SOURCE_RELATIVE, AL_TRUE);
     alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
     alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
 
@@ -590,7 +595,7 @@ void AudioTrackS16::DrainBuffers() {
     if (CheckError()) {
         log("OpenAL: Faile to get played buffers.");
     } else {
-        for (unsigned int i = 0; i < num_processed_buffers; i++) {
+        for (ALint i = 0; i < num_processed_buffers; i++) {
             ALuint buffer = processed_buffer_ids[i];
             alSourceUnqueueBuffers(al_source, 1, &buffer);
             if (CheckError()) {
@@ -661,7 +666,7 @@ class AudioSample16 : public IAudioSample {
     virtual bool Open(PAudioDataSource data_source);
     virtual bool IsValid();
 
-    virtual bool Play();
+    virtual bool Play(bool loop = false, bool positioned = false);
     virtual bool Stop();
     virtual bool SetVolume(float volume);
     virtual bool SetPosition(float x, float y, float z, float max_dist);
@@ -674,12 +679,17 @@ class AudioSample16 : public IAudioSample {
     ALenum al_format;
     ALuint al_source;
     ALsizei al_sample_rate;
+
+    bool loop;
+    bool positioned;
 };
 
 AudioSample16::AudioSample16() {
     al_format = AL_FORMAT_STEREO16;
     al_source = -1;
     al_sample_rate = 0;
+    loop = false;
+    positioned = true;
 }
 
 AudioSample16::~AudioSample16() { Close(); }
@@ -719,6 +729,8 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
     alSourcei(al_source, AL_LOOPING, AL_FALSE);
     alSourcef(al_source, AL_PITCH, 1.f);
     alSourcef(al_source, AL_GAIN, 1.f);
+    alSourcef(al_source, AL_REFERENCE_DISTANCE, 1.f);
+    alSourcef(al_source, AL_MAX_DISTANCE, 2000.f);
     alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
     alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
 
@@ -787,7 +799,7 @@ bool AudioSample16::SetPosition(float x, float y, float z, float max_dist) {
     }
 
     alSource3f(al_source, AL_POSITION, x, y, z);
-    //  alSourcef(al_source, AL_MAX_DISTANCE, max_dist);
+    alSourcef(al_source, AL_MAX_DISTANCE, max_dist);
     if (CheckError()) {
         return false;
     }
@@ -797,10 +809,19 @@ bool AudioSample16::SetPosition(float x, float y, float z, float max_dist) {
 
 bool AudioSample16::IsValid() { return (alIsSource(al_source) != 0); }
 
-bool AudioSample16::Play() {
+bool AudioSample16::Play(bool loop_, bool positioned_) {
     if (!IsValid()) {
         return false;
     }
+
+    loop = loop_;
+    positioned = positioned_;
+
+    alSourcei(al_source, AL_SOURCE_RELATIVE, positioned ? AL_FALSE : AL_TRUE);
+    alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
+    alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
+
+    alSourcei(al_source, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
 
     ALint status;
     alGetSourcei(al_source, AL_SOURCE_STATE, &status);
