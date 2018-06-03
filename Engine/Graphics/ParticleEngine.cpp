@@ -410,8 +410,8 @@ void ParticleEngine::DrawParticles_BLV() {
             p->uScreenSpaceY < pBLVRenderParams->uViewportW) {
             if (p->type & ParticleType_Diffuse) {
                 // v14 = &pParticles[i];
-                v15.screenspace_projection_factor_x = p->screenspace_scale;
-                v15.screenspace_projection_factor_y = p->screenspace_scale;
+                v15.screenspace_projection_factor_x = p->screenspace_scale.GetFloat();
+                v15.screenspace_projection_factor_y = p->screenspace_scale.GetFloat();
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
@@ -449,8 +449,8 @@ void ParticleEngine::DrawParticles_BLV() {
                         .texcoord.y = 0.0;
                 }
             } else if (p->type & ParticleType_Bitmap) {
-                v15.screenspace_projection_factor_x = p->screenspace_scale;
-                v15.screenspace_projection_factor_y = p->screenspace_scale;
+                v15.screenspace_projection_factor_x = p->screenspace_scale.GetFloat();
+                v15.screenspace_projection_factor_y = p->screenspace_scale.GetFloat();
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
@@ -458,8 +458,8 @@ void ParticleEngine::DrawParticles_BLV() {
                 render->MakeParticleBillboardAndPush_BLV(
                     &v15, p->texture, p->uLightColor_bgr, p->angle);
             } else if (p->type & ParticleType_Sprite) {
-                v15.screenspace_projection_factor_x = p->screenspace_scale;
-                v15.screenspace_projection_factor_y = p->screenspace_scale;
+                v15.screenspace_projection_factor_x = p->screenspace_scale.GetFloat();
+                v15.screenspace_projection_factor_y = p->screenspace_scale.GetFloat();
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
@@ -484,10 +484,8 @@ void ParticleEngine::DrawParticles_ODM() {
             continue;
 
         if (particle->type & ParticleType_Diffuse) {
-            pBillboard.screenspace_projection_factor_x =
-                particle->screenspace_scale;
-            pBillboard.screenspace_projection_factor_y =
-                particle->screenspace_scale;
+            pBillboard.screenspace_projection_factor_x = particle->screenspace_scale.GetFloat();
+            pBillboard.screenspace_projection_factor_y = particle->screenspace_scale.GetFloat();
             pBillboard.screen_space_x = particle->uScreenSpaceX;
             pBillboard.screen_space_y = particle->uScreenSpaceY;
             pBillboard.object_pid = particle->object_pid;
@@ -527,10 +525,8 @@ void ParticleEngine::DrawParticles_ODM() {
                 pLines.uNumLines++;
             }
         } else if (particle->type & ParticleType_Bitmap) {
-            pBillboard.screenspace_projection_factor_x =
-                particle->screenspace_scale;
-            pBillboard.screenspace_projection_factor_y =
-                particle->screenspace_scale;
+            pBillboard.screenspace_projection_factor_x = particle->screenspace_scale.GetFloat();
+            pBillboard.screenspace_projection_factor_y = particle->screenspace_scale.GetFloat();
             pBillboard.screen_space_x = particle->uScreenSpaceX;
             pBillboard.screen_space_y = particle->uScreenSpaceY;
             pBillboard.object_pid = particle->object_pid;
@@ -539,17 +535,13 @@ void ParticleEngine::DrawParticles_ODM() {
                 &pBillboard, particle->texture, particle->uLightColor_bgr,
                 particle->angle);
         } else if (particle->type & ParticleType_Sprite) {
-            pBillboard.screenspace_projection_factor_x =
-                particle->screenspace_scale;
-            pBillboard.screenspace_projection_factor_y =
-                particle->screenspace_scale;
+            pBillboard.screenspace_projection_factor_x = particle->screenspace_scale.GetFloat();
+            pBillboard.screenspace_projection_factor_y = particle->screenspace_scale.GetFloat();
             pBillboard.screen_space_x = particle->uScreenSpaceX;
             pBillboard.screen_space_y = particle->uScreenSpaceY;
             pBillboard.object_pid = particle->object_pid;
             pBillboard.screen_space_z = particle->zbuffer_depth;
-            render->MakeParticleBillboardAndPush_ODM(
-                &pBillboard, particle->texture, particle->uLightColor_bgr,
-                particle->angle);
+            render->MakeParticleBillboardAndPush_ODM(&pBillboard, particle->texture, particle->uLightColor_bgr, particle->angle);
         }
     }
 }

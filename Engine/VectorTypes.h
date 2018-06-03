@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
 #include <cmath>
+#include <cstdint>
 
 #include "OurMath.h"
 
@@ -20,7 +20,7 @@ struct Vec2 {
 #define Vec2_int_ Vec2<int32_t>
 #define Vec2_float_ Vec2<float>
 
-const float pi = std::acos(-1);
+const float pi = std::acos(-1.f);
 
 #pragma pack(push, 1)
 template <class T>

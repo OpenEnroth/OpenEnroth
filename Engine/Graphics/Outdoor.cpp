@@ -1800,22 +1800,18 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
                 auto _v26 = fixed::FromInt(pODMRenderParams->int_fov_rad) /
                             fixed::FromInt(view_x);
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v15->scale * _v26;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v15->scale * _v26;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v15->scale.GetFloat() * _v26.GetFloat();
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v15->scale.GetFloat() * _v26.GetFloat();
 
                 if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() &&
                     pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0) {
                     pBillboardRenderList[uNumBillboardsToDraw - 1]
-                        .screenspace_projection_factor_y =
-                        fixed::FromFloat(
-                            1.0f /
-                            pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower) *
+                        .screenspace_projection_factor_y = 1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower *
                         pBillboardRenderList[uNumBillboardsToDraw - 1]
                             .screenspace_projection_factor_y;
                 } else if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active()) {
                     pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
-                        fixed::FromFloat(
-                            spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i])) *
+                            spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
                 }
 

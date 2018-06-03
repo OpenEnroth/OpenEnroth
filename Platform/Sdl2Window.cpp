@@ -1,6 +1,6 @@
 #include "Platform/Sdl2Window.h"
 
-#include "lib/SDL2/include/SDL_syswm.h"
+#include "SDL_syswm.h"
 
 void Sdl2Window::MessageProc(const SDL_Event &e) {
     switch (e.type) {

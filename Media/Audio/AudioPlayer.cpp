@@ -196,8 +196,7 @@ void AudioPlayer::StopAll(int sample_id) {
     }
 }
 
-void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
-                            int source_x, int source_y, int sound_data_id) {
+void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int source_x, int source_y, int sound_data_id) {
     if (!bPlayerReady || engine->config->sound_level < 1 ||
         (eSoundID == SOUND_Invalid)) {
         return;
@@ -238,18 +237,20 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         si.sample->Play();
     } else {
         ObjectType object_type = PID_TYPE(pid);
-        int object_id = PID_ID(pid);
+        unsigned int object_id = PID_ID(pid);
         switch (object_type) {
             case OBJECT_BLVDoor: {
                 assert(uCurrentlyLoadedLevelType == LEVEL_Indoor);
-                assert(object_id < pIndoor->uNumDoors);
+                assert((int)object_id < pIndoor->uNumDoors);
 
-                float x = pIndoor->pDoors[object_id].pXOffsets[0] - pParty->vPosition.x;
-                float y = pIndoor->pDoors[object_id].pYOffsets[0] - pParty->vPosition.y;
-                float z = pIndoor->pDoors[object_id].pZOffsets[0] - pParty->vPosition.z;
+                provider->SetListenerPosition(pParty->vPosition.x / 50.f,
+                                              pParty->vPosition.y / 50.f,
+                                              pParty->vPosition.z / 50.f);
+                si.sample->SetPosition(pIndoor->pDoors[object_id].pXOffsets[0] / 50.f,
+                                       pIndoor->pDoors[object_id].pYOffsets[0] / 50.f,
+                                       pIndoor->pDoors[object_id].pZOffsets[0] / 50.f, 500.f);
 
-                si.sample->SetPosition(x / 50.f, y / 50.f, z / 50.f, 500.f);
-                si.sample->Play();
+                si.sample->Play(false, true);
 
                 return;
             }
@@ -260,34 +261,40 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Actor: {
                 assert(object_id < uNumActors);
 
-                float x = pActors[object_id].vPosition.x - pParty->vPosition.x;
-                float y = pActors[object_id].vPosition.y - pParty->vPosition.y;
-                float z = pActors[object_id].vPosition.z - pParty->vPosition.z;
+                provider->SetListenerPosition(pParty->vPosition.x / 50.f,
+                                              pParty->vPosition.y / 50.f,
+                                              pParty->vPosition.z / 50.f);
+                si.sample->SetPosition(pActors[object_id].vPosition.x / 50.f,
+                                       pActors[object_id].vPosition.y / 50.f,
+                                       pActors[object_id].vPosition.z / 50.f, 500.f);
 
-                si.sample->SetPosition(x / 50.f, y / 50.f, z / 50.f, 500.f);
-                si.sample->Play();
+                si.sample->Play(false, true);
                 return;
             }
             case OBJECT_Decoration: {
-                assert(object_id < uNumLevelDecorations);
+                assert(object_id < pLevelDecorations.size());
 
-                float x = pLevelDecorations[object_id].vPosition.x - pParty->vPosition.x;
-                float y = pLevelDecorations[object_id].vPosition.y - pParty->vPosition.y;
-                float z = pLevelDecorations[object_id].vPosition.z - pParty->vPosition.z;
+                provider->SetListenerPosition((float)pParty->vPosition.x,
+                                              (float)pParty->vPosition.y,
+                                              (float)pParty->vPosition.z);
+                si.sample->SetPosition((float)pLevelDecorations[object_id].vPosition.x,
+                                       (float)pLevelDecorations[object_id].vPosition.y,
+                                       (float)pLevelDecorations[object_id].vPosition.z, 2000.f);
 
-                si.sample->SetPosition(x / 50.f, y / 50.f, z / 50.f, 500.f);
-                si.sample->Play();
+                si.sample->Play(true, true);
                 return;
             }
             case OBJECT_Item: {
                 assert(object_id < uNumSpriteObjects);
 
-                float x = pSpriteObjects[object_id].vPosition.x - pParty->vPosition.x;
-                float y = pSpriteObjects[object_id].vPosition.y - pParty->vPosition.y;
-                float z = pSpriteObjects[object_id].vPosition.z - pParty->vPosition.z;
+                provider->SetListenerPosition(pParty->vPosition.x / 50.f,
+                                              pParty->vPosition.y / 50.f,
+                                              pParty->vPosition.z / 50.f);
+                si.sample->SetPosition(pSpriteObjects[object_id].vPosition.x / 50.f,
+                                       pSpriteObjects[object_id].vPosition.y / 50.f,
+                                       pSpriteObjects[object_id].vPosition.z / 50.f, 500.f);
 
-                si.sample->SetPosition(x / 50.f, y / 50.f, z / 50.f, 500.f);
-                si.sample->Play();
+                si.sample->Play(false, true);
                 return;
             }
             case OBJECT_BModel: {
@@ -304,38 +311,45 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 void AudioPlayer::MessWithChannels() { pAudioPlayer->StopChannels(-1, -1); }
 
 void AudioPlayer::UpdateSounds() {
-    float pitch = 2. * pi_double * (double)pParty->sRotationX / 2048.;
-    float yaw = 2. * pi_double * (double)pParty->sRotationY / 2048.;
+    float pitch = pi * (float)pParty->sRotationX / 1024.f;
+    float yaw = pi * (float)pParty->sRotationY / 1024.f;
     provider->SetOrientation(yaw, pitch);
+    provider->SetListenerPosition(pParty->vPosition.x / 50.f,
+                                  pParty->vPosition.y / 50.f,
+                                  pParty->vPosition.z / 50.f);
 }
 
 void AudioPlayer::StopChannels(int uStartChannel, int uEndChannel) {}
 
 #pragma pack(push, 1)
-struct SoundHeader {
+struct SoundHeader_mm7 {
     char pSoundName[40];
-    unsigned int uFileOffset;
-    unsigned int uCompressedSize;
-    unsigned int uDecompressedSize;
+    uint32_t uFileOffset;
+    uint32_t uCompressedSize;
+    uint32_t uDecompressedSize;
 };
 #pragma pack(pop)
 
-// for audio////////////////////////////////////
-FILE *hAudioSnd;
-unsigned int uNumSoundHeaders;
-struct SoundHeader *pSoundHeaders;
-
 void AudioPlayer::LoadAudioSnd() {
-    hAudioSnd = fopen(MakeDataPath("Sounds\\Audio.snd").c_str(), "rb");
-    if (!hAudioSnd) {
+    static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");
+
+    fAudioSnd.open(MakeDataPath("Sounds\\Audio.snd"));
+    if (!fAudioSnd.good()) {
         logger->Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
         return;
     }
 
-    fread(&uNumSoundHeaders, 1, 4, hAudioSnd);
-    pSoundHeaders = nullptr;
-    pSoundHeaders = (SoundHeader *)malloc(sizeof(SoundHeader) * uNumSoundHeaders + 2);
-    fread(pSoundHeaders, 1, sizeof(SoundHeader) * uNumSoundHeaders, hAudioSnd);
+    uint32_t uNumSoundHeaders;
+    fAudioSnd.read((char*)&uNumSoundHeaders, 4);
+    for (uint32_t i = 0; i < uNumSoundHeaders; i++) {
+        SoundHeader_mm7 header_mm7;
+        fAudioSnd.read((char*)&header_mm7, sizeof(SoundHeader_mm7));
+        SoundHeader header;
+        header.uFileOffset = header_mm7.uFileOffset;
+        header.uCompressedSize = header_mm7.uCompressedSize;
+        header.uDecompressedSize = header_mm7.uDecompressedSize;
+        mSoundHeaders[MakeLower(header_mm7.pSoundName)] = header;
+    }
 }
 
 void AudioPlayer::Initialize() {
@@ -351,67 +365,55 @@ void AudioPlayer::Initialize() {
     bPlayerReady = true;
 }
 
-void AudioPlayer::Release() {  // Освободить
-    if (this->bPlayerReady) {
-        free(pSoundHeaders);
-    }
-}
-
 void PlayLevelMusic() {
     unsigned int map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
-        pAudioPlayer->MusicPlayTrack(
-            (MusicID)pMapStats->pInfos[map_id].uRedbookTrackID);
+        pAudioPlayer->MusicPlayTrack((MusicID)pMapStats->pInfos[map_id].uRedbookTrackID);
     }
 }
 
-struct SoundHeader *AudioPlayer::FindSound(const std::string &pName) {
-    std::string filename = pName;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
-
-    for (unsigned int i = 0; i < uNumSoundHeaders; ++i) {
-        std::string soundname = pSoundHeaders[i].pSoundName;
-        std::transform(soundname.begin(), soundname.end(), soundname.begin(),
-                       ::tolower);
-        if (soundname == filename) {
-            return &pSoundHeaders[i];
-        }
+bool AudioPlayer::FindSound(const std::string &pName, struct SoundHeader *header) {
+    if (header == nullptr) {
+        return false;
     }
-    return nullptr;
+
+    std::map<String, SoundHeader>::iterator it = mSoundHeaders.find(MakeLower(pName));
+    if (it == mSoundHeaders.end()) {
+        return false;
+    }
+
+    *header = it->second;
+
+    return true;
 }
 
 PMemBuffer AudioPlayer::LoadSound(const std::string &pSoundName) {
-    SoundHeader *header = FindSound(pSoundName);
-    if (header == nullptr) {
+    SoundHeader header = { 0 };
+    if (!FindSound(pSoundName, &header)) {
         return nullptr;
     }
 
-    PMemBuffer buffer = AllocMemBuffer(header->uDecompressedSize);
+    PMemBuffer buffer = AllocMemBuffer(header.uDecompressedSize);
 
-    fseek(hAudioSnd, header->uFileOffset, SEEK_SET);
-    int NumberOfBytesRead = 0;
-    if (header->uCompressedSize >= header->uDecompressedSize) {
-        header->uCompressedSize = header->uDecompressedSize;
-        if (header->uDecompressedSize) {
-            NumberOfBytesRead = fread((void *)buffer->GetData(), 1,
-                                      header->uDecompressedSize, hAudioSnd);
+    fAudioSnd.seekg(header.uFileOffset, std::ios_base::beg);
+    if (header.uCompressedSize >= header.uDecompressedSize) {
+        header.uCompressedSize = header.uDecompressedSize;
+        if (header.uDecompressedSize) {
+            fAudioSnd.read((char*)buffer->GetData(), header.uDecompressedSize);
         } else {
             logger->Warning(L"Can't load sound file!");
         }
     } else {
-        PMemBuffer compressed = AllocMemBuffer(header->uCompressedSize);
-        NumberOfBytesRead = fread((void *)compressed->GetData(), 1,
-                                  header->uCompressedSize, hAudioSnd);
-        zlib::Uncompress((void *)buffer->GetData(), &header->uDecompressedSize,
-                         (void *)compressed->GetData(),
-                         header->uCompressedSize);
+        PMemBuffer compressed = AllocMemBuffer(header.uCompressedSize);
+        fAudioSnd.read((char*)buffer->GetData(), header.uCompressedSize);
+        zlib::Uncompress((void *)buffer->GetData(), &header.uDecompressedSize,
+                         (void *)compressed->GetData(), header.uCompressedSize);
     }
 
     return buffer;
 }
 
-std::array<__int16, 101> word_4EE088_sound_ids = {
+std::array<uint16_t, 101> word_4EE088_sound_ids = {
     {00000, 10000, 10010, 10020, 10030, 10040, 10050, 10060, 10070, 10080,
      10090, 10100, 11000, 11010, 11020, 11030, 11040, 11050, 11060, 11070,
      11080, 11090, 11100, 12000, 12010, 12020, 12030, 12040, 12050, 12060,

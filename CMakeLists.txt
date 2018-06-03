@@ -58,6 +58,7 @@ find_package(SDL2 REQUIRED)
 include_directories(${INCLUDE_DIRECTORIES} ${FFMPEG_INCLUDE_DIRS})
 include_directories(${INCLUDE_DIRECTORIES} ${OPENAL_INCLUDE_DIR})
 include_directories(${INCLUDE_DIRECTORIES} ${ZLIB_INCLUDE_DIR})
+include_directories(${INCLUDE_DIRECTORIES} ${SDL2_INCLUDE_DIR})
 
 include(CppLint)
 enable_check_style()

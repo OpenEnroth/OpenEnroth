@@ -2816,25 +2816,17 @@ void IndoorLocation::PrepareActorRenderList_BLV() {
                             fixed::FromInt(
                                 floorf(pIndoorCameraD3D->fov_x + 0.5f)) /
                             fixed::FromInt(view_x);
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v9->scale * _v18_over_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v9->scale * _v18_over_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v9->scale.GetFloat() * _v18_over_x.GetFloat();
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v9->scale.GetFloat() * _v18_over_x.GetFloat();
 
                         if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active()) {
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .screenspace_projection_factor_y =
-                                fixed::FromFloat(
-                                    spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i])) *
-                                pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                    .screenspace_projection_factor_y;
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
+                                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
                         } else if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() &&
                                    pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0) {
-                            pBillboardRenderList[uNumBillboardsToDraw - 1]
-                                .screenspace_projection_factor_y =
-                                fixed::FromFloat(
-                                    1.0f / pActors[i]
-                                               .pActorBuffs[ACTOR_BUFF_SHRINK]
-                                               .uPower) *
-                                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                                    1.0f / pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower *
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y;
                         }
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pActors[i].vPosition.x;
@@ -2926,13 +2918,9 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
                             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =
-                                v4->scale *
-                                fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_x + 0.5f)) /
-                                fixed::FromInt(view_x);
+                                v4->scale.GetFloat() * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
-                                v4->scale *
-                                fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_x + 0.5f)) /
-                                fixed::FromInt(view_x);
+                                v4->scale.GetFloat() * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
                         }
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
@@ -3109,16 +3097,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                 pIndoorCameraD3D->fov_x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y =
                 pIndoorCameraD3D->fov_y;
-            pBillboardRenderList[uNumBillboardsToDraw - 1]
-                .screenspace_projection_factor_x =
-                v11->scale *
-                fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_x + 0.5f)) /
-                fixed::FromInt(view_x);
-            pBillboardRenderList[uNumBillboardsToDraw - 1]
-                .screenspace_projection_factor_y =
-                v11->scale *
-                fixed::FromInt((int)floorf(pIndoorCameraD3D->fov_y + 0.5f)) /
-                fixed::FromInt(view_x);
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v11->scale.GetFloat() * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v11->scale.GetFloat() * (int)floorf(pIndoorCameraD3D->fov_y + 0.5f) / view_x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x =
                 pLevelDecorations[uDecorationID].vPosition.x;

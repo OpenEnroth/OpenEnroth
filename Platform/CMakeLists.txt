@@ -1,20 +1,17 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 set(PLATFORM_SOURCES OSWindow.cpp
-                     Win/AppSettings.cpp
-                     Win/Win.cpp
                      OSWindowFactory.cpp
-                     Sdl2Window.cpp
-                     WinApiWindow.cpp)
+                     Sdl2Window.cpp)
 
 set(PLATFORM_HEADERS Api.h
                      OSWindow.h
-                     Win/Win.h
                      OSWindowFactory.h
-                     Sdl2Window.h
-                     WinApiWindow.h)
+                     Sdl2Window.h)
 
 if(WIN32)
+    list(APPEND PLATFORM_SOURCES Win/AppSettings.cpp Win/Win.cpp)
+    list(APPEND PLATFORM_HEADERS Win/Win.h)
 else()
 endif()
 

@@ -2576,10 +2576,8 @@ __int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing
                             pOtherOverlayList->pOverlays[i].screen_space_x;
                         v10.screen_space_y =
                             pOtherOverlayList->pOverlays[i].screen_space_y;
-                        v10.screenspace_projection_factor_x = fixed::Raw(
-                            fixpoint_mul(v11, pFrame->scale._internal));
-                        v10.screenspace_projection_factor_y = fixed::Raw(
-                            fixpoint_mul(v11, pFrame->scale._internal));
+                        v10.screenspace_projection_factor_x = v11 * pFrame->scale.GetFloat();
+                        v10.screenspace_projection_factor_y = v11 * pFrame->scale.GetFloat();
                         v10.pPalette = PaletteManager::Get_Dark_or_Red_LUT(
                             pFrame->uPaletteIndex, 0, 1);
                         v8 = pOtherOverlayList->pOverlays[i].field_2;
