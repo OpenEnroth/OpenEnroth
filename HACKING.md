@@ -27,7 +27,12 @@ Dependencies
 * [OpenAL](https://www.openal.org/downloads/OpenAL11CoreSDK.zip) - audio support
 * [zlib](http://gnuwin32.sourceforge.net/packages/zlib.htm) - compression
 
-On Windows you may run `win/WinPrebuild.ps1 %some_folder_to_install%` PowerShell script for download and install dependencies.
+On Windows, you have to follow these steps:
+* run `cmd.exe`
+* type `powershell`
+* type `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted`
+* type `win/WinPrebuild.ps1 %dependecies_folder%`
+This will download and install dependencies into %dependecies_folder% using PowerShell script.
 
 Coding style
 ------------
