@@ -38,7 +38,7 @@ class Sdl2Window : public OSWindow {
     SDL_Window *sdlWindow;
     SDL_Surface *sdlWindowSurface;
 
-
     void MessageProc(const SDL_Event &e);
-    bool SdlkIsChar(SDL_Keycode key) const;
+    int SdlkToChar(SDL_Keycode key, bool uppercase) const;
+    int SdlkToVk(SDL_Keycode key) const;
 };

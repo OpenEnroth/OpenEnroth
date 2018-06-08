@@ -27,12 +27,14 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
         } break;
 
         case SDL_KEYDOWN: {
-            auto sdlk = e.key.keysym.sym;
-            if (SdlkIsChar(sdlk)) {
-                gameCallback->OnChar(sdlk);
+            auto key = e.key.keysym.sym;
+            auto mods = e.key.keysym.mod;
+
+            auto ch = SdlkToChar(key, (mods & KMOD_CAPS) != (mods & KMOD_SHIFT));
+            if (ch != -1) {
+                gameCallback->OnChar(ch);
             } else {
-                // SDLK_*  _SEEMS_ identical to VK_*, maybe will need some special processing on occasion
-                gameCallback->OnVkDown(sdlk, SdlkIsChar(sdlk) ? (int)sdlk: 0);
+                gameCallback->OnVkDown(SdlkToVk(key), 0);
             }
         }
 
@@ -172,6 +174,50 @@ void Sdl2Window::Activate() {
     PeekMessageLoop();
 }
 
-bool Sdl2Window::SdlkIsChar(SDL_Keycode key) const {
-    return (int)key >= '0' && (int)key <= 'Z';
+
+int Sdl2Window::SdlkToChar(SDL_Keycode key, bool uppercase) const {
+    if (key >= SDLK_0 && key <= SDLK_9) {
+        return '0' + (key - SDLK_0);
+    }
+    if (key >= SDLK_a && key <= SDLK_z) {
+        if (uppercase) {
+            return 'A' + (key - SDLK_a);
+        } else {
+            return 'a' + (key - SDLK_a);
+        }
+    }
+    return -1;
+}
+
+int Sdl2Window::SdlkToVk(SDL_Keycode key) const {
+    if (key >= SDLK_F1 && key <= SDLK_F12) {
+        return VK_F1 + (key - SDLK_F1);
+    }
+
+    static struct {
+        SDL_Keycode sdlk;
+        int vk;
+    }
+    sdlk2vk[] =
+    {
+        { SDLK_LEFT, VK_LEFT },
+        { SDLK_RIGHT, VK_RIGHT },
+        { SDLK_UP, VK_UP },
+        { SDLK_DOWN, VK_DOWN },
+        { SDLK_PRINTSCREEN, VK_PRINT },
+        { SDLK_INSERT, VK_INSERT },
+        { SDLK_HOME, VK_HOME },
+        { SDLK_PAGEUP, VK_PRIOR },
+        { SDLK_DELETE, VK_DELETE },
+        { SDLK_END, VK_END },
+        { SDLK_PAGEDOWN, VK_NEXT },
+    };
+
+    for (int i = 0; i < sizeof(sdlk2vk) / sizeof(*sdlk2vk); ++i) {
+        if (sdlk2vk[i].sdlk == key) {
+            return sdlk2vk[i].vk;
+        }
+    }
+
+    return key & 0xFFFF;
 }
