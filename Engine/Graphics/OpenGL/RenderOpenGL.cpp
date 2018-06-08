@@ -1,16 +1,8 @@
-//#include <Windows.h>
-//#undef DrawText
-//#undef PlaySound
-//#undef Polygon
-
-//#include <gl/gl.h>
-//#include <gl/glu.h>
-
 #ifdef _WINDOWS
     #pragma comment(lib, "opengl32.lib")
     #pragma comment(lib, "glu32.lib")
 
-    // on windows, this is required in gl/glu.h
+    //  on windows, this is required in gl/glu.h
     #if !defined(APIENTRY)
         #define APIENTRY __stdcall
     #endif
