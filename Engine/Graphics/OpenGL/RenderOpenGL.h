@@ -49,8 +49,7 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
                                       RenderBillboard *);
-    virtual void _4A4CC9_AddSomeBillboard(
-        struct stru6_stru1_indoor_sw_billboard *a1, int diffuse);
+    virtual void _4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse);
     virtual void DrawBillboardList_BLV();
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -163,7 +162,6 @@ class RenderOpenGL : public RenderBase {
     void DrawIndoorSkyPolygon(signed int uNumVertices,
                               struct Polygon *pSkyPolygon);
 
-    void *hdc;
     int clip_x, clip_y;
     int clip_z, clip_w;
     unsigned char *render_target_rgb;

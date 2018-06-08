@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Point.h"
+#include "Engine/Log.h"
 
 #include "src/Application/GameWindowHandler.h"
 
@@ -34,8 +35,13 @@ class OSWindow {
 
     virtual void *GetWinApiHandle() = 0;
 
+    // window-renderer integration, probably should be a separate class
+    virtual void OpenGlCreate() = 0;
+    virtual void OpenGlSwapBuffers() = 0;
+
  protected:
     GameWindowHandler *gameCallback = nullptr;
+    Log *log = nullptr;
 };
 
 extern OSWindow *window;

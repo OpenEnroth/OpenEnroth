@@ -221,3 +221,31 @@ int Sdl2Window::SdlkToVk(SDL_Keycode key) const {
 
     return key & 0xFFFF;
 }
+
+
+void Sdl2Window::OpenGlCreate() {
+    // Use OpenGL 3.2 core
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    // Turn on double buffering with a 24bit Z buffer.
+    // You may need to change this to 16 or 32 for your system
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+    sdlOpenGlContext = SDL_GL_CreateContext(sdlWindow);
+    if (!sdlOpenGlContext) {
+        log->Warning(L"OpenGL failed: %S", SDL_GetError());
+    }
+
+    //Use Vsync
+    if (SDL_GL_SetSwapInterval(1) < 0)
+    {
+        log->Info(L"Unable to set VSync! SDL Error: %S\n", SDL_GetError());
+    }
+}
+
+void Sdl2Window::OpenGlSwapBuffers() {
+    SDL_GL_SwapWindow(sdlWindow);
+}

@@ -1,14 +1,33 @@
-#include <Windows.h>
-#undef DrawText
-#undef PlaySound
-#undef Polygon
+//#include <Windows.h>
+//#undef DrawText
+//#undef PlaySound
+//#undef Polygon
 
-#include <gl\gl.h>
-#include <gl\glu.h>
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glu32.lib")
+//#include <gl/gl.h>
+//#include <gl/glu.h>
+
+#ifdef _WINDOWS
+    #pragma comment(lib, "opengl32.lib")
+    #pragma comment(lib, "glu32.lib")
+
+    // on windows, this is required in gl/glu.h
+    #if !defined(APIENTRY)
+        #define APIENTRY __stdcall
+    #endif
+
+    #if !defined(WINGDIAPI)
+        #define WINGDIAPI
+    #endif
+
+    #if !defined(CALLBACK)
+        #define CALLBACK __stdcall
+    #endif
+#endif
 
 #include <algorithm>
+#include <SDL.h>
+#include <SDL_opengl.h>
+#include <gl/glu.h>
 
 #include "Engine/Engine.h"
 #include "Engine/OurMath.h"
@@ -86,7 +105,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     engine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
     if (pFace->uAttributes & FACE_OUTLINED) {
-        if (GetTickCount() % 300 >= 150)
+        if (OS_GetTime() % 300 >= 150)
             uColor = sCorrectedColor = 0xFF20FF20;
         else
             uColor = sCorrectedColor = 0xFF109010;
@@ -1420,7 +1439,8 @@ void RenderOpenGL::Present() {
     }
     glEnd();
 
-    SwapBuffers((HDC)this->hdc);
+    window->OpenGlSwapBuffers();
+    //SwapBuffers((HDC)this->hdc);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -1468,7 +1488,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                         poly->sTextureDeltaU = face.sTextureDeltaU;
                         poly->sTextureDeltaV = face.sTextureDeltaV;
 
-                        unsigned int flow_anim_timer = GetTickCount() >> 4;
+                        unsigned int flow_anim_timer = OS_GetTime() >> 4;
                         unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
                         unsigned int flow_v_mod =
                             poly->texture->GetHeight() - 1;
@@ -1636,7 +1656,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
         glBegin(GL_TRIANGLE_FAN);
 
         int outline_color;
-        if (GetTickCount() % 300 >= 150)
+        if (OS_GetTime() % 300 >= 150)
             outline_color = 0xFFFF2020;
         else
             outline_color = 0xFF901010;
@@ -1796,86 +1816,45 @@ bool RenderOpenGL::Initialize(OSWindow *window_) {
     }
 
     if (window != nullptr) {
-        static PIXELFORMATDESCRIPTOR
-            pfd = {
-                sizeof(PIXELFORMATDESCRIPTOR),
-                1,                              // Version Number
-                PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
-                PFD_TYPE_RGBA,                  // Request An RGBA Format
-                32,                             // Select Our Color Depth
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,  // Color Bits Ignored
-                0,  // No Alpha Buffer
-                0,  // Shift Bit Ignored
-                0,  // No Accumulation Buffer
-                0,
-                0,
-                0,
-                0,               // Accumulation Bits Ignored
-                16,              // 16Bit Z-Buffer (Depth Buffer)
-                0,               // No Stencil Buffer
-                0,               // No Auxiliary Buffer
-                PFD_MAIN_PLANE,  // Main Drawing Layer
-                0,               // Reserved
-                0,
-                0,
-                0  // Layer Masks Ignored
-        };
+        window->OpenGlCreate();
 
-        HGLRC hRC;
-        if (this->hdc = GetDC((HWND)window->GetWinApiHandle())) {
-            HDC hDC = (HDC)this->hdc;
-            int pixel_format_id = 0;
-            if (pixel_format_id = ChoosePixelFormat(hDC, &pfd)) {
-                if (SetPixelFormat(hDC, pixel_format_id, &pfd)) {
-                    if (hRC = wglCreateContext(hDC)) {
-                        if (wglMakeCurrent(hDC, hRC)) {
-                            glShadeModel(GL_SMOOTH);
-                            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
-                            glClearDepth(1.0f);
-                            glEnable(GL_DEPTH_TEST);
-                            glDepthFunc(GL_LEQUAL);
-                            glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+        glShadeModel(GL_SMOOTH);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
+        glClearDepth(1.0f);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-                            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                            glViewport(
-                                0, 0, window->GetWidth(),
-                                window->GetHeight());
+        glViewport(
+            0, 0, window->GetWidth(),
+            window->GetHeight());
 
-                            glMatrixMode(GL_PROJECTION);
-                            glLoadIdentity();
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
 
-                            // Calculate The Aspect Ratio Of The Window
-                            gluPerspective(45.0f,
-                                (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(),
-                                0.1f, 100.0f);
+        // Calculate The Aspect Ratio Of The Window
+        gluPerspective(45.0f,
+            (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(),
+            0.1f, 100.0f);
 
-                            glMatrixMode(GL_MODELVIEW);
-                            glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
-                            // Swap Buffers (Double Buffering)
-                            SwapBuffers(hDC);
+        // Swap Buffers (Double Buffering)
+        window->OpenGlSwapBuffers();
 
-                            this->clip_x = this->clip_y = 0;
-                            this->clip_z = window->GetWidth();
-                            this->clip_w = window->GetHeight();
-                            this->render_target_rgb =
-                                new unsigned char[4 * window->GetWidth() *
-                                window->GetHeight()];
+        this->clip_x = this->clip_y = 0;
+        this->clip_z = window->GetWidth();
+        this->clip_w = window->GetHeight();
+        this->render_target_rgb =
+            new unsigned char[4 * window->GetWidth() *
+            window->GetHeight()];
 
-                            PostInitialization();
+        PostInitialization();
 
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
+        return true;
     }
 
     return false;

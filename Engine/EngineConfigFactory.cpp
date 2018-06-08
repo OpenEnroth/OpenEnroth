@@ -84,7 +84,7 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::Create() {
 
 std::shared_ptr<EngineConfig> EngineConfigFactory::CreateFromCommandLine(const std::string &cmd) {
     auto config = CreateDefaultConfiguration();
-
+//config->renderer_name = "OpenGL";
     if (FindCaseInsensitive(cmd, "-window")) {
         config->dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_RUN_IN_WIDOW;
     }

@@ -34,9 +34,14 @@ class Sdl2Window : public OSWindow {
 
     void *GetWinApiHandle() override;
 
+    // window-renderer integration, probably should be a separate class
+    void OpenGlCreate() override;
+    void OpenGlSwapBuffers() override;
+
  private:
-    SDL_Window *sdlWindow;
-    SDL_Surface *sdlWindowSurface;
+    SDL_Window *sdlWindow = nullptr;
+    SDL_Surface *sdlWindowSurface = nullptr;
+    SDL_GLContext sdlOpenGlContext = nullptr;
 
     void MessageProc(const SDL_Event &e);
     int SdlkToChar(SDL_Keycode key, bool uppercase) const;

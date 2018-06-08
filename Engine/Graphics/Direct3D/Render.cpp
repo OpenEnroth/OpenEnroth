@@ -758,7 +758,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
 
             if (pFace->uAttributes & FACE_OUTLINED) {
                 int color;
-                if (GetTickCount() % 300 >= 150)
+                if (OS_GetTime() % 300 >= 150)
                     color = 0xFFFF2020;
                 else
                     color = 0xFF901010;
@@ -1968,8 +1968,8 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
     // for floor and wall(for example Selesta)-------------------
     if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall ||
         pFace->uPolygonType == POLYGON_Floor) {
-        int v69 = (GetTickCount() / 32) - pIndoorCameraD3D->vPartyPos.x;
-        int v55 = (GetTickCount() / 32) + pIndoorCameraD3D->vPartyPos.y;
+        int v69 = (OS_GetTime() / 32) - pIndoorCameraD3D->vPartyPos.x;
+        int v55 = (OS_GetTime() / 32) + pIndoorCameraD3D->vPartyPos.y;
         for (uint i = 0; i < uNumVertices; ++i) {
             array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
             array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
@@ -2301,7 +2301,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     engine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
     if (pFace->uAttributes & FACE_OUTLINED) {
-        if (GetTickCount() % 300 >= 150)
+        if (OS_GetTime() % 300 >= 150)
             uColor = sCorrectedColor = 0xFF20FF20;
         else
             uColor = sCorrectedColor = 0xFF109010;
@@ -3787,7 +3787,7 @@ void Render::DrawBuildingsD3D() {
             poly->sTextureDeltaU = face.sTextureDeltaU;
             poly->sTextureDeltaV = face.sTextureDeltaV;
 
-            unsigned int flow_anim_timer = GetTickCount() >> 4;
+            unsigned int flow_anim_timer = OS_GetTime() >> 4;
             unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
             unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
 

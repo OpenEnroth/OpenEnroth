@@ -15,7 +15,7 @@ OSWindow *OSWindowFactory::CreateSdl2(const char *title, int window_width, int w
         title,
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         window_width, window_height,
-        SDL_WINDOW_SHOWN);
+        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
     if (sdlWindow) {
         auto sdlWindowSurface = SDL_GetWindowSurface(sdlWindow);
