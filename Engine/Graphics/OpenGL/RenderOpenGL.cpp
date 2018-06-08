@@ -16,10 +16,11 @@
     #endif
 #endif
 
-#include <algorithm>
+#include <gl/glu.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <gl/glu.h>
+
+#include <algorithm>
 
 #include "Engine/Engine.h"
 #include "Engine/OurMath.h"
@@ -1432,7 +1433,7 @@ void RenderOpenGL::Present() {
     glEnd();
 
     window->OpenGlSwapBuffers();
-    //SwapBuffers((HDC)this->hdc);
+    //  SwapBuffers((HDC)this->hdc);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
