@@ -33,6 +33,7 @@ On Windows, you have to follow these steps:
 * type `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted`
 * type `win/WinPrebuild.ps1 %dependecies_folder%`
 This will download and install dependencies into %dependecies_folder% using PowerShell script.
+note: windows restart required 
 
 Coding style
 ------------
