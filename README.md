@@ -3,11 +3,9 @@ Might and Magic VI-VIII engine remake using original data & code
 
 Getting Started
 ---------------
-1. Use one of the projects for Visual Studio in /Builds folder. Latest are most up-to-date.
-2. Required libavcodec dependencies are located in required_dlls folder
-3. On older releases you will probably also need fixed MSS32.dll if project crashes for you.
-4. Compile & run.
-5. Launcher will try to guess your game installation directory (GoG or older releases). You can override folder with game resources using GUI.
+1. You will require a GoG or any older version of Might and Magic 7 installed for engine to guess game assets folder. You can override  assets/game path in launcher.
+2. Use any IDE with CMake integration (Visual Studio is good).
+2. Build & run game directly, or via launcher.
 
 Development
 -----------
