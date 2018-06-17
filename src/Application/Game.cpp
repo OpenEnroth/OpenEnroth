@@ -421,6 +421,8 @@ void Game::EventLoop() {
     char Str2[128];               // [sp+238h] [bp-3C4h]@527
     Actor actor;                  // [sp+2B8h] [bp-344h]@4
     int currHour;
+    int pItemID;
+
 
     dword_50CDC8 = 0;
     if (!pEventTimer->bPaused) {
@@ -523,6 +525,19 @@ void Game::EventLoop() {
                     if (current_screen_type != SCREEN_GAME)
                         pGUIWindow_CurrentMenu->Release();
                     pGUIWindow_CurrentMenu = new GUIWindow_JournalBook();
+                    continue;
+                case UIMSG_OpenDebugMenu:
+                    pMessageQueue_50CBD0->Flush();
+                    if (current_screen_type == SCREEN_DEBUG) {
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
+                        break;
+                    }
+                    if (current_screen_type != SCREEN_GAME)
+                        pGUIWindow_CurrentMenu->Release();
+                    pGUIWindow_CurrentMenu = new GUIWindow_DebugMenu();
+                    current_screen_type = SCREEN_DEBUG;
                     continue;
                 case UIMSG_Escape:  // нажатие Escape and return to game
                     back_to_game();
@@ -881,7 +896,7 @@ void Game::EventLoop() {
                             CharacterUI_ReleaseButtons();
                             ReleaseAwardsScrollBar();
                         }
-                        __debugbreak();  // which GAME_MENU is this?
+                        // __debugbreak();  // which GAME_MENU is this? debug / fallback
                         OnEscape();
                         continue;
                     }
@@ -919,8 +934,9 @@ void Game::EventLoop() {
                 case UIMSG_TransitionUI_Confirm:
                     pMessageQueue_50CBD0->Flush();
                     dword_50CDC8 = 1;
-                    sub_42FBDD();
-                    PlayHouseSound(
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+
+                    PlayHouseSound(  // this is wrong - what is it meant to do??
                         uCurrentHouse_Animation,
                         HouseSound_NotEnoughMoney_TrainingSuccessful);
 
@@ -998,7 +1014,8 @@ void Game::EventLoop() {
                 case UIMSG_OnTravelByFoot:
                     pMessageQueue_50CBD0->Flush();
                     dword_50CDC8 = 1;
-                    sub_42FBDD();
+
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     // pNPCData4 = (NPCData *)GetTravelTime();
                     pOutdoor->level_filename = pCurrentMapName;
                     if (!engine->IsUnderwater() && pParty->bFlying ||
@@ -1233,7 +1250,7 @@ void Game::EventLoop() {
                 case UIMSG_BF:
                     __debugbreak();
                     dword_50CDC8 = 1;
-                    sub_42FBDD();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     SaveGame(1, 0);
                     pCurrentMapName = pMapStats->pInfos[uHouse_ExitPic].pFilename;
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
@@ -1264,7 +1281,7 @@ void Game::EventLoop() {
                 case UIMSG_OnCastTownPortal:
                     pAudioPlayer->StopChannels(-1, -1);
                     pGUIWindow_CurrentMenu =
-                        new GUIWindow_TownPortalBook((char *)uMessageParam);
+                        new GUIWindow_TownPortalBook();  // (char *)uMessageParam);
                     continue;
 
                 case UIMSG_OnCastLloydsBeacon:
@@ -1448,7 +1465,7 @@ void Game::EventLoop() {
                         v63 = 206;
                     }
                     if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits,
-                                                            v63))
+                                                            v63) && !engine->config->debug_town_portal)
                         return;
                     goto LABEL_486;
                 case UIMSG_HintTownPortal: {
@@ -1468,58 +1485,14 @@ void Game::EventLoop() {
                             v68 = 209;
                             break;
                         default:
-                            if (uMessageParam != 5) {
-                                if (uMessageParam) {
-                                    switch (uMessageParam) {
-                                    case 1:
-                                        v69 =
-                                            pMapStats->pInfos[4].pName;
-                                        break;
-                                    case 2:
-                                        v69 =
-                                            pMapStats->pInfos[3].pName;
-                                        break;
-                                    case 3:
-                                        v69 =
-                                            pMapStats->pInfos[10].pName;
-                                        break;
-                                    case 4:
-                                        v69 =
-                                            pMapStats->pInfos[7].pName;
-                                        break;
-                                    default:
-                                        if (uMessageParam != 5) {
-                                            __debugbreak();  // warning
-                                                             // C4700:
-                                                             // uninitialized
-                                                             // local
-                                                             // variable
-                                                             // 'v200'
-                                                             // used
-                                            GameUI_StatusBar_Set(
-                                                localization
-                                                ->FormatString(
-                                                    35, v200));
-                                            continue;
-                                        }
-                                        v69 =
-                                            pMapStats->pInfos[8].pName;
-                                        break;
-                                    }
-                                } else {
-                                    v69 = pMapStats->pInfos[21].pName;
-                                }
-                                GameUI_StatusBar_Set(
-                                    localization->FormatString(35, v69));
-                                continue;
-                            }
                             v68 = 210;
                             break;
                         }
                     } else {
                         v68 = 206;
                     }
-                    if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits, v68)) {
+
+                    if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits, v68) && !engine->config->debug_town_portal) {
                         render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
@@ -1550,7 +1523,7 @@ void Game::EventLoop() {
                     } else {
                         v69 = pMapStats->pInfos[21].pName;
                     }
-                    GameUI_StatusBar_Set(localization->FormatString(35, v69));
+                    GameUI_StatusBar_Set(localization->FormatString(35, v69.c_str()));
                     continue;
                 }
                 case UIMSG_ShowFinalWindow: {
@@ -2412,6 +2385,329 @@ void Game::EventLoop() {
                             viewparams->field_28 = 8;
                         }
                     }
+                case UIMSG_DebugSpecialItem:
+                    pItemID = rand() % 500;
+                    for (uint i = 0; i < 500; ++i) {
+                        if (pItemID + i > 499) pItemID = 0;
+                        if (pItemsTable->pItems[pItemID + i].uItemID_Rep_St > 6) {
+                            pPlayers[uActiveCharacter]->AddItem(-1, pItemID + i);
+                            break;
+                        }
+                    }
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugGenItem:
+                    pItemID = rand() % 500;
+                    for (uint i = 0; i < 500; ++i) {
+                        if (pItemID + i > 499) pItemID = 0;
+                        // if (pItemsTable->pItems[pItemID + i].uItemID_Rep_St ==
+                         //   (item_id - 40015 + 1)) {
+                            pPlayers[uActiveCharacter]->AddItem(-1, pItemID + i);
+                            break;
+                        //}
+                    }
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugKillChar:
+                    pPlayers[uActiveCharacter]->SetCondition(Condition_Dead, 0);
+                    continue;
+                case UIMSG_DebugEradicate:
+                    pPlayers[uActiveCharacter]->SetCondition(Condition_Eradicated, 0);
+                    continue;
+                case UIMSG_DebugFullHeal:
+                    pPlayers[uActiveCharacter]->conditions_times.fill(GameTime(0));
+                    pPlayers[uActiveCharacter]->sHealth =
+                        pPlayers[uActiveCharacter]->GetMaxHealth();
+                    pPlayers[uActiveCharacter]->sMana =
+                        pPlayers[uActiveCharacter]->GetMaxMana();
+                    pAudioPlayer->PlaySound(SOUND_heal, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugCycleAlign:
+                    if (pParty->alignment == PartyAlignment_Good) pParty->alignment = PartyAlignment_Neutral;
+                    else if (pParty->alignment == PartyAlignment_Neutral) pParty->alignment = PartyAlignment_Evil;
+                    else if (pParty->alignment == PartyAlignment_Evil) pParty->alignment = PartyAlignment_Good;
+                    SetUserInterface(pParty->alignment, true);
+                    continue;
+                case UIMSG_DebugTakeFood:
+                    pParty->SetFood(0);
+                    pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugGiveFood:
+                    pParty->SetFood(pParty->uNumFoodRations + 20);
+                    pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugTakeGold:
+                    pParty->SetGold(0);
+                    continue;
+                case UIMSG_DebugLearnSkills:
+                    for (uint i = 1; i < 5; ++i) {            // loop over players
+                        for (int ski = 0; ski < 37; ++ski) {  // loop over skills
+                            if (byte_4ED970_skill_learn_ability_by_class_table
+                                [pPlayers[i]->classType][ski] >
+                                0) {            // if class can learn this skill
+                                switch (ski) {  // give skils
+                                case 0:     // PLAYER_SKILL_STAFF = 0,
+                                    if (pPlayers[i]->skillStaff == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillStaff, 1);
+                                    break;
+                                case 1:  // PLAYER_SKILL_SWORD = 1,
+                                    if (pPlayers[i]->skillSword == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillSword, 1);
+                                    break;
+                                case 2:  // PLAYER_SKILL_DAGGER = 2,
+                                    if (pPlayers[i]->skillDagger == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillDagger, 1);
+                                    break;
+                                case 3:  // PLAYER_SKILL_AXE = 3,
+                                    if (pPlayers[i]->skillAxe == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillAxe, 1);
+                                    break;
+                                case 4:  // PLAYER_SKILL_SPEAR = 4,
+                                    if (pPlayers[i]->skillSpear == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillSpear, 1);
+                                    break;
+                                case 5:  // PLAYER_SKILL_BOW = 5,
+                                    if (pPlayers[i]->skillBow == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillBow, 1);
+                                    break;
+                                case 6:  // PLAYER_SKILL_MACE = 6,
+                                    if (pPlayers[i]->skillMace == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillMace, 1);
+                                    break;
+                                case 7:  // PLAYER_SKILL_BLASTER = 7,
+                                    if (pPlayers[i]->skillBlaster == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillBlaster, 1);
+                                    break;
+                                case 8:  // PLAYER_SKILL_SHIELD = 8,
+                                    if (pPlayers[i]->skillShield == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillShield, 1);
+                                    break;
+                                case 9:  // PLAYER_SKILL_LEATHER = 9,
+                                    if (pPlayers[i]->skillLeather == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillLeather, 1);
+                                    break;
+                                case 10:  // PLAYER_SKILL_CHAIN = 10,
+                                    if (pPlayers[i]->skillChain == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillChain, 1);
+                                    break;
+                                case 11:  // PLAYER_SKILL_PLATE = 11,
+                                    if (pPlayers[i]->skillPlate == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillPlate, 1);
+                                    break;
+                                case 12:  // PLAYER_SKILL_FIRE = 12,
+                                    if (pPlayers[i]->skillFire == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillFire, 1);
+                                    break;
+                                case 13:  // PLAYER_SKILL_AIR = 13,
+                                    if (pPlayers[i]->skillAir == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillAir, 1);
+                                    break;
+                                case 14:  // PLAYER_SKILL_WATER = 14,
+                                    if (pPlayers[i]->skillWater == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillWater, 1);
+                                    break;
+                                case 15:  // PLAYER_SKILL_EARTH = 15,
+                                    if (pPlayers[i]->skillEarth == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillEarth, 1);
+                                    break;
+                                case 16:  // PLAYER_SKILL_SPIRIT = 16,
+                                    if (pPlayers[i]->skillSpirit == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillSpirit, 1);
+                                    break;
+                                case 17:  // PLAYER_SKILL_MIND = 17,
+                                    if (pPlayers[i]->skillMind == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillMind, 1);
+                                    break;
+                                case 18:  // PLAYER_SKILL_BODY = 18,
+                                    if (pPlayers[i]->skillBody == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillBody, 1);
+                                    break;
+                                case 19:  // PLAYER_SKILL_LIGHT = 19,
+                                    if (pPlayers[i]->skillLight == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillLight, 1);
+                                    break;
+                                case 20:  // PLAYER_SKILL_DARK = 20,
+                                    if (pPlayers[i]->skillDark == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillDark, 1);
+                                    break;
+                                case 21:  // PLAYER_SKILL_ITEM_ID = 21,
+                                    if (pPlayers[i]->skillItemId == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillItemId, 1);
+                                    break;
+                                case 22:  // PLAYER_SKILL_MERCHANT = 22,
+                                    if (pPlayers[i]->skillMerchant == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillMerchant, 1);
+                                    break;
+                                case 23:  // PLAYER_SKILL_REPAIR = 23,
+                                    if (pPlayers[i]->skillRepair == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillRepair, 1);
+                                    break;
+                                case 24:  // PLAYER_SKILL_BODYBUILDING = 24,
+                                    if (pPlayers[i]->skillBodybuilding == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillBodybuilding, 1);
+                                    break;
+                                case 25:  // PLAYER_SKILL_MEDITATION = 25,
+                                    if (pPlayers[i]->skillMeditation == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillMeditation, 1);
+                                    break;
+                                case 26:  // PLAYER_SKILL_PERCEPTION = 26,
+                                    if (pPlayers[i]->skillPerception == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillPerception, 1);
+                                    break;
+                                case 27:  // PLAYER_SKILL_DIPLOMACY = 27,
+                                    break;
+                                case 28:  // PLAYER_SKILL_TIEVERY = 28,
+                                    break;
+                                case 29:  // PLAYER_SKILL_TRAP_DISARM = 29,
+                                    if (pPlayers[i]->skillDisarmTrap == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillDisarmTrap, 1);
+                                    break;
+                                case 30:  // PLAYER_SKILL_DODGE = 30,
+                                    if (pPlayers[i]->skillDodge == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillDodge, 1);
+                                    break;
+                                case 31:  // PLAYER_SKILL_UNARMED = 31,
+                                    if (pPlayers[i]->skillUnarmed == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillUnarmed, 1);
+                                    break;
+                                case 32:  // PLAYER_SKILL_MONSTER_ID = 32,
+                                    if (pPlayers[i]->skillMonsterId == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillMonsterId, 1);
+                                    break;
+                                case 33:  // PLAYER_SKILL_ARMSMASTER = 33,
+                                    if (pPlayers[i]->skillArmsmaster == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillArmsmaster, 1);
+                                    break;
+                                case 34:  // PLAYER_SKILL_STEALING = 34,
+                                    if (pPlayers[i]->skillStealing == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillStealing, 1);
+                                    break;
+                                case 35:  // PLAYER_SKILL_ALCHEMY = 35,
+                                    if (pPlayers[i]->skillAlchemy == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillAlchemy, 1);
+                                    break;
+                                case 36:  // PLAYER_SKILL_LEARNING = 36,
+                                    if (pPlayers[i]->skillLearning == 0)
+                                        pPlayers[i]->AddSkillByEvent(
+                                            &Player::skillLearning, 1);
+                                    break;
+
+                                    // PLAYER_SKILL_CLUB = 37,
+                                    // PLAYER_SKILL_MISC = 38,
+                                    // PLAYER_SKILL_INVALID = -1
+                                }
+                            }
+                        }
+                    }
+                    continue;
+                case UIMSG_DebugGiveSkillP:
+                    for (uint i = 0; i < 4; ++i) pParty->pPlayers[i].uSkillPoints += 50;
+                    pPlayers[uActiveCharacter]->PlayAwardSound_Anim();
+                    continue;
+                case UIMSG_DebugGiveEXP:
+                    pParty->GivePartyExp(20000);
+                    pPlayers[uActiveCharacter]->PlayAwardSound_Anim();
+                    continue;
+                case UIMSG_DebugGiveGold:
+                    pParty->SetGold(pParty->uNumGold + 10000);
+                    continue;
+                case UIMSG_DebugTownPortal:
+                    engine->ToggleDebugTownPortal();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugWizardEye:
+                    engine->ToggleDebugWizardEye();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugAllMagic:
+                    engine->ToggleDebugAllMagic();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugTerrain:
+                    engine->ToggleDebugTerrain();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugLightmap:
+                    engine->ToggleDebugLightmap();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugTurboSpeed:
+                    engine->ToggleDebugTurboSpeed();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugNoActors:
+                    engine->ToggleDebugNoActors();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugDrawDist:
+                    engine->ToggleDebugDrawDist();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugSnow:
+                    engine->ToggleDebugSnow();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugNoDamage:
+                    engine->ToggleDebugNoDamage();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugPortalLines:
+                    engine->ToggleDebugPortalLines();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugPickedFace:
+                    engine->ToggleDebugPickedFace();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugShowFPS:
+                    engine->ToggleDebugShowFPS();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugSeasonsChange:
+                    engine->ToggleDebugSeasonsChange();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
+                case UIMSG_DebugFarClip:
+                    if (pODMRenderParams->far_clip == 0x6000)
+                        pODMRenderParams->far_clip = 0x2000;
+                    else
+                        pODMRenderParams->far_clip = 0x6000;
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
                 default:
                     continue;
             }

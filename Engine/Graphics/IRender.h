@@ -300,6 +300,7 @@ class IRender {
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
                                int start_opacity, int end_opacity) = 0;
     virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time) = 0;
+    virtual void DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
 
     virtual void DrawMasked(float u, float v, Image *img,
                             unsigned int color_dimming_level,

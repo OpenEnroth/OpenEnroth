@@ -438,7 +438,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
 void WeaponShopDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 145;
+    dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
@@ -603,7 +603,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
 void ArmorShopDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 145;
+    dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
@@ -786,7 +786,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
 void AlchemistDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 145;
+    dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
@@ -828,7 +828,7 @@ void AlchemistDialog() {
 void MagicShopDialog() {
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 145;
+    dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {

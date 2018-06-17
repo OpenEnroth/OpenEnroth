@@ -4972,8 +4972,8 @@ void BLV_ProcessPartyActions() {
                 party_walking_flag = true;
                 break;
             case PARTY_WalkForward:
-                v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 party_walking_flag = true;
                 break;
             case PARTY_WalkBackward:
@@ -4982,8 +4982,8 @@ void BLV_ProcessPartyActions() {
                 party_walking_flag = true;
                 break;
             case PARTY_RunForward:  //Бег вперёд
-                v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v2 += fixpoint_mul(stru_5C6E00->Cos(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v1 += fixpoint_mul(stru_5C6E00->Sin(angle), 5 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 party_running_flag = true;
                 break;
             case PARTY_RunBackward:
@@ -5230,9 +5230,9 @@ void BLV_ProcessPartyActions() {
                 if (on_water)
                     pAudioPlayer->PlaySound(SOUND_RunWaterIndoor, 804, 1, -1, 0, 0);
                 else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)  //по ковру
-                    pAudioPlayer->PlaySound(SOUND_RunCarpet, 804, 1, -1, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_RunCarpet, -1 /*804*/, 1, -1, 0, 0);
                 else
-                    pAudioPlayer->PlaySound(SOUND_RunWood, 804, 1, -1, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_RunWood, -1 /*804*/, 1, -1, 0, 0);
                 pParty->walk_sound_timer = 96;  // 64
             }
         } else if (party_walking_flag &&
@@ -5242,9 +5242,9 @@ void BLV_ProcessPartyActions() {
                 if (on_water)
                     pAudioPlayer->PlaySound(SOUND_WalkWaterIndoor, 804, 1, -1, 0, 0);
                 else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_CARPET)  //по ковру
-                    pAudioPlayer->PlaySound(SOUND_WalkCarpet, 804, 1, -1, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_WalkCarpet, -1 /*804*/, 1, -1, 0, 0);
                 else
-                    pAudioPlayer->PlaySound(SOUND_WalkWood, 804, 1, -1, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_WalkWood, -1 /*804*/, 1, -1, 0, 0);
                 pParty->walk_sound_timer = 144;  // 64
             }
         }

@@ -213,6 +213,36 @@ enum UIMessageType : unsigned __int32 {
     UIMSG_MMT_MainMenu_MM7 = 427,
     UIMSG_MMT_MainMenu_MM8 = 428,
     UIMSG_MMT_MainMenu_Continue = 429,
+
+    UIMSG_DebugSpecialItem = 971,
+    UIMSG_DebugGenItem = 972,
+    UIMSG_DebugFarClip = 973,
+    UIMSG_DebugSeasonsChange = 974,
+    UIMSG_DebugShowFPS = 975,
+    UIMSG_DebugPickedFace = 976,
+    UIMSG_DebugPortalLines = 977,
+    UIMSG_DebugKillChar = 978,
+    UIMSG_DebugEradicate = 979,
+    UIMSG_DebugNoDamage = 980,
+    UIMSG_DebugFullHeal = 981,
+    UIMSG_DebugSnow = 982,
+    UIMSG_DebugDrawDist = 983,
+    UIMSG_DebugNoActors = 984,
+    UIMSG_DebugTurboSpeed = 985,
+    UIMSG_DebugLightmap = 986,
+    UIMSG_DebugTerrain = 987,
+    UIMSG_DebugAllMagic = 988,
+    UIMSG_DebugWizardEye = 989,
+    UIMSG_DebugCycleAlign = 990,
+    UIMSG_DebugTakeFood = 991,
+    UIMSG_DebugGiveFood = 992,
+    UIMSG_DebugTakeGold = 993,
+    UIMSG_DebugLearnSkills = 994,
+    UIMSG_DebugGiveSkillP = 995,
+    UIMSG_DebugGiveEXP = 996,
+    UIMSG_DebugGiveGold = 997,
+    UIMSG_DebugTownPortal = 998,
+    UIMSG_OpenDebugMenu = 999,
 };
 
 /*  251 */
@@ -522,6 +552,8 @@ enum CURRENT_SCREEN {
     SCREEN_64 = 0x64,
     SCREEN_67 = 0x67,
     SCREEN_QUICK_REFERENCE = 0x68,
+
+    SCREEN_DEBUG = 999,
 };
 
 struct GUIMessage {

@@ -262,6 +262,105 @@ struct Engine {
                 cfg->ToggleBloodsplats();
             });
     }
+
+    inline void ToggleDebugTownPortal() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugTownPortal();
+        });
+    }
+
+    inline void ToggleDebugWizardEye() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugWizardEye();
+        });
+    }
+
+    inline void ToggleDebugAllMagic() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugAllMagic();
+        });
+    }
+
+    inline void ToggleDebugTerrain() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugTerrain();
+        });
+    }
+
+    inline void ToggleDebugLightmap() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugLightmap();
+        });
+    }
+
+    inline void ToggleDebugTurboSpeed() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugTurboSpeed();
+        });
+    }
+
+    inline void ToggleDebugNoActors() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugNoActors();
+        });
+    }
+
+    inline void ToggleDebugDrawDist() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugDrawDist();
+        });
+    }
+
+    inline void ToggleDebugSnow() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugSnow();
+        });
+    }
+
+    inline void ToggleDebugNoDamage() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugNoDamage();
+        });
+    }
+
+    inline void ToggleDebugPortalLines() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugPortalLines();
+        });
+    }
+
+    inline void ToggleDebugPickedFace() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugPickedFace();
+        });
+    }
+
+    inline void ToggleDebugShowFPS() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugShowFPS();
+        });
+    }
+
+    inline void ToggleDebugSeasonsChange() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+            cfg->ToggleDebugSeasonsChange();
+        });
+    }
+
     inline void SetMusicLevel(int level) {
         MutateConfig(
             [level](std::shared_ptr<EngineConfig> &cfg) {
@@ -373,7 +472,6 @@ struct Engine {
 
 extern std::shared_ptr<Engine> engine;
 
-void sub_42FBDD();
 void CloseWindowBackground();
 void back_to_game();
 

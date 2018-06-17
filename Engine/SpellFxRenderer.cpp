@@ -735,7 +735,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return true;
 
         case SPRITE_556:
-            __debugbreak();  // what kind of effect is this? ??blaster
+            __debugbreak();  // what kind of effect is this? ??blaster hydra??
             AddMobileLight(a2, 0xFF0000, 256);
             return false;
 

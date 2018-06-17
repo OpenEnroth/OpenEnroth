@@ -806,7 +806,7 @@ bool HouseUI_CheckIfPlayerCanInteract() {
         pDialogueWindow->pNumPresenceButton = 0;
         GUIWindow window = *pPrimaryWindow;
         window.uFrameX = 483;
-        window.uFrameWidth = 145;
+        window.uFrameWidth = 143;
         window.uFrameZ = 334;
 
         String str = localization->FormatString(
@@ -840,8 +840,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
     char pContainer[40];  // [sp+Ch] [bp-30h]@32
                           // unsigned int v24; // [sp+34h] [bp-8h]@5
 
-    game_ui_status_bar_event_string[0] = 0;
-    game_ui_status_bar_string[0] = 0;
+    GameUI_StatusBar_Clear();
     GameUI_StatusBar_OnEvent("");
     pMessageQueue_50CBD0->Flush();
     viewparams->bRedrawGameUI = 1;
@@ -1036,10 +1035,10 @@ void PrepareHouse(HOUSE_ID house) {
 
 //----- (004B1E92) --------------------------------------------------------
 void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
-    if (pAnimatedRooms[p2DEvents[uHouseID].uAnimationID].uRoomSoundId)
+    if (pAnimatedRooms[p2DEvents[uHouseID-1].uAnimationID].uRoomSoundId)
         pAudioPlayer->PlaySound(
         (SoundID)(sound +
-            100 * (pAnimatedRooms[p2DEvents[uHouseID].uAnimationID]
+            100 * (pAnimatedRooms[p2DEvents[uHouseID-1].uAnimationID]
                 .uRoomSoundId +
                 300)),
             806, 0, -1, 0, 0);
@@ -1696,7 +1695,7 @@ void TravelByTransport() {
 
     GUIWindow travel_window = *window_SpeakInHouse;
     travel_window.uFrameX = 483;
-    travel_window.uFrameWidth = 145;
+    travel_window.uFrameWidth = 143;
     travel_window.uFrameZ = 334;
 
     v4 = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].uType ==
@@ -1932,7 +1931,7 @@ void TownHallDialog() {
 
     GUIWindow townHall_window = *window_SpeakInHouse;
     townHall_window.uFrameX = 483;
-    townHall_window.uFrameWidth = 145;
+    townHall_window.uFrameWidth = 143;
     townHall_window.uFrameZ = 334;
 
     auto fine_str =
@@ -2079,7 +2078,7 @@ void TownHallDialog() {
 void BankDialog() {
     GUIWindow bank_window = *window_SpeakInHouse;
     bank_window.uFrameX = 483;
-    bank_window.uFrameWidth = 145;
+    bank_window.uFrameWidth = 143;
     bank_window.uFrameZ = 334;
     bank_window.DrawTitleText(
         pFontArrus, 0, 220, Color16(0xFFu, 0xFFu, 0x9Bu),
@@ -2240,7 +2239,7 @@ void TavernDialog() {
 
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 145;
+    dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
     v2 = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
         .fPriceMultiplier;
@@ -2641,7 +2640,7 @@ void TempleDialog() {
 
     GUIWindow tample_window = *window_SpeakInHouse;
     tample_window.uFrameX = 483;
-    tample_window.uFrameWidth = 145;
+    tample_window.uFrameWidth = 143;
     tample_window.uFrameZ = 334;
 
     if (uActiveCharacter == 0) {  // avoid nzi
@@ -2987,7 +2986,7 @@ void TrainingDialog(const char *s) {
 
     GUIWindow training_dialog_window = *window_SpeakInHouse;
     training_dialog_window.uFrameX = 483;
-    training_dialog_window.uFrameWidth = 145;
+    training_dialog_window.uFrameWidth = 143;
     training_dialog_window.uFrameZ = 334;
 
     if (uActiveCharacter == 0)  // avoid nzi
@@ -3323,7 +3322,7 @@ void sub_4B6478() {
 
     GUIWindow dialog_window = *window_SpeakInHouse;
     dialog_window.uFrameX = 483;
-    dialog_window.uFrameWidth = 145;
+    dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
     v32 =
@@ -3494,7 +3493,7 @@ void SimpleHouseDialog() {
         house_window.DrawTitleText(pFontCreate, 0, 2, 0,
             pMapStats->pInfos[uHouse_ExitPic].pName, 3);
         house_window.uFrameX = 483;
-        house_window.uFrameWidth = 145;
+        house_window.uFrameWidth = 143;
         house_window.uFrameZ = 334;
         if (!pTransitionStrings[uHouse_ExitPic]) {
             auto str = localization->FormatString(
@@ -3572,7 +3571,7 @@ void SimpleHouseDialog() {
     // for right panel
     GUIWindow right_panel_window = *pDialogueWindow;
     right_panel_window.uFrameX = 483;
-    right_panel_window.uFrameWidth = 145;
+    right_panel_window.uFrameWidth = 143;
     right_panel_window.uFrameZ = 334;
     for (int i = right_panel_window.pStartingPosActiveItem;
         i < right_panel_window.pStartingPosActiveItem +
@@ -3745,7 +3744,7 @@ void SimpleHouseDialog() {
 void JailDialog() {
     GUIWindow jail_dialogue_window = *window_SpeakInHouse;
     jail_dialogue_window.uFrameX = 483;
-    jail_dialogue_window.uFrameWidth = 145;
+    jail_dialogue_window.uFrameWidth = 143;
     jail_dialogue_window.uFrameZ = 334;
     jail_dialogue_window.DrawTitleText(
         pFontArrus, 0,

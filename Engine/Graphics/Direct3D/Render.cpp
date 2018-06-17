@@ -3392,6 +3392,62 @@ void Render::BlendTextures(
     }
 }
 
+void Render::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
+    int dst_x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
+    int dst_y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
+    uint dst_z = dst_x + Portrait->hw_sprites[0]->uAreaWidth;
+    uint dst_w = dst_y + Portrait->hw_sprites[0]->uAreaHeight;
+
+    uint Clipped_X = 0;
+    uint Clipped_Y = 0;
+
+    if (dst_x < rc.x) {
+        Clipped_X = rc.x - dst_x;
+        dst_x = rc.x;
+    }
+
+    if (dst_y < rc.y) {
+        Clipped_Y = rc.y - dst_y;
+        dst_y = rc.y;
+    }
+
+    if (dst_z > rc.z)
+        dst_z = rc.z;
+    if (dst_w > rc.w)
+        dst_w = rc.w;
+
+    Image *temp = Image::Create(128, 128, IMAGE_FORMAT_R5G6B5);
+    uint16_t *temppix = (uint16_t *)temp->GetPixels(IMAGE_FORMAT_R5G6B5);
+
+    int width = Portrait->hw_sprites[0]->texture->GetWidth();
+    int height = Portrait->hw_sprites[0]->texture->GetHeight();
+
+    ushort* src = (unsigned __int16 *)Portrait->hw_sprites[0]->texture->GetPixels(IMAGE_FORMAT_A1R5G5B5);
+    int num_top_scanlines_above_frame_y = Clipped_Y - dst_y;
+
+    for (uint y = dst_y; y < dst_w; ++y) {
+        uint src_y = num_top_scanlines_above_frame_y + y;
+
+        for (uint x = dst_x; x < dst_z; ++x) {
+            uint src_x = Clipped_X - dst_x + x;  // num scanlines left to frame_x  + current x
+
+            uint idx =
+                height * src_y / Portrait->hw_sprites[0]->uAreaHeight * width +
+                width * src_x / Portrait->hw_sprites[0]->uAreaWidth;
+
+            uint a = 2 * (src[idx] & 0xFFE0);
+            uint b = src[idx] & 0x1F;
+
+            temppix[(x-dst_x) + 128*(y-dst_y)] = (b | a);
+        }
+    }
+
+    render->SetUIClipRect(rc.x, rc.y, rc.z, rc.w);
+    render->DrawTextureAlphaNew(dst_x / 640., dst_y / 480., temp);
+    temp->Release();
+    render->ResetUIClipRect();
+}
+
 void Render::DrawTextureAlphaNew(float u, float v, Image *image) {
     Gdiplus::Bitmap *bitmap = BitmapWithImage(image);
     if (!bitmap) {
@@ -4102,8 +4158,7 @@ bool PauseGameDrawing() {
     if (current_screen_type != SCREEN_GAME &&
         current_screen_type != SCREEN_NPC_DIALOGUE &&
         current_screen_type != SCREEN_CHANGE_LOCATION) {
-        //    if (current_screen_type == SCREEN_INPUT_BLV)
-        //      return pMovie_Track;//pSmackerMovie != 0;
+        if (current_screen_type == SCREEN_INPUT_BLV) return uCurrentHouse_Animation;
         if (current_screen_type != SCREEN_BRANCHLESS_NPC_DIALOG) return true;
     }
     return false;

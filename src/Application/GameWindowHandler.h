@@ -19,7 +19,7 @@ class GameWindowHandler {
     void OnScreenshot();
     void OnToggleFullscreen();
     void OnVkDown(int vk, int vk_to_char);
-    void OnChar(int c);
+    bool OnChar(int c);
     void OnFocus();
     void OnFocusLost();
     void OnPaint();

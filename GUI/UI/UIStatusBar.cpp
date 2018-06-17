@@ -20,6 +20,11 @@ void GameUI_StatusBar_Set(const String &str) {
     }
 }
 
+void GameUI_StatusBar_Clear() {
+    game_ui_status_bar_string.clear();
+    GameUI_StatusBar_ClearEventString();
+}
+
 void GameUI_StatusBar_OnEvent_Internal(const String &str, unsigned int ms) {
     game_ui_status_bar_event_string = str;
     game_ui_status_bar_event_string_time_left = OS_GetTime() + ms;

@@ -79,6 +79,7 @@ class RenderOpenGL : public RenderBase {
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
                                int start_opacity, int end_opacity);
     virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time);
+    virtual void DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait_Sprite, int Y_Offset);
 
     virtual void DrawMasked(float u, float v, class Image *img,
                             unsigned int color_dimming_level,

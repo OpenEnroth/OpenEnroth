@@ -6,6 +6,7 @@ void GameUI_StatusBar_Draw();
 void GameUI_StatusBar_DrawForced();
 
 void GameUI_StatusBar_Set(const String &str);
+void GameUI_StatusBar_Clear();
 
 void GameUI_StatusBar_OnEvent(const String &str, unsigned int num_seconds = 2);
 void GameUI_StatusBar_OnEvent_128ms(const String &str);

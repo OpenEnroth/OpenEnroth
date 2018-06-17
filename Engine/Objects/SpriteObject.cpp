@@ -976,7 +976,7 @@ bool SpriteObject::sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x,
     return true;
 }
 
-void SpriteObject::sub_42F960_create_object(int x, int y, int z) {
+void SpriteObject::sub_42F960_create_object(int x, int y, int z) {  // splash
     SpriteObject a1;
 
     a1.containing_item.Reset();

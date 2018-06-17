@@ -1505,7 +1505,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 default:
                     index = item->uItemID - 105;
             }
-            if (index >= 0 && index < 10) {
+            if (index > 0 && index < 10) {  // leather cloak has no collar
                 item_X = pPaperdoll_BodyX +
                          paperdoll_CloakCollar[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY +

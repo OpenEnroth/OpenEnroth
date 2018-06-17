@@ -267,6 +267,10 @@ void RenderOpenGL::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
 void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
     __debugbreak();
 }
+
+void RenderOpenGL::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
+    __debugbreak();
+}
 void RenderOpenGL::DrawTransparentRedShade(float u, float v, Image *a4) {
     __debugbreak();
 }

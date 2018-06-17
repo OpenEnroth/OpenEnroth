@@ -306,98 +306,98 @@ void GUIWindow_GameKeyBindings::Update() {
 
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ВПЕРЁД", 0, 0, 0);
+                                         "FORWARD", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 142, GameMenuUI_GetKeyBindingColor(0),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[0]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 163,
                                          ui_gamemenu_keys_action_name_color,
-                                         "НАЗАД", 0, 0, 0);
+                                         "BACKWARD", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 163, GameMenuUI_GetKeyBindingColor(1),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[1]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 184,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ВЛЕВО", 0, 0, 0);
+                                         "LEFT", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 184, GameMenuUI_GetKeyBindingColor(2),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[2]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 205,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ВПРАВО", 0, 0, 0);
+                                         "RIGHT", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 205, GameMenuUI_GetKeyBindingColor(3),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[3]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 226,
                                          ui_gamemenu_keys_action_name_color,
-                                         "КРИК", 0, 0, 0);
+                                         "YELL", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 226, GameMenuUI_GetKeyBindingColor(4),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[4]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 247,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ПРЫЖОК", 0, 0, 0);
+                                         "JUMP", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 247, GameMenuUI_GetKeyBindingColor(5),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[5]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 268,
                                          ui_gamemenu_keys_action_name_color,
-                                         "П.РЕЖИМ", 0, 0, 0);
+                                         "COMBAT", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 268, GameMenuUI_GetKeyBindingColor(6),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[6]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 142,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ПРИМ. ЗАКЛ.", 0, 0, 0);
+                                         "CAST READY", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 142, GameMenuUI_GetKeyBindingColor(7),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[7]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 163,
                                          ui_gamemenu_keys_action_name_color,
-                                         "АТАКА", 0, 0, 0);
+                                         "ATTACK", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 163, GameMenuUI_GetKeyBindingColor(8),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[8]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 184,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ДЕЙСТВ.", 0, 0, 0);
+                                         "TRIGGER", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 184, GameMenuUI_GetKeyBindingColor(9),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[9]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 205,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ЗАКЛИН.", 0, 0, 0);
+                                         "CAST", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 205, GameMenuUI_GetKeyBindingColor(10),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[10]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 226,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ИГРОК", 0, 0, 0);
+                                         "PASS", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 226, GameMenuUI_GetKeyBindingColor(11),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[11]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 247,
                                          ui_gamemenu_keys_action_name_color,
-                                         "СЛЕД. ИГРОК", 0, 0, 0);
+                                         "CHAR CYCLE", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 247, GameMenuUI_GetKeyBindingColor(12),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[12]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 268,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ЗАДАНИЯ", 0, 0, 0);
+                                         "QUEST", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 268, GameMenuUI_GetKeyBindingColor(13),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[13]), 0,
@@ -408,98 +408,98 @@ void GUIWindow_GameKeyBindings::Update() {
 
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142,
                                          ui_gamemenu_keys_action_name_color,
-                                         "Б. СПРАВКА", 0, 0, 0);
+                                         "QUICK REF", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 142, GameMenuUI_GetKeyBindingColor(14),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[14]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 163,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ОТДЫХ", 0, 0, 0);
+                                         "REST", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 163, GameMenuUI_GetKeyBindingColor(15),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[15]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 184,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ТЕК. ВРЕМЯ", 0, 0, 0);
+                                         "TIME/CAL", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 184, GameMenuUI_GetKeyBindingColor(16),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[16]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 205,
                                          ui_gamemenu_keys_action_name_color,
-                                         "АВТОЗАМЕТКИ", 0, 0, 0);
+                                         "AUTONOTES", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 205, GameMenuUI_GetKeyBindingColor(17),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[17]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 226,
                                          ui_gamemenu_keys_action_name_color,
-                                         "КАРТА", 0, 0, 0);
+                                         "MAP BOOK", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 226, GameMenuUI_GetKeyBindingColor(18),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[18]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 247,
                                          ui_gamemenu_keys_action_name_color,
-                                         "БЕЖАТЬ", 0, 0, 0);
+                                         "ALWAYS RUN", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 247, GameMenuUI_GetKeyBindingColor(19),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[19]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 268,
                                          ui_gamemenu_keys_action_name_color,
-                                         "СМ. ВВЕРХ", 0, 0, 0);
+                                         "LOOK UP", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 127, 268, GameMenuUI_GetKeyBindingColor(20),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[20]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 142,
                                          ui_gamemenu_keys_action_name_color,
-                                         "СМ. ВНИЗ", 0, 0, 0);
+                                         "LOOK DOWN", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 142, GameMenuUI_GetKeyBindingColor(21),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[21]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 163,
                                          ui_gamemenu_keys_action_name_color,
-                                         "СМ. ВПЕРЁД", 0, 0, 0);
+                                         "CTR VIEW", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 163, GameMenuUI_GetKeyBindingColor(22),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[22]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 184,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ПРИБЛИЗ", 0, 0, 0);
+                                         "ZOOM IN", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 184, GameMenuUI_GetKeyBindingColor(23),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[23]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 205,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ОТДАЛИТЬ", 0, 0, 0);
+                                         "ZOOM OUT", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 205, GameMenuUI_GetKeyBindingColor(24),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[24]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 226,
                                          ui_gamemenu_keys_action_name_color,
-                                         "П. ВВЕРХ", 0, 0, 0);
+                                         "FLY UP", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 226, GameMenuUI_GetKeyBindingColor(25),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[25]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 247,
                                          ui_gamemenu_keys_action_name_color,
-                                         "П. ВНИЗ", 0, 0, 0);
+                                         "FLY DOWN", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 247, GameMenuUI_GetKeyBindingColor(26),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[26]), 0,
             0, 0);
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 268,
                                          ui_gamemenu_keys_action_name_color,
-                                         "ПРИЗЕМЛ", 0, 0, 0);
+                                         "LAND", 0, 0, 0);
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 268, GameMenuUI_GetKeyBindingColor(27),
             pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[27]), 0,
@@ -1289,7 +1289,7 @@ void GameUI_WritePointedObjectStatusString() {
             pY <= (window->GetHeight() - 1) * 0.73125) {
             if (!pViewport->Contains(pX, pY)) {
                 if (uLastPointedObjectID != 0) {
-                    game_ui_status_bar_string[0] = 0;
+                    game_ui_status_bar_string.clear();
                     bForceDrawFooter = 1;
                 }
                 uLastPointedObjectID = 0;
@@ -1306,7 +1306,7 @@ void GameUI_WritePointedObjectStatusString() {
                         .uFlags &
                     0x10) {
                     pMouse->uPointingObjectID = 0;
-                    game_ui_status_bar_string[0] = 0;
+                    game_ui_status_bar_string.clear();
                     bForceDrawFooter = 1;
                     uLastPointedObjectID = 0;
                     return;
@@ -1365,7 +1365,7 @@ void GameUI_WritePointedObjectStatusString() {
                         GameUI_StatusBar_Set(newString);
                         if (pMouse->uPointingObjectID == 0 &&
                             uLastPointedObjectID != 0) {
-                            game_ui_status_bar_string[0] = 0;
+                            game_ui_status_bar_string.clear();
                             bForceDrawFooter = 1;
                         }
                         uLastPointedObjectID = pMouse->uPointingObjectID;
@@ -1373,7 +1373,7 @@ void GameUI_WritePointedObjectStatusString() {
                     }
                 }
                 pMouse->uPointingObjectID = 0;
-                game_ui_status_bar_string[0] = 0;
+                game_ui_status_bar_string.clear();
                 bForceDrawFooter = 1;
                 uLastPointedObjectID = 0;
                 return;
@@ -1381,7 +1381,7 @@ void GameUI_WritePointedObjectStatusString() {
                 if (pickedObjectPID >= 0x2000000) {
                     pMouse->uPointingObjectID = 0;
                     if (uLastPointedObjectID != 0) {
-                        game_ui_status_bar_string[0] = 0;
+                        game_ui_status_bar_string.clear();
                         bForceDrawFooter = 1;
                     }
                     uLastPointedObjectID = 0;
@@ -1399,7 +1399,7 @@ void GameUI_WritePointedObjectStatusString() {
                 GameUI_StatusBar_Set(pText);  // intentional fallthrough
             }
             if (pMouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
-                game_ui_status_bar_string[0] = 0;
+                game_ui_status_bar_string.clear();
                 bForceDrawFooter = 1;
             }
             uLastPointedObjectID = pMouse->uPointingObjectID;
@@ -1411,7 +1411,7 @@ void GameUI_WritePointedObjectStatusString() {
             if (Chest::ChestUI_WritePointedObjectStatusString()) {
                 return;
             } else if (uLastPointedObjectID != 0) {  // not found so reset
-                game_ui_status_bar_string[0] = 0;
+                game_ui_status_bar_string.clear();
                 bForceDrawFooter = 1;
             }
             uLastPointedObjectID = 0;
@@ -1453,7 +1453,7 @@ void GameUI_WritePointedObjectStatusString() {
                         pickedObjectID >= 5000) {
                         // if (pMouse->uPointingObjectID == 0) {
                         if (uLastPointedObjectID != 0) {
-                            game_ui_status_bar_string[0] = 0;
+                            game_ui_status_bar_string.clear();
                             bForceDrawFooter = 1;
                         }
                         //}
@@ -1551,7 +1551,7 @@ void GameUI_WritePointedObjectStatusString() {
 
             // ?? if we get here nothing is curos over??
             if (uLastPointedObjectID != 0) {  // not found so reset
-                game_ui_status_bar_string[0] = 0;
+                game_ui_status_bar_string.clear();
                 bForceDrawFooter = 1;
             }
             uLastPointedObjectID = 0;
@@ -1580,7 +1580,7 @@ void GameUI_WritePointedObjectStatusString() {
         {
         if (uLastPointedObjectID != 0)
         {
-        game_ui_status_bar_string[0] = 0;
+        game_ui_status_bar_string.clear();
         bForceDrawFooter = 1;
         }
         uLastPointedObjectID = 0;
@@ -1589,7 +1589,7 @@ void GameUI_WritePointedObjectStatusString() {
         pItemGen = (ItemGen *)((char *)&pParty->pPickedItem + 36 * (v16 + 12 *
         (unsigned int)window_SpeakInHouse->ptr_1C) + 4);
         GameUI_StatusBar_Set(pItemGen->GetDisplayName());
-        game_ui_status_bar_string[0] = 0;
+        game_ui_status_bar_string.clear();
         bForceDrawFooter = 1;
         uLastPointedObjectID = 0;
         return;
@@ -1672,7 +1672,7 @@ void GameUI_WritePointedObjectStatusString() {
 
     // pMouse->uPointingObjectID = sub_46A99B(); //for software
     if (uLastPointedObjectID != 0) {
-        game_ui_status_bar_string[0] = 0;
+        game_ui_status_bar_string.clear();
         bForceDrawFooter = 1;
     }
     uLastPointedObjectID = 0;
@@ -2601,4 +2601,118 @@ __int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing
     }
     // while ( (signed int)v3 < (signed int)&pOverlayList->pOverlays );
     return result;
+}
+
+
+GUIWindow_DebugMenu::GUIWindow_DebugMenu()
+    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+
+    pEventTimer->Pause();
+    int width = 108;
+    int height = 20;
+
+    game_ui_menu_options = assets->GetImage_ColorKey("options", 0x7FF);
+
+    GUIButton *pBtn_DebugTownPortal = CreateButton(13, 140, width, height, 1, 0, UIMSG_DebugTownPortal, 0, 0, "DEBUG TOWN PORTAL");
+    GUIButton *pBtn_DebugGiveGold = CreateButton(127, 140, width, height, 1, 0, UIMSG_DebugGiveGold, 0, 0, "DEBUG GIVE GOLD (10000)");
+    GUIButton *pBtn_DebugGiveEXP = CreateButton(241, 140, width, height, 1, 0, UIMSG_DebugGiveEXP, 0, 0, "DEBUG GIVE EXP (20000)");
+    GUIButton *pBtn_DebugGiveSkillP = CreateButton(354, 140, width, height, 1, 0, UIMSG_DebugGiveSkillP, 0, 0, "DEBUG GIVE SKILL POINT (50)");
+
+    GUIButton *pBtn_DebugLearnSkill = CreateButton(13, 167, width, height, 1, 0, UIMSG_DebugLearnSkills, 0, 0, "DEBUG LEARN CLASS SKILLS");
+    GUIButton *pBtn_DebugRemoveGold = CreateButton(127, 167, width, height, 1, 0, UIMSG_DebugTakeGold, 0, 0, "DEBUG REMOVE GOLD");
+    GUIButton *pBtn_DebugAddFood = CreateButton(241, 167, width, height, 1, 0, UIMSG_DebugGiveFood, 0, 0, "DEBUG GIVE FOOD (20)");
+    GUIButton *pBtn_DebugTakeFood = CreateButton(354, 167, width, height, 1, 0, UIMSG_DebugTakeFood, 0, 0, "DEBUG REMOVE FOOD");
+
+    GUIButton *pBtn_DebugCycleAlign = CreateButton(13, 194, width, height, 1, 0, UIMSG_DebugCycleAlign, 0, 0, "DEBUG CYCLE ALIGNMENT");
+    GUIButton *pBtn_DebugWizardEye = CreateButton(127, 194, width, height, 1, 0, UIMSG_DebugWizardEye, 0, 0, "DEBUG TOGGLE WIZARD EYE");
+    GUIButton *pBtn_DebugAllMagic = CreateButton(241, 194, width, height, 1, 0, UIMSG_DebugAllMagic, 0, 0, "DEBUG TOGGLE All MAGIC");
+    GUIButton *pBtn_DebugTerrain = CreateButton(354, 194, width, height, 1, 0, UIMSG_DebugTerrain, 0, 0, "DEBUG TOGGLE TERRAIN");
+
+    GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, 0, "DEBUG TOGGLE LIGHTMAP DECAL");
+    GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, 0, "DEBUG TOGGLE TURBO SPEED");
+    GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, 0, "DEBUG TOGGLE ACTORS");
+    GUIButton *pBtn_DebugDrawDist = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugDrawDist, 0, 0, "DEBUG TOGGLE EXTENDED DRAW DISTANCE");
+
+    GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, 0, "DEBUG TOGGLE SNOW");
+    GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, 0, "DEBUG TOGGLE PORTAL OUTLINES");
+    GUIButton *pBtn_DebugPickedFace = CreateButton(241, 248, width, height, 1, 0, UIMSG_DebugPickedFace, 0, 0, "DEBUG TOGGLE SHOW PICKED FACE");
+    GUIButton *pBtn_DebugShowFPS = CreateButton(354, 248, width, height, 1, 0, UIMSG_DebugShowFPS, 0, 0, "DEBUG TOGGLE SHOW FPS");
+
+    GUIButton *pBtn_DebugSeasonsChange = CreateButton(13, 275, width, height, 1, 0, UIMSG_DebugSeasonsChange, 0, 0, "DEBUG TOGGLE SEASONS CHANGE");
+    GUIButton *pBtn_DebugFarClipToggle = CreateButton(127, 275, width, height, 1, 0, UIMSG_DebugFarClip, 0, 0, "DEBUG TOGGLE FAR CLIP DISTANCE");
+    GUIButton *pBtn_DebugGenItem = CreateButton(241, 275, width, height, 1, 0, UIMSG_DebugGenItem, 0, 0, "DEBUG GENERATE RANDOM ITEM");
+    GUIButton *pBtn_DebugSpecialItem = CreateButton(354, 275, width, height, 1, 0, UIMSG_DebugSpecialItem, 0, 0, "DEBUG GENERATE RANDOM SPECIAL ITEM");
+
+    //
+
+    GUIButton *pBtn_DebugKillChar = CreateButton(13, 329, width, height, 1, 0, UIMSG_DebugKillChar, 0, 0, "DEBUG KILL SELECTED CHARACTER");
+    GUIButton *pBtn_DebugEradicate = CreateButton(127, 329, width, height, 1, 0, UIMSG_DebugEradicate, 0, 0, "DEBUG ERADICATE SELECTED CHARACTER");
+    GUIButton *pBtn_DebugNoDamage = CreateButton(241, 329, width, height, 1, 0, UIMSG_DebugNoDamage, 0, 0, "DEBUG TOGGLE NO DAMAGE");
+    GUIButton *pBtn_DebugFullHeal = CreateButton(354, 329, width, height, 1, 0, UIMSG_DebugFullHeal, 0, 0, "DEBUG FULLY HEAL SELECTED CHARACTER");
+}
+
+void GUIWindow_DebugMenu::Update() {
+    render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f,
+        pViewport->uViewportTL_Y / 480.0f,
+        game_ui_menu_options);
+
+    buttonbox(13, 140, "Town Portal", engine->config->debug_town_portal);
+    buttonbox(127, 140, "Give Gold", 2);
+    buttonbox(241, 140, "Give EXP", 2);
+    buttonbox(354, 140, "Give Skill", 2);
+
+    buttonbox(13, 167, "Learn Skills", 2);
+    buttonbox(127, 167, "Take Gold", 2);
+    buttonbox(241, 167, "Give Food", 2);
+    buttonbox(354, 167, "Take Food", 2);
+
+    buttonbox(13, 194, "Alignment", pParty->alignment);
+    buttonbox(127, 194, "WizardEye", engine->config->debug_wizard_eye);
+    buttonbox(241, 194, "All Magic", engine->config->debug_all_magic);
+    buttonbox(354, 194, "Terrain", engine->config->debug_terrain);
+
+    buttonbox(13, 221, "Lightmap", engine->config->debug_lightmaps_decals);
+    buttonbox(127, 221, "Turbo", engine->config->debug_turbo_speed);
+    buttonbox(241, 221, "Actors", engine->config->no_actors);
+    buttonbox(354, 221, "Draw Dist", engine->config->extended_draw_distance);
+
+    buttonbox(13, 248, "Snow", engine->config->allow_snow);
+    buttonbox(127, 248, "Portal Lines", engine->config->debug_portal_outlines);
+    buttonbox(241, 248, "Picked Face", engine->config->show_picked_face);
+    buttonbox(354, 248, "Show FPS", engine->config->show_fps);
+
+    buttonbox(13, 275, "Seasons", engine->config->seasons_change);
+    buttonbox(127, 275, "Far Clip", pODMRenderParams->far_clip == 0x6000);
+    buttonbox(241, 275, "Gen Item", 2);
+    buttonbox(354, 275, "Special Item", 2);
+
+    // times ??
+    // conditions ??
+
+    buttonbox(13, 329, "Dead", 2);
+    buttonbox(127, 329, "Eradicate", 2);
+    buttonbox(241, 329, "No Damage", engine->config->no_damage);
+    buttonbox(354, 329, "Full Heal", 2);
+
+    viewparams->bRedrawGameUI = true;
+}
+
+void buttonbox(int x, int y, char* text, int col) {
+    int width = 108;
+    int height = 20;
+    render->FillRectFast(x, y, width+1, height+1, Color16(50, 50, 50));
+
+    render->RasterLine2D(x-1, y-1, x+width+1, y-1, Color16(0xE1u, 255, 0x9Bu));
+    render->RasterLine2D(x-1, y-1, x-1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
+    render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
+    render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
+
+    uint colour = ui_character_condition_severe_color;
+    if (col == 2) {
+        colour = 0;
+    }
+    if (col == 1) {
+        colour = ui_character_bonus_text_color;
+    }
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, x+1, y+2, colour, text, 0, 0, 0);
 }

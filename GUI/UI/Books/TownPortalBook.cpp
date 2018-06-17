@@ -21,9 +21,9 @@ static std::array<Image *, 6>
 
 Image *ui_book_townportal_background = nullptr;
 
-GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(const char *a1)
+GUIWindow_TownPortalBook::GUIWindow_TownPortalBook()  // const char *a1)
     : GUIWindow_Book() {
-    this->sHint = a1;  // inherited from GUIWindow::GUIWindow
+    // this->sHint = a1;  // inherited from GUIWindow::GUIWindow
     this->ptr_1C =
         (void *)WINDOW_TownPortal;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
@@ -83,7 +83,7 @@ void GUIWindow_TownPortalBook::Update() {
         PARTY_QUEST_FOUNTAIN_NIGHON,     PARTY_QUEST_FOUNTAIN_EVENMORN_ISLE,
         PARTY_QUEST_FOUNTAIN_CELESTIA,   PARTY_QUEST_FOUNTAIN_THE_PIT};
     for (uint i = 0; i < 6; ++i) {
-        if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[i]))
+        if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[i]) || engine->config->debug_town_portal)
             render->ZDrawTextureAlpha(pTownPortalBook_xs[i] / 640.0f,
                                       pTownPortalBook_ys[i] / 480.0f,
                                       ui_book_townportal_icons[i], i + 1);
@@ -93,7 +93,7 @@ void GUIWindow_TownPortalBook::Update() {
     v3 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
 
     if (v3) {
-        if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[v3 - 1]))
+        if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[v3 - 1]) || engine->config->debug_town_portal)
             render->DrawTextureAlphaNew(pTownPortalBook_xs[v3 - 1] / 640.0f,
                                         pTownPortalBook_ys[v3 - 1] / 480.0f,
                                         ui_book_townportal_icons[v3 - 1]);

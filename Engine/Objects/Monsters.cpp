@@ -1191,7 +1191,7 @@ void MonsterStats::Initialize() {
 //----- (0044FA08) --------------------------------------------------------
 signed __int16 MonsterList::GetMonsterIDByName(const char *pMonsterName) {
     if (!pMonsterName) return -1;
-    for (signed __int16 i = 1; i <= uNumMonsters; ++i) {
+    for (signed __int16 i = 0; i <= uNumMonsters; ++i) {
         if ((!_stricmp(pMonsters[i].pMonsterName, pMonsterName))) return i;
     }
     Error("Monster not found: %s", pMonsterName);

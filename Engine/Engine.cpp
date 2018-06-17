@@ -739,13 +739,7 @@ void Engine::OutlineSelection() {
     }
 }
 
-//----- (0042FBDD) --------------------------------------------------------
-void sub_42FBDD() {
-    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
-    render->DrawTextureAlphaNew(pBtn_YES->uX / 640.0f, pBtn_YES->uY / 480.0f,
-                                pBtn_YES->vTextures[0]);
-    render->Present();
-}
+
 
 //----- (0042FC15) --------------------------------------------------------
 void CloseWindowBackground() {
@@ -1479,7 +1473,7 @@ unsigned int GetGravityStrength() {
 void GameUI_StatusBar_Update(bool force_hide) {
     if (force_hide ||
         game_ui_status_bar_event_string_time_left &&
-            OS_GetTime() >= game_ui_status_bar_event_string_time_left) {
+            OS_GetTime() >= game_ui_status_bar_event_string_time_left && !pEventTimer->bPaused) {
         game_ui_status_bar_event_string_time_left = 0;
     }
 }
