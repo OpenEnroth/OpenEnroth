@@ -169,20 +169,4 @@ extern SoundList *pSoundList;
 
 extern std::array<float, 10> pSoundVolumeLevels;
 
-#pragma pack(push, 1)
-struct PartySpells {
-    int AddPartySpellSound(int uSoundID, int a6);
-
-    char pSounds[44744];
-    int field_AEC8[45];
-    int field_AF7C[18];
-    int field_AFC4;
-    int pSoundsSizes[2];
-    int pSoundsOffsets[2];
-};
-#pragma pack(pop)
-
-extern std::array<PartySpells, 4> stru_A750F8;
-extern std::array<PartySpells, 4> AA1058_PartyQuickSpellSound;
-
 void PlayLevelMusic();

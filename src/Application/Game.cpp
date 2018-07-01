@@ -1931,13 +1931,7 @@ void Game::EventLoop() {
                         continue;
                     }
                     pPlayers[uActiveCharacter]->uQuickSpell =
-                        quick_spell_at_page +
-                        11 *
-                            pPlayers[uActiveCharacter]->lastOpenedSpellbookPage;
-                    AA1058_PartyQuickSpellSound[uActiveCharacter - 1]
-                        .AddPartySpellSound(
-                            pPlayers[uActiveCharacter]->uQuickSpell,
-                            uActiveCharacter);
+                        quick_spell_at_page + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage;
                     if (uActiveCharacter) pPlayer10->PlaySound(SPEECH_12, 0);
                     byte_506550 = 0;
                     continue;

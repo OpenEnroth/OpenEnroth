@@ -3062,20 +3062,6 @@ void OnPaperdollLeftClick() {
                                     shieldequip + 1;
                                 if (pEquipType != EQUIP_WAND) return;
                                 v50 = _this.uItemID;
-                                if (_this.uItemID) {
-                                    __debugbreak();  // looks like offset in
-                                                     // player's inventory and
-                                                     // wand_lut much like case
-                                                     // in 0042ECB5
-                                    stru_A750F8[uActiveCharacter - 1]
-                                        .AddPartySpellSound(
-                                            wand_spell_ids
-                                                [pPlayers[uActiveCharacter]
-                                                     ->pInventoryItemList[v50]
-                                                     .uItemID -
-                                                 ITEM_WAND_FIRE],
-                                            uActiveCharacter - 1 + 9);
-                                }
                                 break;
                             }
                             v23 = pPlayers[uActiveCharacter]
@@ -3091,23 +3077,7 @@ void OnPaperdollLeftClick() {
                                 v23 + 1;
                             pMouse->RemoveHoldingItem();
                             if (pEquipType != EQUIP_WAND) return;
-                            v50 = pPlayers[uActiveCharacter]
-                                      ->pInventoryItemList[v23]
-                                      .uItemID;
-                            if (v50) {
-                                __debugbreak();  // looks like offset in
-                                                 // player's inventory and
-                                                 // wand_lut much like case in
-                                                 // 0042ECB5
-                                stru_A750F8[uActiveCharacter - 1]
-                                    .AddPartySpellSound(
-                                        wand_spell_ids
-                                            [pPlayers[uActiveCharacter]
-                                                 ->pInventoryItemList[v50]
-                                                 .uItemID -
-                                             ITEM_WAND_FIRE],
-                                        uActiveCharacter - 1 + 9);
-                            }
+                            v50 = pPlayers[uActiveCharacter]->pInventoryItemList[v23].uItemID;
                             break;
                         }
                     }
@@ -3124,15 +3094,6 @@ void OnPaperdollLeftClick() {
                     pPlayers[uActiveCharacter]->pEquipment.uMainHand = v26 + 1;
                     pMouse->RemoveHoldingItem();
                     if (pEquipType != EQUIP_WAND) return;
-                    if (pPlayers[uActiveCharacter]
-                            ->pInventoryItemList[v26]
-                            .uItemID)
-                        stru_A750F8[uActiveCharacter - 1].AddPartySpellSound(
-                            wand_spell_ids[pPlayers[uActiveCharacter]
-                                               ->pInventoryItemList[v26]
-                                               .uItemID -
-                                           ITEM_WAND_FIRE],
-                            uActiveCharacter - 1 + 9);
                     break;
                 }
                 --mainhandequip;
@@ -3153,13 +3114,6 @@ void OnPaperdollLeftClick() {
                 if (pEquipType == EQUIP_WAND) v50 = _this.uItemID;
                 if (twohandedequip)
                     pPlayers[uActiveCharacter]->pEquipment.uShield = 0;
-                if (v50) {  //взять жезл
-                    __debugbreak();  // looks like offset in player's inventory
-                                     // and wand_lut much like case in 0042ECB5
-                    stru_A750F8[uActiveCharacter - 1].AddPartySpellSound(
-                        wand_spell_ids[v50 - ITEM_WAND_FIRE],
-                        uActiveCharacter - 1 + 9);
-                }
                 break;
                 // ---------------------------take two hands(взять двумя
                 // руками)---------------------------------

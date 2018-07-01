@@ -8,8 +8,9 @@
 
 #include "Engine/Objects/Player.h"
 #include "Engine/Strings.h"
+#include "Engine/Party.h"
 
-enum UIMessageType : unsigned __int32 {
+enum UIMessageType : uint32_t {
     UIMSG_0 = 0,
 
     UIMSG_ChangeGameState = 5,
