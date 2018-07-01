@@ -1,6 +1,6 @@
-#include <windows.h>
-
 #include "Engine/Time.h"
+
+#include <chrono>
 
 #include "IO/Keyboard.h"
 
@@ -8,8 +8,9 @@ Timer *pMiscTimer = new Timer;
 Timer *pEventTimer;
 
 //----- (00426317) --------------------------------------------------------
-unsigned __int64 Timer::Time() {
-    unsigned __int64 v2 = TIME_QUANT * timeGetTime() / 1000;
+uint64_t Timer::Time() {
+    std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+    uint64_t v2 = TIME_QUANT * ms.count() / 1000;
     if (v2 < uStartTime) uStartTime = 0;
     return v2;
 }
@@ -55,7 +56,7 @@ void Timer::Update() {
     // signed int v3; // eax@3
     // char v4; // zf@5
 
-    unsigned __int64 new_time = Time();
+    uint64_t new_time = Time();
     while (new_time <= uStartTime) new_time = Time();
 
     uTimeElapsed = new_time - uStartTime;

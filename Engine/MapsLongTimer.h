@@ -6,18 +6,18 @@
 struct MapsLongTimer {
     GameTime NextStartTime;  // timer will either fire event at this time (type
                              // 2, field_C == 0)
-    __int16 timer_evt_ID;
-    __int16 timer_evt_seq_num;
-    __int16 time_left_to_fire;
-    __int16 IntervalHalfMins;  // or fire on these intervals (type 1)
-    __int16 YearsInterval;
-    __int16 MonthsInterval;
-    __int16 WeeksInterval;
-    __int16 HoursInterval;
-    __int16 MinutesInterval;
-    __int16 SecondsInterval;
-    __int16 timer_evt_type;
-    __int16 field_1E;
+    int16_t timer_evt_ID;
+    int16_t timer_evt_seq_num;
+    int16_t time_left_to_fire;
+    int16_t IntervalHalfMins;  // or fire on these intervals (type 1)
+    int16_t YearsInterval;
+    int16_t MonthsInterval;
+    int16_t WeeksInterval;
+    int16_t HoursInterval;
+    int16_t MinutesInterval;
+    int16_t SecondsInterval;
+    int16_t timer_evt_type;
+    int16_t field_1E;
 };
 #pragma pack(pop)
 extern MapsLongTimer MapsLongTimersList[100];  // 5B5928

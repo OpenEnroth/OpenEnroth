@@ -406,8 +406,7 @@ PMemBuffer AudioPlayer::LoadSound(const std::string &pSoundName) {
     } else {
         PMemBuffer compressed = AllocMemBuffer(header.uCompressedSize);
         fAudioSnd.read((char*)compressed->GetData(), header.uCompressedSize);
-        zlib::Uncompress((void *)buffer->GetData(), &header.uDecompressedSize,
-                         (void *)compressed->GetData(), header.uCompressedSize);
+        buffer = zlib::Uncompress(compressed);
     }
 
     return buffer;

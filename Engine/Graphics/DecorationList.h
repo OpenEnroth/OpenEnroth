@@ -70,6 +70,6 @@ class DecorationList {
     std::vector<DecorationDesc> pDecorations;
 };
 
-extern struct DecorationList *pDecorationList;
+extern class DecorationList *pDecorationList;
 
 void RespawnGlobalDecorations();
