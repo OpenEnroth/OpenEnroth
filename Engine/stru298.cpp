@@ -1,7 +1,7 @@
 #include "Engine/stru298.h"
 
 //----- (0040261D) --------------------------------------------------------
-void stru298::Add(__int16 uID, __int16 a3, __int16 x, __int16 y, __int16 z,
+void stru298::Add(int16_t uID, int16_t a3, int16_t x, int16_t y, int16_t z,
                   char a7, char a8) {
     if (count < 100) {
         pIDs[count] = uID;

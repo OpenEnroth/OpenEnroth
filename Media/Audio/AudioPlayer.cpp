@@ -21,9 +21,6 @@ int sLastTrackLengthMS;
 AudioPlayer *pAudioPlayer;
 SoundList *pSoundList;
 
-std::array<PartySpells, 4> stru_A750F8;
-std::array<PartySpells, 4> AA1058_PartyQuickSpellSound;
-
 std::array<float, 10> pSoundVolumeLevels = {
     {0.0000000f, 0.1099999f, 0.2199999f, 0.3300000f, 0.4399999f, 0.5500000f,
      0.6600000f, 0.7699999f, 0.8799999f, 0.9700000f}};
@@ -406,8 +403,7 @@ PMemBuffer AudioPlayer::LoadSound(const std::string &pSoundName) {
     } else {
         PMemBuffer compressed = AllocMemBuffer(header.uCompressedSize);
         fAudioSnd.read((char*)compressed->GetData(), header.uCompressedSize);
-        zlib::Uncompress((void *)buffer->GetData(), &header.uDecompressedSize,
-                         (void *)compressed->GetData(), header.uCompressedSize);
+        buffer = zlib::Uncompress(compressed);
     }
 
     return buffer;
@@ -430,26 +426,3 @@ void AudioPlayer::PlaySpellSound(unsigned int spell, unsigned int pid) {
     PlaySound((SoundID)word_4EE088_sound_ids[spell], pid, 0, -1, 0, 0);
 }
 
-int PartySpells::AddPartySpellSound(int uSoundID, int a6) {
-    static_assert(sizeof(PartySpells) == 45016, "Wrong type size");
-
-    int v3 = 0;
-    int result = word_4EE088_sound_ids[uSoundID];
-
-    //  int a2a = word_4EE088_sound_ids[uSoundID];
-    if (word_4EE088_sound_ids[uSoundID]) {
-        for (int v9 = 0; v9 < 2; ++v9) {
-            //      unsigned int v7 = a2a++;
-            int v8;
-            //      result = pSoundList->LoadSound(v7, (char *)this + v3, 44744
-            //      - v3, &v8, a6);
-            if (!result) break;
-            a6 += 4;
-            result = v8 + 256;
-            this->pSoundsOffsets[v9] = v3;
-            v3 += result;
-            this->pSoundsSizes[v9] = v8 + 256;
-        }
-    }
-    return result;
-}

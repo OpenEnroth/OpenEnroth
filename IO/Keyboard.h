@@ -1,7 +1,7 @@
 #pragma once
 
 /*  284 */
-enum InputAction : __int32 {
+enum InputAction : int32_t {
     INPUT_MoveForward = 0x0,
     INPUT_MoveBackwards = 0x1,
     INPUT_TurnLeft = 0x2,
@@ -34,7 +34,7 @@ enum InputAction : __int32 {
     INPUT_StrafeRight = 0x1D,
 };
 
-enum KeyToggleType : __int32 {
+enum KeyToggleType : int32_t {
     TOGGLE_Continuously = 0x0,
     TOGGLE_OneTimePress = 0x1,
 };
@@ -48,7 +48,7 @@ struct KeyboardActionMapping {
     void SetKeyMapping(int uAction, int vKey, KeyToggleType type);
     unsigned int GetActionVKey(enum InputAction eAction);
     const char *GetVKeyDisplayName(unsigned char a1);
-    const unsigned __int8 TranslateKeyNameToKeyCode(const char *Str);
+    const uint8_t TranslateKeyNameToKeyCode(const char *Str);
     void ReadMappings();
     void StoreMappings();
     bool ProcessTextInput(unsigned int a2);
@@ -63,8 +63,8 @@ struct KeyboardActionMapping {
     unsigned int pVirtualKeyCodesMapping[30];
     KeyToggleType pToggleTypes[30];
     int max_input_string_len;
-    __int8 pPressedKeysBuffer[257];
-    unsigned __int8 uNumKeysPressed;
+    char pPressedKeysBuffer[257];
+    uint8_t uNumKeysPressed;
     char field_202;
     char field_203;
     int field_204;

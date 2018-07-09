@@ -1,5 +1,7 @@
 #include "GUI/GUIFont.h"
 
+#include <cstdarg>
+
 #include <sstream>
 
 #include "Engine/Engine.h"

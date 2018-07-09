@@ -14,8 +14,8 @@
 #include <sys/time.h>
 #endif
 
-void OS_MsgBox(const wchar_t *msg, const wchar_t *title) {
-    MessageBoxW(nullptr, msg, title, 0);
+void OS_MsgBox(const char *msg, const char *title) {
+    MessageBoxA(nullptr, msg, title, 0);
 }
 
 unsigned int OS_GetTime() {

@@ -39,25 +39,25 @@ enum BuildingType : unsigned short {
 #pragma pack(push, 1)
 struct _2devent {
     BuildingType uType;
-    unsigned __int16 uAnimationID;
+    uint16_t uAnimationID;
     char *pName;
     const char *pProprieterName;
     const char *pEnterText;
     const char *pProprieterTitle;
-    __int16 field_14;
-    __int16 _state;
-    __int16 _rep;
-    __int16 _per;
-    __int16 generation_interval_days;
-    __int16 field_1E;
+    int16_t field_14;
+    int16_t _state;
+    int16_t _rep;
+    int16_t _per;
+    int16_t generation_interval_days;
+    int16_t field_1E;
     float fPriceMultiplier;
     float flt_24;
-    unsigned __int16 uOpenTime;
-    unsigned __int16 uCloseTime;
-    __int16 uExitPicID;
-    __int16 uExitMapID;
-    __int16 _quest_related;
-    __int16 field_32;
+    uint16_t uOpenTime;
+    uint16_t uCloseTime;
+    int16_t uExitPicID;
+    int16_t uExitMapID;
+    int16_t _quest_related;
+    int16_t field_32;
 };
 #pragma pack(pop)
 

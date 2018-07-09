@@ -824,8 +824,10 @@ MPlayer::MPlayer() {
     if (!libavcodec_initialized) {
         av_log_set_callback(av_logger);
         // Register all available file formats and codecs
+#ifndef FF_API_NEXT
         avcodec_register_all();
         av_register_all();
+#endif
         libavcodec_initialized = true;
     }
 

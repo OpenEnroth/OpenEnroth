@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\Engine/Events2D.h"
+#include "Engine/Events2D.h"
 
 void WeaponShopWares(GUIWindow dialogwin, bool special = 0);
 void ArmorShopWares(GUIWindow dialogwin, bool special = 0);

@@ -62,19 +62,21 @@ bool OpenALSoundProvider::Initialize() {
     const char *defname = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
 
     device = alcOpenDevice(defname);
-    if (!device || CheckError()) {
+    if (device == nullptr) {
+        CheckError();
         log("al: Default sound device not present");
         return false;
     }
 
     context = alcCreateContext(device, nullptr);
-    if (!context || CheckError()) {
+    if (context == nullptr) {
+        CheckError();
         Release();
         return false;
     }
 
-    alcMakeContextCurrent(context);
-    if (CheckError()) {
+    if (alcMakeContextCurrent(context) != ALC_TRUE) {
+        CheckError();
         Release();
         return false;
     }
@@ -223,6 +225,10 @@ OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
 void OpenALSoundProvider::Stream16(StreamingTrackBuffer *buffer,
                                    int num_samples, const void *samples,
                                    bool wait) {
+    if (buffer == nullptr) {
+        return;
+    }
+
     int bytes_per_sample = 2;
 
     int num_processed_buffers = 0;

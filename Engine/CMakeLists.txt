@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 set(ENGINE_SOURCES AssetsManager.cpp
                    Conditions.cpp
                    Events.cpp
+                   ErrorHandling.cpp
                    Localization.cpp
                    LOD.cpp
                    Log.cpp

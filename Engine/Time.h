@@ -74,7 +74,7 @@ struct GameTime {
         return this->Valid();
     }  // unsafe bool was casuing many problems
 
-    operator int() { return this->value; }  // cast operator conversion require
+    operator int() { return static_cast<int>(this->value); }  // cast operator conversion require
 
     static GameTime FromSeconds(int seconds) {
         return GameTime(seconds, 0, 0, 0, 0, 0, 0);

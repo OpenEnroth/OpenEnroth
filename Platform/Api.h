@@ -16,7 +16,7 @@ void OS_GetAppString(const char *pKeyName, char *pOutString, int uBufLen,
                      const char *pDefaultValue);
 void OS_SetAppString(const char *pKey, const char *pString);
 
-void OS_MsgBox(const wchar_t *msg, const wchar_t *title);
+void OS_MsgBox(const char *msg, const char *title);
 void OS_WaitMessage();
 
 void OS_Sleep(int ms);

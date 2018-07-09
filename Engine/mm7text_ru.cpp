@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <cstdarg>
 
 #include "Engine/Engine.h"
 
