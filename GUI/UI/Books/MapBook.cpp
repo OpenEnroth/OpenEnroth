@@ -213,11 +213,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
     unsigned int v51;       // ecx@55
     int v54;                // esi@75
     int v55;                // eax@75
-    double v57;             // st7@85
-    int v60;         // edi@85
-    int v62;         // ebx@85
-    int v63;         // esi@85
-    int v64;                // eax@87
+    // double v57;             // st7@85
+    // int v60;         // edi@85
+    // int v62;         // ebx@85
+    // int v63;         // esi@85
+    // int v64;                // eax@87
     // unsigned __int16 *pPalette_16; // [sp+48014h] [bp-50h]@23
     int map_tile_X;  // [sp+48020h] [bp-44h]@23
     // unsigned char* texture8_data;

@@ -97,8 +97,9 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
            pODMRenderParams->uMapGridCellZ <= 127);
 
     if (bRedraw) {
-        sub_487DA9();
+        //sub_487DA9(); // wipes poly array feild 108 doesnt do anything
     }
+
     if (pParty->uCurrentMinute != pOutdoor->uLastSunlightUpdateMinute)
         pOutdoor->UpdateSunlightVectors();
     pOutdoor->UpdateFog();
@@ -2412,9 +2413,9 @@ void ODM_ProcessPartyActions() {
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
-                    pParty->pPlayers
+                    (pParty->pPlayers
                             [pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1]
-                                .sMana > 0) {
+                                .sMana > 0 || engine->config->debug_all_magic)) {
                     if (pParty->vPosition.z < engine->config->max_flight_height || hovering) {
                         party_new_Z += 30;
                         v113 += 30;
@@ -3352,7 +3353,7 @@ void SetUnderwaterFog() {
 
 //----- (00487DA9) --------------------------------------------------------
 void sub_487DA9() {
-    for (int i = 0; i < 20000; ++i) array_77EC08[i].field_108 = 0;
+    //for (int i = 0; i < 20000; ++i) array_77EC08[i].field_108 = 0;
 }
 
 //----- (004706C6) --------------------------------------------------------
@@ -3753,7 +3754,7 @@ void UpdateActors_ODM() {
 //----- (0047A384) --------------------------------------------------------
 void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
     MapInfo *v4;            // edi@4
-    size_t v7;              // eax@19
+    // size_t v7;              // eax@19
 
     // thisa->AllocSoftwareDrawBuffers();
     pODMRenderParams->Initialize();

@@ -1000,9 +1000,9 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
     unsigned int v7;  // ebx@6
     unsigned int v8;  // ecx@6
     int result;       // eax@7
-    uint8_t v15;      // [sp+11h] [bp-3h]@13
-    uint8_t v16;      // [sp+12h] [bp-2h]@13
-    uint8_t DstBuf;   // [sp+13h] [bp-1h]@13
+    // uint8_t v15;      // [sp+11h] [bp-3h]@13
+    // uint8_t v16;      // [sp+12h] [bp-2h]@13
+    // uint8_t DstBuf;   // [sp+13h] [bp-1h]@13
     void *DstBufa;    // [sp+1Ch] [bp+8h]@10
     void *Sourcea;    // [sp+20h] [bp+Ch]@10
 
@@ -1044,8 +1044,8 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
                                              enum TEXTURE_TYPE eTextureType) {
     int result;        // esi@14
     unsigned int v14;  // eax@21
-    size_t v22;        // ST2C_4@29
-    const void *v23;   // ecx@29
+    // size_t v22;        // ST2C_4@29
+    // const void *v23;   // ecx@29
 
     size_t data_size = 0;
     FILE *pFile = FindContainer(pContainer, &data_size);

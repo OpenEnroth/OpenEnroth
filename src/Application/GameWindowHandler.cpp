@@ -41,6 +41,7 @@ bool GameWindowHandler::OnChar(int c) {
     if (!pKeyActionMap->ProcessTextInput(c) && !viewparams->field_4C) {
         return GUI_HandleHotkey(c);
     }
+    return 0;
 }
 
 void GameWindowHandler::OnMouseLeftClick(int x, int y) {

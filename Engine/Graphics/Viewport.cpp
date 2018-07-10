@@ -263,9 +263,7 @@ bool ActorInteraction(unsigned int id) {
                 if (pNPCStats->pCatchPhrases
                         [pNPCStats->pGroups_copy[pActors[id].uGroup]]) {
                     pParty->uFlags |= 2;
-                    strcpy(byte_5B0938.data(),
-                           pNPCStats->pCatchPhrases
-                               [pNPCStats->pGroups_copy[pActors[id].uGroup]]);
+                    branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]];
                     sub_4451A8_press_any_key(0, 0, 0);
                 }
             }

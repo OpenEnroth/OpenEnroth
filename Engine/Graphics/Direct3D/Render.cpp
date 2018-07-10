@@ -92,6 +92,7 @@ Texture *Render::CreateSprite(const String &name, unsigned int palette_id,
 }
 
 void Render::WritePixel16(int x, int y, uint16_t color) {
+    // do not use this
     unsigned int b = (color & 0x1F) << 3;
     unsigned int g = ((color >> 5) & 0x3F) << 2;
     unsigned int r = ((color >> 11) & 0x1F) << 3;
@@ -476,7 +477,7 @@ SpriteFrame *LevelDecorationChangeSeason(DecorationDesc *desc, int t) {
         case 3:
         case 4:  // spring
         {
-            switch (desc->uSpriteID) {}
+            // switch (desc->uSpriteID) {}
             return pSpriteFrameTable->GetFrame(desc->uSpriteID, t);
         }
 
@@ -1191,69 +1192,6 @@ bool Render::InitializeFullscreen() {
     return true;
 }
 
-void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
-                           int blend_mode) {
-    uint16_t *pSrc;          // eax@2
-    int uSrcTotalWidth;      // ecx@4
-    unsigned int v10;        // esi@9
-    int v21;                 // [sp+Ch] [bp-18h]@8
-    uint16_t *src_surf_pos;  // [sp+10h] [bp-14h]@9
-    int32_t src_width;       // [sp+14h] [bp-10h]@3
-    int32_t src_height;      // [sp+18h] [bp-Ch]@3
-    int uSrcPitch;           // [sp+1Ch] [bp-8h]@5
-
-    if (!pArcomageGame->pBlit_Copy_pixels) return;
-
-    // dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y
-    // * render->uTargetSurfacePitch];
-    src_width = pSrcRect->z - pSrcRect->x;
-    src_height = pSrcRect->w - pSrcRect->y;
-
-    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
-        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
-    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
-        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
-
-    pSrc = pArcomageGame->pBlit_Copy_pixels;
-    uSrcPitch = uSrcTotalWidth;
-    src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
-    v10 = 0x1F;
-    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
-    if (blend_mode == 2) {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i) {
-            for (int j = 0; j < src_width; ++j) {
-                if (*src_surf_pos != v10) {
-                    if (pTargetPoint->x + j >= 0 &&
-                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
-                        pTargetPoint->y + i >= 0 &&
-                        pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i,
-                                     *src_surf_pos);
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    } else {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i) {
-            for (int j = 0; j < src_width; ++j) {
-                if (*src_surf_pos != v10) {
-                    if (pTargetPoint->x + j >= 0 &&
-                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
-                        pTargetPoint->y + i >= 0 &&
-                        pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i,
-                                     (0x7BEF & (*src_surf_pos / 2)));
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    }
-}
-
 bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
                           float z_bias) {
     // For outdoor terrain and indoor light (VII)(VII)
@@ -1318,6 +1256,72 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
     return true;
 }
 
+void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
+    int blend_mode) {
+    uint16_t *pSrc;          // eax@2
+    int uSrcTotalWidth;      // ecx@4
+    unsigned int v10;        // esi@9
+    int v21;                 // [sp+Ch] [bp-18h]@8
+    uint16_t *src_surf_pos;  // [sp+10h] [bp-14h]@9
+    int32_t src_width;       // [sp+14h] [bp-10h]@3
+    int32_t src_height;      // [sp+18h] [bp-Ch]@3
+    int uSrcPitch;           // [sp+1Ch] [bp-8h]@5
+
+    if (!pArcomageGame->pBlit_Copy_pixels) return;
+
+    src_width = pSrcRect->z - pSrcRect->x;
+    src_height = pSrcRect->w - pSrcRect->y;
+
+    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
+        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
+    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
+        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
+
+    pSrc = pArcomageGame->pBlit_Copy_pixels;
+    uSrcPitch = uSrcTotalWidth;
+    src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
+    v10 = 0x1F;
+    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
+
+    Image *temp = Image::Create(src_width, src_height, IMAGE_FORMAT_A8R8G8B8);
+    uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
+    if (blend_mode == 2) {
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i) {
+            for (int j = 0; j < src_width; ++j) {
+                if (*src_surf_pos != v10) {
+                    if (pTargetPoint->x + j >= 0 &&
+                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
+                        pTargetPoint->y + i >= 0 &&
+                        pTargetPoint->y + i <= window->GetHeight() - 1)
+                        temppix[j + i * src_width] = Color32(*src_surf_pos);
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
+        }
+    }
+    else {
+        uSrcPitch = (uSrcPitch - src_width);
+        for (int i = 0; i < src_height; ++i) {
+            for (int j = 0; j < src_width; ++j) {
+                if (*src_surf_pos != v10) {
+                    if (pTargetPoint->x + j >= 0 &&
+                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
+                        pTargetPoint->y + i >= 0 &&
+                        pTargetPoint->y + i <= window->GetHeight() - 1)
+                        temppix[j + i * src_width] = Color32((0x7BEF & (*src_surf_pos / 2)));
+                }
+                ++src_surf_pos;
+            }
+            src_surf_pos += uSrcPitch;
+        }
+    }
+    render->DrawTextureAlphaNew(pTargetPoint->x / 640., pTargetPoint->y / 480., temp);
+    temp->Release();
+}
+
 void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
     uint16_t *pSrc;          // eax@2
     int uSrcTotalWidth;      // ecx@4
@@ -1331,8 +1335,6 @@ void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
         return;
     }
 
-    // dest_surf_pos = &render->pTargetSurface[pTargetPoint->x + pTargetPoint->y
-    // * render->uTargetSurfacePitch];
     src_width = pSrcRect->z - pSrcRect->x;
     src_height = pSrcRect->w - pSrcRect->y;
     if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
@@ -1345,6 +1347,9 @@ void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
     src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
     v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
 
+    Image *temp = Image::Create(src_width, src_height, IMAGE_FORMAT_A8R8G8B8);
+    uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
     if (blend_mode == 2) {
         uSrcPitch = (uSrcPitch - src_width);
         for (int i = 0; i < src_height; ++i) {
@@ -1354,13 +1359,13 @@ void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
                         pTargetPoint->x + j <= window->GetWidth() - 1 &&
                         pTargetPoint->y + i >= 0 &&
                         pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i,
-                                     *src_surf_pos);
+                        temppix[j + i * src_width] = Color32(*src_surf_pos);
                 }
                 ++src_surf_pos;
             }
             src_surf_pos += uSrcPitch;
         }
+        
     } else {
         uSrcPitch = (uSrcPitch - src_width);
         for (int i = 0; i < src_height; ++i) {
@@ -1370,14 +1375,15 @@ void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
                         pTargetPoint->x + j <= window->GetWidth() - 1 &&
                         pTargetPoint->y + i >= 0 &&
                         pTargetPoint->y + i <= window->GetHeight() - 1)
-                        WritePixel16(pTargetPoint->x + j, pTargetPoint->y + i,
-                                     (0x7BEF & (*src_surf_pos / 2)));
+                        temppix[j + i * src_width] = Color32((0x7BEF & (*src_surf_pos / 2)));
                 }
                 ++src_surf_pos;
             }
             src_surf_pos += uSrcPitch;
         }
     }
+    render->DrawTextureAlphaNew(pTargetPoint->x / 640., pTargetPoint->y / 480., temp);
+    temp->Release();
 }
 
 bool Render::SwitchToWindow() {
@@ -1814,7 +1820,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             }
 
             ErrD3D(pRenderD3D->pDevice->SetTexture(0, 0));  // problem
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
+           ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
                                                        D3DBLEND_INVSRCALPHA));
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
                                                        D3DBLEND_SRCALPHA));
@@ -2688,14 +2694,24 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1,
         pBillboardRenderListD3D[v5].pQuads[i].pos.x = a1->field_104[i].x;
         pBillboardRenderListD3D[v5].pQuads[i].pos.y = a1->field_104[i].y;
 
+
+
+        if (a1->field_104[i].z < 17) a1->field_104[i].z = 17;
+        float rhw = 1.f / a1->field_104[i].z;
+        float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pIndoorCameraD3D->GetFarClip());
+
+
+
         double v10 = a1->field_104[i].z;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             v10 *= 1000.f / 16192.f;
         } else {
             v10 *= 1000.f / pIndoorCameraD3D->GetFarClip();
         }
-        pBillboardRenderListD3D[v5].pQuads[i].pos.z = 1.0 - 1.0 / v10;
-        pBillboardRenderListD3D[v5].pQuads[i].rhw = 1.0 / a1->field_104[i].z;
+
+
+        pBillboardRenderListD3D[v5].pQuads[i].pos.z = 0.9;//z;//1.0 - 1.0 / v10;
+        pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;//1.0 / a1->field_104[i].z;
 
         int v12;
         if (diffuse & 0xFF000000) {
@@ -3462,11 +3478,11 @@ void Render::DrawTextureAlphaNew(float u, float v, Image *image) {
 }
 
 void Render::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
-    int v10;           // eax@5
-    int v12;           // esi@8
-    int v14;           // esi@11
-    unsigned int v15;  // esi@14
-    unsigned int v17;  // ecx@17
+    // int v10;           // eax@5
+    // int v12;           // esi@8
+    // int v14;           // esi@11
+    // unsigned int v15;  // esi@14
+    // unsigned int v17;  // ecx@17
     int v18;           // edx@23
     int uOutXa;        // [sp+20h] [bp+8h]@21
     int *pZBuffer;     // [sp+28h] [bp+10h]@3
@@ -3517,9 +3533,16 @@ void Render::DoRenderBillboards_D3D() {
             SetBillboardBlendOptions(pBillboardRenderListD3D[i].opacity);
         }
 
-        pRenderD3D->pDevice->SetTexture(
-            0, ((TextureD3D *)pBillboardRenderListD3D[i].texture)
-                   ->GetDirect3DTexture());
+        if (pBillboardRenderListD3D[i].texture) {
+            pRenderD3D->pDevice->SetTexture(
+                0, ((TextureD3D *)pBillboardRenderListD3D[i].texture)
+                ->GetDirect3DTexture());
+        } else {
+            auto hwsplat04 = assets->GetBitmap("hwsplat04");
+            ErrD3D(pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)hwsplat04)->GetDirect3DTexture()));
+            //testing 
+        }
+
         ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
             D3DPT_TRIANGLEFAN,
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
@@ -3798,7 +3821,7 @@ int ODM_FarClip(unsigned int uNumVertices) {
 }
 
 void Render::DrawBuildingsD3D() {
-    int v27;  // eax@57
+    // int v27;  // eax@57
     int v49;  // [sp+2Ch] [bp-2Ch]@10
     int v50;  // [sp+30h] [bp-28h]@34
     int v51;  // [sp+34h] [bp-24h]@35
@@ -4982,12 +5005,12 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
     int v8;            // eax@19
     int v9;            // ecx@20
     int v10;           // eax@24
-    unsigned int v14;  // eax@28
+    // unsigned int v14;  // eax@28
     int v15;           // eax@30
     int v16;           // ecx@31
-    unsigned int v17;  // eax@36
+    // unsigned int v17;  // eax@36
     int v21;           // eax@42
-    unsigned int v22;  // eax@43
+    // unsigned int v22;  // eax@43
     int a2;            // [sp+84h] [bp-4h]@23
     BLVFace face;      // [sp+Ch] [bp-7Ch]@1
 

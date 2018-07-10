@@ -99,7 +99,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     Vec3_int_ v701;                 // [sp+D68h] [bp-11Ch]@286
     Vec3_int_ v704;                 // [sp+D74h] [bp-110h]@132
     Vec3_int_ v707;                 // [sp+D80h] [bp-104h]@1127
-    int v710;                       // [sp+D8Ch] [bp-F8h]@1156
+    // int v710;                       // [sp+D8Ch] [bp-F8h]@1156
 
     AIDirection target_direction;  // [sp+DA4h] [bp-E0h]@21
 
@@ -1590,7 +1590,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;
                 }
-                if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana()) {
+                if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() && !engine->config->debug_all_magic) {
                     GameUI_StatusBar_OnEvent(
                         localization->GetString(428));  // Spell failed
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);

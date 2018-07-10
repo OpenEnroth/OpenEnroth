@@ -42,7 +42,7 @@ Icon *IconFrameTable::GetFrame(unsigned int uIconID, unsigned int frame_time) {
 
     if (this->pIcons[uIconID].uFlags & 1 &&
         this->pIcons[uIconID].GetAnimLength() != 0) {
-        int t = frame_time;
+        uint t = frame_time;
 
         t = (t /*/ 8*/) %
             (unsigned __int16)this->pIcons[uIconID].GetAnimLength();

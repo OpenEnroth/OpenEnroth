@@ -1259,8 +1259,8 @@ void GameUI_DrawRightPanelFrames() {
 }
 
 void GameUI_WritePointedObjectStatusString() {
-    GUIWindow *pWindow;                // edi@7
-    GUIButton *pButton;                // ecx@11
+    // GUIWindow *pWindow;                // edi@7
+    // GUIButton *pButton;                // ecx@11
     int requiredSkillpoints;           // ecx@19
     enum UIMessageType pMessageType1;  // esi@24
     int invmatrixindex;                // eax@41
@@ -1276,7 +1276,7 @@ void GameUI_WritePointedObjectStatusString() {
     unsigned int pX;                   // [sp+D4h] [bp-Ch]@1
     unsigned int pY;                   // [sp+D8h] [bp-8h]@1
 
-    int testing;
+    // int testing;
 
     pMouse->uPointingObjectID = 0;
     pMouse->GetClickPos(&pX, &pY);
@@ -1919,7 +1919,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     signed int xpix;       // edi@40
     int pPoint_X;         // edi@72
     int pPoint_Y;         // ebx@72
-    unsigned int lPitch;  // [sp+20h] [bp-34h]@1
+    // unsigned int lPitch;  // [sp+20h] [bp-34h]@1
     signed int pY;        // [sp+20h] [bp-34h]@23
     signed int pX;        // [sp+24h] [bp-30h]@23
     signed int xpixoffset16;       // [sp+24h] [bp-30h]@37

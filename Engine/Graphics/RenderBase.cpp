@@ -113,6 +113,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
         // v0 = (char *)&pSpriteObjects[0].uSectorID;
         // do
         //{
+
         if (!object->uObjectDescID)  // item probably pciked up
             continue;
 
@@ -441,6 +442,8 @@ void RenderBase::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
     billboard->uNumVertices = 4;
 
     float screenspace_projection_factor = a2->screenspace_projection_factor_x;
+    
+    if (a2->screen_space_z < 17) a2->screen_space_z = 17;
 
     float rhw = 1.f / a2->screen_space_z;
     float z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());

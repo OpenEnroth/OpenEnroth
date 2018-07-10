@@ -616,7 +616,7 @@ std::array<std::array<char, 100>, 6> byte_591180;  // idb
 std::array<struct NPCData *, 7>
     HouseNPCData;  // 0 zero element holds standart house npc
 GUIButton *HouseNPCPortraitsButtonsList[6];  // dword_5913F4
-std::array<char, 2000> byte_5B0938;
+String branchless_dialogue_str;
 int EvtTargetObj;                               // 0x5B5920
 int _unused_5B5924_is_travel_ui_drawn = false;  // 005B5924
 int _5B65A8_npcdata_uflags_or_other;

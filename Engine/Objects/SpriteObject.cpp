@@ -54,6 +54,9 @@ SpriteObject::SpriteObject() {
 }
 
 int SpriteObject::Create(int yaw, int pitch, int a4, int a5) {
+    // a4 is speed
+    // a5 is player casted
+
     int angle = yaw;
     if (!uObjectDescID) {
         return -1;
@@ -1009,13 +1012,13 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
     int v91;                // eax@159
     unsigned int v107;      // edx@220
     int v108;        // ebx@225
-    int v110;        // ebx@234
+    // int v110;        // ebx@234
     int v114;               // eax@242
     int v135;        // [sp-4h] [bp-30h]@217
     int v136;               // [sp+Ch] [bp-20h]@208
     int v137;               // [sp+10h] [bp-1Ch]@208
     int v138;        // [sp+14h] [bp-18h]@207
-    int v141;        // [sp+1Ch] [bp-10h]@117
+    // int v141;        // [sp+1Ch] [bp-10h]@117
     uint16_t v150;  // [sp+20h] [bp-Ch]@208
     int v152;        // [sp+24h] [bp-8h]@208
 

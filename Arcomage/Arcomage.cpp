@@ -2300,7 +2300,7 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
             dword_4FAA68 =
                 pCard->draw_extra_card_count + (pCard->field_30 == 1);
             dword_4FAA64 = pCard->draw_extra_card_count;
-            for (uint i = 0; i < pCard->draw_extra_card_count; i++)
+            for (char i = 0; i < pCard->draw_extra_card_count; i++)
                 GetNextCardFromDeck(player_num);
 
             need_to_discard_card =
@@ -2379,7 +2379,7 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
         LABEL_231:
             dword_4FAA68 = pCard->can_draw_extra_card2 + (pCard->field_4D == 1);
             dword_4FAA64 = pCard->can_draw_extra_card2;
-            for (uint i = 0; i < pCard->can_draw_extra_card2; i++)
+            for (char i = 0; i < pCard->can_draw_extra_card2; i++)
                 GetNextCardFromDeck(player_num);
 
             need_to_discard_card =
@@ -2947,7 +2947,7 @@ void GameResultsApply() {
 void ArcomageGame::PrepareArcomage() {
     int v2;      // esi@4
     int v3;      // esi@5
-    int v4;      // edi@5
+    // int v4;      // edi@5
     Rect pXYZW;  // [sp+8h] [bp-1Ch]@5
     Point pXY;   // [sp+18h] [bp-Ch]@5
 

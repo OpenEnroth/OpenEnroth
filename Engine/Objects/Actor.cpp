@@ -3697,8 +3697,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 
 //----- (004BBF61) --------------------------------------------------------
 void Actor::Arena_summon_actor(int monster_id, __int16 x, int y, int z) {
-    int v12;      // ebx@7
-    int v13;      // eax@8
+    // int v12;      // ebx@7
+    // int v13;      // eax@8
     __int16 v16;  // [sp+10h] [bp-4h]@3
 
     if (uNumActors < 500) {
@@ -4034,7 +4034,7 @@ int stru319::FindClosestActor(int pick_depth, int a3, int a4) {
 
 //----- (0042F4DA) --------------------------------------------------------
 bool CheckActors_proximity() {
-    signed int distance;  // edi@1
+    unsigned int distance;  // edi@1
     int for_x;            // ebx@5
     int for_y;            // [sp+Ch] [bp-10h]@5
     int for_z;            // [sp+10h] [bp-Ch]@5

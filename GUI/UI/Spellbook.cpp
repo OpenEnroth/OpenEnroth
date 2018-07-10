@@ -245,24 +245,26 @@ void GUIWindow_Spellbook::Update() {
     // }
 
     Point pt = mouse->GetCursorPos();
-    v10 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
-    if (v10) {
-        if (SBPageCSpellsTextureList[v10]) {
-            pX_coord =
-                pViewport->uViewportTL_X +
-                pIconPos[player->lastOpenedSpellbookPage]
-                        [pSpellbookSpellIndices[player->lastOpenedSpellbookPage]
-                                               [v10]]
-                            .Xpos;
-            pY_coord =
-                pViewport->uViewportTL_Y +
-                pIconPos[player->lastOpenedSpellbookPage]
-                        [pSpellbookSpellIndices[player->lastOpenedSpellbookPage]
-                                               [v10]]
-                            .Ypos;
+    if (pt.x < 640 && pt.y < 480) {
+        v10 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
+        if (v10) {
+            if (SBPageCSpellsTextureList[v10]) {
+                pX_coord =
+                    pViewport->uViewportTL_X +
+                    pIconPos[player->lastOpenedSpellbookPage]
+                    [pSpellbookSpellIndices[player->lastOpenedSpellbookPage]
+                    [v10]]
+                .Xpos;
+                pY_coord =
+                    pViewport->uViewportTL_Y +
+                    pIconPos[player->lastOpenedSpellbookPage]
+                    [pSpellbookSpellIndices[player->lastOpenedSpellbookPage]
+                    [v10]]
+                .Ypos;
 
-            render->DrawTextureAlphaNew(pX_coord / 640.0f, pY_coord / 480.0f,
-                                        SBPageCSpellsTextureList[v10]);
+                render->DrawTextureAlphaNew(pX_coord / 640.0f, pY_coord / 480.0f,
+                    SBPageCSpellsTextureList[v10]);
+            }
         }
     }
 }

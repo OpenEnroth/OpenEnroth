@@ -56,13 +56,13 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
             for (int i = 0; i < face->uNumVertices; i++) {
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.x =
-                    (double)pIndoor->pVertices[face->pVertexIDs[i]].x;
+                    (float)pIndoor->pVertices[face->pVertexIDs[i]].x;
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.y =
-                    (double)pIndoor->pVertices[face->pVertexIDs[i]].y;
+                    (float)pIndoor->pVertices[face->pVertexIDs[i]].y;
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.z =
-                    (double)pIndoor->pVertices[face->pVertexIDs[i]].z;
+                    (float)pIndoor->pVertices[face->pVertexIDs[i]].z;
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
@@ -71,11 +71,11 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
             (Vec3_int_ *)pOutdoor->pBModels[bmodel_id].pVertices.pVertices;
         for (uint i = 0; i < face->uNumVertices; ++i) {
             static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition.x =
-                v[face->pVertexIDs[i]].x;
+                (float)v[face->pVertexIDs[i]].x;
             static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition.y =
-                v[face->pVertexIDs[i]].y;
+                (float)v[face->pVertexIDs[i]].y;
             static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition.z =
-                v[face->pVertexIDs[i]].z;
+                (float)v[face->pVertexIDs[i]].z;
         }
     } else {
         assert(false);

@@ -44,10 +44,10 @@ struct stru6_stru1_indoor_sw_billboard {
     unsigned int uNumVec3sInArray2;
     struct stru160 *pArray2;
     int uNumVertices;
-    local_01 field_14[5];
+    local_01 field_14[5]; // world coords of verts
     int field_64[20];
     float field_B4[20];
-    local_01 field_104[5];
+    local_01 field_104[5]; // billboard coords
 };
 #pragma pack(pop)
 

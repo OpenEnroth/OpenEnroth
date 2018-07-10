@@ -32,8 +32,8 @@ std::array<Vec2_int_, 20> pMonsterArenaPlacements = {{
 }};
 
 void Arena_SelectionFightLevel() {
-    GUIButton *v5;  // eax@18
-    GUIButton *v6;  // esi@19
+    // GUIButton *v5;  // eax@18
+    // GUIButton *v6;  // esi@19
 
     if (pParty->field_7B5_in_arena_quest) {
         if (pParty->field_7B5_in_arena_quest == -1) {

@@ -219,31 +219,31 @@ void SpellFxRenderer::DrawProjectiles() {
 void SpellFxRenderer::
     _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
         SpriteObject *a2, unsigned int uDiffuse, Texture *texture) {
-    SpellFxRenderer *v4;  // edi@1
+    SpellFxRenderer *thisspellfxrend;  // edi@1
     SpriteObject *v5;     // esi@1
     int v6;               // eax@1
     stru6_stru2 *v7;      // eax@2
-    double v8;            // st7@2
-    double v9;            // st6@2
+    double y;            // st7@2
+    double z;            // st6@2
     double v10;           // st7@3
     Particle_sw local_0;  // [sp+8h] [bp-68h]@1
     float x;              // [sp+78h] [bp+8h]@2
 
-    v4 = this;
+    thisspellfxrend = this;
     memset(&local_0, 0, 0x68u);
     v5 = a2;
     v6 = a2->field_54;
     if (v6) {
-        v7 = &v4->array_4[v6 & 0x1F];
+        v7 = &thisspellfxrend->array_4[v6 & 0x1F]; // v7 particle origin?
         x = ((float)a2->vPosition.x - v7->flt_0_x) * 0.5f + v7->flt_0_x;
-        v8 = ((float)v5->vPosition.y - v7->flt_4_y) * 0.5f + v7->flt_4_y;
-        v9 = ((float)v5->vPosition.z - v7->flt_8_z) * 0.5f + v7->flt_8_z;
+        y = ((float)v5->vPosition.y - v7->flt_4_y) * 0.5f + v7->flt_4_y;
+        z = ((float)v5->vPosition.z - v7->flt_8_z) * 0.5f + v7->flt_8_z;
         local_0.type =
             ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
         local_0.uDiffuse = uDiffuse;
         local_0.x = x + 4.0;
-        local_0.y = v8;
-        local_0.z = v9;
+        local_0.y = y;
+        local_0.z = z;
         local_0.r = 0.0;
         local_0.g = 0.0;
         local_0.b = 0.0;
@@ -259,14 +259,14 @@ void SpellFxRenderer::
         particle_engine->AddParticle(&local_0);
         local_0.x = (float)v5->vPosition.x - 4.0f;
         particle_engine->AddParticle(&local_0);
-        v4->array_4[v5->field_54 & 0x1F].flt_0_x = (float)v5->vPosition.x;
-        v4->array_4[v5->field_54 & 0x1F].flt_4_y = (float)v5->vPosition.y;
-        v4->array_4[v5->field_54 & 0x1F].flt_8_z = (float)v5->vPosition.z;
+        thisspellfxrend->array_4[v5->field_54 & 0x1F].flt_0_x = (float)v5->vPosition.x;
+        thisspellfxrend->array_4[v5->field_54 & 0x1F].flt_4_y = (float)v5->vPosition.y;
+        thisspellfxrend->array_4[v5->field_54 & 0x1F].flt_8_z = (float)v5->vPosition.z;
     } else {
-        a2->field_54 = v4->field_0++;
-        v4->array_4[a2->field_54 & 0x1F].flt_0_x = (float)a2->vPosition.x;
-        v4->array_4[a2->field_54 & 0x1F].flt_4_y = (float)a2->vPosition.y;
-        v4->array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
+        a2->field_54 = thisspellfxrend->field_0++;
+        thisspellfxrend->array_4[a2->field_54 & 0x1F].flt_0_x = (float)a2->vPosition.x;
+        thisspellfxrend->array_4[a2->field_54 & 0x1F].flt_4_y = (float)a2->vPosition.y;
+        thisspellfxrend->array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
         v10 = (float)a2->vPosition.x;
         local_0.type =
             ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
@@ -1473,7 +1473,7 @@ int stru6_stru1_indoor_sw_billboard::_4775ED(float a2) {
     // v3 = this->uNumVertices;
     v35 = this;
     if (this->uNumVertices > 0) {
-        v40 = &this->field_64[20];
+        v40 = &this->field_64[20]; // ptr to field b4
         v4 = (char *)&this->field_64[3] + 3;
 
         // while ( 1 )
@@ -1745,7 +1745,7 @@ int stru6_stru1_indoor_sw_billboard::_477927(float a2) {
 }
 
 //----- (00477C61) --------------------------------------------------------
-int stru6_stru1_indoor_sw_billboard::sub_477C61() {
+int stru6_stru1_indoor_sw_billboard::sub_477C61() {  // this calcs feild 64
     // stru6_stru1_indoor_sw_billboard *v1; // ebx@1
     int v2;      // ecx@2
     int v3;      // eax@3
@@ -1761,10 +1761,10 @@ int stru6_stru1_indoor_sw_billboard::sub_477C61() {
     float v13;   // ST24_4@13
     int v14;     // esi@13
     char *v15;   // esi@15
-    // signed int v16; // eax@16
-    //  __int16 v17; // fps@16
-    //  unsigned __int8 v18; // c2@16
-    //  unsigned __int8 v19; // c3@16
+                 // signed int v16; // eax@16
+                 //  __int16 v17; // fps@16
+                 //  unsigned __int8 v18; // c2@16
+                 //  unsigned __int8 v19; // c3@16
     double v20;      // st6@16
     float v21;       // ST18_4@17
     float v22;       // ST2C_4@17
@@ -1856,13 +1856,13 @@ int stru6_stru1_indoor_sw_billboard::sub_477C61() {
         // do
         for (v31 = 3; v31; --v31) {
             v40 = (double)stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX) *
-                  0.0000152587890625;
+                0.0000152587890625;
             v32 = (double)stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX) *
-                  0.0000152587890625;
+                0.0000152587890625;
             v34 = (double)stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY) *
-                  0.0000152587890625;
+                0.0000152587890625;
             v33 = (double)stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY) *
-                  0.0000152587890625;
+                0.0000152587890625;
             // v16 = stru_5C6E00->Sin(pODMRenderParams->rotation_y);
             HEXRAYS_LODWORD(v38) = *(int *)v15;
             // UNDEF(v17);
@@ -1930,7 +1930,7 @@ bool stru6_stru1_indoor_sw_billboard::sub_477F63() {
                16 * this->uNumVertices);
         return this->uNumVertices != 0;
     }
-    v5 = (char *)&this->field_14[20];
+    v5 = (char *)&this->field_14[20]; // ptr to field 64
     for (v6 = 0; v6 < this->uNumVertices; v6++) {
         if (v3 >= *(float *)v5 || *(float *)v5 >= (double)v10) {
             if (v3 < *(float *)v5)
@@ -1955,7 +1955,7 @@ bool stru6_stru1_indoor_sw_billboard::sub_477F63() {
 }
 
 //----- (0047802A) --------------------------------------------------------
-int stru6_stru1_indoor_sw_billboard::sub_47802A() {
+int stru6_stru1_indoor_sw_billboard::sub_47802A() { // covert to billboard coords??
     double v6;       // st7@4
     signed int v16;  // [sp+38h] [bp-Ch]@1
     int a6;          // [sp+3Ch] [bp-8h]@5
@@ -1998,16 +1998,18 @@ int stru6_stru1_indoor_sw_billboard::sub_47802A() {
         }
     } else {
         for (int i = 0; i < this->uNumVertices; i++) {
-            this->field_B4[i * 4 + 20] = (double)pViewport->uScreenCenterX -
+
+            this->field_B4[i * 4 + 20] = (double)pViewport->uScreenCenterX - //104 x
                                          (double)pODMRenderParams->int_fov_rad /
                                              this->field_B4[i * 4] *
                                              this->field_B4[i * 4 + 1];
-            this->field_B4[i * 4 + 21] = (double)pViewport->uScreenCenterY -
+            this->field_B4[i * 4 + 21] = (double)pViewport->uScreenCenterY - //104 y
                                          (double)pODMRenderParams->int_fov_rad /
                                              this->field_B4[i * 4] *
                                              this->field_B4[i * 4 + 2];
-            *((int *)&this->field_B4[i * 4 + 22]) = (int)this->field_B4[i * 4];
-            *((int *)&this->field_B4[i * 4 + 23]) = this->field_B4[i * 4 + 3];
+            *((int *)&this->field_B4[i * 4 + 22]) = (int)this->field_B4[i * 4]; //104 z
+            *((int *)&this->field_B4[i * 4 + 23]) = this->field_B4[i * 4 + 3]; //104 diffuse
+
             if ((double)(signed int)pViewport->uViewportTL_X <=
                     this->field_B4[i * 4 + 20] &&
                 (double)(signed int)pViewport->uViewportBR_X >

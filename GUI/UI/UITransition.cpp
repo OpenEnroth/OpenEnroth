@@ -86,16 +86,16 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
 
-    char filename[40];
+    String filename;
     switch (pParty->alignment) {
         case PartyAlignment_Good:
-            sprintf(filename, "evt%02d-b", const_2());
+            filename = "evt02-b";
             break;
         case PartyAlignment_Neutral:
-            sprintf(filename, "evt%02d", const_2());
+            filename = "evt02";
             break;
         case PartyAlignment_Evil:
-            sprintf(filename, "evt%02d-c", const_2());
+            filename = "evt02-c";
             break;
         default:
             Error("Invalid alignment: %u", pParty->alignment);
@@ -185,19 +185,19 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
 
 GUIWindow_Travel::GUIWindow_Travel()
     : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
-    char pContainer[32];  // [sp+0h] [bp-28h]@1
+    String pContainer;  // [sp+0h] [bp-28h]@1
 
     pEventTimer->Pause();
 
     switch (pParty->alignment) {
         case PartyAlignment_Good:
-            sprintf(pContainer, "evt%02d-b", const_2());
+            pContainer = "evt02-b";
             break;
         case PartyAlignment_Neutral:
-            sprintf(pContainer, "evt%02d", const_2());
+            pContainer = "evt02";
             break;
         case PartyAlignment_Evil:
-            sprintf(pContainer, "evt%02d-c", const_2());
+            pContainer = "evt02-c";
             break;
         default:
             Error("Invalid alignment: %u", pParty->alignment);
