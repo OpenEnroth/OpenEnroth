@@ -503,6 +503,7 @@ char *ChestsSerialize(char *pData) {
 }
 
 char *ChestsDeserialize(char *pData) {
+    vChests.clear();
     uint32_t uNumChests = 0;
     memcpy(&uNumChests, pData, 4);
     pData += 4;
