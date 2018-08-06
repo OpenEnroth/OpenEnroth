@@ -1162,16 +1162,16 @@ const char *FindMm7Directory(char *mm7_path) {
         }
     }
 
-	// GoG new version ( 2018 builds )
-	if (!mm7_installation_found) {
-		mm7_installation_found = OS_GetAppString(
-			"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\GOG.com\Games\1207658916\path",
-			mm7_path, 2048);
+    // GoG new version ( 2018 builds )
+    if (!mm7_installation_found) {
+        mm7_installation_found = OS_GetAppString(
+            "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\GOG.com\Games\1207658916\path",
+            mm7_path, 2048);
 
-		if (mm7_installation_found) {
-			logger->Info(L"GoG MM7 2018 build installation found");
-		}
-	}
+        if (mm7_installation_found) {
+            logger->Info(L"GoG MM7 2018 build installation found");
+        }
+    }
 
     if (!mm7_installation_found) {
         char *path = getenv("WoMM_MM7_INSTALL_DIR");
