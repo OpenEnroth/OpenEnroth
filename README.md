@@ -14,3 +14,5 @@ See the HACKING document in the source code root for information on how to compi
 Current build status
 --------------------
 Master: [![Build Status](https://ci.appveyor.com/api/projects/status/nlno5vo74jf6rnt3/branch/master?svg=true)](https://ci.appveyor.com/project/gp-alex/world-of-might-and-magic)
+
+Code analysis: [![Coverity Status](https://scan.coverity.com/projects/16434/badge.svg)](https://scan.coverity.com/projects/world-of-might-and-magic)
