@@ -81,6 +81,40 @@ void ErrHR(HRESULT hr, const char *pAPI, const char *pFunction,
 unsigned int Render::GetRenderWidth() const { return window->GetWidth(); }
 unsigned int Render::GetRenderHeight() const { return window->GetHeight(); }
 
+
+
+Texture *Render::CreateTexture_ColorKey(const String &name, uint16_t colorkey) {
+    return TextureD3D::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
+}
+
+Texture *Render::CreateTexture_Solid(const String &name) {
+    return TextureD3D::Create(new Image16bit_LOD_Loader(pIcons_LOD, name));
+}
+
+Texture *Render::CreateTexture_Alpha(const String &name) {
+    return TextureD3D::Create(new Alpha_LOD_Loader(pIcons_LOD, name));
+}
+
+Texture *Render::CreateTexture_PCXFromIconsLOD(const String &name) {
+    return TextureD3D::Create(new PCX_LOD_Loader(pIcons_LOD, name));
+}
+
+Texture *Render::CreateTexture_PCXFromNewLOD(const String &name) {
+    return TextureD3D::Create(new PCX_LOD_Loader(pNew_LOD, name));
+}
+
+Texture *Render::CreateTexture_PCXFromFile(const String &name) {
+    return TextureD3D::Create(new PCX_File_Loader(pIcons_LOD, name));
+}
+
+Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,
+    IMAGE_FORMAT format, const void *pixels) {
+
+    return TextureD3D::Create(width, height, format, pixels);
+}
+
+
+
 Texture *Render::CreateTexture(const String &name) {
     return TextureD3D::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name));
 }
@@ -93,6 +127,8 @@ Texture *Render::CreateSprite(const String &name, unsigned int palette_id,
 
 void Render::WritePixel16(int x, int y, uint16_t color) {
     // do not use this
+    __debugbreak();
+
     unsigned int b = (color & 0x1F) << 3;
     unsigned int g = ((color >> 5) & 0x3F) << 2;
     unsigned int r = ((color >> 11) & 0x1F) << 3;
@@ -443,82 +479,6 @@ void Render::DrawBorderTiles(struct Polygon *poly) {
     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
 }
 
-SpriteFrame *LevelDecorationChangeSeason(DecorationDesc *desc, int t) {
-    switch (pParty->uCurrentMonth) {
-        // case 531 (tree60), 536 (tree65), 537 (tree66) have no autumn/winter
-        // sprites
-        case 11:
-        case 0:
-        case 1:  // winter
-        {
-            switch (desc->uSpriteID) {
-                // case 468:           //bush02    grows on swamps, which are
-                // evergreeen actually
-                case 548:  // flower10
-                case 547:  // flower09
-                case 541:  // flower03
-                case 539:  // flower01
-                    return nullptr;
-
-                case 483:  // tree01
-                case 486:  // tree04
-                case 492:  // tree10
-                {
-                    pSpriteFrameTable->InitializeSprite(desc->uSpriteID + 2);
-                    return pSpriteFrameTable->GetFrame(desc->uSpriteID + 2, t);
-                }
-
-                default:
-                    return pSpriteFrameTable->GetFrame(desc->uSpriteID, t);
-            }
-        }
-
-        case 2:
-        case 3:
-        case 4:  // spring
-        {
-            // switch (desc->uSpriteID) {}
-            return pSpriteFrameTable->GetFrame(desc->uSpriteID, t);
-        }
-
-        case 8:
-        case 9:
-        case 10:  // autumn
-        {
-            switch (desc->uSpriteID) {
-                // case 468: //bush02    grows on swamps, which are evergreeen
-                // actually
-                case 548:  // flower10
-                case 547:  // flower09
-                case 541:  // flower03
-                case 539:  // flower01
-                    return nullptr;
-
-                case 483:  // tree01
-                case 486:  // tree04
-                case 492:  // tree10
-                {
-                    pSpriteFrameTable->InitializeSprite(desc->uSpriteID + 1);
-                    return pSpriteFrameTable->GetFrame(desc->uSpriteID + 1, t);
-                }
-
-                default:
-                    return pSpriteFrameTable->GetFrame(desc->uSpriteID, t);
-            }
-        } break;
-
-        case 5:
-        case 6:
-        case 7:  // summer
-                 // all green by default
-        {
-            return pSpriteFrameTable->GetFrame(desc->uSpriteID, t);
-        }
-
-        default:
-            assert(pParty->uCurrentMonth >= 0 && pParty->uCurrentMonth < 12);
-    }
-}
 
 void Render::PrepareDecorationsRenderList_ODM() {
     unsigned int v6;        // edi@9
@@ -549,7 +509,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
                                                         v6 + v7);
 
                     if (engine->config->seasons_change) {
-                        frame = LevelDecorationChangeSeason(decor_desc, v6 + v7);
+                        frame = LevelDecorationChangeSeason(decor_desc, v6 + v7, pParty->uCurrentMonth);
                     }
 
                     if (!frame) {
@@ -1301,8 +1261,7 @@ void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
             }
             src_surf_pos += uSrcPitch;
         }
-    }
-    else {
+    } else {
         uSrcPitch = (uSrcPitch - src_width);
         for (int i = 0; i < src_height; ++i) {
             for (int j = 0; j < src_width; ++j) {
@@ -1365,7 +1324,6 @@ void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
             }
             src_surf_pos += uSrcPitch;
         }
-        
     } else {
         uSrcPitch = (uSrcPitch - src_width);
         for (int i = 0; i < src_height; ++i) {
@@ -2710,8 +2668,8 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1,
         }
 
 
-        pBillboardRenderListD3D[v5].pQuads[i].pos.z = 0.9;//z;//1.0 - 1.0 / v10;
-        pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;//1.0 / a1->field_104[i].z;
+        pBillboardRenderListD3D[v5].pQuads[i].pos.z = z;  // 1.0 - 1.0 / v10;
+        pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;  // 1.0 / a1->field_104[i].z;
 
         int v12;
         if (diffuse & 0xFF000000) {
@@ -2733,6 +2691,13 @@ HWLTexture *Render::LoadHwlBitmap(const char *name) {
 
 HWLTexture *Render::LoadHwlSprite(const char *name) {
     return pD3DSprites.LoadTexture(name);
+}
+
+void Render::Update_Texture(Texture *texture) {
+    // nothing
+}
+void Render::DeleteTexture(Texture *texture) {
+    // nothing
 }
 
 bool Render::MoveTextureToDevice(Texture *texture) {
@@ -3002,6 +2967,21 @@ void Render::ResetUIClipRect() {
     p2DGraphics->SetClip(
         Gdiplus::Rect(0, 0, window->GetWidth(), window->GetHeight()));
 }
+
+
+uint32_t Color32A(uint16_t color16) {  // returns A8B8G8R8
+    uint32_t c = color16;
+    uint32_t b = (c & 31) * 8;
+    uint32_t g = ((c >> 5) & 63) * 4;
+    uint32_t r = ((c >> 11) & 31) * 8;
+
+    return Color32A(r, g, b);
+}
+
+uint32_t Color32A(uint32_t r, uint32_t g, uint32_t b, uint32_t a) {  // returns ABGR
+    return (a << 24) | (b << 16) | (g << 8) | r;
+}
+
 
 uint32_t Color32(uint16_t color16) {
     uint32_t c = color16;
@@ -3478,44 +3458,20 @@ void Render::DrawTextureAlphaNew(float u, float v, Image *image) {
 }
 
 void Render::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
-    // int v10;           // eax@5
-    // int v12;           // esi@8
-    // int v14;           // esi@11
-    // unsigned int v15;  // esi@14
-    // unsigned int v17;  // ecx@17
-    int v18;           // edx@23
-    int uOutXa;        // [sp+20h] [bp+8h]@21
-    int *pZBuffer;     // [sp+28h] [bp+10h]@3
-
     if (!img) return;
 
     int uOutX = u * this->window->GetWidth();
     int uOutY = v * this->window->GetHeight();
-
-    unsigned int v6 = uOutY;
-    unsigned int v7 = img->GetHeight();
-    pZBuffer = &this->pActiveZBuffer[uOutX + window->GetWidth() * uOutY];
-    unsigned int v8 = img->GetWidth();
-    unsigned int v20 = img->GetWidth();
-    unsigned int v19 = img->GetWidth();
+    unsigned int imgheight = img->GetHeight();
+    unsigned int imgwidth = img->GetWidth();
     auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
-    if (v7 > 0) {
-        uOutXa = v7;
-        do {
-            if (v8 > 0) {
-                v18 = v8;
-                do {
-                    if (*pixels & 0xFF000000) *pZBuffer = zVal;
-                    ++pZBuffer;
-                    ++pixels;
-                    --v18;
-                } while (v18);
+    for (int xs = 0; xs < imgwidth; xs++) {
+        for (int ys = 0; ys < imgheight; ys++) {
+            if (pixels[xs + imgwidth * ys] & 0xFF000000) {
+                this->pActiveZBuffer[uOutX + xs + window->GetWidth() * (uOutY + ys)] = zVal;
             }
-            pZBuffer += window->GetWidth() - v8;
-            pixels += v19 - v8;
-            --uOutXa;
-        } while (uOutXa);
+        }
     }
 }
 
@@ -3540,7 +3496,7 @@ void Render::DoRenderBillboards_D3D() {
         } else {
             auto hwsplat04 = assets->GetBitmap("hwsplat04");
             ErrD3D(pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)hwsplat04)->GetDirect3DTexture()));
-            //testing 
+            // testing
         }
 
         ErrD3D(pRenderD3D->pDevice->DrawPrimitive(

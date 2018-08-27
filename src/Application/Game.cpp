@@ -106,6 +106,8 @@ void Game::Run() {
 
     engine->Initialize();
 
+    window->Activate();
+
     ShowMM7IntroVideo_and_LoadingScreen();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
@@ -230,19 +232,6 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
             pMediaPlayer->PlayFullscreenMovie("Intro");
         }
     }
-
-    Image *tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
-
-    render->BeginScene();
-    render->DrawTextureNew(0, 0, tex);
-
-    DrawMM7CopyrightWindow();
-
-    render->EndScene();
-    render->Present();
-
-    tex->Release();
-    tex = nullptr;
 
     bGameoverLoop = false;
 }
@@ -936,7 +925,7 @@ void Game::EventLoop() {
                     dword_50CDC8 = 1;
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
 
-                    //PlayHouseSound(  // this is wrong - what is it meant to do??
+                    // PlayHouseSound(  // this is wrong - what is it meant to do??
                     //    uCurrentHouse_Animation,
                     //    HouseSound_NotEnoughMoney_TrainingSuccessful);
 

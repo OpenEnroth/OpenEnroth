@@ -38,7 +38,7 @@ using EngineIoc = Engine_::IocContainer;
 
 Mouse *pMouse = EngineIoc::ResolveMouse();
 
-Image *parchment = nullptr;
+Texture *parchment = nullptr;
 Image *messagebox_corner_x = nullptr;       // 5076AC
 Image *messagebox_corner_y = nullptr;       // 5076B4
 Image *messagebox_corner_z = nullptr;       // 5076A8

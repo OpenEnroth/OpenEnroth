@@ -17,8 +17,11 @@
 #endif
 
 #include <gl/glu.h>
+#include <gL/gl.h>
+
+
 #include <SDL.h>
-#include <SDL_opengl.h>
+#include <SDL_opengl_glext.h>
 
 #include <algorithm>
 
@@ -30,6 +33,10 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
 
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
@@ -42,45 +49,87 @@
 #include "Platform/Api.h"
 #include "Platform/OsWindow.h"
 
+
 RenderOpenGL::RenderOpenGL()
     : RenderBase() {
 }
-RenderOpenGL::~RenderOpenGL() {}
 
-unsigned int RenderOpenGL::GetRenderWidth() const { return window->GetWidth(); }
-unsigned int RenderOpenGL::GetRenderHeight() const {
-    return window->GetHeight();
-}
+RenderOpenGL::~RenderOpenGL() { __debugbreak(); }
 
-void RenderOpenGL::ClearBlack() { __debugbreak(); }
+void RenderOpenGL::Release() { __debugbreak(); }
+
 void RenderOpenGL::SaveWinnersCertificate(const char *a1) { __debugbreak(); }
+
 bool RenderOpenGL::InitializeFullscreen() {
     __debugbreak();
     return 0;
 }
-void RenderOpenGL::CreateZBuffer() {
-    pActiveZBuffer = (int *)malloc(640 * 480 * sizeof(int));  // 640 * 480 * 4
-    memset32(
-        pActiveZBuffer, 0xFFFF0000,
-        0x4B000u);  //    // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
-}
-void RenderOpenGL::Release() { __debugbreak(); }
-void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                                signed int uW, unsigned __int16 uColor) {}
-void RenderOpenGL::RestoreFrontBuffer() {}
-void RenderOpenGL::RestoreBackBuffer() {}
-void RenderOpenGL::BltBackToFontFast(int a2, int a3, Rect *a4) {
+
+unsigned int RenderOpenGL::GetActorTintColor(float a2, int tint, int a4, int a5,
+    RenderBillboard *a6) {
     __debugbreak();
+    return 0;
 }
+
+
+// when losing and regaining window focus - not required for OGL??
+void RenderOpenGL::RestoreFrontBuffer() { /*__debugbreak();*/ }
+void RenderOpenGL::RestoreBackBuffer() { /*__debugbreak();*/ }
+
+void RenderOpenGL::BltBackToFontFast(int a2, int a3, Rect *a4) {
+    __debugbreak();  // never called anywhere
+}
+
+
+
+unsigned int RenderOpenGL::GetRenderWidth() const { return window->GetWidth(); }
+unsigned int RenderOpenGL::GetRenderHeight() const { return window->GetHeight(); }
+
+void RenderOpenGL::ClearBlack() {  // used only in game over win
+    ClearZBuffer(0, 479);  // dummy params
+    ClearTarget(0);
+}
+
+void RenderOpenGL::ClearTarget(unsigned int uColor) {
+    memset32(render_target_rgb, Color32(uColor), 0x4B000);
+}
+
+void RenderOpenGL::ClearZBuffer(int, int) {
+    // parameter alwyas 0 + 479 but never used
+    memset32(this->pActiveZBuffer, -65536, 0x4B000);
+}
+
+void RenderOpenGL::CreateZBuffer() {
+    pActiveZBuffer = (int *)malloc(window->GetWidth() * window->GetHeight() * sizeof(int));  // 640 * 480 * 4
+    memset32(pActiveZBuffer, 0xFFFF0000, 0x4B000u);      // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
+}
+
+void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
+                                signed int uW, unsigned __int16 uColor) {
+    unsigned int b = (uColor & 0x1F)*8;
+    unsigned int g = ((uColor >> 5) & 0x3F)*4;
+    unsigned int r = ((uColor >> 11) & 0x1F)*8;
+
+    glDisable(GL_TEXTURE_2D);
+    glEnable(GL_LINE_SMOOTH);
+    glLineWidth(1);
+    glColor3ub(r, g, b);
+
+    glBegin(GL_LINES);
+    glVertex3f(uX, uY, 0);
+    glVertex3f(uZ, uW, 0);
+    glEnd();
+}
+
 void RenderOpenGL::BeginSceneD3D() {
+    // Setup for 3D
+
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
+
     glClearColor(0.9f, 0.5f, 0.1f, 1.0f);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-unsigned int RenderOpenGL::GetActorTintColor(float a2, int tint, int a4, int a5,
-                                             RenderBillboard *a6) {
-    __debugbreak();
-    return 0;
 }
 
 void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
@@ -247,45 +296,237 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
     __debugbreak();
 }
 void RenderOpenGL::ScreenFade(unsigned int color, float t) { __debugbreak(); }
+
+
 void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
                                      Image *pTexture) {
-    __debugbreak();
+    DrawTextureNew((pX - move_X)/640., (pY - move_Y)/480., pTexture);
 }
-void RenderOpenGL::DrawImage(Image *, const Rect &rect) {}
+
+
+void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1, 1, 1);
+    bool blendFlag = 1;
+
+    // check if loaded
+    auto texture = (TextureOpenGL *)img;
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    if (blendFlag) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    float depth = 0;
+
+    GLfloat Vertices[] = { (float)rect.x, (float)rect.y, depth,
+        (float)rect.z, (float)rect.y, depth,
+        (float)rect.z, (float)rect.w, depth,
+        (float)rect.x, (float)rect.w, depth };
+
+    GLfloat TexCoord[] = { 0, 0,
+        1, 0,
+        1, 1,
+        0, 1 };
+
+    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
+        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glDisable(GL_BLEND);
+
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        log->Warning(L"OpenGL error: (%u)", err);
+    }
+}
+
+
 void RenderOpenGL::ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture,
                                   int a5) {
-    __debugbreak();
+    // __debugbreak();
+    // blank in d3d
 }
-void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *pTexture,
-                                     int zVal) {
-    __debugbreak();
+
+
+void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
+    if (!img) return;
+
+    int uOutX = u * this->window->GetWidth();
+    int uOutY = v * this->window->GetHeight();
+    unsigned int imgheight = img->GetHeight();
+    unsigned int imgwidth = img->GetWidth();
+    auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
+    for (int xs = 0; xs < imgwidth; xs++) {
+        for (int ys = 0; ys < imgheight; ys++) {
+            if (pixels[xs + imgwidth * ys] & 0xFF000000) {
+                this->pActiveZBuffer[uOutX + xs + window->GetWidth() * (uOutY + ys)] = zVal;
+            }
+        }
+    }
 }
+
+
+
+
 void RenderOpenGL::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
                                  int start_opacity, int end_opacity) {
     __debugbreak();
 }
+
+
 void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
-    __debugbreak();
+    if (img) {
+        auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        int width = img->GetWidth();
+        int height = img->GetHeight();
+        // Image *temp = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
+        uint32_t *temppix = (uint32_t *)img->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+
+        int brightloc = -1;
+        int brightval = 0;
+        int darkloc = -1;
+        int darkval = 765;
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int nudge = x + y * width;
+                // Test the brightness against the threshold
+                int bright = (*(pixelpoint + nudge) & 0xFF) + ((*(pixelpoint + nudge) >> 8) & 0xFF) + ((*(pixelpoint + nudge) >> 16) & 0xFF);
+                if (bright == 0) continue;
+
+                if (bright > brightval) {
+                    brightval = bright;
+                    brightloc = nudge;
+                }
+                if (bright < darkval) {
+                    darkval = bright;
+                    darkloc = nudge;
+                }
+            }
+        }
+
+        // find brightest
+        unsigned int bmax = (*(pixelpoint + brightloc) & 0xFF);
+        unsigned int gmax = ((*(pixelpoint + brightloc) >> 8) & 0xFF);
+        unsigned int rmax = ((*(pixelpoint + brightloc) >> 16) & 0xFF);
+
+        // find darkest not black
+        unsigned int bmin = (*(pixelpoint + darkloc) & 0xFF);
+        unsigned int gmin = ((*(pixelpoint + darkloc) >> 8) & 0xFF);
+        unsigned int rmin = ((*(pixelpoint + darkloc) >> 16) & 0xFF);
+
+        // steps pixels
+        float bstep = (bmax - bmin) / 128.;
+        float gstep = (gmax - gmin) / 128.;
+        float rstep = (rmax - rmin) / 128.;
+
+        int timestep = time % 256;
+
+        // loop through
+        for (int ydraw = 0; ydraw < height; ++ydraw) {
+            for (int xdraw = 0; xdraw < width; ++xdraw) {
+                if (*pixelpoint) {  // check orig item not got blakc pixel
+                    unsigned int bcur = (*(pixelpoint) & 0xFF);
+                    unsigned int gcur = ((*(pixelpoint) >> 8) & 0xFF);
+                    unsigned int rcur = ((*(pixelpoint) >> 16) & 0xFF);
+                    int pixstepb = (bcur - bmin) / bstep + timestep;
+                    if (pixstepb > 255) pixstepb = pixstepb - 256;
+                    if (pixstepb >= 0 && pixstepb < 128)  // 0-127
+                        bcur = bmin + pixstepb * bstep;
+                    if (pixstepb >= 128 && pixstepb < 256) {  // 128-255
+                        pixstepb = pixstepb - 128;
+                        bcur = bmax - pixstepb * bstep;
+                    }
+                    int pixstepr = (rcur - rmin) / rstep + timestep;
+                    if (pixstepr > 255) pixstepr = pixstepr - 256;
+                    if (pixstepr >= 0 && pixstepr < 128)  // 0-127
+                        rcur = rmin + pixstepr * rstep;
+                    if (pixstepr >= 128 && pixstepr < 256) {  // 128-255
+                        pixstepr = pixstepr - 128;
+                        rcur = rmax - pixstepr * rstep;
+                    }
+                    int pixstepg = (gcur - gmin) / gstep + timestep;
+                    if (pixstepg > 255) pixstepg = pixstepg - 256;
+                    if (pixstepg >= 0 && pixstepg < 128)  // 0-127
+                        gcur = gmin + pixstepg * gstep;
+                    if (pixstepg >= 128 && pixstepg < 256) {  // 128-255
+                        pixstepg = pixstepg - 128;
+                        gcur = gmax - pixstepg * gstep;
+                    }
+                    // out pixel
+                    // temppix[xdraw + ydraw * width] = (rcur << 24) | (gcur << 16) | (bcur << 8) | 0xFF;//Color32(rcur, gcur, bcur);
+                    render_target_rgb[int((u*640)+xdraw + 640 *(v*480+ydraw))] = Color32A(rcur, gcur, bcur);
+                }
+                pixelpoint++;
+            }
+        }
+        // draw image
+        // render->Update_Texture(img);
+        // render->DrawTextureAlphaNew(u, v, img);
+        // temp->Release();
+    }
 }
+
+
 
 void RenderOpenGL::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
     __debugbreak();
 }
+
 void RenderOpenGL::DrawTransparentRedShade(float u, float v, Image *a4) {
-    __debugbreak();
+    DrawMasked(u, v, a4, 0, 0xF800);
 }
-void RenderOpenGL::DrawTransparentGreenShade(float u, float v,
-                                             Image *pTexture) {
-    __debugbreak();
+
+void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) {
+    DrawMasked(u, v, pTexture, 0, 0x07E0);
 }
+
 void RenderOpenGL::DrawFansTransparent(const RenderVertexD3D3 *vertices,
                                        unsigned int num_vertices) {
     __debugbreak();
 }
-void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int,
+
+void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level,
                               unsigned __int16 mask) {
-    __debugbreak();
+    if (!pTexture) {
+        return;
+    }
+    uint32_t width = pTexture->GetWidth();
+    uint32_t *pixels = (uint32_t *)pTexture->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    // Image *temp = Image::Create(width, pTexture->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
+    // uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    int x = 640 * u;
+    int y = 480 * v;
+
+    for (unsigned int dy = 0; dy < pTexture->GetHeight(); ++dy) {
+        for (unsigned int dx = 0; dx < width; ++dx) {
+            if (*pixels & 0xFF000000)
+                /*temppix[dx + dy * width] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
+                (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
+                &  Color32(mask);*/
+                render_target_rgb[x+dx + 640*(y+dy)] = Color32A((((*pixels >> 16) & 0xFF) >> color_dimming_level),
+                (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
+                &  Color32A(mask);
+            ++pixels;
+        }
+    }
+    // render->DrawTextureAlphaNew(u, v, temp);
+    // temp->Release();;
 }
+
 void RenderOpenGL::DrawTextureGrayShade(float a2, float a3, Image *a4) {
     __debugbreak();
 }
@@ -302,7 +543,7 @@ Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) { r
 bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
 void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width,
                                   unsigned int height) {
-    __debugbreak();
+    // __debugbreak();
 }
 void RenderOpenGL::SavePCXScreenshot() { __debugbreak(); }
 int RenderOpenGL::GetActorsInViewport(int pDepth) {
@@ -347,8 +588,184 @@ void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
     __debugbreak();
 }
 
+
+
 void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
-    // __debugbreak();
+    unsigned int v6;        // edi@9
+    int v7;                 // eax@9
+    SpriteFrame *frame;     // eax@9
+    unsigned __int16 *v10;  // eax@9
+    int v13;                // ecx@9
+    char r;                 // ecx@20
+    char g;                 // dl@20
+    char b_;                // eax@20
+    Particle_sw local_0;    // [sp+Ch] [bp-98h]@7
+    unsigned __int16 *v37;  // [sp+84h] [bp-20h]@9
+    int v38;                // [sp+88h] [bp-1Ch]@9
+
+    for (unsigned int i = 0; i < uNumLevelDecorations; ++i) {
+        // LevelDecoration* decor = &pLevelDecorations[i];
+        if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
+            pLevelDecorations[i].IsObeliskChestActive()) &&
+            !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
+            DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+            if (!(decor_desc->uFlags & 0x80)) {
+                if (!(decor_desc->uFlags & 0x22)) {
+                    v6 = pMiscTimer->uTotalGameTimeElapsed;
+                    v7 = abs(pLevelDecorations[i].vPosition.x +
+                        pLevelDecorations[i].vPosition.y);
+
+                    frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
+                        v6 + v7);
+
+                    if (engine->config->seasons_change) {
+                        frame = LevelDecorationChangeSeason(decor_desc, v6 + v7, pParty->uCurrentMonth);
+                    }
+
+                    if (!frame) {
+                        continue;
+                    }
+
+                    // v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
+                    // v6 + v7);
+
+                    v10 = (unsigned __int16 *)stru_5C6E00->Atan2(
+                        pLevelDecorations[i].vPosition.x -
+                        pIndoorCameraD3D->vPartyPos.x,
+                        pLevelDecorations[i].vPosition.y -
+                        pIndoorCameraD3D->vPartyPos.y);
+                    v38 = 0;
+                    v13 = ((signed int)(stru_5C6E00->uIntegerPi +
+                        ((signed int)stru_5C6E00->uIntegerPi >>
+                            3) +
+                        pLevelDecorations[i].field_10_y_rot -
+                        (signed int)v10) >>
+                        8) &
+                        7;
+                    v37 = (unsigned __int16 *)v13;
+                    if (frame->uFlags & 2) v38 = 2;
+                    if ((256 << v13) & frame->uFlags) v38 |= 4;
+                    if (frame->uFlags & 0x40000) v38 |= 0x40;
+                    if (frame->uFlags & 0x20000) v38 |= 0x80;
+
+                    // for light
+                    if (frame->uGlowRadius) {
+                        r = 255;
+                        g = 255;
+                        b_ = 255;
+                        if (render->config->is_using_colored_lights) {
+                            r = decor_desc->uColoredLightRed;
+                            g = decor_desc->uColoredLightGreen;
+                            b_ = decor_desc->uColoredLightBlue;
+                        }
+                        pStationaryLightsStack->AddLight(
+                            pLevelDecorations[i].vPosition.x,
+                            pLevelDecorations[i].vPosition.y,
+                            pLevelDecorations[i].vPosition.z +
+                            decor_desc->uDecorationHeight / 2,
+                            frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
+                    }  // for light
+
+                       // v17 = (pLevelDecorations[i].vPosition.x -
+                       // pIndoorCameraD3D->vPartyPos.x) << 16; v40 =
+                       // (pLevelDecorations[i].vPosition.y -
+                       // pIndoorCameraD3D->vPartyPos.y) << 16;
+                    int party_to_decor_x = pLevelDecorations[i].vPosition.x -
+                        pIndoorCameraD3D->vPartyPos.x;
+                    int party_to_decor_y = pLevelDecorations[i].vPosition.y -
+                        pIndoorCameraD3D->vPartyPos.y;
+                    int party_to_decor_z = pLevelDecorations[i].vPosition.z -
+                        pIndoorCameraD3D->vPartyPos.z;
+
+                    int view_x = 0;
+                    int view_y = 0;
+                    int view_z = 0;
+                    bool visible = pIndoorCameraD3D->ViewClip(
+                        pLevelDecorations[i].vPosition.x,
+                        pLevelDecorations[i].vPosition.y,
+                        pLevelDecorations[i].vPosition.z, &view_x, &view_y,
+                        &view_z);
+
+                    if (visible) {
+                        if (2 * abs(view_x) >= abs(view_y)) {
+                            int projected_x = 0;
+                            int projected_y = 0;
+                            pIndoorCameraD3D->Project(view_x, view_y, view_z,
+                                &projected_x,
+                                &projected_y);
+
+                            auto _v41 =
+                                frame->scale *
+                                fixed::FromInt(pODMRenderParams->int_fov_rad) /
+                                fixed::FromInt(view_x);
+
+                            int screen_space_half_width = 0;
+                            screen_space_half_width =
+                                _v41.GetInt() *
+                                frame->hw_sprites[(int)v37]->uBufferWidth / 2;
+
+                            if (projected_x + screen_space_half_width >=
+                                (signed int)pViewport->uViewportTL_X &&
+                                projected_x - screen_space_half_width <=
+                                (signed int)pViewport->uViewportBR_X) {
+                                if (::uNumBillboardsToDraw >= 500) return;
+                                ::uNumBillboardsToDraw++;
+                                ++uNumDecorationsDrawnThisFrame;
+
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .hwsprite = frame->hw_sprites[(int)v37];
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .world_x = pLevelDecorations[i].vPosition.x;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .world_y = pLevelDecorations[i].vPosition.y;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .world_z = pLevelDecorations[i].vPosition.z;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .screen_space_x = projected_x;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .screen_space_y = projected_y;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .screen_space_z = view_x;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .screenspace_projection_factor_x = _v41.GetFloat();
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .screenspace_projection_factor_y = _v41.GetFloat();
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .uPalette = frame->uPaletteIndex;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .field_1E = v38 | 0x200;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .uIndoorSectorID = 0;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .object_pid = PID(OBJECT_Decoration, i);
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .dimming_level = 0;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .pSpriteFrame = frame;
+                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
+                                    .sTintColor = 0;
+                            }
+                        }
+                    }
+                }
+            } else {
+                memset(&local_0, 0, 0x68);
+                local_0.type = ParticleType_Bitmap | ParticleType_Rotating |
+                    ParticleType_8;
+                local_0.uDiffuse = 0xFF3C1E;
+                local_0.x = (double)pLevelDecorations[i].vPosition.x;
+                local_0.y = (double)pLevelDecorations[i].vPosition.y;
+                local_0.z = (double)pLevelDecorations[i].vPosition.z;
+                local_0.r = 0.0;
+                local_0.g = 0.0;
+                local_0.b = 0.0;
+                local_0.particle_size = 1.0;
+                local_0.timeToLive = (rand() & 0x80) + 128;
+                local_0.texture = spell_fx_renderer->effpar01;
+                particle_engine->AddParticle(&local_0);
+            }
+        }
+    }
 }
 
 /*#pragma pack(push, 1)
@@ -391,6 +808,37 @@ FILE *CreateTga(const char *filename, int image_width, int image_height)
         return f;
 }*/
 
+Texture *RenderOpenGL::CreateTexture_ColorKey(const String &name, uint16_t colorkey) {
+    return TextureOpenGL::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
+}
+
+Texture *RenderOpenGL::CreateTexture_Solid(const String &name) {
+    return TextureOpenGL::Create(new Image16bit_LOD_Loader(pIcons_LOD, name));
+}
+
+Texture *RenderOpenGL::CreateTexture_Alpha(const String &name) {
+    return TextureOpenGL::Create(new Alpha_LOD_Loader(pIcons_LOD, name));
+}
+
+Texture *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const String &name) {
+    return TextureOpenGL::Create(new PCX_LOD_Loader(pIcons_LOD, name));
+}
+
+Texture *RenderOpenGL::CreateTexture_PCXFromNewLOD(const String &name) {
+    return TextureOpenGL::Create(new PCX_LOD_Loader(pNew_LOD, name));
+}
+
+Texture *RenderOpenGL::CreateTexture_PCXFromFile(const String &name) {
+    return TextureOpenGL::Create(new PCX_File_Loader(pIcons_LOD, name));
+}
+
+Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height,
+    IMAGE_FORMAT format, const void *pixels) {
+
+    return TextureOpenGL::Create(width, height, format, pixels);
+}
+
+
 Texture *RenderOpenGL::CreateTexture(const String &name) {
     return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name));
 }
@@ -399,6 +847,29 @@ Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id,
                                     /*refactor*/ unsigned int lod_sprite_id) {
     return TextureOpenGL::Create(
         new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id));
+}
+
+void RenderOpenGL::Update_Texture(Texture *texture) {
+    // possibly should inlcude pixel update here
+    // native pix -> opengl format??
+
+    auto t = (TextureOpenGL *)texture;
+    glBindTexture(GL_TEXTURE_2D, t->GetOpenGlTexture());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, t->GetPixels(IMAGE_FORMAT_R8G8B8A8));
+    glBindTexture(GL_TEXTURE_2D, NULL);
+
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        log->Warning(L"OpenGL error: (%u)", err);
+    }
+}
+
+void RenderOpenGL::DeleteTexture(Texture *texture) {
+    auto t = (TextureOpenGL *)texture;
+    GLuint texid = t->GetOpenGlTexture();
+    if (texid != -1) {
+        glDeleteTextures(1, &texid);
+    }
 }
 
 bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
@@ -447,19 +918,23 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     }*/
 
     auto native_format = t->GetFormat();
+    int gl_format = GL_RGB;
+        // native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
+
     unsigned __int8 *pixels = nullptr;
-    if (native_format == IMAGE_FORMAT_R5G6B5)
+    if (native_format == IMAGE_FORMAT_R5G6B5) {
         pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8);
-    else if (native_format == IMAGE_FORMAT_A1R5G5B5)
+    } else if (native_format == IMAGE_FORMAT_A1R5G5B5 || IMAGE_FORMAT_A8R8G8B8) {
         pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+        gl_format = GL_RGBA;
+    } else {
+        log->Warning(L"Image not loaded!");
+    }
 
     if (pixels) {
         GLuint texid;
         glGenTextures(1, &texid);
         t->SetOpenGlTexture(texid);
-
-        int gl_format =
-            native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
 
         glBindTexture(GL_TEXTURE_2D, texid);
         glTexImage2D(GL_TEXTURE_2D, 0, gl_format, t->GetWidth(), t->GetHeight(),
@@ -482,8 +957,8 @@ void _set_3d_projection_matrix() {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(65.0f,
-                   (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(),
+    gluPerspective(62.5f, double(game_viewport_width/double(game_viewport_height))  // 65.0f
+                   /*(GLfloat)window->GetWidth() / (GLfloat)window->GetHeight()*/,
                    near_clip, far_clip);
 }
 
@@ -497,24 +972,30 @@ void _set_3d_modelview_matrix() {
     int camera_z = pParty->vPosition.y;
     gluLookAt(camera_x, camera_y, camera_z,
 
-              camera_x -
-                  pParty->y_rotation_granularity *
-                      cosf(2 * 3.14159 * pParty->sRotationY / 2048.0) -
-                  3,
+              camera_x - pParty->y_rotation_granularity *
+                      cosf(2 * 3.14159 * pParty->sRotationY / 2048.0) /*- 5*/,
               camera_y - pParty->y_rotation_granularity *
-                             sinf(2 * 3.14159 * pParty->sRotationX / 2048.0),
+                             sinf(2 * 3.14159 * (pParty->sRotationX) / 2048.0),
               camera_z - pParty->y_rotation_granularity *
                              sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
 
               0, 1, 0);
 }
 
-void _set_ortho_projection() {
-    glViewport(0, 0, window->GetWidth(), window->GetHeight());
+void _set_ortho_projection(bool gameviewport = false) {
+    if (!gameviewport) {  // project over entire window
+        glViewport(0, 0, window->GetWidth(), window->GetHeight());
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
+    } else {  // project to game viewport
+        glViewport(game_viewport_x, window->GetHeight()-game_viewport_w-1, game_viewport_width, game_viewport_height);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(game_viewport_x, game_viewport_z, game_viewport_w, game_viewport_y, 1, -1);  // far = 1 but ogl looks down -z
+    }
 }
 
 void _set_ortho_modelview() {
@@ -526,8 +1007,6 @@ const int terrain_block_scale = 512;
 const int terrain_height_scale = 32;
 void RenderOpenGL::RenderTerrainD3D() {
     glEnable(GL_TEXTURE_2D);
-
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
@@ -535,8 +1014,45 @@ void RenderOpenGL::RenderTerrainD3D() {
     _set_3d_projection_matrix();
     _set_3d_modelview_matrix();
 
+    GLint lasttex = -1;  // keeps track of which tile texture is loaded
+
+    // tile culling maths
+    int camx = WorldPosToGridCellX(pIndoorCameraD3D->vPartyPos.x);
+    int camz = WorldPosToGridCellZ(pIndoorCameraD3D->vPartyPos.y);
+    int tilerange = (pIndoorCameraD3D->GetFarClip() / terrain_block_scale)+1;
+
+    int camfacing = 2048 - pIndoorCameraD3D->sRotationY;
+    int right = int(camfacing - (stru_5C6E00->uIntegerPi / 2));
+    int left = int(camfacing + (stru_5C6E00->uIntegerPi / 2));
+    if (left > 2048) left -= 2048;
+    if (right < 0) right += 2048;
+
+
     for (int z = 0; z < 128 - 1; ++z) {
         for (int x = 0; x < 128 - 1; ++x) {
+            // tile culling
+            int xdist = camx - x;
+            int zdist = camz - z;
+
+            if (xdist > tilerange || zdist > tilerange) continue;
+
+            int dist = sqrt((xdist)*(xdist) + (zdist)*(zdist));
+            if (dist > tilerange) continue;  // crude distance culling
+
+            int tiledir = stru_5C6E00->Atan2(xdist, zdist)+1024;
+            if (tiledir > 2048) {
+                tiledir -= 2048;
+            }
+
+            if (dist > 2) {  // dont cull near feet
+                if (left > right) {  // crude fov culling
+                    if ((tiledir > left) || (tiledir < right)) continue;
+                } else {
+                    if (!(tiledir < left || tiledir > right)) continue;
+                }
+            }
+
+            // draw tile
             auto tile = pOutdoor->DoGetTile(x, z);
             if (!tile) continue;
 
@@ -575,6 +1091,7 @@ void RenderOpenGL::RenderTerrainD3D() {
             int y12 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x1];
             int y22 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x2];
 
+            // terrain normal had problems
             /*auto norm = &pTerrainNormals[x * 128 + z];
             float dim =
                 (norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
@@ -594,8 +1111,17 @@ void RenderOpenGL::RenderTerrainD3D() {
                 {
                     poly->texture =
                         this->hd_water_tile_anim[this->hd_water_current_frame];
-                    this->DrawTerrainPolygon(poly, true, true);
 
+                    auto texturew = (TextureOpenGL *)poly->texture;
+                    GLint thistexw = texturew->GetOpenGlTexture();
+
+                    // avoid rebinding same tex if we can
+                    if (lasttex != thistexw) {
+                        glBindTexture(GL_TEXTURE_2D, thistexw);
+                        lasttex = thistexw;
+                    }
+
+                    this->DrawTerrainPolygon(poly, true, true);
                     poly->texture = tile->GetTexture();
                 }
                 glDepthMask(GL_TRUE);
@@ -603,37 +1129,46 @@ void RenderOpenGL::RenderTerrainD3D() {
                 water_border_tile = true;
             }
 
+            auto texture = (TextureOpenGL *)poly->texture;
+            GLint thistex = texture->GetOpenGlTexture();
+
+            // avoid rebinding same tex if we can
+            if (lasttex != thistex) {
+                glBindTexture(GL_TEXTURE_2D, thistex);
+                lasttex = thistex;
+            }
+
             this->DrawTerrainPolygon(poly, water_border_tile, true);
         }
     }
 }
 
-void RenderOpenGL::DrawTerrainPolygon(struct Polygon *a3, bool transparent,
+void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent,
                                       bool clampAtTextureBorders) {
-    auto texture = (TextureOpenGL *)a3->texture;
+    auto texture = (TextureOpenGL *)poly->texture;
+    GLint thistex = texture->GetOpenGlTexture();
 
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-
-    // clamping doesnt really help here in opengl so had to alter texture
+     // clamping doesnt really help here in opengl so had to alter texture
     // coordinates a bit
     float clamp_fix_u = 1.0f / texture->GetWidth();
     float clamp_fix_v = 1.0f / texture->GetHeight();
-    if (clampAtTextureBorders) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    } else {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    }
+
+    // if (clampAtTextureBorders) {
+    //    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    //    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    // } else {
+    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // }
 
     if (transparent) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    float dim = 1.0f;  // a3->dimming_level / 20.0f;
-    int x1 = a3->uEdgeList1Size;
-    int z1 = a3->uEdgeList2Size;
+    float dim = poly->dimming_level / 20.0f;
+    int x1 = poly->uEdgeList1Size;
+    int z1 = poly->uEdgeList2Size;
     int x2 = x1 + 1;
     int z2 = z1 + 1;
 
@@ -845,7 +1380,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
             VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
         }
 
-        _set_ortho_projection();
+        _set_ortho_projection(1);
         _set_ortho_modelview();
 
         VertexRenderList[1].vWorldViewProjY =
@@ -907,7 +1442,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
 
             glVertex3f(VertexRenderList[i].vWorldViewProjX,
                 VertexRenderList[i].vWorldViewProjY,
-                -0.99989998);  // z is negative in OpenGL
+                0.99989998);  // z is negative in OpenGL
         }
     }
     glEnd();
@@ -922,12 +1457,12 @@ void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
 //----- (004A1C1E) --------------------------------------------------------
 void RenderOpenGL::DoRenderBillboards_D3D() {
     glEnable(GL_BLEND);
-    glDepthMask(GL_FALSE);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_CULL_FACE);  // some quads are reversed to reuse sprites opposite hand
+    glEnable(GL_TEXTURE_2D);
 
-    _set_ortho_projection();
+    _set_ortho_projection(1);
     _set_ortho_modelview();
-    // _set_3d_projection_matrix();
-    // _set_3d_modelview_matrix();
 
     for (int i = uNumBillboardsToDraw - 1; i >= 0; --i) {
         if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend) {
@@ -935,7 +1470,6 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         }
 
         auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
-        glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
         glBegin(GL_TRIANGLE_FAN);
@@ -964,15 +1498,21 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
                 glTexCoord2f(billboard->pQuads[j].texcoord.x,
                              billboard->pQuads[j].texcoord.y);
 
+                float oneoz = 1. / (billboard->screen_space_z);
+                float oneon = 1. / (pIndoorCameraD3D->GetNearClip()+5);
+                float oneof = 1. / pIndoorCameraD3D->GetFarClip();
+
                 glVertex3f(
                     billboard->pQuads[j].pos.x,
                     billboard->pQuads[j].pos.y,
-                    billboard->pQuads[j].pos.z);
+                    (oneoz - oneon)/(oneof - oneon) );  // depth is  non linear  proportional to reciprocal of distance
             }
         }
         glEnd();
     }
+
     uNumBillboardsToDraw = 0;
+
 
     if (config->is_using_fog) {
         SetUsingFog(false);
@@ -1053,85 +1593,110 @@ void RenderOpenGL::ResetUIClipRect() {
                         this->window->GetHeight());
 }
 
-void RenderOpenGL::PresentBlackScreen() {}
-
-void RenderOpenGL::BeginScene() {}
-void RenderOpenGL::EndScene() {}
-
-void RenderOpenGL::ClearTarget(unsigned int uColor) { __debugbreak(); }
-
-void RenderOpenGL::ClearZBuffer(int, int) {
-    memset32(this->pActiveZBuffer, -65536, 0x4B000);
+void RenderOpenGL::PresentBlackScreen() {
+    BeginScene();
+    ClearBlack();
+    EndScene();
+    Present();
 }
 
+void RenderOpenGL::BeginScene() {
+    // Setup for 2D
+
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+
+    _set_ortho_projection();
+    _set_ortho_modelview();
+}
+
+void RenderOpenGL::EndScene() {
+    // blank in d3d
+}
+
+
+
 void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
-    int uHeight;       // ebx@4
-    unsigned int v11;  // edx@9
-    unsigned int v12;  // esi@12
-    unsigned int v13;  // esi@15
-    unsigned int v15;  // esi@18
-                       // unsigned __int8 *v19; // [sp+18h] [bp-8h]@4
-    int uWidth;        // [sp+1Ch] [bp-4h]@4
-
-    if (!img) return;
-
-    uHeight = img->GetHeight();
-    /// v19 = pTexture->paletted_pixels;
-    uWidth = img->GetWidth();
-
-    auto pixels =
-        (const unsigned __int32 *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-
-    int uX = u * 640.0f;
-    int uY = v * 480.0f;
-    int clipped_out_x = uX;
-    int clipped_out_y = uY;
-    // if (this->bClip)
-    {
-        if ((signed int)uX < (signed int)this->clip_x) {
-            pixels += this->clip_x - uX;
-            uWidth += uX - this->clip_x;
-            clipped_out_x = clip_x;
-        }
-
-        uHeight = img->GetHeight();
-        if ((signed int)uY < (signed int)this->clip_y) {
-            pixels += img->GetWidth() * (this->clip_y - uY);
-            uHeight = uY - this->clip_y + img->GetHeight();
-            clipped_out_y = clip_y;
-        }
-        v11 = this->clip_x;
-        if ((signed int)this->clip_x < (signed int)uX) v11 = uX;
-
-        if ((signed int)(v11 + uWidth) > (signed int)this->clip_z) {
-            v12 = this->clip_x;
-            if ((signed int)this->clip_x < (signed int)uX) v12 = uX;
-            uWidth = this->clip_z - v12;
-        }
-        v13 = this->clip_y;
-        if ((signed int)this->clip_y < (signed int)uY) v13 = uY;
-
-        if ((signed int)(uHeight + v13) > (signed int)this->clip_w) {
-            v15 = this->clip_y;
-            if ((signed int)this->clip_y < (signed int)uY) v15 = uY;
-            uHeight = this->clip_w - v15;
-        }
-    }
-
-    for (int y = 0; y < uHeight; ++y) {
-        for (int x = 0; x < uWidth; ++x) {
-            if (*pixels & 0xFF000000)
-                WritePixel16(clipped_out_x + x, clipped_out_y + y,
-                             Color16((*pixels >> 16) & 0xFF,
-                                     (*pixels >> 8) & 0xFF, *pixels & 0xFF));
-            ++pixels;
-        }
-        pixels += img->GetWidth() - uWidth;
-    }
+    DrawTextureNew(u, v, img);
+    return;
 }
 
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
-    DrawTextureCustomHeight(u, v, tex, tex->GetHeight());
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1, 1, 1);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    auto texture = (TextureOpenGL *)tex;
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    int clipx = this->clip_x;
+    int clipy = this->clip_y;
+    int clipw = this->clip_w;
+    int clipz = this->clip_z;
+
+    int width = tex->GetWidth();
+    int height = tex->GetHeight();
+
+    int x = u * 640;
+    int y = v * 480;
+    int z = x + width;
+    int w = y + height;
+
+    // check bounds
+    if (x >= 640 || x >= clipz || y >= 480 || y >= clipw) return;
+    // check for overlap
+    if ((clipx < z && clipz > x && clipy > w && clipw < y)) return;
+
+    int drawx = max(x, clipx);
+    int drawy = max(y, clipy);
+    int draww = min(w, clipw);
+    int drawz = min(z, clipz);
+
+    float depth = 0;
+
+    GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
+        (float)drawz, (float)drawy, depth,
+        (float)drawz, (float)draww, depth,
+        (float)drawx, (float)draww, depth };
+
+    float texx = (drawx - x) / float(width);
+    float texy = (drawy - y) / float(height);
+    float texz = (width - (z - drawz)) / float(width);
+    float texw = (height - (w - draww)) / float(height);
+
+    GLfloat TexCoord[] = { texx, texy,
+        texz, texy,
+        texz, texw,
+        texx, texw,
+    };
+
+     GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
+        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glDisable(GL_BLEND);
+
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        log->Warning(L"OpenGL error: (%u)", err);
+    }
+
+    // blank over same bit of this render_target_rgb to stop text overlaps
+    for (int ys = drawy; ys < draww; ys++) {
+        memset(this->render_target_rgb +(ys * 640 + drawx), 0x00000000, (drawz - drawx) * 4);
+    }
 }
 
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img,
@@ -1196,249 +1761,89 @@ void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
                             unsigned int uCharWidth, unsigned int uCharHeight,
                             uint8_t *pFontPalette, unsigned __int16 uFaceColor,
                             unsigned __int16 uShadowColor) {
-    unsigned int v9;       // edi@2
-    unsigned int v10;      // esi@2
-    unsigned int v12;      // ebx@3
-                           // signed int v13; // edx@5
-    int v14;               // edx@6
-    signed int v15;        // ebx@7
-                           // unsigned int v16; // edx@9
-    signed int v17;        // edi@10
-    signed int v18;        // ebx@13
-    unsigned int v19;      // edx@15
-    signed int v20;        // esi@16
-    unsigned __int16 v22;  // dx@24
-    unsigned __int8 *v24;  // [sp+Ch] [bp-4h]@2
+    // needs limits checks adding
 
-    v9 = uCharWidth;
-    v10 = uCharHeight;
-    // v11 = &this->pTargetSurface[uOutX + uOutY * this->uTargetSurfacePitch];
-    v24 = pFontPixels;
+    // Image *fonttemp = Image::Create(uCharWidth, uCharHeight, IMAGE_FORMAT_A8R8G8B8);
+    // uint32_t *fontpix = (uint32_t*)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
-    int clipped_out_x = uOutX, clipped_out_y = uOutY;
-    // if (this->bClip)
-    {
-        v12 = this->clip_x;
-        if (uOutX < (signed int)v12) {
-            v24 = &pFontPixels[v12 - uOutX];
-            // v11 += v12 - uOutX;
-            clipped_out_x = clip_x;
-            v9 = uCharWidth + uOutX - v12;
-        }
-        // v13 = this->uClipY;
-        if (uOutY < this->clip_y) {
-            v14 = this->clip_y - uOutY;
-            v24 += uCharWidth * v14;
-            v10 = uCharHeight + uOutY - this->clip_y;
-            // v11 += this->uTargetSurfacePitch * v14;
-            clipped_out_y = clip_y;
-        }
-        v15 = this->clip_x;
-        if (this->clip_x < uOutX) v15 = uOutX;
-        // v16 = this->uClipZ;
-        if ((signed int)(v9 + v15) > (signed int)this->clip_z) {
-            v17 = this->clip_x;
-            if (this->clip_x < uOutX) v17 = uOutX;
-            v9 = this->clip_z - v17;
-        }
-        v18 = this->clip_y;
-        if (this->clip_y < uOutY) v18 = uOutY;
-        v19 = this->clip_w;
-        if ((signed int)(v10 + v18) > (signed int)v19) {
-            v20 = this->clip_y;
-            if (this->clip_y < uOutY) v20 = uOutY;
-            v10 = v19 - v20;
-        }
-    }
-
-    for (uint y = 0; y < v10; ++y) {
-        for (uint x = 0; x < v9; ++x) {
-            if (*v24) {
-                v22 = uShadowColor;
-                if (*v24 != 1) v22 = uFaceColor;
-                WritePixel16(clipped_out_x + x, clipped_out_y + y, v22);
+    for (uint y = 0; y < uCharHeight; ++y) {
+        for (uint x = 0; x < uCharWidth; ++x) {
+            if (*pFontPixels) {
+                uint16_t color = uShadowColor;
+                if (*pFontPixels != 1) {
+                    color = uFaceColor;
+                }
+                // fontpix[x + y * uCharWidth] = Color32(color);
+                this->render_target_rgb[(uOutX+x)+(uOutY+y)*640] = Color32A(color);
             }
-            ++v24;
+            ++pFontPixels;
         }
-        v24 += uCharWidth - v9;
     }
+    // render->DrawTextureAlphaNew(uOutX / 640., uOutY / 480., fonttemp);
+    // fonttemp->Release();
 }
 
 void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
-                                 int a5, unsigned int uFontHeight,
+                                 int uCharWidth, unsigned int uFontHeight,
                                  uint8_t *pPalette,
                                  bool present_time_transparency) {
-    int v8;                // edi@2
-    unsigned int v9;       // esi@2
-    unsigned char *v11;    // edx@2
-    int v14;               // edx@6
-    signed int v15;        // ebx@7
-    signed int v17;        // edi@10
-    signed int v18;        // ebx@13
-    signed int v20;        // esi@16
-    unsigned __int16 v24;  // si@35
-    int v25;               // [sp+Ch] [bp-4h]@2
-    unsigned int v28;      // [sp+20h] [bp+10h]@30
+    // needs limits checks adding
 
-    int a2 = x;
-    int a3 = y;
-    uint a6 = uFontHeight;
-
-    v8 = a5;
-    v9 = a6;
-    // v10 = &pTargetSurface[x + y * uTargetSurfacePitch];
-    v11 = (unsigned char *)font_pixels;
-    v25 = (int)font_pixels;
-    int clipped_out_x = x;
-    int clipped_out_y = y;
-    // if (this->bClip)
-    {
-        if (a2 < (signed int)this->clip_x) {
-            v25 = this->clip_x - a2 + (int)font_pixels;
-            // v10 += v12 - a2;
-            v8 = a5 + a2 - this->clip_x;
-            clipped_out_x = clip_x;
-        }
-        if (a3 < this->clip_y) {
-            v14 = this->clip_y - a3;
-            v25 += a5 * v14;
-            v9 = a6 + a3 - this->clip_y;
-            // v10 += this->uTargetSurfacePitch * v14;
-            clipped_out_y = clip_y;
-        }
-        v15 = this->clip_x;
-        if (this->clip_x < a2) v15 = a2;
-        if (v8 + v15 > (signed int)this->clip_z) {
-            v17 = this->clip_x;
-            if (v17 < a2) v17 = a2;
-            v8 = this->clip_z - v17;
-        }
-        v18 = this->clip_y;
-        if (this->clip_y < a3) v18 = a3;
-        if ((signed int)(v9 + v18) > (signed int)this->clip_w) {
-            v20 = this->clip_y;
-            if (this->clip_y < a3) v20 = a3;
-            v9 = this->clip_w - v20;
-        }
-        v11 = (unsigned char *)v25;
-    }
+    // Image *fonttemp = Image::Create(uCharWidth, uFontHeight, IMAGE_FORMAT_A8R8G8B8);
+    // uint32_t *fontpix = (uint32_t *)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
     if (present_time_transparency) {
-        v28 = 0x7FF;  // transparent color 16bit render->uTargetGMask |
-                      // render->uTargetBMask;
-        for (uint dy = 0; dy < v9; ++dy) {
-            for (int dx = 0; dx < v8; ++dx) {
-                if (*v11)
-                    v24 = pPalette[*v11];
-                else
-                    v24 = v28;
-                WritePixel16(clipped_out_x + dx, clipped_out_y + dy, v24);
-                ++v11;
+        for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
+            for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
+                uint16_t color = (*font_pixels)
+                    ? pPalette[*font_pixels]
+                    : 0x7FF;  // transparent color 16bit
+                              // render->uTargetGMask |
+                              // render->uTargetBMask;
+                this->render_target_rgb[(x + dx) + (y + dy) * 640] = Color32A(color);
+                // fontpix[dx + dy * uCharWidth] = Color32(color);
+                ++font_pixels;
             }
-            v11 += a5 - v8;
         }
     } else {
-        for (uint dy = 0; dy < v9; ++dy) {
-            for (int dx = 0; dx < v8; ++dx) {
-                if (*v11)
-                    WritePixel16(clipped_out_x + dx, clipped_out_y + dy,
-                                 pPalette[*v11]);
-                ++v11;
+        for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
+            for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
+                if (*font_pixels) {
+                    uint8_t index = *font_pixels;
+                    uint8_t r = pPalette[index * 3 + 0];
+                    uint8_t g = pPalette[index * 3 + 1];
+                    uint8_t b = pPalette[index * 3 + 2];
+                    this->render_target_rgb[(x + dx) + (y + dy) * 640] = Color32A(r, g, b);
+                    // fontpix[dx + dy * uCharWidth] = Color32(r, g, b);
+                }
+                ++font_pixels;
             }
-            v11 += a5 - v8;
         }
     }
+    // render->DrawTextureAlphaNew(x / 640., y / 480., fonttemp);
+    // fonttemp->Release();
 }
 
 void RenderOpenGL::Present() {
-    glEnable(GL_TEXTURE_2D);
+    // screen overlay holds all text and changing images at the moment
 
-    static GLuint screen_quad_id = 0;
-    if (!screen_quad_id) {
-        glGenTextures(1, &screen_quad_id);
-        glBindTexture(GL_TEXTURE_2D, screen_quad_id);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    static Texture *screen_text_overlay = 0;
+    if (!screen_text_overlay) {
+        screen_text_overlay = render->CreateTexture_Blank(640, 480, IMAGE_FORMAT_A8R8G8B8);
     }
 
-    {
-        int width = window->GetWidth();
-        int pitch = 4 * width;
-        int alpha_blended_size = pitch * window->GetHeight();
+    uint32_t *pix = (uint32_t*)screen_text_overlay->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+    unsigned int num_pixels = screen_text_overlay->GetWidth() * screen_text_overlay->GetHeight();
+    unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R8G8B8A8);
 
-        auto alpha_blended = new unsigned char[alpha_blended_size];
-        memset(alpha_blended, 0, alpha_blended_size);
-
-        auto src = (unsigned __int32 *)this->render_target_rgb;
-        auto dst = (unsigned __int32 *)alpha_blended;
-        for (uint y = 0; y < 8; ++y) {
-            memcpy(dst + y * width, src + y * width, width * sizeof(__int32));
-        }
-
-        for (uint y = 8; y < 352; ++y) {
-            int left_border_width_px = 8;
-            memcpy(dst + y * width, src + y * width,
-                   left_border_width_px * sizeof(__int32));
-            memcpy(dst + left_border_width_px + game_viewport_width + y * width,
-                   src + left_border_width_px + game_viewport_width + y * width,
-                   (width - left_border_width_px - game_viewport_width) *
-                       sizeof(__int32));
-        }
-
-        for (uint y = 352; y < 480; ++y) {
-            memcpy(dst + y * width, src + y * width, width * sizeof(__int32));
-        }
-
-        for (uint y = pViewport->uViewportTL_Y;
-             y < pViewport->uViewportBR_Y + 1; ++y) {
-            for (uint x = pViewport->uViewportTL_X;
-                 x < pViewport->uViewportBR_X; ++x) {
-                if (src[x + y * width] !=
-                    0xFFF8FC00) {  // F8FC00 =  Color32(Color16(g_mask |
-                                   // b_mask)) - alpha color key
-                    dst[x + y * width] = src[x + y * width];
-                }
-                // else
-                //    dst[x + y * width] = 0x00000000;
-            }
-        }
-
-        glBindTexture(GL_TEXTURE_2D, screen_quad_id);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window->GetWidth(),
-                     window->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                     alpha_blended);
-
-        delete[] alpha_blended;
-    }
-
-    _set_ortho_projection();
-    _set_ortho_modelview();
-
-    glBindTexture(GL_TEXTURE_2D, screen_quad_id);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    // glTranslatef(0.5f, 0.5f, 0.0f); // texels to pixels // somehow it works
-    // against expected - makes things more blurry
-    glBegin(GL_QUADS);
-    {
-        glTexCoord2f(0.0f, 0.0f);
-        glVertex2f(0.0f, 0.0f);
-        glTexCoord2f(0.0f, 1.0f);
-        glVertex2f(0.0f, window->GetHeight());
-        glTexCoord2f(1.0f, 1.0f);
-        glVertex2f(window->GetWidth(), window->GetHeight());
-        glTexCoord2f(1.0f, 0.0f);
-        glVertex2f(window->GetWidth(), 0.0f);
-    }
-    glEnd();
+    // update pixels
+    memcpy(pix, this->render_target_rgb, num_pixels_bytes);
+    // update texture
+    render->Update_Texture(screen_text_overlay);
+    // draw
+    render->DrawTextureAlphaNew(0, 0, screen_text_overlay);
 
     window->OpenGlSwapBuffers();
-    //  SwapBuffers((HDC)this->hdc);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 RenderVertexSoft ogl_draw_buildings_vertices[20];
@@ -1807,6 +2212,7 @@ bool RenderOpenGL::SwitchToWindow() {
     return true;
 }
 
+
 bool RenderOpenGL::Initialize(OSWindow *window_) {
     if (!RenderBase::Initialize(window_)) {
         return false;
@@ -1814,6 +2220,7 @@ bool RenderOpenGL::Initialize(OSWindow *window_) {
 
     if (window != nullptr) {
         window->OpenGlCreate();
+
 
         glShadeModel(GL_SMOOTH);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
@@ -1846,7 +2253,7 @@ bool RenderOpenGL::Initialize(OSWindow *window_) {
         this->clip_z = window->GetWidth();
         this->clip_w = window->GetHeight();
         this->render_target_rgb =
-            new unsigned char[4 * window->GetWidth() *
+            new uint32_t[window->GetWidth() *
             window->GetHeight()];
 
         PostInitialization();
@@ -1858,19 +2265,15 @@ bool RenderOpenGL::Initialize(OSWindow *window_) {
 }
 
 void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) {
-    int idx = 4 * (y * window->GetWidth() + x);
-    this->render_target_rgb[idx + 0] = 8 * ((color >> 11) & 0x1F);
-    this->render_target_rgb[idx + 1] = 4 * ((color >> 5) & 0x3F);
-    this->render_target_rgb[idx + 2] = 8 * (color & 0x1F);
-    this->render_target_rgb[idx + 3] = 0xFF;
+    // render target now 32 bit - format R8G8B8A8
+    render_target_rgb[x + window->GetWidth() * y] = Color32A(color);
 }
 
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
                                 unsigned int uWidth, unsigned int uHeight,
                                 unsigned int uColor16) {
-    for (uint y = uY; y < uY + uHeight; ++y) {
-        for (uint x = uX; x < uX + uWidth; ++x) {
-            this->WritePixel16(x, y, uColor16);
-        }
+    int32_t col = Color32A(uColor16);
+    for (unsigned int dy = 0; dy < uHeight; ++dy) {
+        memset32(this->render_target_rgb + ((uY+dy) * window->GetWidth() + uX), col, uWidth);
     }
 }

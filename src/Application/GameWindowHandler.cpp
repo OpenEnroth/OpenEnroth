@@ -170,9 +170,11 @@ void GameWindowHandler::OnVkDown(int vk, int vk_to_char) {
 }
 
 void GameWindowHandler::OnFocus() {
+    __debugbreak();
 }
 
 void GameWindowHandler::OnFocusLost() {
+    __debugbreak();
 }
 
 void GameWindowHandler::OnPaint() {

@@ -97,7 +97,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
            pODMRenderParams->uMapGridCellZ <= 127);
 
     if (bRedraw) {
-        //sub_487DA9(); // wipes poly array feild 108 doesnt do anything
+        // sub_487DA9(); // wipes poly array feild 108 doesnt do anything
     }
 
     if (pParty->uCurrentMinute != pOutdoor->uLastSunlightUpdateMinute)
@@ -1696,13 +1696,13 @@ bool OutdoorLocation::LoadTileGroupIds() {
 void OutdoorLocation::PrepareActorsDrawList() {
     int z;             // esi@5
     float v4;          // ST48_4@8
-    unsigned int v8;   // eax@11
-    signed int v12;    // eax@16
+    unsigned int Angle_To_Cam;   // eax@11
+    signed int Cur_Action_Time;    // eax@16
     SpriteFrame *v14;  // eax@24
     SpriteFrame *v15;  // ebx@25
                        //    int v22; // ecx@41
                        //    int v23; // ST5C_4@43
-    int v41;           // [sp+24h] [bp-3Ch]@11
+    int Sprite_Octant;           // [sp+24h] [bp-3Ch]@11
                        //    int v48; // [sp+30h] [bp-30h]@41
     signed int v49;    // [sp+34h] [bp-2Ch]@5
                        //    int v51; // [sp+34h] [bp-2Ch]@41
@@ -1736,53 +1736,54 @@ void OutdoorLocation::PrepareActorsDrawList() {
             }
         }
 
-        v8 = stru_5C6E00->Atan2(
+        Angle_To_Cam = stru_5C6E00->Atan2(
             pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
             pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
 
         int v9 = 0;
         HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
-        v41 = ((signed int)(stru_5C6E00->uIntegerPi +
+        Sprite_Octant = ((signed int)(stru_5C6E00->uIntegerPi +
                             ((signed int)stru_5C6E00->uIntegerPi >> 3) + v9 -
-                            v8) >>
-               8) &
-              7;
+                            Angle_To_Cam) >> 8) & 7;
+
+
         if (pParty->bTurnBasedModeOn) {
-            v12 = pActors[i].uCurrentActionTime;
+            Cur_Action_Time = pActors[i].uCurrentActionTime;
             if (pActors[i].uCurrentActionAnimation == 1)
-                v12 = 32 * i + pMiscTimer->uTotalGameTimeElapsed;
+                Cur_Action_Time = 32 * i + pMiscTimer->uTotalGameTimeElapsed;
         } else {
-            v12 = pActors[i].uCurrentActionTime;
+            Cur_Action_Time = pActors[i].uCurrentActionTime;
             if (pActors[i].uCurrentActionAnimation == 1)
-                v12 = 32 * i + pEventTimer->uTotalGameTimeElapsed;
+                Cur_Action_Time = 32 * i + pEventTimer->uTotalGameTimeElapsed;
         }
 
         if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active() ||
             pActors[i].pActorBuffs[ACTOR_BUFF_PARALYZED].Active())
-            v12 = 0;
+            Cur_Action_Time = 0;
         if (pActors[i].uAIState == Summoned && !v49)
-            v14 = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, v12);
+            v14 = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, Cur_Action_Time);
         else if (pActors[i].uAIState == Resurrected)
             v14 = pSpriteFrameTable->GetFrameBy_x(
-                pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], v12);
+                pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], Cur_Action_Time);
         else
             v14 = pSpriteFrameTable->GetFrame(
-                pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], v12);
+                pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], Cur_Action_Time);
+
         v62 = 0;
         v15 = v14;
         // v16 = (int *)v14->uFlags;
         if (v14->uFlags & 2) v62 = 2;
         if (v14->uFlags & 0x40000) v62 |= 0x40;
         if (v14->uFlags & 0x20000) v62 |= 0x80;
-        if ((256 << v41) & v14->uFlags) v62 |= 4;
+        if ((256 << Sprite_Octant) & v14->uFlags) v62 |= 4;
         if (v15->uGlowRadius) {
             pMobileLightsStack->AddLight(x, y, z, 0, v15->uGlowRadius, 0xFFu,
                                          0xFFu, 0xFFu, _4E94D3_light_type);
         }
 
         int view_x = 0, view_y = 0, view_z = 0;
-        bool visible =
-            pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+        bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+
         if (visible) {
             if (abs(view_x) >= abs(view_y)) {
                 int projected_x = 0;
@@ -1795,7 +1796,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 ++uNumSpritesDrawnThisFrame;
 
                 pActors[i].uAttributes |= ACTOR_UNKNOW2;
-                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[v41];
+                pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[Sprite_Octant];
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
 
@@ -3353,7 +3354,7 @@ void SetUnderwaterFog() {
 
 //----- (00487DA9) --------------------------------------------------------
 void sub_487DA9() {
-    //for (int i = 0; i < 20000; ++i) array_77EC08[i].field_108 = 0;
+    // for (int i = 0; i < 20000; ++i) array_77EC08[i].field_108 = 0;
 }
 
 //----- (004706C6) --------------------------------------------------------

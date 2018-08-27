@@ -118,6 +118,7 @@ struct Engine {
     void Deinitialize();
     void DrawParticles();
     void Draw();
+    void DrawGUI();
     void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     void SecondaryInitialization();
     void _461103_load_level_sub();

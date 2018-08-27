@@ -3,6 +3,8 @@
 #include "Engine/OurMath.h"
 #include "Engine/Strings.h"
 
+#include "Engine/Graphics/DecorationList.h"
+
 class Texture;
 
 class Sprite {
@@ -81,3 +83,5 @@ struct SpriteFrameTable {
 void _46E26D_collide_against_sprites(int a1, int a2);
 
 extern struct SpriteFrameTable *pSpriteFrameTable;
+
+SpriteFrame *LevelDecorationChangeSeason(DecorationDesc *desc, int t, int month);

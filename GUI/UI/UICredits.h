@@ -22,7 +22,7 @@ class GUICredits : public GUIWindow {
 
     int width;
     int height;
-    Image *cred_texture;
+    Texture *cred_texture;
     int move_Y;
     int tick;
 };

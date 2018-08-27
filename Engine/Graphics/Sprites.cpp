@@ -592,3 +592,81 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
         }
     }
 }
+
+
+SpriteFrame *LevelDecorationChangeSeason(DecorationDesc *desc, int t, int month) {
+    switch (month/*pParty->uCurrentMonth*/) {
+        // case 531 (tree60), 536 (tree65), 537 (tree66) have no autumn/winter
+        // sprites
+        case 11:
+        case 0:
+        case 1:  // winter
+        {
+            switch (desc->uSpriteID) {
+                // case 468:           //bush02    grows on swamps, which are
+                // evergreeen actually
+                case 548:  // flower10
+                case 547:  // flower09
+                case 541:  // flower03
+                case 539:  // flower01
+                    return nullptr;
+
+                case 483:  // tree01
+                case 486:  // tree04
+                case 492:  // tree10
+                {
+                    pSpriteFrameTable->InitializeSprite(desc->uSpriteID + 2);
+                    return pSpriteFrameTable->GetFrame(desc->uSpriteID + 2, t);
+                }
+
+                default:
+                    return pSpriteFrameTable->GetFrame(desc->uSpriteID, t);
+            }
+        }
+
+        case 2:
+        case 3:
+        case 4:  // spring
+        {
+            // switch (desc->uSpriteID) {}
+            return pSpriteFrameTable->GetFrame(desc->uSpriteID, t);
+        }
+
+        case 8:
+        case 9:
+        case 10:  // autumn
+        {
+            switch (desc->uSpriteID) {
+                // case 468: //bush02    grows on swamps, which are evergreeen
+                // actually
+                case 548:  // flower10
+                case 547:  // flower09
+                case 541:  // flower03
+                case 539:  // flower01
+                    return nullptr;
+
+                case 483:  // tree01
+                case 486:  // tree04
+                case 492:  // tree10
+                {
+                    pSpriteFrameTable->InitializeSprite(desc->uSpriteID + 1);
+                    return pSpriteFrameTable->GetFrame(desc->uSpriteID + 1, t);
+                }
+
+                default:
+                    return pSpriteFrameTable->GetFrame(desc->uSpriteID, t);
+            }
+        } break;
+
+        case 5:
+        case 6:
+        case 7:  // summer
+                 // all green by default
+        {
+            return pSpriteFrameTable->GetFrame(desc->uSpriteID, t);
+        }
+
+        default:
+            assert(/*pParty->uCurrentMonth*/month >= 0 && /*pParty->uCurrentMonth*/month < 12);
+    }
+}

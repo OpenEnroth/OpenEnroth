@@ -104,8 +104,9 @@ class EngineConfig {
     int max_flight_height = 4000;
 
     bool no_intro = true;
-    bool no_logo = false;
-    bool no_sound = false;
+    bool no_logo = true;
+
+    bool no_sound = true;
     bool no_video = false;
     bool no_walk_sound = false;
     bool no_margareth = true;

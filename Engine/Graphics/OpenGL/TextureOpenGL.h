@@ -5,8 +5,12 @@ class TextureOpenGL : public Texture {
  public:
     int GetOpenGlTexture();
 
+    ~TextureOpenGL();
+
  protected:
     friend class RenderOpenGL;
+
+    static Texture *Create(unsigned int width, unsigned int height, IMAGE_FORMAT format, const void * pixels);
 
     static Texture *Create(ImageLoader *loader);
 

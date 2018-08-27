@@ -6,7 +6,7 @@
 #include "../LOD.h"
 #include "FrameTableInc.h"
 
-Image *Icon::GetTexture() {
+Texture *Icon::GetTexture() {
     if (!this->img) {
         this->img = assets->GetImage_ColorKey(this->pTextureName, 0x7FF);
     }

@@ -4,7 +4,8 @@ unsigned int GetSpellColor(signed int a1);
 __int64 GetExperienceRequiredForLevel(int a1);
 
 class Image;
-extern Image *parchment;
+class Texture;
+extern Texture *parchment;
 extern Image *messagebox_corner_x;       // 5076AC
 extern Image *messagebox_corner_y;       // 5076B4
 extern Image *messagebox_corner_z;       // 5076A8

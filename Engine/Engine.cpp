@@ -145,8 +145,6 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 
 //----- (0044103C) --------------------------------------------------------
 void Engine::Draw() {
-    int v4;  // edi@26
-
     SetSaturateFaces(
         pParty->_497FC5_check_party_perception_against_level());
 
@@ -213,15 +211,36 @@ void Engine::Draw() {
         }
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     }
+
+    // 2d from now on
     // DEBUG: force redraw gui
     viewparams->bRedrawGameUI = true;
 
     render->BeginScene();
+    DrawGUI();
+    int v4 = viewparams->bRedrawGameUI;
+    GUI_UpdateWindows();
+    pParty->UpdatePlayersAndHirelingsEmotions();
+    _unused_5B5924_is_travel_ui_drawn = false;
+
+    if (v4)
+        mouse->bRedraw = true;
+    mouse->ReadCursorWithItem();
+    mouse->DrawCursor();
+    mouse->Activate();
+    render->EndScene();
+    render->Present();
+    pParty->uFlags &= ~2;
+}
+
+void Engine::DrawGUI() {
+    render->ResetUIClipRect();
+
     // if (render->pRenderD3D)
     mouse->DrawCursorToTarget();
     if (pOtherOverlayList->bRedraw)
         viewparams->bRedrawGameUI = true;
-    v4 = viewparams->bRedrawGameUI;
+    int v4 = viewparams->bRedrawGameUI;
     GameUI_StatusBar_DrawForced();
     if (!viewparams->bRedrawGameUI) {
         GameUI_DrawRightPanelItems();
@@ -230,19 +249,25 @@ void Engine::Draw() {
         GameUI_StatusBar_Draw();
         viewparams->bRedrawGameUI = false;
     }
-    if (!pMovie_Track) {  //! pVideoPlayer->pSmackerMovie)
+
+
+    if (!pMovie_Track) {  // ! pVideoPlayer->pSmackerMovie)
         GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
         if (v4) {
-            if (!PauseGameDrawing() /*&& render->pRenderD3D*/)  // clear game
+            if (!PauseGameDrawing() /*&& render->pRenderD3D*/) {  // clear game
                                                                 // viewport with
                                                                 // transparent
                                                                 // color
-                render->FillRectFast(
-                    pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
-                    pViewport->uViewportBR_X - pViewport->uViewportTL_X,
-                    pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
-                    0x7FF);
-            viewparams->field_48 = 0;
+
+                if (!(config->renderer_name == "OpenGL")) {  // do not want in opengl mode
+                    render->FillRectFast(
+                        pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
+                        pViewport->uViewportBR_X - pViewport->uViewportTL_X,
+                        pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
+                        0x7FF);
+                }
+                viewparams->field_48 = 0;
+            }
         }
     }
 
@@ -272,7 +297,7 @@ void Engine::Draw() {
         uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         pWeather->Draw();  // Ritor1: my include
 
-    // while(GetTickCount() - last_frame_time < 33 );//FPS control
+                           // while(GetTickCount() - last_frame_time < 33 );//FPS control
     uint frame_dt = OS_GetTime() - last_frame_time;
     last_frame_time = OS_GetTime();
     framerate_time_elapsed += frame_dt;
@@ -289,8 +314,8 @@ void Engine::Draw() {
     if (engine->config->show_fps) {
         if (render_framerate) {
             pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(0, 0, 0),
-                                     StringPrintf("FPS: % .4f", framerate), 0,
-                                     0, 0);
+                StringPrintf("FPS: % .4f", framerate), 0,
+                0, 0);
         }
 
         int debug_info_offset = 0;
@@ -300,14 +325,14 @@ void Engine::Draw() {
             pPrimaryWindow->DrawText(
                 pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255),
                 StringPrintf("Party Sector ID:        %u/%u\n", sector_id,
-                             pIndoor->uNumSectors),
+                    pIndoor->uNumSectors),
                 0, 0, 0);
         }
         pPrimaryWindow->DrawText(
             pFontArrus, 16, debug_info_offset + 16, Color16(255, 255, 255),
             StringPrintf("Party Position:         % d % d % d",
-                         pParty->vPosition.x, pParty->vPosition.y,
-                         pParty->vPosition.z),
+                pParty->vPosition.x, pParty->vPosition.y,
+                pParty->vPosition.z),
             0, 0, 0);
 
         String floor_level_str;
@@ -331,22 +356,9 @@ void Engine::Draw() {
                 floor_level, on_water ? "true" : "false", _a6);
         }
         pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset + 16 + 16,
-                                 Color16(255, 255, 255), floor_level_str, 0, 0,
-                                 0);
+            Color16(255, 255, 255), floor_level_str, 0, 0,
+            0);
     }
-
-    GUI_UpdateWindows();
-    pParty->UpdatePlayersAndHirelingsEmotions();
-
-    _unused_5B5924_is_travel_ui_drawn = false;
-    if (v4)
-        mouse->bRedraw = true;
-    mouse->ReadCursorWithItem();
-    mouse->DrawCursor();
-    mouse->Activate();
-    render->EndScene();
-    render->Present();
-    pParty->uFlags &= ~2;
 }
 
 //----- (0047A815) --------------------------------------------------------
@@ -744,10 +756,6 @@ void Engine::OutlineSelection() {
 //----- (0042FC15) --------------------------------------------------------
 void CloseWindowBackground() {
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -2, 0, -1, 0, 0);
-    render->DrawTextureAlphaNew(pBtn_ExitCancel->uX / 640.0f,
-                                pBtn_ExitCancel->uY / 480.0f,
-                                pBtn_ExitCancel->vTextures[0]);
-    render->Present();
 }
 
 //----- (0046BDC0) --------------------------------------------------------
@@ -840,7 +848,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
 void FinalInitialization() {
     pViewport->SetScreen(viewparams->uSomeX, viewparams->uSomeY,
                          viewparams->uSomeZ, viewparams->uSomeW);
-    pViewport->SetFOV(_6BE3A0_fov * 65536.0f);
+    pViewport->SetFOV(_6BE3A0_fov);
 
     // pIndoorCamera = new IndoorCamera;
     // pIndoorCamera->Initialize(65, viewparams->uScreen_BttmR_X -
@@ -2522,3 +2530,4 @@ void mm7__vector_constructor(void *a1, int objSize, int numObjs,
         }
     }
 }
+

@@ -661,6 +661,11 @@ void MPlayer::HouseMovieLoop() {
 
     render->BeginScene();
 
+    static Texture *tex;
+    if (!tex) {
+        tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
+    }
+
     PMemBuffer buffer = pMovie_Track->GetFrame();
     if (buffer) {
         Rect rect;
@@ -669,11 +674,30 @@ void MPlayer::HouseMovieLoop() {
         rect.z = rect.x + game_viewport_width;
         rect.w = rect.y + game_viewport_height;
 
-        Image *image =
-            Image::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(),
-                          IMAGE_FORMAT_A8R8G8B8, buffer->GetData());
-        render->DrawImage(image, rect);
-        image->Release();
+        // create and update texture
+
+        uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
+        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R8G8B8A8);
+
+        memcpy(pix, buffer->GetData(), num_pixels_bytes);
+            uint32_t *dst = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+
+            // real dodgy conversion to update other pixels
+            for (unsigned int i = 0; i < num_pixels; ++i) {
+                uint32_t p = pix[i];
+                dst[i] = ((p & 0xFF000000) | (p & 0x000000FF) << 16 | (p & 0x0000FF00) | (p & 0x00FF0000) >> 16);
+            }
+
+        // update texture
+        render->Update_Texture(tex);
+        render->DrawImage(tex, rect);
+
+       // Image *image =
+       //     Image::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(),
+        //                  IMAGE_FORMAT_A8R8G8B8, buffer->GetData());
+        // render->DrawImage(image, rect);
+        // image->Release();
     } else {
         pMovie_Track = nullptr;
         size_t size = 0;
@@ -685,6 +709,8 @@ void MPlayer::HouseMovieLoop() {
             pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
             pMovie_Track->Play();
         }
+        // callback to prevent skipped frame draw
+        HouseMovieLoop();
     }
 
     render->EndScene();
@@ -721,10 +747,16 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     rect.z = rect.x + 640;
     rect.w = rect.y + 480;
 
+    // create texture
+    Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
+
     while (true) {
         render->BeginScene();
 
         window->PeekMessageLoop();
+
+        // if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) continue;
+        // add pausing of movie when game lost focus
 
         OS_Sleep(2);
 
@@ -733,15 +765,40 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
             break;
         }
 
-        Image *image =
+        /*Image *image =
             Image::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(),
-                          IMAGE_FORMAT_A8R8G8B8, buffer->GetData());
-        render->DrawImage(image, rect);
-        image->Release();
+                          IMAGE_FORMAT_A8R8G8B8, buffer->GetData());*/
+
+        uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
+        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R8G8B8A8);
+
+        if (num_pixels_bytes == buffer->GetSize()/2) {
+            memcpy(pix, buffer->GetData(), num_pixels_bytes);
+            uint32_t *dst = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+
+            // real dodgy conversion to update other pixels
+                for (unsigned int i = 0; i < num_pixels; ++i) {
+                    uint32_t p = pix[i];
+                    dst[i] = ((p & 0xFF000000) | (p & 0x000000FF) << 16 | (p & 0x0000FF00) | (p & 0x00FF0000) >> 16);
+                }
+        } else {
+            log("bad tiems");
+        }
+
+        // update texture
+        render->Update_Texture(tex);
+        render->DrawImage(tex, rect);
+
+        // render->DrawImage(image, rect);
+        /*image->Release();*/
 
         render->EndScene();
         render->Present();
     }
+
+    // release texture
+    tex->Release();
 
     current_screen_type = SCREEN_GAME;
     pMovie_Track = nullptr;
