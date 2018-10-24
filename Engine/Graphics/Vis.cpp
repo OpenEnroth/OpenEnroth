@@ -262,6 +262,22 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
     float drY = a1->pQuads[0].pos.y;
     float drH = a1->pQuads[1].pos.y - drY;
 
+
+
+    // for small items dont bother with the per pixel checks
+    if (abs(drH) < 5 || abs(drW) < 5) {
+        if (drW < 0) {  // sprite reversed
+            drX = a1->pQuads[3].pos.x;
+            drW = a1->pQuads[0].pos.x - drX;
+        }
+        if (x >= drX && x < (drW + drX) && y >= drY && y < (drH + drY)) {  // simple bounds check
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+
     Sprite *ownerSprite = nullptr;
     for (int i = 0; i < pSprites_LOD->uNumLoadedSprites; ++i) {
         if ((void *)pSprites_LOD->pHardwareSprites[i].texture == a1->texture) {
@@ -280,6 +296,7 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
     LODSprite *spriteHeader = ownerSprite->sprite_header;
 
     if (sy < 0 || sy >= spriteHeader->uHeight) return false;
+    if (sx < 0 || sx >= spriteHeader->uWidth) return false;
 
     return spriteHeader->bitmap[sy * spriteHeader->uWidth + sx] != 0;
 }
@@ -320,6 +337,10 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                             v12->object_pid = PID(OBJECT_BModel, pFaceID);
                             v12->object_type = VisObjectType_Face;
                             ++*pNumPointers;
+                            // logger->Info(L"raypass");
+                        } else {
+                           // __debugbreak();
+                            // logger->Info(L"rayfaile");
                         }
                     }
                 }
@@ -631,6 +652,8 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint,
 
     if (engine->config->show_picked_face)
         pFace->uAttributes |= FACE_PICKED;
+
+
     return true;
     /*
       int v5; // esi@10
@@ -1431,7 +1454,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
 
     signed int v40;  // [sp+108h] [bp+Ch]@17
 
-    static Vis_SelectionList Vis_static_stru_F91E10;
+    /*static*/ Vis_SelectionList Vis_static_stru_F91E10;
     Vis_static_stru_F91E10.uNumPointers = 0;
     v3 = render->pBillboardRenderListD3D[uD3DBillboardIdx].sParentBillboardID;
     if (v3 == -1) return false;
@@ -1489,7 +1512,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
     }
 
     if (v40 >= 4) {
-        if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) return false;
+        // if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) return false;
         t1_x =
             render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[0].pos.x;
         t2_x =

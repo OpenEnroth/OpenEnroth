@@ -108,13 +108,13 @@ struct Engine {
     void OutlineSelection();
     int _44EC23_saturate_face_odm(struct Polygon *a2, int *a3, signed int a4);
     int _44ED0A_saturate_face_blv(struct BLVFace *a2, int *a3, signed int a4);
-    bool AlterGamma_BLV(struct BLVFace *pFace, signed int *pColor);
-    bool AlterGamma_ODM(struct ODMFace *pFace, signed int *pColor);
+    bool AlterGamma_BLV(struct BLVFace *pFace, unsigned int *pColor);
+    bool AlterGamma_ODM(struct ODMFace *pFace, unsigned int *pColor);
     bool draw_debug_outlines();
     bool _44EEA7();
     bool _44F07B();
     void PushStationaryLights(int a2);
-    void PrepareBloodsplats();
+    // void PrepareBloodsplats();
     void Deinitialize();
     void DrawParticles();
     void Draw();
@@ -435,9 +435,6 @@ struct Engine {
     int field_978;
     Game_stru0 stru_97C;
     char field_98C[1148];
-    int uNumBloodsplats;  // not used anymore??
-    int field_E0C;  // to do with bloodsplats - not used anymore??
-    __int64 field_E10;
     int uNumStationaryLights_in_pStationaryLightsStack;
     // unsigned int __depricated1;  // unsigned int bGammaControlInitialized;
     float fSaturation;

@@ -218,7 +218,7 @@ extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
 
 void Render::RenderTerrainD3D() {  // New function
     // warning: the game uses CW culling by default, ccw is incosistent
-    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CCW);
+    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW);
 
     static RenderVertexSoft
         pTerrainVertices[128 * 128];  // vertexCountX and vertexCountZ
@@ -271,7 +271,7 @@ void Render::RenderTerrainD3D() {  // New function
     } else if (direction >= 1.0 &&
                direction < 3.0) {  // NorthEast(CB) - WestNorth(CЗ)
         Start_X = 0, End_X = 128;
-        Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellZ + 1;
+        Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellZ + 2;
     } else if (direction >= 3.0 &&
                direction < 5.0) {  // WestNorth(CЗ) - SouthWest(ЮЗ)
         Start_X = 0, End_X = pODMRenderParams->uMapGridCellX + 2;
@@ -285,12 +285,25 @@ void Render::RenderTerrainD3D() {  // New function
         Start_Z = 0, End_Z = 128;
     }
 
+    int camx = pODMRenderParams->uMapGridCellX;
+    int camz = pODMRenderParams->uMapGridCellZ - 1;
+    int tilerange = (pIndoorCameraD3D->GetFarClip() / blockScale) + 1;
+
     float Light_tile_dist;
 
     for (unsigned int z = Start_Z; z < End_Z; ++z) {
         for (unsigned int x = Start_X; x < End_X; ++x) {
-            struct Polygon *pTilePolygon =
-                &array_77EC08[pODMRenderParams->uNumPolygons];
+            // tile culling
+            int xdist = camx - x;
+            int zdist = camz - z;
+
+            if (xdist > tilerange || zdist > tilerange) continue;
+
+            int dist = sqrt((xdist)*(xdist)+(zdist)*(zdist));
+            if (dist > tilerange) continue;  // crude distance culling
+
+
+            struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
             pTilePolygon->flags = 0;
             pTilePolygon->field_32 = 0;
             // pTilePolygon->uTileBitmapID = pOutdoor->DoGetTileTexture(x, z);
@@ -316,22 +329,43 @@ void Render::RenderTerrainD3D() {  // New function
             //  |            |
             //  .____________.
             //  x,z+1       x+1,z+1
+
+            // verts are CW
+            // memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x],
+            //       sizeof(RenderVertexSoft));  // x, z
+            // array_73D150[0].u = 0;
+            // array_73D150[0].v = 0;
+            // memcpy(&array_73D150[1], &pTerrainVertices[z * 128 + x + 1],
+            //       sizeof(RenderVertexSoft));  // x + 1, z
+            // array_73D150[1].u = 1;
+            // array_73D150[1].v = 0;
+            // memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x + 1],
+            //       sizeof(RenderVertexSoft));  // x + 1, z + 1
+            // array_73D150[2].u = 1;
+            // array_73D150[2].v = 1;
+            // memcpy(&array_73D150[3], &pTerrainVertices[(z + 1) * 128 + x],
+            //       sizeof(RenderVertexSoft));  // x, z + 1
+            // array_73D150[3].u = 0;
+            // array_73D150[3].v = 1;
+
+            // verts CCW - for testing
             memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x],
-                   sizeof(RenderVertexSoft));  // x, z
+                sizeof(RenderVertexSoft));  // x, z
             array_73D150[0].u = 0;
             array_73D150[0].v = 0;
-            memcpy(&array_73D150[1], &pTerrainVertices[z * 128 + x + 1],
-                   sizeof(RenderVertexSoft));  // x + 1, z
-            array_73D150[1].u = 1;
-            array_73D150[1].v = 0;
+            memcpy(&array_73D150[3], &pTerrainVertices[z * 128 + x + 1],
+                sizeof(RenderVertexSoft));  // x + 1, z
+            array_73D150[3].u = 1;
+            array_73D150[3].v = 0;
             memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x + 1],
-                   sizeof(RenderVertexSoft));  // x + 1, z + 1
+                sizeof(RenderVertexSoft));  // x + 1, z + 1
             array_73D150[2].u = 1;
             array_73D150[2].v = 1;
-            memcpy(&array_73D150[3], &pTerrainVertices[(z + 1) * 128 + x],
-                   sizeof(RenderVertexSoft));  // x, z + 1
-            array_73D150[3].u = 0;
-            array_73D150[3].v = 1;
+            memcpy(&array_73D150[1], &pTerrainVertices[(z + 1) * 128 + x],
+                sizeof(RenderVertexSoft));  // x, z + 1
+            array_73D150[1].u = 0;
+            array_73D150[1].v = 1;
+
             // v58 = 0;
             // if (v58 == 4) // if all y == first y;  primitive in xz plane
             // pTile->field_32 |= 0x0001;
@@ -339,24 +373,22 @@ void Render::RenderTerrainD3D() {  // New function
             pTilePolygon->uNumVertices = 4;
             pTilePolygon->field_59 = 5;
 
-            if (array_73D150[0].vWorldViewPosition.x < 8.0 &&
-                array_73D150[1].vWorldViewPosition.x < 8.0 &&
-                array_73D150[2].vWorldViewPosition.x < 8.0 &&
-                array_73D150[3].vWorldViewPosition.x < 8.0)
+            if (array_73D150[0].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() &&
+                array_73D150[1].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() &&
+                array_73D150[2].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() &&
+                array_73D150[3].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip())
                 continue;
-            if (pIndoorCameraD3D->GetFarClip() <
-                    array_73D150[0].vWorldViewPosition.x &&
-                pIndoorCameraD3D->GetFarClip() <
-                    array_73D150[1].vWorldViewPosition.x &&
-                pIndoorCameraD3D->GetFarClip() <
-                    array_73D150[2].vWorldViewPosition.x &&
-                pIndoorCameraD3D->GetFarClip() <
-                    array_73D150[3].vWorldViewPosition.x)
+
+            if (pIndoorCameraD3D->GetFarClip() < array_73D150[0].vWorldViewPosition.x &&
+                pIndoorCameraD3D->GetFarClip() < array_73D150[1].vWorldViewPosition.x &&
+                pIndoorCameraD3D->GetFarClip() < array_73D150[2].vWorldViewPosition.x &&
+                pIndoorCameraD3D->GetFarClip() < array_73D150[3].vWorldViewPosition.x)
                 continue;
+
             //----------------------------------------------------------------------------
 
             ++pODMRenderParams->uNumPolygons;
-            ++pODMRenderParams->field_44;
+            // ++pODMRenderParams->field_44;
             assert(pODMRenderParams->uNumPolygons < 20000);
 
             pTilePolygon->uBModelID = 0;
@@ -370,99 +402,302 @@ void Render::RenderTerrainD3D() {  // New function
             // shading
             // (затенение)----------------------------------------------------------------------------
             // uint norm_idx = pTerrainNormalIndices[2 * (z * 128 + x) + 1];
-            uint norm_idx = pTerrainNormalIndices[2 * (x * 128 + z) + 1];
+            uint norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * z) + 2 /*+ 1*/ ];  // 2 is top tri // 3 is bottom
+            uint bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * z) + 3];
+
             assert(norm_idx < uNumTerrainNormals);
+            assert(bottnormidx < uNumTerrainNormals);
 
             Vec3_float_ *norm = &pTerrainNormals[norm_idx];
-            float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                        (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                        (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
-            pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
+            Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
+
             if (norm_idx < 0 || norm_idx > uNumTerrainNormals - 1)
                 norm = 0;
             else
                 norm = &pTerrainNormals[norm_idx];
-            if (false) {
-            // if (engine->config->allow_lightmaps) {
-                // Ritor1: significant fps slowdown
-                lightmap_builder->StackLights_TerrainFace(
-                    norm, &Light_tile_dist, VertexRenderList, 4,
-                    1);
-                decal_builder->_49BE8A(pTilePolygon, norm,
-                    &Light_tile_dist, VertexRenderList, 4, 1);
-            }
-            unsigned int a5 = 4;
 
-            // ---------Draw distance(Дальность отрисовки)-------------------------------
-            int far_clip_distance = pIndoorCameraD3D->GetFarClip();
-            if (engine->config->extended_draw_distance)
-                far_clip_distance = 0x5000;
-            bool neer_clip = array_73D150[0].vWorldViewPosition.x < 8.0 ||
-                             array_73D150[1].vWorldViewPosition.x < 8.0 ||
-                             array_73D150[2].vWorldViewPosition.x < 8.0 ||
-                             array_73D150[3].vWorldViewPosition.x < 8.0;
-            bool far_clip =
-                (float)far_clip_distance < array_73D150[0].vWorldViewPosition.x ||
-                (float)far_clip_distance < array_73D150[1].vWorldViewPosition.x ||
-                (float)far_clip_distance < array_73D150[2].vWorldViewPosition.x ||
-                (float)far_clip_distance < array_73D150[3].vWorldViewPosition.x;
+            if (bottnormidx < 0 || bottnormidx > uNumTerrainNormals - 1)
+                norm2 = 0;
+            else
+                norm2 = &pTerrainNormals[bottnormidx];
 
-            int uClipFlag = 0;
-            static stru154 static_sub_0048034E_stru_154;
-            lightmap_builder->StationaryLightsCount = 0;
-            if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
-                if (neer_clip)
-                    uClipFlag = 3;
-                else
-                    uClipFlag = far_clip != 0 ? 5 : 0;
-                static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
-                if (decal_builder->uNumDecals > 0)
-                    decal_builder->ApplyDecals(31 - pTilePolygon->dimming_level,
-                                               4, &static_sub_0048034E_stru_154,
-                                               a5, VertexRenderList, 0,
-                                               *(float *)&uClipFlag, -1);
-                if (Lights.uNumLightsApplied > 0)
-                    lightmap_builder->ApplyLights(
-                        &Lights, &static_sub_0048034E_stru_154, a5,
-                        VertexRenderList, 0, uClipFlag);
-            }
 
-            if (!_4D864C_force_sw_render_rules || !engine->config->ForceLegacyProjection()) {
-                // uphill distortions, probably bezier curves required
-                // if ( neer_clip ) //Ritor1: Даёт искажения на подъёме,
-                // возможно требуется ф-ция Безье
-                //{
-                // pTilePolygon->uNumVertices =
-                // ODM_NearClip(pTilePolygon->uNumVertices);
-                // ODM_Project(pTilePolygon->uNumVertices);
-                //}
-                if (far_clip) {
-                    pTilePolygon->uNumVertices =
-                        ODM_FarClip(pTilePolygon->uNumVertices);
-                    ODM_Project(pTilePolygon->uNumVertices);
+            if (norm_idx != bottnormidx) {
+                // we have a split poly - need to apply lights and decals seperately to each half
+
+                pTilePolygon->uNumVertices = 3;
+
+                ///////////// triangle 1 - 1 2 3
+
+                // verts CCW - for testing
+                memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x],
+                    sizeof(RenderVertexSoft));  // x, z
+                array_73D150[0].u = 0;
+                array_73D150[0].v = 0;
+                memcpy(&array_73D150[2], &pTerrainVertices[z * 128 + x + 1],
+                    sizeof(RenderVertexSoft));  // x + 1, z
+                array_73D150[2].u = 1;
+                array_73D150[2].v = 0;
+                memcpy(&array_73D150[1], &pTerrainVertices[(z + 1) * 128 + x + 1],
+                    sizeof(RenderVertexSoft));  // x + 1, z + 1
+                array_73D150[1].u = 1;
+                array_73D150[1].v = 1;
+                // memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x],
+                //    sizeof(RenderVertexSoft));  // x, z + 1
+                // array_73D150[2].u = 0;
+                // array_73D150[2].v = 1;
+
+                for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k) {
+                    memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
+                    VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                 }
-            }
-            // pODMRenderParams->shading_dist_mist = temp;
 
-            // check the transparency and texture (tiles) mapping (проверка
-            // прозрачности и наложение текстур (тайлов))----------------------
-            bool transparent = false;
+                float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
+                    (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
+                    (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
 
-            auto tile_texture = tile->GetTexture();
-            if (!(pTilePolygon->flags & 1)) {
-                // не поддерживается TextureFrameTable
-                if (/*pTile->flags & 2 && */ tile->IsWaterTile()) {
-                    tile_texture =
-                        this->hd_water_tile_anim[this->hd_water_current_frame];
-                } else if (tile->IsWaterBorderTile()) {
-                    // for all shore tiles - draw a tile water under them since
-                    // they're half-empty
-                    DrawBorderTiles(pTilePolygon);
-                    transparent = true;
+                lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, 3, 1);
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, 3, 1);
+
+                unsigned int a5 = 4;
+
+                // ---------Draw distance(Дальность отрисовки)-------------------------------
+                int far_clip_distance = pIndoorCameraD3D->GetFarClip();
+                float near_clip_distance = pIndoorCameraD3D->GetNearClip();
+
+
+                bool neer_clip = array_73D150[0].vWorldViewPosition.x < near_clip_distance ||
+                    array_73D150[1].vWorldViewPosition.x < near_clip_distance ||
+                    array_73D150[2].vWorldViewPosition.x < near_clip_distance;
+                bool far_clip =
+                    (float)far_clip_distance < array_73D150[0].vWorldViewPosition.x ||
+                    (float)far_clip_distance < array_73D150[1].vWorldViewPosition.x ||
+                    (float)far_clip_distance < array_73D150[2].vWorldViewPosition.x;
+
+                int uClipFlag = 0;
+                static stru154 static_sub_0048034E_stru_154;
+                lightmap_builder->StationaryLightsCount = 0;
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
+                    if (neer_clip)
+                        uClipFlag = 3;
+                    else
+                        uClipFlag = far_clip != 0 ? 5 : 0;
+                    static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
+
+                    if (decal_builder->uNumDecals > 0)
+                        decal_builder->ApplyDecals(31 - pTilePolygon->dimming_level,
+                            4, &static_sub_0048034E_stru_154,
+                            3, VertexRenderList, 0,
+                            *(float *)&uClipFlag, -1);
+                    if (Lights.uNumLightsApplied > 0)
+                        lightmap_builder->ApplyLights(
+                            &Lights, &static_sub_0048034E_stru_154, 3,
+                            VertexRenderList, 0, uClipFlag);
                 }
-                pTilePolygon->texture = tile_texture;
 
-                render->DrawTerrainPolygon(pTilePolygon, transparent, true);
+
+
+
+
+
+
+                // pODMRenderParams->shading_dist_mist = temp;
+
+                // check the transparency and texture (tiles) mapping (проверка
+                // прозрачности и наложение текстур (тайлов))----------------------
+                bool transparent = false;
+
+                auto tile_texture = tile->GetTexture();
+                if (!(pTilePolygon->flags & 1)) {
+                    // не поддерживается TextureFrameTable
+                    if (/*pTile->flags & 2 && */ tile->IsWaterTile()) {
+                        tile_texture =
+                            this->hd_water_tile_anim[this->hd_water_current_frame];
+                    } else if (tile->IsWaterBorderTile()) {
+                        // for all shore tiles - draw a tile water under them since
+                        // they're half-empty
+                        DrawBorderTiles(pTilePolygon);
+                        transparent = true;
+                    }
+                    pTilePolygon->texture = tile_texture;
+
+                    render->DrawTerrainPolygon(pTilePolygon, transparent, true);
+                }
+
+                ///////////// triangle 2  0 1 3
+                {
+                    // verts CCW - for testing
+                    memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x],
+                        sizeof(RenderVertexSoft));  // x, z
+                    array_73D150[0].u = 0;
+                    array_73D150[0].v = 0;
+                    // memcpy(&array_73D150[2], &pTerrainVertices[z * 128 + x + 1],
+                    //    sizeof(RenderVertexSoft));  // x + 1, z
+                    // array_73D150[2].u = 1;
+                    // array_73D150[2].v = 0;
+                    memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x + 1],
+                        sizeof(RenderVertexSoft));  // x + 1, z + 1
+                    array_73D150[2].u = 1;
+                    array_73D150[2].v = 1;
+                    memcpy(&array_73D150[1], &pTerrainVertices[(z + 1) * 128 + x],
+                        sizeof(RenderVertexSoft));  // x, z + 1
+                    array_73D150[1].u = 0;
+                    array_73D150[1].v = 1;
+
+                    for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k) {
+                        memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
+                        VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
+                    }
+
+                    float _f2 = ((norm2->x * (float)pOutdoor->vSunlight.x / 65536.0) -
+                        (norm2->y * (float)pOutdoor->vSunlight.y / 65536.0) -
+                        (norm2->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                    pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f2 + 0.5f);
+
+
+                    lightmap_builder->StackLights_TerrainFace(norm2, &Light_tile_dist, VertexRenderList, 3, 0);
+
+                    decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2,
+                        &Light_tile_dist, VertexRenderList, 3, 0);
+
+
+                    unsigned int a5_2 = 4;
+
+                    // ---------Draw distance(Дальность отрисовки)-------------------------------
+                    int far_clip_distance_2 = pIndoorCameraD3D->GetFarClip();
+                    float near_clip_distance_2 = pIndoorCameraD3D->GetNearClip();
+
+
+                    bool neer_clip_2 = array_73D150[0].vWorldViewPosition.x < near_clip_distance_2 ||
+                        array_73D150[1].vWorldViewPosition.x < near_clip_distance_2 ||
+                        array_73D150[2].vWorldViewPosition.x < near_clip_distance_2;
+                    bool far_clip_2 =
+                        (float)far_clip_distance_2 < array_73D150[0].vWorldViewPosition.x ||
+                        (float)far_clip_distance_2 < array_73D150[1].vWorldViewPosition.x ||
+                        (float)far_clip_distance_2 < array_73D150[2].vWorldViewPosition.x;
+
+                    int uClipFlag_2 = 0;
+                    static stru154 static_sub_0048034E_stru_154_2;
+                    lightmap_builder->StationaryLightsCount = 0;
+                    if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
+                        if (neer_clip_2)
+                            uClipFlag_2 = 3;
+                        else
+                            uClipFlag_2 = far_clip_2 != 0 ? 5 : 0;
+                        static_sub_0048034E_stru_154_2.ClassifyPolygon(norm2, Light_tile_dist);
+
+                        if (decal_builder->uNumDecals > 0)
+                            decal_builder->ApplyDecals(31 - pTilePolygon->dimming_level,
+                                4, &static_sub_0048034E_stru_154_2,
+                                3, VertexRenderList, 0,
+                                *(float *)&uClipFlag_2, -1);
+                        if (Lights.uNumLightsApplied > 0)
+                            lightmap_builder->ApplyLights(
+                                &Lights, &static_sub_0048034E_stru_154_2, 3,
+                                VertexRenderList, 0, uClipFlag_2);
+                    }
+
+
+
+
+
+
+
+                    // pODMRenderParams->shading_dist_mist = temp;
+
+                    // check the transparency and texture (tiles) mapping (проверка
+                    // прозрачности и наложение текстур (тайлов))----------------------
+                    bool transparent = false;
+
+                    auto tile_texture = tile->GetTexture();
+                    if (!(pTilePolygon->flags & 1)) {
+                        // не поддерживается TextureFrameTable
+                        if (/*pTile->flags & 2 && */ tile->IsWaterTile()) {
+                            tile_texture =
+                                this->hd_water_tile_anim[this->hd_water_current_frame];
+                        } else if (tile->IsWaterBorderTile()) {
+                            // for all shore tiles - draw a tile water under them since
+                            // they're half-empty
+                            DrawBorderTiles(pTilePolygon);
+                            transparent = true;
+                        }
+                        pTilePolygon->texture = tile_texture;
+
+                        render->DrawTerrainPolygon(pTilePolygon, transparent, true);
+                    }
+                }  // end split trinagles
+            } else {
+                float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
+                    (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
+                    (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
+
+                lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, pTilePolygon->uNumVertices, 1);
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, pTilePolygon->uNumVertices, 1);
+
+                unsigned int a5 = 4;
+
+                // ---------Draw distance(Дальность отрисовки)-------------------------------
+                int far_clip_distance = pIndoorCameraD3D->GetFarClip();
+                float near_clip_distance = pIndoorCameraD3D->GetNearClip();
+
+                if (engine->config->extended_draw_distance)
+                    far_clip_distance = 0x5000;
+                bool neer_clip = array_73D150[0].vWorldViewPosition.x < near_clip_distance ||
+                    array_73D150[1].vWorldViewPosition.x < near_clip_distance ||
+                    array_73D150[2].vWorldViewPosition.x < near_clip_distance ||
+                    array_73D150[3].vWorldViewPosition.x < near_clip_distance;
+                bool far_clip =
+                    (float)far_clip_distance < array_73D150[0].vWorldViewPosition.x ||
+                    (float)far_clip_distance < array_73D150[1].vWorldViewPosition.x ||
+                    (float)far_clip_distance < array_73D150[2].vWorldViewPosition.x ||
+                    (float)far_clip_distance < array_73D150[3].vWorldViewPosition.x;
+
+                int uClipFlag = 0;
+                static stru154 static_sub_0048034E_stru_154;
+                lightmap_builder->StationaryLightsCount = 0;
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
+                    if (neer_clip)
+                        uClipFlag = 3;
+                    else
+                        uClipFlag = far_clip != 0 ? 5 : 0;
+                    static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
+
+                    if (decal_builder->uNumDecals > 0)
+                        decal_builder->ApplyDecals(31 - pTilePolygon->dimming_level,
+                            4, &static_sub_0048034E_stru_154,
+                            a5, VertexRenderList, 0,
+                            *(float *)&uClipFlag, -1);
+
+                    if (Lights.uNumLightsApplied > 0)
+                        lightmap_builder->ApplyLights(&Lights, &static_sub_0048034E_stru_154, a5, VertexRenderList, 0, uClipFlag);
+                }
+
+
+                // pODMRenderParams->shading_dist_mist = temp;
+
+                // check the transparency and texture (tiles) mapping (проверка
+                // прозрачности и наложение текстур (тайлов))----------------------
+                bool transparent = false;
+
+                auto tile_texture = tile->GetTexture();
+                if (!(pTilePolygon->flags & 1)) {
+                    // не поддерживается TextureFrameTable
+                    if (/*pTile->flags & 2 && */ tile->IsWaterTile()) {
+                        tile_texture =
+                            this->hd_water_tile_anim[this->hd_water_current_frame];
+                    } else if (tile->IsWaterBorderTile()) {
+                        // for all shore tiles - draw a tile water under them since
+                        // they're half-empty
+                        DrawBorderTiles(pTilePolygon);
+                        transparent = true;
+                    }
+                    pTilePolygon->texture = tile_texture;
+
+                    render->DrawTerrainPolygon(pTilePolygon, transparent, true);
+                }
+            // end norm split
             }
         }
     }
@@ -577,7 +812,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
                         &view_z);
 
                     if (visible) {
-                        if (2 * abs(view_x) >= abs(view_y)) {
+                        // if (2 * abs(view_x) >= abs(view_y)) {
                             int projected_x = 0;
                             int projected_y = 0;
                             pIndoorCameraD3D->Project(view_x, view_y, view_z,
@@ -591,8 +826,9 @@ void Render::PrepareDecorationsRenderList_ODM() {
 
                             int screen_space_half_width = 0;
                             screen_space_half_width =
-                                _v41.GetInt() *
+                                _v41.GetFloat() *
                                 frame->hw_sprites[(int)v37]->uBufferWidth / 2;
+
 
                             if (projected_x + screen_space_half_width >=
                                     (signed int)pViewport->uViewportTL_X &&
@@ -634,8 +870,10 @@ void Render::PrepareDecorationsRenderList_ODM() {
                                     .pSpriteFrame = frame;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .sTintColor = 0;
+                            } else {
+                                // temp
                             }
-                        }
+                       // }
                     }
                 }
             } else {
@@ -664,7 +902,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
     }
 
     unsigned int v41;     // eax@29
-    int sCorrectedColor;  // [sp+64h] [bp-4h]@4
+    unsigned int sCorrectedColor;  // [sp+64h] [bp-4h]@4
 
     auto texture = (TextureD3D *)pPolygon->texture;
     ODMFace *pFace = pPolygon->pODMFace;
@@ -1175,15 +1413,10 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
     for (uint i = 0; i < pLightmap->NumVertices; ++i) {
         float v18;
         if (fabs(z_bias) < 1e-5) {
-            v18 = 1.0 -
-                  1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) *
-                         pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0);
+            v18 = 1.0 - 1.0 / ((1.0f / 16192.0) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0);
         } else {
-            v18 =
-                1.0 -
-                1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) *
-                       pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0) -
-                z_bias;
+            v18 = 1.0 - 1.0 / ((1.0f / 16192.0) * pLightmap->pVertices[i].vWorldViewPosition.x * 1000.0) - z_bias;
+
             if (v18 < 0.000099999997) {
                 v18 = 0.000099999997;
             }
@@ -1193,10 +1426,8 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
         pVerticesD3D[i].pos.y = pLightmap->pVertices[i].vWorldViewProjY;
         pVerticesD3D[i].pos.z = v18;
 
-        pVerticesD3D[i].rhw =
-            1.0 / pLightmap->pVertices[i].vWorldViewPosition.x;
-        pVerticesD3D[i].diffuse = (uLightmapColorMaskR << 16) |
-                                  (uLightmapColorMaskG << 8) | uLightmapColorB;
+        pVerticesD3D[i].rhw = 1.0 / pLightmap->pVertices[i].vWorldViewPosition.x;
+        pVerticesD3D[i].diffuse = (uLightmapColorR << 16) | (uLightmapColorG << 8) | uLightmapColorB;
         pVerticesD3D[i].specular = 0;
 
         pVerticesD3D[i].texcoord.x = pLightmap->pVertices[i].u;
@@ -1632,9 +1863,9 @@ void Render::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
     }
 }
 
-unsigned int Render::GetActorTintColor(float a2, int tint, int a4, int a5,
-                                       RenderBillboard *a6) {
-    return ::GetActorTintColor(tint, a4, a2, a5, a6);
+unsigned int Render::GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) {
+    // GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, RenderBillboard *a5)
+    return ::GetActorTintColor(DimLevel, tint, WorldViewX, a5, Billboard);
 }
 
 void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
@@ -1725,9 +1956,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                              pIndoorCameraD3D->GetFarClip());
             d3d_vertex_buffer[i].rhw =
                 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
-            d3d_vertex_buffer[i].diffuse = GetActorTintColor(
-                a4->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x,
-                0, 0);
+            d3d_vertex_buffer[i].diffuse = GetActorTintColor(a4->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
             d3d_vertex_buffer[i].specular = 0;
             if (config->is_using_specular)
                 d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(
@@ -1747,11 +1976,13 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             D3DPT_TRIANGLEFAN,  //рисуется текстурка с светом
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
-        // ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
-        // D3DCULL_NONE));
+
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
+
         lightmap_builder->DrawLightmaps(-1 /*, 0*/);
+
         for (uint i = 0; i < uNumVertices; ++i) {
-            d3d_vertex_buffer[i].diffuse = -1;
+            d3d_vertex_buffer[i].diffuse = 0xFFFFFFFF; /*-1;*/
         }
         ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));  //текстурка
         ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
@@ -1767,6 +1998,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             D3DPT_TRIANGLEFAN,
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+
         if (config->is_using_specular) {
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
             ErrD3D(pRenderD3D->pDevice->SetTexture(0, 0));
@@ -1807,447 +2039,11 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                                             0x00FFFFFF, 0.0);
 }
 
-void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
-    if (uNumD3DSceneBegins == 0) {
-        return;
-    }
 
-    unsigned int uNumVertices = pSkyPolygon->uNumVertices;
-    TextureD3D *texture = (TextureD3D *)pSkyPolygon->texture;
 
-    if (uNumVertices >= 3) {
-        this->pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                        D3DTADDRESS_WRAP);
-        if (config->is_using_specular) {
-            this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-            this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-            this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-        }
-        for (unsigned int i = 0; i < uNumVertices; ++i) {
-            pVertices[i].pos.x = VertexRenderList[i].vWorldViewProjX;
-            pVertices[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-            pVertices[i].pos.z = 0.99989998;
-            pVertices[i].rhw = VertexRenderList[i]._rhw;
 
-            pVertices[i].diffuse = ::GetActorTintColor(31, 0, VertexRenderList[i].vWorldViewPosition.x, 1, 0);
-            int v7 = 0;
-            if (config->is_using_specular)
-                v7 = sub_47C3D7_get_fog_specular(0, 1, VertexRenderList[i].vWorldViewPosition.x);
-            pVertices[i].specular = v7;
-            pVertices[i].texcoord.x = VertexRenderList[i].u;
-            pVertices[i].texcoord.y = VertexRenderList[i].v;
-        }
-        pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture());
-        pRenderD3D->pDevice->DrawPrimitive(
-            D3DPT_TRIANGLEFAN,
-            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-            pVertices, uNumVertices,
-            D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTLIGHT);
-    }
-}
 
-void Render::DrawIndoorSkyPolygon(int uNumVertices,
-                                  struct Polygon *pSkyPolygon) {
-    TextureD3D *texture = (TextureD3D *)pSkyPolygon->texture;
 
-    if (uNumD3DSceneBegins == 0) {
-        return;
-    }
-
-    if (uNumVertices >= 3) {
-        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                         D3DTADDRESS_WRAP));
-        int v5 = 31 - (pSkyPolygon->dimming_level & 0x1F);
-        if (v5 < pOutdoor->max_terrain_dimming_level) {
-            v5 = pOutdoor->max_terrain_dimming_level;
-        }
-        for (uint i = 0; i < (unsigned int)uNumVertices; ++i) {
-            d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-            d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-            d3d_vertex_buffer[i].pos.z =
-                1.0 -
-                1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-            d3d_vertex_buffer[i].rhw = array_507D30[i]._rhw;
-            d3d_vertex_buffer[i].diffuse =
-                8 * v5 | ((8 * v5 | (v5 << 11)) << 8);
-            d3d_vertex_buffer[i].specular = 0;
-            d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u;
-            d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v;
-        }
-        ErrD3D(
-            pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
-        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
-            D3DPT_TRIANGLEFAN,
-            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-            d3d_vertex_buffer, uNumVertices, 28));
-    }
-}
-
-void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
-    BLVFace *pFace;              // esi@1
-    double v5;                   // st7@3
-    signed __int64 v6;           // qax@3
-    int v12;                     // edx@7
-    int v13;                     // eax@7
-    int v17;                     // edi@9
-    double v18;                  // st7@9
-    signed int v19;              // ebx@9
-    void *v20;                   // ecx@9
-    int v21;                     // ebx@11
-    int v22;                     // eax@14
-    signed __int64 v23;          // qtt@16
-    double v28;                  // st7@20
-    double v33;                  // st6@23
-    const void *v35;             // ecx@31
-    int v36;                     // eax@31
-    const void *v37;             // edi@31
-    signed __int64 v38;          // qax@31
-    int v39;                     // ecx@31
-    int v40;                     // ebx@33
-    int v41;                     // eax@36
-    signed __int64 v42;          // qtt@39
-    int v43;                     // eax@39
-    double v48;                  // st7@41
-    double v51;                  // st7@46
-    struct Polygon pSkyPolygon;  // [sp+14h] [bp-160h]@6
-    unsigned int v63;            // [sp+120h] [bp-54h]@7
-    unsigned int v65;            // [sp+128h] [bp-4Ch]@1
-    unsigned int v66;            // [sp+12Ch] [bp-48h]@7
-    __int64 v69;                 // [sp+13Ch] [bp-38h]@3
-    int v70;                     // [sp+144h] [bp-30h]@3
-    int X;                       // [sp+148h] [bp-2Ch]@9
-    int v72;                     // [sp+14Ch] [bp-28h]@7
-    float v73;                   // [sp+150h] [bp-24h]@16
-    unsigned int v74;            // [sp+154h] [bp-20h]@3
-    unsigned int v74_;           // [sp+154h] [bp-20h]@3
-    RenderVertexSoft *v75;       // [sp+158h] [bp-1Ch]@3
-    float v76;                   // [sp+15Ch] [bp-18h]@9
-    int v77;                     // [sp+160h] [bp-14h]@9
-    int v78;                     // [sp+164h] [bp-10h]@7
-    void *v79;                   // [sp+168h] [bp-Ch]@9
-    float v80;                   // [sp+16Ch] [bp-8h]@3
-    const void *v81;             // [sp+170h] [bp-4h]@7
-
-    pFace = &pIndoor->pFaces[uFaceID];
-    // for floor and wall(for example Selesta)-------------------
-    if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall ||
-        pFace->uPolygonType == POLYGON_Floor) {
-        int v69 = (OS_GetTime() / 32) - pIndoorCameraD3D->vPartyPos.x;
-        int v55 = (OS_GetTime() / 32) + pIndoorCameraD3D->vPartyPos.y;
-        for (uint i = 0; i < uNumVertices; ++i) {
-            array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
-            array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
-        }
-        render->DrawIndoorPolygon(uNumVertices, pFace,
-                                  PID(OBJECT_BModel, uFaceID), -1, 0);
-        return;
-    }
-    //---------------------------------------
-    v70 = (signed __int64)((double)(pBLVRenderParams->bsp_fov_rad *
-                                    pIndoorCameraD3D->vPartyPos.z)  // 179
-                               / (((double)pBLVRenderParams->bsp_fov_rad +
-                                   16192.0) *
-                                  65536.0) +
-                           (double)pBLVRenderParams->uViewportCenterY);
-    v5 = (double)pIndoorCameraD3D->sRotationX * 0.0030664064;         // 0
-    v6 = (signed __int64)((double)pBLVRenderParams->uViewportCenterY  // 183
-                          - (double)pBLVRenderParams->bsp_fov_rad /
-                                ((cos(v5) * 16192.0 + 0.0000001) * 65535.0) *
-                                (sin(v5) * -16192.0 -
-                                 (double)pIndoorCameraD3D->vPartyPos.z));
-
-    stru_8019C8._48653D_frustum_blv(65536, 0, 0, 0, 65536, 0);
-    pSkyPolygon.Create_48607B(&stru_8019C8);
-
-    // pSkyPolygon.uTileBitmapID = pFace->uBitmapID;
-    pSkyPolygon.texture = pFace->GetTexture();
-
-    // pSkyPolygon.pTexture =
-    // pBitmaps_LOD->GetTexture(pSkyPolygon.uTileBitmapID);
-    if (!pSkyPolygon.texture) return;
-
-    pSkyPolygon.dimming_level = 0;
-    pSkyPolygon.uNumVertices = uNumVertices;
-
-    pSkyPolygon.v_18.x = -stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX + 16);
-    pSkyPolygon.v_18.y = 0;
-    pSkyPolygon.v_18.z = -stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX + 16);
-
-    memcpy(&array_507D30[uNumVertices], array_507D30,
-           sizeof(array_507D30[uNumVertices]));
-    pSkyPolygon.field_24 = 0x2000000;
-
-    extern float _calc_fov(int viewport_width, int angle_degree);
-    // v64 = (double)(signed int)(pBLVRenderParams->uViewportZ -
-    // pBLVRenderParams->uViewportX) * 0.5; v72 = 65536 / (signed int)(signed
-    // __int64)(v64 / tan(0.6457717418670654) + 0.5);
-    v72 = 65536.0f /
-          _calc_fov(pBLVRenderParams->uViewportZ - pBLVRenderParams->uViewportX,
-                    74);
-    v12 = pSkyPolygon.texture->GetWidth() - 1;
-    v13 = pSkyPolygon.texture->GetHeight() - 1;
-    // v67 = 1.0 / (double)pSkyPolygon.pTexture->uTextureWidth;
-    v63 = 224 * pMiscTimer->uTotalGameTimeElapsed & v13;
-    v66 = 224 * pMiscTimer->uTotalGameTimeElapsed & v12;
-    v78 = 0;
-    // v81 = 0;
-    float v68 = 1.0 / (double)pSkyPolygon.texture->GetHeight();
-    if ((signed int)pSkyPolygon.uNumVertices <= 0) return;
-
-    int _507D30_idx = 0;
-    for (_507D30_idx; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
-        // v15 = (void *)(v72 * (v70 -
-        // (int)array_507D30[_507D30_idx].vWorldViewProjY));
-        v77 = fixpoint_mul(
-            pSkyPolygon.ptr_38->viewing_angle_from_west_east,
-            v72 * (v70 - array_507D30[_507D30_idx].vWorldViewProjY));
-        v74 = v77 + pSkyPolygon.ptr_38->angle_from_north;
-
-        v77 = fixpoint_mul(
-            pSkyPolygon.ptr_38->viewing_angle_from_north_south,
-            v72 * (v70 - array_507D30[_507D30_idx].vWorldViewProjY));
-        v74_ = v77 + pSkyPolygon.ptr_38->angle_from_east;
-
-        v79 = (void *)(fixpoint_mul(
-            pSkyPolygon.v_18.z,
-            v72 * (v70 - (int)array_507D30[_507D30_idx].vWorldViewProjY)));
-        v17 = v72 * (pBLVRenderParams->uViewportCenterX -
-                     (int)array_507D30[_507D30_idx].vWorldViewProjX);
-        v18 = array_507D30[_507D30_idx].vWorldViewProjY - 1.0;
-        v19 = -pSkyPolygon.field_24;
-        v77 = -pSkyPolygon.field_24;
-        X = (int)((char *)v79 + pSkyPolygon.v_18.x);
-        HEXRAYS_LODWORD(v76) = (signed __int64)v18;
-        v20 = (void *)(v72 * (v70 - HEXRAYS_LODWORD(v76)));
-        while (1) {
-            v79 = v20;
-            if (!X) goto LABEL_14;
-            v21 = abs(v19 >> 14);
-            if (v21 <= abs(X))  // 0x800 <= 0x28652
-                break;
-            if (HEXRAYS_SLODWORD(v76) <= (signed int)pViewport->uViewportTL_Y)
-                break;
-            v19 = v77;
-            v20 = v79;
-        LABEL_14:
-            v79 = (void *)fixpoint_mul(pSkyPolygon.v_18.z, (int)v20);
-            v22 = fixpoint_mul(pSkyPolygon.v_18.z, (int)v20);
-            --HEXRAYS_LODWORD(v76);
-            v20 = (char *)v20 + v72;
-            X = v22 + pSkyPolygon.v_18.x;
-            v78 = 1;
-        }
-        if (!v78) {
-            HEXRAYS_LODWORD(v23) = v77 << 16;
-            HEXRAYS_HIDWORD(v23) = v77 >> 16;  // v23 = 0xfffffe0000000000
-            v79 = (void *)(v23 / X);           // X = FFFF9014(-28652)
-            v77 = v17;
-            __int64 s = v74 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west,
-                                           v17);  // s = 0xFFFFFFFF FFFF3EE6
-            HEXRAYS_LODWORD(v80) =
-                v66 +
-                ((signed int)fixpoint_mul(HEXRAYS_SLODWORD(s), v23 / X) >> 4);
-            array_507D30[_507D30_idx].u =
-                ((double)HEXRAYS_SLODWORD(v80) * 0.000015259022) *
-                (1.0 / (double)pSkyPolygon.texture->GetWidth());
-
-            __int64 s2 =
-                v74_ + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_south, v17);
-            HEXRAYS_LODWORD(v80) =
-                v63 +
-                ((signed int)fixpoint_mul(HEXRAYS_SLODWORD(s2), v23 / X) >> 4);
-            array_507D30[_507D30_idx].v =
-                ((double)HEXRAYS_SLODWORD(v80) * 0.000015259022) * v68;
-
-            v77 = fixpoint_mul(HEXRAYS_SLODWORD(s), v23 / X);
-            HEXRAYS_LODWORD(v73) = fixpoint_mul(HEXRAYS_SLODWORD(s2), v23 / X);
-            array_507D30[_507D30_idx]._rhw = 65536.0 / (double)(signed int)v79;
-
-            // if ( (int)v81 >= pSkyPolygon.uNumVertices )
-            //{
-            //  render->DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices,
-            //  &pSkyPolygon,
-            //     pBitmaps_LOD->pHardwareTextures[(signed
-            //     __int16)pSkyPolygon.uTileBitmapID]);
-            //  return;
-            //}
-            continue;
-        }
-        break;
-    }
-    if (_507D30_idx >= pSkyPolygon.uNumVertices) {
-        DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
-        return;
-    }
-    HEXRAYS_LODWORD(v73) = 0;
-    v80 = v76;
-    if ((signed int)pSkyPolygon.uNumVertices > 0) {
-        v28 = (double)HEXRAYS_SLODWORD(v76);
-        HEXRAYS_LODWORD(v76) = (int)(char *)VertexRenderList + 28;
-        uint i = 0;
-        for (v78 = pSkyPolygon.uNumVertices; v78; --v78) {
-            ++HEXRAYS_LODWORD(v73);
-            memcpy(&VertexRenderList[i], &array_507D30[i], 0x30u);
-            HEXRAYS_LODWORD(v76) += 48;
-            if (v28 < array_507D30[i].vWorldViewProjY |
-                    v28 == array_507D30[i].vWorldViewProjY ||
-                v28 >= array_507D30[i + 1].vWorldViewProjY) {
-                if (v28 >= array_507D30[i].vWorldViewProjY ||
-                    v28 <= array_507D30[i + 1].vWorldViewProjY) {
-                    i++;
-                    continue;
-                }
-                v33 = (array_507D30[i + 1].vWorldViewProjX -
-                       array_507D30[i].vWorldViewProjX) *
-                          v28 /
-                          (array_507D30[i + 1].vWorldViewProjY -
-                           array_507D30[i].vWorldViewProjY) +
-                      array_507D30[i + 1].vWorldViewProjX;
-            } else {
-                v33 = (array_507D30[i].vWorldViewProjX -
-                       array_507D30[i + 1].vWorldViewProjX) *
-                          v28 /
-                          (array_507D30[i].vWorldViewProjY -
-                           array_507D30[i + 1].vWorldViewProjY) +
-                      array_507D30[i].vWorldViewProjX;
-            }
-            VertexRenderList[i + 1].vWorldViewProjX = v33;
-            ++HEXRAYS_LODWORD(v73);
-            *(unsigned int *)HEXRAYS_LODWORD(v76) = v28;
-            HEXRAYS_LODWORD(v76) += 48;
-            i++;
-        }
-    }
-    if (HEXRAYS_SLODWORD(v73) <= 0) goto LABEL_40;
-    // v34 = (char *)&VertexRenderList[0].vWorldViewProjY;
-    uint j = 0;
-    v65 = v77 >> 14;
-    // HIDWORD(v69) = LODWORD(v73);
-    for (int t = (int)HEXRAYS_LODWORD(v73); t > 1; t--) {
-        v35 = (const void *)(v72 * (v70 - (unsigned __int64)(signed __int64)
-                                              VertexRenderList[j]
-                                                  .vWorldViewProjY));
-
-        // v78 = pSkyPolygon.ptr_38->viewing_angle_from_west_east;
-        // v81 = (const void
-        // *)fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_west_east, v35);
-        v36 =
-            (int)(fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_west_east,
-                               (int)v35) +
-                  pSkyPolygon.ptr_38->angle_from_north);
-
-        v81 = v35;
-        v74 = v36;
-        // v78 = pSkyPolygon.ptr_38->viewing_angle_from_north_south;
-        v81 = (const void *)fixpoint_mul(
-            pSkyPolygon.ptr_38->viewing_angle_from_north_south, (int)v35);
-        v78 = (int)v35;
-        v75 = (RenderVertexSoft *)((char *)v81 +
-                                   pSkyPolygon.ptr_38->angle_from_east);
-        // v81 = (const void *)pSkyPolygon.v_18.z;
-        v78 = fixpoint_mul(pSkyPolygon.v_18.z, (int)v35);
-        v37 = (const void *)(v72 * (pBLVRenderParams->uViewportCenterX -
-                                    (unsigned __int64)(signed __int64)
-                                        VertexRenderList[j]
-                                            .vWorldViewProjX));
-        v38 = (signed __int64)(VertexRenderList[j].vWorldViewProjY - 1.0);
-        v81 = 0;
-        HEXRAYS_LODWORD(v76) = v38;
-        v39 = v72 * (v70 - v38);
-        while (1) {
-            v78 = v39;
-            if (!X) goto LABEL_36;
-            v40 = abs(X);
-            if (abs((signed __int64)v65) <= v40) break;
-            if (HEXRAYS_SLODWORD(v76) <= (signed int)pViewport->uViewportTL_Y)
-                break;
-            v39 = v78;
-        LABEL_36:
-            v78 = pSkyPolygon.v_18.z;
-            v41 = fixpoint_mul(pSkyPolygon.v_18.z, v39);
-            --HEXRAYS_LODWORD(v76);
-            v39 += v72;
-            X = v41 + pSkyPolygon.v_18.x;
-            v81 = (const void *)1;
-        }
-        if (v81) {
-            v79 = (void *)pSkyPolygon.v_18.z;
-            v78 = 2 * HEXRAYS_LODWORD(v76);
-            v81 = (const void *)fixpoint_mul(
-                pSkyPolygon.v_18.z,
-                (((double)v70 - ((double)(2 * HEXRAYS_LODWORD(v76)) -
-                                 VertexRenderList[j].vWorldViewProjY)) *
-                 (double)v72));
-            X = (int)((char *)v81 + pSkyPolygon.v_18.x);
-        }
-        HEXRAYS_LODWORD(v42) = v77 << 16;
-        HEXRAYS_HIDWORD(v42) = v77 >> 16;
-        v79 = (void *)(v42 / X);
-        v81 = v37;
-
-        // v78 = pSkyPolygon.ptr_38->angle_from_west;
-        v81 = (const void *)fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west,
-                                         (int)v37);
-        v43 = v74 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, (int)v37);
-        v74 = (unsigned int)v37;
-        HEXRAYS_LODWORD(v76) = v43;
-
-        // v78 = pSkyPolygon.ptr_38->angle_from_south;
-        v75 = (RenderVertexSoft *)((char *)v75 +
-                                   fixpoint_mul(
-                                       pSkyPolygon.ptr_38->angle_from_south,
-                                       (int)v37));
-        // v74 = fixpoint_mul(v43, v42 / X);
-        v81 = (const void *)fixpoint_mul((int)v75, v42 / X);
-
-        // v34 += 48;
-        // v78 = v66 + ((signed int)fixpoint_mul(v43, v42 / X) >> 4);
-        // v44 = HIDWORD(v69)-- == 1;
-        // v45 = (double)(v66 + ((signed int)fixpoint_mul(v43, v42 / X) >> 4)) *
-        // 0.000015259022; v78 = v63 + ((signed int)fixpoint_mul((int)v75, v42 /
-        // X) >> 4);
-        VertexRenderList[j].u =
-            ((double)(v66 + ((signed int)fixpoint_mul(v43, v42 / X) >> 4)) *
-             0.000015259022) *
-            (1.0 / (double)pSkyPolygon.texture->GetWidth());
-        VertexRenderList[j].v =
-            ((double)(v66 + ((signed int)fixpoint_mul(v43, v42 / X) >> 4)) *
-             0.000015259022) *
-            v68;
-        // v46 = (double)(signed int)v79;
-        VertexRenderList[j].vWorldViewPosition.x =
-            0.000015258789 * (double)(signed int)v79;
-        VertexRenderList[j]._rhw = 65536.0 / (double)(signed int)v79;
-        ++j;
-    }
-    // while ( !v44 );
-LABEL_40:
-    uint i = 0;
-    if (HEXRAYS_SLODWORD(v73) > 0) {
-        v48 = (double)HEXRAYS_SLODWORD(v80);
-        for (HEXRAYS_HIDWORD(v69) = HEXRAYS_LODWORD(v73); HEXRAYS_HIDWORD(v69);
-             --HEXRAYS_HIDWORD(v69)) {
-            if (v48 >= VertexRenderList[i].vWorldViewProjY) {
-                ++i;
-                memcpy(&array_507D30[i], &VertexRenderList[i], 0x30u);
-            }
-        }
-    }
-    pSkyPolygon.uNumVertices = i;
-    DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
-    int pNumVertices = 0;
-    if (HEXRAYS_SLODWORD(v73) > 0) {
-        v51 = (double)HEXRAYS_SLODWORD(v80);
-        for (v80 = v73; v80 != 0.0; --HEXRAYS_LODWORD(v80)) {
-            if (v51 <= VertexRenderList[pNumVertices].vWorldViewProjY) {
-                ++pNumVertices;
-                memcpy(&array_507D30[pNumVertices],
-                       &VertexRenderList[pNumVertices], 0x30u);
-            }
-        }
-    }
-    DrawIndoorSkyPolygon(pNumVertices, &pSkyPolygon);
-}
 
 void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                                int uPackedID, unsigned int uColor, int a8) {
@@ -2255,12 +2051,12 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         return;
     }
 
-    int sCorrectedColor = uColor;
+    unsigned int sCorrectedColor = uColor;
 
     TextureD3D *texture = (TextureD3D *)pFace->GetTexture();
 
     if (lightmap_builder->StationaryLightsCount) {
-        sCorrectedColor = -1;
+        sCorrectedColor =  0xFFFFFFFF/*-1*/;
     }
     engine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
@@ -2302,6 +2098,8 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     } else {
         if (!lightmap_builder->StationaryLightsCount ||
             _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
+           // return;
+
             for (uint i = 0; i < uNumVertices; ++i) {
                 d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
                 d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
@@ -2334,8 +2132,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                 d3d_vertex_buffer[i].pos.z =
                     1.0 -
                     1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-                d3d_vertex_buffer[i].rhw =
-                    1.0 / array_507D30[i].vWorldViewPosition.x;
+                d3d_vertex_buffer[i].rhw = 1.0 / array_507D30[i].vWorldViewPosition.x;
                 d3d_vertex_buffer[i].diffuse = uColor;
                 d3d_vertex_buffer[i].specular = 0;
                 d3d_vertex_buffer[i].texcoord.x =
@@ -2344,45 +2141,40 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                     array_507D30[i].v /
                     (double)pFace->GetTexture()->GetHeight();
             }
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(
-                D3DRENDERSTATE_ZWRITEENABLE, FALSE));
-            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                             D3DTADDRESS_WRAP));
+
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
+            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
             ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+
             ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
                 D3DPT_TRIANGLEFAN,
                 D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
 
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
-                                                       D3DCULL_NONE));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
+
             lightmap_builder->DrawLightmaps(-1 /*, 0*/);
 
-            for (uint i = 0; i < uNumVertices; ++i)
+            for (uint i = 0; i < uNumVertices; ++i) {
                 d3d_vertex_buffer[i].diffuse = sCorrectedColor;
+            }
 
-            ErrD3D(pRenderD3D->pDevice->SetTexture(
-                0, texture->GetDirect3DTexture()));
-            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                             D3DTADDRESS_WRAP));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(
-                D3DRENDERSTATE_ZWRITEENABLE, TRUE));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(
-                D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
-                                                       D3DBLEND_ZERO));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
-                                                       D3DBLEND_SRCCOLOR));
+            ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
+            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
+
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR));
+
             ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
                 D3DPT_TRIANGLEFAN,
                 D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
-                                                       D3DBLEND_ONE));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
-                                                       D3DBLEND_ZERO));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(
-                D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
+
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
         }
     }
 }
@@ -2627,7 +2419,7 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4,
                                                D3DCULL_CW));
 }
 
-void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1,
+void Render::_4A4CC9_AddSomeBillboard(SpellFX_Billboard *a1,
                                       int diffuse) {
     if (a1->uNumVertices < 3) {
         return;
@@ -2654,7 +2446,7 @@ void Render::_4A4CC9_AddSomeBillboard(stru6_stru1_indoor_sw_billboard *a1,
 
 
 
-        if (a1->field_104[i].z < 17) a1->field_104[i].z = 17;
+        // if (a1->field_104[i].z < 17) a1->field_104[i].z = 17;
         float rhw = 1.f / a1->field_104[i].z;
         float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pIndoorCameraD3D->GetFarClip());
 
@@ -2967,21 +2759,6 @@ void Render::ResetUIClipRect() {
     p2DGraphics->SetClip(
         Gdiplus::Rect(0, 0, window->GetWidth(), window->GetHeight()));
 }
-
-
-uint32_t Color32A(uint16_t color16) {  // returns A8B8G8R8
-    uint32_t c = color16;
-    uint32_t b = (c & 31) * 8;
-    uint32_t g = ((c >> 5) & 63) * 4;
-    uint32_t r = ((c >> 11) & 31) * 8;
-
-    return Color32A(r, g, b);
-}
-
-uint32_t Color32A(uint32_t r, uint32_t g, uint32_t b, uint32_t a) {  // returns ABGR
-    return (a << 24) | (b << 16) | (g << 8) | r;
-}
-
 
 uint32_t Color32(uint16_t color16) {
     uint32_t c = color16;
@@ -3494,9 +3271,10 @@ void Render::DoRenderBillboards_D3D() {
                 0, ((TextureD3D *)pBillboardRenderListD3D[i].texture)
                 ->GetDirect3DTexture());
         } else {
-            auto hwsplat04 = assets->GetBitmap("hwsplat04");
-            ErrD3D(pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)hwsplat04)->GetDirect3DTexture()));
+            // auto hwsplat04 = assets->GetBitmap("hwsplat04");
+            // ErrD3D(pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)hwsplat04)->GetDirect3DTexture()));
             // testing
+            ErrD3D(pRenderD3D->pDevice->SetTexture(0, 0));
         }
 
         ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
@@ -3557,13 +3335,14 @@ void Render::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
         default: {
             log->Warning(
                 L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
-            assert(false);
+            assert(false);  // fireball and impolision can crash here - maybe clipping related
             break;
         }
     }
 }
 
 int ODM_NearClip(unsigned int num_vertices) {
+    float nearclip = pIndoorCameraD3D->GetNearClip();
     bool current_vertices_flag;  // edi@1
     bool next_vertices_flag;     // [sp+Ch] [bp-24h]@6
     double t;                    // st6@10
@@ -3571,7 +3350,7 @@ int ODM_NearClip(unsigned int num_vertices) {
 
     if (!num_vertices) return 0;
     for (uint i = 0; i < num_vertices; ++i) {  // есть ли пограничные вершины
-        if (VertexRenderList[i].vWorldViewPosition.x > 8.0) {
+        if (VertexRenderList[i].vWorldViewPosition.x > nearclip) {
             bFound = true;
             break;
         }
@@ -3582,7 +3361,7 @@ int ODM_NearClip(unsigned int num_vertices) {
            sizeof(VertexRenderList[0]));
     next_vertices_flag = false;
     current_vertices_flag = false;
-    if (VertexRenderList[0].vWorldViewPosition.x <= 8.0)
+    if (VertexRenderList[0].vWorldViewPosition.x <= nearclip)
         current_vertices_flag = true;
     // check for near clip plane(проверка по ближней границе)
     //
@@ -3598,15 +3377,15 @@ int ODM_NearClip(unsigned int num_vertices) {
     int out_num_vertices = 0;
     for (uint i = 0; i < num_vertices; ++i) {
         next_vertices_flag =
-            VertexRenderList[i + 1].vWorldViewPosition.x <= 8.0;  //
+            VertexRenderList[i + 1].vWorldViewPosition.x <= nearclip;  //
         if (current_vertices_flag ^ next_vertices_flag) {
             if (next_vertices_flag) {  // следующая вершина за ближней границей
                 // t = near_clip - v0.x / v1.x - v0.x    (формула получения
                 // точки пересечения отрезка с плоскостью)
-                t = (8.0 - VertexRenderList[i].vWorldViewPosition.x) /
+                t = (nearclip - VertexRenderList[i].vWorldViewPosition.x) /
                     (VertexRenderList[i + 1].vWorldViewPosition.x -
                      VertexRenderList[i].vWorldViewPosition.x);
-                array_507D30[out_num_vertices].vWorldViewPosition.x = 8.0;
+                array_507D30[out_num_vertices].vWorldViewPosition.x = nearclip;
                 array_507D30[out_num_vertices].vWorldViewPosition.y =
                     VertexRenderList[i].vWorldViewPosition.y +
                     (VertexRenderList[i + 1].vWorldViewPosition.y -
@@ -3623,12 +3402,12 @@ int ODM_NearClip(unsigned int num_vertices) {
                 array_507D30[out_num_vertices].v =
                     VertexRenderList[i].v +
                     (VertexRenderList[i + 1].v - VertexRenderList[i].v) * t;
-                array_507D30[out_num_vertices]._rhw = 1.0 / 8.0;
+                array_507D30[out_num_vertices]._rhw = 1.0 / nearclip;
             } else {  // текущая вершина за ближней границей
-                t = (8.0 - VertexRenderList[i].vWorldViewPosition.x) /
+                t = (nearclip - VertexRenderList[i].vWorldViewPosition.x) /
                     (VertexRenderList[i].vWorldViewPosition.x -
                      VertexRenderList[i + 1].vWorldViewPosition.x);
-                array_507D30[out_num_vertices].vWorldViewPosition.x = 8.0;
+                array_507D30[out_num_vertices].vWorldViewPosition.x = nearclip;
                 array_507D30[out_num_vertices].vWorldViewPosition.y =
                     VertexRenderList[i].vWorldViewPosition.y +
                     (VertexRenderList[i].vWorldViewPosition.y -
@@ -3645,7 +3424,7 @@ int ODM_NearClip(unsigned int num_vertices) {
                 array_507D30[out_num_vertices].v =
                     VertexRenderList[i].v +
                     (VertexRenderList[i].v - VertexRenderList[i + 1].v) * t;
-                array_507D30[out_num_vertices]._rhw = 1.0 / 8.0;
+                array_507D30[out_num_vertices]._rhw = 1.0 / nearclip;
             }
             // array_507D30[out_num_vertices]._rhw = 0x3E000000u;
             ++out_num_vertices;
@@ -3960,178 +3739,7 @@ void Render::DrawBuildingsD3D() {
     }
 }
 
-void Render::DrawOutdoorSkyD3D() {
-    int v9;                      // eax@4
-    int v10;                     // ebx@4
-    int v13;                     // edi@6
-    int v14;                     // ecx@6
-    int v15;                     // eax@8
-    int v16;                     // eax@12
-    signed __int64 v17;          // qtt@13
-    signed int v18;              // ecx@13
-    struct Polygon pSkyPolygon;  // [sp+14h] [bp-150h]@1
-    int v30;                     // [sp+134h] [bp-30h]@1
-    int v32;                     // [sp+13Ch] [bp-28h]@6
-    int v33;                     // [sp+140h] [bp-24h]@2
-    signed __int64 v34;          // [sp+144h] [bp-20h]@1
-    int v35;                     // [sp+148h] [bp-1Ch]@4
-    int v36;                     // [sp+14Ch] [bp-18h]@2
-    int v37;                     // [sp+154h] [bp-10h]@8
-    int v38;                     // [sp+158h] [bp-Ch]@1
-    int v39;                     // [sp+15Ch] [bp-8h]@4
 
-    v30 =
-        (signed __int64)((double)(pODMRenderParams->int_fov_rad *
-                                  pIndoorCameraD3D->vPartyPos.z) /
-                             ((double)pODMRenderParams->int_fov_rad + 8192.0) +
-                         (double)(pViewport->uScreenCenterY));
-    v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) *
-          pIndoorCameraD3D->GetFarClip();
-    v38 = (signed __int64)((double)(pViewport->uScreenCenterY) -
-                           (double)pODMRenderParams->int_fov_rad /
-                               (v34 + 0.0000001) *
-                               (sin((double)pIndoorCameraD3D->sRotationX *
-                                    0.0030664064) *
-                                    -pIndoorCameraD3D->GetFarClip() -
-                                (double)pIndoorCameraD3D->vPartyPos.z));
-    pSkyPolygon.Create_48607B(&stru_8019C8);  //заполняется ptr_38
-    pSkyPolygon.ptr_38->_48694B_frustum_sky();
-
-    // if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
-    // pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
-    // else
-    // pSkyPolygon.uTileBitmapID = pOutdoor->sSky_TextureID;//179(original 166)
-    // pSkyPolygon.pTexture = (Texture_MM7 *)(pSkyPolygon.uTileBitmapID != -1 ?
-    // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
-    pSkyPolygon.texture = pOutdoor->sky_texture;
-    if (pSkyPolygon.texture) {
-        pSkyPolygon.dimming_level = 0;
-        pSkyPolygon.uNumVertices = 4;
-        // centering(центруем)-----------------------------------------------------------------
-        pSkyPolygon.v_18.x =
-            -stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX + 16);
-        pSkyPolygon.v_18.y = 0;
-        pSkyPolygon.v_18.z =
-            -stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX + 16);
-
-        // sky wiew position(положение неба на
-        // экране)------------------------------------------
-        //                X
-        // 0._____________________________.3
-        //  |8,8                    468,8 |
-        //  |                             |
-        //  |                             |
-        // Y|                             |
-        //  |                             |
-        //  |8,351                468,351 |
-        // 1._____________________________.2
-        //
-        VertexRenderList[0].vWorldViewProjX =
-            (double)(signed int)pViewport->uViewportTL_X;  // 8
-        VertexRenderList[0].vWorldViewProjY =
-            (double)(signed int)pViewport->uViewportTL_Y;  // 8
-
-        VertexRenderList[1].vWorldViewProjX =
-            (double)(signed int)pViewport->uViewportTL_X;   // 8
-        VertexRenderList[1].vWorldViewProjY = (double)v38;  // 247
-
-        VertexRenderList[2].vWorldViewProjX =
-            (double)(signed int)pViewport->uViewportBR_X;   // 468
-        VertexRenderList[2].vWorldViewProjY = (double)v38;  // 247
-
-        VertexRenderList[3].vWorldViewProjX =
-            (double)(signed int)pViewport->uViewportBR_X;  // 468
-        VertexRenderList[3].vWorldViewProjY =
-            (double)(signed int)pViewport->uViewportTL_Y;  // 8
-
-        pSkyPolygon.sTextureDeltaU =
-            224 * pMiscTimer->uTotalGameTimeElapsed;  // 7168
-        pSkyPolygon.sTextureDeltaV =
-            224 * pMiscTimer->uTotalGameTimeElapsed;  // 7168
-
-        pSkyPolygon.field_24 = 0x2000000;  // maybe attributes
-        v33 = 65536 /
-              (signed int)(signed __int64)(((double)(pViewport->uViewportBR_X -
-                                                     pViewport->uViewportTL_X) /
-                                            2) /
-                                               tan(0.6457717418670654) +
-                                           0.5);
-        for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i) {
-            // rotate skydome(вращение купола
-            // неба)--------------------------------------
-            // В игре принята своя система измерения углов. Полный угол (180).
-            // Значению угла 0 соответствует направление на север и/или юг (либо
-            // на восток и/или запад), значению 65536 еденицам(0х10000)
-            // соответствует угол 90. две переменные хранят данные по углу
-            // обзора. field_14 по западу и востоку. field_20 по югу и северу от
-            // -25080 до 25080
-            v39 = fixpoint_mul(
-                pSkyPolygon.ptr_38->viewing_angle_from_west_east,
-                v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-            v35 = v39 + pSkyPolygon.ptr_38->angle_from_north;
-
-            v39 = fixpoint_mul(
-                pSkyPolygon.ptr_38->viewing_angle_from_north_south,
-                v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
-            v36 = v39 + pSkyPolygon.ptr_38->angle_from_east;
-
-            v9 = fixpoint_mul(
-                pSkyPolygon.v_18.z,
-                v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-            v10 = pSkyPolygon.v_18.x + v9;
-            if (v10 > 0) v10 = 0;
-            v13 = v33 * (pViewport->uScreenCenterX -
-                         (signed __int64)VertexRenderList[i].vWorldViewProjX);
-            v34 = -pSkyPolygon.field_24;
-            v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0;
-            v14 = v33 * (v30 - v32);
-            while (1) {
-                if (v10) {
-                    v37 = abs((int)v34 >> 14);
-                    v15 = abs(v10);
-                    if (v37 <= v15 ||
-                        v32 <= (signed int)pViewport->uViewportTL_Y) {
-                        if (v10 <= 0) break;
-                    }
-                }
-                v16 = fixpoint_mul(pSkyPolygon.v_18.z, v14);
-                --v32;
-                v14 += v33;
-                v10 = pSkyPolygon.v_18.x + v16;
-            }
-            HEXRAYS_LODWORD(v17) = HEXRAYS_LODWORD(v34) << 16;
-            HEXRAYS_HIDWORD(v17) = v34 >> 16;
-            v18 = v17 / v10;
-            if (v18 < 0) v18 = pIndoorCameraD3D->GetFarClip();
-            v37 = v35 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, v13);
-            v35 = 224 * pMiscTimer->uTotalGameTimeElapsed +
-                  ((signed int)fixpoint_mul(v37, v18) >> 3);
-            VertexRenderList[i].u =
-                (double)v35 /
-                ((double)pSkyPolygon.texture->GetWidth() * 65536.0);
-
-            v36 = v36 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_south, v13);
-            v35 = 224 * pMiscTimer->uTotalGameTimeElapsed +
-                  ((signed int)fixpoint_mul(v36, v18) >> 3);
-            VertexRenderList[i].v =
-                (double)v35 /
-                ((double)pSkyPolygon.texture->GetHeight() * 65536.0);
-
-            VertexRenderList[i].vWorldViewPosition.x =
-                pIndoorCameraD3D->GetFarClip();
-            VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
-        }
-
-        DrawOutdoorSkyPolygon(&pSkyPolygon);
-        VertexRenderList[0].vWorldViewProjY = (double)v10;
-        VertexRenderList[1].vWorldViewProjY =
-            VertexRenderList[1].vWorldViewProjY + 30.0;
-        VertexRenderList[2].vWorldViewProjY =
-            VertexRenderList[2].vWorldViewProjY + 30.0;
-        VertexRenderList[3].vWorldViewProjY = (double)v10;
-        DrawOutdoorSkyPolygon(&pSkyPolygon);
-    }
-}
 
 bool PauseGameDrawing() {
     if (current_screen_type != SCREEN_GAME &&
@@ -4428,10 +4036,12 @@ void Render::DrawDecal(Decal *pDecal, float z_bias) {
     else
         color_mult = pDecal->field_C18->_43B570_get_color_mult_by_time();
 
+    // temp - bloodsplat persistance
+    color_mult = 1;
+
     for (uint i = 0; i < (unsigned int)pDecal->uNumVertices; ++i) {
         uint uTint =
-            Render::GetActorTintColor(pDecal->pVertices[i].vWorldViewPosition.x,
-                                      pDecal->field_C14, 0, 0, nullptr);
+            Render::GetActorTintColor(pDecal->field_C14, 0, pDecal->pVertices[i].vWorldViewPosition.x, 0, nullptr);
 
         uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF,
              uTintB = uTint & 0xFF;
@@ -4446,6 +4056,10 @@ void Render::DrawDecal(Decal *pDecal, float z_bias) {
                  floorf(uTintG / 255.0 * color_mult * uDecalColorMultG + 0.0f),
              uFinalB =
                  floorf(uTintB / 255.0 * color_mult * uDecalColorMultB + 0.0f);
+
+        // temp - make yellow for easier spotting
+        // uFinalR = 255;
+        // uFinalG = 255;
 
         float v15;
         if (fabs(z_bias) < 1e-5) {
@@ -4553,8 +4167,7 @@ unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3,
             (__PAIR__(v10, (unsigned __int16)a4 >> 2) & 0x1C00));
 }
 
-int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4,
-                      RenderBillboard *a5) {
+int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, RenderBillboard *a5) {
     signed int v6;   // edx@1
     int v8;          // eax@3
     double v9;       // st7@12
@@ -4569,8 +4182,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4,
     v6 = 0;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        return 8 * (31 - max_dimm) |
-               ((8 * (31 - max_dimm) | ((31 - max_dimm) << 11)) << 8);
+        return 8 * (31 - max_dimm) | ((8 * (31 - max_dimm) | ((31 - max_dimm) << 11)) << 8);
 
     if (pParty->armageddon_timer) return 0xFFFF0000;
 
@@ -5999,49 +5611,44 @@ bool IsBModelVisible(BSPModel *model, int *reachable) {
     return false;
 }
 
-int Polygon::_479295() {
-    int v3;           // ecx@4
-    int v4;           // eax@4
-    int v5;           // edx@4
-    Vec3_int_ thisa;  // [sp+Ch] [bp-10h]@8
-    int v11;          // [sp+18h] [bp-4h]@4
-
-    if (!this->pODMFace->pFacePlane.vNormal.z) {
-        v3 = this->pODMFace->pFacePlane.vNormal.x;
-        v4 = -this->pODMFace->pFacePlane.vNormal.y;
-        v5 = 0;
-        v11 = 65536;
-    } else if ((this->pODMFace->pFacePlane.vNormal.x ||
-                this->pODMFace->pFacePlane.vNormal.y) &&
-               abs(this->pODMFace->pFacePlane.vNormal.z) < 59082) {
-        thisa.x = -this->pODMFace->pFacePlane.vNormal.y;
-        thisa.y = this->pODMFace->pFacePlane.vNormal.x;
-        thisa.z = 0;
-        thisa.Normalize_float();
-        v4 = thisa.x;
-        v3 = thisa.y;
-        v5 = 0;
-        v11 = 65536;
-    } else {
-        v3 = 0;
-        v4 = 65536;
-        v11 = 0;
-        v5 = -65536;
-    }
-    sTextureDeltaU = this->pODMFace->sTextureDeltaU;
-    sTextureDeltaV = this->pODMFace->sTextureDeltaV;
-    ptr_38->_48616B_frustum_odm(v4, v3, 0, 0, v5, v11);
-    return 1;
-}
+// int Polygon::_479295() {
+//    int v3;           // ecx@4
+//    int v4;           // eax@4
+//    int v5;           // edx@4
+//    Vec3_int_ thisa;  // [sp+Ch] [bp-10h]@8
+//    int v11;          // [sp+18h] [bp-4h]@4
+//
+//    if (!this->pODMFace->pFacePlane.vNormal.z) {
+//        v3 = this->pODMFace->pFacePlane.vNormal.x;
+//        v4 = -this->pODMFace->pFacePlane.vNormal.y;
+//        v5 = 0;
+//        v11 = 65536;
+//    } else if ((this->pODMFace->pFacePlane.vNormal.x ||
+//                this->pODMFace->pFacePlane.vNormal.y) &&
+//               abs(this->pODMFace->pFacePlane.vNormal.z) < 59082) {
+//        thisa.x = -this->pODMFace->pFacePlane.vNormal.y;
+//        thisa.y = this->pODMFace->pFacePlane.vNormal.x;
+//        thisa.z = 0;
+//        thisa.Normalize_float();
+//        v4 = thisa.x;
+//        v3 = thisa.y;
+//        v5 = 0;
+//        v11 = 65536;
+//    } else {
+//        v3 = 0;
+//        v4 = 65536;
+//        v11 = 0;
+//        v5 = -65536;
+//    }
+//    sTextureDeltaU = this->pODMFace->sTextureDeltaU;
+//    sTextureDeltaV = this->pODMFace->sTextureDeltaV;
+//    ptr_38->CalcSkyFrustumVec(v4, v3, 0, 0, v5, v11);
+//    return 1;
+//}
 
 void sr_485F53(Vec2_int_ *v) {
     ++v->y;
     if (v->y > 1000) v->y = 0;
-}
-
-void Polygon::Create_48607B(stru149 *a2) {
-    this->texture = nullptr;
-    this->ptr_38 = a2;
 }
 
 void Polygon::_normalize_v_18() {
@@ -6055,93 +5662,699 @@ void Polygon::_normalize_v_18() {
     } else {
         v_18.x = round_to_int((double)this->v_18.x / len * 65536.0);
         v_18.y = round_to_int((double)this->v_18.y / len * 65536.0);
-        v_18.y = round_to_int((double)this->v_18.z / len * 65536.0);
+        v_18.z = round_to_int((double)this->v_18.z / len * 65536.0);
     }
 }
 
-void stru149::_48616B_frustum_odm(int a2, int a3, int a4, int a5, int a6,
-                                  int a7) {
-    int v17;  // ST0C_4@6
-    int v19;  // ST0C_4@9
 
-    int v25 = pIndoorCameraD3D->int_cosine_x;
-    int v7 = pIndoorCameraD3D->int_sine_y;
-    int v27 = pIndoorCameraD3D->int_sine_x;
-    // v8 = -pIndoorCamera->pos.y;
-    int v9 = pIndoorCameraD3D->int_cosine_y;
-    // v26 = -pIndoorCamera->pos.z;
-    int v11 = pIndoorCameraD3D->int_cosine_y * -pIndoorCameraD3D->vPartyPos.x +
-              pIndoorCameraD3D->int_sine_y * -pIndoorCameraD3D->vPartyPos.y;
-    int v24 = pIndoorCameraD3D->int_cosine_y * -pIndoorCameraD3D->vPartyPos.y -
-              pIndoorCameraD3D->int_sine_y * -pIndoorCameraD3D->vPartyPos.x;
+// sky billboard stuff
+
+void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y2, int z2) {
+    // 6 0 0 0 6 0
+
+    int cosy = pIndoorCameraD3D->int_cosine_y;
+    int cosx = pIndoorCameraD3D->int_cosine_x;
+    int siny = pIndoorCameraD3D->int_sine_y;
+    int sinx = pIndoorCameraD3D->int_sine_x;
+
+    // positions all minus ?
+    int v11 = cosy * -pIndoorCameraD3D->vPartyPos.x +
+              siny * -pIndoorCameraD3D->vPartyPos.y;
+    int v24 = cosy * -pIndoorCameraD3D->vPartyPos.y -
+              siny * -pIndoorCameraD3D->vPartyPos.x;
+
+    // cam position transform
     if (pIndoorCameraD3D->sRotationX) {
-        this->field_0_party_dir_x =
-            fixpoint_mul(v11, pIndoorCameraD3D->int_cosine_x) +
-            fixpoint_mul((-pIndoorCameraD3D->vPartyPos.z) << 16,
-                         pIndoorCameraD3D->int_sine_x);
+        this->field_0_party_dir_x = fixpoint_mul(v11, cosx) +
+                                fixpoint_mul((-pIndoorCameraD3D->vPartyPos.z) << 16, sinx);
         this->field_4_party_dir_y = v24;
         this->field_8_party_dir_z =
-            fixpoint_mul((-pIndoorCameraD3D->vPartyPos.z) << 16, v25) -
-            fixpoint_mul(v11, v27);
+            fixpoint_mul((-pIndoorCameraD3D->vPartyPos.z) << 16, cosx) /*-*/+
+            fixpoint_mul(v11, sinx);
     } else {
         this->field_0_party_dir_x = v11;
         this->field_4_party_dir_y = v24;
         this->field_8_party_dir_z = (-pIndoorCameraD3D->vPartyPos.z) << 16;
     }
 
+    // set 1 position transfrom (6 0 0) looks like cam left vector
     if (pIndoorCameraD3D->sRotationX) {
-        v17 = fixpoint_mul(a2, v9) + fixpoint_mul(a3, v7);
+         int v17 = fixpoint_mul(x1, cosy) + fixpoint_mul(y1, siny);
 
-        this->angle_from_north = fixpoint_mul(v17, v25) + fixpoint_mul(a4, v27);
-        this->angle_from_west = fixpoint_mul(a3, v9) - fixpoint_mul(a2, v7);
-        this->viewing_angle_from_west_east =
-            fixpoint_mul(a4, v25) - fixpoint_mul(v17, v27);
+        this->CamVecLeft_Z = fixpoint_mul(v17, cosx) + fixpoint_mul(z1, sinx);  // dz
+        this->CamVecLeft_X = fixpoint_mul(y1, cosy) - fixpoint_mul(x1, siny);  // dx
+        this->CamVecLeft_Y = fixpoint_mul(z1, cosx) /*-*/+ fixpoint_mul(v17, sinx);  // dy
     } else {
-        this->angle_from_north = fixpoint_mul(a2, v9) + fixpoint_mul(a3, v7);
-        this->angle_from_west = fixpoint_mul(a3, v9) - fixpoint_mul(a2, v7);
-        this->viewing_angle_from_west_east = a4;
+        this->CamVecLeft_Z = fixpoint_mul(x1, cosy) + fixpoint_mul(y1, siny);  // dz
+        this->CamVecLeft_X = fixpoint_mul(y1, cosy) - fixpoint_mul(x1, siny);  // dx
+        this->CamVecLeft_Y = z1;  // dy
     }
 
+    // set 2 position transfrom (0 6 0) looks like cam front vector
     if (pIndoorCameraD3D->sRotationX) {
-        v19 = fixpoint_mul(a5, v9) + fixpoint_mul(a6, v7);
+        int v19 = fixpoint_mul(x2, cosy) + fixpoint_mul(y2, siny);
 
-        this->angle_from_east = fixpoint_mul(v19, v25) + fixpoint_mul(a7, v27);
-        this->angle_from_south = fixpoint_mul(a6, v9) - fixpoint_mul(a5, v7);
-        this->viewing_angle_from_north_south =
-            fixpoint_mul(a7, v25) - fixpoint_mul(v19, v27);
+        this->CamVecFront_Z = fixpoint_mul(v19, cosx) + fixpoint_mul(z2, sinx);  // dz
+        this->CamVecFront_X = fixpoint_mul(y2, cosy) - fixpoint_mul(x2, siny);  // dx
+        this->CamVecFront_Y = fixpoint_mul(z2, cosx) /*-*/+ fixpoint_mul(v19, sinx);  // dy
     } else {
-        this->angle_from_east = fixpoint_mul(a5, v9) + fixpoint_mul(a6, v7);
-        this->angle_from_south = fixpoint_mul(a6, v9) - fixpoint_mul(a5, v7);
-        this->viewing_angle_from_north_south = a7;
+        this->CamVecFront_Z = fixpoint_mul(x2, cosy) + fixpoint_mul(y2, siny);  // dz
+        this->CamVecFront_X = fixpoint_mul(y2, cosy) - fixpoint_mul(x2, siny);  // dx
+        this->CamVecFront_Y = z2;  // dy
     }
 
-    this->angle_from_east = -this->angle_from_east;
-    this->angle_from_south = -this->angle_from_south;
-    this->viewing_angle_from_north_south =
-        -this->viewing_angle_from_north_south;
-
-    this->field_24 = fixpoint_dot(
-        this->angle_from_north, this->field_0_party_dir_x,
-        this->angle_from_west, this->field_4_party_dir_y,
-        this->viewing_angle_from_west_east, this->field_8_party_dir_z);
-    this->field_28 = fixpoint_dot(
-        this->angle_from_east, this->field_0_party_dir_x,
-        this->angle_from_south, this->field_4_party_dir_y,
-        this->viewing_angle_from_north_south, this->field_8_party_dir_z);
+    this->CamLeftDot = fixpoint_dot(
+        this->CamVecLeft_Z, this->field_0_party_dir_x,
+        this->CamVecLeft_X, this->field_4_party_dir_y,
+        this->CamVecLeft_Y, this->field_8_party_dir_z);
+    this->CamFrontDot = fixpoint_dot(
+        this->CamVecFront_Z, this->field_0_party_dir_x,
+        this->CamVecFront_X, this->field_4_party_dir_y,
+        this->CamVecFront_Y, this->field_8_party_dir_z);
 }
 
-void stru149::_48694B_frustum_sky() {
-    this->angle_from_east = -this->angle_from_east;
-    this->angle_from_south = -this->angle_from_south;
-    this->viewing_angle_from_north_south =
-        -this->viewing_angle_from_north_south;
+void Render::DrawOutdoorSkyD3D() {
+    int v13;                     // edi@6
+    int v14;                     // ecx@6
+    int v15;                     // eax@8
+    int v16;                     // eax@12
+    int v32;                     // [sp+13Ch] [bp-28h]@6
+    int v35;                     // [sp+148h] [bp-1Ch]@4
+    int v36;                     // [sp+14Ch] [bp-18h]@2
+    int v37;                     // [sp+154h] [bp-10h]@8
+    int v39;                     // [sp+15Ch] [bp-8h]@4
 
-    this->field_24 = fixpoint_dot(
-        this->angle_from_north, this->field_0_party_dir_x,
-        this->angle_from_west, this->field_4_party_dir_y,
-        this->viewing_angle_from_west_east, this->field_8_party_dir_z);
-    this->field_28 = fixpoint_dot(
-        this->angle_from_east, this->field_0_party_dir_x,
-        this->angle_from_south, this->field_4_party_dir_y,
-        this->viewing_angle_from_north_south, this->field_8_party_dir_z);
+
+    double rot_to_rads = ((2 * pi_double) / 2048);
+
+    // lowers clouds as party goes up
+    int  horizon_height_offset =
+        (signed __int64)((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
+            / ((double)pODMRenderParams->int_fov_rad + 8192.0)
+            + (double)(pViewport->uScreenCenterY));
+
+    // magnitude in up direction
+    signed __int64 cam_vec_up = cos((double)pIndoorCameraD3D->sRotationX * rot_to_rads) *
+        pIndoorCameraD3D->GetFarClip();
+
+    int bot_y_proj = (signed __int64)((double)(pViewport->uScreenCenterY) -
+        (double)pODMRenderParams->int_fov_rad /
+        (cam_vec_up + 0.0000001) *
+        (sin((double)pIndoorCameraD3D->sRotationX * rot_to_rads)
+            *
+            pIndoorCameraD3D->GetFarClip() -
+            (double)pIndoorCameraD3D->vPartyPos.z));
+
+    struct Polygon pSkyPolygon;
+    pSkyPolygon.texture = nullptr;
+    pSkyPolygon.ptr_38 = &SkyBillboard;
+
+
+    // if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
+    // pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
+    // else
+    // pSkyPolygon.uTileBitmapID = pOutdoor->sSky_TextureID;//179(original 166)
+    // pSkyPolygon.pTexture = (Texture_MM7 *)(pSkyPolygon.uTileBitmapID != -1 ?
+    // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
+
+    pSkyPolygon.texture = pOutdoor->sky_texture;
+    if (pSkyPolygon.texture) {
+        pSkyPolygon.dimming_level = 0;
+        pSkyPolygon.uNumVertices = 4;
+
+        // centering(центруем)-----------------------------------------------------------------
+        // plane of sky polygon rotation vector
+        pSkyPolygon.v_18.x =
+            -stru_5C6E00->Sin(-pIndoorCameraD3D->sRotationX + 16);
+        pSkyPolygon.v_18.y = 0;
+        pSkyPolygon.v_18.z =
+            -stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX + 16);
+
+        // sky wiew position(положение неба на
+        // экране)------------------------------------------
+        //                X
+        // 0._____________________________.3
+        //  |8,8                    468,8 |
+        //  |                             |
+        //  |                             |
+        // Y|                             |
+        //  |                             |
+        //  |8,351                468,351 |
+        // 1._____________________________.2
+        //
+        VertexRenderList[0].vWorldViewProjX =
+            (double)(signed int)pViewport->uViewportTL_X;  // 8
+        VertexRenderList[0].vWorldViewProjY =
+            (double)(signed int)pViewport->uViewportTL_Y;  // 8
+
+        VertexRenderList[1].vWorldViewProjX =
+            (double)(signed int)pViewport->uViewportTL_X;   // 8
+        VertexRenderList[1].vWorldViewProjY = (double)bot_y_proj + 1;  // 247
+
+        VertexRenderList[2].vWorldViewProjX =
+            (double)(signed int)pViewport->uViewportBR_X;   // 468
+        VertexRenderList[2].vWorldViewProjY = (double)bot_y_proj + 1;  // 247
+
+        VertexRenderList[3].vWorldViewProjX =
+            (double)(signed int)pViewport->uViewportBR_X;  // 468
+        VertexRenderList[3].vWorldViewProjY =
+            (double)(signed int)pViewport->uViewportTL_Y;  // 8
+
+        double half_fov_angle_rads = ((pODMRenderParams->uCameraFovInDegrees - 1) * pi_double) / 360;
+
+        // far width per pixel??
+        int widthperpixel = 65536 /
+            (signed int)(signed __int64)(((double)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2)
+                / tan(half_fov_angle_rads) +
+                0.5);
+
+        for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i) {
+            // rotate skydome(вращение купола
+            // неба)--------------------------------------
+            // В игре принята своя система измерения углов. Полный угол (180).
+            // Значению угла 0 соответствует направление на север и/или юг (либо
+            // на восток и/или запад), значению 65536 еденицам(0х10000)
+            // соответствует угол 90. две переменные хранят данные по углу
+            // обзора. field_14 по западу и востоку. field_20 по югу и северу от
+            // -25080 до 25080
+
+            v13 = widthperpixel * (pViewport->uScreenCenterX -
+                (signed __int64)VertexRenderList[i].vWorldViewProjX);
+
+
+            v39 = fixpoint_mul(
+                pSkyPolygon.ptr_38->CamVecLeft_Y,
+                widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
+            v35 = v39 + pSkyPolygon.ptr_38->CamVecLeft_Z;
+
+            int skyfinalleft = v35 + fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_X, v13);
+
+            v39 = fixpoint_mul(
+                pSkyPolygon.ptr_38->CamVecFront_Y,
+                widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
+            v36 = v39 + pSkyPolygon.ptr_38->CamVecFront_Z;
+
+            int finalskyfront = v36 + fixpoint_mul(pSkyPolygon.ptr_38->CamVecFront_X, v13);
+
+
+            int v9 = fixpoint_mul(
+                pSkyPolygon.v_18.z,
+                widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
+
+
+
+
+            int top_y_proj = pSkyPolygon.v_18.x + v9;
+            if (top_y_proj > 0) top_y_proj = 0;
+
+            v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0;
+            v14 = widthperpixel * (horizon_height_offset - v32);
+            while (1) {
+                if (top_y_proj) {
+                    v37 = 2048;  // abs((int)cam_vec_up >> 14);
+                    v15 = abs(top_y_proj);
+                    if (v37 <= v15 ||
+                        v32 <= (signed int)pViewport->uViewportTL_Y) {
+                        if (top_y_proj <= 0) break;
+                    }
+                }
+                v16 = fixpoint_mul(pSkyPolygon.v_18.z, v14);  // does this bit ever get called?
+                --v32;
+                v14 += widthperpixel;
+                top_y_proj = pSkyPolygon.v_18.x + v16;
+            }
+
+            signed int worldviewdepth = (__int64(-512) * 65536 * 65536) / top_y_proj;
+            if (worldviewdepth < 0) worldviewdepth = pIndoorCameraD3D->GetFarClip();
+
+            int texoffset_U = 224 * pMiscTimer->uTotalGameTimeElapsed +
+                ((signed int)fixpoint_mul(skyfinalleft, worldviewdepth) >> 3);
+            VertexRenderList[i].u = (double)texoffset_U /
+                ((double)pSkyPolygon.texture->GetWidth() * 65536.0);
+
+            int texoffset_V = 224 * pMiscTimer->uTotalGameTimeElapsed +
+                ((signed int)fixpoint_mul(finalskyfront, worldviewdepth) >> 3);
+            VertexRenderList[i].v = (double)texoffset_V /
+                ((double)pSkyPolygon.texture->GetHeight() * 65536.0);
+
+            VertexRenderList[i].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
+            VertexRenderList[i]._rhw = 1.0 / (double)(worldviewdepth >> 16);
+        }
+
+        DrawOutdoorSkyPolygon(&pSkyPolygon);
+
+        // adjust and draw again to fill gap below horizon
+        // could mirror over??
+
+        VertexRenderList[0].vWorldViewProjY += 60;
+        VertexRenderList[1].vWorldViewProjY += 60;
+        VertexRenderList[2].vWorldViewProjY += 60;
+        VertexRenderList[3].vWorldViewProjY += 60;
+
+        DrawOutdoorSkyPolygon(&pSkyPolygon);
+    }
+}
+
+void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  // can this be combined with outdoor or removed?
+    BLVFace *pFace;              // esi@1
+    double v5;                   // st7@3
+    signed __int64 v6;           // qax@3
+    int v12;                     // edx@7
+    int v13;                     // eax@7
+    int v17;                     // edi@9
+    double v18;                  // st7@9
+    signed int v19;              // ebx@9
+    void *v20;                   // ecx@9
+    int v21;                     // ebx@11
+    int v22;                     // eax@14
+    signed __int64 v23;          // qtt@16
+    double v28;                  // st7@20
+    double v33;                  // st6@23
+    const void *v35;             // ecx@31
+    int v36;                     // eax@31
+    const void *v37;             // edi@31
+    signed __int64 v38;          // qax@31
+    int v39;                     // ecx@31
+    int v40;                     // ebx@33
+    int v41;                     // eax@36
+    signed __int64 v42;          // qtt@39
+    int v43;                     // eax@39
+    double v48;                  // st7@41
+    double v51;                  // st7@46
+    struct Polygon pSkyPolygon;  // [sp+14h] [bp-160h]@6
+    unsigned int v63;            // [sp+120h] [bp-54h]@7
+    unsigned int v65;            // [sp+128h] [bp-4Ch]@1
+    unsigned int v66;            // [sp+12Ch] [bp-48h]@7
+    __int64 v69;                 // [sp+13Ch] [bp-38h]@3
+    int v70;                     // [sp+144h] [bp-30h]@3
+    int X;                       // [sp+148h] [bp-2Ch]@9
+    int v72;                     // [sp+14Ch] [bp-28h]@7
+    float v73;                   // [sp+150h] [bp-24h]@16
+    unsigned int v74;            // [sp+154h] [bp-20h]@3
+    unsigned int v74_;           // [sp+154h] [bp-20h]@3
+    RenderVertexSoft *v75;       // [sp+158h] [bp-1Ch]@3
+    float v76;                   // [sp+15Ch] [bp-18h]@9
+    int v77;                     // [sp+160h] [bp-14h]@9
+    int v78;                     // [sp+164h] [bp-10h]@7
+    void *v79;                   // [sp+168h] [bp-Ch]@9
+    float v80;                   // [sp+16Ch] [bp-8h]@3
+    const void *v81;             // [sp+170h] [bp-4h]@7
+
+    pFace = &pIndoor->pFaces[uFaceID];
+    // for floor and wall(for example Selesta)-------------------
+    if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall ||
+        pFace->uPolygonType == POLYGON_Floor) {
+        int v69 = (OS_GetTime() / 32) - pIndoorCameraD3D->vPartyPos.x;
+        int v55 = (OS_GetTime() / 32) + pIndoorCameraD3D->vPartyPos.y;
+        for (uint i = 0; i < uNumVertices; ++i) {
+            array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
+            array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
+        }
+        render->DrawIndoorPolygon(uNumVertices, pFace,
+            PID(OBJECT_BModel, uFaceID), -1, 0);
+        return;
+    }
+    //---------------------------------------
+    v70 = (signed __int64)((double)(pBLVRenderParams->bsp_fov_rad *
+        pIndoorCameraD3D->vPartyPos.z)  // 179
+        / (((double)pBLVRenderParams->bsp_fov_rad +
+            16192.0) *
+            65536.0) +
+            (double)pBLVRenderParams->uViewportCenterY);
+    v5 = (double)pIndoorCameraD3D->sRotationX * 0.0030664064;         // 0
+    v6 = (signed __int64)((double)pBLVRenderParams->uViewportCenterY  // 183
+        - (double)pBLVRenderParams->bsp_fov_rad /
+        ((cos(v5) * 16192.0 + 0.0000001) * 65535.0) *
+        (sin(v5) * -16192.0 -
+        (double)pIndoorCameraD3D->vPartyPos.z));
+
+    SkyBillboard.CalcSkyFrustumVec(65536, 0, 0, 0, 65536, 0);
+    // CalcSkyFrustumVec use as same
+
+    pSkyPolygon.texture = nullptr;
+    pSkyPolygon.ptr_38 = &SkyBillboard;
+
+    // pSkyPolygon.uTileBitmapID = pFace->uBitmapID;
+    pSkyPolygon.texture = pFace->GetTexture();
+
+    // pSkyPolygon.pTexture =
+    // pBitmaps_LOD->GetTexture(pSkyPolygon.uTileBitmapID);
+    if (!pSkyPolygon.texture) return;
+
+    pSkyPolygon.dimming_level = 0;
+    pSkyPolygon.uNumVertices = uNumVertices;
+
+    pSkyPolygon.v_18.x = -stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX + 16);
+    pSkyPolygon.v_18.y = 0;
+    pSkyPolygon.v_18.z = -stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX + 16);
+
+    memcpy(&array_507D30[uNumVertices], array_507D30,
+        sizeof(array_507D30[uNumVertices]));
+    pSkyPolygon.field_24 = 0x2000000;
+
+    extern float _calc_fov(int viewport_width, int angle_degree);
+    // v64 = (double)(signed int)(pBLVRenderParams->uViewportZ -
+    // pBLVRenderParams->uViewportX) * 0.5; v72 = 65536 / (signed int)(signed
+    // __int64)(v64 / tan(0.6457717418670654) + 0.5);
+    v72 = 65536.0f /
+        _calc_fov(pBLVRenderParams->uViewportZ - pBLVRenderParams->uViewportX,
+            74);
+    v12 = pSkyPolygon.texture->GetWidth() - 1;
+    v13 = pSkyPolygon.texture->GetHeight() - 1;
+    // v67 = 1.0 / (double)pSkyPolygon.pTexture->uTextureWidth;
+    v63 = 224 * pMiscTimer->uTotalGameTimeElapsed & v13;
+    v66 = 224 * pMiscTimer->uTotalGameTimeElapsed & v12;
+    v78 = 0;
+    // v81 = 0;
+    float v68 = 1.0 / (double)pSkyPolygon.texture->GetHeight();
+    if ((signed int)pSkyPolygon.uNumVertices <= 0) return;
+
+    int _507D30_idx = 0;
+    for (_507D30_idx; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
+        // v15 = (void *)(v72 * (v70 -
+        // (int)array_507D30[_507D30_idx].vWorldViewProjY));
+        v77 = fixpoint_mul(
+            pSkyPolygon.ptr_38->CamVecLeft_Y,
+            v72 * (v70 - array_507D30[_507D30_idx].vWorldViewProjY));
+        v74 = v77 + pSkyPolygon.ptr_38->CamVecLeft_Z;
+
+        v77 = fixpoint_mul(
+            pSkyPolygon.ptr_38->CamVecFront_Y,
+            v72 * (v70 - array_507D30[_507D30_idx].vWorldViewProjY));
+        v74_ = v77 + pSkyPolygon.ptr_38->CamVecFront_Z;
+
+        v79 = (void *)(fixpoint_mul(
+            pSkyPolygon.v_18.z,
+            v72 * (v70 - (int)array_507D30[_507D30_idx].vWorldViewProjY)));
+        v17 = v72 * (pBLVRenderParams->uViewportCenterX -
+            (int)array_507D30[_507D30_idx].vWorldViewProjX);
+        v18 = array_507D30[_507D30_idx].vWorldViewProjY - 1.0;
+        v19 = -pSkyPolygon.field_24;
+        v77 = -pSkyPolygon.field_24;
+        X = (int)((char *)v79 + pSkyPolygon.v_18.x);
+        HEXRAYS_LODWORD(v76) = (signed __int64)v18;
+        v20 = (void *)(v72 * (v70 - HEXRAYS_LODWORD(v76)));
+        while (1) {
+            v79 = v20;
+            if (!X) goto LABEL_14;
+            v21 = abs(v19 >> 14);
+            if (v21 <= abs(X))  // 0x800 <= 0x28652
+                break;
+            if (HEXRAYS_SLODWORD(v76) <= (signed int)pViewport->uViewportTL_Y)
+                break;
+            v19 = v77;
+            v20 = v79;
+        LABEL_14:
+            v79 = (void *)fixpoint_mul(pSkyPolygon.v_18.z, (int)v20);
+            v22 = fixpoint_mul(pSkyPolygon.v_18.z, (int)v20);
+            --HEXRAYS_LODWORD(v76);
+            v20 = (char *)v20 + v72;
+            X = v22 + pSkyPolygon.v_18.x;
+            v78 = 1;
+        }
+        if (!v78) {
+            HEXRAYS_LODWORD(v23) = v77 << 16;
+            HEXRAYS_HIDWORD(v23) = v77 >> 16;  // v23 = 0xfffffe0000000000
+            v79 = (void *)(v23 / X);           // X = FFFF9014(-28652)
+            v77 = v17;
+            __int64 s = v74 + fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_X,
+                v17);  // s = 0xFFFFFFFF FFFF3EE6
+            HEXRAYS_LODWORD(v80) =
+                v66 +
+                ((signed int)fixpoint_mul(HEXRAYS_SLODWORD(s), v23 / X) >> 4);
+            array_507D30[_507D30_idx].u =
+                ((double)HEXRAYS_SLODWORD(v80) * 0.000015259022) *
+                (1.0 / (double)pSkyPolygon.texture->GetWidth());
+
+            __int64 s2 =
+                v74_ + fixpoint_mul(pSkyPolygon.ptr_38->CamVecFront_X, v17);
+            HEXRAYS_LODWORD(v80) =
+                v63 +
+                ((signed int)fixpoint_mul(HEXRAYS_SLODWORD(s2), v23 / X) >> 4);
+            array_507D30[_507D30_idx].v =
+                ((double)HEXRAYS_SLODWORD(v80) * 0.000015259022) * v68;
+
+            v77 = fixpoint_mul(HEXRAYS_SLODWORD(s), v23 / X);
+            HEXRAYS_LODWORD(v73) = fixpoint_mul(HEXRAYS_SLODWORD(s2), v23 / X);
+            array_507D30[_507D30_idx]._rhw = 65536.0 / (double)(signed int)v79;
+
+            // if ( (int)v81 >= pSkyPolygon.uNumVertices )
+            //{
+            //  render->DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices,
+            //  &pSkyPolygon,
+            //     pBitmaps_LOD->pHardwareTextures[(signed
+            //     __int16)pSkyPolygon.uTileBitmapID]);
+            //  return;
+            //}
+            continue;
+        }
+        break;
+    }
+    if (_507D30_idx >= pSkyPolygon.uNumVertices) {
+        DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
+        return;
+    }
+    HEXRAYS_LODWORD(v73) = 0;
+    v80 = v76;
+    if ((signed int)pSkyPolygon.uNumVertices > 0) {
+        v28 = (double)HEXRAYS_SLODWORD(v76);
+        HEXRAYS_LODWORD(v76) = (int)(char *)VertexRenderList + 28;
+        uint i = 0;
+        for (v78 = pSkyPolygon.uNumVertices; v78; --v78) {
+            ++HEXRAYS_LODWORD(v73);
+            memcpy(&VertexRenderList[i], &array_507D30[i], 0x30u);
+            HEXRAYS_LODWORD(v76) += 48;
+            if (v28 < array_507D30[i].vWorldViewProjY |
+                v28 == array_507D30[i].vWorldViewProjY ||
+                v28 >= array_507D30[i + 1].vWorldViewProjY) {
+                if (v28 >= array_507D30[i].vWorldViewProjY ||
+                    v28 <= array_507D30[i + 1].vWorldViewProjY) {
+                    i++;
+                    continue;
+                }
+                v33 = (array_507D30[i + 1].vWorldViewProjX -
+                    array_507D30[i].vWorldViewProjX) *
+                    v28 /
+                    (array_507D30[i + 1].vWorldViewProjY -
+                        array_507D30[i].vWorldViewProjY) +
+                    array_507D30[i + 1].vWorldViewProjX;
+            } else {
+                v33 = (array_507D30[i].vWorldViewProjX -
+                    array_507D30[i + 1].vWorldViewProjX) *
+                    v28 /
+                    (array_507D30[i].vWorldViewProjY -
+                        array_507D30[i + 1].vWorldViewProjY) +
+                    array_507D30[i].vWorldViewProjX;
+            }
+            VertexRenderList[i + 1].vWorldViewProjX = v33;
+            ++HEXRAYS_LODWORD(v73);
+            *(unsigned int *)HEXRAYS_LODWORD(v76) = v28;
+            HEXRAYS_LODWORD(v76) += 48;
+            i++;
+        }
+    }
+    if (HEXRAYS_SLODWORD(v73) <= 0) goto LABEL_40;
+    // v34 = (char *)&VertexRenderList[0].vWorldViewProjY;
+    uint j = 0;
+    v65 = v77 >> 14;
+    // HIDWORD(v69) = LODWORD(v73);
+    for (int t = (int)HEXRAYS_LODWORD(v73); t > 1; t--) {
+        v35 = (const void *)(v72 * (v70 - (unsigned __int64)(signed __int64)
+            VertexRenderList[j]
+            .vWorldViewProjY));
+
+        // v78 = pSkyPolygon.ptr_38->viewing_angle_from_west_east;
+        // v81 = (const void
+        // *)fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_west_east, v35);
+        v36 =
+            (int)(fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_Y,
+            (int)v35) +
+                pSkyPolygon.ptr_38->CamVecLeft_Z);
+
+        v81 = v35;
+        v74 = v36;
+        // v78 = pSkyPolygon.ptr_38->viewing_angle_from_north_south;
+        v81 = (const void *)fixpoint_mul(
+            pSkyPolygon.ptr_38->CamVecFront_Y, (int)v35);
+        v78 = (int)v35;
+        v75 = (RenderVertexSoft *)((char *)v81 +
+            pSkyPolygon.ptr_38->CamVecFront_Z);
+        // v81 = (const void *)pSkyPolygon.v_18.z;
+        v78 = fixpoint_mul(pSkyPolygon.v_18.z, (int)v35);
+        v37 = (const void *)(v72 * (pBLVRenderParams->uViewportCenterX -
+            (unsigned __int64)(signed __int64)
+            VertexRenderList[j]
+            .vWorldViewProjX));
+        v38 = (signed __int64)(VertexRenderList[j].vWorldViewProjY - 1.0);
+        v81 = 0;
+        HEXRAYS_LODWORD(v76) = v38;
+        v39 = v72 * (v70 - v38);
+        while (1) {
+            v78 = v39;
+            if (!X) goto LABEL_36;
+            v40 = abs(X);
+            if (abs((signed __int64)v65) <= v40) break;
+            if (HEXRAYS_SLODWORD(v76) <= (signed int)pViewport->uViewportTL_Y)
+                break;
+            v39 = v78;
+        LABEL_36:
+            v78 = pSkyPolygon.v_18.z;
+            v41 = fixpoint_mul(pSkyPolygon.v_18.z, v39);
+            --HEXRAYS_LODWORD(v76);
+            v39 += v72;
+            X = v41 + pSkyPolygon.v_18.x;
+            v81 = (const void *)1;
+        }
+        if (v81) {
+            v79 = (void *)pSkyPolygon.v_18.z;
+            v78 = 2 * HEXRAYS_LODWORD(v76);
+            v81 = (const void *)fixpoint_mul(
+                pSkyPolygon.v_18.z,
+                (((double)v70 - ((double)(2 * HEXRAYS_LODWORD(v76)) -
+                    VertexRenderList[j].vWorldViewProjY)) *
+                    (double)v72));
+            X = (int)((char *)v81 + pSkyPolygon.v_18.x);
+        }
+        HEXRAYS_LODWORD(v42) = v77 << 16;
+        HEXRAYS_HIDWORD(v42) = v77 >> 16;
+        v79 = (void *)(v42 / X);
+        v81 = v37;
+
+        // v78 = pSkyPolygon.ptr_38->angle_from_west;
+        v81 = (const void *)fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_X,
+            (int)v37);
+        v43 = v74 + fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_X, (int)v37);
+        v74 = (unsigned int)v37;
+        HEXRAYS_LODWORD(v76) = v43;
+
+        // v78 = pSkyPolygon.ptr_38->angle_from_south;
+        v75 = (RenderVertexSoft *)((char *)v75 +
+            fixpoint_mul(
+                pSkyPolygon.ptr_38->CamVecFront_X,
+                (int)v37));
+        // v74 = fixpoint_mul(v43, v42 / X);
+        v81 = (const void *)fixpoint_mul((int)v75, v42 / X);
+
+        // v34 += 48;
+        // v78 = v66 + ((signed int)fixpoint_mul(v43, v42 / X) >> 4);
+        // v44 = HIDWORD(v69)-- == 1;
+        // v45 = (double)(v66 + ((signed int)fixpoint_mul(v43, v42 / X) >> 4)) *
+        // 0.000015259022; v78 = v63 + ((signed int)fixpoint_mul((int)v75, v42 /
+        // X) >> 4);
+        VertexRenderList[j].u =
+            ((double)(v66 + ((signed int)fixpoint_mul(v43, v42 / X) >> 4)) *
+                0.000015259022) *
+                (1.0 / (double)pSkyPolygon.texture->GetWidth());
+        VertexRenderList[j].v =
+            ((double)(v66 + ((signed int)fixpoint_mul(v43, v42 / X) >> 4)) *
+                0.000015259022) *
+            v68;
+        // v46 = (double)(signed int)v79;
+        VertexRenderList[j].vWorldViewPosition.x =
+            0.000015258789 * (double)(signed int)v79;
+        VertexRenderList[j]._rhw = 65536.0 / (double)(signed int)v79;
+        ++j;
+    }
+    // while ( !v44 );
+LABEL_40:
+    uint i = 0;
+    if (HEXRAYS_SLODWORD(v73) > 0) {
+        v48 = (double)HEXRAYS_SLODWORD(v80);
+        for (HEXRAYS_HIDWORD(v69) = HEXRAYS_LODWORD(v73); HEXRAYS_HIDWORD(v69);
+            --HEXRAYS_HIDWORD(v69)) {
+            if (v48 >= VertexRenderList[i].vWorldViewProjY) {
+                ++i;
+                memcpy(&array_507D30[i], &VertexRenderList[i], 0x30u);
+            }
+        }
+    }
+    pSkyPolygon.uNumVertices = i;
+    DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
+    int pNumVertices = 0;
+    if (HEXRAYS_SLODWORD(v73) > 0) {
+        v51 = (double)HEXRAYS_SLODWORD(v80);
+        for (v80 = v73; v80 != 0.0; --HEXRAYS_LODWORD(v80)) {
+            if (v51 <= VertexRenderList[pNumVertices].vWorldViewProjY) {
+                ++pNumVertices;
+                memcpy(&array_507D30[pNumVertices],
+                    &VertexRenderList[pNumVertices], 0x30u);
+            }
+        }
+    }
+    DrawIndoorSkyPolygon(pNumVertices, &pSkyPolygon);
+}
+
+void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
+    if (uNumD3DSceneBegins == 0) {
+        return;
+    }
+
+    unsigned int uNumVertices = pSkyPolygon->uNumVertices;
+    TextureD3D *texture = (TextureD3D *)pSkyPolygon->texture;
+
+    if (uNumVertices >= 3) {
+        this->pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
+            D3DTADDRESS_WRAP);
+        if (config->is_using_specular) {
+            this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
+            this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+            this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+        }
+        for (unsigned int i = 0; i < uNumVertices; ++i) {
+            pVertices[i].pos.x = VertexRenderList[i].vWorldViewProjX;
+            pVertices[i].pos.y = VertexRenderList[i].vWorldViewProjY;
+            pVertices[i].pos.z = 0.99989998;
+            pVertices[i].rhw = VertexRenderList[i]._rhw;
+
+            pVertices[i].diffuse = ::GetActorTintColor(31, 0, VertexRenderList[i].vWorldViewPosition.x, 1, 0);
+            int v7 = 0;
+            if (config->is_using_specular)
+                v7 = sub_47C3D7_get_fog_specular(0, 1, VertexRenderList[i].vWorldViewPosition.x);
+            pVertices[i].specular = v7;
+            pVertices[i].texcoord.x = VertexRenderList[i].u;
+            pVertices[i].texcoord.y = VertexRenderList[i].v;
+        }
+        pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture());
+        pRenderD3D->pDevice->DrawPrimitive(
+            D3DPT_TRIANGLEFAN,
+            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+            pVertices, uNumVertices,
+            D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTLIGHT);
+    }
+}
+
+void Render::DrawIndoorSkyPolygon(int uNumVertices, struct Polygon *pSkyPolygon) {
+    TextureD3D *texture = (TextureD3D *)pSkyPolygon->texture;
+
+    if (uNumD3DSceneBegins == 0) {
+        return;
+    }
+
+    if (uNumVertices >= 3) {
+        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
+            D3DTADDRESS_WRAP));
+        int v5 = 31 - (pSkyPolygon->dimming_level & 0x1F);
+        if (v5 < pOutdoor->max_terrain_dimming_level) {
+            v5 = pOutdoor->max_terrain_dimming_level;
+        }
+        for (uint i = 0; i < (unsigned int)uNumVertices; ++i) {
+            d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
+            d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
+            d3d_vertex_buffer[i].pos.z =
+                1.0 -
+                1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+            d3d_vertex_buffer[i].rhw = array_507D30[i]._rhw;
+            d3d_vertex_buffer[i].diffuse =
+                8 * v5 | ((8 * v5 | (v5 << 11)) << 8);
+            d3d_vertex_buffer[i].specular = 0;
+            d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u;
+            d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v;
+        }
+        ErrD3D(
+            pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));
+        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
+            D3DPT_TRIANGLEFAN,
+            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+            d3d_vertex_buffer, uNumVertices, 28));
+    }
 }

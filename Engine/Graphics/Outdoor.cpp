@@ -48,7 +48,7 @@ MapStartPoint uLevel_StartingPointType;
 OutdoorLocation *pOutdoor = new OutdoorLocation;
 ODMRenderParams *pODMRenderParams;
 
-stru149 stru_8019C8;
+SkyBillboardStruct SkyBillboard;  // skybox planes
 std::array<struct Polygon, 2000 + 18000> array_77EC08;
 
 struct FogProbabilityTableEntry {
@@ -86,30 +86,46 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     if (viewparams->draw_d3d_outlines)
         pIndoorCameraD3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;
 
-    if (bRedraw || true /*render->pRenderD3D*/) {
+    // if (bRedraw || true /*render->pRenderD3D*/) {
         // pODMRenderParams->RotationToInts();
-        sub_481ED9_MessWithODMRenderParams();
-    }
+        // sub_481ED9_MessWithODMRenderParams();
+
+        // inlined
+
+        //----- (00481ED9) --------------------------------------------------------
+        // void sub_481ED9_MessWithODMRenderParams() {
+            pODMRenderParams->uNumPolygons = 0;
+            // pODMRenderParams->uNumEdges = 0;
+            // pODMRenderParams->uNumSpans = 0;
+            // pODMRenderParams->uNumSurfs = 0;
+            pODMRenderParams->uNumBillboards = 0;
+            // pODMRenderParams->field_44 = 0;
+        //}
+
+    //}
 
     pODMRenderParams->uMapGridCellX = WorldPosToGridCellX(pParty->vPosition.x);
     pODMRenderParams->uMapGridCellZ = WorldPosToGridCellZ(pParty->vPosition.y);
-    assert(pODMRenderParams->uMapGridCellX <= 127 &&
-           pODMRenderParams->uMapGridCellZ <= 127);
 
-    if (bRedraw) {
+    assert(pODMRenderParams->uMapGridCellX <= 127 && pODMRenderParams->uMapGridCellZ <= 127);
+
+    // if (bRedraw) {
         // sub_487DA9(); // wipes poly array feild 108 doesnt do anything
-    }
+    //}
 
     if (pParty->uCurrentMinute != pOutdoor->uLastSunlightUpdateMinute)
         pOutdoor->UpdateSunlightVectors();
+
     pOutdoor->UpdateFog();
     // pIndoorCameraD3D->sr_Reset_list_0037C();
 
     // if (render->pRenderD3D) // d3d - redraw always
     {
+        SkyBillboard.CalcSkyFrustumVec(65536, 0, 0, 0, 65536, 0);  // sky box frustum
         render->DrawOutdoorSkyD3D();
-        render->DrawBuildingsD3D();
         render->RenderTerrainD3D();
+        render->DrawBuildingsD3D();
+
         // render->DrawBezierTerrain();
     }
 
@@ -117,7 +133,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     pStationaryLightsStack->uNumLightsActive = 0;
 
     engine->PushStationaryLights(-1);
-    engine->PrepareBloodsplats();
+    // engine->PrepareBloodsplats(); // not used?
     if (bRedraw)
         UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
                              WorldPosToGridCellZ(pParty->vPosition.y),
@@ -2159,13 +2175,14 @@ void ODM_Project(unsigned int uNumVertices) {
 }
 
 //----- (00485F64) --------------------------------------------------------
-void ODMRenderParams::Initialize() {
+void ODMRenderParams::Initialize() {  // this seems to be called several times during loading
     int v1;             // eax@1
     int v2;             // eax@2
     signed __int64 v3;  // qtt@4
     int v4;             // eax@4
 
     this->uCameraFovInDegrees = 75;
+
     v1 = stru_5C6E00->uPiMask & 0xD5;
     if (v1 >= (signed int)stru_5C6E00->uIntegerHalfPi)
         v2 = -stru_5C6E00->pTanTable[stru_5C6E00->uIntegerPi - v1];
@@ -2609,11 +2626,10 @@ void ODM_ProcessPartyActions() {
             case PARTY_WalkBackward: {  // идти назад
                 *(float *)&v128 = _walk_speed;
 
-                float sin_y = sinf(2 * 3.141592653589 * _angle_y / 2048.0),
-                      cos_y = cosf(2 * 3.141592653589 * _angle_y / 2048.0);
+                float sin_y = sinf(2 * pi_double * _angle_y / 2048.0);
+                float cos_y = cosf(2 * pi_double * _angle_y / 2048.0);
 
-                int dx =
-                    cos_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                int dx = cos_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 v2 -= dx;
 
                 int dy =
@@ -2626,8 +2642,8 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_RunBackward:  //бежать назад
             {
-                float sin_y = sinf(2 * 3.141592653589 * _angle_y / 2048.0),
-                      cos_y = cosf(2 * 3.141592653589 * _angle_y / 2048.0);
+                float sin_y = sinf(2 * pi_double * _angle_y / 2048.0);
+                float cos_y = cosf(2 * pi_double * _angle_y / 2048.0);
 
                 int dx =
                     cos_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
@@ -3828,7 +3844,7 @@ void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
     pODMRenderParams->int_fov_rad_inv = (signed __int64)fov_rad_inv;
 
     for (int i = 0; i < 20000; ++i) {
-        array_77EC08[i].ptr_38 = &stru_8019C8;
+        array_77EC08[i].ptr_38 = &SkyBillboard;
 
         array_77EC08[i].ptr_48 = nullptr;
     }
@@ -3939,16 +3955,6 @@ int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 //----- (0047F476) --------------------------------------------------------
 int GridCellToWorldPosZ(int a1) { return (64 - a1) << 9; }
 
-//----- (00481ED9) --------------------------------------------------------
-void sub_481ED9_MessWithODMRenderParams() {
-    stru_8019C8._48616B_frustum_odm(65536, 0, 0, 0, 65536, 0);
-    pODMRenderParams->uNumPolygons = 0;
-    // pODMRenderParams->uNumEdges = 0;
-    // pODMRenderParams->uNumSpans = 0;
-    // pODMRenderParams->uNumSurfs = 0;
-    pODMRenderParams->uNumBillboards = 0;
-    pODMRenderParams->field_44 = 0;
-}
 
 //----- (004823F4) --------------------------------------------------------
 bool IsTerrainSlopeTooHigh(int pos_x, int pos_z) {

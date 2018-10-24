@@ -10,9 +10,9 @@ class Texture;
 
 /*  120 */
 #pragma pack(push, 1)
-struct stru6_stru1_indoor_sw_billboard {
+struct SpellFX_Billboard {
     //----- (004775B1) --------------------------------------------------------
-    inline stru6_stru1_indoor_sw_billboard() {
+    inline SpellFX_Billboard() {
         uNumVertices = 0;
         uNumVec4sInArray1 = 0;
         uNumVec3sInArray2 = 0;
@@ -21,13 +21,13 @@ struct stru6_stru1_indoor_sw_billboard {
     }
 
     //----- (004775C4) --------------------------------------------------------
-    virtual ~stru6_stru1_indoor_sw_billboard();
+    virtual ~SpellFX_Billboard();
 
-    int _4775ED(float a2);
-    int _477927(float a2);
-    int sub_477C61();
-    bool sub_477F63();
-    int sub_47802A();
+    int SpellFXNearClipAdjust(float a2);
+    int SpellFXFarClipAdjust(float a2);
+    int SpellFXViewTransform();
+    bool SpellFXViewClip();
+    int SpellFXProject();
     void Initialize(int a2);
     void _47829F_sphere_particle(float x_offset, float y_offset, float z_offset,
                                  float scale, int diffuse);
@@ -39,15 +39,18 @@ struct stru6_stru1_indoor_sw_billboard {
         int diffuse;
     };
 
+    // for spheres
     unsigned int uNumVec4sInArray1;
     struct stru16x *pArray1;
     unsigned int uNumVec3sInArray2;
     struct stru160 *pArray2;
+
+    // spellfx verts
     int uNumVertices;
     local_01 field_14[5];  // world coords of verts
-    int field_64[20];
-    float field_B4[20];
-    local_01 field_104[5];  // billboard coords
+    int field_64[20];  // view coords
+    float field_B4[20];  // clipped view coords
+    local_01 field_104[5];  // projected billboard coords
 };
 #pragma pack(pop)
 
@@ -102,7 +105,7 @@ struct SpellFxRenderer {
         this->field_0 = 0;
         this->uAnimLength = 0;
 
-        pStru1 = new stru6_stru1_indoor_sw_billboard;
+        pStru1 = new SpellFX_Billboard;
         pStru1->Initialize(0xFF3C1Eu);
     }
     //----- (004A71DC) --------------------------------------------------------
@@ -150,11 +153,11 @@ struct SpellFxRenderer {
     int field_1F8;
     int field_1FC;
     int field_200;
-    int field_204;
+    int field_204;  // sphere tally
     PlayerBuffAnim pPlayerBuffs[4];
     ProjectileAnim pProjectiles[32];
     int uNumProjectiles;
-    stru6_stru1_indoor_sw_billboard *pStru1;
+    SpellFX_Billboard *pStru1;
     int field_5D0;
     int uAnimLength;
     int uFadeTime;

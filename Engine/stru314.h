@@ -2,7 +2,7 @@
 
 /*  179 */
 #pragma pack(push, 1)
-struct stru314 {
+struct stru314 {  // facet normals face / wall / celings
     //----- (00489B60) --------------------------------------------------------
     stru314() {
         this->Normal.x = 0.0;

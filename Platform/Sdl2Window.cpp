@@ -233,9 +233,9 @@ int Sdl2Window::SdlkToVk(SDL_Keycode key) const {
 
 
 void Sdl2Window::OpenGlCreate() {
-    //  Use OpenGL 3.2 core
+    //  Use OpenGL 3.3 core - requires all fixed pipeline code to be modernised
     //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 

@@ -203,11 +203,8 @@ void Engine::Draw() {
             else
                 Error("Invalid level type: %u", uCurrentlyLoadedLevelType);
 
-            // if (render->pRenderD3D)
-            {
-                decal_builder->DrawBloodsplats();
-                lightmap_builder->DrawLightmapsType(2);
-            }
+             decal_builder->DrawBloodsplats();
+             lightmap_builder->DrawLightmapsType(2);  // mobile lights - sparks ??
         }
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     }
@@ -366,16 +363,6 @@ void Engine::DrawParticles() {
     particle_engine->Draw();
 }
 
-//----- (0044F192) --------------------------------------------------------
-void Engine::PrepareBloodsplats() {
-    for (uint i = 0; i < uNumBloodsplats; ++i) {
-        bloodsplat_container->AddBloodsplat(
-            pBloodsplats[i].x, pBloodsplats[i].y, pBloodsplats[i].z,
-            pBloodsplats[i].radius, pBloodsplats[i].r, pBloodsplats[i].g,
-            pBloodsplats[i].b);
-    }
-}
-
 //----- (0044F120) --------------------------------------------------------
 void Engine::PushStationaryLights(int a2) {
     Game__StationaryLight *pLight;
@@ -390,7 +377,7 @@ void Engine::PushStationaryLights(int a2) {
 }
 
 //----- (0044EEA7) --------------------------------------------------------
-bool Engine::_44EEA7() {
+bool Engine::_44EEA7() {  // cursor picking - particle update
     float depth;               // ST00_4@9
     __int64 v6;                // kr00_8@21
     Vis_SelectionFilter *v10;  // [sp+10h] [bp-18h]@2
@@ -438,9 +425,10 @@ bool Engine::_44EEA7() {
     uFlags2 |= 0x01;
     field_E10 = qword_5C6DF0;
     }*/
-    v6 = qword_5C6DF0 - field_E10;
-    if (qword_5C6DF0 - field_E10 == 1)
+    // v6 = qword_5C6DF0 - field_E10;
+    if (qword_5C6DF0/* - field_E10 == 1*/)
         engine->SetForceRedraw(true);
+
     if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
         engine->SetForceRedraw(true);
         uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
@@ -449,7 +437,7 @@ bool Engine::_44EEA7() {
 }
 
 //----- (0044EDE4) --------------------------------------------------------
-bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
+bool Engine::AlterGamma_BLV(BLVFace *pFace, unsigned int *pColor) {
     if (CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
@@ -458,7 +446,7 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, signed int *pColor) {
     }
 }
 
-bool Engine::AlterGamma_ODM(ODMFace *pFace, int *pColor) {
+bool Engine::AlterGamma_ODM(ODMFace *pFace, unsigned int *pColor) {
     if (engine->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
@@ -612,9 +600,6 @@ Engine::Engine() {
     this->vis = EngineIoc::ResolveVis();
 
     uNumStationaryLights = 0;
-    uNumBloodsplats = 0;
-    field_E0C = 0;
-    field_E10 = 0;
     uNumStationaryLights_in_pStationaryLightsStack = 0;
 
     // pThreadWardInstance = nullptr;
@@ -1911,7 +1896,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 }
 
 //----- (00493938) --------------------------------------------------------
-void _493938_regenerate() {
+void _493938_regenerate() {  // immolation
     int current_time;                     // edi@1
     int last_reg_time;                    // qax@1
     int v4;                               // eax@2
@@ -1938,7 +1923,16 @@ void _493938_regenerate() {
 
     current_time = pParty->GetPlayingTime().GetMinutesFraction();
     last_reg_time = pParty->last_regenerated.GetMinutesFraction();
-    if (current_time >= (signed int)last_reg_time + 5) {
+
+    if (current_time == last_reg_time) return;
+
+    int testmin = last_reg_time + 5;
+    if (testmin >= 60) {  // hour tickover boundaries
+        testmin -= 60;
+        if (current_time >= 55) current_time -= 60;
+    }
+
+    if (current_time >= testmin) {
         redraw_flag = false;
         v4 = (current_time - last_reg_time) / 5;
 

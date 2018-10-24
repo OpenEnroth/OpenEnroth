@@ -620,8 +620,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
         // Draw portrait border
         render->ResetUIClipRect();
-        render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128,
-                             Color16(0, 0, 0));
+        render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, Color16(0, 0, 0));
         render->RasterLine2D(
             doll_rect.x - 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.y - 1,
             Color16(0xE1u, 255, 0x9Bu));  // горизонтальная верхняя линия
@@ -1612,7 +1611,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
         }
         case SCREEN_BOOKS: {
-            if (!dword_506364 ||
+            if (!MapBookOpen ||
                 (signed int)pX < (signed int)pViewport->uViewportTL_X ||
                 (signed int)pX > (signed int)pViewport->uViewportBR_X ||
                 (signed int)pY < (signed int)pViewport->uViewportTL_Y ||

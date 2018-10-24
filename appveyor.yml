@@ -32,6 +32,6 @@ install:
 
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
-  - cmd: cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration%
+  - cmd: cmake -G "NMake Makefiles" . -DCMAKE_BUILD_TYPE=%configuration%
   - cmd: nmake check_style
   - cmd: nmake

@@ -261,27 +261,29 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     unsigned int buf_size = 0;
     render->PackScreenshot(150, 112, uncompressed_buff, 1000000, &buf_size);  // создание скриншота
 
-    if (current_screen_type == SCREEN_SAVEGAME) {
-        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
-                                    saveload_ui_loadsave);
-        render->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f,
-                                    saveload_ui_loadsave);
-        int text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
-        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0,
-                                         localization->GetString(190), 0, 0,
-                                         0);  // Сохранение
-        text_pos = pFontSmallnum->AlignText_Center(
-            186, pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
-        pGUIWindow_CurrentMenu->DrawTextInRect(
-            pFontSmallnum, text_pos + 25, 259, 0,
-            pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
-        text_pos =
-            pFontSmallnum->AlignText_Center(186, localization->GetString(165));
-        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0,
-                                         localization->GetString(165), 0, 0,
-                                         0);  // Пожалуйста, подождите
-        render->Present();
-    }
+    // saving - please wait
+
+    // if (current_screen_type == SCREEN_SAVEGAME) {
+    //    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
+    //        saveload_ui_loadsave);
+    //    render->DrawTextureAlphaNew(18 / 640.0f, 141 / 480.0f,
+    //        saveload_ui_loadsave);
+    //    int text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
+    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0,
+    //        localization->GetString(190), 0, 0,
+    //        0);  // Сохранение
+    //    text_pos = pFontSmallnum->AlignText_Center(
+    //        186, pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
+    //    pGUIWindow_CurrentMenu->DrawTextInRect(
+    //        pFontSmallnum, text_pos + 25, 259, 0,
+    //        pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
+    //    text_pos =
+    //        pFontSmallnum->AlignText_Center(186, localization->GetString(165));
+    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0,
+    //        localization->GetString(165), 0, 0,
+    //        0);  // Пожалуйста, подождите
+    //    render->Present();
+    //}
 
     if (pNew_LOD->Write("image.pcx", uncompressed_buff, buf_size, 0)) {
         auto error_message = localization->FormatString(612, 200);  // Savegame damaged! Code=%d

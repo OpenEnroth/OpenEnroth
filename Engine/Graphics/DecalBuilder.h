@@ -30,8 +30,8 @@ struct Bloodsplat {
     unsigned char g;
     unsigned char b;
     char field_1B;
-    int field_1C;
-    unsigned long long field_20;
+    int field_1C;  // flags
+    unsigned long long field_20;  // fade time
     // int field_24;
 };
 #pragma pack(pop)
@@ -98,9 +98,9 @@ struct Decal {
     // void ( ***vdestructor_ptr)(Decal *, bool);
     int uNumVertices;
     RenderVertexSoft pVertices[64];
-    int16_t field_C08;
-    int16_t field_C0A;
-    int16_t field_C0C;
+    int16_t DecalXPos;
+    int16_t DecalYPos;
+    int16_t DecalZPos;
     int16_t field_C0E;
     uint32_t uColorMultiplier;
     int field_C14;
@@ -140,7 +140,7 @@ struct DecalBuilder {
                                       char uClipFlags);
     bool ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID);
     char ApplyDecals_OutdoorFace(ODMFace *pFace);
-    bool _49BE8A(struct Polygon *a2, Vec3_float_ *a3, float *a4,
+    bool ApplyBloodSplatToTerrain(struct Polygon *a2, Vec3_float_ *a3, float *a4,
                  struct RenderVertexSoft *a5, unsigned int uStripType, char a7);
     void DrawDecals(float z_bias);
     void DrawBloodsplats();
@@ -151,7 +151,7 @@ struct DecalBuilder {
     unsigned int DecalsCount;
     int curent_decal_id;  // field_308008
     RenderVertexSoft pVertices[256];
-    int std__vector_30B00C[1024];
+    int std__vector_30B00C[1024];  // outdoor bloodsplats/decals
     int uNumDecals;
     float field_30C010;
     float field_30C014;

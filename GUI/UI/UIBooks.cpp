@@ -57,7 +57,7 @@ void GUIWindow_Book::Release() {
     }
 
     pAudioPlayer->PlaySound(SOUND_closebook, 0, 0, -1, 0, 0);
-    dword_506364 = 0;
+    MapBookOpen = 0;
 
     GUIWindow::Release();
 }

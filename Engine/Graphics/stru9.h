@@ -45,18 +45,19 @@ struct stru9 {
                  struct IndoorCameraD3D_Vec4 *pVertices,
                  struct RenderVertexSoft *pVertices2,
                  unsigned int *pOutNumVertices);
-    bool CalcPortalShape(struct RenderVertexSoft *a1, signed int a2,
-                         struct RenderVertexSoft *pVertices,
-                         unsigned int *pOutNumVertices, struct Vec3_float_ *a5,
-                         float a6, char *a7, int unused);
+    bool AdjustVerticesToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
+        RenderVertexSoft *pOutVertices,
+        unsigned int *pOutNumVertices,
+        struct Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
+        int unused);
     void AddVertex(struct VertexBuffer *pVertexBuffer,
                    struct RenderVertexSoft *pVertex);
-    bool _498774(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
+    bool ClipDecalVertsToFace(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
                  struct RenderVertexSoft *a3, struct stru312 *a4,
                  struct RenderVertexSoft *a5);
     bool AreVectorsCollinear(struct RenderVertexSoft *a1,
                              struct RenderVertexSoft *a2, struct stru312 *a3);
-    bool _4989E1(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
+    bool DoDecalVertsNeedClipping(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
                  struct RenderVertexSoft *a3, struct stru312 *a4);
 
     void (***vdestructor_ptr)(stru9 *, bool);

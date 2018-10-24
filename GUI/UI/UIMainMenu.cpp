@@ -41,7 +41,6 @@ GUIWindow_MainMenu::~GUIWindow_MainMenu() {
     ui_mainmenu_load->Release();
     ui_mainmenu_credits->Release();
     ui_mainmenu_exit->Release();
-
     main_menu_background->Release();
 }
 

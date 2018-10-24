@@ -723,7 +723,7 @@ void AddBspNodeToRenderList(unsigned int node_id);
 void sub_4406BC(unsigned int node_id, unsigned int uFirstNode);  // idb
 char DoInteractionWithTopmostZObject(int a1, int a2);
 int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
-unsigned int sub_4B0E07(unsigned int uFaceID);  // idb
+unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
 void BLV_UpdateUserInputAndOther();
 int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID,
                       unsigned int *pFaceID);
@@ -790,7 +790,7 @@ struct BspRenderer_stru0 {
     uint16_t uFaceID;
     int16_t field_7A6;
     unsigned int viewing_portal_id;  // portal through which we're seeing this node
-    IndoorCameraD3D_Vec4 std__vector_0007AC[4];
+    IndoorCameraD3D_Vec4 std__vector_0007AC[4];  // frustum planes
     RenderVertexSoft pPortalBounding[4];
 };
 #pragma pack(pop)

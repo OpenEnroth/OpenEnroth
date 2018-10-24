@@ -674,30 +674,16 @@ void MPlayer::HouseMovieLoop() {
         rect.z = rect.x + game_viewport_width;
         rect.w = rect.y + game_viewport_height;
 
-        // create and update texture
-
+        // update pixels from buffer
         uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R8G8B8A8);
-
+        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
         memcpy(pix, buffer->GetData(), num_pixels_bytes);
-            uint32_t *dst = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_R8G8B8A8);
-
-            // real dodgy conversion to update other pixels
-            for (unsigned int i = 0; i < num_pixels; ++i) {
-                uint32_t p = pix[i];
-                dst[i] = ((p & 0xFF000000) | (p & 0x000000FF) << 16 | (p & 0x0000FF00) | (p & 0x00FF0000) >> 16);
-            }
 
         // update texture
         render->Update_Texture(tex);
         render->DrawImage(tex, rect);
 
-       // Image *image =
-       //     Image::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(),
-        //                  IMAGE_FORMAT_A8R8G8B8, buffer->GetData());
-        // render->DrawImage(image, rect);
-        // image->Release();
     } else {
         pMovie_Track = nullptr;
         size_t size = 0;
@@ -765,33 +751,15 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
             break;
         }
 
-        /*Image *image =
-            Image::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(),
-                          IMAGE_FORMAT_A8R8G8B8, buffer->GetData());*/
-
+        // update pixels from buffer
         uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R8G8B8A8);
-
-        if (num_pixels_bytes == buffer->GetSize()/2) {
-            memcpy(pix, buffer->GetData(), num_pixels_bytes);
-            uint32_t *dst = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_R8G8B8A8);
-
-            // real dodgy conversion to update other pixels
-                for (unsigned int i = 0; i < num_pixels; ++i) {
-                    uint32_t p = pix[i];
-                    dst[i] = ((p & 0xFF000000) | (p & 0x000000FF) << 16 | (p & 0x0000FF00) | (p & 0x00FF0000) >> 16);
-                }
-        } else {
-            log("bad tiems");
-        }
+        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
+        memcpy(pix, buffer->GetData(), num_pixels_bytes);
 
         // update texture
         render->Update_Texture(tex);
         render->DrawImage(tex, rect);
-
-        // render->DrawImage(image, rect);
-        /*image->Release();*/
 
         render->EndScene();
         render->Present();

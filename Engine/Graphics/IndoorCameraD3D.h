@@ -182,7 +182,7 @@ struct IndoorCameraD3D {
     void DebugDrawPortal(struct BLVFace *pFace);
 
     // void ( ***vdestructor_ptr)(IndoorCameraD3D *, bool);
-    IndoorCameraD3D_Vec3 field_4[3];  // matrix transforms
+    IndoorCameraD3D_Vec3 field_4[3];  // matrix for camera rotation transform
     // IndoorCameraD3D_Vec3 field_14;
     // IndoorCameraD3D_Vec3 field_24;
     IndoorCameraD3D_Vec4 std__vector_000034_prolly_frustrum[6];

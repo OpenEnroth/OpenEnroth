@@ -99,9 +99,7 @@ class ParticleEngine {
     void Draw();
     void UpdateParticles();
     bool ViewProject_TrueIfStillVisible_BLV(unsigned int uParticleID);
-    bool ViewProject_TrueIfStillVisible_ODM(unsigned int uID);
     void DrawParticles_BLV();
-    void DrawParticles_ODM();
 
     Particle pParticles[500];
     stru2_LineList pLines;
