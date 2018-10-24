@@ -324,7 +324,7 @@ bool Keyboard::WasKeyPressed(int vKey) {
 void Keyboard::ProcessInputActions() {
     char v4;                  // al@9
     unsigned __int16 v9;      // ax@102
-    int spell_price;          // eax@103
+    // int spell_price;          // eax@103
     PartyAction partyAction;  // [sp-14h] [bp-1Ch]@20
     InputAction inputAction;  // [sp+0h] [bp-8h]@7
 

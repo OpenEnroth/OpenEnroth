@@ -10,6 +10,17 @@ class RenderOpenGL : public RenderBase {
 
     virtual bool Initialize(OSWindow *window);
 
+    virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey);
+    virtual Texture *CreateTexture_Solid(const String &name);
+    virtual Texture *CreateTexture_Alpha(const String &name);
+
+    virtual Texture *CreateTexture_PCXFromFile(const String &name);
+    virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name);
+    virtual Texture *CreateTexture_PCXFromNewLOD(const String &name);
+
+    virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
+        IMAGE_FORMAT format, const void *pixels = nullptr);
+
     virtual Texture *CreateTexture(const String &name);
     virtual Texture *CreateSprite(
         const String &name, unsigned int palette_id,
@@ -57,6 +68,10 @@ class RenderOpenGL : public RenderBase {
                                 Texture *texture);
     virtual bool MoveTextureToDevice(Texture *texture);
 
+    virtual void Update_Texture(Texture *texture);
+
+    virtual void DeleteTexture(Texture *texture);
+
     virtual void BeginScene();
     virtual void EndScene();
     virtual void ScreenFade(unsigned int color, float t);
@@ -67,7 +82,8 @@ class RenderOpenGL : public RenderBase {
 
     virtual void DrawTextureNew(float u, float v, class Image *);
     virtual void DrawTextureAlphaNew(float u, float v, class Image *);
-    virtual void DrawTextureCustomHeight(float u, float v, class Image *,
+
+        virtual void DrawTextureCustomHeight(float u, float v, class Image *,
                                          int height);
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    Image *);
@@ -165,5 +181,7 @@ class RenderOpenGL : public RenderBase {
 
     int clip_x, clip_y;
     int clip_z, clip_w;
-    unsigned char *render_target_rgb;
+    uint32_t *render_target_rgb;  // now 32 - draw to in format R8G8B8A8 - endian swivel means ABGR
 };
+
+

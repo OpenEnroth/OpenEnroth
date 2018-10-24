@@ -11,6 +11,8 @@ class TextureD3D : public Texture {
  protected:
     friend class Render;
 
+    static Texture *Create(unsigned int width, unsigned int height, IMAGE_FORMAT format, const void * pixels);
+
     static Texture *Create(ImageLoader *loader);
 
     void SetDirectDrawSurface(IDirectDrawSurface *dds) { this->dds = dds; }

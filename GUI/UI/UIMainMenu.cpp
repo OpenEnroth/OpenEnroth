@@ -123,9 +123,12 @@ void GUIWindow_MainMenu::Loop() {
     if (first_initialization) {
         first_initialization = false;
 
+        Image *tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
+
         render->ResetUIClipRect();
         render->BeginScene();
         {
+            render->DrawTextureNew(0, 0, tex);
             DrawMM7CopyrightWindow();
         }
         render->EndScene();
@@ -133,6 +136,8 @@ void GUIWindow_MainMenu::Loop() {
 
         engine->SecondaryInitialization();
         FinalInitialization();
+
+        tex->Release();
     }
 
     current_screen_type = SCREEN_GAME;
@@ -142,7 +147,7 @@ void GUIWindow_MainMenu::Loop() {
     pWindow_MainMenu = new GUIWindow_MainMenu();
 
     SetCurrentMenuID(MENU_MAIN);
-    window->Activate();
+    // window->Activate();
 
     while (GetCurrentMenuID() == MENU_MAIN) {
         window->PeekMessageLoop();

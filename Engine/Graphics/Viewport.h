@@ -52,10 +52,11 @@ struct ViewingParams {
     void AdjustPosition();
     void _443365();
 
-    int uSomeX;
+    int uSomeX;  // game viewport co ords
     int uSomeY;
     int uSomeZ;
     int uSomeW;
+
     unsigned int uScreen_topL_X;
     unsigned int uScreen_topL_Y;
     unsigned int uScreen_BttmR_X;

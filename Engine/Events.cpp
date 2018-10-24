@@ -261,10 +261,10 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
                     int entry_line) {
     signed int v4;         // esi@7
     int v11;               // eax@14
-    char *v12;             // eax@15
-    const char *v16;       // esi@21
-    bool v17;              // edx@21
-    int v18;               // ecx@22
+    // char *v12;             // eax@15
+    // const char *v16;       // esi@21
+    // bool v17;              // edx@21
+    // int v18;               // ecx@22
     int v19;               // ebp@36
     signed int v20;        // ecx@40
     int v21;               // eax@40
@@ -281,8 +281,8 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     int v39;               // ecx@78
     int v42;               // eax@84
     int v43;               // ecx@84
-    GUIButton *v48;        // ecx@93
-    GUIButton *v49;        // esi@94
+    // GUIButton *v48;        // ecx@93
+    // GUIButton *v49;        // esi@94
     signed int pValue;     // ebp@124
     Player *pPlayer;       // esi@125
     int v83;               // eax@212
@@ -304,7 +304,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     int curr_seq_num;      // [sp+10h] [bp-498h]@4
     int v126;              // [sp+1Ch] [bp-48Ch]@262
     int player_choose;     // [sp+20h] [bp-488h]@4
-    int v128;              // [sp+24h] [bp-484h]@21
+    // int v128;              // [sp+24h] [bp-484h]@21
     int v129;              // [sp+24h] [bp-484h]@262
     signed int v130;       // [sp+28h] [bp-480h]@0
     int v132;              // [sp+30h] [bp-478h]@262
@@ -316,8 +316,8 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     int v138;              // [sp+48h] [bp-460h]@40
     int v139;              // [sp+4Ch] [bp-45Ch]@40
     ItemGen item;          // [sp+50h] [bp-458h]@15
-    char Source[120];      // [sp+74h] [bp-434h]@15
-    char Str[120];         // [sp+ECh] [bp-3BCh]@21
+    // char Source[120];      // [sp+74h] [bp-434h]@15
+    // char Str[120];         // [sp+ECh] [bp-3BCh]@21
     Actor Dst;             // [sp+164h] [bp-344h]@53
 
     v133 = 0;
@@ -927,11 +927,9 @@ LABEL_47:
                         current_npc_text =
                             pNPCTopics[EVT_DWORD(_evt->v5) - 1]
                                 .pText;  // (&dword_721664)[8 * v92];
-                        byte_5B0938[0] = 0;
+                        branchless_dialogue_str.clear();
                     } else {
-                        strcpy(
-                            byte_5B0938.data(),
-                            &pLevelStr[pLevelStrOffsets[EVT_DWORD(_evt->v5)]]);
+                        branchless_dialogue_str = &pLevelStr[pLevelStrOffsets[EVT_DWORD(_evt->v5)]];
                     }
                     ++curr_seq_num;
                     break;

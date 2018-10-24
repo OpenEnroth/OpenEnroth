@@ -106,6 +106,8 @@ void Game::Run() {
 
     engine->Initialize();
 
+    window->Activate();
+
     ShowMM7IntroVideo_and_LoadingScreen();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
@@ -231,19 +233,6 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
         }
     }
 
-    Image *tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
-
-    render->BeginScene();
-    render->DrawTextureNew(0, 0, tex);
-
-    DrawMM7CopyrightWindow();
-
-    render->EndScene();
-    render->Present();
-
-    tex->Release();
-    tex = nullptr;
-
     bGameoverLoop = false;
 }
 
@@ -358,16 +347,16 @@ void Game::EventLoop() {
     unsigned int v64;           // eax@486
     int v65;                    // ecx@486
     int v66;                    // eax@488
-    char *v67;                  // eax@489
+    // char *v67;                  // eax@489
     __int16 v68;                // dx@498
-    int v70;                    // eax@525
-    int v71;                    // edi@527
-    NPCData *pNPCData3;         // esi@527
-    char *v73;                  // ecx@533
-    signed int v74;             // edi@535
-    int v75;                    // eax@535
-    int v76;                    // esi@535
-    int v77;                    // eax@537
+    // int v70;                    // eax@525
+    // int v71;                    // edi@527
+    // NPCData *pNPCData3;         // esi@527
+    // char *v73;                  // ecx@533
+    // signed int v74;             // edi@535
+    // int v75;                    // eax@535
+    // int v76;                    // esi@535
+    // int v77;                    // eax@537
     Player *pPlayer2;           // ecx@549
                                 // signed int v81; // eax@552
     signed int v83;             // ecx@554
@@ -388,7 +377,7 @@ void Game::EventLoop() {
     Player *pPlayer4;           // ecx@718
     int v105;                   // eax@718
     Player *pPlayer5;           // ST78_4@758
-    unsigned int v115;          // eax@764
+    // unsigned int v115;          // eax@764
     unsigned int v118;          // eax@785
     unsigned int v119;          // ecx@786
                         //    unsigned int v121; // [sp-28h] [bp-624h]@711
@@ -402,9 +391,9 @@ void Game::EventLoop() {
     Player *pPlayer7;             // [sp+14h] [bp-5E8h]@373
     Player *pPlayer8;             // [sp+14h] [bp-5E8h]@377
     Player *pPlayer9;             // [sp+14h] [bp-5E8h]@455
-    int thisg;                    // [sp+14h] [bp-5E8h]@467
-    int thish;                    // [sp+14h] [bp-5E8h]@528
-    signed int thisi;             // [sp+14h] [bp-5E8h]@535
+    // int thisg;                    // [sp+14h] [bp-5E8h]@467
+    // int thish;                    // [sp+14h] [bp-5E8h]@528
+    // signed int thisi;             // [sp+14h] [bp-5E8h]@535
     MapInfo *pMapInfo;            // [sp+14h] [bp-5E8h]@604
     Player *pPlayer10;            // [sp+14h] [bp-5E8h]@641
     int uMessageParam;            // [sp+18h] [bp-5E4h]@7
@@ -415,10 +404,10 @@ void Game::EventLoop() {
     enum UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     unsigned int v199;            // [sp+30h] [bp-5CCh]@7
     char *v200;                   // [sp+34h] [bp-5C8h]@518
-    int v213;                     // [sp+98h] [bp-564h]@385
+    // int v213;                     // [sp+98h] [bp-564h]@385
     char pOut[32];                // [sp+BCh] [bp-540h]@370
     int v217[9];                  // [sp+158h] [bp-4A4h]@652
-    char Str2[128];               // [sp+238h] [bp-3C4h]@527
+    // char Str2[128];               // [sp+238h] [bp-3C4h]@527
     Actor actor;                  // [sp+2B8h] [bp-344h]@4
     int currHour;
     int pItemID;
@@ -936,9 +925,9 @@ void Game::EventLoop() {
                     dword_50CDC8 = 1;
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
 
-                    PlayHouseSound(  // this is wrong - what is it meant to do??
-                        uCurrentHouse_Animation,
-                        HouseSound_NotEnoughMoney_TrainingSuccessful);
+                    // PlayHouseSound(  // this is wrong - what is it meant to do??
+                    //    uCurrentHouse_Animation,
+                    //    HouseSound_NotEnoughMoney_TrainingSuccessful);
 
                     if (pMovie_Track) pMediaPlayer->Unload();
                     DialogueEnding();

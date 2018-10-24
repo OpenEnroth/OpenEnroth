@@ -10,6 +10,7 @@
 #include "Engine/Graphics/IRenderConfig.h"
 #include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Texture.h"
 
 using EngineIoc = Engine_::IocContainer;
 using Graphics::IRenderConfig;
@@ -43,6 +44,9 @@ struct RenderBillboard {
     unsigned int sTintColor;
     SpriteFrame *pSpriteFrame;
 };
+
+uint32_t Color32A(uint16_t color16);
+uint32_t Color32A(uint32_t r, uint32_t g, uint32_t b, uint32_t a = 0xFF);
 
 uint16_t Color16(uint32_t r, uint32_t g, uint32_t b);
 uint32_t Color32(uint16_t color16);
@@ -220,6 +224,17 @@ class IRender {
 
     virtual bool Initialize(OSWindow *window) = 0;
 
+    virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey) = 0;
+    virtual Texture *CreateTexture_Solid(const String &name) = 0;
+    virtual Texture *CreateTexture_Alpha(const String &name) = 0;
+
+    virtual Texture *CreateTexture_PCXFromFile(const String &name) = 0;
+    virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name) = 0;
+    virtual Texture *CreateTexture_PCXFromNewLOD(const String &name) = 0;
+
+    virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
+        IMAGE_FORMAT format, const void *pixels = nullptr) = 0;
+
     virtual Texture *CreateTexture(const String &name) = 0;
     virtual Texture *CreateSprite(const String &name, unsigned int palette_id,
                                   /*refactor*/ unsigned int lod_sprite_id) = 0;
@@ -276,6 +291,10 @@ class IRender {
                                 float dstX, float dstY, float a7, float a8,
                                 Texture *texture) = 0;
     virtual bool MoveTextureToDevice(Texture *texture) = 0;
+
+    virtual void Update_Texture(Texture *texture) = 0;
+    virtual void DeleteTexture(Texture *texture) = 0;
+
 
     virtual void BeginScene() = 0;
     virtual void EndScene() = 0;

@@ -39,14 +39,16 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     String filename;
     switch (pParty->alignment) {
         case PartyAlignment_Good:
-            filename = StringPrintf("evt%02d-b", const_2());
+            filename = "evt02-b";
             break;
         case PartyAlignment_Neutral:
-            filename = StringPrintf("evt%02d", const_2());
+            filename = "evt02";
             break;
         case PartyAlignment_Evil:
-            filename = StringPrintf("evt%02d-c", const_2());
+            filename = "evt02-c";
             break;
+        default:
+            Error("Invalid alignment: %u", pParty->alignment);
     }
     game_ui_dialogue_background = assets->GetImage_Solid(filename);
 
@@ -324,7 +326,7 @@ void GUIWindow_Dialogue::Update() {
 
         default:
             if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E &&
-                !byte_5B0938[0]) {
+                branchless_dialogue_str.empty()) {
                 dialogue_string = current_npc_text;
             } else if (pGreetType == 1) {  // QuestNPC_greet
                 if (pNPC->greet) {
@@ -552,18 +554,19 @@ void GUIWindow_GenericDialogue::Update() {
     GUIFont *pFont;                  // [sp+128h] [bp-4h]@1
 
     pFont = pFontArrus;
-    if (current_npc_text.length() > 0 && !byte_5B0938[0])
-        strcpy(byte_5B0938.data(), current_npc_text.c_str());
+    if (current_npc_text.length() > 0 && branchless_dialogue_str.empty())
+        branchless_dialogue_str = current_npc_text.c_str();
+
     BranchlessDlg_window.uFrameWidth = game_viewport_width;
     BranchlessDlg_window.uFrameZ = 452;
     pTextHeight =
-        pFontArrus->CalcTextHeight(byte_5B0938.data(),
+        pFontArrus->CalcTextHeight(branchless_dialogue_str,
                                    BranchlessDlg_window.uFrameWidth, 12) +
         7;
     if (352 - pTextHeight < 8) {
         pFont = pFontCreate;
         pTextHeight =
-            pFontCreate->CalcTextHeight(byte_5B0938.data(),
+            pFontCreate->CalcTextHeight(branchless_dialogue_str,
                                         BranchlessDlg_window.uFrameWidth, 12) +
             7;
     }
@@ -574,7 +577,7 @@ void GUIWindow_GenericDialogue::Update() {
                                 _591428_endcap);
     pGUIWindow2->DrawText(
         pFont, 12, 354 - pTextHeight, 0,
-        pFont->FitTextInAWindow(byte_5B0938.data(),
+        pFont->FitTextInAWindow(branchless_dialogue_str,
                                 BranchlessDlg_window.uFrameWidth, 12),
         0, 0, 0);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);

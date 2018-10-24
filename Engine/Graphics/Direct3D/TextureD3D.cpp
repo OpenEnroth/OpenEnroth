@@ -2,6 +2,39 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 
+
+Texture *TextureD3D::Create(unsigned int width, unsigned int height,
+    IMAGE_FORMAT format, const void *pixels = nullptr) {
+
+    auto tex = new TextureD3D();
+    if (tex) {
+        tex->initialized = true;
+        tex->width = width;
+        tex->height = height;
+        tex->native_format = format;
+        unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
+        unsigned int num_pixels_bytes =
+            num_pixels * IMAGE_FORMAT_BytesPerPixel(format);
+        tex->pixels[format] = new unsigned char[num_pixels_bytes];
+        if (pixels) {
+            memcpy(tex->pixels[format], pixels, num_pixels_bytes);
+        } else {
+            memset(tex->pixels[format], 0, num_pixels_bytes);
+        }
+
+        if (tex->initialized && tex->native_format != IMAGE_INVALID_FORMAT) {
+            // tex->pixels[format] = pixels;
+            // tex->initialized = render->MoveTextureToDevice(tex); nope
+            if (!tex->initialized) {
+                __debugbreak;
+            }
+        }
+    }
+
+    return tex;
+}
+
+
 Texture *TextureD3D::Create(ImageLoader *loader) {
     auto tex = new TextureD3D();
     if (tex) {
@@ -35,7 +68,11 @@ bool TextureD3D::LoadImageData() {
             this->loader->Load(&width, &height, &pixels, &native_format);
         if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT) {
             this->pixels[native_format] = pixels;
-            this->initialized = render->MoveTextureToDevice(this);
+
+            // check power of two - temporary
+            if ( (this->width & (this->width - 1)) == 0 && (this->height & (this->height - 1)) == 0 ) {
+                this->initialized = render->MoveTextureToDevice(this);
+            }
         }
     }
 

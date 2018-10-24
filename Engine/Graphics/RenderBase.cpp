@@ -113,10 +113,16 @@ void RenderBase::DrawSpriteObjects_ODM() {
         // v0 = (char *)&pSpriteObjects[0].uSectorID;
         // do
         //{
-        if (!object->uObjectDescID)  // item probably pciked up
-            continue;
 
-        if (!object->HasSprite()) continue;
+        if (!object->uObjectDescID) {  // item probably pciked up
+            // __debugbreak();
+            continue;
+        }
+
+        if (!object->HasSprite()) {
+            // __debugbreak();
+            continue;
+        }
 
         // v1 = &pObjectList->pObjects[*((short *)v0 - 13)];
         // if ( !(v1->uFlags & 1) )
@@ -130,20 +136,20 @@ void RenderBase::DrawSpriteObjects_ODM() {
             int y = object->vPosition.y;
             int z = object->vPosition.z;
             SpriteFrame *frame = object->GetSpriteFrame();
-            int a6 =
-                frame->uGlowRadius * object->field_22_glow_radius_multiplier;
+            int a6 = frame->uGlowRadius * object->field_22_glow_radius_multiplier;
+
+            // sprite angle to camera
             unsigned int v6 = stru_5C6E00->Atan2(
                 object->vPosition.x - pIndoorCameraD3D->vPartyPos.x,
                 object->vPosition.y - pIndoorCameraD3D->vPartyPos.y);
             // LOWORD(v7) = object->uFacing;
             // v8 = v36;
-            int v9 = ((int)(stru_5C6E00->uIntegerPi +
-                            ((int)stru_5C6E00->uIntegerPi >> 3) +
-                            object->uFacing - v6) >>
-                      8) &
-                     7;
-            pBillboardRenderList[::uNumBillboardsToDraw].hwsprite =
-                frame->hw_sprites[v9];
+            int v9 = ((int)(stru_5C6E00->uIntegerPi + ((int)stru_5C6E00->uIntegerPi >> 3) +
+                            object->uFacing - v6) >> 8) & 7;
+
+             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[v9];
+
+
             if (frame->uFlags & 0x20) {
                 // v8 = v36;
                 z -= fixpoint_mul(frame->scale._internal, frame->hw_sprites[v9]->uBufferHeight) / 2;
@@ -163,6 +169,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
             int view_z = 0;
 
             bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+
             if (visible) {
                 if (abs(view_x) >= abs(view_y)) {
                     int projected_x = 0;
@@ -236,6 +243,8 @@ void RenderBase::TransformBillboardsAndSetPalettesODM() {
             billboard.uFlags = p->field_1E;
 
             TransformBillboard(&billboard, p);
+        } else {
+            __debugbreak();
         }
     }
 }
@@ -283,7 +292,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
     billboard->pQuads[0].diffuse = diffuse;
     billboard->pQuads[0].pos.x = (float)a2->screen_space_x - v14 * v30;
     billboard->pQuads[0].pos.y = (float)a2->screen_space_y - v15 * v29;
-    billboard->pQuads[0].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
+    billboard->pQuads[0].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f  / pIndoorCameraD3D->GetFarClip());
     billboard->pQuads[0].rhw = 1.f / a2->screen_space_z;
     billboard->pQuads[0].specular = specular;
     billboard->pQuads[0].texcoord.x = 0.f;
@@ -441,6 +450,7 @@ void RenderBase::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
     billboard->uNumVertices = 4;
 
     float screenspace_projection_factor = a2->screenspace_projection_factor_x;
+    if (a2->screen_space_z < 17) a2->screen_space_z = 17;
 
     float rhw = 1.f / a2->screen_space_z;
     float z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
@@ -508,3 +518,4 @@ HWLTexture *RenderBase::LoadHwlBitmap(const String &name) {
 HWLTexture *RenderBase::LoadHwlSprite(const String &name) {
     return pD3DSprites.LoadTexture(name);
 }
+

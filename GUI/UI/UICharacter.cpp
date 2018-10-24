@@ -805,7 +805,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Player *player) {
 //----- (0041A000) --------------------------------------------------------
 void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     int items_per_page;       // eax@1
-    char Source[100];         // [sp+Ch] [bp-C4h]@1
+    // char Source[100];         // [sp+Ch] [bp-C4h]@1
     GUIWindow awards_window;  // [sp+70h] [bp-60h]@1
 
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
@@ -2684,7 +2684,7 @@ void WetsuitOff(unsigned int uPlayerID) {
         papredoll_dlhus[uPlayerID - 1] = assets->GetImage_Alpha(
             dlhu_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
 
-        wchar_t name[1024];
+        // wchar_t name[1024];
         if (pPlayers[uPlayerID]->uCurrentFace == 12 ||
             pPlayers[uPlayerID]->uCurrentFace == 13) {
             paperdoll_dbrds[pPlayers[uPlayerID]->uCurrentFace] =

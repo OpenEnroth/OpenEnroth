@@ -876,7 +876,7 @@ void UIShop_Buy_Identify_Repair() {
     unsigned int pItemID;  // esi@20
     ItemGen *item;         // esi@21
 
-    int v18;                   // ecx@37
+    // int v18;                   // ecx@37
     float pPriceMultiplier;    // ST1C_4@38
     int taken_item;            // eax@40
     ItemGen *bought_item;      // esi@51

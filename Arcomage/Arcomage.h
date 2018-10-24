@@ -4,6 +4,7 @@
 #include "Engine/Rect.h"
 
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Texture.h"
 
 struct ArcomageCard {
     char pCardName[32];
@@ -145,8 +146,8 @@ struct ArcomageGame {
     GUIFont *pfntArrus;  // ptr_4C;
     int field_50;
     int field_54;
-    Image *pGameBackground;
-    Image *pSprites;
+    Texture *pGameBackground;
+    Texture *pSprites;
     int event_timer_time;
     int uGameWinner;
     int Victory_type;

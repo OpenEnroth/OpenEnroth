@@ -24,6 +24,17 @@ class Render : public RenderBase {
 
     virtual bool Initialize(OSWindow *window);
 
+    virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey);
+    virtual Texture *CreateTexture_Solid(const String &name);
+    virtual Texture *CreateTexture_Alpha(const String &name);
+
+    virtual Texture *CreateTexture_PCXFromFile(const String &name);
+    virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name);
+    virtual Texture *CreateTexture_PCXFromNewLOD(const String &name);
+
+    virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
+        IMAGE_FORMAT format, const void *pixels = nullptr);
+
     virtual Texture *CreateTexture(const String &name);
     virtual Texture *CreateSprite(const String &name, unsigned int palette_id,
                                   unsigned int lod_sprite_id);
@@ -69,6 +80,10 @@ class Render : public RenderBase {
                                 float dstX, float dstY, float a7, float a8,
                                 Texture *texture);
     virtual bool MoveTextureToDevice(Texture *texture);
+
+    virtual void Update_Texture(Texture *texture);
+
+    virtual void DeleteTexture(Texture *texture);
 
     virtual void BeginScene();
     virtual void EndScene();

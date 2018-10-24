@@ -2614,8 +2614,8 @@ void Actor::SummonMinion(int summonerId) {
     MonsterInfo *v9;                   // ebx@10
     // MonsterDesc *v10; // edi@10
     int v13;                 // ebx@10
-    int v15;                 // edi@10
-    int v17;                 // ebx@10
+    int64 v15;                 // edi@10
+    int64 v17;                 // ebx@10
     unsigned int v19;        // qax@10
     int result;              // eax@13
     unsigned int monsterId;  // [sp+10h] [bp-18h]@8
@@ -3697,8 +3697,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 
 //----- (004BBF61) --------------------------------------------------------
 void Actor::Arena_summon_actor(int monster_id, __int16 x, int y, int z) {
-    int v12;      // ebx@7
-    int v13;      // eax@8
+    // int v12;      // ebx@7
+    // int v13;      // eax@8
     __int16 v16;  // [sp+10h] [bp-4h]@3
 
     if (uNumActors < 500) {
@@ -4034,7 +4034,7 @@ int stru319::FindClosestActor(int pick_depth, int a3, int a4) {
 
 //----- (0042F4DA) --------------------------------------------------------
 bool CheckActors_proximity() {
-    signed int distance;  // edi@1
+    unsigned int distance;  // edi@1
     int for_x;            // ebx@5
     int for_y;            // [sp+Ch] [bp-10h]@5
     int for_z;            // [sp+10h] [bp-Ch]@5
@@ -4534,8 +4534,8 @@ void Actor::MakeActorAIList_ODM() {
       while ( v15 - 1 < result );
     }*/
 
-    for (uint i = 0; i < ai_arrays_size; ++i) {
-        for (uint j = 0; j < i; ++j) {
+    for (int i = 0; i < ai_arrays_size; ++i) {
+        for (int j = 0; j < i; ++j) {
             if (ai_near_actors_distances[j] > ai_near_actors_distances[i]) {
                 int tmp = ai_near_actors_distances[j];
                 ai_near_actors_distances[j] = ai_near_actors_distances[i];
@@ -4550,7 +4550,7 @@ void Actor::MakeActorAIList_ODM() {
 
     if (ai_arrays_size > 30) ai_arrays_size = 30;
 
-    for (uint i = 0; i < ai_arrays_size; ++i)
+    for (int i = 0; i < ai_arrays_size; ++i)
         pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_ALIVE;  // 0x400
 }
 
@@ -4564,12 +4564,12 @@ int Actor::MakeActorAIList_BLV() {
     int v18;           // ecx@31
     signed int v19;    // edi@31
     signed int v25;    // eax@40
-    int j;             // edi@45
+    uint j;             // edi@45
     int v30;           // eax@48
     int v37;           // [sp+Ch] [bp-18h]@1
     int v38;           // [sp+10h] [bp-14h]@4
     int v39;           // [sp+14h] [bp-10h]@4
-    int i;             // [sp+18h] [bp-Ch]@31
+    uint i;             // [sp+18h] [bp-Ch]@31
     uint v45;          // [sp+20h] [bp-4h]@1
 
     //  __debugbreak(); // refactor for blv ai
@@ -4681,7 +4681,7 @@ int Actor::MakeActorAIList_BLV() {
            4 * ai_arrays_size);
     memcpy(ai_near_actors_distances.data(), ai_array_4F5E68.data(),
            4 * ai_arrays_size);
-    for (uint i = 0; i < ai_arrays_size; i++)
+    for (int i = 0; i < ai_arrays_size; i++)
         pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_ALIVE;  // 0x400
     return ai_arrays_size;
 }
@@ -4740,7 +4740,7 @@ bool sub_4070EF_prolly_detect_player(unsigned int uObjID,
         case OBJECT_Actor:
             obj1_x = pActors[v2].vPosition.x;
             obj1_y = pActors[v2].vPosition.y;
-            v8 = (double)pActors[v2].uActorHeight * 0.69999999;
+            v8 = (float)pActors[v2].uActorHeight * 0.69999999;
             // v9 = v8 + 6.7553994e15;
             // obj1_z = LODWORD(v9) + pActors[v2].vPosition.z;
             obj1_z = (int)v8 + pActors[v2].vPosition.z;
@@ -4774,7 +4774,7 @@ bool sub_4070EF_prolly_detect_player(unsigned int uObjID,
         case OBJECT_Actor:
             obj2_y = pActors[v12].vPosition.y;
             obj2_x = pActors[v12].vPosition.x;
-            v20 = (double)pActors[v12].uActorHeight * 0.69999999;
+            v20 = (float)pActors[v12].uActorHeight * 0.69999999;
             // v21 = v20 + 6.7553994e15;
             // obj2_z = LODWORD(v21) + pActors[v12].vPosition.z;
             obj2_z = (int)v20 + pActors[v12].vPosition.z;
@@ -5205,7 +5205,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
     v53 = 0;
     v52 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
     if (v18 <= 0) return;
-    for (uint i = v53; i < v56; ++i) {
+    for (int i = v53; i < v56; ++i) {
         pMonster = &pActors[uNumActors];
         pActors[uNumActors].Reset();
         if (v57) {

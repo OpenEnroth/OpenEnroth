@@ -9,11 +9,11 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
             Engine_DeinitializeAndTerminate(0);
         } break;
 
-        case SDL_APP_WILLENTERBACKGROUND: {
+        case SDL_APP_WILLENTERBACKGROUND: {  // this is for mobile apps wrong event
             gameCallback->OnDeactivated();
         } break;
 
-        case SDL_APP_WILLENTERFOREGROUND: {
+        case SDL_APP_WILLENTERFOREGROUND: {  // this is for mobile apps wrong event
             gameCallback->OnActivated();
         } break;
 
@@ -84,6 +84,12 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
             switch (e.window.event) {
                 case SDL_WINDOWEVENT_EXPOSED: {
                     gameCallback->OnPaint();
+                } break;
+                case SDL_WINDOWEVENT_FOCUS_LOST: {
+                    gameCallback->OnDeactivated();
+                } break;
+                case SDL_WINDOWEVENT_FOCUS_GAINED: {
+                    gameCallback->OnActivated();
                 } break;
             }
         } break;
@@ -232,6 +238,8 @@ void Sdl2Window::OpenGlCreate() {
     //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
+
+
     //  Turn on double buffering with a 24bit Z buffer.
     //  You may need to change this to 16 or 32 for your system
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -251,3 +259,4 @@ void Sdl2Window::OpenGlCreate() {
 void Sdl2Window::OpenGlSwapBuffers() {
     SDL_GL_SwapWindow(sdlWindow);
 }
+

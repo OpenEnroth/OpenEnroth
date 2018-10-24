@@ -1259,8 +1259,8 @@ void GameUI_DrawRightPanelFrames() {
 }
 
 void GameUI_WritePointedObjectStatusString() {
-    GUIWindow *pWindow;                // edi@7
-    GUIButton *pButton;                // ecx@11
+    // GUIWindow *pWindow;                // edi@7
+    // GUIButton *pButton;                // ecx@11
     int requiredSkillpoints;           // ecx@19
     enum UIMessageType pMessageType1;  // esi@24
     int invmatrixindex;                // eax@41
@@ -1276,7 +1276,7 @@ void GameUI_WritePointedObjectStatusString() {
     unsigned int pX;                   // [sp+D4h] [bp-Ch]@1
     unsigned int pY;                   // [sp+D8h] [bp-8h]@1
 
-    int testing;
+    // int testing;
 
     pMouse->uPointingObjectID = 0;
     pMouse->GetClickPos(&pX, &pY);
@@ -1919,7 +1919,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     signed int xpix;       // edi@40
     int pPoint_X;         // edi@72
     int pPoint_Y;         // ebx@72
-    unsigned int lPitch;  // [sp+20h] [bp-34h]@1
+    // unsigned int lPitch;  // [sp+20h] [bp-34h]@1
     signed int pY;        // [sp+20h] [bp-34h]@23
     signed int pX;        // [sp+24h] [bp-30h]@23
     signed int xpixoffset16;       // [sp+24h] [bp-30h]@37
@@ -1974,6 +1974,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         static unsigned __int16 pOdmMinimap[117][137];
         assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
 
+        static Texture *minimaptemp;
+        if (!minimaptemp) {
+            minimaptemp = render->CreateTexture_Blank(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
+        }
+
         xpixoffset16 = floorf(startx * 65536.0 + 0.5f);     // LODWORD(v24);
         ypixoffset16 = floorf(starty * 65536.0 + 0.5f);  // LODWORD(v25);
         ypix = ypixoffset16 >> 16;
@@ -1987,7 +1992,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             auto pMapLod0Line =
                 (unsigned __int32 *)viewparams->location_minimap->GetPixels(
                     IMAGE_FORMAT_A8R8G8B8);
-           Image *minimaptemp = Image::Create(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
+           // Image *minimaptemp = Image::Create(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
            auto minitempix = (unsigned __int32 *)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
             for (int y = 0; y < uHeight; ++y) {
@@ -1999,8 +2004,18 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 ypix = ypixoffset16 >> 16;
             }
             // draw image
+
+            uint32_t *dst = (uint32_t*)minimaptemp->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+
+            // real dodgy conversion to update other pixels
+            for (unsigned int i = 0; i < uWidth*uHeight; ++i) {
+                uint32_t p = minitempix[i];
+                dst[i] = ((p & 0xFF000000) | (p & 0x000000FF) << 16 | (p & 0x0000FF00) | (p & 0x00FF0000) >> 16);
+            }
+            render->Update_Texture(minimaptemp);
+
             render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
-            minimaptemp->Release();
+            // minimaptemp->Release();
         }
 
         uNumBlueFacesInBLVMinimap = 0;

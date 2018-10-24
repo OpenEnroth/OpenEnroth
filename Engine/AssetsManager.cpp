@@ -28,15 +28,17 @@ bool AssetsManager::ReleaseImage(const String &name) {
     return true;
 }
 
-Image *AssetsManager::GetImage_ColorKey(const String &name, uint16_t colorkey) {
+
+
+
+Texture *AssetsManager::GetImage_ColorKey(const String &name, uint16_t colorkey) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+        ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image =
-            Image::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
+        auto image = render->CreateTexture_ColorKey(name, colorkey);
         images[filename] = image;
         return image;
     }
@@ -44,14 +46,16 @@ Image *AssetsManager::GetImage_ColorKey(const String &name, uint16_t colorkey) {
     return i->second;
 }
 
-Image *AssetsManager::GetImage_Solid(const String &name) {
+
+
+Texture *AssetsManager::GetImage_Solid(const String &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = Image::Create(new Image16bit_LOD_Loader(pIcons_LOD, name));
+        auto image = render->CreateTexture_Solid(name);
         images[filename] = image;
         return image;
     }
@@ -59,14 +63,14 @@ Image *AssetsManager::GetImage_Solid(const String &name) {
     return i->second;
 }
 
-Image *AssetsManager::GetImage_Alpha(const String &name) {
+Texture *AssetsManager::GetImage_Alpha(const String &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = Image::Create(new Alpha_LOD_Loader(pIcons_LOD, name));
+        auto image = render->CreateTexture_Alpha(name);
         images[filename] = image;
         return image;
     }
@@ -74,14 +78,14 @@ Image *AssetsManager::GetImage_Alpha(const String &name) {
     return i->second;
 }
 
-Image *AssetsManager::GetImage_PCXFromIconsLOD(const String &name) {
+Texture *AssetsManager::GetImage_PCXFromIconsLOD(const String &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = Image::Create(new PCX_LOD_Loader(pIcons_LOD, filename));
+        auto image = render->CreateTexture_PCXFromIconsLOD(name);
         images[filename] = image;
         return image;
     }
@@ -89,14 +93,14 @@ Image *AssetsManager::GetImage_PCXFromIconsLOD(const String &name) {
     return i->second;
 }
 
-Image *AssetsManager::GetImage_PCXFromNewLOD(const String &name) {
+Texture *AssetsManager::GetImage_PCXFromNewLOD(const String &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = Image::Create(new PCX_LOD_Loader(pNew_LOD, filename));
+        auto image = render->CreateTexture_PCXFromNewLOD(name);
         images[filename] = image;
         return image;
     }
@@ -104,14 +108,14 @@ Image *AssetsManager::GetImage_PCXFromNewLOD(const String &name) {
     return i->second;
 }
 
-Image *AssetsManager::GetImage_PCXFromFile(const String &name) {
+Texture *AssetsManager::GetImage_PCXFromFile(const String &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = Image::Create(new PCX_File_Loader(pIcons_LOD, filename));
+        auto image = render->CreateTexture_PCXFromFile(name);
         images[filename] = image;
         return image;
     }

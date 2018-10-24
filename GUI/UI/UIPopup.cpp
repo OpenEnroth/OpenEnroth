@@ -38,7 +38,7 @@ using EngineIoc = Engine_::IocContainer;
 
 Mouse *pMouse = EngineIoc::ResolveMouse();
 
-Image *parchment = nullptr;
+Texture *parchment = nullptr;
 Image *messagebox_corner_x = nullptr;       // 5076AC
 Image *messagebox_corner_y = nullptr;       // 5076B4
 Image *messagebox_corner_z = nullptr;       // 5076A8
@@ -1451,9 +1451,9 @@ void DrawSpellDescriptionPopup(int spell_index) {
 //----- (00416D62) --------------------------------------------------------
 void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
     int v5;                  // esi@62
-    GUIButton *pButton;      // esi@84
+    // GUIButton *pButton;      // esi@84
     const char *pStr;        // edi@85
-    const char *pHint;       // edx@113
+    // const char *pHint;       // edx@113
     GUIWindow popup_window;  // [sp+4h] [bp-74h]@32
 
     if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
@@ -1811,7 +1811,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     int potion1_id;             // edx@25
     unsigned int potion2_id;    // edi@25
     signed int potionID;        // edx@27
-    unsigned int pOut_y;        // edx@57
+    // unsigned int pOut_y;        // edx@57
     double v31;                 // st7@112
     Vec3_int_ v39;              // [sp-18h] [bp-A8h]@83
     GUIWindow message_window;   // [sp+Ch] [bp-84h]@137

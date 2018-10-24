@@ -2,7 +2,7 @@
 
 #include <array>
 
-class Image;
+class Texture;
 
 class Icon {
  public:
@@ -23,7 +23,7 @@ class Icon {
     }
     inline unsigned int GetAnimTime() const { return this->anim_time; }
 
-    Image *GetTexture();
+    Texture *GetTexture();
 
     ///* 000 */ char pAnimationName[12];
     /* 00C */ char pTextureName[12];
@@ -42,7 +42,7 @@ class Icon {
     // unsigned int flags;
     // unsigned int texture_id;
 
-    Image *img;
+    Texture *img;
 };
 
 /*   45 */

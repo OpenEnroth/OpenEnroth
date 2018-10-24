@@ -227,7 +227,7 @@ extern std::array<struct NPCData *, 7>
     HouseNPCData;  // 0this array size temporarily increased to 60 from 6 to
                    // work aroud house overflow
 extern GUIButton *HouseNPCPortraitsButtonsList[6];
-extern std::array<char, 2000> byte_5B0938;
+extern String branchless_dialogue_str;
 extern int EvtTargetObj;
 extern int _unused_5B5924_is_travel_ui_drawn;  // 005B5924
 extern int _5B65A8_npcdata_uflags_or_other;

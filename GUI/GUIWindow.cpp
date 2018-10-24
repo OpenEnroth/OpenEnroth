@@ -2494,8 +2494,6 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
     return result;
 }
 
-int const_2() { return 2; }
-
 WindowManager windowManager;
 
 void WindowManager::DeleteAllVisibleWindows() {

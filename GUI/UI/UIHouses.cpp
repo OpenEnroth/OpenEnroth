@@ -837,7 +837,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
                            // unsigned int v17; // eax@37
     int v18;       // edi@37
     int v19;       // edi@41
-    char pContainer[40];  // [sp+Ch] [bp-30h]@32
+    String pContainer;  // [sp+Ch] [bp-30h]@32
                           // unsigned int v24; // [sp+34h] [bp-8h]@5
 
     GameUI_StatusBar_Clear();
@@ -923,17 +923,17 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
         }
 
         switch (pParty->alignment) {
-        case PartyAlignment_Good:
-            sprintf(pContainer, "evt%02d-b", const_2());
-            break;
-        case PartyAlignment_Neutral:
-            sprintf(pContainer, "evt%02d", const_2());
-            break;
-        case PartyAlignment_Evil:
-            sprintf(pContainer, "evt%02d-c", const_2());
-            break;
-        default:
-            Error("Invalid alignment type: %u", pParty->alignment);
+            case PartyAlignment_Good:
+                pContainer = "evt02-b";
+                break;
+            case PartyAlignment_Neutral:
+                pContainer = "evt02";
+                break;
+            case PartyAlignment_Evil:
+                pContainer = "evt02-c";
+                break;
+            default:
+                Error("Invalid alignment: %u", pParty->alignment);
         }
 
         pDialogueNPCCount = 0;

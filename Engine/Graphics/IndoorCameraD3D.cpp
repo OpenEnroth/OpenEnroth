@@ -653,8 +653,7 @@ void IndoorCameraD3D::CreateWorldMatrixAndSomeStuff() {
     if (fov_x > fov) fov = fov_x;
 
     screenCenterX = (double)pViewport->uScreenCenterX;
-    screenCenterY =
-        (double)(pViewport->uScreenCenterY - pViewport->uScreen_TL_Y);
+    screenCenterY = (double)pViewport->uScreenCenterY;  //- pViewport->uScreen_TL_Y);
 }
 
 //----- (00437691) --------------------------------------------------------
