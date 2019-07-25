@@ -298,14 +298,16 @@ void ItemsTable::Initialize() {
         }
         int res;
         res = atoi(tokens[14]);
+        int mask = 0;
         if (!res) {
             ++tokens[14];
             while (*tokens[14] == ' ')  // fix X 2 case
                 ++tokens[14];
             res = atoi(tokens[14]);
+            mask = 4;  // bit encode for when we need to multuply value
         }
         pSpecialEnchantments[i].iValue = res;
-        pSpecialEnchantments[i].iTreasureLevel = tolower(tokens[15][0]) - 97;
+        pSpecialEnchantments[i].iTreasureLevel = (tolower(tokens[15][0]) - 97) | mask;
     }
 
     pSpecialEnchantments_count = 71;
@@ -585,7 +587,7 @@ void ItemsTable::LoadPotionNotes() {
 //----- (00456442) --------------------------------------------------------
 unsigned int ItemGen::GetValue() {
     unsigned int uBaseValue;  // edi@1
-    unsigned int bonus;
+    unsigned int mod, bonus;
 
     uBaseValue = pItemsTable->pItems[this->uItemID].uValue;
     if (this->uAttributes & ITEM_TEMP_BONUS ||
@@ -594,9 +596,9 @@ unsigned int ItemGen::GetValue() {
     if (uEnchantmentType) return uBaseValue + 100 * m_enchantmentStrength;
 
     if (special_enchantment) {
-        bonus = pItemsTable->pSpecialEnchantments[special_enchantment]
-                    .iTreasureLevel;
-        if (bonus > 10)
+        mod = (pItemsTable->pSpecialEnchantments[special_enchantment-1].iTreasureLevel & 4);
+        bonus = pItemsTable->pSpecialEnchantments[special_enchantment-1].iValue;
+        if (!mod)
             return uBaseValue + bonus;
         else
             return uBaseValue * bonus;
@@ -939,7 +941,13 @@ void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     int spc;
     memset(&val_list, 0, 3200);
     for (unsigned int i = 0; i < pSpecialEnchantments_count; ++i) {
-        int tr_lv = pSpecialEnchantments[i].iTreasureLevel;
+        int tr_lv = (pSpecialEnchantments[i].iTreasureLevel) & 3;
+
+        // tr_lv  0 = treasure level 3/4
+        // tr_lv  1 = treasure level 3/4/5
+        // tr_lv  2 = treasure level 4/5
+        // tr_lv  3 = treasure level 5/6
+
         if ((treasure_level - 1 == 2) && (tr_lv == 1 || tr_lv == 0) ||
             (treasure_level - 1 == 3) &&
                 (tr_lv == 2 || tr_lv == 1 || tr_lv == 0) ||

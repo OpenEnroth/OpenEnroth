@@ -752,10 +752,13 @@ int _43AFE3_calc_spell_damage(int spellId, int spellLevel,
             case 1:
             case 2:
                 v5 = 6;
+                break;
             case 3:
                 v5 = 8;
+                break;
             case 4:
                 v5 = 10;
+                break;
             default:
                 return 0;
         }

@@ -106,7 +106,7 @@ bool sr_42620A(RenderVertexSoft *p) {
 }
 
 //----- (004775C4) --------------------------------------------------------
-stru6_stru1_indoor_sw_billboard::~stru6_stru1_indoor_sw_billboard() {
+SpellFX_Billboard::~SpellFX_Billboard() {
     delete[] pArray1;
     pArray1 = nullptr;
 
@@ -115,7 +115,7 @@ stru6_stru1_indoor_sw_billboard::~stru6_stru1_indoor_sw_billboard() {
 }
 
 //----- (00478211) --------------------------------------------------------
-void stru6_stru1_indoor_sw_billboard::Initialize(int a2) {
+void SpellFX_Billboard::Initialize(int a2) {
     uNumVec4sInArray1 = 66;
     pArray1 = new stru16x[66];
 
@@ -128,40 +128,72 @@ void stru6_stru1_indoor_sw_billboard::Initialize(int a2) {
         pArray1[i].field_8 = array_4EB8B8[i].field_8;
         pArray1[i].field_C = a2;
     }
-    memcpy(pArray2, array_4EBBD0_x.data() /*array_4EBBD0*/,
-           uNumVec3sInArray2 * sizeof(stru160));
+
+    for (int i = 0; i < uNumVec3sInArray2; ++i) {
+        pArray2[i].field_0 = array_4EBBD0_x[3 * i];
+        pArray2[i].field_4 = array_4EBBD0_x[(3 * i)+1];
+        pArray2[i].field_8 = array_4EBBD0_x[(3 * i)+2];
+    }
+
+    // doesnt copy over properly
+    // memcpy(pArray2, array_4EBBD0_x.data() /*array_4EBBD0*/,
+   //        uNumVec3sInArray2 * sizeof(stru160));
 }
 
 //----- (0047829F) --------------------------------------------------------
-void stru6_stru1_indoor_sw_billboard::_47829F_sphere_particle(
+void SpellFX_Billboard::_47829F_sphere_particle(
     float x_offset, float y_offset, float z_offset, float scale, int diffuse) {
     int v7 = 0;
 
-    for (unsigned int i = 0; i < uNumVec3sInArray2; ++i) {
-        for (unsigned int j = 0; j < 3; ++j) {
-            field_14[j].x =
-                x_offset +
-                scale * *(&pArray1->field_0 +
-                          4 * *(int *)((char *)&pArray2->field_0 + v7));
-            field_14[j].y =
-                y_offset +
-                scale * *(&pArray1->field_4 +
-                          4 * *(int *)((char *)&pArray2->field_0 + v7));
-            field_14[j].z =
-                z_offset +
-                scale * *(&pArray1->field_8 +
-                          4 * *(int *)((char *)&pArray2->field_0 + v7));
-            // int v10 = *(int *)((char *)&pArray2->field_0 + v7);
+    // offsets are centrepoints
 
-            field_14[j].diffuse =
-                *((int *)&pArray1[1].field_0 +
-                  4 * (*(int *)((char *)&pArray2->field_0 + v7)));
-            v7 += 4;
-        }
+    // 66 total verts points - held in array1
+    // 128 triangles using 66 diff verts
+
+
+    for (unsigned int i = 0; i < uNumVec3sInArray2; ++i) {  // indicies for triangle in sphere
+        // for (unsigned int j = 0; j < 3; ++j) {
+        //    field_14[j].x =
+        //        x_offset +
+        //        scale * *(&pArray1->field_0 +
+        //                  4 * *(int *)((char *)&pArray2->field_0 + v7));
+        //    field_14[j].y =
+        //        y_offset +
+        //        scale * *(&pArray1->field_4 +
+        //                  4 * *(int *)((char *)&pArray2->field_0 + v7));
+        //    field_14[j].z =
+        //        z_offset +
+        //        scale * *(&pArray1->field_8 +
+        //                  4 * *(int *)((char *)&pArray2->field_0 + v7));
+        //    // int v10 = *(int *)((char *)&pArray2->field_0 + v7);
+
+        //    field_14[j].diffuse =
+        //        *((int *)&pArray1[1].field_0 +
+        //          4 * (*(int *)((char *)&pArray2->field_0 + v7)));
+        //    v7 += 4;
+        //}
+
+
+        field_14[0].x = x_offset + scale * pArray1[int(pArray2[i].field_0)].field_0;
+        field_14[0].y = y_offset + scale * pArray1[int(pArray2[i].field_0)].field_4;
+        field_14[0].z = z_offset + scale * pArray1[int(pArray2[i].field_0)].field_8;
+        field_14[0].diffuse = diffuse;
+
+        field_14[1].x = x_offset + scale * pArray1[int(pArray2[i].field_4)].field_0;
+        field_14[1].y = y_offset + scale * pArray1[int(pArray2[i].field_4)].field_4;
+        field_14[1].z = z_offset + scale * pArray1[int(pArray2[i].field_4)].field_8;
+        field_14[1].diffuse = diffuse;
+
+        field_14[2].x = x_offset + scale * pArray1[int(pArray2[i].field_8)].field_0;
+        field_14[2].y = y_offset + scale * pArray1[int(pArray2[i].field_8)].field_4;
+        field_14[2].z = z_offset + scale * pArray1[int(pArray2[i].field_8)].field_8;
+        field_14[2].diffuse = diffuse;
+
+
 
         uNumVertices = 3;
-        if (sub_477C61() && sub_477F63()) {
-            if (sub_47802A()) render->_4A4CC9_AddSomeBillboard(this, diffuse);
+        if (SpellFXViewTransform() && SpellFXViewClip()) {
+            if (SpellFXProject()) render->_4A4CC9_AddSomeBillboard(this, diffuse);
         }
     }
 }
@@ -825,13 +857,13 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             AddMobileLight(a2, 0xFF3C1E, 256);
             // if (render->pRenderD3D)
             {
-                if (PID_TYPE(a2->spell_caster_pid) != OBJECT_Actor &&
+                if (/*PID_TYPE(a2->spell_caster_pid) != OBJECT_Actor &&*/
                     PID_TYPE(a2->spell_caster_pid) != OBJECT_Item) {
                     if (field_204 != 4) {
                         field_204++;
                         _4A7688_fireball_collision_particle(a2);
                     }
-                    return false;
+                    return true;  // sphere and sprite
                 }
             }
             return true;
@@ -877,7 +909,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             // if ( !render->pRenderD3D )
             //  return true;
             _4A78AE_sparks_spell(a2);
-            AddMobileLight(a2, 0x64640F, 128);
+            AddMobileLight(a2, 0x2F3351, 128);  // 0x64640F
             return false;
 
         case SPRITE_SPELL_AIR_LIGHNING_BOLT:
@@ -1419,606 +1451,233 @@ void SpellFxRenderer::LoadAnimations() {
 }
 
 //----- (004775ED) --------------------------------------------------------
-int stru6_stru1_indoor_sw_billboard::_4775ED(float a2) {
-    char *v2;  // edi@1
-    // int v3; // eax@1
-    char *v4;            // edx@2
-    char *v5;            // esi@3
-    double v6;           // st7@6
-    signed __int64 v7;   // ST84_8@6
-    double v8;           // ST0C_8@6
-    int v9;              // esi@6
-    double v10;          // ST44_8@6
-    int v11;             // ecx@6
-    double v12;          // ST34_8@6
-    int v13;             // ecx@6
-    double v14;          // ST14_8@6
-    double v15;          // st7@8
-    unsigned int v16;    // ecx@8
-    signed __int64 v17;  // ST64_8@8
-    double v18;          // ST24_8@8
-    int v19;             // edi@8
-    double v20;          // ST3C_8@8
-    int v21;             // ecx@8
-    double v22;          // ST2C_8@8
-    int v23;             // ST9C_4@8
-    double v24;          // ST1C_8@8
-    int *v25;            // edi@8
-    int v26;             // esi@8
-    int *v27;            // edi@10
-    int v28;             // esi@10
-    //  int result; // eax@12
-    __int64 v30;                           // [sp+A8h] [bp-30h]@8
-    float v31;                             // [sp+B0h] [bp-28h]@6
-    float v32;                             // [sp+B4h] [bp-24h]@6
-    int v33;                               // [sp+B8h] [bp-20h]@6
-    int v34;                               // [sp+BCh] [bp-1Ch]@2
-    stru6_stru1_indoor_sw_billboard *v35;  // [sp+C0h] [bp-18h]@1
-    float v36;                             // [sp+C4h] [bp-14h]@6
-    int v37;                               // [sp+C8h] [bp-10h]@6
-    int v38;                               // [sp+CCh] [bp-Ch]@1
-    float v39;                             // [sp+D0h] [bp-8h]@6
-    int *v40;                              // [sp+D4h] [bp-4h]@2
+int SpellFX_Billboard::SpellFXNearClipAdjust(float NearClip) {  // near clip adjust - needs diffuse sorting properly??
+    if (!uNumVertices) return 0;
 
-    //  __debugbreak();//нужно почистить, срабатывает при применении закла
-    //  Точечный взрыв и при стрельбе из жезла
-    v2 = (char *)&this->field_64[4 * this->uNumVertices];
-    v38 = 0;
-    *(int *)v2 = this->field_64[0];
-    v2 += 4;
-    *(int *)v2 = this->field_64[1];
-    v2 += 4;
-    *(int *)v2 = this->field_64[2];
-    *((int *)v2 + 1) = this->field_64[3];
-    // v3 = this->uNumVertices;
-    v35 = this;
-    if (this->uNumVertices > 0) {
-        v40 = &this->field_64[20];  // ptr to field b4
-        v4 = (char *)&this->field_64[3] + 3;
+    // copies first vert to position 4
+    field_64[4 * uNumVertices] = field_64[0];
+    field_64[4 * uNumVertices + 1] = field_64[1];
+    field_64[4 * uNumVertices + 2] = field_64[2];
+    field_64[4 * uNumVertices + 3] = field_64[3];
 
-        // while ( 1 )
-        for (v34 = this->uNumVertices; v34; --v34) {
-            v5 = v4 - 15;
-            if (*(float *)(v4 - 15) <= (double)a2 &&
-                *(float *)(v4 + 1) <= (double)a2) {
-                v4 += 16;
-                // --v34;
-                // if ( !v34 )
-                // return this->uNumVertices = v38;
-                continue;
-            }
-            if (*(float *)v5 <= (double)a2) {
-                v6 = (a2 - *(float *)v5) / (*(float *)(v4 + 1) - *(float *)v5);
-                v7 = (unsigned __int8)v4[16] -
-                     (unsigned int)(unsigned __int8)*v4;
-                v36 = v6;
-                v31 = (*(float *)(v4 + 5) - *(float *)(v4 - 11)) * v6 +
-                      *(float *)(v4 - 11);
-                v32 = (*(float *)(v4 + 9) - *(float *)(v4 - 7)) * v6 +
-                      *(float *)(v4 - 7);
-                *(float *)&v37 = (double)v7 * v6;
-                v8 = *(float *)&v37 + 6.7553994e15;
-                v9 = (unsigned __int8)*v4;
-                *(float *)&v37 =
-                    (double)((unsigned __int8)v4[15] -
-                             (unsigned int)(unsigned __int8)*(v4 - 1)) *
-                    v36;
-                v10 = *(float *)&v37 + 6.7553994e15;
-                v11 = (unsigned __int8)*(v4 - 2);
-                v37 = HEXRAYS_LODWORD(v10) + (unsigned __int8)*(v4 - 1);
-                v39 =
-                    (double)((unsigned int)(unsigned __int8)v4[14] - v11) * v36;
-                v12 = v39 + 6.7553994e15;
-                v13 = HEXRAYS_LODWORD(v12) + (unsigned __int8)*(v4 - 2);
-                v39 = (double)((*(int *)(v4 + 13) & 0xFF) -
-                               (*(int *)(v4 - 3) & 0xFFu)) *
-                      v36;
-                v14 = v39 + 6.7553994e15;
-                v33 = (HEXRAYS_LODWORD(v14) + (*(int *)(v4 - 3) & 0xFF)) |
-                      ((v13 | ((v37 | ((HEXRAYS_LODWORD(v8) + v9) << 8)) << 8))
-                       << 8);
-                // this = v35;
-                v5 = (char *)&v30 + 4;
-            } else if (*(float *)(v4 + 1) <= (double)a2) {
-                v15 = (a2 - *(float *)v5) / (*(float *)(v4 + 1) - *(float *)v5);
-                v16 = (unsigned __int8)*v4;
-                HEXRAYS_HIDWORD(v30) = HEXRAYS_LODWORD(a2);
-                v17 = (unsigned __int8)v4[16] - v16;
-                v36 = v15;
-                v31 = (*(float *)(v4 + 5) - *(float *)(v4 - 11)) * v15 +
-                      *(float *)(v4 - 11);
-                v32 = (*(float *)(v4 + 9) - *(float *)(v4 - 7)) * v15 +
-                      *(float *)(v4 - 7);
-                v39 = (double)v17 * v15;
-                v18 = v39 + 6.7553994e15;
-                v19 = (unsigned __int8)*v4;
-                v39 = (double)((unsigned __int8)v4[15] -
-                               (unsigned int)(unsigned __int8)*(v4 - 1)) *
-                      v36;
-                v20 = v39 + 6.7553994e15;
-                v21 = (unsigned __int8)*(v4 - 2);
-                v37 = HEXRAYS_LODWORD(v20) + (unsigned __int8)*(v4 - 1);
-                v39 =
-                    (double)((unsigned int)(unsigned __int8)v4[14] - v21) * v36;
-                v22 = v39 + 6.7553994e15;
-                v23 = HEXRAYS_LODWORD(v22) + (unsigned __int8)*(v4 - 2);
-                v39 = (double)((*(int *)(v4 + 13) & 0xFF) -
-                               (*(int *)(v4 - 3) & 0xFFu)) *
-                      v36;
-                v24 = v39 + 6.7553994e15;
-                v33 =
-                    (HEXRAYS_LODWORD(v24) + (*(int *)(v4 - 3) & 0xFF)) |
-                    ((v23 | ((v37 | ((HEXRAYS_LODWORD(v18) + v19) << 8)) << 8))
-                     << 8);
-                v25 = v40;
-                *v40 = *(int *)v5;
-                v26 = (int)(v5 + 4);
-                ++v25;
-                *v25 = *(int *)v26;
-                v26 += 4;
-                ++v25;
-                ++v38;
-                v40 += 4;
-                *v25 = *(int *)v26;
-                v25[1] = *(int *)(v26 + 4);
-                v5 = (char *)&v30 + 4;
-            }
-            v27 = v40;
-            ++v38;
-            *v40 = *(int *)v5;
-            v28 = (int)(v5 + 4);
-            ++v27;
-            *v27 = *(int *)v28;
-            v28 += 4;
-            ++v27;
-            v40 += 4;
-            *v27 = *(int *)v28;
-            v27[1] = *(int *)(v28 + 4);
-            v4 += 16;
-            // --v34;
-            // if ( !v34 )
-            // return this->uNumVertices = v38;
-        }
+    bool currvert = (field_64[0] <= NearClip);
+    bool nextvert = false;
+    int ProducedVerts = 0;
+    double Tmult;
+
+    for (int i = 0; i  < uNumVertices; ++i) {  // cycle through
+       nextvert = (field_64[(i+1) * 4] <= NearClip);
+
+       if (currvert ^ nextvert) {  // XOR
+           if (nextvert) {  // adjust verts and copy out
+               Tmult = (NearClip - field_64[i * 4]) / (field_64[(i+1) * 4] - field_64[i * 4]);
+
+               // x view = nearclip
+               field_B4[ProducedVerts * 4] = NearClip;
+               // y view
+               field_B4[ProducedVerts * 4 + 1] = (field_64[(i+1) * 4 + 1] - field_64[i * 4 + 1]) * Tmult + field_64[i * 4 + 1];
+               // z view
+               field_B4[ProducedVerts * 4 + 2] = (field_64[(i+1) * 4 + 2] - field_64[i * 4 + 2]) * Tmult + field_64[i * 4 + 2];
+               // diffuse
+               field_B4[ProducedVerts * 4 + 3] = field_64[i * 4 + 3];  // (field_64[(i+1) * 4 + 3] - field_64[i * 4 + 3]) * Tmult + field_64[i * 4 + 3];
+
+           } else {  // currvert
+               Tmult = (NearClip - field_64[i * 4]) / (field_64[i * 4] - field_64[(i+1) * 4]);
+
+               // x view = nearclip
+               field_B4[ProducedVerts * 4] = NearClip;
+               // y view
+               field_B4[ProducedVerts * 4 + 1] = (field_64[i * 4 + 1] - field_64[(i + 1) * 4 + 1]) * Tmult + field_64[i * 4 + 1];
+               // z view
+               field_B4[ProducedVerts * 4 + 2] = (field_64[i * 4 + 2] - field_64[(i + 1) * 4 + 2]) * Tmult + field_64[i * 4 + 2];
+               // diffuse
+               field_B4[ProducedVerts * 4 + 3] = field_64[i * 4 + 3];  // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
+           }
+           ++ProducedVerts;
+       }
+
+       if (!nextvert) {
+           // copy out - vert doesnt need adjusting
+
+           // x view
+           field_B4[ProducedVerts * 4] = field_64[(i + 1) * 4];
+           // y view
+           field_B4[ProducedVerts * 4 + 1] = field_64[(i + 1) * 4 + 1];
+           // z view
+           field_B4[ProducedVerts * 4 + 2] = field_64[(i + 1) * 4 + 2];
+           // diffuse
+           field_B4[ProducedVerts * 4 + 3] = field_64[(i + 1) * 4 + 3];
+
+           ++ProducedVerts;
+       }
+       currvert = nextvert;
     }
-    return this->uNumVertices = v38;
+
+    return this->uNumVertices = ProducedVerts;
 }
 
 //----- (00477927) --------------------------------------------------------
-int stru6_stru1_indoor_sw_billboard::_477927(float a2) {
-    char *v2;            // edi@1
-    int v3;              // eax@1
-    char *v4;            // edx@2
-    char *v5;            // esi@3
-    double v6;           // st7@6
-    signed __int64 v7;   // ST84_8@6
-    double v8;           // ST0C_8@6
-    int v9;              // esi@6
-    double v10;          // ST44_8@6
-    int v11;             // ecx@6
-    double v12;          // ST34_8@6
-    int v13;             // ecx@6
-    double v14;          // ST14_8@6
-    double v15;          // st7@8
-    unsigned int v16;    // ecx@8
-    signed __int64 v17;  // ST64_8@8
-    double v18;          // ST24_8@8
-    int v19;             // edi@8
-    double v20;          // ST3C_8@8
-    int v21;             // ecx@8
-    double v22;          // ST2C_8@8
-    int v23;             // ST9C_4@8
-    double v24;          // ST1C_8@8
-    int *v25;            // edi@8
-    int v26;             // esi@8
-    int *v27;            // edi@10
-    int v28;             // esi@10
-    //  int result; // eax@12
-    __int64 v30;                           // [sp+A8h] [bp-30h]@8
-    float v31;                             // [sp+B0h] [bp-28h]@6
-    float v32;                             // [sp+B4h] [bp-24h]@6
-    int v33;                               // [sp+B8h] [bp-20h]@6
-    int v34;                               // [sp+BCh] [bp-1Ch]@2
-    stru6_stru1_indoor_sw_billboard *v35;  // [sp+C0h] [bp-18h]@1
-    float v36;                             // [sp+C4h] [bp-14h]@6
-    int v37;                               // [sp+C8h] [bp-10h]@6
-    int v38;                               // [sp+CCh] [bp-Ch]@1
-    float v39;                             // [sp+D0h] [bp-8h]@6
-    int *v40;                              // [sp+D4h] [bp-4h]@2
+int SpellFX_Billboard::SpellFXFarClipAdjust(float farclip) {  // far clip adjust - needs diffuse sorting properly??
+    // refactored but not tested
+    // __debugbreak();
 
-    __debugbreak();  //нужно почистить
-    v2 = (char *)&this->field_64[4 * this->uNumVertices];
-    v38 = 0;
-    *(int *)v2 = this->field_64[0];
-    v2 += 4;
-    *(int *)v2 = this->field_64[1];
-    v2 += 4;
-    *(int *)v2 = this->field_64[2];
-    *((int *)v2 + 1) = this->field_64[3];
-    v3 = this->uNumVertices;
-    v35 = this;
-    if (v3 > 0) {
-        v40 = &this->field_64[20];
-        v4 = (char *)&this->field_64[3] + 3;
-        v34 = v3;
-        while (1) {
-            v5 = v4 - 15;
-            if (*(float *)(v4 - 15) >= (double)a2 &&
-                *(float *)(v4 + 1) >= (double)a2) {
-                v4 += 16;
-                --v34;
-                if (!v34) return this->uNumVertices = v38;
-                continue;
+    if (!uNumVertices) return 0;
+
+    // copies first vert to position 4
+    field_64[4 * uNumVertices] = field_64[0];
+    field_64[4 * uNumVertices + 1] = field_64[1];
+    field_64[4 * uNumVertices + 2] = field_64[2];
+    field_64[4 * uNumVertices + 3] = field_64[3];
+
+    bool currvert = (field_64[0] >= farclip);
+    bool nextvert = false;
+    int ProducedVerts = 0;
+    double Tmult;
+
+    for (int i = 0; i < uNumVertices; ++i) {  // cycle through
+        nextvert = (field_64[(i + 1) * 4] >= farclip);
+
+        if (currvert ^ nextvert) {  // XOR
+            if (nextvert) {  // adjust verts and copy out
+                Tmult = (farclip - field_64[i * 4]) / (field_64[(i + 1) * 4] - field_64[i * 4]);
+
+                // x view = nearclip
+                field_B4[ProducedVerts * 4] = farclip;
+                // y view
+                field_B4[ProducedVerts * 4 + 1] = (field_64[(i + 1) * 4 + 1] - field_64[i * 4 + 1]) * Tmult + field_64[i * 4 + 1];
+                // z view
+                field_B4[ProducedVerts * 4 + 2] = (field_64[(i + 1) * 4 + 2] - field_64[i * 4 + 2]) * Tmult + field_64[i * 4 + 2];
+                // diffuse
+                field_B4[ProducedVerts * 4 + 3] = field_64[i * 4 + 3];  // (field_64[(i+1) * 4 + 3] - field_64[i * 4 + 3]) * Tmult + field_64[i * 4 + 3];
+            } else {  // currvert
+                Tmult = (farclip - field_64[i * 4]) / (field_64[i * 4] - field_64[(i + 1) * 4]);
+
+                // x view = nearclip
+                field_B4[ProducedVerts * 4] = farclip;
+                // y view
+                field_B4[ProducedVerts * 4 + 1] = (field_64[i * 4 + 1] - field_64[(i + 1) * 4 + 1]) * Tmult + field_64[i * 4 + 1];
+                // z view
+                field_B4[ProducedVerts * 4 + 2] = (field_64[i * 4 + 2] - field_64[(i + 1) * 4 + 2]) * Tmult + field_64[i * 4 + 2];
+                // diffuse
+                field_B4[ProducedVerts * 4 + 3] = field_64[i * 4 + 3];  // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
             }
-            if (*(float *)v5 >= (double)a2) {
-                v6 = (a2 - *(float *)v5) / (*(float *)(v4 + 1) - *(float *)v5);
-                v7 = (unsigned __int8)v4[16] -
-                     (unsigned int)(unsigned __int8)*v4;
-                v36 = v6;
-                v31 = (*(float *)(v4 + 5) - *(float *)(v4 - 11)) * v6 +
-                      *(float *)(v4 - 11);
-                v32 = (*(float *)(v4 + 9) - *(float *)(v4 - 7)) * v6 +
-                      *(float *)(v4 - 7);
-                *(float *)&v37 = (double)v7 * v6;
-                v8 = *(float *)&v37 + 6.7553994e15;
-                v9 = (unsigned __int8)*v4;
-                *(float *)&v37 =
-                    (double)((unsigned __int8)v4[15] -
-                             (unsigned int)(unsigned __int8)*(v4 - 1)) *
-                    v36;
-                v10 = *(float *)&v37 + 6.7553994e15;
-                v11 = (unsigned __int8)*(v4 - 2);
-                v37 = HEXRAYS_LODWORD(v10) + (unsigned __int8)*(v4 - 1);
-                v39 =
-                    (double)((unsigned int)(unsigned __int8)v4[14] - v11) * v36;
-                v12 = v39 + 6.7553994e15;
-                v13 = HEXRAYS_LODWORD(v12) + (unsigned __int8)*(v4 - 2);
-                v39 = (double)((*(int *)(v4 + 13) & 0xFF) -
-                               (*(int *)(v4 - 3) & 0xFFu)) *
-                      v36;
-                v14 = v39 + 6.7553994e15;
-                v33 = (HEXRAYS_LODWORD(v14) + (*(int *)(v4 - 3) & 0xFF)) |
-                      ((v13 | ((v37 | ((HEXRAYS_LODWORD(v8) + v9) << 8)) << 8))
-                       << 8);
-                // this = v35;
-                v5 = (char *)&v30 + 4;
-            } else if (*(float *)(v4 + 1) >= (double)a2) {
-                v15 = (a2 - *(float *)v5) / (*(float *)(v4 + 1) - *(float *)v5);
-                v16 = (unsigned __int8)*v4;
-                HEXRAYS_HIDWORD(v30) = HEXRAYS_LODWORD(a2);
-                v17 = (unsigned __int8)v4[16] - v16;
-                v36 = v15;
-                v31 = (*(float *)(v4 + 5) - *(float *)(v4 - 11)) * v15 +
-                      *(float *)(v4 - 11);
-                v32 = (*(float *)(v4 + 9) - *(float *)(v4 - 7)) * v15 +
-                      *(float *)(v4 - 7);
-                v39 = (double)v17 * v15;
-                v18 = v39 + 6.7553994e15;
-                v19 = (unsigned __int8)*v4;
-                v39 = (double)((unsigned __int8)v4[15] -
-                               (unsigned int)(unsigned __int8)*(v4 - 1)) *
-                      v36;
-                v20 = v39 + 6.7553994e15;
-                v21 = (unsigned __int8)*(v4 - 2);
-                v37 = HEXRAYS_LODWORD(v20) + (unsigned __int8)*(v4 - 1);
-                v39 =
-                    (double)((unsigned int)(unsigned __int8)v4[14] - v21) * v36;
-                v22 = v39 + 6.7553994e15;
-                v23 = HEXRAYS_LODWORD(v22) + (unsigned __int8)*(v4 - 2);
-                v39 = (double)((*(int *)(v4 + 13) & 0xFF) -
-                               (*(int *)(v4 - 3) & 0xFFu)) *
-                      v36;
-                v24 = v39 + 6.7553994e15;
-                v33 =
-                    (HEXRAYS_LODWORD(v24) + (*(int *)(v4 - 3) & 0xFF)) |
-                    ((v23 | ((v37 | ((HEXRAYS_LODWORD(v18) + v19) << 8)) << 8))
-                     << 8);
-                v25 = v40;
-                *v40 = *(int *)v5;
-                v26 = (int)(v5 + 4);
-                ++v25;
-                *v25 = *(int *)v26;
-                v26 += 4;
-                ++v25;
-                ++v38;
-                v40 += 4;
-                *v25 = *(int *)v26;
-                v25[1] = *(int *)(v26 + 4);
-                v5 = (char *)&v30 + 4;
-            }
-            v27 = v40;
-            ++v38;
-            *v40 = *(int *)v5;
-            v28 = (int)(v5 + 4);
-            ++v27;
-            *v27 = *(int *)v28;
-            v28 += 4;
-            ++v27;
-            v40 += 4;
-            *v27 = *(int *)v28;
-            v27[1] = *(int *)(v28 + 4);
-            v4 += 16;
-            --v34;
-            if (!v34) return this->uNumVertices = v38;
+            ++ProducedVerts;
         }
+
+        if (!nextvert) {
+            // copy out - vert doesnt need adjusting
+
+            // x view
+            field_B4[ProducedVerts * 4] = field_64[(i + 1) * 4];
+            // y view
+            field_B4[ProducedVerts * 4 + 1] = field_64[(i + 1) * 4 + 1];
+            // z view
+            field_B4[ProducedVerts * 4 + 2] = field_64[(i + 1) * 4 + 2];
+            // diffuse
+            field_B4[ProducedVerts * 4 + 3] = field_64[(i + 1) * 4 + 3];
+
+            ++ProducedVerts;
+        }
+        currvert = nextvert;
     }
-    return this->uNumVertices = v38;
+
+    return this->uNumVertices = ProducedVerts;
 }
 
 //----- (00477C61) --------------------------------------------------------
-int stru6_stru1_indoor_sw_billboard::sub_477C61() {  // this calcs feild 64
-    // stru6_stru1_indoor_sw_billboard *v1; // ebx@1
-    int v2;      // ecx@2
-    int v3;      // eax@3
-    double v4;   // st7@4
-    double v5;   // st7@5
-    double v6;   // st6@5
-    double v7;   // st5@6
-    float v8;    // ST30_4@8
-    float v9;    // ST24_4@8
-    double v10;  // st7@8
-    double v11;  // st6@8
-    double v12;  // st5@8
-    float v13;   // ST24_4@13
-    int v14;     // esi@13
-    char *v15;   // esi@15
-                 // signed int v16; // eax@16
-                 //  __int16 v17; // fps@16
-                 //  unsigned __int8 v18; // c2@16
-                 //  unsigned __int8 v19; // c3@16
-    double v20;      // st6@16
-    float v21;       // ST18_4@17
-    float v22;       // ST2C_4@17
-    float v23;       // ST34_4@17
-    float v24;       // ST24_4@17
-    double v25;      // st7@17
-    double v26;      // st6@17
-    float v27;       // ST34_4@18
-    float v28;       // ST30_4@18
-    int v29;         // eax@19
-    signed int v31;  // [sp+8h] [bp-28h]@15
-    float v32;       // [sp+Ch] [bp-24h]@16
-    float v33;       // [sp+14h] [bp-1Ch]@16
-    float v34;       // [sp+18h] [bp-18h]@16
-    float v35;       // [sp+1Ch] [bp-14h]@17
-    float v36;       // [sp+20h] [bp-10h]@4
-    float v37;       // [sp+24h] [bp-Ch]@4
-    float v38;       // [sp+24h] [bp-Ch]@16
-    float v39;       // [sp+28h] [bp-8h]@9
-    float v40;       // [sp+28h] [bp-8h]@16
-    float v41;       // [sp+2Ch] [bp-4h]@6
-    float v42;       // [sp+2Ch] [bp-4h]@9
+int SpellFX_Billboard::SpellFXViewTransform() {  // view transform
+    int ViewPosX;
+    int ViewPosY;
+    int ViewPosZ;
 
-    // __debugbreak();//нужно почистить, срабатывает при применении  закла
-    // Точечный взрыв
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        if (this->uNumVertices > 0) {
-            v3 = (int)&this->field_14[1];
-            // do
-            for (v2 = 0; v2 < this->uNumVertices; ++v2) {
-                v4 = *(float *)(v3 - 4);
-                HEXRAYS_LODWORD(v37) = *(int *)v3;
-                HEXRAYS_LODWORD(v36) = *(int *)(v3 + 4);
-                if (pIndoorCameraD3D->sRotationX) {
-                    v5 = v4 - (double)pIndoorCameraD3D->vPartyPos.x;
-                    v6 = v37 - (double)pIndoorCameraD3D->vPartyPos.y;
-                    // if ( render->pRenderD3D )
-                    //{
-                    v41 = pIndoorCameraD3D->fRotationYSine * v6 +
-                          pIndoorCameraD3D->fRotationYCosine * v5;
-                    v7 = pIndoorCameraD3D->fRotationYSine * v5 -
-                         pIndoorCameraD3D->fRotationYCosine * v6;
-                    /*}
-                    else
-                    {
-                    v41 = pBLVRenderParams->fCosineY * v5 -
-                    pBLVRenderParams->fSineY * v6; v7 = pBLVRenderParams->fSineY
-                    * v5 + pBLVRenderParams->fCosineY * v6;
-                    }*/
-                    v8 = v7;
-                    v9 = v36 - (double)pIndoorCameraD3D->vPartyPos.z;
-                    v10 = pIndoorCameraD3D->fRotationXCosine * v41 -
-                          pIndoorCameraD3D->fRotationXSine * v9;
-                    v11 = v8;
-                    v12 = pIndoorCameraD3D->fRotationXCosine * v9 +
-                          pIndoorCameraD3D->fRotationXSine * v41;
-                } else {
-                    v42 = v4 - (double)pIndoorCameraD3D->vPartyPos.x;
-                    v39 = v37 - (double)pIndoorCameraD3D->vPartyPos.y;
-                    // if ( render->pRenderD3D )
-                    //{
-                    v10 = pIndoorCameraD3D->fRotationYSine * v39 +
-                          pIndoorCameraD3D->fRotationYCosine * v42;
-                    v11 = pIndoorCameraD3D->fRotationYSine * v42 -
-                          pIndoorCameraD3D->fRotationYCosine * v39;
-                    /*}
-                    else
-                    {
-                    v10 = pBLVRenderParams->fCosineY * v42 -
-                    pBLVRenderParams->fSineY * v39; v11 =
-                    pBLVRenderParams->fSineY * v42 + pBLVRenderParams->fCosineY
-                    * v39;
-                    }*/
-                    v12 = v36 - (double)pIndoorCameraD3D->vPartyPos.z;
-                }
-                v13 = v12;
-                // ++v2;
-                *(int *)(v3 + 84) = HEXRAYS_LODWORD(v13);
-                v14 = *(int *)(v3 + 8);
-                *(float *)(v3 + 76) = v10;
-                *(int *)(v3 + 88) = v14;
-                *(float *)(v3 + 80) = v11;
-                v3 += 16;
-            }
-            // while ( v2 < this->uNumVertices );
+    if (this->uNumVertices > 0) {
+        for (int v2 = 0; v2 < this->uNumVertices; ++v2) {
+            // view tranfrom
+            pIndoorCameraD3D->ViewTransform(field_14[v2].x, field_14[v2].y, field_14[v2].z, &ViewPosX, &ViewPosY, &ViewPosZ);
+
+            // load into field 64
+            field_64[v2 * 4] = ViewPosX;
+            field_64[(v2 * 4) + 1] = ViewPosY;
+            field_64[(v2 * 4) + 2] = ViewPosZ;
+            field_64[(v2 * 4) + 3] = field_14[v2].diffuse;
         }
-    } else {
-        v15 = (char *)&this->field_14[1];
-        // do
-        for (v31 = 3; v31; --v31) {
-            v40 = (double)stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX) *
-                0.0000152587890625;
-            v32 = (double)stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX) *
-                0.0000152587890625;
-            v34 = (double)stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY) *
-                0.0000152587890625;
-            v33 = (double)stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY) *
-                0.0000152587890625;
-            // v16 = stru_5C6E00->Sin(pODMRenderParams->rotation_y);
-            HEXRAYS_LODWORD(v38) = *(int *)v15;
-            // UNDEF(v17);
-            v20 = *((float *)v15 - 1) - (double)pIndoorCameraD3D->vPartyPos.x;
-            // if ( v19 | v18 )
-            if (pIndoorCameraD3D->vPartyPos.x == 0) {
-                v27 = v20;
-                HEXRAYS_LODWORD(v35) = *((int *)v15 + 1);
-                v28 = v38 - (double)pIndoorCameraD3D->vPartyPos.y;
-                v25 = v33 * v28 + v34 * v27;
-                v26 = v34 * v28 - v33 * v27;
-            } else {
-                v21 = v20;
-                v22 = v38 - (double)pIndoorCameraD3D->vPartyPos.y;
-                v23 = v33 * v22 + v34 * v21;
-                v24 =
-                    *((float *)v15 + 1) - (double)pIndoorCameraD3D->vPartyPos.z;
-                v25 = v32 * v24 + v40 * v23;
-                v26 = v34 * v22 - v33 * v21;
-                v35 = v40 * v24 - v32 * v23;
-            }
-            *((int *)v15 + 21) = HEXRAYS_LODWORD(v35);
-            v29 = *((int *)v15 + 2);
-            *((float *)v15 + 19) = v25;
-            *((int *)v15 + 22) = v29;
-            *((float *)v15 + 20) = v26;
-            v15 += 16;
-            // --v31;
-        }
-        // while ( v31 );
     }
+
     this->uNumVertices = 3;
     return 1;
 }
 
 //----- (00477F63) --------------------------------------------------------
-bool stru6_stru1_indoor_sw_billboard::sub_477F63() {
-    signed int v1;  // ebx@1
-    double v3;      // st7@2
-    // int v4; // edx@4
-    char *v5;       // ecx@5
-    int v6;         // edi@5
-    float v7;       // ST08_4@13
-    signed int v9;  // [sp+Ch] [bp-8h]@1
-    float v10;      // [sp+10h] [bp-4h]@2
+bool SpellFX_Billboard::SpellFXViewClip() {
+    bool NeedNearClip = 0;
+    bool NeedFarClip = 0;
+    double NearClip = pIndoorCameraD3D->GetNearClip();
+    double FarClip = pIndoorCameraD3D->GetFarClip();
 
-    // __debugbreak();// почистить
-    v1 = 0;
-    v9 = 0;
-    /*if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-    {
-            v10 = 16192.0;
-            v3 = (double)pBLVRenderParams->fov_rad_fixpoint * 0.000015258789;
-    }
-    else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-    {
-            v10 = (double)pODMRenderParams->shading_dist_mist;
-            v3 = 8.0;
-    }*/
-    v3 = pIndoorCameraD3D->GetNearClip();
-    v10 = pIndoorCameraD3D->GetFarClip();
-
-    if (this->uNumVertices <= 0) {
+    if (this->uNumVertices <= 0) {  //  waht??
         memcpy(&this->field_14[40], &this->field_14[20],
                16 * this->uNumVertices);
         return this->uNumVertices != 0;
     }
-    v5 = (char *)&this->field_14[20];  // ptr to field 64
-    for (v6 = 0; v6 < this->uNumVertices; v6++) {
-        if (v3 >= *(float *)v5 || *(float *)v5 >= (double)v10) {
-            if (v3 < *(float *)v5)
-                v9 = 1;
+
+    for (int v6 = 0; v6 < this->uNumVertices; v6++) {
+        if (NearClip >= field_64[v6 * 4] || field_64[v6 * 4] >= FarClip) {
+            if (NearClip < field_64[v6 * 4])
+                NeedFarClip = 1;
             else
-                v1 = 1;
+                NeedNearClip = 1;
         }
-        v5 += 16;
     }
-    if (!v1) {
-        if (v9) {
-            this->_477927(v10);
+
+    if (!NeedNearClip) {
+        if (NeedFarClip) {
+            // far clip
+            this->SpellFXFarClipAdjust(FarClip);
             return this->uNumVertices != 0;
         }
-        memcpy(&this->field_14[40], &this->field_14[20],
-               16 * this->uNumVertices);
+
+        // no clipping required- copy out
+        for (int i = 0; i < uNumVertices; ++i) {
+            field_B4[i * 4] = field_64[i * 4];
+            field_B4[i * 4 + 1] = field_64[i * 4 + 1];
+            field_B4[i * 4 + 2] = field_64[i * 4 + 2];
+            field_B4[i * 4 + 3] = field_64[i * 4 + 3];
+        }
         return this->uNumVertices != 0;
     }
-    v7 = v3;
-    _4775ED(v7);
+
+    // near clip
+    SpellFXNearClipAdjust(NearClip);
     return this->uNumVertices != 0;
 }
 
 //----- (0047802A) --------------------------------------------------------
-int stru6_stru1_indoor_sw_billboard::sub_47802A() {  // covert to billboard coords??
-    double v6;       // st7@4
-    signed int v16;  // [sp+38h] [bp-Ch]@1
-    int a6;          // [sp+3Ch] [bp-8h]@5
-    int a5;          // [sp+40h] [bp-4h]@5
+int SpellFX_Billboard::SpellFXProject() {  // project to billboard coords
+    int Result = 0;
+    int Xproj, Yproj;
 
-    //  __debugbreak(); //необходимо проверить this->field_B4[i*4+16]
-    v16 = 0;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        for (int i = 0; i < this->uNumVertices; i++) {
-            v6 = ((double)pBLVRenderParams->bsp_fov_rad / 65536.0) /
-                 this->field_B4[i * 4];
-            // if ( render->pRenderD3D )
-            {
-                pIndoorCameraD3D->Project(
-                    round_to_int(this->field_B4[i * 4]),
-                    round_to_int(this->field_B4[i * 4 + 1]),
-                    round_to_int(this->field_B4[i * 4 + 2]), &a5, &a6);
-                this->field_B4[i * 4 + 16] = (double)a5;
-                this->field_B4[i * 4 + 17] = (double)a6;
-                this->field_B4[i * 4 + 18] =
-                    round_to_int(this->field_B4[i * 4]);
-            }
-            /*else
-            {
-            this->field_B4[i*4+16] = (double)pBLVRenderParams->uViewportCenterX
-            - v6 * this->field_B4[i*4+1]; this->field_B4[i*4+17] =
-            (double)pBLVRenderParams->uViewportCenterY - v6 *
-            this->field_B4[i*4+2]; this->field_B4[i*4+18] = this->field_B4[i*4];
-            }*/
-            this->field_B4[i * 4 + 19] = this->field_B4[i * 4 + 3];
-            if ((double)(signed int)pViewport->uViewportTL_X <=
-                    this->field_B4[i * 4 + 16] &&
-                (double)(signed int)pViewport->uViewportBR_X >
-                    this->field_B4[i * 4 + 16] &&
-                (double)(signed int)pViewport->uViewportTL_Y <=
-                    this->field_B4[i * 4 + 17] &&
-                (double)(signed int)pViewport->uViewportBR_Y >
-                    this->field_B4[i * 4 + 17])
-                v16 = 1;
-        }
-    } else {
-        for (int i = 0; i < this->uNumVertices; i++) {
-            this->field_B4[i * 4 + 20] = (double)pViewport->uScreenCenterX -  // 104 x
-                                         (double)pODMRenderParams->int_fov_rad /
-                                             this->field_B4[i * 4] *
-                                             this->field_B4[i * 4 + 1];
-            this->field_B4[i * 4 + 21] = (double)pViewport->uScreenCenterY -  // 104 y
-                                         (double)pODMRenderParams->int_fov_rad /
-                                             this->field_B4[i * 4] *
-                                             this->field_B4[i * 4 + 2];
-            *((int *)&this->field_B4[i * 4 + 22]) = (int)this->field_B4[i * 4];  // 104 z
-            *((int *)&this->field_B4[i * 4 + 23]) = this->field_B4[i * 4 + 3];  // 104 diffuse
+    for (int i = 0; i < this->uNumVertices; i++) {
+        pIndoorCameraD3D->Project(
+            round_to_int(this->field_B4[i * 4]),
+            round_to_int(this->field_B4[i * 4 + 1]),
+            round_to_int(this->field_B4[i * 4 + 2]), &Yproj, &Xproj);
 
-            if ((double)(signed int)pViewport->uViewportTL_X <=
-                    this->field_B4[i * 4 + 20] &&
+        field_104[i].x = (double)Yproj;
+        field_104[i].y = (double)Xproj;
+        field_104[i].z = field_B4[i * 4];
+        field_104[i].diffuse = field_B4[i * 4 + 3];
+
+        if (true)
+        /*(double)(signed int)pViewport->uViewportTL_X <=
+                field_104[i].x &&
                 (double)(signed int)pViewport->uViewportBR_X >
-                    this->field_B4[i * 4 + 20] &&
+                field_104[i].x &&
                 (double)(signed int)pViewport->uViewportTL_Y <=
-                    this->field_B4[i * 4 + 21] &&
+                field_104[i].y &&
                 (double)(signed int)pViewport->uViewportBR_Y >
-                    this->field_B4[i * 4 + 21])
-                v16 = 1;
+                field_104[i].y*/
+                Result = 1;
         }
-    }
-    return v16;
+
+    return Result;
 }

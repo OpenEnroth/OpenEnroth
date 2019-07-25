@@ -171,7 +171,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
             bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
 
             if (visible) {
-                if (abs(view_x) >= abs(view_y)) {
+                // if (abs(view_x) >= abs(view_y)) {
                     int projected_x = 0;
                     int projected_y = 0;
                     pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
@@ -209,7 +209,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
                     assert(::uNumBillboardsToDraw < 500);
                     ++::uNumBillboardsToDraw;
                     ++uNumSpritesDrawnThisFrame;
-                }
+               // }
             }
         }
     }
@@ -352,14 +352,10 @@ double fix2double(int fix) {
     return (((double)(fix & 0xFFFF) / (double)0xFFFF) + (double)(fix >> 16));
 }
 
-void RenderBase::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,
+void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
                                                   unsigned int uDiffuse,
                                                   int angle) {
-    if (a2->screen_space_z == 0) {
-        return;
-    }
-
     unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
@@ -375,7 +371,7 @@ void RenderBase::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,
     float screenspace_projection_factor = a2->screenspace_projection_factor_x;
 
     float rhw = 1.f / a2->screen_space_z;
-    float z = 1.f - 1.f / (a2->screen_space_y * 0.061758894f);
+    float z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
 
     float acos = (float)cos(angle);
     float asin = (float)sin(angle);
@@ -424,84 +420,6 @@ void RenderBase::MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,
         float v40 = -12;
         billboard->pQuads[3].pos.x = (acos * v39 - asin * v40) * screenspace_projection_factor + (float)a2->screen_space_x;
         billboard->pQuads[3].pos.y = (acos * v40 + asin * v39 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
-        billboard->pQuads[3].pos.z = z;
-        billboard->pQuads[3].specular = 0;
-        billboard->pQuads[3].diffuse = uDiffuse;
-        billboard->pQuads[3].rhw = rhw;
-        billboard->pQuads[3].texcoord.x = 1.0;
-        billboard->pQuads[3].texcoord.y = 0.0;
-    }
-}
-
-void RenderBase::MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
-                                                  Texture *texture,
-                                                  unsigned int uDiffuse,
-                                                  int angle) {
-    unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
-    RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
-
-    billboard->opacity = RenderBillboardD3D::Opaque_1;
-    billboard->field_90 = a2->field_44;
-    billboard->screen_space_z = a2->screen_space_z;
-    billboard->object_pid = a2->object_pid;
-    billboard->sParentBillboardID = a2->sParentBillboardID;
-    billboard->texture = texture;
-    billboard->z_order = a2->screen_space_z;
-    billboard->uNumVertices = 4;
-
-    float screenspace_projection_factor = a2->screenspace_projection_factor_x;
-    if (a2->screen_space_z < 17) a2->screen_space_z = 17;
-
-    float rhw = 1.f / a2->screen_space_z;
-    float z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
-
-    float acos = (float)cos(angle);
-    float asin = (float)sin(angle);
-
-    {
-        float v16 = -12.f;
-        float v17 = -12.f;
-        billboard->pQuads[0].pos.x = (acos * v16 - asin * v17) * screenspace_projection_factor + (float)a2->screen_space_x;
-        billboard->pQuads[0].pos.y = (acos * v17 + asin * v16 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
-        billboard->pQuads[0].pos.z = z;
-        billboard->pQuads[0].specular = 0;
-        billboard->pQuads[0].diffuse = uDiffuse;
-        billboard->pQuads[0].rhw = rhw;
-        billboard->pQuads[0].texcoord.x = 0.0;
-        billboard->pQuads[0].texcoord.y = 0.0;
-    }
-
-    {
-        float v26 = -12.f;
-        float v27 = 12.f;
-        billboard->pQuads[1].pos.x = (acos * v26 - asin * v27) * screenspace_projection_factor + (float)a2->screen_space_x;
-        billboard->pQuads[1].pos.y = (acos * v27 + asin * v26 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
-        billboard->pQuads[1].pos.z = z;
-        billboard->pQuads[1].specular = 0;
-        billboard->pQuads[1].diffuse = uDiffuse;
-        billboard->pQuads[1].rhw = rhw;
-        billboard->pQuads[1].texcoord.x = 0.0;
-        billboard->pQuads[1].texcoord.y = 1.0;
-    }
-
-    {
-        float v33 = 12.f;
-        float v34 = 12.f;
-        billboard->pQuads[2].pos.x = (acos * v33 - asin * v34) * screenspace_projection_factor + (float)a2->screen_space_x;
-        billboard->pQuads[2].pos.y = (acos * v34 + asin * v33 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
-        billboard->pQuads[2].pos.z = z;
-        billboard->pQuads[2].diffuse = uDiffuse;
-        billboard->pQuads[2].specular = 0;
-        billboard->pQuads[2].rhw = rhw;
-        billboard->pQuads[2].texcoord.x = 1.0;
-        billboard->pQuads[2].texcoord.y = 1.0;
-    }
-
-    {
-        float v40 = 12.f;
-        float v41 = -12.f;
-        billboard->pQuads[3].pos.x = (acos * v40 - asin * v41) * screenspace_projection_factor + (float)a2->screen_space_x;
-        billboard->pQuads[3].pos.y = (acos * v41 + asin * v40 - 12.f) * screenspace_projection_factor + (float)a2->screen_space_y;
         billboard->pQuads[3].pos.z = z;
         billboard->pQuads[3].specular = 0;
         billboard->pQuads[3].diffuse = uDiffuse;

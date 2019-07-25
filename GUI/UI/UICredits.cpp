@@ -37,20 +37,7 @@ GUICredits::GUICredits() :
         Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu),
         text, cred_texture);
 
-
-    uint32_t *pix = (uint32_t*)cred_texture->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-    unsigned int num_pixels = cred_texture->GetWidth() * cred_texture->GetHeight();
-    uint32_t *dst = (uint32_t*)cred_texture->GetPixels(IMAGE_FORMAT_R8G8B8A8);
-
-     // real dodgy conversion to update other pixels
-        for (unsigned int i = 0; i < num_pixels; ++i) {
-            uint32_t p = pix[i];
-            dst[i] = ((p & 0xFF000000) | (p & 0x000000FF) << 16 | (p & 0x0000FF00) | (p & 0x00FF0000) >> 16);
-        }
     render->Update_Texture(cred_texture);
-
-
-
     free(text);
 
     move_Y = 0;

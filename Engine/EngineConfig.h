@@ -91,7 +91,7 @@ class EngineConfig {
     int flags1 = GAME_FLAGS_1_40 | GAME_FLAGS_1_800;
 
     // GAME_FLAGS_2_*
-    int flags2 = GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS | GAME_FLAGS_2_DRAW_BLOODSPLATS;
+    int flags2 = GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS | GAME_FLAGS_2_DRAW_BLOODSPLATS | GAME_FLAGS_2_SATURATE_LIGHTMAPS;
 
     int turn_speed = 0;             // discrete turn speed, 0 for smooth
     float turn_speed_smooth = 1.0f;
@@ -103,8 +103,8 @@ class EngineConfig {
     int gamma = 4;
     int max_flight_height = 4000;
 
-    bool no_intro = true;
-    bool no_logo = true;
+    bool no_intro = false;
+    bool no_logo = false;
 
     bool no_sound = true;
     bool no_video = false;
@@ -117,9 +117,9 @@ class EngineConfig {
     bool seasons_change = true;             // change sprites and tiles according to season
     bool allow_lightmaps = true;
     bool allow_snow = false;
-    bool extended_draw_distance = false;    // 2.5x draw distance
+    bool extended_draw_distance = true;    // 2.5x draw distance
     bool show_fps = true;
-    bool show_picked_face = true;           // red flash face pointed by mouse
+    bool show_picked_face = false;           // red flash face pointed by mouse
     bool debug_all_magic = true;            // toggle all spellbook
     bool debug_wizard_eye = true;           // wizard eye always on
     bool debug_portal_outlines = false;     // draw portal frames

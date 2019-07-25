@@ -13,11 +13,7 @@ class RenderBase : public IRender {
 
     virtual void TransformBillboardsAndSetPalettesODM();
     virtual void DrawSpriteObjects_ODM();
-    virtual void MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,
-                                                  Texture *texture,
-                                                  unsigned int uDiffuse,
-                                                  int angle);
-    virtual void MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
+    virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
                                                   unsigned int uDiffuse,
                                                   int angle);

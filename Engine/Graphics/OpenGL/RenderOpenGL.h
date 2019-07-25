@@ -47,8 +47,7 @@ class RenderOpenGL : public RenderBase {
     virtual void BltBackToFontFast(int a2, int a3, Rect *pSrcRect);
     virtual void BeginSceneD3D();
 
-    virtual unsigned int GetActorTintColor(float a2, int tint, int a4, int a5,
-                                           RenderBillboard *a6);
+    virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard);
 
     virtual void DrawPolygon(struct Polygon *a3);
     virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
@@ -60,7 +59,7 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
                                       RenderBillboard *);
-    virtual void _4A4CC9_AddSomeBillboard(struct stru6_stru1_indoor_sw_billboard *a1, int diffuse);
+    virtual void _4A4CC9_AddSomeBillboard(struct SpellFX_Billboard *a1, int diffuse);
     virtual void DrawBillboardList_BLV();
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -181,7 +180,7 @@ class RenderOpenGL : public RenderBase {
 
     int clip_x, clip_y;
     int clip_z, clip_w;
-    uint32_t *render_target_rgb;  // now 32 - draw to in format R8G8B8A8 - endian swivel means ABGR
+    uint32_t *render_target_rgb;  // now 32 - draw to in format A8R8G8B8 - endian swivel means BGRA
 };
 
 

@@ -42,13 +42,13 @@ struct ViewingParams {
         field_4C = 0;
     }
 
-    void CenterOnParty2();
+    void CenterOnPartyZoomIn();
     void InitGrayPalette();
-    void _443219();
-    void _443225();
-    void _443231();
-    void _44323D();
-    void CenterOnParty();
+    void MapViewUp();
+    void MapViewLeft();
+    void MapViewDown();
+    void MapViewRight();
+    void CenterOnPartyZoomOut();
     void AdjustPosition();
     void _443365();
 

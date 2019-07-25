@@ -56,7 +56,7 @@ bool LightmapBuilder::ApplyLights_OutdoorFace(ODMFace *pFace) {
     Lights.uCurrentAmbientLightLevel = v3 << 16;
     for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         if (pSlot >= 20) break;
-        ApplyLight_ODM((StationaryLight *)pMobileLightsStack[i].pLights, pFace,
+        ApplyLight_ODM((StationaryLight *)&pMobileLightsStack->pLights[i], pFace,
                        (unsigned int *)&pSlot, true);
     }
     for (uint i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
@@ -64,6 +64,7 @@ bool LightmapBuilder::ApplyLights_OutdoorFace(ODMFace *pFace) {
         ApplyLight_ODM(&pStationaryLightsStack->pLights[i], pFace,
                        (unsigned int *)&pSlot, false);
     }
+
     result = pSlot;
     Lights.uNumLightsApplied = pSlot;
     return true;
@@ -82,7 +83,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
                       //  char v20; // c2@11
                       //  signed int v52; // ecx@17
     char v57;         // dl@18
-    String v58;  // [sp-18h] [bp-38h]@10
+    // String v58;  // [sp-18h] [bp-38h]@10
                       //  double v61; // [sp+Ch] [bp-14h]@11
     float minz;       // [sp+14h] [bp-Ch]@11
     float tX_0;
@@ -90,7 +91,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
     float tY_0;
     float tY_1;  // [sp+1Ch] [bp-4h]@5
 
-    //  x0,y0      x1,y1
+    //  x0,y0      x1,y1 // this is actuall ccw??
     //  .____________.
     //  |            |
     //  |            |
@@ -106,6 +107,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
         tY_0 = TerrainVertices[1].vWorldPosition.y;
         tY_1 = TerrainVertices[0].vWorldPosition.y;
     } else if (uStripType == 3) {
+        // __debugbreak();
         if ((unsigned char)X) {
             tX_0 = TerrainVertices[0].vWorldPosition.x;
             tX_1 = TerrainVertices[2].vWorldPosition.x;
@@ -207,6 +209,8 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
                        pLight->vPosition.y * pFace->pFacePlane.vNormal.y +
                        pLight->vPosition.z * pFace->pFacePlane.vNormal.z +
                        pFace->pFacePlane.dist);
+        v10 = v10 / 65536;
+
         if (((bLightBackfaces) || v10 >= 0.0f) &&
             fabsf(v10) <= pLight->uRadius) {
             Lights._blv_lights_radii[*pSlot] = pLight->uRadius;
@@ -242,9 +246,10 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
                         0.33000001;
                 }
             }
+
+            ++*pSlot;
+            return true;
         }
-        ++*pSlot;
-        return true;
     } else {
         return false;
     }
@@ -291,26 +296,28 @@ bool LightmapBuilder::ApplyLights_IndoorFace(unsigned int uFaceID) {
 }
 
 //----- (0045C911) --------------------------------------------------------
-bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *a2,
+bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *pFace,
                                      unsigned int *pSlot, bool bLightBackfaces,
-                                     char *a5) {
+                                     char *LightType) {
     // For indoor light (II)
-    double v13;  // st7@8
+    double Distance;  // st7@8
 
     if (!pLight->uRadius)  // 800
         return false;
 
-    if (pLight->vPosition.x > a2->pBounding.x1 - pLight->uRadius &&
-        pLight->vPosition.x < a2->pBounding.x2 + pLight->uRadius &&
-        pLight->vPosition.y > a2->pBounding.y1 - pLight->uRadius &&
-        pLight->vPosition.y < a2->pBounding.y2 + pLight->uRadius &&
-        pLight->vPosition.z > a2->pBounding.z1 - pLight->uRadius &&
-        pLight->vPosition.z < a2->pBounding.z2 + pLight->uRadius) {
-        v13 = (double)pLight->vPosition.z * a2->pFacePlane.vNormal.z +
-              (double)pLight->vPosition.y * a2->pFacePlane.vNormal.y +
-              (double)pLight->vPosition.x * a2->pFacePlane.vNormal.x +
-              a2->pFacePlane.dist;
-        if ((bLightBackfaces || v13 >= 0.0f) && fabsf(v13) <= pLight->uRadius) {
+    if (pLight->vPosition.x > pFace->pBounding.x1 - pLight->uRadius &&
+        pLight->vPosition.x < pFace->pBounding.x2 + pLight->uRadius &&
+        pLight->vPosition.y > pFace->pBounding.y1 - pLight->uRadius &&
+        pLight->vPosition.y < pFace->pBounding.y2 + pLight->uRadius &&
+        pLight->vPosition.z > pFace->pBounding.z1 - pLight->uRadius &&
+        pLight->vPosition.z < pFace->pBounding.z2 + pLight->uRadius) {
+        Distance = (double)pLight->vPosition.z * pFace->pFacePlane.vNormal.z +
+              (double)pLight->vPosition.y * pFace->pFacePlane.vNormal.y +
+              (double)pLight->vPosition.x * pFace->pFacePlane.vNormal.x +
+              pFace->pFacePlane.dist;
+
+
+        if ((bLightBackfaces || Distance >= 0.0f) && fabsf(Distance) <= pLight->uRadius) {
             unsigned int slot = *pSlot;
 
             Lights._blv_lights_radii[slot] = pLight->uRadius;
@@ -322,7 +329,7 @@ bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *a2,
             Lights._blv_lights_gs[slot] = (double)pLight->uLightColorG / 255.0f;
             Lights._blv_lights_bs[slot] = (double)pLight->uLightColorB / 255.0f;
             Lights._blv_lights_light_dot_faces[slot] =
-                abs((int)floorf(v13 + 0.5f));
+                abs((int)floorf(Distance + 0.5f));
             Lights._blv_lights_types[slot] = pLight->uLightType;
 
             *pSlot += 1;
@@ -457,76 +464,24 @@ int LightmapBuilder::_45C4B9(int a2, RenderVertexSoft *a3,
 // ----- (0045D036) --------------------------------------------------------
 bool LightmapBuilder::StackLights_TerrainFace(Vec3_float_ *pNormal,
                                               float *Light_tile_dist,
-                                              RenderVertexSoft *a3,
+                                              RenderVertexSoft *VertList,
                                               unsigned int uStripType,
                                               bool bLightBackfaces) {
-    /*int v6; // esi@1
-    //LightmapBuilder *v7; // edi@1
-    MobileLight *v8; // ebx@2
-    int v9; // esi@5
-    StationaryLight *v10; // ebx@6
-    //bool result; // eax@9
-    unsigned int a7; // [sp+Ch] [bp-4h]@1
-
-    v6 = 0;
-    //v7 = this;
-    a7 = 0;
-    Lights.uCurrentAmbientLightLevel =
-    pOutdoor->field_CBC_terrain_triangles_shade_type; if (
-    pMobileLightsStack->uNumLightsActive > 0 )
-    {
-      v8 = pMobileLightsStack->pLights;
-      do
-      {
-        if ( (signed int)a7 >= 20 )
-          break;
-        StackLight_TerrainFace((StationaryLight *)v8, pNormal, a3, a1,
-    uStripType, bLightBackfaces, &a7);
-        ++v6;
-        ++v8;
-      }
-      while ( v6 < pMobileLightsStack->uNumLightsActive );
-    }
-    v9 = 0;
-    if ( pStationaryLightsStack->uNumLightsActive > 0 )
-    {
-      v10 = pStationaryLightsStack->pLights;
-      do
-      {
-        if ( (signed int)a7 >= 20 )
-          break;
-        StackLight_TerrainFace(v10, pNormal, a3, a1, uStripType,
-    bLightBackfaces, &a7);
-        ++v9;
-        ++v10;
-      }
-      while ( v9 < pStationaryLightsStack->uNumLightsActive );
-    }
-
-    Lights.uNumLightsApplied = a7;
-    return true;*/
-    // bool __stdcall sub_45D036(struct Vec3<float> *pNormal, int a2, struct
-    // RenderVertex *a3, int a4, signed int X)
-    // {
-    //  float v6; // ebx@2
-
     // For outdoor terrain light(I)
-    unsigned int num_lights;  // [sp+Ch] [bp-4h]@1
-    int i;
-
-    num_lights = 0;
+    unsigned int num_lights = 0;  // [sp+Ch] [bp-4h]@1
     Lights.uCurrentAmbientLightLevel = pOutdoor->max_terrain_dimming_level;
-    for (i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
+
+    for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         if (num_lights >= 20) break;
         StackLight_TerrainFace(
             (StationaryLight *)&pMobileLightsStack->pLights[i], pNormal,
-            Light_tile_dist, a3, uStripType, bLightBackfaces, &num_lights);
+            Light_tile_dist, VertList, uStripType, bLightBackfaces, &num_lights);
     }
 
-    for (i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
+    for (int i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
         if (num_lights >= 20) break;
         StackLight_TerrainFace(&pStationaryLightsStack->pLights[i], pNormal,
-                               Light_tile_dist, a3, uStripType, bLightBackfaces,
+                               Light_tile_dist, VertList, uStripType, bLightBackfaces,
                                &num_lights);
     }
 
@@ -536,10 +491,12 @@ bool LightmapBuilder::StackLights_TerrainFace(Vec3_float_ *pNormal,
 
 // ///////////////////////TOGETHER///////////////////////////////////////////////////////
 // ----- (0045BC07) --------------------------------------------------------
-bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3,
-                                  unsigned int uNumVertices,
-                                  RenderVertexSoft *VertexRenderList,
-                                  IndoorCameraD3D_Vec4 *a6, char uClipFlag) {
+bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *FacePlane, unsigned int uNumVertices,
+                                  RenderVertexSoft *FaceVertexList, IndoorCameraD3D_Vec4 *a6, char uClipFlag) {
+    // a6 - portal frustum ??
+
+    // lightmap_builder->ApplyLights(&Lights, &faceplane, uNumVerticesa, VertsTransformed, pVertices, 0);
+
     // For outdoor terrain and indoor light (III)(III)
     Vec3_int_ pos;         // [sp+2Ch] [bp-40h]@21
     RenderVertexSoft *a9;  // [sp+68h] [bp-4h]@8
@@ -548,25 +505,25 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3,
 
     static RenderVertexSoft static_69B140[64];
 
-    a9 = VertexRenderList;
+    a9 = FaceVertexList;
     if (a6) {
         for (uint i = 0; i < uNumVertices; ++i)
-            memcpy(&static_69B140[i], VertexRenderList + i,
+            memcpy(&static_69B140[i], FaceVertexList + i,
                    sizeof(RenderVertexSoft));
 
-        if (pIndoorCameraD3D->_437376(a3, static_69B140, &uNumVertices) == 1) {
+        if (pIndoorCameraD3D->_437376(FacePlane, static_69B140, &uNumVertices) == 1) {
             if (!uNumVertices) return false;
             a9 = static_69B140;
         }
     }
 
     static stru314 static_69B110;
-    static_69B110.Normal.x = a3->face_plane.vNormal.x;
-    static_69B110.Normal.y = a3->face_plane.vNormal.y;
-    static_69B110.Normal.z = a3->face_plane.vNormal.z;
-    static_69B110.dist = a3->face_plane.dist;
+    static_69B110.Normal.x = FacePlane->face_plane.vNormal.x;
+    static_69B110.Normal.y = FacePlane->face_plane.vNormal.y;
+    static_69B110.Normal.z = FacePlane->face_plane.vNormal.z;
+    static_69B110.dist = FacePlane->face_plane.dist;
     if (!pIndoorCameraD3D->GetFacetOrientation(
-            a3->polygonType, &static_69B110.Normal, &static_69B110.field_10,
+        FacePlane->polygonType, &static_69B110.Normal, &static_69B110.field_10,
             &static_69B110.field_1C)) {
         log->Warning(L"Error: Failed to get the facet orientation");
         Engine_DeinitializeAndTerminate(0);
@@ -584,7 +541,10 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3,
              uColorB =
                  (uint)floorf(pLights->_blv_lights_bs[i] * 255.0 + 0.5f) & 0xFF;
         uint uColor = (uColorR << 16) | (uColorG << 8) | uColorB;
-        if (!uColor) uColor = 0x0FFFFF;  // 0x00FFFFF;
+
+        if (!uColor) {
+            uColor = 0x00FFFFFF;  // 0x00FFFFF;
+        }
 
         if (!_45BE86_build_light_polygon(
                 &pos, pLights->_blv_lights_radii[i], uColor,
@@ -598,10 +558,9 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3,
 }
 
 //----- (0045BE86) --------------------------------------------------------
-bool LightmapBuilder::_45BE86_build_light_polygon(
-    Vec3_int_ *pos, float radius, unsigned int uColorMask, float dot_dist,
-    int uLightType, stru314 *a7, unsigned int uNumVertices,
-    RenderVertexSoft *a9, char uClipFlag) {
+bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, unsigned int uColorMask, float dot_dist,
+    int uLightType, stru314 *FacePlaneNormals, unsigned int uNumVertices, RenderVertexSoft *a9, char uClipFlag) {
+
     // For outdoor terrain and indoor light (IV)(IV)
     Lightmap *lightmap;  // edi@3
                          //  double v17; // st7@5
@@ -617,21 +576,23 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
                               :                       // stationary
                    &MobileLights[MobileLightsCount];  // mobile
     tex_light_radius = radius - dot_dist;
-    flt_3C8C28 = sqrt((radius + radius - tex_light_radius) * tex_light_radius);
-    // flt_3C8C28 = sqrt(tex_light_radius * tex_light_radius);
+    // flt_3C8C28 = sqrt((radius + radius - tex_light_radius) * tex_light_radius);
+    flt_3C8C28 = sqrt(radius * radius - dot_dist * dot_dist);
     flt_3C8C2C_lightmaps_brightness = 1.0 - (radius - flt_3C8C28) / radius;
-    lightmap->position_x = (double)pos->x - dot_dist * a7->Normal.x;
-    lightmap->position_y = (double)pos->y - dot_dist * a7->Normal.y;
-    lightmap->position_z = (double)pos->z - dot_dist * a7->Normal.z;
+
+
+    lightmap->position_x = (double)pos->x - dot_dist * FacePlaneNormals->Normal.x;
+    lightmap->position_y = (double)pos->y - dot_dist * FacePlaneNormals->Normal.y;
+    lightmap->position_z = (double)pos->z - dot_dist * FacePlaneNormals->Normal.z;
 
     light_radius = radius * flt_3C8C2C_lightmaps_brightness;
-    light_length_x = light_radius * a7->field_10.x;
-    light_length_y = light_radius * a7->field_10.y;
-    light_length_z = light_radius * a7->field_10.z;
+    light_length_x = light_radius * FacePlaneNormals->field_10.x;
+    light_length_y = light_radius * FacePlaneNormals->field_10.y;
+    light_length_z = light_radius * FacePlaneNormals->field_10.z;
 
-    light_length_x2 = light_radius * a7->field_1C.x;
-    light_length_y2 = light_radius * a7->field_1C.y;
-    light_length_z2 = light_radius * a7->field_1C.z;
+    light_length_x2 = light_radius * FacePlaneNormals->field_1C.x;
+    light_length_y2 = light_radius * FacePlaneNormals->field_1C.y;
+    light_length_z2 = light_radius * FacePlaneNormals->field_1C.z;
 
     lightmap->pVertices[0].vWorldPosition.x =
         lightmap->position_x - light_length_x2 + light_length_x;
@@ -670,13 +631,13 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
     lightmap->pVertices[3].v = 0.0;
 
     for (uint i = 0; i < 4; ++i) {
-        v24 = a7->Normal.y * lightmap->pVertices[i].vWorldPosition.y +
-              a7->Normal.z * lightmap->pVertices[i].vWorldPosition.z +
-              a7->Normal.x * lightmap->pVertices[i].vWorldPosition.x + a7->dist;
+        v24 = FacePlaneNormals->Normal.y * lightmap->pVertices[i].vWorldPosition.y +
+              FacePlaneNormals->Normal.z * lightmap->pVertices[i].vWorldPosition.z +
+              FacePlaneNormals->Normal.x * lightmap->pVertices[i].vWorldPosition.x + FacePlaneNormals->dist;
 
-        lightmap->pVertices[i].vWorldPosition.x -= v24 * a7->Normal.x;
-        lightmap->pVertices[i].vWorldPosition.y -= v24 * a7->Normal.y;
-        lightmap->pVertices[i].vWorldPosition.z -= v24 * a7->Normal.z;
+        lightmap->pVertices[i].vWorldPosition.x -= v24 * FacePlaneNormals->Normal.x;
+        lightmap->pVertices[i].vWorldPosition.y -= v24 * FacePlaneNormals->Normal.y;
+        lightmap->pVertices[i].vWorldPosition.z -= v24 * FacePlaneNormals->Normal.z;
     }
 
     lightmap->uColorMask = uColorMask;
@@ -703,8 +664,8 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
         if (v38 > radius) return true;
         // radius = (1 / radius) * v38;
         if (uLightType & 4) {  // LIGHT_ATTR_POINT
-            v39 = fabs(a1.x * a7->Normal.x + a1.z * a7->Normal.z +
-                       a1.y * a7->Normal.y);
+            v39 = fabs(a1.x * FacePlaneNormals->Normal.x + a1.z * FacePlaneNormals->Normal.z +
+                       a1.y * FacePlaneNormals->Normal.y);
             v40 = v39 * 1.0 * flt_4D86CC;
 
             lightmap->fBrightness = v40 - ((1 / radius) * v38) * v40;
@@ -718,7 +679,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(
     // Brightness(яркость)/////////////////////////////////////////////////////
 
     if (!engine->pStru9Instance->_4980B9(
-            a9, uNumVertices, a7->Normal.x, a7->Normal.y, a7->Normal.z,
+            a9, uNumVertices, FacePlaneNormals->Normal.x, FacePlaneNormals->Normal.y, FacePlaneNormals->Normal.z,
             lightmap->pVertices, &lightmap->NumVertices))
         return false;
 
@@ -841,8 +802,11 @@ void LightmapBuilder::DrawLightmaps(int indices) {
     // For outdoor terrain and indoor light (VI)(VI)
 
     if (StationaryLightsCount > 0) {
-        if (_4D864C_force_sw_render_rules && engine->config->Flag1_1())
+        if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
+            __debugbreak();
             return;
+        }
+
 
         render->BeginLightmaps();
 
@@ -873,7 +837,7 @@ void LightmapBuilder::Draw_183808_Lightmaps() {
 
     render->BeginLightmaps2();
 
-    DoDraw_183808_Lightmaps(0.00050000002);
+    DoDraw_183808_Lightmaps(0.00050000002*4);
 
     render->EndLightmaps2();
 }

@@ -393,7 +393,7 @@ class GUIWindow {
     unsigned int uFrameW;
     WindowType eWindowType;
     union {
-        void *ptr_1C;  // sometimes BuildID_2Events
+        void *ptr_1C;  // sometimes BuildID_2Events - book open
         unsigned int par1C;
     };
     int field_24;

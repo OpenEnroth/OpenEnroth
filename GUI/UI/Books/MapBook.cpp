@@ -22,26 +22,23 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
-                      int br_y, int _48074);  // idb
+void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, int br_y, int dummy);
 
 Image *ui_book_map_background = nullptr;
 
 GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
-    this->ptr_1C =
-        (void *)WINDOW_MapsBook;  // inherited from GUIWindow::GUIWindow
+    this->ptr_1C = (void *)WINDOW_MapsBook;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
     pEventTimer->Pause();
     viewparams->sViewCenterX = pParty->vPosition.x;
     viewparams->sViewCenterY = pParty->vPosition.y;
     pAudioPlayer->StopChannels(-1, -1);
-    pBooksButtonOverlay =
-        new GUIWindow_BooksButtonOverlay(546, 353, 0, 0, (int)pBtn_Maps);
+    pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(546, 353, 0, 0, (int)pBtn_Maps);
 
-    dword_506364 = 1;
+    MapBookOpen = 1;
+
     ui_book_map_background = assets->GetImage_ColorKey("sbmap", 0x7FF);
-
     ui_book_button1_on = assets->GetImage_Alpha("zoom-on");
     ui_book_button2_on = assets->GetImage_Alpha("zoot-on");
     ui_book_button3_on = assets->GetImage_Alpha("tabNon");
@@ -82,15 +79,9 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
 }
 
 void GUIWindow_MapBook::Update() {
-    unsigned int map_id;  // eax@35
-    // char party_coord[120]; // [sp+Ch] [bp-CCh]@37
-    GUIWindow map_window;  // [sp+84h] [bp-54h]@35
+    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_map_background);
 
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,
-        ui_exit_cancel_button_background);
-    render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f,
-        pViewport->uViewportTL_Y / 480.0f,
-        ui_book_map_background);
     if (BtnUp_flag || viewparams->uMapBookMapZoom / 128 >= 12)  // Button 1
         render->DrawTextureAlphaNew((pViewport->uViewportTL_X + 408) / 640.0f,
         (pViewport->uViewportTL_Y + 2) / 480.0f,
@@ -145,16 +136,17 @@ void GUIWindow_MapBook::Update() {
         (pViewport->uViewportTL_Y + 226) / 480.0f,
             ui_book_button6_on);
 
-    if (BtnDown_flag) viewparams->CenterOnParty2();
-    if (BtnUp_flag) viewparams->CenterOnParty();
-    if (Book_PageBtn3_flag) viewparams->_443219();
-    if (Book_PageBtn4_flag) viewparams->_443231();
-    if (Book_PageBtn5_flag) viewparams->_44323D();
-    if (Book_PageBtn6_flag) viewparams->_443225();
+    if (BtnDown_flag) viewparams->CenterOnPartyZoomIn();
+    if (BtnUp_flag) viewparams->CenterOnPartyZoomOut();
+    if (Book_PageBtn3_flag) viewparams->MapViewUp();
+    if (Book_PageBtn4_flag) viewparams->MapViewDown();
+    if (Book_PageBtn5_flag) viewparams->MapViewRight();
+    if (Book_PageBtn6_flag) viewparams->MapViewLeft();
 
     if (BtnUp_flag | BtnDown_flag | Book_PageBtn3_flag | Book_PageBtn4_flag |
         Book_PageBtn5_flag | Book_PageBtn6_flag)
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+
     BtnUp_flag = 0;
     BtnDown_flag = 0;
     Book_PageBtn6_flag = 0;
@@ -162,109 +154,82 @@ void GUIWindow_MapBook::Update() {
     Book_PageBtn4_flag = 0;
     Book_PageBtn3_flag = 0;
 
+    render->DrawTextureAlphaNew(75 / 640.0f, 22 / 480.0f, ui_book_map_frame);
     DrawBook_Map_sub(97, 49, 361, 313, 0);
+    render->ResetUIClipRect();
+
+    GUIWindow map_window;
     map_window.uFrameWidth = game_viewport_width;
     map_window.uFrameHeight = game_viewport_height;
     map_window.uFrameX = game_viewport_x;
     map_window.uFrameY = game_viewport_y;
     map_window.uFrameZ = game_viewport_z;
     map_window.uFrameW = game_viewport_w;
-    map_id = pMapStats->GetMapInfo(pCurrentMapName);
 
+    uint map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id)
-        map_window.DrawTitleText(pBook2Font, -14, 12, ui_book_map_title_color,
-            pMapStats->pInfos[map_id].pName, 3);
+        map_window.DrawTitleText(pBook2Font, -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
 
-    auto party_coordinates = localization->FormatString(
-        659, pParty->vPosition.x, pParty->vPosition.y);  // "x: %d  y: %d"
+    auto party_coordinates = localization->FormatString(659, pParty->vPosition.x, pParty->vPosition.y);  // "x: %d  y: %d"
 
     map_window.uFrameX = 0;
-    map_window.DrawTitleText(pFontComic, 0, 320, ui_book_map_coordinates_color,
-        party_coordinates, 0);
+    map_window.DrawTitleText(pFontComic, 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);
 }
 
 //----- (00442955) --------------------------------------------------------
-void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
-                      int br_y, int _48074) {
-    int v20;                // eax@16
-    int v26;                // ecx@21
-    unsigned __int16 *v27;  // edi@21
-    int v28;                // edx@21
-    int v29;                // eax@21
-
-    int v54;                // esi@75
-    int v55;                // eax@75
-
-    int map_tile_X;  // [sp+48020h] [bp-44h]@23
-
-    int v87;                    // [sp+48038h] [bp-2Ch]@16
-    unsigned int v88;           // [sp+4803Ch] [bp-28h]@16
-    unsigned __int16 *v93;      // [sp+48050h] [bp-14h]@16
-    unsigned int v95;           // [sp+48058h] [bp-Ch]@16
-    int map_tile_Y;             // [sp+4805Ch] [bp-8h]@10
-    const void *v97;            // [sp+48060h] [bp-4h]@16
-
+void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, int br_y, int dummy) {
     int ScreenCenterX = (signed int)(tl_x + br_x) / 2;
     int ScreenCenterY = (signed int)(tl_y + br_y) / 2;
     render->SetUIClipRect(tl_x, tl_y, br_x, br_y);
+
     int pCenterX = viewparams->sViewCenterX;
     int pCenterY = viewparams->sViewCenterY;
 
-    if (viewparams->uMapBookMapZoom != 384) {
-        if (viewparams->uMapBookMapZoom == 768) {
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-                viewparams->uMapBookMapZoom = 680;
-        }
-    } else {
-        viewparams->sViewCenterX = viewparams->indoor_center_x;
+    if (viewparams->uMapBookMapZoom == 384) {
         pCenterX = viewparams->indoor_center_x;
         pCenterY = viewparams->indoor_center_y;
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-            viewparams->uMapBookMapZoom = viewparams->uMapBookMapZoom - 34;
     }
 
-    int screenWidth, screenHeight;
-
     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {  // outdoors
-        screenWidth = br_x - tl_x + 1;
-        screenHeight = br_y - tl_y + 1;
+        int screenWidth = br_x - tl_x + 1;
+        int screenHeight = br_y - tl_y + 1;
 
         int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);
         int scale_increment = (1 << (loc_power + 16)) / viewparams->uMapBookMapZoom;
         double MapSizeScale = (double)(1 << (16 - loc_power));
         int stepX_r_resets =
             (unsigned int)(signed __int64)
-            ((double)(viewparams->sViewCenterX - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
+            ((double)(pCenterX - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int stepY_r = (int)(signed __int64)
             ((double)(-pCenterY - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int scaled_posY = stepY_r >> 16;
 
         static Texture *minimaptemp = nullptr;
         if (!minimaptemp) {
-            minimaptemp = render->CreateTexture_Blank(screenWidth, screenHeight, IMAGE_FORMAT_R8G8B8A8);
+            minimaptemp = render->CreateTexture_Blank(screenWidth, screenHeight, IMAGE_FORMAT_A8R8G8B8);
         }
-        auto minitempix = (unsigned __int32 *)minimaptemp->GetPixels(IMAGE_FORMAT_R8G8B8A8);
-        auto minimap_pixels = (unsigned __int32 *)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+        auto minitempix = (unsigned __int32 *)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        auto minimap_pixels = (unsigned __int32 *)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         int textr_width = viewparams->location_minimap->GetWidth();
 
         // nearest neiborhood scaling
         // if (texture8_data)
         {
             for (uint i = 0; i < screenHeight; ++i) {
-                map_tile_Y = (scaled_posY - 80) / 4;
+                int map_tile_Y = (scaled_posY - 80) / 4;
                 int stepX_r = stepX_r_resets;
                 for (uint j = 0; j < screenWidth; ++j) {
                     int scaled_posX = stepX_r >> 16;
-                    map_tile_X = (scaled_posX - 80) / 4;
+                    int map_tile_X = (scaled_posX - 80) / 4;
                     if (!pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y)) {
                         if (pOutdoor->IsMapCellPartiallyRevealed(map_tile_X,
                             map_tile_Y)) {
                             if (!((i + ScreenCenterX + j) % 2))
-                                minitempix[j + i * screenWidth] = Color32A(12, 12, 12);  // greyed out
+                                minitempix[j + i * screenWidth] = Color32(12, 12, 12);  // greyed out
                             else
                                 minitempix[j + i * screenWidth] = minimap_pixels[scaled_posX + scaled_posY * textr_width];
                         } else {
-                            minitempix[j + i * screenWidth] = Color32A(0, 0, 0);  // black
+                            minitempix[j + i * screenWidth] = Color32(0, 0, 0);  // black
                         }
                     } else {
                         minitempix[j + i * screenWidth] = minimap_pixels[scaled_posX + scaled_posY * textr_width];
@@ -278,37 +243,24 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
 
         render->Update_Texture(minimaptemp);
         render->DrawTextureAlphaNew(tl_x / 640., tl_y / 480., minimaptemp);
-
-        render->ResetUIClipRect();
-        render->DrawTextureAlphaNew(75 / 640.0f, 22 / 480.0f, ui_book_map_frame);
     } else {  // indoors
         unsigned int Colour_Black = Color16(0, 0, 0);
-        unsigned int Colour_Teal = Color16(0, 0xFF, 0xFF);
-
-        uNumBlueFacesInBLVMinimap = 0;
 
         if (pIndoor->pMapOutlines->uNumOutlines) {
             for (uint i = 0; i < pIndoor->pMapOutlines->uNumOutlines; ++i) {
-                if (!(pIndoor->pFaces[pIndoor->pMapOutlines->pOutlines[i].uFace1ID].Invisible() ||
-                      (pIndoor->pFaces[pIndoor->pMapOutlines->pOutlines[i].uFace2ID].Invisible()))) {
-                    if (!(pIndoor->pMapOutlines->pOutlines[i].uFlags & 1)) {
-                        if (!(!(pIndoor->pFaces[pIndoor->pMapOutlines->pOutlines[i].uFace1ID].uAttributes & FACE_UNKNOW7) &&
-                            !(pIndoor->pFaces[pIndoor->pMapOutlines->pOutlines[i].uFace2ID].uAttributes & FACE_UNKNOW7))) {
-                            pIndoor->pMapOutlines->pOutlines[i].uFlags =
-                                pIndoor->pMapOutlines->pOutlines[i].uFlags | 1;
+                BLVMapOutline *pOutline = &pIndoor->pMapOutlines->pOutlines[i];
 
-                            pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
-                        }
-                    }
+                if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
+                    pIndoor->pFaces[pOutline->uFace2ID].Visible()) {
+                    if (pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_RENDERED ||
+                        pIndoor->pFaces[pOutline->uFace2ID].uAttributes & FACE_RENDERED) {
+                        pOutline->uFlags = pOutline->uFlags | 1;
+                        pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
 
-                    if ((!(pIndoor->pMapOutlines->pOutlines[i].uFlags & 1) &&
-                         !(!(pIndoor->pFaces[pIndoor->pMapOutlines->pOutlines[i].uFace1ID].uAttributes & FACE_UNKNOW7) &&
-                           !(pIndoor->pFaces[pIndoor->pMapOutlines->pOutlines[i].uFace2ID].uAttributes & FACE_UNKNOW7))) ||
-                            pIndoor->pMapOutlines->pOutlines[i].uFlags & 1) {
-                        int Vert1X = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].x - viewparams->sViewCenterX;
-                        int Vert2X = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].x - viewparams->sViewCenterX;
-                        int Vert1Y = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].y - pCenterY;
-                        int Vert2Y = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].y - pCenterY;
+                        int Vert1X = pIndoor->pVertices[pOutline->uVertex1ID].x - pCenterX;
+                        int Vert2X = pIndoor->pVertices[pOutline->uVertex2ID].x - pCenterX;
+                        int Vert1Y = pIndoor->pVertices[pOutline->uVertex1ID].y - pCenterY;
+                        int Vert2Y = pIndoor->pVertices[pOutline->uVertex2ID].y - pCenterY;
 
                         int linex = ScreenCenterX + fixpoint_mul(Vert1X, viewparams->uMapBookMapZoom);
                         int liney = ScreenCenterY - fixpoint_mul(Vert1Y, viewparams->uMapBookMapZoom);
@@ -320,63 +272,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
                 }
             }
         }
-
-        if ((signed int)uNumBlueFacesInBLVMinimap > 0) {
-            for (uint j = 0; j < (signed int)uNumBlueFacesInBLVMinimap; ++j) {
-                v26 = pIndoor
-                          ->pVertices
-                              [pIndoor->pMapOutlines
-                                   ->pOutlines[pBlueFacesInBLVMinimapIDs[j]]
-                                   .uVertex2ID]
-                          .x;
-                v27 = (unsigned __int16
-                           *)(pIndoor
-                                  ->pVertices
-                                      [pIndoor->pMapOutlines
-                                           ->pOutlines
-                                               [pBlueFacesInBLVMinimapIDs[j]]
-                                           .uVertex1ID]
-                                  .x -
-                              pCenterX);
-                v28 = pIndoor
-                          ->pVertices
-                              [pIndoor->pMapOutlines
-                                   ->pOutlines[pBlueFacesInBLVMinimapIDs[j]]
-                                   .uVertex1ID]
-                          .y -
-                      pCenterY;
-                v29 = pIndoor
-                          ->pVertices
-                              [pIndoor->pMapOutlines
-                                   ->pOutlines[pBlueFacesInBLVMinimapIDs[j]]
-                                   .uVertex2ID]
-                          .y -
-                      pCenterY;
-
-                v87 =
-                    fixpoint_mul((signed int)v27, viewparams->uMapBookMapZoom);
-                v88 = fixpoint_mul(v28, viewparams->uMapBookMapZoom);
-                uint i =
-                    fixpoint_mul((v26 - pCenterX), viewparams->uMapBookMapZoom);
-                v95 = fixpoint_mul(v29, viewparams->uMapBookMapZoom);
-                render->RasterLine2D(
-                    ScreenCenterX +
-                        (fixpoint_mul((signed int)v27,
-                                      viewparams->uMapBookMapZoom)),
-                    ScreenCenterY - v88,
-                    ScreenCenterX +
-                        (fixpoint_mul((v26 - pCenterX),
-                                      viewparams->uMapBookMapZoom)),
-                    ScreenCenterY - v95, Colour_Teal);
-            }
-            viewparams->sViewCenterX = pCenterX;
-        }
     }
 
     // Direction arrow drawing
-    int ArrowXPos = (fixpoint_mul((pParty->vPosition.x - viewparams->sViewCenterX), viewparams->uMapBookMapZoom)) + ScreenCenterX - 3;
+    int ArrowXPos = (fixpoint_mul((pParty->vPosition.x - pCenterX), viewparams->uMapBookMapZoom)) + ScreenCenterX - 3;
     int ArrowYPos = ScreenCenterY - (fixpoint_mul((pParty->vPosition.y - pCenterY), viewparams->uMapBookMapZoom)) - 3;
-
     bool DrawArrow = 1;
 
     if (ArrowXPos >= (signed int)tl_x) {
@@ -417,36 +317,17 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x,
     if ((signed int)uNumLevelDecorations > 0) {
         for (uint i = 0; i < (signed int)uNumLevelDecorations; ++i) {
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
-                screenHeight = pLevelDecorations[i].vPosition.y - pCenterY;
-                v93 = (unsigned __int16 *)(pLevelDecorations[i].vPosition.x -
-                                           viewparams->sViewCenterX);
-                v54 = (fixpoint_mul((signed int)v93,
-                                    viewparams->uMapBookMapZoom)) +
-                      ScreenCenterX;
-                v97 = (const void *)(fixpoint_mul(screenHeight,
-                                                  viewparams->uMapBookMapZoom));
-                v55 = ScreenCenterY - (int)v97;
-                // if ( v54 >= render->raster_clip_x && v54 <=
-                // render->raster_clip_z
-                //  && v55 >= render->raster_clip_y && v55 <=
-                //  render->raster_clip_w )
-                {
-                    if (viewparams->uMapBookMapZoom > 512) {
-                        render->RasterLine2D(v54 - 1, v55 - 1, v54 - 1, v55 + 1,
-                                             Color16(0xFFu, 0xFFu, 0xFFu));
-                        render->RasterLine2D(v54, v55 - 1, v54, v55 + 1,
-                                             Color16(0xFFu, 0xFFu, 0xFFu));
-                        render->RasterLine2D(v54 + 1, v55 - 1, v54 + 1, v55 + 1,
-                                             Color16(0xFFu, 0xFFu, 0xFFu));
-                    } else {
-                        render->RasterLine2D(
-                            v54, ScreenCenterY - (int)v97,
-                            (fixpoint_mul((signed int)v93,
-                                viewparams->uMapBookMapZoom)) +
-                            ScreenCenterX,
-                            ScreenCenterY - (int)v97,
-                            Color16(0xFF, 0xFF, 0xFF));
-                    }
+                int DecY = pLevelDecorations[i].vPosition.y - pCenterY;
+                int DecX = pLevelDecorations[i].vPosition.x - pCenterX;
+                int decxpos = ScreenCenterX + fixpoint_mul(DecX, viewparams->uMapBookMapZoom);
+                int decypos = ScreenCenterY - fixpoint_mul(DecY, viewparams->uMapBookMapZoom);
+
+                if (viewparams->uMapBookMapZoom > 512) {
+                    render->RasterLine2D(decxpos - 1, decypos - 1, decxpos - 1, decypos + 1, Color16(0xFFu, 0xFFu, 0xFFu));
+                    render->RasterLine2D(decxpos, decypos - 1, decxpos, decypos + 1, Color16(0xFFu, 0xFFu, 0xFFu));
+                    render->RasterLine2D(decxpos + 1, decypos - 1, decxpos + 1, decypos + 1, Color16(0xFFu, 0xFFu, 0xFFu));
+                } else {
+                    render->RasterLine2D(decxpos, decypos, decxpos, decypos, Color16(0xFF, 0xFF, 0xFF));
                 }
             }
         }

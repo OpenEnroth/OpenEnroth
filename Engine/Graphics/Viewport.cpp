@@ -90,57 +90,52 @@ void Viewport::SetViewport(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {
 }
 
 //----- (00443219) --------------------------------------------------------
-void ViewingParams::_443219() {
+void ViewingParams::MapViewUp() {
     this->sViewCenterY += 512;
-
     AdjustPosition();
 }
 
 //----- (00443225) --------------------------------------------------------
-void ViewingParams::_443225() {
+void ViewingParams::MapViewLeft() {
     this->sViewCenterX -= 512;
-
     AdjustPosition();
 }
 
 //----- (00443231) --------------------------------------------------------
-void ViewingParams::_443231() {
+void ViewingParams::MapViewDown() {
     this->sViewCenterY -= 512;
-
     AdjustPosition();
 }
 
 //----- (0044323D) --------------------------------------------------------
-void ViewingParams::_44323D() {
+void ViewingParams::MapViewRight() {
     this->sViewCenterX += 512;
-
     AdjustPosition();
 }
 
 //----- (00443249) --------------------------------------------------------
-void ViewingParams::CenterOnParty() {
-    this->uMapBookMapZoom = fixpoint_mul(0x8000, this->uMapBookMapZoom);
+void ViewingParams::CenterOnPartyZoomOut() {
+    this->uMapBookMapZoom /= 2;
     if (this->uMapBookMapZoom < 384) this->uMapBookMapZoom = 384;
 
     this->sViewCenterX = pParty->vPosition.x;
     this->sViewCenterY = pParty->vPosition.y;
-
     AdjustPosition();
 }
 
 //----- (00443291) --------------------------------------------------------
-void ViewingParams::CenterOnParty2() {
-    int v2;  // eax@1
+void ViewingParams::CenterOnPartyZoomIn() {
+    int MaxZoom;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        v2 = 1536;
+        MaxZoom = 1536;
     else if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        v2 = 3072;
+        MaxZoom = 3072;
     else
         assert(false);
 
     this->uMapBookMapZoom *= 2;
-    if (this->uMapBookMapZoom > v2) this->uMapBookMapZoom = v2;
+    if (this->uMapBookMapZoom > MaxZoom) this->uMapBookMapZoom = MaxZoom;
 
     this->sViewCenterX = pParty->vPosition.x;
     this->sViewCenterY = pParty->vPosition.y;

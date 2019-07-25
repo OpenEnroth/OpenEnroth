@@ -54,7 +54,7 @@ RenderOpenGL::RenderOpenGL()
     : RenderBase() {
 }
 
-RenderOpenGL::~RenderOpenGL() { __debugbreak(); }
+RenderOpenGL::~RenderOpenGL() { /*__debugbreak();*/ }
 
 void RenderOpenGL::Release() { __debugbreak(); }
 
@@ -65,8 +65,7 @@ bool RenderOpenGL::InitializeFullscreen() {
     return 0;
 }
 
-unsigned int RenderOpenGL::GetActorTintColor(float a2, int tint, int a4, int a5,
-    RenderBillboard *a6) {
+unsigned int RenderOpenGL::GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) {
     __debugbreak();
     return 0;
 }
@@ -111,13 +110,17 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
     unsigned int r = ((uColor >> 11) & 0x1F)*8;
 
     glDisable(GL_TEXTURE_2D);
-    glEnable(GL_LINE_SMOOTH);
     glLineWidth(1);
     glColor3ub(r, g, b);
 
+    // pixel centers around 0.5 so tweak to avoid gaps and squashing
+    if (uZ == uX) {
+       uW += 1;
+    }
+
     glBegin(GL_LINES);
     glVertex3f(uX, uY, 0);
-    glVertex3f(uZ, uW, 0);
+    glVertex3f(uZ+.5, uW+.5, 0);
     glEnd();
 }
 
@@ -130,166 +133,185 @@ void RenderOpenGL::BeginSceneD3D() {
     glClearColor(0.9f, 0.5f, 0.1f, 1.0f);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    render->uNumBillboardsToDraw = 0;  // moved from drawbillboards - cant reset this until mouse picking finished
 }
 
-void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
-                                     int uPackedID, unsigned int uColor,
-                                     int a8) {
-    if (uNumVertices < 3) {
-        return;
-    }
+extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
 
-    int sCorrectedColor = uColor;
+void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
+                                        RenderBillboard *billboard) {
+    int v11;     // eax@9
+    int v12;     // eax@9
+    double v15;  // st5@12
+    double v16;  // st4@12
+    double v17;  // st3@12
+    double v18;  // st2@12
+    int v19;     // ecx@14
+    double v20;  // st3@14
+    int v21;     // ecx@16
+    double v22;  // st3@16
+    float v27;   // [sp+24h] [bp-Ch]@5
+    float v29;   // [sp+2Ch] [bp-4h]@5
+    float v31;   // [sp+3Ch] [bp+Ch]@5
+    float a1;    // [sp+40h] [bp+10h]@5
 
-    TextureOpenGL *texture = (TextureOpenGL *)pFace->GetTexture();
+    // if (this->uNumD3DSceneBegins == 0) {
+    //    return;
+    //}
 
-    if (lightmap_builder->StationaryLightsCount) sCorrectedColor = -1;
-    engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+    Sprite *pSprite = billboard->hwsprite;
+    int dimming_level = billboard->dimming_level;
 
-    if (pFace->uAttributes & FACE_OUTLINED) {
-        if (OS_GetTime() % 300 >= 150)
-            uColor = sCorrectedColor = 0xFF20FF20;
-        else
-            uColor = sCorrectedColor = 0xFF109010;
-    }
-
-    if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
-        /*
-            __debugbreak();
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
-           false)); ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0,
-           D3DTSS_ADDRESS, D3DTADDRESS_WRAP)); for (uint i = 0; i <
-           uNumVertices; ++i)
-            {
-              d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-              d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-              d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 /
-           (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-              d3d_vertex_buffer[i].rhw = 1.0 /
-           array_507D30[i].vWorldViewPosition.x; d3d_vertex_buffer[i].diffuse =
-           sCorrectedColor; d3d_vertex_buffer[i].specular = 0;
-              d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u /
-           (double)pFace->GetTexture()->GetWidth();
-              d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v /
-           (double)pFace->GetTexture()->GetHeight();
-            }
-
-            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-           D3DTADDRESS_WRAP)); ErrD3D(pRenderD3D->pDevice->SetTexture(0,
-           nullptr));
-            ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-              D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-              d3d_vertex_buffer, uNumVertices, 28));
-            lightmap_builder->DrawLightmaps(-1);
-        */
+    // v4 = pSoftBillboard;
+    // v5 = (double)pSoftBillboard->zbuffer_depth;
+    // pSoftBillboarda = pSoftBillboard->zbuffer_depth;
+    // v6 = pSoftBillboard->zbuffer_depth;
+    unsigned int v7 = Billboard_ProbablyAddToListAndSortByZOrder(
+        pSoftBillboard->screen_space_z);
+    // v8 = dimming_level;
+    // device_caps = v7;
+    int v28 = dimming_level & 0xFF000000;
+    if (dimming_level & 0xFF000000) {
+        pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Opaque_3;
     } else {
-        if (!lightmap_builder->StationaryLightsCount ||
-            _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
-            glEnable(GL_TEXTURE_2D);
-            glDisable(GL_BLEND);
-            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+        pBillboardRenderListD3D[v7].opacity = RenderBillboardD3D::Transparent;
+    }
+    // v10 = a3;
+    pBillboardRenderListD3D[v7].field_90 = pSoftBillboard->field_44;
+    pBillboardRenderListD3D[v7].screen_space_z = pSoftBillboard->screen_space_z;
+    pBillboardRenderListD3D[v7].object_pid = pSoftBillboard->object_pid;
+    pBillboardRenderListD3D[v7].sParentBillboardID =
+        pSoftBillboard->sParentBillboardID;
+    // v25 = pSoftBillboard->uScreenSpaceX;
+    // v24 = pSoftBillboard->uScreenSpaceY;
+    a1 = pSoftBillboard->screenspace_projection_factor_x;
+    v29 = pSoftBillboard->screenspace_projection_factor_y;
+    v31 = (double)((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
+    v27 = (double)(pSprite->uBufferHeight - pSprite->uAreaY);
+    if (pSoftBillboard->uFlags & 4) {
+        v31 = v31 * -1.0;
+    }
+    if (config->is_tinting && pSoftBillboard->sTintColor) {
+        v11 = ::GetActorTintColor(dimming_level, 0,
+            pSoftBillboard->screen_space_z, 0, 0);
+        v12 = BlendColors(pSoftBillboard->sTintColor, v11);
+        if (v28)
+            v12 =
+            (unsigned int)((char *)&array_77EC08[1852].pEdgeList1[17] + 3) &
+            ((unsigned int)v12 >> 1);
+    } else {
+        v12 = ::GetActorTintColor(dimming_level, 0,
+            pSoftBillboard->screen_space_z, 0, 0);
+    }
+    // v13 = (double)v25;
+    pBillboardRenderListD3D[v7].pQuads[0].specular = 0;
+    pBillboardRenderListD3D[v7].pQuads[0].diffuse = v12;
+    pBillboardRenderListD3D[v7].pQuads[0].pos.x =
+        pSoftBillboard->screen_space_x - v31 * a1;
+    // v14 = (double)v24;
+    // v32 = v14;
+    pBillboardRenderListD3D[v7].pQuads[0].pos.y =
+        pSoftBillboard->screen_space_y - v27 * v29;
+    v15 = 1.0 - 1.0 / (pSoftBillboard->screen_space_z * 0.061758894);
+    pBillboardRenderListD3D[v7].pQuads[0].pos.z = v15;
+    v16 = 1.0 / pSoftBillboard->screen_space_z;
+    pBillboardRenderListD3D[v7].pQuads[0].rhw =
+        1.0 / pSoftBillboard->screen_space_z;
+    pBillboardRenderListD3D[v7].pQuads[0].texcoord.x = 0.0;
+    pBillboardRenderListD3D[v7].pQuads[0].texcoord.y = 0.0;
+    v17 = (double)((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
+    v18 = (double)(pSprite->uBufferHeight - pSprite->uAreaY -
+        pSprite->uAreaHeight);
+    if (pSoftBillboard->uFlags & 4) {
+        v17 = v17 * -1.0;
+    }
+    pBillboardRenderListD3D[v7].pQuads[1].specular = 0;
+    pBillboardRenderListD3D[v7].pQuads[1].diffuse = v12;
+    pBillboardRenderListD3D[v7].pQuads[1].pos.x =
+        pSoftBillboard->screen_space_x - v17 * a1;
+    pBillboardRenderListD3D[v7].pQuads[1].pos.y =
+        pSoftBillboard->screen_space_y - v18 * v29;
+    pBillboardRenderListD3D[v7].pQuads[1].pos.z = v15;
+    pBillboardRenderListD3D[v7].pQuads[1].rhw = v16;
+    pBillboardRenderListD3D[v7].pQuads[1].texcoord.x = 0.0;
+    pBillboardRenderListD3D[v7].pQuads[1].texcoord.y = 1.0;
+    v19 = pSprite->uBufferHeight - pSprite->uAreaY - pSprite->uAreaHeight;
+    v20 = (double)(pSprite->uAreaX + pSprite->uAreaWidth +
+        (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
+    if (pSoftBillboard->uFlags & 4) {
+        v20 = v20 * -1.0;
+    }
+    pBillboardRenderListD3D[v7].pQuads[2].specular = 0;
+    pBillboardRenderListD3D[v7].pQuads[2].diffuse = v12;
+    pBillboardRenderListD3D[v7].pQuads[2].pos.x =
+        v20 * a1 + pSoftBillboard->screen_space_x;
+    pBillboardRenderListD3D[v7].pQuads[2].pos.y =
+        pSoftBillboard->screen_space_y - (double)v19 * v29;
+    pBillboardRenderListD3D[v7].pQuads[2].pos.z = v15;
+    pBillboardRenderListD3D[v7].pQuads[2].rhw = v16;
+    pBillboardRenderListD3D[v7].pQuads[2].texcoord.x = 1.0;
+    pBillboardRenderListD3D[v7].pQuads[2].texcoord.y = 1.0;
+    v21 = pSprite->uBufferHeight - pSprite->uAreaY;
+    v22 = (double)(pSprite->uAreaX + pSprite->uAreaWidth +
+        (pSprite->uBufferWidth >> 1) - pSprite->uBufferWidth);
+    if (pSoftBillboard->uFlags & 4) {
+        v22 = v22 * -1.0;
+    }
+    pBillboardRenderListD3D[v7].pQuads[3].specular = 0;
+    pBillboardRenderListD3D[v7].pQuads[3].diffuse = v12;
+    pBillboardRenderListD3D[v7].pQuads[3].pos.x =
+        v22 * a1 + pSoftBillboard->screen_space_x;
+    pBillboardRenderListD3D[v7].pQuads[3].pos.y =
+        pSoftBillboard->screen_space_y - (double)v21 * v29;
+    pBillboardRenderListD3D[v7].pQuads[3].pos.z = v15;
+    pBillboardRenderListD3D[v7].pQuads[3].rhw = v16;
+    pBillboardRenderListD3D[v7].pQuads[3].texcoord.x = 1.0;
+    pBillboardRenderListD3D[v7].pQuads[3].texcoord.y = 0.0;
+    // v23 = pSprite->pTexture;
+    pBillboardRenderListD3D[v7].uNumVertices = 4;
+    pBillboardRenderListD3D[v7].z_order = pSoftBillboard->screen_space_z;
+    pBillboardRenderListD3D[v7].texture = pSprite->texture;
+}
 
-            glBegin(GL_TRIANGLE_FAN);
+void RenderOpenGL::_4A4CC9_AddSomeBillboard(
+    struct SpellFX_Billboard *a1, int diffuse) {
+    __debugbreak();
+}
 
-            for (uint i = 0; i < uNumVertices; ++i) {
-                d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-                d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z =
-                    1.0 -
-                    1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-                d3d_vertex_buffer[i].rhw =
-                    1.0 / array_507D30[i].vWorldViewPosition.x;
-                d3d_vertex_buffer[i].diffuse = sCorrectedColor;
-                d3d_vertex_buffer[i].specular = 0;
-                d3d_vertex_buffer[i].texcoord.x =
-                    array_507D30[i].u / (double)pFace->GetTexture()->GetWidth();
-                d3d_vertex_buffer[i].texcoord.y =
-                    array_507D30[i].v /
-                    (double)pFace->GetTexture()->GetHeight();
+void RenderOpenGL::DrawBillboardList_BLV() {
+    SoftwareBillboard soft_billboard = { 0 };
+    soft_billboard.sParentBillboardID = -1;
+    //  soft_billboard.pTarget = pBLVRenderParams->pRenderTarget;
+    soft_billboard.pTargetZ = pBLVRenderParams->pTargetZBuffer;
+    //  soft_billboard.uTargetPitch = uTargetSurfacePitch;
+    soft_billboard.uViewportX = pBLVRenderParams->uViewportX;
+    soft_billboard.uViewportY = pBLVRenderParams->uViewportY;
+    soft_billboard.uViewportZ = pBLVRenderParams->uViewportZ - 1;
+    soft_billboard.uViewportW = pBLVRenderParams->uViewportW;
 
-                glTexCoord2f(d3d_vertex_buffer[i].texcoord.x,
-                             d3d_vertex_buffer[i].texcoord.y);
+    pODMRenderParams->uNumBillboards = ::uNumBillboardsToDraw;
+    for (uint i = 0; i < ::uNumBillboardsToDraw; ++i) {
+        RenderBillboard *p = &pBillboardRenderList[i];
+        if (p->hwsprite) {
+            soft_billboard.screen_space_x = p->screen_space_x;
+            soft_billboard.screen_space_y = p->screen_space_y;
+            soft_billboard.screen_space_z = p->screen_space_z;
+            soft_billboard.sParentBillboardID = i;
+            soft_billboard.screenspace_projection_factor_x =
+                p->screenspace_projection_factor_x;
+            soft_billboard.screenspace_projection_factor_y =
+                p->screenspace_projection_factor_y;
+            soft_billboard.object_pid = p->object_pid;
+            soft_billboard.uFlags = p->field_1E;
+            soft_billboard.sTintColor = p->sTintColor;
 
-                glColor4f(
-                    ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                    config->is_using_specular
-                        ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f
-                        : 1.0f);
-
-                glVertex3f(d3d_vertex_buffer[i].pos.x,
-                           d3d_vertex_buffer[i].pos.z,
-                           d3d_vertex_buffer[i].pos.y);
-            }
-
-            glEnd();
-        } else {
-            /*
-                  glEnable(GL_TEXTURE_2D);
-                  glDisable(GL_BLEND);
-                  glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-
-                  glBegin(GL_TRIANGLE_FAN);
-
-                  for (uint i = 0; i < uNumVertices; ++i) {
-                    d3d_vertex_buffer[i].pos.x =
-               array_507D30[i].vWorldViewProjX; d3d_vertex_buffer[i].pos.y =
-               array_507D30[i].vWorldViewProjY; d3d_vertex_buffer[i].pos.z = 1.0
-               - 1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-                    d3d_vertex_buffer[i].rhw = 1.0 /
-               array_507D30[i].vWorldViewPosition.x;
-                    d3d_vertex_buffer[i].diffuse = uColor;
-                    d3d_vertex_buffer[i].specular = 0;
-                    d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u /
-               (double)pFace->GetTexture()->GetWidth();
-                    d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v /
-               (double)pFace->GetTexture()->GetHeight();
-                  }
-                  glBindTexture(GL_TEXTURE_2D,
-               face_texture->GetOpenGlTexture());
-                  ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-                    D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR |
-               D3DFVF_TEX1, d3d_vertex_buffer, uNumVertices, 28));
-
-                  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
-               D3DCULL_NONE)); lightmap_builder->DrawLightmaps(-1);
-
-                  for (uint i = 0; i < uNumVertices; ++i)
-                    d3d_vertex_buffer[i].diffuse = sCorrectedColor;
-
-                  glBindTexture(GL_TEXTURE_2D,
-               face_texture->GetOpenGlTexture());
-                  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
-               TRUE));
-                  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,
-               TRUE));
-                  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
-               D3DBLEND_ZERO));
-                  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
-               D3DBLEND_SRCCOLOR));
-                  ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-                    D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR |
-               D3DFVF_TEX1, d3d_vertex_buffer, uNumVertices, 28));
-                  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
-               D3DBLEND_ONE));
-                  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
-               D3DBLEND_ZERO));
-                  ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,
-               FALSE));
-            */
+            DrawBillboard_Indoor(&soft_billboard, p);
         }
     }
 }
-void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
-                                        RenderBillboard *) {
-    __debugbreak();
-}
-void RenderOpenGL::_4A4CC9_AddSomeBillboard(
-    struct stru6_stru1_indoor_sw_billboard *a1, int diffuse) {
-    __debugbreak();
-}
-void RenderOpenGL::DrawBillboardList_BLV() {}
+
+
 void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
                                   float dstX, float dstY, float a7, float a8,
                                   Texture *texture) {
@@ -392,8 +414,6 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
         auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         int width = img->GetWidth();
         int height = img->GetHeight();
-        // Image *temp = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
-        uint32_t *temppix = (uint32_t *)img->GetPixels(IMAGE_FORMAT_R8G8B8A8);
 
         int brightloc = -1;
         int brightval = 0;
@@ -468,7 +488,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
                     }
                     // out pixel
                     // temppix[xdraw + ydraw * width] = (rcur << 24) | (gcur << 16) | (bcur << 8) | 0xFF;//Color32(rcur, gcur, bcur);
-                    render_target_rgb[int((u*640)+xdraw + 640 *(v*480+ydraw))] = Color32A(rcur, gcur, bcur);
+                    render_target_rgb[int((u*640)+xdraw + 640 *(v*480+ydraw))] = Color32(rcur, gcur, bcur);
                 }
                 pixelpoint++;
             }
@@ -483,7 +503,15 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
 
 
 void RenderOpenGL::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
-    __debugbreak();
+    Rect rct;
+    rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uBufferWidth / 2;
+    rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
+    rct.z = rct.x + Portrait->hw_sprites[0]->uAreaWidth;
+    rct.w = rct.y + Portrait->hw_sprites[0]->uAreaHeight;
+
+    render->SetUIClipRect(rc.x, rc.y, rc.z, rc.w);
+    render->DrawImage(Portrait->hw_sprites[0]->texture, rct);
+    render->ResetUIClipRect();
 }
 
 void RenderOpenGL::DrawTransparentRedShade(float u, float v, Image *a4) {
@@ -517,9 +545,9 @@ void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int co
                 /*temppix[dx + dy * width] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
                 (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
                 &  Color32(mask);*/
-                render_target_rgb[x+dx + 640*(y+dy)] = Color32A((((*pixels >> 16) & 0xFF) >> color_dimming_level),
+                render_target_rgb[x+dx + 640*(y+dy)] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
                 (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
-                &  Color32A(mask);
+                &  Color32(mask);
             ++pixels;
         }
     }
@@ -554,6 +582,7 @@ void RenderOpenGL::BeginLightmaps() { __debugbreak(); }
 void RenderOpenGL::EndLightmaps() { __debugbreak(); }
 void RenderOpenGL::BeginLightmaps2() { __debugbreak(); }
 void RenderOpenGL::EndLightmaps2() { __debugbreak(); }
+
 bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap,
                                 struct Vec3_float_ *pColorMult, float z_bias) {
     __debugbreak();
@@ -850,12 +879,11 @@ Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id,
 }
 
 void RenderOpenGL::Update_Texture(Texture *texture) {
-    // possibly should inlcude pixel update here
-    // native pix -> opengl format??
+    // takes care of endian flip from literals here - hence BGRA
 
     auto t = (TextureOpenGL *)texture;
     glBindTexture(GL_TEXTURE_2D, t->GetOpenGlTexture());
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, t->GetPixels(IMAGE_FORMAT_R8G8B8A8));
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_BGRA, GL_UNSIGNED_BYTE, t->GetPixels(IMAGE_FORMAT_A8R8G8B8));
     glBindTexture(GL_TEXTURE_2D, NULL);
 
     GLenum err;
@@ -865,6 +893,8 @@ void RenderOpenGL::Update_Texture(Texture *texture) {
 }
 
 void RenderOpenGL::DeleteTexture(Texture *texture) {
+    // crash here when assets not loaded as texture
+
     auto t = (TextureOpenGL *)texture;
     GLuint texid = t->GetOpenGlTexture();
     if (texid != -1) {
@@ -925,7 +955,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     if (native_format == IMAGE_FORMAT_R5G6B5) {
         pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8);
     } else if (native_format == IMAGE_FORMAT_A1R5G5B5 || IMAGE_FORMAT_A8R8G8B8) {
-        pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+        pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);  // rgba
         gl_format = GL_RGBA;
     } else {
         log->Warning(L"Image not loaded!");
@@ -957,7 +987,12 @@ void _set_3d_projection_matrix() {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(62.5f, double(game_viewport_width/double(game_viewport_height))  // 65.0f
+
+
+    // outdoors 60 - should be 75?
+    // indoors 65?/
+
+    gluPerspective(40, double(game_viewport_width/double(game_viewport_height))  // 65.0f
                    /*(GLfloat)window->GetWidth() / (GLfloat)window->GetHeight()*/,
                    near_clip, far_clip);
 }
@@ -967,15 +1002,16 @@ void _set_3d_modelview_matrix() {
     glLoadIdentity();
     glScalef(1.0f, 1.0f, -1.0f);
 
-    int camera_x = pParty->vPosition.x;
+    int camera_x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationY / 2048.0);
+    int camera_z = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationY / 2048.0);
     int camera_y = pParty->vPosition.z + pParty->sEyelevel;
-    int camera_z = pParty->vPosition.y;
+
     gluLookAt(camera_x, camera_y, camera_z,
 
               camera_x - pParty->y_rotation_granularity *
                       cosf(2 * 3.14159 * pParty->sRotationY / 2048.0) /*- 5*/,
               camera_y - pParty->y_rotation_granularity *
-                             sinf(2 * 3.14159 * (pParty->sRotationX) / 2048.0),
+                             sinf(2 * 3.14159 * (pParty->sRotationX/*-25*/) / 2048.0),
               camera_z - pParty->y_rotation_granularity *
                              sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
 
@@ -1027,6 +1063,8 @@ void RenderOpenGL::RenderTerrainD3D() {
     if (left > 2048) left -= 2048;
     if (right < 0) right += 2048;
 
+    float Light_tile_dist;
+
 
     for (int z = 0; z < 128 - 1; ++z) {
         for (int x = 0; x < 128 - 1; ++x) {
@@ -1038,6 +1076,8 @@ void RenderOpenGL::RenderTerrainD3D() {
 
             int dist = sqrt((xdist)*(xdist) + (zdist)*(zdist));
             if (dist > tilerange) continue;  // crude distance culling
+
+            // could do further x + z culling by camera direction see dx
 
             int tiledir = stru_5C6E00->Atan2(xdist, zdist)+1024;
             if (tiledir > 2048) {
@@ -1092,14 +1132,54 @@ void RenderOpenGL::RenderTerrainD3D() {
             int y22 = pOutdoor->pTerrain.pHeightmap[z2 * 128 + x2];
 
             // terrain normal had problems
-            /*auto norm = &pTerrainNormals[x * 128 + z];
-            float dim =
-                (norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                (norm->z * (float)pOutdoor->vSunlight.z / 65536.0);
+            /*uint norm_idx = pTerrainNormalIndices[2 * (x * 128 + z) + 1];
+            assert(norm_idx < uNumTerrainNormals);
 
-            poly->dimming_level = 20.0 - floorf(20.0 * dim + 0.5f);*/
-            poly->dimming_level = 20.0f;
+            Vec3_float_ *norm = &pTerrainNormals[norm_idx];
+            float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
+                (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
+                (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+            pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);*/
+
+            uint norm_idx = pTerrainNormalIndices[2 * (x * 128 + z) + 1];
+            assert(norm_idx < uNumTerrainNormals);
+
+            auto norm = &pTerrainNormals[norm_idx];
+            float dim =
+                ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
+                (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
+                (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+
+            // x start -65536 -> 65536
+            // y always 0
+            // z start -1 -> -65536 -> -1
+
+            // poly->dimming_level = 20.0 - floorf(20.0 * dim + 0.5f);
+
+
+            // adjusts sun dimming - needs better distance supplied
+            poly->dimming_level = ::GetActorTintColor(
+                (20.0 - floorf(20.0 * dim + 0.5f)), 0, /*lightdist*/((dist+1) * terrain_block_scale),
+                0, 0);
+
+
+
+
+            if (norm_idx < 0 || norm_idx > uNumTerrainNormals - 1)
+                norm = 0;
+            else
+                norm = &pTerrainNormals[norm_idx];
+
+            // if (false) {
+            //    // if (engine->config->allow_lightmaps) {
+            //    // Ritor1: significant fps slowdown
+           //     lightmap_builder->StackLights_TerrainFace(
+            //       norm, &Light_tile_dist, VertexRenderList, 4,
+            //        1);
+            //    decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm,
+            //        &Light_tile_dist, VertexRenderList, 4, 1);
+            //}
+
 
             poly->uEdgeList1Size = x;
             poly->uEdgeList2Size = z;
@@ -1166,7 +1246,7 @@ void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent,
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    float dim = poly->dimming_level / 20.0f;
+    float dim = (poly->dimming_level & 0xFF)/255.;  // 1 - (poly->dimming_level / 20.0f);
     int x1 = poly->uEdgeList1Size;
     int z1 = poly->uEdgeList2Size;
     int x2 = x1 + 1;
@@ -1220,7 +1300,7 @@ void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent,
 
 void RenderOpenGL::DrawOutdoorSkyD3D() {
     int v9;                      // eax@4
-    int v10;                     // ebx@4
+    int top_y_proj;                     // ebx@4
     int v13;                     // edi@6
     int v14;                     // ecx@6
     int v15;                     // eax@8
@@ -1228,39 +1308,48 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
     signed __int64 v17;          // qtt@13
     signed int v18;              // ecx@13
     struct Polygon pSkyPolygon;  // [sp+14h] [bp-150h]@1
-    int v30;                     // [sp+134h] [bp-30h]@1
+    int horizon_height_offset;                     // [sp+134h] [bp-30h]@1
     int v32;                     // [sp+13Ch] [bp-28h]@6
     int v33;                     // [sp+140h] [bp-24h]@2
     signed __int64 v34;          // [sp+144h] [bp-20h]@1
     int v35;                     // [sp+148h] [bp-1Ch]@4
     int v36;                     // [sp+14Ch] [bp-18h]@2
     int v37;                     // [sp+154h] [bp-10h]@8
-    int v38;                     // [sp+158h] [bp-Ch]@1
-    int v39;                     // [sp+15Ch] [bp-8h]@4
+    int bot_y_proj;                     // [sp+158h] [bp-Ch]@1
+    int v39;                    // [sp+15Ch] [bp-8h]@4
 
-    v30 =
+    double rot_to_rads = ((2 * pi_double) / 2048);
+
+    // lowers clouds as party goes up
+    horizon_height_offset =
         (signed __int64)((double)(pODMRenderParams->int_fov_rad *
-                                  pIndoorCameraD3D->vPartyPos.z) /
-                             ((double)pODMRenderParams->int_fov_rad + 8192.0) +
-                         (double)(pViewport->uScreenCenterY));
-    v34 = cos((double)pIndoorCameraD3D->sRotationX * 0.0030664064) *
-          pIndoorCameraD3D->GetFarClip();
-    v38 = (signed __int64)((double)(pViewport->uScreenCenterY) -
-                           (double)pODMRenderParams->int_fov_rad /
-                               (v34 + 0.0000001) *
-                               (sin((double)pIndoorCameraD3D->sRotationX *
-                                    0.0030664064) *
-                                    -pIndoorCameraD3D->GetFarClip() -
-                                (double)pIndoorCameraD3D->vPartyPos.z));
-    pSkyPolygon.Create_48607B(&stru_8019C8);  //заполняется ptr_38
-    pSkyPolygon.ptr_38->_48694B_frustum_sky();
+            pIndoorCameraD3D->vPartyPos.z) /
+            ((double)pODMRenderParams->int_fov_rad + 8192.0) +
+            (double)(pViewport->uScreenCenterY));
 
-    // if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
-    // pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
-    // else
-    // pSkyPolygon.uTileBitmapID = pOutdoor->sSky_TextureID;//179(original 166)
-    // pSkyPolygon.pTexture = (Texture_MM7 *)(pSkyPolygon.uTileBitmapID != -1 ?
-    // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
+    // magnitude in up direction
+    v34 = cos((double)pIndoorCameraD3D->sRotationX * rot_to_rads) *
+        pIndoorCameraD3D->GetFarClip();
+
+    bot_y_proj = (signed __int64)((double)(pViewport->uScreenCenterY) -
+        (double)pODMRenderParams->int_fov_rad /
+        (v34 + 0.0000001) *
+        (sin((double)pIndoorCameraD3D->sRotationX * rot_to_rads)
+            *
+            -pIndoorCameraD3D->GetFarClip() -
+            (double)pIndoorCameraD3D->vPartyPos.z));
+
+    // pSkyPolygon.Create_48607B(&SkyBillboard);  //заполняется ptr_38
+                                              // pSkyPolygon.ptr_38->_48694B_frustum_sky();
+    pSkyPolygon.texture = nullptr;
+    pSkyPolygon.ptr_38 = &SkyBillboard;
+
+                                              // if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
+                                              // pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
+                                              // else
+                                              // pSkyPolygon.uTileBitmapID = pOutdoor->sSky_TextureID;//179(original 166)
+                                              // pSkyPolygon.pTexture = (Texture_MM7 *)(pSkyPolygon.uTileBitmapID != -1 ?
+                                              // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
     pSkyPolygon.texture = pOutdoor->sky_texture;
     if (pSkyPolygon.texture) {
         pSkyPolygon.dimming_level = 0;
@@ -1291,11 +1380,11 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
 
         VertexRenderList[1].vWorldViewProjX =
             (double)(signed int)pViewport->uViewportTL_X;   // 8
-        VertexRenderList[1].vWorldViewProjY = (double)v38;  // 247
+        VertexRenderList[1].vWorldViewProjY = (double)bot_y_proj;  // 247
 
         VertexRenderList[2].vWorldViewProjX =
             (double)(signed int)pViewport->uViewportBR_X;   // 468
-        VertexRenderList[2].vWorldViewProjY = (double)v38;  // 247
+        VertexRenderList[2].vWorldViewProjY = (double)bot_y_proj;  // 247
 
         VertexRenderList[3].vWorldViewProjX =
             (double)(signed int)pViewport->uViewportBR_X;  // 468
@@ -1308,12 +1397,14 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
             224 * pMiscTimer->uTotalGameTimeElapsed;  // 7168
 
         pSkyPolygon.field_24 = 0x2000000;  // maybe attributes
+
+        double half_fov_angle_rads = ((pODMRenderParams->uCameraFovInDegrees - 1) * pi_double) / 360;
+
+        // far width per pixel??
         v33 = 65536 /
-              (signed int)(signed __int64)(((double)(pViewport->uViewportBR_X -
-                                                     pViewport->uViewportTL_X) /
-                                            2) /
-                                               tan(0.6457717418670654) +
-                                           0.5);
+            (signed int)(signed __int64)(((double)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2)
+                / tan(half_fov_angle_rads) +
+                0.5);
         for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i) {
             // rotate skydome(вращение купола
             // неба)--------------------------------------
@@ -1324,59 +1415,58 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
             // обзора. field_14 по западу и востоку. field_20 по югу и северу от
             // -25080 до 25080
             v39 = fixpoint_mul(
-                pSkyPolygon.ptr_38->viewing_angle_from_west_east,
-                v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-            v35 = v39 + pSkyPolygon.ptr_38->angle_from_north;
+                pSkyPolygon.ptr_38->CamVecLeft_Y,
+                v33 * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
+            v35 = v39 + pSkyPolygon.ptr_38->CamVecLeft_Z;
 
             v39 = fixpoint_mul(
-                pSkyPolygon.ptr_38->viewing_angle_from_north_south,
-                v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
-            v36 = v39 + pSkyPolygon.ptr_38->angle_from_east;
+                pSkyPolygon.ptr_38->CamVecFront_Y,
+                v33 * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
+            v36 = v39 + pSkyPolygon.ptr_38->CamVecFront_Z;
 
             v9 = fixpoint_mul(
                 pSkyPolygon.v_18.z,
-                v33 * (v30 - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-            v10 = pSkyPolygon.v_18.x + v9;
-            if (v10 > 0) v10 = 0;
+                v33 * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
+            top_y_proj = pSkyPolygon.v_18.x + v9;
+            if (top_y_proj > 0) top_y_proj = 0;
             v13 = v33 * (pViewport->uScreenCenterX -
-                         (signed __int64)VertexRenderList[i].vWorldViewProjX);
+                (signed __int64)VertexRenderList[i].vWorldViewProjX);
             v34 = -pSkyPolygon.field_24;
             v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0;
-            v14 = v33 * (v30 - v32);
+            v14 = v33 * (horizon_height_offset - v32);
             while (1) {
-                if (v10) {
+                if (top_y_proj) {
                     v37 = abs((int)v34 >> 14);
-                    v15 = abs(v10);
+                    v15 = abs(top_y_proj);
                     if (v37 <= v15 ||
                         v32 <= (signed int)pViewport->uViewportTL_Y) {
-                        if (v10 <= 0) break;
+                        if (top_y_proj <= 0) break;
                     }
                 }
                 v16 = fixpoint_mul(pSkyPolygon.v_18.z, v14);
                 --v32;
                 v14 += v33;
-                v10 = pSkyPolygon.v_18.x + v16;
+                top_y_proj = pSkyPolygon.v_18.x + v16;
             }
             HEXRAYS_LODWORD(v17) = HEXRAYS_LODWORD(v34) << 16;
             HEXRAYS_HIDWORD(v17) = v34 >> 16;
-            v18 = v17 / v10;
+            v18 = v17 / top_y_proj;
             if (v18 < 0) v18 = pIndoorCameraD3D->GetFarClip();
-            v37 = v35 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_west, v13);
+            v37 = v35 + fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_X, v13);
             v35 = 224 * pMiscTimer->uTotalGameTimeElapsed +
-                  ((signed int)fixpoint_mul(v37, v18) >> 3);
+                ((signed int)fixpoint_mul(v37, v18) >> 3);
             VertexRenderList[i].u =
                 (double)v35 /
-                (2 * (double)pSkyPolygon.texture->GetWidth() * 65536.0);
+                ((double)pSkyPolygon.texture->GetWidth() * 65536.0);
 
-            v36 = v36 + fixpoint_mul(pSkyPolygon.ptr_38->angle_from_south, v13);
+            v36 = v36 + fixpoint_mul(pSkyPolygon.ptr_38->CamVecFront_X, v13);
             v35 = 224 * pMiscTimer->uTotalGameTimeElapsed +
-                  ((signed int)fixpoint_mul(v36, v18) >> 3);
+                ((signed int)fixpoint_mul(v36, v18) >> 3);
             VertexRenderList[i].v =
                 (double)v35 /
-                (2 * (double)pSkyPolygon.texture->GetHeight() * 65536.0);
+                ((double)pSkyPolygon.texture->GetHeight() * 65536.0);
 
-            VertexRenderList[i].vWorldViewPosition.x =
-                pIndoorCameraD3D->GetFarClip();
+            VertexRenderList[i].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
             VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
         }
 
@@ -1390,12 +1480,12 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
 
         this->DrawOutdoorSkyPolygon(&pSkyPolygon);
 
-        VertexRenderList[0].vWorldViewProjY = (double)v10;
+        VertexRenderList[0].vWorldViewProjY = (double)top_y_proj;
         VertexRenderList[1].vWorldViewProjY =
             VertexRenderList[1].vWorldViewProjY + 30.0;
         VertexRenderList[2].vWorldViewProjY =
             VertexRenderList[2].vWorldViewProjY + 30.0;
-        VertexRenderList[3].vWorldViewProjY = (double)v10;
+        VertexRenderList[3].vWorldViewProjY = (double)top_y_proj;
 
         // this->DrawOutdoorSkyPolygon(&pSkyPolygon);
     }
@@ -1511,7 +1601,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         glEnd();
     }
 
-    uNumBillboardsToDraw = 0;
+    // uNumBillboardsToDraw = 0;
 
 
     if (config->is_using_fog) {
@@ -1585,12 +1675,11 @@ void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
     this->clip_y = y;
     this->clip_z = z;
     this->clip_w = w;
-    glScissor(x, y, z, w);
+    glScissor(x, 480-w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
 }
 
 void RenderOpenGL::ResetUIClipRect() {
-    this->SetUIClipRect(0, 0, this->window->GetWidth(),
-                        this->window->GetHeight());
+    this->SetUIClipRect(0, 0, this->window->GetWidth(), this->window->GetHeight());
 }
 
 void RenderOpenGL::PresentBlackScreen() {
@@ -1623,6 +1712,8 @@ void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
 }
 
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
+    if (!tex) __debugbreak();
+
     glEnable(GL_TEXTURE_2D);
     glColor3f(1, 1, 1);
     glEnable(GL_BLEND);
@@ -1774,7 +1865,7 @@ void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
                     color = uFaceColor;
                 }
                 // fontpix[x + y * uCharWidth] = Color32(color);
-                this->render_target_rgb[(uOutX+x)+(uOutY+y)*640] = Color32A(color);
+                this->render_target_rgb[(uOutX+x)+(uOutY+y)*640] = Color32(color);
             }
             ++pFontPixels;
         }
@@ -1800,7 +1891,7 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
                     : 0x7FF;  // transparent color 16bit
                               // render->uTargetGMask |
                               // render->uTargetBMask;
-                this->render_target_rgb[(x + dx) + (y + dy) * 640] = Color32A(color);
+                this->render_target_rgb[(x + dx) + (y + dy) * 640] = Color32(color);
                 // fontpix[dx + dy * uCharWidth] = Color32(color);
                 ++font_pixels;
             }
@@ -1813,7 +1904,7 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
                     uint8_t r = pPalette[index * 3 + 0];
                     uint8_t g = pPalette[index * 3 + 1];
                     uint8_t b = pPalette[index * 3 + 2];
-                    this->render_target_rgb[(x + dx) + (y + dy) * 640] = Color32A(r, g, b);
+                    this->render_target_rgb[(x + dx) + (y + dy) * 640] = Color32(r, g, b);
                     // fontpix[dx + dy * uCharWidth] = Color32(r, g, b);
                 }
                 ++font_pixels;
@@ -1832,9 +1923,9 @@ void RenderOpenGL::Present() {
         screen_text_overlay = render->CreateTexture_Blank(640, 480, IMAGE_FORMAT_A8R8G8B8);
     }
 
-    uint32_t *pix = (uint32_t*)screen_text_overlay->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+    uint32_t *pix = (uint32_t*)screen_text_overlay->GetPixels(IMAGE_FORMAT_A8R8G8B8);
     unsigned int num_pixels = screen_text_overlay->GetWidth() * screen_text_overlay->GetHeight();
-    unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_R8G8B8A8);
+    unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
 
     // update pixels
     memcpy(pix, this->render_target_rgb, num_pixels_bytes);
@@ -1948,7 +2039,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                         memcpy(ogl_draw_buildings_vertices, array_73D150,
                                sizeof(array_73D150));
 
-                        for (uint i = 1; i <= face.uNumVertices; i++) {
+                        /*for (uint i = 1; i <= face.uNumVertices; i++) {
                             if (model.pVertices.pVertices[face.pVertexIDs[0]]
                                     .z == array_73D150[i - 1].vWorldPosition.z)
                                 ++v53;
@@ -1967,7 +2058,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                                 pIndoorCameraD3D->Project(&array_73D150[i - 1],
                                     1, 0);
                             }
-                        }
+                        }*/
 
                         if (v53 == face.uNumVertices) {
                             poly->field_32 |= 1;
@@ -2004,16 +2095,16 @@ void RenderOpenGL::DrawBuildingsD3D() {
                                            0.0000001);
                             }
 
-                            if (v50) {
-                                poly->uNumVertices =
-                                    ODM_NearClip(face.uNumVertices);
+
+                            // this does not work for ogl - fix?
+                            /*if (v50) {
+                                poly->uNumVertices = ODM_NearClip(face.uNumVertices);
                                 ODM_Project(poly->uNumVertices);
                             }
                             if (v49) {
-                                poly->uNumVertices =
-                                    ODM_FarClip(face.uNumVertices);
+                                poly->uNumVertices = ODM_FarClip(face.uNumVertices);
                                 ODM_Project(poly->uNumVertices);
-                            }
+                            }*/
 
                             if (poly->uNumVertices) {
                                 if (poly->IsWater()) {
@@ -2046,7 +2137,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
     auto a4 = poly->pODMFace;
     auto uNumVertices = poly->uNumVertices;
 
-    int a2 = 0xFFFFFFFF;
+    unsigned int a2 = 0xFFFFFFFF;
     engine->AlterGamma_ODM(a4, &a2);
 
     if (!lightmap_builder->StationaryLightsCount ||
@@ -2055,7 +2146,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
         glDisable(GL_BLEND);
         glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
-        glBegin(GL_TRIANGLE_FAN);
+        glBegin(GL_TRIANGLE_FAN);  // GL_TRIANGLE_FAN
 
         int outline_color;
         if (OS_GetTime() % 300 >= 150)
@@ -2105,6 +2196,12 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
         }
 
         glEnd();
+
+        GLenum err;
+        while ((err = glGetError()) != GL_NO_ERROR) {
+            log->Warning(L"OpenGL error: (%u)", err);
+        }
+
     } else {
         /*for (uint i = 0; i < uNumVertices; ++i)
         {
@@ -2204,6 +2301,177 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
     }
 }
 
+void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
+    int uPackedID, unsigned int uColor,
+    int a8) {
+    if (uNumVertices < 3) {
+        return;
+    }
+
+    _set_3d_projection_matrix();
+    _set_3d_modelview_matrix();
+
+    unsigned int sCorrectedColor = uColor;
+
+    TextureOpenGL *texture = (TextureOpenGL *)pFace->GetTexture();
+
+    if (lightmap_builder->StationaryLightsCount) sCorrectedColor = -1;
+    engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+
+    if (pFace->uAttributes & FACE_OUTLINED) {
+        if (OS_GetTime() % 300 >= 150)
+            uColor = sCorrectedColor = 0xFF20FF20;
+        else
+            uColor = sCorrectedColor = 0xFF109010;
+    }
+
+    if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
+        /*
+        __debugbreak();
+        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
+        false)); ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0,
+        D3DTSS_ADDRESS, D3DTADDRESS_WRAP)); for (uint i = 0; i <
+        uNumVertices; ++i)
+        {
+        d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
+        d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
+        d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 /
+        (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+        d3d_vertex_buffer[i].rhw = 1.0 /
+        array_507D30[i].vWorldViewPosition.x; d3d_vertex_buffer[i].diffuse =
+        sCorrectedColor; d3d_vertex_buffer[i].specular = 0;
+        d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u /
+        (double)pFace->GetTexture()->GetWidth();
+        d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v /
+        (double)pFace->GetTexture()->GetHeight();
+        }
+
+        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
+        D3DTADDRESS_WRAP)); ErrD3D(pRenderD3D->pDevice->SetTexture(0,
+        nullptr));
+        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+        d3d_vertex_buffer, uNumVertices, 28));
+        lightmap_builder->DrawLightmaps(-1);
+        */
+    } else {
+        if (!lightmap_builder->StationaryLightsCount ||
+            _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
+            glEnable(GL_TEXTURE_2D);
+            glDisable(GL_BLEND);
+            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+            // glDisable(GL_CULL_FACE);  // testing
+            // glDisable(GL_DEPTH_TEST);
+
+            // if (uNumVertices != 3 ) return; //3 ,4, 5 ,6
+
+            glBegin(GL_TRIANGLE_FAN);
+
+            for (uint i = 0; i < uNumVertices; ++i) {
+                d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
+                d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
+                d3d_vertex_buffer[i].pos.z =
+                    1.0 -
+                    1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+
+                d3d_vertex_buffer[i].rhw =
+                    1.0 / array_507D30[i].vWorldViewPosition.x;
+                d3d_vertex_buffer[i].diffuse = sCorrectedColor;
+                d3d_vertex_buffer[i].specular = 0;
+                d3d_vertex_buffer[i].texcoord.x =
+                    array_507D30[i].u / (double)pFace->GetTexture()->GetWidth();
+                d3d_vertex_buffer[i].texcoord.y =
+                    array_507D30[i].v /
+                    (double)pFace->GetTexture()->GetHeight();
+
+
+                /*glTexCoord2f(d3d_vertex_buffer[i].texcoord.x,
+                    d3d_vertex_buffer[i].texcoord.y);*/
+
+                glTexCoord2f((pFace->pVertexUIDs[i]/ (double)pFace->GetTexture()->GetWidth()), (pFace->pVertexVIDs[i]/ (double)pFace->GetTexture()->GetHeight()));
+
+
+                 /*glColor4f(
+                ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
+                ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
+                ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
+                config->is_using_specular
+                ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f
+                : 1.0f);*/
+
+                glColor4f(1, 1, 1, 1);
+
+                /*glVertex3f(d3d_vertex_buffer[i].pos.x,
+                d3d_vertex_buffer[i].pos.z,
+                d3d_vertex_buffer[i].pos.y);*/
+
+
+
+                glVertex3f(pIndoor->pVertices[pFace->pVertexIDs[i]].x,
+                    pIndoor->pVertices[pFace->pVertexIDs[i]].z,
+                    pIndoor->pVertices[pFace->pVertexIDs[i]].y);
+            }
+
+            glEnd();
+        } else {
+            /*
+            glEnable(GL_TEXTURE_2D);
+            glDisable(GL_BLEND);
+            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+            glBegin(GL_TRIANGLE_FAN);
+
+            for (uint i = 0; i < uNumVertices; ++i) {
+            d3d_vertex_buffer[i].pos.x =
+            array_507D30[i].vWorldViewProjX; d3d_vertex_buffer[i].pos.y =
+            array_507D30[i].vWorldViewProjY; d3d_vertex_buffer[i].pos.z = 1.0
+            - 1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+            d3d_vertex_buffer[i].rhw = 1.0 /
+            array_507D30[i].vWorldViewPosition.x;
+            d3d_vertex_buffer[i].diffuse = uColor;
+            d3d_vertex_buffer[i].specular = 0;
+            d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u /
+            (double)pFace->GetTexture()->GetWidth();
+            d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v /
+            (double)pFace->GetTexture()->GetHeight();
+            }
+            glBindTexture(GL_TEXTURE_2D,
+            face_texture->GetOpenGlTexture());
+            ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR |
+            D3DFVF_TEX1, d3d_vertex_buffer, uNumVertices, 28));
+
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
+            D3DCULL_NONE)); lightmap_builder->DrawLightmaps(-1);
+
+            for (uint i = 0; i < uNumVertices; ++i)
+            d3d_vertex_buffer[i].diffuse = sCorrectedColor;
+
+            glBindTexture(GL_TEXTURE_2D,
+            face_texture->GetOpenGlTexture());
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
+            TRUE));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,
+            TRUE));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
+            D3DBLEND_ZERO));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
+            D3DBLEND_SRCCOLOR));
+            ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
+            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR |
+            D3DFVF_TEX1, d3d_vertex_buffer, uNumVertices, 28));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
+            D3DBLEND_ONE));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
+            D3DBLEND_ZERO));
+            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,
+            FALSE));
+            */
+        }
+    }
+}
+
 bool RenderOpenGL::SwitchToWindow() {
     // pParty->uFlags |= PARTY_FLAGS_1_0002;
     pViewport->SetFOV(_6BE3A0_fov);
@@ -2231,9 +2499,10 @@ bool RenderOpenGL::Initialize(OSWindow *window_) {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glViewport(
-            0, 0, window->GetWidth(),
-            window->GetHeight());
+        glViewport(0, 0, window->GetWidth(), window->GetHeight());
+        glScissor(0, 0, window->GetWidth(), window->GetHeight());
+
+        glEnable(GL_SCISSOR_TEST);
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -2265,15 +2534,45 @@ bool RenderOpenGL::Initialize(OSWindow *window_) {
 }
 
 void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) {
-    // render target now 32 bit - format R8G8B8A8
-    render_target_rgb[x + window->GetWidth() * y] = Color32A(color);
+    // render target now 32 bit - format A8R8G8B8
+    render_target_rgb[x + window->GetWidth() * y] = Color32(color);
 }
 
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
                                 unsigned int uWidth, unsigned int uHeight,
                                 unsigned int uColor16) {
-    int32_t col = Color32A(uColor16);
-    for (unsigned int dy = 0; dy < uHeight; ++dy) {
-        memset32(this->render_target_rgb + ((uY+dy) * window->GetWidth() + uX), col, uWidth);
+    // uint32_t col = Color32(uColor16);
+    // for (unsigned int dy = 0; dy < uHeight; ++dy) {
+    //    memset32(this->render_target_rgb + ((uY+dy) * window->GetWidth() + uX), col, uWidth);
+    // }
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+
+    unsigned int b = (uColor16 & 0x1F) * 8;
+    unsigned int g = ((uColor16 >> 5) & 0x3F) * 4;
+    unsigned int r = ((uColor16 >> 11) & 0x1F) * 8;
+    glColor3ub(r, g, b);
+
+    float depth = 0;
+
+    GLfloat Vertices[] = { (float)uX, (float)uY, depth,
+        (float)(uX+uWidth), (float)uY, depth,
+        (float)(uX + uWidth), (float)(uY+uHeight), depth,
+        (float)uX, (float)(uY + uHeight), depth };
+
+    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
+        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        log->Warning(L"OpenGL error: (%u)", err);
     }
 }
+
+

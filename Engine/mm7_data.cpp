@@ -27,7 +27,7 @@ std::array<Award, 105> pAwards;
 std::array<AwardType, 1000> achieved_awards;
 int num_achieved_awards;
 int full_num_items_in_book;
-std::array<stru160, 66> array_4EB8B8 = {
+std::array<stru160, 66> array_4EB8B8 = {  // vertices for spheres
     {stru160(0.0000000f, 0.0000000f, 1.0000000f),
      stru160(0.0000000f, 0.3826830f, 0.9238799f),
      stru160(0.3826830f, 0.0000000f, 0.9238799f),
@@ -95,7 +95,7 @@ std::array<stru160, 66> array_4EB8B8 = {
      stru160(-0.8164970f, 0.4082480f, -0.4082480f),
      stru160(-0.4082480f, 0.8164970f, -0.4082480f)}};
 std::array<stru160, 128> array_4EBBD0;
-std::array<__int32, 128 * 3> array_4EBBD0_x = {
+std::array<__int32, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sphere
     {0x00000000, 0x00000001, 0x00000002, 0x00000001, 0x00000003, 0x00000002,
      0x00000001, 0x00000004, 0x00000003, 0x00000003, 0x00000005, 0x00000002,
      0x00000004, 0x00000006, 0x00000003, 0x00000006, 0x00000007, 0x00000003,
@@ -206,7 +206,7 @@ int pWindowList_at_506F50_minus1_indexing[1];
 int dword_4C9890[10];
 int dword_4C9920[16];
 char _4D864C_force_sw_render_rules;
-float flt_4D86CC = 1.0f;
+float flt_4D86CC = 1.0f;  // spot light scale??
 int dword_4D86D8 = 0x40000000;
 
 float flt_4D84E8 = 0.0f;
@@ -516,7 +516,7 @@ signed int sRecoveryTime;    // idb
 unsigned int uRequiredMana;  // idb
 int _506348_current_lloyd_playerid;
 __int64 lloyds_beacon_spell_level;  // qword_506350
-int dword_506364;
+int MapBookOpen;
 int books_page_number;
 int books_primary_item_per_page;
 int Autonotes_Instructors_page_flag;  // dword_50652C
@@ -591,7 +591,7 @@ std::array<unsigned __int8, 5> IsPlayerWearingWatersuit;
 std::array<char, 54> party_has_equipment;
 std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
-unsigned int uNumBlueFacesInBLVMinimap;
+unsigned int uNumBlueFacesInBLVMinimap;  // could remove
 std::array<unsigned __int16, 50> pBlueFacesInBLVMinimapIDs;
 std::array<class Image *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
@@ -701,7 +701,7 @@ struct TileTable *pTileTable;                                        // idb
 std::array<char, 777> pDefaultSkyTexture;                            // idb
 std::array<char, 16> byte_6BE124_cfg_textures_DefaultGroundTexture;  // idb
 int _6BE134_odm_main_tile_group;
-int dword_6BE138;  // are you sure check game menu
+int dword_6BE138;  // are you sure check game menu - load slots
 int dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;

@@ -13,7 +13,7 @@
 #define FACE_FLUID              0x00000010          // wavy animated water or lava
 #define FACE_FLOW_VERTICAL      0x00000020  // Vertical flow of the lava or water
 #define FACE_DONT_CACHE_TEXTURE 0x00000040  // do not load face texture if it isn't loaded already
-#define FACE_UNKNOW7            0x00000080
+#define FACE_RENDERED           0x00000080  // face has been rendered - ie seen by party
 #define FACE_XY_PLANE           0x00000100
 #define FACE_XZ_PLANE           0x00000200
 #define FACE_YZ_PLANE           0x00000400

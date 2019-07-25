@@ -122,7 +122,7 @@ extern signed int sRecoveryTime;    // idb
 extern unsigned int uRequiredMana;  // idb
 extern int _506348_current_lloyd_playerid;
 extern int64_t lloyds_beacon_spell_level;  // qword_506350
-extern int dword_506364;
+extern int MapBookOpen;
 // extern Texture_MM7 *dword_50640C[];
 extern int
     books_page_number;  // number for page in books(номер страницы в книгах)
@@ -201,7 +201,7 @@ extern std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 extern std::array<char, 54> party_has_equipment;
 extern std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
-extern unsigned int uNumBlueFacesInBLVMinimap;
+extern unsigned int uNumBlueFacesInBLVMinimap;  // could remove
 extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 extern std::array<class Image *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;

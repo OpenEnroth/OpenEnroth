@@ -4572,7 +4572,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
 
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result], 0);
+                (int)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 game_viewport_x, game_viewport_y, game_viewport_width,
                 game_viewport_height, 1, 0, UIMSG_CastSpell_Telekinesis, 0, 0,
@@ -4594,7 +4594,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             if (pGUIWindow_CastTargetedSpell) return;
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result], 0);
+                (int)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 0x34u, 0x1A6u, 0x23u, 0, 2, 0,
                 UIMSG_CastSpell_Character_Small_Improvement, 0, 0x31u, "");
@@ -4615,7 +4615,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
         if (flags & ON_CAST_DarkSacrifice && !pGUIWindow_CastTargetedSpell) {
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result], 0);
+                (int)&pCastSpellInfo[result]);
             pBtn_NPCLeft = pGUIWindow_CastTargetedSpell->CreateButton(
                 469, 178, ui_btn_npc_left->GetWidth(),
                 ui_btn_npc_left->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 0, 0,

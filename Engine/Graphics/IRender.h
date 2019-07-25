@@ -45,9 +45,6 @@ struct RenderBillboard {
     SpriteFrame *pSpriteFrame;
 };
 
-uint32_t Color32A(uint16_t color16);
-uint32_t Color32A(uint32_t r, uint32_t g, uint32_t b, uint32_t a = 0xFF);
-
 uint16_t Color16(uint32_t r, uint32_t g, uint32_t b);
 uint32_t Color32(uint16_t color16);
 uint32_t Color32(uint32_t r, uint32_t g, uint32_t b, uint32_t a = 0xFF);
@@ -92,7 +89,7 @@ struct ODMRenderParams {
     unsigned int _unused_uNumSpans;
     unsigned int uNumBillboards;
     float field_40;
-    int field_44;
+    // int field_44;
     int outdoor_grid_band_3;
     int field_4C;
     int field_50;
@@ -132,7 +129,7 @@ struct RenderVertexSoft {
 struct RenderVertexD3D3 {
     Vec3_float_ pos;
     float rhw;
-    int diffuse;
+    unsigned int diffuse;
     unsigned int specular;
     Vec2_float_ texcoord;
 };
@@ -259,8 +256,7 @@ class IRender {
     virtual void BltBackToFontFast(int a2, int a3, Rect *a4) = 0;
     virtual void BeginSceneD3D() = 0;
 
-    virtual unsigned int GetActorTintColor(float a2, int tint, int a4, int a5,
-                                           RenderBillboard *a6) = 0;
+    virtual unsigned int GetActorTintColor(int DimLevel, int tint, float WorldViewX, int a5, RenderBillboard *Billboard) = 0;
 
     virtual void DrawPolygon(struct Polygon *a3) = 0;
     virtual void DrawTerrainPolygon(struct Polygon *a4, bool transparent,
@@ -269,11 +265,7 @@ class IRender {
                                    struct BLVFace *a3, int uPackedID,
                                    unsigned int uColor, int a8) = 0;
 
-    virtual void MakeParticleBillboardAndPush_BLV(SoftwareBillboard *a2,
-                                                  Texture *texture,
-                                                  unsigned int uDiffuse,
-                                                  int angle) = 0;
-    virtual void MakeParticleBillboardAndPush_ODM(SoftwareBillboard *a2,
+    virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
                                                   unsigned int uDiffuse,
                                                   int angle) = 0;
@@ -283,7 +275,7 @@ class IRender {
     virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
                                       RenderBillboard *billboard) = 0;
     virtual void _4A4CC9_AddSomeBillboard(
-        struct stru6_stru1_indoor_sw_billboard *a1, int diffuse) = 0;
+        struct SpellFX_Billboard *a1, int diffuse) = 0;
     virtual void TransformBillboardsAndSetPalettesODM() = 0;
     virtual void DrawBillboardList_BLV() = 0;
 
@@ -471,25 +463,23 @@ int ODM_FarClip(unsigned int uNumVertices);
 
 /*  142 */
 #pragma pack(push, 1)
-struct stru149 {
-    void _48616B_frustum_odm(int a2, int a3, int a4, int a5, int a6, int a7);
-    void _48653D_frustum_blv(int a2, int a3, int a4, int a5, int a6, int a7);
-    void _48694B_frustum_sky();
+struct SkyBillboardStruct {
+    void CalcSkyFrustumVec(int a2, int a3, int a4, int a5, int a6, int a7);
 
     int field_0_party_dir_x;
     int field_4_party_dir_y;
     int field_8_party_dir_z;
-    int angle_from_north;  // field_C
-    int angle_from_west;   // field_10
-    int viewing_angle_from_west_east;
-    int angle_from_east;                 // field_18
-    int angle_from_south;                // field_1C
-    int viewing_angle_from_north_south;  // field_20
-    int field_24;
-    int field_28;
+    int CamVecLeft_Z;
+    int CamVecLeft_X;
+    int CamVecLeft_Y;
+    int CamVecFront_Z;
+    int CamVecFront_X;
+    int CamVecFront_Y;
+    int CamLeftDot;
+    int CamFrontDot;
 };
 #pragma pack(pop)
-extern stru149 stru_8019C8;
+extern SkyBillboardStruct SkyBillboard;
 
 unsigned int _452442_color_cvt(uint16_t a1, uint16_t a2, int a3, int a4);
 

@@ -1912,7 +1912,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         unsigned int uW, unsigned int uZoom,
                         unsigned int bRedrawOdmMinimap) {
     signed int pW;   // ebx@23
-    int v15;         // eax@23
+    int LineGreyDim;         // eax@23
     double startx;      // st7@30
     signed int ypix;  // eax@37
     // unsigned __int16 *v28; // ecx@37
@@ -2004,213 +2004,46 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 ypix = ypixoffset16 >> 16;
             }
             // draw image
-
-            uint32_t *dst = (uint32_t*)minimaptemp->GetPixels(IMAGE_FORMAT_R8G8B8A8);
-
-            // real dodgy conversion to update other pixels
-            for (unsigned int i = 0; i < uWidth*uHeight; ++i) {
-                uint32_t p = minitempix[i];
-                dst[i] = ((p & 0xFF000000) | (p & 0x000000FF) << 16 | (p & 0x0000FF00) | (p & 0x00FF0000) >> 16);
-            }
             render->Update_Texture(minimaptemp);
-
             render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
             // minimaptemp->Release();
         }
-
-        uNumBlueFacesInBLVMinimap = 0;
     } else {  // uCurrentlyLoadedLevelType == LEVEL_Indoor
         render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
-        uNumBlueFacesInBLVMinimap = 0;
 
         for (uint i = 0; i < (uint)pIndoor->pMapOutlines->uNumOutlines; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines->pOutlines[i];
-            // BLVFace* pFace1 = &pIndoor->pFaces[pOutline->uFace1ID];
-            // BLVFace* pFace2 = &pIndoor->pFaces[pOutline->uFace2ID];
+
             if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
                 pIndoor->pFaces[pOutline->uFace2ID].Visible()) {
-                if (pOutline->uFlags & 1) {
-                    if (bWizardEyeActive && uWizardEyeSkillLevel >= 3 &&
-                        (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
-                         pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
-                        (pIndoor
-                             ->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID]
-                                               .uFaceExtraID]
-                             .uEventID ||
-                         pIndoor
-                             ->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID]
-                                               .uFaceExtraID]
-                             .uEventID)) {
-                        if (uNumBlueFacesInBLVMinimap < 49)
-                            pBlueFacesInBLVMinimapIDs
-                                [uNumBlueFacesInBLVMinimap++] = i;
-                    } else {
-                        pX = uCenterX +
-                             ((signed int)(((unsigned int)(fixpoint_mul(
-                                                uZoom,
-                                                pIndoor
-                                                    ->pVertices
-                                                        [pIndoor->pMapOutlines
-                                                             ->pOutlines[i]
-                                                             .uVertex1ID]
-                                                    .x))
-                                            << 16) -
-                                           uZoom * pParty->vPosition.x) >>
-                              16);
-                        pY = uCenterY -
-                             ((signed int)(((unsigned int)(fixpoint_mul(
-                                                uZoom,
-                                                pIndoor
-                                                    ->pVertices
-                                                        [pIndoor->pMapOutlines
-                                                             ->pOutlines[i]
-                                                             .uVertex1ID]
-                                                    .y))
-                                            << 16) -
-                                           uZoom * pParty->vPosition.y) >>
-                              16);
-                        pZ = uCenterX +
-                             ((signed int)(((unsigned int)(fixpoint_mul(
-                                                uZoom,
-                                                pIndoor
-                                                    ->pVertices
-                                                        [pIndoor->pMapOutlines
-                                                             ->pOutlines[i]
-                                                             .uVertex2ID]
-                                                    .x))
-                                            << 16) -
-                                           uZoom * pParty->vPosition.x) >>
-                              16);
-                        pW = uCenterY -
-                             ((signed int)(((unsigned int)(fixpoint_mul(
-                                                uZoom,
-                                                pIndoor
-                                                    ->pVertices
-                                                        [pIndoor->pMapOutlines
-                                                             ->pOutlines[i]
-                                                             .uVertex2ID]
-                                                    .y))
-                                            << 16) -
-                                           uZoom * pParty->vPosition.y) >>
-                              16);
-                        v15 = abs(pOutline->sZ - pParty->vPosition.z) / 8;
-                        if (v15 > 100) v15 = 100;
-                        render->RasterLine2D(pX, pY, pZ, pW,
-                                             viewparams->pPalette[-v15 + 200]);
-                    }
-                    continue;
-                }
-                if (pIndoor->pFaces[pOutline->uFace1ID].uAttributes &
-                        FACE_UNKNOW7 ||
-                    pIndoor->pFaces[pOutline->uFace2ID].uAttributes &
-                        FACE_UNKNOW7) {
+                if (pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_RENDERED ||
+                    pIndoor->pFaces[pOutline->uFace2ID].uAttributes & FACE_RENDERED) {
                     pOutline->uFlags = pOutline->uFlags | 1;
                     pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
+
+                    int Vert1X = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].x - pParty->vPosition.x;
+                    int Vert2X = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].x - pParty->vPosition.x;
+                    int Vert1Y = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].y - pParty->vPosition.y;
+                    int Vert2Y = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].y - pParty->vPosition.y;
+
+                    int linex = uCenterX + fixpoint_mul(uZoom, Vert1X);
+                    int liney = uCenterY - fixpoint_mul(uZoom, Vert1Y);
+                    int linez = uCenterX + fixpoint_mul(uZoom, Vert2X);
+                    int linew = uCenterY - fixpoint_mul(uZoom, Vert2Y);
+
                     if (bWizardEyeActive && uWizardEyeSkillLevel >= 3 &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
                          pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
-                        (pIndoor
-                             ->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID]
-                                               .uFaceExtraID]
-                             .uEventID ||
-                         pIndoor
-                             ->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID]
-                                               .uFaceExtraID]
-                             .uEventID)) {
-                        if (uNumBlueFacesInBLVMinimap < 49)
-                            pBlueFacesInBLVMinimapIDs
-                                [uNumBlueFacesInBLVMinimap++] = i;
+                        (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
+                         pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace2ID].uFaceExtraID].uEventID)) {
+                        render->RasterLine2D(linex, liney, linez, linew, ui_game_minimap_outline_color);
                     } else {
-                        pX = uCenterX +
-                             ((signed int)(((unsigned int)(fixpoint_mul(
-                                                uZoom,
-                                                pIndoor
-                                                    ->pVertices
-                                                        [pIndoor->pMapOutlines
-                                                             ->pOutlines[i]
-                                                             .uVertex1ID]
-                                                    .x))
-                                            << 16) -
-                                           uZoom * pParty->vPosition.x) >>
-                              16);
-                        pY = uCenterY -
-                             ((signed int)(((unsigned int)(fixpoint_mul(
-                                                uZoom,
-                                                pIndoor
-                                                    ->pVertices
-                                                        [pIndoor->pMapOutlines
-                                                             ->pOutlines[i]
-                                                             .uVertex1ID]
-                                                    .y))
-                                            << 16) -
-                                           uZoom * pParty->vPosition.y) >>
-                              16);
-                        pZ = uCenterX +
-                             ((signed int)(((unsigned int)(fixpoint_mul(
-                                                uZoom,
-                                                pIndoor
-                                                    ->pVertices
-                                                        [pIndoor->pMapOutlines
-                                                             ->pOutlines[i]
-                                                             .uVertex2ID]
-                                                    .x))
-                                            << 16) -
-                                           uZoom * pParty->vPosition.x) >>
-                              16);
-                        pW = uCenterY -
-                             ((signed int)(((unsigned int)(fixpoint_mul(
-                                                uZoom,
-                                                pIndoor
-                                                    ->pVertices
-                                                        [pIndoor->pMapOutlines
-                                                             ->pOutlines[i]
-                                                             .uVertex2ID]
-                                                    .y))
-                                            << 16) -
-                                           uZoom * pParty->vPosition.y) >>
-                              16);
-                        v15 = abs(pOutline->sZ - pParty->vPosition.z) / 8;
-                        if (v15 > 100) v15 = 100;
-                        render->RasterLine2D(pX, pY, pZ, pW,
-                                             viewparams->pPalette[-v15 + 200]);
+                        LineGreyDim = abs(pOutline->sZ - pParty->vPosition.z) / 8;
+                        if (LineGreyDim > 100) LineGreyDim = 100;
+                        render->RasterLine2D(linex, liney, linez, linew, viewparams->pPalette[-LineGreyDim + 200]);
                     }
-                    continue;
                 }
             }
-        }
-
-        for (uint i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
-            BLVMapOutline *pOutline =
-                &pIndoor->pMapOutlines->pOutlines[pBlueFacesInBLVMinimapIDs[i]];
-            pX = uCenterX +
-                 ((signed int)(((unsigned int)(fixpoint_mul(
-                                    uZoom,
-                                    pIndoor->pVertices[pOutline->uVertex1ID].x))
-                                << 16) -
-                               uZoom * pParty->vPosition.x) >>
-                  16);
-            pY = uCenterY -
-                 ((signed int)(((unsigned int)(fixpoint_mul(
-                                    uZoom,
-                                    pIndoor->pVertices[pOutline->uVertex1ID].y))
-                                << 16) -
-                               uZoom * pParty->vPosition.y) >>
-                  16);
-            pZ = uCenterX +
-                 ((signed int)(((unsigned int)(fixpoint_mul(
-                                    uZoom,
-                                    pIndoor->pVertices[pOutline->uVertex2ID].x))
-                                << 16) -
-                               uZoom * pParty->vPosition.x) >>
-                  16);
-            pW = uCenterY -
-                 ((signed int)(((unsigned int)(fixpoint_mul(
-                                    uZoom,
-                                    pIndoor->pVertices[pOutline->uVertex2ID].y))
-                                << 16) -
-                               uZoom * pParty->vPosition.y) >>
-                  16);
-            render->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
         }
     }
 
@@ -2225,9 +2058,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if ((signed int)rotate < 640) arrow_idx = 1;
     if ((signed int)rotate <= 384) arrow_idx = 0;
     if ((signed int)rotate < 128 || (signed int)rotate > 1920) arrow_idx = 7;
-    render->DrawTextureAlphaNew((uCenterX - 3) / 640.0f,
-                                (uCenterY - 3) / 480.0f,
-                                game_ui_minimap_dirs[arrow_idx]);
+    render->DrawTextureAlphaNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
@@ -2347,29 +2178,20 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 //  render->raster_clip_w )
                 {
                     if ((signed int)uZoom > 512) {
-                        render->RasterLine2D(
-                            pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1,
-                            pPoint_Y + 1, ui_game_minimap_decoration_color_1);
-                        render->RasterLine2D(
-                            pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y + 1,
-                            ui_game_minimap_decoration_color_1);
-                        render->RasterLine2D(
-                            pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1,
-                            pPoint_Y + 1, ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X - 1, pPoint_Y - 1, pPoint_X - 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X, pPoint_Y - 1, pPoint_X, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X + 1, pPoint_Y - 1, pPoint_X + 1, pPoint_Y + 1, ui_game_minimap_decoration_color_1);
                     } else {
-                        render->RasterLine2D(
-                            pPoint_X, pPoint_Y, pPoint_X, pPoint_Y,
-                            ui_game_minimap_decoration_color_1);
+                        render->RasterLine2D(pPoint_X, pPoint_Y, pPoint_X, pPoint_Y, ui_game_minimap_decoration_color_1);
                     }
                 }
             }
         }
     }
+
     render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_minimap_frame);
     render->SetUIClipRect(541, 0, 567, 480);
-    render->DrawTextureAlphaNew(
-        (floorf(((double)pParty->sRotationY * 0.1171875) + 0.5f) + 285) /
-            640.0f,
+    render->DrawTextureAlphaNew((floorf(((double)pParty->sRotationY * 0.1171875) + 0.5f) + 285) / 640.0f,
         136 / 480.0f, game_ui_minimap_compass);
     render->ResetUIClipRect();
 }

@@ -563,28 +563,16 @@ void Keyboard::ProcessInputActions() {
                             break;
                         }
                         if (!uActiveCharacter) break;
-                        uchar quickSpellNumber =
-                            pPlayers[uActiveCharacter]->uQuickSpell;
-                        v9 = pPlayers[uActiveCharacter]
-                                 ->pActiveSkills[quickSpellNumber / 11 + 12];
-                        bool enoughMana = false;
-                        if ((v9 & 0x100) != 0) {
-                            enoughMana = pSpellDatas[quickSpellNumber]
-                                             .uMagisterLevelMana <
-                                         pPlayers[uActiveCharacter]->sMana;
-                        } else if ((v9 & 0x80) != 0) {
-                            enoughMana =
-                                pSpellDatas[quickSpellNumber].uMasterLevelMana <
-                                pPlayers[uActiveCharacter]->sMana;
-                        } else if ((v9 & 0x40) != 0) {
-                            enoughMana =
-                                pSpellDatas[quickSpellNumber].uExpertLevelMana <
-                                pPlayers[uActiveCharacter]->sMana;
-                        } else {
-                            enoughMana =
-                                pSpellDatas[quickSpellNumber].uNormalLevelMana <
-                                pPlayers[uActiveCharacter]->sMana;
-                        }
+
+                        uchar quickSpellNumber = pPlayers[uActiveCharacter]->uQuickSpell;
+                        int skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_TYPE(quickSpellNumber / 11 + 12));
+
+                        int uRequiredMana = 0;
+                        if (!engine->config->debug_all_magic)
+                            uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_level - 1];
+
+                        bool enoughMana = (pPlayers[uActiveCharacter]->sMana >= uRequiredMana);
+
                         if (!pPlayers[uActiveCharacter]->uQuickSpell ||
                             engine->IsUnderwater() || !enoughMana) {
                             pPartyActionQueue = pPartyActionQueue;

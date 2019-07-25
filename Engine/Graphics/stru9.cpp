@@ -5,7 +5,7 @@
 #include "IndoorCameraD3D.h"
 
 //----- (00498377) --------------------------------------------------------
-bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,
+bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,  // test skipping this
                     unsigned int uNumVertices,
                     IndoorCameraD3D_Vec4 *pVertices,
                     RenderVertexSoft *pVertices2,
@@ -17,7 +17,11 @@ bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,
 
     // __debugbreak();
     // thisa = this;
-    return true;
+
+
+    return true;  // testing bypass
+
+
 
     static RenderVertexSoft static_AE3FB4;
     /*static bool __init_flag1 = false;
@@ -78,9 +82,9 @@ bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,
             for (int i = 0; i < (signed int)*pOutNumVertices; i++) {
                 // v12 = &pVertices[result];
                 if (result) {
-                    if (_4989E1(&pVertices2[i], &pVertices2[i], pPortalBounding,
+                    if (DoDecalVertsNeedClipping(&pVertices2[i], &pVertices2[i], pPortalBounding,
                                 &static_AE3FA4) &&
-                        _498774(&pVertices2[i], &pVertices2[i], pPortalBounding,
+                        ClipDecalVertsToFace(&pVertices2[i], &pVertices2[i], pPortalBounding,
                                 &static_AE3FA4, &static_AE3FB4))
                         AddVertex(&static_AE33A0, &static_AE3FB4);
                 } else {
@@ -98,9 +102,9 @@ bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,
                 *pOutNumVertices = 0;
                 return true;
             }
-            if (_4989E1(&pVertices2[result], v19, pPortalBounding,
+            if (DoDecalVertsNeedClipping(&pVertices2[result], v19, pPortalBounding,
                         &static_AE3FA4) &&
-                _498774(&pVertices2[result], v19, pPortalBounding,
+                ClipDecalVertsToFace(&pVertices2[result], v19, pPortalBounding,
                         &static_AE3FA4, &static_AE3FB4))
                 AddVertex(&static_AE33A0, &static_AE3FB4);
 
@@ -157,71 +161,72 @@ bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,
     return true;
 }
 
-bool stru9::CalcPortalShape(RenderVertexSoft *a1, signed int a2,
-                            RenderVertexSoft *pVertices,
+bool stru9::AdjustVerticesToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
+                            RenderVertexSoft *pOutVertices,
                             unsigned int *pOutNumVertices,
-                            struct Vec3_float_ *a5, float a6, char *a7,
+                            struct Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
                             int unused) {
-    double pLinelength1;         // st7@1
+    // this cycles through adjust vertice posisiton to supplied frustum plane
+    // points are inside frstum plane when point dot product is greater than camera dot distance
+
     RenderVertexSoft *pLineEnd;  // ecx@9
     double pLinelength2;         // st7@9
     double t;                    // st6@12
-    int v19;                     // [sp+Ch] [bp-Ch]@7
-    bool v21;                    // [sp+14h] [bp-4h]@2
 
-    RenderVertexSoft *pLineStart = &a1[0];
+    RenderVertexSoft *pLineStart = &pInVertices[0];
     // pVertices = a3;
-    pLinelength1 = a5->x * a1[0].vWorldPosition.x +
-                   a1[0].vWorldPosition.y * a5->y +
-                   a1[0].vWorldPosition.z * a5->z;
+    double pLinelength1 = CamFrustumNormal->x * pInVertices[0].vWorldPosition.x +
+                    pInVertices[0].vWorldPosition.y * CamFrustumNormal->y +
+                    pInVertices[0].vWorldPosition.z * CamFrustumNormal->z;
     // v20 = v13;
-    v21 = pLinelength1 >= a6;
+    bool Vert1Inside = pLinelength1 >= CamDotDistance;
 
     *pOutNumVertices = 0;
-    if (a2 <= 0) return false;
-    v19 = 1;
+    if (pInNumVertices <= 0) return false;
+
+    int VertCounter = 1;
 
     while (true) {
-        if (v21) {
+        if (Vert1Inside) {
             // ++pVertices;
-            memcpy(pVertices, pLineStart, sizeof(RenderVertexSoft));
+            memcpy(pOutVertices, pLineStart, sizeof(RenderVertexSoft));
             ++*pOutNumVertices;
             // v10 = a5;
-            pVertices++;
+            pOutVertices++;
             // v9 = a1;
         }
-        bool v15 = false;
-        pLineEnd = &a1[v19 % a2];
-        pLinelength2 = a5->x * pLineEnd->vWorldPosition.x +
-                       pLineEnd->vWorldPosition.y * a5->y +
-                       pLineEnd->vWorldPosition.z * a5->z;
-        if (pLinelength2 >= a6) v15 = true;
+        bool Vert2Inside = false;
+        pLineEnd = &pInVertices[VertCounter % pInNumVertices];
+        pLinelength2 = CamFrustumNormal->x * pLineEnd->vWorldPosition.x +
+                       pLineEnd->vWorldPosition.y * CamFrustumNormal->y +
+                       pLineEnd->vWorldPosition.z * CamFrustumNormal->z;
+        if (pLinelength2 >= CamDotDistance) Vert2Inside = true;
 
-        if (v21 != v15) {
-            t = (a6 - pLinelength1) / (pLinelength2 - pLinelength1);
-            pVertices->vWorldPosition.x =
+        if (Vert1Inside != Vert2Inside) {
+            t = (CamDotDistance - pLinelength1) / (pLinelength2 - pLinelength1);
+            pOutVertices->vWorldPosition.x =
                 pLineStart->vWorldPosition.x +
                 (pLineEnd->vWorldPosition.x - pLineStart->vWorldPosition.x) * t;
-            pVertices->vWorldPosition.y =
+            pOutVertices->vWorldPosition.y =
                 pLineStart->vWorldPosition.y +
                 (pLineEnd->vWorldPosition.y - pLineStart->vWorldPosition.y) * t;
-            pVertices->vWorldPosition.z =
+            pOutVertices->vWorldPosition.z =
                 pLineStart->vWorldPosition.z +
                 (pLineEnd->vWorldPosition.z - pLineStart->vWorldPosition.z) * t;
-            pVertices->u = pLineStart->u + (pLineEnd->u - pLineStart->u) * t;
-            pVertices->v = pLineStart->v + (pLineEnd->v - pLineStart->v) * t;
-            ++pVertices;
+            pOutVertices->u = pLineStart->u + (pLineEnd->u - pLineStart->u) * t;
+            pOutVertices->v = pLineStart->v + (pLineEnd->v - pLineStart->v) * t;
+            ++pOutVertices;
             // a3 = pVertices;
             ++*pOutNumVertices;
-            *a7 = 1;
+            *VertsAdjusted = true;
         }
 
         pLineStart++;
-        v21 = v15;
+        Vert1Inside = Vert2Inside;
         pLinelength1 = pLinelength2;
-        if (v19 >= a2) break;
+        if (VertCounter >= pInNumVertices) break;
         // v9 = a1;
-        v19++;
+        VertCounter++;
     }
 
     return *pOutNumVertices >= 3;
@@ -242,9 +247,18 @@ void stru9::AddVertex(struct VertexBuffer *pVertexBuffer,
 }
 
 //----- (00498774) --------------------------------------------------------
-bool stru9::_498774(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
+bool stru9::ClipDecalVertsToFace(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
                     struct RenderVertexSoft *a3, struct stru312 *a4,
                     struct RenderVertexSoft *a5) {
+    // this looks like it is meant to clip the light map / decal verts to the face plane verts
+
+    // a1 - decal vert1
+    // a2 - decal vert2
+    // a3 - face vertex to clip to
+    // a4 - vec along plane perp to decal verts
+    // a5 - verts out
+
+
     RenderVertexSoft *v6;  // ecx@5
     int result;            // eax@5
     double v8;             // st7@5
@@ -257,7 +271,7 @@ bool stru9::_498774(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
     char v15;              // c3@24
     float a1a;             // [sp+10h] [bp+8h]@5
 
-    __debugbreak();
+    // __debugbreak();
 
     static stru312 static_AE3388;
     static stru312 static_AE3378;
@@ -325,27 +339,40 @@ bool stru9::_498774(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
 bool stru9::AreVectorsCollinear(struct RenderVertexSoft *a1,
                                 struct RenderVertexSoft *a2,
                                 struct stru312 *a3) {
-    static stru312 static_F942A0;
+    // is vector a2->a1 in same semiplane as a3
+
+    /*static */stru312 static_F942A0;
 
     static_F942A0.x = a1->vWorldPosition.x - a2->vWorldPosition.x;
     static_F942A0.y = a1->vWorldPosition.y - a2->vWorldPosition.y;
     static_F942A0.z = a1->vWorldPosition.z - a2->vWorldPosition.z;
 
-    static float flt_F942B4 = static_F942A0.z * a3->z +
+    /*static*/ float flt_F942B4 = static_F942A0.z * a3->z +
                               static_F942A0.y * a3->y + static_F942A0.x * a3->x;
     if (flt_F942B4 >= 0) return true;
     return false;
 }
 
 //----- (004989E1) --------------------------------------------------------
-bool stru9::_4989E1(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
+bool stru9::DoDecalVertsNeedClipping(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
                     struct RenderVertexSoft *a3, struct stru312 *a4) {
+    // lightmap/decal first two verts
+    // 3rd is face vert
+    // 4th is vec along face
+
     bool r1;
     bool r2;
 
+    // checks if vector a3->a1 is in the same semiplane as vec a4
+
     r1 = AreVectorsCollinear(a1, a3, a4);
     r2 = AreVectorsCollinear(a2, a3, a4);
-    return !r1 && r2 == 1 || r1 == 1 && !r2;
+
+    // if one vert is in and one is out, we need clipping
+
+    bool result = ((!r1) && (r2 == 1)) || ((r1 == 1) && (!r2));
+
+    return result;
 }
 
 //----- (004980B9) --------------------------------------------------------
@@ -353,6 +380,10 @@ bool stru9::_4980B9(RenderVertexSoft *a1, unsigned int uNumVertices,
                     float pNormalX, float pNormalY, float pNormalZ,
                     RenderVertexSoft *pOutVertices,
                     signed int *pOutNumVertices) {
+    // first two are for the face
+    // last two are light map / decal
+
+
     RenderVertexSoft *v12;  // ecx@9
     double v13;             // st7@12
     double v14;             // st6@12
@@ -380,6 +411,7 @@ bool stru9::_4980B9(RenderVertexSoft *a1, unsigned int uNumVertices,
             ++v25;
 
             static_sub_4980B9_stru_AE3FE8.uNumVertices = 0;
+            // cross product of face normals and vec ab gives vec running along face plane
             static_sub_4980B9_stru_AE4BEC.x = pNormalY * v15 - v14 * pNormalZ;
             static_sub_4980B9_stru_AE4BEC.y = v13 * pNormalZ - v15 * pNormalX;
             static_sub_4980B9_stru_AE4BEC.z = v14 * pNormalX - v13 * pNormalY;
@@ -387,9 +419,9 @@ bool stru9::_4980B9(RenderVertexSoft *a1, unsigned int uNumVertices,
 
             for (uint j = 0; j < *pOutNumVertices; ++j) {
                 if (j) {
-                    if (_4989E1(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
+                    if (DoDecalVertsNeedClipping(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
                                 &static_sub_4980B9_stru_AE4BEC) &&
-                        _498774(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
+                        ClipDecalVertsToFace(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
                                 &static_sub_4980B9_stru_AE4BEC, &stru_AE4BFC))
                         AddVertex(&static_sub_4980B9_stru_AE3FE8, &stru_AE4BFC);
                 }
@@ -403,9 +435,9 @@ bool stru9::_4980B9(RenderVertexSoft *a1, unsigned int uNumVertices,
                 *pOutNumVertices = 0;
                 return true;
             }
-            if (_4989E1(&pOutVertices[*pOutNumVertices - 1], &pOutVertices[0],
+            if (DoDecalVertsNeedClipping(&pOutVertices[*pOutNumVertices - 1], &pOutVertices[0],
                         &a1[i], &static_sub_4980B9_stru_AE4BEC) &&
-                _498774(&pOutVertices[*pOutNumVertices - 1], &pOutVertices[0],
+                ClipDecalVertsToFace(&pOutVertices[*pOutNumVertices - 1], &pOutVertices[0],
                         &a1[i], &static_sub_4980B9_stru_AE4BEC, &stru_AE4BFC))
                 AddVertex(&static_sub_4980B9_stru_AE3FE8, &stru_AE4BFC);
 
