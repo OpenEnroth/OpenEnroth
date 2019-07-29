@@ -8,6 +8,7 @@
 #include <queue>
 #include <string>
 #include <thread>
+#include <functional>
 
 #include <cassert>
 #include <cmath>
