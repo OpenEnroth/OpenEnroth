@@ -52,6 +52,9 @@ add_definitions(-DPACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-might-a
 find_package(FFmpeg REQUIRED COMPONENTS AVFORMAT AVUTIL AVCODEC SWSCALE SWRESAMPLE)
 find_package(OpenAL REQUIRED)
 set(ZLIB_ROOT "$ENV{ZLIBDIR}")
+set(ZLIB_INCLUDE_DIR "$ENV{ZLIBDIR}")
+set(ZLIB_LIBRARY "$ENV{ZLIBDIR}")
+set(ZLIB_LIBRARY_RELEASE "")
 find_package(ZLIB REQUIRED)
 find_package(SDL2 REQUIRED)
 
