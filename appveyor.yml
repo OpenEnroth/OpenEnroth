@@ -1,6 +1,6 @@
 version: 1.0.{build}
 
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 platform:
   - x86
@@ -9,12 +9,12 @@ configuration:
   - Debug
   - Release
 
-cache:
-  - C:\3rd_party -> win\WinPrebuild.ps1
+#cache:
+#  - C:\3rd_party -> win\WinPrebuild.ps1
 
 install:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
-  - ps: .\win\WinPrebuild.ps1
+#  - ps: .\win\WinPrebuild.ps1
 
   # build debug
   #- ps: |
@@ -23,12 +23,6 @@ install:
   # Prepare for NMake
   - if "%platform%" == "x86" call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat"
   - if "%platform%" == "x64" call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" x86_amd64
-
-  - ps: |
-      $env:FFMPEGDIR ="c:\3rd_party\ffmpeg-4.0"
-      $env:OPENALDIR ="c:\3rd_party\openal-1.18.2"
-      $env:ZLIBDIR ="c:\3rd_party\zlib-1.2.11"
-      $env:SDL2DIR ="c:\3rd_party\sdl2-2.0.8"
 
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
