@@ -16,3 +16,6 @@ endif()
 
 add_library(media STATIC ${MEDIA_SOURCES} ${MEDIA_HEADERS})
 target_check_style(media)
+
+target_link_libraries(media openal)
+target_link_libraries(media ffmpeg)

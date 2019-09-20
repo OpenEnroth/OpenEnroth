@@ -12,3 +12,6 @@ Build/Visual Studio 2017/Debug
 # Visual Studio Code
 .vscode/*
 *.code-workspace
+
+# cmake
+out
