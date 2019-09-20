@@ -1,8 +1,8 @@
 
 function(DEBUG_PRINT msg)
-    if (NOT (CMAKE_BUILD_TYPE MATCHES "RELEASE"))
+    #if (NOT (CMAKE_BUILD_TYPE MATCHES "RELEASE"))
         message(STATUS ${msg})
-    endif()
+    #endif()
 endfunction()
 
 
