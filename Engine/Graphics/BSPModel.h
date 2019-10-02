@@ -6,7 +6,7 @@
 #include "Engine/Strings.h"
 
 #define FACE_PORTAL             0x00000001  // portal/two-sided
-#define FACE_CAN_SATURATE_COLOR 0x00000002
+#define FACE_CAN_SATURATE_COLOR 0x00000002  // guess at perception faces
 #define FACE_FLOW_DIAGONAL      0x00000004  // Diagonal flow of the lava or water
 #define FACE_UNKNOW5            0x00000006
 #define FACE_UNKNOW6            0x00000008

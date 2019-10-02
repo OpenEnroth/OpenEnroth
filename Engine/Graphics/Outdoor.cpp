@@ -1727,7 +1727,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
     __int16 v62;       // [sp+5Ch] [bp-4h]@25
 
     for (int i = 0; i < uNumActors; ++i) {
-        pActors[i].uAttributes &= 0xFFFFFFF7;  // ~0x8
+        pActors[i].uAttributes &= ~ACTOR_VISIBLE;
         if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled) {
             continue;
         }
@@ -1756,10 +1756,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
             pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
             pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
 
-        int v9 = 0;
-        HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
+        // int v9 = 0;
+        // HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
         Sprite_Octant = ((signed int)(stru_5C6E00->uIntegerPi +
-                            ((signed int)stru_5C6E00->uIntegerPi >> 3) + v9 -
+                            ((signed int)stru_5C6E00->uIntegerPi >> 3) + pActors[i].uYawAngle -
                             Angle_To_Cam) >> 8) & 7;
 
 
@@ -1811,7 +1811,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 ++uNumBillboardsToDraw;
                 ++uNumSpritesDrawnThisFrame;
 
-                pActors[i].uAttributes |= ACTOR_UNKNOW2;
+                pActors[i].uAttributes |= ACTOR_VISIBLE;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[Sprite_Octant];
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;

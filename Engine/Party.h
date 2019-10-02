@@ -320,6 +320,7 @@ struct Party {
     float flt_TorchlightColorR;
     float flt_TorchlightColorG;
     float flt_TorchlightColorB;
+    float TorchLightLastIntensity;
 };
 
 extern Party *pParty;  // idb

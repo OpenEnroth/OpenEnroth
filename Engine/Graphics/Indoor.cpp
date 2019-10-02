@@ -100,7 +100,7 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
 
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
-    int v5;           // eax@4
+    int TorchLightPower;           // eax@4
     unsigned int v7;  // ebx@8
     BLVSector *v8;    // esi@8
 
@@ -112,13 +112,36 @@ void PrepareDrawLists_BLV() {
     uNumBillboardsToDraw = 0;
 
     if (!_4D864C_force_sw_render_rules || !engine->config->TorchlightEffect()) {  // lightspot around party
-        v5 = 800;
-        if (pParty->TorchlightActive())
-            v5 *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+        TorchLightPower = 800;
+        if (pParty->TorchlightActive()) {
+            // max is 800 * torchlight
+            // min is 800
+            int MinTorch = TorchLightPower;
+            int MaxTorch = TorchLightPower * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+
+            //TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
+            int ran = rand();
+            int mod = ((ran - (RAND_MAX * .4)) / 200);
+            TorchLightPower = (pParty->TorchLightLastIntensity + mod );
+
+            // clamp
+            if (TorchLightPower < MinTorch)
+                TorchLightPower = MinTorch;
+            if (TorchLightPower > MaxTorch)
+                TorchLightPower = MaxTorch;
+
+        }
+        
+        pParty->TorchLightLastIntensity = TorchLightPower;
+        
+
+        //
+        //       double nexLightIntensity(lastIntensity)
+         //   return clamp(0, 1, lastIntensity + (rand() - .3) / 100)
 
         pMobileLightsStack->AddLight(
             pIndoorCameraD3D->vPartyPos.x, pIndoorCameraD3D->vPartyPos.y,
-            pIndoorCameraD3D->vPartyPos.z, pBLVRenderParams->uPartySectorID, v5,
+            pIndoorCameraD3D->vPartyPos.z, pBLVRenderParams->uPartySectorID, TorchLightPower,
             floorf(pParty->flt_TorchlightColorR + 0.5f),
             floorf(pParty->flt_TorchlightColorG + 0.5f),
             floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
@@ -484,7 +507,9 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                 }
 
                 if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
-                    lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, pVertices, 0);
+                    //if (pFace->uAttributes & FACE_OUTLINED) {
+                        lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, pVertices, 0);
+                    //}
 
                 // bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3, unsigned int uNumVertices,
                // RenderVertexSoft *VertexRenderList, IndoorCameraD3D_Vec4 *a6, char uClipFlag) {
@@ -522,6 +547,8 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                     ColourMask = 0xFF808080;
                     // v27 = pBitmaps_LOD->pHardwareTextures[pFace->uBitmapID];
                 }
+
+                
 
                 if (pFace->Indoor_sky()) {
                     render->DrawIndoorSky(uNumVerticesa, uFaceID);
@@ -1718,7 +1745,7 @@ void UpdateActors_BLV() {
     unsigned int actor_id;   // [sp+5Ch] [bp-4h]@1
 
     if (engine->config->no_actors)
-        uNumActors = 0;
+        return;  // uNumActors = 0;
 
     for (actor_id = 0; actor_id < uNumActors; actor_id++) {
         if (pActors[actor_id].uAIState == Removed ||
@@ -2698,7 +2725,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID,
             }
         } else if (v38 < result) {
             result = blv_floor_level[i];
-            if (blv_floor_level[i] <= -29000) __debugbreak();  // crashes here
+            if (blv_floor_level[i] < -29000) __debugbreak();  // crashes here when <=
             *pFaceID = blv_floor_id[i];
         }
     }
@@ -2707,7 +2734,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID,
 }
 
 //----- (0043FDED) --------------------------------------------------------
-void IndoorLocation::PrepareActorRenderList_BLV() {
+void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdoorlocation ??
     unsigned int v4;  // eax@5
     int v6;           // esi@5
     int v8;           // eax@10
@@ -2782,7 +2809,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 
-                        pActors[i].uAttributes |= ACTOR_UNKNOW2;
+                        pActors[i].uAttributes |= ACTOR_VISIBLE;
                         pBillboardRenderList[uNumBillboardsToDraw - 1]
                             .hwsprite = v9->hw_sprites[v6];
                         pBillboardRenderList[uNumBillboardsToDraw - 1]
@@ -5553,13 +5580,13 @@ bool sub_4077F1(int a1, int a2, int a3, ODMFace *face, BSPVertexBuffer *a5) {
 
 //----- (0049B04D) --------------------------------------------------------
 void stru154::GetFacePlaneAndClassify(ODMFace *a2, BSPVertexBuffer *a3) {
-    Vec3_float_ v;  // [sp+4h] [bp-Ch]@1
-    float v7;
+    Vec3_float_ OutPlaneNorm;
+    float OutPlaneDist;
 
-    v.x = 0.0;
-    v.y = 0.0;
-    v.z = 0.0;
-    GetFacePlane(a2, a3, &v, &v7);
+    OutPlaneNorm.x = 0.0;
+    OutPlaneNorm.y = 0.0;
+    OutPlaneNorm.z = 0.0;
+    GetFacePlane(a2, a3, &OutPlaneNorm, &OutPlaneDist);
 
     if (fabsf(a2->pFacePlane.vNormal.z) < 1e-6f)
         polygonType = POLYGON_VerticalWall;
@@ -5569,10 +5596,10 @@ void stru154::GetFacePlaneAndClassify(ODMFace *a2, BSPVertexBuffer *a3) {
     else
         polygonType = POLYGON_InBetweenFloorAndWall;
 
-    face_plane.vNormal.x = v.x;
-    face_plane.vNormal.y = v.y;
-    face_plane.vNormal.z = v.z;
-    face_plane.dist = v7;
+    face_plane.vNormal.x = OutPlaneNorm.x;
+    face_plane.vNormal.y = OutPlaneNorm.y;
+    face_plane.vNormal.z = OutPlaneNorm.z;
+    face_plane.dist = OutPlaneDist;
 }
 
 //----- (0049B0C9) --------------------------------------------------------

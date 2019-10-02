@@ -145,7 +145,7 @@ class AudioPlayer {
  protected:
     bool bPlayerReady;
     int currentMusicTrack;
-    unsigned int uMasterVolume;
+    float uMasterVolume;
     PAudioTrack pCurrentMusicTrack;
     std::ifstream fAudioSnd;
     std::map<String, SoundHeader> mSoundHeaders;

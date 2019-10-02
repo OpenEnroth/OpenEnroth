@@ -184,7 +184,7 @@ float AudioPlayer::MusicGetVolume() {
 void AudioPlayer::SetMasterVolume(int level) {
     level = max(0, level);
     level = min(9, level);
-    uMasterVolume = (unsigned int)(2.f * pSoundVolumeLevels[level]);
+    uMasterVolume = (2.f * pSoundVolumeLevels[level]);
 }
 
 void AudioPlayer::StopAll(int sample_id) {
@@ -223,6 +223,9 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         return;
     }
 
+    si.sample->SetVolume(uMasterVolume);
+
+
     if (pid == 0) {  // generic sound like from UI
         si.sample->Play();
         return;
@@ -252,6 +255,8 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 return;
             }
             case OBJECT_Player: {
+                si.sample->SetVolume((2.f * pSoundVolumeLevels[engine->config->voice_level]));
+                if (object_id == 5) si.sample->Stop();
                 si.sample->Play();
                 return;
             }

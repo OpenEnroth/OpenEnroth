@@ -1269,9 +1269,9 @@ void CharacterUI_StatsTab_ShowHint() {
                 str1 = StringPrintf(localization->GetString(147), v15);
             str2 = localization->FormatString(
                 538,
-                GetExperienceRequiredForLevel(v15) -
-                    (int)pPlayers[uActiveCharacter]->uExperience,
-                v15 + 1);
+                (GetExperienceRequiredForLevel(v15) -
+                    (int)pPlayers[uActiveCharacter]->uExperience),
+                char(v15 + 1));
             str1 += "\n" + str2;
 
             str2 =

@@ -683,7 +683,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 }
 
 unsigned short Actor::GetObjDescId(int spellId) {
-    return pObjectList->ObjectIDByItemID(spell_sprite_mapping[spellId].uSpriteType);
+    return pObjectList->ObjectIDByItemID(spell_sprite_mapping[spellId].uSpriteType);  // crash here
 }
 
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
@@ -2485,7 +2485,7 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     MonsterInfo *v9;  // [sp+84h] [bp-10h]@1
 
     v3 = &pMonsterList->pMonsters[pMonsterInfo.uID - 1];
-    v9 = &pMonsterStats->pInfos[pMonsterInfo.uID - 1 + 1];
+    v9 = &pMonsterStats->pInfos[pMonsterInfo.uID /*- 1 + 1*/];
     // v12 = pSpriteIDs;
     // Source = (char *)v3->pSpriteNames;
     // do
@@ -5054,12 +5054,14 @@ int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level,
 }
 
 //----- (0044F57C) --------------------------------------------------------
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
-                    int a5) {
+void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int a5) {
+    // a3 for abc modify
+    // a4 count
+
     int v7;                // eax@2
     char v8;               // zf@5
     int v12;               // edx@9
-    int v18;               // esi@31
+    //int v18;               // esi@31
     Actor *pMonster;       // esi@35
     int v23;               // edx@36
     int v24;        // edi@36
@@ -5083,7 +5085,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
     int v53;               // [sp+D4h] [bp-14h]@34
     int pSector;           // [sp+D8h] [bp-10h]@32
     int pPosX;             // [sp+DCh] [bp-Ch]@32
-    int v56;               // [sp+E0h] [bp-8h]@8
+    int NumToSpawn;               // [sp+E0h] [bp-8h]@8
     int v57;               // [sp+E4h] [bp-4h]@1
 
     // auto a2 = spawn;
@@ -5096,13 +5098,15 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
         v7 = pIndoor->dlv.field_C_alert;
     else
         v7 = 0;
+
     if (v7)
         v8 = (spawn->uAttributes & 1) == 0;
     else
         v8 = (spawn->uAttributes & 1) == 1;
     if (v8) return;
+
     // result = (void *)(spawn->uIndex - 1);
-    v56 = 1;
+    NumToSpawn = 1;
     switch (spawn->uIndex - 1) {
         case 0:
             // v9 = pMapInfo->uEncounterMonster1AtLeast;
@@ -5113,7 +5117,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                             pMapInfo->uEncounterMonster1AtLeast + 1);
             // v13 = pMapInfo->Dif_M1;
             v57 = pMapInfo->Dif_M1;
-            v56 = pMapInfo->uEncounterMonster1AtLeast + v12;
+            NumToSpawn = pMapInfo->uEncounterMonster1AtLeast + v12;
             strcpy(Source, pMapInfo->pEncounterMonster1Texture.c_str());
             break;
         case 3:
@@ -5140,7 +5144,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                             pMapInfo->uEncounterMonster2AtLeast + 1);
             // v13 = pMapInfo->Dif_M2;
             v57 = pMapInfo->Dif_M2;
-            v56 = pMapInfo->uEncounterMonster2AtLeast + v12;
+            NumToSpawn = pMapInfo->uEncounterMonster2AtLeast + v12;
             strcpy(Source, pMapInfo->pEncounterMonster2Texture.c_str());
             break;
         case 6:
@@ -5167,7 +5171,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                             pMapInfo->uEncounterMonster3AtLeast + 1);
             // v13 = pMapInfo->Dif_M3;
             v57 = pMapInfo->Dif_M3;
-            v56 = pMapInfo->uEncounterMonster3AtLeast + v12;
+            NumToSpawn = pMapInfo->uEncounterMonster3AtLeast + v12;
             strcpy(Source, pMapInfo->pEncounterMonster3Texture.c_str());
             break;
         case 9:
@@ -5188,13 +5192,17 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
         default:
             return;
     }
+
     if (Source[0] == '0') return;
+
     v57 += a3;
     if (v57 > 4) v57 = 4;
     strcpy(Str2, Source);
-    if (a4) v56 = a4;
-    v18 = v56;
-    if ((signed int)(v56 + uNumActors) >= 500) return;
+    if (a4) NumToSpawn = a4;
+    //v18 = NumToSpawn;
+    if (NumToSpawn <= 0) return;
+    if ((signed int)(NumToSpawn + uNumActors) >= 500) return;
+
     pSector = 0;
     pPosX = spawn->vPosition.x;
     a4 = spawn->vPosition.y;
@@ -5204,36 +5212,41 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                                      spawn->vPosition.z);
     v53 = 0;
     v52 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
-    if (v18 <= 0) return;
-    for (int i = v53; i < v56; ++i) {
+    
+
+    // spawning loop
+    for (int i = v53; i < NumToSpawn; ++i) {
         pMonster = &pActors[uNumActors];
         pActors[uNumActors].Reset();
+
+        // random monster levels ABC
         if (v57) {
             v23 = rand() % 100;
-            v24 = 3;
+            v24 = 3;  // 2 , 10 , 20
             v25 = (uint16_t)word_4E8152[3 * v57];
             if (v23 >= v25) {
                 if (v23 < v25 + (uint16_t)word_4E8152[3 * v57 + 1]) {
-                    v24 = 2;
+                    v24 = 2;  // 8 , 20 , 30
                 }
             } else {
-                v24 = 1;
+                v24 = 1; // 90 , 70 , 50
             }
+
             if (v24 == 1) {
                 pTexture = Source;
                 v44 = "%s A";
+            } else if (v24 == 2) {
+                pTexture = Source;
+                v44 = "%s B";
             } else {
-                if (v24 == 2) {
-                    pTexture = Source;
-                    v44 = "%s B";
-                } else {
-                    if (v24 != 3) continue;
-                    pTexture = Source;
-                    v44 = "%s C";
-                }
+                if (v24 != 3) continue;
+                pTexture = Source;
+                v44 = "%s C";
             }
+
             sprintf(Str2, v44, pTexture);
         }
+
         v50 = pMonsterList->GetMonsterIDByName(Str2);
         pTexture = Str2;
         if ((signed __int16)v50 == -1) {
@@ -5243,6 +5256,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                 pTexture);
             Engine_DeinitializeAndTerminate(0);
         }
+
         v27 = &pMonsterList->pMonsters[(signed __int16)v50];
         v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
         if (!v28) v28 = 1;
@@ -5294,7 +5308,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
         // v53 = (char *)v53 + 1;
         // result = v53;
     }
-    // while ( (signed int)v53 < v56 );
+    // while ( (signed int)v53 < NumToSpawn );
 }
 
 //----- (00438F8F) --------------------------------------------------------
