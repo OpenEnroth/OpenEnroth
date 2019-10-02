@@ -294,12 +294,12 @@ void LoadSpellbook(unsigned int spell_school) {
             sprintf(pContainer, "SB%sS%02d",
                     spellbook_texture_filename_suffices[spell_school],
                     pSpellbookSpellIndices[spell_school][i]);
-            SBPageSSpellsTextureList[i] = assets->GetImage_Alpha(pContainer);
+            SBPageSSpellsTextureList[i] = assets->GetImage_Solid(pContainer);
 
             sprintf(pContainer, "SB%sC%02d",
                     spellbook_texture_filename_suffices[spell_school],
                     pSpellbookSpellIndices[spell_school][i]);
-            SBPageCSpellsTextureList[i] = assets->GetImage_Alpha(pContainer);
+            SBPageCSpellsTextureList[i] = assets->GetImage_Solid(pContainer);
         }
     }
 }

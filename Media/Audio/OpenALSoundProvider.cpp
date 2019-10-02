@@ -857,7 +857,18 @@ bool AudioSample16::Stop() {
     return true;
 }
 
-bool AudioSample16::SetVolume(float volume) { return false; }
+bool AudioSample16::SetVolume(float volume) {
+    if (!IsValid()) {
+        return false;
+    }
+
+    alSourcef(al_source, AL_GAIN, volume);
+    if (CheckError()) {
+        return false;
+    }
+
+    return true;
+}
 
 PAudioSample CreateAudioSample(PMemBuffer buffer) {
     std::shared_ptr<AudioSample16> sample = std::make_shared<AudioSample16>();
