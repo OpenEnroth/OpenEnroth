@@ -25,12 +25,12 @@ enum SPRITE_OBJECT_TYPE : unsigned __int16 {
     SPRITE_PROJECTILE_535_IMPACT = 536,
     SPRITE_PROJECTILE_540 = 540,  // gray bolt
     SPRITE_PROJECTILE_540_IMPACT = 541,
-    SPRITE_PROJECTILE_545 = 545,
+    SPRITE_PROJECTILE_545 = 545,  // arrow ??
     SPRITE_PROJECTILE_550 = 550,
-    SPRITE_PROJECTILE_555 = 555,
+    SPRITE_PROJECTILE_555 = 555,  // fireball
 
     SPRITE_556 = 556,  // some red mobile light applied
-    SPRITE_600 = 600,  // some reddish mobile light applied
+    SPRITE_600 = 600,  // some reddish mobile light applied - explode
     SPRITE_601 = 601,
 
     SPRITE_800 = 800,

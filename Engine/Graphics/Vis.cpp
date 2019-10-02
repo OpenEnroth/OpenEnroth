@@ -931,6 +931,8 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY,
     pRotY = pIndoorCameraD3D->sRotationY + UnprojectX(fMouseX);
     pRotX = pIndoorCameraD3D->sRotationX + UnprojectY(fMouseY);
 
+    // log->Info(L"Roty: %d, Rotx: %d", pRotY, pRotX);
+
     pStartR.z = pIndoorCameraD3D->vPartyPos.z;
     pStartR.x = pIndoorCameraD3D->vPartyPos.x;
     pStartR.y = pIndoorCameraD3D->vPartyPos.y;
@@ -1270,8 +1272,12 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
 
     default_list.uNumPointers = 0;
     CastPickRay(pMouseRay, fMouseX, fMouseY, fDepth);
-    PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &default_list,
-                         sprite_filter);
+
+    // log->Info(L"Sx: %f, Sy: %f, Sz: %f \n Fx: %f, Fy: %f, Fz: %f", pMouseRay->vWorldPosition.x, pMouseRay->vWorldPosition.y, pMouseRay->vWorldPosition.z,
+    //     (pMouseRay+1)->vWorldPosition.x, (pMouseRay + 1)->vWorldPosition.y, (pMouseRay + 1)->vWorldPosition.z);
+
+    PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &default_list, sprite_filter);
+
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         PickIndoorFaces_Mouse(fDepth, pMouseRay, &default_list, face_filter);
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
@@ -1461,8 +1467,9 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
 
     if (pBillboardRenderList[v3].screen_space_z > fDepth) return false;
 
-    GetPolygonCenter(render->pBillboardRenderListD3D[v3].pQuads, 4, &test_x,
-                     &test_y);
+    GetPolygonCenter(render->pBillboardRenderListD3D[/*v3*/uD3DBillboardIdx].pQuads, 4, &test_x, &test_y);
+    // why check parent id v3? parent ID are wrong becasue of switching between pBillboardRenderListD3D and pBillboardRenderList
+
     CastPickRay(pPickingRay, test_x, test_y, fDepth);
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         PickIndoorFaces_Mouse(fDepth, pPickingRay, &Vis_static_stru_F91E10,

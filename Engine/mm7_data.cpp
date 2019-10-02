@@ -300,7 +300,7 @@ std::array<const char *, 11> pHouse_ExitPictures = {{
     "istairup", "itrap",   "outside", "idoor",   "isecdoor"
 }};
 
-std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};
+std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};  // level spawn monster levels ABC
 
 char _4E94D0_light_type = 5;
 char _4E94D2_light_type = 6;
@@ -682,7 +682,7 @@ char *pHostileTXT_Raw;
 char *pPotionsTXT_Raw;
 char *pPotionNotesTXT_Raw;
 
-std::array<int, 777> _6807B8_level_decorations_ids;  // idb
+std::array<int, 777> _6807B8_level_decorations_ids;  // idb -level decoratiosn sound
 int _6807E0_num_decorations_with_sounds_6807B8;
 std::array<int, 3000> event_triggers;  // 6807E8
 size_t num_event_triggers;             // 6836C8

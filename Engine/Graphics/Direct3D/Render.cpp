@@ -840,6 +840,11 @@ void Render::PrepareDecorationsRenderList_ODM() {
 
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .hwsprite = frame->hw_sprites[(int)v37];
+
+                                // error catching
+                                if (frame->hw_sprites[(int)v37]->texture->GetHeight() == 0 || frame->hw_sprites[(int)v37]->texture->GetWidth() == 0)
+                                    __debugbreak();
+
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .world_x = pLevelDecorations[i].vPosition.x;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
@@ -2058,7 +2063,21 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     if (lightmap_builder->StationaryLightsCount) {
         sCorrectedColor =  0xFFFFFFFF/*-1*/;
     }
-    engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+
+
+    // perception
+    // engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+
+    if (engine->CanSaturateFaces() && (pFace->uAttributes & FACE_CAN_SATURATE_COLOR)) {
+        uint eightSeconds = OS_GetTime() % 3000;
+        float angle = (eightSeconds / 3000.0f) * 2 * 3.1415f;
+
+        int redstart = (sCorrectedColor & 0x00FF0000) >> 16;
+
+        int col = (redstart - 64) - (64 * cosf(angle));
+        // (a << 24) | (r << 16) | (g << 8) | b;
+        sCorrectedColor = (0xFF << 24) | (redstart << 16) | (col << 8) | col;
+    }
 
     if (pFace->uAttributes & FACE_OUTLINED) {
         if (OS_GetTime() % 300 >= 150)
@@ -2312,6 +2331,8 @@ void Render::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     pBillboardRenderListD3D[v7].uNumVertices = 4;
     pBillboardRenderListD3D[v7].z_order = pSoftBillboard->screen_space_z;
     pBillboardRenderListD3D[v7].texture = pSprite->texture;
+
+    if (pSprite->texture->GetHeight() == 0 || pSprite->texture->GetWidth() == 0) __debugbreak();
 }
 
 void Render::DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -3557,8 +3578,8 @@ int ODM_FarClip(unsigned int uNumVertices) {
 
 void Render::DrawBuildingsD3D() {
     // int v27;  // eax@57
-    int v49;  // [sp+2Ch] [bp-2Ch]@10
-    int v50;  // [sp+30h] [bp-28h]@34
+    int farclip;  // [sp+2Ch] [bp-2Ch]@10
+    int nearclip;  // [sp+30h] [bp-28h]@34
     int v51;  // [sp+34h] [bp-24h]@35
     int v52;  // [sp+38h] [bp-20h]@36
     int v53;  // [sp+3Ch] [bp-1Ch]@8
@@ -3623,8 +3644,8 @@ void Render::DrawBuildingsD3D() {
             else if (poly->flags & 0x2000)
                 poly->sTextureDeltaU += flow_anim_timer & flow_u_mod;
 
-            v50 = 0;
-            v49 = 0;
+            nearclip = 0;
+            farclip = 0;
 
             for (uint vertex_id = 1; vertex_id <= face.uNumVertices;
                  vertex_id++) {
@@ -3654,9 +3675,9 @@ void Render::DrawBuildingsD3D() {
                         pIndoorCameraD3D->GetFarClip()) {
                     if (array_73D150[i - 1].vWorldViewPosition.x >=
                         pIndoorCameraD3D->GetNearClip())
-                        v49 = 1;
+                        farclip = 1;
                     else
-                        v50 = 1;
+                        nearclip = 1;
                 } else {
                     pIndoorCameraD3D->Project(&array_73D150[i - 1], 1, 0);
                 }
@@ -3698,7 +3719,7 @@ void Render::DrawBuildingsD3D() {
                 lightmap_builder->StationaryLightsCount = 0;
                 int v31 = 0;
                 if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
-                    v31 = v50 ? 3 : v49 != 0 ? 5 : 0;
+                    v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
                     static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
                     if (decal_builder->uNumDecals > 0) {
                         decal_builder->ApplyDecals(
@@ -3709,15 +3730,16 @@ void Render::DrawBuildingsD3D() {
                     }
                 }
                 if (Lights.uNumLightsApplied > 0)
+                    // if (face.uAttributes & FACE_OUTLINED)
                     lightmap_builder->ApplyLights(
                         &Lights, &static_RenderBuildingsD3D_stru_73C834,
                         poly->uNumVertices, VertexRenderList, 0, (char)v31);
 
-                if (v50) {
+                if (nearclip) {
                     poly->uNumVertices = ODM_NearClip(face.uNumVertices);
                     ODM_Project(poly->uNumVertices);
                 }
-                if (v49) {
+                if (farclip) {
                     poly->uNumVertices = ODM_FarClip(face.uNumVertices);
                     ODM_Project(poly->uNumVertices);
                 }

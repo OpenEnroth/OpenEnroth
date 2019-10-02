@@ -1073,7 +1073,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     // ******************Decorations**********************//
     memcpy(&uNumLevelDecorations, pSrc, 4);
     // uSourceLen = (char *)uSourceLen + 4;
-    if (uNumLevelDecorations > 3000) logger->Warning(L"Can't load file!");
+    if (uNumLevelDecorations > 3000) logger->Warning(L"Can't load file! Too many decorations");
 
     assert(sizeof(LevelDecoration) == 32);
     // pFilename = (char *)(32 * uNumLevelDecorations);
@@ -1727,7 +1727,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
     __int16 v62;       // [sp+5Ch] [bp-4h]@25
 
     for (int i = 0; i < uNumActors; ++i) {
-        pActors[i].uAttributes &= 0xFFFFFFF7;  // ~0x8
+        pActors[i].uAttributes &= ~ACTOR_VISIBLE;
         if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled) {
             continue;
         }
@@ -1756,10 +1756,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
             pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
             pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
 
-        int v9 = 0;
-        HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
+        // int v9 = 0;
+        // HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
         Sprite_Octant = ((signed int)(stru_5C6E00->uIntegerPi +
-                            ((signed int)stru_5C6E00->uIntegerPi >> 3) + v9 -
+                            ((signed int)stru_5C6E00->uIntegerPi >> 3) + pActors[i].uYawAngle -
                             Angle_To_Cam) >> 8) & 7;
 
 
@@ -1784,6 +1784,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
         else
             v14 = pSpriteFrameTable->GetFrame(
                 pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], Cur_Action_Time);
+
+        // no sprite frame to draw
+        if (v14->icon_name == "null") continue  /* __debugbreak()*/;
+        if (v14->hw_sprites[0] == nullptr) __debugbreak();
 
         v62 = 0;
         v15 = v14;
@@ -1811,8 +1815,12 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 ++uNumBillboardsToDraw;
                 ++uNumSpritesDrawnThisFrame;
 
-                pActors[i].uAttributes |= ACTOR_UNKNOW2;
+                pActors[i].uAttributes |= ACTOR_VISIBLE;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[Sprite_Octant];
+
+                if (v15->hw_sprites[Sprite_Octant]->texture->GetHeight() == 0 || v15->hw_sprites[Sprite_Octant]->texture->GetWidth() == 0)
+                    __debugbreak();
+
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
 

@@ -6,6 +6,8 @@
 Texture *TextureD3D::Create(unsigned int width, unsigned int height,
     IMAGE_FORMAT format, const void *pixels = nullptr) {
 
+    if (width == 0 || height == 0) __debugbreak();
+
     auto tex = new TextureD3D();
     if (tex) {
         tex->initialized = true;
@@ -66,6 +68,9 @@ bool TextureD3D::LoadImageData() {
 
         this->initialized =
             this->loader->Load(&width, &height, &pixels, &native_format);
+
+        if (width == 0 || height == 0) __debugbreak();
+
         if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT) {
             this->pixels[native_format] = pixels;
 

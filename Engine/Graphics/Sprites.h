@@ -74,8 +74,8 @@ struct SpriteFrameTable {
     int uNumSpriteFrames;
     unsigned int uNumEFrames;      // field_4;
     int unused_field;              // field_8
-    SpriteFrame *pSpriteSFrames;   // 0c
-    SpriteFrame **pSpritePFrames;  // 10h
+    SpriteFrame *pSpriteSFrames;   // 0c  new SpriteFrame[X]
+    SpriteFrame **pSpritePFrames;  // 10h  pSpritePFrames[i] = &pSpriteSFrames[pSpriteEFrames[i]];
     int16_t *pSpriteEFrames;       // 14h
 };
 #pragma pack(pop)

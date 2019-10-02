@@ -85,6 +85,12 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                         auto v8 = pSprites_LOD->LoadSprite(
                             pSpriteSFrames[v3].texture_name.c_str(),
                             pSpriteSFrames[v3].uPaletteID);
+
+                        if (v8 == -1) {  // should we set hw_sprites as nullptr in these cases??
+                            // __debugbreak();
+                            logger->Warning(L"Sprite %S not loaded!", pSpriteSFrames[v3].texture_name.c_str());
+                        }
+
                         for (uint i = 0; i < 8; ++i) {
                             // pSpriteSFrames[v3].pHwSpriteIDs[i] = v8;
                             pSpriteSFrames[v3].hw_sprites[i] =
@@ -118,6 +124,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             auto v12 = pSprites_LOD->LoadSprite(
                                 sprite_name, pSpriteSFrames[v3].uPaletteID);
                             // pSpriteSFrames[v3].pHwSpriteIDs[i]=v12;
+                            if (v12 == -1) __debugbreak();
                             pSpriteSFrames[v3].hw_sprites[i] =
                                 &pSprites_LOD->pHardwareSprites[v12];
                         }
@@ -157,6 +164,8 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             auto v12 = pSprites_LOD->LoadSprite(
                                 sprite_name, pSpriteSFrames[v3].uPaletteID);
                             // pSpriteSFrames[v3].pHwSpriteIDs[i]=v12;
+                            if (v12 == -1) __debugbreak();
+
                             pSpriteSFrames[v3].hw_sprites[i] =
                                 &pSprites_LOD->pHardwareSprites[v12];
                         }
@@ -202,13 +211,21 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                         break;
                                 }
                             } else {
-                                sprintf(sprite_name, "%s%i",
-                                        pSpriteSFrames[v3].texture_name.c_str(),
-                                        i);
+                                // some names already passed through with codes attached
+                                if (strlen(pSpriteSFrames[v3].texture_name.c_str()) < 7) {
+                                    sprintf(sprite_name, "%s%i", pSpriteSFrames[v3].texture_name.c_str(), i);
+                                } else {
+                                    sprintf(sprite_name, "%s", pSpriteSFrames[v3].texture_name.c_str());
+                                    // __debugbreak();
+                                }
                             }
+
                             auto v12 = pSprites_LOD->LoadSprite(
                                 sprite_name, pSpriteSFrames[v3].uPaletteID);
                             // pSpriteSFrames[v3].pHwSpriteIDs[i]=v12;
+
+                            if (v12 == -1) __debugbreak();
+
                             pSpriteSFrames[v3].hw_sprites[i] =
                                 &pSprites_LOD->pHardwareSprites[v12];
                         }

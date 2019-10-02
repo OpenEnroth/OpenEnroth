@@ -20,141 +20,116 @@ int MakeColorMaskFromBitDepth(int a1) {
 }
 
 //----- (0048A643) --------------------------------------------------------
-bool HSV2RGB(float *a1, float *a2, float *a3, float a4, float a5, float a6) {
-    float *v6;           // ebx@1
-    float *v7;           // edi@1
-    float *v8;           // esi@1
-    double v9;           // st7@5
-    signed __int64 v10;  // qax@5
-    double v11;          // st7@5
-    double v12;          // st5@5
-    int v13;             // eax@6
-    int v14;             // eax@7
-    int v15;             // eax@8
-    int v16;             // eax@9
-    float v17;           // eax@11
-    float a3a;           // [sp+1Ch] [bp+8h]@14
-    float a4b;           // [sp+20h] [bp+Ch]@5
-    float a4c;           // [sp+20h] [bp+Ch]@5
-    float a4a;           // [sp+20h] [bp+Ch]@5
+bool HSV2RGB(float *redo, float *greeno, float *blueo, float hin, float sin, float vin) {
+    // r,g,b outputs 0-1
 
-    v6 = a3;
-    v7 = a2;
-    v8 = a1;
-    if (a5 == 0.0) {
-        *a3 = a6;
-        *a2 = a6;
-        *a1 = a6;
-        goto LABEL_20;
+    if (hin > 360 || sin > 1 || vin > 1) __debugbreak();
+
+    if (sin == 0.0) {
+        if (vin > 1) vin = 1;
+        if (vin < 0) vin = 0;
+        *blueo = vin;
+        *greeno = vin;
+        *redo = vin;
+         return 1;
     }
-    if (a4 == 360.0) a4 = 0.0;
-    v9 = a4 * 0.01666666666666667;
-    a4b = v9;
-    floor(v9);
-    v10 = (signed __int64)v9;
-    a4c = a4b - (double)(signed int)(signed __int64)v9;
-    v11 = (1.0 - a5) * a6;
-    v12 = (1.0 - a4c * a5) * a6;
-    a4a = (1.0 - (1.0 - a4c) * a5) * a6;
-    if ((int)v10) {
-        v13 = v10 - 1;
-        if (v13) {
-            v14 = v13 - 1;
-            if (v14) {
-                v15 = v14 - 1;
-                if (v15) {
-                    v16 = v15 - 1;
-                    if (v16) {
-                        if (v16 != 1) goto LABEL_20;
-                        *v8 = a6;
-                        v17 = v12;
-                        *v7 = v11;
-                        goto LABEL_12;
-                    }
-                    *(int *)v8 = HEXRAYS_LODWORD(a4a);
-                    *v7 = v11;
-                } else {
-                    *v8 = v11;
-                    a3a = v12;
-                    *(int *)v7 = HEXRAYS_LODWORD(a3a);
-                }
-                v17 = a6;
-            } else {
-                *v8 = v11;
-                *(int *)v7 = HEXRAYS_LODWORD(a6);
-                v17 = a4a;
-            }
-        LABEL_12:
-            *(int *)v6 = HEXRAYS_LODWORD(v17);
-            goto LABEL_20;
-        }
-        *v8 = v12;
-        *v7 = a6;
-    } else {
-        *v8 = a6;
-        *(int *)v7 = HEXRAYS_LODWORD(a4a);
+
+    if (hin == 360.0) hin = 0.0;
+
+    double hh = hin / 60;  // to sixth segments
+    unsigned int segment = (unsigned int)hh;
+    double fractionrem = hh - segment;
+    double p = (1.0 - sin) * vin;
+    double q = (1.0 - fractionrem * sin) * vin;
+    double t = (1.0 - (1.0 - fractionrem) * sin) * vin;
+
+    switch (segment) {
+        case 0:
+            *redo = vin;
+            *greeno = t;
+            *blueo = p;
+            break;
+        case 1:
+            *redo = q;
+            *greeno = vin;
+            *blueo = p;
+            break;
+        case 2:
+            *redo = p;
+            *greeno = vin;
+            *blueo = t;
+            break;
+
+        case 3:
+            *redo = p;
+            *greeno = q;
+            *blueo = vin;
+            break;
+        case 4:
+            *redo = t;
+            *greeno = p;
+            *blueo = vin;
+            break;
+        case 5:
+        default:
+            *redo = vin;
+            *greeno = p;
+            *blueo = q;
+            break;
     }
-    *a3 = v11;
-LABEL_20:
-    if (*v8 > 1.0) *v8 = 1.0;
-    if (*v7 > 1.0) *v7 = 1.0;
-    if (*v6 > 1.0) *v6 = 1.0;
-    if (*v8 < 0.0) *v8 = 0.0;
-    if (*v7 < 0.0) *v7 = 0.0;
-    if (*v6 < 0.0) *v6 = 0.0;
+
     return 1;
 }
 
 //----- (0048A7AA) --------------------------------------------------------
-void RGB2HSV(float *a1, float *a2, float a3, float a4, float a5, float *a6) {
-    double v6;   // st7@2
-    double v7;   // st6@7
-    double v8;   // st5@12
-    double v9;   // st7@15
-    double v10;  // st7@17
-                 //  double v11; // st7@21
-                 //  __int16 v12; // fps@21
-                 //  unsigned __int8 v13; // c0@21
-                 //  unsigned __int8 v14; // c2@21
-    float a6a;   // [sp+14h] [bp+14h]@16
+void RGB2HSV(float *outh, float *outs, float redin, float greenin, float bluein, float *outv) {
+    // RGB inputs 0-1
+    if (redin > 1 || greenin > 1 || bluein > 1) __debugbreak();
 
-    if (a3 <= (double)a4)
-        v6 = a4;
+    double max;
+    double min;
+    double outhcalc;
+    float delta;
+
+    if (redin <= (double)greenin)
+        max = greenin;
     else
-        v6 = a3;
-    if (v6 < a5) v6 = a5;
-    if (a3 <= (double)a4)
-        v7 = a3;
+        max = redin;
+
+    if (max < bluein) max = bluein;
+    // max is value of dominant hue
+
+    if (redin <= (double)greenin)
+        min = redin;
     else
-        v7 = a4;
-    if (v7 > a5) v7 = a5;
-    *a6 = v6;
-    if (v6 == 0.0)
-        v8 = 0.0;
-    else
-        v8 = (v6 - v7) / v6;
-    *a2 = v8;
-    if (v8 == 0.0) {
-        v9 = 0.0;
-        // LABEL_23:
-        *a1 = v9;
+        min = greenin;
+
+    if (min > bluein) min = bluein;
+    // min is value of least hue
+
+    *outv = max;
+    delta = max - min;
+
+    if (max == 0.0) {  // r=g=b=0
+        *outs = 0.0;
+        *outh = 0.0;
         return;
-    }
-    a6a = v6 - v7;
-    if (a3 == v6) {
-        v10 = (a4 - a5) / a6a;
     } else {
-        if (a4 == v6)
-            v10 = (a5 - a3) / a6a + 2.0;
-        else
-            v10 = (a3 - a4) / a6a + 4.0;
+        *outs = delta / max;
     }
-    // *a1 = v10;
-    // v11 = *a1 * 60.0;
-    // UNDEF(v12);
-    *a1 = v10 * 60.0;
-    if (*a1 < 0) {
-        *a1 += 360.0;
+
+    if (redin == max) {
+        outhcalc = (greenin - bluein) / delta;   // yellow and mag
+    } else {
+        if (greenin == max)
+            outhcalc = (bluein - redin) / delta + 2.0;    // cyan and yellow
+        else
+            outhcalc = (redin - greenin) / delta + 4.0;  // mag and cyan
+    }
+
+    *outh = outhcalc * 60.0;  // to degree
+    if (*outh < 0) {
+        *outh += 360.0;
     }
 }
 
@@ -673,13 +648,13 @@ int PaletteManager::ResetNonTestLocked() {
 int PaletteManager::LoadPalette(unsigned int uPaletteID) {
     unsigned int *v2;   // ecx@1
     signed int result;  // eax@1
-    signed int v4;      // esi@6
+    signed int index;      // esi@6
     double v5;          // st7@7
     double v6;          // st7@12
     double v7;          // st6@17
     signed __int64 v8;  // qax@17
     double v9;          // st6@17
-    char v10[768];      // [sp+18h] [bp-388h]@6
+    char colourstore[768];      // [sp+18h] [bp-388h]@6
     // char v11; // [sp+19h] [bp-387h]@17
     // char v12[766]; // [sp+1Ah] [bp-386h]@17
     char Source[32];  // [sp+360h] [bp-40h]@4
@@ -687,18 +662,18 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
     float v16;  // [sp+384h] [bp-1Ch]@7
     int v17;    // [sp+388h] [bp-18h]@6
     float v18;  // [sp+38Ch] [bp-14h]@7
-    float a2a;  // [sp+390h] [bp-10h]@7
-    float a1;   // [sp+394h] [bp-Ch]@7
+    float green;  // [sp+390h] [bp-10h]@7
+    float red;   // [sp+394h] [bp-Ch]@7
     float a6;   // [sp+398h] [bp-8h]@7
-    float a3;   // [sp+39Ch] [bp-4h]@7
+    float blue;   // [sp+39Ch] [bp-4h]@7
 
     // v15 = this;
     v2 = (unsigned int *)&this->pPaletteIDs[1];
     result = 1;
-    while (*v2 != uPaletteID) {
+    while (*v2 != uPaletteID) {  // search through loaded palettes
         ++result;
         ++v2;
-        if (result >= 50) {
+        if (result >= 50) {  // not found in list so load
             sprintf(Source, "pal%03i", uPaletteID);
 
             Texture_MM7 tex;  // [sp+318h] [bp-88h]@4
@@ -706,17 +681,18 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
 
             if (pBitmaps_LOD->LoadTextureFromLOD(&tex, Source,
                                                  TEXTURE_24BIT_PALETTE) == 1) {
-                v4 = 0;
-                v17 = 1 - (int)&v10;
+                index = 0;
+                v17 = 1 - (int)&colourstore;
                 do {
                     // LODWORD(a1) = tex.pPalette24[v4];
-                    a1 = (double)tex.pPalette24[v4] / 255.0f;
-                    HEXRAYS_LODWORD(a2a) = (unsigned __int8)*(
-                        &v10 + v4 + v17 + (unsigned int)tex.pPalette24);
-                    a2a = (double)tex.pPalette24[v4 + 1] / 255.0f;
+                    red = (double)tex.pPalette24[index] / 255.0f;
+                    /*HEXRAYS_LODWORD(green) = (unsigned __int8)*(
+                        &v10 + v4 + v17 + (unsigned int)tex.pPalette24);*/
+                    green = (double)tex.pPalette24[index + 1] / 255.0f;
                     // a3 = tex.pPalette24[v4 + 2];
-                    a3 = (double)tex.pPalette24[v4 + 2] / 255.0f;
-                    RGB2HSV(&v16, &v18, a1, a2a, a3, &a6);
+                    blue = (double)tex.pPalette24[index + 2] / 255.0f;
+                    RGB2HSV(&v16, &v18, red, green, blue, &a6);
+
                     v5 = a6 * 1.1;
                     if (v5 >= 0.0 && v5 >= 1.0) {
                         v5 = 1.0;
@@ -731,17 +707,17 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
                         if (v6 < 0.0) v6 = 0.0;
                     }
                     v18 = v6;
-                    HSV2RGB(&a1, &a2a, &a3, v16, v18, a6);
-                    v7 = a2a * 255.0;
-                    v10[v4] = (signed __int64)(a1 * 255.0);
-                    v8 = (signed __int64)v7;
-                    v9 = a3 * 255.0;
-                    v10[v4 + 1] = v8;
-                    v10[v4 + 2] = (signed __int64)v9;
-                    v4 += 3;
-                } while (v4 < 768);
+
+                    // covert back and store
+                    HSV2RGB(&red, &green, &blue, v16, v18, a6);
+                    colourstore[index] = (signed __int64)(red * 255.0);
+                    colourstore[index + 1] = (signed __int64)(green * 255.0);
+                    colourstore[index + 2] = (signed __int64)(blue * 255.0);
+                    index += 3;
+                } while (index < 768);
+
                 tex.Release();
-                result = this->MakeBasePaletteLut(uPaletteID, v10);
+                result = this->MakeBasePaletteLut(uPaletteID, colourstore);
             } else {
                 result = 0;
             }

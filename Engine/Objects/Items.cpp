@@ -22,7 +22,7 @@
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Monsters.h"
 
-std::array<std::array<char, 14>, 7> byte_4E8168 = {{  // byte_4E8178
+std::array<std::array<char, 14>, 7> byte_4E8168 = {{  // byte_4E8178 -treasure levles
     {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}},
     {{1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}},
     {{1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3}},

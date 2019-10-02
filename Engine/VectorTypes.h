@@ -41,9 +41,9 @@ struct Vec3 : public Vec2<T> {
         float cosf_y = cos(pi * sRotY / 1024.0f);
         float sinf_y = sin(pi * sRotY / 1024.0f);
 
-        *outx = v.x + ((uint64_t)(sinf_y * (int64_t)((uint64_t)(cosf_x * (int64_t)sDepth) >> 16)));
-        *outy = v.y + ((uint64_t)(cosf_y * (int64_t)((uint64_t)(cosf_x * (int64_t)sDepth) >> 16)));
-        *outz = v.z + ((uint64_t)(sinf_x * (int64_t)sDepth) >> 16);
+        *outx = v.x + ((int64_t)(sinf_y * (int64_t)((int64_t)(cosf_x * (int64_t)sDepth) >> 16)));
+        *outy = v.y + ((int64_t)(cosf_y * (int64_t)((int64_t)(cosf_x * (int64_t)sDepth) >> 16)));
+        *outz = v.z + ((int64_t)(sinf_x * (int64_t)sDepth) >> 16);
     }
 
     static void Normalize(T *x, T *y, T *z) {

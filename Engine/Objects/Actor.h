@@ -106,18 +106,18 @@ enum ActorAnimation : __int32 {
     ANIM_Bored = 0x7,
 };
 
-#define ACTOR_UNKNOW2 0x00000008
+#define ACTOR_VISIBLE 0x00000008
 #define ACTOR_STAND_IN_QUEUE 0x00000080
 #define ACTOR_ALIVE 0x00000400
 #define ACTOR_ACTIVE 0x00004000
 #define ACTOR_NEARBY 0x00008000
-#define ACTOR_UNKNOW11 0x00010000
+#define ACTOR_UNKNOW11 0x00010000  // aidisabled
 #define ACTOR_FLEEING 0x00020000
-#define ACTOR_UNKNOW5 0x00040000
+#define ACTOR_UNKNOW5 0x00040000  // casting??
 #define ACTOR_AGGRESSOR 0x00080000
-#define ACTOR_UNKNOW7 0x00100000
+#define ACTOR_UNKNOW7 0x00100000  // alertstatus
 #define ACTOR_ANIMATION 0x00200000
-#define ACTOR_UNKNOW9 0x00400000
+#define ACTOR_UNKNOW9 0x00400000  // actor has job - never finished feature
 #define ACTOR_HAS_ITEM 0x00800000
 #define ACTOR_HOSTILE 0x01000000
 
@@ -291,7 +291,7 @@ struct Actor {
     char field_2A[2];
     struct MonsterInfo pMonsterInfo;
     int16_t word_000084_range_attack;
-    int16_t word_000086_some_monster_id;
+    int16_t word_000086_some_monster_id;  // base monster class monsterlist id
     uint16_t uActorRadius;
     uint16_t uActorHeight;
     uint16_t uMovementSpeed;

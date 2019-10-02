@@ -523,18 +523,15 @@ LABEL_25:
                     _46EF01_collision_chech_player(1);
                 if (PID_TYPE(pSpriteObject->spell_caster_pid) == OBJECT_Actor) {
                     for (v42 = 0; v42 < (signed int)uNumActors; ++v42) {
-                        if (pActors[pSpriteObject->spell_caster_pid >> 3]
-                                .pMonsterInfo.uID !=
-                            pActors[v42].pMonsterInfo.uID)
+                        if (PID_ID(pSpriteObject->spell_caster_pid) != v42) {  // dont collide against self
                             // not sure:
                             // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
-                            Actor::_46DF1A_collide_against_actor(
-                                v42, pMonsterList
-                                         ->pMonsters
-                                             [pActors[v42]
-                                                  .word_000086_some_monster_id -
-                                              1]
-                                         .uToHitRadius);
+                            int radius = 0;
+                            if (pActors[v42].word_000086_some_monster_id) {  // not always filled in from scripted monsters
+                                radius = pMonsterList->pMonsters[pActors[v42].word_000086_some_monster_id - 1].uToHitRadius;
+                            }
+                            Actor::_46DF1A_collide_against_actor(v42, radius);
+                        }
                     }
                 } else {
                     for (v42 = 0; v42 < (signed int)uNumActors; v42++)

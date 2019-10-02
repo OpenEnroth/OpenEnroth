@@ -129,7 +129,7 @@ void SpellFX_Billboard::Initialize(int a2) {
         pArray1[i].field_C = a2;
     }
 
-    for (int i = 0; i < uNumVec3sInArray2; ++i) {
+    for (uint i = 0; i < uNumVec3sInArray2; ++i) {
         pArray2[i].field_0 = array_4EBBD0_x[3 * i];
         pArray2[i].field_4 = array_4EBBD0_x[(3 * i)+1];
         pArray2[i].field_8 = array_4EBBD0_x[(3 * i)+2];
@@ -223,7 +223,7 @@ void SpellFxRenderer::DrawProjectiles() {
     float v11;              // ST0C_4@8
     RenderVertexSoft v[2];  // [sp+30h] [bp-68h]@1
 
-    for (uint i = 0; i < uNumProjectiles; ++i) {
+    for (int i = 0; i < uNumProjectiles; ++i) {
         ProjectileAnim *p = &pProjectiles[i];
 
         v[0].vWorldPosition.x = p->srcX;
@@ -542,7 +542,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
         local_0.type = ParticleType_Sprite;
         local_0.uDiffuse = 0xFFFFFF;
-        __debugbreak();  // fix float values
+       __debugbreak();  // fix float values
         HEXRAYS_LODWORD(local_0.particle_size) = 0x40000000u;
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
@@ -1614,9 +1614,8 @@ bool SpellFX_Billboard::SpellFXViewClip() {
     double NearClip = pIndoorCameraD3D->GetNearClip();
     double FarClip = pIndoorCameraD3D->GetFarClip();
 
-    if (this->uNumVertices <= 0) {  //  waht??
-        memcpy(&this->field_14[40], &this->field_14[20],
-               16 * this->uNumVertices);
+    if (this->uNumVertices <= 0) {  //  what?? behaviour needs investigating
+        memcpy(&this->field_B4[0]/*&this->field_14[40]*/, &this->field_64[0]/*&this->field_14[20]*/, 16 * this->uNumVertices);
         return this->uNumVertices != 0;
     }
 

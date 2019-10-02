@@ -38,7 +38,7 @@ if (WIN32)
         openal_builder
         PREFIX "${OPENAL_INSTALL}"
         DOWNLOAD_DIR "${OPENAL_ARTIFACTS}"
-        URL http://kcat.strangesoft.net/openal-binaries/openal-soft-${OPENAL_VERSION}-bin.zip
+        URL https://openal-soft.org/openal-binaries/openal-soft-${OPENAL_VERSION}-bin.zip
         URL_MD5 03cf7160ca84c36c2e6560fb278308fc
         INSTALL_DIR "${OPENAL_INSTALL}"
         CONFIGURE_COMMAND ""

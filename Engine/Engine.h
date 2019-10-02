@@ -126,7 +126,7 @@ struct Engine {
     bool MM7_Initialize(const std::string &mm7_path);
 
     inline bool IsUnderwater() const { return config->IsUnderwater(); }
-    inline bool CanSaturateFaces() const { return config->CanSaturateFaces(); }
+    inline bool CanSaturateFaces() const { return config->CanSaturateFaces(); }  // this is for perception - move to party
     inline bool AllowSnow() const { return config->allow_snow; }
     inline void SetUnderwater(bool is_underwater) {
         EngineConfigFactory engineConfigFactory;

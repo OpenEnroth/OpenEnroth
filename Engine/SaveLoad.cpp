@@ -38,9 +38,9 @@
 
 struct SavegameList *pSavegameList = new SavegameList;
 unsigned int uNumSavegameFiles;
-std::array<unsigned int, 45> pSavegameUsedSlots;
-std::array<Image *, 45> pSavegameThumbnails;
-std::array<SavegameHeader, 45> pSavegameHeader;
+std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
+std::array<Image *, MAX_SAVE_SLOTS> pSavegameThumbnails;
+std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
 
 bool CopyFile(const String &from, const String &to) {
     int file_size = -1;
@@ -520,7 +520,7 @@ void DoSavegame(unsigned int uSlot) {
     current_screen_type = SCREEN_GAME;
 
     viewparams->bRedrawGameUI = true;
-    for (uint i = 0; i < 45; i++) {
+    for (uint i = 0; i < MAX_SAVE_SLOTS; i++) {
         if (pSavegameThumbnails[i] != nullptr) {
             pSavegameThumbnails[i]->Release();
             pSavegameThumbnails[i] = nullptr;
@@ -551,7 +551,7 @@ void SavegameList::Initialize() {
 SavegameList::SavegameList() { Reset(); }
 
 void SavegameList::Reset() {
-    for (int j = 0; j < 45; j++) {
+    for (int j = 0; j < MAX_SAVE_SLOTS; j++) {
         this->pFileList[j].clear();
     }
 }

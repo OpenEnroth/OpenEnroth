@@ -44,7 +44,7 @@ GUIWindow_Save::GUIWindow_Save() :
     uLoadGameUI_SelectedSlot = 0;
 
     LOD::File pLODFile;
-    for (uint i = 0; i < 40; ++i) {
+    for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
         String file_name = pSavegameList->pFileList[i];
         if (file_name.empty()) {
             file_name = "1.mm7";
@@ -100,7 +100,7 @@ GUIWindow_Save::GUIWindow_Save() :
     pBtnLoadSlot = CreateButton(241, 302, 105, 40, 1, 0, UIMSG_SaveLoadBtn, 0, 0, "", { { saveload_ui_ls_saved } });
     pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, 0, "", { { saveload_ui_x_d } });
     pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, 0, "", { { ui_ar_up_dn } });
-    pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, 34, 0, "", { { ui_ar_dn_dn } });
+    pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, MAX_SAVE_SLOTS, 0, "", { { ui_ar_dn_dn } });
 }
 
 void GUIWindow_Save::Update() {
@@ -121,7 +121,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     pIcons_LOD->_inlined_sub2();
 
     memset(pSavegameUsedSlots.data(), 0, sizeof(pSavegameUsedSlots));
-    memset(pSavegameThumbnails.data(), 0, 45 * sizeof(Image *));
+    memset(pSavegameThumbnails.data(), 0, MAX_SAVE_SLOTS * sizeof(Image *));
 
     saveload_ui_loadsave = assets->GetImage_ColorKey("loadsave", 0x7FF);
     saveload_ui_load_up = assets->GetImage_ColorKey("load_up", 0x7FF);
@@ -159,7 +159,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             strcpy(pSavegameHeader[i].pName, localization->GetString(72));  // "Empty"
             continue;
         }
-        pLODFile.Open(str);
+
+        if (!pLODFile.Open(str)) __debugbreak();
         void *data = pLODFile.LoadRaw("header.bin");
         memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
         if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(613))) {  // "AutoSave.MM7"
@@ -284,7 +285,7 @@ static void UI_DrawSaveLoad(bool save) {
             304, 0, localization->GetString(165), 0, 0, 0);  // Ïîæàëóéñòà, ïîæîæäèòå
     } else {
         if (save) {
-            pSaveFiles = 40;
+            pSaveFiles = MAX_SAVE_SLOTS;
 
             // ingame save scroll bar
             float ypos3 = (float(pSaveListPosition) / (pSaveFiles - 7)) * 89.f;
@@ -293,7 +294,7 @@ static void UI_DrawSaveLoad(bool save) {
             pSaveFiles = uNumSavegameFiles;
 
             // load scroll bar
-            float ypos = (float(pSaveListPosition) / (pSaveFiles - 1)) * 89.f;
+            float ypos = (float(pSaveListPosition) / (pSaveFiles - 7)) * 89.f;
             render->DrawTextureAlphaNew((216+ pGUIWindow_CurrentMenu->uFrameX) / 640.f, (217 + pGUIWindow_CurrentMenu->uFrameY + ypos) / 480.f, scrollstop);
         }
 
@@ -353,10 +354,10 @@ void MainMenuLoad_EventLoop() {
         }
         case UIMSG_DownArrow: {
             ++pSaveListPosition;
-            if (pSaveListPosition >= param)
-                pSaveListPosition = param - 1;
-            if (pSaveListPosition < 1)
-                pSaveListPosition = 0;
+            if (pSaveListPosition > (param - 7))
+                pSaveListPosition = (param - 7);
+            // if (pSaveListPosition < 1)
+             //   pSaveListPosition = 0;
             new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323, 0, 0, (int)pBtnDownArrow);
             break;
         }

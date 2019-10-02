@@ -334,7 +334,7 @@ extern unsigned int uLevelMapStatsID;
 #define GAME_SETTINGS_0400_MISC_TIMER 0x0400
 #define GAME_SETTINGS_0800 0x0800
 #define GAME_SETTINGS_1000 0x1000
-#define GAME_SETTINGS_2000 0x2000
+#define GAME_SETTINGS_2000 0x2000  // initialisation state?
 #define GAME_SETTINGS_4000 0x4000
 extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
 

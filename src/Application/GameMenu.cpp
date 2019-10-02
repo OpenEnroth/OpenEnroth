@@ -92,7 +92,7 @@ void Menu::EventLoop() {
 
             case UIMSG_DownArrow:
                 ++pSaveListPosition;
-                if (pSaveListPosition >= param) pSaveListPosition = param - 1;
+                if (pSaveListPosition > (param - 7) ) pSaveListPosition = (param - 7);
                 new OnButtonClick2(215, 323, 17, 17, (int)pBtnDownArrow);
                 continue;
 
@@ -301,9 +301,9 @@ void Menu::EventLoop() {
                 }
 
                 engine->SetMusicLevel(new_level);
-                if (engine->config->music_level > 0)
-                    pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0);
                 pAudioPlayer->SetMusicVolume(engine->config->music_level);
+                // if (engine->config->music_level > 0)
+                //    pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0);
                 continue;
             }
 
@@ -353,7 +353,7 @@ void Menu::EventLoop() {
 
                 engine->SetVoiceLevel(new_level);
                 if (engine->config->voice_level > 0)
-                    pAudioPlayer->PlaySound(SOUND_hf445a, -1, 0, -1, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_hf445a, 44, 0, -1, 0, 0);
                 continue;
             }
             case UIMSG_SetTurnSpeed:

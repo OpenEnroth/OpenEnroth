@@ -106,10 +106,10 @@ class EngineConfig {
     bool no_intro = false;
     bool no_logo = false;
 
-    bool no_sound = true;
+    bool no_sound = false;
     bool no_video = false;
     bool no_walk_sound = false;
-    bool no_margareth = true;
+    bool no_margareth = false;
     bool no_bloodsplats = false;
     bool no_actors = false;
     bool no_decorations = false;
@@ -119,9 +119,9 @@ class EngineConfig {
     bool allow_snow = false;
     bool extended_draw_distance = true;    // 2.5x draw distance
     bool show_fps = true;
-    bool show_picked_face = false;           // red flash face pointed by mouse
-    bool debug_all_magic = true;            // toggle all spellbook
-    bool debug_wizard_eye = true;           // wizard eye always on
+    bool show_picked_face = true;           // red flash face pointed by mouse
+    bool debug_all_magic = false;            // toggle all spellbook
+    bool debug_wizard_eye = false;           // wizard eye always on
     bool debug_portal_outlines = false;     // draw portal frames
     bool debug_turbo_speed = false;          // party movement 12x
     bool debug_lightmaps_decals = false;    // debug lightmap and decals outlines

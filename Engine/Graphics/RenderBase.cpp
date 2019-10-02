@@ -147,8 +147,10 @@ void RenderBase::DrawSpriteObjects_ODM() {
             int v9 = ((int)(stru_5C6E00->uIntegerPi + ((int)stru_5C6E00->uIntegerPi >> 3) +
                             object->uFacing - v6) >> 8) & 7;
 
-             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[v9];
-
+            pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[v9];
+            // error catching
+            if (frame->hw_sprites[v9]->texture->GetHeight() == 0 || frame->hw_sprites[v9]->texture->GetWidth() == 0)
+                __debugbreak();
 
             if (frame->uFlags & 0x20) {
                 // v8 = v36;
@@ -264,6 +266,10 @@ unsigned int BlendColors(unsigned int a1, unsigned int a2) {
 void RenderBase::TransformBillboard(SoftwareBillboard *a2,
                                     RenderBillboard *pBillboard) {
     Sprite *pSprite = pBillboard->hwsprite;
+    // error catching
+    if (pSprite->texture->GetHeight() == 0 || pSprite->texture->GetWidth() == 0)
+        __debugbreak();
+
     int dimming_level = pBillboard->dimming_level;
 
     unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
@@ -335,6 +341,11 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
     billboard->pQuads[3].texcoord.y = 0.f;
 
     billboard->uNumVertices = 4;
+
+    // error catching
+    if (pSprite->texture->GetHeight() == 0 || pSprite->texture->GetWidth() == 0)
+        __debugbreak();
+
     billboard->texture = pSprite->texture;
     billboard->z_order = a2->screen_space_z;
     billboard->field_90 = a2->field_44;
