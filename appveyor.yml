@@ -25,7 +25,7 @@ install:
   #- if "%platform%" == "x64" call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" x86_amd64
   
   # Workaround testing
-  call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat"
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat"
 
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
