@@ -242,7 +242,6 @@ unsigned int Image::GetHeight() {
 
 Image *Image::Create(unsigned int width, unsigned int height,
                      IMAGE_FORMAT format, const void *pixels) {
-
     if (width == 0 || height == 0) __debugbreak();
 
     Image *img = new Image(false);

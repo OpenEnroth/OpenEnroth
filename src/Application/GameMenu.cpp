@@ -301,9 +301,8 @@ void Menu::EventLoop() {
                 }
 
                 engine->SetMusicLevel(new_level);
-                
                 pAudioPlayer->SetMusicVolume(engine->config->music_level);
-                //if (engine->config->music_level > 0)
+                // if (engine->config->music_level > 0)
                 //    pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0);
                 continue;
             }

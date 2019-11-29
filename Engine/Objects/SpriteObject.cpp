@@ -528,7 +528,7 @@ LABEL_25:
                             pActors[v42].pMonsterInfo.uID)
                             // not sure:
                             // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
-                            Actor::_46DF1A_collide_against_actor( // crashes here
+                            Actor::_46DF1A_collide_against_actor(  // crashes here
                                 v42, pMonsterList
                                          ->pMonsters
                                              [pActors[v42]

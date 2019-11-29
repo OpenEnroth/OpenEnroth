@@ -119,25 +119,22 @@ void PrepareDrawLists_BLV() {
             int MinTorch = TorchLightPower;
             int MaxTorch = TorchLightPower * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
 
-            //TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
+            // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
             int ran = rand();
             int mod = ((ran - (RAND_MAX * .4)) / 200);
-            TorchLightPower = (pParty->TorchLightLastIntensity + mod );
+            TorchLightPower = (pParty->TorchLightLastIntensity + mod);
 
             // clamp
             if (TorchLightPower < MinTorch)
                 TorchLightPower = MinTorch;
             if (TorchLightPower > MaxTorch)
                 TorchLightPower = MaxTorch;
-
         }
-        
-        pParty->TorchLightLastIntensity = TorchLightPower;
-        
 
-        //
+        pParty->TorchLightLastIntensity = TorchLightPower;
+
         //       double nexLightIntensity(lastIntensity)
-         //   return clamp(0, 1, lastIntensity + (rand() - .3) / 100)
+        //   return clamp(0, 1, lastIntensity + (rand() - .3) / 100)
 
         pMobileLightsStack->AddLight(
             pIndoorCameraD3D->vPartyPos.x, pIndoorCameraD3D->vPartyPos.y,
@@ -507,7 +504,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                 }
 
                 if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
-                    //if (pFace->uAttributes & FACE_OUTLINED) {
+                    // if (pFace->uAttributes & FACE_OUTLINED) {
                         lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, pVertices, 0);
                     //}
 
@@ -547,8 +544,6 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                     ColourMask = 0xFF808080;
                     // v27 = pBitmaps_LOD->pHardwareTextures[pFace->uBitmapID];
                 }
-
-                
 
                 if (pFace->Indoor_sky()) {
                     render->DrawIndoorSky(uNumVerticesa, uFaceID);

@@ -991,7 +991,6 @@ void _set_3d_projection_matrix() {
 
     // outdoors 60 - should be 75?
     // indoors 65?/
-    
     // something to do with ratio of screenwidth to viewport width
 
 

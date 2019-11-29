@@ -74,8 +74,6 @@ bool TextureD3D::LoadImageData() {
         if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT) {
             this->pixels[native_format] = pixels;
 
-            
-
             // check power of two - temporary
             if ( (this->width & (this->width - 1)) == 0 && (this->height & (this->height - 1)) == 0 ) {
                 this->initialized = render->MoveTextureToDevice(this);

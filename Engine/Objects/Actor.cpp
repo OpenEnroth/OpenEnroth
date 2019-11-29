@@ -5061,7 +5061,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     int v7;                // eax@2
     char v8;               // zf@5
     int v12;               // edx@9
-    //int v18;               // esi@31
+    // int v18;               // esi@31
     Actor *pMonster;       // esi@35
     int v23;               // edx@36
     int v24;        // edi@36
@@ -5199,7 +5199,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     if (v57 > 4) v57 = 4;
     strcpy(Str2, Source);
     if (a4) NumToSpawn = a4;
-    //v18 = NumToSpawn;
+    // v18 = NumToSpawn;
     if (NumToSpawn <= 0) return;
     if ((signed int)(NumToSpawn + uNumActors) >= 500) return;
 
@@ -5212,7 +5212,6 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
                                      spawn->vPosition.z);
     v53 = 0;
     v52 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
-    
 
     // spawning loop
     for (int i = v53; i < NumToSpawn; ++i) {
@@ -5229,7 +5228,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
                     v24 = 2;  // 8 , 20 , 30
                 }
             } else {
-                v24 = 1; // 90 , 70 , 50
+                v24 = 1;  // 90 , 70 , 50
             }
 
             if (v24 == 1) {

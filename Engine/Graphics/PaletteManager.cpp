@@ -25,7 +25,7 @@ bool HSV2RGB(float *redo, float *greeno, float *blueo, float hin, float sin, flo
 
     if (hin > 360 || sin > 1 || vin > 1) __debugbreak();
 
-   if (sin == 0.0) {
+    if (sin == 0.0) {
         if (vin > 1) vin = 1;
         if (vin < 0) vin = 0;
         *blueo = vin;
@@ -37,7 +37,7 @@ bool HSV2RGB(float *redo, float *greeno, float *blueo, float hin, float sin, flo
     if (hin == 360.0) hin = 0.0;
 
     double hh = hin / 60;  // to sixth segments
-    unsigned int segment = (unsigned int )hh;
+    unsigned int segment = (unsigned int)hh;
     double fractionrem = hh - segment;
     double p = (1.0 - sin) * vin;
     double q = (1.0 - fractionrem * sin) * vin;
@@ -116,8 +116,8 @@ void RGB2HSV(float *outh, float *outs, float redin, float greenin, float bluein,
         return;
     } else {
         *outs = delta / max;
-    }    
- 
+    }
+
     if (redin == max) {
         outhcalc = (greenin - bluein) / delta;   // yellow and mag
     } else {
@@ -126,8 +126,8 @@ void RGB2HSV(float *outh, float *outs, float redin, float greenin, float bluein,
         else
             outhcalc = (redin - greenin) / delta + 4.0;  // mag and cyan
     }
- 
-    *outh = outhcalc * 60.0; // to degree
+
+    *outh = outhcalc * 60.0;  // to degree
     if (*outh < 0) {
         *outh += 360.0;
     }
@@ -707,14 +707,13 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
                         if (v6 < 0.0) v6 = 0.0;
                     }
                     v18 = v6;
-                    
+
                     // covert back and store
                     HSV2RGB(&red, &green, &blue, v16, v18, a6);
                     colourstore[index] = (signed __int64)(red * 255.0);
                     colourstore[index + 1] = (signed __int64)(green * 255.0);
                     colourstore[index + 2] = (signed __int64)(blue * 255.0);
                     index += 3;
-
                 } while (index < 768);
 
                 tex.Release();

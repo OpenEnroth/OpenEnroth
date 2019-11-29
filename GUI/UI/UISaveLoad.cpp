@@ -159,7 +159,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             strcpy(pSavegameHeader[i].pName, localization->GetString(72));  // "Empty"
             continue;
         }
-        
+
         if (!pLODFile.Open(str)) __debugbreak();
         void *data = pLODFile.LoadRaw("header.bin");
         memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
@@ -356,7 +356,7 @@ void MainMenuLoad_EventLoop() {
             ++pSaveListPosition;
             if (pSaveListPosition > (param - 7))
                 pSaveListPosition = (param - 7);
-            //if (pSaveListPosition < 1)
+            // if (pSaveListPosition < 1)
              //   pSaveListPosition = 0;
             new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323, 0, 0, (int)pBtnDownArrow);
             break;

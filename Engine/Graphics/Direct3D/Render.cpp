@@ -2061,7 +2061,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
 
 
     // perception
-    //engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+    // engine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
     if (engine->CanSaturateFaces() && (pFace->uAttributes & FACE_CAN_SATURATE_COLOR)) {
         uint eightSeconds = OS_GetTime() % 3000;
@@ -2070,7 +2070,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         int redstart = (sCorrectedColor & 0x00FF0000) >> 16;
 
         int col = (redstart - 64) - (64 * cosf(angle));
-        //(a << 24) | (r << 16) | (g << 8) | b;
+        // (a << 24) | (r << 16) | (g << 8) | b;
         sCorrectedColor = (0xFF << 24) | (redstart << 16) | (col << 8) | col;
     }
 
@@ -2080,9 +2080,6 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         else
             uColor = sCorrectedColor = 0xFF109010;
     }
-
-    
-
 
     if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
         __debugbreak();
@@ -3728,7 +3725,7 @@ void Render::DrawBuildingsD3D() {
                     }
                 }
                 if (Lights.uNumLightsApplied > 0)
-                    //if (face.uAttributes & FACE_OUTLINED)
+                    // if (face.uAttributes & FACE_OUTLINED)
                     lightmap_builder->ApplyLights(
                         &Lights, &static_RenderBuildingsD3D_stru_73C834,
                         poly->uNumVertices, VertexRenderList, 0, (char)v31);
