@@ -14,7 +14,7 @@ GUIWindow_Modal::GUIWindow_Modal(const char *message,
                 (int)on_release_event, message) {
     pEventTimer->Pause();
     prev_screen_type = current_screen_type;
-    current_screen_type = SCREEN_MODAL_WINDOW;
+    current_screen_type = CURRENT_SCREEN::SCREEN_MODAL_WINDOW;
 }
 
 void GUIWindow_Modal::Update() {

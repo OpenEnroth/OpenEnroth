@@ -923,13 +923,13 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
         }
 
         switch (pParty->alignment) {
-            case PartyAlignment_Good:
+            case PartyAlignment::PartyAlignment_Good:
                 pContainer = "evt02-b";
                 break;
-            case PartyAlignment_Neutral:
+            case PartyAlignment::PartyAlignment_Neutral:
                 pContainer = "evt02";
                 break;
-            case PartyAlignment_Evil:
+            case PartyAlignment::PartyAlignment_Evil:
                 pContainer = "evt02-c";
                 break;
             default:
@@ -2232,7 +2232,7 @@ void TavernDialog() {
     unsigned int pTopic1Height;     // [sp+26Fh] [bp-5h]@55
     unsigned __int8 pTopic2Height;  // [sp+267h] [bp-Dh]@57
     unsigned __int8 pTopic3Height;  // [sp+253h] [bp-21h]@59
-    unsigned __int8 pTopic4Height;
+    unsigned __int8 pTopic4Height = 0;
     int pTextHeight;
     int all_text_height;  // [sp+260h] [bp-14h]@18
     GUIFont *pOutString;
@@ -2969,7 +2969,7 @@ void TrainingDialog(const char *s) {
     int v8;               // edx@4
     double v9;            // st7@6
     signed int v10;       // esi@6
-    int pPrice;           // ecx@6
+    int pPrice = 0;           // ecx@6
     int v14;              // esi@14
     int v19;              // ecx@24
     int v33;              // eax@36
@@ -4046,7 +4046,7 @@ void BackToHouseMenu() {
         if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
             pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
             window_SpeakInHouse = new GUIWindow_House(
-                0, 0, window->GetWidth(), window->GetHeight(), 165, 0);
+                0, 0, window->GetWidth(), window->GetHeight(), 165, "");
             window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94,
                 UIMSG_SelectCharacter, 1, 0x31,
                 "");
@@ -4292,8 +4292,8 @@ void FillAviableSkillsToTeach(BuildingType type) {
 void GenerateSpecialShopItems() {
     signed int item_count;
     signed int shop_index;
-    int treasure_lvl;
-    int item_class;
+    int treasure_lvl = 0;
+    int item_class = 0;
     int mdf;
 
     shop_index = (signed int)window_SpeakInHouse->ptr_1C;
@@ -4344,8 +4344,8 @@ void GenerateSpecialShopItems() {
 void GenerateStandartShopItems() {
     signed int item_count;
     signed int shop_index;
-    int treasure_lvl;
-    int item_class;
+    int treasure_lvl = 0;
+    int item_class = 0;
     int mdf;
 
     shop_index = (signed int)window_SpeakInHouse->ptr_1C;
@@ -4397,7 +4397,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
     pEventTimer->Pause();  // pause timer so not attacked
     pAudioPlayer->StopChannels(-1, -1);
 
-    current_screen_type = SCREEN_HOUSE;
+    current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
     pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(80),  // Quit building
         { { ui_exit_cancel_button_background } });
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {

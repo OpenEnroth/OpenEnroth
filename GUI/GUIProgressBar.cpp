@@ -55,13 +55,13 @@ bool GUIProgressBar::Initialize(Type type) {
         return true;
     } else {
         switch (pParty->alignment) {
-            case PartyAlignment_Good:
+            case PartyAlignment::PartyAlignment_Good:
                 progressbar_dungeon = assets->GetImage_ColorKey("bardata-b", 0x7FF);
                 break;
-            case PartyAlignment_Neutral:
+            case PartyAlignment::PartyAlignment_Neutral:
                 progressbar_dungeon = assets->GetImage_ColorKey("bardata", 0x7FF);
                 break;
-            case PartyAlignment_Evil:
+            case PartyAlignment::PartyAlignment_Evil:
                 progressbar_dungeon = assets->GetImage_ColorKey("bardata-c", 0x7FF);
                 break;
             default:

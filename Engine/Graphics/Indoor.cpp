@@ -1090,7 +1090,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     String dlv_filename = String(filename);
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
-    bool _v244 = false;
+    bool bResetSpawn = false;
     size_t dlv_size = 0;
     rawData = pGames_LOD->LoadCompressed(dlv_filename, &dlv_size);
     if (rawData != nullptr) {
@@ -1098,14 +1098,14 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         memcpy(&dlv, pData, sizeof(DDM_DLV_Header));
         pData += sizeof(DDM_DLV_Header);
     } else {
-        _v244 = true;
+        bResetSpawn = true;
     }
 
     if (dlv.uNumFacesInBModels > 0) {
         if (dlv.uNumDecorations > 0) {
             if (dlv.uNumFacesInBModels != uNumFaces ||
                 dlv.uNumDecorations != uNumLevelDecorations)
-                _v244 = true;
+                bResetSpawn = true;
         }
     }
 
@@ -1113,22 +1113,22 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         respawn_interval_days = 0x1BAF800;
     }
 
-    bool _a = false;
+    bool bRespawnLocation = false;
     if (num_days_played - dlv.uLastRepawnDay >= respawn_interval_days &&
         (pCurrentMapName != "d29.dlv")) {
-        _a = true;
+        bRespawnLocation = true;
     }
 
-    char v203[875];
-    if (_v244 || (_a || !dlv.uLastRepawnDay)) {
-        if (_v244) {
-            memset(v203, 0, 875);
-        } else if (_a || !dlv.uLastRepawnDay) {
-            memcpy(v203, pData, 875);
+    char SavedOutlines[875];
+    if (bResetSpawn || (bRespawnLocation || !dlv.uLastRepawnDay)) {
+        if (bResetSpawn) {
+            memset(SavedOutlines, 0, 875);
+        } else if (bRespawnLocation || !dlv.uLastRepawnDay) {
+            memcpy(SavedOutlines, pData, 875);
         }
 
         dlv.uLastRepawnDay = num_days_played;
-        if (_v244) ++dlv.uNumRespawns;
+        if (!bResetSpawn) ++dlv.uNumRespawns;
         *(int *)pDest = 1;
 
         pData = (char*)pGames_LOD->LoadCompressed(dlv_filename);
@@ -1140,7 +1140,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     memcpy(_visible_outlines, pData, 875);
     pData += 875;
 
-    if (*(int *)pDest) memcpy(_visible_outlines, v203, 875);
+    if (*(int *)pDest) memcpy(_visible_outlines, SavedOutlines, 875);
 
     for (uint i = 0; i < pMapOutlines->uNumOutlines; ++i) {
         BLVMapOutline *pVertex = &pMapOutlines->pOutlines[i];
@@ -1208,6 +1208,11 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     // v170 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
     // v171 = blv.uDoors_ddata_Size;
     ptr_0002B4_doors_ddata = (uint16_t*)malloc(blv.uDoors_ddata_Size);  //, "L.DData");
+    if (ptr_0002B4_doors_ddata == nullptr) {
+        log->Warning(L"Malloc error");
+        Error("Malloc");  // is this recoverable
+    }
+
     memcpy(ptr_0002B4_doors_ddata, pData, blv.uDoors_ddata_Size);
     pData += blv.uDoors_ddata_Size;
 
@@ -2771,6 +2776,8 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
             v9 = pSpriteFrameTable->GetFrame(
                 pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], v8);
 
+        if (v9->icon_name == "null") continue;
+
         v41 = 0;
         if (v9->uFlags & 2) v41 = 2;
         if (v9->uFlags & 0x40000) v41 |= 0x40;
@@ -2922,7 +2929,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                         int projected_y = 0;
                         pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-                        assert(uNumBillboardsToDraw < 500);
+                        assert(uNumBillboardsToDraw < 499);
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 
@@ -3754,7 +3761,7 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
                 if (pIndoor->pFaces[v17].uAttributes & FACE_HAS_EVENT ||
                     !pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID].uEventID)
                     return 1;
-                if (current_screen_type != SCREEN_BRANCHLESS_NPC_DIALOG)
+                if (current_screen_type != CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG)
                     EventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID].uEventID,
                                    a1, 1);
             }
@@ -3793,8 +3800,8 @@ bool PortalFrustrum(int pNumVertices,
     __int16 v38;            // dx@67
     int v46;                // edx@87
     int v49;                // esi@93
-    int v53;                // [sp+Ch] [bp-34h]@44
-    int v54;                // [sp+10h] [bp-30h]@0
+    int v53 = 0;                // [sp+Ch] [bp-34h]@44
+    int v54 = 0;                // [sp+10h] [bp-30h]@0
     int min_y_ID2;          // [sp+14h] [bp-2Ch]@12
     int v59;                // [sp+14h] [bp-2Ch]@87
     int v61;                // [sp+1Ch] [bp-24h]@29
@@ -4643,10 +4650,10 @@ int GetPortalScreenCoord(unsigned int uFaceID) {
 int sub_4AAEA6_transform(RenderVertexSoft *a1) {
     double v4;  // st5@2
     double v5;  // st4@3
-    float v11;  // [sp+8h] [bp-8h]@2
-    float v12;  // [sp+8h] [bp-8h]@6
-    float v13;  // [sp+Ch] [bp-4h]@2
-    float v14;  // [sp+Ch] [bp-4h]@6
+    double v11;  // [sp+8h] [bp-8h]@2
+    double v12;  // [sp+8h] [bp-8h]@6
+    double v13;  // [sp+Ch] [bp-4h]@2
+    double v14;  // [sp+Ch] [bp-4h]@6
 
     if (pIndoorCameraD3D->sRotationX) {
         v13 = a1->vWorldPosition.x - (double)pParty->vPosition.x;
@@ -4691,7 +4698,7 @@ int sub_4AAEA6_transform(RenderVertexSoft *a1) {
     return 0;
 }
 //----- (00472866) --------------------------------------------------------
-void BLV_ProcessPartyActions() {
+void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
     int v1;                   // ebx@1
     int v2;                   // edi@1
     double v10;               // st7@27
@@ -4966,9 +4973,7 @@ void BLV_ProcessPartyActions() {
                      party_z <= floor_level + 6 && pParty->uFallSpeed <= 0) &&
                     pParty->field_24) {
                     hovering = true;
-                    pParty->uFallSpeed =
-                        (signed __int64)((double)(pParty->field_24 << 6) * 1.5 +
-                                         (double)pParty->uFallSpeed);
+                    pParty->uFallSpeed += pParty->field_24 * 96;
                 }
                 break;
             default:
@@ -5337,12 +5342,12 @@ int GetAlertStatus() {
 }
 
 int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
-    int result;            // eax@8
+    int result = 0;            // eax@8
     int v6;                // edi@11
     int v7;                // ebx@11
     int v9;                // ebx@12
     int v10;               // eax@12
-    char v11;              // zf@16
+    char v11 = 0;              // zf@16
     int v12;               // edi@20
     int v13;               // eax@20
     int v14;               // ebx@20
@@ -5353,7 +5358,7 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
     SpawnPointMM7 v19;     // [sp+Ch] [bp-38h]@1
     int v22;               // [sp+2Ch] [bp-18h]@3
     unsigned int uFaceID;  // [sp+38h] [bp-Ch]@10
-    int v26;               // [sp+3Ch] [bp-8h]@11
+    int v26 = 0;               // [sp+3Ch] [bp-8h]@11
     int v27;               // [sp+40h] [bp-4h]@11
 
     if (!uNumActors) return 0;
@@ -5499,7 +5504,7 @@ bool sub_4075DB(int x, int y, int z, BLVFace *face) {
     dword_4F5D98_xs[face->uNumVertices] = dword_4F5D98_xs[0];
     dword_4F5CC8_ys[face->uNumVertices] = dword_4F5CC8_ys[0];
     for (int i = 0; i < face->uNumVertices && a3a < 2; i++) {
-        if (dword_4F5CC8_ys[i] >= v8 ^ (dword_4F5CC8_ys[i + 1] >= v8)) {
+        if ((dword_4F5CC8_ys[i] >= v8) ^ (dword_4F5CC8_ys[i + 1] >= v8)) {
             // if( dword_4F5D98_xs[i + 1] >= a4a || dword_4F5D98_xs[i] >= a4a)
             if (!(dword_4F5D98_xs[i + 1] >= a4a && dword_4F5D98_xs[i] < a4a)) {
                 if ((dword_4F5D98_xs[i + 1] < a4a && dword_4F5D98_xs[i] >= a4a)) {
@@ -5560,7 +5565,7 @@ bool sub_4077F1(int a1, int a2, int a3, ODMFace *face, BSPVertexBuffer *a5) {
     dword_4F5B24_ys[face->uNumVertices + 1] = dword_4F5B24_ys[1];
     for (int i = 0; i < face->uNumVertices; i++) {
         if (a5a >= 2) break;
-        if (dword_4F5B24_ys[i + 1] >= a3 ^ (dword_4F5B24_ys[i + 2] >= a3)) {
+        if ((dword_4F5B24_ys[i + 1] >= a3) ^ (dword_4F5B24_ys[i + 2] >= a3)) {
             if (dword_4F5BF4_xs[i + 2] >= a4a || dword_4F5BF4_xs[i] >= a4a) {
                 if (dword_4F5BF4_xs[i + 2] >= a4a &&
                     dword_4F5BF4_xs[i + 1] >= a4a) {

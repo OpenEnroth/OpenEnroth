@@ -10,15 +10,15 @@ class HWLTexture {
  public:
     inline HWLTexture() {}
 
-    int uBufferWidth;
-    int uBufferHeight;
-    int uAreaWidth;
-    int uAreaHeigth;
-    unsigned int uWidth;
-    unsigned int uHeight;
-    int uAreaX;
-    int uAreaY;
-    uint16_t *pPixels;
+    int uBufferWidth = 0;
+    int uBufferHeight = 0;
+    int uAreaWidth = 0;
+    int uAreaHeigth = 0;
+    unsigned int uWidth = 0;
+    unsigned int uHeight = 0;
+    int uAreaX = 0;
+    int uAreaY = 0;
+    uint16_t *pPixels = nullptr;
 };
 
 class Log;

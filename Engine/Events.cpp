@@ -498,7 +498,7 @@ LABEL_47:
                                 pAudioPlayer->StopChannels(-1, -1);
                                 window_SpeakInHouse = new GUIWindow_House(
                                     0, 0, window->GetWidth(),
-                                    window->GetHeight(), 170, 0);
+                                    window->GetHeight(), 170, "");
                                 window_SpeakInHouse->CreateButton(
                                     61, 424, 31, 0, 2, 94,
                                     UIMSG_SelectCharacter, 1, '1', "");
@@ -1058,7 +1058,7 @@ LABEL_47:
                         pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
                         Transition_StopSound_Autosave(v99, MapStartPoint_Party);
                         v133 = 1;
-                        if (current_screen_type == SCREEN_HOUSE) {
+                        if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
                             if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                                 pAudioPlayer->StopChannels(-1, -1);
                                 dialog_menu_id = HOUSE_DIALOGUE_NULL;
@@ -1067,7 +1067,7 @@ LABEL_47:
                                 window_SpeakInHouse->Release();
                                 window_SpeakInHouse = 0;
                                 pMessageQueue_50CBD0->Flush();
-                                current_screen_type = SCREEN_GAME;
+                                current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                 viewparams->bRedrawGameUI = 1;
                                 pDialogueNPCCount = 0;
                                 pDialogueWindow->Release();
@@ -1189,7 +1189,7 @@ char *GetEventHintString(unsigned int uEventID) {
             test_evt = (_evt_raw *)&pLevelEVT[event_pos];
             if (test_evt->_e_type == EVENT_SpeakInHouse) {
                 str_index = EVT_DWORD(test_evt->v5);
-                if (str_index < 600)
+                if (str_index < 525)  // 600
                     return (char *)p2DEvents[str_index - 1].pName;
             }
         }

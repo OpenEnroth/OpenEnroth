@@ -139,7 +139,7 @@ void GUIWindow_MainMenu::Loop() {
         tex->Release();
     }
 
-    current_screen_type = SCREEN_GAME;
+    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
     pGUIWindow2 = nullptr;
 

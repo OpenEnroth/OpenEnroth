@@ -1455,7 +1455,7 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
 void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
     int blend_mode) {
     uint16_t *pSrc;          // eax@2
-    int uSrcTotalWidth;      // ecx@4
+    int uSrcTotalWidth = 0;      // ecx@4
     unsigned int v10;        // esi@9
     int v21;                 // [sp+Ch] [bp-18h]@8
     uint16_t *src_surf_pos;  // [sp+10h] [bp-14h]@9
@@ -1519,7 +1519,7 @@ void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
 
 void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
     uint16_t *pSrc;          // eax@2
-    int uSrcTotalWidth;      // ecx@4
+    int uSrcTotalWidth = 0;      // ecx@4
     int v21;                 // [sp+Ch] [bp-18h]@8
     uint16_t *src_surf_pos;  // [sp+10h] [bp-14h]@9
     int32_t src_width;       // [sp+14h] [bp-10h]@3
@@ -3764,11 +3764,11 @@ void Render::DrawBuildingsD3D() {
 
 
 bool PauseGameDrawing() {
-    if (current_screen_type != SCREEN_GAME &&
-        current_screen_type != SCREEN_NPC_DIALOGUE &&
-        current_screen_type != SCREEN_CHANGE_LOCATION) {
-        if (current_screen_type == SCREEN_INPUT_BLV) return uCurrentHouse_Animation;
-        if (current_screen_type != SCREEN_BRANCHLESS_NPC_DIALOG) return true;
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
+        current_screen_type != CURRENT_SCREEN::SCREEN_NPC_DIALOGUE &&
+        current_screen_type != CURRENT_SCREEN::SCREEN_CHANGE_LOCATION) {
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV) return uCurrentHouse_Animation;
+        if (current_screen_type != CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) return true;
     }
     return false;
 }
@@ -4164,7 +4164,7 @@ unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3,
     int v7;                // ecx@1
     __int16 v8;            // ST10_2@1
     int v9;                // edi@1
-    unsigned __int16 v10;  // dh@1@1
+    unsigned __int16 v10 = 0;  // dh@1@1
     int v11;               // ebx@1
     int v12;               // ebx@1
     __int16 a3a;           // [sp+1Ch] [bp+8h]@1
@@ -4972,7 +4972,7 @@ void _46E0B2_collide_against_decorations() {
 
 int _46F04E_collide_against_portals() {
     int a3;             // [sp+Ch] [bp-8h]@13
-    int v12;            // [sp+10h] [bp-4h]@15
+    int v12 = 0;            // [sp+10h] [bp-4h]@15
 
     unsigned int v1 = 0xFFFFFF;
     unsigned int v10 = 0xFFFFFF;

@@ -45,7 +45,8 @@ GUIWindow_Save::GUIWindow_Save() :
 
     LOD::File pLODFile;
     for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
-        String file_name = pSavegameList->pFileList[i];
+        // String file_name = pSavegameList->pFileList[i];
+        String file_name = StringPrintf("save%03d.mm7", i);
         if (file_name.empty()) {
             file_name = "1.mm7";
         }
@@ -115,7 +116,7 @@ void GUIWindow_Save::Update() {
 
 GUIWindow_Load::GUIWindow_Load(bool ingame) :
     GUIWindow(0, 0, 0, 0, 0) {
-    current_screen_type = SCREEN_LOADGAME;
+    current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
 
     dword_6BE138 = -1;
     pIcons_LOD->_inlined_sub2();
@@ -180,11 +181,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             pSavegameThumbnails[i] = nullptr;
         }
 
+        pSavegameUsedSlots[i] = 1;
         if (pSavegameThumbnails[i] != nullptr) {
-            pSavegameUsedSlots[i] = 1;
+           // pSavegameUsedSlots[i] = 1;
         } else {
-            pSavegameUsedSlots[i] = 0;
-            pSavegameList->pFileList[i].clear();
+            // pSavegameUsedSlots[i] = 0;
+            // pSavegameList->pFileList[i].clear();
         }
     }
 
@@ -331,7 +333,7 @@ void MainMenuLoad_EventLoop() {
             // main menu save/load wnd   clicking on savegame lines
             if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
                 pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_NONE);
-            if (current_screen_type != SCREEN_SAVEGAME || uLoadGameUI_SelectedSlot != param + pSaveListPosition) {
+            if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME || uLoadGameUI_SelectedSlot != param + pSaveListPosition) {
                 // load clicked line
                 int v26 = param + pSaveListPosition;
                 if (dword_6BE138 == v26) {
@@ -379,7 +381,7 @@ void MainMenuLoad_EventLoop() {
                 // crt_deconstruct_ptr_6A0118();
 
                 SetCurrentMenuID(MENU_MAIN);
-                current_screen_type = SCREEN_GAME;
+                current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                 pEventTimer->Resume();
                 viewparams->bRedrawGameUI = true;
                 break;
@@ -391,10 +393,10 @@ void MainMenuLoad_EventLoop() {
 }
 
 void MainMenuLoad_Loop() {
-    current_screen_type = SCREEN_LOADGAME;
+    current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = new GUIWindow_Load(false);
 
-    while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == SCREEN_LOADGAME) {
+    while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
         window->PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
             OS_WaitMessage();

@@ -771,8 +771,8 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             AddMobileLight(a2, 0xFF0000, 256);
             return false;
 
-        case SPRITE_600:
-            __debugbreak();  // what kind of effect is this?
+        case 601:  // SPRITE_OBJECT_EXPLODE:
+            // __debugbreak();  // what kind of effect is this?
             AddMobileLight(a2, 0xFF3C1E, 256);
             return true;
 

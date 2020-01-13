@@ -1455,7 +1455,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
     // const char *pHint;       // edx@113
     GUIWindow popup_window;  // [sp+4h] [bp-74h]@32
 
-    if (current_screen_type == SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO || GetCurrentMenuID() == MENU_MAIN)
         return;
 
 
@@ -1484,11 +1484,11 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
     pEventTimer->Pause();
     switch (current_screen_type) {
-        case SCREEN_CASTING: {
+        case CURRENT_SCREEN::SCREEN_CASTING: {
             Inventory_ItemPopupAndAlchemy();
             break;
         }
-        case SCREEN_CHEST: {
+        case CURRENT_SCREEN::SCREEN_CHEST: {
             if (!pPlayers[uActiveCharacter]->CanAct()) {
                 static String hint_reference;
                 hint_reference = localization->FormatString(
@@ -1534,7 +1534,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             break;
         }
 
-        case SCREEN_GAME:  // In the main menu displays a pop-up window(В
+        case CURRENT_SCREEN::SCREEN_GAME:  // In the main menu displays a pop-up window(В
                            // главном меню показывает всплывающее окно)
         {
             if (GetCurrentMenuID() > 0) break;
@@ -1610,7 +1610,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             }
             break;
         }
-        case SCREEN_BOOKS: {
+        case CURRENT_SCREEN::SCREEN_BOOKS: {
             if (!MapBookOpen ||
                 (signed int)pX < (signed int)pViewport->uViewportTL_X ||
                 (signed int)pX > (signed int)pViewport->uViewportBR_X ||
@@ -1627,10 +1627,10 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             popup_window.DrawMessageBox(0);
             break;
         }
-        case SCREEN_CHARACTERS:
-        case SCREEN_E:
-        case SCREEN_CHEST_INVENTORY: {
-            if ((signed int)pX > 467 && current_screen_type != SCREEN_E)
+        case CURRENT_SCREEN::SCREEN_CHARACTERS:
+        case CURRENT_SCREEN::SCREEN_E:
+        case CURRENT_SCREEN::SCREEN_CHEST_INVENTORY: {
+            if ((signed int)pX > 467 && current_screen_type != CURRENT_SCREEN::SCREEN_E)
                 Inventory_ItemPopupAndAlchemy();
             else if ((signed int)pY >= 345)
                 break;
@@ -1649,18 +1649,18 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 Inventory_ItemPopupAndAlchemy();
             break;
         }
-        case SCREEN_SPELL_BOOK: {
+        case CURRENT_SCREEN::SCREEN_SPELL_BOOK: {
             if (dword_507B00_spell_info_to_draw_in_popup)
                 DrawSpellDescriptionPopup(
                     dword_507B00_spell_info_to_draw_in_popup - 1);
             break;
         }
-        case SCREEN_HOUSE: {
+        case CURRENT_SCREEN::SCREEN_HOUSE: {
             if ((signed int)pY < 345 && (signed int)pX < 469)
                 ShowPopupShopItem();
             break;
         }
-        case SCREEN_PARTY_CREATION: {
+        case CURRENT_SCREEN::SCREEN_PARTY_CREATION: {
             popup_window.sHint.clear();
             pStr = 0;
             for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
@@ -2262,10 +2262,8 @@ unsigned int GetSpellColor(signed int a1) {
 
 //----- (004B46F8) --------------------------------------------------------
 __int64 GetExperienceRequiredForLevel(int level) {
-    __int64 v1;  // eax@1
-    int i;       // edx@1
-
-    v1 = 0;
-    for (i = 0; i < level; ++i) v1 += i + 1;
+    __int64 v1 = 0;
+    for (int i = 0; i < level; ++i)
+        v1 += __int64(i) + 1;
     return 1000 * v1;
 }

@@ -31,7 +31,7 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
         pMessageQueue_50CBD0->Flush();
         // pGUIWindow_CurrentMenu->Release();
         uGameState = GAME_STATE_NEWGAME_OUT_GAMEMENU;
-        current_screen_type = SCREEN_GAME;
+        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
         viewparams->bRedrawGameUI = 1;
     } else {
         GameUI_StatusBar_OnEvent(localization->GetString(
@@ -45,7 +45,7 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
     if (dword_6BE138 == 132 || force_quit) {
         pMessageQueue_50CBD0->Flush();
         // pGUIWindow_CurrentMenu->Release();
-        current_screen_type = SCREEN_GAME;
+        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
         viewparams->bRedrawGameUI = 1;
         pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 0, 0, -1, 0, 0);
         uGameState = GAME_STATE_GAME_QUITTING_TO_MAIN_MENU;
@@ -63,7 +63,7 @@ void Game_OpenLoadGameDialog() {
     pGUIWindow_CurrentMenu = nullptr;
     game_ui_status_bar_event_string_time_left = 0;
     // LoadUI_Load(1);
-    current_screen_type = SCREEN_LOADGAME;
+    current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
     pGUIWindow_CurrentMenu = new GUIWindow_Load(true);
 }
 
@@ -109,7 +109,7 @@ void Menu::EventLoop() {
                     pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_NONE);
 
                 int v10 = pSaveListPosition + param;
-                if (current_screen_type != SCREEN_SAVEGAME ||
+                if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME ||
                     uLoadGameUI_SelectedSlot != v10) {
                     if (dword_6BE138 == pSaveListPosition + param) {
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn,
@@ -148,7 +148,7 @@ void Menu::EventLoop() {
             case UIMSG_Game_OpenSaveGameDialog: {
                 pGUIWindow_CurrentMenu->Release();
                 game_ui_status_bar_event_string_time_left = 0;
-                current_screen_type = SCREEN_SAVEGAME;
+                current_screen_type = CURRENT_SCREEN::SCREEN_SAVEGAME;
                 pGUIWindow_CurrentMenu =
                     new GUIWindow_Save();  // SaveUI_Load(current_screen_type =
                                            // SCREEN_SAVEGAME);
@@ -163,7 +163,7 @@ void Menu::EventLoop() {
                     new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
 
                 viewparams->field_48 = 1;
-                current_screen_type = SCREEN_OPTIONS;
+                current_screen_type = CURRENT_SCREEN::SCREEN_OPTIONS;
 
                 continue;
             }
@@ -177,7 +177,7 @@ void Menu::EventLoop() {
                     new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
 
                 viewparams->field_48 = 1;
-                current_screen_type = SCREEN_KEYBOARD_OPTIONS;
+                current_screen_type = CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS;
 
                 continue;
             }
@@ -236,7 +236,7 @@ void Menu::EventLoop() {
                 pGUIWindow_CurrentMenu->Release();
                 pGUIWindow_CurrentMenu = new GUIWindow_GameVideoOptions();  // GameMenuUI_OptionsVideo_Load();
                 viewparams->field_48 = 1;
-                current_screen_type = SCREEN_VIDEO_OPTIONS;
+                current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS;
 
                 continue;
             }
@@ -392,7 +392,7 @@ void Menu::EventLoop() {
             case UIMSG_GameMenu_ReturnToGame:
                 // pGUIWindow_CurrentMenu->Release();
                 pEventTimer->Resume();
-                current_screen_type = SCREEN_GAME;
+                current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                 viewparams->bRedrawGameUI = true;
                 continue;
 
@@ -406,16 +406,16 @@ void Menu::EventLoop() {
                 viewparams->bRedrawGameUI = true;
                 viewparams->field_48 = 1;
 
-                if (current_screen_type == SCREEN_MENU) {
-                    current_screen_type = SCREEN_GAME;
-                } else if (current_screen_type == SCREEN_SAVEGAME ||
-                           current_screen_type == SCREEN_LOADGAME) {
+                if (current_screen_type == CURRENT_SCREEN::SCREEN_MENU) {
+                    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                } else if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME ||
+                           current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
                     // crt_deconstruct_ptr_6A0118();
 
                     pGUIWindow_CurrentMenu->Release();
-                    current_screen_type = SCREEN_MENU;
+                    current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
-                } else if (current_screen_type == SCREEN_OPTIONS) {
+                } else if (current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS) {
                     options_menu_skin.Relaease();
                     OS_SetAppInt("soundflag", engine->config->sound_level);
                     OS_SetAppInt("musicflag", engine->config->music_level);
@@ -435,9 +435,9 @@ void Menu::EventLoop() {
                         OS_SetAppInt("TurnDelta", 1);
 
                     pGUIWindow_CurrentMenu->Release();
-                    current_screen_type = SCREEN_MENU;
+                    current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
-                } else if (current_screen_type == SCREEN_VIDEO_OPTIONS) {
+                } else if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS) {
                     // if ( render->pRenderD3D )
                     {
                         OS_SetAppInt("Colored Lights", render->config->is_using_colored_lights);
@@ -446,9 +446,9 @@ void Menu::EventLoop() {
                     }
 
                     pGUIWindow_CurrentMenu->Release();
-                    current_screen_type = SCREEN_MENU;
+                    current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
-                } else if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
+                } else if (current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS) {
                     KeyToggleType pKeyToggleType;  // [sp+0h] [bp-5FCh]@287
                     int v197 = 1;
                     bool pKeyBindingFlag = false;
@@ -487,9 +487,9 @@ void Menu::EventLoop() {
                                 }
                             }
                             if (i > 3 && i != 25 && i != 26)
-                                pKeyToggleType = TOGGLE_OneTimePress;
+                                pKeyToggleType = KeyToggleType::TOGGLE_OneTimePress;
                             else
-                                pKeyToggleType = TOGGLE_Continuously;
+                                pKeyToggleType = KeyToggleType::TOGGLE_Continuously;
                             pKeyActionMap->SetKeyMapping(
                                 i, pPrevVirtualCidesMapping[i], pKeyToggleType);
                         }
@@ -499,7 +499,7 @@ void Menu::EventLoop() {
                     }
 
                     pGUIWindow_CurrentMenu->Release();
-                    current_screen_type = SCREEN_MENU;
+                    current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 }
                 continue;
@@ -510,7 +510,7 @@ void Menu::EventLoop() {
 void Menu::MenuLoop() {
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
-    current_screen_type = SCREEN_MENU;
+    current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
 
     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
 
@@ -525,12 +525,12 @@ void Menu::MenuLoop() {
     gamma_preview_image = assets->GetImage_PCXFromFile("gamma.pcx");
 
     while (uGameState == GAME_STATE_PLAYING &&
-           (current_screen_type == SCREEN_MENU ||
-            current_screen_type == SCREEN_SAVEGAME ||
-            current_screen_type == SCREEN_LOADGAME ||
-            current_screen_type == SCREEN_OPTIONS ||
-            current_screen_type == SCREEN_VIDEO_OPTIONS ||
-            current_screen_type == SCREEN_KEYBOARD_OPTIONS)) {
+           (current_screen_type == CURRENT_SCREEN::SCREEN_MENU ||
+            current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME ||
+            current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME ||
+            current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS ||
+            current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS ||
+            current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS)) {
         window->PeekMessageLoop();
         if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
             OS_WaitMessage();

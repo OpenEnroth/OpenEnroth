@@ -104,7 +104,7 @@ struct Vec4_int_ {
 #pragma pack(push, 1)
 struct Plane_int_ {
     Vec3_int_ vNormal;
-    int dist;
+    int dist = 0;
 };
 #pragma pack(pop)
 

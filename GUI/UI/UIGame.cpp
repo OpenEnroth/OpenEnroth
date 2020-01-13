@@ -808,7 +808,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         }
     }
 
-    if (current_screen_type == SCREEN_GAME) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
         viewparams->bRedrawGameUI = true;
         if (uActiveCharacter != uPlayerID) {
             if (pPlayers[uPlayerID]->uTimeToRecovery || !pPlayers[uPlayerID]->CanAct()) {
@@ -820,15 +820,15 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         }
         pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
             uActiveCharacter,
-            SCREEN_CHARACTERS);  // CharacterUI_Initialize(SCREEN_CHARACTERS);
+            CURRENT_SCREEN::SCREEN_CHARACTERS);  // CharacterUI_Initialize(SCREEN_CHARACTERS);
         return;
     }
-    if (current_screen_type == SCREEN_SPELL_BOOK) return;
-    if (current_screen_type == SCREEN_CHEST) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) return;
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
         viewparams->bRedrawGameUI = true;
         if (uActiveCharacter == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-            current_screen_type = SCREEN_CHEST_INVENTORY;
+            current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
             uActiveCharacter = uPlayerID;
             return;
         }
@@ -838,12 +838,12 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         uActiveCharacter = uPlayerID;
         return;
     }
-    if (current_screen_type != SCREEN_HOUSE) {
-        if (current_screen_type == SCREEN_E) {
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_HOUSE) {
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
             uActiveCharacter = uPlayerID;
             return;
         }
-        if (current_screen_type != SCREEN_CHEST_INVENTORY) {
+        if (current_screen_type != CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
             viewparams->bRedrawGameUI = true;
             uActiveCharacter = uPlayerID;
             if (current_character_screen_window ==
@@ -855,7 +855,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         viewparams->bRedrawGameUI = true;
         if (uActiveCharacter == uPlayerID) {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-            current_screen_type = SCREEN_CHEST_INVENTORY;
+            current_screen_type = CURRENT_SCREEN::SCREEN_CHEST_INVENTORY;
             uActiveCharacter = uPlayerID;
             return;
         }
@@ -879,7 +879,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         __debugbreak();  // fix indexing
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
         pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
-            uActiveCharacter, SCREEN_E);  // CharacterUI_Initialize(SCREEN_E);
+            uActiveCharacter, CURRENT_SCREEN::SCREEN_E);  // CharacterUI_Initialize(SCREEN_E);
         return;
     }
 }
@@ -1158,7 +1158,7 @@ void GameUI_DrawRightPanelItems() {
         _50697C_book_flasher = !_50697C_book_flasher;
     }
 
-    if (_50697C_book_flasher && current_screen_type != SCREEN_REST) {
+    if (_50697C_book_flasher && current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
         if (bFlashQuestBook)
             render->DrawTextureAlphaNew(493 / 640.0f, 355 / 480.0f,
                                         game_ui_tome_quests);
@@ -1284,7 +1284,7 @@ void GameUI_WritePointedObjectStatusString() {
         pY > window->GetHeight() - 1)
         return;
 
-    if (current_screen_type == SCREEN_GAME) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
         if (pX <= (window->GetWidth() - 1) * 0.73125 &&
             pY <= (window->GetHeight() - 1) * 0.73125) {
             if (!pViewport->Contains(pX, pY)) {
@@ -1405,7 +1405,7 @@ void GameUI_WritePointedObjectStatusString() {
             uLastPointedObjectID = pMouse->uPointingObjectID;
             return;
         }
-    } else if (current_screen_type == SCREEN_CHEST) {
+    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
         if (pX <= (window->GetWidth() - 1) * 0.73125 &&
             pY <= (window->GetHeight() - 1) * 0.73125) {  // if in chest area
             if (Chest::ChestUI_WritePointedObjectStatusString()) {
@@ -1420,7 +1420,7 @@ void GameUI_WritePointedObjectStatusString() {
     } else {
         // if (pX <= (window->GetWidth() - 1) * 0.73125 && pY <=
         // (window->GetHeight() - 1) * 0.73125) {
-        if (current_screen_type == SCREEN_CHARACTERS) {
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS) {
             if (current_character_screen_window ==
                 WINDOW_CharacterWindow_Inventory) {
                 if (pY > 0 && pY < 350 && pX >= 13 &&
@@ -1705,8 +1705,8 @@ void GameUI_DrawPartySpells() {
         }
     }
 
-    if (current_screen_type == SCREEN_GAME ||
-        current_screen_type == SCREEN_NPC_DIALOGUE) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE) {
         if (pParty->FlyActive()) {
             if (pParty->bFlying)
                 spell_texture =
@@ -2198,17 +2198,17 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
 //----- (00441498) --------------------------------------------------------
 void GameUI_DrawTorchlightAndWizardEye() {
-    if (current_screen_type == SCREEN_GAME ||
-        current_screen_type == SCREEN_MENU ||
-        current_screen_type == SCREEN_OPTIONS ||
-        current_screen_type == SCREEN_REST ||
-        current_screen_type == SCREEN_SPELL_BOOK ||
-        current_screen_type == SCREEN_CHEST ||
-        current_screen_type == SCREEN_SAVEGAME ||
-        current_screen_type == SCREEN_LOADGAME ||
-        current_screen_type == SCREEN_CHEST_INVENTORY ||
-        current_screen_type == SCREEN_BOOKS ||
-        current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_MENU ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_REST ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_CHEST ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS ||
+        current_screen_type == CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) {
         if (pParty->TorchlightActive()) {
             render->DrawTextureAlphaNew(
                 pUIAnum_Torchlight->x / 640.0f, pUIAnum_Torchlight->y / 480.0f,
@@ -2503,7 +2503,10 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(241, 167, "Give Food", 2);
     buttonbox(354, 167, "Take Food", 2);
 
-    buttonbox(13, 194, "Alignment", pParty->alignment);
+    int col = 0;
+    if (pParty->alignment == PartyAlignment::PartyAlignment_Evil) col = 2;
+    if (pParty->alignment == PartyAlignment::PartyAlignment_Neutral) col = 1;
+    buttonbox(13, 194, "Alignment", col);
     buttonbox(127, 194, "WizardEye", engine->config->debug_wizard_eye);
     buttonbox(241, 194, "All Magic", engine->config->debug_all_magic);
     buttonbox(354, 194, "Terrain", engine->config->debug_terrain);

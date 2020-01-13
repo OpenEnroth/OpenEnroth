@@ -114,10 +114,13 @@ void RenderBase::DrawSpriteObjects_ODM() {
         // do
         //{
 
-        if (!object->uObjectDescID) {  // item probably pciked up
+        // if (object->uType == 601) __debugbreak();
+
+        if (!object->uObjectDescID) {  // item probably pciked up - this also gets wiped at end of sprite anims/ particle effects
             // __debugbreak();
             continue;
         }
+
 
         if (!object->HasSprite()) {
             // __debugbreak();
@@ -129,13 +132,21 @@ void RenderBase::DrawSpriteObjects_ODM() {
         //{
         // v2 = *((short *)v0 - 14)
         // v2 = object->uType;
-        if ((object->uType < 1000 || object->uType >= 10000) && (object->uType < 500 || object->uType >= 600) ||
-            spell_fx_renderer->RenderAsSprite(object)) {
+
+        // render as sprte 500 - 9081
+
+        if (spell_fx_renderer->RenderAsSprite(object) || ((object->uType < 1000 || object->uType >= 10000) && (object->uType < 500 || object->uType >= 600))) {
             // a5 = *(short *)v0;
             int x = object->vPosition.x;
             int y = object->vPosition.y;
             int z = object->vPosition.z;
             SpriteFrame *frame = object->GetSpriteFrame();
+
+            if (frame->icon_name == "null") {
+                __debugbreak();
+                continue;
+            }
+
             int a6 = frame->uGlowRadius * object->field_22_glow_radius_multiplier;
 
             // sprite angle to camera

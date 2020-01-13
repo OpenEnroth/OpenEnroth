@@ -210,7 +210,7 @@ void GUIFont::DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos, const S
 
 String GUIFont::GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned int uX, int a5) {
     if (pInString.empty()) {
-        return nullptr;
+        return "";
     }
 
     int text_height = 0;
@@ -310,7 +310,7 @@ unsigned int GUIFont::AlignText_Center(unsigned int width, const String &pString
 
 String GUIFont::FitTextInAWindow(const String &inString, unsigned int width, int uX, bool return_on_carriage) {
     size_t uInStrLen = inString.length();
-    strcpy(&temp_string[0], inString.c_str());
+    strcpy(temp_string, inString.c_str());
     if (uInStrLen == 0) {
         return &temp_string[0];
     }
@@ -499,6 +499,8 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
     strcpy(text, str.c_str());
 
     size_t pNumLen = strlen(text);
+    if (pNumLen == 0) return 0;
+
     unsigned int pLineWidth = this->GetLineWidth(text);
     if (pLineWidth < rect_width) {
         this->DrawText(pWindow, uX, uY, uColor, text, 0, 0, 0);

@@ -30,19 +30,19 @@ GUIWindow_Chest::GUIWindow_Chest(unsigned int chest_id)
                      localization->GetString(79),
                      {{ui_exit_cancel_button_background}});  // Exit
     CreateButton(7, 8, 460, 343, 1, 0, UIMSG_CHEST_ClickItem, 0, 0, "");
-    current_screen_type = SCREEN_CHEST;
+    current_screen_type = CURRENT_SCREEN::SCREEN_CHEST;
     pEventTimer->Pause();
 }
 
 void GUIWindow_Chest::Update() {
-    if (current_screen_type == SCREEN_CHEST_INVENTORY) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
         render->ClearZBuffer(0, 479);
         draw_leather();
         CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
         render->DrawTextureAlphaNew(pBtn_ExitCancel->uX / 640.0f,
                                     pBtn_ExitCancel->uY / 480.0f,
                                     ui_exit_cancel_button_background);
-    } else if (current_screen_type == SCREEN_CHEST) {
+    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
         auto uChestID = (unsigned int)ptr_1C;
 
         int *v16 = render->pActiveZBuffer;

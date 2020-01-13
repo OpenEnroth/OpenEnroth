@@ -921,13 +921,23 @@ void OutdoorLocation::CreateDebugLocation() {
 
     free(this->pOMAP);
     this->pOMAP = (unsigned int *)malloc(0x10000);
-    memset(this->pOMAP, 0, 0x10000);
+    if (this->pOMAP == nullptr) {
+        log->Warning(L"Malloc error - pOMAP");
+        __debugbreak();
+    } else {
+        memset(this->pOMAP, 0, 0x10000);
+    }
 
     this->numFaceIDListElems = 0;
 
     free(this->pFaceIDLIST);
     this->pFaceIDLIST = (unsigned __int16 *)malloc(2);
-    this->pFaceIDLIST[0] = 0;
+    if (this->pFaceIDLIST == nullptr) {
+        logger->Warning(L"Malloc fail - pfaceidlist");
+        __debugbreak();
+    } else {
+        this->pFaceIDLIST[0] = 0;
+    }
 
     this->sky_texture_filename = pDefaultSkyTexture.data();
     this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
@@ -2008,7 +2018,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
         for (uint i = 1; i < v46; ++i) {
             next_floor_level = odm_floor_level[i];
             if (current_floor_level <= Z + 5) {
-                if (next_floor_level > current_floor_level &&
+                if (next_floor_level >= current_floor_level &&
                     next_floor_level <= Z + 5) {
                     current_floor_level = next_floor_level;
                     v29 = i;
@@ -2697,9 +2707,7 @@ void ODM_ProcessPartyActions() {
                     !(pParty->uFlags & 0x200)) {
                     // v126 = pParty->field_24 << 6;
                     hovering = true;
-                    fall_speed =
-                        (signed __int64)((double)(pParty->field_24 << 6) * 1.5 +
-                                         (double)fall_speed);
+                    fall_speed += pParty->field_24 * 96;
                 }
                 break;
 
@@ -2731,7 +2739,7 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartY = party_new_Z;
     } else if (party_new_Z < v111) {
         if (is_on_water && fall_speed)
-            SpriteObject::sub_42F960_create_object(pX, pY, v111);
+            SpriteObject::Create_Splash_Object(pX, pY, v111);
         fall_speed = 0;
         party_new_Z = v111;
         pParty->uFallStartY = v111;
@@ -3558,7 +3566,7 @@ void UpdateActors_ODM() {
                         if (Splash_Model_On)
                             Splash_Z = Splash_Floor + 30;
 
-                        SpriteObject::sub_42F960_create_object(
+                        SpriteObject::Create_Splash_Object(
                             pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y,
                             Splash_Z);
                         pActors[Actor_ITR].uAIState = Removed;

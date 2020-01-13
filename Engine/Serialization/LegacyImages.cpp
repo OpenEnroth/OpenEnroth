@@ -316,7 +316,7 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->bFlying = party->bFlying;
     this->field_708 = party->field_708;
     this->hirelingScrollPosition = party->hirelingScrollPosition;
-    this->field_70A = party->field_70A;
+    this->field_70A = party->cNonHireFollowers;
     this->field_70B = party->field_70B;
     this->uCurrentYear = party->uCurrentYear;
     this->uCurrentMonth = party->uCurrentMonth;
@@ -371,7 +371,11 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->bTurnBasedModeOn = party->bTurnBasedModeOn;
     this->field_880 = party->field_880;
     this->uFlags2 = party->uFlags2;
-    this->alignment = party->alignment;
+
+    uint align = 0;
+    if (party->alignment == PartyAlignment::PartyAlignment_Evil) align = 2;
+    if (party->alignment == PartyAlignment::PartyAlignment_Neutral) align = 1;
+    this->alignment = align;
 
     for (unsigned int i = 0; i < 20; ++i)
         this->pPartyBuffs[i].Serialize(&party->pPartyBuffs[i]);
@@ -477,7 +481,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->bFlying = this->bFlying;
     party->field_708 = this->field_708;
     party->hirelingScrollPosition = this->hirelingScrollPosition;
-    party->field_70A = this->field_70A;
+    party->cNonHireFollowers = this->field_70A;
     party->field_70B = this->field_70B;
     party->uCurrentYear = this->uCurrentYear;
     party->uCurrentMonth = this->uCurrentMonth;
@@ -535,13 +539,13 @@ void Party_Image_MM7::Deserialize(Party *party) {
 
     switch (this->alignment) {
         case 0:
-            party->alignment = PartyAlignment_Good;
+            party->alignment = PartyAlignment::PartyAlignment_Good;
             break;
         case 1:
-            party->alignment = PartyAlignment_Neutral;
+            party->alignment = PartyAlignment::PartyAlignment_Neutral;
             break;
         case 2:
-            party->alignment = PartyAlignment_Evil;
+            party->alignment = PartyAlignment::PartyAlignment_Evil;
             break;
         default:
             Assert(false);

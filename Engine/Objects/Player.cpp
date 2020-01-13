@@ -4361,7 +4361,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     }
 
     if (pParty->pPickedItem.GetItemEquipType() == EQUIP_SPELL_SCROLL) {
-        if (current_screen_type == SCREEN_CASTING) return;
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_CASTING) return;
         if (!playerAffected->CanAct()) {
             auto str = localization->FormatString(
                 382, localization->GetCharacterConditionName(
@@ -4383,13 +4383,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                 // ,Recharge Item ,Fire Aura
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
-            current_screen_type = SCREEN_GAME;
+            current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
             viewparams->bRedrawGameUI = 1;
             _42777D_CastSpell_UseWand_ShootArrow((SPELL_TYPE)scroll_id, player_num - 1, 0x85u, 1, 0);
         } else {
             mouse->RemoveHoldingItem();
             pMessageQueue_50C9E8->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id, player_num - 1);
-            if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu &&
+            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && pGUIWindow_CurrentMenu &&
                 (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
             }
@@ -5736,7 +5736,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
         if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
             pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] =
                 pParty->GetPlayingTime();
-            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText = 0) {
+            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText == 0) {
                 bFlashHistoryBook = 1;
                 PlayAwardSound();
             }
@@ -7850,7 +7850,7 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
 
     SpriteObject a1a;
-    a1a.uType = SPRITE_600;
+    a1a.uType = SPRITE_OBJECT_EXPLODE;
     a1a.containing_item.Reset();
     a1a.spell_id = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;

@@ -18,8 +18,8 @@ struct GameTime {
     explicit GameTime(uint64_t val) : value(val) {}
     GameTime(int seconds, int minutes, int hours = 0, int days = 0,
              int weeks = 0, int months = 0, int years = 0) {
-        auto converted = (seconds + 60 * minutes + 3600 * hours + 86400 * days +
-                          604800 * weeks + (uint64_t)2419200 * months +
+        auto converted = (seconds + (uint64_t)60 * minutes + (uint64_t)3600 * hours + (uint64_t)86400 * days +
+            (uint64_t)604800 * weeks + (uint64_t)2419200 * months +
                           (uint64_t)29030400 * years) *
                          TIME_PACK_GAME_SECONDS;
 
@@ -45,10 +45,10 @@ struct GameTime {
     int GetMonthsOfYear() const { return this->GetMonths() % 12; }
 
     void AddMinutes(int minutes) {
-        this->value += (uint64_t)(60 * minutes * TIME_PACK_GAME_SECONDS);
+        this->value += ((uint64_t)60 * minutes * TIME_PACK_GAME_SECONDS);
     }
     void SubtractHours(int hours) {
-        this->value -= (uint64_t)(60 * 60 * hours * TIME_PACK_GAME_SECONDS);
+        this->value -= ((uint64_t)60 * 60 * hours * TIME_PACK_GAME_SECONDS);
     }
 
     void Reset() { this->value = 0; }

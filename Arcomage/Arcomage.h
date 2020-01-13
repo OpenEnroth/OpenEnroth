@@ -81,11 +81,11 @@ struct ArcomageCard {
 };
 
 struct AcromageCardOnTable {
-    int uCardId;
-    int field_4;
+    int uCardId = 0;
+    int field_4 = 0;
     Point field_8;
-    int field_10_xplus;
-    int field_14_y_plus;
+    int field_10_xplus = 0;
+    int field_14_y_plus = 0;
     Point field_18_point;
 };
 
@@ -113,7 +113,7 @@ struct ArcomageGame_stru1 {
 class GUIFont;
 
 struct ArcomageGame {
-    ArcomageGame();
+    ArcomageGame() {}
 
     static bool LoadBackground();
     static bool LoadSprites();
@@ -127,39 +127,39 @@ struct ArcomageGame {
 
     static void Loop();
 
-    char field_0;
-    char field_1;
-    char field_2;
-    char field_3;
-    int field_4;
+    char field_0 = 0;
+    char field_1 = 0;
+    char field_2 = 0;
+    char field_3 = 0;
+    int field_4 = 0;
     ArcomageGame_stru1 stru1;
-    int mouse_x;
-    int mouse_y;
-    char mouse_left;
-    char field_39;
-    char mouse_right;
-    char field_3B;
-    uint16_t *pBackgroundPixels;
-    uint16_t *pSpritesPixels;
-    uint16_t *pBlit_Copy_pixels;
-    GUIFont *pfntComic;  // ptr_48;
-    GUIFont *pfntArrus;  // ptr_4C;
-    int field_50;
-    int field_54;
-    Texture *pGameBackground;
-    Texture *pSprites;
-    int event_timer_time;
-    int uGameWinner;
-    int Victory_type;
-    char pPlayer1Name[32];
-    char pPlayer2Name[32];
-    char field_F4;
-    char GameOver;
-    char field_F6;
-    char prev_mouse_left;
-    char prev_mouse_right;
-    char field_F9;
-    char bGameInProgress;
+    int mouse_x = 0;
+    int mouse_y = 0;
+    char mouse_left = 0;
+    char field_39 = 0;
+    char mouse_right = 0;
+    char field_3B = 0;
+    uint16_t *pBackgroundPixels = nullptr;
+    uint16_t *pSpritesPixels = nullptr;
+    uint16_t *pBlit_Copy_pixels = nullptr;
+    GUIFont *pfntComic = nullptr;  // ptr_48;
+    GUIFont *pfntArrus = nullptr;  // ptr_4C;
+    int field_50 = 0;
+    int field_54 = 0;
+    Texture *pGameBackground = nullptr;
+    Texture *pSprites = nullptr;
+    int event_timer_time = 0;
+    int uGameWinner = 0;
+    int Victory_type = 0;
+    char pPlayer1Name[32] = "";
+    char pPlayer2Name[32] = "";
+    char field_F4 = 0;
+    char GameOver = 0;
+    char field_F6 = 0;
+    char prev_mouse_left = 0;
+    char prev_mouse_right = 0;
+    char field_F9 = 0;
+    char bGameInProgress = 0;
 };
 
 extern ArcomageGame *pArcomageGame;

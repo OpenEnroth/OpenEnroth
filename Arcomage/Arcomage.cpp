@@ -216,6 +216,10 @@ bool stru273::Inside(Rect *pXYZW) {
 
 stru272_stru0 *stru272_stru0::New() {
     stru272_stru0 *v2 = (stru272_stru0 *)malloc(0x5Cu);
+    if (v2 == nullptr) {
+        logger->Warning(L"Malloc error");
+        Error("Malloc");  // is this recoverable
+    }
     v2->signature = SIG_trpg;
     v2->position_in_sparks_arr = 0;
     v2->field_30 = 0.0;
@@ -304,7 +308,7 @@ int stru272_stru0::DrawEffect() {
     v22 = this->field_30;
     v4 = v3;
     if (v3 > 0) {
-        v5 = v22 + this->field_2C;
+        v5 = (double)v22 + this->field_2C;
         v22 = v5;
         if (v5 > v4) v22 = v4;
     }
@@ -745,7 +749,7 @@ bool OpponentsAITurn(int player_num) {
     ArcomageCard *v12;           // ecx@20
     int v56;                     // ecx@141
     int v57;                     // edx@141
-    int v132;                    // [sp-14h] [bp-14h]@0
+    int v132 = 0;                    // [sp-14h] [bp-14h]@0
     ArcomagePlayer *enemy;       // [sp-10h] [bp-10h]@5
     ArcomagePlayer *player;      // [sp-Ch] [bp-Ch]@5
 
@@ -2952,8 +2956,8 @@ void ArcomageGame::PrepareArcomage() {
     Point pXY;   // [sp+18h] [bp-Ch]@5
 
     pAudioPlayer->StopChannels(-1, -1);
-    strcpy_s(pArcomageGame->pPlayer1Name, Player1Name);
-    strcpy_s(pArcomageGame->pPlayer2Name, Player2Name);
+    strcpy(pArcomageGame->pPlayer1Name, Player1Name);
+    strcpy(pArcomageGame->pPlayer2Name, Player2Name);
     am_byte_4FAA76 = 0;
     am_byte_4FAA75 = 0;
 
@@ -3005,12 +3009,6 @@ void ArcomageGame::PrepareArcomage() {
     pArcomageGame->GameOver = 0;
     pArcomageGame->pfntComic = pFontComic;
     pArcomageGame->pfntArrus = pFontArrus;
-}
-
-ArcomageGame::ArcomageGame() {
-    field_4 = 0;
-    bGameInProgress = 0;
-    field_F9 = 0;
 }
 
 void SetStartConditions() {

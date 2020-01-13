@@ -175,7 +175,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
         if (on_water) {
             v9 = v6 + 60;
             if (v55) v9 = v6 + 30;
-            sub_42F960_create_object(pSpriteObjects[uLayingItemID].vPosition.x,
+            Create_Splash_Object(pSpriteObjects[uLayingItemID].vPosition.x,
                                      pSpriteObjects[uLayingItemID].vPosition.y,
                                      v9);
             SpriteObject::OnInteraction(uLayingItemID);
@@ -335,7 +335,7 @@ LABEL_13:
                     v44 = v27 + 30;
                 else
                     v44 = v54 + 60;
-                sub_42F960_create_object(
+                Create_Splash_Object(  // splash
                     pSpriteObjects[uLayingItemID].vPosition.x,
                     pSpriteObjects[uLayingItemID].vPosition.y, v44);
                 SpriteObject::OnInteraction(uLayingItemID);
@@ -534,11 +534,13 @@ LABEL_25:
                         }
                     }
                 } else {
-                    for (v42 = 0; v42 < (signed int)uNumActors; v42++)
-                        Actor::_46DF1A_collide_against_actor(
-                            v42,
-                            pMonsterList
-                                ->pMonsters[pActors[v42].word_000086_some_monster_id - 1].uToHitRadius);
+                    for (v42 = 0; v42 < (signed int)uNumActors; v42++) {
+                        int radius = 0;
+                        if (pActors[v42].word_000086_some_monster_id) {  // not always filled in from scripted monsters
+                            radius = pMonsterList->pMonsters[pActors[v42].word_000086_some_monster_id - 1].uToHitRadius;
+                        }
+                        Actor::_46DF1A_collide_against_actor(v42, radius);
+                    }
                 }
                 if (_46F04E_collide_against_portals()) break;
             }
@@ -976,16 +978,14 @@ bool SpriteObject::sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x,
     return true;
 }
 
-void SpriteObject::sub_42F960_create_object(int x, int y, int z) {  // splash
+void SpriteObject::Create_Splash_Object(int x, int y, int z) {  // splash on water
     SpriteObject a1;
-
     a1.containing_item.Reset();
-
     a1.spell_skill = 0;
     a1.spell_level = 0;
     a1.spell_id = 0;
     a1.field_54 = 0;
-    a1.uType = SPRITE_800;
+    a1.uType = SPRITE_WATER_SPLASH;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition.x = x;
     a1.vPosition.y = y;
@@ -996,22 +996,20 @@ void SpriteObject::sub_42F960_create_object(int x, int y, int z) {  // splash
     a1.uSpriteFrameID = 0;
     a1.spell_caster_pid = 0;
     a1.spell_target_pid = 0;
-    int v8 = a1.Create(0, 0, 0, 0);
-    if (v8 != -1) {
-        int v9 = 8 * v8;
-        v9 |= 2;
-        pAudioPlayer->PlaySound((SoundID)SOUND_splash, v9, 0, -1, 0, 0);
+    int objID = a1.Create(0, 0, 0, 0);
+    if (objID != -1) {
+        pAudioPlayer->PlaySound((SoundID)SOUND_splash, PID(OBJECT_Item, objID), 0, 0, 0, 0);
     }
 }
 
 bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
     int v90;                // ST34_4@159
     int v91;                // eax@159
-    unsigned int v107;      // edx@220
+    unsigned int v107 = 0;      // edx@220
     int v108;        // ebx@225
     // int v110;        // ebx@234
     int v114;               // eax@242
-    int v135;        // [sp-4h] [bp-30h]@217
+    int v135 = 0;        // [sp-4h] [bp-30h]@217
     int v136;               // [sp+Ch] [bp-20h]@208
     int v137;               // [sp+10h] [bp-1Ch]@208
     int v138;        // [sp+14h] [bp-18h]@207
@@ -1135,8 +1133,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
                                              PID(OBJECT_Item, uLayingItemID));
                 return 0;
             }
-            pSpriteObjects[uLayingItemID].uType = SPRITE_600;
-            pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_600);
+            pSpriteObjects[uLayingItemID].uType = SPRITE_OBJECT_EXPLODE;
+            pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_OBJECT_EXPLODE);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
@@ -1159,9 +1157,9 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             return 0;
         }
 
-        case SPRITE_600: {
-            pSpriteObjects[uLayingItemID].uType = SPRITE_601;
-            pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_601);
+        case SPRITE_OBJECT_EXPLODE: {  // actor death explode
+            pSpriteObjects[uLayingItemID].uType = SPRITE_OBJECT_EXPLODE_IMPACT;
+            pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_OBJECT_EXPLODE_IMPACT);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }

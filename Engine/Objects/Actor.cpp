@@ -241,6 +241,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     int a1a;                    // [sp+E0h] [bp+10h]@34
     int a1c;                    // [sp+E0h] [bp+10h]@184
 
+    GameTime spell_length = GameTime(0);
+
     actorPtr = &pActors[uActorID];
     realPoints = uSkillLevel & 0x3F;
     masteryLevel = SkillToMastery(uSkillLevel);
@@ -307,8 +309,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v39 = 3 * 60 * (realPoints + 15);
             else
                 v39 = 0;
-            actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v39 / 60)),
+
+            spell_length = GameTime::FromMinutes(v39 / 60);
+
+            actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply((pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFF3C1Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Haste,
@@ -445,8 +449,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v8 = 60 * 60 * (realPoints + 64);
             else
                 v8 = 0;
+            spell_length = GameTime::FromMinutes(v8 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_SHIELD].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v8 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
             return;
 
@@ -459,8 +464,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v44 = 60 * 60 * (realPoints + 64);
             else
                 v44 = 0;
+            spell_length = GameTime::FromMinutes(v44 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v44 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x5C310Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Stoneskin,
@@ -476,9 +482,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v42 = 20 * 60 * realPoints + 3840;
             else
                 v42 = 0;
-
+            spell_length = GameTime::FromMinutes(v42 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_BLESS].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v42 / 60)),
+               (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
 
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
@@ -496,9 +502,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v48 = 2 * (3 * realPoints + 60);
             else
                 v48 = 0;
-
+            spell_length = GameTime::FromMinutes(5);
             actorPtr->pActorBuffs[ACTOR_BUFF_FATE].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(5)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, v48, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
@@ -515,8 +521,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v54 = 20 * 60 * realPoints + 3840;
             else
                 v54 = 0;
+            spell_length = GameTime::FromMinutes(v54 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_HEROISM].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v54 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
@@ -529,8 +536,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v51 = 0;
             else
                 v51 = 60 * 60 * realPoints;
+            spell_length = GameTime::FromMinutes(v51 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v51 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
@@ -583,8 +591,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 HEXRAYS_LOWORD(realPoints) = uSkillLevel;
                 v96 = 0;
             }
+            spell_length = GameTime::FromMinutes(v96 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v96 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
             pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03,
@@ -601,8 +610,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v94 = 20 * 60 * realPoints + 30 * 128;
             else
                 v94 = 0;
+            spell_length = GameTime::FromMinutes(v94 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v94 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
             pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01,
@@ -671,8 +681,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v68 = 5 * 30 * realPoints + 30 * 128;
             else
                 v68 = 15 * 30 * realPoints + 30 * 128;
+            spell_length = GameTime::FromMinutes(v68 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v68 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x7E7E7Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2,
@@ -836,11 +847,10 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
 }
 
 //----- (00404736) --------------------------------------------------------
-void Actor::Explode(unsigned int uActorID) {
-    SpriteObject a1;  // [sp+Ch] [bp-78h]@1
-
-    a1.uType = SPRITE_600;
-    // a1.uObjectDescID = GetObjDescId(a1.uType);  // no  objdesc for this sprtie - check
+void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors eg gogs
+    SpriteObject a1;
+    a1.uType = SPRITE_OBJECT_EXPLODE;
+    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.containing_item.Reset();
     a1.spell_id = 0;
     a1.spell_level = 0;
@@ -851,8 +861,7 @@ void Actor::Explode(unsigned int uActorID) {
     a1.uFacing = 0;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID =
-        pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
     a1.uSpriteFrameID = 0;
     a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
     a1.spell_target_pid = 0;
@@ -888,11 +897,11 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
     float v33;        // st7@45
     Vec3_int_ v37;    // [sp-10h] [bp-5Ch]@15
     AIDirection v41;  // [sp+14h] [bp-38h]@46
-    float outy2;      // [sp+38h] [bp-14h]@33
-    float outx2;      // [sp+3Ch] [bp-10h]@33
-    int outz;         // [sp+40h] [bp-Ch]@6
-    int outy;         // [sp+44h] [bp-8h]@6
-    int outx;         // [sp+48h] [bp-4h]@6
+    float outy2 = 0;      // [sp+38h] [bp-14h]@33
+    float outx2 = 0;      // [sp+3Ch] [bp-10h]@33
+    int outz = 0;         // [sp+40h] [bp-Ch]@6
+    int outy = 0;         // [sp+44h] [bp-8h]@6
+    int outx = 0;         // [sp+48h] [bp-4h]@6
     float a4a;        // [sp+58h] [bp+Ch]@45
 
     v4 = PID_ID(uObj1ID);
@@ -1060,32 +1069,30 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
 }
 
 //----- (00404030) --------------------------------------------------------
-void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int _48,
-                          AIDirection *a4) {
-    AIDirection *v7;  // eax@3
-    AIDirection v1;   // eax@3
-    AIDirection a3;   // [sp+8h] [bp-38h]@4
+void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int UNUSED,
+                          AIDirection *Dir_In) {
+    AIDirection *Dir_Out;
+    AIDirection Dir_Ret;
 
     if (rand() % 100 >= 5) {
-        // v9 = &pActors[uActorID];
-        if (!a4) {
-            Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), uObjID, &v1,
-                                    0);
-            v7 = &v1;
+        if (!Dir_In) {
+            Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), uObjID, &Dir_Ret, 0);
+            Dir_Out = &Dir_Ret;
         } else {
-            v7 = a4;
+            Dir_Out = Dir_In;
         }
-        pActors[uActorID].uYawAngle = v7->uYawAngle;
+
+        pActors[uActorID].uYawAngle = Dir_Out->uYawAngle;
         pActors[uActorID].uCurrentActionTime = 0;
         pActors[uActorID].vVelocity.z = 0;
         pActors[uActorID].vVelocity.y = 0;
         pActors[uActorID].vVelocity.x = 0;
-        pActors[uActorID].uPitchAngle = v7->uPitchAngle;
+        pActors[uActorID].uPitchAngle = Dir_Out->uPitchAngle;
         pActors[uActorID].uCurrentActionLength = 256;
         pActors[uActorID].uAIState = Interacting;
         pActors[uActorID].UpdateAnimation();
     } else {
-        Actor::AI_Bored(uActorID, uObjID, a4);
+        Actor::AI_Bored(uActorID, uObjID, Dir_In);
     }
 }
 
@@ -1629,7 +1636,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
     AIDirection v18;   // [sp+28h] [bp-2Ch]@10
     int v19;           // [sp+44h] [bp-10h]@6
     // signed int a2; // [sp+48h] [bp-Ch]@1
-    int v22;             // [sp+50h] [bp-4h]@3
+    int v22 = 0;             // [sp+50h] [bp-4h]@3
     unsigned int pDira;  // [sp+5Ch] [bp+8h]@11
 
     v3 = &pActors[uActorID];
@@ -3663,8 +3670,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
         v43 = player->GetActualSkillLevel(PLAYER_SKILL_MACE);
         v45 = SkillToMastery(v43);
-        GameTime v46 = GameTime(pParty->GetPlayingTime() + GameTime(0, v43 & 63));  // ??
-        pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply(v46, v45, 0, 0, 0);
+        GameTime v46 = GameTime(0, v43 & 63);  // ??
+        pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), v45, 0, 0, 0);
         if (!engine->config->NoShowDamage()) {
             pMonsterName = player->pName;
 
@@ -4963,81 +4970,91 @@ int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level,
                                      int duration_game_seconds) {
     int result;     // eax@13
     int v10;               // ebx@16
-    const char *v15;       // [sp-4h] [bp-24h]@2
+    const char *cMonsterName;       // [sp-4h] [bp-24h]@2
     unsigned int uFaceID;  // [sp+8h] [bp-18h]@16
     int v19;               // [sp+Ch] [bp-14h]@16
-    size_t v20;            // [sp+10h] [bp-10h]@6
+    // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
     int v21;               // [sp+14h] [bp-Ch]@14
-    unsigned int v23;      // [sp+1Ch] [bp-4h]@6
+    unsigned int uMonsterID;      // [sp+1Ch] [bp-4h]@6
 
     if (caster_skill_level == 4)
-        v15 = "Elemental Light C";
+        cMonsterName = "Elemental Light C";
     else if (caster_skill_level == 3)
-        v15 = "Elemental Light B";
+        cMonsterName = "Elemental Light B";
     else
-        v15 = "Elemental Light A";
+        cMonsterName = "Elemental Light A";
 
-    v23 = pMonsterList->GetMonsterIDByName(v15);
-    v20 = 0;
-    for (v20; v20 < uNumActors; v20++) {
-        if (pActors[v20].uAIState == Removed) break;
+    uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
+
+    // find first free index
+    uint uActorIndex = 0;
+    for (uActorIndex; uActorIndex < 500; uActorIndex++) {
+        if (pActors[uActorIndex].uAIState == Removed) break;
     }
 
+    if (uActorIndex == 499 && (pActors[uActorIndex].uAIState != Removed)) return 0;
+
     result = uNumActors + 1;
-    if (v20 != uNumActors || result < 500) {
+
+
+
+    if (uActorIndex != uNumActors || result < 500) {
         v21 = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
             v21 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
                                      pParty->vPosition.z);
         v19 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
-        pActors[v20].Reset();
-        strcpy(pActors[v20].pActorName, pMonsterStats->pInfos[v23 + 1].pName);
-        pActors[v20].sCurrentHP = pMonsterStats->pInfos[v23 + 1].uHP;
-        memcpy(&pActors[v20].pMonsterInfo, &pMonsterStats->pInfos[v23 + 1],
+        pActors[uActorIndex].Reset();
+        strcpy(pActors[uActorIndex].pActorName, pMonsterStats->pInfos[uMonsterID + 1].pName);
+        pActors[uActorIndex].sCurrentHP = pMonsterStats->pInfos[uMonsterID + 1].uHP;
+        memcpy(&pActors[uActorIndex].pMonsterInfo, &pMonsterStats->pInfos[uMonsterID + 1],
                sizeof(MonsterInfo));
-        pActors[v20].word_000086_some_monster_id = v23 + 1;
-        pActors[v20].uActorRadius = pMonsterList->pMonsters[v23].uMonsterRadius;
-        pActors[v20].uActorHeight = pMonsterList->pMonsters[v23].uMonsterHeight;
-        pActors[v20].pMonsterInfo.uTreasureDiceRolls = 0;
-        pActors[v20].pMonsterInfo.uTreasureType = 0;
-        pActors[v20].pMonsterInfo.uExp = 0;
-        pActors[v20].uMovementSpeed =
-            pMonsterList->pMonsters[v23].uMovementSpeed;
+        pActors[uActorIndex].word_000086_some_monster_id = uMonsterID + 1;
+        pActors[uActorIndex].uActorRadius = pMonsterList->pMonsters[uMonsterID].uMonsterRadius;
+        pActors[uActorIndex].uActorHeight = pMonsterList->pMonsters[uMonsterID].uMonsterHeight;
+        pActors[uActorIndex].pMonsterInfo.uTreasureDiceRolls = 0;
+        pActors[uActorIndex].pMonsterInfo.uTreasureType = 0;
+        pActors[uActorIndex].pMonsterInfo.uExp = 0;
+        pActors[uActorIndex].uMovementSpeed =
+            pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
         v10 = rand() % 2048;
-        pActors[v20].vInitialPosition.x =
+        pActors[uActorIndex].vInitialPosition.x =
             pParty->vPosition.x + fixpoint_mul(stru_5C6E00->Cos(v10), v19);
-        pActors[v20].vPosition.x = pActors[v20].vInitialPosition.x;
-        pActors[v20].vInitialPosition.y =
+        pActors[uActorIndex].vPosition.x = pActors[uActorIndex].vInitialPosition.x;
+        pActors[uActorIndex].vInitialPosition.y =
             pParty->vPosition.y + fixpoint_mul(stru_5C6E00->Sin(v10), v19);
-        pActors[v20].vPosition.y = pActors[v20].vInitialPosition.y;
-        pActors[v20].vInitialPosition.z = pParty->vPosition.z;
-        pActors[v20].vPosition.z = pActors[v20].vInitialPosition.z;
-        pActors[v20].uTetherDistance = 256;
-        pActors[v20].uSectorID = v21;
-        pActors[v20].PrepareSprites(0);
-        pActors[v20].pMonsterInfo.uHostilityType =
+        pActors[uActorIndex].vPosition.y = pActors[uActorIndex].vInitialPosition.y;
+        pActors[uActorIndex].vInitialPosition.z = pParty->vPosition.z;
+        pActors[uActorIndex].vPosition.z = pActors[uActorIndex].vInitialPosition.z;
+        pActors[uActorIndex].uTetherDistance = 256;
+        pActors[uActorIndex].uSectorID = v21;
+        pActors[uActorIndex].PrepareSprites(0);
+        pActors[uActorIndex].pMonsterInfo.uHostilityType =
             MonsterInfo::Hostility_Friendly;
-        pActors[v20].uAlly = 9999;
-        pActors[v20].uGroup = 0;
-        pActors[v20].uCurrentActionTime = 0;
-        pActors[v20].uAIState = Summoned;
-        pActors[v20].uCurrentActionLength = 256;
-        pActors[v20].UpdateAnimation();
+        pActors[uActorIndex].uAlly = 9999;
+        pActors[uActorIndex].uGroup = 0;
+        pActors[uActorIndex].uCurrentActionTime = 0;
+        pActors[uActorIndex].uAIState = Summoned;
+        pActors[uActorIndex].uCurrentActionLength = 256;
+        pActors[uActorIndex].UpdateAnimation();
 
-        result = pIndoor->GetSector(pActors[v20].vPosition.x,
-                                    pActors[v20].vPosition.y,
-                                    pActors[v20].vPosition.z);
+        result = pIndoor->GetSector(pActors[uActorIndex].vPosition.x,
+                                    pActors[uActorIndex].vPosition.y,
+                                    pActors[uActorIndex].vPosition.z);
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor ||
             result == v21 &&
                 (result = BLV_GetFloorLevel(
-                     pActors[v20].vPosition.x, pActors[v20].vPosition.y,
-                     pActors[v20].vPosition.z, result, &uFaceID),
+                     pActors[uActorIndex].vPosition.x, pActors[uActorIndex].vPosition.y,
+                     pActors[uActorIndex].vPosition.z, result, &uFaceID),
                  result != -30000) &&
                 (result = abs(result - pParty->vPosition.z), result <= 1024)) {
-            if (v20 == uNumActors) ++uNumActors;
-            pActors[v20].uSummonerID = PID(OBJECT_Player, spell_power);
-            result = pActors[v20].pActorBuffs[ACTOR_BUFF_SUMMONED].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(duration_game_seconds)),
+            if (uActorIndex == uNumActors) ++uNumActors;
+            pActors[uActorIndex].uSummonerID = PID(OBJECT_Player, spell_power);
+
+            GameTime spell_length = GameTime::FromSeconds(duration_game_seconds);
+
+            result = pActors[uActorIndex].pActorBuffs[ACTOR_BUFF_SUMMONED].Apply(
+                (pParty->GetPlayingTime() + spell_length),
                 caster_skill_level, spell_power, 0, 0);
         }
     }
@@ -5318,7 +5335,7 @@ void area_of_effect__damage_evaluate() {  // not damaging party correctly
     int v31;            // edx@29
     int v32;            // eax@29
     int v33;            // ST24_4@29
-    SpriteObject *sprite_obj_ptr;  // [sp+0h] [bp-28h]@0
+    SpriteObject *sprite_obj_ptr = nullptr;  // [sp+0h] [bp-28h]@0
     int attack_index;    // [sp+10h] [bp-18h]@1
     int v44;            // [sp+14h] [bp-14h]@15
     // Vec3_int_ *pVelocity; // [sp+1Ch] [bp-Ch]@2

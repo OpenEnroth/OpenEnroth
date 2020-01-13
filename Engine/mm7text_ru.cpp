@@ -675,7 +675,7 @@ int sprintfex_internal(char *str) {
     int gender_token = 0;
 
     auto src = buf, dst = p;
-    strcpy_s(buf, str + (p - str));
+    strcpy(buf, str + (p - str));
     while (true) {
         switch (src[1]) {
             case 'I': {

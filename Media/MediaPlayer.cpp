@@ -723,7 +723,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     pEventTimer->Pause();
     pAudioPlayer->MusicPause();
     OS_ShowCursor(false);
-    current_screen_type = SCREEN_VIDEO;
+    current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
 
     pMovie_Track->Play();
 
@@ -768,7 +768,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     // release texture
     tex->Release();
 
-    current_screen_type = SCREEN_GAME;
+    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
     pMovie_Track = nullptr;
 
     OS_ShowCursor(true);

@@ -233,7 +233,7 @@ struct Actor {
     static void AI_StandOrBored(unsigned int uActorID, signed int uObjID,
                                 int uActionLength, struct AIDirection *a4);
     static void AI_FaceObject(unsigned int uActorID, unsigned int uObjID,
-                              int _48, struct AIDirection *a4);
+                              int UNUSED, struct AIDirection *Dir_In);
     static void GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                                  struct AIDirection *pOut, int a4);
     static void Explode(unsigned int uActorID);
