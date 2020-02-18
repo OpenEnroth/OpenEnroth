@@ -608,10 +608,7 @@ void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                           Texture *texture) {
     __debugbreak();
 }
-void RenderOpenGL::am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY,
-                               int blend_mode) {
-    __debugbreak();
-}
+
 void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
                                  int blend_mode) {
     __debugbreak();

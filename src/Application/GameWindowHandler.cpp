@@ -46,7 +46,9 @@ bool GameWindowHandler::OnChar(int c) {
 
 void GameWindowHandler::OnMouseLeftClick(int x, int y) {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.field_0 = 7;
+        pArcomageGame->stru1.am_input_type = 7;
+        pArcomageGame->check_exit = 0;
+        pArcomageGame->force_redraw_1 = 1;
         ArcomageGame::OnMouseClick(0, true);
     } else {
         pMediaPlayer->StopMovie();
@@ -67,8 +69,10 @@ void GameWindowHandler::OnMouseLeftClick(int x, int y) {
 
 void GameWindowHandler::OnMouseRightClick(int x, int y) {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.field_0 = 7;
-        ArcomageGame::OnMouseClick(0, true);
+        pArcomageGame->stru1.am_input_type = 8;
+        pArcomageGame->check_exit = 0;
+        pArcomageGame->force_redraw_1 = 1;
+        ArcomageGame::OnMouseClick(1, true);
     } else {
         pMediaPlayer->StopMovie();
 
@@ -84,7 +88,7 @@ void GameWindowHandler::OnMouseRightClick(int x, int y) {
 
 void GameWindowHandler::OnMouseLeftUp() {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.field_0 = 3;
+        pArcomageGame->stru1.am_input_type = 3;
         ArcomageGame::OnMouseClick(0, 0);
     } else {
         back_to_game();
@@ -93,7 +97,7 @@ void GameWindowHandler::OnMouseLeftUp() {
 
 void GameWindowHandler::OnMouseRightUp() {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.field_0 = 4;
+        pArcomageGame->stru1.am_input_type = 4;
         ArcomageGame::OnMouseClick(1, false);
     } else {
         back_to_game();
@@ -102,7 +106,7 @@ void GameWindowHandler::OnMouseRightUp() {
 
 void GameWindowHandler::OnMouseLeftDoubleClick(int x, int y) {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.field_0 = 7;
+        pArcomageGame->stru1.am_input_type = 7;
     } else {
         OnMouseLeftClick(x, y);
     }
@@ -110,7 +114,7 @@ void GameWindowHandler::OnMouseLeftDoubleClick(int x, int y) {
 
 void GameWindowHandler::OnMouseRightDoubleClick(int x, int y) {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.field_0 = 8;
+        pArcomageGame->stru1.am_input_type = 8;
     } else {
         OnMouseRightClick(x, y);
     }
@@ -132,18 +136,21 @@ void GameWindowHandler::OnVkDown(int vk, int vk_to_char) {
     if (uGameMenuUI_CurentlySelectedKeyIdx != -1) {
         pKeyActionMap->ProcessTextInput(vk);
     } else if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->stru1.field_0 = 1;
+        pArcomageGame->stru1.am_input_type = 1;
 
         set_stru1_field_8_InArcomage(vk_to_char);
         if (vk == VK_ESCAPE) {
-            pArcomageGame->GameOver = 1;
-            pArcomageGame->field_F4 = 1;
-            pArcomageGame->uGameWinner = 2;
-            pArcomageGame->Victory_type = -2;
-        } else if (vk == VK_F3) {
+            pArcomageGame->stru1.am_input_type = 10;
+        } else if (pArcomageGame->check_exit) {
+           pArcomageGame->check_exit = 0;
+           pArcomageGame->force_redraw_1 = 1;
+        }
+
+        if (vk == VK_F3) {
             OnScreenshot();
         } else if (vk == VK_F4 && !pMovie_Track) {
             OnToggleFullscreen();
+            pArcomageGame->stru1.am_input_type = 9;
         }
     } else {
         pMediaPlayer->StopMovie();
@@ -179,7 +186,7 @@ void GameWindowHandler::OnFocusLost() {
 
 void GameWindowHandler::OnPaint() {
     if (pArcomageGame->bGameInProgress) {
-        pArcomageGame->field_F9 = 1;
+        pArcomageGame->force_redraw_1 = 1;
     }
     if (render && render->AreRenderSurfacesOk()) {
         render->Present();
@@ -197,7 +204,7 @@ void GameWindowHandler::OnActivated() {
         dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
 
         if (pArcomageGame->bGameInProgress) {
-            pArcomageGame->field_F9 = 1;
+            pArcomageGame->force_redraw_1 = 1;
         } else {
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER)
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0200_EVENT_TIMER;

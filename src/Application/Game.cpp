@@ -274,8 +274,7 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
         }
     }
 
-    if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition <
-        hireling_slot) {
+    if ((signed int)hireling_id + (signed int)pParty->hirelingScrollPosition < hireling_slot) {
         Actor actor;
         memset(&actor, 0, sizeof(actor));
         actor.sNPC_ID += -1 - pParty->hirelingScrollPosition - hireling_id;

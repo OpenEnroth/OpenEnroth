@@ -4988,16 +4988,14 @@ int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level,
 
     // find first free index
     uint uActorIndex = 0;
-    for (uActorIndex; uActorIndex < 500; uActorIndex++) {
+    for (uActorIndex; uActorIndex < uNumActors; uActorIndex++) {
         if (pActors[uActorIndex].uAIState == Removed) break;
     }
-
-    if (uActorIndex == 499 && (pActors[uActorIndex].uAIState != Removed)) return 0;
 
     result = uNumActors + 1;
 
 
-
+    // use free slot or first new slot
     if (uActorIndex != uNumActors || result < 500) {
         v21 = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)

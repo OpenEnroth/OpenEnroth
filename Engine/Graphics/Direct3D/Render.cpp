@@ -126,8 +126,9 @@ Texture *Render::CreateSprite(const String &name, unsigned int palette_id,
 }
 
 void Render::WritePixel16(int x, int y, uint16_t color) {
-    // do not use this
+    // do not use this - slow
     __debugbreak();
+    logger->Info(L"Reduce use of WritePixel16");
 
     unsigned int b = (color & 0x1F) << 3;
     unsigned int g = ((color >> 5) & 0x3F) << 2;
@@ -1216,6 +1217,8 @@ void Render::Release() {
 
 void Present32(uint32_t *src, unsigned int src_pitch, uint32_t *dst,
                unsigned int dst_pitch) {
+     // return;
+
     for (uint y = 0; y < 8; ++y) {
         memcpy(dst + y * dst_pitch, src + y * src_pitch,
                src_pitch * sizeof(uint32_t));
@@ -1452,8 +1455,8 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
     return true;
 }
 
-void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
-    int blend_mode) {
+// blue mask
+void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
     uint16_t *pSrc;          // eax@2
     int uSrcTotalWidth = 0;      // ecx@4
     unsigned int v10;        // esi@9
@@ -1463,14 +1466,17 @@ void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
     int32_t src_height;      // [sp+18h] [bp-Ch]@3
     int uSrcPitch;           // [sp+1Ch] [bp-8h]@5
 
-    if (!pArcomageGame->pBlit_Copy_pixels) return;
+    if (!pArcomageGame->pBlit_Copy_pixels) {
+        __debugbreak();
+        return;
+    }
 
     src_width = pSrcRect->z - pSrcRect->x;
     src_height = pSrcRect->w - pSrcRect->y;
 
-    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
+    /*if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
         uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
-    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
+    else*/ if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
         uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
 
     pSrc = pArcomageGame->pBlit_Copy_pixels;
@@ -1502,82 +1508,19 @@ void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
         for (int i = 0; i < src_height; ++i) {
             for (int j = 0; j < src_width; ++j) {
                 if (*src_surf_pos != v10) {
-                    if (pTargetPoint->x + j >= 0 &&
-                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
-                        pTargetPoint->y + i >= 0 &&
-                        pTargetPoint->y + i <= window->GetHeight() - 1)
-                        temppix[j + i * src_width] = Color32((0x7BEF & (*src_surf_pos / 2)));
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    }
-    render->DrawTextureAlphaNew(pTargetPoint->x / 640., pTargetPoint->y / 480., temp);
-    temp->Release();
-}
-
-void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
-    uint16_t *pSrc;          // eax@2
-    int uSrcTotalWidth = 0;      // ecx@4
-    int v21;                 // [sp+Ch] [bp-18h]@8
-    uint16_t *src_surf_pos;  // [sp+10h] [bp-14h]@9
-    int32_t src_width;       // [sp+14h] [bp-10h]@3
-    int32_t src_height;      // [sp+18h] [bp-Ch]@3
-    int uSrcPitch;           // [sp+1Ch] [bp-8h]@5
-
-    if (!pArcomageGame->pBlit_Copy_pixels) {
-        return;
-    }
-
-    src_width = pSrcRect->z - pSrcRect->x;
-    src_height = pSrcRect->w - pSrcRect->y;
-    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
-        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
-    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
-        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
-
-    pSrc = pArcomageGame->pBlit_Copy_pixels;
-    uSrcPitch = uSrcTotalWidth;
-    src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
-    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
-
-    Image *temp = Image::Create(src_width, src_height, IMAGE_FORMAT_A8R8G8B8);
-    uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-
-    if (blend_mode == 2) {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i) {
-            for (int j = 0; j < src_width; ++j) {
-                if (*src_surf_pos != v21) {
-                    if (pTargetPoint->x + j >= 0 &&
-                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
-                        pTargetPoint->y + i >= 0 &&
-                        pTargetPoint->y + i <= window->GetHeight() - 1)
-                        temppix[j + i * src_width] = Color32(*src_surf_pos);
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    } else {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i) {
-            for (int j = 0; j < src_width; ++j) {
-                if (*src_surf_pos != v21) {
-                    if (pTargetPoint->x + j >= 0 &&
-                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
-                        pTargetPoint->y + i >= 0 &&
-                        pTargetPoint->y + i <= window->GetHeight() - 1)
-                        temppix[j + i * src_width] = Color32((0x7BEF & (*src_surf_pos / 2)));
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    }
-    render->DrawTextureAlphaNew(pTargetPoint->x / 640., pTargetPoint->y / 480., temp);
-    temp->Release();
+                    if (pTargetPoint->x + j >= 0 &&//
+                        pTargetPoint->x + j <= window->GetWidth() - 1 &&//
+                        pTargetPoint->y + i >= 0 &&//
+                        pTargetPoint->y + i <= window->GetHeight() - 1)//
+                        temppix[j + i * src_width] = Color32((0x7BEF & (*src_surf_pos / 2)));//
+                }//
+                ++src_surf_pos;//
+            }//
+            src_surf_pos += uSrcPitch;//
+        }//
+    }//
+    render->DrawTextureAlphaNew(pTargetPoint->x / 640., pTargetPoint->y / 480., temp);//
+    temp->Release();//
 }
 
 bool Render::SwitchToWindow() {
@@ -1699,6 +1642,8 @@ bool Render::SwitchToWindow() {
 }
 
 void Render::RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t color) {
+    // change to 32bit clor input??
+
     unsigned int b = (color & 0x1F) << 3;
     unsigned int g = ((color >> 5) & 0x3F) << 2;
     unsigned int r = ((color >> 11) & 0x1F) << 3;

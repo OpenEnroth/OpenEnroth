@@ -209,7 +209,7 @@ bool Image::LoadImageData() {
         }
     }
 
-    if (width == 0 || height == 0) __debugbreak();
+    if ((width == 0 || height == 0) && initialized) __debugbreak();
 
     return initialized;
 }
@@ -259,9 +259,12 @@ Image *Image::Create(unsigned int width, unsigned int height,
         } else {
             memset(img->pixels[format], 0, num_pixels_bytes);
         }
-    }
 
-    return img;
+        return img;
+
+    } else {
+        return nullptr;
+    }
 }
 
 const void *Image::GetPixels(IMAGE_FORMAT format) {

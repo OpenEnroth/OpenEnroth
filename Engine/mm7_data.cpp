@@ -505,7 +505,7 @@ std::array<int, 500> ai_near_actors_distances;
 std::array<unsigned int, 500> ai_near_actors_ids;
 std::array<int, 182> dword_4F8580 = {};
 
-char byte_4FAA24;
+char byte_4FAA24;  // turn over break??
 // HWND dword_4FAA28; // idb
 
 std::array<unsigned int, 480> pSRZBufferLineOffsets;

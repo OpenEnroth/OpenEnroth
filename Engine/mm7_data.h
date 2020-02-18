@@ -111,7 +111,7 @@ extern std::array<int, 182> dword_4F8580;
 extern int dword_4FA9B0[];
 extern int dword_4FA9B4[];
 
-extern char byte_4FAA24;
+// extern char am_turn_not_finished;
 // extern HWND dword_4FAA28; // idb
 
 extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
