@@ -27,7 +27,7 @@ Getting Started (With IMAGES!)
 ### wait until The cache has completed creating. (takes a couple of seconds)
 ![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/install3.png)
 
-### Make sure your CMAKE conf looks like this (notice no NINJA is being use only Visual Studio 2019)
+### Make sure your CMAKE conf looks like this (please use Visual Studio 2019 specifically, NINJA generator fails often)
 ![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/final.PNG)
 
 ### Click Build All
