@@ -1,29 +1,24 @@
-
 function(DEBUG_PRINT msg)
-    #if (NOT (CMAKE_BUILD_TYPE MATCHES "RELEASE"))
+    if (NOT (CMAKE_BUILD_TYPE MATCHES "RELEASE"))
         message(STATUS ${msg})
-    #endif()
+    endif()
 endfunction()
 
-
-# This function works around a CMake issue with the Ninja generator where it
-# does not understand imported libraries, and instead needs `BUILD_BYPRODUCTS`
-# explicitly set.
-# https://cmake.org/pipermail/cmake/2015-April/060234.html
-function(NINJA_WORKAROUND_GET_BYPRODUCTS TARGET)
-    string(TOUPPER ${TARGET} NAME)
-    if (CMAKE_GENERATOR MATCHES "Ninja")
-        get_target_property(BYPRODUCTS ${TARGET} IMPORTED_LOCATION)
-
-        get_target_property(ADDITIONAL_BYPRODUCTS ${TARGET} INTERFACE_LINK_LIBRARIES)
-        if(NOT ("${ADDITIONAL_BYPRODUCTS}" STREQUAL "") AND NOT ("${ADDITIONAL_BYPRODUCTS}" STREQUAL "ADDITIONAL_BYPRODUCTS-NOTFOUND"))
-            LIST(APPEND BYPRODUCTS ${ADDITIONAL_BYPRODUCTS})
-        endif()
-
-        DEBUG_PRINT("${NAME}_BYPRODUCTS         ${BYPRODUCTS}")
-        set(${NAME}_BYPRODUCTS ${BYPRODUCTS} PARENT_SCOPE)
+function(ADD_GLOBAL_DEPENDENCY filename)
+    if (NOT EXISTS ${filename})
+        message(STATUS "ADD_GLOBAL_DEPENDENCY(${filename}): file does not exist")
     else()
-        # Make this function a no-op when not using Ninja.
-        set(${NAME}_BYPRODUCTS "" PARENT_SCOPE)
+        list(APPEND GLOBAL_DEPENDENCIES "${filename}")
+        set (GLOBAL_DEPENDENCIES ${GLOBAL_DEPENDENCIES} PARENT_SCOPE)
     endif()
+endfunction()
+
+function(RESOLVE_DEPENDENCIES targetName)
+    foreach(dep ${GLOBAL_DEPENDENCIES})
+        message(STATUS "Copying binary dependency ${dep} to $<TARGET_FILE_DIR:${targetName}>")
+        add_custom_command(
+            TARGET ${targetName} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "${dep}" $<TARGET_FILE_DIR:${targetName}>
+        )
+    endforeach()
 endfunction()

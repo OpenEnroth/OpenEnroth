@@ -5,15 +5,23 @@ SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-  set(BUILD_PLATFORM "x64")
-  set(BUILD_WIN_PLATFORM "win64")
+  set(BUILD_TYPE "x64")
+  set(BUILD_PLATFORM "win32")
 else ()
-  set(BUILD_PLATFORM "x86")
-  set(BUILD_WIN_PLATFORM "win32")
+  set(BUILD_TYPE "x86")
+  set(BUILD_PLATFORM "win32")
 endif ()
 
-DEBUG_PRINT("BUILD_PLATFORM     ${BUILD_PLATFORM}")
-DEBUG_PRINT("BUILD_WIN_PLATFORM ${BUILD_WIN_PLATFORM}")
+DEBUG_PRINT("BUILD_TYPE     ${BUILD_TYPE}")
+DEBUG_PRINT("BUILD_PLATFORM ${BUILD_PLATFORM}")
+
+if( BUILD_TYPE STREQUAL "x64" )
+  message(STATUS  "==============================================================================" )
+  message(STATUS  " " )
+  message(WARNING "Plase note that currently x64 builds could be unstable or fail to build at all" )
+  message(STATUS  " " )
+  message(STATUS  "==============================================================================" )
+endif()
 
 
 # required for unit testing using CMake's ctest command
@@ -24,13 +32,40 @@ enable_testing()
 include(CheckIncludeFile)
 include(CheckIncludeFileCXX)
 include(CheckIncludeFiles)
-include(ExternalProject)
+
+
+
+set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
+
+# actual library dir for current build configuration
+set(LIBRARY_DIR "${LIB_DIR}/${BUILD_PLATFORM}/${BUILD_TYPE}")
+
+set(DEPS_ZIP_FILENAME "all_deps_${BUILD_PLATFORM}_${BUILD_TYPE}.zip")
+set(DEPS_ZIP_FULL_PATH "${LIB_DIR}/${DEPS_ZIP_FILENAME}")
+
+# resolve 3d party libs
+if (NOT EXISTS "${LIBRARY_DIR}")
+    if (NOT EXISTS "${DEPS_ZIP_FULL_PATH}")
+        MESSAGE(STATUS "Downloading dependencies: ${DEPS_ZIP_FILENAME}")
+        file(DOWNLOAD
+            "https://github.com/gp-alex/world-of-might-and-magic-deps/raw/547b5afc13584d1e17e25348b3738b244d84dc72/${DEPS_ZIP_FILENAME}"
+            "${DEPS_ZIP_FULL_PATH}"
+            SHOW_PROGRESS
+            TIMEOUT 60  # seconds
+        )
+    endif()
+
+    execute_process(COMMAND ${CMAKE_COMMAND}
+        -E tar xzf "${DEPS_ZIP_FULL_PATH}"
+        WORKING_DIRECTORY ${LIB_DIR}
+    )
+endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/zlib.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/OpenAL.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/SDL2.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/ffmpeg.cmake")
 
+
 # we add the sub-directories that we want CMake to scan
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
-

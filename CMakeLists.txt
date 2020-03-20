@@ -53,19 +53,6 @@ include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_C
 
 add_definitions(-DPACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-might-and-magic/issues")
 
-#find_package(FFmpeg REQUIRED COMPONENTS AVFORMAT AVUTIL AVCODEC SWSCALE SWRESAMPLE)
-#find_package(OpenAL REQUIRED)
-#set(ZLIB_ROOT "$ENV{ZLIBDIR}")
-#set(ZLIB_INCLUDE_DIR "$ENV{ZLIBDIR}")
-#set(ZLIB_LIBRARY "$ENV{ZLIBDIR}")
-#find_package(ZLIB REQUIRED)
-#find_package(SDL2 REQUIRED)
-
-#include_directories(${INCLUDE_DIRECTORIES} ${FFMPEG_INCLUDE_DIRS})
-#include_directories(${INCLUDE_DIRECTORIES} ${OPENAL_INCLUDE_DIR})
-#include_directories(${INCLUDE_DIRECTORIES} ${ZLIB_INCLUDE_DIR})
-#include_directories(${INCLUDE_DIRECTORIES} ${SDL2_INCLUDE_DIR})
-
 include(CppLint)
 enable_check_style()
 
@@ -92,32 +79,9 @@ target_link_libraries(World_of_Might_and_Magic zlib openal sdl2 ffmpeg)
 target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization)
 target_link_libraries(World_of_Might_and_Magic ddraw.lib dxguid.lib)
 
-if(WIN32)
+set_property(
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic
+)
 
-    foreach(dep ${DEPENDENCIES})
-        message(STATUS "Copying binary dependency ${dep}")
-        add_custom_command(
-            TARGET World_of_Might_and_Magic POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy "${dep}" $<TARGET_FILE_DIR:World_of_Might_and_Magic>
-        )
-    endforeach()
 
-#  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{ZLIBDIR}/zlib1.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
-
-#  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{OPENALDIR}/bin/${VC_LIB_PATH_SUFFIX}/soft_oal.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
-
-#  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/avcodec-58.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
-#  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/avformat-58.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
-#  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/avutil-56.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
-#  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/swresample-3.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
-#  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FFMPEGDIR}/bin/${VC_LIB_PATH_SUFFIX}/swscale-5.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
-#  add_custom_command(TARGET World_of_Might_and_Magic POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{SDL2DIR}/lib/${VC_LIB_PATH_SUFFIX2}/sdl2.dll" $<TARGET_FILE_DIR:World_of_Might_and_Magic>)
-endif()
+RESOLVE_DEPENDENCIES(World_of_Might_and_Magic)

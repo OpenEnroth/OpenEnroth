@@ -1,91 +1,38 @@
-if("${FFMPEG_VERSION}" STREQUAL "")
-    set(FFMPEG_VERSION "4.0")
-    DEBUG_PRINT("No FFMPEG_VERSION specified, defaulting to ${FFMPEG_VERSION}")
-endif()
+# https://ffmpeg.zeranoe.com/builds/
 
+set(FFMPEG_DIR "${LIBRARY_DIR}/ffmpeg-4.2.2")
+set(FFMPEG_BIN_DIR "${FFMPEG_DIR}/bin")
+set(FFMPEG_LIB_DIR "${FFMPEG_DIR}/lib")
+set(FFMPEG_INCLUDE_DIR "${FFMPEG_DIR}/include")
 
-set(FFMPEG_ARTIFACTS    ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-artifacts)
-set(FFMPEG_INSTALL      ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-install)
-set(FFMPEG_SRC          ${FFMPEG_INSTALL}/src/ffmpeg_builder)
-set(FFMPEG_INCLUDE      ${FFMPEG_INSTALL}/src/ffmpeg_builder/include)
-set(FFMPEG_BIN          ${FFMPEG_INSTALL}/src/ffmpeg_binaries_builder/bin)
-set(FFMPEG_LIB          ${FFMPEG_INSTALL}/src/ffmpeg_builder/lib)
-set(FFMPEG_SHARE        ${FFMPEG_INSTALL}/share)
-DEBUG_PRINT("FFMPEG_ARTIFACTS ${FFMPEG_ARTIFACTS}")
-DEBUG_PRINT("FFMPEG_INSTALL   ${FFMPEG_INSTALL}")
-DEBUG_PRINT("FFMPEG_SRC       ${FFMPEG_SRC}")
-DEBUG_PRINT("FFMPEG_INCLUDE   ${FFMPEG_INCLUDE}")
-DEBUG_PRINT("FFMPEG_BIN       ${FFMPEG_BIN}")
-DEBUG_PRINT("FFMPEG_LIB       ${FFMPEG_LIB}")
-DEBUG_PRINT("FFMPEG_SHARE     ${FFMPEG_SHARE}")
-
-
-add_library(ffmpeg STATIC IMPORTED)
-add_dependencies(ffmpeg ffmpeg_builder)
-add_dependencies(ffmpeg ffmpeg_binaries_builder)
-include_directories(${FFMPEG_INCLUDE})
-    
-set_property(
-    TARGET ffmpeg PROPERTY
-    IMPORTED_LOCATION "${FFMPEG_LIB}/avcodec.lib"
-)
-set_property(
-    TARGET ffmpeg
-    PROPERTY INTERFACE_LINK_LIBRARIES
-        "${FFMPEG_LIB}/avdevice.lib"
-        "${FFMPEG_LIB}/avfilter.lib"
-        "${FFMPEG_LIB}/avformat.lib"
-        "${FFMPEG_LIB}/avutil.lib"
-        "${FFMPEG_LIB}/postproc.lib"
-        "${FFMPEG_LIB}/swresample.lib"
-        "${FFMPEG_LIB}/swscale.lib"
+# hack to be able to create a convenience library without sources
+file(WRITE ${FFMPEG_DIR}/ffmpeg.c "")
+add_library(
+    ffmpeg STATIC
+    ${FFMPEG_DIR}/ffmpeg.c
 )
 
-list(APPEND DEPENDENCIES "${FFMPEG_BIN}/avcodec-58.dll")
-list(APPEND DEPENDENCIES "${FFMPEG_BIN}/avdevice-58.dll")
-list(APPEND DEPENDENCIES "${FFMPEG_BIN}/avfilter-7.dll")
-list(APPEND DEPENDENCIES "${FFMPEG_BIN}/avformat-58.dll")
-list(APPEND DEPENDENCIES "${FFMPEG_BIN}/avutil-56.dll")
-list(APPEND DEPENDENCIES "${FFMPEG_BIN}/postproc-55.dll")
-list(APPEND DEPENDENCIES "${FFMPEG_BIN}/swresample-3.dll")
-list(APPEND DEPENDENCIES "${FFMPEG_BIN}/swscale-5.dll")
+target_link_libraries(
+    ffmpeg
+    "${FFMPEG_LIB_DIR}/avcodec.lib"
+    "${FFMPEG_LIB_DIR}/avdevice.lib"
+    "${FFMPEG_LIB_DIR}/avfilter.lib"
+    "${FFMPEG_LIB_DIR}/avformat.lib"
+    "${FFMPEG_LIB_DIR}/avutil.lib"
+    "${FFMPEG_LIB_DIR}/postproc.lib"
+    "${FFMPEG_LIB_DIR}/swresample.lib"
+    "${FFMPEG_LIB_DIR}/swscale.lib"
+)
 
-NINJA_WORKAROUND_GET_BYPRODUCTS(ffmpeg)
+include_directories(
+    "${FFMPEG_INCLUDE_DIR}"
+)
 
-
-
-# For win32 it's faster to download the pre-compiled development binaries.
-if (WIN32)
-    ExternalProject_Add(
-        ffmpeg_builder
-        PREFIX              "${FFMPEG_INSTALL}"
-        DOWNLOAD_DIR        "${FFMPEG_ARTIFACTS}"
-        URL                 "https://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-${FFMPEG_VERSION}-${BUILD_WIN_PLATFORM}-dev.zip"
-        INSTALL_DIR         "${FFMPEG_INSTALL}"
-        CONFIGURE_COMMAND   ""
-        BUILD_COMMAND       ""
-        INSTALL_COMMAND     ""
-
-        BUILD_BYPRODUCTS  ${FFMPEG_BYPRODUCTS}
-    )
-
-
-    
-    ExternalProject_Add(
-        ffmpeg_binaries_builder
-        PREFIX              "${FFMPEG_INSTALL}"
-        DOWNLOAD_DIR        "${FFMPEG_ARTIFACTS}"
-        URL                 "https://ffmpeg.zeranoe.com/builds/${BUILD_WIN_PLATFORM}/shared/ffmpeg-${FFMPEG_VERSION}-${BUILD_WIN_PLATFORM}-shared.zip"
-        INSTALL_DIR         "${FFMPEG_INSTALL}"
-        CONFIGURE_COMMAND   ""
-        BUILD_COMMAND       ""
-        INSTALL_COMMAND     ""
-        
-        BUILD_BYPRODUCTS  "${FFMPEG_BIN}/avcodec.dll"
-    )
-
- # build from source
-else()
-  message(FATAL_ERROR "FFmpeg: No non-win builds yet" )
-endif()
-
+ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/avcodec-58.dll")
+ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/avdevice-58.dll")
+ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/avfilter-7.dll")
+ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/avformat-58.dll")
+ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/avutil-56.dll")
+ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/postproc-55.dll")
+ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/swresample-3.dll")
+ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/swscale-5.dll")
